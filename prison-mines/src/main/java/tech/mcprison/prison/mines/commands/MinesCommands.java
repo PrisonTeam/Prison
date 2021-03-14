@@ -1667,6 +1667,36 @@ public class MinesCommands
         	}
         	
         	
+        	
+        	if ( m.isMineSweeperEnabled() ) {
+        		
+        		// stats for mine sweeper activity:
+        		long mineSweeperAvgMs = ( m.getMineSweeperCount() == 0 ? 0 : m.getMineSweeperTotalMs() / m.getMineSweeperCount());
+        		
+        		String mineSweeperBlks = PlaceholdersUtil.formattedKmbtSISize(m.getMineSweeperBlocksChanged(), fFmt, " " );
+        		
+        		
+        		RowComponent row = new RowComponent();
+        		row.addTextComponent( "&3Mine Sweeper:  &2Enabled&3:  runs: %s  Avg ms: %s  Blks: %s ",
+        						dFmt.format( m.getMineSweeperCount() ), dFmt.format( mineSweeperAvgMs ),
+        						mineSweeperBlks );
+        		chatDisplay.addComponent( row );
+        		
+        		if ( m.getStatsMineSweeperTaskMs().size() > 0 ) {
+        			RowComponent row2 = new RowComponent();
+        			row2.addTextComponent( "&3        %s ", m.statsMessageMineSweeper() );
+        			chatDisplay.addComponent( row2 );
+        		}
+
+        	}
+        	else {
+        		RowComponent row = new RowComponent();
+        		row.addTextComponent( "&3Mine Sweeper:  &cDisabled&3 ");
+        		chatDisplay.addComponent( row );
+        	}
+        	
+        	
+        	
         	if ( m.getResetCommands() != null && m.getResetCommands().size() > 0 ) {
 //        		RowComponent row = new RowComponent();
 //        		row.addTextComponent( "&3Reset Commands: &7%s ",
@@ -3085,6 +3115,10 @@ public class MinesCommands
             	pMines.getMineManager().saveMine( m );
             	sender.sendMessage( String.format( "&7Mine Reset Paging has been enabled for mine %s.", m.getTag()) );
             }
+            else {
+            	sender.sendMessage( String.format( "&7Mine Reset Paging status has not changed for mine %s.", m.getTag()) );
+            	
+            }
         	
         } 
     }
@@ -3113,26 +3147,25 @@ public class MinesCommands
         	PrisonMines pMines = PrisonMines.getInstance();
         	Mine m = pMines.getMine(mineName);
             
-//            if ( !m.isEnabled() ) {
-//            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
-//            	return;
-//            }
-        	
             if  ( mineSweeper == null || !"disable".equalsIgnoreCase( mineSweeper ) && 
             									!"enable".equalsIgnoreCase( mineSweeper ) ) {
             	sender.sendMessage( "&cInvalid paging option&7. Use &adisable&7 or &aenable&7" );
             	return;
             }
             
-            if ( "disable".equalsIgnoreCase( mineSweeper ) && m.isUsePagingOnReset() ) {
+            if ( "disable".equalsIgnoreCase( mineSweeper ) && m.isMineSweeperEnabled() ) {
             	m.setMineSweeperEnabled( false );
             	pMines.getMineManager().saveMine( m );
             	sender.sendMessage( String.format( "&7Mine Sweeper has been disabled for mine %s.", m.getTag()) );
             }
-            else if ( "enable".equalsIgnoreCase( mineSweeper ) && !m.isUsePagingOnReset() ) {
+            else if ( "enable".equalsIgnoreCase( mineSweeper ) && !m.isMineSweeperEnabled() ) {
             	m.setMineSweeperEnabled( true );
             	pMines.getMineManager().saveMine( m );
             	sender.sendMessage( String.format( "&7Mine Sweeper has been enabled for mine %s.", m.getTag()) );
+            }
+            else {
+            	sender.sendMessage( String.format( "&7Mine Sweeper status has not changed for mine %s.", m.getTag()) );
+            	
             }
         	
         } 

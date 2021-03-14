@@ -334,6 +334,13 @@ public abstract class MineReset
     	sb.append( "&3 avgMsPerPage: &7" );
     	sb.append( dFmt.format(avgMs));
     	
+    	sb.append( statsMessageMineSweeper() );
+    	
+    	return sb.toString();
+    }
+
+    public String statsMessageMineSweeper() {
+    	StringBuilder sb = new StringBuilder();
     	
     	if ( getStatsMineSweeperTaskMs().size() > 0 ) {
     		sb.append( " &3 MineSweeper ms: " );
@@ -341,13 +348,11 @@ public abstract class MineReset
     		for ( Long sweepMs : getStatsMineSweeperTaskMs() ) {
     			sb.append( sweepMs ).append( " " );
 			}
-    		
     	}
-    	
     	
     	return sb.toString();
     }
-
+    
     private void resetStats() {
     	setResetPage( 0 ); 
     	
@@ -1041,6 +1046,7 @@ public abstract class MineReset
 		if ( world != null ) {
 
 			long start = System.currentTimeMillis();
+			int blocksChanged = 0;
 			
 			for ( MineTargetPrisonBlock targetBlock : getMineTargetPrisonBlocks() ) {
 				
@@ -1053,12 +1059,14 @@ public abstract class MineReset
 						
 						targetBlock.getPrisonBlock().incrementMiningBlockCount();
 						targetBlock.setAirBroke( true );
+						
+						blocksChanged++;
 					}
 				}
 			}
 
 			long stop = System.currentTimeMillis();
-			long elapsed = start - stop;
+			long elapsed = stop - start;
 			
 			getStatsMineSweeperTaskMs().add( elapsed );
 			
@@ -1068,6 +1076,7 @@ public abstract class MineReset
 			
 			setMineSweeperTotalMs( elapsed + getMineSweeperTotalMs() );
 			setMineSweeperCount( 1 + getMineSweeperCount() );
+			setMineSweeperBlocksChanged( blocksChanged + getMineSweeperBlocksChanged() );
 			
 			// Unlock this task so more can be submitted:
 			synchronized ( MineSweeperTask.class ) {

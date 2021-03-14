@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.7 2021-03-13
 
 
+* **More mine sweeper improvements.**
+Added the tracking of blocks changed so as to get a feeling if its even doinig anything.
+
+
 * **Update more code on the mine sweeper.**
 Adding in total counts of the number of times it has been ran since server restart, plus total ms consumed.  That way can display more detailed stats such as total count and average runtimes.  Can be useful to determine how "expensive" this process will be.
 

@@ -126,7 +126,7 @@ public abstract class MineData
     private boolean mineSweeperEnabled;
     private int mineSweeperCount;
     private long mineSweeperTotalMs;
-    
+    private long mineSweeperBlocksChanged;
     
 
     public enum MineNotificationMode {
@@ -206,6 +206,7 @@ public abstract class MineData
         this.mineSweeperEnabled = false;
         this.mineSweeperCount = 0;
         this.mineSweeperTotalMs = 0;
+        this.mineSweeperBlocksChanged = 0;
         
         
 		if ( Prison.get().getPlatform() == null ) {
@@ -1102,6 +1103,13 @@ public abstract class MineData
 	}
 	public void setMineSweeperTotalMs( long mineSweeperTotalMs ) {
 		this.mineSweeperTotalMs = mineSweeperTotalMs;
+	}
+
+	public long getMineSweeperBlocksChanged() {
+		return mineSweeperBlocksChanged;
+	}
+	public void setMineSweeperBlocksChanged( long mineSweeperBlocksChanged ) {
+		this.mineSweeperBlocksChanged = mineSweeperBlocksChanged;
 	}
 
 }

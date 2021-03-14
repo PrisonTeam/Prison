@@ -21,9 +21,7 @@ public class MineSweeperTask
 			this.mine.submitAsyncTask( callbackAsync );
 		}
 		
-		synchronized ( MineSweeperTask.class ) {
-			this.mine.setMineSweeperSubmitted( false );
-		}
+
 	}
 
 
