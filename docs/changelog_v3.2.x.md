@@ -20,7 +20,11 @@ that you need.
 # v3.2.5-alpha.7 2021-03-13
 
 
-* **FIne tuned how auto features behaves when it is disabled.**
+* **Setup a mine sweeper task that will refresh the block counts.**
+This would be used when an enchantment plugin is not supported, or cannot be supported.  It's not ideal, but it could help minimize the problems of incompatibility.
+
+
+* **Fine tuned how auto features behaves when it is disabled.**
 Only the monitor event is allowed to get through so the block counts could be updated.  When options.general.isAutoManagerEnabled is set to false, auto features will be fully shutdown now.
 
 

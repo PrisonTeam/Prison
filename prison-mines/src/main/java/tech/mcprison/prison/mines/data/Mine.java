@@ -474,7 +474,9 @@ public class Mine
         String mineLinerData = (String) document.get("mineLinerData");
         setLinerData( MineLinerData.fromSaveString( mineLinerData ) );
 
-        
+        Boolean mineSweeperEnabled = (Boolean) document.get( "mineSweeperEnabled" );
+        setMineSweeperEnabled( mineSweeperEnabled == null ? false : mineSweeperEnabled.booleanValue() );
+
         
         if ( dirty ) {
 			
@@ -606,6 +608,8 @@ public class Mine
         String mineLinerData = getLinerData().toSaveString();
         ret.put("mineLinerData", mineLinerData );
         
+        ret.put( "mineSweeperEnabled", isMineSweeperEnabled() );
+
         
         return ret;
     }

@@ -122,6 +122,10 @@ public abstract class MineData
     
     private MineLinerData linerData;
     
+    
+    private boolean mineSweeperEnabled;
+    
+    
 
     public enum MineNotificationMode {
     	disabled,
@@ -197,6 +201,8 @@ public abstract class MineData
         
         this.linerData = new MineLinerData();
     	
+        this.mineSweeperEnabled = false;
+        
         
 		if ( Prison.get().getPlatform() == null ) {
 			// For unit testing purposes:
@@ -1072,5 +1078,11 @@ public abstract class MineData
 		this.linerData = linerData;
 	}
 
-	
+	public boolean isMineSweeperEnabled() {
+		return mineSweeperEnabled;
+	}
+	public void setMineSweeperEnabled( boolean mineSweeperEnabled ) {
+		this.mineSweeperEnabled = mineSweeperEnabled;
+	}
+
 }
