@@ -124,6 +124,8 @@ public abstract class MineData
     
     
     private boolean mineSweeperEnabled;
+    private int mineSweeperCount;
+    private long mineSweeperTotalMs;
     
     
 
@@ -202,6 +204,8 @@ public abstract class MineData
         this.linerData = new MineLinerData();
     	
         this.mineSweeperEnabled = false;
+        this.mineSweeperCount = 0;
+        this.mineSweeperTotalMs = 0;
         
         
 		if ( Prison.get().getPlatform() == null ) {
@@ -1084,6 +1088,20 @@ public abstract class MineData
 	}
 	public void setMineSweeperEnabled( boolean mineSweeperEnabled ) {
 		this.mineSweeperEnabled = mineSweeperEnabled;
+	}
+
+	public int getMineSweeperCount() {
+		return mineSweeperCount;
+	}
+	public void setMineSweeperCount( int mineSweeperCount ) {
+		this.mineSweeperCount = mineSweeperCount;
+	}
+
+	public long getMineSweeperTotalMs() {
+		return mineSweeperTotalMs;
+	}
+	public void setMineSweeperTotalMs( long mineSweeperTotalMs ) {
+		this.mineSweeperTotalMs = mineSweeperTotalMs;
 	}
 
 }

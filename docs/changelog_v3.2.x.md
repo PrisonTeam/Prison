@@ -19,7 +19,11 @@ that you need.
 
 # v3.2.5-alpha.7 2021-03-13
 
-'
+
+* **Update more code on the mine sweeper.**
+Adding in total counts of the number of times it has been ran since server restart, plus total ms consumed.  That way can display more detailed stats such as total count and average runtimes.  Can be useful to determine how "expensive" this process will be.
+
+
 * **Hook up the mine sweeper task so it will run upon block breakage.**
 Also the command has been added to toggle it on and off.  Still needs some work to be done, such as hooking up to /mines info and some other stats tracking.
 

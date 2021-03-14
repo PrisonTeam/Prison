@@ -1066,6 +1066,8 @@ public abstract class MineReset
 				getStatsMineSweeperTaskMs().remove( 0 );
 			}
 			
+			setMineSweeperTotalMs( elapsed + getMineSweeperTotalMs() );
+			setMineSweeperCount( 1 + getMineSweeperCount() );
 			
 			// Unlock this task so more can be submitted:
 			synchronized ( MineSweeperTask.class ) {
