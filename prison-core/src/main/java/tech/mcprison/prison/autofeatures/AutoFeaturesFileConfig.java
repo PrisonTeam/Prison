@@ -36,6 +36,7 @@ public class AutoFeaturesFileConfig {
 	    	isProcessCrazyEnchantsBlockExplodeEvents(options, true),
 	    	
 	    	isProcessMcMMOBlockBreakEvents(options, true),
+	    	isProcessEZBlocksBlockBreakEvents(options, false),
 	    	
 	    	
 	    	general(options),

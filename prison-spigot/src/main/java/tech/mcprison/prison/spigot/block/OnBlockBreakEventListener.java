@@ -10,14 +10,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventException;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.RegisteredListener;
 
 import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
@@ -117,6 +115,7 @@ import zedly.zenchantments.BlockShredEvent;
  *
  */
 public class OnBlockBreakEventListener 
+	extends OnBlockBreakExternalEvents 
 	implements Listener {
 
 	private PrisonMines prisonMineManager;
@@ -127,9 +126,12 @@ public class OnBlockBreakEventListener
 	
 	private boolean teExplosionTriggerEnabled;
 	
-	private boolean isMCMMOChecked = false;
-	private RegisteredListener registeredListenerMCMMO = null; 
-	
+//	private boolean isMCMMOChecked = false;
+//	private RegisteredListener registeredListenerMCMMO = null; 
+//	
+//	private boolean isEZBlockChecked = false;
+//	private RegisteredListener registeredListenerEZBlock = null; 
+//	
 	
 	private AutoFeaturesWrapper autoFeatureWrapper = null;
 	
@@ -339,10 +341,8 @@ public class OnBlockBreakEventListener
      */
 	protected void genericBlockEvent( BlockBreakEvent e, boolean monitor, boolean blockEventsOnly ) {
 		
-		
-		// If mcMMO was not registered, then it will get registered. If mcMMO is not available 
-		// then it will just bypass the registration. It will only be processed only once.
-		registerMCMMO();
+		// Register all external events such as mcMMO and EZBlocks:
+		registerAllExternalEvents();
 		
 		
 		// NOTE that check for auto manager has happened prior to accessing this function.
@@ -396,8 +396,8 @@ public class OnBlockBreakEventListener
     				block.setPrisonBlockTypes( mine.getPrisonBlockTypes() );
     			}
     			
-    			// check mcmmo
-    			checkMCMMO( e );
+    			// check all external events such as mcMMO and EZBlocks:
+    			checkAllExternalEvents( e );
     			
     			// doAction returns a boolean that indicates if the event should be canceled or not:
     			if ( doAction( block, mine, e.getPlayer() ) &&
@@ -425,9 +425,8 @@ public class OnBlockBreakEventListener
 	 */
 	private void genericBlockExplodeEvent( TEBlockExplodeEvent e, boolean monitor, boolean blockEventsOnly ) {
 
-		// If mcMMO was not registered, then it will get registered. If mcMMO is not available 
-		// then it will just bypass the registration. It will only be processed only once.
-		registerMCMMO();
+		// Register all external events such as mcMMO and EZBlocks:
+		registerAllExternalEvents();
 		
 
 		// NOTE that check for auto manager has happened prior to accessing this function.
@@ -524,7 +523,9 @@ public class OnBlockBreakEventListener
     					
     					explodedBlocks.add( sBlock );
     					
-    					checkMCMMO( e.getPlayer(), blk );
+    					
+    					// check all external events such as mcMMO and EZBlocks:
+    	    			checkAllExternalEvents( e.getPlayer(), blk );
     				}
     				
     			}
@@ -594,10 +595,9 @@ public class OnBlockBreakEventListener
 	 */
 	protected void genericBlockExplodeEvent( BlastUseEvent e, boolean monitor, boolean blockEventsOnly ) {
 
-		// If mcMMO was not registered, then it will get registered. If mcMMO is not available 
-		// then it will just bypass the registration. It will only be processed only once.
-		registerMCMMO();
-		
+		// Register all external events such as mcMMO and EZBlocks:
+		registerAllExternalEvents();
+				
 
 		// NOTE that check for auto manager has happened prior to accessing this function.
     	if ( (!monitor && !e.isCancelled() || monitor) && 
@@ -723,7 +723,8 @@ public class OnBlockBreakEventListener
     					
     					explodedBlocks.add( sBlock );
     					
-    					checkMCMMO( e.getPlayer(), blk );
+    					// check all external events such as mcMMO and EZBlocks:
+    	    			checkAllExternalEvents( e.getPlayer(), blk );
     				}
     				
     			}
@@ -1305,60 +1306,115 @@ public class OnBlockBreakEventListener
 		
 	}
 
+//
+//
+//	/**
+//	 * <p>Checks to see if mcMMO is able to be enabled, and if it is, then call it's registered
+//	 * function that will do it's processing before prison will process the blocks.
+//	 * </p>
+//	 * 
+//	 * <p>This adds mcMMO support within mines for herbalism, mining, woodcutting, and excavation.
+//	 * </p>
+//	 * 
+//	 * @param e
+//	 */
+//	private void registerMCMMO() {
+//		
+//		if ( !isMCMMOChecked ) {
+//			
+//	    	boolean isProcessMcMMOBlockBreakEvents = isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents );
+//
+//			if ( isProcessMcMMOBlockBreakEvents ) {
+//				
+//				for ( RegisteredListener rListener : BlockBreakEvent.getHandlerList().getRegisteredListeners() ) {
+//					
+//					if ( rListener.getPlugin().isEnabled() && 
+//							rListener.getPlugin().getName().equalsIgnoreCase( "mcMMO" ) ) {
+//						
+//						registeredListenerMCMMO = rListener;
+//					}
+//				}
+//				
+//			}
+//			
+//			isMCMMOChecked = true;
+//		}
+//	}
+//	
+//	private void checkMCMMO( Player player, Block block ) {
+//		if ( registeredListenerMCMMO != null ) {
+//			BlockBreakEvent bEvent = new BlockBreakEvent( block, player );
+//			checkMCMMO( bEvent );
+//		}
+//	}
+//	
+//	private void checkMCMMO( BlockBreakEvent e ) {
+//		if ( registeredListenerMCMMO != null ) {
+//			
+//			try {
+//				registeredListenerMCMMO.callEvent( e );
+//			}
+//			catch ( EventException e1 ) {
+//				e1.printStackTrace();
+//			}
+//		}
+//	}
+//	
+//	
+//	
+//	/**
+//	 * <p>Checks to see if mcMMO is able to be enabled, and if it is, then call it's registered
+//	 * function that will do it's processing before prison will process the blocks.
+//	 * </p>
+//	 * 
+//	 * <p>This adds mcMMO support within mines for herbalism, mining, woodcutting, and excavation.
+//	 * </p>
+//	 * 
+//	 * @param e
+//	 */
+//	private void registerEZBlock() {
+//		
+//		if ( !isEZBlockChecked ) {
+//			
+//	    	boolean isProcessMcMMOBlockBreakEvents = isBoolean( AutoFeatures.isProcessEZBlocksBlockBreakEvents );
+//
+//			if ( isProcessMcMMOBlockBreakEvents ) {
+//				
+//				for ( RegisteredListener rListener : BlockBreakEvent.getHandlerList().getRegisteredListeners() ) {
+//					
+//					if ( rListener.getPlugin().isEnabled() && 
+//							rListener.getPlugin().getName().equalsIgnoreCase( "EZBlocks" ) ) {
+//						
+//						registeredListenerEZBlock = rListener;
+//					}
+//				}
+//				
+//			}
+//			
+//			isEZBlockChecked = true;
+//		}
+//	}
+//	
+//	private void checkEZBlock( Player player, Block block ) {
+//		if ( registeredListenerEZBlock != null ) {
+//			BlockBreakEvent bEvent = new BlockBreakEvent( block, player );
+//			checkEZBlock( bEvent );
+//		}
+//	}
+//	
+//	private void checkEZBlock( BlockBreakEvent e ) {
+//		if ( registeredListenerEZBlock != null ) {
+//			
+//			try {
+//				registeredListenerEZBlock.callEvent( e );
+//			}
+//			catch ( EventException e1 ) {
+//				e1.printStackTrace();
+//			}
+//		}
+//	}
+//	
 
-
-	/**
-	 * <p>Checks to see if mcMMO is able to be enabled, and if it is, then call it's registered
-	 * function that will do it's processing before prison will process the blocks.
-	 * </p>
-	 * 
-	 * <p>This adds mcMMO support within mines for herbalism, mining, woodcutting, and excavation.
-	 * </p>
-	 * 
-	 * @param e
-	 */
-	private void registerMCMMO() {
-		
-		if ( !isMCMMOChecked ) {
-			
-	    	boolean isProcessMcMMOBlockBreakEvents = isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents );
-
-			if ( isProcessMcMMOBlockBreakEvents ) {
-				
-				for ( RegisteredListener rListener : BlockBreakEvent.getHandlerList().getRegisteredListeners() ) {
-					
-					if ( rListener.getPlugin().isEnabled() && 
-							rListener.getPlugin().getName().equalsIgnoreCase( "mcMMO" ) ) {
-						
-						registeredListenerMCMMO = rListener;
-					}
-				}
-				
-			}
-			
-			isMCMMOChecked = true;
-		}
-	}
-	
-	private void checkMCMMO( Player player, Block block ) {
-		if ( registeredListenerMCMMO != null ) {
-			BlockBreakEvent eMcMMO = new BlockBreakEvent( block, player );
-			checkMCMMO( eMcMMO );
-		}
-	}
-	
-	private void checkMCMMO( BlockBreakEvent e ) {
-		if ( registeredListenerMCMMO != null ) {
-			
-			try {
-				registeredListenerMCMMO.callEvent( e );
-			}
-			catch ( EventException e1 ) {
-				e1.printStackTrace();
-			}
-		}
-	}
-	
 	
 	
 	private int checkCrazyEnchant( Player player, Block block, ItemStack item ) {

@@ -17,9 +17,12 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.8 2021-03-14
+# v3.2.5-alpha.8 2021-03-16
 
 
+* **Added support for EZBlocks (untested).**
+Must be enabled through the auto features config. 
+Refactored the way mcMMO and EZBlocks are handled by putting them in another class of their own and having them registered and triggered through a common function, which will allow the addition of many other similar plugins as needed.
 
 
 * **v3.2.5-alpha.8 2021-03-14**
