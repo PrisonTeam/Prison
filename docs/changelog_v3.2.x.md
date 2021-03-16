@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.8 2021-03-16
 
 
+* **First pass at adding block stats listings for mines.**
+It's hard coded to support only the first 10 blocks within a mine, but this will be updated later to include all blocks.
+
+
 * **Updated the mine sweeper information to contain more details.**
 
 

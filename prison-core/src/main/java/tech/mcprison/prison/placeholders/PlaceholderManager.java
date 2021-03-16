@@ -199,6 +199,17 @@ public class PlaceholderManager {
 		prison_mbm_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 		prison_mrc_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
 
+		prison_mb01_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mb02_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mb03_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mb04_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mb05_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mb06_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mb07_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mb08_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mb09_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mb10_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+
 		
 		// reset_interval, reset_timeleft, blocks_size, blocks_remaining, blocks_percent
 		// player_count
@@ -218,6 +229,17 @@ public class PlaceholderManager {
 		prison_mines_blocks_mined_minename(prison_mbm_minename, PlaceHolderFlags.MINES),
 		prison_mines_reset_count_minename(prison_mrc_minename, PlaceHolderFlags.MINES),
 
+		prison_mines_blocks_01_minename(prison_mb01_minename, PlaceHolderFlags.MINES),
+		prison_mines_blocks_02_minename(prison_mb02_minename, PlaceHolderFlags.MINES),
+		prison_mines_blocks_03_minename(prison_mb03_minename, PlaceHolderFlags.MINES),
+		prison_mines_blocks_04_minename(prison_mb04_minename, PlaceHolderFlags.MINES),
+		prison_mines_blocks_05_minename(prison_mb05_minename, PlaceHolderFlags.MINES),
+		prison_mines_blocks_06_minename(prison_mb06_minename, PlaceHolderFlags.MINES),
+		prison_mines_blocks_07_minename(prison_mb07_minename, PlaceHolderFlags.MINES),
+		prison_mines_blocks_08_minename(prison_mb08_minename, PlaceHolderFlags.MINES),
+		prison_mines_blocks_09_minename(prison_mb09_minename, PlaceHolderFlags.MINES),
+		prison_mines_blocks_10_minename(prison_mb10_minename, PlaceHolderFlags.MINES),
+
 		
 		
 		// PlayerMine aliases:
@@ -236,6 +258,17 @@ public class PlaceholderManager {
 		prison_mbm_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
 		prison_mrc_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
 
+		prison_mb01_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mb02_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mb03_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mb04_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mb05_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mb06_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mb07_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mb08_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mb09_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+		prison_mb10_pm(PlaceHolderFlags.PLAYERMINES, PlaceHolderFlags.ALIAS),
+
 		
 		prison_mines_name_playermines(prison_mn_pm, PlaceHolderFlags.PLAYERMINES),
 		prison_mines_tag_playermines(prison_mt_pm, PlaceHolderFlags.PLAYERMINES),
@@ -252,6 +285,16 @@ public class PlaceholderManager {
 		prison_mines_blocks_mined_playermines(prison_mbm_pm, PlaceHolderFlags.PLAYERMINES),
 		prison_mines_reset_count_playermines(prison_mrc_pm, PlaceHolderFlags.PLAYERMINES),
 
+		prison_mines_blocks_01_playermines(prison_mb01_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_blocks_02_playermines(prison_mb02_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_blocks_03_playermines(prison_mb03_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_blocks_04_playermines(prison_mb04_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_blocks_05_playermines(prison_mb05_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_blocks_06_playermines(prison_mb06_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_blocks_07_playermines(prison_mb07_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_blocks_08_playermines(prison_mb08_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_blocks_09_playermines(prison_mb09_pm, PlaceHolderFlags.PLAYERMINES),
+		prison_mines_blocks_10_playermines(prison_mb10_pm, PlaceHolderFlags.PLAYERMINES),
 		
 	
 		;
