@@ -1650,7 +1650,7 @@ public class MinesCommands
         	
         	if ( m.isSkipResetEnabled() ) {
         		RowComponent row = new RowComponent();
-        		row.addTextComponent( "&3Skip Reset &2Enabled&3: &3Threshold: &7%s  &3Skip Limit: &7%s",
+        		row.addTextComponent( "&3Skip Reset: &2Enabled&3: &3Threshold: &7%s  &3Skip Limit: &7%s",
         				fFmt.format( m.getSkipResetPercent() ), dFmt.format( m.getSkipResetBypassLimit() ));
         		chatDisplay.addComponent( row );
         		
@@ -1675,10 +1675,13 @@ public class MinesCommands
         		
         		String mineSweeperBlks = PlaceholdersUtil.formattedKmbtSISize(m.getMineSweeperBlocksChanged(), fFmt, " " );
         		
+        		// Format with input requiring seconds:
+        		String totalRunTime = PlaceholdersUtil.formattedTime( m.getMineSweeperTotalMs() / 1000d );
         		
         		RowComponent row = new RowComponent();
-        		row.addTextComponent( "&3Mine Sweeper:  &2Enabled&3:  runs: %s  Avg ms: %s  Blks: %s ",
+        		row.addTextComponent( "&3Mine Sweeper: &2Enabled&3: runs: %s  Avg ms: %s  Time: %s  Blks: %s ",
         						dFmt.format( m.getMineSweeperCount() ), dFmt.format( mineSweeperAvgMs ),
+        						totalRunTime,
         						mineSweeperBlks );
         		chatDisplay.addComponent( row );
         		

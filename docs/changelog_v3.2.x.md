@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.8 2021-03-16
 
 
+* **Updated the mine sweeper information to contain more details.**
+
+
 * **Added support for EZBlocks (untested).**
 Must be enabled through the auto features config. 
 Refactored the way mcMMO and EZBlocks are handled by putting them in another class of their own and having them registered and triggered through a common function, which will allow the addition of many other similar plugins as needed.

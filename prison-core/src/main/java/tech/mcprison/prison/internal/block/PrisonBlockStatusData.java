@@ -1,6 +1,9 @@
 package tech.mcprison.prison.internal.block;
 
+import java.text.DecimalFormat;
+
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 
 public abstract class PrisonBlockStatusData {
 
@@ -137,6 +140,28 @@ public abstract class PrisonBlockStatusData {
 			}
 
 		}
+	}
+	
+	public String toPlaceholderString() {
+		StringBuilder sb = new StringBuilder();
+		
+    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+    	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+
+    	String percent = fFmt.format(getChance());
+    	
+//    	String spawned = dFmt.format( getResetBlockCount() );
+    	String remaining = dFmt.format( getResetBlockCount() - getBlockCountUnsaved() );
+    	String total = PlaceholdersUtil.formattedKmbtSISize( 1.0d * getBlockCountTotal(), dFmt, "" );
+    	
+		sb.append( getBlockName() ).append( " (" )
+			.append( percent ).append( " pct) " )
+//			.append( spawned )
+			.append( "  r: " ).append( remaining )
+			.append( "  T: " ) .append( total )
+			;
+		
+		return sb.toString();
 	}
 	
 	/**
