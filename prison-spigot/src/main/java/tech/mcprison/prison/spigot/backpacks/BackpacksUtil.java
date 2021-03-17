@@ -26,7 +26,9 @@ import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.configs.BackpacksConfig;
 import tech.mcprison.prison.spigot.configs.SpigotConfigComponents;
 
-
+/**
+ * @author GABRYCA
+ * */
 public class BackpacksUtil extends SpigotConfigComponents {
 
     private static BackpacksUtil instance;

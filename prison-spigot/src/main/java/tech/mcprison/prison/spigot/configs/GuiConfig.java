@@ -12,7 +12,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 
 /**
  * @author GABRYCA
- */
+ * */
 public class GuiConfig extends SpigotConfigComponents{
 
     // Declaring parameters and variables

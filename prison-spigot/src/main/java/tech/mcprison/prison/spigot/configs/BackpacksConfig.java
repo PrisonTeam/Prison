@@ -8,6 +8,9 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * @author GABRYCA
+ * */
 public class BackpacksConfig extends SpigotConfigComponents{
 
     private FileConfiguration conf;

@@ -11,6 +11,9 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 
+/**
+ * @author GABRYCA
+ * */
 public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
 
     @Command(identifier = "backpack", description = "Backpacks", onlyPlayers = false)

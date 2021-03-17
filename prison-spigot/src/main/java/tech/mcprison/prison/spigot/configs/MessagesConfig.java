@@ -12,7 +12,6 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 /**
  * @author GABRYCA
  **/
-
 public class MessagesConfig extends SpigotConfigComponents{
 
     // Initialize parameters and variables
