@@ -17,7 +17,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.8 2021-03-16
+# v3.2.5-alpha.8 2021-03-17
+
+
+* **Work on the BlockEvent document.**
+Not yet finished, but provides a lot of important information.
 
 
 * **First pass at adding block stats listings for mines.**

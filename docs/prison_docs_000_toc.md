@@ -184,6 +184,18 @@ These guides cover the core fundamentals of Prison.  They may reference other pl
 
 
 
+* [Mine Commands](prison_docs_111_mine_commands.md)
+	What they are. Setting up. Working with Mine Commands.
+
+
+
+* [BlockEvents](prison_docs_115_using_BlockEvents.md)
+	**-+= New! Work In Progress! =+-** 
+	Setting up BlockEvents and information about them.
+
+
+
+
 * [Setting up Ranks & Ladders](prison_docs_102_setting_up_ranks.md)
 	**-+= New! Work In Progress! =+-** Configuring and using Ranks and Ladders.
 
@@ -192,10 +204,6 @@ These guides cover the core fundamentals of Prison.  They may reference other pl
 * [Setting up Prestiges](prison_docs_107_setting_up_prestiges.md)
 	Configuring and using Prestiges.
 
-
-
-* [Mine Commands](prison_docs_111_mine_commands.md)
-	What they are. Setting up. Working with Mine Commands.
 
 
 

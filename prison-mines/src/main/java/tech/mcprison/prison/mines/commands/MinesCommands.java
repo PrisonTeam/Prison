@@ -4047,7 +4047,7 @@ public class MinesCommands
 	}
 	
 
-	@Command(identifier = "mines blockEvent mode", description = "Edits a BlockBreak task mode type: [inline, sync].", 
+	@Command(identifier = "mines blockEvent taskMode", description = "Edits a BlockBreak task mode type: [inline, sync].", 
     		onlyPlayers = false, permissions = "mines.set")
     public void blockEventJobMode(CommandSender sender, 
     			@Arg(name = "mineName") String mineName,
