@@ -1085,7 +1085,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                             Inventory backPack = BackpacksUtil.get().getBackpack(p, id);
                             mode = inventorySellMode.PrisonBackPackMultiples;
                             idBeingProcessedBackpack = id;
-
                             if (backPack != null) {
                                 for (ItemStack itemStack : backPack.getContents()) {
                                     if (itemStack != null) {
@@ -1093,9 +1092,9 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                                     }
                                 }
                             }
-
                         }
                     }
+                    idBeingProcessedBackpack = null;
                 }
 
             } else {
