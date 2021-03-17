@@ -30,16 +30,11 @@ public class BackpacksListeners implements Listener {
     }
 
     @EventHandler
-    public void onDeadBackPack(PlayerDeathEvent e){
-        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Lose_Items_On_Death"))) {
-            BackpacksUtil.get().resetBackpack(e.getEntity());
-            if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))) {
-                for (String id : BackpacksUtil.get().getBackpacksIDs(e.getEntity())) {
-                    BackpacksUtil.get().resetBackpack(e.getEntity(), id);
-                }
-            }
-        }
+    public void onDeadBackpack(PlayerDeathEvent e){
+        onDeadBackpackAction(e);
     }
+
+
 
     @EventHandler
     public void onPlayerBackpackEdit(InventoryClickEvent e){
@@ -53,6 +48,17 @@ public class BackpacksListeners implements Listener {
         if (e.getAction() != Action.RIGHT_CLICK_AIR && e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
         backpackItemClickAction(e);
+    }
+
+    private void onDeadBackpackAction(PlayerDeathEvent e) {
+        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Lose_Items_On_Death"))) {
+            BackpacksUtil.get().resetBackpack(e.getEntity());
+            if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))) {
+                for (String id : BackpacksUtil.get().getBackpacksIDs(e.getEntity())) {
+                    BackpacksUtil.get().resetBackpack(e.getEntity(), id);
+                }
+            }
+        }
     }
 
     private void defaultBackpackSetOnJoin(PlayerJoinEvent e) {

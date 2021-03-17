@@ -20,6 +20,16 @@ that you need.
 # v3.2.5-alpha.8 2021-03-17
 
 
+* **Fixed on death backpack lose**
+On death if you enable the old backpacksconfig.yml option to lose/reset
+  your inventory on death, is now working properly.
+
+
+* **Backpack delete command fixed**
+Fixed backpack delete command only resetting backpacks but not
+  deleting them properly
+
+
 * **Work on the BlockEvent document.**
 Not yet finished, but provides a lot of important information.
 

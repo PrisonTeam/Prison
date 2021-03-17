@@ -24,12 +24,11 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.configs.BackpacksConfig;
-import tech.mcprison.prison.spigot.configs.SpigotConfigComponents;
 
 /**
  * @author GABRYCA
  * */
-public class BackpacksUtil extends SpigotConfigComponents {
+public class BackpacksUtil {
 
     private static BackpacksUtil instance;
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
@@ -41,7 +40,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
     private final Compatibility compat = SpigotPrison.getInstance().getCompatibility();
 
     /**
-     * Check if BackPacks's enabled.
+     * Check if Backpacks's enabled.
      * */
     public static boolean isEnabled(){
         if (SpigotPrison.getInstance().getConfig().getString("backpacks") != null){
@@ -51,7 +50,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
     }
 
     /**
-     * Check if multiple backpacks's enabled.
+     * Check if multiple Backpacks's enabled.
      * */
     public boolean isMultipleBackpacksEnabled(){
         return getBoolean(backpacksConfig.getString("Options.Multiple-BackPacks-For-Player-Enabled"));
@@ -611,7 +610,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
     private void setDefaultBackpackDataConfigMethod() {
         if (backpacksConfig.getConfigurationSection("Inventories") == null) {
             try {
-                backpacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backPacksData.yml");
+                backpacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backpacksData.yml");
                 backpacksDataConfig = YamlConfiguration.loadConfiguration(backpacksFile);
                 backpacksDataConfig.save(backpacksFile);
             } catch (IOException ex) {
@@ -634,7 +633,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
 
         try {
             try {
-                backpacksDataConfig.set("Inventories. " + p.getUniqueId().toString() + ".Items", null);
+                backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items", null);
                 backpacksDataConfig.save(backpacksFile);
             } catch (NullPointerException ex){
                 return false;
@@ -653,7 +652,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
 
         try {
             try {
-                backpacksDataConfig.set("Inventories. " + p.getUniqueId().toString() + ".Items-" + id, null);
+                backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items-" + id, null);
                 backpacksDataConfig.save(backpacksFile);
             } catch (NullPointerException ex){
                 return false;
@@ -672,7 +671,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
 
         try {
             try {
-                backpacksDataConfig.set("Inventories. " + p.getUniqueId().toString() + ".Items", null);
+                backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items", null);
                 backpacksDataConfig.save(backpacksFile);
             } catch (NullPointerException ex){
                 return false;
@@ -691,7 +690,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
 
         try {
             try {
-                backpacksDataConfig.set("Inventories. " + p.getUniqueId().toString() + ".Items-" + id, null);
+                backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items-" + id, null);
                 backpacksDataConfig.save(backpacksFile);
             } catch (NullPointerException ex){
                 return false;
@@ -777,13 +776,13 @@ public class BackpacksUtil extends SpigotConfigComponents {
         // Get the Items config section
         Set<String> slots;
         try {
-            slots = backpacksDataConfig.getConfigurationSection("Inventories. " + p.getUniqueId().toString() + ".Items").getKeys(false);
+            slots = backpacksDataConfig.getConfigurationSection("Inventories." + p.getUniqueId().toString() + ".Items").getKeys(false);
         } catch (NullPointerException ex){
             return inv;
         }
         if (slots.size() != 0) {
             for (String slot : slots) {
-                ItemStack finalItem = backpacksDataConfig.getItemStack("Inventories. " + p.getUniqueId().toString() + ".Items." + slot + ".ITEMSTACK");
+                ItemStack finalItem = backpacksDataConfig.getItemStack("Inventories." + p.getUniqueId().toString() + ".Items." + slot + ".ITEMSTACK");
                 if (finalItem != null) {
                     inv.setItem(Integer.parseInt(slot), finalItem);
                 }
@@ -802,13 +801,13 @@ public class BackpacksUtil extends SpigotConfigComponents {
         // Get the Items config section
         Set<String> slots;
         try {
-            slots = backpacksDataConfig.getConfigurationSection("Inventories. " + p.getUniqueId().toString() + ".Items-" + id).getKeys(false);
+            slots = backpacksDataConfig.getConfigurationSection("Inventories." + p.getUniqueId().toString() + ".Items-" + id).getKeys(false);
         } catch (NullPointerException ex){
             return inv;
         }
         if (slots.size() != 0) {
             for (String slot : slots) {
-                ItemStack finalItem = backpacksDataConfig.getItemStack("Inventories. " + p.getUniqueId().toString() + ".Items-" + id + "." + slot + ".ITEMSTACK");
+                ItemStack finalItem = backpacksDataConfig.getItemStack("Inventories." + p.getUniqueId().toString() + ".Items-" + id + "." + slot + ".ITEMSTACK");
                 if (finalItem != null) {
                     inv.setItem(Integer.parseInt(slot), finalItem);
                 }
@@ -840,13 +839,13 @@ public class BackpacksUtil extends SpigotConfigComponents {
         // Get the Items config section
         Set<String> slots;
         try {
-            slots = backpacksDataConfig.getConfigurationSection("Inventories. " + p.getUniqueId().toString() + ".Items").getKeys(false);
+            slots = backpacksDataConfig.getConfigurationSection("Inventories." + p.getUniqueId().toString() + ".Items").getKeys(false);
         } catch (NullPointerException ex){
             return inv;
         }
         if (slots.size() != 0) {
             for (String slot : slots) {
-                ItemStack finalItem = backpacksDataConfig.getItemStack("Inventories. " + p.getUniqueId().toString() + ".Items." + slot + ".ITEMSTACK");
+                ItemStack finalItem = backpacksDataConfig.getItemStack("Inventories." + p.getUniqueId().toString() + ".Items." + slot + ".ITEMSTACK");
                 if (finalItem != null) {
                     try {
                         inv.setItem(Integer.parseInt(slot), finalItem);
@@ -872,7 +871,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
             int slot = 0;
 
             try {
-                backpacksDataConfig.set("Inventories. " + p.getUniqueId().toString() + ".Items", null);
+                backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items", null);
                 backpacksDataConfig.save(backpacksFile);
             } catch (IOException ex){
                 ex.printStackTrace();
@@ -881,28 +880,27 @@ public class BackpacksUtil extends SpigotConfigComponents {
 
             updateCachedBackpack();
 
-            oldDataVersionUpdater(p, needToSetNewDimensions, needToSetNewOwner, needToSetNewOwnerID);
-
             for (ItemStack item : inv.getContents()){
                 if (item != null){
 
-                    backpacksDataConfig.set("Inventories. " + p.getUniqueId().toString() + ".Items." + slot + ".ITEMSTACK", item);
+                    backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items." + slot + ".ITEMSTACK", item);
 
                     slot++;
                 }
             }
-            if (slot != 0){
-                try {
-                    backpacksDataConfig.save(backpacksFile);
-                } catch (IOException ex){
-                    ex.printStackTrace();
-                }
+
+            oldDataVersionUpdater(p, needToSetNewDimensions, needToSetNewOwner, needToSetNewOwnerID);
+
+            try {
+                backpacksDataConfig.save(backpacksFile);
+            } catch (IOException ex){
+                ex.printStackTrace();
             }
         } else {
             // If it's null just delete the whole stored inventory.
             oldDataVersionUpdater(p, needToSetNewDimensions, needToSetNewOwner, needToSetNewOwnerID);
             try {
-                backpacksDataConfig.set("Inventories. " + p.getUniqueId().toString() + ".Items", null);
+                backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items", null);
                 backpacksDataConfig.save(backpacksFile);
             } catch (IOException ex){
                 ex.printStackTrace();
@@ -924,7 +922,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
             int slot = 0;
 
             try {
-                backpacksDataConfig.set("Inventories. " + p.getUniqueId().toString() + ".Items-" + id, null);
+                backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items-" + id, null);
                 backpacksDataConfig.save(backpacksFile);
             } catch (IOException ex){
                 ex.printStackTrace();
@@ -938,7 +936,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
             for (ItemStack item : inv.getContents()){
                 if (item != null){
 
-                    backpacksDataConfig.set("Inventories. " + p.getUniqueId().toString() + ".Items-" + id + "." + slot + ".ITEMSTACK", item);
+                    backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items-" + id + "." + slot + ".ITEMSTACK", item);
 
                     slot++;
                 }
@@ -954,7 +952,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
             // If it's null just delete the whole stored inventory.
             oldDataVersionUpdater(p, id, needToSetNewDimensions, needToSetNewOwner, needToSetNewOwnerID);
             try {
-                backpacksDataConfig.set("Inventories. " + p.getUniqueId().toString() + ".Items-" + id, null);
+                backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items-" + id, null);
                 backpacksDataConfig.save(backpacksFile);
             } catch (IOException ex){
                 ex.printStackTrace();
@@ -966,7 +964,7 @@ public class BackpacksUtil extends SpigotConfigComponents {
 
     private void oldDataVersionUpdater(Player p, boolean needToSetNewDimensions, boolean needToSetNewOwner, boolean needToSetNewOwnerID) {
         if (needToSetNewDimensions){
-            backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items" + ".Size", Integer.parseInt(backpacksConfig.getString("Options.BackPack_Default_Size")));
+            backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items.Size", Integer.parseInt(backpacksConfig.getString("Options.BackPack_Default_Size")));
         }
         if (needToSetNewOwner){
             backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items.PlayerName", p.getName());
