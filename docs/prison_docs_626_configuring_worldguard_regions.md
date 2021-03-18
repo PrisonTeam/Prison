@@ -283,14 +283,17 @@ It's important to understand that you never add a player as a direct member of a
 Instead, you add the players to a permission group that has access to use the mine regions.  One way to look at this is that a permission is like a key, and you're giving players a copy of the key access the mines.  With a slight twist on that analogy, since we're dealing with groups, everyone within that group shares the same key for the mine regions.  
 
 
-The correct way to add a player to a mine region. Indirectly by giving them access to the "keys". Or in other words, since we hooked up the LuckPerms group `g:prison.mines.<mine-name>` then all we need to do is add them to the group and they will have access to the proper regions.
+The correct way to add a player to a mine region. Indirectly by giving them access to the "keys". Or in other words, since we hooked up the LuckPerms group `prison.mines.<mine-name>` then all we need to do is add them to the group and they will have access to the proper regions.
+
+
+NOTE: With world guard we had to use the prefix of `g:` to indicate the permission was a group.  But with luckperms since we are using the `parent` option it implies its a group.  Therefore if `g:` is used in luckperms it would be an error.
 
 
 Template:
 
     /lp user <player-name> parent set <group-name> true
 
-    /lp user <player-name> parent set g:prison.mines.<mine-name> true
+    /lp user <player-name> parent set prison.mines.<mine-name> true
 
 
 It is important to know how to remove access from a player so they can be demoted or removed from an area that they should no longer access.
@@ -299,7 +302,7 @@ Template:
 
     /lp user <player-name> parent unset <group-name>
 
-    /lp user <player-name> parent unset g:prison.mines.<mine-name>
+    /lp user <player-name> parent unset prison.mines.<mine-name>
 
 
 
@@ -313,8 +316,8 @@ This will result is potentially hundreds, or thousands, of members being added d
     
 And also, the wrong way to add a player to a LuckPerms group. This won't work correctly.
 
-    /lp user <player-name> permission set g:prison.mines.<mine-name> true
-    /lp user <player-name> permission unset g:prison.mines.<mine-name>
+    /lp user <player-name> permission set prison.mines.<mine-name> true
+    /lp user <player-name> permission unset prison.mines.<mine-name>
 
 
 
@@ -330,17 +333,17 @@ And also, the wrong way to add a player to a LuckPerms group. This won't work co
 
 Based upon the above documentation, and from within game, we would use the following to *manually* give a player a permission:
 
-    /lp user <player-name> parent set g:prison.mines.<mine-name> true
+    /lp user <player-name> parent set prison.mines.<mine-name> true
 
 
 For example, if you have a player named *AHappyPrisoner* And you have a mine named "a" you would use the following command:
 
-    /lp user AHappyPrisoner parent set g:prison.mines.a true
+    /lp user AHappyPrisoner parent set prison.mines.a true
 
 
 To run the **a** rank commands when the player uses **/rankup**, the following is the command for **/ranks command add <rankName>**:
 
-	/ranks command add a lp user {player} parent set g:prison.mines.a true
+	/ranks command add a lp user {player} parent set prison.mines.a true
 
 
 Notice how the manually entered command is used with the **/ranks command add <rankName>**?  Just drop the leading slash and it should be good.
@@ -348,7 +351,7 @@ Notice how the manually entered command is used with the **/ranks command add <r
 
 If you want to be able to **demote** a player from rank "b" back down to rank "a" you would need add the following **/ranks command add** to the rank **a** which removes access to the **b** mine.
 
-	/ranks command add a lp user {player} parent unset g:prison.mines.b
+	/ranks command add a lp user {player} parent unset prison.mines.b
 
 
 So to recap, for every rank, ideally you should add the new perms for that rank, and remove the perms for the next higher rank so as to enable the proper functioning of **/ranks demote**.
@@ -388,7 +391,7 @@ Some code chunks will have **In Game:** which is intended to run from within min
 
 
 
-## WG LP Command - Global for whole world
+## WG LP Command - Global for whole world (duplicate instructions)
 
 Run once.
 

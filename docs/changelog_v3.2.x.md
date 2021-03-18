@@ -17,7 +17,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.8 2021-03-17
+# v3.2.5-alpha.8 2021-03-18
+
+
+* **Updated the docs on the worldguard settings to remove the "g:" prefix from the luck perm commands.**
+Just discovered that the "g:" prefix was incorrect and was failing.
 
 
 * **Fixed on death backpack lose**
