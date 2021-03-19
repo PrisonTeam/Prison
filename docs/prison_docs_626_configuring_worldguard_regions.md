@@ -289,20 +289,31 @@ The correct way to add a player to a mine region. Indirectly by giving them acce
 NOTE: With world guard we had to use the prefix of `g:` to indicate the permission was a group.  But with luckperms since we are using the `parent` option it implies its a group.  Therefore if `g:` is used in luckperms it would be an error.
 
 
-Template:
+Template and examples as used in rank commands:
 
     /lp user <player-name> parent set <group-name> true
 
     /lp user <player-name> parent set prison.mines.<mine-name> true
 
+    /lp user {player} parent set prison.mines.a true
+    /lp user {player} parent set prison.mines.b true
 
-It is important to know how to remove access from a player so they can be demoted or removed from an area that they should no longer access.
 
-Template:
 
-    /lp user <player-name> parent unset <group-name>
+It is important to know how to remove access from a player so they can be demoted or removed from an area that they should no longer access.  Please beware that with luckperms to add a group to a player it is "parent set" and then to remove the group from the player you use "parent remove".  For permissions it it's "permission set" and to remove them it's "permission unset".
 
-    /lp user <player-name> parent unset prison.mines.<mine-name>
+
+The examples shown here are removing groups for ranks a and b.  For the rank A command you need to remove rank b permission.  For rank b you would remove rank C permissions.  More information is provided below about why you would want to remove the permissions for the next higher rank.
+
+
+Template and examples as used in rank commands:
+
+    /lp user <player-name> parent remove <group-name>
+
+    /lp user <player-name> parent remove prison.mines.<mine-name>
+
+    /lp user {player) parent remove prison.mines.b
+    /lp user {player) parent remove prison.mines.c
 
 
 
@@ -314,7 +325,7 @@ This will result is potentially hundreds, or thousands, of members being added d
 
     
     
-And also, the wrong way to add a player to a LuckPerms group. This won't work correctly.
+And also, this is the wrong way to add a player to a LuckPerms **group**. This won't work correctly. These are the commands for permissions and not groups.
 
     /lp user <player-name> permission set prison.mines.<mine-name> true
     /lp user <player-name> permission unset prison.mines.<mine-name>
@@ -351,7 +362,7 @@ Notice how the manually entered command is used with the **/ranks command add <r
 
 If you want to be able to **demote** a player from rank "b" back down to rank "a" you would need add the following **/ranks command add** to the rank **a** which removes access to the **b** mine.
 
-	/ranks command add a lp user {player} parent unset prison.mines.b
+	/ranks command add a lp user {player} parent remove prison.mines.b
 
 
 So to recap, for every rank, ideally you should add the new perms for that rank, and remove the perms for the next higher rank so as to enable the proper functioning of **/ranks demote**.
@@ -610,18 +621,23 @@ To enable the processing of the Crazy Enchant BlockExplodeEvent enable this conf
 # Adding the Prison Rank Commands
 
 
-So finally for our example of setting up mines a and b, we now need to add the Rank Commands to active the permission for both.
+So finally for our example of setting up mines a and b, we now need to add the Rank Commands to active the permission for both.  Also included in these commands are the permissions for the mines.tp command, where mines.tp.<MineName> is a permission and not a group.
+
 
 For rank a:
 
     /ranks command add a lp user {player} parent set g:prison.mines.a true
-    /ranks command add a lp user {player} parent unset g:prison.mines.b
+    /ranks command add a lp user {player} parent remove g:prison.mines.b
+    /ranks command add a lp user {player} permission set mines.tp.a true
+    /ranks command add a lp user {player} permission unset mines.tp.b
 
 
 For rank b:
 
     /ranks command add b lp user {player} parent set g:prison.mines.b true
-    /ranks command add b lp user {player} parent unset g:prison.mines.c
+    /ranks command add b lp user {player} parent remove g:prison.mines.c
+    /ranks command add b lp user {player} permission set mines.tp.b true
+    /ranks command add b lp user {player} permission unset mines.tp.c
 
 
 And that's it!  Just repeat for all your other mines.
@@ -656,10 +672,17 @@ Some LuckPerm commands that may be useful.
     /lp group prison.mines.<mine-name> listmembers
     /lp user <user-name> group add <group-name>
     
+    
     /lp listgroups
     /lp group prison.mines.a info
     
-    /lp user <user-name> parent set <group-name>
+    
+    /lp user <user-name> parent set <group-name> true
+    /lp user <user-name> parent remove <group-name>
+    
+    /lp user <user-name> permission set <permission-name> true
+    /lp user <user-name> permission unset <permission-name>
+    
     
     /lp group <groupname> parent add <parentgroup>
     
