@@ -193,12 +193,12 @@ public class LuckPerms5Wrapper
     	    				details.append( "expired" );
     	    			}
 
-    	    			// Group node:
+    	    			// Group node: Redundant since groups are prefixed with "group."
     	    			if ( node.getType() == NodeType.INHERITANCE ) {
-    	    				if ( details.length() > 0 ) {
-    	    					details.append( ":" );
-    	    				}
-    	    				details.append( "group=" ).append( node.getKey() );
+    	    				//if ( details.length() > 0 ) {
+    	    				//	details.append( ":" );
+    	    				//}
+    	    				//details.append( "group=" ).append( node.getKey() );
     	    			}
     	    			
 //    	    			// Permission node:
