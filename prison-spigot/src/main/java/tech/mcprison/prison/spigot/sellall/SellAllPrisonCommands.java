@@ -3,10 +3,7 @@ package tech.mcprison.prison.spigot.sellall;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -54,7 +51,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     private static SellAllPrisonCommands instance;
     private String idBeingProcessedBackpack = null;
-    private Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+    private final Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+    private final ItemStack lapisLazuli = compat.getLapisItemStack();
     public static List<String> activePlayerDelay = new ArrayList<>();
     public boolean signUsed = false;
     public inventorySellMode mode = inventorySellMode.PlayerInventory;
@@ -1038,10 +1036,34 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         // Get the player inventory
         Inventory inv = p.getInventory();
 
+        // Get values and XMaterials from config.
+        HashMap<Double, XMaterial> sellAllXMaterials = new HashMap<>();
+        for (String key : items) {
+            // ItemID
+            XMaterial itemMaterial = null;
+            String itemID = sellAllConfig.getString("Items." + key + ".ITEM_ID");
+            try {
+                itemMaterial = XMaterial.valueOf(itemID);
+            } catch (IllegalArgumentException ignored){}
+
+            // Get value
+            double value = 0;
+            try {
+                String valueString = sellAllConfig.getString("Items." + key + ".ITEM_VALUE");
+                if (valueString != null) {
+                    value = Double.parseDouble(valueString);
+                }
+            } catch (NumberFormatException ignored){}
+
+            if (itemMaterial != null) {
+                sellAllXMaterials.put(value, itemMaterial);
+            }
+        }
+
         // Get the items from the player inventory and for each of them check the conditions.
         mode = inventorySellMode.PlayerInventory;
         for (ItemStack itemStack : inv.getContents()){
-            moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, removeItems);
+            moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, removeItems, sellAllXMaterials);
         }
 
         // Check option and if enabled.
@@ -1055,7 +1077,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             if (backPack != null) {
                 for (ItemStack itemStack : backPack.getInventory().getContents()) {
                     if (itemStack != null) {
-                        moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, removeItems);
+                        moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, removeItems, sellAllXMaterials);
                     }
                 }
             }
@@ -1078,7 +1100,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                             if (backPack != null) {
                                 for (ItemStack itemStack : backPack.getContents()) {
                                     if (itemStack != null) {
-                                        moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, removeItems);
+                                        moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, removeItems, sellAllXMaterials);
                                     }
                                 }
                             }
@@ -1091,7 +1113,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                             if (backPack != null) {
                                 for (ItemStack itemStack : backPack.getContents()) {
                                     if (itemStack != null) {
-                                        moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, removeItems);
+                                        moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, removeItems, sellAllXMaterials);
                                     }
                                 }
                             }
@@ -1108,7 +1130,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 if (backPack != null) {
                     for (ItemStack itemStack : backPack.getContents()) {
                         if (itemStack != null) {
-                            moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, removeItems);
+                            moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, removeItems, sellAllXMaterials);
                         }
                     }
                 }
@@ -1118,47 +1140,28 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         return moneyToGive;
     }
 
-    private double getNewMoneyToGiveManager(Player p, Set<String> items, ItemStack itemStack, boolean removeItems) {
+    private double getNewMoneyToGiveManager(Player p, Set<String> items, ItemStack itemStack, boolean removeItems, HashMap<Double, XMaterial> sellAllXMaterials) {
 
         double moneyToGive = 0;
 
-        ItemStack lapisLazuli = compat.getLapisItemStack();
-
         if (itemStack != null) {
             // Get the items strings from config and for each of them get the Material and value.
-            for (String key : items) {
-
-                // ItemID
-                String itemID = sellAllConfig.getString("Items." + key + ".ITEM_ID");
+            for (Map.Entry<Double, XMaterial> values : sellAllXMaterials.entrySet()) {
 
                 // Flag variable and XMaterials.
                 boolean bypassCondition = false;
                 boolean hasError = false;
-                XMaterial itemMaterial = null;
+                XMaterial itemMaterial = values.getValue();
                 XMaterial invMaterial = null;
-                if (itemStack.isSimilar(lapisLazuli) && itemID.equalsIgnoreCase("LAPIS_LAZULI")){
+                if (itemStack.isSimilar(lapisLazuli) && values.getValue().name().equalsIgnoreCase("LAPIS_LAZULI")){
                     invMaterial = XMaterial.LAPIS_LAZULI;
                     bypassCondition = true;
                 } else {
                     try {
-                        itemMaterial = XMaterial.valueOf(itemID);
                         invMaterial = XMaterial.matchXMaterial(itemStack);
                     } catch (IllegalArgumentException ex) {
                         hasError = true;
                     }
-                }
-
-                // Get value
-                double value = 0;
-                try {
-                    String valueString = sellAllConfig.getString("Items." + key + ".ITEM_VALUE");
-                    if (valueString != null) {
-                        value = Double.parseDouble(valueString);
-                    } else {
-                        hasError = true;
-                    }
-                } catch (NumberFormatException ex){
-                    if (!hasError) hasError = true;
                 }
 
                 // Get amount and remove items if enabled
@@ -1195,7 +1198,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 }
                 // Get the new amount of money to give
                 if (amount != 0) {
-                    moneyToGive += value * amount;
+                    moneyToGive += values.getKey() * amount;
                 }
             }
         }

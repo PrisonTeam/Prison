@@ -98,10 +98,10 @@ public class Output {
     	switch ( level )
     	{
     		case INFO:
-    			colorCode = "&f";
+    			colorCode = "&3";
     			break;
     		case WARNING:
-    			colorCode = "&6";
+    			colorCode = "&c";
     			break;
     		case ERROR:
     			colorCode = "&c";
