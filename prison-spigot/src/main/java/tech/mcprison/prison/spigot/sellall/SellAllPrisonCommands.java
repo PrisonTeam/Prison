@@ -6,7 +6,6 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -56,8 +55,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     public static List<String> activePlayerDelay = new ArrayList<>();
     public boolean signUsed = false;
     public inventorySellMode mode = inventorySellMode.PlayerInventory;
-
-
 
     /**
      * SellAll mode.
@@ -111,11 +108,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         SpigotPlayer sPlayer = new SpigotPlayer(player);
 
-        // Get the Items config section
-        Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
-
         // Get money to give
-        double moneyToGive = getNewMoneyToGive( sPlayer.getWrapper(), items, removeItems);
+        double moneyToGive = getNewMoneyToGive( sPlayer.getWrapper(), removeItems);
         boolean multiplierEnabled = getBoolean(sellAllConfig.getString("Options.Multiplier_Enabled"));
         if (multiplierEnabled) {
             moneyToGive = moneyToGive * getMultiplier(sPlayer);;
@@ -1028,13 +1022,16 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllDefaultSuccess")));
     }
 
-    private double getNewMoneyToGive(Player p, Set<String> items, boolean removeItems){
+    private double getNewMoneyToGive(Player p, boolean removeItems){
 
         // Money to give value
         double moneyToGive = 0;
 
         // Get the player inventory
         Inventory inv = p.getInventory();
+
+        // Get the Items config section
+        Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
 
         // Get values and XMaterials from config.
         HashMap<Double, XMaterial> sellAllXMaterials = new HashMap<>();
@@ -1063,7 +1060,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         // Get the items from the player inventory and for each of them check the conditions.
         mode = inventorySellMode.PlayerInventory;
         for (ItemStack itemStack : inv.getContents()){
-            moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, removeItems, sellAllXMaterials);
+            moneyToGive += getNewMoneyToGiveManager(p, itemStack, removeItems, sellAllXMaterials);
         }
 
         // Check option and if enabled.
@@ -1077,7 +1074,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             if (backPack != null) {
                 for (ItemStack itemStack : backPack.getInventory().getContents()) {
                     if (itemStack != null) {
-                        moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, removeItems, sellAllXMaterials);
+                        moneyToGive += getNewMoneyToGiveManager(p, itemStack, removeItems, sellAllXMaterials);
                     }
                 }
             }
@@ -1100,7 +1097,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                             if (backPack != null) {
                                 for (ItemStack itemStack : backPack.getContents()) {
                                     if (itemStack != null) {
-                                        moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, removeItems, sellAllXMaterials);
+                                        moneyToGive += getNewMoneyToGiveManager(p, itemStack, removeItems, sellAllXMaterials);
                                     }
                                 }
                             }
@@ -1113,7 +1110,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                             if (backPack != null) {
                                 for (ItemStack itemStack : backPack.getContents()) {
                                     if (itemStack != null) {
-                                        moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, removeItems, sellAllXMaterials);
+                                        moneyToGive += getNewMoneyToGiveManager(p, itemStack, removeItems, sellAllXMaterials);
                                     }
                                 }
                             }
@@ -1130,7 +1127,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 if (backPack != null) {
                     for (ItemStack itemStack : backPack.getContents()) {
                         if (itemStack != null) {
-                            moneyToGive += getNewMoneyToGiveManager(p, items, itemStack, removeItems, sellAllXMaterials);
+                            moneyToGive += getNewMoneyToGiveManager(p, itemStack, removeItems, sellAllXMaterials);
                         }
                     }
                 }
@@ -1140,11 +1137,15 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         return moneyToGive;
     }
 
-    private double getNewMoneyToGiveManager(Player p, Set<String> items, ItemStack itemStack, boolean removeItems, HashMap<Double, XMaterial> sellAllXMaterials) {
+    private double getNewMoneyToGiveManager(Player p, ItemStack itemStack, boolean removeItems, HashMap<Double, XMaterial> sellAllXMaterials) {
 
         double moneyToGive = 0;
 
         if (itemStack != null) {
+
+            boolean perBlockPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"));
+            String permission = sellAllConfig.getString("Options.Sell_Per_Block_Permission");
+
             // Get the items strings from config and for each of them get the Material and value.
             for (Map.Entry<Double, XMaterial> values : sellAllXMaterials.entrySet()) {
 
@@ -1171,8 +1172,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 if ((!hasError && itemMaterial == invMaterial) || bypassCondition) {
 
                     // Check if per-block permission's enabled and if player has permission.
-                    if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))){
-                        String permission = sellAllConfig.getString("Options.Sell_Per_Block_Permission");
+                    if (perBlockPermissionEnabled){
                         permission = permission + invMaterial.name();
 
                         // Check if player have this permission, if not return 0 money earned for this item and don't remove it.
@@ -1337,9 +1337,9 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     }
 
     private double getMultiplierExtraByPerms(List<String> perms, double multiplierExtraByPerms) {
+        boolean multiplierPermissionHighOption = getBoolean(sellAllConfig.getString("Options.Multiplier_Permission_Only_Higher"));
         for (String multByPerm : perms){
             double multByPermDouble = Double.parseDouble(multByPerm.substring(26));
-            boolean multiplierPermissionHighOption = getBoolean(sellAllConfig.getString("Options.Multiplier_Permission_Only_Higher"));
             if (!multiplierPermissionHighOption) {
                 multiplierExtraByPerms += multByPermDouble;
             } else if (multByPermDouble > multiplierExtraByPerms){

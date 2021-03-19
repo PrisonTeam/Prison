@@ -525,10 +525,10 @@ public class BackpacksUtil {
      *
      * @param lores
      * */
-    private List<String> createLore( String... lores ) {
+    private List<String> createLore(String... lores) {
         List<String> results = new ArrayList<>();
-        for ( String lore : lores ) {
-            results.add( SpigotPrison.format(lore) );
+        for (String lore : lores) {
+            results.add( SpigotPrison.format(lore));
         }
         return results;
     }
@@ -1025,11 +1025,10 @@ public class BackpacksUtil {
         boolean playerHasItemBackPack = false;
 
         Inventory inv = p.getInventory();
+        ItemStack materialConf = SpigotUtil.getXMaterial(backpacksConfig.getString("Options.BackPack_Item")).parseItem();
 
         for (ItemStack item : inv.getContents()) {
             if (item != null){
-
-                ItemStack materialConf = SpigotUtil.getXMaterial(backpacksConfig.getString("Options.BackPack_Item")).parseItem();
 
                 if (materialConf != null && item.getType() == materialConf.getType() && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().equalsIgnoreCase(SpigotPrison.format(backpacksConfig.getString("Options.BackPack_Item_Title")))){
                     playerHasItemBackPack = true;
@@ -1215,5 +1214,4 @@ public class BackpacksUtil {
         }
         return null;
     }
-
 }
