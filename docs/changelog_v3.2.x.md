@@ -17,7 +17,10 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.8 2021-03-18
+# v3.2.5-alpha.8 2021-03-19
+
+
+* **refactored the OnBlockBreakEventListener to move the majority of the code to a core object** so it can be extended by auto features instead of extending the class with listeners.  This reduces the number of hits to prisons event listeners.
 
 
 * **Updated the docs on the worldguard settings to remove the "g:" prefix from the luck perm commands.**

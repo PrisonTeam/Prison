@@ -227,7 +227,8 @@ public class SpigotUtil {
 
 		
 		// Insert overflow in to Prison's backpack:
-		if (overflow.size() > 0 && BackpacksUtil.isEnabled() && BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_AutoPickup_Usable").equalsIgnoreCase("true")) {
+		if (overflow.size() > 0 && BackpacksUtil.isEnabled() && 
+						BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_AutoPickup_Usable").equalsIgnoreCase("true")) {
 			if (BackpacksUtil.get().isMultipleBackpacksEnabled()){
 				for (String id : BackpacksUtil.get().getBackpacksIDs(player)){
 					if (overflow.size() > 0){

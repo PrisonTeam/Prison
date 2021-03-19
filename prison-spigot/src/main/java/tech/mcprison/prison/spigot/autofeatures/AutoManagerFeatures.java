@@ -32,7 +32,7 @@ import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
+import tech.mcprison.prison.spigot.block.OnBlockBreakEventCore;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -52,7 +52,7 @@ import tech.mcprison.prison.util.Text;
  *
  */
 public class AutoManagerFeatures
-		extends OnBlockBreakEventListener {
+		extends OnBlockBreakEventCore {
 
 
 	private Random random = new Random();
@@ -1586,19 +1586,22 @@ public class AutoManagerFeatures
 			int quantity = 1;
 			int threshold = 10;
 
-			// If fortune is enabled on the tool, then increase drop oddds by:
+			// If fortune is enabled on the tool, then increase drop odds by:
 			//  1 = 14%, 2 = 25%, 3+ = 100%
 			int fortune = getFortune(itemInHand);
 			switch (fortune) {
 				case 0:
 					// No additional threshold when fortune is zero:
 					break;
+					
 				case 1:
 					threshold = 14;
 					break;
+					
 				case 2:
 					threshold = 25;
 					break;
+					
 				case 3:
 				default:
 					// if Fortune 3 or higher, default to 100% drop:

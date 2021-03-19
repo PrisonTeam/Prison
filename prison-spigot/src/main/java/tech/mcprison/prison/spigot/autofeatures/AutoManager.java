@@ -90,8 +90,7 @@ public class AutoManager
      * 
      * 
      */
-    @Override
-    @EventHandler(priority=EventPriority.LOW) 
+    @EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true) 
     public void onBlockBreak(BlockBreakEvent e) {
 
     	genericBlockEvent( e, false, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
@@ -102,15 +101,13 @@ public class AutoManager
      * the complier from falsely triggering a Not Used warning.
      * </p>
      */
-    @Override
-    @EventHandler(priority=EventPriority.LOW) 
+    @EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true) 
     public void onBlockShredBreak(BlockShredEvent e) {
 
     	genericBlockEvent( e, false, !( isBoolean(AutoFeatures.isAutoManagerEnabled) && e.getBlock() != null ) );
     }
     
-    @Override
-    @EventHandler(priority=EventPriority.LOW) 
+    @EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true) 
     public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
     	if ( !e.isCancelled() ) {
     	    
@@ -119,8 +116,7 @@ public class AutoManager
     }
     
     
-    @Override
-    @EventHandler(priority=EventPriority.LOW) 
+    @EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true) 
     public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
     	if ( !e.isCancelled() ) {
     		genericBlockExplodeEvent( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
