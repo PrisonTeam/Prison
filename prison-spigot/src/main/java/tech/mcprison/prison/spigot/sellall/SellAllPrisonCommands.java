@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -53,9 +54,11 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     private static SellAllPrisonCommands instance;
     private String idBeingProcessedBackpack = null;
+    private Compatibility compat = SpigotPrison.getInstance().getCompatibility();
     public static List<String> activePlayerDelay = new ArrayList<>();
     public boolean signUsed = false;
     public inventorySellMode mode = inventorySellMode.PlayerInventory;
+
 
 
     /**
@@ -1119,6 +1122,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         double moneyToGive = 0;
 
+        ItemStack lapisLazuli = compat.getLapisItemStack();
+
         if (itemStack != null) {
             // Get the items strings from config and for each of them get the Material and value.
             for (String key : items) {
@@ -1127,14 +1132,20 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 String itemID = sellAllConfig.getString("Items." + key + ".ITEM_ID");
 
                 // Flag variable and XMaterials.
+                boolean bypassCondition = false;
                 boolean hasError = false;
                 XMaterial itemMaterial = null;
                 XMaterial invMaterial = null;
-                try {
-                    itemMaterial = XMaterial.valueOf(itemID);
-                    invMaterial = XMaterial.matchXMaterial(itemStack);
-                } catch (IllegalArgumentException ex){
-                    hasError = true;
+                if (itemStack.isSimilar(lapisLazuli) && itemID.equalsIgnoreCase("LAPIS_LAZULI")){
+                    invMaterial = XMaterial.LAPIS_LAZULI;
+                    bypassCondition = true;
+                } else {
+                    try {
+                        itemMaterial = XMaterial.valueOf(itemID);
+                        invMaterial = XMaterial.matchXMaterial(itemStack);
+                    } catch (IllegalArgumentException ex) {
+                        hasError = true;
+                    }
                 }
 
                 // Get value
@@ -1154,7 +1165,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 int amount = 0;
                 // Check if the item from the player inventory's on the config of items sellable
                 // So it gets the amount and then remove it from the inventory
-                if (!hasError && itemMaterial == invMaterial) {
+                if ((!hasError && itemMaterial == invMaterial) || bypassCondition) {
 
                     // Check if per-block permission's enabled and if player has permission.
                     if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))){

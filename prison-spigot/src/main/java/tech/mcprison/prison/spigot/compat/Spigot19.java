@@ -20,6 +20,7 @@ package tech.mcprison.prison.spigot.compat;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -126,6 +127,12 @@ public class Spigot19
     @Override
     public Sound getEntityItemBreakSound() {
         return Sound.valueOf("ENTITY_ITEM_BREAK");
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public ItemStack getLapisItemStack() {
+        return new ItemStack(Material.valueOf("INK_SACK"), 1, (short) 4);
     }
 
     @Override
