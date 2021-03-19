@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import com.cryptomorin.xseries.XMaterial;
 
 import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
+import org.jetbrains.annotations.NotNull;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.commands.Arg;
@@ -1024,16 +1025,108 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
     private double getNewMoneyToGive(Player p, boolean removeItems){
 
-        // Money to give value
+        // Money to give value, Player Inventory, Items config section.
         double moneyToGive = 0;
-
-        // Get the player inventory
         Inventory inv = p.getInventory();
-
-        // Get the Items config section
         Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
 
         // Get values and XMaterials from config.
+        HashMap<Double, XMaterial> sellAllXMaterials = getDoubleXMaterialHashMap(items);
+
+        // Get the items from the player inventory and for each of them check the conditions.
+        mode = inventorySellMode.PlayerInventory;
+        for (ItemStack itemStack : inv.getContents()){
+            moneyToGive += getNewMoneyToGiveManager(p, itemStack, removeItems, sellAllXMaterials);
+        }
+
+        // Check option and if enabled.
+        if (IntegrationMinepacksPlugin.getInstance().isEnabled() &&
+        			getBoolean(sellAllConfig.getString("Options.Sell_MinesBackPacks_Plugin_Backpack"))) {
+
+            // Get money to give depending on Mines Backpacks plugin.
+            moneyToGive = sellAllGetMoneyToGiveMinesBackpacksPlugin(p, removeItems, moneyToGive, sellAllXMaterials);
+        }
+
+        // Check if enabled Prison backpacks and sellall on it.
+        if (getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks")) &&
+                getBoolean(sellAllConfig.getString("Options.Sell_Prison_BackPack_Items"))) {
+
+            // Get money to give from the Prison backpacks.
+            moneyToGive = sellAllGetMoneyToGivePrisonBackpacks(p, removeItems, moneyToGive, sellAllXMaterials);
+        }
+
+        return moneyToGive;
+    }
+
+    private double sellAllGetMoneyToGivePrisonBackpacks(Player p, boolean removeItems, double moneyToGive, HashMap<Double, XMaterial> sellAllXMaterials) {
+
+        if (BackpacksUtil.get().isMultipleBackpacksEnabled()) {
+            if (!BackpacksUtil.get().getBackpacksIDs(p).isEmpty()) {
+                for (String id : BackpacksUtil.get().getBackpacksIDs(p)) {
+                    // If the backpack's the default one with a null ID then use this, if not get something else.
+                    if (id == null){
+
+                        Inventory backPack = BackpacksUtil.get().getBackpack(p);
+                        mode = inventorySellMode.PrisonBackPackSingle;
+
+                        if (backPack != null) {
+                            for (ItemStack itemStack : backPack.getContents()) {
+                                if (itemStack != null) {
+                                    moneyToGive += getNewMoneyToGiveManager(p, itemStack, removeItems, sellAllXMaterials);
+                                }
+                            }
+                        }
+
+                    } else {
+
+                        Inventory backPack = BackpacksUtil.get().getBackpack(p, id);
+                        mode = inventorySellMode.PrisonBackPackMultiples;
+                        idBeingProcessedBackpack = id;
+                        if (backPack != null) {
+                            for (ItemStack itemStack : backPack.getContents()) {
+                                if (itemStack != null) {
+                                    moneyToGive += getNewMoneyToGiveManager(p, itemStack, removeItems, sellAllXMaterials);
+                                }
+                            }
+                        }
+                    }
+                }
+                idBeingProcessedBackpack = null;
+            }
+
+        } else {
+            // Set mode and get Prison Backpack inventory
+            mode = inventorySellMode.PrisonBackPackSingle;
+            Inventory backPack = BackpacksUtil.get().getBackpack(p);
+
+            if (backPack != null) {
+                for (ItemStack itemStack : backPack.getContents()) {
+                    if (itemStack != null) {
+                        moneyToGive += getNewMoneyToGiveManager(p, itemStack, removeItems, sellAllXMaterials);
+                    }
+                }
+            }
+        }
+        return moneyToGive;
+    }
+
+    private double sellAllGetMoneyToGiveMinesBackpacksPlugin(Player p, boolean removeItems, double moneyToGive, HashMap<Double, XMaterial> sellAllXMaterials) {
+        // Set mode and get backpack
+        mode = inventorySellMode.MinesBackPack;
+        Backpack backPack = IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p);
+
+        if (backPack != null) {
+            for (ItemStack itemStack : backPack.getInventory().getContents()) {
+                if (itemStack != null) {
+                    moneyToGive += getNewMoneyToGiveManager(p, itemStack, removeItems, sellAllXMaterials);
+                }
+            }
+        }
+        return moneyToGive;
+    }
+
+    @NotNull
+    private HashMap<Double, XMaterial> getDoubleXMaterialHashMap(Set<String> items) {
         HashMap<Double, XMaterial> sellAllXMaterials = new HashMap<>();
         for (String key : items) {
             // ItemID
@@ -1056,85 +1149,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 sellAllXMaterials.put(value, itemMaterial);
             }
         }
-
-        // Get the items from the player inventory and for each of them check the conditions.
-        mode = inventorySellMode.PlayerInventory;
-        for (ItemStack itemStack : inv.getContents()){
-            moneyToGive += getNewMoneyToGiveManager(p, itemStack, removeItems, sellAllXMaterials);
-        }
-
-        // Check option and if enabled.
-        if (IntegrationMinepacksPlugin.getInstance().isEnabled() &&
-        			getBoolean(sellAllConfig.getString("Options.Sell_MinesBackPacks_Plugin_Backpack"))) {
-
-            // Set mode and get backpack
-            mode = inventorySellMode.MinesBackPack;
-            Backpack backPack = IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p);
-
-            if (backPack != null) {
-                for (ItemStack itemStack : backPack.getInventory().getContents()) {
-                    if (itemStack != null) {
-                        moneyToGive += getNewMoneyToGiveManager(p, itemStack, removeItems, sellAllXMaterials);
-                    }
-                }
-            }
-        }
-
-        // Check if enabled Prison backpacks and sellall on it.
-        if (getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks")) &&
-                getBoolean(sellAllConfig.getString("Options.Sell_Prison_BackPack_Items"))) {
-
-            if (BackpacksUtil.get().isMultipleBackpacksEnabled()) {
-
-                if (!BackpacksUtil.get().getBackpacksIDs(p).isEmpty()) {
-                    for (String id : BackpacksUtil.get().getBackpacksIDs(p)) {
-                        // If the backpack's the default one with a null ID then use this, if not get something else.
-                        if (id == null){
-
-                            Inventory backPack = BackpacksUtil.get().getBackpack(p);
-                            mode = inventorySellMode.PrisonBackPackSingle;
-
-                            if (backPack != null) {
-                                for (ItemStack itemStack : backPack.getContents()) {
-                                    if (itemStack != null) {
-                                        moneyToGive += getNewMoneyToGiveManager(p, itemStack, removeItems, sellAllXMaterials);
-                                    }
-                                }
-                            }
-
-                        } else {
-
-                            Inventory backPack = BackpacksUtil.get().getBackpack(p, id);
-                            mode = inventorySellMode.PrisonBackPackMultiples;
-                            idBeingProcessedBackpack = id;
-                            if (backPack != null) {
-                                for (ItemStack itemStack : backPack.getContents()) {
-                                    if (itemStack != null) {
-                                        moneyToGive += getNewMoneyToGiveManager(p, itemStack, removeItems, sellAllXMaterials);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    idBeingProcessedBackpack = null;
-                }
-
-            } else {
-                // Set mode and get Prison Backpack inventory
-                mode = inventorySellMode.PrisonBackPackSingle;
-                Inventory backPack = BackpacksUtil.get().getBackpack(p);
-
-                if (backPack != null) {
-                    for (ItemStack itemStack : backPack.getContents()) {
-                        if (itemStack != null) {
-                            moneyToGive += getNewMoneyToGiveManager(p, itemStack, removeItems, sellAllXMaterials);
-                        }
-                    }
-                }
-            }
-        }
-
-        return moneyToGive;
+        return sellAllXMaterials;
     }
 
     private double getNewMoneyToGiveManager(Player p, ItemStack itemStack, boolean removeItems, HashMap<Double, XMaterial> sellAllXMaterials) {
