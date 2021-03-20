@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.10 2021-03-20
 
 
+* **Move the handling of % checking to the top and also check the playerName so it is properly able to report the player error back to the user.**
+
+
 * **Major bonus fix... If there is a failure with a command, and there is a % in one of the parameters, then this was causing a major failure because it was failing when it failed to begin with.**
 So a double failure.
 So this double escapes the % to make it a %% so it will not trigger a failure in the String.format() when it's sending the messag to the output.

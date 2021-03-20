@@ -429,6 +429,13 @@ public class PrisonCommand {
     			description = "Placeholder text to test using { } as escape characters" ) String text ) {
     	
     	
+    	if ( playerName != null && playerName.contains( "%" ) || 
+    			text != null && text.contains( "%" ) ) {
+    		Output.get().logInfo( "&3You cannot use &7 %% &3 as escape characters. Use &7{&3 &7}&3 instead." );
+    		return;
+    	}
+    	
+    	
     	// blank defaults do not work when there are more than one at a time.  So had to
     	// default to periods.  So convert periods to blanks initially:
     	playerName = (playerName.equals( "." ) ? "" : playerName );
@@ -456,10 +463,6 @@ public class PrisonCommand {
         BulletedListComponent.BulletedListBuilder builder =
                 new BulletedListComponent.BulletedListBuilder();
         
-        if ( text.contains( "%" )) {
-        	Output.get().logInfo( "&3You cannot use &7%%&3 as escape characters. Use &7{ }&3 instead." );
-        	return;
-        }
         
     	UUID playerUuid = (player == null ? null : player.getUUID());
     	String translated = Prison.get().getPlatform().getPlaceholders()
