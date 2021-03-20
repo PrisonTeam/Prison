@@ -76,6 +76,7 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
                 " ",
                 "&8-----------------------"
                 );
+
         List<String> editTagLore = createLore(
                 messages.getString("Lore.ClickToOpen"),
                 "",

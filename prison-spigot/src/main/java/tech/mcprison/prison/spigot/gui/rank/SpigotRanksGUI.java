@@ -55,6 +55,16 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         // Create the inventory and set up the owner, dimensions or number of slots, and title
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Ladders -> Ranks"));
 
+        // Global Strings.
+        String loreShiftRightClickDelete = messages.getString("Lore.ShiftAndRightClickToDelete");
+        String loreClickToManageRank = messages.getString("Lore.ClickToManageRank");
+        String loreInfo = messages.getString("Lore.Info");
+        String loreId = messages.getString("Lore.Id");
+        String loreName = messages.getString("Lore.Name");
+        String loreTag2 = messages.getString("Lore.Tag2");
+        String lorePrice3 = messages.getString("Lore.Price3");
+        String lorePlayersWithRank = messages.getString("Lore.PlayersWithTheRank");
+
 
         // Only loop over the blocks that we need to show:
         int i = counter;
@@ -62,18 +72,18 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
             // Init the lore array with default values for ladders
             List<String> ranksLore = createLore(
-                    messages.getString("Lore.ShiftAndRightClickToDelete"),
-                    messages.getString("Lore.ClickToManageRank"),
+                    loreShiftRightClickDelete,
+                    loreClickToManageRank,
                     "",
-                    messages.getString("Lore.Info"));
+                    loreInfo);
 
             Rank rank = ladder.get().getRanks().get(i);
 
             // Add the RankID Lore
-            ranksLore.add(SpigotPrison.format(messages.getString("Lore.Id") + rank.getId()));
-            ranksLore.add(SpigotPrison.format(messages.getString("Lore.Name") + rank.getName()));
-            ranksLore.add(SpigotPrison.format(messages.getString("Lore.Tag2") + ChatColor.translateAlternateColorCodes('&', rank.getTag())));
-            ranksLore.add(SpigotPrison.format(messages.getString("Lore.Price3") + rank.getCost()));
+            ranksLore.add(SpigotPrison.format(loreId + rank.getId()));
+            ranksLore.add(SpigotPrison.format(loreName + rank.getName()));
+            ranksLore.add(SpigotPrison.format(loreTag2 + ChatColor.translateAlternateColorCodes('&', rank.getTag())));
+            ranksLore.add(SpigotPrison.format(lorePrice3 + rank.getCost()));
 
             // Init a variable
             List<RankPlayer> players =
@@ -82,7 +92,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
                             .collect(Collectors.toList());
 
             // Add the number of players with this rank
-            ranksLore.add(SpigotPrison.format(messages.getString("Lore.PlayersWithTheRank") + players.size()));
+            ranksLore.add(SpigotPrison.format(lorePlayersWithRank + players.size()));
             ranksLore.add("");
             //getCommands(ranksLore, rank);
 

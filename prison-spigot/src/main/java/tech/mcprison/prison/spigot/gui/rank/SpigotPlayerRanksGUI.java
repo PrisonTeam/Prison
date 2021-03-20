@@ -156,14 +156,21 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         int hackyCounterEnchant = 0;
         int amount = 1;
 
+        // Global Strings.
+        String loreInfo = messages.getString("Lore.Info");
+        String lorePrice3 = messages.getString("Lore.Price3");
+
+        // Global booleans.
+        boolean enchantmentEffectEnabled = getBoolean(guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank"));
+
         while ( rank != null ) {
 
             List<String> ranksLore = createLore(
                     " ",
                     "&8-----------------------",
                     " ",
-                    messages.getString("Lore.Info"),
-                    messages.getString("Lore.Price3") + rank.getCost(),
+                    loreInfo,
+                    lorePrice3 + rank.getCost(),
                     " ",
                     "&8-----------------------"
                     );
@@ -186,7 +193,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
             if (!(playerHasThisRank)){
                 if (hackyCounterEnchant <= 0) {
                     hackyCounterEnchant++;
-                    if (guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank").equalsIgnoreCase("true")) {
+                    if (enchantmentEffectEnabled) {
                         itemRank.addUnsafeEnchantment(Enchantment.LUCK, 1);
                     }
                 }
