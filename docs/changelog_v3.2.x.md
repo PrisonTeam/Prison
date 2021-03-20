@@ -17,7 +17,10 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.9 2021-03-19
+# v3.2.5-alpha.9 2021-03-20
+
+* **Change the priority back to LOW.**
+It was changed to LOWEST to try something but it was not working on LOWEST either.  Chaning it to LOWEST may cause other issues.
 
 
 * **v3.2.5-alpha.9 2021-03-19**

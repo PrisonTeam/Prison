@@ -10,9 +10,19 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.5
 
 
+Backpacks not working with auto pickup anymore?  Noticed at one point it wasn't working, but need to see if its still the case.  The issues could have been resolved.
+
+
+
+Personal mines.  Work in conjunction with a plot world?
+- sellable and so would be the features with various upgrades
+- Create a new module based upon Mines with new features to support player interactions and upgrades.
+
 
 - Hook up block filters on the block events.
 
+
+DONE - Add support for EZBlocks... need to test?
 
 
 DONE - fixed - BlockEvents don't not run unless auto features are enabled
@@ -41,6 +51,8 @@ Add potion effects to prison mines.
 
 
 Auto features not working outside of the mines.
+- Maybe be enabled and working now?
+
 
 
 **Block Counts Refresh - (ExtraSean)**
