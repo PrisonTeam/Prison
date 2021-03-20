@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.10 2021-03-20
 
 
+* **New Rank cost preview for some GUIs**
+Edited how the Rank price/cost's shown in some GUIs.
+
+
 * **Doubling Ranks amount Admin GUI fixed**
 Fixed Ranks items doubling in the Admin GUI (tripwire_hooks doubled).
 

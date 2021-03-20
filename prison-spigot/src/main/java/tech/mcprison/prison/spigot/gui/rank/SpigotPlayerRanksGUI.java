@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -18,6 +19,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
@@ -162,6 +164,9 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         // Global booleans.
         boolean enchantmentEffectEnabled = getBoolean(guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank"));
 
+        // Decimal Rank cost format.
+        DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
+
         while ( rank != null ) {
 
             List<String> ranksLore = createLore(
@@ -169,7 +174,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
                     "&8-----------------------",
                     " ",
                     loreInfo,
-                    lorePrice3 + rank.getCost(),
+                    lorePrice3 + PlaceholdersUtil.formattedKmbtSISize(rank.getCost(), formatDecimal, ""),
                     " ",
                     "&8-----------------------"
                     );

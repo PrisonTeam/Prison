@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
@@ -16,6 +17,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -65,6 +67,8 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         String lorePrice3 = messages.getString("Lore.Price3");
         String lorePlayersWithRank = messages.getString("Lore.PlayersWithTheRank");
 
+        // Decimal Rank cost format.
+        DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
 
         // Only loop over the blocks that we need to show:
         int i = counter;
@@ -83,7 +87,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
             ranksLore.add(SpigotPrison.format(loreId + rank.getId()));
             ranksLore.add(SpigotPrison.format(loreName + rank.getName()));
             ranksLore.add(SpigotPrison.format(loreTag2 + ChatColor.translateAlternateColorCodes('&', rank.getTag())));
-            ranksLore.add(SpigotPrison.format(lorePrice3 + rank.getCost()));
+            ranksLore.add(SpigotPrison.format(lorePrice3 + PlaceholdersUtil.formattedKmbtSISize(rank.getCost(), formatDecimal, "")));
 
             // Init a variable
             List<RankPlayer> players =
