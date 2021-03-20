@@ -62,6 +62,13 @@ public class OnBlockBreakEventCore
 	}
 	
 
+	public enum EventDetails {
+		monitor,
+		auto_manager,
+		block_events_only
+		;
+	}
+	
 
 	public AutoFeaturesFileConfig getAutoFeaturesConfig() {
 		return autoFeatureWrapper.getAutoFeaturesConfig();
@@ -117,30 +124,42 @@ public class OnBlockBreakEventCore
     
     
     protected void genericBlockEventMonitor( BlockBreakEvent e ) {
-    	genericBlockEvent( e, true, false );
+    	genericBlockEvent( e, true, false, false );
     }
     
     protected void genericBlockEvent( BlockBreakEvent e ) {
-    	genericBlockEvent( e, false, false );
+    	genericBlockEvent( e, false, false, false );
     }
 
+    protected void genericBlockEventAutoManager( BlockBreakEvent e, boolean blockEventsOnly ) {
+    	genericBlockEvent( e, false, blockEventsOnly, true );
+    }
+    
 	protected void genericBlockExplodeEventMonitor( TEBlockExplodeEvent e ) {
-		genericBlockExplodeEvent( e, true, false );
+		genericBlockExplodeEvent( e, true, false, false );
 	}
 	
 	protected void genericBlockExplodeEvent( TEBlockExplodeEvent e, boolean blockEventsOnly ) {
-		genericBlockExplodeEvent( e, false, blockEventsOnly );
+		genericBlockExplodeEvent( e, false, blockEventsOnly, false );
+	}
+	
+	protected void genericBlockExplodeEventAutoManager( TEBlockExplodeEvent e, boolean blockEventsOnly ) {
+		genericBlockExplodeEvent( e, false, blockEventsOnly, true );
 	}
 	
 
 	protected void genericBlockExplodeEventMonitor( BlastUseEvent e ) {
-		genericBlockExplodeEvent( e, true, false );
+		genericBlockExplodeEvent( e, true, false, false );
 	}
 	
 	protected void genericBlockExplodeEvent( BlastUseEvent e, boolean blockEventsOnly ) {
-		genericBlockExplodeEvent( e, false, blockEventsOnly );
+		genericBlockExplodeEvent( e, false, blockEventsOnly, false );
 	}
 
+	protected void genericBlockExplodeEventAutoManager( BlastUseEvent e, boolean blockEventsOnly ) {
+		genericBlockExplodeEvent( e, true, blockEventsOnly, true );
+	}
+	
     /**
      * <p>This genericBlockEvent handles the basics of a BlockBreakEvent to see if it has happened
      * within a mine or not.  If it is happening within a mine, then we process it with the doAction()
@@ -158,13 +177,15 @@ public class OnBlockBreakEventCore
      * @param montior Identifies that a monitor event called this function.  A monitor should only record
      * 					block break counts.
      */
-	protected void genericBlockEvent( BlockBreakEvent e, boolean monitor, boolean blockEventsOnly ) {
+	protected void genericBlockEvent( BlockBreakEvent e, boolean monitor, boolean blockEventsOnly, 
+			boolean autoManager ) {
 		
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 		
 		
-		String debugInfo = String.format( "### ** genericBlockEvent ** ### %s%s%s ",
+		String debugInfo = String.format( "### ** genericBlockEvent ** ### %s%s%s%s ",
+				(autoManager ? "autoManager " : ""),
 				(e.isCancelled() ? "CANCELED " : ""),
 				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" ));
 		
@@ -267,13 +288,15 @@ public class OnBlockBreakEventCore
 	 * 
 	 * @param e
 	 */
-	private void genericBlockExplodeEvent( TEBlockExplodeEvent e, boolean monitor, boolean blockEventsOnly ) {
+	private void genericBlockExplodeEvent( TEBlockExplodeEvent e, boolean monitor, boolean blockEventsOnly, 
+			boolean autoManager ) {
 
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 		
 		
-		String debugInfo = String.format( "### ** genericBlockExplodeEvent(TEBlockExplodeEvent) ** ### %s%s%s ",
+		String debugInfo = String.format( "### ** genericBlockExplodeEvent(TEBlockExplodeEvent) ** ### %s%s%s%s ",
+				(autoManager ? "autoManager " : ""),
 				(e.isCancelled() ? "CANCELED " : ""),
 				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" ));
 		
@@ -464,13 +487,15 @@ public class OnBlockBreakEventCore
 	 * 
 	 * @param e
 	 */
-	protected void genericBlockExplodeEvent( BlastUseEvent e, boolean monitor, boolean blockEventsOnly ) {
+	protected void genericBlockExplodeEvent( BlastUseEvent e, boolean monitor, boolean blockEventsOnly, 
+			boolean autoManager ) {
 
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 				
 		
-		String debugInfo = String.format( "### ** genericBlockExplodeEvent(BlastUseEvent) ** ### %s%s%s ",
+		String debugInfo = String.format( "### ** genericBlockExplodeEvent(BlastUseEvent) ** ### %s%s%s%s ",
+				(autoManager ? "autoManager " : ""),
 				(e.isCancelled() ? "CANCELED " : ""),
 				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" ));
 		

@@ -145,11 +145,11 @@ public class OnBlockBreakEventListener
     @EventHandler(priority=EventPriority.MONITOR) 
 	public void onCrazyEnchantsBlockExplodeMonitor( BlastUseEvent e ) {
 		
-    	genericBlockExplodeEvent( e, true );
+    	genericBlockExplodeEventMonitor( e );
 	}
     
     
-    @EventHandler(priority=EventPriority.LOW, ignoreCancelled=true) 
+    @EventHandler(priority=EventPriority.LOW) 
     public void onBlockBreak(BlockBreakEvent e) {
 
     	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
@@ -157,19 +157,19 @@ public class OnBlockBreakEventListener
     	}
     }
     
-    @EventHandler(priority=EventPriority.LOW, ignoreCancelled=true) 
+    @EventHandler(priority=EventPriority.LOW) 
     public void onBlockShredBreak(BlockShredEvent e) {
 
     	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
-    		genericBlockEvent( e, false, false );
+    		genericBlockEvent( e, false, false, false );
     	}
     	else {
-    		genericBlockEvent( e, false, true );
+    		genericBlockEvent( e, false, true, false );
     	}
     }
     
     
-    @EventHandler(priority=EventPriority.LOW, ignoreCancelled=true) 
+    @EventHandler(priority=EventPriority.LOW) 
     public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
 
     	boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
@@ -181,7 +181,7 @@ public class OnBlockBreakEventListener
     }
     
     
-    @EventHandler(priority=EventPriority.LOW, ignoreCancelled=true) 
+    @EventHandler(priority=EventPriority.LOW) 
     public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
     	
     	boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );

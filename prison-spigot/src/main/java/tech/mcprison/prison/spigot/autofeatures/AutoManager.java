@@ -88,10 +88,10 @@ public class AutoManager
      * 
      * 
      */
-    @EventHandler(priority=EventPriority.LOW, ignoreCancelled=true) 
+    @EventHandler(priority=EventPriority.LOW) 
     public void onBlockBreak(BlockBreakEvent e) {
 
-    	genericBlockEvent( e, false, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
+    	genericBlockEventAutoManager( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
     }
     
     /**
@@ -99,25 +99,25 @@ public class AutoManager
      * the complier from falsely triggering a Not Used warning.
      * </p>
      */
-    @EventHandler(priority=EventPriority.LOW, ignoreCancelled=true) 
+    @EventHandler(priority=EventPriority.LOW) 
     public void onBlockShredBreak(BlockShredEvent e) {
 
-    	genericBlockEvent( e, false, !( isBoolean(AutoFeatures.isAutoManagerEnabled) && e.getBlock() != null ) );
+    	genericBlockEventAutoManager( e, !( isBoolean(AutoFeatures.isAutoManagerEnabled) && e.getBlock() != null ) );
     }
     
-    @EventHandler(priority=EventPriority.LOW, ignoreCancelled=true) 
+    @EventHandler(priority=EventPriority.LOW) 
     public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
     	if ( !e.isCancelled() ) {
     	    
-    		genericBlockExplodeEvent( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
+    		genericBlockExplodeEventAutoManager( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
     	}
     }
     
     
-    @EventHandler(priority=EventPriority.LOW, ignoreCancelled=true) 
+    @EventHandler(priority=EventPriority.LOW) 
     public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
     	if ( !e.isCancelled() ) {
-    		genericBlockExplodeEvent( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
+    		genericBlockExplodeEventAutoManager( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
     	}
     }
     
