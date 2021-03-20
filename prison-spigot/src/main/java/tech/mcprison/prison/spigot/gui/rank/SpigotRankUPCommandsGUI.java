@@ -23,9 +23,9 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
     private final Rank rank;
 
     // Global Strings.
-    String shiftRightClickToDelete = messages.getString("Lore.ShiftAndRightClickToDelete");
-    String loreInfo = messages.getString("Lore.Info");
-    String loreCommand = messages.getString("Lore.Command");
+    private final String shiftRightClickToDelete = messages.getString("Lore.ShiftAndRightClickToDelete");
+    private final String loreInfo = messages.getString("Lore.Info");
+    private final String loreCommand = messages.getString("Lore.Command");
 
     public SpigotRankUPCommandsGUI(Player p, Rank rank) {
         this.p = p;

@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.10 2021-03-20
 
 
+* **Mines GUIs optimizations**
+Optimized Mines GUIs.
+
+
 * **Ranks GUIs optimizations**
 Optimized Ranks GUIs.
 
