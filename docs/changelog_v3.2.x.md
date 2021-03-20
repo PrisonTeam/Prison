@@ -17,7 +17,13 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.9 2021-03-20
+# v3.2.5-alpha.10 2021-03-20
+
+
+* **v3.2.5-alpha.10 2021-03-20**
+
+
+* **Expand the debugging information for auto manager BlockBreakEvent to include logging for auto manager.**
 
 
 * **With auto features being rather complex and many potential issues with it due to so many possible dependencies, added a debug logging entry to track exactly what happens.**
