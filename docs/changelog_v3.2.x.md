@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.10 2021-03-20
 
 
+* **SellAll GUIs optimizations**
+Optimized SellAll GUIs.
+
+
 * **v3.2.5-alpha.10 2021-03-20**
 
 

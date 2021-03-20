@@ -161,4 +161,11 @@ public abstract class SpigotGUIComponents {
         p.openInventory(inv);
         ListenersPrisonManager.get().addToGUIBlocker(p);
     }
+
+    /**
+     * Java getBoolean's broken so I made my own.
+     * */
+    public boolean getBoolean(String string){
+        return string != null && string.equalsIgnoreCase("true");
+    }
 }

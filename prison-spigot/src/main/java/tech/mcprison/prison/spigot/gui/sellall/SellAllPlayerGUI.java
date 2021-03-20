@@ -63,11 +63,15 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
             return null;
         }
 
+        // Inventory GUI.
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Prison -> SellAll-Player"));
+
+        // Global strings.
+        String loreValue = messages.getString("Lore.Value");
 
         for (String key : items) {
             List<String> itemsLore = createLore(
-                    messages.getString("Lore.Value") + sellAllConfig.getString("Items." + key + ".ITEM_VALUE")
+                    loreValue + sellAllConfig.getString("Items." + key + ".ITEM_VALUE")
             );
 
             ItemStack item = createButton(SpigotUtil.getItemStack(SpigotUtil.getXMaterial(sellAllConfig.getString("Items." + key + ".ITEM_ID")), 1), itemsLore, SpigotPrison.format("&3" + sellAllConfig.getString("Items." + key + ".ITEM_ID")));

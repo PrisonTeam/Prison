@@ -54,6 +54,12 @@ public class SellAllPrestigesMultiplierGUI extends SpigotGUIComponents {
         // Page elements.
         int pageSize = 45;
 
+        // Global strings.
+        String lorePrestigeName = messages.getString("Lore.PrestigeName");
+        String lorePrestigeMultiplier = messages.getString("Lore.PrestigeMultiplier");
+        String loreClickToEdit = messages.getString("Lore.ClickToEdit");
+        String loreClickToDelete =  messages.getString("Lore.RightClickToDelete");
+
         // Only loop over the blocks that we need to show:
         int i = counter;
         for ( ; i < sellAllConfig.getConfigurationSection("Multiplier").getKeys(false).size() && i < counter + pageSize; i++ ) {
@@ -63,11 +69,11 @@ public class SellAllPrestigesMultiplierGUI extends SpigotGUIComponents {
 
                 if (flagValue == i) {
                     List<String> loreMult = createLore(
-                            messages.getString("Lore.PrestigeName") + sellAllConfig.getString("Multiplier." + prestige + ".PRESTIGE_NAME"),
-                            messages.getString("Lore.PrestigeMultiplier") + sellAllConfig.getString("Multiplier." + prestige + ".MULTIPLIER"),
+                            lorePrestigeName + sellAllConfig.getString("Multiplier." + prestige + ".PRESTIGE_NAME"),
+                            lorePrestigeMultiplier + sellAllConfig.getString("Multiplier." + prestige + ".MULTIPLIER"),
                             "",
-                            messages.getString("Lore.ClickToEdit"),
-                            messages.getString("Lore.RightClickToDelete")
+                            loreClickToEdit,
+                            loreClickToDelete
                     );
 
                     ItemStack prestMultiplierButton = createButton(XMaterial.PAPER.parseItem(), loreMult, sellAllConfig.getString("Multiplier." + prestige + ".PRESTIGE_NAME"));
