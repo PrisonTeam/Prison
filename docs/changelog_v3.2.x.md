@@ -19,6 +19,11 @@ that you need.
 
 # v3.2.5-alpha.9 2021-03-20
 
+
+* **With auto features being rather complex and many potential issues with it due to so many possible dependencies, added a debug logging entry to track exactly what happens.**
+This debug information is only logged when debug is enabled through the logger.  This will be very useful to help providing support when people are having issues.
+
+
 * **Change the priority back to LOW.**
 It was changed to LOWEST to try something but it was not working on LOWEST either.  Chaning it to LOWEST may cause other issues.
 

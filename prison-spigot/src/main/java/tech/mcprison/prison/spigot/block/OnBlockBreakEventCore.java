@@ -163,6 +163,12 @@ public class OnBlockBreakEventCore
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 		
+		
+		String debugInfo = String.format( "### ** genericBlockEvent ** ### %s%s%s ",
+				(e.isCancelled() ? "CANCELED " : ""),
+				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" ));
+		
+		
 		// NOTE that check for auto manager has happened prior to accessing this function.
     	if ( !monitor && !e.isCancelled() || monitor ) 
     	{
@@ -188,25 +194,33 @@ public class OnBlockBreakEventCore
     			}
     		}
     		
+    		debugInfo += "mine=" + (mine == null ? "none" : mine.getName()) + " ";
+    		
     		if ( mine != null && mine.isAccessPermissionEnabled() && 
     				!e.getPlayer().hasPermission( mine.getAccessPermission() ) ) {
     			// The player does not have permission to access this mine, so do not process 
     			// 
+    			
+    			debugInfo += "ACCESS_DENIED ";
     		}
     		else if ( blockEventsOnly ) {
     			
     			String triggered = null;
     			
     			doActionBlockEventOnly( block, mine, e.getPlayer(), BlockEventType.blockBreak, triggered );
+
+    			debugInfo += "(actionBlockEventOnly) ";
     		}
     		else if ( monitor && mine == null ) {
     			// bypass all processing since the block break is outside any mine:
     			
+    			debugInfo += "(bypassed monitor no mine) ";
     		}
     		else if ( monitor && mine != null ) {
     			
     			doActionMonitor( block, mine );
     			
+    			debugInfo += "(monitor) ";
     		}
     		
     		// This is where the processing actually happens:
@@ -228,8 +242,16 @@ public class OnBlockBreakEventCore
     				e.setCancelled( true );
     			}
     			
+    			debugInfo += "(normal processing) ";
     		}
+    		else {
+    			
+    			debugInfo += "(logic bypass) ";
+    		}
+    		
     	}
+    	
+    	Output.get().logDebug( debugInfo );
 	}
 
 
@@ -250,6 +272,12 @@ public class OnBlockBreakEventCore
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 		
+		
+		String debugInfo = String.format( "### ** genericBlockExplodeEvent(TEBlockExplodeEvent) ** ### %s%s%s ",
+				(e.isCancelled() ? "CANCELED " : ""),
+				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" ));
+		
+
 
 		// NOTE that check for auto manager has happened prior to accessing this function.
     	if ( !monitor && !e.isCancelled() || monitor ) {
@@ -280,13 +308,17 @@ public class OnBlockBreakEventCore
 				}
     			
     		}
-
+    		
+    		debugInfo += "mine=" + (mine == null ? "none" : mine.getName()) + " ";
+    		
     		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
     		
     		if ( mine != null && mine.isAccessPermissionEnabled() && 
     				!e.getPlayer().hasPermission( mine.getAccessPermission() ) ) {
     			// The player does not have permission to access this mine, so do not process 
     			// 
+    			
+    			debugInfo += "ACCESS_DENIED ";
     		}
     		else if ( blockEventsOnly ) {
     			
@@ -309,10 +341,13 @@ public class OnBlockBreakEventCore
         			}
 
     			}
+    			
+    			debugInfo += "(actionBlockEventOnly) ";
     		}
     		else if ( monitor && mine == null ) {
     			// bypass all processing since the block break is outside any mine:
     			
+    			debugInfo += "(bypassed monitor no mine) ";
     		}
     		else if ( monitor && mine != null ) {
 
@@ -330,6 +365,8 @@ public class OnBlockBreakEventCore
     				
     				doActionMonitor( sBlock, mine );
     			}
+
+    			debugInfo += "(monitor) ";
     		}
 
     		
@@ -368,10 +405,17 @@ public class OnBlockBreakEventCore
     					e.setCancelled( true );
     				}
     			}
-   			}
     			
-
+    			debugInfo += "(normal processing) ";
+   			}
+    		else {
+    			
+    			debugInfo += "(logic bypass) ";
+    		}
+    			
     	}
+    	
+    	Output.get().logDebug( debugInfo );
 	}
 
 
@@ -425,6 +469,12 @@ public class OnBlockBreakEventCore
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 				
+		
+		String debugInfo = String.format( "### ** genericBlockExplodeEvent(BlastUseEvent) ** ### %s%s%s ",
+				(e.isCancelled() ? "CANCELED " : ""),
+				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" ));
+		
+
 
 		// NOTE that check for auto manager has happened prior to accessing this function.
     	if ( (!monitor && !e.isCancelled() || monitor) && 
@@ -491,12 +541,16 @@ public class OnBlockBreakEventCore
 
     		}
 
+			debugInfo += "mine=" + (mine == null ? "none" : mine.getName()) + " ";
+			
 			boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
     		
 			if ( mine != null && mine.isAccessPermissionEnabled() && 
     				!e.getPlayer().hasPermission( mine.getAccessPermission() ) ) {
     			// The player does not have permission to access this mine, so do not process 
     			// 
+
+    			debugInfo += "ACCESS_DENIED ";
     		}
     		else if ( blockEventsOnly ) {
     			
@@ -516,10 +570,13 @@ public class OnBlockBreakEventCore
 	    				doActionBlockEventOnly( sBlock, mine, e.getPlayer(), BlockEventType.CEXplosion, triggered );
 	    			}
 				}
+
+				debugInfo += "(actionBlockEventOnly) ";
     		}
     		else if ( monitor && mine == null ) {
     			// bypass all processing since the block break is outside any mine:
     			
+    			debugInfo += "(bypassed monitor no mine) ";
     		}
     		else if ( monitor && mine != null ) {
 
@@ -537,6 +594,8 @@ public class OnBlockBreakEventCore
     				
     				doActionMonitor( sBlock, mine );
     			}
+
+    			debugInfo += "(monitor) ";
     		}
 
     		// now process all blocks (non-monitor):
@@ -571,10 +630,17 @@ public class OnBlockBreakEventCore
     					e.setCancelled( true );
     				}
     			}
+    			debugInfo += "(normal processing) ";
     		}
-			
+    		else {
+    			
+    			debugInfo += "(logic bypass) ";
+    		}
 
 		}
+    	
+    	Output.get().logDebug( debugInfo );
+
 	}
 	
 	
