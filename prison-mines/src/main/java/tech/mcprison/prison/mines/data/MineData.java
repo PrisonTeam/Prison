@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
@@ -41,6 +42,10 @@ public abstract class MineData
 	
 	private boolean enabled = false;
 	private boolean virtual = false;
+	
+	
+	private String accessPermission = null;
+	
 	
 	private boolean useNewBlockModel = false;
 	
@@ -169,6 +174,10 @@ public abstract class MineData
     	
     	this.enabled = false;
     	this.virtual = false;
+    	
+    	
+    	this.accessPermission = null;
+    	
     	
     	/**
     	 * Mines are sorted based upon the sortOrder, ascending.  If a mine is given
@@ -840,7 +849,22 @@ public abstract class MineData
     }
 
     
-    /**
+    public boolean hasAccess( Player player ) {
+    	return isAccessPermissionEnabled() ? 
+    				player.hasPermission( getAccessPermission() ) : false;
+    }
+    public boolean isAccessPermissionEnabled() {
+    	return getAccessPermission() != null;
+    }
+    public String getAccessPermission() {
+		return accessPermission;
+	}
+	public void setAccessPermission( String accessPermission ) {
+		this.accessPermission = accessPermission;
+	}
+	
+
+	/**
      * Gets the spawn for this mine
      *
      * @return the location of the spawn. {@link Optional#empty()} if no spawn is present OR the

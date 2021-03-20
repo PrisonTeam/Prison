@@ -186,6 +186,9 @@ public class Mine
         setTag( tag );
 
         
+        setAccessPermission( (String) document.get("accessPermission") );
+        
+        
         setVirtual( document.get("isVirtual") == null ? false : (boolean) document.get("isVirtual") );
         
         
@@ -518,6 +521,8 @@ public class Mine
         
         ret.put( "isVirtual", isVirtual() );
         
+        ret.put( "accessPermission", getAccessPermission() );
+
         ret.put( "tag", getTag() );
         ret.put( "sortOrder", getSortOrder() );
         

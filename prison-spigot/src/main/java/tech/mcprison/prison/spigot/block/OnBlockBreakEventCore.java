@@ -45,13 +45,6 @@ public class OnBlockBreakEventCore
 	
 	private boolean teExplosionTriggerEnabled;
 	
-//	private boolean isMCMMOChecked = false;
-//	private RegisteredListener registeredListenerMCMMO = null; 
-//	
-//	private boolean isEZBlockChecked = false;
-//	private RegisteredListener registeredListenerEZBlock = null; 
-//	
-	
 	private AutoFeaturesWrapper autoFeatureWrapper = null;
 	
 	
@@ -121,99 +114,6 @@ public class OnBlockBreakEventCore
 	}
 	
 	
-//    /**
-//     * <p>The EventPriorty.MONITOR means that the state of the event is OVER AND DONE,
-//     * so this function CANNOT do anything with the block, other than "monitor" what
-//     * happened.  That is all we need to do, is to just count the number of blocks within
-//     * a mine that have been broken.
-//     * </p>
-//     * 
-//     * <p><b>Note:</b> Because this is a MONITOR event, we cannot do anything with the 
-//     * target block here. Mostly because everything has already been done with it, and 
-//     * this is only intended to MONITOR the final results. 
-//     * </p>
-//     * 
-//     * <p>One interesting fact about this monitoring is that we know that a block was broken,
-//     * not because of what is left (should be air), but because this function was called.
-//     * There is a chance that the event was canceled and the block remains unbroken, which
-//     * is what WorldGuard would do.  But the event will also be canceled when auto pickup is
-//     * enabled, and at that point the BlockType will be air.
-//     * </p>
-//     * 
-//     * <p>If the event is canceled it's important to check to see that the BlockType is Air,
-//     * since something already broke the block and took the drop.  
-//     * If it is not canceled we still need to count it since it will be a normal drop.  
-//     * </p>
-//     * 
-//     * @param e
-//     */
-//    @EventHandler(priority=EventPriority.MONITOR) 
-//    public void onBlockBreakMonitor(BlockBreakEvent e) {
-//
-//    	genericBlockEventMonitor( e );
-//    }
-//    
-//    @EventHandler(priority=EventPriority.MONITOR) 
-//    public void onBlockShredBreakMonitor(BlockShredEvent e) {
-//    	genericBlockEventMonitor( e );
-//    }
-//    
-//    @EventHandler(priority=EventPriority.MONITOR) 
-//    public void onTEBlockExplodeMonitor(TEBlockExplodeEvent e) {
-//    
-//    	genericBlockExplodeEventMonitor( e );
-//    }
-//
-//    @EventHandler(priority=EventPriority.MONITOR) 
-//	public void onCrazyEnchantsBlockExplodeMonitor( BlastUseEvent e ) {
-//		
-//    	genericBlockExplodeEvent( e, true );
-//	}
-    
-    
-//    @EventHandler(priority=EventPriority.LOW, ignoreCancelled=true) 
-//    public void onBlockBreak(BlockBreakEvent e) {
-//
-//    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
-//    		genericBlockEvent( e );
-//    	}
-//    }
-//    
-//    @EventHandler(priority=EventPriority.LOW, ignoreCancelled=true) 
-//    public void onBlockShredBreak(BlockShredEvent e) {
-//
-//    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
-//    		genericBlockEvent( e, false, false );
-//    	}
-//    	else {
-//    		genericBlockEvent( e, false, true );
-//    	}
-//    }
-    
-    
-//    @EventHandler(priority=EventPriority.LOW, ignoreCancelled=true) 
-//    public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
-//
-//    	boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
-//    	
-//    	if ( isTEExplosiveEnabled ) {
-//    		
-//    		genericBlockExplodeEvent( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
-//    	}
-//    }
-//    
-//    
-//    @EventHandler(priority=EventPriority.LOW, ignoreCancelled=true) 
-//    public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-//    	
-//    	boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
-//    	
-//    	if ( isTEExplosiveEnabled ) {
-//    		
-//    		genericBlockExplodeEvent( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
-//    	}
-//    }
-    
     
     
     protected void genericBlockEventMonitor( BlockBreakEvent e ) {
@@ -288,8 +188,12 @@ public class OnBlockBreakEventCore
     			}
     		}
     		
-    		
-    		if ( blockEventsOnly ) {
+    		if ( mine != null && mine.isAccessPermissionEnabled() && 
+    				!e.getPlayer().hasPermission( mine.getAccessPermission() ) ) {
+    			// The player does not have permission to access this mine, so do not process 
+    			// 
+    		}
+    		else if ( blockEventsOnly ) {
     			
     			String triggered = null;
     			
@@ -379,7 +283,12 @@ public class OnBlockBreakEventCore
 
     		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
     		
-    		if ( blockEventsOnly ) {
+    		if ( mine != null && mine.isAccessPermissionEnabled() && 
+    				!e.getPlayer().hasPermission( mine.getAccessPermission() ) ) {
+    			// The player does not have permission to access this mine, so do not process 
+    			// 
+    		}
+    		else if ( blockEventsOnly ) {
     			
     			if ( mine != null ) {
     				
@@ -584,7 +493,12 @@ public class OnBlockBreakEventCore
 
 			boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
     		
-			if ( blockEventsOnly ) {
+			if ( mine != null && mine.isAccessPermissionEnabled() && 
+    				!e.getPlayer().hasPermission( mine.getAccessPermission() ) ) {
+    			// The player does not have permission to access this mine, so do not process 
+    			// 
+    		}
+    		else if ( blockEventsOnly ) {
     			
 				if ( mine != null ) {
 					
