@@ -48,7 +48,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
             return;
         }
 
-        // Get the dimensions and if needed increases them
+        // Get the dimensions and if required increases them
         int dimension = 54;
         int pageSize = 45;
 
@@ -100,7 +100,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
             ItemStack itemRank = createButton(XMaterial.TRIPWIRE_HOOK.parseItem(), ranksLore, SpigotPrison.format("&3" + rank.getName()));
 
             // Add the button to the inventory
-            inv.addItem(itemRank);
+            inv.setItem(i - counter, itemRank);
         }
 
         if (i < ladder.get().getRanks().size()) {

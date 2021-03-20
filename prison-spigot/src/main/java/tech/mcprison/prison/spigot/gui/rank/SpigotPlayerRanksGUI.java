@@ -123,8 +123,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format(guiConfig.getString("Options.Titles.PlayerRanksGUI")));
 
         // Get many parameters
-        RankLadder ladderData = ladder;
-        Rank rank = ladderData.getLowestRank().get();
+        Rank rank = ladder.getLowestRank().get();
         Rank playerRank = getRankPlayer().getRank(guiConfig.getString("Options.Ranks.Ladder"));
 
         // Call the whole GUI and build it
