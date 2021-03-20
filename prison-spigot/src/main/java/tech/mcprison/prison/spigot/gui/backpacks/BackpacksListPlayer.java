@@ -26,13 +26,27 @@ public class BackpacksListPlayer extends SpigotGUIComponents {
         int dimension = 54;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + p.getName() + " -> Backpacks"));
 
-        List<String> lore;
+        List<String> loreAddBackpackButton = createLore(
+                messages.getString("Lore.ClickToAddBackpack"),
+                " ",
+                "&8-----------------------",
+                " ",
+                messages.getString("Lore.ClickToAddBackpackInst0"),
+                messages.getString("Lore.ClickToAddBackpackInst1"),
+                messages.getString("Lore.ClickToAddBackpackInst2"),
+                messages.getString("Lore.ClickToAddBackpackInst3"),
+                " ",
+                "&8-----------------------"
+        );
+
+        // Global Strings.
+        String loreClickToOpen = messages.getString("Lore.ClickToOpen");
 
         if (!BackpacksUtil.get().getBackpacksIDs(p).isEmpty()) {
             int slot = 0;
             for (String id : BackpacksUtil.get().getBackpacksIDs(p)) {
-                lore = createLore(
-                        messages.getString("Lore.ClickToOpen"),
+                List<String> lore = createLore(
+                        loreClickToOpen,
                         " "
                 );
                 if (slot < 45) {
@@ -49,18 +63,6 @@ public class BackpacksListPlayer extends SpigotGUIComponents {
         }
 
         if (BackpacksUtil.get().getBackpacksIDs(p).isEmpty() || !BackpacksUtil.get().reachedBackpacksLimit(p)) {
-            List<String> loreAddBackpackButton = createLore(
-                    messages.getString("Lore.ClickToAddBackpack"),
-                    " ",
-                    "&8-----------------------",
-                    " ",
-                    messages.getString("Lore.ClickToAddBackpackInst0"),
-                    messages.getString("Lore.ClickToAddBackpackInst1"),
-                    messages.getString("Lore.ClickToAddBackpackInst2"),
-                    messages.getString("Lore.ClickToAddBackpackInst3"),
-                    " ",
-                    "&8-----------------------"
-                    );
             inv.setItem(49, createButton(XMaterial.EMERALD_BLOCK.parseItem(), loreAddBackpackButton, SpigotPrison.format("&aNew Backpack")));
         }
 

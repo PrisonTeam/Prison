@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.10 2021-03-20
 
 
+* **Backpacks GUIs optimzations**
+Optimized Backpacks GUIs.
+
 * **Mines GUIs optimizations**
 Optimized Mines GUIs.
 
