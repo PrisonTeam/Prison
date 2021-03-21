@@ -1,11 +1,10 @@
-package tech.mcprison.prison.mines.data;
+package tech.mcprison.prison.tasks;
 
 import java.util.List;
 
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.tasks.PrisonRunnable;
 
 public class PrisonDispatchCommandTask
 		implements PrisonRunnable {

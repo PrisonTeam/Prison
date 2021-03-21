@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.11 2021-03-20
 
 
+* **Refactored how prison runs the command tasks from rankup commands, mine reset commands, and block event commands.**  
+This will allow all of the commands to utilize the name behaviors.  For example when new placeholders are added, they will be available to all instances of command tasks.  One new behavior that is added to rankup commands and mine commands is the ability to have more than one command per task, just use ";" between the commands.  This also allows for the use of `{msg}` and `{broadcast}` in command tasks that have players. 
+
+
 * **Fixed the ability for either an operator or console to tp a player to any mine that is specified. **
 
 

@@ -7,6 +7,7 @@ import java.util.TreeSet;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
+import tech.mcprison.prison.tasks.PrisonCommandTask.TaskMode;
 
 public class MineBlockEvent {
 
@@ -83,31 +84,31 @@ public class MineBlockEvent {
 	}
 	
 	
-	public enum TaskMode {
-		inline, 
-		inlinePlayer, 
-		
-		sync,
-		syncPlayer;
-		
-		public static TaskMode fromString( String taskMode ) {
-			TaskMode results = inline;
-			
-			if ( taskMode != null ) {
-				
-				for ( TaskMode mode : values() ) {
-					if ( mode.name().equalsIgnoreCase( taskMode ) ) {
-						results = mode;
-						
-						break;
-					}
-				}
-			}
-			
-			return results;
-		}
-		
-	}
+//	public enum TaskMode {
+//		inline, 
+//		inlinePlayer, 
+//		
+//		sync,
+//		syncPlayer;
+//		
+//		public static TaskMode fromString( String taskMode ) {
+//			TaskMode results = inline;
+//			
+//			if ( taskMode != null ) {
+//				
+//				for ( TaskMode mode : values() ) {
+//					if ( mode.name().equalsIgnoreCase( taskMode ) ) {
+//						results = mode;
+//						
+//						break;
+//					}
+//				}
+//			}
+//			
+//			return results;
+//		}
+//		
+//	}
 	
 	public MineBlockEvent( double chance, String permission, 
 								String command, TaskMode taskMode, 
@@ -138,7 +139,7 @@ public class MineBlockEvent {
 		return dFmt.format( getChance() ) + "|" + 
 				(getPermission() == null || getPermission().trim().length() == 0 ? 
 						"none" : getPermission())  + "|" + 
-				getCommand() + "|" + getTaskMode() + "|" + getEventType().name() + "|" + 
+				getCommand() + "|" + getTaskMode().name() + "|" + getEventType().name() + "|" + 
 				(getTriggered() == null ? "none" : getTriggered()) + "|" +
 				getPrisonBlockStrings( "," );
 	}

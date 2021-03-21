@@ -30,6 +30,7 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.events.RankUpEvent;
+import tech.mcprison.prison.tasks.PrisonCommandTask;
 
 /**
  * Utilities for changing the ranks of players.
@@ -456,14 +457,18 @@ public class RankUtil {
         for (String cmd : targetRank.getRankUpCommands()) {
         	if ( cmd != null ) {
         		
-        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
-        				.replace("{player_uid}", rankPlayer.getUUID().toString());
+				PrisonCommandTask cmdTask = new PrisonCommandTask( command.name() );
+				cmdTask.submitCommandTask( rankPlayer, cmd );
+
         		
+//        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
+//        				.replace("{player_uid}", rankPlayer.getUUID().toString());
+
 //            Prison.get().getPlatform().logPlain(
 //            		String.format( "RankUtil.rankupPlayerInternal:  Rank Command: [%s]", 
 //            					formatted ));
         		
-        		PrisonAPI.dispatchCommand(formatted);
+//        		PrisonAPI.dispatchCommand(formatted);
         		count++;
         	}
         }

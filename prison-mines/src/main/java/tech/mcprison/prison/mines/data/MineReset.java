@@ -8,7 +8,6 @@ import java.util.Random;
 import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
@@ -25,6 +24,7 @@ import tech.mcprison.prison.mines.features.MineTargetBlockKey;
 import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.mines.features.MineTracerBuilder;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.tasks.PrisonCommandTask;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 import tech.mcprison.prison.util.BlockType;
@@ -241,7 +241,10 @@ public abstract class MineReset
 						if ( command.startsWith( "before: " )) {
 							String cmd = command.replace( "before: ", "" );
 							
-							PrisonAPI.dispatchCommand(cmd);
+     						PrisonCommandTask cmdTask = new PrisonCommandTask( "MineReset: Before:" );
+     						cmdTask.submitCommandTask( cmd );
+
+							//PrisonAPI.dispatchCommand(cmd);
 						}
 					}
 				}
@@ -272,7 +275,10 @@ public abstract class MineReset
 						if ( command.startsWith( "after: " )) {
 							String cmd = command.replace( "after: ", "" );
 							
-							PrisonAPI.dispatchCommand(cmd);
+     						PrisonCommandTask cmdTask = new PrisonCommandTask( "MineReset: After:" );
+     						cmdTask.submitCommandTask( cmd );
+
+							//PrisonAPI.dispatchCommand(cmd);
 						}
 					}
 				}
@@ -625,7 +631,10 @@ public abstract class MineReset
          					if ( command.startsWith( "before: " )) {
          						String cmd = command.replace( "before: ", "" );
          						
-         						PrisonAPI.dispatchCommand(cmd);
+         						PrisonCommandTask cmdTask = new PrisonCommandTask( "MineReset: Before:" );
+         						cmdTask.submitCommandTask( cmd );
+         							
+         						// PrisonAPI.dispatchCommand(cmd);
          					}
          				}
          			}
@@ -662,7 +671,10 @@ public abstract class MineReset
         					if ( command.startsWith( "after: " )) {
         						String cmd = command.replace( "after: ", "" );
         						
-        						PrisonAPI.dispatchCommand(cmd);
+         						PrisonCommandTask cmdTask = new PrisonCommandTask( "MineReset: After:" );
+         						cmdTask.submitCommandTask( cmd );
+
+        						// PrisonAPI.dispatchCommand(cmd);
         					}
         				}
         			}

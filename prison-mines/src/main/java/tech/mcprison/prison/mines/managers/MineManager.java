@@ -35,7 +35,6 @@ import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MineScheduler.MineResetActions;
 import tech.mcprison.prison.mines.data.MineScheduler.MineResetType;
-import tech.mcprison.prison.mines.data.PrisonDispatchCommandTask;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.ManagerPlaceholders;
@@ -49,6 +48,7 @@ import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
+import tech.mcprison.prison.tasks.PrisonDispatchCommandTask;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 
 /**
