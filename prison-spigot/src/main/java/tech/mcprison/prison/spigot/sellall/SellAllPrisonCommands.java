@@ -361,6 +361,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
+        sellAllConfigUpdater();
+
         boolean sellPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Permission_Enabled"));
         if (sellPermissionEnabled){
             String permission = sellAllConfig.getString("Options.Sell_Permission");
@@ -1368,7 +1370,9 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
      * Get sellAllConfig updated.
      * */
     private void sellAllConfigUpdater(){
-        sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
+
+        // Get updated config.
+        sellAllConfig = YamlConfiguration.loadConfiguration(new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml"));
     }
 
     /**
