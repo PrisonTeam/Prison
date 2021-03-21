@@ -17,7 +17,10 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.10 2021-03-20
+# v3.2.5-alpha.11 2021-03-20
+
+
+* **v3.2.5-alpha.11 2021-03-20**
 
 
 * **Had to externalize TokenEnchant's event listener for the TEBlockExplodeEvent**
