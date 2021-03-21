@@ -37,6 +37,7 @@ import tech.mcprison.prison.spigot.block.OnBlockBreakEventCore;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Text;
@@ -581,7 +582,6 @@ public class AutoManagerFeatures
 		if ( extra != null && extra.size() > 0 ) {
 
 			
-			// WARNING: The following will result in everything within the extra variable being lost:
 			Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
 
 			if ( isBoolean( sellAllConfig, "Options.Full_Inv_AutoSell") ) {
@@ -595,35 +595,47 @@ public class AutoManagerFeatures
 								Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(
 										SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
 							}
-							String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
-							Bukkit.dispatchCommand(player, registeredCmd);
-							return;
+							
+							SellAllPrisonCommands.get().sellAllSellCommand( new SpigotPlayer( player ) );
+							
+//							String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
+//							Bukkit.dispatchCommand(player, registeredCmd);
+//							return;
 					}
 				} else {
 					if (isBoolean( sellAllConfig, "Options.Full_Inv_AutoSell_Notification") ) {
 						Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(
 								SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
 					}
-					String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
-					Bukkit.dispatchCommand(player, registeredCmd);
-					return;
+					SellAllPrisonCommands.get().sellAllSellCommand( new SpigotPlayer( player ) );
+
+//					String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
+//					Bukkit.dispatchCommand(player, registeredCmd);
+//					return;
 				}
+				
+				// Now that something might have been sold, try to add all the extra inventory items back to the 
+				// player's inventory so it is not lost then pass the moreExtras along to be handled as the 
+				// configurations require.
+				HashMap<Integer, SpigotItemStack> moreExtras = new HashMap<>();
+				for ( SpigotItemStack itemStack : extra.values() ) {
+					moreExtras.putAll( SpigotUtil.addItemToPlayerInventory( player, itemStack ));
+				}
+				extra = moreExtras;
 			}
-
+			
 			for ( SpigotItemStack itemStack : extra.values() ) {
-
+				
 				if ( isBoolean( AutoFeatures.dropItemsIfInventoryIsFull ) ) {
-
-//					Location dropPoint = player.getLocation().add( player.getLocation().getDirection());
-//
-//					player.getWorld().dropItem( dropPoint, itemStack );
-
+					
 					SpigotUtil.dropPlayerItems( player, itemStack );
 					notifyPlayerThatInventoryIsFull( player );
-				} else {
+				} 
+				else {
 					notifyPlayerThatInventoryIsFullLosingItems( player );
 				}
 			}
+
 		}
 	}
 	

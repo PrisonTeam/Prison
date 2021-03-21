@@ -350,7 +350,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     }
     
     @Command(identifier = "sellall sell", description = "SellAll sell command", onlyPlayers = true)
-    private void sellAllSellCommand(CommandSender sender){
+	public void sellAllSellCommand(CommandSender sender){
 
         if (!isEnabled()) return;
 

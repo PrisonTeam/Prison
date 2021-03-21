@@ -17,7 +17,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.11 2021-03-20
+# v3.2.5-alpha.11 2021-03-21
+
+
+* **In the auto manager, fixed the loss of "extra" inventory that was triggering a sellall event.**  The extras were being lost even with the sellall.
+Had to change the code to directly access the sellall sell function so as to allow the player's inventory to be updated directly to make room in the player's inventory.  If there is stil extras, then the extras will be handled as setup in the configurations.
 
 
 * **Refactored how prison runs the command tasks from rankup commands, mine reset commands, and block event commands.**  
