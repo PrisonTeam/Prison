@@ -222,7 +222,8 @@ public class OnBlockBreakEventCore
     			// The player does not have permission to access this mine, so do not process 
     			// 
     			
-    			debugInfo += "ACCESS_DENIED ";
+    			e.setCancelled( true );
+    			debugInfo += "ACCESS_DENIED (event canceled) ";
     		}
     		else if ( blockEventsOnly ) {
     			
@@ -341,7 +342,8 @@ public class OnBlockBreakEventCore
     			// The player does not have permission to access this mine, so do not process 
     			// 
     			
-    			debugInfo += "ACCESS_DENIED ";
+    			e.setCancelled( true );
+    			debugInfo += "ACCESS_DENIED (event canceled) ";
     		}
     		else if ( blockEventsOnly ) {
     			
@@ -575,7 +577,8 @@ public class OnBlockBreakEventCore
     			// The player does not have permission to access this mine, so do not process 
     			// 
 
-    			debugInfo += "ACCESS_DENIED ";
+				e.setCancelled( true );
+    			debugInfo += "ACCESS_DENIED (event canceled) ";
     		}
     		else if ( blockEventsOnly ) {
     			
