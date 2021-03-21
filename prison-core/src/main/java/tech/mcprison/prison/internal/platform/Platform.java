@@ -309,7 +309,8 @@ public interface Platform {
 	public boolean unlinkModuleElements( ModuleElement elementA, ModuleElement elementB );
 
 
-	public ModuleElement createModuleElement( CommandSender sender, ModuleElementType elementType, String name, String tag );
+	public ModuleElement createModuleElement( CommandSender sender, ModuleElementType elementType, String name, 
+						String tag, String accessPermission );
 
 	
 	public int getModuleElementCount( ModuleElementType elementType );

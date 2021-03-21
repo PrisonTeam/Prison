@@ -1455,6 +1455,14 @@ public class MinesCommands
         	}
         	
         	
+        	{
+        		RowComponent row = new RowComponent();
+        		row.addTextComponent( "&3Mine Access Permission: %s", 
+        				( m.getAccessPermission() == null ? "&2none" : m.getAccessPermission() ) );
+        		chatDisplay.addComponent( row );
+        	}
+        	
+        	
         	String noTagMessag = String.format( "&7(not set) &3Will default to mine name if used." );
         	chatDisplay.addText("&3Tag: &7%s", m.getTag() == null ? noTagMessag : m.getTag());
         	
@@ -2716,6 +2724,48 @@ public class MinesCommands
             else {
             	
             	sender.sendMessage( "&7Notification Permission filter was not changed. Canceling." );
+            }
+            
+            
+        } 
+    }
+
+
+
+
+    @Command(identifier = "mines set accessPermission", permissions = "mines.set", 
+    		description = "Enable or disable a mine's access permission. If enabled, then players " +
+    					"must have this permission to be able to mine.  This may be able to " +
+    					"replace the need to setting up WorldGuard regions, since this may " +
+    					"serve the same purpose.  This option defaults to disabled. " +
+    					"This command can only use permissions. Permission groups will not work. ", 
+    		altPermissions = "mines.notification.[mineName]")
+    public void setMinePermissionCommand(CommandSender sender,
+        @Arg(name = "mineName", description = "The name of the mine to add a permission to.") String mineName,
+        @Arg(name = "permission", def="enable", description = "Permission.  Suggested: `mines.<mineName>`: [none]") 
+    					String permission
+        
+    		) {
+        
+        if (performCheckMineExists(sender, mineName)) {
+        	setLastMineReferenced(mineName);
+
+        	PrisonMines pMines = PrisonMines.getInstance();
+        	Mine m = pMines.getMine(mineName);
+            
+            
+        	if ( permission == null || permission.equalsIgnoreCase( "none" ) ) {
+            	m.setAccessPermission( null );
+            	pMines.getMineManager().saveMine( m );
+
+            }
+            else {
+            	m.setAccessPermission( permission );
+            	pMines.getMineManager().saveMine( m );
+            	
+            	sender.sendMessage( 
+            			String.format( "&7The Mine Access Permission has been enable for %s and " +
+            					"has a value of [%s].", m.getName(), permission ));
             }
             
             

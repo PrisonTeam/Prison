@@ -277,7 +277,8 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
-	public ModuleElement createModuleElement( CommandSender sender, ModuleElementType elementType, String name, String tag ) {
+	public ModuleElement createModuleElement( CommandSender sender, ModuleElementType elementType, String name, 
+					String tag, String accessPermission ) {
 		return null;
 	}
 	

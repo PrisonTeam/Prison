@@ -1045,7 +1045,7 @@ public class SpigotPlatform
 	 * 
 	 */
 	public ModuleElement createModuleElement( tech.mcprison.prison.internal.CommandSender sender, 
-					ModuleElementType elementType, String name, String tag ) {
+					ModuleElementType elementType, String name, String tag, String accessPermission ) {
 		ModuleElement results = null;
 		
 		if ( elementType == ModuleElementType.MINE ) {
@@ -1055,6 +1055,8 @@ public class SpigotPlatform
 				PrisonMines.getInstance().getMinesCommands().createCommand( sender, "virtual", name );
 				mine = mm.getMine( name );
 				mine.setTag( tag );
+				
+				mine.setAccessPermission( accessPermission );
 				
 				results = mine;
 			}

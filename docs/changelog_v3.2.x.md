@@ -20,6 +20,19 @@ that you need.
 # v3.2.5-alpha.10 2021-03-20
 
 
+* **Additional work on mine access permissions.**
+This enables the setting, removing, and viewing of the access permission from the mines.  
+Mine access permissions can only use permissions, and not group permissions. This feature is also enabled when using /ranks autoConfigure.  
+This feature works well when worldguard is used to define a mine's region, or without a mine's region, so it's up to the admin on how they want to configure their server.  The whole world should still be protected with the global passthrough deny.
+
+
+* **Fixed an NPE issue with loading mines when it encounters an invalid block name and is unable to perform the translation or identification.**
+
+
+* **Added information about how certain blocks cannot be broken natively within a world guard region in some situations.**
+Through the use of prison, they probably will break normally.  Examples are sea_lantern and various forms of prismarine.
+
+
 * **New Rank cost preview for some GUIs**
 Edited how the Rank price/cost's shown in some GUIs.
 

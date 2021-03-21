@@ -359,7 +359,7 @@ public class RanksCommands
 
 	        			// Creates a virtual mine:
 	        			ModuleElement mine = Prison.get().getPlatform().createModuleElement( 
-	        					sender, ModuleElementType.MINE, rankName, tag );
+	        					sender, ModuleElementType.MINE, rankName, tag, perm1 + rankName );
 	        			
 	        			if ( mine != null ) {
 	        				countMines++;
