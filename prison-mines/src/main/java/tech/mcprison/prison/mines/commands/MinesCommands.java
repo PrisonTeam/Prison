@@ -1457,7 +1457,7 @@ public class MinesCommands
         	
         	{
         		RowComponent row = new RowComponent();
-        		row.addTextComponent( "&3Mine Access Permission: %s", 
+        		row.addTextComponent( "&3Mine Access Permission: &7%s", 
         				( m.getAccessPermission() == null ? "&2none" : m.getAccessPermission() ) );
         		chatDisplay.addComponent( row );
         	}

@@ -173,8 +173,11 @@ public class SpigotPrison extends JavaPlugin {
         
         // Manually register Listeners with Bukkit:
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
-        Bukkit.getPluginManager().registerEvents(new AutoManager(), this);
-        Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventListener(), this);
+        
+        new OnBlockBreakEventListener().registerAllBlockBreakEvents( this );
+        
+//        Bukkit.getPluginManager().registerEvents(new AutoManager(), this);
+//        Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventListener(), this);
         Bukkit.getPluginManager().registerEvents(new SlimeBlockFunEventListener(), this);
         Bukkit.getPluginManager().registerEvents(new SpigotListener(), this);
 

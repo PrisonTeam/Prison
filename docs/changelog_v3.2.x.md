@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.10 2021-03-20
 
 
+* **Had to externalize TokenEnchant's event listener for the TEBlockExplodeEvent**
+so it won't cause any errors when TE is not installed.  It was preventing AutoFeatures from loading when it goes wrong.
+
+
 * **Additional work on mine access permissions.**
 This enables the setting, removing, and viewing of the access permission from the mines.  
 Mine access permissions can only use permissions, and not group permissions. This feature is also enabled when using /ranks autoConfigure.  

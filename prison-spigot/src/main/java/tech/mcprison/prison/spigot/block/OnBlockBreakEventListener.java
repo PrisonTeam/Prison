@@ -1,14 +1,16 @@
 package tech.mcprison.prison.spigot.block;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
-
 import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.autofeatures.AutoManager;
+import tech.mcprison.prison.spigot.autofeatures.AutoManagerTokenEnchant;
 import zedly.zenchantments.BlockShredEvent;
 
 /**
@@ -97,6 +99,29 @@ public class OnBlockBreakEventListener
 		
 	}
 	
+	
+	public void registerAllBlockBreakEvents(SpigotPrison spigotPrison ) {
+		
+		// AutoManager should be registered first:
+		Bukkit.getPluginManager().registerEvents(new AutoManager(), spigotPrison);
+		
+		Bukkit.getPluginManager().registerEvents( this, spigotPrison);
+		
+		try {
+            Class.forName("com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent");
+            
+            Bukkit.getPluginManager().registerEvents(new AutoManagerTokenEnchant(), spigotPrison);
+            Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventTokenEnchant(), spigotPrison);
+            
+        } 
+        catch (ClassNotFoundException e) {
+            // TokenEnchant is not available on this server which is not an error.  Just
+        	// ignore this situation and do not register the TE explosion events.
+        }
+		
+//	    Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventListener(), spigotPrison);
+		
+	}
 
 	
     /**
@@ -136,11 +161,11 @@ public class OnBlockBreakEventListener
     	genericBlockEventMonitor( e );
     }
     
-    @EventHandler(priority=EventPriority.MONITOR) 
-    public void onTEBlockExplodeMonitor(TEBlockExplodeEvent e) {
-    
-    	genericBlockExplodeEventMonitor( e );
-    }
+//    @EventHandler(priority=EventPriority.MONITOR) 
+//    public void onTEBlockExplodeMonitor(TEBlockExplodeEvent e) {
+//    
+//    	genericBlockExplodeEventMonitor( e );
+//    }
 
     @EventHandler(priority=EventPriority.MONITOR) 
 	public void onCrazyEnchantsBlockExplodeMonitor( BlastUseEvent e ) {
@@ -169,16 +194,16 @@ public class OnBlockBreakEventListener
     }
     
     
-    @EventHandler(priority=EventPriority.LOW) 
-    public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
-
-    	boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
-    	
-    	if ( isTEExplosiveEnabled ) {
-    		
-    		genericBlockExplodeEvent( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
-    	}
-    }
+//    @EventHandler(priority=EventPriority.LOW) 
+//    public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
+//
+//    	boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
+//    	
+//    	if ( isTEExplosiveEnabled ) {
+//    		
+//    		genericBlockExplodeEvent( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
+//    	}
+//    }
     
     
     @EventHandler(priority=EventPriority.LOW) 
