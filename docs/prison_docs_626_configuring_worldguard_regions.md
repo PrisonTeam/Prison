@@ -200,6 +200,9 @@ In this example I have included an owner of this mine which is group owner.  And
 Set the *priority* to a value of 10 to take higher precedence of other lower regions that may overlap.
 
 
+Please note that with some versions of WorldGuard, such as 1.8.8, there are some blocks that cannot be broken within regions with the use of the **flag block-break allow**.  The reasons of why this was setup this way is unknown to myself.  Examples of some blocks are **sea_lantern**, **prismarine**, **dark_prismarine**, and other variations of prismarine.  In order to break these blocks the **flag build allow** must be used, but then the players are able to place blocks within the mine, which is not usually acceptable.  It should also be noted that depending upon how your server is configured prison may also be able to break these  blocks within these regions, but if there are issues with these kinds of blocks, then realize the cause is how WorldGuard treats the blocks.
+
+
 The following region setting for access and deny may *appear* to be useful, but don't use them.  Explanations follow.  **Do not use the following:**
 
     ~~/region flag prison_mine_<mine-name> entry -g nonmembers deny~~
