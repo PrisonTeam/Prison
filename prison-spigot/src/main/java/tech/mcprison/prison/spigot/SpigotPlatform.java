@@ -206,6 +206,10 @@ public class SpigotPlatform
     @Override public Optional<Player> getPlayer(String name) {
     	
     	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(name);
+    	
+    	if ( name != null && playerBukkit != null && !playerBukkit.getName().equalsIgnoreCase( name ) ) {
+    		playerBukkit = null;
+    	}
 
     	return Optional.ofNullable( playerBukkit == null ? null : new SpigotPlayer(playerBukkit) );
     	

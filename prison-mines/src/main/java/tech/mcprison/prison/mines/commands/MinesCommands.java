@@ -3271,7 +3271,9 @@ public class MinesCommands
     	
     	Player playerAlt = getOnlinePlayer( playerName );
     	
-    	if ( sender.isOp() && playerAlt != null && playerAlt.isOnline() ) {
+    	boolean isOp = sender.isOp();
+
+    	if ( isOp && playerAlt != null && playerAlt.isOnline() ) {
     		player = playerAlt;
     	}
     	else if ( player == null || !player.isOnline()) {
@@ -3332,13 +3334,14 @@ public class MinesCommands
         
     	
     	String minePermission = "mines.tp." + m.getName().toLowerCase();
-    	if ( !sender.isOp() &&
+    	if ( !isOp &&
     			!sender.hasPermission("mines.tp") && 
     			!sender.hasPermission( minePermission ) ) {
-                Output.get()
-                    .sendError(sender, "Sorry. You're unable to teleport there." );
-                return;
-            }
+    		
+            Output.get()
+                .sendError(sender, "Sorry. You're unable to teleport there." );
+            return;
+        }
     	
 
     	
@@ -3347,7 +3350,11 @@ public class MinesCommands
 //        	return;
 //        }
         
-    	if ( sender instanceof Player ) {
+    	if ( isOp && playerAlt != null && playerAlt.isOnline() ) {
+    		
+    		m.teleportPlayerOut( playerAlt, target );
+    	}
+    	else if ( sender.isPlayer() ) {
     		m.teleportPlayerOut( (Player) sender, target );
     	} else {
     		sender.sendMessage(
@@ -3479,7 +3486,7 @@ public class MinesCommands
     
 	private Player getOnlinePlayer( String playerName ) {
 		Player player = null;
-		if ( playerName != null ) {
+		if ( playerName != null && !playerName.trim().isEmpty() ) {
 			Optional<Player> oPlayer = Prison.get().getPlatform().getPlayer( playerName );
 			player = oPlayer.isPresent() ? oPlayer.get() : null;
 		}

@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.11 2021-03-20
 
 
+* **Fixed the ability for either an operator or console to tp a player to any mine that is specified. **
+
+
 * **v3.2.5-alpha.11 2021-03-20**
 
 
