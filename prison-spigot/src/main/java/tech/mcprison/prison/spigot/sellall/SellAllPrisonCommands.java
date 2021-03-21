@@ -532,8 +532,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         boolean guiEnabled = getBoolean(sellAllConfig.getString("Options.GUI_Enabled"));
         if (guiEnabled){
             // Check if a permission's required, if it isn't it'll open immediately the GUI.
-            boolean guiPermissionEnabled = getBoolean(sellAllConfig.getString("Options.GUI_Permission_Enabled"));
-            if (guiPermissionEnabled){
+            if (getBoolean(sellAllConfig.getString("Options.GUI_Permission_Enabled"))){
                 // Check if the sender have the required permission.
                 String guiPermission = sellAllConfig.getString("Options.GUI_Permission");
                if (guiPermission != null && p.hasPermission(guiPermission)) {
@@ -1400,6 +1399,4 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         activePlayerDelay.remove(p.getName());
     }
-
-
 }
