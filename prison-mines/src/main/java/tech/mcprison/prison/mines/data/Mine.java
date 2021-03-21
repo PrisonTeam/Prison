@@ -385,7 +385,7 @@ public class Mine
 						
 						validateBlockNames.add( prisonBlock.getBlockName() );
 					}
-					else if (validateBlockNames.contains( prisonBlock.getBlockName() ) ) {
+					else if ( prisonBlock != null && validateBlockNames.contains( prisonBlock.getBlockName() ) ) {
 						// Detected and fixed a duplication so mark as dirty so fixed block list is saved:
 						dirty = true;
 						inconsistancy = true;
