@@ -225,6 +225,10 @@ These guides cover the core fundamentals of Prison.  They may reference other pl
 * [Guide: Prison Placeholders](prison_docs_310_guide_placeholders.md) How to use. Includes HolographicDisplays.
 
 
+
+* [Guide: Auto Manager - Setting Up and Enabling Other Plugins](prison_docs_311_guide_automanager.md) Enabling TokenEnchant and CrazyEnchant.
+
+
 **Work In Progress**
 
 
