@@ -750,8 +750,7 @@ public class BackpacksUtil {
 
         int backPackSize = backpackDefaultSize;
         if (backPackSize % 9 != 0){
-            // Stupid math here...
-            backPackSize = (backPackSize / 9) * 9;
+            backPackSize = (int) Math.ceil((float)backPackSize / 9) * 9;
         }
 
         try {
@@ -765,8 +764,7 @@ public class BackpacksUtil {
 
         int backPackSize = backpackDefaultSize;
         if (backPackSize % 9 != 0){
-            // Stupid math here...
-            backPackSize = (backPackSize / 9) * 9;
+            backPackSize = (int) Math.ceil((float)backPackSize / 9) * 9;
         }
 
         try {
