@@ -74,7 +74,6 @@ public interface Compatibility
 
     public Sound getEntityItemBreakSound();
 
-    public ItemStack getLapisItemStack();
 
     enum EquipmentSlot {
         HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD

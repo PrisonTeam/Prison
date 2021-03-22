@@ -352,4 +352,13 @@ public abstract class Spigot113Blocks
 			
 		}
 	}
+
+    @Override
+    public ItemStack getLapisItemStack() {
+    	return XMaterial.LAPIS_LAZULI.parseItem();
+//        if (XMaterial.LAPIS_LAZULI.parseItem() != null) {
+//            return new ItemStack(XMaterial.LAPIS_LAZULI.parseItem());
+//        }
+//        return null;
+    }
 }

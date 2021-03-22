@@ -1,9 +1,7 @@
 package tech.mcprison.prison.spigot.compat;
 
-import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -106,14 +104,6 @@ public class Spigot113
     @Override
     public Sound getEntityItemBreakSound() {
         return Sound.valueOf("ENTITY_ITEM_BREAK");
-    }
-
-    @Override
-    public ItemStack getLapisItemStack() {
-        if (XMaterial.LAPIS_LAZULI.parseItem() != null) {
-            return new ItemStack(XMaterial.LAPIS_LAZULI.parseItem());
-        }
-        return null;
     }
 
     @Override

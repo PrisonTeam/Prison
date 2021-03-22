@@ -20,6 +20,11 @@ that you need.
 # v3.2.5-alpha.13 2021-03-22
 
 
+* The use of a lapis function in Compatibility is not correct since XMaterial provides cross version way of getting it that actually works for 1.8 through 1.16.  
+These updates are just to maintain compatibility in the code, until they can be updated to use XMaterial's item stacks. 
+The interface was changed for where getLapisItemStack is declared.  It's moved to CompatibilityBlocks so that it's use in 1.8 will automatically apply to 1.9 without having to duplicate code.  As such, they have been moved around.
+For this function, in Spigot18Blocks, it is using the XMaterial's parseItem() which returns an items stack with the required magic values already set and applied for the version of the server that is running this code.  XMaterial will handle the version conversions.
+
 
 * **v3.2.5-alpha.13 2021-03-22**
 

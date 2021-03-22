@@ -46,4 +46,6 @@ public interface CompatibilityBlocks {
 	
 	public void setBlockFace( Block bBlock, BlockFace blockFace );
 	
+    public ItemStack getLapisItemStack();
+	
 }

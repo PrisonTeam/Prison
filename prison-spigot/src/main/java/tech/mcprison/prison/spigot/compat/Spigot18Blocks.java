@@ -569,4 +569,20 @@ public abstract class Spigot18Blocks
 		}
 		
 	}
+	
+    //@SuppressWarnings("deprecation")
+    @Override
+    public ItemStack getLapisItemStack() {
+    	
+    	return XMaterial.LAPIS_LAZULI.parseItem();
+    	
+    	// This has VERY high runtime overhead:  XMaterial.matchXMaterial("INK_SACK").get()
+    	// Should use the following instead: XMaterial.INK_SAC
+    	
+//	    if (XMaterial.matchXMaterial("INK_SACK").isPresent() && XMaterial.matchXMaterial("INK_SACK").get().parseMaterial() != null) {
+//            return new ItemStack(XMaterial.matchXMaterial("INK_SACK").get().parseMaterial(), 1, (short) 4);
+//        }
+//	    return null;
+    }
+    
 }
