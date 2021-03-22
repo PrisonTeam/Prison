@@ -56,8 +56,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     private static SellAllPrisonCommands instance;
     private String idBeingProcessedBackpack = null;
-//    private final Compatibility compat = SpigotPrison.getInstance().getCompatibility();
-//    private final ItemStack lapisLazuli = compat.getLapisItemStack();
+    private final Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+    private final ItemStack lapisLazuli = compat.getLapisItemStack();
     public static List<String> activePlayerDelay = new ArrayList<>();
     public boolean signUsed = false;
     public inventorySellMode mode = inventorySellMode.PlayerInventory;
@@ -115,7 +115,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         SpigotPlayer sPlayer = new SpigotPlayer(player);
 
         // Get money to give
-        double moneyToGive = getNewMoneyToGive( sPlayer.getWrapper(), removeItems);
+        double moneyToGive = getNewMoneyToGive(sPlayer.getWrapper(), removeItems);
         boolean multiplierEnabled = getBoolean(sellAllConfig.getString("Options.Multiplier_Enabled"));
         if (multiplierEnabled) {
             moneyToGive = moneyToGive * getMultiplier(sPlayer);;
@@ -1187,13 +1187,14 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             boolean perBlockPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"));
             String permission = sellAllConfig.getString("Options.Sell_Per_Block_Permission");
 
+
+
             // First map itemStack to XMaterial:
-            XMaterial invMaterial = null;
             try {
-                invMaterial = XMaterial.matchXMaterial(itemStack);
-                
-                if ( invMaterial != null && sellAllXMaterials.containsKey( invMaterial ) ) {
-                	Double itemValue = sellAllXMaterials.get( invMaterial );
+                XMaterial invMaterial = getXMaterialOrLapis(itemStack);
+
+                if (invMaterial != null && sellAllXMaterials.containsKey(invMaterial)) {
+                	Double itemValue = sellAllXMaterials.get(invMaterial);
                 	int amount = itemStack.getAmount();
                 	
                 	// Check if per-block permission's enabled and if player has permission.
@@ -1225,8 +1226,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 	}
                 }
             } 
-            catch (IllegalArgumentException ex) {
-            }
+            catch (IllegalArgumentException ignored) {}
             
             
             
@@ -1294,6 +1294,14 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 //            }
         }
         return moneyToGive;
+    }
+
+    @NotNull
+    private XMaterial getXMaterialOrLapis(ItemStack itemStack) {
+        if (itemStack.isSimilar(lapisLazuli)){
+            return XMaterial.LAPIS_LAZULI;
+        }
+        return XMaterial.matchXMaterial(itemStack);
     }
 
     /**

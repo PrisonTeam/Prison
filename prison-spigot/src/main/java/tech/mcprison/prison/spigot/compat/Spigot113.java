@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.compat;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -109,7 +110,10 @@ public class Spigot113
 
     @Override
     public ItemStack getLapisItemStack() {
-        return new ItemStack(Material.LAPIS_LAZULI);
+        if (XMaterial.LAPIS_LAZULI.parseItem() != null) {
+            return new ItemStack(XMaterial.LAPIS_LAZULI.parseItem());
+        }
+        return null;
     }
 
     @Override

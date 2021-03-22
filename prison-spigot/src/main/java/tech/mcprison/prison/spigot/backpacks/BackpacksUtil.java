@@ -38,6 +38,7 @@ public class BackpacksUtil {
     public static List<String> openBackpacks = new ArrayList<>();
     public static List<String> backpackEdited = new ArrayList<>();
     private final Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+    private int backpackDefaultSize = Integer.parseInt(backpacksConfig.getString("Options.BackPack_Default_Size"));
 
     /**
      * Check if Backpacks's enabled.
@@ -747,7 +748,11 @@ public class BackpacksUtil {
     private int getSize(Player p) {
         updateCachedBackpack();
 
-        int backPackSize = 9;
+        int backPackSize = backpackDefaultSize;
+        if (backPackSize % 9 != 0){
+            // Stupid math here...
+            backPackSize = (backPackSize / 9) * 9;
+        }
 
         try {
             backPackSize = Integer.parseInt(backpacksDataConfig.getString("Inventories." + p.getUniqueId().toString() + ".Items.Size"));
@@ -758,7 +763,11 @@ public class BackpacksUtil {
     private int getSize(Player p, String id) {
         updateCachedBackpack();
 
-        int backPackSize = 9;
+        int backPackSize = backpackDefaultSize;
+        if (backPackSize % 9 != 0){
+            // Stupid math here...
+            backPackSize = (backPackSize / 9) * 9;
+        }
 
         try {
             backPackSize = Integer.parseInt(backpacksDataConfig.getString("Inventories." + p.getUniqueId().toString() + ".Items-" + id + ".Size"));

@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison.spigot.compat;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -136,7 +137,10 @@ public class Spigot18
     @SuppressWarnings("deprecation")
     @Override
     public ItemStack getLapisItemStack() {
-        return new ItemStack(Material.valueOf("INK_SACK"), 1, (short) 4);
+	    if (XMaterial.matchXMaterial("INK_SACK").isPresent() && XMaterial.matchXMaterial("INK_SACK").get().parseMaterial() != null) {
+            return new ItemStack(XMaterial.matchXMaterial("INK_SACK").get().parseMaterial(), 1, (short) 4);
+        }
+	    return null;
     }
 
     @SuppressWarnings( "deprecation" )
