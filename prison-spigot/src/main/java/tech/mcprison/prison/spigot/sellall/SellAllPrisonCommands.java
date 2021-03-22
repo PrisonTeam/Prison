@@ -1131,24 +1131,44 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         HashMap<Double, XMaterial> sellAllXMaterials = new HashMap<>();
         for (String key : items) {
             // ItemID
-            XMaterial itemMaterial = null;
+//            XMaterial itemMaterial = null;
             String itemID = sellAllConfig.getString("Items." + key + ".ITEM_ID");
-            try {
-                itemMaterial = XMaterial.valueOf(itemID);
-            } catch (IllegalArgumentException ignored){}
 
-            // Get value
-            double value = 0;
-            try {
-                String valueString = sellAllConfig.getString("Items." + key + ".ITEM_VALUE");
-                if (valueString != null) {
-                    value = Double.parseDouble(valueString);
-                }
-            } catch (NumberFormatException ignored){}
-
-            if (itemMaterial != null) {
-                sellAllXMaterials.put(value, itemMaterial);
+            // NOTE: XMaterial is an exhaustive matching algorythem and will match on more than just the XMaterial enum name.
+            // WARNING: Do not use XMaterial.valueOf() since that only matches on enum name and appears to fail if the internal cache is empty?
+            Optional<XMaterial> iMatOptional = XMaterial.matchXMaterial( itemID );
+            XMaterial itemMaterial = iMatOptional.orElse( null );
+            
+            if ( itemMaterial != null ) {
+            	String valueString = sellAllConfig.getString("Items." + key + ".ITEM_VALUE");
+            	if (valueString != null) {
+            		try {
+            			// If we cannot get a valid value, then there is no point in adding the 
+            			// itemMaterial to the hash since it will be zero anyway:
+						double value = Double.parseDouble(valueString);
+						sellAllXMaterials.put(value, itemMaterial);
+					}
+					catch ( NumberFormatException ignored ) {
+					}
+            	}
+            	
             }
+//            try {
+//                itemMaterial = XMaterial.valueOf(itemID);
+//            } catch (IllegalArgumentException ignored){}
+
+//            // Get value
+//            double value = 0;
+//            try {
+//                String valueString = sellAllConfig.getString("Items." + key + ".ITEM_VALUE");
+//                if (valueString != null) {
+//                    value = Double.parseDouble(valueString);
+//                }
+//            } catch (NumberFormatException ignored){}
+//
+//            if (itemMaterial != null) {
+//                sellAllXMaterials.put(value, itemMaterial);
+//            }
         }
         return sellAllXMaterials;
     }
