@@ -99,14 +99,48 @@ public class AutoManagerFeatures
 
 
 	protected boolean hasSilkTouch (SpigotItemStack itemInHand){
-		return itemInHand.getBukkitStack().getEnchantments().containsKey(Enchantment.SILK_TOUCH);
+		boolean results = false;
+		try {
+			if ( itemInHand != null && itemInHand.getBukkitStack() != null && itemInHand.getBukkitStack().getEnchantments() != null ) {
+				results = itemInHand.getBukkitStack().getEnchantments().containsKey(Enchantment.SILK_TOUCH);
+			}
+		}
+		catch ( NullPointerException e ) {
+			// Ignore. This happens when a TokeEnchanted tool is used when TE is not installed anymore.
+			// It throws this exception:  Caused by: java.lang.NullPointerException: null key in entry: null=5
+		}
+		return results;
 	}
 
 	protected boolean hasFortune(SpigotItemStack itemInHand){
-		return itemInHand.getBukkitStack().getEnchantments().containsKey(Enchantment.LOOT_BONUS_BLOCKS);
+		boolean results = false;
+		try {
+			if ( itemInHand != null && itemInHand.getBukkitStack() != null && itemInHand.getBukkitStack().getEnchantments() != null ) {
+				results = itemInHand.getBukkitStack().getEnchantments().containsKey(Enchantment.LOOT_BONUS_BLOCKS);
+			}
+		}
+		catch ( NullPointerException e ) {
+			// Ignore. This happens when a TokeEnchanted tool is used when TE is not installed anymore.
+			// It throws this exception:  Caused by: java.lang.NullPointerException: null key in entry: null=5
+		}
+		return results;
 	}
 	protected short getFortune(SpigotItemStack itemInHand){
-		return (short) itemInHand.getBukkitStack().getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
+		short results = (short) 0;
+		
+		try {
+			if ( itemInHand != null && 
+					itemInHand.getBukkitStack() != null && 
+					itemInHand.getBukkitStack().containsEnchantment( Enchantment.LOOT_BONUS_BLOCKS ) &&
+					itemInHand.getBukkitStack().getEnchantments() != null ) {
+				results = (short) itemInHand.getBukkitStack().getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
+			}
+		}
+		catch ( NullPointerException e ) {
+			// Ignore. This happens when a TokeEnchanted tool is used when TE is not installed anymore.
+			// It throws this exception:  Caused by: java.lang.NullPointerException: null key in entry: null=5
+		}
+		return results;
 	}
 
 	

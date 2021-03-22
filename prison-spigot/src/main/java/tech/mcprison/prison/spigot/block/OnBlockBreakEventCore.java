@@ -908,7 +908,7 @@ public class OnBlockBreakEventCore
 			SpigotPlayer sPlayer = new SpigotPlayer( player );
 			
 			
-			int bonusXp = checkCrazyEnchant( player, spigotBlock.getWrapper(), itemInHand.getBukkitStack() );
+			int bonusXp = checkCrazyEnchant( player, spigotBlock.getWrapper(), ( itemInHand == null ? null : itemInHand.getBukkitStack()) );
 			
 			// Calculate XP on block break if enabled:
 			calculateAndGivePlayerXP( sPlayer, targetBlockName, count, bonusXp );
@@ -1048,7 +1048,7 @@ public class OnBlockBreakEventCore
 	protected int getDurabilityResistance(SpigotItemStack itemInHand, String itemLore) {
 		int results = 0;
 
-		if ( itemInHand.getBukkitStack().hasItemMeta() ) {
+		if ( itemInHand != null && itemInHand.getBukkitStack().hasItemMeta() ) {
 
 			List<String> lore = new ArrayList<>();
 
@@ -1131,40 +1131,43 @@ public class OnBlockBreakEventCore
 	 */
 	protected void calculateAndApplyDurability(Player player, SpigotItemStack itemInHand, int durabilityResistance) {
 
-		short damage = 1;  // Generally 1 unless instant break block then zero.
-
-		if ( durabilityResistance >= 100 ) {
-			damage = 0;
-		} else if ( durabilityResistance > 0 ) {
-			if ( getRandom().nextInt( 100 ) <= durabilityResistance ) {
+		if ( itemInHand != null ) {
+			short damage = 1;  // Generally 1 unless instant break block then zero.
+			
+			if ( durabilityResistance >= 100 ) {
 				damage = 0;
+			} else if ( durabilityResistance > 0 ) {
+				if ( getRandom().nextInt( 100 ) <= durabilityResistance ) {
+					damage = 0;
+				}
 			}
-		}
-
-		if (damage > 0 && itemInHand.getBukkitStack().containsEnchantment( Enchantment.DURABILITY)) {
-			int durabilityLevel = itemInHand.getBukkitStack().getEnchantmentLevel( Enchantment.DURABILITY );
-
-			// the chance of losing durability is 1 in (1+level)
-			// So if the random int == 0, then take damage, otherwise none.
-			if (getRandom().nextInt( 1 + durabilityLevel ) > 0) {
-				damage = 0;
+			
+			if ( damage > 0 && itemInHand.getBukkitStack().containsEnchantment( Enchantment.DURABILITY)) {
+				int durabilityLevel = itemInHand.getBukkitStack().getEnchantmentLevel( Enchantment.DURABILITY );
+				
+				// the chance of losing durability is 1 in (1+level)
+				// So if the random int == 0, then take damage, otherwise none.
+				if (getRandom().nextInt( 1 + durabilityLevel ) > 0) {
+					damage = 0;
+				}
 			}
-		}
-
-		if (damage > 0) {
-
-			Compatibility compat = SpigotPrison.getInstance().getCompatibility();
-			int maxDurability = compat.getDurabilityMax( itemInHand );
-			int durability = compat.getDurability( itemInHand );
-			int newDurability = durability + damage;
-
-			if (newDurability > maxDurability) {
-				// Item breaks! ;(
-				compat.breakItemInMainHand( player );
-			} else {
-				compat.setDurability( itemInHand, newDurability );
+			
+			if (damage > 0) {
+				
+				Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+				int maxDurability = compat.getDurabilityMax( itemInHand );
+				int durability = compat.getDurability( itemInHand );
+				int newDurability = durability + damage;
+				
+				if (newDurability > maxDurability) {
+					// Item breaks! ;(
+					compat.breakItemInMainHand( player );
+				} else {
+					compat.setDurability( itemInHand, newDurability );
+				}
+				player.updateInventory();
 			}
-			player.updateInventory();
+			
 		}
 	}
 
@@ -1181,7 +1184,7 @@ public class OnBlockBreakEventCore
 	protected void itemLoreCounter( SpigotItemStack itemInHand, String itemLore, int blocks) {
 
 		// A block was broke... so record that event on the tool:	
-		if ( isBoolean( AutoFeatures.loreTrackBlockBreakCount ) ) {
+		if ( itemInHand != null && isBoolean( AutoFeatures.loreTrackBlockBreakCount ) ) {
 			
 			if (itemInHand.getBukkitStack().hasItemMeta()) {
 				
@@ -1346,7 +1349,7 @@ public class OnBlockBreakEventCore
 	private int checkCrazyEnchant( Player player, Block block, ItemStack item ) {
 		int bonusXp = 0;
 		
-		if ( IntegrationCrazyEnchantmentsPickaxes.getInstance().isEnabled() ) {
+		if ( item != null && IntegrationCrazyEnchantmentsPickaxes.getInstance().isEnabled() ) {
 			
 			bonusXp = IntegrationCrazyEnchantmentsPickaxes.getInstance()
 						.getPickaxeEnchantmentExperienceBonus( player, block, item );
