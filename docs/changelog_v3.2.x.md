@@ -17,7 +17,16 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.11 2021-03-22
+# v3.2.5-alpha.13 2021-03-22
+
+
+
+* **v3.2.5-alpha.13 2021-03-22**
+
+
+* **Ran in to problems with a token enchanted tool causing internal null pointer exceptions when TokenEnchant was removed from the server.**
+Normally this would not be an issue since such a tool would not exist outside of a Token Enchant environment.
+These changes are to try to deal with the possible nulls in the item in hand just to be on the safe side, like as if someone broke a block like sand or dirt by hand.  If these NPEs happen, they now are just silently ignored.
 
 
 * **Fixes an issue with how HashMaps were being used.  The key and value were reversed in a HashMap.**
@@ -29,6 +38,10 @@ This should fix all of the issues since all materials can now be represented.
 * **This uses the correct function to convert a String name to an XMaterial.**
 It's using matchXMaterial instead of valueOf, which is what is needing to be used for support of materials from spigot 1.8 through 1.16.
 The code has been updated for this correction, although there is still a major bug in there.  I'll fix that next.
+
+
+* **v3.2.5-alpha.12 2021-03-21**
+
 
 
 * **In the auto manager, fixed the loss of "extra" inventory that was triggering a sellall event.**  The extras were being lost even with the sellall.
