@@ -3,7 +3,12 @@ package tech.mcprison.prison.spigot.sellall;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -13,11 +18,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import com.cryptomorin.xseries.XMaterial;
 
 import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
-import org.jetbrains.annotations.NotNull;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.commands.Arg;
@@ -51,8 +56,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     private static SellAllPrisonCommands instance;
     private String idBeingProcessedBackpack = null;
-    private final Compatibility compat = SpigotPrison.getInstance().getCompatibility();
-    private final ItemStack lapisLazuli = compat.getLapisItemStack();
+//    private final Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+//    private final ItemStack lapisLazuli = compat.getLapisItemStack();
     public static List<String> activePlayerDelay = new ArrayList<>();
     public boolean signUsed = false;
     public inventorySellMode mode = inventorySellMode.PlayerInventory;
@@ -1032,7 +1037,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
 
         // Get values and XMaterials from config.
-        HashMap<Double, XMaterial> sellAllXMaterials = getDoubleXMaterialHashMap(items);
+        HashMap<XMaterial, Double> sellAllXMaterials = getDoubleXMaterialHashMap(items);
 
         // Get the items from the player inventory and for each of them check the conditions.
         mode = inventorySellMode.PlayerInventory;
@@ -1059,7 +1064,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         return moneyToGive;
     }
 
-    private double sellAllGetMoneyToGivePrisonBackpacks(Player p, boolean removeItems, double moneyToGive, HashMap<Double, XMaterial> sellAllXMaterials) {
+    private double sellAllGetMoneyToGivePrisonBackpacks(Player p, boolean removeItems, double moneyToGive, HashMap<XMaterial, Double> sellAllXMaterials) {
 
         if (BackpacksUtil.get().isMultipleBackpacksEnabled()) {
             if (!BackpacksUtil.get().getBackpacksIDs(p).isEmpty()) {
@@ -1111,7 +1116,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         return moneyToGive;
     }
 
-    private double sellAllGetMoneyToGiveMinesBackpacksPlugin(Player p, boolean removeItems, double moneyToGive, HashMap<Double, XMaterial> sellAllXMaterials) {
+    private double sellAllGetMoneyToGiveMinesBackpacksPlugin(Player p, boolean removeItems, double moneyToGive, HashMap<XMaterial, Double> sellAllXMaterials) {
         // Set mode and get backpack
         mode = inventorySellMode.MinesBackPack;
         Backpack backPack = IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p);
@@ -1127,8 +1132,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     }
 
     @NotNull
-    private HashMap<Double, XMaterial> getDoubleXMaterialHashMap(Set<String> items) {
-        HashMap<Double, XMaterial> sellAllXMaterials = new HashMap<>();
+    private HashMap<XMaterial, Double> getDoubleXMaterialHashMap(Set<String> items) {
+        HashMap<XMaterial, Double> sellAllXMaterials = new HashMap<>();
         for (String key : items) {
             // ItemID
 //            XMaterial itemMaterial = null;
@@ -1146,7 +1151,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             			// If we cannot get a valid value, then there is no point in adding the 
             			// itemMaterial to the hash since it will be zero anyway:
 						double value = Double.parseDouble(valueString);
-						sellAllXMaterials.put(value, itemMaterial);
+						sellAllXMaterials.put(itemMaterial, value);
 					}
 					catch ( NumberFormatException ignored ) {
 					}
@@ -1173,7 +1178,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         return sellAllXMaterials;
     }
 
-    private double getNewMoneyToGiveManager(Player p, ItemStack itemStack, boolean removeItems, HashMap<Double, XMaterial> sellAllXMaterials) {
+    private double getNewMoneyToGiveManager(Player p, ItemStack itemStack, boolean removeItems, HashMap<XMaterial, Double> sellAllXMaterials) {
 
         double moneyToGive = 0;
 
@@ -1182,61 +1187,111 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             boolean perBlockPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"));
             String permission = sellAllConfig.getString("Options.Sell_Per_Block_Permission");
 
-            // Get the items strings from config and for each of them get the Material and value.
-            for (Map.Entry<Double, XMaterial> values : sellAllXMaterials.entrySet()) {
-
-                // Flag variable and XMaterials.
-                boolean bypassCondition = false;
-                boolean hasError = false;
-                XMaterial itemMaterial = values.getValue();
-                XMaterial invMaterial = null;
-                if (itemStack.isSimilar(lapisLazuli) && values.getValue().name().equalsIgnoreCase("LAPIS_LAZULI")){
-                    invMaterial = XMaterial.LAPIS_LAZULI;
-                    bypassCondition = true;
-                } else {
-                    try {
-                        invMaterial = XMaterial.matchXMaterial(itemStack);
-                    } catch (IllegalArgumentException ex) {
-                        hasError = true;
-                    }
+            // First map itemStack to XMaterial:
+            XMaterial invMaterial = null;
+            try {
+                invMaterial = XMaterial.matchXMaterial(itemStack);
+                
+                if ( invMaterial != null && sellAllXMaterials.containsKey( invMaterial ) ) {
+                	Double itemValue = sellAllXMaterials.get( invMaterial );
+                	int amount = itemStack.getAmount();
+                	
+                	// Check if per-block permission's enabled and if player has permission.
+                	if (perBlockPermissionEnabled) {
+                		permission = permission + invMaterial.name();
+                		
+                		// Check if player have this permission, if not return 0 money earned for this item and don't remove it.
+                		if (!p.hasPermission(permission)){
+                			return 0;
+                		}
+                	}
+                	
+                	if (removeItems) {
+                		if (mode == inventorySellMode.PlayerInventory) {
+                			p.getInventory().remove(itemStack);
+                		} else if (IntegrationMinepacksPlugin.getInstance().isEnabled() && mode == inventorySellMode.MinesBackPack){
+                			IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p).getInventory().remove(itemStack);
+                		} else if (mode == inventorySellMode.PrisonBackPackSingle){
+                			BackpacksUtil.get().removeItem(p, itemStack);
+                		} else if (mode == inventorySellMode.PrisonBackPackMultiples){
+                			if (idBeingProcessedBackpack != null){
+                				BackpacksUtil.get().removeItem(p, itemStack, idBeingProcessedBackpack);
+                			}
+                		}
+                	}
+                	
+                	if ( itemValue != null && amount > 0 ) {
+                		moneyToGive += itemValue.doubleValue() * amount;
+                	}
                 }
-
-                // Get amount and remove items if enabled
-                int amount = 0;
-                // Check if the item from the player inventory's on the config of items sellable
-                // So it gets the amount and then remove it from the inventory
-                if ((!hasError && itemMaterial == invMaterial) || bypassCondition) {
-
-                    // Check if per-block permission's enabled and if player has permission.
-                    if (perBlockPermissionEnabled){
-                        permission = permission + invMaterial.name();
-
-                        // Check if player have this permission, if not return 0 money earned for this item and don't remove it.
-                        if (!p.hasPermission(permission)){
-                            return 0;
-                        }
-                    }
-
-                    amount = itemStack.getAmount();
-                    if (removeItems) {
-                        if (mode == inventorySellMode.PlayerInventory) {
-                            p.getInventory().remove(itemStack);
-                        } else if (IntegrationMinepacksPlugin.getInstance().isEnabled() && mode == inventorySellMode.MinesBackPack){
-                            IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p).getInventory().remove(itemStack);
-                        } else if (mode == inventorySellMode.PrisonBackPackSingle){
-                            BackpacksUtil.get().removeItem(p, itemStack);
-                        } else if (mode == inventorySellMode.PrisonBackPackMultiples){
-                            if (idBeingProcessedBackpack != null){
-                                BackpacksUtil.get().removeItem(p, itemStack, idBeingProcessedBackpack);
-                            }
-                        }
-                    }
-                }
-                // Get the new amount of money to give
-                if (amount != 0) {
-                    moneyToGive += values.getKey() * amount;
-                }
+            } 
+            catch (IllegalArgumentException ex) {
             }
+            
+            
+            
+//            // Get the items strings from config and for each of them get the Material and value.
+//            Set<XMaterial> keys = sellAllXMaterials.keySet();
+//            for ( XMaterial key : keys ) {
+//            	Double itemValue = sellAllXMaterials.get( keys );
+//				
+////            for (Map.Entry<Double, XMaterial> values : sellAllXMaterials.entrySet()) { 
+//
+//                // Flag variable and XMaterials.
+//                boolean bypassCondition = false;
+////                boolean hasError = false;
+////                XMaterial itemMaterial = key;
+////                XMaterial itemMaterial = values.getValue();
+////                XMaterial invMaterial = null;
+//                
+//                // Probably no longer need this special processing for lapis since it was fixed:
+////                if (itemStack.isSimilar(lapisLazuli) && values.getValue().name().equalsIgnoreCase("LAPIS_LAZULI")){
+////                    invMaterial = XMaterial.LAPIS_LAZULI;
+////                    bypassCondition = true;
+////                } else {
+//                    try {
+//                        invMaterial = XMaterial.matchXMaterial(itemStack);
+//                    } catch (IllegalArgumentException ex) {
+//                        hasError = true;
+//                    }
+////                }
+//
+//                // Get amount and remove items if enabled
+//                int amount = 0;
+//                // Check if the item from the player inventory's on the config of items sellable
+//                // So it gets the amount and then remove it from the inventory
+//                if ((!hasError && itemMaterial == invMaterial) || bypassCondition) {
+//
+//                    // Check if per-block permission's enabled and if player has permission.
+//                    if (perBlockPermissionEnabled){
+//                        permission = permission + invMaterial.name();
+//
+//                        // Check if player have this permission, if not return 0 money earned for this item and don't remove it.
+//                        if (!p.hasPermission(permission)){
+//                            return 0;
+//                        }
+//                    }
+//
+//                    amount = itemStack.getAmount();
+//                    if (removeItems) {
+//                        if (mode == inventorySellMode.PlayerInventory) {
+//                            p.getInventory().remove(itemStack);
+//                        } else if (IntegrationMinepacksPlugin.getInstance().isEnabled() && mode == inventorySellMode.MinesBackPack){
+//                            IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p).getInventory().remove(itemStack);
+//                        } else if (mode == inventorySellMode.PrisonBackPackSingle){
+//                            BackpacksUtil.get().removeItem(p, itemStack);
+//                        } else if (mode == inventorySellMode.PrisonBackPackMultiples){
+//                            if (idBeingProcessedBackpack != null){
+//                                BackpacksUtil.get().removeItem(p, itemStack, idBeingProcessedBackpack);
+//                            }
+//                        }
+//                    }
+//                }
+//                // Get the new amount of money to give
+//                if (amount != 0) {
+//                    moneyToGive += values.getKey() * amount;
+//                }
+//            }
         }
         return moneyToGive;
     }

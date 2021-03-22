@@ -17,7 +17,18 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.11 2021-03-21
+# v3.2.5-alpha.11 2021-03-22
+
+
+* **Fixes an issue with how HashMaps were being used.  The key and value were reversed in a HashMap.**
+So now the XMaterial is the key and the item's value is now a Double as the value in the hash.  It also simplifies looking up matches to the player's inventory because now it can be done through a keyed access with the HashMap, which is what maps are designed for.  So overall, this should help improve the performance too.
+What it was doing, with the HashMap being reversed, was that if two or more materials had the same cost, then only the last material with that cost would be saved and all prior ones read from the config file would be purged/removed/deleted from memory (the HashMap).  This would appear to be fixed by removing a material and adding it back, but in adding it back it would only result in purging another material from the HashMap.  
+This should fix all of the issues since all materials can now be represented.
+
+
+* **This uses the correct function to convert a String name to an XMaterial.**
+It's using matchXMaterial instead of valueOf, which is what is needing to be used for support of materials from spigot 1.8 through 1.16.
+The code has been updated for this correction, although there is still a major bug in there.  I'll fix that next.
 
 
 * **In the auto manager, fixed the loss of "extra" inventory that was triggering a sellall event.**  The extras were being lost even with the sellall.
