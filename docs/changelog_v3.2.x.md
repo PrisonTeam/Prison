@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.13 2021-03-22
 
 
+* **For some reason one of the parameters being passed was null for the player parameter.**
+As such, it was resulting in "someone" in the broadcast messages. This should resolve that issue.  
+
+
 * The use of a lapis function in Compatibility is not correct since XMaterial provides cross version way of getting it that actually works for 1.8 through 1.16.  
 These updates are just to maintain compatibility in the code, until they can be updated to use XMaterial's item stacks. 
 The interface was changed for where getLapisItemStack is declared.  It's moved to CompatibilityBlocks so that it's use in 1.8 will automatically apply to 1.9 without having to duplicate code.  As such, they have been moved around.

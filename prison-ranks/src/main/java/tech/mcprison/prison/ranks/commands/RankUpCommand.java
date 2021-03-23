@@ -184,7 +184,7 @@ public class RankUpCommand
         	// Performs the actual rankup here:
         	RankupResults results = new RankUtil().rankupPlayer(player, rankPlayer, ladder, sender.getName());
         	
-        	processResults( sender, null, results, true, null, ladder, currency );
+        	processResults( sender, rankPlayer, results, true, null, ladder, currency );
 
         	// If the last rankup attempt was successful and they are trying to rankup as many times as possible: 
         	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS && 
@@ -325,7 +325,7 @@ public class RankUpCommand
         	RankupResults results = new RankUtil().promotePlayer(player, rankPlayer, ladder, 
         												player.getName(), sender.getName(), pForceCharge);
         	
-        	processResults( sender, player, results, true, null, ladder, currency );
+        	processResults( sender, rankPlayer, results, true, null, ladder, currency );
         }
     }
 
@@ -369,7 +369,7 @@ public class RankUpCommand
         	RankupResults results = new RankUtil().demotePlayer(player, rankPlayer, ladder, 
         												player.getName(), sender.getName(), pForceCharge);
         	
-        	processResults( sender, player, results, false, null, ladder, currency );
+        	processResults( sender, rankPlayer, results, false, null, ladder, currency );
         }
     }
 
