@@ -17,7 +17,15 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.13 2021-03-22
+# v3.2.5-alpha.13 2021-03-23
+
+
+* **Added a new feature of Custom Placeholders for prison's internal command handler.**
+This will allow different sources to supply custom placeholders that could expand the usability and flexibility of the commands that can be included. 
+
+
+* **An unexpected error occurred on trying to match an ItemStack to an XMaterial.**
+Put try caches around them.  Also created a way to dump an item stack to expanded text so that way the offending item stack can be fully logged.
 
 
 * **It was brought to our attention that an informational message dealing with ladder removals was being assigned a "ERROR" status message.**  Removed the error aspect of it.
