@@ -21,6 +21,8 @@ package tech.mcprison.prison.spigot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -384,28 +386,29 @@ public class SpigotUtil {
 	public static int itemStackRemoveAll( XMaterial xMat, Inventory inv ) {
 		int count = 0;
 		if ( xMat != null && inv != null ) {
-//			ItemStack testStack = xMat.parseItem();
 			
 			// This holds ItemStacks to be deleted. The key is the amount in the ItemStack.
 			List<ItemStack> deleteHolder = new ArrayList<>();
-//			HashMap<Integer,ItemStack> deleteHolder = new HashMap<>();
 			
 			for (ItemStack is : inv.getContents() ) {
 				if ( is != null ) {
-//					if ( is != null && is.isSimilar( testStack ) ) {
 					
-					XMaterial invXMat = XMaterial.matchXMaterial( is );
-					if ( xMat == invXMat ) {
+					try {
+						XMaterial invXMat = XMaterial.matchXMaterial( is );
+						if ( xMat == invXMat ) {
+							
+							count += is.getAmount();
+							deleteHolder.add( is );
+						}
+					}
+					catch ( Exception e ) {
 						
-						count += is.getAmount();
-						deleteHolder.add( is );
+						Output.get().logWarn( 
+								String.format( "SpigotUtil.itemStackRemoveAll: Failure trying to convert " +
+								"an ItemStack to an XMaterial. Trying to remove xMat: %s  ItemStack: %s", 
+								xMat.name(), mapToString( is.serialize() ) ) );
 					}
 					
-					
-//					Integer key = Integer.valueOf( is.getAmount() );
-//					if ( !deleteHolder.containsKey( key )) {
-//						deleteHolder.put( key, is );
-//					}
 				}
 			}
 			
@@ -418,6 +421,36 @@ public class SpigotUtil {
 		return count;
 	}
 
+	@SuppressWarnings( "unchecked" )
+	public static String mapToString( Map<String, Object> map ) {
+		StringBuilder sb = new StringBuilder();
+		
+		Set<String> keys = map.keySet();
+		for (String key : keys) {
+			if ( sb.length() > 0 ) {
+				sb.append( ", " );
+			}
+			sb.append( key ).append( "=" );
+			
+			Object obj = map.get( key );
+			if ( obj instanceof String ) {
+				
+				sb.append( (String) obj );
+			}
+			else if ( obj instanceof Map ) {
+				
+				sb.append( mapToString( (Map<String, Object>) obj ) );
+			}
+			else {
+				sb.append( obj );
+			}
+	    }
+		
+		sb.insert( 0, "{" );
+		sb.append( "}" );
+		
+		return sb.toString();
+	}
 	
 	/**
 	 * <p>This version of itemStackReplaceItems is focused on replacing items within 
@@ -472,13 +505,21 @@ public class SpigotUtil {
 			
 			for (SpigotItemStack is : stacks ) {
 				if ( is != null ) {
-//					if ( is != null && is.isSimilar( testStack ) ) {
 					
-					XMaterial invXMat = XMaterial.matchXMaterial( is.getBukkitStack() );
-					if ( xMat == invXMat ) {
+					try {
+						XMaterial invXMat = XMaterial.matchXMaterial( is.getBukkitStack() );
+						if ( xMat == invXMat ) {
+							
+							count += is.getAmount();
+							deleteHolder.add( is );
+						}
+					}
+					catch ( Exception e ) {
 						
-						count += is.getAmount();
-						deleteHolder.add( is );
+						Output.get().logWarn( 
+								String.format( "SpigotUtil.itemStackRemoveAll:: Failure trying to convert " +
+								"an ItemStack to an XMaterial. Trying to remove xMat: %s  ItemStack: %s", 
+								xMat.name(), mapToString( is.serialize() ) ) );
 					}
 					
 				}

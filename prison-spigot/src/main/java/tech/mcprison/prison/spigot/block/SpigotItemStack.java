@@ -1,12 +1,15 @@
 package tech.mcprison.prison.spigot.block;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.util.BlockType;
@@ -135,5 +138,20 @@ public class SpigotItemStack
 
 	public void setBukkitStack( org.bukkit.inventory.ItemStack bukkitStack ) {
 		this.bukkitStack = bukkitStack;
+	}
+
+	public Map<String, Object> serialize()
+	{
+		Map<String, Object> results = new HashMap<>();
+		
+		if ( getBukkitStack() != null ) {
+			results = getBukkitStack().serialize();
+		}
+		
+		results.put( "prison_version", Prison.get().getPlatform().getPluginVersion() );
+		results.put( "isAir", isAir() );
+		results.put( "isBlock", isBlock() );
+		
+		return results;
 	}
 }
