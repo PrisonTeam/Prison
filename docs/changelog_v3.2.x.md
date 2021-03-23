@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.13 2021-03-22
 
 
+* **It was brought to our attention that an informational message dealing with ladder removals was being assigned a "ERROR" status message.**  Removed the error aspect of it.
+
+
 * **For some reason one of the parameters being passed was null for the player parameter.**
 As such, it was resulting in "someone" in the broadcast messages. This should resolve that issue.  
 

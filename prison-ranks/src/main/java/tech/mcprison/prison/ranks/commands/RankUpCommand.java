@@ -549,7 +549,7 @@ public class RankUpCommand
 				break;
 				
 			case RANKUP_LADDER_REMOVED:
-				Output.get().sendError(sender, "The ladder %s was removed.", ladder);
+				Output.get().send(sender, "The ladder %s was removed.", ladder);
 				break;
 				
 			case RANKUP_FAILURE_REMOVING_LADDER:
