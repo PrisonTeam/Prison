@@ -26,6 +26,7 @@ public class RankupResults {
 
     private double balanceInitial;
     private double balanceFinal;
+    private String currency;
     
     private int rankupCommandsAvailable = 0;
     private int rankupCommandsExecuted = 0;
@@ -47,6 +48,8 @@ public class RankupResults {
         
         this.ladderName = ladderName;
         this.rankName = rankName;
+        
+        this.currency = null;
         
         this.timestampStart = System.currentTimeMillis();
     }
@@ -154,6 +157,13 @@ public class RankupResults {
 	}
 	public void setBalanceFinal( double balanceFinal ) {
 		this.balanceFinal = balanceFinal;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+	public void setCurrency( String currency ){
+		this.currency = currency;
 	}
 
 	public int getRankupCommandsAvailable() {

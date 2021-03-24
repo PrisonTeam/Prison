@@ -30,17 +30,6 @@ public class PrisonDispatchCommandTask
 		this.customPlaceholders = new ArrayList<>();
 	}
 
-	/**
-	 * <p>Add a custom placeholder that will be applied to each task when its running.
-	 * </p>
-	 * 
-	 * @param placeholder The String placeholder that should include the { } escape 
-	 * 						characters.
-	 * @param value The value that is used to replace the placeholder.
-	 */
-	public void addCustomPlaceholder( String placeholder, String value ) {
-		
-	}
 	
 	@Override
 	public void run() {
@@ -50,8 +39,8 @@ public class PrisonDispatchCommandTask
 				
 				// Apply the custom placeholders:
 				for ( PrisonCommandTaskPlaceholderData cPlaceholder : getCustomPlaceholders() ) {
-					if ( task.contains( cPlaceholder.getPlaceholder() ) ) {
-						task = task.replace( cPlaceholder.getPlaceholder(), cPlaceholder.getValue() );
+					if ( cPlaceholder.contains( task ) ) {
+						task = cPlaceholder.replace( task );
 					}
 				}
 				

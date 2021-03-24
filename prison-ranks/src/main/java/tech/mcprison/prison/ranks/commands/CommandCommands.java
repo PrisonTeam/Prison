@@ -15,6 +15,7 @@ import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.tasks.PrisonCommandTask;
 
 /**
  * @author Faizaan A. Datoo
@@ -35,7 +36,9 @@ public class CommandCommands
 	}
 
     @Command(identifier = "ranks command add", 
-    		description = "Adds a command to a rank using {player} and {player_uid} as placeholders.", 
+    		description = "Adds a command to a rank using {player} {player_uid} {msg} {broadcast} as placeholders. " +
+    				" Plus many custom placeholders!  Enter `placeholders` instead of rankName for a list. " +
+    				"Use ; between multiple commands.", 
     		onlyPlayers = false, permissions = "ranks.command")
     public void commandAdd(CommandSender sender, 
     			@Arg(name = "rankName", description = "The Rank name that will recieve this command.") String rankName,
@@ -46,6 +49,14 @@ public class CommandCommands
             command = command.replaceFirst("/", "");
         }
 
+        if ( rankName != null && "placeholders".equalsIgnoreCase( rankName ) ) {
+        	String message = "&7Custom placeholders for rank commands are: &3" +
+        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
+							PrisonCommandTask.CommandEnvironment.rank_commands );
+        	Output.get().logInfo( message );
+        	return;
+        }
+        
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if ( rank == null ) {
             Output.get().sendError(sender, "The rank '%s' does not exist.", rankName);

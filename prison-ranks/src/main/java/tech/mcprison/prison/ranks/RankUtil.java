@@ -31,6 +31,7 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.events.RankUpEvent;
 import tech.mcprison.prison.tasks.PrisonCommandTask;
+import tech.mcprison.prison.tasks.PrisonCommandTask.CustomPlaceholders;
 
 /**
  * Utilities for changing the ranks of players.
@@ -373,6 +374,7 @@ public class RankUtil {
 
         
         
+        String currency = "";
         double nextRankCost = targetRank.getCost();
         double currentRankCost = (originalRank == null ? 0 : originalRank.getCost());
         
@@ -401,6 +403,7 @@ public class RankUtil {
         	
         	if ( targetRank.getCurrency() != null ) {
         		results.addTransaction( RankupTransactions.custom_currency );
+        		results.setCurrency( targetRank.getCurrency() );
         		
         		EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
         											.getEconomyForCurrency( targetRank.getCurrency() );
@@ -413,6 +416,7 @@ public class RankUtil {
         	
         	results.addTransaction( RankupTransactions.player_balance_initial );
         	results.setBalanceInitial( rankPlayer.getBalance( targetRank.getCurrency() ) );
+        	results.setCurrency( targetRank.getCurrency() );
         	
         	if ( pForceCharge == PromoteForceCharge.charge_player) {
         		if ( rankPlayer.getBalance(targetRank.getCurrency()) < nextRankCost ) {
@@ -459,7 +463,19 @@ public class RankUtil {
         		
 				PrisonCommandTask cmdTask = new PrisonCommandTask( command.name() );
 				
-				//cmdTask.add
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.balanceInitial, Double.toString( results.getBalanceInitial()) );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.balanceFinal, Double.toString( results.getBalanceFinal()) );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.currency, results.getCurrency() );
+				
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.rankupCost, Double.toString( results.getTargetRank().getCost() ) );
+				
+				
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.ladder, results.getLadderName() );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.rank, results.getOriginalRank().getName() );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.rankTag, results.getOriginalRank().getTag() );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.targetRank, results.getTargetRank().getName() );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.targetRankTag, results.getTargetRank().getTag() );
+				
 				
 				cmdTask.submitCommandTask( prisonPlayer, cmd );
 

@@ -12,6 +12,8 @@ public class PrisonCommandTask {
 	
 	private int taskId;
 
+	private List<PrisonCommandTaskPlaceholderData> customPlaceholders;
+	
 	public enum TaskMode {
 		inline, 
 		inlinePlayer(true), 
@@ -49,11 +51,68 @@ public class PrisonCommandTask {
 		}
 	}
 	
+	public enum CommandEnvironment {
+		rank_commands,
+		mine_commands,
+		blockevent_commands
+		;
+	}
+	
+	public enum CustomPlaceholders {
+		
+		balanceInitial(CommandEnvironment.rank_commands),
+		balanceFinal(CommandEnvironment.rank_commands),
+		currency(CommandEnvironment.rank_commands),
+		rankupCost(CommandEnvironment.rank_commands),
+
+		ladder(CommandEnvironment.rank_commands),
+		rank(CommandEnvironment.rank_commands),
+		rankTag(CommandEnvironment.rank_commands),
+		targetRank(CommandEnvironment.rank_commands),
+		targetRankTag(CommandEnvironment.rank_commands);
+		
+		private final CommandEnvironment environment;
+		private CustomPlaceholders( CommandEnvironment environment ) {
+			this.environment = environment;
+		}
+
+		public static String listPlaceholders( CommandEnvironment environment ) {
+			StringBuilder sb = new StringBuilder();
+			
+			for ( CustomPlaceholders cp : values() ) {
+				if ( sb.length() > 0 ) {
+					sb.append( " " );
+				}
+				sb.append( cp.getPlaceholder() );
+			}
+			
+			return sb.toString();
+		}
+		
+		/**
+		 * <p>This function returns the enum's name wrapped in a 
+		 * placeholder.
+		 * </p>
+		 * 
+		 * @return
+		 */
+		public String getPlaceholder() {
+			return "{" + name() + "}";
+		}
+		
+		public CommandEnvironment getEnvironment() {
+			return environment;
+		}
+	}
+	
+	
 	public PrisonCommandTask( String errorMessagePrefix ) {
 		super();
 		
 		this.errorMessagePrefix = errorMessagePrefix;
 		this.taskId = 0;
+		
+		this.customPlaceholders = new ArrayList<>();
 	}
 	
 	
@@ -126,6 +185,19 @@ public class PrisonCommandTask {
 		return formatted;
 	}
 
+	/**
+	 * <p>Add a custom placeholder that will be applied to each task when its running.
+	 * </p>
+	 * 
+	 * @param placeholder The String placeholder that should include the { } escape 
+	 * 						characters.
+	 * @param value The value that is used to replace the placeholder.
+	 */
+	public void addCustomPlaceholder( CustomPlaceholders placeholder, String value ) {
+		PrisonCommandTaskPlaceholderData cph = new PrisonCommandTaskPlaceholderData( placeholder, value);
+		getCustomPlaceholders().add( cph );
+	}
+	
 	public String getErrorMessagePrefix() {
 		return errorMessagePrefix;
 	}
@@ -140,4 +212,10 @@ public class PrisonCommandTask {
 		this.taskId = taskId;
 	}
 	
+	public List<PrisonCommandTaskPlaceholderData> getCustomPlaceholders() {
+		return customPlaceholders;
+	}
+	public void setCustomPlaceholders( List<PrisonCommandTaskPlaceholderData> customPlaceholders ) {
+		this.customPlaceholders = customPlaceholders;
+	}
 }

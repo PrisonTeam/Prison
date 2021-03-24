@@ -17,7 +17,18 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.13 2021-03-23
+# v3.2.5-alpha.13 2021-03-24
+
+
+* **Custom Command Task Placeholders!!**
+Expand what you can do with prison's command tasks!  Just expanded the number of command task placeholders for rankup commands! Your rankup commands will be able to support the following placeholders with the next alpha release.  Plus Rank Commands now supports multiple commands per task, just like the BlockEvents!
+
+  Common placeholders: **{player} {player_uid} {msg} {broadcast}**
+
+  Custom placeholders for Rank Commands: **{balanceInitial} {balanceFinal} {currency} {rankupCost} {ladder} {rank} {rankTag} {targetRank} {targetRankTag}**
+
+
+* **Hooked up the wrong player object within the rankup commands.**  Using the correct one now.  It works in my testing because my test environment has enabled certain features in the past, but most other users would not have those features enabled so it would not work correctly.
 
 
 * **Added a new feature of Custom Placeholders for prison's internal command handler.**
