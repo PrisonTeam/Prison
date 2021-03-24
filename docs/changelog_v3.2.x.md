@@ -19,6 +19,13 @@ that you need.
 
 # v3.2.5-alpha.13 2021-03-24
 
+* **Old Block Model: Had a situation where block was null.**
+This should never happen and was cause by the old block model not being able to properly map and old block type to an existing prison's BlockType. 
+This issue has been fixed so it defaults a null value to AIR.  The other issue was resolved too, but more are bound to exist that are not mapped because it is the old block model.
+
+
+* **Old block model: Added the older name for red_nether_bricks which was without the trailing "s" for v1.10, v1.11, and v1.12.**
+
 
 * **Custom Command Task Placeholders!!**
 Expand what you can do with prison's command tasks!  Just expanded the number of command task placeholders for rankup commands! Your rankup commands will be able to support the following placeholders with the next alpha release.  Plus Rank Commands now supports multiple commands per task, just like the BlockEvents!

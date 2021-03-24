@@ -50,7 +50,7 @@ public class BlockOld
      * Assigns the type and chance
      */
     public BlockOld(BlockType block, double chance, long blockCountTotal) {
-    	super(block.name(), chance, blockCountTotal);
+    	super((block == null ? BlockOld.AIR.getBlockName() : block.name()), chance, blockCountTotal);
     			
         this.type = block;
 //        this.chance = chance;
