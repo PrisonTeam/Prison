@@ -119,6 +119,7 @@ public class RankUpCommand
         	return;
         }
         
+        // Player will always be the player since they have to be online and must be a player:
         Player player = getPlayer( sender, null );
         
         if ( !sender.isPlayer() ) {
@@ -184,7 +185,7 @@ public class RankUpCommand
         	// Performs the actual rankup here:
         	RankupResults results = new RankUtil().rankupPlayer(player, rankPlayer, ladder, sender.getName());
         	
-        	processResults( sender, rankPlayer, results, true, null, ladder, currency );
+        	processResults( sender, player.getName(), results, true, null, ladder, currency );
 
         	// If the last rankup attempt was successful and they are trying to rankup as many times as possible: 
         	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS && 
@@ -325,7 +326,7 @@ public class RankUpCommand
         	RankupResults results = new RankUtil().promotePlayer(player, rankPlayer, ladder, 
         												player.getName(), sender.getName(), pForceCharge);
         	
-        	processResults( sender, rankPlayer, results, true, null, ladder, currency );
+        	processResults( sender, player.getName(), results, true, null, ladder, currency );
         }
     }
 
@@ -369,7 +370,7 @@ public class RankUpCommand
         	RankupResults results = new RankUtil().demotePlayer(player, rankPlayer, ladder, 
         												player.getName(), sender.getName(), pForceCharge);
         	
-        	processResults( sender, rankPlayer, results, false, null, ladder, currency );
+        	processResults( sender, player.getName(), results, false, null, ladder, currency );
         }
     }
 
@@ -422,7 +423,7 @@ public class RankUpCommand
         	RankupResults results = new RankUtil().setRank(player, rankPlayer, ladder, rank, 
         												player.getName(), sender.getName());
         	
-        	processResults( sender, player, results, true, rank, ladder, currency );
+        	processResults( sender, player.getName(), results, true, rank, ladder, currency );
         }
 	}
 
@@ -459,7 +460,7 @@ public class RankUpCommand
 	}
 
 
-	public void processResults( CommandSender sender, Player player, 
+	public void processResults( CommandSender sender, String playerName, 
 					RankupResults results, 
 					boolean rankup, String rank, String ladder, String currency ) {
 	
@@ -467,7 +468,7 @@ public class RankUpCommand
             case RANKUP_SUCCESS:
             	if ( rankup ) {
             		String message = String.format( "Congratulations! %s ranked up to rank '%s'. %s",
-            				(player == null ? "You have" : player.getName()),
+            				(playerName == null ? "You have" : playerName),
             				(results.getTargetRank() == null ? "" : results.getTargetRank().getName()), 
             				(results.getMessage() != null ? results.getMessage() : "") );
             		Output.get().sendInfo(sender, message);
@@ -476,13 +477,13 @@ public class RankUpCommand
             		if ( Prison.get().getPlatform().getConfigBooleanFalse( "broadcast-rankups" ) ) {
             			
             			String messageGlobal = String.format( "Congratulations! %s ranked up to rank '%s'.",
-            					(player == null ? "Someone" : player.getName()),
+            					(playerName == null ? "Someone" : playerName),
             					(results.getTargetRank() == null ? "" : results.getTargetRank().getName()) );
             			broadcastToWholeServer( sender, messageGlobal );
             		}
             	} else {
 	            	String message = String.format( "Unfortunately, %s has been demoted to rank '%s'. %s",
-            				(player == null ? "You have" : player.getName()),
+            				(playerName == null ? "You have" : playerName),
             				(results.getTargetRank() == null ? "" : results.getTargetRank().getName()), 
             				(results.getMessage() != null ? results.getMessage() : ""));
             		Output.get().sendInfo(sender, message);
@@ -491,7 +492,7 @@ public class RankUpCommand
             		if ( Prison.get().getPlatform().getConfigBooleanFalse( "broadcast-rankups" ) ) {
             			
             			String messageGlobal = String.format( "Unfortunately, %s has been demoted to rank '%s'.",
-            					(player == null ? "Someone" : player.getName()),
+            					(playerName == null ? "Someone" : playerName),
             					(results.getTargetRank() == null ? "" : results.getTargetRank().getName()) );
             			 broadcastToWholeServer( sender, messageGlobal );
             		}
@@ -506,11 +507,11 @@ public class RankUpCommand
                 break;
             case RANKUP_LOWEST:
             	Output.get().sendInfo(sender, "%s already at the lowest rank!",
-            				(player == null ? "You are" : player.getName()));
+            				(playerName == null ? "You are" : playerName));
             	break;
             case RANKUP_HIGHEST:
                 Output.get().sendInfo(sender, "%s already at the highest rank!",
-            				(player == null ? "You are" : player.getName()));
+            				(playerName == null ? "You are" : playerName));
                 break;
             case RANKUP_FAILURE:
                 Output.get().sendError(sender,

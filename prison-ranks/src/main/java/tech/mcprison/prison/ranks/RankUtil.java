@@ -458,7 +458,10 @@ public class RankUtil {
         	if ( cmd != null ) {
         		
 				PrisonCommandTask cmdTask = new PrisonCommandTask( command.name() );
-				cmdTask.submitCommandTask( rankPlayer, cmd );
+				
+				//cmdTask.add
+				
+				cmdTask.submitCommandTask( prisonPlayer, cmd );
 
         		
 //        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
