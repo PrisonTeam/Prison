@@ -1020,7 +1020,7 @@ public enum BlockType {
 	
 	
 	NETHER_BRICKS( "minecraft:nether_bricks", MaterialType.BLOCK, MaterialVersion.v1_8 ),
-	RED_NETHER_BRICKS( "minecraft:red_nether_bricks", MaterialType.BLOCK, MaterialVersion.v1_10 ),
+	RED_NETHER_BRICKS( "minecraft:red_nether_bricks", MaterialType.BLOCK, MaterialVersion.v1_10, "RED_NETHER_BRICK" ),
 	CRACKED_NETHER_BRICKS( "minecraft:cracked_nether_bricks", MaterialType.BLOCK, MaterialVersion.v1_16 ),
 	CHISELED_NETHER_BRICKS( "minecraft:chiseled_nether_bricks", MaterialType.BLOCK, MaterialVersion.v1_16 ),
 	
@@ -1086,6 +1086,14 @@ public enum BlockType {
     }
     
     
+    
+    BlockType(String id, MaterialType materialType, MaterialVersion materialVersion, String... altNames ) {
+    	this( id, materialType, materialVersion );
+    	
+     	for ( String altName : altNames ) {
+			this.altNames.add( altName );
+		}
+    }
     
     BlockType(String id, MaterialType materialType, MaterialVersion materialVersion ) {
     	this.legacyId = -1;
