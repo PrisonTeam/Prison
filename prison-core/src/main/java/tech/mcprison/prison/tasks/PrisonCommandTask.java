@@ -128,6 +128,11 @@ public class PrisonCommandTask {
 	public void submitCommandTask( Player player, String command, 
 			TaskMode taskMode ) {
 		
+		if ( command.contains( "{inline}" ) ) {
+			taskMode = TaskMode.inline;
+			command = command.replace( "{inline}", "" );
+		}
+		
 		String commandTranslated = translateCommand( player, command );
 		
 		// Split multiple commands in to a List of individual tasks:

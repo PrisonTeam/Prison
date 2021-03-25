@@ -19,6 +19,12 @@ that you need.
 
 # v3.2.5-alpha.13 2021-03-24
 
+
+
+* **New feature: If using a prison command task, it will now check to see if there is a placeholder of {inline} and if it finds one, then it will run the command inline instead of submitting it.**
+If a TaskMode is defined (such as within BlockEvents) then this will override the supplied TaskMode.  Just place the new placeholder {inline} anywhere within the task, but it's best to include it at the beginning.  If you have multiple commands in one task command, then you only need to include this placeholder once, since it will apply to them all.
+
+
 * **Old Block Model: Had a situation where block was null.**
 This should never happen and was cause by the old block model not being able to properly map and old block type to an existing prison's BlockType. 
 This issue has been fixed so it defaults a null value to AIR.  The other issue was resolved too, but more are bound to exist that are not mapped because it is the old block model.
