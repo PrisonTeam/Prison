@@ -403,10 +403,12 @@ public class SpigotUtil {
 					}
 					catch ( Exception e ) {
 						
-						Output.get().logWarn( 
-								String.format( "SpigotUtil.itemStackRemoveAll: Failure trying to convert " +
-								"an ItemStack to an XMaterial. Trying to remove xMat: %s  ItemStack: %s", 
-								xMat.name(), mapToString( is.serialize() ) ) );
+						// Ignore: This exception is normal since enchanting plugins assign custom data values which
+						//         which will cause a mis-mapping on pre v1.13 platforms.
+//						Output.get().logWarn( 
+//								String.format( "SpigotUtil.itemStackRemoveAll: Failure trying to convert " +
+//								"an ItemStack to an XMaterial. Trying to remove xMat: %s  ItemStack: %s", 
+//								xMat.name(), mapToString( is.serialize() ) ) );
 					}
 					
 				}
@@ -421,6 +423,17 @@ public class SpigotUtil {
 		return count;
 	}
 
+	/**
+	 * <p>This function is used to convert a map to a String. It has been created to provide a
+	 * String conversion for ItemStack.serialize() functions.  
+	 * What this produces may look similar to json but it isn't json.  Largest difference is that
+	 * no Strings in the output are quote and there isn't any code to properly handle numbers and
+	 * Booleans, or even arrays for that matter.  It's able to deal with ItemStacks, so be careful
+	 * with the use of any other Maps.
+	 * </p>
+	 * @param map
+	 * @return
+	 */
 	@SuppressWarnings( "unchecked" )
 	public static String mapToString( Map<String, Object> map ) {
 		StringBuilder sb = new StringBuilder();
@@ -515,11 +528,13 @@ public class SpigotUtil {
 						}
 					}
 					catch ( Exception e ) {
-						
-						Output.get().logWarn( 
-								String.format( "SpigotUtil.itemStackRemoveAll:: Failure trying to convert " +
-								"an ItemStack to an XMaterial. Trying to remove xMat: %s  ItemStack: %s", 
-								xMat.name(), mapToString( is.serialize() ) ) );
+				
+						// Ignore: This exception is normal since enchanting plugins assign custom data values which
+						//         which will cause a mis-mapping on pre v1.13 platforms.
+//						Output.get().logWarn( 
+//								String.format( "SpigotUtil.itemStackRemoveAll:: Failure trying to convert " +
+//								"an ItemStack to an XMaterial. Trying to remove xMat: %s  ItemStack: %s", 
+//								xMat.name(), mapToString( is.serialize() ) ) );
 					}
 					
 				}
