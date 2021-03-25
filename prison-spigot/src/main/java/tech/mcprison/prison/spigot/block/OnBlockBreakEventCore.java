@@ -694,19 +694,22 @@ public class OnBlockBreakEventCore
 	
 	public void doActionBlockEventOnly( SpigotBlock spigotBlock, Mine mine, Player player, 
 													BlockEventType blockEventType, String triggered ) {
-		if ( mine != null ) {
+		if ( mine != null && spigotBlock != null ) {
 			
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( spigotBlock );
 			
-			String targetBlockName =  mine == null ? 
-					spigotBlock.getPrisonBlock().getBlockName()
-						: targetBlock.getPrisonBlock().getBlockName();
-	
-			// Process mine block break events:
-			SpigotPlayer sPlayer = new SpigotPlayer( player );
-			
+			if ( targetBlock != null && targetBlock.getPrisonBlock() != null ) {
 				
-			mine.processBlockBreakEventCommands( targetBlockName, sPlayer, blockEventType, triggered );
+				String targetBlockName =  mine == null ? 
+						spigotBlock.getPrisonBlock().getBlockName()
+						: targetBlock.getPrisonBlock().getBlockName();
+						
+				// Process mine block break events:
+				SpigotPlayer sPlayer = new SpigotPlayer( player );
+				
+				
+				mine.processBlockBreakEventCommands( targetBlockName, sPlayer, blockEventType, triggered );
+			}
 		}
 	}
 	
