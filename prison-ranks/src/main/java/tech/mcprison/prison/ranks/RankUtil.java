@@ -374,7 +374,7 @@ public class RankUtil {
 
         
         
-        String currency = "";
+//        String currency = "";
         double nextRankCost = targetRank.getCost();
         double currentRankCost = (originalRank == null ? 0 : originalRank.getCost());
         
@@ -471,10 +471,14 @@ public class RankUtil {
 				
 				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.ladder, results.getLadderName() );
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.rank, results.getOriginalRank().getName() );
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.rankTag, results.getOriginalRank().getTag() );
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.targetRank, results.getTargetRank().getName() );
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.targetRankTag, results.getTargetRank().getTag() );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.rank,
+									(results.getOriginalRank() == null ? "none" : results.getOriginalRank().getName()) );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.rankTag, 
+									(results.getOriginalRank() == null ? "none" : results.getOriginalRank().getTag()) );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.targetRank, 
+									(results.getTargetRank() == null ? "none" : results.getTargetRank().getName()) );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.targetRankTag, 
+									(results.getTargetRank() == null ? "none" : results.getTargetRank().getTag()) );
 				
 				
 				cmdTask.submitCommandTask( prisonPlayer, cmd );

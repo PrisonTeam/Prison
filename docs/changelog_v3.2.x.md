@@ -17,7 +17,11 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.14 2021-03-24
+# v3.2.5-alpha.14 2021-03-25
+
+
+* **For the rank command custom placeholders set them up to default to "none" if the rank does not exist.**
+There exists the possibility that some ranks may not exist and result in a null for the selected ranks.
 
 
 * **v3.2.5-alpha.14 2021-03-24**
