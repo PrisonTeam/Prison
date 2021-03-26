@@ -17,7 +17,13 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.14 2021-03-25
+# v3.2.5-alpha.14 2021-03-26
+
+
+* **When saving mines, it is now saving a nulled field as an empty string, otherwise that field will be omitted from the save file when I always want it to be there, even when empty values exist.**
+
+
+* **Small tweaks to mine access perms to deal better with null values and to properly handle a situation if there is an empty string that gets set.**
 
 
 * **Fixed an issue with linking ranks to mines.**  Once unlinked it would not be able to be relinked.
