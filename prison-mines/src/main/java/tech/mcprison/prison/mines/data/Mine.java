@@ -186,7 +186,8 @@ public class Mine
         setTag( tag );
 
         
-        setAccessPermission( (String) document.get("accessPermission") );
+        String accessPerm =  (String) document.get("accessPermission");
+        setAccessPermission( (accessPerm == null || accessPerm.trim().isEmpty() ? null : accessPerm) );
         
         
         setVirtual( document.get("isVirtual") == null ? false : (boolean) document.get("isVirtual") );
@@ -521,7 +522,8 @@ public class Mine
         
         ret.put( "isVirtual", isVirtual() );
         
-        ret.put( "accessPermission", getAccessPermission() );
+        String accessPerm = getAccessPermission();
+        ret.put( "accessPermission", accessPerm == null || !accessPerm.trim().isEmpty() ? null : accessPerm );
 
         ret.put( "tag", getTag() );
         ret.put( "sortOrder", getSortOrder() );

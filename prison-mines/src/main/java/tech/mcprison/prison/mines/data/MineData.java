@@ -854,7 +854,7 @@ public abstract class MineData
     				player.hasPermission( getAccessPermission() ) : false;
     }
     public boolean isAccessPermissionEnabled() {
-    	return getAccessPermission() != null;
+    	return accessPermission != null && !accessPermission.trim().isEmpty();
     }
     public String getAccessPermission() {
 		return accessPermission;

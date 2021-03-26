@@ -2758,6 +2758,9 @@ public class MinesCommands
             	m.setAccessPermission( null );
             	pMines.getMineManager().saveMine( m );
 
+            	sender.sendMessage( 
+            			String.format( "&7The Mine Access Permission has been disabled for %s.", 
+            					m.getName() ));
             }
             else {
             	m.setAccessPermission( permission );
