@@ -250,6 +250,19 @@ public class BackpacksUtil {
     }
 
     /**
+     * Set Player Backpacks max dimensions.
+     * NOTE: Should be a multiple of 9.
+     * Max dimension for now's 54.
+     *
+     * @param p - OfflinePlayer
+     * @param size - Size
+     *
+     * */
+    public void setBackpackSize(OfflinePlayer p, int size){
+        backpackResize(p, size);
+    }
+
+    /**
      * Set Backpack size with ID.
      * NOTE: Must be a multiple of 9.
      * Max dimension's 54, minimum 9.
@@ -259,6 +272,19 @@ public class BackpacksUtil {
      * @param id - ID
      * */
     public void setBackpackSize(Player p, int size, String id){
+        backpackResize(p, size, id);
+    }
+
+    /**
+     * Set Backpack size with ID.
+     * NOTE: Must be a multiple of 9.
+     * Max dimension's 54, minimum 9.
+     *
+     * @param p - OfflinePlayer
+     * @param size - Size
+     * @param id - ID
+     * */
+    public void setBackpackSize(OfflinePlayer p, int size, String id){
         backpackResize(p, size, id);
     }
 
@@ -725,7 +751,47 @@ public class BackpacksUtil {
         updateCachedBackpack();
     }
 
+    private void backpackResize(OfflinePlayer p, int size) {
+        updateCachedBackpack();
+
+        // Must be multiple of 9.
+        if (size % 9 != 0 || size > 54){
+            return;
+        }
+
+        updateCachedBackpack();
+
+        backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items.Size", size);
+
+        try {
+            backpacksDataConfig.save(backpacksFile);
+        } catch (IOException ex){
+            ex.printStackTrace();
+        }
+        updateCachedBackpack();
+    }
+
     private void backpackResize(Player p, int size, String id) {
+        updateCachedBackpack();
+
+        // Must be multiple of 9.
+        if (size % 9 != 0 || size > 54){
+            return;
+        }
+
+        updateCachedBackpack();
+
+        backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items-" + id + ".Size", size);
+
+        try {
+            backpacksDataConfig.save(backpacksFile);
+        } catch (IOException ex){
+            ex.printStackTrace();
+        }
+        updateCachedBackpack();
+    }
+
+    private void backpackResize(OfflinePlayer p, int size, String id) {
         updateCachedBackpack();
 
         // Must be multiple of 9.

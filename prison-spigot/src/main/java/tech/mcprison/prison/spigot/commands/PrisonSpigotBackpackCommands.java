@@ -94,4 +94,55 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
             Output.get().sendWarn(sender, SpigotPrison.format(getMessages().getString("Message.BackPackDeleteOperationFail")));
         }
     }
+
+    /*@Command(identifier = "backpack set size", description = "Resize a player's backpack.", permissions = "prison.admin", onlyPlayers = false)
+    private void resizeBackpackCommand(CommandSender sender,
+                                       @Arg(name = "Backpack Owner", description = "The backpack owner name", def = "null") String name,
+                                       @Arg(name = "Backpack size", description = "Backpack size multiple of 9", def = "9") String size,
+                                       @Arg(name = "id", description = "The backpack ID optional", def = "null") String id){
+
+        if (name.equalsIgnoreCase("null")){
+            Output.get().sendWarn(sender, SpigotPrison.format(getMessages().getString("Message.BackPackNeedPlayer")));
+            return;
+        }
+
+        int sizeInt;
+        try{
+            sizeInt = Integer.parseInt(size);
+        } catch (NumberFormatException ex){
+            Output.get().sendWarn(sender, SpigotPrison.format(getMessages().getString("Message.BackPackResizeNotInt")));
+            return;
+        }
+
+        // Must be multiple of 9.
+        if (sizeInt % 9 != 0 || sizeInt > 54){
+            Output.get().sendWarn(sender, SpigotPrison.format(getMessages().getString("Message.BackPackResizeNotMultiple9")));
+            return;
+        }
+
+        boolean isOnlinePlayer = Bukkit.getPlayerExact(name) != null;
+        if (id.equalsIgnoreCase("null")) {
+            if (isOnlinePlayer) {
+
+                BackpacksUtil.get().setBackpackSize(Bukkit.getPlayerExact(name), sizeInt);
+
+            } else {
+
+                BackpacksUtil.get().setBackpackSize(BackpacksUtil.get().getBackpackOwnerOffline(name), sizeInt);
+
+            }
+        } else {
+            if (isOnlinePlayer){
+
+                BackpacksUtil.get().setBackpackSize(Bukkit.getPlayerExact(name), sizeInt, id);
+
+            } else {
+
+                BackpacksUtil.get().setBackpackSize(BackpacksUtil.get().getBackpackOwnerOffline(name, id), sizeInt, id);
+
+            }
+        }
+
+        Output.get().sendInfo(sender, SpigotPrison.format(getMessages().getString("Message.BackPackResizeDone")));
+    }*/
 }
