@@ -4,6 +4,7 @@ package tech.mcprison.prison.spigot.sellall;
 import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -18,16 +19,20 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -76,9 +81,11 @@ public class SellAllUtil {
 
     /**
      * Get the money to give to the Player depending on the multiplier.
+     * This can be a bit like the SellAll Sell command, but without sellall sounds and options.
      *
-     * @param player Player
-     * @param removeItems boolean
+     * @param player - Player
+     * @param removeItems - True to remove the items from the Player, False to get only the value of the Money + Multiplier
+     *                    - Without touching the Player's inventory.
      *
      * @return money
      * */
@@ -158,13 +165,140 @@ public class SellAllUtil {
     }
 
     /**
+     * Enable or disable perUserToggleable autoSell.
+     *
+     * @param enableBoolean - True to enable or False to disable
+     *
+     * @return error - True if error occurred.
+     * */
+    public boolean sellAllAutoSellPerUserToggleableEnable(boolean enableBoolean) {
+        return sellAllAutoSelPerUserToggleableTottle(enableBoolean);
+    }
+
+    /**
+     * SellAll Sell command essentially, but in a method.
+     *
+     * NOTE: It applies sellall options from the config, except the sellall permission one.
+     *
+     * @param p - Player affected by sellall.
+     * */
+    public void sellAllSellAction(Player p) {
+        sellAllSellPlayer(p);
+    }
+
+    /**
+     * Open SellAll GUI for Players or Admins depending on their status and/or permissions.
+     *
+     * @param p - Player that should open the GUI
+     *
+     * @return boolean - True if a GUI got open with success, false if Disabled or missing all permissions.
+     * */
+    public boolean sellAllGUI(Player p) {
+        // If the Admin GUI's enabled will enter do this, if it isn't it'll try to open the Player GUI.
+        boolean guiEnabled = getBoolean(sellAllConfig.getString("Options.GUI_Enabled"));
+        if (guiEnabled){
+            // Check if a permission's required, if it isn't it'll open immediately the GUI.
+            if (getBoolean(sellAllConfig.getString("Options.GUI_Permission_Enabled"))){
+                // Check if the sender have the required permission.
+                String guiPermission = sellAllConfig.getString("Options.GUI_Permission");
+                if (guiPermission != null && p.hasPermission(guiPermission)) {
+                    SellAllAdminGUI gui = new SellAllAdminGUI(p);
+                    gui.open();
+                    return true;
+                    // Try to open the Player GUI anyway.
+                } else if (sellAllPlayerGUI(p)) return true;
+                // Open the Admin GUI because a permission isn't required.
+            } else {
+                SellAllAdminGUI gui = new SellAllAdminGUI(p);
+                gui.open();
+                return true;
+            }
+        }
+
+        // If the admin GUI's disabled, it'll try to use the Player GUI anyway.
+        return sellAllPlayerGUI(p);
+    }
+
+    /**
      * Java getBoolean's broken so I made my own.
      * */
     public boolean getBoolean(String string){
         return string != null && string.equalsIgnoreCase("true");
     }
 
+    private void sellAllSellPlayer(Player p) {
+        boolean sellAllSignEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Enabled"));
+        boolean sellAllBySignOnlyEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_By_Sign_Only"));
+        String byPassPermission = sellAllConfig.getString("Options.SellAll_By_Sign_Bypass_Permission");
+        if (sellAllSignEnabled && sellAllBySignOnlyEnabled && (byPassPermission != null && !p.hasPermission(byPassPermission))){
+            if (!signUsed){
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllSignOnly")));
+                return;
+            }
+        }
 
+        if (signUsed) signUsed = false;
+
+        boolean sellSoundEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Sound_Enabled"));
+        Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+        if (!(sellAllConfig.getConfigurationSection("Items.") == null)) {
+
+            if (sellAllCommandDelay(p)) return;
+
+            // Get Spigot Player.
+            SpigotPlayer sPlayer = new SpigotPlayer(p);
+
+            // Get money to give + multiplier.
+            double moneyToGive = getMoneyWithMultiplier(p, true);
+
+            RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
+            String currency = sellAllConfig.getString("Options.SellAll_Currency");
+            if (currency != null && currency.equalsIgnoreCase("default")) currency = null;
+
+            rankPlayer.addBalance(currency, moneyToGive);
+
+            boolean sellNotifyEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Notify_Enabled"));
+            if (moneyToGive < 0.001) {
+                if (sellSoundEnabled){
+                    Sound sound;
+                    try {
+                        sound = Sound.valueOf(sellAllConfig.getString("Options.Sell_Sound_Fail_Name"));
+                    } catch (IllegalArgumentException ex){
+                        sound = compat.getAnvilSound();
+                    }
+                    p.playSound(p.getLocation(), sound, 3, 1);
+                }
+                if (sellNotifyEnabled) {
+                    Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllNothingToSell")));
+                }
+            } else {
+                if (sellSoundEnabled){
+                    Sound sound;
+                    try {
+                        sound = Sound.valueOf(sellAllConfig.getString("Options.Sell_Sound_Success_Name"));
+                    } catch (IllegalArgumentException ex){
+                        sound = compat.getLevelUpSound();
+                    }
+                    p.playSound(p.getLocation(), sound, 3, 1);
+                }
+                if (sellNotifyEnabled) {
+                    DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
+                    Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllYouGotMoney") + PlaceholdersUtil.formattedKmbtSISize(moneyToGive, formatDecimal, "")));
+                }
+            }
+        } else {
+            if (sellSoundEnabled){
+                Sound sound;
+                try {
+                    sound = Sound.valueOf(sellAllConfig.getString("Options.Sell_Sound_Fail_Name"));
+                } catch (IllegalArgumentException ex){
+                    sound = compat.getAnvilSound();
+                }
+                p.playSound(p.getLocation(), sound, 3, 1);
+            }
+            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllEmpty")));
+        }
+    }
 
     private SellAllUtil instanceUpdater() {
         if (isEnabled && instance == null){
@@ -172,6 +306,19 @@ public class SellAllUtil {
         }
 
         return instance;
+    }
+
+    private boolean sellAllAutoSelPerUserToggleableTottle(boolean enableBoolean) {
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("Options.Full_Inv_AutoSell_perUserToggleable", enableBoolean);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return true;
+        }
+        return false;
     }
 
     private boolean sellAllAutoSellToggle(boolean enableBoolean) {
