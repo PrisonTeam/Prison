@@ -2795,19 +2795,20 @@ public class MinesCommands
             	return;
             }
             
+            
             if ( m.getRank() != null ) {
             	// First unlink the preexisting mine and rank:
             	String removedRankName = m.getRank().getName();
             	
+            	// unlinkModuleElement will do the saving
             	Prison.get().getPlatform().unlinkModuleElements( m, m.getRank() );
-            	
         		
         		sender.sendMessage( String.format( "&3Rank &7%s &3has been removed from mine &7%s", 
         				removedRankName, m.getTag() ));
 
             }
             
-            if ( "none".equalsIgnoreCase( rankName ) ) {
+            if ( !"none".equalsIgnoreCase( rankName ) ) {
             	
             	boolean success = Prison.get().getPlatform().linkModuleElements( m, 
             			ModuleElementType.RANK, rankName );
@@ -2820,6 +2821,7 @@ public class MinesCommands
             				rankName, m.getTag() ));
             	}
             }
+            
         } 
     }
 

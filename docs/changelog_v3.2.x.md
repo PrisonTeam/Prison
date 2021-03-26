@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.14 2021-03-25
 
 
+* **Fixed an issue with linking ranks to mines.**  Once unlinked it would not be able to be relinked.
+
+
 * **For the rank command custom placeholders set them up to default to "none" if the rank does not exist.**
 There exists the possibility that some ranks may not exist and result in a null for the selected ranks.
 
