@@ -1,5 +1,5 @@
 [CENTER][B][COLOR=rgb(230, 145, 56)][SIZE=7][IMG]https://raw.githubusercontent.com/PrisonTeam/Prison/bleeding/PrisonSpigotMC/Images/Sectional_Header_Prison.png[/IMG] [/SIZE][/COLOR][/B]
-[FONT=Courier New][SIZE=1][COLOR=#bfbfbf]Prison SpigotMC page v1.1.[/COLOR][/SIZE][/FONT]
+[FONT=Courier New][SIZE=1][COLOR=#bfbfbf]Prison SpigotMC page v1.1.4[/COLOR][/SIZE][/FONT]
 [COLOR=rgb(230, 145, 56)][SIZE=7][URL='https://discord.com/invite/DCJ3j6r'][IMG]https://camo.githubusercontent.com/b12a95e20b7ca35f918c0ab5103fe56b6f44c067/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f636861742d6f6e253230646973636f72642d3732383964612e737667[/IMG][/URL] [/SIZE][/COLOR][URL='https://github.com/PrisonTeam/Prison/blob/bleeding/LICENSE.md'][IMG]https://camo.githubusercontent.com/5f2cb15e3e2b3bf7c08ec9a3b597e9e67f9dbca0/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6c6963656e73652d47504c2532304c6963656e736525323076332d626c75652e737667[/IMG] [/URL][URL='https://github.com/PrisonTeam/Prison/actions?query=workflow%3A%22Prison+Build%22'][IMG]https://github.com/PrisonTeam/Prison/workflows/Prison%20Build/badge.svg[/IMG][/URL]
 [COLOR=rgb(230, 145, 56)][SIZE=7]An all-around Open-Source Prison Plugin.[/SIZE][/COLOR]
 
@@ -274,7 +274,7 @@
 [*][COLOR=#808080][SIZE=4][B]Player-Mine [/B]Placeholders: These are a hybrid placeholder that reports the mine specific details for the mine that the player is within. As they go from one mine to another, the mine stats reports on their current mine.[/SIZE][/COLOR]
 [*][COLOR=#808080][SIZE=4][B]SellAll Multiplier [/B]Placeholders: These placeholders report on the player's total multiplier value, which includes permission-based multipliers.[/SIZE][/COLOR]
 [*][COLOR=#808080][SIZE=4]There are placeholders sub-commands located under [B]/prison placeholders[/B]. One of which is listing all of the placeholders: [B]/prison placeholders list[/B]. And even a search for placeholders with live values shown within the results.[/SIZE][/COLOR]
-[*][COLOR=#808080][SIZE=4]Prison's placeholders are available on [URL='https://github.com/PlaceholderAPI/PlaceholderAPI/wiki/Placeholders#prison'][B]PAPI's wiki[/B][/URL].  Recently added placeholders may not be included, use /prison placeholders list.[/SIZE][/COLOR]
+[*][COLOR=#808080][SIZE=4]Prison's placeholders are available on [URL='https://github.com/PlaceholderAPI/PlaceholderAPI/wiki/Placeholders#prison'][B]PAPI's wiki[/B][/URL].  Recently added placeholders may not be included, use /prison placeholders list instead.[/SIZE][/COLOR]
 [/LIST]
 
 [CENTER]
