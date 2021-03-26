@@ -228,13 +228,13 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             e.printStackTrace();
             return;
         }
+        sellAllConfigUpdater();
 
         if (enableBoolean){
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllDelayEnabled")));
         } else {
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllDelayDisabled")));
         }
-        sellAllConfigUpdater();
     }
 
     @Command(identifier = "sellall set delay", description = "Edit SellAll delay.", onlyPlayers = false, permissions = "prison.sellall.delay")
@@ -261,9 +261,9 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             e.printStackTrace();
             return;
         }
+        sellAllConfigUpdater();
 
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllDelayEditedWithSuccess") + " [" + delayValue + "s]"));
-        sellAllConfigUpdater();
     }
 
     @Command(identifier = "sellall autosell", description = "Enable SellAll AutoSell.", onlyPlayers = false, permissions = "prison.autosell.edit")
@@ -303,13 +303,13 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             e.printStackTrace();
             return;
         }
+        sellAllConfigUpdater();
 
         if (enableBoolean){
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllAutoSellEnabled")));
         } else {
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllAutoSellDisabled")));
         }
-        sellAllConfigUpdater();
     }
 
     @Command(identifier = "sellall autosell perUserToggleable", description = "Enable AutoSell perUserToggleable", onlyPlayers = false, permissions = "prison.autosell.edit")
@@ -1158,22 +1158,6 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             	}
             	
             }
-//            try {
-//                itemMaterial = XMaterial.valueOf(itemID);
-//            } catch (IllegalArgumentException ignored){}
-
-//            // Get value
-//            double value = 0;
-//            try {
-//                String valueString = sellAllConfig.getString("Items." + key + ".ITEM_VALUE");
-//                if (valueString != null) {
-//                    value = Double.parseDouble(valueString);
-//                }
-//            } catch (NumberFormatException ignored){}
-//
-//            if (itemMaterial != null) {
-//                sellAllXMaterials.put(value, itemMaterial);
-//            }
         }
         return sellAllXMaterials;
     }
@@ -1222,76 +1206,11 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
                 	}
                 	
                 	if ( itemValue != null && amount > 0 ) {
-                		moneyToGive += itemValue.doubleValue() * amount;
+                		moneyToGive += itemValue * amount;
                 	}
                 }
             } 
             catch (IllegalArgumentException ignored) {}
-            
-            
-            
-//            // Get the items strings from config and for each of them get the Material and value.
-//            Set<XMaterial> keys = sellAllXMaterials.keySet();
-//            for ( XMaterial key : keys ) {
-//            	Double itemValue = sellAllXMaterials.get( keys );
-//				
-////            for (Map.Entry<Double, XMaterial> values : sellAllXMaterials.entrySet()) { 
-//
-//                // Flag variable and XMaterials.
-//                boolean bypassCondition = false;
-////                boolean hasError = false;
-////                XMaterial itemMaterial = key;
-////                XMaterial itemMaterial = values.getValue();
-////                XMaterial invMaterial = null;
-//                
-//                // Probably no longer need this special processing for lapis since it was fixed:
-////                if (itemStack.isSimilar(lapisLazuli) && values.getValue().name().equalsIgnoreCase("LAPIS_LAZULI")){
-////                    invMaterial = XMaterial.LAPIS_LAZULI;
-////                    bypassCondition = true;
-////                } else {
-//                    try {
-//                        invMaterial = XMaterial.matchXMaterial(itemStack);
-//                    } catch (IllegalArgumentException ex) {
-//                        hasError = true;
-//                    }
-////                }
-//
-//                // Get amount and remove items if enabled
-//                int amount = 0;
-//                // Check if the item from the player inventory's on the config of items sellable
-//                // So it gets the amount and then remove it from the inventory
-//                if ((!hasError && itemMaterial == invMaterial) || bypassCondition) {
-//
-//                    // Check if per-block permission's enabled and if player has permission.
-//                    if (perBlockPermissionEnabled){
-//                        permission = permission + invMaterial.name();
-//
-//                        // Check if player have this permission, if not return 0 money earned for this item and don't remove it.
-//                        if (!p.hasPermission(permission)){
-//                            return 0;
-//                        }
-//                    }
-//
-//                    amount = itemStack.getAmount();
-//                    if (removeItems) {
-//                        if (mode == inventorySellMode.PlayerInventory) {
-//                            p.getInventory().remove(itemStack);
-//                        } else if (IntegrationMinepacksPlugin.getInstance().isEnabled() && mode == inventorySellMode.MinesBackPack){
-//                            IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p).getInventory().remove(itemStack);
-//                        } else if (mode == inventorySellMode.PrisonBackPackSingle){
-//                            BackpacksUtil.get().removeItem(p, itemStack);
-//                        } else if (mode == inventorySellMode.PrisonBackPackMultiples){
-//                            if (idBeingProcessedBackpack != null){
-//                                BackpacksUtil.get().removeItem(p, itemStack, idBeingProcessedBackpack);
-//                            }
-//                        }
-//                    }
-//                }
-//                // Get the new amount of money to give
-//                if (amount != 0) {
-//                    moneyToGive += values.getKey() * amount;
-//                }
-//            }
         }
         return moneyToGive;
     }
