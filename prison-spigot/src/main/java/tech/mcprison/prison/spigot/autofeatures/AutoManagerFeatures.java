@@ -377,11 +377,14 @@ public class AutoManagerFeatures
 //					dropExtra( player.getInventory().addItem(itemStack), player, block );
 				}
 
+				autosellPerBlockBreak( player );
+				
 //				autoPickupCleanup( player, itemInHand, count );
 			}
 		}
 		return count;
 	}
+
 
 	
 	public int calculateNormalDrop( SpigotItemStack itemInHand, SpigotBlock block ) {
@@ -455,6 +458,24 @@ public class AutoManagerFeatures
 		return count;
 	}
 
+	
+	
+	public void autosellPerBlockBreak( Player player ) {
+		// This won't try to sell on every item stack, but assuming that sellall will hit on very block 
+		// break, then the odds of inventory being overflowed on one explosion would be more rare than anything
+		if ( isBoolean( AutoFeatures.isAutoSellPerBlockBreakEnabled ) ) {
+			// Run sell all
+			if ( isBoolean( AutoFeatures.isAutoSellPerBlockBreakInlinedEnabled ) ) {
+				// run sellall inline with the block break event:
+				SellAllPrisonCommands.get().sellAllSellCommand( new SpigotPlayer( player ) );
+			}
+			else {
+				// Submit sellall to run in the future (0 ticks in the future):
+				String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
+				Bukkit.dispatchCommand(player, registeredCmd);
+			}
+		}
+	}
 	
 	public void playerSmelt( SpigotPlayer player ) {
 		

@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.14 2021-03-26
 
 
+* **Hooked up new auto feature settings to enable autosell on each block break.** It may not be ideal, and could cause some lag, but it would be better than trying to script it to run outside of prison.  
+
+
 * **Disabled the upcoming rank permissions since they are not hooked up.**
 They have disclaimers stating they are not enabled yet, but people are still trying to use them.  Also the idea of managing groups needs to be figured out, since it cannot be done through vault.
 

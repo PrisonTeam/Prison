@@ -58,6 +58,8 @@ public class AutoFeaturesFileConfig {
 				playSoundIfInventoryIsFull(general, true),
 				hologramIfInventoryIsFull(general, false),
 
+				isAutoSellPerBlockBreakEnabled(general, false),
+				isAutoSellPerBlockBreakInlinedEnabled(general, false),
 				
 			permissions(options),
 				permissionAutoPickup(permissions, "prison.automanager.pickup"),
