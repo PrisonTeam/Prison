@@ -76,8 +76,8 @@ public class RanksCommands
     	sender.dispatchCommand( "ranks ladder help" );
     }
     
-    @Command(identifier = "ranks perms", 
-    		onlyPlayers = false, permissions = "prison.commands")
+//    @Command(identifier = "ranks perms", 
+//    		onlyPlayers = false, permissions = "prison.commands")
     public void ranksPermsSubcommands(CommandSender sender) {
     	sender.dispatchCommand( "ranks perms help" );
     }
@@ -822,8 +822,8 @@ public class RanksCommands
     
     
 
-    @Command(identifier = "ranks perms list", description = "Lists rank permissions", 
-    							onlyPlayers = false, permissions = "ranks.set")
+//    @Command(identifier = "ranks perms list", description = "Lists rank permissions", 
+//    							onlyPlayers = false, permissions = "ranks.set")
     public void rankPermsList(CommandSender sender, 
     				@Arg(name = "rankName") String rankName
     			){
@@ -956,9 +956,9 @@ public class RanksCommands
     }
     
 
-    @Command(identifier = "ranks perms addPerm", 
-  		  		description = "Add a ladder permission. Valid placeholder: {rank}.", 
-  		  onlyPlayers = false, permissions = "ranks.set")
+//    @Command(identifier = "ranks perms addPerm", 
+//  		  		description = "Add a ladder permission. Valid placeholder: {rank}.", 
+//  		  onlyPlayers = false, permissions = "ranks.set")
     public void rankPermsAddPerm(CommandSender sender, 
   		  @Arg(name = "rankName", 
   						description = "Rank name to add the permission to.") String rankName,
@@ -999,9 +999,9 @@ public class RanksCommands
     }
     
     
-    @Command(identifier = "ranks perms addGroup", 
-    		description = "Add a ladder permission. Valid placeholder: {rank}.", 
-    		onlyPlayers = false, permissions = "ranks.set")
+//    @Command(identifier = "ranks perms addGroup", 
+//    		description = "Add a ladder permission. Valid placeholder: {rank}.", 
+//    		onlyPlayers = false, permissions = "ranks.set")
     public void rankPermsAddPermGroup(CommandSender sender, 
     		@Arg(name = "rankName", 
     					description = "Rank name to add the permission to.") String rankName,
@@ -1043,8 +1043,8 @@ public class RanksCommands
     
 
 
-    @Command(identifier = "ranks perms remove", description = "Remove rank permissions", 
-  		  onlyPlayers = false, permissions = "ranks.set")
+//    @Command(identifier = "ranks perms remove", description = "Remove rank permissions", 
+//  		  onlyPlayers = false, permissions = "ranks.set")
     public void rankPermsRemove(CommandSender sender, 
     		@Arg(name = "rankName", def = "default", 
   						description = "Rank name to list the permissions.") String rankName,

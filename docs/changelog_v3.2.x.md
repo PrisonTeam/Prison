@@ -20,6 +20,10 @@ that you need.
 # v3.2.5-alpha.14 2021-03-26
 
 
+* **Disabled the upcoming rank permissions since they are not hooked up.**
+They have disclaimers stating they are not enabled yet, but people are still trying to use them.  Also the idea of managing groups needs to be figured out, since it cannot be done through vault.
+
+
 * **When saving mines, it is now saving a nulled field as an empty string, otherwise that field will be omitted from the save file when I always want it to be there, even when empty values exist.**
 
 
