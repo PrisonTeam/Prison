@@ -738,6 +738,8 @@ public class OnBlockBreakEventCore
 						null, itemInHand );
 				
 				cancel = true;
+				
+				aMan.autosellPerBlockBreak( player );
 			}
 			
 		}
@@ -790,7 +792,9 @@ public class OnBlockBreakEventCore
 				aMan.processBlockBreakage( spigotBlock, mine, player, drop, 
 						blockEventType, triggered, itemInHand );
 				
+				aMan.autosellPerBlockBreak( player );
 			}
+			
 		}
 		
 		if ( mine != null ) {
