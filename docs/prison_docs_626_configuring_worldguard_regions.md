@@ -6,20 +6,44 @@
 
 This document explains how to setup WorldGuard to protect your mines and how to prevent players from accessing it when they don't have the correct permissions.  It also explains how to setup the permissions in the Prison's **/ranks command add <rankName** so they are ran automatically during a **/rankup** and **/ranks promote** event. This document also covers what needs to be configured to ensure that the rank commands will work properly with **/ranks demote**.
 
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
-# Please READ This
+**NOTE:** The first part of this document (about 60%) covers many of the topics in greater detail than what is probably needed.  
 
-This document is a work in progress.
-
-Sorry for the state of this document. We found a flaw in the original document in which the protections did not work as expected.  The original documents were using region templates to help reduce the amount of typing you would have to do per mine and rank.  But it turns out that once that region template was tied to a permission, then it opened up all mines to be mined by any player that has access to any mine.  In other words, if someone gained access to A they could mine in Z if they could get there.  Therefore I'm in the process of redesigning the permissions to work properly (which they now do).  
-
-But updating this document will take a little more time because I'm needing to rewrite everything a few times.
-
-In the mean time, I've indicated some content that no longer applies with an `x` as the first character on the line.
+**NOTE:** The second part of this document begins with "**WG LP Commands - Overview**" is a more streamlined process with less explanations.  
  
 
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:8px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+# Please READ This First
+
+As of Prison v3.2.5 (or v3.2.5-alpha.14 for pre-releases) there is a much easier way to setup mines to prevent access and to grant access to mines.  The new feature uses the command `/mines set accessPermission help`.
+
+Outline on what to do is as follows:
+
+* Setup a WorldGuard __global__ region as defined just below.  Must enable the flag `passthrough deny`.
+* For each mine, add a permission to access the mine with `/mines set accessPermission help`
+* For each rank's rankup command tasks, make sure the permission is given to the players as specified with the `set accessPermisson` command.
+
+
+**Note:** You do not need to set any WorldGuard regions for the mines.
+  
+**Note:** You can setup WorldGuard regions to keep out non-players.
+
+<hr style="height:8px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+# Please READ This Second
+
+This document is a work in progress.  This is a complex topic and depending upon how your environment is setup, the actual configurations may need to vary from what's covered in this document.
+
+
+The first attempt at this document tried to use region templates, where a template would define the flags set for each region.  That way each mine's specific region would have the template as a parent.  Unfortunately, within LuckPerms there is no such thing as a hierarchical permissions, but instead its granted access to all associations.  So this design failed because once you gave a player access to mine A, then they would have access to all mines.   So if you're thinking about setting up group templates, then you may want to reconsider and do a lot of testing if you use them.
+
+ 
+<hr style="height:8px; border:none; color:#aaf; background-color:#aaf;">
 
 
 # Dependencies 
@@ -29,13 +53,14 @@ In the mean time, I've indicated some content that no longer applies with an `x`
 * Install a Permissions Plugin that is compatible with Vault 
     * This guide uses LuckPerms.  See [Setting up LuckPerms](prison_docs_020_setting_up_luckperms.md) for more information.
 
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
 
 
 # Setting up WorldGuard and WorldEdit:
 
 Install both WorldGuard and WorldEdit as required for your version of the server and Minecraft. Follow the general directions in the link above.  If you require additional help, there should be plenty of good resources if you search for them.
+
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -63,11 +88,11 @@ Please note **from console**.
 **Please Note about other Plugins:** Although this example is using WorldGuard from the console, which requires the use of the **-w** flag, other plugins may also require the use of special considerations when being ran from the console.  If the in-game command does not work, then review that plugin's documentation to see if there is any special requirements to run from console.
 
 
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
 
 
-# Naming conventions to Consider
+# Naming Conventions to Consider
 
 
 Please note that whatever you choose to use for the region names or the permissions is up to you.  It may be easier to understand what is what, if it has some kind of context such as a region named **mine_<mine-name>** when compared with **mine_area_<mine-name>**.  Same with permissions.  If they begin with **prison.mines.<mine-name>** you will easily understand it role versus a **prison.tp.<mine-name>**, or a permission for notifications, or even enchantments.
@@ -87,6 +112,10 @@ From console:
 
     op <yourName>
     deop <yourName>
+    
+From in game:
+
+    /deop <yourName>
 
 
 Then **in game**, give yourself a WorldEdit wand:
@@ -104,20 +133,27 @@ Then **in game**, give yourself a WorldEdit wand:
 
 As op, protect the whole world with a passthrough flag set to deny. This will prevent building, PVP, and everything else.  Basically, any action that “passthrough” all over defined regions, will be denied.  The command with the **-w world** parameter has been added to the following list too.  Use that version from console, the other without **-w world** in game.  And where the name **world** is the actual name of your world.
 
+
+Note: the minimum you will need is the first line.  The other two shuts down mob spawning, which is optional.
+
+
 In game commands:
 
     /rg flag __global__ passthrough deny
+    
     /region flag __global__ mob-spawning deny
     /gamerule doMobSpawning false
 
-Console commands:
+
+Console commands.  Notice the addition of the world parameter:
    
     /rg flag -w <world> __global__ passthrough deny
+    
     /region flag -w <world> __global__ mob-spawning deny
     /gamerule doMobSpawning false
 
 
-Note that the **/gamerule doMobSpawning false** may also help prevent mobs from spawning, and may help reduce the overhead of WorldGuard from having to deny the spawning events.  Kind of double protection.
+Note that the **/gamerule doMobSpawning false** may also help prevent mobs from spawning.  It's like double protection.
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -125,17 +161,15 @@ Note that the **/gamerule doMobSpawning false** may also help prevent mobs from 
 
 # Various LuckPerm Commands for Templates and Mines
 
-The WorldGuard region templates are covered below, but first you need to setup the groups within LuckPerm or the permissions on the child groups will not be tied back to the parent groups within LuckPerms.
+The WorldGuard regions are covered below, but first you need to setup the groups within LuckPerm. Failure to create the groups prior to using them with the regions and prison rank commands may result in failures to work properly.
 
 
 For prison, we will use the prefix of `prison.mines` so we know what these groups and permissions are related to the mines.
 
 
-LuckPerms commands to create a group, and how to have a child group inherit permissions from a parent.  The first command should be used twice, first for the parent, then the child group.  The the next command shows how to assign a parent group to a child group.
+LuckPerms commands to create a group is as follows. 
 
 	/lp creategroup <group>
-	/lp group <group> parent add <parent-group>
-
 
 
 We **must** create a LuckPerms group for every mine.  Only mine `a` and `b` are shown here, but create one for each mine.
@@ -144,23 +178,33 @@ We **must** create a LuckPerms group for every mine.  Only mine `a` and `b` are 
 	/lp creategroup prison.mines.b
 	
 	
-
 To check to see if these groups are setup properly, you can inspect them with the following commands.
 
     /lp listgroups
     /lp group prison.mines.a info
 
 
-To grant permission to the players, you need to use the following since we need to add the player to the group.
+To grant permission to the players, you need to use the following commands since we need to add the player to the group. 
+
+Please be aware of the difference between **set** and **add**.  Most of the time you probably want to use **add** otherwise **set** will mess up your LuckPerms prefixes if you have them configured since you can only have one primary group set at a time (set being the key word that assigns a group to be the primary).
+
+Setting the primary Luckperms group:
 
     /lp user <user-name> parent set <group-name>
     /lp user <user-name> parent set prison.mines.a
+    
+Adding a LuckPerms group to a player:
+
+    /lp user <user-name> parent add <group-name>
+    /lp user <user-name> parent add prison.mines.a
     
 
 And to now hook this up to prison, you do same command, dropping the leading slash, but with adding a rank command prefix and use the {player} placeholder (more on this later)
 
 
     /ranks command add a lp user {player} parent set prison.mines.a
+    
+    /ranks command add a lp user {player} parent add prison.mines.a
 
     
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
@@ -170,10 +214,16 @@ And to now hook this up to prison, you do same command, dropping the leading sla
 
 # Unprotecting a Mine for its members - Required for all Mines
 
+
+**Important:** This is not needed if you are using **Mine Access Permissions**: `/mines set accessPermission help`.  See the section at the top of this document titled: "Please READ This First".
+
+
+
 **Purpose:** This will actually give members the ability to perform mining related tasks within the mine.  They need to be able to break the blocks within the mine, and to pickup items, XP, and allows item drops. 
 
 
-This defines a WorldGuard region, and needs to be applied to all mines.
+
+This defines a WorldGuard region, and needs to be applied to all mines, unless the Mine Access Permissions are used.
 
 
 Select the same area of the mine with the WorldEdit **wand**, then use the following commands to define a mine.  It will define a region with the mine’s name, and set the parent to mine_template, with the only member ever being the permission group **prison.mines.<mine-name>**.  Never add a player to a WorldGuard region since it will get messy.  Always use permission based groups and then add the player to that group.
@@ -193,6 +243,9 @@ In this example I have included an owner of this mine which is group owner.  And
     /region flag prison_mine_<mine-name> exp-drops allow
     /region flag prison_mine_<mine-name> item-drop allow
     
+    
+*Optional:*
+
     /region addowner prison_mine_<mine-name> g:owner
     /region addmember prison_mine_<mine-name> g:admin
     
@@ -226,6 +279,9 @@ It’s a bad idea to deny access to the mines through these regions. Such as wit
 # Protecting a Mine's Area - Required for all Mine Areas
 
 **Purpose:** To keep out all non-members from a mining area.  The mining area, as in this context, is the area that immediately surrounds a mine, and generally non-members should not have access to it.
+
+
+**Important:** You don't need to define mine-area regions if your mines are geographically isolated, such as islands in a void world.
   
 
 In general, it may be tempting to restrict access to the mine itself so non-members cannot mine it.  But there is a serious problem with just protecting the mine, and that’s when non-members walk on top of the mine.  They will fall in to the mine, as expected, but WorldGuard will try to keep them out, so they will be bumped back above the mine, thus triggering a “fly” event, or a “hover” event.  This action may trigger anti-hacking software to auto kick them, or auto ban the players, or the players could get stuck, and it may even cause a lot of lag on the server too.
@@ -254,7 +310,10 @@ Just like **prison_mine_<mine-name>** WorldGuard region, we need to add the **g:
     /region setpriority prison_mine_area_<mine-name> 10
     /region flag prison_mine_area_<mine-name> entry -g nonmembers deny
     /region flag prison_mine_area_<mine-name> entry-deny-message You must rank-up to access this mine.
+
     
+*Optional:*
+
     /region addowner prison_mine_area_<mine-name> g:owner
     /region addmember prison_mine_area_<mine-name> g:admin
     
@@ -292,7 +351,7 @@ The correct way to add a player to a mine region. Indirectly by giving them acce
 NOTE: With world guard we had to use the prefix of `g:` to indicate the permission was a group.  But with luckperms since we are using the `parent` option it implies its a group.  Therefore if `g:` is used in luckperms it would be an error.
 
 
-Template and examples as used in rank commands:
+Template and examples as used in rank commands using **parent set**, you may want to actually use **parent add** instead:
 
     /lp user <player-name> parent set <group-name> true
 
@@ -300,6 +359,16 @@ Template and examples as used in rank commands:
 
     /lp user {player} parent set prison.mines.a true
     /lp user {player} parent set prison.mines.b true
+
+
+Examples using **parent add** for the groups:
+
+    /lp user <player-name> parent add <group-name> true
+
+    /lp user <player-name> parent add prison.mines.<mine-name> true
+
+    /lp user {player} parent add prison.mines.a true
+    /lp user {player} parent add prison.mines.b true
 
 
 
@@ -328,7 +397,7 @@ This will result is potentially hundreds, or thousands, of members being added d
 
     
     
-And also, this is the wrong way to add a player to a LuckPerms **group**. This won't work correctly. These are the commands for permissions and not groups.
+The following is an example of adding and removing a permission to a player.  These are plain permissions and not a permission group. 
 
     /lp user <player-name> permission set prison.mines.<mine-name> true
     /lp user <player-name> permission unset prison.mines.<mine-name>
@@ -347,17 +416,17 @@ And also, this is the wrong way to add a player to a LuckPerms **group**. This w
 
 Based upon the above documentation, and from within game, we would use the following to *manually* give a player a permission:
 
-    /lp user <player-name> parent set prison.mines.<mine-name> true
+    /lp user <player-name> parent add prison.mines.<mine-name> true
 
 
 For example, if you have a player named *AHappyPrisoner* And you have a mine named "a" you would use the following command:
 
-    /lp user AHappyPrisoner parent set prison.mines.a true
+    /lp user AHappyPrisoner parent add prison.mines.a true
 
 
 To run the **a** rank commands when the player uses **/rankup**, the following is the command for **/ranks command add <rankName>**:
 
-	/ranks command add a lp user {player} parent set prison.mines.a true
+	/ranks command add a lp user {player} parent add prison.mines.a true
 
 
 Notice how the manually entered command is used with the **/ranks command add <rankName>**?  Just drop the leading slash and it should be good.
@@ -381,16 +450,20 @@ There are many ways to accomplish the same goals and that's what makes Minecraft
 One of the primary focuses for this document has been protecting the area around your mine to prevent players who should not access the mine, from enter that region.  One alternative to needing to protect a mine, would be to limit the access to the mine so it does not have to be protected.  One simple way of accomplishing that, is to have the mines in a void world, and then each mine would be a separate island.  Then all that would need to be protected, or controlled, would be the warping to that location.
 
 
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:8px; border:none; color:#aaf; background-color:#aaf;">
 
 
     
 
 
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:8px; border:none; color:#aaf; background-color:#aaf;">
 
 
 # WG LP Commands - Overview
+
+
+**WARNING:** These sections that are prefixed with "WG LP Commands" are a step-by-step repeat of everything said in this document above, but it's scaled down.
+
 
 These are entered in a step by step process, intended for you to follow.
 
@@ -405,7 +478,7 @@ Some code chunks will have **In Game:** which is intended to run from within min
 
 
 
-## WG LP Command - Global for whole world (duplicate instructions)
+## WG LP Commands - Global for whole world (duplicate instructions)
 
 Run once.
 
@@ -413,6 +486,7 @@ Run once.
 In game:
 
     /rg flag __global__ passthrough deny
+    
     /region flag __global__ mob-spawning deny
     /gamerule doMobSpawning false
     
@@ -420,6 +494,7 @@ In game:
 Console:
 
     /rg flag -w world __global__ passthrough deny
+    
     /region flag -w world __global__ mob-spawning deny
     /gamerule doMobSpawning false
 
@@ -429,7 +504,7 @@ Console:
 
 
 
-## WG LP Command - Setting up LuckPerm Groups
+## WG LP Commands - Setting up LuckPerm Groups
 
 Run once.  You must know what your mines and ranks will be.  Mines are just a simple letter like A through Z.  The ranks generally have the same name.
 
@@ -448,7 +523,7 @@ For each mine, there will be
 	
 	
 
-## LuckPerms Adding Permissions to the Groups
+## WG LP Commands - LuckPerms Adding Permissions to the Groups
 
 Run once for each mine/rank.
 
@@ -483,7 +558,10 @@ Then all other ranks would only need what is required of the new ranks.  Such as
 
     
     
-## Creating the Mine's WorldGuard Region
+## WG LP Commands - Creating the Mine's WorldGuard Region
+
+
+**Important:** This step is not needed if you are using **Mine Access Permissions**.
 
 
 You can either use the worldEdit wand to select what you want to set as a region, or you can use other WorldEdit features to set them.
@@ -507,10 +585,14 @@ Once you have a WorldEdit selection then you can create a WorldGuard region.
     /region flag prison_mine_a exp-drops -g members allow
     /region flag prison_mine_a item-drop -g members allow
     
+    /region addmember prison_mine_a g:prison.mines.a
+
+
+*Optional:*
+
     /region addowner prison_mine_a g:owner
     /region addmember prison_mine_a g:admin
     
-    /region addmember prison_mine_a g:prison.mines.a
 
 
 Repeat the same for mine b.
@@ -520,7 +602,11 @@ Repeat the same for mine b.
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
-## Creating the Mine Area WorldGuard Region
+## WG LP Commands - Creating the Mine Area WorldGuard Region
+
+
+**Important:** This step is not needed if you are using geographical locations such as islands within a void world.
+
 
 The mine area is an area that surrounds the mine to protect the area from players who should not have access.  This area should be at least 5 blocks larger in the X and Z axis than the mine, so as to prevent non-member players from being able to attempt mining.
 
@@ -537,10 +623,14 @@ You need to select the area like the prior region and then define it with the fo
     /region flag prison_mines_area_a entry -g nonmembers deny
     /region flag prison_mines_area_a entry-deny-message You must rank-up to access this mine.
     
+    /region addmember prison_mines_area_a g:prison.mines.a
+
+
+*Optional:*
+
     /region addowner prison_mines_area_a g:owner
     /region addmember prison_mines_area_a g:admin
     
-    /region addmember prison_mines_area_a g:prison.mines.a
     
 
 Please notice that we have defined two WorldGuard regions: prison_mines_a and prison_mines_area_a.  But for both of them, we've assigned the LuckPerms group g:prison.mines.a as members.  This means, all we need to do is add the player to that LuckPerms group and they will have access to both the mine_area and also the mine.
@@ -552,7 +642,7 @@ Please notice that we have defined two WorldGuard regions: prison_mines_a and pr
 
 
 
-# Adding the Prison Rank Commands
+# WG LP Commands - Adding the Prison Rank Commands
 
 
 So finally for our example of setting up mines a and b, we now need to add the Rank Commands to active the permission for both.  Also included in these commands are the permissions for the mines.tp command, where mines.tp.<MineName> is a permission and not a group.
@@ -560,16 +650,16 @@ So finally for our example of setting up mines a and b, we now need to add the R
 
 For rank a:
 
-    /ranks command add a lp user {player} parent set g:prison.mines.a true
-    /ranks command add a lp user {player} parent remove g:prison.mines.b
+    /ranks command add a lp user {player} parent add prison.mines.a true
+    /ranks command add a lp user {player} parent remove prison.mines.b
     /ranks command add a lp user {player} permission set mines.tp.a true
     /ranks command add a lp user {player} permission unset mines.tp.b
 
 
 For rank b:
 
-    /ranks command add b lp user {player} parent set g:prison.mines.b true
-    /ranks command add b lp user {player} parent remove g:prison.mines.c
+    /ranks command add b lp user {player} parent add prison.mines.b true
+    /ranks command add b lp user {player} parent remove prison.mines.c
     /ranks command add b lp user {player} permission set mines.tp.b true
     /ranks command add b lp user {player} permission unset mines.tp.c
 
@@ -579,10 +669,16 @@ And that's it!  Just repeat for all your other mines.
 
 
 
+<hr style="height:8px; border:none; color:#aaf; background-color:#aaf;">
+
+
 
 # Other Commands That May Be Important:
 
+
     /region redefine mine_<mine-name>
+    
+    
     /region removeowner prison_mine_<mine-name> <owner-name>
     /region removemember prison_mine_<mine-name> <player-name>
     
@@ -593,8 +689,10 @@ Set’s the WorldEdit selection to the dimensions of the given mine:
     /region select prison_mine_<mine-name>
     /region select prison_mine_area_<mine-name>
 
+
     /region info prison_mine_<mine-name>
     /region info prison_mine_area_<mine-name>
+
     
     /region list 
     /region list -w world
@@ -605,6 +703,8 @@ Some LuckPerm commands that may be useful.
 
     /lp group prison.mines.<mine-name> listmembers
     /lp user <user-name> group add <group-name>
+
+    /lp user <user-name> info
     
     
     /lp listgroups
@@ -612,6 +712,7 @@ Some LuckPerm commands that may be useful.
     
     
     /lp user <user-name> parent set <group-name> true
+    /lp user <user-name> parent add <group-name> true
     /lp user <user-name> parent remove <group-name>
     
     /lp user <user-name> permission set <permission-name> true
