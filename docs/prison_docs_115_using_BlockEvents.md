@@ -4,7 +4,7 @@
 
 # BlockEvents
 
-Prison's BlockEvents provides a way to fire commands when a block is broken by a player.  Every BlockEvent must have a chance which can range from 0.0000 percent to 100.0 percent.  Optionally, you can tie the block event to a permission, to an event type, and for Token Enchant explosions you can filter on the enchantment type that triggered that explosion.  Soon, BlockEvents will be able to filter on block types too.
+Prison's BlockEvents provides a way to fire commands when a block is broken by a player.  Every BlockEvent must have a chance which can range from 0.0000 percent to 100.0 percent.  Optionally, you can tie the block event to a permission, to an event type, and for Token Enchant explosions you can filter on the enchantment type that triggered that explosion.  You can also filter on a Crazy Enchant blast too.  Soon, BlockEvents will be able to filter on block types too.
 
 
 A single BlockEvent can also have more than one command that is ran together with each command separated by a semi-colon. ";" 

@@ -19,26 +19,45 @@ Items to add to this document:
 * Use of **/mines list**
 * Use of **/mines reset** provide a little information about how it works in relationship to the other settings and commands.  There are some internal things that happen and this will help clarify how the other settings are impacted.
 
+
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
 
 # New! Prison Fast Start
 
-Prison now has a new set of features that can help you get up and running faster than ever!  `/ranks autoConfigure`. It can auto create your ranks and virtual mines, A through Z, it will link the mines to the ranks, setup the basic rank commands to provide basic access permissions for your players, and assign blocks of increasing values to all mines.  All you need to do is to use the command `/mines set area` on all mines to make them physical mines.  Plus there are a new features to help provide the finishing touches in almost no time.   
- - `/ranks autoConfigure`
+Prison now has a new set of features that can help you get up and running faster than ever!  `/ranks autoConfigure`. It can auto create your ranks and virtual mines, A through Z, it will link the mines to the ranks, setup the basic rank commands to provide basic access permissions for your players, and assign blocks of increasing values to all mines.  This command also enables the Mine Access Permission so it will be easier to control player's access to mining.
+
+The Prison auto configure also now enables prison's **sellall** features and preloads about 98 default items to make it easier to get started with your sellall shop.
+
+
+Once the the auto configure command is completed, all you need to do is to use the command `/mines set area` on all mines to make them physical mines.  Plus there are a new features to help provide the finishing touches in almost no time, such as setting liners for your mines.
+
+
+Some of the commands of interest:
+
+ - `/ranks autoConfigure help`
  - `/mines set area help`
  - `/mines set tracer help`
  - `/mines set size help`
  - `/mines set liner help`
  
 Documentation pertaining to the use of the auto configuration will be coming soon.
+
+
+Keep in mind that in order to use the command `/ranks autoConfigure` you cannot have any mines or ranks defined yet.  So before you create a test mine, go ahead and run the auto configure so at least that is complete.  There is an option to force the generation of auto configure, but when forcing the generation, it will skip over any rank and any mine that is already configured, so it could cause a mess.
  
-Keep in mind that in order to use the command `/ranks autoConfigure` you cannot have any mines or ranks defined yet.  So before you create a test mine, go ahead and run the auto configure so at least that is complete.
  
+One thing you need to keep in mind, if you are using something like LuckPerm groups, you must define the groups within LuckPerms before you can actually use them, such as through a rankup command being ran.
+
+
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
 # Getting Started
+
 
 Please review the Prison's [Table of Contents](prison_docs_000_toc.md) for information on how to configure your server, and which plugins are required, or at least suggested.  
 
@@ -99,6 +118,7 @@ Then holding the Prison's wand (blaze rod), left-click in one corner, and then r
 
 
 Then create the mine with:
+
 ```
 /mines create test1
 ```
@@ -137,6 +157,8 @@ For the following commands, we can use the console, which is also easier to see 
 
 Some of the highlights of these commands are as follows:
 * `/mines create` : Create the mine based upon the wand selection.
+* `/mines set accessPermission help` : Use a mine permission to grant players access to the mine. This will override WG regions and resolve issues with strange behaviors resulting from WG.  This must be a plain permission and cannot be a permission group.
+
 * `/mines command` : **Now active!**  **Take your mines to the next level!** See the document on [Mine Commands](prison_docs_111_mine_commands.md) for more information. Every time a mine resets, you can now control what commands run right before a reset, and what runs right after a reset. These commands are similar to the Rank Commands, since they can be any command that you can run from the console.  The idea is that you can have unique mines that have not been possible before, such as randomly spawned forests or specific builds.
 * `/mines delete` : Deletes a mine. You can always undelete a mine by going in to the server file system and rename the deleted mine, then restart the server.
 * `/mines info` : Very useful in viewing all information related to the mine.
