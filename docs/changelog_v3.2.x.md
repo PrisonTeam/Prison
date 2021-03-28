@@ -17,7 +17,13 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.14 2021-03-28
+# v3.2.5-alpha.15 2021-03-28
+
+
+
+
+* **v3.2.5-alpha.15 2021-03-28**
+
 
 
 * **For the /ranks autoConfigure it now adds removal of all permissions to rank a's commands.**
