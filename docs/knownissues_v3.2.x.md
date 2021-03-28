@@ -10,7 +10,29 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.5
 
 
-Backpacks not working with auto pickup anymore?  Noticed at one point it wasn't working, but need to see if its still the case.  The issues could have been resolved.
+* Change `/prison version` to minimize info.  Add an "all" feature to show full details.  Capture errors and reshow them in the /prsion version?  Not sure about this last one.
+
+
+* To `/ranks autoFeatures` add warnings at the completion identifying that the user must create any needed groups.
+ - Note that WG global region needs to have the flag `passthrough deny` set.
+
+
+* List more enabled features within /prison version such as if GUI, sellall, auto features, etc are enabled.
+
+
+
+DONE - Under SpigotUtils.ItemStackRemovalAll - remove the error messages.  Basically it is normal for non-standard material types to be used by other plugins, and they trigger XMaterial's exception that an item cannot be mapped.  Basically the datavalue is non-standard.
+
+
+Look at sellall and XMAteral's use of parse.  Needs to handle it with an item stack.
+
+
+DONE - Look at rank commands that may not be running as console? 
+- The commands are being ran as console and not user.
+- The issue was it was using the wrong user object and therefore the commands were not being resolved correctly.
+
+
+DONE - Was a new config that was not allowing the auto pickup to be enabled. Backpacks not working with auto pickup anymore?  Noticed at one point it wasn't working, but need to see if its still the case.  The issues could have been resolved.
 
 
 
@@ -55,7 +77,7 @@ Auto features not working outside of the mines.
 
 
 
-**Block Counts Refresh - (ExtraSean)**
+DONE - **Block Counts Refresh - (ExtraSean)**
 - His enchantment plugin does not have an explosion event
 - Provide a way to update block counts using TargetBlockList
 - Delay 4 to 10 seconds based upon percent remaining
@@ -104,8 +126,8 @@ old block model - block constraint - excludeTop - not allowing block counts to b
     block won't result in over counting the breaks.
     
 
-- auto manager - add support for mending enchantment on tools.
-
+DONE - do nothing - auto manager - add support for mending enchantment on tools.
+- mending assigns XP received to repair tools and armor. This is more complicated than needed and there may be other solutions, such as dropping orbs so it can be processed naturally.
 
 
 

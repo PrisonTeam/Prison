@@ -23,12 +23,15 @@
 **[v3.2.3 - 2020-12-25](prison_changelog_v3.2.3.md)**
  
  
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
 # New! Prison Fast Start
 
-Prison now has a new set of features that can help you get up and running faster than ever!  `/ranks autoConfigure`. It can auto create your ranks and virtual mines, A through Z, it will link the mines to the ranks, setup the basic rank commands to provide basic access permissions for your players, and assign blocks of increasing values to all mines.  All you need to do is to use the command `/mines set area` on all mines to make them physical mines.  Plus there are a new features to help provide the finishing touches in almost no time.   
- -  `/ranks autoConfigure`
+[Prison Auto Configure / Prison Quick Start!](prison_docs_100_setting_up_auto_configure.md)
+
+Prison now has a new set of features that can help you get up and running faster than ever!  `/ranks autoConfigure`. It can auto create your ranks and virtual mines, A through Z, it will link the mines to the ranks, setup the basic rank commands to provide basic access permissions for your players, and assign blocks of increasing values to all mines.  All you need to do is to use the command `/mines set area` on all mines to make them physical mines.  Plus there are a new features to help provide the finishing touches in almost no time.
+ 
+ - `/ranks autoConfigure`
  - `/mines set area help`
  - `/mines set tracer help`
  - `/mines set size help`
@@ -37,7 +40,7 @@ Prison now has a new set of features that can help you get up and running faster
  Documentation pertaining to the use of the auto configuration will be coming soon.
  
 
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:5px; border:none; color:#aaf; background-color:#aaf;">
 
 # Table of Contents for this Document
 
@@ -177,6 +180,9 @@ Prison now has a new set of features that can help you get up and running faster
 
 These guides cover the core fundamentals of Prison.  They may reference other plugins, but these guides will not go in to depth on how to install or use the other plugins; those details will be a focused guide of their own. 
 
+
+* [Prison Auto Configure / Prison Quick Start!](prison_docs_100_setting_up_auto_configure.md)
+Get your prison setup quickly by running the command `/ranks autoCommand` which will configure most features within prison.
 
 
 * [Setting up Mines](prison_docs_101_setting_up_mines.md)
