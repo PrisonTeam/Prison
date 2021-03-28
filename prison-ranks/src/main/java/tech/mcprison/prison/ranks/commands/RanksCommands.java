@@ -329,10 +329,15 @@ public class RanksCommands
 	        int colorID = 1;
 	        double price = 0;
 
+	        String firstRankName = null;
 	        
 	        for ( char cRank = 'A'; cRank <= 'Z'; cRank++) {
 	        	String rankName = Character.toString( cRank );
 	        	String tag = "&7[&" + Integer.toHexString((colorID++ % 15) + 1) + rankName + "&7]";
+	        	
+	        	if ( firstRankName == null ) {
+	        		firstRankName = rankName;
+	        	}
 	        	
 	        	char cRankNext = (char) (cRank + 1);
 	        	String rankNameNext = Character.toString( cRankNext );
@@ -345,6 +350,15 @@ public class RanksCommands
 	        			countRankCmds++;
 	        			getRankCommandCommands().commandAdd( sender, rankName, permCmdAdd + perm2 + rankName.toLowerCase());
 	        			countRankCmds++;
+	        			
+	        			// Add all the command removal statements to rank A's commands so if the command /ranks set rank A is 
+	        			// used then all perms are removed
+	        			if ( !firstRankName.equalsIgnoreCase( rankName ) ) {
+	        				getRankCommandCommands().commandAdd( sender, firstRankName, permCmdDel + perm1 + rankName.toLowerCase());
+	        				countRankCmds++;
+	        				getRankCommandCommands().commandAdd( sender, firstRankName, permCmdDel + perm2 + rankName.toLowerCase());
+	        				countRankCmds++;
+	        			}
 	        			
 	        			if ( cRankNext <= 'Z' ) {
 	        				getRankCommandCommands().commandAdd( sender, rankName, permCmdDel + perm1 + rankNameNext.toLowerCase());

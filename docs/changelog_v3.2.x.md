@@ -17,7 +17,17 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.14 2021-03-26
+# v3.2.5-alpha.14 2021-03-28
+
+
+* **For the /ranks autoConfigure it now adds removal of all permissions to rank a's commands.**
+This will help when using prestige by removing all higher ranks set by rankup commands.
+
+
+* **For the command /ranks command add if a command already exists, then don't add a duplicate, just print a message stating its a duplicate.**
+
+
+* **Add new documents and update a few others**
 
 
 * **Hooked up new auto feature settings to enable autosell on each block break.** It may not be ideal, and could cause some lag, but it would be better than trying to script it to run outside of prison.  
