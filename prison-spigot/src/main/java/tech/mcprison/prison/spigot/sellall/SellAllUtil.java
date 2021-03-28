@@ -4,6 +4,7 @@ package tech.mcprison.prison.spigot.sellall;
 import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -189,11 +190,216 @@ public class SellAllUtil {
     /**
      * Open SellAll GUI for Players or Admins depending on their status and/or permissions.
      *
-     * @param p - Player that should open the GUI
+     * @param p - Player that should open the GUI.
      *
      * @return boolean - True if a GUI got open with success, false if Disabled or missing all permissions.
      * */
     public boolean sellAllGUI(Player p) {
+        return sellAllOpenGUI(p);
+    }
+
+    /**
+     * Add SellAll Block by ID.
+     *
+     * @param itemID - String name of Block.
+     *
+     * @param value - Value of the block when sold.
+     *
+     * @return error - True if an error occurred, false if success.
+     * */
+    public boolean sellAllAddBlock(String itemID, Double value) {
+        return sellAllAddBlockAction(itemID, value);
+    }
+
+    /**
+     * Add SellAll Block by Material.
+     *
+     * @param material - Material of Block.
+     *
+     * @param value - Value of the block when sold.
+     *
+     * @return error - True if an error occurred, false if success.
+     * */
+    public boolean sellAllAddBlock(Material material, Double value) {
+        return sellAllAddBlockAction(material, value);
+    }
+
+    /**
+     * Add SellAll Block by ItemStack.
+     *
+     * @param itemStack - ItemStack of Block.
+     *
+     * @param value - Value of the block when sold.
+     *
+     * @return error - True if an error occurred, false if success.
+     * */
+    public boolean sellAllAddBlock(ItemStack itemStack, Double value) {
+        return sellAllAddBlockAction(itemStack, value);
+    }
+
+    /**
+     * Add SellAll Block by ItemStack.
+     *
+     * @param xMaterial - XMaterial of Block.
+     *
+     * @param value - Value of the block when sold.
+     *
+     * @return error - True if an error occurred, false if success.
+     * */
+    public boolean sellAllAddBlock(XMaterial xMaterial, Double value) {
+        return sellAllAddBlockAction(xMaterial, value);
+    }
+
+    /**
+     * <p>This will add the XMaterial and value to the sellall.
+     * This will update even if the sellall has not been enabled.
+     * </p>
+     *
+     * @param blockAdd - XMaterial of the Block to add.
+     * @param value - Double value when sold.
+     */
+    public void sellAllAddCommand(XMaterial blockAdd, Double value){
+
+        String itemID = blockAdd.name();
+
+        // If the block or item was already configured, then skip this:
+        if (sellAllConfig.getConfigurationSection("Items." + itemID) != null){
+            return;
+        }
+
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("Items." + itemID + ".ITEM_ID", blockAdd.name());
+            conf.set("Items." + itemID + ".ITEM_VALUE", value);
+            if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
+                conf.set("Items." + itemID + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + blockAdd.name());
+            }
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            Output.get().logError( SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")), e);
+            return;
+        }
+
+        Output.get().logInfo(SpigotPrison.format("&3 ITEM [" + itemID + ", " + value + messages.getString("Message.SellAllAddSuccess")));
+        sellAllConfigUpdater();
+    }
+
+    /**
+     * Java getBoolean's broken so I made my own.
+     * */
+    public boolean getBoolean(String string){
+        return string != null && string.equalsIgnoreCase("true");
+    }
+
+
+
+    private boolean sellAllAddBlockAction(XMaterial xMaterial, Double value) {
+        try {
+            try {
+                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                conf.set("Items." + xMaterial.name() + ".ITEM_ID", xMaterial.name());
+                conf.set("Items." + xMaterial.name() + ".ITEM_VALUE", value);
+                if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
+                    conf.set("Items." + xMaterial.name() + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + xMaterial.name());
+                }
+                conf.save(sellAllFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return true;
+            }
+        } catch (IllegalArgumentException ex){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean sellAllAddBlockAction(ItemStack itemStack, Double value) {
+        try {
+            XMaterial blockAdd;
+            try {
+                blockAdd = XMaterial.matchXMaterial(itemStack);
+            } catch (IllegalArgumentException ex){
+                return true;
+            }
+
+            try {
+                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                conf.set("Items." + blockAdd.name() + ".ITEM_ID", blockAdd.name());
+                conf.set("Items." + blockAdd.name() + ".ITEM_VALUE", value);
+                if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
+                    conf.set("Items." + blockAdd.name() + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + blockAdd.name());
+                }
+                conf.save(sellAllFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return true;
+            }
+        } catch (IllegalArgumentException ex){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean sellAllAddBlockAction(Material material, Double value) {
+        try {
+            XMaterial blockAdd;
+            try {
+                blockAdd = XMaterial.matchXMaterial(material);
+            } catch (IllegalArgumentException ex){
+                return true;
+            }
+
+            try {
+                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                conf.set("Items." + blockAdd.name() + ".ITEM_ID", blockAdd.name());
+                conf.set("Items." + blockAdd.name() + ".ITEM_VALUE", value);
+                if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
+                    conf.set("Items." + blockAdd.name() + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + blockAdd.name());
+                }
+                conf.save(sellAllFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return true;
+            }
+        } catch (IllegalArgumentException ex){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean sellAllAddBlockAction(String itemID, Double value) {
+        try {
+            XMaterial blockAdd;
+            try {
+                blockAdd = XMaterial.valueOf(itemID);
+            } catch (IllegalArgumentException ex){
+                return true;
+            }
+
+            try {
+                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                conf.set("Items." + blockAdd.name() + ".ITEM_ID", blockAdd.name());
+                conf.set("Items." + blockAdd.name() + ".ITEM_VALUE", value);
+                if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
+                    conf.set("Items." + blockAdd.name() + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + blockAdd.name());
+                }
+                conf.save(sellAllFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return true;
+            }
+        } catch (IllegalArgumentException ex){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean sellAllOpenGUI(Player p) {
         // If the Admin GUI's enabled will enter do this, if it isn't it'll try to open the Player GUI.
         boolean guiEnabled = getBoolean(sellAllConfig.getString("Options.GUI_Enabled"));
         if (guiEnabled){
@@ -217,13 +423,6 @@ public class SellAllUtil {
 
         // If the admin GUI's disabled, it'll try to use the Player GUI anyway.
         return sellAllPlayerGUI(p);
-    }
-
-    /**
-     * Java getBoolean's broken so I made my own.
-     * */
-    public boolean getBoolean(String string){
-        return string != null && string.equalsIgnoreCase("true");
     }
 
     private void sellAllSellPlayer(Player p) {

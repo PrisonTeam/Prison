@@ -630,7 +630,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
     	String itemID = blockAdd.name();
     	
-    	// If the block or item was already cnfigured, then skip this:
+    	// If the block or item was already configured, then skip this:
         if (sellAllConfig.getConfigurationSection("Items." + itemID) != null){
             return;
         }
