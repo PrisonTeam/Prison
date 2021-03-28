@@ -1282,6 +1282,32 @@ public class RanksCommands
 		}
     }
 
+    
+    @Command(identifier = "ranks playerInventory", permissions = "mines.set", 
+    		description = "For listing what's in a player's inventory by dumping it to console.", 
+    		onlyPlayers = false )
+    public void ranksPlayerInventoryCommand(CommandSender sender,
+					@Arg(name = "player", def = "", description = "Player name") String playerName
+			) {
+    	
+    	Player player = getPlayer( sender, playerName );
+    	
+    	if (player == null) {
+    		sender.sendMessage( "&3You must be a player in the game to run this command, and/or the player must be online." );
+    		return;
+    	}
+
+//    	Player player = getPlayer( sender );
+//    	
+//    	if (player == null || !player.isOnline()) {
+//    		sender.sendMessage( "&3You must be a player in the game to run this command." );
+//    		return;
+//    	}
+    	
+    	player.printDebugInventoryInformationToConsole();
+    }
+    
+    
 	private void listPermissions( CommandSender sender, String prefix, List<String> perms )
 	{
 		StringBuilder sb = new StringBuilder();
