@@ -9,7 +9,6 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -374,9 +373,9 @@ public class SellAllUtil {
         }
 
         try {
-            XMaterial blockAdd;
+            XMaterial xMaterial;
             try {
-                blockAdd = XMaterial.matchXMaterial(itemStack);
+                xMaterial = XMaterial.matchXMaterial(itemStack);
             } catch (IllegalArgumentException ex) {
                 return true;
             }
@@ -384,10 +383,10 @@ public class SellAllUtil {
             try {
                 File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
                 FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-                conf.set("Items." + blockAdd.name() + ".ITEM_ID", blockAdd.name());
-                conf.set("Items." + blockAdd.name() + ".ITEM_VALUE", value);
+                conf.set("Items." + xMaterial.name() + ".ITEM_ID", xMaterial.name());
+                conf.set("Items." + xMaterial.name() + ".ITEM_VALUE", value);
                 if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
-                    conf.set("Items." + blockAdd.name() + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + blockAdd.name());
+                    conf.set("Items." + xMaterial.name() + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + xMaterial.name());
                 }
                 conf.save(sellAllFile);
             } catch (IOException e) {
@@ -406,9 +405,9 @@ public class SellAllUtil {
         }
 
         try {
-            XMaterial blockAdd;
+            XMaterial xMaterial;
             try {
-                blockAdd = XMaterial.matchXMaterial(material);
+                xMaterial = XMaterial.matchXMaterial(material);
             } catch (IllegalArgumentException ex) {
                 return true;
             }
@@ -416,10 +415,10 @@ public class SellAllUtil {
             try {
                 File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
                 FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-                conf.set("Items." + blockAdd.name() + ".ITEM_ID", blockAdd.name());
-                conf.set("Items." + blockAdd.name() + ".ITEM_VALUE", value);
+                conf.set("Items." + xMaterial.name() + ".ITEM_ID", xMaterial.name());
+                conf.set("Items." + xMaterial.name() + ".ITEM_VALUE", value);
                 if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
-                    conf.set("Items." + blockAdd.name() + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + blockAdd.name());
+                    conf.set("Items." + xMaterial.name() + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + xMaterial.name());
                 }
                 conf.save(sellAllFile);
             } catch (IOException e) {
@@ -438,9 +437,9 @@ public class SellAllUtil {
         }
 
         try {
-            XMaterial blockAdd;
+            XMaterial xMaterial;
             try {
-                blockAdd = XMaterial.valueOf(itemID);
+                xMaterial = XMaterial.valueOf(itemID);
             } catch (IllegalArgumentException ex) {
                 return true;
             }
@@ -448,10 +447,10 @@ public class SellAllUtil {
             try {
                 File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
                 FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-                conf.set("Items." + itemID + ".ITEM_ID", blockAdd.name());
+                conf.set("Items." + itemID + ".ITEM_ID", xMaterial.name());
                 conf.set("Items." + itemID + ".ITEM_VALUE", value);
                 if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
-                    conf.set("Items." + itemID + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + blockAdd.name());
+                    conf.set("Items." + itemID + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + xMaterial.name());
                 }
                 conf.save(sellAllFile);
             } catch (IOException e) {
@@ -482,14 +481,22 @@ public class SellAllUtil {
     }
 
     private boolean sellAllDeleteAction(ItemStack itemStack) {
-        if (sellAllConfig.getConfigurationSection("Items." + itemStack.getType().name()) == null) {
+
+        XMaterial xMaterial;
+        try {
+            xMaterial = XMaterial.matchXMaterial(itemStack);
+        } catch (IllegalArgumentException ex) {
+            return true;
+        }
+
+        if (sellAllConfig.getConfigurationSection("Items." + xMaterial.name()) == null) {
             return true;
         }
 
         try {
             File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Items." + itemStack.getType().name(), null);
+            conf.set("Items." + xMaterial.name(), null);
             conf.save(sellAllFile);
         } catch (IOException e) {
             e.printStackTrace();
@@ -499,14 +506,22 @@ public class SellAllUtil {
     }
 
     private boolean sellAllDeleteAction(Material material) {
-        if (sellAllConfig.getConfigurationSection("Items." + material.name()) == null) {
+
+        XMaterial xMaterial;
+        try {
+            xMaterial = XMaterial.matchXMaterial(material);
+        } catch (IllegalArgumentException ex) {
+            return true;
+        }
+
+        if (sellAllConfig.getConfigurationSection("Items." + xMaterial.name()) == null) {
             return true;
         }
 
         try {
             File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Items." + material.name(), null);
+            conf.set("Items." + xMaterial.name(), null);
             conf.save(sellAllFile);
         } catch (IOException e) {
             e.printStackTrace();
@@ -516,14 +531,22 @@ public class SellAllUtil {
     }
 
     private boolean sellAllDeleteAction(String itemID) {
-        if (sellAllConfig.getConfigurationSection("Items." + itemID) == null) {
+
+        XMaterial xMaterial;
+        try {
+            xMaterial = XMaterial.valueOf(itemID);
+        } catch (IllegalArgumentException ex) {
+            return true;
+        }
+
+        if (sellAllConfig.getConfigurationSection("Items." + xMaterial.name()) == null) {
             return true;
         }
 
         try {
             File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Items." + itemID, null);
+            conf.set("Items." + xMaterial.name(), null);
             conf.save(sellAllFile);
         } catch (IOException e) {
             e.printStackTrace();
