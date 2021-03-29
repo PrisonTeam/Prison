@@ -79,6 +79,15 @@ public class IntegrationManager {
     	if ( !integrations.containsKey( iType ) ) {
     		integrations.put(iType, new ArrayList<>());
     	}
+    	
+    	// If integration is already stored, remove the older one.  Check on keyName:
+    	List<Integration> regIntegrations = integrations.get(iType);
+    	for ( int x = 0; x < regIntegrations.size(); x++ ) {
+    		if ( i.getKeyName().equals( regIntegrations.get(x).getKeyName() ) ) {
+    			regIntegrations.remove( x );
+    			break;
+    		}
+    	}
     	integrations.get(iType).add(i);
     }
     
@@ -187,10 +196,11 @@ public class IntegrationManager {
      * keeps the business logic of relationship of integrations to Integration Types 
      * internal so as to no leak that knowledge out of this function. 
      * </p>
+     * @param isBasic 
      * 
      * @return
      */
-    public List<DisplayComponent> getIntegrationComponents() {
+    public List<DisplayComponent> getIntegrationComponents(boolean isBasic) {
     	List<DisplayComponent> results = new ArrayList<>();
     	
         for ( IntegrationType integrationType : IntegrationType.values() )
@@ -199,6 +209,9 @@ public class IntegrationManager {
 				// Skip this integration type:
 				break;
 			} 
+			
+			boolean activeIntegration = false;
+			
         	results.add( new TextComponent( String.format( "&7Integration Type: &3%s", integrationType.name() ) ));
 
         	// Generates the placeholder list for the /prison version command, printing
@@ -219,45 +232,57 @@ public class IntegrationManager {
 			} 
 			else if ( plugins == null || plugins.size() == 0 ) {
 				results.add( new TextComponent( "&e    none" ));
+				activeIntegration = true;
 			} 
 			else {
 				for ( Integration plugin : plugins ) {
-					String pluginUrl = plugin.getPluginSourceURL();
-					String msg = String.format( "&a    %s <%s> %s", plugin.getDisplayName(),
-							( plugin.hasIntegrated() ? "Active" : "Inactive"),
-							( pluginUrl == null ? "" : "&7[URL]"));
-					FancyMessage fancy = new FancyMessage( msg );
-			 		if ( pluginUrl != null ) {
-			 			fancy.command( pluginUrl ).tooltip( "Click to open URL for this plugin.", pluginUrl );
-			 		}
-					results.add( new FancyMessageComponent(fancy) );
-			 		
-					String altInfo = plugin.getAlternativeInformation();
-					if ( altInfo != null ) {
-						results.add( new TextComponent( "        " + altInfo ));
-					}
 					
-					if ( integrationType ==  IntegrationType.ECONOMY && 
-							plugin instanceof EconomyCurrencyIntegration ) {
-						EconomyCurrencyIntegration econ = (EconomyCurrencyIntegration) plugin;
+					if ( isBasic && plugin.hasIntegrated() || !isBasic ) {
+						activeIntegration = true;
 						
-						StringBuilder sb = new StringBuilder();
+						String pluginUrl = plugin.getPluginSourceURL();
+						String msg = String.format( "&a    %s <%s> %s", plugin.getDisplayName(),
+								( plugin.hasIntegrated() ? "Active" : "Inactive"),
+								( pluginUrl == null ? "" : "&7[URL]"));
+						FancyMessage fancy = new FancyMessage( msg );
+						if ( pluginUrl != null ) {
+							fancy.command( pluginUrl ).tooltip( "Click to open URL for this plugin.", pluginUrl );
+						}
+						results.add( new FancyMessageComponent(fancy) );
 						
-						for ( String currency : econ.getSupportedCurrencies().keySet() ) {
-							Boolean supported = econ.getSupportedCurrencies().get( currency );
-							if ( supported.booleanValue() ) {
-								if ( sb.length() > 0 ) {
-									sb.append( " " );
-								}
-								sb.append( currency );
-							}
+						String altInfo = plugin.getAlternativeInformation();
+						if ( altInfo != null ) {
+							results.add( new TextComponent( "        " + altInfo ));
 						}
 						
-						if ( sb.length() > 0 ) {
-							results.add( new TextComponent( "      &3Currencies: " + sb.toString() ));
+						if ( integrationType ==  IntegrationType.ECONOMY && 
+								plugin instanceof EconomyCurrencyIntegration ) {
+							EconomyCurrencyIntegration econ = (EconomyCurrencyIntegration) plugin;
+							
+							StringBuilder sb = new StringBuilder();
+							
+							for ( String currency : econ.getSupportedCurrencies().keySet() ) {
+								Boolean supported = econ.getSupportedCurrencies().get( currency );
+								if ( supported.booleanValue() ) {
+									if ( sb.length() > 0 ) {
+										sb.append( " " );
+									}
+									sb.append( currency );
+								}
+							}
+							
+							if ( sb.length() > 0 ) {
+								results.add( new TextComponent( "      &3Currencies: " + sb.toString() ));
+							}
 						}
 					}
 				}
+			}
+			
+			if ( isBasic && !activeIntegration ) {
+				
+				results.add( new TextComponent( String.format( "&7    No active Integrations of this Type." ) ));
+				
 			}
 		}
     	

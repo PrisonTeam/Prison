@@ -507,10 +507,10 @@ public class AutoFeaturesFileConfig {
 //					key, value.toString() );
 //		}
 		
-		List<String> blockNames = getFeatureStringList( AutoFeatures.autoPickupBlockNameList );
-		StringBuilder sbBlockName = new StringBuilder( String.join( ", ", blockNames ) ).insert( 0, "[" ).append( "]" );
-		Output.get().logInfo( "###--### AutoFeaturesFileConfig: test autoPickupBlockNameList: length = %d  value = %s ", 
-				blockNames.size(), sbBlockName.toString() );
+//		List<String> blockNames = getFeatureStringList( AutoFeatures.autoPickupBlockNameList );
+//		StringBuilder sbBlockName = new StringBuilder( String.join( ", ", blockNames ) ).insert( 0, "[" ).append( "]" );
+//		Output.get().logInfo( "###--### AutoFeaturesFileConfig: test autoPickupBlockNameList: length = %d  value = %s ", 
+//				blockNames.size(), sbBlockName.toString() );
 
     }
 

@@ -225,7 +225,7 @@ public class SpigotPrison extends JavaPlugin {
 //        	cmdVersion.getRegisteredPlugins().add( value );
 //		}
 
-		ChatDisplay cdVersion = cmdVersion.displayVersion();
+		ChatDisplay cdVersion = cmdVersion.displayVersion("basic");
 		cdVersion.toLog( LogLevel.INFO );
 		
 		// Provides a startup test of blocks available for the version of spigot that being used:

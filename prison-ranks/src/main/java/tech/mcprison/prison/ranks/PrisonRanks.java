@@ -18,6 +18,8 @@
 package tech.mcprison.prison.ranks;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import tech.mcprison.prison.Prison;
@@ -26,6 +28,7 @@ import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleStatus;
+import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.commands.CommandCommands;
 import tech.mcprison.prison.ranks.commands.LadderCommands;
@@ -35,6 +38,7 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
+import tech.mcprison.prison.ranks.managers.RankManager.RanksByLadderOptions;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Database;
 
@@ -55,6 +59,9 @@ public class PrisonRanks
     private PlayerManager playerManager;
 
     private Database database;
+    
+	private List<String> prisonStartupDetails;
+	
 
     /*
      * Constructor
@@ -62,6 +69,8 @@ public class PrisonRanks
 
     public PrisonRanks(String version) {
         super(MODULE_NAME, version, 3);
+        
+        this.prisonStartupDetails = new ArrayList<>();
     }
 
 
@@ -88,7 +97,7 @@ public class PrisonRanks
             
             String integrationDebug = PrisonAPI.getIntegrationManager()
             			.getIntegrationDetails(IntegrationType.ECONOMY);
-            Output.get().logError( "PrisonRanks.enable() - Failed - No Economy Plugin Active - " + 
+            logStartupMessageError( "PrisonRanks.enable() - Failed - No Economy Plugin Active - " + 
             			integrationDebug );
             return;
         }
@@ -105,10 +114,11 @@ public class PrisonRanks
         rankManager = new RankManager(initCollection("ranks"));
         try {
             rankManager.loadRanks();
-        } catch (IOException e) {
+        } 
+        catch (IOException e) {
         	getStatus().setStatus(ModuleStatus.Status.FAILED);
             getStatus().addMessage("&cFailed Loading Ranks: " + e.getMessage());
-            Output.get().logError("A rank file failed to load.", e);
+            logStartupMessageError("A rank file failed to load. " + e.getMessage());
         }
 
         // Load up the ladders
@@ -117,10 +127,11 @@ public class PrisonRanks
         ladderManager = new LadderManager(initCollection("ladders"), this);
         try {
             ladderManager.loadLadders();
-        } catch (IOException e) {
+        } 
+        catch (IOException e) {
         	getStatus().setStatus(ModuleStatus.Status.FAILED);
         	getStatus().addMessage("&cFailed Loading Loadders: " + e.getMessage());
-            Output.get().logError("A ladder file failed to load.", e);
+        	logStartupMessageError("A ladder file failed to load. " + e.getMessage());
         }
         createDefaultLadder();
 
@@ -130,7 +141,7 @@ public class PrisonRanks
 
         
         // Verify that all ranks that use currencies have valid currencies:
-        rankManager.identifyAllRankCurrencies();
+        rankManager.identifyAllRankCurrencies( getPrisonStartupDetails() );
         
         
         // Load up the players
@@ -139,10 +150,11 @@ public class PrisonRanks
         playerManager = new PlayerManager(initCollection("players"));
         try {
             playerManager.loadPlayers();
-        } catch (IOException e) {
+        } 
+        catch (IOException e) {
         	getStatus().setStatus(ModuleStatus.Status.FAILED);
         	getStatus().addMessage("&cFailed Loading Players: " + e.getMessage());
-            Output.get().logError("A player file failed to load.", e);
+        	logStartupMessageError("A player file failed to load. " + e.getMessage());
         }
 
         // Load up the commands
@@ -169,15 +181,16 @@ public class PrisonRanks
         ConversionManager.getInstance().registerConversionAgent(new RankConversionAgent());
 
 
-        Output.get().logInfo("Loaded " + getRankCount() + " ranks.");
-        Output.get().logInfo("Loaded " + getladderCount() + " ladders.");
-        Output.get().logInfo("Loaded " + getPlayersCount() + " players.");
+        logStartupMessage("Loaded " + getRankCount() + " ranks.");
+        logStartupMessage("Loaded " + getladderCount() + " ladders.");
+        logStartupMessage("Loaded " + getPlayersCount() + " players.");
         
         
 
         // Display all Ranks in each ladder:
-    	boolean includeAll = true;
-    	PrisonRanks.getInstance().getRankManager().ranksByLadders( includeAll );
+        PrisonRanks.getInstance().getRankManager().ranksByLadders( RanksByLadderOptions.allRanks );
+//    	boolean includeAll = true;
+//    	PrisonRanks.getInstance().getRankManager().ranksByLadders( includeAll );
         
     }
 
@@ -265,12 +278,36 @@ public class PrisonRanks
      */
 
 
+    private void logStartupMessageError( String message ) {
+    	logStartupMessage( LogLevel.ERROR, message );
+    
+    }
+
+    private void logStartupMessage( String message ) {
+    	logStartupMessage( LogLevel.INFO, message );
+    	
+    }
+    private void logStartupMessage( LogLevel logLevel, String message ) {
+    	
+    	Output.get().log( message, logLevel );
+    	
+    	getPrisonStartupDetails().add( message );
+    }
+    
+    public List<String> getPrisonStartupDetails() {
+    	return prisonStartupDetails;
+    }
+    public void setPrisonStartupDetails( List<String> prisonStartupDetails ){
+    	this.prisonStartupDetails = prisonStartupDetails;
+    }
+
+    
 
     public RankManager getRankManager() {
         return rankManager;
     }
 
-    public LadderManager getLadderManager() {
+	public LadderManager getLadderManager() {
         return ladderManager;
     }
 

@@ -41,6 +41,7 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerName;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
+import tech.mcprison.prison.ranks.managers.RankManager.RanksByLadderOptions;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -1360,27 +1361,31 @@ public class RanksCommands
 	}
  
     
-    @Command(identifier = "ranks players", description = "Shows all ranks with player counts", onlyPlayers = false)
+    @Command(identifier = "ranks players", description = "Shows all ranks with player counts", 
+    		onlyPlayers = false, aliases="ranks stats")
     public void rankPlayers(CommandSender sender,
     			@Arg(name = "ladderName", def = "all", description = "Ladder Name [all, none, LadderName]") String ladderName,
-    			@Arg(name = "action", def = "players", description = "List type [players, all]") String action){
+    			@Arg(name = "action", def = "all", 
+    				description = "List type; default so 'all'. 'Players' only shows ranks that have player. " +
+    						"'All' includes all ranks including ones without players. " +
+    						"'Full includes player names if prison is tracking them. [players, all, full]") String action){
 
     	
     	if ( !ladderName.equalsIgnoreCase( "all" ) && 
     			PrisonRanks.getInstance().getLadderManager().getLadder( ladderName ) == null ) {
-    		Output.get().sendError(sender, "The ladder '%s' doesn't exist, or was not ALL.", ladderName);
+    		Output.get().sendError(sender, "The ladder '%s' doesn't exist, or was not 'ALL'.", ladderName);
     		return;
     	}
     	
     	
-    	if ( !action.equalsIgnoreCase( "players" ) && !action.equalsIgnoreCase( "all" ) ) {
-    		Output.get().sendError(sender, "The action '%s' is invalid. [players, all]", action);
-    		
+    	RanksByLadderOptions option = RanksByLadderOptions.fromString( action );
+    	if ( option == null ) {
+    		Output.get().sendError(sender, "The action '%s' is invalid. [players, all, full]", action);
     		return;
     	}
     	
-    	boolean includeAll = action.equalsIgnoreCase( "all" );
-    	PrisonRanks.getInstance().getRankManager().ranksByLadders( sender, ladderName, includeAll );
+//    	boolean includeAll = action.equalsIgnoreCase( "all" );
+    	PrisonRanks.getInstance().getRankManager().ranksByLadders( sender, ladderName, option );
     	
 //    	Output.get().logInfo( "Ranks by ladders:" );
 //    	

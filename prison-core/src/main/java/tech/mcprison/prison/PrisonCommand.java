@@ -25,8 +25,8 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.CommandPagedData;
@@ -57,13 +57,39 @@ public class PrisonCommand {
 	
 	private TreeMap<String, RegisteredPluginsData> registeredPluginData = new TreeMap<>();
 	
+	private List<String> prisonStartupDetails;
+	
+	public PrisonCommand() {
+		super();
+		
+		this.prisonStartupDetails = new ArrayList<>();
+		
+	}
 	
     @Command(identifier = "prison version", description = "Displays version information.", 
     		onlyPlayers = false )
-    public void versionCommand(CommandSender sender) {
-    	ChatDisplay display = displayVersion();
+    public void versionCommand(CommandSender sender,
+    		@Wildcard(join=true)
+    		@Arg(name = "options", description = "Options [basic, all]", def = "basic" ) String options) {
+    	
+    	if ( options != null && !"basic".equalsIgnoreCase( options ) && !"all".equalsIgnoreCase( options ) ) {
+    		Output.get().logInfo( "&7Invalid option. [basic, all]" );
+    		return;
+ 
+    	}
+    	else if ( options == null ) {
+    		options = "basic";
+    	}
+    	
+    	ChatDisplay display = displayVersion(options);
     	
         display.send(sender);
+        
+//        if ( options != null && "all".equalsIgnoreCase( options )) {
+//        	// Display all Ranks in each ladder:
+//        	boolean includeAll = true;
+//        	PrisonRanks.getInstance().getRankManager().ranksByLadders( includeAll );
+//        }
     }
     
     /**
@@ -206,7 +232,9 @@ public class PrisonCommand {
 		}
     }
     
-    public ChatDisplay displayVersion() {
+    public ChatDisplay displayVersion(String options) {
+    
+    	boolean isBasic = options == null || "basic".equalsIgnoreCase( options );
     	
         ChatDisplay display = new ChatDisplay("/prison version");
         display.addText("&7Prison Version: %s", Prison.get().getPlatform().getPluginVersion());
@@ -216,7 +244,7 @@ public class PrisonCommand {
 
         display.addText("");
         
-        display.addText("&7Commands: /prison");
+        display.addText("&7Prison's root Command: /prison");
         
         for ( Module module : Prison.get().getModuleManager().getModules() ) {
         	
@@ -225,7 +253,7 @@ public class PrisonCommand {
         			(module.getStatus().getStatus() == ModuleStatus.Status.FAILED ? 
         						"[" + module.getStatus().getMessage() + "]" : "")
         			);
-        	display.addText( ".   &7Base Commands: %s", module.getBaseCommands() );
+        	// display.addText( ".   &7Base Commands: %s", module.getBaseCommands() );
         }
         
         List<String> disabledModules = Prison.get().getModuleManager().getDisabledModules();
@@ -257,7 +285,7 @@ public class PrisonCommand {
         display.addText(Text.tab("&7Economy: " + economy));
         
         
-        List<DisplayComponent> integrationRows = im.getIntegrationComponents();
+        List<DisplayComponent> integrationRows = im.getIntegrationComponents( isBasic );
         for ( DisplayComponent component : integrationRows )
 		{
         	display.addComponent( component );
@@ -268,6 +296,7 @@ public class PrisonCommand {
         // NOTE: This list of plugins is good enough and the detailed does not have all the info.
         // Display all loaded plugins:
         if ( getRegisteredPlugins().size() > 0 ) {
+        	display.addText("");
         	display.addText( "&7Registered Plugins: " );
         	StringBuilder sb = new StringBuilder();
         	for ( String plugin : getRegisteredPlugins() ) {
@@ -320,7 +349,14 @@ public class PrisonCommand {
 
         
         Prison.get().getPlatform().getWorldLoadErrors( display );
-        
+
+        if ( !isBasic && getPrisonStartupDetails().size() > 0 ) {
+        	display.addText("");
+        	
+        	for ( String msg : getPrisonStartupDetails() ) {
+				display.addText( msg );
+			}
+        }
         
         return display;
     }
@@ -893,6 +929,13 @@ public class PrisonCommand {
 		RegisteredPluginsData plugin = getRegisteredPluginData().get( pluginName );
 		
 		plugin.addCommand( command, commandAliases );
+	}
+
+	public List<String> getPrisonStartupDetails() {
+		return prisonStartupDetails;
+	}
+	public void setPrisonStartupDetails( List<String> prisonStartupDetails ) {
+		this.prisonStartupDetails = prisonStartupDetails;
 	}
 
 }
