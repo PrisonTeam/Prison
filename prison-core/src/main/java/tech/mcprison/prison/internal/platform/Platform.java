@@ -324,5 +324,13 @@ public interface Platform {
 
 	public void autoCreateMineLinerAssignment();
 	
-
+	
+	/** 
+	 * This function will return a list of text strings indicating features that are either enabled or disabled.
+	 * 
+	 * @return
+	 */
+	public List<String> getActiveFeatures();
+	
+	
 }

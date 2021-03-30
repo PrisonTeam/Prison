@@ -1575,4 +1575,12 @@ public class SpigotPlatform
 		return blockList;
 	}
 	
+	@Override
+	public List<String> getActiveFeatures() {
+		List<String> results = new ArrayList<>();
+		
+		
+		return results;
+	}
+	
 }

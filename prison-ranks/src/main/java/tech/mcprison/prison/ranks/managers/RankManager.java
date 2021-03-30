@@ -487,7 +487,7 @@ public class RankManager {
     			
     			if ( players > 0 ) {
     				
-    				sb.append( " (" ).append( players ).append( " )" );
+    				sb.append( " (" ).append( players ).append( ")" );
     				
     				if ( option == RanksByLadderOptions.full ) {
     					sb.append( "[" );

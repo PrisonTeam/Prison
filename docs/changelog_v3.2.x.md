@@ -20,6 +20,14 @@ that you need.
 # v3.2.5-alpha.15 2021-03-28
 
 
+* **Setup the hooks for listing active features that will be included with /prison version.**
+It's hooked up, but has no content yet.
+
+
+* **Simplify what is shown under /prison version.**
+Also added a new parameter named action with a value of either basic (less detail and default) or all which will include more detailed information, such as the inactive integrations.  In the future, error messages from the start process may also be included if they are captured.
+Removed a test comment from the AutoFeaturesFileConfig.
+Expand the /ranks players command to add the option of 'full' which will not include all player names for each rank.  This may be a huge list depending upon server.  The player's names that are included will only be for players that prison has captured their names since names are normally not apart of the RankPlayers object.
 
 
 * **v3.2.5-alpha.15 2021-03-28**

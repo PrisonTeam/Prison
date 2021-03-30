@@ -264,7 +264,17 @@ public class PrisonCommand {
         				disabledModule );
         	}
         }
-         
+
+        
+        List<String> features = Prison.get().getPlatform().getActiveFeatures();
+        if ( features.size() > 0 ) {
+        	
+        	display.addText("");
+        	for ( String feature : features ) {
+        		display.addText( feature );
+        	}
+        }
+        
         
         display.addText("");
         display.addText("&7Integrations:");
