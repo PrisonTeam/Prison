@@ -48,6 +48,8 @@ import com.cryptomorin.xseries.messages.Titles;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonCommand;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.convert.ConversionResult;
@@ -1579,6 +1581,41 @@ public class SpigotPlatform
 	public List<String> getActiveFeatures() {
 		List<String> results = new ArrayList<>();
 		
+		
+    	
+    	AutoFeaturesWrapper afw = AutoFeaturesWrapper.getInstance();
+    	
+    	results.add( String.format("AutoManager Enabled:&b %s", 
+    										afw.isBoolean( AutoFeatures.isAutoManagerEnabled )) );
+
+    	results.add( String.format("    Auto Pickup:&b %s", 
+    										afw.isBoolean( AutoFeatures.autoPickupEnabled )) );
+    	results.add( String.format("    Auto Smelt:&b %s", 
+    										afw.isBoolean( AutoFeatures.autoSmeltEnabled )) );
+    	results.add( String.format("    Auto Block:&b %s", 
+    										afw.isBoolean( AutoFeatures.autoBlockEnabled )) );
+    	
+    	
+    	results.add( String.format("Prestiges Enabled:&b %s", 
+    										getConfigBooleanFalse( "prestige.enabled" )) );
+    	results.add( String.format("    Reset Money:&b %s", 
+    										getConfigBooleanFalse( "prestige.resetMoney" )) );
+    	results.add( String.format("    Reset Default Ladder:&b %s", 
+    										getConfigBooleanFalse( "prestige.resetDefaultLadder" )) );
+
+
+    	results.add( String.format("GUI Enabled:&b %s", 
+    										getConfigBooleanFalse( "prison-gui-enabled" )) );
+    	
+    	
+    	results.add( String.format("Sellall Enabled:&b %s", 
+    										getConfigBooleanFalse( "sellall" )) );
+    		  
+    	
+    	results.add( String.format("Backpacks Enabled:&b %s", 
+    										getConfigBooleanFalse( "backpacks" )) );
+    	
+
 		
 		return results;
 	}

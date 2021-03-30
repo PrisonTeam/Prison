@@ -46,8 +46,8 @@ public class VaultEconomyWrapper
 			this.preV1dot4 = ( new BluesSpigetSemVerComparator().compareTo( getVaultVersion(), 
 									"1.4.0" ) < 0 );
 			
-			Output.get().logInfo( "### VaultEconomyWrapper : vaultVersion = " + getVaultVersion() + 
-					"  is pre1_4= " + isPreV1_4() );
+//			Output.get().logInfo( "### VaultEconomyWrapper : vaultVersion = " + getVaultVersion() + 
+//					"  is pre1_4= " + isPreV1_4() );
 		}
 	}
 	

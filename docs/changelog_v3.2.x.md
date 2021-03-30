@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.15 2021-03-28
 
 
+* **Added a few high level features to report on their enabled status.**
+
+
 * **Setup the hooks for listing active features that will be included with /prison version.**
 It's hooked up, but has no content yet.
 
