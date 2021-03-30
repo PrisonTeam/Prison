@@ -271,7 +271,15 @@ public class PrisonCommand {
         	
         	display.addText("");
         	for ( String feature : features ) {
-        		display.addText( feature );
+        		
+        		if ( !feature.startsWith( "+" ) ) {
+        			
+        			display.addText( feature );
+        		}
+        		else if ( !isBasic ) {
+        			
+        			display.addText( feature.substring( 1 ) );
+        		}
         	}
         }
         

@@ -1594,6 +1594,29 @@ public class SpigotPlatform
     										afw.isBoolean( AutoFeatures.autoSmeltEnabled )) );
     	results.add( String.format("    Auto Block:&b %s", 
     										afw.isBoolean( AutoFeatures.autoBlockEnabled )) );
+
+    	results.add( String.format("+    Calculate Durability:&b %s", 
+    										afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled )) );
+    	results.add( String.format("+    Calculate Fortune:&b %s", 
+    										afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled )) );
+    	results.add( String.format("+    Calculate Fortune on all Blocks:&b %s", 
+    										afw.isBoolean( AutoFeatures.isCalculateFortuneOnAllBlocksEnabled )) );
+    	results.add( String.format("+    Max Fortune Level:&b %s", 
+    										afw.isBoolean( AutoFeatures.maxFortuneLevel )) );
+    	
+    	results.add( String.format("+    Calculate XP:&b %s", 
+    										afw.isBoolean( AutoFeatures.isCalculateXPEnabled )) );
+    	results.add( String.format("+    Drop XP as Orbs:&b %s", 
+    										afw.isBoolean( AutoFeatures.givePlayerXPAsOrbDrops )) );
+    	
+    	results.add( String.format("+    Process TokensEnchant Explosive Events:&b %s", 
+    										afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents )) );
+    	results.add( String.format("+    Process Crazy Enchants Block Explode Events:&b %s", 
+    										afw.isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents )) );
+    	results.add( String.format("+    Process McMMO BlockBreakEvents:&b %s", 
+    										afw.isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents )) );
+    	
+    	
     	
     	
     	results.add( String.format("Prestiges Enabled:&b %s", 

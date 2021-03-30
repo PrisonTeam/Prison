@@ -20,6 +20,9 @@ that you need.
 # v3.2.5-alpha.15 2021-03-28
 
 
+* **Added a few other details that will be displayed when using /prison version all.**
+
+
 * **Added a few high level features to report on their enabled status.**
 
 
