@@ -1134,7 +1134,7 @@ public class AutoManagerFeatures
 					
 					break;
 					
-				case SNOW_BLOCK:
+				case SNOWBALL:
 					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockSnowBlock ), source, XMaterial.SNOW_BLOCK, 4, p );
 					
 					break;
@@ -1294,7 +1294,7 @@ public class AutoManagerFeatures
 					
 					break;
 					
-				case SNOW_BLOCK:
+				case SNOWBALL:
 					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.SNOW_BLOCK, 4 );
 					
 					break;

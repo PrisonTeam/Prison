@@ -17,7 +17,10 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.15 2021-03-28
+# v3.2.5-alpha.15 2021-03-30
+
+
+* **For blocking the source should have been snowball instead of snow_block since the output was snow_block.**
 
 
 * **Added a few other details that will be displayed when using /prison version all.**
