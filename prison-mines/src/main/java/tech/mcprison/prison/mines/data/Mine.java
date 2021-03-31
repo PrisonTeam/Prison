@@ -186,6 +186,10 @@ public class Mine
         setTag( tag );
 
         
+        String accessPerm = (String) document.get("accessPermission");
+        setAccessPermission( (accessPerm == null || accessPerm.trim().isEmpty() ? null : accessPerm) );
+        
+        
         setVirtual( document.get("isVirtual") == null ? false : (boolean) document.get("isVirtual") );
         
         
@@ -382,7 +386,7 @@ public class Mine
 						
 						validateBlockNames.add( prisonBlock.getBlockName() );
 					}
-					else if (validateBlockNames.contains( prisonBlock.getBlockName() ) ) {
+					else if ( prisonBlock != null && validateBlockNames.contains( prisonBlock.getBlockName() ) ) {
 						// Detected and fixed a duplication so mark as dirty so fixed block list is saved:
 						dirty = true;
 						inconsistancy = true;
@@ -433,7 +437,7 @@ public class Mine
 		}
 
         
-        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) && 
+        if ( isUseNewBlockModel() && 
         		getPrisonBlocks().size() == 0 && getBlocks().size() > 0 ) {
         	// Need to perform the initial conversion: 
         	
@@ -474,7 +478,9 @@ public class Mine
         String mineLinerData = (String) document.get("mineLinerData");
         setLinerData( MineLinerData.fromSaveString( mineLinerData ) );
 
-        
+        Boolean mineSweeperEnabled = (Boolean) document.get( "mineSweeperEnabled" );
+        setMineSweeperEnabled( mineSweeperEnabled == null ? false : mineSweeperEnabled.booleanValue() );
+
         
         if ( dirty ) {
 			
@@ -516,6 +522,9 @@ public class Mine
         
         ret.put( "isVirtual", isVirtual() );
         
+        String accessPerm = getAccessPermission();
+        ret.put( "accessPermission", accessPerm == null || accessPerm.trim().isEmpty() ? "" : accessPerm );
+
         ret.put( "tag", getTag() );
         ret.put( "sortOrder", getSortOrder() );
         
@@ -606,6 +615,8 @@ public class Mine
         String mineLinerData = getLinerData().toSaveString();
         ret.put("mineLinerData", mineLinerData );
         
+        ret.put( "mineSweeperEnabled", isMineSweeperEnabled() );
+
         
         return ret;
     }
@@ -642,7 +653,7 @@ public class Mine
 	{
 		StringBuilder sb = new StringBuilder();
 
-       if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+       if ( isUseNewBlockModel() ) {
         	for ( PrisonBlock block : getPrisonBlocks()) {
         		if ( sb.length() > 0 ) {
         			sb.append( ", " );

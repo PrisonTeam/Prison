@@ -19,6 +19,7 @@
 package tech.mcprison.prison.spigot.compat;
 
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -62,6 +63,17 @@ public interface Compatibility
     public void breakItemInMainHand(Player player);
     
     public void playIronDoorSound(Location loc);
+
+    public Sound getAnvilSound();
+
+    public Sound getLevelUpSound();
+
+    public Sound getOpenChestSound();
+
+    public Sound getCloseChestSound();
+
+    public Sound getEntityItemBreakSound();
+
 
     enum EquipmentSlot {
         HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD

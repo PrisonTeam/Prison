@@ -48,6 +48,8 @@ import com.cryptomorin.xseries.messages.Titles;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonCommand;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.convert.ConversionResult;
@@ -83,6 +85,8 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.placeholder.SpigotPlaceholders;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
+import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
+import tech.mcprison.prison.spigot.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.util.ActionBarUtil;
 import tech.mcprison.prison.spigot.util.SpigotYamlFileIO;
 import tech.mcprison.prison.store.Storage;
@@ -94,7 +98,7 @@ import tech.mcprison.prison.util.Text;
 /**
  * @author Faizaan A. Datoo
  */
-class SpigotPlatform 
+public class SpigotPlatform 
 	implements Platform {
 
     private SpigotPrison plugin;
@@ -204,6 +208,10 @@ class SpigotPlatform
     @Override public Optional<Player> getPlayer(String name) {
     	
     	org.bukkit.entity.Player playerBukkit = Bukkit.getPlayer(name);
+    	
+    	if ( name != null && playerBukkit != null && !playerBukkit.getName().equalsIgnoreCase( name ) ) {
+    		playerBukkit = null;
+    	}
 
     	return Optional.ofNullable( playerBukkit == null ? null : new SpigotPlayer(playerBukkit) );
     	
@@ -638,7 +646,7 @@ class SpigotPlatform
         for ( Plugin plugin : server.getPluginManager().getPlugins() ) {
         	String name = plugin.getName();
         	String version = plugin.getDescription().getVersion();
-        	String value = "&7" + name + " &3(&a" + version + "&3)";
+        	String value = " " + name + " (" + version + ")";
         	cmdVersion.getRegisteredPlugins().add( value );
         	
         	cmdVersion.addRegisteredPlugin( name, version );
@@ -649,7 +657,7 @@ class SpigotPlatform
 		}
         
         if ( isPlugManPresent ) {
-        	ChatDisplay chatDisplay = new ChatDisplay("&d* &d* &5WARNING: &dPlugMan &5Detected! &d* &d*");
+        	ChatDisplay chatDisplay = new ChatDisplay("&d* *&5 WARNING: &d PlugMan &5 Detected! &d* *");
         	chatDisplay.addText( "&7The use of PlugMan on this Prison server will corrupt internals" );
         	chatDisplay.addText( "&7of Prison and may lead to a non-functional state, or even total" );
         	chatDisplay.addText( "&7corruption of the internal settings, the saved files, and maybe" );
@@ -659,7 +667,7 @@ class SpigotPlatform
         	chatDisplay.addText( "&7Prison support team has no obligation to help recover, or repair," );
         	chatDisplay.addText( "&7any troubles that may result of the use of PlugMan." );
         	chatDisplay.addText( "&bPlease Note: &3The &7/prison reload&3 commands are safe to use anytime." );
-        	chatDisplay.addText( "&d* &d* &5WARNING &d* &d* &5WARNING &d* &d* &5WARNING &d* &d*" );
+        	chatDisplay.addText( "&d* *&5 WARNING &d* *&5 WARNING &d* *&5 WARNING &d* *" );
         	
         	chatDisplay.sendtoOutputLogInfo();;
         }
@@ -1043,10 +1051,11 @@ class SpigotPlatform
 	 * 
 	 */
 	public ModuleElement createModuleElement( tech.mcprison.prison.internal.CommandSender sender, 
-					ModuleElementType elementType, String name, String tag ) {
+					ModuleElementType elementType, String name, String tag, String accessPermission ) {
 		ModuleElement results = null;
 		
-		if ( elementType == ModuleElementType.MINE ) {
+		if ( elementType == ModuleElementType.MINE && 
+								PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
 			MineManager mm = PrisonMines.getInstance().getMineManager();
 			Mine mine = mm.getMine( name );
 			if ( mine == null ) {
@@ -1054,10 +1063,13 @@ class SpigotPlatform
 				mine = mm.getMine( name );
 				mine.setTag( tag );
 				
+				mine.setAccessPermission( accessPermission );
+				
 				results = mine;
 			}
 		}
-		else if ( elementType == ModuleElementType.RANK ) {
+		else if ( elementType == ModuleElementType.RANK &&
+								PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
 			RankManager rm = PrisonRanks.getInstance().getRankManager();
 			rm.getRanksCommands().createRank( sender, name, 0, "default", tag );
 			
@@ -1073,11 +1085,13 @@ class SpigotPlatform
 	public int getModuleElementCount( ModuleElementType elementType ) {
 		int results = 0;
 		
-		if ( elementType == ModuleElementType.MINE ) {
+		if ( elementType == ModuleElementType.MINE &&
+							PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
 			MineManager mm = PrisonMines.getInstance().getMineManager();
 			results = mm.getMines().size();
 		}
-		else if ( elementType == ModuleElementType.RANK ) {
+		else if ( elementType == ModuleElementType.RANK &&
+							PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
 			RankManager rm = PrisonRanks.getInstance().getRankManager();
 			results = rm.getRanks().size();
 		}
@@ -1185,10 +1199,38 @@ class SpigotPlatform
 	 */
 	@Override
 	public void autoCreateMineBlockAssignment() {
-		List<String> blockList = null; 
+		List<String> blockList = new ArrayList<>(); 
+		
+		
+		// Turn on sellall:
+		SpigotPrison.getInstance().getConfig().set( "sellall", true );
+		
+		
+		SellAllPrisonCommands sellall = SellAllPrisonCommands.get();
+		if ( sellall != null && SellAllPrisonCommands.isEnabled()) {
+			
+			// Setup all the prices in sellall:
+			for ( SellAllBlockData xMatCost : buildBlockListXMaterial() ) {
+				
+				// Add blocks to sellall:
+				sellall.sellAllAddCommand( xMatCost.getBlock(), xMatCost.getPrice() );
+			}
+		}
+		
+		
 		
         if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
-        	blockList = buildBlockListXMaterial();
+        	
+        	for ( SellAllBlockData xMatCost : buildBlockListXMaterial() ) {
+        		
+        		// Add only the primary blocks to this blockList which will be used to generate the
+        		// mine's block contents:
+				if ( xMatCost.isPrimary() ) {
+					blockList.add( xMatCost.getBlock().name() );
+				}
+			}
+        	
+//        	blockList = buildBlockListXMaterial();
         }
         else {
         	blockList = buildBlockListBlockType();
@@ -1325,49 +1367,165 @@ class SpigotPlatform
 		return results;
 	}
 	
+	
 	/**
 	 * This listing of blocks is based strictly upon XMaterial. 
 	 * This is the preferred list to use with the new block model.
 	 * 
 	 * @return
 	 */
-	protected List<String> buildBlockListXMaterial() {
-		List<String> blockList = new ArrayList<>();
+	public List<SellAllBlockData> buildBlockListXMaterial() {
+		List<SellAllBlockData> blockList = new ArrayList<>();
 		
-		blockList.add( XMaterial.COBBLESTONE.name() );
-		blockList.add( XMaterial.ANDESITE.name() );
-		blockList.add( XMaterial.DIORITE.name() );
-		blockList.add( XMaterial.COAL_ORE.name() );
+		blockList.add( new SellAllBlockData( XMaterial.COBBLESTONE, 4, true) );
+		blockList.add( new SellAllBlockData( XMaterial.ANDESITE, 5, true) );
+		blockList.add( new SellAllBlockData( XMaterial.DIORITE, 6, true) );
+		blockList.add( new SellAllBlockData( XMaterial.COAL_ORE, 13, true) );
+		blockList.add( new SellAllBlockData( XMaterial.GRANITE, 8, true) );
 
-		blockList.add( XMaterial.GRANITE.name() );
-		blockList.add( XMaterial.STONE.name() );
-		blockList.add( XMaterial.IRON_ORE.name() );
-		blockList.add( XMaterial.POLISHED_ANDESITE.name() );
-
-//		blockList.add( XMaterial.POLISHED_DIORITE.name() );
-//		blockList.add( XMaterial.POLISHED_GRANITE.name() );
-		blockList.add( XMaterial.GOLD_ORE.name() );
+		blockList.add( new SellAllBlockData( XMaterial.STONE, 9, true) );
+		blockList.add( new SellAllBlockData( XMaterial.IRON_ORE, 18, true) );
+		blockList.add( new SellAllBlockData( XMaterial.POLISHED_ANDESITE, 7, true) );
+		blockList.add( new SellAllBlockData( XMaterial.GOLD_ORE, 45, true) );
+		blockList.add( new SellAllBlockData( XMaterial.MOSSY_COBBLESTONE, 29, true) );
 
 		
-		blockList.add( XMaterial.MOSSY_COBBLESTONE.name() );
-		blockList.add( XMaterial.COAL_BLOCK.name() );
-		blockList.add( XMaterial.NETHER_QUARTZ_ORE.name() );
-		blockList.add( XMaterial.IRON_BLOCK.name() );
+		blockList.add( new SellAllBlockData( XMaterial.COAL_BLOCK, 135, true) );
+		blockList.add( new SellAllBlockData( XMaterial.IRON_BLOCK, 190, true) );
+		blockList.add( new SellAllBlockData( XMaterial.LAPIS_ORE, 100, true) );
+		blockList.add( new SellAllBlockData( XMaterial.REDSTONE_ORE, 45, true) );
+		blockList.add( new SellAllBlockData( XMaterial.DIAMOND_ORE, 200, true) );
 
-		blockList.add( XMaterial.LAPIS_ORE.name() );
-		blockList.add( XMaterial.REDSTONE_ORE.name() );
-		blockList.add( XMaterial.DIAMOND_ORE.name() );
-
-		blockList.add( XMaterial.QUARTZ_BLOCK.name() );
-		blockList.add( XMaterial.EMERALD_ORE.name() );
-
-		blockList.add( XMaterial.GOLD_BLOCK.name() );
-		blockList.add( XMaterial.LAPIS_BLOCK.name() );
-		blockList.add( XMaterial.REDSTONE_BLOCK.name() );
+		blockList.add( new SellAllBlockData( XMaterial.EMERALD_ORE, 250, true) );
+		blockList.add( new SellAllBlockData( XMaterial.GOLD_BLOCK, 450, true) );
+		blockList.add( new SellAllBlockData( XMaterial.LAPIS_BLOCK, 950, true) );
+		blockList.add( new SellAllBlockData( XMaterial.REDSTONE_BLOCK, 405, true) );
+		blockList.add( new SellAllBlockData( XMaterial.DIAMOND_BLOCK, 2000, true) );
+		
+		blockList.add( new SellAllBlockData( XMaterial.EMERALD_BLOCK, 2250, true) );
+		
+		
 		
 //		blockList.add( XMaterial.SLIME_BLOCK.name() );
-		blockList.add( XMaterial.DIAMOND_BLOCK.name() );
-		blockList.add( XMaterial.EMERALD_BLOCK.name() );
+		blockList.add( new SellAllBlockData( XMaterial.OBSIDIAN, 450 ) );
+		
+		
+		
+		// these are not used to generate the mine blocks:
+		blockList.add( new SellAllBlockData( XMaterial.CLAY, 12 ) );
+		blockList.add( new SellAllBlockData( XMaterial.GRAVEL, 3 ) );
+		blockList.add( new SellAllBlockData( XMaterial.SAND, 6 ) );
+		blockList.add( new SellAllBlockData( XMaterial.DIRT, 4 ) );
+		blockList.add( new SellAllBlockData( XMaterial.COARSE_DIRT, 7 ) );
+		blockList.add( new SellAllBlockData( XMaterial.PODZOL, 6 ) );
+		blockList.add( new SellAllBlockData( XMaterial.RED_SAND, 9 ) );
+		blockList.add( new SellAllBlockData( XMaterial.BEDROCK, 500 ) );
+		blockList.add( new SellAllBlockData( XMaterial.SANDSTONE, 3 ) );
+		
+		blockList.add( new SellAllBlockData( XMaterial.POLISHED_ANDESITE, 7 ) );
+		blockList.add( new SellAllBlockData( XMaterial.POLISHED_DIORITE, 8 ) );
+		blockList.add( new SellAllBlockData( XMaterial.POLISHED_GRANITE, 9 ) );
+		blockList.add( new SellAllBlockData( XMaterial.CHISELED_NETHER_BRICKS, 39 ) );
+		blockList.add( new SellAllBlockData( XMaterial.CHISELED_RED_SANDSTONE, 11 ) );
+		blockList.add( new SellAllBlockData( XMaterial.CHISELED_STONE_BRICKS, 11 ) );
+		blockList.add( new SellAllBlockData( XMaterial.CUT_RED_SANDSTONE, 13 ) );
+		blockList.add( new SellAllBlockData( XMaterial.CUT_SANDSTONE, 10 ) );
+
+		
+		
+		blockList.add( new SellAllBlockData( XMaterial.NETHER_QUARTZ_ORE, 34, true) );
+		blockList.add( new SellAllBlockData( XMaterial.QUARTZ, 34 ) );
+		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_BLOCK, 136, true) );
+		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_SLAB, 68, true) );
+
+		blockList.add( new SellAllBlockData( XMaterial.CHISELED_QUARTZ_BLOCK, 136 ) );
+		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_BRICKS, 136 ) );
+		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_PILLAR, 136 ) );
+		blockList.add( new SellAllBlockData( XMaterial.SMOOTH_QUARTZ, 136 ) );
+
+
+		blockList.add( new SellAllBlockData( XMaterial.SMOOTH_RED_SANDSTONE, 14 ) );
+		blockList.add( new SellAllBlockData( XMaterial.SMOOTH_SANDSTONE, 14 ) );
+		blockList.add( new SellAllBlockData( XMaterial.SMOOTH_STONE, 14 ) );
+		
+		
+		blockList.add( new SellAllBlockData( XMaterial.CHARCOAL, 16 ) );
+		blockList.add( new SellAllBlockData( XMaterial.CRACKED_NETHER_BRICKS, 16 ) );
+		blockList.add( new SellAllBlockData( XMaterial.CRACKED_STONE_BRICKS, 14 ) );
+		
+		blockList.add( new SellAllBlockData( XMaterial.EMERALD, 14 ) );
+		blockList.add( new SellAllBlockData( XMaterial.END_STONE, 14 ) );
+		blockList.add( new SellAllBlockData( XMaterial.END_STONE_BRICKS, 14 ) );
+
+		
+		blockList.add( new SellAllBlockData( XMaterial.FLINT, 9 ) );
+		
+		
+		blockList.add( new SellAllBlockData( XMaterial.LAPIS_LAZULI, 14 ) );
+		blockList.add( new SellAllBlockData( XMaterial.MOSSY_STONE_BRICKS, 14 ) );
+		
+		
+		blockList.add( new SellAllBlockData( XMaterial.PRISMARINE_SHARD, 13 ) );
+		blockList.add( new SellAllBlockData( XMaterial.PRISMARINE, 52 ) );
+		
+		blockList.add( new SellAllBlockData( XMaterial.PRISMARINE_BRICKS, 52 ) );
+		blockList.add( new SellAllBlockData( XMaterial.PRISMARINE_BRICK_SLAB, 52 ) );
+		blockList.add( new SellAllBlockData( XMaterial.PRISMARINE_CRYSTALS, 37 ) );
+		blockList.add( new SellAllBlockData( XMaterial.DARK_PRISMARINE, 52 ) );
+		blockList.add( new SellAllBlockData( XMaterial.DARK_PRISMARINE_SLAB, 52 ) );
+		
+		blockList.add( new SellAllBlockData( XMaterial.PURPUR_BLOCK, 14 ) );
+		blockList.add( new SellAllBlockData( XMaterial.PURPUR_PILLAR, 14 ) );
+
+		
+		
+//		blockList.add( new SellAllBlockData( XMaterial.SEA_LANTERN, 98 ) );
+
+		blockList.add( new SellAllBlockData( XMaterial.TERRACOTTA, 10 ) );
+
+		
+		blockList.add( new SellAllBlockData( XMaterial.ACACIA_LOG, 7 ) );
+		blockList.add( new SellAllBlockData( XMaterial.BIRCH_LOG, 7 ) );
+		blockList.add( new SellAllBlockData( XMaterial.DARK_OAK_LOG, 7 ) );
+		blockList.add( new SellAllBlockData( XMaterial.JUNGLE_LOG, 7 ) );
+		blockList.add( new SellAllBlockData( XMaterial.OAK_LOG, 7 ) );
+		blockList.add( new SellAllBlockData( XMaterial.SPRUCE_LOG, 7 ) );
+		blockList.add( new SellAllBlockData( XMaterial.ACACIA_PLANKS, 28 ) );
+		blockList.add( new SellAllBlockData( XMaterial.BIRCH_PLANKS, 28 ) );
+		blockList.add( new SellAllBlockData( XMaterial.DARK_OAK_PLANKS, 28 ) );
+		blockList.add( new SellAllBlockData( XMaterial.JUNGLE_PLANKS, 28 ) );
+		blockList.add( new SellAllBlockData( XMaterial.OAK_PLANKS, 28 ) );
+		blockList.add( new SellAllBlockData( XMaterial.SPRUCE_PLANKS, 28 ) );
+		
+		blockList.add( new SellAllBlockData( XMaterial.ACACIA_WOOD, 7 ) );
+		blockList.add( new SellAllBlockData( XMaterial.BIRCH_WOOD, 7 ) );
+		blockList.add( new SellAllBlockData( XMaterial.DARK_OAK_WOOD, 7 ) );
+		blockList.add( new SellAllBlockData( XMaterial.JUNGLE_WOOD, 7 ) );
+		blockList.add( new SellAllBlockData( XMaterial.OAK_WOOD, 7 ) );
+		blockList.add( new SellAllBlockData( XMaterial.SPRUCE_WOOD, 7 ) );
+		
+
+		
+		blockList.add( new SellAllBlockData( XMaterial.IRON_NUGGET, 3 ) );
+		blockList.add( new SellAllBlockData( XMaterial.IRON_INGOT, 27 ) );
+		
+		blockList.add( new SellAllBlockData( XMaterial.GOLD_NUGGET, 12 ) );
+		blockList.add( new SellAllBlockData( XMaterial.GOLD_INGOT, 108 ) );
+		
+		blockList.add( new SellAllBlockData( XMaterial.REDSTONE, 45 ) );
+		
+
+		blockList.add( new SellAllBlockData( XMaterial.GLOWSTONE, 52 ) );
+		blockList.add( new SellAllBlockData( XMaterial.GLOWSTONE_DUST, 14 ) );
+
+		
+		
+		blockList.add( new SellAllBlockData( XMaterial.COAL, 15 ) );
+		blockList.add( new SellAllBlockData( XMaterial.DIAMOND, 200 ) );
+		
+		blockList.add( new SellAllBlockData( XMaterial.SUGAR_CANE, 13 ) );
+		blockList.add( new SellAllBlockData( XMaterial.SUGAR, 13 ) );
+		blockList.add( new SellAllBlockData( XMaterial.PAPER, 13 ) );
 		
 		return blockList;
 	}
@@ -1422,4 +1580,71 @@ class SpigotPlatform
 		
 		return blockList;
 	}
+	
+	@Override
+	public List<String> getActiveFeatures() {
+		List<String> results = new ArrayList<>();
+		
+		
+    	
+    	AutoFeaturesWrapper afw = AutoFeaturesWrapper.getInstance();
+    	
+    	results.add( String.format("AutoManager Enabled:&b %s", 
+    										afw.isBoolean( AutoFeatures.isAutoManagerEnabled )) );
+
+    	results.add( String.format("    Auto Pickup:&b %s", 
+    										afw.isBoolean( AutoFeatures.autoPickupEnabled )) );
+    	results.add( String.format("    Auto Smelt:&b %s", 
+    										afw.isBoolean( AutoFeatures.autoSmeltEnabled )) );
+    	results.add( String.format("    Auto Block:&b %s", 
+    										afw.isBoolean( AutoFeatures.autoBlockEnabled )) );
+
+    	results.add( String.format("+    Calculate Durability:&b %s", 
+    										afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled )) );
+    	results.add( String.format("+    Calculate Fortune:&b %s", 
+    										afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled )) );
+    	results.add( String.format("+    Calculate Fortune on all Blocks:&b %s", 
+    										afw.isBoolean( AutoFeatures.isCalculateFortuneOnAllBlocksEnabled )) );
+    	results.add( String.format("+    Max Fortune Level:&b %s", 
+    										afw.isBoolean( AutoFeatures.maxFortuneLevel )) );
+    	
+    	results.add( String.format("+    Calculate XP:&b %s", 
+    										afw.isBoolean( AutoFeatures.isCalculateXPEnabled )) );
+    	results.add( String.format("+    Drop XP as Orbs:&b %s", 
+    										afw.isBoolean( AutoFeatures.givePlayerXPAsOrbDrops )) );
+    	
+    	results.add( String.format("+    Process TokensEnchant Explosive Events:&b %s", 
+    										afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents )) );
+    	results.add( String.format("+    Process Crazy Enchants Block Explode Events:&b %s", 
+    										afw.isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents )) );
+    	results.add( String.format("+    Process McMMO BlockBreakEvents:&b %s", 
+    										afw.isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents )) );
+    	
+    	
+    	
+    	
+    	results.add( String.format("Prestiges Enabled:&b %s", 
+    										getConfigBooleanFalse( "prestige.enabled" )) );
+    	results.add( String.format("    Reset Money:&b %s", 
+    										getConfigBooleanFalse( "prestige.resetMoney" )) );
+    	results.add( String.format("    Reset Default Ladder:&b %s", 
+    										getConfigBooleanFalse( "prestige.resetDefaultLadder" )) );
+
+
+    	results.add( String.format("GUI Enabled:&b %s", 
+    										getConfigBooleanFalse( "prison-gui-enabled" )) );
+    	
+    	
+    	results.add( String.format("Sellall Enabled:&b %s", 
+    										getConfigBooleanFalse( "sellall" )) );
+    		  
+    	
+    	results.add( String.format("Backpacks Enabled:&b %s", 
+    										getConfigBooleanFalse( "backpacks" )) );
+    	
+
+		
+		return results;
+	}
+	
 }

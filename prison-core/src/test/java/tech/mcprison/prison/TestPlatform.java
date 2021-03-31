@@ -277,7 +277,8 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
-	public ModuleElement createModuleElement( CommandSender sender, ModuleElementType elementType, String name, String tag ) {
+	public ModuleElement createModuleElement( CommandSender sender, ModuleElementType elementType, String name, 
+					String tag, String accessPermission ) {
 		return null;
 	}
 	
@@ -301,4 +302,9 @@ public class TestPlatform implements Platform {
 		
 	}
 	
+	@Override
+	public List<String> getActiveFeatures() {
+		List<String> results = new ArrayList<>();
+		return results;
+	}
 }

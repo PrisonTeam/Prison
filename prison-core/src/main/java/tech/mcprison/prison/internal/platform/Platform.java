@@ -309,7 +309,8 @@ public interface Platform {
 	public boolean unlinkModuleElements( ModuleElement elementA, ModuleElement elementB );
 
 
-	public ModuleElement createModuleElement( CommandSender sender, ModuleElementType elementType, String name, String tag );
+	public ModuleElement createModuleElement( CommandSender sender, ModuleElementType elementType, String name, 
+						String tag, String accessPermission );
 
 	
 	public int getModuleElementCount( ModuleElementType elementType );
@@ -323,5 +324,13 @@ public interface Platform {
 
 	public void autoCreateMineLinerAssignment();
 	
-
+	
+	/** 
+	 * This function will return a list of text strings indicating features that are either enabled or disabled.
+	 * 
+	 * @return
+	 */
+	public List<String> getActiveFeatures();
+	
+	
 }

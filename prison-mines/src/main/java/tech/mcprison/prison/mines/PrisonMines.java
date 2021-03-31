@@ -90,7 +90,7 @@ public class PrisonMines extends Module {
 
     @Override
     public String getBaseCommands() {
-    	return "&7/&2mines";
+    	return "/mines";
     }
     
     @Override

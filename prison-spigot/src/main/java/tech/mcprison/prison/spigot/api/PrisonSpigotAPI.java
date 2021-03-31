@@ -21,8 +21,10 @@ import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.managers.RankManager;
+import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
-import tech.mcprison.prison.spigot.commands.sellall.SellAllPrisonCommands;
+import tech.mcprison.prison.spigot.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.MaterialType;
@@ -47,7 +49,7 @@ public class PrisonSpigotAPI {
 	 * <p>This returns all mines that are within prison.
 	 * </p>
 	 * 
-	 * @return
+	 * @return results - List of Mines
 	 */
 	public List<Mine> getMines() {
 		List<Mine> results = new ArrayList<>();
@@ -71,8 +73,8 @@ public class PrisonSpigotAPI {
 	 * that will include all mines and will not omit any.  Those begin with an "x".
 	 * </p>
 	 * 
-	 * @param sortOrder
-	 * @return
+	 * @param sortOrder - MineSortOrder
+	 * @return results - PrisonSortableResults
 	 */
 	public PrisonSortableResults getMines( MineSortOrder sortOrder ) {
 		PrisonSortableResults results = null;
@@ -120,7 +122,7 @@ public class PrisonSpigotAPI {
 	 * variations.
 	 * </p>
 	 * 
-	 * @param blockName The name of a block that is intended to b validated
+	 * @param blockName - The name of a block that is intended to b validated
 	 * @return The name of a valid block within prison
 	 */
 	public String getPrisonBlockName( String blockName ) {
@@ -148,7 +150,7 @@ public class PrisonSpigotAPI {
 	 * <p>Provides a list of all mines that contains the specfied block.
 	 * </p>
 	 * 
-	 * @param prisonBlockName The prison block name
+	 * @param prisonBlockName - The prison block name
 	 * @return List of all mines that contains the specified block name
 	 */
 	public List<Mine> getMines( String prisonBlockName ) {
@@ -200,7 +202,7 @@ public class PrisonSpigotAPI {
 	 * are not in a mine, then it will return a null value.
 	 * </p>
 	 * 
-	 * @param player
+	 * @param player - Player
 	 * @return The prison mine that the player is standing in or null if they were not in a mine
 	 */
 	public Mine findMineLocation( Player player ) {
@@ -214,7 +216,7 @@ public class PrisonSpigotAPI {
 	 * If the block was not in a mine, then it would return a null.
 	 * </p>
 	 * 
-	 * @param BlockBreakEvent e
+	 * @param e - BlockBreakEvent
 	 * @return The prison mine if the broken block was located in a mine, otherwise it returns a null
 	 */
 	public Mine getPrisonMine( BlockBreakEvent e ) {
@@ -236,9 +238,9 @@ public class PrisonSpigotAPI {
 	 * block is of type AIR.
 	 * </p>
 	 * 
-	 * @param player
-	 * @param block
-	 * @param isCanceledEvent
+	 * @param player - Player
+	 * @param block - Block
+	 * @param isCanceledEvent - Boolean
 	 * @return
 	 */
 	public Mine getPrisonMine( Player player, Block block, boolean isCanceledEvent) {
@@ -324,6 +326,19 @@ public class PrisonSpigotAPI {
 		SpigotPlayer spigotPlayer = new SpigotPlayer( player );
 		
 		return spigotPlayer.getSellAllMultiplier();
+	}
+
+	/**
+	 * Get the Prison backpacksUtil, which's essentially the core
+	 * of Prison backpacks, to edit or use them by yourself.
+	 *
+	 * This will return null if backpacks are disabled.
+	 * */
+	public BackpacksUtil getPrisonBackpacks(){
+		if (SpigotPrison.getInstance().getConfig().getString("backpacks") != null && SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true")){
+			return BackpacksUtil.get();
+		}
+		return null;
 	}
 
 	/**

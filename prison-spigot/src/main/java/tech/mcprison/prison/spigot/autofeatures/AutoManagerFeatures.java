@@ -1,15 +1,15 @@
 package tech.mcprison.prison.spigot.autofeatures;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -17,10 +17,8 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
@@ -28,17 +26,18 @@ import com.cryptomorin.xseries.XMaterial;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
+import tech.mcprison.prison.spigot.block.OnBlockBreakEventCore;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
-import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Text;
@@ -55,39 +54,10 @@ import tech.mcprison.prison.util.Text;
  *
  */
 public class AutoManagerFeatures
-		extends OnBlockBreakEventListener {
+		extends OnBlockBreakEventCore {
 
-	public enum ItemLoreCounters {
-
-		// NOTE: the String value must include a trailing space!
-
-		itemLoreBlockBreakCount( ChatColor.LIGHT_PURPLE + "Prison Blocks Mined:" +
-				ChatColor.GRAY + " "),
-
-		itemLoreBlockExplodeCount( ChatColor.LIGHT_PURPLE + "Prison Blocks Exploded:" +
-				ChatColor.GRAY + " ");
-
-
-		private final String lore;
-		ItemLoreCounters( String lore ) {
-			this.lore = lore;
-		}
-		public String getLore() {
-			return lore;
-		}
-
-	}
-
-	public enum ItemLoreEnablers {
-		Pickup,
-		Smelt,
-		Block
-		;
-	}
 
 	private Random random = new Random();
-
-	private AutoFeaturesFileConfig autoFeaturesConfig = null;
 
 
 	public AutoManagerFeatures() {
@@ -99,72 +69,8 @@ public class AutoManagerFeatures
 
 	private void setup() {
 
-		this.autoFeaturesConfig = new AutoFeaturesFileConfig();
-
 	}
 
-	public AutoFeaturesFileConfig getAutoFeaturesConfig() {
-		return autoFeaturesConfig;
-	}
-
-	public boolean isBoolean( AutoFeatures feature ) {
-		return autoFeaturesConfig.isFeatureBoolean( feature );
-	}
-
-	protected String getMessage( AutoFeatures feature ) {
-		return autoFeaturesConfig.getFeatureMessage( feature );
-	}
-
-	protected List<String> getListString( AutoFeatures feature ) {
-		List<String> results = null;
-		if ( feature.isStringList() ) {
-			results = autoFeaturesConfig.getFeatureStringList( feature );
-		}
-		else {
-			results = new ArrayList<>();
-		}
-		return results;
-	}
-
-//	/**
-//     * <p>This lazy loading of the FileConfiguration for the AutoFeatures will ensure
-//     * the file is loaded from the file system only one time and only when it is first
-//     * used.  This ensures that if it is never used, it is never loaded in to memory.
-//     * </p>
-//     *
-//     * @return
-//     */
-//    private FileConfiguration getAutoFeaturesConfig() {
-//    	if ( this.autoFeaturesConfig == null ) {
-//    		AutoFeaturesFileConfig afc = new AutoFeaturesFileConfig();
-//    		this.autoFeaturesConfig = afc.getConfig();
-//
-//    	}
-//        return autoFeaturesConfig;
-//    }
-
-
-//    /**
-//     * <p>This change in this function, to move it in to this class, allows the
-//     * reloading of the parameters that controls all of the behaviors whenever
-//     * the data is saved.
-//     * </p>
-//     *
-//     * @return
-//     */
-//    public boolean saveAutoFeaturesConfig() {
-//    	boolean success = false;
-//    	FileConfiguration afConfig = getAutoFeaturesConfig();
-//
-//    	if ( afConfig != null ) {
-//    		AutoFeaturesFileConfig afc = new AutoFeaturesFileConfig();
-//    		success = afc.saveConf(afConfig);
-//
-//    		// reload the internal settings:
-//    		setup();
-//    	}
-//    	return success;
-//    }
 
 	/**
 	 * <p>If the fortune level is zero, then this function will always return a value of one.
@@ -193,16 +99,232 @@ public class AutoManagerFeatures
 
 
 	protected boolean hasSilkTouch (SpigotItemStack itemInHand){
-		return itemInHand.getBukkitStack().getEnchantments().containsKey(Enchantment.SILK_TOUCH);
+		boolean results = false;
+		try {
+			if ( itemInHand != null && itemInHand.getBukkitStack() != null && itemInHand.getBukkitStack().getEnchantments() != null ) {
+				results = itemInHand.getBukkitStack().getEnchantments().containsKey(Enchantment.SILK_TOUCH);
+			}
+		}
+		catch ( NullPointerException e ) {
+			// Ignore. This happens when a TokeEnchanted tool is used when TE is not installed anymore.
+			// It throws this exception:  Caused by: java.lang.NullPointerException: null key in entry: null=5
+		}
+		return results;
 	}
 
 	protected boolean hasFortune(SpigotItemStack itemInHand){
-		return itemInHand.getBukkitStack().getEnchantments().containsKey(Enchantment.LOOT_BONUS_BLOCKS);
+		boolean results = false;
+		try {
+			if ( itemInHand != null && itemInHand.getBukkitStack() != null && itemInHand.getBukkitStack().getEnchantments() != null ) {
+				results = itemInHand.getBukkitStack().getEnchantments().containsKey(Enchantment.LOOT_BONUS_BLOCKS);
+			}
+		}
+		catch ( NullPointerException e ) {
+			// Ignore. This happens when a TokeEnchanted tool is used when TE is not installed anymore.
+			// It throws this exception:  Caused by: java.lang.NullPointerException: null key in entry: null=5
+		}
+		return results;
 	}
 	protected short getFortune(SpigotItemStack itemInHand){
-		return (short) itemInHand.getBukkitStack().getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
+		short results = (short) 0;
+		
+		try {
+			if ( itemInHand != null && 
+					itemInHand.getBukkitStack() != null && 
+					itemInHand.getBukkitStack().containsEnchantment( Enchantment.LOOT_BONUS_BLOCKS ) &&
+					itemInHand.getBukkitStack().getEnchantments() != null ) {
+				results = (short) itemInHand.getBukkitStack().getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
+			}
+		}
+		catch ( NullPointerException e ) {
+			// Ignore. This happens when a TokeEnchanted tool is used when TE is not installed anymore.
+			// It throws this exception:  Caused by: java.lang.NullPointerException: null key in entry: null=5
+		}
+		return results;
 	}
 
+	
+    
+    
+    @Override
+	public boolean doAction( SpigotBlock block, Mine mine, Player player ) {
+    	
+    	return applyAutoEvents( block, player, mine );
+	}
+    
+    
+    /**
+     * <p>This function overrides the doAction in OnBlockBreakEventListener and
+     * this is only enabled when auto manager is enabled.
+     * </p>
+     * 
+     */
+    @Override
+    public boolean doAction( Mine mine, Player player, List<SpigotBlock> explodedBlocks, 
+    								BlockEventType blockEventType, String triggered ) {
+    	return applyAutoEvents( player, mine, explodedBlocks, blockEventType, triggered );
+    }
+	
+
+	private boolean applyAutoEvents( SpigotBlock spigotBlock, Player player, Mine mine) {
+		boolean cancel = false;
+		
+		if (isBoolean(AutoFeatures.isAutoManagerEnabled) && 
+			!spigotBlock.isEmpty() ) {
+			
+//			Output.get().logInfo( "#### AutoManager.applyAutoEvents: BlockBreakEvent: :: " + mine.getName() + "  " + 
+//					"  blocks remaining= " + 
+//					mine.getRemainingBlockCount() + " [" + block.toString() + "]"
+//					);
+
+			SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
+
+			int count = applyAutoEvents( player, spigotBlock, mine );
+			
+			if ( count > 0 ) {
+				processBlockBreakage( spigotBlock, mine, player, count, BlockEventType.blockBreak,
+										null, itemInHand );
+
+    			cancel = true;
+			}
+			
+			if ( mine != null ) {
+				checkZeroBlockReset( mine );
+			}
+	
+		}
+		
+		return cancel;
+	}
+
+
+	
+	
+	private int applyAutoEvents( Player player, SpigotBlock block, Mine mine ) {
+		int count = 0;
+		
+		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
+
+		
+		boolean isLoreEnabled = isBoolean( AutoFeatures.isLoreEnabled );
+		
+		boolean lorePickup = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.lorePickupValue ) );
+		boolean loreSmelt = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.loreSmeltValue) );
+		boolean loreBlock = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.loreBlockValue ) );
+		
+		
+		boolean isAutoPickup = lorePickup || isBoolean( AutoFeatures.autoPickupEnabled ) ||
+										player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ));
+		
+		boolean isAutoSmelt = loreSmelt || isBoolean( AutoFeatures.autoSmeltEnabled ) ||
+										player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ));
+		
+		boolean isAutoBlock = loreBlock || isBoolean( AutoFeatures.autoBlockEnabled ) ||
+										player.isPermissionSet( getMessage( AutoFeatures.permissionAutoBlock ));
+		
+		// NOTE: Using isPermissionSet so players that are op'd to not auto enable everything.
+		//       Ops will have to have the perms set to actually use them.
+				
+		// AutoPickup
+		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines )) &&
+				isAutoPickup ) {
+			
+			count = autoFeaturePickup( block, player, itemInHand );
+
+			// Cannot set to air yet, or auto smelt and auto block will only get AIR:
+//			autoPickupCleanup( block, count );
+		}
+		
+		XMaterial source = SpigotUtil.getXMaterial( block.getPrisonBlock() );
+		
+		// AutoSmelt
+		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoSmeltLimitToMines )) &&
+				isAutoSmelt ){
+			
+			// Smelting needs to change the source to the smelted target so auto block will work:
+			source = autoFeatureSmelt( player, source );
+		}
+		
+		// AutoBlock
+		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoBlockLimitToMines )) &&
+				isAutoBlock ) {
+			
+			autoFeatureBlock( player, source );
+		}
+		
+		
+		// AutoPickup - Clean up (set block to air)
+		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines )) &&
+				isAutoPickup ) {
+			
+			autoPickupCleanup( block, count );
+			
+		}
+
+		
+		return count;
+	}
+
+
+	/**
+	 * <p>This function gets called for EACH block that is impacted by the
+	 * explosion event.  The event may have have a list of blocks, but not all
+	 * blocks may be included in the mine. This function is called ONLY when
+	 * a block is within a mine,
+	 * </p>
+	 * 
+	 * <p>The event TEBlockExplodeEvent has already taken place and it handles all
+	 * actions such as auto pickup, auto smelt, and auto block.  The only thing we
+	 * need to do is to record the number of blocks that were removed during 
+	 * the explosion event. The blocks should have been replaced by air.
+	 * </p>
+	 * 
+	 * <p>Normally, prison based auto features, and or the perms need to be enabled 
+	 * for the auto features to be enabled, but since this is originating from another
+	 * plugin and another external configuration, we cannot test for any real perms
+	 * or configs.  The fact that this event happens within one of the mines is 
+	 * good enough, and must be counted.
+	 * </p>
+	 * 
+	 * @param e
+	 * @param mine
+	 */
+	private boolean applyAutoEvents( Player player, Mine mine, 
+									List<SpigotBlock> explodedBlocks, BlockEventType blockEventType, 
+										String triggered ) {
+		boolean cancel = false;
+		
+		int totalCount = 0;
+
+		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
+
+		
+		// The explodedBlocks list have already been validated as being within the mine:
+		for ( SpigotBlock spigotBlock : explodedBlocks ) {
+			
+			int drop = applyAutoEvents( player, spigotBlock, mine );
+			totalCount += drop;
+			
+			if ( drop > 0 ) {
+				
+				processBlockBreakage( spigotBlock, mine, player, drop, 
+											blockEventType, triggered, itemInHand );
+			}
+		}
+		
+		if ( mine != null ) {
+			checkZeroBlockReset( mine );
+		}
+		
+		if ( totalCount > 0 ) {
+			cancel = true;
+		}
+		
+		return cancel;
+	}
+	
+	
+	
 	/*
 	 * Drops are wrong with old 1.14.4 releases of spigot
 	 * but got fixed in newer versions.
@@ -214,20 +336,25 @@ public class AutoManagerFeatures
 		int count = 0;
 		if (autoPickup) {
 
-			// The following is not the correct drops:
-			Collection<SpigotItemStack> drops = SpigotUtil.getDrops(block, itemInHand);
-//			Collection<ItemStack> drops = e.getBlock().getDrops(itemInHand);
+			// The following may not be the correct drops for all versions of spigot,
+			// plus there are some extra items, such as flint, that will never be dropped.
+			List<SpigotItemStack> drops = new ArrayList<>( SpigotUtil.getDrops(block, itemInHand) );
 
 
 			if (drops != null && drops.size() > 0 ) {
 
+				
+				// Merge drops so each item is only represented once, but has counts.
+				drops = mergeDrops( drops );
+				
+
 				// Need better drop calculation that is not using the getDrops function.
 				short fortuneLevel = getFortune(itemInHand);
-
 
 				// Adds in additional drop items:
 				calculateDropAdditions( itemInHand, drops );
 
+				
 				if ( isBoolean( AutoFeatures.isCalculateSilkEnabled ) &&
 						hasSilkTouch( itemInHand )) {
 
@@ -243,31 +370,40 @@ public class AutoManagerFeatures
 					}
 
 					count += itemStack.getAmount();
-					dropExtra( SpigotUtil.addItemToPlayerInventory( player, itemStack ), player, block );
+					
+					HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( player, itemStack );
+					
+					dropExtra( extras, player );
 //					dropExtra( player.getInventory().addItem(itemStack), player, block );
 				}
 
+				autosellPerBlockBreak( player );
+				
 //				autoPickupCleanup( player, itemInHand, count );
 			}
 		}
 		return count;
 	}
 
+
 	
 	public int calculateNormalDrop( SpigotItemStack itemInHand, SpigotBlock block ) {
 		int count = 0;
-		
 
-		// The following is not the correct drops:
-		Collection<SpigotItemStack> drops = SpigotUtil.getDrops(block, itemInHand);
-//		Collection<ItemStack> drops = e.getBlock().getDrops(itemInHand);
+		// The following may not be the correct drops for all versions of spigot,
+		// plus there are some extra items, such as flint, that will never be dropped.
+		List<SpigotItemStack> drops = new ArrayList<>( SpigotUtil.getDrops(block, itemInHand) );
 
 
 		if (drops != null && drops.size() > 0 ) {
 
+			
+			// Merge drops so each item is only represented once, but has counts.
+			drops = mergeDrops( drops );
+			
+			
 			// Need better drop calculation that is not using the getDrops function.
 			short fortuneLevel = getFortune(itemInHand);
-
 
 			// Adds in additional drop items:
 			calculateDropAdditions( itemInHand, drops );
@@ -278,20 +414,40 @@ public class AutoManagerFeatures
 				calculateSilkTouch( itemInHand, drops );
 			}
 
-			// Drop the items where the origional block was located:
+			
+			// calculate fortune before smelting and blocking:
 			for ( SpigotItemStack itemStack : drops ) {
 
 				if ( isBoolean( AutoFeatures.isCalculateFortuneEnabled ) ) {
 					// calculateFortune directly modifies the quantity on the blocks ItemStack:
 					calculateFortune( itemStack, fortuneLevel );
 				}
+			}
+			
+			
+			
+			if ( isBoolean( AutoFeatures.normalDropSmelt ) ) {
+				
+				normalDropSmelt( drops );
+			}
+			
+			
+			if ( isBoolean( AutoFeatures.normalDropBlock ) ) {
+				
+				normalDropBlock( drops );
+				
+			}
+			
+			
+			// Drop the items where the origional block was located:
+			for ( SpigotItemStack itemStack : drops ) {
+
 
 				count += itemStack.getAmount();
 				
+				
 				dropAtBlock( itemStack, block );
 				
-//				dropExtra( SpigotUtil.addItemToPlayerInventory( player, itemStack ), player, block );
-//				dropExtra( player.getInventory().addItem(itemStack), player, block );
 			}
 
 			
@@ -302,7 +458,102 @@ public class AutoManagerFeatures
 		return count;
 	}
 
-	protected void autoPickupCleanup( SpigotBlock block, Player player, SpigotItemStack itemInHand, int count )
+	
+	
+	public void autosellPerBlockBreak( Player player ) {
+		// This won't try to sell on every item stack, but assuming that sellall will hit on very block 
+		// break, then the odds of inventory being overflowed on one explosion would be more rare than anything
+		if ( isBoolean( AutoFeatures.isAutoSellPerBlockBreakEnabled ) ) {
+			// Run sell all
+			if ( isBoolean( AutoFeatures.isAutoSellPerBlockBreakInlinedEnabled ) ) {
+				// run sellall inline with the block break event:
+				SellAllPrisonCommands.get().sellAllSellCommand( new SpigotPlayer( player ) );
+			}
+			else {
+				// Submit sellall to run in the future (0 ticks in the future):
+				String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
+				Bukkit.dispatchCommand(player, registeredCmd);
+			}
+		}
+	}
+	
+	public void playerSmelt( SpigotPlayer player ) {
+		
+		List<XMaterial> smelts = new ArrayList<>();
+		
+		smelts.add( XMaterial.GOLD_ORE );
+		smelts.add( XMaterial.NETHER_GOLD_ORE );
+		smelts.add( XMaterial.IRON_ORE );
+		smelts.add( XMaterial.COAL_ORE );
+		smelts.add( XMaterial.DIAMOND_ORE );
+		smelts.add( XMaterial.EMERALD_ORE );
+		smelts.add( XMaterial.LAPIS_ORE );
+		smelts.add( XMaterial.REDSTONE_ORE );
+		smelts.add( XMaterial.NETHER_QUARTZ_ORE );
+		smelts.add( XMaterial.ANCIENT_DEBRIS );
+//		smelts.add( XMaterial.COPPER_ORE );
+		
+		
+		for ( XMaterial xMat : smelts ) {
+			autoFeatureSmelt( player.getWrapper(), xMat );
+		}
+
+	}
+	
+	public void playerBlock( SpigotPlayer player ) {
+		
+		List<XMaterial> blocks = new ArrayList<>();
+		
+		blocks.add( XMaterial.GOLD_INGOT );
+		blocks.add( XMaterial.IRON_INGOT );
+		blocks.add( XMaterial.COAL );
+		blocks.add( XMaterial.DIAMOND );
+		blocks.add( XMaterial.REDSTONE );
+		blocks.add( XMaterial.EMERALD );
+		blocks.add( XMaterial.QUARTZ );
+		blocks.add( XMaterial.PRISMARINE_SHARD );
+		blocks.add( XMaterial.SNOW_BLOCK );
+		blocks.add( XMaterial.GLOWSTONE_DUST );
+		blocks.add( XMaterial.LAPIS_LAZULI );
+		
+		
+		for ( XMaterial xMat : blocks ) {
+			autoFeatureBlock( player.getWrapper(), xMat );
+		}
+		
+	}
+	
+	/**
+	 * <p>The List of drops must have only one ItemStack per block type (name).
+	 * This function combines multiple occurrences together and adds up their 
+	 * counts to properly represent the total quantity in the original drops collection
+	 * that had duplicate entries.
+	 * </p>
+	 * 
+	 * @param List of SpigotItemStack drops with duplicate entries
+	 * @return List of SpigotItemStack drops without duplicates
+	 */
+	private List<SpigotItemStack> mergeDrops( List<SpigotItemStack> drops )
+	{
+		TreeMap<String,SpigotItemStack> results = new TreeMap<>();
+
+		for ( SpigotItemStack drop : drops ) {
+			String key = drop.getName();
+			if ( !results.containsKey( key ) ) {
+				results.put( key, drop );
+			}
+			else {
+				SpigotItemStack sItemStack = results.get( key );
+				
+				sItemStack.setAmount( sItemStack.getAmount() + drop.getAmount() );
+			}
+		}
+		
+		return new ArrayList<>( results.values() );
+	}
+
+
+	protected void autoPickupCleanup( SpigotBlock block, int count )
 	{
 		// Auto pickup has been successful. Now clean up.
 		if ( count > 0 ) {
@@ -312,186 +563,66 @@ public class AutoManagerFeatures
 				block.setPrisonBlock( PrisonBlock.AIR );
 			}
 			
-//			e.setCancelled(true);
-//			e.getBlock().setType(Material.AIR);
-//
-//			// Maybe needed to prevent drop side effects:
-//			e.getBlock().getDrops().clear();
+		}
+	}
+	
+	
 
-			// calculate durability impact: Include item durability resistance.
-			if ( isBoolean( AutoFeatures.isCalculateDurabilityEnabled ) ) {
 
-				// value of 0 = normal durability. Value 100 = never calculate durability.
-				int durabilityResistance = 0;
-				if ( isBoolean( AutoFeatures.loreDurabiltyResistance ) ) {
-					durabilityResistance = getDurabilityResistance( itemInHand,
-							getMessage( AutoFeatures.loreDurabiltyResistanceName ) );
-				}
-
-				calculateDurability( player, itemInHand, durabilityResistance );
-			}
+	
+	public void checkZeroBlockReset( Mine mine ) {
+		if ( mine != null ) {
+			
+			// submit a mine sweeper task.  It will only run if it is enabled and another 
+			// mine sweeper task has not been submitted.
+			mine.submitMineSweeperTask();
+			
+			// Checks to see if the mine ran out of blocks, and if it did, then
+			// it will reset the mine:
+			mine.checkZeroBlockReset();
 		}
 	}
 
-	protected void autoSmelt( boolean autoSmelt, String sourceStr, String destinationStr, Player p, SpigotBlock block  ) {
+	protected boolean checkLore( SpigotItemStack itemInHand, String loreValue ) {
+		boolean results = false;
+		
+		double lorePercent = getLoreValue( itemInHand, loreValue );
 
-		if ( autoSmelt ) {
-			XMaterial source = SpigotUtil.getXMaterial( sourceStr );
-			XMaterial destination = SpigotUtil.getXMaterial( destinationStr );
+		results = lorePercent == 100.0 ||
+					lorePercent > 0 && 
+					lorePercent <= getRandom().nextDouble() * 100;
+		
+		return results;
+	}
 
-			SpigotItemStack sourceStack = new SpigotItemStack( source.parseItem() );
-			SpigotItemStack destStack = new SpigotItemStack( destination.parseItem() );
+	
 
-			if ( sourceStack != null && destStack != null &&
-					SpigotUtil.playerInventoryContainsAtLeast( p, sourceStack, 1 ) ) {
+	protected void autoSmelt( boolean autoSmelt, XMaterial source, XMaterial target, Player p ) {
 
-				int count = itemCount(source, p);
-				if ( count > 0 ) {
-					sourceStack.setAmount( count );
-					destStack.setAmount( count );
-
-					SpigotUtil.playerInventoryRemoveItem( p, sourceStack );
-
-					HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( p, destStack );
-					dropExtra( extras, p, block );
-				}
-			}
+		if ( autoSmelt && source != null && target != null ) {
+			
+			HashMap<Integer, SpigotItemStack> overflow = SpigotUtil.itemStackReplaceItems( p, source, target, 1 );
+			dropExtra( overflow, p );
 
 		}
 	}
-	protected void autoBlock( boolean autoBlock, String sourceStr, String destinationStr,
-							  Player p, SpigotBlock block  ) {
-		autoBlock(autoBlock, sourceStr, destinationStr, 9, p, block );
+	
+	
+	protected void autoBlock( boolean autoBlock, XMaterial source, XMaterial target, Player p  ) {
+		autoBlock(autoBlock, source, target, 9, p );
 	}
 
-	protected void autoBlock( boolean autoBlock, String sourceStr, String destinationStr,
-							  int targetCount, Player p, SpigotBlock block  ) {
+	
+	protected void autoBlock( boolean autoBlock, XMaterial source, XMaterial target, int ratio, Player p  ) {
 
-		XMaterial source = SpigotUtil.getXMaterial( sourceStr );
-		XMaterial destination = SpigotUtil.getXMaterial( destinationStr );
-
-		if ( autoBlock ) {
-			int count = itemCount(source, p);
-			if ( count >= targetCount ) {
-				int mult = count / targetCount;
-
-				p.getInventory().removeItem(SpigotUtil.getItemStack(source, mult * targetCount));
-
-				SpigotItemStack itemStack = SpigotUtil.getSpigotItemStack(destination, mult);
-				HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( p, itemStack );
-//				HashMap<Integer, ItemStack> extras = p.getInventory().addItem(SpigotUtil.getItemStack(destination, mult));
-				dropExtra( extras, p, block);
-			}
+		if ( autoBlock && source != null && target != null ) {
+			HashMap<Integer, SpigotItemStack> overflow = SpigotUtil.itemStackReplaceItems( p, source, target, ratio );
+			dropExtra( overflow, p );
+			
 		}
 	}
 
-//	/**
-//	 * <p>Lapis is really dyed ink sacks, so need to have special processing to ensure we process the
-//	 * correct material, and not just any ink sack.
-//	 * </p>
-//	 *
-//	 * <p><b>Warning:</b> this will not work with minecraft 1.15.x since magic numbers have been
-//	 * 						eliminated.
-//	 * </p>
-//	 *
-//	 * @param autoBlock
-//	 * @param player
-//	 */
-//	protected void autoBlockLapis( boolean autoBlock, Player player, Block block  ) {
-//		if ( autoBlock ) {
-//			// ink_sack = 351:4
-//
-//			Material mat = Material.matchMaterial( "INK_SACK" );
-//			short typeId = 4;
-//
-//			// try both methods to get lapis:
-//
-//			try {
-//				convertLapisBlock( player, block, mat, typeId );
-//			}
-//			catch ( Exception e ) {
-//				// Ignore exception.
-//			}
-//
-//			mat = Material.matchMaterial( "lapis_lazuli" );
-//			if ( mat != null ) {
-//
-//				try {
-//					convertLapisBlock( player, block, mat );
-//				}
-//				catch ( Exception e ) {
-//					// Ignore exception.
-//				}
-//			}
-//
-//		}
-//	}
 
-
-//	private void convertLapisBlock( Player player, Block block, Material mat, int typeId ) {
-//		XMaterial xMat = SpigotUtil.getXMaterial( mat );
-//		int count = itemCount(xMat, typeId, player);
-//
-//		if ( count >= 9 ) {
-//			int mult = count / 9;
-//
-//			ItemStack removeLapisItemStack = XMaterial.LAPIS_LAZULI.parseItem();
-//			removeLapisItemStack.setAmount( mult * 9 );
-//
-////			ItemStack removeLapisItemStack = new ItemStack( mat,  mult * 9, (short) typeId);
-//			player.getInventory().removeItem(removeLapisItemStack);
-//
-//			dropExtra( player.getInventory().addItem(new ItemStack(Material.LAPIS_BLOCK, mult)), player, block );
-//
-//		}
-//	}
-
-//	private void convertLapisBlock( Player player, Block block, Material mat ) {
-//		XMaterial xMat = SpigotUtil.getXMaterial( mat );
-//		int count = itemCount(xMat, player);
-//
-//		if ( count >= 9 ) {
-//			int mult = count / 9;
-//
-//			ItemStack removeLapisItemStack = XMaterial.LAPIS_LAZULI.parseItem();
-//			removeLapisItemStack.setAmount( mult * 9 );
-//
-////			ItemStack removeLapisItemStack = new ItemStack( mat,  mult * 9 );
-//			player.getInventory().removeItem(removeLapisItemStack);
-//
-//			dropExtra( player.getInventory().addItem(
-//					new ItemStack(Material.LAPIS_BLOCK, mult)), player, block );
-//		}
-//	}
-
-	private int itemCount(XMaterial source, Player player) {
-		int count = 0;
-		if ( source != null ) {
-			ItemStack testStack = source.parseItem();
-
-			PlayerInventory inv = player.getInventory();
-			for (ItemStack is : inv.getContents() ) {
-				if ( is != null && is.isSimilar( testStack ) ) {
-					count += is.getAmount();
-				}
-			}
-		}
-		return count;
-	}
-
-
-//	private int itemCount(Material source, int typeId, Player player) {
-//		int count = 0;
-//		PlayerInventory inv = player.getInventory();
-//
-//		for (ItemStack is : inv.getContents()) {
-//
-//			if ( is != null && is.getType() != null && is.getType().compareTo( source ) == 0 ) {
-//				count += is.getAmount();
-//			}
-//		}
-//		return count;
-//	}
 
 	/**
 	 * <p>If the player does not have any more inventory room for the current items, then
@@ -501,52 +632,71 @@ public class AutoManagerFeatures
 	 * @param player
 	 * @param block
 	 */
-	private void dropExtra( HashMap<Integer, SpigotItemStack> extra, Player player, SpigotBlock block ) {
+	private void dropExtra( HashMap<Integer, SpigotItemStack> extra, Player player ) {
 
 		if ( extra != null && extra.size() > 0 ) {
 
+			
 			Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
 
-			if (sellAllConfig.getString("Options.Full_Inv_AutoSell").equalsIgnoreCase("true")) {
-				if (sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable").equalsIgnoreCase("true")){
+			if ( isBoolean( sellAllConfig, "Options.Full_Inv_AutoSell") ) {
+				if ( isBoolean( sellAllConfig, "Options.Full_Inv_AutoSell_perUserToggleable") ){
 
 					UUID playerUUID = player.getUniqueId();
 
-					if (sellAllConfig.getString("Users." + playerUUID + ".isEnabled") != null){
-						if (sellAllConfig.getString("Users." + playerUUID + ".isEnabled").equalsIgnoreCase("true")){
-							if (sellAllConfig.getString("Options.Full_Inv_AutoSell_Notification").equalsIgnoreCase("true")) {
-								Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
+					if (isBoolean( sellAllConfig, "Users." + playerUUID + ".isEnabled") ) {
+						
+							if (isBoolean( sellAllConfig, "Options.Full_Inv_AutoSell_Notification") ) {
+								Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(
+										SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
 							}
-
-							Bukkit.dispatchCommand(player, "sellall sell");
-							return;
-						}
+							
+							SellAllPrisonCommands.get().sellAllSellCommand( new SpigotPlayer( player ) );
+							
+//							String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
+//							Bukkit.dispatchCommand(player, registeredCmd);
+//							return;
 					}
 				} else {
-					if (sellAllConfig.getString("Options.Full_Inv_AutoSell_Notification").equalsIgnoreCase("true")) {
-						Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
+					if (isBoolean( sellAllConfig, "Options.Full_Inv_AutoSell_Notification") ) {
+						Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(
+								SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
 					}
+					SellAllPrisonCommands.get().sellAllSellCommand( new SpigotPlayer( player ) );
 
-					Bukkit.dispatchCommand(player, "sellall sell");
-					return;
+//					String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
+//					Bukkit.dispatchCommand(player, registeredCmd);
+//					return;
 				}
+				
+				// Now that something might have been sold, try to add all the extra inventory items back to the 
+				// player's inventory so it is not lost then pass the moreExtras along to be handled as the 
+				// configurations require.
+				HashMap<Integer, SpigotItemStack> moreExtras = new HashMap<>();
+				for ( SpigotItemStack itemStack : extra.values() ) {
+					moreExtras.putAll( SpigotUtil.addItemToPlayerInventory( player, itemStack ));
+				}
+				extra = moreExtras;
 			}
-
+			
 			for ( SpigotItemStack itemStack : extra.values() ) {
-
+				
 				if ( isBoolean( AutoFeatures.dropItemsIfInventoryIsFull ) ) {
-
-//					Location dropPoint = player.getLocation().add( player.getLocation().getDirection());
-//
-//					player.getWorld().dropItem( dropPoint, itemStack );
-
+					
 					SpigotUtil.dropPlayerItems( player, itemStack );
-					notifyPlayerThatInventoryIsFull( player, block );
-				} else {
-					notifyPlayerThatInventoryIsFullLosingItems( player, block );
+					notifyPlayerThatInventoryIsFull( player );
+				} 
+				else {
+					notifyPlayerThatInventoryIsFullLosingItems( player );
 				}
 			}
+
 		}
+	}
+	
+	private boolean isBoolean( Configuration sellAllConfig, String config ) {
+		String configValue = sellAllConfig.getString( config );
+		return configValue != null && configValue.equalsIgnoreCase( "true" );
 	}
 	
 	private void dropAtBlock( SpigotItemStack itemStack, SpigotBlock block ) {
@@ -554,27 +704,27 @@ public class AutoManagerFeatures
 		SpigotUtil.dropItems( block, itemStack );
 	}
 
-	private void notifyPlayerThatInventoryIsFull( Player player, SpigotBlock block ) {
-		notifyPlayerWithSound( player, block, AutoFeatures.inventoryIsFull );
+	private void notifyPlayerThatInventoryIsFull( Player player ) {
+		notifyPlayerWithSound( player, AutoFeatures.inventoryIsFull );
 	}
 
-	@SuppressWarnings( "unused" )
-	private void notifyPlayerThatInventoryIsFullDroppingItems( Player player, SpigotBlock block ) {
-		notifyPlayerWithSound( player, block, AutoFeatures.inventoryIsFullDroppingItems );
+//	@SuppressWarnings( "unused" )
+//	private void notifyPlayerThatInventoryIsFullDroppingItems( Player player ) {
+//		notifyPlayerWithSound( player, AutoFeatures.inventoryIsFullDroppingItems );
+//	}
+
+	private void notifyPlayerThatInventoryIsFullLosingItems( Player player ) {
+		notifyPlayerWithSound( player, AutoFeatures.inventoryIsFullLosingItems );
+
 	}
 
-	private void notifyPlayerThatInventoryIsFullLosingItems( Player player, SpigotBlock block ) {
-		notifyPlayerWithSound( player, block, AutoFeatures.inventoryIsFullLosingItems );
+	private void notifyPlayerWithSound( Player player, AutoFeatures messageId ) {
 
-	}
-
-	private void notifyPlayerWithSound( Player player, SpigotBlock block, AutoFeatures messageId ) {
-
-		String message = autoFeaturesConfig.getFeatureMessage( messageId );
+		String message = getMessage( messageId );
 
 		// Play sound when full
 		if (isBoolean(AutoFeatures.playSoundIfInventoryIsFull)) {
-			Prison.get().getMinecraftVersion() ;
+//	not used:		Prison.get().getMinecraftVersion() ;
 
 			// This hard coding the Sound enum causes failures in spigot 1.8.8 since it does not exist:
 			Sound sound;
@@ -770,13 +920,12 @@ public class AutoManagerFeatures
 	 */
 	protected int autoFeaturePickup( SpigotBlock block, Player p, SpigotItemStack itemInHand ) {
 
-
-//		Material brokenBlock = e.getBlock().getType();
-//		String blockName = brokenBlock.toString().toLowerCase();
-//		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( p );
 		int count = 0;
+
+		boolean isAll = isBoolean( AutoFeatures.autoPickupAllBlocks );
+		PrisonBlock prisonBlock = block.getPrisonBlock();
 		
-		// Use this is a block name lisst based upon the following:  blockType:blockName if not minecraft, or blockName
+		// Use this is a block name list based upon the following:  blockType:blockName if not minecraft, or blockName
 		List<String> autoPickupBlockNameList =
 				isBoolean( AutoFeatures.autoPickupBlockNameListEnabled ) ? 
 						getListString( AutoFeatures.autoPickupBlockNameList ) : null;
@@ -787,82 +936,71 @@ public class AutoManagerFeatures
 		}
 		
 		else if ( isBoolean( AutoFeatures.autoPickupBlockNameListEnabled ) && autoPickupBlockNameList.size() > 0 && 
-							autoPickupBlockNameList.contains( block.getPrisonBlock().getBlockName() ) ) {
+							autoPickupBlockNameList.contains( prisonBlock.getBlockName() ) ) {
 			count += autoPickup( true, p, itemInHand, block );
 		}
 			
 		else {
 
-			switch (block.getPrisonBlock().getBlockNameSearch() ) {
+			switch ( prisonBlock.getBlockName() ) {
 
 				case "cobblestone":
-					count += autoPickup(isBoolean( AutoFeatures.autoPickupAllBlocks ) ||
-							isBoolean( AutoFeatures.autoPickupCobbleStone ), p, itemInHand, block);
+					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupCobbleStone ), p, itemInHand, block);
 					break;
 
 				case "stone":
-					count += autoPickup(isBoolean( AutoFeatures.autoPickupAllBlocks ) ||
-							isBoolean( AutoFeatures.autoPickupStone ), p, itemInHand, block);
+					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupStone ), p, itemInHand, block);
 					break;
 
 				case "gold_ore":
-					count += autoPickup(isBoolean( AutoFeatures.autoPickupAllBlocks ) ||
-							isBoolean( AutoFeatures.autoPickupGoldOre ), p, itemInHand, block);
+					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupGoldOre ), p, itemInHand, block);
 					break;
 
 				case "iron_ore":
-					count += autoPickup(isBoolean( AutoFeatures.autoPickupAllBlocks ) ||
-							isBoolean( AutoFeatures.autoPickupIronOre ), p, itemInHand, block);
+					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupIronOre ), p, itemInHand, block);
 					break;
 
 				case "coal_ore":
-					count += autoPickup(isBoolean( AutoFeatures.autoPickupAllBlocks ) ||
-							isBoolean( AutoFeatures.autoPickupCoalOre ), p, itemInHand, block);
+					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupCoalOre ), p, itemInHand, block);
 					break;
 
 				case "diamond_ore":
-					count += autoPickup(isBoolean( AutoFeatures.autoPickupAllBlocks ) ||
-							isBoolean( AutoFeatures.autoPickupDiamondOre ), p, itemInHand, block);
+					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupDiamondOre ), p, itemInHand, block);
 					break;
 
 				case "redstone_ore":
-					count += autoPickup(isBoolean( AutoFeatures.autoPickupAllBlocks ) ||
-							isBoolean( AutoFeatures.autoPickupRedStoneOre ), p, itemInHand, block);
+					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupRedStoneOre ), p, itemInHand, block);
 					break;
 
 				case "emerald_ore":
-					count += autoPickup(isBoolean( AutoFeatures.autoPickupAllBlocks ) ||
-							isBoolean( AutoFeatures.autoPickupEmeraldOre ), p, itemInHand, block);
+					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupEmeraldOre ), p, itemInHand, block);
 					break;
 
 				case "quartz_ore":
-					count += autoPickup(isBoolean( AutoFeatures.autoPickupAllBlocks ) ||
-							isBoolean( AutoFeatures.autoPickupQuartzOre ), p, itemInHand, block);
+					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupQuartzOre ), p, itemInHand, block);
 					break;
 
 				case "lapis_ore":
-					count += autoPickup(isBoolean( AutoFeatures.autoPickupAllBlocks ) ||
-							isBoolean( AutoFeatures.autoPickupLapisOre ), p, itemInHand, block );
+					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupLapisOre ), p, itemInHand, block );
 					break;
 
 				case "snow_ball":
-					count += autoPickup(isBoolean( AutoFeatures.autoPickupAllBlocks ) ||
-							isBoolean( AutoFeatures.autoPickupSnowBall ), p, itemInHand, block );
+					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupSnowBall ), p, itemInHand, block );
 					break;
 
 				case "glowstone_dust": // works 1.15.2
-					count += autoPickup(isBoolean( AutoFeatures.autoPickupAllBlocks ) ||
-							isBoolean( AutoFeatures.autoPickupGlowstoneDust ), p, itemInHand, block );
+					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupGlowstoneDust ), p, itemInHand, block );
 					break;
 
 				default:
-					count += autoPickup(isBoolean( AutoFeatures.autoPickupAllBlocks ), p, itemInHand, block );
+					count += autoPickup(isAll, p, itemInHand, block );
 					break;
 			}
 		}
 
+		// Moved out of this function since it shouldn't have been placed here.
 		// Calculate XP on block break if enabled:
-		calculateXP( p, block, count );
+//		calculateXP( p, block, count );
 
 //				Output.get().logInfo( "In mine: %s  blockName= [%s] %s  drops= %s  count= %s  dropNumber= %s ",
 //						mine.getName(), blockName, Integer.toString( dropNumber ),
@@ -873,159 +1011,310 @@ public class AutoManagerFeatures
 		return count;
 	}
 
-	protected void autoFeatureSmelt( SpigotBlock block, Player p, SpigotItemStack itemInHand )
+	protected XMaterial autoFeatureSmelt( Player p, XMaterial source )
 	{
-//		Block block = e.getBlock();
+		XMaterial results = source;
+		
+		boolean isAll = isBoolean( AutoFeatures.autoSmeltAllBlocks );
+		
+//		XMaterial source = SpigotUtil.getXMaterial( block.getPrisonBlock() );
+		if ( source != null ) {
+			
+			switch ( source )
+			{
+				case GOLD_ORE:
+				case NETHER_GOLD_ORE:
+					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltGoldOre ), source, XMaterial.GOLD_INGOT, p );
+					results = XMaterial.GOLD_INGOT;
+					break;
+					
+				case IRON_ORE:
+					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltIronOre ), source, XMaterial.IRON_INGOT, p );
+					results = XMaterial.IRON_INGOT;
+					break;
+					
+				case COAL_ORE:
+					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltCoalOre ), source, XMaterial.COAL, p );
+					results = XMaterial.COAL;
+					break;
+					
+				case DIAMOND_ORE:
+					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltDiamondlOre ), source, XMaterial.DIAMOND, p );
+					results = XMaterial.DIAMOND;
+					break;
+					
+				case EMERALD_ORE:
+					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltEmeraldOre ), source, XMaterial.EMERALD, p );
+					results = XMaterial.EMERALD;
+					break;
+					
+				case LAPIS_ORE:
+					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltLapisOre ), source, XMaterial.LAPIS_LAZULI, p );
+					results = XMaterial.LAPIS_LAZULI;
+					break;
+					
+				case REDSTONE_ORE:
+					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltRedstoneOre ), source, XMaterial.REDSTONE, p );
+					results = XMaterial.REDSTONE;
+					break;
+					
+				case NETHER_QUARTZ_ORE:
+					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltNetherQuartzOre ), source, XMaterial.QUARTZ, p );
+					results = XMaterial.QUARTZ;
+					break;
+					
+				case ANCIENT_DEBRIS:
+					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltAncientDebris ), source, XMaterial.NETHERITE_SCRAP, p );
+					results = XMaterial.NETHERITE_SCRAP;
+					break;
 
-		autoSmelt(isBoolean( AutoFeatures.autoSmeltAllBlocks ) || isBoolean( AutoFeatures.autoSmeltGoldOre ), "GOLD_ORE", "GOLD_INGOT", p, block);
-
-		autoSmelt(isBoolean( AutoFeatures.autoSmeltAllBlocks ) || isBoolean( AutoFeatures.autoSmeltIronOre ), "IRON_ORE", "IRON_INGOT", p, block);
-	}
-
-	protected void autoFeatureBlock( SpigotBlock block, Player p, SpigotItemStack itemInHand ) {
-
-//		Block block = e.getBlock();
-
-		// Any autoBlock target could be enabled, and could have multiples of 9, so perform the
-		// checks within each block type's function call.  So in one pass, could hit on more
-		// than one of these for multiple times too.
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockGoldBlock ), "GOLD_INGOT", "GOLD_BLOCK", p, block);
-
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockIronBlock ), "IRON_INGOT", "IRON_BLOCK", p, block);
-
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockCoalBlock ), "COAL", "COAL_BLOCK", p, block);
-
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockDiamondBlock ), "DIAMOND", "DIAMOND_BLOCK", p, block);
-
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockRedstoneBlock ), "REDSTONE","REDSTONE_BLOCK", p, block);
-
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockEmeraldBlock ), "EMERALD", "EMERALD_BLOCK", p, block);
-
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockQuartzBlock ), "QUARTZ", "QUARTZ_BLOCK", 4, p, block);
-
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockPrismarineBlock ), "PRISMARINE_SHARD", "PRISMARINE", 4, p, block);
-
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockSnowBlock ), "SNOW_BALL", "SNOW_BLOCK", 4, p, block);
-
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockGlowstone ), "GLOWSTONE_DUST", "GLOWSTONE", 4, p, block);
-
-		autoBlock(isBoolean( AutoFeatures.autoBlockAllBlocks ) || isBoolean( AutoFeatures.autoBlockLapisBlock ), "LAPIS_LAZULI", "LAPIS_BLOCK", p, block);
-	}
-
-	protected void itemLoreCounter( SpigotItemStack itemInHand, String itemLore, int blocks) {
-
-		if (itemInHand.getBukkitStack().hasItemMeta()) {
-
-			List<String> lore = new ArrayList<>();
-			itemLore = itemLore.trim() + " ";
-			itemLore = Text.translateAmpColorCodes( itemLore.trim() + " ");
-			ItemMeta meta = itemInHand.getBukkitStack().getItemMeta();
-
-//			String prisonBlockBroken = itemLore.getLore();
-
-
-			if (meta.hasLore()) {
-				lore = meta.getLore();
-				boolean found = false;
-
-				for( int i = 0; i < lore.size(); i++ ) {
-					if ( lore.get( i ).startsWith( itemLore ) ) {
-						String val = lore.get( i ).replace( itemLore, "" ).trim();
-						int count = blocks;
-
-						try {
-							count += Integer.parseInt(val);
-						} catch (NumberFormatException e1) {
-							Output.get().logError("AutoManager: tool counter failure. lore= [" + lore.get(i) + "] val= [" + val + "] error: " + e1.getMessage());								}
-
-						lore.set(i, itemLore + count);
-						found = true;
-
-						break;
-					}
-				}
-
-				if ( !found ) {
-					lore.add(itemLore + 1);
-				}
-
-			} else {
-				lore.add(itemLore + 1);
+				// v1.17 !!
+//				case COPPER_ORE:
+//					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltIronOre ), source, XMaterial.COPPER_INGOT, p );
+//					results = XMaterial.COPPER_INGOT;
+//					break;
+					
+				default:
+					break;
 			}
-
-			meta.setLore(lore);
-			itemInHand.getBukkitStack().setItemMeta(meta);
-
-			// incrementCounterInName( itemInHand, meta );
-
 		}
-	}
-
-	/**
-	 * <p>This function will search for the loreDurabiltyResistanceName within the
-	 * item in the hand, if found it will return the number if it exists.  If not
-	 * found, then it will return a value of zero, indicating that no special resistance
-	 * exists, and that durability should be applied as normal.
-	 * </p>
-	 *
-	 * <p>If there is no value after the lore name, then the default is 100 %.
-	 * If a value follows the lore name, then it must be an integer.
-	 * If it is less than 0, then 0. If it is greater than 100, then 100.
-	 * </p>
-	 *
-	 * @param itemInHand
-	 * @param itemLore
-	 * @return
-	 */
-	protected int getDurabilityResistance(SpigotItemStack itemInHand, String itemLore) {
-		int results = 0;
-
-		if ( itemInHand.getBukkitStack().hasItemMeta() ) {
-
-			List<String> lore = new ArrayList<>();
-
-			itemLore = itemLore.trim() + " ";
-
-			itemLore = Text.translateAmpColorCodes( itemLore.trim() + " ");
-
-//			String prisonBlockBroken = itemLore.getLore();
-
-			ItemMeta meta = itemInHand.getBukkitStack().getItemMeta();
-
-			if (meta.hasLore()) {
-				lore = meta.getLore();
-
-				for (String s : lore) {
-					if (s.startsWith(itemLore)) {
-
-						// It has the durability resistance lore, so set the results to 100.
-						// If a value is set, then it will be replaced.
-						results = 100;
-
-						String val = s.replace(itemLore, "").trim();
-
-						try {
-							results += Integer.parseInt(val);
-						} catch (NumberFormatException e1) {
-							Output.get().logError("AutoManager: tool durability failure. lore= [" + s + "] val= [" + val + "] error: " + e1.getMessage());
-						}
-
-						break;
-					}
-				}
-			}
-
-			if ( results > 100d ) {
-				results = 100;
-			}
-			else if ( results < 0 ) {
-				results = 0;
-			}
-
-		}
-
+		
+		
 		return results;
 	}
+
+	protected void autoFeatureBlock( Player p, XMaterial source  ) {
+
+		boolean isAll = isBoolean( AutoFeatures.autoSmeltAllBlocks );
+
+		if ( source != null ) {
+			
+			// Any autoBlock target could be enabled, and could have multiples of 9, so perform the
+			// checks within each block type's function call.  So in one pass, could hit on more
+			// than one of these for multiple times too.
+			switch ( source )
+			{
+				case GOLD_INGOT:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockGoldBlock ), source, XMaterial.GOLD_BLOCK, p );
+					
+					break;
+					
+				case IRON_INGOT:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockIronBlock ), source, XMaterial.IRON_BLOCK, p );
+					
+					break;
+
+				case COAL:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockCoalBlock ), source, XMaterial.COAL_BLOCK, p );
+					
+					break;
+					
+				case DIAMOND:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockDiamondBlock ), source, XMaterial.DIAMOND_BLOCK, p );
+					
+					break;
+					
+				case REDSTONE:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockRedstoneBlock ), source,XMaterial.REDSTONE_BLOCK, p );
+					
+					break;
+					
+				case EMERALD:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockEmeraldBlock ), source, XMaterial.EMERALD_BLOCK, p );
+					
+					break;
+					
+				case QUARTZ:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockQuartzBlock ), source, XMaterial.QUARTZ_BLOCK, 4, p );
+					
+					break;
+					
+				case PRISMARINE_SHARD:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockPrismarineBlock ), source, XMaterial.PRISMARINE, 4, p );
+					
+					break;
+					
+				case SNOWBALL:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockSnowBlock ), source, XMaterial.SNOW_BLOCK, 4, p );
+					
+					break;
+					
+				case GLOWSTONE_DUST:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockGlowstone ), source, XMaterial.GLOWSTONE, 4, p );
+					
+					break;
+					
+				case LAPIS_LAZULI:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockLapisBlock ), source, XMaterial.LAPIS_BLOCK, p );
+					
+					break;
+					
+				default:
+					break;
+			}
+		}
+
+	}
+
+	
+	/**
+	 * <p>This processes the normal drop smelting if it's enabled.  Only the 
+	 * List of SpigotItemStacks are needed.
+	 * </p>
+	 * 
+	 * @param drops
+	 */
+	protected void normalDropSmelt( List<SpigotItemStack> drops ) {
+		
+		Set<XMaterial> xMats = new HashSet<>();
+		for ( SpigotItemStack sItemStack : drops ) {
+			XMaterial source = XMaterial.matchXMaterial( sItemStack.getBukkitStack() );
+			
+			if ( !xMats.contains( source  ) ) {
+				xMats.add( source );
+			}
+		}
+		
+		
+		for ( XMaterial source : xMats ) {
+			
+			
+			switch ( source )
+			{
+				case GOLD_ORE:
+				case NETHER_GOLD_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GOLD_INGOT, 1 );
+					break;
+					
+				case IRON_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.IRON_INGOT, 1 );
+					break;
+					
+				case COAL_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COAL,11 );
+					break;
+					
+				case DIAMOND_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.DIAMOND, 1 );
+					break;
+					
+				case EMERALD_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.EMERALD, 1 );
+					break;
+					
+				case LAPIS_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_LAZULI, 1 );
+					break;
+					
+				case REDSTONE_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.REDSTONE, 1 );
+					break;
+					
+				case NETHER_QUARTZ_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.QUARTZ, 1 );
+					break;
+					
+				case ANCIENT_DEBRIS:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.NETHERITE_SCRAP, 1 );
+					break;
+
+				// v1.17 !!
+//				case COPPER_ORE:
+//					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COPPER_INGOT, 1);
+//					break;
+					
+				default:
+					break;
+			}
+		}
+		
+	}
+
+
+	/**
+	 * <p>This processed the normal drops for blocking.  Only the List of 
+	 * SpigotItemStacks are needed since everything else is self contained.
+	 * </p>
+	 * 
+	 * @param drops
+	 */
+	protected void normalDropBlock( List<SpigotItemStack> drops ) {
+		
+		Set<XMaterial> xMats = new HashSet<>();
+		for ( SpigotItemStack sItemStack : drops ) {
+			XMaterial source = XMaterial.matchXMaterial( sItemStack.getBukkitStack() );
+			
+			if ( !xMats.contains( source  ) ) {
+				xMats.add( source );
+			}
+		}
+		
+		
+		for ( XMaterial source : xMats ) {
+			
+			switch ( source )
+			{
+				case GOLD_INGOT:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GOLD_BLOCK, 9 );
+					
+					break;
+					
+				case IRON_INGOT:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.IRON_BLOCK, 9 );
+					
+					break;
+
+				case COAL:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COAL_BLOCK, 9 );
+					
+					break;
+					
+				case DIAMOND:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.DIAMOND_BLOCK, 9 );
+					
+					break;
+					
+				case REDSTONE:
+					SpigotUtil.itemStackReplaceItems( drops, source,XMaterial.REDSTONE_BLOCK, 9 );
+					
+					break;
+					
+				case EMERALD:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.EMERALD_BLOCK, 9 );
+					
+					break;
+					
+				case QUARTZ:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.QUARTZ_BLOCK, 4 );
+					
+					break;
+					
+				case PRISMARINE_SHARD:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.PRISMARINE, 4 );
+					
+					break;
+					
+				case SNOWBALL:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.SNOW_BLOCK, 4 );
+					
+					break;
+					
+				case GLOWSTONE_DUST:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GLOWSTONE, 4 );
+					
+					break;
+					
+				case LAPIS_LAZULI:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_BLOCK, 1 );
+					
+					
+				default:
+					break;
+			}
+		}
+		
+	}
+
 
 
 	protected void incrementCounterInName( ItemStack itemInHand, ItemMeta meta ) {
@@ -1065,161 +1354,14 @@ public class AutoManagerFeatures
 	}
 
 	/**
-	 * <p>This should calculate and apply the durability consumption on the tool.
+	 * <p>NOTE that the calculations of calculateBukkitExtendedFortuneBlockCount()
+	 * will override the fortune calculations below.
 	 * </p>
-	 *
-	 * <p>The damage is calculated as a value of one durability, but all damage can be
-	 * skipped if the tool has a durability enchantment.  If it does, then there is a
-	 * percent chance of 1 in (1 + durabilityLevel).  So if a tool has a durability level
-	 * of 1, then there is a 50% chance. Level of 2, then a 66.6% chance. Level of 3 has
-	 * a 75% chance. And a level of 9 has a 90% chance. There are no upper limits on
-	 * durability enchantment levels.
-	 * </p>
-	 *
-	 * <p>Some blocks may have a damage of greater than 1, but for now, this
-	 * does not take that in to consideration. If hooking up in the future, just
-	 * set the initial damage to the correct value based upon block type that was mined.
-	 * </p>
-	 *
-	 * <p>The parameter durabilityResistance is optional, to disable use a value of ZERO.
-	 * This is a percentage and is calculated first.  If random value is equal to the parameter
-	 * or less, then it will skip the durability calculations for the current event.
-	 * </p>
-	 *
-	 * <p>Based upon the following URL.  See Tool Durability.
-	 * </p>
-	 * https://minecraft.gamepedia.com/Item_durability
-	 *
-	 * @param player
-	 * @param itemInHand - Should be the tool they used to mine or dig the block
-	 * @param durabilityResistance - Chance to prevent durability wear being applied.
-	 * 			Zero always disables this calculation and allows normal durability calculations
-	 * 			to be performed. 100 always prevents wear.
-	 */
-	protected void calculateDurability(Player player, SpigotItemStack itemInHand, int durabilityResistance) {
-
-		short damage = 1;  // Generally 1 unless instant break block then zero.
-
-		if ( durabilityResistance >= 100 ) {
-			damage = 0;
-		} else if ( durabilityResistance > 0 ) {
-			if ( getRandom().nextInt( 100 ) <= durabilityResistance ) {
-				damage = 0;
-			}
-		}
-
-		if (damage > 0 && itemInHand.getBukkitStack().containsEnchantment( Enchantment.DURABILITY)) {
-			int durabilityLevel = itemInHand.getBukkitStack().getEnchantmentLevel( Enchantment.DURABILITY );
-
-			// the chance of losing durability is 1 in (1+level)
-			// So if the random int == 0, then take damage, otherwise none.
-			if (getRandom().nextInt( durabilityLevel ) > 0) {
-				damage = 0;
-			}
-		}
-
-		if (damage > 0) {
-
-			Compatibility compat = SpigotPrison.getInstance().getCompatibility();
-			int maxDurability = compat.getDurabilityMax( itemInHand );
-			int durability = compat.getDurability( itemInHand );
-			int newDurability = durability + damage;
-
-			if (newDurability > maxDurability) {
-				// Item breaks! ;(
-				compat.breakItemInMainHand( player );
-			} else {
-				compat.setDurability( itemInHand, newDurability );
-			}
-			player.updateInventory();
-		}
-	}
-
-	private void calculateXP(Player player, SpigotBlock block, int count) {
-
-		if (isBoolean(AutoFeatures.isCalculateXPEnabled) && block != null ) {
-
-			String blockName = block.getPrisonBlock() == null ? null : block.getPrisonBlock().getBlockName();
-
-			if ( blockName != null ) {
-
-				int xp = 0;
-				for ( int i = 0; i < count; i++ ) {
-					xp += calculateXP( blockName );
-				}
-
-				if (xp > 0) {
-
-					if ( isBoolean( AutoFeatures.givePlayerXPAsOrbDrops )) {
-
-						Location dropPoint = player.getLocation().add( player.getLocation().getDirection());
-						((ExperienceOrb) player.getWorld().spawn(dropPoint, ExperienceOrb.class)).setExperience(xp);
-
-					}
-					else {
-						player.giveExp( xp );
-					}
-				}
-			}
-		}
-	}
-	/**
-	 * <p>This calculate xp based upon the block that is broken.
-	 * Fortune does not increase XP that a block drops.
-	 * </p>
-	 *
-	 * <ul>
-	 *   <li>Coal Ore: 0 - 2</li>
-	 *   <li>Nether Gold Ore: 0 - 1</li>
-	 *   <li>Diamond Ore, Emerald Ore: 3 - 7</li>
-	 *   <li>Lapis Luzuli Ore, Nether Quartz Ore: 2 - 5</li>
-	 *   <li>Redstone Ore: 1 - 5</li>
-	 *   <li>Monster Spawner: 15 - 43</li>
-	 * </ul>
-	 *
-	 * @param Block
-	 * @return
-	 */
-	private int calculateXP( String blockName ) {
-		int xp = 0;
-
-		switch (blockName.toLowerCase()) {
-			case "coal_ore":
-				xp = getRandom().nextInt( 2 );
-				break;
-
-			case "nether_gold_ore":
-				xp = getRandom().nextInt( 1 );
-				break;
-
-			case "diamond_ore":
-			case "emerald_ore":
-				xp = getRandom().nextInt( 4 ) + 3;
-				break;
-
-			case "lapis_ore":
-			case "nether_quartz_ore":
-				xp = getRandom().nextInt( 3 ) + 2;
-				break;
-
-			case "redstone_ore":
-				xp = getRandom().nextInt( 4 ) + 1;
-				break;
-
-			case "spawn":
-				xp = getRandom().nextInt( 28 ) + 15;
-				break;
-
-			default:
-				break;
-		}
-
-		return xp;
-	}
-
-	/**
+	 * 
+	 * 
 	 * <p>This function is based upon the following wiki page.
 	 * </p>
+	 * 
 	 * https://minecraft.gamepedia.com/Fortune
 	 *
 	 * <p>"<b>Ore:</b> For coal ore, diamond ore, emerald ore, lapis lazuli ore,
@@ -1255,7 +1397,19 @@ public class AutoManagerFeatures
 	 */
 	protected void calculateFortune(SpigotItemStack blocks, int fortuneLevel) {
 
+		
+		// If the bukkit fortune was applied (amount > 1) then extend it to the full
+		// range of the fortune enchantment.  Otherwise this value will be zero.
+		// This value represents the final number of block amount.
+		int bukkitExtendedFortuneBlockCount = 
+				calculateBukkitExtendedFortuneBlockCount( blocks, fortuneLevel );
+		
 		if (fortuneLevel > 0) {
+			
+			int maxFortuneLevel = getInteger( AutoFeatures.maxFortuneLevel );
+			if ( maxFortuneLevel > 0 && fortuneLevel > maxFortuneLevel ) {
+				fortuneLevel = maxFortuneLevel;
+			}
 
 			int count = blocks.getAmount();
 			int multiplier = 1;
@@ -1299,10 +1453,16 @@ public class AutoManagerFeatures
 					block == BlockType.SNOW_BLOCK
 					) {
 
-				multiplier = calculateFortuneMultiplier( fortuneLevel, multiplier );
-
-				// multiply the multiplier:
-				count *= multiplier;
+				if ( bukkitExtendedFortuneBlockCount == 0 ) {
+					multiplier = calculateFortuneMultiplier( fortuneLevel, multiplier );
+					
+					// multiply the multiplier:
+					count *= multiplier;
+				}
+				else {
+					count = bukkitExtendedFortuneBlockCount;
+				}
+				
 			} else if ( block == BlockType.GLOWSTONE ||
 					block == BlockType.GLOWSTONE_DUST ||
 					block == BlockType.REDSTONE ||
@@ -1340,89 +1500,76 @@ public class AutoManagerFeatures
 				}
 
 				// add the multiplier to the count:
-				count += multiplier;
+				if ( bukkitExtendedFortuneBlockCount == 0 ) {
+					count += multiplier;
+				}
+				else {
+					count = bukkitExtendedFortuneBlockCount;
+				}
+
 			}
 
 			// The count has the final value so set it as the amount:
 			blocks.setAmount( count );
 		}
 
+	}
 
 
-		// cannot use switches with dynamic Material types:
-//		switch ( blocks.getType() ){
-//
-//			case COAL:
-//			case DIAMOND:
-//			case EMERALD:
-//			case LAPIS_BLOCK:
-//			case GOLD_BLOCK:
-//			case QUARTZ_BLOCK:
-//			case COAL_ORE:
-//			case DIAMOND_ORE:
-//			case EMERALD_ORE:
-//			case LAPIS_ORE:
-//			case GOLD_ORE:
-//			case QUARTZ_ORE:
-//
-//				multiplier = calculateFortuneMultiplier( fortuneLevel, multiplier );
-//
-//				// multiply the multiplier:
-//				count *= multiplier;
-//				break;
-//
-//			case GLOWSTONE:
-//			case GLOWSTONE_DUST:
-//			case REDSTONE:
-//			case SEA_LANTERN:
-//			case GLOWING_REDSTONE_ORE:
-//			case PRISMARINE:
-//
-//			case BEETROOT_SEEDS:
-//			case CARROT:
-//			case MELON:
-//			case MELON_SEEDS:
-//			case NETHER_WARTS:
-//			case POTATO:
-//			case GRASS:
-//			case WHEAT:
-//
-//				multiplier = getRandom().nextInt( fortuneLevel );
-//
-//				switch ( blocks.getType() )
-//				{
-//					// limits slightly greater than standard:
-//					case GLOWSTONE:
-//						// standard: 4
-//						if ( multiplier > 5 ) {
-//							multiplier = 5;
-//						}
-//						break;
-//					case SEA_LANTERN:
-//						// standard: 5
-//						if ( multiplier > 6 ) {
-//							multiplier = 6;
-//						}
-//						break;
-//					case MELON:
-//						// standard: 9
-//						if ( multiplier > 11 ) {
-//							multiplier = 11;
-//						}
-//
-//					default:
-//						break;
-//				}
-//
-//				// add the multiplier to the count:
-//				count += multiplier;
-//
-//			default:
-//				break;
-//		}
-
-//		// The count has the final value so set it as the amount:
-//		blocks.setAmount( count );
+	/**
+	 * <p>This function detects if bukkit applied a fortune to the drop that it supplied by
+	 * checking to see if the block amount is grater than 1.
+	 * If it is, and the fortune level of the tool is greater than the vanilla max fortune 
+	 * level of 3, then it calculates a fortune multiplier based upon the how far above the
+	 * max level of 3.
+	 * </p>
+	 * 
+	 * <p>To help prevent excessive number of results, the calculated fortune multiplier is 
+	 * then randomly adjusted between 0.70 (reduction) to 1.10 (increase) in the fortune
+	 * multiplier.
+	 * </p>
+	 * 
+	 * <p>A returned value of zero indicates no fortune was able to be calculated and 
+	 * this should be ignored.
+	 * </p>
+	 * 
+	 * @param blocks
+	 * @param fortuneLevel
+	 * @return
+	 */
+	private int calculateBukkitExtendedFortuneBlockCount( SpigotItemStack blocks, int fortuneLevel )
+	{
+		int bukkitExtendedFortuneBlockCount = 0;
+		
+		if ( fortuneLevel > 0 && blocks.getAmount() > 1 ) {
+			// Note: fortune has already been applied by bukkit, but it may have been
+			//       capped at fortune 3.
+			
+			if ( fortuneLevel > 3 ) {
+				
+				// First calculate the fortune multiplier, which is simply the fortunelevel
+				// divided by the max normal fortune level which is always three.
+				double fortuneMultiplier = fortuneLevel / 3;
+				
+				// Next calculate the random factor.  It will be applied to the multiplier to 
+				// adjust the fortune results slightly.  The range will be 0.7 to 1.1 so the 
+				// the average result would be to reduce the generated quantity.
+				double randomFactor = ( 0.4D * getRandom().nextDouble() ) + 0.7D;
+				
+				
+				// The adjusted fortune multiplier is to be applied to the number of blocks
+				// and represents a close approximation to what bukkit's fortune may produce
+				// if it wre to be extended to enchantment levels greater than 3 for fortune.
+				double adjustedFortuneMultiplier = fortuneMultiplier * randomFactor;
+				
+				bukkitExtendedFortuneBlockCount = 
+								(int) Math.floor( 
+										Math.round( blocks.getAmount() * adjustedFortuneMultiplier ));
+			}
+			
+		}
+		
+		return bukkitExtendedFortuneBlockCount;
 	}
 
 
@@ -1618,11 +1765,11 @@ public class AutoManagerFeatures
 	 * @param drops
 	 */
 	@SuppressWarnings( "unused" )
-	private void calculateSilkTouch(SpigotItemStack itemInHand, Collection<SpigotItemStack> drops) {
+	private void calculateSilkTouch(SpigotItemStack itemInHand, List<SpigotItemStack> drops) {
 
 		for (SpigotItemStack itemStack : drops) {
 
-			// If stack is gravel, then there is a 10% chance of droping flint.
+			// If stack is gravel, then there is a 10% chance of dropping flint.
 
 		}
 	}
@@ -1649,14 +1796,18 @@ public class AutoManagerFeatures
 	 * @param itemInHand
 	 * @param drops
 	 */
-	private void calculateDropAdditions(SpigotItemStack itemInHand, Collection<SpigotItemStack> drops) {
-
+	private void calculateDropAdditions(SpigotItemStack itemInHand, List<SpigotItemStack> drops) {
+		List<SpigotItemStack> adds = new ArrayList<SpigotItemStack>();
+		
 		for (SpigotItemStack itemStack : drops) {
 
 			// If gravel and has the 10% chance whereas rnd is zero, which is 1 out of 10.
 			// But if has silk touch, then never drop flint.
-			calculateDropAdditionsGravelFlint( itemInHand, itemStack, drops );
+			adds.addAll( 
+					calculateDropAdditionsGravelFlint( itemInHand, itemStack, drops ) );
 		}
+		
+		drops.addAll( adds );
 	}
 
 
@@ -1675,26 +1826,32 @@ public class AutoManagerFeatures
 	 * @param itemStack
 	 * @param drops
 	 */
-	private void calculateDropAdditionsGravelFlint(SpigotItemStack itemInHand, SpigotItemStack itemStack,
-												   Collection<SpigotItemStack> drops ) {
+	private List<SpigotItemStack> calculateDropAdditionsGravelFlint(SpigotItemStack itemInHand, 
+											SpigotItemStack itemStack,
+												   List<SpigotItemStack> drops ) {
+		List<SpigotItemStack> adds = new ArrayList<SpigotItemStack>();
+		
 		if (itemStack.getMaterial() == BlockType.GRAVEL && !hasSilkTouch(itemInHand)) {
 
 			int quantity = 1;
 			int threshold = 10;
 
-			// If fortune is enabled on the tool, then increase drop oddds by:
+			// If fortune is enabled on the tool, then increase drop odds by:
 			//  1 = 14%, 2 = 25%, 3+ = 100%
 			int fortune = getFortune(itemInHand);
 			switch (fortune) {
 				case 0:
 					// No additional threshold when fortune is zero:
 					break;
+					
 				case 1:
 					threshold = 14;
 					break;
+					
 				case 2:
 					threshold = 25;
 					break;
+					
 				case 3:
 				default:
 					// if Fortune 3 or higher, default to 100% drop:
@@ -1713,9 +1870,10 @@ public class AutoManagerFeatures
 
 //				ItemStack flintStack = new ItemStack(Material.FLINT, quantity);
 				SpigotItemStack flintStack = new SpigotItemStack( quantity, BlockType.FLINT);
-				drops.add(flintStack);
+				adds.add(flintStack);
 			}
 		}
+		return adds;
 	}
 
 	public Random getRandom() {

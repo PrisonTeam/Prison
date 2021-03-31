@@ -49,7 +49,6 @@ import tech.mcprison.prison.mines.data.MineScheduler.MineResetType;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
-import tech.mcprison.prison.mines.features.MineBlockEvent.TaskMode;
 import tech.mcprison.prison.mines.features.MineLinerBuilder;
 import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.mines.managers.MineManager;
@@ -63,6 +62,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.selection.Selection;
+import tech.mcprison.prison.tasks.PrisonCommandTask.TaskMode;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.MaterialType;
@@ -441,10 +441,9 @@ public class MinesCommands
 //        	return;
 //        }
         
-        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
 
         
-        if ( useNewBlockModel ) {
+        if ( m.isUseNewBlockModel() ) {
         	
         	block = block == null ? null : block.trim().toLowerCase();
         	PrisonBlock prisonBlock = null;
@@ -525,7 +524,7 @@ public class MinesCommands
         		.withReplacements(block, mineName).sendTo(sender);
         }
 
-        getBlocksList(m, null, useNewBlockModel, true ).send(sender);
+        getBlocksList(m, null, true ).send(sender);
 
         //pMines.getMineManager().clearCache();
     }
@@ -609,9 +608,8 @@ public class MinesCommands
 //        	return;
 //        }
         
-        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
 
-        if ( useNewBlockModel ) {
+        if ( m.isUseNewBlockModel() ) {
         
         	
         	block = block == null ? null : block.trim().toLowerCase();
@@ -731,7 +729,7 @@ public class MinesCommands
         }
         
         
-        getBlocksList(m, null, useNewBlockModel, true ).send(sender);
+        getBlocksList(m, null, true ).send(sender);
 
         //pMines.getMineManager().clearCache();
 
@@ -826,9 +824,8 @@ public class MinesCommands
         PrisonMines pMines = PrisonMines.getInstance();
         Mine m = pMines.getMine(mineName);
         
-        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
         
-        if ( useNewBlockModel ) {
+        if ( m.isUseNewBlockModel() ) {
         
         	
         	block = block == null ? null : block.trim().toLowerCase();
@@ -873,7 +870,7 @@ public class MinesCommands
         	deleteBlock( sender, pMines, m, blockType );
         }
         
-        getBlocksList(m, null, useNewBlockModel, true).send(sender);
+        getBlocksList(m, null, true).send(sender);
     }
 
     /**
@@ -1126,19 +1123,18 @@ public class MinesCommands
       		chatDisplay.addComponent( row );
       	}
         
-        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
-        
-        int blockSize = 0;
+
+      	int blockSize = 0;
 
 
         chatDisplay.addText("&3Blocks:");
         chatDisplay.addText("&8Click on a block's name to edit its chances of appearing.%s",
-        		(useNewBlockModel ? ".." : ""));
+        		(m.isUseNewBlockModel() ? ".." : ""));
         
-        BulletedListComponent list = getBlocksList(m, null, useNewBlockModel, true );
+        BulletedListComponent list = getBlocksList(m, null, true );
         chatDisplay.addComponent(list);
 
-        if ( useNewBlockModel ) {
+        if ( m.isUseNewBlockModel() ) {
         	blockSize =  m.getPrisonBlocks().size();
         }
         else {
@@ -1222,12 +1218,10 @@ public class MinesCommands
         }
         
         
-    	boolean useNewBlockModel = Prison.get().getPlatform()
-    										.getConfigBooleanFalse( "use-new-prison-block-model" );
         
     	PrisonBlockStatusData block = null;
     	
-    	if ( useNewBlockModel ) {
+    	if ( m.isUseNewBlockModel() ) {
     		block = m.getPrisonBlock( blockName );
     	}
     	else {
@@ -1413,7 +1407,7 @@ public class MinesCommands
         CommandPagedData cmdPageData = null;
         
         
-        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+        if ( m.isUseNewBlockModel() ) {
         
         	cmdPageData = new CommandPagedData(
         			"/mines info " + m.getName(), m.getPrisonBlocks().size(),
@@ -1458,6 +1452,14 @@ public class MinesCommands
         	
         	if ( !m.isEnabled() ) {
         		chatDisplay.addText("&cWarning!! This mine is &lDISABLED&r&c!!" );
+        	}
+        	
+        	
+        	{
+        		RowComponent row = new RowComponent();
+        		row.addTextComponent( "&3Mine Access Permission: &7%s", 
+        				( m.getAccessPermission() == null ? "&2none" : m.getAccessPermission() ) );
+        		chatDisplay.addComponent( row );
         	}
         	
         	
@@ -1656,7 +1658,7 @@ public class MinesCommands
         	
         	if ( m.isSkipResetEnabled() ) {
         		RowComponent row = new RowComponent();
-        		row.addTextComponent( "&3Skip Reset &2Enabled&3: &3Threshold: &7%s  &3Skip Limit: &7%s",
+        		row.addTextComponent( "&3Skip Reset: &2Enabled&3: &3Threshold: &7%s  &3Skip Limit: &7%s",
         				fFmt.format( m.getSkipResetPercent() ), dFmt.format( m.getSkipResetBypassLimit() ));
         		chatDisplay.addComponent( row );
         		
@@ -1671,6 +1673,39 @@ public class MinesCommands
         		row.addTextComponent( "&3Skip Mine Reset if no Activity: &cnot set");
         		chatDisplay.addComponent( row );
         	}
+        	
+        	
+        	
+        	if ( m.isMineSweeperEnabled() ) {
+        		
+        		// stats for mine sweeper activity:
+        		long mineSweeperAvgMs = ( m.getMineSweeperCount() == 0 ? 0 : m.getMineSweeperTotalMs() / m.getMineSweeperCount());
+        		
+        		String mineSweeperBlks = PlaceholdersUtil.formattedKmbtSISize(m.getMineSweeperBlocksChanged(), fFmt, " " );
+        		
+        		// Format with input requiring seconds:
+        		String totalRunTime = PlaceholdersUtil.formattedTime( m.getMineSweeperTotalMs() / 1000d );
+        		
+        		RowComponent row = new RowComponent();
+        		row.addTextComponent( "&3Mine Sweeper: &2Enabled&3: runs: %s  Avg ms: %s  Time: %s  Blks: %s ",
+        						dFmt.format( m.getMineSweeperCount() ), dFmt.format( mineSweeperAvgMs ),
+        						totalRunTime,
+        						mineSweeperBlks );
+        		chatDisplay.addComponent( row );
+        		
+        		if ( m.getStatsMineSweeperTaskMs().size() > 0 ) {
+        			RowComponent row2 = new RowComponent();
+        			row2.addTextComponent( "&3        %s ", m.statsMessageMineSweeper() );
+        			chatDisplay.addComponent( row2 );
+        		}
+
+        	}
+        	else {
+        		RowComponent row = new RowComponent();
+        		row.addTextComponent( "&3Mine Sweeper:  &cDisabled&3 ");
+        		chatDisplay.addComponent( row );
+        	}
+        	
         	
         	
         	if ( m.getResetCommands() != null && m.getResetCommands().size() > 0 ) {
@@ -1693,23 +1728,22 @@ public class MinesCommands
         	
         }
         
-        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
         
         int blockSize = 0;
         if ( cmdPageData.isShowAll() || cmdPageData.getCurPage() > 1 ) {
         	if ( cmdPageData.isDebug() ) {
         		chatDisplay.addText( "&7Block model: &3%s", 
-        				( useNewBlockModel ? "New" : "Old") );
+        				( m.isUseNewBlockModel() ? "New" : "Old") );
         	}
         	chatDisplay.addText("&3Blocks:");
         	chatDisplay.addText("&8Click on a block's name to edit its chances of appearing.%s",
-        			(useNewBlockModel ? ".." : ""));
+        			(m.isUseNewBlockModel() ? ".." : ""));
         	
-        	BulletedListComponent list = getBlocksList(m, cmdPageData, useNewBlockModel, true );
+        	BulletedListComponent list = getBlocksList(m, cmdPageData, true );
         	chatDisplay.addComponent(list);
         }
 
-        if ( useNewBlockModel ) {
+        if ( m.isUseNewBlockModel() ) {
         	blockSize =  m.getPrisonBlocks().size();
         }
         else {
@@ -1723,7 +1757,7 @@ public class MinesCommands
     }
 
     private BulletedListComponent getBlocksList(Mine m, CommandPagedData cmdPageData, 
-    							boolean useNewBlockModel, boolean includeTotals ) {
+    							boolean includeTotals ) {
        
     	BulletedListComponent.BulletedListBuilder builder = new BulletedListComponent.BulletedListBuilder();
 
@@ -1734,7 +1768,7 @@ public class MinesCommands
         
         PrisonBlock totals = new PrisonBlock("Totals");
         
-        if ( useNewBlockModel ) {
+        if ( m.isUseNewBlockModel() ) {
 
         	for (PrisonBlock block : m.getPrisonBlocks()) {
         		double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
@@ -1750,8 +1784,8 @@ public class MinesCommands
         		}
         	}
         }
-        if ( !useNewBlockModel || 
-        		!useNewBlockModel && cmdPageData != null && cmdPageData.isDebug() ) {
+        if ( !m.isUseNewBlockModel() || 
+        		!m.isUseNewBlockModel() && cmdPageData != null && cmdPageData.isDebug() ) {
         	
         	for (BlockOld block : m.getBlocks()) {
         		double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
@@ -2697,6 +2731,51 @@ public class MinesCommands
     }
 
 
+
+
+    @Command(identifier = "mines set accessPermission", permissions = "mines.set", 
+    		description = "Enable or disable a mine's access permission. If enabled, then players " +
+    					"must have this permission to be able to mine.  This may be able to " +
+    					"replace the need to setting up WorldGuard regions, since this may " +
+    					"serve the same purpose.  This option defaults to disabled. " +
+    					"This command can only use permissions. Permission groups will not work. ", 
+    		altPermissions = "mines.notification.[mineName]")
+    public void setMinePermissionCommand(CommandSender sender,
+        @Arg(name = "mineName", description = "The name of the mine to add a permission to.") String mineName,
+        @Arg(name = "permission", def="enable", description = "Permission.  Suggested: `mines.<mineName>`: [none]") 
+    					String permission
+        
+    		) {
+        
+        if (performCheckMineExists(sender, mineName)) {
+        	setLastMineReferenced(mineName);
+
+        	PrisonMines pMines = PrisonMines.getInstance();
+        	Mine m = pMines.getMine(mineName);
+            
+            
+        	if ( permission == null || permission.equalsIgnoreCase( "none" ) ) {
+            	m.setAccessPermission( null );
+            	pMines.getMineManager().saveMine( m );
+
+            	sender.sendMessage( 
+            			String.format( "&7The Mine Access Permission has been disabled for %s.", 
+            					m.getName() ));
+            }
+            else {
+            	m.setAccessPermission( permission );
+            	pMines.getMineManager().saveMine( m );
+            	
+            	sender.sendMessage( 
+            			String.format( "&7The Mine Access Permission has been enable for %s and " +
+            					"has a value of [%s].", m.getName(), permission ));
+            }
+            
+            
+        } 
+    }
+
+
     @Command(identifier = "mines set rank", permissions = "mines.set", 
     		description = "Links a mine to a rank or removes the rank.")
     public void setMineRankCommand(CommandSender sender,
@@ -2719,19 +2798,20 @@ public class MinesCommands
             	return;
             }
             
+            
             if ( m.getRank() != null ) {
             	// First unlink the preexisting mine and rank:
             	String removedRankName = m.getRank().getName();
             	
+            	// unlinkModuleElement will do the saving
             	Prison.get().getPlatform().unlinkModuleElements( m, m.getRank() );
-            	
         		
         		sender.sendMessage( String.format( "&3Rank &7%s &3has been removed from mine &7%s", 
         				removedRankName, m.getTag() ));
 
             }
             
-            if ( "none".equalsIgnoreCase( rankName ) ) {
+            if ( !"none".equalsIgnoreCase( rankName ) ) {
             	
             	boolean success = Prison.get().getPlatform().linkModuleElements( m, 
             			ModuleElementType.RANK, rankName );
@@ -2744,6 +2824,7 @@ public class MinesCommands
             				rankName, m.getTag() ));
             	}
             }
+            
         } 
     }
 
@@ -2988,7 +3069,10 @@ public class MinesCommands
     		@Arg(name = "mineName", description = "The name of the mine") String mineName,
     		@Arg(name = "edge", description = "Edge to use [top, bottom, north, east, south, west, walls]", def = "walls") String edge, 
     		//@Arg(name = "adjustment", description = "How to adust the size [smaller, larger]", def = "larger") String adjustment,
-    		@Arg(name = "pattern", description = "pattern to use [?]", def = "bright") String pattern,
+    		@Arg(name = "pattern", description = "pattern to use. '?' for a list of all patterns. " +
+    				"'repair' will attempt to repair missing blocks outside of the liner. " +
+    				"'remove' will remove the liner from the mine. 'removeAll' removes alll liners. [?]", 
+    				def = "bright") String pattern,
     		@Arg(name = "force", description = "Force liner if air [force no]", def = "no") String force
     		
     		) {
@@ -2997,16 +3081,17 @@ public class MinesCommands
     		return;
     	}
     	
+    	if ( pattern != null && "?".equals( pattern ) || edge != null && "?".equals( edge )) {
+    		
+    		sender.sendMessage( "&cAvailable Edges: &3[&7top bottom north east south west walls&3]" );
+    		sender.sendMessage( "&3Available Patterns: [&7" + LinerPatterns.toStringAll() + "&3]" );
+    		return;
+    	}
+    	
     	Edges e = Edges.fromString( edge );
     	if ( e == null ) {
     		sender.sendMessage( "&cInvalid edge value. &3[&7top bottom north east south west walls&3]" );
     		return;
-    	}
-    	
-    	if ( pattern != null && "?".equals( pattern )) {
-    		sender.sendMessage( "&3Available Patterns: [&7" + 
-    				LinerPatterns.toStringAll() + "&3]" );
-    		
     	}
     	
     	LinerPatterns linerPattern = LinerPatterns.fromString( pattern );
@@ -3034,12 +3119,21 @@ public class MinesCommands
 //    		return;
 //    	}
     	
-    	mine.getLinerData().setLiner( e, linerPattern, isForced );
-    	
-    	new MineLinerBuilder( mine, e, linerPattern, isForced );
+    	if ( linerPattern == LinerPatterns.removeAll ) {
+    		
+    		mine.getLinerData().removeAll();
+    		sender.sendMessage( "&7All liners have been removed from mine " + mine.getName() );
+    	}
+    	else if ( linerPattern == LinerPatterns.remove ) {
+    		mine.getLinerData().remove( e );
+    		sender.sendMessage( "&7The liner for the " + e.name() + " has been removed from mine " + mine.getName() );
+    	}
+    	else {
+    		mine.getLinerData().setLiner( e, linerPattern, isForced );
+    		new MineLinerBuilder( mine, e, linerPattern, isForced );
+    	}
     	
     	pMines.getMineManager().saveMine( mine );
-    	
     }
     
     
@@ -3078,6 +3172,58 @@ public class MinesCommands
             	m.setUsePagingOnReset( true );
             	pMines.getMineManager().saveMine( m );
             	sender.sendMessage( String.format( "&7Mine Reset Paging has been enabled for mine %s.", m.getTag()) );
+            }
+            else {
+            	sender.sendMessage( String.format( "&7Mine Reset Paging status has not changed for mine %s.", m.getTag()) );
+            	
+            }
+        	
+        } 
+    }
+
+
+    @Command(identifier = "mines set mineSweeper", permissions = "mines.set", 
+    		description = "Enable the Mine Sweeper task that is used to update the block counts " +
+    				"in the mine if there is another plugin that is breaking blocks and " +
+    				"prison is unable to integrate with that process to get an accurate block " +
+    				"update in real time. WARNING: This task should never be used unless it is a last " +
+    				"resort. With each block that broke, prison will 'try' to submit this task, but " +
+    				"it can only submit the task every 2 to 10 seconds, no matter how many blocks " +
+    				"are broke or how quickly. The fewer blocks that remain in the mine, the shorter " +
+    				"the submission delay will be. Enable '/mines stats' to monitor run time of " +
+    				"the sweep, then use '/mines info' to view them.")
+    public void setMineSweeperCommand(CommandSender sender,
+        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
+        @Arg(name = "mineSweeper", def="disabled", 
+        		description = "Enable or disable the mineSweeper tasks [disable, enable]") 
+    					String mineSweeper
+    		) {
+        
+        if (performCheckMineExists(sender, mineName)) {
+        	setLastMineReferenced(mineName);
+
+        	PrisonMines pMines = PrisonMines.getInstance();
+        	Mine m = pMines.getMine(mineName);
+            
+            if  ( mineSweeper == null || !"disable".equalsIgnoreCase( mineSweeper ) && 
+            									!"enable".equalsIgnoreCase( mineSweeper ) ) {
+            	sender.sendMessage( "&cInvalid paging option&7. Use &adisable&7 or &aenable&7" );
+            	return;
+            }
+            
+            if ( "disable".equalsIgnoreCase( mineSweeper ) && m.isMineSweeperEnabled() ) {
+            	m.setMineSweeperEnabled( false );
+            	pMines.getMineManager().saveMine( m );
+            	sender.sendMessage( String.format( "&7Mine Sweeper has been disabled for mine %s.", m.getTag()) );
+            }
+            else if ( "enable".equalsIgnoreCase( mineSweeper ) && !m.isMineSweeperEnabled() ) {
+            	m.setMineSweeperEnabled( true );
+            	pMines.getMineManager().saveMine( m );
+            	sender.sendMessage( String.format( "&7Mine Sweeper has been enabled for mine %s.", m.getTag()) );
+            }
+            else {
+            	sender.sendMessage( String.format( "&7Mine Sweeper status has not changed for mine %s.", m.getTag()) );
+            	
             }
         	
         } 
@@ -3130,7 +3276,9 @@ public class MinesCommands
     	
     	Player playerAlt = getOnlinePlayer( playerName );
     	
-    	if ( sender.isOp() && playerAlt != null && playerAlt.isOnline() ) {
+    	boolean isOp = sender.isOp();
+
+    	if ( isOp && playerAlt != null && playerAlt.isOnline() ) {
     		player = playerAlt;
     	}
     	else if ( player == null || !player.isOnline()) {
@@ -3191,13 +3339,14 @@ public class MinesCommands
         
     	
     	String minePermission = "mines.tp." + m.getName().toLowerCase();
-    	if ( !sender.isOp() &&
+    	if ( !isOp &&
     			!sender.hasPermission("mines.tp") && 
     			!sender.hasPermission( minePermission ) ) {
-                Output.get()
-                    .sendError(sender, "Sorry. You're unable to teleport there." );
-                return;
-            }
+    		
+            Output.get()
+                .sendError(sender, "Sorry. You're unable to teleport there." );
+            return;
+        }
     	
 
     	
@@ -3206,7 +3355,11 @@ public class MinesCommands
 //        	return;
 //        }
         
-    	if ( sender instanceof Player ) {
+    	if ( isOp && playerAlt != null && playerAlt.isOnline() ) {
+    		
+    		m.teleportPlayerOut( playerAlt, target );
+    	}
+    	else if ( sender.isPlayer() ) {
     		m.teleportPlayerOut( (Player) sender, target );
     	} else {
     		sender.sendMessage(
@@ -3338,7 +3491,7 @@ public class MinesCommands
     
 	private Player getOnlinePlayer( String playerName ) {
 		Player player = null;
-		if ( playerName != null ) {
+		if ( playerName != null && !playerName.trim().isEmpty() ) {
 			Optional<Player> oPlayer = Prison.get().getPlatform().getPlayer( playerName );
 			player = oPlayer.isPresent() ? oPlayer.get() : null;
 		}
@@ -3365,21 +3518,6 @@ public class MinesCommands
     }
     
     
-    @Command(identifier = "mines playerInventory", permissions = "mines.set", 
-    		description = "For listing what's in a player's inventory by dumping it to console.", 
-    		onlyPlayers = false )
-    public void playerInventoryCommand(CommandSender sender) {
-    	
-    	Player player = getPlayer( sender );
-    	
-    	if (player == null || !player.isOnline()) {
-    		sender.sendMessage( "&3You must be a player in the game to run this command." );
-    		return;
-    	}
-    	
-    	player.printDebugInventoryInformationToConsole();
-    }
-
 
     
 
@@ -3956,7 +4094,7 @@ public class MinesCommands
 	}
 	
 
-	@Command(identifier = "mines blockEvent mode", description = "Edits a BlockBreak task mode type: [inline, sync].", 
+	@Command(identifier = "mines blockEvent taskMode", description = "Edits a BlockBreak task mode type: [inline, sync].", 
     		onlyPlayers = false, permissions = "mines.set")
     public void blockEventJobMode(CommandSender sender, 
     			@Arg(name = "mineName") String mineName,

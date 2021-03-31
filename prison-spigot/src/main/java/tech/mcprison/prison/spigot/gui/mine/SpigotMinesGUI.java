@@ -56,6 +56,20 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         // Create the inventory and set up the owner, dimensions or number of slots, and title
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MinesManager -> Mines"));
 
+        // Global Strings.
+        String loreLeftClickOpen = messages.getString("Lore.LeftClickToOpen");
+        String loreShiftRightClickToDelete = messages.getString("Lore.ShiftAndRightClickToDelete");
+        String loreInfo = messages.getString("Lore.Info");
+        String loreWorld = messages.getString("Lore.World");
+        String loreSpawnPoint = messages.getString("Lore.SpawnPoint");
+        String loreResetTime = messages.getString("Lore.ResetTime");
+        String loreSizeOfMine = messages.getString("Lore.SizeOfMine");
+        String loreVolume = messages.getString("Lore.Volume");
+        String loreBlocks = messages.getString("Lore.Blocks");
+
+        // Global boolean.
+        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
+
         // Only loop over the blocks that we need to show:
         int i = counter;
         for ( ; i < mines.getSortedList().size() && i < counter + pageSize; i++ ) {
@@ -64,31 +78,30 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
 
             // Init the lore array with default values for ladders
             List<String> minesLore = createLore(
-                    messages.getString("Lore.LeftClickToOpen"),
-                    messages.getString("Lore.ShiftAndRightClickToDelete"),
+                    loreLeftClickOpen,
+                    loreShiftRightClickToDelete,
                     "",
-                    messages.getString("Lore.Info"));
+                    loreInfo
+            );
 
             // Add a lore
-            minesLore.add(SpigotPrison.format(messages.getString("Lore.World") +  m.getWorldName()));
+            minesLore.add(SpigotPrison.format(loreWorld +  m.getWorldName()));
             String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
-            minesLore.add(SpigotPrison.format(messages.getString("Lore.SpawnPoint") + spawnPoint));
-            minesLore.add(SpigotPrison.format(messages.getString("Lore.ResetTime") + m.getResetTime()));
+            minesLore.add(SpigotPrison.format(loreSpawnPoint + spawnPoint));
+            minesLore.add(SpigotPrison.format(loreResetTime + m.getResetTime()));
 
             if (!m.isVirtual()) {
                 // Add a lore
-                minesLore.add(SpigotPrison.format(messages.getString("Lore.SizeOfMine") + m.getBounds().getDimensions()));
-                minesLore.add(SpigotPrison.format(messages.getString("Lore.Volume") + m.getBounds().getTotalBlockCount()));
+                minesLore.add(SpigotPrison.format(loreSizeOfMine + m.getBounds().getDimensions()));
+                minesLore.add(SpigotPrison.format(loreVolume + m.getBounds().getTotalBlockCount()));
             }
 
             // Add a lore
-            minesLore.add(SpigotPrison.format(messages.getString("Lore.Blocks")));
+            minesLore.add(SpigotPrison.format(loreBlocks));
 
             // Init some variables and do the actions
             DecimalFormat dFmt = new DecimalFormat("##0.00");
             double totalChance = 0.0d;
-
-            boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
 
             if (useNewBlockModel) {
 

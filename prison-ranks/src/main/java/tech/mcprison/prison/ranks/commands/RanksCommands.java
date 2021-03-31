@@ -41,6 +41,7 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerName;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
+import tech.mcprison.prison.ranks.managers.RankManager.RanksByLadderOptions;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -76,8 +77,8 @@ public class RanksCommands
     	sender.dispatchCommand( "ranks ladder help" );
     }
     
-    @Command(identifier = "ranks perms", 
-    		onlyPlayers = false, permissions = "prison.commands")
+//    @Command(identifier = "ranks perms", 
+//    		onlyPlayers = false, permissions = "prison.commands")
     public void ranksPermsSubcommands(CommandSender sender) {
     	sender.dispatchCommand( "ranks perms help" );
     }
@@ -202,8 +203,10 @@ public class RanksCommands
 		int mineCount = Prison.get().getPlatform().getModuleElementCount( ModuleElementType.MINE );
 		
 		if (!force && ( rankCount > 0 || mineCount > 0 ) ) {
-			String message = String.format( "&3Cannot run &7/ranks autoConfigure &3 with any " +
-					"ranks or mines already setup. Rank count = &7%d&3. Mine count = &7%d", 
+			String message = String.format( "&3You should not run &7/ranks autoConfigure &3 with any " +
+					"ranks or mines already setup. Rank count = &7%d&3. Mine count = &7%d " +
+					"Add the option 'force' to force it to run.  If there is a conflict with a " +
+					"preexisting rank or mine, then they will be skipped with no configuration.", 
 					rankCount, mineCount );
 			Output.get().logWarn( message );
 			return;
@@ -327,10 +330,15 @@ public class RanksCommands
 	        int colorID = 1;
 	        double price = 0;
 
+	        String firstRankName = null;
 	        
 	        for ( char cRank = 'A'; cRank <= 'Z'; cRank++) {
 	        	String rankName = Character.toString( cRank );
 	        	String tag = "&7[&" + Integer.toHexString((colorID++ % 15) + 1) + rankName + "&7]";
+	        	
+	        	if ( firstRankName == null ) {
+	        		firstRankName = rankName;
+	        	}
 	        	
 	        	char cRankNext = (char) (cRank + 1);
 	        	String rankNameNext = Character.toString( cRankNext );
@@ -343,6 +351,15 @@ public class RanksCommands
 	        			countRankCmds++;
 	        			getRankCommandCommands().commandAdd( sender, rankName, permCmdAdd + perm2 + rankName.toLowerCase());
 	        			countRankCmds++;
+	        			
+	        			// Add all the command removal statements to rank A's commands so if the command /ranks set rank A is 
+	        			// used then all perms are removed
+	        			if ( !firstRankName.equalsIgnoreCase( rankName ) ) {
+	        				getRankCommandCommands().commandAdd( sender, firstRankName, permCmdDel + perm1 + rankName.toLowerCase());
+	        				countRankCmds++;
+	        				getRankCommandCommands().commandAdd( sender, firstRankName, permCmdDel + perm2 + rankName.toLowerCase());
+	        				countRankCmds++;
+	        			}
 	        			
 	        			if ( cRankNext <= 'Z' ) {
 	        				getRankCommandCommands().commandAdd( sender, rankName, permCmdDel + perm1 + rankNameNext.toLowerCase());
@@ -357,7 +374,7 @@ public class RanksCommands
 
 	        			// Creates a virtual mine:
 	        			ModuleElement mine = Prison.get().getPlatform().createModuleElement( 
-	        					sender, ModuleElementType.MINE, rankName, tag );
+	        					sender, ModuleElementType.MINE, rankName, tag, perm1 + rankName );
 	        			
 	        			if ( mine != null ) {
 	        				countMines++;
@@ -711,11 +728,18 @@ public class RanksCommands
     }
     
     // set commands
-    @Command(identifier = "ranks set currency", description = "Modifies a ranks currency", 
+    @Command(identifier = "ranks set currency", description = "Modifies a rank's currency to use an alternative " +
+    		"(custom) currency.  This is the currency that they player will have to pay with to rank up to this " +
+    		"rank. This does not change how sellall, or any other aspect of prison will operate.  " +
+    		"Few economy plugins support custom currencies; Gems Economy is one " +
+    		"that is support by prison.  " +
+    		"To use the default currency, this must not be set.", 
     													onlyPlayers = false, permissions = "ranks.set")
     public void setCurrency(CommandSender sender, 
     		@Arg(name = "rankName") String rankName, 
-    		@Arg(name = "currency", description = "The currency to use with this rank.") String currency){
+    		@Arg(name = "currency", 
+    			description = "The custom currency to use with this rank, " +
+    					"or 'none' to remove a custom currency.") String currency){
     	
     	Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
     	if ( rank == null ) {
@@ -725,31 +749,42 @@ public class RanksCommands
     	
     	
     	if ( currency == null || currency.trim().length() == 0 ) {
-    		Output.get().sendError(sender, "A currency name must be specified. '%s' is invalid.", currency);
+    		Output.get().sendError(sender, "A currency name must be specified, or must be " +
+    				"'none'. '%s' is invalid.", currency);
     		return;
     	}
     	
-    	
-    	EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
-				.getEconomyForCurrency( currency );
-    	if ( currencyEcon == null ) {
-    		Output.get().sendError(sender, "No active economy supports the currency named '%s'.", currency);
-    		return;
+    	if ( "none".equalsIgnoreCase( currency ) && rank.getCurrency() == null ) {
+
+    		Output.get().sendInfo(sender,"The rank '%s' does not have a currency that " +
+    								"can be cleared. ", rankName);
+    		
     	}
-    	
-    	
-    	rank.setCurrency( currency );
-    	
-    	// Save the rank
-//    	try {
+    	else if ( "none".equalsIgnoreCase( currency ) ) {
+    		rank.setCurrency( null );
+    		
+    		PrisonRanks.getInstance().getRankManager().saveRank(rank);
+    		
+    		Output.get().sendInfo(sender,"Successfully cleared the currency for the rank '%s'. " +
+    				"This rank no longer has a custom currency. ", rankName);
+    		
+    	}
+    	else {
+    		
+    		EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+    				.getEconomyForCurrency( currency );
+    		if ( currencyEcon == null ) {
+    			Output.get().sendError(sender, "No active economy supports the currency named '%s'.", currency);
+    			return;
+    		}
+    		
+    		rank.setCurrency( currency );
+    		
     		PrisonRanks.getInstance().getRankManager().saveRank(rank);
     		
     		Output.get().sendInfo(sender,"Successfully set the currency for the rank '%s' to %s", rankName, currency);
-//    	} catch (IOException e) {
-//    		Output.get().sendError(sender,
-//    				"The rank could not be saved to disk. The change in rank currency has not been saved. Check the console for details.");
-//    		Output.get().logError("Rank could not be written to disk (setCurrency).", e);
-//    	}
+    	}
+    	
     }
 
     @Command(identifier = "ranks set tag", description = "Modifies a ranks tag", 
@@ -802,8 +837,8 @@ public class RanksCommands
     
     
 
-    @Command(identifier = "ranks perms list", description = "Lists rank permissions", 
-    							onlyPlayers = false, permissions = "ranks.set")
+//    @Command(identifier = "ranks perms list", description = "Lists rank permissions", 
+//    							onlyPlayers = false, permissions = "ranks.set")
     public void rankPermsList(CommandSender sender, 
     				@Arg(name = "rankName") String rankName
     			){
@@ -936,9 +971,9 @@ public class RanksCommands
     }
     
 
-    @Command(identifier = "ranks perms addPerm", 
-  		  		description = "Add a ladder permission. Valid placeholder: {rank}.", 
-  		  onlyPlayers = false, permissions = "ranks.set")
+//    @Command(identifier = "ranks perms addPerm", 
+//  		  		description = "Add a ladder permission. Valid placeholder: {rank}.", 
+//  		  onlyPlayers = false, permissions = "ranks.set")
     public void rankPermsAddPerm(CommandSender sender, 
   		  @Arg(name = "rankName", 
   						description = "Rank name to add the permission to.") String rankName,
@@ -979,9 +1014,9 @@ public class RanksCommands
     }
     
     
-    @Command(identifier = "ranks perms addGroup", 
-    		description = "Add a ladder permission. Valid placeholder: {rank}.", 
-    		onlyPlayers = false, permissions = "ranks.set")
+//    @Command(identifier = "ranks perms addGroup", 
+//    		description = "Add a ladder permission. Valid placeholder: {rank}.", 
+//    		onlyPlayers = false, permissions = "ranks.set")
     public void rankPermsAddPermGroup(CommandSender sender, 
     		@Arg(name = "rankName", 
     					description = "Rank name to add the permission to.") String rankName,
@@ -1023,8 +1058,8 @@ public class RanksCommands
     
 
 
-    @Command(identifier = "ranks perms remove", description = "Remove rank permissions", 
-  		  onlyPlayers = false, permissions = "ranks.set")
+//    @Command(identifier = "ranks perms remove", description = "Remove rank permissions", 
+//  		  onlyPlayers = false, permissions = "ranks.set")
     public void rankPermsRemove(CommandSender sender, 
     		@Arg(name = "rankName", def = "default", 
   						description = "Rank name to list the permissions.") String rankName,
@@ -1262,6 +1297,32 @@ public class RanksCommands
 		}
     }
 
+    
+    @Command(identifier = "ranks playerInventory", permissions = "mines.set", 
+    		description = "For listing what's in a player's inventory by dumping it to console.", 
+    		onlyPlayers = false )
+    public void ranksPlayerInventoryCommand(CommandSender sender,
+					@Arg(name = "player", def = "", description = "Player name") String playerName
+			) {
+    	
+    	Player player = getPlayer( sender, playerName );
+    	
+    	if (player == null) {
+    		sender.sendMessage( "&3You must be a player in the game to run this command, and/or the player must be online." );
+    		return;
+    	}
+
+//    	Player player = getPlayer( sender );
+//    	
+//    	if (player == null || !player.isOnline()) {
+//    		sender.sendMessage( "&3You must be a player in the game to run this command." );
+//    		return;
+//    	}
+    	
+    	player.printDebugInventoryInformationToConsole();
+    }
+    
+    
 	private void listPermissions( CommandSender sender, String prefix, List<String> perms )
 	{
 		StringBuilder sb = new StringBuilder();
@@ -1273,14 +1334,14 @@ public class RanksCommands
 			
 			if ( sb.length() > 70 ) {
 				String message = String.format( "    &7* (%s) &3%s", 
-						prefix, sb.toString());
+						prefix, sb.toString().replace( "%", "%%%%" ));
 				sendToPlayerAndConsole( sender, message );
 				sb.setLength( 0 );
 			}
 		}
 		if ( sb.length() > 0 ) {
 			String message = String.format( "    &7* (%s) &3%s", 
-					prefix, sb.toString());
+					prefix, sb.toString().replace( "%", "%%%%" ));
 			sendToPlayerAndConsole( sender, message );
 			sb.setLength( 0 );
 		}
@@ -1300,27 +1361,31 @@ public class RanksCommands
 	}
  
     
-    @Command(identifier = "ranks players", description = "Shows all ranks with player counts", onlyPlayers = false)
+    @Command(identifier = "ranks players", description = "Shows all ranks with player counts", 
+    		onlyPlayers = false, aliases="ranks stats")
     public void rankPlayers(CommandSender sender,
     			@Arg(name = "ladderName", def = "all", description = "Ladder Name [all, none, LadderName]") String ladderName,
-    			@Arg(name = "action", def = "players", description = "List type [players, all]") String action){
+    			@Arg(name = "action", def = "all", 
+    				description = "List type; default so 'all'. 'Players' only shows ranks that have player. " +
+    						"'All' includes all ranks including ones without players. " +
+    						"'Full includes player names if prison is tracking them. [players, all, full]") String action){
 
     	
     	if ( !ladderName.equalsIgnoreCase( "all" ) && 
     			PrisonRanks.getInstance().getLadderManager().getLadder( ladderName ) == null ) {
-    		Output.get().sendError(sender, "The ladder '%s' doesn't exist, or was not ALL.", ladderName);
+    		Output.get().sendError(sender, "The ladder '%s' doesn't exist, or was not 'ALL'.", ladderName);
     		return;
     	}
     	
     	
-    	if ( !action.equalsIgnoreCase( "players" ) && !action.equalsIgnoreCase( "all" ) ) {
-    		Output.get().sendError(sender, "The action '%s' is invalid. [players, all]", action);
-    		
+    	RanksByLadderOptions option = RanksByLadderOptions.fromString( action );
+    	if ( option == null ) {
+    		Output.get().sendError(sender, "The action '%s' is invalid. [players, all, full]", action);
     		return;
     	}
     	
-    	boolean includeAll = action.equalsIgnoreCase( "all" );
-    	PrisonRanks.getInstance().getRankManager().ranksByLadders( sender, ladderName, includeAll );
+//    	boolean includeAll = action.equalsIgnoreCase( "all" );
+    	PrisonRanks.getInstance().getRankManager().ranksByLadders( sender, ladderName, option );
     	
 //    	Output.get().logInfo( "Ranks by ladders:" );
 //    	

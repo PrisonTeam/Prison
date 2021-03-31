@@ -469,6 +469,7 @@ public class RankPlayer
 	@Override
 	public void dispatchCommand( String command )
 	{
+		PrisonAPI.dispatchCommand( command );
 	}
 	
 	@Override

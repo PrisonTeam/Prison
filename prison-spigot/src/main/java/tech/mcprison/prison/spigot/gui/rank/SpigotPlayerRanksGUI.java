@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -18,6 +19,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
@@ -123,8 +125,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format(guiConfig.getString("Options.Titles.PlayerRanksGUI")));
 
         // Get many parameters
-        RankLadder ladderData = ladder;
-        Rank rank = ladderData.getLowestRank().get();
+        Rank rank = ladder.getLowestRank().get();
         Rank playerRank = getRankPlayer().getRank(guiConfig.getString("Options.Ranks.Ladder"));
 
         // Call the whole GUI and build it
@@ -156,12 +157,27 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         int hackyCounterEnchant = 0;
         int amount = 1;
 
+        // Global Strings.
+        String loreInfo = messages.getString("Lore.Info");
+        String lorePrice3 = messages.getString("Lore.Price3");
+
+        // Global booleans.
+        boolean enchantmentEffectEnabled = getBoolean(guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank"));
+
+        // Decimal Rank cost format.
+        DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
+
         while ( rank != null ) {
 
             List<String> ranksLore = createLore(
-                    messages.getString("Lore.Info"),
-                    messages.getString("Lore.Price3") + rank.getCost()
-            );
+                    " ",
+                    "&8-----------------------",
+                    " ",
+                    loreInfo,
+                    lorePrice3 + PlaceholdersUtil.formattedKmbtSISize(rank.getCost(), formatDecimal, ""),
+                    " ",
+                    "&8-----------------------"
+                    );
 
             if (placeholderAPINotNull) {
                 if (hackyCounterEnchant == 1) {
@@ -181,7 +197,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
             if (!(playerHasThisRank)){
                 if (hackyCounterEnchant <= 0) {
                     hackyCounterEnchant++;
-                    if (guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank").equalsIgnoreCase("true")) {
+                    if (enchantmentEffectEnabled) {
                         itemRank.addUnsafeEnchantment(Enchantment.LUCK, 1);
                     }
                 }

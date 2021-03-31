@@ -31,12 +31,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.inventivetalent.update.spiget.SpigetUpdate;
 import org.inventivetalent.update.spiget.UpdateCallback;
 
-import at.pcgamingfreaks.Minepacks.Bukkit.API.MinepacksPlugin;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
@@ -54,17 +52,19 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.managers.RankManager;
-import tech.mcprison.prison.spigot.autofeatures.AutoManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
-import tech.mcprison.prison.spigot.backpacks.BackPacksListeners;
+import tech.mcprison.prison.spigot.backpacks.BackpacksListeners;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
-import tech.mcprison.prison.spigot.commands.*;
-import tech.mcprison.prison.spigot.commands.sellall.SellAllPrisonCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotBackpackCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotGUICommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotMinesCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotPrestigeCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotRanksCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot113;
 import tech.mcprison.prison.spigot.compat.Spigot18;
 import tech.mcprison.prison.spigot.compat.Spigot19;
-import tech.mcprison.prison.spigot.configs.BackPacksConfig;
+import tech.mcprison.prison.spigot.configs.BackpacksConfig;
 import tech.mcprison.prison.spigot.configs.GuiConfig;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.configs.SellAllConfig;
@@ -79,7 +79,8 @@ import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
-import tech.mcprison.prison.spigot.player.SlimeBlockFunEventListener;
+import tech.mcprison.prison.spigot.sellall.SellAllPrisonCommands;
+import tech.mcprison.prison.spigot.slime.SlimeBlockFunEventListener;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.utils.PrisonUtilsModule;
 
@@ -106,12 +107,12 @@ public class SpigotPrison extends JavaPlugin {
     private MessagesConfig messagesConfig;
     private GuiConfig guiConfig;
     private SellAllConfig sellAllConfig;
-    private BackPacksConfig backPacksConfig;
-    private final boolean backPacksEnabled = getConfig().getString("backpacks").equalsIgnoreCase("true");
+    private BackpacksConfig backpacksConfig;
 
     private PrisonBlockTypes prisonBlockTypes;
 
     private static SpigotPrison config;
+    private static boolean isBackPacksEnabled = false;
 
     public static SpigotPrison getInstance(){
         return config;
@@ -171,15 +172,21 @@ public class SpigotPrison extends JavaPlugin {
         
         // Manually register Listeners with Bukkit:
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
-        Bukkit.getPluginManager().registerEvents(new AutoManager(), this);
-        Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventListener(), this);
+        
+        new OnBlockBreakEventListener().registerAllBlockBreakEvents( this );
+        
+//        Bukkit.getPluginManager().registerEvents(new AutoManager(), this);
+//        Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventListener(), this);
         Bukkit.getPluginManager().registerEvents(new SlimeBlockFunEventListener(), this);
-
-        if (backPacksEnabled){
-            Bukkit.getPluginManager().registerEvents(new BackPacksListeners(), this);
-        }
-
         Bukkit.getPluginManager().registerEvents(new SpigotListener(), this);
+
+        try {
+            isBackPacksEnabled = getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true");
+        } catch (NullPointerException ignored){}
+
+        if (isBackPacksEnabled){
+            Bukkit.getPluginManager().registerEvents(new BackpacksListeners(), this);
+        }
 
         initIntegrations();
         
@@ -218,7 +225,7 @@ public class SpigotPrison extends JavaPlugin {
 //        	cmdVersion.getRegisteredPlugins().add( value );
 //		}
 
-		ChatDisplay cdVersion = cmdVersion.displayVersion();
+		ChatDisplay cdVersion = cmdVersion.displayVersion("basic");
 		cdVersion.toLog( LogLevel.INFO );
 		
 		// Provides a startup test of blocks available for the version of spigot that being used:
@@ -262,15 +269,12 @@ public class SpigotPrison extends JavaPlugin {
         return messagesConfig.getFileGuiMessagesConfig();
     }
 
-    public FileConfiguration getBackPacksConfig() {
-
-        if (backPacksEnabled) {
-            backPacksConfig = new BackPacksConfig();
-        } else {
-            return null;
+    public FileConfiguration getBackpacksConfig() {
+        if (backpacksConfig == null){
+            backpacksConfig = new BackpacksConfig();
         }
 
-        return backPacksConfig.getFileBackPacksConfig();
+        return backpacksConfig.getFileBackpacksConfig();
     }
     
     public AutoManagerFeatures getAutoFeatures() {
@@ -430,17 +434,6 @@ public class SpigotPrison extends JavaPlugin {
 //        registerIntegration(new WorldGuard7Integration());
     }
 
-    public static MinepacksPlugin getMinepacks() {
-        Plugin bukkitPlugin = Bukkit.getPluginManager().getPlugin("Minepacks");
-        if(!(bukkitPlugin instanceof MinepacksPlugin)) {
-            return null;
-        }
-        return (MinepacksPlugin) bukkitPlugin;
-    }
-
-    public static boolean MinepacksPresent() {
-        return getMinepacks() != null;
-    }
 	
 	/**
 	 * <p>This "tries" to reload the placeholder integrations, which may not
@@ -528,8 +521,8 @@ public class SpigotPrison extends JavaPlugin {
         }
 
         // Load backpacks commands if enabled
-        if (backPacksEnabled){
-            Prison.get().getCommandHandler().registerCommands(new PrisonSpigotBackPacksCommands());
+        if (isBackPacksEnabled){
+            Prison.get().getCommandHandler().registerCommands(new PrisonSpigotBackpackCommands());
         }
 
         // This registers the admin's /gui commands

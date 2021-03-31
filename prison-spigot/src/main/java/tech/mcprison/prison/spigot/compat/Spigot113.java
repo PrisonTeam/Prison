@@ -80,12 +80,36 @@ public class Spigot113
     public void playIronDoorSound(Location loc) {
         loc.getWorld().playEffect(loc, Effect.IRON_DOOR_TOGGLE, null);
     }
-    
 
-	@Override
+    @Override
+    public Sound getAnvilSound() {
+        return Sound.valueOf("BLOCK_ANVIL_BREAK");
+    }
+
+    @Override
+    public Sound getLevelUpSound() {
+        return Sound.valueOf("ENTITY_PLAYER_LEVELUP");
+    }
+
+    @Override
+    public Sound getOpenChestSound() {
+        return Sound.valueOf("BLOCK_CHEST_OPEN");
+    }
+
+    @Override
+    public Sound getCloseChestSound() {
+        return Sound.valueOf("BLOCK_CHEST_CLOSE");
+    }
+
+    @Override
+    public Sound getEntityItemBreakSound() {
+        return Sound.valueOf("ENTITY_ITEM_BREAK");
+    }
+
+    @Override
 	public void breakItemInMainHand( Player player ) {
 		player.getInventory().setItemInMainHand( null );
 		
-		player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0F, 0.85F); 
+		player.playSound(player.getLocation(), getEntityItemBreakSound(), 1.0F, 0.85F);
 	}
 }

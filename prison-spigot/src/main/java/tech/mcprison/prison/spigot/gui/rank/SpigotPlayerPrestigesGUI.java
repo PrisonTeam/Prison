@@ -147,14 +147,12 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
             return;
         }
 
-        RankLadder ladderData = ladder;
-
-        if (!ladderData.getLowestRank().isPresent()){
+        if (!ladder.getLowestRank().isPresent()){
             Output.get().sendWarn(new SpigotPlayer(player), SpigotPrison.format(messages.getString("Message.NoRanksPrestigesLadder")));
             return;
         }
 
-        Rank rank = ladderData.getLowestRank().get();
+        Rank rank = ladder.getLowestRank().get();
 
         Rank playerRank = getRankPlayer().getRank("prestiges");
 
@@ -162,15 +160,23 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         Material materialHas = Material.getMaterial(guiConfig.getString("Options.Ranks.Item_gotten_rank"));
         Material materialHasNot = Material.getMaterial(guiConfig.getString("Options.Ranks.Item_not_gotten_rank"));
 
+        // Variables.
         boolean playerHasThisRank = true;
         int hackyCounterEnchant = 0;
+
+        // Global strings.
+        String loreInfo = messages.getString("Lore.Info");
+        String lorePrice3 = messages.getString("Lore.Price3");
+
+        // Global boolean.
+        boolean enchantmentEffectEnabled = getBoolean(guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank"));
 
         int amount = 1;
         while ( rank != null ) {
 
             List<String> ranksLore = createLore(
-                    messages.getString("Lore.Info"),
-                    messages.getString("Lore.Price3") + rank.getCost()
+                    loreInfo,
+                    lorePrice3 + rank.getCost()
             );
 
             if (placeholderAPINotNull) {
@@ -189,7 +195,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
             if (!(playerHasThisRank)){
                 if (hackyCounterEnchant <= 0) {
                     hackyCounterEnchant++;
-                    if (guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank").equalsIgnoreCase("true")) {
+                    if (enchantmentEffectEnabled) {
                         itemrank.addUnsafeEnchantment(Enchantment.LUCK, 1);
                     }
                 }

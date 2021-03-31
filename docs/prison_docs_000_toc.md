@@ -5,10 +5,10 @@
 
 ## Project Related
 
-* **[Prison README.md](../README.md)**
-* **[Prison LICENSE.md](../LICENSE.md)**
-* **[Prison Change logs](../changelog_v3.2.x.md)** Detailed changes to prison.
-* **[Prison Known Issues](../knownissues_v3.2.x.md)** Known Issues and To Do's.
+* **[Prison README.md](README.md)**
+* **[Prison LICENSE.md](LICENSE.md)**
+* **[Prison Change logs](changelog_v3.2.x.md)** Detailed changes to prison.
+* **[Prison Known Issues](knownissues_v3.2.x.md)** Known Issues and To Do's.
 * **[Prison Discord Server](https://discord.gg/DCJ3j6r)** Get help here.
 
 
@@ -16,28 +16,36 @@
 
 
 ## Build logs
- - **[v3.2.4-alpha - Current](../changelog_v3.2.x.md)**
+ - **[v3.2.5-alpha - Current](changelog_v3.2.x.md)**
  - **[v3.2.0 - 2019-12-03](prison_changelog_v3.2.0.md)**&nbsp;&nbsp;
 **[v3.2.1 - 2020-09-27](prison_changelog_v3.2.1.md)**&nbsp;&nbsp;
 **[v3.2.2 - 2020-11-21](prison_changelog_v3.2.2.md)**&nbsp;&nbsp;
-**[v3.2.3 - 2020-12-25](prison_changelog_v3.2.3.md)**
+**[v3.2.3 - 2020-12-25](prison_changelog_v3.2.3.md)**&nbsp;&nbsp;
+**[v3.2.4 - 2021-03-01](prison_changelog_v3.2.4.md)**&nbsp;&nbsp;
+**[v3.2.5 - 2021-04-01](prison_changelog_v3.2.5.md)**
+
  
  
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
 # New! Prison Fast Start
 
-Prison now has a new set of features that can help you get up and running faster than ever!  `/ranks autoConfigure`. It can auto create your ranks and virtual mines, A through Z, it will link the mines to the ranks, setup the basic rank commands to provide basic access permissions for your players, and assign blocks of increasing values to all mines.  All you need to do is to use the command `/mines set area` on all mines to make them physical mines.  Plus there are a new features to help provide the finishing touches in almost no time.   
- -  `/ranks autoConfigure`
+[Prison Auto Configure / Prison Quick Start!](prison_docs_100_setting_up_auto_configure.md)
+
+Prison now has a new set of features that can help you get up and running faster than ever!  `/ranks autoConfigure`. It can auto create your ranks and virtual mines, A through Z, it will link the mines to the ranks, setup the basic rank commands to provide basic access permissions for your players.  It will also setup the Mine Access Permissions and assign blocks of increasing values to all mines.  Once it generates all the virtual mines, all you need to do is to use the command `/mines set area help` on all mines to make them physical mines and then prison will be ready to use.  Plus there are many new features to help provide the finishing touches in almost no time.
+ 
+ - `/ranks autoConfigure`
  - `/mines set area help`
  - `/mines set tracer help`
  - `/mines set size help`
  - `/mines set liner help`
  
- Documentation pertaining to the use of the auto configuration will be coming soon.
+ [Prison Auto Configure / Prison Quick Start Guide!](prison_docs_100_setting_up_auto_configure.md)
+
+
  
 
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:5px; border:none; color:#aaf; background-color:#aaf;">
 
 # Table of Contents for this Document
 
@@ -178,9 +186,24 @@ Prison now has a new set of features that can help you get up and running faster
 These guides cover the core fundamentals of Prison.  They may reference other plugins, but these guides will not go in to depth on how to install or use the other plugins; those details will be a focused guide of their own. 
 
 
+* [Prison Auto Configure / Prison Quick Start!](prison_docs_100_setting_up_auto_configure.md)
+Get your prison setup quickly by running the command `/ranks autoCommand` which will configure most features within prison.
+
 
 * [Setting up Mines](prison_docs_101_setting_up_mines.md)
 	Basics of creating. Searching for Blocks. Customizing. One-block mine example with HolographicDisplays.
+
+
+
+* [Mine Commands](prison_docs_111_mine_commands.md)
+	What they are. Setting up. Working with Mine Commands.
+
+
+
+* [BlockEvents](prison_docs_115_using_BlockEvents.md)
+	**-+= New! Work In Progress! =+-** 
+	Setting up BlockEvents and information about them.
+
 
 
 
@@ -192,10 +215,6 @@ These guides cover the core fundamentals of Prison.  They may reference other pl
 * [Setting up Prestiges](prison_docs_107_setting_up_prestiges.md)
 	Configuring and using Prestiges.
 
-
-
-* [Mine Commands](prison_docs_111_mine_commands.md)
-	What they are. Setting up. Working with Mine Commands.
 
 
 
@@ -215,6 +234,10 @@ These guides cover the core fundamentals of Prison.  They may reference other pl
 
 
 * [Guide: Prison Placeholders](prison_docs_310_guide_placeholders.md) How to use. Includes HolographicDisplays.
+
+
+
+* [Guide: Auto Manager - Setting Up and Enabling Other Plugins](prison_docs_311_guide_automanager.md) Enabling TokenEnchant and CrazyEnchant.
 
 
 **Work In Progress**

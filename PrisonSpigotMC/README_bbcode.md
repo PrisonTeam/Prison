@@ -57,7 +57,14 @@ https://www.curseforge.com/minecraft/bukkit-plugins/mc-prison-v3
 
 This site does not use bbedit codes.  What it does use is html.  
 
+
+** NOTE : The following is important to understand** since I went back and tried to update the site and it failed because I tried to do it a different way.  lol
+
+
 To get the "translated" html from the bbedit codes, I opened spigotmc.org within firefox's developer's tools to inspect the container that help the html code.  I copied all of it and pasted it in to the editor in bukkit after enabling the code view of the editor.  I kept the initial content.  It worked fine without having to tweak anything after that. It may not be a perfect rendition since it does not carry over the css that is used within spigotmc.org, but it's not bad overall. It is not worth trying to get the css working better (you can't change it anyway). 
+
+
+Note: bukkit.org has an option for a "markdown" editor, but it does not work.  It's bad.  It's trash.
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">

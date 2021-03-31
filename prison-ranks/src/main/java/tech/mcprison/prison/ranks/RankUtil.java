@@ -30,6 +30,8 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.events.RankUpEvent;
+import tech.mcprison.prison.tasks.PrisonCommandTask;
+import tech.mcprison.prison.tasks.PrisonCommandTask.CustomPlaceholders;
 
 /**
  * Utilities for changing the ranks of players.
@@ -141,7 +143,8 @@ public class RankUtil {
 		fireRankupEvent,
 		
 		rankup_successful, 
-		failure_exception_caught_check_server_logs
+		failure_exception_caught_check_server_logs, 
+		successfully_saved_player_rank_data
 		
 		;
 	}
@@ -343,9 +346,13 @@ public class RankUtil {
         		boolean success = rankPlayer.removeLadder( ladder.getName() );
         		
         		if ( success ) {
-        			results.addTransaction( RankupStatus.RANKUP_LADDER_REMOVED, 
-        					RankupTransactions.ladder_was_removed_from_player );
-        			return;
+        	        if ( savePlayerRank( results, rankPlayer ) ) {
+
+        	        	results.addTransaction( RankupStatus.RANKUP_LADDER_REMOVED, 
+        	        			RankupTransactions.ladder_was_removed_from_player );
+        	        	
+        	        	return;
+        	        }
         		}
         	}
         	
@@ -367,6 +374,7 @@ public class RankUtil {
 
         
         
+//        String currency = "";
         double nextRankCost = targetRank.getCost();
         double currentRankCost = (originalRank == null ? 0 : originalRank.getCost());
         
@@ -395,6 +403,7 @@ public class RankUtil {
         	
         	if ( targetRank.getCurrency() != null ) {
         		results.addTransaction( RankupTransactions.custom_currency );
+        		results.setCurrency( targetRank.getCurrency() );
         		
         		EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
         											.getEconomyForCurrency( targetRank.getCurrency() );
@@ -407,6 +416,7 @@ public class RankUtil {
         	
         	results.addTransaction( RankupTransactions.player_balance_initial );
         	results.setBalanceInitial( rankPlayer.getBalance( targetRank.getCurrency() ) );
+        	results.setCurrency( targetRank.getCurrency() );
         	
         	if ( pForceCharge == PromoteForceCharge.charge_player) {
         		if ( rankPlayer.getBalance(targetRank.getCurrency()) < nextRankCost ) {
@@ -438,14 +448,8 @@ public class RankUtil {
 
         rankPlayer.addRank(ladder, targetRank);
 
-        try {
-            PrisonRanks.getInstance().getPlayerManager().savePlayer(rankPlayer);
-        } catch (IOException e) {
-            Output.get().logError("An error occurred while saving player files.", e);
-            
-            results.addTransaction( RankupStatus.RANKUP_FAILURE_COULD_NOT_SAVE_PLAYER_FILE, 
-            			RankupTransactions.failure_cannot_save_player_file );
-            return;
+        if ( !savePlayerRank( results, rankPlayer ) ) {
+        	return;
         }
 
         // Now, we'll run the rank up commands.
@@ -457,14 +461,37 @@ public class RankUtil {
         for (String cmd : targetRank.getRankUpCommands()) {
         	if ( cmd != null ) {
         		
-        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
-        				.replace("{player_uid}", rankPlayer.getUUID().toString());
+				PrisonCommandTask cmdTask = new PrisonCommandTask( command.name() );
+				
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.balanceInitial, Double.toString( results.getBalanceInitial()) );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.balanceFinal, Double.toString( results.getBalanceFinal()) );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.currency, results.getCurrency() );
+				
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.rankupCost, Double.toString( results.getTargetRank().getCost() ) );
+				
+				
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.ladder, results.getLadderName() );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.rank,
+									(results.getOriginalRank() == null ? "none" : results.getOriginalRank().getName()) );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.rankTag, 
+									(results.getOriginalRank() == null ? "none" : results.getOriginalRank().getTag()) );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.targetRank, 
+									(results.getTargetRank() == null ? "none" : results.getTargetRank().getName()) );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.targetRankTag, 
+									(results.getTargetRank() == null ? "none" : results.getTargetRank().getTag()) );
+				
+				
+				cmdTask.submitCommandTask( prisonPlayer, cmd );
+
         		
+//        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
+//        				.replace("{player_uid}", rankPlayer.getUUID().toString());
+
 //            Prison.get().getPlatform().logPlain(
 //            		String.format( "RankUtil.rankupPlayerInternal:  Rank Command: [%s]", 
 //            					formatted ));
         		
-        		PrisonAPI.dispatchCommand(formatted);
+//        		PrisonAPI.dispatchCommand(formatted);
         		count++;
         	}
         }
@@ -482,6 +509,27 @@ public class RankUtil {
         results.addTransaction( RankupStatus.RANKUP_SUCCESS, RankupTransactions.rankup_successful );
         
     }
+
+
+
+	private boolean savePlayerRank( RankupResults results, RankPlayer rankPlayer ) {
+		boolean success = false;
+		try {
+            PrisonRanks.getInstance().getPlayerManager().savePlayer(rankPlayer);
+            
+            results.addTransaction( 
+            		RankupTransactions.successfully_saved_player_rank_data );
+            
+            success = true;
+        } catch (IOException e) {
+            Output.get().logError("An error occurred while saving player files.", e);
+            
+            results.addTransaction( RankupStatus.RANKUP_FAILURE_COULD_NOT_SAVE_PLAYER_FILE, 
+            			RankupTransactions.failure_cannot_save_player_file );
+        }
+		
+		return success;
+	}
 
     
     private Rank calculateTargetRank(RankupCommands command, RankupResults results, 

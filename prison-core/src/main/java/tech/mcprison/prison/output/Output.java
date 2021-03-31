@@ -19,7 +19,9 @@
 package tech.mcprison.prison.output;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.MissingFormatArgumentException;
+import java.util.Set;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.CommandSender;
@@ -35,18 +37,27 @@ public class Output {
     // Fields
     private static Output instance;
     
-    private String PREFIX_TEMPLATE = "&8| %s &8| &7";
+    private String PREFIX_TEMPLATE = "| %s | &7";
+//    private String PREFIX_TEMPLATE = "&8| %s &8| &7";
     public String INFO_PREFIX = gen("Info");
     public String WARNING_PREFIX = gen("Warning");
     public String ERROR_PREFIX = gen("Error");
     public String DEBUG_PREFIX = gen("Debug");
 
     private boolean debug = false;
+    private Set<DebugType> activeDebugTypes;
+
+    public enum DebugType {
+    	blockbreak,
+    	durability
+    	;
+    }
     
-    // Constructor
 
     private Output() {
         instance = this;
+        
+        this.activeDebugTypes = new HashSet<>();
     }
 
     // Public methods
@@ -97,10 +108,10 @@ public class Output {
     	switch ( level )
     	{
     		case INFO:
-    			colorCode = "&f";
+    			colorCode = "&3";
     			break;
     		case WARNING:
-    			colorCode = "&6";
+    			colorCode = "&c";
     			break;
     		case ERROR:
     			colorCode = "&c";
@@ -130,7 +141,7 @@ public class Output {
     	} else {
     		try {
 				Prison.get().getPlatform().log(
-						gen("&3Prison") + " " + 
+						gen("Prison") + " " + 
 						getLogColorCode(level) +
 						String.format(message, args));
 			}
@@ -145,7 +156,7 @@ public class Output {
 				}
 				
 				Prison.get().getPlatform().logCore(
-						gen("&3Prison") + " " + 
+						gen("Prison") + " " + 
 						getLogColorCode(LogLevel.ERROR) +
 						"Failure to generate log message due to incorrect number of parameters: [" + 
 						e.getMessage() + "] :: Original raw message [" + message + "] " +
@@ -199,11 +210,27 @@ public class Output {
     	}
     }
     
+    public void logDebug( DebugType debugType, String message, Object... args) {
+    	logDebug(message, args );
+    	
+//    	// The following is not yet enabled since the user interfaces are not in place to manage the set:
+//    	if ( isDebug() && debugType != null && getActiveDebugTypes().contains( debugType ) ) {
+//    		log(message, LogLevel.DEBUG, args);
+//    	}
+    }
+    
     public boolean isDebug() {
 		return debug;
 	}
 	public void setDebug( boolean debug ) {
 		this.debug = debug;
+	}
+
+	public Set<DebugType> getActiveDebugTypes() {
+		return activeDebugTypes;
+	}
+	public void setActiveDebugTypes( Set<DebugType> activeDebugTypes ) {
+		this.activeDebugTypes = activeDebugTypes;
 	}
 
 	/**

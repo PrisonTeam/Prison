@@ -28,6 +28,10 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
     private final Player p;
+    private final String permissionWarpPlugin = guiConfig.getString("Options.Mines.PermissionWarpPlugin");
+    private final String statusUnlockedMine = messages.getString("Lore.StatusUnlockedMine");
+    private final String clickToTeleport = messages.getString("Lore.ClickToTeleport");
+    private final String statusLockedMine = messages.getString("Lore.StatusLockedMine");
 
     public SpigotPlayerMinesGUI(Player p) {
         this.p = p;
@@ -63,20 +67,16 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         // Make the buttons for every Mine with info
         for (Mine m : mines.getSortedList()) {
 
-            // Init the lore array with default values for ladders
-            List<String> minesLore = createLore(
-                   );
-
-            if (guiBuilder(inv, m, minesLore)) return;
+            if (guiBuilder(inv, m)) return;
         }
 
         // Open the inventory
         openGUI(p, inv);
     }
 
-    private boolean guiBuilder(Inventory inv, Mine m, List<String> minesLore) {
+    private boolean guiBuilder(Inventory inv, Mine m) {
         try {
-            buttonsSetup(inv, m, minesLore);
+            buttonsSetup(inv, m);
         } catch (NullPointerException ex){
             Output.get().sendError(new SpigotPlayer(p),"&cThere's a null value in the GuiConfig.yml [broken]");
             ex.printStackTrace();
@@ -85,14 +85,18 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Inventory inv, Mine m, List<String> minesLore) {
+    private void buttonsSetup(Inventory inv, Mine m) {
+
+        // Init the lore array with default values for ladders
+        List<String> minesLore = createLore(
+        );
 
         ItemStack itemMines;
         Material material;
 
         GuiConfig guiConfigClass = new GuiConfig();
         guiConfig = guiConfigClass.getFileGuiConfig();
-        String permission = SpigotPrison.format(guiConfig.getString("Options.Mines.PermissionWarpPlugin"));
+        String permission = SpigotPrison.format(permissionWarpPlugin);
 
         // Get Mine Name.
         String mineName = m.getName();
@@ -123,11 +127,11 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
         if (p.hasPermission(permission + m.getName()) || p.hasPermission(permission.substring(0, permission.length() - 1))){
             material = ( mineMaterial == null ? Material.COAL_ORE : mineMaterial);
-            minesLore.add(SpigotPrison.format(messages.getString("Lore.StatusUnlockedMine")));
-            minesLore.add(SpigotPrison.format(messages.getString("Lore.ClickToTeleport")));
+            minesLore.add(SpigotPrison.format(statusUnlockedMine));
+            minesLore.add(SpigotPrison.format(clickToTeleport));
         } else {
             material = XMaterial.REDSTONE_BLOCK.parseMaterial();
-            minesLore.add(SpigotPrison.format(messages.getString("Lore.StatusLockedMine")));
+            minesLore.add(SpigotPrison.format(statusLockedMine));
         }
 
         // Get mine Tag.

@@ -2,12 +2,16 @@ package tech.mcprison.prison.spigot.commands;
 
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
+
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
-import tech.mcprison.prison.spigot.gui.backpacks.SpigotPlayerBackPacksGUI;
+import tech.mcprison.prison.spigot.gui.backpacks.BackpacksListPlayer;
 import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerPrestigesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
@@ -18,8 +22,7 @@ import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
  */
 public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
 
-    private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
-    private Configuration backPacksConfig = SpigotPrison.getInstance().getBackPacksConfig();
+    private final Configuration messages = getMessages();
 
     /**
      * NOTE: onlyPlayers needs to be false so players can use /gui help on the command, even from console.
@@ -151,12 +154,13 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     @Command(identifier = "gui sellall", description = "SellAll GUI command", onlyPlayers = true)
     private void sellAllGuiCommandNew(CommandSender sender){
 
-        sender.dispatchCommand("sellall gui");
+    	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall gui" );
+        sender.dispatchCommand(registeredCmd);
     }
 
-    @Command(identifier = "gui backpack", description = "GUI Backpacks for players",
-            onlyPlayers = true )
-    private void prisonBackPacksGUI(CommandSender sender) {
+    @Command(identifier = "gui backpack", description = "Backpack as a GUI", onlyPlayers = true)
+    private void backpackGUIOpenCommand(CommandSender sender,
+    @Arg(name = "Backpack-ID", def = "null", description = "If user have more than backpack, he'll be able to choose another backpack on ID") String id){
 
         Player p = getSpigotPlayer(sender);
 
@@ -165,13 +169,42 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        String permission = backPacksConfig.getString("Options.BackPack_Use_Permission");
-        if (getBoolean(backPacksConfig.getString("Options.BackPack_Use_Permission_Enabled")) && permission != null && !sender.hasPermission(permission)){
-            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.MissingPermission") + " [" + permission + "]"));
+        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled")) && (Integer.parseInt(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player")) <= BackpacksUtil.get().getNumberOwnedBackpacks(p)) && !BackpacksUtil.get().getBackpacksIDs(p).contains(id)){
+            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.BackPackOwnLimitReached") + " [" + BackpacksUtil.get().getNumberOwnedBackpacks(p) + "]"));
             return;
         }
 
-        SpigotPlayerBackPacksGUI gui = new SpigotPlayerBackPacksGUI(p);
-        gui.open();
+        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission_Enabled")) && !p.hasPermission(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission"))){
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.MissingPermission") + " [" + BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission") + "]"));
+            return;
+        }
+
+        // New method.
+        if (!id.equalsIgnoreCase("null") && getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))){
+            BackpacksUtil.get().openBackpack(p, id);
+        } else {
+            BackpacksUtil.get().openBackpack(p);
+        }
     }
+
+    @Command(identifier = "gui backpackslist", description = "Backpack as a GUI", onlyPlayers = true)
+    private void backpackListGUICommand(CommandSender sender){
+        Player p = getSpigotPlayer(sender);
+
+        if (p == null) {
+            Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString("Message.CantRunGUIFromConsole")));
+            return;
+        }
+
+        // New method.
+        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))){
+            if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission_Enabled")) && !p.hasPermission(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission"))){
+                 Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.MissingPermission") + " [" + BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission") + "]"));
+                 return;
+            }
+            BackpacksListPlayer gui = new BackpacksListPlayer(p);
+            gui.open();
+        }
+    }
+
 }

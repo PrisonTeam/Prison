@@ -141,7 +141,8 @@ Using the command `/prison placeholders test` should be used to test and perfect
 
 
 
-### Placeholder Attribute - Numeric Formats
+## Placeholder Attribute - Numeric Formats
+
 
 The Numeric Format attribute will only work on placeholders that return plain numbers.  If there is a "_format" version of the placeholder, then an attribute will override the default formatting.
 
@@ -149,55 +150,53 @@ Example of this attribute's usage is as follows, using descriptions for each par
 
 `::nFormat:format:spaces:unitType:hex:hex2:debug`
 
-<ul>
-  <li><b>nFormat</b>: the keyword to identify this attribute.</li>
-  <li><b>format</b>: formatting based upon Java's DecimalFormat class.
+
+
+- **nFormat**: the keyword to identify this attribute.</li>
+- **format**: formatting based upon Java's DecimalFormat class.
   					**Required.** Defaults to #,##0.00. 
-     <ul>
-       <li>#,###</li>
-       <li>#,###.00</li>
-       <li>#,###.00000</li>
-    </ul>
-  </li>
-  <li><b>spaces</b>: number of spaces between format and unit of measure. 
-  				**Optional.** Defaults to 1.</li>
-  <li><b>unitType</b>: unit type to display or to use to transform the results.
+    * #,###
+    * #,###.00
+    * #,###.00000
+
+- **spaces**: number of spaces between format and unit of measure. 
+  				**Optional.** Defaults to 1.
+- **unitType**: unit type to display or to use to transform the results.
   				**Optional.** Defaults to the placeholder type that is used.
-  	<ul>
-      <li><b>none</b>: No display of units. No transformations.</li>
-      <li><b>kmg</b>: Uses one character units: kMGTPEZY. Transforms results by 
+
+    * **none**: No display of units. No transformations.
+    * **kmg**: Uses one character units: kMGTPEZY. Transforms results by 
        			dividing by 1000.0 until value is less than 1000.0, and 
        			each time it increments the unit character.  
-       			k=1,000, M=1,000,000 and etc. These are metric SI codes.</li>
-      <li><b>kmbt</b>: Uses one character units: KMBTqQsS. Transforms results by 
+       			k=1,000, M=1,000,000 and etc. These are metric SI codes.
+    * **kmbt**: Uses one character units: KMBTqQsS. Transforms results by 
        			dividing by 1000.0 until value is less than 1000.0, and 
        			each time it increments the unit character.  
-       			k=1,000, M=1,000,000 and etc. These are non-standard codes.</li>       			
-	  <li><b>binary</b>: Uses a base-two divisor of 1024 along with the units: 
+       			k=1,000, M=1,000,000 and etc. These are non-standard codes.   			
+    * **binary**: Uses a base-two divisor of 1024 along with the units: 
        			KB, MB, GB, TB, PB, EB, ZB, and YB.  
-       			</li>
-      <li><i>Note:</i> Other unitTypes can be added along with different style of
-       			reducers.</p>
-  	</ul>
-  </li>
-  <li><b>hex</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+       			
+    * *Note:* Other unitTypes can be added along with different style of
+       			reducers.
+      
+- **hex**: **Optional.** Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "hex". When enabled it will translate
   				hex color codes, and other color codes before sending the placeholder
   				results back to the requestor. This is useful for plugins that
   				do not directly support hex color codes.
-  <li><b>hex2</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+- **hex2**: **Optional.** Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "hex2". When enabled it will translate
   				hex color codes to their intermediate state, which uses '&' color 
   				codes, sending the placeholder results back to the requestor. 
   				This is useful for plugins that do not directly support hex 
   				color codes and may work when 'hex' does not.
-  <li><b>debug</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+- **debug**: **Optional.** Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "debug". When enabled it
    				will log to the console the status of this attribute, along with
    				any error messages that may occur when applying the attribute.
-  </li>
   
-</ul>
+
+
 
 
 The parameters that are optional do not have to be included, unless another parameter after the optional ones are needed. Then the optional parameter must be supplied and cannot be empty.
@@ -221,7 +220,8 @@ Although it is not suggested to include color codes in the formatting of numbers
 
 
 
-### Placeholder Attribute - Bar Graphs
+## Placeholder Attribute - Bar Graphs
+
 
 The bar placeholder attribute only works with placeholders with the word bar in them. 
 
@@ -230,34 +230,37 @@ Example of this attribute's usage is as follows, using descriptions for each par
 
 `::bar:size:posColor:posSeg:negColor:negSeg:hex:hex2:debug`
 
-<ul>
-  <li><b>bar</b>: the keyword to identify this attribute.</li>
-  <li><b>size</b>: The number of segments to generate.</li>
-  <li><b>Positive Color</b>: The color code to use for the positive segments. 
-  						Color codes should start with an &.</li>
-  <li><b>Positive Segment</b>: The value that will be used for the positive
-  						segment.</li>
-  <li><b>Negative Color</b>: The color code to use for the negative segments. 
-  						Color codes should start with an &.</li>
-  <li><b>Negative Segment</b>: The value that will be used for the negative
-  						segment.</li>
-  <li><b>hex</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+
+
+- **bar**: the keyword to identify this attribute.
+- **size**: The number of segments to generate.
+- **Positive Color**: The color code to use for the positive segments. 
+  						Color codes should start with an &.
+- **Positive Segment**: The value that will be used for the positive
+  						segment.
+- **Negative Color**: The color code to use for the negative segments. 
+  						Color codes should start with an &.
+- **Negative Segment**: The value that will be used for the negative
+  						segment.
+  	
+      
+- **hex**: **Optional.** Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "hex". When enabled it will translate
   				hex color codes, and other color codes before sending the placeholder
   				results back to the requestor. This is useful for plugins that
   				do not directly support hex color codes.
-  <li><b>hex2</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+- **hex2**: **Optional.** Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "hex2". When enabled it will translate
   				hex color codes to their intermediate state, which uses '&' color 
   				codes, sending the placeholder results back to the requestor. 
   				This is useful for plugins that do not directly support hex 
   				color codes and may work when 'hex' does not.
-  <li><b>debug</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+- **debug**: **Optional.** Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "debug". When enabled it
    				will log to the console the status of this attribute, along with
-   				any error messages that may occur when applying the attribute.
-  </li>
-</ul>
+   				any error messages that may occur when applying the attribute.					
+  						
+
 
 The parameters are all optional and if they are not supplied then the default values for the bar graph will be used instead. 
 
@@ -285,7 +288,7 @@ Examples of using hex color codes in a bar graph placeholder. Try it first with 
 
 
 
-### Placeholder Attribute - Text
+## Placeholder Attribute - Text
 
 
 This placeholder attribute is for text formatting the placeholder results.  The only thing it does is to process the hex, hex2, and debug options.
@@ -303,24 +306,22 @@ Example of this attribute's usage is as follows, using descriptions for each par
 `::text:hex:hex2:debug`
 
 
-<ul>
-  <li><b>hex</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+      
+- **hex**: **Optional.** Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "hex". When enabled it will translate
   				hex color codes, and other color codes before sending the placeholder
   				results back to the requestor. This is useful for plugins that
   				do not directly support hex color codes.
-  <li><b>hex2</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+- **hex2**: **Optional.** Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "hex2". When enabled it will translate
   				hex color codes to their intermediate state, which uses '&' color 
   				codes, sending the placeholder results back to the requestor. 
   				This is useful for plugins that do not directly support hex 
   				color codes and may work when 'hex' does not.
-  <li><b>debug</b>: <i>Optional.</i> Case sensitive. Non-positional; can be placed anywhere.
+- **debug**: **Optional.** Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "debug". When enabled it
    				will log to the console the status of this attribute, along with
    				any error messages that may occur when applying the attribute.
-  </li>
-</ul>
 
 
 
@@ -331,22 +332,30 @@ Example of this attribute's usage is as follows, using descriptions for each par
 
 # Rank Command Placeholders
 
+
 The Rank Commands recognize only two placeholders, but they are not considered part of the standard placeholders.  There are also only two placeholders that are recognized and both are case sensitive (must be lower case), and must also include curly braces too.
+
 
 * {player}
 * {player_uid}
 
+
 This is mentioned here since these rank command placeholders are not part of all the other placeholders, so as such, it may be difficult to find information for these items.
+
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
+
 # Placeholder Commands
+
 
 *Since Prison v3.2.1-alpha.13*
 
+
 There are a few commands within prison that will allow you list placeholders, search for placeholders, and to test random text that includes placeholders.
+
 
 * **/prison placeholders**
 
@@ -381,6 +390,7 @@ Example of the list of placeholders that is available through **/prison placehol
 
 
 <h3>Prison Placeholder Search with Two Search Patterns</h3>
+
 
 <img src="images/prison_docs_310_guide_placeholders_3.png" alt="Prison Placeholder Search" title="Prison Placeholder Search" width="500" />
 

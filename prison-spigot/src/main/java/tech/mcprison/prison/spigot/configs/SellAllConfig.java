@@ -61,13 +61,17 @@ public class SellAllConfig extends SpigotConfigComponents {
         dataConfig("Options.GUI_Permission_Enabled", "true");
         dataConfig("Options.GUI_Permission","prison.admin");
         dataConfig("Options.Sell_Permission_Enabled","false");
-        dataConfig("Options.Sell_Permission","prison.admin");
+        dataConfig("Options.Sell_Permission","prison.sell");
+        dataConfig("Options.Sell_Per_Block_Permission_Enabled", "false");
+        dataConfig("Options.Sell_Per_Block_Permission", "prison.sellall.");
         dataConfig("Options.Sell_Delay_Enabled", "false");
         dataConfig("Options.Sell_Delay_Seconds", "5");
         dataConfig("Options.Sell_Notify_Enabled", "true");
         dataConfig("Options.Sell_Sound_Enabled", "true");
         dataConfig("Options.Sell_Sound_Success_Name", "ENTITY_PLAYER_LEVELUP");
         dataConfig("Options.Sell_Sound_Fail_Name", "BLOCK_ANVIL_PLACE");
+        dataConfig("Options.Sell_Prison_BackPack_Items", "true");
+        dataConfig("Options.Sell_MinesBackPacks_Plugin_Backpack", "true");
         dataConfig("Options.SellAll_Currency", "default");
         dataConfig("Options.SellAll_Sign_Enabled", "false");
         dataConfig("Options.SellAll_Sign_Use_Permission_Enabled", "false");

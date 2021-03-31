@@ -1,6 +1,6 @@
 /*
  *  Prison is a Minecraft plugin for the prison game mode.
- *  Copyright (C) 2017-2020 The Prison Team
+ *  Copyright (C) 2017-2021 The Prison Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ package tech.mcprison.prison.spigot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,6 +30,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -43,13 +45,16 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.internal.inventory.Viewable;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.BlockTestStats;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
+import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
+import tech.mcprison.prison.util.Vector;
 
 /**
  * Utilities for converting Prison-Core types to Spigot types.
@@ -172,26 +177,378 @@ public class SpigotUtil {
 		
 		return itemStack;
 	}
-	
-	/**
-	 * Used in AutoManagerFeatures.
-	 * 
-	 * @param player
-	 * @param itemStack
-	 * @return
-	 */
-	public static HashMap<Integer, SpigotItemStack> addItemToPlayerInventory( 
+
+
+	/*public static HashMap<Integer, SpigotItemStack> addItemToPlayerInventory(
 			Player player, SpigotItemStack itemStack ) {
 		HashMap<Integer, SpigotItemStack> results = new HashMap<>();
 		
 		HashMap<Integer, ItemStack> overflow = player.getInventory().addItem( itemStack.getBukkitStack() );
 		Set<Integer> keys = overflow.keySet();
-		for ( Integer key : keys ) {
-			results.put( key, new SpigotItemStack( overflow.get( key ) ));
+
+		if (SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true") &&
+				SpigotPrison.getInstance().getBackPacksConfig().getString("Options.BackPack_AutoPickup_Usable").equalsIgnoreCase("true")) {
+
+			// Get backpack.
+			Inventory prisonBackpack = BackPacksUtil.get().getInventory(player);
+
+			for (Integer key : keys){
+				HashMap<Integer, ItemStack> overflowBackPack = prisonBackpack.addItem(overflow.get(key));
+
+				if (!overflowBackPack.isEmpty()){
+					Set<Integer> keys2 = overflowBackPack.keySet();
+					for (Integer key2 : keys2) {
+						results.put(key2, new SpigotItemStack(overflowBackPack.get(key2)));
+					}
+				}
+			}
+			// Save backpack with new items if not full.
+			BackPacksUtil.get().setInventory(player, prisonBackpack);
+		} else {
+			for (Integer key : keys) {
+				results.put(key, new SpigotItemStack(overflow.get(key)));
+			}
 		}
+
+		return results;
+	}*/
+
+
+	/**
+	 * Used in AutoManagerFeatures.
+	 *
+	 * @param player
+	 * @param itemStack
+	 * @return
+	 */
+	public static HashMap<Integer, SpigotItemStack> addItemToPlayerInventory(
+															Player player, SpigotItemStack itemStack ) {
+		HashMap<Integer, SpigotItemStack> results = new HashMap<>();
 		
+		HashMap<Integer, ItemStack> overflow = player.getInventory().addItem( itemStack.getBukkitStack() );
+
+		
+		// Insert overflow in to Prison's backpack:
+		if (overflow.size() > 0 && BackpacksUtil.isEnabled() && 
+						BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_AutoPickup_Usable").equalsIgnoreCase("true")) {
+			if (BackpacksUtil.get().isMultipleBackpacksEnabled()){
+				for (String id : BackpacksUtil.get().getBackpacksIDs(player)){
+					if (overflow.size() > 0){
+						if (id == null){
+							Inventory inv = BackpacksUtil.get().getBackpack(player);
+							overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
+							BackpacksUtil.get().setInventory(player, inv);
+						} else {
+							Inventory inv = BackpacksUtil.get().getBackpack(player, id);
+							overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
+							BackpacksUtil.get().setInventory(player, inv, id);
+						}
+					}
+				}
+			} else {
+				Inventory inv = BackpacksUtil.get().getBackpack(player);
+				overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
+				BackpacksUtil.get().setInventory(player, inv);
+			}
+		}
+
+		
+		// Insert overflow in to Minepacks backpack:
+		if ( overflow.size() > 0 && IntegrationMinepacksPlugin.getInstance().isEnabled() ) {
+			overflow = IntegrationMinepacksPlugin.getInstance().addItemsBukkit( player, overflow );						
+		}
+
+		
+		// Cannot stick it anywhere else, so return the extras:
+		for ( Integer key : overflow.keySet() ) {
+			results.put(key, new SpigotItemStack(overflow.get(key)));
+		}
+
 		return results;
 	}
+	
+//	public static int countItemsInPlayerInventory(
+//								Player player, SpigotItemStack itemStackSource, 
+//								SpigotItemStack itemStackTarget, int quantity ) {
+//		int count = 0;
+//
+//		player.getInventory().
+//		
+//		
+//		
+//		return count ;
+//	}
+//	
+//	public static HashMap<Integer, SpigotItemStack> exchangeItemsFromPlayerInventory(
+//			Player player, SpigotItemStack itemStackSource, 
+//			SpigotItemStack itemStackTarget, int quantity ) {
+//		HashMap<Integer, SpigotItemStack> overflow = new HashMap<>();
+//		
+//		HashMap<Integer, SpigotItemStack> removed = new HashMap<>();
+//		
+//		
+//		
+//		return overflow ;
+//	}
+
+	
+	public static int itemStackCount(XMaterial xMat, Inventory inv ) {
+		int count = 0;
+		if ( xMat != null && inv != null ) {
+			ItemStack testStack = xMat.parseItem();
+
+			for (ItemStack is : inv.getContents() ) {
+				if ( is != null && is.isSimilar( testStack ) ) {
+					count += is.getAmount();
+				}
+			}
+		}
+		return count;
+	}
+	
+	
+	public static  HashMap<Integer, SpigotItemStack> itemStackAddAll( Player player, 
+												XMaterial source, int count ) {
+		
+		ItemStack sourceItems = source.parseItem();
+		sourceItems.setAmount( count );
+
+		SpigotItemStack sourceItemStack = new SpigotItemStack( sourceItems );
+		
+		return addItemToPlayerInventory( player, sourceItemStack );
+	}
+	
+	
+	public static HashMap<Integer, SpigotItemStack> itemStackReplaceItems( Player player, 
+							XMaterial source, XMaterial target, int ratio ) {
+		
+		HashMap<Integer, SpigotItemStack> overflow = new HashMap<>();
+		
+		// Removes all of the specified source types from all inventories:
+		int sourceRemoved = itemStackRemoveAll( player, source );
+		
+		// The number of sources that need to be added back since it's the remainder:
+		int sourceAdd = sourceRemoved % ratio;
+		
+		int targetCount = sourceRemoved / ratio;
+		
+		
+		if ( sourceAdd > 0 ) {
+			for ( SpigotItemStack sItemStack : itemStackAddAll( player, source, sourceAdd ).values() ) {
+				overflow.put( Integer.valueOf( overflow.size() ), sItemStack );
+			}
+		}
+
+		
+		if ( targetCount > 0 ) {
+			for ( SpigotItemStack sItemStack : itemStackAddAll( player, target, targetCount ).values() ) {
+				overflow.put( Integer.valueOf( overflow.size() ), sItemStack );
+			}
+		}
+		
+
+		return overflow;
+	}
+	
+	public static int itemStackRemoveAll(Player player, XMaterial xMat ) {
+		int removed = 0;
+
+		// First remove from the player's inventory:
+		removed += itemStackRemoveAll( xMat, player.getInventory() );
+
+		
+		// Insert overflow in to Prison's backpack:
+		if ( SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true")) {
+		
+			Inventory inv = BackpacksUtil.get().getBackpack(player);
+			removed += itemStackRemoveAll( xMat, inv );
+			BackpacksUtil.get().setInventory( player, inv );
+		}
+		
+		
+		// Insert overflow in to Minepacks backpack:
+		if ( IntegrationMinepacksPlugin.getInstance().isEnabled() ) {
+			removed += IntegrationMinepacksPlugin.getInstance().itemStackRemoveAll(player, xMat);
+		}
+	
+		return removed;
+	}
+
+	/**
+	 * <p>This function will remove a given XMaterial from an Inventory and as 
+	 * a result, this function will return a count of how many were removed.
+	 * </p>
+	 * 
+	 * @param xMat The XMaterial that needs to b removed from the inventory
+	 * @param inv The Inventory object
+	 * @return count of how many items were removed
+	 */
+	public static int itemStackRemoveAll( XMaterial xMat, Inventory inv ) {
+		int count = 0;
+		if ( xMat != null && inv != null ) {
+			
+			// This holds ItemStacks to be deleted. The key is the amount in the ItemStack.
+			List<ItemStack> deleteHolder = new ArrayList<>();
+			
+			for (ItemStack is : inv.getContents() ) {
+				if ( is != null ) {
+					
+					try {
+						XMaterial invXMat = XMaterial.matchXMaterial( is );
+						if ( xMat == invXMat ) {
+							
+							count += is.getAmount();
+							deleteHolder.add( is );
+						}
+					}
+					catch ( Exception e ) {
+						
+						// Ignore: This exception is normal since enchanting plugins assign custom data values which
+						//         which will cause a mis-mapping on pre v1.13 platforms.
+//						Output.get().logWarn( 
+//								String.format( "SpigotUtil.itemStackRemoveAll: Failure trying to convert " +
+//								"an ItemStack to an XMaterial. Trying to remove xMat: %s  ItemStack: %s", 
+//								xMat.name(), mapToString( is.serialize() ) ) );
+					}
+					
+				}
+			}
+			
+			// Now remove the items stacks from the inventory:
+			for ( ItemStack itemStack : deleteHolder ) {
+				inv.remove( itemStack );
+			}
+			
+		}
+		return count;
+	}
+
+	/**
+	 * <p>This function is used to convert a map to a String. It has been created to provide a
+	 * String conversion for ItemStack.serialize() functions.  
+	 * What this produces may look similar to json but it isn't json.  Largest difference is that
+	 * no Strings in the output are quote and there isn't any code to properly handle numbers and
+	 * Booleans, or even arrays for that matter.  It's able to deal with ItemStacks, so be careful
+	 * with the use of any other Maps.
+	 * </p>
+	 * @param map
+	 * @return
+	 */
+	@SuppressWarnings( "unchecked" )
+	public static String mapToString( Map<String, Object> map ) {
+		StringBuilder sb = new StringBuilder();
+		
+		Set<String> keys = map.keySet();
+		for (String key : keys) {
+			if ( sb.length() > 0 ) {
+				sb.append( ", " );
+			}
+			sb.append( key ).append( "=" );
+			
+			Object obj = map.get( key );
+			if ( obj instanceof String ) {
+				
+				sb.append( (String) obj );
+			}
+			else if ( obj instanceof Map ) {
+				
+				sb.append( mapToString( (Map<String, Object>) obj ) );
+			}
+			else {
+				sb.append( obj );
+			}
+	    }
+		
+		sb.insert( 0, "{" );
+		sb.append( "}" );
+		
+		return sb.toString();
+	}
+	
+	/**
+	 * <p>This version of itemStackReplaceItems is focused on replacing items within 
+	 * the stacks collection only.  It serves as the source and the target locations for the
+	 * conversions.
+	 * </p>
+	 * 
+	 * @param stacks
+	 * @param source
+	 * @param target
+	 * @param ratio
+	 */
+	public static void itemStackReplaceItems( List<SpigotItemStack> stacks,
+											XMaterial source, XMaterial target, int ratio ) {
+		// Removes all of the specified source types from all inventories:
+		int sourceRemoved = itemStackRemoveAll( source, stacks );
+		
+		// The number of sources that need to be added back since it's the remainder:
+		int sourceAdd = sourceRemoved % ratio;
+		
+		int targetCount = sourceRemoved / ratio;
+		
+		
+		if ( sourceAdd > 0 ) {
+			itemStackAddAll( stacks, source, sourceAdd );
+		}
+		
+		
+		if ( targetCount > 0 ) {
+			itemStackAddAll( stacks, target, targetCount );
+		}
+		
+	}
+	
+	
+	private static void itemStackAddAll( List<SpigotItemStack> stacks, XMaterial source, int amount ) {
+		ItemStack iStack = source.parseItem();
+		iStack.setAmount( amount );
+		
+		SpigotItemStack sItemStack = new SpigotItemStack( iStack );
+		stacks.add( sItemStack );
+	}
+
+	public static int itemStackRemoveAll( XMaterial xMat, List<SpigotItemStack> stacks ) {
+		int count = 0;
+		if ( xMat != null && stacks != null ) {
+//			ItemStack testStack = xMat.parseItem();
+			
+			// This holds ItemStacks to be deleted. The key is the amount in the ItemStack.
+			List<SpigotItemStack> deleteHolder = new ArrayList<>();
+//			HashMap<Integer,ItemStack> deleteHolder = new HashMap<>();
+			
+			for (SpigotItemStack is : stacks ) {
+				if ( is != null ) {
+					
+					try {
+						XMaterial invXMat = XMaterial.matchXMaterial( is.getBukkitStack() );
+						if ( xMat == invXMat ) {
+							
+							count += is.getAmount();
+							deleteHolder.add( is );
+						}
+					}
+					catch ( Exception e ) {
+				
+						// Ignore: This exception is normal since enchanting plugins assign custom data values which
+						//         which will cause a mis-mapping on pre v1.13 platforms.
+//						Output.get().logWarn( 
+//								String.format( "SpigotUtil.itemStackRemoveAll:: Failure trying to convert " +
+//								"an ItemStack to an XMaterial. Trying to remove xMat: %s  ItemStack: %s", 
+//								xMat.name(), mapToString( is.serialize() ) ) );
+					}
+					
+				}
+			}
+			
+			// Now remove the items stacks from the inventory:
+			for ( SpigotItemStack itemStack : deleteHolder ) {
+				stacks.remove( itemStack );
+			}
+			
+		}
+		return count;
+	}
+
 	
 	/**
 	 * Used in AutoManagerFeatures.
@@ -199,11 +556,12 @@ public class SpigotUtil {
 	 * @param itemStack
 	 */
 	public static void dropPlayerItems( Player player, SpigotItemStack itemStack ) {
-		
-		org.bukkit.Location dropPoint = player.getLocation().add( player.getLocation().getDirection());
-		
-		player.getWorld().dropItem( dropPoint, itemStack.getBukkitStack() );
-		
+		if ( itemStack != null && itemStack.getAmount() > 0 ) {
+			
+			org.bukkit.Location dropPoint = player.getLocation().add( player.getLocation().getDirection());
+			
+			player.getWorld().dropItem( dropPoint, itemStack.getBukkitStack() );
+		}
 	}
 	
 	
@@ -234,8 +592,6 @@ public class SpigotUtil {
 	 * but it does not represent the correct block types in lower versions, 
 	 * such as with 1.8.x. This has everything to do with magic numbers.
 	 * Instead convert it to an ItemStack.
-	 * 
-	 * @param blockTypes
 	 */
 	public static List<PrisonBlock> getAllPlatformBlockTypes() {
 		List<PrisonBlock> blockTypes = new ArrayList<>();
@@ -345,6 +701,22 @@ public class SpigotUtil {
 			results = new PrisonBlock( blockName );
 			results.setValid( false );
 		}
+		return results;
+	}
+	
+	public static PrisonBlock getPrisonBlock( XMaterial xMat ) {
+		
+		PrisonBlock results = null;
+		
+		if ( xMat != null ) {
+			results = new PrisonBlock( xMat.name() );
+			
+		}
+		
+		if ( results == null ) {
+			results = getPrisonBlock( xMat.name() );
+		}
+		
 		return results;
 	}
 	
@@ -561,9 +933,13 @@ public class SpigotUtil {
    */
 
     public static Location bukkitLocationToPrison(org.bukkit.Location bukkitLocation) {
+    	org.bukkit.util.Vector v = bukkitLocation.getDirection();
+    	Vector direction = new Vector( v.getX(), v.getY(), v.getZ() );
+    	
         return new Location(new SpigotWorld(bukkitLocation.getWorld()), bukkitLocation.getX(),
             bukkitLocation.getY(), bukkitLocation.getZ(), bukkitLocation.getPitch(),
-            bukkitLocation.getYaw());
+            bukkitLocation.getYaw(), 
+            direction );
     }
 
     public static org.bukkit.Location prisonLocationToBukkit(Location prisonLocation) {

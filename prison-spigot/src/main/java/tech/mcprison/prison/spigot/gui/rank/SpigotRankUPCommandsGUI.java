@@ -22,6 +22,11 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
     private final Player p;
     private final Rank rank;
 
+    // Global Strings.
+    private final String shiftRightClickToDelete = messages.getString("Lore.ShiftAndRightClickToDelete");
+    private final String loreInfo = messages.getString("Lore.Info");
+    private final String loreCommand = messages.getString("Lore.Command");
+
     public SpigotRankUPCommandsGUI(Player p, Rank rank) {
         this.p = p;
         this.rank = rank;
@@ -88,10 +93,10 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         ItemStack itemCommand;
         // Init the lore array with default values for ladders
         List<String> commandsLore = createLore(
-                messages.getString("Lore.ShiftAndRightClickToDelete"),
+                shiftRightClickToDelete,
                 "",
-                messages.getString("Lore.Info"));
-        commandsLore.add(SpigotPrison.format(messages.getString("Lore.Command") + command));
+                loreInfo);
+        commandsLore.add(SpigotPrison.format(loreCommand + command));
 
         // Make the button with materials, amount, lore and name
         itemCommand = createButton(XMaterial.TRIPWIRE_HOOK.parseItem(), commandsLore, SpigotPrison.format("&3" + rank.getName() + " " + command));

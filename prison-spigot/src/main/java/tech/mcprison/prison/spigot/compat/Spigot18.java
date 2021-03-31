@@ -107,14 +107,39 @@ public class Spigot18
         loc.getWorld().playEffect(loc, Effect.DOOR_TOGGLE, null);
     }
 
-	@SuppressWarnings( "deprecation" )
+    @Override
+    public Sound getAnvilSound() {
+        return Sound.valueOf("ANVIL_LAND");
+    }
+
+    @Override
+    public Sound getLevelUpSound() {
+        return Sound.valueOf("LEVEL_UP");
+    }
+
+    @Override
+    public Sound getOpenChestSound() {
+        return Sound.valueOf("CHEST_OPEN");
+    }
+
+    @Override
+    public Sound getCloseChestSound() {
+        return Sound.valueOf("CHEST_CLOSE");
+    }
+
+    @Override
+    public Sound getEntityItemBreakSound() {
+        return Sound.valueOf("ITEM_BREAK");
+    }
+
+    @SuppressWarnings( "deprecation" )
 	@Override
 	public void breakItemInMainHand( Player player ) {
 		player.setItemInHand( null );
 		
 		try
 		{
-			player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0F, 0.85F);
+			player.playSound(player.getLocation(), getEntityItemBreakSound(), 1.0F, 0.85F);
 		}
 		catch ( NoSuchFieldError e )
 		{

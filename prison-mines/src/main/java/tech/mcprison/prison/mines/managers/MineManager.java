@@ -24,15 +24,17 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MineScheduler.MineResetActions;
 import tech.mcprison.prison.mines.data.MineScheduler.MineResetType;
-import tech.mcprison.prison.mines.data.PrisonDispatchCommandTask;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.ManagerPlaceholders;
@@ -46,6 +48,7 @@ import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
+import tech.mcprison.prison.tasks.PrisonDispatchCommandTask;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 
 /**
@@ -72,6 +75,7 @@ public class MineManager
     private int mineResetCommandsCurrentTaskId = 0;
     private List<MineResetActions> mineResetActions;
 
+    private Pattern simpleNumberPattern = Pattern.compile("([0-9]+)");
 
 	/**
 	 * <p>These sort orders control how the mines are sorted, and which ones 
@@ -964,6 +968,73 @@ public class MineManager
 					
 						break;
 						
+					case prison_mb01_minename:
+					case prison_mb02_minename:
+					case prison_mb03_minename:
+					case prison_mb04_minename:
+					case prison_mb05_minename:
+					case prison_mb06_minename:
+					case prison_mb07_minename:
+					case prison_mb08_minename:
+					case prison_mb09_minename:
+					case prison_mb10_minename:
+					case prison_mines_blocks_01_minename:
+					case prison_mines_blocks_02_minename:
+					case prison_mines_blocks_03_minename:
+					case prison_mines_blocks_04_minename:
+					case prison_mines_blocks_05_minename:
+					case prison_mines_blocks_06_minename:
+					case prison_mines_blocks_07_minename:
+					case prison_mines_blocks_08_minename:
+					case prison_mines_blocks_09_minename:
+					case prison_mines_blocks_10_minename:
+					case prison_mb01_pm:
+					case prison_mb02_pm:
+					case prison_mb03_pm:
+					case prison_mb04_pm:
+					case prison_mb05_pm:
+					case prison_mb06_pm:
+					case prison_mb07_pm:
+					case prison_mb08_pm:
+					case prison_mb09_pm:
+					case prison_mb10_pm:
+					case prison_mines_blocks_01_playermines:
+					case prison_mines_blocks_02_playermines:
+					case prison_mines_blocks_03_playermines:
+					case prison_mines_blocks_04_playermines:
+					case prison_mines_blocks_05_playermines:
+					case prison_mines_blocks_06_playermines:
+					case prison_mines_blocks_07_playermines:
+					case prison_mines_blocks_08_playermines:
+					case prison_mines_blocks_09_playermines:
+					case prison_mines_blocks_10_playermines:
+						
+						Matcher matcher = simpleNumberPattern.matcher( 
+												placeHolderKey.getPlaceholder().name() );
+						
+						// Should only be one number so just take the first one if there is one:
+						if ( matcher.find() ) {
+							String numStr = matcher.group();
+							
+							if ( numStr != null ) {
+								int index = Integer.parseInt( numStr ) - 1;
+								
+								PrisonBlockStatusData blockStats = null;
+								
+								// Only try to get the blocks if the index is within range:
+								if ( mine.isUseNewBlockModel() && mine.getPrisonBlocks().size() > index ) {
+									blockStats = mine.getPrisonBlocks().get( index );
+								}
+								else if ( !mine.isUseNewBlockModel() && mine.getBlocks().size() > index ) {
+									blockStats = mine.getBlocks().get( index );
+								}
+								
+								if ( blockStats != null ) {
+									results = blockStats.toPlaceholderString();
+								}
+							}
+						}
+						
 					default:
 						break;
 				}
@@ -1010,7 +1081,6 @@ public class MineManager
     }
     
     
-    
     public String getTranslatePlayerMinesPlaceHolder( UUID playerUuid, String playerName, 
     						PlaceHolderKey placeHolderKey, String identifier ) {
     	String results = null;
@@ -1028,6 +1098,10 @@ public class MineManager
     	
     	
     	results = getTranslatePlayerMinesPlaceHolder( playerUuid, playerName, placeHolderKey, attribute );
+    	
+    	if ( results == null ) {
+    		results = "";
+    	}
     	
     	return results;
     }

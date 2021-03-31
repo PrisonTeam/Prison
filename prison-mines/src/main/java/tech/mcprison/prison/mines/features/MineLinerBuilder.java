@@ -3,7 +3,6 @@ package tech.mcprison.prison.mines.features;
 import java.util.ArrayList;
 import java.util.List;
 
-import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.BlockFace;
@@ -43,7 +42,9 @@ public class MineLinerBuilder {
 		beacon,
 		bricked,
 		
-		repair
+		repair,
+		remove,
+		removeAll
 		;
 		
 		public static LinerPatterns fromString( String pattern ) {
@@ -192,8 +193,6 @@ public class MineLinerBuilder {
 	private void generatePattern( Edges edge, World world, int xMin, int xMax, int yMin, int yMax, int zMin, int zMax) {
 		try {
 			
-			boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
-			
 			// Output.get().logInfo( "MineRest.resetSynchonouslyInternal() " + getName() );
 
 //			Output.get().logInfo( "### MineLinerBuilder - xMin=%d, xMax=%d, yMin=%d, yMax=%d, zMin=%d, zMax=%d ",
@@ -284,7 +283,7 @@ public class MineLinerBuilder {
 //								tBlockPlus2.getLocation().toBlockCoordinates(), 
 //									x, y, z,  nextBlockName);
 						
-						if ( useNewBlockModel ) {
+						if ( getMine().isUseNewBlockModel() ) {
 							
 							if ( REPAIR_LINER.equalsIgnoreCase( nextBlockName ) ) {
 								

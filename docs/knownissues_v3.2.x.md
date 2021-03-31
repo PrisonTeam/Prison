@@ -1,4 +1,4 @@
-[Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
+[Prison Documents - Table of Contents](prison_docs_000_toc.md)
 
 # Prison Known Issues and To Do's for v3.2.x
 
@@ -7,23 +7,67 @@ a short list of To Do's. This list is intended to help work through known
 issues, and/or to serve as items that should be added, or fixed.
 
 
-# To Do Items - During Alpha v3.2.4
+# To Do Items - During Alpha v3.2.5
 
 
-- /prison utils message - add ability to send message to player or broadcast
-
-
--DONE: COUNT blocks upon startup when doing the air counts:
-
-- DONE: build targetBlockList when counting air blocks upon server startup.
-
-
-
-- DONE: Use the mine tag name over the mine's name if it exists.
+* Issue with `/ranks autoConfigure` if Mines module is disabled.  Gets a NPE, which is not surprising.  Note: line number is from v3.2.4 so does not match source anymore.
+[21:00:38 WARN]: Caused by: java.lang.NullPointerException
+[21:00:38 WARN]:        at tech.mcprison.prison.spigot.SpigotPlatform.getModuleElementCount(SpigotPlatform.java:1077)
+[21:00:38 WARN]:        at tech.mcprison.prison.ranks.commands.RanksCommands.autoConfigureRanks(RanksCommands.java:202)
+[21:00:38 WARN]:        ... 28 more
 
 
 
-- DONE: TE Explosions does not produce exact counts.  Have done extensive work to get this to work better, but can only get closer and has not been exact. Not sure why at this time.
+* possible change to /prison version all to include errors during startup.  Errors would need to be captchured.
+
+
+* To `/ranks autoFeatures` add warnings at the completion identifying that the user must create any needed groups.
+ - Note that WG global region needs to have the flag `passthrough deny` set.
+
+
+
+
+Look at sellall and XMAteral's use of parse.  Needs to handle it with an item stack.
+
+Personal mines.  Work in conjunction with a plot world?
+- sellable and so would be the features with various upgrades
+- Create a new module based upon Mines with new features to support player interactions and upgrades.
+
+
+- Hook up block filters on the block events.
+
+  
+- /prison utils mining
+  - Add XP direct and ORBs
+
+
+Auto features not working outside of the mines.
+- Maybe be enabled and working now?
+
+  
+
+- Add new placeholders:
+  - Top-n - Blocks mined for mines
+  - Top-n - Most active mines (based upon blocks mined)
+  - Update papi's wiki
+  - Track stats on placeholders?  Could be useful in tracking down expensive stats.
+  
+  
+- Add blocks mined for players
+  - 
+  
+Review the chat hander in the spigot module. It was rewritten a few weeks ago to fix some issues and to optimize how things are handled.  The issue is that the new code (way of handling things) needs to be extended to other areas.  So review the SpigotPlaceholders class and see how it can be updated.  Then end result will be less code and less potential issues.
+
+  
+- Update /prison autofeatures to include new settings.
+
+
+- Could make /prison autofeatures reload happen. Alias: /prison reload autofeatures
+
+
+Not sure if the following is fixed?
+old block model - block constraint - excludeTop - not allowing block counts to be shown
+   - air block count fixed and working
 
 
 
@@ -33,14 +77,13 @@ issues, and/or to serve as items that should be added, or fixed.
 
 - /mines set size <mineName> walls 0 is not refreshing.
   - NOTE: Cannot refresh liners if size is 0. The reason for this is that a liner may not always fill the full edge.  Therefore, a value of 0 cannot tell if there should be a liner block in that position. Normally a liner only replaces existing block when applying the liner, or it forces it so it fills the whole edge.  If it's not normally forced, then it cannot be done.
+  - NOTE: See the next comment. That may be the best option since anything else will never be perfect anyway and it will also be overly complex.  The following is a simple and clear way of repairing the liners.
 
+- Mine liner data - Is there any way to capture what blocks were set so a "repair" can work?
+  - Only real option appears to be to +1 it, then -1 it to force the repair.
+  - Or when running the repair state something like:
+    "Repair can only update blocks that are in place in the liner. If one is missing, then OP yourself, then fill in the voids with any blocks (cobblestone) then run the repair again."
 
-
-- DONE: Setup an on suffocation event listener so if a player gets stuck in a mine, tp them out to the spawn point. 
- - This is done, but the player has to take damage before the event is fired.  Therefore it is not instant when they log in.  Also if they cannot take damage, such they are in god mode, then it won't kick in either.  I've also seen this where it won't tp myself to the mine's spawn because I don't have the perms to go there, but not really sure if that was the cause.
-
-
-   
    
 - Future Block Constraints:
  - GradientBottom - The block has a greater chance to spawn near the bottom of the mine. 
@@ -53,24 +96,11 @@ issues, and/or to serve as items that should be added, or fixed.
      defined in that mine included there.  This is so air and other blocks that don't find hits can be included with the counts.  Needed for when blocks are changed so it does not lose change status?
      
 
-- player.getPermission() is not returning anything??
-
 
 - Prestiges max - if at max show 100% or Max, etc... Maybe set "max" on a placeholder attribute?
 
 
 - Add a prestiges config option to auto add a zero rank entry for prestige ranks.
-
-
-- Convert AutoFeaturesConfig to a Singleton.  GUI is having issues with consistency?
-
-
-- For `/ranks player <playerName>` add a optional perm to list all permissions that match a pattern.  This will allow checking to see if a player has a specfic perm.
-
-
-- Provide util functions that can run other commands for the players.  Could be useful to for BlockEvents.
-  - DONE: repair & repairAll
-  - potions and potion effects - in progress
 
 
 
@@ -98,7 +128,7 @@ issues, and/or to serve as items that should be added, or fixed.
   - PrisonBlock - add "price" - Maybe keyed by "shop".
     - custom currency support like ranks?
     - shop, currency, price, item
-  - RankPlayer now has hooks for getBalance, addBalance, setBalance, both with and without custom currencies.
+  - DONE: RankPlayer now has hooks for getBalance, addBalance, setBalance, both with and without custom currencies.
   - Hook startup for PrisonBlock to sellall to preload the price 
   - PrisonBlock - add quantity
   - Add a utility method for converting a PrisonBlock to ItemStack
@@ -122,14 +152,6 @@ issues, and/or to serve as items that should be added, or fixed.
   - This will be easier to fix once currencies are fixed
   
 
-- Possible issue with auto features preventing WorldGuard from protecting a
-  mine.  In the auto features GUI, when the bottom three features are turned 
-  off then WG won't protect the region.
-
-
-- ? auto features - issue with lore
-- world guard - not working properly
-
 
 * **Custom block issues**
 - If CustomItems is loaded successfully but yet not using new block model, show error message
@@ -145,10 +167,11 @@ issues, and/or to serve as items that should be added, or fixed.
 
 
 * **Prestige Options**
- - Reset money on prestige - boolean option
+ - DONE: Reset money on prestige - boolean option
+ - DONE: Prevent reset of default ladder on prestiging.
  - Auto Prestige - server setting or player setting?
  - prestigemax - keep applying prestiges until run out of funds
- - rankmax - keep applying rankups until run out of funds
+ - DONE: rankmax - keep applying rankups until run out of funds
  - Eliminate prestige ranks - (optional)
    * Would need ladder commands
    * Need to define an upper limit of how many
@@ -225,27 +248,6 @@ Add new placeholders for ladder commands to be able to have generic ladder comma
 * **Rank Commands - Edit and delete**
 Add line numbers and enable the ability to edit and delete by line number.
 
-
-
-
-GABRYCAToday at 3:46 PM
-3.2.1 -> Nothing to fix 
-
-3.3.0 before -> 
-Bug: Bug fixes which will be reported by the user, if nothing will be reported in a month, then some of the next planned features will be integrated within this:
-New:
-- Add Ranks, Mines, Prestiges and RankupCommands presets
-- Add a walktrough GUI and Command to set up Prison presets on first start in the server
-- <rank>, <rank_next>, <prestige>, <prestige_next> placeholders for RankupCommands
-
-3.3.0 ->
-New:
-- Add close GUI Button 
-- Next page button for ranks, ladders, rankupcommands and mines
-- Eventually add some features which are missing in the GUIs
-- Enhanced GUI listeners and management system (I'll need this for the next feature)
-- Tracker and "cache" of the previous open GUI (will be deleted if there aren't Open GUIs... to sort this out)
--  Go Back button to go to the previous GUI
 
 
 
@@ -340,8 +342,8 @@ This is put on hold for the v3.2.2 release.
 
 
 
-* **Upon startup validate all Blocks that are defined in the mines**
-
+* DONE:  **Upon startup validate all Blocks that are defined in the mines**
+\
 Upon loading prison, validate that all blocks that are defined within each mine are actually valid for that version of minecraft.  This will be important in that it may help eliminate possible errors when the server owner upgrades the server, or other plugins.  Also it will be very helpful when Prison's block handling is enhanced since it will be a tool used to verify and maybe even fix incorrect block types.
 
 
@@ -418,6 +420,143 @@ I think those few integrations could really provide a huge bootstrap to getting 
 
 
 # Features recently added:
+
+
+
+- DONE - Add support for EZBlocks... need to test?
+
+
+- DONE - fixed - BlockEvents don't not run unless auto features are enabled
+
+
+- DONE - Hook mcMMO up to the explosion events
+
+
+- DONE: CMI currency is not working correctly with vault and prison (Monzter)
+- Unable to test since it is a premium plugin. :(
+- Turned out the CMI version of vault he downloaded didn't work. Had to use the injector.
+
+
+
+- DONE: Add potion effects to prison mines.  
+ - The potion effects should only last a short duration with auto renewal
+ -   
+
+
+- DONE: /ranks set currency may not be able to remove custom currencies
+  - able to remove custom currencies if they are set
+
+
+- DONE - **Block Counts Refresh - (ExtraSean)**
+- His enchantment plugin does not have an explosion event
+- Provide a way to update block counts using TargetBlockList
+- Delay 4 to 10 seconds based upon percent remaining
+- Submitted after a blockBreakEvent
+- This is a new feature that has to be enabled for each mine
+
+
+- DONE - Prison Utils
+  - potions - need to work on that!!
+
+
+
+- DONE: Add /prison utils smelt
+- DONE: Add /prison utils block
+
+
+- DONE: Block breaking in auto manager
+  - Just thought of this... if using the target block list to record block breakage,
+    then can still double up the counts if more than one explosion event includes the
+    same block.  Need to add to the target block class a boolean to indicate that the
+    block has been broken, or at least already counted.  That way duplicate use of that
+    block won't result in over counting the breaks.
+    
+
+- DONE - do nothing - auto manager - add support for mending enchantment on tools.
+- mending assigns XP received to repair tools and armor. This is more complicated than needed and there may be other solutions, such as dropping orbs so it can be processed naturally.
+
+
+- DONE: Convert AutoFeaturesConfig to a Singleton.  GUI is having issues with consistency?
+  - The AutoFeaturesConfig is not a singleton, but there is now a wrapper that is.
+
+
+- DONE: Provide util functions that can run other commands for the players.  Could be useful to for BlockEvents.
+  - DONE: repair & repairAll
+  - DONE: potions and potion effects - in progress
+
+
+
+
+- DONE:  List more enabled features within /prison version such as if GUI, sellall, auto features, etc are enabled.
+
+
+- DONE: Change `/prison version` to minimize info.  Add an "all" feature to show full details.  Capture errors and reshow them in the /prsion version?  Not sure about this last one.
+
+
+- DONE - Under SpigotUtils.ItemStackRemovalAll - remove the error messages.  Basically it is normal for non-standard material types to be used by other plugins, and they trigger XMaterial's exception that an item cannot be mapped.  Basically the datavalue is non-standard.
+
+
+
+
+- DONE - Look at rank commands that may not be running as console? 
+- The commands are being ran as console and not user.
+- The issue was it was using the wrong user object and therefore the commands were not being resolved correctly.
+
+
+- DONE - Was a new config that was not allowing the auto pickup to be enabled. Backpacks not working with auto pickup anymore?  Noticed at one point it wasn't working, but need to see if its still the case.  The issues could have been resolved.
+
+
+
+- DONE:  /rankup states the player does not have enough money, then takes what they do have.
+
+
+- DONE:  Auto manager drops - fortune - if spigot applies fortune to the drops (item != 1) then use a different calculations for generating the extra drops.
+
+
+- DONE: minepacks plugin - NoClassDefFoundError - pcgamingfreaks/Minepacks/bukkit/API/MinepacksPlugin
+  - Not an issue: I think this was a non-related issue that someone else was happening. They later reported it was woring well.
+
+
+- DONE: ranks autoConfigure 
+  - DONE: add blocks that are assigned to the mines to sellall
+     - add a block price to the blocks - base upon essentialsX?
+  - DONE: enable sellall
+
+- DONE: auto features - lore - need to be hooked up to TE explosions, CE blasts, normal block breaks... etc... basically review and enable where needed.
+
+
+- DONE: /prison utils message - add ability to send message to player or broadcast
+
+
+
+- DONE: COUNT blocks upon startup when doing the air counts:
+
+
+- DONE: build targetBlockList when counting air blocks upon server startup.
+
+
+- DONE: Use the mine tag name over the mine's name if it exists.
+
+
+- DONE: TE Explosions does not produce exact counts.  Have done extensive work to get this to work better, but can only get closer and has not been exact. Not sure why at this time.
+
+
+- DONE: Setup an on suffocation event listener so if a player gets stuck in a mine, tp them out to the spawn point. 
+ - This is done, but the player has to take damage before the event is fired.  Therefore it is not instant when they log in.  Also if they cannot take damage, such they are in god mode, then it won't kick in either.  I've also seen this where it won't tp myself to the mine's spawn because I don't have the perms to go there, but not really sure if that was the cause.
+
+
+- DONE: For `/ranks player <playerName>` add a optional perm to list all permissions that match a pattern.  This will allow checking to see if a player has a specfic perm.
+
+
+- DONE: player.getPermission() is not returning anything??
+
+
+- DONE: Possible issue with auto features preventing WorldGuard from protecting a mine.  In the auto features GUI, when the bottom three features are turned off then WG won't protect the region.
+
+
+- DONE: ? auto features - issue with lore. world guard - not working properly
+
+
 
 
 

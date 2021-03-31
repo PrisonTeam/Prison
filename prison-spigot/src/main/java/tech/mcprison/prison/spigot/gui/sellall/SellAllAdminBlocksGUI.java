@@ -67,19 +67,35 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
         // Get the dimensions and if needed increases them
         dimension = (int) Math.ceil(items.size() / 9D) * 9;
 
+        // Check if there're too many blocks.
         if (dimension > 54){
             Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.TooManySellAllItems")));
             return null;
         }
 
+        // Inventory of GUI.
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3SellAll -> Blocks"));
+
+        // Global strings.
+        String loreLine1 = messages.getString("Lore.RightClickToDelete");
+        String loreLine2 = messages.getString("Lore.LeftClickToEdit");
+        String lorePermission = messages.getString("Lore.Permission");
+        String permissionSellAllBlock = sellAllConfig.getString("Options.Sell_Per_Block_Permission");
+        String loreValue = messages.getString("Lore.Value");
+
+        boolean sellAllPerBlockPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"));
 
         for (String key : items) {
             List<String> itemsLore = createLore(
-                    messages.getString("Lore.RightClickToDelete"),
-                    messages.getString("Lore.LeftClickToEdit"),
-                    messages.getString("Lore.Value") + sellAllConfig.getString("Items." + key + ".ITEM_VALUE")
+                    loreLine1,
+                    loreLine2,
+                    loreValue + sellAllConfig.getString("Items." + key + ".ITEM_VALUE")
             );
+
+            if (sellAllPerBlockPermissionEnabled){
+                itemsLore.add("");
+                itemsLore.add(SpigotPrison.format(lorePermission + "&7" + permissionSellAllBlock + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
+            }
 
             ItemStack item = createButton(SpigotUtil.getItemStack(SpigotUtil.getXMaterial(sellAllConfig.getString("Items." + key + ".ITEM_ID")), 1), itemsLore, SpigotPrison.format("&3" + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
             inv.addItem(item);

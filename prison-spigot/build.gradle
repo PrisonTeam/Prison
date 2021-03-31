@@ -90,11 +90,22 @@ dependencies {
  
 
     compileOnly fileTree(dir: 'lib', include: ['*.jar'], 
-    			exclude: ['TokenEnchantAPI-18.11.3.jar', 'Spiget_v1.4.2.prison-build.jar',
-    					'crazyenchantments-plugin-api-BlastUseEvent-1.8-Dev-Build-v8.jar'])
+    			exclude: ['Spiget_v1.4.2.prison-build.jar',
+    					'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
+    					'Zenchantments__API_v1.15.2.build4.jar'])
     compile fileTree(dir: 'lib', 
-    			include: ['TokenEnchantAPI-18.11.3.jar', 'Spiget_v1.4.2.prison-build.jar',
-    					'crazyenchantments-plugin-api-BlastUseEvent-1.8-Dev-Build-v8.jar'])
+    			include: ['Spiget_v1.4.2.prison-build.jar',
+    					'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
+    					'Zenchantments__API_v1.15.2.build4.jar'])
+    					
+//    compileOnly fileTree(dir: 'lib', include: ['*.jar'], 
+//    			exclude: ['TokenEnchantAPI-18.11.3.jar', 'Spiget_v1.4.2.prison-build.jar',
+//    					'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
+//    					'Zenchantments__API_v1.15.2.build4.jar'])
+//    compile fileTree(dir: 'lib', 
+//    			include: ['TokenEnchantAPI-18.11.3.jar', 'Spiget_v1.4.2.prison-build.jar',
+//    					'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
+//    					'Zenchantments__API_v1.15.2.build4.jar'])
     					
 //    compile fileTree(dir: 'lib', include: ['SPIGET__BUKKIT-1.4.2-SNAPSHOT.jar'])
 

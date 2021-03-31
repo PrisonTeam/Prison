@@ -12,7 +12,6 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 /**
  * @author GABRYCA
  **/
-
 public class MessagesConfig extends SpigotConfigComponents{
 
     // Initialize parameters and variables
@@ -53,23 +52,8 @@ public class MessagesConfig extends SpigotConfigComponents{
     private void dataConfig(String key, String value){
 
         String originalString = conf.getString(key);
-        boolean gotConverted = false;
 
-        // "Converter".
-        if (originalString != null) {
-            if (originalString.contains("&7[&3PRISON&7] &3")) {
-                value = originalString.substring(17);
-                gotConverted = true;
-            } else if (originalString.contains("&7[&3PRISON INFO&7] &a") || originalString.contains("&7[&3PRISON INFO&7] &c") || originalString.contains("&7[&3PRISON INFO&7] &3") || value.contains("&7[&3PRISON WARN&7] &c") || value.contains("&7[&3PRISON WARN&7] &3")) {
-                value = originalString.substring(22);
-                gotConverted = true;
-            } else if (originalString.contains("&7[&3PRISON ERROR&7] &3")) {
-                value = originalString.substring(23);
-                gotConverted = true;
-            }
-        }
-
-        if (originalString == null || gotConverted) {
+        if (originalString == null) {
             conf.set(key, value);
             changeCount++;
         }
@@ -85,6 +69,11 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.BlockType","&3BlockType: ");
         dataConfig("Lore.Blocks","&3Blocks:");
         dataConfig("Lore.Blocks2","&8Manage blocks of the Mine.");
+        dataConfig("Lore.ClickToAddBackpack", "&8Click to add backpack.");
+        dataConfig("Lore.ClickToAddBackpackInst0", "&3Instructions: ");
+        dataConfig("Lore.ClickToAddBackpackInst1", "&8Remember to add an item");
+        dataConfig("Lore.ClickToAddBackpackInst2", "&8Inside the backpack to");
+        dataConfig("Lore.ClickToAddBackpackInst3", "&8Save it");
         dataConfig("Lore.ClickToChoose","&8Click to choose.");
         dataConfig("Lore.ClickToConfirm","&8Click to confirm.");
         dataConfig("Lore.ClickToCancel","&8Click to cancel.");
@@ -100,7 +89,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.ClickToRankup","&8Click to rankup");
         dataConfig("Lore.ClickToEditBlock", "&8Click to edit percentage.");
         dataConfig("Lore.ClickToEdit", "&8Click to edit.");
-        dataConfig("Lore.ClickToClose", "&cClick to close the GUI.");
+        dataConfig("Lore.ClickToClose", "&8Click to close the GUI.");
         dataConfig("Lore.ClickToPriorPage", "&aClick to see the prior page.");
         dataConfig("Lore.ClickToNextPage", "&aClick to see the next page.");
         dataConfig("Lore.ClickToStartBlockSetup", "&aClick to setup block.");
@@ -114,7 +103,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.ContainsNoCommands"," &3contains no commands.");
         dataConfig("Lore.DelaySellAll", "&3Delay: &8");
         dataConfig("Lore.DisableNotifications","&8Disable notifications.");
-        dataConfig("Lore.DisabledAll","&aAll features OFF");
+        dataConfig("Lore.DisabledAll","&3All features &cOFF&3.");
         dataConfig("Lore.EnabledAll","&aAll features ON");
         dataConfig("Lore.EmptyMultiplier", "&c[!] There aren't multipliers!");
         dataConfig("Lore.FullSoundEnabled","&aFull Inv., notify with sound ON");
@@ -136,6 +125,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.Multiplier", "&3Multiplier: &f");
         dataConfig("Lore.Name","&3Rank Name: &7");
         dataConfig("Lore.Notifications","&8Edit Mines notifications.");
+        dataConfig("Lore.Permission", "&3Permission: ");
         dataConfig("Lore.PlayersWithTheRank","&3Players at rank: &7");
         dataConfig("Lore.PrestigeWarning", "&3Prestige will reset: ");
         dataConfig("Lore.PrestigeWarning2", "&3 - &bRank");
@@ -155,7 +145,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.RanksButton","&8Ranks GUI manager.");
         dataConfig("Lore.ResetButton","&8Resets the mine.");
         dataConfig("Lore.RightClickToCancel","&cRight-Click to cancel.");
-        dataConfig("Lore.RightClickToEnable","&aRight-Click to enable.");
+        dataConfig("Lore.RightClickToEnable","&cRight-Click to &aenable&c.");
         dataConfig("Lore.RightClickToDisable", "&cRight-Click to disable.");
         dataConfig("Lore.RightClickToToggle","&3Right click to toggle.");
         dataConfig("Lore.RightClickToDelete", "&cRight-Click to delete.");
@@ -201,7 +191,14 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.ZeroBlocksReset2","&8before reset when it ");
         dataConfig("Lore.ZeroBlocksReset3","&8reaches zero blocks.");
         dataConfig("Message.BackPackNeedPlayer", "Please add a playername.");
+        dataConfig("Message.BackPackDeleteOperationSuccess", "The backpack should've been deleted with success!");
+        dataConfig("Message.BackPackDeleteOperationFail", "Can't find the backpack or something went wrong...?");
         dataConfig("Message.BackPackPlayerNotFound", "Player not found.");
+        dataConfig("Message.BackPackDoNotOwnAny", "Sorry but you don't own any inventory, please use /backpack <AnIdYouWant> to make one.");
+        dataConfig("Message.BackPackOwnLimitReached", "Sorry but you already have the max amount of backpacks allowed for Player!");
+        dataConfig("Message.BackPackResizeNotInt", "Backpack's size value isn't a number.");
+        dataConfig("Message.BackPackResizeNotMultiple9", "Backpack's size must be a multiple of 9 and max 54.");
+        dataConfig("Message.BackPackResizeDone", "If the Backpack wasn't missing, it got resized with success!");
         dataConfig("Message.CantGetRanksAdmin", "Can't get Ranks, there might be &cno ranks&7 or the Ranks module's &cdisabled&7.");
         dataConfig("Message.CantRunGUIFromConsole", "You cannot run the GUI from the console.");
         dataConfig("Message.CantGiveItemFromConsole", "You can't get an item as the console.");

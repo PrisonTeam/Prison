@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.player;
+package tech.mcprison.prison.spigot.slime;
 
 import java.text.DecimalFormat;
 

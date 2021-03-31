@@ -7,11 +7,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -57,29 +59,38 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
 
     private void buttonsSetup(Inventory inv) {
 
-
         // Create the lore
         List<String> rankupCommandsLore = createLore(
-                messages.getString("Lore.ClickToOpen"),
-                "",
-                messages.getString("Lore.Info")
+                messages.getString("Lore.ClickToOpen")
         );
 
         // SpigotRanksGUI.getCommands(rankupCommandsLore, rank);
+
+        // Decimal Rank cost format.
+        DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
 
         // Create the lore
         List<String> editPriceLore = createLore(
                 messages.getString("Lore.ClickToOpen"),
                 "",
+                "&8-----------------------",
+                " ",
                 messages.getString("Lore.Info"),
-                messages.getString("Lore.Price") + rank.getCost()
-        );
+                messages.getString("Lore.Price") + PlaceholdersUtil.formattedKmbtSISize(rank.getCost(), formatDecimal, ""),
+                " ",
+                "&8-----------------------"
+                );
+
         List<String> editTagLore = createLore(
                 messages.getString("Lore.ClickToOpen"),
                 "",
+                "&8-----------------------",
+                " ",
                 messages.getString("Lore.Info"),
-                messages.getString("Lore.Tag") + rank.getTag()
-        );
+                messages.getString("Lore.Tag") + rank.getTag(),
+                " ",
+                "&8-----------------------"
+                );
 
         // Create the button
         Material commandMinecart = Material.matchMaterial( "command_minecart" );

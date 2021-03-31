@@ -62,6 +62,41 @@ public class RankManager {
     private LadderCommands ladderCommands;
 
     
+    public enum RanksByLadderOptions {
+    	playersOnly("players"),
+    	allRanks("all"),
+    	full;
+    	
+    	
+    	private final String altName;
+    	
+    	private RanksByLadderOptions() {
+    		this.altName = null;
+    	}
+    	
+    	private RanksByLadderOptions( String altName ) {
+    		this.altName = altName;
+    	}
+    	
+    	public static RanksByLadderOptions fromString( String value ) {
+    		RanksByLadderOptions results = null;
+    		
+    		for ( RanksByLadderOptions opt : values() ) {
+				if ( opt.name().equalsIgnoreCase( value ) || 
+						opt.getAltName() != null && opt.getAltName().equalsIgnoreCase( value )) {
+					results = opt;
+					break;
+				}
+			}
+    		
+    		return results;
+    	}
+
+		public String getAltName() {
+			return altName;
+		}
+    	
+    }
     /*
      * Constructor
      */
@@ -408,16 +443,17 @@ public class RankManager {
      * </p>
      * 
      */
-    public void identifyAllRankCurrencies() {
+    public void identifyAllRankCurrencies( List<String> prisonStartupDetails ) {
     	for ( Rank rank : loadedRanks ) {
 			if ( rank.getCurrency() != null ) {
 				EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
 						.getEconomyForCurrency( rank.getCurrency() );
 				if ( currencyEcon == null ) {
-					Output.get().logError( 
-						String.format( "Economy Failure: &7The currency &a%s&7 was registered with " +
+					String message = String.format( "Economy Failure: &7The currency &a%s&7 was registered with " +
 							"rank &a%s&7, but it isn't supported by any Economy integration.",
-							rank.getCurrency(), rank.getName()) );
+							rank.getCurrency(), rank.getName());
+					Output.get().logError( message );
+					prisonStartupDetails.add( message );
 				}
 			}
 		}
@@ -426,7 +462,7 @@ public class RankManager {
     
     
     
-    public String listAllRanks( String ladderName, List<Rank> ranks, boolean includeAll ) {
+    public String listAllRanks( String ladderName, List<Rank> ranks, RanksByLadderOptions option ) {
     	StringBuilder sb = new StringBuilder();
     	
     	PlayerManager playerManager = PrisonRanks.getInstance().getPlayerManager();
@@ -440,26 +476,44 @@ public class RankManager {
                         .collect(Collectors.toList());
     		int players = playersList.size();
     		
-    		if ( includeAll || !includeAll && players > 0 ) {
+    		if ( option == RanksByLadderOptions.allRanks || 
+    					option == RanksByLadderOptions.full || players > 0 ) {
     			if ( sb.length() > 0 ) {
-    				sb.append( "&2, " );
+    				sb.append( ", " );
     			}
     			
     			
-    			sb.append( " &3" );
-    			sb.append( rank.getName() );
+    			sb.append( " " ).append( rank.getName() );
     			
     			if ( players > 0 ) {
     				
-    				sb.append( " &7" );
-    				sb.append( players );
+    				sb.append( " (" ).append( players ).append( ")" );
+    				
+    				if ( option == RanksByLadderOptions.full ) {
+    					sb.append( "[" );
+    					
+    					for ( RankPlayer rankPlayer : playersList )
+						{
+    						if ( rankPlayer.getName() != null ) {
+    							
+    							sb.append( rankPlayer.getName() ).append( " " );
+    						}
+						}
+    					
+    					// if last character is a space, then remove it:
+    					if ( sb.charAt( sb.length() - 1 ) == ' ' ) {
+    						sb.setLength( sb.length() - 1 );
+    					}
+    					sb.append( "]" );
+    				}
+    				
     			}
     		}
 		}
     	
-    	sb.insert( 0, "&b: " );
+    	sb.insert( 0, ": " );
     	sb.insert( 0, ladderName );
-    	sb.insert( 0, "  &7" );
+    	sb.insert( 0, "&7  " );
     	
     	return sb.toString();
     }
@@ -471,15 +525,15 @@ public class RankManager {
      * 
      * @param includeAll If true then includes all ranks, otherwise just ranks within one more players
      */
-    public void ranksByLadders(  boolean includeAll ) {
-    	ranksByLadders( null, "all", includeAll );
+    public void ranksByLadders(  RanksByLadderOptions option ) {
+    	ranksByLadders( null, "all", option );
     }
     
-    public void ranksByLadders( CommandSender sender, boolean includeAll ) {
-    	ranksByLadders( sender, "all", includeAll );
+    public void ranksByLadders( CommandSender sender, RanksByLadderOptions option ) {
+    	ranksByLadders( sender, "all", option );
     }
     
-    public void ranksByLadders( CommandSender sender, String ladderName, boolean includeAll ) {
+    public void ranksByLadders( CommandSender sender, String ladderName, RanksByLadderOptions option ) {
     	
     	rankByLadderOutput( sender, "&7Ranks by ladders:" );
     	
@@ -492,7 +546,7 @@ public class RankManager {
     			List<Rank> ladderRanks = ladder.getRanks();
     			ranksIncluded.addAll( ladderRanks );
     			
-    			String ranksByLadder = listAllRanks( ladder.getName(), ladderRanks, includeAll );
+    			String ranksByLadder = listAllRanks( ladder.getName(), ladderRanks, option );
     			
     			rankByLadderOutput( sender, ranksByLadder );
     		}
@@ -508,7 +562,8 @@ public class RankManager {
     		// NOTE: No players should be associated with ranks that are not tied to a ladder,
     		//       so enable "true" for includeAll to list all ranks that are not tied to ladders
     		//       since player count will always be zero.
-    		String ranksByLadder = listAllRanks( "none", ranksExcluded, true );
+    		// Update: Set the RanksByLadderOptions to full
+    		String ranksByLadder = listAllRanks( "none", ranksExcluded, RanksByLadderOptions.full );
     		
     		rankByLadderOutput( sender, ranksByLadder );
     	}

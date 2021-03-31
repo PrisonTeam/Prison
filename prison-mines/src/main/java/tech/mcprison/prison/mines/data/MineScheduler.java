@@ -1,7 +1,6 @@
 package tech.mcprison.prison.mines.data;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -14,8 +13,8 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
-import tech.mcprison.prison.mines.features.MineBlockEvent.TaskMode;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.tasks.PrisonCommandTask;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 
@@ -541,61 +540,65 @@ public abstract class MineScheduler
 					perms.trim().length() == 0
 					) {
 				
-				 {
+				PrisonCommandTask cmdTask = new PrisonCommandTask( "BlockEvent" );
+				cmdTask.submitCommandTask( player, blockEvent.getCommand(), blockEvent.getTaskMode() );
 					
-					String formatted = blockEvent.getCommand()
-							.replace( "{msg}", "prison utils msg {player} " )
-							.replace( "{broadcast}", "prison utils broadcast " )
-							.replace("{player}", player.getName())
-							.replace("{player_uid}", player.getUUID().toString());
-					
-					// Split multiple commands in to a List of individual tasks:
-					List<String> tasks = new ArrayList<>( 
-							Arrays.asList( formatted.split( ";" ) ));
-					
-					
-					if ( tasks.size() > 0 ) {
-						
-						String errorMessage = "BlockEvent: Player: " + player.getName();
-						
-						boolean playerTask = blockEvent.getTaskMode() == TaskMode.inlinePlayer || 
-											 blockEvent.getTaskMode() == TaskMode.syncPlayer;
-						
-						PrisonDispatchCommandTask task = 
-								new PrisonDispatchCommandTask( tasks, errorMessage, 
-												player, playerTask );
-						
-						
-						switch ( blockEvent.getTaskMode() )
-						{
-							case inline:
-							case inlinePlayer:
-								// Don't submit, but run it here within this thread:
-								task.run();
-								break;
-								
-							case sync:
-							case syncPlayer:
-							//case "async": // async will cause failures so run as sync:
-								
-								// submit task: 
-								@SuppressWarnings( "unused" ) 
-								int taskId = PrisonTaskSubmitter.runTaskLater(task, 0);
-								break;
-								
-							default:
-								break;
-						}
-						
-					}
-					
-					
-//							PrisonAPI.dispatchCommand(formatted);
-				}
+//				{
+//					
+//					String formatted = blockEvent.getCommand()
+//							.replace( "{msg}", "prison utils msg {player} " )
+//							.replace( "{broadcast}", "prison utils broadcast " )
+//							.replace("{player}", player.getName())
+//							.replace("{player_uid}", player.getUUID().toString());
+//					
+//					// Split multiple commands in to a List of individual tasks:
+//					List<String> tasks = new ArrayList<>( 
+//							Arrays.asList( formatted.split( ";" ) ));
+//					
+//					
+//					if ( tasks.size() > 0 ) {
+//						
+//						String errorMessage = "BlockEvent: Player: " + player.getName();
+//						
+//						boolean playerTask = blockEvent.getTaskMode() == TaskMode.inlinePlayer || 
+//											 blockEvent.getTaskMode() == TaskMode.syncPlayer;
+//						
+//						PrisonDispatchCommandTask task = 
+//								new PrisonDispatchCommandTask( tasks, errorMessage, 
+//												player, playerTask );
+//						
+//						
+//						switch ( blockEvent.getTaskMode() )
+//						{
+//							case inline:
+//							case inlinePlayer:
+//								// Don't submit, but run it here within this thread:
+//								task.run();
+//								break;
+//								
+//							case sync:
+//							case syncPlayer:
+//							//case "async": // async will cause failures so run as sync:
+//								
+//								// submit task: 
+//								@SuppressWarnings( "unused" ) 
+//								int taskId = PrisonTaskSubmitter.runTaskLater(task, 0);
+//								break;
+//								
+//							default:
+//								break;
+//						}
+//						
+//					}
+//					
+//					
+////					PrisonAPI.dispatchCommand(formatted);
+//				}
 			}
 		}
 	}
 	
+	@Override
 	public boolean checkZeroBlockReset() {
 		boolean reset = false;
 		
