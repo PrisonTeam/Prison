@@ -921,7 +921,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
         sellAllConfigUpdater();
     }
 
-    @Command(identifier = "sellall Trigger edit", description = "Edit an Item of the Shift+Right Click trigger -> /sellall sell command.", permissions = "prison.admin", onlyPlayers = false)
+    // This command doesn't makes sense.
+    /*@Command(identifier = "sellall Trigger edit", description = "Edit an Item of the Shift+Right Click trigger -> /sellall sell command.", permissions = "prison.admin", onlyPlayers = false)
     private void sellAllTriggerEdit(CommandSender sender,
                                    @Arg(name = "Item", description = "Item name") String itemID){
 
@@ -971,7 +972,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllTriggerItemEditSuccess") + " [" + itemID + " ]"));
         sellAllConfigUpdater();
-    }
+    }*/
 
     @Command(identifier = "sellall Trigger delete", description = "Delete an Item from the Shift+Right Click trigger -> /sellall sell command.", permissions = "prison.admin", onlyPlayers = false)
     private void sellAllTriggerDelete(CommandSender sender,
