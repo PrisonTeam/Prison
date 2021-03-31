@@ -9,7 +9,7 @@
 
 ## Prison Documentation
 
-[Prison Documents - Table of Contents](docs/prison_docs_000_toc.md)
+[Prison Documents - Table of Contents](https://prisonteam.github.io/Prison/prison_docs_000_toc.html)
 
 The Prison documentation covers the important details on how to setup a usable Prison server.
 These documents are in a state of development, so more will be added.

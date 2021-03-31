@@ -1108,6 +1108,11 @@ public class OnBlockBreakEventCore
 	/**
 	 * <p>This should calculate and apply the durability consumption on the tool.
 	 * </p>
+	 * 
+	 * <p>This only applies to to the use of tools. If the player's hand is empty (AIR),
+	 * or the item in hand has no max durability, then it's not a tool so it skips 
+	 * this processing.
+	 * </p>
 	 *
 	 * <p>The damage is calculated as a value of one durability, but all damage can be
 	 * skipped if the tool has a durability enchantment.  If it does, then there is a
