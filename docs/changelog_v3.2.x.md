@@ -21,12 +21,15 @@ that you need.
 
 
 
-# v3.2.6-alpha.1 2021-04-01
+# v3.2.6-alpha.1 2021-03-31
+
+
+* **Prevent prison's BlockBreak event listeners from registering if they are not enabled.**
+For the core listeners, this means the mine module must be enabled.
 
 
 * **Close GUI Message**
-A new message got added to the messages FILE that will be shown when closing a Prison GUI
-  with the close GUI button (Message -> GuiClosedWithSuccess:).
+A new message got added to the messages FILE that will be shown when closing a Prison GUI with the close GUI button (Message -> GuiClosedWithSuccess:).
 
 
 * **Player Ranks GUI (/gui ranks or /ranks for players) Lore is now customizable**

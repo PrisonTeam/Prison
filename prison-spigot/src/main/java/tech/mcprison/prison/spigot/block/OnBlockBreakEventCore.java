@@ -70,6 +70,29 @@ public class OnBlockBreakEventCore
 		;
 	}
 	
+	
+	/**
+	 * <p>The Prison Mines module must be enabled, or these BlockBreakEvents should 
+	 * not be enabled since they are geared to work with the prison mines.
+	 * </p>
+	 * 
+	 * <p>At this time, prison's block handling is not supported outside of the mines.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public boolean isEnabled() {
+		boolean results = false;
+
+		Optional<Module> mmOptional = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
+		if ( mmOptional.isPresent() && mmOptional.get().isEnabled() ) {
+			PrisonMines prisonMines = (PrisonMines) mmOptional.get();
+			
+			results = prisonMines != null;
+		}
+		
+		return results;
+	}
 
 	public AutoFeaturesFileConfig getAutoFeaturesConfig() {
 		return autoFeatureWrapper.getAutoFeaturesConfig();
@@ -1389,15 +1412,18 @@ public class OnBlockBreakEventCore
 	
 	
 	private Mine findMineLocation( SpigotBlock block ) {
-		return getPrisonMineManager().findMineLocationExact( block.getLocation() );
+		return getPrisonMineManager() == null ? 
+				null : getPrisonMineManager().findMineLocationExact( block.getLocation() );
 	}
 	
 
 	private TreeMap<Long, Mine> getPlayerCache() {
-		return getPrisonMineManager().getPlayerCache();
+		return getPrisonMineManager() == null ? 
+				new TreeMap<Long, Mine>() :
+				getPrisonMineManager().getPlayerCache();
 	}
 
-	public PrisonMines getPrisonMineManager() {
+	private PrisonMines getPrisonMineManager() {
 		if ( prisonMineManager == null && !isMineModuleDisabled() ) {
 			Optional<Module> mmOptional = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
 			if ( mmOptional.isPresent() && mmOptional.get().isEnabled() ) {

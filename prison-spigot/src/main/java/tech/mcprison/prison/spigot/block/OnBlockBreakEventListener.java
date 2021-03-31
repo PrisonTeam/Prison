@@ -8,6 +8,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.autofeatures.AutoManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerTokenEnchant;
@@ -102,24 +103,38 @@ public class OnBlockBreakEventListener
 	
 	public void registerAllBlockBreakEvents(SpigotPrison spigotPrison ) {
 		
-		// AutoManager should be registered first:
-		Bukkit.getPluginManager().registerEvents(new AutoManager(), spigotPrison);
+		// Only register these event listeners if these are enabled.
+		// In order to be enabled, the prison mines module must be enabled.
 		
-		Bukkit.getPluginManager().registerEvents( this, spigotPrison);
-		
-		try {
-            Class.forName("com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent");
-            
-            Bukkit.getPluginManager().registerEvents(new AutoManagerTokenEnchant(), spigotPrison);
-            Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventTokenEnchant(), spigotPrison);
-            
-        } 
-        catch (ClassNotFoundException e) {
-            // TokenEnchant is not available on this server which is not an error.  Just
-        	// ignore this situation and do not register the TE explosion events.
-        }
-		
+		if ( isEnabled() ) {
+			
+			// AutoManager should be registered first:
+			// Only register Auto Manager if it is enabled:
+			if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+				Bukkit.getPluginManager().registerEvents(new AutoManager(), spigotPrison);
+			}
+			
+			Bukkit.getPluginManager().registerEvents( this, spigotPrison);
+			
+			try {
+				Class.forName("com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent");
+				
+				Bukkit.getPluginManager().registerEvents(new AutoManagerTokenEnchant(), spigotPrison);
+				Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventTokenEnchant(), spigotPrison);
+				
+			} 
+			catch (ClassNotFoundException e) {
+				// TokenEnchant is not available on this server which is not an error.  Just
+				// ignore this situation and do not register the TE explosion events.
+			}
+			
 //	    Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventListener(), spigotPrison);
+		}
+		
+		else {
+			Output.get().logWarn( "BlockBreak event listeners cannot be registered " +
+											"since the mine module is disabled." );
+		}
 		
 	}
 
