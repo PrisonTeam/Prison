@@ -110,7 +110,7 @@ public class SellAllUtil {
      * @param currency - String currency name
      * @return error - true if an error occurred.
      */
-    public boolean setSellAllCurrency(CommandSender sender, String currency) {
+    public boolean setCurrency(CommandSender sender, String currency) {
         return sellAllCurrencySaver(sender, currency);
     }
 
@@ -135,7 +135,7 @@ public class SellAllUtil {
      * @param enableBoolean - True to enable and False to disable.
      * @return error - True if an error occurred.
      */
-    public boolean sellAllDelayEnable(boolean enableBoolean) {
+    public boolean enableDelay(boolean enableBoolean) {
         return sellAllDelayToggle(enableBoolean);
     }
 
@@ -145,7 +145,7 @@ public class SellAllUtil {
      * @param delayValue
      * @return error - True if error occurred.
      */
-    public boolean setSellAllDelay(int delayValue) {
+    public boolean setDelay(int delayValue) {
         return sellAllDelaySave(delayValue);
     }
 
@@ -155,7 +155,7 @@ public class SellAllUtil {
      * @param enableBoolean - True to enable or False to disable
      * @return error - True if error occurred.
      */
-    public boolean sellAllAutoSellEnable(boolean enableBoolean) {
+    public boolean enableAutoSell(boolean enableBoolean) {
         return sellAllAutoSellToggle(enableBoolean);
     }
 
@@ -165,18 +165,17 @@ public class SellAllUtil {
      * @param enableBoolean - True to enable or False to disable
      * @return error - True if error occurred.
      */
-    public boolean sellAllAutoSellPerUserToggleableEnable(boolean enableBoolean) {
+    public boolean enableAutoSellPerUserToggleable(boolean enableBoolean) {
         return sellAllAutoSelPerUserToggleableToggle(enableBoolean);
     }
 
     /**
      * SellAll Sell command essentially, but in a method.
-     * <p>
-     * NOTE: It applies sellall options from the config, except the sellall permission one.
+     * NOTE: It applies sellAll options from the config, except the sellAll permission one.
      *
      * @param p - Player affected by sellall.
      */
-    public void sellAllSellAction(Player p) {
+    public void sellAllSell(Player p) {
         sellAllSellPlayer(p);
     }
 
@@ -186,7 +185,7 @@ public class SellAllUtil {
      * @param p - Player that should open the GUI.
      * @return boolean - True if a GUI got open with success, false if Disabled or missing all permissions.
      */
-    public boolean sellAllGUI(Player p) {
+    public boolean openGUI(Player p) {
         return sellAllOpenGUI(p);
     }
 
@@ -197,7 +196,7 @@ public class SellAllUtil {
      * @param value  - Value of the block when sold.
      * @return error - True if an error occurred, false if success.
      */
-    public boolean sellAllAddBlock(String itemID, Double value) {
+    public boolean addBlock(String itemID, Double value) {
         return sellAllAddBlockAction(itemID, value);
     }
 
@@ -208,7 +207,7 @@ public class SellAllUtil {
      * @param value    - Value of the block when sold.
      * @return error - True if an error occurred, false if success.
      */
-    public boolean sellAllAddBlock(Material material, Double value) {
+    public boolean addBlock(Material material, Double value) {
         return sellAllAddBlockAction(material, value);
     }
 
@@ -219,7 +218,7 @@ public class SellAllUtil {
      * @param value     - Value of the block when sold.
      * @return error - True if an error occurred, false if success.
      */
-    public boolean sellAllAddBlock(ItemStack itemStack, Double value) {
+    public boolean addBlock(ItemStack itemStack, Double value) {
         return sellAllAddBlockAction(itemStack, value);
     }
 
@@ -230,7 +229,7 @@ public class SellAllUtil {
      * @param value     - Value of the block when sold.
      * @return error - True if an error occurred, false if success.
      */
-    public boolean sellAllAddBlock(XMaterial xMaterial, Double value) {
+    public boolean addBlock(XMaterial xMaterial, Double value) {
         return sellAllAddBlockAction(xMaterial, value);
     }
 
@@ -252,7 +251,7 @@ public class SellAllUtil {
      * @param itemID - String name of Block.
      * @return error - True if an error occurred or missing item in the config, False if success.
      */
-    public boolean sellAllDelete(String itemID) {
+    public boolean deleteBlock(String itemID) {
         return sellAllDeleteAction(itemID);
     }
 
@@ -262,7 +261,7 @@ public class SellAllUtil {
      * @param material - Material of Block.
      * @return error - True if an error occurred or missing item in the config, False if success.
      */
-    public boolean sellAllDelete(Material material) {
+    public boolean deleteBlock(Material material) {
         return sellAllDeleteAction(material);
     }
 
@@ -272,7 +271,7 @@ public class SellAllUtil {
      * @param itemStack - ItemStack of Block.
      * @return error - True if an error occurred or missing item in the config, False if success.
      */
-    public boolean sellAllDelete(ItemStack itemStack) {
+    public boolean deleteBlock(ItemStack itemStack) {
         return sellAllDeleteAction(itemStack);
     }
 
@@ -282,7 +281,7 @@ public class SellAllUtil {
      * @param xMaterial - XMaterial of Block.
      * @return error - True if an error occurred or missing item in the config, False if success.
      */
-    public boolean sellAllDelete(XMaterial xMaterial) {
+    public boolean deleteBlock(XMaterial xMaterial) {
         return sellAllDeleteAction(xMaterial);
     }
 
@@ -294,7 +293,7 @@ public class SellAllUtil {
      *
      * @return error - True if error occurred or block is missing in the config, False if success.
      */
-    public boolean sellAllEditBlock(String itemID, Double value) {
+    public boolean editBlock(String itemID, Double value) {
         return sellAllEditBlockAction(itemID, value);
     }
 
@@ -306,7 +305,7 @@ public class SellAllUtil {
      *
      * @return error - True if error occurred or block is missing in the config, False if success.
      */
-    public boolean sellAllEditBlock(Material material, Double value) {
+    public boolean editBlock(Material material, Double value) {
         return sellAllEditBlockAction(material, value);
     }
 
@@ -318,7 +317,7 @@ public class SellAllUtil {
      *
      * @return error - True if error occurred or block is missing in the config, False if success.
      */
-    public boolean sellAllEditBlock(ItemStack itemStack, Double value) {
+    public boolean editBlock(ItemStack itemStack, Double value) {
         return sellAllEditBlockAction(itemStack, value);
     }
 
@@ -330,7 +329,7 @@ public class SellAllUtil {
      *
      * @return error - True if error occurred or block is missing in the config, False if success.
      */
-    public boolean sellAllEditBlock(XMaterial xMaterial, Double value) {
+    public boolean editBlock(XMaterial xMaterial, Double value) {
         return sellAllEditBlockAction(xMaterial, value);
     }
 
@@ -342,7 +341,7 @@ public class SellAllUtil {
      *
      * @return error - True if error occurred and false if success.
      * */
-    public boolean sellAllAddMultiplier(String prestige, Double multiplier) {
+    public boolean addMultiplier(String prestige, Double multiplier) {
         return sellAllAddMultiplierAction(prestige, multiplier);
     }
 
@@ -353,7 +352,7 @@ public class SellAllUtil {
      *
      * @return error - True if error occurred or the Multiplier wasn't found, false if success.
      * */
-    public boolean SellAllDeleteMultiplier(String prestige) {
+    public boolean deleteMultiplier(String prestige) {
         return sellAllDeleteMultiplierAction(prestige);
     }
 
@@ -366,7 +365,7 @@ public class SellAllUtil {
      *
      * @return error - True if error occurred, False if success.
      * */
-    public boolean sellAllItemTriggerToggle(boolean enableInput) {
+    public boolean toggleItemTrigger(boolean enableInput) {
         return sellAllItemToggle(enableInput);
     }
 
@@ -377,7 +376,7 @@ public class SellAllUtil {
      *
      * @return error - True if an error occurred, False if success.
      * */
-    public boolean sellAllAddItemTrigger(String itemID) {
+    public boolean addItemTrigger(String itemID) {
         return sellAllAddTrigger(itemID);
     }
 
@@ -388,7 +387,7 @@ public class SellAllUtil {
      *
      * @return error - True if an error occurred, False if success.
      * */
-    public boolean sellAllAddItemTrigger(XMaterial itemMaterial) {
+    public boolean addItemTrigger(XMaterial itemMaterial) {
         return sellAllAddTrigger(itemMaterial);
     }
 
@@ -399,7 +398,7 @@ public class SellAllUtil {
      *
      * @return error - True if an error occurred, False if success.
      * */
-    public boolean sellAllAddItemTrigger(Material itemMaterial) {
+    public boolean addItemTrigger(Material itemMaterial) {
         return sellAllAddTrigger(itemMaterial);
     }
 
@@ -410,7 +409,7 @@ public class SellAllUtil {
      *
      * @return error - True if an error occurred, False if success.
      * */
-    public boolean sellAllAddItemTrigger(ItemStack itemStack) {
+    public boolean addItemTrigger(ItemStack itemStack) {
         return sellAllAddTrigger(itemStack);
     }
 
@@ -421,7 +420,7 @@ public class SellAllUtil {
      *
      * @return error - True if error occurred or item not found, False if success.
      * */
-    public boolean sellAllDeleteItemTrigger(String itemID) {
+    public boolean deleteItemTrigger(String itemID) {
         return sellAllDeleteTrigger(itemID);
     }
 
@@ -432,7 +431,7 @@ public class SellAllUtil {
      *
      * @return error - True if error occurred or item not found, False if success.
      * */
-    public boolean sellAllDeleteItemTrigger(XMaterial itemMaterial) {
+    public boolean deleteItemTrigger(XMaterial itemMaterial) {
         return sellAllDeleteTrigger(itemMaterial);
     }
 
@@ -443,7 +442,7 @@ public class SellAllUtil {
      *
      * @return error - True if error occurred or item not found, False if success.
      * */
-    public boolean sellAllDeleteItemTrigger(Material itemMaterial) {
+    public boolean deleteItemTrigger(Material itemMaterial) {
         return sellAllDeleteTrigger(itemMaterial);
     }
 
@@ -454,7 +453,7 @@ public class SellAllUtil {
      *
      * @return error - True if error occurred or item not found, False if success.
      * */
-    public boolean sellAllDeleteItemTrigger(ItemStack itemStack) {
+    public boolean deleteItemTrigger(ItemStack itemStack) {
         return sellAllDeleteTrigger(itemStack);
     }
 
