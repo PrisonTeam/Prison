@@ -1139,42 +1139,58 @@ public class OnBlockBreakEventCore
 	 */
 	protected void calculateAndApplyDurability(Player player, SpigotItemStack itemInHand, int durabilityResistance) {
 
-		if ( itemInHand != null ) {
-			short damage = 1;  // Generally 1 unless instant break block then zero.
+		if ( itemInHand != null && !itemInHand.isAir() ) {
 			
-			if ( durabilityResistance >= 100 ) {
-				damage = 0;
-			} else if ( durabilityResistance > 0 ) {
-				if ( getRandom().nextInt( 100 ) <= durabilityResistance ) {
+			Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+			int maxDurability = compat.getDurabilityMax( itemInHand );
+			int durability = compat.getDurability( itemInHand );
+			
+			
+			Output.get().logDebug( DebugType.durability, "calculateAndApplyDurability: maxDurability=" + 
+							maxDurability + " durability=" + durability + "  inHand=" + 
+							itemInHand.getName() );
+			
+			// Need to skip processing on empty item stacks and items that have no max durability
+			if ( maxDurability > 0 ) {
+				
+				short damage = 1;  // Generally 1 unless instant break block then zero.
+				
+				if ( durabilityResistance >= 100 ) {
 					damage = 0;
+				} else if ( durabilityResistance > 0 ) {
+					if ( getRandom().nextInt( 100 ) <= durabilityResistance ) {
+						damage = 0;
+					}
+				}
+				
+				if ( damage > 0 && itemInHand.getBukkitStack().containsEnchantment( Enchantment.DURABILITY)) {
+					int durabilityLevel = itemInHand.getBukkitStack().getEnchantmentLevel( Enchantment.DURABILITY );
+					
+					// the chance of losing durability is 1 in (1+level)
+					// So if the random int == 0, then take damage, otherwise none.
+					if (getRandom().nextInt( 1 + durabilityLevel ) > 0) {
+						damage = 0;
+					}
+				}
+				
+				if (damage > 0) {
+					
+//				Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+//				int maxDurability = compat.getDurabilityMax( itemInHand );
+//				int durability = compat.getDurability( itemInHand );
+					int newDurability = durability + damage;
+					
+					if (newDurability > maxDurability) {
+						// Item breaks! ;(
+						compat.breakItemInMainHand( player );
+					} else {
+						compat.setDurability( itemInHand, newDurability );
+					}
+					player.updateInventory();
 				}
 			}
 			
-			if ( damage > 0 && itemInHand.getBukkitStack().containsEnchantment( Enchantment.DURABILITY)) {
-				int durabilityLevel = itemInHand.getBukkitStack().getEnchantmentLevel( Enchantment.DURABILITY );
-				
-				// the chance of losing durability is 1 in (1+level)
-				// So if the random int == 0, then take damage, otherwise none.
-				if (getRandom().nextInt( 1 + durabilityLevel ) > 0) {
-					damage = 0;
-				}
-			}
 			
-			if (damage > 0) {
-				
-				Compatibility compat = SpigotPrison.getInstance().getCompatibility();
-				int maxDurability = compat.getDurabilityMax( itemInHand );
-				int durability = compat.getDurability( itemInHand );
-				int newDurability = durability + damage;
-				
-				if (newDurability > maxDurability) {
-					// Item breaks! ;(
-					compat.breakItemInMainHand( player );
-				} else {
-					compat.setDurability( itemInHand, newDurability );
-				}
-				player.updateInventory();
-			}
 			
 		}
 	}

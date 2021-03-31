@@ -20,6 +20,13 @@ that you need.
 # v3.2.5-alpha.15 2021-03-30
 
 
+* **Fixed issue with applying durability to non tools.**
+
+
+* **Add in DebugType to logDebug messages.**
+They are not yet hooked up, they will allow for controlling which debug messages are displayed.
+
+
 * **For blocking the source should have been snowball instead of snow_block since the output was snow_block.**
 
 
