@@ -1054,7 +1054,8 @@ public class SpigotPlatform
 					ModuleElementType elementType, String name, String tag, String accessPermission ) {
 		ModuleElement results = null;
 		
-		if ( elementType == ModuleElementType.MINE ) {
+		if ( elementType == ModuleElementType.MINE && 
+								PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
 			MineManager mm = PrisonMines.getInstance().getMineManager();
 			Mine mine = mm.getMine( name );
 			if ( mine == null ) {
@@ -1067,7 +1068,8 @@ public class SpigotPlatform
 				results = mine;
 			}
 		}
-		else if ( elementType == ModuleElementType.RANK ) {
+		else if ( elementType == ModuleElementType.RANK &&
+								PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
 			RankManager rm = PrisonRanks.getInstance().getRankManager();
 			rm.getRanksCommands().createRank( sender, name, 0, "default", tag );
 			
@@ -1083,11 +1085,13 @@ public class SpigotPlatform
 	public int getModuleElementCount( ModuleElementType elementType ) {
 		int results = 0;
 		
-		if ( elementType == ModuleElementType.MINE ) {
+		if ( elementType == ModuleElementType.MINE &&
+							PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
 			MineManager mm = PrisonMines.getInstance().getMineManager();
 			results = mm.getMines().size();
 		}
-		else if ( elementType == ModuleElementType.RANK ) {
+		else if ( elementType == ModuleElementType.RANK &&
+							PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
 			RankManager rm = PrisonRanks.getInstance().getRankManager();
 			results = rm.getRanks().size();
 		}
