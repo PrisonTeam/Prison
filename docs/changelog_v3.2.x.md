@@ -17,7 +17,13 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
-# v3.2.5-alpha.15 2021-03-30
+# v3.2.5-alpha.16 2021-03-30
+
+
+
+
+* **v3.2.5-alpha.16 2021-03-30**
+
 
 
 * **Fixed issue with applying durability to non tools.**
