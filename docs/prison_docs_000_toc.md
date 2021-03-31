@@ -20,7 +20,10 @@
  - **[v3.2.0 - 2019-12-03](prison_changelog_v3.2.0.md)**&nbsp;&nbsp;
 **[v3.2.1 - 2020-09-27](prison_changelog_v3.2.1.md)**&nbsp;&nbsp;
 **[v3.2.2 - 2020-11-21](prison_changelog_v3.2.2.md)**&nbsp;&nbsp;
-**[v3.2.3 - 2020-12-25](prison_changelog_v3.2.3.md)**
+**[v3.2.3 - 2020-12-25](prison_changelog_v3.2.3.md)**&nbsp;&nbsp;
+**[v3.2.4 - 2021-03-01](prison_changelog_v3.2.4.md)**&nbsp;&nbsp;
+**[v3.2.5 - 2021-04-01](prison_changelog_v3.2.5.md)**
+
  
  
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
