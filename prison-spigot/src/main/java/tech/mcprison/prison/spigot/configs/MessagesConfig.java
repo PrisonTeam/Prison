@@ -329,6 +329,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.SellAllTriggerMissingItem", "There isn't an item in the SellAllConfig.yml trigger like that.");
         dataConfig("Message.TooLowValue", "&cToo low value.");
         dataConfig("Message.TooHighValue", "&cToo high value.");
+        dataConfig("Message.GUIReloadSuccess", "GUIs reloaded with success!");
         dataConfig("Setup.Message.MissingPermission", "Sorry but you don't have the &cpermission&7 [-prison.setup- or -prison.admin-]!");
         dataConfig("Setup.Message.WrongFormat", "You're &cmissing&7 the last argument -mines- or -ranks-, /<command> setup -mines- or -ranks- !");
         dataConfig("Setup.Message.WelcomeToRanksSetup", "Hi and welcome to the Ranks Setup, please &cwait&7 until it'll be completed!");

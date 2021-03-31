@@ -18,7 +18,12 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
+# v3.2.6 2021-03-31
 
+* **v3.2.6-alpha.16 2021-03-31** <--- Change this because of timezones
+
+* **Added /gui reload command**
+It's now possible to reload GUIs with the /gui reload command.
 
 # v3.2.5 2021-04-01
 Release of next bug update.

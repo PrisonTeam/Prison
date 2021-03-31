@@ -10,6 +10,7 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
+import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
 import tech.mcprison.prison.spigot.gui.backpacks.BackpacksListPlayer;
 import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
@@ -207,4 +208,11 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
         }
     }
 
+    @Command(identifier = "gui reload", description = "Reload GUIs", permissions = "prison.admin",onlyPlayers = false)
+    public void reloadGUICommand(CommandSender sender){
+        SpigotGUIComponents.updateMessages();
+        SpigotGUIComponents.updateSellAll();
+        SpigotGUIComponents.updateGUIConfig();
+        Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.GUIReloadSuccess")));
+    }
 }

@@ -335,12 +335,40 @@ public class SellAllUtil {
     }
 
     /**
+     * Add SellAll Multiplier.
+     *
+     * @param prestige - Prestige name to hook.
+     * @param multiplier - Multiplier Double Value.
+     *
+     * @return error - True if error occurred and false if success.
+     * */
+    public boolean sellAllAddMultiplier(String prestige, Double multiplier) {
+        return sellAllAddMultiplierAction(prestige, multiplier);
+    }
+
+    /**
      * Java getBoolean's broken so I made my own.
      */
     public boolean getBoolean(String string) {
         return string != null && string.equalsIgnoreCase("true");
     }
 
+
+
+    private boolean sellAllAddMultiplierAction(String prestige, Double multiplier) {
+        if (addMultiplierConditions(prestige)) return true;
+
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("Multiplier." + prestige + ".PRESTIGE_NAME", prestige);
+            conf.set("Multiplier." + prestige + ".MULTIPLIER", multiplier);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            return true;
+        }
+        return false;
+    }
 
     private boolean sellAllEditBlockAction(XMaterial xMaterial, Double value) {
         if (sellAllConfig.getConfigurationSection("Items." + xMaterial.name()) == null) {
@@ -1126,45 +1154,25 @@ public class SellAllUtil {
         return false;
     }
 
-    private boolean addMultiplierConditions(CommandSender sender, String prestige, Double multiplier) {
-
-        boolean multiplierEnabled = getBoolean(sellAllConfig.getString("Options.Multiplier_Enabled"));
-        if (!multiplierEnabled) {
-
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMultipliersAreDisabled")));
-            return true;
-        }
-
-        if (prestige == null) {
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
-            return true;
-        }
-        if (multiplier == null) {
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
-            return true;
-        }
+    private boolean addMultiplierConditions(String prestige) {
 
         PrisonRanks rankPlugin = (PrisonRanks) (Prison.get().getModuleManager() == null ? null : Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME).orElse(null));
         if (rankPlugin == null) {
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllRanksDisabled")));
             return true;
         }
 
         boolean isPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges") != null;
         if (!isPrestigeLadder) {
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllPrestigeLadderNotFound")));
             return true;
         }
 
         boolean isARank = rankPlugin.getRankManager().getRank(prestige) != null;
         if (!isARank) {
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllCantFindPrestigeOrRank") + prestige));
             return true;
         }
 
         boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").containsRank(rankPlugin.getRankManager().getRank(prestige).getId());
         if (!isInPrestigeLadder) {
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllRankNotFoundInPrestigeLadder") + prestige));
             return true;
         }
         return false;

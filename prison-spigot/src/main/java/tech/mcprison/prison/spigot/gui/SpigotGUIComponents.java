@@ -1,17 +1,20 @@
 package tech.mcprison.prison.spigot.gui;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.yaml.snakeyaml.Yaml;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.modules.Module;
@@ -26,9 +29,9 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
  */
 public abstract class SpigotGUIComponents {
 
-    public Configuration messages = getMessages();
-    public Configuration guiConfig = getGuiConfig();
-    public Configuration sellAllConfig = getSellAll();
+    public static Configuration messages = getMessages();
+    public static Configuration guiConfig = getGuiConfig();
+    public static Configuration sellAllConfig = getSellAll();
 
     /**
      * Create a button for the GUI using Material.
@@ -147,6 +150,27 @@ public abstract class SpigotGUIComponents {
      * */
     public static AutoFeaturesFileConfig afConfig() {
         return SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+    }
+
+    /**
+     * Reload messages config for GUIs.
+     * */
+    public static void updateMessages(){
+        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/module_conf/lang/" + SpigotPrison.getInstance().getConfig().getString("default-language") + ".yml");
+        messages = YamlConfiguration.loadConfiguration(file);
+    }
+
+    /**
+     * Reload sellall config for GUIs.
+     * */
+    public static void updateSellAll(){
+        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+        sellAllConfig = YamlConfiguration.loadConfiguration(file);
+    }
+
+    public static void updateGUIConfig(){
+        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/GuiConfig.yml");
+        guiConfig = YamlConfiguration.loadConfiguration(file);
     }
 
     /**
