@@ -2,6 +2,8 @@ package tech.mcprison.prison.spigot.configs;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.bukkit.configuration.file.FileConfiguration;
@@ -34,6 +36,21 @@ public class GuiConfig extends SpigotConfigComponents{
     	
         // Values to write down into the config
         values();
+
+        if (conf.getConfigurationSection("EditableLore.Ranks") == null){
+            List<String> lore = new ArrayList<>();
+            lore.add(" ");
+            lore.add("&8-----------------------");
+            lore.add(" ");
+            lore.add("&8&l|&3Info&8|");
+            lore.add("&3Rank Price: &a${rankPrice}");
+            lore.add(" ");
+            lore.add("&8-----------------------");
+            lore.add("%prison_rcb_default%");
+
+            conf.set("EditableLore.Ranks", lore);
+            changeCount++;
+        }
 
         // Count and save
         if (changeCount > 0) {

@@ -24,6 +24,15 @@ that you need.
 # v3.2.6-alpha.1 2021-04-01
 
 
+* **Close GUI Message**
+A new message got added to the messages FILE that will be shown when closing a Prison GUI
+  with the close GUI button (Message -> GuiClosedWithSuccess:).
+
+
+* **Player Ranks GUI (/gui ranks or /ranks for players) Lore is now customizable**
+It's possible to customize the GUI lore from the guiconfig.yml for Player Ranks.
+
+
 * **Added /gui reload command**
 It's now possible to reload GUIs with the /gui reload command.
 

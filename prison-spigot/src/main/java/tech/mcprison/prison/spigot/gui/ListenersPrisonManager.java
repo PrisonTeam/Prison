@@ -393,6 +393,7 @@ public class ListenersPrisonManager implements Listener {
 
             // Close GUI button globally.
             if (buttonNameMain.equalsIgnoreCase("Close")) {
+                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.GuiClosedWithSuccess")));
                 p.closeInventory();
                 return;
             }

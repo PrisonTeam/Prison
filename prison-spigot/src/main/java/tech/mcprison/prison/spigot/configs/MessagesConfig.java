@@ -241,6 +241,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.CancelPrestige", "&cCancel&7: Type the word &ccancel&7 to cancel, &cyou've 30 seconds.");
         dataConfig("Message.PrestigesAreDisabled", "Prestiges are &cdisabled&7. Check config.yml.");
         dataConfig("Message.GuiOrPrestigesDisabled", "GUI and/or GUI Prestiges is &cdisabled&7. Check GuiConfig.yml.");
+        dataConfig("Message.GuiClosedWithSuccess", "The GUI got closed.");
         dataConfig("Message.CantFindPrestiges", "The prestige ladder has &cno prestiges&7!");
         dataConfig("Message.missingGuiPrestigesPermission", "You lack the &cpermissions&7 to use GUI prestiges");
         dataConfig("Message.rankTagRename", "Please write the &6tag &7you'd like to use and &6submit&7.");

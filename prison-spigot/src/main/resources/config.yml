@@ -97,7 +97,7 @@ prison-block-compatibility-report: false
 placeholder:
   bar-segments: 20
   bar-positive-color: "&2"
-  bar-positive-segment: "#"
+  bar-positive-segment: "|"
   bar-negative-color: "&4"
   bar-negative-segment: "="
 
