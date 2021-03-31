@@ -10,31 +10,24 @@ issues, and/or to serve as items that should be added, or fixed.
 # To Do Items - During Alpha v3.2.5
 
 
-* Change `/prison version` to minimize info.  Add an "all" feature to show full details.  Capture errors and reshow them in the /prsion version?  Not sure about this last one.
+* Issue with `/ranks autoConfigure` if Mines module is disabled.  Gets a NPE, which is not surprising.  Note: line number is from v3.2.4 so does not match source anymore.
+[21:00:38 WARN]: Caused by: java.lang.NullPointerException
+[21:00:38 WARN]:        at tech.mcprison.prison.spigot.SpigotPlatform.getModuleElementCount(SpigotPlatform.java:1077)
+[21:00:38 WARN]:        at tech.mcprison.prison.ranks.commands.RanksCommands.autoConfigureRanks(RanksCommands.java:202)
+[21:00:38 WARN]:        ... 28 more
+
+
+
+* possible change to /prison version all to include errors during startup.  Errors would need to be captchured.
 
 
 * To `/ranks autoFeatures` add warnings at the completion identifying that the user must create any needed groups.
  - Note that WG global region needs to have the flag `passthrough deny` set.
 
 
-* List more enabled features within /prison version such as if GUI, sellall, auto features, etc are enabled.
-
-
-
-DONE - Under SpigotUtils.ItemStackRemovalAll - remove the error messages.  Basically it is normal for non-standard material types to be used by other plugins, and they trigger XMaterial's exception that an item cannot be mapped.  Basically the datavalue is non-standard.
 
 
 Look at sellall and XMAteral's use of parse.  Needs to handle it with an item stack.
-
-
-DONE - Look at rank commands that may not be running as console? 
-- The commands are being ran as console and not user.
-- The issue was it was using the wrong user object and therefore the commands were not being resolved correctly.
-
-
-DONE - Was a new config that was not allowing the auto pickup to be enabled. Backpacks not working with auto pickup anymore?  Noticed at one point it wasn't working, but need to see if its still the case.  The issues could have been resolved.
-
-
 
 Personal mines.  Work in conjunction with a plot world?
 - sellable and so would be the features with various upgrades
@@ -43,51 +36,14 @@ Personal mines.  Work in conjunction with a plot world?
 
 - Hook up block filters on the block events.
 
-
-DONE - Add support for EZBlocks... need to test?
-
-
-DONE - fixed - BlockEvents don't not run unless auto features are enabled
-
-
-DONE - Hook mcMMO up to the explosion events
-
-
-DONE: CMI currency is not working correctly with vault and prison (Monzter)
-- Unable to test since it is a premium plugin. :(
-- Turned out the CMI version of vault he downloaded didn't work. Had to use the injector.
-
-
-
+  
 - /prison utils mining
   - Add XP direct and ORBs
-
-Add potion effects to prison mines.  
- - The potion effects should only last a short duration with auto renewal
- -   
-
-
-- DONE: /ranks set currency may not be able to remove custom currencies
-  - able to remove custom currencies if they are set
-
 
 
 Auto features not working outside of the mines.
 - Maybe be enabled and working now?
 
-
-
-DONE - **Block Counts Refresh - (ExtraSean)**
-- His enchantment plugin does not have an explosion event
-- Provide a way to update block counts using TargetBlockList
-- Delay 4 to 10 seconds based upon percent remaining
-- Submitted after a blockBreakEvent
-- This is a new feature that has to be enabled for each mine
-
-
-DONE - Prison Utils
-  - potions - need to work on that!!
-  
   
 
 - Add new placeholders:
@@ -112,22 +68,6 @@ Review the chat hander in the spigot module. It was rewritten a few weeks ago to
 Not sure if the following is fixed?
 old block model - block constraint - excludeTop - not allowing block counts to be shown
    - air block count fixed and working
-
-
-- DONE: Add /prison utils smelt
-- DONE: Add /prison utils block
-
-
-- DONE: Block breaking in auto manager
-  - Just thought of this... if using the target block list to record block breakage,
-    then can still double up the counts if more than one explosion event includes the
-    same block.  Need to add to the target block class a boolean to indicate that the
-    block has been broken, or at least already counted.  That way duplicate use of that
-    block won't result in over counting the breaks.
-    
-
-DONE - do nothing - auto manager - add support for mending enchantment on tools.
-- mending assigns XP received to repair tools and armor. This is more complicated than needed and there may be other solutions, such as dropping orbs so it can be processed naturally.
 
 
 
@@ -161,15 +101,6 @@ DONE - do nothing - auto manager - add support for mending enchantment on tools.
 
 
 - Add a prestiges config option to auto add a zero rank entry for prestige ranks.
-
-
-- DONE: Convert AutoFeaturesConfig to a Singleton.  GUI is having issues with consistency?
-  - The AutoFeaturesConfig is not a singleton, but there is now a wrapper that is.
-
-
-- Provide util functions that can run other commands for the players.  Could be useful to for BlockEvents.
-  - DONE: repair & repairAll
-  - potions and potion effects - in progress
 
 
 
@@ -489,6 +420,90 @@ I think those few integrations could really provide a huge bootstrap to getting 
 
 
 # Features recently added:
+
+
+
+- DONE - Add support for EZBlocks... need to test?
+
+
+- DONE - fixed - BlockEvents don't not run unless auto features are enabled
+
+
+- DONE - Hook mcMMO up to the explosion events
+
+
+- DONE: CMI currency is not working correctly with vault and prison (Monzter)
+- Unable to test since it is a premium plugin. :(
+- Turned out the CMI version of vault he downloaded didn't work. Had to use the injector.
+
+
+
+- DONE: Add potion effects to prison mines.  
+ - The potion effects should only last a short duration with auto renewal
+ -   
+
+
+- DONE: /ranks set currency may not be able to remove custom currencies
+  - able to remove custom currencies if they are set
+
+
+- DONE - **Block Counts Refresh - (ExtraSean)**
+- His enchantment plugin does not have an explosion event
+- Provide a way to update block counts using TargetBlockList
+- Delay 4 to 10 seconds based upon percent remaining
+- Submitted after a blockBreakEvent
+- This is a new feature that has to be enabled for each mine
+
+
+- DONE - Prison Utils
+  - potions - need to work on that!!
+
+
+
+- DONE: Add /prison utils smelt
+- DONE: Add /prison utils block
+
+
+- DONE: Block breaking in auto manager
+  - Just thought of this... if using the target block list to record block breakage,
+    then can still double up the counts if more than one explosion event includes the
+    same block.  Need to add to the target block class a boolean to indicate that the
+    block has been broken, or at least already counted.  That way duplicate use of that
+    block won't result in over counting the breaks.
+    
+
+- DONE - do nothing - auto manager - add support for mending enchantment on tools.
+- mending assigns XP received to repair tools and armor. This is more complicated than needed and there may be other solutions, such as dropping orbs so it can be processed naturally.
+
+
+- DONE: Convert AutoFeaturesConfig to a Singleton.  GUI is having issues with consistency?
+  - The AutoFeaturesConfig is not a singleton, but there is now a wrapper that is.
+
+
+- DONE: Provide util functions that can run other commands for the players.  Could be useful to for BlockEvents.
+  - DONE: repair & repairAll
+  - DONE: potions and potion effects - in progress
+
+
+
+
+- DONE:  List more enabled features within /prison version such as if GUI, sellall, auto features, etc are enabled.
+
+
+- DONE: Change `/prison version` to minimize info.  Add an "all" feature to show full details.  Capture errors and reshow them in the /prsion version?  Not sure about this last one.
+
+
+- DONE - Under SpigotUtils.ItemStackRemovalAll - remove the error messages.  Basically it is normal for non-standard material types to be used by other plugins, and they trigger XMaterial's exception that an item cannot be mapped.  Basically the datavalue is non-standard.
+
+
+
+
+- DONE - Look at rank commands that may not be running as console? 
+- The commands are being ran as console and not user.
+- The issue was it was using the wrong user object and therefore the commands were not being resolved correctly.
+
+
+- DONE - Was a new config that was not allowing the auto pickup to be enabled. Backpacks not working with auto pickup anymore?  Noticed at one point it wasn't working, but need to see if its still the case.  The issues could have been resolved.
 
 
 

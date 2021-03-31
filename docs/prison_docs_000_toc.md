@@ -29,7 +29,7 @@
 
 [Prison Auto Configure / Prison Quick Start!](prison_docs_100_setting_up_auto_configure.md)
 
-Prison now has a new set of features that can help you get up and running faster than ever!  `/ranks autoConfigure`. It can auto create your ranks and virtual mines, A through Z, it will link the mines to the ranks, setup the basic rank commands to provide basic access permissions for your players, and assign blocks of increasing values to all mines.  All you need to do is to use the command `/mines set area` on all mines to make them physical mines.  Plus there are a new features to help provide the finishing touches in almost no time.
+Prison now has a new set of features that can help you get up and running faster than ever!  `/ranks autoConfigure`. It can auto create your ranks and virtual mines, A through Z, it will link the mines to the ranks, setup the basic rank commands to provide basic access permissions for your players.  It will also setup the Mine Access Permissions and assign blocks of increasing values to all mines.  Once it generates all the virtual mines, all you need to do is to use the command `/mines set area help` on all mines to make them physical mines and then prison will be ready to use.  Plus there are many new features to help provide the finishing touches in almost no time.
  
  - `/ranks autoConfigure`
  - `/mines set area help`
@@ -37,7 +37,9 @@ Prison now has a new set of features that can help you get up and running faster
  - `/mines set size help`
  - `/mines set liner help`
  
- Documentation pertaining to the use of the auto configuration will be coming soon.
+ [Prison Auto Configure / Prison Quick Start Guide!](prison_docs_100_setting_up_auto_configure.md)
+
+
  
 
 <hr style="height:5px; border:none; color:#aaf; background-color:#aaf;">
