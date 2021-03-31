@@ -28,9 +28,13 @@ Set the version to v3.2.5.
 Publishing this version.  Update documents.
 
 
+* **Adding to v3.2.5 release: Fixed an issue if one of the mine or ranks modules is disabled.**
+This was encountered with the mines module being disabled when running /ranks autoConfigure.
+This is to be included with the v3.2.5 release.
+
+
 
 * **v3.2.5-alpha.16 2021-03-30**
-
 
 
 * **Fixed issue with applying durability to non tools.**
