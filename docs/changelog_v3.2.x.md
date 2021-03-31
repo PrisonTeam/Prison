@@ -28,6 +28,9 @@ Set the version to v3.2.5.
 Publishing this version.  Update documents.
 
 
+* **Including the new alias for /prison version so it can be used with the next release.**
+
+
 * **Adding to v3.2.5 release: Fixed an issue if one of the mine or ranks modules is disabled.**
 This was encountered with the mines module being disabled when running /ranks autoConfigure.
 This is to be included with the v3.2.5 release.

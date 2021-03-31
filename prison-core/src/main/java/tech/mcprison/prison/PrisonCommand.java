@@ -67,7 +67,7 @@ public class PrisonCommand {
 	}
 	
     @Command(identifier = "prison version", description = "Displays version information.", 
-    		onlyPlayers = false )
+    		onlyPlayers = false, aliases = "prison info" )
     public void versionCommand(CommandSender sender,
     		@Wildcard(join=true)
     		@Arg(name = "options", description = "Options [basic, all]", def = "basic" ) String options) {
