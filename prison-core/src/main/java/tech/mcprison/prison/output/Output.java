@@ -19,7 +19,9 @@
 package tech.mcprison.prison.output;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.MissingFormatArgumentException;
+import java.util.Set;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.CommandSender;
@@ -43,11 +45,19 @@ public class Output {
     public String DEBUG_PREFIX = gen("Debug");
 
     private boolean debug = false;
+    private Set<DebugType> activeDebugTypes;
+
+    public enum DebugType {
+    	blockbreak,
+    	durability
+    	;
+    }
     
-    // Constructor
 
     private Output() {
         instance = this;
+        
+        this.activeDebugTypes = new HashSet<>();
     }
 
     // Public methods
@@ -200,11 +210,27 @@ public class Output {
     	}
     }
     
+    public void logDebug( DebugType debugType, String message, Object... args) {
+    	logDebug(message, args );
+    	
+//    	// The following is not yet enabled since the user interfaces are not in place to manage the set:
+//    	if ( isDebug() && debugType != null && getActiveDebugTypes().contains( debugType ) ) {
+//    		log(message, LogLevel.DEBUG, args);
+//    	}
+    }
+    
     public boolean isDebug() {
 		return debug;
 	}
 	public void setDebug( boolean debug ) {
 		this.debug = debug;
+	}
+
+	public Set<DebugType> getActiveDebugTypes() {
+		return activeDebugTypes;
+	}
+	public void setActiveDebugTypes( Set<DebugType> activeDebugTypes ) {
+		this.activeDebugTypes = activeDebugTypes;
 	}
 
 	/**

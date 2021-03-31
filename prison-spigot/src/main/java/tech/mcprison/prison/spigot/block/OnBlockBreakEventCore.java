@@ -27,6 +27,7 @@ import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.output.Output.DebugType;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.compat.Compatibility;
@@ -273,7 +274,7 @@ public class OnBlockBreakEventCore
     		
     	}
     	
-    	Output.get().logDebug( debugInfo );
+    	Output.get().logDebug( DebugType.blockbreak, debugInfo );
 	}
 
 
@@ -440,7 +441,7 @@ public class OnBlockBreakEventCore
     			
     	}
     	
-    	Output.get().logDebug( debugInfo );
+    	Output.get().logDebug( DebugType.blockbreak, debugInfo );
 	}
 
 
@@ -667,7 +668,7 @@ public class OnBlockBreakEventCore
 
 		}
     	
-    	Output.get().logDebug( debugInfo );
+    	Output.get().logDebug( DebugType.blockbreak, debugInfo );
 
 	}
 	
