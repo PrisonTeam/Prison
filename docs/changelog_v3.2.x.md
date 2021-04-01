@@ -24,6 +24,9 @@ that you need.
 # v3.2.6-alpha.1 2021-04-01
 
 
+* **Add the block break event priority to the /prison version command.**
+
+
 * **Added a new auto features option to control the BlockBreakEvent priority.**
 It defaults to LOW (what it's been set to for the last 4 versions), but the vaild options are:
 LOWEST, LOW, NORMAL, HIGH, and HIGHEST.

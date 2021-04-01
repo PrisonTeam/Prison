@@ -79,6 +79,7 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
+import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotOfflinePlayer;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -1591,6 +1592,12 @@ public class SpigotPlatform
     	
     	results.add( String.format("AutoManager Enabled:&b %s", 
     										afw.isBoolean( AutoFeatures.isAutoManagerEnabled )) );
+    	
+		String bbePriority = afw.getMessage( AutoFeatures.blockBreakEventPriority );
+		BlockBreakPriority blockBreakPriority = BlockBreakPriority.fromString( bbePriority );
+		results.add( String.format("    Block Break Event Priority:&b %s", 
+											blockBreakPriority.name() ) );
+
 
     	results.add( String.format("    Auto Pickup:&b %s", 
     										afw.isBoolean( AutoFeatures.autoPickupEnabled )) );
