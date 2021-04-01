@@ -43,6 +43,8 @@ public class AutoFeaturesFileConfig {
 	    	
 		    	isAutoManagerEnabled(general, false),
 		    	
+		    	blockBreakEventPriority(general, "LOW"),
+		    	
 		    	isCalculateDurabilityEnabled(general, false),
 		    	
 		    	isCalculateFortuneEnabled(general, true),

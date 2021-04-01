@@ -172,11 +172,8 @@ public class SpigotPrison extends JavaPlugin {
         
         // Manually register Listeners with Bukkit:
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
+
         
-        new OnBlockBreakEventListener().registerAllBlockBreakEvents( this );
-        
-//        Bukkit.getPluginManager().registerEvents(new AutoManager(), this);
-//        Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventListener(), this);
         Bukkit.getPluginManager().registerEvents(new SlimeBlockFunEventListener(), this);
         Bukkit.getPluginManager().registerEvents(new SpigotListener(), this);
 
@@ -199,6 +196,10 @@ public class SpigotPrison extends JavaPlugin {
         // After all the integrations have been loaded and the deferred tasks ran, 
         // then run the deferred Module setups:
         initDeferredModules();
+        
+        
+        // The BlockBreakEvents must be registered after the mines and ranks modules have been enabled:
+        new OnBlockBreakEventListener().registerAllBlockBreakEvents( this );
         
         
         initMetrics();

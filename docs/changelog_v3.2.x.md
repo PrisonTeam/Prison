@@ -21,7 +21,14 @@ that you need.
 
 
 
-# v3.2.6-alpha.1 2021-03-31
+# v3.2.6-alpha.1 2021-04-01
+
+
+* **Added a new auto features option to control the BlockBreakEvent priority.**
+It defaults to LOW (what it's been set to for the last 4 versions), but the vaild options are:
+LOWEST, LOW, NORMAL, HIGH, and HIGHEST.
+The monitor priority is not available since block states must not be changed at that priority.  The existing monitors will remain set to a MONITOR priority irrespective to what priority is set.
+
 
 
 * **Prevent prison's BlockBreak event listeners from registering if they are not enabled.**
