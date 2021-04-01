@@ -24,6 +24,13 @@ that you need.
 # v3.2.6-alpha.1 2021-04-01
 
 
+* **Enabled /backpack set size**
+Enabled /backpack set size command, it must be a multiple of 9.
+  The permission to use it is prison.admin.
+  The format of the command's /backpack set size <Owner> <Size> <Id>, ID
+  is OPTIONAL and required only for multiple backpacks when enabled.
+
+
 * **Add the block break event priority to the /prison version command.**
 
 

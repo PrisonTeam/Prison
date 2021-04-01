@@ -95,7 +95,7 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    /*@Command(identifier = "backpack set size", description = "Resize a player's backpack.", permissions = "prison.admin", onlyPlayers = false)
+    @Command(identifier = "backpack set size", description = "Resize a player's backpack.", permissions = "prison.admin", onlyPlayers = false)
     private void resizeBackpackCommand(CommandSender sender,
                                        @Arg(name = "Backpack Owner", description = "The backpack owner name", def = "null") String name,
                                        @Arg(name = "Backpack size", description = "Backpack size multiple of 9", def = "9") String size,
@@ -144,5 +144,5 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
         }
 
         Output.get().sendInfo(sender, SpigotPrison.format(getMessages().getString("Message.BackPackResizeDone")));
-    }*/
+    }
 }
