@@ -11,6 +11,8 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 
+import java.util.List;
+
 /**
  * @author GABRYCA
  * */
@@ -45,6 +47,8 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
+        if (isDisabledWorld(p)) return;
+
         BackpacksUtil.get().giveBackpackToPlayer(p);
     }
 
@@ -57,6 +61,8 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
             Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString("Message.CantGiveItemFromConsole")));
             return;
         }
+
+        if (isDisabledWorld(p)) return;
 
         if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))) {
             sender.dispatchCommand("gui backpackslist");
@@ -144,5 +150,11 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
         }
 
         Output.get().sendInfo(sender, SpigotPrison.format(getMessages().getString("Message.BackPackResizeDone")));
+    }
+
+    private boolean isDisabledWorld(Player p) {
+        String worldName = p.getWorld().getName();
+        List<String> disabledWorlds = BackpacksUtil.get().getBackpacksConfig().getStringList("Options.DisabledWorlds");
+        return disabledWorlds.contains(worldName);
     }
 }

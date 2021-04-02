@@ -24,6 +24,9 @@ that you need.
 # v3.2.6-alpha.1 2021-04-01
 
 
+* **Backpack disabled worlds**
+It's now possible to disable backpacks in some worlds, give a look to the backpacksconfig.
+
 * **Enabled /backpack set size**
 Enabled /backpack set size command, it must be a multiple of 9.
   The permission to use it is prison.admin.

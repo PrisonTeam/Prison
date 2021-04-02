@@ -17,6 +17,8 @@ import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerPrestigesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
 
+import java.util.List;
+
 /**
  * @author GABRYCA
  * @author RoyalBlueRanger (rBluer)
@@ -170,6 +172,8 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             return;
         }
 
+        if (isDisabledWorld(p)) return;
+
         if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled")) && (Integer.parseInt(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player")) <= BackpacksUtil.get().getNumberOwnedBackpacks(p)) && !BackpacksUtil.get().getBackpacksIDs(p).contains(id)){
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.BackPackOwnLimitReached") + " [" + BackpacksUtil.get().getNumberOwnedBackpacks(p) + "]"));
             return;
@@ -197,6 +201,8 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             return;
         }
 
+        if (isDisabledWorld(p)) return;
+
         // New method.
         if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))){
             if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission_Enabled")) && !p.hasPermission(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission"))){
@@ -214,5 +220,11 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
         SpigotGUIComponents.updateSellAll();
         SpigotGUIComponents.updateGUIConfig();
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.GUIReloadSuccess")));
+    }
+
+    private boolean isDisabledWorld(Player p) {
+        String worldName = p.getWorld().getName();
+        List<String> disabledWorlds = BackpacksUtil.get().getBackpacksConfig().getStringList("Options.DisabledWorlds");
+        return disabledWorlds.contains(worldName);
     }
 }
