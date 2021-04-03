@@ -21,7 +21,12 @@ that you need.
 
 
 
-# v3.2.6-alpha.1 2021-04-03
+# v3.2.6-alpha.2 2021-04-03
+
+
+
+* **v3.2.6-alpha.2 2021-04-03**
+
 
 
 * **Modified how the configuration of the block break events are processed to give better granular control over them.**
