@@ -970,7 +970,7 @@ public class BackpacksUtil {
                 }
             }
 
-            oldDataVersionUpdater(p, needToSetNewDimensions, needToSetNewOwner, needToSetNewOwnerID);
+            oldDataVersionUpdater(p, true, true, true);
 
             try {
                 backpacksDataConfig.save(backpacksFile);
