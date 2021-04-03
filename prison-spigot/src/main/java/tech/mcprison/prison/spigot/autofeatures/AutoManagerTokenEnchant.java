@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
 
@@ -24,7 +25,7 @@ public class AutoManagerTokenEnchant
 	public void registerBlockBreakEvents(SpigotPrison spigotPrison ) {
 	
 		
-		String bbePriority = getMessage( AutoFeatures.blockBreakEventPriority );
+		String bbePriority = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
 		BlockBreakPriority blockBreakPriority = BlockBreakPriority.fromString( bbePriority );
 		
 		switch ( blockBreakPriority )
@@ -52,6 +53,10 @@ public class AutoManagerTokenEnchant
 			case HIGHEST:
 				Bukkit.getPluginManager().registerEvents( 
 						new AutoManagerTokenEnchantEventHighest(), spigotPrison);
+				break;
+
+			case DISABLED:
+				Output.get().logInfo( "AutoManager TokenEnchant BlockExplodeEvent handling has been DISABLED." );
 				break;
 
 			default:

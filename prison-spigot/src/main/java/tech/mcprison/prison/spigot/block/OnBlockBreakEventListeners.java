@@ -8,6 +8,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import zedly.zenchantments.BlockShredEvent;
 
@@ -19,13 +20,15 @@ public class OnBlockBreakEventListeners
 	public void registerBlockBreakEvents(SpigotPrison spigotPrison ) {
 	
 		
-		// Always register the monitor event:
-		Bukkit.getPluginManager().registerEvents( 
-								new OnBlockBreakEventListenerMonitor(), spigotPrison);
-		
-		
 		String bbePriority = getMessage( AutoFeatures.blockBreakEventPriority );
 		BlockBreakPriority blockBreakPriority = BlockBreakPriority.fromString( bbePriority );
+		
+		if ( blockBreakPriority != BlockBreakPriority.DISABLED ) {
+			
+			// Always register the monitor event:
+			Bukkit.getPluginManager().registerEvents( 
+					new OnBlockBreakEventListenerMonitor(), spigotPrison);
+		}
 		
 		switch ( blockBreakPriority )
 		{
@@ -54,6 +57,10 @@ public class OnBlockBreakEventListeners
 						new OnBlockBreakEventListenerHighest(), spigotPrison);
 				break;
 
+			case DISABLED:
+				Output.get().logInfo( "BlockBreakEvent handling and monitoring has been DISABLED." );
+				break;
+				
 			default:
 				break;
 		}

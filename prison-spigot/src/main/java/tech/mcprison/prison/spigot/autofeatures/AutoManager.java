@@ -8,6 +8,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
 import zedly.zenchantments.BlockShredEvent;
@@ -61,6 +62,88 @@ public class AutoManager
 			case HIGHEST:
 				Bukkit.getPluginManager().registerEvents( 
 						new AutoManagerEventListenerHighest(), spigotPrison);
+				break;
+
+			case DISABLED:
+				Output.get().logInfo( "AutoManager BlockBreakEvent handling has been DISABLED." );
+				break;
+
+			default:
+				break;
+		}
+		
+		
+		String cePriority = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
+		BlockBreakPriority crazyEnchantsPriority = BlockBreakPriority.fromString( cePriority );
+		
+		switch ( crazyEnchantsPriority )
+		{
+			case LOWEST:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerBlastUseEventListenerLowest(), spigotPrison);
+				break;
+				
+			case LOW:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerBlastUseEventListenerLow(), spigotPrison);
+				break;
+				
+			case NORMAL:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerBlastUseEventListenerNormal(), spigotPrison);
+				break;
+				
+			case HIGH:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerBlastUseEventListenerHigh(), spigotPrison);
+				break;
+				
+			case HIGHEST:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerBlastUseEventListenerHighest(), spigotPrison);
+				break;
+			case DISABLED:
+				Output.get().logInfo( "AutoManager Crazy Enchant's BlastUseEvent handling has been DISABLED." );
+				break;
+
+				
+			default:
+				break;
+		}
+		
+		
+		String zbsPriority = getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
+		BlockBreakPriority blockShredPriority = BlockBreakPriority.fromString( zbsPriority );
+		
+		switch ( blockShredPriority )
+		{
+			case LOWEST:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerBlockShredEventListenerLowest(), spigotPrison);
+				break;
+				
+			case LOW:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerBlockShredEventListenerLow(), spigotPrison);
+				break;
+				
+			case NORMAL:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerBlockShredEventListenerNormal(), spigotPrison);
+				break;
+				
+			case HIGH:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerBlockShredEventListenerHigh(), spigotPrison);
+				break;
+				
+			case HIGHEST:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerBlockShredEventListenerHighest(), spigotPrison);
+				break;
+
+			case DISABLED:
+				Output.get().logInfo( "AutoManager Zenchantments BlockShredEvent handling has been DISABLED." );
 				break;
 
 			default:
@@ -164,11 +247,6 @@ public class AutoManager
         public void onBlockShredBreak(BlockShredEvent e) {
         	super.onBlockShredBreak( e );
         }
-        
-        @EventHandler(priority=EventPriority.LOWEST) 
-        public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-        	super.onCrazyEnchantsBlockExplodeLow( e );
-        }
     }
     
     public class AutoManagerEventListenerLow 
@@ -183,11 +261,6 @@ public class AutoManager
     	@EventHandler(priority=EventPriority.LOW) 
     	public void onBlockShredBreak(BlockShredEvent e) {
     		super.onBlockShredBreak( e );
-    	}
-    	
-    	@EventHandler(priority=EventPriority.LOW) 
-    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-    		super.onCrazyEnchantsBlockExplodeLow( e );
     	}
     }
     
@@ -204,11 +277,6 @@ public class AutoManager
     	public void onBlockShredBreak(BlockShredEvent e) {
     		super.onBlockShredBreak( e );
     	}
-    	
-    	@EventHandler(priority=EventPriority.NORMAL) 
-    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-    		super.onCrazyEnchantsBlockExplodeLow( e );
-    	}
     }
     
     public class AutoManagerEventListenerHigh 
@@ -223,11 +291,6 @@ public class AutoManager
     	@EventHandler(priority=EventPriority.HIGH) 
     	public void onBlockShredBreak(BlockShredEvent e) {
     		super.onBlockShredBreak( e );
-    	}
-    	
-    	@EventHandler(priority=EventPriority.HIGH) 
-    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-    		super.onCrazyEnchantsBlockExplodeLow( e );
     	}
     }
     
@@ -244,11 +307,115 @@ public class AutoManager
     	public void onBlockShredBreak(BlockShredEvent e) {
     		super.onBlockShredBreak( e );
     	}
+    }
+    
+    
+    
+    
+    
+    public class AutoManagerBlastUseEventListenerLowest 
+		extends AutoManager
+		implements Listener {
+    	
+        @EventHandler(priority=EventPriority.LOWEST) 
+        public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
+        	super.onCrazyEnchantsBlockExplodeLow( e );
+        }
+    }
+    
+    public class AutoManagerBlastUseEventListenerLow 
+	    extends AutoManager
+	    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.LOW) 
+    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
+    		super.onCrazyEnchantsBlockExplodeLow( e );
+    	}
+    }
+    
+    public class AutoManagerBlastUseEventListenerNormal 
+	    extends AutoManager
+	    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.NORMAL) 
+    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
+    		super.onCrazyEnchantsBlockExplodeLow( e );
+    	}
+    }
+    
+    public class AutoManagerBlastUseEventListenerHigh 
+	    extends AutoManager
+	    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.HIGH) 
+    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
+    		super.onCrazyEnchantsBlockExplodeLow( e );
+    	}
+    }
+    
+    public class AutoManagerBlastUseEventListenerHighest 
+	    extends AutoManager
+	    implements Listener {
     	
     	@EventHandler(priority=EventPriority.HIGHEST) 
     	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
     		super.onCrazyEnchantsBlockExplodeLow( e );
     	}
     }
+    
+    
+   
+    
+    public class AutoManagerBlockShredEventListenerLowest 
+		extends AutoManager
+		implements Listener {
+        
+        @EventHandler(priority=EventPriority.LOWEST) 
+        public void onBlockShredBreak(BlockShredEvent e) {
+        	super.onBlockShredBreak( e );
+        }
+    }
+    
+    public class AutoManagerBlockShredEventListenerLow 
+	    extends AutoManager
+	    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.LOW) 
+    	public void onBlockShredBreak(BlockShredEvent e) {
+    		super.onBlockShredBreak( e );
+    	}
+    }
+    
+    public class AutoManagerBlockShredEventListenerNormal 
+	    extends AutoManager
+	    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.NORMAL) 
+    	public void onBlockShredBreak(BlockShredEvent e) {
+    		super.onBlockShredBreak( e );
+    	}
+    }
+    
+    public class AutoManagerBlockShredEventListenerHigh 
+	    extends AutoManager
+	    implements Listener {
+	    	
+    	@EventHandler(priority=EventPriority.HIGH) 
+    	public void onBlockShredBreak(BlockShredEvent e) {
+    		super.onBlockShredBreak( e );
+    	}
+    }
+    
+    public class AutoManagerBlockShredEventListenerHighest 
+    extends AutoManager
+    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.HIGHEST) 
+    	public void onBlockShredBreak(BlockShredEvent e) {
+    		super.onBlockShredBreak( e );
+    	}
+    }
+    
+    
     
 }

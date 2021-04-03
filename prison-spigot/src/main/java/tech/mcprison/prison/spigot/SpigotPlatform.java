@@ -1597,6 +1597,21 @@ public class SpigotPlatform
 		BlockBreakPriority blockBreakPriority = BlockBreakPriority.fromString( bbePriority );
 		results.add( String.format("    Block Break Event Priority:&b %s", 
 											blockBreakPriority.name() ) );
+		
+		String tebePriority = afw.getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
+		BlockBreakPriority tebEventPriority = BlockBreakPriority.fromString( tebePriority );
+		results.add( String.format("    Token Enchant BlockExplodeEvent Priority:&b %s", 
+				tebEventPriority.name() ) );
+		
+		String cebuePriority = afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
+		BlockBreakPriority cebuEventPriority = BlockBreakPriority.fromString( cebuePriority );
+		results.add( String.format("    Crazy Enchant BlastUseEvent Priority:&b %s", 
+				cebuEventPriority.name() ) );
+
+		String zbsePriority = afw.getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
+		BlockBreakPriority zbsEventPriority = BlockBreakPriority.fromString( zbsePriority );
+		results.add( String.format("    Zenchantments BlockShredEvent Priority:&b %s", 
+				zbsEventPriority.name() ) );
 
 
     	results.add( String.format("    Auto Pickup:&b %s", 

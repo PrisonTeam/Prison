@@ -21,7 +21,13 @@ that you need.
 
 
 
-# v3.2.6-alpha.1 2021-04-01
+# v3.2.6-alpha.1 2021-04-03
+
+
+* **Modified how the configuration of the block break events are processed to give better granular control over them.**
+Added a BlockBreakPriority of DISABLED so individual events can be fully controlled, even turned off.
+Expanded the block break related priorities so they can be better controlled and even disabled.  This will allow for a fine grained control over each plugin instead of lumping them all together, along with prison.
+These changes should provide a much greater degree of flexibility to help get environments working properly.
 
 
 * **Backpack disabled worlds**

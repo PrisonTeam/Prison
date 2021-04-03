@@ -97,6 +97,9 @@ public class OnBlockBreakEventListener
 	
 	
 	public enum BlockBreakPriority {
+		
+		DISABLED,
+		
 		LOWEST,
 		LOW,
 		NORMAL,
