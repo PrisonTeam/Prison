@@ -12,12 +12,11 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
 
-public class BackpacksListPlayer extends SpigotGUIComponents {
+public class BackpacksListPlayerGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
-    public BackpacksListPlayer(Player p) {
+    public BackpacksListPlayerGUI(Player p) {
         this.p = p;
     }
 
@@ -72,7 +71,6 @@ public class BackpacksListPlayer extends SpigotGUIComponents {
 
         ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
         inv.setItem(dimension-1, closeGUI);
-
 
         openGUI(p, inv);
     }

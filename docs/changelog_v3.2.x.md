@@ -24,6 +24,27 @@ that you need.
 # v3.2.6-alpha.2 2021-04-03
 
 
+* **Backpack Admin Player Backpacks List GUI**
+A sub-GUI of the Admin Player List GUI, which will show all the backpacks
+  own by a Player, only a maximum of 54 backpacks of the Player can be shown,
+  pages will be added in the future.
+
+
+* **Backpack Admin Player List GUI**
+A sub-GUI of the backpacks ADMIN GUI that will show a list of players
+  owning at least one backpack, only 54 players can be shown for now,
+  not one more, pages will be added in the future.
+
+
+* **Backpack admin GUI**
+A new admin GUI for backpacks got added, you can open it with /backpack admin.
+  NOTE: You need the permission prison.admin to use it.
+
+
+* **Backpack Internal Error fixed**
+Fixed an internal backpack saving error, this didn't compromise the use of
+  backpacks but just the ADMIN management.
+
 
 * **v3.2.6-alpha.2 2021-04-03**
 

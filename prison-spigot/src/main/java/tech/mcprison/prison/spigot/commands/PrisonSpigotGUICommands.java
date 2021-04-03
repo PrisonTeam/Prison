@@ -12,7 +12,8 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
-import tech.mcprison.prison.spigot.gui.backpacks.BackpacksListPlayer;
+import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminGUI;
+import tech.mcprison.prison.spigot.gui.backpacks.BackpacksListPlayerGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerPrestigesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
@@ -161,58 +162,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
         sender.dispatchCommand(registeredCmd);
     }
 
-    @Command(identifier = "gui backpack", description = "Backpack as a GUI", onlyPlayers = true)
-    private void backpackGUIOpenCommand(CommandSender sender,
-    @Arg(name = "Backpack-ID", def = "null", description = "If user have more than backpack, he'll be able to choose another backpack on ID") String id){
-
-        Player p = getSpigotPlayer(sender);
-
-        if (p == null) {
-            Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString("Message.CantRunGUIFromConsole")));
-            return;
-        }
-
-        if (isDisabledWorld(p)) return;
-
-        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled")) && (Integer.parseInt(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player")) <= BackpacksUtil.get().getNumberOwnedBackpacks(p)) && !BackpacksUtil.get().getBackpacksIDs(p).contains(id)){
-            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.BackPackOwnLimitReached") + " [" + BackpacksUtil.get().getNumberOwnedBackpacks(p) + "]"));
-            return;
-        }
-
-        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission_Enabled")) && !p.hasPermission(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission"))){
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.MissingPermission") + " [" + BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission") + "]"));
-            return;
-        }
-
-        // New method.
-        if (!id.equalsIgnoreCase("null") && getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))){
-            BackpacksUtil.get().openBackpack(p, id);
-        } else {
-            BackpacksUtil.get().openBackpack(p);
-        }
-    }
-
-    @Command(identifier = "gui backpackslist", description = "Backpack as a GUI", onlyPlayers = true)
-    private void backpackListGUICommand(CommandSender sender){
-        Player p = getSpigotPlayer(sender);
-
-        if (p == null) {
-            Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString("Message.CantRunGUIFromConsole")));
-            return;
-        }
-
-        if (isDisabledWorld(p)) return;
-
-        // New method.
-        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))){
-            if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission_Enabled")) && !p.hasPermission(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission"))){
-                 Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.MissingPermission") + " [" + BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission") + "]"));
-                 return;
-            }
-            BackpacksListPlayer gui = new BackpacksListPlayer(p);
-            gui.open();
-        }
-    }
+    // Backpack GUI commands got moved to the Backpacks class so they won't be loaded if backpacks are disabled.
 
     @Command(identifier = "gui reload", description = "Reload GUIs", permissions = "prison.admin",onlyPlayers = false)
     public void reloadGUICommand(CommandSender sender){

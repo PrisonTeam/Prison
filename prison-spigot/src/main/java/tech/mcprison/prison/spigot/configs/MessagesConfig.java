@@ -69,6 +69,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.BlockType","&3BlockType: ");
         dataConfig("Lore.Blocks","&3Blocks:");
         dataConfig("Lore.Blocks2","&8Manage blocks of the Mine.");
+        dataConfig("Lore.BackpackID", "&3Backpack ID: ");
         dataConfig("Lore.ClickToAddBackpack", "&8Click to add backpack.");
         dataConfig("Lore.ClickToAddBackpackInst0", "&3Instructions: ");
         dataConfig("Lore.ClickToAddBackpackInst1", "&8Remember to add an item");
@@ -126,6 +127,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.Name","&3Rank Name: &7");
         dataConfig("Lore.Notifications","&8Edit Mines notifications.");
         dataConfig("Lore.Permission", "&3Permission: ");
+        dataConfig("Lore.PlayerOwner", "&3Backpack owner: ");
         dataConfig("Lore.PlayersWithTheRank","&3Players at rank: &7");
         dataConfig("Lore.PrestigeWarning", "&3Prestige will reset: ");
         dataConfig("Lore.PrestigeWarning2", "&3 - &bRank");

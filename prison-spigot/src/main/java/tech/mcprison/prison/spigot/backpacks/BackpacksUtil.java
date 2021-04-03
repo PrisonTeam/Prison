@@ -51,6 +51,14 @@ public class BackpacksUtil {
     }
 
     /**
+     * Get Backpacks DATA config.
+     * */
+    public Configuration getBackpacksData(){
+        updateCachedBackpack();
+        return backpacksDataConfig;
+    }
+
+    /**
      * Check if multiple Backpacks's enabled.
      * */
     public boolean isMultipleBackpacksEnabled(){
@@ -992,6 +1000,7 @@ public class BackpacksUtil {
         boolean needToSetNewOwnerID = checkBackpackOwnerIDMissing(p, id);
 
         if (inv.getContents() != null){
+
             int slot = 0;
 
             try {
@@ -1004,7 +1013,7 @@ public class BackpacksUtil {
 
             updateCachedBackpack();
 
-            oldDataVersionUpdater(p, id, needToSetNewDimensions, needToSetNewOwner, needToSetNewOwnerID);
+            oldDataVersionUpdater(p, id, true, true, true);
 
             for (ItemStack item : inv.getContents()){
                 if (item != null){

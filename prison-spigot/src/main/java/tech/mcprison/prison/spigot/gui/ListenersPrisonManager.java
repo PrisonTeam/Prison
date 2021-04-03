@@ -30,6 +30,8 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
+import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminListGUI;
+import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminPlayerListGUI;
 import tech.mcprison.prison.spigot.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -650,6 +652,39 @@ public class ListenersPrisonManager implements Listener {
 
                     break;
                 }
+                // Check the title and do the actions.
+                case "Backpacks-Admin":{
+
+                    backpacksAdmin(e, p, buttonNameMain);
+
+                    break;
+                }
+                // Check the title and do the actions.
+                case "Backpacks-Admin-Players":{
+
+                    BackpacksAdminListGUI gui = new BackpacksAdminListGUI(p, parts[1]);
+                    gui.open();
+
+                    break;
+                }
+                // Check the title and do the actions.
+                case "Backpacks-Admin-List":{
+
+                    if (parts[0].equalsIgnoreCase("Backpack")){
+                        if (e.isRightClick() && e.isShiftClick()){
+                            if (parts[2].equalsIgnoreCase("default")){
+                                Bukkit.dispatchCommand(p, "backpack delete " + parts[1]);
+                            } else {
+                                Bukkit.dispatchCommand(p, "backpack delete " + parts[1] + " " + parts[2]);
+                            }
+                            p.closeInventory();
+                            BackpacksAdminListGUI gui = new BackpacksAdminListGUI(p, parts[1]);
+                            gui.open();
+                        }
+                    }
+
+                    break;
+                }
                 default:{
 
                     break;
@@ -674,6 +709,20 @@ public class ListenersPrisonManager implements Listener {
                 backpacksList(p, buttonNameMain, parts);
             }
         }
+    }
+
+    private void backpacksAdmin(InventoryClickEvent e, Player p, String buttonNameMain) {
+        if(buttonNameMain.equalsIgnoreCase("Backpacks-List")){
+
+            BackpacksAdminPlayerListGUI gui = new BackpacksAdminPlayerListGUI(p);
+            gui.open();
+
+        } else if(buttonNameMain.equalsIgnoreCase("Backpack-Settings")){
+            p.closeInventory();
+            Output.get().sendInfo(new SpigotPlayer(p),  SpigotPrison.format("&6Coming Soon..."));
+        }
+
+        e.setCancelled(true);
     }
 
     private void backpacksList(Player p, String buttonNameMain, String[] parts) {
