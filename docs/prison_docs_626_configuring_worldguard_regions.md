@@ -34,7 +34,7 @@ Outline on what to do is as follows:
 
 As of Prison v3.2.7 (or v3.2.6-alpha.2) you can now change the priority of prison's event listeners for BlockBreakEvents and explosion events.
 
-Please see the `autoFeaturesConfig.yml` configuration file to make changes.  Prison is using the default value of LOW, but if you need to make adjustments, you can do so under the group `options.blockBreakEvents`.
+Please see the `autoFeaturesConfig.yml` configuration file to make changes.  Prison is using the default value of `LOW`, but if you need to make adjustments, you can do so under the group `options.blockBreakEvents` as listed below.  
 
 
 ```
@@ -50,6 +50,12 @@ options:
     CrazyEnchantsBlastUseEventPriority: LOW
     ZenchantmentsBlockShredEventPriority: LOW
 ```
+
+Valid values are `LOWEST`, `LOW`, `NORMAL`, `HIGH`, and `HIGHEST`.  You can also use `DISABLED` to prevent the use of those listeners, but keep in mind that if you have auto features enabled then you set the priority to `DISABLED` then auto features will not work.  If disabled is specified then it will also disable the `MONITOR` even listener so prison will be unable to track which blocks are broken or provide a count of what remains.  
+
+You cannot set any of the above event priorities to MONITOR since that goes against the bukkit/spigot standards to change block states under the MONITOR priorities.
+
+
 
 <hr style="height:8px; border:none; color:#aaf; background-color:#aaf;">
 
