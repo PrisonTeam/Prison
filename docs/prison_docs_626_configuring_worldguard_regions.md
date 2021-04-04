@@ -29,7 +29,27 @@ Outline on what to do is as follows:
 
 **Note:** You do not need to set any WorldGuard regions for the mines.
   
-**Note:** You can setup WorldGuard regions to keep out non-players.
+**Note:** You can still setup WorldGuard regions to keep out non-players.
+
+
+As of Prison v3.2.7 (or v3.2.6-alpha.2) you can now change the priority of prison's event listeners for BlockBreakEvents and explosion events.
+
+Please see the `autoFeaturesConfig.yml` configuration file to make changes.  Prison is using the default value of LOW, but if you need to make adjustments, you can do so under the group `options.blockBreakEvents`.
+
+
+```
+options:
+  otherPlugins:
+    isProcessTokensEnchantExplosiveEvents: true
+    isProcessCrazyEnchantsBlockExplodeEvents: true
+    isProcessMcMMOBlockBreakEvents: true
+    isProcessEZBlocksBlockBreakEvents: false
+  blockBreakEvents:
+    blockBreakEventPriority: LOW
+    TokenEnchantBlockExplodeEventPriority: LOW
+    CrazyEnchantsBlastUseEventPriority: LOW
+    ZenchantmentsBlockShredEventPriority: LOW
+```
 
 <hr style="height:8px; border:none; color:#aaf; background-color:#aaf;">
 
