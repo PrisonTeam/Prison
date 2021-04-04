@@ -24,6 +24,14 @@ that you need.
 # v3.2.6-alpha.2 2021-04-03
 
 
+* **Provide a sanity check when creating a mine greater than 20,000 blocks.**
+If a mine is a lot larger than expected, it may be due to a stray point set from another mine, which a super huge mine could destroy the surrounding builds.  So if something is horribly wrong with the selection, it may save someone's builds.
+
+
+* **Provide a sanity check when creating a mine greater than 20,000 blocks.**
+If a mine is a lot larger than expected, it may be due to a stray point set from another mine, which a super huge mine could destroy the surrounding builds.  So if something is horribly wrong with the selection, it may save someone's builds.
+
+
 * **Backpack Admin Player Backpacks List GUI**
 A sub-GUI of the Admin Player List GUI, which will show all the backpacks
   own by a Player, only a maximum of 54 backpacks of the Player can be shown,
