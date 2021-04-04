@@ -21,7 +21,15 @@ that you need.
 
 
 
-# v3.2.6-alpha.2 2021-04-03
+# v3.2.6-alpha.2 2021-04-04
+
+
+* **Trying to double register Prison with papi, once as normal, and with upper case prefix.**
+
+
+* **Changed placeholder replacements to be case insensitive when performing the replacements.**
+This probably only applies to chat prefixes.
+This probably will not be unicode sensitive.
 
 
 * **Provide a sanity check when creating a mine greater than 20,000 blocks.**

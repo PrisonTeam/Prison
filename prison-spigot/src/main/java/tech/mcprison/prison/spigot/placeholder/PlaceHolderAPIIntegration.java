@@ -11,6 +11,7 @@ public class PlaceHolderAPIIntegration
 	extends PlaceholderIntegration {
 	
 	private PlaceHolderAPIIntegrationWrapper placeHolderWrapper;
+	private PlaceHolderAPIIntegrationUppercaseWrapper placeHolderUppercaseWrapper;
 
 	public PlaceHolderAPIIntegration() {
 		super( "PlaceholderAPI", "PlaceholderAPI" );
@@ -23,6 +24,9 @@ public class PlaceHolderAPIIntegration
 				if ( Bukkit.getPluginManager().isPluginEnabled(getProviderName()) ) {
 					this.placeHolderWrapper = new PlaceHolderAPIIntegrationWrapper();
 					this.placeHolderWrapper.register();
+					
+					this.placeHolderUppercaseWrapper = new PlaceHolderAPIIntegrationUppercaseWrapper();
+					this.placeHolderUppercaseWrapper.register();
 				}
 			}
 			catch ( NoClassDefFoundError | IllegalStateException e ) {
