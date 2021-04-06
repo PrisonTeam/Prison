@@ -333,13 +333,28 @@ public class PrisonSpigotAPI {
 	 * Get the Prison backpacksUtil, which's essentially the core
 	 * of Prison backpacks, to edit or use them by yourself.
 	 *
-	 * This will return null if backpacks are disabled.
+	 * @return BackpaacksUtil - Null if Prison Backpacks are disabled.
 	 * */
 	public BackpacksUtil getPrisonBackpacks(){
 		if (SpigotPrison.getInstance().getConfig().getString("backpacks") != null && SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true")){
 			return BackpacksUtil.get();
 		}
 		return null;
+	}
+
+	/**
+	 * Get the whole SellAllUtil of Prison Sellall to manage what you
+	 * want of Prison SellAll.
+	 *
+	 * @return SellAllUtil - Null if Prison Sellall's disabled.
+	 * */
+	public SellAllUtil getPrisonSellAll(){
+
+		if (sellAll == null){
+			sellAll = SellAllUtil.get();
+		}
+
+		return sellAll;
 	}
 
 	/**
