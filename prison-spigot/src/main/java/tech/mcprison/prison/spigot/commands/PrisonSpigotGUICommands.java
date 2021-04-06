@@ -8,14 +8,11 @@ import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerPrestigesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
-
-import java.util.List;
 
 /**
  * @author GABRYCA
@@ -164,7 +161,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     @Command(identifier = "gui reload", description = "Reload GUIs", permissions = "prison.admin",onlyPlayers = false)
     public void reloadGUICommand(CommandSender sender){
         SpigotGUIComponents.updateMessages();
-        SpigotGUIComponents.updateSellAll();
+        SpigotGUIComponents.updateSellAllConfig();
         SpigotGUIComponents.updateGUIConfig();
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.GUIReloadSuccess")));
     }

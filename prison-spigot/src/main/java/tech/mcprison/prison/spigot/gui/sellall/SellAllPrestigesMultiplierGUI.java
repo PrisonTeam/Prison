@@ -20,6 +20,8 @@ public class SellAllPrestigesMultiplierGUI extends SpigotGUIComponents {
 
     private final Player p;
     private int counter;
+    private int dimension = 45;
+    private Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3SellAll -> Multipliers"));
 
     public SellAllPrestigesMultiplierGUI(Player p, int counter){
         this.p = p;
@@ -28,19 +30,17 @@ public class SellAllPrestigesMultiplierGUI extends SpigotGUIComponents {
 
     public void open() {
 
-        // Create a new inventory
-        int dimension = 45;
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3SellAll -> Multipliers"));
+        updateSellAllConfig();
 
-        if (guiBuilder(inv)) return;
+        if (guiBuilder()) return;
 
         // Open the inventory
         openGUI(p, inv);
     }
 
-    private boolean guiBuilder(Inventory inv) {
+    private boolean guiBuilder() {
         try {
-            buttonsSetup(inv);
+            buttonsSetup();
         } catch (NullPointerException ex){
             Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -49,7 +49,7 @@ public class SellAllPrestigesMultiplierGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Inventory inv) {
+    private void buttonsSetup() {
 
         // Page elements.
         int pageSize = 45;

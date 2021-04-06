@@ -39,7 +39,7 @@ public class SellAllConfig extends SpigotConfigComponents {
         values();
 
         // Disabled worlds config.
-        if (conf.getConfigurationSection("Options.DisabledWorlds") == null){
+        if (conf.getList("Options.DisabledWorlds") == null){
             List<String> exampleWorlds = new ArrayList<>();
             exampleWorlds.add("exampleWorld");
             exampleWorlds.add("anotherExampleWorld");

@@ -27,6 +27,16 @@ that you need.
 * **Added a character to prevent the collapse of the indents under some reporting conditions... generally when copying and pasting in to other tools.**
 
 
+* **Many SellAll GUI Fixes**
+SellAll GUIs will now update dynamically, some double messages errors got fixed,
+  also a typo that was breaking the delay GUI.
+
+
+* **SellAllUtil for SellAll**
+Moved many sellall code management to the SellAllUtil class, this can add new
+  issues but also fix many, please report them if you found any.
+
+
 * **SellAll disabled worlds**
 It's now possible to add disabled worlds where /sellall sell and /sellall auto toggle won't
   work to sellall from the sellallconfig.yml.

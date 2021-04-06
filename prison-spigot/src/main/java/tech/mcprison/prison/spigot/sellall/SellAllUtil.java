@@ -16,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
-import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
@@ -72,6 +71,10 @@ public class SellAllUtil {
         return instanceUpdater();
     }
 
+    public Configuration getSellAllConfig(){
+        return sellAllConfig;
+    }
+
     /**
      * Use this to toggle the SellAllSign, essentially this will tell to the SellAll Sell command that you're using a sign
      * for SellAll.
@@ -106,12 +109,11 @@ public class SellAllUtil {
     /**
      * Set sellSll currency by name
      *
-     * @param sender   - CommandSender (Prison)
      * @param currency - String currency name
      * @return error - true if an error occurred.
      */
-    public boolean setCurrency(CommandSender sender, String currency) {
-        return sellAllCurrencySaver(sender, currency);
+    public boolean setCurrency(String currency) {
+        return sellAllCurrencySaver(currency);
     }
 
     /**
@@ -166,7 +168,18 @@ public class SellAllUtil {
      * @return error - True if error occurred.
      */
     public boolean enableAutoSellPerUserToggleable(boolean enableBoolean) {
-        return sellAllAutoSelPerUserToggleableToggle(enableBoolean);
+        return sellAllAutoSellPerUserToggleableToggle(enableBoolean);
+    }
+
+    /**
+     * Enable or disable autosell to a player.
+     *
+     * @param p - Player
+     *
+     * @return error - True if error occurred, false if success.
+     * */
+    public boolean autoSellPlayerToggle(Player p) {
+        return sellAllAutoSellPlayerToggler(p);
     }
 
     /**
@@ -884,20 +897,16 @@ public class SellAllUtil {
 
     private boolean sellAllAddBlockAction(XMaterial xMaterial, Double value) {
         try {
-            try {
-                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-                conf.set("Items." + xMaterial.name() + ".ITEM_ID", xMaterial.name());
-                conf.set("Items." + xMaterial.name() + ".ITEM_VALUE", value);
-                if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
-                    conf.set("Items." + xMaterial.name() + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + xMaterial.name());
-                }
-                conf.save(sellAllFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return true;
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("Items." + xMaterial.name() + ".ITEM_ID", xMaterial.name());
+            conf.set("Items." + xMaterial.name() + ".ITEM_VALUE", value);
+            if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
+                conf.set("Items." + xMaterial.name() + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + xMaterial.name());
             }
-        } catch (IllegalArgumentException ex) {
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            e.printStackTrace();
             return true;
         }
         updateSellAllConfig();
@@ -1129,7 +1138,7 @@ public class SellAllUtil {
         return instance;
     }
 
-    private boolean sellAllAutoSelPerUserToggleableToggle(boolean enableBoolean) {
+    private boolean sellAllAutoSellPerUserToggleableToggle(boolean enableBoolean) {
         try {
             File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
@@ -1154,6 +1163,50 @@ public class SellAllUtil {
             return true;
         }
         sellAllConfigUpdater();
+        return false;
+    }
+
+    private boolean sellAllAutoSellPlayerToggler(Player p) {
+        // Get Player UUID.
+        UUID playerUUID = p.getUniqueId();
+
+        if (sellAllConfig.getString("Users." + playerUUID + ".isEnabled") != null){
+
+            boolean isEnabled = getBoolean(sellAllConfig.getString("Users." + playerUUID + ".isEnabled"));
+            try {
+                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                conf.set("Users." + playerUUID + ".isEnabled", !isEnabled);
+                conf.save(sellAllFile);
+            } catch (IOException e) {
+                Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+                e.printStackTrace();
+                return true;
+            }
+
+            if (isEnabled){
+                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllAutoDisabled")));
+            } else {
+                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllAutoEnabled")));
+            }
+
+        } else {
+
+            // Enable it for the first time
+            try {
+                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                conf.set("Users." + playerUUID + ".isEnabled", true);
+                conf.set("Users." + playerUUID + ".name", p.getName());
+                conf.save(sellAllFile);
+            } catch (IOException e) {
+                Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+                e.printStackTrace();
+                return true;
+            }
+
+            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllAutoEnabled")));
+        }
         return false;
     }
 
@@ -1185,11 +1238,10 @@ public class SellAllUtil {
         return false;
     }
 
-    private boolean sellAllCurrencySaver(CommandSender sender, String currency) {
+    private boolean sellAllCurrencySaver(String currency) {
 
         EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager().getEconomyForCurrency(currency);
         if (currencyEcon == null && !currency.equalsIgnoreCase("default")) {
-            Output.get().sendError(sender, SpigotPrison.format(messages.getString("Message.SellAllCurrencyNotFound")), currency);
             return true;
         }
 
@@ -1199,7 +1251,6 @@ public class SellAllUtil {
             conf.set("Options.SellAll_Currency", currency);
             conf.save(sellAllFile);
         } catch (IOException e) {
-            Output.get().sendError(sender, SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
             e.printStackTrace();
             return true;
         }

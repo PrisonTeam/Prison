@@ -26,6 +26,7 @@ import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.MaterialType;
 
@@ -42,7 +43,7 @@ public class PrisonSpigotAPI {
 	
 	private PrisonMines prisonMineManager;
 	private boolean mineModuleDisabled = false;
-	private SellAllPrisonCommands sellAll;
+	private SellAllUtil sellAll;
 	
 
 	/**
@@ -353,7 +354,7 @@ public class PrisonSpigotAPI {
 	public Double getSellAllMoneyWithMultiplier(Player player){
 
 	    if (sellAll == null){
-	        sellAll = SellAllPrisonCommands.get();
+	        sellAll = SellAllUtil.get();
         }
 
 		if (sellAll != null){

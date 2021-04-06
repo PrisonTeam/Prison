@@ -20,6 +20,9 @@ public class SellAllDelayGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final int val;
+    private int dimension = 45;
+    private Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3SellAll -> Delay"));
+
 
     public SellAllDelayGUI(Player p, int val){
         this.p = p;
@@ -28,19 +31,17 @@ public class SellAllDelayGUI extends SpigotGUIComponents {
 
     public void open() {
 
-        // Create a new inventory
-        int dimension = 45;
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3SellAll -> Delay"));
+        updateSellAllConfig();
 
-        if (guiBuilder(inv)) return;
+        if (guiBuilder()) return;
 
         // Open the inventory
         openGUI(p, inv);
     }
 
-    private boolean guiBuilder(Inventory inv) {
+    private boolean guiBuilder() {
         try {
-            buttonsSetup(inv);
+            buttonsSetup();
         } catch (NullPointerException ex){
             Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -49,7 +50,7 @@ public class SellAllDelayGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Inventory inv) {
+    private void buttonsSetup() {
 
         // Create a new lore
         List<String> changeDecreaseValueLore;
@@ -69,7 +70,7 @@ public class SellAllDelayGUI extends SpigotGUIComponents {
         ItemStack decreaseStack = XMaterial.REDSTONE_BLOCK.parseItem();
 
         // Decrease button
-        ItemStack decreaseOf1 = createButton(decreaseStack, changeDecreaseValueLore, SpigotPrison.format("&3Delay" + + val + " - 1" ));
+        ItemStack decreaseOf1 = createButton(decreaseStack, changeDecreaseValueLore, SpigotPrison.format("&3Delay " + + val + " - 1" ));
         inv.setItem(1, decreaseOf1);
         ItemStack decreaseOf5 = createButton(new ItemStack(decreaseMat, 10), changeDecreaseValueLore, SpigotPrison.format("&3Delay " + val + " - 10"));
         inv.setItem(10, decreaseOf5);

@@ -19,6 +19,7 @@ import java.util.Set;
 public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
 
     private final Player p;
+    boolean itemsNotNull = true;
 
     public SellAllAdminBlocksGUI(Player p){
         this.p = p;
@@ -26,12 +27,15 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
 
     public void open() {
 
-        if (guiBuilder()) return;
+        updateSellAllConfig();
 
         Inventory inv = buttonsSetup();
-        if (inv == null) {
+        if (inv == null && !itemsNotNull) {
             Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllGUIEmpty")));
             Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllGUIEmpty2")));
+            return;
+        } else if (inv == null){
+            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.TooManySellAllItems")));
             return;
         }
 
@@ -60,6 +64,7 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
         Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
 
         if (items.size() == 0){
+            itemsNotNull = false;
             p.closeInventory();
             return null;
         }
@@ -69,7 +74,8 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
 
         // Check if there're too many blocks.
         if (dimension > 54){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.TooManySellAllItems")));
+            itemsNotNull = true;
+            p.closeInventory();
             return null;
         }
 

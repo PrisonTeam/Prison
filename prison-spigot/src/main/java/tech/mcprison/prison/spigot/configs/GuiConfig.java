@@ -36,7 +36,7 @@ public class GuiConfig extends SpigotConfigComponents{
         // Values to write down into the config
         values();
 
-        if (conf.getConfigurationSection("EditableLore.Ranks") == null){
+        if (conf.getList("EditableLore.Ranks") == null){
             List<String> lore = new ArrayList<>();
             lore.add(" ");
             lore.add("&8-----------------------");

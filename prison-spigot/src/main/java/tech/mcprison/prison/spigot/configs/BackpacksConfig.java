@@ -37,7 +37,7 @@ public class BackpacksConfig extends SpigotConfigComponents{
         // Call method
         values();
 
-        if (conf.getConfigurationSection("Options.DisabledWorlds") == null){
+        if (conf.getList("Options.DisabledWorlds") == null){
             List<String> exampleWorlds = new ArrayList<>();
             exampleWorlds.add("exampleWorld");
             exampleWorlds.add("anotherExampleWorld");

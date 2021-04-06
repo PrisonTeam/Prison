@@ -42,6 +42,7 @@ import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoSmeltGUI;
 import tech.mcprison.prison.spigot.gui.mine.*;
 import tech.mcprison.prison.spigot.gui.rank.*;
 import tech.mcprison.prison.spigot.gui.sellall.*;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -237,7 +238,7 @@ public class ListenersPrisonManager implements Listener {
                                 }
 
                                 if (sellAllConfig.getString("Options.SellAll_By_Sign_Only").equalsIgnoreCase("true")) {
-                                    SellAllPrisonCommands sellAll = SellAllPrisonCommands.get();
+                                    SellAllUtil sellAll = SellAllUtil.get();
                                     if (sellAll != null) {
                                         sellAll.toggleSellAllSign();
                                     }
@@ -955,7 +956,7 @@ public class ListenersPrisonManager implements Listener {
             if (e.isLeftClick()){
 
                 // Execute the command
-            	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall delay set" );
+            	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall set delay" );
                 Bukkit.dispatchCommand(p, registeredCmd + " " + part3);
 
                 // Close the inventory
@@ -1113,6 +1114,7 @@ public class ListenersPrisonManager implements Listener {
                 if (e.getClick().isRightClick()){
                 	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall autosell" );
                     Bukkit.dispatchCommand(p, registeredCmd + " true");
+                    p.closeInventory();
                     SellAllAdminGUI gui = new SellAllAdminGUI(p);
                     gui.open();
                 } else {
@@ -1126,6 +1128,7 @@ public class ListenersPrisonManager implements Listener {
                 if (e.getClick().isRightClick()){
                 	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall delay" );
                     Bukkit.dispatchCommand(p, registeredCmd + " false");
+                    p.closeInventory();
                     SellAllAdminGUI gui = new SellAllAdminGUI(p);
                     gui.open();
                 } else {
@@ -1140,6 +1143,7 @@ public class ListenersPrisonManager implements Listener {
                         }
                     } catch (NumberFormatException ignored){}
 
+                    p.closeInventory();
                     SellAllDelayGUI gui = new SellAllDelayGUI(p, val);
                     gui.open();
                 }
@@ -1152,6 +1156,7 @@ public class ListenersPrisonManager implements Listener {
                 if (e.getClick().isRightClick()){
                 	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall delay" );
                     Bukkit.dispatchCommand(p, registeredCmd + " true");
+                    p.closeInventory();
                     SellAllAdminGUI gui = new SellAllAdminGUI(p);
                     gui.open();
                 } else {

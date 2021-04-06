@@ -161,7 +161,7 @@ public abstract class SpigotGUIComponents {
     /**
      * Reload sellall config for GUIs.
      * */
-    public static void updateSellAll(){
+    public static void updateSellAllConfig(){
         File file = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
         sellAllConfig = YamlConfiguration.loadConfiguration(file);
     }
