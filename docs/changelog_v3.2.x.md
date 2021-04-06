@@ -21,7 +21,10 @@ that you need.
 
 
 
-# v3.2.6-alpha.2 2021-04-04
+# v3.2.6-alpha.2 2021-04-06
+
+
+* **Added a character to prevent the collapse of the indents under some reporting conditions... generally when copying and pasting in to other tools.**
 
 
 * **SellAll disabled worlds**
