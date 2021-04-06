@@ -61,6 +61,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     public static List<String> activePlayerDelay = new ArrayList<>();
     public boolean signUsed = false;
     public inventorySellMode mode = inventorySellMode.PlayerInventory;
+    private SellAllUtil sellAllUtil = SellAllUtil.get();
 
     /**
      * SellAll mode.
@@ -366,6 +367,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
+        if (sellAllUtil.isDisabledWorld(p)) return;
+
         sellAllConfigUpdater();
 
         boolean sellPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Permission_Enabled"));
@@ -463,6 +466,8 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             Output.get().sendError(sender, SpigotPrison.format(getMessages().getString("Message.CantRunGUIFromConsole")));
             return;
         }
+
+        if (sellAllUtil.isDisabledWorld(p)) return;
 
         boolean perUserToggleableEnabled = getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable"));
         if (!perUserToggleableEnabled){

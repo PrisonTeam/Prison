@@ -2,6 +2,8 @@ package tech.mcprison.prison.spigot.configs;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -35,6 +37,15 @@ public class SellAllConfig extends SpigotConfigComponents {
 
         // Call method
         values();
+
+        // Disabled worlds config.
+        if (conf.getConfigurationSection("Options.DisabledWorlds") == null){
+            List<String> exampleWorlds = new ArrayList<>();
+            exampleWorlds.add("exampleWorld");
+            exampleWorlds.add("anotherExampleWorld");
+            conf.set("Options.DisabledWorlds", exampleWorlds);
+            changeCount++;
+        }
 
         if (changeCount > 0) {
             try {

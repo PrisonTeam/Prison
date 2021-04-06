@@ -168,10 +168,4 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
         SpigotGUIComponents.updateGUIConfig();
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.GUIReloadSuccess")));
     }
-
-    private boolean isDisabledWorld(Player p) {
-        String worldName = p.getWorld().getName();
-        List<String> disabledWorlds = BackpacksUtil.get().getBackpacksConfig().getStringList("Options.DisabledWorlds");
-        return disabledWorlds.contains(worldName);
-    }
 }

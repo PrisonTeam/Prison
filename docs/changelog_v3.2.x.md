@@ -24,6 +24,11 @@ that you need.
 # v3.2.6-alpha.2 2021-04-04
 
 
+* **SellAll disabled worlds**
+It's now possible to add disabled worlds where /sellall sell and /sellall auto toggle won't
+  work to sellall from the sellallconfig.yml.
+
+
 * **Trying to double register Prison with papi, once as normal, and with upper case prefix.**
 
 

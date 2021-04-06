@@ -43,7 +43,7 @@ import java.util.*;
  */
 public class SellAllUtil {
 
-    private SellAllUtil instance;
+    private static SellAllUtil instance;
     private final boolean isEnabled = isEnabled();
     private File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
     public Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
@@ -68,7 +68,7 @@ public class SellAllUtil {
     /**
      * Get SellAll instance.
      */
-    public SellAllUtil get() {
+    public static SellAllUtil get() {
         return instanceUpdater();
     }
 
@@ -458,6 +458,17 @@ public class SellAllUtil {
     }
 
     /**
+     * Check if the world the player is in is disabled.
+     *
+     * @param p - Player
+     *
+     * @return boolean - true if the player is in a disabled world, false if not.
+     * */
+    public boolean isDisabledWorld(Player p) {
+        return playerPositionIsDisabledWorld(p);
+    }
+
+    /**
      * Java getBoolean's broken so I made my own.
      */
     public boolean getBoolean(String string) {
@@ -465,6 +476,13 @@ public class SellAllUtil {
     }
 
 
+
+    private boolean playerPositionIsDisabledWorld(Player p) {
+        updateSellAllConfig();
+        String worldName = p.getWorld().getName();
+        List<String> disabledWorlds = sellAllConfig.getStringList("Options.DisabledWorlds");
+        return disabledWorlds.contains(worldName);
+    }
 
     private boolean sellAllDeleteTrigger(ItemStack itemStack) {
         try {
@@ -1103,8 +1121,8 @@ public class SellAllUtil {
         }
     }
 
-    private SellAllUtil instanceUpdater() {
-        if (isEnabled && instance == null) {
+    private static SellAllUtil instanceUpdater() {
+        if (SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true") && instance == null) {
             instance = new SellAllUtil();
         }
 
