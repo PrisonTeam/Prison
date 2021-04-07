@@ -171,6 +171,8 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
             List<String> ranksLore = new ArrayList<>();
             for (String stringValue : configCustomLore) {
                 stringValue = stringValue.replace("{rankPrice}", PlaceholdersUtil.formattedKmbtSISize(rank.getCost(), formatDecimal, ""));
+                stringValue = stringValue.replace("{rankName}", rank.getName());
+                stringValue = stringValue.replace("{rankTag}", rank.getTag());
                 ranksLore.add(SpigotPrison.format(stringValue));
             }
             if (placeholderAPINotNull){
@@ -184,9 +186,11 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
                 }
             }*/
 
-            ItemStack itemRank = createButton(
-                    (playerHasThisRank ? materialHas : materialHasNot),
-                    amount++, ranksLore, SpigotPrison.format(rank.getTag()));
+            ItemStack itemRank;
+            boolean showNumber = getBoolean(guiConfig.getString("Options.Ranks.Number_of_Rank_Player_GUI"));
+            itemRank = createButton((playerHasThisRank ? materialHas : materialHasNot), (showNumber ? amount : 1), ranksLore, SpigotPrison.format(rank.getTag()));
+
+            amount++;
 
             if (playerRank != null && playerRank.equals(rank)){
                 playerHasThisRank = false;

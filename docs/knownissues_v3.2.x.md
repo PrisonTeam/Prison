@@ -7,6 +7,13 @@ a short list of To Do's. This list is intended to help work through known
 issues, and/or to serve as items that should be added, or fixed.
 
 
+# Random Issues - Alpha v3.2.6
+
+
+* Sometimes Player Ranks lores placeholders from placeholderAPI aren't working, 
+it's unknown why it's happening.
+
+
 # To Do Items - During Alpha v3.2.5
 
 

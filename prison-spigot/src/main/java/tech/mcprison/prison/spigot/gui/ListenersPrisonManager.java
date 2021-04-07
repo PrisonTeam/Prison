@@ -30,6 +30,7 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
+import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminGUI;
 import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminListGUI;
 import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminPlayerListGUI;
 import tech.mcprison.prison.spigot.sellall.SellAllPrisonCommands;
@@ -1559,6 +1560,11 @@ public class ListenersPrisonManager implements Listener {
             // Check the Item display name and do open the right GUI
             case "SellAll": {
                 SellAllAdminGUI gui = new SellAllAdminGUI(p);
+                gui.open();
+                break;
+            }
+            case "Backpacks": {
+                BackpacksAdminGUI gui = new BackpacksAdminGUI(p);
                 gui.open();
                 break;
             }

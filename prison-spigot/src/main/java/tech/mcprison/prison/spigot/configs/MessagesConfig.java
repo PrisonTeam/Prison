@@ -192,6 +192,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.ZeroBlocksReset1","&8Set a mine's delay ");
         dataConfig("Lore.ZeroBlocksReset2","&8before reset when it ");
         dataConfig("Lore.ZeroBlocksReset3","&8reaches zero blocks.");
+        dataConfig("Message.BackPackIsDisabled", "Backpacks are disabled in the config.yml, you can't use this!");
         dataConfig("Message.BackPackNeedPlayer", "Please add a playername.");
         dataConfig("Message.BackPackDeleteOperationSuccess", "The backpack should've been deleted with success!");
         dataConfig("Message.BackPackDeleteOperationFail", "Can't find the backpack or something went wrong...?");

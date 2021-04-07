@@ -24,6 +24,22 @@ that you need.
 # v3.2.6-alpha.2 2021-04-06
 
 
+* **Player GUI aka /gui ranks have more internal placeholders**
+You can now use {rankName} and {rankTag} for the Player Ranks GUI lore
+  editor in the guiconfig.yml, they'll be replaced automatically with the
+  rank name and rank tag.
+
+
+* **Option to enable or disable numbers in the /gui ranks or /ranks for players**
+It's now possible to show or not the rank number in the GUI by changing in the guiconfig.yml
+  this option: 
+  Number_of_Rank_Player_GUI: false
+  
+
+* **Edited /gui main GUI design and added backpack admin button**
+Added Backpack Admin button to the /gui so it's available directly from there.
+
+
 * **Added SellAllUtil to the PrisonAPI**
 You can now access the whole SellAllUtil from the PrisonAPI with
   the getPrisonSellAll method.
