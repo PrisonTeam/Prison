@@ -172,19 +172,12 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
             for (String stringValue : configCustomLore) {
                 stringValue = stringValue.replace("{rankPrice}", PlaceholdersUtil.formattedKmbtSISize(rank.getCost(), formatDecimal, ""));
                 stringValue = stringValue.replace("{rankName}", rank.getName());
-                stringValue = stringValue.replace("{rankTag}", rank.getTag());
+                stringValue = stringValue.replace("{rankTag}", SpigotPrison.format(rank.getTag()));
                 ranksLore.add(SpigotPrison.format(stringValue));
             }
             if (placeholderAPINotNull){
                 ranksLore = PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(player.getUniqueId()), ranksLore);
             }
-
-            /*if (placeholderAPINotNull) {
-                if (hackyCounterEnchant == 1) {
-                    hackyCounterEnchant++;
-                    ranksLore.add(SpigotPrison.format(PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(player.getUniqueId()), "%prison_rcb_default%")));
-                }
-            }*/
 
             ItemStack itemRank;
             boolean showNumber = getBoolean(guiConfig.getString("Options.Ranks.Number_of_Rank_Player_GUI"));
