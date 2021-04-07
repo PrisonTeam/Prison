@@ -21,7 +21,12 @@ that you need.
 
 
 
-# v3.2.6-alpha.2 2021-04-06
+# v3.2.6-alpha.3 2021-04-07
+
+
+
+* **v3.2.6-alpha.3 2021-04-07**
+
 
 
 * **Player GUI aka /gui ranks have more internal placeholders**

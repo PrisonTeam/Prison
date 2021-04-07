@@ -17,6 +17,16 @@ it's unknown why it's happening.
 # To Do Items - During Alpha v3.2.5
 
 
+
+* BlockEvents - Action based upon blocks broken, not a percent chance.
+
+
+NOT an Issue: OfficiallyGuo — Today at 5:41 AM
+[19:34:33 INFO]: | Prison |  Spigot18Blocks.getBlockType() : Spigot block cannot be mapped to a prison BlockType : CONCRETE id = 251 data = 11  BlockType = null
+Should I worry about this? Prison Version: 3.2.5.  Even tho I get this message, there aren't any actual errors happening in-game.
+NOTE: This is not an issue.  OfficiallyGuo is running spigot 1.12.2 and trying to use concrete. More of a reason to use the new block model.
+
+
 * Warning if using `/mines set area` and volume is over 20k in size.  Could possibly be an error.
 
 

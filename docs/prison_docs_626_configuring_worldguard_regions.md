@@ -74,7 +74,6 @@ The first attempt at this document tried to use region templates, where a templa
 
 # Dependencies 
 
-* Vault - Interfaces with the Permission Plugins
 * [Install WorldGuard and WorldEdit](prison_docs_026_setting_up_worldguard_worldedit.md)
 * Install a Permissions Plugin that is compatible with Vault 
     * This guide uses LuckPerms.  See [Setting up LuckPerms](prison_docs_020_setting_up_luckperms.md) for more information.
@@ -493,9 +492,9 @@ One of the primary focuses for this document has been protecting the area around
 
 These are entered in a step by step process, intended for you to follow.
 
-These can, and probably will, be translated in to a runnable script within prison that will set everything up for you.  Well, once you take care of the basics. 
 
 You should be in game when you run these commands, otherwise you may have to specify the world name with almost all LuckPerm commands.  When these are converted to scrips, the world parameter will be added.
+
 
 Some code chunks will have **In Game:** which is intended to run from within minecraft.  The **Console:** is intended to be ran from the console, where there is no player, so you have to provide the "world".  Note that if your world is not named "world" then you will have to change that.  If there are any code chunks that are marked as "script" then those provide an example of what kind of placeholders would have to be used.
 
