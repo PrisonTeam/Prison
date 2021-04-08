@@ -24,6 +24,10 @@ that you need.
 # v3.2.6-alpha.3 2021-04-07
 
 
+* **Fixed backpacks issue with dimensions**
+Custom backpacks dimensions were resetting when adding an item to the backpack.
+  
+
 
 * **v3.2.6-alpha.3 2021-04-07**
 

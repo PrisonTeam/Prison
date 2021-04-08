@@ -949,6 +949,8 @@ public class BackpacksUtil {
         boolean needToSetNewOwnerID = checkBackpackOwnerIDMissing(p);
 
         if (inv.getContents() != null){
+
+            int backpackSize = getBackpackSize(p);
             int slot = 0;
 
             try {
@@ -961,6 +963,8 @@ public class BackpacksUtil {
 
             updateCachedBackpack();
 
+            backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items.Size", backpackSize);
+
             for (ItemStack item : inv.getContents()){
                 if (item != null){
 
@@ -970,7 +974,7 @@ public class BackpacksUtil {
                 }
             }
 
-            oldDataVersionUpdater(p, true, true, true);
+            oldDataVersionUpdater(p, false, true, true);
 
             try {
                 backpacksDataConfig.save(backpacksFile);
@@ -1001,6 +1005,7 @@ public class BackpacksUtil {
 
         if (inv.getContents() != null){
 
+            int backpackSize = getBackpackSize(p, id);
             int slot = 0;
 
             try {
@@ -1013,7 +1018,9 @@ public class BackpacksUtil {
 
             updateCachedBackpack();
 
-            oldDataVersionUpdater(p, id, true, true, true);
+            backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items-" + id + ".Size", backpackSize);
+
+            oldDataVersionUpdater(p, id, false, true, true);
 
             for (ItemStack item : inv.getContents()){
                 if (item != null){
