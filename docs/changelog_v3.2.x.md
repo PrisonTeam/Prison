@@ -28,6 +28,9 @@ that you need.
 * **v3.2.6-alpha.3 2021-04-07**
 
 
+* **Removed the minepacks maven repo and just included the api jar because their maven repo was failing for over 24 hours.**
+Removed jetbrain annotations since they were preventing the project from compliing since the classes could not be found by the compiler.  By changing the build.gradle script to remove the maven repo for minepacks it forced an update and the updated resources were unable to locate jetbrains classes.
+
 
 * **Player GUI aka /gui ranks have more internal placeholders**
 You can now use {rankName} and {rankTag} for the Player Ranks GUI lore

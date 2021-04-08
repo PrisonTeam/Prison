@@ -1,28 +1,10 @@
 package tech.mcprison.prison.spigot.sellall;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import com.cryptomorin.xseries.XMaterial;
 
-import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.commands.Arg;
@@ -30,21 +12,11 @@ import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.internal.CommandSender;
-import tech.mcprison.prison.modules.Module;
-import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.placeholders.PlaceholdersUtil;
-import tech.mcprison.prison.ranks.PrisonRanks;
-import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPlatform;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBaseCommands;
-import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
-import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
-import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
 
 /**
  * @author GABRYCA

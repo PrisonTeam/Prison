@@ -2,7 +2,11 @@ package tech.mcprison.prison.spigot.backpacks;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -14,11 +18,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
 
 import com.cryptomorin.xseries.XMaterial;
 
-import org.jetbrains.annotations.Nullable;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
@@ -847,7 +849,6 @@ public class BackpacksUtil {
         return backPackSize;
     }
 
-    @NotNull
     private Inventory getBackpackOwn(Player p) {
 
         updateCachedBackpack();
@@ -873,7 +874,6 @@ public class BackpacksUtil {
         return inv;
     }
 
-    @NotNull
     private Inventory getBackpackOwn(Player p, String id) {
         updateCachedBackpack();
 
@@ -1075,7 +1075,6 @@ public class BackpacksUtil {
         return overflow;
     }
 
-    @NotNull
     private HashMap<Integer, ItemStack> addItemToBackpack(Player p, ItemStack item, String id) {
         Inventory inv = getBackpack(p, id);
         HashMap<Integer, ItemStack> overflow = inv.addItem(item);
@@ -1090,7 +1089,6 @@ public class BackpacksUtil {
         return underflow;
     }
 
-    @NotNull
     private HashMap<Integer, ItemStack> removeItemFromBackpack(Player p, ItemStack item, String id) {
         Inventory inv = getBackpack(p, id);
         HashMap<Integer, ItemStack> underflow = inv.removeItem(item);
@@ -1154,7 +1152,6 @@ public class BackpacksUtil {
         }
     }
 
-    @NotNull
     private List<String> getBackpacksIDsList(Player p) {
         List<String> backpacksIDs = new ArrayList<>();
 
@@ -1233,7 +1230,6 @@ public class BackpacksUtil {
         return backpacksDataConfig.getString("Inventories." + p.getUniqueId().toString() + ".Items-" + id + ".UniqueID") == null;
     }
 
-    @Nullable
     private OfflinePlayer getOfflinePlayer(String name) {
         if (name != null) {
             updateCachedBackpack();
@@ -1248,7 +1244,6 @@ public class BackpacksUtil {
         return null;
     }
 
-    @Nullable
     private OfflinePlayer getOfflinePlayer(String name, String id) {
         if (name != null) {
             updateCachedBackpack();
@@ -1265,7 +1260,6 @@ public class BackpacksUtil {
         return null;
     }
 
-    @Nullable
     private Player getOnlinePlayer(String name) {
         if (name != null) {
             updateCachedBackpack();
@@ -1280,7 +1274,6 @@ public class BackpacksUtil {
         return null;
     }
 
-    @Nullable
     private Player getOnlinePlayer(String name, String id) {
         if (name != null) {
             updateCachedBackpack();
