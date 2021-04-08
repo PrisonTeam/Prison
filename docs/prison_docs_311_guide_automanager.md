@@ -34,10 +34,13 @@ This document contains information on how to configure TokenEnchant and Crazy En
 # To get TokenEnchant's TEBlockExplosionEvent to work with prison, you must follow these settings:
 
 
-Please note that these instructions apply to **Prison v3.2.4** and later only.
+**Please Note:** that these instructions apply to **Prison v3.2.4** and later only.
 
 
-Please note that as of Prison v3.2.5-alpha.11 some of these settings may not be required, especially in relation to WorldGuard and if you are using Mine Access Permissions.
+**Please Note:** that as of Prison v3.2.5-alpha.11 some of these settings may not be required, especially in relation to WorldGuard and if you are using Mine Access Permissions.
+
+
+**Please Note:** As of prison v3.2.6-alpha.1 Event priorities have been added to prison. Changing the event priorities may make it easier to get prison to work better with TE instead of having to change the event priorities on TE.  If the follow directions do not work well for you, then try changing a few of the the prison's event priorities.  Currently I do not have any documentation to explain how this may help.
 
 
 
