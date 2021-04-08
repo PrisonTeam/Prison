@@ -853,7 +853,8 @@ public class BackpacksUtil {
 
         updateCachedBackpack();
 
-        Inventory inv = Bukkit.createInventory(p, getBackpackSize(p), SpigotPrison.format("&3" + p.getName() + " -> Backpack"));
+        int size = getBackpackSize(p);
+        Inventory inv = Bukkit.createInventory(p, size, SpigotPrison.format("&3" + p.getName() + " -> Backpack"));
 
         // Get the Items config section
         Set<String> slots;
@@ -866,7 +867,10 @@ public class BackpacksUtil {
             for (String slot : slots) {
                 ItemStack finalItem = backpacksDataConfig.getItemStack("Inventories." + p.getUniqueId().toString() + ".Items." + slot + ".ITEMSTACK");
                 if (finalItem != null) {
-                    inv.setItem(Integer.parseInt(slot), finalItem);
+                    int slotNumber = Integer.parseInt(slot);
+                    if (size > slotNumber) {
+                        inv.setItem(slotNumber, finalItem);
+                    }
                 }
             }
         }
@@ -877,7 +881,8 @@ public class BackpacksUtil {
     private Inventory getBackpackOwn(Player p, String id) {
         updateCachedBackpack();
 
-        Inventory inv = Bukkit.createInventory(p, getBackpackSize(p, id), SpigotPrison.format("&3" + p.getName() + " -> Backpack-" + id));
+        int size = getBackpackSize(p, id);
+        Inventory inv = Bukkit.createInventory(p, size, SpigotPrison.format("&3" + p.getName() + " -> Backpack-" + id));
 
         // Get the Items config section
         Set<String> slots;
@@ -890,7 +895,10 @@ public class BackpacksUtil {
             for (String slot : slots) {
                 ItemStack finalItem = backpacksDataConfig.getItemStack("Inventories." + p.getUniqueId().toString() + ".Items-" + id + "." + slot + ".ITEMSTACK");
                 if (finalItem != null) {
-                    inv.setItem(Integer.parseInt(slot), finalItem);
+                    int slotNumber = Integer.parseInt(slot);
+                    if (size > slotNumber) {
+                        inv.setItem(slotNumber, finalItem);
+                    }
                 }
             }
         }

@@ -24,9 +24,13 @@ that you need.
 # v3.2.6-alpha.3 2021-04-07
 
 
+* **Fixed a backpack error for backpack set size**
+If too many items were in a backpack and it got resized to a smaller
+  size than the number of them, it won't give an error anymore.
+
+
 * **Fixed backpacks issue with dimensions**
 Custom backpacks dimensions were resetting when adding an item to the backpack.
-  
 
 
 * **v3.2.6-alpha.3 2021-04-07**
