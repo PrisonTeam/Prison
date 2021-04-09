@@ -4,11 +4,12 @@ import java.util.List;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import tech.mcprison.prison.mines.data.Mine;
-import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
+import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 
 /**
@@ -28,7 +29,17 @@ import tech.mcprison.prison.spigot.block.SpigotBlock;
 public class PrisonMinesBlockBreakEvent
 		extends BlockBreakEvent
 {
-
+	/**
+	 * Warning: Because this class extends from the BlockBreakEvent, it also
+	 *          uses the same handlers listing, which means when this event
+	 *          fires, it will fire all BlockBreakEvent listeners too.  
+	 *          For prison, it means an a recursive loop that will result in
+	 *          numerous stack overflow exceptions.  This prevents that from
+	 *          happening.  Plus the BlockBreakEvent handler specificially checks
+	 *          for this class and exits.
+	 */
+	private static final HandlerList handlers = new HandlerList();
+	
 	private Mine mine;
 	private SpigotBlock spigotBlock;
 
@@ -148,5 +159,13 @@ public class PrisonMinesBlockBreakEvent
 //	public void setOverRideSpigotBlock( SpigotBlock overRideSpigotBlock ) {
 //		this.overRideSpigotBlock = overRideSpigotBlock;
 //	}
+	
+	@Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
 }

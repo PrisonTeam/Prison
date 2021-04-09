@@ -206,6 +206,10 @@ public class OnBlockBreakEventCore
 	protected void genericBlockEvent( BlockBreakEvent e, boolean monitor, boolean blockEventsOnly, 
 			boolean autoManager ) {
 		
+		if ( e instanceof PrisonMinesBlockBreakEvent ) {
+			return;
+		}
+		
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 		

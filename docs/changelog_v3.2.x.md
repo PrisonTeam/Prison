@@ -21,7 +21,12 @@ that you need.
 
 
 
-# v3.2.6-alpha.3 2021-04-09
+# v3.2.6-alpha.4 2021-04-09
+
+
+
+* **Fix to the new PrisonMinesBlockBreakEvent.**
+Found out the hard way that since this extended the BlockBreakEvent it was picking up all the registered handlers for the BlockBreakEvent. LOL  So fixed that to prevent a possible stack overflow exception within prison.
 
 
 * **New Feature: Added PrisonMinesBlockBreakEvent to all auto manager event handlers.**
