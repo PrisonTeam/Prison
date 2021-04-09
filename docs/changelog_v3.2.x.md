@@ -21,7 +21,11 @@ that you need.
 
 
 
-# v3.2.6-alpha.3 2021-04-07
+# v3.2.6-alpha.3 2021-04-09
+
+
+* **New Feature: Added PrisonMinesBlockBreakEvent to all auto manager event handlers.**
+This allows the canceling of prison's handling of the block break event before they are processed.  This event type also contains the mine in which the blocks exist in, along with the list of any exploded blocks.  This event also identifies the BlockEventType along with the TokenEnchant triggered event if it is set.  Through these prison related objects (Mines and SpigotBlock) the consuming plugin can extract a lot of detailed information about the event and conditions.  The event also includes getOriginalTargetBlock() function that can be used with any of the provided blocks in this event to identify what the original block within the mine was set to, along with the mine's stats that goes along with that block.
 
 
 * **Fixed a backpack error for backpack set size**

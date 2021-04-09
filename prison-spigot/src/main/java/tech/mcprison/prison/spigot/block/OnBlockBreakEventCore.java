@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.TreeMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
@@ -29,6 +30,7 @@ import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.Output.DebugType;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -281,12 +283,25 @@ public class OnBlockBreakEventCore
     			// check all external events such as mcMMO and EZBlocks:
     			OnBlockBreakExternalEvents.getInstance().checkAllExternalEvents( e );
     			
-    			// doAction returns a boolean that indicates if the event should be canceled or not:
-    			if ( doAction( block, mine, e.getPlayer() ) &&
-    					!isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
-    				
-    				e.setCancelled( true );
-    			}
+    			List<SpigotBlock> explodedBlocks = new ArrayList<>();
+    			String triggered = null;
+    			
+    			PrisonMinesBlockBreakEvent pmbbEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
+    												mine, block, explodedBlocks, BlockEventType.blockBreak, triggered );
+                Bukkit.getServer().getPluginManager().callEvent(pmbbEvent);
+                if ( pmbbEvent.isCancelled() ) {
+                	debugInfo += "(normal processing: PrisonMinesBlockBreakEvent canceld) ";
+                }
+                else {
+                	
+                	// doAction returns a boolean that indicates if the event should be canceled or not:
+                	if ( doAction( block, mine, e.getPlayer() ) &&
+                			!isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
+                		
+                		e.setCancelled( true );
+                	}
+                }
+    			
     			
     			debugInfo += "(normal processing) ";
     		}
@@ -446,13 +461,24 @@ public class OnBlockBreakEventCore
     			if ( explodedBlocks.size() > 0 ) {
     				
 					String triggered = checkCEExplosionTriggered( e );
+					
+
+					PrisonMinesBlockBreakEvent pmbbEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
+	    												mine, block, explodedBlocks, BlockEventType.TEXplosion, triggered );
+	                Bukkit.getServer().getPluginManager().callEvent(pmbbEvent);
+	                if ( pmbbEvent.isCancelled() ) {
+	                	debugInfo += "(normal processing: PrisonMinesBlockBreakEvent canceld) ";
+	                }
+	                else {
+	                	
+	                	// This is where the processing actually happens:
+	                	if ( doAction( mine, e.getPlayer(), explodedBlocks, BlockEventType.TEXplosion, triggered ) && 
+	                			!isBoolean( AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
+	                		
+	                		e.setCancelled( true );
+	                	}
+	                }
     				
-    				// This is where the processing actually happens:
-    				if ( doAction( mine, e.getPlayer(), explodedBlocks, BlockEventType.TEXplosion, triggered ) && 
-    							!isBoolean( AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
-    					
-    					e.setCancelled( true );
-    				}
     			}
     			
     			debugInfo += "(normal processing) ";
@@ -675,12 +701,28 @@ public class OnBlockBreakEventCore
     				
 					String triggered = null;
     				
-    				// This is where the processing actually happens:
-    				if ( doAction( mine, e.getPlayer(), explodedBlocks, BlockEventType.CEXplosion, triggered ) && 
-    							!isBoolean( AutoFeatures.isDebugSupressOnCEBlastUseEventCancels )) {
-    					
-    					e.setCancelled( true );
-    				}
+					
+					// Warning: BlastUseEvent does not identify the block the player actually hit, so the dummyBlock
+					//          is just a random first block from the explodedBlocks list and may not be the block
+					//          that initiated the explosion event.
+					SpigotBlock dummyBlock = explodedBlocks.get( 0 );
+					
+	    			PrisonMinesBlockBreakEvent pmbbEvent = new PrisonMinesBlockBreakEvent( dummyBlock.getWrapper(), e.getPlayer(),
+	    												mine, dummyBlock, explodedBlocks, BlockEventType.CEXplosion, triggered );
+	                Bukkit.getServer().getPluginManager().callEvent(pmbbEvent);
+	                if ( pmbbEvent.isCancelled() ) {
+	                	debugInfo += "(normal processing: PrisonMinesBlockBreakEvent canceld) ";
+	                }
+	                else {
+	                	
+	                	// This is where the processing actually happens:
+	                	if ( doAction( mine, e.getPlayer(), explodedBlocks, BlockEventType.CEXplosion, triggered ) && 
+	                			!isBoolean( AutoFeatures.isDebugSupressOnCEBlastUseEventCancels )) {
+	                		
+	                		e.setCancelled( true );
+	                	}
+	                	
+	                }
     			}
     			debugInfo += "(normal processing) ";
     		}
