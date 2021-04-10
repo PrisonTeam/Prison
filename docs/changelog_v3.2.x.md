@@ -21,7 +21,12 @@ that you need.
 
 
 
-# v3.2.6-alpha.4 2021-04-09
+# v3.2.6-alpha.4 2021-04-10
+
+
+* **Start to add in a PrisonMinesBlockEventEvent class.**
+It has been disabled because it cannot be used yet; the BlockEvents need to under go some major changes to support its use.
+Currently the BlockEvents receive only references to the sources (block names and not the actual blocks), but in order to hook this up properly, all blocks and details need to be passed.  The current system for controlling the BlockEvents is unable to support that kind of an environment right now. It will be changed in the very near future to get this working.
 
 
 * **v3.2.6-alpha.4 2021-04-09**

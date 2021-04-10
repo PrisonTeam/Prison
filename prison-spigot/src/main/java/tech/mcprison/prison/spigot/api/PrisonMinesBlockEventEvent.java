@@ -5,7 +5,6 @@ import java.util.List;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.block.BlockBreakEvent;
 
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
@@ -13,15 +12,33 @@ import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 
 /**
- * <p>This is an event that prison calls before processing the blocks that
- * are within the mines.  It is cancelable.
+ * <p>This is an event that prison calls before processing the BlockEvents that can 
+ * be setup after a block(s) is(are) physically broken. This event is filtered by a 
+ * defined random chance, an optional player permission, original BlockBreakType
+ * (normal BlockBreakEvent, TokenEnchant explosions events, Crazy Enchant explosions 
+ * events, etc).  
  * </p>
- *  
+ * 
+ * <p>This is called before applying the BlockBreak events. The block already was 
+ * broken, the BlockBreak events are actions to take afterwards. If this event is
+ * canceled, then it will not run any of the BlockBreak commands that are directly
+ * tied to this entry.  Other BlockBreak events may run and cannot be canceled by
+ * this event.  Note you can stack multiple command in one BlockBreak command by 
+ * using semicolons.
+ * </p>
+ * 
  * <p>Please note, that the two prison events, PrisonMinesBlockEventEvent and 
- * PrisonMinesBlockBreakEvent are exactly the same, except for the class name.  
+ * PrisonMinesBlockBreakEvent are almost exactly the same, except for the class name.  
  * This is intentional since PrisonMinesBlockBreakEvent is fired before prison 
  * processes a block event, and PrisonMinesBlockEventEvent is fired before 
  * processing a BlockEvent that has passed it's primary filters.
+ * </p>
+ * 
+ * <p>PrisonMinesBlockEventEvent also has a field called parameter.  It's a way to
+ * target specific listeners if needed.  For example, to fire the PrisonMinesBlockEventEvent
+ * you would use the placeholder {fireBlockEvent}.  But to pass a parameter, you 
+ * would use {fireBlockEvent::rainbow-decay} as an example.  This is a sample 
+ * prison event that you can actually include in your mines now.
  * </p>
  * 
  * <p><b>Warning:</b> BlastUseEvent does not identify the block the player actually hit, so the dummyBlock
@@ -33,25 +50,25 @@ import tech.mcprison.prison.spigot.block.SpigotBlock;
  * </p>
  *
  */
-public class PrisonMinesBlockBreakEvent
-		extends BlockBreakEvent
+public class PrisonMinesBlockEventEvent
+//		extends BlockBreakEvent
 {
 	/**
-	 * Warning: Because this class extends from the BlockBreakEvent, it also
-	 *          uses the same handlers listing, which means when this event
-	 *          fires, it will fire all BlockBreakEvent listeners too.  
-	 *          For prison, it means an a recursive loop that will result in
-	 *          numerous stack overflow exceptions.  This prevents that from
-	 *          happening.  Plus the BlockBreakEvent handler specifically checks
-	 *          for this class and exits.
-	 *          
+	 * <p><b>Warning:</b> BlastUseEvent does not identify the block the player actually hit, so the dummyBlock
+	 * is just a random first block from the explodedBlocks list and may not be the block
+	 * that initiated the explosion event.  Such events are identified by 
+	 * BlockEventType.CEXplosion.  Make sure you do not process the first block twice,
+	 * which is also passed as the org.bukkit.block.Block and the SpigotBlock to prevent have to 
+	 * pass nulls.  They are the exact same objects.  
+	 * </p>
+	 *
 	 * Due to this behavior, since BlockBreakEvent's handlers is static, it 
 	 * will "share" the handlers (listeners).  To prevent this unwanted behavior,
 	 * since prison's BlockBreakEvent listeners will be called, this class
 	 * defines and overrides the the handlers with it's own instance.
 	 * 
 	 */
-	private static final HandlerList handlers = new HandlerList();
+private static final HandlerList handlers = new HandlerList();
 	
 	private Mine mine;
 	private SpigotBlock spigotBlock;
@@ -63,21 +80,25 @@ public class PrisonMinesBlockBreakEvent
 	private BlockEventType blockEventType;
 	private String triggered;
 
-	public PrisonMinesBlockBreakEvent( Block theBlock, Player player, 
+	private String parameter;
+	
+	public PrisonMinesBlockEventEvent( Block theBlock, Player player, 
 			Mine mine, SpigotBlock spigotBlock, 
 			List<SpigotBlock> explodedBlocks, 
 			BlockEventType blockEventType,
-			String triggered )
+			String triggered, String parameter )
 	{
-		super( theBlock, player );
-		
-		this.mine = mine;
-		this.spigotBlock = spigotBlock;
-		
-		this.explodedBlocks = explodedBlocks;
-		
-		this.blockEventType = blockEventType;
-		this.triggered = triggered;
+//		super( theBlock, player );
+//		
+//		this.mine = mine;
+//		this.spigotBlock = spigotBlock;
+//		
+//		this.explodedBlocks = explodedBlocks;
+//		
+//		this.blockEventType = blockEventType;
+//		this.triggered = triggered;
+//		
+//		this.parameter = parameter;
 		
 		//this.overRideSpigotBlock = null;
 		
@@ -165,7 +186,7 @@ public class PrisonMinesBlockBreakEvent
 	public void setTriggered( String triggered ) {
 		this.triggered = triggered;
 	}
-
+	
 //	public SpigotBlock getOverRideSpigotBlock() {
 //		return overRideSpigotBlock;
 //	}
@@ -173,12 +194,20 @@ public class PrisonMinesBlockBreakEvent
 //		this.overRideSpigotBlock = overRideSpigotBlock;
 //	}
 	
-	@Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
+	public String getParameter() {
+		return parameter;
+	}
+	public void setParameter( String parameter ) {
+		this.parameter = parameter;
+	}
+
+	
+//	@Override
+//    public HandlerList getHandlers() {
+//        return handlers;
+//    }
+//    public static HandlerList getHandlerList() {
+//        return handlers;
+//    }
 
 }
