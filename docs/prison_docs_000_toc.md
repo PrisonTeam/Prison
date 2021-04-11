@@ -22,7 +22,8 @@
 **[v3.2.2 - 2020-11-21](prison_changelog_v3.2.2.md)**&nbsp;&nbsp;
 **[v3.2.3 - 2020-12-25](prison_changelog_v3.2.3.md)**&nbsp;&nbsp;
 **[v3.2.4 - 2021-03-01](prison_changelog_v3.2.4.md)**&nbsp;&nbsp;
-**[v3.2.5 - 2021-04-01](prison_changelog_v3.2.5.md)**
+**[v3.2.5 - 2021-04-01](prison_changelog_v3.2.5.md)**&nbsp;&nbsp;
+**[v3.2.6 - 2021-04-11](prison_changelog_v3.2.6.md)**
 
  
  
