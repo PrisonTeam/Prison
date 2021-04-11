@@ -467,7 +467,9 @@ public class AutoManagerFeatures
 			// Run sell all
 			if ( isBoolean( AutoFeatures.isAutoSellPerBlockBreakInlinedEnabled ) ) {
 				// run sellall inline with the block break event:
-				SellAllPrisonCommands.get().sellAllSellCommand( new SpigotPlayer( player ) );
+				if (SellAllPrisonCommands.get() != null) {
+					SellAllPrisonCommands.get().sellAllSellCommand(new SpigotPlayer(player));
+				}
 			}
 			else {
 				// Submit sellall to run in the future (0 ticks in the future):

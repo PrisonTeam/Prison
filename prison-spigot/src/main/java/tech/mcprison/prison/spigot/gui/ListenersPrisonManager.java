@@ -30,6 +30,9 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
+import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminGUI;
+import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminListGUI;
+import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminPlayerListGUI;
 import tech.mcprison.prison.spigot.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -40,6 +43,7 @@ import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoSmeltGUI;
 import tech.mcprison.prison.spigot.gui.mine.*;
 import tech.mcprison.prison.spigot.gui.rank.*;
 import tech.mcprison.prison.spigot.gui.sellall.*;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -235,7 +239,7 @@ public class ListenersPrisonManager implements Listener {
                                 }
 
                                 if (sellAllConfig.getString("Options.SellAll_By_Sign_Only").equalsIgnoreCase("true")) {
-                                    SellAllPrisonCommands sellAll = SellAllPrisonCommands.get();
+                                    SellAllUtil sellAll = SellAllUtil.get();
                                     if (sellAll != null) {
                                         sellAll.toggleSellAllSign();
                                     }
@@ -393,6 +397,7 @@ public class ListenersPrisonManager implements Listener {
 
             // Close GUI button globally.
             if (buttonNameMain.equalsIgnoreCase("Close")) {
+                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.GuiClosedWithSuccess")));
                 p.closeInventory();
                 return;
             }
@@ -649,6 +654,39 @@ public class ListenersPrisonManager implements Listener {
 
                     break;
                 }
+                // Check the title and do the actions.
+                case "Backpacks-Admin":{
+
+                    backpacksAdmin(e, p, buttonNameMain);
+
+                    break;
+                }
+                // Check the title and do the actions.
+                case "Backpacks-Admin-Players":{
+
+                    BackpacksAdminListGUI gui = new BackpacksAdminListGUI(p, parts[1]);
+                    gui.open();
+
+                    break;
+                }
+                // Check the title and do the actions.
+                case "Backpacks-Admin-List":{
+
+                    if (parts[0].equalsIgnoreCase("Backpack")){
+                        if (e.isRightClick() && e.isShiftClick()){
+                            if (parts[2].equalsIgnoreCase("default")){
+                                Bukkit.dispatchCommand(p, "backpack delete " + parts[1]);
+                            } else {
+                                Bukkit.dispatchCommand(p, "backpack delete " + parts[1] + " " + parts[2]);
+                            }
+                            p.closeInventory();
+                            BackpacksAdminListGUI gui = new BackpacksAdminListGUI(p, parts[1]);
+                            gui.open();
+                        }
+                    }
+
+                    break;
+                }
                 default:{
 
                     break;
@@ -673,6 +711,20 @@ public class ListenersPrisonManager implements Listener {
                 backpacksList(p, buttonNameMain, parts);
             }
         }
+    }
+
+    private void backpacksAdmin(InventoryClickEvent e, Player p, String buttonNameMain) {
+        if(buttonNameMain.equalsIgnoreCase("Backpacks-List")){
+
+            BackpacksAdminPlayerListGUI gui = new BackpacksAdminPlayerListGUI(p);
+            gui.open();
+
+        } else if(buttonNameMain.equalsIgnoreCase("Backpack-Settings")){
+            p.closeInventory();
+            Output.get().sendInfo(new SpigotPlayer(p),  SpigotPrison.format("&6Coming Soon..."));
+        }
+
+        e.setCancelled(true);
     }
 
     private void backpacksList(Player p, String buttonNameMain, String[] parts) {
@@ -905,7 +957,7 @@ public class ListenersPrisonManager implements Listener {
             if (e.isLeftClick()){
 
                 // Execute the command
-            	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall delay set" );
+            	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall set delay" );
                 Bukkit.dispatchCommand(p, registeredCmd + " " + part3);
 
                 // Close the inventory
@@ -1063,6 +1115,7 @@ public class ListenersPrisonManager implements Listener {
                 if (e.getClick().isRightClick()){
                 	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall autosell" );
                     Bukkit.dispatchCommand(p, registeredCmd + " true");
+                    p.closeInventory();
                     SellAllAdminGUI gui = new SellAllAdminGUI(p);
                     gui.open();
                 } else {
@@ -1076,6 +1129,7 @@ public class ListenersPrisonManager implements Listener {
                 if (e.getClick().isRightClick()){
                 	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall delay" );
                     Bukkit.dispatchCommand(p, registeredCmd + " false");
+                    p.closeInventory();
                     SellAllAdminGUI gui = new SellAllAdminGUI(p);
                     gui.open();
                 } else {
@@ -1090,6 +1144,7 @@ public class ListenersPrisonManager implements Listener {
                         }
                     } catch (NumberFormatException ignored){}
 
+                    p.closeInventory();
                     SellAllDelayGUI gui = new SellAllDelayGUI(p, val);
                     gui.open();
                 }
@@ -1102,6 +1157,7 @@ public class ListenersPrisonManager implements Listener {
                 if (e.getClick().isRightClick()){
                 	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall delay" );
                     Bukkit.dispatchCommand(p, registeredCmd + " true");
+                    p.closeInventory();
                     SellAllAdminGUI gui = new SellAllAdminGUI(p);
                     gui.open();
                 } else {
@@ -1504,6 +1560,11 @@ public class ListenersPrisonManager implements Listener {
             // Check the Item display name and do open the right GUI
             case "SellAll": {
                 SellAllAdminGUI gui = new SellAllAdminGUI(p);
+                gui.open();
+                break;
+            }
+            case "Backpacks": {
+                BackpacksAdminGUI gui = new BackpacksAdminGUI(p);
                 gui.open();
                 break;
             }

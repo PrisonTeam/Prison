@@ -231,24 +231,28 @@ public class SpigotUtil {
 		// Insert overflow in to Prison's backpack:
 		if (overflow.size() > 0 && BackpacksUtil.isEnabled() && 
 						BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_AutoPickup_Usable").equalsIgnoreCase("true")) {
-			if (BackpacksUtil.get().isMultipleBackpacksEnabled()){
-				for (String id : BackpacksUtil.get().getBackpacksIDs(player)){
-					if (overflow.size() > 0){
-						if (id == null){
-							Inventory inv = BackpacksUtil.get().getBackpack(player);
-							overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
-							BackpacksUtil.get().setInventory(player, inv);
-						} else {
-							Inventory inv = BackpacksUtil.get().getBackpack(player, id);
-							overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
-							BackpacksUtil.get().setInventory(player, inv, id);
+			String worldName = player.getWorld().getName();
+			List<String> disabledWorlds = BackpacksUtil.get().getBackpacksConfig().getStringList("Options.DisabledWorlds");
+			if (!disabledWorlds.contains(worldName)){
+				if (BackpacksUtil.get().isMultipleBackpacksEnabled()) {
+					for (String id : BackpacksUtil.get().getBackpacksIDs(player)) {
+						if (overflow.size() > 0) {
+							if (id == null) {
+								Inventory inv = BackpacksUtil.get().getBackpack(player);
+								overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
+								BackpacksUtil.get().setInventory(player, inv);
+							} else {
+								Inventory inv = BackpacksUtil.get().getBackpack(player, id);
+								overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
+								BackpacksUtil.get().setInventory(player, inv, id);
+							}
 						}
 					}
+				} else {
+					Inventory inv = BackpacksUtil.get().getBackpack(player);
+					overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
+					BackpacksUtil.get().setInventory(player, inv);
 				}
-			} else {
-				Inventory inv = BackpacksUtil.get().getBackpack(player);
-				overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
-				BackpacksUtil.get().setInventory(player, inv);
 			}
 		}
 

@@ -7,10 +7,41 @@ a short list of To Do's. This list is intended to help work through known
 issues, and/or to serve as items that should be added, or fixed.
 
 
+# Random Issues - Alpha v3.2.6
+
+
+* Sometimes Player Ranks lores placeholders from placeholderAPI aren't working, 
+it's unknown why it's happening.
+
+
 # To Do Items - During Alpha v3.2.5
 
 
-* Issue with `/ranks autoConfigure` if Mines module is disabled.  Gets a NPE, which is not surprising.  Note: line number is from v3.2.4 so does not match source anymore.
+
+* BlockEvents - Action based upon blocks broken, not a percent chance.
+
+
+NOT an Issue: OfficiallyGuo — Today at 5:41 AM
+[19:34:33 INFO]: | Prison |  Spigot18Blocks.getBlockType() : Spigot block cannot be mapped to a prison BlockType : CONCRETE id = 251 data = 11  BlockType = null
+Should I worry about this? Prison Version: 3.2.5.  Even tho I get this message, there aren't any actual errors happening in-game.
+NOTE: This is not an issue.  OfficiallyGuo is running spigot 1.12.2 and trying to use concrete. More of a reason to use the new block model.
+
+
+* Warning if using `/mines set area` and volume is over 20k in size.  Could possibly be an error.
+
+
+* ladder commands
+
+
+* global virtual mine:  To apply mine commands & blockEvents to all other mines.
+
+ 
+
+* TP cooldowns - for /mines tp
+  - Take a look at how essentialsX deals with it
+
+
+DONE * Issue with `/ranks autoConfigure` if Mines module is disabled.  Gets a NPE, which is not surprising.  Note: line number is from v3.2.4 so does not match source anymore.
 [21:00:38 WARN]: Caused by: java.lang.NullPointerException
 [21:00:38 WARN]:        at tech.mcprison.prison.spigot.SpigotPlatform.getModuleElementCount(SpigotPlatform.java:1077)
 [21:00:38 WARN]:        at tech.mcprison.prison.ranks.commands.RanksCommands.autoConfigureRanks(RanksCommands.java:202)
@@ -28,6 +59,7 @@ issues, and/or to serve as items that should be added, or fixed.
 
 
 Look at sellall and XMAteral's use of parse.  Needs to handle it with an item stack.
+
 
 Personal mines.  Work in conjunction with a plot world?
 - sellable and so would be the features with various upgrades

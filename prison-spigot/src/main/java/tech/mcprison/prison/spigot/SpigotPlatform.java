@@ -79,6 +79,7 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
+import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotOfflinePlayer;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -1591,33 +1592,54 @@ public class SpigotPlatform
     	
     	results.add( String.format("AutoManager Enabled:&b %s", 
     										afw.isBoolean( AutoFeatures.isAutoManagerEnabled )) );
+    	
+		String bbePriority = afw.getMessage( AutoFeatures.blockBreakEventPriority );
+		BlockBreakPriority blockBreakPriority = BlockBreakPriority.fromString( bbePriority );
+		results.add( String.format(".   Block Break Event Priority:&b %s", 
+											blockBreakPriority.name() ) );
+		
+		String tebePriority = afw.getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
+		BlockBreakPriority tebEventPriority = BlockBreakPriority.fromString( tebePriority );
+		results.add( String.format(".   Token Enchant BlockExplodeEvent Priority:&b %s", 
+				tebEventPriority.name() ) );
+		
+		String cebuePriority = afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
+		BlockBreakPriority cebuEventPriority = BlockBreakPriority.fromString( cebuePriority );
+		results.add( String.format(".   Crazy Enchant BlastUseEvent Priority:&b %s", 
+				cebuEventPriority.name() ) );
 
-    	results.add( String.format("    Auto Pickup:&b %s", 
+		String zbsePriority = afw.getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
+		BlockBreakPriority zbsEventPriority = BlockBreakPriority.fromString( zbsePriority );
+		results.add( String.format(".   Zenchantments BlockShredEvent Priority:&b %s", 
+				zbsEventPriority.name() ) );
+
+
+    	results.add( String.format(".   Auto Pickup:&b %s", 
     										afw.isBoolean( AutoFeatures.autoPickupEnabled )) );
-    	results.add( String.format("    Auto Smelt:&b %s", 
+    	results.add( String.format(".   Auto Smelt:&b %s", 
     										afw.isBoolean( AutoFeatures.autoSmeltEnabled )) );
-    	results.add( String.format("    Auto Block:&b %s", 
+    	results.add( String.format(".   Auto Block:&b %s", 
     										afw.isBoolean( AutoFeatures.autoBlockEnabled )) );
 
-    	results.add( String.format("+    Calculate Durability:&b %s", 
+    	results.add( String.format("+.   Calculate Durability:&b %s", 
     										afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled )) );
-    	results.add( String.format("+    Calculate Fortune:&b %s", 
+    	results.add( String.format("+.   Calculate Fortune:&b %s", 
     										afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled )) );
-    	results.add( String.format("+    Calculate Fortune on all Blocks:&b %s", 
+    	results.add( String.format("+.   Calculate Fortune on all Blocks:&b %s", 
     										afw.isBoolean( AutoFeatures.isCalculateFortuneOnAllBlocksEnabled )) );
-    	results.add( String.format("+    Max Fortune Level:&b %s", 
+    	results.add( String.format("+.   Max Fortune Level:&b %s", 
     										afw.isBoolean( AutoFeatures.maxFortuneLevel )) );
     	
-    	results.add( String.format("+    Calculate XP:&b %s", 
+    	results.add( String.format("+.   Calculate XP:&b %s", 
     										afw.isBoolean( AutoFeatures.isCalculateXPEnabled )) );
-    	results.add( String.format("+    Drop XP as Orbs:&b %s", 
+    	results.add( String.format("+.   Drop XP as Orbs:&b %s", 
     										afw.isBoolean( AutoFeatures.givePlayerXPAsOrbDrops )) );
     	
-    	results.add( String.format("+    Process TokensEnchant Explosive Events:&b %s", 
+    	results.add( String.format("+.   Process TokensEnchant Explosive Events:&b %s", 
     										afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents )) );
-    	results.add( String.format("+    Process Crazy Enchants Block Explode Events:&b %s", 
+    	results.add( String.format("+.   Process Crazy Enchants Block Explode Events:&b %s", 
     										afw.isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents )) );
-    	results.add( String.format("+    Process McMMO BlockBreakEvents:&b %s", 
+    	results.add( String.format("+.   Process McMMO BlockBreakEvents:&b %s", 
     										afw.isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents )) );
     	
     	
@@ -1625,9 +1647,9 @@ public class SpigotPlatform
     	
     	results.add( String.format("Prestiges Enabled:&b %s", 
     										getConfigBooleanFalse( "prestige.enabled" )) );
-    	results.add( String.format("    Reset Money:&b %s", 
+    	results.add( String.format(".   Reset Money:&b %s", 
     										getConfigBooleanFalse( "prestige.resetMoney" )) );
-    	results.add( String.format("    Reset Default Ladder:&b %s", 
+    	results.add( String.format(".   Reset Default Ladder:&b %s", 
     										getConfigBooleanFalse( "prestige.resetDefaultLadder" )) );
 
 

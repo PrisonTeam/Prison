@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.autofeatures;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -7,7 +8,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
 import zedly.zenchantments.BlockShredEvent;
 
 
@@ -17,7 +20,7 @@ import zedly.zenchantments.BlockShredEvent;
  */
 public class AutoManager 
 	extends AutoManagerFeatures
-	implements Listener {
+	{
 	
 	public AutoManager() {
         super();
@@ -26,6 +29,128 @@ public class AutoManager
         // from non-event listeners:
         SpigotPrison.getInstance().setAutoFeatures( this );
     }
+
+	
+	public void registerBlockBreakEvents(SpigotPrison spigotPrison ) {
+	
+		
+		String bbePriority = getMessage( AutoFeatures.blockBreakEventPriority );
+		BlockBreakPriority blockBreakPriority = BlockBreakPriority.fromString( bbePriority );
+		
+		switch ( blockBreakPriority )
+		{
+			case LOWEST:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerEventListenerLowest(), spigotPrison);
+				break;
+				
+			case LOW:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerEventListenerLow(), spigotPrison);
+				break;
+				
+			case NORMAL:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerEventListenerNormal(), spigotPrison);
+				break;
+				
+			case HIGH:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerEventListenerHigh(), spigotPrison);
+				break;
+				
+			case HIGHEST:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerEventListenerHighest(), spigotPrison);
+				break;
+
+			case DISABLED:
+				Output.get().logInfo( "AutoManager BlockBreakEvent handling has been DISABLED." );
+				break;
+
+			default:
+				break;
+		}
+		
+		
+		String cePriority = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
+		BlockBreakPriority crazyEnchantsPriority = BlockBreakPriority.fromString( cePriority );
+		
+		switch ( crazyEnchantsPriority )
+		{
+			case LOWEST:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerBlastUseEventListenerLowest(), spigotPrison);
+				break;
+				
+			case LOW:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerBlastUseEventListenerLow(), spigotPrison);
+				break;
+				
+			case NORMAL:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerBlastUseEventListenerNormal(), spigotPrison);
+				break;
+				
+			case HIGH:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerBlastUseEventListenerHigh(), spigotPrison);
+				break;
+				
+			case HIGHEST:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerBlastUseEventListenerHighest(), spigotPrison);
+				break;
+			case DISABLED:
+				Output.get().logInfo( "AutoManager Crazy Enchant's BlastUseEvent handling has been DISABLED." );
+				break;
+
+				
+			default:
+				break;
+		}
+		
+		
+		String zbsPriority = getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
+		BlockBreakPriority blockShredPriority = BlockBreakPriority.fromString( zbsPriority );
+		
+		switch ( blockShredPriority )
+		{
+			case LOWEST:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerBlockShredEventListenerLowest(), spigotPrison);
+				break;
+				
+			case LOW:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerBlockShredEventListenerLow(), spigotPrison);
+				break;
+				
+			case NORMAL:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerBlockShredEventListenerNormal(), spigotPrison);
+				break;
+				
+			case HIGH:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerBlockShredEventListenerHigh(), spigotPrison);
+				break;
+				
+			case HIGHEST:
+				Bukkit.getPluginManager().registerEvents( 
+						new AutoManagerBlockShredEventListenerHighest(), spigotPrison);
+				break;
+
+			case DISABLED:
+				Output.get().logInfo( "AutoManager Zenchantments BlockShredEvent handling has been DISABLED." );
+				break;
+
+			default:
+				break;
+		}
+		
+	}
 
 
 //    /**
@@ -77,7 +202,6 @@ public class AutoManager
      * 
      * 
      */
-    @EventHandler(priority=EventPriority.LOW) 
     public void onBlockBreak(BlockBreakEvent e) {
 
     	genericBlockEventAutoManager( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
@@ -88,7 +212,6 @@ public class AutoManager
      * the complier from falsely triggering a Not Used warning.
      * </p>
      */
-    @EventHandler(priority=EventPriority.LOW) 
     public void onBlockShredBreak(BlockShredEvent e) {
 
     	genericBlockEventAutoManager( e, !( isBoolean(AutoFeatures.isAutoManagerEnabled) && e.getBlock() != null ) );
@@ -103,192 +226,196 @@ public class AutoManager
 //    }
 //    
     
-    @EventHandler(priority=EventPriority.LOW) 
     public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
     	if ( !e.isCancelled() ) {
     		genericBlockExplodeEventAutoManager( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
     	}
     }
     
-//    
-//    
-//    @Override
-//	public boolean doAction( SpigotBlock block, Mine mine, Player player ) {
-//    	
-//    	return applyAutoEvents( block, player, mine );
-//	}
-//    
-//    
-//    /**
-//     * <p>This function overrides the doAction in OnBlockBreakEventListener and
-//     * this is only enabled when auto manager is enabled.
-//     * </p>
-//     * 
-//     */
-//    @Override
-//    public boolean doAction( Mine mine, Player player, List<SpigotBlock> explodedBlocks, 
-//    								BlockEventType blockEventType, String triggered ) {
-//    	return applyAutoEvents( player, mine, explodedBlocks, blockEventType, triggered );
-//    }
     
     
-//
-//	private boolean applyAutoEvents( SpigotBlock spigotBlock, Player player, Mine mine) {
-//		boolean cancel = false;
-//		
-//		if (isBoolean(AutoFeatures.isAutoManagerEnabled) && 
-//			!spigotBlock.isEmpty() ) {
-//			
-////			Output.get().logInfo( "#### AutoManager.applyAutoEvents: BlockBreakEvent: :: " + mine.getName() + "  " + 
-////					"  blocks remaining= " + 
-////					mine.getRemainingBlockCount() + " [" + block.toString() + "]"
-////					);
-//
-//			SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
-//
-//			int count = applyAutoEvents( player, spigotBlock, mine );
-//			
-//			if ( count > 0 ) {
-//				processBlockBreakage( spigotBlock, mine, player, count, BlockEventType.blockBreak,
-//										null, itemInHand );
-//
-//    			cancel = true;
-//			}
-//			
-//			if ( mine != null ) {
-//				checkZeroBlockReset( mine );
-//			}
-//	
-//		}
-//		
-//		return cancel;
-//	}
-//
-//
-//	
-//	
-//	private int applyAutoEvents( Player player, SpigotBlock block, Mine mine ) {
-//		int count = 0;
-//		
-//		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
-//
-//		
-//		boolean isLoreEnabled = isBoolean( AutoFeatures.isLoreEnabled );
-//		
-//		boolean lorePickup = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.lorePickupValue ) );
-//		boolean loreSmelt = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.loreSmeltValue) );
-//		boolean loreBlock = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.loreBlockValue ) );
-//		
-//		
-//		boolean isAutoPickup = lorePickup || isBoolean( AutoFeatures.autoPickupEnabled ) ||
-//										player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ));
-//		
-//		boolean isAutoSmelt = loreSmelt || isBoolean( AutoFeatures.autoSmeltEnabled ) ||
-//										player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ));
-//		
-//		boolean isAutoBlock = loreBlock || isBoolean( AutoFeatures.autoBlockEnabled ) ||
-//										player.isPermissionSet( getMessage( AutoFeatures.permissionAutoBlock ));
-//		
-//		// NOTE: Using isPermissionSet so players that are op'd to not auto enable everything.
-//		//       Ops will have to have the perms set to actually use them.
-//				
-//		// AutoPickup
-//		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines )) &&
-//				isAutoPickup ) {
-//			
-//			count = autoFeaturePickup( block, player, itemInHand );
-//
-//			// Cannot set to air yet, or auto smelt and auto block will only get AIR:
-////			autoPickupCleanup( block, count );
-//		}
-//		
-//		XMaterial source = SpigotUtil.getXMaterial( block.getPrisonBlock() );
-//		
-//		// AutoSmelt
-//		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoSmeltLimitToMines )) &&
-//				isAutoSmelt ){
-//			
-//			// Smelting needs to change the source to the smelted target so auto block will work:
-//			source = autoFeatureSmelt( player, source );
-//		}
-//		
-//		// AutoBlock
-//		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoBlockLimitToMines )) &&
-//				isAutoBlock ) {
-//			
-//			autoFeatureBlock( player, source );
-//		}
-//		
-//		
-//		// AutoPickup - Clean up (set block to air)
-//		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines )) &&
-//				isAutoPickup ) {
-//			
-//			autoPickupCleanup( block, count );
-//			
-//		}
-//
-//		
-//		return count;
-//	}
-//
-//
-//	/**
-//	 * <p>This function gets called for EACH block that is impacted by the
-//	 * explosion event.  The event may have have a list of blocks, but not all
-//	 * blocks may be included in the mine. This function is called ONLY when
-//	 * a block is within a mine,
-//	 * </p>
-//	 * 
-//	 * <p>The event TEBlockExplodeEvent has already taken place and it handles all
-//	 * actions such as auto pickup, auto smelt, and auto block.  The only thing we
-//	 * need to do is to record the number of blocks that were removed during 
-//	 * the explosion event. The blocks should have been replaced by air.
-//	 * </p>
-//	 * 
-//	 * <p>Normally, prison based auto features, and or the perms need to be enabled 
-//	 * for the auto features to be enabled, but since this is originating from another
-//	 * plugin and another external configuration, we cannot test for any real perms
-//	 * or configs.  The fact that this event happens within one of the mines is 
-//	 * good enough, and must be counted.
-//	 * </p>
-//	 * 
-//	 * @param e
-//	 * @param mine
-//	 */
-//	private boolean applyAutoEvents( Player player, Mine mine, 
-//									List<SpigotBlock> explodedBlocks, BlockEventType blockEventType, 
-//										String triggered ) {
-//		boolean cancel = false;
-//		
-//		int totalCount = 0;
-//
-//		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
-//
-//		
-//		// The explodedBlocks list have already been validated as being within the mine:
-//		for ( SpigotBlock spigotBlock : explodedBlocks ) {
-//			
-//			int drop = applyAutoEvents( player, spigotBlock, mine );
-//			totalCount += drop;
-//			
-//			if ( drop > 0 ) {
-//				
-//				processBlockBreakage( spigotBlock, mine, player, drop, 
-//											blockEventType, triggered, itemInHand );
-//			}
-//		}
-//		
-//		if ( mine != null ) {
-//			checkZeroBlockReset( mine );
-//		}
-//		
-//		if ( totalCount > 0 ) {
-//			cancel = true;
-//		}
-//		
-//		return cancel;
-//	}
-//	
-
+    public class AutoManagerEventListenerLowest 
+		extends AutoManager
+		implements Listener {
+    	
+        @EventHandler(priority=EventPriority.LOWEST) 
+        public void onBlockBreak(BlockBreakEvent e) {
+        	super.onBlockBreak( e );
+        }
+        
+        @EventHandler(priority=EventPriority.LOWEST) 
+        public void onBlockShredBreak(BlockShredEvent e) {
+        	super.onBlockShredBreak( e );
+        }
+    }
+    
+    public class AutoManagerEventListenerLow 
+	    extends AutoManager
+	    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.LOW) 
+    	public void onBlockBreak(BlockBreakEvent e) {
+    		super.onBlockBreak( e );
+    	}
+    	
+    	@EventHandler(priority=EventPriority.LOW) 
+    	public void onBlockShredBreak(BlockShredEvent e) {
+    		super.onBlockShredBreak( e );
+    	}
+    }
+    
+    public class AutoManagerEventListenerNormal 
+	    extends AutoManager
+	    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.NORMAL) 
+    	public void onBlockBreak(BlockBreakEvent e) {
+    		super.onBlockBreak( e );
+    	}
+    	
+    	@EventHandler(priority=EventPriority.NORMAL) 
+    	public void onBlockShredBreak(BlockShredEvent e) {
+    		super.onBlockShredBreak( e );
+    	}
+    }
+    
+    public class AutoManagerEventListenerHigh 
+	    extends AutoManager
+	    implements Listener {
+	    	
+    	@EventHandler(priority=EventPriority.HIGH) 
+    	public void onBlockBreak(BlockBreakEvent e) {
+    		super.onBlockBreak( e );
+    	}
+    	
+    	@EventHandler(priority=EventPriority.HIGH) 
+    	public void onBlockShredBreak(BlockShredEvent e) {
+    		super.onBlockShredBreak( e );
+    	}
+    }
+    
+    public class AutoManagerEventListenerHighest 
+    extends AutoManager
+    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.HIGHEST) 
+    	public void onBlockBreak(BlockBreakEvent e) {
+    		super.onBlockBreak( e );
+    	}
+    	
+    	@EventHandler(priority=EventPriority.HIGHEST) 
+    	public void onBlockShredBreak(BlockShredEvent e) {
+    		super.onBlockShredBreak( e );
+    	}
+    }
+    
+    
+    
+    
+    
+    public class AutoManagerBlastUseEventListenerLowest 
+		extends AutoManager
+		implements Listener {
+    	
+        @EventHandler(priority=EventPriority.LOWEST) 
+        public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
+        	super.onCrazyEnchantsBlockExplodeLow( e );
+        }
+    }
+    
+    public class AutoManagerBlastUseEventListenerLow 
+	    extends AutoManager
+	    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.LOW) 
+    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
+    		super.onCrazyEnchantsBlockExplodeLow( e );
+    	}
+    }
+    
+    public class AutoManagerBlastUseEventListenerNormal 
+	    extends AutoManager
+	    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.NORMAL) 
+    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
+    		super.onCrazyEnchantsBlockExplodeLow( e );
+    	}
+    }
+    
+    public class AutoManagerBlastUseEventListenerHigh 
+	    extends AutoManager
+	    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.HIGH) 
+    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
+    		super.onCrazyEnchantsBlockExplodeLow( e );
+    	}
+    }
+    
+    public class AutoManagerBlastUseEventListenerHighest 
+	    extends AutoManager
+	    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.HIGHEST) 
+    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
+    		super.onCrazyEnchantsBlockExplodeLow( e );
+    	}
+    }
+    
+    
+   
+    
+    public class AutoManagerBlockShredEventListenerLowest 
+		extends AutoManager
+		implements Listener {
+        
+        @EventHandler(priority=EventPriority.LOWEST) 
+        public void onBlockShredBreak(BlockShredEvent e) {
+        	super.onBlockShredBreak( e );
+        }
+    }
+    
+    public class AutoManagerBlockShredEventListenerLow 
+	    extends AutoManager
+	    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.LOW) 
+    	public void onBlockShredBreak(BlockShredEvent e) {
+    		super.onBlockShredBreak( e );
+    	}
+    }
+    
+    public class AutoManagerBlockShredEventListenerNormal 
+	    extends AutoManager
+	    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.NORMAL) 
+    	public void onBlockShredBreak(BlockShredEvent e) {
+    		super.onBlockShredBreak( e );
+    	}
+    }
+    
+    public class AutoManagerBlockShredEventListenerHigh 
+	    extends AutoManager
+	    implements Listener {
+	    	
+    	@EventHandler(priority=EventPriority.HIGH) 
+    	public void onBlockShredBreak(BlockShredEvent e) {
+    		super.onBlockShredBreak( e );
+    	}
+    }
+    
+    public class AutoManagerBlockShredEventListenerHighest 
+    extends AutoManager
+    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.HIGHEST) 
+    	public void onBlockShredBreak(BlockShredEvent e) {
+    		super.onBlockShredBreak( e );
+    	}
+    }
+    
+    
+    
 }

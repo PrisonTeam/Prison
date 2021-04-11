@@ -32,16 +32,27 @@ public class AutoFeaturesFileConfig {
     	
     	options,
     	
-	    	isProcessTokensEnchantExplosiveEvents(options, true),
-	    	isProcessCrazyEnchantsBlockExplodeEvents(options, true),
+    		otherPlugins(options),
+    		
+	    		isProcessTokensEnchantExplosiveEvents(otherPlugins, true),
+	    		isProcessCrazyEnchantsBlockExplodeEvents(otherPlugins, true),
+	    		
+	    		isProcessMcMMOBlockBreakEvents(otherPlugins, true),
+	    		isProcessEZBlocksBlockBreakEvents(otherPlugins, false),
+	    		
+    		
+	    	blockBreakEvents(options),
 	    	
-	    	isProcessMcMMOBlockBreakEvents(options, true),
-	    	isProcessEZBlocksBlockBreakEvents(options, false),
+		    	blockBreakEventPriority(blockBreakEvents, "LOW"),
+		    	TokenEnchantBlockExplodeEventPriority(blockBreakEvents, "LOW"),
+		    	CrazyEnchantsBlastUseEventPriority(blockBreakEvents, "LOW"),
+		    	ZenchantmentsBlockShredEventPriority(blockBreakEvents, "LOW"),
 	    	
-	    	
+		    	
 	    	general(options),
 	    	
 		    	isAutoManagerEnabled(general, false),
+		    	
 		    	
 		    	isCalculateDurabilityEnabled(general, false),
 		    	

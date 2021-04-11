@@ -1,6 +1,7 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -41,6 +42,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
     private PrisonRanks rankPlugin;
     private RankPlayer rankPlayer;
     private final boolean placeholderAPINotNull = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null || Bukkit.getPluginManager().getPlugin("PlaceholdersAPI") != null;
+    private final List<String> configCustomLore = guiConfig.getStringList("EditableLore.Ranks");
 
     public SpigotPlayerRanksGUI(Player player) {
         this.player = player;
@@ -157,9 +159,6 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         int hackyCounterEnchant = 0;
         int amount = 1;
 
-        // Global Strings.
-        String loreInfo = messages.getString("Lore.Info");
-        String lorePrice3 = messages.getString("Lore.Price3");
 
         // Global booleans.
         boolean enchantmentEffectEnabled = getBoolean(guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank"));
@@ -167,28 +166,24 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         // Decimal Rank cost format.
         DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
 
-        while ( rank != null ) {
+        while (rank != null) {
 
-            List<String> ranksLore = createLore(
-                    " ",
-                    "&8-----------------------",
-                    " ",
-                    loreInfo,
-                    lorePrice3 + PlaceholdersUtil.formattedKmbtSISize(rank.getCost(), formatDecimal, ""),
-                    " ",
-                    "&8-----------------------"
-                    );
-
-            if (placeholderAPINotNull) {
-                if (hackyCounterEnchant == 1) {
-                    hackyCounterEnchant++;
-                    ranksLore.add(SpigotPrison.format(PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(player.getUniqueId()), "%prison_rcb_default%")));
-                }
+            List<String> ranksLore = new ArrayList<>();
+            for (String stringValue : configCustomLore) {
+                stringValue = stringValue.replace("{rankPrice}", PlaceholdersUtil.formattedKmbtSISize(rank.getCost(), formatDecimal, ""));
+                stringValue = stringValue.replace("{rankName}", rank.getName());
+                stringValue = stringValue.replace("{rankTag}", SpigotPrison.format(rank.getTag()));
+                ranksLore.add(SpigotPrison.format(stringValue));
+            }
+            if (placeholderAPINotNull){
+                ranksLore = PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(player.getUniqueId()), ranksLore);
             }
 
-            ItemStack itemRank = createButton(
-                    (playerHasThisRank ? materialHas : materialHasNot),
-                    amount++, ranksLore, SpigotPrison.format(rank.getTag()));
+            ItemStack itemRank;
+            boolean showNumber = getBoolean(guiConfig.getString("Options.Ranks.Number_of_Rank_Player_GUI"));
+            itemRank = createButton((playerHasThisRank ? materialHas : materialHasNot), (showNumber ? amount : 1), ranksLore, SpigotPrison.format(rank.getTag()));
+
+            amount++;
 
             if (playerRank != null && playerRank.equals(rank)){
                 playerHasThisRank = false;

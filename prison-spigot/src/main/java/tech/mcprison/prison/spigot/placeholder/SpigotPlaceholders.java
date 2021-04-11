@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.mines.PrisonMines;
@@ -217,7 +218,9 @@ public class SpigotPlaceholders
 							replacement = "";
 						}
 						
-						results = results.replace("{" + identifier + "}", replacement );
+						
+						results = placeholderReplace( results, "{" + identifier + "}", replacement );
+//						results = results.replace("{" + identifier + "}", replacement );
 
 					}
 					
@@ -230,11 +233,25 @@ public class SpigotPlaceholders
 			}
 		}
 		
-		
-
-
 		return results;
 	}
+    
+    /**
+     * This provides for a case insensitive replacement of placeholders.
+     * 
+     * String target = "FOOBar";
+	 * target = target.replaceAll("(?i)foo", "");
+     * 
+     * @param text
+     * @param placeholder
+     * @param target
+     * @return
+     */
+    private String placeholderReplace( String text, String placeholder, String target ) {
+    	
+    	return text.replaceAll( "(?i)" + Pattern.quote(placeholder) , target );
+    }
+    
     
     /**
      * <p>Since a player UUID is provided, first translate for any possible 
@@ -268,8 +285,10 @@ public class SpigotPlaceholders
     			if ( results != null && identifier != null && identifier.hasResults() ) {
     				
     				
-    				results = results.replace( identifier.getEscapedIdentifier(), 
-							pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, identifier.getIdentifier() ) );
+    				results = placeholderReplace( results, identifier.getEscapedIdentifier(), 
+    						pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, identifier.getIdentifier() ) );
+//    				results = results.replace( identifier.getEscapedIdentifier(), 
+//							pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, identifier.getIdentifier() ) );
     			}
     			
 //    			// Rank in to an issue with placeholders: prison_mbm_minename and prison_mbm_pm, 
@@ -316,9 +335,14 @@ public class SpigotPlaceholders
 	    			PlaceholderResults identifier = placeHolderKey.getIdentifier( results );
 	    			
 	    			if ( identifier.hasResults() ) {
-	    				results = results.replace( identifier.getEscapedIdentifier(), 
-								mm.getTranslatePlayerMinesPlaceHolder( playerUuid, playerName, 
+	    				
+	    				results = placeholderReplace( results, identifier.getEscapedIdentifier(), 
+											mm.getTranslatePlayerMinesPlaceHolder( playerUuid, playerName, 
 													placeHolderKey, identifier.getIdentifier() ) );
+	    						
+//	    				results = results.replace( identifier.getEscapedIdentifier(), 
+//								mm.getTranslatePlayerMinesPlaceHolder( playerUuid, playerName, 
+//													placeHolderKey, identifier.getIdentifier() ) );
 	    			}
 	   
 	    			

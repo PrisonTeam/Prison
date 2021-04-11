@@ -26,7 +26,7 @@ public class SellAllAdminAutoSellGUI extends SpigotGUIComponents {
 
     public void open() {
 
-        if (guiBuilder()) return;
+        updateSellAllConfig();
 
         Inventory inv = buttonsSetup();
 

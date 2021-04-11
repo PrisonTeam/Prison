@@ -26,7 +26,7 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
 
     public void open() {
 
-        if (guiBuilder()) return;
+        updateSellAllConfig();
 
         Inventory inv = buttonsSetup();
         if (inv == null) return;

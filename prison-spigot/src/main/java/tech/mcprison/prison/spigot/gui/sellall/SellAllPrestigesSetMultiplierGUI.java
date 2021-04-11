@@ -21,6 +21,8 @@ public class SellAllPrestigesSetMultiplierGUI extends SpigotGUIComponents {
     private final Player p;
     private final double val;
     private final String prestigeName;
+    private int dimension = 45;
+    private Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Edit -> Multiplier"));
 
     public SellAllPrestigesSetMultiplierGUI(Player p, double val, String prestigeName){
         this.p = p;
@@ -30,19 +32,17 @@ public class SellAllPrestigesSetMultiplierGUI extends SpigotGUIComponents {
 
     public void open() {
 
-        // Create a new inventory
-        int dimension = 45;
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Edit -> Multiplier"));
+        updateSellAllConfig();
 
-        if (guiBuilder(inv)) return;
+        if (guiBuilder()) return;
 
         // Open the inventory
         openGUI(p, inv);
     }
 
-    private boolean guiBuilder(Inventory inv) {
+    private boolean guiBuilder() {
         try {
-            buttonsSetup(inv);
+            buttonsSetup();
         } catch (NullPointerException ex){
             Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
@@ -51,7 +51,7 @@ public class SellAllPrestigesSetMultiplierGUI extends SpigotGUIComponents {
         return false;
     }
 
-    private void buttonsSetup(Inventory inv) {
+    private void buttonsSetup() {
 
         // Create a new lore
         List<String> changeDecreaseValueLore;

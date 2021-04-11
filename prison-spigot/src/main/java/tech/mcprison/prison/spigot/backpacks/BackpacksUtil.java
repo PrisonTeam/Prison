@@ -2,7 +2,11 @@ package tech.mcprison.prison.spigot.backpacks;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -14,11 +18,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
 
 import com.cryptomorin.xseries.XMaterial;
 
-import org.jetbrains.annotations.Nullable;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
@@ -48,6 +50,14 @@ public class BackpacksUtil {
             return SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true");
         }
         return false;
+    }
+
+    /**
+     * Get Backpacks DATA config.
+     * */
+    public Configuration getBackpacksData(){
+        updateCachedBackpack();
+        return backpacksDataConfig;
     }
 
     /**
@@ -839,12 +849,12 @@ public class BackpacksUtil {
         return backPackSize;
     }
 
-    @NotNull
     private Inventory getBackpackOwn(Player p) {
 
         updateCachedBackpack();
 
-        Inventory inv = Bukkit.createInventory(p, getBackpackSize(p), SpigotPrison.format("&3" + p.getName() + " -> Backpack"));
+        int size = getBackpackSize(p);
+        Inventory inv = Bukkit.createInventory(p, size, SpigotPrison.format("&3" + p.getName() + " -> Backpack"));
 
         // Get the Items config section
         Set<String> slots;
@@ -857,7 +867,10 @@ public class BackpacksUtil {
             for (String slot : slots) {
                 ItemStack finalItem = backpacksDataConfig.getItemStack("Inventories." + p.getUniqueId().toString() + ".Items." + slot + ".ITEMSTACK");
                 if (finalItem != null) {
-                    inv.setItem(Integer.parseInt(slot), finalItem);
+                    int slotNumber = Integer.parseInt(slot);
+                    if (size > slotNumber) {
+                        inv.setItem(slotNumber, finalItem);
+                    }
                 }
             }
         }
@@ -865,11 +878,11 @@ public class BackpacksUtil {
         return inv;
     }
 
-    @NotNull
     private Inventory getBackpackOwn(Player p, String id) {
         updateCachedBackpack();
 
-        Inventory inv = Bukkit.createInventory(p, getBackpackSize(p, id), SpigotPrison.format("&3" + p.getName() + " -> Backpack-" + id));
+        int size = getBackpackSize(p, id);
+        Inventory inv = Bukkit.createInventory(p, size, SpigotPrison.format("&3" + p.getName() + " -> Backpack-" + id));
 
         // Get the Items config section
         Set<String> slots;
@@ -882,7 +895,10 @@ public class BackpacksUtil {
             for (String slot : slots) {
                 ItemStack finalItem = backpacksDataConfig.getItemStack("Inventories." + p.getUniqueId().toString() + ".Items-" + id + "." + slot + ".ITEMSTACK");
                 if (finalItem != null) {
-                    inv.setItem(Integer.parseInt(slot), finalItem);
+                    int slotNumber = Integer.parseInt(slot);
+                    if (size > slotNumber) {
+                        inv.setItem(slotNumber, finalItem);
+                    }
                 }
             }
         }
@@ -941,6 +957,8 @@ public class BackpacksUtil {
         boolean needToSetNewOwnerID = checkBackpackOwnerIDMissing(p);
 
         if (inv.getContents() != null){
+
+            int backpackSize = getBackpackSize(p);
             int slot = 0;
 
             try {
@@ -953,6 +971,8 @@ public class BackpacksUtil {
 
             updateCachedBackpack();
 
+            backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items.Size", backpackSize);
+
             for (ItemStack item : inv.getContents()){
                 if (item != null){
 
@@ -962,7 +982,7 @@ public class BackpacksUtil {
                 }
             }
 
-            oldDataVersionUpdater(p, needToSetNewDimensions, needToSetNewOwner, needToSetNewOwnerID);
+            oldDataVersionUpdater(p, false, true, true);
 
             try {
                 backpacksDataConfig.save(backpacksFile);
@@ -992,6 +1012,8 @@ public class BackpacksUtil {
         boolean needToSetNewOwnerID = checkBackpackOwnerIDMissing(p, id);
 
         if (inv.getContents() != null){
+
+            int backpackSize = getBackpackSize(p, id);
             int slot = 0;
 
             try {
@@ -1004,7 +1026,9 @@ public class BackpacksUtil {
 
             updateCachedBackpack();
 
-            oldDataVersionUpdater(p, id, needToSetNewDimensions, needToSetNewOwner, needToSetNewOwnerID);
+            backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items-" + id + ".Size", backpackSize);
+
+            oldDataVersionUpdater(p, id, false, true, true);
 
             for (ItemStack item : inv.getContents()){
                 if (item != null){
@@ -1066,7 +1090,6 @@ public class BackpacksUtil {
         return overflow;
     }
 
-    @NotNull
     private HashMap<Integer, ItemStack> addItemToBackpack(Player p, ItemStack item, String id) {
         Inventory inv = getBackpack(p, id);
         HashMap<Integer, ItemStack> overflow = inv.addItem(item);
@@ -1081,7 +1104,6 @@ public class BackpacksUtil {
         return underflow;
     }
 
-    @NotNull
     private HashMap<Integer, ItemStack> removeItemFromBackpack(Player p, ItemStack item, String id) {
         Inventory inv = getBackpack(p, id);
         HashMap<Integer, ItemStack> underflow = inv.removeItem(item);
@@ -1145,7 +1167,6 @@ public class BackpacksUtil {
         }
     }
 
-    @NotNull
     private List<String> getBackpacksIDsList(Player p) {
         List<String> backpacksIDs = new ArrayList<>();
 
@@ -1224,7 +1245,6 @@ public class BackpacksUtil {
         return backpacksDataConfig.getString("Inventories." + p.getUniqueId().toString() + ".Items-" + id + ".UniqueID") == null;
     }
 
-    @Nullable
     private OfflinePlayer getOfflinePlayer(String name) {
         if (name != null) {
             updateCachedBackpack();
@@ -1239,7 +1259,6 @@ public class BackpacksUtil {
         return null;
     }
 
-    @Nullable
     private OfflinePlayer getOfflinePlayer(String name, String id) {
         if (name != null) {
             updateCachedBackpack();
@@ -1256,7 +1275,6 @@ public class BackpacksUtil {
         return null;
     }
 
-    @Nullable
     private Player getOnlinePlayer(String name) {
         if (name != null) {
             updateCachedBackpack();
@@ -1271,7 +1289,6 @@ public class BackpacksUtil {
         return null;
     }
 
-    @Nullable
     private Player getOnlinePlayer(String name, String id) {
         if (name != null) {
             updateCachedBackpack();

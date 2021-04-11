@@ -1,13 +1,10 @@
 package tech.mcprison.prison.spigot.block;
 
-import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.autofeatures.AutoManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerTokenEnchant;
@@ -90,8 +87,7 @@ import zedly.zenchantments.BlockShredEvent;
  *
  */
 public class OnBlockBreakEventListener 
-	extends OnBlockBreakEventCore
-	implements Listener {
+	extends OnBlockBreakEventCore {
 
 	
 	public OnBlockBreakEventListener() {
@@ -100,81 +96,133 @@ public class OnBlockBreakEventListener
 	}
 	
 	
+	public enum BlockBreakPriority {
+		
+		DISABLED,
+		
+		LOWEST,
+		LOW,
+		NORMAL,
+		HIGH,
+		HIGHEST;
+		
+		public static BlockBreakPriority fromString( String value ) {
+			BlockBreakPriority results = BlockBreakPriority.LOW;
+			
+			if ( value != null ) {
+				
+				for ( BlockBreakPriority bbPriority : values() ) {
+					if ( bbPriority.name().equalsIgnoreCase( value )) {
+						results = bbPriority;
+						break;
+					}
+				}
+			}
+			
+			return results;
+		}
+	}
+	
 	public void registerAllBlockBreakEvents(SpigotPrison spigotPrison ) {
 		
-		// AutoManager should be registered first:
-		Bukkit.getPluginManager().registerEvents(new AutoManager(), spigotPrison);
+		// Only register these event listeners if these are enabled.
+		// In order to be enabled, the prison mines module must be enabled.
 		
-		Bukkit.getPluginManager().registerEvents( this, spigotPrison);
-		
-		try {
-            Class.forName("com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent");
-            
-            Bukkit.getPluginManager().registerEvents(new AutoManagerTokenEnchant(), spigotPrison);
-            Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventTokenEnchant(), spigotPrison);
-            
-        } 
-        catch (ClassNotFoundException e) {
-            // TokenEnchant is not available on this server which is not an error.  Just
-        	// ignore this situation and do not register the TE explosion events.
-        }
-		
+		if ( isEnabled() ) {
+			
+			// AutoManager should be registered first:
+			// Only register Auto Manager if it is enabled:
+			if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+				
+				AutoManager autoManager = new AutoManager();
+				autoManager.registerBlockBreakEvents( spigotPrison );
+			}
+			
+			
+			OnBlockBreakEventListeners listeners = new OnBlockBreakEventListeners();
+			listeners.registerBlockBreakEvents( spigotPrison );
+			
+			
+			try {
+				Class.forName("com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent");
+				
+				AutoManagerTokenEnchant tokenEnchant = new AutoManagerTokenEnchant();
+				tokenEnchant.registerBlockBreakEvents( spigotPrison );
+				
+				OnBlockBreakEventTokenEnchant bbTokenEnchant = new OnBlockBreakEventTokenEnchant();
+				bbTokenEnchant.registerBlockBreakEvents( spigotPrison );
+				
+//				Bukkit.getPluginManager().registerEvents(new AutoManagerTokenEnchant(), spigotPrison);
+//				Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventTokenEnchant(), spigotPrison);
+				
+			} 
+			catch (ClassNotFoundException e) {
+				// TokenEnchant is not available on this server which is not an error.  Just
+				// ignore this situation and do not register the TE explosion events.
+			}
+			
 //	    Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventListener(), spigotPrison);
+		}
+		
+		else {
+			Output.get().logWarn( "BlockBreak event listeners cannot be registered " +
+											"since the mine module is disabled." );
+		}
 		
 	}
 
-	
-    /**
-     * <p>The EventPriorty.MONITOR means that the state of the event is OVER AND DONE,
-     * so this function CANNOT do anything with the block, other than "monitor" what
-     * happened.  That is all we need to do, is to just count the number of blocks within
-     * a mine that have been broken.
-     * </p>
-     * 
-     * <p><b>Note:</b> Because this is a MONITOR event, we cannot do anything with the 
-     * target block here. Mostly because everything has already been done with it, and 
-     * this is only intended to MONITOR the final results. 
-     * </p>
-     * 
-     * <p>One interesting fact about this monitoring is that we know that a block was broken,
-     * not because of what is left (should be air), but because this function was called.
-     * There is a chance that the event was canceled and the block remains unbroken, which
-     * is what WorldGuard would do.  But the event will also be canceled when auto pickup is
-     * enabled, and at that point the BlockType will be air.
-     * </p>
-     * 
-     * <p>If the event is canceled it's important to check to see that the BlockType is Air,
-     * since something already broke the block and took the drop.  
-     * If it is not canceled we still need to count it since it will be a normal drop.  
-     * </p>
-     * 
-     * @param e
-     */
-    @EventHandler(priority=EventPriority.MONITOR) 
-    public void onBlockBreakMonitor(BlockBreakEvent e) {
-
-    	genericBlockEventMonitor( e );
-    }
-    
-    @EventHandler(priority=EventPriority.MONITOR) 
-    public void onBlockShredBreakMonitor(BlockShredEvent e) {
-    	genericBlockEventMonitor( e );
-    }
-    
+//	
+//    /**
+//     * <p>The EventPriorty.MONITOR means that the state of the event is OVER AND DONE,
+//     * so this function CANNOT do anything with the block, other than "monitor" what
+//     * happened.  That is all we need to do, is to just count the number of blocks within
+//     * a mine that have been broken.
+//     * </p>
+//     * 
+//     * <p><b>Note:</b> Because this is a MONITOR event, we cannot do anything with the 
+//     * target block here. Mostly because everything has already been done with it, and 
+//     * this is only intended to MONITOR the final results. 
+//     * </p>
+//     * 
+//     * <p>One interesting fact about this monitoring is that we know that a block was broken,
+//     * not because of what is left (should be air), but because this function was called.
+//     * There is a chance that the event was canceled and the block remains unbroken, which
+//     * is what WorldGuard would do.  But the event will also be canceled when auto pickup is
+//     * enabled, and at that point the BlockType will be air.
+//     * </p>
+//     * 
+//     * <p>If the event is canceled it's important to check to see that the BlockType is Air,
+//     * since something already broke the block and took the drop.  
+//     * If it is not canceled we still need to count it since it will be a normal drop.  
+//     * </p>
+//     * 
+//     * @param e
+//     */
 //    @EventHandler(priority=EventPriority.MONITOR) 
-//    public void onTEBlockExplodeMonitor(TEBlockExplodeEvent e) {
-//    
-//    	genericBlockExplodeEventMonitor( e );
+//    public void onBlockBreakMonitor(BlockBreakEvent e) {
+//
+//    	genericBlockEventMonitor( e );
 //    }
-
-    @EventHandler(priority=EventPriority.MONITOR) 
-	public void onCrazyEnchantsBlockExplodeMonitor( BlastUseEvent e ) {
-		
-    	genericBlockExplodeEventMonitor( e );
-	}
+//    
+//    @EventHandler(priority=EventPriority.MONITOR) 
+//    public void onBlockShredBreakMonitor(BlockShredEvent e) {
+//    	genericBlockEventMonitor( e );
+//    }
+//    
+////    @EventHandler(priority=EventPriority.MONITOR) 
+////    public void onTEBlockExplodeMonitor(TEBlockExplodeEvent e) {
+////    
+////    	genericBlockExplodeEventMonitor( e );
+////    }
+//
+//    @EventHandler(priority=EventPriority.MONITOR) 
+//	public void onCrazyEnchantsBlockExplodeMonitor( BlastUseEvent e ) {
+//		
+//    	genericBlockExplodeEventMonitor( e );
+//	}
+//    
     
     
-    @EventHandler(priority=EventPriority.LOW) 
     public void onBlockBreak(BlockBreakEvent e) {
 
     	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
@@ -182,7 +230,6 @@ public class OnBlockBreakEventListener
     	}
     }
     
-    @EventHandler(priority=EventPriority.LOW) 
     public void onBlockShredBreak(BlockShredEvent e) {
 
     	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
@@ -194,19 +241,6 @@ public class OnBlockBreakEventListener
     }
     
     
-//    @EventHandler(priority=EventPriority.LOW) 
-//    public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
-//
-//    	boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
-//    	
-//    	if ( isTEExplosiveEnabled ) {
-//    		
-//    		genericBlockExplodeEvent( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
-//    	}
-//    }
-    
-    
-    @EventHandler(priority=EventPriority.LOW) 
     public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
     	
     	boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
@@ -217,5 +251,18 @@ public class OnBlockBreakEventListener
     	}
     }
     
+////    @EventHandler(priority=EventPriority.LOW) 
+////    public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
+////
+////    	boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
+////    	
+////    	if ( isTEExplosiveEnabled ) {
+////    		
+////    		genericBlockExplodeEvent( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
+////    	}
+////    }
+
+
+
 
 }

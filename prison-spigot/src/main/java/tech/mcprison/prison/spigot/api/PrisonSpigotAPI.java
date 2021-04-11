@@ -26,6 +26,7 @@ import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.MaterialType;
 
@@ -42,7 +43,7 @@ public class PrisonSpigotAPI {
 	
 	private PrisonMines prisonMineManager;
 	private boolean mineModuleDisabled = false;
-	private SellAllPrisonCommands sellAll;
+	private SellAllUtil sellAll;
 	
 
 	/**
@@ -332,13 +333,28 @@ public class PrisonSpigotAPI {
 	 * Get the Prison backpacksUtil, which's essentially the core
 	 * of Prison backpacks, to edit or use them by yourself.
 	 *
-	 * This will return null if backpacks are disabled.
+	 * @return BackpaacksUtil - Null if Prison Backpacks are disabled.
 	 * */
 	public BackpacksUtil getPrisonBackpacks(){
 		if (SpigotPrison.getInstance().getConfig().getString("backpacks") != null && SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true")){
 			return BackpacksUtil.get();
 		}
 		return null;
+	}
+
+	/**
+	 * Get the whole SellAllUtil of Prison Sellall to manage what you
+	 * want of Prison SellAll.
+	 *
+	 * @return SellAllUtil - Null if Prison Sellall's disabled.
+	 * */
+	public SellAllUtil getPrisonSellAll(){
+
+		if (sellAll == null){
+			sellAll = SellAllUtil.get();
+		}
+
+		return sellAll;
 	}
 
 	/**
@@ -353,7 +369,7 @@ public class PrisonSpigotAPI {
 	public Double getSellAllMoneyWithMultiplier(Player player){
 
 	    if (sellAll == null){
-	        sellAll = SellAllPrisonCommands.get();
+	        sellAll = SellAllUtil.get();
         }
 
 		if (sellAll != null){

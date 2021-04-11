@@ -64,6 +64,7 @@ import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.selection.Selection;
 import tech.mcprison.prison.tasks.PrisonCommandTask.TaskMode;
 import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.MaterialType;
 import tech.mcprison.prison.util.Text;
@@ -2873,7 +2874,9 @@ public class MinesCommands
         		"uses the area defined by the wand. &7Feet&3 defines a 1x1 mine under your feet" +
         		"which is useful in void worlds or when flying and can be enlarged with " +
         		"&7/mines set size help&3 . &2[&7wand feet&2]", 
-        				def = "wand") String source
+        				def = "wand") String source,
+        @Arg(name = "confirm", description = "If the mine is greater than 20k blocks you will have " +
+        		"to confirm the area.", def = "---") String confirm
         ) {
     	
     	if (!performCheckMineExists(sender, mineName)) {
@@ -2915,6 +2918,18 @@ public class MinesCommands
                 .sendTo(sender);
             return;
         }
+        
+        DecimalFormat dFmt = new DecimalFormat("#,##0");
+        Bounds selectedBounds = selection.asBounds();
+        
+        if ( selectedBounds.getTotalBlockCount() > 20000 && 
+        		(confirm == null || !"yes".equalsIgnoreCase( confirm ) )) {
+        	String message = String.format( "&7Warning: This mine has a size of %s. If this is " +
+        			"intentional, then please re-submit this command with a confirmation of 'yes' " +
+        			"as a final parameter.  ", dFmt.format( selectedBounds.getTotalBlockCount() ) );
+        	sender.sendMessage( message );
+        	return;
+        }
 
         // TODO check to see if they are the same boundaries, if not, don't change...
         
@@ -2924,12 +2939,11 @@ public class MinesCommands
         
         // Setting the bounds when it's virtual will configure all the internals:
         
-        m.setBounds(selection.asBounds());
+        m.setBounds(selectedBounds);
         
         if ( wasVirtual ) {
         	
         	
-        	DecimalFormat dFmt = new DecimalFormat("#,##0");
         	String message = String.format( "&3The mine &7%s &3 is no longer a virutal mine " +
         			"and has been enabled with an area of &7%s &3blocks.",
         			m.getTag(), dFmt.format( m.getBounds().getTotalBlockCount() ));

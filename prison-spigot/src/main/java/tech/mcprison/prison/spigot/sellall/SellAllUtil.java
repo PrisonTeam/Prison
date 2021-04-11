@@ -1,8 +1,16 @@
 package tech.mcprison.prison.spigot.sellall;
 
 
-import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
-import com.cryptomorin.xseries.XMaterial;
+import java.io.File;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -12,11 +20,13 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+
+import com.cryptomorin.xseries.XMaterial;
+
+import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
-import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
@@ -31,11 +41,6 @@ import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.*;
-
 /**
  * SellAllUtil class, this will replace the whole SellAll mess of a code of SellAllPrisonCommands.
  *
@@ -43,7 +48,7 @@ import java.util.*;
  */
 public class SellAllUtil {
 
-    private SellAllUtil instance;
+    private static SellAllUtil instance;
     private final boolean isEnabled = isEnabled();
     private File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
     public Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
@@ -68,8 +73,12 @@ public class SellAllUtil {
     /**
      * Get SellAll instance.
      */
-    public SellAllUtil get() {
+    public static SellAllUtil get() {
         return instanceUpdater();
+    }
+
+    public Configuration getSellAllConfig(){
+        return sellAllConfig;
     }
 
     /**
@@ -106,12 +115,11 @@ public class SellAllUtil {
     /**
      * Set sellSll currency by name
      *
-     * @param sender   - CommandSender (Prison)
      * @param currency - String currency name
      * @return error - true if an error occurred.
      */
-    public boolean setSellAllCurrency(CommandSender sender, String currency) {
-        return sellAllCurrencySaver(sender, currency);
+    public boolean setCurrency(String currency) {
+        return sellAllCurrencySaver(currency);
     }
 
     /**
@@ -135,7 +143,7 @@ public class SellAllUtil {
      * @param enableBoolean - True to enable and False to disable.
      * @return error - True if an error occurred.
      */
-    public boolean sellAllDelayEnable(boolean enableBoolean) {
+    public boolean enableDelay(boolean enableBoolean) {
         return sellAllDelayToggle(enableBoolean);
     }
 
@@ -145,7 +153,7 @@ public class SellAllUtil {
      * @param delayValue
      * @return error - True if error occurred.
      */
-    public boolean setSellAllDelay(int delayValue) {
+    public boolean setDelay(int delayValue) {
         return sellAllDelaySave(delayValue);
     }
 
@@ -155,7 +163,7 @@ public class SellAllUtil {
      * @param enableBoolean - True to enable or False to disable
      * @return error - True if error occurred.
      */
-    public boolean sellAllAutoSellEnable(boolean enableBoolean) {
+    public boolean enableAutoSell(boolean enableBoolean) {
         return sellAllAutoSellToggle(enableBoolean);
     }
 
@@ -165,18 +173,28 @@ public class SellAllUtil {
      * @param enableBoolean - True to enable or False to disable
      * @return error - True if error occurred.
      */
-    public boolean sellAllAutoSellPerUserToggleableEnable(boolean enableBoolean) {
-        return sellAllAutoSelPerUserToggleableTottle(enableBoolean);
+    public boolean enableAutoSellPerUserToggleable(boolean enableBoolean) {
+        return sellAllAutoSellPerUserToggleableToggle(enableBoolean);
+    }
+
+    /**
+     * Enable or disable autosell to a player.
+     *
+     * @param p - Player
+     *
+     * @return error - True if error occurred, false if success.
+     * */
+    public boolean autoSellPlayerToggle(Player p) {
+        return sellAllAutoSellPlayerToggler(p);
     }
 
     /**
      * SellAll Sell command essentially, but in a method.
-     * <p>
-     * NOTE: It applies sellall options from the config, except the sellall permission one.
+     * NOTE: It applies sellAll options from the config, except the sellAll permission one.
      *
      * @param p - Player affected by sellall.
      */
-    public void sellAllSellAction(Player p) {
+    public void sellAllSell(Player p) {
         sellAllSellPlayer(p);
     }
 
@@ -186,7 +204,7 @@ public class SellAllUtil {
      * @param p - Player that should open the GUI.
      * @return boolean - True if a GUI got open with success, false if Disabled or missing all permissions.
      */
-    public boolean sellAllGUI(Player p) {
+    public boolean openGUI(Player p) {
         return sellAllOpenGUI(p);
     }
 
@@ -197,7 +215,7 @@ public class SellAllUtil {
      * @param value  - Value of the block when sold.
      * @return error - True if an error occurred, false if success.
      */
-    public boolean sellAllAddBlock(String itemID, Double value) {
+    public boolean addBlock(String itemID, Double value) {
         return sellAllAddBlockAction(itemID, value);
     }
 
@@ -208,7 +226,7 @@ public class SellAllUtil {
      * @param value    - Value of the block when sold.
      * @return error - True if an error occurred, false if success.
      */
-    public boolean sellAllAddBlock(Material material, Double value) {
+    public boolean addBlock(Material material, Double value) {
         return sellAllAddBlockAction(material, value);
     }
 
@@ -219,7 +237,7 @@ public class SellAllUtil {
      * @param value     - Value of the block when sold.
      * @return error - True if an error occurred, false if success.
      */
-    public boolean sellAllAddBlock(ItemStack itemStack, Double value) {
+    public boolean addBlock(ItemStack itemStack, Double value) {
         return sellAllAddBlockAction(itemStack, value);
     }
 
@@ -230,7 +248,7 @@ public class SellAllUtil {
      * @param value     - Value of the block when sold.
      * @return error - True if an error occurred, false if success.
      */
-    public boolean sellAllAddBlock(XMaterial xMaterial, Double value) {
+    public boolean addBlock(XMaterial xMaterial, Double value) {
         return sellAllAddBlockAction(xMaterial, value);
     }
 
@@ -252,7 +270,7 @@ public class SellAllUtil {
      * @param itemID - String name of Block.
      * @return error - True if an error occurred or missing item in the config, False if success.
      */
-    public boolean sellAllDelete(String itemID) {
+    public boolean deleteBlock(String itemID) {
         return sellAllDeleteAction(itemID);
     }
 
@@ -262,7 +280,7 @@ public class SellAllUtil {
      * @param material - Material of Block.
      * @return error - True if an error occurred or missing item in the config, False if success.
      */
-    public boolean sellAllDelete(Material material) {
+    public boolean deleteBlock(Material material) {
         return sellAllDeleteAction(material);
     }
 
@@ -272,7 +290,7 @@ public class SellAllUtil {
      * @param itemStack - ItemStack of Block.
      * @return error - True if an error occurred or missing item in the config, False if success.
      */
-    public boolean sellAllDelete(ItemStack itemStack) {
+    public boolean deleteBlock(ItemStack itemStack) {
         return sellAllDeleteAction(itemStack);
     }
 
@@ -282,7 +300,7 @@ public class SellAllUtil {
      * @param xMaterial - XMaterial of Block.
      * @return error - True if an error occurred or missing item in the config, False if success.
      */
-    public boolean sellAllDelete(XMaterial xMaterial) {
+    public boolean deleteBlock(XMaterial xMaterial) {
         return sellAllDeleteAction(xMaterial);
     }
 
@@ -294,7 +312,7 @@ public class SellAllUtil {
      *
      * @return error - True if error occurred or block is missing in the config, False if success.
      */
-    public boolean sellAllEditBlock(String itemID, Double value) {
+    public boolean editBlock(String itemID, Double value) {
         return sellAllEditBlockAction(itemID, value);
     }
 
@@ -306,7 +324,7 @@ public class SellAllUtil {
      *
      * @return error - True if error occurred or block is missing in the config, False if success.
      */
-    public boolean sellAllEditBlock(Material material, Double value) {
+    public boolean editBlock(Material material, Double value) {
         return sellAllEditBlockAction(material, value);
     }
 
@@ -318,7 +336,7 @@ public class SellAllUtil {
      *
      * @return error - True if error occurred or block is missing in the config, False if success.
      */
-    public boolean sellAllEditBlock(ItemStack itemStack, Double value) {
+    public boolean editBlock(ItemStack itemStack, Double value) {
         return sellAllEditBlockAction(itemStack, value);
     }
 
@@ -330,8 +348,143 @@ public class SellAllUtil {
      *
      * @return error - True if error occurred or block is missing in the config, False if success.
      */
-    public boolean sellAllEditBlock(XMaterial xMaterial, Double value) {
+    public boolean editBlock(XMaterial xMaterial, Double value) {
         return sellAllEditBlockAction(xMaterial, value);
+    }
+
+    /**
+     * Add SellAll Multiplier.
+     *
+     * @param prestige - Prestige name to hook.
+     * @param multiplier - Multiplier Double Value.
+     *
+     * @return error - True if error occurred and false if success.
+     * */
+    public boolean addMultiplier(String prestige, Double multiplier) {
+        return sellAllAddMultiplierAction(prestige, multiplier);
+    }
+
+    /**
+     * Delete SellAll Multiplier.
+     *
+     * @param prestige - Prestige with the multiplier
+     *
+     * @return error - True if error occurred or the Multiplier wasn't found, false if success.
+     * */
+    public boolean deleteMultiplier(String prestige) {
+        return sellAllDeleteMultiplierAction(prestige);
+    }
+
+    /**
+     * Enable or disable SellAll Item Trigger feature.
+     * This's a feature that makes the player able to Shift and Right click
+     * On an item in his hand to trigger sellall.
+     *
+     * @param enableInput - True to enable, False to disable.
+     *
+     * @return error - True if error occurred, False if success.
+     * */
+    public boolean toggleItemTrigger(boolean enableInput) {
+        return sellAllItemToggle(enableInput);
+    }
+
+    /**
+     * Add an Item to the SellAll item Triggers.
+     *
+     * @param itemID - String name of the Item
+     *
+     * @return error - True if an error occurred, False if success.
+     * */
+    public boolean addItemTrigger(String itemID) {
+        return sellAllAddTrigger(itemID);
+    }
+
+    /**
+     * Add an Item to the SellAll item Triggers.
+     *
+     * @param itemMaterial - XMaterial of the Item
+     *
+     * @return error - True if an error occurred, False if success.
+     * */
+    public boolean addItemTrigger(XMaterial itemMaterial) {
+        return sellAllAddTrigger(itemMaterial);
+    }
+
+    /**
+     * Add an Item to the SellAll item Triggers.
+     *
+     * @param itemMaterial - Material of the Item
+     *
+     * @return error - True if an error occurred, False if success.
+     * */
+    public boolean addItemTrigger(Material itemMaterial) {
+        return sellAllAddTrigger(itemMaterial);
+    }
+
+    /**
+     * Add an Item to the SellAll item Triggers.
+     *
+     * @param itemStack - ItemStack of the Item
+     *
+     * @return error - True if an error occurred, False if success.
+     * */
+    public boolean addItemTrigger(ItemStack itemStack) {
+        return sellAllAddTrigger(itemStack);
+    }
+
+    /**
+     * Delete a sellAll Item trigger.
+     *
+     * @param itemID - Name of the item.
+     *
+     * @return error - True if error occurred or item not found, False if success.
+     * */
+    public boolean deleteItemTrigger(String itemID) {
+        return sellAllDeleteTrigger(itemID);
+    }
+
+    /**
+     * Delete a sellAll Item trigger.
+     *
+     * @param itemMaterial - Material of the item.
+     *
+     * @return error - True if error occurred or item not found, False if success.
+     * */
+    public boolean deleteItemTrigger(XMaterial itemMaterial) {
+        return sellAllDeleteTrigger(itemMaterial);
+    }
+
+    /**
+     * Delete a sellall Item trigger.
+     *
+     * @param itemMaterial - Material of the item.
+     *
+     * @return error - True if error occurred or item not found, False if success.
+     * */
+    public boolean deleteItemTrigger(Material itemMaterial) {
+        return sellAllDeleteTrigger(itemMaterial);
+    }
+
+    /**
+     * Delete a sellAll Item trigger.
+     *
+     * @param itemStack - ItemStack of the item.
+     *
+     * @return error - True if error occurred or item not found, False if success.
+     * */
+    public boolean deleteItemTrigger(ItemStack itemStack) {
+        return sellAllDeleteTrigger(itemStack);
+    }
+
+    /**
+     * Check if the world the player is in is disabled.
+     *
+     * @param p - Player
+     *
+     * @return boolean - true if the player is in a disabled world, false if not.
+     * */
+    public boolean isDisabledWorld(Player p) {
+        return playerPositionIsDisabledWorld(p);
     }
 
     /**
@@ -341,6 +494,191 @@ public class SellAllUtil {
         return string != null && string.equalsIgnoreCase("true");
     }
 
+
+
+    private boolean playerPositionIsDisabledWorld(Player p) {
+        updateSellAllConfig();
+        String worldName = p.getWorld().getName();
+        List<String> disabledWorlds = sellAllConfig.getStringList("Options.DisabledWorlds");
+        return disabledWorlds.contains(worldName);
+    }
+
+    private boolean sellAllDeleteTrigger(ItemStack itemStack) {
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("ShiftAndRightClickSellAll.Items." + itemStack.getType().name() + ".ITEM_ID", null);
+            conf.set("ShiftAndRightClickSellAll.Items." + itemStack.getType().name(), null);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return true;
+        }
+        updateSellAllConfig();
+        return false;
+    }
+
+    private boolean sellAllDeleteTrigger(Material itemMaterial) {
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("ShiftAndRightClickSellAll.Items." + itemMaterial.name() + ".ITEM_ID", null);
+            conf.set("ShiftAndRightClickSellAll.Items." + itemMaterial.name(), null);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return true;
+        }
+        updateSellAllConfig();
+        return false;
+    }
+
+    private boolean sellAllDeleteTrigger(XMaterial itemMaterial) {
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("ShiftAndRightClickSellAll.Items." + itemMaterial.name() + ".ITEM_ID", null);
+            conf.set("ShiftAndRightClickSellAll.Items." + itemMaterial.name(), null);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return true;
+        }
+        updateSellAllConfig();
+        return false;
+    }
+
+    private boolean sellAllDeleteTrigger(String itemID) {
+        if (sellAllConfig.getString("Options.ShiftAndRightClickSellAll.Items." + itemID + ".ITEM_ID") == null){
+            return true;
+        }
+
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("ShiftAndRightClickSellAll.Items." + itemID + ".ITEM_ID", null);
+            conf.set("ShiftAndRightClickSellAll.Items." + itemID, null);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return true;
+        }
+        updateSellAllConfig();
+        return false;
+    }
+
+    private boolean sellAllAddTrigger(ItemStack blockAdd) {
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("ShiftAndRightClickSellAll.Items." + blockAdd.getType().name() + ".ITEM_ID", blockAdd.getType().name());
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return true;
+        }
+        updateSellAllConfig();
+        return false;
+    }
+
+    private boolean sellAllAddTrigger(Material blockAdd) {
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("ShiftAndRightClickSellAll.Items." + blockAdd.name() + ".ITEM_ID", blockAdd.name());
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return true;
+        }
+        updateSellAllConfig();
+        return false;
+    }
+
+    private boolean sellAllAddTrigger(XMaterial blockAdd) {
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("ShiftAndRightClickSellAll.Items." + blockAdd.name() + ".ITEM_ID", blockAdd.name());
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return true;
+        }
+        updateSellAllConfig();
+        return false;
+    }
+
+    private boolean sellAllAddTrigger(String itemID) {
+        try {
+            XMaterial blockAdd;
+            try {
+                blockAdd = XMaterial.valueOf(itemID);
+            } catch (IllegalArgumentException ex) {
+                return true;
+            }
+
+            try {
+                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                conf.set("ShiftAndRightClickSellAll.Items." + itemID + ".ITEM_ID", blockAdd.name());
+                conf.save(sellAllFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return true;
+            }
+        } catch (IllegalArgumentException ex) {
+            return true;
+        }
+        updateSellAllConfig();
+        return false;
+    }
+
+    private boolean sellAllItemToggle(boolean enableInput) {
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("Options.ShiftAndRightClickSellAll.Enabled", enableInput);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            return true;
+        }
+        updateSellAllConfig();
+        return false;
+    }
+
+    private boolean sellAllDeleteMultiplierAction(String prestige) {
+        if (sellAllConfig.getConfigurationSection("Multiplier." + prestige) == null){
+            return true;
+        }
+
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("Multiplier." + prestige, null);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            return true;
+        }
+        updateSellAllConfig();
+        return false;
+    }
+
+    private boolean sellAllAddMultiplierAction(String prestige, Double multiplier) {
+        if (addMultiplierConditions(prestige)) return true;
+
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("Multiplier." + prestige + ".PRESTIGE_NAME", prestige);
+            conf.set("Multiplier." + prestige + ".MULTIPLIER", multiplier);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            return true;
+        }
+        updateSellAllConfig();
+        return false;
+    }
 
     private boolean sellAllEditBlockAction(XMaterial xMaterial, Double value) {
         if (sellAllConfig.getConfigurationSection("Items." + xMaterial.name()) == null) {
@@ -364,6 +702,7 @@ public class SellAllUtil {
         } catch (IllegalArgumentException ex) {
             return true;
         }
+        updateSellAllConfig();
         return false;
     }
 
@@ -396,6 +735,7 @@ public class SellAllUtil {
         } catch (IllegalArgumentException ex) {
             return true;
         }
+        updateSellAllConfig();
         return false;
     }
 
@@ -428,6 +768,7 @@ public class SellAllUtil {
         } catch (IllegalArgumentException ex) {
             return true;
         }
+        updateSellAllConfig();
         return false;
     }
 
@@ -460,6 +801,7 @@ public class SellAllUtil {
         } catch (IllegalArgumentException ex) {
             return true;
         }
+        updateSellAllConfig();
         return false;
     }
 
@@ -477,6 +819,7 @@ public class SellAllUtil {
             e.printStackTrace();
             return true;
         }
+        updateSellAllConfig();
         return false;
     }
 
@@ -502,6 +845,7 @@ public class SellAllUtil {
             e.printStackTrace();
             return true;
         }
+        updateSellAllConfig();
         return false;
     }
 
@@ -527,6 +871,7 @@ public class SellAllUtil {
             e.printStackTrace();
             return true;
         }
+        updateSellAllConfig();
         return false;
     }
 
@@ -552,27 +897,25 @@ public class SellAllUtil {
             e.printStackTrace();
             return true;
         }
+        updateSellAllConfig();
         return false;
     }
 
     private boolean sellAllAddBlockAction(XMaterial xMaterial, Double value) {
         try {
-            try {
-                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-                conf.set("Items." + xMaterial.name() + ".ITEM_ID", xMaterial.name());
-                conf.set("Items." + xMaterial.name() + ".ITEM_VALUE", value);
-                if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
-                    conf.set("Items." + xMaterial.name() + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + xMaterial.name());
-                }
-                conf.save(sellAllFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return true;
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("Items." + xMaterial.name() + ".ITEM_ID", xMaterial.name());
+            conf.set("Items." + xMaterial.name() + ".ITEM_VALUE", value);
+            if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
+                conf.set("Items." + xMaterial.name() + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + xMaterial.name());
             }
-        } catch (IllegalArgumentException ex) {
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            e.printStackTrace();
             return true;
         }
+        updateSellAllConfig();
         return false;
     }
 
@@ -601,6 +944,7 @@ public class SellAllUtil {
         } catch (IllegalArgumentException ex) {
             return true;
         }
+        updateSellAllConfig();
         return false;
     }
 
@@ -629,6 +973,7 @@ public class SellAllUtil {
         } catch (IllegalArgumentException ex) {
             return true;
         }
+        updateSellAllConfig();
         return false;
     }
 
@@ -657,6 +1002,7 @@ public class SellAllUtil {
         } catch (IllegalArgumentException ex) {
             return true;
         }
+        updateSellAllConfig();
         return false;
     }
 
@@ -687,6 +1033,7 @@ public class SellAllUtil {
     }
 
     private boolean sellAllOpenGUI(Player p) {
+        updateSellAllConfig();
         // If the Admin GUI's enabled will enter do this, if it isn't it'll try to open the Player GUI.
         boolean guiEnabled = getBoolean(sellAllConfig.getString("Options.GUI_Enabled"));
         if (guiEnabled) {
@@ -713,6 +1060,9 @@ public class SellAllUtil {
     }
 
     private void sellAllSellPlayer(Player p) {
+
+        updateSellAllConfig();
+
         boolean sellAllSignEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Enabled"));
         boolean sellAllBySignOnlyEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_By_Sign_Only"));
         String byPassPermission = sellAllConfig.getString("Options.SellAll_By_Sign_Bypass_Permission");
@@ -786,15 +1136,15 @@ public class SellAllUtil {
         }
     }
 
-    private SellAllUtil instanceUpdater() {
-        if (isEnabled && instance == null) {
+    private static SellAllUtil instanceUpdater() {
+        if (SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true") && instance == null) {
             instance = new SellAllUtil();
         }
 
         return instance;
     }
 
-    private boolean sellAllAutoSelPerUserToggleableTottle(boolean enableBoolean) {
+    private boolean sellAllAutoSellPerUserToggleableToggle(boolean enableBoolean) {
         try {
             File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
@@ -804,6 +1154,7 @@ public class SellAllUtil {
             e.printStackTrace();
             return true;
         }
+        updateSellAllConfig();
         return false;
     }
 
@@ -818,6 +1169,50 @@ public class SellAllUtil {
             return true;
         }
         sellAllConfigUpdater();
+        return false;
+    }
+
+    private boolean sellAllAutoSellPlayerToggler(Player p) {
+        // Get Player UUID.
+        UUID playerUUID = p.getUniqueId();
+
+        if (sellAllConfig.getString("Users." + playerUUID + ".isEnabled") != null){
+
+            boolean isEnabled = getBoolean(sellAllConfig.getString("Users." + playerUUID + ".isEnabled"));
+            try {
+                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                conf.set("Users." + playerUUID + ".isEnabled", !isEnabled);
+                conf.save(sellAllFile);
+            } catch (IOException e) {
+                Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+                e.printStackTrace();
+                return true;
+            }
+
+            if (isEnabled){
+                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllAutoDisabled")));
+            } else {
+                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllAutoEnabled")));
+            }
+
+        } else {
+
+            // Enable it for the first time
+            try {
+                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+                conf.set("Users." + playerUUID + ".isEnabled", true);
+                conf.set("Users." + playerUUID + ".name", p.getName());
+                conf.save(sellAllFile);
+            } catch (IOException e) {
+                Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+                e.printStackTrace();
+                return true;
+            }
+
+            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllAutoEnabled")));
+        }
         return false;
     }
 
@@ -849,11 +1244,10 @@ public class SellAllUtil {
         return false;
     }
 
-    private boolean sellAllCurrencySaver(CommandSender sender, String currency) {
+    private boolean sellAllCurrencySaver(String currency) {
 
         EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager().getEconomyForCurrency(currency);
         if (currencyEcon == null && !currency.equalsIgnoreCase("default")) {
-            Output.get().sendError(sender, SpigotPrison.format(messages.getString("Message.SellAllCurrencyNotFound")), currency);
             return true;
         }
 
@@ -863,7 +1257,6 @@ public class SellAllUtil {
             conf.set("Options.SellAll_Currency", currency);
             conf.save(sellAllFile);
         } catch (IOException e) {
-            Output.get().sendError(sender, SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
             e.printStackTrace();
             return true;
         }
@@ -873,7 +1266,6 @@ public class SellAllUtil {
     }
 
     private double getNewMoneyToGive(Player p, boolean removeItems) {
-
         // Money to give value, Player Inventory, Items config section.
         double moneyToGive = 0;
         Inventory inv = p.getInventory();
@@ -908,7 +1300,6 @@ public class SellAllUtil {
     }
 
     private double sellAllGetMoneyToGivePrisonBackpacks(Player p, boolean removeItems, double moneyToGive, HashMap<XMaterial, Double> sellAllXMaterials) {
-
         if (BackpacksUtil.get().isMultipleBackpacksEnabled()) {
             if (!BackpacksUtil.get().getBackpacksIDs(p).isEmpty()) {
                 for (String id : BackpacksUtil.get().getBackpacksIDs(p)) {
@@ -974,7 +1365,6 @@ public class SellAllUtil {
         return moneyToGive;
     }
 
-    @NotNull
     private HashMap<XMaterial, Double> getDoubleXMaterialHashMap(Set<String> items) {
         HashMap<XMaterial, Double> sellAllXMaterials = new HashMap<>();
         for (String key : items) {
@@ -1056,7 +1446,6 @@ public class SellAllUtil {
         return moneyToGive;
     }
 
-    @NotNull
     private XMaterial getXMaterialOrLapis(ItemStack itemStack) {
         if (itemStack.isSimilar(lapisLazuli)) {
             return XMaterial.LAPIS_LAZULI;
@@ -1126,45 +1515,25 @@ public class SellAllUtil {
         return false;
     }
 
-    private boolean addMultiplierConditions(CommandSender sender, String prestige, Double multiplier) {
-
-        boolean multiplierEnabled = getBoolean(sellAllConfig.getString("Options.Multiplier_Enabled"));
-        if (!multiplierEnabled) {
-
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMultipliersAreDisabled")));
-            return true;
-        }
-
-        if (prestige == null) {
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
-            return true;
-        }
-        if (multiplier == null) {
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllMultiplierWrongFormat")));
-            return true;
-        }
+    private boolean addMultiplierConditions(String prestige) {
 
         PrisonRanks rankPlugin = (PrisonRanks) (Prison.get().getModuleManager() == null ? null : Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME).orElse(null));
         if (rankPlugin == null) {
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllRanksDisabled")));
             return true;
         }
 
         boolean isPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges") != null;
         if (!isPrestigeLadder) {
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllPrestigeLadderNotFound")));
             return true;
         }
 
         boolean isARank = rankPlugin.getRankManager().getRank(prestige) != null;
         if (!isARank) {
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllCantFindPrestigeOrRank") + prestige));
             return true;
         }
 
         boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").containsRank(rankPlugin.getRankManager().getRank(prestige).getId());
         if (!isInPrestigeLadder) {
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.SellAllRankNotFoundInPrestigeLadder") + prestige));
             return true;
         }
         return false;
@@ -1256,7 +1625,6 @@ public class SellAllUtil {
         boolean multiplierEnabled = getBoolean(sellAllConfig.getString("Options.Multiplier_Enabled"));
         if (multiplierEnabled) {
             moneyToGive = moneyToGive * getMultiplier(sPlayer);
-            ;
         }
 
         return moneyToGive;
@@ -1286,5 +1654,4 @@ public class SellAllUtil {
 
         return multiplier;
     }
-
 }

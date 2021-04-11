@@ -92,6 +92,27 @@ custom currency and that currency cannot be found in any economy.
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
+# Server Start Up Script
+
+
+If you are leasing a server from a hosting service you may not be able to customize the startup script. But if you have control over it, then the following information may help.
+
+
+`java -Xdebug -Xms2g -Xmx4g -jar spigot-1.16.5.jar -nogui`
+
+
+Example of enabling debug hooks for the server.  This is used with Eclipse, and may work with other IDEs since it's a java directive.
+
+`java -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005 -Xms2g -Xmx8g -jar spigot-1.16.5.jar -nogui --log-strip-color`
+
+
+Note: The use of `--log-strip-color` may or may not work within your environment.
+
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
 
 # Getting Help
 
@@ -111,7 +132,7 @@ everything from the first line to the last. Please take a screen print and provi
 discord with a detailed explanation of the issue.  Include everything from:
 
 ```
-	[16:21:30 INFO]: [Prison] Enabling Prison v3.2.1-alpha.13
+	[16:21:30 INFO]: [Prison] Enabling Prison v3.2.5
 ```
 
 through:

@@ -69,6 +69,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.BlockType","&3BlockType: ");
         dataConfig("Lore.Blocks","&3Blocks:");
         dataConfig("Lore.Blocks2","&8Manage blocks of the Mine.");
+        dataConfig("Lore.BackpackID", "&3Backpack ID: ");
         dataConfig("Lore.ClickToAddBackpack", "&8Click to add backpack.");
         dataConfig("Lore.ClickToAddBackpackInst0", "&3Instructions: ");
         dataConfig("Lore.ClickToAddBackpackInst1", "&8Remember to add an item");
@@ -126,6 +127,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.Name","&3Rank Name: &7");
         dataConfig("Lore.Notifications","&8Edit Mines notifications.");
         dataConfig("Lore.Permission", "&3Permission: ");
+        dataConfig("Lore.PlayerOwner", "&3Backpack owner: ");
         dataConfig("Lore.PlayersWithTheRank","&3Players at rank: &7");
         dataConfig("Lore.PrestigeWarning", "&3Prestige will reset: ");
         dataConfig("Lore.PrestigeWarning2", "&3 - &bRank");
@@ -190,6 +192,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.ZeroBlocksReset1","&8Set a mine's delay ");
         dataConfig("Lore.ZeroBlocksReset2","&8before reset when it ");
         dataConfig("Lore.ZeroBlocksReset3","&8reaches zero blocks.");
+        dataConfig("Message.BackPackIsDisabled", "Backpacks are disabled in the config.yml, you can't use this!");
         dataConfig("Message.BackPackNeedPlayer", "Please add a playername.");
         dataConfig("Message.BackPackDeleteOperationSuccess", "The backpack should've been deleted with success!");
         dataConfig("Message.BackPackDeleteOperationFail", "Can't find the backpack or something went wrong...?");
@@ -241,6 +244,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.CancelPrestige", "&cCancel&7: Type the word &ccancel&7 to cancel, &cyou've 30 seconds.");
         dataConfig("Message.PrestigesAreDisabled", "Prestiges are &cdisabled&7. Check config.yml.");
         dataConfig("Message.GuiOrPrestigesDisabled", "GUI and/or GUI Prestiges is &cdisabled&7. Check GuiConfig.yml.");
+        dataConfig("Message.GuiClosedWithSuccess", "The GUI got closed.");
         dataConfig("Message.CantFindPrestiges", "The prestige ladder has &cno prestiges&7!");
         dataConfig("Message.missingGuiPrestigesPermission", "You lack the &cpermissions&7 to use GUI prestiges");
         dataConfig("Message.rankTagRename", "Please write the &6tag &7you'd like to use and &6submit&7.");
@@ -329,6 +333,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.SellAllTriggerMissingItem", "There isn't an item in the SellAllConfig.yml trigger like that.");
         dataConfig("Message.TooLowValue", "&cToo low value.");
         dataConfig("Message.TooHighValue", "&cToo high value.");
+        dataConfig("Message.GUIReloadSuccess", "GUIs reloaded with success!");
         dataConfig("Setup.Message.MissingPermission", "Sorry but you don't have the &cpermission&7 [-prison.setup- or -prison.admin-]!");
         dataConfig("Setup.Message.WrongFormat", "You're &cmissing&7 the last argument -mines- or -ranks-, /<command> setup -mines- or -ranks- !");
         dataConfig("Setup.Message.WelcomeToRanksSetup", "Hi and welcome to the Ranks Setup, please &cwait&7 until it'll be completed!");

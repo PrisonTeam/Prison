@@ -29,7 +29,33 @@ Outline on what to do is as follows:
 
 **Note:** You do not need to set any WorldGuard regions for the mines.
   
-**Note:** You can setup WorldGuard regions to keep out non-players.
+**Note:** You can still setup WorldGuard regions to keep out non-players.
+
+
+As of Prison v3.2.7 (or v3.2.6-alpha.2) you can now change the priority of prison's event listeners for BlockBreakEvents and explosion events.
+
+Please see the `autoFeaturesConfig.yml` configuration file to make changes.  Prison is using the default value of `LOW`, but if you need to make adjustments, you can do so under the group `options.blockBreakEvents` as listed below.  
+
+
+```
+options:
+  otherPlugins:
+    isProcessTokensEnchantExplosiveEvents: true
+    isProcessCrazyEnchantsBlockExplodeEvents: true
+    isProcessMcMMOBlockBreakEvents: true
+    isProcessEZBlocksBlockBreakEvents: false
+  blockBreakEvents:
+    blockBreakEventPriority: LOW
+    TokenEnchantBlockExplodeEventPriority: LOW
+    CrazyEnchantsBlastUseEventPriority: LOW
+    ZenchantmentsBlockShredEventPriority: LOW
+```
+
+Valid values are `LOWEST`, `LOW`, `NORMAL`, `HIGH`, and `HIGHEST`.  You can also use `DISABLED` to prevent the use of those listeners, but keep in mind that if you have auto features enabled then you set the priority to `DISABLED` then auto features will not work.  If disabled is specified then it will also disable the `MONITOR` even listener so prison will be unable to track which blocks are broken or provide a count of what remains.  
+
+You cannot set any of the above event priorities to MONITOR since that goes against the bukkit/spigot standards to change block states under the MONITOR priorities.
+
+
 
 <hr style="height:8px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -48,7 +74,6 @@ The first attempt at this document tried to use region templates, where a templa
 
 # Dependencies 
 
-* Vault - Interfaces with the Permission Plugins
 * [Install WorldGuard and WorldEdit](prison_docs_026_setting_up_worldguard_worldedit.md)
 * Install a Permissions Plugin that is compatible with Vault 
     * This guide uses LuckPerms.  See [Setting up LuckPerms](prison_docs_020_setting_up_luckperms.md) for more information.
@@ -467,9 +492,9 @@ One of the primary focuses for this document has been protecting the area around
 
 These are entered in a step by step process, intended for you to follow.
 
-These can, and probably will, be translated in to a runnable script within prison that will set everything up for you.  Well, once you take care of the basics. 
 
 You should be in game when you run these commands, otherwise you may have to specify the world name with almost all LuckPerm commands.  When these are converted to scrips, the world parameter will be added.
+
 
 Some code chunks will have **In Game:** which is intended to run from within minecraft.  The **Console:** is intended to be ran from the console, where there is no player, so you have to provide the "world".  Note that if your world is not named "world" then you will have to change that.  If there are any code chunks that are marked as "script" then those provide an example of what kind of placeholders would have to be used.
 

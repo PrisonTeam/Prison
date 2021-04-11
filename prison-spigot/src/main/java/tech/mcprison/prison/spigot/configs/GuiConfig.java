@@ -2,7 +2,8 @@ package tech.mcprison.prison.spigot.configs;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -35,6 +36,21 @@ public class GuiConfig extends SpigotConfigComponents{
         // Values to write down into the config
         values();
 
+        if (conf.getList("EditableLore.Ranks") == null){
+            List<String> lore = new ArrayList<>();
+            lore.add(" ");
+            lore.add("&8-----------------------");
+            lore.add(" ");
+            lore.add("&8&l|&3Info&8|");
+            lore.add("&3Rank Price: &a${rankPrice}");
+            lore.add(" ");
+            lore.add("&8-----------------------");
+            lore.add("%prison_rcb_default%");
+
+            conf.set("EditableLore.Ranks", lore);
+            changeCount++;
+        }
+
         // Count and save
         if (changeCount > 0) {
         	try {
@@ -61,18 +77,19 @@ public class GuiConfig extends SpigotConfigComponents{
         dataConfig("Options.Ranks.GUI_Enabled","true");
         dataConfig("Options.Ranks.Permission_GUI_Enabled","false");
         dataConfig("Options.Ranks.Permission_GUI","prison.gui.ranks");
-        dataConfig("Options.Mines.GUI_Enabled","true");
-        dataConfig("Options.Mines.Permission_GUI_Enabled","false");
-        dataConfig("Options.Mines.Permission_GUI","prison.gui.mines");
-        dataConfig("Options.Prestiges.GUI_Enabled","true");
-        dataConfig("Options.Prestiges.Permission_GUI_Enabled","false");
-        dataConfig("Options.Prestiges.Permission_GUI","prison.gui.prestiges");
-        dataConfig("Options.Ranks.Ladder","default");
         dataConfig("Options.Ranks.Item_gotten_rank","TRIPWIRE_HOOK");
         dataConfig("Options.Ranks.Item_not_gotten_rank","REDSTONE_BLOCK");
         dataConfig("Options.Ranks.Enchantment_effect_current_rank","true");
+        dataConfig("Options.Ranks.Ladder","default");
+        dataConfig("Options.Ranks.Number_of_Rank_Player_GUI", "false");
+        dataConfig("Options.Mines.GUI_Enabled","true");
+        dataConfig("Options.Mines.Permission_GUI_Enabled","false");
+        dataConfig("Options.Mines.Permission_GUI","prison.gui.mines");
         dataConfig("Options.Mines.PermissionWarpPlugin","mines.tp.");
         dataConfig("Options.Mines.CommandWarpPlugin","mines tp");
+        dataConfig("Options.Prestiges.GUI_Enabled","true");
+        dataConfig("Options.Prestiges.Permission_GUI_Enabled","false");
+        dataConfig("Options.Prestiges.Permission_GUI","prison.gui.prestiges");
         dataConfig("Options.Setup.EnabledGUI", "true");
         dataConfig("Options.Titles.PlayerRanksGUI", "&3Player -> Ranks");
         dataConfig("Options.Titles.PlayerPrestigesGUI", "&3Player -> Prestiges");

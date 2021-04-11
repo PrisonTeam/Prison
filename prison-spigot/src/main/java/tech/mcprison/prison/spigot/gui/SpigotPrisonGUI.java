@@ -17,6 +17,7 @@ import java.util.List;
 public class SpigotPrisonGUI extends SpigotGUIComponents {
 
     private final Player p;
+    private final int dimension = 45;
 
     public SpigotPrisonGUI(Player p){
         this.p = p;
@@ -25,7 +26,6 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
     public void open() {
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
-        int dimension = 27;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3PrisonManager"));
 
         if (guiBuilder(inv)) return;
@@ -70,12 +70,14 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
         ItemStack autoManager = createButton(XMaterial.IRON_PICKAXE.parseItem(), prisonTasksLore, SpigotPrison.format("&3" + "AutoManager"));
         ItemStack mines = createButton(XMaterial.DIAMOND_ORE.parseItem(), minesLore, SpigotPrison.format("&3" + "Mines"));
         ItemStack sellAll = createButton(XMaterial.CHEST.parseItem(), sellAllLore, SpigotPrison.format("&3" + "SellAll"));
+        ItemStack backpacksAdmin = createButton(XMaterial.CHEST_MINECART.parseItem(), sellAllLore, SpigotPrison.format("&3" + "Backpacks"));
 
         // Position of the button
         inv.setItem(10, ranks);
-        inv.setItem(12, autoManager);
-        inv.setItem(14, mines);
-        inv.setItem(16, sellAll);
-        inv.setItem(26, closeGUI);
+        inv.setItem(13, autoManager);
+        inv.setItem(16, mines);
+        inv.setItem(29, sellAll);
+        inv.setItem(33, backpacksAdmin);
+        inv.setItem(dimension-1, closeGUI);
     }
 }
