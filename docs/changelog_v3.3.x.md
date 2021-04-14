@@ -20,12 +20,15 @@ These represent the work that has been done on prison.
 # v3.3.0-alpha.1 2021-04-14
 
 
+* **Setup the auto feature's sellall on each block mined to suppress notifications and sounds.**
+
+
 * **Fixed a thread safety bug with the sign usage variable within the singleton.**  
 Basically it would have failed to identify a specific player as to using a sign.  If there were many players online and they all performed a sellall event, but only one using a sign, then any of the other players who were not using the sign would have a race condition and the first one to be processed would be identified as having used the sign.
 
 
-* **Also provided a way to suppress the notifications so the command can be used in slient mode, which would be beneficial for a per-block use of sellall.**
- When notifications are suppressed, it supresses the text messges and the audio.
+* **Also provided a way to suppress the notifications so the command can be used in silent mode, which would be beneficial for a per-block use of sellall.**
+ When notifications are suppressed, it suppresses the text messages and the audio.
 
 
 * **v3.3.0-alpha.1 2021-04-11**

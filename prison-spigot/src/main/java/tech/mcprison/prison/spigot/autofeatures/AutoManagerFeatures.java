@@ -468,12 +468,12 @@ public class AutoManagerFeatures
 			if ( isBoolean( AutoFeatures.isAutoSellPerBlockBreakInlinedEnabled ) ) {
 				// run sellall inline with the block break event:
 				if (SellAllPrisonCommands.get() != null) {
-					SellAllPrisonCommands.get().sellAllSellCommand(new SpigotPlayer(player));
+					SellAllPrisonCommands.get().sellAllSellCommand(new SpigotPlayer(player), "silent");
 				}
 			}
 			else {
 				// Submit sellall to run in the future (0 ticks in the future):
-				String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
+				String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell silent" );
 				Bukkit.dispatchCommand(player, registeredCmd);
 			}
 		}
@@ -653,7 +653,7 @@ public class AutoManagerFeatures
 										SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
 							}
 							
-							SellAllPrisonCommands.get().sellAllSellCommand( new SpigotPlayer( player ) );
+							SellAllPrisonCommands.get().sellAllSellCommand( new SpigotPlayer( player ), "" );
 							
 //							String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
 //							Bukkit.dispatchCommand(player, registeredCmd);
@@ -664,7 +664,7 @@ public class AutoManagerFeatures
 						Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(
 								SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
 					}
-					SellAllPrisonCommands.get().sellAllSellCommand( new SpigotPlayer( player ) );
+					SellAllPrisonCommands.get().sellAllSellCommand( new SpigotPlayer( player ), "" );
 
 //					String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
 //					Bukkit.dispatchCommand(player, registeredCmd);
