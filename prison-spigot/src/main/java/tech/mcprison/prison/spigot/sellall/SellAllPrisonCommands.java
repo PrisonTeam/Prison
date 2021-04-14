@@ -195,7 +195,10 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     }
     
     @Command(identifier = "sellall sell", description = "SellAll sell command", onlyPlayers = true)
-	public void sellAllSellCommand(CommandSender sender){
+	public void sellAllSellCommand(CommandSender sender,
+			@Arg(name = "notification", def="",
+    		description = "Notification about the sellall transaction. Defaults to normal. " +
+    				"'silent' suppresses results. [silent]") String notification ){
 
         if (!isEnabled()) return;
 
@@ -217,7 +220,10 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             }
         }
 
-        sellAllUtil.sellAllSell(p);
+        boolean notifications = !(notification != null && "silent".equalsIgnoreCase( notification ));
+        boolean bySignOnly = notification != null && "bySignOnly".equalsIgnoreCase( notification );
+        
+        sellAllUtil.sellAllSell(p, notifications, bySignOnly);
     }
 
     @Command(identifier = "sellall auto toggle", description = "Let the user enable or disable sellall auto", onlyPlayers = true)

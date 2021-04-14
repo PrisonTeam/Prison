@@ -1,6 +1,12 @@
 package tech.mcprison.prison.spigot.gui;
 
-import com.cryptomorin.xseries.XMaterial;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -17,6 +23,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
@@ -30,24 +39,37 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
-import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminGUI;
-import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminListGUI;
-import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminPlayerListGUI;
-import tech.mcprison.prison.spigot.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoPickupGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoSmeltGUI;
-import tech.mcprison.prison.spigot.gui.mine.*;
-import tech.mcprison.prison.spigot.gui.rank.*;
-import tech.mcprison.prison.spigot.gui.sellall.*;
-import tech.mcprison.prison.spigot.sellall.SellAllUtil;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
+import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminGUI;
+import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminListGUI;
+import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminPlayerListGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotBlocksListGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotBlocksMineListGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMineBlockPercentageGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMineInfoGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMineNotificationRadiusGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMineNotificationsGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMineResetTimeGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMinesBlocksGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMinesConfirmGUI;
+import tech.mcprison.prison.spigot.gui.mine.SpigotMinesGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotLaddersGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotRankManagerGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotRankPriceGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotRankUPCommandsGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminAutoSellGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminBlocksGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllDelayGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllPrestigesMultiplierGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllPrestigesSetMultiplierGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllPriceGUI;
 
 /**
  * @author GABRYCA
@@ -238,11 +260,13 @@ public class ListenersPrisonManager implements Listener {
                                     return;
                                 }
 
+                                boolean bySignOnly = false;
                                 if (sellAllConfig.getString("Options.SellAll_By_Sign_Only").equalsIgnoreCase("true")) {
-                                    SellAllUtil sellAll = SellAllUtil.get();
-                                    if (sellAll != null) {
-                                        sellAll.toggleSellAllSign();
-                                    }
+                                	bySignOnly = true;
+//                                    SellAllUtil sellAll = SellAllUtil.get();
+//                                    if (sellAll != null) {
+//                                        sellAll.toggleSellAllSign();
+//                                    }
                                 }
 
                                 if (sellAllConfig.getString("Options.SellAll_Sign_Notify").equalsIgnoreCase("true")) {
@@ -251,7 +275,7 @@ public class ListenersPrisonManager implements Listener {
 
                                 // Execute the sellall command
                                 String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
-                                Bukkit.dispatchCommand(p, registeredCmd);
+                                Bukkit.dispatchCommand(p, registeredCmd + ( bySignOnly ? " bySignOnly" : ""));
                             }
                         } catch (IndexOutOfBoundsException ignored) {}
                     }

@@ -53,7 +53,7 @@ public class SellAllUtil {
     private File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
     public Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
     public static List<String> activePlayerDelay = new ArrayList<>();
-    public boolean signUsed = false;
+//    public boolean signUsed = false;
     private final Compatibility compat = SpigotPrison.getInstance().getCompatibility();
     private final ItemStack lapisLazuli = compat.getLapisItemStack();
     private String idBeingProcessedBackpack = null;
@@ -81,13 +81,13 @@ public class SellAllUtil {
         return sellAllConfig;
     }
 
-    /**
-     * Use this to toggle the SellAllSign, essentially this will tell to the SellAll Sell command that you're using a sign
-     * for SellAll.
-     */
-    public void toggleSellAllSign() {
-        sellAllSignToggler();
-    }
+//    /**
+//     * Use this to toggle the SellAllSign, essentially this will tell to the SellAll Sell command that you're using a sign
+//     * for SellAll.
+//     */
+//    public void toggleSellAllSign() {
+//        sellAllSignToggler();
+//    }
 
     /**
      * Get the money to give to the Player depending on the multiplier.
@@ -196,6 +196,10 @@ public class SellAllUtil {
      */
     public void sellAllSell(Player p) {
         sellAllSellPlayer(p);
+    }
+    
+    public void sellAllSell(Player p, boolean notifications, boolean bySignOnly) {
+    	sellAllSellPlayer(p, notifications, bySignOnly);
     }
 
     /**
@@ -1060,22 +1064,25 @@ public class SellAllUtil {
     }
 
     private void sellAllSellPlayer(Player p) {
+    	sellAllSellPlayer( p, true, false );
+    }
+    private void sellAllSellPlayer(Player p, boolean notifications, boolean bySignOnly) {
 
         updateSellAllConfig();
 
         boolean sellAllSignEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Enabled"));
         boolean sellAllBySignOnlyEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_By_Sign_Only"));
         String byPassPermission = sellAllConfig.getString("Options.SellAll_By_Sign_Bypass_Permission");
-        if (sellAllSignEnabled && sellAllBySignOnlyEnabled && (byPassPermission != null && !p.hasPermission(byPassPermission))) {
-            if (!signUsed) {
+        if (sellAllSignEnabled && sellAllBySignOnlyEnabled && (byPassPermission == null || byPassPermission != null && !p.hasPermission(byPassPermission))) {
+            if (!bySignOnly) {
                 Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllSignOnly")));
                 return;
             }
         }
 
-        if (signUsed) signUsed = false;
+//        if (signUsed) signUsed = false;
 
-        boolean sellSoundEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Sound_Enabled"));
+        boolean sellSoundEnabled = notifications && getBoolean(sellAllConfig.getString("Options.Sell_Sound_Enabled"));
         Compatibility compat = SpigotPrison.getInstance().getCompatibility();
         if (!(sellAllConfig.getConfigurationSection("Items.") == null)) {
 
@@ -1093,7 +1100,7 @@ public class SellAllUtil {
 
             rankPlayer.addBalance(currency, moneyToGive);
 
-            boolean sellNotifyEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Notify_Enabled"));
+            boolean sellNotifyEnabled = notifications && getBoolean(sellAllConfig.getString("Options.Sell_Notify_Enabled"));
             if (moneyToGive < 0.001) {
                 if (sellSoundEnabled) {
                     Sound sound;
@@ -1611,11 +1618,11 @@ public class SellAllUtil {
         activePlayerDelay.remove(p.getName());
     }
 
-    private void sellAllSignToggler() {
-        if (!signUsed) {
-            signUsed = true;
-        }
-    }
+//    private void sellAllSignToggler() {
+//        if (!signUsed) {
+//            signUsed = true;
+//        }
+//    }
 
     private double getMoneyFinal(Player player, boolean removeItems) {
         SpigotPlayer sPlayer = new SpigotPlayer(player);
