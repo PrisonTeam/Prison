@@ -19,6 +19,12 @@ These represent the work that has been done on prison.
 
 # v3.3.0-alpha.1 2021-04-14
 
+* **Backpack size permission**
+Added a permission to set a _custom backpack size of a player_, it works just like permission multipliers,
+  you just need to use this permission: **prison.backpack.size.<number>** replacing <number> with
+  the custom size, **multiple of 9** that you want to use for your backpack, **example: prison.backpack.size.18** will
+  make backpacks of that player with a size of 18 slots/2 rows.
+
 
 * **Logic error on calculating the units for placeholders.**
 Was using <= instead of just < so it would produce a result of "1,000.0 K" instead of "1.0 M".

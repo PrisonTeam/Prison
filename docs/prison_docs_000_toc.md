@@ -122,6 +122,7 @@ Prison now has a new set of features that can help you get up and running faster
 - [/rankupMax \[ladder\]](docs-commands/prison_docs_command_39_rankupmax.md) `ranks.user` `ranks.rankupmax` `ranks.rankupmax.[ladderName]`
 - [/rankup \[ladder\]](docs-commands/prison_docs_command_40_rankup.md) `ranks.user` `ranks.rankup.[ladderName]`
 - /gui \[gui\]
+- [/backpack](docs-commands/prison_docs_command_43_backpack.md)
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">

@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.sellall;
+package tech.mcprison.prison.spigot.commands;
 
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
@@ -15,8 +15,9 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPlatform;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.commands.PrisonSpigotBaseCommands;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 
 /**
  * @author GABRYCA

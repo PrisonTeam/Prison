@@ -26,6 +26,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.configs.BackpacksConfig;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
  * @author GABRYCA
@@ -830,9 +831,10 @@ public class BackpacksUtil {
         }
 
         try {
-            backPackSize = Integer.parseInt(backpacksDataConfig.getString("Inventories." + p.getUniqueId().toString() + ".Items.Size"));
+            backPackSize = Integer.parseInt(backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Items.Size"));
         } catch (NumberFormatException ignored){}
-        return backPackSize;
+
+        return getBackpackPermSize(p, backPackSize);
     }
 
     private int getSize(Player p, String id) {
@@ -846,6 +848,24 @@ public class BackpacksUtil {
         try {
             backPackSize = Integer.parseInt(backpacksDataConfig.getString("Inventories." + p.getUniqueId().toString() + ".Items-" + id + ".Size"));
         } catch (NumberFormatException ignored){}
+
+        return getBackpackPermSize(p, backPackSize);
+    }
+
+    private int getBackpackPermSize(Player p, int backPackSize) {
+        SpigotPlayer sPlayer = new SpigotPlayer(p);
+        List<String> perms = sPlayer.getPermissions("prison.backpack.size.");
+        int value = 0;
+        for (String permNumber : perms){
+            int newValue = Integer.parseInt(permNumber.substring(21));
+            if (newValue > value){
+                value = (int) Math.ceil((float)newValue / 9) * 9;
+            }
+        }
+
+        if (value != 0){
+            return value;
+        }
         return backPackSize;
     }
 
