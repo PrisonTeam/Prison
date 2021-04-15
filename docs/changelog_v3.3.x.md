@@ -20,6 +20,10 @@ These represent the work that has been done on prison.
 # v3.3.0-alpha.1 2021-04-14
 
 
+* **Logic error on calculating the units for placeholders.**
+Was using <= instead of just < so it would produce a result of "1,000.0 K" instead of "1.0 M".
+
+
 * **Setup the auto feature's sellall on each block mined to suppress notifications and sounds.**
 
 

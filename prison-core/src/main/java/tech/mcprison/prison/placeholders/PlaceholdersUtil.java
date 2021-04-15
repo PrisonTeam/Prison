@@ -106,7 +106,7 @@ public class PlaceholdersUtil {
 	}
 	
 	private static double divBy1000( double amount, StringBuilder unit, String units ) {
-    	if ( amount <= 1000.0 || units.length() == 1 ) {
+    	if ( amount < 1000.0 || units.length() == 1 ) {
     		unit.append( units.subSequence( 0, 1 ) );
     	}
     	else {
@@ -139,7 +139,7 @@ public class PlaceholdersUtil {
     	if ( prefixesBinary.size() == 0) {
     		// no prefixesBinary units have been defined, so exit returning the original amount:
     	}
-    	else if ( amount <= 1024.0 || prefixesBinary.size() == (prefixesBinaryPos + 1)) {
+    	else if ( amount < 1024.0 || prefixesBinary.size() == (prefixesBinaryPos + 1)) {
     		unit.append( prefixesBinary.get( prefixesBinaryPos ) );
     	}
     	else {
