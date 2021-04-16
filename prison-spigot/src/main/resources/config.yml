@@ -121,22 +121,9 @@ default-language: en_US
 
 
 # The storage engine that Prison should use to store data.
-# Ensure that only one is left uncommented out. Also, ensure
-# that you specify your MongoDB or SQL login credentials if necessary.
+# The only valid storageType is json. 
 storageType: "json"
-#storageType: "mongo"
-#storageType: "sql"
 
-# NOTE: The following is not used since SQL and MongoDB are not valid options.
-# Login credentials for either SQL or MongoDB
-#database:
-#  enabled: false
-#  type: sql # sql or mongo
-#  host: localhost
-#  database: prison
-#  username: root
-#  password: root
-#  port: 3306
 
 
 
