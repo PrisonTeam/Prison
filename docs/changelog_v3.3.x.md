@@ -20,6 +20,10 @@ These represent the work that has been done on prison.
 # v3.3.0-alpha.0 2021-04-16
 
 
+* **New feature: Add a tp warmup that is enabled within the config.yml file.**
+Able to configure the max distance the player can travel before the tp event is canceled.  Also can specify the warmup length of time, in ticks, that is used.
+
+
 * **Remove the references to mySQL and mongoDB from config.yml file since these never existed and probably won't ever exist any time soon.**
 
 
