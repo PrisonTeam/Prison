@@ -53,6 +53,7 @@ import tech.mcprison.prison.mines.features.MineLinerBuilder;
 import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
+import tech.mcprison.prison.mines.tasks.MineTeleportWarmUpTask;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
@@ -63,6 +64,7 @@ import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.selection.Selection;
 import tech.mcprison.prison.tasks.PrisonCommandTask.TaskMode;
+import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Bounds.Edges;
@@ -3371,17 +3373,40 @@ public class MinesCommands
         
     	if ( isOp && playerAlt != null && playerAlt.isOnline() ) {
     		
-    		m.teleportPlayerOut( playerAlt, target );
+    		teleportPlayer( playerAlt, m, target );
+//    		m.teleportPlayerOut( playerAlt, target );
     	}
     	else if ( sender.isPlayer() ) {
-    		m.teleportPlayerOut( (Player) sender, target );
+    		teleportPlayer( (Player) sender, m, target );
+//    		m.teleportPlayerOut( (Player) sender, target );
     	} else {
     		sender.sendMessage(
     	            "&3Telport failed. Are you sure you're a Player?");
     	}
     }
 
-    
+    private void teleportPlayer( Player player, Mine mine, String target ) {
+    	
+    	if ( Prison.get().getPlatform().getConfigBooleanFalse( "prison-mines.tp-warmup.enabled" ) ) {
+    		
+    		// if warm up enabled:
+    		double maxDistance = Prison.get().getPlatform().
+    							getConfigDouble( "prison-mines.tp-warmup.movementMaxDistance", 1.0 );
+    		long delayInTicks = Prison.get().getPlatform().
+    							getConfigLong( "prison-mines.tp-warmup.delayInTicks", 20 );
+    		
+    		MineTeleportWarmUpTask mineTeleportWarmUp = new MineTeleportWarmUpTask( 
+    							player, mine, target, maxDistance );
+    		PrisonTaskSubmitter.runTaskLater( mineTeleportWarmUp, delayInTicks );
+    	}
+    	else {
+    		
+    		mine.teleportPlayerOut( player, target );
+    	}
+    	
+
+
+    }
     
     @Command(identifier = "mines stats", permissions = "mines.stats", description = "Toggle stats on all mines.")
     public void mineStats(CommandSender sender) {

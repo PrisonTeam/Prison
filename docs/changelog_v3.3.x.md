@@ -20,6 +20,9 @@ These represent the work that has been done on prison.
 # v3.3.0-alpha.0 2021-04-16
 
 
+* **Remove the references to mySQL and mongoDB from config.yml file since these never existed and probably won't ever exist any time soon.**
+
+
 * **Add a function to get a double config value from the config.yml file.**
 
 
