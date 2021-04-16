@@ -17,7 +17,10 @@ These represent the work that has been done on prison.
 
 
 
-# v3.3.0-alpha.0 2021-04-15
+# v3.3.0-alpha.0 2021-04-16
+
+
+* **Add a function to get a double config value from the config.yml file.**
 
 
 * **Fixes an issue if the json array for resetWarningTimes has a trailing comma, which will result in a null entry.**

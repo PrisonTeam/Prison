@@ -826,7 +826,7 @@ public class SpigotPlatform
 			}
 			catch ( NumberFormatException e ) {
 				Output.get().logInfo( "Invalid config.yml value. The setting " +
-						"%s should be an integer but had a value of [%s]", 
+						"%s should be an long but had a value of [%s]", 
 						key, config );
 			}
 			
@@ -835,6 +835,28 @@ public class SpigotPlatform
 		return results;
 	}
 	
+	
+	@Override
+	public double getConfigDouble( String key, double defaultValue ) {
+		double results = defaultValue;
+		
+		String config = getConfigString(key);
+		
+		if ( config != null && config.trim().length() > 0) {
+			
+			try {
+				results = Double.parseDouble( config );
+			}
+			catch ( NumberFormatException e ) {
+				Output.get().logInfo( "Invalid config.yml value. The setting " +
+						"%s should be an double but had a value of [%s]", 
+						key, config );
+			}
+			
+		}
+		
+		return results;
+	}
 
 	
     /**

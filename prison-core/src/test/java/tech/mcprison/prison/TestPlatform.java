@@ -256,6 +256,11 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
+	public double getConfigDouble( String key, double defaultValue ) {
+		return defaultValue;
+	}
+	
+	@Override
 	public PrisonBlockTypes getPrisonBlockTypes() {
 		return null;
 	}

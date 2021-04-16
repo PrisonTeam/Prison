@@ -289,6 +289,8 @@ public interface Platform {
 	public int getConfigInt( String key, int defaultValue );
 	
 	public long getConfigLong( String key, long defaultValue );
+
+	public double getConfigDouble( String key, double defaultValue );
 	
 
     /**
