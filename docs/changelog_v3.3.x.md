@@ -20,6 +20,9 @@ These represent the work that has been done on prison.
 # v3.3.0-alpha.1 2021-04-16
 
 
+* **Added a 3d distance on the Bounds to better track player movements when using tp warm ups.**
+It was using 2d distance, ignoring the y axis.
+
 
 * **v3.3.0-alpha.1 2021-04-16**
 

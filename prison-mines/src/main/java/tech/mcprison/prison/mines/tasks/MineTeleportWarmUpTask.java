@@ -37,7 +37,7 @@ public class MineTeleportWarmUpTask
 		
 		Bounds bounds = new Bounds( getLocation(), locationNew );
 		
-		if ( bounds.getDistance() <= getMaxDistance() ) {
+		if ( bounds.getDistance3d() <= getMaxDistance() ) {
 			mine.teleportPlayerOut( getPlayer(), getTarget() );
 		}
 		else {

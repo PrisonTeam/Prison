@@ -421,6 +421,14 @@ public class Bounds {
     	double distance = Math.sqrt( (deltaX * deltaX)  + (deltaZ * deltaZ) );
     	return Math.round( distance );
     }
+    
+    public double getDistance3d() {
+    	double deltaX = getMin().getX() - getMax().getX();
+    	double deltaY = getMin().getY() - getMax().getY();
+    	double deltaZ = getMin().getZ() - getMax().getZ();
+    	double distance = Math.sqrt( (deltaX * deltaX) + (deltaY * deltaY)  + (deltaZ * deltaZ) );
+    	return Math.round( distance );
+    }
   
     public double getDistance(Location location) {
     	double deltaX = getCenter().getX() - location.getX();
