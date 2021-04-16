@@ -233,6 +233,23 @@ public abstract class MineScheduler
 	protected List<MineJob> initializeJobWorkflow( double resetTime, boolean includeMessages, ArrayList<Integer> rwTimes )
 	{
 		List<MineJob> workflow = new ArrayList<>();
+		ArrayList<Integer> resetWarningTimes = new ArrayList<>();
+		
+		// The resetWarningTimes can have a null value at the end if the json is setup with something like this:
+		//  "resetWarningTimes": [ 600, 300, 60, ]
+		// notice the comma after the 60 and no other number following that.  That happened to be a mistake
+		// that was made by a user, and resulted in all mines filing to load.
+		for ( Integer time : rwTimes ) {
+			if ( time != null && time.intValue() > 0 ) {
+				resetWarningTimes.add( time );
+			}
+		}
+		if ( resetWarningTimes.size() == 0 ) {
+			// they probably assume they never want a reset warning message so set the resetWarningTimes to one year:
+			int oneYear = 360 * 24 * 60 * 60;
+			resetWarningTimes.add( Integer.valueOf( oneYear ) );
+		}
+		
 		
 		// if the mine is virtual, set the resetTime to four hours.  It won't reset, but it will stay active
 		// in the workflow:
@@ -246,10 +263,10 @@ public abstract class MineScheduler
 		if ( includeMessages ) {
 			// Need to ensure that the reset warning times are sorted in ascending order:
 //			ArrayList<Integer> rwTimes = PrisonMines.getInstance().getConfig().resetWarningTimes;
-			Collections.sort( rwTimes );
+			Collections.sort( resetWarningTimes );
 			
 			double total = 0;
-			for ( Integer time : rwTimes ) {
+			for ( Integer time : resetWarningTimes ) {
 				if ( time < resetTime ) {
 					// if reset time is less than warning time, then skip warning:
 					double elapsed = time - total;

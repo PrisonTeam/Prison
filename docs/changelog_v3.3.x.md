@@ -17,7 +17,13 @@ These represent the work that has been done on prison.
 
 
 
-# v3.3.0-alpha.1 2021-04-14
+# v3.3.0-alpha.0 2021-04-15
+
+
+* **Fixes an issue if the json array for resetWarningTimes has a trailing comma, which will result in a null entry.**
+So the fix purges out any nulls, no matter where they may be.
+Also if there are no entries, it sets the reset warning times to a single entry that is one year long.  That will ensure no warnings happen, and this assumes that it was an attempt to disable the warnings.
+
 
 * **Backpack size permission**
 Added a permission to set a _custom backpack size of a player_, it works just like permission multipliers,
@@ -41,7 +47,7 @@ Basically it would have failed to identify a specific player as to using a sign.
  When notifications are suppressed, it suppresses the text messages and the audio.
 
 
-* **v3.3.0-alpha.1 2021-04-11**
+* **v3.3.0-alpha.0 2021-04-11**
 
   Start on the alpha.1 release.
   
