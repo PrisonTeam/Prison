@@ -37,7 +37,7 @@ import tech.mcprison.prison.spigot.block.OnBlockBreakEventCore;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-import tech.mcprison.prison.spigot.commands.SellAllPrisonCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Text;
@@ -467,8 +467,8 @@ public class AutoManagerFeatures
 			// Run sell all
 			if ( isBoolean( AutoFeatures.isAutoSellPerBlockBreakInlinedEnabled ) ) {
 				// run sellall inline with the block break event:
-				if (SellAllPrisonCommands.get() != null) {
-					SellAllPrisonCommands.get().sellAllSellCommand(new SpigotPlayer(player), "silent");
+				if (PrisonSpigotSellAllCommands.get() != null) {
+					PrisonSpigotSellAllCommands.get().sellAllSellCommand(new SpigotPlayer(player), "silent");
 				}
 			}
 			else {
@@ -653,7 +653,7 @@ public class AutoManagerFeatures
 										SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
 							}
 							
-							SellAllPrisonCommands.get().sellAllSellCommand( new SpigotPlayer( player ), "" );
+							PrisonSpigotSellAllCommands.get().sellAllSellCommand( new SpigotPlayer( player ), "" );
 							
 //							String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
 //							Bukkit.dispatchCommand(player, registeredCmd);
@@ -664,7 +664,7 @@ public class AutoManagerFeatures
 						Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(
 								SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
 					}
-					SellAllPrisonCommands.get().sellAllSellCommand( new SpigotPlayer( player ), "" );
+					PrisonSpigotSellAllCommands.get().sellAllSellCommand( new SpigotPlayer( player ), "" );
 
 //					String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
 //					Bukkit.dispatchCommand(player, registeredCmd);

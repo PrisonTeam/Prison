@@ -119,7 +119,7 @@ If everything's right, the sign will look like the sellall-sign-visible-tag from
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
-# SellAll Auto
+# SellAll Auto:
 
 You can turn on or off from the SellAllConfig.yml file the SellAll Auto feature, which will sell everything sellable from the player inventory when it's full.
 Just edit these config lines like this:
@@ -128,6 +128,8 @@ Just edit these config lines like this:
   Full_Inv_AutoSell_Notification: 'false'
 ```
 You can edit the autoSell notification as you want.
+
+## SellAll Auto Per-User-Toggleable
 
 It's also possible to enable or disable sellAll per-User, it'll be them to choose if enable it or not.
 They'll need to use the command: `/sellall auto toggle`, it'll let them enable or disable it, when used
@@ -139,6 +141,38 @@ The admin can enable this feature from the `sellAllConfig.yml`, by changing this
 ```
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+# SellAll Earnings After Delay (custom /sellall sell command):
+
+## What's the command:
+
+The command is: `/sellall delaysell`.
+
+## What is it:
+It's a command enabled by default that can let you show, only after a delay, how much money
+did the player earn during that delay.
+You can disable it from the sellallconfig.yml:
+`Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Enabled: true`
+
+For example, you can add it as a blockbreakevent command in a Mine, and the first time the player
+breaks a block, a cooldown will start of the number of seconds (by default 10 but it's editable from the sellallconfig.yml, the options's: 
+`Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Delay_Seconds: 10`) that you set in the sellallconfig.yml, if you run this
+command or /sellall sell while the delay isn't over, it won't tell you how much money did you earn with that /sellall sell,
+but at the end of the delay it will tell you the total amount earned during this time.
+
+So, a pratical example:
+
+- A player breaks a block in a mine with a blockbreakevent command: /sellall delaysell.
+- The cooldown automatically starts of 10 seconds and the player sellable items get sold, he earned now 100$.
+- At 5 seconds, the player breaks another block and another /sellall delaysell command get triggered, the delay isn't over
+so there're 5 more seconds to go, he earns 10$.
+- At 7 seconds, the player uses /sellall sell because (for example) he dropped a bomb and got instantly full his inventory
+so had to clean/sell it and earns 1000$.
+- At 10 seconds, a message will show telling "You earned with AutoSell: 1110$".
+- End.
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
 
 # LIST OF COMMANDS
 ```

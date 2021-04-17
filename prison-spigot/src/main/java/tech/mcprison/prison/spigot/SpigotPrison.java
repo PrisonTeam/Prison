@@ -79,7 +79,7 @@ import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
-import tech.mcprison.prison.spigot.commands.SellAllPrisonCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.slime.SlimeBlockFunEventListener;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.utils.PrisonUtilsModule;
@@ -517,8 +517,8 @@ public class SpigotPrison extends JavaPlugin {
 //        }
 
         // Load sellAll if enabled
-        if (SellAllPrisonCommands.isEnabled()){
-            Prison.get().getCommandHandler().registerCommands(new SellAllPrisonCommands());
+        if (PrisonSpigotSellAllCommands.isEnabled()){
+            Prison.get().getCommandHandler().registerCommands(new PrisonSpigotSellAllCommands());
         }
 
         // Load backpacks commands if enabled

@@ -252,6 +252,8 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.rankTagRenameClosed", "Rename tag &cclosed&7, nothing got changed!");
         dataConfig("Message.rankGuiDisabledOrAllGuiDisabled", "GUI and/or GUI Ranks is &cdisabled&7. Check GuiConfig.yml (%s %s)");
         dataConfig("Message.rankGuiMissingPermission", "You lack the &cpermissions&7 to use the Ranks GUI.");
+        dataConfig("Message.SellAllAutoSellEarnedMoney", "You earned with AutoSell: ");
+        dataConfig("Message.SellAllAutoSellEarnedMoneyCurrency", "$");
         dataConfig("Message.SellAllAutoSellMissingPermission", "You don't have the &cpermission&7 to edit AutoSell.");
         dataConfig("Message.SellAllAutoSellEnabled", "Autosell has been &aenabled&7.");
         dataConfig("Message.SellAllAutoSellDisabled", "Autosell has been &cdisabled&7.");

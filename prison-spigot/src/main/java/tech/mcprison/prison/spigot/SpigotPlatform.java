@@ -87,7 +87,7 @@ import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.placeholder.SpigotPlaceholders;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
 import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
-import tech.mcprison.prison.spigot.commands.SellAllPrisonCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.util.ActionBarUtil;
 import tech.mcprison.prison.spigot.util.SpigotYamlFileIO;
 import tech.mcprison.prison.store.Storage;
@@ -1229,8 +1229,8 @@ public class SpigotPlatform
 		SpigotPrison.getInstance().getConfig().set( "sellall", true );
 		
 		
-		SellAllPrisonCommands sellall = SellAllPrisonCommands.get();
-		if ( sellall != null && SellAllPrisonCommands.isEnabled()) {
+		PrisonSpigotSellAllCommands sellall = PrisonSpigotSellAllCommands.get();
+		if ( sellall != null && PrisonSpigotSellAllCommands.isEnabled()) {
 			
 			// Setup all the prices in sellall:
 			for ( SellAllBlockData xMatCost : buildBlockListXMaterial() ) {

@@ -4,12 +4,7 @@ package tech.mcprison.prison.spigot.sellall;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -53,6 +48,7 @@ public class SellAllUtil {
     private File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
     public Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
     public static List<String> activePlayerDelay = new ArrayList<>();
+    public static Map<Player, Double> activeAutoSellPlayers = new HashMap<>();
 //    public boolean signUsed = false;
     private final Compatibility compat = SpigotPrison.getInstance().getCompatibility();
     private final ItemStack lapisLazuli = compat.getLapisItemStack();
@@ -185,7 +181,7 @@ public class SellAllUtil {
      * @return error - True if error occurred, false if success.
      * */
     public boolean autoSellPlayerToggle(Player p) {
-        return sellAllAutoSellPlayerToggler(p);
+        return sellAllAutoSellPlayerToggle(p);
     }
 
     /**
@@ -489,6 +485,26 @@ public class SellAllUtil {
      * */
     public boolean isDisabledWorld(Player p) {
         return playerPositionIsDisabledWorld(p);
+    }
+
+    /**
+     * Add Player to AutoSell delay for earned money notification.
+     * This will add the player only if missing, if already added then will do nothing.
+     * */
+    public void addToAutoSellTask(Player p) {
+        if (!activeAutoSellPlayers.containsKey(p) && getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Enabled"))) {
+            activeAutoSellPlayers.put(p, 0.00);
+            int delay = Integer.parseInt(sellAllConfig.getString("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Delay_Seconds"));
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> taskSellAllAutoActions(p), 20L * delay);
+        }
+    }
+
+    /**
+     * Remove Player from AutoSell delay for earned money notification.
+     * This's usually handled only internally and should be used only for some rare exceptions.
+     * */
+    public void removeFromAutoSellTask(Player p){
+        activeAutoSellPlayers.remove(p);
     }
 
     /**
@@ -1115,18 +1131,22 @@ public class SellAllUtil {
                     Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllNothingToSell")));
                 }
             } else {
-                if (sellSoundEnabled) {
-                    Sound sound;
-                    try {
-                        sound = Sound.valueOf(sellAllConfig.getString("Options.Sell_Sound_Success_Name"));
-                    } catch (IllegalArgumentException ex) {
-                        sound = compat.getLevelUpSound();
+                if (activeAutoSellPlayers.containsKey(p) && getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Enabled"))) {
+                    activeAutoSellPlayers.put(p, activeAutoSellPlayers.get(p) + moneyToGive);
+                } else {
+                    if (sellSoundEnabled) {
+                        Sound sound;
+                        try {
+                            sound = Sound.valueOf(sellAllConfig.getString("Options.Sell_Sound_Success_Name"));
+                        } catch (IllegalArgumentException ex) {
+                            sound = compat.getLevelUpSound();
+                        }
+                        p.playSound(p.getLocation(), sound, 3, 1);
                     }
-                    p.playSound(p.getLocation(), sound, 3, 1);
-                }
-                if (sellNotifyEnabled) {
-                    DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
-                    Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllYouGotMoney") + PlaceholdersUtil.formattedKmbtSISize(moneyToGive, formatDecimal, "")));
+                    if (sellNotifyEnabled) {
+                        DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
+                        Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllYouGotMoney") + PlaceholdersUtil.formattedKmbtSISize(moneyToGive, formatDecimal, "")));
+                    }
                 }
             }
         } else {
@@ -1179,7 +1199,7 @@ public class SellAllUtil {
         return false;
     }
 
-    private boolean sellAllAutoSellPlayerToggler(Player p) {
+    private boolean sellAllAutoSellPlayerToggle(Player p) {
         // Get Player UUID.
         UUID playerUUID = p.getUniqueId();
 
@@ -1660,5 +1680,14 @@ public class SellAllUtil {
         multiplier += multiplierExtraByPerms;
 
         return multiplier;
+    }
+
+    private void taskSellAllAutoActions(Player p) {
+        if (activeAutoSellPlayers.containsKey(p)) {
+            if (activeAutoSellPlayers.get(p) != 0.00) {
+                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllAutoSellEarnedMoney") + activeAutoSellPlayers.get(p) + messages.getString("Message.SellAllAutoSellEarnedMoneyCurrency")));
+            }
+            activeAutoSellPlayers.remove(p);
+        }
     }
 }

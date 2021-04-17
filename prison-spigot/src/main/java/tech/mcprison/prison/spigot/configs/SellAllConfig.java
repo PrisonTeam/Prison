@@ -99,6 +99,8 @@ public class SellAllConfig extends SpigotConfigComponents {
         dataConfig("Options.Full_Inv_AutoSell_perUserToggleable", "false");
         dataConfig("Options.Full_Inv_AutoSell_perUserToggleable_Need_Perm", "false");
         dataConfig("Options.Full_Inv_AutoSell_PerUserToggleable_Permission", "prison.sellall.toggle");
+        dataConfig("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Enabled", "true");
+        dataConfig("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Delay_Seconds", "10");
         dataConfig("Options.Multiplier_Enabled", "false");
         dataConfig("Options.Multiplier_Default", "1");
         dataConfig("Options.Multiplier_Permission_Only_Higher", "false");
