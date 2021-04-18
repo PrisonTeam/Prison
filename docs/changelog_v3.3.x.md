@@ -20,6 +20,18 @@ These represent the work that has been done on prison.
 # v3.3.0-alpha.1 2021-04-16
 
 
+* **Fixed a SellAll NPE**
+If Ranks are disabled, sellall can't be used, instead of giving an error now it will
+  just tell you that Ranks are disabled in a message.
+
+
+* **Added /sellall delaysell command**
+This command's enabled by default and if triggered will work just like sellall sell but
+  it will start a countdown that won't tell you how much did you earn immediately but
+  will only at the end of it, if the same command or sellall sell is triggered during this,
+  the amount of money earned will increase and will tell you at the end the total amount.
+  
+
 * **Added a 3d distance on the Bounds to better track player movements when using tp warm ups.**
 It was using 2d distance, ignoring the y axis.
 

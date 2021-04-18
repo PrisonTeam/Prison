@@ -1110,6 +1110,15 @@ public class SellAllUtil {
             // Get money to give + multiplier.
             double moneyToGive = getMoneyWithMultiplier(p, true);
 
+            // Check if Ranks are enabled.
+            ModuleManager modMan = Prison.get().getModuleManager();
+            Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
+            PrisonRanks rankPlugin = (PrisonRanks) module;
+            if (rankPlugin == null){
+                Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("Ranks are disabled, you can't use this without Ranks enabled!"));
+                return;
+            }
+
             RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
             String currency = sellAllConfig.getString("Options.SellAll_Currency");
             if (currency != null && currency.equalsIgnoreCase("default")) currency = null;
