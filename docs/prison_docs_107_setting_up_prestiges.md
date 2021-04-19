@@ -14,12 +14,19 @@ This document provides information how to setup and use prestiges.
 This document should be able to provide the basic information to get the built in prestiges configured and working.
 
 
+Prestiges are generally used to track how many times a player has gone through all of the default ranks.  There are many variations on how prestiges are implemented, but they area always a status symbol that sets the top players from the rest.  Some features may include resetting a player's monetary balance to zero, setting their rank back to the beginning, or some other change to make the next pass through the ranks slightly different, but usually more difficult.
+  
+
+
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
 # Enabling Prestiges
 
-By default, prestiges are disabled and must be enabled before you can use them.  Edit the following file:
+By default, prestiges are disabled and must be enabled before you can use them.  Even though the prestiges feature is disabled, prison still auto generates a prestige ladder.  
+
+
+Edit the following file:
 
 ```
 plugins/Prison/config.yml
