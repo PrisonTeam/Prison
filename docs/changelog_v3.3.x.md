@@ -20,6 +20,9 @@ These represent the work that has been done on prison.
 # v3.3.0-alpha.1 2021-04-16
 
 
+* **Added FastAsyncWorldEdit to Prison's soft depends.**
+
+
 * **Fixed a SellAll NPE**
 If Ranks are disabled, sellall can't be used, instead of giving an error now it will
   just tell you that Ranks are disabled in a message.
