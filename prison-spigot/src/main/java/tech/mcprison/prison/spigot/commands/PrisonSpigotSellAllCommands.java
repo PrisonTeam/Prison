@@ -255,7 +255,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
 
         if (!getBoolean(sellAllUtil.sellAllConfig.getString("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Enabled"))){
-            Output.get().sendError(sender, SpigotPrison.format("Disabled from sellallconfig.yml: Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Enabled = false."));
+            sellAllSellCommand(sender, "");
             return;
         }
 
