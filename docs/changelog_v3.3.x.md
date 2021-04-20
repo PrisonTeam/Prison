@@ -17,7 +17,10 @@ These represent the work that has been done on prison.
 
 
 
-# v3.3.0-alpha.1 2021-04-16
+# v3.3.0-alpha.1 2021-04-20
+
+
+* **No need to use the singleton getInstance() since the code is already running in that very same instance: SpigotPrison.**
 
 
 * **Bug fix: The /mines blockEvent list was generating a "suggest" that was converting the & in the color codes to their raw value.**
