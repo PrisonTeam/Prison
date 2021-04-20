@@ -1085,8 +1085,17 @@ public abstract class MineData
 		this.blockEvents = blockEvents;
 	}
 	
-	public boolean getBlockEventsRemove( String command ) {
+	public boolean getBlockEventsRemove( MineBlockEvent blockEvent ) {
 		boolean results = false;
+		
+		if ( blockEvent != null ) {
+			results = getBlockEvents().remove( blockEvent );
+		}
+		
+		return results;
+	}
+	
+	public boolean getBlockEventsRemove( String command ) {
 		MineBlockEvent blockEvent = null;
 		for ( MineBlockEvent be : getBlockEvents() ) {
 			if ( be.getCommand().equalsIgnoreCase( command ) ) {
@@ -1094,11 +1103,7 @@ public abstract class MineData
 			}
 		}
 		
-		if ( blockEvent != null ) {
-			results = getBlockEvents().remove( blockEvent );
-		}
-		
-		return results;
+		return getBlockEventsRemove( blockEvent );
 	}
 
 	public MineLinerData getLinerData() {

@@ -20,6 +20,10 @@ These represent the work that has been done on prison.
 # v3.3.0-alpha.1 2021-04-16
 
 
+* **Bug fix: The /mines blockEvent list was generating a "suggest" that was converting the & in the color codes to their raw value.**
+The command `/mines blockEvent remove` now uses line number like the other commands so you no longer need to specify the whole command, just the line number.
+
+
 * **Added FastAsyncWorldEdit to Prison's soft depends.**
 
 

@@ -3652,7 +3652,7 @@ public class MinesCommands
         	
         	FancyMessage msgRemove = new FancyMessage( String.format( " &4Remove&3", 
         			blockEvent.getCommand() ) )
-        			.suggest("/mines blockEvent remove " + m.getName() + " " + blockEvent.getCommand() )
+        			.suggest("/mines blockEvent remove " + m.getName() + " " + rowNumber )
         			.tooltip("Click to Delete this BlockEvent");
         	row.addFancy( msgRemove );
         	
@@ -3686,13 +3686,16 @@ public class MinesCommands
     		onlyPlayers = false, permissions = "mines.set")
     public void blockEventRemove(CommandSender sender, 
     				@Arg(name = "mineName") String mineName,
-    				@Arg(name = "command", description = "Exact BlockEvent command to remove") 
-    						@Wildcard String command) {
+    				@Arg(name = "row") Integer row) {
     	
-        if (command.startsWith("/")) {
-            command = command.replaceFirst("/", "");
+        if ( row == null || row <= 0 ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid row number greater than zero. " +
+        					"Was row=[&b%d&7]",
+        					(row == null ? "null" : row) ));
+        	return;        	
         }
-    	
+        
         if (!performCheckMineExists(sender, mineName)) {
             return;
         }
@@ -3708,12 +3711,23 @@ public class MinesCommands
             return;
         }
 
-        if ( m.getBlockEventsRemove(command) ) {
+        if ( row > m.getBlockEvents().size() ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid row number no greater than &b%d&7. " +
+        					"Was row=[&b%d&7]",
+        					m.getBlockEvents().size(), (row == null ? "null" : row) ));
+        	return;        	
+        }
+        
+        MineBlockEvent blockEvent = m.getBlockEvents().get( row - 1 );
+        
+        
+        if ( blockEvent != null && m.getBlockEventsRemove( blockEvent ) ) {
         	
         	pMines.getMineManager().saveMine( m );
             	
         	Output.get().sendInfo(sender, "Removed BlockEvent command '%s' from the mine '%s'.", 
-        				command, m.getTag());
+        				blockEvent.getCommand(), m.getTag());
         } else {
         	Output.get().sendWarn(sender, 
         			String.format("The mine %s doesn't contain that BlockEvent command. Nothing was changed.", 
