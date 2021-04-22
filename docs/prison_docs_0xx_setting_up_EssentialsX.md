@@ -64,7 +64,9 @@ Setting up Essentials is easy, but you've to choose which plugins to add.
 
 
 * Edit the `config.yml` file: 
-    - Search for the section pertaining to chat by using the keyword: **EssentialsChat**
+    - Search for the section pertaining to chat by using one of the following keywords: 
+      - **EssentialsChat** for older versions of EssentialsX for spigot v1.8 through v1.15
+      - **EssentialsX Chat** for newer versions of EssentialsX.
     - Add the placeholders {prison_rank_tag} or {prison_rank} to the "format:" line.
         * The placeholders should be **all lower case**
         * The curly braces is used by EssentialsX chat engine, not Prison. Other chat plugins may use percent symbols instead.
