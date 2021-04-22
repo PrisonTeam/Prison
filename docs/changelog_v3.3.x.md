@@ -17,7 +17,10 @@ These represent the work that has been done on prison.
 
 
 
-# v3.3.0-alpha.1 2021-04-20
+# v3.3.0-alpha.1 2021-04-22
+
+
+* **Refactored the extraction of the server's version within BlueSpigetSemVerComparator so it could be included in a unit test to help ensure a specific issue with paper v1.15 was not an error within prison.**
 
 
 * **No need to use the singleton getInstance() since the code is already running in that very same instance: SpigotPrison.**

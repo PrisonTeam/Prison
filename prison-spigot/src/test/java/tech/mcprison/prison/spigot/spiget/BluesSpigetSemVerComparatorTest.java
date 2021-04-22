@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.spiget;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -106,6 +107,16 @@ public class BluesSpigetSemVerComparatorTest
 		// higher than prerelease:
 		assertFalse( bssvc.performComparisons( "1.2.3", 
 										 "1.2.3-alpha.1" ) );
+		
+	}
+	
+	@Test
+	public void test02() {
+		BluesSpigetSemVerComparator bssvc = new BluesSpigetSemVerComparator();
+		
+		String paperTest = "Minecraft version: git-Paper-21 (MC: 1.15)";
+		
+		assertEquals( "1.15", bssvc.getBukkitVersion( paperTest ) );
 		
 	}
 }

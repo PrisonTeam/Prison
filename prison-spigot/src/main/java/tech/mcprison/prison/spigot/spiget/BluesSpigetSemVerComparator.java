@@ -124,14 +124,35 @@ public class BluesSpigetSemVerComparator
 	 */
 	public int compareMCVersionTo( String checkVersion ) {
 		int results = -1;
-		String currentVersion = Bukkit.getVersion().trim().toLowerCase();
-		int i = currentVersion.indexOf("(mc:");
-		int len = currentVersion.length();
-		if ( i >= 0 && (i+4 < len)) {
-			currentVersion = currentVersion.substring( i + 4, len -1 ).trim();
+		String currentVersion = getBukkitVersion();
+		if ( currentVersion != null ) {
 			
 			results = compareTo( currentVersion, checkVersion );
 		}
+		return results;
+	}
+	
+	private String getBukkitVersion() {
+		// Minecraft version: git-Paper-21 (MC: 1.15)
+		
+		return getBukkitVersion( getBukkitVersionRaw() );
+	}
+	private String getBukkitVersionRaw() {
+		return Bukkit.getVersion();
+	}
+	
+	protected String getBukkitVersion( String currentVersion ) {
+		String results = null;
+		
+		if ( currentVersion != null ) {
+			currentVersion = currentVersion.trim().toLowerCase();
+			int i = currentVersion.indexOf("(mc:");
+			int len = currentVersion.length();
+			if ( i >= 0 && (i+4 < len)) {
+				results = currentVersion.substring( i + 4, len - 1 ).trim();
+			}
+		}
+		
 		return results;
 	}
 
