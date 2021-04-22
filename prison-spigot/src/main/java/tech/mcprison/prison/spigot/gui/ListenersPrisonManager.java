@@ -1559,7 +1559,7 @@ public class ListenersPrisonManager implements Listener {
 
     private void prisonManagerGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
-        // Check the Item display name and do open the right GUI
+        // Check the Item display name and do open the right GUI.
         switch (buttonNameMain) {
             case "Ranks - Ladders": {
                 SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 0);
@@ -1567,21 +1567,27 @@ public class ListenersPrisonManager implements Listener {
                 break;
             }
 
-            // Check the Item display name and do open the right GUI
+            // Check the Item display name and do open the right GUI.
             case "AutoManager": {
-                SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
-                gui.open();
+
+                // Check if the autofeatures config isn't null.
+                if(SpigotGUIComponents.afConfig() != null) {
+                    SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
+                    gui.open();
+                } else {
+                    Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("Can't find an autofeatures config, maybe they're disabled."));
+                }
                 break;
             }
 
-            // Check the Item display name and do open the right GUI
+            // Check the Item display name and do open the right GUI.
             case "Mines": {
                 SpigotMinesGUI gui = new SpigotMinesGUI(p, 0);
                 gui.open();
                 break;
             }
 
-            // Check the Item display name and do open the right GUI
+            // Check the Item display name and do open the right GUI.
             case "SellAll": {
                 SellAllAdminGUI gui = new SellAllAdminGUI(p);
                 gui.open();
@@ -1594,13 +1600,13 @@ public class ListenersPrisonManager implements Listener {
             }
         }
 
-        // Cancel the event
+        // Cancel the event.
         e.setCancelled(true);
     }
 
     private void laddersGUI(InventoryClickEvent e, Player p, String buttonNameMain, Module module, String[] parts) {
 
-        // Check if the Ranks module's loaded
+        // Check if the Ranks module's loaded.
         if(!(module instanceof PrisonRanks)){
             Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("The GUI can't open because the &3Rank module &cisn't loaded"));
             p.closeInventory();
@@ -1617,11 +1623,11 @@ public class ListenersPrisonManager implements Listener {
             return;
         }
 
-        // Get the ladder by the name of the button got before
+        // Get the ladder by the name of the button got before.
         ladder = Optional.of(PrisonRanks.getInstance().getLadderManager().getLadder(buttonNameMain));
 
         // When the player click an item with shift and right click, e.isShiftClick should be enough but i want
-        // to be sure's a right click
+        // to be sure's a right click.
         if (e.isShiftClick() && e.isRightClick()) {
 
             // Execute the command
@@ -1634,11 +1640,11 @@ public class ListenersPrisonManager implements Listener {
 
         }
 
-        // Open the GUI of ranks
+        // Open the GUI of ranks.
         SpigotRanksGUI gui = new SpigotRanksGUI(p, ladder, 0);
         gui.open();
 
-        // Cancel the event
+        // Cancel the event.
         e.setCancelled(true);
     }
 
@@ -1653,19 +1659,19 @@ public class ListenersPrisonManager implements Listener {
             return;
         }
 
-        // Get the rank
+        // Get the rank.
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(buttonNameMain);
 
-        // Check if the rank exist
+        // Check if the rank exist.
         if (rank == null) {
             Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cThe rank " + buttonNameMain + " does not exist."));
             return;
         }
 
-        // Check clicks
+        // Check clicks.
         if (e.isShiftClick() && e.isRightClick()) {
 
-            // Execute the command
+            // Execute the command.
             Bukkit.dispatchCommand(p, "ranks delete " + buttonNameMain);
             e.setCancelled(true);
             p.closeInventory();
@@ -1675,234 +1681,234 @@ public class ListenersPrisonManager implements Listener {
 
         } else {
 
-            // Open a GUI
+            // Open a GUI.
             SpigotRankManagerGUI gui = new SpigotRankManagerGUI(p, rank);
             gui.open();
 
         }
 
-        // Cancel the event
+        // Cancel the event.
         e.setCancelled(true);
     }
 
     private void playerPrestigesGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
-        // Check the button name and do the actions
+        // Check the button name and do the actions.
         if (buttonNameMain.equalsIgnoreCase("Prestige")){
-            // Close the inventory
+            // Close the inventory.
             p.closeInventory();
-            // Execute the command
+            // Execute the command.
             Bukkit.dispatchCommand(p, "prestige");
         }
 
-        // Cancel the event
+        // Cancel the event.
         e.setCancelled(true);
     }
 
     private void prestigeConfirmationGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
-        // Check the button name and do the actions
+        // Check the button name and do the actions.
         if (buttonNameMain.equalsIgnoreCase("Confirm: Prestige")){
-            // Execute the command
+            // Execute the command.
             Bukkit.dispatchCommand(p, "rankup prestiges");
-            // Close the inventory
+            // Close the inventory.
             p.closeInventory();
         } else if (buttonNameMain.equalsIgnoreCase("Cancel: Don't Prestige")){
-            // Send a message to the player
+            // Send a message to the player.
             Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format("&cCancelled"));
-            // Close the inventory
+            // Close the inventory.
             p.closeInventory();
         }
 
-        // Cancel the event
+        // Cancel the event.
         e.setCancelled(true);
     }
 
     private void rankManagerGUI(InventoryClickEvent e, Player p, String[] parts) {
 
-        // Output finally the buttonName and the minename explicit out of the array
+        // Output finally the buttonName and the minename explicit out of the array.
         String buttonName = parts[0];
         String rankName = parts[1];
 
-        // Get the rank
+        // Get the rank.
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
 
-        // Check the button name and do the actions
+        // Check the button name and do the actions.
         if (buttonName.equalsIgnoreCase("RankupCommands")){
 
-            // Check if the rank exist
+            // Check if the rank exist.
             if (rank == null) {
-                // Send a message to the player
+                // Send a message to the player.
                 Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cThe rank " + rankName + " does not exist."));
                 return;
             }
 
-            // Check the rankupCommand of the Rank
+            // Check the rankupCommand of the Rank.
             if (rank.getRankUpCommands() == null) {
-                // Send a message to the player
+                // Send a message to the player.
                 Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cThere aren't commands for this rank anymore."));
             }
 
-            // Open the GUI of commands
+            // Open the GUI of commands.
             else {
                 SpigotRankUPCommandsGUI gui = new SpigotRankUPCommandsGUI(p, rank);
                 gui.open();
             }
 
-        // Check the button name and do the actions
+        // Check the button name and do the actions.
         } else if (buttonName.equalsIgnoreCase("RankPrice")){
 
-            // Check and open a GUI
+            // Check and open a GUI.
             if(rank != null) {
                 SpigotRankPriceGUI gui = new SpigotRankPriceGUI(p, (int) rank.getCost(), rank.getName());
                 gui.open();
             }
 
-        // Check the button name and do the actions
+        // Check the button name and do the actions.
         } else if (buttonName.equalsIgnoreCase("RankTag")){
 
-            // Send messages to the player
+            // Send messages to the player.
             Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.rankTagRename")));
             Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.rankTagRenameClose")));
-            // Start the async task
+            // Start the async task.
             tempChatVariable = rankName;
             chatInteractData(p, ChatMode.RankName);
             p.closeInventory();
         }
 
-        // Cancel the event
+        // Cancel the event.
         e.setCancelled(true);
     }
 
     private void playerRanksGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
-        // Check the buttonName and do the actions
+        // Check the buttonName and do the actions.
         if (buttonNameMain.equals(SpigotPrison.format(messages.getString("Lore.Rankup").substring(2)))){
             Bukkit.dispatchCommand(p, "rankup " + guiConfig.getString("Options.Ranks.Ladder"));
             p.closeInventory();
         }
 
-        // Cancel the event
+        // Cancel the event.
         e.setCancelled(true);
     }
 
     private void rankUPCommandsGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
-        // Check the clickType
+        // Check the clickType.
         if (e.isShiftClick() && e.isRightClick()) {
 
-            // Execute the command
+            // Execute the command.
             Bukkit.dispatchCommand(p, "ranks command remove " + buttonNameMain);
-            // Cancel the event
+            // Cancel the event.
             e.setCancelled(true);
-            // Close the inventory
+            // Close the inventory.
             p.closeInventory();
             return;
 
         }
 
-        // Cancel the event
+        // Cancel the event.
         e.setCancelled(true);
     }
 
     private void rankPriceGUI(InventoryClickEvent e, Player p, String[] parts) {
 
-        // Rename the parts
+        // Rename the parts.
         String part1 = parts[0];
         String part2 = parts[1];
         String part3 = parts[2];
 
-        // Initialize the variable
+        // Initialize the variable.
         int decreaseOrIncreaseValue = 0;
 
-        // If there're enough parts init another variable
+        // If there're enough parts init another variable.
         if (parts.length == 4){
             decreaseOrIncreaseValue = Integer.parseInt(parts[3]);
         }
 
-        // Check the button name and do the actions
+        // Check the button name and do the actions.
         if (part1.equalsIgnoreCase("Confirm:")) {
 
-            // Check the click type and do the actions
+            // Check the click type and do the actions.
             if (e.isLeftClick()){
 
-                // Execute the command
+                // Execute the command.
                 Bukkit.dispatchCommand(p,"ranks set cost " + part2 + " " + part3);
 
-                // Close the inventory
+                // Close the inventory.
                 p.closeInventory();
 
                 return;
 
-                // Check the click type and do the actions
+                // Check the click type and do the actions.
             } else if (e.isRightClick()){
 
-                // Send a message to the player
+                // Send a message to the player.
                 Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cEvent cancelled."));
 
                 e.setCancelled(true);
 
-                // Close the inventory
+                // Close the inventory.
                 p.closeInventory();
 
                 return;
             } else {
 
-                // Cancel the event
+                // Cancel the event.
                 e.setCancelled(true);
                 return;
             }
         }
 
-        // Give to val a value
+        // Give to val a value.
         int val = Integer.parseInt(part2);
 
-        // Check the calculator symbol
+        // Check the calculator symbol.
         if (part3.equals("-")){
 
-            // Check if the value's already too low
+            // Check if the value's already too low.
             if (!((val -  decreaseOrIncreaseValue) < 0)) {
 
-                // If it isn't too low then decrease it
+                // If it isn't too low then decrease it.
                 val = val - decreaseOrIncreaseValue;
 
-                // If it is too low
+                // If it is too low.
             } else {
 
-                // Tell to the player that the value's too low
+                // Tell to the player that the value's too low.
                 Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cToo low value."));
 
                 e.setCancelled(true);
 
-                // Close the inventory
+                // Close the inventory.
                 p.closeInventory();
                 return;
             }
 
-            // Open an updated GUI after the value changed
+            // Open an updated GUI after the value changed.
             SpigotRankPriceGUI gui = new SpigotRankPriceGUI(p, val, part1);
             gui.open();
 
             // Check the calculator symbol
         } else if (part3.equals("+")){
 
-            // Check if the value isn't too high
+            // Check if the value isn't too high.
             if (!((val + decreaseOrIncreaseValue) > 2147483646)) {
 
                 // Increase the value
                 val = val + decreaseOrIncreaseValue;
 
-                // If the value's too high then do the action
+                // If the value's too high then do the action.
             } else {
 
-                // Close the GUI and tell it to the player
+                // Close the GUI and tell it to the player.
                 Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cToo high value."));
                 e.setCancelled(true);
                 p.closeInventory();
                 return;
             }
 
-            // Open a new updated GUI with new values
+            // Open a new updated GUI with new values.
             SpigotRankPriceGUI gui = new SpigotRankPriceGUI(p, val, part1);
             gui.open();
 
@@ -1920,29 +1926,29 @@ public class ListenersPrisonManager implements Listener {
             return;
         }
 
-        // Variables
+        // Variables.
         PrisonMines pMines = PrisonMines.getInstance();
         Mine m = pMines.getMine(buttonNameMain);
 
-        // Check the clicks
+        // Check the clicks.
         if (e.isShiftClick() && e.isRightClick()) {
-            // Execute the command
+            // Execute the command.
             Bukkit.dispatchCommand(p, "mines delete " + buttonNameMain);
-            // Cancel the event
+            // Cancel the event.
             e.setCancelled(true);
-            // Close the inventory
+            // Close the inventory.
             p.closeInventory();
-            // Open a GUI
+            // Open a GUI.
             SpigotMinesConfirmGUI gui = new SpigotMinesConfirmGUI(p, buttonNameMain);
             gui.open();
             return;
         }
 
-        // Open the GUI of mines info
+        // Open the GUI of mines info.
         SpigotMineInfoGUI gui = new SpigotMineInfoGUI(p, m, buttonNameMain);
         gui.open();
 
-        // Cancel the event
+        // Cancel the event.
         e.setCancelled(true);
     }
 
@@ -1965,79 +1971,79 @@ public class ListenersPrisonManager implements Listener {
 
     private void mineInfoGUI(InventoryClickEvent e, Player p, String[] parts) {
 
-        // Output finally the buttonName and the mineName explicit out of the array
+        // Output finally the buttonName and the mineName explicit out of the array.
         String buttonName = parts[0];
         String mineName = parts[1];
 
-        // Check the name of the button and do the actions
+        // Check the name of the button and do the actions.
         switch (buttonName) {
             case "Blocks_of_the_Mine:":
 
-                // Open the GUI
+                // Open the GUI.
                 SpigotMinesBlocksGUI gui = new SpigotMinesBlocksGUI(p, mineName);
                 gui.open();
 
                 break;
 
-            // Check the name of the button and do the actions
+            // Check the name of the button and do the actions.
             case "Reset_Mine:":
 
-                // Check the clickType and do the actions
+                // Check the clickType and do the actions.
                 if (e.isLeftClick()) {
-                    // Execute the command
+                    // Execute the command.
                     Bukkit.dispatchCommand(p, "mines reset " + mineName);
                 } else if (e.isRightClick()){
-                    // Execute the command
+                    // Execute the command.
                     Bukkit.dispatchCommand(p, "mines set skipReset " + mineName);
                 } else if (e.isRightClick() && e.isShiftClick()){
-                    // Execute the command
+                    // Execute the command.
                     Bukkit.dispatchCommand(p, "mines set zeroBlockResetDelay " + mineName);
                 }
 
-                // Cancel the event
+                // Cancel the event.
                 e.setCancelled(true);
 
                 break;
 
-            // Check the name of the button and do the actions
+            // Check the name of the button and do the actions.
             case "Mine_Spawn:":
 
-                // Execute the command
+                // Execute the command.
                 Bukkit.dispatchCommand(p, "mines set spawn " + mineName);
 
-                // Cancel the event
+                // Cancel the event.
                 e.setCancelled(true);
                 break;
 
-            // Check the name of the button and do the actions
+            // Check the name of the button and do the actions.
             case "Mine_notifications:":
 
-                // Open the GUI
+                // Open the GUI.
                 SpigotMineNotificationsGUI gui1 = new SpigotMineNotificationsGUI(p, mineName);
                 gui1.open();
 
                 break;
 
-            // Check the name of the button and do the actions
+            // Check the name of the button and do the actions.
             case "TP_to_the_Mine:":
 
-                // Close the inventory
+                // Close the inventory.
                 p.closeInventory();
 
-                // Execute the Command
+                // Execute the Command.
                 Bukkit.dispatchCommand(p, "mines tp " + mineName);
 
                 break;
 
-            // Check the name of the button and do the actions
+            // Check the name of the button and do the actions.
             case "Reset_Time:":
 
-                // Initialize the variables
+                // Initialize the variables.
                 PrisonMines pMines = PrisonMines.getInstance();
                 Mine m = pMines.getMine(mineName);
                 int val = m.getResetTime();
 
-                // Open the GUI
+                // Open the GUI.
                 SpigotMineResetTimeGUI gui2 = new SpigotMineResetTimeGUI(p, val, mineName);
                 gui2.open();
 
