@@ -748,7 +748,7 @@ public class BackpacksUtil {
         updateCachedBackpack();
 
         // Must be multiple of 9.
-        if (size % 9 != 0 || size > 54){
+        if ((size % 9 != 0 || size > 54) && size != 0){
             return;
         }
 
@@ -768,7 +768,7 @@ public class BackpacksUtil {
         updateCachedBackpack();
 
         // Must be multiple of 9.
-        if (size % 9 != 0 || size > 54){
+        if ((size % 9 != 0 || size > 54) && size != 0){
             return;
         }
 
@@ -828,13 +828,16 @@ public class BackpacksUtil {
         updateCachedBackpack();
 
         int backPackSize = backpackDefaultSize;
-        if (backPackSize % 9 != 0){
-            backPackSize = (int) Math.ceil((float)backPackSize / 9) * 9;
-        }
 
         try {
             backPackSize = Integer.parseInt(backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Items.Size"));
         } catch (NumberFormatException ignored){}
+
+        if (backPackSize % 9 != 0){
+            backPackSize = (int) Math.ceil((float)backPackSize / 9) * 9;
+        }
+
+        if (backPackSize == 0) backPackSize = 9;
 
         return getBackpackPermSize(p, backPackSize);
     }
@@ -843,13 +846,16 @@ public class BackpacksUtil {
         updateCachedBackpack();
 
         int backPackSize = backpackDefaultSize;
-        if (backPackSize % 9 != 0){
-            backPackSize = (int) Math.ceil((float)backPackSize / 9) * 9;
-        }
 
         try {
             backPackSize = Integer.parseInt(backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Items-" + id + ".Size"));
         } catch (NumberFormatException ignored){}
+
+        if (backPackSize % 9 != 0){
+            backPackSize = (int) Math.ceil((float)backPackSize / 9) * 9;
+        }
+
+        if (backPackSize == 0) backPackSize = 9;
 
         return getBackpackPermSize(p, backPackSize);
     }

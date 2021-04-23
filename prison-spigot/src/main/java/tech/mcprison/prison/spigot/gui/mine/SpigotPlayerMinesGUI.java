@@ -49,14 +49,14 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
         // If the inventory is empty
         if (dimension == 0){
-            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.NoMines")));
+            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.NoMines")));
             p.closeInventory();
             return;
         }
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.TooManyMines")));
+            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.TooManyMines")));
             p.closeInventory();
             return;
         }
@@ -78,7 +78,7 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(inv, m);
         } catch (NullPointerException ex){
-            Output.get().sendError(new SpigotPlayer(p),"&cThere's a null value in the GuiConfig.yml [broken]");
+            Output.get().sendWarn(new SpigotPlayer(p),"&cThere's a null value in the GuiConfig.yml [broken]");
             ex.printStackTrace();
             return true;
         }

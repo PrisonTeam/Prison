@@ -126,7 +126,7 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
         }
 
         // Must be multiple of 9.
-        if (sizeInt % 9 != 0 || sizeInt > 54){
+        if ((sizeInt % 9 != 0 || sizeInt > 54) && sizeInt != 0){
             Output.get().sendWarn(sender, SpigotPrison.format(getMessages().getString("Message.BackPackResizeNotMultiple9")));
             return;
         }

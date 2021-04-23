@@ -20,6 +20,16 @@ These represent the work that has been done on prison.
 # v3.3.0-alpha.1 2021-04-22
 
 
+* **More warns and less errors**
+GUI won't give you errors when something is wrong, but just warns, so they're
+  less allarming.
+
+
+* **Backpack won't break if size is set to 0**
+The Backpack won't break if the size is set to 0, it will open anyway with a minimum size of 9, 
+  this's because of an IllegalArgumentException error from Bukkit.
+
+
 * **Refactored the extraction of the server's version within BlueSpigetSemVerComparator so it could be included in a unit test to help ensure a specific issue with paper v1.15 was not an error within prison.**
 
 

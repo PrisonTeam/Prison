@@ -414,7 +414,7 @@ public class ListenersPrisonManager implements Listener {
                 module = Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME).orElse(null);
                 title = compat.getGUITitle(e).substring(2);
             } catch (ArrayIndexOutOfBoundsException ex){
-                Output.get().sendError(new SpigotPlayer(p), "An error occurred while using the GUI, please check logs.");
+                Output.get().sendWarn(new SpigotPlayer(p), "An error occurred while using the GUI, please check logs.");
                 ex.printStackTrace();
                 return;
             }
@@ -805,7 +805,7 @@ public class ListenersPrisonManager implements Listener {
                 conf.set("Options.Mines.MaterialType." + parts[1], parts[0]);
                 conf.save(sellAllFile);
             } catch (IOException ex){
-                Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
                 ex.printStackTrace();
                 return;
             }
@@ -1575,7 +1575,7 @@ public class ListenersPrisonManager implements Listener {
                     SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
                     gui.open();
                 } else {
-                    Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("Can't find an autofeatures config, maybe they're disabled."));
+                    Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("Can't find an autofeatures config, maybe they're disabled."));
                 }
                 break;
             }
@@ -1608,7 +1608,7 @@ public class ListenersPrisonManager implements Listener {
 
         // Check if the Ranks module's loaded.
         if(!(module instanceof PrisonRanks)){
-            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("The GUI can't open because the &3Rank module &cisn't loaded"));
+            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("The GUI can't open because the &3Rank module &cisn't loaded"));
             p.closeInventory();
             e.setCancelled(true);
             return;
