@@ -17,7 +17,15 @@ These represent the work that has been done on prison.
 
 
 
-# v3.3.0-alpha.1 2021-04-22
+# v3.3.0-alpha.2 2021-04-23
+
+
+
+* **3.3.0-alpha.2 2021-04-23**
+
+
+* **added a new prison utils materialsearch that will allow the admin to search to see what materials are available.**
+Multiple search words can be used.  such as "gold axe" which will return an axe and pickaxe.
 
 
 * **More warns and less errors**
