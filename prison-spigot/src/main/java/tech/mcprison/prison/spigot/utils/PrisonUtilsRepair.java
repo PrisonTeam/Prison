@@ -3,6 +3,8 @@ package tech.mcprison.prison.spigot.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Material;
+
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.Wildcard;
@@ -297,6 +299,56 @@ public class PrisonUtilsRepair
     		repairItem( item, repaired, repairOptions );
     	}
     }
+    
+    
+	
+	@Command(identifier = "prison utils materialsearch", 
+				description = "Provides a search of bukkit Materials",
+			onlyPlayers = false, permissions = "prison.utils.materialsearch")
+	public void utilMaterialSearch(CommandSender sender, 
+			@Wildcard(join=true)
+			@Arg(name = "search", description = "search words used to match Materials", 
+					def = "") String search ) {
+		
+		if ( search != null && !search.trim().isEmpty() ) {
+			
+			String[] searchTerms = search.trim().toLowerCase().split( " " );
+			
+			StringBuilder sb = new StringBuilder();
+			int count = 0;
+			for ( Material mat : Material.values() ) {
+				String name = mat.name().toLowerCase();
+				
+				if ( wordContains( name, searchTerms ) ) {
+					if ( sb.length() > 0 ) {
+						sb.append( " " );
+					}
+					sb.append( mat.name() );
+					count++;
+				}
+			}
+			
+			if ( sb.length() == 0 ) {
+				sb.append( "<nothing-found>" );
+			}
+			
+			Output.get().logInfo( "MaterialSearch: searchTerms=[%s] results=%s :: %s ",
+					search, Integer.toString( count ), sb.toString() );
+		}
+	}
+	
+	private boolean wordContains( String word, String[] terms ) {
+		boolean found = true;
+		
+		for ( String term : terms ) {
+			if ( !word.contains( term ) ) {
+				found = false;
+				break;
+			}
+		}
+		
+		return found;
+	}
 
 	public boolean isEnableRepairAll() {
 		return enableRepairAll;
