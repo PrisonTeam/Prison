@@ -225,6 +225,11 @@ Get your prison setup quickly by running the command `/ranks autoCommand` which 
 
 
 
+* [Setting up Backpacks](prison_docs_117_setting_up_backpacks.md)	
+    How to enable backpacks.
+
+
+
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
