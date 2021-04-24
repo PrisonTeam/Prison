@@ -73,3 +73,8 @@ Options:
 
 ```
 
+# Commands:
+
+Give a look to this guidebook for some extra info about backpacks: 
+[Backpacks Commands](docs-commands/prison_docs_command_43_backpack.md)
+

@@ -87,7 +87,7 @@ public class BackpacksUtil {
      * @return boolean - True if reached, false if not.
      * */
     public boolean reachedBackpacksLimit(Player p){
-        return getBoolean(backpacksConfig.getString("Options.Multiple-BackPacks-For-Player-Enabled")) && (Integer.parseInt(backpacksConfig.getString("Options.Multiple-BackPacks-For-Player")) <= getNumberOwnedBackpacks(p));
+        return getBoolean(backpacksConfig.getString("Options.Multiple-BackPacks-For-Player-Enabled")) && (getBackpacksLimit(p) <= getNumberOwnedBackpacks(p));
     }
 
     /**
@@ -213,7 +213,7 @@ public class BackpacksUtil {
     public boolean resetBackpack(Player p) {
         return resetBackpackMethod(p);
     }
-    
+
     /**
      * Reset a player's backpack by ID.
      *
@@ -243,7 +243,7 @@ public class BackpacksUtil {
      * @param p - OfflinePlayer
      * @param id - String ID
      *
-     * @return success - true of false
+     * @return success - true or false
      * */
     public boolean resetBackpack(OfflinePlayer p, String id){
         return resetBackpackMethod(p, id);
@@ -561,6 +561,59 @@ public class BackpacksUtil {
     }
 
     /**
+     * Set limit of backpacks that a user can own.
+     *
+     * @param p - Player
+     * @param limit - Integer limit.
+     *
+     * @return success - true if success, false if error.
+     * */
+    public boolean setBackpacksLimit(Player p, int limit){
+        return backpacksLimitSet(p, limit);
+    }
+
+    /**
+     * Set limit of backpacks that a user can own.
+     *
+     * @param p - OfflinePlayer
+     * @param limit - Integer limit.
+     *
+     * @return success - true if success, false if error.
+     * */
+    public boolean setBackpacksLimit(OfflinePlayer p, int limit){
+        return backpacksLimitSet(p, limit);
+    }
+
+    /**
+     * Get Backpacks Limit of a Player
+     *
+     * @param p - Player
+     *
+     * @return limit - Integer.
+     * */
+    public int getBackpacksLimit(Player p){
+        return backpacksLimitGet(p);
+    }
+
+    /**
+     * Get Backpacks Limit of a Player
+     *
+     * @param p - OfflinePlayer
+     *
+     * @return limit - Integer.
+     * */
+    public int getBackpacksLimit(OfflinePlayer p){
+        return backpacksLimitGet(p);
+    }
+
+    /**
+     * Java getBoolean's broken so I made my own.
+     * */
+    public boolean getBoolean(String string){
+        return string != null && string.equalsIgnoreCase("true");
+    }
+
+    /**
      * Create a Lore for an Item in the GUI.
      *
      * @param lores
@@ -613,11 +666,56 @@ public class BackpacksUtil {
         return item;
     }
 
-    /**
-     * Java getBoolean's broken so I made my own.
-     * */
-    public boolean getBoolean(String string){
-        return string != null && string.equalsIgnoreCase("true");
+    private int backpacksLimitGet(OfflinePlayer p) {
+        updateCachedBackpack();
+
+        // If the value if null, for example from an older version of Prison, this will read the default value from the
+        // backpacksconfig.yml and set it.
+        if (backpacksConfig.getString("Inventories." + p.getUniqueId() + ".Limit") == null){
+            setBackpacksLimit(p, Integer.parseInt(backpacksConfig.getString("Options.Multiple-BackPacks-For-Player")));
+        }
+
+        return backpacksConfig.getInt("Inventories." + p.getUniqueId() + ".Limit");
+    }
+
+    private int backpacksLimitGet(Player p) {
+        updateCachedBackpack();
+
+        // If the value if null, for example from an older version of Prison, this will read the default value from the
+        // backpacksconfig.yml and set it.
+        if (backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Limit") == null){
+            setBackpacksLimit(p, Integer.parseInt(backpacksConfig.getString("Options.Multiple-BackPacks-For-Player")));
+        }
+
+        return Integer.parseInt(backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Limit"));
+    }
+
+    private boolean backpacksLimitSet(Player p, int limit) {
+        updateCachedBackpack();
+
+        try{
+            backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Limit", limit);
+            backpacksDataConfig.save(backpacksFile);
+        } catch (IOException ex){
+            return false;
+        }
+
+        updateCachedBackpack();
+        return true;
+    }
+
+    private boolean backpacksLimitSet(OfflinePlayer p, int limit) {
+        updateCachedBackpack();
+
+        try {
+            backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Limit", limit);
+            backpacksDataConfig.save(backpacksFile);
+        } catch (IOException ex) {
+            return false;
+        }
+
+        updateCachedBackpack();
+        return true;
     }
 
     private void backpackConfigUpdater() {
@@ -637,7 +735,7 @@ public class BackpacksUtil {
     private boolean checkOwnBackpack(Player p) {
         updateCachedBackpack();
 
-        String playerName = backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Items.Playername");
+        String playerName = backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".PlayerName");
         return playerName != null;
     }
 
@@ -1092,10 +1190,10 @@ public class BackpacksUtil {
             backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items.Size", Integer.parseInt(backpacksConfig.getString("Options.BackPack_Default_Size")));
         }
         if (needToSetNewOwner){
-            backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items.PlayerName", p.getName());
+            backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".PlayerName", p.getName());
         }
         if (needToSetNewOwnerID){
-            backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items.UniqueID", p.getUniqueId().toString());
+            backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".UniqueID", p.getUniqueId().toString());
         }
     }
 
@@ -1104,10 +1202,10 @@ public class BackpacksUtil {
             backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items-" + id + ".Size", Integer.parseInt(backpacksConfig.getString("Options.BackPack_Default_Size")));
         }
         if (needToSetNewOwner){
-            backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items-" + id + ".PlayerName", p.getName());
+            backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".PlayerName", p.getName());
         }
         if (needToSetNewOwnerID){
-            backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items-" + id + ".UniqueID", p.getUniqueId().toString());
+            backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".UniqueID", p.getUniqueId().toString());
         }
     }
 
@@ -1206,10 +1304,12 @@ public class BackpacksUtil {
         // Items-1 or anyway an ID, I'm just getting the ID with this which's what I need.
         try {
             for (String key : backpacksDataConfig.getConfigurationSection("Inventories." + p.getUniqueId()).getKeys(false)) {
-                if (!key.equalsIgnoreCase("Items")) {
+                if (!key.equalsIgnoreCase("Items") && !key.equalsIgnoreCase("Limit") && !key.equalsIgnoreCase("PlayerName") && !key.equalsIgnoreCase("UniqueID")) {
                     backpacksIDs.add(key.substring(6));
                 } else {
-                    backpacksIDs.add(null);
+                    if (!backpacksIDs.contains(null) && !key.equalsIgnoreCase("PlayerName") && !key.equalsIgnoreCase("UniqueID") && !key.equalsIgnoreCase("Limit")) {
+                        backpacksIDs.add(null);
+                    }
                 }
             }
         } catch (NullPointerException ignored){}
@@ -1225,8 +1325,10 @@ public class BackpacksUtil {
         // Items can be -> Items- or just Items in the config, the default and old backpacks will have Items only, newer will be like
         // Items-1 or anyway an ID, I'm just getting the ID with this which's what I need.
         try {
-            for (String ignored : backpacksDataConfig.getConfigurationSection("Inventories." + p.getUniqueId()).getKeys(false)) {
-                backpacksNumber++;
+            for (String string : backpacksDataConfig.getConfigurationSection("Inventories." + p.getUniqueId()).getKeys(false)) {
+                if (!string.equalsIgnoreCase("PlayerName") && !string.equalsIgnoreCase("Limit") && !string.equalsIgnoreCase("UniqueID")) {
+                    backpacksNumber++;
+                }
             }
         } catch (NullPointerException ignored){}
 
@@ -1258,19 +1360,19 @@ public class BackpacksUtil {
     }
 
     private boolean checkBackpackOwnerMissing(Player p) {
-        return backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Items.PlayerName") == null;
+        return backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".PlayerName") == null;
     }
 
     private boolean checkBackpackOwnerMissing(Player p, String id) {
-        return backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Items-" + id + ".PlayerName") == null;
+        return backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".PlayerName") == null;
     }
 
     private boolean checkBackpackOwnerIDMissing(Player p) {
-        return backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Items.UniqueID") == null;
+        return backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".UniqueID") == null;
     }
 
     private boolean checkBackpackOwnerIDMissing(Player p, String id) {
-        return backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Items-" + id + ".UniqueID") == null;
+        return backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".UniqueID") == null;
     }
 
     private OfflinePlayer getOfflinePlayer(String name) {
@@ -1278,8 +1380,8 @@ public class BackpacksUtil {
             updateCachedBackpack();
             if (backpacksDataConfig.getConfigurationSection("Inventories") != null) {
                 for (String uniqueID : backpacksDataConfig.getConfigurationSection("Inventories").getKeys(false)) {
-                    if (backpacksDataConfig.getString("Inventories." + uniqueID + ".Items.PlayerName").equalsIgnoreCase(name) && backpacksDataConfig.getString("Inventories." + uniqueID + ".Items.UniqueID") != null) {
-                        return Bukkit.getOfflinePlayer(UUID.fromString(backpacksDataConfig.getString("Inventories." + uniqueID + ".Items.UniqueID")));
+                    if (backpacksDataConfig.getString("Inventories." + uniqueID + ".PlayerName").equalsIgnoreCase(name) && backpacksDataConfig.getString("Inventories." + uniqueID + ".UniqueID") != null) {
+                        return Bukkit.getOfflinePlayer(UUID.fromString(backpacksDataConfig.getString("Inventories." + uniqueID + ".UniqueID")));
                     }
                 }
             }
@@ -1292,9 +1394,9 @@ public class BackpacksUtil {
             updateCachedBackpack();
             if (backpacksDataConfig.getConfigurationSection("Inventories") != null) {
                 for (String uniqueID : backpacksDataConfig.getConfigurationSection("Inventories").getKeys(false)) {
-                    if (backpacksDataConfig.getString("Inventories." + uniqueID + ".Items-" + id + ".PlayerName") != null && backpacksDataConfig.getString("Inventories." + uniqueID + ".Items-" + id + ".UniqueID") != null){
-                        if (backpacksDataConfig.getString("Inventories." + uniqueID + ".Items-" + id + ".PlayerName").equalsIgnoreCase(name)){
-                            return Bukkit.getOfflinePlayer(UUID.fromString(backpacksDataConfig.getString("Inventories." + uniqueID + ".Items-" + id + ".UniqueID")));
+                    if (backpacksDataConfig.getString("Inventories." + uniqueID + ".PlayerName") != null && backpacksDataConfig.getString("Inventories." + uniqueID + ".UniqueID") != null){
+                        if (backpacksDataConfig.getString("Inventories." + uniqueID + ".PlayerName").equalsIgnoreCase(name)){
+                            return Bukkit.getOfflinePlayer(UUID.fromString(backpacksDataConfig.getString("Inventories." + uniqueID + ".UniqueID")));
                         }
                     }
                 }
@@ -1308,8 +1410,8 @@ public class BackpacksUtil {
             updateCachedBackpack();
             if (backpacksDataConfig.getConfigurationSection("Inventories") != null) {
                 for (String uniqueID : backpacksDataConfig.getConfigurationSection("Inventories").getKeys(false)) {
-                    if (backpacksDataConfig.getString("Inventories." + uniqueID + ".Items.PlayerName").equalsIgnoreCase(name) && backpacksDataConfig.getString("Inventories." + uniqueID + ".Items.UniqueID") != null) {
-                        return Bukkit.getPlayer(UUID.fromString(backpacksDataConfig.getString("Inventories." + uniqueID + ".Items.UniqueID")));
+                    if (backpacksDataConfig.getString("Inventories." + uniqueID + ".PlayerName").equalsIgnoreCase(name) && backpacksDataConfig.getString("Inventories." + uniqueID + ".UniqueID") != null) {
+                        return Bukkit.getPlayer(UUID.fromString(backpacksDataConfig.getString("Inventories." + uniqueID + ".UniqueID")));
                     }
                 }
             }
@@ -1322,9 +1424,9 @@ public class BackpacksUtil {
             updateCachedBackpack();
             if (backpacksDataConfig.getConfigurationSection("Inventories") != null) {
                 for (String uniqueID : backpacksDataConfig.getConfigurationSection("Inventories").getKeys(false)) {
-                    if (backpacksDataConfig.getString("Inventories." + uniqueID + ".Items-" + id + ".PlayerName") != null && backpacksDataConfig.getString("Inventories." + uniqueID + ".Items-" + id + ".UniqueID") != null){
-                        if (backpacksDataConfig.getString("Inventories." + uniqueID + ".Items-" + id + ".PlayerName").equalsIgnoreCase(name)){
-                            return Bukkit.getPlayer(UUID.fromString(backpacksDataConfig.getString("Inventories." + uniqueID + ".Items-" + id + ".UniqueID")));
+                    if (backpacksDataConfig.getString("Inventories." + uniqueID + ".PlayerName") != null && backpacksDataConfig.getString("Inventories." + uniqueID + ".UniqueID") != null){
+                        if (backpacksDataConfig.getString("Inventories." + uniqueID + ".PlayerName").equalsIgnoreCase(name)){
+                            return Bukkit.getPlayer(UUID.fromString(backpacksDataConfig.getString("Inventories." + uniqueID + ".UniqueID")));
                         }
                     }
                 }

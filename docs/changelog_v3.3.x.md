@@ -26,6 +26,37 @@ This disconnects the teleport event from the suffocation event canceling which m
 These changes also places the user one block higher above the mine so their feet are not within it.  This will help prevent the triggering of the teleport since they are no longer within the mine.  When teleporting one block higher, it will spawn a glass block under them, then that glass block will be removed in about 10 ticks.
 
 
+* **New /backpack limit decrement command**
+This new command is just like /backpack limit add but it does the opposite, instead
+  of incrementing the limit it will decrement. Format: 
+  - /backpack limit decrement <Player> <DecrementNumber>, for example if you have 3 backpacks
+  as a limit, /backpack limit decrement GABRYCA 2, will set my new limit to 3 - 2 = 1.
+    Multiple backpacks must be enabled to use this feature.
+
+
+* **New /backpack limit add command**
+This new command is just like /backpack limit set but instead of setting a new size
+  it will increment it of the number specified, format:
+  - /backpack limit add <Player> <IncrementNumber>, for example if you have 2 backpacks as a limit
+  then execute /backpack limit add GABRYCA 3, your new limit is 2 + 3 = 5.
+    Multiple backpacks must be enabled to use this feature.
+
+
+* **New /backpack limit set command**
+New command to set the amount of backpacks that a player can own, the format is:
+  - /backpack limit set <player> <number>, for exaple /backpack limit set GABRYCA 2 will let
+  me own only 2 backpacks if multiple backpacks is enabled.
+
+
+* **Backpacks DATA file structure reworked**
+Backpacks data FILE structure got edited quite a lot for some new features, more customizations
+  and hopefully less bugs.
+  NOTE: Upgrading from an older version may make the admin commands unusable, to fix this you need
+  to open at least one time that backpack and it will convert to the new structure, but stability or bugs
+  isn't guaranteed, the best way to avoid issues is to delete the whole backpacksdata.yml config, but
+  obviously you'd loose all the backpacks.
+
+
 * **Elminate all references to the config setting `use-new-prison-block-model` except for the one in the SpigotPlatform object.**
 This will allow for easier switch over to the new block model since it will be only one place that needs to be changed.  When switched over, it will support an alternative settings that will allow the forcing of the old block model.
 

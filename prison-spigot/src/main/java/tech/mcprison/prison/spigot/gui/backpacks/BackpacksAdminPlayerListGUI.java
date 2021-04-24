@@ -38,12 +38,9 @@ public class BackpacksAdminPlayerListGUI extends SpigotGUIComponents {
         for (String uuid : playerUUID) {
 
             String name = null;
-            Set<String> items = backpacksData.getConfigurationSection("Inventories." + uuid).getKeys(false);
-            for (String inventoryID : items) {
-                if (playersFound <= 54) {
-                    if (uuid.equalsIgnoreCase(backpacksData.getString("Inventories." + uuid + "." + inventoryID + ".UniqueID"))) {
-                        name = backpacksData.getString("Inventories." + uuid + "." + inventoryID + ".PlayerName");
-                    }
+            if (playersFound <= 54) {
+                if (uuid.equalsIgnoreCase(backpacksData.getString("Inventories." + uuid + ".UniqueID"))) {
+                    name = backpacksData.getString("Inventories." + uuid + ".PlayerName");
                 }
             }
 

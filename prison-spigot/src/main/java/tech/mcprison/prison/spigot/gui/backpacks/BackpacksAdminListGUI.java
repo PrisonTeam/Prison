@@ -42,30 +42,34 @@ public class BackpacksAdminListGUI extends SpigotGUIComponents {
             for (String inventoryID : items) {
 
                 String name;
-                name = backpacksData.getString("Inventories." + uuid + "." + inventoryID + ".PlayerName");
+                name = backpacksData.getString("Inventories." + uuid + ".PlayerName");
                 if (name != null && name.equalsIgnoreCase(playerBackpackName)){
 
                     if (backpacksFound < 54) {
-                        String id;
-                        if (!inventoryID.equalsIgnoreCase("items")) {
+                        String id = null;
+                        if (!inventoryID.equalsIgnoreCase("items") && !inventoryID.equalsIgnoreCase("PlayerName") && !inventoryID.equalsIgnoreCase("UniqueID") && !inventoryID.equalsIgnoreCase("Limit")) {
                             id = inventoryID.substring(6);
                         } else {
-                            id = "default";
+                            if (!inventoryID.equalsIgnoreCase("PlayerName") && !inventoryID.equalsIgnoreCase("UniqueID") && !inventoryID.equalsIgnoreCase("Limit")){
+                                id = "default";
+                            }
                         }
-                        List<String> backpacksLore = createLore(
-                                loreShiftAndRightClickToDelete,
-                                "&8----------------",
-                                " ",
-                                loreInfo,
-                                lorePlayerOwner + name,
-                                loreBackpackID + id,
-                                " ",
-                                "&8----------------"
-                        );
+                        if (id != null) {
+                            List<String> backpacksLore = createLore(
+                                    loreShiftAndRightClickToDelete,
+                                    "&8----------------",
+                                    " ",
+                                    loreInfo,
+                                    lorePlayerOwner + name,
+                                    loreBackpackID + id,
+                                    " ",
+                                    "&8----------------"
+                            );
 
-                        ItemStack backpackButton = createButton(XMaterial.CHEST.parseItem(), backpacksLore, "&3" + "Backpack " + name + " " + id);
-                        inv.setItem(backpacksFound, backpackButton);
-                        backpacksFound++;
+                            ItemStack backpackButton = createButton(XMaterial.CHEST.parseItem(), backpacksLore, "&3" + "Backpack " + name + " " + id);
+                            inv.setItem(backpacksFound, backpackButton);
+                            backpacksFound++;
+                        }
                     } else {
                         openGUI(p, inv);
                         return;

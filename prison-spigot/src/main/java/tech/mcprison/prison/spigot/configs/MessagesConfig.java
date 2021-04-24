@@ -202,6 +202,10 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.BackPackResizeNotInt", "Backpack's size value isn't a number.");
         dataConfig("Message.BackPackResizeNotMultiple9", "Backpack's size must be a multiple of 9 and max 54.");
         dataConfig("Message.BackPackResizeDone", "If the Backpack wasn't missing, it got resized with success!");
+        dataConfig("Message.BackPackLimitMissingParam", "You're missing some arguments required to set the backpacks limit!");
+        dataConfig("Message.BackPackLimitNotNumber", "The Backpacks Limit number isn't a number!");
+        dataConfig("Message.BackPackLimitSuccess", "The Backpacks Limit got edited with success!");
+        dataConfig("Message.BackPackLimitDecrementFail", "The Backpacks limit decremented of that value would be negative, operation canceled!");
         dataConfig("Message.CantGetRanksAdmin", "Can't get Ranks, there might be &cno ranks&7 or the Ranks module's &cdisabled&7.");
         dataConfig("Message.CantRunGUIFromConsole", "You cannot run the GUI from the console.");
         dataConfig("Message.CantGiveItemFromConsole", "You can't get an item as the console.");

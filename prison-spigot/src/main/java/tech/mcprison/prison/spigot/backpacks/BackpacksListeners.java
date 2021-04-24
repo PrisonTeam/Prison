@@ -39,7 +39,6 @@ public class BackpacksListeners implements Listener {
     @EventHandler
     public void onPlayerBackpackEdit(InventoryClickEvent e){
         backpackEditEvent(e);
-
     }
 
     @EventHandler
