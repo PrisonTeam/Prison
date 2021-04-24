@@ -48,7 +48,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         // Get the dimensions and if needed increases them
         int dimension = 54;
         
-		boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
+		boolean useNewBlockModel = Prison.get().getPlatform().isUseNewPrisonBlockModel();
 
         // Create the inventory
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MineInfo -> Blocks"));

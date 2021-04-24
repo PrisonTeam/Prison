@@ -20,6 +20,10 @@ These represent the work that has been done on prison.
 # v3.3.0-alpha.2 2021-04-23
 
 
+* **Elminate all references to the config setting `use-new-prison-block-model` except for the one in the SpigotPlatform object.**
+This will allow for easier switch over to the new block model since it will be only one place that needs to be changed.  When switched over, it will support an alternative settings that will allow the forcing of the old block model.
+
+
 * **Enhanced the conversion to the new block model to preserve the constraints that were added under the old block model.**
 
 

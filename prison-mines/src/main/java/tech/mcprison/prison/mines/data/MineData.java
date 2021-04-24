@@ -223,8 +223,7 @@ public abstract class MineData
 			this.useNewBlockModel = false;
 		}
 		else {
-			this.useNewBlockModel = Prison.get().getPlatform()
-								.getConfigBooleanFalse( "use-new-prison-block-model" );
+			this.useNewBlockModel = Prison.get().getPlatform().isUseNewPrisonBlockModel();
 		}
     }
 

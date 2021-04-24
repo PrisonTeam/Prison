@@ -236,6 +236,11 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
+	public boolean isUseNewPrisonBlockModel() {
+		return false;
+	}
+	
+	@Override
 	public boolean getConfigBooleanFalse( String key ) {
 		return false;
 	}

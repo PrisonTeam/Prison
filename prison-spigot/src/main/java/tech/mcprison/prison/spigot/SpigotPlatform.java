@@ -774,6 +774,14 @@ public class SpigotPlatform
 		return ( val != null && val.trim().equalsIgnoreCase( "true" ) );
 	}
 	
+	
+	@Override
+	public boolean isUseNewPrisonBlockModel() {
+		
+		return getConfigBooleanFalse( "use-new-prison-block-model" );
+//		return !getConfigBooleanFalse( "use-old-prison-block-model" );
+	}
+	
 	/**
 	 * <p>This returns the boolean value that is associated with the key.
 	 * It has to match on true to return a true value, but if the key does
@@ -1242,7 +1250,7 @@ public class SpigotPlatform
 		
 		
 		
-        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+        if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
         	
         	for ( SellAllBlockData xMatCost : buildBlockListXMaterial() ) {
         		
@@ -1292,7 +1300,7 @@ public class SpigotPlatform
 			for ( int i = 0; i < mBlocks.size(); i++ )
 			{
 				
-				if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+				if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
 					
 					PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( mBlocks.get( i ) );
 	            	if ( prisonBlock != null ) {

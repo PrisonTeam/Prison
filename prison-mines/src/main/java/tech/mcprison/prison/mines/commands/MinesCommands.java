@@ -931,7 +931,7 @@ public class MinesCommands
     	
     	ChatDisplay display = null;
     	
-        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+        if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
             
         	display = prisonBlockSearchBuilder(search, page, true, "mines block search");
         }
@@ -959,7 +959,7 @@ public class MinesCommands
     	
     	ChatDisplay display = null;
     	
-    	if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+    	if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
     		
     		display = prisonBlockSearchBuilder(search, page, false, "mines block searchAll");
     	}

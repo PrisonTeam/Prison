@@ -68,7 +68,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         String loreBlocks = messages.getString("Lore.Blocks");
 
         // Global boolean.
-        boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
+        boolean useNewBlockModel = Prison.get().getPlatform().isUseNewPrisonBlockModel();
 
         // Only loop over the blocks that we need to show:
         int i = counter;
