@@ -17,7 +17,13 @@ These represent the work that has been done on prison.
 
 
 
-# v3.3.0-alpha.2 2021-04-23
+# v3.3.0-alpha.2 2021-04-24
+
+
+* **Changes to the teleporting of players.**
+This fixes a potential issue with suffocation events locking a player in to an endless loop. 
+This disconnects the teleport event from the suffocation event canceling which may help address this.  The teleport event is submitted to run 3 ticks in to the future so it can also allow the suffocation event to be canceled fully.
+These changes also places the user one block higher above the mine so their feet are not within it.  This will help prevent the triggering of the teleport since they are no longer within the mine.  When teleporting one block higher, it will spawn a glass block under them, then that glass block will be removed in about 10 ticks.
 
 
 * **Elminate all references to the config setting `use-new-prison-block-model` except for the one in the SpigotPlatform object.**

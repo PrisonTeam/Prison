@@ -218,7 +218,7 @@ public abstract class MineReset
 			}
 			
 			
-			teleportAllPlayersOut( getBounds().getyBlockMax() );
+			teleportAllPlayersOut();
 //			setStatsTeleport1TimeMS(
 //					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
 			
@@ -257,7 +257,7 @@ public abstract class MineReset
 			// If a player falls back in to the mine before it is fully done being reset, 
 			// such as could happen if there is lag or a lot going on within the server, 
 			// this will TP anyone out who would otherwise suffocate.  I hope! lol
-			teleportAllPlayersOut( getBounds().getyBlockMax() );
+			teleportAllPlayersOut();
 //			setStatsTeleport2TimeMS(
 //					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
 			
@@ -288,6 +288,10 @@ public abstract class MineReset
 			// Broadcast message to all players within a certain radius of this mine:
 			broadcastResetMessageToAllPlayersWithRadius();
 //			broadcastResetMessageToAllPlayersWithRadius( MINE_RESET__BROADCAST_RADIUS_BLOCKS );
+			
+			
+			submitTeleportGlassBlockRemoval();
+			
 			
 			// If part of a chained_resets, then kick off the next reset:
 			if ( getCurrentJob().getResetActions().contains( MineResetActions.CHAINED_RESETS )) {
@@ -407,17 +411,19 @@ public abstract class MineReset
     }
 	
 
-    protected abstract long teleportAllPlayersOut(int targetY);
+    protected abstract long teleportAllPlayersOut();
     
     
     public abstract void teleportPlayerOut(Player player);
     
 
-    public abstract void teleportPlayerOut(Player player, String targetLocation);
+    public abstract Location teleportPlayerOut(Player player, String targetLocation);
 
 
 	public abstract Location alternativeTpLocation();
 	
+	
+	public abstract void submitTeleportGlassBlockRemoval();
 	
 	
     /**
@@ -651,7 +657,7 @@ public abstract class MineReset
         		// If a player falls back in to the mine before it is fully done being reset, 
         		// such as could happen if there is lag or a lot going on within the server, 
         		// this will TP anyone out who would otherwise suffocate.  I hope! lol
-    			teleportAllPlayersOut( getBounds().getyBlockMax() );
+    			teleportAllPlayersOut();
 //    			setStatsTeleport2TimeMS(
 //    					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
         		
@@ -684,7 +690,10 @@ public abstract class MineReset
         		// Broadcast message to all players within a certain radius of this mine:
         		broadcastResetMessageToAllPlayersWithRadius();
 //        		broadcastResetMessageToAllPlayersWithRadius( MINE_RESET__BROADCAST_RADIUS_BLOCKS );
-
+        		
+        		
+        		submitTeleportGlassBlockRemoval();
+        		
                 
                 // Tie to the command stats mode so it logs it if stats are enabled:
                 if ( PrisonMines.getInstance().getMineManager().isMineStats() || 
@@ -742,7 +751,7 @@ public abstract class MineReset
 			if (!canceled) {
 				
 				try {
-					teleportAllPlayersOut( getBounds().getyBlockMax() );
+					teleportAllPlayersOut();
 //					setStatsTeleport1TimeMS(
 //							teleportAllPlayersOut( getBounds().getyBlockMax() ) );
 					

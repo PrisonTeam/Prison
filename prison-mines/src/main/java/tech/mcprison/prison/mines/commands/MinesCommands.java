@@ -3402,6 +3402,11 @@ public class MinesCommands
     	else {
     		
     		mine.teleportPlayerOut( player, target );
+    		
+    		// To "move" the player out of the mine, they are elevated by one block above the surface
+    		// so need to remove the glass block if one is spawned under them.  If there is no glass
+    		// block, then it will do nothing.
+    		mine.submitTeleportGlassBlockRemoval();
     	}
     	
 

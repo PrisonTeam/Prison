@@ -14,6 +14,7 @@ public class PrisonBlock
 			implements Comparable<PrisonBlock> {
 	
 	public static PrisonBlock AIR;
+	public static PrisonBlock GLASS;
 	public static PrisonBlock IGNORE;
 	public static PrisonBlock NULL_BLOCK;
 	
@@ -31,6 +32,7 @@ public class PrisonBlock
 	
 	static {
 		AIR = new PrisonBlock( InternalBlockTypes.AIR.name(), false );
+		GLASS = new PrisonBlock( InternalBlockTypes.GLASS.name(), true );
 		IGNORE = new PrisonBlock( InternalBlockTypes.IGNORE.name(), false );
 		NULL_BLOCK = new PrisonBlock( InternalBlockTypes.NULL_BLOCK.name(), false );
 	}

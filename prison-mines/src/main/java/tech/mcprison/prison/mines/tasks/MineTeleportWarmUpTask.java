@@ -17,6 +17,9 @@ public class MineTeleportWarmUpTask
 	
 	private double maxDistance;
 	
+	private String messageSuccess;
+	private String messageFailed;
+	
 	public MineTeleportWarmUpTask( Player player, Mine mine, String target, double maxDistance ) {
 		super();
 		
@@ -27,6 +30,10 @@ public class MineTeleportWarmUpTask
 		this.location = player.getLocation();
 		
 		this.maxDistance = maxDistance;
+		
+		
+		this.messageSuccess = null;
+		this.messageFailed = "&7You moved! Teleport canceled.";
 	}
 	
 	@Override
@@ -39,9 +46,22 @@ public class MineTeleportWarmUpTask
 		
 		if ( bounds.getDistance3d() <= getMaxDistance() ) {
 			mine.teleportPlayerOut( getPlayer(), getTarget() );
+			
+    		// To "move" the player out of the mine, they are elevated by one block above the surface
+    		// so need to remove the glass block if one is spawned under them.  If there is no glass
+    		// block, then it will do nothing.
+    		mine.submitTeleportGlassBlockRemoval();
+
+    		if ( getMessageSuccess() != null && !getMessageSuccess().isEmpty() ) {
+    			
+    			player.sendMessage( getMessageSuccess() );
+    		}
 		}
 		else {
-			player.sendMessage( "&7You moved! Teleport canceled." );
+			if ( getMessageFailed() != null && !getMessageFailed().isEmpty() ) {
+				
+				player.sendMessage( getMessageFailed() );
+			}
 		}
 		
 	}
@@ -79,5 +99,19 @@ public class MineTeleportWarmUpTask
 	}
 	public void setMaxDistance( double maxDistance ) {
 		this.maxDistance = maxDistance;
+	}
+
+	public String getMessageSuccess() {
+		return messageSuccess;
+	}
+	public void setMessageSuccess( String messageSuccess ) {
+		this.messageSuccess = messageSuccess;
+	}
+
+	public String getMessageFailed() {
+		return messageFailed;
+	}
+	public void setMessageFailed( String messageFailed ) {
+		this.messageFailed = messageFailed;
 	}
 }
