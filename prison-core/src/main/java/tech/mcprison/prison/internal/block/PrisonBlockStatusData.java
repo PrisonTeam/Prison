@@ -142,6 +142,24 @@ public abstract class PrisonBlockStatusData {
 		}
 	}
 	
+	/**
+	 * This function transfers all stats from an old block to this existing block. 
+	 * The data is replaced, not "added" so use cautiously.
+	 * 
+	 * @param oldBlock
+	 */
+	public void transferStats( PrisonBlockStatusData oldBlock ) {
+		if ( oldBlock != null ) {
+			
+			setChance( oldBlock.getChance() );
+			setBlockCountTotal( oldBlock.getBlockCountTotal() );
+			setConstraintMin( oldBlock.getConstraintMin() );
+			setConstraintMax( oldBlock.getConstraintMax() );
+			setConstraintExcludeTopLayers( oldBlock.getConstraintExcludeTopLayers() );
+			setConstraintExcludeBottomLayers( oldBlock.getConstraintExcludeBottomLayers() );
+		}
+	}
+	
 	public String toPlaceholderString() {
 		StringBuilder sb = new StringBuilder();
 		

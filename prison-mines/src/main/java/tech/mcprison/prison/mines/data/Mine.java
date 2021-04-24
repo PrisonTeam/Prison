@@ -441,12 +441,12 @@ public class Mine
         		getPrisonBlocks().size() == 0 && getBlocks().size() > 0 ) {
         	// Need to perform the initial conversion: 
         	
-        	for ( BlockOld block : getBlocks() ) {
-        		PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( block.getType().name() );
+        	for ( BlockOld blockOld : getBlocks() ) {
+        		PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockOld.getType().name() );
             	if ( prisonBlock != null ) {
             		
-            		prisonBlock.setChance( block.getChance() );
-            		prisonBlock.setBlockCountTotal( block.getBlockCountTotal() );
+            		// This transfers all the stats over so none are lost.
+            		prisonBlock.transferStats( blockOld );
             		
             		addPrisonBlock( prisonBlock );
 

@@ -20,6 +20,9 @@ These represent the work that has been done on prison.
 # v3.3.0-alpha.2 2021-04-23
 
 
+* **Enhanced the conversion to the new block model to preserve the constraints that were added under the old block model.**
+
+
 
 * **3.3.0-alpha.2 2021-04-23**
 
