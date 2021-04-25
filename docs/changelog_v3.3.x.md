@@ -20,6 +20,13 @@ These represent the work that has been done on prison.
 # v3.3.0-alpha.2 2021-04-24
 
 
+* **Backpack list add backpack button FIX**
+The backpack add button won't show if the backpacks limit for a player is set to 0.
+
+* **Backpack admin player list NPE fix**
+Fixed an NPE of the admin backpacks GUI list.
+
+
 * **Change to the maven URLs to pair them to the implementations.**
 Not sure if this will help, but it will help narrow which maven repos are related to the resources.
 There's been a problem where repos go off line and then gradle always tries and fails to locate the resources in the apache commons repo.

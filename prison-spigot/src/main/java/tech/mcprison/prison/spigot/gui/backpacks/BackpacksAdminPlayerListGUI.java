@@ -6,8 +6,10 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
@@ -28,7 +30,19 @@ public class BackpacksAdminPlayerListGUI extends SpigotGUIComponents {
         int dimension = 54;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Backpacks-Admin-Players"));
 
-        Set<String> playerUUID = backpacksData.getConfigurationSection("Inventories").getKeys(false);
+
+        if (backpacksData.getConfigurationSection("Inventories") == null){
+            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.BackPackListEmpty")));
+            return;
+        }
+
+        Set<String> playerUUID;
+        try {
+            playerUUID = backpacksData.getConfigurationSection("Inventories").getKeys(false);
+        } catch (NullPointerException ex){
+            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.BackPackListEmpty")));
+            return;
+        }
 
         List<String> backpackLore = createLore(
                 clickToOpen

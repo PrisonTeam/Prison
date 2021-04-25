@@ -60,7 +60,7 @@ public class BackpacksListPlayerGUI extends SpigotGUIComponents {
             }
         }
 
-        if (BackpacksUtil.get().getBackpacksIDs(p).isEmpty() || !BackpacksUtil.get().reachedBackpacksLimit(p)) {
+        if ((BackpacksUtil.get().getBackpacksIDs(p).isEmpty() || !BackpacksUtil.get().reachedBackpacksLimit(p)) && BackpacksUtil.get().getBackpacksLimit(p) != 0) {
             inv.setItem(49, createButton(XMaterial.EMERALD_BLOCK.parseItem(), loreAddBackpackButton, SpigotPrison.format("&aNew Backpack")));
         }
 
