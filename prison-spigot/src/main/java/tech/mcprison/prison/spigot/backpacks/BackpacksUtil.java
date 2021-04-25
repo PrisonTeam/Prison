@@ -612,6 +612,8 @@ public class BackpacksUtil {
      * Backpacksconfig option -> Options.BackPack_Access_And_Item_If_Limit_Is_0 is false by default, so a player can't own
      * a backpack if the limit is 0 and won't get the item to open one, also he won't have access to the /gui backpack command.
      *
+     * @param p - Player.
+     *
      * @return boolean
      * */
     public boolean canOwnBackpack(Player p){
