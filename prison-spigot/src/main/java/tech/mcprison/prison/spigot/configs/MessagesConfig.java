@@ -207,6 +207,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.BackPackLimitSuccess", "The Backpacks Limit got edited with success!");
         dataConfig("Message.BackPackLimitDecrementFail", "The Backpacks limit decremented of that value would be negative, operation canceled!");
         dataConfig("Message.BackPackListEmpty", "There aren't backpacks in this server.");
+        dataConfig("Message.BackPackCantOwn", "Sorry but looks like you can't own Backpacks!");
         dataConfig("Message.CantGetRanksAdmin", "Can't get Ranks, there might be &cno ranks&7 or the Ranks module's &cdisabled&7.");
         dataConfig("Message.CantRunGUIFromConsole", "You cannot run the GUI from the console.");
         dataConfig("Message.CantGiveItemFromConsole", "You can't get an item as the console.");

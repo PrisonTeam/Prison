@@ -606,6 +606,18 @@ public class BackpacksUtil {
         return backpacksLimitGet(p);
     }
 
+
+    /**
+     * Check if a Player can own a Backpack depending on limit and config options even if the limit is set to 0.
+     * Backpacksconfig option -> Options.BackPack_Access_And_Item_If_Limit_Is_0 is false by default, so a player can't own
+     * a backpack if the limit is 0 and won't get the item to open one, also he won't have access to the /gui backpack command.
+     *
+     * @return boolean
+     * */
+    public boolean canOwnBackpack(Player p){
+        return playerCanOwnBackpack(p);
+    }
+
     /**
      * Java getBoolean's broken so I made my own.
      * */
@@ -760,10 +772,14 @@ public class BackpacksUtil {
     }
 
     private void giveBackpackToPlayerOnJoinItem(Player p) {
-        if (getBoolean(backpacksConfig.getString("Options.BackPack_Item_OnJoin"))) {
-        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "backpack item" );
+        if (getBoolean(backpacksConfig.getString("Options.BackPack_Item_OnJoin")) && playerCanOwnBackpack(p)) {
+            String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "backpack item" );
             Bukkit.dispatchCommand(p, registeredCmd);
         }
+    }
+
+    private boolean playerCanOwnBackpack(Player p){
+        return !(!getBoolean(backpacksConfig.getString("Options.BackPack_Access_And_Item_If_Limit_Is_0")) && getBackpacksLimit(p) == 0);
     }
 
     private boolean resetBackpackMethod(Player p) {

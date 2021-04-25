@@ -5,8 +5,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 
 import java.util.List;
@@ -20,6 +22,11 @@ public class BackpacksListPlayerGUI extends SpigotGUIComponents {
     }
 
     public void open(){
+
+        if (BackpacksUtil.get().getBackpacksLimit(p) == 0){
+            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.BackPackCantOwn")));
+            return;
+        }
 
         int dimension = 54;
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + p.getName() + " -> Backpacks"));
@@ -60,7 +67,7 @@ public class BackpacksListPlayerGUI extends SpigotGUIComponents {
             }
         }
 
-        if ((BackpacksUtil.get().getBackpacksIDs(p).isEmpty() || !BackpacksUtil.get().reachedBackpacksLimit(p)) && BackpacksUtil.get().getBackpacksLimit(p) != 0) {
+        if (BackpacksUtil.get().getBackpacksIDs(p).isEmpty() || !BackpacksUtil.get().reachedBackpacksLimit(p)) {
             inv.setItem(49, createButton(XMaterial.EMERALD_BLOCK.parseItem(), loreAddBackpackButton, SpigotPrison.format("&aNew Backpack")));
         }
 

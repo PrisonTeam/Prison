@@ -20,10 +20,21 @@ These represent the work that has been done on prison.
 # v3.3.0-alpha.2 2021-04-24
 
 
-* **Backpack list add backpack button FIX**
+* **Backpack option for item on join when limit is set to 0.**
+It's now possible to give or not the backpack item to open it on join, depending on if
+  the limit is 0 or not, by default if the limit is 0 you won't have access to create a backpack and the item.
+
+
+* **Backpacks list GUI limit 0 message.**
+If a player have a limit of 0 backpacks, instead of opening an empty GUI he'll get an info
+  message telling him that he can't own backpacks.
+
+
+* **Backpack list add backpack button FIX.**
 The backpack add button won't show if the backpacks limit for a player is set to 0.
 
-* **Backpack admin player list NPE fix**
+
+* **Backpack admin player list NPE fix.**
 Fixed an NPE of the admin backpacks GUI list.
 
 
@@ -38,7 +49,7 @@ This disconnects the teleport event from the suffocation event canceling which m
 These changes also places the user one block higher above the mine so their feet are not within it.  This will help prevent the triggering of the teleport since they are no longer within the mine.  When teleporting one block higher, it will spawn a glass block under them, then that glass block will be removed in about 10 ticks.
 
 
-* **New /backpack limit decrement command**
+* **New /backpack limit decrement command.**
 This new command is just like /backpack limit add but it does the opposite, instead
   of incrementing the limit it will decrement. Format: 
   - /backpack limit decrement <Player> <DecrementNumber>, for example if you have 3 backpacks
@@ -46,7 +57,7 @@ This new command is just like /backpack limit add but it does the opposite, inst
     Multiple backpacks must be enabled to use this feature.
 
 
-* **New /backpack limit add command**
+* **New /backpack limit add command.**
 This new command is just like /backpack limit set but instead of setting a new size
   it will increment it of the number specified, format:
   - /backpack limit add <Player> <IncrementNumber>, for example if you have 2 backpacks as a limit
@@ -54,13 +65,13 @@ This new command is just like /backpack limit set but instead of setting a new s
     Multiple backpacks must be enabled to use this feature.
 
 
-* **New /backpack limit set command**
+* **New /backpack limit set command.**
 New command to set the amount of backpacks that a player can own, the format is:
   - /backpack limit set <player> <number>, for exaple /backpack limit set GABRYCA 2 will let
   me own only 2 backpacks if multiple backpacks is enabled.
 
 
-* **Backpacks DATA file structure reworked**
+* **Backpacks DATA file structure reworked.**
 Backpacks data FILE structure got edited quite a lot for some new features, more customizations
   and hopefully less bugs.
   NOTE: Upgrading from an older version may make the admin commands unusable, to fix this you need

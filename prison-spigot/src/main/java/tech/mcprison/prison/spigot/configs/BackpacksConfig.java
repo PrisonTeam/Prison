@@ -74,6 +74,7 @@ public class BackpacksConfig extends SpigotConfigComponents{
         dataConfig("Options.BackPack_Item", "CHEST");
         dataConfig("Options.BackPack_Item_Title", "&3Backpack");
         dataConfig("Options.BackPack_Item_OnJoin", "true");
+        dataConfig("Options.BackPack_Access_And_Item_If_Limit_Is_0", "false");
         dataConfig("Options.BackPack_Lose_Items_On_Death", "false");
         dataConfig("Options.BackPack_Open_Sound_Enabled", "true");
         dataConfig("Options.BackPack_Open_Sound", "BLOCK_CHEST_OPEN");

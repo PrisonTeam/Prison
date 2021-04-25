@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.commands;
 
+import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
@@ -291,6 +292,11 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
 
         if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission_Enabled")) && !p.hasPermission(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission"))){
             Output.get().sendWarn(sender, SpigotPrison.format(messages.getString("Message.MissingPermission") + " [" + BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission") + "]"));
+            return;
+        }
+
+        if (!BackpacksUtil.get().canOwnBackpack(p)){
+            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.BackPackCantOwn")));
             return;
         }
 
