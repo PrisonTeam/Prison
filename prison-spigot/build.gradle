@@ -30,12 +30,32 @@ repositories {
     maven { url = "https://repo.lucko.me/" }
     maven { url = "https://repo.codemc.org/repository/maven-public/" }
     //maven { url = "https://repo.inventivetalent.org/content/groups/public/" }
-    maven { url = "http://repo.mvdw-software.be/content/groups/public/" }
-    maven { url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/' }
-    maven { url = 'https://mvnrepository.com/artifact/org.apache.commons/commons-lang3' }
+    maven { 
+    	url = "http://repo.mvdw-software.be/content/groups/public/" 
+    	content {
+    		includeGroup 'be.maximvdw'
+    	}
+    }
+    maven { 
+    	url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/' 
+    	content {
+    		includeGroup 'me.lucko.luckperms'
+    	}
+    }
+    maven { 
+    	url = 'https://mvnrepository.com/artifact/org.apache.commons/commons-lang3' 
+    	content {
+    		includeGroup 'org.apache.commons'
+    	}
+    }
    // maven { url = 'https://repo.pcgamingfreaks.at/repository/maven-everything' }
     
-    maven { url = 'https://mvnrepository.com/artifact/com.github.cryptomorin' }
+    maven { 
+    	url = 'https://mvnrepository.com/artifact/com.github.cryptomorin' 
+    	content {
+    		includeGroup 'com.github.cryptomorin'
+    	}
+    }
   //  maven { url = 'https://maven.enginehub.org/repo/' }
   
   	//maven { url = "https://nexus.badbones69.com/repository/maven-releases/" }
@@ -58,6 +78,7 @@ dependencies {
     
 	implementation 'org.apache.commons:commons-lang3:3.9'
     implementation 'me.clip:placeholderapi:2.9.1'
+//    implementation 'me.clip:placeholderapi:2.10.9'
     
     implementation 'net.luckperms:api:5.0'
     implementation 'me.lucko.luckperms:luckperms-api:4.0'

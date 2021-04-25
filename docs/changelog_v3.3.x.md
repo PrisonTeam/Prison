@@ -20,6 +20,11 @@ These represent the work that has been done on prison.
 # v3.3.0-alpha.2 2021-04-24
 
 
+* **Change to the maven URLs to pair them to the implementations.**
+Not sure if this will help, but it will help narrow which maven repos are related to the resources.
+There's been a problem where repos go off line and then gradle always tries and fails to locate the resources in the apache commons repo.
+
+
 * **Changes to the teleporting of players.**
 This fixes a potential issue with suffocation events locking a player in to an endless loop. 
 This disconnects the teleport event from the suffocation event canceling which may help address this.  The teleport event is submitted to run 3 ticks in to the future so it can also allow the suffocation event to be canceled fully.
