@@ -178,7 +178,7 @@ public class SpigotPrison extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new SpigotListener(), this);
 
         try {
-            isBackPacksEnabled = getConfig().getString("backpacks").equalsIgnoreCase("true");
+            isBackPacksEnabled = getConfig().getBoolean("backpacks");
         } catch (NullPointerException ignored){}
 
         if (isBackPacksEnabled){

@@ -50,10 +50,14 @@ public class MessagesConfig extends SpigotConfigComponents{
     }
 
     private void dataConfig(String key, String value){
+        if (conf.get(key) == null) {
+            conf.set(key, value);
+            changeCount++;
+        }
+    }
 
-        String originalString = conf.getString(key);
-
-        if (originalString == null) {
+    private void dataConfig(String key, boolean value){
+        if (conf.get(key) == null) {
             conf.set(key, value);
             changeCount++;
         }

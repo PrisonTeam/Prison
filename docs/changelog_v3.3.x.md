@@ -20,6 +20,12 @@ These represent the work that has been done on prison.
 # v3.3.0-alpha.2 2021-04-26
 
 
+* **Configs support for booleans**
+Configs now support booleans values, if you delete your old ones they will work.
+  NOTE: There may still be some booleans as strings, please report them and I'll slowly try to
+  remove them.
+
+
 * **Updated a few repos:**
 XSeries, placeholderAPI, be.maximvdw.MVDWPlaceholderAPI, net.milkbowl.vault, me.lucko.luckperms.luckperms-api
 NOTE: org.bstats.bstats-bukkit v1.7 has a source code change over v1.5
