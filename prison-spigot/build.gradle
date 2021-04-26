@@ -30,6 +30,7 @@ repositories {
     maven { url = "https://repo.lucko.me/" }
     maven { url = "https://repo.codemc.org/repository/maven-public/" }
     //maven { url = "https://repo.inventivetalent.org/content/groups/public/" }
+    
     maven { 
     	url = "http://repo.mvdw-software.be/content/groups/public/" 
     	content {
@@ -37,9 +38,10 @@ repositories {
     	}
     }
     maven { 
-    	url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/' 
+    	url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' 
+    	//url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/' 
     	content {
-    		includeGroup 'me.lucko.luckperms'
+    		includeGroup 'me.clip'
     	}
     }
     maven { 
@@ -77,8 +79,9 @@ dependencies {
     // Using jar instead: lib/Spiget_v1.4.2.prison-build.jar
     
 	implementation 'org.apache.commons:commons-lang3:3.9'
+
     implementation 'me.clip:placeholderapi:2.9.1'
-//    implementation 'me.clip:placeholderapi:2.10.9'
+//  implementation 'me.clip:placeholderapi:2.10.9'
     
     implementation 'net.luckperms:api:5.0'
     implementation 'me.lucko.luckperms:luckperms-api:4.0'
@@ -166,7 +169,10 @@ shadowJar {
         include(dependency('org.apache.commons:commons-lang3:3.10'))
         include(dependency('com.google.code.gson:gson:2.8.6'))
         include(dependency('org.bstats:bstats-bukkit:1.5'))
+
         include(dependency('me.clip:placeholderapi:2.9.1'))
+//        include(dependency('me.clip:placeholderapi:2.10.9'))
+
         //include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
         include(dependency('com.github.cryptomorin:XSeries:7.8.0'))
         
