@@ -135,7 +135,7 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onSignEditing(SignChangeEvent e){
 
         sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
@@ -170,7 +170,7 @@ public class ListenersPrisonManager implements Listener {
         } catch (IndexOutOfBoundsException ignored){}
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerInteractEvent(PlayerInteractEvent e){
 
         sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
@@ -180,10 +180,8 @@ public class ListenersPrisonManager implements Listener {
             boolean sellAllTriggerEnabled = getBoolean(sellAllConfig.getString("Options.ShiftAndRightClickSellAll.Enabled"));
             if (sellAllTriggerEnabled) {
                 // Check if the action if Shift + Right Click.
-                if (e.getAction().equals(Action.RIGHT_CLICK_AIR) && e.getPlayer().isSneaking()) {
-
-                    // Get player.
-                    Player p = e.getPlayer();
+                Player p = e.getPlayer();
+                if (e.getAction().equals(Action.RIGHT_CLICK_AIR) && p.isSneaking()) {
 
                     // Check if a permission's required.
                     boolean permissionSellAllTriggerEnabled = getBoolean(sellAllConfig.getString("Options.ShiftAndRightClickSellAll.PermissionEnabled"));
@@ -260,14 +258,11 @@ public class ListenersPrisonManager implements Listener {
                                     return;
                                 }
 
-                                boolean bySignOnly = false;
-                                if (sellAllConfig.getString("Options.SellAll_By_Sign_Only").equalsIgnoreCase("true")) {
-                                	bySignOnly = true;
-//                                    SellAllUtil sellAll = SellAllUtil.get();
-//                                    if (sellAll != null) {
-//                                        sellAll.toggleSellAllSign();
-//                                    }
-                                }
+                                boolean bySignOnly = sellAllConfig.getString("Options.SellAll_By_Sign_Only").equalsIgnoreCase("true");
+                                //                                    SellAllUtil sellAll = SellAllUtil.get();
+                                //                                    if (sellAll != null) {
+                                //                                        sellAll.toggleSellAllSign();
+                                //                                    }
 
                                 if (sellAllConfig.getString("Options.SellAll_Sign_Notify").equalsIgnoreCase("true")) {
                                     Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllSignNotify")));
@@ -291,7 +286,7 @@ public class ListenersPrisonManager implements Listener {
         chatEventPlayer.remove(p.getName());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR,ignoreCancelled = true)
     public void onGuiClosing(InventoryCloseEvent e){
 
         // If the GUI's disabled then return
@@ -382,7 +377,7 @@ public class ListenersPrisonManager implements Listener {
     }
 
     // InventoryClickEvent.
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onClick(InventoryClickEvent e){
 
         // Check if GUIs are enabled.
