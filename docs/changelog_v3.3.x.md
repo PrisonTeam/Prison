@@ -17,7 +17,12 @@ These represent the work that has been done on prison.
 
 
 
-# v3.3.0-alpha.2 2021-04-24
+# v3.3.0-alpha.2 2021-04-26
+
+
+* **Updated a few repos:**
+XSeries, placeholderAPI, be.maximvdw.MVDWPlaceholderAPI, net.milkbowl.vault, me.lucko.luckperms.luckperms-api
+NOTE: org.bstats.bstats-bukkit v1.7 has a source code change over v1.5
 
 
 * **Backpack option for item on join when limit is set to 0.**
