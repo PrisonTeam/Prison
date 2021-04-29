@@ -17,13 +17,16 @@ These represent the work that has been done on prison.
 
 
 
-# v3.3.0-alpha.2 2021-04-26
+# v3.3.0-alpha.2 2021-04-28
+
+
+* **Added a new document for prison APIs.**
+It's a start, but there is a lot more that needs to be added.
 
 
 * **Configs support for booleans**
 Configs now support booleans values, if you delete your old ones they will work.
-  NOTE: There may still be some booleans as strings, please report them and I'll slowly try to
-  remove them.
+  NOTE: There may still be some booleans as strings, please report them and I'll slowly try to remove them.
 
 
 * **Updated a few repos:**

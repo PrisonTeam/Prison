@@ -247,7 +247,8 @@ Get your prison setup quickly by running the command `/ranks autoCommand` which 
 * [Guide: Auto Manager - Setting Up and Enabling Other Plugins](prison_docs_311_guide_automanager.md) Enabling TokenEnchant and CrazyEnchant.
 
 
-**Work In Progress**
+* [Guide: Prison APIs](prison_docs_318_prison_APIs.md) 
+
 
 
 
@@ -271,8 +272,6 @@ This section of guides will focus more on other plugins and how they can integra
 * [Ideas on Setting up Donor Mines and Private Mines](prison_docs_628_configuring_private_mines.md)
 
 
-
-* **Work In Progress**
 
 
 
