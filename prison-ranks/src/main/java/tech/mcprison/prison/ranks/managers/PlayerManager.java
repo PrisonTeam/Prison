@@ -649,10 +649,14 @@ public class PlayerManager
     					double balance = getPlayerBalance(prisonPlayer,rank);
     					
     					double remaining = cost - balance;
-    					
-//    					if ( remaining < 0 ) {
-//    						remaining = 0;
-//    					}
+    
+    					// Without the following, if the player has more money than what the rank will cost,
+    					// then it would result in a negative amount, which is wrong.  
+    					// This is cost remaining... once they are able to afford a rankup, then remaining 
+    					// cost will be zero.
+    					if ( remaining < 0 ) {
+    						remaining = 0;
+    					}
     					
         				if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
         					PlaceholderAttributeNumberFormat attributeNF = 

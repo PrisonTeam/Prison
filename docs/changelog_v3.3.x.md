@@ -20,6 +20,10 @@ These represent the work that has been done on prison.
 # v3.3.0-alpha.2 2021-04-28
 
 
+* **Prevent negative values in a placeholder when the player has more money than what is needed to rankup.**  
+Since the placeholder is identifying how much is needed before ranking up, it only makes sense that once they can afford it, then they won't need more, so the value is zero.
+
+
 * **Added a new document for prison APIs.**
 It's a start, but there is a lot more that needs to be added.
 
