@@ -1125,7 +1125,7 @@ public abstract class MineReset
 	public boolean submitMineSweeperTask() {
 		boolean results = false;
 		
-		if ( !isMineSweeperSubmitted() ) {
+		if ( isMineSweeperEnabled() && !isMineSweeperSubmitted() ) {
 			
 			synchronized ( MineSweeperTask.class ) {
 				

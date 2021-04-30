@@ -17,7 +17,10 @@ These represent the work that has been done on prison.
 
 
 
-# v3.3.0-alpha.2 2021-04-28
+# v3.3.0-alpha.2 2021-04-30
+
+
+* **Bug fix: limit when the MineSweeper task will run.**
 
 
 * **Prevent negative values in a placeholder when the player has more money than what is needed to rankup.**  
