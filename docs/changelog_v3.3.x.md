@@ -20,6 +20,10 @@ These represent the work that has been done on prison.
 # v3.3.0-alpha.2 2021-04-30
 
 
+* **v3.2.7-alpha.1 2021-04-30**
+  - Note: v3.2.7 will be released in the next few days.  This release will address a few major issues.
+  
+
 * **Bug fix: limit when the MineSweeper task will run.**
 
 
