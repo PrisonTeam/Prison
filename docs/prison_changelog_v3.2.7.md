@@ -1,28 +1,66 @@
 [Prison Documents - Table of Contents](prison_docs_000_toc.md)
 
-## Prison Build Logs for v3.3.x
+## Prison Build Logs for v3.2.7 - 2021-05-02
 
 ## Build logs
- - **[v3.3.0-alpha - Current](changelog_v3.3.x.md)**
- - [v3.2.0 - 2019-12-03](prison_changelog_v3.2.0.md)&nbsp;&nbsp;
-[v3.2.1 - 2020-09-27](prison_changelog_v3.2.1.md)&nbsp;&nbsp;
-[v3.2.2 - 2020-11-21](prison_changelog_v3.2.2.md)&nbsp;&nbsp;
-[v3.2.3 - 2020-12-25](prison_changelog_v3.2.3.md)&nbsp;&nbsp;
-[v3.2.4 - 2021-03-01](prison_changelog_v3.2.4.md)&nbsp;&nbsp;
-[v3.2.5 - 2021-04-01](prison_changelog_v3.2.5.md)&nbsp;&nbsp;
-[v3.2.6 - 2021-04-11](prison_changelog_v3.2.6.md)&nbsp;&nbsp;
-[v3.2.7 - 2021-05-02](prison_changelog_v3.2.7.md)
+ - **[v3.3.x - Current](changelog_v3.3.x.md)**
+ - **[v3.2.0 - 2019-12-03](prison_changelog_v3.2.0.md)**&nbsp;&nbsp;
+**[v3.2.1 - 2020-09-27](prison_changelog_v3.2.1.md)**&nbsp;&nbsp;
+**[v3.2.2 - 2020-11-21](prison_changelog_v3.2.2.md)**&nbsp;&nbsp;
+**[v3.2.3 - 2020-12-25](prison_changelog_v3.2.3.md)**&nbsp;&nbsp;
+**[v3.2.4 - 2021-03-01](prison_changelog_v3.2.4.md)**&nbsp;&nbsp;
+**[v3.2.5 - 2021-04-01](prison_changelog_v3.2.5.md)**&nbsp;&nbsp;
+**[v3.2.6 - 2021-04-11](prison_changelog_v3.2.6.md)**&nbsp;&nbsp;
+**[v3.2.7 - 2021-05-02](prison_changelog_v3.2.7.md)**
  
 
-These represent the work that has been done on prison. 
+Greetings!  I'm delighted that you are interested in the build logs for the
+Prison plugin.  I'm wanting to provide a more formal documentation as to what 
+is going on in each build so you have a better idea if it may be something 
+that you need.
 
 
 
-# v3.3.0-alpha.1 2021-05-02
+# NOTICE : v3.2.6 had a issue with performance and release v3.2.7 fixes it
+
+
+* Significant changes to prison for improving support related commands.  The following commands are now recommended to be used to help provide details for troubleshooting.
+
+ *  /prison version all
+ *  /mines stats
+ *  /mines reset *all*
+ *  /mines list
+ *  /mines info <mineName> all
+ *  /mines stats
+ *  
+ *  /ranks ladder list
+ *  /ranks players all all
+ *  /ranks list <ladderName>
+ *  /ranks info <rankName> 
+ *  /ranks command <rankName>
+
+* If a mine is taking too long to reset, `/mines info` now includes a warning and recommends enabling Mine Reset Paging.
+
+* For all players on the server, force rank changes with one command.
+Can use the command as `/ranks set rank *all* *same*` to reset all player's ranks to their current rank.
+
+* Bug Fix: The new Mine Sweeper was added in the last release, but was accidentally always enabled.  This was fixed.
+
+
+* Significant changes and fixes for backpacks
+
+* Updated a few repos to their more recent releases
+
+* Changes to player teleport to prevent looping and locking a player in place.
+
+* Enhance how the new block model is setup to make for an easier transition to using it.
+
+
 
 
 
 # v3.2.7 2021-05-02
+
 
 
 * **Set version to v3.2.7**
@@ -222,8 +260,10 @@ Basically it would have failed to identify a specific player as to using a sign.
 * **Also provided a way to suppress the notifications so the command can be used in silent mode, which would be beneficial for a per-block use of sellall.**
  When notifications are suppressed, it suppresses the text messages and the audio.
 
-
+ 
+ 
 * **v3.3.0-alpha.0 2021-04-11**
 
   Start on the alpha.1 release.
   
+ 

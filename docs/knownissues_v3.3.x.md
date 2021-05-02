@@ -3,6 +3,9 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
+DONE: * Issue with removing a BlockEvent by clicking on the remove link.  It converts all of the & to the raw code.
+ - `/mines blockEvent remove` now uses line numbers so this is no longer an issue.
+ 
 
 * Rare condition caused by FAWEs where prison loads before CMI even though it all configured to do so otherwise.
   May be able to provide a way to force the ranks module loading so that way it can just "assume" everything is working.
