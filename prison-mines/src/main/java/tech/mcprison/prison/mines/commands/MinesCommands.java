@@ -1586,6 +1586,14 @@ public class MinesCommands
         		}
         		
         		chatDisplay.addComponent( row );
+        		
+        		double resetTimeSeconds = m.getStatsResetTimeMS() / 1000.0;
+        		if ( !m.isUsePagingOnReset() && resetTimeSeconds > 0.5 ) {
+        			String resetTimeSec = PlaceholdersUtil.formattedTime( resetTimeSeconds );
+        			chatDisplay.addText("&5  Warning: &3Reset time is &7%s&3, which is high. " +
+        					"It is recommened that you try to enable &7/mines set resetPaging help",
+        					resetTimeSec );
+        		}
         	}
         	
         	if ( !m.isVirtual() ) {

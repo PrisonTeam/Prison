@@ -20,6 +20,9 @@ These represent the work that has been done on prison.
 # v3.2.7-alpha.1 2021-05-01
 
 
+* **If the mine's reset time is greater than half a second and if mine paging is turned off, a warning will be printed under /mines info that will warn the user that the reset time is high, and that they should consider turning on mine reset paging.**
+
+
 * **Add a new feature to /ranks info to include rank commands when option 'all' is used.**
 
 
