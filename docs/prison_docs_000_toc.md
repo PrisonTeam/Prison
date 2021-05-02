@@ -16,14 +16,15 @@
 
 
 ## Build logs
- - **[v3.2.5-alpha - Current](changelog_v3.2.x.md)**
+ - **[v3.3.0.alpha.1 - Current](changelog_v3.3.x.md)**
  - **[v3.2.0 - 2019-12-03](prison_changelog_v3.2.0.md)**&nbsp;&nbsp;
 **[v3.2.1 - 2020-09-27](prison_changelog_v3.2.1.md)**&nbsp;&nbsp;
 **[v3.2.2 - 2020-11-21](prison_changelog_v3.2.2.md)**&nbsp;&nbsp;
 **[v3.2.3 - 2020-12-25](prison_changelog_v3.2.3.md)**&nbsp;&nbsp;
 **[v3.2.4 - 2021-03-01](prison_changelog_v3.2.4.md)**&nbsp;&nbsp;
 **[v3.2.5 - 2021-04-01](prison_changelog_v3.2.5.md)**&nbsp;&nbsp;
-**[v3.2.6 - 2021-04-11](prison_changelog_v3.2.6.md)**
+**[v3.2.6 - 2021-04-11](prison_changelog_v3.2.6.md)**&nbsp;&nbsp;
+**[v3.2.7 - 2021-05-02](prison_changelog_v3.2.7.md)**
 
  
  
@@ -122,6 +123,7 @@ Prison now has a new set of features that can help you get up and running faster
 - [/rankupMax \[ladder\]](docs-commands/prison_docs_command_39_rankupmax.md) `ranks.user` `ranks.rankupmax` `ranks.rankupmax.[ladderName]`
 - [/rankup \[ladder\]](docs-commands/prison_docs_command_40_rankup.md) `ranks.user` `ranks.rankup.[ladderName]`
 - /gui \[gui\]
+- [/backpack](docs-commands/prison_docs_command_43_backpack.md)
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
@@ -224,6 +226,11 @@ Get your prison setup quickly by running the command `/ranks autoCommand` which 
 
 
 
+* [Setting up Backpacks](prison_docs_117_setting_up_backpacks.md)	
+    How to enable backpacks.
+
+
+
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
@@ -241,7 +248,8 @@ Get your prison setup quickly by running the command `/ranks autoCommand` which 
 * [Guide: Auto Manager - Setting Up and Enabling Other Plugins](prison_docs_311_guide_automanager.md) Enabling TokenEnchant and CrazyEnchant.
 
 
-**Work In Progress**
+* [Guide: Prison APIs](prison_docs_318_prison_APIs.md) 
+
 
 
 
@@ -265,8 +273,6 @@ This section of guides will focus more on other plugins and how they can integra
 * [Ideas on Setting up Donor Mines and Private Mines](prison_docs_628_configuring_private_mines.md)
 
 
-
-* **Work In Progress**
 
 
 

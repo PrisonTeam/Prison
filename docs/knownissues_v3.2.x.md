@@ -7,14 +7,10 @@ a short list of To Do's. This list is intended to help work through known
 issues, and/or to serve as items that should be added, or fixed.
 
 
-# Random Issues - Alpha v3.2.6
-
-
-* Sometimes Player Ranks lores placeholders from placeholderAPI aren't working, 
-it's unknown why it's happening.
 
 
 # To Do Items - During Alpha v3.2.5
+
 
 
 
@@ -27,7 +23,7 @@ Should I worry about this? Prison Version: 3.2.5.  Even tho I get this message, 
 NOTE: This is not an issue.  OfficiallyGuo is running spigot 1.12.2 and trying to use concrete. More of a reason to use the new block model.
 
 
-* Warning if using `/mines set area` and volume is over 20k in size.  Could possibly be an error.
+DONE: * Warning if using `/mines set area` and volume is over 20k in size.  Could possibly be an error.
 
 
 * ladder commands
@@ -37,7 +33,7 @@ NOTE: This is not an issue.  OfficiallyGuo is running spigot 1.12.2 and trying t
 
  
 
-* TP cooldowns - for /mines tp
+DONE * TP warm ups - for /mines tp
   - Take a look at how essentialsX deals with it
 
 
@@ -58,7 +54,7 @@ DONE * Issue with `/ranks autoConfigure` if Mines module is disabled.  Gets a NP
 
 
 
-Look at sellall and XMAteral's use of parse.  Needs to handle it with an item stack.
+DONE: Look at sellall and XMAteral's use of parse.  Needs to handle it with an item stack.
 
 
 Personal mines.  Work in conjunction with a plot world?

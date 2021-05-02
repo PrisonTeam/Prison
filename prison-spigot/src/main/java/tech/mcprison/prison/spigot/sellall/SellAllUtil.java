@@ -4,12 +4,7 @@ package tech.mcprison.prison.spigot.sellall;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -53,7 +48,8 @@ public class SellAllUtil {
     private File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
     public Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
     public static List<String> activePlayerDelay = new ArrayList<>();
-    public boolean signUsed = false;
+    public static Map<Player, Double> activeAutoSellPlayers = new HashMap<>();
+//    public boolean signUsed = false;
     private final Compatibility compat = SpigotPrison.getInstance().getCompatibility();
     private final ItemStack lapisLazuli = compat.getLapisItemStack();
     private String idBeingProcessedBackpack = null;
@@ -81,13 +77,13 @@ public class SellAllUtil {
         return sellAllConfig;
     }
 
-    /**
-     * Use this to toggle the SellAllSign, essentially this will tell to the SellAll Sell command that you're using a sign
-     * for SellAll.
-     */
-    public void toggleSellAllSign() {
-        sellAllSignToggler();
-    }
+//    /**
+//     * Use this to toggle the SellAllSign, essentially this will tell to the SellAll Sell command that you're using a sign
+//     * for SellAll.
+//     */
+//    public void toggleSellAllSign() {
+//        sellAllSignToggler();
+//    }
 
     /**
      * Get the money to give to the Player depending on the multiplier.
@@ -185,7 +181,7 @@ public class SellAllUtil {
      * @return error - True if error occurred, false if success.
      * */
     public boolean autoSellPlayerToggle(Player p) {
-        return sellAllAutoSellPlayerToggler(p);
+        return sellAllAutoSellPlayerToggle(p);
     }
 
     /**
@@ -196,6 +192,10 @@ public class SellAllUtil {
      */
     public void sellAllSell(Player p) {
         sellAllSellPlayer(p);
+    }
+    
+    public void sellAllSell(Player p, boolean notifications, boolean bySignOnly) {
+    	sellAllSellPlayer(p, notifications, bySignOnly);
     }
 
     /**
@@ -485,6 +485,26 @@ public class SellAllUtil {
      * */
     public boolean isDisabledWorld(Player p) {
         return playerPositionIsDisabledWorld(p);
+    }
+
+    /**
+     * Add Player to AutoSell delay for earned money notification.
+     * This will add the player only if missing, if already added then will do nothing.
+     * */
+    public void addToAutoSellTask(Player p) {
+        if (!activeAutoSellPlayers.containsKey(p) && getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Enabled"))) {
+            activeAutoSellPlayers.put(p, 0.00);
+            int delay = Integer.parseInt(sellAllConfig.getString("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Delay_Seconds"));
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> taskSellAllAutoActions(p), 20L * delay);
+        }
+    }
+
+    /**
+     * Remove Player from AutoSell delay for earned money notification.
+     * This's usually handled only internally and should be used only for some rare exceptions.
+     * */
+    public void removeFromAutoSellTask(Player p){
+        activeAutoSellPlayers.remove(p);
     }
 
     /**
@@ -1060,22 +1080,25 @@ public class SellAllUtil {
     }
 
     private void sellAllSellPlayer(Player p) {
+    	sellAllSellPlayer( p, true, false );
+    }
+    private void sellAllSellPlayer(Player p, boolean notifications, boolean bySignOnly) {
 
         updateSellAllConfig();
 
         boolean sellAllSignEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Enabled"));
         boolean sellAllBySignOnlyEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_By_Sign_Only"));
         String byPassPermission = sellAllConfig.getString("Options.SellAll_By_Sign_Bypass_Permission");
-        if (sellAllSignEnabled && sellAllBySignOnlyEnabled && (byPassPermission != null && !p.hasPermission(byPassPermission))) {
-            if (!signUsed) {
+        if (sellAllSignEnabled && sellAllBySignOnlyEnabled && (byPassPermission == null || byPassPermission != null && !p.hasPermission(byPassPermission))) {
+            if (!bySignOnly) {
                 Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllSignOnly")));
                 return;
             }
         }
 
-        if (signUsed) signUsed = false;
+//        if (signUsed) signUsed = false;
 
-        boolean sellSoundEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Sound_Enabled"));
+        boolean sellSoundEnabled = notifications && getBoolean(sellAllConfig.getString("Options.Sell_Sound_Enabled"));
         Compatibility compat = SpigotPrison.getInstance().getCompatibility();
         if (!(sellAllConfig.getConfigurationSection("Items.") == null)) {
 
@@ -1087,13 +1110,22 @@ public class SellAllUtil {
             // Get money to give + multiplier.
             double moneyToGive = getMoneyWithMultiplier(p, true);
 
+            // Check if Ranks are enabled.
+            ModuleManager modMan = Prison.get().getModuleManager();
+            Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
+            PrisonRanks rankPlugin = (PrisonRanks) module;
+            if (rankPlugin == null){
+                Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("Ranks are disabled, you can't use this without Ranks enabled!"));
+                return;
+            }
+
             RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
             String currency = sellAllConfig.getString("Options.SellAll_Currency");
             if (currency != null && currency.equalsIgnoreCase("default")) currency = null;
 
             rankPlayer.addBalance(currency, moneyToGive);
 
-            boolean sellNotifyEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Notify_Enabled"));
+            boolean sellNotifyEnabled = notifications && getBoolean(sellAllConfig.getString("Options.Sell_Notify_Enabled"));
             if (moneyToGive < 0.001) {
                 if (sellSoundEnabled) {
                     Sound sound;
@@ -1108,18 +1140,22 @@ public class SellAllUtil {
                     Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllNothingToSell")));
                 }
             } else {
-                if (sellSoundEnabled) {
-                    Sound sound;
-                    try {
-                        sound = Sound.valueOf(sellAllConfig.getString("Options.Sell_Sound_Success_Name"));
-                    } catch (IllegalArgumentException ex) {
-                        sound = compat.getLevelUpSound();
+                if (activeAutoSellPlayers.containsKey(p) && getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Enabled"))) {
+                    activeAutoSellPlayers.put(p, activeAutoSellPlayers.get(p) + moneyToGive);
+                } else {
+                    if (sellSoundEnabled) {
+                        Sound sound;
+                        try {
+                            sound = Sound.valueOf(sellAllConfig.getString("Options.Sell_Sound_Success_Name"));
+                        } catch (IllegalArgumentException ex) {
+                            sound = compat.getLevelUpSound();
+                        }
+                        p.playSound(p.getLocation(), sound, 3, 1);
                     }
-                    p.playSound(p.getLocation(), sound, 3, 1);
-                }
-                if (sellNotifyEnabled) {
-                    DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
-                    Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllYouGotMoney") + PlaceholdersUtil.formattedKmbtSISize(moneyToGive, formatDecimal, "")));
+                    if (sellNotifyEnabled) {
+                        DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
+                        Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllYouGotMoney") + PlaceholdersUtil.formattedKmbtSISize(moneyToGive, formatDecimal, "")));
+                    }
                 }
             }
         } else {
@@ -1172,7 +1208,7 @@ public class SellAllUtil {
         return false;
     }
 
-    private boolean sellAllAutoSellPlayerToggler(Player p) {
+    private boolean sellAllAutoSellPlayerToggle(Player p) {
         // Get Player UUID.
         UUID playerUUID = p.getUniqueId();
 
@@ -1611,11 +1647,11 @@ public class SellAllUtil {
         activePlayerDelay.remove(p.getName());
     }
 
-    private void sellAllSignToggler() {
-        if (!signUsed) {
-            signUsed = true;
-        }
-    }
+//    private void sellAllSignToggler() {
+//        if (!signUsed) {
+//            signUsed = true;
+//        }
+//    }
 
     private double getMoneyFinal(Player player, boolean removeItems) {
         SpigotPlayer sPlayer = new SpigotPlayer(player);
@@ -1653,5 +1689,14 @@ public class SellAllUtil {
         multiplier += multiplierExtraByPerms;
 
         return multiplier;
+    }
+
+    private void taskSellAllAutoActions(Player p) {
+        if (activeAutoSellPlayers.containsKey(p)) {
+            if (activeAutoSellPlayers.get(p) != 0.00) {
+                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllAutoSellEarnedMoney") + activeAutoSellPlayers.get(p) + messages.getString("Message.SellAllAutoSellEarnedMoneyCurrency")));
+            }
+            activeAutoSellPlayers.remove(p);
+        }
     }
 }

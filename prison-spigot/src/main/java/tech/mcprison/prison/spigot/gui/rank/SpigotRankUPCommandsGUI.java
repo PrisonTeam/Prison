@@ -81,7 +81,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(inv, command);
         } catch (NullPointerException ex){
-            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
             return true;
         }

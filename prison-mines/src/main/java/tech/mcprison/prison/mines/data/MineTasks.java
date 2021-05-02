@@ -5,10 +5,12 @@ import java.util.List;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.MineScheduler.MineJob;
+import tech.mcprison.prison.mines.tasks.MineChangeBlockTask;
 import tech.mcprison.prison.tasks.PrisonRunnable;
-import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
@@ -78,7 +80,7 @@ public abstract class MineTasks
      * @param targetY
      */
 	@Override
-    protected long teleportAllPlayersOut(int targetY) {
+    protected long teleportAllPlayersOut() {
     	long start = System.currentTimeMillis();
     	
     	if ( isVirtual() ) {
@@ -134,7 +136,8 @@ public abstract class MineTasks
      * @param player
      */
     @Override
-    public void teleportPlayerOut(Player player, String targetLocation) {
+    public Location teleportPlayerOut(Player player, String targetLocation) {
+    	Location tpTargetLocation = null;
     	
     	if ( isVirtual() ) {
     		// ignore:
@@ -147,32 +150,69 @@ public abstract class MineTasks
 							getName()  ));
 		}
 		else {
-			Location altTp = alternativeTpLocation();
-			Location target = "spawn".equalsIgnoreCase( targetLocation ) && isHasSpawn() ? 
-										getSpawn() : altTp;
+//			Location altTp = alternativeTpLocation();
+			tpTargetLocation = "spawn".equalsIgnoreCase( targetLocation ) && isHasSpawn() ? 
+										getSpawn() : alternativeTpLocation();
 			
 			// Player needs to stand on something.  If block below feet is air, change it to a 
 			// glass block:
-			Location targetGround = new Location( target );
-			targetGround.setY( target.getBlockY() - 1 );
+			Location targetGround = new Location( tpTargetLocation );
+			targetGround.setY( tpTargetLocation.getBlockY() - 1 );
 			if ( targetGround.getBlockAt().isEmpty() ) {
-				targetGround.getBlockAt().setType( BlockType.GLASS );
+				targetGround.getBlockAt().setPrisonBlock( PrisonBlock.GLASS );;
 			}
 			
-			player.teleport( target );
+			player.teleport( tpTargetLocation );
+			
+			
 			
 //    	PrisonMines.getInstance().getMinesMessages().getLocalizable("teleported")
 //    			.withReplacements(this.getName()).sendTo(player);
 		}
-
+    	
+    	return tpTargetLocation;
     }
 
+    @Override
+    public void submitTeleportGlassBlockRemoval() {
+    	
+    	Location altTp = alternativeTpLocation();
+    	Location tpTargetLocation = isHasSpawn() ? getSpawn() : altTp;
+									
+    	Location glassBlockLocation = new Location( tpTargetLocation );
+    	glassBlockLocation.setY( tpTargetLocation.getBlockY() - 1 );
+    	
+    	if ( glassBlockLocation.getBlockAt().getPrisonBlock().equals( PrisonBlock.GLASS ) ) {
+    		// The glass block is under the player's feet so submit to remove it:
+    		
+    		MineChangeBlockTask changeBlockTask = 
+    							new MineChangeBlockTask( glassBlockLocation, PrisonBlock.AIR );
+    		
+    		int delayInTicks = 10;
+    		PrisonTaskSubmitter.runTaskLater( changeBlockTask, delayInTicks );
+    	}
+    			
+    }
 
+    /**
+     * <p>The idea behind the alternative TP location is to provide a location for teleporting the player
+     * to that is outside the mine and this is used when there isn't a defined spawn location for the
+     * mine.
+     * </p>
+     * 
+     * <p>The target location is the very center of the mine, on the top.  Plus we are adding two blocks
+     * to the Y location so their head is out of the mine's region.  Before it was just adding 1 block, 
+     * but the player was still in the mine, which could cause issues in extreme events (suffocation
+     * events).
+     * </p>
+     *  
+     */
     @Override
 	public Location alternativeTpLocation()
 	{
 		Location altTp = new Location( getBounds().getCenter() );
-    	altTp.setY( getBounds().getyBlockMax() + 1 );
+		int y = getBounds().getyBlockMax() + 2;
+    	altTp.setY( y );
 		return altTp;
 	}
 	

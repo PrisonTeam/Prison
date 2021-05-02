@@ -1,5 +1,7 @@
 package tech.mcprison.prison.spigot.configs;
 
+import org.bukkit.configuration.Configuration;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -17,5 +19,4 @@ public abstract class SpigotConfigComponents {
             }
         }
     }
-
 }

@@ -65,7 +65,7 @@ public class GuiConfig extends SpigotConfigComponents{
         conf = YamlConfiguration.loadConfiguration(file);
     }
 
-    private void dataConfig(String key, String value){
+    private void dataConfig(String key, Object value){
     	if (conf.getString(key) == null) {
     		conf.set(key, value);
     		changeCount++;
@@ -74,23 +74,23 @@ public class GuiConfig extends SpigotConfigComponents{
 
     // All the strings of the config should be here
     private void values(){
-        dataConfig("Options.Ranks.GUI_Enabled","true");
-        dataConfig("Options.Ranks.Permission_GUI_Enabled","false");
+        dataConfig("Options.Ranks.GUI_Enabled", true);
+        dataConfig("Options.Ranks.Permission_GUI_Enabled", false);
         dataConfig("Options.Ranks.Permission_GUI","prison.gui.ranks");
         dataConfig("Options.Ranks.Item_gotten_rank","TRIPWIRE_HOOK");
         dataConfig("Options.Ranks.Item_not_gotten_rank","REDSTONE_BLOCK");
-        dataConfig("Options.Ranks.Enchantment_effect_current_rank","true");
+        dataConfig("Options.Ranks.Enchantment_effect_current_rank", true);
         dataConfig("Options.Ranks.Ladder","default");
-        dataConfig("Options.Ranks.Number_of_Rank_Player_GUI", "false");
-        dataConfig("Options.Mines.GUI_Enabled","true");
-        dataConfig("Options.Mines.Permission_GUI_Enabled","false");
+        dataConfig("Options.Ranks.Number_of_Rank_Player_GUI",  false);
+        dataConfig("Options.Mines.GUI_Enabled", true);
+        dataConfig("Options.Mines.Permission_GUI_Enabled", false);
         dataConfig("Options.Mines.Permission_GUI","prison.gui.mines");
         dataConfig("Options.Mines.PermissionWarpPlugin","mines.tp.");
         dataConfig("Options.Mines.CommandWarpPlugin","mines tp");
-        dataConfig("Options.Prestiges.GUI_Enabled","true");
-        dataConfig("Options.Prestiges.Permission_GUI_Enabled","false");
+        dataConfig("Options.Prestiges.GUI_Enabled", true);
+        dataConfig("Options.Prestiges.Permission_GUI_Enabled", false);
         dataConfig("Options.Prestiges.Permission_GUI","prison.gui.prestiges");
-        dataConfig("Options.Setup.EnabledGUI", "true");
+        dataConfig("Options.Setup.EnabledGUI", true);
         dataConfig("Options.Titles.PlayerRanksGUI", "&3Player -> Ranks");
         dataConfig("Options.Titles.PlayerPrestigesGUI", "&3Player -> Prestiges");
         dataConfig("Options.Titles.PlayerMinesGUI", "&3Player -> Mines");

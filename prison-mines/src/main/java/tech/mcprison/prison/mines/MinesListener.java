@@ -6,7 +6,9 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.events.player.PlayerSuffocationEvent;
 import tech.mcprison.prison.internal.events.world.PrisonWorldLoadEvent;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.tasks.MineTeleportWarmUpTask;
 import tech.mcprison.prison.selection.SelectionCompletedEvent;
+import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 import tech.mcprison.prison.util.Bounds;
 
 /**
@@ -40,9 +42,25 @@ public class MinesListener {
     	if ( mine != null ) {
     		e.setCanceled( true );
     		
-    		mine.teleportPlayerOut( player );
+    		// Submit the teleport task to run in 3 ticks.  This will allow the suffocation
+    		// event to be canceled.  If the player moves then they don't need to be teleported
+    		// so it will be canceled.
+    		MineTeleportWarmUpTask mineTeleportWarmUp = new MineTeleportWarmUpTask( 
+    							player, mine, "spawn", 0.5 );
+    		mineTeleportWarmUp.setMessageSuccess( 
+    							"&7You have been teleported out of the mine to prevent suffocating." );
+    		mineTeleportWarmUp.setMessageFailed( null );
     		
-    		player.sendMessage( "&7You have been teleported out of the mine to prevent suffocating." );
+    		PrisonTaskSubmitter.runTaskLater( mineTeleportWarmUp, 3 );
+//    		mine.teleportPlayerOut( player );
+//    		
+//    		
+//    		// To "move" the player out of the mine, they are elevated by one block above the surface
+//    		// so need to remove the glass block if one is spawned under them.  If there is no glass
+//    		// block, then it will do nothing.
+//    		mine.submitTeleportGlassBlockRemoval();
+    		
+//    		player.sendMessage( "&7You have been teleported out of the mine to prevent suffocating." );
     	}
     	else {
     		player.sendMessage( "&7You cannot be teleported to safety.  Good luck." );

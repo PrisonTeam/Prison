@@ -50,10 +50,14 @@ public class MessagesConfig extends SpigotConfigComponents{
     }
 
     private void dataConfig(String key, String value){
+        if (conf.get(key) == null) {
+            conf.set(key, value);
+            changeCount++;
+        }
+    }
 
-        String originalString = conf.getString(key);
-
-        if (originalString == null) {
+    private void dataConfig(String key, boolean value){
+        if (conf.get(key) == null) {
             conf.set(key, value);
             changeCount++;
         }
@@ -202,6 +206,12 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.BackPackResizeNotInt", "Backpack's size value isn't a number.");
         dataConfig("Message.BackPackResizeNotMultiple9", "Backpack's size must be a multiple of 9 and max 54.");
         dataConfig("Message.BackPackResizeDone", "If the Backpack wasn't missing, it got resized with success!");
+        dataConfig("Message.BackPackLimitMissingParam", "You're missing some arguments required to set the backpacks limit!");
+        dataConfig("Message.BackPackLimitNotNumber", "The Backpacks Limit number isn't a number!");
+        dataConfig("Message.BackPackLimitSuccess", "The Backpacks Limit got edited with success!");
+        dataConfig("Message.BackPackLimitDecrementFail", "The Backpacks limit decremented of that value would be negative, operation canceled!");
+        dataConfig("Message.BackPackListEmpty", "There aren't backpacks in this server.");
+        dataConfig("Message.BackPackCantOwn", "Sorry but looks like you can't own Backpacks!");
         dataConfig("Message.CantGetRanksAdmin", "Can't get Ranks, there might be &cno ranks&7 or the Ranks module's &cdisabled&7.");
         dataConfig("Message.CantRunGUIFromConsole", "You cannot run the GUI from the console.");
         dataConfig("Message.CantGiveItemFromConsole", "You can't get an item as the console.");
@@ -252,6 +262,8 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Message.rankTagRenameClosed", "Rename tag &cclosed&7, nothing got changed!");
         dataConfig("Message.rankGuiDisabledOrAllGuiDisabled", "GUI and/or GUI Ranks is &cdisabled&7. Check GuiConfig.yml (%s %s)");
         dataConfig("Message.rankGuiMissingPermission", "You lack the &cpermissions&7 to use the Ranks GUI.");
+        dataConfig("Message.SellAllAutoSellEarnedMoney", "You earned with AutoSell: ");
+        dataConfig("Message.SellAllAutoSellEarnedMoneyCurrency", "$");
         dataConfig("Message.SellAllAutoSellMissingPermission", "You don't have the &cpermission&7 to edit AutoSell.");
         dataConfig("Message.SellAllAutoSellEnabled", "Autosell has been &aenabled&7.");
         dataConfig("Message.SellAllAutoSellDisabled", "Autosell has been &cdisabled&7.");

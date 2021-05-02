@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.sellall;
+package tech.mcprison.prison.spigot.commands;
 
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
@@ -15,16 +15,17 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPlatform;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.commands.PrisonSpigotBaseCommands;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 
 /**
  * @author GABRYCA
  * @author RoyalBlueRanger (rBluer)
  */
-public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
+public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
 
-    private static SellAllPrisonCommands instance;
+    private static PrisonSpigotSellAllCommands instance;
     private SellAllUtil sellAllUtil = SellAllUtil.get();
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
 
@@ -38,9 +39,9 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     /**
      * Get SellAll Commands instance.
      * */
-    public static SellAllPrisonCommands get() {
+    public static PrisonSpigotSellAllCommands get() {
         if (instance == null && isEnabled()) {
-            instance = new SellAllPrisonCommands();
+            instance = new PrisonSpigotSellAllCommands();
         }
         if (instance == null){
             return null;
@@ -193,9 +194,12 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.SellAllAutoPerUserToggleableDisabled")));
         }
     }
-    
+
     @Command(identifier = "sellall sell", description = "SellAll sell command", onlyPlayers = true)
-	public void sellAllSellCommand(CommandSender sender){
+	public void sellAllSellCommand(CommandSender sender,
+			@Arg(name = "notification", def="",
+    		description = "Notification about the sellall transaction. Defaults to normal. " +
+    				"'silent' suppresses results. [silent]") String notification ){
 
         if (!isEnabled()) return;
 
@@ -217,8 +221,48 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
             }
         }
 
-        sellAllUtil.sellAllSell(p);
+        boolean notifications = !(notification != null && "silent".equalsIgnoreCase( notification ));
+        boolean bySignOnly = notification != null && "bySignOnly".equalsIgnoreCase( notification );
+
+        sellAllUtil.sellAllSell(p, notifications, bySignOnly);
     }
+
+    @Command(identifier = "sellall delaysell", description = "Like SellAll Sell command but this will be delayed for some " +
+            "seconds and if sellall sell commands are triggered during this delay, " +
+            "they will sum up to the total value that will be visible in a notification at the end of the delay. " +
+            "Running more of these commands before a delay have been completed won't reset it and will do the same of /sellall sell " +
+            "without a notification (silently).", onlyPlayers = true)
+    public void sellAllSellWithDelayCommand(CommandSender sender){
+
+        if (!isEnabled()) return;
+
+        Player p = getSpigotPlayer(sender);
+
+        if (p == null){
+            Output.get().sendInfo(sender, SpigotPrison.format("&cSorry but you can't use that from the console!"));
+            return;
+        }
+
+        if (sellAllUtil.isDisabledWorld(p)) return;
+
+        boolean sellPermissionEnabled = getBoolean(sellAllUtil.getSellAllConfig().getString("Options.Sell_Permission_Enabled"));
+        if (sellPermissionEnabled){
+            String permission = sellAllUtil.getSellAllConfig().getString("Options.Sell_Permission");
+            if (permission == null || !p.hasPermission(permission)){
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + " [" + permission + "]"));
+                return;
+            }
+        }
+
+        if (!getBoolean(sellAllUtil.sellAllConfig.getString("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Enabled"))){
+            sellAllSellCommand(sender, "");
+            return;
+        }
+
+        SellAllUtil.get().addToAutoSellTask(p);
+        sellAllSellCommand(sender, "");
+    }
+
 
     @Command(identifier = "sellall auto toggle", description = "Let the user enable or disable sellall auto", onlyPlayers = true)
     private void sellAllAutoEnableUser(CommandSender sender){
@@ -317,14 +361,14 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
      * <p>This will add the XMaterial and value to the sellall.
      * This will update even if the sellall has not been enabled.
      * </p>
-     * 
+     *
      * @param blockAdd
      * @param value
      */
     public void sellAllAddCommand(XMaterial blockAdd, Double value){
 
     	String itemID = blockAdd.name();
-    	
+
     	// If the block or item was already configured, then skip this:
         if (sellAllUtil.getSellAllConfig().getConfigurationSection("Items." + itemID) != null){
             return;
@@ -334,7 +378,7 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
 
         Output.get().logInfo(SpigotPrison.format("&3 ITEM [" + itemID + ", " + value + messages.getString("Message.SellAllAddSuccess")));
     }
-    
+
     @Command(identifier = "sellall delete", description = "SellAll delete command, remove an item from shop.", permissions = "prison.admin", onlyPlayers = false)
     private void sellAllDeleteCommand(CommandSender sender, @Arg(name = "Item_ID", description = "The Item_ID you want to remove.") String itemID){
 
@@ -572,11 +616,11 @@ public class SellAllPrisonCommands extends PrisonSpigotBaseCommands {
     private void sellAllSetDefaultCommand(CommandSender sender){
 
         if (!isEnabled()) return;
-        
+
 		// Setup all the prices in sellall:
         SpigotPlatform platform = (SpigotPlatform) Prison.get().getPlatform();
 		for ( SellAllBlockData xMatCost : platform.buildBlockListXMaterial() ) {
-			
+
 			// Add blocks to sellall:
 			sellAllAddCommand( xMatCost.getBlock(), xMatCost.getPrice() );
 		}

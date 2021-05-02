@@ -378,22 +378,22 @@ NOTE: With world guard we had to use the prefix of `g:` to indicate the permissi
 
 Template and examples as used in rank commands using **parent set**, you may want to actually use **parent add** instead:
 
-    /lp user <player-name> parent set <group-name> true
+    /lp user <player-name> parent set <group-name>
 
-    /lp user <player-name> parent set prison.mines.<mine-name> true
+    /lp user <player-name> parent set prison.mines.<mine-name>
 
-    /lp user {player} parent set prison.mines.a true
-    /lp user {player} parent set prison.mines.b true
+    /lp user {player} parent set prison.mines.a
+    /lp user {player} parent set prison.mines.b
 
 
 Examples using **parent add** for the groups:
 
-    /lp user <player-name> parent add <group-name> true
+    /lp user <player-name> parent add <group-name>
 
-    /lp user <player-name> parent add prison.mines.<mine-name> true
+    /lp user <player-name> parent add prison.mines.<mine-name>
 
-    /lp user {player} parent add prison.mines.a true
-    /lp user {player} parent add prison.mines.b true
+    /lp user {player} parent add prison.mines.a
+    /lp user {player} parent add prison.mines.b
 
 
 
@@ -441,17 +441,17 @@ The following is an example of adding and removing a permission to a player.  Th
 
 Based upon the above documentation, and from within game, we would use the following to *manually* give a player a permission:
 
-    /lp user <player-name> parent add prison.mines.<mine-name> true
+    /lp user <player-name> parent add prison.mines.<mine-name>
 
 
 For example, if you have a player named *AHappyPrisoner* And you have a mine named "a" you would use the following command:
 
-    /lp user AHappyPrisoner parent add prison.mines.a true
+    /lp user AHappyPrisoner parent add prison.mines.a
 
 
 To run the **a** rank commands when the player uses **/rankup**, the following is the command for **/ranks command add <rankName>**:
 
-	/ranks command add a lp user {player} parent add prison.mines.a true
+	/ranks command add a lp user {player} parent add prison.mines.a
 
 
 Notice how the manually entered command is used with the **/ranks command add <rankName>**?  Just drop the leading slash and it should be good.
@@ -675,7 +675,7 @@ So finally for our example of setting up mines a and b, we now need to add the R
 
 For rank a:
 
-    /ranks command add a lp user {player} parent add prison.mines.a true
+    /ranks command add a lp user {player} parent add prison.mines.a
     /ranks command add a lp user {player} parent remove prison.mines.b
     /ranks command add a lp user {player} permission set mines.tp.a true
     /ranks command add a lp user {player} permission unset mines.tp.b
@@ -683,7 +683,7 @@ For rank a:
 
 For rank b:
 
-    /ranks command add b lp user {player} parent add prison.mines.b true
+    /ranks command add b lp user {player} parent add prison.mines.b
     /ranks command add b lp user {player} parent remove prison.mines.c
     /ranks command add b lp user {player} permission set mines.tp.b true
     /ranks command add b lp user {player} permission unset mines.tp.c
@@ -736,8 +736,8 @@ Some LuckPerm commands that may be useful.
     /lp group prison.mines.a info
     
     
-    /lp user <user-name> parent set <group-name> true
-    /lp user <user-name> parent add <group-name> true
+    /lp user <user-name> parent set <group-name>
+    /lp user <user-name> parent add <group-name>
     /lp user <user-name> parent remove <group-name>
     
     /lp user <user-name> permission set <permission-name> true

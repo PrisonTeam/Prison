@@ -19,6 +19,7 @@ public class PrisonBlockTypes {
 	
 	public enum InternalBlockTypes {
 		AIR,
+		GLASS,
 		IGNORE,
 		NULL_BLOCK
 	}

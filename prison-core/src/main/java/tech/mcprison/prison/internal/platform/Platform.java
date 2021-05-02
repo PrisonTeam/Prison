@@ -275,6 +275,19 @@ public interface Platform {
 	
 
 	/**
+	 * <p>This is the only way to find out if the new block model is enabled.
+	 * </p>
+	 * 
+	 * <p>This should be the only place within prison to use the actual String value of the
+	 * permission.  This will allow for a simple change in the future.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public boolean isUseNewPrisonBlockModel();
+	
+	
+	/**
 	 * <p>This returns the boolean value that is associated with the key.
 	 * It has to match on true to return a true value, but if the key does
 	 * not exist, then it returns a value of true.  Default value is true.
@@ -289,6 +302,8 @@ public interface Platform {
 	public int getConfigInt( String key, int defaultValue );
 	
 	public long getConfigLong( String key, long defaultValue );
+
+	public double getConfigDouble( String key, double defaultValue );
 	
 
     /**
@@ -331,6 +346,7 @@ public interface Platform {
 	 * @return
 	 */
 	public List<String> getActiveFeatures();
-	
+
+
 	
 }

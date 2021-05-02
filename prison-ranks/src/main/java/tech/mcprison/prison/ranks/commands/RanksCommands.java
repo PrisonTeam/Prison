@@ -630,10 +630,13 @@ public class RanksCommands
 
     }
 
-    @Command(identifier = "ranks info", description = "Information about a rank.", 
+    @Command(identifier = "ranks info", description = "Information about a rank.  Use of the option of 'ALL' then " +
+    							"rank commands will be included too.", 
     							onlyPlayers = false, permissions = "ranks.info", 
     							altPermissions = "ranks.admin" )
-    public void infoCmd(CommandSender sender, @Arg(name = "rankName") String rankName) {
+    public void infoCmd(CommandSender sender, 
+    		@Arg(name = "rankName") String rankName, 
+    		@Arg(name = "options", def = "", description = "Optional: ['ALL'] will include rank commands.") String options) {
     	
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if ( rank == null ) {
@@ -699,6 +702,11 @@ public class RanksCommands
         }
 
         display.send(sender);
+        
+        if ( options != null && "all".equalsIgnoreCase( options )) {
+        	
+        	getRankCommandCommands().commandList( sender, rankName );
+        }
     }
 
     // set commands

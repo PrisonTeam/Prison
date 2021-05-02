@@ -23,9 +23,9 @@ public class PrisonUtilsListeners
 		this.unbreakableBlockList = new HashMap<>();
 	}
 	
-	
-    @EventHandler( priority=EventPriority.LOWEST )
-    public void rainbowDecayBlockEvent(PrisonMinesBlockEventEvent e) {
+	// Runtime exception for some reasons here.
+//    @EventHandler( priority=EventPriority.LOWEST )
+//    public void rainbowDecayBlockEvent(PrisonMinesBlockEventEvent e) {
     	
 //    	if ( !e.isCancelled() && e.getParameter() != null &&
 //    			e.getParameter().startsWith("rainbow-decay" ) ) {
@@ -39,7 +39,7 @@ public class PrisonUtilsListeners
 //    		runableTask.submit();
 //    	}
 
-    }
+//    }
 
     /**
      * <p>This event prevents any block that is within the unbreakableBlockList 

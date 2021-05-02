@@ -48,7 +48,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         // Get the dimensions and if needed increases them
         int dimension = 54;
         
-		boolean useNewBlockModel = Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" );
+		boolean useNewBlockModel = Prison.get().getPlatform().isUseNewPrisonBlockModel();
 
         // Create the inventory
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MineInfo -> Blocks"));
@@ -105,7 +105,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(inv, block, blockmaterial, blockmaterialdisplay);
         } catch (NullPointerException ex){
-            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
             return true;
         }
@@ -116,7 +116,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
     	try {
     		buttonsSetup(inv, block, blockmaterial, blockmaterialdisplay);
     	} catch (NullPointerException ex){
-    		Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+    		Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
     		ex.printStackTrace();
     		return true;
     	}

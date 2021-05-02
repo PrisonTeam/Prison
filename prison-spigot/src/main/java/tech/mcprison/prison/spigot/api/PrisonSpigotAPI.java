@@ -24,7 +24,6 @@ import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
-import tech.mcprison.prison.spigot.sellall.SellAllPrisonCommands;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.util.BlockType;
@@ -129,7 +128,7 @@ public class PrisonSpigotAPI {
 	public String getPrisonBlockName( String blockName ) {
 		String results = null;
 		
-        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+        if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
         	
         	PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockName );
         	if ( prisonBlock != null && prisonBlock.isBlock() ) {
@@ -162,7 +161,7 @@ public class PrisonSpigotAPI {
 			PrisonBlock prisonBlock = null;
 			BlockType blockType = null;
 			
-			if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+			if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
 				
 				prisonBlock = Prison.get().getPlatform().getPrisonBlock( prisonBlockName );
 				if ( prisonBlock != null && !prisonBlock.isBlock() ) {

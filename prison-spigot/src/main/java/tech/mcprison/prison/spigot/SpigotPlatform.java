@@ -87,7 +87,7 @@ import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.placeholder.SpigotPlaceholders;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
 import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
-import tech.mcprison.prison.spigot.sellall.SellAllPrisonCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.util.ActionBarUtil;
 import tech.mcprison.prison.spigot.util.SpigotYamlFileIO;
 import tech.mcprison.prison.store.Storage;
@@ -774,6 +774,14 @@ public class SpigotPlatform
 		return ( val != null && val.trim().equalsIgnoreCase( "true" ) );
 	}
 	
+	
+	@Override
+	public boolean isUseNewPrisonBlockModel() {
+		
+		return getConfigBooleanFalse( "use-new-prison-block-model" );
+//		return !getConfigBooleanFalse( "use-old-prison-block-model" );
+	}
+	
 	/**
 	 * <p>This returns the boolean value that is associated with the key.
 	 * It has to match on true to return a true value, but if the key does
@@ -826,7 +834,7 @@ public class SpigotPlatform
 			}
 			catch ( NumberFormatException e ) {
 				Output.get().logInfo( "Invalid config.yml value. The setting " +
-						"%s should be an integer but had a value of [%s]", 
+						"%s should be an long but had a value of [%s]", 
 						key, config );
 			}
 			
@@ -835,6 +843,28 @@ public class SpigotPlatform
 		return results;
 	}
 	
+	
+	@Override
+	public double getConfigDouble( String key, double defaultValue ) {
+		double results = defaultValue;
+		
+		String config = getConfigString(key);
+		
+		if ( config != null && config.trim().length() > 0) {
+			
+			try {
+				results = Double.parseDouble( config );
+			}
+			catch ( NumberFormatException e ) {
+				Output.get().logInfo( "Invalid config.yml value. The setting " +
+						"%s should be an double but had a value of [%s]", 
+						key, config );
+			}
+			
+		}
+		
+		return results;
+	}
 
 	
     /**
@@ -1207,8 +1237,8 @@ public class SpigotPlatform
 		SpigotPrison.getInstance().getConfig().set( "sellall", true );
 		
 		
-		SellAllPrisonCommands sellall = SellAllPrisonCommands.get();
-		if ( sellall != null && SellAllPrisonCommands.isEnabled()) {
+		PrisonSpigotSellAllCommands sellall = PrisonSpigotSellAllCommands.get();
+		if ( sellall != null && PrisonSpigotSellAllCommands.isEnabled()) {
 			
 			// Setup all the prices in sellall:
 			for ( SellAllBlockData xMatCost : buildBlockListXMaterial() ) {
@@ -1220,7 +1250,7 @@ public class SpigotPlatform
 		
 		
 		
-        if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+        if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
         	
         	for ( SellAllBlockData xMatCost : buildBlockListXMaterial() ) {
         		
@@ -1270,7 +1300,7 @@ public class SpigotPlatform
 			for ( int i = 0; i < mBlocks.size(); i++ )
 			{
 				
-				if ( Prison.get().getPlatform().getConfigBooleanFalse( "use-new-prison-block-model" ) ) {
+				if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
 					
 					PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( mBlocks.get( i ) );
 	            	if ( prisonBlock != null ) {

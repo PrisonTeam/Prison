@@ -50,7 +50,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         rankPlugin = (PrisonRanks) module;
 
         if (rankPlugin == null){
-            Output.get().sendError(new SpigotPlayer(player), SpigotPrison.format("&3Looks like the Ranks module's disabled"));
+            Output.get().sendWarn(new SpigotPlayer(player), SpigotPrison.format("&3Looks like the Ranks module's disabled"));
             return;
         }
 
@@ -132,7 +132,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(ladder, dimension, inv);
         } catch (NullPointerException ex){
-            Output.get().sendError(new SpigotPlayer(getPlayer()), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendWarn(new SpigotPlayer(getPlayer()), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
             return true;
         }

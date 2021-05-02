@@ -65,7 +65,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         }
 
  	    if (rankPlugin.getPlayerManager() == null) {
- 	        Output.get().sendError(new SpigotPlayer(player), SpigotPrison.format("&c: rankPlugin.getPlayerManager() == null."));
+ 	        Output.get().sendWarn(new SpigotPlayer(player), SpigotPrison.format("&c: rankPlugin.getPlayerManager() == null."));
  	    	return;
  	    }
 
@@ -141,7 +141,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(dimension, inv, rank, playerRank);
         } catch (NullPointerException ex){
-            Output.get().sendError(new SpigotPlayer(getPlayer()), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendWarn(new SpigotPlayer(getPlayer()), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
             ex.printStackTrace();
             return true;
         }
