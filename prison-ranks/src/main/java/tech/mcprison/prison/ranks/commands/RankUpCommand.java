@@ -39,6 +39,7 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.LadderManager;
+import tech.mcprison.prison.ranks.managers.PlayerManager;
 
 /**
  * The commands for this module.
@@ -376,23 +377,45 @@ public class RankUpCommand
 
 
     @Command(identifier = "ranks set rank", description = "Sets a player to a specified rank on a ladder, " +
-    		"or remove a player from a ladder (delete player rank).", 
+    		"or remove a player from a ladder (delete player rank).  Or if you use '*all*' for player name, " +
+    		"then it will run this command on all players registered with Prison. When *all* is combined with " +
+    		"the rankName '*same*' it will reapply the same rank to each player which will rerun the rank " +
+    		"commands for the players.  If rank 'A' is your starting rank, you can use '*all*' and 'A' to " +
+    		"reset all players to the starting rank; next you will need to -remove- all prestige ladders " +
+    		"from all players too.", 
     			permissions = "ranks.setrank", onlyPlayers = false) 
     public void setRank(CommandSender sender,
-    	@Arg(name = "playerName", def = "", description = "Player name") String playerName,
-    	@Arg(name = "rankName", description = "The rank to assign to the player, or [-remove-] " +
+    	@Arg(name = "playerName", def = "", description = "Player name, or [*all*]") String playerName,
+    	@Arg(name = "rankName", description = "The rank to assign to the player, or [-remove-, *same*] " +
     						"to deleete the player from the rank.") String rank,
         @Arg(name = "ladder", description = "The ladder to demote on.", def = "default") String ladder) {
 
-    	Player player = getPlayer( sender, playerName );
-    	
-    	if (player == null) {
-    		sender.sendMessage( "&3You must be a player in the game to run this command, " +
-    										"and/or the player must be online." );
-    		return;
+    	if ( "*all*".equalsIgnoreCase( playerName )) {
+    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+    		
+    		for ( RankPlayer player : pm.getPlayers() ) {
+    			
+    			Player targetPlayer = getPlayer( null, player.getName() );
+    			if ( targetPlayer != null ) {
+    				
+    				String targetRank = rank.equalsIgnoreCase("*same*") ? player.getRank( ladder ).getName() : rank;
+    				setPlayerRank( targetPlayer, targetRank, ladder, sender );
+    			}
+    		}
+    		
     	}
-
-        setPlayerRank( player, rank, ladder, sender );
+    	else {
+    		
+    		Player player = getPlayer( sender, playerName );
+    		
+    		if (player == null) {
+    			sender.sendMessage( "&3You must be a player in the game to run this command, " +
+    					"and/or the player must be online." );
+    			return;
+    		}
+    		
+    		setPlayerRank( player, rank, ladder, sender );
+    	}
     }
 
     
