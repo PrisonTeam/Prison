@@ -20,6 +20,9 @@ These represent the work that has been done on prison.
 # v3.2.7-alpha.1 2021-05-01
 
 
+* **Changes to `/mines info <mineName> all` which uses the keyword all in display the full mine info, including all of the mine's reset commands and all of the mine's block events too.**
+
+
 * **Added a server run time to a few reports since it will be useful in understanding how long the server has been active.**
 
 

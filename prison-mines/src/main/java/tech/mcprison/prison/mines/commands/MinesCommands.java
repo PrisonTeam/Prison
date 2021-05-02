@@ -1389,11 +1389,13 @@ public class MinesCommands
     }
 
     @Command(identifier = "mines info", permissions = "mines.info", onlyPlayers = false, 
-    				description = "Lists information about a mine.")
+    				description = "Lists information about a mine. Page value of 'ALL' will show all of the " +
+    						"information on page 1 and 2 (block list with block constraints), plus it will show " +
+    						"all BlockEvents, and mine reset commands. ")
     public void infoCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to view.") String mineName,
         @Arg(name = "page", def = "1", 
-        				description = "Page of search results (optional) [1-n, ALL, DEBUG]") String page 
+        				description = "Page of search results (optional) [1-n, ALL]") String page 
     		) {
         if (!performCheckMineExists(sender, mineName)) {
             return;
@@ -1502,7 +1504,7 @@ public class MinesCommands
         		String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
         		chatDisplay.addText("&3Spawnpoint: &7%s", spawnPoint);
         		
-        		if ( mMan.isMineStats() ) {
+        		if ( cmdPageData.isShowAll() || mMan.isMineStats() ) {
         			RowComponent rowStats = new RowComponent();
         			rowStats.addTextComponent( "  -- &7 Stats :: " );
         			rowStats.addTextComponent( m.statsMessage() );
@@ -1733,14 +1735,18 @@ public class MinesCommands
 
         	
         }
-        
+
+        {
+        	chatDisplay.addText( "&3Block model: &7%s", 
+        			( m.isUseNewBlockModel() ? "New" : "Old") );
+        }
         
         int blockSize = 0;
         if ( cmdPageData.isShowAll() || cmdPageData.getCurPage() > 1 ) {
-        	if ( cmdPageData.isDebug() ) {
-        		chatDisplay.addText( "&7Block model: &3%s", 
-        				( m.isUseNewBlockModel() ? "New" : "Old") );
-        	}
+//        	if ( cmdPageData.isDebug() ) {
+//        		chatDisplay.addText( "&3Block model: &7%s", 
+//        				( m.isUseNewBlockModel() ? "New" : "Old") );
+//        	}
         	chatDisplay.addText("&3Blocks:");
         	chatDisplay.addText("&8Click on a block's name to edit its chances of appearing.%s",
         			(m.isUseNewBlockModel() ? ".." : ""));
@@ -1760,6 +1766,15 @@ public class MinesCommands
         cmdPageData.generatePagedCommandFooter( chatDisplay, message );
         
         chatDisplay.send(sender);
+        
+        // If show all, then include the mine's commands and blockEvents:
+        // These are different commands, so they will be in different chatDisplay objects
+        // so cannot weave them together:
+        if ( cmdPageData.isShowAll() ) {
+        	commandList( sender, m.getName() );
+        	
+        	blockEventList( sender, m.getName() );
+        }
     }
 
     private BulletedListComponent getBlocksList(Mine m, CommandPagedData cmdPageData, 
