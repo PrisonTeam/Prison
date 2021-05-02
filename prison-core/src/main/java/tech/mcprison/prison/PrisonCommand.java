@@ -242,6 +242,8 @@ public class PrisonCommand {
         display.addText("&7Running on Platform: %s", Prison.get().getPlatform().getClass().getName());
         display.addText("&7Minecraft Version: %s", Prison.get().getMinecraftVersion());
 
+        display.addText("&7Server runtime: %s", Prison.get().getServerRuntimeFormatted() );;
+        
         display.addText("");
         
         display.addText("&7Prison's root Command: /prison");

@@ -1446,6 +1446,9 @@ public class MinesCommands
         
         ChatDisplay chatDisplay = new ChatDisplay("&bMine: &3" + m.getName());
 
+        chatDisplay.addText("&7Server runtime: %s", Prison.get().getServerRuntimeFormatted() );;
+
+
         // Display Mine Info only:
         if ( cmdPageData.getCurPage() == 1 ) {
         	

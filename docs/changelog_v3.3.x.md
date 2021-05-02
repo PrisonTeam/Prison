@@ -19,6 +19,10 @@ These represent the work that has been done on prison.
 
 # v3.2.7-alpha.1 2021-05-01
 
+
+* **Added a server run time to a few reports since it will be useful in understanding how long the server has been active.**
+
+
 * **New feature: For all players on the server, force rank changes with one command.**
 Can use the command as `/ranks set rank *all* *same*` to reset all player's ranks to their current rank.  This will rerun the rank commands for the players so it will apply new settings.  Or you can use it like `/ranks set rank *all* A` to set all players to rank 'A', this would effectively reset the server, but also would need to use `/ranks set rank *all* -remove- prestiges` to reset the prestige ladder too.
 

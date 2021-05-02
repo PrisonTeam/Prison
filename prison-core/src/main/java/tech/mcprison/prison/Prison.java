@@ -34,6 +34,7 @@ import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.modules.PluginEntity;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceholderManager;
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.selection.SelectionManager;
 import tech.mcprison.prison.store.Database;
 import tech.mcprison.prison.troubleshoot.TroubleshootManager;
@@ -64,11 +65,13 @@ public class Prison
 	public static final int SPIGOTMC_ORG_PROJECT_ID = 1223; //72740;
 	
     // Singleton
+	private static Prison instance = null;
 
     public static final int API_LEVEL = 3;
-    private static Prison instance = null;
     
     private String minecraftVersion;
+    
+    private long serverStartupTime;
 
     // Fields
     private Platform platform;
@@ -89,6 +92,11 @@ public class Prison
     private Database metaDatabase;
     
     
+    private Prison() {
+    	super();
+    	
+    	this.serverStartupTime = System.currentTimeMillis();
+    }
 
     /**
      * Gets the current instance of this class. <p> An instance will always be available after
@@ -176,6 +184,7 @@ public class Prison
     	Output.get().logInfo("&7Loading Prison version: &3%s", PrisonAPI.getPluginVersion());
     	Output.get().logInfo("&7Running on platform: &3%s", platform.getClass().getSimpleName());
     	Output.get().logInfo("&7Minecraft version: &3%s", getMinecraftVersion());
+    	Output.get().logInfo("&7Server runtime: %s", getServerRuntimeFormatted() );
     	Output.get().logInfo("");
     }
 
@@ -379,5 +388,18 @@ public class Prison
     	return placeholderManager;
     }
     
+    
+    public long getServerStartupTime() {
+		return serverStartupTime;
+	}
+	public void setServerStartupTime( long serverStartupTime ) {
+		this.serverStartupTime = serverStartupTime;
+	}
+
+	public String getServerRuntimeFormatted() {
+    	long currentTime = System.currentTimeMillis();
+    	long runtimeMs = currentTime - getServerStartupTime();
+    	return PlaceholdersUtil.formattedTime( runtimeMs / 1000 );
+    }
     
 }
