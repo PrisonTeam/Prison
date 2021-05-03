@@ -46,8 +46,9 @@ If hassle-free updates and zero payments is not enough for you to consider switc
 (the following is a test)
 
 | Stable | Stable | Stable | Experimental |
+| ------ | ------ | ------ | ------------ |
 | (spigotmc.org) | (Polymart) | (Bukkit/Twitch) | {Nightly) |
-| ------ | ---------------------- |
+| ------ | ------ | ------ | ------------ |
 | [![Stable Download](https://img.shields.io/badge/download-stable-44cc11.svg)](https://www.spigotmc.org/resources/prison.1223/) | [![Stable Download](https://img.shields.io/badge/download-stable-44cc11.svg)](https://polymart.org/resource/prison-1-8-x-1-16-5.678/updates) | [![Stable Download](https://img.shields.io/badge/download-stable-44cc11.svg)](https://dev.bukkit.org/projects/mc-prison-v3) | [![Experimental Download](https://img.shields.io/badge/download-experimental-red.svg)](https://ci.appveyor.com/project/faizaand/prison/build/artifacts) | 
 
 
@@ -56,6 +57,7 @@ If hassle-free updates and zero payments is not enough for you to consider switc
 ## Gradle Configurations
 
 Prison is now able through the jitpack.io repository:
+
 [![Release](https://jitpack.io/v/User/Repo.svg)]
 (https://jitpack.io/#PrisonTeam/Prison)
 
