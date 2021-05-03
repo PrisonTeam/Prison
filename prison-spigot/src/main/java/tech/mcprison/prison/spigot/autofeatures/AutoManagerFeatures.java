@@ -302,13 +302,16 @@ public class AutoManagerFeatures
 		// The explodedBlocks list have already been validated as being within the mine:
 		for ( SpigotBlock spigotBlock : explodedBlocks ) {
 			
-			int drop = applyAutoEvents( player, spigotBlock, mine );
-			totalCount += drop;
-			
-			if ( drop > 0 ) {
+			if ( spigotBlock != null && !spigotBlock.isEmpty() ) {
 				
-				processBlockBreakage( spigotBlock, mine, player, drop, 
-											blockEventType, triggered, itemInHand );
+				int drop = applyAutoEvents( player, spigotBlock, mine );
+				totalCount += drop;
+				
+				if ( drop > 0 ) {
+					
+					processBlockBreakage( spigotBlock, mine, player, drop, 
+							blockEventType, triggered, itemInHand );
+				}
 			}
 		}
 		

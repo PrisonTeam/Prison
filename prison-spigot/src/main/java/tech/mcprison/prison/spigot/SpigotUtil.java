@@ -225,48 +225,54 @@ public class SpigotUtil {
 															Player player, SpigotItemStack itemStack ) {
 		HashMap<Integer, SpigotItemStack> results = new HashMap<>();
 		
-		HashMap<Integer, ItemStack> overflow = player.getInventory().addItem( itemStack.getBukkitStack() );
-
-		
-		// Insert overflow in to Prison's backpack:
-		if (overflow.size() > 0 && BackpacksUtil.isEnabled() && 
-						BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_AutoPickup_Usable").equalsIgnoreCase("true")) {
-			String worldName = player.getWorld().getName();
-			List<String> disabledWorlds = BackpacksUtil.get().getBackpacksConfig().getStringList("Options.DisabledWorlds");
-			if (!disabledWorlds.contains(worldName)){
-				if (BackpacksUtil.get().isMultipleBackpacksEnabled()) {
-					for (String id : BackpacksUtil.get().getBackpacksIDs(player)) {
-						if (overflow.size() > 0) {
-							if (id == null) {
-								Inventory inv = BackpacksUtil.get().getBackpack(player);
-								overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
-								BackpacksUtil.get().setInventory(player, inv);
-							} else {
-								Inventory inv = BackpacksUtil.get().getBackpack(player, id);
-								overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
-								BackpacksUtil.get().setInventory(player, inv, id);
+		if ( itemStack != null && itemStack.getBukkitStack() != null ) {
+			HashMap<Integer, ItemStack> overflow = player.getInventory().addItem( itemStack.getBukkitStack() );
+			
+			// Insert overflow in to Prison's backpack:
+			if ( BackpacksUtil.isEnabled() ) {
+				
+				BackpacksUtil bpUtil = BackpacksUtil.get();
+				if (overflow.size() > 0 && 
+						bpUtil.getBackpacksConfig().getString("Options.BackPack_AutoPickup_Usable").equalsIgnoreCase("true")) {
+					String worldName = player.getWorld().getName();
+					List<String> disabledWorlds = bpUtil.getBackpacksConfig().getStringList("Options.DisabledWorlds");
+					if (!disabledWorlds.contains(worldName)){
+						if (bpUtil.isMultipleBackpacksEnabled()) {
+							for (String id : bpUtil.getBackpacksIDs(player)) {
+								if (overflow.size() > 0) {
+									if (id == null) {
+										Inventory inv = bpUtil.getBackpack(player);
+										overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
+										bpUtil.setInventory(player, inv);
+									} else {
+										Inventory inv = bpUtil.getBackpack(player, id);
+										overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
+										bpUtil.setInventory(player, inv, id);
+									}
+								}
 							}
+						} else {
+							Inventory inv = bpUtil.getBackpack(player);
+							overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
+							bpUtil.setInventory(player, inv);
 						}
 					}
-				} else {
-					Inventory inv = BackpacksUtil.get().getBackpack(player);
-					overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
-					BackpacksUtil.get().setInventory(player, inv);
 				}
 			}
+			
+			
+			// Insert overflow in to Minepacks backpack:
+			if ( overflow.size() > 0 && IntegrationMinepacksPlugin.getInstance().isEnabled() ) {
+				overflow = IntegrationMinepacksPlugin.getInstance().addItemsBukkit( player, overflow );						
+			}
+			
+			
+			// Cannot stick it anywhere else, so return the extras:
+			for ( Integer key : overflow.keySet() ) {
+				results.put(key, new SpigotItemStack(overflow.get(key)));
+			}
 		}
-
 		
-		// Insert overflow in to Minepacks backpack:
-		if ( overflow.size() > 0 && IntegrationMinepacksPlugin.getInstance().isEnabled() ) {
-			overflow = IntegrationMinepacksPlugin.getInstance().addItemsBukkit( player, overflow );						
-		}
-
-		
-		// Cannot stick it anywhere else, so return the extras:
-		for ( Integer key : overflow.keySet() ) {
-			results.put(key, new SpigotItemStack(overflow.get(key)));
-		}
 
 		return results;
 	}
