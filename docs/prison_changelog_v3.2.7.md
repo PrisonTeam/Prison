@@ -66,6 +66,8 @@ The new backpack storage system requires manual intervention to update the data;
 
 
 * **Set version to v3.2.7**
+  - Note that all changes that were made under v3.3.0-alpha.1 and v3.3.0-alpha.2 have been publicly released under v3.2.7
+
 
 
 * **If the mine's reset time is greater than half a second and if mine paging is turned off, a warning will be printed under /mines info that will warn the user that the reset time is high, and that they should consider turning on mine reset paging.**

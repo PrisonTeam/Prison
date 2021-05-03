@@ -51,14 +51,10 @@ If hassle-free updates and zero payments is not enough for you to consider switc
 
 Prison is now able through the jitpack.io repository:
 
-[![Release](https://jitpack.io/v/User/Repo.svg)]
-(https://jitpack.io/#PrisonTeam/Prison)
+[![Release](https://jitpack.io/v/User/Repo.svg)](https://jitpack.io/#PrisonTeam/Prison)
 
 
-Within your `repositories` section, add jitpack.io as the last entry.  Jitpack.io suggests that they should always be the last entry.
-
-
-Through jitpack.io's webpage you can select a Prison release and it will generate the correct dependency to use: [Prison repo on jitpack.io](https://jitpack.io/#PrisonTeam/Prison)
+Within your `repositories` section, add jitpack.io as the last entry, as suggested by jitpack.io.
 
 
 ```
@@ -77,3 +73,10 @@ dependencies {
 	implementation 'com.github.PrisonTeam:Prison:Tag'
 }
 ```
+
+Through jitpack.io's webpage you can select a Prison release and it will generate the correct dependency to use: [Prison repo on jitpack.io](https://jitpack.io/#PrisonTeam/Prison)
+
+
+
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
+

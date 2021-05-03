@@ -35,9 +35,48 @@ If hassle-free updates and zero payments is not enough for you to consider switc
 * **New releases are heavily bug-tested.** We test every single aspect of every new release of Prison before releasing it to the community. If a release doesn't pass our rigorous update checklist, it is iterated upon until it does. What does this mean for you? Solid updates with minimal bugs for your server.
 * **Prison is always expanding.** We are always looking for ways to expand Prison with features that make your server run more smoothly. Additionally, we are always looking for contributions from the community, be it code contributions, feature requests, bug reports, translations, or documentation.
 
+
 ## Get Prison
 
-| Stable | Experimental (Nightly) |
-| ------ | ---------------------- |
-| [![Stable Download](https://img.shields.io/badge/download-stable-44cc11.svg)](https://www.spigotmc.org/resources/prison.1223/) | [![Experimental Download](https://img.shields.io/badge/download-experimental-red.svg)](https://ci.appveyor.com/project/faizaand/prison/build/artifacts) | 
+
+| SpigotMC.org | Polymart.org | Bukkit.org | Experimental |
+| ------------ | ------------ | ---------- | ------------ |
+|    Stable    |    Stable    |   Stable   |    *Nightly*  |
+| [![Stable Download](https://img.shields.io/badge/download-stable-44cc11.svg)](https://www.spigotmc.org/resources/prison.1223/) | [![Stable Download](https://img.shields.io/badge/download-stable-44cc11.svg)](https://polymart.org/resource/prison-1-8-x-1-16-5.678/updates) | [![Stable Download](https://img.shields.io/badge/download-stable-44cc11.svg)](https://dev.bukkit.org/projects/mc-prison-v3) | [![Experimental Download](https://img.shields.io/badge/download-experimental-red.svg)](https://ci.appveyor.com/project/faizaand/prison/build/artifacts) | 
+
+
+
+
+## Gradle Configurations
+
+Prison is now able through the jitpack.io repository:
+
+[![Release](https://jitpack.io/v/User/Repo.svg)](https://jitpack.io/#PrisonTeam/Prison)
+
+
+Within your `repositories` section, add jitpack.io as the last entry, as suggested by jitpack.io.
+
+
+```
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
+	}
+}
+```
+
+Then add the dependency:
+
+```
+dependencies {
+	implementation 'com.github.PrisonTeam:Prison:Tag'
+}
+```
+
+Through jitpack.io's webpage you can select a Prison release and it will generate the correct dependency to use: [Prison repo on jitpack.io](https://jitpack.io/#PrisonTeam/Prison)
+
+
+
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
