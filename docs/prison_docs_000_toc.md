@@ -5,8 +5,8 @@
 
 ## Project Related
 
-* **[Prison README(README.md)**
-* **[Prison LICENSE](LICENSE.md)**
+* **[Prison README](README.md)**
+* **[Prison License](prison_license.md)**
 * **[Prison Change logs](changelog_v3.2.x.md)** Detailed changes to prison.
 * **[Prison Known Issues](knownissues_v3.2.x.md)** Known Issues and To Do's.
 * **[Prison Discord Server](https://discord.gg/DCJ3j6r)** Get help here.
