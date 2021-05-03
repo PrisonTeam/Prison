@@ -5,18 +5,18 @@
 
 ## Project Related
 
-* **[Prison README](README.md)**
-* **[Prison License](prison_license.md)**
-* **[Prison Change logs](changelog_v3.2.x.md)** Detailed changes to prison.
-* **[Prison Known Issues](knownissues_v3.2.x.md)** Known Issues and To Do's.
+* **[Prison README](prison_readme.md)** High level information, plus how to use with gradle builds.
+* **[Prison License](prison_license.md)** GNU General Public License
+* **[Prison Change logs](changelog_v3.3.x.md)** Detailed changes to prison.
+* **[Prison Known Issues](knownissues_v3.3.x.md)** Known Issues and To Do's.
 * **[Prison Discord Server](https://discord.gg/DCJ3j6r)** Get help here.
 
 
-* **[Most Recent Version of Prison Documentation](https://github.com/PrisonTeam/Prison/blob/bleeding/docs/prison_docs_000_toc.md)** Docs change frequently, but GITHUG's master versions do not. These are the latest docs!
+* **[Most Recent Version of Prison Documentation : Table of Contents](https://prisonteam.github.io/Prison/prison_docs_000_toc.html)** Docs change frequently, so the bleeding branch is tracked for Prison's online docs to keep them up to date.
 
 
 ## Build logs
- - **[v3.3.0.alpha.1 - Current](changelog_v3.3.x.md)**
+ - **[v3.3.0.alpha.3 - Current](changelog_v3.3.x.md)**
  - **[v3.2.0 - 2019-12-03](prison_changelog_v3.2.0.md)**&nbsp;&nbsp;
 **[v3.2.1 - 2020-09-27](prison_changelog_v3.2.1.md)**&nbsp;&nbsp;
 **[v3.2.2 - 2020-11-21](prison_changelog_v3.2.2.md)**&nbsp;&nbsp;
@@ -49,6 +49,7 @@ Prison now has a new set of features that can help you get up and running faster
 
 <hr style="height:5px; border:none; color:#aaf; background-color:#aaf;">
 
+
 # Table of Contents for this Document
 
 * [Commands Shortcut Help](#commands-shortcut-help)
@@ -60,7 +61,9 @@ Prison now has a new set of features that can help you get up and running faster
 * [Guides - Configuring Other Plugins for Prison](#guides-configuring-other-plugins-for-prison)
 * [Guides - FAQs](#guides-faqs)
 
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+<hr style="height:5px; border:none; color:#aaf; background-color:#aaf;">
 
 
 
