@@ -51,7 +51,7 @@ If hassle-free updates and zero payments is not enough for you to consider switc
 
 Prison is now able through the jitpack.io repository:
 
-[![Release](https://jitpack.io/v/User/Repo.svg)](https://jitpack.io/#PrisonTeam/Prison)
+[![Release](https://jitpack.io/v/PrisonTeam/Prison.svg)](https://jitpack.io/#PrisonTeam/Prison)
 
 
 Within your `repositories` section, add jitpack.io as the last entry, as suggested by jitpack.io.
