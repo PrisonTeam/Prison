@@ -47,7 +47,9 @@ Can use the command as `/ranks set rank *all* *same*` to reset all player's rank
 * Bug Fix: The new Mine Sweeper was added in the last release, but was accidentally always enabled.  This was fixed.
 
 
-* Significant changes and fixes for backpacks
+* Significant changes and fixes for backpacks. New size permission, limit set, and Stability improvements.
+The new backpack storage system requires manual intervention to update the data; until the old backpack is opened, the admin commands won't work. If there are backpack issues that won't resolve, then the data storage file that contains all player's backpack data must be deleted (total loss of player's contents). The file is located within plugins/Prison/backpacks/backPacksData.yml.
+
 
 * Updated a few repos to their more recent releases
 
