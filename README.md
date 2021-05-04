@@ -66,7 +66,7 @@ allprojects {
 }
 ```
 
-Then add the dependency:
+Then add the dependency as follows, but replace `Tag` with a valid tag such as `3.2.7`.  See the link to jitpack.io's website for a list of Tags that you can use; select from the tabs Releases, Builds, Branches, and Commits.
 
 ```
 dependencies {

@@ -41,31 +41,138 @@ There are two primary packages that contains API related classes.  One at the pr
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
 
+
+# Prison Events
+
+There are a few prison events that you can include in your project to better control what prison does.  
+
+
+### tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent
+
+This is a new event that was just added to Prison around the v3.2.6 release.  This event is raised before prison applies changes to the block (actually breaks the block).  If your plugin does not want the block to be broken, the event can be canceled.
+
+
+This event contains a lot of prison data that could be very useful to your plugin.  It extends the basic BlockBreakEvent so all related fields can be found within this class too.  The exception is that this event creates it's own HandlerList that is disconnected from the BlockBreakEvent so this event will not get mixed in to the normal BlockBreakEvent.
+
+
+<ul>
+
+  <li><b>tech.mcprison.prison.mines.data.Mine:</b> The actual Prison Mine object.  You have full access to the whole mine's data; be very careful in what you change and modify since changing the wrong thing can corrupt your mine and or server.</li>
+  
+	
+  <li><b>tech.mcprison.prison.spigot.block.SpigotBlock:</b> This is the block that was "hit". If this is part of an explosion event, then the other blocks will be in the explodedBlocks collection.</li>
+
+
+  <li><b>List<SpigotBlock> explodedBlocks:</b> These are the blocks from explosion events.  If there wasn't an explosion, then this list will be empty.</li>
+  
+  
+  <li><b>tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType:</b> This identifies what event type triggered Prison to handle the event.  Valid values will be: `blockBreak`, `TEXplosion`, and `CEXplosion`.  As new plugins are added to prison, there may be more possible values.</li>
+  
+  
+  <li><b>String triggered:</b> If the BlockEventType is `TEXplosion` then this field <i>may</i> contain the name of the enchantment that triggered the TE Explosive event.  Older versions of TE does not support this field, so if you are not seeing this field being populated, then check to see if you can upgrade to a newer version.</li>
+  
+  
+  <li><b>Plus</b> all of the standard parameters from the BlockBreakEvent.</li>
+  
+  
+</ul>
+
+
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+### tech.mcprison.prison.spigot.api.PrisonMinesBlockEventEvent
+
+**Coming soon!!**
+
+This event is identical to the PrisonMinesBlockBreakEvent as far as the fields and data that it contains, but this event will be raised before running the block events.
+
+This event will probably be enhanced to contain more of the details related to the BlockEvent.
+
+
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
+
+
+### tech.mcprison.prison.mines.events.MineResetEvent
+
+This event is raised before a mine is reset.  It can be canceled.
+
+
+<ul>
+
+  <li><b>tech.mcprison.prison.mines.data.Mine:</b> The actual Prison Mine object.  You have full access to the whole mine's data; be very careful in what you change and modify since changing the wrong thing can corrupt your mine and or server.</li>
+  
+</ul>
+
+
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
+
+
+### tech.mcprison.prison.ranks.events.RankUpEvent
+
+This event is raised before a Rankup is finalized, and after everything else has been processed.  This event can be canceled to prevent a rankup from happening.
+
+If this event is canceled, please provide a reason for the field `cancelReason` so it can be added to the log.
+
+Please note, this contains a `cost` field, but the currency for that cost is within the `newRank` field.
+
+
+Note: The following are a list of fields.  They will be expanded in the future in to a list with more information.
+
+```
+  private RankPlayer player;
+  private Rank oldRank;
+  private Rank newRank;
+  private double cost;
+    
+  private RankupCommands command;
+  private PromoteForceCharge forceCharge;
+
+  private boolean canceled = false;
+  private String cancelReason = null;
+```
+
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
 # Using jitpack.io as a Prison repo
 
 
-Since Prison is not setup in any public repos, you can use jitpack.io for your builds.  The following instructions are based upon the details listed at the jitpack.io website.  Since Prison uses gradle, these instructions are for gradle.  Their website has information for maven and a few other repo types.
-
-
-https://jitpack.io
-
-
-**Please Note:**  I used their webpage to construct the following directions, along with the correct settings to use, but I could not get the build to work in another project using the `implementation` keyword, but it did compile with the keyword `compileOnly`.  In this test project I do not have code that is using any of Prison's classes, so that could make a difference too.  Use of this site is your choice, but we cannot provide support if the Prison project is unable to be compiled in your project.  - Blue
+You can use jitpack.io for your builds if you need to include Prison in your project.  The following instructions are based upon the details listed at the jitpack.io web site.  Since Prison uses gradle, these instructions are for gradle.  Their web site has information for maven and a few other repo types.
 
 
 
-Look up the repository.  On the main page of jitpack.io enter `com.github.PrisonTeam/Prison` in to the search field and press the button "**Look Up**".  It will return information on prison's commits to the master branch.  
+**Please Note:**  I used their web site to construct the following directions, along with the correct settings to use. I should point out that it can take a few attempts (up to 12) to get a new release from Prison to build successful.  This is related more to gradle's short timeout that does not provide enough time to download and build all dependencies.  After v3.2.7 was released the gradle timeouts were increases so future builds should be more successful.
 
-
-Next you will see a table of versions with tabs at the top (they don't look like tabs). Click on the tab named "Builds".  This will show a list of Versions. For example it will include "v3.2.6" and "3.2.6", but look under the Status column.  Select one that has "Get It" button to populate the examples at the bottom of the page.
-
-
-
-If you need to use the current bleeding branch use `com.github.PrisonTeam/Prison/bleeding`
+Use of this site is your choice, but we cannot provide support if the Prison project is unable to be compiled in your project.  - Blue
 
 
 
-First, you need to add jitpack.io to the your repository listing.
+### How to use jitpack.io's Web site for Prison
+
+Through jitpack.io's web site you can select a Prison release and it will generate the correct dependency to use.  Click on the following button to browse the options available for Prison:
+
+[![Release](https://jitpack.io/v/PrisonTeam/Prison.svg)](https://jitpack.io/#PrisonTeam/Prison)
+
+
+
+The link above get's you to Prison's content, but the general instructions to use the site is as simple as looking up the repository.  On the main page of jitpack.io enter `com.github.PrisonTeam/Prison` in to the search field and press the button "**Look Up**".  It will return information on prison's commits to the master branch.  You can enter other github projects this way too.
+
+
+Next you will see a table of versions with tabs at the top (they don't look like tabs).  The default tab is named Releases and you can use one of the items on this page.  You can also click on the tab named "Builds" which will also list of Versions, but this tab could include different variations for each version. For example it will include "v3.2.7" and "3.2.7", but look under the Status column and select one that has the "Get It" button.  Click on that "Get It" button to populate the examples at the bottom of the page with the selected builds, then you can just copy and paste that information.
+
+
+
+### Selecting from the 'bleeding' branch
+
+
+If you need to use the current bleeding branch, then you can copy and paste the following text in to the Project Lookup field: `com.github.PrisonTeam/Prison/bleeding`
+
+
+
+Within your `repositories` section, add jitpack.io as the last entry, as suggested by jitpack.io.
 
 ```
 allprojects {
@@ -76,11 +183,19 @@ allprojects {
 }
 ```
 
+Then add the dependency as follows, but replace `Tag` with a valid tag such as `3.2.7`.  See the link to jitpack.io's web site for a list of Tags that you can use; select from the tabs Releases, Builds, Branches, and Commits.
 
-Then you need to add the jitpack.io dependency as the very last of your dependencies.
+```
+dependencies {
+	implementation 'com.github.PrisonTeam:Prison:Tag'
+}
+```
 
 
-This is the generic format:
+### Examples using various settings for the 'Tag'
+
+
+The following uses the most recent commit on the bleeding branch:
 
 ```
 dependencies {
@@ -89,11 +204,11 @@ dependencies {
 ```
 
 
-This is the formated version for Prison's master branch:
+This uses Prison's master branch, release v3.2.7:
 
 ```
 dependencies {
-	implementation 'com.github.PrisonTeam:Prison:3.2.6'
+	implementation 'com.github.PrisonTeam:Prison:3.2.7'
 }
 ```
 
@@ -110,6 +225,19 @@ Then all that is left is to build the project.
 
 
 
-<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
+### If you run in to challenges using jitpack.io
+
+
+Good luck with your project!  Hopefully jitpack.io can provide the dependencies that you need to build your project using Prison. 
+
+
+From what I've seen, once their web site has the green "Get It" button it will usually work well.  If the button is not green, but gray, then that means it has not built a local instance of that release yet.  Clicking on "Get It" will initiate a build which can take up to 15 minutes.  If it fails, you can retry the request. If it won't let you, please visit **Prison's Discord Server** and ask Blue to resubmit (Blue has access to resubmit failed builds).  Note builds usually fail because they could not complete in a limited about of time, but upon multiple attempts it will succeed.
+
+
+Please note that other than these instructions, and requests to resubmit a failed build, we are unable to provide support if attempts to get this to work fails.
+
+
+
+<hr style="height:5px; border:none; color:#aaf; background-color:#aaf;">
 
 
