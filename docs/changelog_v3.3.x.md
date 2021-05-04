@@ -21,6 +21,12 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.3 2021-05-03
 
 
+* **Setup about 22 new messages for ranks so they can be externalized.**
+They are related to rankup commands.
+Since ranks did not have any messages before, the language file will be generated when starting the server.
+Changed the version to v3.3.0-alpha.3b just to mark it.
+
+
 * **Mine Sweeper was not hooked up to the blockBreakCounts so it was not triggering a mine reset on zero blocks remaining like it should have been doing.**
 Also increased the length between sweeps from 10 seconds to 15 seconds on a full mine.  The lowest value is still 2 seconds when it becomes close to empty.  Will put these values in a config setting soon so the admins can tweak them (hopefully increase the timings to be longer).
 

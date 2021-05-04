@@ -26,6 +26,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.integration.IntegrationType;
+import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleStatus;
 import tech.mcprison.prison.output.LogLevel;
@@ -62,6 +63,8 @@ public class PrisonRanks
     
 	private List<String> prisonStartupDetails;
 	
+    private LocaleManager localeManager;
+    
 
     /*
      * Constructor
@@ -91,6 +94,8 @@ public class PrisonRanks
     public void enable() {
         instance = this;
 
+        this.localeManager = new LocaleManager(this, "lang/ranks");
+        
         if (!PrisonAPI.getIntegrationManager().hasForType(IntegrationType.ECONOMY)) {
             getStatus().setStatus(ModuleStatus.Status.FAILED);
             getStatus().setMessage("&cNo economy plugin");
@@ -339,5 +344,9 @@ public class PrisonRanks
     	int playersCount = getPlayerManager() == null || getPlayerManager().getPlayers() == null ? 0 : 
     		getPlayerManager().getPlayers().size();
     	return playersCount;
+    }
+    
+    public LocaleManager getRanksMessages() {
+        return localeManager;
     }
 }
