@@ -13,7 +13,7 @@ But APIs do exist, and so do a few Events.  More will be added in the future too
 Prison does not have any formal maven repository, or similar repos.  The source is only within github so your builds will have to be performed over that, or find some other services such as https://jitpack.io/.  Your choice on how to work with the project will be up to you.
 
 
-<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:7px; border:none; color:#aaf; background-color:#aaf;">
 
 
 
@@ -38,7 +38,7 @@ There are two primary packages that contains API related classes.  One at the pr
 
 
 
-<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;" />
+<hr style="height:7px; border:none; color:#aaf; background-color:#aaf;" />
 
 
 
@@ -47,7 +47,7 @@ There are two primary packages that contains API related classes.  One at the pr
 There are a few prison events that you can include in your project to better control what prison does.  
 
 
-## tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent
+## Prison Event: tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent
 
 This is a new event that was just added to Prison around the v3.2.6 release.  This event is raised before prison applies changes to the block (actually breaks the block).  If your plugin does not want the block to be broken, the event can be canceled.
 
@@ -82,7 +82,7 @@ This event contains a lot of prison data that could be very useful to your plugi
 
 
 
-## tech.mcprison.prison.spigot.api.PrisonMinesBlockEventEvent
+## Prison Event: tech.mcprison.prison.spigot.api.PrisonMinesBlockEventEvent
 
 **Coming soon!!**
 
@@ -94,7 +94,7 @@ This event will probably be enhanced to contain more of the details related to t
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
 
-## tech.mcprison.prison.mines.events.MineResetEvent
+## Prison Event: tech.mcprison.prison.mines.events.MineResetEvent
 
 This event is raised before a mine is reset.  It can be canceled.
 
@@ -109,7 +109,7 @@ This event is raised before a mine is reset.  It can be canceled.
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;" />
 
 
-## tech.mcprison.prison.ranks.events.RankUpEvent
+## Prison Event: tech.mcprison.prison.ranks.events.RankUpEvent
 
 This event is raised before a Rankup is finalized, and after everything else has been processed.  This event can be canceled to prevent a rankup from happening.
 
@@ -133,7 +133,7 @@ Note: The following are a list of fields.  They will be expanded in the future i
   private String cancelReason = null;
 ```
 
-<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;" />
+<hr style="height:7px; border:none; color:#aaf; background-color:#aaf;" />
 
 
 
@@ -238,6 +238,6 @@ Please note that other than these instructions, and requests to resubmit a faile
 
 
 
-<hr style="height:5px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:7px; border:none; color:#aaf; background-color:#aaf;">
 
 

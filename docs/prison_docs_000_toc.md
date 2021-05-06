@@ -252,6 +252,7 @@ Get your prison setup quickly by running the command `/ranks autoCommand` which 
 
 
 * [Guide: Prison APIs](prison_docs_318_prison_APIs.md) 
+Prison's APIs and Events to help customize Prison.  Ideal for plugins using prison and to help customize how prison works on your server.
 
 
 
