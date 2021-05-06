@@ -38,7 +38,7 @@ There are two primary packages that contains API related classes.  One at the pr
 
 
 
-<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;" />
 
 
 
@@ -47,7 +47,7 @@ There are two primary packages that contains API related classes.  One at the pr
 There are a few prison events that you can include in your project to better control what prison does.  
 
 
-### tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent
+## tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent
 
 This is a new event that was just added to Prison around the v3.2.6 release.  This event is raised before prison applies changes to the block (actually breaks the block).  If your plugin does not want the block to be broken, the event can be canceled.
 
@@ -63,7 +63,7 @@ This event contains a lot of prison data that could be very useful to your plugi
   <li><b>tech.mcprison.prison.spigot.block.SpigotBlock:</b> This is the block that was "hit". If this is part of an explosion event, then the other blocks will be in the explodedBlocks collection.</li>
 
 
-  <li><b>List<SpigotBlock> explodedBlocks:</b> These are the blocks from explosion events.  If there wasn't an explosion, then this list will be empty.</li>
+  <li><b>List &lt;SpigotBlock&gt; explodedBlocks:</b> These are the blocks from explosion events.  If there wasn't an explosion, then this list will be empty.</li>
   
   
   <li><b>tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType:</b> This identifies what event type triggered Prison to handle the event.  Valid values will be: `blockBreak`, `TEXplosion`, and `CEXplosion`.  As new plugins are added to prison, there may be more possible values.</li>
@@ -78,11 +78,11 @@ This event contains a lot of prison data that could be very useful to your plugi
 </ul>
 
 
-<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;" />
 
 
 
-### tech.mcprison.prison.spigot.api.PrisonMinesBlockEventEvent
+## tech.mcprison.prison.spigot.api.PrisonMinesBlockEventEvent
 
 **Coming soon!!**
 
@@ -94,7 +94,7 @@ This event will probably be enhanced to contain more of the details related to t
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
 
-### tech.mcprison.prison.mines.events.MineResetEvent
+## tech.mcprison.prison.mines.events.MineResetEvent
 
 This event is raised before a mine is reset.  It can be canceled.
 
@@ -106,10 +106,10 @@ This event is raised before a mine is reset.  It can be canceled.
 </ul>
 
 
-<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;" />
 
 
-### tech.mcprison.prison.ranks.events.RankUpEvent
+## tech.mcprison.prison.ranks.events.RankUpEvent
 
 This event is raised before a Rankup is finalized, and after everything else has been processed.  This event can be canceled to prevent a rankup from happening.
 
@@ -133,7 +133,7 @@ Note: The following are a list of fields.  They will be expanded in the future i
   private String cancelReason = null;
 ```
 
-<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;" />
 
 
 
