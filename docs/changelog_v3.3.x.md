@@ -18,7 +18,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.3 2021-05-03
+# v3.3.0-alpha.3 2021-05-09
+
+
+* **Fix access to auto features if auto features is disabled.**
+If auto features is disabled, then it will not be instantiated.  This may cause issues with the GUI where it expects it exists.  This change will create an instance so the GUI will have access to it.
 
 
 * **Setup about 22 new messages for ranks so they can be externalized.**

@@ -52,6 +52,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.managers.RankManager;
+import tech.mcprison.prison.spigot.autofeatures.AutoManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.backpacks.BackpacksListeners;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
@@ -60,6 +61,7 @@ import tech.mcprison.prison.spigot.commands.PrisonSpigotGUICommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotMinesCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotPrestigeCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotRanksCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot113;
 import tech.mcprison.prison.spigot.compat.Spigot18;
@@ -79,7 +81,6 @@ import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
-import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.slime.SlimeBlockFunEventListener;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.utils.PrisonUtilsModule;
@@ -279,6 +280,12 @@ public class SpigotPrison extends JavaPlugin {
     }
     
     public AutoManagerFeatures getAutoFeatures() {
+    	if ( autoFeatures == null ) {
+    		// None of the event listeners have been registered so auto features has not 
+    		// been setup.  The following line will allow it to be setup so the setting can be accessed:
+    		new AutoManager();
+    	}
+    	
 		return autoFeatures;
 	}
 
