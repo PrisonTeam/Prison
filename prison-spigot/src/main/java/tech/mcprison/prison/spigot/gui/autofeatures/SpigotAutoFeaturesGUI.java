@@ -56,7 +56,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
 
         ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
 
-        if (afConfig.isFeatureBoolean(AutoFeatures.isAutoManagerEnabled)) {
+        if (afConfig != null && afConfig.isFeatureBoolean(AutoFeatures.isAutoManagerEnabled)) {
 
             // Declare buttons
             ItemStack autoPickup;

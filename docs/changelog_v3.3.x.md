@@ -25,6 +25,10 @@ These build logs represent the work that has been going on within prison.
 If auto features is disabled, then it will not be instantiated.  This may cause issues with the GUI where it expects it exists.  This change will create an instance so the GUI will have access to it.
 
 
+* **Attempting fix of NPE for AutoFeatures GUI.**
+Potentially fixed NPE for autofeatures.
+
+
 * **Setup about 22 new messages for ranks so they can be externalized.**
 They are related to rankup commands.
 Since ranks did not have any messages before, the language file will be generated when starting the server.
