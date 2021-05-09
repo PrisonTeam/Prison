@@ -282,7 +282,9 @@ public class SpigotPrison extends JavaPlugin {
     public AutoManagerFeatures getAutoFeatures() {
     	if ( autoFeatures == null ) {
     		// None of the event listeners have been registered so auto features has not 
-    		// been setup.  The following line will allow it to be setup so the setting can be accessed:
+    		// been setup.  The following line will allow it to be setup so the setting can be accessed.
+    		// The proper way to access the settings are through... 
+    		//     AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig()
     		new AutoManager();
     	}
     	

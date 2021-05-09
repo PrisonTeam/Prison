@@ -21,6 +21,9 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.3 2021-05-09
 
 
+* **Slight changes to the GUI in accessing the auto features settings in a more direct way.**
+
+
 * **Fix access to auto features if auto features is disabled.**
 If auto features is disabled, then it will not be instantiated.  This may cause issues with the GUI where it expects it exists.  This change will create an instance so the GUI will have access to it.
 

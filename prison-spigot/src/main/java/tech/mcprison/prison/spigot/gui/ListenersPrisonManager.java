@@ -29,6 +29,7 @@ import com.cryptomorin.xseries.XMaterial;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.modules.Module;
@@ -2435,8 +2436,8 @@ public class ListenersPrisonManager implements Listener {
     private void autoFeaturesGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Get the config
-        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
-
+        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
+        
         // Output finally the buttonname and the mode explicit out of the array
         String buttonName = parts[0];
         String mode = parts[1];
@@ -2501,7 +2502,7 @@ public class ListenersPrisonManager implements Listener {
     private void autoPickupGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Get the config
-        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
 
         // Output finally the buttonname and the mode explicit out of the array
         String buttonname = parts[0];
@@ -2585,7 +2586,7 @@ public class ListenersPrisonManager implements Listener {
     private void autoSmeltGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Get the config
-        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
 
         // Output finally the buttonname and the mode explicit out of the array
         String buttonname = parts[0];
@@ -2623,7 +2624,7 @@ public class ListenersPrisonManager implements Listener {
     private void autoBlockGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Get the config
-        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
 
         // Output finally the buttonname and the mode explicit out of the array
         String buttonname = parts[0];
@@ -2795,7 +2796,7 @@ public class ListenersPrisonManager implements Listener {
      * @param player
      */
     private boolean saveAutoFeatures( InventoryClickEvent e, Player player ) {
-    	boolean success = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig().saveConf();
+    	boolean success = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig().saveConf();
     	e.setCancelled(true);
     	player.closeInventory();
     	return success;
