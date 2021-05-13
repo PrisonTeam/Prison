@@ -467,7 +467,7 @@ public class RankLadder
 	public Optional<Rank> getByPosition(int position) {
     	Rank results = null;
     	
-    	if ( getRanks().size() >= position ) {
+    	if ( getRanks().size() > position ) {
     		results = getRanks().get( position );
     	}
     	

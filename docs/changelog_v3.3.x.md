@@ -18,7 +18,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.3 2021-05-09
+# v3.3.0-alpha.3 2021-05-12
+
+* **Fixed a bug with getting the position of the rank.**
+For example if trying to get the last rank, it would cause an index out of range exception.  For example if there are no ranks but yet trying to select the first rank, it will not work.
 
 
 * **Slight changes to the GUI in accessing the auto features settings in a more direct way.**
