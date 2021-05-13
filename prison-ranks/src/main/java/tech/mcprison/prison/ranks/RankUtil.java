@@ -25,6 +25,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
@@ -280,9 +281,11 @@ public class RankUtil {
     				rankName, playerName, executorName, pForceCharge );
     	} catch (Exception e ) {
     		results.addTransaction( RankupTransactions.failure_exception_caught_check_server_logs );
-    		String message = String.format( 
-    				"Failure to perform rankupPlayerInternal check server logs for stack trace: %s", e.getMessage() );
-    		Output.get().logError( message, e );
+    		
+    		Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+        			.getLocalizable( "ranks_rankutil__failure_internal" )
+        			.withReplacements( e.getMessage() );           	
+    		Output.get().logError( localManagerLog.localize(), e );
     	}
     	
     	// Log the results:
@@ -522,8 +525,11 @@ public class RankUtil {
             
             success = true;
         } catch (IOException e) {
-            Output.get().logError("An error occurred while saving player files.", e);
-            
+    		Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+        			.getLocalizable( "ranks_rankutil__failure_saving_player_data" )
+        			.withReplacements( e.getMessage() );           	
+    		Output.get().logError( localManagerLog.localize(), e );
+    		
             results.addTransaction( RankupStatus.RANKUP_FAILURE_COULD_NOT_SAVE_PLAYER_FILE, 
             			RankupTransactions.failure_cannot_save_player_file );
         }

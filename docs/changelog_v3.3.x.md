@@ -18,7 +18,9 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.3 2021-05-12
+# v3.3.0-alpha.3 2021-05-13
+
+* **Added more rank related messages to the external file.**
 
 * **Fixed a bug with getting the position of the rank.**
 For example if trying to get the last rank, it would cause an index out of range exception.  For example if there are no ranks but yet trying to select the first rank, it will not work.

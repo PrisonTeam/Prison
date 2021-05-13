@@ -74,9 +74,10 @@ public class RankUpCommand
 			rankUpPrivate(sender, ladder, RankupModes.MAX_RANKS, "ranks.rankupmax.");
 		}
     	else {
-            Output.get()
-            .sendError(sender, "You need the permission '%s' to rank up on this ladder.",
-            		"ranks.rankupmax." + ladder.toLowerCase());
+        	PrisonRanks.getInstance().getRanksMessages()
+	    		.getLocalizable( "ranks_rankup__no_permission" )
+	    		.withReplacements( "ranks.rankupmax." + ladder.toLowerCase() )
+	    		.sendTo( sender );
     	}
     }
 	
@@ -87,8 +88,9 @@ public class RankUpCommand
 		) {
         
         if ( !sender.isPlayer() ) {
-        	
-        	Output.get().sendError(sender, "&7Cannot run rankup from console.  See &3/rankup help&7." );
+        	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+        			.getLocalizable( "ranks_rankup__cannot_run_from_console" );           	
+        	Output.get().logInfo( localManagerLog.localize() );
         	return;
         }
         
@@ -105,9 +107,11 @@ public class RankUpCommand
         				Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ))) && 
         	!ladder.equalsIgnoreCase("default") && 
         	!sender.hasPermission(permission + ladder.toLowerCase())) {
-            Output.get()
-                .sendError(sender, "You need the permission '%s' to rank up on this ladder.",
-                		permission + ladder.toLowerCase());
+        	
+        	PrisonRanks.getInstance().getRanksMessages()
+	    		.getLocalizable( "ranks_rankup__no_permission" )
+	    		.withReplacements( permission + ladder.toLowerCase() )
+	    		.sendTo( sender );
             return;
         }
 
@@ -115,8 +119,9 @@ public class RankUpCommand
         // 
         if ( mode == null ) {
         	
-        	Output.get()
-        		.sendError(sender, "&7Invalid rankup mode. Internal failure. Please report." );
+        	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+        			.getLocalizable( "ranks_rankup__internal_failure" );           	
+        	Output.get().logInfo( localManagerLog.localize() );
         	return;
         }
         
@@ -125,7 +130,9 @@ public class RankUpCommand
         
         if ( !sender.isPlayer() ) {
         	
-        	Output.get().sendError(sender, "&7Cannot run rankup from console.  See &3/rankup help&7." );
+        	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+        			.getLocalizable( "ranks_rankup__cannot_run_from_console" );           	
+        	Output.get().logInfo( localManagerLog.localize() );
         	return;
         }
 
@@ -152,11 +159,16 @@ public class RankUpCommand
 			RankLadder rankLadder = lm.getLadder("default");
 			
 			if ( rankLadder == null ){
-				sender.sendMessage("&c[ERROR] There isn't a default ladder! Please report this to an admin!");
+				
+				PrisonRanks.getInstance().getRanksMessages()
+	    			.getLocalizable( "ranks_rankup__error_no_default_ladder" )
+	    			.sendTo( sender );
 				return;
 			}
 			if (!rankLadder.getLowestRank().isPresent()){
-				sender.sendMessage("&c[ERROR] Can't get the lowest rank! Please report this to an admin!");
+				PrisonRanks.getInstance().getRanksMessages()
+					.getLocalizable( "ranks_rankup__error_no_lower_rank" )
+					.sendTo( sender );
 				return;
 			}
 
@@ -167,7 +179,9 @@ public class RankUpCommand
 			}
 
 			if (!(rank == pRankSecond)) {
-				sender.sendMessage("&cYou aren't at the last rank!");
+				PrisonRanks.getInstance().getRanksMessages()
+					.getLocalizable( "ranks_rankup__not_at_last_rank" )
+					.sendTo( sender );
 				return;
 			}
 			
@@ -206,8 +220,9 @@ public class RankUpCommand
         		prestigePlayer( sender, player, rankPlayer, pRankAfter, lm );
         	}
         	else if ( canPrestige ) {
-        		player.sendMessage("&7[&3Sorry&7] &3You were not able to &6Prestige!");
-
+        		PrisonRanks.getInstance().getRanksMessages()
+					.getLocalizable( "ranks_rankup__not_able_to_prestige" )
+					.sendTo( sender );
         	}
         	
         }
@@ -260,7 +275,10 @@ public class RankUpCommand
 				// Check if the ranks match
 
 				if (pRankSecond != lm.getLadder("default").getLowestRank().get()) {
-					player.sendMessage( "&7Unable to reset your rank on the default ladder." );
+					
+					PrisonRanks.getInstance().getRanksMessages()
+						.getLocalizable( "ranks_rankup__not_able_to_reset_rank" )
+						.sendTo( sender );
 					success = false;
 				}
 //			}
@@ -270,17 +288,28 @@ public class RankUpCommand
 			
 			// set the player's balance to zero:
 			rankPlayer.setBalance( 0 );
-			
-			player.sendMessage( "&7Your balance has been set to zero." );
+			PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_rankup__balance_set_to_zero" )
+				.sendTo( sender );
 		}
 		
 		if ( success ) {
 			// Send a message to the player because he did prestige!
-			player.sendMessage("&7[&3Congratulations&7] &3You've &6Prestige&3 to " + pRankAfter.getTag() + "&c!");
+			PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_rankup__prestige_successful" )
+				.withReplacements(
+						pRankAfter.getTag()
+	    				)
+				.sendTo( sender );
 		}
 		else {
 			
-			player.sendMessage("&7[&3Sorry&7] &3You were not able to &6Prestige&3 to " + pRankAfter.getTag() + "&c!");
+			PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_rankup__prestige_failure" )
+				.withReplacements(
+						pRankAfter.getTag()
+						)
+				.sendTo( sender );
 		}
 
 	}
@@ -309,9 +338,14 @@ public class RankUpCommand
     	
     	PromoteForceCharge pForceCharge = PromoteForceCharge.fromString( chargePlayer );
     	if ( pForceCharge == null|| pForceCharge == PromoteForceCharge.refund_player ) {
-    		sender.sendMessage( 
-    				String.format( "&3Invalid value for chargePlayer. Valid values are: %s %s", 
-    						PromoteForceCharge.no_charge.name(), PromoteForceCharge.charge_player.name()) );
+    		
+			PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_rankup__invalid_charge_value" )
+				.withReplacements(
+						PromoteForceCharge.no_charge.name(), 
+						PromoteForceCharge.charge_player.name()
+						)
+				.sendTo( sender );
     		return;
     	}
 
@@ -359,9 +393,13 @@ public class RankUpCommand
     	
     	PromoteForceCharge pForceCharge = PromoteForceCharge.fromString( refundPlayer );
     	if ( pForceCharge == null || pForceCharge == PromoteForceCharge.charge_player ) {
-    		sender.sendMessage( 
-    				String.format( "&3Invalid value for refundPlayer. Valid values are: %s %s", 
-    						PromoteForceCharge.no_charge.name(), PromoteForceCharge.refund_player.name()) );
+			PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_rankup__invalid_refund_value" )
+				.withReplacements(
+						PromoteForceCharge.no_charge.name(), 
+						PromoteForceCharge.refund_player.name()
+						)
+				.sendTo( sender );
     		return;
     	}
     	
@@ -525,7 +563,13 @@ public class RankUpCommand
             					(results.getMessage() != null ? results.getMessage() : "")
             				);
             	
-            	Output.get().logInfo( "%s initiated rank change: %s", sender.getName(), localManager.localize() );
+            	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+            			.getLocalizable( "ranks_rankup__log_rank_change" )
+            			.withReplacements(
+            					
+            					sender.getName(), localManager.localize()
+            				);           	
+            	Output.get().logInfo( localManagerLog.localize() );
             	
             	if ( Prison.get().getPlatform().getConfigBooleanFalse( "broadcast-rankups" ) ) {
             		String messagNoPlayerNameBroadcast = PrisonRanks.getInstance().getRanksMessages()
