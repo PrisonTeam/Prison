@@ -19,6 +19,7 @@ package tech.mcprison.prison.ranks;
 
 import com.google.common.eventbus.Subscribe;
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
@@ -54,13 +55,19 @@ public class FirstJoinHandler {
         if (firstRank.isPresent()) {
             player.addRank(PrisonRanks.getInstance().getDefaultLadder(), firstRank.get());
         } else {
-            Output.get().logWarn("There are no ranks on the server! New player has no rank.");
+        	
+        	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+        			.getLocalizable( "ranks_firstJoinHandler__no_ranks_on_server" );           	
+        	Output.get().logWarn( localManagerLog.localize() );
         }
 
         try {
             PrisonRanks.getInstance().getPlayerManager().savePlayer(player);
         } catch (IOException e) {
-            Output.get().logError("Could not save player files.", e);
+        	
+        	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+        			.getLocalizable( "ranks_firstJoinHandler__could_not_save_plaer" );           	
+        	Output.get().logError( localManagerLog.localize(), e );
         }
     }
 
