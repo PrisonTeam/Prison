@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
@@ -144,11 +145,12 @@ public class LadderManager {
     		success = true;
     	}
     	catch ( IOException e ) {
-    		String message = String.format( "&cLadderManager.saveLadder: Failed to save the ladder. &7%s " +
-    				"&3Error= [&7%s&3]", 
-    						ladder.getName(), e.getMessage() );
     		
-    		Output.get().logError( message, e );
+    		Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+        			.getLocalizable( "ranks_ladderManager__cannot_save_ladder_file" )
+        			.withReplacements( ladder.getName(), e.getMessage() );
+    		    		
+    		Output.get().logError( localManagerLog.localize(), e );
     	}
     	
     	return success;

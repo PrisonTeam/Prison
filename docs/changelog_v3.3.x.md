@@ -18,7 +18,12 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.3 2021-05-13
+# v3.3.0-alpha.3 2021-05-15
+
+
+* **Finalized moving all messages within the ranks module to a file.**
+If rank related messages are not being displayed, but instead a code is being shown instead, then you will need to delete the following folder on the server and then restart prison to get it to regenerate with the latest messages.  If you made customizations to the files within this directory, then please back it up before deleting it, then copy them back in to the new files.
+`plugins/Prison/module_conf/ranks` 
 
 
 * **Added more rank related messages to the external file.**

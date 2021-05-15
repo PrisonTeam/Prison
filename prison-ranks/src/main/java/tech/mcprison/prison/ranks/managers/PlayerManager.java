@@ -36,6 +36,7 @@ import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.events.player.PlayerJoinEvent;
+import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.ManagerPlaceholders;
 import tech.mcprison.prison.placeholders.PlaceHolderKey;
@@ -159,9 +160,13 @@ public class PlayerManager
 			}
 			catch ( Exception e )
 			{
-				String message = "An error occurred while saving the player files: "  +
-						player.filename();
-				
+	    		
+	    		Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+	        			.getLocalizable( "ranks_playerManager__cannot_save_player_file" )
+	        			.withReplacements( player.filename() );
+	 
+	    		String message = localManagerLog.localize();
+	    		
     			if ( !getPlayerErrors().contains( message ) ) {
     				getPlayerErrors().add( message );
     				Output.get().logError( message );
@@ -241,8 +246,13 @@ public class PlayerManager
 				savePlayer( results );
 			}
 			catch ( IOException e ) {
-				String message = String.format( "PlayerManager.getPlayer(): Failed to add new player name: %s. %s",
-									playerName, e.getMessage());
+				
+				Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+	        			.getLocalizable( "ranks_playerManager__cannot_add_new_player" )
+	        			.withReplacements( playerName, e.getMessage() );
+				
+				String message = localManagerLog.localize();
+				
     			if ( !getPlayerErrors().contains( message ) ) {
     				
     				getPlayerErrors().add( message );
@@ -326,10 +336,18 @@ public class PlayerManager
         				Prison.get().getEventBus().post(new FirstJoinEvent(newPlayer));
         			} 
         			catch (IOException e) {
-        				Output.get().logError(
-        						"Failed to create new player data file for player " + 
-        								(playerName == null ? "<NoNameAvailable>" : playerName) + 
-        								"  target filename: " + newPlayer.filename(), e);
+        				
+        				Localizable localManagerLogNoName = PrisonRanks.getInstance().getRanksMessages()
+        						.getLocalizable( "ranks_playerManager__no_player_name_available" );
+        				
+        				Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+        	        			.getLocalizable( "ranks_playerManager__cannot_save_new_player_file" )
+        	        			.withReplacements( 
+        	        					(playerName == null ? 
+        	        								localManagerLogNoName.localize() : playerName), 
+        	        					newPlayer.filename() );
+        				
+        				Output.get().logError( localManagerLog.localize(), e);
         			}
         		}
         		
@@ -518,8 +536,12 @@ public class PlayerManager
     	
         Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
         if( prisonPlayer == null ) {
-        	String message = String.format( "getPlayerNextRankCostPercent: " +
-        			"Could not load player: %s", rankPlayer.getUUID());
+        	
+			Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+        			.getLocalizable( "ranks_playerManager__cannot_load_player_file" )
+        			.withReplacements( rankPlayer.getUUID().toString() );
+
+        	String message = "getPlayerNextRankCostPercent: " + localManagerLog.localize();
 			
         	if ( !getPlayerErrors().contains( message ) ) {
 				getPlayerErrors().add( message );
@@ -563,8 +585,12 @@ public class PlayerManager
     	
     	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
     	if( prisonPlayer == null ) {
-    		String message = String.format( "getPlayerNextRankCostBar: " +
-    				"Could not load player: %s", rankPlayer.getUUID());
+    		
+			Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+        			.getLocalizable( "ranks_playerManager__cannot_load_player_file" )
+        			.withReplacements( rankPlayer.getUUID().toString() );
+
+    		String message = "getPlayerNextRankCostBar: " + localManagerLog.localize();
 
     		if ( !getPlayerErrors().contains( message ) ) {
 				getPlayerErrors().add( message );
@@ -621,8 +647,12 @@ public class PlayerManager
     	
     	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
     	if( prisonPlayer == null ) {
-    		String message = String.format( "getPlayerNextRankCostRemaining: " +
-    				"Could not load player: %s", rankPlayer.getUUID());
+    		
+			Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+        			.getLocalizable( "ranks_playerManager__cannot_load_player_file" )
+        			.withReplacements( rankPlayer.getUUID().toString() );
+
+    		String message = "getPlayerNextRankCostRemaining: " + localManagerLog.localize();
     		
 			if ( !getPlayerErrors().contains( message ) ) {
 				getPlayerErrors().add( message );
@@ -696,8 +726,12 @@ public class PlayerManager
     	
     	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
     	if( prisonPlayer == null ) {
-    		String message = String.format( "getPlayerBalance: " +
-    				"Could not load player: %s", rankPlayer.getUUID());
+    		
+			Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+        			.getLocalizable( "ranks_playerManager__cannot_load_player_file" )
+        			.withReplacements( rankPlayer.getUUID().toString() );
+
+    		String message = "getPlayerBalance: " + localManagerLog.localize();
     		
 			if ( !getPlayerErrors().contains( message ) ) {
 				getPlayerErrors().add( message );
@@ -762,9 +796,12 @@ public class PlayerManager
     		if ( currencyEcon != null ) {
         		playerBalance = currencyEcon.getBalance( player, rank.getCurrency() );
     		} else {
-    			String message = String.format( "Failed to load Economy to get the balance for " +
-						"player %s with a currency of %s.",
-						player.getName(), rank.getCurrency() );
+    			
+    			Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+            			.getLocalizable( "ranks_playerManager__failed_to_load_economy_currency" )
+            			.withReplacements( player.getName(), rank.getCurrency()  );
+
+    			String message = localManagerLog.localize();
     			
     			if ( !getPlayerErrors().contains( message ) ) {
     				getPlayerErrors().add( message );
@@ -780,8 +817,12 @@ public class PlayerManager
     		if ( economy != null ) {
     			playerBalance = economy.getBalance( player );
     		} else {
-    			String message = String.format( "Failed to load Economy to get the balance for player %s.",
-						player.getName() );
+    			Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+    					.getLocalizable( "ranks_playerManager__failed_to_load_economy" )
+    					.withReplacements( player.getName() );
+    			
+    			String message = localManagerLog.localize();
+
     			Output.get().logError( message );
     			if ( !getPlayerErrors().contains( message ) ) {
     				

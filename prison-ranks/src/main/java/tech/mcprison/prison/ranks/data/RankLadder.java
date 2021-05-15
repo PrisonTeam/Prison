@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import com.google.gson.internal.LinkedTreeMap;
 
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
 import tech.mcprison.prison.ranks.managers.RankManager;
