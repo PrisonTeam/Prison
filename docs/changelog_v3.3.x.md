@@ -18,7 +18,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.3 2021-05-15
+# v3.3.0-alpha.4 2021-05-15
+
+
+* **v3.3.0-alpha.4 2021-05-15**
 
 
 * **Finalized moving all messages within the ranks module to a file.**
