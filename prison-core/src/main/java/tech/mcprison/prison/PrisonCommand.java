@@ -41,6 +41,7 @@ import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.DisplayComponent;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.troubleshoot.TroubleshootResult;
 import tech.mcprison.prison.troubleshoot.Troubleshooter;
 import tech.mcprison.prison.util.Text;
@@ -243,6 +244,27 @@ public class PrisonCommand {
         display.addText("&7Minecraft Version: %s", Prison.get().getMinecraftVersion());
 
         display.addText("&7Server runtime: %s", Prison.get().getServerRuntimeFormatted() );;
+        
+        
+        // System stats:
+        Runtime runtime = Runtime.getRuntime();
+        
+        
+        int processors = runtime.availableProcessors();
+        long memoryMax = runtime.maxMemory();
+        long memoryTotal = runtime.totalMemory();
+        long memoryFree = runtime.freeMemory();
+        long memoryUsed = memoryTotal - memoryFree;
+        
+        DecimalFormat dFmt = new DecimalFormat("#,##0.000");
+        String memMax = PlaceholdersUtil.formattedIPrefixBinarySize( memoryMax, dFmt, " " );
+        String memTotal = PlaceholdersUtil.formattedIPrefixBinarySize( memoryTotal, dFmt, " " );
+        String memFree = PlaceholdersUtil.formattedIPrefixBinarySize( memoryFree, dFmt, " " );
+        String memUsed = PlaceholdersUtil.formattedIPrefixBinarySize( memoryUsed, dFmt, " " );
+
+        display.addText("&7Processor cores: %s ", Integer.toString( processors ) );
+        display.addText("&7Memory Max: %s  Total: %s  Free: %s  Used: %s", 
+        				memMax, memTotal, memFree, memUsed );
         
         display.addText("");
         

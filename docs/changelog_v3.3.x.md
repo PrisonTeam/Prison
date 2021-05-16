@@ -18,7 +18,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.4 2021-05-15
+# v3.3.0-alpha.4 2021-05-16
+
+
+* **Add some system stats on cores and memory.**
+Could be helpful on troubleshooting performance issues.
 
 
 * **v3.3.0-alpha.4 2021-05-15**
