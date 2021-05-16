@@ -249,6 +249,7 @@ public class PrisonCommand {
         // System stats:
         Runtime runtime = Runtime.getRuntime();
         
+        String javaVersion = System.getProperty("java.version");
         
         int processors = runtime.availableProcessors();
         long memoryMax = runtime.maxMemory();
@@ -262,7 +263,8 @@ public class PrisonCommand {
         String memFree = PlaceholdersUtil.formattedIPrefixBinarySize( memoryFree, dFmt, " " );
         String memUsed = PlaceholdersUtil.formattedIPrefixBinarySize( memoryUsed, dFmt, " " );
 
-        display.addText("&7Processor cores: %s ", Integer.toString( processors ) );
+        display.addText("&7Java Version: %s  Processor cores: %s ", 
+        								javaVersion, Integer.toString( processors ) );
         display.addText("&7Memory Max: %s  Total: %s  Free: %s  Used: %s", 
         				memMax, memTotal, memFree, memUsed );
         

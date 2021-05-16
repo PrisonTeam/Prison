@@ -21,6 +21,9 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.4 2021-05-16
 
 
+* **Added the Java Version to the /prison version to work with the other system stats**
+
+
 * **Add some system stats on cores and memory.**
 Could be helpful on troubleshooting performance issues.
 
