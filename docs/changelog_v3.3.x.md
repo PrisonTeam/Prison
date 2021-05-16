@@ -21,6 +21,10 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.4 2021-05-16
 
 
+* **Added prison file stats to the /prison version command.**
+Now lists how many files, folders, and total file size that prison is using within the plugins/Prison/ directory.
+
+
 * **Added the Java Version to the /prison version to work with the other system stats**
 
 
