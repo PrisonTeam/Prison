@@ -303,6 +303,11 @@ public class TestPlatform implements Platform {
 	}
 
 	@Override
+	public boolean isMineAccessibleByRank( Player player, ModuleElement mine ) {
+		return false;
+	}
+	
+	@Override
 	public void autoCreateMineBlockAssignment() {
 		
 	}

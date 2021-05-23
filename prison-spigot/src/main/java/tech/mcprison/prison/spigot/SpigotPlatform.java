@@ -1208,6 +1208,61 @@ public class SpigotPlatform
 	
 	
 	/**
+	 * <p>This function will take the player and check to see if they have access to the mine
+	 * based upon ranks.  The mine must be linked to a rank, and it must be either the player's
+	 * current rank, or a prior rank of the player.
+	 * </p>
+	 * 
+	 * <p>If the ranks module or mines module are disabled, or if a mine is not linked to a rank, 
+	 * then this function will return a value of false.
+	 * </p>
+	 * 
+	 * <p>Please note that this function does not check to see if this feature should, or should
+	 * not be enabled, or how this feature should be used, or in what situation.  That should be
+	 * handled by the caller to this function.
+	 * </p>
+	 * 
+	 * @param player
+	 * @param mine
+	 * @return
+	 */
+	@Override
+	public boolean isMineAccessibleByRank( Player player, ModuleElement mine ) {
+		boolean isAccessible = false;
+		
+		if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() &&
+				PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() &&
+				player != null && 
+				mine != null && mine instanceof Mine && ((Mine) mine).getRank() != null
+				) {
+			
+			Rank targetRank = (Rank) ((Mine) mine).getRank();
+			
+    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+    		RankPlayer rankPlayer = pm.getPlayer( player );
+
+    		if ( rankPlayer != null ) {
+    			
+    			Rank rank = rankPlayer.getRank( "default" );
+    			if ( rank != null ) {
+    				
+    				isAccessible = rank.equals( targetRank );
+    				Rank priorRank = rank.getRankPrior();
+    				
+    				while ( !isAccessible && priorRank != null ) {
+    					
+    					isAccessible = rank.equals( targetRank );
+    					priorRank = rank.getRankPrior();
+    				}
+    			}
+    		}
+		}
+		
+		return isAccessible;
+	}
+
+	
+	/**
 	 * <p>This function assigns blocks to all of the generated mines.  It is intended that
 	 * these mines were just created by the autoCreate function which will ensure that
 	 * no blocks have yet been assigned to any mines.  Because it is assumed that no 

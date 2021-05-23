@@ -333,6 +333,9 @@ public interface Platform {
 	
 	public ModuleElement getPlayerDefaultMine( tech.mcprison.prison.internal.CommandSender sender );
 	
+
+	public boolean isMineAccessibleByRank( Player player, ModuleElement mine );
+	
 	
 	public void autoCreateMineBlockAssignment();
 
