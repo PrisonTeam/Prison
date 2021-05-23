@@ -18,7 +18,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.4 2021-05-22
+# v3.3.0-alpha.4 2021-05-23
+
+
+* **Bug fix: gradle option of compileOnly corrected a new issue with placeholderapi where two different placeholders were trying to load the same class, but yet the results were producing unexpected results.**
 
 
 * **Rewrite of the /mines tp to hook up the new functionality of rank access.**

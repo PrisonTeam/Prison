@@ -89,7 +89,7 @@ dependencies {
     
 	implementation 'org.apache.commons:commons-lang3:3.9'
 
-    implementation 'me.clip:placeholderapi:2.10.9'
+    compileOnly 'me.clip:placeholderapi:2.10.9'
     
     // Repo may be hosted: https://hub.spigotmc.org/nexus/content/groups/public/
     // But do not see v5.0
