@@ -47,6 +47,13 @@ import tech.mcprison.prison.util.Location;
 public class Mine 
 	extends MineScheduler 
 	implements PrisonSortable {
+	
+	
+	public enum MineType {
+		primary,
+		playerMines
+		;
+	}
 
     /**
      * Creates a new, empty mine instance
