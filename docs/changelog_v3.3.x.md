@@ -18,7 +18,21 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.4 2021-05-16
+# v3.3.0-alpha.4 2021-05-22
+
+
+* **Rewrite of the /mines tp to hook up the new functionality of rank access.**
+Also simplified how the tp commands are handled to reduce some of the complexities.
+
+
+* **Setup new fields within the Mines to provide access by rank control, and to start to setup the use of mine groups and even mine types.**
+None of these have been hooked up yet to be saved or loaded.  None have been hooked up to configs through commands yet.  But basic behavior with these new settings will be functional once they are enabled.
+
+
+* **Setup the platform to be able to check if a player has a rank, or if that rank is a lower rank on that ladder.**
+The assumption is that if a player has a rank that is higher than the one being tested for, then they would still have access to that rank.
+This allows for the elimination of using permissions for items like TP or mining access.
+
 
 
 * **Added prison file stats to the /prison version command.**

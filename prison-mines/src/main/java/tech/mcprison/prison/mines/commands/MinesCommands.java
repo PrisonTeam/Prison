@@ -3313,82 +3313,98 @@ public class MinesCommands
     		target = "spawn";
     	}
     	
-    	
-    	Player player = getPlayer( sender );
-    	
-    	Player playerAlt = getOnlinePlayer( playerName );
-    	
-    	boolean isOp = sender.isOp();
-
-    	if ( isOp && playerAlt != null && playerAlt.isOnline() ) {
-    		player = playerAlt;
-    	}
-    	else if ( player == null || !player.isOnline()) {
-
-    		if ( playerName != null && playerName.trim().length() > 0 && playerAlt == null) {
-    			sender.sendMessage( "&3Specified player is not in the game so they cannot be teleported." );
-    		}
-    		
-    		// If the sender is console or its being ran as a rank command, and the playerName is 
-    		// a valid online player, then use that player as the active player issuing the command:
-    		if ( playerAlt != null && playerAlt.isOnline() ) {
-    			player = playerAlt;
-    		}
-    		else {
-    			sender.sendMessage( "&3You must be a player in the game to run this command." );
-    			return;
-    		}
-    		
-    	}
-    	else if ( playerAlt != null && !player.getName().equalsIgnoreCase( playerAlt.getName()  ) ) {
-    		sender.sendMessage( "&3You cannot teleport other players to a mine. Ignoring parameter." );
-    	}
-    	
-    	
-    	if ( mineName == null || mineName.trim().isEmpty() ) {
-    		// Need to find a "correct" mine to TP to.
-    		
-    		Mine m = (Mine) Prison.get().getPlatform().getPlayerDefaultMine( sender );
-
-    		if ( m != null ) {
-    			
-    			m.teleportPlayerOut( (Player) sender, target );
-    		}
-    		else {
-    			sender.sendMessage( "&cNo target mine found. " +
-    									"&3Resubmit teleport request with a mine name." );
-    		}
-    		
-    		return;
-    	}
-    	
-
     	// Load mine information first to confirm the mine exists and the parameter is correct:
     	if (!performCheckMineExists(sender, mineName)) {
     		return;
     	}
-
-    	setLastMineReferenced(mineName);
+    	
+    	//setLastMineReferenced(mineName);
     	
     	PrisonMines pMines = PrisonMines.getInstance();
     	Mine m = pMines.getMine(mineName);
     	
     	
-        if ( m.isVirtual() ) {
-        	sender.sendMessage( "&cInvalid option. This mine is a virtual mine&7. Use &a/mines set area &7to enable the mine." );
-        	return;
-        }
-        
+    	if ( m.isVirtual() ) {
+    		sender.sendMessage( "&cInvalid option. This mine is a virtual mine&7. Use &a/mines set area &7to enable the mine." );
+    		return;
+    	}
     	
-    	String minePermission = "mines.tp." + m.getName().toLowerCase();
-    	if ( !isOp &&
-    			!sender.hasPermission("mines.tp") && 
-    			!sender.hasPermission( minePermission ) ) {
+    	
+    	Player player = getPlayer( sender );
+    	
+    	Player playerAlt = getOnlinePlayer( playerName );
+    	
+    	
+    	if ( playerName != null && playerName.trim().length() > 0 && playerAlt == null) {
+    		sender.sendMessage( "&3Specified player is not in the game so they cannot be teleported." );
+    		return;
+    	}
+    	
+    	
+    	if ( (player == null || !player.isOnline()) && playerAlt != null && !playerAlt.isOnline() ) {
+    		sender.sendMessage( "&3The player must be in the game." );
+			return;
+    	}
+    	
+    	
+    	boolean isOp = sender.isOp();
+    	
+    	if ( isOp && playerAlt != null && playerAlt.isOnline() ) {
     		
-            Output.get()
-                .sendError(sender, "Sorry. You're unable to teleport there." );
-            return;
+    		// The person issuing the tp command is op and they are trying to TP another player
+    		player = playerAlt;
+
+    		// Console is trying to TP someone, the other checks do not apply:
+    		teleportPlayer( playerAlt, m, target );
+    		return;
+    	}
+    	else if ( (player == null || !player.isOnline()) && playerAlt != null && playerAlt.isOnline() ) {
+    		
+    		// If the sender is console or its being ran as a rank command, and the playerName is 
+    		// a valid online player, then TP them:
+    		
+    		teleportPlayer( playerAlt, m, target );
+    		return;
+    	}
+    	else if ( playerAlt != null && !player.getName().equalsIgnoreCase( playerAlt.getName()  ) ) {
+    		
+    		sender.sendMessage( "&3You cannot teleport other players to a mine. Ignoring parameter." );
+    		return;
+    	}
+    	
+    	// From here on down, cannot use playerAlt, so must use either sender or player:
+    	
+    	if ( mineName == null || mineName.trim().isEmpty() ) {
+    		// Need to find a "correct" mine to TP to.
+    		
+    		m = (Mine) Prison.get().getPlatform().getPlayerDefaultMine( sender );
+
+    		if ( m == null ) {
+    			
+    			sender.sendMessage( "&cNo target mine found. " +
+    									"&3Resubmit teleport request with a mine name." );
+    			return;
+    		}
+    	}
+    	
+        
+        
+        if ( !isOp && !m.hasTPAccess( player ) ) {
+        	
+        	Output.get().sendError(sender, "Sorry. You're unable to teleport there." );
+        	return;
+        	
         }
+    	
+//    	String minePermission = "mines.tp." + m.getName().toLowerCase();
+//    	if ( !isOp &&
+//    			!sender.hasPermission("mines.tp") && 
+//    			!sender.hasPermission( minePermission ) ) {
+//    		
+//            Output.get()
+//                .sendError(sender, "Sorry. You're unable to teleport there." );
+//            return;
+//        }
     	
 
     	
@@ -3397,12 +3413,7 @@ public class MinesCommands
 //        	return;
 //        }
         
-    	if ( isOp && playerAlt != null && playerAlt.isOnline() ) {
-    		
-    		teleportPlayer( playerAlt, m, target );
-//    		m.teleportPlayerOut( playerAlt, target );
-    	}
-    	else if ( sender.isPlayer() ) {
+    	if ( sender.isPlayer() ) {
     		teleportPlayer( (Player) sender, m, target );
 //    		m.teleportPlayerOut( (Player) sender, target );
     	} else {
