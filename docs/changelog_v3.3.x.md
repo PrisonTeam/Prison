@@ -21,6 +21,14 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.4 2021-05-23
 
 
+* **Save and load Mine's MineTypes, tpAccessByRank, and mineAccessByRank.**
+These still are not hooked up to the user options and commands so they cannot be setup yet, but they are functional.
+
+
+* **Slight change to the way the info is printed for /prison version to add periods in the leading spaces that defined indentations.**
+This is done to prevent the gaps from being eliminated in the log files on some environments.
+
+
 * **Bug fix: gradle option of compileOnly corrected a new issue with placeholderapi where two different placeholders were trying to load the same class, but yet the results were producing unexpected results.**
 
 
