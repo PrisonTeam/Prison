@@ -47,7 +47,6 @@ repositories {
     }
     maven { 
     	url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' 
-    	//url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/' 
     	content {
     		includeGroup 'me.clip'
     	}
@@ -58,7 +57,6 @@ repositories {
     		includeGroup 'org.apache.commons'
     	}
     }
-   // maven { url = 'https://repo.pcgamingfreaks.at/repository/maven-everything' }
     
     maven { 
     	url = 'https://mvnrepository.com/artifact/com.github.cryptomorin' 
@@ -66,9 +64,10 @@ repositories {
     		includeGroup 'com.github.cryptomorin'
     	}
     }
-  //  maven { url = 'https://maven.enginehub.org/repo/' }
-  
-  	//maven { url = "https://nexus.badbones69.com/repository/maven-releases/" }
+
+  // maven { url = 'https://repo.pcgamingfreaks.at/repository/maven-everything' }
+  // maven { url = 'https://maven.enginehub.org/repo/' }
+  // maven { url = "https://nexus.badbones69.com/repository/maven-releases/" }
   	
 }
 
@@ -93,9 +92,9 @@ dependencies {
     
     // Repo may be hosted: https://hub.spigotmc.org/nexus/content/groups/public/
     // But do not see v5.0
-    implementation 'net.luckperms:api:5.0'
+    compileOnly 'net.luckperms:api:5.0'
     
-    implementation 'me.lucko.luckperms:luckperms-api:4.2'
+    compileOnly 'me.lucko.luckperms:luckperms-api:4.2'
     
 	implementation 'com.github.cryptomorin:XSeries:7.9.1.1'
 //	implementation 'com.github.cryptomorin:XSeries:7.8.0'
@@ -121,14 +120,10 @@ dependencies {
 //  compileOnly 'at.pcgamingfreaks:Minepacks-API:2.3.21.3'
 
     compileOnly 'net.milkbowl.vault:VaultAPI:1.7'
-//    compileOnly 'net.milkbowl.vault:VaultAPI:1.6'
     
     compileOnly('be.maximvdw:MVdWPlaceholderAPI:2.5.2-SNAPSHOT'){
         exclude group: 'org.spigotmc'
     }
-//   compileOnly('be.maximvdw:MVdWPlaceholderAPI:2.4.0-SNAPSHOT'){
-//        exclude group: 'org.spigotmc'
-//    }
 
  //   compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.1'
  
@@ -142,22 +137,11 @@ dependencies {
     					'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
     					'Zenchantments__API_v1.15.2.build4.jar'])
     					
-//    compileOnly fileTree(dir: 'lib', include: ['*.jar'], 
-//    			exclude: ['TokenEnchantAPI-18.11.3.jar', 'Spiget_v1.4.2.prison-build.jar',
-//    					'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
-//    					'Zenchantments__API_v1.15.2.build4.jar'])
-//    compile fileTree(dir: 'lib', 
-//    			include: ['TokenEnchantAPI-18.11.3.jar', 'Spiget_v1.4.2.prison-build.jar',
-//    					'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
-//    					'Zenchantments__API_v1.15.2.build4.jar'])
     					
 //    compile fileTree(dir: 'lib', include: ['SPIGET__BUKKIT-1.4.2-SNAPSHOT.jar'])
 
 //    compileOnly fileTree(dir: 'lib', include: ['*.jar'], exclude: ['TokenEnchantAPI-15.5.0.jar'])
 //    compile fileTree(dir: 'lib', include: ['TokenEnchantAPI-18.5.0.jar'])
-
-//    compileOnly fileTree(dir: 'lib', include: ['*.jar'], exclude: ['TokenEnchantAPI-15.3.2.jar'])
-//    compile fileTree(dir: 'lib', include: ['TokenEnchantAPI-15.3.2.jar'])
 
 
     testCompile group: 'junit', name: 'junit', version: '4.12'

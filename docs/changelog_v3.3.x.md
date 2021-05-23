@@ -21,6 +21,11 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.4 2021-05-23
 
 
+* **Bug Fix in Gradle config: Issue with using the gradle implementation directive instead of compileOnly.**
+The issue was presenting itself with PlaceholderAPI not working when registering prison's placeholders.  This was caused by using implementation which was causing the classes to be compiled with prison, which caused issues when spigot/paper was recently released.  I suspect it had to do with different class loaders trying to load the same classes.  But by changing over to compileOnly the classes were not included with prison and therefore were not causing conflicts when running with multiple class loaders.
+There is a strong chance that luckperms could possibly have the same issues, so changed that too since luckperms was not being shadowed to prevent the conflicts.
+
+
 * **Save and load Mine's MineTypes, tpAccessByRank, and mineAccessByRank.**
 These still are not hooked up to the user options and commands so they cannot be setup yet, but they are functional.
 
