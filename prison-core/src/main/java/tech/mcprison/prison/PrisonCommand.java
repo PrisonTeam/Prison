@@ -45,7 +45,6 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.troubleshoot.TroubleshootResult;
 import tech.mcprison.prison.troubleshoot.Troubleshooter;
-import tech.mcprison.prison.util.Text;
 
 /**
  * Root commands for managing the platform as a whole, in-game.
@@ -343,14 +342,14 @@ public class PrisonCommand {
                 " " + im.getForType(IntegrationType.PERMISSION).get().getDisplayName() :
                 "None");
 
-        display.addText(Text.tab("&7Permissions: " + permissions));
+        display.addText(". . &7Permissions: " + permissions);
 
         String economy =
         		(im.hasForType(IntegrationType.ECONOMY) ?
                 " " + im.getForType(IntegrationType.ECONOMY).get().getDisplayName() : 
                 "None");
 
-        display.addText(Text.tab("&7Economy: " + economy));
+        display.addText(". . &7Economy: " + economy);
         
         
         List<DisplayComponent> integrationRows = im.getIntegrationComponents( isBasic );
@@ -369,7 +368,7 @@ public class PrisonCommand {
         	StringBuilder sb = new StringBuilder();
         	for ( String plugin : getRegisteredPlugins() ) {
         		if ( sb.length() == 0) {
-        			sb.append( "  " );
+        			sb.append( ". " );
         			sb.append( plugin );
         		} else {
         			sb.append( ",  " );
