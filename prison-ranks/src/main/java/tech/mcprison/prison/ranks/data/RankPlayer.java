@@ -436,7 +436,7 @@ public class RankPlayer
     public boolean hasAccessToRank( Rank targetRank ) {
     	boolean hasAccess = false;
     	
-    	Rank rank = getRank( "default" );
+    	Rank rank = getRank( targetRank.getLadder() );
     	hasAccess = rank.equals( targetRank );
 		Rank priorRank = rank.getRankPrior();
 		
