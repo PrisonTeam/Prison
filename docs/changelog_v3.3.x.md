@@ -21,6 +21,10 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.4 2021-05-23
 
 
+* **Fix a bug in searching for rank dependency.**
+This is currently being used for /mines tp if tpAccessByRank is enabled.
+
+
 * **Hook up the commands /mines set mineAccessByRank and /mines set tpAccessByRank.**
 Tied it in to a few other commands such as /mines tp and /mines set accessPermission to indicate that the preferred way to access these commands are by rank.
 If mineAccessByRank is enabled, then it will disable the /mines set acessPermission and will not even show it's value if it was set previously.

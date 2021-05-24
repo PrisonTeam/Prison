@@ -1251,8 +1251,8 @@ public class SpigotPlatform
     				
     				while ( !isAccessible && priorRank != null ) {
     					
-    					isAccessible = rank.equals( targetRank );
-    					priorRank = rank.getRankPrior();
+    					isAccessible = priorRank.equals( targetRank );
+    					priorRank = priorRank.getRankPrior();
     				}
     			}
     		}
