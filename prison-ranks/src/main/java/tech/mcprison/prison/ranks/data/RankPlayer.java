@@ -432,6 +432,24 @@ public class RankPlayer
         return ladderRanks;
     }
 
+    
+    public boolean hasAccessToRank( Rank targetRank ) {
+    	boolean hasAccess = false;
+    	
+    	Rank rank = getRank( "default" );
+    	hasAccess = rank.equals( targetRank );
+		Rank priorRank = rank.getRankPrior();
+		
+		while ( !hasAccess && priorRank != null ) {
+			
+			hasAccess = priorRank.equals( targetRank );
+			priorRank = priorRank.getRankPrior();
+		}
+    	
+    	return hasAccess;
+    }
+    
+    
     /*
      * equals() and hashCode()
      */

@@ -1243,18 +1243,20 @@ public class SpigotPlatform
 
     		if ( rankPlayer != null ) {
     			
-    			Rank rank = rankPlayer.getRank( "default" );
-    			if ( rank != null ) {
-    				
-    				isAccessible = rank.equals( targetRank );
-    				Rank priorRank = rank.getRankPrior();
-    				
-    				while ( !isAccessible && priorRank != null ) {
-    					
-    					isAccessible = priorRank.equals( targetRank );
-    					priorRank = priorRank.getRankPrior();
-    				}
-    			}
+    			isAccessible = rankPlayer.hasAccessToRank( targetRank );
+    			
+//    			Rank rank = rankPlayer.getRank( "default" );
+//    			if ( rank != null ) {
+//    				
+//    				isAccessible = rank.equals( targetRank );
+//    				Rank priorRank = rank.getRankPrior();
+//    				
+//    				while ( !isAccessible && priorRank != null ) {
+//    					
+//    					isAccessible = priorRank.equals( targetRank );
+//    					priorRank = priorRank.getRankPrior();
+//    				}
+//    			}
     		}
 		}
 		

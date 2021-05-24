@@ -18,7 +18,12 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.4 2021-05-23
+# v3.3.0-alpha.4 2021-05-24
+
+
+* **More changes for access by rank.**
+Moved the logic for identifying if a player has access to a given rank to the RankPlayer object.  Also set it up so it is checking the correct ladder based upon the supplied targetRank. 
+Hooked up miningAccessByRank for block events.  Tested to confirm accessPermissions and tp perms still work for mines that are not tied to ranks. 
 
 
 * **Fix a bug in searching for rank dependency.**
