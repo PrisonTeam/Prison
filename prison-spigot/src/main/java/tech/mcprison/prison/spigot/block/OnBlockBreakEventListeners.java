@@ -6,7 +6,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -65,8 +64,17 @@ public class OnBlockBreakEventListeners
 				break;
 		}
 		
+    	boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
+    	
+    	if ( isCEBlockExplodeEnabled ) {
+    		OnBlockBreakEventCrazyEnchants bbeCE = new OnBlockBreakEventCrazyEnchants();
+    		bbeCE.registerBlastUseEvents( spigotPrison );
+    	}
+
 	}
 	
+	
+
 	   
     public class OnBlockBreakEventListenerMonitor
 		extends OnBlockBreakEventListener
@@ -116,11 +124,11 @@ public class OnBlockBreakEventListeners
 //        	genericBlockExplodeEventMonitor( e );
 //        }
 
-        @EventHandler(priority=EventPriority.MONITOR) 
-    	public void onCrazyEnchantsBlockExplodeMonitor( BlastUseEvent e ) {
-    		
-        	genericBlockExplodeEventMonitor( e );
-    	}
+//        @EventHandler(priority=EventPriority.MONITOR) 
+//    	public void onCrazyEnchantsBlockExplodeMonitor( BlastUseEvent e ) {
+//    		
+//        	genericBlockExplodeEventMonitor( e );
+//    	}
         
     	
     }
@@ -140,10 +148,10 @@ public class OnBlockBreakEventListeners
         	super.onBlockShredBreak( e );
         }
         
-        @EventHandler(priority=EventPriority.LOWEST) 
-        public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-        	super.onCrazyEnchantsBlockExplodeLow( e );
-        }
+//        @EventHandler(priority=EventPriority.LOWEST) 
+//        public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
+//        	super.onCrazyEnchantsBlockExplodeLow( e );
+//        }
     }
     
     
@@ -161,10 +169,10 @@ public class OnBlockBreakEventListeners
     		super.onBlockShredBreak( e );
     	}
     	
-    	@EventHandler(priority=EventPriority.LOW) 
-    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-    		super.onCrazyEnchantsBlockExplodeLow( e );
-    	}
+//    	@EventHandler(priority=EventPriority.LOW) 
+//    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
+//    		super.onCrazyEnchantsBlockExplodeLow( e );
+//    	}
     }
     
     
@@ -182,10 +190,10 @@ public class OnBlockBreakEventListeners
     		super.onBlockShredBreak( e );
     	}
     	
-    	@EventHandler(priority=EventPriority.NORMAL) 
-    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-    		super.onCrazyEnchantsBlockExplodeLow( e );
-    	}
+//    	@EventHandler(priority=EventPriority.NORMAL) 
+//    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
+//    		super.onCrazyEnchantsBlockExplodeLow( e );
+//    	}
     }
     
     
@@ -203,10 +211,10 @@ public class OnBlockBreakEventListeners
     		super.onBlockShredBreak( e );
     	}
     	
-    	@EventHandler(priority=EventPriority.HIGH) 
-    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-    		super.onCrazyEnchantsBlockExplodeLow( e );
-    	}
+//    	@EventHandler(priority=EventPriority.HIGH) 
+//    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
+//    		super.onCrazyEnchantsBlockExplodeLow( e );
+//    	}
     }
     
     
@@ -224,10 +232,12 @@ public class OnBlockBreakEventListeners
     		super.onBlockShredBreak( e );
     	}
     	
-    	@EventHandler(priority=EventPriority.HIGHEST) 
-    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-    		super.onCrazyEnchantsBlockExplodeLow( e );
-    	}
+//    	@EventHandler(priority=EventPriority.HIGHEST) 
+//    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
+//    		super.onCrazyEnchantsBlockExplodeLow( e );
+//    	}
     }
     
+ 
+
 }

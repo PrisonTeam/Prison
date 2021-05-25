@@ -130,11 +130,11 @@ dependencies {
 
     compileOnly fileTree(dir: 'lib', include: ['*.jar'], 
     			exclude: ['Spiget_v1.4.2.prison-build.jar',
-    					'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
+    					// 'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
     					'Zenchantments__API_v1.15.2.build4.jar'])
     compile fileTree(dir: 'lib', 
     			include: ['Spiget_v1.4.2.prison-build.jar',
-    					'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
+    					// 'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
     					'Zenchantments__API_v1.15.2.build4.jar'])
     					
     					
