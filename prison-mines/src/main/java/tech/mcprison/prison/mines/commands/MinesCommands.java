@@ -2348,16 +2348,35 @@ public class MinesCommands
     			!("spawn".equalsIgnoreCase( target ) || "mine".equalsIgnoreCase( target )) ) {
     		target = "spawn";
     	}
-    	
-    	// Load mine information first to confirm the mine exists and the parameter is correct:
-    	if (!performCheckMineExists(sender, mineName)) {
-    		return;
-    	}
-    	
     	//setLastMineReferenced(mineName);
     	
     	PrisonMines pMines = PrisonMines.getInstance();
-    	Mine m = pMines.getMine(mineName);
+    	Mine m = null;
+    	
+    	
+    	if ( mineName == null || mineName.trim().isEmpty() ) {
+    		// Need to find a "correct" mine to TP to.
+    		
+    		m = (Mine) Prison.get().getPlatform().getPlayerDefaultMine( sender );
+
+    		if ( m == null ) {
+    			
+    			sender.sendMessage( "&cNo target mine found. " +
+    									"&3Resubmit teleport request with a mine name." );
+    			return;
+    		}
+    	}
+    	else {
+    		
+    		// Load mine information first to confirm the mine exists and the parameter is correct:
+    		if (!performCheckMineExists(sender, mineName)) {
+    			return;
+    		}
+    		
+    		
+    		m = pMines.getMine(mineName);
+    	}
+    	
     	
     	
     	if ( m.isVirtual() ) {

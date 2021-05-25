@@ -18,7 +18,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.4 2021-05-24
+# v3.3.0-alpha.4 2021-05-25
+
+
+* **Fixed an issue with using just /mtp with no mine name.**
 
 
 * **More changes for access by rank.**
