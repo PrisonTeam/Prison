@@ -9,12 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.BaseCommands;
@@ -284,39 +282,39 @@ public class RanksCommands
 			return;
 		}
 		
-		TreeMap<String, RegisteredPluginsData> plugins = 
-								Prison.get().getPrisonCommands().getRegisteredPluginData();
+//		TreeMap<String, RegisteredPluginsData> plugins = 
+//								Prison.get().getPrisonCommands().getRegisteredPluginData();
 		
-//
-        String permCmdAdd = null;
-        String permCmdDel = null;
-        String perm1 = "mines.";
-        String perm2 = "mines.tp.";
+
+//		String permCmdAdd = null;
+//        String permCmdDel = null;
+//        String perm1 = "mines.";
+//        String perm2 = "mines.tp.";
         
-        if ( plugins.containsKey("LuckPerms") ){
-        	permCmdAdd = "lp user {player} permission set ";
-        	permCmdDel = "lp user {player} permission unset ";
-        } 
-        else if ( plugins.containsKey("PermissionsEx") ){
-        	permCmdAdd = "pex user {player} add ";
-        	permCmdDel = "pex user {player} add -";
-        } 
-        else if ( plugins.containsKey("UltraPermissions") ){
-        	permCmdAdd = "upc addplayerpermission {player} ";
-        	permCmdDel = "upc removeplayerpermission {player} ";
-        } 
-        else if ( plugins.containsKey("GroupManager") ){
-        	permCmdAdd = "manuaddp {player} ";
-        	permCmdDel = "manudelp {player} ";
-        } 
-        else if ( plugins.containsKey("zPermissions") ){
-        	permCmdAdd = "permissions player {player} set ";
-        	permCmdDel = "permissions player {player} unset ";
-        } 
-        else if ( plugins.containsKey("PowerfulPerms") ){
-        	permCmdAdd = "pp user {player} add ";
-        	permCmdAdd = "pp user {player} remove ";
-        }
+//        if ( plugins.containsKey("LuckPerms") ){
+//        	permCmdAdd = "lp user {player} permission set ";
+//        	permCmdDel = "lp user {player} permission unset ";
+//        } 
+//        else if ( plugins.containsKey("PermissionsEx") ){
+//        	permCmdAdd = "pex user {player} add ";
+//        	permCmdDel = "pex user {player} add -";
+//        } 
+//        else if ( plugins.containsKey("UltraPermissions") ){
+//        	permCmdAdd = "upc addplayerpermission {player} ";
+//        	permCmdDel = "upc removeplayerpermission {player} ";
+//        } 
+//        else if ( plugins.containsKey("GroupManager") ){
+//        	permCmdAdd = "manuaddp {player} ";
+//        	permCmdDel = "manudelp {player} ";
+//        } 
+//        else if ( plugins.containsKey("zPermissions") ){
+//        	permCmdAdd = "permissions player {player} set ";
+//        	permCmdDel = "permissions player {player} unset ";
+//        } 
+//        else if ( plugins.containsKey("PowerfulPerms") ){
+//        	permCmdAdd = "pp user {player} add ";
+//        	permCmdAdd = "pp user {player} remove ";
+//        }
 
 
 		
@@ -340,49 +338,52 @@ public class RanksCommands
 	        		firstRankName = rankName;
 	        	}
 	        	
-	        	char cRankNext = (char) (cRank + 1);
-	        	String rankNameNext = Character.toString( cRankNext );
+//	        	char cRankNext = (char) (cRank + 1);
+//	        	String rankNameNext = Character.toString( cRankNext );
 	        	
 	        	if ( createRank(sender, rankName, price, "default", tag) ) {
 	        		countRanks++;
 	        		
-	        		if ( permCmdAdd != null ) {
-	        			getRankCommandCommands().commandAdd( sender, rankName, permCmdAdd + perm1 + rankName.toLowerCase());
-	        			countRankCmds++;
-	        			getRankCommandCommands().commandAdd( sender, rankName, permCmdAdd + perm2 + rankName.toLowerCase());
-	        			countRankCmds++;
-	        			
-	        			// Add all the command removal statements to rank A's commands so if the command /ranks set rank A is 
-	        			// used then all perms are removed
-	        			if ( !firstRankName.equalsIgnoreCase( rankName ) ) {
-	        				getRankCommandCommands().commandAdd( sender, firstRankName, permCmdDel + perm1 + rankName.toLowerCase());
-	        				countRankCmds++;
-	        				getRankCommandCommands().commandAdd( sender, firstRankName, permCmdDel + perm2 + rankName.toLowerCase());
-	        				countRankCmds++;
-	        			}
-	        			
-	        			if ( cRankNext <= 'Z' ) {
-	        				getRankCommandCommands().commandAdd( sender, rankName, permCmdDel + perm1 + rankNameNext.toLowerCase());
-	        				countRankCmds++;
-	        				getRankCommandCommands().commandAdd( sender, rankName, permCmdDel + perm2 + rankNameNext.toLowerCase());
-	        				countRankCmds++;
-	        			}
-	        			
-	        		}
+//	        		if ( permCmdAdd != null ) {
+//	        			getRankCommandCommands().commandAdd( sender, rankName, permCmdAdd + perm1 + rankName.toLowerCase());
+//	        			countRankCmds++;
+////	        			getRankCommandCommands().commandAdd( sender, rankName, permCmdAdd + perm2 + rankName.toLowerCase());
+////	        			countRankCmds++;
+//	        			
+//	        			// Add all the command removal statements to rank A's commands so if the command /ranks set rank A is 
+//	        			// used then all perms are removed
+//	        			if ( !firstRankName.equalsIgnoreCase( rankName ) ) {
+//	        				getRankCommandCommands().commandAdd( sender, firstRankName, permCmdDel + perm1 + rankName.toLowerCase());
+//	        				countRankCmds++;
+////	        				getRankCommandCommands().commandAdd( sender, firstRankName, permCmdDel + perm2 + rankName.toLowerCase());
+////	        				countRankCmds++;
+//	        			}
+//	        			
+//	        			if ( cRankNext <= 'Z' ) {
+//	        				getRankCommandCommands().commandAdd( sender, rankName, permCmdDel + perm1 + rankNameNext.toLowerCase());
+//	        				countRankCmds++;
+////	        				getRankCommandCommands().commandAdd( sender, rankName, permCmdDel + perm2 + rankNameNext.toLowerCase());
+////	        				countRankCmds++;
+//	        			}
+//	        			
+//	        		}
 	        		
 	        		if ( mines ) {
 
 	        			// Creates a virtual mine:
+	        			String perm = null;
+//	        			String perm = perm1 + rankName;
 	        			ModuleElement mine = Prison.get().getPlatform().createModuleElement( 
-	        					sender, ModuleElementType.MINE, rankName, tag, perm1 + rankName );
+	        					sender, ModuleElementType.MINE, rankName, tag, perm );
 	        			
 	        			if ( mine != null ) {
 	        				countMines++;
 	        				
-	        				// Links the virtual mine to generated rank:
+	        				// Links the virtual mine to generated rank and configure mines:
 	        				if ( Prison.get().getPlatform().linkModuleElements( mine, ModuleElementType.RANK, rankName ) ) {
 	        					countLinked++;
 	        				}
+	        				
 	        			}
 	        		}
 	        	}
@@ -404,11 +405,11 @@ public class RanksCommands
 		// If mines were created, go ahead and auto assign blocks to the mines:
 		if ( countMines > 0 ) {
 			Prison.get().getPlatform().autoCreateMineBlockAssignment();
+			Prison.get().getPlatform().autoCreateMineLinerAssignment();
+			
+			Prison.get().getPlatform().autoCreateConfigureMines();
 		}
 		
-		if ( countMines > 0 ) {
-			Prison.get().getPlatform().autoCreateMineLinerAssignment();
-		}
 		
 		if ( countRanks == 0 ) {
 			Output.get().logInfo( "Ranks autoConfigure: No ranks were created.");
@@ -421,11 +422,11 @@ public class RanksCommands
 			}
 			else {
 				Output.get().logInfo( "Ranks autoConfigure: %d rank commands were created.", countRanks);
-				Output.get().logInfo( "Ranks autoConfigure: The permission %s<rankName> and " +
-						"%s<rankName> was " +
-						"created for each rank. Make sure you add every permission to your " +
-						"permission plugin or they may not work. ",
-						 perm1, perm2 );
+//				Output.get().logInfo( "Ranks autoConfigure: The permission %s<rankName> and " +
+//						"%s<rankName> was " +
+//						"created for each rank. Make sure you add every permission to your " +
+//						"permission plugin or they may not work. ",
+//						 perm1, perm2 );
 			}
 		}
 		
@@ -1306,9 +1307,9 @@ public class RanksCommands
     }
 
     
-    @Command(identifier = "ranks playerInventory", permissions = "mines.set", 
-    		description = "For listing what's in a player's inventory by dumping it to console.", 
-    		onlyPlayers = false )
+//    @Command(identifier = "ranks playerInventory", permissions = "mines.set", 
+//    		description = "For listing what's in a player's inventory by dumping it to console.", 
+//    		onlyPlayers = false )
     public void ranksPlayerInventoryCommand(CommandSender sender,
 					@Arg(name = "player", def = "", description = "Player name") String playerName
 			) {

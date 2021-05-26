@@ -343,6 +343,9 @@ public interface Platform {
 	public void autoCreateMineLinerAssignment();
 	
 	
+	public void autoCreateConfigureMines();
+	
+	
 	/** 
 	 * This function will return a list of text strings indicating features that are either enabled or disabled.
 	 * 

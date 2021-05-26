@@ -1094,7 +1094,9 @@ public class SpigotPlatform
 				mine = mm.getMine( name );
 				mine.setTag( tag );
 				
-				mine.setAccessPermission( accessPermission );
+				if ( accessPermission != null && !accessPermission.trim().isEmpty() ) {
+					mine.setAccessPermission( accessPermission );
+				}
 				
 				results = mine;
 			}
@@ -1263,6 +1265,26 @@ public class SpigotPlatform
 		return isAccessible;
 	}
 
+	@Override
+	public void autoCreateConfigureMines() {
+		
+		MineManager mm = PrisonMines.getInstance().getMineManager();
+		List<Mine> mines = mm.getMines();
+		
+		for ( Mine mine : mines ) {
+			
+			// Setup access by rank:
+			
+			if ( mine.getRank() != null ) {
+				
+				mine.setTpAccessByRank( true );
+				mine.setMineAccessByRank( true );
+				
+			}
+		}
+			
+
+	}
 	
 	/**
 	 * <p>This function assigns blocks to all of the generated mines.  It is intended that

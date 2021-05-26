@@ -318,6 +318,11 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
+	public void autoCreateConfigureMines() {
+		
+	}
+	
+	@Override
 	public List<String> getActiveFeatures() {
 		List<String> results = new ArrayList<>();
 		return results;
