@@ -7,6 +7,7 @@ import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.FancyMessageComponent;
@@ -31,27 +32,48 @@ public class LadderCommands
     public void ladderAdd(CommandSender sender, @Arg(name = "ladderName") String ladderName) {
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
         if ( ladder != null ) {
-            Output.get()
-                .sendError(sender, "A ladder with the name '%s' already exists.", ladderName);
+        	PrisonRanks.getInstance().getRanksMessages()
+        			.getLocalizable( "ranks_LadderCommands__ladder_already_exists" )
+        			.withReplacements( 
+        					ladderName ).
+        			sendTo( sender );
+        			
             return;
         }
 
         RankLadder rankLadder = PrisonRanks.getInstance().getLadderManager().createLadder(ladderName);
 
         if ( rankLadder == null ) {
-            Output.get().sendError(sender,
-                "An error occurred while creating your ladder. &8Check the console for details.");
+        	
+        	PrisonRanks.getInstance().getRanksMessages()
+					.getLocalizable( "ranks_LadderCommands__ladder_creation_error" )
+					.withReplacements( 
+							ladderName ).
+					sendTo( sender );
+        	
             return;
         }
 
         try {
-            PrisonRanks.getInstance().getLadderManager().saveLadder(rankLadder);
+        	
+        	PrisonRanks.getInstance().getLadderManager().saveLadder(rankLadder);
+
+        	PrisonRanks.getInstance().getRanksMessages()
+		        	.getLocalizable( "ranks_LadderCommands__ladder_created" )
+		        	.withReplacements( 
+		        			ladderName )
+		        	.sendTo( sender );
             
-            Output.get().sendInfo(sender, "The ladder '%s' has been created.", ladderName);
         } catch (IOException e) {
-            Output.get().sendError(sender,
-                "An error occurred while creating your ladder. &8Check the console for details.");
-            Output.get().logError("Could not save ladder.", e);
+        	
+        	PrisonRanks.getInstance().getRanksMessages()
+					.getLocalizable( "ranks_LadderCommands__ladder_creation_error" )
+					.withReplacements( 
+							ladderName )
+					.sendTo( sender );
+        	PrisonRanks.getInstance().getRanksMessages()
+		        	.getLocalizable( "ranks_LadderCommands__ladder_could_not_save" )
+		        	.sendTo( sender );
         }
     }
 
@@ -61,26 +83,40 @@ public class LadderCommands
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
 
         if ( ladder == null ) {
-            Output.get().sendError(sender, "The ladder '%s' doesn't exist.", ladderName);
+        	PrisonRanks.getInstance().getRanksMessages()
+					.getLocalizable( "ranks_LadderCommands__ladder_does_not_exist" )
+					.withReplacements( 
+							ladderName )
+					.sendTo( sender );
             return;
         }
         
         if (ladder.getName().equalsIgnoreCase( "default" )) {
-        	Output.get().sendError(sender, "You cannot delete the default ladder. It's needed." );
+        	PrisonRanks.getInstance().getRanksMessages()
+		        	.getLocalizable( "ranks_LadderCommands__ladder_cannot_delete_default" )
+		        	.sendTo( sender );
         	return;
         }
 
         if (ladder.getName().equalsIgnoreCase( "prestiges" )) {
-        	Output.get().sendError(sender, "You cannot delete the prestiges ladder. It's needed." );
+        	PrisonRanks.getInstance().getRanksMessages()
+		        	.getLocalizable( "ranks_LadderCommands__ladder_cannot_delete_prestiges" )
+		        	.sendTo( sender );
         	return;
         }
         
         if ( PrisonRanks.getInstance().getLadderManager().removeLadder(ladder) ) {
-            Output.get().sendInfo(sender, "The ladder '%s' has been deleted.", ladderName);
+        	PrisonRanks.getInstance().getRanksMessages()
+					.getLocalizable( "ranks_LadderCommands__ladder_deleted" )
+					.withReplacements( 
+							ladderName )
+					.sendTo( sender );
 
         } else {
-            Output.get().sendError(sender,
-                "An error occurred while removing your ladder. &8Check the console for details.");
+        	PrisonRanks.getInstance().getRanksMessages()
+		        	.getLocalizable( "ranks_LadderCommands__ladder_error" )
+		        	.sendTo( sender );
+        	
         }
     }
 
@@ -104,12 +140,18 @@ public class LadderCommands
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
 
         if ( ladder == null ) {
-            Output.get().sendError(sender, "The ladder '%s' doesn't exist.", ladderName);
+        	PrisonRanks.getInstance().getRanksMessages()
+					.getLocalizable( "ranks_LadderCommands__ladder_does_not_exist" )
+					.withReplacements( 
+							ladderName )
+					.sendTo( sender );
             return;
         }
 
         ChatDisplay display = new ChatDisplay(ladder.getName());
-        display.addText("&7This ladder contains the following ranks:");
+        Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+        				.getLocalizable( "ranks_LadderCommands__ladder_has_ranks" );
+        display.addText( localManagerLog.localize() );
 
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
@@ -128,15 +170,22 @@ public class LadderCommands
 //            }
             
             boolean defaultRank = ("default".equalsIgnoreCase( ladderName ) && first);
+            
+            Localizable lmDefaultRank = PrisonRanks.getInstance().getRanksMessages()
+    				.getLocalizable( "ranks_LadderCommands__ladder_default_rank" );
 
-            builder.add("&3#%d &8- &3%s %s", rank.getPosition(),
-                rank.getName(), 
-                (defaultRank ? "&b(&9Default Rank&b) &7-" : "")
+            builder.add("&3(#%s) &8- &3%s %s", 
+            		Integer.toString( rank.getPosition() ),
+            		rank.getName(), 
+                (defaultRank ? lmDefaultRank.localize() : "")
             	);
             first = false;
         }
 
-        builder.add( "&3See &f/ranks list &b[ladderName] &3for more details on ranks." );
+        Localizable localManagerLog2 = PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_LadderCommands__ladder_see_ranks_list" );
+        
+        builder.add( localManagerLog2.localize() );
         
         display.addComponent(builder.build());
         
@@ -155,6 +204,7 @@ public class LadderCommands
     	sender.sendMessage( "Attempting to remove the specified rank from it's original ladder, " +
     			"then it will be added back to the target ladder at the spcified location. The rank " +
     			"will not be lost." );
+    	
     	ladderRemoveRank( sender, ladderName, rankName );
     	ladderAddRank(sender, ladderName, rankName, position );
     }
@@ -170,21 +220,32 @@ public class LadderCommands
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
         
         if ( ladder == null ) {
-            Output.get().sendError(sender, "The ladder '%s' doesn't exist.", ladderName);
+        	PrisonRanks.getInstance().getRanksMessages()
+					.getLocalizable( "ranks_LadderCommands__ladder_does_not_exist" )
+					.withReplacements( 
+							ladderName )
+					.sendTo( sender );
             return;
         }
 
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
 //        Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRankOptional(rankName);
         if ( rank == null ) {
-            Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
+        	PrisonRanks.getInstance().getRanksMessages()
+					.getLocalizable( "ranks_LadderCommands__rank_does_not_exist" )
+					.withReplacements( 
+							rankName )
+					.sendTo( sender );
             return;
         }
 
         if (ladder.containsRank(rank.getId())) {
-            Output.get()
-                .sendError(sender, "The ladder '%s' already contains the rank '%s'.", ladderName,
-                    rankName);
+        	PrisonRanks.getInstance().getRanksMessages()
+					.getLocalizable( "ranks_LadderCommands__ladder_already_has_rank" )
+					.withReplacements( 
+							ladderName,
+							rankName )
+					.sendTo( sender );
             return;
         }
 
@@ -197,12 +258,22 @@ public class LadderCommands
         try {
             PrisonRanks.getInstance().getLadderManager().saveLadder(ladder);
             
-            Output.get().sendInfo(sender, "Added rank '%s' to ladder '%s' in position %s.", 
-            		rank.getName(), ladder.getName(), Integer.toString( position ));
+            PrisonRanks.getInstance().getRanksMessages()
+					.getLocalizable( "ranks_LadderCommands__ladder_added_rank" )
+					.withReplacements( 
+							rank.getName(), 
+							ladder.getName(), 
+							Integer.toString( position ) )
+					.sendTo( sender );
+            
         } catch (IOException e) {
-            Output.get().sendError(sender,
-                "An error occurred while adding a rank to your ladder. &8Check the console for details.");
-            Output.get().logError("Error while saving ladder.", e);
+        	
+        	PrisonRanks.getInstance().getRanksMessages()
+		        	.getLocalizable( "ranks_LadderCommands__ladder_error_adding" )
+		        	.sendTo( sender );
+        	PrisonRanks.getInstance().getRanksMessages()
+		        	.getLocalizable( "ranks_LadderCommands__ladder_error_saving" )
+		        	.sendTo( sender );
         }
     }
 
@@ -213,14 +284,22 @@ public class LadderCommands
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
         
         if ( ladder == null ) {
-            Output.get().sendError(sender, "The ladder '%s' doesn't exist.", ladderName);
+        	PrisonRanks.getInstance().getRanksMessages()
+					.getLocalizable( "ranks_LadderCommands__ladder_does_not_exist" )
+					.withReplacements( 
+							ladderName )
+					.sendTo( sender );
             return;
         }
 
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
 //        Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRankOptional(rankName);
         if ( rank == null ) {
-            Output.get().sendError(sender, "The rank '%s' doesn't exist.", rankName);
+        	PrisonRanks.getInstance().getRanksMessages()
+					.getLocalizable( "ranks_LadderCommands__rank_does_not_exist" )
+					.withReplacements( 
+							rankName )
+					.sendTo( sender );
             return;
         }
 
@@ -232,16 +311,21 @@ public class LadderCommands
             Output.get().sendInfo(sender, "Removed rank '%s' from ladder '%s'.", rank.getName(),
             		ladder.getName());
         } catch (IOException e) {
-            Output.get().sendError(sender,
-                "An error occurred while removing a rank from your ladder. &8Check the console for details.");
-            Output.get().logError("Error while saving ladder.", e);
+        	PrisonRanks.getInstance().getRanksMessages()
+		        	.getLocalizable( "ranks_LadderCommands__ladder_error_removing" )
+		        	.sendTo( sender );
+			PrisonRanks.getInstance().getRanksMessages()
+		        	.getLocalizable( "ranks_LadderCommands__ladder_error_saving" )
+		        	.sendTo( sender );
         }
 
     }
 
 
-  @Command(identifier = "ranks ladder perms list", description = "Lists ladder permissions", 
-  							onlyPlayers = false, permissions = "ranks.set")
+    
+// NOT USED:
+//  @Command(identifier = "ranks ladder perms list", description = "Lists ladder permissions", 
+//  							onlyPlayers = false, permissions = "ranks.set")
   public void ladderPermsList(CommandSender sender, 
   				@Arg(name = "ladderName", def = "default", 
   						description = "Ladder name to list the permissions.") String ladderName
@@ -251,15 +335,22 @@ public class LadderCommands
       RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
       
       if ( ladder == null ) {
-          Output.get().sendError(sender, "The ladder '%s' doesn't exist.", ladderName);
+    	  PrisonRanks.getInstance().getRanksMessages()
+					.getLocalizable( "ranks_LadderCommands__ladder_does_not_exist" )
+					.withReplacements( 
+							ladderName )
+					.sendTo( sender );
           return;
       }
 
       if ( ladder.getPermissions() == null ||ladder.getPermissions().size() == 0 && 
     		  ladder.getPermissionGroups() == null && ladder.getPermissionGroups().size() == 0 ) {
       	
-          Output.get().sendInfo(sender, "&3The ladder '&7%s&3' contains no permissions or " +
-          		"permission groups.", ladder.getName() );
+    	  PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_LadderCommands__ladder_has_no_perms" )
+				.withReplacements( 
+						ladder.getName() )
+				.sendTo( sender );
           return;
       }
 
@@ -338,9 +429,10 @@ public class LadderCommands
   }
   
 
-  @Command(identifier = "ranks ladder perms addPerm", 
-		  		description = "Add a ladder permission. Valid placeholder: {rank}.", 
-		  onlyPlayers = false, permissions = "ranks.set")
+//NOT USED:
+//  @Command(identifier = "ranks ladder perms addPerm", 
+//		  		description = "Add a ladder permission. Valid placeholder: {rank}.", 
+//		  onlyPlayers = false, permissions = "ranks.set")
   public void ladderPermsAddPerm(CommandSender sender, 
 		  @Arg(name = "ladderName", def = "default", 
 						description = "Ladder name to add the permission to.") String ladderName,
@@ -387,10 +479,10 @@ public class LadderCommands
       ladderPermsList( sender, ladder.getName() );
   }
   
-  
-  @Command(identifier = "ranks ladder perms addGroup", 
-		  		description = "Add a ladder permission group. Valid placeholder: {rank}.", 
-		  onlyPlayers = false, permissions = "ranks.set")
+//NOT USED:
+//  @Command(identifier = "ranks ladder perms addGroup", 
+//		  		description = "Add a ladder permission group. Valid placeholder: {rank}.", 
+//		  onlyPlayers = false, permissions = "ranks.set")
   public void ladderPermsAddGroup(CommandSender sender, 
 		  @Arg(name = "ladderName", def = "default", 
 						description = "Ladder name to add the permission group to.") String ladderName,
@@ -460,8 +552,10 @@ public class LadderCommands
 //
 //  }
   
-  @Command(identifier = "ranks ladder perms remove", description = "Lists ladder permissions", 
-		  onlyPlayers = false, permissions = "ranks.set")
+  
+//NOT USED:
+//  @Command(identifier = "ranks ladder perms remove", description = "Lists ladder permissions", 
+//		  onlyPlayers = false, permissions = "ranks.set")
   public void ladderPermsRemove(CommandSender sender, 
 		  @Arg(name = "ladderName", def = "default", 
 						description = "Ladder name to list the permissions.") String ladderName,

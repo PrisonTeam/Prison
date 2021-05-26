@@ -21,6 +21,9 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.4 2021-05-25
 
 
+* **Externalized the LadderCommands.**
+
+
 * **Fixed an issue with mine block commands not working since the functions were moved to another class.**
 
 
