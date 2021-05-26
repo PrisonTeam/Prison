@@ -21,6 +21,13 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.4 2021-05-25
 
 
+* **Fixed an issue with mine block commands not working since the functions were moved to another class.**
+
+
+* **CrazyEnchant was having similar issues as papi was in that the prison instance of CrazyEnchant (what was used to build prison) was resulting in nulls when trying to use that plugin within prison.**
+So changed the way CrazyEnchant was used in gradle as compileOnly, but this resulted in numerous error message about the BlastUseEvent could not be registered since it did not exist.  The odd thing was, that even when preventing registration, somehow it was still getting to be registered.  As such, the only way to prevent registration was to "hide" the event in a plain Object in the parameters of the core classes, then cast them to the correct class once inside the functions.  This solved the problems but appears to be a strange way to deal with it.
+
+
 * **Fixed an issue with using just /mtp with no mine name.**
 
 

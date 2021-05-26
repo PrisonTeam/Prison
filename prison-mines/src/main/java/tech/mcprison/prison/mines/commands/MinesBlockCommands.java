@@ -6,8 +6,6 @@ import java.util.List;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.chat.FancyMessage;
-import tech.mcprison.prison.commands.Arg;
-import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.CommandPagedData;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.block.PrisonBlock;
@@ -32,27 +30,11 @@ public class MinesBlockCommands
 		super( cmdGroup );
 	}
 
-    @Command(identifier = "mines block", 
-    		onlyPlayers = false, permissions = "prison.commands")
-    public void mineBlockSubcommands(CommandSender sender) {
-    	sender.dispatchCommand( "mines block help" );
-    }
+
     
-    @Command(identifier = "mines blockEvent", 
-    		onlyPlayers = false, permissions = "prison.commands")
-    public void mineBlockEventSubcommands(CommandSender sender) {
-    	sender.dispatchCommand( "mines blockEvent help" );
-    }
-	
-    
-    @Command(identifier = "mines block add", permissions = "mines.block", onlyPlayers = false, 
-    						description = "Adds a block to a mine.")
     public void addBlockCommand(CommandSender sender,
-    			@Arg(name = "mineName", description = "The name of the mine to add the block to.")
             			String mineName, 
-            	@Arg(name = "block", description = "The block's name or ID.") 
     					String block,
-            	@Arg(name = "chance", description = "The percent chance (out of 100) that this block will occur.")
     					double chance) {
         if (!performCheckMineExists(sender, mineName)) {
             return;
@@ -364,16 +346,12 @@ public class MinesBlockCommands
 
 	}
 	
-    @Command(identifier = "mines block set", permissions = "mines.block", onlyPlayers = false, 
-    					description = "Changes the percentage of a block in a mine.")
-    public void setBlockCommand(CommandSender sender,
-    			@Arg(name = "mineName", description = "The name of the mine to edit.") 
+
+	public void setBlockCommand(CommandSender sender,
     					String mineName,
-    			@Arg(name = "block", description = "The block's name or ID.") 
     					String block,
-    			@Arg(name = "chance", description = "The percent chance (out of 100) that this block will occur.") 
     					double chance) {
-    	
+     	
         if (!performCheckMineExists(sender, mineName)) {
             return;
         }
@@ -590,11 +568,9 @@ public class MinesBlockCommands
     }
     
 
-    @Command(identifier = "mines block remove", permissions = "mines.block", 
-    			onlyPlayers = false, description = "Deletes a block from a mine.")
     public void delBlockCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
-        @Arg(name = "block", def = "AIR", description = "The block's name") String block) {
+        String mineName,
+        String block) {
 
         if (!performCheckMineExists(sender, mineName)) {
             return;
@@ -695,11 +671,9 @@ public class MinesBlockCommands
 		}
 	}
 
-    @Command(identifier = "mines block search", permissions = "mines.block", 
-    				description = "Searches for a block to add to a mine.")
     public void searchBlockCommand(CommandSender sender,
-        @Arg(name = "search", def = " ", description = "Any part of the block's name or ID.") String search,
-        @Arg(name = "page", def = "1", description = "Page of search results (optional)") String page ) {
+        String search,
+        String page ) {
 
     	PrisonMines pMines = PrisonMines.getInstance();
     	if (search == null)
@@ -723,11 +697,9 @@ public class MinesBlockCommands
         //pMines.getMineManager().clearCache();
     }
     
-    @Command(identifier = "mines block searchAll", permissions = "mines.block", 
-    		description = "Searches for a blocks and items. Items cannot be added to mines.")
     public void searchBlockAllCommand(CommandSender sender,
-    		@Arg(name = "search", def = " ", description = "Any part of the block's, or item's name.") String search,
-    		@Arg(name = "page", def = "1", description = "Page of search results (optional)") String page ) {
+    		String search,
+    		String page ) {
     	
     	PrisonMines pMines = PrisonMines.getInstance();
     	if (search == null)
@@ -878,10 +850,8 @@ public class MinesBlockCommands
 
 	
 
-    @Command(identifier = "mines block list", permissions = "mines.block", 
-    				description = "Searches for a block to add to a mine.")
     public void listBlockCommand(CommandSender sender,
-    		@Arg(name = "mineName", description = "The name of the mine to view.") String mineName ) {
+    		String mineName ) {
 
         setLastMineReferenced(mineName);
         
@@ -933,16 +903,11 @@ public class MinesBlockCommands
     
     
 
-    @Command(identifier = "mines block constraint", permissions = "mines.block", 
-    				description = "Optionally enable constraints on a mine's block generation.")
     public void constraintsBlockCommand(CommandSender sender,
-    		@Arg(name = "mineName", description = "The name of the mine to view.") String mineName,
-    		@Arg(name = "blockNme", description = "The block's name") String blockName,
-    		@Arg(name = "contraint", description = "Constraint to apply " +
-    						"[min max excludeTop excludeBottom]",
-    					def = "max") String constraint,
-    		@Arg(name = "value", description = "The value to assign to this constraint. " +
-    					"A value of 0 will remove the constraint.") int value ) {
+    		String mineName,
+    		String blockName,
+    		String constraint,
+    		int value ) {
 
         setLastMineReferenced(mineName);
         

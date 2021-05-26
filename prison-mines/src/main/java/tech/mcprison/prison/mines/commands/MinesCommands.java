@@ -85,6 +85,114 @@ public class MinesCommands
     	sender.dispatchCommand( "mines set help" );
     }
     
+    
+    /*
+     * NOTE: Block commands from the class MinesBlockCommands need to have the "command" references here
+     * so the prison command handler can pick them up properly.
+     * 
+     * 
+     */
+    
+    @Command(identifier = "mines block", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void mineBlockSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "mines block help" );
+    }
+    
+    @Command(identifier = "mines blockEvent", 
+    		onlyPlayers = false, permissions = "prison.commands")
+    public void mineBlockEventSubcommands(CommandSender sender) {
+    	sender.dispatchCommand( "mines blockEvent help" );
+    }
+	
+    @Override
+    @Command(identifier = "mines block add", permissions = "mines.block", onlyPlayers = false, 
+			description = "Adds a block to a mine.")
+	public void addBlockCommand(CommandSender sender,
+			@Arg(name = "mineName", description = "The name of the mine to add the block to.")
+					String mineName, 
+			@Arg(name = "block", description = "The block's name or ID.") 
+					String block,
+			@Arg(name = "chance", description = "The percent chance (out of 100) that this block will occur.")
+					double chance) {
+    	
+    	super.addBlockCommand( sender, mineName, block, chance );
+    }
+    
+    
+    @Override
+    @Command(identifier = "mines block set", permissions = "mines.block", onlyPlayers = false, 
+			description = "Changes the percentage of a block in a mine.")
+	public void setBlockCommand(CommandSender sender,
+			@Arg(name = "mineName", description = "The name of the mine to edit.") 
+					String mineName,
+			@Arg(name = "block", description = "The block's name or ID.") 
+					String block,
+			@Arg(name = "chance", description = "The percent chance (out of 100) that this block will occur.") 
+					double chance) {
+	    	
+    	super.setBlockCommand( sender, mineName, block, chance );
+	}  
+    
+    @Override
+    @Command(identifier = "mines block remove", permissions = "mines.block", 
+    			onlyPlayers = false, description = "Deletes a block from a mine.")
+    public void delBlockCommand(CommandSender sender,
+	        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
+	        @Arg(name = "block", def = "AIR", description = "The block's name") String block) {
+
+    	super.delBlockCommand( sender, mineName, block );
+    }
+    
+    @Override
+    @Command(identifier = "mines block search", permissions = "mines.block", 
+					description = "Searches for a block to add to a mine.")
+	public void searchBlockCommand(CommandSender sender,
+			@Arg(name = "search", def = " ", description = "Any part of the block's name or ID.") String search,
+			@Arg(name = "page", def = "1", description = "Page of search results (optional)") String page ) {
+		
+    	super.searchBlockCommand( sender, search, page );
+    }
+    
+    @Override
+    @Command(identifier = "mines block searchAll", permissions = "mines.block", 
+    		description = "Searches for a blocks and items. Items cannot be added to mines.")
+    public void searchBlockAllCommand(CommandSender sender,
+    		@Arg(name = "search", def = " ", description = "Any part of the block's, or item's name.") String search,
+    		@Arg(name = "page", def = "1", description = "Page of search results (optional)") String page ) {
+    	
+    	super.searchBlockAllCommand( sender, search, page );
+    }
+    
+    @Override
+    @Command(identifier = "mines block list", permissions = "mines.block", 
+    				description = "Searches for a block to add to a mine.")
+    public void listBlockCommand(CommandSender sender,
+    		@Arg(name = "mineName", description = "The name of the mine to view.") String mineName ) {
+
+    	super.listBlockCommand( sender, mineName );
+    }
+    
+    @Override
+    
+    @Command(identifier = "mines block constraint", permissions = "mines.block", 
+							description = "Optionally enable constraints on a mine's block generation.")
+	public void constraintsBlockCommand(CommandSender sender,
+			@Arg(name = "mineName", description = "The name of the mine to view.") String mineName,
+			@Arg(name = "blockNme", description = "The block's name") String blockName,
+			@Arg(name = "contraint", description = "Constraint to apply " +
+						"[min max excludeTop excludeBottom]",
+					def = "max") String constraint,
+			@Arg(name = "value", description = "The value to assign to this constraint. " +
+					"A value of 0 will remove the constraint.") int value ) {
+
+    	super.constraintsBlockCommand( sender, mineName, blockName, constraint, value );
+    }
+    
+
+    
+    
+    
     @Command(identifier = "mines create", description = "Creates a new mine, or even a virtual mine.", 
     		onlyPlayers = false, permissions = "mines.create")
     public void createCommand(CommandSender sender,
