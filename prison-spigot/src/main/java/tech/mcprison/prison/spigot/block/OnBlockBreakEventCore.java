@@ -51,6 +51,8 @@ public class OnBlockBreakEventCore
 	private AutoFeaturesWrapper autoFeatureWrapper = null;
 	
 	
+	private Boolean crazyEnchantEnabled;
+	
 	private Random random = new Random();
 	
 	
@@ -62,6 +64,8 @@ public class OnBlockBreakEventCore
 		this.prisonMineManager = null;
 		
 		this.teExplosionTriggerEnabled = true;
+		
+		this.crazyEnchantEnabled = null;
 	}
 	
 
@@ -1445,7 +1449,21 @@ public class OnBlockBreakEventCore
 	private int checkCrazyEnchant( Player player, Block block, ItemStack item ) {
 		int bonusXp = 0;
 		
-		if ( item != null && IntegrationCrazyEnchantmentsPickaxes.getInstance().isEnabled() ) {
+		if ( isCrazyEnchantEnabled() == null ) {
+			try {
+				Class.forName( 
+						"tech.mcprison.prison.spigot.integrations.IntegrationCrazyEnchantmentsPickaxes", false, 
+								this.getClass().getClassLoader() );
+				setCrazyEnchantEnabled( Boolean.TRUE );
+			}
+			catch ( ClassNotFoundException e ) {
+				setCrazyEnchantEnabled( Boolean.FALSE );
+			}
+		
+		}
+		
+		if ( isCrazyEnchantEnabled().booleanValue() && 
+				item != null && IntegrationCrazyEnchantmentsPickaxes.getInstance().isEnabled() ) {
 			
 			bonusXp = IntegrationCrazyEnchantmentsPickaxes.getInstance()
 						.getPickaxeEnchantmentExperienceBonus( player, block, item );
@@ -1515,6 +1533,13 @@ public class OnBlockBreakEventCore
 
 	public Random getRandom() {
 		return random;
+	}
+
+	public Boolean isCrazyEnchantEnabled() {
+		return crazyEnchantEnabled;
+	}
+	public void setCrazyEnchantEnabled( Boolean crazyEnchantEnabled ) {
+		this.crazyEnchantEnabled = crazyEnchantEnabled;
 	}
 
 

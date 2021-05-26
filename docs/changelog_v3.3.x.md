@@ -21,6 +21,10 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.4 2021-05-25
 
 
+* **Fix issue with crazyEnchants generation of bonus xp.**
+Had to check if the ce class exists, if not, then it disables the processing.
+
+
 * **Changes to /ranks autoConfigure to configure tp and mine access by ranks.**
 These are the new preferred ways to configure TP access and also grant access to the mines.  Permissions are still an option, but are more complex for the users to setup.  This will require no effort, but will just work without needing any external plugin support.
 Since access by rank is now standard, auto configure no long will generate ANY permissions rank commands.  If a player needs them, then they can manually add them.  Soon, ladder commands will be added so at that point they can setup one ladder command to apply to all ranks on that ladder.
