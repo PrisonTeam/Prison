@@ -21,6 +21,13 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.4 2021-05-25
 
 
+* **A few changes to automanager in how and when it processes the block breaking events.**
+Auto smelt and auto block now only is processed right after auto pickup happens, and before the items are placed within the inventory.
+If auto pickup is turned off, then auto smelt and auto block is off by default too.  There is a auto manager normal drop processing that has smelt and blocking before the items drop.  They can enable those features if they need them.
+Fine tuned how fortune is applied to both auto pickup and normal drops.  Moved around a few things so they may behave more naturally, and hopefully won't get messed up by having drawn the wrong conclusions.
+Starting to work on documents to better describe the chain of events and processing so it make more sense on how the settings work in conjunction with each other.
+
+
 * **Fix issue with crazyEnchants generation of bonus xp.**
 Had to check if the ce class exists, if not, then it disables the processing.
 
