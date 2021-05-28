@@ -942,7 +942,7 @@ public class PrisonCommand {
     	display.addText( "&3Selected Settings from &bplugins/Prison/autoFeaturesConfigs.yml&3:" );
     	display.addText( "&b  Normal Drops (if auto pickup is off):" );
     	display.addText( "&b    options.normalDrop.isProcessNormalDropsEvents:  %s", 
-    									afw.isBoolean( AutoFeatures.isProcessNormalDropsEvents ) );
+    									afw.isBoolean( AutoFeatures.handleNormalDropsEvents ) );
     	display.addText( "&b    options.normalDrop.isProcessTokensEnchantExplosiveEvents:  %s", 
     									afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents ) );
     	display.addText( "&b    options.normalDrop.isProcessTokensEnchantExplosiveEvents:  %s", 
