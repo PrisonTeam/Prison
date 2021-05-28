@@ -1619,20 +1619,36 @@ public class AutoManagerFeatures
 				// The adjusted fortune multiplier is to be applied to the number of blocks
 				// and represents a close approximation to what bukkit's fortune may produce
 				// if it were to be extended to enchantment levels greater than 3 for fortune.
-				int adjustedFortuneMultiplier = 
-									(int) Math.floor( 
-												Math.round(fortuneMultiplier * randomFactor));
+				double adjustedFortuneMultiplier = Math.round(fortuneMultiplier * randomFactor);
+				double adjFortuneMultiplierCapped = adjustedFortuneMultiplier;
+				
+				
 				
 				
 				// If the adjustedfortuneMultipler is greater than the permitted max value then use the max value.
 				// A zero value for fortuneMultiplierMax indicates no max should be used.
 				int fortuneMultiplierMax = getInteger( AutoFeatures.fortuneMultiplierMax );
 				if ( fortuneMultiplierMax != 0d && adjustedFortuneMultiplier > fortuneMultiplierMax ) {
-					adjustedFortuneMultiplier = fortuneMultiplierMax;
+					adjFortuneMultiplierCapped = fortuneMultiplierMax;
 				}
 				
 				
-				bukkitExtendedFortuneBlockCount = blocks.getAmount() * adjustedFortuneMultiplier;
+				bukkitExtendedFortuneBlockCount = (int) (blocks.getAmount() * adjFortuneMultiplierCapped);
+				
+					
+				if ( Output.get().isDebug() ) {
+					String message = "### calculateBukkitExtendedFortuneBlockCount ### " +
+							"fortuneLevel: %d  defaultBlocks: %d  fortMult: %f  " +
+							"rndRngLow: %f  rndRngHigh: %f  rndFactor: %f  adjFortMult: %f  " +
+							"maxMultiplier: %f   extendedFortuneBlockCount= %d";
+					message = String.format(  message, 
+							fortuneLevel, blocks.getAmount(),
+							fortuneMultiplier, randomFactorRangeLow, randomFactorRangeHigh, 
+							randomFactor, adjustedFortuneMultiplier, 
+							adjFortuneMultiplierCapped, bukkitExtendedFortuneBlockCount );
+					
+					Output.get().logDebug( message );
+				}
 			}
 			
 		}

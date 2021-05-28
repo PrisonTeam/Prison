@@ -21,6 +21,11 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.4 2021-05-28
 
 
+* **Adjustments to the calculate bukkit extended fortune.**
+Got rid of the int values and are now using doubles in the calculations so the results are finer grained and actually have a better chance of varying.
+Also added a debug statement to print out details when debugging is enabled through /prison debug toggling.
+
+
 * **More adjustments to auto features, but this time focusing mostly on fortune.**
 Reordered the fortune settings to now be within a group.  If it is disabled, then none of the related fortune calculations will be performed.
 Under /prison version all, added information to better explain what's controlling other settings.  For example if one setting if enabled causes another setting to be disabled, it will show that the setting is disabled.
