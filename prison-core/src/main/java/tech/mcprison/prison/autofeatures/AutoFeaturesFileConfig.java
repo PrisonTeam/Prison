@@ -56,11 +56,8 @@ public class AutoFeaturesFileConfig {
 		    	
 		    	isCalculateDurabilityEnabled(general, false),
 		    	
-		    	isCalculateFortuneEnabled(general, true),
-		    	isCalculateFortuneOnAllBlocksEnabled(general, false),
-		    	maxFortuneLevel(general, 0),
-		    	
 		    	isCalculateSilkEnabled(general, true),
+		    	isCalculateDropAdditionsEnabled(general, true),
 		    	
 		    	isCalculateXPEnabled(general, true),
 		    	givePlayerXPAsOrbDrops(general, true),
@@ -104,7 +101,26 @@ public class AutoFeaturesFileConfig {
     			normalDropSmelt(normalDrop, true),
     			normalDropBlock(normalDrop, true),
     			
-				
+    			
+    		fortuneFeature(options),
+    			
+	    		isCalculateFortuneEnabled(fortuneFeature, true),
+	    		
+	    		fortuneMultiplierMax(fortuneFeature, 0 ),
+
+	    		
+	    		isExtendBukkitFortuneCalculationsEnabled(fortuneFeature, true),
+	    		extendBukkitFortuneFactorPercentRangeLow(fortuneFeature, 70 ),
+	    		extendBukkitFortuneFactorPercentRangeHigh(fortuneFeature, 110 ),
+	    		
+	    		
+	    		isCalculateAltFortuneEnabled(fortuneFeature, false),
+	    		isCalculateAltFortuneOnAllBlocksEnabled(fortuneFeature, false),
+	    		
+	    		
+
+	    		
+	    		
 	    	pickupFeature(options),
 		    	pickupLimitToMines(pickupFeature, true),
 		    	pickupAllBlocks(pickupFeature, true),

@@ -125,6 +125,7 @@ public class AutoManagerFeatures
 		}
 		return results;
 	}
+	
 	protected short getFortune(SpigotItemStack itemInHand){
 		short results = (short) 0;
 		
@@ -140,6 +141,12 @@ public class AutoManagerFeatures
 			// Ignore. This happens when a TokeEnchanted tool is used when TE is not installed anymore.
 			// It throws this exception:  Caused by: java.lang.NullPointerException: null key in entry: null=5
 		}
+		
+		int maxFortuneLevel = getInteger( AutoFeatures.fortuneMultiplierMax );
+		if ( maxFortuneLevel != 0 && results > maxFortuneLevel ) {
+			results = (short) maxFortuneLevel;
+		}
+		
 		return results;
 	}
 
@@ -374,13 +381,9 @@ public class AutoManagerFeatures
 				// Need better drop calculation that is not using the getDrops function.
 				short fortuneLevel = getFortune(itemInHand);
 
-				if ( isBoolean( AutoFeatures.isCalculateSilkEnabled ) &&
-						hasSilkTouch( itemInHand )) {
-					
-					calculateSilkTouch( itemInHand, drops );
-				}
+				calculateSilkTouch( itemInHand, drops );
 				
-				// Adds in additional drop items: Add Gravel and Flint:
+				// Adds in additional drop items: Add Flint with gravel drops:
 				calculateDropAdditions( itemInHand, drops );
 
 
@@ -446,13 +449,9 @@ public class AutoManagerFeatures
 			// Need better drop calculation that is not using the getDrops function.
 			short fortuneLevel = getFortune(itemInHand);
 
-			if ( isBoolean( AutoFeatures.isCalculateSilkEnabled ) &&
-					hasSilkTouch( itemInHand )) {
-				
-				calculateSilkTouch( itemInHand, drops );
-			}
+			calculateSilkTouch( itemInHand, drops );
 			
-			// Adds in additional drop items:
+			// Adds in additional drop items: Add Flint with gravel drops:
 			calculateDropAdditions( itemInHand, drops );
 
 			
@@ -1446,32 +1445,82 @@ public class AutoManagerFeatures
 			
 			int count = blocks.getAmount();
 			
-			// If the bukkit fortune was applied (amount > 1) then extend it to the full
-			// range of the fortune enchantment.  Otherwise this value will be zero.
-			// This value represents the final number of block amount.
-			int bukkitExtendedFortuneBlockCount = 
-									calculateBukkitExtendedFortuneBlockCount( blocks, fortuneLevel );
-			
-			if ( bukkitExtendedFortuneBlockCount > 0 ) {
-				count = bukkitExtendedFortuneBlockCount;
+			if ( isBoolean( AutoFeatures.isExtendBukkitFortuneCalculationsEnabled ) ) {
+				
+				// If the bukkit fortune was applied (amount > 1) then extend it to the full
+				// range of the fortune enchantment.  Otherwise this value will be zero.
+				// This value represents the final number of block amount.
+				int bukkitExtendedFortuneBlockCount = 
+						calculateBukkitExtendedFortuneBlockCount( blocks, fortuneLevel );
+				
+				if ( bukkitExtendedFortuneBlockCount > 0 ) {
+					count = bukkitExtendedFortuneBlockCount;
+				}
 			}
-			else {
+			
+			else if ( isBoolean( AutoFeatures.isExtendBukkitFortuneCalculationsEnabled ) ) {
 
 				int multiplier = 1;
-				
-				int maxFortuneLevel = getInteger( AutoFeatures.maxFortuneLevel );
-				if ( maxFortuneLevel > 0 && fortuneLevel > maxFortuneLevel ) {
-					fortuneLevel = maxFortuneLevel;
-				}
 				
 				// Due to variations with gold and wood PickAxe need to use a dynamic
 				// Material name selection which will fit for the version of MC that is
 				// being ran.
 				BlockType block = blocks.getMaterial();
 				
+				// These need to be processed first due to special drop amounts for these items, and 
+				// in the next group there is the isCalculateAltFortuneOnAllBlocksEnabled setting that
+				// would override these values if it were to be processed first.
+				if ( block == BlockType.GLOWSTONE ||
+						block == BlockType.GLOWSTONE_DUST ||
+						block == BlockType.REDSTONE ||
+						block == BlockType.SEA_LANTERN ||
+						block == BlockType.GLOWING_REDSTONE_ORE ||
+						block == BlockType.REDSTONE_ORE ||
+						block == BlockType.PRISMARINE ||
+						
+						block == BlockType.BEETROOT_SEEDS ||
+						block == BlockType.CARROT ||
+						block == BlockType.MELON ||
+						block == BlockType.MELON_SEEDS ||
+						block == BlockType.NETHER_WART ||
+						block == BlockType.POTATO ||
+						block == BlockType.GRASS ||
+						block == BlockType.WHEAT ) {
+					multiplier = getRandom().nextInt( fortuneLevel );
+					
+					// limits slightly greater than standard:
+					if (block == BlockType.GLOWSTONE) {
+						// standard: 4
+						if (multiplier > 5) {
+							multiplier = 5;
+						}
+					} else if (block == BlockType.SEA_LANTERN) {
+						// standard: 5
+						if (multiplier > 6) {
+							multiplier = 6;
+						}
+					} else if (block == BlockType.MELON) {
+						// standard: 9
+						if (multiplier > 11) {
+							multiplier = 11;
+						}
+					}
+					
+					
+					// If the adjustedfortuneMultipler is greater than the permitted max value then use the max value.
+					// A zero value for fortuneMultiplierMax indicates no max should be used.
+					int fortuneMultiplierMax = getInteger( AutoFeatures.fortuneMultiplierMax );
+					if ( fortuneMultiplierMax != 0d && multiplier > fortuneMultiplierMax ) {
+						multiplier = fortuneMultiplierMax;
+					}
+					
+					// add the multiplier to the count:
+					count += multiplier;
+
+				}
 				
-				if ( 
-						isBoolean( AutoFeatures.isCalculateFortuneOnAllBlocksEnabled ) ||
+				else if ( 
+						isBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled ) ||
 						
 						block == BlockType.COAL_ORE ||
 						block == BlockType.DIAMOND_ORE ||
@@ -1508,45 +1557,6 @@ public class AutoManagerFeatures
 					// multiply the multiplier:
 					count *= multiplier;
 					
-				} else if ( block == BlockType.GLOWSTONE ||
-						block == BlockType.GLOWSTONE_DUST ||
-						block == BlockType.REDSTONE ||
-						block == BlockType.SEA_LANTERN ||
-						block == BlockType.GLOWING_REDSTONE_ORE ||
-						block == BlockType.REDSTONE_ORE ||
-						block == BlockType.PRISMARINE ||
-						
-						block == BlockType.BEETROOT_SEEDS ||
-						block == BlockType.CARROT ||
-						block == BlockType.MELON ||
-						block == BlockType.MELON_SEEDS ||
-						block == BlockType.NETHER_WART ||
-						block == BlockType.POTATO ||
-						block == BlockType.GRASS ||
-						block == BlockType.WHEAT ) {
-					multiplier = getRandom().nextInt( fortuneLevel );
-					
-					// limits slightly greater than standard:
-					if (block == BlockType.GLOWSTONE) {
-						// standard: 4
-						if (multiplier > 5) {
-							multiplier = 5;
-						}
-					} else if (block == BlockType.SEA_LANTERN) {
-						// standard: 5
-						if (multiplier > 6) {
-							multiplier = 6;
-						}
-					} else if (block == BlockType.MELON) {
-						// standard: 9
-						if (multiplier > 11) {
-							multiplier = 11;
-						}
-					}
-					
-					// add the multiplier to the count:
-					count += multiplier;
-
 				}
 				
 			}
@@ -1582,8 +1592,11 @@ public class AutoManagerFeatures
 	private int calculateBukkitExtendedFortuneBlockCount( SpigotItemStack blocks, int fortuneLevel )
 	{
 		int bukkitExtendedFortuneBlockCount = 0;
+
 		
-		if ( fortuneLevel > 0 && blocks.getAmount() > 1 ) {
+		if ( isBoolean( AutoFeatures.isExtendBukkitFortuneCalculationsEnabled ) && 
+				fortuneLevel > 0 && blocks.getAmount() > 1 ) {
+			
 			// Note: fortune has already been applied by bukkit, but it may have been
 			//       capped at fortune 3.
 			
@@ -1594,19 +1607,32 @@ public class AutoManagerFeatures
 				double fortuneMultiplier = fortuneLevel / 3;
 				
 				// Next calculate the random factor.  It will be applied to the multiplier to 
-				// adjust the fortune results slightly.  The range will be 0.7 to 1.1 so the 
+				// adjust the fortune results slightly.  The default range will be 0.7 to 1.1 so the 
 				// the average result would be to reduce the generated quantity.
-				double randomFactor = ( 0.4D * getRandom().nextDouble() ) + 0.7D;
+				double randomFactorRangeLow = getInteger( AutoFeatures.extendBukkitFortuneFactorPercentRangeLow ) / 100d;
+				double randomFactorRangeHigh = getInteger( AutoFeatures.extendBukkitFortuneFactorPercentRangeHigh ) / 100d;
+				
+				double randomFactor = ( (randomFactorRangeHigh - randomFactorRangeLow) * getRandom().nextDouble() ) + 
+								randomFactorRangeLow;
 				
 				
 				// The adjusted fortune multiplier is to be applied to the number of blocks
 				// and represents a close approximation to what bukkit's fortune may produce
-				// if it wre to be extended to enchantment levels greater than 3 for fortune.
-				double adjustedFortuneMultiplier = fortuneMultiplier * randomFactor;
+				// if it were to be extended to enchantment levels greater than 3 for fortune.
+				int adjustedFortuneMultiplier = 
+									(int) Math.floor( 
+												Math.round(fortuneMultiplier * randomFactor));
 				
-				bukkitExtendedFortuneBlockCount = 
-								(int) Math.floor( 
-										Math.round( blocks.getAmount() * adjustedFortuneMultiplier ));
+				
+				// If the adjustedfortuneMultipler is greater than the permitted max value then use the max value.
+				// A zero value for fortuneMultiplierMax indicates no max should be used.
+				int fortuneMultiplierMax = getInteger( AutoFeatures.fortuneMultiplierMax );
+				if ( fortuneMultiplierMax != 0d && adjustedFortuneMultiplier > fortuneMultiplierMax ) {
+					adjustedFortuneMultiplier = fortuneMultiplierMax;
+				}
+				
+				
+				bukkitExtendedFortuneBlockCount = blocks.getAmount() * adjustedFortuneMultiplier;
 			}
 			
 		}
@@ -1795,6 +1821,16 @@ public class AutoManagerFeatures
 				}
 				
 		}
+		
+		
+		// If the adjustedfortuneMultipler is greater than the permitted max value then use the max value.
+		// A zero value for fortuneMultiplierMax indicates no max should be used.
+		int fortuneMultiplierMax = getInteger( AutoFeatures.fortuneMultiplierMax );
+		if ( fortuneMultiplierMax != 0d && multiplier > fortuneMultiplierMax ) {
+			multiplier = fortuneMultiplierMax;
+		}
+		
+		
 		return multiplier;
 	}
 
@@ -1808,11 +1844,14 @@ public class AutoManagerFeatures
 	 */
 	@SuppressWarnings( "unused" )
 	private void calculateSilkTouch(SpigotItemStack itemInHand, List<SpigotItemStack> drops) {
-
-		for (SpigotItemStack itemStack : drops) {
-
-			// If stack is gravel, then there is a 10% chance of dropping flint.
-
+		
+		if ( isBoolean( AutoFeatures.isCalculateSilkEnabled ) && hasSilkTouch( itemInHand )) {
+			
+			for (SpigotItemStack itemStack : drops) {
+				
+				// If stack is gravel, then there is a 10% chance of dropping flint.
+				
+			}
 		}
 	}
 
@@ -1839,17 +1878,21 @@ public class AutoManagerFeatures
 	 * @param drops
 	 */
 	private void calculateDropAdditions(SpigotItemStack itemInHand, List<SpigotItemStack> drops) {
-		List<SpigotItemStack> adds = new ArrayList<SpigotItemStack>();
 		
-		for (SpigotItemStack itemStack : drops) {
-
-			// If gravel and has the 10% chance whereas rnd is zero, which is 1 out of 10.
-			// But if has silk touch, then never drop flint.
-			adds.addAll( 
-					calculateDropAdditionsGravelFlint( itemInHand, itemStack, drops ) );
+		if ( isBoolean( AutoFeatures.isCalculateDropAdditionsEnabled ) ) {
+			
+			List<SpigotItemStack> adds = new ArrayList<SpigotItemStack>();
+			
+			for (SpigotItemStack itemStack : drops) {
+				
+				// If gravel and has the 10% chance whereas rnd is zero, which is 1 out of 10.
+				// But if has silk touch, then never drop flint.
+				adds.addAll( 
+						calculateDropAdditionsGravelFlint( itemInHand, itemStack, drops ) );
+			}
+			
+			drops.addAll( adds );
 		}
-		
-		drops.addAll( adds );
 	}
 
 

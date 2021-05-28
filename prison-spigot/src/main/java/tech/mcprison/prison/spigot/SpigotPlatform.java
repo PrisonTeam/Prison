@@ -1723,21 +1723,54 @@ public class SpigotPlatform
 				zbsEventPriority.name() ) );
 
 
-    	results.add( String.format(".   Auto Pickup:&b %s", 
-    										afw.isBoolean( AutoFeatures.autoPickupEnabled )) );
-    	results.add( String.format(".   Auto Smelt:&b %s", 
-    										afw.isBoolean( AutoFeatures.autoSmeltEnabled )) );
-    	results.add( String.format(".   Auto Block:&b %s", 
-    										afw.isBoolean( AutoFeatures.autoBlockEnabled )) );
+		results.add( " " );
+		
+		boolean isAutoPickup = afw.isBoolean( AutoFeatures.autoPickupEnabled );
+    	results.add( String.format(".   Auto Pickup:&b %s", isAutoPickup ) );
+    	
+    	results.add( String.format(".   Auto Smelt:&b %s", (!isAutoPickup ? "disabled" :
+    										afw.isBoolean( AutoFeatures.autoSmeltEnabled ))) );
+    	results.add( String.format(".   Auto Block:&b %s", (!isAutoPickup ? "disabled" :
+    										afw.isBoolean( AutoFeatures.autoBlockEnabled ))) );
 
+    	
+    	results.add( String.format(".   Handle Normal Drops:&b %s", (isAutoPickup ? "disabled by AutoPickup" :
+    										afw.isBoolean( AutoFeatures.handleNormalDropsEvents ))) );
+    	results.add( String.format(".   Normal Drop Smelt:&b %s", (isAutoPickup ? "disabled" :
+    										afw.isBoolean( AutoFeatures.normalDropSmelt ))) );
+    	results.add( String.format(".   Normal Drop Block:&b %s", (isAutoPickup ? "disabled" :
+    										afw.isBoolean( AutoFeatures.normalDropBlock ))) );
+    	
+    	
+    	
+		results.add( " " );
+		
     	results.add( String.format("+.   Calculate Durability:&b %s", 
     										afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled )) );
-    	results.add( String.format("+.   Calculate Fortune:&b %s", 
-    										afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled )) );
-    	results.add( String.format("+.   Calculate Fortune on all Blocks:&b %s", 
-    										afw.isBoolean( AutoFeatures.isCalculateFortuneOnAllBlocksEnabled )) );
-    	results.add( String.format("+.   Max Fortune Level:&b %s", 
-    										afw.isBoolean( AutoFeatures.maxFortuneLevel )) );
+    	
+    	
+    	boolean isCalcFortune = afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled );
+    	results.add( String.format(".   Calculate Fortune:&b %s", isCalcFortune) );
+    	results.add( String.format("+.  .  Max Fortune Multiplier:&b %s", 
+    										afw.getInteger( AutoFeatures.fortuneMultiplierMax )) );
+    	
+    	boolean isExtendedBukkitFortune = afw.isBoolean( AutoFeatures.isExtendBukkitFortuneCalculationsEnabled );
+    	results.add( String.format(".  .  Extended Bukkit Fortune Enabled:&b %s", 
+    										isExtendedBukkitFortune) );
+    	results.add( String.format("+.  .  Extended Bukkit Fortune Factor Percent Range Low:&b %s", 
+    										afw.getInteger( AutoFeatures.extendBukkitFortuneFactorPercentRangeLow )) );
+    	results.add( String.format("+.  .  Extended Bukkit Fortune Factor Percent Range High:&b %s", 
+    										afw.getInteger( AutoFeatures.extendBukkitFortuneFactorPercentRangeHigh )) );
+    	
+    	
+    	results.add( String.format(".  .  Calculate Alt Fortune Enabled:&b %s", ( isExtendedBukkitFortune ? "disabled" :
+    										afw.isBoolean( AutoFeatures.isCalculateAltFortuneEnabled ))) );
+    	results.add( String.format("+.  .  Calculate Alt Fortune on all Blocks:&b %s", 
+    										afw.isBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled )) );
+    	
+    	
+    	results.add( " " );
+    	
     	
     	results.add( String.format("+.   Calculate XP:&b %s", 
     										afw.isBoolean( AutoFeatures.isCalculateXPEnabled )) );

@@ -18,7 +18,13 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.4 2021-05-27
+# v3.3.0-alpha.4 2021-05-28
+
+
+* **More adjustments to auto features, but this time focusing mostly on fortune.**
+Reordered the fortune settings to now be within a group.  If it is disabled, then none of the related fortune calculations will be performed.
+Under /prison version all, added information to better explain what's controlling other settings.  For example if one setting if enabled causes another setting to be disabled, it will show that the setting is disabled.
+This should help inform the users how fortune works and what is controlled by the settings.
 
 
 * **Some significant changes have been made to the names and ordering (nesting) of the autoFeaturesConfig.yml file.**

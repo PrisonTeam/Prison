@@ -974,14 +974,14 @@ public class PrisonCommand {
     									afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled ));
     	display.addText( "&b   options.general.isCalculateFortuneEnabled %s", 
     									afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled ));
-    	display.addText( "&b   options.general.isCalculateFortuneOnAllBlocksEnabled %s", 
-    									afw.isBoolean( AutoFeatures.isCalculateFortuneOnAllBlocksEnabled ));
+    	display.addText( "&b   options.general.isCalculateAltFortuneOnAllBlocksEnabled %s", 
+    									afw.isBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled ));
     	display.addText( "&b   options.general.isCalculateXPEnabled %s", 
     									afw.isBoolean( AutoFeatures.isCalculateXPEnabled ));
     	display.addText( "&b   options.general.givePlayerXPAsOrbDrops %s", 
     									afw.isBoolean( AutoFeatures.givePlayerXPAsOrbDrops ));
-    	display.addText( "&b   options.general.maxFortuneLevel %s", 
-    									afw.getMessage( AutoFeatures.maxFortuneLevel ));
+    	display.addText( "&b   options.general.fortuneMultiplierMax %s", 
+    									afw.getMessage( AutoFeatures.fortuneMultiplierMax ));
 
     	display.addText( "&b " );
     	display.addText( "&b   options.isProcessTokensEnchantExplosiveEvents %s", 
