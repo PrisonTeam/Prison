@@ -18,7 +18,12 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.4 2021-05-25
+# v3.3.0-alpha.4 2021-05-27
+
+
+* **Some significant changes have been made to the names and ordering (nesting) of the autoFeaturesConfig.yml file.**
+The auto features is being changed around to add more granular control over how auto features work, and to fix some odd behaviors.  As such, many of the configuration names have been changed and old configurations will be reset/lost.  
+So if auto features were turned off, the will have to be turned off again within the config file after upgrading.
 
 
 * **A few changes to automanager in how and when it processes the block breaking events.**

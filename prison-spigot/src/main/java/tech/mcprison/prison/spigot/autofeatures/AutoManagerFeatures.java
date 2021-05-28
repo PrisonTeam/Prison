@@ -218,7 +218,7 @@ public class AutoManagerFeatures
 		
 		boolean isAutoSmelt = loreSmelt || isBoolean( AutoFeatures.autoSmeltEnabled ) ||
 										player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ));
-		isAutoSmelt = (mine != null || mine == null && !isBoolean( AutoFeatures.autoSmeltLimitToMines )) &&
+		isAutoSmelt = (mine != null || mine == null && !isBoolean( AutoFeatures.smeltLimitToMines )) &&
 							isAutoSmelt;
 		
 		boolean isAutoBlock = loreBlock || isBoolean( AutoFeatures.autoBlockEnabled ) ||
@@ -231,7 +231,7 @@ public class AutoManagerFeatures
 		//       Ops will have to have the perms set to actually use them.
 				
 		// AutoPickup
-		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines )) &&
+		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.pickupLimitToMines )) &&
 				isAutoPickup ) {
 			
 			count = autoFeaturePickup( block, player, itemInHand, isAutoSmelt, isAutoBlock );
@@ -276,7 +276,7 @@ public class AutoManagerFeatures
 		
 		
 		// AutoPickup - Clean up (set block to air)
-		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines )) &&
+		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.pickupLimitToMines )) &&
 				isAutoPickup ) {
 			
 			autoPickupCleanup( block, count );
@@ -966,21 +966,21 @@ public class AutoManagerFeatures
 
 		int count = 0;
 
-		boolean isAll = isBoolean( AutoFeatures.autoPickupAllBlocks );
+		boolean isAll = isBoolean( AutoFeatures.pickupAllBlocks );
 		PrisonBlock prisonBlock = block.getPrisonBlock();
 		
 		// Use this is a block name list based upon the following:  blockType:blockName if not minecraft, or blockName
-		List<String> autoPickupBlockNameList =
-				isBoolean( AutoFeatures.autoPickupBlockNameListEnabled ) ? 
-						getListString( AutoFeatures.autoPickupBlockNameList ) : null;
+		List<String> pickupBlockNameList =
+				isBoolean( AutoFeatures.pickupBlockNameListEnabled ) ? 
+						getListString( AutoFeatures.pickupBlockNameList ) : null;
 
-		if (isBoolean(AutoFeatures.autoPickupAllBlocks)) {
+		if (isBoolean(AutoFeatures.pickupAllBlocks)) {
 			count += autoPickup( true, p, itemInHand, block, isAutoSmelt, isAutoBlock );
 
 		}
 		
-		else if ( isBoolean( AutoFeatures.autoPickupBlockNameListEnabled ) && autoPickupBlockNameList.size() > 0 && 
-							autoPickupBlockNameList.contains( prisonBlock.getBlockName() ) ) {
+		else if ( isBoolean( AutoFeatures.pickupBlockNameListEnabled ) && pickupBlockNameList.size() > 0 && 
+							pickupBlockNameList.contains( prisonBlock.getBlockName() ) ) {
 			count += autoPickup( true, p, itemInHand, block, isAutoSmelt, isAutoBlock );
 		}
 			
@@ -989,51 +989,51 @@ public class AutoManagerFeatures
 			switch ( prisonBlock.getBlockName() ) {
 
 				case "cobblestone":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupCobbleStone ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupCobbleStone ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
 					break;
 
 				case "stone":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupStone ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupStone ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
 					break;
 
 				case "gold_ore":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupGoldOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupGoldOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
 					break;
 
 				case "iron_ore":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupIronOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupIronOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
 					break;
 
 				case "coal_ore":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupCoalOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupCoalOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
 					break;
 
 				case "diamond_ore":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupDiamondOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupDiamondOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
 					break;
 
 				case "redstone_ore":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupRedStoneOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupRedStoneOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
 					break;
 
 				case "emerald_ore":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupEmeraldOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupEmeraldOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
 					break;
 
 				case "quartz_ore":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupQuartzOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupQuartzOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
 					break;
 
 				case "lapis_ore":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupLapisOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupLapisOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
 					break;
 
 				case "snow_ball":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupSnowBall ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupSnowBall ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
 					break;
 
 				case "glowstone_dust": // works 1.15.2
-					count += autoPickup( isAll || isBoolean( AutoFeatures.autoPickupGlowstoneDust ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupGlowstoneDust ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
 					break;
 
 				default:
@@ -1059,7 +1059,7 @@ public class AutoManagerFeatures
 	{
 		XMaterial results = source;
 		
-		boolean isAll = isBoolean( AutoFeatures.autoSmeltAllBlocks );
+		boolean isAll = isBoolean( AutoFeatures.smeltAllBlocks );
 		
 //		XMaterial source = SpigotUtil.getXMaterial( block.getPrisonBlock() );
 		if ( source != null ) {
@@ -1068,53 +1068,53 @@ public class AutoManagerFeatures
 			{
 				case GOLD_ORE:
 				case NETHER_GOLD_ORE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltGoldOre ), source, XMaterial.GOLD_INGOT, p );
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltGoldOre ), source, XMaterial.GOLD_INGOT, p );
 					results = XMaterial.GOLD_INGOT;
 					break;
 					
 				case IRON_ORE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltIronOre ), source, XMaterial.IRON_INGOT, p );
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltIronOre ), source, XMaterial.IRON_INGOT, p );
 					results = XMaterial.IRON_INGOT;
 					break;
 					
 				case COAL_ORE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltCoalOre ), source, XMaterial.COAL, p );
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltCoalOre ), source, XMaterial.COAL, p );
 					results = XMaterial.COAL;
 					break;
 					
 				case DIAMOND_ORE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltDiamondlOre ), source, XMaterial.DIAMOND, p );
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltDiamondlOre ), source, XMaterial.DIAMOND, p );
 					results = XMaterial.DIAMOND;
 					break;
 					
 				case EMERALD_ORE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltEmeraldOre ), source, XMaterial.EMERALD, p );
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltEmeraldOre ), source, XMaterial.EMERALD, p );
 					results = XMaterial.EMERALD;
 					break;
 					
 				case LAPIS_ORE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltLapisOre ), source, XMaterial.LAPIS_LAZULI, p );
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltLapisOre ), source, XMaterial.LAPIS_LAZULI, p );
 					results = XMaterial.LAPIS_LAZULI;
 					break;
 					
 				case REDSTONE_ORE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltRedstoneOre ), source, XMaterial.REDSTONE, p );
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltRedstoneOre ), source, XMaterial.REDSTONE, p );
 					results = XMaterial.REDSTONE;
 					break;
 					
 				case NETHER_QUARTZ_ORE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltNetherQuartzOre ), source, XMaterial.QUARTZ, p );
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltNetherQuartzOre ), source, XMaterial.QUARTZ, p );
 					results = XMaterial.QUARTZ;
 					break;
 					
 				case ANCIENT_DEBRIS:
-					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltAncientDebris ), source, XMaterial.NETHERITE_SCRAP, p );
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltAncientDebris ), source, XMaterial.NETHERITE_SCRAP, p );
 					results = XMaterial.NETHERITE_SCRAP;
 					break;
 
 				// v1.17 !!
 //				case COPPER_ORE:
-//					autoSmelt( isAll || isBoolean( AutoFeatures.autoSmeltIronOre ), source, XMaterial.COPPER_INGOT, p );
+//					autoSmelt( isAll || isBoolean( AutoFeatures.smeltIronOre ), source, XMaterial.COPPER_INGOT, p );
 //					results = XMaterial.COPPER_INGOT;
 //					break;
 					
@@ -1129,7 +1129,7 @@ public class AutoManagerFeatures
 
 	protected void autoFeatureBlock( Player p, XMaterial source  ) {
 
-		boolean isAll = isBoolean( AutoFeatures.autoSmeltAllBlocks );
+		boolean isAll = isBoolean( AutoFeatures.smeltAllBlocks );
 
 		if ( source != null ) {
 			

@@ -280,7 +280,7 @@ public class OnBlockBreakEventCore
     		}
     		
     		// This is where the processing actually happens:
-    		else if ( mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines ) ) {
+    		else if ( mine != null || mine == null && !isBoolean( AutoFeatures.pickupLimitToMines ) ) {
     			
     			// Set the mine's PrisonBlockTypes for the block. Used to identify custom blocks.
     			// Needed since processing of the block will lose track of which mine it came from.
@@ -443,7 +443,7 @@ public class OnBlockBreakEventCore
     		
     		// now process all blocks (non-monitor):
     		else if ( isTEExplosiveEnabled && 
-    				( mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines )) ) {
+    				( mine != null || mine == null && !isBoolean( AutoFeatures.pickupLimitToMines )) ) {
     			
     			// have to go through all blocks since some blocks may be outside the mine.
     			// but terminate search upon first find:
@@ -684,7 +684,7 @@ public class OnBlockBreakEventCore
 
     		// now process all blocks (non-monitor):
     		else if ( isCEBlockExplodeEnabled && 
-    				( mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines )) ) {
+    				( mine != null || mine == null && !isBoolean( AutoFeatures.pickupLimitToMines )) ) {
     			
     			// have to go through all blocks since some blocks may be outside the mine.
     			// but terminate search upon first find:
@@ -796,7 +796,7 @@ public class OnBlockBreakEventCore
 		
 		// Do not have to check if auto manager is enabled because it isn't if it's calling this function:
 //			boolean isAutoManagerEnabled = aMan.isBoolean( AutoFeatures.isAutoManagerEnabled );
-		boolean isProcessNormalDropsEnabled = isBoolean( AutoFeatures.isProcessNormalDropsEvents );
+		boolean isProcessNormalDropsEnabled = isBoolean( AutoFeatures.handleNormalDropsEvents );
 		
 		
 		if ( isProcessNormalDropsEnabled ) {
