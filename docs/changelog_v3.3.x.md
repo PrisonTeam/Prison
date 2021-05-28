@@ -21,6 +21,11 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.4 2021-05-28
 
 
+* **Had to redo how crazy enchants were being initialized.**
+Need to get everything in the try catch for overall safety, but had to add NoClassDefFoundError too.
+This prevents this from failing when CE is not installed, but hwne it is, it allows the player to pickup the pickaxe enchantment experience bonus.
+
+
 * **Adjustments to the calculate bukkit extended fortune.**
 Got rid of the int values and are now using doubles in the calculations so the results are finer grained and actually have a better chance of varying.
 Also added a debug statement to print out details when debugging is enabled through /prison debug toggling.

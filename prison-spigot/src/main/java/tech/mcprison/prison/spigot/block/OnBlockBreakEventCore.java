@@ -1449,24 +1449,23 @@ public class OnBlockBreakEventCore
 	private int checkCrazyEnchant( Player player, Block block, ItemStack item ) {
 		int bonusXp = 0;
 		
-		if ( isCrazyEnchantEnabled() == null ) {
-			try {
+		try {
+			if ( isCrazyEnchantEnabled() == null ) {
 				Class.forName( 
 						"tech.mcprison.prison.spigot.integrations.IntegrationCrazyEnchantmentsPickaxes", false, 
-								this.getClass().getClassLoader() );
+						this.getClass().getClassLoader() );
 				setCrazyEnchantEnabled( Boolean.TRUE );
 			}
-			catch ( ClassNotFoundException e ) {
-				setCrazyEnchantEnabled( Boolean.FALSE );
-			}
-		
-		}
-		
-		if ( isCrazyEnchantEnabled().booleanValue() && 
-				item != null && IntegrationCrazyEnchantmentsPickaxes.getInstance().isEnabled() ) {
 			
-			bonusXp = IntegrationCrazyEnchantmentsPickaxes.getInstance()
+			if ( isCrazyEnchantEnabled() != null && isCrazyEnchantEnabled().booleanValue() && 
+					item != null && IntegrationCrazyEnchantmentsPickaxes.getInstance().isEnabled() ) {
+				
+				bonusXp = IntegrationCrazyEnchantmentsPickaxes.getInstance()
 						.getPickaxeEnchantmentExperienceBonus( player, block, item );
+			}
+		}
+		catch ( NoClassDefFoundError | Exception e ) {
+			setCrazyEnchantEnabled( Boolean.FALSE );
 		}
 		
 		return bonusXp;
