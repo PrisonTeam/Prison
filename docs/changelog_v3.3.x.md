@@ -18,12 +18,17 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.4 2021-05-28
+# v3.3.0-alpha.4 2021-05-29
+
+
+* **Changes to the /prison debug options by enabling the use of DebugTargets so as to only turn on specific debug logging entries within prison, instead of all of them. ** 
+This will give a lot more control over helping players figure out what's going on.
+When using the `/prison debug` command, it will show the current status and all available debug targets. Can use the key words of 'on' and 'off', or without them, everything is just toggled on and off.  If some targets are enabled and then the global commands are used, the targets will be cleared.  So if `/prison debug blockBreak` is enabled, then no other debugging messages are shown.  But then if `/prison debug` is issued, then that blockBreak target is removed, but the global debug is enabled.  Then a second use of `/prison debug` will turn off all logging.  Of course instead of cycling through the gobals, the player can also turn off **blockBreak** logging with any of the following: `/prison debug blockBreak` (toggled), `/prison debug off blockBreak`, or `/prison debug blockBreak off` since position of **off** does not matter.
 
 
 * **Had to redo how crazy enchants were being initialized.**
 Need to get everything in the try catch for overall safety, but had to add NoClassDefFoundError too.
-This prevents this from failing when CE is not installed, but hwne it is, it allows the player to pickup the pickaxe enchantment experience bonus.
+This prevents this from failing when CE is not installed, but when it is, it allows the player to pickup the pickaxe enchantment experience bonus.
 
 
 * **Adjustments to the calculate bukkit extended fortune.**

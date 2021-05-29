@@ -31,6 +31,7 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventCore;
@@ -1636,7 +1637,8 @@ public class AutoManagerFeatures
 				bukkitExtendedFortuneBlockCount = (int) (blocks.getAmount() * adjFortuneMultiplierCapped);
 				
 					
-				if ( Output.get().isDebug() ) {
+				if ( Output.get().isDebug( DebugTarget.blockBreakFortune ) ) {
+					
 					String message = "### calculateBukkitExtendedFortuneBlockCount ### " +
 							"fortuneLevel: %d  defaultBlocks: %d  fortMult: %f  " +
 							"rndRngLow: %f  rndRngHigh: %f  rndFactor: %f  adjFortMult: %f  " +
@@ -1647,7 +1649,7 @@ public class AutoManagerFeatures
 							randomFactor, adjustedFortuneMultiplier, 
 							adjFortuneMultiplierCapped, bukkitExtendedFortuneBlockCount );
 					
-					Output.get().logDebug( message );
+					Output.get().logDebug( DebugTarget.blockBreakFortune, message );
 				}
 			}
 			

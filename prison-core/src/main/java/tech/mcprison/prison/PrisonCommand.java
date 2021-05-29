@@ -23,6 +23,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -42,6 +43,7 @@ import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.DisplayComponent;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.troubleshoot.TroubleshootResult;
 import tech.mcprison.prison.troubleshoot.Troubleshooter;
@@ -1023,15 +1025,37 @@ public class PrisonCommand {
     
     
     @Command(identifier = "prison debug", 
-    		description = "For internal use only. Do not use until instructed since this is not hookedup.", 
+    		description = "For internal use only. Do not use unless instructed.", 
     		onlyPlayers = false, permissions = "prison.debug" )
-    public void toggleDebug(CommandSender sender ) {
+    public void toggleDebug(CommandSender sender,
+    		@Wildcard(join=true)
+    		@Arg(name = "targets", def = " ",
+    				description = "Enable or disable a debugging target. " +
+    				"Use 'targets' to list all available targets.  Use 'on' or 'off' to toggle " +
+    				"on and off individual targets, or all targets if no target is specified.") String targets ) {
     	
-    	Output.get().setDebug( !Output.get().isDebug() );
+    	Output.get().applyDebugTargets( targets );
     	
-    	String message = "Debug logging: " + (Output.get().isDebug() ? "enabled" : "disabled");
-
+    	String message = "Global Debug Logging is " + (Output.get().isDebug() ? "enabled" : "disabled");
     	sender.sendMessage( message );
+    	
+    	Set<DebugTarget> activeDebugTargets = Output.get().getActiveDebugTargets();
+    	
+    	if ( activeDebugTargets.size() > 0 ) {
+    		message = ". Active Debug Targets:";
+    		sender.sendMessage( message );
+    		
+    		for ( DebugTarget target : activeDebugTargets )
+			{
+    			message = String.format( ". . Target: %s", target.name() );
+    			sender.sendMessage( message );
+			}
+    	}
+    	
+    	String validTargets = Output.get().getDebugTargetsString();
+    	message = String.format( ". Valid Targets: %s", validTargets );
+    	sender.sendMessage( message );
+
     }
     
     

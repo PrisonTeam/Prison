@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.MissingFormatArgumentException;
 import java.util.Set;
+import java.util.TreeSet;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.CommandSender;
@@ -45,19 +46,52 @@ public class Output {
     public String DEBUG_PREFIX = gen("Debug");
 
     private boolean debug = false;
-    private Set<DebugType> activeDebugTypes;
+    private Set<DebugTarget> activeDebugTargets;
 
-    public enum DebugType {
-    	blockbreak,
+    public enum DebugTarget {
+    	all,
+    	on,
+    	off,
+    	blockBreak,
+    	blockBreakFortune,
     	durability
     	;
+    	
+    	public static DebugTarget fromString( String target ) {
+    		DebugTarget results = null;
+    		
+    		for ( DebugTarget t : values() ) {
+				if ( t.name().equalsIgnoreCase( target ) ) {
+					results = t;
+				}
+			}
+    		
+    		return results;
+    	}
+    	
+    	public static TreeSet<DebugTarget> fromMultiString( String targets ) {
+    		TreeSet<DebugTarget> results = new TreeSet<>();
+    		
+    		if ( targets != null && !targets.trim().isEmpty() ) {
+    			
+    			for ( String trgt : targets.split( " " ) ) {
+    				DebugTarget t = fromString( trgt );
+    				if ( t != null ) {
+    					results.add( t );
+    				}
+    			}
+    		}
+    		
+    		return results;
+    	}
     }
+    
     
 
     private Output() {
         instance = this;
         
-        this.activeDebugTypes = new HashSet<>();
+        this.activeDebugTargets = new HashSet<>();
     }
 
     // Public methods
@@ -210,8 +244,12 @@ public class Output {
     	}
     }
     
-    public void logDebug( DebugType debugType, String message, Object... args) {
-    	logDebug(message, args );
+    public void logDebug( DebugTarget debugTarget, String message, Object... args) {
+    	
+    	if ( isDebug( debugTarget ) ) {
+    		
+    		logDebug(message, args );
+    	}
     	
 //    	// The following is not yet enabled since the user interfaces are not in place to manage the set:
 //    	if ( isDebug() && debugType != null && getActiveDebugTypes().contains( debugType ) ) {
@@ -219,6 +257,73 @@ public class Output {
 //    	}
     }
     
+    public String getDebugTargetsString() {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	for ( DebugTarget target : DebugTarget.values() ) {
+			if ( sb.length() > 0 ) {
+				sb.append( ", " );
+			}
+    		sb.append( target.name() );
+		}
+    	
+    	return sb.toString();
+    }
+    
+    public void applyDebugTargets( String targets ) {
+    	
+    	TreeSet<DebugTarget> trgts = DebugTarget.fromMultiString( targets );
+    	
+    	if ( trgts.size() > 0 ) {
+    		applyDebugTargets( trgts );
+    	}
+    	else {
+    		// No targets were set, so just toggle the debugger:
+    		Output.get().setDebug( !Output.get().isDebug() );
+
+    		// Clear all existing targets:
+    		getActiveDebugTargets().clear();
+    	}
+    }
+    
+    public void applyDebugTargets( TreeSet<DebugTarget> targets ) {
+    	
+    	boolean onTarget = targets.contains( DebugTarget.on );
+    	
+    	// offTarget cannot be set if onTarget is on:
+    	boolean offTarget = !onTarget && targets.contains( DebugTarget.off );
+    	
+    	targets.remove( DebugTarget.on );
+    	targets.remove( DebugTarget.off );
+
+    	for ( DebugTarget target : targets ) {
+			
+    		if ( onTarget ) {
+    			getActiveDebugTargets().add( target );
+    		}
+    		else if ( offTarget ) {
+    			getActiveDebugTargets().remove( target );
+    		}
+    		else {
+    			// Toggle the settings:
+    			boolean hasIt = getActiveDebugTargets().contains( target );
+    			if ( hasIt ) {
+    				getActiveDebugTargets().remove( target );
+    			}
+    			else {
+    				getActiveDebugTargets().add( target );
+    			}
+    		}
+    		
+		}
+
+    	// No global changes here:
+    	// Output.get().setDebug( !Output.get().isDebug() );
+    }
+    
+    public boolean isDebug( DebugTarget debugTarget ) {
+    	return isDebug() || getActiveDebugTargets().contains( debugTarget );
+    }
     public boolean isDebug() {
 		return debug;
 	}
@@ -226,11 +331,12 @@ public class Output {
 		this.debug = debug;
 	}
 
-	public Set<DebugType> getActiveDebugTypes() {
-		return activeDebugTypes;
+
+	public Set<DebugTarget> getActiveDebugTargets() {
+		return activeDebugTargets;
 	}
-	public void setActiveDebugTypes( Set<DebugType> activeDebugTypes ) {
-		this.activeDebugTypes = activeDebugTypes;
+	public void setActiveDebugTargets( Set<DebugTarget> activeDebugTargets ) {
+		this.activeDebugTargets = activeDebugTargets;
 	}
 
 	/**

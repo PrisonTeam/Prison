@@ -28,7 +28,7 @@ import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.output.Output.DebugType;
+import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
@@ -320,7 +320,7 @@ public class OnBlockBreakEventCore
     		
     	}
     	
-    	Output.get().logDebug( DebugType.blockbreak, debugInfo );
+    	Output.get().logDebug( DebugTarget.blockBreak, debugInfo );
 	}
 
 
@@ -497,7 +497,7 @@ public class OnBlockBreakEventCore
     			
     	}
     	
-    	Output.get().logDebug( DebugType.blockbreak, debugInfo );
+    	Output.get().logDebug( DebugTarget.blockBreak, debugInfo );
 	}
 
 
@@ -739,7 +739,7 @@ public class OnBlockBreakEventCore
 
 		}
     	
-    	Output.get().logDebug( DebugType.blockbreak, debugInfo );
+    	Output.get().logDebug( DebugTarget.blockBreak, debugInfo );
 
 	}
 	
@@ -1222,7 +1222,7 @@ public class OnBlockBreakEventCore
 			int durability = compat.getDurability( itemInHand );
 			
 			
-			Output.get().logDebug( DebugType.durability, "calculateAndApplyDurability: maxDurability=" + 
+			Output.get().logDebug( DebugTarget.durability, "calculateAndApplyDurability: maxDurability=" + 
 							maxDurability + " durability=" + durability + "  inHand=" + 
 							itemInHand.getName() );
 			
