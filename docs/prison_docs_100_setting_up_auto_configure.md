@@ -184,6 +184,8 @@ Please see the short section at the top of this document titled: **Overview**.
 It is strongly suggested to run this command from the console so it will be easier to see the messages and any notifications it may provide.
 
 
+**Update 2021-05-28:** The latest version of prison autoConfigure, that has not yet been released even in alpha, has eliminated the generation of the permissions when building the ranks and mines.  This is because some of the main core features within prison are now using Rank Associations to determine if a player has access to `/mines tp` command and also if they have access to each mine.  This new feature of using Rank Associations will only work for mines that are linked to ranks.
+
 
 **IMPORTANT:** If you run this command without having a permission plugin setup, then the auto configure process will not generate any rank commands for dealing with permissions.  You will have to add all of them manually later on.
 

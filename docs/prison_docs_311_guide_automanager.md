@@ -106,3 +106,60 @@ To enable the processing of the Crazy Enchant BlockExplodeEvent enable this conf
 
 
 
+# BlockEvents - Fortune Features
+
+
+Prison provides a few options for controlling fortune.  But before those options are discussed, the process of how fortune is calculated may be a very important topic to understand since it's not a simple calculation.
+
+
+Initially, prison uses Bukkit's Block.getDrops() function to get a set of ItemStacks of the drops related to the block that is being broken.  These drops are not fully inclusive as you would find within a vanilla game, but are somewhat limited, and they do vary from one version of spigot to another (1.8 vs 1.16 could be drastically different).
+
+
+So to correct for omissions, such as a percent chance flint would be dropped with mining of gravel, and to adjust for the limited range of fortune within the vanilla server, prison has to make adjustments. 
+
+
+With Fortune, the standard is for fortune 1 through 3.  But with OP prison setups, Prison needs to support higher fortune levels.  
+
+
+With a standard block break event, you break one block and you get one drop. That is standard without fortune.  So the way Prison detects if fortune is applied, is if there is more than one block provided for a drop.  With fortune 3 being the highest possible level to influence the drops, Prison checks the tool to see what it's fortune level is, then uses that within the calculations.
+
+
+So if the tool has a fortune level of three or less, then Prison does nothing with the drops since everything is already taken care of.  But if the fortune level is greater than 3, then Prison must make adjustments to the drops.   
+
+
+The way prison extends the drops for higher fortune levels for tools with a fortune over three, is to divide the standard drop by three (since it maxes out at three), then multiplies that value by the actual fortune level on the tool.  The reason is that all of the random variables that went in to calculating the standard drop have already been applied, so all that needs to be done is to extend the total drop amount to cover the tool's actual fortune level.  Since a fortune 3 has a higher chance to adding more to the drop compared to a fortune 1, then we can assume those random chances are reflected in the standard drop.  This also means prison should not apply a random chance to the drops since that chance was already applied. 
+
+
+One issue with extending the fortune on the standard drops is that the amounts can appear to be much higher than what would be expected.  So prison provides a way to apply a multiplier to the results to pull down that generated value.  
+
+
+**If Auto Pickup is enabled**
+
+* Bukkit's Block.getDrops()
+* If drops == 1 then no fortune has been added.
+  * If tools fortune enchantment > 3 then apply
+* If drops > 1 then fortune has been already applied by bukkit
+  * If tool's fortune enchantment <= 3, then do not apply fortune
+  * If tool's fortune enchantment > 3, then need to calculate the additional fortune.
+    * Formula: drops / 3 * tool_fortune_level = raw_adjusted_drops
+    * Formula: raw_adjusted_drops x 
+
+
+**If Auto Pickup is disabled, and Process Normal Drops is Enabled**
+
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+# BlockEvents - Silk Touch Features
+
+
+At this time, Prison does not provide any support for silk touch.  Internally the basics are in place, but there has never been a request to enable anything related to silk touch within the mines.
+
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+

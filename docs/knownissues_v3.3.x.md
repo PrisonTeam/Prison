@@ -3,6 +3,51 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
+* Auto Features
+ - Add a reload for them.
+ - Enable alt fortune calculations as a fall through backup calculation if no fortune is provided for the given block  
+
+
+* /ranks autoConfigure:
+  * Show percent breakdown of blocks
+  * Option to name all mines: list of mines.  Permit non A, B, C naming.
+  * list world guard commands to protect the world (would then have functional world)
+  
+
+* If no ranks are defined and the placeholders are attempted to be used, it is causing some errors.  No economy plugin so Ranks did not load. {prison_rank_tag} was causing an error with /prison placeholder test.  "Server: Invalid json. Unterminated escape sequence..."
+The ranks module did not load due to no economy.
+
+
+DONE * Add `/prison debug` targets so specific kinds of debug messages can be turned on and off so it does not flood the console with tons of irrelevant messages.
+
+
+* Add a message count to the `/prison debug` features where it will only print a specific number of messages before turning off the logging for those targets.
+
+
+DONE * replace ranks with mine related commands with ranks.  
+  - can eliminate permissions on /mtp and mine accessperms.
+
+
+DONE * Add system stats to `/prison version`
+
+
+* Support for Personal Mines:
+  - World support - main mines & Personal mines
+
+
+* World support: Only have prison active in the worlds specified?
+  - World-main-mines:
+  - World-personal-mines:
+  
+* Or have mine groups where you can specify one world for a given group.
+
+  
+* world specific exclusions:
+ - Have a world list that will shutdown prison commands when issued in that world:
+   - command handler should ignore those worlds
+   - chat handler should ignore those worlds
+
+
 DONE: * Issue with removing a BlockEvent by clicking on the remove link.  It converts all of the & to the raw code.
  - `/mines blockEvent remove` now uses line numbers so this is no longer an issue.
  
@@ -11,7 +56,11 @@ DONE: * Issue with removing a BlockEvent by clicking on the remove link.  It con
   May be able to provide a way to force the ranks module loading so that way it can just "assume" everything is working.
   
   
+* Ranks have been converted to have all messages moved to files:
 * UTF-8 support.
+ - If UTF-8 characters do not work, then they must be converted with a tool similar to this website:
+ - http://www.pinyin.info/tools/converter/chars2uninumbers.html
+ 
 
 
 * Force the loading of Ranks module if there is a failure.  Found that FAWEs is screwing up the loading sequence of prison when dealing with CMI, and as such, ranks are failing to load since CMI loads after prison.  Setting softdepend for all of these do not help.
