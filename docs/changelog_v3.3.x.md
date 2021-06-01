@@ -18,7 +18,15 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.4 2021-05-29
+# v3.3.0-alpha.4 2021-06-01
+
+
+* **Externalized messages for the RanksCommmands.**
+All of the details with the messages has been put in to the new class RanksCommandMessages.
+Moved some unused RanksCommands to the RanksCommandsPerms class.  May eliminate them, or hook them up later.  Probably eliminate them.
+
+
+* **Updates to a few different documents.**
 
 
 * **Changes to the /prison debug options by enabling the use of DebugTargets so as to only turn on specific debug logging entries within prison, instead of all of them. ** 
