@@ -21,6 +21,10 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.4 2021-06-01
 
 
+* **Added a ranks_rankup__version number to the en_US.properties file so as to help track future changes.**
+At this time, nothing is automated, but this is a manual verification version id.
+
+
 * **Reposition the location of the durability debug message.**
 This allows only constructing it when the debugging messages are enabled for this target type which will reduce unneeded overhead when debugging is turned off.
 Also repositioning the message allows more information to be included so it's actually more useful too.
