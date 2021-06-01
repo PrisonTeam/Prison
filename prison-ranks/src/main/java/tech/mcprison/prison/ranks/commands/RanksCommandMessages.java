@@ -19,7 +19,7 @@ public class RanksCommandMessages
 		super( cmdGroup );
 	}
 	
-	protected void rankAlreadyExists( CommandSender sender, String rankName ) {
+	protected void rankAlreadyExistsMsg( CommandSender sender, String rankName ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__rank_already_exists" )
 				.withReplacements( 
@@ -27,13 +27,13 @@ public class RanksCommandMessages
 				.sendTo( sender );
 	}
 	
-	protected void rankNameRequired( CommandSender sender ) {
+	protected void rankNameRequiredMsg( CommandSender sender ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__rank_name_required" )
 				.sendTo( sender );
 	}
 	
-	protected void ladderDoesNotExist( CommandSender sender, String ladderName ) {
+	protected void ladderDoesNotExistMsg( CommandSender sender, String ladderName ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ladder_does_not_exist" )
 				.withReplacements( 
@@ -41,7 +41,7 @@ public class RanksCommandMessages
 				.sendTo( sender );
 	}
 	
-	protected void rankDoesNotExist( CommandSender sender, String rankName ) {
+	protected void rankDoesNotExistMsg( CommandSender sender, String rankName ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__rank_does_not_exist" )
 				.withReplacements( 
@@ -49,13 +49,13 @@ public class RanksCommandMessages
 				.sendTo( sender );
 	}
 	
-	protected void rankCannotBeCreated( CommandSender sender ) {
+	protected void rankCannotBeCreatedMsg( CommandSender sender ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__rank_cannot_be_created" )
 				.sendTo( sender );
 	}
 	
-	protected void rankCreatedSuccessfully( CommandSender sender, String rankName,
+	protected void rankCreatedSuccessfullyMsg( CommandSender sender, String rankName,
 			String ladderName, String tag ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__rank_created_successfully" )
@@ -64,7 +64,7 @@ public class RanksCommandMessages
 				.sendTo( sender );
 	}
 	
-	protected void errorCouldNotSaveLadder( CommandSender sender, 
+	protected void errorCouldNotSaveLadderMsg( CommandSender sender, 
 					String ladderName, IOException e ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__error_saving_ladder" )
@@ -82,7 +82,7 @@ public class RanksCommandMessages
 	}
 	
 	
-	protected void autoConfigPreexistingRankMineWarning( CommandSender sender, 
+	protected void autoConfigPreexistingRankMineWarningMsg( CommandSender sender, 
 			int rankCount, int mineCount ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__auto_config_preexisting_warning" )
@@ -91,7 +91,7 @@ public class RanksCommandMessages
 				.sendTo( sender );
 	}
 	
-	protected void autoConfigForceWarning( CommandSender sender ) {
+	protected void autoConfigForceWarningMsg( CommandSender sender ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__auto_config_force_warning" )
 				.sendTo( sender );
@@ -99,7 +99,7 @@ public class RanksCommandMessages
 	
 	
 	
-	protected void autoConfigInvalidOptions( CommandSender sender, 
+	protected void autoConfigInvalidOptionsMsg( CommandSender sender, 
 			String optionHelp, String options ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__auto_config_invalid_options" )
@@ -108,7 +108,7 @@ public class RanksCommandMessages
 				.sendTo( sender );
 	}
 	
-	protected void autoConfigRankExistsSkip( CommandSender sender, 
+	protected void autoConfigRankExistsSkipMsg( CommandSender sender, 
 			String cRank) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__auto_config_invalid_options" )
@@ -117,13 +117,13 @@ public class RanksCommandMessages
 				.sendTo( sender );
 	}
 	
-	protected void autoConfigNoRanksCreated( CommandSender sender ) {
+	protected void autoConfigNoRanksCreatedMsg( CommandSender sender ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__auto_config_no_ranks_created" )
 				.sendTo( sender );
 	}
 	
-	protected void autoConfigRanksCreated( CommandSender sender, 
+	protected void autoConfigRanksCreatedMsg( CommandSender sender, 
 			String value) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__auto_config_ranks_created" )
@@ -133,13 +133,13 @@ public class RanksCommandMessages
 	}
 	
 	
-	protected void autoConfigNoRankCmdsCreated( CommandSender sender ) {
+	protected void autoConfigNoRankCmdsCreatedMsg( CommandSender sender ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__auto_config_no_rank_cmds_created" )
 				.sendTo( sender );
 	}
 	
-	protected void autoConfigRankCmdsCreated( CommandSender sender, 
+	protected void autoConfigRankCmdsCreatedMsg( CommandSender sender, 
 			String value) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__auto_config_rank_cmds_created" )
@@ -149,13 +149,13 @@ public class RanksCommandMessages
 	}
 	
 	
-	protected void autoConfigNoMinesCreated( CommandSender sender ) {
+	protected void autoConfigNoMinesCreatedMsg( CommandSender sender ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__auto_config_no_mines_created" )
 				.sendTo( sender );
 	}
 	
-	protected void autoConfigMinesCreated( CommandSender sender, 
+	protected void autoConfigMinesCreatedMsg( CommandSender sender, 
 			String value) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__auto_config_mines_created" )
@@ -164,13 +164,13 @@ public class RanksCommandMessages
 				.sendTo( sender );
 	}
 	
-	protected void autoConfigNoLinkage( CommandSender sender ) {
+	protected void autoConfigNoLinkageMsg( CommandSender sender ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__auto_config_no_linkage" )
 				.sendTo( sender );
 	}
 	
-	protected void autoConfigLinkageCount( CommandSender sender, 
+	protected void autoConfigLinkageCountMsg( CommandSender sender, 
 			String value) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__auto_config_linkage_count" )
@@ -181,13 +181,13 @@ public class RanksCommandMessages
 	
 
 	
-	protected void rankCannotBeRemoved( CommandSender sender ) {
+	protected void rankCannotBeRemovedMsg( CommandSender sender ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__rank_cannot_remove" )
 				.sendTo( sender );
 	}
 	
-	protected void rankWasRemoved( CommandSender sender, 
+	protected void rankWasRemovedMsg( CommandSender sender, 
 			String rankName) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__rank_was_removed" )
@@ -196,7 +196,7 @@ public class RanksCommandMessages
 				.sendTo( sender );
 	}
 	
-	protected void rankDeleteError( CommandSender sender, 
+	protected void rankDeleteErrorMsg( CommandSender sender, 
 			String rankName) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__rank_delete_error" )
@@ -205,7 +205,7 @@ public class RanksCommandMessages
 				.sendTo( sender );
 	}
 	
-	protected String ranksListHeader( String ladderName) {
+	protected String ranksListHeaderMsg( String ladderName) {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_list_header" )
 				.withReplacements( 
@@ -213,13 +213,13 @@ public class RanksCommandMessages
 				.localize();
 	}
 	
-	protected String ranksListClickToEdit() {
+	protected String ranksListClickToEditMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_list_click_to_edit" )
 				.localize();
 	}
 	
-	protected String ranksListCommandCount( int commandCount ) {
+	protected String ranksListCommandCountMsg( int commandCount ) {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_list_command_count" )
 				.withReplacements( 
@@ -227,7 +227,7 @@ public class RanksCommandMessages
 				.localize();
 	}
 	
-	protected String ranksListCurrency( String currency ) {
+	protected String ranksListCurrencyMsg( String currency ) {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_list_currency" )
 				.withReplacements( 
@@ -235,25 +235,25 @@ public class RanksCommandMessages
 				.localize();
 	}
 	
-	protected String ranksListClickToView() {
+	protected String ranksListClickToViewMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_list_click_to_view" )
 				.localize();
 	}
 	
-	protected String ranksListClickToView2() {
+	protected String ranksListClickToView2Msg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_list_click_to_view2" )
 				.localize();
 	}
 	
-	protected String ranksListCreateNewRank() {
+	protected String ranksListCreateNewRankMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_list_create_new_rank" )
 				.localize();
 	}
 	
-	protected String ranksListYouMayTry() {
+	protected String ranksListYouMayTryMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_list_you_may_try" )
 				.localize();
@@ -261,7 +261,7 @@ public class RanksCommandMessages
 	
 	
 	
-	protected String ranksInfoHeader( String rankName ) {
+	protected String ranksInfoHeaderMsg( String rankName ) {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_info_header" )
 				.withReplacements( 
@@ -269,7 +269,7 @@ public class RanksCommandMessages
 				.localize();
 	}
 	
-	protected String ranksInfoName( String rankName ) {
+	protected String ranksInfoNameMsg( String rankName ) {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_info_name" )
 				.withReplacements( 
@@ -277,7 +277,7 @@ public class RanksCommandMessages
 				.localize();
 	}
 	
-	protected String ranksInfoTag( String tag ) {
+	protected String ranksInfoTagMsg( String tag ) {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_info_tag" )
 				.withReplacements( 
@@ -285,7 +285,7 @@ public class RanksCommandMessages
 				.localize();
 	}	
 	
-	protected String ranksInfoLadder( String ladderName ) {
+	protected String ranksInfoLadderMsg( String ladderName ) {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_info_ladder" )
 				.withReplacements( 
@@ -293,13 +293,13 @@ public class RanksCommandMessages
 				.localize();
 	}	
 	
-	protected String ranksInfoNotLinkedToMines() {
+	protected String ranksInfoNotLinkedToMinesMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_info_not_linked_to_mines" )
 				.localize();
 	}
 	
-	protected String ranksInfoLinkedMines( String mines ) {
+	protected String ranksInfoLinkedMinesMsg( String mines ) {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_info_linked_mines" )
 				.withReplacements( 
@@ -307,7 +307,7 @@ public class RanksCommandMessages
 				.localize();
 	}
 	
-	protected String ranksInfoCost( double cost ) {
+	protected String ranksInfoCostMsg( double cost ) {
 		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_info_cost" )
@@ -316,7 +316,7 @@ public class RanksCommandMessages
 				.localize();
 	}
 	
-	protected String ranksInfoCurrency( String currency ) {
+	protected String ranksInfoCurrencyMsg( String currency ) {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_info_currency" )
 				.withReplacements( 
@@ -324,7 +324,7 @@ public class RanksCommandMessages
 				.localize();
 	}
 	
-	protected String ranksInfoPlayersWithRank( double playerCount ) {
+	protected String ranksInfoPlayersWithRankMsg( double playerCount ) {
 		DecimalFormat dFmt = new DecimalFormat("#,##0");
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_info_players_with_rank" )
@@ -333,7 +333,7 @@ public class RanksCommandMessages
 				.localize();
 	}
 	
-	protected String ranksInfoRankId( int rankId ) {
+	protected String ranksInfoRankIdMsg( int rankId ) {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_info_cost" )
 				.withReplacements( 
@@ -341,19 +341,19 @@ public class RanksCommandMessages
 				.localize();
 	}
 
-	protected String ranksInfoRankDeleteMessage() {
+	protected String ranksInfoRankDeleteMessageMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_info_rank_delete_message" )
 				.localize();
 	}
 	
-	protected String ranksInfoRankDeleteToolTip() {
+	protected String ranksInfoRankDeleteToolTipMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_info_rank_delete_tool_tip" )
 				.localize();
 	}
 	
-	protected void rankSetCostSuccessful( CommandSender sender, 
+	protected void rankSetCostSuccessfulMsg( CommandSender sender, 
 			String rankName, double cost ) {
 		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
 		PrisonRanks.getInstance().getRanksMessages()
@@ -364,7 +364,7 @@ public class RanksCommandMessages
 				.sendTo( sender );
 	}
 
-	protected void rankSetCurrencyNotSpecified( CommandSender sender, 
+	protected void rankSetCurrencyNotSpecifiedMsg( CommandSender sender, 
 			String currency ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__set_currency_not_specified" )
@@ -373,7 +373,7 @@ public class RanksCommandMessages
 				.sendTo( sender );
 	}
 
-	protected void rankSetCurrencyNoCurrencyToClear( CommandSender sender, 
+	protected void rankSetCurrencyNoCurrencyToClearMsg( CommandSender sender, 
 			String rankName ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__set_currency_no_currency_to_clear" )
@@ -382,7 +382,7 @@ public class RanksCommandMessages
 				.sendTo( sender );
 	}
 	
-	protected void rankSetCurrencyCleared( CommandSender sender, 
+	protected void rankSetCurrencyClearedMsg( CommandSender sender, 
 			String rankName ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__set_currency_cleared" )
@@ -391,7 +391,7 @@ public class RanksCommandMessages
 				.sendTo( sender );
 	}
 	
-	protected void rankSetCurrencyNoActiveSupport( CommandSender sender, 
+	protected void rankSetCurrencyNoActiveSupportMsg( CommandSender sender, 
 			String currency ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__set_currency_no_active_support" )
@@ -400,7 +400,7 @@ public class RanksCommandMessages
 				.sendTo( sender );
 	}
 	
-	protected void rankSetCurrencySuccessful( CommandSender sender, 
+	protected void rankSetCurrencySuccessfulMsg( CommandSender sender, 
 			String rankName, String currency ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__set_currency_successful" )
@@ -410,19 +410,19 @@ public class RanksCommandMessages
 	}
 	
 	
-	protected void rankSetTagInvalid( CommandSender sender ) {
+	protected void rankSetTagInvalidMsg( CommandSender sender ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__set_tag_invalid" )
 				.sendTo( sender );
 	}
 	
-	protected void rankSetTagNoChange( CommandSender sender ) {
+	protected void rankSetTagNoChangeMsg( CommandSender sender ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__set_tag_no_change" )
 				.sendTo( sender );
 	}
 	
-	protected void rankSetTagCleared( CommandSender sender, 
+	protected void rankSetTagClearedMsg( CommandSender sender, 
 			String rankName ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__set_tag_cleared" )
@@ -431,7 +431,7 @@ public class RanksCommandMessages
 				.sendTo( sender );
 	}
 	
-	protected void rankSetTagSucess( CommandSender sender, 
+	protected void rankSetTagSucessMsg( CommandSender sender, 
 			String rankName ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__set_tag_success" )
@@ -442,13 +442,13 @@ public class RanksCommandMessages
 
 
 	
-	protected void ranksPlayerOnline( CommandSender sender ) {
+	protected void ranksPlayerOnlineMsg( CommandSender sender ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_must_be_online" )
 				.sendTo( sender );
 	}
 
-	protected String ranksPlayerLadderInfo( String playerName, 
+	protected String ranksPlayerLadderInfoMsg( String playerName, 
 					String ladderName, String rankName ) {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_ladder_info" )
@@ -457,13 +457,13 @@ public class RanksCommandMessages
 				.localize();
 	}
 
-	protected String ranksPlayerLadderHighestRank() {
+	protected String ranksPlayerLadderHighestRankMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_ladder_highest_rank" )
 				.localize();
 	}
 
-	protected String ranksPlayerLadderNextRank( String nextRankName, 
+	protected String ranksPlayerLadderNextRankMsg( String nextRankName, 
 					String nextRankCost ) {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_ladder_next_rank" )
@@ -472,7 +472,7 @@ public class RanksCommandMessages
 				.localize();
 	}
 
-	protected String ranksPlayerLadderNextRankCurrency( String currency ) {
+	protected String ranksPlayerLadderNextRankCurrencyMsg( String currency ) {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_ladder_next_rank_currency" )
 				.withReplacements( 
@@ -480,7 +480,7 @@ public class RanksCommandMessages
 				.localize();
 	}
 	
-	protected String ranksPlayerBalanceDefault( String playerName, 
+	protected String ranksPlayerBalanceDefaultMsg( String playerName, 
 			String amount ) {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_balance_default" )
@@ -489,7 +489,7 @@ public class RanksCommandMessages
 				.localize();
 	}
 
-	protected String ranksPlayerBalanceOthers( String playerName, String currency,
+	protected String ranksPlayerBalanceOthersMsg( String playerName, String currency,
 			String amount ) {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_balance_others" )
@@ -498,13 +498,13 @@ public class RanksCommandMessages
 				.localize();
 	}
 
-	protected String ranksPlayerPermsOffline() {
+	protected String ranksPlayerPermsOfflineMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_perms_offline" )
 				.localize();
 	}
 
-	protected String ranksPlayerSellallMultiplier( String multiplier, 
+	protected String ranksPlayerSellallMultiplierMsg( String multiplier, 
 			String notAccurate) {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_sellall_multiplier" )
@@ -513,67 +513,67 @@ public class RanksCommandMessages
 				.localize();
 	}
 
-	protected String ranksPlayerNotAccurate() {
+	protected String ranksPlayerNotAccurateMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_not_accurate" )
 				.localize();
 	}
 	
-	protected String ranksPlayerAdminOnly() {
+	protected String ranksPlayerAdminOnlyMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_admin_only" )
 				.localize();
 	}
 	
-	protected String ranksPlayerPastNames() {
+	protected String ranksPlayerPastNamesMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_past_names" )
 				.localize();
 	}
 
-	protected String ranksPlayerPerms() {
+	protected String ranksPlayerPermsMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_perms" )
 				.localize();
 	}
 
-	protected String ranksPlayerOp() {
+	protected String ranksPlayerOpMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_op" )
 				.localize();
 	}
 
-	protected String ranksPlayerPlayer() {
+	protected String ranksPlayerPlayerMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_player" )
 				.localize();
 	}
 
-	protected String ranksPlayerOnline() {
+	protected String ranksPlayerOnlineMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_online" )
 				.localize();
 	}
 
-	protected String ranksPlayerOffline() {
+	protected String ranksPlayerOfflineMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_offline" )
 				.localize();
 	}
 
-	protected String ranksPlayerPrisonOfflinePlayer() {
+	protected String ranksPlayerPrisonOfflinePlayerMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_prison_offline_player" )
 				.localize();
 	}
 
-	protected String ranksPlayerPrisonPlayer() {
+	protected String ranksPlayerPrisonPlayerMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_prison_player" )
 				.localize();
 	}
 
-	protected void ranksPlayerNoRanksFound( CommandSender sender, String playerName ) {
+	protected void ranksPlayerNoRanksFoundMsg( CommandSender sender, String playerName ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_no_ranks_found" )
 				.withReplacements( 
@@ -581,7 +581,7 @@ public class RanksCommandMessages
 				.sendTo( sender );
 	}
 	
-	protected void ranksPlayersInvalidLadder( CommandSender sender, String ladderName ) {
+	protected void ranksPlayersInvalidLadderMsg( CommandSender sender, String ladderName ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__players_invalid_ladder" )
 				.withReplacements( 
@@ -589,7 +589,7 @@ public class RanksCommandMessages
 				.sendTo( sender, LogLevel.ERROR );
 	}
 	
-	protected void ranksPlayersInvalidAction( CommandSender sender, String action ) {
+	protected void ranksPlayersInvalidActionMsg( CommandSender sender, String action ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__players_invalid_action" )
 				.withReplacements( 

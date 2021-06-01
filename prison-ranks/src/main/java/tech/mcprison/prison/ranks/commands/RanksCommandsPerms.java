@@ -39,7 +39,7 @@ public class RanksCommandsPerms
 	  
       Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
       if ( rank == null ) {
-      	rankDoesNotExist( sender, rankName );
+      	rankDoesNotExistMsg( sender, rankName );
           return;
       }
       
@@ -177,7 +177,7 @@ public class RanksCommandsPerms
 	  
       Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
       if ( rank == null ) {
-      	rankDoesNotExist( sender, rankName );
+      	rankDoesNotExistMsg( sender, rankName );
           return;
       }
       
@@ -220,7 +220,7 @@ public class RanksCommandsPerms
   	
   	Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
   	if ( rank == null ) {
-  		rankDoesNotExist( sender, rankName );
+  		rankDoesNotExistMsg( sender, rankName );
   		return;
   	}
   	
@@ -263,7 +263,7 @@ public class RanksCommandsPerms
      	
   	Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
   	if ( rank == null ) {
-  		rankDoesNotExist( sender, rankName );
+  		rankDoesNotExistMsg( sender, rankName );
   		return;
   	}
   	

@@ -17,17 +17,14 @@
 
 package tech.mcprison.prison.ranks.commands;
 
-import java.text.DecimalFormat;
 import java.util.UUID;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.Arg;
-import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.platform.Platform;
-import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
@@ -49,7 +46,7 @@ import tech.mcprison.prison.ranks.managers.PlayerManager;
  * @author RoyalBlueRanger
  */
 public class RankUpCommand 
-				extends BaseCommands {
+				extends RankUpCommandMessages {
 
 	public RankUpCommand() {
 		super( "RankUpCommand" );
@@ -74,10 +71,7 @@ public class RankUpCommand
 			rankUpPrivate(sender, ladder, RankupModes.MAX_RANKS, "ranks.rankupmax.");
 		}
     	else {
-        	PrisonRanks.getInstance().getRanksMessages()
-	    		.getLocalizable( "ranks_rankup__no_permission" )
-	    		.withReplacements( "ranks.rankupmax." + ladder.toLowerCase() )
-	    		.sendTo( sender );
+    		rankupMaxNoPermissionMsg( sender, "ranks.rankupmax." + ladder );
     	}
     }
 	
@@ -88,9 +82,7 @@ public class RankUpCommand
 		) {
         
         if ( !sender.isPlayer() ) {
-        	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( "ranks_rankup__cannot_run_from_console" );           	
-        	Output.get().logInfo( localManagerLog.localize() );
+        	Output.get().logInfo( rankupCannotRunFromConsoleMsg() );
         	return;
         }
         
@@ -105,23 +97,17 @@ public class RankUpCommand
         if (!(ladder.equalsIgnoreCase("prestiges") && 
         		(Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) || 
         				Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ))) && 
-        	!ladder.equalsIgnoreCase("default") && 
-        	!sender.hasPermission(permission + ladder.toLowerCase())) {
+		        	!ladder.equalsIgnoreCase("default") && 
+		        	!sender.hasPermission(permission + ladder.toLowerCase())) {
         	
-        	PrisonRanks.getInstance().getRanksMessages()
-	    		.getLocalizable( "ranks_rankup__no_permission" )
-	    		.withReplacements( permission + ladder.toLowerCase() )
-	    		.sendTo( sender );
+        	rankupMaxNoPermissionMsg( sender, permission + ladder );
             return;
         }
 
         
         // 
         if ( mode == null ) {
-        	
-        	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( "ranks_rankup__internal_failure" );           	
-        	Output.get().logInfo( localManagerLog.localize() );
+        	Output.get().logInfo( rankupInternalFailureMsg() );
         	return;
         }
         
@@ -129,10 +115,7 @@ public class RankUpCommand
         Player player = getPlayer( sender, null );
         
         if ( !sender.isPlayer() ) {
-        	
-        	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( "ranks_rankup__cannot_run_from_console" );           	
-        	Output.get().logInfo( localManagerLog.localize() );
+        	Output.get().logInfo( rankupCannotRunFromConsoleMsg() );
         	return;
         }
 
@@ -160,15 +143,11 @@ public class RankUpCommand
 			
 			if ( rankLadder == null ){
 				
-				PrisonRanks.getInstance().getRanksMessages()
-	    			.getLocalizable( "ranks_rankup__error_no_default_ladder" )
-	    			.sendTo( sender );
+				rankupErrorNoDefaultLadderMsg( sender );
 				return;
 			}
 			if (!rankLadder.getLowestRank().isPresent()){
-				PrisonRanks.getInstance().getRanksMessages()
-					.getLocalizable( "ranks_rankup__error_no_lower_rank" )
-					.sendTo( sender );
+				rankupErrorNoLowerRankMsg( sender );
 				return;
 			}
 
@@ -179,9 +158,7 @@ public class RankUpCommand
 			}
 
 			if (!(rank == pRankSecond)) {
-				PrisonRanks.getInstance().getRanksMessages()
-					.getLocalizable( "ranks_rankup__not_at_last_rank" )
-					.sendTo( sender );
+				rankupNotAtLastRankMsg( sender );
 				return;
 			}
 			
@@ -220,9 +197,7 @@ public class RankUpCommand
         		prestigePlayer( sender, player, rankPlayer, pRankAfter, lm );
         	}
         	else if ( canPrestige ) {
-        		PrisonRanks.getInstance().getRanksMessages()
-					.getLocalizable( "ranks_rankup__not_able_to_prestige" )
-					.sendTo( sender );
+        		rankupNotAbleToPrestigeMsg( sender );
         	}
         	
         }
@@ -276,9 +251,7 @@ public class RankUpCommand
 
 				if (pRankSecond != lm.getLadder("default").getLowestRank().get()) {
 					
-					PrisonRanks.getInstance().getRanksMessages()
-						.getLocalizable( "ranks_rankup__not_able_to_reset_rank" )
-						.sendTo( sender );
+					rankupNotAbleToResetRankMsg( sender );
 					success = false;
 				}
 //			}
@@ -288,28 +261,16 @@ public class RankUpCommand
 			
 			// set the player's balance to zero:
 			rankPlayer.setBalance( 0 );
-			PrisonRanks.getInstance().getRanksMessages()
-				.getLocalizable( "ranks_rankup__balance_set_to_zero" )
-				.sendTo( sender );
+			prestigePlayerBalanceSetToZeroMsg( sender );
 		}
 		
 		if ( success ) {
 			// Send a message to the player because he did prestige!
-			PrisonRanks.getInstance().getRanksMessages()
-				.getLocalizable( "ranks_rankup__prestige_successful" )
-				.withReplacements(
-						pRankAfter.getTag()
-	    				)
-				.sendTo( sender );
+			prestigePlayerSucessfulMsg( sender, pRankAfter.getTag() );
 		}
 		else {
 			
-			PrisonRanks.getInstance().getRanksMessages()
-				.getLocalizable( "ranks_rankup__prestige_failure" )
-				.withReplacements(
-						pRankAfter.getTag()
-						)
-				.sendTo( sender );
+			prestigePlayerFailureMsg( sender, pRankAfter.getTag() );
 		}
 
 	}
@@ -327,25 +288,14 @@ public class RankUpCommand
     	Player player = getPlayer( sender, playerName );
     	
     	if (player == null) {
-    		PrisonRanks.getInstance().getRanksMessages()
-	    		.getLocalizable( "ranks_rankup__rankup_failure_must_be_online_player" )
-	    		.sendTo( sender );
-    		
-//    		sender.sendMessage( "&3You must be a player in the game to run this command, " +
-//    															"and/or the player must be online." );
+    		ranksPromotePlayerMustBeOnlineMsg( sender );
     		return;
     	}
     	
     	PromoteForceCharge pForceCharge = PromoteForceCharge.fromString( chargePlayer );
     	if ( pForceCharge == null|| pForceCharge == PromoteForceCharge.refund_player ) {
     		
-			PrisonRanks.getInstance().getRanksMessages()
-				.getLocalizable( "ranks_rankup__invalid_charge_value" )
-				.withReplacements(
-						PromoteForceCharge.no_charge.name(), 
-						PromoteForceCharge.charge_player.name()
-						)
-				.sendTo( sender );
+    		ranksPromotePlayerInvalidChargeValueMsg( sender );
     		return;
     	}
 
@@ -382,24 +332,13 @@ public class RankUpCommand
     	Player player = getPlayer( sender, playerName );
     	
     	if (player == null) {
-    		PrisonRanks.getInstance().getRanksMessages()
-	    		.getLocalizable( "ranks_rankup__rankup_failure_must_be_online_player" )
-	    		.sendTo( sender );
-    		
-//    		sender.sendMessage( "&3You must be a player in the game to run this command, " +
-//    															"and/or the player must be online." );
+    		ranksPromotePlayerMustBeOnlineMsg( sender );
     		return;
     	}
     	
     	PromoteForceCharge pForceCharge = PromoteForceCharge.fromString( refundPlayer );
     	if ( pForceCharge == null || pForceCharge == PromoteForceCharge.charge_player ) {
-			PrisonRanks.getInstance().getRanksMessages()
-				.getLocalizable( "ranks_rankup__invalid_refund_value" )
-				.withReplacements(
-						PromoteForceCharge.no_charge.name(), 
-						PromoteForceCharge.refund_player.name()
-						)
-				.sendTo( sender );
+    		ranksDemotePlayerInvalidRefundValueMsg( sender );
     		return;
     	}
     	
@@ -455,12 +394,7 @@ public class RankUpCommand
     		Player player = getPlayer( sender, playerName );
     		
     		if (player == null) {
-    			PrisonRanks.getInstance().getRanksMessages()
-		    		.getLocalizable( "ranks_rankup__rankup_failure_must_be_online_player" )
-		    		.sendTo( sender );
-    			
-//    			sender.sendMessage( "&3You must be a player in the game to run this command, " +
-//    					"and/or the player must be online." );
+    			ranksPromotePlayerMustBeOnlineMsg( sender );
     			return;
     		}
     		
@@ -508,12 +442,7 @@ public class RankUpCommand
 
         // The ladder doesn't exist
         if ( ladder == null ) {
-        	PrisonRanks.getInstance().getRanksMessages()
-        		.getLocalizable( "ranks_rankup__rankup_failure_invalid_ladder" )
-        		.withReplacements( ladderName )
-        		.sendTo( sender );
-        	
-//            Output.get().sendError(sender, "The ladder '%s' does not exist.", ladderName);
+        	ranksConfirmLadderMsg( sender, ladderName );
         }
         else {
         	results = ladder.getName();
@@ -529,13 +458,7 @@ public class RankUpCommand
 
         // Well, this isn't supposed to happen...
         if ( player == null ) {
-        	PrisonRanks.getInstance().getRanksMessages()
-	    		.getLocalizable( "ranks_rankup__rankup_failure_to_get_rankplayer" )
-	    		.sendTo( sender );
-        	
-//            Output.get().sendError(sender,
-//                "You don't exist! The server has no records of you. Try rejoining, " +
-//            									"or contact a server administrator for help.");
+        	ranksRankupFailureToGetRankPlayerMsg( sender );
         }
 
         return player;
@@ -549,226 +472,185 @@ public class RankUpCommand
 		switch (results.getStatus()) {
             case RANKUP_SUCCESS:
             	
-            	String messageId = rankup ? "ranks_rankup__rankup_success" : "ranks_rankup__demote_success";
+            	ranksRankupSuccessMsg( sender, playerName, results, rankup );
+//            	String messageId = rankup ? "ranks_rankup__rankup_success" : "ranks_rankup__demote_success";
+//
+//            	String messagNoPlayerName = PrisonRanks.getInstance().getRanksMessages()
+//            			.getLocalizable( "ranks_rankup__rankup_no_player_name" ).localize();
+//            	
+//            	Localizable localManager = PrisonRanks.getInstance().getRanksMessages()
+//            			.getLocalizable( messageId )
+//            			.withReplacements(
+//            					
+//            					(playerName == null ? messagNoPlayerName : playerName),
+//            					(results.getTargetRank() == null ? "" : results.getTargetRank().getName()), 
+//            					(results.getMessage() != null ? results.getMessage() : "")
+//            				);
+//            	
+//            	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+//            			.getLocalizable( "ranks_rankup__log_rank_change" )
+//            			.withReplacements(
+//            					
+//            					sender.getName(), localManager.localize()
+//            				);           	
+//            	Output.get().logInfo( localManagerLog.localize() );
+//            	
+//            	if ( Prison.get().getPlatform().getConfigBooleanFalse( "broadcast-rankups" ) ) {
+//            		String messagNoPlayerNameBroadcast = PrisonRanks.getInstance().getRanksMessages()
+//            				.getLocalizable( "ranks_rankup__rankup_no_player_name_broadcast" ).localize();
+//            		
+//            		PrisonRanks.getInstance().getRanksMessages()
+//	            		.getLocalizable( messageId )
+//	            		.withReplacements(
+//            				
+//            				(playerName == null ? messagNoPlayerNameBroadcast : playerName),
+//            				(results.getTargetRank() == null ? "" : results.getTargetRank().getName()), 
+//            				(results.getMessage() != null ? results.getMessage() : "")
+//            			)
+//	            		.broadcast();
+//            	}
+//            	else {
+//            		localManager.sendTo( sender );
+//            	}
 
-            	String messagNoPlayerName = PrisonRanks.getInstance().getRanksMessages()
-            			.getLocalizable( "ranks_rankup__rankup_no_player_name" ).localize();
-            	
-            	Localizable localManager = PrisonRanks.getInstance().getRanksMessages()
-            			.getLocalizable( messageId )
-            			.withReplacements(
-            					
-            					(playerName == null ? messagNoPlayerName : playerName),
-            					(results.getTargetRank() == null ? "" : results.getTargetRank().getName()), 
-            					(results.getMessage() != null ? results.getMessage() : "")
-            				);
-            	
-            	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-            			.getLocalizable( "ranks_rankup__log_rank_change" )
-            			.withReplacements(
-            					
-            					sender.getName(), localManager.localize()
-            				);           	
-            	Output.get().logInfo( localManagerLog.localize() );
-            	
-            	if ( Prison.get().getPlatform().getConfigBooleanFalse( "broadcast-rankups" ) ) {
-            		String messagNoPlayerNameBroadcast = PrisonRanks.getInstance().getRanksMessages()
-            				.getLocalizable( "ranks_rankup__rankup_no_player_name_broadcast" ).localize();
-            		
-            		PrisonRanks.getInstance().getRanksMessages()
-	            		.getLocalizable( messageId )
-	            		.withReplacements(
-            				
-            				(playerName == null ? messagNoPlayerNameBroadcast : playerName),
-            				(results.getTargetRank() == null ? "" : results.getTargetRank().getName()), 
-            				(results.getMessage() != null ? results.getMessage() : "")
-            			)
-	            		.broadcast();
-            	}
-            	else {
-            		localManager.sendTo( sender );
-            	}
-//            	if ( rankup ) {
-//            		String message = String.format( "Congratulations! %s ranked up to rank '%s'. %s",
-//            				(playerName == null ? "You have" : playerName),
-//            				(results.getTargetRank() == null ? "" : results.getTargetRank().getName()), 
-//            				(results.getMessage() != null ? results.getMessage() : "") );
-//            		Output.get().sendInfo(sender, message);
-//            		
-//            		if ( Prison.get().getPlatform().getConfigBooleanFalse( "broadcast-rankups" ) ) {
-//            			
-//            			String messageGlobal = String.format( "Congratulations! %s ranked up to rank '%s'.",
-//            					(playerName == null ? "Someone" : playerName),
-//            					(results.getTargetRank() == null ? "" : results.getTargetRank().getName()) );
-//            			broadcastToWholeServer( sender, messageGlobal );
-//            		}
-//            	} else {
-            		
-//	            	String message = String.format( "Unfortunately, %s has been demoted to rank '%s'. %s",
-//            				(playerName == null ? "You have" : playerName),
-//            				(results.getTargetRank() == null ? "" : results.getTargetRank().getName()), 
-//            				(results.getMessage() != null ? results.getMessage() : ""));
-//            		Output.get().sendInfo(sender, message);
-//            		Output.get().logInfo( "%s initiated rank change: %s", sender.getName(), message );
-//            		
-//            		if ( Prison.get().getPlatform().getConfigBooleanFalse( "broadcast-rankups" ) ) {
-//            			
-//            			String messageGlobal = String.format( "Unfortunately, %s has been demoted to rank '%s'.",
-//            					(playerName == null ? "Someone" : playerName),
-//            					(results.getTargetRank() == null ? "" : results.getTargetRank().getName()) );
-//            			 broadcastToWholeServer( sender, messageGlobal );
-//            		}
-//				}
                 break;
             case RANKUP_CANT_AFFORD:
-            	DecimalFormat dFmt = new DecimalFormat("#,##0.00");
-            	
-            	PrisonRanks.getInstance().getRanksMessages()
-	        		.getLocalizable( "ranks_rankup__rankup_cant_afford" )
-	        		.withReplacements(
-	    				
-	        				dFmt.format( results.getTargetRank() == null ? 0 : results.getTargetRank().getCost()), 
-	                        results.getTargetRank().getCurrency() == null ? "" : results.getTargetRank().getCurrency()
-	    			)
-	        		.sendTo( sender );
+            	ranksRankupCannotAffordMsg( sender, results );
+//            	DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+//            	
+//            	PrisonRanks.getInstance().getRanksMessages()
+//	        		.getLocalizable( "ranks_rankup__rankup_cant_afford" )
+//	        		.withReplacements(
+//	    				
+//	        				dFmt.format( results.getTargetRank() == null ? 0 : results.getTargetRank().getCost()), 
+//	                        results.getTargetRank().getCurrency() == null ? "" : results.getTargetRank().getCurrency()
+//	    			)
+//	        		.sendTo( sender );
 	            	
-//                Output.get().sendError(sender,
-//                    "You don't have enough money to rank up! The next rank costs %s %s.",
-//                    dFmt.format( results.getTargetRank() == null ? 0 : results.getTargetRank().getCost()), 
-//                    results.getTargetRank().getCurrency() == null ? "" : results.getTargetRank().getCurrency() );
-//                break;
+                break;
             case RANKUP_LOWEST:
-            	{
-            		String messagYouAre = PrisonRanks.getInstance().getRanksMessages()
-            				.getLocalizable( "ranks_rankup__rankup_you_are" ).localize();
-            		
-            		PrisonRanks.getInstance().getRanksMessages()
-            		.getLocalizable( "ranks_rankup__rankup_lowest" )
-            		.withReplacements(
-            				
-            				(playerName == null ? messagYouAre : playerName)
-            				)
-            		.sendTo( sender );
-            	}
+            	ranksRankupLowestRankMsg( sender, playerName, results );
+//            	{
+//            		String messagYouAre = PrisonRanks.getInstance().getRanksMessages()
+//            				.getLocalizable( "ranks_rankup__rankup_you_are" ).localize();
+//            		
+//            		PrisonRanks.getInstance().getRanksMessages()
+//            		.getLocalizable( "ranks_rankup__rankup_lowest" )
+//            		.withReplacements(
+//            				
+//            				(playerName == null ? messagYouAre : playerName)
+//            				)
+//            		.sendTo( sender );
+//            	}
             	
-//            	Output.get().sendInfo(sender, "%s already at the lowest rank!",
-//            				(playerName == null ? "You are" : playerName));
             	break;
             case RANKUP_HIGHEST:
-            	{
-            		String messagYouAre = PrisonRanks.getInstance().getRanksMessages()
-            				.getLocalizable( "ranks_rankup__rankup_you_are" ).localize();
-            		
-            		PrisonRanks.getInstance().getRanksMessages()
-            		.getLocalizable( "ranks_rankup__rankup_highest" )
-            		.withReplacements(
-            				
-            				(playerName == null ? messagYouAre : playerName)
-            				)
-            		.sendTo( sender );
-            	}
+            	ranksRankupHighestRankMsg( sender, playerName, results );
+//            	{
+//            		String messagYouAre = PrisonRanks.getInstance().getRanksMessages()
+//            				.getLocalizable( "ranks_rankup__rankup_you_are" ).localize();
+//            		
+//            		PrisonRanks.getInstance().getRanksMessages()
+//            		.getLocalizable( "ranks_rankup__rankup_highest" )
+//            		.withReplacements(
+//            				
+//            				(playerName == null ? messagYouAre : playerName)
+//            				)
+//            		.sendTo( sender );
+//            	}
             	
-//                Output.get().sendInfo(sender, "%s already at the highest rank!",
-//            				(playerName == null ? "You are" : playerName));
                 break;
             case RANKUP_FAILURE:
-            	PrisonRanks.getInstance().getRanksMessages()
-	        		.getLocalizable( "ranks_rankup__rankup_failure" )
-	        		.sendTo( sender );
-//                Output.get().sendError(sender,
-//                    "Generic rankup failure. Review rankup details to identify why.");
+            	ranksRankupFailureMsg( sender );
+//            	PrisonRanks.getInstance().getRanksMessages()
+//	        		.getLocalizable( "ranks_rankup__rankup_failure" )
+//	        		.sendTo( sender );
                 break;
             case RANKUP_FAILURE_COULD_NOT_LOAD_PLAYER:
-            	PrisonRanks.getInstance().getRanksMessages()
-	            	.getLocalizable( "ranks_rankup__rankup_failed_to_load_player" )
-	            	.sendTo( sender );
+            	ranksRankupFailureCouldNotLoadPlayerMsg( sender );
+//            	PrisonRanks.getInstance().getRanksMessages()
+//	            	.getLocalizable( "ranks_rankup__rankup_failed_to_load_player" )
+//	            	.sendTo( sender );
             	
-//            	Output.get().sendError(sender,
-//            			"Failed to load player.");
             	break;
             case RANKUP_FAILURE_COULD_NOT_LOAD_LADDER:
-            	PrisonRanks.getInstance().getRanksMessages()
-            		.getLocalizable( "ranks_rankup__rankup_failed_to_load_ladder" )
-            		.sendTo( sender );
+            	ranksRankupFailureCouldNotLoadLadderMsg( sender );
+//            	PrisonRanks.getInstance().getRanksMessages()
+//            		.getLocalizable( "ranks_rankup__rankup_failed_to_load_ladder" )
+//            		.sendTo( sender );
             	
-//            	Output.get().sendError(sender,
-//            			"Failed to load ladder.");
             	break;
             case RANKUP_FAILURE_UNABLE_TO_ASSIGN_RANK:
-            	PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( "ranks_rankup__rankup_failed_to_assign_rank" )
-        			.sendTo( sender );
+            	ranksRankupFailureUnableToAssignRankMsg( sender );
+//            	PrisonRanks.getInstance().getRanksMessages()
+//        			.getLocalizable( "ranks_rankup__rankup_failed_to_assign_rank" )
+//        			.sendTo( sender );
             	
-//            	Output.get().sendError(sender,
-//            			"Failed to assign a rank.  Review rankup details to identify why.");
             	break;
             case RANKUP_FAILURE_COULD_NOT_SAVE_PLAYER_FILE:
-            	PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( "ranks_rankup__rankup_failed_to_save_player_file" )
-        			.sendTo( sender );
+            	ranksRankupFailureCouldNotSavePlayerFileMsg( sender );
+//            	PrisonRanks.getInstance().getRanksMessages()
+//        			.getLocalizable( "ranks_rankup__rankup_failed_to_save_player_file" )
+//        			.sendTo( sender );
             	
-//            	Output.get().sendError(sender,
-//            			"Failed to retrieve or write data. Your files may be corrupted. " +
-//            			"Alert a server administrator.");
             	break;
             case RANKUP_NO_RANKS:
-            	PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( "ranks_rankup__rankup_no_ranks" )
-        			.sendTo( sender );            	
+            	ranksRankupFailureNoRanksMsg( sender );
+//            	PrisonRanks.getInstance().getRanksMessages()
+//        			.getLocalizable( "ranks_rankup__rankup_no_ranks" )
+//        			.sendTo( sender );            	
             	
-//                Output.get().sendError(sender, "There are no ranks in this ladder.");
                 break;
             case RANKUP_FAILURE_RANK_DOES_NOT_EXIST:
-            	PrisonRanks.getInstance().getRanksMessages()
-	    			.getLocalizable( "ranks_rankup__rankup_rank_does_not_exist" )
-	    			.withReplacements( rank )
-	    			.sendTo( sender ); 
+            	ranksRankupFailureRankDoesNotExistMsg( sender, rank );
+//            	PrisonRanks.getInstance().getRanksMessages()
+//	    			.getLocalizable( "ranks_rankup__rankup_rank_does_not_exist" )
+//	    			.withReplacements( rank )
+//	    			.sendTo( sender ); 
             	
-//            	Output.get().sendError(sender, "The rank %s does not exist on this server.", rank);
             	break;
 			case RANKUP_FAILURE_RANK_IS_NOT_IN_LADDER:
-				PrisonRanks.getInstance().getRanksMessages()
-	    			.getLocalizable( "ranks_rankup__rankup_rank_is_not_in_ladder" )
-	    			.withReplacements( rank, ladder )
-	    			.sendTo( sender );
+				ranksRankupFailureRankIsNotInLadderMsg( sender, rank, ladder );
+//				PrisonRanks.getInstance().getRanksMessages()
+//	    			.getLocalizable( "ranks_rankup__rankup_rank_is_not_in_ladder" )
+//	    			.withReplacements( rank, ladder )
+//	    			.sendTo( sender );
 				
-//				Output.get().sendError(sender, "The rank %s does not exist in the ladder %s.", rank, ladder);
 				break;
             
 			case RANKUP_FAILURE_CURRENCY_IS_NOT_SUPPORTED:
-				PrisonRanks.getInstance().getRanksMessages()
-	    			.getLocalizable( "ranks_rankup__rankup_currency_is_not_supported" )
-	    			.withReplacements( results.getTargetRank().getCurrency() )
-	    			.sendTo( sender );	
+				ranksRankupFailureCurrencyIsNotSupportedMsg( sender, results.getTargetRank().getCurrency() );
+//				PrisonRanks.getInstance().getRanksMessages()
+//	    			.getLocalizable( "ranks_rankup__rankup_currency_is_not_supported" )
+//	    			.withReplacements( results.getTargetRank().getCurrency() )
+//	    			.sendTo( sender );	
 				
-//				Output.get().sendError(sender, "The currency, %s, is not supported by any " +
-//													"loaded economies.", results.getTargetRank().getCurrency());
 				break;
 				
 			case RANKUP_LADDER_REMOVED:
-				PrisonRanks.getInstance().getRanksMessages()
-	    			.getLocalizable( "ranks_rankup__rankup_ladder_removed" )
-	    			.withReplacements( ladder )
-	    			.sendTo( sender );
+				ranksRankupFailureLadderRemovedMsg( sender, ladder );
+//				PrisonRanks.getInstance().getRanksMessages()
+//	    			.getLocalizable( "ranks_rankup__rankup_ladder_removed" )
+//	    			.withReplacements( ladder )
+//	    			.sendTo( sender );
 				
-//				Output.get().send(sender, "The ladder %s was removed.", ladder);
 				break;
 				
 			case RANKUP_FAILURE_REMOVING_LADDER:
-				PrisonRanks.getInstance().getRanksMessages()
-					.getLocalizable( "ranks_rankup__rankup_failure_removing_ladder" )
-					.withReplacements( ladder )
-					.sendTo( sender );
+				ranksRankupFailureRemovingLadderMsg( sender, ladder );
+//				PrisonRanks.getInstance().getRanksMessages()
+//					.getLocalizable( "ranks_rankup__rankup_failure_removing_ladder" )
+//					.withReplacements( ladder )
+//					.sendTo( sender );
 				
-//				Output.get().sendError(sender, "The ladder %s could not be removed.", ladder);
 				break;
 				
 			case IN_PROGRESS:
-				PrisonRanks.getInstance().getRanksMessages()
-					.getLocalizable( "ranks_rankup__rankup_in_progress_failure" )
-					.sendTo( sender );
+				ranksRankupFailureInProgressMsg( sender );
+//				PrisonRanks.getInstance().getRanksMessages()
+//					.getLocalizable( "ranks_rankup__rankup_in_progress_failure" )
+//					.sendTo( sender );
 				
-//				Output.get().sendError(sender, "Rankup failed to complete normally. No status was set.");
 				break;
 			default:
 				break;

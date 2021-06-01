@@ -21,6 +21,9 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.5 2021-06-01
 
 
+* **Refactoring ranks module commands to put the external messages within messages classes since it cleans up a lot of code since the messages are messy (multi-lined).**
+
+
 * **v3.3.0-alpha.5 2021-06-01**
 
 

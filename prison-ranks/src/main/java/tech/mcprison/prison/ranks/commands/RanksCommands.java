@@ -106,13 +106,13 @@ public class RanksCommands
 
         // Ensure a rank with the name doesn't already exist
         if (PrisonRanks.getInstance().getRankManager().getRank(name) != null) {
-        	rankAlreadyExists( sender, name );
+        	rankAlreadyExistsMsg( sender, name );
             return success;
         }
         
         // Ensure a rank with the name doesn't already exist
         if (name == null || name.trim().length() == 0 || name.contains( "&" )) {
-        	rankNameRequired( sender );
+        	rankNameRequiredMsg( sender );
         	return success;
         }
 
@@ -121,7 +121,7 @@ public class RanksCommands
         RankLadder rankLadder = PrisonRanks.getInstance().getLadderManager().getLadder(ladder);
         
         if ( rankLadder == null ) {
-        	ladderDoesNotExist( sender, ladder );
+        	ladderDoesNotExistMsg( sender, ladder );
             return success;
         }
 
@@ -136,7 +136,7 @@ public class RanksCommands
 
         // Ensure it was created
         if (!newRankOptional.isPresent()) {
-        	rankCannotBeCreated( sender );
+        	rankCannotBeCreatedMsg( sender );
             return success;
         }
 
@@ -160,9 +160,9 @@ public class RanksCommands
             success = true;
             
             // Tell the player the good news!
-            rankCreatedSuccessfully( sender, name, ladder, tag );
+            rankCreatedSuccessfullyMsg( sender, name, ladder, tag );
         } catch (IOException e) {
-        	errorCouldNotSaveLadder( sender, rankLadder.getName(), e );
+        	errorCouldNotSaveLadderMsg( sender, rankLadder.getName(), e );
         }
 
         return success;
@@ -193,12 +193,12 @@ public class RanksCommands
 		
 		if (!force && ( rankCount > 0 || mineCount > 0 ) ) {
 			
-			autoConfigPreexistingRankMineWarning( sender, rankCount, mineCount );
+			autoConfigPreexistingRankMineWarningMsg( sender, rankCount, mineCount );
 			return;
 		}
 		
 		if ( force ) {
-			autoConfigForceWarning( sender );
+			autoConfigForceWarningMsg( sender );
 		}
 		
 		String optionHelp = "&b[&7full ranks mines price=&dx &7mult=&dx&b]";
@@ -260,7 +260,7 @@ public class RanksCommands
 		// What's left over, if not just a blank string, must be an error:
 		options = (options == null ? "" : options.replaceAll( "/s*", " " ));
 		if ( options.trim().length() != 0 ) {
-			autoConfigInvalidOptions( sender, optionHelp, options );
+			autoConfigInvalidOptionsMsg( sender, optionHelp, options );
 			return;
 		}
 		
@@ -370,7 +370,7 @@ public class RanksCommands
 	        		}
 	        	}
 	        	else {
-	        		autoConfigRankExistsSkip( sender, Character.toString( cRank ) );
+	        		autoConfigRankExistsSkipMsg( sender, Character.toString( cRank ) );
 	        	}
 
 	            if (price == 0){
@@ -392,30 +392,30 @@ public class RanksCommands
 		
 		
 		if ( countRanks == 0 ) {
-			autoConfigNoRanksCreated( sender );
+			autoConfigNoRanksCreatedMsg( sender );
 		}
 		else {
-			autoConfigRanksCreated( sender, Integer.toString( countRanks ) );
+			autoConfigRanksCreatedMsg( sender, Integer.toString( countRanks ) );
 			
 			if ( countRankCmds == 0 ) {
-				autoConfigNoRankCmdsCreated( sender );
+				autoConfigNoRankCmdsCreatedMsg( sender );
 			}
 			else {
-				autoConfigRankCmdsCreated( sender, Integer.toString( countRanks ) );
+				autoConfigRankCmdsCreatedMsg( sender, Integer.toString( countRanks ) );
 			}
 		}
 		
 		if ( countMines == 0 ) {
-			autoConfigNoMinesCreated( sender );
+			autoConfigNoMinesCreatedMsg( sender );
 		}
 		else {
-			autoConfigMinesCreated( sender, Integer.toString( countMines ) );
+			autoConfigMinesCreatedMsg( sender, Integer.toString( countMines ) );
 			
 			if ( countLinked == 0 ) {
-				autoConfigNoLinkage( sender );
+				autoConfigNoLinkageMsg( sender );
 			}
 			else {
-				autoConfigLinkageCount( sender, Integer.toString( countLinked ) );
+				autoConfigLinkageCountMsg( sender, Integer.toString( countLinked ) );
 			}
 		}
 		
@@ -445,20 +445,20 @@ public class RanksCommands
         // Check to ensure the rank exists
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if ( rank == null ) {
-        	rankDoesNotExist( sender, rankName );
+        	rankDoesNotExistMsg( sender, rankName );
             return;
         }
 
         if (PrisonRanks.getInstance().getDefaultLadder().getRanks().contains( rank ) 
             && PrisonRanks.getInstance().getDefaultLadder().getRanks().size() == 1) {
-        	rankCannotBeRemoved( sender );
+        	rankCannotBeRemovedMsg( sender );
             return;
         }
 
         if ( PrisonRanks.getInstance().getRankManager().removeRank(rank) ) {
-        	rankWasRemoved( sender, rankName );
+        	rankWasRemovedMsg( sender, rankName );
         } else {
-        	rankDeleteError( sender, rankName );
+        	rankDeleteErrorMsg( sender, rankName );
         }
     }
 
@@ -475,7 +475,7 @@ public class RanksCommands
         			PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
 
         if ( ladder == null ) {
-        	ladderDoesNotExist( sender, ladderName );
+        	ladderDoesNotExistMsg( sender, ladderName );
             return;
         }
 
@@ -491,11 +491,11 @@ public class RanksCommands
 //        }
         
 
-        String rankHeader = ranksListHeader( ladderName );
+        String rankHeader = ranksListHeaderMsg( ladderName );
         ChatDisplay display = new ChatDisplay( rankHeader );
         
         if ( hasPerm ) {
-        	display.addText( ranksListClickToEdit() );
+        	display.addText( ranksListClickToEditMsg() );
         }
         
 
@@ -511,9 +511,10 @@ public class RanksCommands
             							String.format( "&3%s " , rank.getName() )
             							: "");
             String textCmdCount = ( hasPerm ? 
-            					ranksListCommandCount(rank.getRankUpCommands().size())
+            					ranksListCommandCountMsg(rank.getRankUpCommands().size())
             							: "" );
-            String textCurrency = (rank.getCurrency() == null ? "" : ranksListCurrency( rank.getCurrency() ));
+            String textCurrency = (rank.getCurrency() == null ? "" : 
+            								ranksListCurrencyMsg( rank.getCurrency() ));
             
             String text =
                 String.format("%s &9[&3%s&9] &7- %s&7%s%s%s", 
@@ -530,7 +531,7 @@ public class RanksCommands
             FancyMessage msg = null;
             if ( hasPerm ) {
             	msg = new FancyMessage(text).command("/ranks info " + rankName)
-            			.tooltip( ranksListClickToView() );
+            			.tooltip( ranksListClickToViewMsg() );
             }
             else {
             	msg = new FancyMessage(text);
@@ -568,7 +569,7 @@ public class RanksCommands
         if ( hasPerm ) {
         	display.addComponent(new FancyMessageComponent(
         			new FancyMessage("&7[&a+&7] Add").suggest("/ranks create ")
-        			.tooltip( ranksListCreateNewRank() )));
+        			.tooltip( ranksListCreateNewRankMsg() )));
         	
         	List<String> others = new ArrayList<>();
         	for (RankLadder other : PrisonRanks.getInstance().getLadderManager().getLadders()) {
@@ -583,7 +584,7 @@ public class RanksCommands
         	}
         	
         	if (others.size() != 0) {
-        		FancyMessage msg = new FancyMessage( ranksListYouMayTry() );
+        		FancyMessage msg = new FancyMessage( ranksListYouMayTryMsg() );
         		msg.then( " " );
         		int i = 0;
         		for (String other : others) {
@@ -591,7 +592,7 @@ public class RanksCommands
         			if (i == others.size() && others.size() > 1) {
         				msg.then(" &8and ");
         			}
-        			msg.then("&7" + other).tooltip( ranksListClickToView2() ).command(other);
+        			msg.then("&7" + other).tooltip( ranksListClickToView2Msg() ).command(other);
         			msg.then(i == others.size() ? "&8." : "&8,");
         		}
         		display.addComponent(new FancyMessageComponent(msg));
@@ -615,20 +616,20 @@ public class RanksCommands
         if ( rank == null ) {
 //        	rankOpt = PrisonRanks.getInstance().getRankManager().getRankEscaped(rankName);
 //        	if (!rankOpt.isPresent()) {
-        		rankDoesNotExist( sender, rankName );
+        		rankDoesNotExistMsg( sender, rankName );
         		return;
 //        	}
         }
 
 
-        ChatDisplay display = new ChatDisplay( ranksInfoHeader( rank.getTag() ));
+        ChatDisplay display = new ChatDisplay( ranksInfoHeaderMsg( rank.getTag() ));
 
-        display.addText( ranksInfoName( rank.getName() ));
-        display.addText( ranksInfoTag( rank.getTag() ));
-        display.addText( ranksInfoLadder( rank.getLadder().getName() ));
+        display.addText( ranksInfoNameMsg( rank.getName() ));
+        display.addText( ranksInfoTagMsg( rank.getTag() ));
+        display.addText( ranksInfoLadderMsg( rank.getLadder().getName() ));
         
         if ( rank.getMines().size() == 0 ) {
-        	display.addText( ranksInfoNotLinkedToMines() );
+        	display.addText( ranksInfoNotLinkedToMinesMsg() );
         }
         else {
         	StringBuilder sb = new StringBuilder();
@@ -641,28 +642,28 @@ public class RanksCommands
 				sb.append( mine.getName() );
 			}
         	
-        	display.addText( ranksInfoLinkedMines( sb.toString() ));
+        	display.addText( ranksInfoLinkedMinesMsg( sb.toString() ));
         }
 
-        display.addText( ranksInfoCost( rank.getCost() ));
+        display.addText( ranksInfoCostMsg( rank.getCost() ));
         
-        display.addText( ranksInfoCurrency( (rank.getCurrency() == null ? "&cdefault" : rank.getCurrency()) ));
+        display.addText( ranksInfoCurrencyMsg( (rank.getCurrency() == null ? "&cdefault" : rank.getCurrency()) ));
         
         List<RankPlayer> players =
         		PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
         		.filter(rankPlayer -> rankPlayer.getLadderRanks().values().contains(rank))
         		.collect(Collectors.toList());
-        display.addText( ranksInfoPlayersWithRank( players.size() ));
+        display.addText( ranksInfoPlayersWithRankMsg( players.size() ));
 
         if (sender.hasPermission("ranks.admin")) {
             // This is admin-exclusive content
 
 //            display.addText("&8[Admin Only]");
-            display.addText( ranksInfoRankId( rank.getId() ));
+            display.addText( ranksInfoRankIdMsg( rank.getId() ));
 
             FancyMessage del =
-                new FancyMessage( ranksInfoRankDeleteMessage() ).command("/ranks delete " + rank.getName())
-                    .tooltip( ranksInfoRankDeleteToolTip() );
+                new FancyMessage( ranksInfoRankDeleteMessageMsg() ).command("/ranks delete " + rank.getName())
+                    .tooltip( ranksInfoRankDeleteToolTipMsg() );
             display.addComponent(new FancyMessageComponent(del));
         }
 
@@ -682,7 +683,7 @@ public class RanksCommands
     		@Arg(name = "cost", description = "The cost of this rank.") double cost){
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if ( rank == null ) {
-        	rankDoesNotExist( sender, rankName );
+        	rankDoesNotExistMsg( sender, rankName );
             return;
         }
         
@@ -690,7 +691,7 @@ public class RanksCommands
         
         PrisonRanks.getInstance().getRankManager().saveRank(rank);
         
-        rankSetCostSuccessful( sender, rankName, cost );
+        rankSetCostSuccessfulMsg( sender, rankName, cost );
     }
     
 
@@ -709,19 +710,19 @@ public class RanksCommands
     	
     	Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
     	if ( rank == null ) {
-    		rankDoesNotExist( sender, rankName );
+    		rankDoesNotExistMsg( sender, rankName );
     		return;
     	}
     	
     	
     	if ( currency == null || currency.trim().length() == 0 ) {
-    		rankSetCurrencyNotSpecified( sender, currency );
+    		rankSetCurrencyNotSpecifiedMsg( sender, currency );
     		return;
     	}
     	
     	if ( "none".equalsIgnoreCase( currency ) && rank.getCurrency() == null ) {
 
-    		rankSetCurrencyNoCurrencyToClear( sender, rankName );
+    		rankSetCurrencyNoCurrencyToClearMsg( sender, rankName );
     		
     	}
     	else if ( "none".equalsIgnoreCase( currency ) ) {
@@ -729,7 +730,7 @@ public class RanksCommands
     		
     		PrisonRanks.getInstance().getRankManager().saveRank(rank);
     		
-    		rankSetCurrencyCleared( sender, rankName );
+    		rankSetCurrencyClearedMsg( sender, rankName );
     		
     	}
     	else {
@@ -738,7 +739,7 @@ public class RanksCommands
     				.getEconomyForCurrency( currency );
     		if ( currencyEcon == null ) {
     			
-    			rankSetCurrencyNoActiveSupport( sender, currency );
+    			rankSetCurrencyNoActiveSupportMsg( sender, currency );
     			return;
     		}
     		
@@ -746,7 +747,7 @@ public class RanksCommands
     		
     		PrisonRanks.getInstance().getRankManager().saveRank(rank);
     		
-    		rankSetCurrencySuccessful( sender, rankName, currency );
+    		rankSetCurrencySuccessfulMsg( sender, rankName, currency );
     	}
     	
     }
@@ -760,13 +761,13 @@ public class RanksCommands
     	
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if ( rank == null ) {
-        	rankDoesNotExist( sender, rankName );
+        	rankDoesNotExistMsg( sender, rankName );
             return;
         }
         
 
         if ( tag == null || tag.trim().length() == 0 ) {
-        	rankSetTagInvalid( sender );
+        	rankSetTagInvalidMsg( sender );
         	return;
         }
         
@@ -779,7 +780,7 @@ public class RanksCommands
         		rank.getTag() != null &&
         		rank.getTag().equalsIgnoreCase( tag )) {
         
-        	rankSetTagNoChange( sender );
+        	rankSetTagNoChangeMsg( sender );
         	return;
         }
 
@@ -788,298 +789,13 @@ public class RanksCommands
         PrisonRanks.getInstance().getRankManager().saveRank(rank);
 
         if ( tag == null ) {
-        	rankSetTagCleared( sender, rank.getName() );
+        	rankSetTagClearedMsg( sender, rank.getName() );
         }
         else {
-        	rankSetTagSucess( sender, rank.getName() );
+        	rankSetTagSucessMsg( sender, rank.getName() );
         }
     }
     
-    
-
-////    @Command(identifier = "ranks perms list", description = "Lists rank permissions", 
-////    							onlyPlayers = false, permissions = "ranks.set")
-//    public void rankPermsList(CommandSender sender, 
-//    				@Arg(name = "rankName") String rankName
-//    			){
-//    	sender.sendMessage( "&cWarning: &3This feature is not yet functional." );
-//	  
-//        Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-//        if ( rank == null ) {
-//        	rankDoesNotExist( sender, rankName );
-//            return;
-//        }
-//        
-//        
-//        if ( rank.getPermissions() == null ||rank.getPermissions().size() == 0 && 
-//        		rank.getPermissionGroups() == null && rank.getPermissionGroups().size() == 0 ) {
-//        	
-//            Output.get().sendInfo(sender, "The Rank '%s' contains no permissions or " +
-//            		"permission groups.", rank.getName());
-//            return;
-//        }
-//
-//        RankLadder ladder = rank.getLadder();
-//
-//        ChatDisplay display = new ChatDisplay("Rank Permissions and Groups for " + rank.getName());
-//        display.addText("&8Click a Permission to remove it.");
-//        BulletedListComponent.BulletedListBuilder builder =
-//        									new BulletedListComponent.BulletedListBuilder();
-//
-//        listLadderPerms( ladder, builder );
-//        
-//        int rowNumber = 1;
-//        
-//        if ( rank.getPermissions().size() > 0 ) {
-//        	builder.add( "&7Permissions:" );
-//        }
-//        for (String perm : rank.getPermissions() ) {
-//        	
-//        	RowComponent row = new RowComponent();
-//        	
-//        	row.addTextComponent( "  &3Row: &d%d  ", rowNumber++ );
-//        	
-//        	FancyMessage msgPermission = new FancyMessage( String.format( "&7%s ", perm ) )
-//        			.command( "/ranks perms edit " + rank.getName() + " " + rowNumber + " " )
-//        			.tooltip("Permission - Click to Edit");
-//        	row.addFancy( msgPermission );
-//        	
-//        	
-//        	FancyMessage msgRemove = new FancyMessage( String.format( "  &cRemove " ) )
-//        			.command( "/ranks perms remove " + rank.getName() + " " + rowNumber + " " )
-//        			.tooltip("Remove Permission - Click to Delete");
-//        	row.addFancy( msgRemove );
-//        	
-//            builder.add( row );
-//        }
-//
-//        if ( rank.getPermissionGroups().size() > 0 ) {
-//        	builder.add( "&7Permission Groups:" );
-//        }
-//        for (String permGroup : rank.getPermissionGroups() ) {
-//        	
-//        	RowComponent row = new RowComponent();
-//        	
-//        	row.addTextComponent( "  &3Row: &d%d  ", rowNumber++ );
-//        	
-//        	FancyMessage msgPermission = new FancyMessage( String.format( "&7%s ", permGroup ) )
-//        			.command( "/ranks perms edit " + rank.getName() + " " + rowNumber + " " )
-//        			.tooltip("Permission Group - Click to Edit");
-//        	row.addFancy( msgPermission );
-//        	
-//        	
-//        	FancyMessage msgRemove = new FancyMessage( String.format( "  &cRemove " ) )
-//        			.command( "/ranks perms remove " + rank.getName() + " " + rowNumber + " " )
-//        			.tooltip("Remove Permission Group - Click to Delete");
-//        	row.addFancy( msgRemove );
-//        	
-//            builder.add( row );
-//        }
-//
-//        
-//        display.addComponent(builder.build());
-//        display.addComponent(new FancyMessageComponent(
-//            new FancyMessage("&7[&a+&7] Add Permission")
-//            			.suggest("/ranks perms addPerm " + rank.getName() + " [perm] /")
-//                .tooltip("&7Add a new Permission.")));
-//        display.addComponent(new FancyMessageComponent(
-//        		new FancyMessage("&7[&a+&7] Add Permission Group")
-//        				.suggest("/ranks perms addPermGroup " + rank.getName() + " [permGroup] /")
-//        		.tooltip("&7Add a new Permission Group.")));
-//
-//        display.send(sender);
-//
-//    }
-//    
-//    private void listLadderPerms( RankLadder ladder, 
-//    					BulletedListComponent.BulletedListBuilder builder ) {
-//    	
-//        if ( ladder.getPermissions().size() > 0 ) {
-//          	builder.add( "&3Ladder &7%s &3Permissions:", ladder.getName() );
-//        }
-//        for (String perm : ladder.getPermissions() ) {
-//          	
-//          	RowComponent row = new RowComponent();
-//          	
-//          	row.addTextComponent( "    " );
-//          	
-//          	FancyMessage msgPermission = new FancyMessage( String.format( "&7%s ", perm ) )
-//          			.command( "/ranks ladder perms list " + ladder.getName() )
-//          			.tooltip("Ladder Permission - Click to List Ladder");
-//          	row.addFancy( msgPermission );
-//          	
-//            builder.add( row );
-//        }
-//
-//        if ( ladder.getPermissionGroups().size() > 0 ) {
-//          	builder.add( "&3Ladder &7%s &3Permission Groups:", ladder.getName() );
-//        }
-//        for (String permGroup : ladder.getPermissionGroups() ) {
-//          	
-//          	RowComponent row = new RowComponent();
-//          	
-//          	row.addTextComponent( "    " );
-//          	
-//          	FancyMessage msgPermission = new FancyMessage( String.format( "&7%s ", permGroup ) )
-//          			.command( "/ranks ladder perms list " + ladder.getName() )
-//          			.tooltip("Ladder Permission Group - Click to List Ladder");
-//          	row.addFancy( msgPermission );
-//          	
-//          	builder.add( row );
-//        }
-//
-//    }
-//    
-//
-////    @Command(identifier = "ranks perms addPerm", 
-////  		  		description = "Add a ladder permission. Valid placeholder: {rank}.", 
-////  		  onlyPlayers = false, permissions = "ranks.set")
-//    public void rankPermsAddPerm(CommandSender sender, 
-//  		  @Arg(name = "rankName", 
-//  						description = "Rank name to add the permission to.") String rankName,
-//  		  @Arg(name = "permission", description = "Permission") String permission
-//  		  ){
-//    	
-//    	sender.sendMessage( "&cWarning: &3This feature is not yet functional." );
-//  	  
-//        Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-//        if ( rank == null ) {
-//        	rankDoesNotExist( sender, rankName );
-//            return;
-//        }
-//        
-//
-//        if ( permission == null || permission.trim().isEmpty() ) {
-//        	
-//            Output.get().sendInfo(sender, "&3The &7permission &3parameter is required." );
-//            return;
-//        }
-//        
-//        
-//        if ( rank.hasPermission( permission ) ) {
-//      	  
-//      	  Output.get().sendInfo(sender, "&3The permission &7%s &3already exists.", permission );
-//      	  return;
-//        }
-//        
-//        rank.getPermissions().add( permission );
-//        
-//        
-//        PrisonRanks.getInstance().getRankManager().saveRank(rank);
-//
-//        Output.get().sendInfo(sender, "&3The permission &7%s &3was successfully added " +
-//        		"to the rank &7%s&3.", permission, rank.getName() );
-//        
-//        rankPermsList( sender, rank.getName() );
-//    }
-//    
-//    
-////    @Command(identifier = "ranks perms addGroup", 
-////    		description = "Add a ladder permission. Valid placeholder: {rank}.", 
-////    		onlyPlayers = false, permissions = "ranks.set")
-//    public void rankPermsAddPermGroup(CommandSender sender, 
-//    		@Arg(name = "rankName", 
-//    					description = "Rank name to add the permission to.") String rankName,
-//    		@Arg(name = "permissionGroup", description = "Permission Group") String permissionGroup
-//    	){
-//    	
-//    	sender.sendMessage( "&cWarning: &3This feature is not yet functional." );
-//    	
-//    	Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-//    	if ( rank == null ) {
-//    		rankDoesNotExist( sender, rankName );
-//    		return;
-//    	}
-//    	
-//    	
-//    	if ( permissionGroup == null || permissionGroup.trim().isEmpty() ) {
-//    		
-//    		Output.get().sendInfo(sender, "&3The &7permission group &3parameter is required." );
-//    		return;
-//    	}
-//    	
-//    	
-//    	if ( rank.hasPermissionGroup( permissionGroup ) ) {
-//    		
-//    		Output.get().sendInfo(sender, "&3The permission Group &7%s &3already exists.", permissionGroup );
-//    		return;
-//    	}
-//    	
-//    	rank.getPermissionGroups().add( permissionGroup );
-//    	
-//    	
-//    	PrisonRanks.getInstance().getRankManager().saveRank(rank);
-//    	
-//    	Output.get().sendInfo(sender, "&3The permission group &7%s &3was successfully added " +
-//    			"to the rank &7%s&3.", permissionGroup, rank.getName() );
-//    	
-//    	rankPermsList( sender, rank.getName() );
-//    }
-//    
-//
-//
-////    @Command(identifier = "ranks perms remove", description = "Remove rank permissions", 
-////  		  onlyPlayers = false, permissions = "ranks.set")
-//    public void rankPermsRemove(CommandSender sender, 
-//    		@Arg(name = "rankName", def = "default", 
-//  						description = "Rank name to list the permissions.") String rankName,
-//  			@Arg(name = "row") Integer row
-//  		  ){
-//    	sender.sendMessage( "&cWarning: &3This feature is not yet functional." );
-//  	  
-//       	
-//    	Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
-//    	if ( rank == null ) {
-//    		rankDoesNotExist( sender, rankName );
-//    		return;
-//    	}
-//    	
-//  	  
-//        boolean dirty = false;
-//        String removedPerm = "";
-//        boolean permGroup = false;
-//        
-//        if ( row == null || row <= 0 ) {
-//        	sender.sendMessage( 
-//        			String.format("&7Please provide a valid row number greater than zero. " +
-//        					"Was row=[&b%d&7]",
-//        					(row == null ? "null" : row) ));
-//        	return;        	
-//        }
-//        
-//        if ( row <= rank.getPermissions().size() ) {
-//      	  removedPerm = rank.getPermissions().remove( row - 1 );
-//      	  dirty = true;
-//        }
-//        else {
-//      	  // Remove from row the size of permissions so the row will align to the permissionGroups.
-//      	  row -= rank.getPermissions().size();
-//      	  
-//      	  if ( row <= rank.getPermissionGroups().size() ) {
-//      		  
-//      		  removedPerm = rank.getPermissions().remove( row - 1 );
-//      		  dirty = true;
-//      		  permGroup = true;
-//      	  }
-//        }
-//
-//        if ( dirty ) {
-//        	PrisonRanks.getInstance().getRankManager().saveRank(rank);
-//        	
-//        	Output.get().sendInfo(sender, "&3The permission%s &7%s &3was successfully removed " +
-//        			"to the rank &7%s&3.",
-//        			( permGroup ? " group" : "" ),
-//        			removedPerm, rank.getName() );
-//           
-//        }
-//        else {
-//      	  Output.get().sendInfo(sender, "&3The permission on row &7%s &3was unable to be removed " +
-//      	  		"from the &7%s &3rank. " +
-//    	  			"Is that a valid row number?",
-//    	  			Integer.toString( row ), rank.getName() );
-//        }
-//    }
-//      
     
     
     
@@ -1093,7 +809,7 @@ public class RanksCommands
     	Player player = getPlayer( sender, playerName );
     	
     	if (player == null) {
-    		ranksPlayerOnline( sender );
+    		ranksPlayerOnlineMsg( sender );
     		return;
     	}
 
@@ -1121,20 +837,20 @@ public class RanksCommands
 				Rank rank = rankLadders.get( rankLadder );
 				Rank nextRank = rank.getRankNext();
 				
-				String messageRank = ranksPlayerLadderInfo( 
+				String messageRank = ranksPlayerLadderInfoMsg( 
 						player.getDisplayName(), 
 						rankLadder.getName(),
 						rank.getName() );
 				
 				if ( nextRank == null ) {
-					messageRank += ranksPlayerLadderHighestRank();
+					messageRank += ranksPlayerLadderHighestRankMsg();
 				} else {
-					messageRank += ranksPlayerLadderNextRank( 
+					messageRank += ranksPlayerLadderNextRankMsg( 
 							nextRank.getName(), 
 							dFmt.format( nextRank.getCost() ) );
 
 					if ( nextRank.getCurrency() != null ) {
-						messageRank += ranksPlayerLadderNextRankCurrency( nextRank.getCurrency() );
+						messageRank += ranksPlayerLadderNextRankCurrencyMsg( nextRank.getCurrency() );
 					}
 				}
 				
@@ -1145,12 +861,12 @@ public class RanksCommands
 
 			// The default currency first:
 			double balance = rankPlayer.getBalance();
-			String message = ranksPlayerBalanceDefault( player.getName(), dFmt.format( balance ) );
+			String message = ranksPlayerBalanceDefaultMsg( player.getName(), dFmt.format( balance ) );
 			sendToPlayerAndConsole( sender, message );
 			
 			for ( String currency : currencies ) {
 				double balanceCurrency = rankPlayer.getBalance( currency );
-				String messageCurrency = ranksPlayerBalanceOthers( 
+				String messageCurrency = ranksPlayerBalanceOthersMsg( 
 						player.getName(), dFmt.format( balanceCurrency ), currency );
 				sendToPlayerAndConsole( sender, messageCurrency );
 
@@ -1164,14 +880,14 @@ public class RanksCommands
 			boolean isPrisonOfflineMcPlayer = (player instanceof OfflineMcPlayer);
 
 			if ( !isOnline ) {
-				String msgOffline = ranksPlayerPermsOffline();
+				String msgOffline = ranksPlayerPermsOfflineMsg();
 				sendToPlayerAndConsole( sender, msgOffline );
 			}
 			
 			double sellallMultiplier = player.getSellAllMultiplier();
 			DecimalFormat pFmt = new DecimalFormat("#,##0.0000");
-			String messageNotAccurrate = ranksPlayerNotAccurate();
-			String messageSellallMultiplier = ranksPlayerSellallMultiplier( 
+			String messageNotAccurrate = ranksPlayerNotAccurateMsg();
+			String messageSellallMultiplier = ranksPlayerSellallMultiplierMsg( 
 					pFmt.format( sellallMultiplier ), 
 					(!isOnline ? "  " + messageNotAccurrate : "") );
 			sendToPlayerAndConsole( sender, messageSellallMultiplier );
@@ -1181,11 +897,11 @@ public class RanksCommands
 			if ( sender.hasPermission("ranks.admin") ) {
 	            // This is admin-exclusive content
 
-				sendToPlayerAndConsole( sender, ranksPlayerAdminOnly() );
+				sendToPlayerAndConsole( sender, ranksPlayerAdminOnlyMsg() );
 				
 				if ( rankPlayer.getNames().size() > 1 ) {
 					
-					sendToPlayerAndConsole( sender, "  " + ranksPlayerPastNames() );
+					sendToPlayerAndConsole( sender, "  " + ranksPlayerPastNamesMsg() );
 					
 					for ( RankPlayerName rpn : rankPlayer.getNames() ) {
 						
@@ -1197,19 +913,19 @@ public class RanksCommands
 				if ( options != null && options.toLowerCase().contains( "perms" ) ) 
 				{
 					
-					String msgPlayerPerms = ranksPlayerPerms();
+					String msgPlayerPerms = ranksPlayerPermsMsg();
 					
 					sendToPlayerAndConsole( sender, String.format( "  %s:  %s%s%s%s", 
 								msgPlayerPerms,
-								(isOp ? " " + ranksPlayerOp() : ""),
-								(isPlayer ? " " + ranksPlayerPlayer() : ""),
-								(isOnline ? " " + ranksPlayerOnline() : " " + ranksPlayerOffline()),
-								(isPrisonOfflineMcPlayer ? " " + ranksPlayerPrisonOfflinePlayer() : 
-									(isPrisonPlayer ? " " + ranksPlayerPrisonPlayer() : ""))
+								(isOp ? " " + ranksPlayerOpMsg() : ""),
+								(isPlayer ? " " + ranksPlayerPlayerMsg() : ""),
+								(isOnline ? " " + ranksPlayerOnlineMsg() : " " + ranksPlayerOfflineMsg()),
+								(isPrisonOfflineMcPlayer ? " " + ranksPlayerPrisonOfflinePlayerMsg() : 
+									(isPrisonPlayer ? " " + ranksPlayerPrisonPlayerMsg() : ""))
 							) );
 					
 					if ( !isOnline ) {
-						sendToPlayerAndConsole( sender, ranksPlayerPermsOffline() );
+						sendToPlayerAndConsole( sender, ranksPlayerPermsOfflineMsg() );
 					}
 					
 					player.recalculatePermissions();
@@ -1254,7 +970,7 @@ public class RanksCommands
 //			sender.sendMessage( message );
 			
 		} else {
-			ranksPlayerNoRanksFound( sender, player.getDisplayName() );
+			ranksPlayerNoRanksFoundMsg( sender, player.getDisplayName() );
 		}
     }
 
@@ -1334,14 +1050,14 @@ public class RanksCommands
     	
     	if ( !ladderName.equalsIgnoreCase( "all" ) && 
     			PrisonRanks.getInstance().getLadderManager().getLadder( ladderName ) == null ) {
-    		ranksPlayersInvalidLadder( sender, ladderName );
+    		ranksPlayersInvalidLadderMsg( sender, ladderName );
     		return;
     	}
     	
     	
     	RanksByLadderOptions option = RanksByLadderOptions.fromString( action );
     	if ( option == null ) {
-    		ranksPlayersInvalidAction( sender, action );
+    		ranksPlayersInvalidActionMsg( sender, action );
     		return;
     	}
     	
