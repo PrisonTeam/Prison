@@ -1221,15 +1221,14 @@ public class OnBlockBreakEventCore
 			int maxDurability = compat.getDurabilityMax( itemInHand );
 			int durability = compat.getDurability( itemInHand );
 			
+			short damage = 1;  // Generally 1 unless instant break block then zero.
 			
-			Output.get().logDebug( DebugTarget.durability, "calculateAndApplyDurability: maxDurability=" + 
-							maxDurability + " durability=" + durability + "  inHand=" + 
-							itemInHand.getName() );
+			int durabilityLevel = 0;
+			boolean toolBreak = false;
 			
 			// Need to skip processing on empty item stacks and items that have no max durability
 			if ( maxDurability > 0 ) {
 				
-				short damage = 1;  // Generally 1 unless instant break block then zero.
 				
 				if ( durabilityResistance >= 100 ) {
 					damage = 0;
@@ -1240,7 +1239,7 @@ public class OnBlockBreakEventCore
 				}
 				
 				if ( damage > 0 && itemInHand.getBukkitStack().containsEnchantment( Enchantment.DURABILITY)) {
-					int durabilityLevel = itemInHand.getBukkitStack().getEnchantmentLevel( Enchantment.DURABILITY );
+					durabilityLevel = itemInHand.getBukkitStack().getEnchantmentLevel( Enchantment.DURABILITY );
 					
 					// the chance of losing durability is 1 in (1+level)
 					// So if the random int == 0, then take damage, otherwise none.
@@ -1259,6 +1258,7 @@ public class OnBlockBreakEventCore
 					if (newDurability > maxDurability) {
 						// Item breaks! ;(
 						compat.breakItemInMainHand( player );
+						toolBreak = true;
 					} else {
 						compat.setDurability( itemInHand, newDurability );
 					}
@@ -1267,6 +1267,16 @@ public class OnBlockBreakEventCore
 			}
 			
 			
+			if ( Output.get().isDebug( DebugTarget.durability ) ) {
+
+				String message = String.format( "calculateAndApplyDurability: %s:  maxDurability= %d  " + 
+						"durability: %d  damage: %d  durResistance: %d  toolDurabilityLvl: %d  %s", 
+						itemInHand.getName(), maxDurability, durability, damage, 
+						durabilityResistance, durabilityLevel, 
+						(toolBreak ? "[Broke]" : "") );
+				
+				Output.get().logDebug( DebugTarget.durability, message );
+			}
 			
 		}
 	}

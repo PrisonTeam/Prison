@@ -21,6 +21,11 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.4 2021-06-01
 
 
+* **Reposition the location of the durability debug message.**
+This allows only constructing it when the debugging messages are enabled for this target type which will reduce unneeded overhead when debugging is turned off.
+Also repositioning the message allows more information to be included so it's actually more useful too.
+
+
 * **Externalized messages for the RanksCommmands.**
 All of the details with the messages has been put in to the new class RanksCommandMessages.
 Moved some unused RanksCommands to the RanksCommandsPerms class.  May eliminate them, or hook them up later.  Probably eliminate them.
