@@ -18,7 +18,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.4 2021-06-01
+# v3.3.0-alpha.5 2021-06-01
+
+
+* **v3.3.0-alpha.5 2021-06-01**
 
 
 * **Added a ranks_rankup__version number to the en_US.properties file so as to help track future changes.**
