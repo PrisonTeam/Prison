@@ -159,6 +159,35 @@ One issue with extending the fortune on the standard drops is that the amounts c
 At this time, Prison does not provide any support for silk touch.  Internally the basics are in place, but there has never been a request to enable anything related to silk touch within the mines.
 
 
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+# BlockEvents - Durability (Wear) Calculations
+
+Sometimes the durability on the tools used for mining are applied, and sometimes they are not. 
+
+Prison has the ability to enable durability calculations to add wear to the tools, if needed. If bukkit is applying the durability calculations and wear, and if the prison calculations are also enabled, then too much durability wear could be applied to your tools (a doubling effect).
+
+When it is calculated to apply wear to the tools, it only adds 1 to the total durability on the tool.  When the durability, or wear, exceeds the max durability level for the tool, then the tool will break.
+
+The tool's durability level will impact, and reduce, the chance to add wear to the tool.  Also if the tool has the Durability Resistance enchantment, levels 1 through 100, it too will make it more difficult to add wear to the tool.  If the Durability Resistance enchantment has a level of 100 (or no specified level assumes to be 100), then no wear will ever be applied to the tool.
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+# BlockEvents - XP
+
+Prison has the ability to give the player XP for mining certain kinds of blocks.  The XP can be give either directly, or though the generation of XP Orbs.
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+# BlockEvents - Tool Lore Counter
+
+Prison provides block break counts on tools through the use of lore, if enabled.  This will track how blocks a tool has broken over it's life span.
+
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
