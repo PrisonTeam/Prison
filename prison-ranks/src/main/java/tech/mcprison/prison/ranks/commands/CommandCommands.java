@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
-import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
@@ -21,7 +20,7 @@ import tech.mcprison.prison.tasks.PrisonCommandTask;
  * @author Faizaan A. Datoo
  */
 public class CommandCommands
-				extends BaseCommands {
+				extends CommandCommandsMessages {
 	
 	public CommandCommands() {
 		super( "CommandCommands" );
@@ -50,16 +49,19 @@ public class CommandCommands
         }
 
         if ( rankName != null && "placeholders".equalsIgnoreCase( rankName ) ) {
-        	String message = "&7Custom placeholders for rank commands are: &3" +
-        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
-							PrisonCommandTask.CommandEnvironment.rank_commands );
+        	
+        	String placeholders = PrisonCommandTask.CustomPlaceholders.listPlaceholders(
+									PrisonCommandTask.CommandEnvironment.rank_commands );
+        	
+        	String message = ranksCommandAddPlaceholdersMsg( placeholders );
+        	
         	Output.get().logInfo( message );
         	return;
         }
         
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if ( rank == null ) {
-            Output.get().sendError(sender, "The rank '%s' does not exist.", rankName);
+        	rankDoesNotExistMsg( sender, rankName );
             return;
         }
 
@@ -72,7 +74,7 @@ public class CommandCommands
         for ( String rankCommand : rank.getRankUpCommands() ) {
 			if ( rankCommand.equalsIgnoreCase( command ) ) {
 				
-				Output.get().sendInfo(sender, "Duplicate command '%s' was not added to the rank '%s'.", command, rank.getName());
+				ranksCommandAddDuplicateMsg( sender, rankName );
 				return;
 			}
 		}
@@ -82,7 +84,7 @@ public class CommandCommands
     	
         PrisonRanks.getInstance().getRankManager().saveRank( rank );
         
-        Output.get().sendInfo(sender, "Added command '%s' to the rank '%s'.", command, rank.getName());
+        ranksCommandAddSuccessMsg( sender, command, rankName );
 
     }
 
@@ -99,7 +101,7 @@ public class CommandCommands
 
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if ( rank == null) {
-            Output.get().sendError(sender, "The rank '%s' does not exist.", rankName);
+        	rankDoesNotExistMsg( sender, rankName );
             return;
         }
 
@@ -111,12 +113,10 @@ public class CommandCommands
         	
         	PrisonRanks.getInstance().getRankManager().saveRank( rank );
         	
-        	Output.get()
-		        	.sendInfo(sender, "Removed command '%s' from the rank '%s'.", command, rank.getName());
+        	ranksCommandRemoveSuccessMsg( sender, command, rank.getName() );
 
         } else {
-        	Output.get()
-        		.sendWarn(sender, "The rank doesn't contain that command. Nothing was changed.");
+        	ranksCommandRemoveFailedMsg( sender );
         }
     }
 
@@ -127,31 +127,32 @@ public class CommandCommands
     	
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if ( rank == null ) {
-            Output.get().sendError(sender, "The rank '%s' does not exist.", rankName);
+        	rankDoesNotExistMsg( sender, rankName );
             return;
         }
 
         if (rank.getRankUpCommands() == null || rank.getRankUpCommands().size() == 0) {
-            Output.get().sendInfo(sender, "The rank '%s' contains no commands.", rank.getName());
+        	ranksCommandListContainsNoneMsg( sender, rank.getName() );
             return;
         }
 
-        ChatDisplay display = new ChatDisplay("RankUpCommand for " + rank.getTag());
-        display.addText("&8Click a command to remove it.");
+        ChatDisplay display = new ChatDisplay( ranksCommandListCmdHeaderMsg( rank.getTag() ));
+        display.addText( ranksCommandListClickCmdToRemoveMsg() );
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
 
         for (String command : rank.getRankUpCommands()) {
             FancyMessage msg = new FancyMessage("&3/" + command)
                 .command("/ranks command remove " + rankName + " " + command)
-                .tooltip("Click to remove.");
+                .tooltip( ranksCommandListClickToRemoveMsg() );
             builder.add(msg);
         }
 
         display.addComponent(builder.build());
         display.addComponent(new FancyMessageComponent(
-            new FancyMessage("&7[&a+&7] Add").suggest("/ranks command add " + rankName + " /")
-                .tooltip("&7Add a new command.")));
+            new FancyMessage( ranksCommandListAddButtonMsg() )
+            	.suggest("/ranks command add " + rankName + " /")
+                .tooltip( ranksCommandListAddNewCommandToolTipMsg() )));
         display.send(sender);
     }
 

@@ -31,12 +31,10 @@ import com.google.common.eventbus.Subscribe;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.events.player.PlayerJoinEvent;
-import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.ManagerPlaceholders;
 import tech.mcprison.prison.placeholders.PlaceHolderKey;
@@ -65,7 +63,7 @@ import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
  * @author Faizaan A. Datoo
  */
 public class PlayerManager
-	extends BaseCommands
+	extends PlayerManagerMessages
 	implements ManagerPlaceholders {
 
 
@@ -73,7 +71,7 @@ public class PlayerManager
     private List<RankPlayer> players;
     private TreeMap<String, RankPlayer> playersByName;
     
-    private List<RankPlayer> playersByTop;
+//    private List<RankPlayer> playersByTop;
 
     private List<PlaceHolderKey> translatedPlaceHolderKeys;
     
@@ -158,21 +156,16 @@ public class PlayerManager
             try {
 				savePlayer(player);
 			}
-			catch ( Exception e )
-			{
+			catch ( Exception e )  {
+				
+				String errorMessage = cannotSavePlayerFile( player.filename() );
 	    		
-	    		Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-	        			.getLocalizable( "ranks_playerManager__cannot_save_player_file" )
-	        			.withReplacements( player.filename() );
-	 
-	    		String message = localManagerLog.localize();
-	    		
-    			if ( !getPlayerErrors().contains( message ) ) {
-    				getPlayerErrors().add( message );
-    				Output.get().logError( message );
+    			if ( !getPlayerErrors().contains( errorMessage ) ) {
+    				getPlayerErrors().add( errorMessage );
+    				Output.get().logError( errorMessage );
     			}
     			
-				Output.get().logError(message, e);
+//				Output.get().logError(errorMessage, e);
 			}
         }
     }
@@ -247,16 +240,12 @@ public class PlayerManager
 			}
 			catch ( IOException e ) {
 				
-				Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-	        			.getLocalizable( "ranks_playerManager__cannot_add_new_player" )
-	        			.withReplacements( playerName, e.getMessage() );
+				String errorMessage = cannotAddNewPlayer( playerName, e.getMessage() );
 				
-				String message = localManagerLog.localize();
-				
-    			if ( !getPlayerErrors().contains( message ) ) {
+    			if ( !getPlayerErrors().contains( errorMessage ) ) {
     				
-    				getPlayerErrors().add( message );
-    				Output.get().logError( message );
+    				getPlayerErrors().add( errorMessage );
+    				Output.get().logError( errorMessage );
     			}
 			}
     	}
@@ -337,17 +326,9 @@ public class PlayerManager
         			} 
         			catch (IOException e) {
         				
-        				Localizable localManagerLogNoName = PrisonRanks.getInstance().getRanksMessages()
-        						.getLocalizable( "ranks_playerManager__no_player_name_available" );
+        				String errorMessage = cannotSaveNewPlayerFile( playerName, newPlayer.filename() );
         				
-        				Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-        	        			.getLocalizable( "ranks_playerManager__cannot_save_new_player_file" )
-        	        			.withReplacements( 
-        	        					(playerName == null ? 
-        	        								localManagerLogNoName.localize() : playerName), 
-        	        					newPlayer.filename() );
-        				
-        				Output.get().logError( localManagerLog.localize(), e);
+        				Output.get().logError( errorMessage, e);
         			}
         		}
         		
@@ -537,11 +518,9 @@ public class PlayerManager
         Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
         if( prisonPlayer == null ) {
         	
-			Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( "ranks_playerManager__cannot_load_player_file" )
-        			.withReplacements( rankPlayer.getUUID().toString() );
+        	String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
 
-        	String message = "getPlayerNextRankCostPercent: " + localManagerLog.localize();
+        	String message = "getPlayerNextRankCostPercent: " + errorMessage;
 			
         	if ( !getPlayerErrors().contains( message ) ) {
 				getPlayerErrors().add( message );
@@ -586,11 +565,9 @@ public class PlayerManager
     	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
     	if( prisonPlayer == null ) {
     		
-			Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( "ranks_playerManager__cannot_load_player_file" )
-        			.withReplacements( rankPlayer.getUUID().toString() );
+    		String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
 
-    		String message = "getPlayerNextRankCostBar: " + localManagerLog.localize();
+    		String message = "getPlayerNextRankCostBar: " + errorMessage;
 
     		if ( !getPlayerErrors().contains( message ) ) {
 				getPlayerErrors().add( message );
@@ -648,11 +625,9 @@ public class PlayerManager
     	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
     	if( prisonPlayer == null ) {
     		
-			Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( "ranks_playerManager__cannot_load_player_file" )
-        			.withReplacements( rankPlayer.getUUID().toString() );
-
-    		String message = "getPlayerNextRankCostRemaining: " + localManagerLog.localize();
+    		String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
+    		
+    		String message = "getPlayerNextRankCostRemaining: " + errorMessage;
     		
 			if ( !getPlayerErrors().contains( message ) ) {
 				getPlayerErrors().add( message );
@@ -727,11 +702,9 @@ public class PlayerManager
     	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
     	if( prisonPlayer == null ) {
     		
-			Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( "ranks_playerManager__cannot_load_player_file" )
-        			.withReplacements( rankPlayer.getUUID().toString() );
-
-    		String message = "getPlayerBalance: " + localManagerLog.localize();
+    		String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
+    		
+    		String message = "getPlayerBalance: " + errorMessage;
     		
 			if ( !getPlayerErrors().contains( message ) ) {
 				getPlayerErrors().add( message );
@@ -797,15 +770,11 @@ public class PlayerManager
         		playerBalance = currencyEcon.getBalance( player, rank.getCurrency() );
     		} else {
     			
-    			Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-            			.getLocalizable( "ranks_playerManager__failed_to_load_economy_currency" )
-            			.withReplacements( player.getName(), rank.getCurrency()  );
+    			String errorMessage = cannotLoadEconomyCurrency( player.getName(), rank.getCurrency() );
 
-    			String message = localManagerLog.localize();
-    			
-    			if ( !getPlayerErrors().contains( message ) ) {
-    				getPlayerErrors().add( message );
-    				Output.get().logError( message );
+    			if ( !getPlayerErrors().contains( errorMessage ) ) {
+    				getPlayerErrors().add( errorMessage );
+    				Output.get().logError( errorMessage );
     			}
     			
     		}
@@ -817,17 +786,13 @@ public class PlayerManager
     		if ( economy != null ) {
     			playerBalance = economy.getBalance( player );
     		} else {
-    			Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-    					.getLocalizable( "ranks_playerManager__failed_to_load_economy" )
-    					.withReplacements( player.getName() );
     			
-    			String message = localManagerLog.localize();
-
-    			Output.get().logError( message );
-    			if ( !getPlayerErrors().contains( message ) ) {
+    			String errorMessage = cannotLoadEconomy( player.getName() );
+    			
+    			if ( !getPlayerErrors().contains( errorMessage ) ) {
     				
-    				getPlayerErrors().add( message );
-    				Output.get().logError( message );
+    				getPlayerErrors().add( errorMessage );
+    				Output.get().logError( errorMessage );
     			}
     			
     		}

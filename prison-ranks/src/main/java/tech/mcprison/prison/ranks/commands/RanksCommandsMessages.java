@@ -10,11 +10,11 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
 
-public class RanksCommandMessages
+public class RanksCommandsMessages
 	extends BaseCommands
 {
 
-	public RanksCommandMessages( String cmdGroup )
+	public RanksCommandsMessages( String cmdGroup )
 	{
 		super( cmdGroup );
 	}

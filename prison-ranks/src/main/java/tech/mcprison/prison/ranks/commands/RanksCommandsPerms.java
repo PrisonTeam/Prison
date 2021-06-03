@@ -22,7 +22,7 @@ import tech.mcprison.prison.ranks.data.RankLadder;
  *
  */
 public class RanksCommandsPerms
-	extends RanksCommandMessages 
+	extends RanksCommandsMessages 
 {
 
 	public RanksCommandsPerms( String cmdGroup ) {

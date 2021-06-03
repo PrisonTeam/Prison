@@ -44,7 +44,7 @@ import tech.mcprison.prison.util.Text;
  * @author Faizaan A. Datoo
  */
 public class RanksCommands
-			extends RanksCommandMessages {
+			extends RanksCommandsMessages {
 	
 	private CommandCommands rankCommandCommands = null;
 	

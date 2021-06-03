@@ -34,6 +34,7 @@ import tech.mcprison.prison.store.Document;
  * @author Faizaan A. Datoo
  */
 public class Rank
+		extends RankMessages
 		implements PrisonSortable,
 					ModuleElement {
 
@@ -189,13 +190,11 @@ public class Rank
 		}
 		catch ( Exception e )
 		{
-			Output.get().logError( 
-					String.format( "&aFailure: Loading Ranks! &7Exception parsing rank documents. " +
-					"Rank id= %s name= %s  [%s]", 
-					Integer.toString( this.id ), (this.name == null ? "null" : this.name ),
-					e.getMessage())
-					);
+			String message = rankFailureLoadingRanksMsg( Integer.toString( this.id ),
+					(this.name == null ? "null" : this.name ),
+					e.getMessage() );
 			
+			Output.get().logError( message );
 		}
     }
 

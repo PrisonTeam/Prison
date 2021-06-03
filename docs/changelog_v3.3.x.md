@@ -20,6 +20,10 @@ These build logs represent the work that has been going on within prison.
 
 # v3.3.0-alpha.5 2021-06-01
 
+* **More adjustments to the rank messages.**
+Added a few more messages so incremented ranks_messages__version=2.
+Moved all code dealing with messages to a Messages class by the same name.  This will keep the actual code much cleaner.
+
 
 * **Refactoring ranks module commands to put the external messages within messages classes since it cleans up a lot of code since the messages are messy (multi-lined).**
 

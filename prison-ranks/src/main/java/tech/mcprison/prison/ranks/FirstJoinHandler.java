@@ -17,23 +17,24 @@
 
 package tech.mcprison.prison.ranks;
 
+import java.io.IOException;
+import java.util.Optional;
+
 import com.google.common.eventbus.Subscribe;
+
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.events.FirstJoinEvent;
-
-import java.io.IOException;
-import java.util.Optional;
 
 /**
  * Handles the players upon their first join.
  *
  * @author Faizaan A. Datoo
  */
-public class FirstJoinHandler {
+public class FirstJoinHandler
+		extends FirstJoinHandlerMessages {
 
     /*
      * Constructor
@@ -56,18 +57,14 @@ public class FirstJoinHandler {
             player.addRank(PrisonRanks.getInstance().getDefaultLadder(), firstRank.get());
         } else {
         	
-        	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( "ranks_firstJoinHandler__no_ranks_on_server" );           	
-        	Output.get().logWarn( localManagerLog.localize() );
+        	Output.get().logWarn( firstJoinWarningNoRanksOnServer() );
         }
 
         try {
             PrisonRanks.getInstance().getPlayerManager().savePlayer(player);
         } catch (IOException e) {
         	
-        	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( "ranks_firstJoinHandler__could_not_save_plaer" );           	
-        	Output.get().logError( localManagerLog.localize(), e );
+        	Output.get().logError( firstJoinErrorCouldNotSavePlayer(), e );
         }
     }
 

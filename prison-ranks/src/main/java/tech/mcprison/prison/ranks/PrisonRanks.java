@@ -27,8 +27,6 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.localization.LocaleManager;
-import tech.mcprison.prison.localization.Localizable;
-import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleStatus;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
@@ -48,7 +46,7 @@ import tech.mcprison.prison.store.Database;
  * @author Faizaan A. Datoo
  */
 public class PrisonRanks 
-	extends Module {
+	extends PrisonRanksMessages {
 	
 	public static final String MODULE_NAME = "Ranks";
     /*
@@ -100,17 +98,12 @@ public class PrisonRanks
         if (!PrisonAPI.getIntegrationManager().hasForType(IntegrationType.ECONOMY)) {
             getStatus().setStatus(ModuleStatus.Status.FAILED);
             
-            Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( "ranks_prisonRanks__failure_no_economy_status" );           	
-            getStatus().setMessage( localManagerLog.localize() );
+            getStatus().setMessage( prisonRanksFailureNoEconomyStatusMsg() );
             
             String integrationDebug = PrisonAPI.getIntegrationManager()
             			.getIntegrationDetails(IntegrationType.ECONOMY);
-            Localizable localManagerLog2 = PrisonRanks.getInstance().getRanksMessages()
-            		.getLocalizable( "ranks_prisonRanks__failure_no_economy" )
-            		.withReplacements( integrationDebug );           	
             
-            logStartupMessageError( localManagerLog2.localize() );
+            logStartupMessageError( prisonRanksFailureNoEconomyMsg( integrationDebug ) );
             return;
         }
 
@@ -130,16 +123,9 @@ public class PrisonRanks
         catch (IOException e) {
         	getStatus().setStatus(ModuleStatus.Status.FAILED);
         	
-            Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( "ranks_prisonRanks__failure_loading_ranks_status" )
-        			.withReplacements( e.getMessage() );           	
-            getStatus().setMessage( localManagerLog.localize() );
+            getStatus().setMessage( prisonRanksFailureLoadingRankStatusMsg( e.getMessage() ) );
 
-            Localizable localManagerLog2 = PrisonRanks.getInstance().getRanksMessages()
-            		.getLocalizable( "ranks_prisonRanks__failure_loading_ranks" )
-            		.withReplacements( e.getMessage() );           	
-            
-            logStartupMessageError( localManagerLog2.localize() );
+            logStartupMessageError( prisonRanksFailureLoadingRanksMsg( e.getMessage() ) );
         }
 
         // Load up the ladders
@@ -152,16 +138,9 @@ public class PrisonRanks
         catch (IOException e) {
         	getStatus().setStatus(ModuleStatus.Status.FAILED);
         	
-            Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( "ranks_prisonRanks__failure_loading_ladders_status" )
-        			.withReplacements( e.getMessage() );           	
-            getStatus().setMessage( localManagerLog.localize() );
+            getStatus().setMessage( prisonRanksFailureLoadingLadderStatusMsg( e.getMessage() ) );
 
-            Localizable localManagerLog2 = PrisonRanks.getInstance().getRanksMessages()
-            		.getLocalizable( "ranks_prisonRanks__failure_loading_ladders" )
-            		.withReplacements( e.getMessage() );           	
-            
-            logStartupMessageError( localManagerLog2.localize() );
+            logStartupMessageError( prisonRanksFailureLoadingLadderMsg( e.getMessage() ) );
         }
         createDefaultLadder();
 
@@ -184,19 +163,12 @@ public class PrisonRanks
         catch (IOException e) {
         	getStatus().setStatus(ModuleStatus.Status.FAILED);
         	
-            Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( "ranks_prisonRanks__failure_loading_players_status" )
-        			.withReplacements( e.getMessage() );           	
-            getStatus().setMessage( localManagerLog.localize() );
+            getStatus().setMessage( prisonRanksFailureLoadingPlayersStatusMsg( e.getMessage() ) );
 
-            Localizable localManagerLog2 = PrisonRanks.getInstance().getRanksMessages()
-            		.getLocalizable( "ranks_prisonRanks__failure_loading_players" )
-            		.withReplacements( e.getMessage() );           	
-            
-            logStartupMessageError( localManagerLog2.localize() );
+            logStartupMessageError( prisonRanksFailureLoadingPlayersMsg( e.getMessage() ) );
 
-        	getStatus().addMessage("&cFailed Loading Players: " + e.getMessage());
-        	logStartupMessageError("A player file failed to load. " + e.getMessage());
+        	getStatus().addMessage( prisonRanksFailedLoadingPlayersMsg( e.getMessage() ));
+        	logStartupMessageError( prisonRanksFailedToLoadPlayFileMsg( e.getMessage() ));
         }
 
         // Load up the commands
@@ -223,22 +195,11 @@ public class PrisonRanks
         ConversionManager.getInstance().registerConversionAgent(new RankConversionAgent());
 
 
-        Localizable localManagerLogRankCounts = PrisonRanks.getInstance().getRanksMessages()
-    			.getLocalizable( "ranks_prisonRanks__status_loaded_ranks" )
-    			.withReplacements( Integer.toString( getRankCount() ) );
-        logStartupMessage( localManagerLogRankCounts.localize() );
+        logStartupMessage( prisonRanksStatusLoadedRanksMsg( getRankCount() ) );
         
+        logStartupMessage( prisonRanksStatusLoadedLaddersMsg( getladderCount() ) );
         
-        Localizable localManagerLogLadderCounts = PrisonRanks.getInstance().getRanksMessages()
-        		.getLocalizable( "ranks_prisonRanks__status_loaded_ladders" )
-        		.withReplacements( Integer.toString( getRankCount() ) );
-        logStartupMessage( localManagerLogLadderCounts.localize() );
-        
-        
-        Localizable localManagerLogPlayerCounts = PrisonRanks.getInstance().getRanksMessages()
-        		.getLocalizable( "ranks_prisonRanks__status_loaded_players" )
-        		.withReplacements( Integer.toString( getRankCount() ) );
-        logStartupMessage( localManagerLogPlayerCounts.localize() );
+        logStartupMessage( prisonRanksStatusLoadedPlayersMsg( getPlayersCount() ) );
         
 
         // Display all Ranks in each ladder:
@@ -265,11 +226,6 @@ public class PrisonRanks
      */
     @Override 
     public void disable() {
-//        try {
-//            rankManager.saveRanks();
-//        } catch (IOException e) {
-//            Output.get().logError("A ranks file failed to save.", e);
-//        }
     }
     
 
@@ -291,36 +247,22 @@ public class PrisonRanks
             RankLadder rankLadder = ladderManager.createLadder("default");
 
             if ( rankLadder == null ) {
-            	Localizable localManagerLogCreate = PrisonRanks.getInstance().getRanksMessages()
-            			.getLocalizable( "ranks_prisonRanks__failure_with_ladder_create" );
-            	Localizable localManagerLogDefalt = PrisonRanks.getInstance().getRanksMessages()
-            			.getLocalizable( "ranks_prisonRanks__failure_with_ladder_default" );
-            	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-            			.getLocalizable( "ranks_prisonRanks__failure_with_ladder" )
-            			.withReplacements( 
-            					localManagerLogCreate.localize(),
-            					localManagerLogDefalt.localize() );
             	
-            	Output.get().logError( localManagerLog.localize() );
-                super.getStatus().toFailed( localManagerLog.localize() );
+            	String failureMsg = prisonRanksFailureCreateDefaultLadderMsg();
+            	
+            	Output.get().logError( failureMsg );
+                super.getStatus().toFailed( failureMsg );
                 return;
             }
 
             try {
                 ladderManager.saveLadder( rankLadder );
             } catch (IOException e) {
-            	Localizable localManagerLogSave = PrisonRanks.getInstance().getRanksMessages()
-            			.getLocalizable( "ranks_prisonRanks__failure_with_ladder_save" );
-            	Localizable localManagerLogDefalt = PrisonRanks.getInstance().getRanksMessages()
-            			.getLocalizable( "ranks_prisonRanks__failure_with_ladder_default" );
-            	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-            			.getLocalizable( "ranks_prisonRanks__failure_with_ladder" )
-            			.withReplacements( 
-            					localManagerLogSave.localize(),
-            					localManagerLogDefalt.localize() );
             	
-            	Output.get().logError( localManagerLog.localize() );
-                super.getStatus().toFailed( localManagerLog.localize() );
+            	String failureMsg = prisonRanksFailureSavingDefaultLadderMsg();
+            	
+            	Output.get().logError( failureMsg );
+                super.getStatus().toFailed( failureMsg );
             }
         }
 
@@ -328,44 +270,27 @@ public class PrisonRanks
             RankLadder rankLadder = ladderManager.createLadder("prestiges");
 
             if ( rankLadder == null ) {
-            	Localizable localManagerLogCreate = PrisonRanks.getInstance().getRanksMessages()
-            			.getLocalizable( "ranks_prisonRanks__failure_with_ladder_create" );
-            	Localizable localManagerLogPrestiges = PrisonRanks.getInstance().getRanksMessages()
-            			.getLocalizable( "ranks_prisonRanks__failure_with_ladder_prestiges" );
-            	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-            			.getLocalizable( "ranks_prisonRanks__failure_with_ladder" )
-            			.withReplacements( 
-            					localManagerLogCreate.localize(),
-            					localManagerLogPrestiges.localize() );
+
+            	String failureMsg = prisonRanksFailureCreatePrestigeLadderMsg();
             	
-            	Output.get().logError( localManagerLog.localize() );
-                super.getStatus().toFailed( localManagerLog.localize() );
+            	Output.get().logError( failureMsg );
+                super.getStatus().toFailed( failureMsg );
                 return;
             }
 
             try {
                 ladderManager.saveLadder( rankLadder );
             } catch (IOException e) {
-            	Localizable localManagerLogSave = PrisonRanks.getInstance().getRanksMessages()
-            			.getLocalizable( "ranks_prisonRanks__failure_with_ladder_save" );
-            	Localizable localManagerLogPrestiges = PrisonRanks.getInstance().getRanksMessages()
-            			.getLocalizable( "ranks_prisonRanks__failure_with_ladder_prestiges" );
-            	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-            			.getLocalizable( "ranks_prisonRanks__failure_with_ladder" )
-            			.withReplacements( 
-            					localManagerLogSave.localize(),
-            					localManagerLogPrestiges.localize() );
+
+            	String failureMsg = prisonRanksFailureSavingPrestigeLadderMsg();
             	
-            	Output.get().logError( localManagerLog.localize() );
-                super.getStatus().toFailed( localManagerLog.localize() );
+            	Output.get().logError( failureMsg );
+                super.getStatus().toFailed( failureMsg );
             }
         }
 
     }
 
-    /*
-     * Getters & Setters
-     */
 
 
     private void logStartupMessageError( String message ) {

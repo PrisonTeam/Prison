@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
@@ -36,7 +35,8 @@ import tech.mcprison.prison.store.Document;
  *
  * @author Faizaan A. Datoo
  */
-public class LadderManager {
+public class LadderManager
+		extends LadderManagerMessages {
 
     /*
      * Fields & Constants
@@ -146,11 +146,9 @@ public class LadderManager {
     	}
     	catch ( IOException e ) {
     		
-    		Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( "ranks_ladderManager__cannot_save_ladder_file" )
-        			.withReplacements( ladder.getName(), e.getMessage() );
-    		    		
-    		Output.get().logError( localManagerLog.localize(), e );
+    		String errorMessage = cannotSaveLadderFile( ladder.getName(), e.getMessage() );
+    		
+    		Output.get().logError( errorMessage, e );
     	}
     	
     	return success;

@@ -25,7 +25,6 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
@@ -39,7 +38,8 @@ import tech.mcprison.prison.tasks.PrisonCommandTask.CustomPlaceholders;
  *
  * @author Faizaan A. Datoo
  */
-public class RankUtil {
+public class RankUtil
+		extends RankUtilMessages {
 
 	
 	public enum RankupCommands {
@@ -282,10 +282,7 @@ public class RankUtil {
     	} catch (Exception e ) {
     		results.addTransaction( RankupTransactions.failure_exception_caught_check_server_logs );
     		
-    		Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( "ranks_rankutil__failure_internal" )
-        			.withReplacements( e.getMessage() );           	
-    		Output.get().logError( localManagerLog.localize(), e );
+    		Output.get().logError( rankUtilFailureInternalMsg( e.getMessage() ), e );
     	}
     	
     	// Log the results:
@@ -307,15 +304,12 @@ public class RankUtil {
     		String rankName, String playerName, String executorName, 
     		PromoteForceCharge pForceCharge) {
 
-    	
-
         
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
         if( ladder == null ) {
         	results.addTransaction( RankupStatus.RANKUP_FAILURE_COULD_NOT_LOAD_LADDER, RankupTransactions.failed_ladder );
         	return;
         }
-
         
 
         Rank originalRank = rankPlayer.getRank(ladder.getName());
@@ -524,11 +518,10 @@ public class RankUtil {
             		RankupTransactions.successfully_saved_player_rank_data );
             
             success = true;
-        } catch (IOException e) {
-    		Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-        			.getLocalizable( "ranks_rankutil__failure_saving_player_data" )
-        			.withReplacements( e.getMessage() );           	
-    		Output.get().logError( localManagerLog.localize(), e );
+        } 
+		catch (IOException e) {
+        	
+    		Output.get().logError( rankUtilFailureSavingPlayerMsg( e.getMessage() ), e );
     		
             results.addTransaction( RankupStatus.RANKUP_FAILURE_COULD_NOT_SAVE_PLAYER_FILE, 
             			RankupTransactions.failure_cannot_save_player_file );
