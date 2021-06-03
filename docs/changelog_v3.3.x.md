@@ -18,7 +18,12 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.5 2021-06-01
+# v3.3.0-alpha.5 2021-06-03
+
+
+* **Added a new command to allow admins to reload the auto features configs so they do not have to restart the server if they made manual changes to the config file.**
+`/prison reload autoFeatures help`
+
 
 * **More adjustments to the rank messages.**
 Added a few more messages so incremented ranks_messages__version=2.

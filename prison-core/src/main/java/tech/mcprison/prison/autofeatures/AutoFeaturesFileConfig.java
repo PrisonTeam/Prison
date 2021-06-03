@@ -544,6 +544,19 @@ public class AutoFeaturesFileConfig {
 
     }
 
+    
+    public void reloadConfig() {
+    	// First clear the configs:
+    	getConfig().clear();
+    	
+    	
+    	// Load from the config file:
+    	YamlFileIO yamlFileIO = Prison.get().getPlatform().getYamlFileIO( getConfigFile() );
+		List<AutoFeatures> dne = yamlFileIO.loadYamlAutoFeatures( getConfig() );
+		
+		dne.size();
+    }
+    
 
 	/**
 	 * <p>This updates AutoFeatures with a String value.

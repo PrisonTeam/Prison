@@ -19,6 +19,7 @@
 package tech.mcprison.prison;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -879,6 +880,27 @@ public class PrisonCommand {
     	sender.sendMessage( message );
     }
     
+    @Command(identifier = "prison reload autoFeatures", 
+    		description = "AutoFeatures reload: Reloads the auto features settings. The current " +
+    				"settings will be discarded before reloading the configuration file.", 
+    		onlyPlayers = false, permissions = "prison.autofeatures")
+    public void reloadAutoFeatures(CommandSender sender ) {
+    	    	
+    	AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig().reloadConfig();
+    	
+    	String message = "&7AutoFeatures were reloaded. The new settings are now in effect. ";
+    	sender.sendMessage( message );
+
+    	try {
+    		String filePath = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig()
+    								.getConfigFile().getCanonicalPath();
+    		sender.sendMessage( filePath );
+    	}
+    	catch ( IOException e ) {
+    		// Ingore
+    	}
+    }
+
     
     /**
      * <p>This command does not do anything, except to provide a command placeholder to
