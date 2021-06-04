@@ -18,7 +18,12 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.5 2021-06-03
+# v3.3.0-alpha.5 2021-06-04
+
+
+* **Prison now does TPS calculations.**
+These are based upon EssentialsX, but improves a few issues that I found with their calculations.  Prison's TPS calcuations have a much lower overhead with the calculations too.
+The display of TPS is shown in the command /prison version.
 
 
 * **Added a new command to allow admins to reload the auto features configs so they do not have to restart the server if they made manual changes to the config file.**

@@ -48,6 +48,7 @@ import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.troubleshoot.TroubleshootResult;
 import tech.mcprison.prison.troubleshoot.Troubleshooter;
+import tech.mcprison.prison.util.PrisonTPS;
 
 /**
  * Root commands for managing the platform as a whole, in-game.
@@ -292,6 +293,12 @@ public class PrisonCommand {
         getPrisonDiskSpaceUsage( display, prisonFolder, 
         		"&7Prison's File Count: %s  Folder Count: %s  Disk Space: %s  Other Objects: %s" );
         
+        
+        DecimalFormat iFmt = new DecimalFormat("#,##0");
+        display.addText( "&7Prison TPS Average: %s   Interval: %s ticks  Priors: %s",
+        						Prison.get().getPrisonTPS().getAverageTPSFormatted(),
+        						iFmt.format( PrisonTPS.SUBMIT_TICKS_INTERVAL ),
+        						Prison.get().getPrisonTPS().getLastTPS() );
         
         
         display.addText("");

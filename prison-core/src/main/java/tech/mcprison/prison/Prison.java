@@ -39,6 +39,7 @@ import tech.mcprison.prison.selection.SelectionManager;
 import tech.mcprison.prison.store.Database;
 import tech.mcprison.prison.troubleshoot.TroubleshootManager;
 import tech.mcprison.prison.util.EventExceptionHandler;
+import tech.mcprison.prison.util.PrisonTPS;
 
 /**
  * Entry point for implementations. <p> An instance of Prison can be retrieved using the static
@@ -90,6 +91,9 @@ public class Prison
     private PlaceholderManager placeholderManager;
     
     private Database metaDatabase;
+    
+    
+    private PrisonTPS prisonTPS;
     
     
     private Prison() {
@@ -146,6 +150,8 @@ public class Prison
         this.commandHandler.registerCommands(prisonCommands);
         
         
+        this.prisonTPS = new PrisonTPS();
+        this.prisonTPS.submitAsyncTPSTask();
 
 
         long stopTime = System.currentTimeMillis();
@@ -401,5 +407,9 @@ public class Prison
     	long runtimeMs = currentTime - getServerStartupTime();
     	return PlaceholdersUtil.formattedTime( runtimeMs / 1000 );
     }
+
+	public PrisonTPS getPrisonTPS() {
+		return prisonTPS;
+	}
     
 }
