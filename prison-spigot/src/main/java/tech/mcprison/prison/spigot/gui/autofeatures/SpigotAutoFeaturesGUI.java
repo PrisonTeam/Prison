@@ -50,6 +50,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
 
     private void buttonsSetup() {
 
+        // Close GUI button lore.
         List<String> closeGUILore = createLore(
                 messages.getString("Lore.ClickToClose")
         );

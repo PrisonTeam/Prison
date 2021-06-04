@@ -144,10 +144,19 @@ public abstract class SpigotGUIComponents {
         return SpigotPrison.getInstance().getGuiConfig();
     }
 
+    // Investigating on NPEs here.
     /**
      * Get autoFeatures Config.
      * */
     public static AutoFeaturesFileConfig afConfig() {
+        if (AutoFeaturesWrapper.getInstance() == null){
+            return null;
+        }
+        try{
+            AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
+        } catch (NullPointerException ex){
+            return null;
+        }
         return AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
     }
 

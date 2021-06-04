@@ -20,6 +20,10 @@ These build logs represent the work that has been going on within prison.
 
 # v3.3.0-alpha.5 2021-06-04
 
+* `BY GABRYCA on 04/06/2021:`
+**FIX for NPEs from AutoFeatures GUI.**
+  Potentially fixed NPE error from AutoFeatures GUI, now instead of "_BREAKING_" it should
+  open the "this feature is disabled" GUI as expected.
 
 * **Prison now does TPS calculations.**
 These are based upon EssentialsX, but improves a few issues that I found with their calculations.  Prison's TPS calcuations have a much lower overhead with the calculations too.
