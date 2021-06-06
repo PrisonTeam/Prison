@@ -189,15 +189,20 @@ public class SpigotPrison extends JavaPlugin {
 
         initIntegrations();
         
-        // NOTE: Put all commands within the initModulesAndCommands() function.
-        initModulesAndCommands();
-        
-        applyDeferredIntegrationInitializations();
         
         
-        // After all the integrations have been loaded and the deferred tasks ran, 
-        // then run the deferred Module setups:
-        initDeferredModules();
+        // This is the loader for modules and commands:
+        enableModulesAndCommands();
+        
+//        // NOTE: Put all commands within the initModulesAndCommands() function.
+//        initModulesAndCommands();
+//        
+//        applyDeferredIntegrationInitializations();
+//        
+//        
+//        // After all the integrations have been loaded and the deferred tasks ran, 
+//        // then run the deferred Module setups:
+//        initDeferredModules();
         
         
         // The BlockBreakEvents must be registered after the mines and ranks modules have been enabled:
@@ -475,6 +480,39 @@ public class SpigotPrison extends JavaPlugin {
     	PrisonAPI.getIntegrationManager().register(integration, isRegistered, version );
     }
 
+    
+    private void enableModulesAndCommands() {
+    	
+        // NOTE: Put all commands within the initModulesAndCommands() function.
+        initModulesAndCommands();
+        
+        applyDeferredIntegrationInitializations();
+        
+        
+        // After all the integrations have been loaded and the deferred tasks ran, 
+        // then run the deferred Module setups:
+        initDeferredModules();
+
+    }
+    
+    private void disableModulesAndCommands() {
+    	
+    	for ( Module module : Prison.get().getModuleManager().getModules() ) {
+    		if ( module.isEnabled() ) {
+    			module.disable();
+    		}
+    	}
+    	
+    	Prison.get().getCommandHandler().getAllRegisteredCommands();
+    }
+    
+    public void resetModulesAndCommands() {
+    	
+    	disableModulesAndCommands();
+    	
+    	enableModulesAndCommands();
+    }
+    
     /**
      * This function registers all of the modules in prison.  It should also manage
      * the registration of "extra" commands that are outside of the modules, such

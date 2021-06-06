@@ -21,6 +21,10 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.5 2021-06-06
 
 
+* **Setting up SpigotPrison to support a reload on ranks and mines.**
+It's not hooked up yet, and it may not work, but the structure of performing the reload and calling the correct functions are now in place.
+
+
 * **Possible bug fix: Custom prison command placeholders were not be applied to the commands prior to submitting them.** Cause was missing code?  
 This was tested and working a few months ago, so not sure what happened to the source.  But added it in to the command translation function to fix this issue.
 
