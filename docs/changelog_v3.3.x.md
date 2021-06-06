@@ -21,6 +21,9 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.5 2021-06-06
 
 
+* **Added CMIEInjector to the soft depends to see if this will help resolve an issue with CMI loading after prison (again).**
+
+
 * **Upgrade Gradle to version v7.0.2, from v5.6.4**
 In order to better support the Java 16 environment, Gradle needs to be upgrade to the latest v7.0.2 release. During upgrading, which must be performed one version at a time, each version will both identify problems that will impact the future versions of the build, but also they will suggest how to resolve those problems.  
 
