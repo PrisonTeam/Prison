@@ -21,6 +21,33 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.5 2021-06-06
 
 
+* **Upgrade Gradle to version v7.0.2, from v5.6.4**
+In order to better support the Java 16 environment, Gradle needs to be upgrade to the latest v7.0.2 release. During upgrading, which must be performed one version at a time, each version will both identify problems that will impact the future versions of the build, but also they will suggest how to resolve those problems.  
+
+
+
+  * **Versions Upgraded To:** : **v6.0**
+  * **Versions to be Upgraded To**: v6.0, v6.0.1, v6.1, v6.1.1, v6.2, v6.2.1, v6.2.2, v6.3, v6.4, v6.4.1, v6.5, v6.5.1, v6.6, v6.6.1, v6.7, v6.7.1, v6.8, v6.8.1, v6.8.2, v6.8.3, v6.9, v7.0, v7.0.1, v7.0.2 (note: I think I can skip bug releases).
+  * <code>gradlew wrapper --gradle-version 6.0</code> :: Sets the new wrapper version  
+  * <code>gradlew --version</code> :: Will actually install the new version  
+  * <code>gradlew build</code> :: Will build project with the new version to ensure all is good.  If build is good, then you can try to upgrade to the next version.
+  
+
+* **Upgrade to Gradle v6.0** - Had to fix a few dozen issues.  
+
+- Maven plugin is being deprecated and is replaced with maven-publish plugin.  testCompile is being replaced with testImplementation.
+- Updates to enable support for Gradle v6.0.  These changes are mandatory for support with Gradle v7.0.
+- Removed support for building a local maven repos (commented it out)... it never worked locally (since it's the wrong computer) and it never worked on remote servers for similar reasons.
+- Change all URL protocols from http to https.
+- Change the directive testCompile to testImplmentation
+- Change the directive compile to implementation
+The command gradlew was updated when gradle wrapper was updated to version 6.0.
+Bump prison version to v3.3.0-alpha5c.
+
+
+* **v3.3.0-alpha.5c - 2021-06-06**
+.
+
 * **Setting up SpigotPrison to support a reload on ranks and mines.**
 It's not hooked up yet, and it may not work, but the structure of performing the reload and calling the correct functions are now in place.
 

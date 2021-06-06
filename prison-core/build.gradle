@@ -27,11 +27,13 @@ dependencies {
 	implementation 'org.apache.commons:commons-lang3:3.9'
 }
 
+/*
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         include 'items.csv'
     }
 }
+*/
 
 shadowJar {
     dependencies {
@@ -39,9 +41,10 @@ shadowJar {
         include(dependency('com.google.code.gson:gson:2.8.6'))
     }
     classifier 'API'
-    version = null
+    archiveVersion = null
 }
 
+/*
 publishing {
     repositories {
         maven {
@@ -55,5 +58,6 @@ publishing {
         }
     }
 }
+*/
 
 build.dependsOn(shadowJar)

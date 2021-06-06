@@ -34,13 +34,13 @@ repositories {
     maven { url = "https://repo.lucko.me/" }
 
     maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
-    maven { url = "http://nexus.hc.to/content/repositories/pub_releases" }
+    maven { url = "https://nexus.hc.to/content/repositories/pub_releases" }
     
     maven { url = "https://repo.codemc.org/repository/maven-public/" }
     //maven { url = "https://repo.inventivetalent.org/content/groups/public/" }
     
     maven { 
-    	url = "http://repo.mvdw-software.be/content/groups/public/" 
+    	url = "https://repo.mvdw-software.be/content/groups/public/" 
     	content {
     		includeGroup 'be.maximvdw'
     	}
@@ -132,7 +132,7 @@ dependencies {
     			exclude: ['Spiget_v1.4.2.prison-build.jar',
     					// 'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
     					'Zenchantments__API_v1.15.2.build4.jar'])
-    compile fileTree(dir: 'lib', 
+    implementation fileTree(dir: 'lib', 
     			include: ['Spiget_v1.4.2.prison-build.jar',
     					// 'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
     					'Zenchantments__API_v1.15.2.build4.jar'])
@@ -144,7 +144,7 @@ dependencies {
 //    compile fileTree(dir: 'lib', include: ['TokenEnchantAPI-18.5.0.jar'])
 
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
 
 }
 
