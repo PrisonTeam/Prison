@@ -21,6 +21,10 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.5 2021-06-06
 
 
+* **Potential bug fix where access to the mine needs to be grante by default if both access by perms and access by ranks are disabled.**
+This may have been preventing players from mining when relying on WorldGuard regions for player access.
+
+
 * **Adjustments and improvements to the prison TPS calculation, and expansion on some of the documentation to go along with it.**
 This should result in a more accurate TPS calculation that is more responsive to the current conditions.
 

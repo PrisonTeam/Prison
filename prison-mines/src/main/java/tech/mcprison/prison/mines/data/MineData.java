@@ -915,6 +915,11 @@ public abstract class MineData
      * be checked; it has to be disabled for the permissions for Mine Access Permission.
      * </p>
      * 
+     * <p>If both isMineAccessByRank() and isAccessPermissionEnabled() are both disabled, then
+     * it is assumed that something else external to prison will be managing the access so this
+     * to the mine, function should allow the player to have access.
+     * </p>
+     * 
      * @param player
      * @return
      */
@@ -924,7 +929,8 @@ public abstract class MineData
     	if ( isMineAccessByRank() && 
 				Prison.get().getPlatform().isMineAccessibleByRank( player, this ) ||
 				!isMineAccessByRank() &&
-    					isAccessPermissionEnabled() && player.hasPermission( getAccessPermission() )
+    					isAccessPermissionEnabled() && player.hasPermission( getAccessPermission() ) ||
+    		 !isMineAccessByRank() && !isAccessPermissionEnabled() 
     			 ) {
 
     		results = true;
