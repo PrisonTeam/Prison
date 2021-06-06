@@ -21,6 +21,10 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.5 2021-06-06
 
 
+* **Possible bug fix: Custom prison command placeholders were not be applied to the commands prior to submitting them.** Cause was missing code?  
+This was tested and working a few months ago, so not sure what happened to the source.  But added it in to the command translation function to fix this issue.
+
+
 * **Potential bug fix where access to the mine needs to be grante by default if both access by perms and access by ranks are disabled.**
 This may have been preventing players from mining when relying on WorldGuard regions for player access.
 
