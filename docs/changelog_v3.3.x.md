@@ -18,7 +18,12 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.5 2021-06-04
+# v3.3.0-alpha.5 2021-06-06
+
+
+* **Adjustments and improvements to the prison TPS calculation, and expansion on some of the documentation to go along with it.**
+This should result in a more accurate TPS calculation that is more responsive to the current conditions.
+
 
 * `BY GABRYCA on 04/06/2021:`
 **FIX for NPEs from AutoFeatures GUI.**

@@ -295,10 +295,20 @@ public class PrisonCommand {
         
         
         DecimalFormat iFmt = new DecimalFormat("#,##0");
-        display.addText( "&7Prison TPS Average: %s   Interval: %s ticks  Priors: %s",
-        						Prison.get().getPrisonTPS().getAverageTPSFormatted(),
+        PrisonTPS prisonTPS = Prison.get().getPrisonTPS();
+        display.addText( "&7Prison TPS Average: %s  Min: %s  Max: %s%s   " +
+        					"Interval: %s ticks  Samples: %s",
+        						prisonTPS.getAverageTPSFormatted(),
+        						prisonTPS.getTPSMinFormatted(),
+        						( prisonTPS.getTpsMax() >= 100  ? ">" : ""),
+        						prisonTPS.getTPSMaxFormatted(),
         						iFmt.format( PrisonTPS.SUBMIT_TICKS_INTERVAL ),
-        						Prison.get().getPrisonTPS().getLastTPS() );
+        						iFmt.format( prisonTPS.getTpsSamples() )
+        		);
+        
+        
+        display.addText( "&7TPS History: %s",
+        		prisonTPS.getLastFewTPS() );
         
         
         display.addText("");

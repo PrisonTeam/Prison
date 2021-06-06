@@ -169,7 +169,8 @@ public class SpigotPrison extends JavaPlugin {
         this.scheduler = new SpigotScheduler(this);
 
         Prison.get().init(new SpigotPlatform(this), Bukkit.getVersion());
-        Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
+        Prison.get().getLocaleManager().setDefaultLocale(
+        			getConfig().getString("default-language", "en_US"));
         
         // Manually register Listeners with Bukkit:
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
