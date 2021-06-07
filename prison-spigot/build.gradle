@@ -24,7 +24,6 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
-    jcenter()
 
 	// net.luckperm.api:
     maven { url = "https://hub.spigotmc.org/nexus/content/groups/public" }
