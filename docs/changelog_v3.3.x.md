@@ -29,16 +29,17 @@ In order to better support the Java 16 environment, Gradle needs to be upgrade t
 
 
 
-  * **Versions Upgraded To:** : **v6.0**, **v6.1**, **v6.2**, **v6.3**, **v6.4**, **v6.5**, **v6.6**, **v6.7**, **v6.8**, **v6.9**,  **v7.0**,  **v7.0.1**
+  * **Versions Upgraded To:** : **v6.0**, **v6.1**, **v6.2**, **v6.3**, **v6.4**, **v6.5**, **v6.6**, **v6.7**, **v6.8**, **v6.9**,  **v7.0**,  **v7.0.1**,  **v7.0.2**
   * **Versions to be Upgraded To**: v6.0, v6.0.1, v6.1, v6.1.1, v6.2, v6.2.1, v6.2.2, v6.3, v6.4, v6.4.1, v6.5, v6.5.1, v6.6, v6.6.1, v6.7, v6.7.1, v6.8, v6.8.1, v6.8.2, v6.8.3, v6.9, v7.0, v7.0.1, v7.0.2 (note: I think I can skip bug releases).
   * <code>gradlew wrapper --gradle-version 6.0</code> :: Sets the new wrapper version  
   * <code>gradlew --version</code> :: Will actually install the new version  
   * <code>gradlew build</code> :: Will build project with the new version to ensure all is good.  If build is good, then you can try to upgrade to the next version.
   
 
-* **Upgrade to Gradle v7.0, v7.0.1**
+* **Upgrade to Gradle v7.0, v7.0.1, v7.0.2**
 Gradle v7.0 had a bug, but the build completed normally.  
 Gradle v7.0.1 had issues with maven repo **jcenter** which is shutting down and will be removed in Gradle v8.0.  Suggested to use mavenCentral instead. Just removed `jcenter()` from two `build.gradle` configs and all is working again.
+Gradle v7.0.2 had no issues when upgrading.
 
 
 * **Upgrade to Gradle v6.2, v6.3, v6.4, v6.5, v6.6 v6.7, v6.8, v6.9**
