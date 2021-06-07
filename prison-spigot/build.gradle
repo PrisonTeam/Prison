@@ -163,6 +163,9 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'plugin.yml'
     }
+    
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE // do not allow duplicates
+//    duplicatesStrategy = DuplicatesStrategy.INCLUDE // allow duplicates
 }
 
 shadowJar {
