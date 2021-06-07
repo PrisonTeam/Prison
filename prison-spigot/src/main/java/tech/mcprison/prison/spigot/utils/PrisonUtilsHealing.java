@@ -7,6 +7,7 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PrisonUtilsHealing
@@ -14,7 +15,30 @@ public class PrisonUtilsHealing
 {
     //Add freeze heal
     private boolean enableHealingHeal = false;
-    private boolean enableHealFeed = false;
+    private boolean enableHealingFeed = false;
+    private boolean enableHealingBreath = false;
+
+    public enum HealingOptions {
+
+        heal,
+        feed,
+        breath,
+        ;
+
+        public static PrisonUtilsHealing.HealingOptions fromString(String option ) {
+            PrisonUtilsHealing.HealingOptions results = null;
+
+            for ( PrisonUtilsHealing.HealingOptions rOp : values() )
+            {
+                if ( rOp.name().equalsIgnoreCase( option ) ) {
+                    results = rOp;
+                    break;
+                }
+            }
+
+            return results;
+        }
+    }
 
     public PrisonUtilsHealing() {
         super();
@@ -42,43 +66,58 @@ public class PrisonUtilsHealing
             permissions = "prison.utils.healing.heal",
             altPermissions = "prison.utils.healing.heal.others")
     public void utilHealingheal(CommandSender sender,
-            @Arg(name = "playerName", description = "Player Name") String playerName,
-
+            @Arg(name = "playerName", description = "Player Name") String playerName
+            /*
             @Wildcard(join=true)
-            @Arg(name = "options", description = "Options [health, saturation, breath]",
-                 def = "") String options ) {
+            @Arg(name = "options", description = "Options [player, all]",
+                 def = "") String options
+                 */
+            ){
 
         if( !enableHealingHeal ){
             Output.get().logInfo("Prison's utils command healingHeal is disabled in modules.yml.");
         } else {
-            //List<PrisonUtilsRepair.RepairOptions> repairOptions = getOptions( PrisonUtilsRepair.RepairOptions.repairAll, options, playerName );
-
-
             SpigotPlayer player = checkPlayerPerms( sender, playerName,
-                    "prison.utils.repair.all",
-                    "prison.utils.repair.all.others" );
+                    "prison.utils.healing.heal",
+                    "prison.utils.healing.heal.others" );
 
             // Player cannot be null.  If it is null, then there was a failure.
             if ( player != null ) {
 
-                //utilRepair( player, playerName, repairOptions );
+                utilHealingHeal( player, playerName );
             }
         }
+    }
+
+    private void utilHealingHeal( SpigotPlayer player, String playerName ) {
+        
+    }
+
+    private void utilHealingFeed( SpigotPlayer player, String playerName ) {
+
+    }
+
+    private void utilHealingBreath( SpigotPlayer player, String playerName ) {
+
     }
 
     public boolean isEnableHealingHeal(){
         return enableHealingHeal;
     }
 
-    public boolean isEnableHealFeed() {
-        return enableHealFeed;
+    public boolean isEnableHealingFeed() { return enableHealingFeed; }
+
+    public boolean isEnableHealingBreath() { return enableHealingBreath; }
+
+    public void setEnableHealingFeed(boolean enableHealingFeed) {
+        this.enableHealingFeed = enableHealingFeed;
     }
 
-    public void setEnableHealFeed(boolean enabled) {
-        this.enableHealFeed = enableHealFeed;
-    }
-
-    public void setEnableHealingHeal(boolean enabled) {
+    public void setEnableHealingHeal(boolean enableHealingHeal) {
         this.enableHealingHeal = enableHealingHeal;
+    }
+
+    public void setEnableHealingBreath(boolean enableHealingBreath) {
+        this.enableHealingBreath = enableHealingBreath;
     }
 }
