@@ -29,13 +29,17 @@ In order to better support the Java 16 environment, Gradle needs to be upgrade t
 
 
 
-  * **Versions Upgraded To:** : **v6.0**, **v6.1**, 
+  * **Versions Upgraded To:** : **v6.0**, **v6.1**, **v6.2**, **v6.3**, **v6.4**, **v6.5**, **v6.6**, **v6.7**, **v6.8**, **v6.9**, 
   * **Versions to be Upgraded To**: v6.0, v6.0.1, v6.1, v6.1.1, v6.2, v6.2.1, v6.2.2, v6.3, v6.4, v6.4.1, v6.5, v6.5.1, v6.6, v6.6.1, v6.7, v6.7.1, v6.8, v6.8.1, v6.8.2, v6.8.3, v6.9, v7.0, v7.0.1, v7.0.2 (note: I think I can skip bug releases).
   * <code>gradlew wrapper --gradle-version 6.0</code> :: Sets the new wrapper version  
   * <code>gradlew --version</code> :: Will actually install the new version  
   * <code>gradlew build</code> :: Will build project with the new version to ensure all is good.  If build is good, then you can try to upgrade to the next version.
   
-  
+
+* **Upgrade to Gradle v6.2, v6.3, v6.4, v6.5, v6.6 v6.7, v6.8, v6.9**
+Upgraded gradle to these versions without any new warnings or errors.  So no change to any of the build configs.
+
+
 * **Upgrade to Gradle v6.1**  
 Added duplicateStrategy of DuplicatesStrategy.EXCLUDE to prevent multiple copies of resources from being added to the generated jar file. 
 Duplicates could cause problems and are redundant objects that just inflate the jar.
