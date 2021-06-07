@@ -1,9 +1,11 @@
 package tech.mcprison.prison.spigot.utils;
 
+import org.bukkit.Bukkit;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
@@ -60,7 +62,7 @@ public class PrisonUtilsHealing
         return true;
     }
 
-    @Command(identifier = "prison utils healPlayer",
+    @Command(identifier = "prison utils heal",
             description = "Heals a player to full health",
             onlyPlayers = false,
             permissions = "prison.utils.healing.heal",
@@ -90,7 +92,7 @@ public class PrisonUtilsHealing
     }
 
     private void utilHealingHeal( SpigotPlayer player, String playerName ) {
-        
+        player.setHealth(20);
     }
 
     private void utilHealingFeed( SpigotPlayer player, String playerName ) {
