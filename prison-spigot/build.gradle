@@ -77,15 +77,20 @@ dependencies {
     implementation project(':prison-mines')
     implementation project(':prison-ranks')
 
-// NOTE: source code changes for v1.7    
-//    implementation 'org.bstats:bstats-bukkit:1.7'
-    implementation 'org.bstats:bstats-bukkit:1.5'
+
+    implementation 'org.bstats:bstats-base:2.2.1'
+    implementation 'org.bstats:bstats-bukkit:2.2.1'
+//    implementation 'org.bstats:bstats-bukkit:1.5'
+    
     
     // Repo keeps going down:
     //implementation 'org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'
     // Using jar instead: lib/Spiget_v1.4.2.prison-build.jar
+  
     
-	implementation 'org.apache.commons:commons-lang3:3.9'
+	implementation 'org.apache.commons:commons-lang3:3.12.0'
+//	implementation 'org.apache.commons:commons-lang3:3.9'
+
 
     compileOnly 'me.clip:placeholderapi:2.10.9'
     
@@ -106,12 +111,14 @@ dependencies {
 //  This includes 535KB when all we need is 1 class! 
 //	implementation 'me.badbones69:crazyenchantments-plugin:1.8-Dev-Build-v8'
 
+
 	// 1.9.4-R0.1-SNAPSHOT has been the version used for a long time:
 //    compileOnly 'org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT'
 	// 1.12.2-R0.1-SNAPSHOT works well:
 //    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
 	// 1.13.2 fails since deprecated functions have been removed.
     compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
+
 
 
 // NOTE: The repo is no longer resolving to the correct resources:
@@ -162,22 +169,27 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'plugin.yml'
     }
-    
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE // do not allow duplicates
-//    duplicatesStrategy = DuplicatesStrategy.INCLUDE // allow duplicates
+
+    // Need to have includ duplicates for the version to be updated in the plugin.yml file.
+    // Also the final build is actually smaller with include.    
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE // allow duplicates
+//    duplicatesStrategy = DuplicatesStrategy.EXCLUDE // do not allow duplicates
 }
 
 shadowJar {
     dependencies {
-        include(dependency('org.apache.commons:commons-lang3:3.10'))
+        include(dependency('org.apache.commons:commons-lang3:3.12.0'))
+//        include(dependency('org.apache.commons:commons-lang3:3.10'))
         include(dependency('com.google.code.gson:gson:2.8.6'))
-        include(dependency('org.bstats:bstats-bukkit:1.5'))
+        
+        include(dependency('org.bstats:bstats-base:2.2.1'))
+        include(dependency('org.bstats:bstats-bukkit:2.2.1'))
 
         include(dependency('me.clip:placeholderapi:2.10.9'))
 
-        //include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
         include(dependency('com.github.cryptomorin:XSeries:7.9.1.1'))
         
+        //include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
         //include(dependency('me.badbones69:crazyenchantments-plugin:1.8-Dev-Build-v8'))
         
         include(project(':prison-core'))
@@ -185,7 +197,8 @@ shadowJar {
         include(project(':prison-ranks'))
     }
 
-    relocate 'org.bstats.bukkit', 'tech.mcprison.prison.spigot'
+    relocate 'org.bstats', 'tech.mcprison.prison.bstats'
+
     relocate 'org.inventivetalent.update.spiget', 'tech.mcprison.prison.spiget'
     relocate 'com.cryptomorin', 'tech.mcprison.prison.cryptomorin'
 

@@ -18,7 +18,12 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.5 2021-06-06
+# v3.3.0-alpha.5 2021-06-07
+
+* **Update a few gradle build includes: bStats and apache commons lang4. Fixed INCLUDE dup stragety.**
+Update bStats from v1.5 to v2.2.1.  Not 100% sure that the plugin's ID is 657, but that's what is loaded on their website for Prison.
+Update apache commons lang3 from v3.9 to v3.12.0.
+Had to change the duplication strategy to INCLUDE so the project's version would be added to the generate jar.  Using EXCLUDE was preventing the version from being injected in to plugin.yml.
 
 
 * **Added CMIEInjector to the soft depends to see if this will help resolve an issue with CMI loading after prison (again).**

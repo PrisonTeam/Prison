@@ -26,6 +26,9 @@ import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.MultiLineChart;
+import org.bstats.charts.SimpleBarChart;
+import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.SimpleCommandMap;
@@ -331,10 +334,10 @@ public class SpigotPrison extends JavaPlugin {
         if (!getConfig().getBoolean("send-metrics", true)) {
             return; // Don't check if they don't want it
         }
-        Metrics metrics = new Metrics(this);
+        Metrics metrics = new Metrics( this, 657 );
 
         // Report the modules being used
-        metrics.addCustomChart(new Metrics.SimpleBarChart("modules_used", () -> {
+        metrics.addCustomChart(new SimpleBarChart("modules_used", () -> {
             Map<String, Integer> valueMap = new HashMap<>();
             for (Module m : PrisonAPI.getModuleManager().getModules()) {
                 valueMap.put(m.getName(), 1);
@@ -344,7 +347,7 @@ public class SpigotPrison extends JavaPlugin {
 
         // Report the API level
         metrics.addCustomChart(
-                new Metrics.SimplePie("api_level", () -> "API Level " + Prison.API_LEVEL));
+                new SimplePie("api_level", () -> "API Level " + Prison.API_LEVEL));
         
         Optional<Module> prisonMinesOpt = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
         Optional<Module> prisonRanksOpt = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
@@ -353,7 +356,7 @@ public class SpigotPrison extends JavaPlugin {
         int rankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getRankCount()).orElse(0);
         int ladderCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getladderCount()).orElse(0);
         
-        metrics.addCustomChart(new Metrics.MultiLineChart("mines_ranks_and_ladders", new Callable<Map<String, Integer>>() {
+        metrics.addCustomChart(new MultiLineChart("mines_ranks_and_ladders", new Callable<Map<String, Integer>>() {
             @Override
             public Map<String, Integer> call() throws Exception {
                 Map<String, Integer> valueMap = new HashMap<>();
