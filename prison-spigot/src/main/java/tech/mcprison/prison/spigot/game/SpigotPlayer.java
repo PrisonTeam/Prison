@@ -478,12 +478,4 @@ public class SpigotPlayer
 		
 		
 	}
-
-	public void setHealth(int health){
-        if( getWrapper() != null) {
-            getWrapper().setHealth(health);
-        }
-    }
-    
-    
 }

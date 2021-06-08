@@ -92,7 +92,7 @@ public class PrisonUtilsHealing
     }
 
     private void utilHealingHeal( SpigotPlayer player, String playerName ) {
-        player.setHealth(20);
+        player.getWrapper().setHealth(20);
     }
 
     private void utilHealingFeed( SpigotPlayer player, String playerName ) {
