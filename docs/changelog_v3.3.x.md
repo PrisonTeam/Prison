@@ -18,7 +18,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.5 2021-06-07
+# v3.3.0-alpha.6 2021-06-07
+
+
+* **v3.3.0-alpha.6 2021-06-07**
+Setting the version.  The v3.3.0 release will be put on hold since focus will be to get v3.2.8 out which will support Java 16.  It is unknown how many of the spigot 1.17 blocks will be initially supported.
 
 
 * **Added the reporting of the delayed prison startup to the detail information for the command /prison version.**
