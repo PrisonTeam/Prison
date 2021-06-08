@@ -1,6 +1,8 @@
 package tech.mcprison.prison.spigot.utils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.Wildcard;
@@ -120,7 +122,9 @@ public class PrisonUtilsHealing
 
     private void utilHealingHeal( SpigotPlayer player, String playerName ) {
         if( player == null || Bukkit.getPlayer(playerName) == null ) return;
-        player.getWrapper().setHealth(20);
+        AttributeInstance maxHealth = player.getWrapper().getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        if( maxHealth == null ) return;
+        player.getWrapper().setHealth(maxHealth.getValue());
     }
 
     private void utilHealingFeed( SpigotPlayer player, String playerName ) {
