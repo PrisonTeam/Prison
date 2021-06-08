@@ -77,7 +77,7 @@ public class PrisonUtilsHealing
             ){
 
         if( !enableHealingHeal ){
-            Output.get().logInfo("Prison's utils command healingHeal is disabled in modules.yml.");
+            Output.get().logInfo("Prison's utils command heal is disabled in modules.yml.");
         } else {
             SpigotPlayer player = checkPlayerPerms( sender, playerName,
                     "prison.utils.healing.heal",
@@ -85,18 +85,47 @@ public class PrisonUtilsHealing
 
             // Player cannot be null.  If it is null, then there was a failure.
             if ( player != null ) {
-
                 utilHealingHeal( player, playerName );
             }
         }
     }
 
+    @Command(identifier = "prison utils feed",
+            description = "Feeds a player to full",
+            onlyPlayers = false,
+            permissions = "prison.utils.healing.feed",
+            altPermissions = "prison.utils.healing.feed.others")
+    public void utilHealingFeed(CommandSender sender,
+                                @Arg(name = "playerName", description = "Player Name") String playerName
+            /*
+            @Wildcard(join=true)
+            @Arg(name = "options", description = "Options [player, all]",
+                 def = "") String options
+                 */
+    ){
+
+        if( !enableHealingFeed ){
+            Output.get().logInfo("Prison's utils command feed is disabled in modules.yml.");
+        } else {
+            SpigotPlayer player = checkPlayerPerms( sender, playerName,
+                    "prison.utils.healing.feed",
+                    "prison.utils.healing.feed.others" );
+
+            // Player cannot be null.  If it is null, then there was a failure.
+            if ( player != null ) {
+                utilHealingFeed( player, playerName );
+            }
+        }
+    }
+
     private void utilHealingHeal( SpigotPlayer player, String playerName ) {
+        if( player == null || Bukkit.getPlayer(playerName) == null ) return;
         player.getWrapper().setHealth(20);
     }
 
     private void utilHealingFeed( SpigotPlayer player, String playerName ) {
-
+        if( player == null || Bukkit.getPlayer(playerName) == null ) return;
+        player.getWrapper().setFoodLevel(20);
     }
 
     private void utilHealingBreath( SpigotPlayer player, String playerName ) {
