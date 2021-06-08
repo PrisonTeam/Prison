@@ -1795,8 +1795,18 @@ public class SpigotPlatform
     										getConfigBooleanFalse( "prestige.resetDefaultLadder" )) );
 
 
+    	results.add( "" );
+    	
+    	
+    	boolean delayedPrisonStartup = getConfigBooleanFalse( "delayedCMIStartup" );
+    	if ( delayedPrisonStartup ) {
+    		
+    		results.add( String.format("Prison Delayed Start:&b %s", delayedPrisonStartup) );
+    	}
+    	
+    	
     	results.add( String.format("GUI Enabled:&b %s", 
-    										getConfigBooleanFalse( "prison-gui-enabled" )) );
+    			getConfigBooleanFalse( "prison-gui-enabled" )) );
     	
     	
     	results.add( String.format("Sellall Enabled:&b %s", 

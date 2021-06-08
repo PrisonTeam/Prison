@@ -21,6 +21,10 @@ These build logs represent the work that has been going on within prison.
 # v3.3.0-alpha.5 2021-06-07
 
 
+* **Added the reporting of the delayed prison startup to the detail information for the command /prison version.**
+It only will be displayed when it's enabled so it's presence will not encourage use by just being there.
+
+
 * **New feature: Provide a delayed start for the CMI startup.**
 This provides a fix for CMI not wanting to start until after prison has loaded without an active economy.
 If the vault economy is available then it will start normally.  
