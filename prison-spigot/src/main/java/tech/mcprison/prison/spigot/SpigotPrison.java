@@ -160,6 +160,8 @@ public class SpigotPrison extends JavaPlugin {
 
     @Override
     public void onEnable() {
+    	
+    	
     	config = this;
         this.saveDefaultConfig();
         debug = getConfig().getBoolean("debug", false);
@@ -174,6 +176,31 @@ public class SpigotPrison extends JavaPlugin {
         Prison.get().init(new SpigotPlatform(this), Bukkit.getVersion());
         Prison.get().getLocaleManager().setDefaultLocale(
         			getConfig().getString("default-language", "en_US"));
+        
+        
+        
+    	boolean delayedCMIStartup = getConfig().getBoolean("delayedCMIStartup", false);
+    	
+    	if ( !delayedCMIStartup ) {
+    		onEnableStartup();
+    	}
+    	else {
+    		onEnableDelayedStartCMI();
+    	}
+    	
+    }
+    
+    
+    protected void onEnableDelayedStartCMI() {
+    	
+    	SpigotPrisonCMIDelayedStartupTask delayedStartupTask = new SpigotPrisonCMIDelayedStartupTask( this );
+    	delayedStartupTask.submit();
+    }
+    
+    	
+   protected void onEnableStartup() {
+	   
+
         
         // Manually register Listeners with Bukkit:
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
@@ -330,6 +357,12 @@ public class SpigotPrison extends JavaPlugin {
     	return format == null ? null : ChatColor.stripColor(format);
     }
     
+    /**
+     * <p>bStats reporting</p>
+     * 
+     * https://github.com/Bastian/bStats-Metrics/tree/master/base/src/main/java/org/bstats/charts
+     * 
+     */
     private void initMetrics() {
         if (!getConfig().getBoolean("send-metrics", true)) {
             return; // Don't check if they don't want it
@@ -453,6 +486,10 @@ public class SpigotPrison extends JavaPlugin {
 //        registerIntegration(new WorldGuard7Integration());
     }
 
+	protected boolean isIntegrationRegistered( Integration integration ) {
+		
+    	return Bukkit.getPluginManager().isPluginEnabled(integration.getProviderName());
+	}
 	
 	/**
 	 * <p>This "tries" to reload the placeholder integrations, which may not
@@ -475,7 +512,7 @@ public class SpigotPrison extends JavaPlugin {
     
     private void registerIntegration(Integration integration) {
 
-    	boolean isRegistered = Bukkit.getPluginManager().isPluginEnabled(integration.getProviderName());
+    	boolean isRegistered = isIntegrationRegistered( integration );
     	String version = ( isRegistered ? Bukkit.getPluginManager()
     									.getPlugin( integration.getProviderName() )
     											.getDescription().getVersion() : null );
@@ -675,7 +712,11 @@ public class SpigotPrison extends JavaPlugin {
     	}
     }
     
-    public Compatibility getCompatibility() {
+    public SpigotScheduler getScheduler() {
+		return scheduler;
+	}
+
+	public Compatibility getCompatibility() {
     	return compatibility;
     }
     

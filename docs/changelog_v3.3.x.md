@@ -20,7 +20,14 @@ These build logs represent the work that has been going on within prison.
 
 # v3.3.0-alpha.5 2021-06-07
 
-* **Update a few gradle build includes: bStats and apache commons lang4. Fixed INCLUDE dup stragety.**
+
+* **New feature: Provide a delayed start for the CMI startup.**
+This provides a fix for CMI not wanting to start until after prison has loaded without an active economy.
+If the vault economy is available then it will start normally.  
+If the Vault Economy is not available at startup, then prison will allow normal startup of the server, but delaying prison's startup for 5 seconds and then it will check again.  It will make 6 attempts before failing.  
+
+
+* **Update a few gradle build includes: bStats and apache commons lang4. Fixed INCLUDE dup strategy.**
 Update bStats from v1.5 to v2.2.1.  Not 100% sure that the plugin's ID is 657, but that's what is loaded on their website for Prison.
 Update apache commons lang3 from v3.9 to v3.12.0.
 Had to change the duplication strategy to INCLUDE so the project's version would be added to the generate jar.  Using EXCLUDE was preventing the version from being injected in to plugin.yml.
