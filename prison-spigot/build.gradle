@@ -20,7 +20,7 @@ group 'tech.mcprison'
 
 apply plugin: 'java'
 
-sourceCompatibility = 1.8
+//sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
@@ -202,8 +202,11 @@ shadowJar {
 
     //relocate 'me.badbones69.crazyenchantments.api.events.BlastUseEvent', 'tech.mcprison.prison.crazyenchantments.api'
 
-    classifier ''
-    archiveVersion = ''
+
+	archiveAppendix = ''
+	archiveClassifier = project.property('targetArchiveClassifier')
+//	archiveClassifier = 'java1.8'
+    
     
 //    minimize()
 }
