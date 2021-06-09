@@ -5,12 +5,17 @@ import java.util.List;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventException;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.plugin.RegisteredListener;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.output.ChatDisplay;
+import tech.mcprison.prison.output.LogLevel;
+import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.output.Output.DebugTarget;
 
 public class OnBlockBreakExternalEvents {
 	
@@ -84,6 +89,30 @@ public class OnBlockBreakExternalEvents {
 		
 		
 		registerEZBlock();
+		
+		
+		if ( Output.get().isDebug( DebugTarget.blockBreakListeners ) ) {
+			
+			String eventType = "BlockBreakEvent";
+			
+			RegisteredListener[] listeners = BlockBreakEvent.getHandlerList().getRegisteredListeners();
+			
+	        ChatDisplay display = new ChatDisplay("Event Dump: " + eventType );
+	        display.addText("&8All registered EventListeners (%d):", listeners.length );
+
+			for ( RegisteredListener eventListner : listeners ) {
+				String plugin = eventListner.getPlugin().getName();
+				EventPriority priority = eventListner.getPriority();
+				String listener = eventListner.getListener().getClass().getName();
+				
+				String message = String.format( "&3  Plugin: &7%s   %s  &3(%s)", 
+						plugin, priority.name(), listener);
+
+				display.addText( message );
+			}
+			
+			display.toLog( LogLevel.DEBUG );
+		}
 		
 	}
 

@@ -18,7 +18,14 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.8-alpha.1 2021-06-07
+# v3.2.8-alpha.1 2021-06-09
+
+
+* **Added a new debug tool for BlockEvents that dumps all registered BlockEvents that lists the plugin name and priority along with the listener.**
+This can help identify potential issues when it appears like its not working.
+
+
+* **For the prison's compatibility classes, added support for Player getMaxHealth() and setMaxHealth().**
 
 
 * **Changes to gradle build so the java version can be set in the primary build script.**
