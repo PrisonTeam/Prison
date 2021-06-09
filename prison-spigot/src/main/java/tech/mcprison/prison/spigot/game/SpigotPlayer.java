@@ -38,6 +38,7 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
@@ -479,5 +480,34 @@ public class SpigotPlayer
 		
 	}
     
-    
+	
+	public double getHealth() {
+		double health = 0;
+		if ( getWrapper() != null ) {
+			health = getWrapper().getHealth();
+		}
+		return health;
+	}
+	public void setHealth( double health ) {
+		if ( getWrapper() != null ) {
+			getWrapper().setHealth( health );
+		}
+	}
+	
+	public double getMaxHealth() {
+		double maxHealth = 0;
+		if ( getWrapper() != null ) {
+			
+			maxHealth = SpigotPrison.getInstance().getCompatibility()
+								.getMaxHealth( getWrapper() );
+		}
+		return maxHealth;
+	}
+	public void setMaxHealth( double maxHealth ) {
+		if ( getWrapper() != null ) {
+			SpigotPrison.getInstance().getCompatibility()
+								.setMaxHealth( getWrapper(), maxHealth );
+		}
+	}
+	
 }

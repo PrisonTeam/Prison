@@ -18,7 +18,7 @@ import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.util.BlockType;
 
 public abstract class Spigot113Blocks 
-	extends CompatibilityCache 
+	extends Spigot19Player 
 	implements CompatibilityBlocks {
 
 	public BlockType getBlockType(Block spigotBlock) {

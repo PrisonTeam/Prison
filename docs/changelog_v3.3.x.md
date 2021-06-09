@@ -21,6 +21,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.8-alpha.1 2021-06-07
 
 
+* **Changes to gradle build so the java version can be set in the primary build script.**
+Changed the generation of the jar's file name from Prison.jar to Prison-<version>-java1.8.jar to prepare for a java 1.8 and a java 16 build.
+
+
 * **v3.2.8-alpha.1 2021-06-07**
 Internally set the version, but will not release it until a few other things are finished.
 The prison version is set to 3.2.8-alpha.1 to prepare for the release of prison that is compatible with Java 16 and Spigot 1.17.

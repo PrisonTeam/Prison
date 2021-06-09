@@ -10,7 +10,8 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.util.BlockType;
 
-public interface CompatibilityBlocks {
+public interface CompatibilityBlocks
+			extends CompatibilityPlayer {
 
 	public BlockType getBlockType(Block spigotBlock);
 

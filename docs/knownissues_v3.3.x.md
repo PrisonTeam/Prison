@@ -3,8 +3,63 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
+* **NOTICE - About Prison, Java 16, and Minecraft 1.17**
+
+Prison is all about providing the best experience for your server environment.In order to look toward the future, so we can continue to provide the best possible experience, we have to set limits on what we can actually provide support on.  We are currently entering a challenging period of time where we will have to make some difficult decisions to help ensure the best possible future for Prison.
+
+Minecraft 1.17 is scheduled to be released on June 8th, 2021. The release of 1.17 brings with it some major changes that will have significant ripples throughout the minecraft server community, mostly due to the heavy dependency upon Java 1.8 for many years.  This ultimately means there are a lot of unknowns that we will have to work through and there will be situations that were unexpected.
+
+One major change in our support statement is that Prison, as of right now, will only *officially* support Spigot v1.8.8 (10.9% usage), v1.12 (10.9% usage), and v1.16.5 (73.5% usage). These three versions of Spigot represents 95.3% of all servers using the Prison plugin.  This does not include any server that has disabled the bstats, which is one reason why you should keep that enabled so you can be represented in our stats and our plans for the future. 
+
+Note: The follow up versions in descending order of usage are: v1.14.4 (1.6% usage), v1.13.2 (1.2% usage), v1.15.2 (1.2% usage), and v1.11.2 (0.9% usage).  No other versions are recorded by bStats.
+
+But please keep in mind, as with our official stance of only supporting Spigot, we will also *provide* as-needed support for Paper and other Spigot compatible platforms. We want you to have the flexibility to use the platform that best suites your needs.  We just will not pre-test on those platforms, but we will try to address any issues that are brought to our attention. The non-supported versions of Spigot falls under this same limitation of support: we will not pre-test for the non-supported versions, but if you are using them and find issues, we will work with you to resolve them. The actual impact of dropping support for 1.9, 1.10, 1.11, 1.13, 1.14, and 1.15 should have no impact on quality for those releases of Spigot, but it will free up a lot of time spent on testing.
+
+
+Some initial testing with running a prison server using Java 16:
+* Spigot v1.8.8 will startup and run. But there are major failures with missing classes that are critical for the core bukkit and Java components to work properly.  It is doubtful a fix will ever be provided.
+* It has been noted that bukkit/spigot 1.8 through 1.11 will not work with Java 11 and later.
+* Spigot v1.12.2 compiled with Java 1.8 appears to work perfectly well with Java 16 running on the server.
+* Spigot v1.16.5 compiled with Java 1.8 appears to work perfectly well with Java 16 running on the server.
+
+
+I have not tried to compile anything with Java 16 since I need to first update the Prison build environment to support it.  But these are tests that will be explored in the very near future so as to get a better understanding on what we can expect from the build process.
+
+
+In the last few days, I've updated gradle to the latest release so it will support Java 16.  Other resources have been updated too.  More work will be done over the next week or two to prepare for MC 1.17 and Java 16.
+
+
+NOTE: At this time, I think there will have to be two builds.  One with Java 1.8 for Spigot versions 1.8 through 1.16.5.  Then another build with Java 16 that will support Spigot 1.12 through 17.  This will give admins the flexibility to choose the version of Java to run on their servers that they are most comfortable with.  Initially, these builds will be automated, but initially they may be a manual process.
+
+
+
+**Prison v3.2.8 will be targeted to support Java 16, and hopefully, Minecraft v1.17 too.**
+
+
+
+Java 1.8 and Java 11 have a built-in javascript engine. Java 16 does not.
+This plugin provides support, and compatibility, with javascript processing.
+Other plugins that use javascript, such as papi, would have to be compiled
+to work with this plugin.  
+https://polymart.org/resource/jsengine.1095
+
+
+
+
+* **Preparing for Java 16**
+  * Update Gradle to most recent release
+  * Review other dependencies and update them too, if possible.
+  * Update development environment, and system to support Java 16
+  * 
+  
+
+
+* rank commands - remove by line number
+  - Same for mine commands
+  
+
 * Auto Features
- - Add a reload for them.
+ - DONE: Add a reload for them.
  - Enable alt fortune calculations as a fall through backup calculation if no fortune is provided for the given block  
 
 
