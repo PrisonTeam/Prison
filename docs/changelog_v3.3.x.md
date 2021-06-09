@@ -18,6 +18,19 @@ These build logs represent the work that has been going on within prison.
 
 
 
+# v3.2.8-alpha.1 2021-06-07
+
+
+* **v3.2.8-alpha.1 2021-06-07**
+Internally set the version, but will not release it until a few other things are finished.
+The prison version is set to 3.2.8-alpha.1 to prepare for the release of prison that is compatible with Java 16 and Spigot 1.17.
+Prison may not support all of the blocks in Spigot 1.17, but will be runnable.
+Corrected some of the consistency issues with apache commons not specifying the correct version.
+
+
+NOTE: v3.2.8-alpha.1 is identical to v3.3.0-alpha.6.  V3.3.0 is far from being ready to be released.  So v3.2.8 will enable Java 16 and also Minecraft 1.17.
+
+
 # v3.3.0-alpha.6 2021-06-07
 
 
@@ -94,7 +107,7 @@ It's not hooked up yet, and it may not work, but the structure of performing the
 This was tested and working a few months ago, so not sure what happened to the source.  But added it in to the command translation function to fix this issue.
 
 
-* **Potential bug fix where access to the mine needs to be grante by default if both access by perms and access by ranks are disabled.**
+* **Potential bug fix where access to the mine needs to be granted by default if both access by perms and access by ranks are disabled.**
 This may have been preventing players from mining when relying on WorldGuard regions for player access.
 
 

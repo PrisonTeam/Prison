@@ -80,7 +80,6 @@ dependencies {
 
     implementation 'org.bstats:bstats-base:2.2.1'
     implementation 'org.bstats:bstats-bukkit:2.2.1'
-//    implementation 'org.bstats:bstats-bukkit:1.5'
     
     
     // Repo keeps going down:
@@ -89,7 +88,6 @@ dependencies {
   
     
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
-//	implementation 'org.apache.commons:commons-lang3:3.9'
 
 
     compileOnly 'me.clip:placeholderapi:2.10.9'

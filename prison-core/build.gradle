@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.apache.commons:commons-lang3:3.9'
+	implementation 'org.apache.commons:commons-lang3:3.12.0'
 }
 
 /*
@@ -37,7 +37,7 @@ processResources {
 
 shadowJar {
     dependencies {
-        include(dependency('org.apache.commons:commons-lang3:3.10'))
+        include(dependency('org.apache.commons:commons-lang3:3.12.0'))
         include(dependency('com.google.code.gson:gson:2.8.6'))
     }
     classifier 'API'
