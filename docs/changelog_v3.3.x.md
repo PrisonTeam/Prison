@@ -20,6 +20,10 @@ These build logs represent the work that has been going on within prison.
 
 # v3.2.8-alpha.1 2021-06-09
 
+* **Eliminated a couple of %s entries in this config file.**
+The files/directory will need to be cleared so they can be regenerated.
+`plugins/Prison/module_conf/ranks/` should be cleared for automated replacement.
+
 
 * **Added a new debug tool for BlockEvents that dumps all registered BlockEvents that lists the plugin name and priority along with the listener.**
 This can help identify potential issues when it appears like its not working.
