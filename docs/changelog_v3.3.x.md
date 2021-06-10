@@ -21,6 +21,12 @@ These build logs represent the work that has been going on within prison.
 # v3.2.8-alpha.1 2021-06-10
 
 
+* **Added a ranks_message__auto_refresh=true to indicate the language file should be refreshed.**
+The lack of this setting will allow it to be  refreshed too.  Only a value of false will prevent a refresh.
+A value of false will prevent auto updates so if someone customizes their configs their changes will be preserved.
+NOTE: auto update of these language files has not been hooked up yet.
+
+
 * **Added a new feature to scan plugin jars to identify what java version compiled them.**
 This information will be incorporated in to the /prison version shortly.
 
