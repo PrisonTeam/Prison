@@ -48,6 +48,7 @@ import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.troubleshoot.TroubleshootResult;
 import tech.mcprison.prison.troubleshoot.Troubleshooter;
+import tech.mcprison.prison.util.PrisonJarReporter;
 import tech.mcprison.prison.util.PrisonTPS;
 
 /**
@@ -1064,14 +1065,26 @@ public class PrisonCommand {
     
     
     @Command(identifier = "prison debug", 
-    		description = "For internal use only. Do not use unless instructed.", 
+    		description = "Enables debugging and trouble shooting information. " +
+    				"For internal use only. Do not use unless instructed.", 
     		onlyPlayers = false, permissions = "prison.debug" )
     public void toggleDebug(CommandSender sender,
     		@Wildcard(join=true)
     		@Arg(name = "targets", def = " ",
-    				description = "Enable or disable a debugging target. " +
+    				description = "Optional. Enable or disable a debugging target. [on, off, targets, jarScan] " +
     				"Use 'targets' to list all available targets.  Use 'on' or 'off' to toggle " +
-    				"on and off individual targets, or all targets if no target is specified.") String targets ) {
+    				"on and off individual targets, or all targets if no target is specified.  " +
+    				"jarScan will identify what Java version compiled the class files within the listed jars"
+    						) String targets ) {
+    	
+    	if ( targets != null && "jarScan".equalsIgnoreCase( targets ) ) {
+    		
+    		PrisonJarReporter pjr = new PrisonJarReporter();
+    		pjr.scanForJars();
+    		pjr.dumpJarDetails();
+    		
+    		return;
+    	}
     	
     	Output.get().applyDebugTargets( targets );
     	
