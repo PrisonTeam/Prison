@@ -915,9 +915,12 @@ public abstract class MineData
      * be checked; it has to be disabled for the permissions for Mine Access Permission.
      * </p>
      * 
-     * <p>If both isMineAccessByRank() and isAccessPermissionEnabled() are both disabled, then
+     * <p>NOTE: The following is not valid because there may be another way perms are used
+     * for accessing the mine, but this is a good way to check access if accessByRank and 
+     * MineAccessByPerms is enabled.
+     * <strike>If both isMineAccessByRank() and isAccessPermissionEnabled() are both disabled, then
      * it is assumed that something else external to prison will be managing the access so this
-     * to the mine, function should allow the player to have access.
+     * to the mine, function should allow the player to have access.</strike>
      * </p>
      * 
      * @param player
@@ -929,8 +932,10 @@ public abstract class MineData
     	if ( isMineAccessByRank() && 
 				Prison.get().getPlatform().isMineAccessibleByRank( player, this ) ||
 				!isMineAccessByRank() &&
-    					isAccessPermissionEnabled() && player.hasPermission( getAccessPermission() ) ||
-    		 !isMineAccessByRank() && !isAccessPermissionEnabled() 
+    					isAccessPermissionEnabled() && player.hasPermission( getAccessPermission() ) 
+    					
+    			/// Note: the following cannot be added here since it will grant access if both are disabled
+    			//		|| !isMineAccessByRank() && !isAccessPermissionEnabled() 
     			 ) {
 
     		results = true;

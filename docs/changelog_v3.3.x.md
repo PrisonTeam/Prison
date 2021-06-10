@@ -18,7 +18,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.8-alpha.1 2021-06-09
+# v3.2.8-alpha.1 2021-06-10
+
+* **Setup the mine Access by Rank to be applied within the player GUI.**
+Had to change the logic on block break handling to only check the Mine.hasMiningAccessByRank() if the access by options have been enabled. Block breakage needs to be more flexible since block breakage may be controlled by WorldGuard which would mean prison would have no way to validate if the player has access or not.  Hence why access by rank is so important.
+
 
 * **Eliminated a couple of %s entries in this config file.**
 The files/directory will need to be cleared so they can be regenerated.
