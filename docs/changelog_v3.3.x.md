@@ -21,6 +21,12 @@ These build logs represent the work that has been going on within prison.
 # v3.2.8-alpha.1 2021-06-10
 
 
+* **Bug Fix: Player Mine GUI on TP'ing player to mine**
+There was a logic error in checking for the player permissions on if they have access to TP to a mine.  The error happened when the mine name is longer than the base permission name such that it produced this index out of bounds exception: "mines.tp.".substr(0, -3).  
+The logic was changed to mirror how it was within the SpigotPlayersMineGUI class.
+Also took the opportunity to hook up the Access by Rank check too, so that way admins do not have to configure perms just for the GUI.
+
+
 * **Added a getRankPlayer() to the prison spigot API.**
 
 
