@@ -21,6 +21,12 @@ These build logs represent the work that has been going on within prison.
 # v3.2.8-alpha.1 2021-06-10
 
 
+* **Spigot 1.17 bug fix: Fixes the identification of the correct version of spigot.**
+This is a temp fix for now, but it's functional.
+The version of spigot was not able to be resolved so Prison was defaulting to use the spigot 1.8 compatibility mode which resulted in a lot of issues.
+With this fix, most issues are resolved and the player can mine.
+
+
 * **New features of showing the dump of registered listeners for the BlockBreakEvent and the AsyncPlayerChatEvent.**
 These are located under the /prison debug command when special targets are specified.
 Removed the DebugTarget.blockBreakListeners target type since it now has a directly called component in /prison debug.

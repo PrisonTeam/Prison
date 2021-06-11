@@ -153,6 +153,10 @@ public class BluesSpigetSemVerComparator
 			}
 		}
 		
+		if ( results !=  null && "1.17".equals( results ) ) {
+			results = "1.17.0";
+		}
+		
 		return results;
 	}
 
