@@ -21,6 +21,11 @@ These build logs represent the work that has been going on within prison.
 # v3.2.8-alpha.1 2021-06-10
 
 
+* **New features of showing the dump of registered listeners for the BlockBreakEvent and the AsyncPlayerChatEvent.**
+These are located under the /prison debug command when special targets are specified.
+Removed the DebugTarget.blockBreakListeners target type since it now has a directly called component in /prison debug.
+
+
 * **Added a ranks_message__auto_refresh=true to indicate the language file should be refreshed.**
 The lack of this setting will allow it to be  refreshed too.  Only a value of false will prevent a refresh.
 A value of false will prevent auto updates so if someone customizes their configs their changes will be preserved.

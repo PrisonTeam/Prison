@@ -354,5 +354,8 @@ public interface Platform {
 	public List<String> getActiveFeatures();
 
 
+	public void dumpEventListenersBlockBreakEvents();
+	
+	public void dumpEventListenersPlayerChatEvents();
 	
 }

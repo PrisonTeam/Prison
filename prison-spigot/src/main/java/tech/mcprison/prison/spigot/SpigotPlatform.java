@@ -40,7 +40,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredListener;
 
 import com.cryptomorin.xseries.XBlock;
 import com.cryptomorin.xseries.XMaterial;
@@ -48,8 +54,8 @@ import com.cryptomorin.xseries.messages.Titles;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonCommand;
-import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.convert.ConversionResult;
@@ -80,6 +86,7 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotOfflinePlayer;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -87,7 +94,7 @@ import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.placeholder.SpigotPlaceholders;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
 import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
-import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
+import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.util.ActionBarUtil;
 import tech.mcprison.prison.spigot.util.SpigotYamlFileIO;
 import tech.mcprison.prison.store.Storage;
@@ -99,6 +106,7 @@ import tech.mcprison.prison.util.Text;
 /**
  * @author Faizaan A. Datoo
  */
+@SuppressWarnings( "deprecation" )
 public class SpigotPlatform 
 	implements Platform {
 
@@ -1821,4 +1829,44 @@ public class SpigotPlatform
 		return results;
 	}
 	
+	
+	
+	@Override
+	public void dumpEventListenersBlockBreakEvents() {
+		
+		dumpEventListeners( "BlockBreakEvent", BlockBreakEvent.getHandlerList() );
+	}
+	
+	@Override
+	public void dumpEventListenersPlayerChatEvents() {
+		
+		dumpEventListeners( "AsyncPlayerChatEvent", AsyncPlayerChatEvent.getHandlerList() );
+			
+		if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.17.0") < 0 ) {
+			
+			dumpEventListeners( "PlayerChatEvent", PlayerChatEvent.getHandlerList() );
+		}
+	}
+	
+	private void dumpEventListeners( String eventType, HandlerList handlerList ) {
+		
+		RegisteredListener[] listeners = handlerList.getRegisteredListeners();
+		
+		ChatDisplay display = new ChatDisplay("Event Dump: " + eventType );
+		display.addText("&8All registered EventListeners (%d):", listeners.length );
+		
+		for ( RegisteredListener eventListner : listeners ) {
+			String plugin = eventListner.getPlugin().getName();
+			EventPriority priority = eventListner.getPriority();
+			String listener = eventListner.getListener().getClass().getName();
+			
+			String message = String.format( "&3  Plugin: &7%s   %s  &3(%s)", 
+					plugin, priority.name(), listener);
+			
+			display.addText( message );
+		}
+		
+		display.toLog( LogLevel.DEBUG );
+	}
+
 }

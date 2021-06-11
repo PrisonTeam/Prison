@@ -1071,7 +1071,8 @@ public class PrisonCommand {
     public void toggleDebug(CommandSender sender,
     		@Wildcard(join=true)
     		@Arg(name = "targets", def = " ",
-    				description = "Optional. Enable or disable a debugging target. [on, off, targets, jarScan] " +
+    				description = "Optional. Enable or disable a debugging target. " +
+    					"[on, off, targets, jarScan, blockBreakListeners, chatListeners] " +
     				"Use 'targets' to list all available targets.  Use 'on' or 'off' to toggle " +
     				"on and off individual targets, or all targets if no target is specified.  " +
     				"jarScan will identify what Java version compiled the class files within the listed jars"
@@ -1085,6 +1086,21 @@ public class PrisonCommand {
     		
     		return;
     	}
+    	
+    	if ( targets != null && "blockBreakListeners".equalsIgnoreCase( targets ) ) {
+    		
+    		Prison.get().getPlatform().dumpEventListenersBlockBreakEvents();
+    		
+    		return;
+    	}
+    	
+    	if ( targets != null && "chatListeners".equalsIgnoreCase( targets ) ) {
+    		
+    		Prison.get().getPlatform().dumpEventListenersPlayerChatEvents();
+    		
+    		return;
+    	}
+    	
     	
     	Output.get().applyDebugTargets( targets );
     	
