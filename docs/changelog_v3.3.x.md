@@ -21,6 +21,11 @@ These build logs represent the work that has been going on within prison.
 # v3.2.8-alpha.1 2021-06-12
 
 
+* **Update XSeries to v8.0.0**
+It is not yet available on the main Maven repo, so using jitpack.io to provide the resource for now.
+Note that this gives prison all of the 1.17 blocks.
+
+
 * **This is a more correct fix for the semantic version value of "1.17".**
 In general, 1.17 is invalid as strictly defined, but since that is the convention that Spigot uses, then made this work correctly by detecting this pattern, then appending ".0" to the end of the version to make it correct.
 Also updated the unit tests to properly handle this new condition.

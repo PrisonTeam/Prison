@@ -56,13 +56,18 @@ repositories {
     		includeGroup 'org.apache.commons'
     	}
     }
-    
+
+/*
     maven { 
     	url = 'https://mvnrepository.com/artifact/com.github.cryptomorin' 
     	content {
     		includeGroup 'com.github.cryptomorin'
     	}
     }
+*/  
+
+   	maven { url 'https://jitpack.io' }
+
 
   // maven { url = 'https://repo.pcgamingfreaks.at/repository/maven-everything' }
   // maven { url = 'https://maven.enginehub.org/repo/' }
@@ -98,7 +103,12 @@ dependencies {
     
     compileOnly 'me.lucko.luckperms:luckperms-api:4.2'
     
-	implementation 'com.github.cryptomorin:XSeries:7.9.1.1'
+    // jitpack.io:
+    implementation 'com.github.cryptomorin:xseries:b95d195482'
+    
+    // https://mvnrepository.com/artifact/com.github.cryptomorin:
+//	implementation 'com.github.cryptomorin:XSeries:8.0.0'
+//	implementation 'com.github.cryptomorin:XSeries:7.9.1.1'
 //	implementation 'com.github.cryptomorin:XSeries:7.8.0'
 //	implementation 'com.github.cryptomorin:XSeries:7.6.0.0.1'
 //	implementation 'com.github.cryptomorin:XSeries:7.5.4'
@@ -185,7 +195,9 @@ shadowJar {
 
         include(dependency('me.clip:placeholderapi:2.10.9'))
 
-        include(dependency('com.github.cryptomorin:XSeries:7.9.1.1'))
+        include(dependency('com.github.cryptomorin:xseries:b95d195482'))
+//        include(dependency('com.github.cryptomorin:xseries:8.0.0'))
+        //include(dependency('com.github.cryptomorin:XSeries:7.9.1.1'))
         
         //include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
         //include(dependency('me.badbones69:crazyenchantments-plugin:1.8-Dev-Build-v8'))
