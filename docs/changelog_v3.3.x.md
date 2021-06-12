@@ -18,7 +18,13 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.8-alpha.1 2021-06-10
+# v3.2.8-alpha.1 2021-06-12
+
+
+* **This is a more correct fix for the semantic version value of "1.17".**
+In general, 1.17 is invalid as strictly defined, but since that is the convention that Spigot uses, then made this work correctly by detecting this pattern, then appending ".0" to the end of the version to make it correct.
+Also updated the unit tests to properly handle this new condition.
+Updated the compatibility code to default to Spigot 1.13 compatibility if the Spigot semVer is invalid.
 
 
 * **Spigot 1.17 release - v3.2.8-alpha.1 - 2021-06-11**

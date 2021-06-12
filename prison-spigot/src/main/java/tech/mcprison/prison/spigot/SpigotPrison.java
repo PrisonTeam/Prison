@@ -69,6 +69,7 @@ import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot113;
 import tech.mcprison.prison.spigot.compat.Spigot18;
 import tech.mcprison.prison.spigot.compat.Spigot19;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.configs.BackpacksConfig;
 import tech.mcprison.prison.spigot.configs.GuiConfig;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
@@ -85,6 +86,7 @@ import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
 import tech.mcprison.prison.spigot.slime.SlimeBlockFunEventListener;
+import tech.mcprison.prison.spigot.spiget.BluesSemanticVersionData;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.utils.PrisonUtilsModule;
 
@@ -168,6 +170,7 @@ public class SpigotPrison extends JavaPlugin {
 
         initDataDir();
         initCommandMap();
+        this.compatibility = SpigotCompatibility.getInstance();
         initCompatibility();
         initUpdater();
         
@@ -451,19 +454,36 @@ public class SpigotPrison extends JavaPlugin {
         }
     }
 
+    /**
+     * Priority of defaulting to Spigot113 if an unknown version.
+     */
     private void initCompatibility() {
     	
-    	if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.9.0") < 0 ) {
-            compatibility = new Spigot18();
-        } 
-    	else if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.13.0") < 0 ) {
-            compatibility = new Spigot19();
-        }
-    	else {
+    	String bukkitVersion =  new BluesSpigetSemVerComparator().getBukkitVersion();
+    	
+    	if ( bukkitVersion == null ) {
+    		
     		compatibility = new Spigot113();
     	}
+    	else {
 
-        getLogger().info("Using version adapter " + compatibility.getClass().getName());
+    		BluesSemanticVersionData svData = new BluesSemanticVersionData( bukkitVersion );
+    		
+    		if ( svData.compareTo( new BluesSemanticVersionData( "1.9.0" ) ) < 0 ) {
+    			
+    			compatibility = new Spigot18();
+    		}
+    		else if ( svData.compareTo( new BluesSemanticVersionData( "1.13.0" ) ) < 0 ) {
+    			
+    			compatibility = new Spigot19();
+    		}
+    		else {
+    			
+    			compatibility = new Spigot113();
+    		}
+    	}
+
+    	Output.get().logInfo("Using version adapter " + compatibility.getClass().getName());
     }
 
 	private void initIntegrations() {
