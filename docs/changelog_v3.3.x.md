@@ -21,6 +21,12 @@ These build logs represent the work that has been going on within prison.
 # v3.2.8-alpha.1 2021-06-12
 
 
+* **Prison's New Block Model is now enabled by default.**
+With the release of Spigot 1.17 and with 73.5% of all servers using Spigot 1.16.x, it is far past time to make Prison's new block model the default.  All old blocks will be auto converted upon started.  The benefit with this switch over is that all blocks that are valid on the running server will automatically be available.  Such would not be the case with the old block model.
+This change was intended for the v3.3.0.  
+In the super-rare case where there is an issue with the new block model, there is a new, unpublished setting that will re-enable the old block model.  That setting should never be used; if an issue does exist, then it should be fixed in the new block model.
+
+
 * **On ranks demotions, added a DEMOTE_SUCCESS RankupStatus to simplify a few things and to get rid of a hard coded boolean that was indicating a rankup vs. demote.**
 
 

@@ -782,12 +782,32 @@ public class SpigotPlatform
 		return ( val != null && val.trim().equalsIgnoreCase( "true" ) );
 	}
 	
-	
+	/**
+	 * <p>Prison is now automatically enabling the new prison block model.
+	 * The old block model still exists, but it has to be explicitly 
+	 * enabled in config.yml.
+	 * </p>
+	 * 
+	 * <p>No one should ever use the old block model. If there is an issue with
+	 * the new model then it should be fixed and not avoided.  But if they 
+	 * must, then the following must be added to the `plugins/Prison/config.yml`.
+	 * </p>
+	 * 
+	 * <pre>
+	 * # Warning: The use of the OLD prison block model will be removed
+	 * #          from future releases in the near future.  This old
+	 * #          model is to be used only on an emergency basis 
+	 * #          until any issues with the new model have been resolved.
+	 * use-old-prison-block-model: true
+	 * </pre>
+	 * 
+	 * @return
+	 */
 	@Override
 	public boolean isUseNewPrisonBlockModel() {
 		
-		return getConfigBooleanFalse( "use-new-prison-block-model" );
-//		return !getConfigBooleanFalse( "use-old-prison-block-model" );
+//		return getConfigBooleanFalse( "use-new-prison-block-model" );
+		return !getConfigBooleanFalse( "use-old-prison-block-model" );
 	}
 	
 	/**

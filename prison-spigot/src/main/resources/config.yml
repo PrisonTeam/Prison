@@ -103,17 +103,6 @@ placeholder:
 
 
 
-
-# NEW: Non-Functional at this time. Coming soon!
-# This is strictly a work in progress right now, and does not work yet.
-# This uses a new prison block model for providing the internal block lists
-# and for generating the blocks.  This allows usage from mc 1.8.x through 
-# v1.16.x and enables all new blocks for the version the server is running.
-# This new model currently does not support custom blocks.
-#use-new-prison-block-model: false
-
-
-
 # Default language that is used as the primary language.
 # See the lang directories under /plugins/Prison/module_conf/ for the 
 # language files that can be edited.
