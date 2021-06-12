@@ -21,6 +21,13 @@ These build logs represent the work that has been going on within prison.
 # v3.2.8-alpha.1 2021-06-12
 
 
+* **Bug fix for Spigot 1.17: NMS has been disabled in 1.17, which means cannot get player's locale.**
+When running on 1.17 it would produce stack traces every time the multi-language components would be used within Prison.  There was no way to capture the stack traces and it was generating a phantom trace that was lacking formation on where it was being generated from.
+To work around this issue, the code for the NMS was moved to the compatibility package and it was rewritten to prevent exceptions.  If it is able get past the initialization without errors, but produce errors upon trying to access the internals, it will now capture the failures and prevent them from being tried again.
+The nms code should work from spigot 1.3 through 1.16.5. It does not work with 1.17.  Will have to find an alternative method of getting it.
+
+
+
 * **Update XSeries to v8.0.0**
 It is not yet available on the main Maven repo, so using jitpack.io to provide the resource for now.
 Note that this gives prison all of the 1.17 blocks.
