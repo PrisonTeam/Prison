@@ -21,6 +21,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.8-alpha.2 2021-06-12
 
 
+* **For the /mines block list there was an M missing from the word Remaining for some hover text.
+
+
 * **For the command prison version, add the java version of what compiled the class files within that plugin's jar.**
 
 
