@@ -101,6 +101,8 @@ import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.util.PrisonJarReporter;
+import tech.mcprison.prison.util.PrisonJarReporter.JarFileData;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -646,6 +648,11 @@ public class SpigotPlatform
 		 
 		 Server server = SpigotPrison.getInstance().getServer();
 		 
+		 // Scan the existing jar files:
+		 PrisonJarReporter jarReporter = new PrisonJarReporter();
+		 jarReporter.scanForJars();
+		 jarReporter.dumpJarDetails(); // temp!
+		 
         // Finally print the version after loading the prison plugin:
 //        PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
 		 
@@ -655,7 +662,11 @@ public class SpigotPlatform
         for ( Plugin plugin : server.getPluginManager().getPlugins() ) {
         	String name = plugin.getName();
         	String version = plugin.getDescription().getVersion();
-        	String value = " " + name + " (" + version + ")";
+        	JarFileData pluginJarFile = jarReporter.getJarsByPluginName().get( name );
+        	
+        	String value = " " + name + " (" + version + 
+        			( pluginJarFile == null ? "" : " " + pluginJarFile.getJavaVersion().name() ) +
+        			")";
         	cmdVersion.getRegisteredPlugins().add( value );
         	
         	cmdVersion.addRegisteredPlugin( name, version );

@@ -21,6 +21,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.8-alpha.2 2021-06-12
 
 
+* **For the command prison version, add the java version of what compiled the class files within that plugin's jar.**
+
+
 * **v3.2.8-alpha.2 2021-06-12**
 Bump the version to alpha.2.  This release fixes all the obvious issues relating to the new Spigot 1.17.
 This release also has full 1.17 block support too.
@@ -57,10 +60,13 @@ Also updated the unit tests to properly handle this new condition.
 Updated the compatibility code to default to Spigot 1.13 compatibility if the Spigot semVer is invalid.
 
 
+
 * **Spigot 1.17 release - v3.2.8-alpha.1 - 2021-06-11**
 The release v3.2.8-alpha.1 has been release.
 Only known issues: 
    * Unable to use nms to get the player's preferred language
+
+
 
 
 * **Spigot 1.17 bug fix: Fixes the identification of the correct version of spigot.**

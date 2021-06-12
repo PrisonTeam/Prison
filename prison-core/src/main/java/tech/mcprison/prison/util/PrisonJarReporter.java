@@ -12,6 +12,7 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -34,6 +35,8 @@ import tech.mcprison.prison.output.Output;
 public class PrisonJarReporter {
 	
 	private List<JarFileData> jars;
+	
+	private TreeMap<String, JarFileData> jarsByPluginName;
 	
 	public enum JavaVersion {
 		JDK_1_1("2d"),
@@ -85,6 +88,7 @@ public class PrisonJarReporter {
 		super();
 		
 		this.jars = new ArrayList<>();
+		this.jarsByPluginName = new TreeMap<>();
 	}
 	
 	public class JarFileData {
@@ -192,6 +196,8 @@ public class PrisonJarReporter {
 				JarFileData jfData = new JarFileData( name, pluginName, classHex, isValidJar, javaVersion );
 				
 				getJars().add( jfData );
+				
+				getJarsByPluginName().put( jfData.getPluginName(), jfData );
 				
 //				Output.get().logInfo( jfData.toString() );
 			}
@@ -389,6 +395,12 @@ public class PrisonJarReporter {
 	public void setJars( List<JarFileData> jars ) {
 		this.jars = jars;
 	}
-	
+
+	public TreeMap<String, JarFileData> getJarsByPluginName() {
+		return jarsByPluginName;
+	}
+	public void setJarsByPluginName( TreeMap<String, JarFileData> jarsByPluginName ) {
+		this.jarsByPluginName = jarsByPluginName;
+	}
 	
 }
