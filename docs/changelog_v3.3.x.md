@@ -18,7 +18,12 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.8-alpha.1 2021-06-12
+# v3.2.8-alpha.2 2021-06-12
+
+
+* **v3.2.8-alpha.2 2021-06-12**
+Bump the version to alpha.2.  This release fixes all the obvious issues relating to the new Spigot 1.17.
+This release also has full 1.17 block support too.
 
 
 * **Prison's New Block Model is now enabled by default.**

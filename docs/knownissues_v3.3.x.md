@@ -3,6 +3,34 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
+* **For v3.2.8 Release - - Preparing for Java 16**
+  * DONE: Update Gradle to most recent release
+  * Review other dependencies and update them too, if possible.
+  * DONE: Update development environment, and system to support Java 16
+  * DONE: Update XSeries to support the new block types.
+  * 
+  * DONE: Enable the new block model - 73.5% are currently using v1.16.x so with the new 1.17 more people will be expecting the new blocks.
+  * Auto Refresh for language files when version detects new update is available and if auto update is enabled for that language file.
+
+  * In /prison version, if auto features are disabled, show NO details.
+
+  * Confirm duplicates on BlockBreakEvents makes sense.
+
+  * Ranks info raw tag is not showing the editing formats... 
+
+  * Fortune on all blocks is not working...
+  
+  * Hook up java version on /prison version's plugin listings
+  
+  * DONE: Issue with nms with SpigotPlayer... does not work with 1.17.  
+   - Disabled when fails.  No longer produces stack traces.
+
+
+* Plugin exception handling has problems
+  - This is a very rare condition that it happens, but when it does, the global trapping of Prison errors produces a stack trace that is missing details.  Off hand it is not known where that code is.  Need to look in to it and fix it.
+  
+
+
 * **NOTICE - About Prison, Java 16, and Minecraft 1.17**
 
 Prison is all about providing the best experience for your server environment.In order to look toward the future, so we can continue to provide the best possible experience, we have to set limits on what we can actually provide support on.  We are currently entering a challenging period of time where we will have to make some difficult decisions to help ensure the best possible future for Prison.
@@ -45,13 +73,6 @@ https://polymart.org/resource/jsengine.1095
 
 
 
-
-* **Preparing for Java 16**
-  * Update Gradle to most recent release
-  * Review other dependencies and update them too, if possible.
-  * Update development environment, and system to support Java 16
-  * 
-  
 
 
 * rank commands - remove by line number
