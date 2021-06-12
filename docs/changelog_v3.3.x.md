@@ -21,6 +21,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.8-alpha.1 2021-06-12
 
 
+* **Fixed an issue with players not being able to use /ranks player on themselves.**
+It was trying to use an empty player name instead of getting it from the sender object.
+
+
 * **Bug fix for Spigot 1.17: NMS has been disabled in 1.17, which means cannot get player's locale.**
 When running on 1.17 it would produce stack traces every time the multi-language components would be used within Prison.  There was no way to capture the stack traces and it was generating a phantom trace that was lacking formation on where it was being generated from.
 To work around this issue, the code for the NMS was moved to the compatibility package and it was rewritten to prevent exceptions.  If it is able get past the initialization without errors, but produce errors upon trying to access the internals, it will now capture the failures and prevent them from being tried again.
