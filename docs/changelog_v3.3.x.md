@@ -21,6 +21,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.8-alpha.1 2021-06-12
 
 
+* **On ranks demotions, added a DEMOTE_SUCCESS RankupStatus to simplify a few things and to get rid of a hard coded boolean that was indicating a rankup vs. demote.**
+
+
 * **Fixed an issue with players not being able to use /ranks player on themselves.**
 It was trying to use an empty player name instead of getting it from the sender object.
 

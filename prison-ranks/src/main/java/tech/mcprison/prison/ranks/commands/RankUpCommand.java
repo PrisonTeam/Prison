@@ -177,7 +177,7 @@ public class RankUpCommand
         	// Performs the actual rankup here:
         	RankupResults results = new RankUtil().rankupPlayer(player, rankPlayer, ladder, sender.getName());
         	
-        	processResults( sender, player.getName(), results, true, null, ladder, currency );
+        	processResults( sender, player.getName(), results, null, ladder, currency );
 
         	// If the last rankup attempt was successful and they are trying to rankup as many times as possible: 
         	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS && 
@@ -315,7 +315,7 @@ public class RankUpCommand
         	RankupResults results = new RankUtil().promotePlayer(player, rankPlayer, ladder, 
         												player.getName(), sender.getName(), pForceCharge);
         	
-        	processResults( sender, player.getName(), results, true, null, ladder, currency );
+        	processResults( sender, player.getName(), results, null, ladder, currency );
         }
     }
 
@@ -356,7 +356,7 @@ public class RankUpCommand
         	RankupResults results = new RankUtil().demotePlayer(player, rankPlayer, ladder, 
         												player.getName(), sender.getName(), pForceCharge);
         	
-        	processResults( sender, player.getName(), results, false, null, ladder, currency );
+        	processResults( sender, player.getName(), results, null, ladder, currency );
         }
     }
 
@@ -430,7 +430,7 @@ public class RankUpCommand
         	RankupResults results = new RankUtil().setRank(player, rankPlayer, ladder, rank, 
         												player.getName(), sender.getName());
         	
-        	processResults( sender, player.getName(), results, true, rank, ladder, currency );
+        	processResults( sender, player.getName(), results, rank, ladder, currency );
         }
 	}
 
@@ -467,12 +467,16 @@ public class RankUpCommand
 
 	public void processResults( CommandSender sender, String playerName, 
 					RankupResults results, 
-					boolean rankup, String rank, String ladder, String currency ) {
+					String rank, String ladder, String currency ) {
 	
 		switch (results.getStatus()) {
             case RANKUP_SUCCESS:
+            	ranksRankupSuccessMsg( sender, playerName, results );
             	
-            	ranksRankupSuccessMsg( sender, playerName, results, rankup );
+            	break;
+            	
+            case DEMOTE_SUCCESS:
+            	ranksRankupSuccessMsg( sender, playerName, results );
 
                 break;
             case RANKUP_CANT_AFFORD:
