@@ -651,7 +651,7 @@ public class SpigotPlatform
 		 // Scan the existing jar files:
 		 PrisonJarReporter jarReporter = new PrisonJarReporter();
 		 jarReporter.scanForJars();
-		 jarReporter.dumpJarDetails(); // temp!
+		 // jarReporter.dumpJarDetails(); // temp!
 		 
         // Finally print the version after loading the prison plugin:
 //        PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
