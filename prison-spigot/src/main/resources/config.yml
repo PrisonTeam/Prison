@@ -103,17 +103,6 @@ placeholder:
 
 
 
-
-# NEW: Non-Functional at this time. Coming soon!
-# This is strictly a work in progress right now, and does not work yet.
-# This uses a new prison block model for providing the internal block lists
-# and for generating the blocks.  This allows usage from mc 1.8.x through 
-# v1.16.x and enables all new blocks for the version the server is running.
-# This new model currently does not support custom blocks.
-#use-new-prison-block-model: false
-
-
-
 # Default language that is used as the primary language.
 # See the lang directories under /plugins/Prison/module_conf/ for the 
 # language files that can be edited.
@@ -148,3 +137,42 @@ prison-mines:
     movementMaxDistance: 1.0
     delayInTicks: 20
     
+
+
+# Warning: Do not use the following option. This could break the natural Bukkit 
+# loading behavior of Prison and other plugins.  It can have unexpected 
+# side effects. 
+# Use this feature ONLY when instructed by Prison support team and when 
+# other solutions have be tried first.
+#
+#   CMI Economy, through Vault, can have an issue of not initializing itself until 
+# all other plugins are done starting up, which means it's not active when prison 
+# tries to start.  Prison must enable it's integration with Vault before
+# it can enable Ranks, and everything that is depending upon ranks.  Failure to
+# have a funcional Economy when Ranks are enabled could lead to runtime errors
+# and even data corruption within your server, so ranks are disabled under those
+# conditons.
+#
+#   To get CMI's economy working with Prison, this option wil test to see if the Vault 
+# Economy is active, if it is, then it will allow Prison to start normally.  If not,
+# it will allow the prison's onEnable() function to return with a "success" to tell
+# Bukkit/Spigot that Prison was enabled successfully, but in reality, the 
+# enabling of Prison will be delayed for 5 seconds and then it will try again.
+# If it is, then Prison will be enabled.  If the Vault Economy is still not
+# active, then it will try again in 5 seconds.  It will attempt to start 6
+# times and if it fails to find an active Vault Economy then Prison will 
+# NOT start up at all.
+#
+#   It's an all or nothing situation when you enable this feature.
+#
+# Warning: Other plugins that depend upon and use Prison may fail.  If they do fail 
+# because of a delayed start, then that is beyond the scope of support that can
+# be provided by Prison.  Delayed start is provided to get CMI working.  
+# We cannot be responsible for their choices.   
+#
+# Note: The process that this controls ONLY checks for the activation of Vault
+# Economy.  Therefore you must use CMI with Vault. Also this will "work" with 
+# any other economy plugins using vault too.  But please do not use this 
+# unless all other options have been exhusted.  
+# delayedCMIStartup: false
+

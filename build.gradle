@@ -20,6 +20,41 @@ import java.util.Date
 
 apply plugin: 'java'
 
+ext.targetArchiveClassifier = 'Java1.8'
+//ext.targetArchiveClassifier = 'Java16'
+
+
+// Lists all versions of java that are available to the toolchain
+// $ ./gradlew -q javaToolchains
+
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(8))
+//    languageVersion.set(JavaLanguageVersion.of(16))
+  }
+}
+
+
+/*
+task('Build-Java8', type: JavaCompile ) {
+
+    javaCompiler = javaToolchains.compilerFor {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+    
+    ext.targetArchiveClassifier = 'java1.8'
+}
+
+task('Build-Java16', type: JavaCompile ) {
+
+    javaCompiler = javaToolchains.compilerFor {
+        languageVersion = JavaLanguageVersion.of(16)
+    }
+    
+    ext.targetArchiveClassifier = 'java16'
+}
+*/
+
 /* Two different ways to enable utf-8 encoding within gradle, but not sure its
  * even needed at this time.  Keeping for a few builds to make sure all is ok.
 compileJava.options.encoding = 'UTF-8'
@@ -32,12 +67,15 @@ tasks.withType(JavaCompile) {
 println """
 ==========================================================================
 You are building the Prison plugin 
-  Version:    ${project.version} 
-  Build time: ${getCurrentTimestamp()}
+  Prison Version:  ${project.version} 
+  Build time:      ${getCurrentTimestamp()}
+  Java version:    
+  Test value:      ${targetArchiveClassifier}
 
 Output files are located in [subproject]/build/libs.
-The runnable JAR is usually named prison.jar.
-Example: The spigot build artifact is prison-spigot/build/libs/prison.jar
+The runnable JAR is usually named Prison-<version>-java1.8.jar.
+Example: The spigot build artifact is:
+             prison-spigot/build/libs/Prison-${project.version}-java1.8.jar
 ==========================================================================
 """
 
@@ -45,7 +83,7 @@ buildscript {
 
     repositories {
         mavenCentral()
-        jcenter()
+        
         maven { url "https://plugins.gradle.org/m2/" }
     }
 
@@ -58,19 +96,24 @@ buildscript {
 subprojects {
 
     apply plugin: 'java'
-    apply plugin: 'maven'
-    apply plugin: 'maven-publish'
+//    apply plugin: 'maven'
+//    apply plugin: 'maven-publish'
     apply plugin: 'com.github.johnrengelman.shadow'
 
+
     archivesBaseName = 'Prison'
+
+    
     group = 'tech.mcprison.prison'
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+//    sourceCompatibility = 16
+//    targetCompatibility = 16
+//    sourceCompatibility = 1.8
+//    targetCompatibility = 1.8
 
     repositories {
         mavenCentral()
-        maven { url "http://maven.sk89q.com/repo/" }
+        maven { url "https://maven.sk89q.com/repo/" }
         maven { url "https://mvnrepository.com/artifact/org.apache.commons/commons-lang3" }
     }
 
@@ -79,10 +122,10 @@ subprojects {
     }
 
     dependencies {
-        implementation 'org.apache.commons:commons-lang3:3.10'
+        implementation 'org.apache.commons:commons-lang3:3.12.0'
         implementation 'com.google.guava:guava:19.0'
         implementation 'com.google.code.gson:gson:2.8.6'
-        testCompile 'junit:junit:4.12'
+        testImplementation 'junit:junit:4.12'
     }
 
 }

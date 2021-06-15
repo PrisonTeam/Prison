@@ -57,6 +57,8 @@ public class RankUtil
 	
 	public enum RankupStatus {
 		RANKUP_SUCCESS,
+		DEMOTE_SUCCESS,
+		
 		RANKUP_FAILURE,
 		RANKUP_FAILURE_COULD_NOT_LOAD_PLAYER,
 		RANKUP_FAILURE_COULD_NOT_LOAD_LADDER,
@@ -144,6 +146,8 @@ public class RankUtil
 		fireRankupEvent,
 		
 		rankup_successful, 
+		demote_successful, 
+
 		failure_exception_caught_check_server_logs, 
 		successfully_saved_player_rank_data
 		
@@ -503,7 +507,14 @@ public class RankUtil
 //        Prison.get().getEventBus().post(rankupEvent);
         
         
-        results.addTransaction( RankupStatus.RANKUP_SUCCESS, RankupTransactions.rankup_successful );
+        if ( RankupCommands.demote == command ) {
+        	
+        	results.addTransaction( RankupStatus.DEMOTE_SUCCESS, RankupTransactions.demote_successful );
+        }
+        else {
+        	
+        	results.addTransaction( RankupStatus.RANKUP_SUCCESS, RankupTransactions.rankup_successful );
+        }
         
     }
 

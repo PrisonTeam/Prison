@@ -46,6 +46,17 @@ public class BluesSemanticVersionData
 				"(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?" + // prerelease
 			"(?:\\+(?<buildmetadata>[0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$" // buildmetadata
 		;
+	
+	/**
+	 * <p>This patternMajorMinorFragment is used to detect when a supplied semantic
+	 * version is not complete, but yet it has the major and minor components. 
+	 * When a semVer is identified, then can append a ".0" to make it valid.
+	 * </p>
+	 */
+	private final String patternMajorMinorFragment = 
+			"^(?<major>0|[1-9]\\d*)\\." + // major
+					"(?<minor>0|[1-9]\\d*)$"   // minor
+					;
 
 //	private final String pattern = 
 //				"^(0|[1-9]\\d*)\\." +  // major
@@ -78,20 +89,33 @@ public class BluesSemanticVersionData
 		this.original = semVerStr;
 		this.messages = new ArrayList<>();
 		
-		Pattern r = Pattern.compile(patternNamed);
-	//	Pattern r = Pattern.compile(pattern);
-		Matcher m = ( semVerStr == null ? null : r.matcher(semVerStr) );
-		
-		this.valid = ( semVerStr == null ? false : m.find() );
-		
-		if ( isValid() ) {
-			this.major = parseInt(m, GroupNames.major);
-			this.minor = parseInt(m, GroupNames.minor);
-			this.patch = parseInt(m, GroupNames.patch);
-			
-			this.prerelease = parseString(m, GroupNames.prerelease);
-			this.buildmetadata = parseString(m, GroupNames.buildmetadata); 
+		if ( semVerStr == null ) {
+			this.valid = false;
 		}
+		else {
+			
+			Pattern rMmf = Pattern.compile(patternMajorMinorFragment);
+			Matcher mMmf = rMmf.matcher(semVerStr);
+			
+			if ( mMmf.find() ) {
+				semVerStr += ".0";
+			}
+			
+			Pattern r = Pattern.compile(patternNamed);
+			Matcher m = ( semVerStr == null ? null : r.matcher(semVerStr) );
+			
+			this.valid = m.find();
+			
+			if ( isValid() ) {
+				this.major = parseInt(m, GroupNames.major);
+				this.minor = parseInt(m, GroupNames.minor);
+				this.patch = parseInt(m, GroupNames.patch);
+				
+				this.prerelease = parseString(m, GroupNames.prerelease);
+				this.buildmetadata = parseString(m, GroupNames.buildmetadata); 
+			}
+		}
+		
 	}
 	
 	/**

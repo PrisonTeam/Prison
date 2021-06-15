@@ -252,7 +252,8 @@ public class OnBlockBreakEventCore
     		debugInfo += "mine=" + (mine == null ? "none" : mine.getName()) + " ";
     		
 
-    		if ( mine != null && !mine.hasMiningAccess( new SpigotPlayer( e.getPlayer() ) ) ) {
+    		if ( mine != null && (mine.isMineAccessByRank() || mine.isAccessPermissionEnabled()) && 
+    					!mine.hasMiningAccess( new SpigotPlayer( e.getPlayer() ) ) ) {
     			// The player does not have permission to access this mine, so do not process 
     			// 
     			
@@ -384,7 +385,8 @@ public class OnBlockBreakEventCore
     		
     		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
     		
-    		if ( mine != null && !mine.hasMiningAccess( new SpigotPlayer( e.getPlayer() ) ) ) {
+    		if ( mine != null && (mine.isMineAccessByRank() || mine.isAccessPermissionEnabled()) && 
+    					!mine.hasMiningAccess( new SpigotPlayer( e.getPlayer() ) ) ) {
     			// The player does not have permission to access this mine, so do not process 
     			// 
     			
@@ -629,7 +631,8 @@ public class OnBlockBreakEventCore
 			
 			boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
     		
-			if ( mine != null && !mine.hasMiningAccess( new SpigotPlayer( e.getPlayer() ) ) ) {
+			if ( mine != null && (mine.isMineAccessByRank() || mine.isAccessPermissionEnabled()) && 
+						!mine.hasMiningAccess( new SpigotPlayer( e.getPlayer() ) ) ) {
     			// The player does not have permission to access this mine, so do not process 
     			// 
 

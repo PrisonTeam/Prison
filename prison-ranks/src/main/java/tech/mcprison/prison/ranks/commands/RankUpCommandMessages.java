@@ -10,6 +10,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankupResults;
 import tech.mcprison.prison.ranks.RankUtil.PromoteForceCharge;
+import tech.mcprison.prison.ranks.RankUtil.RankupStatus;
 
 public class RankUpCommandMessages 
 		extends BaseCommands {
@@ -135,8 +136,12 @@ public class RankUpCommandMessages
 	
 	
 	protected void ranksRankupSuccessMsg( CommandSender sender, String playerName, 
-			RankupResults results, boolean rankup ) {
-       	String messageId = rankup ? "ranks_rankup__rankup_success" : "ranks_rankup__demote_success";
+			RankupResults results ) {
+		
+		
+       	String messageId = results.getStatus() == RankupStatus.DEMOTE_SUCCESS ? 
+       					"ranks_rankup__demote_success" :
+       					"ranks_rankup__rankup_success" ;
 
     	String messagNoPlayerName = PrisonRanks.getInstance().getRanksMessages()
     			.getLocalizable( "ranks_rankup__rankup_no_player_name" ).localize();

@@ -18,7 +18,207 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.3.0-alpha.5 2021-06-04
+# v3.2.8-alpha.2 2021-06-12
+
+
+* **For the /mines block list there was an M missing from the word Remaining for some hover text.
+
+
+* **For the command prison version, add the java version of what compiled the class files within that plugin's jar.**
+
+
+* **v3.2.8-alpha.2 2021-06-12**
+Bump the version to alpha.2.  This release fixes all the obvious issues relating to the new Spigot 1.17.
+This release also has full 1.17 block support too.
+
+
+* **Prison's New Block Model is now enabled by default.**
+With the release of Spigot 1.17 and with 73.5% of all servers using Spigot 1.16.x, it is far past time to make Prison's new block model the default.  All old blocks will be auto converted upon started.  The benefit with this switch over is that all blocks that are valid on the running server will automatically be available.  Such would not be the case with the old block model.
+This change was intended for the v3.3.0.  
+In the super-rare case where there is an issue with the new block model, there is a new, unpublished setting that will re-enable the old block model.  That setting should never be used; if an issue does exist, then it should be fixed in the new block model.
+
+
+* **On ranks demotions, added a DEMOTE_SUCCESS RankupStatus to simplify a few things and to get rid of a hard coded boolean that was indicating a rankup vs. demote.**
+
+
+* **Fixed an issue with players not being able to use /ranks player on themselves.**
+It was trying to use an empty player name instead of getting it from the sender object.
+
+
+* **Bug fix for Spigot 1.17: NMS has been disabled in 1.17, which means cannot get player's locale.**
+When running on 1.17 it would produce stack traces every time the multi-language components would be used within Prison.  There was no way to capture the stack traces and it was generating a phantom trace that was lacking formation on where it was being generated from.
+To work around this issue, the code for the NMS was moved to the compatibility package and it was rewritten to prevent exceptions.  If it is able get past the initialization without errors, but produce errors upon trying to access the internals, it will now capture the failures and prevent them from being tried again.
+The nms code should work from spigot 1.3 through 1.16.5. It does not work with 1.17.  Will have to find an alternative method of getting it.
+
+
+
+* **Update XSeries to v8.0.0**
+It is not yet available on the main Maven repo, so using jitpack.io to provide the resource for now.
+Note that this gives prison all of the 1.17 blocks.
+
+
+* **This is a more correct fix for the semantic version value of "1.17".**
+In general, 1.17 is invalid as strictly defined, but since that is the convention that Spigot uses, then made this work correctly by detecting this pattern, then appending ".0" to the end of the version to make it correct.
+Also updated the unit tests to properly handle this new condition.
+Updated the compatibility code to default to Spigot 1.13 compatibility if the Spigot semVer is invalid.
+
+
+
+* **Spigot 1.17 release - v3.2.8-alpha.1 - 2021-06-11**
+The release v3.2.8-alpha.1 has been release.
+Only known issues: 
+   * Unable to use nms to get the player's preferred language
+
+
+
+
+* **Spigot 1.17 bug fix: Fixes the identification of the correct version of spigot.**
+This is a temp fix for now, but it's functional.
+The version of spigot was not able to be resolved so Prison was defaulting to use the spigot 1.8 compatibility mode which resulted in a lot of issues.
+With this fix, most issues are resolved and the player can mine.
+
+
+* **New features of showing the dump of registered listeners for the BlockBreakEvent and the AsyncPlayerChatEvent.**
+These are located under the /prison debug command when special targets are specified.
+Removed the DebugTarget.blockBreakListeners target type since it now has a directly called component in /prison debug.
+
+
+* **Added a ranks_message__auto_refresh=true to indicate the language file should be refreshed.**
+The lack of this setting will allow it to be  refreshed too.  Only a value of false will prevent a refresh.
+A value of false will prevent auto updates so if someone customizes their configs their changes will be preserved.
+NOTE: auto update of these language files has not been hooked up yet.
+
+
+* **Added a new feature to scan plugin jars to identify what java version compiled them.**
+This information will be incorporated in to the /prison version shortly.
+
+
+* **Bug Fix: Player Mine GUI on TP'ing player to mine**
+There was a logic error in checking for the player permissions on if they have access to TP to a mine.  The error happened when the mine name is longer than the base permission name such that it produced this index out of bounds exception: "mines.tp.".substr(0, -3).  
+The logic was changed to mirror how it was within the SpigotPlayersMineGUI class.
+Also took the opportunity to hook up the Access by Rank check too, so that way admins do not have to configure perms just for the GUI.
+
+
+* **Added a getRankPlayer() to the prison spigot API.**
+
+
+* **Setup the mine Access by Rank to be applied within the player GUI.**
+Had to change the logic on block break handling to only check the Mine.hasMiningAccessByRank() if the access by options have been enabled. Block breakage needs to be more flexible since block breakage may be controlled by WorldGuard which would mean prison would have no way to validate if the player has access or not.  Hence why access by rank is so important.
+
+
+* **Eliminated a couple of %s entries in this config file.**
+The files/directory will need to be cleared so they can be regenerated.
+`plugins/Prison/module_conf/ranks/` should be cleared for automated replacement.
+
+
+* **Added a new debug tool for BlockEvents that dumps all registered BlockEvents that lists the plugin name and priority along with the listener.**
+This can help identify potential issues when it appears like its not working.
+
+
+* **For the prison's compatibility classes, added support for Player getMaxHealth() and setMaxHealth().**
+
+
+* **Changes to gradle build so the java version can be set in the primary build script.**
+Changed the generation of the jar's file name from Prison.jar to Prison-<version>-java1.8.jar to prepare for a java 1.8 and a java 16 build.
+
+
+* **v3.2.8-alpha.1 2021-06-07**
+Internally set the version, but will not release it until a few other things are finished.
+The prison version is set to 3.2.8-alpha.1 to prepare for the release of prison that is compatible with Java 16 and Spigot 1.17.
+Prison may not support all of the blocks in Spigot 1.17, but will be runnable.
+Corrected some of the consistency issues with apache commons not specifying the correct version.
+
+
+NOTE: v3.2.8-alpha.1 is identical to v3.3.0-alpha.6.  V3.3.0 is far from being ready to be released.  So v3.2.8 will enable Java 16 and also Minecraft 1.17.
+
+
+# v3.3.0-alpha.6 2021-06-15
+
+
+* **Clean up some of the LocalManager code.**
+Added code to reload/replace language properties files when there are new ones in the jar with no locals, and if the jar version has a greater version.
+
+
+* **v3.3.0-alpha.6 2021-06-07**
+Setting the version.  The v3.3.0 release will be put on hold since focus will be to get v3.2.8 out which will support Java 16.  It is unknown how many of the spigot 1.17 blocks will be initially supported.
+
+
+* **Added the reporting of the delayed prison startup to the detail information for the command /prison version.**
+It only will be displayed when it's enabled so it's presence will not encourage use by just being there.
+
+
+* **New feature: Provide a delayed start for the CMI startup.**
+This provides a fix for CMI not wanting to start until after prison has loaded without an active economy.
+If the vault economy is available then it will start normally.  
+If the Vault Economy is not available at startup, then prison will allow normal startup of the server, but delaying prison's startup for 5 seconds and then it will check again.  It will make 6 attempts before failing.  
+
+
+* **Update a few gradle build includes: bStats and apache commons lang4. Fixed INCLUDE dup strategy.**
+Update bStats from v1.5 to v2.2.1.  Not 100% sure that the plugin's ID is 657, but that's what is loaded on their website for Prison.
+Update apache commons lang3 from v3.9 to v3.12.0.
+Had to change the duplication strategy to INCLUDE so the project's version would be added to the generate jar.  Using EXCLUDE was preventing the version from being injected in to plugin.yml.
+
+
+* **Added CMIEInjector to the soft depends to see if this will help resolve an issue with CMI loading after prison (again).**
+
+
+* **Upgrade Gradle to version v7.0.2, from v5.6.4**
+In order to better support the Java 16 environment, Gradle needs to be upgrade to the latest v7.0.2 release. During upgrading, which must be performed one version at a time, each version will both identify problems that will impact the future versions of the build, but also they will suggest how to resolve those problems.  
+
+
+
+  * **Versions Upgraded To:** : **v6.0**, **v6.1**, **v6.2**, **v6.3**, **v6.4**, **v6.5**, **v6.6**, **v6.7**, **v6.8**, **v6.9**,  **v7.0**,  **v7.0.1**,  **v7.0.2**
+  * **Versions to be Upgraded To**: v6.0, v6.0.1, v6.1, v6.1.1, v6.2, v6.2.1, v6.2.2, v6.3, v6.4, v6.4.1, v6.5, v6.5.1, v6.6, v6.6.1, v6.7, v6.7.1, v6.8, v6.8.1, v6.8.2, v6.8.3, v6.9, v7.0, v7.0.1, v7.0.2 (note: I think I can skip bug releases).
+  * <code>gradlew wrapper --gradle-version 6.0</code> :: Sets the new wrapper version  
+  * <code>gradlew --version</code> :: Will actually install the new version  
+  * <code>gradlew build</code> :: Will build project with the new version to ensure all is good.  If build is good, then you can try to upgrade to the next version.
+  
+
+* **Upgrade to Gradle v7.0, v7.0.1, v7.0.2**
+Gradle v7.0 had a bug, but the build completed normally.  
+Gradle v7.0.1 had issues with maven repo **jcenter** which is shutting down and will be removed in Gradle v8.0.  Suggested to use mavenCentral instead. Just removed `jcenter()` from two `build.gradle` configs and all is working again.
+Gradle v7.0.2 had no issues when upgrading.
+
+
+* **Upgrade to Gradle v6.2, v6.3, v6.4, v6.5, v6.6 v6.7, v6.8, v6.9**
+Upgraded gradle to these versions without any new warnings or errors.  So no change to any of the build configs.
+
+
+* **Upgrade to Gradle v6.1**  
+Added duplicateStrategy of DuplicatesStrategy.EXCLUDE to prevent multiple copies of resources from being added to the generated jar file. 
+Duplicates could cause problems and are redundant objects that just inflate the jar.
+
+
+* **Upgrade to Gradle v6.0** - Had to fix a few dozen issues.  
+
+- Maven plugin is being deprecated and is replaced with maven-publish plugin.  testCompile is being replaced with testImplementation.
+- Updates to enable support for Gradle v6.0.  These changes are mandatory for support with Gradle v7.0.
+- Removed support for building a local maven repos (commented it out)... it never worked locally (since it's the wrong computer) and it never worked on remote servers for similar reasons.
+- Change all URL protocols from http to https.
+- Change the directive testCompile to testImplmentation
+- Change the directive compile to implementation
+The command gradlew was updated when gradle wrapper was updated to version 6.0.
+Bump prison version to v3.3.0-alpha5c.
+
+
+* **v3.3.0-alpha.5c - 2021-06-06**
+.
+
+* **Setting up SpigotPrison to support a reload on ranks and mines.**
+It's not hooked up yet, and it may not work, but the structure of performing the reload and calling the correct functions are now in place.
+
+
+* **Possible bug fix: Custom prison command placeholders were not be applied to the commands prior to submitting them.** Cause was missing code?  
+This was tested and working a few months ago, so not sure what happened to the source.  But added it in to the command translation function to fix this issue.
+
+
+* **Potential bug fix where access to the mine needs to be granted by default if both access by perms and access by ranks are disabled.**
+This may have been preventing players from mining when relying on WorldGuard regions for player access.
+
+
+* **Adjustments and improvements to the prison TPS calculation, and expansion on some of the documentation to go along with it.**
+This should result in a more accurate TPS calculation that is more responsive to the current conditions.
+
 
 * `BY GABRYCA on 04/06/2021:`
 **FIX for NPEs from AutoFeatures GUI.**

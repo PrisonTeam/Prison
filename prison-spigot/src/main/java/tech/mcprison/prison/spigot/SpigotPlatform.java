@@ -40,7 +40,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredListener;
 
 import com.cryptomorin.xseries.XBlock;
 import com.cryptomorin.xseries.XMaterial;
@@ -48,8 +54,8 @@ import com.cryptomorin.xseries.messages.Titles;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonCommand;
-import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.convert.ConversionResult;
@@ -80,6 +86,7 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotOfflinePlayer;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -87,18 +94,21 @@ import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.placeholder.SpigotPlaceholders;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
 import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
-import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
+import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.util.ActionBarUtil;
 import tech.mcprison.prison.spigot.util.SpigotYamlFileIO;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.util.PrisonJarReporter;
+import tech.mcprison.prison.util.PrisonJarReporter.JarFileData;
 import tech.mcprison.prison.util.Text;
 
 /**
  * @author Faizaan A. Datoo
  */
+@SuppressWarnings( "deprecation" )
 public class SpigotPlatform 
 	implements Platform {
 
@@ -638,6 +648,11 @@ public class SpigotPlatform
 		 
 		 Server server = SpigotPrison.getInstance().getServer();
 		 
+		 // Scan the existing jar files:
+		 PrisonJarReporter jarReporter = new PrisonJarReporter();
+		 jarReporter.scanForJars();
+		 // jarReporter.dumpJarDetails(); // temp!
+		 
         // Finally print the version after loading the prison plugin:
 //        PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
 		 
@@ -647,7 +662,11 @@ public class SpigotPlatform
         for ( Plugin plugin : server.getPluginManager().getPlugins() ) {
         	String name = plugin.getName();
         	String version = plugin.getDescription().getVersion();
-        	String value = " " + name + " (" + version + ")";
+        	JarFileData pluginJarFile = jarReporter.getJarsByPluginName().get( name );
+        	
+        	String value = " " + name + " (" + version + 
+        			( pluginJarFile == null ? "" : " " + pluginJarFile.getJavaVersion().name() ) +
+        			")";
         	cmdVersion.getRegisteredPlugins().add( value );
         	
         	cmdVersion.addRegisteredPlugin( name, version );
@@ -774,12 +793,32 @@ public class SpigotPlatform
 		return ( val != null && val.trim().equalsIgnoreCase( "true" ) );
 	}
 	
-	
+	/**
+	 * <p>Prison is now automatically enabling the new prison block model.
+	 * The old block model still exists, but it has to be explicitly 
+	 * enabled in config.yml.
+	 * </p>
+	 * 
+	 * <p>No one should ever use the old block model. If there is an issue with
+	 * the new model then it should be fixed and not avoided.  But if they 
+	 * must, then the following must be added to the `plugins/Prison/config.yml`.
+	 * </p>
+	 * 
+	 * <pre>
+	 * # Warning: The use of the OLD prison block model will be removed
+	 * #          from future releases in the near future.  This old
+	 * #          model is to be used only on an emergency basis 
+	 * #          until any issues with the new model have been resolved.
+	 * use-old-prison-block-model: true
+	 * </pre>
+	 * 
+	 * @return
+	 */
 	@Override
 	public boolean isUseNewPrisonBlockModel() {
 		
-		return getConfigBooleanFalse( "use-new-prison-block-model" );
-//		return !getConfigBooleanFalse( "use-old-prison-block-model" );
+//		return getConfigBooleanFalse( "use-new-prison-block-model" );
+		return !getConfigBooleanFalse( "use-old-prison-block-model" );
 	}
 	
 	/**
@@ -1795,8 +1834,18 @@ public class SpigotPlatform
     										getConfigBooleanFalse( "prestige.resetDefaultLadder" )) );
 
 
+    	results.add( "" );
+    	
+    	
+    	boolean delayedPrisonStartup = getConfigBooleanFalse( "delayedCMIStartup" );
+    	if ( delayedPrisonStartup ) {
+    		
+    		results.add( String.format("Prison Delayed Start:&b %s", delayedPrisonStartup) );
+    	}
+    	
+    	
     	results.add( String.format("GUI Enabled:&b %s", 
-    										getConfigBooleanFalse( "prison-gui-enabled" )) );
+    			getConfigBooleanFalse( "prison-gui-enabled" )) );
     	
     	
     	results.add( String.format("Sellall Enabled:&b %s", 
@@ -1811,4 +1860,44 @@ public class SpigotPlatform
 		return results;
 	}
 	
+	
+	
+	@Override
+	public void dumpEventListenersBlockBreakEvents() {
+		
+		dumpEventListeners( "BlockBreakEvent", BlockBreakEvent.getHandlerList() );
+	}
+	
+	@Override
+	public void dumpEventListenersPlayerChatEvents() {
+		
+		dumpEventListeners( "AsyncPlayerChatEvent", AsyncPlayerChatEvent.getHandlerList() );
+			
+		if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.17.0") < 0 ) {
+			
+			dumpEventListeners( "PlayerChatEvent", PlayerChatEvent.getHandlerList() );
+		}
+	}
+	
+	private void dumpEventListeners( String eventType, HandlerList handlerList ) {
+		
+		RegisteredListener[] listeners = handlerList.getRegisteredListeners();
+		
+		ChatDisplay display = new ChatDisplay("Event Dump: " + eventType );
+		display.addText("&8All registered EventListeners (%d):", listeners.length );
+		
+		for ( RegisteredListener eventListner : listeners ) {
+			String plugin = eventListner.getPlugin().getName();
+			EventPriority priority = eventListner.getPriority();
+			String listener = eventListner.getListener().getClass().getName();
+			
+			String message = String.format( "&3  Plugin: &7%s   %s  &3(%s)", 
+					plugin, priority.name(), listener);
+			
+			display.addText( message );
+		}
+		
+		display.toLog( LogLevel.DEBUG );
+	}
+
 }

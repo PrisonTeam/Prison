@@ -15,7 +15,7 @@ import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.util.BlockType;
 
 public abstract class Spigot18Blocks 
-	extends CompatibilityCache
+	extends Spigot18Player 
 	implements CompatibilityBlocks {
 
 

@@ -77,13 +77,15 @@ public class BluesSpigetSemVerComparatorTest
 		assertTrue( bssvc.performComparisons( "2.37.902-alpha.181-beta.0+build2.5", 
 										"2.37.902-alpha.181-beta.1+build2.7.34" ) );
 
-		// Newer version has invalid semVer: always return false:
-		assertFalse( bssvc.performComparisons( "1.2.3", "1.3" ) );
+		// Newer version has invalid semVer, but its corrected to be valid: return true:
+		assertTrue( bssvc.performComparisons( "1.2.3", "1.3" ) );
 		
 		
 		// Current version has invalid semVer, but newer has valid. Always true:
 		assertTrue( bssvc.performComparisons( "1.2", "1.2.1" ) );
-		assertTrue( bssvc.performComparisons( "1.501", "1.2.1" ) );
+		
+		// 1.501 is valid so this test will fail since 1.2.1 is less:
+		assertFalse( bssvc.performComparisons( "1.501", "1.2.1" ) );
 		assertTrue( bssvc.performComparisons( "9999901", "1.2.1" ) );
 		
 		
@@ -108,6 +110,9 @@ public class BluesSpigetSemVerComparatorTest
 		assertFalse( bssvc.performComparisons( "1.2.3", 
 										 "1.2.3-alpha.1" ) );
 		
+		
+		assertTrue( bssvc.performComparisons( "1.16.5", "1.17" ) );
+		assertTrue( bssvc.performComparisons( "1.16.5", "1.17.0" ) );
 	}
 	
 	@Test

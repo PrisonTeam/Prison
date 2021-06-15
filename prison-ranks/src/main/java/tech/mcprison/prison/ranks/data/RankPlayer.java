@@ -358,7 +358,7 @@ public class RankPlayer
      */
     public Rank getRank(RankLadder ladder) {
     	
-    	if ( !ladderRanks.containsKey( ladder ) ) {
+    	if ( ladder == null || !ladderRanks.containsKey( ladder ) ) {
     		return null;
     	}
     	
@@ -433,19 +433,36 @@ public class RankPlayer
     }
 
     
+    /**
+     * <p>This function will check to see if the player has the same rank as the
+     * targetRank, or if the target rank is lower on the ladder than where their
+     * current rank is located.  This confirms that the two ranks are on the same
+     * ladder, and it walks down the ladder, starting with the player's rank, until
+     * it finds a match with the target rank.
+     * </p>
+     * 
+     * @param targetRank
+     * @return
+     */
     public boolean hasAccessToRank( Rank targetRank ) {
     	boolean hasAccess = false;
     	
-    	Rank rank = getRank( targetRank.getLadder() );
-    	hasAccess = rank.equals( targetRank );
-		Rank priorRank = rank.getRankPrior();
-		
-		while ( !hasAccess && priorRank != null ) {
-			
-			hasAccess = priorRank.equals( targetRank );
-			priorRank = priorRank.getRankPrior();
-		}
-    	
+    	if ( targetRank != null && targetRank.getLadder() != null ) {
+    		
+    		Rank rank = getRank( targetRank.getLadder() );
+    		if ( rank != null && 
+    				rank.getLadder().equals( targetRank.getLadder() ) ) {
+    			
+    			hasAccess = rank.equals( targetRank );
+    			Rank priorRank = rank.getRankPrior();
+    			
+    			while ( !hasAccess && priorRank != null ) {
+    				
+    				hasAccess = priorRank.equals( targetRank );
+    				priorRank = priorRank.getRankPrior();
+    			}
+    		}
+    	}
     	return hasAccess;
     }
     

@@ -28,6 +28,7 @@ import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
 public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
     private final Player p;
+    private final SpigotPlayer spigotPlayer;
     private final String permissionWarpPlugin = guiConfig.getString("Options.Mines.PermissionWarpPlugin");
     private final String statusUnlockedMine = messages.getString("Lore.StatusUnlockedMine");
     private final String clickToTeleport = messages.getString("Lore.ClickToTeleport");
@@ -35,6 +36,8 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
     public SpigotPlayerMinesGUI(Player p) {
         this.p = p;
+        
+        this.spigotPlayer = new SpigotPlayer(p);
     }
 
     public void open(){
@@ -125,7 +128,8 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         	}
         }
 
-        if (p.hasPermission(permission + m.getName()) || p.hasPermission(permission.substring(0, permission.length() - 1))){
+        if (m.hasMiningAccess(spigotPlayer) || p.hasPermission(permission + m.getName()) || 
+        						p.hasPermission(permission.substring(0, permission.length() - 1))){
             material = ( mineMaterial == null ? Material.COAL_ORE : mineMaterial);
             minesLore.add(SpigotPrison.format(statusUnlockedMine));
             minesLore.add(SpigotPrison.format(clickToTeleport));

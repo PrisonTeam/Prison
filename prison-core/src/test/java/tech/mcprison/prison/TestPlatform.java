@@ -327,4 +327,15 @@ public class TestPlatform implements Platform {
 		List<String> results = new ArrayList<>();
 		return results;
 	}
+	
+	@Override
+	public void dumpEventListenersBlockBreakEvents() {
+		
+	}
+	
+	@Override
+	public void dumpEventListenersPlayerChatEvents() {
+		
+	}
+	
 }

@@ -187,6 +187,15 @@ public class PrisonCommandTask {
 					.replace( "{player_uid}", player.getUUID().toString());
 		}
 		
+		if ( getCustomPlaceholders() != null && getCustomPlaceholders().size() > 0 ) {
+			for ( PrisonCommandTaskPlaceholderData cph : getCustomPlaceholders() ) {
+				String placeholder = "{" + cph.getPlaceholder() + "}";
+				if ( formatted.contains( placeholder ) ) {
+					formatted = formatted.replace( placeholder, cph.getValue() );
+				}
+			}
+		}
+		
 		return formatted;
 	}
 

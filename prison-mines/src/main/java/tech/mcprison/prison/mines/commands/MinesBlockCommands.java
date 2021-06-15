@@ -292,7 +292,7 @@ public class MinesBlockCommands
 
 		String text2 = formatStringPadRight( (totals ? "    &b%s" : "  &3Rm: &7%s"), 16,
 				iFmt.format( block.getResetBlockCount() - block.getBlockCountUnsaved() ) );
-		FancyMessage msg2 = new FancyMessage( text2 ).tooltip( "&7Number of blocks of this type &3R&7e&3e&7aining." );
+		FancyMessage msg2 = new FancyMessage( text2 ).tooltip( "&7Number of blocks of this type &3R&7e&3m&7aining." );
 		row.addFancy( msg2 );
 
 		FancyMessage msg3 = new FancyMessage( String.format( (totals ? " &b%s" : "  &3T: &7%s"),
