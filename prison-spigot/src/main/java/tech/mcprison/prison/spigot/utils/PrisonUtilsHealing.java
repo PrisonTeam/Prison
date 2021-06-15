@@ -135,7 +135,6 @@ public class PrisonUtilsHealing
     private void utilHealingBreath( SpigotPlayer player, String playerName ) {
         if( player == null || Bukkit.getPlayer(playerName) == null ) return;
         player.getWrapper().setRemainingAir(player.getWrapper().getMaximumAir());
-        //JUST A TEST IGNORE THIS COMMIT
     }
 
     public boolean isEnableHealingHeal(){
