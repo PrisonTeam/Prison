@@ -1459,7 +1459,7 @@ public class AutoManagerFeatures
 				}
 			}
 			
-			else if ( isBoolean( AutoFeatures.isExtendBukkitFortuneCalculationsEnabled ) ) {
+			else if ( !isBoolean( AutoFeatures.isExtendBukkitFortuneCalculationsEnabled ) ) {
 
 				int multiplier = 1;
 				
