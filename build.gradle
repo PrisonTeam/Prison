@@ -73,9 +73,9 @@ You are building the Prison plugin
   Test value:      ${targetArchiveClassifier}
 
 Output files are located in [subproject]/build/libs.
-The runnable JAR is usually named Prison-<version>-java1.8.jar.
+The runnable JAR is usually named Prison-<version>.jar.
 Example: The spigot build artifact is:
-             prison-spigot/build/libs/Prison-${project.version}-java1.8.jar
+             prison-spigot/build/libs/Prison-${project.version}.jar
 ==========================================================================
 """
 
