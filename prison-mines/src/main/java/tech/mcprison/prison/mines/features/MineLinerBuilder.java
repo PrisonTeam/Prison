@@ -42,6 +42,12 @@ public class MineLinerBuilder {
 		beacon,
 		bricked,
 		
+		stronghold,
+		ruins,
+		zaged,
+		crimsonWaste,
+		cryingGold,
+		
 		repair,
 		remove,
 		removeAll
@@ -546,6 +552,56 @@ public class MineLinerBuilder {
 				pattern2d = beacon;
 				break;
 				
+			case stronghold:
+				String[][] stronghold =
+				{
+						// cracked_stone_bricks stone_bricks mossy_stone_bricks stone_bricks cracked_stone_bricks
+						// cracked_stone_bricks stone_bricks cracked_stone_bricks mossy_stone_bricks
+						{ "cracked_stone_bricks", "stone_bricks", "mossy_stone_bricks", "stone_bricks", "cracked_stone_bricks" },
+						{ "cracked_stone_bricks", "stone_bricks", "cracked_stone_bricks", "mossy_stone_bricks" }
+//						{ "cracked_stone_bricks", "stone_bricks", "cracked_stone_bricks", "mossy_stone_bricks" }
+				};
+				pattern2d = stronghold;
+				break;
+				
+			case ruins:
+				String[][] ruins =
+				{
+						// chiseled_red_sandstone chiseled_sandstone chiseled_polished_blackstone chiseled_nether_bricks chiseled_quartz_block
+						{ "chiseled_red_sandstone", "chiseled_sandstone", "chiseled_polished_blackstone",
+						  "chiseled_nether_bricks", "chiseled_quartz_block" }
+				};
+				pattern2d = ruins;
+				break;
+				
+			case zaged:
+				String[][] zaged =
+				{
+						{ "warped_hyphae", "warped_hyphae", "crying_obsidian", "crying_obsidian" },
+						{ "warped_hyphae", "crying_obsidian", "crying_obsidian", "warped_hyphae" },
+						{ "crying_obsidian", "crying_obsidian", "warped_hyphae", "warped_hyphae" },
+						{ "crying_obsidian", "warped_hyphae", "warped_hyphae", "crying_obsidian" }
+				};
+				pattern2d = zaged;
+				break;
+				
+			case crimsonWaste:
+				String[][] crimsonWaste =
+				{
+						{ "crimson_hyphae", "warped_hyphae" },
+						{ "warped_hyphae", "crimson_hyphae" }
+				};
+				pattern2d = crimsonWaste;
+				break;
+				
+			case cryingGold:
+				String[][] cryingGold =
+				{
+						{ "gilded_blackstone", "crying_obsidian" },
+						{ "crying_obsidian", "gilded_blackstone" }
+				};
+				pattern2d = cryingGold;
+				break;
 				
 			case obby:
 				String[][] obby =
