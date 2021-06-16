@@ -21,6 +21,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.8-alpha.3 2021-06-16
 
 
+* **Had to double escape the use of %.**
+It was working before, so this is a symptom of the messaging now being ran through String.format() twice.
+
+
 * **Fixed a problem with a rank command's message missing a parameter.**
 The text was expecting two parameters, only one was provided through the code.  Fixed.
 

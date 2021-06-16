@@ -653,7 +653,7 @@ public class PrisonCommand {
     	
     	if ( playerName != null && playerName.contains( "%" ) || 
     			text != null && text.contains( "%" ) ) {
-    		Output.get().logInfo( "&3You cannot use &7 %% &3 as escape characters. Use &7{&3 &7}&3 instead." );
+    		Output.get().logInfo( "&3You cannot use &7 %%%% &3 as escape characters. Use &7{&3 &7}&3 instead." );
     		return;
     	}
     	
