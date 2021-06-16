@@ -1457,9 +1457,13 @@ public class AutoManagerFeatures
 				if ( bukkitExtendedFortuneBlockCount > 0 ) {
 					count = bukkitExtendedFortuneBlockCount;
 				}
+				
+				// The count has the final value so set it as the amount:
+				blocks.setAmount( count );
+				return;
 			}
 			
-			else if ( !isBoolean( AutoFeatures.isExtendBukkitFortuneCalculationsEnabled ) ) {
+			if ( isBoolean( AutoFeatures.isCalculateAltFortuneEnabled ) ) {
 
 				int multiplier = 1;
 				

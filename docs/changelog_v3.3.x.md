@@ -21,6 +21,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.8-alpha.3 2021-06-16
 
 
+* **Fixed issue with no fortune for mc 1.8.8 and mc 1.12.2.**
+The configs for auto manager now work properly.  
+
+
 * **Had to double escape the use of %.**
 It was working before, so this is a symptom of the messaging now being ran through String.format() twice.
 
