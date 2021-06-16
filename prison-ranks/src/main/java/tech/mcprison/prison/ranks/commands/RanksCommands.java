@@ -792,7 +792,7 @@ public class RanksCommands
         	rankSetTagClearedMsg( sender, rank.getName() );
         }
         else {
-        	rankSetTagSucessMsg( sender, rank.getName() );
+        	rankSetTagSucessMsg( sender, tag, rank.getName() );
         }
     }
     

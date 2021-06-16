@@ -21,6 +21,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.8-alpha.2 2021-06-16
 
 
+* **Fixed a problem with a rank command's message missing a parameter.**
+The text was expecting two parameters, only one was provided through the code.  Fixed.
+
+
 * **A fortune calculation should have had a ! in an if statement.**
 
 

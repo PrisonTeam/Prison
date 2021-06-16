@@ -432,10 +432,11 @@ public class RanksCommandsMessages
 	}
 	
 	protected void rankSetTagSucessMsg( CommandSender sender, 
-			String rankName ) {
+			String tag, String rankName ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__set_tag_success" )
 				.withReplacements( 
+						tag,
 						rankName )
 				.sendTo( sender );
 	}
