@@ -42,6 +42,9 @@ public class MineLinerBuilder {
 		beacon,
 		bricked,
 		
+		darkForest,
+		theColors,
+		
 		stronghold,
 		ruins,
 		zaged,
@@ -657,7 +660,39 @@ public class MineLinerBuilder {
 				};
 				pattern2d = bricked;
 				break;
+				
+			case darkForest:
+				{
+					String a = "dark_prismarine";
+					String b = "glowstone";
+					String c = "obsidian";
+					
+					String[][] pattern =
+							{
+									{ a, b, c, b },
+									{ b, c, a, c },
+									{ c, a, b, a }
+							};
+					pattern2d = pattern;
+				}
+				break;
 
+			case theColors:
+				{
+					String a = "redstone_block";
+					String b = "lapis_block";
+					String c = "quartz_block";
+					
+					String[][] pattern =
+							{
+									{ a, b, c, b },
+									{ b, c, a, c },
+									{ c, a, b, a }
+							};
+					pattern2d = pattern;
+				}
+				break;
+				
 				
 			case white: 
 				String[][] white =

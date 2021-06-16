@@ -21,6 +21,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.8-alpha.3 2021-06-16
 
 
+* **Added a couple more mine liner patterns: darkForest and theColors.**
+
+
 * **Update XSeries to v8.1.0 and switched back over to mvnrepo instead of using the temporary jitpack.io.**
 Update the Prison build text to remove the java version from the build artifact name, since it was already removed from the generated jar.
 
