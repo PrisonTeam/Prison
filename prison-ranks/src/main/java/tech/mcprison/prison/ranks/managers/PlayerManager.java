@@ -683,6 +683,121 @@ public class PlayerManager
     	return sb.toString();
     }
     
+    
+  public String getPlayerNextRankCostRemainingPercent( RankPlayer rankPlayer, String ladderName ) {
+  	StringBuilder sb = new StringBuilder();
+  	
+      Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
+      if( prisonPlayer == null ) {
+      	
+      	String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
+
+      	String message = "getPlayerNextRankCostPercent: " + errorMessage;
+			
+      	if ( !getPlayerErrors().contains( message ) ) {
+				getPlayerErrors().add( message );
+				Output.get().logError( message );
+			}
+      	return "0";
+      }
+  	
+  	if ( !rankPlayer.getLadderRanks().isEmpty()) {
+  		DecimalFormat dFmt = new DecimalFormat("#,##0");
+  		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getLadderRanks().entrySet()) {
+  			RankLadder key = entry.getKey();
+  			if ( ladderName == null ||
+   				 ladderName != null && key.getName().equalsIgnoreCase( ladderName )) {
+  				
+  				if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
+  					if ( sb.length() > 0 ) {
+  						sb.append(",  ");
+  					}
+  					
+  					Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
+  					double cost = rank.getCost();
+  					double balance = getPlayerBalance(prisonPlayer,rank);
+  					
+  					double remaining = cost - balance;
+  				    
+					// Without the following, if the player has more money than what the rank will cost,
+					// then it would result in a negative amount, which is wrong.  
+					// This is cost remaining... once they are able to afford a rankup, then remaining 
+					// cost will be zero.
+					if ( remaining < 0 ) {
+						remaining = 0;
+					}
+  					double percent = (remaining < 0 ? 0.0 : 
+  						(cost == 0.0d || remaining > cost ? 100.0 : 
+  							remaining / cost * 100.0 )
+  							);
+  					sb.append( dFmt.format( percent ));
+  				}
+  			}
+  		}
+  	}
+  	
+  	return sb.toString();
+  }
+  
+  public String getPlayerNextRankCostRemainingBar( RankPlayer rankPlayer, String ladderName, 
+							PlaceholderAttribute attribute ) {
+	  StringBuilder sb = new StringBuilder();
+	  
+	  Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
+	  if( prisonPlayer == null ) {
+		  
+		  String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
+		  
+		  String message = "getPlayerNextRankCostPercent: " + errorMessage;
+		  
+		  if ( !getPlayerErrors().contains( message ) ) {
+			  getPlayerErrors().add( message );
+			  Output.get().logError( message );
+		  }
+		  return "0";
+	  }
+	  
+	  if ( !rankPlayer.getLadderRanks().isEmpty()) {
+		  DecimalFormat dFmt = new DecimalFormat("#,##0");
+		  for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getLadderRanks().entrySet()) {
+			  RankLadder key = entry.getKey();
+			  if ( ladderName == null ||
+					  ladderName != null && key.getName().equalsIgnoreCase( ladderName )) {
+				  
+				  if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
+					  if ( sb.length() > 0 ) {
+						  sb.append(",  ");
+					  }
+					  
+					  Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
+					  double cost = rank.getCost();
+					  double balance = getPlayerBalance(prisonPlayer,rank);
+					  
+					  double remaining = cost - balance;
+					  
+					  // Without the following, if the player has more money than what the rank will cost,
+					  // then it would result in a negative amount, which is wrong.  
+					  // This is cost remaining... once they are able to afford a rankup, then remaining 
+					  // cost will be zero.
+					  if ( remaining < 0 ) {
+						  remaining = 0;
+					  }
+					  double percent = (remaining < 0 ? 0.0 : 
+						  (cost == 0.0d || remaining > cost ? 100.0 : 
+							  remaining / cost * 100.0 )
+							  );
+					  sb.append( dFmt.format( percent ));
+					  
+					  sb.append( Prison.get().getPlaceholderManager().
+		    					getProgressBar( remaining, cost, false, attribute ));
+				  }
+			  }
+		  }
+	  }
+	  
+	  return sb.toString();
+  }
+
     /**
      * <p>This gets the player's balance as a formatted String based upon the ranks' 
      * custom currency, if it's set.  If there is a problem getting the custom 
@@ -999,6 +1114,7 @@ public class PlayerManager
 						results = getPlayerNextRankCostBar( rankPlayer, ladderName, attribute );
 						break;
 						
+						
 					case prison_rcr:
 					case prison_rankup_cost_remaining:
 					case prison_rcr_laddername:
@@ -1012,6 +1128,21 @@ public class PlayerManager
 					case prison_rankup_cost_remaining_formatted_laddername:
 						results = getPlayerNextRankCostRemaining( rankPlayer, ladderName, true, attribute );
 						break;
+						
+					case prison_rcrp:
+					case prison_rankup_cost_remaining_percent:
+					case prison_rcrp_laddername:
+					case prison_rankup_cost_remaining_percent_laddername:
+						results = getPlayerNextRankCostRemainingPercent( rankPlayer, ladderName );
+						break;
+						
+					case prison_rcrb:
+					case prison_rankup_cost_remaining_bar:
+					case prison_rcrb_laddername:
+					case prison_rankup_cost_remaining_bar_laddername:
+						results = getPlayerNextRankCostRemainingBar( rankPlayer, ladderName, attribute );
+						break;
+						
 						
 					case prison_rr:
 					case prison_rankup_rank:
