@@ -122,9 +122,11 @@ public class PrisonUtilsHealing
 
     private void utilHealingHeal( SpigotPlayer player, String playerName ) {
         if( player == null || Bukkit.getPlayer(playerName) == null ) return;
-        AttributeInstance maxHealth = player.getWrapper().getAttribute(Attribute.GENERIC_MAX_HEALTH);
-        if( maxHealth == null ) return;
-        player.getWrapper().setHealth(maxHealth.getValue());
+        double maxHealth = player.getMaxHealth();
+
+        if( maxHealth == 0 ) return;
+
+        player.getWrapper().setHealth(maxHealth);
     }
 
     private void utilHealingFeed( SpigotPlayer player, String playerName ) {
@@ -137,9 +139,7 @@ public class PrisonUtilsHealing
         player.getWrapper().setRemainingAir(player.getWrapper().getMaximumAir());
     }
 
-    public boolean isEnableHealingHeal(){
-        return enableHealingHeal;
-    }
+    public boolean isEnableHealingHeal() { return enableHealingHeal; }
 
     public boolean isEnableHealingFeed() { return enableHealingFeed; }
 
