@@ -18,7 +18,7 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.8-alpha.2 2021-06-16
+# v3.2.8-alpha.3 2021-06-16
 
 
 * **Fixed a problem with a rank command's message missing a parameter.**
@@ -26,6 +26,12 @@ The text was expecting two parameters, only one was provided through the code.  
 
 
 * **A fortune calculation should have had a ! in an if statement.**
+
+
+* **v3.2.8-alpha.3 2021-06-16**
+
+
+* **Removed the java version suffix from the build artifact name.**
 
 
 * **Clean up some of the LocalManager code.**

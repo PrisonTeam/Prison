@@ -216,7 +216,8 @@ shadowJar {
 
 
 	archiveAppendix = ''
-	archiveClassifier = project.property('targetArchiveClassifier')
+	archiveClassifier = ''
+//	archiveClassifier = project.property('targetArchiveClassifier')
 //	archiveClassifier = 'java1.8'
     
     
