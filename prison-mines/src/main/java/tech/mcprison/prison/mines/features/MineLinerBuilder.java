@@ -556,25 +556,53 @@ public class MineLinerBuilder {
 				break;
 				
 			case stronghold:
-				String[][] stronghold =
 				{
-						// cracked_stone_bricks stone_bricks mossy_stone_bricks stone_bricks cracked_stone_bricks
-						// cracked_stone_bricks stone_bricks cracked_stone_bricks mossy_stone_bricks
-						{ "cracked_stone_bricks", "stone_bricks", "mossy_stone_bricks", "stone_bricks", "cracked_stone_bricks" },
-						{ "cracked_stone_bricks", "stone_bricks", "cracked_stone_bricks", "mossy_stone_bricks" }
-//						{ "cracked_stone_bricks", "stone_bricks", "cracked_stone_bricks", "mossy_stone_bricks" }
-				};
-				pattern2d = stronghold;
+					String a = "cracked_stone_bricks";
+					String b = "stone_bricks";
+					String c = "mossy_stone_bricks";
+					
+					String d = "deepslate_bricks";
+					String e = "cracked_deepslate_bricks";
+					String f = "prismarine_bricks";
+					String g = "infested_chiseled_stone_bricks";
+					
+					String[][] stronghold =
+							{
+									{ a, b, a, b, a, c, a, b, a, b, a, d, a, b },
+									{ b, a, c, a, b, a, b, f, b, c, b, a, b, a },
+									{ a, b, d, b, a, b, a, b, a, b, a, b },
+									{ b, a, b, a, b, c, b, a, e, a, g, a },
+									{ a, c, a, b, a, b, a, b, a, b, c, b, a, f },
+									{ b, a, b, a, b, a, b, a, d, a, b, a, b, c },
+									{ a, e, a, b, f, b, a, b, c, b },
+									{ c, a, b, g, b, c, b, a, b, a }
+//									{ a, b, c, b, a },
+//									{ a, b, a, c }
+							};
+					pattern2d = stronghold;
+				}
 				break;
 				
 			case ruins:
-				String[][] ruins =
 				{
-						// chiseled_red_sandstone chiseled_sandstone chiseled_polished_blackstone chiseled_nether_bricks chiseled_quartz_block
-						{ "chiseled_red_sandstone", "chiseled_sandstone", "chiseled_polished_blackstone",
-						  "chiseled_nether_bricks", "chiseled_quartz_block" }
-				};
-				pattern2d = ruins;
+					String a = "chiseled_red_sandstone";
+					String b = "chiseled_sandstone";
+					String c = "chiseled_polished_blackstone";
+					String d = "chiseled_nether_bricks";
+					String e = "chiseled_quartz_block";
+					
+					String[][] ruins =
+							{
+									{ c, d, c, d, c, d },
+									{ d, e, b, e, b, e },
+									{ c, b, a, b, a, b },
+									{ d, e, b, a, b, e },
+									{ c, b, a, b, a, b },
+									{ d, e, b, e, b, e }
+									// { a, b, c, d, e }
+							};
+					pattern2d = ruins;
+				}
 				break;
 				
 			case zaged:

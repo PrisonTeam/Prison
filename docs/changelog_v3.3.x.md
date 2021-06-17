@@ -21,6 +21,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.8-alpha.3 2021-06-16
 
 
+* **Updates to the stronghold and ruins patterns.**
+
+
 * **Added a couple more mine liner patterns: darkForest and theColors.**
 
 
