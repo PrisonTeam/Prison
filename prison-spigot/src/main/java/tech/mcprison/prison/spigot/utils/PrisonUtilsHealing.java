@@ -48,7 +48,8 @@ public class PrisonUtilsHealing
             permissions = "prison.utils.healing.heal",
             altPermissions = "prison.utils.healing.heal.others")
     public void utilHealingHeal(CommandSender sender,
-            @Arg(name = "playerName", description = "Player Name") String playerName
+                                @Arg(name = "playerName", description = "Player Name") String playerName,
+                                @Arg(name = "amount", description = "amount of air given") String amount
             /*
             @Wildcard(join=true)
             @Arg(name = "options", description = "Options [player, all]",
@@ -64,7 +65,7 @@ public class PrisonUtilsHealing
                     "prison.utils.healing.heal.others" );
 
             // Player cannot be null.  If it is null, then there was a failure.
-            utilHealingHeal( player, playerName );
+            utilHealingHeal( player, playerName, amount );
         }
     }
 
@@ -74,7 +75,8 @@ public class PrisonUtilsHealing
             permissions = "prison.utils.healing.feed",
             altPermissions = "prison.utils.healing.feed.others")
     public void utilHealingFeed(CommandSender sender,
-                                @Arg(name = "playerName", description = "Player Name") String playerName
+                                @Arg(name = "playerName", description = "Player Name") String playerName,
+                                @Arg(name = "amount", description = "amount of food given") String amount
             /*
             @Wildcard(join=true)
             @Arg(name = "options", description = "Options [player, all]",
@@ -90,7 +92,7 @@ public class PrisonUtilsHealing
                     "prison.utils.healing.feed.others" );
 
             // Player cannot be null.  If it is null, then there was a failure.
-            utilHealingFeed( player, playerName );
+            utilHealingFeed( player, playerName, amount );
         }
     }
 
@@ -100,12 +102,8 @@ public class PrisonUtilsHealing
             permissions = "prison.utils.healing.breath",
             altPermissions = "prison.utils.healing.breath.others")
     public void utilHealingBreath(CommandSender sender,
-                                @Arg(name = "playerName", description = "Player Name") String playerName
-            /*
-            @Wildcard(join=true)
-            @Arg(name = "options", description = "Options [player, all]",
-                 def = "") String options
-                 */
+                                @Arg(name = "playerName", description = "Player Name") String playerName,
+                                @Arg(name = "amount", description = "amount of air given") String amount
     ){
 
         if( !enableHealingBreath ){
@@ -116,11 +114,11 @@ public class PrisonUtilsHealing
                     "prison.utils.healing.breath.others" );
 
             // Player cannot be null.  If it is null, then there was a failure.
-            utilHealingBreath( player, playerName );
+            utilHealingBreath( player, playerName, amount );
         }
     }
 
-    private void utilHealingHeal( SpigotPlayer player, String playerName ) {
+    private void utilHealingHeal( SpigotPlayer player, String playerName, String amount ) {
         if( player == null || Bukkit.getPlayer(playerName) == null ) return;
         double maxHealth = player.getMaxHealth();
 
@@ -129,12 +127,12 @@ public class PrisonUtilsHealing
         player.getWrapper().setHealth(maxHealth);
     }
 
-    private void utilHealingFeed( SpigotPlayer player, String playerName ) {
+    private void utilHealingFeed( SpigotPlayer player, String playerName, String amount ) {
         if( player == null || Bukkit.getPlayer(playerName) == null ) return;
         player.getWrapper().setFoodLevel(20);
     }
 
-    private void utilHealingBreath( SpigotPlayer player, String playerName ) {
+    private void utilHealingBreath( SpigotPlayer player, String playerName, String amount ) {
         if( player == null || Bukkit.getPlayer(playerName) == null ) return;
         player.getWrapper().setRemainingAir(player.getWrapper().getMaximumAir());
     }
