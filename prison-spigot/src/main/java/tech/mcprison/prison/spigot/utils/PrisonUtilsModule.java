@@ -63,6 +63,16 @@ public class PrisonUtilsModule
 				
 			}
 
+			if ( isEnabled( "utils.healing.enabled", true ) ) {
+				PrisonUtilsHealing utils = new PrisonUtilsHealing();
+				utils.setEnableHealingHeal( isEnabled( "utils.healing.heal", true ) );
+				utils.setEnableHealingFeed( isEnabled( "utils.healing.feed", true ) );
+				utils.setEnableHealingBreath( isEnabled("utils.healing.breath", true));
+
+				Prison.get().getCommandHandler().registerCommands( utils );
+			}
+
+
 			if ( isEnabled( "utils.potions.enabled", true ) ) {
 
 				PrisonUtilsPotions utils = new PrisonUtilsPotions();

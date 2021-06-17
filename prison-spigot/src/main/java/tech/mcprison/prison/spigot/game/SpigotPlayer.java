@@ -488,22 +488,6 @@ public class SpigotPlayer
 			
 			((ExperienceOrb) getWrapper().getWorld().spawn(bukkitLocation, ExperienceOrb.class)).setExperience(xp);
 		}
-		
-		
-	}
-    
-	
-	public double getHealth() {
-		double health = 0;
-		if ( getWrapper() != null ) {
-			health = getWrapper().getHealth();
-		}
-		return health;
-	}
-	public void setHealth( double health ) {
-		if ( getWrapper() != null ) {
-			getWrapper().setHealth( health );
-		}
 	}
 	
 	public double getMaxHealth() {
@@ -521,5 +505,4 @@ public class SpigotPlayer
 								.setMaxHealth( getWrapper(), maxHealth );
 		}
 	}
-	
 }

@@ -235,6 +235,4 @@ public abstract class PrisonUtils
 	public void setPluginVersion( String pluginVersion ) {
 		this.pluginVersion = pluginVersion;
 	}
-
-	
 }

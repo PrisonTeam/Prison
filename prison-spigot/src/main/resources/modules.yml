@@ -24,4 +24,8 @@ utils:
     enabled: true
     repairAll: true
     repairHand: true
-    
+  healing:
+    enabled: true
+    heal: true
+    feed: true
+    breath: true
