@@ -69,7 +69,7 @@ public class PrisonUtilsHealing
             onlyPlayers = false,
             permissions = "prison.utils.healing.heal",
             altPermissions = "prison.utils.healing.heal.others")
-    public void utilHealingheal(CommandSender sender,
+    public void utilHealingHeal(CommandSender sender,
             @Arg(name = "playerName", description = "Player Name") String playerName
             /*
             @Wildcard(join=true)
@@ -116,6 +116,34 @@ public class PrisonUtilsHealing
             // Player cannot be null.  If it is null, then there was a failure.
             if ( player != null ) {
                 utilHealingFeed( player, playerName );
+            }
+        }
+    }
+
+    @Command(identifier = "prison utils breath",
+            description = "Gives a player air while underwater",
+            onlyPlayers = false,
+            permissions = "prison.utils.healing.breath",
+            altPermissions = "prison.utils.healing.breath.others")
+    public void utilHealingBreath(CommandSender sender,
+                                @Arg(name = "playerName", description = "Player Name") String playerName
+            /*
+            @Wildcard(join=true)
+            @Arg(name = "options", description = "Options [player, all]",
+                 def = "") String options
+                 */
+    ){
+
+        if( !enableHealingBreath ){
+            Output.get().logInfo("Prison's utils command breath is disabled in modules.yml.");
+        } else {
+            SpigotPlayer player = checkPlayerPerms( sender, playerName,
+                    "prison.utils.healing.breath",
+                    "prison.utils.healing.breath.others" );
+
+            // Player cannot be null.  If it is null, then there was a failure.
+            if ( player != null ) {
+                utilHealingBreath( player, playerName );
             }
         }
     }
