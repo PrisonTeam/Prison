@@ -64,9 +64,7 @@ public class PrisonUtilsHealing
                     "prison.utils.healing.heal.others" );
 
             // Player cannot be null.  If it is null, then there was a failure.
-            if ( player != null ) {
-                utilHealingHeal( player, playerName );
-            }
+            utilHealingHeal( player, playerName );
         }
     }
 
@@ -92,9 +90,7 @@ public class PrisonUtilsHealing
                     "prison.utils.healing.feed.others" );
 
             // Player cannot be null.  If it is null, then there was a failure.
-            if ( player != null ) {
-                utilHealingFeed( player, playerName );
-            }
+            utilHealingFeed( player, playerName );
         }
     }
 
@@ -120,9 +116,7 @@ public class PrisonUtilsHealing
                     "prison.utils.healing.breath.others" );
 
             // Player cannot be null.  If it is null, then there was a failure.
-            if ( player != null ) {
-                utilHealingBreath( player, playerName );
-            }
+            utilHealingBreath( player, playerName );
         }
     }
 
