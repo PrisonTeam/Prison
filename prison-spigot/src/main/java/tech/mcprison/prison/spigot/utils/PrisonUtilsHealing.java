@@ -22,28 +22,6 @@ public class PrisonUtilsHealing
     private boolean enableHealingFeed = false;
     private boolean enableHealingBreath = false;
 
-    public enum HealingOptions {
-
-        heal,
-        feed,
-        breath,
-        ;
-
-        public static PrisonUtilsHealing.HealingOptions fromString(String option ) {
-            PrisonUtilsHealing.HealingOptions results = null;
-
-            for ( PrisonUtilsHealing.HealingOptions rOp : values() )
-            {
-                if ( rOp.name().equalsIgnoreCase( option ) ) {
-                    results = rOp;
-                    break;
-                }
-            }
-
-            return results;
-        }
-    }
-
     public PrisonUtilsHealing() {
         super();
     }
