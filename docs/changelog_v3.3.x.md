@@ -18,7 +18,51 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.8-alpha.2 2021-06-12
+# v3.2.8-alpha.3 2021-06-16
+
+
+* **Updates to the stronghold and ruins patterns.**
+
+
+* **Added a couple more mine liner patterns: darkForest and theColors.**
+
+
+* **Update XSeries to v8.1.0 and switched back over to mvnrepo instead of using the temporary jitpack.io.**
+Update the Prison build text to remove the java version from the build artifact name, since it was already removed from the generated jar.
+
+
+* **Add 8 new placeholders for rankup cost remaining for percents and bars.**
+
+
+* **v3.2.8-alpha.3 2021-06-16**
+
+
+* **Mr. Grumpy Cat's suggestions for 5 new patterns for the liners.**
+
+
+* **Fixed issue with no fortune for mc 1.8.8 and mc 1.12.2.**
+The configs for auto manager now work properly.  
+
+
+* **Had to double escape the use of %.**
+It was working before, so this is a symptom of the messaging now being ran through String.format() twice.
+
+
+* **Fixed a problem with a rank command's message missing a parameter.**
+The text was expecting two parameters, only one was provided through the code.  Fixed.
+
+
+* **A fortune calculation should have had a ! in an if statement.**
+
+
+* **v3.2.8-alpha.3 2021-06-16**
+
+
+* **Removed the java version suffix from the build artifact name.**
+
+
+* **Clean up some of the LocalManager code.**
+Added code to reload/replace language properties files when there are new ones in the jar with no locals, and if the jar version has a greater version.
 
 
 * **For the /mines block list there was an M missing from the word Remaining for some hover text.
@@ -132,11 +176,7 @@ Corrected some of the consistency issues with apache commons not specifying the 
 NOTE: v3.2.8-alpha.1 is identical to v3.3.0-alpha.6.  V3.3.0 is far from being ready to be released.  So v3.2.8 will enable Java 16 and also Minecraft 1.17.
 
 
-# v3.3.0-alpha.6 2021-06-15
-
-
-* **Clean up some of the LocalManager code.**
-Added code to reload/replace language properties files when there are new ones in the jar with no locals, and if the jar version has a greater version.
+# v3.3.0-alpha.6 2021-06-07
 
 
 * **v3.3.0-alpha.6 2021-06-07**
