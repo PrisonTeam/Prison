@@ -504,16 +504,19 @@ public class LocaleManager {
                 		
                 		File newLocal = new File( targetPath, localeName );
                 		
-                		try (
-                				BufferedInputStream inStream = new BufferedInputStream( zip );
-                				) {
-                			Files.copy( inStream, newLocal.toPath() );
-                		}
+                		BufferedInputStream inStream = new BufferedInputStream( zip );
+
+        				Files.copy( inStream, newLocal.toPath() );
                 	}
+                	else {
+                		// Need to close the entry to position to the next entry:
+                		zip.closeEntry();
+                	}
+                	
                 	
                 }
             } 
-            catch (IOException ex) {
+            catch (Exception ex) {
                 throw new RuntimeException(
                     "Failed to initialize LocaleManager for plugin " + getOwningPlugin()
                         + " - Prison cannot continue to load.", ex);

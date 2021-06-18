@@ -25,6 +25,12 @@ These build logs represent the work that has been going on within prison.
 
 # v3.2.8 2021-06-17
 
+* **Note: Bug fixes for 3.2.8.**
+
+* **Fixed a failure on startup for new installations of prison.**
+Basically it was unable to deploy the language files due to try-with-resources closing the initial zip connection.
+
+
 Prison V3.2.8 Release!
 Prison now fully support Spigot 1.17 and Java 16!
 
