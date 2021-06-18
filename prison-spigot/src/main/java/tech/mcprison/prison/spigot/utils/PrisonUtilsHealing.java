@@ -1,18 +1,10 @@
 package tech.mcprison.prison.spigot.utils;
 
-import org.bukkit.Bukkit;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
-import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
-import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PrisonUtilsHealing
         extends PrisonUtils
@@ -21,28 +13,6 @@ public class PrisonUtilsHealing
     private boolean enableHealingHeal = false;
     private boolean enableHealingFeed = false;
     private boolean enableHealingBreath = false;
-
-    public enum HealingOptions {
-
-        heal,
-        feed,
-        breath,
-        ;
-
-        public static PrisonUtilsHealing.HealingOptions fromString(String option ) {
-            PrisonUtilsHealing.HealingOptions results = null;
-
-            for ( PrisonUtilsHealing.HealingOptions rOp : values() )
-            {
-                if ( rOp.name().equalsIgnoreCase( option ) ) {
-                    results = rOp;
-                    break;
-                }
-            }
-
-            return results;
-        }
-    }
 
     public PrisonUtilsHealing() {
         super();
@@ -65,17 +35,21 @@ public class PrisonUtilsHealing
     }
 
     @Command(identifier = "prison utils heal",
-            description = "Heals a player to full health",
+            description = "Heals a player to full health, add or subtract to their " +
+            						"health, or sets a specific health level. Uses a " +
+            						"maxHealth level that comes from bukkit.",
             onlyPlayers = false,
             permissions = "prison.utils.healing.heal",
             altPermissions = "prison.utils.healing.heal.others")
     public void utilHealingHeal(CommandSender sender,
-            @Arg(name = "playerName", description = "Player Name") String playerName
-            /*
-            @Wildcard(join=true)
-            @Arg(name = "options", description = "Options [player, all]",
-                 def = "") String options
-                 */
+                                @Arg(name = "playerName", description = "Player Name") String playerName,
+                                @Arg(name = "amount", def = "", 
+                                		description = "Optional mount of air given. " +
+                                		"If no amount is provided, then health level will be set to " +
+                                		"maxHealth.  If a '+' is used then the amount will be added to " +
+                                		"the player's current health level.  If a '-' is used then it " +
+                                		"will be subtracted. If an amount is provided without a '+' or " +
+                                		"'-' then that is what the player's health will be set to.") String amount
             ){
 
         if( !enableHealingHeal ){
@@ -85,25 +59,27 @@ public class PrisonUtilsHealing
                     "prison.utils.healing.heal",
                     "prison.utils.healing.heal.others" );
 
-            // Player cannot be null.  If it is null, then there was a failure.
-            if ( player != null ) {
-                utilHealingHeal( player, playerName );
-            }
+            utilHealingHeal( player, amount );
         }
     }
 
     @Command(identifier = "prison utils feed",
-            description = "Feeds a player to full",
+            description = "Feeds a player to full hunger, add or subtract to their " + 
+            		          		"hunger, or sets a specific hunger level. Uses a " +
+            		          		"max hunger level of 20 since bukkit does not have a " +
+            		          		"max hunger level.",
             onlyPlayers = false,
             permissions = "prison.utils.healing.feed",
             altPermissions = "prison.utils.healing.feed.others")
     public void utilHealingFeed(CommandSender sender,
-                                @Arg(name = "playerName", description = "Player Name") String playerName
-            /*
-            @Wildcard(join=true)
-            @Arg(name = "options", description = "Options [player, all]",
-                 def = "") String options
-                 */
+                                @Arg(name = "playerName", description = "Player Name") String playerName,
+                                @Arg(name = "amount", def = "", 
+                                		description = "Optional amount of food given. " +
+                                		"If no amount is provided, then hunger level will be set to " +
+                                		"20.  If a '+' is used then the amount will be added to " +
+                                		"the player's current hunger level.  If a '-' is used then it " +
+                                		"will be subtracted. If an amount is provided without a '+' or " +
+                                		"'-' then that is what the player's hunger will be set to." ) String amount
     ){
 
         if( !enableHealingFeed ){
@@ -113,25 +89,26 @@ public class PrisonUtilsHealing
                     "prison.utils.healing.feed",
                     "prison.utils.healing.feed.others" );
 
-            // Player cannot be null.  If it is null, then there was a failure.
-            if ( player != null ) {
-                utilHealingFeed( player, playerName );
-            }
+            utilHealingFeed( player, amount );
         }
     }
 
     @Command(identifier = "prison utils breath",
-            description = "Gives a player air while underwater",
+            description = "Gives a player air while underwater, add or subtract to their " +
+            						"air levels, or sets a specific air level.  Uses a maxAir level, " +
+            						"which comes from bukkit.",
             onlyPlayers = false,
             permissions = "prison.utils.healing.breath",
             altPermissions = "prison.utils.healing.breath.others")
     public void utilHealingBreath(CommandSender sender,
-                                @Arg(name = "playerName", description = "Player Name") String playerName
-            /*
-            @Wildcard(join=true)
-            @Arg(name = "options", description = "Options [player, all]",
-                 def = "") String options
-                 */
+                                @Arg(name = "playerName", description = "Player Name") String playerName,
+                                @Arg(name = "amount", def = "",
+                                		description = "amount of air given expressed in ticks. " +
+                                		"If no amount is provided, then hunger level will be set to " +
+                                		"20.  If a '+' is used then the amount will be added to " +
+                                		"the player's current hunger level.  If a '-' is used then it " +
+                                		"will be subtracted. If an amount is provided without a '+' or " +
+                                		"'-' then that is what the player's hunger will be set to.") String amount
     ){
 
         if( !enableHealingBreath ){
@@ -141,30 +118,53 @@ public class PrisonUtilsHealing
                     "prison.utils.healing.breath",
                     "prison.utils.healing.breath.others" );
 
-            // Player cannot be null.  If it is null, then there was a failure.
-            if ( player != null ) {
-                utilHealingBreath( player, playerName );
-            }
+            utilHealingBreath( player, amount );
         }
     }
 
-    private void utilHealingHeal( SpigotPlayer player, String playerName ) {
-        if( player == null || Bukkit.getPlayer(playerName) == null ) return;
+    private void utilHealingHeal( SpigotPlayer player, String amount ) {
+        if(player == null){
+            return;
+        }
+
         double maxHealth = player.getMaxHealth();
 
-        if( maxHealth == 0 ) return;
+        if (maxHealth != 0) {
+            double newHealth = player.getWrapper().getHealth() + parseInt(amount);
+            double health = amount == null || amount.trim().isEmpty() ? maxHealth :
+                            newHealth < 0 ? 0 :
+                            Math.min(newHealth, maxHealth);
 
-        player.getWrapper().setHealth(maxHealth);
+            player.getWrapper().setHealth(health);
+        }
     }
 
-    private void utilHealingFeed( SpigotPlayer player, String playerName ) {
-        if( player == null || Bukkit.getPlayer(playerName) == null ) return;
-        player.getWrapper().setFoodLevel(20);
+    private void utilHealingFeed( SpigotPlayer player, String amount ) {
+        if(player == null){
+            return;
+        }
+
+        int newFood = player.getWrapper().getFoodLevel() + parseInt(amount);
+        int food = amount == null || amount.trim().isEmpty() ? 20 :
+                   newFood < 0 ? 0 :
+                   Math.min(newFood, 20);
+
+        player.getWrapper().setFoodLevel(food);
     }
 
-    private void utilHealingBreath( SpigotPlayer player, String playerName ) {
-        if( player == null || Bukkit.getPlayer(playerName) == null ) return;
-        player.getWrapper().setRemainingAir(player.getWrapper().getMaximumAir());
+    private void utilHealingBreath( SpigotPlayer player, String amount ) {
+        if( player == null ) {
+            return;
+        }
+
+        int maxAir = player.getWrapper().getMaximumAir();
+
+        int newAir = player.getWrapper().getRemainingAir() + parseInt(amount);
+        int air = amount == null || amount.trim().isEmpty() ? maxAir :
+                  newAir < 0 ? 0 :
+                  Math.min(newAir, maxAir);
+
+        player.getWrapper().setRemainingAir(air);
     }
 
     public boolean isEnableHealingHeal() { return enableHealingHeal; }
