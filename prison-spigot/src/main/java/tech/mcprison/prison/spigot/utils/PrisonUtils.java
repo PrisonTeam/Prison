@@ -218,7 +218,7 @@ public abstract class PrisonUtils
 		int number = 0;
 
 		try{
-			number = Integer.parseInt(s.replaceAll("+|-", ""));
+			number = Integer.parseInt(s);
 		}catch(NumberFormatException ex){
 			ex.printStackTrace();
 		}
