@@ -1,18 +1,10 @@
 package tech.mcprison.prison.spigot.utils;
 
-import org.bukkit.Bukkit;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
-import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
-import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PrisonUtilsHealing
         extends PrisonUtils
@@ -21,28 +13,6 @@ public class PrisonUtilsHealing
     private boolean enableHealingHeal = false;
     private boolean enableHealingFeed = false;
     private boolean enableHealingBreath = false;
-
-    public enum HealingOptions {
-
-        heal,
-        feed,
-        breath,
-        ;
-
-        public static PrisonUtilsHealing.HealingOptions fromString(String option ) {
-            PrisonUtilsHealing.HealingOptions results = null;
-
-            for ( PrisonUtilsHealing.HealingOptions rOp : values() )
-            {
-                if ( rOp.name().equalsIgnoreCase( option ) ) {
-                    results = rOp;
-                    break;
-                }
-            }
-
-            return results;
-        }
-    }
 
     public PrisonUtilsHealing() {
         super();
@@ -70,12 +40,8 @@ public class PrisonUtilsHealing
             permissions = "prison.utils.healing.heal",
             altPermissions = "prison.utils.healing.heal.others")
     public void utilHealingHeal(CommandSender sender,
-            @Arg(name = "playerName", description = "Player Name") String playerName
-            /*
-            @Wildcard(join=true)
-            @Arg(name = "options", description = "Options [player, all]",
-                 def = "") String options
-                 */
+                                @Arg(name = "playerName", description = "Player Name") String playerName,
+                                @Arg(name = "amount", description = "amount of air given") String amount
             ){
 
         if( !enableHealingHeal ){
@@ -85,10 +51,7 @@ public class PrisonUtilsHealing
                     "prison.utils.healing.heal",
                     "prison.utils.healing.heal.others" );
 
-            // Player cannot be null.  If it is null, then there was a failure.
-            if ( player != null ) {
-                utilHealingHeal( player, playerName );
-            }
+            utilHealingHeal( player, amount );
         }
     }
 
@@ -98,12 +61,8 @@ public class PrisonUtilsHealing
             permissions = "prison.utils.healing.feed",
             altPermissions = "prison.utils.healing.feed.others")
     public void utilHealingFeed(CommandSender sender,
-                                @Arg(name = "playerName", description = "Player Name") String playerName
-            /*
-            @Wildcard(join=true)
-            @Arg(name = "options", description = "Options [player, all]",
-                 def = "") String options
-                 */
+                                @Arg(name = "playerName", description = "Player Name") String playerName,
+                                @Arg(name = "amount", description = "amount of food given") String amount
     ){
 
         if( !enableHealingFeed ){
@@ -113,10 +72,7 @@ public class PrisonUtilsHealing
                     "prison.utils.healing.feed",
                     "prison.utils.healing.feed.others" );
 
-            // Player cannot be null.  If it is null, then there was a failure.
-            if ( player != null ) {
-                utilHealingFeed( player, playerName );
-            }
+            utilHealingFeed( player, amount );
         }
     }
 
@@ -126,12 +82,8 @@ public class PrisonUtilsHealing
             permissions = "prison.utils.healing.breath",
             altPermissions = "prison.utils.healing.breath.others")
     public void utilHealingBreath(CommandSender sender,
-                                @Arg(name = "playerName", description = "Player Name") String playerName
-            /*
-            @Wildcard(join=true)
-            @Arg(name = "options", description = "Options [player, all]",
-                 def = "") String options
-                 */
+                                @Arg(name = "playerName", description = "Player Name") String playerName,
+                                @Arg(name = "amount", description = "amount of air given") String amount
     ){
 
         if( !enableHealingBreath ){
@@ -141,30 +93,53 @@ public class PrisonUtilsHealing
                     "prison.utils.healing.breath",
                     "prison.utils.healing.breath.others" );
 
-            // Player cannot be null.  If it is null, then there was a failure.
-            if ( player != null ) {
-                utilHealingBreath( player, playerName );
-            }
+            utilHealingBreath( player, amount );
         }
     }
 
-    private void utilHealingHeal( SpigotPlayer player, String playerName ) {
-        if( player == null || Bukkit.getPlayer(playerName) == null ) return;
+    private void utilHealingHeal( SpigotPlayer player, String amount ) {
+        if(player == null){
+            return;
+        }
+
         double maxHealth = player.getMaxHealth();
 
-        if( maxHealth == 0 ) return;
+        if (maxHealth != 0) {
+            double newHealth = player.getWrapper().getHealth() + parseInt(amount);
+            double health = amount == null ? maxHealth :
+                            newHealth < 0 ? 0 :
+                            Math.min(newHealth, maxHealth);
 
-        player.getWrapper().setHealth(maxHealth);
+            player.getWrapper().setHealth(health);
+        }
     }
 
-    private void utilHealingFeed( SpigotPlayer player, String playerName ) {
-        if( player == null || Bukkit.getPlayer(playerName) == null ) return;
-        player.getWrapper().setFoodLevel(20);
+    private void utilHealingFeed( SpigotPlayer player, String amount ) {
+        if(player == null){
+            return;
+        }
+
+        int newFood = player.getWrapper().getFoodLevel() + parseInt(amount);
+        int food = amount == null ? 20 :
+                   newFood < 0 ? 0 :
+                   Math.min(newFood, 20);
+
+        player.getWrapper().setFoodLevel(food);
     }
 
-    private void utilHealingBreath( SpigotPlayer player, String playerName ) {
-        if( player == null || Bukkit.getPlayer(playerName) == null ) return;
-        player.getWrapper().setRemainingAir(player.getWrapper().getMaximumAir());
+    private void utilHealingBreath( SpigotPlayer player, String amount ) {
+        if( player == null ) {
+            return;
+        }
+
+        int maxAir = player.getWrapper().getMaximumAir();
+
+        int newAir = player.getWrapper().getRemainingAir() + parseInt(amount);
+        int air = amount == null ? maxAir :
+                  newAir < 0 ? 0 :
+                  Math.min(newAir, maxAir);
+
+        player.getWrapper().setRemainingAir(air);
     }
 
     public boolean isEnableHealingHeal() { return enableHealingHeal; }
