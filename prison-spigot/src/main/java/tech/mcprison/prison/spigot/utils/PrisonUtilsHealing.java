@@ -1,18 +1,11 @@
 package tech.mcprison.prison.spigot.utils;
 
-import org.bukkit.Bukkit;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
+import com.google.common.primitives.Ints;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
-import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
-import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PrisonUtilsHealing
         extends PrisonUtils
@@ -64,7 +57,6 @@ public class PrisonUtilsHealing
                     "prison.utils.healing.heal",
                     "prison.utils.healing.heal.others" );
 
-            // Player cannot be null.  If it is null, then there was a failure.
             utilHealingHeal( player, playerName, amount );
         }
     }
@@ -118,22 +110,34 @@ public class PrisonUtilsHealing
         }
     }
 
-    private void utilHealingHeal( SpigotPlayer player, String playerName, String amount ) {
-        if( player == null || Bukkit.getPlayer(playerName) == null ) return;
+    private void utilHealingHeal( SpigotPlayer player, String amount ) {
+        if(player == null){
+            return;
+        }
+
         double maxHealth = player.getMaxHealth();
 
-        if( maxHealth == 0 ) return;
+        if (maxHealth != 0) {
+            double newHealth = player.getWrapper().getHealth() + parseInt(amount);
+            double health = amount == null ? maxHealth :
+                            newHealth < 0 ? 0 :
+                            Math.min(newHealth, maxHealth);
 
-        player.getWrapper().setHealth(maxHealth);
+            player.getWrapper().setHealth(health);
+        }
     }
 
-    private void utilHealingFeed( SpigotPlayer player, String playerName, String amount ) {
-        if( player == null || Bukkit.getPlayer(playerName) == null ) return;
-        player.getWrapper().setFoodLevel(20);
+    private void utilHealingFeed( SpigotPlayer player, String amount ) {
+        int feedAmountInt = parseInt(amount);
+        if(feedAmountInt == 0 || player == null){
+            return;
+        }
+
+        player.getWrapper().setFoodLevel(Math.min(feedAmountInt, 20));
     }
 
-    private void utilHealingBreath( SpigotPlayer player, String playerName, String amount ) {
-        if( player == null || Bukkit.getPlayer(playerName) == null ) return;
+    private void utilHealingBreath( SpigotPlayer player, String amount ) {
+        if( player == null ) return;
         player.getWrapper().setRemainingAir(player.getWrapper().getMaximumAir());
     }
 

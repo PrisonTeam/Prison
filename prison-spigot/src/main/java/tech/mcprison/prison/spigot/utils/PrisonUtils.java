@@ -214,6 +214,17 @@ public abstract class PrisonUtils
 		return results;
 	}
 
+	public int parseInt(String s){
+		int number = 0;
+
+		try{
+			number = Integer.parseInt(s.replaceAll("+|-", ""));
+		}catch(NumberFormatException ex){
+			ex.printStackTrace();
+		}
+
+		return number;
+	}
 	
 	public String getPluginName() {
 		return pluginName;
