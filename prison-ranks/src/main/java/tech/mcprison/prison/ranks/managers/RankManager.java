@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.commands.CommandCommands;
@@ -304,8 +305,10 @@ public class RankManager {
     								rank.getRankPrior() : 
     									rank.getRankNext() );
     	if ( newRank == null ) {
-    		 Output.get().logError("Remove Rank Warning: No fallback rank exists so players with " +
-    		 		"the rank that is being removed will have no rank on that ladder.");
+        	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+        			.getLocalizable( "ranks_rankManager__remove_rank_warning" );
+        	
+        	Output.get().logError( localManagerLog.localize() );
     	}
 
     	
@@ -325,10 +328,18 @@ public class RankManager {
                     try {
                         PrisonRanks.getInstance().getPlayerManager().savePlayer(rankPlayer);
                     } catch (IOException e) {
-                        Output.get().logError("RemoveRank: Couldn't save player file.", e);
+                    	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+                    			.getLocalizable( "ranks_rankManager__cannot_save_player_file" );
+                    	
+                    	Output.get().logError( localManagerLog.localize() );
                     }
-                    PrisonAPI.debug("Player %s is now %s", rankPlayer.getName(),
-                        newRank.getName());
+                    
+                    Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+                    		.getLocalizable( "ranks_rankManager__cannot_save_player_file" )
+                    		.withReplacements( 
+                    					rankPlayer.getName(),
+                    					newRank.getName() );
+                    PrisonAPI.debug( localManagerLog.localize() );
                 }
             });
             
@@ -339,7 +350,12 @@ public class RankManager {
             	PrisonRanks.getInstance().getLadderManager().saveLadder(ladder);
             } catch (IOException e) {
             	success[0] = false;
-            	Output.get().logError("RemoveRank: Could not save ladder " + ladder.getName() + ".", e);
+            	
+            	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+            			.getLocalizable( "ranks_rankManager__cannot_save_ladder_file" )
+            			.withReplacements( ladder.getName() );
+            	
+            	Output.get().logError( localManagerLog.localize(), e );
             }
             
         }
@@ -449,11 +465,14 @@ public class RankManager {
 				EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
 						.getEconomyForCurrency( rank.getCurrency() );
 				if ( currencyEcon == null ) {
-					String message = String.format( "Economy Failure: &7The currency &a%s&7 was registered with " +
-							"rank &a%s&7, but it isn't supported by any Economy integration.",
-							rank.getCurrency(), rank.getName());
-					Output.get().logError( message );
-					prisonStartupDetails.add( message );
+					
+					Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+	            			.getLocalizable( "ranks_rankManager__failure_no_economy" )
+	            			.withReplacements( rank.getCurrency(), rank.getName() );
+	            	
+	            	Output.get().logError( localManagerLog.localize() );
+					
+					prisonStartupDetails.add( localManagerLog.localize() );
 				}
 			}
 		}
@@ -535,7 +554,10 @@ public class RankManager {
     
     public void ranksByLadders( CommandSender sender, String ladderName, RanksByLadderOptions option ) {
     	
-    	rankByLadderOutput( sender, "&7Ranks by ladders:" );
+    	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+    			.getLocalizable( "ranks_rankManager__ranks_by_ladders" );
+    	
+    	rankByLadderOutput( sender, localManagerLog.localize() );
     	
     	// Track which ranks were included in the ladders listed:
     	List<Rank> ranksIncluded = new ArrayList<>();

@@ -303,6 +303,11 @@ public class TestPlatform implements Platform {
 	}
 
 	@Override
+	public boolean isMineAccessibleByRank( Player player, ModuleElement mine ) {
+		return false;
+	}
+	
+	@Override
 	public void autoCreateMineBlockAssignment() {
 		
 	}
@@ -313,8 +318,24 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
+	public void autoCreateConfigureMines() {
+		
+	}
+	
+	@Override
 	public List<String> getActiveFeatures() {
 		List<String> results = new ArrayList<>();
 		return results;
 	}
+	
+	@Override
+	public void dumpEventListenersBlockBreakEvents() {
+		
+	}
+	
+	@Override
+	public void dumpEventListenersPlayerChatEvents() {
+		
+	}
+	
 }

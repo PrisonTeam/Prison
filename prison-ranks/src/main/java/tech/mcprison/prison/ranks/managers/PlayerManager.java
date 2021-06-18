@@ -31,7 +31,6 @@ import com.google.common.eventbus.Subscribe;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.Player;
@@ -64,7 +63,7 @@ import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
  * @author Faizaan A. Datoo
  */
 public class PlayerManager
-	extends BaseCommands
+	extends PlayerManagerMessages
 	implements ManagerPlaceholders {
 
 
@@ -72,7 +71,7 @@ public class PlayerManager
     private List<RankPlayer> players;
     private TreeMap<String, RankPlayer> playersByName;
     
-    private List<RankPlayer> playersByTop;
+//    private List<RankPlayer> playersByTop;
 
     private List<PlaceHolderKey> translatedPlaceHolderKeys;
     
@@ -157,17 +156,16 @@ public class PlayerManager
             try {
 				savePlayer(player);
 			}
-			catch ( Exception e )
-			{
-				String message = "An error occurred while saving the player files: "  +
-						player.filename();
+			catch ( Exception e )  {
 				
-    			if ( !getPlayerErrors().contains( message ) ) {
-    				getPlayerErrors().add( message );
-    				Output.get().logError( message );
+				String errorMessage = cannotSavePlayerFile( player.filename() );
+	    		
+    			if ( !getPlayerErrors().contains( errorMessage ) ) {
+    				getPlayerErrors().add( errorMessage );
+    				Output.get().logError( errorMessage );
     			}
     			
-				Output.get().logError(message, e);
+//				Output.get().logError(errorMessage, e);
 			}
         }
     }
@@ -241,12 +239,13 @@ public class PlayerManager
 				savePlayer( results );
 			}
 			catch ( IOException e ) {
-				String message = String.format( "PlayerManager.getPlayer(): Failed to add new player name: %s. %s",
-									playerName, e.getMessage());
-    			if ( !getPlayerErrors().contains( message ) ) {
+				
+				String errorMessage = cannotAddNewPlayer( playerName, e.getMessage() );
+				
+    			if ( !getPlayerErrors().contains( errorMessage ) ) {
     				
-    				getPlayerErrors().add( message );
-    				Output.get().logError( message );
+    				getPlayerErrors().add( errorMessage );
+    				Output.get().logError( errorMessage );
     			}
 			}
     	}
@@ -326,10 +325,10 @@ public class PlayerManager
         				Prison.get().getEventBus().post(new FirstJoinEvent(newPlayer));
         			} 
         			catch (IOException e) {
-        				Output.get().logError(
-        						"Failed to create new player data file for player " + 
-        								(playerName == null ? "<NoNameAvailable>" : playerName) + 
-        								"  target filename: " + newPlayer.filename(), e);
+        				
+        				String errorMessage = cannotSaveNewPlayerFile( playerName, newPlayer.filename() );
+        				
+        				Output.get().logError( errorMessage, e);
         			}
         		}
         		
@@ -518,8 +517,10 @@ public class PlayerManager
     	
         Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
         if( prisonPlayer == null ) {
-        	String message = String.format( "getPlayerNextRankCostPercent: " +
-        			"Could not load player: %s", rankPlayer.getUUID());
+        	
+        	String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
+
+        	String message = "getPlayerNextRankCostPercent: " + errorMessage;
 			
         	if ( !getPlayerErrors().contains( message ) ) {
 				getPlayerErrors().add( message );
@@ -563,8 +564,10 @@ public class PlayerManager
     	
     	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
     	if( prisonPlayer == null ) {
-    		String message = String.format( "getPlayerNextRankCostBar: " +
-    				"Could not load player: %s", rankPlayer.getUUID());
+    		
+    		String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
+
+    		String message = "getPlayerNextRankCostBar: " + errorMessage;
 
     		if ( !getPlayerErrors().contains( message ) ) {
 				getPlayerErrors().add( message );
@@ -621,8 +624,10 @@ public class PlayerManager
     	
     	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
     	if( prisonPlayer == null ) {
-    		String message = String.format( "getPlayerNextRankCostRemaining: " +
-    				"Could not load player: %s", rankPlayer.getUUID());
+    		
+    		String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
+    		
+    		String message = "getPlayerNextRankCostRemaining: " + errorMessage;
     		
 			if ( !getPlayerErrors().contains( message ) ) {
 				getPlayerErrors().add( message );
@@ -678,6 +683,121 @@ public class PlayerManager
     	return sb.toString();
     }
     
+    
+  public String getPlayerNextRankCostRemainingPercent( RankPlayer rankPlayer, String ladderName ) {
+  	StringBuilder sb = new StringBuilder();
+  	
+      Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
+      if( prisonPlayer == null ) {
+      	
+      	String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
+
+      	String message = "getPlayerNextRankCostPercent: " + errorMessage;
+			
+      	if ( !getPlayerErrors().contains( message ) ) {
+				getPlayerErrors().add( message );
+				Output.get().logError( message );
+			}
+      	return "0";
+      }
+  	
+  	if ( !rankPlayer.getLadderRanks().isEmpty()) {
+  		DecimalFormat dFmt = new DecimalFormat("#,##0");
+  		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getLadderRanks().entrySet()) {
+  			RankLadder key = entry.getKey();
+  			if ( ladderName == null ||
+   				 ladderName != null && key.getName().equalsIgnoreCase( ladderName )) {
+  				
+  				if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
+  					if ( sb.length() > 0 ) {
+  						sb.append(",  ");
+  					}
+  					
+  					Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
+  					double cost = rank.getCost();
+  					double balance = getPlayerBalance(prisonPlayer,rank);
+  					
+  					double remaining = cost - balance;
+  				    
+					// Without the following, if the player has more money than what the rank will cost,
+					// then it would result in a negative amount, which is wrong.  
+					// This is cost remaining... once they are able to afford a rankup, then remaining 
+					// cost will be zero.
+					if ( remaining < 0 ) {
+						remaining = 0;
+					}
+  					double percent = (remaining < 0 ? 0.0 : 
+  						(cost == 0.0d || remaining > cost ? 100.0 : 
+  							remaining / cost * 100.0 )
+  							);
+  					sb.append( dFmt.format( percent ));
+  				}
+  			}
+  		}
+  	}
+  	
+  	return sb.toString();
+  }
+  
+  public String getPlayerNextRankCostRemainingBar( RankPlayer rankPlayer, String ladderName, 
+							PlaceholderAttribute attribute ) {
+	  StringBuilder sb = new StringBuilder();
+	  
+	  Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
+	  if( prisonPlayer == null ) {
+		  
+		  String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
+		  
+		  String message = "getPlayerNextRankCostPercent: " + errorMessage;
+		  
+		  if ( !getPlayerErrors().contains( message ) ) {
+			  getPlayerErrors().add( message );
+			  Output.get().logError( message );
+		  }
+		  return "0";
+	  }
+	  
+	  if ( !rankPlayer.getLadderRanks().isEmpty()) {
+		  DecimalFormat dFmt = new DecimalFormat("#,##0");
+		  for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getLadderRanks().entrySet()) {
+			  RankLadder key = entry.getKey();
+			  if ( ladderName == null ||
+					  ladderName != null && key.getName().equalsIgnoreCase( ladderName )) {
+				  
+				  if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
+					  if ( sb.length() > 0 ) {
+						  sb.append(",  ");
+					  }
+					  
+					  Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
+					  double cost = rank.getCost();
+					  double balance = getPlayerBalance(prisonPlayer,rank);
+					  
+					  double remaining = cost - balance;
+					  
+					  // Without the following, if the player has more money than what the rank will cost,
+					  // then it would result in a negative amount, which is wrong.  
+					  // This is cost remaining... once they are able to afford a rankup, then remaining 
+					  // cost will be zero.
+					  if ( remaining < 0 ) {
+						  remaining = 0;
+					  }
+					  double percent = (remaining < 0 ? 0.0 : 
+						  (cost == 0.0d || remaining > cost ? 100.0 : 
+							  remaining / cost * 100.0 )
+							  );
+					  sb.append( dFmt.format( percent ));
+					  
+					  sb.append( Prison.get().getPlaceholderManager().
+		    					getProgressBar( remaining, cost, false, attribute ));
+				  }
+			  }
+		  }
+	  }
+	  
+	  return sb.toString();
+  }
+
     /**
      * <p>This gets the player's balance as a formatted String based upon the ranks' 
      * custom currency, if it's set.  If there is a problem getting the custom 
@@ -696,8 +816,10 @@ public class PlayerManager
     	
     	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
     	if( prisonPlayer == null ) {
-    		String message = String.format( "getPlayerBalance: " +
-    				"Could not load player: %s", rankPlayer.getUUID());
+    		
+    		String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
+    		
+    		String message = "getPlayerBalance: " + errorMessage;
     		
 			if ( !getPlayerErrors().contains( message ) ) {
 				getPlayerErrors().add( message );
@@ -762,13 +884,12 @@ public class PlayerManager
     		if ( currencyEcon != null ) {
         		playerBalance = currencyEcon.getBalance( player, rank.getCurrency() );
     		} else {
-    			String message = String.format( "Failed to load Economy to get the balance for " +
-						"player %s with a currency of %s.",
-						player.getName(), rank.getCurrency() );
     			
-    			if ( !getPlayerErrors().contains( message ) ) {
-    				getPlayerErrors().add( message );
-    				Output.get().logError( message );
+    			String errorMessage = cannotLoadEconomyCurrency( player.getName(), rank.getCurrency() );
+
+    			if ( !getPlayerErrors().contains( errorMessage ) ) {
+    				getPlayerErrors().add( errorMessage );
+    				Output.get().logError( errorMessage );
     			}
     			
     		}
@@ -780,13 +901,13 @@ public class PlayerManager
     		if ( economy != null ) {
     			playerBalance = economy.getBalance( player );
     		} else {
-    			String message = String.format( "Failed to load Economy to get the balance for player %s.",
-						player.getName() );
-    			Output.get().logError( message );
-    			if ( !getPlayerErrors().contains( message ) ) {
+    			
+    			String errorMessage = cannotLoadEconomy( player.getName() );
+    			
+    			if ( !getPlayerErrors().contains( errorMessage ) ) {
     				
-    				getPlayerErrors().add( message );
-    				Output.get().logError( message );
+    				getPlayerErrors().add( errorMessage );
+    				Output.get().logError( errorMessage );
     			}
     			
     		}
@@ -993,6 +1114,7 @@ public class PlayerManager
 						results = getPlayerNextRankCostBar( rankPlayer, ladderName, attribute );
 						break;
 						
+						
 					case prison_rcr:
 					case prison_rankup_cost_remaining:
 					case prison_rcr_laddername:
@@ -1006,6 +1128,21 @@ public class PlayerManager
 					case prison_rankup_cost_remaining_formatted_laddername:
 						results = getPlayerNextRankCostRemaining( rankPlayer, ladderName, true, attribute );
 						break;
+						
+					case prison_rcrp:
+					case prison_rankup_cost_remaining_percent:
+					case prison_rcrp_laddername:
+					case prison_rankup_cost_remaining_percent_laddername:
+						results = getPlayerNextRankCostRemainingPercent( rankPlayer, ladderName );
+						break;
+						
+					case prison_rcrb:
+					case prison_rankup_cost_remaining_bar:
+					case prison_rcrb_laddername:
+					case prison_rankup_cost_remaining_bar_laddername:
+						results = getPlayerNextRankCostRemainingBar( rankPlayer, ladderName, attribute );
+						break;
+						
 						
 					case prison_rr:
 					case prison_rankup_rank:

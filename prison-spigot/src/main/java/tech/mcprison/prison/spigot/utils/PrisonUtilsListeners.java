@@ -8,7 +8,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import tech.mcprison.prison.mines.features.MineTargetBlockKey;
-import tech.mcprison.prison.spigot.api.PrisonMinesBlockEventEvent;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 
 public class PrisonUtilsListeners

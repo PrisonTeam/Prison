@@ -29,6 +29,7 @@ import com.cryptomorin.xseries.XMaterial;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.modules.Module;
@@ -1958,9 +1959,14 @@ public class ListenersPrisonManager implements Listener {
         }
 
         if (mineName != null) {
-            if (p.hasPermission(permission + mineName) || p.hasPermission(permission.substring(0, permission.length() - (mineName.length() + 1)))) {
-                Bukkit.dispatchCommand(p, SpigotPrison.format(guiConfig.getString("Options.Mines.CommandWarpPlugin") + " " + mineName));
-            }
+        	
+        	// Confirm the player has access to the mine before trying to TP them there:
+        	Mine mine = PrisonMines.getInstance().getMine( mineName );
+        	SpigotPlayer spigotPlayer = new SpigotPlayer(p);
+        	if (mine.hasMiningAccess(spigotPlayer) || p.hasPermission(permission + mineName) || 
+        						p.hasPermission(permission.substring(0, permission.length() - 1))) {
+        		Bukkit.dispatchCommand(p, SpigotPrison.format(guiConfig.getString("Options.Mines.CommandWarpPlugin") + " " + mineName));
+        	}
         }
     }
 
@@ -2435,8 +2441,8 @@ public class ListenersPrisonManager implements Listener {
     private void autoFeaturesGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Get the config
-        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
-
+        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
+        
         // Output finally the buttonname and the mode explicit out of the array
         String buttonName = parts[0];
         String mode = parts[1];
@@ -2501,7 +2507,7 @@ public class ListenersPrisonManager implements Listener {
     private void autoPickupGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Get the config
-        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
 
         // Output finally the buttonname and the mode explicit out of the array
         String buttonname = parts[0];
@@ -2515,62 +2521,62 @@ public class ListenersPrisonManager implements Listener {
 
             switch (buttonname){
                 case "All_Blocks":{
-                    afConfig.setFeature( AutoFeatures.autoPickupAllBlocks, !enabled );
+                    afConfig.setFeature( AutoFeatures.pickupAllBlocks, !enabled );
                     saveConfigPickup(e, p);
                     break;
                 }
                 case "Cobblestone":{
-                    afConfig.setFeature(AutoFeatures.autoPickupCobbleStone, !enabled);
+                    afConfig.setFeature(AutoFeatures.pickupCobbleStone, !enabled);
                     saveConfigPickup(e,p);
                     break;
                 }
                 case "Gold_Ore":{
-                    afConfig.setFeature( AutoFeatures.autoPickupGoldOre, !enabled );
+                    afConfig.setFeature( AutoFeatures.pickupGoldOre, !enabled );
                     saveConfigPickup(e, p);
                     break;
                 }
                 case "Iron_Ore":{
-                    afConfig.setFeature( AutoFeatures.autoPickupIronOre, !enabled );
+                    afConfig.setFeature( AutoFeatures.pickupIronOre, !enabled );
                     saveConfigPickup(e, p);
                     break;
                 }
                 case "Coal_Ore":{
-                    afConfig.setFeature( AutoFeatures.autoPickupCoalOre, !enabled );
+                    afConfig.setFeature( AutoFeatures.pickupCoalOre, !enabled );
                     saveConfigPickup(e, p);
                     break;
                 }
                 case "Diamond_Ore":{
-                    afConfig.setFeature( AutoFeatures.autoPickupDiamondOre, !enabled );
+                    afConfig.setFeature( AutoFeatures.pickupDiamondOre, !enabled );
                     saveConfigPickup(e, p);
                     break;
                 }
                 case "Redstone_Ore":{
-                    afConfig.setFeature( AutoFeatures.autoPickupRedStoneOre, !enabled );
+                    afConfig.setFeature( AutoFeatures.pickupRedStoneOre, !enabled );
                     saveConfigPickup(e, p);
                     break;
                 }
                 case "Emerald_Ore":{
-                    afConfig.setFeature( AutoFeatures.autoPickupEmeraldOre, !enabled );
+                    afConfig.setFeature( AutoFeatures.pickupEmeraldOre, !enabled );
                     saveConfigPickup(e, p);
                     break;
                 }
                 case "Quartz_Ore":{
-                    afConfig.setFeature( AutoFeatures.autoPickupQuartzOre, !enabled );
+                    afConfig.setFeature( AutoFeatures.pickupQuartzOre, !enabled );
                     saveConfigPickup(e, p);
                     break;
                 }
                 case "Lapis_Ore":{
-                    afConfig.setFeature( AutoFeatures.autoPickupLapisOre, !enabled );
+                    afConfig.setFeature( AutoFeatures.pickupLapisOre, !enabled );
                     saveConfigPickup(e, p);
                     break;
                 }
                 case "Snow_Ball":{
-                    afConfig.setFeature( AutoFeatures.autoPickupSnowBall, !enabled );
+                    afConfig.setFeature( AutoFeatures.pickupSnowBall, !enabled );
                     saveConfigPickup(e, p);
                     break;
                 }
                 case "Glowstone_Dust":{
-                    afConfig.setFeature( AutoFeatures.autoPickupGlowstoneDust, !enabled );
+                    afConfig.setFeature( AutoFeatures.pickupGlowstoneDust, !enabled );
                     saveConfigPickup(e, p);
                     break;
                 }
@@ -2585,7 +2591,7 @@ public class ListenersPrisonManager implements Listener {
     private void autoSmeltGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Get the config
-        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
 
         // Output finally the buttonname and the mode explicit out of the array
         String buttonname = parts[0];
@@ -2599,17 +2605,17 @@ public class ListenersPrisonManager implements Listener {
 
             switch (buttonname){
                 case "Gold_Ore":{
-                    afConfig.setFeature( AutoFeatures.autoSmeltGoldOre, !enabled );
+                    afConfig.setFeature( AutoFeatures.smeltGoldOre, !enabled );
                     saveConfigSmelt(e, p);
                     break;
                 }
                 case "Iron_Ore":{
-                    afConfig.setFeature( AutoFeatures.autoSmeltIronOre, !enabled );
+                    afConfig.setFeature( AutoFeatures.smeltIronOre, !enabled );
                     saveConfigSmelt(e, p);
                     break;
                 }
                 case "All_Ores":{
-                    afConfig.setFeature( AutoFeatures.autoSmeltAllBlocks, !enabled );
+                    afConfig.setFeature( AutoFeatures.smeltAllBlocks, !enabled );
                     saveConfigSmelt(e, p);
                     break;
                 }
@@ -2623,7 +2629,7 @@ public class ListenersPrisonManager implements Listener {
     private void autoBlockGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Get the config
-        AutoFeaturesFileConfig afConfig = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
 
         // Output finally the buttonname and the mode explicit out of the array
         String buttonname = parts[0];
@@ -2795,7 +2801,7 @@ public class ListenersPrisonManager implements Listener {
      * @param player
      */
     private boolean saveAutoFeatures( InventoryClickEvent e, Player player ) {
-    	boolean success = SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig().saveConf();
+    	boolean success = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig().saveConf();
     	e.setCancelled(true);
     	player.closeInventory();
     	return success;

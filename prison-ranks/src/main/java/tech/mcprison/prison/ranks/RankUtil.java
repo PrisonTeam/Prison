@@ -38,7 +38,8 @@ import tech.mcprison.prison.tasks.PrisonCommandTask.CustomPlaceholders;
  *
  * @author Faizaan A. Datoo
  */
-public class RankUtil {
+public class RankUtil
+		extends RankUtilMessages {
 
 	
 	public enum RankupCommands {
@@ -56,6 +57,8 @@ public class RankUtil {
 	
 	public enum RankupStatus {
 		RANKUP_SUCCESS,
+		DEMOTE_SUCCESS,
+		
 		RANKUP_FAILURE,
 		RANKUP_FAILURE_COULD_NOT_LOAD_PLAYER,
 		RANKUP_FAILURE_COULD_NOT_LOAD_LADDER,
@@ -143,6 +146,8 @@ public class RankUtil {
 		fireRankupEvent,
 		
 		rankup_successful, 
+		demote_successful, 
+
 		failure_exception_caught_check_server_logs, 
 		successfully_saved_player_rank_data
 		
@@ -280,9 +285,8 @@ public class RankUtil {
     				rankName, playerName, executorName, pForceCharge );
     	} catch (Exception e ) {
     		results.addTransaction( RankupTransactions.failure_exception_caught_check_server_logs );
-    		String message = String.format( 
-    				"Failure to perform rankupPlayerInternal check server logs for stack trace: %s", e.getMessage() );
-    		Output.get().logError( message, e );
+    		
+    		Output.get().logError( rankUtilFailureInternalMsg( e.getMessage() ), e );
     	}
     	
     	// Log the results:
@@ -304,15 +308,12 @@ public class RankUtil {
     		String rankName, String playerName, String executorName, 
     		PromoteForceCharge pForceCharge) {
 
-    	
-
         
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
         if( ladder == null ) {
         	results.addTransaction( RankupStatus.RANKUP_FAILURE_COULD_NOT_LOAD_LADDER, RankupTransactions.failed_ladder );
         	return;
         }
-
         
 
         Rank originalRank = rankPlayer.getRank(ladder.getName());
@@ -506,7 +507,14 @@ public class RankUtil {
 //        Prison.get().getEventBus().post(rankupEvent);
         
         
-        results.addTransaction( RankupStatus.RANKUP_SUCCESS, RankupTransactions.rankup_successful );
+        if ( RankupCommands.demote == command ) {
+        	
+        	results.addTransaction( RankupStatus.DEMOTE_SUCCESS, RankupTransactions.demote_successful );
+        }
+        else {
+        	
+        	results.addTransaction( RankupStatus.RANKUP_SUCCESS, RankupTransactions.rankup_successful );
+        }
         
     }
 
@@ -521,9 +529,11 @@ public class RankUtil {
             		RankupTransactions.successfully_saved_player_rank_data );
             
             success = true;
-        } catch (IOException e) {
-            Output.get().logError("An error occurred while saving player files.", e);
-            
+        } 
+		catch (IOException e) {
+        	
+    		Output.get().logError( rankUtilFailureSavingPlayerMsg( e.getMessage() ), e );
+    		
             results.addTransaction( RankupStatus.RANKUP_FAILURE_COULD_NOT_SAVE_PLAYER_FILE, 
             			RankupTransactions.failure_cannot_save_player_file );
         }

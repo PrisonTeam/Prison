@@ -217,7 +217,7 @@ public class IntegrationManager {
         	// Generates the placeholder list for the /prison version command, printing
         	// two placeholders per line.
 			if ( integrationType ==  IntegrationType.PLACEHOLDER ) {
-				results.add(  new TextComponent( "    &7To list all or search for placeholders see: " +
+				results.add(  new TextComponent( ". . &7To list all or search for placeholders see: " +
 						"&a/prison placeholders") );
 //				getPlaceholderTemplateList( results );
 			}
@@ -226,12 +226,12 @@ public class IntegrationManager {
 			
 			if ( integrationType == IntegrationType.WORLDGUARD && 
 					(plugins == null || plugins.size() == 0 ) ) {
-				results.add( new TextComponent( "    &e&oWorldGuard integration has not been added " +
+				results.add( new TextComponent( ". . &e&oWorldGuard integration has not been added " +
 						"to Prison yet.&3 WorldGuard can still be used normally since this " +
 						"is not an error." ));
 			} 
 			else if ( plugins == null || plugins.size() == 0 ) {
-				results.add( new TextComponent( "&e    none" ));
+				results.add( new TextComponent( "&e. . none" ));
 				activeIntegration = true;
 			} 
 			else {
@@ -241,7 +241,7 @@ public class IntegrationManager {
 						activeIntegration = true;
 						
 						String pluginUrl = plugin.getPluginSourceURL();
-						String msg = String.format( "&a    %s <%s> %s", plugin.getDisplayName(),
+						String msg = String.format( "&a. . %s <%s> %s", plugin.getDisplayName(),
 								( plugin.hasIntegrated() ? "Active" : "Inactive"),
 								( pluginUrl == null ? "" : "&7[URL]"));
 						FancyMessage fancy = new FancyMessage( msg );
@@ -252,7 +252,7 @@ public class IntegrationManager {
 						
 						String altInfo = plugin.getAlternativeInformation();
 						if ( altInfo != null ) {
-							results.add( new TextComponent( "        " + altInfo ));
+							results.add( new TextComponent( ". . . . " + altInfo ));
 						}
 						
 						if ( integrationType ==  IntegrationType.ECONOMY && 
@@ -272,7 +272,7 @@ public class IntegrationManager {
 							}
 							
 							if ( sb.length() > 0 ) {
-								results.add( new TextComponent( "      &3Currencies: " + sb.toString() ));
+								results.add( new TextComponent( ". . . &3Currencies: " + sb.toString() ));
 							}
 						}
 					}
@@ -281,7 +281,7 @@ public class IntegrationManager {
 			
 			if ( isBasic && !activeIntegration ) {
 				
-				results.add( new TextComponent( String.format( "&7    No active Integrations of this Type." ) ));
+				results.add( new TextComponent( String.format( "&7. . No active Integrations of this Type." ) ));
 				
 			}
 		}

@@ -187,8 +187,8 @@ public class Localizable {
     }
 
     private String localizeIn(String locale, boolean recursive, String... fallbacks) {
-        if (getParent().configs.containsKey(locale)) { // check if the locale is defined
-            Properties props = getParent().configs.get(locale);
+        if (getParent().getConfigs().containsKey(locale)) { // check if the locale is defined
+            Properties props = getParent().getConfigs().get(locale);
             if (props.containsKey(getKey())) { // check if the message is defined in the locale
                 String message = (String) props.get(getKey()); // yay, it worked
                 if (replacements != null) {

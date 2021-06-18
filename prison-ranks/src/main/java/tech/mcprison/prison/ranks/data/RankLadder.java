@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import com.google.gson.internal.LinkedTreeMap;
 
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
 import tech.mcprison.prison.ranks.managers.RankManager;
@@ -467,7 +466,7 @@ public class RankLadder
 	public Optional<Rank> getByPosition(int position) {
     	Rank results = null;
     	
-    	if ( getRanks().size() >= position ) {
+    	if ( getRanks().size() > position ) {
     		results = getRanks().get( position );
     	}
     	

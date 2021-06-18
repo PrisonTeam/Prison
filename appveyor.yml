@@ -10,7 +10,8 @@ cache:
   - C:\Users\appveyor\.gradle
 
 artifacts:
-  - path: prison-spigot\build\libs\Prison.jar
+  - path: prison-spigot\build\libs\
+    name: Prison
 
 environment:
   matrix:

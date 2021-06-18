@@ -333,11 +333,17 @@ public interface Platform {
 	
 	public ModuleElement getPlayerDefaultMine( tech.mcprison.prison.internal.CommandSender sender );
 	
+
+	public boolean isMineAccessibleByRank( Player player, ModuleElement mine );
+	
 	
 	public void autoCreateMineBlockAssignment();
 
 
 	public void autoCreateMineLinerAssignment();
+	
+	
+	public void autoCreateConfigureMines();
 	
 	
 	/** 
@@ -348,5 +354,8 @@ public interface Platform {
 	public List<String> getActiveFeatures();
 
 
+	public void dumpEventListenersBlockBreakEvents();
+	
+	public void dumpEventListenersPlayerChatEvents();
 	
 }

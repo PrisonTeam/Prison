@@ -75,8 +75,8 @@ public class BluesSemanticVersionDataTest
 		assertFalse(svData.isValid());
 		
 		svData = new BluesSemanticVersionData("3.2");
-		assertEquals("<fail>.<fail>.<fail> (invalid) [3.2]", svData.toString());
-		assertFalse(svData.isValid());
+		assertEquals("3.2.0 (valid) [3.2]", svData.toString());
+		assertTrue(svData.isValid());
 		
 		svData = new BluesSemanticVersionData("3.1-alpha");
 		assertEquals("<fail>.<fail>.<fail> (invalid) [3.1-alpha]", svData.toString());
@@ -166,6 +166,14 @@ public class BluesSemanticVersionDataTest
 		assertFalse( new BluesSpigetSemVerComparator().compareTo( "1.15.2", "1.9.0" ) < 0 );
 		assertTrue( new BluesSpigetSemVerComparator().compareTo( "1.9.0", "1.9.0" ) == 0 );
 		assertTrue( new BluesSpigetSemVerComparator().compareTo( "1.15.2", "1.9.0" ) > 0 );
+		
+		
+		// The following "should" assert to a value of true.
+		// When spigot releases a new Major version, they do not include the bug
+		// fix number.  Examples: 1.8, 1.9, 1.10, 1.11, 1.12, 1.13, 1.14, 1.15, 1.16, 1.17
+		svDataCheck = new BluesSemanticVersionData("1.17");
+		assertTrue(svDataCheck.isValid());
+
 		
 	}
 

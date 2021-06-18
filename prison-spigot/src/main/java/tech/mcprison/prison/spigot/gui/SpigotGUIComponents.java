@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
@@ -143,11 +144,20 @@ public abstract class SpigotGUIComponents {
         return SpigotPrison.getInstance().getGuiConfig();
     }
 
+    // Investigating on NPEs here.
     /**
      * Get autoFeatures Config.
      * */
     public static AutoFeaturesFileConfig afConfig() {
-        return SpigotPrison.getInstance().getAutoFeatures().getAutoFeaturesConfig();
+        if (AutoFeaturesWrapper.getInstance() == null){
+            return null;
+        }
+        try{
+            AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
+        } catch (NullPointerException ex){
+            return null;
+        }
+        return AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
     }
 
     /**

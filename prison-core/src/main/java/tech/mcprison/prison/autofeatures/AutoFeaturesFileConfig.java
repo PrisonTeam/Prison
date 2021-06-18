@@ -56,11 +56,8 @@ public class AutoFeaturesFileConfig {
 		    	
 		    	isCalculateDurabilityEnabled(general, false),
 		    	
-		    	isCalculateFortuneEnabled(general, true),
-		    	isCalculateFortuneOnAllBlocksEnabled(general, false),
-		    	maxFortuneLevel(general, 0),
-		    	
 		    	isCalculateSilkEnabled(general, true),
+		    	isCalculateDropAdditionsEnabled(general, true),
 		    	
 		    	isCalculateXPEnabled(general, true),
 		    	givePlayerXPAsOrbDrops(general, true),
@@ -92,71 +89,93 @@ public class AutoFeaturesFileConfig {
 				loreDurabiltyResistanceName(lore, "&dDurability Resistance&7"),
 				
 				
+			autoFeatures(options),
+				autoPickupEnabled(autoFeatures, true),
+				autoSmeltEnabled(autoFeatures, true),
+				autoBlockEnabled(autoFeatures, true),
+				
 			
 			normalDrop(options),
 			
-    			isProcessNormalDropsEvents(normalDrop, true),
+    			handleNormalDropsEvents(normalDrop, true),
     			normalDropSmelt(normalDrop, true),
     			normalDropBlock(normalDrop, true),
     			
-				
-	    	autoPickup(options),
-		    	autoPickupEnabled(autoPickup, true),
-		    	autoPickupLimitToMines(autoPickup, true),
-		    	autoPickupAllBlocks(autoPickup, true),
-		    	
-		    	autoPickupBlockNameListEnabled( autoPickup, false ),
-		    	autoPickupBlockNameList(autoPickup, NodeType.STRING_LIST,
-		    				"coal_block", "iron_ore"),
-		    	
-		    	autoPickupCobbleStone(autoPickup, true),
-		    	autoPickupStone(autoPickup, true),
-		    	autoPickupGoldOre(autoPickup, true),
-		    	autoPickupIronOre(autoPickup, true),
-		    	autoPickupCoalOre(autoPickup, true),
-		    	autoPickupDiamondOre(autoPickup, true),
-		    	autoPickupRedStoneOre(autoPickup, true),
-		    	autoPickupEmeraldOre(autoPickup, true),
-		    	autoPickupQuartzOre(autoPickup, true),
-		    	autoPickupLapisOre(autoPickup, true),
-		    	autoPickupSnowBall(autoPickup, true),
-		    	autoPickupGlowstoneDust(autoPickup, true),
+    			
+    		fortuneFeature(options),
+    			
+	    		isCalculateFortuneEnabled(fortuneFeature, true),
+	    		
+	    		fortuneMultiplierMax(fortuneFeature, 0 ),
+
+	    		
+	    		isExtendBukkitFortuneCalculationsEnabled(fortuneFeature, true),
+	    		extendBukkitFortuneFactorPercentRangeLow(fortuneFeature, 70 ),
+	    		extendBukkitFortuneFactorPercentRangeHigh(fortuneFeature, 110 ),
+	    		
+	    		
+	    		isCalculateAltFortuneEnabled(fortuneFeature, false),
+	    		isCalculateAltFortuneOnAllBlocksEnabled(fortuneFeature, false),
+	    		
+	    		
+
+	    		
+	    		
+	    	pickupFeature(options),
+		    	pickupLimitToMines(pickupFeature, true),
+		    	pickupAllBlocks(pickupFeature, true),
+			    	
+		    	pickupBlockNameListEnabled( pickupFeature, false ),
+		    	pickupBlockNameList(pickupFeature, NodeType.STRING_LIST,
+			    				"coal_block", "iron_ore"),
+			    	
+		    	pickupCobbleStone(pickupFeature, true),
+		    	pickupStone(pickupFeature, true),
+		    	pickupGoldOre(pickupFeature, true),
+		    	pickupIronOre(pickupFeature, true),
+		    	pickupCoalOre(pickupFeature, true),
+		    	pickupDiamondOre(pickupFeature, true),
+		    	pickupRedStoneOre(pickupFeature, true),
+		    	pickupEmeraldOre(pickupFeature, true),
+		    	pickupQuartzOre(pickupFeature, true),
+		    	pickupLapisOre(pickupFeature, true),
+		    	pickupSnowBall(pickupFeature, true),
+		    	pickupGlowstoneDust(pickupFeature, true),
+	    	
     	
-    	
-	    	autoSmelt(options),
-		    	autoSmeltEnabled(autoSmelt, true),
-		    	autoSmeltLimitToMines(autoSmelt, true),
-		    	autoSmeltAllBlocks(autoSmelt, true),
+	    	smeltFeature(options),
+		    	
+		    	smeltLimitToMines(smeltFeature, true),
+		    	smeltAllBlocks(smeltFeature, true),
 
 		    	
-		    	autoSmeltGoldOre(autoSmelt, true),
-		    	autoSmeltIronOre(autoSmelt, true),
-		    	autoSmeltCoalOre(autoSmelt, true),
-		    	autoSmeltDiamondlOre(autoSmelt, true),
-		    	autoSmeltEmeraldOre(autoSmelt, true),
-		    	autoSmeltLapisOre(autoSmelt, true),
-		    	autoSmeltRedstoneOre(autoSmelt, true),
-		    	autoSmeltNetherQuartzOre(autoSmelt, true),
-		    	autoSmeltAncientDebris(autoSmelt, true),
+		    	smeltGoldOre(smeltFeature, true),
+		    	smeltIronOre(smeltFeature, true),
+		    	smeltCoalOre(smeltFeature, true),
+		    	smeltDiamondlOre(smeltFeature, true),
+		    	smeltEmeraldOre(smeltFeature, true),
+		    	smeltLapisOre(smeltFeature, true),
+		    	smeltRedstoneOre(smeltFeature, true),
+		    	smeltNetherQuartzOre(smeltFeature, true),
+		    	smeltAncientDebris(smeltFeature, true),
 	   
 	    	
-	    	autoBlock(options),
-		    	autoBlockEnabled(autoBlock, true),
-		    	autoBlockLimitToMines(autoBlock, true),
-		    	autoBlockAllBlocks(autoBlock, true),
+	    	blockFeature(options),
+		    	autoBlockLimitToMines(blockFeature, true),
+		    	autoBlockAllBlocks(blockFeature, true),
 
 		    	
-		    	autoBlockGoldBlock(autoBlock, true),
-		    	autoBlockIronBlock(autoBlock, true),
-		    	autoBlockCoalBlock(autoBlock, true),
-		    	autoBlockDiamondBlock(autoBlock, true),
-		    	autoBlockRedstoneBlock(autoBlock, true),
-		    	autoBlockEmeraldBlock(autoBlock, true),
-		    	autoBlockQuartzBlock(autoBlock, true),
-		    	autoBlockPrismarineBlock(autoBlock, true),
-		    	autoBlockLapisBlock(autoBlock, true),
-		    	autoBlockSnowBlock(autoBlock, true),
-		    	autoBlockGlowstone(autoBlock, true),
+		    	autoBlockGoldBlock(blockFeature, true),
+		    	autoBlockIronBlock(blockFeature, true),
+		    	autoBlockCoalBlock(blockFeature, true),
+		    	autoBlockDiamondBlock(blockFeature, true),
+		    	autoBlockRedstoneBlock(blockFeature, true),
+		    	autoBlockEmeraldBlock(blockFeature, true),
+		    	autoBlockQuartzBlock(blockFeature, true),
+		    	autoBlockPrismarineBlock(blockFeature, true),
+		    	autoBlockLapisBlock(blockFeature, true),
+		    	autoBlockSnowBlock(blockFeature, true),
+		    	autoBlockGlowstone(blockFeature, true),
 		    	
 	    	debug(options),
 	    		isDebugSupressOnBlockBreakEventCancels(debug, false),
@@ -525,6 +544,19 @@ public class AutoFeaturesFileConfig {
 
     }
 
+    
+    public void reloadConfig() {
+    	// First clear the configs:
+    	getConfig().clear();
+    	
+    	
+    	// Load from the config file:
+    	YamlFileIO yamlFileIO = Prison.get().getPlatform().getYamlFileIO( getConfigFile() );
+		List<AutoFeatures> dne = yamlFileIO.loadYamlAutoFeatures( getConfig() );
+		
+		dne.size();
+    }
+    
 
 	/**
 	 * <p>This updates AutoFeatures with a String value.

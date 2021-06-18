@@ -132,7 +132,7 @@ public class BluesSpigetSemVerComparator
 		return results;
 	}
 	
-	private String getBukkitVersion() {
+	public String getBukkitVersion() {
 		// Minecraft version: git-Paper-21 (MC: 1.15)
 		
 		return getBukkitVersion( getBukkitVersionRaw() );
@@ -152,6 +152,10 @@ public class BluesSpigetSemVerComparator
 				results = currentVersion.substring( i + 4, len - 1 ).trim();
 			}
 		}
+		
+//		if ( results !=  null && "1.17".equals( results ) ) {
+//			results = "1.17.0";
+//		}
 		
 		return results;
 	}

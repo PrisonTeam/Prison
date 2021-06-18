@@ -1085,9 +1085,13 @@ public abstract class MineReset
 					}
 				}
 			}
+			
 
 			long stop = System.currentTimeMillis();
 			long elapsed = stop - start;
+			
+			// This ensures that the getRemainingBlockCount() is updated and is correct:
+			addBlockBreakCount( blocksChanged );
 			
 			getStatsMineSweeperTaskMs().add( elapsed );
 			
@@ -1136,12 +1140,12 @@ public abstract class MineReset
 					
 					// calculate the refresh interval, which is actually the submission delay for 
 					// running the task.  The ranks of the interval should be between 2 seconds 
-					// and 10 seconds.
+					// and 15 seconds.
 					int blockCount = getBounds().getTotalBlockCount();
 					int blockCurrent = getRemainingBlockCount();
 					double blockPercent = blockCurrent / ((double) blockCount);
 					
-					double taskDelaySec = 2.0d + (8.0d * blockPercent );
+					double taskDelaySec = 2.0d + (13.0d * blockPercent );
 					
 					long taskDelayTicks = (long) (taskDelaySec * 20.0d);
 					

@@ -47,6 +47,27 @@ import tech.mcprison.prison.util.Location;
 public class Mine 
 	extends MineScheduler 
 	implements PrisonSortable {
+	
+	
+	public enum MineType {
+		primary,
+		playerMines
+		;
+		
+		public static MineType fromString( String mineType ) {
+			MineType results = primary;
+			
+			if ( mineType != null && !mineType.trim().isEmpty() ) {
+				for ( MineType mt : values() ) {
+					if ( mt.name().equalsIgnoreCase( mineType ) ) {
+						results = mt;
+					}
+				}
+			}
+			
+			return results;
+		}
+	}
 
     /**
      * Creates a new, empty mine instance
@@ -67,9 +88,16 @@ public class Mine
      * @param selection
      */
     public Mine(String name, Selection selection) {
+    	this( name, selection, MineType.primary );
+    }
+    
+    public Mine(String name, Selection selection, MineType mineType) {
     	super();
     	
     	setName(name);
+    	
+    	setMineType( mineType );
+    	
     	if ( selection == null ) {
     		setVirtual( true );
     	}
@@ -186,11 +214,24 @@ public class Mine
         setTag( tag );
 
         
+        String mineType = (String) document.get("mineType");
+        if ( mineType == null ) {
+        	// If mineType was not saved, then it was a primary mine:
+        	mineType = MineType.primary.name();
+        	dirty = true;
+        }
+        setMineType( MineType.fromString( mineType ) );
+
+        
         String accessPerm = (String) document.get("accessPermission");
         setAccessPermission( (accessPerm == null || accessPerm.trim().isEmpty() ? null : accessPerm) );
         
-        
-        setVirtual( document.get("isVirtual") == null ? false : (boolean) document.get("isVirtual") );
+               
+    	setTpAccessByRank( document.get("tpAccessByRank") == null ? false : (boolean) document.get("tpAccessByRank") );
+    	setMineAccessByRank( document.get("mineAccessByRank") == null ? false : (boolean) document.get("mineAccessByRank") );
+
+    	
+    	setVirtual( document.get("isVirtual") == null ? false : (boolean) document.get("isVirtual") );
         
         
         Double sortOrder = (Double) document.get( "sortOrder" );
@@ -521,12 +562,19 @@ public class Mine
         ret.put("name", getName());
         
         ret.put( "isVirtual", isVirtual() );
+
+        ret.put( "tpAccessByRank", isTpAccessByRank() );
+        ret.put( "mineAccessByRank", isMineAccessByRank() );
         
         String accessPerm = getAccessPermission();
         ret.put( "accessPermission", accessPerm == null || accessPerm.trim().isEmpty() ? "" : accessPerm );
 
         ret.put( "tag", getTag() );
         ret.put( "sortOrder", getSortOrder() );
+
+        
+        ret.put( "mineType", getMineType().name() );
+        
         
         if ( !isVirtual() ) {
         	ret.put("minX", getBounds().getMin().getX());

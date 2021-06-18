@@ -3,7 +3,7 @@ main: tech.mcprison.prison.spigot.SpigotPrison
 version: "${version}"
 description: Prison is an all-in-one plugin for the Minecraft prison game mode.
 website: https://prison.jar-mc.com
-softdepend: [Essentials, Vault, ProtocolLib, LuckPerms, WorldEdit, WorldGuard, Multiverse-Core, Multiworld, MVdWPlaceholderAPI, PlaceholderAPI, PermissionsEx, GroupManagerX, GemsEconomy, TokenEnchant, CMI, CMILib, CMIPaperLib, mcMMO, PlotSquared, Multiverse, FastAsyncWorldEdit]
+softdepend: [Essentials, Vault, ProtocolLib, LuckPerms, WorldEdit, WorldGuard, Multiverse-Core, Multiworld, MVdWPlaceholderAPI, PlaceholderAPI, PermissionsEx, GroupManagerX, GemsEconomy, TokenEnchant, CMI, CMILib, CMIEInjector, CMIPaperLib, mcMMO, PlotSquared, Multiverse, FastAsyncWorldEdit]
 
 # Older versions than 1.13 will ignore this, but this will allow 1.13 and up to use newer block types?
 api-version: 1.13

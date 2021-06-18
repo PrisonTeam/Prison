@@ -26,7 +26,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.integration.IntegrationType;
-import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.modules.ModuleStatus;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
@@ -46,7 +46,7 @@ import tech.mcprison.prison.store.Database;
  * @author Faizaan A. Datoo
  */
 public class PrisonRanks 
-	extends Module {
+	extends PrisonRanksMessages {
 	
 	public static final String MODULE_NAME = "Ranks";
     /*
@@ -62,6 +62,8 @@ public class PrisonRanks
     
 	private List<String> prisonStartupDetails;
 	
+    private LocaleManager localeManager;
+    
 
     /*
      * Constructor
@@ -91,14 +93,17 @@ public class PrisonRanks
     public void enable() {
         instance = this;
 
+        this.localeManager = new LocaleManager(this, "lang/ranks");
+        
         if (!PrisonAPI.getIntegrationManager().hasForType(IntegrationType.ECONOMY)) {
             getStatus().setStatus(ModuleStatus.Status.FAILED);
-            getStatus().setMessage("&cNo economy plugin");
+            
+            getStatus().setMessage( prisonRanksFailureNoEconomyStatusMsg() );
             
             String integrationDebug = PrisonAPI.getIntegrationManager()
             			.getIntegrationDetails(IntegrationType.ECONOMY);
-            logStartupMessageError( "PrisonRanks.enable() - Failed - No Economy Plugin Active - " + 
-            			integrationDebug );
+            
+            logStartupMessageError( prisonRanksFailureNoEconomyMsg( integrationDebug ) );
             return;
         }
 
@@ -117,8 +122,10 @@ public class PrisonRanks
         } 
         catch (IOException e) {
         	getStatus().setStatus(ModuleStatus.Status.FAILED);
-            getStatus().addMessage("&cFailed Loading Ranks: " + e.getMessage());
-            logStartupMessageError("A rank file failed to load. " + e.getMessage());
+        	
+            getStatus().setMessage( prisonRanksFailureLoadingRankStatusMsg( e.getMessage() ) );
+
+            logStartupMessageError( prisonRanksFailureLoadingRanksMsg( e.getMessage() ) );
         }
 
         // Load up the ladders
@@ -130,8 +137,10 @@ public class PrisonRanks
         } 
         catch (IOException e) {
         	getStatus().setStatus(ModuleStatus.Status.FAILED);
-        	getStatus().addMessage("&cFailed Loading Loadders: " + e.getMessage());
-        	logStartupMessageError("A ladder file failed to load. " + e.getMessage());
+        	
+            getStatus().setMessage( prisonRanksFailureLoadingLadderStatusMsg( e.getMessage() ) );
+
+            logStartupMessageError( prisonRanksFailureLoadingLadderMsg( e.getMessage() ) );
         }
         createDefaultLadder();
 
@@ -153,8 +162,13 @@ public class PrisonRanks
         } 
         catch (IOException e) {
         	getStatus().setStatus(ModuleStatus.Status.FAILED);
-        	getStatus().addMessage("&cFailed Loading Players: " + e.getMessage());
-        	logStartupMessageError("A player file failed to load. " + e.getMessage());
+        	
+            getStatus().setMessage( prisonRanksFailureLoadingPlayersStatusMsg( e.getMessage() ) );
+
+            logStartupMessageError( prisonRanksFailureLoadingPlayersMsg( e.getMessage() ) );
+
+        	getStatus().addMessage( prisonRanksFailedLoadingPlayersMsg( e.getMessage() ));
+        	logStartupMessageError( prisonRanksFailedToLoadPlayFileMsg( e.getMessage() ));
         }
 
         // Load up the commands
@@ -181,10 +195,11 @@ public class PrisonRanks
         ConversionManager.getInstance().registerConversionAgent(new RankConversionAgent());
 
 
-        logStartupMessage("Loaded " + getRankCount() + " ranks.");
-        logStartupMessage("Loaded " + getladderCount() + " ladders.");
-        logStartupMessage("Loaded " + getPlayersCount() + " players.");
+        logStartupMessage( prisonRanksStatusLoadedRanksMsg( getRankCount() ) );
         
+        logStartupMessage( prisonRanksStatusLoadedLaddersMsg( getladderCount() ) );
+        
+        logStartupMessage( prisonRanksStatusLoadedPlayersMsg( getPlayersCount() ) );
         
 
         // Display all Ranks in each ladder:
@@ -211,11 +226,6 @@ public class PrisonRanks
      */
     @Override 
     public void disable() {
-//        try {
-//            rankManager.saveRanks();
-//        } catch (IOException e) {
-//            Output.get().logError("A ranks file failed to save.", e);
-//        }
     }
     
 
@@ -237,18 +247,22 @@ public class PrisonRanks
             RankLadder rankLadder = ladderManager.createLadder("default");
 
             if ( rankLadder == null ) {
-            	String message = "Failed to create a new default ladder, preexisting one not be found.";
-            	Output.get().logError(message);
-                super.getStatus().toFailed("&c" + message);
+            	
+            	String failureMsg = prisonRanksFailureCreateDefaultLadderMsg();
+            	
+            	Output.get().logError( failureMsg );
+                super.getStatus().toFailed( failureMsg );
                 return;
             }
 
             try {
                 ladderManager.saveLadder( rankLadder );
             } catch (IOException e) {
-            	String message = "Failed to save a new default ladder, preexisting one not be found.";
-            	Output.get().logError(message, e);
-                super.getStatus().toFailed("&c" + message);
+            	
+            	String failureMsg = prisonRanksFailureSavingDefaultLadderMsg();
+            	
+            	Output.get().logError( failureMsg );
+                super.getStatus().toFailed( failureMsg );
             }
         }
 
@@ -256,26 +270,27 @@ public class PrisonRanks
             RankLadder rankLadder = ladderManager.createLadder("prestiges");
 
             if ( rankLadder == null ) {
-                String message = "Failed to create a new prestiges ladder, preexisting one not be found.";
-                Output.get().logError(message);
-                super.getStatus().toFailed("&c" + message);
+
+            	String failureMsg = prisonRanksFailureCreatePrestigeLadderMsg();
+            	
+            	Output.get().logError( failureMsg );
+                super.getStatus().toFailed( failureMsg );
                 return;
             }
 
             try {
                 ladderManager.saveLadder( rankLadder );
             } catch (IOException e) {
-                String message = "Failed to save a new prestiges ladder, preexisting one not be found.";
-                Output.get().logError(message, e);
-                super.getStatus().toFailed("&c" + message);
+
+            	String failureMsg = prisonRanksFailureSavingPrestigeLadderMsg();
+            	
+            	Output.get().logError( failureMsg );
+                super.getStatus().toFailed( failureMsg );
             }
         }
 
     }
 
-    /*
-     * Getters & Setters
-     */
 
 
     private void logStartupMessageError( String message ) {
@@ -339,5 +354,9 @@ public class PrisonRanks
     	int playersCount = getPlayerManager() == null || getPlayerManager().getPlayers() == null ? 0 : 
     		getPlayerManager().getPlayers().size();
     	return playersCount;
+    }
+    
+    public LocaleManager getRanksMessages() {
+        return localeManager;
     }
 }

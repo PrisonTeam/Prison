@@ -17,22 +17,24 @@
 
 package tech.mcprison.prison.ranks;
 
+import java.io.IOException;
+import java.util.Optional;
+
 import com.google.common.eventbus.Subscribe;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.events.FirstJoinEvent;
 
-import java.io.IOException;
-import java.util.Optional;
-
 /**
  * Handles the players upon their first join.
  *
  * @author Faizaan A. Datoo
  */
-public class FirstJoinHandler {
+public class FirstJoinHandler
+		extends FirstJoinHandlerMessages {
 
     /*
      * Constructor
@@ -54,13 +56,15 @@ public class FirstJoinHandler {
         if (firstRank.isPresent()) {
             player.addRank(PrisonRanks.getInstance().getDefaultLadder(), firstRank.get());
         } else {
-            Output.get().logWarn("There are no ranks on the server! New player has no rank.");
+        	
+        	Output.get().logWarn( firstJoinWarningNoRanksOnServer() );
         }
 
         try {
             PrisonRanks.getInstance().getPlayerManager().savePlayer(player);
         } catch (IOException e) {
-            Output.get().logError("Could not save player files.", e);
+        	
+        	Output.get().logError( firstJoinErrorCouldNotSavePlayer(), e );
         }
     }
 

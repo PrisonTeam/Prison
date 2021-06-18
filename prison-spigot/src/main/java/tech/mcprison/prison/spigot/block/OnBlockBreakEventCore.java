@@ -28,7 +28,7 @@ import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.output.Output.DebugType;
+import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
@@ -51,6 +51,8 @@ public class OnBlockBreakEventCore
 	private AutoFeaturesWrapper autoFeatureWrapper = null;
 	
 	
+	private Boolean crazyEnchantEnabled;
+	
 	private Random random = new Random();
 	
 	
@@ -62,6 +64,8 @@ public class OnBlockBreakEventCore
 		this.prisonMineManager = null;
 		
 		this.teExplosionTriggerEnabled = true;
+		
+		this.crazyEnchantEnabled = null;
 	}
 	
 
@@ -247,8 +251,9 @@ public class OnBlockBreakEventCore
     		
     		debugInfo += "mine=" + (mine == null ? "none" : mine.getName()) + " ";
     		
-    		if ( mine != null && mine.isAccessPermissionEnabled() && 
-    				!e.getPlayer().hasPermission( mine.getAccessPermission() ) ) {
+
+    		if ( mine != null && (mine.isMineAccessByRank() || mine.isAccessPermissionEnabled()) && 
+    					!mine.hasMiningAccess( new SpigotPlayer( e.getPlayer() ) ) ) {
     			// The player does not have permission to access this mine, so do not process 
     			// 
     			
@@ -276,7 +281,7 @@ public class OnBlockBreakEventCore
     		}
     		
     		// This is where the processing actually happens:
-    		else if ( mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines ) ) {
+    		else if ( mine != null || mine == null && !isBoolean( AutoFeatures.pickupLimitToMines ) ) {
     			
     			// Set the mine's PrisonBlockTypes for the block. Used to identify custom blocks.
     			// Needed since processing of the block will lose track of which mine it came from.
@@ -316,7 +321,7 @@ public class OnBlockBreakEventCore
     		
     	}
     	
-    	Output.get().logDebug( DebugType.blockbreak, debugInfo );
+    	Output.get().logDebug( DebugTarget.blockBreak, debugInfo );
 	}
 
 
@@ -380,8 +385,8 @@ public class OnBlockBreakEventCore
     		
     		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
     		
-    		if ( mine != null && mine.isAccessPermissionEnabled() && 
-    				!e.getPlayer().hasPermission( mine.getAccessPermission() ) ) {
+    		if ( mine != null && (mine.isMineAccessByRank() || mine.isAccessPermissionEnabled()) && 
+    					!mine.hasMiningAccess( new SpigotPlayer( e.getPlayer() ) ) ) {
     			// The player does not have permission to access this mine, so do not process 
     			// 
     			
@@ -440,7 +445,7 @@ public class OnBlockBreakEventCore
     		
     		// now process all blocks (non-monitor):
     		else if ( isTEExplosiveEnabled && 
-    				( mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines )) ) {
+    				( mine != null || mine == null && !isBoolean( AutoFeatures.pickupLimitToMines )) ) {
     			
     			// have to go through all blocks since some blocks may be outside the mine.
     			// but terminate search upon first find:
@@ -494,7 +499,7 @@ public class OnBlockBreakEventCore
     			
     	}
     	
-    	Output.get().logDebug( DebugType.blockbreak, debugInfo );
+    	Output.get().logDebug( DebugTarget.blockBreak, debugInfo );
 	}
 
 
@@ -626,8 +631,8 @@ public class OnBlockBreakEventCore
 			
 			boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
     		
-			if ( mine != null && mine.isAccessPermissionEnabled() && 
-    				!e.getPlayer().hasPermission( mine.getAccessPermission() ) ) {
+			if ( mine != null && (mine.isMineAccessByRank() || mine.isAccessPermissionEnabled()) && 
+						!mine.hasMiningAccess( new SpigotPlayer( e.getPlayer() ) ) ) {
     			// The player does not have permission to access this mine, so do not process 
     			// 
 
@@ -682,7 +687,7 @@ public class OnBlockBreakEventCore
 
     		// now process all blocks (non-monitor):
     		else if ( isCEBlockExplodeEnabled && 
-    				( mine != null || mine == null && !isBoolean( AutoFeatures.autoPickupLimitToMines )) ) {
+    				( mine != null || mine == null && !isBoolean( AutoFeatures.pickupLimitToMines )) ) {
     			
     			// have to go through all blocks since some blocks may be outside the mine.
     			// but terminate search upon first find:
@@ -737,7 +742,7 @@ public class OnBlockBreakEventCore
 
 		}
     	
-    	Output.get().logDebug( DebugType.blockbreak, debugInfo );
+    	Output.get().logDebug( DebugTarget.blockBreak, debugInfo );
 
 	}
 	
@@ -794,7 +799,7 @@ public class OnBlockBreakEventCore
 		
 		// Do not have to check if auto manager is enabled because it isn't if it's calling this function:
 //			boolean isAutoManagerEnabled = aMan.isBoolean( AutoFeatures.isAutoManagerEnabled );
-		boolean isProcessNormalDropsEnabled = isBoolean( AutoFeatures.isProcessNormalDropsEvents );
+		boolean isProcessNormalDropsEnabled = isBoolean( AutoFeatures.handleNormalDropsEvents );
 		
 		
 		if ( isProcessNormalDropsEnabled ) {
@@ -1219,15 +1224,14 @@ public class OnBlockBreakEventCore
 			int maxDurability = compat.getDurabilityMax( itemInHand );
 			int durability = compat.getDurability( itemInHand );
 			
+			short damage = 1;  // Generally 1 unless instant break block then zero.
 			
-			Output.get().logDebug( DebugType.durability, "calculateAndApplyDurability: maxDurability=" + 
-							maxDurability + " durability=" + durability + "  inHand=" + 
-							itemInHand.getName() );
+			int durabilityLevel = 0;
+			boolean toolBreak = false;
 			
 			// Need to skip processing on empty item stacks and items that have no max durability
 			if ( maxDurability > 0 ) {
 				
-				short damage = 1;  // Generally 1 unless instant break block then zero.
 				
 				if ( durabilityResistance >= 100 ) {
 					damage = 0;
@@ -1238,7 +1242,7 @@ public class OnBlockBreakEventCore
 				}
 				
 				if ( damage > 0 && itemInHand.getBukkitStack().containsEnchantment( Enchantment.DURABILITY)) {
-					int durabilityLevel = itemInHand.getBukkitStack().getEnchantmentLevel( Enchantment.DURABILITY );
+					durabilityLevel = itemInHand.getBukkitStack().getEnchantmentLevel( Enchantment.DURABILITY );
 					
 					// the chance of losing durability is 1 in (1+level)
 					// So if the random int == 0, then take damage, otherwise none.
@@ -1257,6 +1261,7 @@ public class OnBlockBreakEventCore
 					if (newDurability > maxDurability) {
 						// Item breaks! ;(
 						compat.breakItemInMainHand( player );
+						toolBreak = true;
 					} else {
 						compat.setDurability( itemInHand, newDurability );
 					}
@@ -1265,6 +1270,16 @@ public class OnBlockBreakEventCore
 			}
 			
 			
+			if ( Output.get().isDebug( DebugTarget.durability ) ) {
+
+				String message = String.format( "calculateAndApplyDurability: %s:  maxDurability= %d  " + 
+						"durability: %d  damage: %d  durResistance: %d  toolDurabilityLvl: %d  %s", 
+						itemInHand.getName(), maxDurability, durability, damage, 
+						durabilityResistance, durabilityLevel, 
+						(toolBreak ? "[Broke]" : "") );
+				
+				Output.get().logDebug( DebugTarget.durability, message );
+			}
 			
 		}
 	}
@@ -1447,10 +1462,23 @@ public class OnBlockBreakEventCore
 	private int checkCrazyEnchant( Player player, Block block, ItemStack item ) {
 		int bonusXp = 0;
 		
-		if ( item != null && IntegrationCrazyEnchantmentsPickaxes.getInstance().isEnabled() ) {
+		try {
+			if ( isCrazyEnchantEnabled() == null ) {
+				Class.forName( 
+						"tech.mcprison.prison.spigot.integrations.IntegrationCrazyEnchantmentsPickaxes", false, 
+						this.getClass().getClassLoader() );
+				setCrazyEnchantEnabled( Boolean.TRUE );
+			}
 			
-			bonusXp = IntegrationCrazyEnchantmentsPickaxes.getInstance()
+			if ( isCrazyEnchantEnabled() != null && isCrazyEnchantEnabled().booleanValue() && 
+					item != null && IntegrationCrazyEnchantmentsPickaxes.getInstance().isEnabled() ) {
+				
+				bonusXp = IntegrationCrazyEnchantmentsPickaxes.getInstance()
 						.getPickaxeEnchantmentExperienceBonus( player, block, item );
+			}
+		}
+		catch ( NoClassDefFoundError | Exception e ) {
+			setCrazyEnchantEnabled( Boolean.FALSE );
 		}
 		
 		return bonusXp;
@@ -1517,6 +1545,13 @@ public class OnBlockBreakEventCore
 
 	public Random getRandom() {
 		return random;
+	}
+
+	public Boolean isCrazyEnchantEnabled() {
+		return crazyEnchantEnabled;
+	}
+	public void setCrazyEnchantEnabled( Boolean crazyEnchantEnabled ) {
+		this.crazyEnchantEnabled = crazyEnchantEnabled;
 	}
 
 

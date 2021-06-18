@@ -21,7 +21,7 @@ public class RankUpEvent {
     private Rank newRank;
     private double cost;
     
-    private RankupCommands commad;
+    private RankupCommands command;
     private PromoteForceCharge forceCharge;
 
     private boolean canceled = false;
@@ -41,7 +41,7 @@ public class RankUpEvent {
         this.newRank = newRank;
         this.cost = cost;
         
-        this.commad = rankupCommand;
+        this.command = rankupCommand;
         this.forceCharge = forceCharge;
     }
 
@@ -82,8 +82,8 @@ public class RankUpEvent {
     }
 
 
-	public RankupCommands getCommad() {
-		return commad;
+	public RankupCommands getCommand() {
+		return command;
 	}
 
 

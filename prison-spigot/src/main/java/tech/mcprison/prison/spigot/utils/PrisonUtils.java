@@ -214,6 +214,20 @@ public abstract class PrisonUtils
 		return results;
 	}
 
+	public int parseInt(String s){
+		int number = 0;
+
+		if ( s != null && !s.trim().isEmpty() ) {
+			
+			try{
+				number = Integer.parseInt(s);
+			}catch(NumberFormatException ex){
+				ex.printStackTrace();
+			}
+		}
+
+		return number;
+	}
 	
 	public String getPluginName() {
 		return pluginName;
@@ -235,6 +249,4 @@ public abstract class PrisonUtils
 	public void setPluginVersion( String pluginVersion ) {
 		this.pluginVersion = pluginVersion;
 	}
-
-	
 }

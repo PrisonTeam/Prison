@@ -26,6 +26,9 @@ import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.MultiLineChart;
+import org.bstats.charts.SimpleBarChart;
+import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.SimpleCommandMap;
@@ -52,6 +55,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.managers.RankManager;
+import tech.mcprison.prison.spigot.autofeatures.AutoManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.backpacks.BackpacksListeners;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
@@ -60,10 +64,12 @@ import tech.mcprison.prison.spigot.commands.PrisonSpigotGUICommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotMinesCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotPrestigeCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotRanksCommands;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.Spigot113;
 import tech.mcprison.prison.spigot.compat.Spigot18;
 import tech.mcprison.prison.spigot.compat.Spigot19;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.configs.BackpacksConfig;
 import tech.mcprison.prison.spigot.configs.GuiConfig;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
@@ -79,8 +85,8 @@ import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
-import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.slime.SlimeBlockFunEventListener;
+import tech.mcprison.prison.spigot.spiget.BluesSemanticVersionData;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.utils.PrisonUtilsModule;
 
@@ -156,19 +162,48 @@ public class SpigotPrison extends JavaPlugin {
 
     @Override
     public void onEnable() {
+    	
+    	
     	config = this;
         this.saveDefaultConfig();
         debug = getConfig().getBoolean("debug", false);
 
         initDataDir();
         initCommandMap();
+        this.compatibility = SpigotCompatibility.getInstance();
         initCompatibility();
         initUpdater();
         
         this.scheduler = new SpigotScheduler(this);
 
         Prison.get().init(new SpigotPlatform(this), Bukkit.getVersion());
-        Prison.get().getLocaleManager().setDefaultLocale(getConfig().getString("default-language", "en_US"));
+        Prison.get().getLocaleManager().setDefaultLocale(
+        			getConfig().getString("default-language", "en_US"));
+        
+        
+        
+    	boolean delayedCMIStartup = getConfig().getBoolean("delayedCMIStartup", false);
+    	
+    	if ( !delayedCMIStartup ) {
+    		onEnableStartup();
+    	}
+    	else {
+    		onEnableDelayedStartCMI();
+    	}
+    	
+    }
+    
+    
+    protected void onEnableDelayedStartCMI() {
+    	
+    	SpigotPrisonCMIDelayedStartupTask delayedStartupTask = new SpigotPrisonCMIDelayedStartupTask( this );
+    	delayedStartupTask.submit();
+    }
+    
+    	
+   protected void onEnableStartup() {
+	   
+
         
         // Manually register Listeners with Bukkit:
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
@@ -187,15 +222,20 @@ public class SpigotPrison extends JavaPlugin {
 
         initIntegrations();
         
-        // NOTE: Put all commands within the initModulesAndCommands() function.
-        initModulesAndCommands();
-        
-        applyDeferredIntegrationInitializations();
         
         
-        // After all the integrations have been loaded and the deferred tasks ran, 
-        // then run the deferred Module setups:
-        initDeferredModules();
+        // This is the loader for modules and commands:
+        enableModulesAndCommands();
+        
+//        // NOTE: Put all commands within the initModulesAndCommands() function.
+//        initModulesAndCommands();
+//        
+//        applyDeferredIntegrationInitializations();
+//        
+//        
+//        // After all the integrations have been loaded and the deferred tasks ran, 
+//        // then run the deferred Module setups:
+//        initDeferredModules();
         
         
         // The BlockBreakEvents must be registered after the mines and ranks modules have been enabled:
@@ -279,6 +319,14 @@ public class SpigotPrison extends JavaPlugin {
     }
     
     public AutoManagerFeatures getAutoFeatures() {
+    	if ( autoFeatures == null ) {
+    		// None of the event listeners have been registered so auto features has not 
+    		// been setup.  The following line will allow it to be setup so the setting can be accessed.
+    		// The proper way to access the settings are through... 
+    		//     AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig()
+    		new AutoManager();
+    	}
+    	
 		return autoFeatures;
 	}
 
@@ -312,14 +360,20 @@ public class SpigotPrison extends JavaPlugin {
     	return format == null ? null : ChatColor.stripColor(format);
     }
     
+    /**
+     * <p>bStats reporting</p>
+     * 
+     * https://github.com/Bastian/bStats-Metrics/tree/master/base/src/main/java/org/bstats/charts
+     * 
+     */
     private void initMetrics() {
         if (!getConfig().getBoolean("send-metrics", true)) {
             return; // Don't check if they don't want it
         }
-        Metrics metrics = new Metrics(this);
+        Metrics metrics = new Metrics( this, 657 );
 
         // Report the modules being used
-        metrics.addCustomChart(new Metrics.SimpleBarChart("modules_used", () -> {
+        metrics.addCustomChart(new SimpleBarChart("modules_used", () -> {
             Map<String, Integer> valueMap = new HashMap<>();
             for (Module m : PrisonAPI.getModuleManager().getModules()) {
                 valueMap.put(m.getName(), 1);
@@ -329,7 +383,7 @@ public class SpigotPrison extends JavaPlugin {
 
         // Report the API level
         metrics.addCustomChart(
-                new Metrics.SimplePie("api_level", () -> "API Level " + Prison.API_LEVEL));
+                new SimplePie("api_level", () -> "API Level " + Prison.API_LEVEL));
         
         Optional<Module> prisonMinesOpt = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
         Optional<Module> prisonRanksOpt = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
@@ -338,7 +392,7 @@ public class SpigotPrison extends JavaPlugin {
         int rankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getRankCount()).orElse(0);
         int ladderCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getladderCount()).orElse(0);
         
-        metrics.addCustomChart(new Metrics.MultiLineChart("mines_ranks_and_ladders", new Callable<Map<String, Integer>>() {
+        metrics.addCustomChart(new MultiLineChart("mines_ranks_and_ladders", new Callable<Map<String, Integer>>() {
             @Override
             public Map<String, Integer> call() throws Exception {
                 Map<String, Integer> valueMap = new HashMap<>();
@@ -400,19 +454,36 @@ public class SpigotPrison extends JavaPlugin {
         }
     }
 
+    /**
+     * Priority of defaulting to Spigot113 if an unknown version.
+     */
     private void initCompatibility() {
     	
-    	if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.9.0") < 0 ) {
-            compatibility = new Spigot18();
-        } 
-    	else if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.13.0") < 0 ) {
-            compatibility = new Spigot19();
-        }
-    	else {
+    	String bukkitVersion =  new BluesSpigetSemVerComparator().getBukkitVersion();
+    	
+    	if ( bukkitVersion == null ) {
+    		
     		compatibility = new Spigot113();
     	}
+    	else {
 
-        getLogger().info("Using version adapter " + compatibility.getClass().getName());
+    		BluesSemanticVersionData svData = new BluesSemanticVersionData( bukkitVersion );
+    		
+    		if ( svData.compareTo( new BluesSemanticVersionData( "1.9.0" ) ) < 0 ) {
+    			
+    			compatibility = new Spigot18();
+    		}
+    		else if ( svData.compareTo( new BluesSemanticVersionData( "1.13.0" ) ) < 0 ) {
+    			
+    			compatibility = new Spigot19();
+    		}
+    		else {
+    			
+    			compatibility = new Spigot113();
+    		}
+    	}
+
+    	Output.get().logInfo("Using version adapter " + compatibility.getClass().getName());
     }
 
 	private void initIntegrations() {
@@ -435,6 +506,10 @@ public class SpigotPrison extends JavaPlugin {
 //        registerIntegration(new WorldGuard7Integration());
     }
 
+	protected boolean isIntegrationRegistered( Integration integration ) {
+		
+    	return Bukkit.getPluginManager().isPluginEnabled(integration.getProviderName());
+	}
 	
 	/**
 	 * <p>This "tries" to reload the placeholder integrations, which may not
@@ -457,7 +532,7 @@ public class SpigotPrison extends JavaPlugin {
     
     private void registerIntegration(Integration integration) {
 
-    	boolean isRegistered = Bukkit.getPluginManager().isPluginEnabled(integration.getProviderName());
+    	boolean isRegistered = isIntegrationRegistered( integration );
     	String version = ( isRegistered ? Bukkit.getPluginManager()
     									.getPlugin( integration.getProviderName() )
     											.getDescription().getVersion() : null );
@@ -465,6 +540,39 @@ public class SpigotPrison extends JavaPlugin {
     	PrisonAPI.getIntegrationManager().register(integration, isRegistered, version );
     }
 
+    
+    private void enableModulesAndCommands() {
+    	
+        // NOTE: Put all commands within the initModulesAndCommands() function.
+        initModulesAndCommands();
+        
+        applyDeferredIntegrationInitializations();
+        
+        
+        // After all the integrations have been loaded and the deferred tasks ran, 
+        // then run the deferred Module setups:
+        initDeferredModules();
+
+    }
+    
+    private void disableModulesAndCommands() {
+    	
+    	for ( Module module : Prison.get().getModuleManager().getModules() ) {
+    		if ( module.isEnabled() ) {
+    			module.disable();
+    		}
+    	}
+    	
+    	Prison.get().getCommandHandler().getAllRegisteredCommands();
+    }
+    
+    public void resetModulesAndCommands() {
+    	
+    	disableModulesAndCommands();
+    	
+    	enableModulesAndCommands();
+    }
+    
     /**
      * This function registers all of the modules in prison.  It should also manage
      * the registration of "extra" commands that are outside of the modules, such
@@ -624,7 +732,11 @@ public class SpigotPrison extends JavaPlugin {
     	}
     }
     
-    public Compatibility getCompatibility() {
+    public SpigotScheduler getScheduler() {
+		return scheduler;
+	}
+
+	public Compatibility getCompatibility() {
     	return compatibility;
     }
     

@@ -16,6 +16,7 @@ import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
+import tech.mcprison.prison.mines.data.Mine.MineType;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineLinerData;
 import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
@@ -43,11 +44,18 @@ public abstract class MineData
 	private boolean enabled = false;
 	private boolean virtual = false;
 	
+	private MineType mineType;
+	private MineGroup mineGroup;
 	
 	private String accessPermission = null;
 	
 	
 	private boolean useNewBlockModel = false;
+	
+	
+	private boolean tpAccessByRank = true;
+	private boolean mineAccessByRank = true;
+	
 	
 	/**
 	 * A sortOrder of -1 means it should be excluded from most mine listings.
@@ -428,6 +436,8 @@ public abstract class MineData
     	//this.worldName = bounds.getMin().getWorld().getName();
     }
 
+    
+    
     public List<BlockOld> getBlocks() {
         return blocks;
     }
@@ -848,10 +858,92 @@ public abstract class MineData
     }
 
     
-    public boolean hasAccess( Player player ) {
-    	return isAccessPermissionEnabled() ? 
-    				player.hasPermission( getAccessPermission() ) : false;
+    /**
+     * <p>This checks to see if the player has access to be TP'd to the mine.
+     * The preferred way to grant access is to enable the the setting MineAccessibleByRank
+     * so access will be rank related and will not be based upon outside permissions.
+     * </p>
+     * 
+     * <p>As an alternative, and to support older configurations, the players can have 
+     * the admin perm 'mines.tp' which will grant them access to all mines.
+     * Or if they have the mine specific permission of 'mines.tp.<mineName>'.
+     * Use of permissions is strongly discouraged due to many possible issues with
+     * external permission plugins that are beyond our control.
+     * </p>
+     * 
+     * <p>If isTpAccessByRank() is enabled, then the permissions for players will never
+     * be checked.  Admins with the permission of 'mines.tp' will always be valid, 
+     * no matter if isTpAccessByRank() is enabled.
+     * </p>
+     * 
+     * <p>Please note that TP access checks are not needed, nor performed, if console or an
+     * op'd player TPs someone else.  The fact that they are console, or OP, overrides the
+     * need to check if they can be TP'd to the specified mine.
+     * </p>
+     * 
+     * @param player
+     * @return
+     */
+    public boolean hasTPAccess( Player player ) {
+    	boolean results = false;
+    	
+    	String minePermission = "mines.tp." + getName().toLowerCase();
+    	
+    	if ( isTpAccessByRank() && Prison.get().getPlatform().isMineAccessibleByRank( player, this ) ||
+    			player.hasPermission("mines.tp") || 
+    			!isTpAccessByRank() && player.hasPermission( minePermission ) ) {
+    		
+    		results = true;
+    	}
+    	
+    	return results;
     }
+    
+    /**
+     * <p>This function identifies if the player has access to the mine for mining purposes.
+     * The preferred way to grant access is to enable the the setting MineAccessibleByRank
+     * so access will be rank related and will not be based upon outside permissions.
+     * </p>
+     * 
+     * <p>As an alternative, and to support older configurations, the players can use the
+     * specific permission as defined by the admins for the Mine Access Permission.
+     * Use of permissions is strongly discouraged due to many possible issues with
+     * external permission plugins that are beyond our control.
+     * </p>
+     *     
+     * <p>If isMineAccessByRank() is enabled, then the permissions for mine access will never
+     * be checked; it has to be disabled for the permissions for Mine Access Permission.
+     * </p>
+     * 
+     * <p>NOTE: The following is not valid because there may be another way perms are used
+     * for accessing the mine, but this is a good way to check access if accessByRank and 
+     * MineAccessByPerms is enabled.
+     * <strike>If both isMineAccessByRank() and isAccessPermissionEnabled() are both disabled, then
+     * it is assumed that something else external to prison will be managing the access so this
+     * to the mine, function should allow the player to have access.</strike>
+     * </p>
+     * 
+     * @param player
+     * @return
+     */
+    public boolean hasMiningAccess( Player player ) {
+    	boolean results = false;
+    	
+    	if ( isMineAccessByRank() && 
+				Prison.get().getPlatform().isMineAccessibleByRank( player, this ) ||
+				!isMineAccessByRank() &&
+    					isAccessPermissionEnabled() && player.hasPermission( getAccessPermission() ) 
+    					
+    			/// Note: the following cannot be added here since it will grant access if both are disabled
+    			//		|| !isMineAccessByRank() && !isAccessPermissionEnabled() 
+    			 ) {
+
+    		results = true;
+    	}
+    				
+    	return results;
+    }
+    
     public boolean isAccessPermissionEnabled() {
     	return accessPermission != null && !accessPermission.trim().isEmpty();
     }
@@ -862,6 +954,34 @@ public abstract class MineData
 		this.accessPermission = accessPermission;
 	}
 	
+
+	public MineType getMineType() {
+		return mineType;
+	}
+	public void setMineType( MineType mineType ) {
+		this.mineType = mineType;
+	}
+
+	public MineGroup getMineGroup() {
+		return mineGroup;
+	}
+	public void setMineGroup( MineGroup mineGroup ) {
+		this.mineGroup = mineGroup;
+	}
+
+	public boolean isTpAccessByRank() {
+		return tpAccessByRank;
+	}
+	public void setTpAccessByRank( boolean tpAccessByRank ) {
+		this.tpAccessByRank = tpAccessByRank;
+	}
+
+	public boolean isMineAccessByRank() {
+		return mineAccessByRank;
+	}
+	public void setMineAccessByRank( boolean mineAccessByRank ) {
+		this.mineAccessByRank = mineAccessByRank;
+	}
 
 	/**
      * Gets the spawn for this mine

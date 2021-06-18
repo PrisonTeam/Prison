@@ -35,7 +35,8 @@ import tech.mcprison.prison.store.Document;
  *
  * @author Faizaan A. Datoo
  */
-public class LadderManager {
+public class LadderManager
+		extends LadderManagerMessages {
 
     /*
      * Fields & Constants
@@ -144,11 +145,10 @@ public class LadderManager {
     		success = true;
     	}
     	catch ( IOException e ) {
-    		String message = String.format( "&cLadderManager.saveLadder: Failed to save the ladder. &7%s " +
-    				"&3Error= [&7%s&3]", 
-    						ladder.getName(), e.getMessage() );
     		
-    		Output.get().logError( message, e );
+    		String errorMessage = cannotSaveLadderFile( ladder.getName(), e.getMessage() );
+    		
+    		Output.get().logError( errorMessage, e );
     	}
     	
     	return success;

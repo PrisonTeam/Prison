@@ -241,11 +241,12 @@ public class OnBlockBreakEventListener
     }
     
     
-    public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
+    public void onCrazyEnchantsBlockExplodeLow( Object obj ) {
     	
-    	boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
+    	boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
     	
-    	if ( isTEExplosiveEnabled ) {
+    	if ( isCEBlockExplodeEnabled ) {
+    		BlastUseEvent e = (BlastUseEvent) obj;
     		
     		genericBlockExplodeEvent( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
     	}

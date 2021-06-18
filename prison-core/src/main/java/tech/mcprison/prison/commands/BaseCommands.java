@@ -50,7 +50,8 @@ public abstract class BaseCommands
 	public Player getPlayer( CommandSender sender, String playerName, UUID uuid ) {
 		Player result = null;
 		
-		playerName = playerName != null ? playerName : sender != null ? sender.getName() : null;
+		playerName = playerName != null && !playerName.trim().isEmpty() ? 
+								playerName : sender != null ? sender.getName() : null;
 		
 		//Output.get().logInfo("RanksCommands.getPlayer :: playerName = " + playerName );
 		

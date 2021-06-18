@@ -5,18 +5,18 @@
 
 ## Project Related
 
-* **[Prison README.md](README.md)**
-* **[Prison LICENSE.md](LICENSE.md)**
-* **[Prison Change logs](changelog_v3.2.x.md)** Detailed changes to prison.
-* **[Prison Known Issues](knownissues_v3.2.x.md)** Known Issues and To Do's.
+* **[Prison README](prison_readme.md)** High level information, plus how to use with gradle builds.
+* **[Prison License](prison_license.md)** GNU General Public License
+* **[Prison Change logs](changelog_v3.3.x.md)** Detailed changes to prison.
+* **[Prison Known Issues](knownissues_v3.3.x.md)** Known Issues and To Do's.
 * **[Prison Discord Server](https://discord.gg/DCJ3j6r)** Get help here.
 
 
-* **[Most Recent Version of Prison Documentation](https://github.com/PrisonTeam/Prison/blob/bleeding/docs/prison_docs_000_toc.md)** Docs change frequently, but GITHUG's master versions do not. These are the latest docs!
+* **[Most Recent Version of Prison Documentation : Table of Contents](https://prisonteam.github.io/Prison/prison_docs_000_toc.html)** Docs change frequently, so the bleeding branch is tracked for Prison's online docs to keep them up to date.
 
 
 ## Build logs
- - **[v3.3.0.alpha.1 - Current](changelog_v3.3.x.md)**
+ - **[v3.3.0.alpha.3 - Current](changelog_v3.3.x.md)**
  - **[v3.2.0 - 2019-12-03](prison_changelog_v3.2.0.md)**&nbsp;&nbsp;
 **[v3.2.1 - 2020-09-27](prison_changelog_v3.2.1.md)**&nbsp;&nbsp;
 **[v3.2.2 - 2020-11-21](prison_changelog_v3.2.2.md)**&nbsp;&nbsp;
@@ -24,8 +24,18 @@
 **[v3.2.4 - 2021-03-01](prison_changelog_v3.2.4.md)**&nbsp;&nbsp;
 **[v3.2.5 - 2021-04-01](prison_changelog_v3.2.5.md)**&nbsp;&nbsp;
 **[v3.2.6 - 2021-04-11](prison_changelog_v3.2.6.md)**&nbsp;&nbsp;
-**[v3.2.7 - 2021-05-02](prison_changelog_v3.2.7.md)**
+**[v3.2.7 - 2021-05-02](prison_changelog_v3.2.7.md)**&nbsp;&nbsp;
+**[v3.2.8 - 2021-06-17](prison_changelog_v3.2.8.md)**
 
+
+ 
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
+
+
+# Prison Now Fully Supports Spigot 1.17 and Java 16 !!
+
+
+## Prison now has Access By Rank to Reduce the number of Permissions needed!
  
  
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
@@ -34,7 +44,15 @@
 
 [Prison Auto Configure / Prison Quick Start!](prison_docs_100_setting_up_auto_configure.md)
 
-Prison now has a new set of features that can help you get up and running faster than ever!  `/ranks autoConfigure`. It can auto create your ranks and virtual mines, A through Z, it will link the mines to the ranks, setup the basic rank commands to provide basic access permissions for your players.  It will also setup the Mine Access Permissions and assign blocks of increasing values to all mines.  Once it generates all the virtual mines, all you need to do is to use the command `/mines set area help` on all mines to make them physical mines and then prison will be ready to use.  Plus there are many new features to help provide the finishing touches in almost no time.
+Prison now has a new set of features that can help you get up and running faster than ever!  
+
+
+Before you try to setup Prison, you really need to install an Economy or the Ranks module will not be enabled.  It is strongly suggested you install the following plugins:  Vault, EssentialsX, EssentialsX-Chat, PlaceholderAPI, LuckPerms, WorldEdit, WorldGuard (or Fast Async World Edit, FAWE, on newer versions of Spigot).
+
+
+`/ranks autoConfigure`. It can auto create your ranks and virtual mines, A through Z, it will link the mines to the ranks, setup the Mine Access By Rank and TP Access By Rank.  It will also setup the Mine as a Virtual Mine will and assign blocks of increasing values to all mines.  Each mine will also be assigned a random liner.  The Ranks autoConfigure will also enable sellall and load over 90 default blocks for your shop.
+
+Once it generates all the virtual mines, all you need to do is to use the command `/mines set area help` on all mines to make them physical mines and then prison will be ready to use.  Plus there are many new features to help provide the finishing touches in almost no time.
  
  - `/ranks autoConfigure`
  - `/mines set area help`
@@ -42,12 +60,20 @@ Prison now has a new set of features that can help you get up and running faster
  - `/mines set size help`
  - `/mines set liner help`
  
+ 
+ To protect your world, you need to use the following WorldGuard command:
+ 
+ ```
+/rg flag __global__ passthrough deny
+ ```
+ 
  [Prison Auto Configure / Prison Quick Start Guide!](prison_docs_100_setting_up_auto_configure.md)
 
 
  
 
 <hr style="height:5px; border:none; color:#aaf; background-color:#aaf;">
+
 
 # Table of Contents for this Document
 
@@ -60,7 +86,9 @@ Prison now has a new set of features that can help you get up and running faster
 * [Guides - Configuring Other Plugins for Prison](#guides-configuring-other-plugins-for-prison)
 * [Guides - FAQs](#guides-faqs)
 
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+<hr style="height:5px; border:none; color:#aaf; background-color:#aaf;">
 
 
 
@@ -249,6 +277,7 @@ Get your prison setup quickly by running the command `/ranks autoCommand` which 
 
 
 * [Guide: Prison APIs](prison_docs_318_prison_APIs.md) 
+Prison's APIs and Events to help customize Prison.  Ideal for plugins using prison and to help customize how prison works on your server.
 
 
 

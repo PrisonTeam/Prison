@@ -20,11 +20,10 @@ group 'tech.mcprison'
 
 apply plugin: 'java'
 
-sourceCompatibility = 1.8
+//sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
-    jcenter()
 
 	// net.luckperm.api:
     maven { url = "https://hub.spigotmc.org/nexus/content/groups/public" }
@@ -34,20 +33,19 @@ repositories {
     maven { url = "https://repo.lucko.me/" }
 
     maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
-    maven { url = "http://nexus.hc.to/content/repositories/pub_releases" }
+    maven { url = "https://nexus.hc.to/content/repositories/pub_releases" }
     
     maven { url = "https://repo.codemc.org/repository/maven-public/" }
     //maven { url = "https://repo.inventivetalent.org/content/groups/public/" }
     
     maven { 
-    	url = "http://repo.mvdw-software.be/content/groups/public/" 
+    	url = "https://repo.mvdw-software.be/content/groups/public/" 
     	content {
     		includeGroup 'be.maximvdw'
     	}
     }
     maven { 
     	url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' 
-    	//url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/' 
     	content {
     		includeGroup 'me.clip'
     	}
@@ -58,17 +56,22 @@ repositories {
     		includeGroup 'org.apache.commons'
     	}
     }
-   // maven { url = 'https://repo.pcgamingfreaks.at/repository/maven-everything' }
-    
+
+
     maven { 
-    	url = 'https://mvnrepository.com/artifact/com.github.cryptomorin' 
+    	url = 'https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries' 
     	content {
     		includeGroup 'com.github.cryptomorin'
     	}
     }
-  //  maven { url = 'https://maven.enginehub.org/repo/' }
   
-  	//maven { url = "https://nexus.badbones69.com/repository/maven-releases/" }
+
+  // 	maven { url 'https://jitpack.io' }
+
+
+  // maven { url = 'https://repo.pcgamingfreaks.at/repository/maven-everything' }
+  // maven { url = 'https://maven.enginehub.org/repo/' }
+  // maven { url = "https://nexus.badbones69.com/repository/maven-releases/" }
   	
 }
 
@@ -79,25 +82,34 @@ dependencies {
     implementation project(':prison-mines')
     implementation project(':prison-ranks')
 
-// NOTE: source code changes for v1.7    
-//    implementation 'org.bstats:bstats-bukkit:1.7'
-    implementation 'org.bstats:bstats-bukkit:1.5'
+
+    implementation 'org.bstats:bstats-base:2.2.1'
+    implementation 'org.bstats:bstats-bukkit:2.2.1'
+    
     
     // Repo keeps going down:
     //implementation 'org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'
     // Using jar instead: lib/Spiget_v1.4.2.prison-build.jar
+  
     
-	implementation 'org.apache.commons:commons-lang3:3.9'
+	implementation 'org.apache.commons:commons-lang3:3.12.0'
 
-    implementation 'me.clip:placeholderapi:2.10.9'
+
+    compileOnly 'me.clip:placeholderapi:2.10.9'
     
     // Repo may be hosted: https://hub.spigotmc.org/nexus/content/groups/public/
     // But do not see v5.0
-    implementation 'net.luckperms:api:5.0'
+    compileOnly 'net.luckperms:api:5.0'
     
-    implementation 'me.lucko.luckperms:luckperms-api:4.2'
+    compileOnly 'me.lucko.luckperms:luckperms-api:4.2'
     
-	implementation 'com.github.cryptomorin:XSeries:7.9.1.1'
+    // jitpack.io:
+//    implementation 'com.github.cryptomorin:xseries:b95d195482'
+    
+    // https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
+	implementation 'com.github.cryptomorin:XSeries:8.1.0'
+    
+//	implementation 'com.github.cryptomorin:XSeries:7.9.1.1'
 //	implementation 'com.github.cryptomorin:XSeries:7.8.0'
 //	implementation 'com.github.cryptomorin:XSeries:7.6.0.0.1'
 //	implementation 'com.github.cryptomorin:XSeries:7.5.4'
@@ -108,6 +120,7 @@ dependencies {
 //  This includes 535KB when all we need is 1 class! 
 //	implementation 'me.badbones69:crazyenchantments-plugin:1.8-Dev-Build-v8'
 
+
 	// 1.9.4-R0.1-SNAPSHOT has been the version used for a long time:
 //    compileOnly 'org.spigotmc:spigot-api:1.9.4-R0.1-SNAPSHOT'
 	// 1.12.2-R0.1-SNAPSHOT works well:
@@ -116,51 +129,37 @@ dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
 
 
+
 // NOTE: The repo is no longer resolving to the correct resources:
 //	compileOnly 'at.pcgamingfreaks:Minepacks-API:2.3.22'
 //  compileOnly 'at.pcgamingfreaks:Minepacks-API:2.3.21.3'
 
     compileOnly 'net.milkbowl.vault:VaultAPI:1.7'
-//    compileOnly 'net.milkbowl.vault:VaultAPI:1.6'
     
     compileOnly('be.maximvdw:MVdWPlaceholderAPI:2.5.2-SNAPSHOT'){
         exclude group: 'org.spigotmc'
     }
-//   compileOnly('be.maximvdw:MVdWPlaceholderAPI:2.4.0-SNAPSHOT'){
-//        exclude group: 'org.spigotmc'
-//    }
 
  //   compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.1'
  
 
     compileOnly fileTree(dir: 'lib', include: ['*.jar'], 
     			exclude: ['Spiget_v1.4.2.prison-build.jar',
-    					'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
+    					// 'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
     					'Zenchantments__API_v1.15.2.build4.jar'])
-    compile fileTree(dir: 'lib', 
+    implementation fileTree(dir: 'lib', 
     			include: ['Spiget_v1.4.2.prison-build.jar',
-    					'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
+    					// 'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
     					'Zenchantments__API_v1.15.2.build4.jar'])
     					
-//    compileOnly fileTree(dir: 'lib', include: ['*.jar'], 
-//    			exclude: ['TokenEnchantAPI-18.11.3.jar', 'Spiget_v1.4.2.prison-build.jar',
-//    					'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
-//    					'Zenchantments__API_v1.15.2.build4.jar'])
-//    compile fileTree(dir: 'lib', 
-//    			include: ['TokenEnchantAPI-18.11.3.jar', 'Spiget_v1.4.2.prison-build.jar',
-//    					'CrazyEnchantments-plugin-api.v1.8-Dev-Build-v8.jar',
-//    					'Zenchantments__API_v1.15.2.build4.jar'])
     					
 //    compile fileTree(dir: 'lib', include: ['SPIGET__BUKKIT-1.4.2-SNAPSHOT.jar'])
 
 //    compileOnly fileTree(dir: 'lib', include: ['*.jar'], exclude: ['TokenEnchantAPI-15.5.0.jar'])
 //    compile fileTree(dir: 'lib', include: ['TokenEnchantAPI-18.5.0.jar'])
 
-//    compileOnly fileTree(dir: 'lib', include: ['*.jar'], exclude: ['TokenEnchantAPI-15.3.2.jar'])
-//    compile fileTree(dir: 'lib', include: ['TokenEnchantAPI-15.3.2.jar'])
 
-
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
 
 }
 
@@ -179,19 +178,28 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'plugin.yml'
     }
+
+    // Need to have includ duplicates for the version to be updated in the plugin.yml file.
+    // Also the final build is actually smaller with include.    
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE // allow duplicates
+//    duplicatesStrategy = DuplicatesStrategy.EXCLUDE // do not allow duplicates
 }
 
 shadowJar {
     dependencies {
-        include(dependency('org.apache.commons:commons-lang3:3.10'))
+        include(dependency('org.apache.commons:commons-lang3:3.12.0'))
+//        include(dependency('org.apache.commons:commons-lang3:3.10'))
         include(dependency('com.google.code.gson:gson:2.8.6'))
-        include(dependency('org.bstats:bstats-bukkit:1.5'))
+        
+        include(dependency('org.bstats:bstats-base:2.2.1'))
+        include(dependency('org.bstats:bstats-bukkit:2.2.1'))
 
         include(dependency('me.clip:placeholderapi:2.10.9'))
 
-        //include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
-        include(dependency('com.github.cryptomorin:XSeries:7.9.1.1'))
+//        include(dependency('com.github.cryptomorin:xseries:b95d195482'))
+        include(dependency('com.github.cryptomorin:XSeries:8.1.0'))
         
+        //include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
         //include(dependency('me.badbones69:crazyenchantments-plugin:1.8-Dev-Build-v8'))
         
         include(project(':prison-core'))
@@ -199,14 +207,19 @@ shadowJar {
         include(project(':prison-ranks'))
     }
 
-    relocate 'org.bstats.bukkit', 'tech.mcprison.prison.spigot'
+    relocate 'org.bstats', 'tech.mcprison.prison.bstats'
+
     relocate 'org.inventivetalent.update.spiget', 'tech.mcprison.prison.spiget'
     relocate 'com.cryptomorin', 'tech.mcprison.prison.cryptomorin'
 
     //relocate 'me.badbones69.crazyenchantments.api.events.BlastUseEvent', 'tech.mcprison.prison.crazyenchantments.api'
 
-    classifier ''
-    archiveVersion = ''
+
+	archiveAppendix = ''
+	archiveClassifier = ''
+//	archiveClassifier = project.property('targetArchiveClassifier')
+//	archiveClassifier = 'java1.8'
+    
     
 //    minimize()
 }

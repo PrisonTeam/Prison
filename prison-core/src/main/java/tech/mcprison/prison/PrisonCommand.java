@@ -18,10 +18,13 @@
 
 package tech.mcprison.prison;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -41,9 +44,12 @@ import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.DisplayComponent;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.output.Output.DebugTarget;
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.troubleshoot.TroubleshootResult;
 import tech.mcprison.prison.troubleshoot.Troubleshooter;
-import tech.mcprison.prison.util.Text;
+import tech.mcprison.prison.util.PrisonJarReporter;
+import tech.mcprison.prison.util.PrisonTPS;
 
 /**
  * Root commands for managing the platform as a whole, in-game.
@@ -242,7 +248,69 @@ public class PrisonCommand {
         display.addText("&7Running on Platform: %s", Prison.get().getPlatform().getClass().getName());
         display.addText("&7Minecraft Version: %s", Prison.get().getMinecraftVersion());
 
+        
+        // System stats:
+        display.addText("");
+
         display.addText("&7Server runtime: %s", Prison.get().getServerRuntimeFormatted() );;
+        
+        Runtime runtime = Runtime.getRuntime();
+        
+        String javaVersion = System.getProperty("java.version");
+        
+        int processors = runtime.availableProcessors();
+        long memoryMax = runtime.maxMemory();
+        long memoryTotal = runtime.totalMemory();
+        long memoryFree = runtime.freeMemory();
+        long memoryUsed = memoryTotal - memoryFree;
+        
+        DecimalFormat dFmt = new DecimalFormat("#,##0.000");
+        String memMax = PlaceholdersUtil.formattedIPrefixBinarySize( memoryMax, dFmt, " " );
+        String memTotal = PlaceholdersUtil.formattedIPrefixBinarySize( memoryTotal, dFmt, " " );
+        String memFree = PlaceholdersUtil.formattedIPrefixBinarySize( memoryFree, dFmt, " " );
+        String memUsed = PlaceholdersUtil.formattedIPrefixBinarySize( memoryUsed, dFmt, " " );
+
+        display.addText("&7Java Version: %s  Processor cores: %s ", 
+        								javaVersion, Integer.toString( processors ) );
+        display.addText("&7Memory Max: %s  Total: %s  Free: %s  Used: %s", 
+        				memMax, memTotal, memFree, memUsed );
+        
+        
+        File prisonFolder = Prison.get().getDataFolder();
+        long diskSpaceTotal = prisonFolder.getTotalSpace();
+        long diskSpaceUsable = prisonFolder.getUsableSpace();
+        long diskSpaceFree = prisonFolder.getFreeSpace();
+        long diskSpaceUsed = diskSpaceTotal - diskSpaceFree;
+        
+        String dsTotal = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceTotal, dFmt, " " );
+        String dsUsable = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceUsable, dFmt, " " );
+        String dsFree = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceFree, dFmt, " " );
+        String dsUsed = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceUsed, dFmt, " " );
+        
+        display.addText("&7Total Server Disk Space: %s  Usable: %s  Free: %s  Used: %s", 
+        		dsTotal, dsUsable, dsFree, dsUsed );
+        
+        
+        getPrisonDiskSpaceUsage( display, prisonFolder, 
+        		"&7Prison's File Count: %s  Folder Count: %s  Disk Space: %s  Other Objects: %s" );
+        
+        
+        DecimalFormat iFmt = new DecimalFormat("#,##0");
+        PrisonTPS prisonTPS = Prison.get().getPrisonTPS();
+        display.addText( "&7Prison TPS Average: %s  Min: %s  Max: %s%s   " +
+        					"Interval: %s ticks  Samples: %s",
+        						prisonTPS.getAverageTPSFormatted(),
+        						prisonTPS.getTPSMinFormatted(),
+        						( prisonTPS.getTpsMax() >= 100  ? ">" : ""),
+        						prisonTPS.getTPSMaxFormatted(),
+        						iFmt.format( PrisonTPS.SUBMIT_TICKS_INTERVAL ),
+        						iFmt.format( prisonTPS.getTpsSamples() )
+        		);
+        
+        
+        display.addText( "&7TPS History: %s",
+        		prisonTPS.getLastFewTPS() );
+        
         
         display.addText("");
         
@@ -295,14 +363,14 @@ public class PrisonCommand {
                 " " + im.getForType(IntegrationType.PERMISSION).get().getDisplayName() :
                 "None");
 
-        display.addText(Text.tab("&7Permissions: " + permissions));
+        display.addText(". . &7Permissions: " + permissions);
 
         String economy =
         		(im.hasForType(IntegrationType.ECONOMY) ?
                 " " + im.getForType(IntegrationType.ECONOMY).get().getDisplayName() : 
                 "None");
 
-        display.addText(Text.tab("&7Economy: " + economy));
+        display.addText(". . &7Economy: " + economy);
         
         
         List<DisplayComponent> integrationRows = im.getIntegrationComponents( isBasic );
@@ -321,7 +389,7 @@ public class PrisonCommand {
         	StringBuilder sb = new StringBuilder();
         	for ( String plugin : getRegisteredPlugins() ) {
         		if ( sb.length() == 0) {
-        			sb.append( "  " );
+        			sb.append( ". " );
         			sb.append( plugin );
         		} else {
         			sb.append( ",  " );
@@ -381,8 +449,106 @@ public class PrisonCommand {
         return display;
     }
 
+    public class PrisonDiskStats {
+    	
+    	long fileCount = 0L;
+    	long folderCount = 0L;
+    	long otherObjectCount = 0L;
+    	long storageSize = 0L;
+    	
+    	public PrisonDiskStats() {
+    		super();
+    	}
+
+    	public void incrementFileCount() {
+    		fileCount++;
+    	}
+		public long getFileCount() {
+			return fileCount;
+		}
+		public void setFileCount( long fileCount ) {
+			this.fileCount = fileCount;
+		}
+
+		public void incrementFolderCount() {
+			folderCount++;
+		}
+		public long getFolderCount() {
+			return folderCount;
+		}
+		public void setFolderCount( long folderCount ) {
+			this.folderCount = folderCount;
+		}
+
+		public void incrementOtherObjectCount() {
+			otherObjectCount++;
+		}
+		public long getOtherObjectCount() {
+			return otherObjectCount;
+		}
+		public void setOtherObjectCount( long otherObjectCount ) {
+			this.otherObjectCount = otherObjectCount;
+		}
+
+		public void addStorageSize( long fileSize ) {
+			storageSize += fileSize;
+		}
+		public long getStorageSize() {
+			return storageSize;
+		}
+		public void setStorageSize( long storageSize ) {
+			this.storageSize = storageSize;
+		}
+    }
 	
-    /**
+    private void getPrisonDiskSpaceUsage( ChatDisplay display,
+    					File prisonFolder, String text ) {
+    	
+    	PrisonDiskStats diskStats = new PrisonDiskStats();
+    	
+    	// Increment folder count for prison's plugin folder:
+    	diskStats.incrementFolderCount();
+    	
+    	calculatePrisonDiskUsage( diskStats, prisonFolder );
+    	
+    	DecimalFormat dFmt = new DecimalFormat("#,##0.000");
+    	DecimalFormat iFmt = new DecimalFormat("#,##0");
+    	
+    	String prisonFileCount = iFmt.format( diskStats.getFileCount() );
+    	String prisonFolderCount = iFmt.format( diskStats.getFolderCount() );
+    	String prisonOtherObjectCount = iFmt.format( diskStats.getOtherObjectCount() );
+    	String prisonStorageSize = PlaceholdersUtil.formattedIPrefixBinarySize( 
+    						diskStats.getStorageSize(), dFmt, " " );
+        
+        display.addText( text, prisonFileCount, prisonFolderCount, prisonStorageSize, 
+        			prisonOtherObjectCount );
+    	
+	}
+
+
+    private void calculatePrisonDiskUsage( PrisonDiskStats diskStats, File prisonFolder ) {
+    	
+    	File[] files = prisonFolder.listFiles();
+    	
+    	for ( File file : files ) {
+			if ( file.isDirectory() ) {
+				diskStats.incrementFolderCount();
+				
+				// recursively call for all directories:
+				calculatePrisonDiskUsage( diskStats, file );
+			}
+			else if ( file.isFile() ) {
+				diskStats.incrementFileCount();
+				diskStats.addStorageSize( file.length() );
+			}
+			else {
+				diskStats.incrementOtherObjectCount();
+			}
+		}
+    }
+    
+
+	/**
      * A test to see if these dummny command placeholders could possibly lock out
      * players who don't have permission to view the subcommands?
      * 
@@ -487,7 +653,7 @@ public class PrisonCommand {
     	
     	if ( playerName != null && playerName.contains( "%" ) || 
     			text != null && text.contains( "%" ) ) {
-    		Output.get().logInfo( "&3You cannot use &7 %% &3 as escape characters. Use &7{&3 &7}&3 instead." );
+    		Output.get().logInfo( "&3You cannot use &7 %%%% &3 as escape characters. Use &7{&3 &7}&3 instead." );
     		return;
     	}
     	
@@ -732,6 +898,27 @@ public class PrisonCommand {
     	sender.sendMessage( message );
     }
     
+    @Command(identifier = "prison reload autoFeatures", 
+    		description = "AutoFeatures reload: Reloads the auto features settings. The current " +
+    				"settings will be discarded before reloading the configuration file.", 
+    		onlyPlayers = false, permissions = "prison.autofeatures")
+    public void reloadAutoFeatures(CommandSender sender ) {
+    	    	
+    	AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig().reloadConfig();
+    	
+    	String message = "&7AutoFeatures were reloaded. The new settings are now in effect. ";
+    	sender.sendMessage( message );
+
+    	try {
+    		String filePath = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig()
+    								.getConfigFile().getCanonicalPath();
+    		sender.sendMessage( filePath );
+    	}
+    	catch ( IOException e ) {
+    		// Ingore
+    	}
+    }
+
     
     /**
      * <p>This command does not do anything, except to provide a command placeholder to
@@ -797,7 +984,7 @@ public class PrisonCommand {
     	display.addText( "&3Selected Settings from &bplugins/Prison/autoFeaturesConfigs.yml&3:" );
     	display.addText( "&b  Normal Drops (if auto pickup is off):" );
     	display.addText( "&b    options.normalDrop.isProcessNormalDropsEvents:  %s", 
-    									afw.isBoolean( AutoFeatures.isProcessNormalDropsEvents ) );
+    									afw.isBoolean( AutoFeatures.handleNormalDropsEvents ) );
     	display.addText( "&b    options.normalDrop.isProcessTokensEnchantExplosiveEvents:  %s", 
     									afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents ) );
     	display.addText( "&b    options.normalDrop.isProcessTokensEnchantExplosiveEvents:  %s", 
@@ -829,14 +1016,14 @@ public class PrisonCommand {
     									afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled ));
     	display.addText( "&b   options.general.isCalculateFortuneEnabled %s", 
     									afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled ));
-    	display.addText( "&b   options.general.isCalculateFortuneOnAllBlocksEnabled %s", 
-    									afw.isBoolean( AutoFeatures.isCalculateFortuneOnAllBlocksEnabled ));
+    	display.addText( "&b   options.general.isCalculateAltFortuneOnAllBlocksEnabled %s", 
+    									afw.isBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled ));
     	display.addText( "&b   options.general.isCalculateXPEnabled %s", 
     									afw.isBoolean( AutoFeatures.isCalculateXPEnabled ));
     	display.addText( "&b   options.general.givePlayerXPAsOrbDrops %s", 
     									afw.isBoolean( AutoFeatures.givePlayerXPAsOrbDrops ));
-    	display.addText( "&b   options.general.maxFortuneLevel %s", 
-    									afw.getMessage( AutoFeatures.maxFortuneLevel ));
+    	display.addText( "&b   options.general.fortuneMultiplierMax %s", 
+    									afw.getMessage( AutoFeatures.fortuneMultiplierMax ));
 
     	display.addText( "&b " );
     	display.addText( "&b   options.isProcessTokensEnchantExplosiveEvents %s", 
@@ -878,15 +1065,65 @@ public class PrisonCommand {
     
     
     @Command(identifier = "prison debug", 
-    		description = "For internal use only. Do not use until instructed since this is not hookedup.", 
+    		description = "Enables debugging and trouble shooting information. " +
+    				"For internal use only. Do not use unless instructed.", 
     		onlyPlayers = false, permissions = "prison.debug" )
-    public void toggleDebug(CommandSender sender ) {
+    public void toggleDebug(CommandSender sender,
+    		@Wildcard(join=true)
+    		@Arg(name = "targets", def = " ",
+    				description = "Optional. Enable or disable a debugging target. " +
+    					"[on, off, targets, jarScan, blockBreakListeners, chatListeners] " +
+    				"Use 'targets' to list all available targets.  Use 'on' or 'off' to toggle " +
+    				"on and off individual targets, or all targets if no target is specified.  " +
+    				"jarScan will identify what Java version compiled the class files within the listed jars"
+    						) String targets ) {
     	
-    	Output.get().setDebug( !Output.get().isDebug() );
+    	if ( targets != null && "jarScan".equalsIgnoreCase( targets ) ) {
+    		
+    		PrisonJarReporter pjr = new PrisonJarReporter();
+    		pjr.scanForJars();
+    		pjr.dumpJarDetails();
+    		
+    		return;
+    	}
     	
-    	String message = "Debug logging: " + (Output.get().isDebug() ? "enabled" : "disabled");
-
+    	if ( targets != null && "blockBreakListeners".equalsIgnoreCase( targets ) ) {
+    		
+    		Prison.get().getPlatform().dumpEventListenersBlockBreakEvents();
+    		
+    		return;
+    	}
+    	
+    	if ( targets != null && "chatListeners".equalsIgnoreCase( targets ) ) {
+    		
+    		Prison.get().getPlatform().dumpEventListenersPlayerChatEvents();
+    		
+    		return;
+    	}
+    	
+    	
+    	Output.get().applyDebugTargets( targets );
+    	
+    	String message = "Global Debug Logging is " + (Output.get().isDebug() ? "enabled" : "disabled");
     	sender.sendMessage( message );
+    	
+    	Set<DebugTarget> activeDebugTargets = Output.get().getActiveDebugTargets();
+    	
+    	if ( activeDebugTargets.size() > 0 ) {
+    		message = ". Active Debug Targets:";
+    		sender.sendMessage( message );
+    		
+    		for ( DebugTarget target : activeDebugTargets )
+			{
+    			message = String.format( ". . Target: %s", target.name() );
+    			sender.sendMessage( message );
+			}
+    	}
+    	
+    	String validTargets = Output.get().getDebugTargetsString();
+    	message = String.format( ". Valid Targets: %s", validTargets );
+    	sender.sendMessage( message );
+
     }
     
     

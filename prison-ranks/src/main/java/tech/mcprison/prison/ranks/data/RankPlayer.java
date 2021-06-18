@@ -358,7 +358,7 @@ public class RankPlayer
      */
     public Rank getRank(RankLadder ladder) {
     	
-    	if ( !ladderRanks.containsKey( ladder ) ) {
+    	if ( ladder == null || !ladderRanks.containsKey( ladder ) ) {
     		return null;
     	}
     	
@@ -432,6 +432,41 @@ public class RankPlayer
         return ladderRanks;
     }
 
+    
+    /**
+     * <p>This function will check to see if the player has the same rank as the
+     * targetRank, or if the target rank is lower on the ladder than where their
+     * current rank is located.  This confirms that the two ranks are on the same
+     * ladder, and it walks down the ladder, starting with the player's rank, until
+     * it finds a match with the target rank.
+     * </p>
+     * 
+     * @param targetRank
+     * @return
+     */
+    public boolean hasAccessToRank( Rank targetRank ) {
+    	boolean hasAccess = false;
+    	
+    	if ( targetRank != null && targetRank.getLadder() != null ) {
+    		
+    		Rank rank = getRank( targetRank.getLadder() );
+    		if ( rank != null && 
+    				rank.getLadder().equals( targetRank.getLadder() ) ) {
+    			
+    			hasAccess = rank.equals( targetRank );
+    			Rank priorRank = rank.getRankPrior();
+    			
+    			while ( !hasAccess && priorRank != null ) {
+    				
+    				hasAccess = priorRank.equals( targetRank );
+    				priorRank = priorRank.getRankPrior();
+    			}
+    		}
+    	}
+    	return hasAccess;
+    }
+    
+    
     /*
      * equals() and hashCode()
      */
@@ -474,23 +509,23 @@ public class RankPlayer
 	
 	@Override
 	public boolean hasPermission( String perm ) {
-		Output.get().logError( "SpigotOfflinePlayer.hasPermission: Cannot access permissions for offline players." );
+		Output.get().logError( "RankPlayer.hasPermission: Cannot access permissions for offline players." );
 		return false;
 	}
 	
 	@Override
 	public void sendMessage( String message ) {
-		Output.get().logError( "SpigotOfflinePlayer.sendMessage: Cannot send messages to offline players." );
+		Output.get().logError( "RankPlayer.sendMessage: Cannot send messages to offline players." );
 	}
 	
 	@Override
 	public void sendMessage( String[] messages ) {
-		Output.get().logError( "SpigotOfflinePlayer.sendMessage: Cannot send messages to offline players." );
+		Output.get().logError( "RankPlayer.sendMessage: Cannot send messages to offline players." );
 	}
 	
 	@Override
 	public void sendRaw( String json ) {
-		Output.get().logError( "SpigotOfflinePlayer.sendRaw: Cannot send messages to offline players." );
+		Output.get().logError( "RankPlayer.sendRaw: Cannot send messages to offline players." );
 	}
 
 	@Override
@@ -500,12 +535,12 @@ public class RankPlayer
 
 	@Override
 	public void give( ItemStack itemStack ) {
-		Output.get().logError( "SpigotOfflinePlayer.give: Cannot give to offline players." );
+		Output.get().logError( "RankPlayer.give: Cannot give to offline players." );
 	}
 
 	@Override
 	public Location getLocation() {
-		Output.get().logError( "SpigotOfflinePlayer.getLocation: Offline players have no location." );
+		Output.get().logError( "RankPlayer.getLocation: Offline players have no location." );
 		return null;
 	}
 	
@@ -524,17 +559,17 @@ public class RankPlayer
 	
 	@Override
 	public void teleport( Location location ) {
-		Output.get().logError( "SpigotOfflinePlayer.teleport: Offline players cannot be teleported." );
+		Output.get().logError( "RankPlayer.teleport: Offline players cannot be teleported." );
 	}
 
 	@Override
 	public void setScoreboard( Scoreboard scoreboard ) {
-		Output.get().logError( "SpigotOfflinePlayer.setScoreboard: Offline players cannot use scoreboards." );
+		Output.get().logError( "RankPlayer.setScoreboard: Offline players cannot use scoreboards." );
 	}
 
 	@Override
 	public Gamemode getGamemode() {
-		Output.get().logError( "SpigotOfflinePlayer.getGamemode: Offline is not a valid gamemode." );
+		Output.get().logError( "RankPlayer.getGamemode: Offline is not a valid gamemode." );
 		return null;
 	}
 
@@ -544,7 +579,7 @@ public class RankPlayer
 
 	@Override
 	public Optional<String> getLocale() {
-		Output.get().logError( "SpigotOfflinePlayer.getLocale: Offline is not a valid gamemode." );
+		Output.get().logError( "RankPlayer.getLocale: Offline is not a valid gamemode." );
 		return null;
 	}
 

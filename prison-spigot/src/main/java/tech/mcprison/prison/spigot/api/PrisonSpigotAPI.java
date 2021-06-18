@@ -20,6 +20,8 @@ import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
@@ -88,6 +90,20 @@ public class PrisonSpigotAPI {
 		return results;
 	}
 	
+	
+	public RankPlayer getRankPlayer( Player bukkitPlayer ) {
+		RankPlayer results = null;
+		
+		if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+			
+			PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+			
+			results = pm.getPlayer( bukkitPlayer.getUniqueId(), bukkitPlayer.getName() );
+		}
+		
+		return results;
+	}
+
 	
 	/**
 	 * <p>This returns a list of all ranks.
