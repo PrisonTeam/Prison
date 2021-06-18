@@ -10,7 +10,7 @@ Prison's table of contents of all documents.
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
-
+# Prison Now Fully Supports Spigot 1.17 and Java 16 !!
 
 ### Prison Build Logs for v3.2.0 (2019-12-03) through v3.2.6-alpha (current)
 
@@ -24,6 +24,8 @@ Prison's table of contents of all documents.
  - **[v3.2.4 - 2021-03-01](prison_changelog_v3.2.4.md)**
  - **[v3.2.5 - 2021-04-01](prison_changelog_v3.2.5.md)**
  - **[v3.2.6 - 2021-04-11](prison_changelog_v3.2.6.md)**
+ - **[v3.2.7 - 2021-05-02](prison_changelog_v3.2.7.md)**
+ - **[v3.2.8 - 2021-06-17](prison_changelog_v3.2.8.md)**
 
 
  - **[v3.3.0 - 2021-??-??](prison_changelog_v3.3.x.md)**
