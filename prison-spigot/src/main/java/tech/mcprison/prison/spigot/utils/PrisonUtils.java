@@ -217,10 +217,13 @@ public abstract class PrisonUtils
 	public int parseInt(String s){
 		int number = 0;
 
-		try{
-			number = Integer.parseInt(s);
-		}catch(NumberFormatException ex){
-			ex.printStackTrace();
+		if ( s != null && !s.trim().isEmpty() ) {
+			
+			try{
+				number = Integer.parseInt(s);
+			}catch(NumberFormatException ex){
+				ex.printStackTrace();
+			}
 		}
 
 		return number;
