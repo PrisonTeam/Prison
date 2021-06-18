@@ -1,6 +1,5 @@
 package tech.mcprison.prison.spigot.utils;
 
-import com.google.common.primitives.Ints;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
@@ -43,11 +42,6 @@ public class PrisonUtilsHealing
     public void utilHealingHeal(CommandSender sender,
                                 @Arg(name = "playerName", description = "Player Name") String playerName,
                                 @Arg(name = "amount", description = "amount of air given") String amount
-            /*
-            @Wildcard(join=true)
-            @Arg(name = "options", description = "Options [player, all]",
-                 def = "") String options
-                 */
             ){
 
         if( !enableHealingHeal ){
@@ -69,11 +63,6 @@ public class PrisonUtilsHealing
     public void utilHealingFeed(CommandSender sender,
                                 @Arg(name = "playerName", description = "Player Name") String playerName,
                                 @Arg(name = "amount", description = "amount of food given") String amount
-            /*
-            @Wildcard(join=true)
-            @Arg(name = "options", description = "Options [player, all]",
-                 def = "") String options
-                 */
     ){
 
         if( !enableHealingFeed ){
@@ -83,7 +72,6 @@ public class PrisonUtilsHealing
                     "prison.utils.healing.feed",
                     "prison.utils.healing.feed.others" );
 
-            // Player cannot be null.  If it is null, then there was a failure.
             utilHealingFeed( player, playerName, amount );
         }
     }
@@ -104,8 +92,7 @@ public class PrisonUtilsHealing
             SpigotPlayer player = checkPlayerPerms( sender, playerName,
                     "prison.utils.healing.breath",
                     "prison.utils.healing.breath.others" );
-
-            // Player cannot be null.  If it is null, then there was a failure.
+            
             utilHealingBreath( player, playerName, amount );
         }
     }
@@ -128,17 +115,31 @@ public class PrisonUtilsHealing
     }
 
     private void utilHealingFeed( SpigotPlayer player, String amount ) {
-        int feedAmountInt = parseInt(amount);
-        if(feedAmountInt == 0 || player == null){
+        if(player == null){
             return;
         }
 
-        player.getWrapper().setFoodLevel(Math.min(feedAmountInt, 20));
+        int newFood = player.getWrapper().getFoodLevel() + parseInt(amount);
+        int food = amount == null ? 20 :
+                   newFood < 0 ? 0 :
+                   Math.min(newFood, 20);
+
+        player.getWrapper().setFoodLevel(food);
     }
 
     private void utilHealingBreath( SpigotPlayer player, String amount ) {
-        if( player == null ) return;
-        player.getWrapper().setRemainingAir(player.getWrapper().getMaximumAir());
+        if( player == null ) {
+            return;
+        }
+
+        int maxAir = player.getWrapper().getMaximumAir();
+
+        int newAir = player.getWrapper().getRemainingAir() + parseInt(amount);
+        int air = amount == null ? maxAir :
+                  newAir < 0 ? 0 :
+                  Math.min(newAir, maxAir);
+
+        player.getWrapper().setRemainingAir(air);
     }
 
     public boolean isEnableHealingHeal() { return enableHealingHeal; }
