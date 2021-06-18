@@ -51,7 +51,7 @@ public class PrisonUtilsHealing
                     "prison.utils.healing.heal",
                     "prison.utils.healing.heal.others" );
 
-            utilHealingHeal( player, playerName, amount );
+            utilHealingHeal( player, amount );
         }
     }
 
@@ -72,7 +72,7 @@ public class PrisonUtilsHealing
                     "prison.utils.healing.feed",
                     "prison.utils.healing.feed.others" );
 
-            utilHealingFeed( player, playerName, amount );
+            utilHealingFeed( player, amount );
         }
     }
 
@@ -92,8 +92,8 @@ public class PrisonUtilsHealing
             SpigotPlayer player = checkPlayerPerms( sender, playerName,
                     "prison.utils.healing.breath",
                     "prison.utils.healing.breath.others" );
-            
-            utilHealingBreath( player, playerName, amount );
+
+            utilHealingBreath( player, amount );
         }
     }
 
