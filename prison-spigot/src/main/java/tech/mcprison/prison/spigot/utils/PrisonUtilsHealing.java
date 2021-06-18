@@ -35,13 +35,21 @@ public class PrisonUtilsHealing
     }
 
     @Command(identifier = "prison utils heal",
-            description = "Heals a player to full health",
+            description = "Heals a player to full health, add or subtract to their " +
+            						"health, or sets a specific health level. Uses a " +
+            						"maxHealth level that comes from bukkit.",
             onlyPlayers = false,
             permissions = "prison.utils.healing.heal",
             altPermissions = "prison.utils.healing.heal.others")
     public void utilHealingHeal(CommandSender sender,
                                 @Arg(name = "playerName", description = "Player Name") String playerName,
-                                @Arg(name = "amount", description = "amount of air given") String amount
+                                @Arg(name = "amount", def = "", 
+                                		description = "Optional mount of air given. " +
+                                		"If no amount is provided, then health level will be set to " +
+                                		"maxHealth.  If a '+' is used then the amount will be added to " +
+                                		"the player's current health level.  If a '-' is used then it " +
+                                		"will be subtracted. If an amount is provided without a '+' or " +
+                                		"'-' then that is what the player's health will be set to.") String amount
             ){
 
         if( !enableHealingHeal ){
@@ -56,13 +64,22 @@ public class PrisonUtilsHealing
     }
 
     @Command(identifier = "prison utils feed",
-            description = "Feeds a player to full",
+            description = "Feeds a player to full hunger, add or subtract to their " + 
+            		          		"hunger, or sets a specific hunger level. Uses a " +
+            		          		"max hunger level of 20 since bukkit does not have a " +
+            		          		"max hunger level.",
             onlyPlayers = false,
             permissions = "prison.utils.healing.feed",
             altPermissions = "prison.utils.healing.feed.others")
     public void utilHealingFeed(CommandSender sender,
                                 @Arg(name = "playerName", description = "Player Name") String playerName,
-                                @Arg(name = "amount", description = "amount of food given") String amount
+                                @Arg(name = "amount", def = "", 
+                                		description = "Optional amount of food given. " +
+                                		"If no amount is provided, then hunger level will be set to " +
+                                		"20.  If a '+' is used then the amount will be added to " +
+                                		"the player's current hunger level.  If a '-' is used then it " +
+                                		"will be subtracted. If an amount is provided without a '+' or " +
+                                		"'-' then that is what the player's hunger will be set to." ) String amount
     ){
 
         if( !enableHealingFeed ){
@@ -77,13 +94,21 @@ public class PrisonUtilsHealing
     }
 
     @Command(identifier = "prison utils breath",
-            description = "Gives a player air while underwater",
+            description = "Gives a player air while underwater, add or subtract to their " +
+            						"air levels, or sets a specific air level.  Uses a maxAir level, " +
+            						"which comes from bukkit.",
             onlyPlayers = false,
             permissions = "prison.utils.healing.breath",
             altPermissions = "prison.utils.healing.breath.others")
     public void utilHealingBreath(CommandSender sender,
                                 @Arg(name = "playerName", description = "Player Name") String playerName,
-                                @Arg(name = "amount", description = "amount of air given") String amount
+                                @Arg(name = "amount", def = "",
+                                		description = "amount of air given expressed in ticks. " +
+                                		"If no amount is provided, then hunger level will be set to " +
+                                		"20.  If a '+' is used then the amount will be added to " +
+                                		"the player's current hunger level.  If a '-' is used then it " +
+                                		"will be subtracted. If an amount is provided without a '+' or " +
+                                		"'-' then that is what the player's hunger will be set to.") String amount
     ){
 
         if( !enableHealingBreath ){
@@ -106,7 +131,7 @@ public class PrisonUtilsHealing
 
         if (maxHealth != 0) {
             double newHealth = player.getWrapper().getHealth() + parseInt(amount);
-            double health = amount == null ? maxHealth :
+            double health = amount == null || amount.trim().isEmpty() ? maxHealth :
                             newHealth < 0 ? 0 :
                             Math.min(newHealth, maxHealth);
 
@@ -120,7 +145,7 @@ public class PrisonUtilsHealing
         }
 
         int newFood = player.getWrapper().getFoodLevel() + parseInt(amount);
-        int food = amount == null ? 20 :
+        int food = amount == null || amount.trim().isEmpty() ? 20 :
                    newFood < 0 ? 0 :
                    Math.min(newFood, 20);
 
@@ -135,7 +160,7 @@ public class PrisonUtilsHealing
         int maxAir = player.getWrapper().getMaximumAir();
 
         int newAir = player.getWrapper().getRemainingAir() + parseInt(amount);
-        int air = amount == null ? maxAir :
+        int air = amount == null || amount.trim().isEmpty() ? maxAir :
                   newAir < 0 ? 0 :
                   Math.min(newAir, maxAir);
 

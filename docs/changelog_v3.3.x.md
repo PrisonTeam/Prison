@@ -23,7 +23,15 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.8 2021-06-17
+# v3.2.8.1 2021-06-18
+
+
+* **Expanded the help information on the commands for /prison utils heal, feed, and breath to explain how amount works.**
+
+
+* **Pull in the changes to bleeding with the new amount fields for /prison utils heal, feed, and breath.**
+Without amount being specified it will restore full healing, feeding, breathing.  If an amount is entered with a "+" then it will add the amount to the current health levels, or if "-" then it subtracts from the current health level.  If a value is supplied without either "+" Or "-" then it will set it to that value.
+
 
 * **Note: Bug fixes for 3.2.8.**
 
