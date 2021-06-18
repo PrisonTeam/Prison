@@ -25,6 +25,8 @@ These build logs represent the work that has been going on within prison.
 
 # v3.2.8.1 2021-06-18
 
+* **Apply fixes to the v3.2.8 release**
+
 
 * **Check for null and an empty string in the parseInt() function for the /prison utils.**
 
