@@ -26,6 +26,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.8.1 2021-06-18
 
 
+* **Check for null and an empty string in the parseInt() function for the /prison utils.**
+
+
 * **Expanded the help information on the commands for /prison utils heal, feed, and breath to explain how amount works.**
 
 
