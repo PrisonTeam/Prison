@@ -26,10 +26,14 @@ Prison's Auto Configure will perform most of the basic configurations to get you
 * Assign blocks to each mine, starting with the least valuable blocks for Mine A, and then including more valuable blocks until it gets to Mine Z. 
 
 
-* Enable Mine Access Permissions for each mine.  The actual commands that are used are based upon the economy plugin that you have installed when you run this command.  This allows prison to work with the minimal configurations of external plugins such as WorldGuard; all you need to do is to enable WorldGuard's global region with the flag `passthrough deny`. 
+* Auto Configure now uses a new feature called Access by Rank.  This is automatically enabled for Mine Access and Access to TP for the players.  Access by Rank eliminates the need to use perms for these access.  As a player ranks up, they will gain access to ranks and mines, but all prior ranks and mines will automatically be included. 
 
 
-* Setup some of the most basic rank commands that will give your players the permissions needed to access the mines associated with their rank, and to TP to those mines.
+* ~~Enable Mine Access Permissions for each mine.  The actual commands that are used are based upon the economy plugin that you have installed when you run this command.  This allows prison to work with the minimal configurations of external plugins such as WorldGuard; all you need to do is to enable WorldGuard's global region with the flag `passthrough deny`. ~~  Warning do not use the access by permissions since Access by Rank replaces it, but it can still be used if you want.
+
+
+* ~~Setup some of the most basic rank commands that will give your players the permissions needed to access the mines associated with their rank, and to TP to those mines.~~  Note: Permissions are  no longer setup since prison does not need them for TP or Mine Access.  If you need to add any permission you would have to manually add them as usual.
+
 
 
 * Enable Prison's Sellall feature and preload the default shop prices with about 98 items and blocks.  These defaults settings will allow your players to sell what they mine.

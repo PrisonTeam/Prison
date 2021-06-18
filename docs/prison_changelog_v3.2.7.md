@@ -11,7 +11,8 @@
 **[v3.2.4 - 2021-03-01](prison_changelog_v3.2.4.md)**&nbsp;&nbsp;
 **[v3.2.5 - 2021-04-01](prison_changelog_v3.2.5.md)**&nbsp;&nbsp;
 **[v3.2.6 - 2021-04-11](prison_changelog_v3.2.6.md)**&nbsp;&nbsp;
-**[v3.2.7 - 2021-05-02](prison_changelog_v3.2.7.md)**
+**[v3.2.7 - 2021-05-02](prison_changelog_v3.2.7.md)**&nbsp;&nbsp;
+**[v3.2.8 - 2021-06-17](prison_changelog_v3.2.8.md)**
  
 
 Greetings!  I'm delighted that you are interested in the build logs for the
