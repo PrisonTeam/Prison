@@ -24,6 +24,11 @@ These build logs represent the work that has been going on within prison.
 # v3.2.8.2 2021-06-18
 
 
+* **Bug fix: Issue with non-plugin jars being scanned, which was resulting in a null value for the plugin names.**
+Changed the code to bypass all jars that are not registered (has the signature of) as a bukkit plugin.
+This bug prevented prison from starting up, so this is a very serious issue.
+
+
 * **Rework how some of the BlockBreakEvents are setup to reduce unused and duplicate listeners.**
 Changed the defaults for the three enchantment plugins to be DISABLED by default.  This will help reduce listeners when these plugins are not being used.
 
