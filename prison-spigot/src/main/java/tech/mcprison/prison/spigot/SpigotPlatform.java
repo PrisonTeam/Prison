@@ -1738,92 +1738,95 @@ public class SpigotPlatform
     	
     	AutoFeaturesWrapper afw = AutoFeaturesWrapper.getInstance();
     	
-    	results.add( String.format("AutoManager Enabled:&b %s", 
-    										afw.isBoolean( AutoFeatures.isAutoManagerEnabled )) );
+    	boolean isAutoManagerEnabled = afw.isBoolean( AutoFeatures.isAutoManagerEnabled );
+    	results.add( String.format("AutoManager Enabled:&b %s", isAutoManagerEnabled) );
     	
-		String bbePriority = afw.getMessage( AutoFeatures.blockBreakEventPriority );
-		BlockBreakPriority blockBreakPriority = BlockBreakPriority.fromString( bbePriority );
-		results.add( String.format(".   Block Break Event Priority:&b %s", 
-											blockBreakPriority.name() ) );
-		
-		String tebePriority = afw.getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
-		BlockBreakPriority tebEventPriority = BlockBreakPriority.fromString( tebePriority );
-		results.add( String.format(".   Token Enchant BlockExplodeEvent Priority:&b %s", 
-				tebEventPriority.name() ) );
-		
-		String cebuePriority = afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
-		BlockBreakPriority cebuEventPriority = BlockBreakPriority.fromString( cebuePriority );
-		results.add( String.format(".   Crazy Enchant BlastUseEvent Priority:&b %s", 
-				cebuEventPriority.name() ) );
-
-		String zbsePriority = afw.getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
-		BlockBreakPriority zbsEventPriority = BlockBreakPriority.fromString( zbsePriority );
-		results.add( String.format(".   Zenchantments BlockShredEvent Priority:&b %s", 
-				zbsEventPriority.name() ) );
-
-
-		results.add( " " );
-		
-		boolean isAutoPickup = afw.isBoolean( AutoFeatures.autoPickupEnabled );
-    	results.add( String.format(".   Auto Pickup:&b %s", isAutoPickup ) );
-    	
-    	results.add( String.format(".   Auto Smelt:&b %s", (!isAutoPickup ? "disabled" :
-    										afw.isBoolean( AutoFeatures.autoSmeltEnabled ))) );
-    	results.add( String.format(".   Auto Block:&b %s", (!isAutoPickup ? "disabled" :
-    										afw.isBoolean( AutoFeatures.autoBlockEnabled ))) );
-
-    	
-    	results.add( String.format(".   Handle Normal Drops:&b %s", (isAutoPickup ? "disabled by AutoPickup" :
-    										afw.isBoolean( AutoFeatures.handleNormalDropsEvents ))) );
-    	results.add( String.format(".   Normal Drop Smelt:&b %s", (isAutoPickup ? "disabled" :
-    										afw.isBoolean( AutoFeatures.normalDropSmelt ))) );
-    	results.add( String.format(".   Normal Drop Block:&b %s", (isAutoPickup ? "disabled" :
-    										afw.isBoolean( AutoFeatures.normalDropBlock ))) );
-    	
-    	
-    	
-		results.add( " " );
-		
-    	results.add( String.format("+.   Calculate Durability:&b %s", 
-    										afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled )) );
-    	
-    	
-    	boolean isCalcFortune = afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled );
-    	results.add( String.format(".   Calculate Fortune:&b %s", isCalcFortune) );
-    	results.add( String.format("+.  .  Max Fortune Multiplier:&b %s", 
-    										afw.getInteger( AutoFeatures.fortuneMultiplierMax )) );
-    	
-    	boolean isExtendedBukkitFortune = afw.isBoolean( AutoFeatures.isExtendBukkitFortuneCalculationsEnabled );
-    	results.add( String.format(".  .  Extended Bukkit Fortune Enabled:&b %s", 
-    										isExtendedBukkitFortune) );
-    	results.add( String.format("+.  .  Extended Bukkit Fortune Factor Percent Range Low:&b %s", 
-    										afw.getInteger( AutoFeatures.extendBukkitFortuneFactorPercentRangeLow )) );
-    	results.add( String.format("+.  .  Extended Bukkit Fortune Factor Percent Range High:&b %s", 
-    										afw.getInteger( AutoFeatures.extendBukkitFortuneFactorPercentRangeHigh )) );
-    	
-    	
-    	results.add( String.format(".  .  Calculate Alt Fortune Enabled:&b %s", ( isExtendedBukkitFortune ? "disabled" :
-    										afw.isBoolean( AutoFeatures.isCalculateAltFortuneEnabled ))) );
-    	results.add( String.format("+.  .  Calculate Alt Fortune on all Blocks:&b %s", 
-    										afw.isBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled )) );
-    	
-    	
-    	results.add( " " );
-    	
-    	
-    	results.add( String.format("+.   Calculate XP:&b %s", 
-    										afw.isBoolean( AutoFeatures.isCalculateXPEnabled )) );
-    	results.add( String.format("+.   Drop XP as Orbs:&b %s", 
-    										afw.isBoolean( AutoFeatures.givePlayerXPAsOrbDrops )) );
-    	
-    	results.add( String.format("+.   Process TokensEnchant Explosive Events:&b %s", 
-    										afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents )) );
-    	results.add( String.format("+.   Process Crazy Enchants Block Explode Events:&b %s", 
-    										afw.isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents )) );
-    	results.add( String.format("+.   Process McMMO BlockBreakEvents:&b %s", 
-    										afw.isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents )) );
-    	
-    	
+    	if ( isAutoManagerEnabled ) {
+    		
+    		String bbePriority = afw.getMessage( AutoFeatures.blockBreakEventPriority );
+    		BlockBreakPriority blockBreakPriority = BlockBreakPriority.fromString( bbePriority );
+    		results.add( String.format(".   Block Break Event Priority:&b %s", 
+    				blockBreakPriority.name() ) );
+    		
+    		String tebePriority = afw.getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
+    		BlockBreakPriority tebEventPriority = BlockBreakPriority.fromString( tebePriority );
+    		results.add( String.format(".   Token Enchant BlockExplodeEvent Priority:&b %s", 
+    				tebEventPriority.name() ) );
+    		
+    		String cebuePriority = afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
+    		BlockBreakPriority cebuEventPriority = BlockBreakPriority.fromString( cebuePriority );
+    		results.add( String.format(".   Crazy Enchant BlastUseEvent Priority:&b %s", 
+    				cebuEventPriority.name() ) );
+    		
+    		String zbsePriority = afw.getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
+    		BlockBreakPriority zbsEventPriority = BlockBreakPriority.fromString( zbsePriority );
+    		results.add( String.format(".   Zenchantments BlockShredEvent Priority:&b %s", 
+    				zbsEventPriority.name() ) );
+    		
+    		results.add( " " );
+    		
+    		boolean isAutoPickup = afw.isBoolean( AutoFeatures.autoPickupEnabled );
+    		results.add( String.format(".   Auto Pickup:&b %s", isAutoPickup ) );
+    		
+    		results.add( String.format(".   Auto Smelt:&b %s", (!isAutoPickup ? "disabled" :
+    			afw.isBoolean( AutoFeatures.autoSmeltEnabled ))) );
+    		results.add( String.format(".   Auto Block:&b %s", (!isAutoPickup ? "disabled" :
+    			afw.isBoolean( AutoFeatures.autoBlockEnabled ))) );
+    		
+    		
+    		results.add( String.format(".   Handle Normal Drops:&b %s", (isAutoPickup ? "disabled by AutoPickup" :
+    			afw.isBoolean( AutoFeatures.handleNormalDropsEvents ))) );
+    		results.add( String.format(".   Normal Drop Smelt:&b %s", (isAutoPickup ? "disabled" :
+    			afw.isBoolean( AutoFeatures.normalDropSmelt ))) );
+    		results.add( String.format(".   Normal Drop Block:&b %s", (isAutoPickup ? "disabled" :
+    			afw.isBoolean( AutoFeatures.normalDropBlock ))) );
+    		
+    		
+    		
+    		results.add( " " );
+    		
+    		results.add( String.format("+.   Calculate Durability:&b %s", 
+    				afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled )) );
+    		
+    		
+    		boolean isCalcFortune = afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled );
+    		results.add( String.format(".   Calculate Fortune:&b %s", isCalcFortune) );
+    		results.add( String.format("+.  .  Max Fortune Multiplier:&b %s", 
+    				afw.getInteger( AutoFeatures.fortuneMultiplierMax )) );
+    		
+    		boolean isExtendedBukkitFortune = afw.isBoolean( AutoFeatures.isExtendBukkitFortuneCalculationsEnabled );
+    		results.add( String.format(".  .  Extended Bukkit Fortune Enabled:&b %s", 
+    				isExtendedBukkitFortune) );
+    		results.add( String.format("+.  .  Extended Bukkit Fortune Factor Percent Range Low:&b %s", 
+    				afw.getInteger( AutoFeatures.extendBukkitFortuneFactorPercentRangeLow )) );
+    		results.add( String.format("+.  .  Extended Bukkit Fortune Factor Percent Range High:&b %s", 
+    				afw.getInteger( AutoFeatures.extendBukkitFortuneFactorPercentRangeHigh )) );
+    		
+    		
+    		results.add( String.format(".  .  Calculate Alt Fortune Enabled:&b %s", ( isExtendedBukkitFortune ? "disabled" :
+    			afw.isBoolean( AutoFeatures.isCalculateAltFortuneEnabled ))) );
+    		results.add( String.format("+.  .  Calculate Alt Fortune on all Blocks:&b %s", 
+    				afw.isBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled )) );
+    		
+    		
+    		results.add( " " );
+    		
+    		
+    		results.add( String.format("+.   Calculate XP:&b %s", 
+    				afw.isBoolean( AutoFeatures.isCalculateXPEnabled )) );
+    		results.add( String.format("+.   Drop XP as Orbs:&b %s", 
+    				afw.isBoolean( AutoFeatures.givePlayerXPAsOrbDrops )) );
+    		
+    		results.add( String.format("+.   Process TokensEnchant Explosive Events:&b %s", 
+    				afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents )) );
+    		results.add( String.format("+.   Process Crazy Enchants Block Explode Events:&b %s", 
+    				afw.isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents )) );
+    		results.add( String.format("+.   Process McMMO BlockBreakEvents:&b %s", 
+    				afw.isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents )) );
+    		
+    		
+    		
+    	}
     	
     	
     	results.add( String.format("Prestiges Enabled:&b %s", 
