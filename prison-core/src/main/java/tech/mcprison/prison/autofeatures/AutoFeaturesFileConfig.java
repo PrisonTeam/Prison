@@ -44,9 +44,9 @@ public class AutoFeaturesFileConfig {
 	    	blockBreakEvents(options),
 	    	
 		    	blockBreakEventPriority(blockBreakEvents, "LOW"),
-		    	TokenEnchantBlockExplodeEventPriority(blockBreakEvents, "LOW"),
-		    	CrazyEnchantsBlastUseEventPriority(blockBreakEvents, "LOW"),
-		    	ZenchantmentsBlockShredEventPriority(blockBreakEvents, "LOW"),
+		    	TokenEnchantBlockExplodeEventPriority(blockBreakEvents, "DISABLED"),
+		    	CrazyEnchantsBlastUseEventPriority(blockBreakEvents, "DISABLED"),
+		    	ZenchantmentsBlockShredEventPriority(blockBreakEvents, "DISABLED"),
 	    	
 		    	
 	    	general(options),

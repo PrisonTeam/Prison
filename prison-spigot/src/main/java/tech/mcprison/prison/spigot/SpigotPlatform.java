@@ -1869,6 +1869,9 @@ public class SpigotPlatform
 	public void dumpEventListenersBlockBreakEvents() {
 		
 		dumpEventListeners( "BlockBreakEvent", BlockBreakEvent.getHandlerList() );
+		
+		Output.get().logInfo( "&3Prison Internal BlockBreakEvents: " +
+								"tech.mcprison.prison.spigot.SpigotListener" );
 	}
 	
 	@Override

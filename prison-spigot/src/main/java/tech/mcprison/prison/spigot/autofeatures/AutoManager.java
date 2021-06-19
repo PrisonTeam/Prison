@@ -86,6 +86,14 @@ public class AutoManager
 		String zbsPriority = getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
 		BlockBreakPriority blockShredPriority = BlockBreakPriority.fromString( zbsPriority );
 		
+		if ( blockShredPriority != BlockBreakPriority.DISABLED ) {
+			
+			// Always register the monitor event:
+			Bukkit.getPluginManager().registerEvents( 
+					new AutoManagerBlockShredEventListenerMonitor(), spigotPrison);
+		}
+
+		
 		switch ( blockShredPriority )
 		{
 			case LOWEST:
@@ -285,6 +293,16 @@ public class AutoManager
     
     
     
+    
+    public class AutoManagerBlockShredEventListenerMonitor 
+	    extends AutoManager
+	    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.MONITOR) 
+    	public void onBlockShredBreakMonitor(BlockShredEvent e) {
+    		super.genericBlockEventMonitor( e );
+    	}
+    }
     
     public class AutoManagerBlockShredEventListenerLowest 
 		extends AutoManager

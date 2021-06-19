@@ -18,9 +18,18 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# v3.3.0-alpha.7 2021-06-??
+*Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
+# v3.2.8.2 2021-06-18
+
+
+* **Rework how some of the BlockBreakEvents are setup to reduce unused and duplicate listeners.**
+Changed the defaults for the three enchantment plugins to be DISABLED by default.  This will help reduce listeners when these plugins are not being used.
+
+
+* **Suppress the auto manager details in `/prison version` if auto manager is disabled.**
+Displaying this information would only cause confusion since the setting are ignored, but could imply they are active since they are shown in this command.
 
 
 # v3.2.8.1 2021-06-18
