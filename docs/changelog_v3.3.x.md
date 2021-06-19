@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.1 2021-06-19
 
 
+* **Set the next version to v3.2.9-alpha.1**
+
+
 * **Fix a potential NPE. Suspect the new value of Y is too low and is result in no block.**
 Cannot check the y value for a lower limit since future versions of minecraft will allow for negative values of y, and values greater than 255.  So having to check when a block cannot be resolved, which is not too specific.
 
