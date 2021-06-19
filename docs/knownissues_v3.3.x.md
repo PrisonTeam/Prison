@@ -3,24 +3,29 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
+* If automanager is turned off, and /prison reload automanager is ran, it will reload the settings, but the event listeners are only registered upon server startup.  So if that condition happens... should display a warning indicating the server must be restarted.
+
+* If ranks module fails due to no economy, try to make that a little more obvious.
+
+
 * **For v3.2.8 Release - - Preparing for Java 16**
   * DONE: Update Gradle to most recent release
   * Review other dependencies and update them too, if possible.
   * DONE: Update development environment, and system to support Java 16
-  * DONE: Update XSeries to support the new block types.
+  * DONE: Update XSeries to support the new block types. Updated to v8.0.0 and then v8.1.0.
   * 
   * DONE: Enable the new block model - 73.5% are currently using v1.16.x so with the new 1.17 more people will be expecting the new blocks.
-  * Auto Refresh for language files when version detects new update is available and if auto update is enabled for that language file.
+  * DONE: Auto Refresh for language files when version detects new update is available and if auto update is enabled for that language file.
 
-  * In /prison version, if auto features are disabled, show NO details.
+  * DONE: In /prison version, if auto features are disabled, show NO details.
 
   * Confirm duplicates on BlockBreakEvents makes sense.
 
   * Ranks info raw tag is not showing the editing formats... 
 
-  * Fortune on all blocks is not working...
+  * DONE: Fortune on all blocks is not working...
   
-  * Hook up java version on /prison version's plugin listings
+  * DONE: Hook up java version on /prison version's plugin listings
   
   * DONE: Issue with nms with SpigotPlayer... does not work with 1.17.  
    - Disabled when fails.  No longer produces stack traces.
