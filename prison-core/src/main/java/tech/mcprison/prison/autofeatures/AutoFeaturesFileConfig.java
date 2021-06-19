@@ -33,9 +33,6 @@ public class AutoFeaturesFileConfig {
     	options,
     	
     		otherPlugins(options),
-    		
-	    		isProcessTokensEnchantExplosiveEvents(otherPlugins, true),
-	    		isProcessCrazyEnchantsBlockExplodeEvents(otherPlugins, true),
 	    		
 	    		isProcessMcMMOBlockBreakEvents(otherPlugins, true),
 	    		isProcessEZBlocksBlockBreakEvents(otherPlugins, false),
@@ -44,14 +41,20 @@ public class AutoFeaturesFileConfig {
 	    	blockBreakEvents(options),
 	    	
 		    	blockBreakEventPriority(blockBreakEvents, "LOW"),
+
+		    	isProcessTokensEnchantExplosiveEvents(blockBreakEvents, false),
 		    	TokenEnchantBlockExplodeEventPriority(blockBreakEvents, "DISABLED"),
+		    	
+		    	isProcessCrazyEnchantsBlockExplodeEvents(blockBreakEvents, false),
 		    	CrazyEnchantsBlastUseEventPriority(blockBreakEvents, "DISABLED"),
+
+		    	isProcessZenchantsBlockExplodeEvents(blockBreakEvents, false),
 		    	ZenchantmentsBlockShredEventPriority(blockBreakEvents, "DISABLED"),
 	    	
 		    	
 	    	general(options),
 	    	
-		    	isAutoManagerEnabled(general, false),
+		    	isAutoManagerEnabled(general, true),
 		    	
 		    	
 		    	isCalculateDurabilityEnabled(general, false),
@@ -60,7 +63,7 @@ public class AutoFeaturesFileConfig {
 		    	isCalculateDropAdditionsEnabled(general, true),
 		    	
 		    	isCalculateXPEnabled(general, true),
-		    	givePlayerXPAsOrbDrops(general, true),
+		    	givePlayerXPAsOrbDrops(general, false),
 		    	
 		    	dropItemsIfInventoryIsFull(general, true),
 				playSoundIfInventoryIsFull(general, true),
@@ -69,13 +72,16 @@ public class AutoFeaturesFileConfig {
 				isAutoSellPerBlockBreakEnabled(general, false),
 				isAutoSellPerBlockBreakInlinedEnabled(general, false),
 				
+				
 			permissions(options),
+			
 				permissionAutoPickup(permissions, "prison.automanager.pickup"),
 				permissionAutoSmelt(permissions, "prison.automanager.smelt"),
 				permissionAutoBlock(permissions, "prison.automanager.block"),
 			
 				
 			lore(options),
+			
 				isLoreEnabled(lore, true),
 				lorePickupValue(lore, "&dPickup&7"),
 				loreSmeltValue(lore, "&dSmelt&7"),
@@ -90,6 +96,7 @@ public class AutoFeaturesFileConfig {
 				
 				
 			autoFeatures(options),
+			
 				autoPickupEnabled(autoFeatures, true),
 				autoSmeltEnabled(autoFeatures, true),
 				autoBlockEnabled(autoFeatures, true),

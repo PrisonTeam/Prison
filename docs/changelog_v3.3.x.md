@@ -21,7 +21,13 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.8.2 2021-06-18
+# v3.2.9-alpha.1 2021-06-19
+
+
+* **Reworked some of the event listeners to eliminate duplicates and to pull some out in to their own classes so it is clear what they are listening for.**
+Zenchantments has been fixed for when auto features is off.  It did not have any listeners setup for the normal drop processing.
+Moved around some of the config settings for the autoFeaturesConfig.yml to group them better and add a processing control setting for zenchantment.  
+Set the default value for enabling auto manager to true so it will be on by default now.
 
 
 * **Bug fix: Issue with non-plugin jars being scanned, which was resulting in a null value for the plugin names.**

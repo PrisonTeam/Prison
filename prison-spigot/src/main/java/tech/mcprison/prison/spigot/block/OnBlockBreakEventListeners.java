@@ -63,6 +63,33 @@ public class OnBlockBreakEventListeners
 				break;
 		}
 		
+		
+		
+		boolean isTEBlockExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
+		
+		if ( isTEBlockExplosiveEnabled ) {
+			
+			try {
+				Class.forName("com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent");
+				
+//				AutoManagerTokenEnchant tokenEnchant = new AutoManagerTokenEnchant();
+//				tokenEnchant.registerBlockBreakEvents( spigotPrison );
+				
+				OnBlockBreakEventTokenEnchant bbTokenEnchant = new OnBlockBreakEventTokenEnchant();
+				bbTokenEnchant.registerBlockBreakEvents( spigotPrison );
+				
+//			Bukkit.getPluginManager().registerEvents(new AutoManagerTokenEnchant(), spigotPrison);
+//			Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventTokenEnchant(), spigotPrison);
+				
+			} 
+			catch (ClassNotFoundException e) {
+				// TokenEnchant is not available on this server which is not an error.  Just
+				// ignore this situation and do not register the TE explosion events.
+			}
+		}
+		
+		
+		
     	boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
     	
     	if ( isCEBlockExplodeEnabled ) {
@@ -70,6 +97,16 @@ public class OnBlockBreakEventListeners
     		bbeCE.registerBlastUseEvents( spigotPrison );
     	}
 
+		
+		
+    	boolean isZenBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessZenchantsBlockExplodeEvents );
+		
+		if ( isZenBlockExplodeEnabled ) {
+			
+			OnBlockBreakEventZenchantments zenBlockEvents = new OnBlockBreakEventZenchantments();
+			zenBlockEvents.registerBlockBreakEvents( spigotPrison );
+		}
+		
 	}
 	
 	

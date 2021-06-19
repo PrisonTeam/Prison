@@ -1870,8 +1870,16 @@ public class SpigotPlatform
 		
 		dumpEventListeners( "BlockBreakEvent", BlockBreakEvent.getHandlerList() );
 		
-		Output.get().logInfo( "&3Prison Internal BlockBreakEvents: " +
+		Output.get().logInfo( "&2NOTE: Prison Block Event Listeners:" );
+		
+		Output.get().logInfo( "&2. . Prison Internal BlockBreakEvents: " +
 								"tech.mcprison.prison.spigot.SpigotListener" );
+		Output.get().logInfo( "&2. . Auto Feature Core: Non-AutoManager: " +
+								"OnBlockBreakEventListeners$OnBlockBreakEventListener*" );
+		Output.get().logInfo( "&2. . Prison MONITOR Events manages block counts, " +
+								"Mine Sweeper, and zero block conditions." );
+		Output.get().logInfo( "&2. . AutoManager and enchantment event listeners are " +
+				"				identified by their class names." );
 	}
 	
 	@Override
