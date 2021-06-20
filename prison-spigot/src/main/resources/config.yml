@@ -173,6 +173,24 @@ prison-mines:
 # Note: The process that this controls ONLY checks for the activation of Vault
 # Economy.  Therefore you must use CMI with Vault. Also this will "work" with 
 # any other economy plugins using vault too.  But please do not use this 
-# unless all other options have been exhusted.  
-# delayedCMIStartup: false
+# unless all other options have been exhusted. 
+#
+# To use the delayed startup:
+# 1. delayedPrisonStartup.enabled: true
+# 2. Optional: cooldown-secs and max-attemps identifies how frequently and how
+#    many times Prison will try to hook in to the vault economy.
+# 3. inspect-vault is optional. When enabled it will display what value must be
+#    used with the vault-economy-name.
+# 4. triggers.vault: true.  Must be true or this won't work. When true this
+#    ensures Vault has been registered and is also enabled.
+# 5. vault-economy-name: must match what's in vault.  If not, then prison will 
+#    fail to start.
+delayedPrisonStartup:
+  enabled: false
+  cooldown-secs: 5
+  max-attempts: 6
+  inspect-vault: true
+  triggers:
+    vault: true
+    vault-economy-name: Economy_Essentials
 

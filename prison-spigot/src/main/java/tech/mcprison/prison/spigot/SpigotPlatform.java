@@ -1879,7 +1879,7 @@ public class SpigotPlatform
 		Output.get().logInfo( "&2. . Prison MONITOR Events manages block counts, " +
 								"Mine Sweeper, and zero block conditions." );
 		Output.get().logInfo( "&2. . AutoManager and enchantment event listeners are " +
-				"				identified by their class names." );
+								"identified by their class names." );
 	}
 	
 	@Override

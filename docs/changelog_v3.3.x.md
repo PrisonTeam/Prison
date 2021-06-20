@@ -24,7 +24,12 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.1 2021-06-19
 
 
-* **Set the next version to v3.2.9-alpha.1**
+* **A little more advanced way to delay the startup of prison.**
+This change requires that vault be present and active, then also that the VaultEconomy is also active.  It then is able to validate the economy plugin that is actually active to confirm that CMI Economy is loaded and hopefully active. 
+It is hoped that this will allow a better control starting up prison.
+
+
+* **Set the next version to v3.2.9-alpha.1  2021-06-19**
 
 
 * **Fix a potential NPE. Suspect the new value of Y is too low and is result in no block.**

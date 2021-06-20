@@ -34,6 +34,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.inventivetalent.update.spiget.SpigetUpdate;
 import org.inventivetalent.update.spiget.UpdateCallback;
@@ -182,21 +183,21 @@ public class SpigotPrison extends JavaPlugin {
         
         
         
-    	boolean delayedCMIStartup = getConfig().getBoolean("delayedCMIStartup", false);
-    	
-    	if ( !delayedCMIStartup ) {
+    	boolean delayedPrisonStartup = getConfig().getBoolean("delayedPrisonStartup.enabled", false);
+
+    	if ( !delayedPrisonStartup ) {
     		onEnableStartup();
     	}
     	else {
-    		onEnableDelayedStartCMI();
+    		onEnableDelayedStart();
     	}
     	
     }
     
     
-    protected void onEnableDelayedStartCMI() {
+    protected void onEnableDelayedStart() {
     	
-    	SpigotPrisonCMIDelayedStartupTask delayedStartupTask = new SpigotPrisonCMIDelayedStartupTask( this );
+    	SpigotPrisonDelayedStartupTask delayedStartupTask = new SpigotPrisonDelayedStartupTask( this );
     	delayedStartupTask.submit();
     }
     
@@ -508,7 +509,19 @@ public class SpigotPrison extends JavaPlugin {
 
 	protected boolean isIntegrationRegistered( Integration integration ) {
 		
-    	return Bukkit.getPluginManager().isPluginEnabled(integration.getProviderName());
+    	return isPluginRegistered( integration.getProviderName() );
+	}
+	
+	protected boolean isPluginRegistered( String pluginName ) {
+		
+		return Bukkit.getPluginManager().isPluginEnabled( pluginName );
+	}
+	
+	protected boolean isPluginEnabled( String pluginName ) {
+		
+		Plugin plug = Bukkit.getPluginManager().getPlugin( pluginName );
+		
+		return plug != null && plug.isEnabled();
 	}
 	
 	/**
