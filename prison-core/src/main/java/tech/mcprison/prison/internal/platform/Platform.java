@@ -357,5 +357,8 @@ public interface Platform {
 	public void dumpEventListenersBlockBreakEvents();
 	
 	public void dumpEventListenersPlayerChatEvents();
+
+
+	public void traceEventListenersBlockBreakEvents( CommandSender sender );
 	
 }

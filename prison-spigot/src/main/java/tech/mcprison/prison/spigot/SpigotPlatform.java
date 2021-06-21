@@ -1893,6 +1893,24 @@ public class SpigotPlatform
 		}
 	}
 	
+	/**
+	 * <p>Some information on events...
+	 * </p>
+	 * 
+	 * https://bukkit.fandom.com/wiki/Event_API_Reference
+	 * 
+	 * <p>When changing values of an event the changes of one with the higher priority will 
+	 * override any changes done before by a listener with a lower priority so that in the 
+	 * end the one with the highest priority can have the final say in the actually outcome. 
+	 * <b>To achieve this priority order listeners are called from the ones with the 
+	 * lowest to the ones with the highest priority. Any listener with the MONITOR 
+	 * priority is called last.</b> 
+	 * 
+	 * </p>
+	 * 
+	 * @param eventType
+	 * @param handlerList
+	 */
 	private void dumpEventListeners( String eventType, HandlerList handlerList ) {
 		
 		RegisteredListener[] listeners = handlerList.getRegisteredListeners();
@@ -1914,4 +1932,18 @@ public class SpigotPlatform
 		display.toLog( LogLevel.DEBUG );
 	}
 
+	/**
+	 * <p>This feature will be similar to the WorldGuard's command 
+	 * 	<pre>/wg debug testbreak -ts &lt;player&gt;</pre>, but this will show far 
+	 * more details on each and every step.
+	 * </p>
+	 * 
+	 */
+	@Override
+	public void traceEventListenersBlockBreakEvents( tech.mcprison.prison.internal.CommandSender sender )
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
 }

@@ -23,6 +23,12 @@ These build logs represent the work that has been going on within prison.
 
 # v3.2.9-alpha.1 2021-06-21
 
+
+* **Getting ready to add a new debug feature to test the BlockBreakEvent processing by going through all registered event listeners one by one and see if they handle the event.**
+The new feature, when done, will list what happens with each listener, and report the state of the block between each one.  
+The mine will be a parameter so you can test how it works within a specific mine without having to have an online player look at a block, like how wg does it with their command /wg debug testbreak.
+
+
 * **Added a new {firstJoin} placeholder for the rank commands.**
 This will only be activated upon a first join event, therefore it can only be added to the default rank on the default ladder. If added to any other command on any other ladder or any other rank, that command will always be ignored.
 The use of this new placeholder allow special processing for new players only and prevents th need for other plugins just to provide On Join processing.

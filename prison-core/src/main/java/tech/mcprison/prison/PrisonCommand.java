@@ -1094,6 +1094,13 @@ public class PrisonCommand {
     		return;
     	}
     	
+    	if ( targets != null && "traceBlockBreakListeners".equalsIgnoreCase( targets ) ) {
+    		
+    		Prison.get().getPlatform().traceEventListenersBlockBreakEvents( sender );
+    		
+    		return;
+    	}
+    	
     	if ( targets != null && "chatListeners".equalsIgnoreCase( targets ) ) {
     		
     		Prison.get().getPlatform().dumpEventListenersPlayerChatEvents();
