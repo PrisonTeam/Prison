@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.1 2021-06-21
 
 
+* **Fixed the placeholder prison_rankup_cost_remaining_bar_laddername to remove a numeric value that was being prepended to the bar graph.**
+It was left over from the percent function and should have been removed before.
+
+
 * **The RankPlayer's addRank() function was changed to eliminate the ladder parameter because the ladder "should" be part of the Rank object anyway.**
 Having ladder was redundant.
 
