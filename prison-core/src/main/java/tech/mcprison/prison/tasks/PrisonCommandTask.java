@@ -60,6 +60,8 @@ public class PrisonCommandTask {
 	
 	public enum CustomPlaceholders {
 		
+		firstJoin(CommandEnvironment.rank_commands),
+
 		balanceInitial(CommandEnvironment.rank_commands),
 		balanceFinal(CommandEnvironment.rank_commands),
 		currency(CommandEnvironment.rank_commands),

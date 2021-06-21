@@ -46,7 +46,8 @@ public class RankUtil
 		rankup,
 		promote,
 		demote,
-		setrank;
+		setrank,
+		firstJoin;
 	}
 	
 	public enum RankupModes {
@@ -91,6 +92,7 @@ public class RankUtil
 		tring_to_promote,
 		trying_to_demote,
 		trying_to_setrank,
+		trying_to_firstJoin,
 		
 		bypassing_cost_for_player,
 		costs_paid_by_player,
@@ -199,7 +201,11 @@ public class RankUtil
     
     public RankupResults setRank(Player player, RankPlayer rankPlayer, String ladderName, String rankName, 
     										String playerName, String executorName) {
-    	return rankupPlayer(RankupCommands.setrank, player, rankPlayer, ladderName, rankName, 
+    	
+    	RankupCommands rankupCmd = "FirstJoinEvent".equalsIgnoreCase( executorName ) ?
+    						RankupCommands.firstJoin : RankupCommands.setrank;
+    	
+    	return rankupPlayer( rankupCmd, player, rankPlayer, ladderName, rankName, 
     					playerName, executorName, PromoteForceCharge.no_charge );
     }
     
@@ -239,6 +245,10 @@ public class RankUtil
 				
 			case setrank:
 				results.addTransaction(RankupTransactions.trying_to_setrank);
+				break;
+				
+			case firstJoin:
+				results.addTransaction(RankupTransactions.trying_to_firstJoin);
 				break;
 				
 			default:
@@ -460,7 +470,9 @@ public class RankUtil
         
         int count = 0;
         for (String cmd : targetRank.getRankUpCommands()) {
-        	if ( cmd != null ) {
+        	if ( cmd != null && 
+        			( !cmd.contains( "{firstJoin}" ) || 
+        			   cmd.contains( "{firstJoin}" ) && command == RankupCommands.firstJoin )  ) {
         		
 				PrisonCommandTask cmdTask = new PrisonCommandTask( command.name() );
 				
@@ -480,6 +492,10 @@ public class RankUtil
 									(results.getTargetRank() == null ? "none" : results.getTargetRank().getName()) );
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.targetRankTag, 
 									(results.getTargetRank() == null ? "none" : results.getTargetRank().getTag()) );
+				
+				if ( command == RankupCommands.firstJoin && cmd.contains( "{firstJoin}" ) ) {
+					cmd = cmd.replace( "{firstJoin}", cmd );
+				}
 				
 				
 				cmdTask.submitCommandTask( prisonPlayer, cmd );
@@ -576,7 +592,7 @@ public class RankUtil
         
         
         // If default ladder and rank is null at this point, that means use the "default" rank:
-        if ( command == RankupCommands.setrank ) {
+        if ( command == RankupCommands.setrank || command == RankupCommands.firstJoin ) {
         	
         	if ( "-remove-".equalsIgnoreCase( rankName ) ) {
         		

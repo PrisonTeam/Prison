@@ -23,6 +23,10 @@ These build logs represent the work that has been going on within prison.
 
 # v3.2.9-alpha.1 2021-06-21
 
+* **Added a new {firstJoin} placeholder for the rank commands.**
+This will only be activated upon a first join event, therefore it can only be added to the default rank on the default ladder. If added to any other command on any other ladder or any other rank, that command will always be ignored.
+The use of this new placeholder allow special processing for new players only and prevents th need for other plugins just to provide On Join processing.
+
 
 * **Fixed the placeholder prison_rankup_cost_remaining_bar_laddername to remove a numeric value that was being prepended to the bar graph.**
 It was left over from the percent function and should have been removed before.
