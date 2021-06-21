@@ -21,7 +21,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.9-alpha.1 2021-06-19
+# v3.2.9-alpha.1 2021-06-21
+
+
+* **The RankPlayer's addRank() function was changed to eliminate the ladder parameter because the ladder "should" be part of the Rank object anyway.**
+Having ladder was redundant.
 
 
 * **A little more advanced way to delay the startup of prison.**

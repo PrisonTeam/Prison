@@ -322,7 +322,7 @@ public class RankManager {
                 if ( curRank != null && rank.equals( curRank ) ) {
                     rankPlayer.removeRank(curRank);
                     if ( newRank != null ) {
-                    	rankPlayer.addRank(ladder, newRank);
+                    	rankPlayer.addRank(newRank);
                     }
                     
                     try {

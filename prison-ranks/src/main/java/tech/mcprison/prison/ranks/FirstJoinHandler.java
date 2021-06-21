@@ -54,7 +54,13 @@ public class FirstJoinHandler
         Optional<Rank> firstRank = PrisonRanks.getInstance().getDefaultLadder().getLowestRank();
 
         if (firstRank.isPresent()) {
-            player.addRank(PrisonRanks.getInstance().getDefaultLadder(), firstRank.get());
+        	Rank rank = firstRank.get();
+        	
+        	if ( !player.getLadderRanks().containsKey( rank.getLadder() ) ) {
+        		
+        		player.addRank( rank );
+        		
+        	}
         } else {
         	
         	Output.get().logWarn( firstJoinWarningNoRanksOnServer() );

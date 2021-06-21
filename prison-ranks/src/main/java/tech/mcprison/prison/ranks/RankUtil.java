@@ -447,7 +447,7 @@ public class RankUtil
         	results.addTransaction( RankupTransactions.zero_cost_to_player );
         }
 
-        rankPlayer.addRank(ladder, targetRank);
+        rankPlayer.addRank(targetRank);
 
         if ( !savePlayerRank( results, rankPlayer ) ) {
         	return;
