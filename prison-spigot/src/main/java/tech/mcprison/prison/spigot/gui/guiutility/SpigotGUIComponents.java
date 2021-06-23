@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.gui;
+package tech.mcprison.prison.spigot.gui.guiutility;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,6 +21,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 
 /**
  * @author rbluer RoyalBlueRanger

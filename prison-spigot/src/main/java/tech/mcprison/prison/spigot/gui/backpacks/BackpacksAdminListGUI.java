@@ -8,7 +8,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
-import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
+import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 import java.util.List;
 import java.util.Set;

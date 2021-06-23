@@ -49,6 +49,7 @@ import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoSmeltGUI;
 import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminGUI;
 import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminListGUI;
 import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminPlayerListGUI;
+import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 import tech.mcprison.prison.spigot.gui.mine.SpigotBlocksListGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotBlocksMineListGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotMineBlockPercentageGUI;

@@ -8,13 +8,14 @@ import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 import java.util.List;
 
 /**
  * @author GABRYCA
  */
-public class PrisonSetupGUI extends SpigotGUIComponents{
+public class PrisonSetupGUI extends SpigotGUIComponents {
 
     private final Player p;
 
