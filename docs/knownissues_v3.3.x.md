@@ -3,78 +3,39 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
+
+* Ladder commands:
+
+* Delete by line number:
+
+
+
+
+* Add optional block counts to level up.  So if money and block counts are used, then both have to be satisfied.
+If only one, then only one of those would be used.
+- Count only the block mined and not the results of fortune.  It will be easier to control how much mining a player does by ruling out the results of fortune... after all, it's "Blocks Broken" and not "Blocks Received".
+
+
+* Add support for mineTinker
+
+
+
+
 * If automanager is turned off, and /prison reload automanager is ran, it will reload the settings, but the event listeners are only registered upon server startup.  So if that condition happens... should display a warning indicating the server must be restarted.
+- Add a warning about event priority changes needing a server restart:
+
+
 
 * If ranks module fails due to no economy, try to make that a little more obvious.
 
 
-* **For v3.2.8 Release - - Preparing for Java 16**
-  * DONE: Update Gradle to most recent release
-  * Review other dependencies and update them too, if possible.
-  * DONE: Update development environment, and system to support Java 16
-  * DONE: Update XSeries to support the new block types. Updated to v8.0.0 and then v8.1.0.
-  * 
-  * DONE: Enable the new block model - 73.5% are currently using v1.16.x so with the new 1.17 more people will be expecting the new blocks.
-  * DONE: Auto Refresh for language files when version detects new update is available and if auto update is enabled for that language file.
+- If starting up prison and there are 0 ranks and 0 mines, then submit a delayed job that will run in 10 seconds to print out a message to console on how to run `/ranks autoConfigure` for quick setup... include link to the online docs.
 
-  * DONE: In /prison version, if auto features are disabled, show NO details.
-
-  * Confirm duplicates on BlockBreakEvents makes sense.
-
-  * Ranks info raw tag is not showing the editing formats... 
-
-  * DONE: Fortune on all blocks is not working...
-  
-  * DONE: Hook up java version on /prison version's plugin listings
-  
-  * DONE: Issue with nms with SpigotPlayer... does not work with 1.17.  
-   - Disabled when fails.  No longer produces stack traces.
 
 
 * Plugin exception handling has problems
   - This is a very rare condition that it happens, but when it does, the global trapping of Prison errors produces a stack trace that is missing details.  Off hand it is not known where that code is.  Need to look in to it and fix it.
   
-
-
-* **NOTICE - About Prison, Java 16, and Minecraft 1.17**
-
-Prison is all about providing the best experience for your server environment.In order to look toward the future, so we can continue to provide the best possible experience, we have to set limits on what we can actually provide support on.  We are currently entering a challenging period of time where we will have to make some difficult decisions to help ensure the best possible future for Prison.
-
-Minecraft 1.17 is scheduled to be released on June 8th, 2021. The release of 1.17 brings with it some major changes that will have significant ripples throughout the minecraft server community, mostly due to the heavy dependency upon Java 1.8 for many years.  This ultimately means there are a lot of unknowns that we will have to work through and there will be situations that were unexpected.
-
-One major change in our support statement is that Prison, as of right now, will only *officially* support Spigot v1.8.8 (10.9% usage), v1.12 (10.9% usage), and v1.16.5 (73.5% usage). These three versions of Spigot represents 95.3% of all servers using the Prison plugin.  This does not include any server that has disabled the bstats, which is one reason why you should keep that enabled so you can be represented in our stats and our plans for the future. 
-
-Note: The follow up versions in descending order of usage are: v1.14.4 (1.6% usage), v1.13.2 (1.2% usage), v1.15.2 (1.2% usage), and v1.11.2 (0.9% usage).  No other versions are recorded by bStats.
-
-But please keep in mind, as with our official stance of only supporting Spigot, we will also *provide* as-needed support for Paper and other Spigot compatible platforms. We want you to have the flexibility to use the platform that best suites your needs.  We just will not pre-test on those platforms, but we will try to address any issues that are brought to our attention. The non-supported versions of Spigot falls under this same limitation of support: we will not pre-test for the non-supported versions, but if you are using them and find issues, we will work with you to resolve them. The actual impact of dropping support for 1.9, 1.10, 1.11, 1.13, 1.14, and 1.15 should have no impact on quality for those releases of Spigot, but it will free up a lot of time spent on testing.
-
-
-Some initial testing with running a prison server using Java 16:
-* Spigot v1.8.8 will startup and run. But there are major failures with missing classes that are critical for the core bukkit and Java components to work properly.  It is doubtful a fix will ever be provided.
-* It has been noted that bukkit/spigot 1.8 through 1.11 will not work with Java 11 and later.
-* Spigot v1.12.2 compiled with Java 1.8 appears to work perfectly well with Java 16 running on the server.
-* Spigot v1.16.5 compiled with Java 1.8 appears to work perfectly well with Java 16 running on the server.
-
-
-I have not tried to compile anything with Java 16 since I need to first update the Prison build environment to support it.  But these are tests that will be explored in the very near future so as to get a better understanding on what we can expect from the build process.
-
-
-In the last few days, I've updated gradle to the latest release so it will support Java 16.  Other resources have been updated too.  More work will be done over the next week or two to prepare for MC 1.17 and Java 16.
-
-
-NOTE: At this time, I think there will have to be two builds.  One with Java 1.8 for Spigot versions 1.8 through 1.16.5.  Then another build with Java 16 that will support Spigot 1.12 through 17.  This will give admins the flexibility to choose the version of Java to run on their servers that they are most comfortable with.  Initially, these builds will be automated, but initially they may be a manual process.
-
-
-
-**Prison v3.2.8 will be targeted to support Java 16, and hopefully, Minecraft v1.17 too.**
-
-
-
-Java 1.8 and Java 11 have a built-in javascript engine. Java 16 does not.
-This plugin provides support, and compatibility, with javascript processing.
-Other plugins that use javascript, such as papi, would have to be compiled
-to work with this plugin.  
-https://polymart.org/resource/jsengine.1095
 
 
 
@@ -99,17 +60,10 @@ https://polymart.org/resource/jsengine.1095
 The ranks module did not load due to no economy.
 
 
-DONE * Add `/prison debug` targets so specific kinds of debug messages can be turned on and off so it does not flood the console with tons of irrelevant messages.
 
 
 * Add a message count to the `/prison debug` features where it will only print a specific number of messages before turning off the logging for those targets.
 
-
-DONE * replace ranks with mine related commands with ranks.  
-  - can eliminate permissions on /mtp and mine accessperms.
-
-
-DONE * Add system stats to `/prison version`
 
 
 * Support for Personal Mines:
@@ -129,13 +83,7 @@ DONE * Add system stats to `/prison version`
    - chat handler should ignore those worlds
 
 
-DONE: * Issue with removing a BlockEvent by clicking on the remove link.  It converts all of the & to the raw code.
- - `/mines blockEvent remove` now uses line numbers so this is no longer an issue.
- 
 
-* Rare condition caused by FAWEs where prison loads before CMI even though it all configured to do so otherwise.
-  May be able to provide a way to force the ranks module loading so that way it can just "assume" everything is working.
-  
   
 * Ranks have been converted to have all messages moved to files:
 * UTF-8 support.
@@ -144,17 +92,12 @@ DONE: * Issue with removing a BlockEvent by clicking on the remove link.  It con
  
 
 
-* Force the loading of Ranks module if there is a failure.  Found that FAWEs is screwing up the loading sequence of prison when dealing with CMI, and as such, ranks are failing to load since CMI loads after prison.  Setting softdepend for all of these do not help.
-
-
 * Sometimes Player Ranks lores placeholders from placeholderAPI aren't working, 
 it's unknown why it's happening.
 
 
 * Fix per rank progress bars.  This includes adding a new placeholder series since you will have to include the rank name in the placeholder.  Current ladder placeholders are based upon the player's current rank only.  
 
-
-DONE * Mines TP warmup
 
 
 * BlockEvents - Action based upon blocks broken, not a percent chance.
@@ -182,6 +125,7 @@ DONE * Mines TP warmup
 Personal mines.  Work in conjunction with a plot world?
 - sellable and so would be the features with various upgrades
 - Create a new module based upon Mines with new features to support player interactions and upgrades.
+
 
 
 - Hook up block filters on the block events.
@@ -233,17 +177,11 @@ Auto features not working outside of the mines.
   
 - Review the chat hander in the spigot module. It was rewritten a few weeks ago to fix some issues and to optimize how things are handled.  The issue is that the new code (way of handling things) needs to be extended to other areas.  So review the SpigotPlaceholders class and see how it can be updated.  Then end result will be less code and less potential issues.
 
+
+
 - Optimize the handling of chat placeholder.  They will always be the same for the whole server, so cache the PlaceholderKeys that are used.
   - Partially done.  The chat handler was updated, but the change could be pushed in to other existing code to improve the flexibility and resolve some of the weaknesses that may exist.
 
-
-
-  
-- Update /prison autofeatures to include new settings.
-
-
-
-- Could make /prison autofeatures reload happen. Alias: /prison reload autofeatures
 
 
 
@@ -268,6 +206,7 @@ Maybe: Have an alt block list for mines were blocks that are not actually
   - Not an issue: "Use of placeholders is failing %prison_ is failing on %p"  Turned out they were trying to use %player% instead of {player}.
   
   
+  
 - auto features
   - custom list of blocks for fortune
 
@@ -286,21 +225,10 @@ Maybe: Have an alt block list for mines were blocks that are not actually
 - Show a message at startup indicating that the new block model is enabled or not enabled
 
 
-* **Rework rank permissions to eliminate need to put perms in rank commands**
-- Enhance the PermissionIntegration abstract class to also work with group perms.
-- Add to ranks two new fields: permissions and permissionGroups.  Save and load.
-- Add a new boolean field to ranks: usePermissions. Save and load.
-- Add support for these perms within rank commands
-- Rewrite rankups to use these perms when ranking up, promote, demote, and also for prestiges
-
-
 
 * **Prestige Options**
- - DONE: Reset money on prestige - boolean option
- - DONE: Prevent reset of default ladder on prestiging.
  - Auto Prestige - server setting or player setting?
  - prestigemax - keep applying prestiges until run out of funds
- - DONE: rankmax - keep applying rankups until run out of funds
  - Eliminate prestige ranks - (optional)
    * Would need ladder commands
    * Need to define an upper limit of how many
@@ -315,6 +243,7 @@ Maybe: Have an alt block list for mines were blocks that are not actually
 
 
 - Prestiges max - if at max show 100% or Max, etc... Maybe set "max" on a placeholder attribute?
+
 
 - Add a prestiges config option to auto add a zero rank entry for prestige ranks.
 
@@ -344,6 +273,7 @@ Maybe: Have an alt block list for mines were blocks that are not actually
 
 
 
+
 * **Value estimates for a mine**
 We know what blocks are in the mine and the percentages.  If people equally mine all blocks (some only go for the more valuable ones if they can) then we can produce a formula that can tell you how many estimated inventory fulls it would take to reach the rankup cost.  That could be a really awesome "validation" tool to make sure one or two ranks are not messed up with either being too easy or too difficult. Will need hooks in to auto manager tools to calculate fortune and what results from block breaks. Could be complex.
 `/mines value info` show breakdown of a mine's defined ores and what it would take to reach /rankup
@@ -355,6 +285,8 @@ We know what blocks are in the mine and the percentages.  If people equally mine
 
 * **Commands - Enhancement**
 Be able to select rank and mine commands for edit and deletion, or even moving, with line numbers.
+
+
 
 * **Rank Commands - Edit and delete**
 Add line numbers and enable the ability to edit and delete by line number.
@@ -406,11 +338,163 @@ Offers for translation:
   
 
 
+<hr style="height:13px; border:none; color:#aaf; background-color:#aaf;">
 
 
-# Features recently added:
+
+
+# Features recently added since v3.2.6
 
 
 
+**For v3.2.8 Release - - Preparing for Java 16**
+
+
+   * DONE: Update Gradle to most recent release
+
+
+   * On going: Review other dependencies and update them too, if possible.
+
+
+   * DONE: Update development environment, and system to support Java 16
+
+
+   * DONE: Update XSeries to support the new block types. Updated to v8.0.0 and then v8.1.0.
+  
+  
+   * DONE: Enable the new block model - 73.5% are currently using v1.16.x so with the new 1.17 more people will be expecting the new blocks.
+  
+  
+   * DONE: Auto Refresh for language files when version detects new update is available and if auto update is enabled for that language file.
+
+
+   * DONE: In /prison version, if auto features are disabled, show NO details.
+
+
+   * DONE: Confirm duplicates on BlockBreakEvents makes sense.  Fixed the BlockBreakEvents by making sure they all had their own classes so they could be identified as to what they really are.  This cleaned up a lot, and also eliminated one set of duplicates too.
+
+
+   * Works: This was not an issue. Ranks info raw tag is not showing the editing formats...  The rank I saw this on did not have any formatting.
+
+
+   * DONE: Fortune on all blocks is not working...
+
+  
+   * DONE: Hook up java version on /prison version's plugin listings
+
+  
+   * DONE: Issue with nms with SpigotPlayer... does not work with 1.17.  
+     - Disabled when fails.  No longer produces stack traces.
+
+
+**Other additions and changes:**
+
+
+* **Prestige Options**
+ - DONE: Reset money on prestige - boolean option
+ - DONE: Prevent reset of default ladder on prestiging.
+ - DONE: rankmax - keep applying rankups until run out of funds
+
+
+- DONE: Update /prison autofeatures to include new settings.
+
+
+- DONE: Could make /prison autofeatures reload happen. Alias: /prison reload autofeatures
+
+
+- DONE * Mines TP warmup
+
+
+
+- DONE: * Issue with removing a BlockEvent by clicking on the remove link.  It converts all of the & to the raw code.
+ - `/mines blockEvent remove` now uses line numbers so this is no longer an issue.
+ 
+ 
+- DONE - Used load delays - Rare condition caused by FAWEs where prison loads before CMI even though it all configured to do so otherwise.  
+  - May be able to provide a way to force the ranks module loading so that way it can just "assume" everything is working.
+  - Force the loading of Ranks module if there is a failure.  Found that FAWEs is screwing up the loading sequence of prison when dealing with CMI, and as such, ranks are failing to load since CMI loads after prison.  Setting softdepend for all of these do not help.
+
+
+DONE * Add `/prison debug` targets so specific kinds of debug messages can be turned on and off so it does not flood the console with tons of irrelevant messages.
+
+
+DONE * replace ranks with mine related commands with ranks.  
+  - can eliminate permissions on /mtp and mine accessperms.
+
+
+DONE * Add system stats to `/prison version`
+
+
+
+* **Works fine: Bug in /ranks autoConfigure??:  Confirmed everything is OK... No bugs** 
+An admin must have messed up mine A since blocks were gone and other settings were not correct. They could have ran `/ranks autoConfigure force` after creating mine a manually.
+
+
+
+* **Rework rank permissions to eliminate need to put perms in rank commands**
+  - **NOTE: This was a fail!!**
+    - This did not work because:
+      1. You cannot access group perms through bukkit
+      2. You cannot create new group perms through vault
+      3. It's not possible to easily check perms through vault
+    - This has been made obsolete with the use of Access by Rank !!
+- Enhance the PermissionIntegration abstract class to also work with group perms.
+- Add to ranks two new fields: permissions and permissionGroups.  Save and load.
+- Add a new boolean field to ranks: usePermissions. Save and load.
+- Add support for these perms within rank commands
+- Rewrite rankups to use these perms when ranking up, promote, demote, and also for prestiges
+
+
+
+
+
+<hr style="height:13px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+* **NOTICE - About Prison, Java 16, and Minecraft 1.17**
+
+Prison is all about providing the best experience for your server environment.In order to look toward the future, so we can continue to provide the best possible experience, we have to set limits on what we can actually provide support on.  We are currently entering a challenging period of time where we will have to make some difficult decisions to help ensure the best possible future for Prison.
+
+Minecraft 1.17 is scheduled to be released on June 8th, 2021. The release of 1.17 brings with it some major changes that will have significant ripples throughout the minecraft server community, mostly due to the heavy dependency upon Java 1.8 for many years.  This ultimately means there are a lot of unknowns that we will have to work through and there will be situations that were unexpected.
+
+One major change in our support statement is that Prison, as of right now, will only *officially* support Spigot v1.8.8 (10.9% usage), v1.12 (10.9% usage), and v1.16.5 (73.5% usage). These three versions of Spigot represents 95.3% of all servers using the Prison plugin.  This does not include any server that has disabled the bstats, which is one reason why you should keep that enabled so you can be represented in our stats and our plans for the future. 
+
+Note: The follow up versions in descending order of usage are: v1.14.4 (1.6% usage), v1.13.2 (1.2% usage), v1.15.2 (1.2% usage), and v1.11.2 (0.9% usage).  No other versions are recorded by bStats.
+
+But please keep in mind, as with our official stance of only supporting Spigot, we will also *provide* as-needed support for Paper and other Spigot compatible platforms. We want you to have the flexibility to use the platform that best suites your needs.  We just will not pre-test on those platforms, but we will try to address any issues that are brought to our attention. The non-supported versions of Spigot falls under this same limitation of support: we will not pre-test for the non-supported versions, but if you are using them and find issues, we will work with you to resolve them. The actual impact of dropping support for 1.9, 1.10, 1.11, 1.13, 1.14, and 1.15 should have no impact on quality for those releases of Spigot, but it will free up a lot of time spent on testing.
+
+
+Some initial testing with running a prison server using Java 16:
+* Spigot v1.8.8 will startup and run. But there are major failures with missing classes that are critical for the core bukkit and Java components to work properly.  It is doubtful a fix will ever be provided.
+* It has been noted that bukkit/spigot 1.8 through 1.11 will not work with Java 11 and later.
+* Spigot v1.12.2 compiled with Java 1.8 appears to work perfectly well with Java 16 running on the server.
+* Spigot v1.16.5 compiled with Java 1.8 appears to work perfectly well with Java 16 running on the server.
+
+
+I have not tried to compile anything with Java 16 since I need to first update the Prison build environment to support it.  But these are tests that will be explored in the very near future so as to get a better understanding on what we can expect from the build process.
+
+
+In the last few days, I've updated gradle to the latest release so it will support Java 16.  Other resources have been updated too.  More work will be done over the next week or two to prepare for MC 1.17 and Java 16.
+
+
+NOTE: At this time, I think there will have to be two builds.  One with Java 1.8 for Spigot versions 1.8 through 1.16.5.  Then another build with Java 16 that will support Spigot 1.12 through 17.  This will give admins the flexibility to choose the version of Java to run on their servers that they are most comfortable with.  Initially, these builds will be automated, but initially they may be a manual process.
+
+
+
+**Prison v3.2.8 will be targeted to support Java 16, and hopefully, Minecraft v1.17 too.**
+
+
+
+Java 1.8 and Java 11 have a built-in javascript engine. Java 16 does not.
+This plugin provides support, and compatibility, with javascript processing.
+Other plugins that use javascript, such as papi, would have to be compiled
+to work with this plugin.  
+https://polymart.org/resource/jsengine.1095
+
+
+
+
+<hr style="height:13px; border:none; color:#aaf; background-color:#aaf;">
 
 
