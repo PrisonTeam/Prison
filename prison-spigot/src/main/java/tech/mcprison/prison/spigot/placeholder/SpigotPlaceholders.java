@@ -56,7 +56,7 @@ public class SpigotPlaceholders
 					count = placeholderDetails.get( flag );
 				}
 				
-				placeholderDetails.put( flag, new Integer(count + 1) );
+				placeholderDetails.put( flag, Integer.valueOf(count + 1) );
 			}
 		}
 
