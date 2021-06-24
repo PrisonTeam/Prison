@@ -12,6 +12,7 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.FancyMessageComponent;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.tasks.PrisonCommandTask;
@@ -92,11 +93,16 @@ public class CommandCommands
     		onlyPlayers = false, permissions = "ranks.command")
     public void commandRemove(CommandSender sender, 
     			@Arg(name = "rankName") String rankName,
-    			@Arg(name = "command", 
-    					description = "The command must be exactly the same as stored in the rank.") 
-    					@Wildcard String command) {
-        if (command.startsWith("/")) {
-            command = command.replaceFirst("/", "");
+    			@Arg(name = "row", 
+    					description = "The row number of the command to remove.") 
+    					Integer row) {
+    	
+        if ( row == null || row <= 0 ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid row number greater than zero. " +
+        					"Was row=[&b%d&7]",
+        					(row == null ? "null" : row) ));
+        	return;        	
         }
 
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
@@ -108,16 +114,29 @@ public class CommandCommands
         if (rank.getRankUpCommands() == null) {
             rank.setRankUpCommands( new ArrayList<>() );
         }
+
+        if ( row > rank.getRankUpCommands().size() ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid row number no greater than &b%d&7. " +
+        					"Was row=[&b%d&7]",
+        					rank.getRankUpCommands().size(), (row == null ? "null" : row) ));
+        	return;        	
+        }
         
-        if ( rank.getRankUpCommands().remove(command) ) {
+        String oldCommand = rank.getRankUpCommands().remove( (int) row );
+        
+        if ( oldCommand != null ) {
         	
         	PrisonRanks.getInstance().getRankManager().saveRank( rank );
         	
-        	ranksCommandRemoveSuccessMsg( sender, command, rank.getName() );
+        	ranksCommandRemoveSuccessMsg( sender, oldCommand, rank.getName() );
 
         } else {
         	ranksCommandRemoveFailedMsg( sender );
         }
+        
+        // Redisplay the the rank command list:
+        commandList( sender, rankName );
     }
 
     @Command(identifier = "ranks command list", description = "Lists the commands for a rank.", 
@@ -141,11 +160,25 @@ public class CommandCommands
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
 
+        int rowNumber = 1;
         for (String command : rank.getRankUpCommands()) {
+        	
+        	RowComponent row = new RowComponent();
+        	
+        	row.addTextComponent( " &3Row: &d%d  ", rowNumber++ );
+        	
             FancyMessage msg = new FancyMessage("&3/" + command)
                 .command("/ranks command remove " + rankName + " " + command)
                 .tooltip( ranksCommandListClickToRemoveMsg() );
-            builder.add(msg);
+            row.addFancy( msg );
+            
+        	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
+        			.suggest("/ranks command remove " + rankName + " " + rowNumber )
+        			.tooltip("Click to Delete this Rank");
+        	row.addFancy( msgRemove );
+	
+            builder.add( row );
+            
         }
 
         display.addComponent(builder.build());

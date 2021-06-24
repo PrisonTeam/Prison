@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.1 2021-06-24
 
 
+* **Changed rank commands to use row number for removal**, instead of having to enter the exact command.
+Entering the command has problems when formatting is used.
+
+
 * **Later versions of Java required that the getters and setters for the handlers exist.**
 
 
