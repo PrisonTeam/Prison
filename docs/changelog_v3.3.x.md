@@ -24,6 +24,12 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.1 2021-06-24
 
 
+* **Later versions of Java required that the getters and setters for the handlers exist.**
+
+
+* **Fixed an invalid use of an Intger object.  It was deprecated and removed.**
+
+
 * **Found a statement that had a parameter on a String.format when it shouldn't have.**
 This did not produce any errors; it was just incorrect.
 
