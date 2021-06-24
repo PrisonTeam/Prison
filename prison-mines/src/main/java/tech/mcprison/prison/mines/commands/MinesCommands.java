@@ -2856,8 +2856,7 @@ public class MinesCommands
         	row.addFancy( msgCommand );
         	
         	
-        	FancyMessage msgRemove = new FancyMessage( String.format( " &4Remove&3", 
-        			blockEvent.getCommand() ) )
+        	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
         			.suggest("/mines blockEvent remove " + m.getName() + " " + rowNumber )
         			.tooltip("Click to Delete this BlockEvent");
         	row.addFancy( msgRemove );

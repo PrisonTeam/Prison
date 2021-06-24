@@ -21,7 +21,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.9-alpha.1 2021-06-21
+# v3.2.9-alpha.1 2021-06-24
+
+
+* **Found a statement that had a parameter on a String.format when it shouldn't have.**
+This did not produce any errors; it was just incorrect.
 
 
 * **Getting ready to add a new debug feature to test the BlockBreakEvent processing by going through all registered event listeners one by one and see if they handle the event.**
