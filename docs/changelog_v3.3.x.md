@@ -21,7 +21,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.9-alpha.1 2021-06-24
+# v3.2.9-alpha.2 2021-06-24
+
+
+* **v3.2.9-alpha.2 2021-06-24**
+Bump to alpha.2.
+
 
 * **Bug fix: Found a rank message that was missing the second parameter.**
 This was with the command /ranks command add when the command was a duplicate of a preexisting command.
