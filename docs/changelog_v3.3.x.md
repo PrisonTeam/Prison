@@ -23,6 +23,13 @@ These build logs represent the work that has been going on within prison.
 
 # v3.2.9-alpha.1 2021-06-24
 
+* **Bug fix: Found a rank message that was missing the second parameter.**
+This was with the command /ranks command add when the command was a duplicate of a preexisting command.
+
+
+* **Updated some of the comments on how to manually specify the java location to control what version of java is used (this is like hard coding).**
+It is not advisable directly change the actual build scripts since they will cause failures on other platforms.
+
 
 * **Changed rank commands to use row number for removal**, instead of having to enter the exact command.
 Entering the command has problems when formatting is used.

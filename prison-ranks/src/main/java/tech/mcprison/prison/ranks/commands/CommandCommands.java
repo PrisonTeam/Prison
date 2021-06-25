@@ -75,7 +75,7 @@ public class CommandCommands
         for ( String rankCommand : rank.getRankUpCommands() ) {
 			if ( rankCommand.equalsIgnoreCase( command ) ) {
 				
-				ranksCommandAddDuplicateMsg( sender, rankName );
+				ranksCommandAddDuplicateMsg( sender, command, rankName );
 				return;
 			}
 		}

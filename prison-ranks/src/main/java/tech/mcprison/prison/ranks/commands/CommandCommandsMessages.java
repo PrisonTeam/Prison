@@ -28,10 +28,11 @@ public class CommandCommandsMessages
 	}
 	
 	
-	protected void ranksCommandAddDuplicateMsg( CommandSender sender, String rankName ) {
+	protected void ranksCommandAddDuplicateMsg( CommandSender sender, String newCommand, String rankName ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_commandCommands__command_add_duplicate" )
-				.withReplacements( 
+				.withReplacements(
+						newCommand,
 						rankName )
 				.sendTo( sender );
 	}
