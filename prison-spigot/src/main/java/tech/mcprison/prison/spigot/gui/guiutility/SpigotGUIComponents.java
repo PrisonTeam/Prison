@@ -49,7 +49,7 @@ public abstract class SpigotGUIComponents {
 
         ItemStack item = new ItemStack(id, amount);
         ItemMeta meta = item.getItemMeta();
-        return getItemStack(item, lore, display, meta);
+        return getItemStack(item, lore, SpigotPrison.format(display), meta);
     }
 
     /**
@@ -71,7 +71,7 @@ public abstract class SpigotGUIComponents {
             meta = XMaterial.BARRIER.parseItem().getItemMeta();
         }
 
-        return getItemStack(item, lore, display, meta);
+        return getItemStack(item, lore, SpigotPrison.format(display), meta);
     }
 
     /**

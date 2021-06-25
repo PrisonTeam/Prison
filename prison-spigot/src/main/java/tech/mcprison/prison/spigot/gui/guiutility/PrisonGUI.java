@@ -16,6 +16,23 @@ public class PrisonGUI extends SpigotGUIComponents{
     private Inventory inv;
     private String permission = null;
 
+    /**
+     * Basic PrisonGUI empty.
+     *
+     * @param p - Player.
+     * @param size - int.
+     * @param title - String.
+     * */
+    public PrisonGUI(Player p, int size, String title){
+        this.p = p;
+        this.inv = Bukkit.createInventory(null, size, SpigotPrison.format(title));
+    }
+
+    /**
+     * Basic PrisonGUI with nothing, this is not recommended.
+     *
+     * @param p - Player.
+     * */
     public PrisonGUI(Player p){
         this.p = p;
     }

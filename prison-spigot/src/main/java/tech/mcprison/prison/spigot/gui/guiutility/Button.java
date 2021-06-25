@@ -15,6 +15,21 @@ public class Button extends SpigotGUIComponents{
     private int position;
 
     /**
+     * Create button (the recommended one).
+     *
+     * @param position - int.
+     * @param buttonItem - XMaterial.
+     * @param lore - List<String>.
+     * @param title - String.
+     * */
+    public Button(int position, XMaterial buttonItem, List<String> lore, String title){
+        if (position < 54) {
+            this.position = position;
+            this.buttonItem = createButton(buttonItem.parseItem(), lore, title);
+        }
+    }
+
+    /**
      * Create button.
      *
      * @param position - int.
@@ -39,6 +54,22 @@ public class Button extends SpigotGUIComponents{
         if (position < 54) {
             this.position = position;
             this.buttonItem = createButton(buttonItem.parseItem(), null, title);
+        }
+    }
+
+    /**
+     * Create button.
+     *
+     * @param position - int.
+     * @param buttonItem - XMaterial.
+     * @param amount - int.
+     * @param lore - List<String>.
+     * @param title - String.
+     * */
+    public Button(int position, XMaterial buttonItem, int amount, List<String> lore, String title){
+        if (position < 54) {
+            this.position = position;
+            this.buttonItem = createButton(buttonItem.parseMaterial(), amount, lore, title);
         }
     }
 

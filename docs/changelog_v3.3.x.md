@@ -24,6 +24,11 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.2 2021-06-24
 
 
+* **GUI utility, started transition:** GUIs are slowly being rewritten to the new GUI
+utility, this will improve performance and make GUIs more stable in the future.
+
+
+
 * **v3.2.9-alpha.2 2021-06-24**
 Bump to alpha.2.
 
