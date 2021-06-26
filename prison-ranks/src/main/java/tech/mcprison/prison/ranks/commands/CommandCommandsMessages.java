@@ -105,4 +105,71 @@ public class CommandCommandsMessages
 				.localize();
 	}
 	
+	
+	
+	
+	
+	protected String ladderCommandAddPlaceholdersMsg( String placeholders ) {
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_commandCommands__ladder_command_add_placeholders" )
+				.withReplacements( 
+						placeholders )
+				.localize();
+	}
+	
+	protected void ladderDoesNotExistMsg( CommandSender sender, String rankName ) {
+		PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_commandCommands__ladder_does_not_exist" )
+				.withReplacements( 
+						rankName )
+				.sendTo( sender );
+	}
+	
+	
+	protected void ladderCommandAddDuplicateMsg( CommandSender sender, String newCommand, String rankName ) {
+		PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_commandCommands__ladder_command_add_duplicate" )
+				.withReplacements(
+						newCommand,
+						rankName )
+				.sendTo( sender );
+	}
+	
+	protected void ladderCommandAddSuccessMsg( CommandSender sender, 
+					String command, String rankName ) {
+		PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_commandCommands__ladder_command_add_success" )
+				.withReplacements( 
+						command,
+						rankName )
+				.sendTo( sender );
+	}
+	
+	protected void ladderCommandRemoveSuccessMsg( CommandSender sender, 
+			String command, String rankName ) {
+		PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_commandCommands__ladder_command_remove_sucess" )
+				.withReplacements( 
+						command,
+						rankName )
+				.sendTo( sender );
+	}
+	
+	protected void ladderCommandRemoveFailedMsg( CommandSender sender ) {
+		PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_commandCommands__ladder_command_remove_failed" )
+				.sendTo( sender );
+	}
+	
+
+	protected void ladderCommandListContainsNoneMsg( CommandSender sender, 
+			String rankName ) {
+		PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_commandCommands__ladder_command_list_contains_none" )
+				.withReplacements( 
+						rankName )
+				.sendTo( sender );
+	}
+
+	
 }

@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.2 2021-06-26
 
 
+* **Setup the ladder messages for the ladder commands.**
+It was using the rank command messages.
+
+
 * **Hook up the ladder rankup commands to the commands to list, add, and remove commands from the ladder.**
 These work, but currently use the rank messages and not ladder specific messages.
 

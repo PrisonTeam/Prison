@@ -211,7 +211,7 @@ public class CommandCommands
         	String placeholders = PrisonCommandTask.CustomPlaceholders.listPlaceholders(
 									PrisonCommandTask.CommandEnvironment.rank_commands );
         	
-        	String message = ranksCommandAddPlaceholdersMsg( placeholders );
+        	String message = ladderCommandAddPlaceholdersMsg( placeholders );
         	
         	Output.get().logInfo( message );
         	return;
@@ -219,7 +219,7 @@ public class CommandCommands
         
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
         if ( ladder == null ) {
-        	rankDoesNotExistMsg( sender, ladderName );
+        	ladderDoesNotExistMsg( sender, ladderName );
             return;
         }
 
@@ -232,7 +232,7 @@ public class CommandCommands
         for ( String rankCommand : ladder.getRankUpCommands() ) {
 			if ( rankCommand.equalsIgnoreCase( command ) ) {
 				
-				ranksCommandAddDuplicateMsg( sender, command, ladderName );
+				ladderCommandAddDuplicateMsg( sender, command, ladderName );
 				return;
 			}
 		}
@@ -242,7 +242,7 @@ public class CommandCommands
     	
         PrisonRanks.getInstance().getLadderManager().save( ladder );
         
-        ranksCommandAddSuccessMsg( sender, command, ladderName );
+        ladderCommandAddSuccessMsg( sender, command, ladderName );
 
     }
 
@@ -265,7 +265,7 @@ public class CommandCommands
 
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
         if ( ladder == null) {
-        	rankDoesNotExistMsg( sender, ladderName );
+        	ladderDoesNotExistMsg( sender, ladderName );
             return;
         }
 
@@ -287,10 +287,10 @@ public class CommandCommands
         	
         	PrisonRanks.getInstance().getLadderManager().save( ladder );
         	
-        	ranksCommandRemoveSuccessMsg( sender, oldCommand, ladder.getName() );
+        	ladderCommandRemoveSuccessMsg( sender, oldCommand, ladder.getName() );
 
         } else {
-        	ranksCommandRemoveFailedMsg( sender );
+        	ladderCommandRemoveFailedMsg( sender );
         }
         
         // Redisplay the the rank command list:
@@ -304,12 +304,12 @@ public class CommandCommands
     	
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
         if ( ladder == null ) {
-        	rankDoesNotExistMsg( sender, ladderName );
+        	ladderDoesNotExistMsg( sender, ladderName );
             return;
         }
 
         if (ladder.getRankUpCommands() == null || ladder.getRankUpCommands().size() == 0) {
-        	ranksCommandListContainsNoneMsg( sender, ladder.getName() );
+        	ladderCommandListContainsNoneMsg( sender, ladder.getName() );
             return;
         }
 
