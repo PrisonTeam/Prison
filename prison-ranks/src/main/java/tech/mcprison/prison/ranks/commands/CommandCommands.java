@@ -15,6 +15,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.tasks.PrisonCommandTask;
 
 /**
@@ -187,4 +188,162 @@ public class CommandCommands
         display.send(sender);
     }
 
+    
+
+    @Command(identifier = "ranks ladder command add", 
+    		description = "Ladder commands apply to all ranks. Adds a command to a ladder " +
+    				"using {player} {player_uid} {msg} {broadcast} as placeholders. " +
+    				" Plus many custom placeholders!  Enter `placeholders` instead of rankName for a list. " +
+    				"Use ; between multiple commands.", 
+    		onlyPlayers = false, permissions = "ranks.command")
+    public void commandLadderAdd(CommandSender sender, 
+    			@Arg(name = "ladderName", 
+    				description = "The ladder name that will recieve this command.") String ladderName,
+    			@Arg(name = "command", 
+    				description = "The command to add without / prefix. Will be ran as a console command.") 
+    					@Wildcard String command) {
+        if (command.startsWith("/")) {
+            command = command.replaceFirst("/", "");
+        }
+
+        if ( ladderName != null && "placeholders".equalsIgnoreCase( ladderName ) ) {
+        	
+        	String placeholders = PrisonCommandTask.CustomPlaceholders.listPlaceholders(
+									PrisonCommandTask.CommandEnvironment.rank_commands );
+        	
+        	String message = ranksCommandAddPlaceholdersMsg( placeholders );
+        	
+        	Output.get().logInfo( message );
+        	return;
+        }
+        
+        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
+        if ( ladder == null ) {
+        	rankDoesNotExistMsg( sender, ladderName );
+            return;
+        }
+
+        if (ladder.getRankUpCommands() == null) {
+        	ladder.setRankUpCommands( new ArrayList<>() );
+        }
+        
+        
+        // Make sure the command is not already added.  If so, then don't add it:
+        for ( String rankCommand : ladder.getRankUpCommands() ) {
+			if ( rankCommand.equalsIgnoreCase( command ) ) {
+				
+				ranksCommandAddDuplicateMsg( sender, command, ladderName );
+				return;
+			}
+		}
+        
+        
+        ladder.getRankUpCommands().add(command);
+    	
+        PrisonRanks.getInstance().getLadderManager().save( ladder );
+        
+        ranksCommandAddSuccessMsg( sender, command, ladderName );
+
+    }
+
+    @Command(identifier = "ranks ladder command remove", 
+    		description = "Removes a command from a rank.", 
+    		onlyPlayers = false, permissions = "ranks.command")
+    public void commandLadderRemove(CommandSender sender, 
+    			@Arg(name = "ladderName") String ladderName,
+    			@Arg(name = "row", 
+    					description = "The row number of the command to remove.") 
+    					Integer row) {
+    	
+        if ( row == null || row <= 0 ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid row number greater than zero. " +
+        					"Was row=[&b%d&7]",
+        					(row == null ? "null" : row) ));
+        	return;        	
+        }
+
+        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+        if ( ladder == null) {
+        	rankDoesNotExistMsg( sender, ladderName );
+            return;
+        }
+
+        if (ladder.getRankUpCommands() == null) {
+            ladder.setRankUpCommands( new ArrayList<>() );
+        }
+
+        if ( row > ladder.getRankUpCommands().size() ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid row number no greater than &b%d&7. " +
+        					"Was row=[&b%d&7]",
+        					ladder.getRankUpCommands().size(), (row == null ? "null" : row) ));
+        	return;        	
+        }
+        
+        String oldCommand = ladder.getRankUpCommands().remove( (int) row - 1 );
+        
+        if ( oldCommand != null ) {
+        	
+        	PrisonRanks.getInstance().getLadderManager().save( ladder );
+        	
+        	ranksCommandRemoveSuccessMsg( sender, oldCommand, ladder.getName() );
+
+        } else {
+        	ranksCommandRemoveFailedMsg( sender );
+        }
+        
+        // Redisplay the the rank command list:
+        commandLadderList( sender, ladderName );
+    }
+
+    @Command(identifier = "ranks ladder command list", description = "Lists the commands for a ladder.", 
+    		onlyPlayers = false, permissions = "ranks.command")
+    public void commandLadderList(CommandSender sender, 
+    		@Arg(name = "ladderName") String ladderName) {
+    	
+        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
+        if ( ladder == null ) {
+        	rankDoesNotExistMsg( sender, ladderName );
+            return;
+        }
+
+        if (ladder.getRankUpCommands() == null || ladder.getRankUpCommands().size() == 0) {
+        	ranksCommandListContainsNoneMsg( sender, ladder.getName() );
+            return;
+        }
+
+        ChatDisplay display = new ChatDisplay( ranksCommandListCmdHeaderMsg( ladder.getName() ));
+        display.addText( ranksCommandListClickCmdToRemoveMsg() );
+        BulletedListComponent.BulletedListBuilder builder =
+            new BulletedListComponent.BulletedListBuilder();
+
+        int rowNumber = 1;
+        for (String command : ladder.getRankUpCommands()) {
+        	
+        	RowComponent row = new RowComponent();
+        	
+        	row.addTextComponent( " &3Row: &d%d  ", rowNumber++ );
+        	
+            FancyMessage msg = new FancyMessage("&3/" + command);
+            row.addFancy( msg );
+            
+        	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
+        			.suggest("/ranks ladder command remove " + ladderName + " " + rowNumber )
+        			.tooltip( ranksCommandListClickToRemoveMsg() );
+        	row.addFancy( msgRemove );
+	
+            builder.add( row );
+            
+        }
+
+        display.addComponent(builder.build());
+        display.addComponent(new FancyMessageComponent(
+            new FancyMessage( ranksCommandListAddButtonMsg() )
+            	.suggest("/ranks ladder command add " + ladderName + " /")
+                .tooltip( ranksCommandListAddNewCommandToolTipMsg() )));
+        display.send(sender);
+    }
+
+    
 }
