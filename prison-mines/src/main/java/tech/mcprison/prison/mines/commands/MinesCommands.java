@@ -3591,11 +3591,24 @@ public class MinesCommands
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
 
+        int rowNumber = 1;
         for (String command : m.getResetCommands()) {
-            FancyMessage msg = new FancyMessage( "&a'&7" + command + "&a'" )
-                .command("/mines command remove " + mineName + " " + command)
-                .tooltip("Click to remove.");
-            builder.add(msg);
+        	
+        	
+        	RowComponent row = new RowComponent();
+        	
+        	row.addTextComponent( " &3Row: &d%d  ", rowNumber++ );
+        	
+        	FancyMessage msg = new FancyMessage( "&a'&7" + command + "&a'" );
+            row.addFancy( msg );
+            
+        	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
+        			.suggest("/mines command remove " + m.getName() + " " + rowNumber )
+        			.tooltip("Click to Remove this Mine Command");
+        	row.addFancy( msgRemove );
+	
+            builder.add( row );
+
         }
 
         display.addComponent(builder.build());
@@ -3610,19 +3623,19 @@ public class MinesCommands
     		onlyPlayers = false, permissions = "mines.command")
     public void commandRemove(CommandSender sender, 
     				@Arg(name = "mineName") String mineName,
-    				@Arg(name = "command", 
-    					description = "Exact command to remove including the 'before: ' and 'after: ' states.") 
-    						@Wildcard String command) {
+    				@Arg(name = "row", 
+							description = "The row number of the command to remove.") 
+							Integer row) {
     	
-//    	if ( 1 < 2 ) {
-//    		sender.sendMessage( "&cThis command is disabled&7. It will be enabled in the near future." );
-//    		return;
-//    	}
     	
-        if (command.startsWith("/")) {
-            command = command.replaceFirst("/", "");
+        if ( row == null || row <= 0 ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid row number greater than zero. " +
+        					"Was row=[&b%d&7]",
+        					(row == null ? "null" : row) ));
+        	return;        	
         }
-    	
+
         if (!performCheckMineExists(sender, mineName)) {
             return;
         }
@@ -3643,13 +3656,29 @@ public class MinesCommands
             return;
         }
 
-        if ( m.getResetCommands().remove(command) ) {
+
+        if (m.getResetCommands() == null) {
+        	m.setResetCommands( new ArrayList<>() );
+        }
+
+        if ( row > m.getResetCommands().size() ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid row number no greater than &b%d&7. " +
+        					"Was row=[&b%d&7]",
+        					m.getResetCommands().size(), (row == null ? "null" : row) ));
+        	return;        	
+        }
+
+
+        String oldCommand = m.getResetCommands().remove( (int) row - 1);
+        if ( oldCommand != null ) {
         	
         	pMines.getMineManager().saveMine( m );
             	
         	Output.get().sendInfo(sender, "Removed command '%s' from the mine '%s'.", 
-        				command, m.getTag());
-        } else {
+        				oldCommand, m.getTag());
+        } 
+        else {
         	Output.get().sendWarn(sender, 
         			String.format("The mine %s doesn't contain that command. Nothing was changed.", 
         						m.getTag()));

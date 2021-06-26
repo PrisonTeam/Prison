@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.2 2021-06-25
 
 
+* **Converted mine commands to use row number for removal.**
+
+
 * **Fixed an issue with rank commands removal with a line number... should have subtracted one from the row number.**
 
 
