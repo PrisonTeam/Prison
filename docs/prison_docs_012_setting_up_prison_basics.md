@@ -10,6 +10,43 @@ This document provides a quick overview on how to install Prison and get it runn
 
 
 
+# Download Prison
+
+Download Prison from one of the following sites:
+* [spigotmc.org's Prison History Page](https://www.spigotmc.org/resources/prison.1223/history).
+* [Polymart.org](https://polymart.org/resource/prison-1-8-x-1-17.678)
+* [bukkit.org](https://www.curseforge.com/minecraft/bukkit-plugins/mc-prison-v3)
+
+
+
+Setting up Prison is simple:
+
+* Download Prison - Current Release
+    - Go to the SpigotMC.org Prison's resource page:
+        - [Prison Downloads](https://www.spigotmc.org/resources/prison.1223/history "Prison download can be found under the Version History tab")
+    - Click on the Version History tab if needed
+    - Choose the latest version to download
+    
+* **Download Prison's Pre-Release Version**
+    - Useful to access newer features and fixes
+    - You can always find the latest alpha build on the Discord Server in the #alpha-versions channel:
+        - [Prison Discord Server](https://discord.gg/DCJ3j6r)
+
+* Copy the prison jar file to your server's plugin directory.  
+
+* Remove any older prison jar file
+
+* Restart the server. 
+
+* Prison's startup information contains a lot of information.  If you ever have issues, check that information first since it probably will identify what the issues are.
+
+* Follow Prison's documentation on customization, but at this point it's ready for use. 
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
 # Prison's Dependencies on Other Plugins
 
 * **None - No hard dependencies** - There are no hard dependencies for Prison.
@@ -31,7 +68,7 @@ Prison requires an active economy in order to active the Ranks plugin.  When Pri
 * **EssentialsX Economy** - SUGGESTED - Optional - This is a simple economy plugin that just works well.  If you don't have a specific need to use another economy plugin, then it may be best to use this one since it works so well.
   
 
-* **CMI Economy** - Not Suggested - CMI has a lot of really neat features, so it's totally understandable that you may want to use their economy too.  But the reason why we do not suggest it's use is because it is difficult to get to work with prison for a few reasons.  We will try to support your use of CMIE, but you will have to try to be proactive in trying to get it to work; if you just want "simple", then try EssentialsX Economy first.
+* **CMI Economy** - Not Suggested - CMI has a lot of really neat features, so it's totally understandable that you may want to use their economy too.  But the reason why we do not suggest it's use is because it is difficult to get to work with prison for a few reasons.  We will try to support your use of CMIE, but you will have to try to be proactive in trying to get it to work; if you just want "simple", then try EssentialsX Economy first.  
 1) You must use the normal Vault and then use the CMI Vault Injector.  We've never seen the CMI provided version of Vault work with prison.  Symptom is that prison reports a 0.00 amount for the player when using `/ranks player <playerName>`.  The Vault inject has always worked well.  
 2) The CMI Economy **has** to be fully loaded and active *before* prison loads the Ranks.  Otherwise prison will refuse to load the ranks and prison will not work.  It appears as if CMIE is purposefully delaying it's activation until all other plugins are finished loading; I'm sure there is a good reason for that, but it causes prison to fail.  Setting up proper soft dependencies within Prison does not work. To address this serious issue, because we really want CMIE to work with Prison, there is a new setting that will actually delay prison's startup to give CMIE a chance to active.  This new feature should not be used without a good reason since it alters Prison's startup processes, but it has shown to work very well. The configs are within the config.yml file, but talk to Blue *before* trying to enable it.
 
@@ -87,10 +124,54 @@ With this plugin, all placeholders are registered with it automatically when pri
 It should also be noted that because of some of the limitations of MVdW, not all features of Prison's placeholder support will be supported.  For example, you may not be able to reload placeholders, or use placeholder attributes to customize how placeholders are used.
 
 
+
+### World Protection Plugins
+
+
+* **WorldEdit** - Recommended - Used with WorldGuard
+
+
+* **WorldGuard** - Recommended - Used to protect your worlds.  At a minimum setup the `__global__` region to protect your world from players.
+
+```
+/rg flag __global__ passthrough deny
+```
+
+
+* **Fast Async World Edit (FAWEs)** - Recommended on the newer Spigot Versions - Read notices on compatibility with WorldEdit and WorldGuard.  Some people report issues with this plugin; read reviews and do your homework if you're having issues.
+
+
+* **CoreProtect** - Optional - Server protection against griefing and building mistakes, and even server failures that may corrupt blocks/chunks.
+
+
+
+### Enchantment Plugins
+
+
+* **CustomItems** - Recommended - Premium Plugin - Allows for the use of custom blocks within Prison.  This provides for a great deal of customizations, including custom textures for your custom blocks. Prison supports CI at about 95% or more.  If you need additional support added for CI, please contact Blue and he will add it for you.  
+[https://polymart.org/resource/custom-items.1](https://polymart.org/resource/custom-items.1)
+
+
+* **TokenEnchant** - Recommended - Premium Plugin - This is one of the few recommended premium plugins that we would recommend, but it works very well with prison.  It took a lot of effort to get this to work with Prison, but is perhaps the most supported one too.  Keep in mind that it is premium and they also charge for other add on features, so the initial cost may not be your final cost.  
+[https://polymart.org/resource/tokenenchant-1-7-10-1-17.155](https://polymart.org/resource/tokenenchant-1-7-10-1-17.155)
+
+
+* **Crazy Enchantments** - Optional - Some support is provided for Crazy Enchantments, but it may not be at 100% in all areas. This is an open source project and supports Spigot 1.8 through 1.16.
+[https://www.spigotmc.org/resources/crazy-enchantments.16470/](https://www.spigotmc.org/resources/crazy-enchantments.16470/)
+
+
+* **Zenchantments** - Optional - Some support is provided for zen, but it may not be 100%.  More work needs to be done to improve the integration in to prison.  This is an open source project.  It identifies that it supports spigot 1.9 through 1.14 (different versions).  [https://www.spigotmc.org/resources/zenchantments.12948/](https://www.spigotmc.org/resources/zenchantments.12948/).
+
+
+* **Tokens** - **NOT SUPPORTED!!**  
+Warning: People have paid for this plugin only to find out after the fact that it is not supported and they mistook it for *TokenEnchant* (see above).  This plugin does not have a block explosion event that prison can hook in to, so it can never be supported.  The developers have been asked a few times to add such an event, but they refused stating they did not see a purpose to add something like that.  Hopefully in the future they will add support, and when they do, then we can add it to Prison.
+If you purchase this plugin to use on your server, do so with great caution since it is not supported and it may not integrate with prison.
+[ * Not supported * Tokens * Not supported * ](https://www.spigotmc.org/resources/%E2%9A%A1%EF%B8%8F-tokens-%E2%9A%A1%EF%B8%8F-40-enchantments-%E2%AD%95-free-expansions-%E2%AD%95-25-off.79668/)
+
  
- ### Other Plugins
+### Other Plugins
  
- 
+
 * **Holographic Displays** Optional, but Suggested - Will need to use PlaceholderAPI, ProtocolLib, and also HolographicExtension to enable HD to work with other placeholders.
 
 
@@ -98,9 +179,6 @@ It should also be noted that because of some of the limitations of MVdW, not all
 
 
 * **TAB** - Optional - Tab Menu
-
-
-* **CoreProtect** - Optional - Server protection against griefing and building mistakes, and even server failures that may corrupt blocks/chunks.
 
 
 * **Crazy Crates** - Optional - Crates Plugin
@@ -113,37 +191,6 @@ It should also be noted that because of some of the limitations of MVdW, not all
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
-
-# Download Prison
-
-Download Prison from [spigotmc.org's Prison History Page](https://www.spigotmc.org/resources/prison.1223/history).
-
-
-Setting up Prison is simple:
-
-* Download Prison - Current Release
-    - Go to the SpigotMC.org Prison's resource page:
-        - [Prison Downloads](https://www.spigotmc.org/resources/prison.1223/history "Prison download can be found under the Version History tab")
-    - Click on the Version History tab if needed
-    - Choose the latest version to download
-    
-* **Download Prison's Pre-Release Version**
-    - Useful to access newer features and fixes
-    - You can always find the latest alpha build on the Discord Server in the #alpha-versions channel:
-        - [Prison Discord Server](https://discord.gg/DCJ3j6r)
-
-* Copy the prison jar file to your server's plugin directory.  
-
-* Remove any older prison jar file
-
-* Restart the server. 
-
-* Prison's startup information contains a lot of information.  If you ever have issues, check that information first since it probably will identify what the issues are.
-
-* Follow Prison's documentation on customization, but at this point it's ready for use. 
-
-
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
 

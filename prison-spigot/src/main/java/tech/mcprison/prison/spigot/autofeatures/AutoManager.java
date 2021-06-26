@@ -24,10 +24,11 @@ public class AutoManager
 	
 	public AutoManager() {
         super();
-        
-        // Save this instance within the SpigotPrison instance so it can be accessed
-        // from non-event listeners:
-        SpigotPrison.getInstance().setAutoFeatures( this );
+   
+        // NOTE: Set in SpigotPrison.
+//        // Save this instance within the SpigotPrison instance so it can be accessed
+//        // from non-event listeners:
+//        SpigotPrison.getInstance().setAutoFeatures( this );
     }
 
 	

@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.2 2021-06-26
 
 
+* **Update docs and provided a new startup task that runs when there are no mines or ranks on a server.**
+The new task will print out a few messages in the console and provide links for additional information.  This is to help new admins of Prison figure out how to get it configured quickly and where to find help.
+
+
 * **Added a few more rank messages for the ladder commands and fine tune how they work.**
 Changes to the list commands for ranks and ladders to suppress the option to remove the commands.  The /ranks info command will now suppress the removals.
 

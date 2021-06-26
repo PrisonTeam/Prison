@@ -1,10 +1,11 @@
-package tech.mcprison.prison.spigot;
+package tech.mcprison.prison.spigot.tasks;
 
 import org.bukkit.Bukkit;
 
 import net.milkbowl.vault.economy.Economy;
 import tech.mcprison.prison.integration.Integration;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.economies.VaultEconomy;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 

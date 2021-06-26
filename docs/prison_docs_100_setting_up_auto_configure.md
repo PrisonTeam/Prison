@@ -29,17 +29,16 @@ Prison's Auto Configure will perform most of the basic configurations to get you
 * Auto Configure now uses a new feature called Access by Rank.  This is automatically enabled for Mine Access and Access to TP for the players.  Access by Rank eliminates the need to use perms for these access.  As a player ranks up, they will gain access to ranks and mines, but all prior ranks and mines will automatically be included. 
 
 
-* ~~Enable Mine Access Permissions for each mine.  The actual commands that are used are based upon the economy plugin that you have installed when you run this command.  This allows prison to work with the minimal configurations of external plugins such as WorldGuard; all you need to do is to enable WorldGuard's global region with the flag `passthrough deny`. ~~  Warning do not use the access by permissions since Access by Rank replaces it, but it can still be used if you want.
-
-
-* ~~Setup some of the most basic rank commands that will give your players the permissions needed to access the mines associated with their rank, and to TP to those mines.~~  Note: Permissions are  no longer setup since prison does not need them for TP or Mine Access.  If you need to add any permission you would have to manually add them as usual.
-
-
-
 * Enable Prison's Sellall feature and preload the default shop prices with about 98 items and blocks.  These defaults settings will allow your players to sell what they mine.
 
 
 * Enable Prison's Auto Features.  This includes, by default, auto pickup, auto smelt, and auto block.  It also enables other features such as providing XP for certain blocks, fortune, etc.  
+
+
+* ~~Enable Mine Access Permissions for each mine.~~  ~~The actual commands that are used are based upon the economy plugin that you have installed when you run this command.~~  ~~This allows prison to work with the minimal configurations of external plugins such as WorldGuard; all you need to do is to enable WorldGuard's global region with the flag `passthrough deny`. ~~  Notice: do not use the access by permissions since Access by Rank replaces it, but it can still be used if you want.
+
+
+* ~~Setup some of the most basic rank commands that will give your players the permissions needed to access the mines associated with their rank, and to TP to those mines.~~  Note: Permissions are no longer setup since prison does not need them for TP or Mine Access.  If you need to add any permission you would have to manually add them as usual to either Rank commands, or better yet, ladder commands: `/ranks command add help` and `/ranks ladder command add help`.  Both of these have the same extended set of placeholders that can be used and the list can be provided with: `/ranks command add placeholders`.
 
 
 
@@ -125,7 +124,7 @@ These listings are to help guide you in planning on what you need.  A minecraft 
 
 
 * **Server Cores**
-    - Most hosting services offer only 1 core.  
+    - Most hosting services offer only 1 core, and a lot of times that single core is shared. 
     - Naturally prison will do well with just one core, but if your server is growing with a lot of players and you're starting to see heavy loads, then you may want to consider increasing the number of dedicated cores your server can use.  Most hosting services do not provide this as an option, but some do.  So this should be something to consider if your server is growing large.
     
     

@@ -89,6 +89,8 @@ import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
 import tech.mcprison.prison.spigot.slime.SlimeBlockFunEventListener;
 import tech.mcprison.prison.spigot.spiget.BluesSemanticVersionData;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
+import tech.mcprison.prison.spigot.tasks.PrisonInitialStartupTask;
+import tech.mcprison.prison.spigot.tasks.SpigotPrisonDelayedStartupTask;
 import tech.mcprison.prison.spigot.utils.PrisonUtilsModule;
 
 /**
@@ -125,11 +127,8 @@ public class SpigotPrison extends JavaPlugin {
         return config;
     }
 
-//  ###Tab-Complete###
-//  private TreeSet<String> registeredCommands = new TreeSet<>();
        
 
-//    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void onLoad() {
     	
@@ -202,7 +201,7 @@ public class SpigotPrison extends JavaPlugin {
     }
     
     	
-   protected void onEnableStartup() {
+   public void onEnableStartup() {
 	   
 
         
@@ -276,6 +275,13 @@ public class SpigotPrison extends JavaPlugin {
 		}
 		
 		Output.get().logInfo( "Prison - Finished loading." );
+		
+		
+		if ( PrisonInitialStartupTask.isInitialStartup() ) {
+			
+			PrisonInitialStartupTask startupTask = new PrisonInitialStartupTask( this );
+			startupTask.submit();
+		}
     }
 
     @Override
@@ -325,7 +331,7 @@ public class SpigotPrison extends JavaPlugin {
     		// been setup.  The following line will allow it to be setup so the setting can be accessed.
     		// The proper way to access the settings are through... 
     		//     AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig()
-    		new AutoManager();
+    		autoFeatures = new AutoManager();
     	}
     	
 		return autoFeatures;
@@ -507,7 +513,7 @@ public class SpigotPrison extends JavaPlugin {
 //        registerIntegration(new WorldGuard7Integration());
     }
 
-	protected boolean isIntegrationRegistered( Integration integration ) {
+	public boolean isIntegrationRegistered( Integration integration ) {
 		
     	return isPluginRegistered( integration.getProviderName() );
 	}
@@ -517,7 +523,7 @@ public class SpigotPrison extends JavaPlugin {
 		return Bukkit.getPluginManager().isPluginEnabled( pluginName );
 	}
 	
-	protected boolean isPluginEnabled( String pluginName ) {
+	public boolean isPluginEnabled( String pluginName ) {
 		
 		Plugin plug = Bukkit.getPluginManager().getPlugin( pluginName );
 		
