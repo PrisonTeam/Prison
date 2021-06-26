@@ -105,6 +105,21 @@ public class CommandCommandsMessages
 				.localize();
 	}
 	
+    protected void rankRowNumberMustBeGreaterThanZero( CommandSender sender, Integer row ) {
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_commandCommands__command_row_number_must_be_greater_than_zero" )
+		.withReplacements( 
+				Integer.toString( row ) )
+		.sendTo( sender );
+	}
+    
+    protected void rankRowNumberTooHigh( CommandSender sender, Integer row ) {
+    	PrisonRanks.getInstance().getRanksMessages()
+    	.getLocalizable( "ranks_commandCommands__command_row_number_too_high" )
+    	.withReplacements( 
+    			Integer.toString( row ) )
+    	.sendTo( sender );
+    }
 	
 	
 	
@@ -171,5 +186,13 @@ public class CommandCommandsMessages
 				.sendTo( sender );
 	}
 
+	
+	protected String ladderCommandListCmdHeaderMsg( String rankTag ) {
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_commandCommands__ladder_command_list_cmd_header" )
+				.withReplacements( 
+						rankTag )
+				.localize();
+	}
 	
 }

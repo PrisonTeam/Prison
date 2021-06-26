@@ -99,10 +99,7 @@ public class CommandCommands
     					Integer row) {
     	
         if ( row == null || row <= 0 ) {
-        	sender.sendMessage( 
-        			String.format("&7Please provide a valid row number greater than zero. " +
-        					"Was row=[&b%d&7]",
-        					(row == null ? "null" : row) ));
+        	rankRowNumberMustBeGreaterThanZero( sender, row );
         	return;        	
         }
 
@@ -117,10 +114,7 @@ public class CommandCommands
         }
 
         if ( row > rank.getRankUpCommands().size() ) {
-        	sender.sendMessage( 
-        			String.format("&7Please provide a valid row number no greater than &b%d&7. " +
-        					"Was row=[&b%d&7]",
-        					rank.getRankUpCommands().size(), (row == null ? "null" : row) ));
+        	rankRowNumberTooHigh( sender, row );
         	return;        	
         }
         
@@ -137,13 +131,15 @@ public class CommandCommands
         }
         
         // Redisplay the the rank command list:
-        commandList( sender, rankName );
+        commandList( sender, rankName, "" );
     }
 
-    @Command(identifier = "ranks command list", description = "Lists the commands for a rank.", 
+
+	@Command(identifier = "ranks command list", description = "Lists the commands for a rank.", 
     		onlyPlayers = false, permissions = "ranks.command")
     public void commandList(CommandSender sender, 
-    		@Arg(name = "rankName") String rankName) {
+    		@Arg(name = "rankName") String rankName, 
+    		@Arg(name = "options", description = "Options [noRemoves]", def = "") String options) {
     	
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if ( rank == null ) {
@@ -155,9 +151,14 @@ public class CommandCommands
         	ranksCommandListContainsNoneMsg( sender, rank.getName() );
             return;
         }
+        
+        boolean noRemoves = options != null && "noRemoves".equalsIgnoreCase( options );
 
         ChatDisplay display = new ChatDisplay( ranksCommandListCmdHeaderMsg( rank.getTag() ));
-        display.addText( ranksCommandListClickCmdToRemoveMsg() );
+        if ( !noRemoves ) {
+        	
+        	display.addText( ranksCommandListClickCmdToRemoveMsg() );
+        }
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
 
@@ -171,10 +172,12 @@ public class CommandCommands
             FancyMessage msg = new FancyMessage("&3/" + command);
             row.addFancy( msg );
             
-        	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
-        			.suggest("/ranks command remove " + rankName + " " + rowNumber )
-        			.tooltip( ranksCommandListClickToRemoveMsg() );
-        	row.addFancy( msgRemove );
+            if ( !noRemoves ) {
+            	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
+            			.suggest("/ranks command remove " + rankName + " " + rowNumber )
+            			.tooltip( ranksCommandListClickToRemoveMsg() );
+            	row.addFancy( msgRemove );
+            }
 	
             builder.add( row );
             
@@ -256,10 +259,7 @@ public class CommandCommands
     					Integer row) {
     	
         if ( row == null || row <= 0 ) {
-        	sender.sendMessage( 
-        			String.format("&7Please provide a valid row number greater than zero. " +
-        					"Was row=[&b%d&7]",
-        					(row == null ? "null" : row) ));
+        	rankRowNumberMustBeGreaterThanZero( sender, row );
         	return;        	
         }
 
@@ -274,10 +274,7 @@ public class CommandCommands
         }
 
         if ( row > ladder.getRankUpCommands().size() ) {
-        	sender.sendMessage( 
-        			String.format("&7Please provide a valid row number no greater than &b%d&7. " +
-        					"Was row=[&b%d&7]",
-        					ladder.getRankUpCommands().size(), (row == null ? "null" : row) ));
+        	rankRowNumberTooHigh( sender, row );
         	return;        	
         }
         
@@ -294,13 +291,14 @@ public class CommandCommands
         }
         
         // Redisplay the the rank command list:
-        commandLadderList( sender, ladderName );
+        commandLadderList( sender, ladderName, "" );
     }
 
     @Command(identifier = "ranks ladder command list", description = "Lists the commands for a ladder.", 
     		onlyPlayers = false, permissions = "ranks.command")
     public void commandLadderList(CommandSender sender, 
-    		@Arg(name = "ladderName") String ladderName) {
+    		@Arg(name = "ladderName", description = "Ladder Name") String ladderName, 
+    		@Arg(name = "options", description = "Options [noRemoves]", def = "") String options ) {
     	
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
         if ( ladder == null ) {
@@ -312,9 +310,14 @@ public class CommandCommands
         	ladderCommandListContainsNoneMsg( sender, ladder.getName() );
             return;
         }
+        
+        boolean noRemoves = options != null && "noRemoves".equalsIgnoreCase( options );
 
-        ChatDisplay display = new ChatDisplay( ranksCommandListCmdHeaderMsg( ladder.getName() ));
-        display.addText( ranksCommandListClickCmdToRemoveMsg() );
+        ChatDisplay display = new ChatDisplay( ladderCommandListCmdHeaderMsg( ladder.getName() ));
+        if ( !noRemoves ) {
+        	display.addText( ranksCommandListClickCmdToRemoveMsg() );
+        }
+        
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
 
@@ -328,10 +331,13 @@ public class CommandCommands
             FancyMessage msg = new FancyMessage("&3/" + command);
             row.addFancy( msg );
             
-        	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
-        			.suggest("/ranks ladder command remove " + ladderName + " " + rowNumber )
-        			.tooltip( ranksCommandListClickToRemoveMsg() );
-        	row.addFancy( msgRemove );
+            if ( !noRemoves ) {
+            	
+            	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
+            			.suggest("/ranks ladder command remove " + ladderName + " " + rowNumber )
+            			.tooltip( ranksCommandListClickToRemoveMsg() );
+            	row.addFancy( msgRemove );
+            }
 	
             builder.add( row );
             

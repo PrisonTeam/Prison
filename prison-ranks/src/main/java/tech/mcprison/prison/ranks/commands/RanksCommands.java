@@ -670,7 +670,9 @@ public class RanksCommands
         
         if ( options != null && "all".equalsIgnoreCase( options )) {
         	
-        	getRankCommandCommands().commandList( sender, rankName );
+        	getRankCommandCommands().commandLadderList( sender, rank.getLadder().getName(), "noRemoves" );
+        	
+        	getRankCommandCommands().commandList( sender, rankName, "noRemoves" );
         }
     }
 

@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.2 2021-06-26
 
 
+* **Added a few more rank messages for the ladder commands and fine tune how they work.**
+Changes to the list commands for ranks and ladders to suppress the option to remove the commands.  The /ranks info command will now suppress the removals.
+
+
 * **Hooked up ladder rankup commands to the rankup processes.**
 
 
