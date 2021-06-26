@@ -19,6 +19,8 @@ package tech.mcprison.prison.ranks;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import tech.mcprison.prison.Prison;
@@ -469,7 +471,13 @@ public class RankUtil
         results.setRankupCommandsAvailable( targetRank.getRankUpCommands().size() );
         
         int count = 0;
-        for (String cmd : targetRank.getRankUpCommands()) {
+        
+        List<String> rankupCommands = new ArrayList<>();
+        
+        rankupCommands.addAll( ladder.getRankUpCommands() );
+        rankupCommands.addAll( targetRank.getRankUpCommands() );
+        
+        for (String cmd : rankupCommands ) {
         	if ( cmd != null && 
         			( !cmd.contains( "{firstJoin}" ) || 
         			   cmd.contains( "{firstJoin}" ) && command == RankupCommands.firstJoin )  ) {

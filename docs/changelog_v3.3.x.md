@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.2 2021-06-26
 
 
+* **Hooked up ladder rankup commands to the rankup processes.**
+
+
 * **Setup the ladder messages for the ladder commands.**
 It was using the rank command messages.
 
