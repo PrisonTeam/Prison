@@ -3,6 +3,9 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
+* Bug: placeholders are not working correctly when player is offline...
+  - Example with the bar graph placeholders.
+
 
 * Ladder commands:
 

@@ -46,23 +46,25 @@ there are many good resources out there.
 
 *  Once you have downloaded BuildTools.jar, you will run *one* of the following commands (only one) from the command line.  Multiple versions are shown as an example of how by simply specifying different versions, the same BuildTool will generate the different environments.  The Windows and linux command line usage are the same.  See the provided URL in the first step above for the list of valid versions that are supported by the BuildTools.jar file.  
 
-    java -jar BuildTools.jar --rev 1.8.8
-    java -jar BuildTools.jar --rev 1.12.2
-    java -jar BuildTools.jar --rev 1.13.2
-    java -jar BuildTools.jar --rev 1.14.4
-    java -jar BuildTools.jar --rev 1.15.1
-
+```
+  java -jar BuildTools.jar --rev 1.8.8
+  java -jar BuildTools.jar --rev 1.12.2
+  java -jar BuildTools.jar --rev 1.13.2
+  java -jar BuildTools.jar --rev 1.14.4
+  java -jar BuildTools.jar --rev 1.15.1
+```
 
 *  For example, with BuildTools.jar being in a root directory, create a subdirectory and then start a build within that directory.  The benefit is that you can use the same BuildTools.jar to build multiple different versions of spigot.  This example starts off with building a v1.14.4 instance and then builds a 1.8.8 instance.
 
-    mkdir spigot-1.14.4
-    cd spigot-1.14.4
-    java -jar ../BuildTools.jar –rev 1.14.4
-    cd ..
-    mkdir spigot-1.8.8
-    cd spigot-1.8.8
-    java -jar ../BuildTools.jar –rev 1.8.8
-
+```
+  mkdir spigot-1.14.4
+  cd spigot-1.14.4
+  java -jar ../BuildTools.jar –rev 1.14.4
+  cd ..
+  mkdir spigot-1.8.8
+  cd spigot-1.8.8
+  java -jar ../BuildTools.jar –rev 1.8.8
+```
 
 *  **Updating BuildTools:** Once in a while you will be prompted to update the BuildTools.jar file. To do update it, all you need to do is to just download it, and replace the older one you were using.  
 
@@ -81,17 +83,19 @@ there are many good resources out there.
 
 *  Windows example, if you’re still in the build directory:
 
-    cd ../..
-    mkdir spigot-1.14.4_server
-    copy /B builds\spigot-1.14.4\spigot-1.14.4.jar spigot-1.14.4_server
-
+```
+  cd ../..
+  mkdir spigot-1.14.4_server
+  copy /B builds\spigot-1.14.4\spigot-1.14.4.jar spigot-1.14.4_server
+```
 
 *  Linux example, if you’re still in the build directory:
 
-    cd ../..
-    mkdir spigot-1.14.4_server
-    cp builds/spigot-1.14.4/spigot-1.14.4.jar spigot-1.14.4_server
-
+```
+  cd ../..
+  mkdir spigot-1.14.4_server
+  cp builds/spigot-1.14.4/spigot-1.14.4.jar spigot-1.14.4_server
+```
 
 
 *  Run the server for the first time (see the next step). It will start to auto-generate the server environment and then will stop.  You will need to manually modify eula.txt and set eula=true.  Save.  Close.  Restart the server.  It will startup successfully now.
@@ -99,8 +103,10 @@ there are many good resources out there.
 
 *  This is a simple example of what is needed for a windows cmd file. It sets the minimum memory to 2 GB and the max to 8 GB.  A linux script would be similar, but without the pause.
 
+```
     java -Xms2g -Xmx8g -jar spigot-1.14.4.jar
     pause
+```
 
 *  Let the server fully start for the first time, then stop it by entering “stop” in the open server console.  The server is now ready to be customized.
 

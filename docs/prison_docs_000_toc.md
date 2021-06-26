@@ -169,7 +169,7 @@ Once it generates all the virtual mines, all you need to do is to use the comman
 
 
 * [Setting up Prison - Basics](prison_docs_012_setting_up_prison_basics.md) **Required**
-    Adding the plugin to your server.
+    Adding the plugin to your server.  **Other plugin dependency suggestions.**
 
 
 * [Prison - Getting Help](prison_docs_013_Prison_Help.md) **Important**
