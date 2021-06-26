@@ -22,8 +22,16 @@ There may be no hard dependencies that will prevent Prison from running, but the
 
 * **EssentialsX** - Optional, but STRONGLY Suggested - Provides many of the basic commands and behaviors that you would expect from a Spigot server such as chat, warps, and even some moderation commands.  EssentialsX is not Essentials, since Essentials is an older abandoned project, and EssentialsX is a forked project that is still maintained.  Unfortunately, internally it is identified as simply Essentials, but you can tell it's EssentialsX if the version is greater than 2.15.x.
 
+* **EssentialsX Economy** - Optional - This is a simple economy plugin that just works well.  If you don't have a specific need to use another economy plugin, then it may be best to use this one since it works so well.
+  
 
-* **EssentialsX Chat** - Optional - Enhanced Chat experience.
+* **EssentialsX Chat** - Optional - Enhanced Chat experience. Provides customizations to the chat prefixes.
+
+
+* **LuckPerms** - Required - LuckPerms is a great permission plugin that is actively supported and has many new features to make managing your server easier.
+
+
+* **LuckPerms Chat Formatter** - Optional - Used in place of EssentialsX Chat?
 
 
 * **A permissions plugin of your choice** - Required - Prison works with many different permission plugins through Vault.  I strongly suggest LuckPerms since it is free and is under active development so bugs and performance issues will be addressed.
@@ -34,6 +42,23 @@ There may be no hard dependencies that will prevent Prison from running, but the
 
 * **PlaceholderAPI** - Used through Vault, it is free and provides the core interfaces in to the usage of placeholders.  Prison also has a special integration setup for PlaceholderAPI to register all of the Prison placeholders dynamically upon startup.  You do not need to download anything from the cloud for prison to work with this plugin.
  
+
+* **AnimatedScoreboard** - Optional - Scoreboard
+
+
+* **TAB** - Optional - Tab Menu
+
+
+* **CoreProtect** - Optional - Server protection against griefing and building mistakes, and even server failures that may corrupt blocks/chunks.
+
+
+* **Crazy Crates** - Optional - Crates Plugin
+
+
+* **Multiverse-Core** - Optional - Multiple Worlds - Including the ability to create void worlds
+
+
+
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
