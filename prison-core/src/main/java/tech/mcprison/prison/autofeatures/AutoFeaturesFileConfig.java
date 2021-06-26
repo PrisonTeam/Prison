@@ -83,9 +83,10 @@ public class AutoFeaturesFileConfig {
 			lore(options),
 			
 				isLoreEnabled(lore, true),
-				lorePickupValue(lore, "&dPickup&7"),
-				loreSmeltValue(lore, "&dSmelt&7"),
-				loreBlockValue(lore, "&dBlock&7"),
+				
+				lorePickupValue(lore, "&dAuto Pickup&7"),
+				loreSmeltValue(lore, "&dAuto Smelt&7"),
+				loreBlockValue(lore, "&dAuto Block&7"),
 				
 				loreTrackBlockBreakCount(lore, false),
 				loreBlockBreakCountName(lore, "&dPrison Blocks Mined:&7 "),

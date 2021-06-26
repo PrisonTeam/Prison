@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.2 2021-06-25
 
 
+* **Found an issue with lore value of Block hitting upon any lore that begins with Block, such as Blocks Mined:**
+To fix this issue, the default lore has been changed to include prefixes of "Auto ".
+
+
 * **Found bug with lapis_lazuli having a 1 to 1 auto block to lapis_block.**
 Should be 1 to 9.
 
