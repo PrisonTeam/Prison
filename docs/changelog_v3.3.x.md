@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.2 2021-06-26
 
 
+* **Added rankup commands to the ladders objects.** 
+This sets up the loading and saving of them.
+
+
 * **In the LadderManager is a function saveLadder that should not be used outside of the ladder manager so it's visibility was set to private.**
 As such, many external functions had to be changed to the save() function.
 
