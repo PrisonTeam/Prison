@@ -10,7 +10,7 @@ This document provides a quick overview on how to install Prison and get it runn
 
 
 
-# Dependencies 
+# Prison's Dependencies on Other Plugins
 
 * **None - No hard dependencies** - There are no hard dependencies for Prison.
 
@@ -20,28 +20,79 @@ There may be no hard dependencies that will prevent Prison from running, but the
 * **Vault** - Optional, but STRONGLY Suggested - This is perhaps the most important plugin.  This plugin provides a common way to access other plugins running on your server, but without having to write any code within Prison to support them.  Vault provides the mapping of a plugin's unique APIs to a common Vault API.  Vault helps support Economy, Permissions, and Placeholders.  Because of Vault, Prison can work flawlessly with dozens of other plugins.  Please refer to Vault's documentation for what it supports.
 
 
-* **EssentialsX** - Optional, but STRONGLY Suggested - Provides many of the basic commands and behaviors that you would expect from a Spigot server such as chat, warps, and even some moderation commands.  EssentialsX is not Essentials, since Essentials is an older abandoned project, and EssentialsX is a forked project that is still maintained.  Unfortunately, internally it is identified as simply Essentials, but you can tell it's EssentialsX if the version is greater than 2.15.x.
+* **EssentialsX** - **STRONGLY SUGGESTED**, but still Optional - Provides many of the basic commands and behaviors that you would expect from a Spigot server such as chat, warps, and even some moderation commands and commands that can be given to premium players.  EssentialsX is not Essentials, since Essentials is an older abandoned project, and EssentialsX is a forked project that is still maintained.  Unfortunately, internally it is identified as simply Essentials, but you can tell it's EssentialsX if the version is greater than 2.15.x.  EssentialsX is released as a zip file and you must extract the jars that you are interested in.  It should also be pointed out that all EssentialsX jars should come from the same zip file so they will be of the same version and the same release.
 
-* **EssentialsX Economy** - Optional - This is a simple economy plugin that just works well.  If you don't have a specific need to use another economy plugin, then it may be best to use this one since it works so well.
+
+### Economy Plugins - Required
+
+Prison requires an active economy in order to active the Ranks plugin.  When Prison starts up, it performs many validations on the mines and ranks as they are being loaded.  With Ranks, if Prison cannot find an active economy, then it will refuse to load the Ranks module due to possible server corruption (ie... what failed that there is no economy).
+
+
+* **EssentialsX Economy** - SUGGESTED - Optional - This is a simple economy plugin that just works well.  If you don't have a specific need to use another economy plugin, then it may be best to use this one since it works so well.
   
+
+* **CMI Economy** - Not Suggested - CMI has a lot of really neat features, so it's totally understandable that you may want to use their economy too.  But the reason why we do not suggest it's use is because it is difficult to get to work with prison for a few reasons.  We will try to support your use of CMIE, but you will have to try to be proactive in trying to get it to work; if you just want "simple", then try EssentialsX Economy first.
+1) You must use the normal Vault and then use the CMI Vault Injector.  We've never seen the CMI provided version of Vault work with prison.  Symptom is that prison reports a 0.00 amount for the player when using `/ranks player <playerName>`.  The Vault inject has always worked well.  
+2) The CMI Economy **has** to be fully loaded and active *before* prison loads the Ranks.  Otherwise prison will refuse to load the ranks and prison will not work.  It appears as if CMIE is purposefully delaying it's activation until all other plugins are finished loading; I'm sure there is a good reason for that, but it causes prison to fail.  Setting up proper soft dependencies within Prison does not work. To address this serious issue, because we really want CMIE to work with Prison, there is a new setting that will actually delay prison's startup to give CMIE a chance to active.  This new feature should not be used without a good reason since it alters Prison's startup processes, but it has shown to work very well. The configs are within the config.yml file, but talk to Blue *before* trying to enable it.
+
+
+### Chat Plugins - Optional
 
 * **EssentialsX Chat** - Optional - Enhanced Chat experience. Provides customizations to the chat prefixes.
 
-
-* **LuckPerms** - Required - LuckPerms is a great permission plugin that is actively supported and has many new features to make managing your server easier.
 
 
 * **LuckPerms Chat Formatter** - Optional - Used in place of EssentialsX Chat?
 
 
-* **A permissions plugin of your choice** - Required - Prison works with many different permission plugins through Vault.  I strongly suggest LuckPerms since it is free and is under active development so bugs and performance issues will be addressed.
-    * Warning: LuckPerms v5.0.x crashes older versions of prison, such as V3.2.0 and earlier.
-    * Notice: Prison v3.2.1, and newer, supports all versions of LuckPerms.
-    * Strongly suggest using LuckPerms v5.x with all of the latest versions of Prison.
+
+### Permission Plugins - Required
 
 
-* **PlaceholderAPI** - Used through Vault, it is free and provides the core interfaces in to the usage of placeholders.  Prison also has a special integration setup for PlaceholderAPI to register all of the Prison placeholders dynamically upon startup.  You do not need to download anything from the cloud for prison to work with this plugin.
+Permission plugins are not *strictly* required for Prison to work, but within a server environment almost *everything* depends upon permissions in order to make things work.
+
+
+Prison actually uses bukkit's permission interfaces.  This makes it simple for Prison, but it also limits what prison can do.  For example, one limitation is with permission groups; Prison is unable to resolve permission groups since that "concept" does not exist in bukkit, but is a concept that is implemented through plugins like PEX and LuckPerms.
+
+
+* **LuckPerms** - Required - LuckPerms is a great permission plugin that is actively supported and has many new features to make managing your server easier.
+
+
+* **LuckPerms v5.x.x** - Use the latest version of LuckPerms whenever you can.  Keep in mind that releases to spigotmc.org is somewhat infrequent; giving them the "counts" for downloads is nice, but you may have to go to their main download page to get the most recent releases: [https://luckperms.net/download](https://luckperms.net/download).  Please note that is normal for issues to surface once in a while, and there were a few that needs to be avoided: The releases v5.3.0 through about v5.3.3 had some issues that caused significant logging and failures.
+
+
+* **LuckPerms v4.x.x** This older version of LuckPerms is still supported, but it is highly recommended to upgrade to the latest v5.x.x release.  LuckPerms v4.x.x is required for prison v3.2.0 and older (Prison v3.2.1 and newer supports all versions of LuckPerms).  Please consider upgrading both Prison and LuckPerms to the latest releases for the best experience.
+
+
+* **NOTE: A permissions plugin of your choice** - Required - Prison works with many different permission plugins through Vault.  I strongly suggest LuckPerms since it is free and is under active development so bugs and performance issues will be addressed.  If you choose to use another permission plugin, then please consider ones that work with Vault; Prison uses Vault provide the flexibility of choosing from many different plugins.
+
+
+* **Other Permission Plugins** There are many out there, and as developer of Prison, and through providing support, we don't hear of any issues with other permission plugins.  The reason for this is because they probably just work well to begin with, and that Prison uses bukkit's permission interfaces.  So it keeps things simple for setting up Prison.  If you are just getting started with building a server, then we suggested keeping it simple with something like LuckPerms, but there are other permission plugins out there that can provide a whole new experience with your server, such as jobs and careers for your players.   
+
+
+### Placeholder Plugins
+
+
+Chat related plugins provides access to Prison placeholders, but these placeholder plugins takes it to the next level and allows other plugins to access prison data.  There are not many out there, mostly because papi is so simple and does it so well so there is no real need for other plugins.
+
+
+It should be noted that Prison's placeholders do not include the escape characters, and they may vary in the other plugins that you use placeholders.  Sometimes they may be { } or % %, and sometimes you may have to mix the two.  The plugin's documentation should help you identify what's the correct usage.
+
+
+* **PlaceholderAPI** - Strongly Suggested - Also known as papi.  Used through Vault, it is free and provides the core interfaces in to the usage of placeholders.  Prison also has a special integration setup for PlaceholderAPI to register all of the Prison placeholders dynamically upon startup.  You do not need to download anything from the cloud for prison to work with this plugin.  Also if you reload papi, you do not have to reload Prison's placeholders.  Prison registers placeholders that are all lower case and more recently, all upper case too so it's easier to use placholders through papi.
+
+
+* **MVdWPlaceholder** - Suggested to Avoid - Prison does support this plugin, but since it is used mostly with premium plugins, we have no way to fully test this plugin to ensure it actually works correctly.  We've heard very few people have used this plugin, but we've heard it does work well. Use at your own risk. 
+With this plugin, all placeholders are registered with it automatically when prison starts up, and all placeholders should be used as all lower case.  Because prison has so many plugins, with many that are expanded based upon ladders, ranks, and mine names, a modest prison server could generate and register well over 1000 placeholders.  MVdWPlaceholder appears to be very verbose so you will see a lot of logging.
+It should also be noted that because of some of the limitations of MVdW, not all features of Prison's placeholder support will be supported.  For example, you may not be able to reload placeholders, or use placeholder attributes to customize how placeholders are used.
+
+
  
+ ### Other Plugins
+ 
+ 
+* **Holographic Displays** Optional, but Suggested - Will need to use PlaceholderAPI, ProtocolLib, and also HolographicExtension to enable HD to work with other placeholders.
+
 
 * **AnimatedScoreboard** - Optional - Scoreboard
 
