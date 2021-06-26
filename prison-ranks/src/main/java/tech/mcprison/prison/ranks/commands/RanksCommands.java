@@ -1,6 +1,5 @@
 package tech.mcprison.prison.ranks.commands;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -154,15 +153,15 @@ public class RanksCommands
         // Add the ladder
 
         rankLadder.addRank(newRank);
-        try {
-            PrisonRanks.getInstance().getLadderManager().saveLadder(rankLadder);
+        if ( PrisonRanks.getInstance().getLadderManager().save(rankLadder) ) {
             
             success = true;
             
             // Tell the player the good news!
             rankCreatedSuccessfullyMsg( sender, name, ladder, tag );
-        } catch (IOException e) {
-        	errorCouldNotSaveLadderMsg( sender, rankLadder.getName(), e );
+        } 
+        else {
+        	errorCouldNotSaveLadderMsg( sender, rankLadder.getName() );
         }
 
         return success;

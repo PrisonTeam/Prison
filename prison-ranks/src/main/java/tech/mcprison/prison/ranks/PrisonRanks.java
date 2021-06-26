@@ -255,9 +255,7 @@ public class PrisonRanks
                 return;
             }
 
-            try {
-                ladderManager.saveLadder( rankLadder );
-            } catch (IOException e) {
+            if ( !ladderManager.save( rankLadder ) ) {
             	
             	String failureMsg = prisonRanksFailureSavingDefaultLadderMsg();
             	
@@ -278,9 +276,7 @@ public class PrisonRanks
                 return;
             }
 
-            try {
-                ladderManager.saveLadder( rankLadder );
-            } catch (IOException e) {
+            if ( !ladderManager.save( rankLadder ) ) {
 
             	String failureMsg = prisonRanksFailureSavingPrestigeLadderMsg();
             	

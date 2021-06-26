@@ -118,7 +118,7 @@ public class LadderManager
      * @param ladder The {@link RankLadder} to save.
      * @throws IOException If the ladder could not be serialized, or if the ladder could not be saved to the file.
      */
-    public void saveLadder(RankLadder ladder) throws IOException {
+    private void saveLadder(RankLadder ladder) throws IOException {
         this.saveLadder(ladder, "ladder_" + ladder.getId());
     }
 

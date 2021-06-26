@@ -1,7 +1,5 @@
 package tech.mcprison.prison.ranks.commands;
 
-import java.io.IOException;
-
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
@@ -40,13 +38,12 @@ public class LadderCommands
             return;
         }
 
-        try {
-        	
-        	PrisonRanks.getInstance().getLadderManager().saveLadder(rankLadder);
+        if ( PrisonRanks.getInstance().getLadderManager().save(rankLadder) ) {
 
         	ladderAddCreatedMsg( sender, ladderName );
             
-        } catch (IOException e) {
+        }
+        else {
         	
         	ladderAddCreationErrorMsg( sender, ladderName );
 
@@ -195,12 +192,11 @@ public class LadderCommands
             ladder.addRank(rank);
         }
 
-        try {
-            PrisonRanks.getInstance().getLadderManager().saveLadder(ladder);
+        if ( PrisonRanks.getInstance().getLadderManager().save(ladder) ) {
             
             ladderAddedRankMsg( sender, ladderName, rankName, position );
-            
-        } catch (IOException e) {
+        } 
+        else {
         	
         	ladderErrorAddingMsg( sender );
         	
@@ -228,12 +224,12 @@ public class LadderCommands
 
         ladder.removeRank(ladder.getPositionOfRank(rank));
 
-        try {
-            PrisonRanks.getInstance().getLadderManager().saveLadder(ladder);
+        if ( PrisonRanks.getInstance().getLadderManager().save(ladder) ) {
 
             ladderRemovedRankFromLadderMsg( sender, rankName, ladderName );
             
-        } catch (IOException e) {
+        } 
+        else {
         	ladderErrorRemovingingMsg( sender );
         	ladderErrorSavingMsg( sender );
         }

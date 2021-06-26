@@ -21,7 +21,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.9-alpha.2 2021-06-25
+# v3.2.9-alpha.2 2021-06-26
+
+
+* **In the LadderManager is a function saveLadder that should not be used outside of the ladder manager so it's visibility was set to private.**
+As such, many external functions had to be changed to the save() function.
 
 
 * **Converted mine commands to use row number for removal.**

@@ -346,16 +346,15 @@ public class RankManager {
             
             // ... remove it from each ladder it was in...
             ladder.removeRank(ladder.getPositionOfRank(rank));
-            try {
-            	PrisonRanks.getInstance().getLadderManager().saveLadder(ladder);
-            } catch (IOException e) {
+            if ( !PrisonRanks.getInstance().getLadderManager().save(ladder) ) {
+
             	success[0] = false;
             	
             	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
             			.getLocalizable( "ranks_rankManager__cannot_save_ladder_file" )
             			.withReplacements( ladder.getName() );
             	
-            	Output.get().logError( localManagerLog.localize(), e );
+            	Output.get().logError( localManagerLog.localize() );
             }
             
         }

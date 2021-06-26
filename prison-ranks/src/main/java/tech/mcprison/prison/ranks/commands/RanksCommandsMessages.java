@@ -65,7 +65,7 @@ public class RanksCommandsMessages
 	}
 	
 	protected void errorCouldNotSaveLadderMsg( CommandSender sender, 
-					String ladderName, IOException e ) {
+					String ladderName ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__error_saving_ladder" )
 				.withReplacements( 
@@ -78,7 +78,7 @@ public class RanksCommandsMessages
 						ladderName )
 				.localize();
 		
-		Output.get().logError( message, e );
+		Output.get().logError( message );
 	}
 	
 	
