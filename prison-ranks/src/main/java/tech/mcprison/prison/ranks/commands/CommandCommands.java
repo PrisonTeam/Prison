@@ -167,14 +167,12 @@ public class CommandCommands
         	
         	row.addTextComponent( " &3Row: &d%d  ", rowNumber++ );
         	
-            FancyMessage msg = new FancyMessage("&3/" + command)
-                .command("/ranks command remove " + rankName + " " + command)
-                .tooltip( ranksCommandListClickToRemoveMsg() );
+            FancyMessage msg = new FancyMessage("&3/" + command);
             row.addFancy( msg );
             
         	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
         			.suggest("/ranks command remove " + rankName + " " + rowNumber )
-        			.tooltip("Click to Delete this Rank");
+        			.tooltip( ranksCommandListClickToRemoveMsg() );
         	row.addFancy( msgRemove );
 	
             builder.add( row );
