@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.2 2021-06-25
 
 
+* **Fixed an issue with rank commands removal with a line number... should have subtracted one from the row number.**
+
+
 * **Found an issue with lore value of Block hitting upon any lore that begins with Block, such as Blocks Mined:**
 To fix this issue, the default lore has been changed to include prefixes of "Auto ".
 

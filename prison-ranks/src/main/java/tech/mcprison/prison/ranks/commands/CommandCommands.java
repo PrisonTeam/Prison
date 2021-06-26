@@ -123,7 +123,7 @@ public class CommandCommands
         	return;        	
         }
         
-        String oldCommand = rank.getRankUpCommands().remove( (int) row );
+        String oldCommand = rank.getRankUpCommands().remove( (int) row - 1 );
         
         if ( oldCommand != null ) {
         	
