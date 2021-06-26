@@ -1348,8 +1348,8 @@ public class AutoManagerFeatures
 					
 					break;
 					
-				case LAPIS_LAZULI:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_BLOCK, 1 );
+				case LAPIS_LAZULI:	
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_BLOCK, 9 );
 					
 					
 				default:

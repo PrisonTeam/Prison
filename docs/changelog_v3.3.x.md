@@ -21,7 +21,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.9-alpha.2 2021-06-24
+# v3.2.9-alpha.2 2021-06-25
+
+
+* **Found bug with lapis_lazuli having a 1 to 1 auto block to lapis_block.**
+Should be 1 to 9.
 
 
 * **GUI utility, started transition:** GUIs are slowly being rewritten to the new GUI
