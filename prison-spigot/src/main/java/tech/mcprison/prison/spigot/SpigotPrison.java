@@ -475,42 +475,6 @@ public class SpigotPrison extends JavaPlugin {
         }
     }
 
-//    /**
-//     * 
-//     * NOTE: This is now obsolete since the setup is done internally within the
-//     *       Compatibility classes instead of leaking business knowledge here.
-//     *       SpigotCompatibility.getInstance();
-//     *       
-//     * Priority of defaulting to Spigot113 if an unknown version.
-//     */
-//    private void initCompatibility() {
-//    	
-//    	String bukkitVersion =  new BluesSpigetSemVerComparator().getBukkitVersion();
-//    	
-//    	if ( bukkitVersion == null ) {
-//    		
-//    		compatibility = new Spigot113();
-//    	}
-//    	else {
-//
-//    		BluesSemanticVersionData svData = new BluesSemanticVersionData( bukkitVersion );
-//    		
-//    		if ( svData.compareTo( new BluesSemanticVersionData( "1.9.0" ) ) < 0 ) {
-//    			
-//    			compatibility = new Spigot18();
-//    		}
-//    		else if ( svData.compareTo( new BluesSemanticVersionData( "1.13.0" ) ) < 0 ) {
-//    			
-//    			compatibility = new Spigot19();
-//    		}
-//    		else {
-//    			
-//    			compatibility = new Spigot113();
-//    		}
-//    	}
-//
-//    	Output.get().logInfo("Using version adapter " + compatibility.getClass().getName());
-//    }
 
 	private void initIntegrations() {
 
