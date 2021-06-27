@@ -35,6 +35,8 @@ import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MineData;
@@ -144,24 +146,28 @@ public class MinesCommands
     	super.delBlockCommand( sender, mineName, block );
     }
     
-    @Override
     @Command(identifier = "mines block search", permissions = "mines.block", 
 					description = "Searches for a block to add to a mine.")
 	public void searchBlockCommand(CommandSender sender,
 			@Arg(name = "search", def = " ", description = "Any part of the block's name or ID.") String search,
 			@Arg(name = "page", def = "1", description = "Page of search results (optional)") String page ) {
 		
-    	super.searchBlockCommand( sender, search, page );
+    	super.searchBlockCommand( sender, search, page, 
+    			"mines block search", 
+    			"mines block add",
+    			"mine" );
     }
     
-    @Override
     @Command(identifier = "mines block searchAll", permissions = "mines.block", 
     		description = "Searches for a blocks and items. Items cannot be added to mines.")
     public void searchBlockAllCommand(CommandSender sender,
     		@Arg(name = "search", def = " ", description = "Any part of the block's, or item's name.") String search,
     		@Arg(name = "page", def = "1", description = "Page of search results (optional)") String page ) {
     	
-    	super.searchBlockAllCommand( sender, search, page );
+    	super.searchBlockAllCommand( sender, search, page,
+    			"mines block searchAll", 
+    			"mines block add",
+    			"mine" );
     }
     
     @Override
@@ -2856,6 +2862,28 @@ public class MinesCommands
         	row.addFancy( msgCommand );
         	
         	
+        	if ( blockEvent.getPrisonBlocks().size() > 0 ) {
+        		StringBuilder sb = new StringBuilder();
+        		
+        		for ( PrisonBlock block : blockEvent.getPrisonBlocks() ) {
+					if ( sb.length() > 0 ) {
+						sb.append( ", " );
+					}
+					sb.append( block.getBlockName() );
+				}
+        		if ( sb.length() > 0 ) {
+        			sb.insert( 0, "[" );
+        			sb.append( "]" );
+        			
+        			FancyMessage msgBlocks = new FancyMessage( sb.toString() )
+        					.tooltip( "Block filters. Click block list to add another." )
+        					.suggest( "/mines blockvent block add " + m.getName() + " " + 
+        								rowNumber + " block_name" );
+        			
+        			row.addFancy( msgBlocks );
+        		}
+        	}
+        	
         	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
         			.suggest("/mines blockEvent remove " + m.getName() + " " + rowNumber )
         			.tooltip("Click to Delete this BlockEvent");
@@ -3439,9 +3467,10 @@ public class MinesCommands
     					"blockName to. If not provided, or value of 0, then " +
     					"this command " +
     					"will display a list of all commands.") Integer row,
-    			@Arg(name = "search", description = "Optioinal keyword 'search' to search " +
+    			@Arg(name = "search", description = "Optional keyword 'search' to search " +
     					"based upon value of blockName. [search, none, <blank>]",
     					def = "") String search,
+    			@Wildcard(join=true)
     	        @Arg(name = "blockName", description = "Name of block to add, or " +
     	        		"'search' to search for blocks",
     					def = "search") String blockName
@@ -3520,23 +3549,47 @@ public class MinesCommands
         	
         	// block search: 
         	
+        	String page = extractPage( blockName );
+        	String searchValue = extractSearchValue( page, blockName );
         	
+        	String commandBase = "mines blockEvent block add " + mineName + " " + row;
+        	
+        	super.searchBlockCommand( sender, searchValue, page, 
+        			commandBase + " search", 
+        			commandBase,
+        			"blockEvent" );
+        	
+        	return;
         }
         
 
         // We have the row number, so now get the BlockEvent:
         MineBlockEvent blockEvent = m.getBlockEvents().get( row - 1 );
-        
 
-        
+        if ( blockEvent != null ) {
+        	
+        	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
+        	PrisonBlock block = prisonBlockTypes.getBlockTypesByName( blockName );
+        	
+        	if ( block != null ) {
+        		blockEvent.getPrisonBlocks().add( block );
+        		
+        		pMines.getMineManager().saveMine( m );
+        		
+        		// Block added and saved.
+        		
+        		return;
+        	}
+        	else {
+        		// Invalid block name. Try searching for the correct name:
+        		
+        	}
+        	
+        }
+        else {
+        	// BlockEvent not found. Recheck the blockEven row number.
+        }
 
-        
-
-        TaskMode taskModeOld = blockEvent.getTaskMode();
-        
-        //blockEvent.setTaskMode( taskMode );
-
-        pMines.getMineManager().saveMine( m );
         
         
 //        Output.get().sendInfo(sender, "&7BlockEvent task mode &b%s&7 was changed for mine '&b%s&7'. " +
@@ -3551,12 +3604,43 @@ public class MinesCommands
  //       blockEventList( sender, mineName );
 
     }
+	
+	
+	private String extractSearchValue( String page, String blockName ) {
+		String results = blockName;
+		if ( blockName.toLowerCase().startsWith( page.toLowerCase() ) ) {
+			results = blockName.substring( page.length() ).trim();
+		}
+		
+		return results;
+	}
+
+	private String extractPage( String blockName ) {
+		String page = "1";
+		
+		if ( blockName != null && blockName.toLowerCase().startsWith( "all " ) ) {
+			page = "all";
+		}
+		else if ( blockName!= null && blockName.contains( " " ) ) {
+					
+			try {
+				String pageStr = blockName.substring( 0, blockName.indexOf( " " ) );
+				
+				int pg = Integer.parseInt( pageStr );
+				
+				page = Integer.toString( pg );
+			}
+			catch ( NumberFormatException e ) {
+			}
+		}
+		
+		return page;
+	}
 
 
 	
 	
 	
-
 
 
 	@Command(identifier = "mines command list", description = "Lists the commands for a mine.", 

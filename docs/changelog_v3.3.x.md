@@ -21,7 +21,17 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.9-alpha.2 2021-06-26
+# v3.2.9-alpha.2 2021-06-27
+
+
+* **Setup blockEvents to be able to search for blocks to be added.**
+Unfortunately, this turned out to be the wrong approach and is too complicated.  I just thought of a better way to do this.
+Committing this code since some of it does improve a few things not directly related to blockEvents.
+
+
+* **Changed around how the startup of prison works.**
+This helps to eliminate a couple of error messages when enabling the compatibility classes.
+Moved the display of the system stats to the Prison class so it can be now included with the prison splash screen.  This is important to get displayed here so if there are other failures, at least we have that covered to help with troubleshooting.
 
 
 * **Update docs and provided a new startup task that runs when there are no mines or ranks on a server.**

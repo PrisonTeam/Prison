@@ -673,7 +673,10 @@ public class MinesBlockCommands
 
     public void searchBlockCommand(CommandSender sender,
         String search,
-        String page ) {
+        String page, 
+        String blockSeachCommand,
+        String commandBlockAdd,
+        String targetText ) {
 
     	PrisonMines pMines = PrisonMines.getInstance();
     	if (search == null)
@@ -685,11 +688,13 @@ public class MinesBlockCommands
     	
         if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
             
-        	display = prisonBlockSearchBuilder(search, page, true, "mines block search");
+        	display = prisonBlockSearchBuilder(search, page, true, 
+        						blockSeachCommand, commandBlockAdd, targetText );
         }
         else {
         	
-        	display = blockSearchBuilder(search, page, true, "mines block search");
+        	display = blockSearchBuilder(search, page, true, 
+        						blockSeachCommand, commandBlockAdd, targetText );
         }
         
         display.send(sender);
@@ -699,7 +704,10 @@ public class MinesBlockCommands
     
     public void searchBlockAllCommand(CommandSender sender,
     		String search,
-    		String page ) {
+    		String page,
+    		String blockSeachCommand, 
+    		String commandBlockAdd,
+            String targetText ) {
     	
     	PrisonMines pMines = PrisonMines.getInstance();
     	if (search == null)
@@ -711,11 +719,13 @@ public class MinesBlockCommands
     	
     	if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
     		
-    		display = prisonBlockSearchBuilder(search, page, false, "mines block searchAll");
+    		display = prisonBlockSearchBuilder(search, page, false, 
+    						blockSeachCommand, commandBlockAdd, targetText );
     	}
     	else {
     		
-    		display = blockSearchBuilder(search, page, false, "mines block searchAll");
+    		display = blockSearchBuilder(search, page, false, 
+    						blockSeachCommand, commandBlockAdd, targetText );
     	}
     	
     	display.send(sender);
@@ -724,14 +734,17 @@ public class MinesBlockCommands
     }
     
     private ChatDisplay prisonBlockSearchBuilder(String search, String page, 
-    							boolean restrictToBlocks, String command )
+    							boolean restrictToBlocks, 
+    							String commandBlockSearch,
+    							String commandBlockAdd,
+    					        String targetText )
     {
     	
     	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
     	List<PrisonBlock> blocks = prisonBlockTypes.getBlockTypes( search, restrictToBlocks );
     	
     	CommandPagedData cmdPageData = new CommandPagedData(
-    			"/" + command + " " + search, blocks.size(),
+    			"/" + commandBlockSearch + " " + search, blocks.size(),
     			0, page );
     	
     	// Same page logic as in mines info
@@ -752,7 +765,7 @@ public class MinesBlockCommands
     	
     	
     	ChatDisplay display = new ChatDisplay("Block Search (" + blocks.size() + ")");
-    	display.addText("&8Click a block to add it to a mine.");
+    	display.addText("&8Click a block to add it to a " + targetText + ".");
     	
     	BulletedListComponent.BulletedListBuilder builder =
     			new BulletedListComponent.BulletedListBuilder();
@@ -766,9 +779,9 @@ public class MinesBlockCommands
     								(block.isBlock() ? "block" : "item")
 //    								block.getAltName(),
     								))
-    				.suggest("/mines block add " + getLastMineReferenced() + 
+    				.suggest("/" + commandBlockAdd + " " + getLastMineReferenced() + 
     									" " + block.getBlockNameSearch() + " %")
-    				.tooltip("&7Click to add block to a mine.");
+    				.tooltip("&7Click to add block to a " + targetText + ".");
     		builder.add(msg);
     	}
     	display.addComponent(builder.build());
@@ -782,7 +795,10 @@ public class MinesBlockCommands
     }
 
 	private ChatDisplay blockSearchBuilder(String search, String page, 
-					boolean restrictToBlocks, String command)
+					boolean restrictToBlocks, 
+					String commandBlockSearch,
+					String commandBlockAdd,
+			        String targetText )
 	{
 		List<BlockType> blocks = new ArrayList<>();
     	for (BlockType block : BlockType.values())
@@ -797,7 +813,7 @@ public class MinesBlockCommands
     	
         
         CommandPagedData cmdPageData = new CommandPagedData(
-        		"/" + command + " " + search, blocks.size(),
+        		"/" + commandBlockSearch + " " + search, blocks.size(),
         		0, page );
     	
     	// Same page logic as in mines info
@@ -818,7 +834,7 @@ public class MinesBlockCommands
 
     	
         ChatDisplay display = new ChatDisplay("Block Search (" + blocks.size() + ")");
-        display.addText("&8Click a block to add it to a mine.");
+        display.addText("&8Click a block to add it to a " + targetText + ".");
         
         BulletedListComponent.BulletedListBuilder builder =
         						new BulletedListComponent.BulletedListBuilder();
@@ -834,8 +850,8 @@ public class MinesBlockCommands
                     					"(" + block.getMaterialVersion() + ")"),
                     				(block.isBlock() ? "block": "item"))
                     		)
-                    .suggest("/mines block add " + getLastMineReferenced() + " " + block.name() + " %")
-                        .tooltip("&7Click to add block to a mine.");
+                    .suggest("/" + commandBlockAdd + " " + getLastMineReferenced() + " " + block.name() + " %")
+                        .tooltip("&7Click to add block to a " + targetText + ".");
                 builder.add(msg);
         }
         display.addComponent(builder.build());
