@@ -18,7 +18,6 @@
 
 package tech.mcprison.prison;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -45,11 +44,9 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.DisplayComponent;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.Output.DebugTarget;
-import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.troubleshoot.TroubleshootResult;
 import tech.mcprison.prison.troubleshoot.Troubleshooter;
 import tech.mcprison.prison.util.PrisonJarReporter;
-import tech.mcprison.prison.util.PrisonTPS;
 
 /**
  * Root commands for managing the platform as a whole, in-game.
@@ -238,6 +235,74 @@ public class PrisonCommand {
 		}
     }
     
+    
+//    public void displaySystemSettings( ChatDisplay display ) {
+//    	
+//        display.addText("&7Server runtime: %s", Prison.get().getServerRuntimeFormatted() );;
+//        
+//        Runtime runtime = Runtime.getRuntime();
+//        
+//        String javaVersion = System.getProperty("java.version");
+//        
+//        int processors = runtime.availableProcessors();
+//        long memoryMax = runtime.maxMemory();
+//        long memoryTotal = runtime.totalMemory();
+//        long memoryFree = runtime.freeMemory();
+//        long memoryUsed = memoryTotal - memoryFree;
+//        
+//        DecimalFormat dFmt = new DecimalFormat("#,##0.000");
+//        String memMax = PlaceholdersUtil.formattedIPrefixBinarySize( memoryMax, dFmt, " " );
+//        String memTotal = PlaceholdersUtil.formattedIPrefixBinarySize( memoryTotal, dFmt, " " );
+//        String memFree = PlaceholdersUtil.formattedIPrefixBinarySize( memoryFree, dFmt, " " );
+//        String memUsed = PlaceholdersUtil.formattedIPrefixBinarySize( memoryUsed, dFmt, " " );
+//
+//        display.addText("&7Java Version: %s  Processor cores: %s ", 
+//        								javaVersion, Integer.toString( processors ) );
+//        display.addText("&7Memory Max: %s  Total: %s  Free: %s  Used: %s", 
+//        				memMax, memTotal, memFree, memUsed );
+//        
+//        
+//        File prisonFolder = Prison.get().getDataFolder();
+//        long diskSpaceTotal = prisonFolder.getTotalSpace();
+//        long diskSpaceUsable = prisonFolder.getUsableSpace();
+//        long diskSpaceFree = prisonFolder.getFreeSpace();
+//        long diskSpaceUsed = diskSpaceTotal - diskSpaceFree;
+//        
+//        String dsTotal = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceTotal, dFmt, " " );
+//        String dsUsable = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceUsable, dFmt, " " );
+//        String dsFree = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceFree, dFmt, " " );
+//        String dsUsed = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceUsed, dFmt, " " );
+//        
+//        display.addText("&7Total Server Disk Space: %s  Usable: %s  Free: %s  Used: %s", 
+//        		dsTotal, dsUsable, dsFree, dsUsed );
+//        
+//        
+//        getPrisonDiskSpaceUsage( display, prisonFolder, 
+//        		"&7Prison's File Count: %s  Folder Count: %s  Disk Space: %s  Other Objects: %s" );
+//
+//    }
+    
+    
+//    public void displaySystemTPS( ChatDisplay display ) {
+//    	
+//        DecimalFormat iFmt = new DecimalFormat("#,##0");
+//        PrisonTPS prisonTPS = Prison.get().getPrisonTPS();
+//        display.addText( "&7Prison TPS Average: %s  Min: %s  Max: %s%s   " +
+//        					"Interval: %s ticks  Samples: %s",
+//        						prisonTPS.getAverageTPSFormatted(),
+//        						prisonTPS.getTPSMinFormatted(),
+//        						( prisonTPS.getTpsMax() >= 100  ? ">" : ""),
+//        						prisonTPS.getTPSMaxFormatted(),
+//        						iFmt.format( PrisonTPS.SUBMIT_TICKS_INTERVAL ),
+//        						iFmt.format( prisonTPS.getTpsSamples() )
+//        		);
+//        
+//        
+//        display.addText( "&7TPS History: %s",
+//        		prisonTPS.getLastFewTPS() );
+//
+//    }
+    	
     public ChatDisplay displayVersion(String options) {
     
     	boolean isBasic = options == null || "basic".equalsIgnoreCase( options );
@@ -251,65 +316,69 @@ public class PrisonCommand {
         
         // System stats:
         display.addText("");
+        
+        Prison.get().displaySystemSettings( display );
+        
+        Prison.get().displaySystemTPS( display );
 
-        display.addText("&7Server runtime: %s", Prison.get().getServerRuntimeFormatted() );;
-        
-        Runtime runtime = Runtime.getRuntime();
-        
-        String javaVersion = System.getProperty("java.version");
-        
-        int processors = runtime.availableProcessors();
-        long memoryMax = runtime.maxMemory();
-        long memoryTotal = runtime.totalMemory();
-        long memoryFree = runtime.freeMemory();
-        long memoryUsed = memoryTotal - memoryFree;
-        
-        DecimalFormat dFmt = new DecimalFormat("#,##0.000");
-        String memMax = PlaceholdersUtil.formattedIPrefixBinarySize( memoryMax, dFmt, " " );
-        String memTotal = PlaceholdersUtil.formattedIPrefixBinarySize( memoryTotal, dFmt, " " );
-        String memFree = PlaceholdersUtil.formattedIPrefixBinarySize( memoryFree, dFmt, " " );
-        String memUsed = PlaceholdersUtil.formattedIPrefixBinarySize( memoryUsed, dFmt, " " );
-
-        display.addText("&7Java Version: %s  Processor cores: %s ", 
-        								javaVersion, Integer.toString( processors ) );
-        display.addText("&7Memory Max: %s  Total: %s  Free: %s  Used: %s", 
-        				memMax, memTotal, memFree, memUsed );
-        
-        
-        File prisonFolder = Prison.get().getDataFolder();
-        long diskSpaceTotal = prisonFolder.getTotalSpace();
-        long diskSpaceUsable = prisonFolder.getUsableSpace();
-        long diskSpaceFree = prisonFolder.getFreeSpace();
-        long diskSpaceUsed = diskSpaceTotal - diskSpaceFree;
-        
-        String dsTotal = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceTotal, dFmt, " " );
-        String dsUsable = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceUsable, dFmt, " " );
-        String dsFree = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceFree, dFmt, " " );
-        String dsUsed = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceUsed, dFmt, " " );
-        
-        display.addText("&7Total Server Disk Space: %s  Usable: %s  Free: %s  Used: %s", 
-        		dsTotal, dsUsable, dsFree, dsUsed );
-        
-        
-        getPrisonDiskSpaceUsage( display, prisonFolder, 
-        		"&7Prison's File Count: %s  Folder Count: %s  Disk Space: %s  Other Objects: %s" );
-        
-        
-        DecimalFormat iFmt = new DecimalFormat("#,##0");
-        PrisonTPS prisonTPS = Prison.get().getPrisonTPS();
-        display.addText( "&7Prison TPS Average: %s  Min: %s  Max: %s%s   " +
-        					"Interval: %s ticks  Samples: %s",
-        						prisonTPS.getAverageTPSFormatted(),
-        						prisonTPS.getTPSMinFormatted(),
-        						( prisonTPS.getTpsMax() >= 100  ? ">" : ""),
-        						prisonTPS.getTPSMaxFormatted(),
-        						iFmt.format( PrisonTPS.SUBMIT_TICKS_INTERVAL ),
-        						iFmt.format( prisonTPS.getTpsSamples() )
-        		);
+//        display.addText("&7Server runtime: %s", Prison.get().getServerRuntimeFormatted() );;
+//        
+//        Runtime runtime = Runtime.getRuntime();
+//        
+//        String javaVersion = System.getProperty("java.version");
+//        
+//        int processors = runtime.availableProcessors();
+//        long memoryMax = runtime.maxMemory();
+//        long memoryTotal = runtime.totalMemory();
+//        long memoryFree = runtime.freeMemory();
+//        long memoryUsed = memoryTotal - memoryFree;
+//        
+//        DecimalFormat dFmt = new DecimalFormat("#,##0.000");
+//        String memMax = PlaceholdersUtil.formattedIPrefixBinarySize( memoryMax, dFmt, " " );
+//        String memTotal = PlaceholdersUtil.formattedIPrefixBinarySize( memoryTotal, dFmt, " " );
+//        String memFree = PlaceholdersUtil.formattedIPrefixBinarySize( memoryFree, dFmt, " " );
+//        String memUsed = PlaceholdersUtil.formattedIPrefixBinarySize( memoryUsed, dFmt, " " );
+//
+//        display.addText("&7Java Version: %s  Processor cores: %s ", 
+//        								javaVersion, Integer.toString( processors ) );
+//        display.addText("&7Memory Max: %s  Total: %s  Free: %s  Used: %s", 
+//        				memMax, memTotal, memFree, memUsed );
+//        
+//        
+//        File prisonFolder = Prison.get().getDataFolder();
+//        long diskSpaceTotal = prisonFolder.getTotalSpace();
+//        long diskSpaceUsable = prisonFolder.getUsableSpace();
+//        long diskSpaceFree = prisonFolder.getFreeSpace();
+//        long diskSpaceUsed = diskSpaceTotal - diskSpaceFree;
+//        
+//        String dsTotal = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceTotal, dFmt, " " );
+//        String dsUsable = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceUsable, dFmt, " " );
+//        String dsFree = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceFree, dFmt, " " );
+//        String dsUsed = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceUsed, dFmt, " " );
+//        
+//        display.addText("&7Total Server Disk Space: %s  Usable: %s  Free: %s  Used: %s", 
+//        		dsTotal, dsUsable, dsFree, dsUsed );
+//        
+//        
+//        getPrisonDiskSpaceUsage( display, prisonFolder, 
+//        		"&7Prison's File Count: %s  Folder Count: %s  Disk Space: %s  Other Objects: %s" );
         
         
-        display.addText( "&7TPS History: %s",
-        		prisonTPS.getLastFewTPS() );
+//        DecimalFormat iFmt = new DecimalFormat("#,##0");
+//        PrisonTPS prisonTPS = Prison.get().getPrisonTPS();
+//        display.addText( "&7Prison TPS Average: %s  Min: %s  Max: %s%s   " +
+//        					"Interval: %s ticks  Samples: %s",
+//        						prisonTPS.getAverageTPSFormatted(),
+//        						prisonTPS.getTPSMinFormatted(),
+//        						( prisonTPS.getTpsMax() >= 100  ? ">" : ""),
+//        						prisonTPS.getTPSMaxFormatted(),
+//        						iFmt.format( PrisonTPS.SUBMIT_TICKS_INTERVAL ),
+//        						iFmt.format( prisonTPS.getTpsSamples() )
+//        		);
+//        
+//        
+//        display.addText( "&7TPS History: %s",
+//        		prisonTPS.getLastFewTPS() );
         
         
         display.addText("");
@@ -449,103 +518,103 @@ public class PrisonCommand {
         return display;
     }
 
-    public class PrisonDiskStats {
-    	
-    	long fileCount = 0L;
-    	long folderCount = 0L;
-    	long otherObjectCount = 0L;
-    	long storageSize = 0L;
-    	
-    	public PrisonDiskStats() {
-    		super();
-    	}
-
-    	public void incrementFileCount() {
-    		fileCount++;
-    	}
-		public long getFileCount() {
-			return fileCount;
-		}
-		public void setFileCount( long fileCount ) {
-			this.fileCount = fileCount;
-		}
-
-		public void incrementFolderCount() {
-			folderCount++;
-		}
-		public long getFolderCount() {
-			return folderCount;
-		}
-		public void setFolderCount( long folderCount ) {
-			this.folderCount = folderCount;
-		}
-
-		public void incrementOtherObjectCount() {
-			otherObjectCount++;
-		}
-		public long getOtherObjectCount() {
-			return otherObjectCount;
-		}
-		public void setOtherObjectCount( long otherObjectCount ) {
-			this.otherObjectCount = otherObjectCount;
-		}
-
-		public void addStorageSize( long fileSize ) {
-			storageSize += fileSize;
-		}
-		public long getStorageSize() {
-			return storageSize;
-		}
-		public void setStorageSize( long storageSize ) {
-			this.storageSize = storageSize;
-		}
-    }
+//    public class PrisonDiskStats {
+//    	
+//    	long fileCount = 0L;
+//    	long folderCount = 0L;
+//    	long otherObjectCount = 0L;
+//    	long storageSize = 0L;
+//    	
+//    	public PrisonDiskStats() {
+//    		super();
+//    	}
+//
+//    	public void incrementFileCount() {
+//    		fileCount++;
+//    	}
+//		public long getFileCount() {
+//			return fileCount;
+//		}
+//		public void setFileCount( long fileCount ) {
+//			this.fileCount = fileCount;
+//		}
+//
+//		public void incrementFolderCount() {
+//			folderCount++;
+//		}
+//		public long getFolderCount() {
+//			return folderCount;
+//		}
+//		public void setFolderCount( long folderCount ) {
+//			this.folderCount = folderCount;
+//		}
+//
+//		public void incrementOtherObjectCount() {
+//			otherObjectCount++;
+//		}
+//		public long getOtherObjectCount() {
+//			return otherObjectCount;
+//		}
+//		public void setOtherObjectCount( long otherObjectCount ) {
+//			this.otherObjectCount = otherObjectCount;
+//		}
+//
+//		public void addStorageSize( long fileSize ) {
+//			storageSize += fileSize;
+//		}
+//		public long getStorageSize() {
+//			return storageSize;
+//		}
+//		public void setStorageSize( long storageSize ) {
+//			this.storageSize = storageSize;
+//		}
+//    }
 	
-    private void getPrisonDiskSpaceUsage( ChatDisplay display,
-    					File prisonFolder, String text ) {
-    	
-    	PrisonDiskStats diskStats = new PrisonDiskStats();
-    	
-    	// Increment folder count for prison's plugin folder:
-    	diskStats.incrementFolderCount();
-    	
-    	calculatePrisonDiskUsage( diskStats, prisonFolder );
-    	
-    	DecimalFormat dFmt = new DecimalFormat("#,##0.000");
-    	DecimalFormat iFmt = new DecimalFormat("#,##0");
-    	
-    	String prisonFileCount = iFmt.format( diskStats.getFileCount() );
-    	String prisonFolderCount = iFmt.format( diskStats.getFolderCount() );
-    	String prisonOtherObjectCount = iFmt.format( diskStats.getOtherObjectCount() );
-    	String prisonStorageSize = PlaceholdersUtil.formattedIPrefixBinarySize( 
-    						diskStats.getStorageSize(), dFmt, " " );
-        
-        display.addText( text, prisonFileCount, prisonFolderCount, prisonStorageSize, 
-        			prisonOtherObjectCount );
-    	
-	}
+//    private void getPrisonDiskSpaceUsage( ChatDisplay display,
+//    					File prisonFolder, String text ) {
+//    	
+//    	PrisonDiskStats diskStats = new PrisonDiskStats();
+//    	
+//    	// Increment folder count for prison's plugin folder:
+//    	diskStats.incrementFolderCount();
+//    	
+//    	calculatePrisonDiskUsage( diskStats, prisonFolder );
+//    	
+//    	DecimalFormat dFmt = new DecimalFormat("#,##0.000");
+//    	DecimalFormat iFmt = new DecimalFormat("#,##0");
+//    	
+//    	String prisonFileCount = iFmt.format( diskStats.getFileCount() );
+//    	String prisonFolderCount = iFmt.format( diskStats.getFolderCount() );
+//    	String prisonOtherObjectCount = iFmt.format( diskStats.getOtherObjectCount() );
+//    	String prisonStorageSize = PlaceholdersUtil.formattedIPrefixBinarySize( 
+//    						diskStats.getStorageSize(), dFmt, " " );
+//        
+//        display.addText( text, prisonFileCount, prisonFolderCount, prisonStorageSize, 
+//        			prisonOtherObjectCount );
+//    	
+//	}
 
 
-    private void calculatePrisonDiskUsage( PrisonDiskStats diskStats, File prisonFolder ) {
-    	
-    	File[] files = prisonFolder.listFiles();
-    	
-    	for ( File file : files ) {
-			if ( file.isDirectory() ) {
-				diskStats.incrementFolderCount();
-				
-				// recursively call for all directories:
-				calculatePrisonDiskUsage( diskStats, file );
-			}
-			else if ( file.isFile() ) {
-				diskStats.incrementFileCount();
-				diskStats.addStorageSize( file.length() );
-			}
-			else {
-				diskStats.incrementOtherObjectCount();
-			}
-		}
-    }
+//    private void calculatePrisonDiskUsage( PrisonDiskStats diskStats, File prisonFolder ) {
+//    	
+//    	File[] files = prisonFolder.listFiles();
+//    	
+//    	for ( File file : files ) {
+//			if ( file.isDirectory() ) {
+//				diskStats.incrementFolderCount();
+//				
+//				// recursively call for all directories:
+//				calculatePrisonDiskUsage( diskStats, file );
+//			}
+//			else if ( file.isFile() ) {
+//				diskStats.incrementFileCount();
+//				diskStats.addStorageSize( file.length() );
+//			}
+//			else {
+//				diskStats.incrementOtherObjectCount();
+//			}
+//		}
+//    }
     
 
 	/**

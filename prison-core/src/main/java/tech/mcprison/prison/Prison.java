@@ -19,6 +19,7 @@
 package tech.mcprison.prison;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.Optional;
 
 import com.google.common.eventbus.EventBus;
@@ -32,6 +33,7 @@ import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.modules.PluginEntity;
+import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceholderManager;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
@@ -129,15 +131,23 @@ public class Prison
         this.platform = platform;
         this.minecraftVersion = minecraftVersion;
         
-        sendBanner();
-        Output.get().logInfo("Enabling and starting...");
-
-        // Initialize various parts of the API. The magic happens here :)
         if (!initDataFolder()) {
         	Output.get().logInfo("&cFailure: &eInitializing the Prison Data Folders!" );
         	Output.get().logInfo("&e&k!=&d Prison Plugin Terminated! &e&k=!&7" );
-            return false;
+        	return false;
         }
+        
+        
+        this.prisonTPS = new PrisonTPS();
+        this.prisonTPS.submitAsyncTPSTask();
+
+
+        sendBanner();
+        
+        
+        Output.get().logInfo("Enabling and starting...");
+
+        // Initialize various parts of the API. The magic happens here :)
         initManagers();
         if (!initMetaDatabase()) {
         	Output.get().logInfo("&cFailure: &eInitializing the Prison Database!" );
@@ -149,9 +159,6 @@ public class Prison
         this.prisonCommands = new PrisonCommand();
         this.commandHandler.registerCommands(prisonCommands);
         
-        
-        this.prisonTPS = new PrisonTPS();
-        this.prisonTPS.submitAsyncTPSTask();
 
 
         long stopTime = System.currentTimeMillis();
@@ -179,19 +186,198 @@ public class Prison
     // Initialization steps
 
     private void sendBanner() {
-    	Output.get().logInfo("");
-    	Output.get().logInfo("&6 _____      _                 ");
-    	Output.get().logInfo("&6|  __ \\    (_)                ");
-    	Output.get().logInfo("&6| |__) | __ _ ___  ___  _ __  ");
-    	Output.get().logInfo("&6|  ___/ '__| / __|/ _ \\| '_ \\");
-    	Output.get().logInfo("&6| |   | |  | \\__ \\ (_) | | | |");
-    	Output.get().logInfo("&6|_|   |_|  |_|___/\\___/|_| |_|");
-    	Output.get().logInfo("");
-    	Output.get().logInfo("&7Loading Prison version: &3%s", PrisonAPI.getPluginVersion());
-    	Output.get().logInfo("&7Running on platform: &3%s", platform.getClass().getSimpleName());
-    	Output.get().logInfo("&7Minecraft version: &3%s", getMinecraftVersion());
-    	Output.get().logInfo("&7Server runtime: %s", getServerRuntimeFormatted() );
-    	Output.get().logInfo("");
+    	
+    	ChatDisplay display = new ChatDisplay("");
+    	
+    	display.addText("");
+    	display.addText("&6 _____      _                 ");
+    	display.addText("&6|  __ \\    (_)                ");
+    	display.addText("&6| |__) | __ _ ___  ___  _ __  ");
+    	display.addText("&6|  ___/ '__| / __|/ _ \\| '_ \\");
+    	display.addText("&6| |   | |  | \\__ \\ (_) | | | |");
+    	display.addText("&6|_|   |_|  |_|___/\\___/|_| |_|");
+    	display.addText("");
+    	display.addText("&7Loading Prison version: &3%s", PrisonAPI.getPluginVersion());
+    	display.addText("&7Running on platform: &3%s", platform.getClass().getSimpleName());
+    	display.addText("&7Minecraft version: &3%s", getMinecraftVersion());
+    	// display.addText("&7Server runtime: %s", getServerRuntimeFormatted() );
+    	display.addText("");
+    	
+    	displaySystemSettings( display );
+    	displaySystemTPS( display );
+
+    	display.addText("");
+    	
+    	display.sendtoOutputLogInfo();
+    }
+    
+    public void displaySystemSettings( ChatDisplay display ) {
+    	
+        display.addText("&7Server runtime: %s", Prison.get().getServerRuntimeFormatted() );;
+        
+        Runtime runtime = Runtime.getRuntime();
+        
+        String javaVersion = System.getProperty("java.version");
+        
+        int processors = runtime.availableProcessors();
+        long memoryMax = runtime.maxMemory();
+        long memoryTotal = runtime.totalMemory();
+        long memoryFree = runtime.freeMemory();
+        long memoryUsed = memoryTotal - memoryFree;
+        
+        DecimalFormat dFmt = new DecimalFormat("#,##0.000");
+        String memMax = PlaceholdersUtil.formattedIPrefixBinarySize( memoryMax, dFmt, " " );
+        String memTotal = PlaceholdersUtil.formattedIPrefixBinarySize( memoryTotal, dFmt, " " );
+        String memFree = PlaceholdersUtil.formattedIPrefixBinarySize( memoryFree, dFmt, " " );
+        String memUsed = PlaceholdersUtil.formattedIPrefixBinarySize( memoryUsed, dFmt, " " );
+
+        display.addText("&7Java Version: %s  Processor cores: %s ", 
+        								javaVersion, Integer.toString( processors ) );
+        display.addText("&7Memory Max: %s  Total: %s  Free: %s  Used: %s", 
+        				memMax, memTotal, memFree, memUsed );
+        
+        
+        File prisonFolder = Prison.get().getDataFolder();
+        long diskSpaceTotal = prisonFolder.getTotalSpace();
+        long diskSpaceUsable = prisonFolder.getUsableSpace();
+        long diskSpaceFree = prisonFolder.getFreeSpace();
+        long diskSpaceUsed = diskSpaceTotal - diskSpaceFree;
+        
+        String dsTotal = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceTotal, dFmt, " " );
+        String dsUsable = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceUsable, dFmt, " " );
+        String dsFree = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceFree, dFmt, " " );
+        String dsUsed = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceUsed, dFmt, " " );
+        
+        display.addText("&7Total Server Disk Space: %s  Usable: %s  Free: %s  Used: %s", 
+        		dsTotal, dsUsable, dsFree, dsUsed );
+        
+        
+        getPrisonDiskSpaceUsage( display, prisonFolder, 
+        		"&7Prison's File Count: %s  Folder Count: %s  Disk Space: %s  Other Objects: %s" );
+
+    	
+    }
+    
+    
+    public void displaySystemTPS( ChatDisplay display ) {
+    	
+        DecimalFormat iFmt = new DecimalFormat("#,##0");
+        PrisonTPS prisonTPS = Prison.get().getPrisonTPS();
+        display.addText( "&7Prison TPS Average: %s  Min: %s  Max: %s%s   " +
+        					"Interval: %s ticks  Samples: %s",
+        						prisonTPS.getAverageTPSFormatted(),
+        						prisonTPS.getTPSMinFormatted(),
+        						( prisonTPS.getTpsMax() >= 100  ? ">" : ""),
+        						prisonTPS.getTPSMaxFormatted(),
+        						iFmt.format( PrisonTPS.SUBMIT_TICKS_INTERVAL ),
+        						iFmt.format( prisonTPS.getTpsSamples() )
+        		);
+        
+        
+        String tpsHistory = prisonTPS.getLastFewTPS();
+        if ( tpsHistory.length() > 0 ) {
+        	
+        	display.addText( "&7TPS History: %s", tpsHistory );
+        }
+
+    }
+    
+    private void getPrisonDiskSpaceUsage( ChatDisplay display,
+			File prisonFolder, String text ) {
+
+		PrisonDiskStats diskStats = new PrisonDiskStats();
+		
+		// Increment folder count for prison's plugin folder:
+		diskStats.incrementFolderCount();
+		
+		calculatePrisonDiskUsage( diskStats, prisonFolder );
+		
+		DecimalFormat dFmt = new DecimalFormat("#,##0.000");
+		DecimalFormat iFmt = new DecimalFormat("#,##0");
+		
+		String prisonFileCount = iFmt.format( diskStats.getFileCount() );
+		String prisonFolderCount = iFmt.format( diskStats.getFolderCount() );
+		String prisonOtherObjectCount = iFmt.format( diskStats.getOtherObjectCount() );
+		String prisonStorageSize = PlaceholdersUtil.formattedIPrefixBinarySize( 
+						diskStats.getStorageSize(), dFmt, " " );
+		
+		display.addText( text, prisonFileCount, prisonFolderCount, prisonStorageSize, 
+				prisonOtherObjectCount );
+		
+	}
+
+	
+	private void calculatePrisonDiskUsage( PrisonDiskStats diskStats, File prisonFolder ) {
+	
+		File[] files = prisonFolder.listFiles();
+		
+		for ( File file : files ) {
+			if ( file.isDirectory() ) {
+				diskStats.incrementFolderCount();
+				
+				// recursively call for all directories:
+				calculatePrisonDiskUsage( diskStats, file );
+			}
+			else if ( file.isFile() ) {
+				diskStats.incrementFileCount();
+				diskStats.addStorageSize( file.length() );
+			}
+			else {
+				diskStats.incrementOtherObjectCount();
+			}
+		}
+	}
+
+    public class PrisonDiskStats {
+    	
+    	long fileCount = 0L;
+    	long folderCount = 0L;
+    	long otherObjectCount = 0L;
+    	long storageSize = 0L;
+    	
+    	public PrisonDiskStats() {
+    		super();
+    	}
+
+    	public void incrementFileCount() {
+    		fileCount++;
+    	}
+		public long getFileCount() {
+			return fileCount;
+		}
+		public void setFileCount( long fileCount ) {
+			this.fileCount = fileCount;
+		}
+
+		public void incrementFolderCount() {
+			folderCount++;
+		}
+		public long getFolderCount() {
+			return folderCount;
+		}
+		public void setFolderCount( long folderCount ) {
+			this.folderCount = folderCount;
+		}
+
+		public void incrementOtherObjectCount() {
+			otherObjectCount++;
+		}
+		public long getOtherObjectCount() {
+			return otherObjectCount;
+		}
+		public void setOtherObjectCount( long otherObjectCount ) {
+			this.otherObjectCount = otherObjectCount;
+		}
+
+		public void addStorageSize( long fileSize ) {
+			storageSize += fileSize;
+		}
+		public long getStorageSize() {
+			return storageSize;
+		}
+		public void setStorageSize( long storageSize ) {
+			this.storageSize = storageSize;
+		}
     }
 
     private boolean initDataFolder() {

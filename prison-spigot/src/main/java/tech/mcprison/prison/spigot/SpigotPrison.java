@@ -67,9 +67,6 @@ import tech.mcprison.prison.spigot.commands.PrisonSpigotPrestigeCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotRanksCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
-import tech.mcprison.prison.spigot.compat.Spigot113;
-import tech.mcprison.prison.spigot.compat.Spigot18;
-import tech.mcprison.prison.spigot.compat.Spigot19;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.configs.BackpacksConfig;
 import tech.mcprison.prison.spigot.configs.GuiConfig;
@@ -87,7 +84,6 @@ import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
 import tech.mcprison.prison.spigot.slime.SlimeBlockFunEventListener;
-import tech.mcprison.prison.spigot.spiget.BluesSemanticVersionData;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.tasks.PrisonInitialStartupTask;
 import tech.mcprison.prison.spigot.tasks.SpigotPrisonDelayedStartupTask;
@@ -101,7 +97,9 @@ import tech.mcprison.prison.spigot.utils.PrisonUtilsModule;
  */
 public class SpigotPrison extends JavaPlugin {
 
-    Field commandMap;
+	private static SpigotPrison config;
+
+	Field commandMap;
     Field knownCommands;
     SpigotScheduler scheduler;
     Compatibility compatibility;
@@ -120,14 +118,17 @@ public class SpigotPrison extends JavaPlugin {
 
     private PrisonBlockTypes prisonBlockTypes;
 
-    private static SpigotPrison config;
     private static boolean isBackPacksEnabled = false;
 
     public static SpigotPrison getInstance(){
         return config;
     }
 
-       
+    public SpigotPrison() {
+    	super();
+    	
+    	config = this;
+    }
 
     @Override
     public void onLoad() {
@@ -164,22 +165,31 @@ public class SpigotPrison extends JavaPlugin {
     public void onEnable() {
     	
     	
-    	config = this;
+    	// Setup the config.yml file and set debug mode:
+    	// config = this;
         this.saveDefaultConfig();
-        debug = getConfig().getBoolean("debug", false);
+        this.debug = getConfig().getBoolean("debug", false);
 
+        // Create the core directory structure if it is missing:
         initDataDir();
+
+        // Setup some of the key data structures and object requried to be in place
+        // prior to starting up:
         initCommandMap();
-        this.compatibility = SpigotCompatibility.getInstance();
-        initCompatibility();
-        initUpdater();
-        
         this.scheduler = new SpigotScheduler(this);
 
-        Prison.get().init(new SpigotPlatform(this), Bukkit.getVersion());
-        Prison.get().getLocaleManager().setDefaultLocale(
-        			getConfig().getString("default-language", "en_US"));
+        // Show Prison's splash screen and setup the core components:
+        Prison.get()
+        		.init(new SpigotPlatform(this), Bukkit.getVersion());
         
+        Prison.get().getLocaleManager().setDefaultLocale(
+        		getConfig().getString("default-language", "en_US"));
+        
+        this.compatibility = SpigotCompatibility.getInstance();
+//        initCompatibility();  Obsolete...
+        
+        
+        initUpdater();
         
         
     	boolean delayedPrisonStartup = getConfig().getBoolean("delayedPrisonStartup.enabled", false);
@@ -411,6 +421,10 @@ public class SpigotPrison extends JavaPlugin {
         }));
     }
 
+    /**
+     * Checks to see if there is a newer version of prison that has been released.
+     * It checks based upon what is deployed to spigotmc.org.
+     */
 	private void initUpdater() {
         if (!getConfig().getBoolean("check-updates")) {
             return; // Don't check if they don't want it
@@ -461,37 +475,42 @@ public class SpigotPrison extends JavaPlugin {
         }
     }
 
-    /**
-     * Priority of defaulting to Spigot113 if an unknown version.
-     */
-    private void initCompatibility() {
-    	
-    	String bukkitVersion =  new BluesSpigetSemVerComparator().getBukkitVersion();
-    	
-    	if ( bukkitVersion == null ) {
-    		
-    		compatibility = new Spigot113();
-    	}
-    	else {
-
-    		BluesSemanticVersionData svData = new BluesSemanticVersionData( bukkitVersion );
-    		
-    		if ( svData.compareTo( new BluesSemanticVersionData( "1.9.0" ) ) < 0 ) {
-    			
-    			compatibility = new Spigot18();
-    		}
-    		else if ( svData.compareTo( new BluesSemanticVersionData( "1.13.0" ) ) < 0 ) {
-    			
-    			compatibility = new Spigot19();
-    		}
-    		else {
-    			
-    			compatibility = new Spigot113();
-    		}
-    	}
-
-    	Output.get().logInfo("Using version adapter " + compatibility.getClass().getName());
-    }
+//    /**
+//     * 
+//     * NOTE: This is now obsolete since the setup is done internally within the
+//     *       Compatibility classes instead of leaking business knowledge here.
+//     *       SpigotCompatibility.getInstance();
+//     *       
+//     * Priority of defaulting to Spigot113 if an unknown version.
+//     */
+//    private void initCompatibility() {
+//    	
+//    	String bukkitVersion =  new BluesSpigetSemVerComparator().getBukkitVersion();
+//    	
+//    	if ( bukkitVersion == null ) {
+//    		
+//    		compatibility = new Spigot113();
+//    	}
+//    	else {
+//
+//    		BluesSemanticVersionData svData = new BluesSemanticVersionData( bukkitVersion );
+//    		
+//    		if ( svData.compareTo( new BluesSemanticVersionData( "1.9.0" ) ) < 0 ) {
+//    			
+//    			compatibility = new Spigot18();
+//    		}
+//    		else if ( svData.compareTo( new BluesSemanticVersionData( "1.13.0" ) ) < 0 ) {
+//    			
+//    			compatibility = new Spigot19();
+//    		}
+//    		else {
+//    			
+//    			compatibility = new Spigot113();
+//    		}
+//    	}
+//
+//    	Output.get().logInfo("Using version adapter " + compatibility.getClass().getName());
+//    }
 
 	private void initIntegrations() {
 

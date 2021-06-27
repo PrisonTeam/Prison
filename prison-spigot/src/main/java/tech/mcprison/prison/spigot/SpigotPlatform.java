@@ -142,6 +142,8 @@ public class SpigotPlatform
     }
     
     public SpigotPlatform(SpigotPrison plugin) {
+    	super();
+    	
         this.plugin = plugin;
         this.scoreboardManager = new SpigotScoreboardManager();
         this.storage = initStorage();
