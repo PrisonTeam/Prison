@@ -1,6 +1,5 @@
 package tech.mcprison.prison.ranks.commands;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 
 import tech.mcprison.prison.commands.BaseCommands;

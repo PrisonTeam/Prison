@@ -24,6 +24,12 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.2 2021-06-27
 
 
+* **Enhancements and fixes to /ranks autoConfigure.**
+Fixes an issue when trying to use force where it was not working.  It now works.
+Provided new behavior of when forcing it will try to fully use what you already have, both with ranks and mines, but all mine that have blocks will be replaced.  If mine liners already exist, they will not be replaced.
+Added a new option to `forceKeepBlocks` that when mines already exist, it will keep their blocks.
+
+
 * **Setup blockEvents to be able to search for blocks to be added.**
 Unfortunately, this turned out to be the wrong approach and is too complicated.  I just thought of a better way to do this.
 Committing this code since some of it does improve a few things not directly related to blockEvents.

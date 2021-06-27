@@ -298,6 +298,11 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
+	public ModuleElement getModuleElement( ModuleElementType elementType, String elementName ) {
+		return null;
+	}
+	
+	@Override
 	public ModuleElement getPlayerDefaultMine( tech.mcprison.prison.internal.CommandSender sender ) {
 		return null;
 	}
@@ -308,7 +313,7 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
-	public void autoCreateMineBlockAssignment() {
+	public void autoCreateMineBlockAssignment( boolean forceKeepBlocks ) {
 		
 	}
 	

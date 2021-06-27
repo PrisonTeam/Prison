@@ -1173,6 +1173,23 @@ public class SpigotPlatform
 		return results;
 	}
 	
+	@Override
+	public ModuleElement getModuleElement( ModuleElementType elementType, String elementName ) {
+		ModuleElement results = null;
+		
+		if ( elementType == ModuleElementType.MINE &&
+							PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+			MineManager mm = PrisonMines.getInstance().getMineManager();
+			results = mm.getMine( elementName );
+		}
+		else if ( elementType == ModuleElementType.RANK &&
+							PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+			RankManager rm = PrisonRanks.getInstance().getRankManager();
+			results = rm.getRank( elementName );
+		}
+		
+		return results;
+	}
 	/**
 	 * <p>This function takes a CommandSender for a player, and tries to find a mine
 	 * that would be associated with that player.  This is a very complex process
@@ -1349,7 +1366,7 @@ public class SpigotPlatform
 	 * 
 	 */
 	@Override
-	public void autoCreateMineBlockAssignment() {
+	public void autoCreateMineBlockAssignment( boolean forceKeepBlocks ) {
 		List<String> blockList = new ArrayList<>(); 
 		
 		
@@ -1401,6 +1418,32 @@ public class SpigotPlatform
 		
 		int startPos = 1;
 		for ( Mine mine : mines ) {
+			
+			boolean hasBlocks = mine.getPrisonBlocks().size() > 0 || mine.getBlocks().size() > 0;
+			
+			// If the mines already has blocks, log them, then clear them since this will replace them:
+			if ( hasBlocks && !forceKeepBlocks ) {
+				String oldBlockList = mine.getBlockListString();
+				
+				String message = String.format( "Mine: %s  Removed old blocks: %s", 
+						mine.getName(), oldBlockList );
+				
+				Output.get().logInfo( message );
+				
+				mine.getPrisonBlocks().clear();
+				mine.getBlocks().clear();
+			}
+			
+			else if ( hasBlocks && forceKeepBlocks ) {
+				String oldBlockList = mine.getBlockListString();
+
+				String message = String.format( "Mine: %s  Keeping existing blocks: %s", 
+						mine.getName(), oldBlockList );
+				
+				Output.get().logInfo( message );
+				
+				continue;
+			}
 			
 			 List<String> mBlocks = mineBlockList( blockList, startPos++, mineBlockSize );
 			
@@ -1481,12 +1524,23 @@ public class SpigotPlatform
 		
 		for ( Mine mine : mines ) {
 			
-			if ( mine.getLinerData().toSaveString().trim().isEmpty() ) {
+			String mineLinerData = mine.getLinerData().toSaveString();
+			boolean createLiner = mineLinerData.trim().isEmpty();
+			
+			if ( createLiner ) {
 				mine.getLinerData().setLiner( Edges.walls, getRandomLinerType(), true );
 				mine.getLinerData().setLiner( Edges.bottom, getRandomLinerType(), true );
 
+				mineLinerData = mine.getLinerData().toSaveString();
+				
 				mm.saveMine( mine );
 			}
+
+			String message = String.format( "Mine Liner status: %s %s : %s", 
+					mine.getName(),
+					(createLiner ? "(Created)" : "(AlreadyExists)"),
+					mineLinerData );
+			Output.get().logInfo( message );
 		}	
 	}
 	
