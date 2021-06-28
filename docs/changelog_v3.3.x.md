@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.2 2021-06-28
 
 
+* **Added world to the MineTargetBlockKey since it will be needed with future util tools.**
+
+
 * **Hook up the blockEvents block filters.  This is now 100% functional.**
 
 

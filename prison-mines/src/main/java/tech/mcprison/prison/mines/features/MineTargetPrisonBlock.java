@@ -1,5 +1,6 @@
 package tech.mcprison.prison.mines.features;
 
+import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 
 public class MineTargetPrisonBlock
@@ -12,13 +13,13 @@ public class MineTargetPrisonBlock
 	private boolean airBroke;
 	
 	
-	protected MineTargetPrisonBlock( int x, int y, int z ) {
+	protected MineTargetPrisonBlock( World world, int x, int y, int z ) {
 		
-		this.blockKey = new MineTargetBlockKey( x, y, z );
+		this.blockKey = new MineTargetBlockKey( world, x, y, z );
 	}
 	
-	public MineTargetPrisonBlock( PrisonBlockStatusData prisonBlock, int x, int y, int z ) {
-		this( x, y, z );
+	public MineTargetPrisonBlock( PrisonBlockStatusData prisonBlock, World world, int x, int y, int z ) {
+		this( world, x, y, z );
 		
 		this.prisonBlock = prisonBlock;
 		

@@ -1,14 +1,18 @@
 package tech.mcprison.prison.mines.features;
 
+import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.util.Location;
 
 public class MineTargetBlockKey
 	implements Comparable<MineTargetBlockKey>
 {
+	private final World world;
 	private final int x, y, z;
 	
-	public MineTargetBlockKey( int x, int y, int z ) {
+	public MineTargetBlockKey( World world, int x, int y, int z ) {
 		super();
+		
+		this.world = world;
 		
 		this.x = x;
 		this.y = y;
@@ -16,7 +20,7 @@ public class MineTargetBlockKey
 	}
 	
 	public MineTargetBlockKey( Location location ) {
-		this( location.getBlockX(), location.getBlockY(), location.getBlockZ() );
+		this( location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ() );
 	}
 	
 	@Override
@@ -27,6 +31,10 @@ public class MineTargetBlockKey
 				.append( z ).append( ")" );
 		
 		return sb.toString();
+	}
+
+	public World getWorld() {
+		return world;
 	}
 
 	public int getX() {
@@ -49,13 +57,18 @@ public class MineTargetBlockKey
 		}
 		else {
 			
-			result = Integer.compare( getX(), key.getX() );
+			result = getWorld().getName().compareTo( key.getWorld().getName() );
 			
 			if ( result == 0 ) {
-				result = Integer.compare( getZ(), key.getZ() );
+				
+				result = Integer.compare( getX(), key.getX() );
 				
 				if ( result == 0 ) {
-					result = Integer.compare( getY(), key.getY() );
+					result = Integer.compare( getZ(), key.getZ() );
+					
+					if ( result == 0 ) {
+						result = Integer.compare( getY(), key.getY() );
+					}
 				}
 			}
 		}
