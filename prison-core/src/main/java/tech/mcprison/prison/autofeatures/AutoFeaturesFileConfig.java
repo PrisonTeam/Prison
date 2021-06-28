@@ -157,6 +157,8 @@ public class AutoFeaturesFileConfig {
 		    	smeltAllBlocks(smeltFeature, true),
 
 		    	
+		    	smeltCobblestone(smeltFeature, false),
+		    	
 		    	smeltGoldOre(smeltFeature, true),
 		    	smeltIronOre(smeltFeature, true),
 		    	smeltCoalOre(smeltFeature, true),
@@ -166,6 +168,7 @@ public class AutoFeaturesFileConfig {
 		    	smeltRedstoneOre(smeltFeature, true),
 		    	smeltNetherQuartzOre(smeltFeature, true),
 		    	smeltAncientDebris(smeltFeature, true),
+		    	smeltCopperOre(smeltFeature, true),
 	   
 	    	
 	    	blockFeature(options),
@@ -184,6 +187,8 @@ public class AutoFeaturesFileConfig {
 		    	autoBlockLapisBlock(blockFeature, true),
 		    	autoBlockSnowBlock(blockFeature, true),
 		    	autoBlockGlowstone(blockFeature, true),
+		    	autoBlockCopperBlock(blockFeature, true),
+		    	
 		    	
 	    	debug(options),
 	    		isDebugSupressOnBlockBreakEventCancels(debug, false),

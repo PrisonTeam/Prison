@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.2 2021-06-28
 
 
+* **Added support for smelting cobblestone to stone (defaults to off) and copper_ore to copper_ingots.  Added support for blocking copper_ingots to copper_blocks.**
+
+
 * **Adjustments to the blockEvent block remove.**
 
 

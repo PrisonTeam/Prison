@@ -524,6 +524,7 @@ public class AutoManagerFeatures
 		
 		List<XMaterial> smelts = new ArrayList<>();
 		
+		smelts.add( XMaterial.COBBLESTONE );
 		smelts.add( XMaterial.GOLD_ORE );
 		smelts.add( XMaterial.NETHER_GOLD_ORE );
 		smelts.add( XMaterial.IRON_ORE );
@@ -534,7 +535,7 @@ public class AutoManagerFeatures
 		smelts.add( XMaterial.REDSTONE_ORE );
 		smelts.add( XMaterial.NETHER_QUARTZ_ORE );
 		smelts.add( XMaterial.ANCIENT_DEBRIS );
-//		smelts.add( XMaterial.COPPER_ORE );
+		smelts.add( XMaterial.COPPER_ORE );
 		
 		
 		for ( XMaterial xMat : smelts ) {
@@ -1066,6 +1067,11 @@ public class AutoManagerFeatures
 			
 			switch ( source )
 			{
+				case COBBLESTONE:
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltCobblestone ), source, XMaterial.STONE, p );
+					results = XMaterial.STONE;
+					break;
+					
 				case GOLD_ORE:
 				case NETHER_GOLD_ORE:
 					autoSmelt( isAll || isBoolean( AutoFeatures.smeltGoldOre ), source, XMaterial.GOLD_INGOT, p );
@@ -1113,10 +1119,10 @@ public class AutoManagerFeatures
 					break;
 
 				// v1.17 !!
-//				case COPPER_ORE:
-//					autoSmelt( isAll || isBoolean( AutoFeatures.smeltIronOre ), source, XMaterial.COPPER_INGOT, p );
-//					results = XMaterial.COPPER_INGOT;
-//					break;
+				case COPPER_ORE:
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltCopperOre ), source, XMaterial.COPPER_INGOT, p );
+					results = XMaterial.COPPER_INGOT;
+					break;
 					
 				default:
 					break;
@@ -1193,6 +1199,11 @@ public class AutoManagerFeatures
 					
 					break;
 					
+				case COPPER_INGOT:
+					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockCopperBlock ), source, XMaterial.COPPER_BLOCK, p );
+					
+					break;
+					
 				default:
 					break;
 			}
@@ -1225,6 +1236,10 @@ public class AutoManagerFeatures
 			
 			switch ( source )
 			{
+				case COBBLESTONE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.STONE, 1 );
+					break;
+					
 				case GOLD_ORE:
 				case NETHER_GOLD_ORE:
 					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GOLD_INGOT, 1 );
@@ -1263,9 +1278,9 @@ public class AutoManagerFeatures
 					break;
 
 				// v1.17 !!
-//				case COPPER_ORE:
-//					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COPPER_INGOT, 1);
-//					break;
+				case COPPER_ORE:
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COPPER_INGOT, 1);
+					break;
 					
 				default:
 					break;
@@ -1351,6 +1366,12 @@ public class AutoManagerFeatures
 				case LAPIS_LAZULI:	
 					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_BLOCK, 9 );
 					
+					break;
+					
+				case COPPER_INGOT:	
+					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COPPER_BLOCK, 9 );
+					
+					break;
 					
 				default:
 					break;
