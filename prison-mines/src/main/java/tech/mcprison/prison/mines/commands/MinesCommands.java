@@ -3720,7 +3720,7 @@ public class MinesCommands
                 display.addText("&8Select a block filter from this mine by using the block's row number:");
                 display.addText("&8  " + commandBlockEvent + " [rowBlockName]");
                 
-                DecimalFormat dFmt = new DecimalFormat("0.00000");
+//                DecimalFormat dFmt = new DecimalFormat("0.00000");
                 
         		// Display a list of blocks for the mine:
         		int blockRow = 0;
@@ -3728,15 +3728,17 @@ public class MinesCommands
         		// Old block model is not supported with blockEvent block filers:
         		if ( m.isUseNewBlockModel() ) {
         			
-        			for ( PrisonBlock block : m.getPrisonBlocks() )
+        			for ( PrisonBlock block : blockEvent.getPrisonBlocks() )
         			{
         	        	
         	        	RowComponent rowB = new RowComponent();
         	        	
         	        	rowB.addTextComponent( " &3Row: &d%d  ", ++blockRow );
         	        	
-        	        	String message = String.format( "&7%s %s", 
-        	        			block.getBlockName(), dFmt.format( block.getChance() ) );
+        	        	String message = String.format( "&7%s", 
+        	        			block.getBlockName() );
+//        	        	String message = String.format( "&7%s %s", 
+//        	        			block.getBlockName(), dFmt.format( block.getChance() ) );
         	        	
         	        	String command = String.format( "%s %d", commandBlockEvent, blockRow );
         	        	

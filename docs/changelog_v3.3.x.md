@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.2 2021-06-28
 
 
+* **Adjustments to the blockEvent block remove.**
+
+
 * **More work on adding support for block filters on mines blockEvents.**
 Got the commands working for adding and removing blocks to and from a blockEvent.
 
