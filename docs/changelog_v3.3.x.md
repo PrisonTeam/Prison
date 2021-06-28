@@ -21,7 +21,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.9-alpha.2 2021-06-27
+# v3.2.9-alpha.2 2021-06-28
+
+
+* **More work on adding support for block filters on mines blockEvents.**
+Got the commands working for adding and removing blocks to and from a blockEvent.
 
 
 * **Enhancements and fixes to /ranks autoConfigure.**

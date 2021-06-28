@@ -234,6 +234,48 @@ public class MineBlockEvent {
 		return results;
 	}
 	
+	/**
+	 * Adds a prisonBlock filter if it does not already exist.
+	 * 
+	 * @param block
+	 */
+	public void addPrisonBlock( PrisonBlock block ) {
+		
+		if ( !getPrisonBlocks().contains( block ) ) {
+			getPrisonBlocks().add( block );
+		}
+	}
+
+
+	/**
+	 * This will remove a specific block based upon row number.
+	 * 
+	 * @param rowBlockName
+	 * @return if successfully removed
+	 */
+	public boolean removePrisonBlock( Integer rowBlockName ) {
+		boolean results = false;
+		
+		if ( rowBlockName != null && rowBlockName > 0 && getPrisonBlocks().size() <= rowBlockName ) {
+			
+			PrisonBlock targetBlock = null;
+			
+			int count = 0;
+			for ( PrisonBlock prisonBlock : getPrisonBlocks() ) {
+				if ( ++count == rowBlockName.intValue() ) {
+					targetBlock = prisonBlock;
+					break;
+				}
+			}
+
+			if ( targetBlock != null ) {
+				
+				results = getPrisonBlocks().remove( targetBlock );
+			}
+		}
+		
+		return results;
+	}
 	 
 	
 	/**
@@ -344,6 +386,7 @@ public class MineBlockEvent {
 	public void setPrisonBlocks( Set<PrisonBlock> prisonBlocks ) {
 		this.prisonBlocks = prisonBlocks;
 	}
+
 
 
 //	public boolean isInline() {
