@@ -21,7 +21,13 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.9-alpha.2 2021-06-28
+# v3.2.9-alpha.3 2021-06-28
+
+
+* **v3.2.9-alpha.3 2021-06-28**28
+
+
+* **SpigotSetupGUI was rewritten using the new GUI utility.**
 
 
 * **Added world to the MineTargetBlockKey since it will be needed with future util tools.**

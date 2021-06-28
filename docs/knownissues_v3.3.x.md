@@ -3,13 +3,21 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
+
+* DONE: BlockEvents - add block filters - tested successfully
+
+
+* Add a util function to respawn the block that was mined... use it with blockEvents.
+- In progress
+
+
 * Bug: placeholders are not working correctly when player is offline...
   - Example with the bar graph placeholders.
 
 
-* Ladder commands:
+* DONE: Ladder commands:
 
-* Delete by line number:
+* DONE: Delete by line number:
 
 
 
@@ -19,8 +27,16 @@ If only one, then only one of those would be used.
 - Count only the block mined and not the results of fortune.  It will be easier to control how much mining a player does by ruling out the results of fortune... after all, it's "Blocks Broken" and not "Blocks Received".
 
 
-* Add support for mineTinker
+- Virtual Inventory Items from mining... With the player object, not only keep track of blocks mined, but have a virtual inventory to track what they have collected.
+   - Hooked up to sellall
+   - Have max limits and commands to increase and decrease the total inventory size... could have both "slots" and max stack size per slots.  So that way the players can buy, or rank up those components, just like normal backpacks?
+   - Will prevent players from trading and cheating... 
+   
 
+
+
+* Add support for mineTinker
+https://www.spigotmc.org/resources/minetinker-50-modifiers-tools-and-armor.58940/
 
 
 
@@ -32,8 +48,6 @@ If only one, then only one of those would be used.
 * If ranks module fails due to no economy, try to make that a little more obvious.
 
 
-- If starting up prison and there are 0 ranks and 0 mines, then submit a delayed job that will run in 10 seconds to print out a message to console on how to run `/ranks autoConfigure` for quick setup... include link to the online docs.
-
 
 
 * Plugin exception handling has problems
@@ -41,12 +55,7 @@ If only one, then only one of those would be used.
   
 
 
-
-
-
-* rank commands - remove by line number
-  - Same for mine commands
-  
+ 
 
 * Auto Features
  - DONE: Add a reload for them.
@@ -131,7 +140,6 @@ Personal mines.  Work in conjunction with a plot world?
 
 
 
-- Hook up block filters on the block events.
 
   
 - /prison utils mining
@@ -141,6 +149,7 @@ Personal mines.  Work in conjunction with a plot world?
 
 
 Auto features not working outside of the mines.
+- Will not support auto features outside of the mines directly.... too many issues.
 - Maybe be enabled and working now?
 - This caused issues and may have been disabled.
 
@@ -204,8 +213,8 @@ Maybe: Have an alt block list for mines were blocks that are not actually
 
 
 - blockEvent
-  - simplify add - use common defaults - can change features with the other commands
-  - Add a target block name
+  - DONE: simplify add - use common defaults - can change features with the other commands
+  - DONE: Add a target block name
   - Not an issue: "Use of placeholders is failing %prison_ is failing on %p"  Turned out they were trying to use %player% instead of {player}.
   
   
@@ -253,7 +262,7 @@ Maybe: Have an alt block list for mines were blocks that are not actually
  
 
 
-* **Get new block model working**
+* DONE **Get new block model working**
   *  Start to enable and test various functions
   *  Add in Custom Items Integration
      *  Code Integration for CI - Key to specific version due to api changes
@@ -265,7 +274,7 @@ Maybe: Have an alt block list for mines were blocks that are not actually
 
 
 * **Combine a few commands & Other short Notes:**
- - Combine `/mines set rank` and `/mines set norank`
+ - DONE: Combine `/mines set rank` and `/mines set norank`
  - Combine `/mines set notificationPerm` with `/mines set notification`.  Add an option to enable perms.  Allow the perm to be changed? Maybe even use as a default the same permission that is used in `/ranks autoConfigure`.
  - Combine `/mines set zeroBlockResetDelay` with `/mines set resetThreshold`
  
@@ -426,6 +435,17 @@ DONE * replace ranks with mine related commands with ranks.
 
 
 DONE * Add system stats to `/prison version`
+
+
+
+
+DONE: If starting up prison and there are 0 ranks and 0 mines, then submit a delayed job that will run in 10 seconds to print out a message to console on how to run `/ranks autoConfigure` for quick setup... include link to the online docs.
+
+
+DONE: rank commands - remove by line number
+  - DONE: Same for mine commands
+ 
+
 
 
 
