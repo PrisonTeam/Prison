@@ -302,6 +302,8 @@ public class MineBlockEvent {
 		// First check chance, since that's perhaps the quickest check:
 		if ( chance <= getChance() &&
 				
+				isValidBlock( blockName ) &&
+				
 				// Make sure we have the correct eventTypes:
 			(eventType == BlockEventType.TEXplosion && 
 				eventType == getEventType() && 
@@ -322,6 +324,19 @@ public class MineBlockEvent {
 	}
 	
 	
+	private boolean isValidBlock( String blockName ) {
+
+		// If no prisonBlocks have been setup, return true:
+		return getPrisonBlocks().size() == 0 || hasBlockType( blockName );
+	}
+	
+	private boolean hasBlockType( String blockName ) {
+		PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
+    	PrisonBlock block = prisonBlockTypes.getBlockTypesByName( blockName );
+    	
+		return getPrisonBlocks().contains( block );
+	}
+
 	public double getChance() {
 		return chance;
 	}
