@@ -80,7 +80,9 @@ public class PrisonGUI extends SpigotGUIComponents{
      * */
     public void addButton(Button button){
         if (button != null){
-            if (button.getButtonPosition() < inv.getSize()){
+            if (button.getButtonPosition() == null){
+                inv.addItem(button.getButtonItem());
+            } else if (button.getButtonPosition() < inv.getSize()){
                 inv.setItem(button.getButtonPosition(), button.getButtonItem());
             }
         }

@@ -24,6 +24,13 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.3 2021-06-28
 
 
+* **SpigotAutoBlockGUI was rewritten using the new GUI utility.**
+
+
+* **GUI Utility updated:** it now supports buttons without a position (null value), they'll be 
+added to the first free slot in the inventory.
+
+
 * **v3.2.9-alpha.3 2021-06-28**28
 
 

@@ -12,7 +12,7 @@ import java.util.List;
 public class Button extends SpigotGUIComponents{
 
     private ItemStack buttonItem;
-    private int position;
+    private Integer position = null;
 
     /**
      * Create button (the recommended one).
@@ -22,8 +22,8 @@ public class Button extends SpigotGUIComponents{
      * @param lore - List<String>.
      * @param title - String.
      * */
-    public Button(int position, XMaterial buttonItem, List<String> lore, String title){
-        if (position < 54) {
+    public Button(Integer position, XMaterial buttonItem, List<String> lore, String title){
+        if (position == null || position < 54) {
             this.position = position;
             this.buttonItem = createButton(buttonItem.parseItem(), lore, title);
         }
@@ -36,8 +36,8 @@ public class Button extends SpigotGUIComponents{
      * @param buttonItem - ItemStack.
      * @param title - String.
      * */
-    public Button(int position, ItemStack buttonItem, String title){
-        if (position < 54) {
+    public Button(Integer position, ItemStack buttonItem, String title){
+        if (position == null || position < 54) {
             this.position = position;
             this.buttonItem = createButton(buttonItem, null, title);
         }
@@ -50,8 +50,8 @@ public class Button extends SpigotGUIComponents{
      * @param buttonItem - XMaterial.
      * @param title - String.
      * */
-    public Button(int position, XMaterial buttonItem, String title){
-        if (position < 54) {
+    public Button(Integer position, XMaterial buttonItem, String title){
+        if (position == null || position < 54) {
             this.position = position;
             this.buttonItem = createButton(buttonItem.parseItem(), null, title);
         }
@@ -66,8 +66,8 @@ public class Button extends SpigotGUIComponents{
      * @param lore - List<String>.
      * @param title - String.
      * */
-    public Button(int position, XMaterial buttonItem, int amount, List<String> lore, String title){
-        if (position < 54) {
+    public Button(Integer position, XMaterial buttonItem, int amount, List<String> lore, String title){
+        if (position == null || position < 54) {
             this.position = position;
             this.buttonItem = createButton(buttonItem.parseMaterial(), amount, lore, title);
         }
@@ -79,8 +79,8 @@ public class Button extends SpigotGUIComponents{
      * @param position - int.
      * @param buttonItem - ItemStack.
      * */
-    public Button(int position, ItemStack buttonItem){
-        if (position < 54) {
+    public Button(Integer position, ItemStack buttonItem){
+        if (position == null || position < 54) {
             this.position = position;
             this.buttonItem = buttonItem;
         }
@@ -94,8 +94,8 @@ public class Button extends SpigotGUIComponents{
      * @param amount - int.
      * @param title - String.
      * */
-    public Button(int position, XMaterial buttonMaterial, int amount, String title){
-        if (position < 54 && amount <= 64) {
+    public Button(Integer position, XMaterial buttonMaterial, int amount, String title){
+        if ((position == null || position < 54) && amount <= 64) {
             this.position = position;
             this.buttonItem = createButton(buttonMaterial.parseMaterial(), amount, null, title);
         }
@@ -109,8 +109,8 @@ public class Button extends SpigotGUIComponents{
      * @param amount - int.
      * @param title - String.
      * */
-    public Button(int position, Material buttonMaterial, int amount, String title){
-        if (position < 54 && amount <= 64) {
+    public Button(Integer position, Material buttonMaterial, int amount, String title){
+        if ((position == null || position < 54) && amount <= 64) {
             this.position = position;
             this.buttonItem = createButton(buttonMaterial, amount, null, title);
         }
@@ -144,7 +144,7 @@ public class Button extends SpigotGUIComponents{
      *
      * @return position - int.
      * */
-    public int getButtonPosition(){
+    public Integer getButtonPosition(){
         return position;
     }
 
