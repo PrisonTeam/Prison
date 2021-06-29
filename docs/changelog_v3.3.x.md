@@ -23,6 +23,8 @@ These build logs represent the work that has been going on within prison.
 
 # v3.2.9-alpha.3 2021-06-28
 
+* **SellAll performance improvements:** Improved sellall performance with Inventories and Backpacks.
+
 
 * **SpigotAutoBlockGUI was rewritten using the new GUI utility.**
 
