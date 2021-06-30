@@ -46,7 +46,7 @@ public class SellAllUtil {
     private static SellAllUtil instance;
     private final boolean isEnabled = isEnabled();
     private File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-    public Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
+    public Configuration sellAllConfig = SpigotPrison.getInstance().updateSellAllConfig();
     public static List<String> activePlayerDelay = new ArrayList<>();
     public static Map<Player, Double> activeAutoSellPlayers = new HashMap<>();
 //    public boolean signUsed = false;

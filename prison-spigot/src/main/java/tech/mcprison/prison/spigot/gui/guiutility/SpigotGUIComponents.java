@@ -135,7 +135,7 @@ public abstract class SpigotGUIComponents {
      * Get SellAll config.
      * */
     protected static Configuration getSellAll(){
-        return SpigotPrison.getInstance().getSellAllConfig();
+        return SpigotPrison.getInstance().updateSellAllConfig();
     }
 
     /**

@@ -23,6 +23,9 @@ These build logs represent the work that has been going on within prison.
 
 # v3.2.9-alpha.4 2021-06-30
 
+* **Improving SellAll config usage performance:** SellAll config is now cached and loaded/updated only when necessary, this was causing
+a ton of unnecessary load for each PlayerInteractAction, especially Prison Listeners class.
+
 
 * **v3.2.9-alpha.4 2021-06-30**
 

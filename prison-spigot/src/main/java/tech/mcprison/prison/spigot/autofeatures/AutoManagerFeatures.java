@@ -681,7 +681,7 @@ public class AutoManagerFeatures
 		if ( extra != null && extra.size() > 0 ) {
 
 			
-			Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
+			Configuration sellAllConfig = SpigotPrison.getInstance().updateSellAllConfig();
 
 			if ( isBoolean( sellAllConfig, "Options.Full_Inv_AutoSell") ) {
 				if ( isBoolean( sellAllConfig, "Options.Full_Inv_AutoSell_perUserToggleable") ){

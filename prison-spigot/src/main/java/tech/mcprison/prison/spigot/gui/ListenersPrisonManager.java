@@ -89,7 +89,7 @@ public class ListenersPrisonManager implements Listener {
     private final Configuration guiConfig = SpigotPrison.getInstance().getGuiConfig();
 
     // NOTE: sellAllConfig will be null if sellall is not enbled.
-	private Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
+	private Configuration sellAllConfig = SpigotPrison.getInstance().updateSellAllConfig();
     
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     boolean guiNotEnabled = !(config.getString("prison-gui-enabled").equalsIgnoreCase("true"));
