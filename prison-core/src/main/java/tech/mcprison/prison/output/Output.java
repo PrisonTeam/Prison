@@ -55,7 +55,8 @@ public class Output {
     	blockBreak,
 //    	blockBreakListeners,
     	blockBreakFortune,
-    	durability
+    	durability, 
+    	support
     	;
     	
     	public static DebugTarget fromString( String target ) {
