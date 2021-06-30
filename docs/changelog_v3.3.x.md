@@ -21,7 +21,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.9-alpha.3 2021-06-30
+# v3.2.9-alpha.4 2021-06-30
+
+
+* **v3.2.9-alpha.4 2021-06-30**
 
 
 * **Add support for sending /prison version to a discord channel to make it easier to get detail information from users**
