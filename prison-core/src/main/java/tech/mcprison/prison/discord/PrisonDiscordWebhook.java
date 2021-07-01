@@ -2,7 +2,6 @@ package tech.mcprison.prison.discord;
 
 import java.awt.Color;
 import java.io.IOException;
-import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
@@ -173,9 +172,7 @@ public class PrisonDiscordWebhook
 	
 	private String getPwhu() {
 		
-		return String.format( "%s/%s-%s-%s_-%s",
-				"859531792649551892", "IApovjbJnzGy8apuPew3z", "" +
-						"3rs8M8eRq15ViFvpBVvSuoxZNS", "Elikm9ZRczv0UJL", "R6" );
+		return "859531792649551892";
 	}
 	public String getUserName() {
 		return userName;
