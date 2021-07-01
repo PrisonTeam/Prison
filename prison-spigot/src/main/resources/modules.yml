@@ -29,3 +29,6 @@ utils:
     heal: true
     feed: true
     breath: true
+  decay:
+    enabled: true
+    obby: true

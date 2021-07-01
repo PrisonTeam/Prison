@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.4 2021-07-01
 
 
+* **Start to hook up the prison decay utility.  Its disabled.**
+
+
 * **setup a few things to extend the reporting of the block's name along with it's coordinates if they are set.**
 Added Location to the PrisonBlock so it can be used to identify a specific block.
 
