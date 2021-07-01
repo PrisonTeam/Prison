@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -16,30 +18,42 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.Text;
 
 /**
- * Hey, quick question.... 
- * Are there any APIs for https://paste.helpch.at/ to help insert content to a new paste?  
- * That way an app can create a paste and then provide the user with the URL?
+ * <p>This class provides a way to post text to https://paste.helpch.at/ so 
+ * it can be used to help provide support when needed.
+ * </p>
+ * 
+ * <p>The site paste.helpch.at is a hastebin site so it following the standard
+ * hastebin protocols in uploading content.
+ * </p>
+ * 
+ * <p>Sending a POST request to https://hasteUrl/documents, with the request body as the 
+ * paste content it will return the id of the paste, which is then appended to the 
+ * site's URL.  
+ * </p>
+ * 
+ * 
+ * <p>For example:</p> 
+ * 
+ * <p>Posting to: <pre>https://paste.helpch.at/documents</pre></p>
+ * 
+ * <p>Provides a result (as an example):</p>
+ * <pre>{"key":"utozikecag"}</pre>
+ * 
+ * <p>Then use that to construct the actual URL to access the paste:</p>
+ * <pre>https://paste.helpch.at/utozikecag</pre>
+ * 
  *
- * You can send a POST request to https://hasteUrl/documents, with the request body as the 
- * paste content it will return the id of the paste.
+ * <p>References:
+ * </p>
  * 
- * Ok, but could you explain what you mean by hasteUrl since that is not a valid url?  
- * I'm guessing it does not have anything to do with the helpch.at site?
- * 
- * The url of any hastebin.  paste.helpch.at is a hastebin
- * 
- * oh it is? I did not know that.  Ok... that makes sense.  Thanks!
- * 
- * it is indeed. 
- *
- *
  * https://github.com/kaimu-kun/hastebin.java/blob/master/src/me/kaimu/hastebin/Hastebin.java
  * 
- *
- *  https://www.spigotmc.org/threads/making-a-paste-in-pastebin-hastebin.366093/#post-3353670
+ * https://www.spigotmc.org/threads/making-a-paste-in-pastebin-hastebin.366093/#post-3353670
  *  
- * JsonObject object = GSON.fromJson(new InputStreamReader(connection.getInputStream(), Charsets.UTF_8), JsonObject.class);
-String url = "https://hastebin.com/" + object.get("key").getAsString();
+ *  <pre>
+	JsonObject object = GSON.fromJson(new InputStreamReader(connection.getInputStream(), Charsets.UTF_8), JsonObject.class);
+	String url = "https://hastebin.com/" + object.get("key").getAsString();
+	</pre>
  *
  *
  */
@@ -51,10 +65,12 @@ public class PrisonPasteChat {
 	
 //	private static final String hastebinURL = "https://hastebin.com/documents";
 	
+	private String supportName;
 	
-	public PrisonPasteChat() {
+	public PrisonPasteChat( String supportName ) {
 		super();
 		
+		this.supportName = supportName;
 	}
 	
 	public String post ( String text ) {
@@ -66,7 +82,7 @@ public class PrisonPasteChat {
 		
 		try {
 			
-			String cleanedText = Text.stripColor( text );
+			String cleanedText = setupSupportPrefix() + Text.stripColor( text );
 			
 			results = postPaste( cleanedText, raw );
 		}
@@ -76,6 +92,20 @@ public class PrisonPasteChat {
 		}
 		
 		return results;
+	}
+	
+	private String setupSupportPrefix() {
+		
+		StringBuilder sb = new StringBuilder();
+		
+		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+		
+		sb.append( "Support Name:    " ).append( supportName ).append( "\n" );
+		sb.append( "Submission Date: " ).append( sdFmt.format( new Date() ) ).append( "\n" );
+		
+		sb.append( "\n" );
+		
+		return sb.toString();
 	}
 	
 	private String postPaste( String text, boolean raw ) 
@@ -116,17 +146,14 @@ public class PrisonPasteChat {
 			Output.get().logError( 
 					String.format( "Failure in sending paste. %s ", e.getMessage()) , e );
 		}
-
 		
 		
 		if ( rawJson != null ) {
-			
-			Output.get().logInfo( "### rawJson : " + rawJson );
+			//Output.get().logInfo( "### rawJson : " + rawJson );
+			// ### rawJson : {"key":"utozikecag"}
 			
 			Gson gson = new Gson();
-			
 			JsonObject object = gson.fromJson( rawJson, JsonObject.class );
-//			PrisonPasteChatJson chatResults = gson.fromJson( rawJson, PrisonPasteChatJson.class );
 			
 			results = hastebinURL + 
 					( raw ? hastebinURLraw : "" ) +

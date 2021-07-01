@@ -2,7 +2,9 @@ package tech.mcprison.prison.discord;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Set;
 
 import tech.mcprison.prison.Prison;
@@ -10,6 +12,7 @@ import tech.mcprison.prison.discord.DiscordWebhook.EmbedObject;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.Output.DebugTarget;
+import tech.mcprison.prison.util.Text;
 
 /**
  * <p>Please note, that there are max limits for what can be sent.  
@@ -169,6 +172,128 @@ public class PrisonDiscordWebhook
 		
 		return message;
 	}
+	
+	public void sample() {
+    	
+//    	PrisonDiscordWebhook prisonWebhook = new PrisonDiscordWebhook();
+//    	
+//    	if ( prisonWebhook.setup() ) {
+//    		
+//    		ChatDisplay display = displayVersion("ALL");
+//    		StringBuilder text = display.toStringBuilder();
+//    		List<String> textParts = extractChunks( text, 2000 );
+//    		
+////    		if ( Output.get().isDebug( DebugTarget.support ) ) {
+//    			Output.get().logInfo( 
+//    					"Prison support submit version: submit size: %d ", text.length() );
+////    		}
+////    		
+//    		// Able to send:
+//
+//    		// NOTE: Max message size of 2000 characters:
+//    		int i = 0;
+//    		for ( String textPart : textParts )
+//			{
+//				Output.get().logInfo( "### debug - text part %d  length = %d", i, textPart.length() );
+//				
+//    			prisonWebhook.send( sender, "Prison's Discord Webhook Version", 
+//    					textPart, false );
+//    			
+//			}
+//    		
+//    		
+////    		sender.sendMessage( "Prison's Discord Support:  It appears like Prison is able to " +
+////    				"automatically submit support information for you. Please get confirmation from a " +
+////    				"staff member prior to submitting any additional information." );
+//    	}
+//    	else {
+//    		sender.sendMessage( "Prison's Discord Support:  Sorry. Unable to automatically submit support " +
+//    				"information for you. You will have to manually provide the requested information." );
+//    	}
+    	
+	}
+	
+	public void sample2() {
+	    
+//	    @Command(identifier = "prison support submit testMessage", 
+//	    		description = "For Prison support purposes only.  Use when instructed to do so. " +
+//	    				"This will provide a simple test to confirm if the Prison plugin can " +
+//	    				"help submit support information for you. A Prison Discord staff member will " +
+//	    				"need to request that you submit this test, and they will confirm if it was " +
+//	    				"success or not.", 
+//	    				onlyPlayers = false, permissions = "prison.debug" )
+//	    public void supportSubmitTestMessage(CommandSender sender,
+//	    		@Arg(name = "option", description = "Do not use this option.", def = "" ) String option
+//	    		) {
+//	    	
+//	    	PrisonDiscordWebhook prisonWebhook = new PrisonDiscordWebhook();
+//	    	
+//	    	if ( prisonWebhook.setup() ) {
+//	    		
+//	    		// Able to send:
+//	    		prisonWebhook.send( sender, "Prison's Discord Webhook Test", 
+//	    				"This is a test of the Prison's Discord Webhook.  If this is received, then " +
+//	    				"the server admin who requested help can submit additional support information. " +
+//	    				"\\n\\nPlease inform the requestor that they can submit additional information. " +
+//	    				"This confirms that their hosting services allows outgoing http transactions.",
+//	    				!(option != null && "false".equalsIgnoreCase( option )) );
+//	    		
+////	    		sender.sendMessage( "Prison's Discord Support:  It appears like Prison is able to " +
+////	    				"automatically submit support information for you. Please get confirmation from a " +
+////	    				"staff member prior to submitting any additional information." );
+//	    	}
+//	    	else {
+//	    		sender.sendMessage( "Prison's Discord Support:  Sorry. Unable to automatically submit support " +
+//	    				"information for you. You will have to manually provide the requested information." );
+//	    	}
+//	    	
+//	    }
+	    
+	
+	}
+	
+	
+	public List<String> extractChunks( StringBuilder text, int maxLength )
+	{
+		List<String> results = new ArrayList<>();
+
+		int start = 0;
+		int end = text.length();
+
+		if ( (end - start) > maxLength ) {
+			end = text.lastIndexOf( "\\n", start + maxLength );
+		}
+
+		while ( end != -1 ) {
+
+			String str = text.substring( start, end );
+			if ( str != null ) {
+				str = Text.stripColor( str );
+			}
+			results.add( str );
+
+			if ( end < text.length() ) {
+				start = end + 1;
+
+				if ( start + maxLength > text.length() ) {
+					end = text.length();
+				}
+				else {
+					end = text.lastIndexOf( "\\n", start + maxLength );
+					if ( end < start ) {
+						end = start + maxLength;
+					}
+				}
+			}
+			else {
+				end = -1;
+			}
+
+		}
+
+		return results;
+	}
+	
 	
 	private String getPwhu() {
 		
