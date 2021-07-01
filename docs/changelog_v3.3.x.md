@@ -24,6 +24,12 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.4 2021-06-30
 
 
+* **Fixes some issues with cleaning up the text thats being sent.**
+It removes color codes and strips out all utf-8 color codes that fail to translate properly so the resulting text is clean.
+Also injects the submission size in to the payload without altering the content size.
+Added the ability to send the current server log.  But cuts off at a max size of 400,000 characters.
+
+
 * **Added a requirement to provide a support name that will be used to tag all pastes.**
 This will help identify who the paste belongs to.
 

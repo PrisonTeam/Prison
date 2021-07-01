@@ -18,7 +18,10 @@
 
 package tech.mcprison.prison;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -1008,7 +1011,7 @@ public class PrisonCommand {
     				"use your discord name, or at least something similar. ", 
     				onlyPlayers = false, permissions = "prison.debug" )
     public void supportSetName(CommandSender sender,
-    		
+    		@Wildcard(join=true)
     		@Arg(name = "supportName", 
     				description = "The support name to use with support submissions." ) 
     			String supportName
@@ -1063,6 +1066,83 @@ public class PrisonCommand {
 		}
 		
     	
+    }
+    
+    
+    @Command(identifier = "prison support submit latestLog", 
+    		description = "For Prison support: This will copy the contents of `logs/latest.log` " +
+    				"to paste.helpch.at so it can be easily shared with Prison's support staff .", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportSubmitLatestLog(CommandSender sender
+    		) {
+    	
+    	
+    	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
+    		Output.get().logInfo( "The support name needs to be set prior to using this command." );
+    		Output.get().logInfo( "Use &7/prison support setSupportName help" );
+    		
+    		return;
+    	}
+    	
+    	
+    	File latestLogFile = new File( Prison.get().getDataFolder().getParentFile().getParentFile(), 
+    									"logs/latest.log");
+    	
+    	Output.get().logInfo( "### log path: " + latestLogFile.getAbsolutePath() );
+    	
+    	
+    	StringBuilder logText = new StringBuilder();
+    	
+    	if ( latestLogFile.exists() && latestLogFile.canRead() ) {
+    		try (
+    				BufferedReader br = Files.newBufferedReader( latestLogFile.toPath() );
+    			) {
+    			String line = br.readLine();
+    			while ( line != null && logText.length() < PrisonPasteChat.HASTEBIN_MAX_LENGTH ) {
+    				
+    				logText.append( line ).append( "\n" );
+    				
+    				line = br.readLine();
+    			}
+    			
+    			if ( logText.length() > PrisonPasteChat.HASTEBIN_MAX_LENGTH ) {
+    				
+    				String trimMessage = "\n\n### Log has been trimmed to a max length of " +
+    						PrisonPasteChat.HASTEBIN_MAX_LENGTH + "\n";
+    				int pos = PrisonPasteChat.HASTEBIN_MAX_LENGTH - trimMessage.length();
+    				
+    				logText.insert( pos, trimMessage );
+    				logText.setLength( PrisonPasteChat.HASTEBIN_MAX_LENGTH );
+    			}
+    			
+			}
+			catch ( IOException e ) {
+				Output.get().logInfo( "Failed to read log file: %s  [%s]", 
+						latestLogFile.getAbsolutePath(), e.getMessage() );
+				return;
+			}
+    		
+    		if ( logText != null ) {
+    			
+    			PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName() );
+    			
+    			String helpURL = pasteChat.post( logText.toString() );
+    			
+    			if ( helpURL != null ) {
+    				
+    				Output.get().logInfo( "Prison's support information has been pasted. Copy and " +
+    						"paste this URL in to Prison's Discord server." );
+    				Output.get().logInfo( "Paste this URL: %s", helpURL );
+    			}
+    			else {
+    				// Do nothing since if helpURL is null, then it has probably
+    				// already sent an error message.
+    			}
+    			return;
+    		}
+    	}
+    	
+    	Output.get().logInfo( "Unable to send log file.  Unknown reason why." );
     }
     
 

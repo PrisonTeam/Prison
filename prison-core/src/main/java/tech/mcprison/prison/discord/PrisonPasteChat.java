@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -62,8 +63,10 @@ public class PrisonPasteChat {
 	private static final String hastebinURL = "https://paste.helpch.at/";
 	private static final String hastebinURLdocuments = "documents";
 	private static final String hastebinURLraw = "raw/";
-	
 //	private static final String hastebinURL = "https://hastebin.com/documents";
+	
+	public static final int HASTEBIN_MAX_LENGTH = 200000;
+	private static final String SUBMISSION_SIZE_PLACEHOLDER = "{submissionSizeInBytes-------}";
 	
 	private String supportName;
 	
@@ -82,7 +85,7 @@ public class PrisonPasteChat {
 		
 		try {
 			
-			String cleanedText = setupSupportPrefix() + Text.stripColor( text );
+			String cleanedText = cleanText( text );
 			
 			results = postPaste( cleanedText, raw );
 		}
@@ -93,6 +96,36 @@ public class PrisonPasteChat {
 		
 		return results;
 	}
+
+	private String cleanText( String text )
+	{
+		String cleanedText = Text.stripColor( text );
+		
+		cleanedText = setupSupportPrefix() + 
+				cleanedText.replaceAll( 
+						"\\[m|\\[0;30;1m|\\[0;31;1m|\\[0;32;1m|\\[0;33;1m|\\[0;34;1m|\\[0;35;1m|" +
+						"\\[0;36;1m|\\[0;37;1m|\\[0;38;1m|\\[0;39;1m|" +
+						"\\[0;30;22m|\\[0;31;22m|\\[0;32;22m|\\[0;33;22m|\\[0;34;22m|\\[0;35;22m|" +
+						"\\[0;36;22m|\\[0;37;22m|\\[0;38;22m|\\[0;39;22m" +
+						"",
+						"" );
+		
+		// Max length of 400,000 characters:  Trim and send first section only.
+		if ( cleanedText.length() > HASTEBIN_MAX_LENGTH ) {
+			cleanedText = cleanedText.substring( 0, HASTEBIN_MAX_LENGTH );
+		}
+		
+		
+		// Injects the size back in to the text without changing the total length of the text:
+		int size = cleanedText.length();
+		DecimalFormat dFmt = new DecimalFormat("#,##0");
+		String sizeString = (dFmt.format( size ) + " bytes                        ")
+									.substring( 0, SUBMISSION_SIZE_PLACEHOLDER.length() );
+		
+		cleanedText = cleanedText.replace( SUBMISSION_SIZE_PLACEHOLDER, sizeString );
+		
+		return cleanedText;
+	}
 	
 	private String setupSupportPrefix() {
 		
@@ -102,6 +135,7 @@ public class PrisonPasteChat {
 		
 		sb.append( "Support Name:    " ).append( supportName ).append( "\n" );
 		sb.append( "Submission Date: " ).append( sdFmt.format( new Date() ) ).append( "\n" );
+		sb.append( "Submission Size: " ).append( SUBMISSION_SIZE_PLACEHOLDER ).append( "\n" );
 		
 		sb.append( "\n" );
 		
