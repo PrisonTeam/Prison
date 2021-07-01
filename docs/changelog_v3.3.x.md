@@ -23,6 +23,8 @@ These build logs represent the work that has been going on within prison.
 
 # v3.2.9-alpha.4 2021-07-01
 
+* **SpigotAutoFeaturesGUI was rewritten using the new GUI utility.**
+
 
 * **Check for null on the location when cloning a prison block.**
 
