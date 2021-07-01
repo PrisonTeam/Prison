@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.4 2021-07-01
 
 
+* **setup a few things to extend the reporting of the block's name along with it's coordinates if they are set.**
+Added Location to the PrisonBlock so it can be used to identify a specific block.
+
+
 * **Created a new BlockUtils class that can be used with utilities and the like.**
  Currently its managing the unbreakableBlockList and has been hooked up to the auto manager to prevent the breaking of those blocks.
 

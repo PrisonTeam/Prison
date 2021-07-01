@@ -1,6 +1,7 @@
 package tech.mcprison.prison.internal.block;
 
 import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
+import tech.mcprison.prison.util.Location;
 
 /**
  * <p>This class embodies the nature of the block and different behaviors, if
@@ -11,7 +12,8 @@ import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
  */
 public class PrisonBlock
 			extends PrisonBlockStatusData
-			implements Comparable<PrisonBlock> {
+			implements Comparable<PrisonBlock>, 
+				BlockExtendedDescription {
 	
 	public static PrisonBlock AIR;
 	public static PrisonBlock GLASS;
@@ -29,6 +31,8 @@ public class PrisonBlock
 	private boolean block = true;
 	
 	private boolean legacyBlock = false;
+	
+	private Location location = null;
 	
 	static {
 		AIR = new PrisonBlock( InternalBlockTypes.AIR.name(), false );
@@ -83,6 +87,8 @@ public class PrisonBlock
 		this.valid = clonable.isValid();
 		this.block = clonable.isBlock();
 		this.legacyBlock = clonable.isLegacyBlock();
+		
+		this.location = new Location( clonable.getLocation() );
 	}
 	
 	@Override
@@ -140,6 +146,21 @@ public class PrisonBlock
 					getBlockType().name() + ":" + getBlockName() : getBlockName();
 	}
 
+	
+	public String getExtendedDescription() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append( getBlockNameFormal() );
+		
+		if ( getLocation() != null ) {
+			sb.append( "::" );
+			
+			sb.append( getLocation().toWorldCoordinates() );
+		}
+		
+		return sb.toString();
+	}
+	
 	/**
 	 * When adding custom blocks to prison, there is a check to ensure 
 	 * that the name is not in conflict with a preexisting block name.
@@ -201,6 +222,13 @@ public class PrisonBlock
 		this.legacyBlock = legacyBlock;
 	}
 
+	public Location getLocation() {
+		return location;
+	}
+	public void setLocation( Location location ) {
+		this.location = location;
+	}
+	
 	public PrisonBlock clone() {
 		return new PrisonBlock( this );
 	}

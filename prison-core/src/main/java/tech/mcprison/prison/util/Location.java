@@ -179,6 +179,12 @@ public class Location {
         return "(" + x + ", " + y + ", " + z + ")";
     }
 
+    
+    public String toWorldCoordinates() {
+    	return "(" + world.getName() + ", " + x + ", " + y + ", " + z + ")";
+    }
+
+    
     /**
      * Returns the values in coordinate (x, y, z) format, to the nearest block (i.e. no decimals).
      *
