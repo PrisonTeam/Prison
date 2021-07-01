@@ -88,7 +88,9 @@ public class PrisonBlock
 		this.block = clonable.isBlock();
 		this.legacyBlock = clonable.isLegacyBlock();
 		
-		this.location = new Location( clonable.getLocation() );
+		
+		this.location = clonable == null || clonable.getLocation() == null ? null : 
+									new Location( clonable.getLocation() );
 	}
 	
 	@Override
