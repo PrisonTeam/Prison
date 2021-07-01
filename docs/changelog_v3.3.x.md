@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.4 2021-06-30
 
 
+* **Set defaults for Access by Rank to be off.**
+With it being enabled, it was causing issues when no rank was hooked up to the mine.
+
+
 * **Hook prison up to paste.helpch.at** 
 with the current support providing logging of `/prison version all`.
 
