@@ -1,25 +1,25 @@
 package tech.mcprison.prison.spigot.utils;
 
-import java.util.HashMap;
-
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import tech.mcprison.prison.mines.features.MineTargetBlockKey;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 
 public class PrisonUtilsListeners
 		implements Listener
 {
-	private HashMap<MineTargetBlockKey, SpigotBlock> unbreakableBlockList;
+//	private HashMap<MineTargetBlockKey, SpigotBlock> unbreakableBlockList;
 	
 	
 	public PrisonUtilsListeners() {
 		super();
 		
-		this.unbreakableBlockList = new HashMap<>();
+		// Force it to be setup and ready:
+		BlockUtils.getInstance();
+		
+//		this.unbreakableBlockList = new HashMap<>();
 	}
 	
 	// Runtime exception for some reasons here.
@@ -53,17 +53,16 @@ public class PrisonUtilsListeners
     	
     	if ( !e.isCancelled() ) {
     		SpigotBlock block = new SpigotBlock( e.getBlock() );
-    		MineTargetBlockKey key = new MineTargetBlockKey( block.getLocation() );
     		
-    		if ( getUnbreakableBlockList().containsKey( key ) ) {
+    		if ( BlockUtils.isBlockUnbreakable( block ) ) {
     			e.setCancelled( true );
     		}
     	}
     }
 
 
-	public HashMap<MineTargetBlockKey, SpigotBlock> getUnbreakableBlockList() {
-		return unbreakableBlockList;
-	}
+//	public HashMap<MineTargetBlockKey, SpigotBlock> getUnbreakableBlockList() {
+//		return unbreakableBlockList;
+//	}
 
 }

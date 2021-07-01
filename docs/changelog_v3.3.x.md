@@ -21,7 +21,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.9-alpha.4 2021-06-30
+# v3.2.9-alpha.4 2021-07-01
+
+
+* **Created a new BlockUtils class that can be used with utilities and the like.**
+ Currently its managing the unbreakableBlockList and has been hooked up to the auto manager to prevent the breaking of those blocks.
 
 
 * **Fixes some issues with cleaning up the text thats being sent.**

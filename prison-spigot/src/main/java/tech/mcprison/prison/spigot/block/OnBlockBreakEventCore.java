@@ -35,6 +35,7 @@ import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.integrations.IntegrationCrazyEnchantmentsPickaxes;
+import tech.mcprison.prison.spigot.utils.BlockUtils;
 import tech.mcprison.prison.util.Text;
 
 public class OnBlockBreakEventCore
@@ -252,7 +253,13 @@ public class OnBlockBreakEventCore
     		debugInfo += "mine=" + (mine == null ? "none" : mine.getName()) + " ";
     		
 
-    		if ( mine != null && (mine.isMineAccessByRank() || mine.isAccessPermissionEnabled()) && 
+    		if ( mine != null && BlockUtils.isBlockUnbreakable( block ) ) {
+    			// The block is unbreakable because a utility has it locked:
+    			
+    			e.setCancelled( true );
+    			debugInfo += "UNBREAKABLE_BLOCK_UTILS (event canceled) ";
+    		}
+    		else if ( mine != null && (mine.isMineAccessByRank() || mine.isAccessPermissionEnabled()) && 
     					!mine.hasMiningAccess( new SpigotPlayer( e.getPlayer() ) ) ) {
     			// The player does not have permission to access this mine, so do not process 
     			// 
@@ -385,7 +392,13 @@ public class OnBlockBreakEventCore
     		
     		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
     		
-    		if ( mine != null && (mine.isMineAccessByRank() || mine.isAccessPermissionEnabled()) && 
+    		if ( mine != null && BlockUtils.isBlockUnbreakable( block ) ) {
+    			// The block is unbreakable because a utility has it locked:
+    			
+    			e.setCancelled( true );
+    			debugInfo += "UNBREAKABLE_BLOCK_UTILS (event canceled) ";
+    		}
+    		else if ( mine != null && (mine.isMineAccessByRank() || mine.isAccessPermissionEnabled()) && 
     					!mine.hasMiningAccess( new SpigotPlayer( e.getPlayer() ) ) ) {
     			// The player does not have permission to access this mine, so do not process 
     			// 
@@ -410,7 +423,10 @@ public class OnBlockBreakEventCore
         				// perform that check indirectly.
         				SpigotBlock sBlock = new SpigotBlock(blk);
         				
-        				doActionBlockEventOnly( sBlock, mine, e.getPlayer(), BlockEventType.blockBreak, triggered );
+        				if ( !BlockUtils.isBlockUnbreakable( sBlock ) ) {
+        	    			
+        					doActionBlockEventOnly( sBlock, mine, e.getPlayer(), BlockEventType.blockBreak, triggered );
+        	    		}
         			}
 
     			}
@@ -436,7 +452,10 @@ public class OnBlockBreakEventCore
     				// perform that check indirectly.
     				SpigotBlock sBlock = new SpigotBlock(blk);
     				
-    				doActionMonitor( sBlock, mine );
+    				if ( !BlockUtils.isBlockUnbreakable( sBlock ) ) {
+    					
+    					doActionMonitor( sBlock, mine );
+    				}
     			}
 
     			debugInfo += "(monitor) ";
@@ -456,7 +475,9 @@ public class OnBlockBreakEventCore
     				// Need to wrap in a Prison block so it can be used with the mines:
     				SpigotBlock sBlock = new SpigotBlock(blk);
     				
-    				if ( mine.isInMineExact( sBlock.getLocation() ) ) {
+    				
+    				if ( !BlockUtils.isBlockUnbreakable( sBlock ) && 
+    							mine.isInMineExact( sBlock.getLocation() ) ) {
     					
     					explodedBlocks.add( sBlock );
     					
@@ -654,7 +675,10 @@ public class OnBlockBreakEventCore
 	    				// perform that check indirectly.
 	    				SpigotBlock sBlock = new SpigotBlock(blk);
 	    				
-	    				doActionBlockEventOnly( sBlock, mine, e.getPlayer(), BlockEventType.CEXplosion, triggered );
+	    				if ( !BlockUtils.isBlockUnbreakable( sBlock ) ) {
+	    					
+	    					doActionBlockEventOnly( sBlock, mine, e.getPlayer(), BlockEventType.CEXplosion, triggered );
+	    				}
 	    			}
 				}
 
@@ -679,7 +703,10 @@ public class OnBlockBreakEventCore
     				// perform that check indirectly.
     				SpigotBlock sBlock = new SpigotBlock(blk);
     				
-    				doActionMonitor( sBlock, mine );
+    				if ( !BlockUtils.isBlockUnbreakable( sBlock ) ) {
+    					
+    					doActionMonitor( sBlock, mine );
+    				}
     			}
 
     			debugInfo += "(monitor) ";
@@ -697,10 +724,12 @@ public class OnBlockBreakEventCore
     				// Need to wrap in a Prison block so it can be used with the mines:
     				SpigotBlock sBlock = new SpigotBlock(blk);
     				
-    				if ( mine.isInMineExact( sBlock.getLocation() ) ) {
+    				if ( !BlockUtils.isBlockUnbreakable( sBlock ) && 
+    						mine.isInMineExact( sBlock.getLocation() ) ) {
     					
     					explodedBlocks.add( sBlock );
     					
+    						
     					// check all external events such as mcMMO and EZBlocks:
     					OnBlockBreakExternalEvents.getInstance().checkAllExternalEvents( e.getPlayer(), blk );
     				}
