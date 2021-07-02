@@ -60,6 +60,7 @@ import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.selection.Selection;
 import tech.mcprison.prison.tasks.PrisonCommandTask.TaskMode;
+import tech.mcprison.prison.tasks.PrisonCommandTask;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Bounds.Edges;
@@ -2981,8 +2982,9 @@ public class MinesCommands
 			"Example: 'token give {player} 1;{msg} &7You got &31 &7token!;tpa a'", 
     		onlyPlayers = false, permissions = "mines.set")
     public void blockEventAdd(CommandSender sender, 
-    			@Arg(name = "mineName") String mineName,
-    			@Arg(name = "percent",
+    			@Arg(name = "mineName", description = "mine name, or 'placeholders' for a list of possible placeholders that " +
+    					"you can use with blockEvents") String mineName,
+    			@Arg(name = "percent", def = "100.0",
     					description = "Percent chance between 0.0000 and 100.0") Double chance,
     			@Arg(name = "permission", def = "none",
     					description = "Optional permission that the player must have, or [none] for no perm." 
@@ -3001,6 +3003,24 @@ public class MinesCommands
     	
 		// Note: async is not an option since the bukkit dispatchCommand will run it as sync.
 		//String mode = "sync";
+		
+        if ( mineName != null && "placeholders".equalsIgnoreCase( mineName ) ) {
+        	
+        	String placeholders = 
+        			
+        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
+        					PrisonCommandTask.CommandEnvironment.all_commands ) + " " +
+        			
+        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
+									PrisonCommandTask.CommandEnvironment.blockevent_commands );
+        	
+        	String message = String.format( "Valid Placeholders that can be used with blockEvents: [%s]", 
+        							placeholders );
+        	
+        	Output.get().logInfo( message );
+        	return;
+        }
+
 		
     	if (command.startsWith("/")) {
             command = command.replaceFirst("/", "");
@@ -3956,10 +3976,29 @@ public class MinesCommands
 	@Command(identifier = "mines command add", description = "Adds a command to a mine with NO placeholders.", 
     		onlyPlayers = false, permissions = "mines.command")
     public void commandAdd(CommandSender sender, 
-    			@Arg(name = "mineName") String mineName,
+    			@Arg(name = "mineName", description = "mine name, or 'placeholders' for a list of possible placeholders that " +
+    					"you can use with blockEvents") String mineName,
     			@Arg(name = "state", def = "before", description = "State can be either before or after.") String state,
     			@Arg(name = "command") @Wildcard String command) {
-    	
+  
+		
+		
+        if ( mineName != null && "placeholders".equalsIgnoreCase( mineName ) ) {
+        	
+        	String placeholders = 
+        			
+        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
+        					PrisonCommandTask.CommandEnvironment.all_commands ) + " " +
+        			
+        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
+									PrisonCommandTask.CommandEnvironment.mine_commands );
+        	
+        	String message = String.format( "Valid Placeholders that can be used with blockEvents: [%s]", 
+        							placeholders );
+        	
+        	Output.get().logInfo( message );
+        	return;
+        }
 
     	if (command.startsWith("/")) {
             command = command.replaceFirst("/", "");

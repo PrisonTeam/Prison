@@ -296,13 +296,13 @@ public class MineBlockEvent {
 	 * @return
 	 */
 	public boolean isFireEvent( double chance, BlockEventType eventType, 
-					String blockName, String triggered ) {
+			MineTargetPrisonBlock targetBlock, String triggered ) {
 		boolean results = false;
 		
 		// First check chance, since that's perhaps the quickest check:
 		if ( chance <= getChance() &&
 				
-				isValidBlock( blockName ) &&
+				isValidBlock( targetBlock ) &&
 				
 				// Make sure we have the correct eventTypes:
 			(eventType == BlockEventType.TEXplosion && 
@@ -324,17 +324,17 @@ public class MineBlockEvent {
 	}
 	
 	
-	private boolean isValidBlock( String blockName ) {
+	private boolean isValidBlock( MineTargetPrisonBlock targetBlock) {
 
 		// If no prisonBlocks have been setup, return true:
-		return getPrisonBlocks().size() == 0 || hasBlockType( blockName );
+		return getPrisonBlocks().size() == 0 || hasBlockType( targetBlock );
 	}
 	
-	private boolean hasBlockType( String blockName ) {
-		PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
-    	PrisonBlock block = prisonBlockTypes.getBlockTypesByName( blockName );
+	private boolean hasBlockType( MineTargetPrisonBlock targetBlock ) {
+//		PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
+//    	PrisonBlock block = prisonBlockTypes.getBlockTypesByName( blockName );
     	
-		return getPrisonBlocks().contains( block );
+		return getPrisonBlocks().contains( targetBlock.getPrisonBlock() );
 	}
 
 	public double getChance() {

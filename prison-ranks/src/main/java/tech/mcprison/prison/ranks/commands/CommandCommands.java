@@ -52,7 +52,12 @@ public class CommandCommands
 
         if ( rankName != null && "placeholders".equalsIgnoreCase( rankName ) ) {
         	
-        	String placeholders = PrisonCommandTask.CustomPlaceholders.listPlaceholders(
+        	String placeholders = 
+        			
+        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
+        					PrisonCommandTask.CommandEnvironment.all_commands ) + " " +
+        			
+        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
 									PrisonCommandTask.CommandEnvironment.rank_commands );
         	
         	String message = ranksCommandAddPlaceholdersMsg( placeholders );

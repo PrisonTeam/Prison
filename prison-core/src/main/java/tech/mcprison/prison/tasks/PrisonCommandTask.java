@@ -52,6 +52,7 @@ public class PrisonCommandTask {
 	}
 	
 	public enum CommandEnvironment {
+		all_commands,
 		rank_commands,
 		mine_commands,
 		blockevent_commands
@@ -59,6 +60,18 @@ public class PrisonCommandTask {
 	}
 	
 	public enum CustomPlaceholders {
+		
+		player(CommandEnvironment.all_commands),
+		player_uid(CommandEnvironment.all_commands),
+
+		msg(CommandEnvironment.all_commands),
+		broadcast(CommandEnvironment.all_commands),
+
+		inline(CommandEnvironment.all_commands),
+		inlinePlayer(CommandEnvironment.all_commands),
+		sync(CommandEnvironment.all_commands),
+		syncPlayer(CommandEnvironment.all_commands),
+
 		
 		firstJoin(CommandEnvironment.rank_commands),
 
@@ -71,7 +84,42 @@ public class PrisonCommandTask {
 		rank(CommandEnvironment.rank_commands),
 		rankTag(CommandEnvironment.rank_commands),
 		targetRank(CommandEnvironment.rank_commands),
-		targetRankTag(CommandEnvironment.rank_commands);
+		targetRankTag(CommandEnvironment.rank_commands),
+
+		
+		
+		blockName(CommandEnvironment.blockevent_commands),
+		
+		locationWorld(CommandEnvironment.blockevent_commands),
+		locationX(CommandEnvironment.blockevent_commands),
+		locationY(CommandEnvironment.blockevent_commands),
+		locationZ(CommandEnvironment.blockevent_commands),
+		
+		coordinates(CommandEnvironment.blockevent_commands),
+		worldCoordinates(CommandEnvironment.blockevent_commands),
+		extendedDescription(CommandEnvironment.blockevent_commands),
+
+		
+		blockChance(CommandEnvironment.blockevent_commands),
+		blockIsAir(CommandEnvironment.blockevent_commands),
+		
+		blocksPlaced(CommandEnvironment.blockevent_commands),
+		blockRemaining(CommandEnvironment.blockevent_commands),
+		blocksMinedTotal(CommandEnvironment.blockevent_commands),
+		mineBlocksRemaining(CommandEnvironment.blockevent_commands),
+
+		mineBlocksRemainingPercent(CommandEnvironment.blockevent_commands),
+		mineBlocksTotalMined(CommandEnvironment.blockevent_commands),
+		mineBlocksSize(CommandEnvironment.blockevent_commands),
+
+		blockMinedName(CommandEnvironment.blockevent_commands),
+		blockMinedNameFormal(CommandEnvironment.blockevent_commands),
+		blockMinedBlockType(CommandEnvironment.blockevent_commands),
+		
+		eventType(CommandEnvironment.blockevent_commands),
+		eventTriggered(CommandEnvironment.blockevent_commands)
+		
+		;
 		
 		private final CommandEnvironment environment;
 		private CustomPlaceholders( CommandEnvironment environment ) {
@@ -81,11 +129,17 @@ public class PrisonCommandTask {
 		public static String listPlaceholders( CommandEnvironment environment ) {
 			StringBuilder sb = new StringBuilder();
 			
-			for ( CustomPlaceholders cp : values() ) {
-				if ( sb.length() > 0 ) {
-					sb.append( " " );
+			if ( environment != null ) {
+				
+				for ( CustomPlaceholders cp : values() ) {
+					if ( environment.equals( cp.getEnvironment() ) ) {
+						
+						if ( sb.length() > 0 ) {
+							sb.append( " " );
+						}
+						sb.append( cp.getPlaceholder() );
+					}
 				}
-				sb.append( cp.getPlaceholder() );
 			}
 			
 			return sb.toString();
@@ -133,6 +187,21 @@ public class PrisonCommandTask {
 		if ( command.contains( "{inline}" ) ) {
 			taskMode = TaskMode.inline;
 			command = command.replace( "{inline}", "" );
+		}
+		
+		if ( command.contains( "{inlinePlayer}" ) ) {
+			taskMode = TaskMode.inlinePlayer;
+			command = command.replace( "{inlinePlayer}", "" );
+		}
+		
+		if ( command.contains( "{sync}" ) ) {
+			taskMode = TaskMode.sync;
+			command = command.replace( "{sync}", "" );
+		}
+		
+		if ( command.contains( "{syncPlayer}" ) ) {
+			taskMode = TaskMode.syncPlayer;
+			command = command.replace( "{syncPlayer}", "" );
 		}
 		
 		String commandTranslated = translateCommand( player, command );

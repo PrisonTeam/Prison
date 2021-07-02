@@ -22,6 +22,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
@@ -804,15 +805,16 @@ public class OnBlockBreakEventCore
 			
 			if ( targetBlock != null && targetBlock.getPrisonBlock() != null ) {
 				
-				String targetBlockName =  mine == null ? 
-						spigotBlock.getPrisonBlock().getBlockName()
-						: targetBlock.getPrisonBlock().getBlockName();
+//				String targetBlockName =  mine == null ? 
+//						spigotBlock.getPrisonBlock().getBlockName()
+//						: targetBlock.getPrisonBlock().getBlockName();
 						
 				// Process mine block break events:
 				SpigotPlayer sPlayer = new SpigotPlayer( player );
 				
+				PrisonBlock prisonBlock = spigotBlock.getPrisonBlock();
 				
-				mine.processBlockBreakEventCommands( targetBlockName, sPlayer, blockEventType, triggered );
+				mine.processBlockBreakEventCommands( prisonBlock, targetBlock, sPlayer, blockEventType, triggered );
 			}
 		}
 	}
@@ -1046,7 +1048,10 @@ public class OnBlockBreakEventCore
 				// Record the block break:
 				mine.incrementBlockMiningCount( targetBlock );
 				
-				mine.processBlockBreakEventCommands( targetBlockName, sPlayer, blockEventType, triggered );
+				PrisonBlock prisonBlock = spigotBlock.getPrisonBlock();
+				
+				mine.processBlockBreakEventCommands( prisonBlock,
+										targetBlock, sPlayer, blockEventType, triggered );
 			}
 			
 		}
