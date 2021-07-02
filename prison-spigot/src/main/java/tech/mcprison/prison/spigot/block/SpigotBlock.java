@@ -103,6 +103,14 @@ public class SpigotBlock implements Block {
     			
     			results = getPrisonBlockFromCustomBlockIntegration( blockType );
     			if ( results != null ) {
+    				
+    				if ( getLocation() != null ) {
+    					// Clone the block that was found in the mine.  This will allow us to 
+    					// set the location:
+    					results = new PrisonBlock( results );
+    					
+    					results.setLocation( getLocation() );
+    				}
     				break;
     			}
     		}
