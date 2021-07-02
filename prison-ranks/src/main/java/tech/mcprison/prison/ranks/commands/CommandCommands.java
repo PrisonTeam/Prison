@@ -217,7 +217,10 @@ public class CommandCommands
         if ( ladderName != null && "placeholders".equalsIgnoreCase( ladderName ) ) {
         	
         	String placeholders = PrisonCommandTask.CustomPlaceholders.listPlaceholders(
-									PrisonCommandTask.CommandEnvironment.rank_commands );
+											PrisonCommandTask.CommandEnvironment.all_commands ) + " " +
+        			
+									PrisonCommandTask.CustomPlaceholders.listPlaceholders(
+											PrisonCommandTask.CommandEnvironment.rank_commands );
         	
         	String message = ladderCommandAddPlaceholdersMsg( placeholders );
         	

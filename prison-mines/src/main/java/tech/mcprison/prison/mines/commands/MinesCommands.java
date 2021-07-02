@@ -3993,7 +3993,7 @@ public class MinesCommands
         			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
 									PrisonCommandTask.CommandEnvironment.mine_commands );
         	
-        	String message = String.format( "Valid Placeholders that can be used with blockEvents: [%s]", 
+        	String message = String.format( "Valid Placeholders that can be used with mine commands: [%s]", 
         							placeholders );
         	
         	Output.get().logInfo( message );
