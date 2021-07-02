@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.5 2021-07-02
 
 
+* **Fixed an issue with the {firstjoin} placeholder for rank related commands; it was not removing the placeholder correctly, but was injecting itself back in to the command.**
+
+
 * **Change the way block events are handled.**
 Instead of just passing the block name, the block event now gets the block that was actually broke, plus the block that was originally set.  
 New placeholders were added for block events and even for all placeholders.  This greatly expands the functionality of the placeholders.

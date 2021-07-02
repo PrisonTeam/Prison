@@ -502,7 +502,7 @@ public class RankUtil
 									(results.getTargetRank() == null ? "none" : results.getTargetRank().getTag()) );
 				
 				if ( command == RankupCommands.firstJoin && cmd.contains( "{firstJoin}" ) ) {
-					cmd = cmd.replace( "{firstJoin}", cmd );
+					cmd = cmd.replace( "{firstJoin}", "" );
 				}
 				
 				
