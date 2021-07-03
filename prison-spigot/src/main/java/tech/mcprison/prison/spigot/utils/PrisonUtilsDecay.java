@@ -22,6 +22,7 @@ public class PrisonUtilsDecay
 	
 	private boolean enableDecayObby = false;
 	private boolean enableDecayRainbow = false;
+	private boolean enableDecayBlocks = false;
 	
 	/**
 	 * <p>There is no initialization needed for these commands.
@@ -256,7 +257,7 @@ public class PrisonUtilsDecay
 						String blockTargetName,
 			@Arg(name = "decayBlocks", description = "Decay blocks. One or more blockNames to " +
 					"use for the decay effects. Use pipe | to add more blocks with no spaces. Use " +
-					"block search for the names. Example: '<block1>|<block2>|<block3>' ") 
+					"block search for the names. Example: '<block1>,<block2>,<block3>' ") 
 						String decayBlocks,
 			@Arg(name = "decayTimeTicks", description = "The length of time the decay lasts, in ticks. " +
 					"Must be at least 4 ticks, and no more than 5 minutes (6000 ticks).")
@@ -269,17 +270,18 @@ public class PrisonUtilsDecay
 		
 		 ) {
 	
-		if ( !isEnableDecayObby() ) {
+		if ( !isEnableDecayBlocks() ) {
 			
-			Output.get().logInfo( "Prison's utils command decayBlocks is disabled in modules.yml." );
+			Output.get().logInfo( "Prison's utils command decay blocks is disabled in modules.yml." );
 		}
 		else {
 	
 			PrisonBlock sourceBlock = PrisonBlock.fromBlockCoordinates( blockCoordinates );
 			
 			if ( sourceBlock == null || sourceBlock.getLocation() == null ) {
-				Output.get().logInfo( "Prison utils decay blocks: blockCoordinates requires a value that " +
-						"includes a block name and coordinates: 'blockName::(worldName,x,y,z)' Was: [%s]",
+				Output.get().logInfo( "Prison utils decay blocks: the parameter 'blockCoordinates' " +
+						"requires a value that includes a block name and coordinates: " +
+						"'blockName::(worldName,x,y,z)' Was: [%s]",
 						blockCoordinates );
 				return;
 			}
@@ -287,8 +289,9 @@ public class PrisonUtilsDecay
 			PrisonBlock targetBlock = PrisonBlock.fromBlockName( blockTargetName );
 			
 			if ( targetBlock == null ) {
-				Output.get().logInfo( "Prison utils decay blocks: decayBlocks is not a valid " +
-						"block name(s). Confirm they are correct with '/mines block search help`. " +
+				Output.get().logInfo( "Prison utils decay blocks: the parameter 'blockTargetName' " +
+						"is not a valid block name(s). Confirm they are correct with " +
+						"'/mines block search help`. " +
 						"Was: [%s]",
 						blockTargetName );
 				return;
@@ -305,9 +308,9 @@ public class PrisonUtilsDecay
 			List<PrisonBlock> decayBlocksList = extractDecayBlocks( decayBlocks );
 			
 			if ( decayBlocksList.size() == 0 ) {
-				Output.get().logInfo( "Prison utils decay blocks: blockTargetName is not a valid " +
-						"block name. Was: [%s]",
-						blockTargetName );
+				Output.get().logInfo( "Prison utils decay blocks: the parameter 'decayBlocks' does not " +
+						"contain any valid block names. Example: '<block1>,<block2>,<block3>'.  Was: [%s]",
+						decayBlocks );
 				return;
 			}
 			
@@ -338,7 +341,7 @@ public class PrisonUtilsDecay
 		List<PrisonBlock> decayBlocksList = new ArrayList<>();
 		
 		if ( decayBlocksList != null ) {
-			String[] dblocks = decayBlocks.trim().split( "|" );
+			String[] dblocks = decayBlocks.trim().split( "," );
 			
 			if ( dblocks != null && dblocks.length > 0 ) {
 				for ( String blockName : dblocks ) {
@@ -366,6 +369,13 @@ public class PrisonUtilsDecay
 	}
 	public void setEnableDecayRainbow( boolean enableDecayRainbow ) {
 		this.enableDecayRainbow = enableDecayRainbow;
+	}
+
+	public boolean isEnableDecayBlocks() {
+		return enableDecayBlocks;
+	}
+	public void setEnableDecayBlocks( boolean enableDecayBlocks ) {
+		this.enableDecayBlocks = enableDecayBlocks;
 	}
 
 }

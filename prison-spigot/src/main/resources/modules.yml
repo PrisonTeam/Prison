@@ -33,3 +33,4 @@ utils:
     enabled: true
     obby: true
     rainbow: true
+    blocks: true

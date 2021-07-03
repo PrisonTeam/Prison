@@ -97,18 +97,25 @@ public class BlockUtils
 	}
 	
 	public void removeUnbreakable( Location location ) {
-		if ( location != null ) {
+		if ( location != null && getUnbreakableBlocks().containsKey( location ) ) {
 			
-			UnbreakableBlockData data = getUnbreakableBlocks().remove( location );
-
-			if ( data.getMine() != null && getUnbreakableBlocksByMine().containsKey( data.getMine() )) {
+			synchronized ( BlockUtils.class ) {
 				
-				getUnbreakableBlocksByMine().get( data.getMine() ).remove( data );
-			}
-			
-			if ( data.getTaskId() > 0 ) {
-				// If task is still queued to run, cancel it:
-				PrisonTaskSubmitter.cancelTask( data.getTaskId() );
+				if ( getUnbreakableBlocks().containsKey( location ) ) {
+					
+					UnbreakableBlockData data = getUnbreakableBlocks().remove( location );
+					
+					if ( data != null && data.getMine() != null && 
+							getUnbreakableBlocksByMine().containsKey( data.getMine() )) {
+						
+						getUnbreakableBlocksByMine().get( data.getMine() ).remove( data );
+					}
+					
+					if ( data.getTaskId() > 0 ) {
+						// If task is still queued to run, cancel it:
+						PrisonTaskSubmitter.cancelTask( data.getTaskId() );
+					}
+				}
 			}
 		}
 	}
