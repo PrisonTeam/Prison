@@ -32,3 +32,4 @@ utils:
   decay:
     enabled: true
     obby: true
+    rainbow: true

@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.5 2021-07-03
 
 
+* **Added support for a rainbow decay.  It cycles through 10 block colors.**
+
+
 * **More changes to get decays working.**
 When used and hooked up, the decay obby feature will cause mined block will turn to turn to obby for a given amount of time before it is changed to a specified block of choice.
 

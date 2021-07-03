@@ -90,6 +90,7 @@ public class PrisonUtilsModule
 				PrisonUtilsDecay utils = new PrisonUtilsDecay();
 
 				utils.setEnableDecayObby( isEnabled( "utils.decay.obby", true ) );
+				utils.setEnableDecayRainbow( isEnabled( "utils.decay.rainbow", true ) );
 
 				Prison.get().getCommandHandler().registerCommands( utils );
 
