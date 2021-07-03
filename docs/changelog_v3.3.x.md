@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.5 2021-07-03
 
 
+* **Added custom decay blocks list so custom decays are possible.**
+Reworked the rainbow decay to use the custom block decay since they are so similar.
+
+
 * **Added support for a rainbow decay.  It cycles through 10 block colors.**
 
 

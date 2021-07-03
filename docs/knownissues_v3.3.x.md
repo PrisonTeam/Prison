@@ -3,6 +3,11 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
+* Issue with decay functions or at least it shows the problem exists.  Enable a decay such as obby or rainbow, then test to confirm it works.  Then enchant a tool (increase it's eff).  Then test again and it does not.  This was seen happening while OP'd.  May not be related to decays, but it appears as if enchanting causes the pick to bypass prison?
+
+
+* prison should "scan" offline players upon startup and auto add anyone not already hooked up.  This will help reduce a lot of questions and make the first experience with prison smoother.... 
+
 
 * DONE: BlockEvents - add block filters - tested successfully
 

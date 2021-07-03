@@ -1,5 +1,8 @@
 package tech.mcprison.prison.spigot.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.commands.Arg;
@@ -9,6 +12,7 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.api.PrisonSpigotAPI;
+import tech.mcprison.prison.spigot.utils.tasks.DecayBlocksTask;
 import tech.mcprison.prison.spigot.utils.tasks.DecayObbyTask;
 import tech.mcprison.prison.spigot.utils.tasks.DecayRainbowTask;
 
@@ -218,6 +222,135 @@ public class PrisonUtilsDecay
 			
 			decayTask.submit();
 		}
+	}
+
+	/**
+	 * This command will use the specified list of blocks to perform the decay effect.
+	 * 
+	 * // submit decay task... 
+			// 1) Set block to unbreakable
+			// 2) set sourceBlock to the specified list of decayBlocks
+			// 3) submit delayed task
+			// 4) task then sets block to targetBlock
+			// 5) Remove block from unbreakable
+	 * 
+	 * @param sender
+	 * @param blockCoordinates
+	 * @param blockTargetName
+	 * @param decayBlocks
+	 * @param decayTimeTicks
+	 * @param mineName
+	 */
+	@Command(identifier = "prison utils decay blocks", 
+			description = "Decays a block using the list of decay blockNames to the target blocks. " +
+					"One or more block names can be specified using a pipe | and no spaces.",
+		onlyPlayers = false, 
+		permissions = "prison.utils.decay.blocks")
+	public void utilDecayBlocks(CommandSender sender, 
+			@Arg(name = "blockCoordinates", 
+				description = "Block coordinates represents the source block and location. Format:" +
+						"'blockName::(worldName,x,y,z)'. Use placeholder '{blockCoordinates}'") 
+						String blockCoordinates,
+			@Arg(name = "blockTargetName", description = "Target block type after decaying. " +
+						"Use '/mines block search help' to find correct block name.") 
+						String blockTargetName,
+			@Arg(name = "decayBlocks", description = "Decay blocks. One or more blockNames to " +
+					"use for the decay effects. Use pipe | to add more blocks with no spaces. Use " +
+					"block search for the names. Example: '<block1>|<block2>|<block3>' ") 
+						String decayBlocks,
+			@Arg(name = "decayTimeTicks", description = "The length of time the decay lasts, in ticks. " +
+					"Must be at least 4 ticks, and no more than 5 minutes (6000 ticks).")
+						long decayTimeTicks,
+			@Arg(name = "mineName", def = "",
+					description = "Optional, but very helpful. The mine " +
+					"where the block originated from.  If it was outside of a mine, then " +
+					"this should be omitted.") 
+						String mineName
+		
+		 ) {
+	
+		if ( !isEnableDecayObby() ) {
+			
+			Output.get().logInfo( "Prison's utils command decayBlocks is disabled in modules.yml." );
+		}
+		else {
+	
+			PrisonBlock sourceBlock = PrisonBlock.fromBlockCoordinates( blockCoordinates );
+			
+			if ( sourceBlock == null || sourceBlock.getLocation() == null ) {
+				Output.get().logInfo( "Prison utils decay blocks: blockCoordinates requires a value that " +
+						"includes a block name and coordinates: 'blockName::(worldName,x,y,z)' Was: [%s]",
+						blockCoordinates );
+				return;
+			}
+			
+			PrisonBlock targetBlock = PrisonBlock.fromBlockName( blockTargetName );
+			
+			if ( targetBlock == null ) {
+				Output.get().logInfo( "Prison utils decay blocks: decayBlocks is not a valid " +
+						"block name(s). Confirm they are correct with '/mines block search help`. " +
+						"Was: [%s]",
+						blockTargetName );
+				return;
+			}
+			
+			if ( decayTimeTicks < 4 ) {
+				decayTimeTicks = 4;
+			}
+			else if ( decayTimeTicks > 6000 ) {
+				decayTimeTicks = 6000;
+			}
+			
+			
+			List<PrisonBlock> decayBlocksList = extractDecayBlocks( decayBlocks );
+			
+			if ( decayBlocksList.size() == 0 ) {
+				Output.get().logInfo( "Prison utils decay blocks: blockTargetName is not a valid " +
+						"block name. Was: [%s]",
+						blockTargetName );
+				return;
+			}
+			
+			// Mine is used to better track these blocks:
+			PrisonSpigotAPI spigotApi = new PrisonSpigotAPI();
+			
+			Mine mine = spigotApi.findMineLocation( sourceBlock );
+			
+			UnbreakableBlockData data = BlockUtils.getInstance().addUnbreakable( sourceBlock, mine );
+			data.setTargetBlock( targetBlock );
+			data.setDecayTimeTicks( decayTimeTicks );
+			
+			// submit decay task... 
+			// 1) Set block to unbreadkable
+			// 2) set sourceBlock to obby
+			// 3) submit delayed task
+			// 4) task then sets block to targetBlock
+			// 5) Remove block from unbreakable
+			
+			// If mine resets, then remove all unbreakable blocks that are within the mine. 
+			DecayBlocksTask decayTask = new DecayBlocksTask( data, decayBlocksList );
+			
+			decayTask.submit();
+		}
+	}
+
+	private List<PrisonBlock> extractDecayBlocks( String decayBlocks ) {
+		List<PrisonBlock> decayBlocksList = new ArrayList<>();
+		
+		if ( decayBlocksList != null ) {
+			String[] dblocks = decayBlocks.trim().split( "|" );
+			
+			if ( dblocks != null && dblocks.length > 0 ) {
+				for ( String blockName : dblocks ) {
+					
+					PrisonBlock block = PrisonBlock.fromBlockName( blockName );
+					if ( block != null ) {
+						decayBlocksList.add( block );
+					}
+				}
+			}
+		}
+		return decayBlocksList;
 	}
 
 
