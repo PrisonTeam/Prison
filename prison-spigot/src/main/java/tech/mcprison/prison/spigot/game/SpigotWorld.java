@@ -47,12 +47,15 @@ public class SpigotWorld implements World {
 
     @Override public List<Player> getPlayers() {
         return Bukkit.getServer().getOnlinePlayers().stream()
-            .filter(player -> player.getWorld().getName().equals(bukkitWorld.getName()))
+            .filter(player -> 
+            		player.getWorld().getName().equals(
+            					bukkitWorld.getName()))
             .map((Function<org.bukkit.entity.Player, SpigotPlayer>) SpigotPlayer::new)
             .collect(Collectors.toList());
     }
 
-    @Override public Block getBlockAt(Location location) {
+    @Override 
+    public Block getBlockAt(Location location) {
         return new SpigotBlock(
         		bukkitWorld.getBlockAt(SpigotUtil.prisonLocationToBukkit(location)));
     }

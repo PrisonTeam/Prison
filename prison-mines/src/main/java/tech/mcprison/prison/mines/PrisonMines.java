@@ -251,6 +251,19 @@ public class PrisonMines extends Module {
 
 		return results;
 	}
+	
+	public Mine findMineLocation( Location blockLocation ) {
+		Mine results = null;
+		
+		if ( blockLocation != null ) {
+			
+			// Look for the correct mine to use. 
+			// Set mine to null so if cannot find the right one it will return a null:
+			results = findMineLocationExact( blockLocation );
+		}
+
+		return results;
+	}
 
 //    private void initMines() {
 ////        mines = MineManager.fromDb();

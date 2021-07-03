@@ -77,18 +77,18 @@ public class SpigotBlock implements Block {
     }
     
     @Override public Location getLocation() {
-        return SpigotUtil.bukkitLocationToPrison(bBlock.getLocation());
+        return SpigotUtil.bukkitLocationToPrison(getWrapper().getLocation());
     }
 
     @Override public Block getRelative(BlockFace face) {
         return new SpigotBlock(
-        		bBlock.getRelative(
+        		getWrapper().getRelative(
         				org.bukkit.block.BlockFace.valueOf(
         						face.name())));
     }
 
     @Override public BlockType getType() {
-    	return SpigotPrison.getInstance().getCompatibility().getBlockType( bBlock );
+    	return SpigotPrison.getInstance().getCompatibility().getBlockType( getWrapper() );
 //        return SpigotUtil.materialToBlockType(bBlock.getType());
     }
 
@@ -104,20 +104,21 @@ public class SpigotBlock implements Block {
     			results = getPrisonBlockFromCustomBlockIntegration( blockType );
     			if ( results != null ) {
     				
-    				if ( getLocation() != null ) {
-    					// Clone the block that was found in the mine.  This will allow us to 
-    					// set the location:
-    					results = new PrisonBlock( results );
-    					
-    					results.setLocation( getLocation() );
-    				}
     				break;
     			}
     		}
     	}
 
     	if ( results == null ) {
-    		results = SpigotPrison.getInstance().getCompatibility().getPrisonBlock( bBlock );
+    		results = SpigotPrison.getInstance().getCompatibility().getPrisonBlock( getWrapper() );
+    	}
+
+    	if ( results.getLocation() == null && getLocation() != null ) {
+    		// Clone the block that was found in the mine.  This will allow us to 
+    		// set the location:
+    		results = new PrisonBlock( results );
+    		
+    		results.setLocation( getLocation() );
     	}
     	
     	return results;
@@ -171,7 +172,7 @@ public class SpigotBlock implements Block {
 			case minecraft:
 				{
 					SpigotPrison.getInstance().getCompatibility().
-									updateSpigotBlock( prisonBlock, bBlock );
+									updateSpigotBlock( prisonBlock, getWrapper() );
 				}
 				
 				
@@ -203,7 +204,7 @@ public class SpigotBlock implements Block {
     public void setBlockFace( BlockFace blockFace ) {
     	
     	SpigotPrison.getInstance().getCompatibility()
-					.setBlockFace( bBlock, blockFace );
+					.setBlockFace( getWrapper(), blockFace );
     }
     /**
      * <p>When setting the Data and Type, turn off apply physics which will reduce the over head on block updates
@@ -215,7 +216,7 @@ public class SpigotBlock implements Block {
 	public void setType(BlockType blockType) {
     	
 		SpigotPrison.getInstance().getCompatibility()
-						.updateSpigotBlock( blockType, bBlock );
+						.updateSpigotBlock( blockType, getWrapper() );
 		
 //    	if ( type != null && type != BlockType.IGNORE ) {
 //    		
@@ -287,14 +288,24 @@ public class SpigotBlock implements Block {
     }
 
     @Override public boolean breakNaturally() {
-        return bBlock.breakNaturally();
+    	boolean results = false;
+    	
+    	if ( getWrapper() != null ) {
+    		
+    		results = getWrapper().breakNaturally();
+    	}
+        
+        return results;
     }
 
     @Override public List<ItemStack> getDrops() {
         List<ItemStack> ret = new ArrayList<>();
 
-        bBlock.getDrops()
-            .forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
+        if ( getWrapper() != null ) {
+        	
+        	getWrapper().getDrops()
+        			.forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
+        }
 
         return ret;
     }
@@ -304,8 +315,11 @@ public class SpigotBlock implements Block {
     public List<ItemStack> getDrops(ItemStack tool) {
         List<ItemStack> ret = new ArrayList<>();
 
-        bBlock.getDrops(SpigotUtil.prisonItemStackToBukkit(tool))
-            .forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
+        if ( getWrapper() != null ) {
+        	
+        	getWrapper().getDrops(SpigotUtil.prisonItemStackToBukkit(tool))
+        			.forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
+        }
 
         return ret;
     }

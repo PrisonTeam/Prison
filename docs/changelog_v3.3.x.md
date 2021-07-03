@@ -21,7 +21,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.9-alpha.5 2021-07-02
+# v3.2.9-alpha.5 2021-07-03
+
+
+* **More changes to get decays working.**
+When used and hooked up, the decay obby feature will cause mined block will turn to turn to obby for a given amount of time before it is changed to a specified block of choice.
 
 
 * **Fixed an issue with the {firstjoin} placeholder for rank related commands; it was not removing the placeholder correctly, but was injecting itself back in to the command.**

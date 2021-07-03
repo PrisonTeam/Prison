@@ -89,6 +89,7 @@ public class PrisonCommandTask {
 		
 		
 		blockName(CommandEnvironment.blockevent_commands),
+		mineName(CommandEnvironment.blockevent_commands),
 		
 		locationWorld(CommandEnvironment.blockevent_commands),
 		locationX(CommandEnvironment.blockevent_commands),
@@ -97,7 +98,7 @@ public class PrisonCommandTask {
 		
 		coordinates(CommandEnvironment.blockevent_commands),
 		worldCoordinates(CommandEnvironment.blockevent_commands),
-		extendedDescription(CommandEnvironment.blockevent_commands),
+		blockCoordinates(CommandEnvironment.blockevent_commands),
 
 		
 		blockChance(CommandEnvironment.blockevent_commands),
@@ -117,8 +118,10 @@ public class PrisonCommandTask {
 		blockMinedBlockType(CommandEnvironment.blockevent_commands),
 		
 		eventType(CommandEnvironment.blockevent_commands),
-		eventTriggered(CommandEnvironment.blockevent_commands)
+		eventTriggered(CommandEnvironment.blockevent_commands),
 		
+		utilsDecay(CommandEnvironment.blockevent_commands)
+
 		;
 		
 		private final CommandEnvironment environment;
@@ -255,7 +258,8 @@ public class PrisonCommandTask {
 			formatted = formatted
 					.replace( "{msg}", "prison utils msg {player} " )
 					.replace( "{player}", player.getName())
-					.replace( "{player_uid}", player.getUUID().toString());
+					.replace( "{player_uid}", player.getUUID().toString())
+					.replace( "{utilsDecay}", "prison utils decay" );
 		}
 		
 		if ( getCustomPlaceholders() != null && getCustomPlaceholders().size() > 0 ) {

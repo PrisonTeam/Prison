@@ -12,6 +12,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
@@ -568,26 +569,32 @@ public abstract class MineScheduler
 				
 				DecimalFormat dFmt = new DecimalFormat( "#,##0.0000" );
 				
+				PrisonBlockStatusData originalBlock = targetBlock.getPrisonBlock();
+				
 				PrisonCommandTask cmdTask = new PrisonCommandTask( "BlockEvent" );
 				
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockName, targetBlock.getPrisonBlock().getBlockName() );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockName, originalBlock.getBlockName() );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineName, getName() );
 				
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.locationWorld, prisonBlock.getLocation().getWorld().getName() );
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.locationX, Integer.toString( prisonBlock.getLocation().getBlockX() ));
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.locationY, Integer.toString( prisonBlock.getLocation().getBlockY() ));
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.locationZ, Integer.toString( prisonBlock.getLocation().getBlockZ() ));
+				if ( prisonBlock.getLocation() != null ) {
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationWorld, prisonBlock.getLocation().getWorld().getName() );
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationX, Integer.toString( prisonBlock.getLocation().getBlockX() ));
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationY, Integer.toString( prisonBlock.getLocation().getBlockY() ));
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationZ, Integer.toString( prisonBlock.getLocation().getBlockZ() ));
+					
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.coordinates, prisonBlock.getLocation().toCoordinates() );
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.worldCoordinates, prisonBlock.getLocation().toWorldCoordinates() );
+					
+				}
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockCoordinates, prisonBlock.getBlockCoordinates() );
 
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.coordinates, prisonBlock.getLocation().toCoordinates() );
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.worldCoordinates, prisonBlock.getLocation().toWorldCoordinates() );
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.extendedDescription, prisonBlock.getExtendedDescription() );
 
-
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockChance, dFmt.format( targetBlock.getPrisonBlock().getChance() ) );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockChance, dFmt.format( originalBlock.getChance() ) );
 				
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blocksPlaced, Integer.toString( targetBlock.getPrisonBlock().getResetBlockCount() ));
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockRemaining, Long.toString( targetBlock.getPrisonBlock().getBlockCountUnsaved() ));
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.blocksPlaced, Integer.toString( originalBlock.getResetBlockCount() ));
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockRemaining, Long.toString( originalBlock.getBlockCountUnsaved() ));
 				
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blocksMinedTotal, targetBlock.getPrisonBlock().getBlockName() );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.blocksMinedTotal, originalBlock.getBlockName() );
 				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineBlocksRemaining, Integer.toString( getRemainingBlockCount() ));
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineBlocksRemainingPercent, Double.toString( getPercentRemainingBlockCount() ) );
@@ -604,9 +611,6 @@ public abstract class MineScheduler
 				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.eventType, eventType.name() );
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.eventTriggered, triggered );
-				
-				
-				
 				
 				
 				

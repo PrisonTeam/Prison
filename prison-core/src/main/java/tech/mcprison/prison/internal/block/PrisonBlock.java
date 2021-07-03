@@ -1,5 +1,6 @@
 package tech.mcprison.prison.internal.block;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
 import tech.mcprison.prison.util.Location;
 
@@ -149,7 +150,7 @@ public class PrisonBlock
 	}
 
 	
-	public String getExtendedDescription() {
+	public String getBlockCoordinates() {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append( getBlockNameFormal() );
@@ -161,6 +162,39 @@ public class PrisonBlock
 		}
 		
 		return sb.toString();
+	}
+	
+	public static PrisonBlock fromBlockName( String blockName ) {
+		PrisonBlock results = null;
+		
+		if ( blockName != null && !blockName.trim().isEmpty() ) {
+			
+			results = Prison.get().getPlatform().getPrisonBlock( blockName );
+		}
+		
+		return results;
+	}
+	
+	public static PrisonBlock fromBlockCoordinates( String blockCoordinates ) {
+		PrisonBlock results = null;
+		
+		if ( blockCoordinates != null && !blockCoordinates.trim().isEmpty() ) {
+			String[] bc = blockCoordinates.split( "::" );
+			String blockName = bc[0];
+			String coordinates = bc.length >= 2 ? bc[1] : null;
+			
+			results = fromBlockName( blockName );
+			
+			if ( results != null && coordinates != null ) {
+				Location location = Location.decodeWorldCoordinates( coordinates );
+				
+				if ( location != null ) {
+					results.setLocation( location );
+				}
+			}
+		}
+		
+		return results;
 	}
 	
 	/**

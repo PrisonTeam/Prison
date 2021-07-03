@@ -5,6 +5,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 
 public class PrisonUtilsListeners
@@ -52,9 +53,9 @@ public class PrisonUtilsListeners
     public void unbreakableBlock( BlockBreakEvent e ) {
     	
     	if ( !e.isCancelled() ) {
-    		SpigotBlock block = new SpigotBlock( e.getBlock() );
+    		PrisonBlock block = new SpigotBlock( e.getBlock() ).getPrisonBlock();
     		
-    		if ( BlockUtils.isBlockUnbreakable( block ) ) {
+    		if ( BlockUtils.getInstance().isUnbreakable( block ) ) {
     			e.setCancelled( true );
     		}
     	}
