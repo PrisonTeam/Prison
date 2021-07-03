@@ -21,7 +21,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.9-alpha.5 2021-07-03
+# v3.2.9-alpha.6 2021-07-03
+
+
+* **v3.2.9-alpha.6 2021-07-03**
 
 
 * **Added custom decay blocks list so custom decays are possible.**
