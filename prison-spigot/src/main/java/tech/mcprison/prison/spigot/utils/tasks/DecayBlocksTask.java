@@ -26,7 +26,8 @@ public class DecayBlocksTask
 		
 		this.decayBlocksList = decayBlocksList;
 		
-		intervalPerBlock = data.getDecayTimeTicks() / getDecayBlocksList().size();
+		intervalPerBlock = getDecayBlocksList() == null || getDecayBlocksList().size() == 0 ?
+					5 :data.getDecayTimeTicks() / getDecayBlocksList().size();
 		if ( intervalPerBlock < 1 ) {
 			intervalPerBlock = 1;
 		}

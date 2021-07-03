@@ -23,6 +23,8 @@ These build logs represent the work that has been going on within prison.
 
 # v3.2.9-alpha.6 2021-07-03
 
+* **Fixed a divide by zero error... utils decay**
+
 
 * **Enhanced the PrisonBlock.getBlockTypesByName to search the custom blocks if not found initially.**
 It will then try prefixing the name with the custom block type ids. Provided a hook for air.
