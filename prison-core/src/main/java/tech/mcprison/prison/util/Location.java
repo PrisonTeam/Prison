@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison.util;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
 
@@ -52,6 +53,10 @@ public class Location {
     	this( world, x, y, z, 0.0f, 0.0f);
     }
 
+    public Location(String worldName, int x, int y, int z) {
+    	this( Prison.get().getPlatform().getWorld( worldName ).orElse( null ), (double) x, (double) y, (double) z );
+    }
+    
     public Location(Location clone) {
     	this( clone.getWorld(), clone.getX(), clone.getY(), clone.getZ(), 
     			clone.getPitch(), clone.getYaw(), clone.getDirection());
@@ -179,6 +184,21 @@ public class Location {
         return "(" + x + ", " + y + ", " + z + ")";
     }
 
+    
+    public String toWorldCoordinates() {
+    	return "(" + world.getName() + "," + ((int) x) + "," + ((int) y) + "," + ((int) z) + ")";
+    }
+
+    public static Location decodeWorldCoordinates( String worldCoordinats ) {
+    	Location results = null;
+    	String[] d = worldCoordinats.replaceAll( "\\(|\\)", "" ).split( "," );
+    	
+    	if ( d != null && d.length == 4 ) {
+    		results = new Location( d[0], Integer.parseInt( d[1] ), Integer.parseInt( d[2] ), Integer.parseInt( d[3] ) );
+    	}
+    	return results;
+    }
+    
     /**
      * Returns the values in coordinate (x, y, z) format, to the nearest block (i.e. no decimals).
      *

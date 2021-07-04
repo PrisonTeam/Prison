@@ -142,6 +142,8 @@ public class SpigotPlatform
     }
     
     public SpigotPlatform(SpigotPrison plugin) {
+    	super();
+    	
         this.plugin = plugin;
         this.scoreboardManager = new SpigotScoreboardManager();
         this.storage = initStorage();
@@ -1171,6 +1173,23 @@ public class SpigotPlatform
 		return results;
 	}
 	
+	@Override
+	public ModuleElement getModuleElement( ModuleElementType elementType, String elementName ) {
+		ModuleElement results = null;
+		
+		if ( elementType == ModuleElementType.MINE &&
+							PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+			MineManager mm = PrisonMines.getInstance().getMineManager();
+			results = mm.getMine( elementName );
+		}
+		else if ( elementType == ModuleElementType.RANK &&
+							PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+			RankManager rm = PrisonRanks.getInstance().getRankManager();
+			results = rm.getRank( elementName );
+		}
+		
+		return results;
+	}
 	/**
 	 * <p>This function takes a CommandSender for a player, and tries to find a mine
 	 * that would be associated with that player.  This is a very complex process
@@ -1347,7 +1366,7 @@ public class SpigotPlatform
 	 * 
 	 */
 	@Override
-	public void autoCreateMineBlockAssignment() {
+	public void autoCreateMineBlockAssignment( boolean forceKeepBlocks ) {
 		List<String> blockList = new ArrayList<>(); 
 		
 		
@@ -1399,6 +1418,32 @@ public class SpigotPlatform
 		
 		int startPos = 1;
 		for ( Mine mine : mines ) {
+			
+			boolean hasBlocks = mine.getPrisonBlocks().size() > 0 || mine.getBlocks().size() > 0;
+			
+			// If the mines already has blocks, log them, then clear them since this will replace them:
+			if ( hasBlocks && !forceKeepBlocks ) {
+				String oldBlockList = mine.getBlockListString();
+				
+				String message = String.format( "Mine: %s  Removed old blocks: %s", 
+						mine.getName(), oldBlockList );
+				
+				Output.get().logInfo( message );
+				
+				mine.getPrisonBlocks().clear();
+				mine.getBlocks().clear();
+			}
+			
+			else if ( hasBlocks && forceKeepBlocks ) {
+				String oldBlockList = mine.getBlockListString();
+
+				String message = String.format( "Mine: %s  Keeping existing blocks: %s", 
+						mine.getName(), oldBlockList );
+				
+				Output.get().logInfo( message );
+				
+				continue;
+			}
 			
 			 List<String> mBlocks = mineBlockList( blockList, startPos++, mineBlockSize );
 			
@@ -1479,12 +1524,23 @@ public class SpigotPlatform
 		
 		for ( Mine mine : mines ) {
 			
-			if ( mine.getLinerData().toSaveString().trim().isEmpty() ) {
+			String mineLinerData = mine.getLinerData().toSaveString();
+			boolean createLiner = mineLinerData.trim().isEmpty();
+			
+			if ( createLiner ) {
 				mine.getLinerData().setLiner( Edges.walls, getRandomLinerType(), true );
 				mine.getLinerData().setLiner( Edges.bottom, getRandomLinerType(), true );
 
+				mineLinerData = mine.getLinerData().toSaveString();
+				
 				mm.saveMine( mine );
 			}
+
+			String message = String.format( "Mine Liner status: %s %s : %s", 
+					mine.getName(),
+					(createLiner ? "(Created)" : "(AlreadyExists)"),
+					mineLinerData );
+			Output.get().logInfo( message );
 		}	
 	}
 	
@@ -1738,92 +1794,95 @@ public class SpigotPlatform
     	
     	AutoFeaturesWrapper afw = AutoFeaturesWrapper.getInstance();
     	
-    	results.add( String.format("AutoManager Enabled:&b %s", 
-    										afw.isBoolean( AutoFeatures.isAutoManagerEnabled )) );
+    	boolean isAutoManagerEnabled = afw.isBoolean( AutoFeatures.isAutoManagerEnabled );
+    	results.add( String.format("AutoManager Enabled:&b %s", isAutoManagerEnabled) );
     	
-		String bbePriority = afw.getMessage( AutoFeatures.blockBreakEventPriority );
-		BlockBreakPriority blockBreakPriority = BlockBreakPriority.fromString( bbePriority );
-		results.add( String.format(".   Block Break Event Priority:&b %s", 
-											blockBreakPriority.name() ) );
-		
-		String tebePriority = afw.getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
-		BlockBreakPriority tebEventPriority = BlockBreakPriority.fromString( tebePriority );
-		results.add( String.format(".   Token Enchant BlockExplodeEvent Priority:&b %s", 
-				tebEventPriority.name() ) );
-		
-		String cebuePriority = afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
-		BlockBreakPriority cebuEventPriority = BlockBreakPriority.fromString( cebuePriority );
-		results.add( String.format(".   Crazy Enchant BlastUseEvent Priority:&b %s", 
-				cebuEventPriority.name() ) );
-
-		String zbsePriority = afw.getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
-		BlockBreakPriority zbsEventPriority = BlockBreakPriority.fromString( zbsePriority );
-		results.add( String.format(".   Zenchantments BlockShredEvent Priority:&b %s", 
-				zbsEventPriority.name() ) );
-
-
-		results.add( " " );
-		
-		boolean isAutoPickup = afw.isBoolean( AutoFeatures.autoPickupEnabled );
-    	results.add( String.format(".   Auto Pickup:&b %s", isAutoPickup ) );
-    	
-    	results.add( String.format(".   Auto Smelt:&b %s", (!isAutoPickup ? "disabled" :
-    										afw.isBoolean( AutoFeatures.autoSmeltEnabled ))) );
-    	results.add( String.format(".   Auto Block:&b %s", (!isAutoPickup ? "disabled" :
-    										afw.isBoolean( AutoFeatures.autoBlockEnabled ))) );
-
-    	
-    	results.add( String.format(".   Handle Normal Drops:&b %s", (isAutoPickup ? "disabled by AutoPickup" :
-    										afw.isBoolean( AutoFeatures.handleNormalDropsEvents ))) );
-    	results.add( String.format(".   Normal Drop Smelt:&b %s", (isAutoPickup ? "disabled" :
-    										afw.isBoolean( AutoFeatures.normalDropSmelt ))) );
-    	results.add( String.format(".   Normal Drop Block:&b %s", (isAutoPickup ? "disabled" :
-    										afw.isBoolean( AutoFeatures.normalDropBlock ))) );
-    	
-    	
-    	
-		results.add( " " );
-		
-    	results.add( String.format("+.   Calculate Durability:&b %s", 
-    										afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled )) );
-    	
-    	
-    	boolean isCalcFortune = afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled );
-    	results.add( String.format(".   Calculate Fortune:&b %s", isCalcFortune) );
-    	results.add( String.format("+.  .  Max Fortune Multiplier:&b %s", 
-    										afw.getInteger( AutoFeatures.fortuneMultiplierMax )) );
-    	
-    	boolean isExtendedBukkitFortune = afw.isBoolean( AutoFeatures.isExtendBukkitFortuneCalculationsEnabled );
-    	results.add( String.format(".  .  Extended Bukkit Fortune Enabled:&b %s", 
-    										isExtendedBukkitFortune) );
-    	results.add( String.format("+.  .  Extended Bukkit Fortune Factor Percent Range Low:&b %s", 
-    										afw.getInteger( AutoFeatures.extendBukkitFortuneFactorPercentRangeLow )) );
-    	results.add( String.format("+.  .  Extended Bukkit Fortune Factor Percent Range High:&b %s", 
-    										afw.getInteger( AutoFeatures.extendBukkitFortuneFactorPercentRangeHigh )) );
-    	
-    	
-    	results.add( String.format(".  .  Calculate Alt Fortune Enabled:&b %s", ( isExtendedBukkitFortune ? "disabled" :
-    										afw.isBoolean( AutoFeatures.isCalculateAltFortuneEnabled ))) );
-    	results.add( String.format("+.  .  Calculate Alt Fortune on all Blocks:&b %s", 
-    										afw.isBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled )) );
-    	
-    	
-    	results.add( " " );
-    	
-    	
-    	results.add( String.format("+.   Calculate XP:&b %s", 
-    										afw.isBoolean( AutoFeatures.isCalculateXPEnabled )) );
-    	results.add( String.format("+.   Drop XP as Orbs:&b %s", 
-    										afw.isBoolean( AutoFeatures.givePlayerXPAsOrbDrops )) );
-    	
-    	results.add( String.format("+.   Process TokensEnchant Explosive Events:&b %s", 
-    										afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents )) );
-    	results.add( String.format("+.   Process Crazy Enchants Block Explode Events:&b %s", 
-    										afw.isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents )) );
-    	results.add( String.format("+.   Process McMMO BlockBreakEvents:&b %s", 
-    										afw.isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents )) );
-    	
-    	
+    	if ( isAutoManagerEnabled ) {
+    		
+    		String bbePriority = afw.getMessage( AutoFeatures.blockBreakEventPriority );
+    		BlockBreakPriority blockBreakPriority = BlockBreakPriority.fromString( bbePriority );
+    		results.add( String.format(".   Block Break Event Priority:&b %s", 
+    				blockBreakPriority.name() ) );
+    		
+    		String tebePriority = afw.getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
+    		BlockBreakPriority tebEventPriority = BlockBreakPriority.fromString( tebePriority );
+    		results.add( String.format(".   Token Enchant BlockExplodeEvent Priority:&b %s", 
+    				tebEventPriority.name() ) );
+    		
+    		String cebuePriority = afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
+    		BlockBreakPriority cebuEventPriority = BlockBreakPriority.fromString( cebuePriority );
+    		results.add( String.format(".   Crazy Enchant BlastUseEvent Priority:&b %s", 
+    				cebuEventPriority.name() ) );
+    		
+    		String zbsePriority = afw.getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
+    		BlockBreakPriority zbsEventPriority = BlockBreakPriority.fromString( zbsePriority );
+    		results.add( String.format(".   Zenchantments BlockShredEvent Priority:&b %s", 
+    				zbsEventPriority.name() ) );
+    		
+    		results.add( " " );
+    		
+    		boolean isAutoPickup = afw.isBoolean( AutoFeatures.autoPickupEnabled );
+    		results.add( String.format(".   Auto Pickup:&b %s", isAutoPickup ) );
+    		
+    		results.add( String.format(".   Auto Smelt:&b %s", (!isAutoPickup ? "disabled" :
+    			afw.isBoolean( AutoFeatures.autoSmeltEnabled ))) );
+    		results.add( String.format(".   Auto Block:&b %s", (!isAutoPickup ? "disabled" :
+    			afw.isBoolean( AutoFeatures.autoBlockEnabled ))) );
+    		
+    		
+    		results.add( String.format(".   Handle Normal Drops:&b %s", (isAutoPickup ? "disabled by AutoPickup" :
+    			afw.isBoolean( AutoFeatures.handleNormalDropsEvents ))) );
+    		results.add( String.format(".   Normal Drop Smelt:&b %s", (isAutoPickup ? "disabled" :
+    			afw.isBoolean( AutoFeatures.normalDropSmelt ))) );
+    		results.add( String.format(".   Normal Drop Block:&b %s", (isAutoPickup ? "disabled" :
+    			afw.isBoolean( AutoFeatures.normalDropBlock ))) );
+    		
+    		
+    		
+    		results.add( " " );
+    		
+    		results.add( String.format("+.   Calculate Durability:&b %s", 
+    				afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled )) );
+    		
+    		
+    		boolean isCalcFortune = afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled );
+    		results.add( String.format(".   Calculate Fortune:&b %s", isCalcFortune) );
+    		results.add( String.format("+.  .  Max Fortune Multiplier:&b %s", 
+    				afw.getInteger( AutoFeatures.fortuneMultiplierMax )) );
+    		
+    		boolean isExtendedBukkitFortune = afw.isBoolean( AutoFeatures.isExtendBukkitFortuneCalculationsEnabled );
+    		results.add( String.format(".  .  Extended Bukkit Fortune Enabled:&b %s", 
+    				isExtendedBukkitFortune) );
+    		results.add( String.format("+.  .  Extended Bukkit Fortune Factor Percent Range Low:&b %s", 
+    				afw.getInteger( AutoFeatures.extendBukkitFortuneFactorPercentRangeLow )) );
+    		results.add( String.format("+.  .  Extended Bukkit Fortune Factor Percent Range High:&b %s", 
+    				afw.getInteger( AutoFeatures.extendBukkitFortuneFactorPercentRangeHigh )) );
+    		
+    		
+    		results.add( String.format(".  .  Calculate Alt Fortune Enabled:&b %s", ( isExtendedBukkitFortune ? "disabled" :
+    			afw.isBoolean( AutoFeatures.isCalculateAltFortuneEnabled ))) );
+    		results.add( String.format("+.  .  Calculate Alt Fortune on all Blocks:&b %s", 
+    				afw.isBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled )) );
+    		
+    		
+    		results.add( " " );
+    		
+    		
+    		results.add( String.format("+.   Calculate XP:&b %s", 
+    				afw.isBoolean( AutoFeatures.isCalculateXPEnabled )) );
+    		results.add( String.format("+.   Drop XP as Orbs:&b %s", 
+    				afw.isBoolean( AutoFeatures.givePlayerXPAsOrbDrops )) );
+    		
+    		results.add( String.format("+.   Process TokensEnchant Explosive Events:&b %s", 
+    				afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents )) );
+    		results.add( String.format("+.   Process Crazy Enchants Block Explode Events:&b %s", 
+    				afw.isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents )) );
+    		results.add( String.format("+.   Process McMMO BlockBreakEvents:&b %s", 
+    				afw.isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents )) );
+    		
+    		
+    		
+    	}
     	
     	
     	results.add( String.format("Prestiges Enabled:&b %s", 
@@ -1866,6 +1925,17 @@ public class SpigotPlatform
 	public void dumpEventListenersBlockBreakEvents() {
 		
 		dumpEventListeners( "BlockBreakEvent", BlockBreakEvent.getHandlerList() );
+		
+		Output.get().logInfo( "&2NOTE: Prison Block Event Listeners:" );
+		
+		Output.get().logInfo( "&2. . Prison Internal BlockBreakEvents: " +
+								"tech.mcprison.prison.spigot.SpigotListener" );
+		Output.get().logInfo( "&2. . Auto Feature Core: Non-AutoManager: " +
+								"OnBlockBreakEventListeners$OnBlockBreakEventListener*" );
+		Output.get().logInfo( "&2. . Prison MONITOR Events manages block counts, " +
+								"Mine Sweeper, and zero block conditions." );
+		Output.get().logInfo( "&2. . AutoManager and enchantment event listeners are " +
+								"identified by their class names." );
 	}
 	
 	@Override
@@ -1879,6 +1949,24 @@ public class SpigotPlatform
 		}
 	}
 	
+	/**
+	 * <p>Some information on events...
+	 * </p>
+	 * 
+	 * https://bukkit.fandom.com/wiki/Event_API_Reference
+	 * 
+	 * <p>When changing values of an event the changes of one with the higher priority will 
+	 * override any changes done before by a listener with a lower priority so that in the 
+	 * end the one with the highest priority can have the final say in the actually outcome. 
+	 * <b>To achieve this priority order listeners are called from the ones with the 
+	 * lowest to the ones with the highest priority. Any listener with the MONITOR 
+	 * priority is called last.</b> 
+	 * 
+	 * </p>
+	 * 
+	 * @param eventType
+	 * @param handlerList
+	 */
 	private void dumpEventListeners( String eventType, HandlerList handlerList ) {
 		
 		RegisteredListener[] listeners = handlerList.getRegisteredListeners();
@@ -1900,4 +1988,18 @@ public class SpigotPlatform
 		display.toLog( LogLevel.DEBUG );
 	}
 
+	/**
+	 * <p>This feature will be similar to the WorldGuard's command 
+	 * 	<pre>/wg debug testbreak -ts &lt;player&gt;</pre>, but this will show far 
+	 * more details on each and every step.
+	 * </p>
+	 * 
+	 */
+	@Override
+	public void traceEventListenersBlockBreakEvents( tech.mcprison.prison.internal.CommandSender sender )
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
 }

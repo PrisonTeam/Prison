@@ -16,7 +16,7 @@ import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.PrisonSetupGUI;
-import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
+import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 import java.text.DecimalFormat;
 import java.util.List;

@@ -758,7 +758,7 @@ public class PlayerManager
 	  }
 	  
 	  if ( !rankPlayer.getLadderRanks().isEmpty()) {
-		  DecimalFormat dFmt = new DecimalFormat("#,##0");
+//		  DecimalFormat dFmt = new DecimalFormat("#,##0");
 		  for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getLadderRanks().entrySet()) {
 			  RankLadder key = entry.getKey();
 			  if ( ladderName == null ||
@@ -782,11 +782,11 @@ public class PlayerManager
 					  if ( remaining < 0 ) {
 						  remaining = 0;
 					  }
-					  double percent = (remaining < 0 ? 0.0 : 
-						  (cost == 0.0d || remaining > cost ? 100.0 : 
-							  remaining / cost * 100.0 )
-							  );
-					  sb.append( dFmt.format( percent ));
+//					  double percent = (remaining < 0 ? 0.0 : 
+//						  (cost == 0.0d || remaining > cost ? 100.0 : 
+//							  remaining / cost * 100.0 )
+//							  );
+//					  sb.append( dFmt.format( percent ));
 					  
 					  sb.append( Prison.get().getPlaceholderManager().
 		    					getProgressBar( remaining, cost, false, attribute ));
@@ -974,6 +974,7 @@ public class PlayerManager
 		}
 		return results;
 	}
+	
 	
     /**
      * <p>Entry point for translating placeholders.
@@ -1186,7 +1187,8 @@ public class PlayerManager
     }
 
 
-    @Override
+
+	@Override
     public List<PlaceHolderKey> getTranslatedPlaceHolderKeys() {
     	if ( translatedPlaceHolderKeys == null ) {
     		translatedPlaceHolderKeys = new ArrayList<>();
@@ -1242,6 +1244,7 @@ public class PlayerManager
     			}
     			
     		}
+    		
     	}
     	
     	return translatedPlaceHolderKeys;

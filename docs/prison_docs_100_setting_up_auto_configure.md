@@ -17,7 +17,7 @@ This document covers how to run `/ranks autoConfigure`, it's options, and what t
 Prison's Auto Configure will perform most of the basic configurations to get you up and running quickly.  This feature will perform the following tasks for you:
 
 
-* Create a series of Ranks and Mines that be named A through Z.  The mines are generated as Virtual Mines.
+* Create a series of Ranks and Mines that will be named A through Z, for both the mines and the linked ranks.  The mines are generated as Virtual Mines.
 
 
 * Link each Mine to it's associated Rank.
@@ -29,14 +29,18 @@ Prison's Auto Configure will perform most of the basic configurations to get you
 * Auto Configure now uses a new feature called Access by Rank.  This is automatically enabled for Mine Access and Access to TP for the players.  Access by Rank eliminates the need to use perms for these access.  As a player ranks up, they will gain access to ranks and mines, but all prior ranks and mines will automatically be included. 
 
 
-* ~~Enable Mine Access Permissions for each mine.  The actual commands that are used are based upon the economy plugin that you have installed when you run this command.  This allows prison to work with the minimal configurations of external plugins such as WorldGuard; all you need to do is to enable WorldGuard's global region with the flag `passthrough deny`. ~~  Warning do not use the access by permissions since Access by Rank replaces it, but it can still be used if you want.
-
-
-* ~~Setup some of the most basic rank commands that will give your players the permissions needed to access the mines associated with their rank, and to TP to those mines.~~  Note: Permissions are  no longer setup since prison does not need them for TP or Mine Access.  If you need to add any permission you would have to manually add them as usual.
-
-
-
 * Enable Prison's Sellall feature and preload the default shop prices with about 98 items and blocks.  These defaults settings will allow your players to sell what they mine.
+
+
+* Enable Prison's Auto Features.  This includes, by default, auto pickup, auto smelt, and auto block.  It also enables other features such as providing XP for certain blocks, fortune, etc.  
+
+
+* ~~Enable Mine Access Permissions for each mine.~~  ~~The actual commands that are used are based upon the economy plugin that you have installed when you run this command.~~  ~~This allows prison to work with the minimal configurations of external plugins such as WorldGuard; all you need to do is to enable WorldGuard's global region with the flag `passthrough deny`. ~~  Notice: do not use the access by permissions since Access by Rank replaces it, but it can still be used if you want.
+
+
+* ~~Setup some of the most basic rank commands that will give your players the permissions needed to access the mines associated with their rank, and to TP to those mines.~~  Note: Permissions are no longer setup since prison does not need them for TP or Mine Access.  If you need to add any permission you would have to manually add them as usual to either Rank commands, or better yet, ladder commands: `/ranks command add help` and `/ranks ladder command add help`.  Both of these have the same extended set of placeholders that can be used and the list can be provided with: `/ranks command add placeholders`.
+
+
 
 
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
@@ -120,7 +124,7 @@ These listings are to help guide you in planning on what you need.  A minecraft 
 
 
 * **Server Cores**
-    - Most hosting services offer only 1 core.  
+    - Most hosting services offer only 1 core, and a lot of times that single core is shared. 
     - Naturally prison will do well with just one core, but if your server is growing with a lot of players and you're starting to see heavy loads, then you may want to consider increasing the number of dedicated cores your server can use.  Most hosting services do not provide this as an option, but some do.  So this should be something to consider if your server is growing large.
     
     
@@ -188,10 +192,10 @@ Please see the short section at the top of this document titled: **Overview**.
 It is strongly suggested to run this command from the console so it will be easier to see the messages and any notifications it may provide.
 
 
-**Update 2021-05-28:** The latest version of prison autoConfigure, that has not yet been released even in alpha, has eliminated the generation of the permissions when building the ranks and mines.  This is because some of the main core features within prison are now using Rank Associations to determine if a player has access to `/mines tp` command and also if they have access to each mine.  This new feature of using Rank Associations will only work for mines that are linked to ranks.
+The current version of Prison's `/ranks autoConfigure` uses Access by Ranks to allow players to use various parts of prison automatically.  Two of the major components that are using Access by Rank are `/mines tp` and player access to the mines.  These accesses are based upon the default rank.  A player, through Access by Ranks, has access to all prior ranks too.  This new feature of using Rank Associations will only work for mines that are linked to ranks.
 
 
-**IMPORTANT:** If you run this command without having a permission plugin setup, then the auto configure process will not generate any rank commands for dealing with permissions.  You will have to add all of them manually later on.
+The use of Access by Ranks prevents the need for `/ranks autoConfigure` to generate any rank commands dealing with permissions.  You may need to add them for your own needs.
 
 
 **Critical:** It should be noted that the ideal conditions to running this command is without having any mines or ranks previously defined.  If any are detected, this command will terminate and will not attempt to perform any actions.  You can use the Option **force** to force the auto configure to run if there are ranks and mines already defined.  If you do force it, keep in mind that it will skip over any rank or mine that it would otherwise try to generate.  It will not add rank commands to existing ranks.  It will not add blocks to existing mines.  It will not hook up ranks to mines.  Nor will it configure such features as Mine Access Permissions.  If you decide to use **force** you do so at your own risks.  That said, it's easy to delete the `plugins/Prison/` directory and start over (or just rename it).
@@ -226,6 +230,8 @@ The server that was created to run this example was using 9 core plugins:
 
 <img src="images/prison_docs_100_setting_up_auto_configure_02.png" alt="9 core plugins" title="9 core plugins" width="600" /> 
 
+
+<h1>Note: The following is from an older release of prison that generated rank commands that controlled the way prison worked.</h1>
 
 
 Sample of prison starting up for the first time and it's console messages:
@@ -331,208 +337,56 @@ Running the command:
 [04:19:55 INFO]:    ranks.set
 >ranks autoConfigure
 [04:20:03 INFO]: | Info | Your new rank, 'A', was created in the ladder 'default', using the tag value of '[A]'
-[04:20:03 INFO]: | Info | Added command 'lp user {player} permission set mines.a' to the rank 'A'.
-[04:20:03 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.a' to the rank 'A'.
-[04:20:03 INFO]: | Info | Added command 'lp user {player} permission unset mines.b' to the rank 'A'.
-[04:20:03 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.b' to the rank 'A'.
 [04:20:03 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:04 INFO]: | Info | Your new rank, 'B', was created in the ladder 'default', using the tag value of '[B]'
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission set mines.b' to the rank 'B'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.b' to the rank 'B'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.b' to the rank 'A'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.b' to the rank 'A'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.c' to the rank 'B'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.c' to the rank 'B'.
 [04:20:04 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:04 INFO]: | Info | Your new rank, 'C', was created in the ladder 'default', using the tag value of '[C]'
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission set mines.c' to the rank 'C'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.c' to the rank 'C'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.c' to the rank 'A'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.c' to the rank 'A'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.d' to the rank 'C'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.d' to the rank 'C'.
 [04:20:04 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:04 INFO]: | Info | Your new rank, 'D', was created in the ladder 'default', using the tag value of '[D]'
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission set mines.d' to the rank 'D'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.d' to the rank 'D'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.d' to the rank 'A'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.d' to the rank 'A'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.e' to the rank 'D'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.e' to the rank 'D'.
 [04:20:04 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:04 INFO]: | Info | Your new rank, 'E', was created in the ladder 'default', using the tag value of '[E]'
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission set mines.e' to the rank 'E'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.e' to the rank 'E'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.e' to the rank 'A'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.e' to the rank 'A'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.f' to the rank 'E'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.f' to the rank 'E'.
 [04:20:04 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:04 INFO]: | Info | Your new rank, 'F', was created in the ladder 'default', using the tag value of '[F]'
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission set mines.f' to the rank 'F'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.f' to the rank 'F'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.f' to the rank 'A'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.f' to the rank 'A'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.g' to the rank 'F'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.g' to the rank 'F'.
 [04:20:04 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:04 INFO]: | Info | Your new rank, 'G', was created in the ladder 'default', using the tag value of '[G]'
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission set mines.g' to the rank 'G'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.g' to the rank 'G'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.g' to the rank 'A'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.g' to the rank 'A'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.h' to the rank 'G'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.h' to the rank 'G'.
 [04:20:04 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:04 INFO]: | Info | Your new rank, 'H', was created in the ladder 'default', using the tag value of '[H]'
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission set mines.h' to the rank 'H'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.h' to the rank 'H'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.h' to the rank 'A'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.h' to the rank 'A'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.i' to the rank 'H'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.i' to the rank 'H'.
 [04:20:04 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:04 INFO]: | Info | Your new rank, 'I', was created in the ladder 'default', using the tag value of '[I]'
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission set mines.i' to the rank 'I'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.i' to the rank 'I'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.i' to the rank 'A'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.i' to the rank 'A'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.j' to the rank 'I'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.j' to the rank 'I'.
 [04:20:04 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:04 INFO]: | Info | Your new rank, 'J', was created in the ladder 'default', using the tag value of '[J]'
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission set mines.j' to the rank 'J'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.j' to the rank 'J'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.j' to the rank 'A'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.j' to the rank 'A'.
-[04:20:04 INFO]: | Info | Added command 'lp user {player} permission unset mines.k' to the rank 'J'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.k' to the rank 'J'.
 [04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:05 INFO]: | Info | Your new rank, 'K', was created in the ladder 'default', using the tag value of '[K]'
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.k' to the rank 'K'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.k' to the rank 'K'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.k' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.k' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.l' to the rank 'K'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.l' to the rank 'K'.
 [04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:05 INFO]: | Info | Your new rank, 'L', was created in the ladder 'default', using the tag value of '[L]'
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.l' to the rank 'L'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.l' to the rank 'L'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.l' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.l' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.m' to the rank 'L'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.m' to the rank 'L'.
 [04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:05 INFO]: | Info | Your new rank, 'M', was created in the ladder 'default', using the tag value of '[M]'
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.m' to the rank 'M'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.m' to the rank 'M'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.m' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.m' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.n' to the rank 'M'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.n' to the rank 'M'.
 [04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:05 INFO]: | Info | Your new rank, 'N', was created in the ladder 'default', using the tag value of '[N]'
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.n' to the rank 'N'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.n' to the rank 'N'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.n' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.n' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.o' to the rank 'N'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.o' to the rank 'N'.
 [04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:05 INFO]: | Info | Your new rank, 'O', was created in the ladder 'default', using the tag value of '[O]'
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.o' to the rank 'O'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.o' to the rank 'O'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.o' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.o' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.p' to the rank 'O'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.p' to the rank 'O'.
 [04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:05 INFO]: | Info | Your new rank, 'P', was created in the ladder 'default', using the tag value of '[P]'
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.p' to the rank 'P'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.p' to the rank 'P'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.p' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.p' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.q' to the rank 'P'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.q' to the rank 'P'.
 [04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:05 INFO]: | Info | Your new rank, 'Q', was created in the ladder 'default', using the tag value of '[Q]'
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.q' to the rank 'Q'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.q' to the rank 'Q'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.q' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.q' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.r' to the rank 'Q'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.r' to the rank 'Q'.
 [04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:05 INFO]: | Info | Your new rank, 'R', was created in the ladder 'default', using the tag value of '[R]'
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.r' to the rank 'R'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.r' to the rank 'R'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.r' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.r' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.s' to the rank 'R'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.s' to the rank 'R'.
 [04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:05 INFO]: | Info | Your new rank, 'S', was created in the ladder 'default', using the tag value of '[S]'
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.s' to the rank 'S'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.s' to the rank 'S'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.s' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.s' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.t' to the rank 'S'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.t' to the rank 'S'.
 [04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:05 INFO]: | Info | Your new rank, 'T', was created in the ladder 'default', using the tag value of '[T]'
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.t' to the rank 'T'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.t' to the rank 'T'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.t' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.t' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.u' to the rank 'T'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.u' to the rank 'T'.
 [04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:05 INFO]: | Info | Your new rank, 'U', was created in the ladder 'default', using the tag value of '[U]'
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.u' to the rank 'U'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.u' to the rank 'U'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.u' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.u' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.v' to the rank 'U'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.v' to the rank 'U'.
 [04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:05 INFO]: | Info | Your new rank, 'V', was created in the ladder 'default', using the tag value of '[V]'
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.v' to the rank 'V'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.v' to the rank 'V'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.v' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.v' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.w' to the rank 'V'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.w' to the rank 'V'.
 [04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:05 INFO]: | Info | Your new rank, 'W', was created in the ladder 'default', using the tag value of '[W]'
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.w' to the rank 'W'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.w' to the rank 'W'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.w' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.w' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.x' to the rank 'W'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.x' to the rank 'W'.
 [04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:05 INFO]: | Info | Your new rank, 'X', was created in the ladder 'default', using the tag value of '[X]'
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.x' to the rank 'X'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.x' to the rank 'X'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.x' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.x' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.y' to the rank 'X'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.y' to the rank 'X'.
 [04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:05 INFO]: | Info | Your new rank, 'Y', was created in the ladder 'default', using the tag value of '[Y]'
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.y' to the rank 'Y'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.y' to the rank 'Y'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.y' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.y' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.z' to the rank 'Y'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.z' to the rank 'Y'.
 [04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 [04:20:05 INFO]: | Info | Your new rank, 'Z', was created in the ladder 'default', using the tag value of '[Z]'
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.z' to the rank 'Z'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission set mines.tp.z' to the rank 'Z'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.z' to the rank 'A'.
-[04:20:05 INFO]: | Info | Added command 'lp user {player} permission unset mines.tp.z' to the rank 'A'.
 [04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
 ```
 

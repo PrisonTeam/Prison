@@ -226,6 +226,18 @@ public class PrisonSpigotAPI {
 		return getPrisonMineManager().findMineLocation( spigotPlayer );
 	}
 	
+	/**
+	 * <p>This function will use the Location to identify if the block came from 
+	 * within a mine or not.
+	 * </p>
+	 * 
+	 * @param block A PrisonBlock only if it contains a Location.
+	 * @return
+	 */
+	public Mine findMineLocation( PrisonBlock block ) {
+		return getPrisonMineManager().findMineLocation( block.getLocation() );
+	}
+	
 	
 	/**
 	 * <p>This function will return the mine in which a block break even has occurred.

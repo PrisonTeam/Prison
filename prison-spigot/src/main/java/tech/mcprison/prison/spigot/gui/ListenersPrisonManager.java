@@ -49,6 +49,7 @@ import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoSmeltGUI;
 import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminGUI;
 import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminListGUI;
 import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminPlayerListGUI;
+import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 import tech.mcprison.prison.spigot.gui.mine.SpigotBlocksListGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotBlocksMineListGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotMineBlockPercentageGUI;
@@ -88,7 +89,7 @@ public class ListenersPrisonManager implements Listener {
     private final Configuration guiConfig = SpigotPrison.getInstance().getGuiConfig();
 
     // NOTE: sellAllConfig will be null if sellall is not enbled.
-	private Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
+	private Configuration sellAllConfig = SpigotPrison.getInstance().updateSellAllConfig();
     
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     boolean guiNotEnabled = !(config.getString("prison-gui-enabled").equalsIgnoreCase("true"));

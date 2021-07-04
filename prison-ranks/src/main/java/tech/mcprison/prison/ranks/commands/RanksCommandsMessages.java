@@ -1,6 +1,5 @@
 package tech.mcprison.prison.ranks.commands;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 
 import tech.mcprison.prison.commands.BaseCommands;
@@ -65,7 +64,7 @@ public class RanksCommandsMessages
 	}
 	
 	protected void errorCouldNotSaveLadderMsg( CommandSender sender, 
-					String ladderName, IOException e ) {
+					String ladderName ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__error_saving_ladder" )
 				.withReplacements( 
@@ -78,7 +77,7 @@ public class RanksCommandsMessages
 						ladderName )
 				.localize();
 		
-		Output.get().logError( message, e );
+		Output.get().logError( message );
 	}
 	
 	
@@ -335,7 +334,7 @@ public class RanksCommandsMessages
 	
 	protected String ranksInfoRankIdMsg( int rankId ) {
 		return PrisonRanks.getInstance().getRanksMessages()
-				.getLocalizable( "ranks_rankCommands__ranks_info_cost" )
+				.getLocalizable( "ranks_rankCommands__ranks_info_rank_id" )
 				.withReplacements( 
 						Integer.toString( rankId ) )
 				.localize();

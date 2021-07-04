@@ -5,6 +5,7 @@ import java.util.List;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.MineScheduler.MineJob;
@@ -180,16 +181,22 @@ public abstract class MineTasks
     	Location tpTargetLocation = isHasSpawn() ? getSpawn() : altTp;
 									
     	Location glassBlockLocation = new Location( tpTargetLocation );
-    	glassBlockLocation.setY( tpTargetLocation.getBlockY() - 1 );
+    	int newY = tpTargetLocation.getBlockY() - 1;
+    	glassBlockLocation.setY( newY );
     	
-    	if ( glassBlockLocation.getBlockAt().getPrisonBlock().equals( PrisonBlock.GLASS ) ) {
-    		// The glass block is under the player's feet so submit to remove it:
+    	Block block = glassBlockLocation.getBlockAt();
+    	if ( block != null ) {
+    		PrisonBlock prisonBlock = block.getPrisonBlock();
     		
-    		MineChangeBlockTask changeBlockTask = 
-    							new MineChangeBlockTask( glassBlockLocation, PrisonBlock.AIR );
-    		
-    		int delayInTicks = 10;
-    		PrisonTaskSubmitter.runTaskLater( changeBlockTask, delayInTicks );
+    		if ( prisonBlock != null && prisonBlock.equals( PrisonBlock.GLASS ) ) {
+    			// The glass block is under the player's feet so submit to remove it:
+    			
+    			MineChangeBlockTask changeBlockTask = 
+    					new MineChangeBlockTask( glassBlockLocation, PrisonBlock.AIR );
+    			
+    			int delayInTicks = 10;
+    			PrisonTaskSubmitter.runTaskLater( changeBlockTask, delayInTicks );
+    		}
     	}
     			
     }

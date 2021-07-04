@@ -46,7 +46,7 @@ public class SellAllUtil {
     private static SellAllUtil instance;
     private final boolean isEnabled = isEnabled();
     private File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-    public Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
+    public Configuration sellAllConfig = SpigotPrison.getInstance().updateSellAllConfig();
     public static List<String> activePlayerDelay = new ArrayList<>();
     public static Map<Player, Double> activeAutoSellPlayers = new HashMap<>();
 //    public boolean signUsed = false;
@@ -1313,7 +1313,7 @@ public class SellAllUtil {
         // Get the items from the player inventory and for each of them check the conditions.
         mode = inventorySellMode.PlayerInventory;
         for (ItemStack itemStack : inv.getContents()) {
-            moneyToGive += getNewMoneyToGiveManager(p, itemStack, removeItems, sellAllXMaterials);
+            moneyToGive += getNewMoneyToGiveManager(p, inv, itemStack, removeItems, sellAllXMaterials);
         }
 
         // Check option and if enabled.
@@ -1348,9 +1348,10 @@ public class SellAllUtil {
                         if (backPack != null) {
                             for (ItemStack itemStack : backPack.getContents()) {
                                 if (itemStack != null) {
-                                    moneyToGive += getNewMoneyToGiveManager(p, itemStack, removeItems, sellAllXMaterials);
+                                    moneyToGive += getNewMoneyToGiveManager(p, backPack, itemStack, removeItems, sellAllXMaterials);
                                 }
                             }
+                            BackpacksUtil.get().setInventory(p, backPack);
                         }
 
                     } else {
@@ -1361,9 +1362,10 @@ public class SellAllUtil {
                         if (backPack != null) {
                             for (ItemStack itemStack : backPack.getContents()) {
                                 if (itemStack != null) {
-                                    moneyToGive += getNewMoneyToGiveManager(p, itemStack, removeItems, sellAllXMaterials);
+                                    moneyToGive += getNewMoneyToGiveManager(p, backPack, itemStack, removeItems, sellAllXMaterials);
                                 }
                             }
+                            BackpacksUtil.get().setInventory(p, backPack, id);
                         }
                     }
                 }
@@ -1378,9 +1380,10 @@ public class SellAllUtil {
             if (backPack != null) {
                 for (ItemStack itemStack : backPack.getContents()) {
                     if (itemStack != null) {
-                        moneyToGive += getNewMoneyToGiveManager(p, itemStack, removeItems, sellAllXMaterials);
+                        moneyToGive += getNewMoneyToGiveManager(p, backPack, itemStack, removeItems, sellAllXMaterials);
                     }
                 }
+                BackpacksUtil.get().setInventory(p, backPack);
             }
         }
         return moneyToGive;
@@ -1392,9 +1395,10 @@ public class SellAllUtil {
         Backpack backPack = IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p);
 
         if (backPack != null) {
-            for (ItemStack itemStack : backPack.getInventory().getContents()) {
+            Inventory inv = backPack.getInventory();
+            for (ItemStack itemStack : inv.getContents()) {
                 if (itemStack != null) {
-                    moneyToGive += getNewMoneyToGiveManager(p, itemStack, removeItems, sellAllXMaterials);
+                    moneyToGive += getNewMoneyToGiveManager(p, inv, itemStack, removeItems, sellAllXMaterials);
                 }
             }
         }
@@ -1430,7 +1434,7 @@ public class SellAllUtil {
         return sellAllXMaterials;
     }
 
-    private double getNewMoneyToGiveManager(Player p, ItemStack itemStack, boolean removeItems, HashMap<XMaterial, Double> sellAllXMaterials) {
+    private double getNewMoneyToGiveManager(Player p, Inventory inv, ItemStack itemStack, boolean removeItems, HashMap<XMaterial, Double> sellAllXMaterials) {
 
         double moneyToGive = 0;
 
@@ -1460,14 +1464,14 @@ public class SellAllUtil {
 
                     if (removeItems) {
                         if (mode == inventorySellMode.PlayerInventory) {
-                            p.getInventory().remove(itemStack);
+                            inv.remove(itemStack);
                         } else if (IntegrationMinepacksPlugin.getInstance().isEnabled() && mode == inventorySellMode.MinesBackPack) {
-                            IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p).getInventory().remove(itemStack);
+                            inv.remove(itemStack);
                         } else if (mode == inventorySellMode.PrisonBackPackSingle) {
-                            BackpacksUtil.get().removeItem(p, itemStack);
+                            inv.remove(itemStack);
                         } else if (mode == inventorySellMode.PrisonBackPackMultiples) {
                             if (idBeingProcessedBackpack != null) {
-                                BackpacksUtil.get().removeItem(p, itemStack, idBeingProcessedBackpack);
+                                inv.remove(itemStack);
                             }
                         }
                     }

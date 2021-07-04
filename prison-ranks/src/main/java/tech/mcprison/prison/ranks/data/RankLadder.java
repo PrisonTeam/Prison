@@ -54,6 +54,10 @@ public class RankLadder
     private List<String> permissionGroups;
  
     
+    // The commands that are run when this rank is attained.
+    private List<String> rankUpCommands;
+
+    
     private boolean dirty = false;
 
     /*
@@ -62,6 +66,8 @@ public class RankLadder
 
     public RankLadder() {
     	super();
+    	
+    	this.rankUpCommands = new ArrayList<>();
     	
     	this.ranks = new ArrayList<>();
     	
@@ -90,6 +96,22 @@ public class RankLadder
         List<LinkedTreeMap<String, Object>> ranksLocal =
                 (List<LinkedTreeMap<String, Object>>) document.get("ranks");
 
+		getRankUpCommands().clear();
+		Object cmds = document.get("commands");
+		if ( cmds != null ) {
+
+			List<String> commands = (List<String>) cmds;
+			for ( String cmd : commands ) {
+				if ( cmd != null ) {
+					getRankUpCommands().add( cmd );
+				}
+			}
+			
+			// This was allowing nulls to be added to the live commands... 
+//			this.rankUpCommands = (List<String>) cmds;
+		}
+
+        
         this.ranks = new ArrayList<>();
         for (LinkedTreeMap<String, Object> rank : ranksLocal) {
         	
@@ -168,6 +190,15 @@ public class RankLadder
         Document ret = new Document();
         ret.put("id", this.id);
         ret.put("name", this.name);
+        
+        List<String> cmds = new ArrayList<>();
+        for ( String cmd : getRankUpCommands() ) {
+        	// Filters out possible nulls:
+			if ( cmd != null ) {
+				cmds.add( cmd );
+			}
+		}
+        ret.put("commands", cmds);
         
         // getRanks() no longer returns an intermediate object, it contains the ranks:
         List<LinkedTreeMap<String, Object>> ranksLocal =
@@ -698,9 +729,20 @@ public class RankLadder
 //		this.ranks = ranks;
 //	}
 	
+	public List<String> getRankUpCommands() {
+		if ( rankUpCommands == null ) {
+			rankUpCommands = new ArrayList<>();
+		}
+		return rankUpCommands;
+	}
+	public void setRankUpCommands( List<String> rankUpCommands ) {
+		this.rankUpCommands = rankUpCommands;
+	}
+
 	public List<String> getPermissions() {
 		return permissions;
 	}
+
 	public void setPermissions( List<String> permissions ) {
 		this.permissions = permissions;
 	}

@@ -77,12 +77,26 @@ public class PrisonUtilsModule
 
 				PrisonUtilsPotions utils = new PrisonUtilsPotions();
 
-				utils.setEnablePotionEffects( isEnabled( "utils.potions.potionEffects.enabled", true ) );
+				utils.setEnablePotionEffects( isEnabled( "utils.potions.potionEffects", true ) );
 				// utils.setEnablePotions( isEnabled( "utils.potions.potions.enabled", true ) );
 
 				Prison.get().getCommandHandler().registerCommands( utils );
 
 			}
+			
+			
+			if ( isEnabled( "utils.decay.enabled", true ) ) {
+
+				PrisonUtilsDecay utils = new PrisonUtilsDecay();
+
+				utils.setEnableDecayObby( isEnabled( "utils.decay.obby", true ) );
+				utils.setEnableDecayRainbow( isEnabled( "utils.decay.rainbow", true ) );
+				utils.setEnableDecayBlocks( isEnabled( "utils.decay.blocks", true ) );
+
+				Prison.get().getCommandHandler().registerCommands( utils );
+
+			}
+			
 		}
 	}
 

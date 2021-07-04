@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.gui;
+package tech.mcprison.prison.spigot.gui.guiutility;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,6 +21,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 
 /**
  * @author rbluer RoyalBlueRanger
@@ -48,7 +49,7 @@ public abstract class SpigotGUIComponents {
 
         ItemStack item = new ItemStack(id, amount);
         ItemMeta meta = item.getItemMeta();
-        return getItemStack(item, lore, display, meta);
+        return getItemStack(item, lore, SpigotPrison.format(display), meta);
     }
 
     /**
@@ -70,7 +71,7 @@ public abstract class SpigotGUIComponents {
             meta = XMaterial.BARRIER.parseItem().getItemMeta();
         }
 
-        return getItemStack(item, lore, display, meta);
+        return getItemStack(item, lore, SpigotPrison.format(display), meta);
     }
 
     /**
@@ -134,7 +135,7 @@ public abstract class SpigotGUIComponents {
      * Get SellAll config.
      * */
     protected static Configuration getSellAll(){
-        return SpigotPrison.getInstance().getSellAllConfig();
+        return SpigotPrison.getInstance().updateSellAllConfig();
     }
 
     /**

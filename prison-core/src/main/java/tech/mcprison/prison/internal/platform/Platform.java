@@ -330,6 +330,8 @@ public interface Platform {
 	
 	public int getModuleElementCount( ModuleElementType elementType );
 	
+	public ModuleElement getModuleElement( ModuleElementType elementType, String elementName );
+	
 	
 	public ModuleElement getPlayerDefaultMine( tech.mcprison.prison.internal.CommandSender sender );
 	
@@ -337,7 +339,7 @@ public interface Platform {
 	public boolean isMineAccessibleByRank( Player player, ModuleElement mine );
 	
 	
-	public void autoCreateMineBlockAssignment();
+	public void autoCreateMineBlockAssignment( boolean forceKeepBlocks );
 
 
 	public void autoCreateMineLinerAssignment();
@@ -357,5 +359,8 @@ public interface Platform {
 	public void dumpEventListenersBlockBreakEvents();
 	
 	public void dumpEventListenersPlayerChatEvents();
+
+
+	public void traceEventListenersBlockBreakEvents( CommandSender sender );
 	
 }

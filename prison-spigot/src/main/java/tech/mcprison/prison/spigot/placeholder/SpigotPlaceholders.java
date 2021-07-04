@@ -20,6 +20,7 @@ import tech.mcprison.prison.placeholders.PlaceholderResults;
 import tech.mcprison.prison.placeholders.Placeholders;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
+import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
 
 public class SpigotPlaceholders
@@ -56,7 +57,7 @@ public class SpigotPlaceholders
 					count = placeholderDetails.get( flag );
 				}
 				
-				placeholderDetails.put( flag, new Integer(count + 1) );
+				placeholderDetails.put( flag, Integer.valueOf(count + 1) );
 			}
 		}
 
@@ -233,6 +234,28 @@ public class SpigotPlaceholders
 			}
 		}
 		
+		if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+			
+			RankManager rm = PrisonRanks.getInstance().getRankManager();
+			
+			if ( rm != null ) {
+
+				List<PlaceHolderKey> placeholderKeys = rm.getTranslatedPlaceHolderKeys();
+	    		
+	    		for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
+	    			
+	    			PlaceholderResults identifier = placeHolderKey.getIdentifier( results );
+	    			
+	    			if ( results != null && identifier != null && identifier.hasResults() ) {
+	    				
+	    				results = placeholderReplace( results, identifier.getEscapedIdentifier(), 
+	    						rm.getTranslateRanksPlaceHolder( placeHolderKey, identifier.getIdentifier()  ) );
+	    			}
+	    			
+	    		}
+			}
+		}
+		
 		return results;
 	}
     
@@ -325,6 +348,7 @@ public class SpigotPlaceholders
     	
 		// Check the mine's playerMines placeholders:
 		if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+			
 			MineManager mm = PrisonMines.getInstance().getMineManager();
 			if ( mm != null ) {
 				
@@ -379,6 +403,7 @@ public class SpigotPlaceholders
 			
 		}
 
+		
     	// Then translate any remaining non-player (mine) related placeholders:
     	results = placeholderTranslateText( results);
     	
@@ -392,12 +417,18 @@ public class SpigotPlaceholders
 		
 		TreeMap<String, PlaceHolderKey> placeholderKeys = new TreeMap<>();
 		
-		MineManager mm = null;
 		PlayerManager pm = null;
+		RankManager rm = null;
+		MineManager mm = null;
 		
 		if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
 			pm = PrisonRanks.getInstance().getPlayerManager();
 			addAllPlaceHolderKeys( placeholderKeys, pm.getTranslatedPlaceHolderKeys() );
+		}
+		
+		if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+			rm = PrisonRanks.getInstance().getRankManager();
+			addAllPlaceHolderKeys( placeholderKeys, rm.getTranslatedPlaceHolderKeys() );
 		}
 		
 		if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
@@ -424,6 +455,7 @@ public class SpigotPlaceholders
 				
 				String value = null;
 				
+				
 				if ( mm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.MINES ) ||
 							placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.PLAYERMINES ))) {
 					PlaceholderAttribute attribute = null;
@@ -432,6 +464,9 @@ public class SpigotPlaceholders
 				else if ( pm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.PLAYER ) || 
 							placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.LADDERS ))) {
 					value = pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, placeHolderKey, null );
+				}
+				else if ( rm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.RANKS )) ) {
+					value = rm.getTranslateRanksPlaceHolder( placeHolderKey, null );
 				}
 				
 				String placeholderAlias = ( placeHolderKey.getAliasName() == null ? null : 

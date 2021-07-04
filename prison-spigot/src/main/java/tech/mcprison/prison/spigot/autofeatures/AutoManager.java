@@ -24,10 +24,11 @@ public class AutoManager
 	
 	public AutoManager() {
         super();
-        
-        // Save this instance within the SpigotPrison instance so it can be accessed
-        // from non-event listeners:
-        SpigotPrison.getInstance().setAutoFeatures( this );
+   
+        // NOTE: Set in SpigotPrison.
+//        // Save this instance within the SpigotPrison instance so it can be accessed
+//        // from non-event listeners:
+//        SpigotPrison.getInstance().setAutoFeatures( this );
     }
 
 	
@@ -73,6 +74,32 @@ public class AutoManager
 		}
 		
 		
+		boolean isTEBlockExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
+		
+		if ( isTEBlockExplosiveEnabled ) {
+			
+			try {
+				Class.forName("com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent");
+				
+				AutoManagerTokenEnchant tokenEnchant = new AutoManagerTokenEnchant();
+				tokenEnchant.registerBlockBreakEvents( spigotPrison );
+				
+//				OnBlockBreakEventTokenEnchant bbTokenEnchant = new OnBlockBreakEventTokenEnchant();
+//				bbTokenEnchant.registerBlockBreakEvents( spigotPrison );
+				
+//			Bukkit.getPluginManager().registerEvents(new AutoManagerTokenEnchant(), spigotPrison);
+//			Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventTokenEnchant(), spigotPrison);
+				
+			} 
+			catch (ClassNotFoundException e) {
+				// TokenEnchant is not available on this server which is not an error.  Just
+				// ignore this situation and do not register the TE explosion events.
+			}
+		}
+		
+		
+		
+		
     	boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
     	
     	if ( isCEBlockExplodeEnabled ) {
@@ -82,44 +109,49 @@ public class AutoManager
 
 		
 		
+    	boolean isZenBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessZenchantsBlockExplodeEvents );
 		
-		String zbsPriority = getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
-		BlockBreakPriority blockShredPriority = BlockBreakPriority.fromString( zbsPriority );
-		
-		switch ( blockShredPriority )
-		{
-			case LOWEST:
-				Bukkit.getPluginManager().registerEvents( 
-						new AutoManagerBlockShredEventListenerLowest(), spigotPrison);
-				break;
-				
-			case LOW:
-				Bukkit.getPluginManager().registerEvents( 
-						new AutoManagerBlockShredEventListenerLow(), spigotPrison);
-				break;
-				
-			case NORMAL:
-				Bukkit.getPluginManager().registerEvents( 
-						new AutoManagerBlockShredEventListenerNormal(), spigotPrison);
-				break;
-				
-			case HIGH:
-				Bukkit.getPluginManager().registerEvents( 
-						new AutoManagerBlockShredEventListenerHigh(), spigotPrison);
-				break;
-				
-			case HIGHEST:
-				Bukkit.getPluginManager().registerEvents( 
-						new AutoManagerBlockShredEventListenerHighest(), spigotPrison);
-				break;
-
-			case DISABLED:
-				Output.get().logInfo( "AutoManager Zenchantments BlockShredEvent handling has been DISABLED." );
-				break;
-
-			default:
-				break;
+		if ( isZenBlockExplodeEnabled ) {
+			
+			AutoManagerZenchantments zenBlockEvents = new AutoManagerZenchantments();
+			zenBlockEvents.registerBlockBreakEvents( spigotPrison );
 		}
+
+		
+//		switch ( blockShredPriority )
+//		{
+//			case LOWEST:
+//				Bukkit.getPluginManager().registerEvents( 
+//						new AutoManagerBlockShredEventListenerLowest(), spigotPrison);
+//				break;
+//				
+//			case LOW:
+//				Bukkit.getPluginManager().registerEvents( 
+//						new AutoManagerBlockShredEventListenerLow(), spigotPrison);
+//				break;
+//				
+//			case NORMAL:
+//				Bukkit.getPluginManager().registerEvents( 
+//						new AutoManagerBlockShredEventListenerNormal(), spigotPrison);
+//				break;
+//				
+//			case HIGH:
+//				Bukkit.getPluginManager().registerEvents( 
+//						new AutoManagerBlockShredEventListenerHigh(), spigotPrison);
+//				break;
+//				
+//			case HIGHEST:
+//				Bukkit.getPluginManager().registerEvents( 
+//						new AutoManagerBlockShredEventListenerHighest(), spigotPrison);
+//				break;
+//
+//			case DISABLED:
+//				Output.get().logInfo( "AutoManager Zenchantments BlockShredEvent handling has been DISABLED." );
+//				break;
+//
+//			default:
+//				break;
+//		}
 		
 	}
 
@@ -216,10 +248,10 @@ public class AutoManager
         	super.onBlockBreak( e );
         }
         
-        @EventHandler(priority=EventPriority.LOWEST) 
-        public void onBlockShredBreak(BlockShredEvent e) {
-        	super.onBlockShredBreak( e );
-        }
+//        @EventHandler(priority=EventPriority.LOWEST) 
+//        public void onBlockShredBreak(BlockShredEvent e) {
+//        	super.onBlockShredBreak( e );
+//        }
     }
     
     public class AutoManagerEventListenerLow 
@@ -231,10 +263,10 @@ public class AutoManager
     		super.onBlockBreak( e );
     	}
     	
-    	@EventHandler(priority=EventPriority.LOW) 
-    	public void onBlockShredBreak(BlockShredEvent e) {
-    		super.onBlockShredBreak( e );
-    	}
+//    	@EventHandler(priority=EventPriority.LOW) 
+//    	public void onBlockShredBreak(BlockShredEvent e) {
+//    		super.onBlockShredBreak( e );
+//    	}
     }
     
     public class AutoManagerEventListenerNormal 
@@ -246,10 +278,10 @@ public class AutoManager
     		super.onBlockBreak( e );
     	}
     	
-    	@EventHandler(priority=EventPriority.NORMAL) 
-    	public void onBlockShredBreak(BlockShredEvent e) {
-    		super.onBlockShredBreak( e );
-    	}
+//    	@EventHandler(priority=EventPriority.NORMAL) 
+//    	public void onBlockShredBreak(BlockShredEvent e) {
+//    		super.onBlockShredBreak( e );
+//    	}
     }
     
     public class AutoManagerEventListenerHigh 
@@ -261,10 +293,10 @@ public class AutoManager
     		super.onBlockBreak( e );
     	}
     	
-    	@EventHandler(priority=EventPriority.HIGH) 
-    	public void onBlockShredBreak(BlockShredEvent e) {
-    		super.onBlockShredBreak( e );
-    	}
+//    	@EventHandler(priority=EventPriority.HIGH) 
+//    	public void onBlockShredBreak(BlockShredEvent e) {
+//    		super.onBlockShredBreak( e );
+//    	}
     }
     
     public class AutoManagerEventListenerHighest 
@@ -276,65 +308,75 @@ public class AutoManager
     		super.onBlockBreak( e );
     	}
     	
-    	@EventHandler(priority=EventPriority.HIGHEST) 
-    	public void onBlockShredBreak(BlockShredEvent e) {
-    		super.onBlockShredBreak( e );
-    	}
+//    	@EventHandler(priority=EventPriority.HIGHEST) 
+//    	public void onBlockShredBreak(BlockShredEvent e) {
+//    		super.onBlockShredBreak( e );
+//    	}
     }
     
     
     
     
-    
-    public class AutoManagerBlockShredEventListenerLowest 
-		extends AutoManager
-		implements Listener {
-        
-        @EventHandler(priority=EventPriority.LOWEST) 
-        public void onBlockShredBreak(BlockShredEvent e) {
-        	super.onBlockShredBreak( e );
-        }
-    }
-    
-    public class AutoManagerBlockShredEventListenerLow 
-	    extends AutoManager
-	    implements Listener {
-    	
-    	@EventHandler(priority=EventPriority.LOW) 
-    	public void onBlockShredBreak(BlockShredEvent e) {
-    		super.onBlockShredBreak( e );
-    	}
-    }
-    
-    public class AutoManagerBlockShredEventListenerNormal 
-	    extends AutoManager
-	    implements Listener {
-    	
-    	@EventHandler(priority=EventPriority.NORMAL) 
-    	public void onBlockShredBreak(BlockShredEvent e) {
-    		super.onBlockShredBreak( e );
-    	}
-    }
-    
-    public class AutoManagerBlockShredEventListenerHigh 
-	    extends AutoManager
-	    implements Listener {
-	    	
-    	@EventHandler(priority=EventPriority.HIGH) 
-    	public void onBlockShredBreak(BlockShredEvent e) {
-    		super.onBlockShredBreak( e );
-    	}
-    }
-    
-    public class AutoManagerBlockShredEventListenerHighest 
-    extends AutoManager
-    implements Listener {
-    	
-    	@EventHandler(priority=EventPriority.HIGHEST) 
-    	public void onBlockShredBreak(BlockShredEvent e) {
-    		super.onBlockShredBreak( e );
-    	}
-    }
+//    
+//    public class AutoManagerBlockShredEventListenerMonitor 
+//	    extends AutoManager
+//	    implements Listener {
+//    	
+//    	@EventHandler(priority=EventPriority.MONITOR) 
+//    	public void onBlockShredBreakMonitor(BlockShredEvent e) {
+//    		super.genericBlockEventMonitor( e );
+//    	}
+//    }
+//    
+//    public class AutoManagerBlockShredEventListenerLowest 
+//		extends AutoManager
+//		implements Listener {
+//        
+//        @EventHandler(priority=EventPriority.LOWEST) 
+//        public void onBlockShredBreak(BlockShredEvent e) {
+//        	super.onBlockShredBreak( e );
+//        }
+//    }
+//    
+//    public class AutoManagerBlockShredEventListenerLow 
+//	    extends AutoManager
+//	    implements Listener {
+//    	
+//    	@EventHandler(priority=EventPriority.LOW) 
+//    	public void onBlockShredBreak(BlockShredEvent e) {
+//    		super.onBlockShredBreak( e );
+//    	}
+//    }
+//    
+//    public class AutoManagerBlockShredEventListenerNormal 
+//	    extends AutoManager
+//	    implements Listener {
+//    	
+//    	@EventHandler(priority=EventPriority.NORMAL) 
+//    	public void onBlockShredBreak(BlockShredEvent e) {
+//    		super.onBlockShredBreak( e );
+//    	}
+//    }
+//    
+//    public class AutoManagerBlockShredEventListenerHigh 
+//	    extends AutoManager
+//	    implements Listener {
+//	    	
+//    	@EventHandler(priority=EventPriority.HIGH) 
+//    	public void onBlockShredBreak(BlockShredEvent e) {
+//    		super.onBlockShredBreak( e );
+//    	}
+//    }
+//    
+//    public class AutoManagerBlockShredEventListenerHighest 
+//    extends AutoManager
+//    implements Listener {
+//    	
+//    	@EventHandler(priority=EventPriority.HIGHEST) 
+//    	public void onBlockShredBreak(BlockShredEvent e) {
+//    		super.onBlockShredBreak( e );
+//    	}
+//    }
     
     
     

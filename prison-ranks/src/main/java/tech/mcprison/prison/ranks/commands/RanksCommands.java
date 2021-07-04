@@ -1,6 +1,5 @@
 package tech.mcprison.prison.ranks.commands;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -154,15 +153,15 @@ public class RanksCommands
         // Add the ladder
 
         rankLadder.addRank(newRank);
-        try {
-            PrisonRanks.getInstance().getLadderManager().saveLadder(rankLadder);
+        if ( PrisonRanks.getInstance().getLadderManager().save(rankLadder) ) {
             
             success = true;
             
             // Tell the player the good news!
             rankCreatedSuccessfullyMsg( sender, name, ladder, tag );
-        } catch (IOException e) {
-        	errorCouldNotSaveLadderMsg( sender, rankLadder.getName(), e );
+        } 
+        else {
+        	errorCouldNotSaveLadderMsg( sender, rankLadder.getName() );
         }
 
         return success;
@@ -173,19 +172,25 @@ public class RanksCommands
 			"single letters A through Z for both the rank and mine names. If both ranks and mines are " +
 			"generated, they will also be linked together automatically. To set the starting price use " +
 			"price=x. To set multiplier mult=x. Cannot autoConfigure if any ranks or mines are defined, " +
-			"but 'force' will attempt it but at your risk. " +
+			"but 'force' will attempt it but at your risk and will replace all blocks in preexisting " +
+			"mines. To keep preexisting blocks, use 'forceKeepBlocks' with the 'force' option. " +
 			"Default values [full price=50000 mult=1.5]", 
 			onlyPlayers = false, permissions = "ranks.set")
 	public void autoConfigureRanks(CommandSender sender, 
 			@Wildcard(join=true)
 			@Arg(name = "options", 
-				description = "Options: [full ranks mines price=x mult=x force]", 
+				description = "Options: [full ranks mines price=x mult=x force forceKeepBlocks]", 
 				def = "full") String options
 			) {
 		
+		boolean forceKeepBlocks = options != null && options.contains( "forceKeepBlocks" );
+		if ( forceKeepBlocks ) {
+			options = options.replace( "forceKeepBlocks", "" ).trim();
+		}
+		
 		boolean force = options != null && options.contains( "force" );
 		if ( force ) {
-			options = options.replace( "force", "" );
+			options = options.replace( "force", "" ).trim();
 		}
 		
 		int rankCount = PrisonRanks.getInstance().getRankManager().getRanks().size();
@@ -201,13 +206,14 @@ public class RanksCommands
 			autoConfigForceWarningMsg( sender );
 		}
 		
-		String optionHelp = "&b[&7full ranks mines price=&dx &7mult=&dx&b]";
+		String optionHelp = "&b[&7full ranks mines price=&dx &7mult=&dx &7force forceKeepBlocks&b]";
 		boolean ranks = false;
 		boolean mines = false;
 		double startingPrice = 50000;
 		double percentMultipler = 1.5;
 		
-		options = (options == null ? "" : options.replaceAll( "/s*", " " ));
+		options = (options == null || options.trim().isEmpty() ? 
+							"full" : options.trim().replaceAll( "/s*", " " ));
 		if ( options.trim().length() == 0 ) {
 			Output.get().sendError(sender,
 					"&3Invalid options.  Use %s&3.  Was: &3%s",
@@ -218,15 +224,15 @@ public class RanksCommands
 		if ( options.contains( "full" ) ) {
 			ranks = true;
 			mines = true;
-			options = options.replace( "full", "" );
+			options = options.replace( "full", "" ).trim();
 		}
 		if ( options.contains( "ranks" ) ) {
 			ranks = true;
-			options = options.replace( "ranks", "" );
+			options = options.replace( "ranks", "" ).trim();
 		}
 		if ( options.contains( "mines" ) ) {
 			mines = true;
-			options = options.replace( "mines", "" );
+			options = options.replace( "mines", "" ).trim();
 		}
 		
 		String priceStr = extractParameter("price=", options);
@@ -301,8 +307,10 @@ public class RanksCommands
 
 		
 		int countRanks = 0;
+		int countRanksForced = 0;
 		int countRankCmds = 0;
 		int countMines = 0;
+		int countMinesForced = 0;
 		int countLinked = 0;
 		
 		if ( ranks ) {
@@ -323,8 +331,17 @@ public class RanksCommands
 //	        	char cRankNext = (char) (cRank + 1);
 //	        	String rankNameNext = Character.toString( cRankNext );
 	        	
-	        	if ( createRank(sender, rankName, price, "default", tag) ) {
-	        		countRanks++;
+	        	boolean forceRank = force && PrisonRanks.getInstance().getRankManager().getRank( rankName ) != null;
+	        	if ( forceRank ||
+	        			createRank(sender, rankName, price, "default", tag) ) {
+	        		
+	        		if ( forceRank ) {
+	        			countRanksForced++;
+	        		}
+	        		else {
+	        			countRanks++;
+	        		}
+	        		
 	        		
 //	        		if ( permCmdAdd != null ) {
 //	        			getRankCommandCommands().commandAdd( sender, rankName, permCmdAdd + perm1 + rankName.toLowerCase());
@@ -355,11 +372,26 @@ public class RanksCommands
 	        			// Creates a virtual mine:
 	        			String perm = null;
 //	        			String perm = perm1 + rankName;
-	        			ModuleElement mine = Prison.get().getPlatform().createModuleElement( 
-	        					sender, ModuleElementType.MINE, rankName, tag, perm );
+	        			
+	        			
+	        			
+	        			ModuleElement mine = Prison.get().getPlatform().getModuleElement( ModuleElementType.MINE, rankName );
+	        			
+	        			boolean forceMine = force && mine != null;
+	        			
+	        			if ( mine == null ) {
+	        				mine = Prison.get().getPlatform().createModuleElement( 
+	        								sender, ModuleElementType.MINE, rankName, tag, perm );
+	        			}
+	        			
 	        			
 	        			if ( mine != null ) {
-	        				countMines++;
+	        				if ( forceMine ) {
+	        					countMinesForced++;
+	        				}
+	        				else {
+	        					countMines++;
+	        				}
 	        				
 	        				// Links the virtual mine to generated rank and configure mines:
 	        				if ( Prison.get().getPlatform().linkModuleElements( mine, ModuleElementType.RANK, rankName ) ) {
@@ -383,8 +415,8 @@ public class RanksCommands
 		}
 		
 		// If mines were created, go ahead and auto assign blocks to the mines:
-		if ( countMines > 0 ) {
-			Prison.get().getPlatform().autoCreateMineBlockAssignment();
+		if ( countMines > 0 || countMinesForced > 0 ) {
+			Prison.get().getPlatform().autoCreateMineBlockAssignment( forceKeepBlocks );
 			Prison.get().getPlatform().autoCreateMineLinerAssignment();
 			
 			Prison.get().getPlatform().autoCreateConfigureMines();
@@ -405,6 +437,10 @@ public class RanksCommands
 			}
 		}
 		
+		if ( countRanksForced > 0 ) {
+			// message about number of ranks that preexisting and were force:
+		}
+		
 		if ( countMines == 0 ) {
 			autoConfigNoMinesCreatedMsg( sender );
 		}
@@ -419,6 +455,10 @@ public class RanksCommands
 			}
 		}
 		
+		if ( countMinesForced > 0 ) {
+			// message about number of mines that preexisting and were force:
+		}
+
 		Output.get().logInfo( "");
 		
 		
@@ -671,7 +711,9 @@ public class RanksCommands
         
         if ( options != null && "all".equalsIgnoreCase( options )) {
         	
-        	getRankCommandCommands().commandList( sender, rankName );
+        	getRankCommandCommands().commandLadderList( sender, rank.getLadder().getName(), "noRemoves" );
+        	
+        	getRankCommandCommands().commandList( sender, rankName, "noRemoves" );
         }
     }
 

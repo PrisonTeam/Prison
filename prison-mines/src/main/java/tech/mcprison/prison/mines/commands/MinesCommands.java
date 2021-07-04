@@ -35,6 +35,7 @@ import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MineData;
@@ -59,6 +60,7 @@ import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.selection.Selection;
 import tech.mcprison.prison.tasks.PrisonCommandTask.TaskMode;
+import tech.mcprison.prison.tasks.PrisonCommandTask;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Bounds.Edges;
@@ -144,24 +146,28 @@ public class MinesCommands
     	super.delBlockCommand( sender, mineName, block );
     }
     
-    @Override
     @Command(identifier = "mines block search", permissions = "mines.block", 
 					description = "Searches for a block to add to a mine.")
 	public void searchBlockCommand(CommandSender sender,
 			@Arg(name = "search", def = " ", description = "Any part of the block's name or ID.") String search,
 			@Arg(name = "page", def = "1", description = "Page of search results (optional)") String page ) {
 		
-    	super.searchBlockCommand( sender, search, page );
+    	super.searchBlockCommand( sender, search, page, 
+    			"mines block search", 
+    			"mines block add",
+    			"mine" );
     }
     
-    @Override
     @Command(identifier = "mines block searchAll", permissions = "mines.block", 
     		description = "Searches for a blocks and items. Items cannot be added to mines.")
     public void searchBlockAllCommand(CommandSender sender,
     		@Arg(name = "search", def = " ", description = "Any part of the block's, or item's name.") String search,
     		@Arg(name = "page", def = "1", description = "Page of search results (optional)") String page ) {
     	
-    	super.searchBlockAllCommand( sender, search, page );
+    	super.searchBlockAllCommand( sender, search, page,
+    			"mines block searchAll", 
+    			"mines block add",
+    			"mine" );
     }
     
     @Override
@@ -2792,7 +2798,7 @@ public class MinesCommands
         ChatDisplay display = new ChatDisplay("BlockEvent Commands for " + m.getTag());
         display.addText("&8Hover over values for more information and clickable actions.");
 
-        generateBlockEventListing( m, display );
+        generateBlockEventListing( m, display, true );
         
         display.addComponent(new FancyMessageComponent(
             new FancyMessage("&7[&a+&7] Add").suggest("/mines blockEvent add " + mineName + " [chance] [perm] [cmd] /")
@@ -2800,7 +2806,7 @@ public class MinesCommands
         display.send(sender);
     }
 
-	private void generateBlockEventListing( Mine m, ChatDisplay display ) {
+	private void generateBlockEventListing( Mine m, ChatDisplay display, boolean includeRemove ) {
 		
 		BulletedListComponent.BulletedListBuilder builder =
         					new BulletedListComponent.BulletedListBuilder();
@@ -2856,11 +2862,35 @@ public class MinesCommands
         	row.addFancy( msgCommand );
         	
         	
-        	FancyMessage msgRemove = new FancyMessage( String.format( " &4Remove&3", 
-        			blockEvent.getCommand() ) )
-        			.suggest("/mines blockEvent remove " + m.getName() + " " + rowNumber )
-        			.tooltip("Click to Delete this BlockEvent");
-        	row.addFancy( msgRemove );
+//        	if ( blockEvent.getPrisonBlocks().size() > 0 ) {
+//        		StringBuilder sb = new StringBuilder();
+//        		
+//        		for ( PrisonBlock block : blockEvent.getPrisonBlocks() ) {
+//					if ( sb.length() > 0 ) {
+//						sb.append( ", " );
+//					}
+//					sb.append( block.getBlockName() );
+//				}
+//        		if ( sb.length() > 0 ) {
+//        			sb.insert( 0, "[" );
+//        			sb.append( "]" );
+//        			
+//        			FancyMessage msgBlocks = new FancyMessage( sb.toString() )
+//        					.tooltip( "Block filters. Click block list to add another." )
+//        					.suggest( "/mines blockvent block add " + m.getName() + " " + 
+//        								rowNumber + " block_name" );
+//        			
+//        			row.addFancy( msgBlocks );
+//        		}
+//        	}
+        	
+        	if ( includeRemove ) {
+        		
+        		FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
+        				.suggest("/mines blockEvent remove " + m.getName() + " " + rowNumber )
+        				.tooltip("Click to Delete this BlockEvent");
+        		row.addFancy( msgRemove );
+        	}
         	
 	
             builder.add( row );
@@ -2952,8 +2982,9 @@ public class MinesCommands
 			"Example: 'token give {player} 1;{msg} &7You got &31 &7token!;tpa a'", 
     		onlyPlayers = false, permissions = "mines.set")
     public void blockEventAdd(CommandSender sender, 
-    			@Arg(name = "mineName") String mineName,
-    			@Arg(name = "percent",
+    			@Arg(name = "mineName", description = "mine name, or 'placeholders' for a list of possible placeholders that " +
+    					"you can use with blockEvents") String mineName,
+    			@Arg(name = "percent", def = "100.0",
     					description = "Percent chance between 0.0000 and 100.0") Double chance,
     			@Arg(name = "permission", def = "none",
     					description = "Optional permission that the player must have, or [none] for no perm." 
@@ -2972,6 +3003,24 @@ public class MinesCommands
     	
 		// Note: async is not an option since the bukkit dispatchCommand will run it as sync.
 		//String mode = "sync";
+		
+        if ( mineName != null && "placeholders".equalsIgnoreCase( mineName ) ) {
+        	
+        	String placeholders = 
+        			
+        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
+        					PrisonCommandTask.CommandEnvironment.all_commands ) + " " +
+        			
+        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
+									PrisonCommandTask.CommandEnvironment.blockevent_commands );
+        	
+        	String message = String.format( "Valid Placeholders that can be used with blockEvents: [%s]", 
+        							placeholders );
+        	
+        	Output.get().logInfo( message );
+        	return;
+        }
+
 		
     	if (command.startsWith("/")) {
             command = command.replaceFirst("/", "");
@@ -3432,132 +3481,370 @@ public class MinesCommands
 
 
 	@Command(identifier = "mines blockEvent block add", 
-						description = "Adds a blockName to a BlockBreak task.", 
+						description = "Adds a block filter to a BlockBreak task. " +
+								"Omit the row number to display all of the available block events for" +
+								"the selected mine. " +
+								"Omit the block name to disaply a list of all the available blocks for " +
+								"the selected mine.", 
 						onlyPlayers = false, permissions = "mines.set")
     public void blockEventBlockAdd(CommandSender sender, 
     			@Arg(name = "mineName") String mineName,
-    			@Arg(name = "row", def = "0", description = "Row number to add a " +
-    					"blockName to. If not provided, or value of 0, then " +
-    					"this command " +
-    					"will display a list of all commands.") Integer row,
-    			@Arg(name = "search", description = "Optioinal keyword 'search' to search " +
-    					"based upon value of blockName. [search, none, <blank>]",
-    					def = "") String search,
-    	        @Arg(name = "blockName", description = "Name of block to add, or " +
-    	        		"'search' to search for blocks",
-    					def = "search") String blockName
+    			@Arg(name = "rowBlockEvent", def = "0", description = "Row number of the blockEvent to " +
+    					"add the block filter to. If not provided, or value of 0, then " +
+    					"this command will display a list of all current blockEvents for " +
+    					"this mine.") Integer rowBlockEvent,
+
+    			// search is no longer needed nor is the wildcard join for blockName:
+//    			@Arg(name = "search", description = "Optional keyword 'search' to search " +
+//    					"based upon value of blockName. [search, none, <blank>]",
+//    					def = "") String search,
+//    			@Wildcard(join=true)
+    	        @Arg(name = "rowBlockName", description = "Row number of the block to add, or " +
+    	        		"if ommitted, then it will show a list of all of the blocks that " +
+    	        		"are available within the selected mine.",
+    					def = "") Integer rowBlockName
     			) {
 
         if (!performCheckMineExists(sender, mineName)) {
             return;
         }
         
-        
         setLastMineReferenced(mineName);
-
-        
-        // Need to clean up the search field:
-        if ( search == null || search.trim().isEmpty() ) {
-        	// Make sure search is equal to "search"
-        	search = "none";
-        }
-        else if ( "search".equalsIgnoreCase( search ) ) {
-        	// Make sure it is all lower case:
-        	search = "search";
-        }
-        else {
-        	// The value in search is not actually part of search, but instead part of
-        	// the block name, so shift it to blockName:
-        	blockName = search.trim() + 
-        				( blockName == null || blockName.trim().isEmpty() ? "" : " " + blockName );
-        	search = "none";
-        }
-        
         
         PrisonMines pMines = PrisonMines.getInstance();
 //    	MineManager mMan = pMines.getMineManager();
         Mine m = pMines.getMine(mineName);
-
         
+        
+        String commandRoot = String.format( "" +
+				"/mines blockEvent block add %s ", m.getName() );
         
         /// if row is less than 1, then we need to display a list of BlockEvents:
-        if ( row == null || row <= 0 ) {
-        	
+        if ( rowBlockEvent == null || rowBlockEvent <= 0 ) {
 
             ChatDisplay display = new ChatDisplay("Add blocks to a BlockEvent for " + m.getTag() );
             display.addText("&8Hover over values for more information and clickable actions.");
 
             // Generates a blockEvent listing for the given selected mine:
-            generateBlockEventListing( m, display );
+            generateBlockEventListing( m, display, false );
             
             
             display.addText( "&7Select a BlockEvent by row number to add a block" );
             
             // try to "suggest" reading this command: 
             // mines blockEvent block add [row] [search} [block]
-        	FancyMessage msgAddBlock = new FancyMessage( String.format( "&7/mines blockEvent block add %d %s %s", 
-					row, search, blockName ) )
-					.suggest( "/mines blockEvent block add " + row + " " + search + " [eventType]" )
-					.tooltip("Add blockName to blockEvent - Click to Add");
+        	FancyMessage msgAddBlock = new FancyMessage( String.format( 
+        									"&7%s [rowBlockEvent] [rowBlockName]", 
+        										commandRoot ) )
+					.suggest( commandRoot + " [rowBlockEvent] [rowBlockName]" )
+					.tooltip("Add block to blockEvent - Click to Add");
             
+        	RowComponent rowFancy = new RowComponent();
+        	rowFancy.addFancy( msgAddBlock );
+        	display.addComponent( rowFancy );
+
             display.send( sender );
-            msgAddBlock.send( sender );
      
         	return;        	
         }
         
         
-        if ( row > m.getBlockEvents().size() ) {
+        if ( rowBlockEvent > m.getBlockEvents().size() ) {
         	sender.sendMessage( 
         			String.format("&7Please provide a valid row number no greater than &b%d&7. " +
-        					"Was row=[&b%d&7]",
-        					m.getBlockEvents().size(), (row == null ? "null" : row) ));
+        					"Was rowBlockEvent=[&b%d&7]",
+        					m.getBlockEvents().size(), (rowBlockEvent == null ? "null" : rowBlockEvent) ));
         	return;        	
-        }
-        
-        
-        // If search is "search", then perform a block search:
-        if ( "search".equalsIgnoreCase( search ) ) {
-        	
-        	// block search: 
-        	
-        	
         }
         
 
         // We have the row number, so now get the BlockEvent:
-        MineBlockEvent blockEvent = m.getBlockEvents().get( row - 1 );
+        MineBlockEvent blockEvent = m.getBlockEvents().get( rowBlockEvent - 1 );
+
+        if ( blockEvent != null ) {
+        	
+        	if ( rowBlockName == null || rowBlockName == 0 || 
+        						rowBlockName > m.getBlockEvents().size() ) {
+        		
+        		String commandBlockEvent = String.format( "" +
+        				"%s %d ", commandRoot, rowBlockEvent );
+
+        		ChatDisplay display = new ChatDisplay("Add blocks to a BlockEvent for " + m.getTag() );
+                display.addText("&8Select a block from this mine by using the block's row number:");
+                display.addText("&8  " + commandBlockEvent + " [rowBlockName]");
+                
+                DecimalFormat dFmt = new DecimalFormat("0.00000");
+                
+        		// Display a list of blocks for the mine:
+        		int blockRow = 0;
+        		
+        		// Old block model is not supported with blockEvent block filers:
+        		if ( m.isUseNewBlockModel() ) {
+        			
+        			for ( PrisonBlock block : m.getPrisonBlocks() )
+        			{
+        	        	
+        	        	RowComponent rowB = new RowComponent();
+        	        	
+        	        	rowB.addTextComponent( " &3Row: &d%d  ", ++blockRow );
+        	        	
+        	        	String message = String.format( "&7%s %s", 
+        	        			block.getBlockName(), dFmt.format( block.getChance() ) );
+        	        	
+        	        	String command = String.format( "%s %d", commandBlockEvent, blockRow );
+        	        	
+        	        	FancyMessage msgAddBlock = new FancyMessage( message )
+								.suggest( command )
+								.tooltip("Add selected block to blockEvent - Click to Add");
+        	        	
+        	        	rowB.addFancy( msgAddBlock );
+        	        	
+        	        	display.addComponent( rowB );
+        			}
+        		}
+
+        		display.send( sender );
+        		return;
+        	}
+        	
+        	
+        	// Old block model is not supported with blockEvent block filers:
+        	if ( m.isUseNewBlockModel() ) {
+        		PrisonBlock block = m.getPrisonBlocks().get( rowBlockName - 1 );
+        		
+        		if ( block != null ) {
+
+        			blockEvent.addPrisonBlock( block );
+        			
+        			pMines.getMineManager().saveMine( m );
+        			
+        			sender.sendMessage( "Block has been added to BlockEvent" );
+        			
+        			return;
+        		}
+        	}
+        	
+//        	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
+//        	PrisonBlock block = prisonBlockTypes.getBlockTypesByName( blockName );
+ 
+        	
+        }
+        else {
+        	sender.sendMessage( "BlockEvent was not found" );
+        	// BlockEvent not found. Recheck the blockEven row number.
+        }
+
+        // Redisplay the event list:
+ //       blockEventList( sender, mineName );
+
+        sender.sendMessage( "BlockEvent was not completed correctly" );
+    }
+	
+	
+
+
+	@Command(identifier = "mines blockEvent block remove", 
+						description = "Removes a block filter from a BlockBreak task. " +
+								"Omit the row number to display all of the available block events for" +
+								"the selected mine. " +
+								"Omit the rowBlockName to disaply a list of all the blocks filters for " +
+								"this task.", 
+						onlyPlayers = false, permissions = "mines.set")
+    public void blockEventBlockRemove(CommandSender sender, 
+    			@Arg(name = "mineName") String mineName,
+    			@Arg(name = "rowBlockEvent", def = "0", description = "Row number of the blockEvent to " +
+    					"add the block filter to. If not provided, or value of 0, then " +
+    					"this command will display a list of all current blockEvents for " +
+    					"this mine.") Integer rowBlockEvent,
+
+    			// search is no longer needed nor is the wildcard join for blockName:
+//    			@Arg(name = "search", description = "Optional keyword 'search' to search " +
+//    					"based upon value of blockName. [search, none, <blank>]",
+//    					def = "") String search,
+//    			@Wildcard(join=true)
+    	        @Arg(name = "rowBlockName", description = "Name of block to add, or " +
+    	        		"if ommitted, then it will show a list of all of the blocks that " +
+    	        		"are available within the selected mine.",
+    					def = "") Integer rowBlockName
+    			) {
+
+        if (!performCheckMineExists(sender, mineName)) {
+            return;
+        }
         
+        setLastMineReferenced(mineName);
 
         
+        PrisonMines pMines = PrisonMines.getInstance();
+//    	MineManager mMan = pMines.getMineManager();
+        Mine m = pMines.getMine(mineName);
 
         
+        String commandRoot = String.format( "" +
+				"/mines blockEvent block remove %s ", m.getName() );
+        
+        
+        /// if row is less than 1, then we need to display a list of BlockEvents:
+        if ( rowBlockEvent == null || rowBlockEvent <= 0 ) {
+        	
 
-        TaskMode taskModeOld = blockEvent.getTaskMode();
-        
-        //blockEvent.setTaskMode( taskMode );
+            ChatDisplay display = new ChatDisplay("Remove block from a BlockEvent for " + m.getTag() );
+            display.addText("&8Hover over values for more information and clickable actions.");
 
-        pMines.getMineManager().saveMine( m );
+            // Generates a blockEvent listing for the given selected mine:
+            generateBlockEventListing( m, display, false );
+            
+            
+            display.addText( "&7Select a BlockEvent by row number to remove a block" );
+            
+            // try to "suggest" reading this command: 
+            // mines blockEvent block add [row] [search} [block]
+        	FancyMessage msgRemoveBlock = new FancyMessage( String.format( 
+        									"&7%s [rowBlockEvent] [rowBlockName]", 
+        										commandRoot ) )
+					.suggest( commandRoot + " [rowBlockEvent] [rowBlockName]" )
+					.tooltip("Remove a block from a blockEvent - Click to Remove");
+            
+        	RowComponent rowFancy = new RowComponent();
+        	rowFancy.addFancy( msgRemoveBlock );
+        	display.addComponent( rowFancy );
+        	
+            display.send( sender );
+     
+        	return;        	
+        }
         
         
-//        Output.get().sendInfo(sender, "&7BlockEvent task mode &b%s&7 was changed for mine '&b%s&7'. " +
-//        		"Was &b%s&7. Command '&b%s&7'", 
-//        		taskMode, m.getName(), taskModeOld.name(), blockEvent.getCommand() );
+        if ( rowBlockEvent > m.getBlockEvents().size() ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid row number no greater than &b%d&7. " +
+        					"Was rowBlockEvent=[&b%d&7]",
+        					m.getBlockEvents().size(), (rowBlockEvent == null ? "null" : rowBlockEvent) ));
+        	return;        	
+        }
+        
+        
 
-        
-        Output.get().sendInfo(sender, "&7BlockEvent add block is under developement and is not finalized." );
+        // We have the row number, so now get the BlockEvent:
+        MineBlockEvent blockEvent = m.getBlockEvents().get( rowBlockEvent - 1 );
+
+        if ( blockEvent != null ) {
+        	
+        	if ( rowBlockName == null || rowBlockName == 0 || 
+        						rowBlockName > m.getBlockEvents().size() ) {
+        		
+        		String commandBlockEvent = String.format( "" +
+        				"%s %d ", commandRoot, rowBlockEvent );
+
+        		ChatDisplay display = new ChatDisplay("Remove a block from a BlockEvent for " + m.getTag() );
+                display.addText("&8Select a block filter from this mine by using the block's row number:");
+                display.addText("&8  " + commandBlockEvent + " [rowBlockName]");
+                
+//                DecimalFormat dFmt = new DecimalFormat("0.00000");
+                
+        		// Display a list of blocks for the mine:
+        		int blockRow = 0;
+        		
+        		// Old block model is not supported with blockEvent block filers:
+        		if ( m.isUseNewBlockModel() ) {
+        			
+        			for ( PrisonBlock block : blockEvent.getPrisonBlocks() )
+        			{
+        	        	
+        	        	RowComponent rowB = new RowComponent();
+        	        	
+        	        	rowB.addTextComponent( " &3Row: &d%d  ", ++blockRow );
+        	        	
+        	        	String message = String.format( "&7%s", 
+        	        			block.getBlockName() );
+//        	        	String message = String.format( "&7%s %s", 
+//        	        			block.getBlockName(), dFmt.format( block.getChance() ) );
+        	        	
+        	        	String command = String.format( "%s %d", commandBlockEvent, blockRow );
+        	        	
+        	        	FancyMessage msgAddBlock = new FancyMessage( message )
+								.suggest( command )
+								.tooltip("Remove a selected block from a blockEvent - Click to Remove");
+        	        	
+        	        	rowB.addFancy( msgAddBlock );
+        	        	
+        	        	display.addComponent( rowB );
+        			}
+        		}
+
+        		display.send( sender );
+        		return;
+        	}
+        	
+        	
+        	// Old block model is not supported with blockEvent block filers:
+        	if ( m.isUseNewBlockModel() ) {
+        		
+        		if ( blockEvent.removePrisonBlock( rowBlockName ) ) {
+
+        			pMines.getMineManager().saveMine( m );
+        			
+        			sender.sendMessage( "Block has been removed from the BlockEvent" );
+        			
+        			return;
+        		}
+        	}
+        	
+//        	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
+//        	PrisonBlock block = prisonBlockTypes.getBlockTypesByName( blockName );
+        	
+        }
+        else {
+        	sender.sendMessage( "BlockEvent was not found" );
+        	// BlockEvent not found. Recheck the blockEven row number.
+        	
+        	return;
+        }
 
         
         // Redisplay the event list:
  //       blockEventList( sender, mineName );
 
+        sender.sendMessage( "BlockEvent was not completed correctly" );
     }
+	
+
+	
+//	private String extractSearchValue( String page, String blockName ) {
+//		String results = blockName;
+//		if ( blockName.toLowerCase().startsWith( page.toLowerCase() ) ) {
+//			results = blockName.substring( page.length() ).trim();
+//		}
+//		
+//		return results;
+//	}
+
+//	private String extractPage( String blockName ) {
+//		String page = "1";
+//		
+//		if ( blockName != null && blockName.toLowerCase().startsWith( "all " ) ) {
+//			page = "all";
+//		}
+//		else if ( blockName!= null && blockName.contains( " " ) ) {
+//					
+//			try {
+//				String pageStr = blockName.substring( 0, blockName.indexOf( " " ) );
+//				
+//				int pg = Integer.parseInt( pageStr );
+//				
+//				page = Integer.toString( pg );
+//			}
+//			catch ( NumberFormatException e ) {
+//			}
+//		}
+//		
+//		return page;
+//	}
 
 
 	
 	
 	
-
 
 
 	@Command(identifier = "mines command list", description = "Lists the commands for a mine.", 
@@ -3592,11 +3879,24 @@ public class MinesCommands
         BulletedListComponent.BulletedListBuilder builder =
             new BulletedListComponent.BulletedListBuilder();
 
+        int rowNumber = 1;
         for (String command : m.getResetCommands()) {
-            FancyMessage msg = new FancyMessage( "&a'&7" + command + "&a'" )
-                .command("/mines command remove " + mineName + " " + command)
-                .tooltip("Click to remove.");
-            builder.add(msg);
+        	
+        	
+        	RowComponent row = new RowComponent();
+        	
+        	row.addTextComponent( " &3Row: &d%d  ", rowNumber++ );
+        	
+        	FancyMessage msg = new FancyMessage( "&a'&7" + command + "&a'" );
+            row.addFancy( msg );
+            
+        	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
+        			.suggest("/mines command remove " + m.getName() + " " + rowNumber )
+        			.tooltip("Click to Remove this Mine Command");
+        	row.addFancy( msgRemove );
+	
+            builder.add( row );
+
         }
 
         display.addComponent(builder.build());
@@ -3611,19 +3911,19 @@ public class MinesCommands
     		onlyPlayers = false, permissions = "mines.command")
     public void commandRemove(CommandSender sender, 
     				@Arg(name = "mineName") String mineName,
-    				@Arg(name = "command", 
-    					description = "Exact command to remove including the 'before: ' and 'after: ' states.") 
-    						@Wildcard String command) {
+    				@Arg(name = "row", 
+							description = "The row number of the command to remove.") 
+							Integer row) {
     	
-//    	if ( 1 < 2 ) {
-//    		sender.sendMessage( "&cThis command is disabled&7. It will be enabled in the near future." );
-//    		return;
-//    	}
     	
-        if (command.startsWith("/")) {
-            command = command.replaceFirst("/", "");
+        if ( row == null || row <= 0 ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid row number greater than zero. " +
+        					"Was row=[&b%d&7]",
+        					(row == null ? "null" : row) ));
+        	return;        	
         }
-    	
+
         if (!performCheckMineExists(sender, mineName)) {
             return;
         }
@@ -3644,13 +3944,29 @@ public class MinesCommands
             return;
         }
 
-        if ( m.getResetCommands().remove(command) ) {
+
+        if (m.getResetCommands() == null) {
+        	m.setResetCommands( new ArrayList<>() );
+        }
+
+        if ( row > m.getResetCommands().size() ) {
+        	sender.sendMessage( 
+        			String.format("&7Please provide a valid row number no greater than &b%d&7. " +
+        					"Was row=[&b%d&7]",
+        					m.getResetCommands().size(), (row == null ? "null" : row) ));
+        	return;        	
+        }
+
+
+        String oldCommand = m.getResetCommands().remove( (int) row - 1);
+        if ( oldCommand != null ) {
         	
         	pMines.getMineManager().saveMine( m );
             	
         	Output.get().sendInfo(sender, "Removed command '%s' from the mine '%s'.", 
-        				command, m.getTag());
-        } else {
+        				oldCommand, m.getTag());
+        } 
+        else {
         	Output.get().sendWarn(sender, 
         			String.format("The mine %s doesn't contain that command. Nothing was changed.", 
         						m.getTag()));
@@ -3660,10 +3976,29 @@ public class MinesCommands
 	@Command(identifier = "mines command add", description = "Adds a command to a mine with NO placeholders.", 
     		onlyPlayers = false, permissions = "mines.command")
     public void commandAdd(CommandSender sender, 
-    			@Arg(name = "mineName") String mineName,
+    			@Arg(name = "mineName", description = "mine name, or 'placeholders' for a list of possible placeholders that " +
+    					"you can use with blockEvents") String mineName,
     			@Arg(name = "state", def = "before", description = "State can be either before or after.") String state,
     			@Arg(name = "command") @Wildcard String command) {
-    	
+  
+		
+		
+        if ( mineName != null && "placeholders".equalsIgnoreCase( mineName ) ) {
+        	
+        	String placeholders = 
+        			
+        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
+        					PrisonCommandTask.CommandEnvironment.all_commands ) + " " +
+        			
+        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
+									PrisonCommandTask.CommandEnvironment.mine_commands );
+        	
+        	String message = String.format( "Valid Placeholders that can be used with mine commands: [%s]", 
+        							placeholders );
+        	
+        	Output.get().logInfo( message );
+        	return;
+        }
 
     	if (command.startsWith("/")) {
             command = command.replaceFirst("/", "");

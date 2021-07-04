@@ -1490,7 +1490,7 @@ public abstract class MineReset
     
     private void addMineTargetPrisonBlock( PrisonBlockStatusData block, int x, int y, int z ) {
     	
-    	MineTargetPrisonBlock mtpb = new MineTargetPrisonBlock( block, x, y, z );
+    	MineTargetPrisonBlock mtpb = new MineTargetPrisonBlock( block, getWorld().get(), x, y, z );
     	
 		getMineTargetPrisonBlocks().add( mtpb );
 		getMineTargetPrisonBlocksMap().put( mtpb.getBlockKey(), mtpb );

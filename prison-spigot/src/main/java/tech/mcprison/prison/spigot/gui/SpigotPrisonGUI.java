@@ -8,6 +8,9 @@ import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
+import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 import java.util.List;
 
@@ -25,59 +28,31 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
 
     public void open() {
 
-        // Create the inventory and set up the owner, dimensions or number of slots, and title
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3PrisonManager"));
+        // Create PrisonGUI, it requires Player (who will open the GUI), size and title.
+        PrisonGUI gui = new PrisonGUI(p, dimension, "&3PrisonManager");
 
-        if (guiBuilder(inv)) return;
+        // Create and add buttons.
+        gui.addButton(new Button(10, XMaterial.TRIPWIRE_HOOK, createLore(
+                messages.getString("Lore.RanksButton"),
+                messages.getString("Lore.ClickToOpen")), "&3" + "Ranks - Ladders"));
 
-        // Open the inventory, I don't remember why I did add the this.p
-        openGUI(p,inv);
-    }
-
-    private boolean guiBuilder(Inventory inv) {
-        try {
-            buttonsSetup(inv);
-        } catch (NullPointerException ex){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
-            ex.printStackTrace();
-            return true;
-        }
-        return false;
-    }
-
-    private void buttonsSetup(Inventory inv) {
-
-
-        List<String> ranksLore = createLore(
-        		messages.getString("Lore.RanksButton"),
-                messages.getString("Lore.ClickToOpen"));
-        List<String> prisonTasksLore = createLore(
+        gui.addButton(new Button(13, XMaterial.IRON_PICKAXE, createLore(
                 messages.getString("Lore.PrisonTasksButton"),
-                messages.getString("Lore.ClickToOpen"));
-        List<String> minesLore = createLore(
+                messages.getString("Lore.ClickToOpen")), SpigotPrison.format("&3" + "AutoManager")));
+
+        gui.addButton(new Button(16, XMaterial.DIAMOND_ORE, createLore(
                 messages.getString("Lore.MinesButton"),
-                messages.getString("Lore.ClickToOpen"));
-        List<String> sellAllLore = createLore(
-                messages.getString("Lore.ClickToOpen"));
-        List<String> closeGUILore = createLore(
-                messages.getString("Lore.ClickToClose")
-        );
+                messages.getString("Lore.ClickToOpen")), SpigotPrison.format("&3" + "Mines")));
 
-        ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
+        gui.addButton(new Button(29, XMaterial.CHEST, createLore(
+                messages.getString("Lore.ClickToOpen")), SpigotPrison.format("&3" + "SellAll")));
 
-        // Create the button, set up the material, amount, lore and name
-        ItemStack ranks = createButton(XMaterial.TRIPWIRE_HOOK.parseItem(), ranksLore, SpigotPrison.format("&3" + "Ranks - Ladders"));
-        ItemStack autoManager = createButton(XMaterial.IRON_PICKAXE.parseItem(), prisonTasksLore, SpigotPrison.format("&3" + "AutoManager"));
-        ItemStack mines = createButton(XMaterial.DIAMOND_ORE.parseItem(), minesLore, SpigotPrison.format("&3" + "Mines"));
-        ItemStack sellAll = createButton(XMaterial.CHEST.parseItem(), sellAllLore, SpigotPrison.format("&3" + "SellAll"));
-        ItemStack backpacksAdmin = createButton(XMaterial.CHEST_MINECART.parseItem(), sellAllLore, SpigotPrison.format("&3" + "Backpacks"));
+        gui.addButton(new Button(33, XMaterial.CHEST_MINECART, createLore(
+                messages.getString("Lore.ClickToOpen")), SpigotPrison.format("&3" + "Backpacks")));
 
-        // Position of the button
-        inv.setItem(10, ranks);
-        inv.setItem(13, autoManager);
-        inv.setItem(16, mines);
-        inv.setItem(29, sellAll);
-        inv.setItem(33, backpacksAdmin);
-        inv.setItem(dimension-1, closeGUI);
+        gui.addButton(new Button(44, XMaterial.RED_STAINED_GLASS_PANE, createLore(
+                messages.getString("Lore.ClickToClose")), SpigotPrison.format("&c" + "Close")));
+
+        gui.open();
     }
 }

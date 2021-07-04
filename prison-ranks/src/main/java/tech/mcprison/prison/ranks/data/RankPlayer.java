@@ -271,24 +271,24 @@ public class RankPlayer
      * @param rank   The {@link Rank} to add.
      * @throws IllegalArgumentException If the rank specified is not on this ladder.
      */
-    public void addRank(RankLadder ladder, Rank rank) {
-        if (!ladder.containsRank(rank.getId())) {
+    public void addRank( Rank rank) {
+        if ( rank.getLadder() == null ) {
             throw new IllegalArgumentException("Rank must be on ladder.");
         }
 
-        String ladderName = ladder.getName();
+        String ladderName = rank.getLadder().getName();
         
         // Remove the current rank on this ladder first
         if (ranksRefs.containsKey(ladderName)) {
             ranksRefs.remove(ladderName);
         }
         
-        if ( ladderRanks.containsKey( ladder ) ) {
-        	ladderRanks.remove( ladder );
+        if ( ladderRanks.containsKey( rank.getLadder() ) ) {
+        	ladderRanks.remove( rank.getLadder() );
         }
 
         ranksRefs.put(ladderName, rank.getId());
-        ladderRanks.put( ladder, rank );
+        ladderRanks.put( rank.getLadder(), rank );
     }
 
     /**

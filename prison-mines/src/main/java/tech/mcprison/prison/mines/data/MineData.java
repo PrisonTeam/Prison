@@ -53,8 +53,8 @@ public abstract class MineData
 	private boolean useNewBlockModel = false;
 	
 	
-	private boolean tpAccessByRank = true;
-	private boolean mineAccessByRank = true;
+	private boolean tpAccessByRank = false;
+	private boolean mineAccessByRank = false;
 	
 	
 	/**

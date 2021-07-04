@@ -12,7 +12,8 @@
 **[v3.2.5 - 2021-04-01](prison_changelog_v3.2.5.md)**&nbsp;&nbsp;
 **[v3.2.6 - 2021-04-11](prison_changelog_v3.2.6.md)**&nbsp;&nbsp;
 **[v3.2.7 - 2021-05-02](prison_changelog_v3.2.7.md)**&nbsp;&nbsp;
-**[v3.2.8 - 2021-06-17](prison_changelog_v3.2.8.md)**
+**[v3.2.8 - 2021-06-17](prison_changelog_v3.2.8.md)**&nbsp;&nbsp;
+**[v3.2.9 - 2021-07-03](prison_changelog_v3.2.9.md)**
  
 
 Greetings!  I'm delighted that you are interested in the build logs for the
@@ -22,6 +23,27 @@ that you need.
 
 
 # Prison now fully supports Spigot 1.17 and Java 16 
+
+
+# v3.2.8.1 2021-06-18
+
+* **Apply fixes to the v3.2.8 release**
+
+
+* **Check for null and an empty string in the parseInt() function for the /prison utils.**
+
+
+* **Expanded the help information on the commands for /prison utils heal, feed, and breath to explain how amount works.**
+
+
+* **Pull in the changes to bleeding with the new amount fields for /prison utils heal, feed, and breath.**
+Without amount being specified it will restore full healing, feeding, breathing.  If an amount is entered with a "+" then it will add the amount to the current health levels, or if "-" then it subtracts from the current health level.  If a value is supplied without either "+" Or "-" then it will set it to that value.
+
+
+* **Note: Bug fixes for 3.2.8.**
+
+* **Fixed a failure on startup for new installations of prison.**
+Basically it was unable to deploy the language files due to try-with-resources closing the initial zip connection.
 
 
 # v3.2.8 2021-06-17

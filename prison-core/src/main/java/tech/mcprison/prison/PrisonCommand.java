@@ -18,8 +18,10 @@
 
 package tech.mcprison.prison;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,7 @@ import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.CommandPagedData;
 import tech.mcprison.prison.commands.Wildcard;
+import tech.mcprison.prison.discord.PrisonPasteChat;
 import tech.mcprison.prison.integration.IntegrationManager;
 import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.CommandSender;
@@ -45,11 +48,9 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.DisplayComponent;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.Output.DebugTarget;
-import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.troubleshoot.TroubleshootResult;
 import tech.mcprison.prison.troubleshoot.Troubleshooter;
 import tech.mcprison.prison.util.PrisonJarReporter;
-import tech.mcprison.prison.util.PrisonTPS;
 
 /**
  * Root commands for managing the platform as a whole, in-game.
@@ -64,6 +65,9 @@ public class PrisonCommand {
 	private TreeMap<String, RegisteredPluginsData> registeredPluginData = new TreeMap<>();
 	
 	private List<String> prisonStartupDetails;
+	
+	private String supportName = null;
+	
 	
 	public PrisonCommand() {
 		super();
@@ -238,6 +242,8 @@ public class PrisonCommand {
 		}
     }
     
+    
+    	
     public ChatDisplay displayVersion(String options) {
     
     	boolean isBasic = options == null || "basic".equalsIgnoreCase( options );
@@ -251,66 +257,11 @@ public class PrisonCommand {
         
         // System stats:
         display.addText("");
+        
+        Prison.get().displaySystemSettings( display );
+        
+        Prison.get().displaySystemTPS( display );
 
-        display.addText("&7Server runtime: %s", Prison.get().getServerRuntimeFormatted() );;
-        
-        Runtime runtime = Runtime.getRuntime();
-        
-        String javaVersion = System.getProperty("java.version");
-        
-        int processors = runtime.availableProcessors();
-        long memoryMax = runtime.maxMemory();
-        long memoryTotal = runtime.totalMemory();
-        long memoryFree = runtime.freeMemory();
-        long memoryUsed = memoryTotal - memoryFree;
-        
-        DecimalFormat dFmt = new DecimalFormat("#,##0.000");
-        String memMax = PlaceholdersUtil.formattedIPrefixBinarySize( memoryMax, dFmt, " " );
-        String memTotal = PlaceholdersUtil.formattedIPrefixBinarySize( memoryTotal, dFmt, " " );
-        String memFree = PlaceholdersUtil.formattedIPrefixBinarySize( memoryFree, dFmt, " " );
-        String memUsed = PlaceholdersUtil.formattedIPrefixBinarySize( memoryUsed, dFmt, " " );
-
-        display.addText("&7Java Version: %s  Processor cores: %s ", 
-        								javaVersion, Integer.toString( processors ) );
-        display.addText("&7Memory Max: %s  Total: %s  Free: %s  Used: %s", 
-        				memMax, memTotal, memFree, memUsed );
-        
-        
-        File prisonFolder = Prison.get().getDataFolder();
-        long diskSpaceTotal = prisonFolder.getTotalSpace();
-        long diskSpaceUsable = prisonFolder.getUsableSpace();
-        long diskSpaceFree = prisonFolder.getFreeSpace();
-        long diskSpaceUsed = diskSpaceTotal - diskSpaceFree;
-        
-        String dsTotal = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceTotal, dFmt, " " );
-        String dsUsable = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceUsable, dFmt, " " );
-        String dsFree = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceFree, dFmt, " " );
-        String dsUsed = PlaceholdersUtil.formattedIPrefixBinarySize( diskSpaceUsed, dFmt, " " );
-        
-        display.addText("&7Total Server Disk Space: %s  Usable: %s  Free: %s  Used: %s", 
-        		dsTotal, dsUsable, dsFree, dsUsed );
-        
-        
-        getPrisonDiskSpaceUsage( display, prisonFolder, 
-        		"&7Prison's File Count: %s  Folder Count: %s  Disk Space: %s  Other Objects: %s" );
-        
-        
-        DecimalFormat iFmt = new DecimalFormat("#,##0");
-        PrisonTPS prisonTPS = Prison.get().getPrisonTPS();
-        display.addText( "&7Prison TPS Average: %s  Min: %s  Max: %s%s   " +
-        					"Interval: %s ticks  Samples: %s",
-        						prisonTPS.getAverageTPSFormatted(),
-        						prisonTPS.getTPSMinFormatted(),
-        						( prisonTPS.getTpsMax() >= 100  ? ">" : ""),
-        						prisonTPS.getTPSMaxFormatted(),
-        						iFmt.format( PrisonTPS.SUBMIT_TICKS_INTERVAL ),
-        						iFmt.format( prisonTPS.getTpsSamples() )
-        		);
-        
-        
-        display.addText( "&7TPS History: %s",
-        		prisonTPS.getLastFewTPS() );
-        
         
         display.addText("");
         
@@ -449,107 +400,9 @@ public class PrisonCommand {
         return display;
     }
 
-    public class PrisonDiskStats {
-    	
-    	long fileCount = 0L;
-    	long folderCount = 0L;
-    	long otherObjectCount = 0L;
-    	long storageSize = 0L;
-    	
-    	public PrisonDiskStats() {
-    		super();
-    	}
-
-    	public void incrementFileCount() {
-    		fileCount++;
-    	}
-		public long getFileCount() {
-			return fileCount;
-		}
-		public void setFileCount( long fileCount ) {
-			this.fileCount = fileCount;
-		}
-
-		public void incrementFolderCount() {
-			folderCount++;
-		}
-		public long getFolderCount() {
-			return folderCount;
-		}
-		public void setFolderCount( long folderCount ) {
-			this.folderCount = folderCount;
-		}
-
-		public void incrementOtherObjectCount() {
-			otherObjectCount++;
-		}
-		public long getOtherObjectCount() {
-			return otherObjectCount;
-		}
-		public void setOtherObjectCount( long otherObjectCount ) {
-			this.otherObjectCount = otherObjectCount;
-		}
-
-		public void addStorageSize( long fileSize ) {
-			storageSize += fileSize;
-		}
-		public long getStorageSize() {
-			return storageSize;
-		}
-		public void setStorageSize( long storageSize ) {
-			this.storageSize = storageSize;
-		}
-    }
-	
-    private void getPrisonDiskSpaceUsage( ChatDisplay display,
-    					File prisonFolder, String text ) {
-    	
-    	PrisonDiskStats diskStats = new PrisonDiskStats();
-    	
-    	// Increment folder count for prison's plugin folder:
-    	diskStats.incrementFolderCount();
-    	
-    	calculatePrisonDiskUsage( diskStats, prisonFolder );
-    	
-    	DecimalFormat dFmt = new DecimalFormat("#,##0.000");
-    	DecimalFormat iFmt = new DecimalFormat("#,##0");
-    	
-    	String prisonFileCount = iFmt.format( diskStats.getFileCount() );
-    	String prisonFolderCount = iFmt.format( diskStats.getFolderCount() );
-    	String prisonOtherObjectCount = iFmt.format( diskStats.getOtherObjectCount() );
-    	String prisonStorageSize = PlaceholdersUtil.formattedIPrefixBinarySize( 
-    						diskStats.getStorageSize(), dFmt, " " );
-        
-        display.addText( text, prisonFileCount, prisonFolderCount, prisonStorageSize, 
-        			prisonOtherObjectCount );
-    	
-	}
-
-
-    private void calculatePrisonDiskUsage( PrisonDiskStats diskStats, File prisonFolder ) {
-    	
-    	File[] files = prisonFolder.listFiles();
-    	
-    	for ( File file : files ) {
-			if ( file.isDirectory() ) {
-				diskStats.incrementFolderCount();
-				
-				// recursively call for all directories:
-				calculatePrisonDiskUsage( diskStats, file );
-			}
-			else if ( file.isFile() ) {
-				diskStats.incrementFileCount();
-				diskStats.addStorageSize( file.length() );
-			}
-			else {
-				diskStats.incrementOtherObjectCount();
-			}
-		}
-    }
-    
 
 	/**
-     * A test to see if these dummny command placeholders could possibly lock out
+     * A test to see if these dummy command placeholders could possibly lock out
      * players who don't have permission to view the subcommands?
      * 
      */
@@ -1094,6 +947,13 @@ public class PrisonCommand {
     		return;
     	}
     	
+    	if ( targets != null && "traceBlockBreakListeners".equalsIgnoreCase( targets ) ) {
+    		
+    		Prison.get().getPlatform().traceEventListenersBlockBreakEvents( sender );
+    		
+    		return;
+    	}
+    	
     	if ( targets != null && "chatListeners".equalsIgnoreCase( targets ) ) {
     		
     		Prison.get().getPlatform().dumpEventListenersPlayerChatEvents();
@@ -1145,6 +1005,149 @@ public class PrisonCommand {
     }
     
     
+    @Command(identifier = "prison support setSupportName", 
+    		description = "This sets the support name that is used with the submissions so its " +
+    				"easier to track who the submissions belong to.  It is recommended that you " +
+    				"use your discord name, or at least something similar. ", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportSetName(CommandSender sender,
+    		@Wildcard(join=true)
+    		@Arg(name = "supportName", 
+    				description = "The support name to use with support submissions." ) 
+    			String supportName
+    		) {
+    	
+    	if ( supportName == null || supportName.trim().isEmpty() ) {
+    		Output.get().logInfo( "A value for supportName is required." );
+    		return;
+    	}
+
+    	setSupportName( supportName );
+    	
+    	Output.get().logInfo( "The support name has been set to: %s", getSupportName() );
+    	Output.get().logInfo( "You can now use the support submit options." );
+
+    }
+    
+    
+    
+    @Command(identifier = "prison support submit version", 
+    		description = "For Prison support: This will copy the contents of '/prison version all' " +
+    				"to paste.helpch.at so it can be easily shared with Prison's support staff .", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportSubmitVersion(CommandSender sender
+    		) {
+    	
+    	
+    	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
+    		Output.get().logInfo( "The support name needs to be set prior to using this command." );
+    		Output.get().logInfo( "Use &7/prison support setSupportName help" );
+    		
+    		return;
+    	}
+    	
+    	
+    	ChatDisplay display = displayVersion("ALL");
+		StringBuilder text = display.toStringBuilder();
+		
+		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName() );
+		
+		String helpURL = pasteChat.post( text.toString() );
+		
+		if ( helpURL != null ) {
+			
+			Output.get().logInfo( "Prison's support information has been pasted. Copy and " +
+					"paste this URL in to Prison's Discord server." );
+			Output.get().logInfo( "Paste this URL: %s", helpURL );
+		}
+		else {
+			// Do nothing since if helpURL is null, then it has probably
+			// already sent an error message.
+		}
+		
+    	
+    }
+    
+    
+    @Command(identifier = "prison support submit latestLog", 
+    		description = "For Prison support: This will copy the contents of `logs/latest.log` " +
+    				"to paste.helpch.at so it can be easily shared with Prison's support staff .", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportSubmitLatestLog(CommandSender sender
+    		) {
+    	
+    	
+    	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
+    		Output.get().logInfo( "The support name needs to be set prior to using this command." );
+    		Output.get().logInfo( "Use &7/prison support setSupportName help" );
+    		
+    		return;
+    	}
+    	
+    	
+    	File latestLogFile = new File( Prison.get().getDataFolder().getParentFile().getParentFile(), 
+    									"logs/latest.log");
+    	
+    	Output.get().logInfo( "### log path: " + latestLogFile.getAbsolutePath() );
+    	
+    	
+    	StringBuilder logText = new StringBuilder();
+    	
+    	if ( latestLogFile.exists() && latestLogFile.canRead() ) {
+    		try (
+    				BufferedReader br = Files.newBufferedReader( latestLogFile.toPath() );
+    			) {
+    			String line = br.readLine();
+    			while ( line != null && logText.length() < PrisonPasteChat.HASTEBIN_MAX_LENGTH ) {
+    				
+    				logText.append( line ).append( "\n" );
+    				
+    				line = br.readLine();
+    			}
+    			
+    			if ( logText.length() > PrisonPasteChat.HASTEBIN_MAX_LENGTH ) {
+    				
+    				String trimMessage = "\n\n### Log has been trimmed to a max length of " +
+    						PrisonPasteChat.HASTEBIN_MAX_LENGTH + "\n";
+    				int pos = PrisonPasteChat.HASTEBIN_MAX_LENGTH - trimMessage.length();
+    				
+    				logText.insert( pos, trimMessage );
+    				logText.setLength( PrisonPasteChat.HASTEBIN_MAX_LENGTH );
+    			}
+    			
+			}
+			catch ( IOException e ) {
+				Output.get().logInfo( "Failed to read log file: %s  [%s]", 
+						latestLogFile.getAbsolutePath(), e.getMessage() );
+				return;
+			}
+    		
+    		if ( logText != null ) {
+    			
+    			PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName() );
+    			
+    			String helpURL = pasteChat.post( logText.toString() );
+    			
+    			if ( helpURL != null ) {
+    				
+    				Output.get().logInfo( "Prison's support information has been pasted. Copy and " +
+    						"paste this URL in to Prison's Discord server." );
+    				Output.get().logInfo( "Paste this URL: %s", helpURL );
+    			}
+    			else {
+    				// Do nothing since if helpURL is null, then it has probably
+    				// already sent an error message.
+    			}
+    			return;
+    		}
+    	}
+    	
+    	Output.get().logInfo( "Unable to send log file.  Unknown reason why." );
+    }
+    
+
+    
+    
     
 // This functionality should not be available in v3.2.1!  If someone is still running Prison 2.x.x 
 //							    then they must first upgrade to
@@ -1193,6 +1196,13 @@ public class PrisonCommand {
 	}
 	public void setPrisonStartupDetails( List<String> prisonStartupDetails ) {
 		this.prisonStartupDetails = prisonStartupDetails;
+	}
+
+	public String getSupportName() {
+		return supportName;
+	}
+	public void setSupportName( String supportName ) {
+		this.supportName = supportName;
 	}
 
 }

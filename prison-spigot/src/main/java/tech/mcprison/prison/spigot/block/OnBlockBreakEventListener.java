@@ -7,7 +7,6 @@ import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.autofeatures.AutoManager;
-import tech.mcprison.prison.spigot.autofeatures.AutoManagerTokenEnchant;
 import zedly.zenchantments.BlockShredEvent;
 
 /**
@@ -137,29 +136,14 @@ public class OnBlockBreakEventListener
 				AutoManager autoManager = new AutoManager();
 				autoManager.registerBlockBreakEvents( spigotPrison );
 			}
+				
+				
 			
-			
+			// Registers all of the non-AutoManager block events:
 			OnBlockBreakEventListeners listeners = new OnBlockBreakEventListeners();
 			listeners.registerBlockBreakEvents( spigotPrison );
-			
-			
-			try {
-				Class.forName("com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent");
-				
-				AutoManagerTokenEnchant tokenEnchant = new AutoManagerTokenEnchant();
-				tokenEnchant.registerBlockBreakEvents( spigotPrison );
-				
-				OnBlockBreakEventTokenEnchant bbTokenEnchant = new OnBlockBreakEventTokenEnchant();
-				bbTokenEnchant.registerBlockBreakEvents( spigotPrison );
-				
-//				Bukkit.getPluginManager().registerEvents(new AutoManagerTokenEnchant(), spigotPrison);
-//				Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventTokenEnchant(), spigotPrison);
-				
-			} 
-			catch (ClassNotFoundException e) {
-				// TokenEnchant is not available on this server which is not an error.  Just
-				// ignore this situation and do not register the TE explosion events.
-			}
+
+
 			
 //	    Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventListener(), spigotPrison);
 		}

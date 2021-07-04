@@ -34,6 +34,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.inventivetalent.update.spiget.SpigetUpdate;
 import org.inventivetalent.update.spiget.UpdateCallback;
@@ -66,9 +67,6 @@ import tech.mcprison.prison.spigot.commands.PrisonSpigotPrestigeCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotRanksCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
-import tech.mcprison.prison.spigot.compat.Spigot113;
-import tech.mcprison.prison.spigot.compat.Spigot18;
-import tech.mcprison.prison.spigot.compat.Spigot19;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.configs.BackpacksConfig;
 import tech.mcprison.prison.spigot.configs.GuiConfig;
@@ -86,8 +84,9 @@ import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
 import tech.mcprison.prison.spigot.slime.SlimeBlockFunEventListener;
-import tech.mcprison.prison.spigot.spiget.BluesSemanticVersionData;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
+import tech.mcprison.prison.spigot.tasks.PrisonInitialStartupTask;
+import tech.mcprison.prison.spigot.tasks.SpigotPrisonDelayedStartupTask;
 import tech.mcprison.prison.spigot.utils.PrisonUtilsModule;
 
 /**
@@ -98,7 +97,9 @@ import tech.mcprison.prison.spigot.utils.PrisonUtilsModule;
  */
 public class SpigotPrison extends JavaPlugin {
 
-    Field commandMap;
+	private static SpigotPrison config;
+
+	Field commandMap;
     Field knownCommands;
     SpigotScheduler scheduler;
     Compatibility compatibility;
@@ -117,18 +118,18 @@ public class SpigotPrison extends JavaPlugin {
 
     private PrisonBlockTypes prisonBlockTypes;
 
-    private static SpigotPrison config;
     private static boolean isBackPacksEnabled = false;
 
     public static SpigotPrison getInstance(){
         return config;
     }
 
-//  ###Tab-Complete###
-//  private TreeSet<String> registeredCommands = new TreeSet<>();
-       
+    public SpigotPrison() {
+    	super();
+    	
+    	config = this;
+    }
 
-//    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void onLoad() {
     	
@@ -164,44 +165,53 @@ public class SpigotPrison extends JavaPlugin {
     public void onEnable() {
     	
     	
-    	config = this;
+    	// Setup the config.yml file and set debug mode:
+    	// config = this;
         this.saveDefaultConfig();
-        debug = getConfig().getBoolean("debug", false);
+        this.debug = getConfig().getBoolean("debug", false);
 
+        // Create the core directory structure if it is missing:
         initDataDir();
+
+        // Setup some of the key data structures and object requried to be in place
+        // prior to starting up:
         initCommandMap();
-        this.compatibility = SpigotCompatibility.getInstance();
-        initCompatibility();
-        initUpdater();
-        
         this.scheduler = new SpigotScheduler(this);
 
-        Prison.get().init(new SpigotPlatform(this), Bukkit.getVersion());
+        // Show Prison's splash screen and setup the core components:
+        Prison.get()
+        		.init(new SpigotPlatform(this), Bukkit.getVersion());
+        
         Prison.get().getLocaleManager().setDefaultLocale(
-        			getConfig().getString("default-language", "en_US"));
+        		getConfig().getString("default-language", "en_US"));
+        
+        this.compatibility = SpigotCompatibility.getInstance();
+//        initCompatibility();  Obsolete...
         
         
+        initUpdater();
         
-    	boolean delayedCMIStartup = getConfig().getBoolean("delayedCMIStartup", false);
-    	
-    	if ( !delayedCMIStartup ) {
+        
+    	boolean delayedPrisonStartup = getConfig().getBoolean("delayedPrisonStartup.enabled", false);
+
+    	if ( !delayedPrisonStartup ) {
     		onEnableStartup();
     	}
     	else {
-    		onEnableDelayedStartCMI();
+    		onEnableDelayedStart();
     	}
     	
     }
     
     
-    protected void onEnableDelayedStartCMI() {
+    protected void onEnableDelayedStart() {
     	
-    	SpigotPrisonCMIDelayedStartupTask delayedStartupTask = new SpigotPrisonCMIDelayedStartupTask( this );
+    	SpigotPrisonDelayedStartupTask delayedStartupTask = new SpigotPrisonDelayedStartupTask( this );
     	delayedStartupTask.submit();
     }
     
     	
-   protected void onEnableStartup() {
+   public void onEnableStartup() {
 	   
 
         
@@ -275,6 +285,13 @@ public class SpigotPrison extends JavaPlugin {
 		}
 		
 		Output.get().logInfo( "Prison - Finished loading." );
+		
+		
+		if ( PrisonInitialStartupTask.isInitialStartup() ) {
+			
+			PrisonInitialStartupTask startupTask = new PrisonInitialStartupTask( this );
+			startupTask.submit();
+		}
     }
 
     @Override
@@ -295,7 +312,11 @@ public class SpigotPrison extends JavaPlugin {
         return guiConfig.getFileGuiConfig();
     }
 
-    public FileConfiguration getSellAllConfig() {
+    public FileConfiguration getSellAllConfig(){
+        return sellAllConfig.getFileSellAllConfig();
+    }
+
+    public FileConfiguration updateSellAllConfig() {
         // Let this like this or it wont update when you do /Sellall etc and will need a server restart.
         sellAllConfig = new SellAllConfig();
         sellAllConfig.initialize();
@@ -324,7 +345,7 @@ public class SpigotPrison extends JavaPlugin {
     		// been setup.  The following line will allow it to be setup so the setting can be accessed.
     		// The proper way to access the settings are through... 
     		//     AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig()
-    		new AutoManager();
+    		autoFeatures = new AutoManager();
     	}
     	
 		return autoFeatures;
@@ -404,6 +425,10 @@ public class SpigotPrison extends JavaPlugin {
         }));
     }
 
+    /**
+     * Checks to see if there is a newer version of prison that has been released.
+     * It checks based upon what is deployed to spigotmc.org.
+     */
 	private void initUpdater() {
         if (!getConfig().getBoolean("check-updates")) {
             return; // Don't check if they don't want it
@@ -454,37 +479,6 @@ public class SpigotPrison extends JavaPlugin {
         }
     }
 
-    /**
-     * Priority of defaulting to Spigot113 if an unknown version.
-     */
-    private void initCompatibility() {
-    	
-    	String bukkitVersion =  new BluesSpigetSemVerComparator().getBukkitVersion();
-    	
-    	if ( bukkitVersion == null ) {
-    		
-    		compatibility = new Spigot113();
-    	}
-    	else {
-
-    		BluesSemanticVersionData svData = new BluesSemanticVersionData( bukkitVersion );
-    		
-    		if ( svData.compareTo( new BluesSemanticVersionData( "1.9.0" ) ) < 0 ) {
-    			
-    			compatibility = new Spigot18();
-    		}
-    		else if ( svData.compareTo( new BluesSemanticVersionData( "1.13.0" ) ) < 0 ) {
-    			
-    			compatibility = new Spigot19();
-    		}
-    		else {
-    			
-    			compatibility = new Spigot113();
-    		}
-    	}
-
-    	Output.get().logInfo("Using version adapter " + compatibility.getClass().getName());
-    }
 
 	private void initIntegrations() {
 
@@ -506,9 +500,21 @@ public class SpigotPrison extends JavaPlugin {
 //        registerIntegration(new WorldGuard7Integration());
     }
 
-	protected boolean isIntegrationRegistered( Integration integration ) {
+	public boolean isIntegrationRegistered( Integration integration ) {
 		
-    	return Bukkit.getPluginManager().isPluginEnabled(integration.getProviderName());
+    	return isPluginRegistered( integration.getProviderName() );
+	}
+	
+	protected boolean isPluginRegistered( String pluginName ) {
+		
+		return Bukkit.getPluginManager().isPluginEnabled( pluginName );
+	}
+	
+	public boolean isPluginEnabled( String pluginName ) {
+		
+		Plugin plug = Bukkit.getPluginManager().getPlugin( pluginName );
+		
+		return plug != null && plug.isEnabled();
 	}
 	
 	/**

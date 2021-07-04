@@ -193,13 +193,19 @@ public class PrisonJarReporter {
 				
 				String pluginName = getPluginNameFromJar( zipFile );
 				
-				JarFileData jfData = new JarFileData( name, pluginName, classHex, isValidJar, javaVersion );
+				// If the jar is not a plugin, then skip it:
+				if ( isValidJar && pluginName != null ) {
+					
+					JarFileData jfData = new JarFileData( name, pluginName, classHex, isValidJar, javaVersion );
+					
+					if ( jfData != null ) {
+						
+						getJars().add( jfData );
+						
+						getJarsByPluginName().put( jfData.getPluginName(), jfData );
+					}
+				}
 				
-				getJars().add( jfData );
-				
-				getJarsByPluginName().put( jfData.getPluginName(), jfData );
-				
-//				Output.get().logInfo( jfData.toString() );
 			}
 			catch ( ZipException e )
 			{

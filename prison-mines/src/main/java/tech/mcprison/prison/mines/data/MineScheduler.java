@@ -1,5 +1,6 @@
 package tech.mcprison.prison.mines.data;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,13 +11,17 @@ import java.util.Stack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
+import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonCommandTask;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
+import tech.mcprison.prison.tasks.PrisonCommandTask.CustomPlaceholders;
 
 public abstract class MineScheduler
 		extends MineTasks
@@ -497,7 +502,9 @@ public abstract class MineScheduler
 	 * @param blockCount
 	 * @param player 
 	 */
-	public void processBlockBreakEventCommands( String blockName, Player player, 
+	public void processBlockBreakEventCommands( PrisonBlock prisonBlock,
+						MineTargetPrisonBlock targetBlock,
+						Player player, 
 							BlockEventType eventType, String triggered ) {
 		
 		// Only one block is processed here:
@@ -507,7 +514,8 @@ public abstract class MineScheduler
 			for ( MineBlockEvent blockEvent : getBlockEvents() ) {
 				double chance = random.nextDouble() * 100;
 				
-				processBlockEventDetails( player, blockName, eventType, chance, blockEvent, triggered );
+				processBlockEventDetails( player, prisonBlock,
+						targetBlock, eventType, chance, blockEvent, triggered );
 			}
 		}
 	}
@@ -541,12 +549,14 @@ public abstract class MineScheduler
 //		}
 //	}
 
-	private void processBlockEventDetails( Player player, String blockName, BlockEventType eventType, 
+	private void processBlockEventDetails( Player player, PrisonBlock prisonBlock,
+							MineTargetPrisonBlock targetBlock, BlockEventType eventType, 
 				double chance, 
 					MineBlockEvent blockEvent, String triggered )
 	{
 
-		boolean fireEvent = blockEvent.isFireEvent( chance, eventType, blockName, triggered );
+		boolean fireEvent = blockEvent.isFireEvent( chance, eventType, 
+							targetBlock, triggered );
 		
 		if ( fireEvent ) {
 			
@@ -557,7 +567,53 @@ public abstract class MineScheduler
 					perms.trim().length() == 0
 					) {
 				
+				DecimalFormat dFmt = new DecimalFormat( "#,##0.0000" );
+				
+				PrisonBlockStatusData originalBlock = targetBlock.getPrisonBlock();
+				
 				PrisonCommandTask cmdTask = new PrisonCommandTask( "BlockEvent" );
+				
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockName, originalBlock.getBlockName() );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineName, getName() );
+				
+				if ( prisonBlock.getLocation() != null ) {
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationWorld, prisonBlock.getLocation().getWorld().getName() );
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationX, Integer.toString( prisonBlock.getLocation().getBlockX() ));
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationY, Integer.toString( prisonBlock.getLocation().getBlockY() ));
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationZ, Integer.toString( prisonBlock.getLocation().getBlockZ() ));
+					
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.coordinates, prisonBlock.getLocation().toCoordinates() );
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.worldCoordinates, prisonBlock.getLocation().toWorldCoordinates() );
+					
+				}
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockCoordinates, prisonBlock.getBlockCoordinates() );
+
+
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockChance, dFmt.format( originalBlock.getChance() ) );
+				
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.blocksPlaced, Integer.toString( originalBlock.getResetBlockCount() ));
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockRemaining, Long.toString( originalBlock.getBlockCountUnsaved() ));
+				
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.blocksMinedTotal, originalBlock.getBlockName() );
+				
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineBlocksRemaining, Integer.toString( getRemainingBlockCount() ));
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineBlocksRemainingPercent, Double.toString( getPercentRemainingBlockCount() ) );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineBlocksTotalMined, Long.toString( getTotalBlocksMined() ));
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineBlocksSize, Integer.toString( getBounds().getTotalBlockCount() ));
+
+				
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockIsAir, Boolean.toString( targetBlock.getPrisonBlock().isAir() ));
+				
+				
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockMinedName, prisonBlock.getBlockName() );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockMinedNameFormal, prisonBlock.getBlockNameFormal() );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockMinedBlockType, prisonBlock.getBlockType().name() );
+				
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.eventType, eventType.name() );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.eventTriggered, triggered );
+				
+				
+				
 				cmdTask.submitCommandTask( player, blockEvent.getCommand(), blockEvent.getTaskMode() );
 					
 //				{

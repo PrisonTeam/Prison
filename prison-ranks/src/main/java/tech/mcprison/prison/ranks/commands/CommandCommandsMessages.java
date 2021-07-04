@@ -28,10 +28,11 @@ public class CommandCommandsMessages
 	}
 	
 	
-	protected void ranksCommandAddDuplicateMsg( CommandSender sender, String rankName ) {
+	protected void ranksCommandAddDuplicateMsg( CommandSender sender, String newCommand, String rankName ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_commandCommands__command_add_duplicate" )
-				.withReplacements( 
+				.withReplacements(
+						newCommand,
 						rankName )
 				.sendTo( sender );
 	}
@@ -101,6 +102,96 @@ public class CommandCommandsMessages
 	protected String ranksCommandListAddNewCommandToolTipMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_commandCommands__command_list_add_new_command_tool_tip" )
+				.localize();
+	}
+	
+    protected void rankRowNumberMustBeGreaterThanZero( CommandSender sender, Integer row ) {
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_commandCommands__command_row_number_must_be_greater_than_zero" )
+		.withReplacements( 
+				Integer.toString( row ) )
+		.sendTo( sender );
+	}
+    
+    protected void rankRowNumberTooHigh( CommandSender sender, Integer row ) {
+    	PrisonRanks.getInstance().getRanksMessages()
+    	.getLocalizable( "ranks_commandCommands__command_row_number_too_high" )
+    	.withReplacements( 
+    			Integer.toString( row ) )
+    	.sendTo( sender );
+    }
+	
+	
+	
+	
+	protected String ladderCommandAddPlaceholdersMsg( String placeholders ) {
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_commandCommands__ladder_command_add_placeholders" )
+				.withReplacements( 
+						placeholders )
+				.localize();
+	}
+	
+	protected void ladderDoesNotExistMsg( CommandSender sender, String rankName ) {
+		PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_commandCommands__ladder_does_not_exist" )
+				.withReplacements( 
+						rankName )
+				.sendTo( sender );
+	}
+	
+	
+	protected void ladderCommandAddDuplicateMsg( CommandSender sender, String newCommand, String rankName ) {
+		PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_commandCommands__ladder_command_add_duplicate" )
+				.withReplacements(
+						newCommand,
+						rankName )
+				.sendTo( sender );
+	}
+	
+	protected void ladderCommandAddSuccessMsg( CommandSender sender, 
+					String command, String rankName ) {
+		PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_commandCommands__ladder_command_add_success" )
+				.withReplacements( 
+						command,
+						rankName )
+				.sendTo( sender );
+	}
+	
+	protected void ladderCommandRemoveSuccessMsg( CommandSender sender, 
+			String command, String rankName ) {
+		PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_commandCommands__ladder_command_remove_sucess" )
+				.withReplacements( 
+						command,
+						rankName )
+				.sendTo( sender );
+	}
+	
+	protected void ladderCommandRemoveFailedMsg( CommandSender sender ) {
+		PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_commandCommands__ladder_command_remove_failed" )
+				.sendTo( sender );
+	}
+	
+
+	protected void ladderCommandListContainsNoneMsg( CommandSender sender, 
+			String rankName ) {
+		PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_commandCommands__ladder_command_list_contains_none" )
+				.withReplacements( 
+						rankName )
+				.sendTo( sender );
+	}
+
+	
+	protected String ladderCommandListCmdHeaderMsg( String rankTag ) {
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_commandCommands__ladder_command_list_cmd_header" )
+				.withReplacements( 
+						rankTag )
 				.localize();
 	}
 	

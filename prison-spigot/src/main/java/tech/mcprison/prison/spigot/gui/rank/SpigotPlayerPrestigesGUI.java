@@ -26,7 +26,7 @@ import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-import tech.mcprison.prison.spigot.gui.SpigotGUIComponents;
+import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 /**
  * @author GABRYCA

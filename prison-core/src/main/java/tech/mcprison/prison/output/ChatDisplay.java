@@ -88,4 +88,27 @@ public class ChatDisplay {
         }
     }
 
+    public StringBuilder toStringBuilder() {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	sb.append( title ).append( "\n" );
+        for (DisplayComponent component : displayComponents) {
+        	sb.append( component.text() ).append( "\n" );
+        }
+        
+        return sb;
+    }
+    
+    public StringBuilder toStringBuilderEscaped() {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	sb.append( title ).append( "\\n" );
+    	for (DisplayComponent component : displayComponents) {
+    		sb.append( component.text() ).append( "\\n" );
+    	}
+    	
+    	return sb;
+    }
+    
+
 }

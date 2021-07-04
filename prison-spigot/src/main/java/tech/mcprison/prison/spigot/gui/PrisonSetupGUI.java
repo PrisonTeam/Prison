@@ -8,13 +8,16 @@ import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
+import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 import java.util.List;
 
 /**
  * @author GABRYCA
  */
-public class PrisonSetupGUI extends SpigotGUIComponents{
+public class PrisonSetupGUI extends SpigotGUIComponents {
 
     private final Player p;
 
@@ -24,32 +27,11 @@ public class PrisonSetupGUI extends SpigotGUIComponents{
 
     public void open(){
 
-        // Create the inventory
-        int dimension = 9;
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Prison Setup -> Confirmation"));
+        // Create Prison GUI.
+        PrisonGUI gui = new PrisonGUI(p, 9, "&3Prison Setup -> Confirmation");
 
-        if (guiBuilder(inv)) return;
-
-        // Open the inventory
-        openGUI(p, inv);
-    }
-
-    private boolean guiBuilder(Inventory inv) {
-        try {
-            buttonsSetup(inv);
-        } catch (NullPointerException ex){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
-            ex.printStackTrace();
-            return true;
-        }
-        return false;
-    }
-
-    private void buttonsSetup(Inventory inv) {
-
-
-        // Blocks of the mine
-        List<String> confirmLore = createLore(
+        // Add button.
+        gui.addButton(new Button(2, XMaterial.EMERALD_BLOCK, createLore(
                 messages.getString("Lore.ClickToConfirm"),
                 messages.getString("Lore.noRanksFoundSetup"),
                 messages.getString("Lore.noRanksFoundSetup1"),
@@ -60,18 +42,13 @@ public class PrisonSetupGUI extends SpigotGUIComponents{
                 messages.getString("Lore.noRanksFoundSetup6"),
                 messages.getString("Lore.noRanksFoundSetup7"),
                 messages.getString("Lore.noRanksFoundSetup8")
-        );
+        ), "&3" + "Confirm: Setup"));
 
-        // Blocks of the mine
-        List<String> cancelLore = createLore(
-                messages.getString("Lore.ClickToCancel"));
+        // Add button.
+        gui.addButton(new Button(6, XMaterial.REDSTONE_BLOCK, createLore(
+                messages.getString("Lore.ClickToCancel")), "&3" + "Cancel: Setup"));
 
-        // Create the button, set up the material, amount, lore and name
-        ItemStack confirm = createButton(XMaterial.EMERALD_BLOCK.parseItem(), confirmLore, SpigotPrison.format("&3" + "Confirm: Setup"));
-        ItemStack cancel = createButton(XMaterial.REDSTONE_BLOCK.parseItem(), cancelLore, SpigotPrison.format("&3" + "Cancel: Setup"));
-
-        // Position of the button
-        inv.setItem(2, confirm);
-        inv.setItem(6, cancel);
+        // Open Prison GUI.
+        gui.open();
     }
 }

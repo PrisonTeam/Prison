@@ -129,14 +129,44 @@ public class PrisonBlockTypes {
 	 * @return
 	 */
 	public PrisonBlock getBlockTypesByName( String blockName ) {
-		blockName = blockName.toLowerCase();
-		if ( blockName.startsWith( PrisonBlockType.minecraft.name() + ":" )) {
-			blockName = blockName.replaceAll( PrisonBlockType.minecraft.name() + ":", "" );
+		PrisonBlock results = null;
+		
+		if ( blockName != null ) {
+			
+			blockName = blockName.toLowerCase();
+			if ( "air".equals( blockName ) ) {
+				results = PrisonBlock.AIR;
+			}
+			else if ( blockName.startsWith( PrisonBlockType.minecraft.name() + ":" )) {
+				blockName = blockName.replaceAll( PrisonBlockType.minecraft.name() + ":", "" );
+			}
+			
+			results = searchBlockTypesByName( blockName );
+			
+			if ( results != null ) {
+				results = results.clone();
+			}
+		}
+		return results;
+	}
+	
+	private PrisonBlock searchBlockTypesByName( String blockName ) {
+		PrisonBlock block = blockTypesByName.get( blockName );
+		
+		if ( block == null && !blockName.contains( ":" ) ) {
+			for ( PrisonBlockType blockType : PrisonBlockType.values()  )
+			{
+				block = blockTypesByName.get( blockType.name() + ":" + blockName );
+				if ( block != null ) {
+					break;
+				}
+			}
 		}
 		
-		PrisonBlock block = blockTypesByName.get( blockName );
-		return block == null ? null : block.clone();
+		return block;
 	}
+	
+	
 	public TreeMap<String, PrisonBlock> getBlockTypesByName() {
 		return blockTypesByName;
 	}
