@@ -18,17 +18,29 @@
 package tech.mcprison.prison.ranks.managers;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.localization.Localizable;
+import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.placeholders.ManagerPlaceholders;
+import tech.mcprison.prison.placeholders.PlaceHolderKey;
+import tech.mcprison.prison.placeholders.PlaceholderAttribute;
+import tech.mcprison.prison.placeholders.PlaceholderAttributeNumberFormat;
+import tech.mcprison.prison.placeholders.PlaceholderAttributeText;
+import tech.mcprison.prison.placeholders.PlaceholderManager;
+import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceHolderFlags;
+import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.commands.CommandCommands;
 import tech.mcprison.prison.ranks.commands.LadderCommands;
@@ -45,7 +57,8 @@ import tech.mcprison.prison.store.Document;
  *
  * @author Faizaan A. Datoo
  */
-public class RankManager {
+public class RankManager 
+	implements ManagerPlaceholders {
 
     /*
      * Fields & Constants
@@ -62,6 +75,7 @@ public class RankManager {
     private RankUpCommand rankupCommands;
     private LadderCommands ladderCommands;
 
+    private List<PlaceHolderKey> translatedPlaceHolderKeys;
     
     public enum RanksByLadderOptions {
     	playersOnly("players"),
@@ -599,8 +613,185 @@ public class RankManager {
 		}
 	}
 
+
+	private String getRankCost( Rank rank, PlaceholderAttribute attribute, boolean formatted )
+	{
+		double cost = rank.getCost();
+		
+		String resultsx = null;
+		DecimalFormat dFmt = new DecimalFormat("#,##0");
+		if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+			PlaceholderAttributeNumberFormat attributeNF = 
+											(PlaceholderAttributeNumberFormat) attribute;
+			resultsx = attributeNF.format( cost );
+		}
+		else  if ( formatted ) {
+			resultsx =  PlaceholdersUtil.formattedMetricSISize( cost );
+		}
+		else {
+			resultsx = dFmt.format( cost );
+		}
+		return resultsx;
+	}
 	
 	
+	public String getTranslateRanksPlaceHolder( PlaceHolderKey placeHolderKey, String identifier ) {
+    	String results = null;
+ 	
+    	if ( placeHolderKey != null && identifier != null ) {
+
+    		if ( !identifier.startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
+    			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
+    		}
+     
+    		// placeholder Attributes:
+    		PlaceholderManager pman = Prison.get().getPlaceholderManager();
+    		//String placeholder = pman.extractPlaceholderString( identifier );
+    		PlaceholderAttribute attribute = pman.extractPlaceholderExtractAttribute( identifier );
+    		
+    		
+    		String rankName = placeHolderKey.getData();
+    		Rank rank = PrisonRanks.getInstance().getRankManager().getRank( rankName );
+
+    		
+    		results = getTranslateRanksPlaceHolder( placeHolderKey, rank, attribute );
+    	}
+    	
+    	return results;
+    }
+    
+    public String getTranslateRanksPlaceHolder( PlaceHolderKey placeHolderKey, 
+    				Rank rank, PlaceholderAttribute attribute ) {
+		String results = null;
+
+		PrisonPlaceHolders placeHolder = placeHolderKey.getPlaceholder();
+		
+		if ( rank != null ) {
+			
+			switch ( placeHolder ) {
+				
+				
+				case prison_rank__name_rankname:
+				case prison_r_n_rankname:
+					results = rank.getName();
+					break;
+					
+				case prison_rank__tag_rankname:
+				case prison_r_t_rankname:
+					results = rank.getTag();
+					break;
+					
+				case prison_rank__ladder_rankname:
+				case prison_r_l_rankname:
+					results = rank.getLadder().getName();
+					break;
+					
+					
+					
+				case prison_rank__cost_rankname:
+				case prison_r_c_rankname:
+					results = getRankCost( rank, attribute, false );
+					break;
+					
+				case prison_rank__cost_formatted_rankname:
+				case prison_r_cf_rankname:
+					results = getRankCost( rank, attribute, true );
+					break;
+					
+				case prison_rank__currency_rankname:
+				case prison_r_cu_rankname:
+					results = rank.getCurrency() == null ? "default" : rank.getCurrency();
+					break;
+					
+				case prison_rank__id_rankname:
+				case prison_r_id_rankname:
+					results = Integer.toString( rank.getId() );
+					break;
+					
+				case prison_rank__player_count_rankname:
+				case prison_r_pc_rankname:
+					List<RankPlayer> players =
+					PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
+					.filter(rPlayer -> rPlayer.getLadderRanks().values().contains(rank))
+					.collect(Collectors.toList());
+					
+					results = Integer.toString( players.size() );
+					break;
+					
+				case prison_rank__linked_mines_rankname:
+				case prison_r_lm_rankname:
+					StringBuilder sb = new StringBuilder();
+					for ( ModuleElement mine : rank.getMines() ) {
+						if ( sb.length() > 0 ) {
+							sb.append( ", " );
+						}
+						sb.append( mine.getName() );
+					}
+					
+					results = sb.toString();
+					break;
+					
+				default:
+					break;
+			}
+			
+			if ( attribute != null && attribute instanceof PlaceholderAttributeText ) {
+				PlaceholderAttributeText attributeText = (PlaceholderAttributeText) attribute;
+				
+				results = attributeText.format( results );
+			}
+		}
+		
+		return results;
+    }
+
+
+
+    
+	@Override
+    public List<PlaceHolderKey> getTranslatedPlaceHolderKeys() {
+    	if ( translatedPlaceHolderKeys == null ) {
+    		translatedPlaceHolderKeys = new ArrayList<>();
+    		
+    		// This generates all the placeholders for all ranks:
+    		List<PrisonPlaceHolders> placeHolders = PrisonPlaceHolders.getTypes( PlaceHolderFlags.RANKS );
+    		
+    		List<Rank> ranks = PrisonRanks.getInstance().getRankManager().getRanks();
+    		for ( Rank rank : ranks ) {
+    			for ( PrisonPlaceHolders ph : placeHolders ) {
+    				
+    				String rankName = rank.getName().toLowerCase();
+    				
+    				String key = ph.name().replace( 
+    						PlaceholderManager.PRISON_PLACEHOLDER_RANKNAME_SUFFIX, "_" + rankName ).
+    							toLowerCase();
+    				
+    				PlaceHolderKey placeholder = new PlaceHolderKey(key, ph, rankName );
+    				if ( ph.getAlias() != null ) {
+    					String aliasName = ph.getAlias().name().replace( 
+    							PlaceholderManager.PRISON_PLACEHOLDER_RANKNAME_SUFFIX, "_" + rankName ).
+    								toLowerCase();
+    					placeholder.setAliasName( aliasName );
+    				}
+    				translatedPlaceHolderKeys.add( placeholder );
+    				
+    			}
+    			
+    		}
+    	}
+    	
+    	return translatedPlaceHolderKeys;
+    }
+    
+    @Override
+    public void reloadPlaceholders() {
+    	
+    	// clear the class variable so they will regenerate:
+    	translatedPlaceHolderKeys = null;
+    	
+    	// Regenerate the translated placeholders:
+    	getTranslatedPlaceHolderKeys();
+    }
 	
 	
 	private List<Rank> getLoadedRanks() {

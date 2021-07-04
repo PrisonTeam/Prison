@@ -447,8 +447,8 @@ public class PlaceholderManager {
 		
 		public String getChatText() {
 			return "&a" + name() + 
-					(hasAlias() ? "&7(&b" + getAlias().name() + "&7)" : "") +
-					(isSuppressed() ? "&4*&a ": " ");
+					(hasAlias() ? " &b" + getAlias().name()  : "") +
+					(isSuppressed() ? " &4*&a ": " ");
 		}
 		
 		public static String getAllChatTexts() {
