@@ -4,6 +4,7 @@
 
 
 * Issue with decay functions or at least it shows the problem exists.  Enable a decay such as obby or rainbow, then test to confirm it works.  Then enchant a tool (increase it's eff).  Then test again and it does not.  This was seen happening while OP'd.  May not be related to decays, but it appears as if enchanting causes the pick to bypass prison?
+- Was able to reproduce this at a later time
 
 
 * prison should "scan" offline players upon startup and auto add anyone not already hooked up.  This will help reduce a lot of questions and make the first experience with prison smoother.... 
@@ -12,17 +13,16 @@
 * DONE: BlockEvents - add block filters - tested successfully
 
 
-* Add a util function to respawn the block that was mined... use it with blockEvents.
-- In progress
-
-
-* Bug: placeholders are not working correctly when player is offline...
-  - Example with the bar graph placeholders.
+* DONE: decay:  Add a util function to respawn the block that was mined... use it with blockEvents.
 
 
 * DONE: Ladder commands:
 
 * DONE: Delete by line number:
+
+
+* Bug: placeholders are not working correctly when player is offline...
+  - Example with the bar graph placeholders.
 
 
 

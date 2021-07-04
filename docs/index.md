@@ -26,7 +26,7 @@ Prison's table of contents of all documents.
  - **[v3.2.6 - 2021-04-11](prison_changelog_v3.2.6.md)**
  - **[v3.2.7 - 2021-05-02](prison_changelog_v3.2.7.md)**
  - **[v3.2.8 - 2021-06-17](prison_changelog_v3.2.8.md)**
-
+ - **[v3.2.9 - 2021-07-03](prison_changelog_v3.2.9.md)**
 
  - **[v3.3.0 - 2021-??-??](prison_changelog_v3.3.x.md)**
 
