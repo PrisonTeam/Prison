@@ -461,14 +461,14 @@ public class PlayerManager
     	List<Rank> results = new ArrayList<>();
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
-    		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getLadderRanks().entrySet()) {
+    		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
     			
-    			RankLadder key = entry.getKey();
-    			if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
-    				
-    				Rank nextRank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
-    				results.add( nextRank );
-    			}
+    			Rank rank = rankPlayer.getRank( ladder );
+				if ( rank != null && rank.getRankNext() != null ) {
+					Rank nextRank = rank.getRankNext();
+					
+					results.add( nextRank );
+				}
     		}
     	}
     	
@@ -481,24 +481,28 @@ public class PlayerManager
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		DecimalFormat dFmt = new DecimalFormat("#,##0");
-    		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getLadderRanks().entrySet()) {
-    			RankLadder key = entry.getKey();
+    		
+    		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
+    			
     			if ( ladderName == null ||
-      				 ladderName != null && key.getName().equalsIgnoreCase( ladderName )) {
+    					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
+    				Rank rank = rankPlayer.getRank( ladder );
+    				if ( rank != null && rank.getRankNext() != null ) {
+    					Rank nextRank = rank.getRankNext();
+    					
     					if ( sb.length() > 0 ) {
     						sb.append(", ");
     					}
     					
-    					double cost = key.getNext(key.getPositionOfRank(entry.getValue())).get().getCost();
+    					double cost = nextRank.getCost();
     					
-        				if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
-        					PlaceholderAttributeNumberFormat attributeNF = 
-        													(PlaceholderAttributeNumberFormat) attribute;
-        					sb.append( attributeNF.format( cost ) );
-        				}
-        				else  if ( formatted ) {
+    					if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    						PlaceholderAttributeNumberFormat attributeNF = 
+    								(PlaceholderAttributeNumberFormat) attribute;
+    						sb.append( attributeNF.format( cost ) );
+    					}
+    					else  if ( formatted ) {
     						sb.append( PlaceholdersUtil.formattedMetricSISize( cost ));
     					}
     					else {
@@ -507,6 +511,7 @@ public class PlayerManager
     				}
     			}
     		}
+    		
     	}
     	
     	return sb.toString();
@@ -531,19 +536,23 @@ public class PlayerManager
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		DecimalFormat dFmt = new DecimalFormat("#,##0");
-    		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getLadderRanks().entrySet()) {
-    			RankLadder key = entry.getKey();
+    		
+    		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
+    			
     			if ( ladderName == null ||
-     				 ladderName != null && key.getName().equalsIgnoreCase( ladderName )) {
+    					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
+    				Rank rank = rankPlayer.getRank( ladder );
+    				if ( rank != null && rank.getRankNext() != null ) {
+    					Rank nextRank = rank.getRankNext();
+    					
     					if ( sb.length() > 0 ) {
     						sb.append(",  ");
     					}
     					
-    					Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
-    					double cost = rank.getCost();
-    					double balance = getPlayerBalance(prisonPlayer,rank);
+//    					Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
+    					double cost = nextRank.getCost();
+    					double balance = getPlayerBalance(prisonPlayer,nextRank);
     					
     					double percent = (balance < 0 ? 0 : 
     						(cost == 0.0d || balance > cost ? 100.0 : 
@@ -580,24 +589,27 @@ public class PlayerManager
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		
 //    		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
-    		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getLadderRanks().entrySet()) {
-    			RankLadder key = entry.getKey();
+
+    		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
+    		
     			if ( ladderName == null ||
-    					ladderName != null && key.getName().equalsIgnoreCase( ladderName )) {
+    					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
+    				Rank rank = rankPlayer.getRank( ladder );
+    				if ( rank != null && rank.getRankNext() != null ) {
+    					Rank nextRank = rank.getRankNext();
+    					
     					if ( sb.length() > 0 ) {
     						sb.append(",  ");
     					}
     					
-    					Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
-    					double cost = rank.getCost();
-    					double balance = getPlayerBalance(prisonPlayer,rank);
+    					double cost = nextRank.getCost();
+    					double balance = getPlayerBalance(prisonPlayer,nextRank);
     					
-    				   	
-    			    	sb.append( Prison.get().getPlaceholderManager().
-    			    					getProgressBar( balance, cost, false, attribute ));
-
+    					
+    					sb.append( Prison.get().getPlaceholderManager().
+    							getProgressBar( balance, cost, false, attribute ));
+    					
     				}
     			}
     		}
@@ -639,22 +651,25 @@ public class PlayerManager
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		DecimalFormat dFmt = new DecimalFormat("#,##0");
-    		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getLadderRanks().entrySet()) {
-    			RankLadder key = entry.getKey();
+
+    		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
+    			
     			if ( ladderName == null ||
-    					ladderName != null && key.getName().equalsIgnoreCase( ladderName )) {
+    					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
+    				Rank rank = rankPlayer.getRank( ladder );
+    				if ( rank != null && rank.getRankNext() != null ) {
+    					Rank nextRank = rank.getRankNext();
+    					
     					if ( sb.length() > 0 ) {
     						sb.append(",  ");
     					}
     					
-    					Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
-    					double cost = rank.getCost();
-    					double balance = getPlayerBalance(prisonPlayer,rank);
+    					double cost = nextRank.getCost();
+    					double balance = getPlayerBalance(prisonPlayer,nextRank);
     					
     					double remaining = cost - balance;
-    
+    					
     					// Without the following, if the player has more money than what the rank will cost,
     					// then it would result in a negative amount, which is wrong.  
     					// This is cost remaining... once they are able to afford a rankup, then remaining 
@@ -663,13 +678,13 @@ public class PlayerManager
     						remaining = 0;
     					}
     					
-        				if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
-        					PlaceholderAttributeNumberFormat attributeNF = 
-        													(PlaceholderAttributeNumberFormat) attribute;
-        					sb.append( attributeNF.format( remaining ) );
-        				}
-
-        				else if ( formatted ) {
+    					if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    						PlaceholderAttributeNumberFormat attributeNF = 
+    								(PlaceholderAttributeNumberFormat) attribute;
+    						sb.append( attributeNF.format( remaining ) );
+    					}
+    					
+    					else if ( formatted ) {
     						sb.append( PlaceholdersUtil.formattedMetricSISize( remaining ));
     					}
     					else {
@@ -703,22 +718,25 @@ public class PlayerManager
   	
   	if ( !rankPlayer.getLadderRanks().isEmpty()) {
   		DecimalFormat dFmt = new DecimalFormat("#,##0");
-  		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getLadderRanks().entrySet()) {
-  			RankLadder key = entry.getKey();
-  			if ( ladderName == null ||
-   				 ladderName != null && key.getName().equalsIgnoreCase( ladderName )) {
-  				
-  				if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
-  					if ( sb.length() > 0 ) {
-  						sb.append(",  ");
-  					}
-  					
-  					Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
-  					double cost = rank.getCost();
-  					double balance = getPlayerBalance(prisonPlayer,rank);
-  					
-  					double remaining = cost - balance;
-  				    
+  		
+		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
+			
+			if ( ladderName == null ||
+					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
+				
+				Rank rank = rankPlayer.getRank( ladder );
+				if ( rank != null && rank.getRankNext() != null ) {
+					Rank nextRank = rank.getRankNext();
+				
+					if ( sb.length() > 0 ) {
+						sb.append(",  ");
+					}
+					
+					double cost = nextRank.getCost();
+					double balance = getPlayerBalance(prisonPlayer,nextRank);
+					
+					double remaining = cost - balance;
+					
 					// Without the following, if the player has more money than what the rank will cost,
 					// then it would result in a negative amount, which is wrong.  
 					// This is cost remaining... once they are able to afford a rankup, then remaining 
@@ -726,55 +744,58 @@ public class PlayerManager
 					if ( remaining < 0 ) {
 						remaining = 0;
 					}
-  					double percent = (remaining < 0 ? 0.0 : 
-  						(cost == 0.0d || remaining > cost ? 100.0 : 
-  							remaining / cost * 100.0 )
-  							);
-  					sb.append( dFmt.format( percent ));
-  				}
-  			}
-  		}
+					double percent = (remaining < 0 ? 0.0 : 
+						(cost == 0.0d || remaining > cost ? 100.0 : 
+							remaining / cost * 100.0 )
+							);
+					sb.append( dFmt.format( percent ));
+				}
+			}
+		}
   	}
   	
   	return sb.toString();
   }
   
   public String getPlayerNextRankCostRemainingBar( RankPlayer rankPlayer, String ladderName, 
-							PlaceholderAttribute attribute ) {
+		  PlaceholderAttribute attribute ) {
 	  StringBuilder sb = new StringBuilder();
-	  
+
 	  Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
 	  if( prisonPlayer == null ) {
-		  
+
 		  String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
-		  
+
 		  String message = "getPlayerNextRankCostPercent: " + errorMessage;
-		  
+
 		  if ( !getPlayerErrors().contains( message ) ) {
 			  getPlayerErrors().add( message );
 			  Output.get().logError( message );
 		  }
 		  return "0";
 	  }
-	  
+
 	  if ( !rankPlayer.getLadderRanks().isEmpty()) {
-//		  DecimalFormat dFmt = new DecimalFormat("#,##0");
-		  for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getLadderRanks().entrySet()) {
-			  RankLadder key = entry.getKey();
+		  //		  DecimalFormat dFmt = new DecimalFormat("#,##0");
+
+		  for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
+
 			  if ( ladderName == null ||
-					  ladderName != null && key.getName().equalsIgnoreCase( ladderName )) {
-				  
-				  if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
+					  ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
+
+				  Rank rank = rankPlayer.getRank( ladder );
+				  if ( rank != null && rank.getRankNext() != null ) {
+					  Rank nextRank = rank.getRankNext();
+
 					  if ( sb.length() > 0 ) {
 						  sb.append(",  ");
 					  }
-					  
-					  Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
-					  double cost = rank.getCost();
-					  double balance = getPlayerBalance(prisonPlayer,rank);
-					  
+
+					  double cost = nextRank.getCost();
+					  double balance = getPlayerBalance(prisonPlayer,nextRank);
+
 					  double remaining = cost - balance;
-					  
+
 					  // Without the following, if the player has more money than what the rank will cost,
 					  // then it would result in a negative amount, which is wrong.  
 					  // This is cost remaining... once they are able to afford a rankup, then remaining 
@@ -782,19 +803,21 @@ public class PlayerManager
 					  if ( remaining < 0 ) {
 						  remaining = 0;
 					  }
-//					  double percent = (remaining < 0 ? 0.0 : 
-//						  (cost == 0.0d || remaining > cost ? 100.0 : 
-//							  remaining / cost * 100.0 )
-//							  );
-//					  sb.append( dFmt.format( percent ));
-					  
+  //					  double percent = (remaining < 0 ? 0.0 : 
+  //						  (cost == 0.0d || remaining > cost ? 100.0 : 
+  //							  remaining / cost * 100.0 )
+  //							  );
+  //					  sb.append( dFmt.format( percent ));
+
 					  sb.append( Prison.get().getPlaceholderManager().
-		    					getProgressBar( remaining, cost, false, attribute ));
+							  getProgressBar( remaining, cost, false, attribute ));
 				  }
+
 			  }
 		  }
+
 	  }
-	  
+
 	  return sb.toString();
   }
 
@@ -831,26 +854,27 @@ public class PlayerManager
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		DecimalFormat dFmt = new DecimalFormat("#,##0");
-    		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getLadderRanks().entrySet()) {
-    			RankLadder key = entry.getKey();
+    		
+    		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
+    			
     			if ( ladderName == null ||
-    					ladderName != null && key.getName().equalsIgnoreCase( ladderName )) {
+    					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
+    				Rank rank = rankPlayer.getRank( ladder );
+    				if ( rank != null ) {
     					if ( sb.length() > 0 ) {
     						sb.append(",  ");
     					}
     					
-    					Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
     					double balance = getPlayerBalance(prisonPlayer,rank);
     					
-        				if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
-        					PlaceholderAttributeNumberFormat attributeNF = 
-        													(PlaceholderAttributeNumberFormat) attribute;
-        					sb.append( attributeNF.format( balance ) );
-        				}
-
-        				else if ( formatted ) {
+    					if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    						PlaceholderAttributeNumberFormat attributeNF = 
+    								(PlaceholderAttributeNumberFormat) attribute;
+    						sb.append( attributeNF.format( balance ) );
+    					}
+    					
+    					else if ( formatted ) {
     						sb.append( PlaceholdersUtil.formattedMetricSISize( balance ));
     					}
     					else {
@@ -920,17 +944,19 @@ public class PlayerManager
     	StringBuilder sb = new StringBuilder();
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
-    		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getLadderRanks().entrySet()) {
-    			RankLadder key = entry.getKey();
+    		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
+    			
     			if ( ladderName == null ||
-       				 ladderName != null && key.getName().equalsIgnoreCase( ladderName )) {
-
-    				if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
-    					if ( sb.length() > 0 ) {
-    						sb.append(" ");
-    					}
-    					sb.append(key.getNext(key.getPositionOfRank(entry.getValue())).get().getName());
-    				}
+    					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
+    				Rank rank = rankPlayer.getRank( ladder );
+  				  	if ( rank != null && rank.getRankNext() != null ) {
+  				  		Rank nextRank = rank.getRankNext();
+  				  		
+  				  		if ( sb.length() > 0 ) {
+  				  			sb.append(" ");
+  				  		}
+  				  		sb.append( nextRank.getName( ));
+  				  	}
     			}
     		}
     	}
@@ -942,17 +968,22 @@ public class PlayerManager
     	StringBuilder sb = new StringBuilder();
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
-    		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getLadderRanks().entrySet()) {
-    			RankLadder key = entry.getKey();
+    		
+    		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
+    			
     			if ( ladderName == null ||
-          			 ladderName != null && key.getName().equalsIgnoreCase( ladderName )) {
-
-    				if(key.getNext(key.getPositionOfRank(entry.getValue())).isPresent()) {
+    					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
+    				
+    				Rank rank = rankPlayer.getRank( ladder );
+  				  	if ( rank != null && rank.getRankNext() != null ) {
+  				  		Rank nextRank = rank.getRankNext();
+  				  		
 //    					if ( sb.length() > 0 ) {
 //    						sb.append(", ");
 //    					}
-    					sb.append(key.getNext(key.getPositionOfRank(entry.getValue())).get().getTag());
-    				}
+
+  				  		sb.append( nextRank.getTag() );
+  				  	}
     			}
     		}
     	}

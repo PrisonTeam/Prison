@@ -21,10 +21,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.3-alpha.0 2021-07-03
+# v3.2.10-alpha.0 2021-07-03
 
 
-
+* **Refactor ranks and RankLadders to eliminate old and inefficient ways to get the ranks and next ranks.**
+These change will help improve the performance of processing the placeholders.
+This also allows the elimination of a few functions that are now obsolete.
 
 
 # v3.2.9 2021-07-03

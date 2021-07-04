@@ -313,37 +313,48 @@ public class RankLadder
 //        PrisonRanks.getInstance().getRankManager().connectRanks();
     }
 
-    /**
-     * Removes a rank from this ladder.
-     *
-     * @param position The position of the rank to be removed. The positions of the rest of the
-     *                 ranks will be downshifted to fill the gap.
-     */
-    public void removeRank(int position) {
-    	
-    	Rank rank = getRanks().remove( position );
-    	
-    	rank.setLadder( null );
-
-    	// Update the rank positions along with next and prior:
-    	connectRanks();
-
-    	
-//        ranks.stream().filter(positionRank -> positionRank.getPosition() > position).forEach(
-//                positionRank -> positionRank.setPosition(positionRank.getPosition() - 1)
-//        );
+//    /**
+//     * Removes a rank from this ladder.
+//     *
+//     * @param position The position of the rank to be removed. The positions of the rest of the
+//     *                 ranks will be downshifted to fill the gap.
+//     */
+//    public void removeRank(int position) {
+//    	
+//    	Rank rank = getRanks().remove( position );
+//    	
+//    	rank.setLadder( null );
 //
-//        Iterator<PositionRank> iter = ranks.iterator();
-//        while (iter.hasNext()) {
-//            PositionRank rank = iter.next();
-//            if (rank.getPosition() == position) {
-//                iter.remove();
-//                break;
-//            }
-//        }
-        
-//        // Reset the rank relationships:
-//        PrisonRanks.getInstance().getRankManager().connectRanks();
+//    	// Update the rank positions along with next and prior:
+//    	connectRanks();
+//
+//    	
+////        ranks.stream().filter(positionRank -> positionRank.getPosition() > position).forEach(
+////                positionRank -> positionRank.setPosition(positionRank.getPosition() - 1)
+////        );
+////
+////        Iterator<PositionRank> iter = ranks.iterator();
+////        while (iter.hasNext()) {
+////            PositionRank rank = iter.next();
+////            if (rank.getPosition() == position) {
+////                iter.remove();
+////                break;
+////            }
+////        }
+//        
+////        // Reset the rank relationships:
+////        PrisonRanks.getInstance().getRankManager().connectRanks();
+//    }
+    public void removeRank( Rank rank ) {
+    	
+    	boolean success = getRanks().remove( rank );
+    	
+    	if ( success ) {
+    		rank.setLadder( null );
+    		
+    		// Update the rank positions along with next and prior:
+    		connectRanks();
+    	}
     }
     
     /**
@@ -414,104 +425,104 @@ public class RankLadder
         return ranks.stream().anyMatch(rank -> rank.getId() == rankId);
     }
 
-    /**
-     * Returns the position of the specified {@link Rank} in this ladder.
-     *
-     * @param rank The {@link Rank} to retrieve the position of.
-     * @return The position of the rank, or -1 if the rank was not found.
-     */
-    public int getPositionOfRank(Rank rank) {
-    	
-    	return getRanks().contains( rank ) ? rank.getPosition() : -1;
-    	
-//        for (PositionRank rankEntry : ranks) {
-//            if (rankEntry.getRankId() == rank.getId()) {
-//                return rankEntry.getPosition();
-//            }
-//        }
-//
-//        return -1;
-    }
-
-    /**
-     * Returns the next highest rank in the ladder.
-     *
-     * @param after The position of the current rank.
-     * @return An optional containing either the rank if there is a next rank in the ladder, or
-     * empty if there isn't or if the rank does not exist anymore.
-     */
-    public Optional<Rank> getNext(int after) {
-    	Rank results = null;
-    	
-    	if ( getRanks().size() >= after ) {
-    		results = getRanks().get( after ).getRankNext();
-    	}
-    	
-    	return results == null ? Optional.empty() : Optional.of( results );
-//        List<Integer> positions =
-//                ranks.stream().map(PositionRank::getPosition).sorted().collect(Collectors.toList());
-//
-//        int newIndex = positions.indexOf(after) + 1;
-//        if (newIndex >= positions.size()) {
-//            return Optional.empty();
-//        }
-//
-//        int nextPosition = positions.get(newIndex);
-//        return getByPosition(nextPosition);
-    }
-
-    /**
-     * Returns the next lowest rank in the ladder.
-     *
-     * @param before The position of the current rank.
-     * @return An optional containing either the rank if there is a previous rank in the ladder, or
-     * empty if there isn't or if the rank does not exist anymore.
-     */
-    public Optional<Rank> getPrevious(int before) {
-    	Rank results = null;
-    	
-    	if ( getRanks().size() >= before ) {
-    		results = getRanks().get( before ).getRankPrior();
-    	}
-    	
-    	return results == null ? Optional.empty() : Optional.of( results );
-    	
-//        List<Integer> positions =
-//                ranks.stream().map(PositionRank::getPosition).sorted().collect(Collectors.toList());
-//
-//        int newIndex = positions.indexOf(before) - 1;
-//        if (newIndex < 0) {
-//            return Optional.empty();
-//        }
-//
-//        int previousPosition = positions.get(newIndex);
-//        return getByPosition(previousPosition);
-    }
-
-    /**
-     * Searches for and returns a rank in the ladder, depending on the position in the ladder.
-     *
-     * @param position The position to search for.
-     * @return An optional containing the rank if it was found, or empty if it wasn't.
-     */
-	public Optional<Rank> getByPosition(int position) {
-    	Rank results = null;
-    	
-    	if ( getRanks().size() > position ) {
-    		results = getRanks().get( position );
-    	}
-    	
-    	return results == null ? Optional.empty() : Optional.of( results );
-//
+//    /**
+//     * Returns the position of the specified {@link Rank} in this ladder.
+//     *
+//     * @param rank The {@link Rank} to retrieve the position of.
+//     * @return The position of the rank, or -1 if the rank was not found.
+//     */
+//    public int getPositionOfRankx(Rank rank) {
 //    	
-//        for (PositionRank posRank : ranks) {
-//            if (posRank.getPosition() == position) {
-//                return PrisonRanks.getInstance().getRankManager().getRankOptional(posRank.getRankId());
-//            }
-//        }
-//
-//        return Optional.empty();
-    }
+//    	return getRanks().contains( rank ) ? rank.getPosition() : -1;
+//    	
+////        for (PositionRank rankEntry : ranks) {
+////            if (rankEntry.getRankId() == rank.getId()) {
+////                return rankEntry.getPosition();
+////            }
+////        }
+////
+////        return -1;
+//    }
+
+//    /**
+//     * Returns the next highest rank in the ladder.
+//     *
+//     * @param after The position of the current rank.
+//     * @return An optional containing either the rank if there is a next rank in the ladder, or
+//     * empty if there isn't or if the rank does not exist anymore.
+//     */
+//    private Optional<Rank> getNextX(int after) {
+//    	Rank results = null;
+//    	
+//    	if ( getRanks().size() >= after ) {
+//    		results = getRanks().get( after ).getRankNext();
+//    	}
+//    	
+//    	return results == null ? Optional.empty() : Optional.of( results );
+////        List<Integer> positions =
+////                ranks.stream().map(PositionRank::getPosition).sorted().collect(Collectors.toList());
+////
+////        int newIndex = positions.indexOf(after) + 1;
+////        if (newIndex >= positions.size()) {
+////            return Optional.empty();
+////        }
+////
+////        int nextPosition = positions.get(newIndex);
+////        return getByPosition(nextPosition);
+//    }
+
+//    /**
+//     * Returns the next lowest rank in the ladder.
+//     *
+//     * @param before The position of the current rank.
+//     * @return An optional containing either the rank if there is a previous rank in the ladder, or
+//     * empty if there isn't or if the rank does not exist anymore.
+//     */
+//    private Optional<Rank> getPreviousX(int before) {
+//    	Rank results = null;
+//    	
+//    	if ( getRanks().size() >= before ) {
+//    		results = getRanks().get( before ).getRankPrior();
+//    	}
+//    	
+//    	return results == null ? Optional.empty() : Optional.of( results );
+//    	
+////        List<Integer> positions =
+////                ranks.stream().map(PositionRank::getPosition).sorted().collect(Collectors.toList());
+////
+////        int newIndex = positions.indexOf(before) - 1;
+////        if (newIndex < 0) {
+////            return Optional.empty();
+////        }
+////
+////        int previousPosition = positions.get(newIndex);
+////        return getByPosition(previousPosition);
+//    }
+
+//    /**
+//     * Searches for and returns a rank in the ladder, depending on the position in the ladder.
+//     *
+//     * @param position The position to search for.
+//     * @return An optional containing the rank if it was found, or empty if it wasn't.
+//     */
+//	private Optional<Rank> getByPositionX(int position) {
+//    	Rank results = null;
+//    	
+//    	if ( getRanks().size() > position ) {
+//    		results = getRanks().get( position );
+//    	}
+//    	
+//    	return results == null ? Optional.empty() : Optional.of( results );
+////
+////    	
+////        for (PositionRank posRank : ranks) {
+////            if (posRank.getPosition() == position) {
+////                return PrisonRanks.getInstance().getRankManager().getRankOptional(posRank.getRankId());
+////            }
+////        }
+////
+////        return Optional.empty();
+//    }
 
     // This next method is sort of precautionary. Sure, positions start at 0, but if the user decides 
     // to be crazy and alters the position within the data files, we need to make sure we adjust 

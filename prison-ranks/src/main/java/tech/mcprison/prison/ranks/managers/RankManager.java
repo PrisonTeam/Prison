@@ -359,7 +359,8 @@ public class RankManager
             
             
             // ... remove it from each ladder it was in...
-            ladder.removeRank(ladder.getPositionOfRank(rank));
+            ladder.removeRank( rank );
+//            ladder.removeRank(ladder.getPositionOfRank(rank));
             if ( !PrisonRanks.getInstance().getLadderManager().save(ladder) ) {
 
             	success[0] = false;

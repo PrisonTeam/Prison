@@ -222,7 +222,8 @@ public class LadderCommands
             return;
         }
 
-        ladder.removeRank(ladder.getPositionOfRank(rank));
+        ladder.removeRank( rank );
+//        ladder.removeRank(ladder.getPositionOfRank(rank));
 
         if ( PrisonRanks.getInstance().getLadderManager().save(ladder) ) {
 

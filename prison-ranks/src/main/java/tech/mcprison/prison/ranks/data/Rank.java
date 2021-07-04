@@ -84,9 +84,6 @@ public class Rank
     
     private transient RankLadder ladder;
     
-    /*
-     * Document-related
-     */
 
     public Rank() {
     	super();
@@ -297,10 +294,15 @@ public class Rank
     	this.ladder = ladder;
     }
     
-    /*
-     * equals() and hashCode()
-     */
 
+    /**
+     * The test of equality should only be done upon the rank id.
+     * This function is pretty much useless since you can only have
+     * one rank with the same rank ID and with the same name.  So it
+     * is sufficient to only check if the rank.id matches.  
+     * The other fields, such as name, cost, currency, and tag 
+     * are pretty much meaningless to use in this test.
+     */
     @Override 
     public boolean equals(Object o) {
         if (this == o) {
@@ -312,23 +314,26 @@ public class Rank
 
         Rank rank = (Rank) o;
 
-        if (id != rank.id) {
-            return false;
-        }
-        if (Double.compare(rank.cost, cost) != 0) {
-            return false;
-        }
+        // Rank.id is unique and there should never be two with the same rank.
         
-        if ( currency != null && rank.currency == null || 
-        		currency != null && rank.currency != null && 
-        				!currency.equals( rank.currency ) ) {
-        	return false;
-        }
-        	
-        if (!name.equals(rank.name)) {
-            return false;
-        }
-        return tag != null ? tag.equals(rank.tag) : rank.tag == null;
+        return id != rank.id;
+//        if (id != rank.id) {
+//            return false;
+//        }
+//        if (Double.compare(rank.cost, cost) != 0) {
+//            return false;
+//        }
+//        
+//        if ( currency != null && rank.currency == null || 
+//        		currency != null && rank.currency != null && 
+//        				!currency.equals( rank.currency ) ) {
+//        	return false;
+//        }
+//        	
+//        if (!name.equals(rank.name)) {
+//            return false;
+//        }
+//        return tag != null ? tag.equals(rank.tag) : rank.tag == null;
     }
 
     @Override 
@@ -449,6 +454,5 @@ public class Rank
 	public void setMineStrings( List<String> mineStrings ) {
 		this.mineStrings = mineStrings;
 	}
-    
-	
+
 }

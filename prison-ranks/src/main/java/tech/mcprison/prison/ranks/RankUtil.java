@@ -579,7 +579,8 @@ public class RankUtil
         		  command == RankupCommands.promote ||
         		  command == RankupCommands.demote )) {
         	// Set the default rank:
-            Optional<Rank> lowestRank = ladder.getByPosition(0);
+            Optional<Rank> lowestRank = ladder.getLowestRank();
+//            Optional<Rank> lowestRank = ladder.getByPosition(0);
             if (!lowestRank.isPresent()) {
             	results.addTransaction( RankupStatus.RANKUP_NO_RANKS, 
             					RankupTransactions.no_ranks_found_on_ladder );
