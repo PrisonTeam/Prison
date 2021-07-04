@@ -14,6 +14,7 @@ public class PlaceholderManager {
     
     public static final String PRISON_PLACEHOLDER_MINENAME_SUFFIX = "_minename";
     public static final String PRISON_PLACEHOLDER_LADDERNAME_SUFFIX = "_laddername";
+    public static final String PRISON_PLACEHOLDER_RANKNAME_SUFFIX = "_rankname";
     
     public static final String PRISON_PLACEHOLDER_ATTRIBUTE_FIELD_SEPARATOR = ":";
     public static final String PRISON_PLACEHOLDER_ATTRIBUTE_SEPARATOR = 
@@ -26,6 +27,7 @@ public class PlaceholderManager {
     	
     	PLAYER,
     	LADDERS,
+    	RANKS,
     	MINES,
     	PLAYERMINES,
     	
@@ -320,6 +322,28 @@ public class PlaceholderManager {
 		prison_mines_blocks_10_playermines(prison_mb10_pm, PlaceHolderFlags.PLAYERMINES),
 		
 	
+		
+		prison_r_n_rankname(PlaceHolderFlags.RANKS, PlaceHolderFlags.ALIAS),
+		prison_r_t_rankname(PlaceHolderFlags.RANKS, PlaceHolderFlags.ALIAS),
+		prison_r_l_rankname(PlaceHolderFlags.RANKS, PlaceHolderFlags.ALIAS),
+		prison_r_c_rankname(PlaceHolderFlags.RANKS, PlaceHolderFlags.ALIAS),
+		prison_r_cf_rankname(PlaceHolderFlags.RANKS, PlaceHolderFlags.ALIAS),
+		prison_r_cu_rankname(PlaceHolderFlags.RANKS, PlaceHolderFlags.ALIAS),
+		prison_r_id_rankname(PlaceHolderFlags.RANKS, PlaceHolderFlags.ALIAS),
+		prison_r_pc_rankname(PlaceHolderFlags.RANKS, PlaceHolderFlags.ALIAS),
+		prison_r_lm_rankname(PlaceHolderFlags.RANKS, PlaceHolderFlags.ALIAS),
+		
+		
+		prison_rank__name_rankname(prison_r_n_rankname, PlaceHolderFlags.RANKS),
+		prison_rank__tag_rankname(prison_r_t_rankname, PlaceHolderFlags.RANKS),
+		prison_rank__ladder_rankname(prison_r_l_rankname, PlaceHolderFlags.RANKS),
+		prison_rank__cost_rankname(prison_r_c_rankname, PlaceHolderFlags.RANKS),
+		prison_rank__cost_formatted_rankname(prison_r_cf_rankname, PlaceHolderFlags.RANKS),
+		prison_rank__currency_rankname(prison_r_cu_rankname, PlaceHolderFlags.RANKS),
+		prison_rank__id_rankname(prison_r_id_rankname, PlaceHolderFlags.RANKS),
+		prison_rank__player_count_rankname(prison_r_pc_rankname, PlaceHolderFlags.RANKS),
+		prison_rank__linked_mines_rankname(prison_r_lm_rankname, PlaceHolderFlags.RANKS),
+		
 		;
 		
 		

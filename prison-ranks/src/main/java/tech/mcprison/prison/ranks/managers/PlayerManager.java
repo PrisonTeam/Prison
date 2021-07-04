@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.google.common.eventbus.Subscribe;
 
@@ -35,6 +36,7 @@ import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.events.player.PlayerJoinEvent;
+import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.ManagerPlaceholders;
 import tech.mcprison.prison.placeholders.PlaceHolderKey;
@@ -975,6 +977,29 @@ public class PlayerManager
 		return results;
 	}
 	
+	
+
+	private String getRankCost( Rank rank, PlaceholderAttribute attribute, boolean formatted )
+	{
+		double cost = rank.getCost();
+		
+		String resultsx = null;
+		DecimalFormat dFmt = new DecimalFormat("#,##0");
+		if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+			PlaceholderAttributeNumberFormat attributeNF = 
+											(PlaceholderAttributeNumberFormat) attribute;
+			resultsx = attributeNF.format( cost );
+		}
+		else  if ( formatted ) {
+			resultsx =  PlaceholdersUtil.formattedMetricSISize( cost );
+		}
+		else {
+			resultsx = dFmt.format( cost );
+		}
+		return resultsx;
+	}
+	
+	
     /**
      * <p>Entry point for translating placeholders.
      * </p>
@@ -1170,6 +1195,98 @@ public class PlayerManager
 						results = getPlayerSellallMultiplier( rankPlayer, attribute );
 						break;
 						
+						
+					case prison_rank__name_rankname:
+					case prison_r_n_rankname:
+						{
+							Rank rank = getRank( placeHolderKey);
+							results = rank.getName();
+						}
+						break;
+						
+					case prison_rank__tag_rankname:
+					case prison_r_t_rankname:
+						{
+							Rank rank = getRank( placeHolderKey);
+							results = rank.getTag();
+						}
+						break;
+						
+					case prison_rank__ladder_rankname:
+					case prison_r_l_rankname:
+						{
+							Rank rank = getRank( placeHolderKey);
+							results = rank.getLadder().getName();
+						}
+						break;
+						
+					
+						
+					case prison_rank__cost_rankname:
+					case prison_r_c_rankname:
+						{
+							Rank rank = getRank( placeHolderKey);
+							results = getRankCost( rank, attribute, false );
+						}
+						break;
+						
+					case prison_rank__cost_formatted_rankname:
+					case prison_r_cf_rankname:
+						{
+							Rank rank = getRank( placeHolderKey);
+							results = getRankCost( rank, attribute, true );
+						}
+						break;
+						
+					case prison_rank__currency_rankname:
+					case prison_r_cu_rankname:
+						{
+							Rank rank = getRank( placeHolderKey);
+							results = rank.getCurrency() == null ? "default" : rank.getCurrency();
+						}
+						break;
+						
+					case prison_rank__id_rankname:
+					case prison_r_id_rankname:
+						{
+							Rank rank = getRank( placeHolderKey);
+							results = Integer.toString( rank.getId() );
+						}
+						break;
+						
+					case prison_rank__player_count_rankname:
+					case prison_r_pc_rankname:
+						{
+							Rank rank = getRank( placeHolderKey);
+							
+							List<RankPlayer> players =
+					        		PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
+					        			.filter(rPlayer -> rPlayer.getLadderRanks().values().contains(rank))
+					        			.collect(Collectors.toList());
+							
+							results = Integer.toString( players.size() );
+						}
+						break;
+						
+					case prison_rank__linked_mines_rankname:
+					case prison_r_lm_rankname:
+						{
+							Rank rank = getRank( placeHolderKey);
+							
+				        	StringBuilder sb = new StringBuilder();
+				        	for ( ModuleElement mine : rank.getMines() ) {
+								if ( sb.length() > 0 ) {
+									sb.append( ", " );
+								}
+								sb.append( mine.getName() );
+							}
+
+							results = sb.toString();
+						}
+						break;
+						
+						
+						
 					default:
 						break;
 				}
@@ -1186,7 +1303,12 @@ public class PlayerManager
     }
 
 
-    @Override
+
+    private Rank getRank( PlaceHolderKey placeHolderKey ) {
+		return PrisonRanks.getInstance().getRankManager().getRank( placeHolderKey.getData() );
+	}
+
+	@Override
     public List<PlaceHolderKey> getTranslatedPlaceHolderKeys() {
     	if ( translatedPlaceHolderKeys == null ) {
     		translatedPlaceHolderKeys = new ArrayList<>();
@@ -1238,6 +1360,31 @@ public class PlayerManager
 //    						IntegrationManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED, "" );
 //    				PlaceHolderKey placeholder2 = new PlaceHolderKey(key2, ph, ladder.name, false );
 //    				translatedPlaceHolderKeys.add( placeholder2 );
+    				
+    			}
+    			
+    		}
+    		
+    		
+    		// This generates all the placeholders for all ranks:
+    		placeHolders = PrisonPlaceHolders.getTypes( PlaceHolderFlags.RANKS );
+    		
+    		List<Rank> ranks = PrisonRanks.getInstance().getRankManager().getRanks();
+    		for ( Rank rank : ranks ) {
+    			for ( PrisonPlaceHolders ph : placeHolders ) {
+    				
+    				String key = ph.name().replace( 
+    						PlaceholderManager.PRISON_PLACEHOLDER_RANKNAME_SUFFIX, "_" + rank.getName() ).
+    							toLowerCase();
+    				
+    				PlaceHolderKey placeholder = new PlaceHolderKey(key, ph, rank.getName() );
+    				if ( ph.getAlias() != null ) {
+    					String aliasName = ph.getAlias().name().replace( 
+    							PlaceholderManager.PRISON_PLACEHOLDER_RANKNAME_SUFFIX, "_" + rank.getName() ).
+    								toLowerCase();
+    					placeholder.setAliasName( aliasName );
+    				}
+    				translatedPlaceHolderKeys.add( placeholder );
     				
     			}
     			

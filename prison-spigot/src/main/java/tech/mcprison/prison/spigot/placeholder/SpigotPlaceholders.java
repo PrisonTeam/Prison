@@ -424,6 +424,9 @@ public class SpigotPlaceholders
 				
 				String value = null;
 				
+				
+				// This gets the "extra" data that is needed for MINES and PLAYERMINES, and also LADDERS and
+				// PLAYER.  Note that RANKS do not need any additional information.
 				if ( mm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.MINES ) ||
 							placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.PLAYERMINES ))) {
 					PlaceholderAttribute attribute = null;

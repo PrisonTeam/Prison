@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.6 2021-07-03
 
 
+* **Preliminary work on 18 new placeholders that focus on ranks.**  These are non-functional at this time.
+
+
 * **Found the wrong message signature was being used... it was for rank ids.**
 
 
