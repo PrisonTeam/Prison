@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.9-alpha.6 2021-07-03
 
 
+* **Found the wrong message signature was being used... it was for rank ids.**
+
+
 * **Utils decay made some adjustments and changes.**
 decayBlocks list: The use of pipe was conflicting with the saving and loading of the mines data so was chanted to commas.
 

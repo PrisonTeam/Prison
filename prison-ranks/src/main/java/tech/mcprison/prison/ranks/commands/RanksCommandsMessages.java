@@ -334,7 +334,7 @@ public class RanksCommandsMessages
 	
 	protected String ranksInfoRankIdMsg( int rankId ) {
 		return PrisonRanks.getInstance().getRanksMessages()
-				.getLocalizable( "ranks_rankCommands__ranks_info_cost" )
+				.getLocalizable( "ranks_rankCommands__ranks_info_rank_id" )
 				.withReplacements( 
 						Integer.toString( rankId ) )
 				.localize();
