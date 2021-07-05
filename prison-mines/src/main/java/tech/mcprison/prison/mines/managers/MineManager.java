@@ -1146,7 +1146,7 @@ public class MineManager
 		}
 		
 		// If results is null, but a PLAYERMINES then must return an empty string:
-		if ( results == null && placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.PLAYERMINES ) ) {
+		if ( results == null && placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.MINEPLAYERS ) ) {
 			results = "";
 		}
 		
@@ -1247,7 +1247,7 @@ public class MineManager
     		// Next we need to register all the PLAYERMINES.  The mines are dynamic, based upon which one
     		// the player is in.  So this is just a simple registration.
     		List<PrisonPlaceHolders> placeHoldersPM = 
-    									PrisonPlaceHolders.getTypes( PlaceHolderFlags.PLAYERMINES );
+    									PrisonPlaceHolders.getTypes( PlaceHolderFlags.MINEPLAYERS );
     		
 			for ( PrisonPlaceHolders ph : placeHoldersPM ) {
 				String key = ph.name().toLowerCase();
