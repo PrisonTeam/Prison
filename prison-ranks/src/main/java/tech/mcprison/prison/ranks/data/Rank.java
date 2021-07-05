@@ -316,7 +316,7 @@ public class Rank
 
         // Rank.id is unique and there should never be two with the same rank.
         
-        return id != rank.id;
+        return id == rank.id;
 //        if (id != rank.id) {
 //            return false;
 //        }

@@ -744,7 +744,7 @@ public class RankManager
 					
 				case prison_rank__ladder_rankname:
 				case prison_r_l_rankname:
-					results = rank.getLadder().getName();
+					results = rank.getLadder() == null ? "" : rank.getLadder().getName();
 					break;
 					
 				case prison_rank__ladder_position_rankname:
@@ -962,21 +962,23 @@ public class RankManager
 	{
 		double cost = 0;
 		// Get player's rank:
-		Rank playerRank = rankPlayer.getRank( rank.getLadder().getName() );
-		if ( rank.getPosition() < playerRank.getPosition() ) {
-			cost = 0;
-		}
-		else {
-			cost = playerRank.getCost();
-			Rank nextRank = playerRank;
+		Rank playerRank = rankPlayer.getRank( rank.getLadder() );
+		if ( playerRank != null ) {
 			
-			while ( nextRank != null &&
-					nextRank.getPosition() < rank.getPosition() ) {
-				
-				cost += playerRank.getCost();
-				nextRank = nextRank.getRankNext();
+			if ( rank.getPosition() < playerRank.getPosition() ) {
+				cost = 0;
 			}
-			
+			else {
+				cost = playerRank.getCost();
+				Rank nextRank = playerRank;
+				
+				while ( nextRank != null &&
+						nextRank.getPosition() < rank.getPosition() ) {
+					
+					cost += playerRank.getCost();
+					nextRank = nextRank.getRankNext();
+				}
+			}
 		}
 		return cost;
 	}

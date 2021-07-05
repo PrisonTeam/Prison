@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.0 2021-07-05
 
 
+* **Fix a few other issues with the new placeholders.**
+
+
 * **Enhance the /ranks autoConfigure to work much better with existing mines and ranks when doing a force.**
 
 

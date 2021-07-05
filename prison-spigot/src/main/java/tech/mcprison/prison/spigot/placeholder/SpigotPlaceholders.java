@@ -79,6 +79,12 @@ public class SpigotPlaceholders
     			placeholdersRawCount += placeholderPlayerKeys.size();
     			
     		}
+    		RankManager rm = PrisonRanks.getInstance().getRankManager();
+    		if ( rm != null ) {
+    			List<PlaceHolderKey> placeholderPlayerKeys = rm.getTranslatedPlaceHolderKeys();
+    			placeholdersRawCount += placeholderPlayerKeys.size();
+    			
+    		}
     	}
     	
 
@@ -110,6 +116,17 @@ public class SpigotPlaceholders
     				}
     			}
     		}
+    		RankManager rm = PrisonRanks.getInstance().getRankManager();
+    		if ( rm != null ) {
+    			List<PlaceHolderKey> placeholderPlayerKeys = rm.getTranslatedPlaceHolderKeys();
+    			
+    			for ( PlaceHolderKey placeHolderKey : placeholderPlayerKeys ) {
+    				if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
+    					placeholdersRegistered++;
+    				}
+    			}
+    		}
+
     	}
     	
 
