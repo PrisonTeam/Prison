@@ -21,7 +21,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.0 2021-07-03
+# v3.2.10-alpha.0 2021-07-05
+
+
+* **Enhance the /ranks autoConfigure to work much better with existing mines and ranks when doing a force.**
+
 
 * **New 18 new placeholders added to prison.  Hooked up the following placeholders, but have not yet ran through testing yet.**
 prison_rank_ladder_position (prison_rlp), prison_rank_ladder_position_laddername (prison_rlp_laddername), 

@@ -169,27 +169,46 @@ public class RanksCommands
 
 	
 	@Command(identifier = "ranks autoConfigure", description = "Auto configures Ranks and Mines using " +
-			"single letters A through Z for both the rank and mine names. If both ranks and mines are " +
+			"single letters A through Z for both the rank and mine names. Both ranks and mines are " +
 			"generated, they will also be linked together automatically. To set the starting price use " +
-			"price=x. To set multiplier mult=x. Cannot autoConfigure if any ranks or mines are defined, " +
-			"but 'force' will attempt it but at your risk and will replace all blocks in preexisting " +
+			"price=x. To set multiplier mult=x. AutoConfigure will try to merge any preexsiting ranks " +
+			"and mines, but you must use the 'force' keyword in 'options'. Force will replace all blocks " +
+			"in preexisting " +
 			"mines. To keep preexisting blocks, use 'forceKeepBlocks' with the 'force' option. " +
 			"Default values [full price=50000 mult=1.5]", 
 			onlyPlayers = false, permissions = "ranks.set")
 	public void autoConfigureRanks(CommandSender sender, 
 			@Wildcard(join=true)
 			@Arg(name = "options", 
-				description = "Options: [full ranks mines price=x mult=x force forceKeepBlocks]", 
+				description = "Options: [full ranks mines price=x mult=x force forceKeepBlocks dontForceLinerWalls dontForceLinerBottoms]", 
 				def = "full") String options
 			) {
 		
-		boolean forceKeepBlocks = options != null && options.contains( "forceKeepBlocks" );
-		if ( forceKeepBlocks ) {
-			options = options.replace( "forceKeepBlocks", "" ).trim();
+		// force options to lower case to work better with mixed case usage:
+		options = options == null ? "" : options.toLowerCase().trim();
+		
+		boolean force = false;
+		boolean forceLinersWalls = true;
+		boolean forceLinersBottom = true;
+		boolean forceKeepBlocks = false;
+		
+		
+		if ( options.contains( "forcekeepblocks" ) ) {
+			forceKeepBlocks = true;
+			options = options.replace( "forcekeepblocks", "" ).trim();
 		}
 		
-		boolean force = options != null && options.contains( "force" );
-		if ( force ) {
+		if ( options.contains( "dontforcelinerwalls" ) ) {
+			forceLinersWalls = false;
+			options = options.replace( "dontforcelinerwalls", "" ).trim();
+		}
+		if ( options.contains( "dontforcelinerbottoms" ) ) {
+			forceLinersBottom = false;
+			options = options.replace( "dontforcelinerbottoms", "" ).trim();
+		}
+		
+		if ( options.contains( "force" ) ) {
+			force = true;
 			options = options.replace( "force", "" ).trim();
 		}
 		
@@ -206,7 +225,7 @@ public class RanksCommands
 			autoConfigForceWarningMsg( sender );
 		}
 		
-		String optionHelp = "&b[&7full ranks mines price=&dx &7mult=&dx &7force forceKeepBlocks&b]";
+		String optionHelp = "&b[&7full ranks mines price=&dx &7mult=&dx &7force forceKeepBlocks dontForceLinerWalls dontForceLinerBottoms&b]";
 		boolean ranks = false;
 		boolean mines = false;
 		double startingPrice = 50000;
@@ -313,6 +332,8 @@ public class RanksCommands
 		int countMinesForced = 0;
 		int countLinked = 0;
 		
+		List<String> rankMineNames = new ArrayList<>();
+		
 		if ( ranks ) {
 			
 	        int colorID = 1;
@@ -322,6 +343,9 @@ public class RanksCommands
 	        
 	        for ( char cRank = 'A'; cRank <= 'Z'; cRank++) {
 	        	String rankName = Character.toString( cRank );
+	        	
+	        	rankMineNames.add( rankName );
+	        	
 	        	String tag = "&7[&" + Integer.toHexString((colorID++ % 15) + 1) + rankName + "&7]";
 	        	
 	        	if ( firstRankName == null ) {
@@ -414,10 +438,11 @@ public class RanksCommands
 	        }
 		}
 		
+		
 		// If mines were created, go ahead and auto assign blocks to the mines:
 		if ( countMines > 0 || countMinesForced > 0 ) {
-			Prison.get().getPlatform().autoCreateMineBlockAssignment( forceKeepBlocks );
-			Prison.get().getPlatform().autoCreateMineLinerAssignment();
+			Prison.get().getPlatform().autoCreateMineBlockAssignment( rankMineNames, forceKeepBlocks );
+			Prison.get().getPlatform().autoCreateMineLinerAssignment( rankMineNames, forceLinersBottom, forceLinersWalls );
 			
 			Prison.get().getPlatform().autoCreateConfigureMines();
 		}

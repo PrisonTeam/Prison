@@ -339,10 +339,11 @@ public interface Platform {
 	public boolean isMineAccessibleByRank( Player player, ModuleElement mine );
 	
 	
-	public void autoCreateMineBlockAssignment( boolean forceKeepBlocks );
+	public void autoCreateMineBlockAssignment( List<String> rankMineNames, boolean forceKeepBlocks );
 
 
-	public void autoCreateMineLinerAssignment();
+	public void autoCreateMineLinerAssignment( List<String> rankMineNames, 
+					boolean forceLinersBottom, boolean forceLinersWalls );
 	
 	
 	public void autoCreateConfigureMines();

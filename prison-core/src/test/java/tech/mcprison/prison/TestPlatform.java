@@ -313,12 +313,13 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
-	public void autoCreateMineBlockAssignment( boolean forceKeepBlocks ) {
+	public void autoCreateMineBlockAssignment( List<String> rankMineNames, boolean forceKeepBlocks ) {
 		
 	}
 	
 	@Override
-	public void autoCreateMineLinerAssignment() {
+	public void autoCreateMineLinerAssignment( List<String> rankMineNames, 
+					boolean forceLinersBottom, boolean forceLinersWalls ) {
 		
 	}
 	
