@@ -10,16 +10,6 @@
 * prison should "scan" offline players upon startup and auto add anyone not already hooked up.  This will help reduce a lot of questions and make the first experience with prison smoother.... 
 
 
-* DONE: BlockEvents - add block filters - tested successfully
-
-
-* DONE: decay:  Add a util function to respawn the block that was mined... use it with blockEvents.
-
-
-* DONE: Ladder commands:
-
-* DONE: Delete by line number:
-
 
 * Bug: placeholders are not working correctly when player is offline...
   - Example with the bar graph placeholders.
@@ -361,6 +351,20 @@ Offers for translation:
 
 
 # Features recently added since v3.2.6
+
+
+
+Completed for v3.2.9:
+
+
+* DONE: BlockEvents - add block filters - tested successfully
+
+* DONE: decay:  Add a util function to respawn the block that was mined... use it with blockEvents.
+
+* DONE: Ladder commands:
+
+* DONE: Delete by line number:
+
 
 
 

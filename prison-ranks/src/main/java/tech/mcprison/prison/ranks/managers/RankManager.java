@@ -990,6 +990,9 @@ public class RankManager
     		
     		// This generates all the placeholders for all ranks:
     		List<PrisonPlaceHolders> placeHolders = PrisonPlaceHolders.getTypes( PlaceHolderFlags.RANKS );
+
+    		placeHolders.addAll( PrisonPlaceHolders.getTypes( PlaceHolderFlags.RANKPLAYERS ) );
+    		
     		
     		List<Rank> ranks = PrisonRanks.getInstance().getRankManager().getRanks();
     		for ( Rank rank : ranks ) {

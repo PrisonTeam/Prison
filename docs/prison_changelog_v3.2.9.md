@@ -29,6 +29,8 @@ that you need.
 
 
 ### v3.2.9 Release Highlights
+v3.2.9 - Prison Update - Enhancements to blockEvents, placeholders, support, and events
+
 
 * Prison now has new commands to help provide better support and can be found under:  /prison support  These commands will be expanded to help make it a lot easier to get help on many issues that could be configuration based.  Prison is now able to help sent some information to https://paste.helpch.at.  These tools also cleans up a lot junk in the log messages so they are easier to read.
 
