@@ -21,7 +21,15 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.0 2021-07-05
+# v3.2.10-alpha.1 2021-07-05
+
+
+
+
+* **v3.2.10-alpha.1 2021-07-05**
+
+
+* **Bug fix... when selling on each block break event, it needs to suppress the per-sale messages.**
 
 
 * **Fix a few other issues with the new placeholders.**
