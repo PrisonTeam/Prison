@@ -43,7 +43,7 @@ import tech.mcprison.prison.placeholders.PlaceholderAttribute;
 import tech.mcprison.prison.placeholders.PlaceholderAttributeNumberFormat;
 import tech.mcprison.prison.placeholders.PlaceholderAttributeText;
 import tech.mcprison.prison.placeholders.PlaceholderManager;
-import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceHolderFlags;
+import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceholderFlags;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.store.Collection;
@@ -749,7 +749,7 @@ public class MineManager
 
 			// If the mine is not provided, try to get it from the placeholder data: 
 			if ( mine == null && 
-					placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.MINES ) &&
+					placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINES ) &&
 					placeHolderKey.getData() != null )  {
 				mine = getMine( placeHolderKey.getData() );
 			}
@@ -1123,7 +1123,7 @@ public class MineManager
 		
 		Mine mine = null;
 		
-		if ( placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.MINES )) {
+		if ( placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINES )) {
 			mine = getMine( placeHolderKey.getData() );
 		}
 		else {
@@ -1146,7 +1146,7 @@ public class MineManager
 		}
 		
 		// If results is null, but a PLAYERMINES then must return an empty string:
-		if ( results == null && placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.MINEPLAYERS ) ) {
+		if ( results == null && placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINEPLAYERS ) ) {
 			results = "";
 		}
 		
@@ -1212,7 +1212,7 @@ public class MineManager
     		translatedPlaceHolderKeys = new ArrayList<>();
     		
     		List<PrisonPlaceHolders> placeHolders = 
-    				PrisonPlaceHolders.getTypes( PlaceHolderFlags.MINES );
+    				PrisonPlaceHolders.getTypes( PlaceholderFlags.MINES );
 //    				PrisonPlaceHolders.excludeTypes( 
 //    					PrisonPlaceHolders.getTypes( PlaceHolderFlags.MINES ),
 //    						PlaceHolderFlags.PLAYERMINES);
@@ -1247,7 +1247,7 @@ public class MineManager
     		// Next we need to register all the PLAYERMINES.  The mines are dynamic, based upon which one
     		// the player is in.  So this is just a simple registration.
     		List<PrisonPlaceHolders> placeHoldersPM = 
-    									PrisonPlaceHolders.getTypes( PlaceHolderFlags.MINEPLAYERS );
+    									PrisonPlaceHolders.getTypes( PlaceholderFlags.MINEPLAYERS );
     		
 			for ( PrisonPlaceHolders ph : placeHoldersPM ) {
 				String key = ph.name().toLowerCase();

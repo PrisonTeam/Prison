@@ -23,7 +23,7 @@ public class PlaceholderManager {
     
     private PlaceholderProgressBarConfig progressBarConfig;
     
-    public enum PlaceHolderFlags {
+    public enum PlaceholderFlags {
     	
     	PLAYER,
     	LADDERS,
@@ -119,244 +119,244 @@ public class PlaceholderManager {
      */
 	public enum PrisonPlaceHolders {
 		
-		no_match__(PlaceHolderFlags.SUPRESS),
+		no_match__(PlaceholderFlags.SUPRESS),
 		
 		// Rank aliases:
-		prison_r(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
-		prison_rn(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
-		prison_rt(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
-		prison_rlp(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
+		prison_r(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_rn(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_rt(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_rlp(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
 		
-		prison_rc(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
-		prison_rcf(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
-		prison_rcp(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
-		prison_rcb(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
+		prison_rc(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_rcf(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_rcp(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_rcb(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
 		
-		prison_rcr(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
-		prison_rcrf(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
-		prison_rcrp(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
-		prison_rcrb(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
+		prison_rcr(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_rcrf(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_rcrp(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_rcrb(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
 		
-		prison_rr(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
-		prison_rrt(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
+		prison_rr(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_rrt(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
 
 
 		
 		
-		prison_rank(prison_r, PlaceHolderFlags.PLAYER),
-		prison_rank_number(prison_rn, PlaceHolderFlags.PLAYER),
-		prison_rank_tag(prison_rt, PlaceHolderFlags.PLAYER),
-		prison_rank_ladder_position(prison_rlp, PlaceHolderFlags.PLAYER),
+		prison_rank(prison_r, PlaceholderFlags.PLAYER),
+		prison_rank_number(prison_rn, PlaceholderFlags.PLAYER),
+		prison_rank_tag(prison_rt, PlaceholderFlags.PLAYER),
+		prison_rank_ladder_position(prison_rlp, PlaceholderFlags.PLAYER),
 		
-		prison_rankup_cost(prison_rc, PlaceHolderFlags.PLAYER),
-		prison_rankup_cost_formatted(prison_rcf, PlaceHolderFlags.PLAYER),
-		prison_rankup_cost_percent(prison_rcp, PlaceHolderFlags.PLAYER),
-		prison_rankup_cost_bar(prison_rcb, PlaceHolderFlags.PLAYER),
+		prison_rankup_cost(prison_rc, PlaceholderFlags.PLAYER),
+		prison_rankup_cost_formatted(prison_rcf, PlaceholderFlags.PLAYER),
+		prison_rankup_cost_percent(prison_rcp, PlaceholderFlags.PLAYER),
+		prison_rankup_cost_bar(prison_rcb, PlaceholderFlags.PLAYER),
 		
-		prison_rankup_cost_remaining(prison_rcr, PlaceHolderFlags.PLAYER),
-		prison_rankup_cost_remaining_formatted(prison_rcrf, PlaceHolderFlags.PLAYER),
-		prison_rankup_cost_remaining_percent(prison_rcrp, PlaceHolderFlags.PLAYER),
-		prison_rankup_cost_remaining_bar(prison_rcrb, PlaceHolderFlags.PLAYER),
+		prison_rankup_cost_remaining(prison_rcr, PlaceholderFlags.PLAYER),
+		prison_rankup_cost_remaining_formatted(prison_rcrf, PlaceholderFlags.PLAYER),
+		prison_rankup_cost_remaining_percent(prison_rcrp, PlaceholderFlags.PLAYER),
+		prison_rankup_cost_remaining_bar(prison_rcrb, PlaceholderFlags.PLAYER),
 		
-		prison_rankup_rank(prison_rr, PlaceHolderFlags.PLAYER),
-		prison_rankup_rank_tag(prison_rrt, PlaceHolderFlags.PLAYER),
+		prison_rankup_rank(prison_rr, PlaceholderFlags.PLAYER),
+		prison_rankup_rank_tag(prison_rrt, PlaceholderFlags.PLAYER),
 
 		
 		
 		// Ladder aliases:
-		prison_r_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
-		prison_rn_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
-		prison_rt_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
-		prison_rlp_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
+		prison_r_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
+		prison_rn_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
+		prison_rt_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
+		prison_rlp_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
 		
-		prison_rc_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
-		prison_rcf_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
-		prison_rcp_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
-		prison_rcb_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
+		prison_rc_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
+		prison_rcf_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
+		prison_rcp_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
+		prison_rcb_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
 		
-		prison_rcr_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
-		prison_rcrf_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
-		prison_rcrp_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
-		prison_rcrb_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
+		prison_rcr_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
+		prison_rcrf_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
+		prison_rcrp_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
+		prison_rcrb_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
 		
-		prison_rr_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
-		prison_rrt_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
+		prison_rr_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
+		prison_rrt_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
 		
 		
-		prison_rank_laddername(prison_r_laddername, PlaceHolderFlags.LADDERS),
-		prison_rank_number_laddername(prison_rn_laddername, PlaceHolderFlags.LADDERS),
-		prison_rank_tag_laddername(prison_rt_laddername, PlaceHolderFlags.LADDERS),
-		prison_rank_ladder_position_laddername(prison_rlp_laddername, PlaceHolderFlags.LADDERS),
+		prison_rank_laddername(prison_r_laddername, PlaceholderFlags.LADDERS),
+		prison_rank_number_laddername(prison_rn_laddername, PlaceholderFlags.LADDERS),
+		prison_rank_tag_laddername(prison_rt_laddername, PlaceholderFlags.LADDERS),
+		prison_rank_ladder_position_laddername(prison_rlp_laddername, PlaceholderFlags.LADDERS),
 		
-		prison_rankup_cost_laddername(prison_rc_laddername, PlaceHolderFlags.LADDERS),
-		prison_rankup_cost_formatted_laddername(prison_rcf_laddername, PlaceHolderFlags.LADDERS),
-		prison_rankup_cost_percent_laddername(prison_rcp_laddername, PlaceHolderFlags.LADDERS),
-		prison_rankup_cost_bar_laddername(prison_rcb_laddername, PlaceHolderFlags.LADDERS),
+		prison_rankup_cost_laddername(prison_rc_laddername, PlaceholderFlags.LADDERS),
+		prison_rankup_cost_formatted_laddername(prison_rcf_laddername, PlaceholderFlags.LADDERS),
+		prison_rankup_cost_percent_laddername(prison_rcp_laddername, PlaceholderFlags.LADDERS),
+		prison_rankup_cost_bar_laddername(prison_rcb_laddername, PlaceholderFlags.LADDERS),
 		
-		prison_rankup_cost_remaining_laddername(prison_rcr_laddername, PlaceHolderFlags.LADDERS),
-		prison_rankup_cost_remaining_formatted_laddername(prison_rcrf_laddername, PlaceHolderFlags.LADDERS),
-		prison_rankup_cost_remaining_percent_laddername(prison_rcrp_laddername, PlaceHolderFlags.LADDERS),
-		prison_rankup_cost_remaining_bar_laddername(prison_rcrb_laddername, PlaceHolderFlags.LADDERS),
+		prison_rankup_cost_remaining_laddername(prison_rcr_laddername, PlaceholderFlags.LADDERS),
+		prison_rankup_cost_remaining_formatted_laddername(prison_rcrf_laddername, PlaceholderFlags.LADDERS),
+		prison_rankup_cost_remaining_percent_laddername(prison_rcrp_laddername, PlaceholderFlags.LADDERS),
+		prison_rankup_cost_remaining_bar_laddername(prison_rcrb_laddername, PlaceholderFlags.LADDERS),
 		
-		prison_rankup_rank_laddername(prison_rr_laddername, PlaceHolderFlags.LADDERS),
-		prison_rankup_rank_tag_laddername(prison_rrt_laddername, PlaceHolderFlags.LADDERS),
+		prison_rankup_rank_laddername(prison_rr_laddername, PlaceholderFlags.LADDERS),
+		prison_rankup_rank_tag_laddername(prison_rrt_laddername, PlaceholderFlags.LADDERS),
 	
 		
 		
 		// player balances.  Both with and without ladders.
-		prison_pb(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
-		prison_player_balance(prison_pb, PlaceHolderFlags.PLAYER),
+		prison_pb(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_player_balance(prison_pb, PlaceholderFlags.PLAYER),
 		
-		prison_pb_laddername(PlaceHolderFlags.LADDERS, PlaceHolderFlags.ALIAS),
-		prison_player_balance_laddername(prison_pb_laddername, PlaceHolderFlags.LADDERS),
+		prison_pb_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
+		prison_player_balance_laddername(prison_pb_laddername, PlaceholderFlags.LADDERS),
 
 	
 		
-		prison_psm(PlaceHolderFlags.PLAYER, PlaceHolderFlags.ALIAS),
-		prison_player_sellall_multiplier(prison_psm, PlaceHolderFlags.PLAYER),
+		prison_psm(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_player_sellall_multiplier(prison_psm, PlaceholderFlags.PLAYER),
 		
 		
 		
 		// Mine aliases:
-		prison_mn_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mt_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mi_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mif_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mtl_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mtlb_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mtlf_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_ms_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mr_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mrb_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mp_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mpc_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mbm_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mrc_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mn_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mt_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mi_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mif_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mtl_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mtlb_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mtlf_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_ms_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mr_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mrb_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mp_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mpc_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mbm_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mrc_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
 
-		prison_mb01_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mb02_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mb03_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mb04_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mb05_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mb06_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mb07_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mb08_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mb09_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
-		prison_mb10_minename(PlaceHolderFlags.MINES, PlaceHolderFlags.ALIAS),
+		prison_mb01_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mb02_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mb03_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mb04_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mb05_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mb06_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mb07_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mb08_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mb09_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_mb10_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
 
 		
 		// reset_interval, reset_timeleft, blocks_size, blocks_remaining, blocks_percent
 		// player_count
 		// NOTE: Remove PrisonPlaceHolderFlags.SUPRESS when ready to be used:
-		prison_mines_name_minename(prison_mn_minename, PlaceHolderFlags.MINES),
-		prison_mines_tag_minename(prison_mt_minename, PlaceHolderFlags.MINES),
-		prison_mines_interval_minename(prison_mi_minename, PlaceHolderFlags.MINES),
-		prison_mines_interval_formatted_minename(prison_mif_minename, PlaceHolderFlags.MINES),
-		prison_mines_timeleft_minename(prison_mtl_minename, PlaceHolderFlags.MINES),
-		prison_mines_timeleft_bar_minename(prison_mtlb_minename, PlaceHolderFlags.MINES),
-		prison_mines_timeleft_formatted_minename(prison_mtlf_minename, PlaceHolderFlags.MINES),
-		prison_mines_size_minename(prison_ms_minename, PlaceHolderFlags.MINES),
-		prison_mines_remaining_minename(prison_mr_minename, PlaceHolderFlags.MINES),
-		prison_mines_remaining_bar_minename(prison_mrb_minename, PlaceHolderFlags.MINES),
-		prison_mines_percent_minename(prison_mp_minename, PlaceHolderFlags.MINES),
-		prison_mines_player_count_minename(prison_mpc_minename, PlaceHolderFlags.MINES),
-		prison_mines_blocks_mined_minename(prison_mbm_minename, PlaceHolderFlags.MINES),
-		prison_mines_reset_count_minename(prison_mrc_minename, PlaceHolderFlags.MINES),
+		prison_mines_name_minename(prison_mn_minename, PlaceholderFlags.MINES),
+		prison_mines_tag_minename(prison_mt_minename, PlaceholderFlags.MINES),
+		prison_mines_interval_minename(prison_mi_minename, PlaceholderFlags.MINES),
+		prison_mines_interval_formatted_minename(prison_mif_minename, PlaceholderFlags.MINES),
+		prison_mines_timeleft_minename(prison_mtl_minename, PlaceholderFlags.MINES),
+		prison_mines_timeleft_bar_minename(prison_mtlb_minename, PlaceholderFlags.MINES),
+		prison_mines_timeleft_formatted_minename(prison_mtlf_minename, PlaceholderFlags.MINES),
+		prison_mines_size_minename(prison_ms_minename, PlaceholderFlags.MINES),
+		prison_mines_remaining_minename(prison_mr_minename, PlaceholderFlags.MINES),
+		prison_mines_remaining_bar_minename(prison_mrb_minename, PlaceholderFlags.MINES),
+		prison_mines_percent_minename(prison_mp_minename, PlaceholderFlags.MINES),
+		prison_mines_player_count_minename(prison_mpc_minename, PlaceholderFlags.MINES),
+		prison_mines_blocks_mined_minename(prison_mbm_minename, PlaceholderFlags.MINES),
+		prison_mines_reset_count_minename(prison_mrc_minename, PlaceholderFlags.MINES),
 
-		prison_mines_blocks_01_minename(prison_mb01_minename, PlaceHolderFlags.MINES),
-		prison_mines_blocks_02_minename(prison_mb02_minename, PlaceHolderFlags.MINES),
-		prison_mines_blocks_03_minename(prison_mb03_minename, PlaceHolderFlags.MINES),
-		prison_mines_blocks_04_minename(prison_mb04_minename, PlaceHolderFlags.MINES),
-		prison_mines_blocks_05_minename(prison_mb05_minename, PlaceHolderFlags.MINES),
-		prison_mines_blocks_06_minename(prison_mb06_minename, PlaceHolderFlags.MINES),
-		prison_mines_blocks_07_minename(prison_mb07_minename, PlaceHolderFlags.MINES),
-		prison_mines_blocks_08_minename(prison_mb08_minename, PlaceHolderFlags.MINES),
-		prison_mines_blocks_09_minename(prison_mb09_minename, PlaceHolderFlags.MINES),
-		prison_mines_blocks_10_minename(prison_mb10_minename, PlaceHolderFlags.MINES),
+		prison_mines_blocks_01_minename(prison_mb01_minename, PlaceholderFlags.MINES),
+		prison_mines_blocks_02_minename(prison_mb02_minename, PlaceholderFlags.MINES),
+		prison_mines_blocks_03_minename(prison_mb03_minename, PlaceholderFlags.MINES),
+		prison_mines_blocks_04_minename(prison_mb04_minename, PlaceholderFlags.MINES),
+		prison_mines_blocks_05_minename(prison_mb05_minename, PlaceholderFlags.MINES),
+		prison_mines_blocks_06_minename(prison_mb06_minename, PlaceholderFlags.MINES),
+		prison_mines_blocks_07_minename(prison_mb07_minename, PlaceholderFlags.MINES),
+		prison_mines_blocks_08_minename(prison_mb08_minename, PlaceholderFlags.MINES),
+		prison_mines_blocks_09_minename(prison_mb09_minename, PlaceholderFlags.MINES),
+		prison_mines_blocks_10_minename(prison_mb10_minename, PlaceholderFlags.MINES),
 
 		
 		
 		// PlayerMine aliases:
-		prison_mn_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mt_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mi_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mif_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mtl_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mtlb_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mtlf_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_ms_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mr_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mrb_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mp_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mpc_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mbm_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mrc_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
+		prison_mn_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mt_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mi_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mif_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mtl_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mtlb_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mtlf_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_ms_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mr_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mrb_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mp_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mpc_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mbm_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mrc_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
 
-		prison_mb01_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mb02_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mb03_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mb04_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mb05_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mb06_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mb07_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mb08_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mb09_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_mb10_pm(PlaceHolderFlags.MINEPLAYERS, PlaceHolderFlags.ALIAS),
+		prison_mb01_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mb02_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mb03_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mb04_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mb05_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mb06_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mb07_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mb08_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mb09_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_mb10_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
 
 		
-		prison_mines_name_playermines(prison_mn_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_tag_playermines(prison_mt_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_interval_playermines(prison_mi_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_interval_formatted_playermines(prison_mif_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_timeleft_playermines(prison_mtl_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_timeleft_bar_playermines(prison_mtlb_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_timeleft_formatted_playermines(prison_mtlf_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_size_playermines(prison_ms_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_remaining_playermines(prison_mr_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_remaining_bar_playermines(prison_mrb_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_percent_playermines(prison_mp_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_player_count_playermines(prison_mpc_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_blocks_mined_playermines(prison_mbm_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_reset_count_playermines(prison_mrc_pm, PlaceHolderFlags.MINEPLAYERS),
+		prison_mines_name_playermines(prison_mn_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_tag_playermines(prison_mt_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_interval_playermines(prison_mi_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_interval_formatted_playermines(prison_mif_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_timeleft_playermines(prison_mtl_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_timeleft_bar_playermines(prison_mtlb_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_timeleft_formatted_playermines(prison_mtlf_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_size_playermines(prison_ms_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_remaining_playermines(prison_mr_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_remaining_bar_playermines(prison_mrb_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_percent_playermines(prison_mp_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_player_count_playermines(prison_mpc_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_blocks_mined_playermines(prison_mbm_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_reset_count_playermines(prison_mrc_pm, PlaceholderFlags.MINEPLAYERS),
 
-		prison_mines_blocks_01_playermines(prison_mb01_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_blocks_02_playermines(prison_mb02_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_blocks_03_playermines(prison_mb03_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_blocks_04_playermines(prison_mb04_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_blocks_05_playermines(prison_mb05_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_blocks_06_playermines(prison_mb06_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_blocks_07_playermines(prison_mb07_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_blocks_08_playermines(prison_mb08_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_blocks_09_playermines(prison_mb09_pm, PlaceHolderFlags.MINEPLAYERS),
-		prison_mines_blocks_10_playermines(prison_mb10_pm, PlaceHolderFlags.MINEPLAYERS),
+		prison_mines_blocks_01_playermines(prison_mb01_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_blocks_02_playermines(prison_mb02_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_blocks_03_playermines(prison_mb03_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_blocks_04_playermines(prison_mb04_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_blocks_05_playermines(prison_mb05_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_blocks_06_playermines(prison_mb06_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_blocks_07_playermines(prison_mb07_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_blocks_08_playermines(prison_mb08_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_blocks_09_playermines(prison_mb09_pm, PlaceholderFlags.MINEPLAYERS),
+		prison_mines_blocks_10_playermines(prison_mb10_pm, PlaceholderFlags.MINEPLAYERS),
 		
 	
 		
-		prison_r_n_rankname(PlaceHolderFlags.RANKS, PlaceHolderFlags.ALIAS),
-		prison_r_t_rankname(PlaceHolderFlags.RANKS, PlaceHolderFlags.ALIAS),
-		prison_r_l_rankname(PlaceHolderFlags.RANKS, PlaceHolderFlags.ALIAS),
-		prison_r_lp_rankname(PlaceHolderFlags.RANKS, PlaceHolderFlags.ALIAS),
-		prison_r_c_rankname(PlaceHolderFlags.RANKS, PlaceHolderFlags.ALIAS),
-		prison_r_cf_rankname(PlaceHolderFlags.RANKS, PlaceHolderFlags.ALIAS),
-		prison_r_cu_rankname(PlaceHolderFlags.RANKS, PlaceHolderFlags.ALIAS),
-		prison_r_id_rankname(PlaceHolderFlags.RANKS, PlaceHolderFlags.ALIAS),
-		prison_r_pc_rankname(PlaceHolderFlags.RANKS, PlaceHolderFlags.ALIAS),
-		prison_r_lm_rankname(PlaceHolderFlags.RANKS, PlaceHolderFlags.ALIAS),
+		prison_r_n_rankname(PlaceholderFlags.RANKS, PlaceholderFlags.ALIAS),
+		prison_r_t_rankname(PlaceholderFlags.RANKS, PlaceholderFlags.ALIAS),
+		prison_r_l_rankname(PlaceholderFlags.RANKS, PlaceholderFlags.ALIAS),
+		prison_r_lp_rankname(PlaceholderFlags.RANKS, PlaceholderFlags.ALIAS),
+		prison_r_c_rankname(PlaceholderFlags.RANKS, PlaceholderFlags.ALIAS),
+		prison_r_cf_rankname(PlaceholderFlags.RANKS, PlaceholderFlags.ALIAS),
+		prison_r_cu_rankname(PlaceholderFlags.RANKS, PlaceholderFlags.ALIAS),
+		prison_r_id_rankname(PlaceholderFlags.RANKS, PlaceholderFlags.ALIAS),
+		prison_r_pc_rankname(PlaceholderFlags.RANKS, PlaceholderFlags.ALIAS),
+		prison_r_lm_rankname(PlaceholderFlags.RANKS, PlaceholderFlags.ALIAS),
 		
 		
 
 		
 		
-		prison_rank__name_rankname(prison_r_n_rankname, PlaceHolderFlags.RANKS),
-		prison_rank__tag_rankname(prison_r_t_rankname, PlaceHolderFlags.RANKS),
-		prison_rank__ladder_rankname(prison_r_l_rankname, PlaceHolderFlags.RANKS),
-		prison_rank__ladder_position_rankname(prison_r_lp_rankname, PlaceHolderFlags.RANKS),
-		prison_rank__cost_rankname(prison_r_c_rankname, PlaceHolderFlags.RANKS),
-		prison_rank__cost_formatted_rankname(prison_r_cf_rankname, PlaceHolderFlags.RANKS),
-		prison_rank__currency_rankname(prison_r_cu_rankname, PlaceHolderFlags.RANKS),
-		prison_rank__id_rankname(prison_r_id_rankname, PlaceHolderFlags.RANKS),
-		prison_rank__player_count_rankname(prison_r_pc_rankname, PlaceHolderFlags.RANKS),
-		prison_rank__linked_mines_rankname(prison_r_lm_rankname, PlaceHolderFlags.RANKS),
+		prison_rank__name_rankname(prison_r_n_rankname, PlaceholderFlags.RANKS),
+		prison_rank__tag_rankname(prison_r_t_rankname, PlaceholderFlags.RANKS),
+		prison_rank__ladder_rankname(prison_r_l_rankname, PlaceholderFlags.RANKS),
+		prison_rank__ladder_position_rankname(prison_r_lp_rankname, PlaceholderFlags.RANKS),
+		prison_rank__cost_rankname(prison_r_c_rankname, PlaceholderFlags.RANKS),
+		prison_rank__cost_formatted_rankname(prison_r_cf_rankname, PlaceholderFlags.RANKS),
+		prison_rank__currency_rankname(prison_r_cu_rankname, PlaceholderFlags.RANKS),
+		prison_rank__id_rankname(prison_r_id_rankname, PlaceholderFlags.RANKS),
+		prison_rank__player_count_rankname(prison_r_pc_rankname, PlaceholderFlags.RANKS),
+		prison_rank__linked_mines_rankname(prison_r_lm_rankname, PlaceholderFlags.RANKS),
 		
 		
 		
@@ -364,44 +364,47 @@ public class PlaceholderManager {
 
 		
 		//prison_r_plp_rankname(PlaceHolderFlags.RANKPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_r_pcst_rankname(PlaceHolderFlags.RANKPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_r_pcf_rankname(PlaceHolderFlags.RANKPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_r_pcr_rankname(PlaceHolderFlags.RANKPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_r_pcrf_rankname(PlaceHolderFlags.RANKPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_r_pcp_rankname(PlaceHolderFlags.RANKPLAYERS, PlaceHolderFlags.ALIAS),
-		prison_r_pcb_rankname(PlaceHolderFlags.RANKPLAYERS, PlaceHolderFlags.ALIAS),
+		prison_r_pcst_rankname(PlaceholderFlags.RANKPLAYERS, PlaceholderFlags.ALIAS),
+		prison_r_pcf_rankname(PlaceholderFlags.RANKPLAYERS, PlaceholderFlags.ALIAS),
+		prison_r_pcr_rankname(PlaceholderFlags.RANKPLAYERS, PlaceholderFlags.ALIAS),
+		prison_r_pcrf_rankname(PlaceholderFlags.RANKPLAYERS, PlaceholderFlags.ALIAS),
+		prison_r_pcp_rankname(PlaceholderFlags.RANKPLAYERS, PlaceholderFlags.ALIAS),
+		prison_r_pcb_rankname(PlaceholderFlags.RANKPLAYERS, PlaceholderFlags.ALIAS),
 		
 		
 		//prison_rank__player_ladder_position_rankname(prison_r_plp_rankname, PlaceHolderFlags.RANKPLAYERS),
-		prison_rank__player_cost_rankname(prison_r_pcst_rankname, PlaceHolderFlags.RANKPLAYERS),
-		prison_rank__player_cost_formatted_rankname(prison_r_pcf_rankname, PlaceHolderFlags.RANKPLAYERS),
-		prison_rank__player_cost_remaining_rankname(prison_r_pcf_rankname, PlaceHolderFlags.RANKPLAYERS),
-		prison_rank__player_cost_remaining_formatted_rankname(prison_r_pcf_rankname, PlaceHolderFlags.RANKPLAYERS),
-		prison_rank__player_cost_percent_rankname(prison_r_pcp_rankname, PlaceHolderFlags.RANKPLAYERS),
-		prison_rank__player_cost_bar_rankname(prison_r_pcb_rankname, PlaceHolderFlags.RANKPLAYERS)
+		prison_rank__player_cost_rankname(prison_r_pcst_rankname, PlaceholderFlags.RANKPLAYERS),
+		prison_rank__player_cost_formatted_rankname(prison_r_pcf_rankname, PlaceholderFlags.RANKPLAYERS),
+		prison_rank__player_cost_remaining_rankname(prison_r_pcf_rankname, PlaceholderFlags.RANKPLAYERS),
+		prison_rank__player_cost_remaining_formatted_rankname(prison_r_pcf_rankname, PlaceholderFlags.RANKPLAYERS),
+		prison_rank__player_cost_percent_rankname(prison_r_pcp_rankname, PlaceholderFlags.RANKPLAYERS),
+		prison_rank__player_cost_bar_rankname(prison_r_pcb_rankname, PlaceholderFlags.RANKPLAYERS),
+		
+		
+		
 		
 		;
 		
 		
 		private final PrisonPlaceHolders alias;
-		private final List<PlaceHolderFlags> flags;
+		private final List<PlaceholderFlags> flags;
 		private PrisonPlaceHolders() {
 			this.flags = new ArrayList<>();
 			this.alias = null;
 		}
-		private PrisonPlaceHolders(PlaceHolderFlags... flags) {
+		private PrisonPlaceHolders(PlaceholderFlags... flags) {
 			this.alias = null;
 			this.flags = getFlags(flags);
 		}
-		private PrisonPlaceHolders(PrisonPlaceHolders alias, PlaceHolderFlags... flags) {
+		private PrisonPlaceHolders(PrisonPlaceHolders alias, PlaceholderFlags... flags) {
 			this.alias = alias;
 			this.flags = getFlags(flags);
 		}
 		
-		private List<PlaceHolderFlags> getFlags( PlaceHolderFlags[] flags ) {
-			List<PlaceHolderFlags> flagz = new ArrayList<>();
+		private List<PlaceholderFlags> getFlags( PlaceholderFlags[] flags ) {
+			List<PlaceholderFlags> flagz = new ArrayList<>();
 			if ( flags != null ) {
-				for ( PlaceHolderFlags flag : flags ) {
+				for ( PlaceholderFlags flag : flags ) {
 					flagz.add( flag );
 				}
 			}
@@ -417,15 +420,15 @@ public class PlaceholderManager {
 			return alias != null;
 		}
 		public boolean isAlias() {
-			return flags.contains( PlaceHolderFlags.ALIAS );
+			return flags.contains( PlaceholderFlags.ALIAS );
 		}
 		public boolean isSuppressed() {
-			return flags.contains( PlaceHolderFlags.SUPRESS );
+			return flags.contains( PlaceholderFlags.SUPRESS );
 		}
-		public boolean hasFlag( PlaceHolderFlags flag ) {
+		public boolean hasFlag( PlaceholderFlags flag ) {
 			return flags.contains( flag );
 		}
-		public List<PlaceHolderFlags> getFlags() {
+		public List<PlaceholderFlags> getFlags() {
 			return flags;
 		}
 
@@ -452,7 +455,7 @@ public class PlaceholderManager {
 			return result;
 		}
 		
-		public static List<PrisonPlaceHolders> getTypes(PlaceHolderFlags flag) {
+		public static List<PrisonPlaceHolders> getTypes(PlaceholderFlags flag) {
 			List<PrisonPlaceHolders> results = new ArrayList<>();
 			
 			if ( flag != null ) {
@@ -467,7 +470,7 @@ public class PlaceholderManager {
 		}
 		
 		public static List<PrisonPlaceHolders> excludeTypes(
-							List<PrisonPlaceHolders> list, PlaceHolderFlags flag) {
+							List<PrisonPlaceHolders> list, PlaceholderFlags flag) {
 			List<PrisonPlaceHolders> results = new ArrayList<>();
 			
 			if ( flag != null ) {

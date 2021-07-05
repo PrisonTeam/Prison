@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.1 2021-07-05
 
 
+* **Fixed a typo that was made a long time ago.  Placeholder has a capitol H in the name.**
+
+
 * **Increased the number of rows displayed when using the placeholder search.  It was showing six placeholders and I increased it to 10.**
 
 

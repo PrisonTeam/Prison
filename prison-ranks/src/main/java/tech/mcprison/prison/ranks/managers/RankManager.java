@@ -39,7 +39,7 @@ import tech.mcprison.prison.placeholders.PlaceholderAttribute;
 import tech.mcprison.prison.placeholders.PlaceholderAttributeNumberFormat;
 import tech.mcprison.prison.placeholders.PlaceholderAttributeText;
 import tech.mcprison.prison.placeholders.PlaceholderManager;
-import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceHolderFlags;
+import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceholderFlags;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
@@ -991,9 +991,9 @@ public class RankManager
     		translatedPlaceHolderKeys = new ArrayList<>();
     		
     		// This generates all the placeholders for all ranks:
-    		List<PrisonPlaceHolders> placeHolders = PrisonPlaceHolders.getTypes( PlaceHolderFlags.RANKS );
+    		List<PrisonPlaceHolders> placeHolders = PrisonPlaceHolders.getTypes( PlaceholderFlags.RANKS );
 
-    		placeHolders.addAll( PrisonPlaceHolders.getTypes( PlaceHolderFlags.RANKPLAYERS ) );
+    		placeHolders.addAll( PrisonPlaceHolders.getTypes( PlaceholderFlags.RANKPLAYERS ) );
     		
     		
     		List<Rank> ranks = PrisonRanks.getInstance().getRankManager().getRanks();

@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceHolderFlags;
+import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceholderFlags;
 
 public interface Placeholders {
 	
-	public Map<PlaceHolderFlags, Integer> getPlaceholderDetailCounts();
+	public Map<PlaceholderFlags, Integer> getPlaceholderDetailCounts();
 	
 	
 	public int getPlaceholderCount();

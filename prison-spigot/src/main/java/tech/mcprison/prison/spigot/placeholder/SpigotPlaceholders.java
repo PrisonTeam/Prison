@@ -14,7 +14,7 @@ import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceHolderKey;
 import tech.mcprison.prison.placeholders.PlaceholderAttribute;
-import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceHolderFlags;
+import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceholderFlags;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
 import tech.mcprison.prison.placeholders.PlaceholderResults;
 import tech.mcprison.prison.placeholders.Placeholders;
@@ -28,8 +28,8 @@ public class SpigotPlaceholders
 
     
 	@Override
-    public Map<PlaceHolderFlags, Integer> getPlaceholderDetailCounts() {
-    	Map<PlaceHolderFlags, Integer> placeholderDetails = new TreeMap<>();
+    public Map<PlaceholderFlags, Integer> getPlaceholderDetailCounts() {
+    	Map<PlaceholderFlags, Integer> placeholderDetails = new TreeMap<>();
     	
     	List<PlaceHolderKey> placeholders = new ArrayList<>();
     	
@@ -53,7 +53,7 @@ public class SpigotPlaceholders
     	}
     	
     	for ( PlaceHolderKey phKey : placeholders ) {
-			for ( PlaceHolderFlags flag : phKey.getPlaceholder().getFlags() ) {
+			for ( PlaceholderFlags flag : phKey.getPlaceholder().getFlags() ) {
 
 				int count = 0;
 				
@@ -486,19 +486,19 @@ public class SpigotPlaceholders
 				String value = null;
 				
 				
-				if ( mm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.MINES ) ||
-							placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.MINEPLAYERS ))) {
+				if ( mm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINES ) ||
+							placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINEPLAYERS ))) {
 					PlaceholderAttribute attribute = null;
 					value = mm.getTranslateMinesPlaceHolder( placeHolderKey, attribute );
 				}
-				else if ( pm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.PLAYER ) || 
-							placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.LADDERS ))) {
+				else if ( pm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.PLAYER ) || 
+							placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.LADDERS ))) {
 					value = pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, placeHolderKey, null );
 				}
-				else if ( rm != null && placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.RANKS ) ) {
+				else if ( rm != null && placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.RANKS ) ) {
 					value = rm.getTranslateRanksPlaceHolder( placeHolderKey, null );
 				}
-				else if ( rm != null && placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.RANKPLAYERS ) ) {
+				else if ( rm != null && placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.RANKPLAYERS ) ) {
 					value = rm.getTranslateRankPlayersPlaceHolder( playerUuid, playerName, placeHolderKey, null );
 				}
 				
@@ -598,8 +598,8 @@ public class SpigotPlaceholders
 		Output.get().logInfo( "Total placeholders generated: %d", 
 				getPlaceholderCount() );
 		
-		Map<PlaceHolderFlags, Integer> phDetails = getPlaceholderDetailCounts();
-		for ( PlaceHolderFlags key : phDetails.keySet() ) {
+		Map<PlaceholderFlags, Integer> phDetails = getPlaceholderDetailCounts();
+		for ( PlaceholderFlags key : phDetails.keySet() ) {
 			Output.get().logInfo( "  %s: %d", 
 					key.name(), phDetails.get( key ) );
 			

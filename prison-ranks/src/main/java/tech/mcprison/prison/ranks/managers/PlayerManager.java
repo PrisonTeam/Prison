@@ -42,7 +42,7 @@ import tech.mcprison.prison.placeholders.PlaceholderAttribute;
 import tech.mcprison.prison.placeholders.PlaceholderAttributeNumberFormat;
 import tech.mcprison.prison.placeholders.PlaceholderAttributeText;
 import tech.mcprison.prison.placeholders.PlaceholderManager;
-import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceHolderFlags;
+import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceholderFlags;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
 import tech.mcprison.prison.placeholders.PlaceholderResults;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
@@ -1233,7 +1233,7 @@ public class PlayerManager
     		translatedPlaceHolderKeys = new ArrayList<>();
     		
     		// This generates all of the placeholders for the player ranks:
-    		List<PrisonPlaceHolders> placeHolders = PrisonPlaceHolders.getTypes( PlaceHolderFlags.PLAYER );
+    		List<PrisonPlaceHolders> placeHolders = PrisonPlaceHolders.getTypes( PlaceholderFlags.PLAYER );
     		for ( PrisonPlaceHolders ph : placeHolders ) {
     			PlaceHolderKey placeholder = new PlaceHolderKey(ph.name(), ph );
     			if ( ph.getAlias() != null ) {
@@ -1254,7 +1254,7 @@ public class PlayerManager
     		
     		
     		// This generates all of the placeholders for the ladders:
-    		placeHolders = PrisonPlaceHolders.getTypes( PlaceHolderFlags.LADDERS );
+    		placeHolders = PrisonPlaceHolders.getTypes( PlaceholderFlags.LADDERS );
     		
     		List<RankLadder> ladders = PrisonRanks.getInstance().getLadderManager().getLadders();
     		for ( RankLadder ladder : ladders ) {

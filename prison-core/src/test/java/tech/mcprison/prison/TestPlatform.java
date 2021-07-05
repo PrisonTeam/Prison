@@ -44,7 +44,7 @@ import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.placeholders.Placeholders;
-import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceHolderFlags;
+import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceholderFlags;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.Location;
@@ -199,8 +199,8 @@ public class TestPlatform implements Platform {
 
     
     
-    public Map<PlaceHolderFlags, Integer> getPlaceholderDetailCounts() {
-    	Map<PlaceHolderFlags, Integer> placeholderDetails = new TreeMap<>();
+    public Map<PlaceholderFlags, Integer> getPlaceholderDetailCounts() {
+    	Map<PlaceholderFlags, Integer> placeholderDetails = new TreeMap<>();
     	
     	return placeholderDetails;
     }
