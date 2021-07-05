@@ -590,7 +590,7 @@ public class PrisonCommand {
     public void placeholdersSearchCommand(CommandSender sender,
     		@Arg(name = "playerName", description = "Player name to use with player rank placeholders (optional)", 
     				def = "." ) String playerName,
-    		@Arg(name = "pageNumber", description = "page number of results to display", def = "." ) String pageNumber,
+    		@Arg(name = "pageNumber", description = "page number of results to display (optional)", def = "." ) String pageNumber,
     		@Wildcard(join=true)
     		@Arg(name = "patterns", description = "Patterns of placeholders to search for" ) String patterns ) {
     
@@ -680,7 +680,7 @@ public class PrisonCommand {
         
         CommandPagedData cmdPageData = new CommandPagedData(
         		"/prison placeholders search", placeholders.size(),
-        		0, Integer.toString( page ), 12 );
+        		0, Integer.toString( page ), 20 );
         // Need to provide more "parts" to the command that follows the page number:
         cmdPageData.setPageCommandSuffix( patterns );
     	

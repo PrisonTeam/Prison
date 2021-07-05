@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.1 2021-07-05
 
 
+* **Increased the number of rows displayed when using the placeholder search.  It was showing six placeholders and I increased it to 10.**
+
+
 * **Renamed the PlaceHolderFlags from PLAYERMINES to MINEPLAYERS which is more consistent in how it is being used.**
 
 
