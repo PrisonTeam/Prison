@@ -23,8 +23,15 @@ These build logs represent the work that has been going on within prison.
 
 # v3.2.10-alpha.0 2021-07-03
 
+* **New 18 new placeholders added to prison.  Hooked up the following placeholders, but have not yet ran through testing yet.**
+prison_rank_ladder_position (prison_rlp), prison_rank_ladder_position_laddername (prison_rlp_laddername), 
+prison_rank__ladder_position_rankname (prison_r_lp_rankname), prison_rank__player_cost_rankname (prison_r_pcst_rankname),
+prison_rank__player_cost_formatted_rankname (prison_r_pcf_rankname),   prison_rank__player_cost_remaining_rankname (prison_r_pcf_rankname),
+prison_rank__player_cost_remaining_formatted_rankname (prison_r_pcf_rankname),  prison_rank__player_cost_percent_rankname (prison_r_pcp_rankname),
+prison_rank__player_cost_bar_rankname (prison_r_pcb_rankname)
 
-* **Refactor ranks and RankLadders to eliminate old and inefficient ways to get the ranks and next ranks.**
+
+* **Refactored ranks and RankLadders to eliminate old and inefficient ways to get the ranks and next ranks.**
 These change will help improve the performance of processing the placeholders.
 This also allows the elimination of a few functions that are now obsolete.
 

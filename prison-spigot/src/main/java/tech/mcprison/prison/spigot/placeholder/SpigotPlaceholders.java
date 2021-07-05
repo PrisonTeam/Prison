@@ -39,6 +39,10 @@ public class SpigotPlaceholders
     		if ( pm != null ) {
     			placeholders.addAll( pm.getTranslatedPlaceHolderKeys() );
     		}
+    		RankManager rm = PrisonRanks.getInstance().getRankManager();
+    		if ( rm != null ) {
+    			placeholders.addAll( rm.getTranslatedPlaceHolderKeys() );
+    		}
     	}
 
     	if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
@@ -155,6 +159,15 @@ public class SpigotPlaceholders
 			PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
 			if ( pm != null ) {
 				results = pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, identifier );
+			}
+			
+			RankManager rm = PrisonRanks.getInstance().getRankManager();
+			if ( rm != null && results == null ) {
+				results = rm.getTranslateRanksPlaceHolder( identifier );
+				
+				if ( results == null ) {
+					results = rm.getTranslateRankPlayersPlaceHolder( playerUuid, playerName, identifier );
+				}
 			}
 		}
 		
@@ -465,8 +478,11 @@ public class SpigotPlaceholders
 							placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.LADDERS ))) {
 					value = pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, placeHolderKey, null );
 				}
-				else if ( rm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.RANKS )) ) {
+				else if ( rm != null && placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.RANKS ) ) {
 					value = rm.getTranslateRanksPlaceHolder( placeHolderKey, null );
+				}
+				else if ( rm != null && placeHolderKey.getPlaceholder().hasFlag( PlaceHolderFlags.RANKPLAYERS ) ) {
+					value = rm.getTranslateRankPlayersPlaceHolder( playerUuid, playerName, placeHolderKey, null );
 				}
 				
 				String placeholderAlias = ( placeHolderKey.getAliasName() == null ? null : 

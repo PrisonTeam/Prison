@@ -899,7 +899,7 @@ public class PlayerManager
      * @param rank
      * @return
      */
-    private double getPlayerBalance(Player player, Rank rank) {
+    public double getPlayerBalance(Player player, Rank rank) {
     	double playerBalance = 0;
         	
     	if ( rank != null && rank.getCurrency() != null ) {
@@ -1116,6 +1116,14 @@ public class PlayerManager
 					case prison_rt_laddername:
 					case prison_rank_tag_laddername:
 						results = getPlayerRankTag( rankPlayer, ladderName );
+						break;
+						
+					case prison_rank_ladder_position:
+					case prison_rlp:
+					case prison_rank_ladder_position_laddername:
+					case prison_rlp_laddername:
+						
+						results = Integer.toString( rankPlayer.getRank( ladderName ).getPosition() );
 						break;
 						
 					case prison_rc:

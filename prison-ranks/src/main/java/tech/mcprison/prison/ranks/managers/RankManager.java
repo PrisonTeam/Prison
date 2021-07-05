@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import tech.mcprison.prison.Prison;
@@ -636,8 +637,67 @@ public class RankManager
 	}
 	
 	
+    public String getTranslateRankPlayersPlaceHolder( UUID playerUuid, String playerName, String identifier ) {
+    	String results = null;
+
+    	if ( playerUuid != null && identifier != null ) {
+    		
+    		List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
+    		
+    		identifier = identifier.toLowerCase();
+    		
+    		if ( !identifier.startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
+    			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
+    		}
+    		
+    		// placeholder Attributes: 
+    		PlaceholderManager pman = Prison.get().getPlaceholderManager();
+    		String placeholder = pman.extractPlaceholderString( identifier );
+    		PlaceholderAttribute attribute = pman.extractPlaceholderExtractAttribute( identifier );
+    		
+    		for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
+    			if ( placeHolderKey.getKey().equalsIgnoreCase( placeholder )) {
+    				results = getTranslateRankPlayersPlaceHolder( playerUuid, playerName, placeHolderKey, attribute );
+    				break;
+    			}
+    		}
+    	}
+    	
+    	return results;
+    }
+	
+	public String getTranslateRanksPlaceHolder( String identifier ) {
+    	String results = null;
+    	List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
+    	
+		if ( !identifier.startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
+			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
+		}
+    	
+		// placeholder Attributes:
+		PlaceholderManager pman = Prison.get().getPlaceholderManager();
+		String placeholder = pman.extractPlaceholderString( identifier );
+		//PlaceholderAttribute attribute = pman.extractPlaceholderExtractAttribute( identifier );
+		
+    	for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
+			if ( placeHolderKey.getKey().equalsIgnoreCase( placeholder )) {
+				
+				//Mine mine = getMine( placeHolderKey.getData() );
+				
+				results = getTranslateRanksPlaceHolder( placeHolderKey, identifier );
+				break;
+			}
+		}
+    	
+    	return results;
+    }
+	
 	public String getTranslateRanksPlaceHolder( PlaceHolderKey placeHolderKey, String identifier ) {
     	String results = null;
+    	
+    	if ( identifier == null ) {
+    		identifier = placeHolderKey.getKey();
+    	}
  	
     	if ( placeHolderKey != null && identifier != null ) {
 
@@ -687,7 +747,10 @@ public class RankManager
 					results = rank.getLadder().getName();
 					break;
 					
-					
+				case prison_rank__ladder_position_rankname:
+				case prison_r_lp_rankname:
+					results = Integer.toString( rank.getPosition() );
+					break;
 					
 				case prison_rank__cost_rankname:
 				case prison_r_c_rankname:
@@ -746,6 +809,177 @@ public class RankManager
 		return results;
     }
 
+    
+    public String getTranslateRankPlayersPlaceHolder(UUID playerUuid, String playerName, 
+    		PlaceHolderKey placeHolderKey, PlaceholderAttribute attribute) {
+    	String results = null;
+
+		PrisonPlaceHolders placeHolder = placeHolderKey.getPlaceholder();
+		
+    	String rankName = placeHolderKey.getData();
+		Rank rank = PrisonRanks.getInstance().getRankManager().getRank( rankName );
+		
+		
+		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+		RankPlayer rankPlayer = pm.getPlayer(playerUuid, playerName);
+		
+		
+		if ( rank != null && rankPlayer != null ) {
+			
+			switch ( placeHolder ) {
+				
+				case prison_rank__player_cost_rankname:
+				case prison_r_pcst_rankname:
+					{
+						double cost = calclateRankCost( rankPlayer, rank );
+						
+						if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    						PlaceholderAttributeNumberFormat attributeNF = 
+    								(PlaceholderAttributeNumberFormat) attribute;
+    						results = attributeNF.format( cost );
+    					}
+						else {
+							
+							DecimalFormat dFmt = new DecimalFormat("#,##0");
+							results = dFmt.format( cost );
+						}
+					}
+					break;
+					
+				case prison_rank__player_cost_formatted_rankname:
+				case prison_r_pcf_rankname:
+					{
+						double cost = calclateRankCost( rankPlayer, rank );
+						
+						if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    						PlaceholderAttributeNumberFormat attributeNF = 
+    								(PlaceholderAttributeNumberFormat) attribute;
+    						results = attributeNF.format( cost );
+    					}
+						else {
+							
+							results = PlaceholdersUtil.formattedMetricSISize( cost );
+						}
+					}
+					break;
+				
+					
+				case prison_rank__player_cost_remaining_rankname:
+				case prison_r_pcr_rankname:
+					{
+						double cost = calclateRankCost( rankPlayer, rank );
+						double balance = pm.getPlayerBalance( rankPlayer, rank);
+						
+						double remaining = cost - balance;
+						
+						if ( remaining < 0 ) {
+    						remaining = 0;
+    					}
+						
+						if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    						PlaceholderAttributeNumberFormat attributeNF = 
+    								(PlaceholderAttributeNumberFormat) attribute;
+    						results = attributeNF.format( remaining );
+    					}
+						else {
+							
+							DecimalFormat dFmt = new DecimalFormat("#,##0");
+							results = dFmt.format( remaining );
+						}
+					}
+					break;
+					
+				case prison_rank__player_cost_remaining_formatted_rankname:
+				case prison_r_pcrf_rankname:
+					{
+						double cost = calclateRankCost( rankPlayer, rank );
+						double balance = pm.getPlayerBalance( rankPlayer, rank);
+						
+						double remaining = cost - balance;
+						
+						if ( remaining < 0 ) {
+    						remaining = 0;
+    					}
+						
+						if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    						PlaceholderAttributeNumberFormat attributeNF = 
+    								(PlaceholderAttributeNumberFormat) attribute;
+    						results = attributeNF.format( remaining );
+    					}
+						else {
+							
+							results = PlaceholdersUtil.formattedMetricSISize( remaining );
+						}
+
+					}
+					break;
+					
+					
+					
+					
+				case prison_rank__player_cost_percent_rankname:
+				case prison_r_pcp_rankname:
+					{
+						double cost = calclateRankCost( rankPlayer, rank );
+						double balance = pm.getPlayerBalance( rankPlayer, rank);
+						
+						double percent = (balance < 0 ? 0 : 
+    						(cost == 0.0d || balance > cost ? 100.0 : 
+    							balance / cost * 100.0 )
+    							);
+						DecimalFormat dFmt = new DecimalFormat("#,##0");
+    					results = dFmt.format( percent );
+					}
+					break;
+					
+				case prison_rank__player_cost_bar_rankname:
+				case prison_r_pcb_rankname:
+					{
+						double cost = calclateRankCost( rankPlayer, rank );
+						double balance = pm.getPlayerBalance( rankPlayer, rank);
+						
+						results = Prison.get().getPlaceholderManager().
+										getProgressBar( balance, cost, false, attribute );
+					}
+					break;
+					
+					
+				default:
+					break;
+			}
+			
+			if ( attribute != null && attribute instanceof PlaceholderAttributeText ) {
+				PlaceholderAttributeText attributeText = (PlaceholderAttributeText) attribute;
+				
+				results = attributeText.format( results );
+			}
+		}
+		
+		return results;
+    }
+
+	private double calclateRankCost( RankPlayer rankPlayer, Rank rank )
+	{
+		double cost = 0;
+		// Get player's rank:
+		Rank playerRank = rankPlayer.getRank( rank.getLadder().getName() );
+		if ( rank.getPosition() < playerRank.getPosition() ) {
+			cost = 0;
+		}
+		else {
+			cost = playerRank.getCost();
+			Rank nextRank = playerRank;
+			
+			while ( nextRank != null &&
+					nextRank.getPosition() < rank.getPosition() ) {
+				
+				cost += playerRank.getCost();
+				nextRank = nextRank.getRankNext();
+			}
+			
+		}
+		return cost;
+	}
 
 
     

@@ -99,7 +99,7 @@ public class RankPlayerSortableLadderRankBalance
 					results = 0;
 				}
 				
-				if ( results == 0 ) {
+				else {
 					
 					// compare the Ranks' position.  Ranks with higher position are greater:
 					
