@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.1 2021-07-06
 
 
+* **Setup a getConfigString in the Platform with a default value.** 
+
+
 * **New placeholders for mine block stats: Renamed percent to chance. Added prison_top_mine_block_remaining_bar_nnn_minename.**
 
 

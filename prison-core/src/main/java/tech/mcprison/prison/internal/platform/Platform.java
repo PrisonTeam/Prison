@@ -261,6 +261,8 @@ public interface Platform {
 	
 	public String getConfigString( String key );
 	
+	public String getConfigString( String key, String defaultValue );
+	
 	
 	/**
 	 * <p>This returns the boolean value that is associated with the key.

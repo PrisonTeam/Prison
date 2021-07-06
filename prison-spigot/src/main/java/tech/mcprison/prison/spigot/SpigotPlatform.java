@@ -778,6 +778,11 @@ public class SpigotPlatform
 		return SpigotPrison.getInstance().getConfig().getString( key );
 	}
 	
+	@Override
+	public String getConfigString( String key, String defaultValue ) {
+		return SpigotPrison.getInstance().getConfig().getString( key, defaultValue );
+	}
+	
 	/**
 	 * <p>This returns the boolean value that is associated with the key.
 	 * It has to match on true to return a true value.  If the key does
