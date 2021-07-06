@@ -286,12 +286,12 @@ public class MinesBlockCommands
 		}
 
 		String text1 = formatStringPadRight( (totals ? "      &b%s" : "  &3Pl: &7%s"), 16,
-				iFmt.format( block.getResetBlockCount() ) );
+				iFmt.format( block.getBlockPlacedCount() ) );
 		FancyMessage msg1 = new FancyMessage( text1 ).tooltip( "&7Number of blocks of this type &3Pl&7aced in this mine." );
 		row.addFancy( msg1 );
 
 		String text2 = formatStringPadRight( (totals ? "    &b%s" : "  &3Rm: &7%s"), 16,
-				iFmt.format( block.getResetBlockCount() - block.getBlockCountUnsaved() ) );
+				iFmt.format( block.getBlockPlacedCount() - block.getBlockCountUnsaved() ) );
 		FancyMessage msg2 = new FancyMessage( text2 ).tooltip( "&7Number of blocks of this type &3R&7e&3m&7aining." );
 		row.addFancy( msg2 );
 

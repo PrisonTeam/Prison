@@ -18,7 +18,7 @@ public abstract class PrisonBlockStatusData {
 	private int constraintExcludeTopLayers;
 	private int constraintExcludeBottomLayers;
 	
-	private int blockCountOnReset;
+	private int blockPlacedCount;
 	
 	private long blockCountTotal;
 	private long blockCountSession;
@@ -43,7 +43,7 @@ public abstract class PrisonBlockStatusData {
 		this.constraintExcludeTopLayers = 0;
 		this.constraintExcludeBottomLayers = 0;
 		
-		this.blockCountOnReset = 0;
+		this.blockPlacedCount = 0;
 		
 		this.blockCountTotal = blockCountTotal;
 		this.blockCountSession = 0;
@@ -58,11 +58,11 @@ public abstract class PrisonBlockStatusData {
 	}
 
 	public void incrementResetBlockCount() {
-		blockCountOnReset++;
+		blockPlacedCount++;
 	}
 	
 	public void decrementResetBlockCount() {
-		blockCountOnReset--;
+		blockPlacedCount--;
 	}
 	
 	public void incrementMiningBlockCount() {
@@ -169,7 +169,7 @@ public abstract class PrisonBlockStatusData {
     	String percent = fFmt.format(getChance());
     	
 //    	String spawned = dFmt.format( getResetBlockCount() );
-    	String remaining = dFmt.format( getResetBlockCount() - getBlockCountUnsaved() );
+    	String remaining = dFmt.format( getBlockPlacedCount() - getBlockCountUnsaved() );
     	String total = PlaceholdersUtil.formattedKmbtSISize( 1.0d * getBlockCountTotal(), dFmt, "" );
     	
 		sb.append( getBlockName() ).append( " (" )
@@ -257,7 +257,7 @@ public abstract class PrisonBlockStatusData {
 			
 			// If Max is enabled (non zero) has the block reached that limit yet?
 			if ( ( getConstraintMax() == 0 || 
-			getConstraintMax() > 0 && getResetBlockCount() < getConstraintMax() )
+			getConstraintMax() > 0 && getBlockPlacedCount() < getConstraintMax() )
 					) {
 				
 				enabled = true;
@@ -276,7 +276,7 @@ public abstract class PrisonBlockStatusData {
 	 */
 	public void addStats( PrisonBlockStatusData block ) {
 		
-		setResetBlockCount( getResetBlockCount() + block.getResetBlockCount() );
+		setBlockPlacedCount( getBlockPlacedCount() + block.getBlockPlacedCount() );
 		setBlockCountSession( getBlockCountSession() + block.getBlockCountSession() );
 		setBlockCountTotal( getBlockCountTotal() + block.getBlockCountTotal() );
 		setBlockCountUnsaved( getBlockCountUnsaved() + block.getBlockCountUnsaved() );
@@ -310,11 +310,11 @@ public abstract class PrisonBlockStatusData {
 		this.chance = chance;
 	}
 
-	public int getResetBlockCount() {
-		return blockCountOnReset;
+	public int getBlockPlacedCount() {
+		return blockPlacedCount;
 	}
-	public void setResetBlockCount( int resetBlockCount ) {
-		this.blockCountOnReset = resetBlockCount;
+	public void setBlockPlacedCount( int blockPlacedCount ) {
+		this.blockPlacedCount = blockPlacedCount;
 	}
 
 	public long getBlockCountTotal() {

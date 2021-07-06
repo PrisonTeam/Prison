@@ -1353,8 +1353,8 @@ public abstract class MineReset
 	{
     	if ( block.getConstraintMin() > 0 ) {
     		
-    		int maxAttempts = (block.getConstraintMin() - block.getResetBlockCount()) * 3;
-    		for ( int i = 0; i < maxAttempts && block.getResetBlockCount() < block.getConstraintMin(); i++ ) {
+    		int maxAttempts = (block.getConstraintMin() - block.getBlockPlacedCount()) * 3;
+    		for ( int i = 0; i < maxAttempts && block.getBlockPlacedCount() < block.getConstraintMin(); i++ ) {
     			
 //    			int maxSize = getMineTargetPrisonBlocks().size();
     			
