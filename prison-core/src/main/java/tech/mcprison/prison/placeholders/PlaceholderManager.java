@@ -33,12 +33,37 @@ public class PlaceholderManager {
     	MINES,
     	MINEPLAYERS,
     	
-    	STATSMINES,
+    	STATSMINES( true ),
     	
     	
     	SUPRESS,
     	ALIAS
     	;
+    	
+    	private final boolean sequence;
+    	
+    	private PlaceholderFlags() {
+    		this.sequence = false;
+    	}
+    	private PlaceholderFlags( boolean hasSequence ) {
+    		this.sequence = hasSequence;
+    	}
+    	
+    	/**
+    	 * <p>This identifies if a placeholder type contains a sequence as
+    	 * part of its placeholder name.  For example a sequence would be 
+    	 * identified as '_nnn_' where 'n' represents a positive number and 
+    	 * can be 1 digit in length or more.  Three 'n's are used to represent
+    	 * this numeric sequence, but does not require it to be three digits
+    	 * in length.  The number may also be left-padded with zeros; as long
+    	 * as it parses successfully with Integer.parse().
+    	 * </p>
+    	 * 
+    	 * @return
+    	 */
+    	public boolean hasSequence() {
+    		return sequence;
+    	}
     }
     
     public enum PlaceholderAttributePrefixes {
@@ -430,6 +455,28 @@ public class PlaceholderManager {
 		}
 		public List<PlaceholderFlags> getFlags() {
 			return flags;
+		}
+		
+		/**
+		 * <p>Some placeholders have a "sequence" of numbers as part of the
+		 * placeholder name.  This function, hasSequence(), is a quick way to
+		 * identify if the placeholder contains a sequence so the special processing
+		 * that is required for sequences can be performed.
+		 * </p>
+		 * 
+		 * @return
+		 */
+		public boolean hasSequence() {
+			boolean results = false;
+			
+			for ( PlaceholderFlags placeholderFlags : flags ) {
+				if ( placeholderFlags.hasSequence() ) {
+					results = true;
+					break;
+				}
+			}
+			
+			return results;
 		}
 
 		public static PrisonPlaceHolders fromString( String placeHolder ) {
