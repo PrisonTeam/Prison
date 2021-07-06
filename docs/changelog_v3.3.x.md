@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.1 2021-07-06
 
 
+* **Used the wrong numeric formatter... needed to be an integer.**
+
+
 * **Added 10 new placeholders to provide stats on mine blocks.**
 These use a series value in the placeholder to specify the specific block.  The series number is not limited and can range from 1 through a large reasonable value.  The number can be one or more digits, with or without a left padding zeros.
 

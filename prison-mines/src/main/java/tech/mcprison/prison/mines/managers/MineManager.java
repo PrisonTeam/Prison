@@ -1010,7 +1010,7 @@ public class MineManager
 								PrisonBlock block = blocks.get( sequence - 1 );
 								
 								if ( block != null ) {
-									results = dFmt.format( block.getBlockPlacedCount() );
+									results = iFmt.format( block.getBlockPlacedCount() );
 								}
 							}
 						}
@@ -1024,7 +1024,7 @@ public class MineManager
 								PrisonBlock block = blocks.get( sequence - 1 );
 								
 								if ( block != null ) {
-									results = dFmt.format( block.getBlockPlacedCount() - block.getBlockCountUnsaved() );
+									results = iFmt.format( block.getBlockPlacedCount() - block.getBlockCountUnsaved() );
 								}
 							}
 						}
@@ -1038,7 +1038,7 @@ public class MineManager
 								PrisonBlock block = blocks.get( sequence - 1 );
 								
 								if ( block != null ) {
-									results = dFmt.format( block.getBlockCountTotal() );
+									results = iFmt.format( block.getBlockCountTotal() );
 								}
 							}
 						}
