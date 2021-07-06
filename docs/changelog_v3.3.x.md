@@ -21,7 +21,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.1 2021-07-05
+# v3.2.10-alpha.1 2021-07-06
+
+
+
+* **Placeholders test: Fixed issue with player name being incorrect and also added player information if it is provided in the output.**
 
 
 * **Fixed a typo that was made a long time ago.  Placeholder has a capitol H in the name.**

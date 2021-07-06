@@ -539,12 +539,24 @@ public class PrisonCommand {
                 new BulletedListComponent.BulletedListBuilder();
         
         
-    	UUID playerUuid = (player == null ? null : player.getUUID());
+    	UUID playerUuid = player == null ? null : player.getUUID();
+    	playerName = player != null ? player.getName() :
+    			(playerName.isEmpty() ? sender.getName() : playerName);
+    	
     	String translated = Prison.get().getPlatform().getPlaceholders()
-    					.placeholderTranslateText( playerUuid, sender.getName(), text );
+    					.placeholderTranslateText( playerUuid, playerName, text );
     	
     	builder.add( String.format( "&a    Include one or more Prison placeholders with other text..."));
     	builder.add( String.format( "&a    Use { } to escape the placeholders."));
+    	
+    	// Show player info here like with the search:
+        if ( player != null ) {
+        	builder.add( String.format( "&a    Player: &7%s  &aPlayerUuid: &7%s", player.getName(), 
+        			(playerUuid == null ? "null" : playerUuid.toString())));
+        	
+        }
+        
+    	
     	builder.add( String.format( "&7  Original:   \\Q%s\\E", text));
     	builder.add( String.format( "&7  Translated: %s", translated));
     	
