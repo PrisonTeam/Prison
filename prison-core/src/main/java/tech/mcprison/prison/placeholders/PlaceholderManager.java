@@ -317,16 +317,6 @@ public class PlaceholderManager {
 		prison_mbm_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
 		prison_mrc_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
 
-		prison_mb01_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
-		prison_mb02_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
-		prison_mb03_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
-		prison_mb04_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
-		prison_mb05_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
-		prison_mb06_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
-		prison_mb07_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
-		prison_mb08_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
-		prison_mb09_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
-		prison_mb10_pm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
 
 		
 		prison_mines_name_playermines(prison_mn_pm, PlaceholderFlags.MINEPLAYERS),
@@ -344,16 +334,6 @@ public class PlaceholderManager {
 		prison_mines_blocks_mined_playermines(prison_mbm_pm, PlaceholderFlags.MINEPLAYERS),
 		prison_mines_reset_count_playermines(prison_mrc_pm, PlaceholderFlags.MINEPLAYERS),
 
-		prison_mines_blocks_01_playermines(prison_mb01_pm, PlaceholderFlags.MINEPLAYERS),
-		prison_mines_blocks_02_playermines(prison_mb02_pm, PlaceholderFlags.MINEPLAYERS),
-		prison_mines_blocks_03_playermines(prison_mb03_pm, PlaceholderFlags.MINEPLAYERS),
-		prison_mines_blocks_04_playermines(prison_mb04_pm, PlaceholderFlags.MINEPLAYERS),
-		prison_mines_blocks_05_playermines(prison_mb05_pm, PlaceholderFlags.MINEPLAYERS),
-		prison_mines_blocks_06_playermines(prison_mb06_pm, PlaceholderFlags.MINEPLAYERS),
-		prison_mines_blocks_07_playermines(prison_mb07_pm, PlaceholderFlags.MINEPLAYERS),
-		prison_mines_blocks_08_playermines(prison_mb08_pm, PlaceholderFlags.MINEPLAYERS),
-		prison_mines_blocks_09_playermines(prison_mb09_pm, PlaceholderFlags.MINEPLAYERS),
-		prison_mines_blocks_10_playermines(prison_mb10_pm, PlaceholderFlags.MINEPLAYERS),
 		
 	
 		
