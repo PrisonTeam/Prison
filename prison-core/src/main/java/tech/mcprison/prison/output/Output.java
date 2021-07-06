@@ -33,17 +33,25 @@ import tech.mcprison.prison.internal.CommandSender;
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-public class Output {
+public class Output 
+		extends OutputMessages {
 
-    // Fields
     private static Output instance;
     
-    private String PREFIX_TEMPLATE = "| %s | &7";
-//    private String PREFIX_TEMPLATE = "&8| %s &8| &7";
-    public String INFO_PREFIX = gen("Info");
-    public String WARNING_PREFIX = gen("Warning");
-    public String ERROR_PREFIX = gen("Error");
-    public String DEBUG_PREFIX = gen("Debug");
+    private String prefixTemplate;
+    
+    private String prefixTemplatePrison;
+    
+    private String prefixTemplateInfo;
+    private String prefixTemplateWarning;
+    private String prefixTemplateError;
+    private String prefixTemplateDebug;
+    
+    private String colorCodeInfo;
+    private String colorCodeWarning;
+    private String colorCodeError;
+    private String colorCodeDebug;
+    
 
     private boolean debug = false;
     private Set<DebugTarget> activeDebugTargets;
@@ -91,12 +99,26 @@ public class Output {
     
 
     private Output() {
-        instance = this;
+    	instance = this;
+
+    	this.activeDebugTargets = new HashSet<>();
         
-        this.activeDebugTargets = new HashSet<>();
+    	this.prefixTemplate = coreOutputPrefixTemplateMsg();
+
+    	this.prefixTemplatePrison = gen( coreOutputPrefixTemplatePrisonMsg() );
+
+    	this.prefixTemplateInfo = gen( coreOutputPrefixTemplateInfoMsg() );
+    	this.prefixTemplateWarning = gen( coreOutputPrefixTemplateWarningMsg() );
+    	this.prefixTemplateError = gen( coreOutputPrefixTemplateErrorMsg() );
+    	this.prefixTemplateDebug = gen( coreOutputPrefixTemplateDebugMsg() );
+        
+    	this.colorCodeInfo = coreOutputColorCodeInfoMsg();
+        this.colorCodeWarning = coreOutputColorCodeWarningMsg();
+        this.colorCodeError = coreOutputColorCodeErrorMsg();
+        this.colorCodeDebug = coreOutputColorCodeDebugMsg();
+        
     }
 
-    // Public methods
 
     public static Output get() {
         if (instance == null) {
@@ -118,16 +140,16 @@ public class Output {
         switch ( level )
 		{
 			case INFO:
-				prefix = INFO_PREFIX;
+				prefix = prefixTemplateInfo;
 				break;
 			case WARNING:
-				prefix = WARNING_PREFIX;
+				prefix = prefixTemplateWarning;
 				break;
 			case ERROR:
-				prefix = ERROR_PREFIX;
+				prefix = prefixTemplateError;
 				break;
 			case DEBUG:
-				prefix = DEBUG_PREFIX;
+				prefix = prefixTemplateDebug;
 				break;
 				
 			case PLAIN:
@@ -144,16 +166,16 @@ public class Output {
     	switch ( level )
     	{
     		case INFO:
-    			colorCode = "&3";
+    			colorCode = colorCodeInfo;
     			break;
     		case WARNING:
-    			colorCode = "&c";
+    			colorCode = colorCodeWarning;
     			break;
     		case ERROR:
-    			colorCode = "&c";
+    			colorCode = colorCodeError;
     			break;
     		case DEBUG:
-    			colorCode = "&9";
+    			colorCode = colorCodeDebug;
     			break;
     			
     		case PLAIN:
@@ -173,11 +195,18 @@ public class Output {
      */
     public void log(String message, LogLevel level, Object... args) {
     	if ( Prison.get() == null || Prison.get().getPlatform() == null ) {
-    		System.err.println("Prison: Output.log Logger failure: " + message );
+    		String errorMessage = coreOutputErrorStartupFailureMsg();
+    		if ( errorMessage == null || errorMessage.trim().isEmpty() ) {
+    			// NOTE: The following must remain as is.  This is a fallback for if there
+    			// are major failures in prison.  At least it can prefix the messages so they
+    			// can be identified along with the reasons.
+    			errorMessage = "Prison: (Sending to System.err due to Output.log Logger failure):";
+    		}
+    		System.err.println( errorMessage + " " + message );
     	} else {
     		try {
 				Prison.get().getPlatform().log(
-						gen("Prison") + " " + 
+						prefixTemplatePrison + " " + 
 						getLogColorCode(level) +
 						String.format(message, args));
 			}
@@ -186,17 +215,16 @@ public class Output {
 				StringBuilder sb = new StringBuilder();
 				
 				for ( Object arg : args ) {
-					sb.append( "[" );
-					sb.append( arg );
-					sb.append( "] " );
+					sb.append( "[" ).append( arg ).append( "] " );
 				}
 				
+				String errorMessage = coreOutputErrorIncorrectNumberOfParametersMsg(
+						level.name(), e.getMessage(), message, sb.toString() );
+				
 				Prison.get().getPlatform().logCore(
-						gen("Prison") + " " + 
+						prefixTemplatePrison + " " + 
 						getLogColorCode(LogLevel.ERROR) +
-						"Failure to generate log message due to incorrect number of parameters: [" + 
-						e.getMessage() + "] :: Original raw message [" + message + "] " +
-						"Arguments: " + sb.toString() );
+						errorMessage );
 			}
     	}
     }
@@ -385,7 +413,7 @@ public class Output {
     // Private methods
 
     private String gen(String name) {
-        return String.format(PREFIX_TEMPLATE, name);
+        return String.format(prefixTemplate, name);
     }
 
 }
