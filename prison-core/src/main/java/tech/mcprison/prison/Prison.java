@@ -118,8 +118,25 @@ public class Prison
         return instance;
     }
 
-    // Public methods
 
+    /**
+     * Lazy load LocalManager which ensures Prison is already loaded so 
+     * can get the default language to use from the plugin configs.
+     * 
+     * Returns the {@link LocaleManager} for the plugin. This contains the global messages that Prison
+     * uses to run its command library, and the like. {@link Module}s have their own {@link
+     * LocaleManager}s, so that each module can have independent localization.
+     *
+     * @return The global locale manager instance.
+     */
+    public LocaleManager getLocaleManager() {
+    		
+    	if ( this.localeManager == null ) {
+    		this.localeManager = new LocaleManager(this, "lang/core");
+    	}
+        return localeManager;
+    }
+    
     /**
      * Initializes prison-core. In the implementations, this should be called when the plugin is
      * enabled. After this is called, every getter in this class will return a value.

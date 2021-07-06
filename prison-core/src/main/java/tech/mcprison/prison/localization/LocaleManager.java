@@ -128,6 +128,10 @@ public class LocaleManager {
         
         this.localFolder = getLocalDataFolder();
         
+        // Always get the config's default-language settings to ensure we are always
+        // accessing the correct files.
+        setDefaultLocale( Prison.get().getPlatform().getConfigString( "default-language", "en_US" ));
+        
         
         // Check to see if there are any updates that need to be applied to the 
         // the properties files that are local.
@@ -433,15 +437,15 @@ public class LocaleManager {
     				} 
     				catch (IOException ex) {
     					Output.get().logWarn(
-    							"Failed to load custom locale \"" + locale.getName() +
-    							"\" for plugin " + getOwningPlugin() + " (" + 
+    							"Failed to load custom locale " + locale.getName() +
+    							" for plugin " + getOwningPlugin() + " (" + 
     							ex.getMessage() + ")");
     				}
     			} 
     			else {
-    				Output.get().logWarn("Found subfolder \"" + locale.getName() +
-			    				"\" within locale folder \"" + LOCALE_FOLDER +
-			    				"\" in data folder for plugin " + getOwningPlugin() +
+    				Output.get().logWarn("Found subfolder " + locale.getName() +
+			    				" within locale folder " + LOCALE_FOLDER +
+			    				" in data folder for plugin " + getOwningPlugin() +
 			    				" - not loading");
     			}
     		}
@@ -619,6 +623,12 @@ public class LocaleManager {
      * @since 1.0
      */
     public String getDefaultLocale() {
+    	if ( defaultLocale == null ) {
+    		defaultLocale = Prison.get().getPlatform().getConfigString( "default-language", "en_US" );
+    		if ( defaultLocale == null ) {
+    			defaultLocale = "en_US";
+    		}
+    	}
         return defaultLocale;
     }
 

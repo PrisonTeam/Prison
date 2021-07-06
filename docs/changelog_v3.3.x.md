@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.1 2021-07-06
 
 
+* **Adjustments to when the LocalManager is started so it can be activated as soon as possible.**
+This is because of the need for Output.get() to use externalized messages for it's prefixes and color codes.  This does present some problems, but it actually works fine at runtime and also for junit tests too.
+
+
 * **Setup a getConfigString in the Platform with a default value.** 
 
 

@@ -173,7 +173,11 @@ public class SpigotPrison extends JavaPlugin {
         // Create the core directory structure if it is missing:
         initDataDir();
 
-        // Setup some of the key data structures and object requried to be in place
+//        // Setup the localManager (when instantiating Prison) and set the default language:
+//        Prison.get().getLocaleManager().setDefaultLocale(
+//        		getConfig().getString("default-language", "en_US"));
+
+        // Setup some of the key data structures and object required to be in place
         // prior to starting up:
         initCommandMap();
         this.scheduler = new SpigotScheduler(this);
@@ -182,8 +186,6 @@ public class SpigotPrison extends JavaPlugin {
         Prison.get()
         		.init(new SpigotPlatform(this), Bukkit.getVersion());
         
-        Prison.get().getLocaleManager().setDefaultLocale(
-        		getConfig().getString("default-language", "en_US"));
         
         this.compatibility = SpigotCompatibility.getInstance();
 //        initCompatibility();  Obsolete...
