@@ -409,16 +409,18 @@ public class PlaceholderManager {
 		
 		
 		prison_tmbn_nnn_minename(PlaceholderFlags.STATSMINES, PlaceholderFlags.ALIAS),
-		prison_tmbp_nnn_minename(PlaceholderFlags.STATSMINES, PlaceholderFlags.ALIAS),
+		prison_tmbc_nnn_minename(PlaceholderFlags.STATSMINES, PlaceholderFlags.ALIAS),
 		prison_tmbpl_nnn_minename(PlaceholderFlags.STATSMINES, PlaceholderFlags.ALIAS),
 		prison_tmbr_nnn_minename(PlaceholderFlags.STATSMINES, PlaceholderFlags.ALIAS),
+		prison_tmbrb_nnn_minename(PlaceholderFlags.STATSMINES, PlaceholderFlags.ALIAS),
 		prison_tmbt_nnn_minename(PlaceholderFlags.STATSMINES, PlaceholderFlags.ALIAS),
 		
 		
 		prison_top_mine_block_name_nnn_minename(prison_tmbn_nnn_minename, PlaceholderFlags.STATSMINES),
-		prison_top_mine_block_percent_nnn_minename(prison_tmbp_nnn_minename, PlaceholderFlags.STATSMINES),
+		prison_top_mine_block_chance_nnn_minename(prison_tmbc_nnn_minename, PlaceholderFlags.STATSMINES),
 		prison_top_mine_block_placed_nnn_minename(prison_tmbpl_nnn_minename, PlaceholderFlags.STATSMINES),
 		prison_top_mine_block_remaing_nnn_minename(prison_tmbr_nnn_minename, PlaceholderFlags.STATSMINES),
+		prison_top_mine_block_remaing_bar_nnn_minename(prison_tmbrb_nnn_minename, PlaceholderFlags.STATSMINES),
 		prison_top_mine_block_total_nnn_minename(prison_tmbt_nnn_minename, PlaceholderFlags.STATSMINES),
 		
 //		prison_top_mine_balance_nnn,

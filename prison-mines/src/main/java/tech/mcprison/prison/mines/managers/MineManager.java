@@ -762,6 +762,7 @@ public class MineManager
 			if ( mine != null ) {
 				DecimalFormat dFmt = new DecimalFormat("#,##0.00");
 				DecimalFormat iFmt = new DecimalFormat("#,##0");
+//				DecimalFormat fFmt = new DecimalFormat("#,##0.00");
 				
 				switch ( placeHolderKey.getPlaceholder() ) {
 					case prison_mn_minename:
@@ -987,16 +988,23 @@ public class MineManager
 						}
 						break;
 						
-					case prison_top_mine_block_percent_nnn_minename:
-					case prison_tmbp_nnn_minename:
+					case prison_top_mine_block_chance_nnn_minename:
+					case prison_tmbc_nnn_minename:
 						{
 							List<PrisonBlock> blocks = mine.getPrisonBlocks();
 							if ( sequence > 0 && sequence <= blocks.size() ) {
 								PrisonBlock block = blocks.get( sequence - 1 );
 								
 								if ( block != null ) {
-									DecimalFormat fFmt = new DecimalFormat("#,##0.00");
-									results = fFmt.format( block.getChance() );
+									if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+			        					PlaceholderAttributeNumberFormat attributeNF = 
+			        													(PlaceholderAttributeNumberFormat) attribute;
+			        					results = attributeNF.format( (long) block.getChance() );
+			        				}
+			        				else {
+			        					
+			        					results = dFmt.format( block.getChance() );
+			        				}
 								}
 							}
 						}
@@ -1010,7 +1018,15 @@ public class MineManager
 								PrisonBlock block = blocks.get( sequence - 1 );
 								
 								if ( block != null ) {
-									results = iFmt.format( block.getBlockPlacedCount() );
+									if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+			        					PlaceholderAttributeNumberFormat attributeNF = 
+			        													(PlaceholderAttributeNumberFormat) attribute;
+			        					results = attributeNF.format( (long) block.getBlockPlacedCount() );
+			        				}
+			        				else {
+			        					
+			        					results = iFmt.format( block.getBlockPlacedCount() );
+			        				}
 								}
 							}
 						}
@@ -1024,7 +1040,35 @@ public class MineManager
 								PrisonBlock block = blocks.get( sequence - 1 );
 								
 								if ( block != null ) {
-									results = iFmt.format( block.getBlockPlacedCount() - block.getBlockCountUnsaved() );
+									if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+			        					PlaceholderAttributeNumberFormat attributeNF = 
+			        													(PlaceholderAttributeNumberFormat) attribute;
+			        					results = attributeNF.format( (long) 
+			        								block.getBlockPlacedCount() - block.getBlockCountUnsaved() );
+			        				}
+			        				else {
+			        					
+			        					results = iFmt.format( block.getBlockPlacedCount() - block.getBlockCountUnsaved() );
+			        				}
+								}
+							}
+						}
+						break;
+						
+					case prison_top_mine_block_remaing_bar_nnn_minename:
+					case prison_tmbrb_nnn_minename:
+						{
+							List<PrisonBlock> blocks = mine.getPrisonBlocks();
+							if ( sequence > 0 && sequence <= blocks.size() ) {
+								PrisonBlock block = blocks.get( sequence - 1 );
+								
+								if ( block != null ) {
+									int placed = block.getBlockPlacedCount();
+									long removed = block.getBlockCountUnsaved();
+									
+									results = Prison.get().getPlaceholderManager().
+											getProgressBar( ((double) removed), ((double) placed), 
+													false, attribute );
 								}
 							}
 						}
@@ -1038,80 +1082,21 @@ public class MineManager
 								PrisonBlock block = blocks.get( sequence - 1 );
 								
 								if ( block != null ) {
-									results = iFmt.format( block.getBlockCountTotal() );
+									if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+			        					PlaceholderAttributeNumberFormat attributeNF = 
+			        													(PlaceholderAttributeNumberFormat) attribute;
+			        					results = attributeNF.format( (long) block.getBlockCountTotal() );
+			        				}
+			        				else {
+			        					
+			        					results = iFmt.format( block.getBlockCountTotal() );
+			        				}
 								}
 							}
 						}
 						break;
 						
 					
-//					case prison_mb01_minename:
-//					case prison_mb02_minename:
-//					case prison_mb03_minename:
-//					case prison_mb04_minename:
-//					case prison_mb05_minename:
-//					case prison_mb06_minename:
-//					case prison_mb07_minename:
-//					case prison_mb08_minename:
-//					case prison_mb09_minename:
-//					case prison_mb10_minename:
-//					case prison_mines_blocks_01_minename:
-//					case prison_mines_blocks_02_minename:
-//					case prison_mines_blocks_03_minename:
-//					case prison_mines_blocks_04_minename:
-//					case prison_mines_blocks_05_minename:
-//					case prison_mines_blocks_06_minename:
-//					case prison_mines_blocks_07_minename:
-//					case prison_mines_blocks_08_minename:
-//					case prison_mines_blocks_09_minename:
-//					case prison_mines_blocks_10_minename:
-//					case prison_mb01_pm:
-//					case prison_mb02_pm:
-//					case prison_mb03_pm:
-//					case prison_mb04_pm:
-//					case prison_mb05_pm:
-//					case prison_mb06_pm:
-//					case prison_mb07_pm:
-//					case prison_mb08_pm:
-//					case prison_mb09_pm:
-//					case prison_mb10_pm:
-//					case prison_mines_blocks_01_playermines:
-//					case prison_mines_blocks_02_playermines:
-//					case prison_mines_blocks_03_playermines:
-//					case prison_mines_blocks_04_playermines:
-//					case prison_mines_blocks_05_playermines:
-//					case prison_mines_blocks_06_playermines:
-//					case prison_mines_blocks_07_playermines:
-//					case prison_mines_blocks_08_playermines:
-//					case prison_mines_blocks_09_playermines:
-//					case prison_mines_blocks_10_playermines:
-//						
-//						Matcher matcher = simpleNumberPattern.matcher( 
-//												placeHolderKey.getPlaceholder().name() );
-//						
-//						// Should only be one number so just take the first one if there is one:
-//						if ( matcher.find() ) {
-//							String numStr = matcher.group();
-//							
-//							if ( numStr != null ) {
-//								int index = Integer.parseInt( numStr ) - 1;
-//								
-//								PrisonBlockStatusData blockStats = null;
-//								
-//								// Only try to get the blocks if the index is within range:
-//								if ( mine.isUseNewBlockModel() && mine.getPrisonBlocks().size() > index ) {
-//									blockStats = mine.getPrisonBlocks().get( index );
-//								}
-//								else if ( !mine.isUseNewBlockModel() && mine.getBlocks().size() > index ) {
-//									blockStats = mine.getBlocks().get( index );
-//								}
-//								
-//								if ( blockStats != null ) {
-//									results = blockStats.toPlaceholderString();
-//								}
-//							}
-//						}
-//						break;
 						
 					default:
 						break;
