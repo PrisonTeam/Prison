@@ -371,11 +371,11 @@ public class LocaleManager {
 				) {
 			prop.load( fr );
 			
-			boolean hasVersion = prop.containsKey( "ranks_messages__version" );
-			String version = prop.getProperty( "ranks_messages__version" );
+			boolean hasVersion = prop.containsKey( "messages__version" );
+			String version = prop.getProperty( "messages__version" );
 			
-			boolean hasAutoRefresh = prop.containsKey( "ranks_messages__auto_refresh" );
-			String autoRefresh = prop.getProperty( "ranks_messages__auto_refresh" );
+			boolean hasAutoRefresh = prop.containsKey( "messages__auto_refresh" );
+			String autoRefresh = prop.getProperty( "messages__auto_refresh" );
 			
 			if ( hasVersion && version != null && !version.trim().isEmpty() ) {
 				pfd.setLocalVersion( version );
@@ -400,11 +400,11 @@ public class LocaleManager {
     		
     		prop.load( new StringReader( propertiesData ) );
     		
-    		boolean hasVersion = prop.containsKey( "ranks_messages__version" );
-    		String version = prop.getProperty( "ranks_messages__version" );
+    		boolean hasVersion = prop.containsKey( "messages__version" );
+    		String version = prop.getProperty( "messages__version" );
     		
-    		boolean hasAutoRefresh = prop.containsKey( "ranks_messages__auto_refresh" );
-    		String autoRefresh = prop.getProperty( "ranks_messages__auto_refresh" );
+    		boolean hasAutoRefresh = prop.containsKey( "messages__auto_refresh" );
+    		String autoRefresh = prop.getProperty( "messages__auto_refresh" );
     		
     		if ( hasVersion && version != null && !version.trim().isEmpty() ) {
     			pfd.setJarVersion( version );

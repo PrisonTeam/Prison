@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.1 2021-07-06
 
 
+* **Adjustments to LocaleManager for updating the internal checks for if the external files need to be updated.**
+Also finalize how Prison object sorks with the LocaleManager.
+
+
 * **Removed obsolete placeholders that are not used anymore.**
 
 

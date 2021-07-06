@@ -146,6 +146,7 @@ public class Prison
     public boolean init(Platform platform, String minecraftVersion) {
         long startTime = System.currentTimeMillis();
 
+        
         this.platform = platform;
         this.minecraftVersion = minecraftVersion;
         
@@ -159,7 +160,11 @@ public class Prison
         this.prisonTPS = new PrisonTPS();
         this.prisonTPS.submitAsyncTPSTask();
 
+        
+        // Setup the LocalManager if it is not yet started:
+        getLocaleManager();
 
+        
         sendBanner();
         
         
@@ -517,7 +522,10 @@ public class Prison
 
     private void initManagers() {
         // Now we initialize the API
-        this.localeManager = new LocaleManager(this, "lang/core");
+    	
+    	// LocalManager must be initialized ASAP due to dependencies with
+    	// Output components:
+//        this.localeManager = new LocaleManager(this, "lang/core");
         this.errorManager = new ErrorManager(this);
         this.eventBus = new EventBus(new EventExceptionHandler());
         this.moduleManager = new ModuleManager();
@@ -592,16 +600,7 @@ public class Prison
         return dataFolder;
     }
 
-    /**
-     * Returns the {@link LocaleManager} for the plugin. This contains the global messages that Prison
-     * uses to run its command library, and the like. {@link Module}s have their own {@link
-     * LocaleManager}s, so that each module can have independent localization.
-     *
-     * @return The global locale manager instance.
-     */
-    public LocaleManager getLocaleManager() {
-        return localeManager;
-    }
+
 
     /**
      * Returns the core's {@link ErrorManager}. For modules, you should use your own module's error manager via {@link Module#getErrorManager()}.
