@@ -100,7 +100,8 @@ public class MVdWPlaceholderIntegration
     				if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
     					registerPlaceholder(placeHolderKey.getKey(),
     							player -> Text.translateAmpColorCodes(
-    									mm.getTranslateMinesPlaceHolder( placeHolderKey, (PlaceholderAttribute) null  )
+    									mm.getTranslateMinesPlaceHolder( placeHolderKey, 
+    											(PlaceholderAttribute) null, -1  )
     									));
     					if ( !registered ) {
     						registered = true;

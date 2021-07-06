@@ -24,6 +24,16 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.1 2021-07-06
 
 
+* **Added 10 new placeholders to provide stats on mine blocks.**
+These use a series value in the placeholder to specify the specific block.  The series number is not limited and can range from 1 through a large reasonable value.  The number can be one or more digits, with or without a left padding zeros.
+
+
+* **Renamed the field PrisonBlockStatusData.getResetBlockCount() to getBlockPlacedCount() to be more descriptive of what it actually is.**
+
+
+* **Add the ability of a PlaceholderFlag to self identify as having a sequence.**
+This will allow for automatic processing of these kind of placeholders without having to hard code for them.
+
 
 * **Placeholders test: Fixed issue with player name being incorrect and also added player information if it is provided in the output.**
 
