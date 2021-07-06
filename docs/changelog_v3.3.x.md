@@ -24,8 +24,13 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.1 2021-07-06
 
 
+* **Added the ability to fail silently for the Localizable object to prevent the message ID from flooding certain messages.**
+This will be employed in the Output.get() functions so if it cannot load the prefixes and level colors, then the message IDs will not be injected in to the messages.  
+This new feature should never be used without careful consideration since it is important to identify when messages fail so they can be fixed properly.
+
+
 * **Adjustments to LocaleManager for updating the internal checks for if the external files need to be updated.**
-Also finalize how Prison object sorks with the LocaleManager.
+Also finalize how Prison object works with the LocaleManager.
 
 
 * **Removed obsolete placeholders that are not used anymore.**
