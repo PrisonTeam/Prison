@@ -1572,7 +1572,7 @@ public class SellAllUtil {
             return true;
         }
 
-        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").containsRank(rankPlugin.getRankManager().getRank(prestige).getId());
+        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").containsRank(rankPlugin.getRankManager().getRank(prestige));
         if (!isInPrestigeLadder) {
             return true;
         }

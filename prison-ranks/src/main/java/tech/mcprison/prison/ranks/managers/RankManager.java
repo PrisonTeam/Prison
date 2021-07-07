@@ -327,9 +327,12 @@ public class RankManager
     	}
 
     	
-    	final boolean[] success = {true};
-        for (RankLadder ladder : PrisonRanks.getInstance().getLadderManager()
-        						.getLaddersWithRank(rank.getId())) {
+    	boolean success = true;
+    	
+    	RankLadder ladder = rank.getLadder();
+    	
+//        for (RankLadder ladder : PrisonRanks.getInstance().getLadderManager() .getLadder( rank )) 
+        {
         	
             // Move each player in this ladder to the new rank
             PrisonRanks.getInstance().getPlayerManager().getPlayers().forEach(rankPlayer -> {
@@ -364,7 +367,7 @@ public class RankManager
 //            ladder.removeRank(ladder.getPositionOfRank(rank));
             if ( !PrisonRanks.getInstance().getLadderManager().save(ladder) ) {
 
-            	success[0] = false;
+            	success = false;
             	
             	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
             			.getLocalizable( "ranks_rankManager__cannot_save_ladder_file" )
@@ -375,20 +378,19 @@ public class RankManager
             
         }
 
-        if(!success[0]) {
-            return false;
+        if( success ) {
+
+        	// Remove it from the list...
+        	removeRankFromCollections( rank );
+        	
+        	// Reset the rank relationships:
+        	// connectRanks();
+        	
+        	// ... and remove the rank's save files.
+        	collection.delete(rank.filename());
         }
 
-        // Remove it from the list...
-        removeRankFromCollections( rank );
-//        loadedRanks.remove(rank);
-        
-//        // Reset the rank relationships:
-//        connectRanks();
-
-        // ... and remove the rank's save files.
-        collection.delete(rank.filename());
-        return true;
+        return success;
     }
 
 //    /**

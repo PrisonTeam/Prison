@@ -122,7 +122,10 @@ public class PlayerManager
      */
     public void loadPlayers() throws IOException {
         List<Document> players = collection.getAll();
-        players.forEach(document -> this.players.add(new RankPlayer(document)));
+        players.forEach(
+        		document -> 
+        			this.players.add(
+        					new RankPlayer(document)));
     }
 
     /**

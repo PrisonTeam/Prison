@@ -626,7 +626,7 @@ public class RankUtil
         		
         		if ( targetRank != null ) {
         			
-        			if ( !ladder.containsRank( targetRank.getId() )) {
+        			if ( !ladder.containsRank( targetRank )) {
         				results.addTransaction( RankupStatus.RANKUP_FAILURE_RANK_IS_NOT_IN_LADDER, 
         						RankupTransactions.failed_rank_not_in_ladder );
         				return targetRank;

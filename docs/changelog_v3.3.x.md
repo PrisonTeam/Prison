@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.2 2021-07-06
 
 
+* **Clean up some rank and ladder function to eliminate the use of magic numbers: both rank ids and ladder ids.**
+These were bad, since the objects were already linked together, so using these functions were just adding unneeded overhead.
+
+
 * **v3.2.10-alpha.2 2021-07-06**
 
 

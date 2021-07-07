@@ -360,15 +360,14 @@ public class RankLadder
      */
 
     /**
-     * Returns true if this ladder contains a rank with a specified ID.
-     *
-     * @param rankId The ID of the rank to search for.
+     * Returns true if this ladder contains the Rank.
+     * 
+     * @param the rank to search for.
      * @return True if the rank was found, false otherwise.
      */
-    public boolean containsRank(int rankId) {
-        return ranks.stream().anyMatch(rank -> rank.getId() == rankId);
+    public boolean containsRank( Rank rank ) {
+    	return ranks.contains( rank );
     }
-
 
     // This next method is sort of precautionary. Sure, positions start at 0, but if the user decides 
     // to be crazy and alters the position within the data files, we need to make sure we adjust 

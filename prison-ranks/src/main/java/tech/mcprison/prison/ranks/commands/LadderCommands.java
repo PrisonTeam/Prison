@@ -181,7 +181,7 @@ public class LadderCommands
             return;
         }
 
-        if (ladder.containsRank(rank.getId())) {
+        if (ladder.containsRank( rank )) {
         	ladderAlreadyHasRankMsg( sender, ladderName, rankName );
             return;
         }
