@@ -84,6 +84,8 @@ public class Rank
     
     private transient RankLadder ladder;
     
+    private transient List<RankPlayer> players;
+    
 
     public Rank() {
     	super();
@@ -95,6 +97,8 @@ public class Rank
     	
     	this.permissions = new ArrayList<>();
     	this.permissionGroups =  new ArrayList<>();
+    	
+    	this.players = new ArrayList<>();
     	
     }
     
@@ -272,6 +276,26 @@ public class Rank
 	}
 
     
+	/**
+	 * <p>This adds players to this rank.  It prevents duplicates.
+	 * </p>
+	 * 
+	 * @param player
+	 */
+	public void addPlayer( RankPlayer player ) {
+		
+		if ( !getPlayers().contains( player ) ) {
+			getPlayers().add( player );
+		}
+	}
+
+	public void removePlayer( RankPlayer player ) {
+		
+		if ( getPlayers().contains( player ) ) {
+			getPlayers().remove( player );
+		}
+	}
+	
     @Override
     public String toString() {
     	return "Rank: " + id + " " + name;
@@ -453,6 +477,10 @@ public class Rank
 	}
 	public void setMineStrings( List<String> mineStrings ) {
 		this.mineStrings = mineStrings;
+	}
+
+	public List<RankPlayer> getPlayers() {
+		return players;
 	}
 
 }

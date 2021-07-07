@@ -172,6 +172,22 @@ public class PlayerManager
 			}
         }
     }
+    
+    /**
+     * <p>This function will add all the players to all of the ranks they
+     * are associated with.
+     * </p>
+     * 
+     */
+    public void connectPlayersToRanks() {
+    	for ( RankPlayer player : players ) {
+			
+    		for ( Rank rank : player.getLadderRanks().values() ) {
+    			
+    			rank.addPlayer( player );
+    		}
+		}
+    }
 
     /*
      * Getters & Setters

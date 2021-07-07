@@ -157,6 +157,7 @@ public class PrisonRanks
 
 
         playerManager = new PlayerManager(initCollection("players"));
+        
         try {
             playerManager.loadPlayers();
         } 
@@ -171,6 +172,9 @@ public class PrisonRanks
         	logStartupMessageError( prisonRanksFailedToLoadPlayFileMsg( e.getMessage() ));
         }
 
+        // Hook up all players to the ranks:
+        playerManager.connectPlayersToRanks();
+        
         // Load up the commands
 
         CommandCommands rankCommandCommands = new CommandCommands();
