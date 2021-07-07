@@ -21,7 +21,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.1 2021-07-06
+# v3.2.10-alpha.2 2021-07-06
+
+
+* **v3.2.10-alpha.2 2021-07-06**
 
 
 * **Added the ability to fail silently for the Localizable object to prevent the message ID from flooding certain messages.**
