@@ -34,6 +34,7 @@ public class PlaceholderManager {
     	MINEPLAYERS,
     	
     	STATSMINES( true ),
+    	STATSRANKS( true ),
     	
     	
     	SUPRESS,
@@ -403,7 +404,14 @@ public class PlaceholderManager {
 		prison_top_mine_block_remaing_bar_nnn_minename(prison_tmbrb_nnn_minename, PlaceholderFlags.STATSMINES),
 		prison_top_mine_block_total_nnn_minename(prison_tmbt_nnn_minename, PlaceholderFlags.STATSMINES),
 		
-//		prison_top_mine_balance_nnn,
+		
+		prison_trbn_nnn_rankname(PlaceholderFlags.STATSRANKS, PlaceholderFlags.ALIAS),
+		prison_trbs_nnn_rankname(PlaceholderFlags.STATSRANKS, PlaceholderFlags.ALIAS),
+		prison_trbb_nnn_rankname(PlaceholderFlags.STATSRANKS, PlaceholderFlags.ALIAS),
+		
+		prison_top_rank_balance_name_nnn_rankname( prison_trbn_nnn_rankname, PlaceholderFlags.STATSRANKS ),
+		prison_top_rank_balance_score_nnn_rankname( prison_trbs_nnn_rankname, PlaceholderFlags.STATSRANKS ),
+		prison_top_rank_balance_balance_nnn_rankname( prison_trbb_nnn_rankname, PlaceholderFlags.STATSRANKS ),
 		
 		
 		;

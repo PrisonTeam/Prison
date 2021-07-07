@@ -84,7 +84,9 @@ public class Rank
     
     private transient RankLadder ladder;
     
-    private transient List<RankPlayer> players;
+    private transient final List<RankPlayer> players;
+    
+    private transient final StatsRankPlayerBalance statsPlayerBlance;
     
 
     public Rank() {
@@ -99,6 +101,8 @@ public class Rank
     	this.permissionGroups =  new ArrayList<>();
     	
     	this.players = new ArrayList<>();
+    	
+    	this.statsPlayerBlance = new StatsRankPlayerBalance( this );
     	
     }
     
@@ -122,6 +126,8 @@ public class Rank
      * @param name
      */
     protected Rank( String name ) {
+    	this();
+    	
     	this.position = 0;
     	this.id = 0;
     	this.name = name;
@@ -276,6 +282,11 @@ public class Rank
 	}
 
     
+	public StatsRankPlayerBalance getStatsPlayerBlance() {
+		return statsPlayerBlance;
+	}
+
+
 	/**
 	 * <p>This adds players to this rank.  It prevents duplicates.
 	 * </p>
@@ -286,6 +297,8 @@ public class Rank
 		
 		if ( !getPlayers().contains( player ) ) {
 			getPlayers().add( player );
+			
+			getStatsPlayerBlance().addPlayer( player );
 		}
 	}
 
@@ -293,6 +306,8 @@ public class Rank
 		
 		if ( getPlayers().contains( player ) ) {
 			getPlayers().remove( player );
+			
+			getStatsPlayerBlance().removePlayer( player );
 		}
 	}
 	

@@ -825,6 +825,7 @@ public class RankManager
 		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
 		RankPlayer rankPlayer = pm.getPlayer(playerUuid, playerName);
 		
+		DecimalFormat dFmt = new DecimalFormat("#,##0");
 		
 		if ( rank != null && rankPlayer != null ) {
 			
@@ -842,7 +843,6 @@ public class RankManager
     					}
 						else {
 							
-							DecimalFormat dFmt = new DecimalFormat("#,##0");
 							results = dFmt.format( cost );
 						}
 					}
@@ -885,7 +885,6 @@ public class RankManager
     					}
 						else {
 							
-							DecimalFormat dFmt = new DecimalFormat("#,##0");
 							results = dFmt.format( remaining );
 						}
 					}
@@ -929,7 +928,6 @@ public class RankManager
     						(cost == 0.0d || balance > cost ? 100.0 : 
     							balance / cost * 100.0 )
     							);
-						DecimalFormat dFmt = new DecimalFormat("#,##0");
     					results = dFmt.format( percent );
 					}
 					break;
@@ -943,6 +941,26 @@ public class RankManager
 						results = Prison.get().getPlaceholderManager().
 										getProgressBar( balance, cost, false, attribute );
 					}
+					break;
+					
+					
+				case prison_top_rank_balance_name_nnn_rankname: 
+				case prison_trbn_nnn_rankname:
+					results = rank.getStatsPlayerBlance().getTopStats( 1 ).getPlayer().getName();
+					
+					break;
+					
+				case prison_top_rank_balance_score_nnn_rankname:
+				case prison_trbs_nnn_rankname:
+					results = dFmt.format( rank.getStatsPlayerBlance().getTopStats( 1 ).getScore());
+					
+					break;
+					
+				case prison_top_rank_balance_balance_nnn_rankname:
+				case prison_trbb_nnn_rankname:
+					results = dFmt.format( rank.getStatsPlayerBlance().getTopStats( 1 ).getPlayer()
+							.getBalance( rank.getCurrency()) );
+					
 					break;
 					
 					

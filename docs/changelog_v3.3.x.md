@@ -24,6 +24,12 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.2 2021-07-06
 
 
+* **Added top rank balance placeholders: 6 for now and more will be added soon once these are fully working.**
+These are based upon the player's balance within the rank.
+Also added a Hesitancy Delay Penalty to help encourage players to rankup instead of trying to dominate a single rank.
+These have not yet been tested.
+
+
 * **Added RankPlayers to Ranks.**
 This will allow quicker access to all players at each rank, which will help for top ranking reporting.
 
