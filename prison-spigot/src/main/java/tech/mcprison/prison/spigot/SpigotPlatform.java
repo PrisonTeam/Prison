@@ -278,6 +278,21 @@ public class SpigotPlatform
     public Optional<Player> getOfflinePlayer(UUID uuid) {
     	return getOfflinePlayer(null, uuid);
     }
+    
+	@Override
+    public List<Player> getOfflinePlayers() {
+    	List<Player> players = new ArrayList<>();
+    	
+    	for ( OfflinePlayer oPlayer : Bukkit.getOfflinePlayers() ) {
+			if ( oPlayer != null ) {
+				
+				players.add( new SpigotOfflinePlayer( oPlayer ) );
+			}
+    	}
+    	
+    	return players;
+    }
+    
     private Optional<Player> getOfflinePlayer(String name, UUID uuid) {
     	Player player = null;
     	

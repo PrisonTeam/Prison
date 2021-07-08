@@ -47,12 +47,9 @@ import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
 import tech.mcprison.prison.placeholders.PlaceholderResults;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
-import tech.mcprison.prison.ranks.RankUtil;
-import tech.mcprison.prison.ranks.RankupResults;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
-import tech.mcprison.prison.ranks.events.FirstJoinEvent;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
@@ -141,8 +138,16 @@ public class PlayerManager
 //        collection.insert(playerFile, player.toDocument());
     }
 
-    public void savePlayer(RankPlayer player) throws IOException {
-        this.savePlayer(player, player.filename());
+    public void savePlayer(RankPlayer player) {
+    	try {
+    		this.savePlayer(player, player.filename());
+    	}
+    	catch (IOException e) {
+			
+			String errorMessage = cannotSaveNewPlayerFile( player.getName(), player.filename() );
+			
+			Output.get().logError( errorMessage, e);
+		}
     }
 
     /**
@@ -225,7 +230,7 @@ public class PlayerManager
     		
     		for ( RankPlayer rankPlayer : players ) {
     			if ( uid != null && rankPlayer.getUUID().equals(uid) || 
-    					uid == null && playerName != null && playerName.trim().length() > 0 &&
+    					uid == null && playerName != null && playerName.trim().isEmpty() &&
     					rankPlayer.getDisplayName() != null &&
     					rankPlayer.getDisplayName().equalsIgnoreCase( playerName ) ) {
     				
@@ -254,19 +259,19 @@ public class PlayerManager
     	
     	// Save if dirty (change or new):
     	if ( dirty && results != null ) {
-    		try {
-				savePlayer( results );
-			}
-			catch ( IOException e ) {
-				
-				String errorMessage = cannotAddNewPlayer( playerName, e.getMessage() );
-				
-    			if ( !getPlayerErrors().contains( errorMessage ) ) {
-    				
-    				getPlayerErrors().add( errorMessage );
-    				Output.get().logError( errorMessage );
-    			}
-			}
+    		savePlayer( results );
+//    		try {
+//			}
+//			catch ( IOException e ) {
+//				
+//				String errorMessage = cannotAddNewPlayer( playerName, e.getMessage() );
+//				
+//    			if ( !getPlayerErrors().contains( errorMessage ) ) {
+//    				
+//    				getPlayerErrors().add( errorMessage );
+//    				Output.get().logError( errorMessage );
+//    			}
+//			}
     	}
     	
     	
@@ -281,6 +286,10 @@ public class PlayerManager
     	return rPlayer;
     }
     
+    
+    public RankPlayer addPlayer( Player player ) {
+    	return addPlayer( player.getUUID(), player.getName() );
+    }
     
     private RankPlayer addPlayer( UUID uid, String playerName ) {
     	RankPlayer results = null;
@@ -322,33 +331,23 @@ public class PlayerManager
         			newPlayer = new RankPlayer( uid, playerName );
         			newPlayer.checkName( playerName );
         			
+        			newPlayer.firstJoin();
+        			
         			players.add(newPlayer);
         			getPlayersByName().put( playerName, newPlayer );
         			
-        			try {
-        				savePlayer(newPlayer);
-        				
-        				Player player = getPlayer( null, playerName, uid );
-        				
-        				// Assign the player to the default rank:
-        				String ladder = null; // will set to the "default" ladder
-        				String rank = null;   // will set to the "default" rank
-        				
-        				// Set the rank to the default ladder and the default rank.  The results are logged
-        				// before the results are returned, so can ignore the results:
-        				@SuppressWarnings( "unused" )
-        				RankupResults results = new RankUtil().setRank(player, newPlayer, ladder, rank, 
-        						playerName, "FirstJoinEvent");
-        				
-        				
-        				Prison.get().getEventBus().post(new FirstJoinEvent(newPlayer));
-        			} 
-        			catch (IOException e) {
-        				
-        				String errorMessage = cannotSaveNewPlayerFile( playerName, newPlayer.filename() );
-        				
-        				Output.get().logError( errorMessage, e);
-        			}
+        			savePlayer(newPlayer);
+
+        			
+//        			try {
+//        				
+//        			} 
+//        			catch (IOException e) {
+//        				
+//        				String errorMessage = cannotSaveNewPlayerFile( playerName, newPlayer.filename() );
+//        				
+//        				Output.get().logError( errorMessage, e);
+//        			}
         		}
         		
         	}
@@ -1141,8 +1140,12 @@ public class PlayerManager
 					case prison_rlp:
 					case prison_rank_ladder_position_laddername:
 					case prison_rlp_laddername:
-						
-						results = Integer.toString( rankPlayer.getRank( ladderName ).getPosition() );
+						{
+							// rank may be null:
+							Rank rank = rankPlayer.getRank( ladderName );
+							
+							results = rank == null ? "" : Integer.toString( rank.getPosition() );
+						}
 						break;
 						
 					case prison_rc:

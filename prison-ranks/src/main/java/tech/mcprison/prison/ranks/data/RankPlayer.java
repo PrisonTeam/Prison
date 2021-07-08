@@ -37,8 +37,10 @@ import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.ranks.FirstJoinHandlerMessages;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
+import tech.mcprison.prison.ranks.events.FirstJoinEvent;
 import tech.mcprison.prison.ranks.top.RankPlayerBalance;
 import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.util.Gamemode;
@@ -167,9 +169,22 @@ public class RankPlayer
         return ret;
     }
 
-    /*
-     * Methods
-     */
+
+    @Override
+    public String toString() {
+    	return getName() + " " + getRanks();
+    }
+    
+    public String getRanks() {
+    	StringBuilder sb  = new StringBuilder();
+    	
+    	for ( Rank rank : getLadderRanks().values() ) {
+			sb.append( rank.getLadder() == null ? "--" : rank.getLadder().getName() )
+				.append( ":" ).append( rank.getName() ).append( " " );
+		}
+    	
+    	return sb.toString();
+    }
     
     public UUID getUUID() {
     	return uid;
@@ -212,7 +227,8 @@ public class RankPlayer
     		String name = getLastName();
     		
     		// Check if the last name in the list is not the same as the name passed:
-    		if ( name != null && !name.equalsIgnoreCase( playerName ) ) {
+    		if ( name == null || 
+    				name != null && !name.equalsIgnoreCase( playerName ) ) {
     			
     			RankPlayerName rpn = new RankPlayerName( playerName, System.currentTimeMillis() );
     			getNames().add( rpn );
@@ -262,6 +278,42 @@ public class RankPlayer
     	return "player_" + uid.getLeastSignificantBits();
     }
     
+    
+    /**
+     * <p>This function will check to see if the player is on the default rank on 
+     * the default ladder.  If not, then it will add them.  
+     * </p>
+     * 
+     * <p>This is safe to run on anyone, even if they already are on the default ladder.
+     * </p>
+     * 
+     * <p>Note, this will not save the player's new rank.  The save function must be
+     * managed and called outside of this.
+     * </p>
+     */
+    public void firstJoin() {
+    	
+    	RankLadder defaultLadder = PrisonRanks.getInstance().getDefaultLadder();
+    	
+    	if ( !getLadderRanks().containsKey( defaultLadder ) ) {
+    		
+    		Optional<Rank> firstRank = defaultLadder.getLowestRank();
+    		
+    		if ( firstRank.isPresent() ) {
+    			Rank rank = firstRank.get();
+    			
+    			addRank( rank );
+    			
+    			Prison.get().getEventBus().post(new FirstJoinEvent( this ));
+    			
+    		} else {
+    			
+    			FirstJoinHandlerMessages messages = new FirstJoinHandlerMessages();
+    			Output.get().logWarn( messages.firstJoinWarningNoRanksOnServer() );
+    		}
+    	}
+    	
+    }
     
     /**
      * Add a rank to this player.

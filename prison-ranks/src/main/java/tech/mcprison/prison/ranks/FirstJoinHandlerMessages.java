@@ -2,7 +2,7 @@ package tech.mcprison.prison.ranks;
 
 public class FirstJoinHandlerMessages {
 
-	protected String firstJoinWarningNoRanksOnServer() {
+	public String firstJoinWarningNoRanksOnServer() {
 		return PrisonRanks.getInstance().getRanksMessages()
 		    			.getLocalizable( "ranks_firstJoinHandler__no_ranks_on_server" )
 		    			.localize();

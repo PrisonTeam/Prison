@@ -55,7 +55,8 @@ public class SpigotCommandSender implements CommandSender {
 //        return uuid;
 //    }
 
-    @Override public String getName() {
+    @Override 
+    public String getName() {
         return bukkitSender.getName();
     }
 

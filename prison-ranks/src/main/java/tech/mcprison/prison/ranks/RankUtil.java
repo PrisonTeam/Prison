@@ -17,7 +17,6 @@
 
 package tech.mcprison.prison.ranks;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -546,21 +545,21 @@ public class RankUtil
 
 	private boolean savePlayerRank( RankupResults results, RankPlayer rankPlayer ) {
 		boolean success = false;
-		try {
+//		try {
             PrisonRanks.getInstance().getPlayerManager().savePlayer(rankPlayer);
             
             results.addTransaction( 
             		RankupTransactions.successfully_saved_player_rank_data );
             
             success = true;
-        } 
-		catch (IOException e) {
-        	
-    		Output.get().logError( rankUtilFailureSavingPlayerMsg( e.getMessage() ), e );
-    		
-            results.addTransaction( RankupStatus.RANKUP_FAILURE_COULD_NOT_SAVE_PLAYER_FILE, 
-            			RankupTransactions.failure_cannot_save_player_file );
-        }
+//        } 
+//		catch (IOException e) {
+//        	
+//    		Output.get().logError( rankUtilFailureSavingPlayerMsg( e.getMessage() ), e );
+//    		
+//            results.addTransaction( RankupStatus.RANKUP_FAILURE_COULD_NOT_SAVE_PLAYER_FILE, 
+//            			RankupTransactions.failure_cannot_save_player_file );
+//        }
 		
 		return success;
 	}

@@ -81,7 +81,10 @@ public interface Platform {
      * Returns a list of all online players.
      */
     List<Player> getOnlinePlayers();
-
+    
+	public List<Player> getOfflinePlayers();
+	
+	
 // NOTE: Disabling for now.  There is an internal failure within the Prison code base when trying 
 //       to use this, so will revisit in the future.
     public Optional<Player> getOfflinePlayer(String name);
@@ -365,5 +368,8 @@ public interface Platform {
 
 
 	public void traceEventListenersBlockBreakEvents( CommandSender sender );
+
+
+
 	
 }

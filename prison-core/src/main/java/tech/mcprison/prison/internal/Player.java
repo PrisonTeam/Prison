@@ -47,6 +47,8 @@ public interface Player
      */
     String getDisplayName();
 
+    public String toString();
+    
     /**
      * Sets the player's display name (nickname).
      *

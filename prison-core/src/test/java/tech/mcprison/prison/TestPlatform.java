@@ -82,7 +82,12 @@ public class TestPlatform implements Platform {
     @Override public List<Player> getOnlinePlayers() {
         return new ArrayList<>();
     }
-
+    @Override
+    public List<Player> getOfflinePlayers() {
+    	List<Player> players = new ArrayList<>();
+    	return players;
+    }
+    
     @Override
 	public Optional<Player> getOfflinePlayer( String name ) {
 		return null;

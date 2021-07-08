@@ -26,6 +26,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.integration.IntegrationType;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.modules.ModuleStatus;
 import tech.mcprison.prison.output.LogLevel;
@@ -35,6 +36,7 @@ import tech.mcprison.prison.ranks.commands.LadderCommands;
 import tech.mcprison.prison.ranks.commands.RankUpCommand;
 import tech.mcprison.prison.ranks.commands.RanksCommands;
 import tech.mcprison.prison.ranks.data.RankLadder;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
@@ -172,8 +174,24 @@ public class PrisonRanks
         	logStartupMessageError( prisonRanksFailedToLoadPlayFileMsg( e.getMessage() ));
         }
 
+        
+        // Check to see if there are any not in prison: add them:
+        for ( Player player : Prison.get().getPlatform().getOfflinePlayers() ) {
+        	
+        	// getPlayer() will add a player who does not exist:
+        	RankPlayer rPlayer = playerManager.getPlayer( player );
+        	if ( rPlayer != null ) {
+        		if ( rPlayer.checkName( player.getName() ) ) {
+        			playerManager.savePlayer( rPlayer );
+        		}
+        	}
+        }
+        
+        
         // Hook up all players to the ranks:
         playerManager.connectPlayersToRanks();
+        
+        
         
         // Load up the commands
 

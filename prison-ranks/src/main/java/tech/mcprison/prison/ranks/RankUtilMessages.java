@@ -6,7 +6,7 @@ public class RankUtilMessages {
 		return PrisonRanks.getInstance().getRanksMessages()
     			.getLocalizable( "ranks_rankutil__failure_internal" )
     			.withReplacements( 
-    					errorMessage )
+    					errorMessage == null ? "--" : errorMessage )
     			.localize();
 	}
 	

@@ -17,14 +17,9 @@
 
 package tech.mcprison.prison.ranks;
 
-import java.io.IOException;
-import java.util.Optional;
-
 import com.google.common.eventbus.Subscribe;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.events.FirstJoinEvent;
 
@@ -51,27 +46,15 @@ public class FirstJoinHandler
     @Subscribe public void onFirstJoin(FirstJoinEvent event) {
         RankPlayer player = event.getPlayer();
 
-        Optional<Rank> firstRank = PrisonRanks.getInstance().getDefaultLadder().getLowestRank();
+        // Try to perform the first join processing to give them the default rank:
+        player.firstJoin();
 
-        if (firstRank.isPresent()) {
-        	Rank rank = firstRank.get();
-        	
-        	if ( !player.getLadderRanks().containsKey( rank.getLadder() ) ) {
-        		
-        		player.addRank( rank );
-        		
-        	}
-        } else {
-        	
-        	Output.get().logWarn( firstJoinWarningNoRanksOnServer() );
-        }
-
-        try {
-            PrisonRanks.getInstance().getPlayerManager().savePlayer(player);
-        } catch (IOException e) {
-        	
-        	Output.get().logError( firstJoinErrorCouldNotSavePlayer(), e );
-        }
+        PrisonRanks.getInstance().getPlayerManager().savePlayer(player);
+//        try {
+//        } catch (IOException e) {
+//        	
+//        	Output.get().logError( firstJoinErrorCouldNotSavePlayer(), e );
+//        }
     }
 
 }

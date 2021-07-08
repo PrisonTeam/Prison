@@ -21,7 +21,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.2 2021-07-06
+# v3.2.10-alpha.2 2021-07-08
+
+
+* **Added a player check on prison startup that will add all offline players that are not hooked up to prison yet.  Plus it will register name changes too.**
 
 
 * **Added top rank balance placeholders: 6 for now and more will be added soon once these are fully working.**

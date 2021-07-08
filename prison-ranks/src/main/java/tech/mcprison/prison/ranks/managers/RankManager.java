@@ -343,14 +343,14 @@ public class RankManager
                     	rankPlayer.addRank(newRank);
                     }
                     
-                    try {
-                        PrisonRanks.getInstance().getPlayerManager().savePlayer(rankPlayer);
-                    } catch (IOException e) {
-                    	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-                    			.getLocalizable( "ranks_rankManager__cannot_save_player_file" );
-                    	
-                    	Output.get().logError( localManagerLog.localize() );
-                    }
+                    PrisonRanks.getInstance().getPlayerManager().savePlayer(rankPlayer);
+//                    try {
+//                    } catch (IOException e) {
+//                    	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+//                    			.getLocalizable( "ranks_rankManager__cannot_save_player_file" );
+//                    	
+//                    	Output.get().logError( localManagerLog.localize() );
+//                    }
                     
                     Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
                     		.getLocalizable( "ranks_rankManager__cannot_save_player_file" )

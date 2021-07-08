@@ -32,6 +32,12 @@ public class SpigotOfflinePlayer
 		return offlinePlayer.getName();
 	}
 
+    @Override
+    public String toString() {
+    	return getName();
+    }
+    
+    
 	@Override
 	public void dispatchCommand( String command ) {
 		
