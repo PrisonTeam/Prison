@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.2 2021-07-08
 
 
+* **Hooked up STATSRANKS placeholders and got rid of obsolete ones.  Still more testing needed.**
+
+
 * **Added a player check on prison startup that will add all offline players that are not hooked up to prison yet.  Plus it will register name changes too.**
 
 

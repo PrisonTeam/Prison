@@ -259,16 +259,16 @@ public class PlaceholderManager {
 		prison_mbm_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
 		prison_mrc_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
 
-		prison_mb01_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
-		prison_mb02_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
-		prison_mb03_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
-		prison_mb04_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
-		prison_mb05_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
-		prison_mb06_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
-		prison_mb07_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
-		prison_mb08_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
-		prison_mb09_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
-		prison_mb10_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+//		prison_mb01_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+//		prison_mb02_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+//		prison_mb03_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+//		prison_mb04_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+//		prison_mb05_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+//		prison_mb06_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+//		prison_mb07_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+//		prison_mb08_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+//		prison_mb09_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+//		prison_mb10_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
 
 		
 		// reset_interval, reset_timeleft, blocks_size, blocks_remaining, blocks_percent
@@ -289,16 +289,16 @@ public class PlaceholderManager {
 		prison_mines_blocks_mined_minename(prison_mbm_minename, PlaceholderFlags.MINES),
 		prison_mines_reset_count_minename(prison_mrc_minename, PlaceholderFlags.MINES),
 
-		prison_mines_blocks_01_minename(prison_mb01_minename, PlaceholderFlags.MINES),
-		prison_mines_blocks_02_minename(prison_mb02_minename, PlaceholderFlags.MINES),
-		prison_mines_blocks_03_minename(prison_mb03_minename, PlaceholderFlags.MINES),
-		prison_mines_blocks_04_minename(prison_mb04_minename, PlaceholderFlags.MINES),
-		prison_mines_blocks_05_minename(prison_mb05_minename, PlaceholderFlags.MINES),
-		prison_mines_blocks_06_minename(prison_mb06_minename, PlaceholderFlags.MINES),
-		prison_mines_blocks_07_minename(prison_mb07_minename, PlaceholderFlags.MINES),
-		prison_mines_blocks_08_minename(prison_mb08_minename, PlaceholderFlags.MINES),
-		prison_mines_blocks_09_minename(prison_mb09_minename, PlaceholderFlags.MINES),
-		prison_mines_blocks_10_minename(prison_mb10_minename, PlaceholderFlags.MINES),
+//		prison_mines_blocks_01_minename(prison_mb01_minename, PlaceholderFlags.MINES),
+//		prison_mines_blocks_02_minename(prison_mb02_minename, PlaceholderFlags.MINES),
+//		prison_mines_blocks_03_minename(prison_mb03_minename, PlaceholderFlags.MINES),
+//		prison_mines_blocks_04_minename(prison_mb04_minename, PlaceholderFlags.MINES),
+//		prison_mines_blocks_05_minename(prison_mb05_minename, PlaceholderFlags.MINES),
+//		prison_mines_blocks_06_minename(prison_mb06_minename, PlaceholderFlags.MINES),
+//		prison_mines_blocks_07_minename(prison_mb07_minename, PlaceholderFlags.MINES),
+//		prison_mines_blocks_08_minename(prison_mb08_minename, PlaceholderFlags.MINES),
+//		prison_mines_blocks_09_minename(prison_mb09_minename, PlaceholderFlags.MINES),
+//		prison_mines_blocks_10_minename(prison_mb10_minename, PlaceholderFlags.MINES),
 
 		
 		

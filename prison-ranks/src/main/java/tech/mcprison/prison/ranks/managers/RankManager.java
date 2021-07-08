@@ -50,6 +50,7 @@ import tech.mcprison.prison.ranks.commands.RanksCommands;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.data.StatsRankPlayerBalanceData;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
 
@@ -501,16 +502,18 @@ public class RankManager
     public String listAllRanks( String ladderName, List<Rank> ranks, RanksByLadderOptions option ) {
     	StringBuilder sb = new StringBuilder();
     	
-    	PlayerManager playerManager = PrisonRanks.getInstance().getPlayerManager();
+//    	PlayerManager playerManager = PrisonRanks.getInstance().getPlayerManager();
     	
     	for (Rank rank : ranks ) {
     		
+    		int players = rank.getPlayers().size();
+    		
     		// Get the players per rank!!
-			List<RankPlayer> playersList =
-                    playerManager.getPlayers().stream()
-                        .filter(rankPlayer -> rankPlayer.getLadderRanks().values().contains(rank))
-                        .collect(Collectors.toList());
-    		int players = playersList.size();
+//			List<RankPlayer> playersList =
+//                    playerManager.getPlayers().stream()
+//                        .filter(rankPlayer -> rankPlayer.getLadderRanks().values().contains(rank))
+//                        .collect(Collectors.toList());
+//    		int players = playersList.size();
     		
     		if ( option == RanksByLadderOptions.allRanks || 
     					option == RanksByLadderOptions.full || players > 0 ) {
@@ -528,7 +531,7 @@ public class RankManager
     				if ( option == RanksByLadderOptions.full ) {
     					sb.append( "[" );
     					
-    					for ( RankPlayer rankPlayer : playersList )
+    					for ( RankPlayer rankPlayer : rank.getPlayers() )
 						{
     						if ( rankPlayer.getName() != null ) {
     							
@@ -729,6 +732,8 @@ public class RankManager
 
 		PrisonPlaceHolders placeHolder = placeHolderKey.getPlaceholder();
 		
+		DecimalFormat dFmt = new DecimalFormat("#,##0");
+		
 		if ( rank != null ) {
 			
 			switch ( placeHolder ) {
@@ -797,6 +802,54 @@ public class RankManager
 					results = sb.toString();
 					break;
 					
+					
+				case prison_top_rank_balance_name_nnn_rankname: 
+				case prison_trbn_nnn_rankname:
+					{
+						StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( 1 );
+						if ( stats != null ) {
+							
+							results = stats.getPlayer() == null ? "" : stats.getPlayer().getName();
+						}
+						else {
+							results = "";
+						}
+					}
+					
+					break;
+					
+				case prison_top_rank_balance_score_nnn_rankname:
+				case prison_trbs_nnn_rankname:
+					{
+						StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( 1 );
+						if ( stats != null ) {
+							
+							results = dFmt.format( stats.getScore());
+						}
+						else {
+							results = "";
+						}
+					}
+					
+					break;
+					
+				case prison_top_rank_balance_balance_nnn_rankname:
+				case prison_trbb_nnn_rankname:
+					{
+						StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( 1 );
+						if ( stats != null ) {
+							
+							results = stats.getPlayer() == null ? "" :
+										dFmt.format( stats.getPlayer().getBalance( rank.getCurrency()) );
+						}
+						else {
+							results = "";
+						}
+					}
+					
+					break;
+					
+
 				default:
 					break;
 			}
@@ -944,26 +997,6 @@ public class RankManager
 					break;
 					
 					
-				case prison_top_rank_balance_name_nnn_rankname: 
-				case prison_trbn_nnn_rankname:
-					results = rank.getStatsPlayerBlance().getTopStats( 1 ).getPlayer().getName();
-					
-					break;
-					
-				case prison_top_rank_balance_score_nnn_rankname:
-				case prison_trbs_nnn_rankname:
-					results = dFmt.format( rank.getStatsPlayerBlance().getTopStats( 1 ).getScore());
-					
-					break;
-					
-				case prison_top_rank_balance_balance_nnn_rankname:
-				case prison_trbb_nnn_rankname:
-					results = dFmt.format( rank.getStatsPlayerBlance().getTopStats( 1 ).getPlayer()
-							.getBalance( rank.getCurrency()) );
-					
-					break;
-					
-					
 				default:
 					break;
 			}
@@ -1014,6 +1047,8 @@ public class RankManager
     		List<PrisonPlaceHolders> placeHolders = PrisonPlaceHolders.getTypes( PlaceholderFlags.RANKS );
 
     		placeHolders.addAll( PrisonPlaceHolders.getTypes( PlaceholderFlags.RANKPLAYERS ) );
+    		
+    		placeHolders.addAll( PrisonPlaceHolders.getTypes( PlaceholderFlags.STATSRANKS ) );
     		
     		
     		List<Rank> ranks = PrisonRanks.getInstance().getRankManager().getRanks();

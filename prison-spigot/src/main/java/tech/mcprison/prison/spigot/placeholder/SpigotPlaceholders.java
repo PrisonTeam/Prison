@@ -444,7 +444,8 @@ public class SpigotPlaceholders
 				else if ( rm != null && placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.RANKS ) ) {
 					value = rm.getTranslateRanksPlaceHolder( placeHolderKey, null );
 				}
-				else if ( rm != null && placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.RANKPLAYERS ) ) {
+				else if ( rm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.RANKPLAYERS ) ||
+						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSRANKS )) ) {
 					value = rm.getTranslateRankPlayersPlaceHolder( playerUuid, playerName, placeHolderKey, null );
 				}
 				
