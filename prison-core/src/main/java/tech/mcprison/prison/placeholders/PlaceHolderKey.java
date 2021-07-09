@@ -201,6 +201,21 @@ public class PlaceHolderKey {
 //						pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, identifier ) );
 			}
 		}
+//		else if ( textLowercase.contains( key ) ) {
+//			
+//			int idx = textLowercase.indexOf( key );
+//			int idxStart = idx + 1;
+//
+//			
+//			int idxEnd = idx + key.length() - 1 - adjustment;
+//			String identifier = text.substring( idxStart, idxEnd);
+//			
+//			results.setIdentifier( identifier, "", "" );
+//			results.setPlaceholder( this );
+//			
+////			results.setIdentifier( key, escLeft, escRight );
+//			foundIdentifier = true;
+//		}
 		
 		return foundIdentifier;
 	}

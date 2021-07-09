@@ -1129,21 +1129,33 @@ public class MineManager
 			
     		// placeholder Attributes:
     		PlaceholderManager pman = Prison.get().getPlaceholderManager();
-//    		String placeholder = pman.extractPlaceholderString( identifier );
+    		String placeholder = pman.extractPlaceholderString( identifier );
     		PlaceholderAttribute attribute = pman.extractPlaceholderExtractAttribute( identifier );
     		
     		
     		for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
-    			PlaceholderResults phResults = placeHolderKey.getIdentifier( identifier );
-    			
-    			if ( phResults != null && phResults.hasResults() ) {
+    			if ( placeHolderKey.getKey().equalsIgnoreCase( placeholder )) {
+
+    				// Use this ONLY to get the numeric sequence!!!  We already have the correct placeholder.
+    				PlaceholderResults phResults = placeHolderKey.getIdentifier( placeholder );
     				
-    				//Mine mine = getMine( placeHolderKey.getData() );
-    				
-    				results = getTranslatePlayerMinesPlaceHolder( playerUuid, playerName, placeHolderKey, 
-    							attribute, phResults.getNumericSequence() );
+    				results = getTranslatePlayerMinesPlaceHolder( playerUuid, playerName, 
+    											placeHolderKey, attribute,
+    													phResults.getNumericSequence());
     				break;
     			}
+    			
+    			
+    			
+//    			if ( phResults != null && phResults.hasResults() ) {
+//    				
+//    				//Mine mine = getMine( placeHolderKey.getData() );
+//    				
+//    				results = getTranslatePlayerMinesPlaceHolder( playerUuid, playerName, 
+//    								placeHolderKey, attribute, 
+//    										phResults.getNumericSequence() );
+//    				break;
+//    			}
     			
 //    			if ( placeHolderKey.getKey().equalsIgnoreCase( placeholder )) {
 //    				results = getTranslatePlayerMinesPlaceHolder( playerUuid, playerName, placeHolderKey, 
@@ -1156,7 +1168,16 @@ public class MineManager
     	return results;
     }
     
-    
+
+    /**
+     * 
+     * @param playerUuid
+     * @param playerName
+     * @param placeHolderKey
+     * @param identifier
+     * @param position
+     * @return
+     */
     public String getTranslatePlayerMinesPlaceHolder( UUID playerUuid, String playerName, 
     						PlaceHolderKey placeHolderKey, String identifier, int position ) {
     	String results = null;
@@ -1184,7 +1205,7 @@ public class MineManager
     }
     
     /**
-     * We must have a player to process these placeholders.
+     * We must have a player to process these placeholders.  
      * 
      * @param playerUuid
      * @param playerName

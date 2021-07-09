@@ -21,7 +21,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.2 2021-07-08
+# v3.2.10-alpha.2 2021-07-09
+
+
+* **Fixed issue with a few placeholders that were not working.**
+Was using the wrong translator so a number of mine related placeholders stopped working.  
+The mineplayers were not working too.  The bug was introduced by hooking up STATSMINES.
 
 
 * **Hooked up STATSRANKS placeholders and got rid of obsolete ones.  Still more testing needed.**
