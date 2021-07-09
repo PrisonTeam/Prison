@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.2 2021-07-09
 
 
+* **Added support for prison support submit for ranks and ladders, and also for mines.**
+These two new commands will submit the raw json files.
+
+
 * **New Feature!! Major support feature!  Send all of prison's configs to paste.helpch.at so we can know exactly how servers are configured.**
 This logs the following config files: config.yml plugin.yml autoFeaturesConfig.yml modules.yml module_conf/mines/config.json 
       SellAllConfig.yml GuiConfig.yml backpacks/backpacksconfig.yml

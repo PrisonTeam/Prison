@@ -3,6 +3,16 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
+* Add mine notifications by Rank
+
+
+* Prestiges: Rewrite and enhance so as to make it "automatic" without the need to create ranks
+* Externalize the mines module on multi-lang
+* Add top-n rankings for mines and maybe other ratings
+* Add block break counts to players
+
+
+
 * Issue with decay functions or at least it shows the problem exists.  Enable a decay such as obby or rainbow, then test to confirm it works.  Then enchant a tool (increase it's eff).  Then test again and it does not.  This was seen happening while OP'd.  May not be related to decays, but it appears as if enchanting causes the pick to bypass prison?
 - Was able to reproduce this at a later time
 
@@ -112,7 +122,7 @@ it's unknown why it's happening.
  
 
  
-* ladder commands
+* DONE: ladder commands
 
 
 * global virtual mine:  To apply mine commands & blockEvents to all other mines.

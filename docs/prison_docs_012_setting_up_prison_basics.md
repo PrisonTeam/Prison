@@ -178,6 +178,9 @@ If you purchase this plugin to use on your server, do so with great caution sinc
 * **AnimatedScoreboard** - Optional - Scoreboard
 
 
+* **Scoreboard-revision** - Optional - Scoreboard - NOTE: This is buggy if a color code falls in a certain area of the scoreboard.  If you see glitches, you may be able to add a space or character before the placeholder.  Such a fix may not always work though.
+
+
 * **TAB** - Optional - Tab Menu
 
 
