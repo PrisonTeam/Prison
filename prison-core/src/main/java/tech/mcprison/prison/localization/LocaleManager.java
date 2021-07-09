@@ -46,6 +46,7 @@ import java.nio.file.Files;
 import java.security.CodeSource;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -115,6 +116,8 @@ public class LocaleManager {
     private String internalPath;
     
     private File localFolder;
+    
+    private static final List<LocaleManager> registeredInstances = new ArrayList<>();
 
     /**
      * Constructs a new {@link LocaleManager} owned by the given {@link PluginEntity}.
@@ -128,6 +131,22 @@ public class LocaleManager {
         
         this.localFolder = getLocalDataFolder();
         
+        getRegisteredInstances().add( this );
+        
+        reload();
+    }
+
+    public LocaleManager(PluginEntity module) {
+        this(module, LOCALE_FOLDER);
+    }
+    
+    
+    public void reload() {
+    	
+    	// Reset configs:
+    	configs.clear();
+    	
+    	
         // Always get the config's default-language settings to ensure we are always
         // accessing the correct files.
         setDefaultLocale( Prison.get().getPlatform().getConfigString( "default-language", "en_US" ));
@@ -143,16 +162,20 @@ public class LocaleManager {
         // Load the shipped locales first first from the prison jar file:
         loadShippedLocales();
         
-        // Then any custom locales will overried and replace the internal locales:
+        
+        // Then any custom locales will override and replace the internal locales:
         loadCustomLocales(); // custom locales will override
-    }
 
-    public LocaleManager(PluginEntity module) {
-        this(module, LOCALE_FOLDER);
     }
     
     
-    @Override
+    
+    public static List<LocaleManager> getRegisteredInstances()
+	{
+		return registeredInstances;
+	}
+
+	@Override
     public String toString() {
     	StringBuilder sb = new StringBuilder();
     	
@@ -584,16 +607,18 @@ public class LocaleManager {
         try {
             Properties temp = new Properties();
             temp.load(is);
+            
             Properties config;
             if (configs.containsKey(name)) {
                 config = configs.get(name);
+                
                 for (Map.Entry<Object, Object> e : temp.entrySet()) {
                     config.put(e.getKey(), e.getValue());
                 }
             } else {
                 config = temp;
+                configs.put(name, config);
             }
-            configs.put(name, config);
         } 
         catch (IOException ex) {
             if (printStackTrace) {

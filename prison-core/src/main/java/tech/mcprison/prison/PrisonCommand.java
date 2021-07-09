@@ -43,6 +43,7 @@ import tech.mcprison.prison.integration.IntegrationManager;
 import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleStatus;
 import tech.mcprison.prison.output.BulletedListComponent;
@@ -60,7 +61,8 @@ import tech.mcprison.prison.util.PrisonJarReporter;
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-public class PrisonCommand {
+public class PrisonCommand 
+		extends PrisonCommandMessages {
 
 	private List<String> registeredPlugins = new ArrayList<>();
 	
@@ -764,6 +766,24 @@ public class PrisonCommand {
 
     	sender.sendMessage( message );
     }
+
+    
+    @Command(identifier = "prison reload locales", 
+    		description = "Locales reload: This will reload all of the language files that are being used " +
+    				"within prison. Based upon the configuration settings, this will load the proper locales.", 
+    		onlyPlayers = false, permissions = "prison.reload")
+    public void localesReloadCommand(CommandSender sender ) {
+    	
+    	for ( LocaleManager LocalManager : LocaleManager.getRegisteredInstances() ) {
+    		LocalManager.reload();
+    	}
+    	
+    	String message = "Locales reload was attempted. " +
+    			"No guarentees that it worked 100%. Restart server if any doubts.";
+    	
+    	sender.sendMessage( message );
+    }
+    
     
     @Command(identifier = "prison reload autoFeatures", 
     		description = "AutoFeatures reload: Reloads the auto features settings. The current " +
@@ -939,7 +959,7 @@ public class PrisonCommand {
     		@Wildcard(join=true)
     		@Arg(name = "targets", def = " ",
     				description = "Optional. Enable or disable a debugging target. " +
-    					"[on, off, targets, jarScan, blockBreakListeners, chatListeners] " +
+    					"[on, off, targets, jarScan, blockBreakListeners, chatListeners, testLocale] " +
     				"Use 'targets' to list all available targets.  Use 'on' or 'off' to toggle " +
     				"on and off individual targets, or all targets if no target is specified.  " +
     				"jarScan will identify what Java version compiled the class files within the listed jars"
@@ -971,6 +991,13 @@ public class PrisonCommand {
     	if ( targets != null && "chatListeners".equalsIgnoreCase( targets ) ) {
     		
     		Prison.get().getPlatform().dumpEventListenersPlayerChatEvents();
+    		
+    		return;
+    	}
+    	
+    	if ( targets != null && "testLocale".equalsIgnoreCase( targets ) ) {
+    		
+    		coreDebugTestLocaleseMsg( sender );
     		
     		return;
     	}
@@ -1121,7 +1148,7 @@ public class PrisonCommand {
 
     	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName() );
     	
-    	String helpURL = pasteChat.post( text.toString() );
+    	String helpURL = pasteChat.postKeepColorCodes( text.toString() );
     	
     	if ( helpURL != null ) {
     		
@@ -1169,7 +1196,7 @@ public class PrisonCommand {
     	
     	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName() );
     	
-    	String helpURL = pasteChat.post( text.toString() );
+    	String helpURL = pasteChat.postKeepColorCodes( text.toString() );
     	
     	if ( helpURL != null ) {
     		
@@ -1217,7 +1244,7 @@ public class PrisonCommand {
     	
     	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName() );
     	
-    	String helpURL = pasteChat.post( text.toString() );
+    	String helpURL = pasteChat.postKeepColorCodes( text.toString() );
     	
     	if ( helpURL != null ) {
     		

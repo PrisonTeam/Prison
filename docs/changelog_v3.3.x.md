@@ -24,6 +24,12 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.3 2021-07-09
 
 
+* **New feature: /prison reload locales.  Its now possible to reload the language files that prison uses.**
+Added a new debug item to test to see if utf-8 is working:  /prison debug testLocale.  No, it does not work with utf-8 text yet.
+I did confirm that if the properties files are setup with UTF-8 and are a part of the prion jar, that the UTF-8 encoding will properly be saved to the local file system.  
+The area that I think is causing failures is with the Properties object itself since that is not utf-8 compatible, so it appears.
+
+
 * **v3.2.10-alpha.3 2021-07-09**
 
 
