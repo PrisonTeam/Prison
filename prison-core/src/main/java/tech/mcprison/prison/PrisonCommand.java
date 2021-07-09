@@ -1085,8 +1085,9 @@ public class PrisonCommand {
     @Command(identifier = "prison support submit configs", 
     		description = "For Prison support: This will copy the contents of Prison's config " +
     				"file to paste.helpch.at so it can be easily shared with Prison's " +
-    				"support staff.  This will include the following: config.yml, autoFeaturesConfig.yml, " +
-    				"modules.yml,  ", 
+    				"support staff.  This will include the following: config.yml plugin.yml " +
+    				"autoFeaturesConfig.yml modules.yml module_conf/mines/config.json " +
+    				"SellAllConfig.yml GuiConfig.yml backpacks/backpacksconfig.yml", 
     				onlyPlayers = false, permissions = "prison.debug" )
     public void supportSubmitConfigs(CommandSender sender
     		) {
@@ -1136,8 +1137,119 @@ public class PrisonCommand {
     	
     }
     
+    @Command(identifier = "prison support submit ranks", 
+    		description = "For Prison support: This will copy the contents of Prison's " +
+    				"ladders and ranks configs to paste.helpch.at so it can be " +
+    				"easily shared with Prison's support staff.", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportSubmitRanks(CommandSender sender
+    		) {
+    	
+    	
+    	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
+    		Output.get().logInfo( "The support name needs to be set prior to using this command." );
+    		Output.get().logInfo( "Use &7/prison support setSupportName help" );
+    		
+    		return;
+    	}
+    	
+    	
+    	List<File> files = listFiles( "data_storage/ranksDb/ladders/", ".json" );
+    	files.addAll( listFiles( "data_storage/ranksDb/ranks/", ".json" ) );
+    	
+    	
+    	StringBuilder text = new StringBuilder();
+    	
+    	for ( File file : files ) {
+    		
+    		addFileToText( file, text );
+    		
+    	}
+    	
+    	
+    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName() );
+    	
+    	String helpURL = pasteChat.post( text.toString() );
+    	
+    	if ( helpURL != null ) {
+    		
+    		Output.get().logInfo( "Prison's support information has been pasted. Copy and " +
+    				"paste this URL in to Prison's Discord server." );
+    		Output.get().logInfo( "Paste this URL: %s", helpURL );
+    	}
+    	else {
+    		// Do nothing since if helpURL is null, then it has probably
+    		// already sent an error message.
+    	}
+    	
+    	
+    }
     
-    private void addFileToText( File file, StringBuilder sb )
+    
+    @Command(identifier = "prison support submit mines", 
+    		description = "For Prison support: This will copy the contents of Prison's " +
+    				"mines configs to paste.helpch.at so it can be " +
+    				"easily shared with Prison's support staff.", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportSubmitMines(CommandSender sender
+    		) {
+    	
+    	
+    	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
+    		Output.get().logInfo( "The support name needs to be set prior to using this command." );
+    		Output.get().logInfo( "Use &7/prison support setSupportName help" );
+    		
+    		return;
+    	}
+    	
+    	
+    	List<File> files = listFiles( "data_storage/mines/mines/", ".json" );
+    	
+    	
+    	StringBuilder text = new StringBuilder();
+    	
+    	for ( File file : files ) {
+    		
+    		addFileToText( file, text );
+    		
+    	}
+    	
+    	
+    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName() );
+    	
+    	String helpURL = pasteChat.post( text.toString() );
+    	
+    	if ( helpURL != null ) {
+    		
+    		Output.get().logInfo( "Prison's support information has been pasted. Copy and " +
+    				"paste this URL in to Prison's Discord server." );
+    		Output.get().logInfo( "Paste this URL: %s", helpURL );
+    	}
+    	else {
+    		// Do nothing since if helpURL is null, then it has probably
+    		// already sent an error message.
+    	}
+    	
+    	
+    }
+    
+    
+    private List<File> listFiles( String path, String fileSuffix ) {
+    	List<File> files = new ArrayList<>();
+		
+		File dataFolder = Prison.get().getDataFolder();
+		File filePaths = new File( dataFolder, path );
+		
+		for ( File file : filePaths.listFiles() ) {
+			if ( file.getName().toLowerCase().endsWith( fileSuffix.toLowerCase() )) {
+				files.add( file );
+			}
+		}
+		
+		return files;
+	}
+
+	private void addFileToText( File file, StringBuilder sb )
 	{
     	DecimalFormat dFmt = new DecimalFormat("#,##0");
 		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
