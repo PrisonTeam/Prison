@@ -1252,7 +1252,7 @@ public class MinesCommands
         
         CommandPagedData cmdPageData = new CommandPagedData(
         		"/mines list " + sortOrder.name(), sortedMines.getSortedList().size(),
-        		0, page, 7 );
+        		0, page, 14 );
         
         BulletedListComponent list = 
         		getMinesLineItemList(sortedMines, player, cmdPageData, mMan.isMineStats());
@@ -1302,14 +1302,30 @@ public class MinesCommands
             	}
             	
             	
+            	String name = m.getName();
+            	if ( name.length() < 6 ) {
+            		name += "      ".substring( 0, (6-name.length()) );
+            	}
             	row.addFancy( 
-            			new FancyMessage( String.format("&7%s ", m.getTag()) )
+            			new FancyMessage( String.format("&7%s ", name) )
             					.command("/mines info " + m.getName())
             					.tooltip("&7Mine " + m.getTag() + ": Click to view more info."));
             	
             	if ( m.getTag() != null && m.getTag().trim().length() > 0 ) {
-            		row.addTextComponent( "%s ", m.getTag() );
+            		String tag = m.getTag();
+            		if ( tag.length() < 6 ) {
+            			tag += "      ".substring( 0, (6-tag.length()) );
+            		}
+            		row.addTextComponent( "%s ", tag );
             	}
+            	
+            	
+            	if ( !m.isVirtual() ) {
+            		row.addFancy( 
+            				new FancyMessage("&eTP ").command("/mines tp " + m.getName())
+            				.tooltip("&7Click to TP to the mine"));
+            	}
+            	
             	
             	boolean hasCmds = m.getResetCommands().size() > 0;
             	if ( hasCmds ) {
@@ -1320,6 +1336,17 @@ public class MinesCommands
                 					.tooltip("&7Click to view commands."));
             	}
 
+            	
+            	
+            	boolean hasBlockEvents = m.getBlockEvents().size() > 0;
+            	if ( hasBlockEvents ) {
+            		row.addFancy( 
+            				new FancyMessage( String.format(" &cbEvs: &7%s  ", 
+            						Integer.toString( m.getBlockEvents().size() )) )
+            				.command("/mines blockEvent list " + m.getName())
+            				.tooltip("&7Click to view blockEvents."));
+            	}
+            	
             	
             	
             	if ( m.isVirtual() ) {
@@ -1336,12 +1363,6 @@ public class MinesCommands
             				.command("/mines info " + m.getName())
             				.tooltip("&7Click to view possible reason why the mine is " +
             						"disabled. World may not exist? "));
-            	}
-            	
-            	if ( !m.isVirtual() ) {
-            		row.addFancy( 
-            				new FancyMessage("&eTP ").command("/mines tp " + m.getName())
-            				.tooltip("&7Click to TP to the mine"));
             	}
             	
             	
@@ -1382,35 +1403,36 @@ public class MinesCommands
             		
             	}
             	
-            	builder.add(row.getFancy());
+            	//builder.add(row.getFancy());
             	
             	
             	if ( !m.isVirtual() ) {
-            		RowComponent row2 = new RowComponent();
+//            		RowComponent row2 = new RowComponent();
 //            	row2.addTextComponent( "            &3Rem: " );
             		
             		// Right justify the total blocks mined, with 1000's separators:
-            		String blocksMined = "                 " + dFmt.format( m.getTotalBlocksMined() );
-            		blocksMined = blocksMined.substring( blocksMined.length() - 10);
+            		String blocksMined = "          " + dFmt.format( m.getTotalBlocksMined() );
+//            		String blocksMined = "                 " + dFmt.format( m.getTotalBlocksMined() );
+            		blocksMined = blocksMined.substring( blocksMined.length() - 8);
             		
-            		row2.addFancy( 
+            		row.addFancy( 
             				new FancyMessage( String.format("  %s  &3Rem: ", blocksMined)).
             				tooltip( "Blocks mined" ) );
             		
-            		row2.addFancy( 
+            		row.addFancy( 
             				new FancyMessage(fFmt.format(m.getPercentRemainingBlockCount())).
             				tooltip( "Percent Blocks Remaining" ) );
             		
-            		row2.addTextComponent( "%%  &3RCnt: &7" );
+            		row.addTextComponent( "%%  &3RCnt: &7" );
             		
-            		row2.addFancy( 
+            		row.addFancy( 
             				new FancyMessage(dFmt.format(m.getResetCount())).
             				tooltip( "Times the mine was reset." ) );
             		
             		if ( !m.isVirtual() ) {
             			
-            			row2.addTextComponent( " &3 Vol: &7" );
-            			row2.addFancy( 
+            			row.addTextComponent( " &3 Vol: &7" );
+            			row.addFancy( 
             					new FancyMessage(dFmt.format(m.getBounds().getTotalBlockCount())).
             					tooltip( "Volume in Blocks" ) );
             		}
@@ -1429,7 +1451,7 @@ public class MinesCommands
 //       	 
 //       	 row.addTextComponent( "&7 - &b");
             		
-            		builder.add(row2.getFancy());
+            		builder.add(row.getFancy());
             		
             	}
             	

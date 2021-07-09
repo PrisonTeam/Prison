@@ -21,7 +21,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.2 2021-07-09
+# v3.2.10-alpha.3 2021-07-09
+
+
+
+
+* **reformat the /mines list command to mak it easier to read**
 
 
 * **Added support for prison support submit for ranks and ladders, and also for mines.**
