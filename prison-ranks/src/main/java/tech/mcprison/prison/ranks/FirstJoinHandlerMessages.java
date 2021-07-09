@@ -14,4 +14,11 @@ public class FirstJoinHandlerMessages {
 						.localize();
 	}
 	
+	public String firstJoinSuccess( String playerName ) {
+		return PrisonRanks.getInstance().getRanksMessages()
+						.getLocalizable( "ranks_firstJoinHandler__success" )
+						.withReplacements( playerName )
+						.localize();
+	}
+	
 }

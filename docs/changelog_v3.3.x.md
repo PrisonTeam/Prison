@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.2 2021-07-09
 
 
+* **Added a success message when a player is added to prison's default rank.**
+
+
 * **Fixed issue with a few placeholders that were not working.**
 Was using the wrong translator so a number of mine related placeholders stopped working.  
 The mineplayers were not working too.  The bug was introduced by hooking up STATSMINES.

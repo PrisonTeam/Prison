@@ -306,6 +306,9 @@ public class RankPlayer
     			
     			Prison.get().getEventBus().post(new FirstJoinEvent( this ));
     			
+    			FirstJoinHandlerMessages messages = new FirstJoinHandlerMessages();
+    			Output.get().logWarn( messages.firstJoinSuccess( getName() ) );
+    			
     		} else {
     			
     			FirstJoinHandlerMessages messages = new FirstJoinHandlerMessages();
