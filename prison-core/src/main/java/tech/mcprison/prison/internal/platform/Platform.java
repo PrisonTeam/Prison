@@ -370,6 +370,7 @@ public interface Platform {
 	public void traceEventListenersBlockBreakEvents( CommandSender sender );
 
 
+	public void saveResource( String string, boolean replace );
 
 	
 }

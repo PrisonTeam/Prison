@@ -24,6 +24,11 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.2 2021-07-09
 
 
+* **New Feature!! Major support feature!  Send all of prison's configs to paste.helpch.at so we can know exactly how servers are configured.**
+This logs the following config files: config.yml plugin.yml autoFeaturesConfig.yml modules.yml module_conf/mines/config.json 
+      SellAllConfig.yml GuiConfig.yml backpacks/backpacksconfig.yml
+
+
 * **Added a success message when a player is added to prison's default rank.**
 
 

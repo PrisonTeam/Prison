@@ -2032,4 +2032,8 @@ public class SpigotPlatform
 		
 	}
 	
+	@Override
+	public void saveResource( String fileName, boolean replace ) {
+		SpigotPrison.getInstance().saveResource( fileName, replace );
+	}
 }

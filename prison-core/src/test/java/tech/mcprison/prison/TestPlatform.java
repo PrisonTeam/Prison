@@ -359,4 +359,8 @@ public class TestPlatform implements Platform {
 		
 	}
 	
+	@Override
+	public void saveResource( String string, boolean replace ) {
+		
+	}
 }

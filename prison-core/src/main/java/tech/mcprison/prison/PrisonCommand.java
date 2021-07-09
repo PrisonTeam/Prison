@@ -23,7 +23,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -1080,8 +1082,113 @@ public class PrisonCommand {
     	
     }
     
+    @Command(identifier = "prison support submit configs", 
+    		description = "For Prison support: This will copy the contents of Prison's config " +
+    				"file to paste.helpch.at so it can be easily shared with Prison's " +
+    				"support staff.  This will include the following: config.yml, autoFeaturesConfig.yml, " +
+    				"modules.yml,  ", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportSubmitConfigs(CommandSender sender
+    		) {
+    	
+    	
+    	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
+    		Output.get().logInfo( "The support name needs to be set prior to using this command." );
+    		Output.get().logInfo( "Use &7/prison support setSupportName help" );
+    		
+    		return;
+    	}
+    	
+    	Prison.get().getPlatform().saveResource( "plugin.yml", true );
+    	
+    	String fileNames = "config.yml plugin.yml autoFeaturesConfig.yml modules.yml module_conf/mines/config.json " +
+    			"SellAllConfig.yml GuiConfig.yml backpacks/backpacksconfig.yml";
+    	List<File> files = convertNamesToFiles( fileNames );
+    	
+    	
+    	StringBuilder text = new StringBuilder();
+
+    	for ( File file : files ) {
+			
+    		addFileToText( file, text );
+    		
+    		if ( file.getName().equalsIgnoreCase( "plugin.yml" ) ) {
+    			file.delete();
+    		}
+		}
+    	
+
+    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName() );
+    	
+    	String helpURL = pasteChat.post( text.toString() );
+    	
+    	if ( helpURL != null ) {
+    		
+    		Output.get().logInfo( "Prison's support information has been pasted. Copy and " +
+    				"paste this URL in to Prison's Discord server." );
+    		Output.get().logInfo( "Paste this URL: %s", helpURL );
+    	}
+    	else {
+    		// Do nothing since if helpURL is null, then it has probably
+    		// already sent an error message.
+    	}
+    	
+    	
+    }
     
-    @Command(identifier = "prison support submit latestLog", 
+    
+    private void addFileToText( File file, StringBuilder sb )
+	{
+    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+    	
+    	sb.append( "\n" );
+    	
+		sb.append( "File Name:   " ).append( file.getName() ).append( "\n" );
+		sb.append( "File Path:   " ).append( file.getAbsolutePath() ).append( "\n" );
+		sb.append( "File Size:   " ).append( dFmt.format( file.length() ) ).append( " bytes\n" );
+		sb.append( "File Date:   " ).append( sdFmt.format( new Date(file.lastModified()) ) ).append( " bytes\n" );
+		sb.append( "File Stats:  " )
+					.append( file.exists() ? "EXISTS " : "" )
+					.append( file.canRead() ? "READABLE " : "" )
+					.append( file.canWrite() ? "WRITEABLE " : "" )
+					.append( "\n" );
+		
+		sb.append( "\n" );
+		sb.append( "=== ---  ---   ---   ---   ---   ---   ---   ---  --- ===\n" );
+		sb.append( "\n" );
+
+		
+		if ( file.exists() && file.canRead() ) {
+			readFileToStringBulider( file, sb );
+		}
+		else {
+			sb.append( "Warning: The file is not readable so it cannot be included.\n" );
+		}
+		
+		sb.append( "\n" );
+		sb.append( "===  ---  ===   ---   ===   ---   ===   ---   ===  ---  ===\n" );
+		sb.append( "=== # # ### # # # ### # # # ### # # # ### # # # ### # # ===\n" );
+		sb.append( "===  ---  ===   ---   ===   ---   ===   ---   ===  ---  ===\n" );
+		sb.append( "\n" );
+		
+	}
+
+	private List<File> convertNamesToFiles( String fileNames )
+	{
+		List<File> files = new ArrayList<>();
+		
+		File dataFolder = Prison.get().getDataFolder();
+		
+		for ( String fileName : fileNames.split( " " )) {
+			File file = new File( dataFolder, fileName );
+			files.add( file );
+		}
+		
+		return files;
+	}
+
+	@Command(identifier = "prison support submit latestLog", 
     		description = "For Prison support: This will copy the contents of `logs/latest.log` " +
     				"to paste.helpch.at so it can be easily shared with Prison's support staff .", 
     				onlyPlayers = false, permissions = "prison.debug" )
@@ -1106,33 +1213,8 @@ public class PrisonCommand {
     	StringBuilder logText = new StringBuilder();
     	
     	if ( latestLogFile.exists() && latestLogFile.canRead() ) {
-    		try (
-    				BufferedReader br = Files.newBufferedReader( latestLogFile.toPath() );
-    			) {
-    			String line = br.readLine();
-    			while ( line != null && logText.length() < PrisonPasteChat.HASTEBIN_MAX_LENGTH ) {
-    				
-    				logText.append( line ).append( "\n" );
-    				
-    				line = br.readLine();
-    			}
-    			
-    			if ( logText.length() > PrisonPasteChat.HASTEBIN_MAX_LENGTH ) {
-    				
-    				String trimMessage = "\n\n### Log has been trimmed to a max length of " +
-    						PrisonPasteChat.HASTEBIN_MAX_LENGTH + "\n";
-    				int pos = PrisonPasteChat.HASTEBIN_MAX_LENGTH - trimMessage.length();
-    				
-    				logText.insert( pos, trimMessage );
-    				logText.setLength( PrisonPasteChat.HASTEBIN_MAX_LENGTH );
-    			}
-    			
-			}
-			catch ( IOException e ) {
-				Output.get().logInfo( "Failed to read log file: %s  [%s]", 
-						latestLogFile.getAbsolutePath(), e.getMessage() );
-				return;
-			}
+    		
+    		readFileToStringBulider( latestLogFile, logText );
     		
     		if ( logText != null ) {
     			
@@ -1156,6 +1238,37 @@ public class PrisonCommand {
     	
     	Output.get().logInfo( "Unable to send log file.  Unknown reason why." );
     }
+
+	private void readFileToStringBulider( File textFile, StringBuilder text )
+	{
+		try (
+				BufferedReader br = Files.newBufferedReader( textFile.toPath() );
+			) {
+			String line = br.readLine();
+			while ( line != null && text.length() < PrisonPasteChat.HASTEBIN_MAX_LENGTH ) {
+				
+				text.append( line ).append( "\n" );
+				
+				line = br.readLine();
+			}
+			
+			if ( text.length() > PrisonPasteChat.HASTEBIN_MAX_LENGTH ) {
+				
+				String trimMessage = "\n\n### Log has been trimmed to a max length of " +
+						PrisonPasteChat.HASTEBIN_MAX_LENGTH + "\n";
+				int pos = PrisonPasteChat.HASTEBIN_MAX_LENGTH - trimMessage.length();
+				
+				text.insert( pos, trimMessage );
+				text.setLength( PrisonPasteChat.HASTEBIN_MAX_LENGTH );
+			}
+			
+		}
+		catch ( IOException e ) {
+			Output.get().logInfo( "Failed to read log file: %s  [%s]", 
+					textFile.getAbsolutePath(), e.getMessage() );
+			return;
+		}
+	}
     
 
     
