@@ -923,7 +923,8 @@ public class RankManager
 				case prison_r_pcr_rankname:
 					{
 						double cost = calclateRankCost( rankPlayer, rank );
-						double balance = pm.getPlayerBalance( rankPlayer, rank);
+						double balance = rankPlayer.getBalance( rank.getCurrency() );
+//						double balance = pm.getPlayerBalance( rankPlayer, rank);
 						
 						double remaining = cost - balance;
 						
@@ -947,7 +948,8 @@ public class RankManager
 				case prison_r_pcrf_rankname:
 					{
 						double cost = calclateRankCost( rankPlayer, rank );
-						double balance = pm.getPlayerBalance( rankPlayer, rank);
+						double balance = rankPlayer.getBalance( rank.getCurrency() );
+//						double balance = pm.getPlayerBalance( rankPlayer, rank);
 						
 						double remaining = cost - balance;
 						
@@ -975,7 +977,8 @@ public class RankManager
 				case prison_r_pcp_rankname:
 					{
 						double cost = calclateRankCost( rankPlayer, rank );
-						double balance = pm.getPlayerBalance( rankPlayer, rank);
+						double balance = rankPlayer.getBalance( rank.getCurrency() );
+//						double balance = pm.getPlayerBalance( rankPlayer, rank);
 						
 						double percent = (balance < 0 ? 0 : 
     						(cost == 0.0d || balance > cost ? 100.0 : 
@@ -989,7 +992,8 @@ public class RankManager
 				case prison_r_pcb_rankname:
 					{
 						double cost = calclateRankCost( rankPlayer, rank );
-						double balance = pm.getPlayerBalance( rankPlayer, rank);
+						double balance = rankPlayer.getBalance( rank.getCurrency() );
+//						double balance = pm.getPlayerBalance( rankPlayer, rank);
 						
 						results = Prison.get().getPlaceholderManager().
 										getProgressBar( balance, cost, false, attribute );

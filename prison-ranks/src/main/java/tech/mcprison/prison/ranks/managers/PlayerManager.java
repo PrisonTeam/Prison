@@ -30,9 +30,6 @@ import java.util.UUID;
 import com.google.common.eventbus.Subscribe;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
-import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.events.player.PlayerJoinEvent;
 import tech.mcprison.prison.output.Output;
@@ -538,19 +535,19 @@ public class PlayerManager
     public String getPlayerNextRankCostPercent( RankPlayer rankPlayer, String ladderName ) {
     	StringBuilder sb = new StringBuilder();
     	
-        Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
-        if( prisonPlayer == null ) {
-        	
-        	String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
-
-        	String message = "getPlayerNextRankCostPercent: " + errorMessage;
-			
-        	if ( !getPlayerErrors().contains( message ) ) {
-				getPlayerErrors().add( message );
-				Output.get().logError( message );
-			}
-        	return "0";
-        }
+//        Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
+//        if( prisonPlayer == null ) {
+//        	
+//        	String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
+//
+//        	String message = "getPlayerNextRankCostPercent: " + errorMessage;
+//			
+//        	if ( !getPlayerErrors().contains( message ) ) {
+//				getPlayerErrors().add( message );
+//				Output.get().logError( message );
+//			}
+////        	return "0";
+//        }
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		DecimalFormat dFmt = new DecimalFormat("#,##0");
@@ -570,7 +567,8 @@ public class PlayerManager
     					
 //    					Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
     					double cost = nextRank.getCost();
-    					double balance = getPlayerBalance(prisonPlayer,nextRank);
+    					double balance = rankPlayer.getBalance( rank.getCurrency() );
+//    					double balance = getPlayerBalance(prisonPlayer,nextRank);
     					
     					double percent = (balance < 0 ? 0 : 
     						(cost == 0.0d || balance > cost ? 100.0 : 
@@ -589,20 +587,20 @@ public class PlayerManager
     														PlaceholderAttribute attribute ) {
     	StringBuilder sb = new StringBuilder();
     	
-    	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
-    	if( prisonPlayer == null ) {
-    		
-    		String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
-
-    		String message = "getPlayerNextRankCostBar: " + errorMessage;
-
-    		if ( !getPlayerErrors().contains( message ) ) {
-				getPlayerErrors().add( message );
-				Output.get().logError( message );
-			}
-			
-    		return "0";
-    	}
+//    	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
+//    	if( prisonPlayer == null ) {
+//    		
+//    		String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
+//
+//    		String message = "getPlayerNextRankCostBar: " + errorMessage;
+//
+//    		if ( !getPlayerErrors().contains( message ) ) {
+//				getPlayerErrors().add( message );
+//				Output.get().logError( message );
+//			}
+//			
+//    		//  return "0";
+//    	}
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		
@@ -622,7 +620,8 @@ public class PlayerManager
     					}
     					
     					double cost = nextRank.getCost();
-    					double balance = getPlayerBalance(prisonPlayer,nextRank);
+    					double balance = rankPlayer.getBalance( rank.getCurrency() );
+//    					double balance = getPlayerBalance(prisonPlayer,nextRank);
     					
     					
     					sb.append( Prison.get().getPlaceholderManager().
@@ -652,20 +651,20 @@ public class PlayerManager
     						boolean formatted, PlaceholderAttribute attribute ) {
     	StringBuilder sb = new StringBuilder();
     	
-    	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
-    	if( prisonPlayer == null ) {
-    		
-    		String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
-    		
-    		String message = "getPlayerNextRankCostRemaining: " + errorMessage;
-    		
-			if ( !getPlayerErrors().contains( message ) ) {
-				getPlayerErrors().add( message );
-				Output.get().logError( message );
-			}
-			
-    		return "0";
-    	}
+//    	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
+//    	if( prisonPlayer == null ) {
+//    		
+//    		String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
+//    		
+//    		String message = "getPlayerNextRankCostRemaining: " + errorMessage;
+//    		
+//			if ( !getPlayerErrors().contains( message ) ) {
+//				getPlayerErrors().add( message );
+//				Output.get().logError( message );
+//			}
+//			
+////    		return "0";
+//    	}
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		DecimalFormat dFmt = new DecimalFormat("#,##0");
@@ -684,7 +683,8 @@ public class PlayerManager
     					}
     					
     					double cost = nextRank.getCost();
-    					double balance = getPlayerBalance(prisonPlayer,nextRank);
+    					double balance = rankPlayer.getBalance( rank.getCurrency() );
+//    					double balance = getPlayerBalance(prisonPlayer,nextRank);
     					
     					double remaining = cost - balance;
     					
@@ -720,19 +720,19 @@ public class PlayerManager
   public String getPlayerNextRankCostRemainingPercent( RankPlayer rankPlayer, String ladderName ) {
   	StringBuilder sb = new StringBuilder();
   	
-      Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
-      if( prisonPlayer == null ) {
-      	
-      	String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
-
-      	String message = "getPlayerNextRankCostPercent: " + errorMessage;
-			
-      	if ( !getPlayerErrors().contains( message ) ) {
-				getPlayerErrors().add( message );
-				Output.get().logError( message );
-			}
-      	return "0";
-      }
+//      Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
+//      if( prisonPlayer == null ) {
+//      	
+//      	String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
+//
+//      	String message = "getPlayerNextRankCostPercent: " + errorMessage;
+//			
+//      	if ( !getPlayerErrors().contains( message ) ) {
+//				getPlayerErrors().add( message );
+//				Output.get().logError( message );
+//			}
+////      	return "0";
+//      }
   	
   	if ( !rankPlayer.getLadderRanks().isEmpty()) {
   		DecimalFormat dFmt = new DecimalFormat("#,##0");
@@ -751,7 +751,8 @@ public class PlayerManager
 					}
 					
 					double cost = nextRank.getCost();
-					double balance = getPlayerBalance(prisonPlayer,nextRank);
+					double balance = rankPlayer.getBalance( rank.getCurrency() );
+//					double balance = getPlayerBalance(prisonPlayer,nextRank);
 					
 					double remaining = cost - balance;
 					
@@ -779,19 +780,19 @@ public class PlayerManager
 		  PlaceholderAttribute attribute ) {
 	  StringBuilder sb = new StringBuilder();
 
-	  Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
-	  if( prisonPlayer == null ) {
-
-		  String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
-
-		  String message = "getPlayerNextRankCostPercent: " + errorMessage;
-
-		  if ( !getPlayerErrors().contains( message ) ) {
-			  getPlayerErrors().add( message );
-			  Output.get().logError( message );
-		  }
-		  return "0";
-	  }
+//	  Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
+//	  if( prisonPlayer == null ) {
+//
+//		  String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
+//
+//		  String message = "getPlayerNextRankCostPercent: " + errorMessage;
+//
+//		  if ( !getPlayerErrors().contains( message ) ) {
+//			  getPlayerErrors().add( message );
+//			  Output.get().logError( message );
+//		  }
+////		  return "0";
+//	  }
 
 	  if ( !rankPlayer.getLadderRanks().isEmpty()) {
 		  //		  DecimalFormat dFmt = new DecimalFormat("#,##0");
@@ -810,7 +811,8 @@ public class PlayerManager
 					  }
 
 					  double cost = nextRank.getCost();
-					  double balance = getPlayerBalance(prisonPlayer,nextRank);
+					  double balance = rankPlayer.getBalance( rank.getCurrency() );
+//					  double balance = getPlayerBalance(prisonPlayer,nextRank);
 
 					  double remaining = cost - balance;
 
@@ -855,20 +857,20 @@ public class PlayerManager
     								boolean formatted, PlaceholderAttribute attribute ) {
     	StringBuilder sb = new StringBuilder();
     	
-    	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
-    	if( prisonPlayer == null ) {
-    		
-    		String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
-    		
-    		String message = "getPlayerBalance: " + errorMessage;
-    		
-			if ( !getPlayerErrors().contains( message ) ) {
-				getPlayerErrors().add( message );
-				Output.get().logError( message );
-			}
-			
-    		return "0";
-    	}
+//    	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
+//    	if( prisonPlayer == null ) {
+//    		
+//    		String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
+//    		
+//    		String message = "getPlayerBalance: " + errorMessage;
+//    		
+//			if ( !getPlayerErrors().contains( message ) ) {
+//				getPlayerErrors().add( message );
+//				Output.get().logError( message );
+//			}
+//			
+////    		return "0";
+//    	}
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		DecimalFormat dFmt = new DecimalFormat("#,##0");
@@ -884,7 +886,8 @@ public class PlayerManager
     						sb.append(",  ");
     					}
     					
-    					double balance = getPlayerBalance(prisonPlayer,rank);
+    					double balance = rankPlayer.getBalance( rank.getCurrency() );
+//    					double balance = getPlayerBalance(prisonPlayer,rank);
     					
     					if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
     						PlaceholderAttributeNumberFormat attributeNF = 
@@ -906,57 +909,60 @@ public class PlayerManager
     	return sb.toString();
     }
     
-    /**
-     * <p>This gets the player's balance, and if the rank is provided, it will check to 
-     * see if there is a custom currency that needs to be used for that rank.  If there
-     * is a custom currency, then it will check the balance for that player using that
-     * currency.
-     * </p>
-     * 
-     * @param player
-     * @param rank
-     * @return
-     */
-    public double getPlayerBalance(Player player, Rank rank) {
-    	double playerBalance = 0;
-        	
-    	if ( rank != null && rank.getCurrency() != null ) {
-    		EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
-    						.getEconomyForCurrency( rank.getCurrency() );
-    		if ( currencyEcon != null ) {
-        		playerBalance = currencyEcon.getBalance( player, rank.getCurrency() );
-    		} else {
-    			
-    			String errorMessage = cannotLoadEconomyCurrency( player.getName(), rank.getCurrency() );
-
-    			if ( !getPlayerErrors().contains( errorMessage ) ) {
-    				getPlayerErrors().add( errorMessage );
-    				Output.get().logError( errorMessage );
-    			}
-    			
-    		}
-    		
-    	} else {
-    		
-    		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
-
-    		if ( economy != null ) {
-    			playerBalance = economy.getBalance( player );
-    		} else {
-    			
-    			String errorMessage = cannotLoadEconomy( player.getName() );
-    			
-    			if ( !getPlayerErrors().contains( errorMessage ) ) {
-    				
-    				getPlayerErrors().add( errorMessage );
-    				Output.get().logError( errorMessage );
-    			}
-    			
-    		}
-    	}
-
-    	return playerBalance;
-    }
+//    /**
+//     * <p>This gets the player's balance, and if the rank is provided, it will check to 
+//     * see if there is a custom currency that needs to be used for that rank.  If there
+//     * is a custom currency, then it will check the balance for that player using that
+//     * currency.
+//     * </p>
+//     * 
+//     * @param player
+//     * @param rank
+//     * @return
+//     */
+//    public double getPlayerBalance(Player player, Rank rank) {
+//    	double playerBalance = 0;
+//        	
+//    	if ( player != null ) {
+//    		
+//    		if ( rank != null && rank.getCurrency() != null ) {
+//    			EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+//    					.getEconomyForCurrency( rank.getCurrency() );
+//    			if ( currencyEcon != null ) {
+//    				playerBalance = currencyEcon.getBalance( player, rank.getCurrency() );
+//    			} else {
+//    				
+//    				String errorMessage = cannotLoadEconomyCurrency( player.getName(), rank.getCurrency() );
+//    				
+//    				if ( !getPlayerErrors().contains( errorMessage ) ) {
+//    					getPlayerErrors().add( errorMessage );
+//    					Output.get().logError( errorMessage );
+//    				}
+//    				
+//    			}
+//    			
+//    		} else {
+//    			
+//    			EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+//    			
+//    			if ( economy != null ) {
+//    				playerBalance = economy.getBalance( player );
+//    			} else {
+//    				
+//    				String errorMessage = cannotLoadEconomy( player.getName() );
+//    				
+//    				if ( !getPlayerErrors().contains( errorMessage ) ) {
+//    					
+//    					getPlayerErrors().add( errorMessage );
+//    					Output.get().logError( errorMessage );
+//    				}
+//    				
+//    			}
+//    		}
+//    	}
+//
+//    	return playerBalance;
+//    }
     
     public String getPlayerNextRankName( RankPlayer rankPlayer, String ladderName ) {
     	StringBuilder sb = new StringBuilder();
