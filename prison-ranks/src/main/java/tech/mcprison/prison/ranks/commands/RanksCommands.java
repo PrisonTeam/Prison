@@ -527,11 +527,14 @@ public class RanksCommands
         }
     }
 
-    @Command(identifier = "ranks list", description = "Lists all the ranks on the server.", 
+    @Command(identifier = "ranks list", description = "Lists all the ranks on the server by" +
+    		"ladder.  If 'all' is used instead of a ladder name, then it will print all " +
+    		"ranks.", 
     							onlyPlayers = false, altPermissions = "ranks.list"
     							)
     public void listRanks(CommandSender sender,
-        @Arg(name = "ladderName", def = "default") String ladderName) {
+        @Arg(name = "ladderName", def = "default", 
+        	description = "A ladder name, or 'all' to list all ranks by ladder.") String ladderName) {
 
     	boolean hasPerm = sender.hasPermission("ranks.list") ||
     					sender.isOp();
@@ -539,14 +542,13 @@ public class RanksCommands
         RankLadder ladder =
         			PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
 
-        if ( ladder == null ) {
+        if ( ladder == null && !"all".equalsIgnoreCase( ladderName ) ) {
         	ladderDoesNotExistMsg( sender, ladderName );
             return;
         }
 
-        Rank rank = ladder.getLowestRank().orElse( null );
         
-        if ( rank == null ) {
+        if ( ladder != null && ladder.getRanks().size() == 0 ) {
         	ladderHasNoRanksMsg( sender, ladderName );
         }
 
@@ -559,8 +561,32 @@ public class RanksCommands
 //            }
 //        }
         
+        ChatDisplay display = null;
+        
+        if ( ladder != null ) {
+        	display = listRanksOnLadder( ladder, hasPerm );
+        }
+        else {
+        	display = new ChatDisplay( "List ALL Ranks" );
+        	
+        	List<RankLadder> ladders = PrisonRanks.getInstance().getLadderManager().getLadders();
+        	
+        	for ( RankLadder rLadder : ladders ) {
+        		ChatDisplay cDisp = listRanksOnLadder( rLadder, hasPerm );
+        		
+        		if ( display == null ) {
+        			display = cDisp;
+        		}
+        		else {
+        			display.addEmptyLine();
+        			
+        			display.addChatDisplay( cDisp );
+        		}
+				
+			}
+        }
+        
 
-        ChatDisplay display = listRanksOnLadder( ladder, hasPerm );
         
         if ( hasPerm ) {
         	display.addComponent(new FancyMessageComponent(
@@ -589,7 +615,7 @@ public class RanksCommands
         				msg.then(" &8and ");
         			}
         			msg.then("&7" + other).tooltip( ranksListClickToView2Msg() ).command(other);
-        			msg.then(i == others.size() ? "&8." : "&8,");
+        			msg.then(i == others.size() ? "&8." : "&8, ");
         		}
         		display.addComponent(new FancyMessageComponent(msg));
         	}

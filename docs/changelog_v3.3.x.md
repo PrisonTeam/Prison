@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.3 2021-07-10
 
 
+* **Add option to /ranks list to include all ranks through the use of the "all" in place of the ladder name.**
+
+
 * **Fixed a bug where getting a player was returning a null.**
 When that null was encountered, it was not processing the placeholders, especially for the bars. 
 Not really sure why it was failing, but replaced the use of getting the player balance with the most recent use of RankPlayer's getBalance() works perfectly.
