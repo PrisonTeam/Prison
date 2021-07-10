@@ -64,6 +64,7 @@ import tech.mcprison.prison.tasks.PrisonCommandTask;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Bounds.Edges;
+import tech.mcprison.prison.util.Text;
 
 /**
  * @author Dylan M. Perks
@@ -1194,8 +1195,6 @@ public class MinesCommands
             @Arg(name = "page", def = "1", 
             	description = "Page of search results (optional) [1-n, ALL]") String page 
     		) {
-        ChatDisplay display = new ChatDisplay("Mines");
-        display.addText("&8Click a mine's name to see more information.");
     	Player player = getPlayer( sender );
     	
     	MineSortOrder sortOrder = MineSortOrder.fromString( sort );
@@ -1224,7 +1223,21 @@ public class MinesCommands
     		}
     	}
 
-        PrisonMines pMines = PrisonMines.getInstance();
+    	ChatDisplay display = new ChatDisplay("Mines");
+    	display.addText("&8Click a mine's name to see more information.");
+
+    	
+    	CommandPagedData cmdPageData = getMinesList( display, sortOrder, page, player );
+    	
+        
+        cmdPageData.generatePagedCommandFooter( display );
+        
+        display.send(sender);
+    }
+
+	private CommandPagedData getMinesList( ChatDisplay display, MineSortOrder sortOrder, String page, Player player )
+	{
+		PrisonMines pMines = PrisonMines.getInstance();
     	MineManager mMan = pMines.getMineManager();
     	
     	
@@ -1258,12 +1271,8 @@ public class MinesCommands
         		getMinesLineItemList(sortedMines, player, cmdPageData, mMan.isMineStats());
     	
     	display.addComponent(list);
-    	
-        
-        cmdPageData.generatePagedCommandFooter( display );
-        
-        display.send(sender);
-    }
+		return cmdPageData;
+	}
 
 
     private BulletedListComponent getMinesLineItemList( PrisonSortableResults sortedMines, Player player,
@@ -1311,10 +1320,12 @@ public class MinesCommands
             					.command("/mines info " + m.getName())
             					.tooltip("&7Mine " + m.getTag() + ": Click to view more info."));
             	
+            	
             	if ( m.getTag() != null && m.getTag().trim().length() > 0 ) {
             		String tag = m.getTag();
-            		if ( tag.length() < 6 ) {
-            			tag += "      ".substring( 0, (6-tag.length()) );
+            		String tagNoColor = Text.stripColor( tag );
+            		if ( tagNoColor.length() < 6 ) {
+            			tag += "      ".substring( 0, (6 - tagNoColor.length()) );
             		}
             		row.addTextComponent( "%s ", tag );
             	}
@@ -1326,52 +1337,6 @@ public class MinesCommands
             				.tooltip("&7Click to TP to the mine"));
             	}
             	
-            	
-            	boolean hasCmds = m.getResetCommands().size() > 0;
-            	if ( hasCmds ) {
-            		row.addFancy( 
-                			new FancyMessage( String.format(" &cCmds: &7%s  ", 
-                					Integer.toString( m.getResetCommands().size() )) )
-                					.command("/mines commands list " + m.getName())
-                					.tooltip("&7Click to view commands."));
-            	}
-
-            	
-            	
-            	boolean hasBlockEvents = m.getBlockEvents().size() > 0;
-            	if ( hasBlockEvents ) {
-            		row.addFancy( 
-            				new FancyMessage( String.format(" &cbEvs: &7%s  ", 
-            						Integer.toString( m.getBlockEvents().size() )) )
-            				.command("/mines blockEvent list " + m.getName())
-            				.tooltip("&7Click to view blockEvents."));
-            	}
-            	
-            	
-            	
-            	if ( m.isVirtual() ) {
-            		row.addFancy(  
-            				new FancyMessage( "&cVIRTUAL " )
-            				.command("/mines set area " + m.getName())
-            				.tooltip("&7Click to set the mine's area to make it a real mine. "));
-            	}
-            	
-            	
-            	if ( !m.isEnabled() ) {
-            		row.addFancy(  
-            				new FancyMessage( "&cDISABLED!! " )
-            				.command("/mines info " + m.getName())
-            				.tooltip("&7Click to view possible reason why the mine is " +
-            						"disabled. World may not exist? "));
-            	}
-            	
-            	
-            	if ( m.isUsePagingOnReset() ) {
-            		row.addFancy( 
-            				new FancyMessage("&5Paged ")
-            				.tooltip("&7Paging Used during Mine Reset"));
-            	}
-
             	
             	row.addTextComponent( "  &3(&2R: " );
             	
@@ -1437,6 +1402,56 @@ public class MinesCommands
             					tooltip( "Volume in Blocks" ) );
             		}
             		
+            		
+
+                	
+                	
+                	boolean hasCmds = m.getResetCommands().size() > 0;
+                	if ( hasCmds ) {
+                		row.addFancy( 
+                    			new FancyMessage( String.format(" &cCmds: &7%s  ", 
+                    					Integer.toString( m.getResetCommands().size() )) )
+                    					.command("/mines commands list " + m.getName())
+                    					.tooltip("&7Click to view commands."));
+                	}
+
+                	
+                	
+                	boolean hasBlockEvents = m.getBlockEvents().size() > 0;
+                	if ( hasBlockEvents ) {
+                		row.addFancy( 
+                				new FancyMessage( String.format(" &cbEvs: &7%s  ", 
+                						Integer.toString( m.getBlockEvents().size() )) )
+                				.command("/mines blockEvent list " + m.getName())
+                				.tooltip("&7Click to view blockEvents."));
+                	}
+                	
+                	
+                	
+                	if ( m.isVirtual() ) {
+                		row.addFancy(  
+                				new FancyMessage( "&cVIRTUAL " )
+                				.command("/mines set area " + m.getName())
+                				.tooltip("&7Click to set the mine's area to make it a real mine. "));
+                	}
+                	
+                	
+                	if ( !m.isEnabled() ) {
+                		row.addFancy(  
+                				new FancyMessage( "&cDISABLED!! " )
+                				.command("/mines info " + m.getName())
+                				.tooltip("&7Click to view possible reason why the mine is " +
+                						"disabled. World may not exist? "));
+                	}
+                	
+                	
+                	if ( m.isUsePagingOnReset() ) {
+                		row.addFancy( 
+                				new FancyMessage("&5Paged ")
+                				.tooltip("&7Paging Used during Mine Reset"));
+                	}
+
+      
             		
 //       	 String noteMode = m.getNotificationMode().name() + 
 //       			 ( m.getNotificationMode() == MineNotificationMode.radius ? 
