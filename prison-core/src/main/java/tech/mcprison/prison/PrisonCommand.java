@@ -1187,6 +1187,11 @@ public class PrisonCommand
     	
     	StringBuilder text = new StringBuilder();
     	
+    	
+//    	text.append( Prison.get().getPlatform().getRanksListString() );
+//    	printFooter( text );
+ 
+    	
     	for ( File file : files ) {
     		
     		addFileToText( file, text );

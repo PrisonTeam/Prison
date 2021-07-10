@@ -581,13 +581,31 @@ public class RanksCommands
             String textCurrency = (rank.getCurrency() == null ? "" : 
             								ranksListCurrencyMsg( rank.getCurrency() ));
             
+            // Since the formatting gets confused with color formatting, we must 
+            // trick it to deal correctly with tags.  Tags can have many colors, but
+            // it will render as if it had the colors stripped.  So first generate the
+            // formatted text with tagNoColor, then replace the no color tag with the
+            // normal tag.
+            String tag = rank.getTag();
+            String tagNoColor = Text.stripColor( tag );
+            
             String text =
-                String.format("%s &9[&3%s&9] &7- %s&7%s%s%s", 
-                			textRankName, rank.getTag(), 
-                			(defaultRank ? "&b(&9Default&b) &7- " : ""),
+                String.format("%-8s &3%-8s %s&7%17s %s&7 %s", 
+                			textRankName, 
+                			tagNoColor, 
+                			(defaultRank ? "{def}" : ""),
                 			Text.numberToDollars(rank.getCost()),
                 			textCurrency,
-                			textCmdCount );
+                			textCmdCount 
+                			);
+            
+            // Swap the color tag back in:
+            text = text.replace( tagNoColor, tag );
+            
+            if ( defaultRank ) {
+            	// Swap out the default placeholder for the actual content:
+            	text = text.replace( " {def}&7        ", "&c(&9Default&c)&7" );
+            }
             
             String rankName = rank.getName();
             if ( rankName.contains( "&" ) ) {

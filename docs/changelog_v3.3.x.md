@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.3 2021-07-10
 
 
+* **Improvements to the /ranks list command.**
+Enhanced the header so it's clear which ladder is involved.  Also cleaned up the formatting with the tag colors so it does not impact the column alignments. Also doing a little more with injecting the "default" tag so it does not shift the columns.
+
+
 * **Adds the listing of all mines to the /prison support submit mines command.**
 This provides an overview of all mines and is included at the top of the listing.
 
