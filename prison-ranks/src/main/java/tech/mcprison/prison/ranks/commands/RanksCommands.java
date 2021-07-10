@@ -668,6 +668,10 @@ public class RanksCommands
         		String textCurrency = (rank.getCurrency() == null ? "" : 
         			ranksListCurrencyMsg( rank.getCurrency() ));
         		
+        		String players = rank.getPlayers().size() == 0 ? "" : 
+        				" &dPlayers: &3" + rank.getPlayers().size();
+        				
+        		
         		// Since the formatting gets confused with color formatting, we must 
         		// trick it to deal correctly with tags.  Tags can have many colors, but
         		// it will render as if it had the colors stripped.  So first generate the
@@ -677,13 +681,14 @@ public class RanksCommands
         		String tagNoColor = Text.stripColor( tag );
         		
         		String text =
-        				String.format("%-8s &3%-8s %s&7%17s %s&7 %s", 
+        				String.format("%-8s &3%-8s %s&7%17s %s&7 %s%s", 
         						textRankName, 
         						tagNoColor, 
         						(defaultRank ? "{def}" : ""),
         						Text.numberToDollars(rank.getCost()),
         						textCurrency,
-        						textCmdCount 
+        						textCmdCount,
+        						players
         						);
         		
         		// Swap the color tag back in:
