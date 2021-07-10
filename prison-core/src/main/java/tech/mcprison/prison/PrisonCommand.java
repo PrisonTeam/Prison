@@ -1235,6 +1235,12 @@ public class PrisonCommand
     	
     	StringBuilder text = new StringBuilder();
     	
+    	
+    	text.append( Prison.get().getPlatform().getMinesListString() );
+    	printFooter( text );
+    	
+    	
+    	
     	for ( File file : files ) {
     		
     		addFileToText( file, text );
@@ -1304,6 +1310,12 @@ public class PrisonCommand
 		else {
 			sb.append( "Warning: The file is not readable so it cannot be included.\n" );
 		}
+		
+		
+		printFooter( sb );
+	}
+	
+	public void printFooter( StringBuilder sb ) {
 		
 		sb.append( "\n" );
 		sb.append( "===  ---  ===   ---   ===   ---   ===   ---   ===  ---  ===\n" );

@@ -70,6 +70,7 @@ import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.mines.commands.MinesCommands;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.mines.managers.MineManager;
@@ -2035,5 +2036,21 @@ public class SpigotPlatform
 	@Override
 	public void saveResource( String fileName, boolean replace ) {
 		SpigotPrison.getInstance().saveResource( fileName, replace );
+	}
+	
+	
+	@Override
+	public String getMinesListString() {
+		
+		MinesCommands mc = new MinesCommands();
+		
+    	
+    	ChatDisplay display = new ChatDisplay("Mines");
+    	display.addText("&8Click a mine's name to see more information.");
+    	mc.getMinesList( display, MineManager.MineSortOrder.sortOrder, "all", null );
+  
+    	StringBuilder sb = display.toStringBuilder();
+		
+    	return Text.stripColor( sb.toString() );
 	}
 }

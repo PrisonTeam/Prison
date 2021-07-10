@@ -363,4 +363,9 @@ public class TestPlatform implements Platform {
 	public void saveResource( String string, boolean replace ) {
 		
 	}
+	
+	@Override
+	public String getMinesListString() {
+		return "";
+	}
 }

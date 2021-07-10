@@ -1227,15 +1227,14 @@ public class MinesCommands
     	display.addText("&8Click a mine's name to see more information.");
 
     	
-    	CommandPagedData cmdPageData = getMinesList( display, sortOrder, page, player );
+    	getMinesList( display, sortOrder, page, player );
     	
         
-        cmdPageData.generatePagedCommandFooter( display );
         
         display.send(sender);
     }
 
-	private CommandPagedData getMinesList( ChatDisplay display, MineSortOrder sortOrder, String page, Player player )
+	public void getMinesList( ChatDisplay display, MineSortOrder sortOrder, String page, Player player )
 	{
 		PrisonMines pMines = PrisonMines.getInstance();
     	MineManager mMan = pMines.getMineManager();
@@ -1271,7 +1270,10 @@ public class MinesCommands
         		getMinesLineItemList(sortedMines, player, cmdPageData, mMan.isMineStats());
     	
     	display.addComponent(list);
-		return cmdPageData;
+    	
+    	cmdPageData.generatePagedCommandFooter( display );
+    	
+    	
 	}
 
 

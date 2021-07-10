@@ -21,7 +21,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.3 2021-07-09
+# v3.2.10-alpha.3 2021-07-10
+
+
+* **Adds the listing of all mines to the /prison support submit mines command.**
+This provides an overview of all mines and is included at the top of the listing.
 
 
 * **Improve the layout of all of the mines with the command /mines list all.**
