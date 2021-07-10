@@ -40,6 +40,20 @@ public class RanksCommandsMessages
 				.sendTo( sender );
 	}
 	
+	protected void ladderHasNoRanksMsg( CommandSender sender, String ladderName ) {
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_rankCommands__ladder_has_no_ranks" )
+		.withReplacements( 
+				ladderName )
+		.sendTo( sender );
+	}
+	
+	protected String ladderHasNoRanksTextMsg() {
+		return PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_rankCommands__ladder_has_no_ranks_text" )
+		.localize();
+	}
+	
 	protected void rankDoesNotExistMsg( CommandSender sender, String rankName ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__rank_does_not_exist" )
