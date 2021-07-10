@@ -1102,8 +1102,7 @@ public class PrisonCommand
 			Output.get().logInfo( "Paste this URL: %s", helpURL );
 		}
 		else {
-			// Do nothing since if helpURL is null, then it has probably
-			// already sent an error message.
+    		Output.get().logInfo( "There was an error trying to generate the paste.helpch.at URL." );
 		}
 		
     	
@@ -1157,8 +1156,7 @@ public class PrisonCommand
     		Output.get().logInfo( "Paste this URL: %s", helpURL );
     	}
     	else {
-    		// Do nothing since if helpURL is null, then it has probably
-    		// already sent an error message.
+    		Output.get().logInfo( "There was an error trying to generate the paste.helpch.at URL." );
     	}
     	
     	
@@ -1210,8 +1208,7 @@ public class PrisonCommand
     		Output.get().logInfo( "Paste this URL: %s", helpURL );
     	}
     	else {
-    		// Do nothing since if helpURL is null, then it has probably
-    		// already sent an error message.
+    		Output.get().logInfo( "There was an error trying to generate the paste.helpch.at URL." );
     	}
     	
     	
@@ -1264,8 +1261,7 @@ public class PrisonCommand
     		Output.get().logInfo( "Paste this URL: %s", helpURL );
     	}
     	else {
-    		// Do nothing since if helpURL is null, then it has probably
-    		// already sent an error message.
+    		Output.get().logInfo( "There was an error trying to generate the paste.helpch.at URL." );
     	}
     	
     	

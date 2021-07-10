@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.3 2021-07-10
 
 
+* **Added an error message if there is a failure when using /prison support submit.**
+I assumed that other error messages would exist, but having doubts if it always will have other errors displayed.
+
+
 * **Improvements to the /ranks list command.**
 Enhanced the header so it's clear which ladder is involved.  Also cleaned up the formatting with the tag colors so it does not impact the column alignments. Also doing a little more with injecting the "default" tag so it does not shift the columns.
 
