@@ -368,4 +368,9 @@ public class TestPlatform implements Platform {
 	public String getMinesListString() {
 		return "";
 	}
+	
+	@Override
+	public String getRanksListString() {
+		return "";
+	}
 }

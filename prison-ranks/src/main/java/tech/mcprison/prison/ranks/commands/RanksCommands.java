@@ -47,6 +47,10 @@ public class RanksCommands
 	
 	private CommandCommands rankCommandCommands = null;
 	
+	public RanksCommands() {
+		super( "RanksCommands" );
+	}
+	
 	public RanksCommands( CommandCommands rankCommandCommands ) {
 		super( "RanksCommands" );
 		
@@ -569,21 +573,7 @@ public class RanksCommands
         else {
         	display = new ChatDisplay( "List ALL Ranks" );
         	
-        	List<RankLadder> ladders = PrisonRanks.getInstance().getLadderManager().getLadders();
-        	
-        	for ( RankLadder rLadder : ladders ) {
-        		ChatDisplay cDisp = listRanksOnLadder( rLadder, hasPerm );
-        		
-        		if ( display == null ) {
-        			display = cDisp;
-        		}
-        		else {
-        			display.addEmptyLine();
-        			
-        			display.addChatDisplay( cDisp );
-        		}
-				
-			}
+        	listAllRanks( display, hasPerm );
         }
         
 
@@ -625,6 +615,25 @@ public class RanksCommands
         display.send(sender);
 
     }
+
+	public void listAllRanks( ChatDisplay display, boolean hasPerm )
+	{
+		List<RankLadder> ladders = PrisonRanks.getInstance().getLadderManager().getLadders();
+		
+		for ( RankLadder rLadder : ladders ) {
+			ChatDisplay cDisp = listRanksOnLadder( rLadder, hasPerm );
+			
+			if ( display == null ) {
+				display = cDisp;
+			}
+			else {
+				display.addEmptyLine();
+				
+				display.addChatDisplay( cDisp );
+			}
+			
+		}
+	}
 
 	private ChatDisplay listRanksOnLadder( RankLadder ladder, boolean hasPerm )
 	{

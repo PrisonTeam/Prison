@@ -82,6 +82,7 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.commands.RanksCommands;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
@@ -2046,11 +2047,25 @@ public class SpigotPlatform
 		
     	
     	ChatDisplay display = new ChatDisplay("Mines");
-    	display.addText("&8Click a mine's name to see more information.");
     	mc.getMinesList( display, MineManager.MineSortOrder.sortOrder, "all", null );
   
     	StringBuilder sb = display.toStringBuilder();
 		
     	return Text.stripColor( sb.toString() );
+	}
+	
+	@Override
+	public String getRanksListString() {
+		
+		RanksCommands rc = new RanksCommands();
+		
+		
+		ChatDisplay display = new ChatDisplay("Ranks");
+		
+		rc.listAllRanks( display, true );
+		
+		StringBuilder sb = display.toStringBuilder();
+		
+		return Text.stripColor( sb.toString() );
 	}
 }

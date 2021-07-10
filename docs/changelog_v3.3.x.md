@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.3 2021-07-10
 
 
+* **Hooked up the /ranks list all command to the /prison support submit ranks command.**
+
+
 * **Add option to /ranks list to include all ranks through the use of the "all" in place of the ladder name.**
 
 

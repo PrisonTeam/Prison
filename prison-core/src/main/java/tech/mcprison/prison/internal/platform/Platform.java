@@ -375,5 +375,8 @@ public interface Platform {
 
 	public String getMinesListString();
 
+
+	public String getRanksListString();
+
 	
 }
