@@ -3019,10 +3019,13 @@ public class MinesCommands
 
 	
 
-	@Command(identifier = "mines blockEvent add", description = "Adds a BlockBreak command to a mine. " +
+	@Command(identifier = "mines blockEvent add", description = "Adds a BlockBreak command to a mine.  " +
+			"For each block that is broke there will be a chance to run one of these commands. " +
 			"To send messages use {msg} or {broadcast} followed by the formatted message. " +
 			"Can use placeholders {player} and {player_uid}. Use ; between multiple commands. " +
-			"Example: 'token give {player} 1;{msg} &7You got &31 &7token!;tpa a'", 
+			"Example: 'token give {player} 1;{msg} &7You got &31 &7token!;tpa a' \n" +
+			"This command defaults to no permission and 'sync' task mode; " +
+			"see '/mines blockEvent' for more blockEvent options.", 
     		onlyPlayers = false, permissions = "mines.set", 
     		docURLs = {"https://prisonteam.github.io/Prison/prison_docs_115_using_BlockEvents.html",
     				"https://prisonteam.github.io/Prison/prison_docs_111_mine_commands.html" } )
@@ -3031,19 +3034,19 @@ public class MinesCommands
     					"you can use with blockEvents") String mineName,
     			@Arg(name = "percent", def = "100.0",
     					description = "Percent chance between 0.0000 and 100.0") Double chance,
-    			@Arg(name = "permission", def = "none",
-    					description = "Optional permission that the player must have, or [none] for no perm." 
-    								) String perm,
+//    			@Arg(name = "permission", def = "none",
+//    					description = "Optional permission that the player must have, or [none] for no perm." 
+//    								) String perm,
 //    			@Arg(name = "eventType", def = "eventTypeAll",
 //    					description = "EventType to trigger BlockEvent: [eventTypeAll, eventBlockBreak, eventTEXplosion]"
 //    								) String eventType,
 //    			@Arg(name = "triggered", def = "none",
 //    					description = "TE Explosion Triggered sources. Requires TokenEnchant v18.11.0 or newer. [none, ...]"
 //    					) String triggered,
-    			@Arg(name = "taskMode", description = "Processing task mode to run the task as console. " +
-    								"Player runs as player. " +
-    								"[inline, inlinePlayer, sync, syncPlayer]",
-    					def = "inline") String mode,
+//    			@Arg(name = "taskMode", description = "Processing task mode to run the task as console. " +
+//    								"Player runs as player. " +
+//    								"[inline, inlinePlayer, sync, syncPlayer]",
+//    					def = "inline") String mode,
     			@Arg(name = "command") @Wildcard String command) {
     	
 		// Note: async is not an option since the bukkit dispatchCommand will run it as sync.
@@ -3066,6 +3069,8 @@ public class MinesCommands
         	return;
         }
 
+        String perm = "none";
+        String mode = "sync"; // "inline";
 		
     	if (command.startsWith("/")) {
             command = command.replaceFirst("/", "");

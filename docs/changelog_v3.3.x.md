@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.4 2021-07-10
 
 
+* **Simplify the command /mines blockEvent add by removing the permissions and taskMode from the add.**
+This was causing too muchh confusion for a lot of people. It should help to keep the add much more basic. There have been alternative commands to modify those settings so it really isn't important to set them on the add.  Also odds are they will not anything but the default values for these two fields.  The defaults are perms = none and taskMode = sync.  TaskMode is not defaulting to inline due to increased risk of lag and prison being falsely blamed for it.  If desired, the admin can always change the taskMode to what they need.
+
+
 * **Bug fix: Fixed an issue where the "on click" events were using the wrong row number.**
 The row number was getting incremented at the wrong time.
 
