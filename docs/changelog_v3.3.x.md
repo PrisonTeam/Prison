@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.3 2021-07-10
 
 
+* **Few minor tweaks to the mines info command with formatting.**
+
+
 * **Added player counts to the rank list command.**
 
 

@@ -756,23 +756,26 @@ public class MinesCommands
         	}
         	
         	
-        	if ( m.isMineAccessByRank() && m.isTpAccessByRank() ) {
+        	boolean mineAccessByRank = m.isMineAccessByRank();
+        	boolean tpAccessByRank = m.isTpAccessByRank();
+        	
+        	if ( mineAccessByRank && tpAccessByRank ) {
         		RowComponent row = new RowComponent();
         		row.addTextComponent( "&3Mine Access by Rank.   TP Access by Rank." );
         		chatDisplay.addComponent( row );
         	}
-        	else if ( !m.isMineAccessByRank() && m.isTpAccessByRank() ) {
+        	else if ( !mineAccessByRank && tpAccessByRank ) {
         		RowComponent row = new RowComponent();
         		row.addTextComponent( "&3TP Access by Rank." );
         		chatDisplay.addComponent( row );
         	}
-        	if ( m.isMineAccessByRank() && !m.isTpAccessByRank() ) {
+        	if ( mineAccessByRank && !tpAccessByRank ) {
         		RowComponent row = new RowComponent();
         		row.addTextComponent( "&3Mine Access by Rank." );
         		chatDisplay.addComponent( row );
         	}
         	
-        	if ( !m.isMineAccessByRank() ) {
+        	if ( !mineAccessByRank ) {
         		RowComponent row = new RowComponent();
         		row.addTextComponent( "&3Mine Access Permission: &7%s   &3(Should use Access by Rank)", 
         				( m.getAccessPermission() == null ? "&2none" : m.getAccessPermission() ) );
@@ -934,7 +937,7 @@ public class MinesCommands
         		chatDisplay.addComponent( row );
         	}
         	
-        	{
+        	if ( m.isUseNotificationPermission() ) {
         		RowComponent row = new RowComponent();
         		row.addTextComponent( "&3Notification Permission: &7%s", 
         				m.getMineNotificationPermissionName() );
@@ -949,7 +952,8 @@ public class MinesCommands
         		RowComponent row = new RowComponent();
         		if ( m.isZeroBlockResetDisabled() ) {
         			row.addTextComponent( "&3Zero Blocks Reset Delay: &cDISABLED");
-        		} else {
+        		} 
+        		else {
         			if ( m.getResetThresholdPercent() == 0 ) {
         				row.addTextComponent( "&3Zero Blocks Reset Delay: &7%s &3Seconds",
         						fFmt.format( m.getZeroBlockResetDelaySec() ));
