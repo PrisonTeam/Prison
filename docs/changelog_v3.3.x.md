@@ -21,7 +21,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.3 2021-07-10
+# v3.2.10-alpha.4 2021-07-10
+
+
+
+* **v3.2.10-alpha.4 2021-07-10 **
 
 
 * **Few minor tweaks to the mines info command with formatting.**
