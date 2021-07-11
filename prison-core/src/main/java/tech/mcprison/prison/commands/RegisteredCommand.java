@@ -47,6 +47,9 @@ public class RegisteredCommand
     private String[] permissions;
     private String[] altPermissions;
     private String[] aliases;
+    private String[] docURLs;
+    
+    
     private List<RegisteredCommand> registeredAliases;
     private RegisteredCommand parentOfAlias;
     
@@ -328,6 +331,10 @@ public class RegisteredCommand
 		return aliases;
 	}
 
+	public String[] getDocURLs() {
+		return docURLs;
+	}
+
 	public List<RegisteredCommand> getRegisteredAliases() {
 		return registeredAliases;
 	}
@@ -388,6 +395,7 @@ public class RegisteredCommand
         this.permissions = command.permissions();
         this.altPermissions = command.altPermissions();
         this.aliases = command.aliases();
+        this.docURLs = command.docURLs();
         
         this.onlyPlayers = command.onlyPlayers();
 

@@ -212,6 +212,23 @@ public class CommandHandler {
                 	}
                 	
                 }
+                if ( command.getDocURLs() != null && command.getDocURLs().length > 0 ) {
+                	
+                	message.add(ChatColor.DARK_AQUA + "Documentation:");
+
+                	for ( String docURL : command.getDocURLs() ) {
+                		
+                		
+                		StringBuilder sb = new StringBuilder();
+                		
+                		sb.append( "    " ).append( ChatColor.DARK_BLUE ).append( "[" )
+                					.append( ChatColor.AQUA ).append( docURL )
+                					.append( ChatColor.DARK_BLUE ).append( "]" );
+
+                		message.add( sb.toString() );
+                	}
+                	
+                }
             }
 
             List<RegisteredCommand> subcommands = command.getSuffixes();

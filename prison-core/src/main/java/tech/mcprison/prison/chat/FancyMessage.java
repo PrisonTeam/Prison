@@ -644,6 +644,10 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
     public void send(CommandSender sender) {
         send(sender, toJSONString());
     }
+    
+    public void sendJson( CommandSender sender, String jsonString ) {
+    	send( sender, jsonString );
+    }
 
     /**
      * Sends this message to multiple command senders.
