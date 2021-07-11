@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.4 2021-07-10
 
 
+* **Bug fix: Fixed an issue where the "on click" events were using the wrong row number.**
+The row number was getting incremented at the wrong time.
+
 
 * **v3.2.10-alpha.4 2021-07-10 **
 

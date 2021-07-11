@@ -2856,14 +2856,14 @@ public class MinesCommands
 
         DecimalFormat dFmt = new DecimalFormat("0.00000");
         
-        int rowNumber = 1;
+        int rowNumber = 0;
         for (MineBlockEvent blockEvent : m.getBlockEvents()) {
         	
         	RowComponent row = new RowComponent();
         	
         	String chance = dFmt.format( blockEvent.getChance() );
         	
-        	row.addTextComponent( " &3Row: &d%d  ", rowNumber++ );
+        	row.addTextComponent( " &3Row: &d%d  ", ++rowNumber );
         	
         	FancyMessage msgPercent = new FancyMessage( String.format( "&7%s%% ", chance ) )
         			.suggest( "/mines blockEvent percent " + m.getName() + " " + rowNumber + " [%]" )
