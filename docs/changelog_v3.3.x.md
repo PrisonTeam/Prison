@@ -24,6 +24,11 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.4 2021-07-11
 
 
+* **Convert the CommandHandler.getHelpMessage() to return a ChatDisplay object to allow the use of creating clickable URLs in the help messages.**
+The help messages now has headers which shows the command that's being listed.
+Updated the /mines blockEvent add command to include two docURLs to use as an example; improved the help message.
+
+
 * **If a Ladder has a bad rank that is already in another ladder, that rank will not be added to the new ladder that is being loaded.**
 An error message is already being logged, but this change will update the ladder to resave it without the duplicate rank.
 

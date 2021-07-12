@@ -29,6 +29,7 @@ import java.util.Map;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 
@@ -300,7 +301,7 @@ public class RegisteredCommand
         return flags;
     }
 
-    public String[] getHelpMessage() {
+    public ChatDisplay getHelpMessage() {
         return handler.getHelpHandler().getHelpMessage(this);
     }
 
@@ -382,7 +383,8 @@ public class RegisteredCommand
     }
 
     public void sendHelpMessage(CommandSender sender) {
-        sender.sendMessage(getHelpMessage());
+    	
+    	getHelpMessage().send( sender );
     }
 
     void set(Object methodInstance, Method method) {
