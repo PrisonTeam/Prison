@@ -24,6 +24,13 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.4 2021-07-10
 
 
+* **This fixes a user error situation, which is not a bug, in the listing of ranks. 
+The user copied the contents of one ladder to another ladder, without deleting the source ladder.  Thus there were two instances of a series of ranks, when there should ever be only one instance of a rank.  A rank can be in at most one ladder, or no ladder.  
+The result of this issue is that when the second ladder was hookedup at prison's startup, it corrupted the ranks in the first ladder.
+This works around such problems by changing /ranks list by using the list of ranks within the ladder, instead of using the rank's prior and next associations.  
+These changes also add the rankId to both the '/ranks list' and '/ranks ladder rankList' commands, and also '-' and '+' notations to indicate a rank is linked to a prior and next rank.
+
+
 * **Simplify the command /mines blockEvent add by removing the permissions and taskMode from the add.**
 This was causing too muchh confusion for a lot of people. It should help to keep the add much more basic. There have been alternative commands to modify those settings so it really isn't important to set them on the add.  Also odds are they will not anything but the default values for these two fields.  The defaults are perms = none and taskMode = sync.  TaskMode is not defaulting to inline due to increased risk of lag and prison being falsely blamed for it.  If desired, the admin can always change the taskMode to what they need.
 

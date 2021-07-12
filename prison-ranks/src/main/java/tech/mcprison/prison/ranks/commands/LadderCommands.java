@@ -95,7 +95,13 @@ public class LadderCommands
 
     @Command(identifier = "ranks ladder listranks", description = "Lists the ranks within a ladder.", 
     								onlyPlayers = false, permissions = "ranks.ladder")
-    public void ladderInfo(CommandSender sender, @Arg(name = "ladderName") String ladderName) {
+    public void ladderInfo(
+    		CommandSender sender, 
+    		@Arg(name = "ladderName", def = "default", 
+    		description = "The ladder name to display the ranks on. " +
+    				"Defaults to the default ladder") String ladderName
+    		
+    		) {
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
 
         if ( ladder == null ) {
@@ -126,9 +132,14 @@ public class LadderCommands
             
             String defaultRankValue = ladderDefaultRankMsg();
 
-            builder.add("&3(#%s) &8- &3%s %s", 
+            builder.add("&3(#%s) &8- &3%s (rankId: %s%s%s) %s", 
             		Integer.toString( rank.getPosition() ),
-            		rank.getName(), 
+            		rank.getName(),
+            		
+            		Integer.toString( rank.getId() ),
+            		(rank.getRankPrior() == null ? "" : " -"),
+            		(rank.getRankNext() == null ? "" : " +"),
+            		
                 (defaultRank ? defaultRankValue : "")
             	);
             first = false;

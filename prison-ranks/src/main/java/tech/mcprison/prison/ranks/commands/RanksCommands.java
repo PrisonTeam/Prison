@@ -644,82 +644,87 @@ public class RanksCommands
         	display.addText( ranksListClickToEditMsg() );
         }
         
-        Rank rank = ladder.getLowestRank().orElse( null );
         
-        if ( rank == null ) {
+        if ( ladder.getRanks().size() == 0 ) {
         	display.addText( ladderHasNoRanksTextMsg() );
         }
-        else {
+        
+        BulletedListComponent.BulletedListBuilder builder =
+        		new BulletedListComponent.BulletedListBuilder();
+        
+        boolean first = true;
+        for (Rank rank : ladder.getRanks()) {
         	
-        	BulletedListComponent.BulletedListBuilder builder =
-        			new BulletedListComponent.BulletedListBuilder();
+        	boolean defaultRank = ("default".equalsIgnoreCase( ladder.getName() ) && first);
         	
-        	boolean first = true;
-        	while ( rank != null ) {
-        		
-        		boolean defaultRank = ("default".equalsIgnoreCase( ladder.getName() ) && first);
-        		
-        		String textRankName = ( hasPerm ?
-        				String.format( "&3%s " , rank.getName() )
-        				: "");
-        		String textCmdCount = ( hasPerm ? 
-        				ranksListCommandCountMsg(rank.getRankUpCommands().size())
-        				: "" );
-        		String textCurrency = (rank.getCurrency() == null ? "" : 
-        			ranksListCurrencyMsg( rank.getCurrency() ));
-        		
-        		String players = rank.getPlayers().size() == 0 ? "" : 
-        				" &dPlayers: &3" + rank.getPlayers().size();
-        				
-        		
-        		// Since the formatting gets confused with color formatting, we must 
-        		// trick it to deal correctly with tags.  Tags can have many colors, but
-        		// it will render as if it had the colors stripped.  So first generate the
-        		// formatted text with tagNoColor, then replace the no color tag with the
-        		// normal tag.
-        		String tag = rank.getTag();
-        		String tagNoColor = Text.stripColor( tag );
-        		
-        		String text =
-        				String.format("%-8s &3%-8s %s&7%17s %s&7 %s%s", 
-        						textRankName, 
-        						tagNoColor, 
-        						(defaultRank ? "{def}" : ""),
-        						Text.numberToDollars(rank.getCost()),
-        						textCurrency,
-        						textCmdCount,
-        						players
-        						);
-        		
-        		// Swap the color tag back in:
-        		text = text.replace( tagNoColor, tag );
-        		
-        		if ( defaultRank ) {
-        			// Swap out the default placeholder for the actual content:
-        			text = text.replace( " {def}&7        ", "&c(&9Default&c)&7" );
-        		}
-        		
-        		String rankName = rank.getName();
-        		if ( rankName.contains( "&" ) ) {
-        			rankName = rankName.replace( "&", "-" );
-        		}
-        		FancyMessage msg = null;
-        		if ( hasPerm ) {
-        			msg = new FancyMessage(text).command("/ranks info " + rankName)
-        					.tooltip( ranksListClickToViewMsg() );
-        		}
-        		else {
-        			msg = new FancyMessage(text);
-        		}
-        		
-        		builder.add(msg);
-        		
-        		rank = rank.getRankNext();
-        		first = false;
+        	String textRankName = ( hasPerm ?
+        			String.format( "&3%s " , rank.getName() )
+        			: "");
+        	String textCmdCount = ( hasPerm ? 
+        			ranksListCommandCountMsg(rank.getRankUpCommands().size())
+        			: "" );
+        	String textCurrency = (rank.getCurrency() == null ? "" : 
+        		ranksListCurrencyMsg( rank.getCurrency() ));
+        	
+        	String players = rank.getPlayers().size() == 0 ? "" : 
+        		" &dPlayers: &3" + rank.getPlayers().size();
+        	
+        	
+        	// Since the formatting gets confused with color formatting, we must 
+        	// trick it to deal correctly with tags.  Tags can have many colors, but
+        	// it will render as if it had the colors stripped.  So first generate the
+        	// formatted text with tagNoColor, then replace the no color tag with the
+        	// normal tag.
+        	// If tag is null, show it as an empty String.  Normally rank name will
+        	// be used, but at least this show's it is not set.
+        	String tag = rank.getTag() == null ? "" : rank.getTag();
+        	String tagNoColor = Text.stripColor( tag );
+        	
+        	String text =
+        			String.format("%-8s &3%-8s %s&7%17s &3(rankId: %s%s%s) %s&7 %s%s", 
+        					textRankName, 
+        					tagNoColor, 
+        					(defaultRank ? "{def}" : ""),
+        					Text.numberToDollars(rank.getCost()),
+        					
+        					Integer.toString( rank.getId() ),
+        					(rank.getRankPrior() == null ? "" : " -"),
+        					(rank.getRankNext() == null ? "" : " +"),
+        					
+        					textCurrency,
+        					textCmdCount,
+        					players
+        					);
+        	
+        	// Swap the color tag back in:
+        	text = text.replace( tagNoColor, tag );
+        	
+        	if ( defaultRank ) {
+        		// Swap out the default placeholder for the actual content:
+        		text = text.replace( " {def}&7        ", "&c(&9Default&c)&7" );
         	}
-
-        	display.addComponent(builder.build());
+        	
+        	String rankName = rank.getName();
+        	if ( rankName.contains( "&" ) ) {
+        		rankName = rankName.replace( "&", "-" );
+        	}
+        	FancyMessage msg = null;
+        	if ( hasPerm ) {
+        		msg = new FancyMessage(text).command("/ranks info " + rankName)
+        				.tooltip( ranksListClickToViewMsg() );
+        	}
+        	else {
+        		msg = new FancyMessage(text);
+        	}
+        	
+        	builder.add(msg);
+        	
+//        		rank = rank.getRankNext();
+        	first = false;
+        	
         }
+        
+        display.addComponent(builder.build());
 
 		return display;
 	}
