@@ -83,11 +83,18 @@ public class RankLadder
 	public RankLadder(Document document, PrisonRanks prisonRanks) {
     	this();
     	
+    	this.id = RankUtil.doubleToInt(document.get("id"));
+    	this.name = (String) document.get("name");
+    	
     	RankManager rankManager = prisonRanks.getRankManager();
     	
-        this.id = RankUtil.doubleToInt(document.get("id"));
-        this.name = (String) document.get("name");
-        
+    	if ( rankManager == null ) {
+
+    		RankMessages rMessages = new RankMessages();
+    		rMessages.rankFailureLoadingRankManagerMsg( getName(), getId() );
+    		
+    		return;
+    	}
         
         List<LinkedTreeMap<String, Object>> ranksLocal =
                 (List<LinkedTreeMap<String, Object>>) document.get("ranks");
@@ -114,23 +121,27 @@ public class RankLadder
         	
         	// The only real field that is important here is rankId to tie the 
         	// rank back to this ladder.  Name helps clarify the contents of the 
-        	// Ladder file. Position is redundant (its now in Rank), but 
-        	// it identifies the load order.
-        	int rPos = RankUtil.doubleToInt(rank.get("position"));
+        	// Ladder file. 
         	int rRankId = RankUtil.doubleToInt((rank.get("rankId")));
         	String rRankName = (String) rank.get( "rankName" );
         	
-        	Rank rankPrison = null;
+        	Rank rankPrison = rankManager.getRank( rRankId );
         	
-        	if ( rankManager != null &&  
-    				rankManager.getRank( rRankId ) !=  null) {
+        	if ( rankPrison != null && rankPrison.getLadder() != null ) {
+        		
+        		RankMessages rMessages = new RankMessages();
+        		rMessages.rankFailureLoadingDuplicateRankMsg( 
+        				rankPrison.getName(), rankPrison.getLadder().getName(), 
+        						getName() );
+        		
+        	}
+        	else if ( rankPrison != null) {
 
-        		rankPrison = rankManager.getRank( rRankId );
         		addRank( rankPrison );
 
 //        		Output.get().logInfo( "RankLadder load : " + getName() + 
 //        				"  rank= " + rankPrison.getName() + " " + rankPrison.getId() + 
-//        				" " + rankPrison.getPosition() );
+//        				 );
         		
 //        		// if null look it up from loaded ranks:
 //        		if ( rRankName == null  ) {
@@ -144,7 +155,7 @@ public class RankLadder
         					rRankName : "Rank " + rRankId;
         		double cost = getRanks().size() == 0 ? 0 : 
         					getRanks().get( getRanks().size() - 1 ).getCost() * 3;
-        		Rank newRank = new Rank(rPos, rRankId, rankName, null, cost );
+        		Rank newRank = new Rank( rRankId, rankName, null, cost );
         		
         		addRank( newRank );
         		
@@ -155,7 +166,6 @@ public class RankLadder
 //        		Output.get().logError( message );
         	}
         	
-//            ranks.add(new PositionRank( rPos, rRankId, rRankName, rankPrison ));
         }
         
         this.maxPrestige = RankUtil.doubleToInt(document.get("maxPrestige"));

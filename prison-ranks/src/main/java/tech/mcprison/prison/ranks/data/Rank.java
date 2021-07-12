@@ -102,7 +102,7 @@ public class Rank
     	
     }
     
-    public Rank( int position, int id, String name, String tag, double cost ) {
+    public Rank( int id, String name, String tag, double cost ) {
     	this();
     	
 //    	this.position = position;

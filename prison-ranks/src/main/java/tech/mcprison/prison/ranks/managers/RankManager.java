@@ -240,14 +240,11 @@ public class RankManager
      */
     public Optional<Rank> createRank(String name, String tag, double cost) {
     	
-    	int position = getRanks().size(); 
-    			
         // Set the default values...
-        Rank newRank = new Rank( position, getNextAvailableId(), name, tag, cost );
+        Rank newRank = new Rank( getNextAvailableId(), name, tag, cost );
 
         // ... add it to the list...
         addRank(newRank);
-//        loadedRanks.add(newRank);
         
 //        // Reset the rank relationships:
 //        connectRanks();

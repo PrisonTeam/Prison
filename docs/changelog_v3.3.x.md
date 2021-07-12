@@ -21,7 +21,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.4 2021-07-10
+# v3.2.10-alpha.4 2021-07-11
+
+
+* **Clean up Ranks a little more by removing more of the rank position and report failures if a rank is already loaded in another rank to prevent internal failures if a ladder save file is corrupted by manual editing.**
 
 
 * **Removed the use of rank.getPosition() from all saved information within ranks and ladders.**
