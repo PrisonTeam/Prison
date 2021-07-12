@@ -83,6 +83,8 @@ public class RankLadder
 	public RankLadder(Document document, PrisonRanks prisonRanks) {
     	this();
     	
+    	boolean isDirty = false;
+    	
     	this.id = RankUtil.doubleToInt(document.get("id"));
     	this.name = (String) document.get("name");
     	
@@ -133,7 +135,8 @@ public class RankLadder
         		rMessages.rankFailureLoadingDuplicateRankMsg( 
         				rankPrison.getName(), rankPrison.getLadder().getName(), 
         						getName() );
-        		
+
+        		isDirty = true;
         	}
         	else if ( rankPrison != null) {
 
@@ -188,6 +191,10 @@ public class RankLadder
 			for ( String permissionGroup : permissionGroups ) {
 				getPermissionGroups().add( permissionGroup );
 			}
+		}
+		
+		if ( isDirty ) {
+			PrisonRanks.getInstance().getLadderManager().save( this );
 		}
 
     }

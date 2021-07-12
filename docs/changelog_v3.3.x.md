@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.4 2021-07-11
 
 
+* **If a Ladder has a bad rank that is already in another ladder, that rank will not be added to the new ladder that is being loaded.**
+An error message is already being logged, but this change will update the ladder to resave it without the duplicate rank.
+
+
 * **Clean up Ranks a little more by removing more of the rank position and report failures if a rank is already loaded in another rank to prevent internal failures if a ladder save file is corrupted by manual editing.**
 
 
