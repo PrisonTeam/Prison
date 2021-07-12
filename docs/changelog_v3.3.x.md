@@ -24,7 +24,11 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.4 2021-07-10
 
 
-* **This fixes a user error situation, which is not a bug, in the listing of ranks. 
+* **Removed the use of rank.getPosition() from all saved information within ranks and ladders.**
+Position is no longer used to access any rank. It is only used to compare if one rank is higher or lower than another.  It's lazy loaded only when it is needed the first time. If a rank is removed from a ladder, or inserted in to a ladder other than at the end, then all ranks in the ladder are set to -1 for the position so they recalculate when they are used the next time.
+
+
+* **This fixes a user error situation, which is not a bug, in the listing of ranks.**
 The user copied the contents of one ladder to another ladder, without deleting the source ladder.  Thus there were two instances of a series of ranks, when there should ever be only one instance of a rank.  A rank can be in at most one ladder, or no ladder.  
 The result of this issue is that when the second ladder was hookedup at prison's startup, it corrupted the ranks in the first ladder.
 This works around such problems by changing /ranks list by using the list of ranks within the ladder, instead of using the rank's prior and next associations.  

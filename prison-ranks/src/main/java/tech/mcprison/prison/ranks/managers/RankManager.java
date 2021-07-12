@@ -129,9 +129,6 @@ public class RankManager
         this.ranksById = new TreeMap<>();
     }
 
-    /*
-     * Methods & Getters & Setters
-     */
     
     private void addRank( Rank rank ) {
     	if ( rank != null ) {
@@ -139,6 +136,10 @@ public class RankManager
     		String rankName = rank.getName();
     		getRanksByName().put( rankName.toLowerCase(), rank );
     		getRanksById().put( rank.getId(), rank );
+    		
+    		// Do not have to reset position number since the new rank is 
+    		// added to the end of the ladder's rank List, and therefore 
+    		// no other rank is impacted.
     	}
     }
     
@@ -147,10 +148,22 @@ public class RankManager
     		getLoadedRanks().remove( rank );
     		getRanksByName().remove( rank.getName().toLowerCase() );
     		getRanksById().remove( rank.getId() );
+    		
+    		// Since the removal of a rank could shift the position of
+    		// more than one rank, then all positions should be reset.
+    		
+    		resetRankPositions( rank );
     	}
     	
     }
 
+    
+    private void resetRankPositions( Rank rank ) {
+    	
+    	for ( Rank r : rank.getLadder().getRanks() ) {
+			r.resetPosition();
+		}
+    }
     
     
     /**

@@ -38,12 +38,8 @@ public class Rank
 		implements PrisonSortable,
 					ModuleElement {
 
-    /*
-     * Fields & Constants
-     */
-	
-	// This is to help eliminate RankLadder.PositionRank object:
-	private int position; 
+//	// This is to help eliminate RankLadder.PositionRank object:
+	private transient int position = -1; 
 
     // The unique identifier used to distinguish this rank from others - this never changes.
     private int id;
@@ -109,7 +105,7 @@ public class Rank
     public Rank( int position, int id, String name, String tag, double cost ) {
     	this();
     	
-    	this.position = position;
+//    	this.position = position;
     	
     	this.id = id;
     	this.name = name;
@@ -128,7 +124,7 @@ public class Rank
     protected Rank( String name ) {
     	this();
     	
-    	this.position = 0;
+//    	this.position = 0;
     	this.id = 0;
     	this.name = name;
     }
@@ -139,8 +135,8 @@ public class Rank
     	
         try
 		{
-        	Object pos = document.get("position");
-        	this.position = RankUtil.doubleToInt( pos == null ? 0.0d : pos );
+//        	Object pos = document.get("position");
+//        	this.position = RankUtil.doubleToInt( pos == null ? 0.0d : pos );
         	
 			this.id = RankUtil.doubleToInt(document.get("id"));
 			this.name = (String) document.get("name");
@@ -207,7 +203,7 @@ public class Rank
 
     public Document toDocument() {
         Document ret = new Document();
-        ret.put("position", this.position );
+//        ret.put("position", this.position );
         ret.put("id", this.id);
         ret.put("name", this.name);
         ret.put("tag", this.tag);
@@ -388,13 +384,40 @@ public class Rank
         return result;
     }
 
-    
+    /**
+     * This new implementation of position is lazy loaded and should never be saved.
+     * This is to provide a quick reference to the position within the ladder's rank's
+     * ArrayList. This should never be used to access a rank or to refer to a rank; the
+     * actual objects should be used for that.
+     * 
+     * @return
+     */
 	public int getPosition() {
+		if ( position == -1 && getLadder() != null ) {
+			
+			position = 0;
+			for ( Rank r : getLadder().getRanks() ) {
+				if ( r == this ) {
+					break;
+				}
+				position++;
+			}
+
+		}
 		return position;
 	}
-	public void setPosition( int position ) {
-		this.position = position;
+	/**
+	 * This will force the rank's position to be reset the next time it is 
+	 * accessed.
+	 * 
+	 */
+	public void resetPosition() {
+		position = -1;
 	}
+	
+//	public void setPosition( int position ) {
+//		this.position = position;
+//	}
 
 	public int getId() {
 		return id;

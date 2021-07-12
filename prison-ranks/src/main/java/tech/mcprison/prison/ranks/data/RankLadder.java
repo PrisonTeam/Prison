@@ -202,8 +202,8 @@ public class RankLadder
         for ( Rank rank : getRanks() ) {
         	LinkedTreeMap<String, Object> rnk = new LinkedTreeMap<String, Object>();
         	
-        	rnk.put( "position", Double.valueOf( (double) rank.getPosition() ));
-        	rnk.put( "rankId", Double.valueOf( (double) rank.getId() ));
+//        	rnk.put( "position", rank.getPosition() );
+        	rnk.put( "rankId", rank.getId() );
         	rnk.put( "rankName", rank.getName());
 
         	ranksLocal.add( rnk );
@@ -242,24 +242,17 @@ public class RankLadder
     		position = 0;
     	}
     	else if ( position > getRanks().size() ) {
-    		position = getRanks().size();
+    		getRanks().add( rank );
     	}
-//        position = Math.min(position,
-//                getRanks().size() + 1); // Make sure to cap it off at the upper limit or else problems
-//        int finalPosition = position;
-//        ranks.stream().filter(positionRank -> positionRank.getPosition() >= finalPosition)
-//                .forEach(positionRank -> positionRank.setPosition(positionRank.getPosition() + 1));
+    	else {
+    		getRanks().add( position, rank );
+    	}
 
-        rank.setPosition( position );
-        getRanks().add( position, rank );
-        rank.setLadder( this );
-//        ranks.add(new PositionRank(position, rank.getId(), rank.getName(), rank));
+    	rank.setLadder( this );
 
         // Update the rank positions along with next and prior:
         connectRanks();
         
-//        // Reset the rank relationships:
-//        PrisonRanks.getInstance().getRankManager().connectRanks();
     }
     
 
@@ -272,8 +265,8 @@ public class RankLadder
      * @param rank The {@link Rank} to add.
      */
     public void addRank(Rank rank) {
-    	int position = getRanks().size();
-    	rank.setPosition( position );
+//    	int position = getRanks().size();
+//    	rank.setPosition( position );
     	rank.setLadder( this );
     	
     	getRanks().add( rank );
@@ -321,9 +314,12 @@ public class RankLadder
     	// update their position value:
     	for ( int i = 0; i < getRanks().size(); i++ ) {
     		Rank rank = getRanks().get( i );
-    		if ( rank.getPosition() != i ) {
-    			rank.setPosition( i );
-    		}
+    		
+    		rank.resetPosition();
+    		
+//    		if ( rank.getPosition() != i ) {
+//    			rank.setPosition( i );
+//    		}
     		
     		// reset the rankPrior and rankNext in case there are no hookups:
     		// Important if ranks are removed, or inserted, or moved:
@@ -382,11 +378,15 @@ public class RankLadder
 	public Optional<Rank> getLowestRank() {
     	Rank results = null;
     	
-    	for ( Rank r : getRanks() ) {
-			if ( results == null || r.getPosition() < results.getPosition() ) {
-				results = r;
-			}
-		}
+    	if ( getRanks().size() > 0 ) {
+    		results = getRanks().get( 0 );
+    	}
+    	
+//    	for ( Rank r : getRanks() ) {
+//			if ( results == null || r.getPosition() < results.getPosition() ) {
+//				results = r;
+//			}
+//		}
     	
     	return results == null ? Optional.empty() : Optional.of( results );
     }
