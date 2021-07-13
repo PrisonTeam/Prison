@@ -21,7 +21,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.4 2021-07-11
+# v3.2.10-alpha.4 2021-07-12
+
+
+* **Updated cryptomorin's XSeries to v8.2.0.**
 
 
 * **Convert the CommandHandler.getHelpMessage() to return a ChatDisplay object to allow the use of creating clickable URLs in the help messages.**
