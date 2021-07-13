@@ -24,6 +24,18 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.4 2021-07-13
 
 
+* **MineInfo GUI now uses PrisonGUI Utility.**
+
+
+* **Removed unused imports from some GUI classes.**
+
+
+* **MineInfo GUI TP Button now has an Arrow instead of a red_bed:** red_bed can't be translated to a legacy block in 1.8.8.
+
+
+* **Fixed performance issues for MinesInfo GUI.**
+
+
 * **Added information to the language files on how to use utf-8 text in these properties files.**
 
 

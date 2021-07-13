@@ -2,18 +2,13 @@ package tech.mcprison.prison.spigot.gui.autofeatures;
 
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;

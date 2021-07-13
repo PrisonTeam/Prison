@@ -1,18 +1,11 @@
 package tech.mcprison.prison.spigot.gui;
 
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-
-import java.util.List;
 
 /**
  * @author GABRYCA
@@ -20,7 +13,6 @@ import java.util.List;
 public class SpigotPrisonGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final int dimension = 45;
 
     public SpigotPrisonGUI(Player p){
         this.p = p;
@@ -29,6 +21,7 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
     public void open() {
 
         // Create PrisonGUI, it requires Player (who will open the GUI), size and title.
+        int dimension = 45;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3PrisonManager");
 
         // Create and add buttons.
