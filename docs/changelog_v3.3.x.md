@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.4 2021-07-12
 
 
+* **Enable loading utf-8 encoding from the properties files. Java 1.8 is unable load them as utf-8, so this provides a work around.**
+At this point, this ensures that if a properties file contains utf-8 encoded text, that it can be packaged in the prison jar, extracted to the file system, then loaded and used and maintain full utf-8 encoding all the way until it hits bukkit.  bukkit corrupts it and confirmed it was corrupted in spigot 1.8.8, 1.3.4, and 1.16.5 so its not an isolated issue for just one spigot version.
+
+
 * **Updated cryptomorin's XSeries to v8.2.0.**
 
 

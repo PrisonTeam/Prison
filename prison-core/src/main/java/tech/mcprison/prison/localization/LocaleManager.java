@@ -41,6 +41,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.CodeSource;
@@ -605,8 +606,26 @@ public class LocaleManager {
     private void loadLocale(String name, InputStream is, boolean printStackTrace) {
     	
         try {
-            Properties temp = new Properties();
-            temp.load(is);
+
+        	
+        	Properties temp = new Properties();
+//            temp.load(is);
+
+        	// The InputStream is part of a zipEntry so it cannot be closed, or it will close the zip stream
+            BufferedReader br = new BufferedReader( new InputStreamReader( is, Charset.forName("UTF-8") ));
+            String line = br.readLine();
+            
+            while ( line != null ) {
+            	if ( !line.startsWith( "#" ) && line.contains( "=" ) ) {
+            		
+            		String[] keyValue = line.split( "\\=" );
+            		String value = keyValue[1]; // StringEscapeUtils.escapeJava( keyValue[1] );
+            		temp.put( keyValue[0], value );
+            	}
+            	
+            	line = br.readLine();
+            }
+            
             
             Properties config;
             if (configs.containsKey(name)) {
