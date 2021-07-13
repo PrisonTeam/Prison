@@ -20,6 +20,9 @@ import java.util.Date
 
 apply plugin: 'java'
 
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = "UTF-8"
+
 ext.targetArchiveClassifier = 'Java1.8'
 //ext.targetArchiveClassifier = 'Java16'
 
