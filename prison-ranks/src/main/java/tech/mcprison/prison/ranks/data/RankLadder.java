@@ -36,7 +36,7 @@ import tech.mcprison.prison.store.Document;
  * @author Faizaan A. Datoo
  */
 public class RankLadder 
-		implements PrisonSortable {
+		implements PrisonSortable, Comparable<RankLadder> {
 
     /*
      * Fields & Constants
@@ -246,7 +246,17 @@ public class RankLadder
     	return ranks;
     }
 
-    /**
+    @Override
+	public int compareTo( RankLadder rl )
+	{
+    	int results = -1;
+    	if ( rl != null ) {
+    		results = getName().compareTo( rl.getName() );
+    	}
+		return results;
+	}
+
+	/**
      * Add a rank to this ladder.
      *
      * @param position The place in line to put this rank, beginning at 0. The player will be taken

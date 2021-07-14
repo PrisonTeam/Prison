@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -61,7 +62,7 @@ public class RankPlayer
     private UUID uid;
     
     
-    private HashMap<RankLadder, Rank> ladderRanks;
+    private TreeMap<RankLadder, Rank> ladderRanks;
     
     // ranks is the storage structure used to save the player's ladder & ranks:
     private HashMap<String, Integer> ranksRefs; // <Ladder Name, Rank ID>
@@ -87,7 +88,7 @@ public class RankPlayer
     public RankPlayer() {
     	super();
     	
-    	this.ladderRanks = new HashMap<>();
+    	this.ladderRanks = new TreeMap<>();
     	
         this.ranksRefs = new HashMap<>();
         //this.prestige = new HashMap<>();
@@ -413,11 +414,15 @@ public class RankPlayer
      */
     public Rank getRank(RankLadder ladder) {
     	
-    	if ( ladder == null || !ladderRanks.containsKey( ladder ) ) {
-    		return null;
-    	}
-    	
-    	return ladderRanks.get( ladder );
+    	Set<RankLadder> keys = ladderRanks.keySet();
+    	for ( RankLadder key : keys )
+		{
+    		if ( key.getName().equalsIgnoreCase( ladder.getName() ) ) {
+    			return ladderRanks.get( key );
+    		}
+		}
+
+    	return null;
     	
 //        if (!ranksRefs.containsKey(ladder.getName())) {
 //            return null;

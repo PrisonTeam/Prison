@@ -21,7 +21,15 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.4 2021-07-13
+# v3.2.10-alpha.4 2021-07-14
+
+
+* **Made the RankLadder comparable and in the RankPlayer changed the map to a TreeMap.**
+This should fix the inconsistencies that I was seeing earlier.
+
+
+* **If a player is detected to be lacking a rank on the default ladder, it will adde the default rank.**
+Ran in a problem where getting the current rank for a ladder was failing when it was ran, but worked when stepped through a debugger.
 
 
 * **When checking for players not hooked up to prison, prison now ensures there is a default rank configured or it won't try to check the players.**
