@@ -203,4 +203,14 @@ public abstract class PrisonRanksMessages
 	}
 	
 	
+	protected String prisonRankAddedAndFixedPlayers( int addedPlayers, int fixedPLayers ) {
+		return PrisonRanks.getInstance().getRanksMessages()
+    			.getLocalizable( "ranks_prisonRanks__added_and_fixed_players" )
+    			.withReplacements( 
+    					Integer.toString( addedPlayers ),
+    					Integer.toString( fixedPLayers )
+    					)
+    			.localize();
+	}
+	
 }

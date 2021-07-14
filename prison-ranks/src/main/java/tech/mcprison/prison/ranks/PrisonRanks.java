@@ -179,7 +179,9 @@ public class PrisonRanks
         // If there is a default rank on the default ladder, then
         // check to see if there are any players not in prison: add them:
         RankLadder defaultLadder = getLadderManager().getLadder( "default" );
-        if ( defaultLadder.getRanks().size() > 0 ) {
+        if ( defaultLadder != null && defaultLadder.getRanks().size() > 0 ) {
+        	int addedPlayers = 0;
+        	int fixedPlayers = 0;
         	
         	for ( Player player : Prison.get().getPlatform().getOfflinePlayers() ) {
         		
@@ -188,6 +190,7 @@ public class PrisonRanks
         		if ( rPlayer != null ) {
         			if ( rPlayer.checkName( player.getName() ) ) {
         				playerManager.savePlayer( rPlayer );
+        				addedPlayers++;
         			}
         		}
         	}
@@ -197,13 +200,32 @@ public class PrisonRanks
         	// ladder and rank:
         	Rank defaultRank = defaultLadder.getLowestRank().get();
         	for ( RankPlayer rPlayer : playerManager.getPlayers() ) {
+        		
+        		@SuppressWarnings( "unused" )
+				String rp = rPlayer.toString();
 				
-        		if ( rPlayer.getRank( "default" ) == null ) {
+        		Rank rankOnDefault = rPlayer.getRank( defaultLadder );
+//        		Rank rankOnDefaultStr = rPlayer.getRank( defaultLadder.getName() );
+        		
+//        		Output.get().logInfo( "#### %s  ladder = %s  isRankNull= %s  rank= %s %s [%s]" ,
+//        				rPlayer.getName(),
+//        				defaultLadder.getName(), 
+//        				(rankOnDefault == null ? "true" : "false"), (rankOnDefault == null ? "null" : rankOnDefault.getName()),
+//        				(rankOnDefaultStr == null ? "true" : "false"), (rankOnDefaultStr == null ? "null" : rankOnDefaultStr.getName()),
+//        				rp );
+        		
+        		if ( rankOnDefault == null ) {
+//        			Output.get().logInfo( "#### Reset to default rank" ); 
         			rPlayer.addRank( defaultRank );
         			
         			playerManager.savePlayer( rPlayer );
+        			fixedPlayers++;
         		}
 			}
+        	if ( addedPlayers > 0 || fixedPlayers > 0 ) {
+        		
+        		Output.get().logInfo( prisonRankAddedAndFixedPlayers( addedPlayers, fixedPlayers ) );
+        	}
         }
         
         
