@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.4 2021-07-13
 
 
+* **When checking for players not hooked up to prison, prison now ensures there is a default rank configured or it won't try to check the players.**
+This change also checks players within prison to ensure they have a rank on the default ladder.
+
+
 * **MineInfo GUI now uses PrisonGUI Utility.**
 
 

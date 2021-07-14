@@ -35,6 +35,7 @@ import tech.mcprison.prison.ranks.commands.CommandCommands;
 import tech.mcprison.prison.ranks.commands.LadderCommands;
 import tech.mcprison.prison.ranks.commands.RankUpCommand;
 import tech.mcprison.prison.ranks.commands.RanksCommands;
+import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.LadderManager;
@@ -175,16 +176,34 @@ public class PrisonRanks
         }
 
         
-        // Check to see if there are any not in prison: add them:
-        for ( Player player : Prison.get().getPlatform().getOfflinePlayers() ) {
+        // If there is a default rank on the default ladder, then
+        // check to see if there are any players not in prison: add them:
+        RankLadder defaultLadder = getLadderManager().getLadder( "default" );
+        if ( defaultLadder.getRanks().size() > 0 ) {
         	
-        	// getPlayer() will add a player who does not exist:
-        	RankPlayer rPlayer = playerManager.getPlayer( player );
-        	if ( rPlayer != null ) {
-        		if ( rPlayer.checkName( player.getName() ) ) {
-        			playerManager.savePlayer( rPlayer );
+        	for ( Player player : Prison.get().getPlatform().getOfflinePlayers() ) {
+        		
+        		// getPlayer() will add a player who does not exist:
+        		RankPlayer rPlayer = playerManager.getPlayer( player );
+        		if ( rPlayer != null ) {
+        			if ( rPlayer.checkName( player.getName() ) ) {
+        				playerManager.savePlayer( rPlayer );
+        			}
         		}
         	}
+        	
+        	
+        	// If any player does not have a rank on the default ladder, then add the default 
+        	// ladder and rank:
+        	Rank defaultRank = defaultLadder.getLowestRank().get();
+        	for ( RankPlayer rPlayer : playerManager.getPlayers() ) {
+				
+        		if ( rPlayer.getRank( "default" ) == null ) {
+        			rPlayer.addRank( defaultRank );
+        			
+        			playerManager.savePlayer( rPlayer );
+        		}
+			}
         }
         
         
