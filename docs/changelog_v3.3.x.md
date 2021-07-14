@@ -21,7 +21,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.4 2021-07-14
+# v3.2.10-alpha.5 2021-07-14
+
+
+* **v3.2.10-alpha.5 2021-07-14**
 
 
 * **Made the RankLadder comparable and in the RankPlayer changed the map to a TreeMap.**
