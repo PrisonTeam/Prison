@@ -22,6 +22,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 
 /**
  * @author rbluer RoyalBlueRanger
@@ -173,8 +174,9 @@ public abstract class SpigotGUIComponents {
      * Reload sellall config for GUIs.
      * */
     public static void updateSellAllConfig(){
-        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-        sellAllConfig = YamlConfiguration.loadConfiguration(file);
+        SellAllUtil util = SellAllUtil.get();
+        util.updateSellAllConfig();
+        sellAllConfig = util.getSellAllConfig();
     }
 
     public static void updateGUIConfig(){

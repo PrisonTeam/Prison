@@ -27,6 +27,12 @@ These build logs represent the work that has been going on within prison.
 * **v3.2.10-alpha.5 2021-07-14**
 
 
+* **SpigotGUIComponents minor changes.**
+
+
+* **SellAll Blocks GUI now uses PrisonGUI Utility.**
+
+
 * **Made the RankLadder comparable and in the RankPlayer changed the map to a TreeMap.**
 This should fix the inconsistencies that I was seeing earlier.
 
