@@ -3,6 +3,31 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
+
+* When adding block stats.... add player online stats.
+  - add events that run, similar to blockEvents, but maybe call them statsEvents?
+  - So after so many blocks are mined... or so many minutes a player is online, run a command
+  
+  - Online stats:
+   - track which players are online... may need to get the active player list every minute?  freq could be configurable.
+   - track location of player... if the player has not moved in over x-ticks, then mark them as afk.  distance traveled is an important aspect... so afk machines may keep them moving in a 1 block radius.  Might be able to see if a player is being pushed by water or pistons? 
+
+
+* Enable mine sweeper when auto features is disabled.  Not sure if this is still needed?
+
+
+* Make ranks more expensive on each prestige....
+
+
+* Test BlockEvent perms... they appear like they don't work.
+
+
+* DONE: Issue with placeholders bars and rankup costs...
+
+
+* Add support for BOSS BAR when holding pick axe.  Maybe setup placeholders in the config.yml?
+- Example would be showing the bar and percent to next rank.
+
 * Add mine notifications by Rank
 
 
@@ -17,11 +42,11 @@
 - Was able to reproduce this at a later time
 
 
-* prison should "scan" offline players upon startup and auto add anyone not already hooked up.  This will help reduce a lot of questions and make the first experience with prison smoother.... 
+* DONE: prison should "scan" offline players upon startup and auto add anyone not already hooked up.  This will help reduce a lot of questions and make the first experience with prison smoother.... 
 
 
 
-* Bug: placeholders are not working correctly when player is offline...
+* DONE: Bug: placeholders are not working correctly when player is offline...
   - Example with the bar graph placeholders.
 
 

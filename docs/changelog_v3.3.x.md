@@ -21,19 +21,24 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.5 2021-07-14
+# v3.2.10-alpha.6 2021-07-15
+
+
+* **Update docs... scale back what we support with WorldGuard regions since access by ranks solves so many problems.**
+
+
+* **SellAll Admin Blocks List GUI now supports pages.**  Note: This was **not** part of the v3.2.10-alpha.5 release.
+
+
+* **SpigotGUIComponents minor changes.**  Note: This was **not** part of the v3.2.10-alpha.5 release.
+
+
+* **SellAll Blocks GUI now uses PrisonGUI Utility.** Note: This was **not** part of the v3.2.10-alpha.5 release.
+
 
 
 * **v3.2.10-alpha.5 2021-07-14**
 
-
-* **SellAll Admin Blocks List GUI now supports pages.**
-
-
-* **SpigotGUIComponents minor changes.**
-
-
-* **SellAll Blocks GUI now uses PrisonGUI Utility.**
 
 
 * **Made the RankLadder comparable and in the RankPlayer changed the map to a TreeMap.**
