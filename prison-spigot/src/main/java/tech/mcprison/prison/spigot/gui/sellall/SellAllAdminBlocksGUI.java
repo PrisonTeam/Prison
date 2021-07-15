@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.gui.sellall;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -11,6 +12,7 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 
 import java.util.List;
 import java.util.Set;
@@ -21,9 +23,11 @@ import java.util.Set;
 public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
 
     private final Player p;
+    private final int startingItem;
 
-    public SellAllAdminBlocksGUI(Player p){
+    public SellAllAdminBlocksGUI(Player p, int startingItem){
         this.p = p;
+        this.startingItem = startingItem;
     }
 
     public void open() {
@@ -64,19 +68,42 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
 
         boolean sellAllPerBlockPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"));
 
+        int itemsAdded = 0, itemsRead = 0;
         for (String key : items) {
-            List<String> itemsLore = createLore(
-                    loreLine1,
-                    loreLine2,
-                    loreValue + sellAllConfig.getString("Items." + key + ".ITEM_VALUE")
-            );
+            itemsRead++;
 
-            if (sellAllPerBlockPermissionEnabled){
-                itemsLore.add("");
-                itemsLore.add(SpigotPrison.format(lorePermission + "&7" + permissionSellAllBlock + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
+            if (itemsRead >= startingItem) {
+
+                if (startingItem != 0){
+
+                    List<String> priorPageLore = createLore(messages.getString("Lore.ClickToPriorPage"));
+                    gui.addButton(new Button(45, XMaterial.BOOK, priorPageLore, "&7Prior " + (startingItem - 45)));
+
+                }
+
+                if (itemsAdded >= 45){
+
+                    List<String> nextPageLore = createLore(messages.getString("Lore.ClickToNextPage"));
+                    gui.addButton(new Button(53, XMaterial.BOOK, nextPageLore, "&7Next " + (startingItem + itemsAdded)));
+
+                }
+
+                if (itemsAdded < 45) {
+                    List<String> itemsLore = createLore(
+                            loreLine1,
+                            loreLine2,
+                            loreValue + sellAllConfig.getString("Items." + key + ".ITEM_VALUE")
+                    );
+
+                    if (sellAllPerBlockPermissionEnabled) {
+                        itemsLore.add("");
+                        itemsLore.add(SpigotPrison.format(lorePermission + "&7" + permissionSellAllBlock + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
+                    }
+
+                    gui.addButton(new Button(null, SpigotUtil.getXMaterial(sellAllConfig.getString("Items." + key + ".ITEM_ID")), itemsLore, SpigotPrison.format("&3" + sellAllConfig.getString("Items." + key + ".ITEM_ID"))));
+                    itemsAdded++;
+                }
             }
-
-            gui.addButton(new Button(null, SpigotUtil.getXMaterial(sellAllConfig.getString("Items." + key + ".ITEM_ID")), itemsLore, SpigotPrison.format("&3" + sellAllConfig.getString("Items." + key + ".ITEM_ID"))));
         }
         gui.open();
     }

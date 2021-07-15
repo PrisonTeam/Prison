@@ -601,7 +601,7 @@ public class ListenersPrisonManager implements Listener {
                 // Check the title and do the actions.
                 case "SellAll -> Blocks": {
 
-                    sellAllAdminBlocksGUI(e, p, buttonNameMain);
+                    sellAllAdminBlocksGUI(e, p, parts);
 
                     break;
                 }
@@ -1112,7 +1112,7 @@ public class ListenersPrisonManager implements Listener {
 
             case "Blocks-Shop":{
 
-                SellAllAdminBlocksGUI gui = new SellAllAdminBlocksGUI(p);
+                SellAllAdminBlocksGUI gui = new SellAllAdminBlocksGUI(p, 0);
                 gui.open();
                 break;
             }
@@ -1534,19 +1534,35 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    private void sellAllAdminBlocksGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
+    private void sellAllAdminBlocksGUI(InventoryClickEvent e, Player p, String[] parts) {
+
+        if (parts[0].equalsIgnoreCase("Prior")){
+
+            SellAllAdminBlocksGUI gui = new SellAllAdminBlocksGUI(p, Integer.parseInt(parts[1]));
+            gui.open();
+
+            e.setCancelled(true);
+            return;
+        } else if (parts[0].equalsIgnoreCase("Next")){
+
+            SellAllAdminBlocksGUI gui = new SellAllAdminBlocksGUI(p, Integer.parseInt(parts[1]));
+            gui.open();
+
+            e.setCancelled(true);
+            return;
+        }
 
         if (e.isRightClick()){
 
         	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall delete" );
-            Bukkit.dispatchCommand(p, registeredCmd + " " + buttonNameMain);
+            Bukkit.dispatchCommand(p, registeredCmd + " " + parts[0]);
             p.closeInventory();
 
         } else if (e.isLeftClick()){
 
-            String valueString = sellAllConfig.getString("Items." + buttonNameMain + ".ITEM_VALUE");
+            String valueString = sellAllConfig.getString("Items." + parts[0] + ".ITEM_VALUE");
             if (valueString != null) {
-                SellAllPriceGUI gui = new SellAllPriceGUI(p, Double.parseDouble(valueString), buttonNameMain);
+                SellAllPriceGUI gui = new SellAllPriceGUI(p, Double.parseDouble(valueString), parts[0]);
                 gui.open();
             }
         }

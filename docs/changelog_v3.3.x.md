@@ -27,6 +27,9 @@ These build logs represent the work that has been going on within prison.
 * **v3.2.10-alpha.5 2021-07-14**
 
 
+* **SellAll Admin Blocks List GUI now supports pages.**
+
+
 * **SpigotGUIComponents minor changes.**
 
 
