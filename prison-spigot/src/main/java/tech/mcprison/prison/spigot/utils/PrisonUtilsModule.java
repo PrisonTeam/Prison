@@ -97,6 +97,16 @@ public class PrisonUtilsModule
 
 			}
 			
+			if ( isEnabled( "utils.sounds.enabled", true ) ) {
+				
+				PrisonUtilsSounds utils = new PrisonUtilsSounds();
+				
+				utils.setEnableSoundEffects( isEnabled( "utils.sounds.playSound", true ) );
+				
+				Prison.get().getCommandHandler().registerCommands( utils );
+				
+			}
+			
 		}
 	}
 

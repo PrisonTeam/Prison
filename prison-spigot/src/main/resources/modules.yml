@@ -34,3 +34,5 @@ utils:
     obby: true
     rainbow: true
     blocks: true
+  sounds:
+    playSound: true

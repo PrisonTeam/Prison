@@ -194,21 +194,19 @@ public abstract class PrisonUtils
 		int results = defaultValue;
 		
 		if ( value != null && !value.trim().isEmpty() ) {
+			try {
+				results = Integer.parseInt( value );
+			}
+			catch ( NumberFormatException e ) {
+				// Not a valid number so ignore
+			}
 			
-		}
-		
-		try {
-			results = Integer.parseInt( value );
-		}
-		catch ( NumberFormatException e ) {
-			// Not a valid number so ignore
-		}
-		
-		if ( results < rangeLow ) {
-			results = rangeLow;
-		}
-		else if ( results > rangeHigh ) {
-			results = rangeHigh;
+			if ( results < rangeLow ) {
+				results = rangeLow;
+			}
+			else if ( results > rangeHigh ) {
+				results = rangeHigh;
+			}
 		}
 		
 		return results;
@@ -227,6 +225,71 @@ public abstract class PrisonUtils
 		}
 
 		return number;
+	}
+	
+	/**
+	 * <p>Parses a value to a float.  It uses the supplied default value and
+	 * also constrains the results by the parameters.
+	 * </p>
+	 * 
+	 * @param value
+	 * @param defaultValue
+	 * @param rangeLow
+	 * @param rangeHigh
+	 * @return
+	 */
+	protected float floatValue( String value, float defaultValue, float rangeLow, float rangeHigh ) {
+		float results = defaultValue;
+		
+		if ( value != null && !value.trim().isEmpty() ) {
+			try {
+				results = Float.parseFloat( value );
+			}
+			catch ( NumberFormatException e ) {
+				// Not a valid number so ignore
+			}
+			
+			if ( results < rangeLow ) {
+				results = rangeLow;
+			}
+			else if ( results > rangeHigh ) {
+				results = rangeHigh;
+			}
+		}
+		
+		return results;
+	}
+	/**
+	 * <p>Parses a value to a double.  It uses the supplied default value and
+	 * also constrains the results by the parameters.
+	 * </p>
+	 * 
+	 * @param value
+	 * @param defaultValue
+	 * @param rangeLow
+	 * @param rangeHigh
+	 * @return
+	 */
+	protected double doubleValue( String value, double defaultValue, double rangeLow, double rangeHigh ) {
+		double results = defaultValue;
+		
+		if ( value != null && !value.trim().isEmpty() ) {
+			try {
+				results = Double.parseDouble( value );
+			}
+			catch ( NumberFormatException e ) {
+				// Not a valid number so ignore
+			}
+			
+			if ( results < rangeLow ) {
+				results = rangeLow;
+			}
+			else if ( results > rangeHigh ) {
+				results = rangeHigh;
+			}
+		}
+		
+		return results;
 	}
 	
 	public String getPluginName() {

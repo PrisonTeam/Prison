@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.6 2021-07-15
 
 
+* **Add the ability to play sounds through the /prison utils sound command.**
+
+
 * **Update docs... scale back what we support with WorldGuard regions since access by ranks solves so many problems.**
 
 
