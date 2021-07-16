@@ -24,6 +24,11 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.6 2021-07-16
 
 
+* **More changes to setting up a player cache.**
+The basics should be represented, with startup and shutdown of the cache, running a periodical task to refresh the data, running a periodical task to save the data.
+No data is processed as of yet, but the cache should be reactive to players logging on and off the server.
+
+
 * **Initial work on setting up the Player Cache.**
 
 

@@ -25,6 +25,10 @@ public class PlayerCachePlayerData {
 	
 	private transient File playerFile = null;
 	
+	// NOTE: Since we are logging time online all players that have been online are
+	//       always considered dirty since their online time would need to be updated.
+//	private transient boolean dirty = false;
+	
 	/**
 	 *  This Object lock is used to synchronized the public side of this class
 	 *  and the protected side of this class which is the database transaction
@@ -33,14 +37,7 @@ public class PlayerCachePlayerData {
 	@SuppressWarnings( "unused" )
 	private transient final Object lock = new Object();
 	
-	private transient boolean updateTaskSubmitted = false;
-	
-	
-	
-	/**
-	 * This is just to hold on to the BukkitTask when the database update is submitted.
-	 */
-//	private PlayerCacheRunnable playerTask;
+	private transient PlayerCacheRunnable task = null;
 	
 	
 	private long onlineTimeTotal = 0L;
@@ -58,7 +55,6 @@ public class PlayerCachePlayerData {
 		
 		this.playerFile = playerFile;
 		
-//		this.playerTask = null;
 	}
 
 	@Override
@@ -66,7 +62,6 @@ public class PlayerCachePlayerData {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append( getPlayer().getName() ).append( " [value= " ).append( 0 )
-				.append( isUpdateTaskSubmitted() ? " *UpdateSubmitted*" : "" )
 				.append( " ]" );
 		
 		return sb.toString();
@@ -101,19 +96,12 @@ public class PlayerCachePlayerData {
 		this.playerName = playerName;
 	}
 
-	public boolean isUpdateTaskSubmitted() {
-		return updateTaskSubmitted;
+	public PlayerCacheRunnable getTask() {
+		return task;
 	}
-	public void setUpdateTaskSubmitted( boolean updateTaskSubmitted ) {
-		this.updateTaskSubmitted = updateTaskSubmitted;
+	public void setTask( PlayerCacheRunnable task ) {
+		this.task = task;
 	}
-
-//	public PlayerCacheRunnable getPlayerTask() {
-//		return playerTask;
-//	}
-//	public void setPlayerTask( PlayerCacheRunnable playerTask ) {
-//		this.playerTask = playerTask;
-//	}
 
 	public long getOnlineTimeTotal() {
 		return onlineTimeTotal;

@@ -5,6 +5,8 @@ import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -78,17 +80,40 @@ public class PlayerCacheFiles
 	 * file upon loading in to the cache the next time they are activated.
 	 * </p>
 	 * 
+	 * <p>This function first saves the new player data to a temp file.  If that 
+	 * was successful, then it deletes the original file, and renames the temp
+	 * file back to the original name.
+	 * </p>
+	 * 
 	 * @param player
 	 */
 	public void toJsonFile( PlayerCachePlayerData player) {
+		
+		File playerFile = player.getPlayerFile();
+		File outTemp = createTempFile( playerFile );
+		boolean success = false;
+		
 		try (
-				FileWriter fw = new FileWriter( player.getPlayerFile() );
+				FileWriter fw = new FileWriter( outTemp );
 				){
 			getGson().toJson( player, fw );
+			
+			success = true;
 		}
 		catch ( JsonIOException | IOException e ) {
 			e.printStackTrace();
 		}
+		
+		if ( success && playerFile.delete() ) {
+			outTemp.renameTo( playerFile );
+		}
+	}
+	
+	private File createTempFile( File file ) {
+	    SimpleDateFormat sdf = new SimpleDateFormat("_yyyy-MM-dd_HH-mm-ss");
+	    String name = file.getName() + sdf.format( new Date() ) + ".temp";
+	    
+	    return new File( file.getParentFile(), name);
 	}
 	
 	/**
