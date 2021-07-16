@@ -50,7 +50,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         rankPlugin = (PrisonRanks) module;
 
         if (rankPlugin == null){
-            Output.get().sendWarn(new SpigotPlayer(player), SpigotPrison.format("&3Looks like the Ranks module's disabled"));
+            Output.get().sendWarn(new SpigotPlayer(player), "&3Looks like the Ranks module's disabled");
             return;
         }
 
@@ -132,7 +132,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(ladder, dimension, inv);
         } catch (NullPointerException ex){
-            Output.get().sendWarn(new SpigotPlayer(getPlayer()), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendWarn(new SpigotPlayer(getPlayer()), "&cThere's a null value in the GuiConfig.yml [broken]");
             ex.printStackTrace();
             return true;
         }
@@ -143,12 +143,12 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
 
 
         if ( ladder == null ){
-            Output.get().sendWarn(new SpigotPlayer(player), SpigotPrison.format(messages.getString("Message.LadderPrestigesNotFound")));
+            Output.get().sendWarn(new SpigotPlayer(player), messages.getString("Message.LadderPrestigesNotFound"));
             return;
         }
 
         if (!ladder.getLowestRank().isPresent()){
-            Output.get().sendWarn(new SpigotPlayer(player), SpigotPrison.format(messages.getString("Message.NoRanksPrestigesLadder")));
+            Output.get().sendWarn(new SpigotPlayer(player), messages.getString("Message.NoRanksPrestigesLadder"));
             return;
         }
 

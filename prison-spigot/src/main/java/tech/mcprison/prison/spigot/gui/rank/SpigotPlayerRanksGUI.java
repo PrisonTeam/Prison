@@ -60,12 +60,12 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         }
 
         if (rankPlugin == null){
-            Output.get().sendWarn(new SpigotPlayer(player), SpigotPrison.format("&c: rankPlugin == null."));
+            Output.get().sendWarn(new SpigotPlayer(player), "&c: rankPlugin == null.");
             return;
         }
 
  	    if (rankPlugin.getPlayerManager() == null) {
- 	        Output.get().sendWarn(new SpigotPlayer(player), SpigotPrison.format("&c: rankPlugin.getPlayerManager() == null."));
+ 	        Output.get().sendWarn(new SpigotPlayer(player), "&c: rankPlugin.getPlayerManager() == null.");
  	    	return;
  	    }
 
@@ -109,14 +109,14 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
         // Ensure ladder is present and that it has a rank:
         if ( ladder == null || !ladder.getLowestRank().isPresent()){
-            Output.get().sendWarn(new SpigotPlayer(getPlayer()), SpigotPrison.format(messages.getString("Message.NoRanksFoundHelp1") + guiConfig.getString("Options.Ranks.Ladder") + messages.getString("Message.NoRanksFoundHelp2")));
+            Output.get().sendWarn(new SpigotPlayer(getPlayer()), messages.getString("Message.NoRanksFoundHelp1") + guiConfig.getString("Options.Ranks.Ladder") + messages.getString("Message.NoRanksFoundHelp2"));
             getPlayer().closeInventory();
             return;
         }
 
         // Get the dimensions and if needed increases them
         if (ladder.getRanks().size() == 0) {
-            Output.get().sendWarn(new SpigotPlayer(getPlayer()), SpigotPrison.format(messages.getString("Message.NoRanksFound")));
+            Output.get().sendWarn(new SpigotPlayer(getPlayer()), messages.getString("Message.NoRanksFound"));
             return;
         }
 
@@ -141,7 +141,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(dimension, inv, rank, playerRank);
         } catch (NullPointerException ex){
-            Output.get().sendWarn(new SpigotPlayer(getPlayer()), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendWarn(new SpigotPlayer(getPlayer()), "&cThere's a null value in the GuiConfig.yml [broken]");
             ex.printStackTrace();
             return true;
         }

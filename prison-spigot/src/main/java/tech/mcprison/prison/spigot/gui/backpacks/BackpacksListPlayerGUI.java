@@ -24,7 +24,7 @@ public class BackpacksListPlayerGUI extends SpigotGUIComponents {
     public void open(){
 
         if (BackpacksUtil.get().getBackpacksLimit(p) == 0){
-            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.BackPackCantOwn")));
+            Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.BackPackCantOwn"));
             return;
         }
 

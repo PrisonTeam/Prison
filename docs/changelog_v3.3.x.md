@@ -24,6 +24,18 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.6 2021-07-15
 
 
+* **Minor SellAll utility changes.**
+
+
+* **SellAll Player Blocks List GUI now supports pages.**
+
+
+* **Minor improvements for GUIs to improve performance.**
+
+
+* **PrisonGUI Buttons utility minor changes.**
+
+
 * **Add the ability to play sounds through the /prison utils sound command.**
 
 

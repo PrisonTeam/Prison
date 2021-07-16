@@ -42,7 +42,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 
         // If the inventory is empty
         if (lm.getLadders().size() == 0){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.NoLadders")));
+            Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.NoLadders"));
             p.closeInventory();
             return;
         }

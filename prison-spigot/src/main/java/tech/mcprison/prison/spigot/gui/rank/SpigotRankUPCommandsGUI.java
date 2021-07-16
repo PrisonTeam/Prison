@@ -40,7 +40,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         }
 
         if (rank.getRankUpCommands().size() == 0){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.NoRankupCommands")));
+            Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.NoRankupCommands"));
             return;
         }
 
@@ -51,14 +51,14 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
         // If the inventory is empty
         if (dimension == 0){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.EmptyGui")));
+            Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.EmptyGui"));
             p.closeInventory();
             return;
         }
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.TooManyRankupCommands")));
+            Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.TooManyRankupCommands"));
             p.closeInventory();
             return;
         }
@@ -81,7 +81,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
         try {
             buttonsSetup(inv, command);
         } catch (NullPointerException ex){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendWarn(new SpigotPlayer(p), "&cThere's a null value in the GuiConfig.yml [broken]");
             ex.printStackTrace();
             return true;
         }

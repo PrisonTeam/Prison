@@ -28,7 +28,7 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
 
 
         if (!SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true")){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllIsDisabled")));
+            Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.SellAllIsDisabled"));
             return;
         }
 
@@ -44,7 +44,7 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
         try {
             buttonsSetup();
         } catch (NullPointerException ex){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
+            Output.get().sendWarn(new SpigotPlayer(p), "&cThere's a null value in the GuiConfig.yml [broken]");
             ex.printStackTrace();
             return true;
         }

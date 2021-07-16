@@ -32,7 +32,7 @@ public class BackpacksAdminPlayerListGUI extends SpigotGUIComponents {
 
 
         if (backpacksData.getConfigurationSection("Inventories") == null){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.BackPackListEmpty")));
+            Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.BackPackListEmpty"));
             return;
         }
 
@@ -40,7 +40,7 @@ public class BackpacksAdminPlayerListGUI extends SpigotGUIComponents {
         try {
             playerUUID = backpacksData.getConfigurationSection("Inventories").getKeys(false);
         } catch (NullPointerException ex){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.BackPackListEmpty")));
+            Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.BackPackListEmpty"));
             return;
         }
 

@@ -1,10 +1,7 @@
 package tech.mcprison.prison.spigot.gui.sellall;
 
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
@@ -12,7 +9,6 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 
 import java.util.List;
 import java.util.Set;
@@ -51,8 +47,8 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
 
         if (emptyInv){
             SpigotPlayer spigotPlayer = new SpigotPlayer(p);
-            Output.get().sendWarn(spigotPlayer, SpigotPrison.format(messages.getString("Message.SellAllGUIEmpty")));
-            Output.get().sendWarn(spigotPlayer, SpigotPrison.format(messages.getString("Message.SellAllGUIEmpty2")));
+            Output.get().sendWarn(spigotPlayer, messages.getString("Message.SellAllGUIEmpty"));
+            Output.get().sendWarn(spigotPlayer, messages.getString("Message.SellAllGUIEmpty2"));
             return;
         }
 
@@ -100,7 +96,7 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
                         itemsLore.add(SpigotPrison.format(lorePermission + "&7" + permissionSellAllBlock + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
                     }
 
-                    gui.addButton(new Button(null, SpigotUtil.getXMaterial(sellAllConfig.getString("Items." + key + ".ITEM_ID")), itemsLore, SpigotPrison.format("&3" + sellAllConfig.getString("Items." + key + ".ITEM_ID"))));
+                    gui.addButton(new Button(null, SpigotUtil.getXMaterial(sellAllConfig.getString("Items." + key + ".ITEM_ID")), itemsLore, "&3" + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
                     itemsAdded++;
                 }
             }

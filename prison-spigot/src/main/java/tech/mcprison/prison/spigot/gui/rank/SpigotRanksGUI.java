@@ -46,7 +46,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
         // Get the dimensions and if needed increases them
         if (!ladder.isPresent() || ladder.get().getRanks().size() == 0) {
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.NoRanksFoundAdmin")));
+            Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.NoRanksFoundAdmin"));
             return;
         }
 

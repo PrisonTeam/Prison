@@ -1510,7 +1510,7 @@ public class SellAllUtil {
                 // Check if the sender has the required permission.
                 String permission = sellAllConfig.getString("Options.Player_GUI_Permission");
                 if (permission != null && p.hasPermission(permission)) {
-                    SellAllPlayerGUI gui = new SellAllPlayerGUI(p);
+                    SellAllPlayerGUI gui = new SellAllPlayerGUI(p, 0);
                     gui.open();
                     // If missing will send a missing permission error message.
                 } else {
@@ -1518,7 +1518,7 @@ public class SellAllUtil {
                 }
                 // Because a permission isn't required, it'll open directly the GUI.
             } else {
-                SellAllPlayerGUI gui = new SellAllPlayerGUI(p);
+                SellAllPlayerGUI gui = new SellAllPlayerGUI(p, 0);
                 gui.open();
             }
             return true;

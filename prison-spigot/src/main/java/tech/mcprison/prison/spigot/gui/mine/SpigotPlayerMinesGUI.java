@@ -52,14 +52,14 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
         // If the inventory is empty
         if (dimension == 0){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.NoMines")));
+            Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.NoMines"));
             p.closeInventory();
             return;
         }
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.TooManyMines")));
+            Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.TooManyMines"));
             p.closeInventory();
             return;
         }
