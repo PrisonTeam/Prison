@@ -40,7 +40,7 @@ public class PlayerCachePlayerData {
 	/**
 	 * This is just to hold on to the BukkitTask when the database update is submitted.
 	 */
-	private PlayerCacheRunnable playerTask;
+//	private PlayerCacheRunnable playerTask;
 	
 	
 	private long onlineTimeTotal = 0L;
@@ -58,7 +58,7 @@ public class PlayerCachePlayerData {
 		
 		this.playerFile = playerFile;
 		
-		this.playerTask = null;
+//		this.playerTask = null;
 	}
 
 	@Override
@@ -108,12 +108,12 @@ public class PlayerCachePlayerData {
 		this.updateTaskSubmitted = updateTaskSubmitted;
 	}
 
-	public PlayerCacheRunnable getPlayerTask() {
-		return playerTask;
-	}
-	public void setPlayerTask( PlayerCacheRunnable playerTask ) {
-		this.playerTask = playerTask;
-	}
+//	public PlayerCacheRunnable getPlayerTask() {
+//		return playerTask;
+//	}
+//	public void setPlayerTask( PlayerCacheRunnable playerTask ) {
+//		this.playerTask = playerTask;
+//	}
 
 	public long getOnlineTimeTotal() {
 		return onlineTimeTotal;
