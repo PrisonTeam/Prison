@@ -1,14 +1,22 @@
+# NOTE: This file is not being used yet. 
+#       This file is not hooked up to b auto refreshed.
+#       If changes are made to this file, please manually send them to RoyalBlueRanger so
+#       this file can be updated in the project.
+#       The location of where this file is actually used is as follows. 
+#         /plugins/Prison/module_conf/lang/zh_TW.yml
+#       You will have to manually replace that file to update it, until it can be automated.
+
 Lore:
-  ActivateWithinMode: "&8啟用範圍內模式."
-  ActivateRadiusMode: "&8啟用半徑模式."
-  AutoPickupGuiManager: "&8自動拾取."
-  AutoSmeltGuiManager: "&8自動冶煉."
-  AutoBlockGuiManager: "&8自動合成方塊."
+  ActivateWithinMode: "&8啟用範圍內模式"
+  ActivateRadiusMode: "&8啟用半徑模式"
+  AutoPickupGuiManager: "&8自動拾取"
+  AutoSmeltGuiManager: "&8自動冶煉"
+  AutoBlockGuiManager: "&8自動合成方塊"
   BlockType: "&3方塊類型: "
   Blocks: "&3方塊:"
-  Blocks2: "&8管理礦場的方塊."
+  Blocks2: "&8管理礦場的方塊"
   BackpackID: "&3背包 ID: "
-  ClickToAddBackpack: "&8按下以新增背包."
+  ClickToAddBackpack: "&8按下以新增背包"
   ClickToAddBackpackInst0: "&3說明: "
   ClickToAddBackpackInst1: "&8請記得在背包內"
   ClickToAddBackpackInst2: "&8新增一個物品"
@@ -16,33 +24,33 @@ Lore:
   ClickToChoose: "&8按下以選擇"
   ClickToConfirm: "&8按下以確認"
   ClickToCancel: "&8按下以取消"
-  ClickToDecrease: "&8按下以減少."
-  ClickToIncrease: "&8按下以增加."
-  ClickToManageRank: "&8管理這個階級."
-  ClickToManageCommands: "&8管理升級階級指令."
-  ClickToOpen: "&8按下以開啟."
-  ClickToOpenBackpack: "&8按下以打開監獄背包."
-  ClickToRename: "&8按下以重新命名."
-  ClickToTeleport: "&8按下以傳送."
-  ClickToUse: "&8按下以使用."
+  ClickToDecrease: "&8按下以減少"
+  ClickToIncrease: "&8按下以增加"
+  ClickToManageRank: "&8管理這個階級"
+  ClickToManageCommands: "&8管理升級階級指令"
+  ClickToOpen: "&8按下以開啟"
+  ClickToOpenBackpack: "&8按下以打開監獄背包"
+  ClickToRename: "&8按下以重新命名"
+  ClickToTeleport: "&8按下以傳送"
+  ClickToUse: "&8按下以使用"
   ClickToRankup: "&8按下以升級階級"
-  ClickToEditBlock: "&8按下以修改百分比."
-  ClickToEdit: "&8按下以編輯."
-  ClickToClose: "&8按下以關閉GUI."
-  ClickToPriorPage: "&a按下以前往 上一頁."
-  ClickToNextPage: "&a按下以前往 下一頁."
-  ClickToStartBlockSetup: "&a按下以 設定方塊."
-  ClickToSelect: "&7按下以 選擇."
-  ClickToAddBlock: "&a按下以 新增方塊."
-  ClickToEnable: "&a按下以啟用."
-  ClickToDisable: "&c按下以停用."
+  ClickToEditBlock: "&8按下以修改百分比"
+  ClickToEdit: "&8按下以編輯"
+  ClickToClose: "&8按下以關閉GUI"
+  ClickToPriorPage: "&a按下以前往 上一頁"
+  ClickToNextPage: "&a按下以前往 下一頁"
+  ClickToStartBlockSetup: "&a按下以 設定方塊"
+  ClickToSelect: "&7按下以 選擇"
+  ClickToAddBlock: "&a按下以 新增方塊"
+  ClickToEnable: "&a按下以啟用"
+  ClickToDisable: "&c按下以停用"
   Chance: "&3機率: "
   Command: "&3指令: &7"
   ContainsTheRank: "&3階級 "
-  ContainsNoCommands: " &3不包含指令."
+  ContainsNoCommands: " &3不包含指令"
   DelaySellAll: "&3延遲: &8"
-  DisableNotifications: "&8關閉通知."
-  DisabledAll: "&3所有功能 &c關閉&3."
+  DisableNotifications: "&8關閉通知"
+  DisabledAll: "&3所有功能 &c關閉&3"
   EnabledAll: "&a所有功能 開啟"
   EmptyMultiplier: "&c[!] 沒有乘數!"
   FullSoundEnabled: "&a所有聲音通知 啟用"
@@ -54,16 +62,16 @@ Lore:
   IfYouHaveEnoughMoney: "&8如果你有足夠的金錢"
   LadderThereAre: "&8那裡有 &3"
   LadderCommands: " &3階上的指令:"
-  LeftClickToConfirm: "&a左鍵以 確認."
-  LeftClickToOpen: "&8左鍵以 開啟."
+  LeftClickToConfirm: "&a左鍵以 確認"
+  LeftClickToOpen: "&8左鍵以 開啟"
   LeftClickToReset: "&a左鍵以 重設"
   LeftClickToEdit: "&a左鍵以 修改數值"
-  ManageResetTime: "&8管理礦場重置時間."
-  MinesButton: "&8礦場GUI管理."
+  ManageResetTime: "&8管理礦場重置時間"
+  MinesButton: "&8礦場GUI管理"
   MineName: "&3礦場名稱: &f"
   Multiplier: "&3乘數: &f"
   Name: "&3階級名稱: &7"
-  Notifications: "&8編輯礦場通知."
+  Notifications: "&8編輯礦場通知"
   Permission: "&3全縣: "
   PlayerOwner: "&3背包擁有者: "
   PlayersWithTheRank: "&3在此階級的玩家: &7"
@@ -72,47 +80,47 @@ Lore:
   PrestigeWarning3: "&3 - &b餘額"
   PrestigeName: "&8聲望名稱: &3"
   PrestigeMultiplier: "&8乘數: &3"
-  PrestigeMultiplierInfoGUI: "&3管理 乘數."
+  PrestigeMultiplierInfoGUI: "&3管理 乘數"
   Price: "&3價格: &a$"
   Price2: "&8價格: &a$"
   Price3: "&3階級 價格: &a$"
   Percentage: "&8百分比: "
-  PrisonTasksButton: "&8監獄任務管理."
+  PrisonTasksButton: "&8監獄任務管理"
   ResetTime: "&3重置時間: &7"
   Radius: "&8半徑: "
   RankupCommands: "&8&l|&3升級階級指令&8| &8&l- &3"
   Rankup: "&a階級升級"
-  RanksButton: "&8階級GUI管理."
+  RanksButton: "&8階級GUI管理"
   ResetButton: "&8重置礦場."
-  RightClickToCancel: "&c右鍵以 取消."
-  RightClickToEnable: "&c右鍵以 &a啟用&c."
-  RightClickToDisable: "&c右鍵以 停用."
-  RightClickToToggle: "&3右鍵以 切換."
-  RightClickToDelete: "&c右鍵以 刪除."
-  RightClickToEdit: "&8右鍵以 編輯."
+  RightClickToCancel: "&c右鍵以 取消"
+  RightClickToEnable: "&c右鍵以 &a啟用&c"
+  RightClickToDisable: "&c右鍵以 停用"
+  RightClickToToggle: "&3右鍵以 切換"
+  RightClickToDelete: "&c右鍵以 刪除"
+  RightClickToEdit: "&8右鍵以 編輯"
   SpawnPoint: "&3出生點: &7"
   StatusLockedMine: "&8狀態: &c上鎖"
   StatusUnlockedMine: "&8狀態: &a解鎖"
-  SpawnPoint2: "&8設定礦場出生點."
+  SpawnPoint2: "&8設定礦場出生點"
   SizeOfMine: "&3礦場的大小: &7"
   Selected: "&3已選擇的"
   ShowItem: "&3顯示 物品: &7"
   ShowItemDescription: "&7這是物品"
   ShowItemDescription2: "&7顯示在玩家的 GUI"
-  ShowItemDescription3: "&7或者礦場的 GUI."
+  ShowItemDescription3: "&7或者礦場的 GUI"
   SellAllDelayInfo: "&8指令 &3/sellall sell"
   SellAllDelayInfo2: "&8還在冷卻中"
-  SellAllCurrencyInfo: "&3編輯 SellAll 貨幣."
+  SellAllCurrencyInfo: "&3編輯 SellAll 貨幣"
   SellAllActiveCurrency: "&3貨幣: &a"
-  ShiftAndRightClickToDelete: "&cShift + 右鍵以 刪除."
+  ShiftAndRightClickToDelete: "&cShift + 右鍵以 刪除"
   ShiftAndRightClickToDisable: "&cShift + 右鍵以 停用"
   ShiftAndRightClickToToggle: "&cShift + 右鍵以 切換"
   StatusEnabled: "&8啟用"
   StatusDisabled: "&8停用"
   SkipReset1: "&8如果沒有 "
   SkipReset2: "&8挖到足夠的方塊 "
-  SkipReset3: "&8則跳過重置."
-  Tp: "&8傳送到礦場."
+  SkipReset3: "&8則跳過重置"
+  Tp: "&8傳送到礦場"
   Tag: "&3標籤: &8"
   Tag2: "&3階級標籤: &7"
   Time: "&8時間: "
@@ -120,48 +128,48 @@ Lore:
   Value: "&3數值: &a$"
   World: "&3世界: &7"
   noRanksFoundSetup: "&3沒有找到任何階級!"
-  noRanksFoundSetup2: "&3如果你想要繼續設定."
+  noRanksFoundSetup2: "&3如果你想要繼續設定"
   noRanksFoundSetup3: "&3所有從 A 到 Z 的階級和礦場"
   noRanksFoundSetup4: "&3都將使用 &a預設 &3數值!"
   noRanksFoundSetup5: "&3你可以執行相同的操作 通過以下指令:"
   noRanksFoundSetup6: "&1/ranks autoConfigure full <price=x> <mult=x>!"
   noRanksFoundSetup7: "&3啟用初始價格 和 乘數 替換 X"
-  noRanksFoundSetup8: "&3預設的初始價格 為 50000, 預設的乘數 為 1.5."
+  noRanksFoundSetup8: "&3預設的初始價格 為 50000, 預設的乘數 為 1.5"
   ZeroBlocksReset1: "&8設定礦場的冷卻時間 "
   ZeroBlocksReset2: "&8冷卻時間 "
-  ZeroBlocksReset3: "&8在礦場沒有任何方塊之前."
+  ZeroBlocksReset3: "&8在礦場沒有任何方塊之前"
 Message:
   BackPackIsDisabled: 背包在 config.yml 中被停用, 你不能使用這個!
-  BackPackNeedPlayer: 請新增一個玩家名稱.
+  BackPackNeedPlayer: 請新增一個玩家名稱
   BackPackDeleteOperationSuccess: 背包應該...已經成功刪除了!
   BackPackDeleteOperationFail: 找不到背包 或者出了甚麼問題...?
-  BackPackPlayerNotFound: 找不到此玩家.
-  BackPackDoNotOwnAny: 抱歉,但您沒有任何背包, 請使用指令 /backpack <你想取的任何ID> 來建立一個背包.
+  BackPackPlayerNotFound: 找不到此玩家
+  BackPackDoNotOwnAny: 抱歉,但您沒有任何背包, 請使用指令 /backpack <你想取的任何ID> 來建立一個背包
   BackPackOwnLimitReached: 抱歉,您已達到玩家所允許的背包上限!
-  BackPackResizeNotInt: 背包的大小數值不是一個整數.
-  BackPackResizeNotMultiple9: 背包的大小必須是 9 的倍數 ,最大值為 54.
+  BackPackResizeNotInt: 背包的大小數值不是一個整數
+  BackPackResizeNotMultiple9: 背包的大小必須是 9 的倍數 ,最大值為 54
   BackPackResizeDone: 如果背包沒有遺失,它的大小已經成功調整!
   BackPackLimitMissingParam: 您缺少設定背包限制所需要的一些參數!
   BackPackLimitNotNumber: 背包的限制 不是一個數字!
   BackPackLimitSuccess: 背包的限制 已成功修改!
   BackPackLimitDecrementFail: 背包的限制減去該值將是負數,您所做的操作將被取消!
-  BackPackListEmpty: 此伺服器沒有任何背包.
+  BackPackListEmpty: 此伺服器沒有任何背包
   BackPackCantOwn: 抱歉,但看起來您不能擁有任何背包!
-  CantGetRanksAdmin: 無法取得階級, 可能 &c沒有階級&7 或者階級模組 已被 &c停用&7.
-  CantRunGUIFromConsole: 白癡,GUI 不能在 console 端執行啦!
-  CantGiveItemFromConsole: 白癡,你不能在 console 端取得物品!
-  DefaultLadderEmpty: 預設的階是 &c空的&7.
-  NoSellAllItems: 抱歉, &c沒有&7可顯示的 販售全部 物品.
-  EmptyGui: 抱歉, GUI 是 &c空的.
+  CantGetRanksAdmin: 無法取得階級, 可能 &c沒有階級&7 或者階級模組 已被 &c停用&7
+  CantRunGUIFromConsole: GUI 不能在 console 端執行!
+  CantGiveItemFromConsole: 你不能在 console 端取得物品!
+  DefaultLadderEmpty: 預設的階是 &c空的&7
+  NoSellAllItems: 抱歉, &c沒有&7可顯示的 販售全部 物品
+  EmptyGui: 抱歉, GUI 是 &c空的
   EnableAutoSellToUse: 抱歉, 自動賣出 &c停用&7, 請啟用它!
   EnableSellDelayToUse: 抱歉, 販售全部 冷卻 是 &c停用&7 的, 請啟用它!
   EventCancelled: "&c事件取消."
-  InvalidBooleanInput: 抱歉, 您必須在此輸入 &a-true-&7 或者 &c-false-&7.
+  InvalidBooleanInput: 抱歉, 您必須在此輸入 &a-true-&7 或者 &c-false-&7
   MissingPermission: 抱歉, 您沒有 &c權限&7 使用!
-  NoBlocksMine: 抱歉, 礦場是 &c空的&7.
-  NoMines: 抱歉,這裡 &c沒有 &7礦場可以顯示.
+  NoBlocksMine: 抱歉, 礦場是 &c空的&7
+  NoMines: 抱歉,這裡 &c沒有 &7礦場可以顯示
   NoRankupCommands: 抱歉, 此階級 &c沒有 升階級指令&7!
-  NoLadders: 抱歉,這裡 &c沒有 &7階可以顯示.
+  NoLadders: 抱歉,這裡 &c沒有 &7階可以顯示
   NoRanksPrestigesLadder: -聲望-階中&c沒有&7階級!
   NoRanksFoundAdmin: 抱歉, 階是 &c空的&7!
   NoRanksFound: 抱歉, 此階是 &c空的&7!
@@ -174,34 +182,34 @@ Message:
   TooManyRankupCommands: 抱歉, GUI &c太多&7 升階級指令 且最大值為 54
   TooManyRanks: 抱歉, GUI &c太多&7 階級 且最大值為 54
   TooManySellAllItems: 抱歉, GUI &c太多&7 物品 且最大值為 54
-  mineNameRename: 請寫下您要使用的 &6礦場名稱 &7並&6送出&7.
-  mineNameRenameClose: 輸入 &cclose &7或 等待 &c30 秒&7來取消.
+  mineNameRename: 請寫下您要使用的 &6礦場名稱 &7並&6送出&7
+  mineNameRenameClose: 輸入 &cclose &7或 等待 &c30 秒&7來取消
   mineNameRenameClosed: 礦場重新命名 &c取消&7!
-  mineOrGuiDisabled: GUI 和/或 GUI Mines 是 &c停用&7的. 請檢查 GuiConfig.yml.
-  mineMissingGuiPermission: 您缺少使用 GUI Mines 的 &c權限&7.
-  MineShowItemEditSuccess: 礦場顯示物品編輯成功.
-  OutOfTimeNoChanges: 時間過久,已&c取消變更&7.
+  mineOrGuiDisabled: GUI 和/或 GUI Mines 是 &c停用&7的. 請檢查 GuiConfig.yml
+  mineMissingGuiPermission: 您缺少使用 GUI Mines 的 &c權限&7
+  MineShowItemEditSuccess: 礦場顯示物品編輯成功
+  OutOfTimeNoChanges: 時間過久,已&c取消變更&7
   PrestigeCancelled: 編輯聲望 已&c取消&7!
-  PrestigeCancelledWrongKeyword: "編輯聲望 已&c取消&7, 您沒有輸入: &aconfirm&7."
-  PrestigeRanOutOfTime: 時間過久, 編輯&c聲望 已取消&7.
+  PrestigeCancelledWrongKeyword: "編輯聲望 已&c取消&7, 您沒有輸入: &aconfirm&7"
+  PrestigeRanOutOfTime: 時間過久, 編輯&c聲望 已取消&7
   PrestigesDisabledDefault: 聲望 預設是 &c停用&7的, 請在 config.yml 修改!
   ConfirmPrestige: "&a確認&7: 請輸入 &aconfirm&7 進行確認"
-  CancelPrestige: "&c取消&7: 請輸入 &ccancel&7 進行取消, &c您有30秒可以進行此操作."
-  PrestigesAreDisabled: 聲望 是 &c停用&7的. 請檢查 config.yml.
-  GuiOrPrestigesDisabled: GUI 和/或 GUI Prestiges 是 &c停用&7的. 請檢查 GuiConfig.yml.
-  GuiClosedWithSuccess: GUI 已關閉.
+  CancelPrestige: "&c取消&7: 請輸入 &ccancel&7 進行取消, &c您有30秒可以進行此操作"
+  PrestigesAreDisabled: 聲望 是 &c停用&7的. 請檢查 config.yml
+  GuiOrPrestigesDisabled: GUI 和/或 GUI Prestiges 是 &c停用&7的. 請檢查 GuiConfig.yml
+  GuiClosedWithSuccess: GUI 已關閉
   CantFindPrestiges: 聲望階 &c沒有聲望&7!
-  missingGuiPrestigesPermission: 您缺少 使用 GUI prestiges 的 &c權限&7.
-  rankTagRename: 請寫下您要使用的 &6標籤 &7並&6送出&7.
-  rankTagRenameClose: 請輸入 &cclose &7或 &c等30秒&7 以取消.
+  missingGuiPrestigesPermission: 您缺少 使用 GUI prestiges 的 &c權限&7
+  rankTagRename: 請寫下您要使用的 &6標籤 &7並&6送出&7
+  rankTagRenameClose: 請輸入 &cclose &7或 &c等30秒&7 以取消
   rankTagRenameClosed: 標籤重新命名 &c取消&7!
-  rankGuiDisabledOrAllGuiDisabled: GUI 和/或 GUI Ranks 是 &c停用&7的. 請檢查 GuiConfig.yml (%s %s)
-  rankGuiMissingPermission: 您缺少使用 Ranks GUI 的 &c權限&7.
+  rankGuiDisabledOrAllGuiDisabled: GUI 和/或 GUI Ranks 是 &c停用&7的 請檢查 GuiConfig.yml (%s %s)
+  rankGuiMissingPermission: 您缺少使用 Ranks GUI 的 &c權限&7
   SellAllAutoSellEarnedMoney: "您因販售全部賺了: "
   SellAllAutoSellEarnedMoneyCurrency: $
-  SellAllAutoSellMissingPermission: 您沒有 &c權限&7 編輯 AutoSell.
-  SellAllAutoSellEnabled: 販售全部 已經 &a啟用&7.
-  SellAllAutoSellDisabled: 販售全部 已經 &c停用&7.
+  SellAllAutoSellMissingPermission: 您沒有 &c權限&7 編輯 AutoSell
+  SellAllAutoSellEnabled: 販售全部 已經 &a啟用&7
+  SellAllAutoSellDisabled: 販售全部 已經 &c停用&7
   SellAllAutoSellAlreadyEnabled: 自動販售 已經 &a啟用&7!
   SellAllAutoSellAlreadyDisabled: 自動販售 已經 &c停用&7!
   SellAllAutoPerUserToggleableAlreadyEnabled: 自動販售 玩家切換開關 已經 &a啟用&7!
@@ -209,15 +217,15 @@ Message:
   SellAllAutoPerUserToggleableEnabled: 販售全部 玩家切換開關 已經 &a啟用&7!
   SellAllAutoPerUserToggleableDisabled: 販售全部 玩家切換開關 &c停用&7!
   SellAllCurrencyChat1: "&3開始為販售全部設置新的貨幣"
-  SellAllCurrencyChat2: 請輸入 &ccancel &7以取消.
-  SellAllCurrencyChat3: 請輸入 &3default &7以使用預設值.
-  SellAllCurrencyChat4: 請輸入 &aCurrency name &7來設置新的貨幣.
+  SellAllCurrencyChat2: 請輸入 &ccancel &7以取消
+  SellAllCurrencyChat3: 請輸入 &3default &7以使用預設值
+  SellAllCurrencyChat4: 請輸入 &aCurrency name &7來設置新的貨幣
   SellAllCurrencyEditedSuccess: 販售全部貨幣編輯成功!
-  SellAllCurrencyEditCancelled: 販售全部貨幣編輯 &c取消&7.
-  SellAllCurrencyNotFound: 沒有已啟用的經濟插件支援 這個名叫 '%s' 的貨幣.
+  SellAllCurrencyEditCancelled: 販售全部貨幣編輯 &c取消&7
+  SellAllCurrencyNotFound: 沒有已啟用的經濟插件支援 這個名叫 '%s' 的貨幣
   SellAllDefaultSuccess: 預設值新增 &a成功&7!
   SellAllDefaultMissingPermission: 抱歉,但您缺少 &c權限!
-  SellAllIsDisabled: 抱歉, 功能 販售全部 在 config.yml 是 &c停用&7的.
+  SellAllIsDisabled: 抱歉, 功能 販售全部 在 config.yml 是 &c停用&7的
   SellAllEditedWithSuccess: "&7] 編輯 &a成功&7!"
   SellAllSubCommandNotFound: 子命令(sub-command) &c沒找到&7, 請輸入 /sellall help 了解更多!
   SellAllMultipliersAreDisabled: 乘數 在 SellAll config 是 &c關閉&7的!
@@ -232,28 +240,28 @@ Message:
   SellAllMultiplierNotNumber2: " 這裡-> "
   SellAllConfigSaveFail: 抱歉, 在儲存設定時&c某些東西發生錯誤&7!
   SellAllMultiplierEditSaveSuccess: 乘數 新增/編輯 &a成功&7!
-  SellAllMultiplierFormat: "請使用此格式輸入: /sellall multiplier delete <聲望>."
+  SellAllMultiplierFormat: "請使用此格式輸入: /sellall multiplier delete <聲望>"
   SellAllCantFindMultiplier: "&c找不到&7 聲望中的乘數 "
   SellAllCantFindMultiplier2: " &7在 sellallconfig.yml"
   SellAllMultiplierDeleteSuccess: 乘數 &c刪除 &a成功&7!
-  SellAllWrongFormatCommand: "&c錯誤的個是&7, 請輸入 /sellall help 了解更多."
+  SellAllWrongFormatCommand: "&c錯誤的個是&7, 請輸入 /sellall help 了解更多"
   SellAllPleaseAddItem: "請 &a加上&7 一個物品ID [範例: /sellall add <COAL_ORE> <價格>]"
   SellAllAddPrice: "請為此物品 &a新增&7 一個價格/價值 [範例: /sellall add <COAL_ORE> 100]"
   SellAllWrongID: 抱歉, &c物品ID錯誤&7, 請檢查!
   SellAllValueNotNumber: 抱歉, 價格/價值 &c不是一個數字&7!
   SellAllMissingID: "請 &a加上&7 一個物品ID [範例: /sellall delete <COAL_ORE>]"
-  SellAllNotFoundStringConfig: " 在 config 中找不到 或 已被 &c刪除&7."
+  SellAllNotFoundStringConfig: " 在 config 中找不到 或 已被 &c刪除&7"
   SellAllNotFoundEdit: " 在 config 中找不到!"
   SellAllDeletedSuccess: " &c刪除&a成功&7!"
   SellAllAddSuccess: "] &a新增&7 &a成功&7!"
   SellAllAlreadyAdded: " &c之前已經新增過了&7, 請使用指令 /sellall edit 編輯它!"
   SellAllCommandEditSuccess: "] &a編輯成功&7!"
-  SellAllYouArentPlayer: 您 &c不是&a一個玩家.
+  SellAllYouArentPlayer: 您 &c不是&a一個玩家
   SellAllNothingToSell: 您 &c沒有東西&7可以賣出!
   SellAllYouGotMoney: 您得到 &a$
-  SellAllGUIDisabled: 抱歉,但 GUI 在 SellAllConfig.yml 是 &c停用&7 的.
+  SellAllGUIDisabled: 抱歉,但 GUI 在 SellAllConfig.yml 是 &c停用&7 的
   SellAllAutoSell: 您的庫存已滿, &a自動販售 啟用&7!
-  SellAllSignOnly: 抱歉, 您只能透過告示牌來使用SellAll (or with the ByPass permission).
+  SellAllSignOnly: 抱歉, 您只能透過告示牌來使用SellAll (or with the ByPass permission)
   SellAllSignNotify: 透過告示牌 使用 &aSellAll 成功&7!
   SellAllSignMissingPermission: 抱歉, 但您沒有 &c權限&7 使用此功能!
   SellAllEmpty: |-
@@ -270,17 +278,17 @@ Message:
   SellAllDelayNotNumber: 冷卻時間的值 &c不是&7 一個數字!
   SellAllGUIEmpty: 抱歉,但這裡 &c沒有&7 方塊在 販售全部的商店!
   SellAllGUIEmpty2: "&7[&c小提示&7] &7您可以 使用指令 /sellall add &a新增&7 一個!"
-  SellAllTriggerAlreadyEnabled: 販售全部 的觸發開關 已經 &a啟用&7.
-  SellAllTriggerAlreadyDisabled: 販售全部 的觸發開關 已經 &c停用&7.
-  SellAllTriggerEnabled: 販售全部 的觸發開關 &a啟用&7.
-  SellAllTriggerDisabled: 販售全部 的觸發開關 &c停用&7.
-  SellAllTriggerIsDisabled: 販售全部 的觸發開關 在 SellAllConfig.yml 是 &c停用&7的.
-  SellAllTriggerMissingItem: 請為 販售全部 Shift+右鍵 新增一個正確的物品ID.
+  SellAllTriggerAlreadyEnabled: 販售全部 的觸發開關 已經 &a啟用&7
+  SellAllTriggerAlreadyDisabled: 販售全部 的觸發開關 已經 &c停用&7
+  SellAllTriggerEnabled: 販售全部 的觸發開關 &a啟用&7
+  SellAllTriggerDisabled: 販售全部 的觸發開關 &c停用&7
+  SellAllTriggerIsDisabled: 販售全部 的觸發開關 在 SellAllConfig.yml 是 &c停用&7的
+  SellAllTriggerMissingItem: 請為 販售全部 Shift+右鍵 新增一個正確的物品ID
   SellAllTriggerItemAddSuccess: 販售全部的觸發物品 新增 &a成功&7!
   SellAllTriggerItemEditSuccess: 販售全部的觸發物品 編輯 &a成功&7!
   SellAllTriggerItemDeleteSuccess: 販售全部的觸發物品 刪除 &a成功&7!
-  TooLowValue: "&c價值太低."
-  TooHighValue: "&c價值太高."
+  TooLowValue: "&c價值太低"
+  TooHighValue: "&c價值太高"
   GUIReloadSuccess: GUI 重新讀取成功!
 Setup:
   Message:
@@ -288,4 +296,4 @@ Setup:
     WrongFormat: 您 &c缺少&7 後方參數 -礦場- or -階級-, /<command> setup -礦場- 或 -階級- !
     WelcomeToRanksSetup: 嗨,歡迎來到階級設定, 請 &c稍等&7 它將會自動完成!
     SuccessRanksSetup: 階級設定 &a完成&7 且 &a成功&7 且階級 &a新增&7 至預設的階, 如果有甚麼東西缺少 請檢查 logs!
-    Aborted: 監獄設定 &c取消&7.
+    Aborted: 監獄設定 &c取消&7
