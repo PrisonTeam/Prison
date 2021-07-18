@@ -5,7 +5,7 @@ import java.util.TreeMap;
 
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.PrisonBlock;
-import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 
 /**
  * <p>This class represents the temporal state of a player's balance
@@ -46,9 +46,11 @@ public class PlayerCachePlayerData {
 	
 	
 	private long onlineTimeTotal = 0L;
-	
-	
-	private long onlineActiveTimeTotal = 0L;
+
+	// "active" time is not needed. It's the total onlineTimeTotal minus
+	// the other types. Tracking active could result in discrepancies and 
+	// would be redundant.
+//	private long onlineActiveTimeTotal = 0L;
 	private long onlineAFKTimeTotal = 0L;
 	private long onlineMiningTimeTotal = 0L;
 	
@@ -67,7 +69,8 @@ public class PlayerCachePlayerData {
 	private transient long sessionTimingStart = 0;
 	private transient long sessionTimingLastCheck = 0;
 	
-	private transient Location sessionLastLocation = null;
+	// sessionLastLocation is used for afk calculations:
+//	private transient Location sessionLastLocation = null;
 	
 	private transient boolean dirty = false;
 	
@@ -89,7 +92,7 @@ public class PlayerCachePlayerData {
 		this.sessionTimingStart = System.currentTimeMillis();
 		this.sessionTimingLastCheck = sessionTimingStart;
 		
-		this.sessionLastLocation = null;
+//		this.sessionLastLocation = null;
 		
 	}
 	
@@ -103,7 +106,7 @@ public class PlayerCachePlayerData {
 		
 		this.playerFile = playerFile;
 		
-		this.sessionLastLocation = player.getLocation();
+//		this.sessionLastLocation = player.getLocation();
 		
 	}
 
@@ -140,7 +143,8 @@ public class PlayerCachePlayerData {
 			sessionTimingLastCheck = currentTime;
 
 			final long duration = currentTime - sessionTimingLastCheck;
-			// if duration is greater than 15 minutes, then move the start point:
+			// if duration is greater than 15 minutes, then move the session start 
+			// point and save it.
 			if ( duration > 900000 ) {
 				
 				sessionTimingStart = currentTime;
@@ -152,7 +156,7 @@ public class PlayerCachePlayerData {
 			
 			// Always Save as total time. Use sessionTimingStart. Ignore sessionTimingLastCheck.
 			final long duration = currentTime - sessionTimingStart;
-			onlineActiveTimeTotal += duration;
+			onlineTimeTotal += duration;
 			
 			//checkTimersAfk();
 			
@@ -162,7 +166,7 @@ public class PlayerCachePlayerData {
 			dirty = true;
 		}
 		else {
-			// Its still mining... 
+			// The session type is still mining... 
 			// Must check sessionTimingLastCheck to see if we went over the 
 			// max mining idle time:
 			
@@ -189,7 +193,7 @@ public class PlayerCachePlayerData {
 				// the last time check:
 				final long tempTime = sessionTimingLastCheck + SESSION_TIMEOUT_MINING_MS;
 				final long miningDuration = sessionTimingStart - tempTime;
-				onlineActiveTimeTotal += miningDuration;
+				onlineTimeTotal += miningDuration;
 				onlineMiningTimeTotal += miningDuration;
 				
 				// Set new session to this boundary:
@@ -199,7 +203,7 @@ public class PlayerCachePlayerData {
 				// Since the last SessionType and current are mining, then the duration from
 				// the new sessionTimingStart to currentTime needs to go to active:
 				final long durationActive = currentTime - sessionTimingStart;
-				onlineActiveTimeTotal += durationActive;
+				onlineTimeTotal += durationActive;
 				
 				//checkTimersAfk();
 				
@@ -221,7 +225,7 @@ public class PlayerCachePlayerData {
 		if ( quantity > 0 && blockName != null && 
 				!PrisonBlock.AIR.getBlockName().equalsIgnoreCase( blockName )
 				) {
-			this.blocksTotal++;
+			this.blocksTotal += quantity;
 			
 			if ( blockName != null ) {
 				addBlockByType( blockName, quantity );
@@ -232,7 +236,7 @@ public class PlayerCachePlayerData {
 			}
 			
 			checkTimersMining( SessionType.mining );
-			
+			dirty = true;
 		}
 	}
 	
@@ -261,13 +265,24 @@ public class PlayerCachePlayerData {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		
+		String totalTime = PlaceholdersUtil.formattedTime( onlineTimeTotal / 1000d );
+		String miningTime = PlaceholdersUtil.formattedTime( onlineMiningTimeTotal / 1000d );
+		
 		sb.append( getPlayerName() )
-			.append( "  total: " )
+		
+			.append( "  TotalOnlineTime: " )
+			.append( totalTime )
+			.append( "  MiningTime: " )
+			.append( miningTime )
+			
+			.append( "  totalBlocks: " )
 			.append( blocksTotal )
 			.append( "  mines: " )
 			.append( blocksByMine )
 			.append( "  blocks: " )
-			.append( blocksByType );
+			.append( blocksByType )
+
+			;
 		
 		return sb.toString();
 	}
@@ -348,6 +363,13 @@ public class PlayerCachePlayerData {
 	}
 	public void setBlocksByType( TreeMap<String, Integer> blocksByType ) {
 		this.blocksByType = blocksByType;
+	}
+
+	public boolean isDirty() {
+		return dirty;
+	}
+	public void setDirty( boolean dirty ) {
+		this.dirty = dirty;
 	}
 
 }
