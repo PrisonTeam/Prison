@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.6 2021-07-18
 
 
+* **Added some documentation to the ExplosiveBlockBreakEvent so users can better understand how it should be used.**
+
+
 * **This is an example of an explosive block break event that should be used so prison can monitor for it, and consume it.**
 
 
