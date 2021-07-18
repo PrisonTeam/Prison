@@ -21,7 +21,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.6 2021-07-17
+# v3.2.10-alpha.6 2021-07-18
+
+
+* **Updates to he Taiwanese language files.**
 
 
 * **Improvements to adding new players to prison upon startup.**
@@ -30,7 +33,7 @@ It now uses the /ranks set rank command now.
 
 
 * **Added support for zh_TW Taiwanese.**
-This is just an initial setup for now.  To enable it, set the langue in the config.yml file to zh_TW.
+This is just an initial setup for now.  To enable it, set the language in the config.yml file to zh_TW.
 
 
 * **Player Cache: Hooked up block tracking for players.**
