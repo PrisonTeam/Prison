@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.6 2021-07-17
 
 
+* **Added support for zh_TW Taiwanese.**
+This is just an initial setup for now.  To enable it, set the langue in the config.yml file to zh_TW.
+
+
 * **Player Cache: Hooked up block tracking for players.**
 Appears to be working as far as tracking blocks that are being broke.  It loads and unloads when a player joins and leaves the server so only active players have their data online. Performs periodical updates on saving.
 This tracks total blocks, block counts by mine, and block counts by block type.
