@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.6 2021-07-18
 
 
+* **This is an example of an explosive block break event that should be used so prison can monitor for it, and consume it.**
+
+
 * **More adjustments to the Taiwanese language files.**
 
 
