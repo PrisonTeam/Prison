@@ -21,7 +21,7 @@ import tech.mcprison.prison.util.Location;
  */
 public class PlayerCachePlayerData {
 	
-	public static final long SESSION_TIMEOUT_MINING_MS = 1000 * 30; // 30 seconds
+	public static final long SESSION_TIMEOUT_MINING_MS = 1000 * 15; // 15 seconds
 
 	private transient Player player;
 	
@@ -63,10 +63,13 @@ public class PlayerCachePlayerData {
 	// This is the time when the "session" was started:
 	private transient SessionType sessionType;
 	
-	private transient long sessionOnlineTimeStart = 0;
-	private transient long sessionOnlineTimeLastCheck = 0;
+	
+	private transient long sessionTimingStart = 0;
+	private transient long sessionTimingLastCheck = 0;
 	
 	private transient Location sessionLastLocation = null;
+	
+	private transient boolean dirty = false;
 	
 	
 	public enum SessionType {
@@ -83,7 +86,8 @@ public class PlayerCachePlayerData {
 		
 		this.sessionType = SessionType.active;
 		
-		this.sessionOnlineTimeStart = System.currentTimeMillis();
+		this.sessionTimingStart = System.currentTimeMillis();
+		this.sessionTimingLastCheck = sessionTimingStart;
 		
 		this.sessionLastLocation = null;
 		
@@ -104,38 +108,112 @@ public class PlayerCachePlayerData {
 	}
 
 	public void checkTimers() {
+
+		// Do not change the session type, so pass it the current:
+		checkTimersMining( sessionType );
 		
-		if ( sessionType == SessionType.mining ) {
-			long currentTime = System.currentTimeMillis();
+	}
+	
+	/**
+	 * <p>If the SessionType is mining, then that means that the last time 
+	 * a checkTimer was called, it was for mining.  Mining can only be active for
+	 * only a short duration after breaking a block.  So once a block is broken, 
+	 * another block must be broken in a specified amount of time to be considered
+	 * actively mining.
+	 * </p>
+	 * 
+	 * <p>This function can only be called from a block break event.
+	 * </p>
+	 * 
+	 * <p>If the prior SessionType was not mining, then that session segment may be
+	 * either afk or active.  Pass to afk check.  Set current session type to mining.
+	 * </p>
+	 * 
+	 * <p>If prior session type was mining, then do nothing if the last 
+	 */
+	private void checkTimersMining( SessionType targetType ) {
+		final long currentTime = System.currentTimeMillis();
+
+		if ( sessionType == targetType && sessionType != SessionType.mining) {
+			// No change in status
 			
-			// Mining can only be active for no more than 30 seconds after the last
-			// block was broken.  So check duration between now and sessionOnlineTimeLastCheck
-			// and if more than 30 seconds, then shutdown mining session and log it, then
-			// reset sessionOnlineTimeLastCheck to the cutover time, 30 seconds later.
+			sessionTimingLastCheck = currentTime;
+
+			final long duration = currentTime - sessionTimingLastCheck;
+			// if duration is greater than 15 minutes, then move the start point:
+			if ( duration > 900000 ) {
+				
+				sessionTimingStart = currentTime;
+				dirty = true;
+			}
 			
-			long duration = currentTime - sessionOnlineTimeLastCheck;
+		}
+		else if ( sessionType != SessionType.mining ) {
 			
-			if ( duration > SESSION_TIMEOUT_MINING_MS ) {
+			// Always Save as total time. Use sessionTimingStart. Ignore sessionTimingLastCheck.
+			final long duration = currentTime - sessionTimingStart;
+			onlineActiveTimeTotal += duration;
+			
+			//checkTimersAfk();
+			
+			sessionType = targetType;
+			sessionTimingStart = currentTime;
+			sessionTimingLastCheck = currentTime;
+			dirty = true;
+		}
+		else {
+			// Its still mining... 
+			// Must check sessionTimingLastCheck to see if we went over the 
+			// max mining idle time:
+			
+			final long duration = currentTime - sessionTimingLastCheck;
+			
+			
+			// If the duration is less than the session mining timeout, then player
+			// is still mining.  Just set the sessionTimingLastCheck.
+			if ( duration < SESSION_TIMEOUT_MINING_MS ) {
+				 
+				sessionTimingLastCheck = currentTime;
+			}
+			
+			// Mining can only be active for no more than SESSION_TIMEOUT_MINING_MS 
+			// after the last  block was broken.  So check duration between now and 
+			// sessionOnlineTimeLastCheck and if more than permitted, then shutdown 
+			// mining session and log it for a duration since session start to 
+			// last check plus the mining timeout value.  Then set session start to 
+			// that position.
+			
+			else if ( duration > SESSION_TIMEOUT_MINING_MS ) {
 				
 				// Calculate the end point of the mining session, which will be 30 seconds after 
 				// the last time check:
-				long tempTime = sessionOnlineTimeLastCheck + SESSION_TIMEOUT_MINING_MS;
-				long miningDuration = sessionOnlineTimeStart - tempTime;
+				final long tempTime = sessionTimingLastCheck + SESSION_TIMEOUT_MINING_MS;
+				final long miningDuration = sessionTimingStart - tempTime;
+				onlineActiveTimeTotal += miningDuration;
 				onlineMiningTimeTotal += miningDuration;
 				
-				sessionOnlineTimeStart = tempTime;
+				// Set new session to this boundary:
+				sessionTimingStart = tempTime;
+				sessionTimingLastCheck = tempTime;
 				
-				// This may not be active, but could be afk...  but set it to active for now, 
-				// and then the next check will evaluate to see if it should be afk.
-				sessionType = SessionType.active;
-			}
-		
-			if ( sessionType == SessionType.afk ) {
-				// check to see if the player has moved... 
+				// Since the last SessionType and current are mining, then the duration from
+				// the new sessionTimingStart to currentTime needs to go to active:
+				final long durationActive = currentTime - sessionTimingStart;
+				onlineActiveTimeTotal += durationActive;
+				
+				//checkTimersAfk();
+				
+				
+				// Now reset the current session:
+				sessionType = targetType;
+				sessionTimingStart = currentTime;
+				sessionTimingLastCheck = currentTime;
+				dirty = true;
 				
 			}
 		}
 		
+
 	}
 
 	public void addBlock( String mine, String blockName, int quantity )
@@ -153,28 +231,8 @@ public class PlayerCachePlayerData {
 				addBlockByMine( mine, quantity );
 			}
 			
-			// Record the SessionType which is mining:
-			if ( sessionType != SessionType.mining ) {
-				
-				// The last session type was not mining so calculate duration and add to 
-				// correct buckit:
-				sessionOnlineTimeLastCheck = System.currentTimeMillis();
-				long duration = sessionOnlineTimeLastCheck - sessionOnlineTimeStart;
-				
-				if ( sessionType == SessionType.afk ) {
-					onlineAFKTimeTotal += duration;
-				}
-				else if ( sessionType == SessionType.active ) {
-					onlineActiveTimeTotal += duration;
-				}
-				
-				sessionType = SessionType.mining;
-				sessionOnlineTimeStart = sessionOnlineTimeLastCheck;
-			}
-			else {
-				// Already in mining mode so do nothing:
-				
-			}
+			checkTimersMining( SessionType.mining );
+			
 		}
 	}
 	
