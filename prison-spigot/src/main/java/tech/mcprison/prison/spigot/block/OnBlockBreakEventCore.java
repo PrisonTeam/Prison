@@ -21,6 +21,7 @@ import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
@@ -814,6 +815,8 @@ public class OnBlockBreakEventCore
 				
 				PrisonBlock prisonBlock = spigotBlock.getPrisonBlock();
 				
+				PlayerCache.getInstance().addPlayerBlocks( sPlayer, mine.getName(), targetBlock.getPrisonBlock(), 1 );
+				
 				mine.processBlockBreakEventCommands( prisonBlock, targetBlock, sPlayer, blockEventType, triggered );
 			}
 		}
@@ -1049,6 +1052,8 @@ public class OnBlockBreakEventCore
 				mine.incrementBlockMiningCount( targetBlock );
 				
 				PrisonBlock prisonBlock = spigotBlock.getPrisonBlock();
+				
+				PlayerCache.getInstance().addPlayerBlocks( sPlayer, mine.getName(), targetBlock.getPrisonBlock(), 1 );
 				
 				mine.processBlockBreakEventCommands( prisonBlock,
 										targetBlock, sPlayer, blockEventType, triggered );

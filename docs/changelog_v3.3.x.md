@@ -21,7 +21,13 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.6 2021-07-16
+# v3.2.10-alpha.6 2021-07-17
+
+
+* **Player Cache: Hooked up block tracking for players.**
+Appears to be working as far as tracking blocks that are being broke.  It loads and unloads when a player joins and leaves the server so only active players have their data online. Performs periodical updates on saving.
+This tracks total blocks, block counts by mine, and block counts by block type.
+Starting to setup time tracking.
 
 
 * **More changes to setting up a player cache.**

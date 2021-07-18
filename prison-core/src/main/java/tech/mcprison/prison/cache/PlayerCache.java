@@ -9,6 +9,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 
@@ -37,6 +39,8 @@ public class PlayerCache {
 	private Map<PlayerCacheRunnable, PlayerCachePlayerData> tasks;
 	
 	private PlayerCacheRunnable saveAllTask;
+	
+	private PlayerCacheRunnable checkTimersTask;
 	
 	
 	private PlayerCache() {
@@ -74,6 +78,8 @@ public class PlayerCache {
 		cacheEvents = new PlayerCacheEvents();
 
 		saveAllTask = submitCacheRefresh();
+		
+		checkTimersTask = submitCacheUpdatePlayerStats();
 
 		log( "PlayerCache: " + 
 				"  " + PLAYER_CACHE_WRITE_DELAY + ": " + getWriteDelay() );
@@ -112,6 +118,9 @@ public class PlayerCache {
 		
 		// Shutdown the save all task so it won't reload players or try to refresh data:
 		PrisonTaskSubmitter.cancelTask( saveAllTask.getTaskId() );
+
+		// Shutdown the timerTasks
+		PrisonTaskSubmitter.cancelTask( checkTimersTask.getTaskId() );
 
 		
 		// save all dirty cache items and purge cache:
@@ -188,13 +197,14 @@ public class PlayerCache {
 		}
 	}
 	
-	public void removePlayerData( PlayerCachePlayerData playerData ) {
-		
+	public PlayerCachePlayerData removePlayerData( PlayerCachePlayerData playerData ) {
+		PlayerCachePlayerData removed = playerData;
 		if ( playerData != null ) {
 			getStats().incrementRemovePlayers();
 			
-			getPlayers().remove( playerData.getPlayerUuid() );
+			removed = getPlayers().remove( playerData.getPlayerUuid() );
 		}
+		return removed;
 	}
 	
 	
@@ -210,16 +220,32 @@ public class PlayerCache {
 	 * 				actively being loaded, so try again later.
 	 */
 	private PlayerCachePlayerData getPlayer( Player player ) {
+		PlayerCachePlayerData playerData = null;
+		
 		getStats().incrementGetPlayers();
 		
 		if ( !getPlayers().containsKey( player.getUUID().toString() ) ) {
 			
 			// Load the player's existing balance:
-			submitAsyncLoadPlayer( player );
+			playerData = getCacheFiles().fromJson( player );
+
+			// Save it to the cache:
+			addPlayerData( playerData );
+//			runLoadPlayerNow( player );
+//			submitAsyncLoadPlayer( player );
+		}
+		else {
+			
+			// Note: if the player has not been loaded yet, this will return a null:
+			playerData = getPlayers().get( player.getUUID().toString() );
+		}
+		
+		if ( playerData != null && 
+				(playerData.getPlayer() == null || !playerData.getPlayer().equals( player ) ) ) {
+			playerData.setPlayer( player );
 		}
 
-		// Note: if the player has not been loaded yet, this will return a null:
-		PlayerCachePlayerData playerData = getPlayers().get( player.getUUID().toString() );
+		
 		return playerData;
 	}
 
@@ -233,6 +259,19 @@ public class PlayerCache {
 			// Submit task to run right away:
 			int taskId = PrisonTaskSubmitter.runTaskLaterAsync( task, 0 );
 			task.setTaskId( taskId );
+		}
+	}
+	
+	protected void runLoadPlayerNow( Player player ) {
+		
+		if ( player != null ) {
+			
+			PlayerCacheLoadPlayerTask task = new PlayerCacheLoadPlayerTask( player );
+			
+			task.run();
+//			// Submit task to run right away:
+//			int taskId = PrisonTaskSubmitter.runTaskLaterAsync( task, 0 );
+//			task.setTaskId( taskId );
 		}
 	}
 	
@@ -260,12 +299,39 @@ public class PlayerCache {
 		
 		PlayerCacheSaveAllPlayersTask task = new PlayerCacheSaveAllPlayersTask();
 		
-		// Submit Timer Task to start running in 30 seconds (600 ticks) and then
-		// refresh stats every 15 seconds (300 ticks):
-		int taskId = PrisonTaskSubmitter.runTaskTimerAsync( task, 600, 300 );
+		// Submit Timer Task to start running in 10 minutes (6000 ticks) and then
+		// refresh stats every 5 minutes (3000 ticks):
+		int taskId = PrisonTaskSubmitter.runTaskTimerAsync( task, 6000, 3000 );
 		task.setTaskId( taskId );
 		
 		return task;
+	}
+	
+	
+	public PlayerCacheRunnable submitCacheUpdatePlayerStats() {
+		
+		PlayerCacheCheckTimersTask task = new PlayerCacheCheckTimersTask();
+		
+		// Submit Timer Task to start running in 30 seconds (600 ticks) and then
+		// refresh stats every 10 seconds (200 ticks):
+		int taskId = PrisonTaskSubmitter.runTaskTimerAsync( task, 600, 200 );
+		task.setTaskId( taskId );
+		
+		return task;
+	}
+	
+	
+	public void addPlayerBlocks( Player player, String mine, PrisonBlockStatusData block, int quantity ) {
+		addPlayerBlocks( player, mine, (PrisonBlock) block, quantity );
+	}
+	public void addPlayerBlocks( Player player, String mine, PrisonBlock block, int quantity ) {
+		PlayerCachePlayerData playerData = getPlayer( player );
+		
+//		Output.get().logInfo( "### addPlayerBlock: mine= " + (mine == null ? "null" : mine) +
+//				" block= " + (block == null ? "null" : block.getBlockName()) + " qty= " + quantity + "  playerData= " +
+//				(playerData == null ? "null" : playerData.toString() ));
+		
+		playerData.addBlock( mine, block.getBlockName(), quantity );
 	}
 	
 

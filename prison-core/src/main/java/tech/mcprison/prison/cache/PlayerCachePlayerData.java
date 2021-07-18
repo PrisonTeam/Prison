@@ -1,8 +1,11 @@
 package tech.mcprison.prison.cache;
 
 import java.io.File;
+import java.util.TreeMap;
 
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.util.Location;
 
 /**
  * <p>This class represents the temporal state of a player's balance
@@ -17,6 +20,8 @@ import tech.mcprison.prison.internal.Player;
  *
  */
 public class PlayerCachePlayerData {
+	
+	public static final long SESSION_TIMEOUT_MINING_MS = 1000 * 30; // 30 seconds
 
 	private transient Player player;
 	
@@ -41,12 +46,51 @@ public class PlayerCachePlayerData {
 	
 	
 	private long onlineTimeTotal = 0L;
+	
+	
+	private long onlineActiveTimeTotal = 0L;
 	private long onlineAFKTimeTotal = 0L;
 	private long onlineMiningTimeTotal = 0L;
 	
 	
-	public PlayerCachePlayerData( Player player, File playerFile ) {
+	
+	private long blocksTotal = 0L;
+	
+	private TreeMap<String, Integer> blocksByMine;
+	private TreeMap<String, Integer> blocksByType;
+	
+	
+	// This is the time when the "session" was started:
+	private transient SessionType sessionType;
+	
+	private transient long sessionOnlineTimeStart = 0;
+	private transient long sessionOnlineTimeLastCheck = 0;
+	
+	private transient Location sessionLastLocation = null;
+	
+	
+	public enum SessionType {
+		active,
+		mining,
+		afk;
+	}
+	
+	public PlayerCachePlayerData() {
 		super();
+		
+		this.blocksByMine = new TreeMap<>();
+		this.blocksByType = new TreeMap<>();
+		
+		this.sessionType = SessionType.active;
+		
+		this.sessionOnlineTimeStart = System.currentTimeMillis();
+		
+		this.sessionLastLocation = null;
+		
+	}
+	
+	public PlayerCachePlayerData( Player player, File playerFile ) {
+		this();
 		
 		this.player = player;
 		
@@ -55,14 +99,117 @@ public class PlayerCachePlayerData {
 		
 		this.playerFile = playerFile;
 		
+		this.sessionLastLocation = player.getLocation();
+		
 	}
 
+	public void checkTimers() {
+		
+		if ( sessionType == SessionType.mining ) {
+			long currentTime = System.currentTimeMillis();
+			
+			// Mining can only be active for no more than 30 seconds after the last
+			// block was broken.  So check duration between now and sessionOnlineTimeLastCheck
+			// and if more than 30 seconds, then shutdown mining session and log it, then
+			// reset sessionOnlineTimeLastCheck to the cutover time, 30 seconds later.
+			
+			long duration = currentTime - sessionOnlineTimeLastCheck;
+			
+			if ( duration > SESSION_TIMEOUT_MINING_MS ) {
+				
+				// Calculate the end point of the mining session, which will be 30 seconds after 
+				// the last time check:
+				long tempTime = sessionOnlineTimeLastCheck + SESSION_TIMEOUT_MINING_MS;
+				long miningDuration = sessionOnlineTimeStart - tempTime;
+				onlineMiningTimeTotal += miningDuration;
+				
+				sessionOnlineTimeStart = tempTime;
+				
+				// This may not be active, but could be afk...  but set it to active for now, 
+				// and then the next check will evaluate to see if it should be afk.
+				sessionType = SessionType.active;
+			}
+		
+			if ( sessionType == SessionType.afk ) {
+				// check to see if the player has moved... 
+				
+			}
+		}
+		
+	}
+
+	public void addBlock( String mine, String blockName, int quantity )
+	{
+		if ( quantity > 0 && blockName != null && 
+				!PrisonBlock.AIR.getBlockName().equalsIgnoreCase( blockName )
+				) {
+			this.blocksTotal++;
+			
+			if ( blockName != null ) {
+				addBlockByType( blockName, quantity );
+			}
+			
+			if ( mine != null ) {
+				addBlockByMine( mine, quantity );
+			}
+			
+			// Record the SessionType which is mining:
+			if ( sessionType != SessionType.mining ) {
+				
+				// The last session type was not mining so calculate duration and add to 
+				// correct buckit:
+				sessionOnlineTimeLastCheck = System.currentTimeMillis();
+				long duration = sessionOnlineTimeLastCheck - sessionOnlineTimeStart;
+				
+				if ( sessionType == SessionType.afk ) {
+					onlineAFKTimeTotal += duration;
+				}
+				else if ( sessionType == SessionType.active ) {
+					onlineActiveTimeTotal += duration;
+				}
+				
+				sessionType = SessionType.mining;
+				sessionOnlineTimeStart = sessionOnlineTimeLastCheck;
+			}
+			else {
+				// Already in mining mode so do nothing:
+				
+			}
+		}
+	}
+	
+	private void addBlockByType( String blockName, int quantity ) {
+		int qty = quantity;
+		
+		if ( getBlocksByType().containsKey( blockName ) ) {
+			qty += getBlocksByType().get( blockName );
+		}
+		
+		getBlocksByType().put( blockName, qty );
+	}
+	private void addBlockByMine( String mine, int quantity ) {
+		int qty = quantity;
+		
+		if ( getBlocksByMine().containsKey( mine ) ) {
+			qty += getBlocksByMine().get( mine );
+			
+		}
+		
+		getBlocksByMine().put( mine, qty );
+	}
+	
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append( getPlayer().getName() ).append( " [value= " ).append( 0 )
-				.append( " ]" );
+		sb.append( getPlayerName() )
+			.append( "  total: " )
+			.append( blocksTotal )
+			.append( "  mines: " )
+			.append( blocksByMine )
+			.append( "  blocks: " )
+			.append( blocksByType );
 		
 		return sb.toString();
 	}
@@ -122,6 +269,27 @@ public class PlayerCachePlayerData {
 	}
 	public void setOnlineMiningTimeTotal( long onlineMiningTimeTotal ) {
 		this.onlineMiningTimeTotal = onlineMiningTimeTotal;
+	}
+
+	public long getBlocksTotal() {
+		return blocksTotal;
+	}
+	public void setBlocksTotal( long blocksTotal ) {
+		this.blocksTotal = blocksTotal;
+	}
+
+	public TreeMap<String, Integer> getBlocksByMine() {
+		return blocksByMine;
+	}
+	public void setBlocksByMine( TreeMap<String, Integer> blocksByMine ) {
+		this.blocksByMine = blocksByMine;
+	}
+
+	public TreeMap<String, Integer> getBlocksByType() {
+		return blocksByType;
+	}
+	public void setBlocksByType( TreeMap<String, Integer> blocksByType ) {
+		this.blocksByType = blocksByType;
 	}
 
 }

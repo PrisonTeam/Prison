@@ -272,7 +272,9 @@ public class PlayerCacheFiles
 			{
 				PlayerCachePlayerData temp = fromJsonFile( file );
 				if ( temp.getPlayerUuid().equalsIgnoreCase( player.getUUID().toString() ) ) {
+					
 					results = temp;
+					results.setPlayerFile( file );
 					break;
 				}
 			}
@@ -289,7 +291,7 @@ public class PlayerCacheFiles
 		// Check to see if the player's name has changed, which means the generated 
 		// file name does not match.  If that is the situation, then need to rename
 		// the file to match the current player's name.
-		else if ( results != null ) {
+		if ( results != null ) {
 			if ( results.getPlayerFile().equals( playerFile ) ) {
 				
 				results.getPlayerFile().renameTo( playerFile );

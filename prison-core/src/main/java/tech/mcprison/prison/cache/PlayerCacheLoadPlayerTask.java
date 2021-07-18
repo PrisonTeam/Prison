@@ -11,6 +11,7 @@ public class PlayerCacheLoadPlayerTask
 	public PlayerCacheLoadPlayerTask( Player player ) {
 		super( null );
 	
+		this.player = player;
 	}
 
 	public void run() {
@@ -19,7 +20,10 @@ public class PlayerCacheLoadPlayerTask
 		
 		PlayerCachePlayerData playerData = pCache.getCacheFiles().fromJson( player );
 		
-		pCache.addPlayerData( playerData );
+		if ( playerData != null ) {
+			
+			pCache.addPlayerData( playerData );
+		}
 		
 	}
 
