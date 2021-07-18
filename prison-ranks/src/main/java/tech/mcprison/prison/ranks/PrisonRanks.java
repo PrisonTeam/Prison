@@ -175,6 +175,32 @@ public class PrisonRanks
         	logStartupMessageError( prisonRanksFailedToLoadPlayFileMsg( e.getMessage() ));
         }
 
+
+        
+        // Hook up all players to the ranks:
+        playerManager.connectPlayersToRanks();
+        
+        
+        
+        // Load up the commands
+
+        CommandCommands rankCommandCommands = new CommandCommands();
+        RanksCommands ranksCommands = new RanksCommands(rankCommandCommands );
+        RankUpCommand rankupCommands = new RankUpCommand();
+        LadderCommands ladderCommands = new LadderCommands();
+        
+        rankManager.setRankCommandCommands( rankCommandCommands );
+        rankManager.setRanksCommands( ranksCommands );
+        rankManager.setRankupCommands( rankupCommands );
+        rankManager.setLadderCommands( ladderCommands );
+
+        Prison.get().getCommandHandler().registerCommands( rankCommandCommands );
+        Prison.get().getCommandHandler().registerCommands( ranksCommands );
+        Prison.get().getCommandHandler().registerCommands( rankupCommands );
+        Prison.get().getCommandHandler().registerCommands( ladderCommands );
+
+        
+        
         
         // If there is a default rank on the default ladder, then
         // check to see if there are any players not in prison: add them:
@@ -205,7 +231,6 @@ public class PrisonRanks
 				String rp = rPlayer.toString();
 				
         		Rank rankOnDefault = rPlayer.getRank( defaultLadder );
-//        		Rank rankOnDefaultStr = rPlayer.getRank( defaultLadder.getName() );
         		
 //        		Output.get().logInfo( "#### %s  ladder = %s  isRankNull= %s  rank= %s %s [%s]" ,
 //        				rPlayer.getName(),
@@ -215,10 +240,16 @@ public class PrisonRanks
 //        				rp );
         		
         		if ( rankOnDefault == null ) {
-//        			Output.get().logInfo( "#### Reset to default rank" ); 
-        			rPlayer.addRank( defaultRank );
+    
+        			rankupCommands.setPlayerRank( rPlayer, defaultRank );
         			
-        			playerManager.savePlayer( rPlayer );
+        			if ( rPlayer.getRank( defaultLadder ) != null ) {
+        				
+        				String message = prisonRankAddedNewPlayer( rPlayer.getName() );
+        				
+        				Output.get().logInfo( message );
+        			}
+        			
         			fixedPlayers++;
         		}
 			}
@@ -229,28 +260,7 @@ public class PrisonRanks
         }
         
         
-        // Hook up all players to the ranks:
-        playerManager.connectPlayersToRanks();
         
-        
-        
-        // Load up the commands
-
-        CommandCommands rankCommandCommands = new CommandCommands();
-        RanksCommands ranksCommands = new RanksCommands(rankCommandCommands );
-        RankUpCommand rankupCommands = new RankUpCommand();
-        LadderCommands ladderCommands = new LadderCommands();
-        
-        rankManager.setRankCommandCommands( rankCommandCommands );
-        rankManager.setRanksCommands( ranksCommands );
-        rankManager.setRankupCommands( rankupCommands );
-        rankManager.setLadderCommands( ladderCommands );
-
-        Prison.get().getCommandHandler().registerCommands( rankCommandCommands );
-        Prison.get().getCommandHandler().registerCommands( ranksCommands );
-        Prison.get().getCommandHandler().registerCommands( rankupCommands );
-        Prison.get().getCommandHandler().registerCommands( ladderCommands );
-
         // Load up all else
 
         new FirstJoinHandler();

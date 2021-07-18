@@ -24,6 +24,11 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.6 2021-07-17
 
 
+* **Improvements to adding new players to prison upon startup.**
+This process scans bukkit's offline players and finds everyone who is not already setup in prison and adds them.
+It now uses the /ranks set rank command now.  
+
+
 * **Added support for zh_TW Taiwanese.**
 This is just an initial setup for now.  To enable it, set the langue in the config.yml file to zh_TW.
 

@@ -293,7 +293,7 @@ public class RankUtil
 
     	try {
     		rankupPlayerInternal(results, command, player, rankPlayer, ladderName, 
-    				rankName, playerName, executorName, pForceCharge );
+    				rankName, pForceCharge );
     	} catch (Exception e ) {
     		results.addTransaction( RankupTransactions.failure_exception_caught_check_server_logs );
     		
@@ -316,7 +316,7 @@ public class RankUtil
      */
     private void rankupPlayerInternal(RankupResults results, 
     		RankupCommands command, Player prisonPlayer, RankPlayer rankPlayer, String ladderName, 
-    		String rankName, String playerName, String executorName, 
+    		String rankName, 
     		PromoteForceCharge pForceCharge) {
 
         
@@ -378,7 +378,8 @@ public class RankUtil
 
         // Target rank is still null, so something failed so terminate:
         if ( targetRank == null ) {
-        	results.addTransaction( RankupStatus.RANKUP_FAILURE_UNABLE_TO_ASSIGN_RANK, RankupTransactions.failed_unable_to_assign_rank );
+        	results.addTransaction( RankupStatus.RANKUP_FAILURE_UNABLE_TO_ASSIGN_RANK, 
+        												RankupTransactions.failed_unable_to_assign_rank );
         	return;
         }
         

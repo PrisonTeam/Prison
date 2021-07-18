@@ -415,6 +415,21 @@ public class RankUpCommand
     }
     
     
+    public void setPlayerRank( RankPlayer rankPlayer, Rank pRank ) {
+        
+        if ( rankPlayer != null ) {
+        	RankupResults results = 
+        			new RankUtil().setRank(rankPlayer, rankPlayer, 
+        						pRank.getLadder().getName(), pRank.getName(), 
+        												rankPlayer.getName(), rankPlayer.getName());
+        	
+        	processResults( rankPlayer, rankPlayer.getName(), results, 
+        			pRank.getName(), pRank.getLadder().getName(), 
+        			pRank.getCurrency() );
+        }
+    }
+    
+    
 	private void setPlayerRank( Player player, String rank, String ladder, CommandSender sender ) {
 		UUID playerUuid = player.getUUID();
         
