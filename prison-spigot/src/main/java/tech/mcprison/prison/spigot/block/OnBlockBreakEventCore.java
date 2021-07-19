@@ -21,8 +21,8 @@ import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
-import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
@@ -38,6 +38,7 @@ import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.integrations.IntegrationCrazyEnchantmentsPickaxes;
 import tech.mcprison.prison.spigot.utils.BlockUtils;
+import tech.mcprison.prison.spigot.utils.PrisonUtilsTitles;
 import tech.mcprison.prison.util.Text;
 
 public class OnBlockBreakEventCore
@@ -257,6 +258,10 @@ public class OnBlockBreakEventCore
 
     		if ( isToolDisabled( e.getPlayer() ) ) {
     			
+    			PrisonUtilsTitles uTitles = new PrisonUtilsTitles();
+    			uTitles.utilsTitlesActionBar( new SpigotPlayer( e.getPlayer() ), "", 
+    					"&cYour tool is worn-out and cannot be used." );
+    			
     			e.setCancelled( true );
     			debugInfo += "UNUSABLE_TOOL__WORN_OUT (event canceled) ";
     		}
@@ -401,6 +406,10 @@ public class OnBlockBreakEventCore
     		
     		if ( isToolDisabled( e.getPlayer() ) ) {
     			
+    			PrisonUtilsTitles uTitles = new PrisonUtilsTitles();
+    			uTitles.utilsTitlesActionBar( new SpigotPlayer( e.getPlayer() ), "", 
+    					"&cYour tool is worn-out and cannot be used." );
+
     			e.setCancelled( true );
     			debugInfo += "UNUSABLE_TOOL__WORN_OUT (event canceled) ";
     		}
@@ -665,8 +674,10 @@ public class OnBlockBreakEventCore
 			boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
     		
 			if ( isToolDisabled( e.getPlayer() ) ) {
-				
-				//e.getPlayer().sen
+    			
+    			PrisonUtilsTitles uTitles = new PrisonUtilsTitles();
+    			uTitles.utilsTitlesActionBar( new SpigotPlayer( e.getPlayer() ), "", 
+    					"&cYour tool is worn-out and cannot be used." );
     			
     			e.setCancelled( true );
     			debugInfo += "UNUSABLE_TOOL__WORN_OUT (event canceled) ";
