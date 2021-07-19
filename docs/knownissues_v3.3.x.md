@@ -3,6 +3,8 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
+* When adding a new rank or mine, auto reload all placeholders so they pick up the new entry.
+
 
 * When adding block stats.... add player online stats.
   - add events that run, similar to blockEvents, but maybe call them statsEvents?

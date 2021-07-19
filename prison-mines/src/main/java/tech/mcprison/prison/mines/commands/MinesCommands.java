@@ -3027,8 +3027,8 @@ public class MinesCommands
 			"This command defaults to no permission and 'sync' task mode; " +
 			"see '/mines blockEvent' for more blockEvent options.", 
     		onlyPlayers = false, permissions = "mines.set", 
-    		docURLs = {"https://prisonteam.github.io/Prison/prison_docs_115_using_BlockEvents.html",
-    				"https://prisonteam.github.io/Prison/prison_docs_111_mine_commands.html" } )
+	    		docURLs = {"https://prisonteam.github.io/Prison/prison_docs_115_using_BlockEvents.html",
+	    				"https://prisonteam.github.io/Prison/prison_docs_111_mine_commands.html" } )
     public void blockEventAdd(CommandSender sender, 
     			@Arg(name = "mineName", description = "mine name, or 'placeholders' for a list of possible placeholders that " +
     					"you can use with blockEvents") String mineName,
