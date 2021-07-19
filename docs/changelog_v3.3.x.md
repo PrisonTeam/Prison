@@ -21,7 +21,13 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.6 2021-07-18
+# v3.2.10-alpha.6 2021-07-19
+
+
+* **New feature: prison utils titles.** 
+This enables sending messages to the player's console as either a title, a subtitle, and/or actionBar.  Can also clear, reset, or set the timings on the titles.
+All three can be sent through the title by using a double colon to indicate the various parts.
+For example: 'Hello Title!::Subtitle is Here!::I'm on an actionBar!'
 
 
 * **Add feature to Auto Features to prevent tools from breaking or being used when durability is equal to or greater than maxDurability.**

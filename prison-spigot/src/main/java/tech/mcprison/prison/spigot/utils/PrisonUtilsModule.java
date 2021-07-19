@@ -107,6 +107,21 @@ public class PrisonUtilsModule
 				
 			}
 			
+			if ( isEnabled( "utils.titles.enabled", true ) ) {
+				
+				PrisonUtilsTitles utils = new PrisonUtilsTitles();
+				
+				utils.setEnableTitlesTitle( isEnabled( "utils.titles.title", true ) );
+				utils.setEnableTitlesSubtitle( isEnabled( "utils.titles.subtitle", true ) );
+				utils.setEnableTitlesActionBar( isEnabled( "utils.titles.actionBar", true ) );
+				utils.setEnableTitlesClear( isEnabled( "utils.titles.clear", true ) );
+				utils.setEnableTitlesReset( isEnabled( "utils.titles.reset", true ) );
+				utils.setEnableTitlesTimes( isEnabled( "utils.titles.times", true ) );
+				
+				Prison.get().getCommandHandler().registerCommands( utils );
+				
+			}
+			
 		}
 	}
 

@@ -35,4 +35,13 @@ utils:
     rainbow: true
     blocks: true
   sounds:
+    enabled: true
     playSound: true
+  titles:
+    enabled: true
+    title: true
+    subtitle: true
+    actionBar: true
+    clear: true
+    reset: true
+    times: true
