@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.6 2021-07-18
 
 
+* **Add feature to Auto Features to prevent tools from breaking or being used when durability is equal to or greater than maxDurability.**
+
+
 * **Added some documentation to the ExplosiveBlockBreakEvent so users can better understand how it should be used.**
 
 

@@ -255,7 +255,12 @@ public class OnBlockBreakEventCore
     		debugInfo += "mine=" + (mine == null ? "none" : mine.getName()) + " ";
     		
 
-    		if ( mine != null && BlockUtils.getInstance().isUnbreakable( block ) ) {
+    		if ( isToolDisabled( e.getPlayer() ) ) {
+    			
+    			e.setCancelled( true );
+    			debugInfo += "UNUSABLE_TOOL__WORN_OUT (event canceled) ";
+    		}
+    		else if ( mine != null && BlockUtils.getInstance().isUnbreakable( block ) ) {
     			// The block is unbreakable because a utility has it locked:
     			
     			e.setCancelled( true );
@@ -394,7 +399,12 @@ public class OnBlockBreakEventCore
     		
     		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
     		
-    		if ( mine != null && BlockUtils.getInstance().isUnbreakable( block ) ) {
+    		if ( isToolDisabled( e.getPlayer() ) ) {
+    			
+    			e.setCancelled( true );
+    			debugInfo += "UNUSABLE_TOOL__WORN_OUT (event canceled) ";
+    		}
+    		else if ( mine != null && BlockUtils.getInstance().isUnbreakable( block ) ) {
     			// The block is unbreakable because a utility has it locked:
     			
     			e.setCancelled( true );
@@ -654,7 +664,14 @@ public class OnBlockBreakEventCore
 			
 			boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
     		
-			if ( mine != null && (mine.isMineAccessByRank() || mine.isAccessPermissionEnabled()) && 
+			if ( isToolDisabled( e.getPlayer() ) ) {
+				
+				//e.getPlayer().sen
+    			
+    			e.setCancelled( true );
+    			debugInfo += "UNUSABLE_TOOL__WORN_OUT (event canceled) ";
+    		}
+    		else if ( mine != null && (mine.isMineAccessByRank() || mine.isAccessPermissionEnabled()) && 
 						!mine.hasMiningAccess( new SpigotPlayer( e.getPlayer() ) ) ) {
     			// The player does not have permission to access this mine, so do not process 
     			// 
@@ -1216,7 +1233,41 @@ public class OnBlockBreakEventCore
 		return results;
 	}
 
-	
+	/**
+	 * <p>This function will check to see the feature 
+	 * <pre>isDisableToolWhenWornOutPreventBreakage</pre> is enabled, and if so,
+	 * then it this will return a value of true if the tool in the hand of the player
+	 * is has a maxDurability greater than zero and the current durability level is
+	 * equal to or greater than the maxDurability.
+	 * </p>
+	 * 
+	 * <p>This function actually does not apply to just tools, but could apply to anything
+	 * that may be used for breaking a block and has durability.
+	 * </p>
+	 * 
+	 * @param player
+	 * @return
+	 */
+	private boolean isToolDisabled( Player player ) {
+		boolean results = false;
+
+		if ( isBoolean( AutoFeatures.isDisableToolWhenWornOutPreventBreakage ) ) {
+			
+			SpigotItemStack itemInHand =
+					SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
+			
+			if ( itemInHand != null && !itemInHand.isAir() ) {
+				
+				Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+				int maxDurability = compat.getDurabilityMax( itemInHand );
+				int durability = compat.getDurability( itemInHand );
+				
+				results = ( maxDurability > 0 && durability >= maxDurability );
+			}
+		}
+			
+		return results;
+	}
 
 	/**
 	 * <p>This should calculate and apply the durability consumption on the tool.

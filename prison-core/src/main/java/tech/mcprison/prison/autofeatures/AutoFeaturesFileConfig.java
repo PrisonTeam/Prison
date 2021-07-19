@@ -57,6 +57,7 @@ public class AutoFeaturesFileConfig {
 		    	isAutoManagerEnabled(general, true),
 		    	
 		    	
+		    	isDisableToolWhenWornOutPreventBreakage(general, false),
 		    	isCalculateDurabilityEnabled(general, false),
 		    	
 		    	isCalculateSilkEnabled(general, true),
