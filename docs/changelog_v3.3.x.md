@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.6 2021-07-19
 
 
+* **Try to better handle situations where integrations fail when integrating.**
+Now has the ability to disable the integration and remove it when it fails.
+
+
 * **New feature: prison utils titles.** 
 This enables sending messages to the player's console as either a title, a subtitle, and/or actionBar.  Can also clear, reset, or set the timings on the titles.
 All three can be sent through the title by using a double colon to indicate the various parts.

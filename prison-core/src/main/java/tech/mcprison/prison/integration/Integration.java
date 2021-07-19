@@ -128,4 +128,7 @@ public interface Integration {
 	public String getDebugInfo();
 	public void setDebugInfo( String debugInfo );
 	public void addDebugInfo( String debugInfo );
+
+
+	public void disableIntegration();
 }

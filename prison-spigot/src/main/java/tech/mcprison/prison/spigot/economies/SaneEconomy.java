@@ -63,9 +63,14 @@ public class SaneEconomy
     
     @Override 
     public boolean hasIntegrated() {
-        return false;
+        return econWrapper != null;
     }
-
+    
+    @Override
+    public void disableIntegration() {
+    	econWrapper = null;
+    }
+    
     @Override
     public String getDisplayName()
     {

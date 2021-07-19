@@ -92,7 +92,12 @@ public class VaultPermissions
     @Override public boolean hasIntegrated() {
         return permissions != null;
     }
-
+    
+    @Override
+    public void disableIntegration() {
+    	permissions = null;
+    }
+    
     /**
      * <p>Vault is unable to return a list of permissions for the players when they
      * are offline.  Vault can only return lists of groups the player is in.  And

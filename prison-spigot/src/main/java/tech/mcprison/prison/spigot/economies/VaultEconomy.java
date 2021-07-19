@@ -102,7 +102,12 @@ public class VaultEconomy
     public boolean hasIntegrated() {
         return econWrapper != null && econWrapper.isEnabled();
     }
-
+    
+    @Override
+    public void disableIntegration() {
+    	econWrapper = null;
+    }
+    
 	@Override
 	public String getPluginSourceURL() {
 		return "https://www.spigotmc.org/resources/vault.34315/";

@@ -58,7 +58,12 @@ public class PlaceHolderAPIIntegration
 	public boolean hasIntegrated() {
 		return (placeHolderWrapper != null);
 	}
-	
+    
+    @Override
+    public void disableIntegration() {
+    	placeHolderWrapper = null;
+    }
+    
 	@Override
     public String getAlternativeInformation() {
     	return null;

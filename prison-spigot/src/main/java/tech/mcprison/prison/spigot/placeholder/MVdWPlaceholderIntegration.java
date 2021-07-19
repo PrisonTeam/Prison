@@ -9,6 +9,7 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.managers.MineManager;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceHolderKey;
 import tech.mcprison.prison.placeholders.PlaceholderAttribute;
 import tech.mcprison.prison.placeholders.PlaceholderIntegration;
@@ -46,13 +47,30 @@ public class MVdWPlaceholderIntegration
 		if ( isRegistered()) {
 			try {
 				if ( Bukkit.getPluginManager().isPluginEnabled(getProviderName())) {
-					placeholderWrapper = new MVdWPlaceholderIntegrationWrapper(getProviderName());
+					
+					
+					// The integration was written for MVdW v3.0.0, but if used with older versions
+					// it will fail.
+
+					// This will fail if the version of mvdw is v2.x.x, which is what we want:
+					Class.forName("be.maximvdw.placeholderapi.PlaceholderAPI", false, getClass().getClassLoader());
+					
+					MVdWPlaceholderIntegrationWrapper wrap = new MVdWPlaceholderIntegrationWrapper(getProviderName());
+					
+					placeholderWrapper = wrap;
 					
 					PrisonAPI.getIntegrationManager().addDeferredInitialization( this );
 				}
 			}
-			catch ( NoClassDefFoundError | IllegalStateException e ) {
+			catch ( NoClassDefFoundError e ) {
 				// ignore this exception since it means the plugin was not loaded
+				Output.get().logWarn( "Attempted to enable the MVdWPlaceholderIntegration but it failed to find the " +
+						"class 'be.maximvdw.placeholderapi.PlaceholderAPI'. This could happen when using " +
+						"MVdWPlaceholderApi v2.x.x.  Prison ONLY support MVdW v3.x.x.  " +
+						"&c****&7  Try using PlaceholderAPI (papi) instead.  &c****" );
+			}
+			catch ( IllegalStateException e ) {
+				// ignore ... plugin is not loaded
 			}
 			catch ( Exception e ) {
 				e.printStackTrace();
@@ -131,6 +149,11 @@ public class MVdWPlaceholderIntegration
     @Override
     public boolean hasIntegrated() {
         return (placeholderWrapper != null);
+    }
+    
+    @Override
+    public void disableIntegration() {
+    	placeholderWrapper = null;
     }
     
     @Override

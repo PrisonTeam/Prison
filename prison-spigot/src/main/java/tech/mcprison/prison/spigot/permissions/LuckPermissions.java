@@ -102,7 +102,11 @@ public class LuckPermissions
     public boolean hasIntegrated() {
         return (permsWrapper != null);
     }
-
+    
+    @Override
+    public void disableIntegration() {
+    	permsWrapper = null;
+    }
 
 	@Override
 	public String getPluginSourceURL() {

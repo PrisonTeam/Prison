@@ -12,6 +12,7 @@ import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.output.DisplayComponent;
 import tech.mcprison.prison.output.FancyMessageComponent;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.TextComponent;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
 
@@ -337,12 +338,60 @@ public class IntegrationManager {
 
 	public void register( Integration integration, boolean isRegistered, String version )
 	{
-    	integration.setRegistered( isRegistered );
-    	integration.setVersion( version );
+		try {
+			
+			integration.setRegistered( isRegistered );
+			integration.setVersion( version );
+			
+			integration.integrate();
+			
+			if ( integration.hasIntegrated() ) {
+				register(integration );
+			}
+//    	else {
+//    		boolean deferredRemoved = getDeferredIntegrations().remove( integration );
+//    		
+//    		Output.get().logWarn( 
+//    				String.format( "Warning: An integration that is registered with bukkit " +
+//    				"failed to integrate: %s %s %s[%s]", 
+//    				integration.getKeyName(), integration.getVersion(),
+//    				( deferredRemoved ? "(Deferred Processing Removed) " : "" ),
+//    				(integration.getDebugInfo() == null ? 
+//    							"no debug info" : integration.getDebugInfo()) ));
+//    	}
+		}
+		catch ( Exception e ) {
+    		boolean deferredRemoved = getDeferredIntegrations().remove( integration );
+    		
+    		removeIntegration( integration );
 
-    	integration.integrate();
+    		Output.get().logWarn( 
+    				String.format( "Warning: An integration caused an error while loading. " +
+    				"Disabling the integration to protect Prison: %s %s %s[%s]", 
+    				integration.getKeyName(), integration.getVersion(),
+    				( deferredRemoved ? "(Deferred Processing Removed) " : "" ),
+    				(integration.getDebugInfo() == null ? 
+    							"no debug info" : integration.getDebugInfo()) ));
+			
+		}
     	
-    	register(integration );
+	}
+
+
+	/**
+	 * <p>This will perform a best effort to remove an integration.  It will not remove it from
+	 * the deferred list, but it would not be able to run.
+	 * </p>
+	 * 
+	 * @param integration
+	 */
+	public void removeIntegration( Integration integration )
+	{
+		// make sure it's disabled:
+		integration.setRegistered( false );
+		integration.disableIntegration();
+		
+		integrations.get( integration.getType() ).remove( integration );
 	}
 
 

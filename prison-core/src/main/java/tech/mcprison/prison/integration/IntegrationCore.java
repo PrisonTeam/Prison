@@ -81,7 +81,10 @@ public class IntegrationCore
     	
     }
     
-  
+    public void disableIntegration() {
+    	
+    }
+    
     public String getKeyName() {
     	return keyName;
     }

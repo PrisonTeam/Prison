@@ -736,7 +736,27 @@ public class SpigotPrison extends JavaPlugin {
 
 	private void applyDeferredIntegrationInitializations() {
     	for ( Integration deferredIntegration : PrisonAPI.getIntegrationManager().getDeferredIntegrations() ) {
-    		deferredIntegration.deferredInitialization();
+    		
+    		try {
+    			if ( deferredIntegration.isRegistered() && deferredIntegration.hasIntegrated() ) {
+    				
+    				deferredIntegration.deferredInitialization();
+    			}
+    		}
+    		catch ( Exception e ) {
+    			
+
+    			PrisonAPI.getIntegrationManager().removeIntegration( deferredIntegration );
+    			
+        		Output.get().logWarn( 
+        				String.format( "Warning: An integration failed during deferred integration. " +
+        				"Disabling the integration to protect Prison: %s %s %s[%s]", 
+        				deferredIntegration.getKeyName(), deferredIntegration.getVersion(),
+        				(deferredIntegration.getDebugInfo() == null ? 
+        							"no debug info" : deferredIntegration.getDebugInfo()) ));
+    			
+    		}
+
     	}
     }
     
