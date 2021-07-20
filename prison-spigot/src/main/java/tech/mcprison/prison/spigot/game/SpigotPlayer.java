@@ -505,4 +505,20 @@ public class SpigotPlayer
 								.setMaxHealth( getWrapper(), maxHealth );
 		}
 	}
+	
+	@Override
+	public void setTitle( String title, String subtitle, int fadeIn, int stay, int fadeOut ) {
+		if ( getWrapper() != null) {
+			SpigotPrison.getInstance().getCompatibility()
+					.sendTitle( getWrapper(), title, subtitle, fadeIn, stay, fadeOut );
+		}
+	}
+	
+	@Override
+	public void setActionBar( String actionBar ) {
+		if ( getWrapper() != null) {
+			SpigotPrison.getInstance().getCompatibility()
+					.sendActionBar( getWrapper(), actionBar );
+		}
+	}
 }

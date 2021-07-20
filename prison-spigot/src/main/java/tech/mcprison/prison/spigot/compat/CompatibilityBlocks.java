@@ -19,6 +19,8 @@ public interface CompatibilityBlocks
 	
 	public XMaterial getXMaterial( Block spigotBlock );
 	
+	public XMaterial getXMaterial( PrisonBlock prisonBlock );
+	
 	public XMaterial getXMaterial( BlockType blockType );
 
 	public void updateSpigotBlock( BlockType blockType, Block spigotBlock );

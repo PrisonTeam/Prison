@@ -293,4 +293,12 @@ public class SpigotOfflinePlayer
     	return results;
     }
     
+	@Override
+	public void setTitle( String title, String subtitle, int fadeIn, int stay, int fadeOut ) {
+	}
+	
+	@Override
+	public void setActionBar( String actionBar ) {
+	}
+    
 }

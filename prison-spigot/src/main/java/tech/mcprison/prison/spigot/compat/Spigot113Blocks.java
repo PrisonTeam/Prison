@@ -18,9 +18,10 @@ import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.util.BlockType;
 
 public abstract class Spigot113Blocks 
-	extends Spigot19Player 
+	extends Spigot110Player 
 	implements CompatibilityBlocks {
 
+	@Override
 	public BlockType getBlockType(Block spigotBlock) {
 		BlockType results = getCachedBlockType( spigotBlock, NO_DATA_VALUE );
 		
@@ -44,6 +45,7 @@ public abstract class Spigot113Blocks
         return results == BlockType.NULL_BLOCK ? null : results;
     }
 	
+	@Override
 	public PrisonBlock getPrisonBlock(Block spigotBlock) {
 		PrisonBlock pBlock = null;
 		
@@ -58,6 +60,7 @@ public abstract class Spigot113Blocks
 		return pBlock;
 	}
 	
+	@Override
 	public BlockType getBlockType(ItemStack spigotStack) {
 		BlockType results = getCachedBlockType( spigotStack, NO_DATA_VALUE );
 		
@@ -73,6 +76,7 @@ public abstract class Spigot113Blocks
 		return results == BlockType.NULL_BLOCK ? null : results;
 	}
 	
+	@Override
 	public XMaterial getXMaterial( Block spigotBlock ) {
 		XMaterial results = NULL_TOKEN;
 
@@ -100,6 +104,7 @@ public abstract class Spigot113Blocks
 	}
 	
 	
+	@Override
 	public XMaterial getXMaterial( PrisonBlock prisonBlock ) {
 		XMaterial results = NULL_TOKEN;
 		
@@ -129,6 +134,7 @@ public abstract class Spigot113Blocks
 	 * @param blockType
 	 * @return
 	 */
+	@Override
 	public XMaterial getXMaterial( BlockType blockType ) {
 		XMaterial results = getCachedXMaterial( blockType, NO_DATA_VALUE );
 		
@@ -162,6 +168,7 @@ public abstract class Spigot113Blocks
 	}
 
 	
+	@Override
 	public void updateSpigotBlock( BlockType blockType, Block spigotBlock ) {
     	
     	if ( blockType != null && blockType != BlockType.IGNORE && spigotBlock != null ) {
@@ -173,6 +180,7 @@ public abstract class Spigot113Blocks
     }
 	
 	
+	@Override
 	public void updateSpigotBlock( PrisonBlock prisonBlock, Block spigotBlock ) {
 		
 		if ( prisonBlock != null && 
@@ -189,6 +197,7 @@ public abstract class Spigot113Blocks
 	}
 	
 	
+	@Override
 	public void updateSpigotBlock( XMaterial xMat, Block spigotBlock ) {
 		
 		if ( xMat != null ) {
@@ -216,6 +225,7 @@ public abstract class Spigot113Blocks
 	 * 
 	 * @return
 	 */
+	@Override
 	public BlockTestStats testCountAllBlockTypes() {
 		BlockTestStats stats = new BlockTestStats();
 		
@@ -242,6 +252,7 @@ public abstract class Spigot113Blocks
 	}
 	
 	
+	@Override
 	public int getDurabilityMax( SpigotItemStack itemInHand ) {
 		return itemInHand.getBukkitStack().getType().getMaxDurability();
 	}
@@ -308,6 +319,7 @@ public abstract class Spigot113Blocks
 	 * org.bukkit.block.BlockFace.SOUTH.  Not sure why it has to be the
 	 * opposite, which is unlike v1.8.8?
 	 */
+	@Override
 	public void setBlockFace( Block spigotBlock, BlockFace blockFace ) {
 		
 		

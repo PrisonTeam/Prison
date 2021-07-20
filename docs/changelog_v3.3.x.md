@@ -24,7 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.6 2021-07-19
 
 
-
+* **Rewrite how the player uses title, subtitle, and actionBar for the /prison utils titles command.**
+Spigot 1.8 does not support any of this.
+Spigot 1.8.8 is when this was introduced. But 1.8.8 does not have actionBar, so instead it shows the message in the subtitle.
+Spigot 1.9+ are able to display title, subtitle, and actionBar at the same time.
 
 
 * **Release of v3.2.10-alpha.6 - 2021-07-19**
