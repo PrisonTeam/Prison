@@ -89,36 +89,9 @@ public class PrisonUtilsTitles
 				
 				String[] messages = message.split( "::" );
 				
-				String title = "";
-				String subtitle = "";
-				String actionBar = "";
-				
-				if ( messages.length > 2 ) {
-					actionBar = messages[2];
-					
-//					actionBar = String.format( 
-//							"title %s actionBar {\"text\": \"%s\"}", 
-//									player.getName(), messages[2] );
-//					dispatchCommand( actionBar );
-				}
-				
-				if ( messages.length > 1 ) {
-					subtitle = messages[1];
-					
-//					subtitle = String.format( 
-//							"title %s subtitle {\"text\": \"%s\"}", 
-//							player.getName(), messages[1] );
-//					dispatchCommand( subtitle );
-				}
-
-				if ( messages.length > 0 ) {
-					title = messages[0];
-					
-//					title = String.format( 
-//							"title %s title {\"text\": \"%s\"}", 
-//							player.getName(), messages[0] );
-//					dispatchCommand( title );
-				}
+				String title = ( messages.length > 0 ? messages[0] : "");
+				String subtitle = ( messages.length > 1 ? messages[1] : "");
+				String actionBar = ( messages.length > 2 ? messages[2] : "");
 				
 				player.setTitle( title, subtitle, -1, -1, -1 );
 				
@@ -130,57 +103,6 @@ public class PrisonUtilsTitles
 		}
 	}
 	
-//	@Command(identifier = "prison utils titles subtitle", 
-//			description = "Displays a Subitle on the player's screen. The subtitle is " +
-//					"displayed under the title. To display the subtitle, this command also " +
-//					"sends a blank title.  If you need to display both the title and subtitle, " +
-//					"then send both with 'titles title'.",
-//					onlyPlayers = false, 
-//					permissions = "prison.utils.titles.subtitle",
-//					altPermissions = "prison.utils.titles.subtitle.others")
-//	public void utilsTitlesSubtitle( CommandSender sender, 
-//			@Arg(name = "playerName", description = "Player name") String playerName,
-//			
-//			@Wildcard(join=true)
-//			@Arg(name = "message", 
-//				description = "The message to display in the subtitle.") String message 
-//			) {
-//		
-//		if ( !isEnableTitlesTitle() ) {
-//			
-//			Output.get().logInfo( "Prison's utils command subtitles title is disabled in modules.yml." );
-//		}
-//		else {
-//			
-//			SpigotPlayer player = checkPlayerPerms( sender, playerName, 
-//					"prison.utils.titles.subtitle", "prison.utils.titles.subtitle.others" );
-//			
-//			if ( player != null ) {
-//				
-//				if ( playerName != null && !playerName.equalsIgnoreCase( player.getName() ) ) {
-//					// Need to shift the player's name over to the message:
-//					
-//					message = playerName + " " + message;
-//					playerName = null;
-//				}
-//				
-//				String titleJsonTitle = String.format( 
-//						"title %s title {\"text\": \"\"}",
-//						player.getName() );
-//				
-//				
-//				String titleJson = String.format( 
-//						"title %s subtitle {\"text\": \"%s\"}",
-//						player.getName(), message );
-//				
-//				dispatchCommand( titleJson );
-//				
-//				// send blank title to get the subtitle to display
-//				dispatchCommand( titleJsonTitle );
-//			}
-//
-//		}
-//	}
 	
 	@Command(identifier = "prison utils titles actionBar", 
 			description = "Displays an actionBar text on the player's screen. The actionBar is " +
