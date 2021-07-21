@@ -30,6 +30,7 @@ import java.util.UUID;
 import com.google.common.eventbus.Subscribe;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.events.player.PlayerJoinEvent;
 import tech.mcprison.prison.output.Output;
@@ -908,6 +909,35 @@ public class PlayerManager
 
     	return sb.toString();
     }
+    private String getPlayerAverageEarningsPerMinute( RankPlayer rankPlayer, String ladderName, 
+    		boolean formatted, PlaceholderAttribute attribute ) {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	
+    	if ( !rankPlayer.getLadderRanks().isEmpty()) {
+    		DecimalFormat dFmt = new DecimalFormat("#,##0");
+    		
+    		double epm = PlayerCache.getInstance().getPlayerEarningsPerMinute( rankPlayer );
+    		
+    		if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    			PlaceholderAttributeNumberFormat attributeNF = 
+    					(PlaceholderAttributeNumberFormat) attribute;
+    			sb.append( attributeNF.format( epm ) );
+    		}
+    		
+    		else if ( formatted ) {
+    			sb.append( PlaceholdersUtil.formattedMetricSISize( epm ));
+    		}
+    		else {
+    			sb.append( dFmt.format( epm ));
+    		}
+    		
+    	}
+    	
+    	return sb.toString();
+    }
+ 
+    
     
 //    /**
 //     * <p>This gets the player's balance, and if the rank is provided, it will check to 
@@ -1231,6 +1261,18 @@ public class PlayerManager
 					case prison_pb_laddername:
 					case prison_player_balance_laddername:
 						results = getPlayerBalance( rankPlayer, ladderName, false, attribute );
+						break;
+						
+					case prison_pb_epm:
+					case prison_player_balance_earnings_per_minute:
+						
+						results = getPlayerAverageEarningsPerMinute( rankPlayer, ladderName, false, attribute );
+						break;
+						
+					case prison_pb_epmf:
+					case prison_player_balance_earnings_per_minute_formatted:
+						
+						results = getPlayerAverageEarningsPerMinute( rankPlayer, ladderName, true, attribute );
 						break;
 						
 					case prison_psm:

@@ -4,7 +4,13 @@ package tech.mcprison.prison.spigot.sellall;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -21,6 +27,7 @@ import com.cryptomorin.xseries.XMaterial;
 import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
@@ -44,7 +51,7 @@ import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
 public class SellAllUtil {
 
     private static SellAllUtil instance;
-    private final boolean isEnabled = isEnabled();
+//    private final boolean isEnabled = isEnabled();
     private File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
     public Configuration sellAllConfig = SpigotPrison.getInstance().updateSellAllConfig();
     public static List<String> activePlayerDelay = new ArrayList<>();
@@ -1667,6 +1674,10 @@ public class SellAllUtil {
             moneyToGive = moneyToGive * getMultiplier(sPlayer);
         }
 
+        // Log the amount of money earned to generate the average earned per minute for the player:
+        if ( moneyToGive > 0 ) {
+        	PlayerCache.getInstance().addPlayerEarnings( sPlayer, moneyToGive );
+        }
         return moneyToGive;
     }
 

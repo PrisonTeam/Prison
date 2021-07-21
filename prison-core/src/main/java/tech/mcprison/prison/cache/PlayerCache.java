@@ -244,7 +244,6 @@ public class PlayerCache {
 				(playerData.getPlayer() == null || !playerData.getPlayer().equals( player ) ) ) {
 			playerData.setPlayer( player );
 		}
-
 		
 		return playerData;
 	}
@@ -332,6 +331,30 @@ public class PlayerCache {
 //				(playerData == null ? "null" : playerData.toString() ));
 		
 		playerData.addBlock( mine, block.getBlockName(), quantity );
+	}
+	
+	/**
+	 * This stores the earnings from the player so they can
+	 * be averaged to find their earnings per minute.
+	 * 
+	 * @param player
+	 * @param earnings
+	 */
+	public void addPlayerEarnings( Player player, double earnings ) {
+		PlayerCachePlayerData playerData = getPlayer( player );
+		
+		playerData.addEarnings( earnings );
+	}
+	public double getPlayerEarningsPerMinute( Player player ) {
+		double earningsPerMinute = 0;
+		
+		PlayerCachePlayerData playerData = getPlayer( player );
+		
+		if ( playerData != null ) {
+			earningsPerMinute = playerData.getAverageEarningsPerMinute();
+		}
+		
+		return earningsPerMinute;
 	}
 	
 

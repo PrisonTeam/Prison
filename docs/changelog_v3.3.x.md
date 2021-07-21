@@ -21,7 +21,13 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.6 2021-07-19
+# v3.2.10-alpha.6 2021-07-21
+
+
+* **New Feature: Prison now tracks average earnings per minute.**
+If you have auto sell enabled (sell upon each block break, see autoFeaturesConfig.yml) then prison will be able to report your average earnings over the last 5 minutes of mining activity.
+`prison_player_balance_earnings_per_minute` prison_pb_epm
+`prison_player_balance_earnings_per_minute_formatted` prison_pb_epmf
 
 
 * **Rewrite how the player uses title, subtitle, and actionBar for the /prison utils titles command.**

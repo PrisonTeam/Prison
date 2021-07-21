@@ -1,6 +1,8 @@
 package tech.mcprison.prison.cache;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.TreeMap;
 
 import tech.mcprison.prison.internal.Player;
@@ -62,6 +64,9 @@ public class PlayerCachePlayerData {
 	private TreeMap<String, Integer> blocksByType;
 	
 	
+	private TreeMap<String, Double> earningsPerMinute;
+	
+	
 	// This is the time when the "session" was started:
 	private transient SessionType sessionType;
 	
@@ -86,6 +91,8 @@ public class PlayerCachePlayerData {
 		
 		this.blocksByMine = new TreeMap<>();
 		this.blocksByType = new TreeMap<>();
+		
+		this.earningsPerMinute = new TreeMap<>();
 		
 		this.sessionType = SessionType.active;
 		
@@ -261,6 +268,46 @@ public class PlayerCachePlayerData {
 	}
 	
 	
+	/**
+	 * This stores the earnings from the player so they can
+	 * be averaged to find their earnings per minute.
+	 * 
+	 * @param earnings
+	 */
+	public void addEarnings( double earnings ) {
+		SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd_hh:mm");
+		String key = dateFmt.format( new Date() );
+		
+		if ( earningsPerMinute.containsKey( key )  ) {
+			earnings += earningsPerMinute.get( key ) + earnings;
+		}
+		
+		earningsPerMinute.put( key, earnings );
+		
+		if ( earningsPerMinute.size() > 5 ) {
+			earningsPerMinute.remove( 
+					earningsPerMinute.firstEntry().getKey() );
+		}
+	}
+	
+	/**
+	 * This returns the average amount earned per minute for the
+	 * last 5 minutes.
+	 * 
+	 * @return
+	 */
+	public double getAverageEarningsPerMinute() {
+		double results = 0;
+		
+		int size = 0;
+		for ( double value : earningsPerMinute.values() ) {
+			results += value;
+			size++;
+		}
+		
+		return ( size == 0 ? 0 : ( results / size ));
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -269,6 +316,9 @@ public class PlayerCachePlayerData {
 		String miningTime = PlaceholdersUtil.formattedTime( onlineMiningTimeTotal / 1000d );
 		
 		sb.append( getPlayerName() )
+		
+			.append( "  avg earnings/min: " )
+			.append( getAverageEarningsPerMinute() )
 		
 			.append( "  TotalOnlineTime: " )
 			.append( totalTime )
@@ -321,6 +371,13 @@ public class PlayerCachePlayerData {
 	}
 	public void setTask( PlayerCacheRunnable task ) {
 		this.task = task;
+	}
+
+	public TreeMap<String, Double> getEarningsPerMinute() {
+		return earningsPerMinute;
+	}
+	public void setEarningsPerMinute( TreeMap<String, Double> earningsPerMinute ) {
+		this.earningsPerMinute = earningsPerMinute;
 	}
 
 	public long getOnlineTimeTotal() {

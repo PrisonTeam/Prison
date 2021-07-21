@@ -233,6 +233,13 @@ public class PlaceholderManager {
 		prison_pb(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
 		prison_player_balance(prison_pb, PlaceholderFlags.PLAYER),
 		
+		
+		prison_pb_epm(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_pb_epmf(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_player_balance_earnings_per_minute(prison_pb_epm, PlaceholderFlags.PLAYER),
+		prison_player_balance_earnings_per_minute_formatted(prison_pb_epmf, PlaceholderFlags.PLAYER),
+		
+		
 		prison_pb_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
 		prison_player_balance_laddername(prison_pb_laddername, PlaceholderFlags.LADDERS),
 
