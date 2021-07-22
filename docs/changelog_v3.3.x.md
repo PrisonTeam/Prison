@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.6 2021-07-23
 
 
+* **Added a debug logging entry for XP Calculations.**
+This will be able to provide detail infomation on if it's working and what the results are.
+
+
 * **Add support for PrisonEnchants' ExplosiveEvent.**
 While adding support for the ExplosiveEvent, found a few issues and fixed them.  Some changes were just in names of functions, others were functional, such as improving the support of unbreakable and blocks that fall outside of a mine.
 

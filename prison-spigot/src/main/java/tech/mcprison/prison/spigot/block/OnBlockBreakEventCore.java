@@ -1476,6 +1476,8 @@ public class OnBlockBreakEventCore
 	protected void calculateAndGivePlayerXP(SpigotPlayer player, String blockName, 
 					int count, int bonusXp ) {
 
+		int totalXp = 0;
+		
 		if (isBoolean(AutoFeatures.isCalculateXPEnabled) && blockName != null ) {
 
 //			String blockName = block.getPrisonBlock() == null ? null : block.getPrisonBlock().getBlockName();
@@ -1489,6 +1491,7 @@ public class OnBlockBreakEventCore
 
 				if (xp > 0) {
 
+					totalXp += xp;
 					if ( isBoolean( AutoFeatures.givePlayerXPAsOrbDrops )) {
 
 						player.dropXPOrbs( xp );
@@ -1500,6 +1503,17 @@ public class OnBlockBreakEventCore
 					}
 				}
 			}
+		}
+		
+		if ( Output.get().isDebug( DebugTarget.xpCalcs )) {
+			
+			String message = String.format( "XP calculations: %s %s  blocks: %d  xp: %d  bonusXp: %d " +
+					" isCalculateXPEnabled: %s  givePlayerXPAsOrbDrops %s ",
+					player.getName(), blockName, count, totalXp, bonusXp,
+					Boolean.toString( isBoolean(AutoFeatures.isCalculateXPEnabled) ), 
+					Boolean.toString( isBoolean( AutoFeatures.givePlayerXPAsOrbDrops ) ) );
+			
+			Output.get().logDebug( DebugTarget.xpCalcs, message );
 		}
 	}
 	

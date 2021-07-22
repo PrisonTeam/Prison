@@ -64,7 +64,8 @@ public class Output
 //    	blockBreakListeners,
     	blockBreakFortune,
     	durability, 
-    	support
+    	support,
+    	xpCalcs
     	;
     	
     	public static DebugTarget fromString( String target ) {
