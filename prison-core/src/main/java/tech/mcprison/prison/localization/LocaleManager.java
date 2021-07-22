@@ -619,7 +619,7 @@ public class LocaleManager {
             	if ( !line.startsWith( "#" ) && line.contains( "=" ) ) {
             		
             		String[] keyValue = line.split( "\\=" );
-            		String value = keyValue[1]; // StringEscapeUtils.escapeJava( keyValue[1] );
+            		String value = (keyValue.length > 1 ? keyValue[1] : ""); // StringEscapeUtils.escapeJava( keyValue[1] );
             		temp.put( keyValue[0], value );
             	}
             	

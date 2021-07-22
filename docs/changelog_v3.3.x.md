@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.6 2021-07-22
 
 
+* **Bug Fix: If a message is removed, such that there is nothing left of the = character in the language properties files, it will now not throw an index out of bounds exception.**
+Removal of the message was not expected and there was unable to handle that situation.
+
+
 * **Added support for 4 new types of placeholders that uses the PlayerCache:**
 Player's total block count.  And player's count per mine.
 
