@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.6 2021-07-22
 
 
+* **Changed some of the DebugTarget names to better reflect where in the project they are occurring.**
+
+
 * **Bug Fix: If a message is removed, such that there is nothing left of the = character in the language properties files, it will now not throw an index out of bounds exception.**
 Removal of the message was not expected and there was unable to handle that situation.
 

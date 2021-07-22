@@ -62,10 +62,10 @@ public class Output
     	off,
     	blockBreak,
 //    	blockBreakListeners,
+    	blockBreakDurability, 
     	blockBreakFortune,
-    	durability, 
-    	support,
-    	xpCalcs
+    	blockBreakXpCalcs,
+    	support
     	;
     	
     	public static DebugTarget fromString( String target ) {

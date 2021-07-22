@@ -1505,7 +1505,7 @@ public class OnBlockBreakEventCore
 			}
 		}
 		
-		if ( Output.get().isDebug( DebugTarget.xpCalcs )) {
+		if ( Output.get().isDebug( DebugTarget.blockBreakXpCalcs )) {
 			
 			String message = String.format( "XP calculations: %s %s  blocks: %d  xp: %d  bonusXp: %d " +
 					" isCalculateXPEnabled: %s  givePlayerXPAsOrbDrops %s ",
@@ -1513,7 +1513,7 @@ public class OnBlockBreakEventCore
 					Boolean.toString( isBoolean(AutoFeatures.isCalculateXPEnabled) ), 
 					Boolean.toString( isBoolean( AutoFeatures.givePlayerXPAsOrbDrops ) ) );
 			
-			Output.get().logDebug( DebugTarget.xpCalcs, message );
+			Output.get().logDebug( DebugTarget.blockBreakXpCalcs, message );
 		}
 	}
 	
@@ -1768,7 +1768,7 @@ public class OnBlockBreakEventCore
 			}
 			
 			
-			if ( Output.get().isDebug( DebugTarget.durability ) ) {
+			if ( Output.get().isDebug( DebugTarget.blockBreakDurability ) ) {
 
 				String message = String.format( "calculateAndApplyDurability: %s:  maxDurability= %d  " + 
 						"durability: %d  damage: %d  durResistance: %d  toolDurabilityLvl: %d  %s", 
@@ -1776,7 +1776,7 @@ public class OnBlockBreakEventCore
 						durabilityResistance, durabilityLevel, 
 						(toolBreak ? "[Broke]" : "") );
 				
-				Output.get().logDebug( DebugTarget.durability, message );
+				Output.get().logDebug( DebugTarget.blockBreakDurability, message );
 			}
 			
 		}
