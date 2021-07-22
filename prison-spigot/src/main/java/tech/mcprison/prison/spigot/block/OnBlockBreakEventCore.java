@@ -330,11 +330,23 @@ public class OnBlockBreakEventCore
                 else {
                 	
                 	// doAction returns a boolean that indicates if the event should be canceled or not:
-                	if ( doAction( block, mine, e.getPlayer() ) &&
-                			!isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels )) {
+                	if ( doAction( block, mine, e.getPlayer() ) ) {
+
+                		if ( !isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels ) ) {
+                			e.setCancelled( true );
+                		}
+                		else {
+                			
+                			debugInfo += "(event was not canceled) ";
+                		}
                 		
-                		e.setCancelled( true );
                 	}
+                	else {
+                		
+                		debugInfo += "(doAction failed without details) ";
+                	}
+
+                	debugInfo += "(normal processing) ";
                 }
     			
     			
@@ -581,11 +593,23 @@ public class OnBlockBreakEventCore
 	                else {
 	                	
 	                	// This is where the processing actually happens:
-	                	if ( doAction( mine, e.getPlayer(), explodedBlocks, BlockEventType.TEXplosion, triggered ) && 
-	                			!isBoolean( AutoFeatures.isDebugSupressOnTEExplodeEventCancels )) {
+	                	if ( doAction( mine, e.getPlayer(), explodedBlocks, BlockEventType.TEXplosion, triggered ) ) {
 	                		
-	                		e.setCancelled( true );
+	                		if ( !isBoolean( AutoFeatures.isDebugSupressOnTEExplodeEventCancels ) ) {
+	                			
+	                			e.setCancelled( true );
+	                		}
+	                		else {
+	                			
+	                			debugInfo += "(event was not canceled) ";
+	                		}
 	                	}
+	                	
+	                	else {
+	                		
+	                		debugInfo += "(doAction failed without details) ";
+	                	}
+	                	
 	                }
     				
     			}
@@ -911,11 +935,21 @@ public class OnBlockBreakEventCore
 	                }
 	                else {
 	                	
-	                	// This is where the processing actually happens:
-	                	if ( doAction( mine, e.getPlayer(), explodedBlocks, BlockEventType.CEXplosion, triggered ) && 
-	                			!isBoolean( AutoFeatures.isDebugSupressOnCEBlastUseEventCancels )) {
+	                	if ( doAction( mine, e.getPlayer(), explodedBlocks, BlockEventType.CEXplosion, triggered ) ) {
 	                		
-	                		e.setCancelled( true );
+	                		if ( !isBoolean( AutoFeatures.isDebugSupressOnCEBlastUseEventCancels ) ) {
+	                			
+	                			e.setCancelled( true );
+	                		}
+	                		else {
+	                			
+	                			debugInfo += "(event was not canceled) ";
+	                		}
+	                	}
+	                	
+	                	else {
+	                		
+	                		debugInfo += "(doAction failed without details) ";
 	                	}
 	                	
 	                }
@@ -1145,18 +1179,28 @@ public class OnBlockBreakEventCore
 					SpigotBlock dummyBlock = explodedBlocks.get( 0 );
 					
 	    			PrisonMinesBlockBreakEvent pmbbEvent = new PrisonMinesBlockBreakEvent( dummyBlock.getWrapper(), e.getPlayer(),
-	    												mine, dummyBlock, explodedBlocks, BlockEventType.CEXplosion, triggered );
+	    												mine, dummyBlock, explodedBlocks, BlockEventType.PEExplosive, triggered );
 	                Bukkit.getServer().getPluginManager().callEvent(pmbbEvent);
 	                if ( pmbbEvent.isCancelled() ) {
-	                	debugInfo += "(normal processing: PrisonMinesBlockBreakEvent canceld) ";
+	                	debugInfo += "(normal processing: PrisonMinesBlockBreakEvent canceled) ";
 	                }
 	                else {
 	                	
-	                	// This is where the processing actually happens:
-	                	if ( doAction( mine, e.getPlayer(), explodedBlocks, BlockEventType.CEXplosion, triggered ) && 
-	                			!isBoolean( AutoFeatures.isDebugSupressOnCEBlastUseEventCancels )) {
+	                	if ( doAction( mine, e.getPlayer(), explodedBlocks, BlockEventType.PEExplosive, triggered ) ) {
 	                		
-	                		e.setCancelled( true );
+	                		if ( !isBoolean( AutoFeatures.isDebugSupressOnPEExplosiveEventCancels ) ) {
+	                			
+	                			e.setCancelled( true );
+	                		}
+	                		else {
+	                			
+	                			debugInfo += "(event was not canceled) ";
+	                		}
+	                	}
+	                	
+	                	else {
+	                		
+	                		debugInfo += "(doAction failed without details) ";
 	                	}
 	                	
 	                }

@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.6 2021-07-22
 
 
+* **A few minor adjustments to better identify the function that is running when logging the debug information on BlockBreaks.**
+Tweaks to the PrisonEnchant's plugin code.  Missed a few changes.
+
+
 * **Changed some of the DebugTarget names to better reflect where in the project they are occurring.**
 
 
