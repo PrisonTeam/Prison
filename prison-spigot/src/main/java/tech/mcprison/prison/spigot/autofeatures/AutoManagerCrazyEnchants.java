@@ -89,7 +89,7 @@ public class AutoManagerCrazyEnchants
     	
         @EventHandler(priority=EventPriority.LOWEST) 
         public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-        	super.onCrazyEnchantsBlockExplodeLow( e );
+        	super.onCrazyEnchantsBlockExplode( e );
         }
     }
     
@@ -99,7 +99,7 @@ public class AutoManagerCrazyEnchants
     	
     	@EventHandler(priority=EventPriority.LOW) 
     	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-    		super.onCrazyEnchantsBlockExplodeLow( e );
+    		super.onCrazyEnchantsBlockExplode( e );
     	}
     }
     
@@ -109,7 +109,7 @@ public class AutoManagerCrazyEnchants
     	
     	@EventHandler(priority=EventPriority.NORMAL) 
     	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-    		super.onCrazyEnchantsBlockExplodeLow( e );
+    		super.onCrazyEnchantsBlockExplode( e );
     	}
     }
     
@@ -119,7 +119,7 @@ public class AutoManagerCrazyEnchants
     	
     	@EventHandler(priority=EventPriority.HIGH) 
     	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-    		super.onCrazyEnchantsBlockExplodeLow( e );
+    		super.onCrazyEnchantsBlockExplode( e );
     	}
     }
     
@@ -129,7 +129,7 @@ public class AutoManagerCrazyEnchants
     	
     	@EventHandler(priority=EventPriority.HIGHEST) 
     	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-    		super.onCrazyEnchantsBlockExplodeLow( e );
+    		super.onCrazyEnchantsBlockExplode( e );
     	}
     }
     

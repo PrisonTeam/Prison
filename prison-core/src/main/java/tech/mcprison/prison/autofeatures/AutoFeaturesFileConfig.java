@@ -51,6 +51,9 @@ public class AutoFeaturesFileConfig {
 		    	isProcessZenchantsBlockExplodeEvents(blockBreakEvents, false),
 		    	ZenchantmentsBlockShredEventPriority(blockBreakEvents, "DISABLED"),
 	    	
+		    	isProcessPrisonEnchantsExplosiveEvents(blockBreakEvents, false),
+		    	PrisonEnchantsExplosiveEventPriority(blockBreakEvents, "DISABLED"),
+		    	
 		    	
 	    	general(options),
 	    	

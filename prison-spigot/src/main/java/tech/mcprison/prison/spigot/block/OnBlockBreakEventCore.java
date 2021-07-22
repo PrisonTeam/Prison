@@ -18,6 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
 import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
+import me.pulsi_.prisonenchants.enchantments.custom.explosive.ExplosiveEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
@@ -194,17 +195,23 @@ public class OnBlockBreakEventCore
 		genericBlockExplodeEvent( e, true, blockEventsOnly, true );
 	}
 	
+	
+	protected void genericBlockExplodeEventMonitor( ExplosiveEvent e ) {
+		genericBlockExplodeEvent( e, true, false, false );
+	}
+	
+	protected void genericBlockExplodeEvent( ExplosiveEvent e, boolean blockEventsOnly ) {
+		genericBlockExplodeEvent( e, false, blockEventsOnly, false );
+	}
+	
+	protected void genericBlockExplodeEventAutoManager( ExplosiveEvent e, boolean blockEventsOnly ) {
+		genericBlockExplodeEvent( e, true, blockEventsOnly, true );
+	}
+	
     /**
      * <p>This genericBlockEvent handles the basics of a BlockBreakEvent to see if it has happened
      * within a mine or not.  If it is happening within a mine, then we process it with the doAction()
      * function.
-     * </p>
-     * 
-     * <p>For this class only. the doAction() is only counting the block break event, but does
-     * nothing with the actual block such that there is no need to have knowledge as to if 
-     * it is a custom block.  In other doAction() functions that would exist in other classes 
-     * that extend from this one, it may need that information.  The hooks to find the custom
-     * blocks is within the Block's getPrisonBlock() function. 
      * </p>
      * 
      * @param e
@@ -428,11 +435,14 @@ public class OnBlockBreakEventCore
     			debugInfo += "ACCESS_DENIED (event canceled) ";
     		}
     		else if ( blockEventsOnly ) {
+    			int unbreakable = 0;
+    			int outsideOfMine = 0;
     			
     			if ( mine != null ) {
     				
     				String triggered = null;
     				
+    				// This was already checked to ensure it's breakable:
     				doActionBlockEventOnly( block, mine, e.getPlayer(), BlockEventType.blockBreak, triggered );
     				
     	   			// All other blocks in the explosion:
@@ -444,12 +454,32 @@ public class OnBlockBreakEventCore
         				// perform that check indirectly.
         				SpigotBlock sBlock = new SpigotBlock(blk);
         				
-        				if ( !BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+           				if ( BlockUtils.getInstance().isUnbreakable( new SpigotBlock( blk ) ) ) {
+        					
+        					unbreakable++;
+        				}
+           				else if (  mine.isInMineExact( sBlock.getLocation() ) ) {
         	    			
         					doActionBlockEventOnly( sBlock, mine, e.getPlayer(), BlockEventType.blockBreak, triggered );
         	    		}
+           				else {
+        					outsideOfMine++;
+        				}
+        				
         			}
 
+    			}
+    			
+    			if ( unbreakable > 0 ) {
+    				
+    				// e.setCancelled( true );
+    				debugInfo += "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
+    						" blocks, event not canceled) ";
+    			}
+    			if ( outsideOfMine > 0 ) {
+    				
+    				debugInfo += "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
+    						" blocks, event not canceled) ";
     			}
     			
     			debugInfo += "(actionBlockEventOnly) ";
@@ -460,7 +490,9 @@ public class OnBlockBreakEventCore
     			debugInfo += "(bypassed monitor no mine) ";
     		}
     		else if ( monitor && mine != null ) {
-
+    			int unbreakable = 0;
+    			int outsideOfMine = 0;
+    			
     			// Initial block that was hit:
     			doActionMonitor( block, mine );
     			
@@ -473,12 +505,30 @@ public class OnBlockBreakEventCore
     				// perform that check indirectly.
     				SpigotBlock sBlock = new SpigotBlock(blk);
     				
-    				if ( !BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+    				if ( BlockUtils.getInstance().isUnbreakable( new SpigotBlock( blk ) ) ) {
+    					
+    					unbreakable++;
+    				}
+    				else if ( mine.isInMineExact( sBlock.getLocation() ) ) {
     					
     					doActionMonitor( sBlock, mine );
     				}
+    				else {
+    					outsideOfMine++;
+    				}
     			}
 
+    			if ( unbreakable > 0 ) {
+    				
+    				// e.setCancelled( true );
+    				debugInfo += "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
+    						" blocks, event not canceled) ";
+    			}
+    			if ( outsideOfMine > 0 ) {
+    				
+    				debugInfo += "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
+    						" blocks, event not canceled) ";
+    			}
     			debugInfo += "(monitor) ";
     		}
 
@@ -486,6 +536,8 @@ public class OnBlockBreakEventCore
     		// now process all blocks (non-monitor):
     		else if ( isTEExplosiveEnabled && 
     				( mine != null || mine == null && !isBoolean( AutoFeatures.pickupLimitToMines )) ) {
+    			int unbreakable = 0;
+    			int outsideOfMine = 0;
     			
     			// have to go through all blocks since some blocks may be outside the mine.
     			// but terminate search upon first find:
@@ -497,14 +549,20 @@ public class OnBlockBreakEventCore
     				SpigotBlock sBlock = new SpigotBlock(blk);
     				
     				
-    				if ( !BlockUtils.getInstance().isUnbreakable( sBlock ) && 
-    							mine.isInMineExact( sBlock.getLocation() ) ) {
+    				if ( BlockUtils.getInstance().isUnbreakable( new SpigotBlock( blk ) ) ) {
+    					
+    					unbreakable++;
+    				}
+    				else if ( mine.isInMineExact( sBlock.getLocation() ) ) {
     					
     					explodedBlocks.add( sBlock );
     					
     					
     					// check all external events such as mcMMO and EZBlocks:
     					OnBlockBreakExternalEvents.getInstance().checkAllExternalEvents( e.getPlayer(), blk );
+    				}
+    				else {
+    					outsideOfMine++;
     				}
     				
     			}
@@ -530,6 +588,18 @@ public class OnBlockBreakEventCore
 	                	}
 	                }
     				
+    			}
+    			
+    			if ( unbreakable > 0 ) {
+    				
+    				// e.setCancelled( true );
+    				debugInfo += "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
+    						" blocks, event not canceled) ";
+    			}
+    			if ( outsideOfMine > 0 ) {
+    				
+    				debugInfo += "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
+    						" blocks, event not canceled) ";
     			}
     			
     			debugInfo += "(normal processing) ";
@@ -682,6 +752,12 @@ public class OnBlockBreakEventCore
     			e.setCancelled( true );
     			debugInfo += "UNUSABLE_TOOL__WORN_OUT (event canceled) ";
     		}
+//    		else if ( mine != null && BlockUtils.getInstance().isUnbreakable( block ) ) {
+//    			// The block is unbreakable because a utility has it locked:
+//    			
+//    			e.setCancelled( true );
+//    			debugInfo += "UNBREAKABLE_BLOCK_UTILS (event canceled) ";
+//    		}
     		else if ( mine != null && (mine.isMineAccessByRank() || mine.isAccessPermissionEnabled()) && 
 						!mine.hasMiningAccess( new SpigotPlayer( e.getPlayer() ) ) ) {
     			// The player does not have permission to access this mine, so do not process 
@@ -691,6 +767,8 @@ public class OnBlockBreakEventCore
     			debugInfo += "ACCESS_DENIED (event canceled) ";
     		}
     		else if ( blockEventsOnly ) {
+    			int unbreakable = 0;
+    			int outsideOfMine = 0;
     			
 				if ( mine != null ) {
 					
@@ -699,18 +777,39 @@ public class OnBlockBreakEventCore
 	    			// All other blocks in the explosion:
 	    			for ( Block blk : e.getBlockList() ) {
 	    				
+	    				
 	    				// Need to wrap in a Prison block so it can be used with the mines.
 	    				// Since this is a monitor, there is no need to check to see if the
 	    				// block is in a mine since the getTargetPrisonBlock function will 
 	    				// perform that check indirectly.
 	    				SpigotBlock sBlock = new SpigotBlock(blk);
 	    				
-	    				if ( !BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+	    				if ( BlockUtils.getInstance().isUnbreakable( new SpigotBlock( blk ) ) ) {
+	    					
+	    					unbreakable++;
+	    				}
+	    				else if ( mine.isInMineExact( sBlock.getLocation() ) ) {
 	    					
 	    					doActionBlockEventOnly( sBlock, mine, e.getPlayer(), BlockEventType.CEXplosion, triggered );
 	    				}
+	    				else {
+	    					outsideOfMine++;
+	    				}
+	    				
 	    			}
 				}
+				
+				if ( unbreakable > 0 ) {
+					
+					// e.setCancelled( true );
+	    			debugInfo += "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
+	    								" blocks, event not canceled) ";
+				}
+				if ( outsideOfMine > 0 ) {
+    				
+    				debugInfo += "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
+    						" blocks, event not canceled) ";
+    			}
 
 				debugInfo += "(actionBlockEventOnly) ";
     		}
@@ -720,7 +819,9 @@ public class OnBlockBreakEventCore
     			debugInfo += "(bypassed monitor no mine) ";
     		}
     		else if ( monitor && mine != null ) {
-
+    			int unbreakable = 0;
+    			int outsideOfMine = 0;
+    			
     			// Initial block that was hit:  CrazyE does not have the main block:
     			// doActionMonitor( block, mine );
     			
@@ -733,10 +834,30 @@ public class OnBlockBreakEventCore
     				// perform that check indirectly.
     				SpigotBlock sBlock = new SpigotBlock(blk);
     				
-    				if ( !BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+    				if ( BlockUtils.getInstance().isUnbreakable( new SpigotBlock( blk ) ) ) {
+    					
+    					unbreakable++;
+    				}
+    				else if ( mine.isInMineExact( sBlock.getLocation() ) ) {
     					
     					doActionMonitor( sBlock, mine );
     				}
+    				else {
+    					outsideOfMine++;
+    				}
+    				
+    			}
+
+    			if ( unbreakable > 0 ) {
+    				
+    				// e.setCancelled( true );
+    				debugInfo += "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
+    						" blocks, event not canceled) ";
+    			}
+    			if ( outsideOfMine > 0 ) {
+    				
+    				debugInfo += "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
+    						" blocks, event not canceled) ";
     			}
 
     			debugInfo += "(monitor) ";
@@ -745,6 +866,8 @@ public class OnBlockBreakEventCore
     		// now process all blocks (non-monitor):
     		else if ( isCEBlockExplodeEnabled && 
     				( mine != null || mine == null && !isBoolean( AutoFeatures.pickupLimitToMines )) ) {
+    			int unbreakable = 0;
+    			int outsideOfMine = 0;
     			
     			// have to go through all blocks since some blocks may be outside the mine.
     			// but terminate search upon first find:
@@ -754,14 +877,19 @@ public class OnBlockBreakEventCore
     				// Need to wrap in a Prison block so it can be used with the mines:
     				SpigotBlock sBlock = new SpigotBlock(blk);
     				
-    				if ( !BlockUtils.getInstance().isUnbreakable( sBlock ) && 
-    						mine.isInMineExact( sBlock.getLocation() ) ) {
+    				if ( BlockUtils.getInstance().isUnbreakable( new SpigotBlock( blk ) ) ) {
+    					
+    					unbreakable++;
+    				}
+    				else if ( mine.isInMineExact( sBlock.getLocation() ) ) {
     					
     					explodedBlocks.add( sBlock );
-    					
     						
     					// check all external events such as mcMMO and EZBlocks:
     					OnBlockBreakExternalEvents.getInstance().checkAllExternalEvents( e.getPlayer(), blk );
+    				}
+    				else {
+    					outsideOfMine++;
     				}
     				
     			}
@@ -792,6 +920,19 @@ public class OnBlockBreakEventCore
 	                	
 	                }
     			}
+    			
+    			if ( unbreakable > 0 ) {
+    				
+    				// e.setCancelled( true );
+    				debugInfo += "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
+    						" blocks, event not canceled) ";
+    			}
+    			if ( outsideOfMine > 0 ) {
+    				
+    				debugInfo += "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
+    						" blocks, event not canceled) ";
+    			}
+
     			debugInfo += "(normal processing) ";
     		}
     		else {
@@ -805,6 +946,248 @@ public class OnBlockBreakEventCore
 
 	}
 	
+
+	
+	/**
+	 * <p>Since there are multiple blocks associated with this event, pull out the player first and
+	 * get the mine, then loop through those blocks to make sure they are within the mine.
+	 * </p>
+	 * 
+	 * <p>The logic in this function is slightly different compared to genericBlockEvent() because this
+	 * event contains multiple blocks so it's far more efficient to process the player data once. 
+	 * So that basically needed a slight refactoring.
+	 * </p>
+	 * 
+	 * @param e
+	 */
+	protected void genericBlockExplodeEvent( ExplosiveEvent e, boolean monitor, boolean blockEventsOnly, 
+			boolean autoManager ) {
+
+		// Register all external events such as mcMMO and EZBlocks:
+		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
+				
+		
+		String debugInfo = String.format( "### ** genericBlockExplodeEvent(PrisonEnchants - ExplosiveEvent) ** ### %s%s%s%s ",
+				(autoManager ? "autoManager " : ""),
+				(e.isCancelled() ? "CANCELED " : ""),
+				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" ));
+		
+
+
+		// NOTE that check for auto manager has happened prior to accessing this function.
+    	if ( !monitor && !e.isCancelled() || monitor ) {
+		
+			List<SpigotBlock> explodedBlocks = new ArrayList<>();
+
+//    		boolean isAir = e.getBlock().getType() == null || e.getBlock().getType() == Material.AIR;
+
+    		// Need to wrap in a Prison block so it can be used with the mines:
+    		SpigotBlock block = new SpigotBlock(e.getBlock());
+			
+			// long startNano = System.nanoTime();
+			Long playerUUIDLSB = Long.valueOf( e.getPlayer().getUniqueId().getLeastSignificantBits() );
+			
+    		// Get the cached mine, if it exists:
+    		Mine mine = getPlayerCache().get( playerUUIDLSB );
+    		
+    		if ( mine == null || !mine.isInMineExact( block.getLocation() ) ) {
+    			// Look for the correct mine to use. 
+    			// Set mine to null so if cannot find the right one it will return a null:
+    			mine = findMineLocation( block );
+    			
+    			// Store the mine in the player cache if not null:
+    			if ( mine != null ) {
+    				getPlayerCache().put( playerUUIDLSB, mine );
+    			}
+    		}
+    		
+
+			debugInfo += "mine=" + (mine == null ? "none" : mine.getName()) + " ";
+			
+			boolean isPEExplosiveEnabled = isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
+    		
+			if ( isToolDisabled( e.getPlayer() ) ) {
+    			
+    			PrisonUtilsTitles uTitles = new PrisonUtilsTitles();
+    			uTitles.utilsTitlesActionBar( new SpigotPlayer( e.getPlayer() ), "", 
+    					"&cYour tool is worn-out and cannot be used." );
+    			
+    			e.setCancelled( true );
+    			debugInfo += "UNUSABLE_TOOL__WORN_OUT (event canceled) ";
+    		}
+    		else if ( mine != null && BlockUtils.getInstance().isUnbreakable( block ) ) {
+    			// The block is unbreakable because a utility has it locked:
+    			
+    			e.setCancelled( true );
+    			debugInfo += "UNBREAKABLE_BLOCK_UTILS (event canceled) ";
+    		}
+			else if ( mine != null && (mine.isMineAccessByRank() || mine.isAccessPermissionEnabled()) && 
+						!mine.hasMiningAccess( new SpigotPlayer( e.getPlayer() ) ) ) {
+    			// The player does not have permission to access this mine, so do not process 
+    			// 
+
+				e.setCancelled( true );
+    			debugInfo += "ACCESS_DENIED (event canceled) ";
+    		}
+    		else if ( blockEventsOnly ) {
+    			
+				if ( mine != null ) {
+					
+					String triggered = null;
+		   			
+	    			// All other blocks in the explosion:
+	    			for ( Block blk : e.getExplodedBlocks() ) {
+	    				
+	    				// Need to wrap in a Prison block so it can be used with the mines.
+	    				// Since this is a monitor, there is no need to check to see if the
+	    				// block is in a mine since the getTargetPrisonBlock function will 
+	    				// perform that check indirectly.
+	    				SpigotBlock sBlock = new SpigotBlock(blk);
+	    				
+	    				if ( !BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+	    					
+	    					doActionBlockEventOnly( sBlock, mine, e.getPlayer(), BlockEventType.CEXplosion, triggered );
+	    				}
+	    			}
+				}
+
+				debugInfo += "(actionBlockEventOnly) ";
+    		}
+    		else if ( monitor && mine == null ) {
+    			// bypass all processing since the block break is outside any mine:
+    			
+    			debugInfo += "(bypassed monitor no mine) ";
+    		}
+    		else if ( monitor && mine != null ) {
+    			int unbreakable = 0;
+    			int outsideOfMine = 0;
+    			
+    			// Initial block that was hit:  CrazyE does not have the main block:
+    			// doActionMonitor( block, mine );
+    			
+    			// All other blocks in the explosion:
+    			for ( Block blk : e.getExplodedBlocks() ) {
+    				
+    				// Need to wrap in a Prison block so it can be used with the mines.
+    				// Since this is a monitor, there is no need to check to see if the
+    				// block is in a mine since the getTargetPrisonBlock function will 
+    				// perform that check indirectly.
+    				SpigotBlock sBlock = new SpigotBlock(blk);
+    				
+    				if ( BlockUtils.getInstance().isUnbreakable( new SpigotBlock( blk ) ) ) {
+    					
+    					unbreakable++;
+    				}
+    				else if ( mine.isInMineExact( sBlock.getLocation() ) ) {
+    					
+    					doActionMonitor( sBlock, mine );
+    				}
+    				else {
+    					outsideOfMine++;
+    				}
+    			}
+
+    			if ( unbreakable > 0 ) {
+    				
+    				// e.setCancelled( true );
+    				debugInfo += "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
+    						" blocks, event not canceled) ";
+    			}
+    			if ( outsideOfMine > 0 ) {
+    				
+    				debugInfo += "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
+    						" blocks, event not canceled) ";
+    			}
+    			
+    			debugInfo += "(monitor) ";
+    		}
+
+    		// now process all blocks (non-monitor):
+    		else if ( isPEExplosiveEnabled && 
+    				( mine != null || mine == null && !isBoolean( AutoFeatures.pickupLimitToMines )) ) {
+       			int unbreakable = 0;
+    			int outsideOfMine = 0;
+    			
+    			// have to go through all blocks since some blocks may be outside the mine.
+    			// but terminate search upon first find:
+   			
+    			for ( Block blk : e.getExplodedBlocks() ) {
+    				
+    				// Need to wrap in a Prison block so it can be used with the mines:
+    				SpigotBlock sBlock = new SpigotBlock(blk);
+    				
+    				if ( BlockUtils.getInstance().isUnbreakable( new SpigotBlock( blk ) ) ) {
+    					
+    					unbreakable++;
+    				}
+    				else if ( mine.isInMineExact( sBlock.getLocation() ) ) {
+    					
+    					explodedBlocks.add( sBlock );
+    					e.getBrokenBlocks().add( blk );
+    					
+    						
+    					// check all external events such as mcMMO and EZBlocks:
+    					OnBlockBreakExternalEvents.getInstance().checkAllExternalEvents( e.getPlayer(), blk );
+    				}
+    				else {
+    					outsideOfMine++;
+    				}
+    				
+    			}
+    			if ( explodedBlocks.size() > 0 ) {
+    				
+					String triggered = null;
+    				
+					
+					// Warning: BlastUseEvent does not identify the block the player actually hit, so the dummyBlock
+					//          is just a random first block from the explodedBlocks list and may not be the block
+					//          that initiated the explosion event.
+					SpigotBlock dummyBlock = explodedBlocks.get( 0 );
+					
+	    			PrisonMinesBlockBreakEvent pmbbEvent = new PrisonMinesBlockBreakEvent( dummyBlock.getWrapper(), e.getPlayer(),
+	    												mine, dummyBlock, explodedBlocks, BlockEventType.CEXplosion, triggered );
+	                Bukkit.getServer().getPluginManager().callEvent(pmbbEvent);
+	                if ( pmbbEvent.isCancelled() ) {
+	                	debugInfo += "(normal processing: PrisonMinesBlockBreakEvent canceld) ";
+	                }
+	                else {
+	                	
+	                	// This is where the processing actually happens:
+	                	if ( doAction( mine, e.getPlayer(), explodedBlocks, BlockEventType.CEXplosion, triggered ) && 
+	                			!isBoolean( AutoFeatures.isDebugSupressOnCEBlastUseEventCancels )) {
+	                		
+	                		e.setCancelled( true );
+	                	}
+	                	
+	                }
+    			}
+    			
+    			if ( unbreakable > 0 ) {
+    				
+    				// e.setCancelled( true );
+    				debugInfo += "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
+    						" blocks, event not canceled) ";
+    			}
+    			if ( outsideOfMine > 0 ) {
+    				
+    				debugInfo += "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
+    						" blocks, event not canceled) ";
+    			}
+    			
+    			debugInfo += "(normal processing) ";
+    		}
+    		else {
+    			
+    			debugInfo += "(logic bypass) ";
+    		}
+
+		}
+    	
+    	Output.get().logDebug( DebugTarget.blockBreak, debugInfo );
+
+	}
+	
+
 	
 	public void doActionMonitor( SpigotBlock block, Mine mine ) {
 		if ( mine != null ) {

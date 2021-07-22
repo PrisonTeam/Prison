@@ -3,6 +3,7 @@ package tech.mcprison.prison.spigot.block;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
+import me.pulsi_.prisonenchants.enchantments.custom.explosive.ExplosiveEvent;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -225,21 +226,30 @@ public class OnBlockBreakEventListener
     }
     
     
-    public void onCrazyEnchantsBlockExplodeLow( Object obj ) {
+    public void onCrazyEnchantsBlockExplode( Object obj ) {
     	
-    	boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
+    	boolean isCEBlockExplodeEnabled = isBoolean( 
+    				AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
     	
     	if ( isCEBlockExplodeEnabled ) {
     		BlastUseEvent e = (BlastUseEvent) obj;
     		
+    		// if autoManager is turned off, then only process the blockEvents
     		genericBlockExplodeEvent( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
     	}
+    }
+    
+    public void onPrisonEnchantsExplosiveEvent(ExplosiveEvent e) {
+    	
+    	// if autoManager is turned off, then only process the blockEvents
+    	genericBlockExplodeEvent( e, false, isBoolean(AutoFeatures.isAutoManagerEnabled), false );
     }
     
 ////    @EventHandler(priority=EventPriority.LOW) 
 ////    public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
 ////
-////    	boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
+////    	boolean isTEExplosiveEnabled = isBoolean( 
+////							    AutoFeatures.isProcessTokensEnchantExplosiveEvents );
 ////    	
 ////    	if ( isTEExplosiveEnabled ) {
 ////    		

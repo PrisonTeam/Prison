@@ -96,8 +96,8 @@ public class OnBlockBreakEventCrazyEnchants
 		implements Listener {
     	
         @EventHandler(priority=EventPriority.MONITOR) 
-        public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-        	super.onCrazyEnchantsBlockExplodeLow( e );
+        public void onCrazyEnchantsBlockExplodeMonitor(BlastUseEvent e) {
+        	super.onCrazyEnchantsBlockExplode( e );
         }
     }
     
@@ -106,8 +106,8 @@ public class OnBlockBreakEventCrazyEnchants
 	    implements Listener {
 	    	
     	@EventHandler(priority=EventPriority.LOWEST) 
-    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-    		super.onCrazyEnchantsBlockExplodeLow( e );
+    	public void onCrazyEnchantsBlockExplodeLowest(BlastUseEvent e) {
+    		super.onCrazyEnchantsBlockExplode( e );
     	}
     }
     
@@ -117,7 +117,7 @@ public class OnBlockBreakEventCrazyEnchants
     	
     	@EventHandler(priority=EventPriority.LOW) 
     	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-    		super.onCrazyEnchantsBlockExplodeLow( e );
+    		super.onCrazyEnchantsBlockExplode( e );
     	}
     }
     
@@ -126,8 +126,8 @@ public class OnBlockBreakEventCrazyEnchants
 	    implements Listener {
     	
     	@EventHandler(priority=EventPriority.NORMAL) 
-    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-    		super.onCrazyEnchantsBlockExplodeLow( e );
+    	public void onCrazyEnchantsBlockExplodeNormal(BlastUseEvent e) {
+    		super.onCrazyEnchantsBlockExplode( e );
     	}
     }
     
@@ -136,8 +136,8 @@ public class OnBlockBreakEventCrazyEnchants
 	    implements Listener {
     	
     	@EventHandler(priority=EventPriority.HIGH) 
-    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-    		super.onCrazyEnchantsBlockExplodeLow( e );
+    	public void onCrazyEnchantsBlockExplodeHigh(BlastUseEvent e) {
+    		super.onCrazyEnchantsBlockExplode( e );
     	}
     }
     
@@ -146,8 +146,8 @@ public class OnBlockBreakEventCrazyEnchants
 	    implements Listener {
     	
     	@EventHandler(priority=EventPriority.HIGHEST) 
-    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-    		super.onCrazyEnchantsBlockExplodeLow( e );
+    	public void onCrazyEnchantsBlockExplodeHighest(BlastUseEvent e) {
+    		super.onCrazyEnchantsBlockExplode( e );
     	}
     }
     

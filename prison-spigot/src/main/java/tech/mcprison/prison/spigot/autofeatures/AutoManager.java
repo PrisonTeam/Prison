@@ -7,6 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
+import me.pulsi_.prisonenchants.enchantments.custom.explosive.ExplosiveEvent;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -118,40 +119,14 @@ public class AutoManager
 		}
 
 		
-//		switch ( blockShredPriority )
-//		{
-//			case LOWEST:
-//				Bukkit.getPluginManager().registerEvents( 
-//						new AutoManagerBlockShredEventListenerLowest(), spigotPrison);
-//				break;
-//				
-//			case LOW:
-//				Bukkit.getPluginManager().registerEvents( 
-//						new AutoManagerBlockShredEventListenerLow(), spigotPrison);
-//				break;
-//				
-//			case NORMAL:
-//				Bukkit.getPluginManager().registerEvents( 
-//						new AutoManagerBlockShredEventListenerNormal(), spigotPrison);
-//				break;
-//				
-//			case HIGH:
-//				Bukkit.getPluginManager().registerEvents( 
-//						new AutoManagerBlockShredEventListenerHigh(), spigotPrison);
-//				break;
-//				
-//			case HIGHEST:
-//				Bukkit.getPluginManager().registerEvents( 
-//						new AutoManagerBlockShredEventListenerHighest(), spigotPrison);
-//				break;
-//
-//			case DISABLED:
-//				Output.get().logInfo( "AutoManager Zenchantments BlockShredEvent handling has been DISABLED." );
-//				break;
-//
-//			default:
-//				break;
-//		}
+		boolean isPEExplosiveEnabled = isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
+		
+		if ( isPEExplosiveEnabled ) {
+			
+			AutoManagerPrisonEnchants explosiveEvents = new AutoManagerPrisonEnchants();
+			explosiveEvents.registerExplosiveEvents( spigotPrison );
+		}
+		
 		
 	}
 
@@ -197,16 +172,10 @@ public class AutoManager
      * class and optimizes mine reuse.
      * </p>
      *
-     * <p>Had to set to a EventPriorty.LOW so other plugins can work with the blocks.
-     * The other plugins were EZBlock & SellAll. This function was canceling the
-     * event after it auto picked it up, so the other plugins were not registering
-     * the blocks as being broken.
-     * </p>
-     * 
-     * 
      */
     public void onBlockBreak(BlockBreakEvent e) {
 
+    	// NOTE: If autoManager is turned off, then process only the blockEvents:
     	genericBlockEventAutoManager( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
     }
     
@@ -217,6 +186,7 @@ public class AutoManager
      */
     public void onBlockShredBreak(BlockShredEvent e) {
 
+    	// NOTE: If autoManager is turned off, then process only the blockEvents:
     	genericBlockEventAutoManager( e, !( isBoolean(AutoFeatures.isAutoManagerEnabled) && e.getBlock() != null ) );
     }
     
@@ -230,9 +200,21 @@ public class AutoManager
 //    
     
     
-    public void onCrazyEnchantsBlockExplodeLow( Object obj ) {
+    public void onCrazyEnchantsBlockExplode( Object obj ) {
     	BlastUseEvent e = (BlastUseEvent) obj;
     	if ( !e.isCancelled() ) {
+
+    		// NOTE: If autoManager is turned off, then process only the blockEvents:
+    		genericBlockExplodeEventAutoManager( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
+    	}
+    }
+    
+    
+    
+    public void onPrisonEnchantsExplosiveEvent( ExplosiveEvent e ) {
+    	if ( !e.isCancelled() ) {
+    		
+    		// NOTE: If autoManager is turned off, then process only the blockEvents:
     		genericBlockExplodeEventAutoManager( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
     	}
     }
@@ -248,10 +230,6 @@ public class AutoManager
         	super.onBlockBreak( e );
         }
         
-//        @EventHandler(priority=EventPriority.LOWEST) 
-//        public void onBlockShredBreak(BlockShredEvent e) {
-//        	super.onBlockShredBreak( e );
-//        }
     }
     
     public class AutoManagerEventListenerLow 
@@ -263,10 +241,6 @@ public class AutoManager
     		super.onBlockBreak( e );
     	}
     	
-//    	@EventHandler(priority=EventPriority.LOW) 
-//    	public void onBlockShredBreak(BlockShredEvent e) {
-//    		super.onBlockShredBreak( e );
-//    	}
     }
     
     public class AutoManagerEventListenerNormal 
@@ -278,10 +252,6 @@ public class AutoManager
     		super.onBlockBreak( e );
     	}
     	
-//    	@EventHandler(priority=EventPriority.NORMAL) 
-//    	public void onBlockShredBreak(BlockShredEvent e) {
-//    		super.onBlockShredBreak( e );
-//    	}
     }
     
     public class AutoManagerEventListenerHigh 
@@ -293,10 +263,6 @@ public class AutoManager
     		super.onBlockBreak( e );
     	}
     	
-//    	@EventHandler(priority=EventPriority.HIGH) 
-//    	public void onBlockShredBreak(BlockShredEvent e) {
-//    		super.onBlockShredBreak( e );
-//    	}
     }
     
     public class AutoManagerEventListenerHighest 
@@ -308,75 +274,8 @@ public class AutoManager
     		super.onBlockBreak( e );
     	}
     	
-//    	@EventHandler(priority=EventPriority.HIGHEST) 
-//    	public void onBlockShredBreak(BlockShredEvent e) {
-//    		super.onBlockShredBreak( e );
-//    	}
     }
     
-    
-    
-    
-//    
-//    public class AutoManagerBlockShredEventListenerMonitor 
-//	    extends AutoManager
-//	    implements Listener {
-//    	
-//    	@EventHandler(priority=EventPriority.MONITOR) 
-//    	public void onBlockShredBreakMonitor(BlockShredEvent e) {
-//    		super.genericBlockEventMonitor( e );
-//    	}
-//    }
-//    
-//    public class AutoManagerBlockShredEventListenerLowest 
-//		extends AutoManager
-//		implements Listener {
-//        
-//        @EventHandler(priority=EventPriority.LOWEST) 
-//        public void onBlockShredBreak(BlockShredEvent e) {
-//        	super.onBlockShredBreak( e );
-//        }
-//    }
-//    
-//    public class AutoManagerBlockShredEventListenerLow 
-//	    extends AutoManager
-//	    implements Listener {
-//    	
-//    	@EventHandler(priority=EventPriority.LOW) 
-//    	public void onBlockShredBreak(BlockShredEvent e) {
-//    		super.onBlockShredBreak( e );
-//    	}
-//    }
-//    
-//    public class AutoManagerBlockShredEventListenerNormal 
-//	    extends AutoManager
-//	    implements Listener {
-//    	
-//    	@EventHandler(priority=EventPriority.NORMAL) 
-//    	public void onBlockShredBreak(BlockShredEvent e) {
-//    		super.onBlockShredBreak( e );
-//    	}
-//    }
-//    
-//    public class AutoManagerBlockShredEventListenerHigh 
-//	    extends AutoManager
-//	    implements Listener {
-//	    	
-//    	@EventHandler(priority=EventPriority.HIGH) 
-//    	public void onBlockShredBreak(BlockShredEvent e) {
-//    		super.onBlockShredBreak( e );
-//    	}
-//    }
-//    
-//    public class AutoManagerBlockShredEventListenerHighest 
-//    extends AutoManager
-//    implements Listener {
-//    	
-//    	@EventHandler(priority=EventPriority.HIGHEST) 
-//    	public void onBlockShredBreak(BlockShredEvent e) {
-//    		super.onBlockShredBreak( e );
-//    	}
-//    }
     
     
     

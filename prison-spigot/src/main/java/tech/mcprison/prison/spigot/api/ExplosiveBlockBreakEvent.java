@@ -3,10 +3,14 @@ package tech.mcprison.prison.spigot.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
+
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.ranks.events.RankUpEvent;
 
 /**
  * <p>This is an example of an explosive event that should be used for 
@@ -63,6 +67,29 @@ public class ExplosiveBlockBreakEvent
 	public ExplosiveBlockBreakEvent( Block theBlock, Player player ) {
 		this( theBlock, player, new ArrayList<>(), null );
 		
+	}
+	
+	/**
+	 * This is strictly a non-function example of how to fire this event.  Make sure you load up the
+	 * parameters correctly, of which this example is passing nulls for block and player, and an 
+	 * empty explodedBlocks list.  The only purpose for this dummy function is to show you how
+	 * to use it in your plugin.
+	 */
+	public void sampleUsage() {
+		
+		Block block = null;
+		Player player = null;
+		List<Block> explodedBlocks = new ArrayList<>();
+		String triggeredBy = "sampleUsage";
+		
+		ExplosiveBlockBreakEvent ebbe = new ExplosiveBlockBreakEvent( block, player, explodedBlocks, triggeredBy );
+	
+		Bukkit.getServer().getPluginManager().callEvent( ebbe );
+		
+		if ( !ebbe.isCancelled() ) {
+			// Go ahead and break the blocks in your plugin.  The fact that it's not canceled implies
+			// that no other plugin was able to process this event.
+		}
 	}
 	
 	public List<Block> getExplodedBlocks() {

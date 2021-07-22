@@ -107,6 +107,15 @@ public class OnBlockBreakEventListeners
 			zenBlockEvents.registerBlockBreakEvents( spigotPrison );
 		}
 		
+		
+		boolean isPEExplosiveEnabled = isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
+		
+		if ( isPEExplosiveEnabled ) {
+			
+			OnBlockBreakEventPrisonEnchants explosiveEvents = new OnBlockBreakEventPrisonEnchants();
+			explosiveEvents.registerExplosiveEvents( spigotPrison );
+		}
+		
 	}
 	
 	

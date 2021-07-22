@@ -85,8 +85,8 @@ public class AutoManagerTokenEnchant
     }
     
     public class AutoManagerTokenEnchantEventLow
-    extends AutoManagerTokenEnchant
-    implements Listener {
+	    extends AutoManagerTokenEnchant
+	    implements Listener {
     	
     	@EventHandler(priority=EventPriority.LOW) 
     	public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
@@ -95,8 +95,8 @@ public class AutoManagerTokenEnchant
     }
     
     public class AutoManagerTokenEnchantEventNormal
-    extends AutoManagerTokenEnchant
-    implements Listener {
+	    extends AutoManagerTokenEnchant
+	    implements Listener {
     	
     	@EventHandler(priority=EventPriority.NORMAL) 
     	public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
@@ -105,8 +105,8 @@ public class AutoManagerTokenEnchant
     }
     
     public class AutoManagerTokenEnchantEventHigh
-    extends AutoManagerTokenEnchant
-    implements Listener {
+	    extends AutoManagerTokenEnchant
+	    implements Listener {
     	
     	@EventHandler(priority=EventPriority.HIGH) 
     	public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
@@ -115,8 +115,8 @@ public class AutoManagerTokenEnchant
     }
     
     public class AutoManagerTokenEnchantEventHighest
-    extends AutoManagerTokenEnchant
-    implements Listener {
+	    extends AutoManagerTokenEnchant
+	    implements Listener {
     	
     	@EventHandler(priority=EventPriority.HIGHEST) 
     	public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {

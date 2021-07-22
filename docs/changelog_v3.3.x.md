@@ -21,7 +21,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.6 2021-07-21
+# v3.2.10-alpha.6 2021-07-23
+
+
+* **Add support for PrisonEnchants' ExplosiveEvent.**
+While adding support for the ExplosiveEvent, found a few issues and fixed them.  Some changes were just in names of functions, others were functional, such as improving the support of unbreakable and blocks that fall outside of a mine.
 
 
 * **Simplified how the title, subtitle, and actionBar are setup with the /prison utils titles title command. **
