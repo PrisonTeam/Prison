@@ -1,5 +1,9 @@
 package tech.mcprison.prison.cache;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 /**
  * <p>This class provide periodical saving of all player data.  
  * This ensures that it's at least stored every once in a while. 
@@ -46,7 +50,11 @@ public class PlayerCacheSaveAllPlayersTask
 	
 		PlayerCache pCache = PlayerCache.getInstance();
 		
-		for ( String key : pCache.getPlayers().keySet() )
+		List<PlayerCachePlayerData> purge = new ArrayList<>();
+		
+		Set<String> keys = pCache.getPlayers().keySet();
+		
+		for ( String key : keys )
 		{
 			PlayerCachePlayerData playerData = pCache.getPlayers().get( key );
 			
@@ -55,6 +63,19 @@ public class PlayerCacheSaveAllPlayersTask
 				playerData.setDirty( false );
 				pCache.getCacheFiles().toJsonFile( playerData );
 			}
+			
+			// If a cached item is found with the player being offline, then 
+			// purge them from the cache.  They were usually added only because
+			// some process had to inspect their stats, so they are safe to remove.
+			if ( !playerData.isOnline() ) {
+				purge.add( playerData );
+			}
+		}
+		
+		
+		for ( PlayerCachePlayerData playerData : purge )
+		{
+			pCache.getPlayers().remove( playerData.getPlayerUuid() );
 		}
 		
 	}

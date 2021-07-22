@@ -21,7 +21,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.6 2021-07-23
+# v3.2.10-alpha.6 2021-07-22
+
+
+* **PlayerCache changes: Start to take in to consideration that a player within the cache may be offline.**
+If that's the case, then prevent some calculations, and remove them from the cache.  Offline players would be added to look up some stats, but then they would be safe to purge.
+When checking the timerTasks, add an earnings of zero to purge past earnings.  This will prevent the average earnings from staying there forever when the player stops mining.
 
 
 * **Added a debug logging entry for XP Calculations.**

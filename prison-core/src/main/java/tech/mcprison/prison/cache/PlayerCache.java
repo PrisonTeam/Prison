@@ -224,11 +224,17 @@ public class PlayerCache {
 		
 		getStats().incrementGetPlayers();
 		
-		if ( !getPlayers().containsKey( player.getUUID().toString() ) ) {
+		String playerUuid = player.getUUID().toString();
+		if ( !getPlayers().containsKey( playerUuid ) ) {
 			
 			// Load the player's existing balance:
 			playerData = getCacheFiles().fromJson( player );
 
+			// NOTE: playerData.isOnline() is dynamic and tied back to the Player object.
+			//       So if they are offline, an OfflinePlayer, then it will automatically
+			//       track that.  Also if the PlayerData object does not have a reference
+			///      to Player, then it's automatically considered offline.
+			
 			// Save it to the cache:
 			addPlayerData( playerData );
 //			runLoadPlayerNow( player );
@@ -237,7 +243,7 @@ public class PlayerCache {
 		else {
 			
 			// Note: if the player has not been loaded yet, this will return a null:
-			playerData = getPlayers().get( player.getUUID().toString() );
+			playerData = getPlayers().get( playerUuid );
 		}
 		
 		if ( playerData != null && 
@@ -329,6 +335,10 @@ public class PlayerCache {
 //		Output.get().logInfo( "### addPlayerBlock: mine= " + (mine == null ? "null" : mine) +
 //				" block= " + (block == null ? "null" : block.getBlockName()) + " qty= " + quantity + "  playerData= " +
 //				(playerData == null ? "null" : playerData.toString() ));
+
+//		if ( playerData != null && playerData.getBlocksTotal() % 20 == 0 ) {
+//			Output.get().logInfo( "#### PlayerCache: " + playerData.toString() );
+//		}
 		
 		playerData.addBlock( mine, block.getBlockName(), quantity );
 	}
@@ -356,7 +366,46 @@ public class PlayerCache {
 		
 		return earningsPerMinute;
 	}
-	
+
+	public long getPlayerBlocksTotal( Player player )
+	{
+		long blocksTotal = 0;
+		
+		PlayerCachePlayerData playerData = getPlayer( player );
+		
+		if ( playerData != null ) {
+			blocksTotal = playerData.getBlocksTotal();
+		}
+
+		return blocksTotal;
+	}
+	public long getPlayerBlocksTotalByMine( Player player, String mineName )
+	{
+		long blocksTotalByMine = 0;
+		
+		PlayerCachePlayerData playerData = getPlayer( player );
+		
+		if ( playerData != null && mineName != null && playerData.getBlocksByMine() != null &&
+				playerData.getBlocksByMine().containsKey( mineName ) ) {
+			
+			blocksTotalByMine = playerData.getBlocksByMine().get( mineName );
+		}
+		
+		return blocksTotalByMine;
+	}
+	public long getPlayerBlocksTotalByBlockType( Player player, String blockType )
+	{
+		long blocksTotalByBlockType = 0;
+		
+		PlayerCachePlayerData playerData = getPlayer( player );
+		
+		if ( playerData != null && blockType != null && playerData.getBlocksByType() != null &&
+				playerData.getBlocksByType().containsKey( blockType ) ) {
+			blocksTotalByBlockType = playerData.getBlocksByType().get( blockType );
+		}
+		
+		return blocksTotalByBlockType;
+	}
 
 
 	public String getPlayerDumpStats() {
@@ -415,5 +464,6 @@ public class PlayerCache {
 	public Map<PlayerCacheRunnable, PlayerCachePlayerData> getTasks() {
 		return tasks;
 	}
+
 
 }

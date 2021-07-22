@@ -117,11 +117,18 @@ public class PlayerCachePlayerData {
 		
 	}
 
+	public boolean isOnline() {
+		return getPlayer() != null && getPlayer().isOnline();
+	}
+	
 	public void checkTimers() {
 
-		// Do not change the session type, so pass it the current:
-		checkTimersMining( sessionType );
-		
+		if ( isOnline() ) {
+			
+			// Do not change the session type, so pass it the current:
+			checkTimersMining( sessionType );
+			
+		}
 	}
 	
 	/**
@@ -144,6 +151,10 @@ public class PlayerCachePlayerData {
 	private void checkTimersMining( SessionType targetType ) {
 		final long currentTime = System.currentTimeMillis();
 
+		if ( !isOnline() ) {
+			return;
+		}
+		
 		if ( sessionType == targetType && sessionType != SessionType.mining) {
 			// No change in status
 			
@@ -316,7 +327,8 @@ public class PlayerCachePlayerData {
 		String miningTime = PlaceholdersUtil.formattedTime( onlineMiningTimeTotal / 1000d );
 		
 		sb.append( getPlayerName() )
-		
+			.append( " " )
+			.append( isOnline() ? "online" : "OFFLINE" )
 			.append( "  avg earnings/min: " )
 			.append( getAverageEarningsPerMinute() )
 		
@@ -374,6 +386,9 @@ public class PlayerCachePlayerData {
 	}
 
 	public TreeMap<String, Double> getEarningsPerMinute() {
+		if ( earningsPerMinute == null ) {
+			earningsPerMinute = new TreeMap<>();
+		}
 		return earningsPerMinute;
 	}
 	public void setEarningsPerMinute( TreeMap<String, Double> earningsPerMinute ) {
@@ -409,6 +424,9 @@ public class PlayerCachePlayerData {
 	}
 
 	public TreeMap<String, Integer> getBlocksByMine() {
+		if ( blocksByMine == null ) {
+			blocksByMine = new TreeMap<>();
+		}
 		return blocksByMine;
 	}
 	public void setBlocksByMine( TreeMap<String, Integer> blocksByMine ) {
@@ -416,6 +434,9 @@ public class PlayerCachePlayerData {
 	}
 
 	public TreeMap<String, Integer> getBlocksByType() {
+		if ( blocksByType == null ) {
+			blocksByType = new TreeMap<>();
+		}
 		return blocksByType;
 	}
 	public void setBlocksByType( TreeMap<String, Integer> blocksByType ) {
