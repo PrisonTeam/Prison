@@ -184,28 +184,28 @@ public class OnBlockBreakEventCore
 	
 
 	protected void genericBlockExplodeEventMonitor( BlastUseEvent e ) {
-		genericBlockExplodeEvent( e, true, false, false );
+		genericBlastUseEvent( e, true, false, false );
 	}
 	
 	protected void genericBlockExplodeEvent( BlastUseEvent e, boolean blockEventsOnly ) {
-		genericBlockExplodeEvent( e, false, blockEventsOnly, false );
+		genericBlastUseEvent( e, false, blockEventsOnly, false );
 	}
 
 	protected void genericBlockExplodeEventAutoManager( BlastUseEvent e, boolean blockEventsOnly ) {
-		genericBlockExplodeEvent( e, true, blockEventsOnly, true );
+		genericBlastUseEvent( e, true, blockEventsOnly, true );
 	}
 	
 	
 	protected void genericBlockExplodeEventMonitor( ExplosiveEvent e ) {
-		genericBlockExplodeEvent( e, true, false, false );
+		genericExplosiveEvent( e, true, false, false );
 	}
 	
 	protected void genericBlockExplodeEvent( ExplosiveEvent e, boolean blockEventsOnly ) {
-		genericBlockExplodeEvent( e, false, blockEventsOnly, false );
+		genericExplosiveEvent( e, false, blockEventsOnly, false );
 	}
 	
 	protected void genericBlockExplodeEventAutoManager( ExplosiveEvent e, boolean blockEventsOnly ) {
-		genericBlockExplodeEvent( e, true, blockEventsOnly, true );
+		genericExplosiveEvent( e, true, blockEventsOnly, true );
 	}
 	
     /**
@@ -660,14 +660,14 @@ public class OnBlockBreakEventCore
 	 * 
 	 * @param e
 	 */
-	protected void genericBlockExplodeEvent( BlastUseEvent e, boolean monitor, boolean blockEventsOnly, 
+	protected void genericBlastUseEvent( BlastUseEvent e, boolean monitor, boolean blockEventsOnly, 
 			boolean autoManager ) {
 
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 				
 		
-		String debugInfo = String.format( "### ** genericBlockExplodeEvent(BlastUseEvent) ** ### %s%s%s%s ",
+		String debugInfo = String.format( "### ** genericBlastUseEvent(BlastUseEvent) ** ### %s%s%s%s ",
 				(autoManager ? "autoManager " : ""),
 				(e.isCancelled() ? "CANCELED " : ""),
 				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" ));
@@ -960,14 +960,14 @@ public class OnBlockBreakEventCore
 	 * 
 	 * @param e
 	 */
-	protected void genericBlockExplodeEvent( ExplosiveEvent e, boolean monitor, boolean blockEventsOnly, 
+	protected void genericExplosiveEvent( ExplosiveEvent e, boolean monitor, boolean blockEventsOnly, 
 			boolean autoManager ) {
 
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 				
 		
-		String debugInfo = String.format( "### ** genericBlockExplodeEvent(PrisonEnchants - ExplosiveEvent) ** ### %s%s%s%s ",
+		String debugInfo = String.format( "### ** genericExplosiveEvent(PrisonEnchants - ExplosiveEvent) ** ### %s%s%s%s ",
 				(autoManager ? "autoManager " : ""),
 				(e.isCancelled() ? "CANCELED " : ""),
 				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" ));
