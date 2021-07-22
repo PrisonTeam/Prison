@@ -243,14 +243,23 @@ public class PlaceholderManager {
 		prison_pb_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
 		prison_player_balance_laddername(prison_pb_laddername, PlaceholderFlags.LADDERS),
 
-	
+		
 		
 		prison_psm(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
 		prison_player_sellall_multiplier(prison_psm, PlaceholderFlags.PLAYER),
+
 		
+		
+		prison_pbt(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_pbtm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		
+		prison_player_blocks_total(prison_pbt, PlaceholderFlags.MINEPLAYERS),
+		prison_player_blocks_total_minename(prison_pbtm, PlaceholderFlags.MINEPLAYERS),
 		
 		
 		// Mine aliases:
+		
+		
 		prison_mn_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
 		prison_mt_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
 		prison_mi_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),

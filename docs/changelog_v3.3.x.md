@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.6 2021-07-22
 
 
+* **Added support for 4 new types of placeholders that uses the PlayerCache:**
+Player's total block count.  And player's count per mine.
+
+
 * **Issue with using offline players with the playerCache.**
 The playerCache should typically only contain active players, but in testing, like using /prison placeholders search, it may add an offline player to get placeholder data from them.
 This prevents null issues with the locations, and eliminates the excessive error message when trying to use getLocation() on an offline player.
