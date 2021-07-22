@@ -9,9 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.ranks.events.RankUpEvent;
-
 /**
  * <p>This is an example of an explosive event that should be used for 
  * enchantments that will break more than one block at a time.

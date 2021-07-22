@@ -110,7 +110,7 @@ public class SpigotOfflinePlayer
 
 	@Override
 	public Location getLocation() {
-		Output.get().logError( "SpigotOfflinePlayer.getLocation: Offline players have no location." );
+//		Output.get().logError( "SpigotOfflinePlayer.getLocation: Offline players have no location." );
 		return null;
 	}
 

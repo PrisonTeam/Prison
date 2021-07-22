@@ -235,7 +235,7 @@ public class PrisonMines extends Module {
 		if ( mine != null && mine.isInMineIncludeTopBottomOfMine( player.getLocation() )) {
 			results = mine;
 		}
-		else {
+		else if ( player.getLocation() != null ) {
 			// Look for the correct mine to use. 
 			// Set mine to null so if cannot find the right one it will return a null:
 			results = findMineLocationIncludeTopBottomOfMine( player.getLocation() );

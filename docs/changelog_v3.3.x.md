@@ -24,6 +24,11 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.6 2021-07-22
 
 
+* **Issue with using offline players with the playerCache.**
+The playerCache should typically only contain active players, but in testing, like using /prison placeholders search, it may add an offline player to get placeholder data from them.
+This prevents null issues with the locations, and eliminates the excessive error message when trying to use getLocation() on an offline player.
+
+
 * **PlayerCache changes: Start to take in to consideration that a player within the cache may be offline.**
 If that's the case, then prevent some calculations, and remove them from the cache.  Offline players would be added to look up some stats, but then they would be safe to purge.
 When checking the timerTasks, add an earnings of zero to purge past earnings.  This will prevent the average earnings from staying there forever when the player stops mining.
