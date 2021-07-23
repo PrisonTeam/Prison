@@ -3,6 +3,22 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
+* prison command handler:
+  - Add command cooldowns - time in ticks - And cooldownTypes: server, player
+
+
+* Player Cache:
+ * DONE: Money earned per minute with placeholders
+ * Add placeholders for blocks counts
+ * Add placeholders for time onlines
+ * Add time mining: per mine
+ * Tracking by items such as mines or ranks, where the player's status can be reset, presents some problems.  Such as the block counts need to be reset for those items, but yet, we need to store them for historical purposes too.  So if someone prestiges 10 times, then there will be 10 different times through mine/rank A.  If block counts become a requirement for rankups, which it will, then the block counts for that mine must be reset back to zero.  So there must be a "current" and "historical" tracking.
+ 
+ Player Cache possibilities?  
+ * blocks per rank?
+ * time mining per rank?
+ 
+
 * When adding a new rank or mine, auto reload all placeholders so they pick up the new entry.
 
 
