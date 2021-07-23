@@ -37,6 +37,7 @@ public class MineLinerBuilder {
 		seaEchos,
 		obby,
 		bedrock,
+		glowstone,
 		glowingPlanks,
 		darkOakPrismarine,
 		beacon,
@@ -649,6 +650,15 @@ public class MineLinerBuilder {
 						{ "bedrock" }
 				};
 				pattern2d = bedrock;
+				break;
+				
+				
+			case glowstone:
+				String[][] glowstone =
+				{
+						{ "glowstone" }
+				};
+				pattern2d = glowstone;
 				break;
 				
 				

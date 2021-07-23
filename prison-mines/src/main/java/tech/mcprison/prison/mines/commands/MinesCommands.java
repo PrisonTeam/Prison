@@ -2298,7 +2298,7 @@ public class MinesCommands
     @Command(identifier = "mines set liner", permissions = "mines.set", 
     			description = "Change the blocks that line the mine.")
     public void setLinerCommand(CommandSender sender,
-    		@Arg(name = "mineName", description = "The name of the mine") String mineName,
+    		@Arg(name = "mineName", description = "The name of the mine, or '*all*' to apply to all mines.") String mineName,
     		@Arg(name = "edge", description = "Edge to use [top, bottom, north, east, south, west, walls]", def = "walls") String edge, 
     		//@Arg(name = "adjustment", description = "How to adust the size [smaller, larger]", def = "larger") String adjustment,
     		@Arg(name = "pattern", description = "pattern to use. '?' for a list of all patterns. " +
@@ -2344,28 +2344,42 @@ public class MinesCommands
     	}
     	
     	PrisonMines pMines = PrisonMines.getInstance();
-    	Mine mine = pMines.getMine(mineName);
     	
-//    	if ( mine.isVirtual() ) {
-//    		sender.sendMessage( "&cMine is a virtual mine.&7 Use &a/mines set area &7to enable the mine." );
-//    		return;
-//    	}
+    	List<Mine> mines = new ArrayList<>();
     	
-    	if ( linerPattern == LinerPatterns.removeAll ) {
-    		
-    		mine.getLinerData().removeAll();
-    		sender.sendMessage( "&7All liners have been removed from mine " + mine.getName() );
-    	}
-    	else if ( linerPattern == LinerPatterns.remove ) {
-    		mine.getLinerData().remove( e );
-    		sender.sendMessage( "&7The liner for the " + e.name() + " has been removed from mine " + mine.getName() );
+    	if ( "*all*".equalsIgnoreCase( mineName ) ) {
+    		mines.addAll( pMines.getMines() );
     	}
     	else {
-    		mine.getLinerData().setLiner( e, linerPattern, isForced );
-    		new MineLinerBuilder( mine, e, linerPattern, isForced );
+    		mines.add( pMines.getMine(mineName) );
+    		
     	}
     	
-    	pMines.getMineManager().saveMine( mine );
+    	for ( Mine mine : mines )
+		{
+//	    	if ( mine.isVirtual() ) {
+//  	  		sender.sendMessage( "&cMine is a virtual mine.&7 Use &a/mines set area &7to enable the mine." );
+//    			return;
+//   	 	}
+    		
+    		if ( linerPattern == LinerPatterns.removeAll ) {
+    			
+    			mine.getLinerData().removeAll();
+    			sender.sendMessage( "&7All liners have been removed from mine " + mine.getName() );
+    		}
+    		else if ( linerPattern == LinerPatterns.remove ) {
+    			mine.getLinerData().remove( e );
+    			sender.sendMessage( "&7The liner for the " + e.name() + " has been removed from mine " + mine.getName() );
+    		}
+    		else {
+    			mine.getLinerData().setLiner( e, linerPattern, isForced );
+    			new MineLinerBuilder( mine, e, linerPattern, isForced );
+    		}
+    		
+    		pMines.getMineManager().saveMine( mine );
+			
+		}
+    	
     }
     
     
