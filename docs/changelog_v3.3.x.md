@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.6 2021-07-22
 
 
+* **Added more internal debug details.**
+
+
 * **Mine liners: Added glowstone and also added the ability to apply a liner change, or removal, from all mines with one command by using `*all*` for the mine name.**
 
 

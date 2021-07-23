@@ -1308,7 +1308,8 @@ public class OnBlockBreakEventCore
 		if ( drop > 0 ) {
 			debugInfo.append( "(doAction processBlockBreakage) " );
 			
-			aMan.processBlockBreakage( spigotBlock, mine, player, drop, BlockEventType.blockBreak, null, itemInHand );
+			aMan.processBlockBreakage( spigotBlock, mine, player, drop, BlockEventType.blockBreak, 
+								null, itemInHand, debugInfo );
 			
 			cancel = true;
 			
@@ -1356,7 +1357,7 @@ public class OnBlockBreakEventCore
 			if ( drop > 0 ) {
 				
 				aMan.processBlockBreakage( spigotBlock, mine, player, drop, 
-						blockEventType, triggered, itemInHand );
+						blockEventType, triggered, itemInHand, debugInfo );
 				
 				aMan.autosellPerBlockBreak( player );
 			}
@@ -1460,7 +1461,8 @@ public class OnBlockBreakEventCore
 	
 	public void processBlockBreakage( SpigotBlock spigotBlock, 
 			Mine mine, Player player, int count,
-			BlockEventType blockEventType, String triggered, SpigotItemStack itemInHand )
+			BlockEventType blockEventType, String triggered, SpigotItemStack itemInHand,
+			StringBuilder debugInfo )
 	{
 		MineTargetPrisonBlock targetBlock = null;
 		
@@ -1473,10 +1475,13 @@ public class OnBlockBreakEventCore
 		// and wasn't originally air, then process the breakage:
 		if ( mine == null || targetBlock != null && !targetBlock.isAirBroke() ) {
 		
+			
 			String targetBlockName =  mine == null ? 
 							spigotBlock.getPrisonBlock().getBlockName()
 								: targetBlock.getPrisonBlock().getBlockName();
 			
+			debugInfo.append( "(processBlockBreakage targetBlock: " + targetBlockName + ")" );
+
 			// Process mine block break events:
 			SpigotPlayer sPlayer = new SpigotPlayer( player );
 			
@@ -1484,7 +1489,7 @@ public class OnBlockBreakEventCore
 			int bonusXp = checkCrazyEnchant( player, spigotBlock.getWrapper(), ( itemInHand == null ? null : itemInHand.getBukkitStack()) );
 			
 			// Calculate XP on block break if enabled:
-			calculateAndGivePlayerXP( sPlayer, targetBlockName, count, bonusXp );
+			calculateAndGivePlayerXP( sPlayer, targetBlockName, count, bonusXp, debugInfo );
 			
 			// calculate durability impact: Include item durability resistance.
 			if ( isBoolean( AutoFeatures.isCalculateDurabilityEnabled ) ) {
@@ -1520,7 +1525,7 @@ public class OnBlockBreakEventCore
 	}
 	
 	protected void calculateAndGivePlayerXP(SpigotPlayer player, String blockName, 
-					int count, int bonusXp ) {
+					int count, int bonusXp, StringBuilder debugInfo ) {
 
 		int totalXp = 0;
 		
@@ -1551,7 +1556,7 @@ public class OnBlockBreakEventCore
 			}
 		}
 		
-		if ( Output.get().isDebug( DebugTarget.blockBreakXpCalcs )) {
+		if ( Output.get().isDebug( DebugTarget.blockBreak ) || Output.get().isDebug( DebugTarget.blockBreakXpCalcs )) {
 			
 			String message = String.format( "XP calculations: %s %s  blocks: %d  xp: %d  bonusXp: %d " +
 					" isCalculateXPEnabled: %s  givePlayerXPAsOrbDrops %s ",
@@ -1559,7 +1564,15 @@ public class OnBlockBreakEventCore
 					Boolean.toString( isBoolean(AutoFeatures.isCalculateXPEnabled) ), 
 					Boolean.toString( isBoolean( AutoFeatures.givePlayerXPAsOrbDrops ) ) );
 			
-			Output.get().logDebug( DebugTarget.blockBreakXpCalcs, message );
+			if ( Output.get().isDebug( DebugTarget.blockBreak ) ) {
+				debugInfo.append( "(" ).append( message ).append( ")" );
+				
+			}
+			if ( Output.get().isDebug( DebugTarget.blockBreakXpCalcs ) ) {
+				
+				Output.get().logDebug( DebugTarget.blockBreakXpCalcs, message );
+			}
+			
 		}
 	}
 	

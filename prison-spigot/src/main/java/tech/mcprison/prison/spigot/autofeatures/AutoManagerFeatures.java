@@ -157,7 +157,7 @@ public class AutoManagerFeatures
     @Override
 	public boolean doAction( SpigotBlock block, Mine mine, Player player, StringBuilder debugInfo ) {
     	
-    	return applyAutoEvents( block, player, mine, debugInfo );
+    	return processAutoEvents( block, player, mine, debugInfo );
 	}
     
     
@@ -175,13 +175,13 @@ public class AutoManagerFeatures
     }
 	
 
-	private boolean applyAutoEvents( SpigotBlock spigotBlock, Player player, Mine mine, StringBuilder debugInfo ) {
+	private boolean processAutoEvents( SpigotBlock spigotBlock, Player player, Mine mine, StringBuilder debugInfo ) {
 		boolean cancel = false;
 		
 		if (isBoolean(AutoFeatures.isAutoManagerEnabled) && 
 			!spigotBlock.isEmpty() ) {
 			
-			debugInfo.append( "(autoManagerEnabled) " );
+			debugInfo.append( "(processAutoEvent) " );
 			
 //			Output.get().logInfo( "#### AutoManager.applyAutoEvents: BlockBreakEvent: :: " + mine.getName() + "  " + 
 //					"  blocks remaining= " + 
@@ -190,11 +190,11 @@ public class AutoManagerFeatures
 
 			SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
 
-			int count = applyAutoEvents( player, spigotBlock, mine );
+			int count = applyAutoEvents( player, spigotBlock, mine, debugInfo );
 			
 			if ( count > 0 ) {
 				processBlockBreakage( spigotBlock, mine, player, count, BlockEventType.blockBreak,
-										null, itemInHand );
+										null, itemInHand, debugInfo );
 
     			cancel = true;
 			}
@@ -209,7 +209,7 @@ public class AutoManagerFeatures
 
 	
 	
-	private int applyAutoEvents( Player player, SpigotBlock block, Mine mine ) {
+	private int applyAutoEvents( Player player, SpigotBlock block, Mine mine, StringBuilder debugInfo ) {
 		int count = 0;
 		
 		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
@@ -235,6 +235,19 @@ public class AutoManagerFeatures
 		isAutoBlock = (mine != null || mine == null && !isBoolean( AutoFeatures.autoBlockLimitToMines )) &&
 							isAutoBlock;
 		
+		if ( Output.get().isDebug( DebugTarget.blockBreak ) ) {
+			
+			debugInfo.append( "(applyAutoEvents: " )
+			.append( lorePickup ? "lorePickup " : "" )
+			.append( lorePickup ? "loreSmelt " : "" )
+			.append( lorePickup ? "loreBlock " : "" )
+			
+			.append( lorePickup ? "autoPickup " : "" )
+			.append( lorePickup ? "autoSmelt " : "" )
+			.append( lorePickup ? "autoBlock " : "" )
+			
+			.append( ")" );
+		}
 		
 		// NOTE: Using isPermissionSet so players that are op'd to not auto enable everything.
 		//       Ops will have to have the perms set to actually use them.
@@ -243,7 +256,7 @@ public class AutoManagerFeatures
 		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.pickupLimitToMines )) &&
 				isAutoPickup ) {
 			
-			count = autoFeaturePickup( block, player, itemInHand, isAutoSmelt, isAutoBlock );
+			count = autoFeaturePickup( block, player, itemInHand, isAutoSmelt, isAutoBlock, debugInfo );
 
 			// Cannot set to air yet, or auto smelt and auto block will only get AIR:
 //			autoPickupCleanup( block, count );
@@ -336,13 +349,13 @@ public class AutoManagerFeatures
 			
 			if ( spigotBlock != null && !spigotBlock.isEmpty() ) {
 				
-				int drop = applyAutoEvents( player, spigotBlock, mine );
+				int drop = applyAutoEvents( player, spigotBlock, mine, debugInfo );
 				totalCount += drop;
 				
 				if ( drop > 0 ) {
 					
 					processBlockBreakage( spigotBlock, mine, player, drop, 
-							blockEventType, triggered, itemInHand );
+							blockEventType, triggered, itemInHand, debugInfo );
 				}
 			}
 		}
@@ -367,72 +380,71 @@ public class AutoManagerFeatures
 	 * For older versions, a good way to get the right drops would be to use 
 	 * BlockDropItemEvent.getItems(), but it's deprecated
 	 * */
-	protected int autoPickup( boolean autoPickup, Player player, 
+	protected int autoPickup( Player player, 
 							SpigotItemStack itemInHand, SpigotBlock block,
-							boolean isAutoSmelt, boolean isAutoBlock ) {
+							boolean isAutoSmelt, boolean isAutoBlock, StringBuilder debugInfo ) {
 		//, BlockBreakEvent e ) {
 		int count = 0;
-		if (autoPickup) {
 
-			// The following may not be the correct drops for all versions of spigot,
-			// plus there are some extra items, such as flint, that will never be dropped.
-			List<SpigotItemStack> drops = new ArrayList<>( SpigotUtil.getDrops(block, itemInHand) );
-
+		// The following may not be the correct drops for all versions of spigot,
+		// plus there are some extra items, such as flint, that will never be dropped.
+		List<SpigotItemStack> drops = new ArrayList<>( SpigotUtil.getDrops(block, itemInHand) );
+		
+		
+		if (drops != null && drops.size() > 0 ) {
 			
-			if (drops != null && drops.size() > 0 ) {
-
-				// Need better drop calculation that is not using the getDrops function.
-				short fortuneLevel = getFortune(itemInHand);
-
-				calculateSilkTouch( itemInHand, drops );
+			// Need better drop calculation that is not using the getDrops function.
+			short fortuneLevel = getFortune(itemInHand);
+			
+			calculateSilkTouch( itemInHand, drops );
+			
+			// Adds in additional drop items: Add Flint with gravel drops:
+			calculateDropAdditions( itemInHand, drops );
+			
+			
+			// Add fortune to the items in the inventory
+			if ( isBoolean( AutoFeatures.isCalculateFortuneEnabled ) ) {
+				debugInfo.append( "(calculateFortune: fort " + fortuneLevel + ")" );
 				
-				// Adds in additional drop items: Add Flint with gravel drops:
-				calculateDropAdditions( itemInHand, drops );
-
-
-				// Add fortune to the items in the inventory
-				if ( isBoolean( AutoFeatures.isCalculateFortuneEnabled ) ) {
-
-					for ( SpigotItemStack itemStack : drops ) {
-						
-						// calculateFortune directly modifies the quantity on the blocks ItemStack:
-						calculateFortune( itemStack, fortuneLevel );
-					}
-				}
-
-				
-				// NOTE: This should be done after applying fortune, otherwise it will get misreadings.
-				// Merge drops so each item is only represented once before adding to the player's inventory
-				drops = mergeDrops( drops );
-				
-				
-				// Smelt
-				if ( isAutoSmelt ) {
-					normalDropSmelt( drops );
-				}
-				
-				
-				// Block
-				if ( isAutoBlock ) {
-					normalDropBlock( drops );
-				}
-				
-
 				for ( SpigotItemStack itemStack : drops ) {
 					
-					count += itemStack.getAmount();
-					
-					HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( player, itemStack );
-					
-					dropExtra( extras, player );
-//					dropExtra( player.getInventory().addItem(itemStack), player, block );
-					
+					// calculateFortune directly modifies the quantity on the blocks ItemStack:
+					calculateFortune( itemStack, fortuneLevel );
 				}
-
-				autosellPerBlockBreak( player );
-				
-//				autoPickupCleanup( player, itemInHand, count );
 			}
+			
+			
+			// NOTE: This should be done after applying fortune, otherwise it will get misreadings.
+			// Merge drops so each item is only represented once before adding to the player's inventory
+			drops = mergeDrops( drops );
+			
+			
+			// Smelt
+			if ( isAutoSmelt ) {
+				normalDropSmelt( drops );
+			}
+			
+			
+			// Block
+			if ( isAutoBlock ) {
+				normalDropBlock( drops );
+			}
+			
+			
+			for ( SpigotItemStack itemStack : drops ) {
+				
+				count += itemStack.getAmount();
+				
+				HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( player, itemStack );
+				
+				dropExtra( extras, player );
+//					dropExtra( player.getInventory().addItem(itemStack), player, block );
+				
+			}
+			
+			autosellPerBlockBreak( player );
+			
+//				autoPickupCleanup( player, itemInHand, count );
 		}
 		return count;
 	}
@@ -962,10 +974,11 @@ public class AutoManagerFeatures
 	 * @param block
 	 * @param p
 	 * @param itemInHand
+	 * @param debugInfo 
 	 * @return
 	 */
 	protected int autoFeaturePickup( SpigotBlock block, Player p, SpigotItemStack itemInHand,
-							boolean isAutoSmelt, boolean isAutoBlock ) {
+							boolean isAutoSmelt, boolean isAutoBlock, StringBuilder debugInfo ) {
 
 		int count = 0;
 
@@ -977,14 +990,14 @@ public class AutoManagerFeatures
 				isBoolean( AutoFeatures.pickupBlockNameListEnabled ) ? 
 						getListString( AutoFeatures.pickupBlockNameList ) : null;
 
-		if (isBoolean(AutoFeatures.pickupAllBlocks)) {
-			count += autoPickup( true, p, itemInHand, block, isAutoSmelt, isAutoBlock );
+		if ( isAll ) {
+			count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 
 		}
 		
 		else if ( isBoolean( AutoFeatures.pickupBlockNameListEnabled ) && pickupBlockNameList.size() > 0 && 
 							pickupBlockNameList.contains( prisonBlock.getBlockName() ) ) {
-			count += autoPickup( true, p, itemInHand, block, isAutoSmelt, isAutoBlock );
+			count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 		}
 			
 		else {
@@ -992,55 +1005,54 @@ public class AutoManagerFeatures
 			switch ( prisonBlock.getBlockName() ) {
 
 				case "cobblestone":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupCobbleStone ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 					break;
 
 				case "stone":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupStone ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 					break;
 
 				case "gold_ore":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupGoldOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 					break;
 
 				case "iron_ore":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupIronOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 					break;
 
 				case "coal_ore":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupCoalOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 					break;
 
 				case "diamond_ore":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupDiamondOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 					break;
 
 				case "redstone_ore":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupRedStoneOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 					break;
 
 				case "emerald_ore":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupEmeraldOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 					break;
 
 				case "quartz_ore":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupQuartzOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 					break;
 
 				case "lapis_ore":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupLapisOre ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 					break;
 
 				case "snow_ball":
-					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupSnowBall ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 					break;
 
 				case "glowstone_dust": // works 1.15.2
-					count += autoPickup( isAll || isBoolean( AutoFeatures.pickupGlowstoneDust ), p, itemInHand, block, isAutoSmelt, isAutoBlock );
+					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 					break;
 
 				default:
-					count += autoPickup(isAll, p, itemInHand, block, isAutoSmelt, isAutoBlock );
 					break;
 			}
 		}
