@@ -155,9 +155,9 @@ public class AutoManagerFeatures
     
     
     @Override
-	public boolean doAction( SpigotBlock block, Mine mine, Player player ) {
+	public boolean doAction( SpigotBlock block, Mine mine, Player player, StringBuilder debugInfo ) {
     	
-    	return applyAutoEvents( block, player, mine );
+    	return applyAutoEvents( block, player, mine, debugInfo );
 	}
     
     
@@ -169,16 +169,19 @@ public class AutoManagerFeatures
      */
     @Override
     public boolean doAction( Mine mine, Player player, List<SpigotBlock> explodedBlocks, 
-    								BlockEventType blockEventType, String triggered ) {
-    	return applyAutoEvents( player, mine, explodedBlocks, blockEventType, triggered );
+    								BlockEventType blockEventType, String triggered, 
+    								StringBuilder debugInfo ) {
+    	return applyAutoEvents( player, mine, explodedBlocks, blockEventType, triggered, debugInfo );
     }
 	
 
-	private boolean applyAutoEvents( SpigotBlock spigotBlock, Player player, Mine mine) {
+	private boolean applyAutoEvents( SpigotBlock spigotBlock, Player player, Mine mine, StringBuilder debugInfo ) {
 		boolean cancel = false;
 		
 		if (isBoolean(AutoFeatures.isAutoManagerEnabled) && 
 			!spigotBlock.isEmpty() ) {
+			
+			debugInfo.append( "(autoManagerEnabled) " );
 			
 //			Output.get().logInfo( "#### AutoManager.applyAutoEvents: BlockBreakEvent: :: " + mine.getName() + "  " + 
 //					"  blocks remaining= " + 
@@ -196,9 +199,7 @@ public class AutoManagerFeatures
     			cancel = true;
 			}
 			
-			if ( mine != null ) {
-				checkZeroBlockReset( mine );
-			}
+			checkZeroBlockReset( mine );
 	
 		}
 		
@@ -321,13 +322,14 @@ public class AutoManagerFeatures
 	 */
 	private boolean applyAutoEvents( Player player, Mine mine, 
 									List<SpigotBlock> explodedBlocks, BlockEventType blockEventType, 
-										String triggered ) {
+										String triggered, StringBuilder debugInfo ) {
 		boolean cancel = false;
 		
 		int totalCount = 0;
 
 		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
 
+		debugInfo.append( "(applyAutoEvents multi-blocks: " + explodedBlocks.size() );
 		
 		// The explodedBlocks list have already been validated as being within the mine:
 		for ( SpigotBlock spigotBlock : explodedBlocks ) {

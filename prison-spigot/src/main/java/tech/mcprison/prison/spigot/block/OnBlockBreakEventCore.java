@@ -326,12 +326,12 @@ public class OnBlockBreakEventCore
     												mine, block, explodedBlocks, BlockEventType.blockBreak, triggered );
                 Bukkit.getServer().getPluginManager().callEvent(pmbbEvent);
                 if ( pmbbEvent.isCancelled() ) {
-                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent canceld) " );
+                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled) " );
                 }
                 else {
                 	
                 	// doAction returns a boolean that indicates if the event should be canceled or not:
-                	if ( doAction( block, mine, e.getPlayer() ) ) {
+                	if ( doAction( block, mine, e.getPlayer(), debugInfo ) ) {
 
                 		if ( !isBoolean( AutoFeatures.isDebugSupressOnBlockBreakEventCancels ) ) {
                 			e.setCancelled( true );
@@ -590,12 +590,12 @@ public class OnBlockBreakEventCore
 	    												mine, block, explodedBlocks, BlockEventType.TEXplosion, triggered );
 	                Bukkit.getServer().getPluginManager().callEvent(pmbbEvent);
 	                if ( pmbbEvent.isCancelled() ) {
-	                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent canceld) " );
+	                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled) " );
 	                }
 	                else {
 	                	
 	                	// This is where the processing actually happens:
-	                	if ( doAction( mine, e.getPlayer(), explodedBlocks, BlockEventType.TEXplosion, triggered ) ) {
+	                	if ( doAction( mine, e.getPlayer(), explodedBlocks, BlockEventType.TEXplosion, triggered, debugInfo ) ) {
 	                		
 	                		if ( !isBoolean( AutoFeatures.isDebugSupressOnTEExplodeEventCancels ) ) {
 	                			
@@ -934,11 +934,11 @@ public class OnBlockBreakEventCore
 	    												mine, dummyBlock, explodedBlocks, BlockEventType.CEXplosion, triggered );
 	                Bukkit.getServer().getPluginManager().callEvent(pmbbEvent);
 	                if ( pmbbEvent.isCancelled() ) {
-	                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent canceld) " );
+	                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled) " );
 	                }
 	                else {
 	                	
-	                	if ( doAction( mine, e.getPlayer(), explodedBlocks, BlockEventType.CEXplosion, triggered ) ) {
+	                	if ( doAction( mine, e.getPlayer(), explodedBlocks, BlockEventType.CEXplosion, triggered, debugInfo ) ) {
 	                		
 	                		if ( !isBoolean( AutoFeatures.isDebugSupressOnCEBlastUseEventCancels ) ) {
 	                			
@@ -1186,11 +1186,11 @@ public class OnBlockBreakEventCore
 	    												mine, dummyBlock, explodedBlocks, BlockEventType.PEExplosive, triggered );
 	                Bukkit.getServer().getPluginManager().callEvent(pmbbEvent);
 	                if ( pmbbEvent.isCancelled() ) {
-	                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent canceled) " );
+	                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled) " );
 	                }
 	                else {
 	                	
-	                	if ( doAction( mine, e.getPlayer(), explodedBlocks, BlockEventType.PEExplosive, triggered ) ) {
+	                	if ( doAction( mine, e.getPlayer(), explodedBlocks, BlockEventType.PEExplosive, triggered, debugInfo ) ) {
 	                		
 	                		if ( !isBoolean( AutoFeatures.isDebugSupressOnPEExplosiveEventCancels ) ) {
 	                			
@@ -1282,7 +1282,7 @@ public class OnBlockBreakEventCore
 	}
 	
 	
-	public boolean doAction( SpigotBlock spigotBlock, Mine mine, Player player ) {
+	public boolean doAction( SpigotBlock spigotBlock, Mine mine, Player player, StringBuilder debugInfo ) {
 		boolean cancel = false;
 		
 		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
@@ -1294,29 +1294,25 @@ public class OnBlockBreakEventCore
 //			boolean isAutoManagerEnabled = aMan.isBoolean( AutoFeatures.isAutoManagerEnabled );
 		boolean isProcessNormalDropsEnabled = isBoolean( AutoFeatures.handleNormalDropsEvents );
 		
+		int drop = 1;
 		
 		if ( isProcessNormalDropsEnabled ) {
 			
-			// Drop the contents of the individual block breaks
-			int drop = aMan.calculateNormalDrop( itemInHand, spigotBlock );
+			debugInfo.append( "(doAction calculateNormalDrop) " );
 			
-			if ( drop > 0 ) {
-				
-				aMan.processBlockBreakage( spigotBlock, mine, player, drop, BlockEventType.blockBreak,
-						null, itemInHand );
-				
-				cancel = true;
-				
-				aMan.autosellPerBlockBreak( player );
-			}
+			// Drop the contents of the individual block breaks
+			drop = aMan.calculateNormalDrop( itemInHand, spigotBlock );
 			
 		}
-		else {
+
+		if ( drop > 0 ) {
+			debugInfo.append( "(doAction processBlockBreakage) " );
 			
-			aMan.processBlockBreakage( spigotBlock, mine, player, 1, BlockEventType.blockBreak, null,
-					itemInHand );
+			aMan.processBlockBreakage( spigotBlock, mine, player, drop, BlockEventType.blockBreak, null, itemInHand );
 			
 			cancel = true;
+			
+			aMan.autosellPerBlockBreak( player );
 		}
 		
 		if ( mine != null ) {
@@ -1338,7 +1334,7 @@ public class OnBlockBreakEventCore
 	 * @param teExplosiveBlocks
 	 */
 	public boolean doAction( Mine mine, Player player, List<SpigotBlock> explodedBlocks, 
-									BlockEventType blockEventType, String triggered ) {
+									BlockEventType blockEventType, String triggered, StringBuilder debugInfo ) {
 		boolean cancel = false;
 	
 		int totalCount = 0;
@@ -1347,9 +1343,11 @@ public class OnBlockBreakEventCore
 		
 		AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
 		
+		debugInfo.append( "(doAction multi-blocks: " + explodedBlocks.size() );
 		
 		// The explodedBlocks list have already been validated as being within the mine:
 		for ( SpigotBlock spigotBlock : explodedBlocks ) {
+			
 			
 			// Drop the contents of the individual block breaks
 			int drop = aMan.calculateNormalDrop( itemInHand, spigotBlock );

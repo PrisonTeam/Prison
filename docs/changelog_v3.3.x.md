@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.6 2021-07-22
 
 
+* **Add the debugInfo to more functions and a few more messages.**
+
+
 * **Changed the debugInfo variable to a StringBuilder instead of just a String.**
 This will provide a little bit of a performance improvement, plus it can then be passed in to the functions to gather more information.
 
