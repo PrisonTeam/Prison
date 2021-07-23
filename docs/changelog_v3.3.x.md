@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.6 2021-07-22
 
 
+* **Changed the debugInfo variable to a StringBuilder instead of just a String.**
+This will provide a little bit of a performance improvement, plus it can then be passed in to the functions to gather more information.
+
+
 * **A few minor adjustments to better identify the function that is running when logging the debug information on BlockBreaks.**
 Tweaks to the PrisonEnchant's plugin code.  Missed a few changes.
 

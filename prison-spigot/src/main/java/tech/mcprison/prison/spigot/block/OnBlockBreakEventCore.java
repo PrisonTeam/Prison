@@ -228,11 +228,12 @@ public class OnBlockBreakEventCore
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 		
+		StringBuilder debugInfo = new StringBuilder();
 		
-		String debugInfo = String.format( "### ** genericBlockEvent ** ### %s%s%s%s ",
+		debugInfo.append( String.format( "### ** genericBlockEvent ** ### %s%s%s%s ",
 				(autoManager ? "autoManager " : ""),
 				(e.isCancelled() ? "CANCELED " : ""),
-				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" ));
+				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" )) );
 		
 		
 		// NOTE that check for auto manager has happened prior to accessing this function.
@@ -260,7 +261,7 @@ public class OnBlockBreakEventCore
     			}
     		}
     		
-    		debugInfo += "mine=" + (mine == null ? "none" : mine.getName()) + " ";
+    		debugInfo.append( "mine=" + (mine == null ? "none" : mine.getName()) + " " );
     		
 
     		if ( isToolDisabled( e.getPlayer() ) ) {
@@ -270,13 +271,13 @@ public class OnBlockBreakEventCore
     					"&cYour tool is worn-out and cannot be used." );
     			
     			e.setCancelled( true );
-    			debugInfo += "UNUSABLE_TOOL__WORN_OUT (event canceled) ";
+    			debugInfo.append( "UNUSABLE_TOOL__WORN_OUT (event canceled) " );
     		}
     		else if ( mine != null && BlockUtils.getInstance().isUnbreakable( block ) ) {
     			// The block is unbreakable because a utility has it locked:
     			
     			e.setCancelled( true );
-    			debugInfo += "UNBREAKABLE_BLOCK_UTILS (event canceled) ";
+    			debugInfo.append( "UNBREAKABLE_BLOCK_UTILS (event canceled) " );
     		}
     		else if ( mine != null && (mine.isMineAccessByRank() || mine.isAccessPermissionEnabled()) && 
     					!mine.hasMiningAccess( new SpigotPlayer( e.getPlayer() ) ) ) {
@@ -284,7 +285,7 @@ public class OnBlockBreakEventCore
     			// 
     			
     			e.setCancelled( true );
-    			debugInfo += "ACCESS_DENIED (event canceled) ";
+    			debugInfo.append( "ACCESS_DENIED (event canceled) " );
     		}
     		else if ( blockEventsOnly ) {
     			
@@ -292,18 +293,18 @@ public class OnBlockBreakEventCore
     			
     			doActionBlockEventOnly( block, mine, e.getPlayer(), BlockEventType.blockBreak, triggered );
 
-    			debugInfo += "(actionBlockEventOnly) ";
+    			debugInfo.append( "(actionBlockEventOnly) " );
     		}
     		else if ( monitor && mine == null ) {
     			// bypass all processing since the block break is outside any mine:
     			
-    			debugInfo += "(bypassed monitor no mine) ";
+    			debugInfo.append( "(bypassed monitor no mine) " );
     		}
     		else if ( monitor && mine != null ) {
     			
     			doActionMonitor( block, mine );
     			
-    			debugInfo += "(monitor) ";
+    			debugInfo.append( "(monitor) " );
     		}
     		
     		// This is where the processing actually happens:
@@ -325,7 +326,7 @@ public class OnBlockBreakEventCore
     												mine, block, explodedBlocks, BlockEventType.blockBreak, triggered );
                 Bukkit.getServer().getPluginManager().callEvent(pmbbEvent);
                 if ( pmbbEvent.isCancelled() ) {
-                	debugInfo += "(normal processing: PrisonMinesBlockBreakEvent canceld) ";
+                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent canceld) " );
                 }
                 else {
                 	
@@ -337,29 +338,29 @@ public class OnBlockBreakEventCore
                 		}
                 		else {
                 			
-                			debugInfo += "(event was not canceled) ";
+                			debugInfo.append( "(event was not canceled) " );
                 		}
                 		
                 	}
                 	else {
                 		
-                		debugInfo += "(doAction failed without details) ";
+                		debugInfo.append( "(doAction failed without details) " );
                 	}
 
-                	debugInfo += "(normal processing) ";
+                	debugInfo.append( "(normal processing) " );
                 }
     			
     			
-    			debugInfo += "(normal processing) ";
+                debugInfo.append( "(normal processing) " );
     		}
     		else {
     			
-    			debugInfo += "(logic bypass) ";
+    			debugInfo.append( "(logic bypass) " );
     		}
     		
     	}
     	
-    	Output.get().logDebug( DebugTarget.blockBreak, debugInfo );
+    	Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
 	}
 
 
@@ -381,11 +382,12 @@ public class OnBlockBreakEventCore
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 		
+		StringBuilder debugInfo = new StringBuilder();
 		
-		String debugInfo = String.format( "### ** genericBlockExplodeEvent(TEBlockExplodeEvent) ** ### %s%s%s%s ",
+		debugInfo.append( String.format( "### ** genericBlockExplodeEvent(TEBlockExplodeEvent) ** ### %s%s%s%s ",
 				(autoManager ? "autoManager " : ""),
 				(e.isCancelled() ? "CANCELED " : ""),
-				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" ));
+				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" )) );
 		
 
 
@@ -419,7 +421,7 @@ public class OnBlockBreakEventCore
     			
     		}
     		
-    		debugInfo += "mine=" + (mine == null ? "none" : mine.getName()) + " ";
+    		debugInfo.append( "mine=" + (mine == null ? "none" : mine.getName()) + " " );
     		
     		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
     		
@@ -430,13 +432,13 @@ public class OnBlockBreakEventCore
     					"&cYour tool is worn-out and cannot be used." );
 
     			e.setCancelled( true );
-    			debugInfo += "UNUSABLE_TOOL__WORN_OUT (event canceled) ";
+    			debugInfo.append( "UNUSABLE_TOOL__WORN_OUT (event canceled) " );
     		}
     		else if ( mine != null && BlockUtils.getInstance().isUnbreakable( block ) ) {
     			// The block is unbreakable because a utility has it locked:
     			
     			e.setCancelled( true );
-    			debugInfo += "UNBREAKABLE_BLOCK_UTILS (event canceled) ";
+    			debugInfo.append( "UNBREAKABLE_BLOCK_UTILS (event canceled) " );
     		}
     		else if ( mine != null && (mine.isMineAccessByRank() || mine.isAccessPermissionEnabled()) && 
     					!mine.hasMiningAccess( new SpigotPlayer( e.getPlayer() ) ) ) {
@@ -444,7 +446,7 @@ public class OnBlockBreakEventCore
     			// 
     			
     			e.setCancelled( true );
-    			debugInfo += "ACCESS_DENIED (event canceled) ";
+    			debugInfo.append( "ACCESS_DENIED (event canceled) " );
     		}
     		else if ( blockEventsOnly ) {
     			int unbreakable = 0;
@@ -485,21 +487,21 @@ public class OnBlockBreakEventCore
     			if ( unbreakable > 0 ) {
     				
     				// e.setCancelled( true );
-    				debugInfo += "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
-    						" blocks, event not canceled) ";
+    				debugInfo.append( "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
+    									" blocks, event not canceled) " );
     			}
     			if ( outsideOfMine > 0 ) {
     				
-    				debugInfo += "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
-    						" blocks, event not canceled) ";
+    				debugInfo.append( "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
+    									" blocks, event not canceled) " );
     			}
     			
-    			debugInfo += "(actionBlockEventOnly) ";
+    			debugInfo.append( "(actionBlockEventOnly) " );
     		}
     		else if ( monitor && mine == null ) {
     			// bypass all processing since the block break is outside any mine:
     			
-    			debugInfo += "(bypassed monitor no mine) ";
+    			debugInfo.append( "(bypassed monitor no mine) " );
     		}
     		else if ( monitor && mine != null ) {
     			int unbreakable = 0;
@@ -533,15 +535,15 @@ public class OnBlockBreakEventCore
     			if ( unbreakable > 0 ) {
     				
     				// e.setCancelled( true );
-    				debugInfo += "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
-    						" blocks, event not canceled) ";
+    				debugInfo.append( "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
+    										" blocks, event not canceled) " );
     			}
     			if ( outsideOfMine > 0 ) {
     				
-    				debugInfo += "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
-    						" blocks, event not canceled) ";
+    				debugInfo.append( "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
+    										" blocks, event not canceled) " );
     			}
-    			debugInfo += "(monitor) ";
+    			debugInfo.append( "(monitor) " );
     		}
 
     		
@@ -588,7 +590,7 @@ public class OnBlockBreakEventCore
 	    												mine, block, explodedBlocks, BlockEventType.TEXplosion, triggered );
 	                Bukkit.getServer().getPluginManager().callEvent(pmbbEvent);
 	                if ( pmbbEvent.isCancelled() ) {
-	                	debugInfo += "(normal processing: PrisonMinesBlockBreakEvent canceld) ";
+	                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent canceld) " );
 	                }
 	                else {
 	                	
@@ -601,13 +603,13 @@ public class OnBlockBreakEventCore
 	                		}
 	                		else {
 	                			
-	                			debugInfo += "(event was not canceled) ";
+	                			debugInfo.append( "(event was not canceled) " );
 	                		}
 	                	}
 	                	
 	                	else {
 	                		
-	                		debugInfo += "(doAction failed without details) ";
+	                		debugInfo.append( "(doAction failed without details) " );
 	                	}
 	                	
 	                }
@@ -617,25 +619,25 @@ public class OnBlockBreakEventCore
     			if ( unbreakable > 0 ) {
     				
     				// e.setCancelled( true );
-    				debugInfo += "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
-    						" blocks, event not canceled) ";
+    				debugInfo.append( "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
+    						" blocks, event not canceled) " );
     			}
     			if ( outsideOfMine > 0 ) {
     				
-    				debugInfo += "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
-    						" blocks, event not canceled) ";
+    				debugInfo.append( "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
+    						" blocks, event not canceled) " );
     			}
     			
-    			debugInfo += "(normal processing) ";
+    			debugInfo.append( "(normal processing) " );
    			}
     		else {
     			
-    			debugInfo += "(logic bypass) ";
+    			debugInfo.append( "(logic bypass) " );
     		}
     			
     	}
     	
-    	Output.get().logDebug( DebugTarget.blockBreak, debugInfo );
+    	Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
 	}
 
 
@@ -690,11 +692,12 @@ public class OnBlockBreakEventCore
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 				
+		StringBuilder debugInfo = new StringBuilder();
 		
-		String debugInfo = String.format( "### ** genericBlastUseEvent(BlastUseEvent) ** ### %s%s%s%s ",
+		debugInfo.append( String.format( "### ** genericBlastUseEvent(BlastUseEvent) ** ### %s%s%s%s ",
 				(autoManager ? "autoManager " : ""),
 				(e.isCancelled() ? "CANCELED " : ""),
-				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" ));
+				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" )) );
 		
 
 
@@ -763,7 +766,7 @@ public class OnBlockBreakEventCore
 
     		}
 
-			debugInfo += "mine=" + (mine == null ? "none" : mine.getName()) + " ";
+			debugInfo.append( "mine=" + (mine == null ? "none" : mine.getName()) + " " );
 			
 			boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
     		
@@ -774,7 +777,7 @@ public class OnBlockBreakEventCore
     					"&cYour tool is worn-out and cannot be used." );
     			
     			e.setCancelled( true );
-    			debugInfo += "UNUSABLE_TOOL__WORN_OUT (event canceled) ";
+    			debugInfo.append( "UNUSABLE_TOOL__WORN_OUT (event canceled) " );
     		}
 //    		else if ( mine != null && BlockUtils.getInstance().isUnbreakable( block ) ) {
 //    			// The block is unbreakable because a utility has it locked:
@@ -788,7 +791,7 @@ public class OnBlockBreakEventCore
     			// 
 
 				e.setCancelled( true );
-    			debugInfo += "ACCESS_DENIED (event canceled) ";
+				debugInfo.append( "ACCESS_DENIED (event canceled) " );
     		}
     		else if ( blockEventsOnly ) {
     			int unbreakable = 0;
@@ -826,21 +829,21 @@ public class OnBlockBreakEventCore
 				if ( unbreakable > 0 ) {
 					
 					// e.setCancelled( true );
-	    			debugInfo += "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
-	    								" blocks, event not canceled) ";
+					debugInfo.append( "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
+	    								" blocks, event not canceled) " );
 				}
 				if ( outsideOfMine > 0 ) {
     				
-    				debugInfo += "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
-    						" blocks, event not canceled) ";
+					debugInfo.append( "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
+    						" blocks, event not canceled) " );
     			}
 
-				debugInfo += "(actionBlockEventOnly) ";
+				debugInfo.append( "(actionBlockEventOnly) " );
     		}
     		else if ( monitor && mine == null ) {
     			// bypass all processing since the block break is outside any mine:
     			
-    			debugInfo += "(bypassed monitor no mine) ";
+    			debugInfo.append( "(bypassed monitor no mine) " );
     		}
     		else if ( monitor && mine != null ) {
     			int unbreakable = 0;
@@ -875,16 +878,16 @@ public class OnBlockBreakEventCore
     			if ( unbreakable > 0 ) {
     				
     				// e.setCancelled( true );
-    				debugInfo += "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
-    						" blocks, event not canceled) ";
+    				debugInfo.append( "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
+    						" blocks, event not canceled) " );
     			}
     			if ( outsideOfMine > 0 ) {
     				
-    				debugInfo += "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
-    						" blocks, event not canceled) ";
+    				debugInfo.append( "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
+    						" blocks, event not canceled) " );
     			}
 
-    			debugInfo += "(monitor) ";
+    			debugInfo.append( "(monitor) " );
     		}
 
     		// now process all blocks (non-monitor):
@@ -931,7 +934,7 @@ public class OnBlockBreakEventCore
 	    												mine, dummyBlock, explodedBlocks, BlockEventType.CEXplosion, triggered );
 	                Bukkit.getServer().getPluginManager().callEvent(pmbbEvent);
 	                if ( pmbbEvent.isCancelled() ) {
-	                	debugInfo += "(normal processing: PrisonMinesBlockBreakEvent canceld) ";
+	                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent canceld) " );
 	                }
 	                else {
 	                	
@@ -943,13 +946,13 @@ public class OnBlockBreakEventCore
 	                		}
 	                		else {
 	                			
-	                			debugInfo += "(event was not canceled) ";
+	                			debugInfo.append( "(event was not canceled) " );
 	                		}
 	                	}
 	                	
 	                	else {
 	                		
-	                		debugInfo += "(doAction failed without details) ";
+	                		debugInfo.append( "(doAction failed without details) " );
 	                	}
 	                	
 	                }
@@ -958,25 +961,25 @@ public class OnBlockBreakEventCore
     			if ( unbreakable > 0 ) {
     				
     				// e.setCancelled( true );
-    				debugInfo += "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
-    						" blocks, event not canceled) ";
+    				debugInfo.append( "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
+    											" blocks, event not canceled) " );
     			}
     			if ( outsideOfMine > 0 ) {
     				
-    				debugInfo += "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
-    						" blocks, event not canceled) ";
+    				debugInfo.append( "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
+    											" blocks, event not canceled) " );
     			}
 
-    			debugInfo += "(normal processing) ";
+    			debugInfo.append( "(normal processing) " );
     		}
     		else {
     			
-    			debugInfo += "(logic bypass) ";
+    			debugInfo.append( "(logic bypass) " );
     		}
 
 		}
     	
-    	Output.get().logDebug( DebugTarget.blockBreak, debugInfo );
+    	Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
 
 	}
 	
@@ -1000,11 +1003,12 @@ public class OnBlockBreakEventCore
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 				
+		StringBuilder debugInfo = new StringBuilder();
 		
-		String debugInfo = String.format( "### ** genericExplosiveEvent(PrisonEnchants - ExplosiveEvent) ** ### %s%s%s%s ",
+		debugInfo.append( String.format( "### ** genericExplosiveEvent(PrisonEnchants - ExplosiveEvent) ** ### %s%s%s%s ",
 				(autoManager ? "autoManager " : ""),
 				(e.isCancelled() ? "CANCELED " : ""),
-				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" ));
+				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" )) );
 		
 
 
@@ -1036,7 +1040,7 @@ public class OnBlockBreakEventCore
     		}
     		
 
-			debugInfo += "mine=" + (mine == null ? "none" : mine.getName()) + " ";
+    		debugInfo.append( "mine=" + (mine == null ? "none" : mine.getName()) + " " );
 			
 			boolean isPEExplosiveEnabled = isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
     		
@@ -1047,13 +1051,13 @@ public class OnBlockBreakEventCore
     					"&cYour tool is worn-out and cannot be used." );
     			
     			e.setCancelled( true );
-    			debugInfo += "UNUSABLE_TOOL__WORN_OUT (event canceled) ";
+    			debugInfo.append( "UNUSABLE_TOOL__WORN_OUT (event canceled) " );
     		}
     		else if ( mine != null && BlockUtils.getInstance().isUnbreakable( block ) ) {
     			// The block is unbreakable because a utility has it locked:
     			
     			e.setCancelled( true );
-    			debugInfo += "UNBREAKABLE_BLOCK_UTILS (event canceled) ";
+    			debugInfo.append( "UNBREAKABLE_BLOCK_UTILS (event canceled) " );
     		}
 			else if ( mine != null && (mine.isMineAccessByRank() || mine.isAccessPermissionEnabled()) && 
 						!mine.hasMiningAccess( new SpigotPlayer( e.getPlayer() ) ) ) {
@@ -1061,7 +1065,7 @@ public class OnBlockBreakEventCore
     			// 
 
 				e.setCancelled( true );
-    			debugInfo += "ACCESS_DENIED (event canceled) ";
+				debugInfo.append( "ACCESS_DENIED (event canceled) " );
     		}
     		else if ( blockEventsOnly ) {
     			
@@ -1085,12 +1089,12 @@ public class OnBlockBreakEventCore
 	    			}
 				}
 
-				debugInfo += "(actionBlockEventOnly) ";
+				debugInfo.append( "(actionBlockEventOnly) " );
     		}
     		else if ( monitor && mine == null ) {
     			// bypass all processing since the block break is outside any mine:
     			
-    			debugInfo += "(bypassed monitor no mine) ";
+    			debugInfo.append( "(bypassed monitor no mine) " );
     		}
     		else if ( monitor && mine != null ) {
     			int unbreakable = 0;
@@ -1124,16 +1128,16 @@ public class OnBlockBreakEventCore
     			if ( unbreakable > 0 ) {
     				
     				// e.setCancelled( true );
-    				debugInfo += "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
-    						" blocks, event not canceled) ";
+    				debugInfo.append( "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
+    						" blocks, event not canceled) " );
     			}
     			if ( outsideOfMine > 0 ) {
     				
-    				debugInfo += "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
-    						" blocks, event not canceled) ";
+    				debugInfo.append( "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
+    						" blocks, event not canceled) " );
     			}
     			
-    			debugInfo += "(monitor) ";
+    			debugInfo.append( "(monitor) " );
     		}
 
     		// now process all blocks (non-monitor):
@@ -1182,7 +1186,7 @@ public class OnBlockBreakEventCore
 	    												mine, dummyBlock, explodedBlocks, BlockEventType.PEExplosive, triggered );
 	                Bukkit.getServer().getPluginManager().callEvent(pmbbEvent);
 	                if ( pmbbEvent.isCancelled() ) {
-	                	debugInfo += "(normal processing: PrisonMinesBlockBreakEvent canceled) ";
+	                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent canceled) " );
 	                }
 	                else {
 	                	
@@ -1194,13 +1198,13 @@ public class OnBlockBreakEventCore
 	                		}
 	                		else {
 	                			
-	                			debugInfo += "(event was not canceled) ";
+	                			debugInfo.append( "(event was not canceled) " );
 	                		}
 	                	}
 	                	
 	                	else {
 	                		
-	                		debugInfo += "(doAction failed without details) ";
+	                		debugInfo.append( "(doAction failed without details) " );
 	                	}
 	                	
 	                }
@@ -1209,25 +1213,25 @@ public class OnBlockBreakEventCore
     			if ( unbreakable > 0 ) {
     				
     				// e.setCancelled( true );
-    				debugInfo += "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
-    						" blocks, event not canceled) ";
+    				debugInfo.append( "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
+    						" blocks, event not canceled) " );
     			}
     			if ( outsideOfMine > 0 ) {
     				
-    				debugInfo += "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
-    						" blocks, event not canceled) ";
+    				debugInfo.append( "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
+    						" blocks, event not canceled) " );
     			}
     			
-    			debugInfo += "(normal processing) ";
+    			debugInfo.append( "(normal processing) " );
     		}
     		else {
     			
-    			debugInfo += "(logic bypass) ";
+    			debugInfo.append( "(logic bypass) " );
     		}
 
 		}
     	
-    	Output.get().logDebug( DebugTarget.blockBreak, debugInfo );
+    	Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
 
 	}
 	
