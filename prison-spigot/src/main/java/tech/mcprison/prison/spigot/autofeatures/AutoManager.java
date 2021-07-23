@@ -211,7 +211,8 @@ public class AutoManager
     
     
     
-    public void onPrisonEnchantsExplosiveEvent( ExplosiveEvent e ) {
+    public void onPrisonEnchantsExplosiveEvent( Object obj ) {
+    	ExplosiveEvent e = (ExplosiveEvent) obj;
     	if ( !e.isCancelled() ) {
     		
     		// NOTE: If autoManager is turned off, then process only the blockEvents:

@@ -239,10 +239,10 @@ public class OnBlockBreakEventListener
     	}
     }
     
-    public void onPrisonEnchantsExplosiveEvent(ExplosiveEvent e) {
-    	
+    public void onPrisonEnchantsExplosiveEvent( Object obj ) {
+    	ExplosiveEvent e = (ExplosiveEvent) obj;
     	// if autoManager is turned off, then only process the blockEvents
-    	genericExplosiveEvent( e, false, isBoolean(AutoFeatures.isAutoManagerEnabled), false );
+    	genericExplosiveEvent( e, false, !isBoolean(AutoFeatures.isAutoManagerEnabled), false );
     }
     
 ////    @EventHandler(priority=EventPriority.LOW) 

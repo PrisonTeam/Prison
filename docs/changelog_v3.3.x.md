@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.6 2021-07-22
 
 
+* **Fixed a problem with the registration of the events failed due to the parameter of ExplosiveEvent.**
+Had to set it to Object to allow it to be registered when the plugin and class does not exist on the server.
+
+
 * **Added more internal debug details.**
 
 
