@@ -221,7 +221,10 @@ public class SpigotPrison extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
 
         
-        Bukkit.getPluginManager().registerEvents(new SlimeBlockFunEventListener(), this);
+        if ( getConfig().getBoolean( "slime-fun" ) ) {
+        	Bukkit.getPluginManager().registerEvents(new SlimeBlockFunEventListener(), this);
+        }
+        
         Bukkit.getPluginManager().registerEvents(new SpigotListener(), this);
 
         try {
