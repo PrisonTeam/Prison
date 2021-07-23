@@ -27,6 +27,9 @@ These build logs represent the work that has been going on within prison.
 * **v3.2.10-alpha.7 2021-07-23**
 
 
+* **Added a note on how fortune works... it's been confusing... **
+
+
 * **Updates to the liner to allow the use of '*all*' for the mine name to apply the same pattern to all mines.**
 For auto configure, ensure that the random liner applied to the mines is not remove, removeAll, or repair.
 

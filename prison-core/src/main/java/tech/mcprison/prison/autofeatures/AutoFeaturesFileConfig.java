@@ -124,6 +124,11 @@ public class AutoFeaturesFileConfig {
 	    		isExtendBukkitFortuneCalculationsEnabled(fortuneFeature, true),
 	    		extendBukkitFortuneFactorPercentRangeLow(fortuneFeature, 70 ),
 	    		extendBukkitFortuneFactorPercentRangeHigh(fortuneFeature, 110 ),
+	    		extendBukkitFortune__ReadMe(fortuneFeature, "To get fortune to work, First " +
+	    				"try to use the extendedBukkitFortune (set it to true). If it won't " +
+	    				"work, then you must disable it (set it to false), then enable " +
+	    				"CalculateAltFortune. AltFortune will never work if " +
+	    				"extendedBukkitFortune is enabled." ),
 	    		
 	    		
 	    		isCalculateAltFortuneEnabled(fortuneFeature, false),
