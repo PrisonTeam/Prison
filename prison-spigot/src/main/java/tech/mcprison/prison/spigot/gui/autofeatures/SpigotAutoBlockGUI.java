@@ -43,73 +43,73 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
 
         if (afConfig != null) {
 
-            if (afConfig.isFeatureBoolean(AutoFeatures.autoBlockAllBlocks)) {
+            if (afConfig.isFeatureBoolean(AutoFeatures.blockAllBlocks)) {
                 gui.addButton(new Button(null, XMaterial.LIME_STAINED_GLASS_PANE, enabledLore, SpigotPrison.format("&a" + "All_Blocks Enabled")));
             } else {
                 gui.addButton(new Button(null, XMaterial.RED_STAINED_GLASS_PANE, disabledLore, SpigotPrison.format("&c" + "All_Blocks Disabled")));
             }
 
-            if (afConfig.isFeatureBoolean(AutoFeatures.autoBlockGoldBlock)) {
+            if (afConfig.isFeatureBoolean(AutoFeatures.blockGoldBlock)) {
                 gui.addButton(new Button(null, XMaterial.GOLD_BLOCK, enabledLore, SpigotPrison.format("&a" + "Gold_Block Enabled")));
             } else {
                 gui.addButton(new Button(null, XMaterial.GOLD_BLOCK, disabledLore, SpigotPrison.format("&c" + "Gold_Block Disabled")));
             }
 
-            if (afConfig.isFeatureBoolean(AutoFeatures.autoBlockIronBlock)) {
+            if (afConfig.isFeatureBoolean(AutoFeatures.blockIronBlock)) {
                 gui.addButton(new Button(null, XMaterial.IRON_BLOCK, enabledLore, SpigotPrison.format("&a" + "Iron_Block Enabled")));
             } else {
                 gui.addButton(new Button(null, XMaterial.IRON_BLOCK, disabledLore, SpigotPrison.format("&c" + "Iron_Block Disabled")));
             }
 
-            if (afConfig.isFeatureBoolean(AutoFeatures.autoBlockCoalBlock)) {
+            if (afConfig.isFeatureBoolean(AutoFeatures.blockCoalBlock)) {
                 gui.addButton(new Button(null, XMaterial.COAL_BLOCK, enabledLore, SpigotPrison.format("&a" + "Coal_Block Enabled")));
             } else {
                 gui.addButton(new Button(null, XMaterial.COAL_BLOCK, disabledLore, SpigotPrison.format("&c" + "Coal_Block Disabled")));
             }
 
-            if (afConfig.isFeatureBoolean(AutoFeatures.autoBlockDiamondBlock)) {
+            if (afConfig.isFeatureBoolean(AutoFeatures.blockDiamondBlock)) {
                 gui.addButton(new Button(null, XMaterial.DIAMOND_BLOCK, enabledLore, SpigotPrison.format("&a" + "Diamond_Block Enabled")));
             } else {
                 gui.addButton(new Button(null, XMaterial.DIAMOND_BLOCK, disabledLore, SpigotPrison.format("&c" + "Diamond_Block Disabled")));
             }
 
-            if (afConfig.isFeatureBoolean(AutoFeatures.autoBlockRedstoneBlock)) {
+            if (afConfig.isFeatureBoolean(AutoFeatures.blockRedstoneBlock)) {
                 gui.addButton(new Button(null, XMaterial.REDSTONE_BLOCK, enabledLore, SpigotPrison.format("&a" + "Redstone_Block Enabled")));
             } else {
                 gui.addButton(new Button(null, XMaterial.REDSTONE_BLOCK, disabledLore, SpigotPrison.format("&c" + "Redstone_Block Disabled")));
             }
 
-            if (afConfig.isFeatureBoolean(AutoFeatures.autoBlockEmeraldBlock)) {
+            if (afConfig.isFeatureBoolean(AutoFeatures.blockEmeraldBlock)) {
                 gui.addButton(new Button(null, XMaterial.EMERALD_BLOCK, enabledLore, SpigotPrison.format("&a" + "Emerald_Block Enabled")));
             } else {
                 gui.addButton(new Button(null, XMaterial.EMERALD_BLOCK, disabledLore, SpigotPrison.format("&c" + "Emerald_Block Disabled")));
             }
 
-            if (afConfig.isFeatureBoolean(AutoFeatures.autoBlockQuartzBlock)) {
+            if (afConfig.isFeatureBoolean(AutoFeatures.blockQuartzBlock)) {
                 gui.addButton(new Button(null, XMaterial.QUARTZ_BLOCK, enabledLore, SpigotPrison.format("&a" + "Quartz_Block Enabled")));
             } else {
                 gui.addButton(new Button(null, XMaterial.QUARTZ_BLOCK, disabledLore, SpigotPrison.format("&c" + "Quartz_Block Disabled")));
             }
 
-            if (afConfig.isFeatureBoolean(AutoFeatures.autoBlockPrismarineBlock)) {
+            if (afConfig.isFeatureBoolean(AutoFeatures.blockPrismarineBlock)) {
                 gui.addButton(new Button(null, XMaterial.PRISMARINE, enabledLore, SpigotPrison.format("&a" + "Prismarine_Block Enabled")));
             } else {
                 gui.addButton(new Button(null, XMaterial.PRISMARINE, disabledLore, SpigotPrison.format("&c" + "Prismarine_Block Disabled")));
             }
 
-            if (afConfig.isFeatureBoolean(AutoFeatures.autoBlockLapisBlock)) {
+            if (afConfig.isFeatureBoolean(AutoFeatures.blockLapisBlock)) {
                 gui.addButton(new Button(null, XMaterial.LAPIS_BLOCK, enabledLore, SpigotPrison.format("&a" + "Lapis_Block Enabled")));
             } else {
                 gui.addButton(new Button(null, XMaterial.LAPIS_BLOCK, disabledLore, SpigotPrison.format("&c" + "Lapis_Block Disabled")));
             }
 
-            if (afConfig.isFeatureBoolean(AutoFeatures.autoBlockSnowBlock)) {
+            if (afConfig.isFeatureBoolean(AutoFeatures.blockSnowBlock)) {
                 gui.addButton(new Button(null, XMaterial.SNOW_BLOCK, enabledLore, SpigotPrison.format("&a" + "Snow_Block Enabled")));
             } else {
                 gui.addButton(new Button(null, XMaterial.SNOW_BLOCK, disabledLore, SpigotPrison.format("&c" + "Snow_Block Disabled")));
             }
 
-            if (afConfig.isFeatureBoolean(AutoFeatures.autoBlockGlowstone)) {
+            if (afConfig.isFeatureBoolean(AutoFeatures.blockGlowstone)) {
                 gui.addButton(new Button(null, XMaterial.GLOWSTONE, enabledLore, SpigotPrison.format("&a" + "Glowstone_Block Enabled")));
             } else {
                 gui.addButton(new Button(null, XMaterial.GLOWSTONE, disabledLore, SpigotPrison.format("&c" + "Glowstone_Block Disabled")));

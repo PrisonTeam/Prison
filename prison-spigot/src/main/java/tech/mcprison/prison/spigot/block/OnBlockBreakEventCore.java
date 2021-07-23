@@ -309,6 +309,7 @@ public class OnBlockBreakEventCore
     		
     		// This is where the processing actually happens:
     		else if ( mine != null || mine == null && !isBoolean( AutoFeatures.pickupLimitToMines ) ) {
+    			debugInfo.append( "(normal processing initiating) " );
     			
     			// Set the mine's PrisonBlockTypes for the block. Used to identify custom blocks.
     			// Needed since processing of the block will lose track of which mine it came from.
@@ -347,11 +348,10 @@ public class OnBlockBreakEventCore
                 		debugInfo.append( "(doAction failed without details) " );
                 	}
 
-                	debugInfo.append( "(normal processing) " );
                 }
     			
     			
-                debugInfo.append( "(normal processing) " );
+                debugInfo.append( "(normal processing completed) " );
     		}
     		else {
     			
@@ -1284,6 +1284,7 @@ public class OnBlockBreakEventCore
 	
 	public boolean doAction( SpigotBlock spigotBlock, Mine mine, Player player, StringBuilder debugInfo ) {
 		boolean cancel = false;
+		debugInfo.append( "(doAction: starting EventCore) " );
 		
 		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
 		

@@ -178,8 +178,7 @@ public class AutoManagerFeatures
 	private boolean processAutoEvents( SpigotBlock spigotBlock, Player player, Mine mine, StringBuilder debugInfo ) {
 		boolean cancel = false;
 		
-		if (isBoolean(AutoFeatures.isAutoManagerEnabled) && 
-			!spigotBlock.isEmpty() ) {
+		if (isBoolean(AutoFeatures.isAutoManagerEnabled) && !spigotBlock.isEmpty() ) {
 			
 			debugInfo.append( "(processAutoEvent) " );
 			
@@ -221,30 +220,59 @@ public class AutoManagerFeatures
 		boolean loreSmelt = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.loreSmeltValue) );
 		boolean loreBlock = isLoreEnabled && checkLore( itemInHand, getMessage( AutoFeatures.loreBlockValue ) );
 		
+		boolean permPickup = player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ));
+		boolean permSmelt = player.isPermissionSet( getMessage( AutoFeatures.permissionAutoSmelt ));
+		boolean permBlock = player.isPermissionSet( getMessage( AutoFeatures.permissionAutoBlock ));
 		
-		boolean isAutoPickup = lorePickup || isBoolean( AutoFeatures.autoPickupEnabled ) ||
-										player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ));
+		boolean configPickup = isBoolean( AutoFeatures.autoPickupEnabled );
+		boolean configSmelt = isBoolean( AutoFeatures.autoSmeltEnabled );
+		boolean configBlock = isBoolean( AutoFeatures.autoBlockEnabled );
 		
-		boolean isAutoSmelt = loreSmelt || isBoolean( AutoFeatures.autoSmeltEnabled ) ||
-										player.isPermissionSet( getMessage( AutoFeatures.permissionAutoPickup ));
-		isAutoSmelt = (mine != null || mine == null && !isBoolean( AutoFeatures.smeltLimitToMines )) &&
-							isAutoSmelt;
+		boolean limit2minesPickup = isBoolean( AutoFeatures.pickupLimitToMines );
+		boolean limit2minesSmelt = isBoolean( AutoFeatures.smeltLimitToMines );
+		boolean limit2minesBlock = isBoolean( AutoFeatures.blockLimitToMines );
 		
-		boolean isAutoBlock = loreBlock || isBoolean( AutoFeatures.autoBlockEnabled ) ||
-										player.isPermissionSet( getMessage( AutoFeatures.permissionAutoBlock ));
-		isAutoBlock = (mine != null || mine == null && !isBoolean( AutoFeatures.autoBlockLimitToMines )) &&
-							isAutoBlock;
+		boolean isAutoPickup = lorePickup || configPickup || permPickup;
+		
+		isAutoPickup = (mine != null || mine == null && !limit2minesPickup) && isAutoPickup;
+		
+		boolean isAutoSmelt = loreSmelt || configSmelt || permSmelt;
+		
+		isAutoSmelt = (mine != null || mine == null && !limit2minesSmelt) && isAutoSmelt;
+		
+		boolean isAutoBlock = loreBlock || configBlock || permBlock;
+		
+		isAutoBlock = (mine != null || mine == null && !limit2minesBlock) && isAutoBlock;
 		
 		if ( Output.get().isDebug( DebugTarget.blockBreak ) ) {
 			
 			debugInfo.append( "(applyAutoEvents: " )
-			.append( lorePickup ? "lorePickup " : "" )
-			.append( lorePickup ? "loreSmelt " : "" )
-			.append( lorePickup ? "loreBlock " : "" )
+			.append( block.getBlockName() )
 			
-			.append( lorePickup ? "autoPickup " : "" )
-			.append( lorePickup ? "autoSmelt " : "" )
-			.append( lorePickup ? "autoBlock " : "" )
+			.append( " Pickup [")
+			.append( isAutoPickup ? "enabled: " : "disabled:" )
+			.append( lorePickup ? "lore " : "" )
+			.append( permPickup ? "perm " : "" )
+			.append( configPickup ? "config " : "" )
+			.append( limit2minesPickup ? "limit2mines" : "noLimit" )
+			.append( "] ")
+			
+			.append( " Smelt [")
+			.append( isAutoSmelt ? "enabled: " : "disabled:" )
+			.append( loreSmelt ? "lore " : "" )
+			.append( permSmelt ? "perm " : "" )
+			.append( configSmelt ? "config " : "" )
+			.append( limit2minesSmelt ? "limit2mines" : "noLimit" )
+			.append( "] ")
+			
+			.append( " Block [")
+			.append( isAutoBlock ? "enabled: " : "disabled:" )
+			.append( loreBlock ? "lore " : "" )
+			.append( permBlock ? "perm " : "" )
+			.append( configBlock ? "config " : "" )
+			.append( limit2minesBlock ? "limit2mines" : "noLimit" )
+			.append( "] ")
+			
 			
 			.append( ")" );
 		}
@@ -394,7 +422,6 @@ public class AutoManagerFeatures
 		if (drops != null && drops.size() > 0 ) {
 			
 			// Need better drop calculation that is not using the getDrops function.
-			short fortuneLevel = getFortune(itemInHand);
 			
 			calculateSilkTouch( itemInHand, drops );
 			
@@ -404,6 +431,8 @@ public class AutoManagerFeatures
 			
 			// Add fortune to the items in the inventory
 			if ( isBoolean( AutoFeatures.isCalculateFortuneEnabled ) ) {
+				short fortuneLevel = getFortune(itemInHand);
+
 				debugInfo.append( "(calculateFortune: fort " + fortuneLevel + ")" );
 				
 				for ( SpigotItemStack itemStack : drops ) {
@@ -421,12 +450,14 @@ public class AutoManagerFeatures
 			
 			// Smelt
 			if ( isAutoSmelt ) {
+				debugInfo.append( "(smelting: itemStacks)" );
 				normalDropSmelt( drops );
 			}
 			
 			
 			// Block
 			if ( isAutoBlock ) {
+				debugInfo.append( "(blocking: itemStacks)" );
 				normalDropBlock( drops );
 			}
 			
@@ -451,6 +482,9 @@ public class AutoManagerFeatures
 
 
 	
+
+
+
 	public int calculateNormalDrop( SpigotItemStack itemInHand, SpigotBlock block ) {
 		int count = 0;
 
@@ -1070,6 +1104,7 @@ public class AutoManagerFeatures
 		return count;
 	}
 
+	
 	protected XMaterial autoFeatureSmelt( Player p, XMaterial source )
 	{
 		XMaterial results = source;
@@ -1159,62 +1194,62 @@ public class AutoManagerFeatures
 			switch ( source )
 			{
 				case GOLD_INGOT:
-					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockGoldBlock ), source, XMaterial.GOLD_BLOCK, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockGoldBlock ), source, XMaterial.GOLD_BLOCK, p );
 					
 					break;
 					
 				case IRON_INGOT:
-					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockIronBlock ), source, XMaterial.IRON_BLOCK, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockIronBlock ), source, XMaterial.IRON_BLOCK, p );
 					
 					break;
 
 				case COAL:
-					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockCoalBlock ), source, XMaterial.COAL_BLOCK, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockCoalBlock ), source, XMaterial.COAL_BLOCK, p );
 					
 					break;
 					
 				case DIAMOND:
-					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockDiamondBlock ), source, XMaterial.DIAMOND_BLOCK, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockDiamondBlock ), source, XMaterial.DIAMOND_BLOCK, p );
 					
 					break;
 					
 				case REDSTONE:
-					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockRedstoneBlock ), source,XMaterial.REDSTONE_BLOCK, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockRedstoneBlock ), source,XMaterial.REDSTONE_BLOCK, p );
 					
 					break;
 					
 				case EMERALD:
-					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockEmeraldBlock ), source, XMaterial.EMERALD_BLOCK, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockEmeraldBlock ), source, XMaterial.EMERALD_BLOCK, p );
 					
 					break;
 					
 				case QUARTZ:
-					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockQuartzBlock ), source, XMaterial.QUARTZ_BLOCK, 4, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockQuartzBlock ), source, XMaterial.QUARTZ_BLOCK, 4, p );
 					
 					break;
 					
 				case PRISMARINE_SHARD:
-					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockPrismarineBlock ), source, XMaterial.PRISMARINE, 4, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockPrismarineBlock ), source, XMaterial.PRISMARINE, 4, p );
 					
 					break;
 					
 				case SNOWBALL:
-					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockSnowBlock ), source, XMaterial.SNOW_BLOCK, 4, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockSnowBlock ), source, XMaterial.SNOW_BLOCK, 4, p );
 					
 					break;
 					
 				case GLOWSTONE_DUST:
-					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockGlowstone ), source, XMaterial.GLOWSTONE, 4, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockGlowstone ), source, XMaterial.GLOWSTONE, 4, p );
 					
 					break;
 					
 				case LAPIS_LAZULI:
-					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockLapisBlock ), source, XMaterial.LAPIS_BLOCK, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockLapisBlock ), source, XMaterial.LAPIS_BLOCK, p );
 					
 					break;
 					
 				case COPPER_INGOT:
-					autoBlock( isAll || isBoolean( AutoFeatures.autoBlockCopperBlock ), source, XMaterial.COPPER_BLOCK, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockCopperBlock ), source, XMaterial.COPPER_BLOCK, p );
 					
 					break;
 					
@@ -1235,6 +1270,8 @@ public class AutoManagerFeatures
 	 */
 	protected void normalDropSmelt( List<SpigotItemStack> drops ) {
 		
+		boolean isAll = isBoolean( AutoFeatures.smeltAllBlocks );
+		
 		Set<XMaterial> xMats = new HashSet<>();
 		for ( SpigotItemStack sItemStack : drops ) {
 			XMaterial source = XMaterial.matchXMaterial( sItemStack.getBukkitStack() );
@@ -1251,49 +1288,82 @@ public class AutoManagerFeatures
 			switch ( source )
 			{
 				case COBBLESTONE:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.STONE, 1 );
+					if ( isAll || isBoolean( AutoFeatures.smeltCobblestone ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.STONE, 1 );
+					}
 					break;
 					
 				case GOLD_ORE:
 				case NETHER_GOLD_ORE:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GOLD_INGOT, 1 );
+					if ( isAll || isBoolean( AutoFeatures.smeltGoldOre ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GOLD_INGOT, 1 );
+					}
 					break;
 					
 				case IRON_ORE:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.IRON_INGOT, 1 );
+					if ( isAll || isBoolean( AutoFeatures.smeltIronOre ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.IRON_INGOT, 1 );
+					}
 					break;
 					
 				case COAL_ORE:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COAL,11 );
+					if ( isAll || isBoolean( AutoFeatures.smeltCoalOre ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COAL,11 );
+					}
 					break;
 					
 				case DIAMOND_ORE:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.DIAMOND, 1 );
+					if ( isAll || isBoolean( AutoFeatures.smeltDiamondlOre ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.DIAMOND, 1 );
+					}
 					break;
 					
 				case EMERALD_ORE:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.EMERALD, 1 );
+					if ( isAll || isBoolean( AutoFeatures.smeltEmeraldOre ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.EMERALD, 1 );
+					}
 					break;
 					
 				case LAPIS_ORE:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_LAZULI, 1 );
+					if ( isAll || isBoolean( AutoFeatures.smeltLapisOre ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_LAZULI, 1 );
+					}
 					break;
 					
 				case REDSTONE_ORE:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.REDSTONE, 1 );
+					if ( isAll || isBoolean( AutoFeatures.smeltRedstoneOre ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.REDSTONE, 1 );
+					}
 					break;
 					
 				case NETHER_QUARTZ_ORE:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.QUARTZ, 1 );
+					if ( isAll || isBoolean( AutoFeatures.smeltNetherQuartzOre ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.QUARTZ, 1 );
+					}
 					break;
 					
 				case ANCIENT_DEBRIS:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.NETHERITE_SCRAP, 1 );
+					if ( isAll || isBoolean( AutoFeatures.smeltAncientDebris ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.NETHERITE_SCRAP, 1 );
+					}
 					break;
 
 				// v1.17 !!
 				case COPPER_ORE:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COPPER_INGOT, 1);
+					if ( isAll || isBoolean( AutoFeatures.smeltCopperOre ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COPPER_INGOT, 1);
+					}
 					break;
 					
 				default:
@@ -1313,6 +1383,8 @@ public class AutoManagerFeatures
 	 */
 	protected void normalDropBlock( List<SpigotItemStack> drops ) {
 		
+		boolean isAll = isBoolean( AutoFeatures.smeltAllBlocks );
+		
 		Set<XMaterial> xMats = new HashSet<>();
 		for ( SpigotItemStack sItemStack : drops ) {
 			XMaterial source = XMaterial.matchXMaterial( sItemStack.getBukkitStack() );
@@ -1328,63 +1400,87 @@ public class AutoManagerFeatures
 			switch ( source )
 			{
 				case GOLD_INGOT:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GOLD_BLOCK, 9 );
-					
+					if ( isAll || isBoolean( AutoFeatures.blockGoldBlock ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GOLD_BLOCK, 9 );
+					}
 					break;
 					
 				case IRON_INGOT:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.IRON_BLOCK, 9 );
-					
+					if ( isAll || isBoolean( AutoFeatures.blockIronBlock ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.IRON_BLOCK, 9 );
+					}
 					break;
 
 				case COAL:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COAL_BLOCK, 9 );
-					
+					if ( isAll || isBoolean( AutoFeatures.blockCoalBlock ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COAL_BLOCK, 9 );
+					}
 					break;
 					
 				case DIAMOND:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.DIAMOND_BLOCK, 9 );
-					
+					if ( isAll || isBoolean( AutoFeatures.blockDiamondBlock ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.DIAMOND_BLOCK, 9 );
+					}
 					break;
 					
 				case REDSTONE:
-					SpigotUtil.itemStackReplaceItems( drops, source,XMaterial.REDSTONE_BLOCK, 9 );
-					
+					if ( isAll || isBoolean( AutoFeatures.blockRedstoneBlock ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source,XMaterial.REDSTONE_BLOCK, 9 );
+					}
 					break;
 					
 				case EMERALD:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.EMERALD_BLOCK, 9 );
-					
+					if ( isAll || isBoolean( AutoFeatures.blockEmeraldBlock ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.EMERALD_BLOCK, 9 );
+					}
 					break;
 					
 				case QUARTZ:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.QUARTZ_BLOCK, 4 );
-					
+					if ( isAll || isBoolean( AutoFeatures.blockQuartzBlock ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.QUARTZ_BLOCK, 4 );
+					}
 					break;
 					
 				case PRISMARINE_SHARD:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.PRISMARINE, 4 );
-					
+					if ( isAll || isBoolean( AutoFeatures.blockPrismarineBlock ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.PRISMARINE, 4 );
+					}
 					break;
 					
 				case SNOWBALL:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.SNOW_BLOCK, 4 );
-					
+					if ( isAll || isBoolean( AutoFeatures.blockSnowBlock ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.SNOW_BLOCK, 4 );
+					}
 					break;
 					
 				case GLOWSTONE_DUST:
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GLOWSTONE, 4 );
-					
+					if ( isAll || isBoolean( AutoFeatures.blockGlowstone ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GLOWSTONE, 4 );
+					}
 					break;
 					
-				case LAPIS_LAZULI:	
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_BLOCK, 9 );
-					
+				case LAPIS_LAZULI:
+					if ( isAll || isBoolean( AutoFeatures.blockLapisBlock ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_BLOCK, 9 );
+					}
 					break;
 					
-				case COPPER_INGOT:	
-					SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COPPER_BLOCK, 9 );
-					
+				case COPPER_INGOT:
+					if ( isAll || isBoolean( AutoFeatures.blockCopperBlock ) ) {
+						
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COPPER_BLOCK, 9 );
+					}
 					break;
 					
 				default:

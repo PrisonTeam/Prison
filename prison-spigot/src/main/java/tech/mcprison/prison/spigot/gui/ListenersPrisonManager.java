@@ -2674,62 +2674,62 @@ public class ListenersPrisonManager implements Listener {
 
             switch (buttonname){
                 case "Gold_Block":{
-                    afConfig.setFeature( AutoFeatures.autoBlockGoldBlock, !enabled );
+                    afConfig.setFeature( AutoFeatures.blockGoldBlock, !enabled );
                     saveConfigBlock(e, p);
                     break;
                 }
                 case "Iron_Block":{
-                    afConfig.setFeature( AutoFeatures.autoBlockIronBlock, !enabled );
+                    afConfig.setFeature( AutoFeatures.blockIronBlock, !enabled );
                     saveConfigBlock(e, p);
                     break;
                 }
                 case "Coal_Block":{
-                    afConfig.setFeature( AutoFeatures.autoBlockCoalBlock, !enabled );
+                    afConfig.setFeature( AutoFeatures.blockCoalBlock, !enabled );
                     saveConfigBlock(e, p);
                     break;
                 }
                 case "Diamond_Block":{
-                    afConfig.setFeature( AutoFeatures.autoBlockDiamondBlock, !enabled );
+                    afConfig.setFeature( AutoFeatures.blockDiamondBlock, !enabled );
                     saveConfigBlock(e, p);
                     break;
                 }
                 case "Redstone_Block":{
-                    afConfig.setFeature( AutoFeatures.autoBlockRedstoneBlock, !enabled );
+                    afConfig.setFeature( AutoFeatures.blockRedstoneBlock, !enabled );
                     saveConfigBlock(e, p);
                     break;
                 }
                 case "Emerald_Block":{
-                    afConfig.setFeature( AutoFeatures.autoBlockEmeraldBlock, !enabled );
+                    afConfig.setFeature( AutoFeatures.blockEmeraldBlock, !enabled );
                     saveConfigBlock(e, p);
                     break;
                 }
                 case "Quartz_Block":{
-                    afConfig.setFeature( AutoFeatures.autoBlockQuartzBlock, !enabled );
+                    afConfig.setFeature( AutoFeatures.blockQuartzBlock, !enabled );
                     saveConfigBlock(e, p);
                     break;
                 }
                 case "Prismarine_Block":{
-                    afConfig.setFeature( AutoFeatures.autoBlockPrismarineBlock, !enabled );
+                    afConfig.setFeature( AutoFeatures.blockPrismarineBlock, !enabled );
                     saveConfigBlock(e, p);
                     break;
                 }
                 case "Lapis_Block":{
-                    afConfig.setFeature( AutoFeatures.autoBlockLapisBlock, !enabled );
+                    afConfig.setFeature( AutoFeatures.blockLapisBlock, !enabled );
                     saveConfigBlock(e, p);
                     break;
                 }
                 case "Snow_Block":{
-                    afConfig.setFeature( AutoFeatures.autoBlockSnowBlock, !enabled );
+                    afConfig.setFeature( AutoFeatures.blockSnowBlock, !enabled );
                     saveConfigBlock(e, p);
                     break;
                 }
                 case "Glowstone_Block":{
-                    afConfig.setFeature( AutoFeatures.autoBlockGlowstone, !enabled );
+                    afConfig.setFeature( AutoFeatures.blockGlowstone, !enabled );
                     saveConfigBlock(e, p);
                     break;
                 }
                 case "All_Blocks":{
-                    afConfig.setFeature( AutoFeatures.autoBlockAllBlocks, !enabled );
+                    afConfig.setFeature( AutoFeatures.blockAllBlocks, !enabled );
                     saveConfigBlock(e, p);
                     break;
                 }

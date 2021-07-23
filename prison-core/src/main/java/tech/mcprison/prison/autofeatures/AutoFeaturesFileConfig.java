@@ -181,22 +181,22 @@ public class AutoFeaturesFileConfig {
 	   
 	    	
 	    	blockFeature(options),
-		    	autoBlockLimitToMines(blockFeature, true),
-		    	autoBlockAllBlocks(blockFeature, true),
+		    	blockLimitToMines(blockFeature, true),
+		    	blockAllBlocks(blockFeature, true),
 
 		    	
-		    	autoBlockGoldBlock(blockFeature, true),
-		    	autoBlockIronBlock(blockFeature, true),
-		    	autoBlockCoalBlock(blockFeature, true),
-		    	autoBlockDiamondBlock(blockFeature, true),
-		    	autoBlockRedstoneBlock(blockFeature, true),
-		    	autoBlockEmeraldBlock(blockFeature, true),
-		    	autoBlockQuartzBlock(blockFeature, true),
-		    	autoBlockPrismarineBlock(blockFeature, true),
-		    	autoBlockLapisBlock(blockFeature, true),
-		    	autoBlockSnowBlock(blockFeature, true),
-		    	autoBlockGlowstone(blockFeature, true),
-		    	autoBlockCopperBlock(blockFeature, true),
+		    	blockGoldBlock(blockFeature, true),
+		    	blockIronBlock(blockFeature, true),
+		    	blockCoalBlock(blockFeature, true),
+		    	blockDiamondBlock(blockFeature, true),
+		    	blockRedstoneBlock(blockFeature, true),
+		    	blockEmeraldBlock(blockFeature, true),
+		    	blockQuartzBlock(blockFeature, true),
+		    	blockPrismarineBlock(blockFeature, true),
+		    	blockLapisBlock(blockFeature, true),
+		    	blockSnowBlock(blockFeature, true),
+		    	blockGlowstone(blockFeature, true),
+		    	blockCopperBlock(blockFeature, true),
 		    	
 		    	
 	    	debug(options),

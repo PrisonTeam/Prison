@@ -27,6 +27,12 @@ These build logs represent the work that has been going on within prison.
 * **v3.2.10-alpha.7 2021-07-23**
 
 
+* **Fixed the way some of the autofeature block settings were named.**
+They had "autoBlock" when auto has nothing to do with it anymore, since those setting will be applied for normal drops too.
+Fixed an issue with auto smelt and auto block where it was not using the config settings, so now it's working correctly.
+Added more debugInfo messages to better understand what's going on when something is not working correctly.
+
+
 * **Added a note on how fortune works... it's been confusing... **
 
 
