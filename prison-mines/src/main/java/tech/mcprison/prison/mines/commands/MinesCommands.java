@@ -2309,7 +2309,7 @@ public class MinesCommands
     		
     		) {
     	
-    	if (!performCheckMineExists(sender, mineName)) {
+    	if ( !"*all*".equalsIgnoreCase( mineName ) && !performCheckMineExists(sender, mineName)) {
     		return;
     	}
     	
@@ -2373,7 +2373,11 @@ public class MinesCommands
     		}
     		else {
     			mine.getLinerData().setLiner( e, linerPattern, isForced );
-    			new MineLinerBuilder( mine, e, linerPattern, isForced );
+
+    			// Do not try to update the liner if it's a virtual mine:
+    			if ( !mine.isVirtual() ) {
+    				new MineLinerBuilder( mine, e, linerPattern, isForced );
+    			}
     		}
     		
     		pMines.getMineManager().saveMine( mine );
