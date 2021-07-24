@@ -135,7 +135,7 @@ public class OnBlockBreakEventListener
 			if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
 				
 				AutoManager autoManager = new AutoManager();
-				autoManager.registerBlockBreakEvents( spigotPrison );
+				autoManager.registerEvents( spigotPrison );
 			}
 				
 				

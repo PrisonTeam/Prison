@@ -1,76 +1,106 @@
 package tech.mcprison.prison.spigot.autofeatures;
 
 import org.bukkit.Bukkit;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.EventExecutor;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredListener;
 
+import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.output.ChatDisplay;
+import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.autofeatures.events.PrisonEventLManager;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
+import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 import zedly.zenchantments.BlockShredEvent;
 
 public class AutoManagerZenchantments
-	extends AutoManagerFeatures {
+	extends AutoManagerFeatures
+	implements PrisonEventLManager {
 
 	public AutoManagerZenchantments() {
 		super();
 	}
 	
 	
-	public void registerBlockBreakEvents(SpigotPrison spigotPrison ) {
+	@Override
+	public void registerEvents(SpigotPrison spigotPrison ) {
 	
-		
-		String zbsPriority = getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
-		BlockBreakPriority blockShredPriority = BlockBreakPriority.fromString( zbsPriority );
-		
-		if ( blockShredPriority != BlockBreakPriority.DISABLED ) {
-			
-			// Always register the monitor event:
-			Bukkit.getPluginManager().registerEvents( 
-					new AutoManagerBlockShredEventListenerMonitor(), spigotPrison);
-		}
+		new AutoManagerBlockShredEventListener().initialize();
 
-		
-		switch ( blockShredPriority )
-		{
-			case LOWEST:
-				Bukkit.getPluginManager().registerEvents( 
-						new AutoManagerBlockShredEventListenerLowest(), spigotPrison);
-				break;
-				
-			case LOW:
-				Bukkit.getPluginManager().registerEvents( 
-						new AutoManagerBlockShredEventListenerLow(), spigotPrison);
-				break;
-				
-			case NORMAL:
-				Bukkit.getPluginManager().registerEvents( 
-						new AutoManagerBlockShredEventListenerNormal(), spigotPrison);
-				break;
-				
-			case HIGH:
-				Bukkit.getPluginManager().registerEvents( 
-						new AutoManagerBlockShredEventListenerHigh(), spigotPrison);
-				break;
-				
-			case HIGHEST:
-				Bukkit.getPluginManager().registerEvents( 
-						new AutoManagerBlockShredEventListenerHighest(), spigotPrison);
-				break;
-
-			case DISABLED:
-				Output.get().logInfo( "AutoManager Zenchantments BlockShredEvent handling has been DISABLED." );
-				break;
-
-			default:
-				break;
-		}
-		
 	}
-	
+
 	  
+    public class AutoManagerBlockShredEventListener
+	    extends AutoManager
+	    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.LOW) 
+    	public void onBlockShredBreak(BlockShredEvent e) {
+    		super.genericBlockEventMonitor( e );
+    	}
+    	
+		
+		public void initialize() {
+	    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessZenchantsBlockExplodeEvents );
+	    	
+	    	if ( !isEventEnabled ) {
+	    		return;
+	    	}
+			
+			// Check to see if the class BlastUseEvent even exists:
+			try {
+				Output.get().logInfo( "AutoManager: checking if loaded: Zenchantments" );
+				
+				Class.forName( "zedly.zenchantments.BlockShredEvent", false, 
+								this.getClass().getClassLoader() );
+				
+				Output.get().logInfo( "AutoManager: Trying to register Zenchantments" );
+
+				
+				String eP = getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
+				BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
+
+				if ( eventPriority != BlockBreakPriority.DISABLED ) {
+					
+					EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
+					
+					PluginManager pm = Bukkit.getServer().getPluginManager();
+
+					pm.registerEvent(BlockShredEvent.class, this, ePriority,
+							new EventExecutor() {
+								public void execute(Listener l, Event e) { 
+									((AutoManagerBlockShredEventListener)l)
+													.onBlockShredBreak((BlockShredEvent)e);
+								}
+							},
+							SpigotPrison.getInstance());
+					
+				}
+				
+			}
+			catch ( ClassNotFoundException e ) {
+				// Zenchantments is not loaded... so ignore.
+				Output.get().logInfo( "AutoManager: Zenchantments is not loaded" );
+			}
+			catch ( Exception e ) {
+				Output.get().logInfo( "AutoManager: Zenchantments failed to load. [%s]", e.getMessage() );
+			}
+		}
+
+		
+    }
+ 
+	  
+    
     public class AutoManagerBlockShredEventListenerMonitor 
 	    extends AutoManager
 	    implements Listener {
@@ -80,54 +110,57 @@ public class AutoManagerZenchantments
     		super.genericBlockEventMonitor( e );
     	}
     }
+   
     
-    public class AutoManagerBlockShredEventListenerLowest 
-		extends AutoManager
-		implements Listener {
-        
-        @EventHandler(priority=EventPriority.LOWEST) 
-        public void onBlockShredBreak(BlockShredEvent e) {
-        	super.onBlockShredBreak( e );
-        }
-    }
-    
-    public class AutoManagerBlockShredEventListenerLow 
-	    extends AutoManager
-	    implements Listener {
+    @Override
+    public void unregisterListeners() {
     	
-    	@EventHandler(priority=EventPriority.LOW) 
-    	public void onBlockShredBreak(BlockShredEvent e) {
-    		super.onBlockShredBreak( e );
+    	AutoManagerBlockShredEventListener listener = null;
+    	for ( RegisteredListener lstnr : BlastUseEvent.getHandlerList().getRegisteredListeners() )
+		{
+			if ( lstnr.getListener() instanceof AutoManagerBlockShredEventListener ) {
+				listener = (AutoManagerBlockShredEventListener) lstnr.getListener();
+				break;
+			}
+		}
+
+    	if ( listener != null ) {
+    		
+			HandlerList.unregisterAll( listener );
     	}
-    }
-    
-    public class AutoManagerBlockShredEventListenerNormal 
-	    extends AutoManager
-	    implements Listener {
     	
-    	@EventHandler(priority=EventPriority.NORMAL) 
-    	public void onBlockShredBreak(BlockShredEvent e) {
-    		super.onBlockShredBreak( e );
-    	}
     }
+	
     
-    public class AutoManagerBlockShredEventListenerHigh 
-	    extends AutoManager
-	    implements Listener {
-	    	
-    	@EventHandler(priority=EventPriority.HIGH) 
-    	public void onBlockShredBreak(BlockShredEvent e) {
-    		super.onBlockShredBreak( e );
-    	}
-    }
-    
-    public class AutoManagerBlockShredEventListenerHighest 
-    extends AutoManager
-    implements Listener {
+    @Override
+    public void dumpEventListeners() {
+    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessZenchantsBlockExplodeEvents );
     	
-    	@EventHandler(priority=EventPriority.HIGHEST) 
-    	public void onBlockShredBreak(BlockShredEvent e) {
-    		super.onBlockShredBreak( e );
+    	if ( !isEventEnabled ) {
+    		return;
+    	}
+    	
+    	// Check to see if the class BlastUseEvent even exists:
+    	try {
+    		
+    		Class.forName( "zedly.zenchantments.BlockShredEvent", false, 
+    				this.getClass().getClassLoader() );
+    		
+    		
+    		ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
+    				"BlockShredEvent", 
+    				new SpigotHandlerList( BlockShredEvent.getHandlerList()) );
+    		
+    		if ( eventDisplay != null ) {
+    			Output.get().logInfo( "" );
+    			eventDisplay.toLog( LogLevel.DEBUG );
+    		}
+    	}
+    	catch ( ClassNotFoundException e ) {
+    		// Zenchantments is not loaded... so ignore.
+    	}
+    	catch ( Exception e ) {
+    		Output.get().logInfo( "AutoManager: zenchantments failed to load. [%s]", e.getMessage() );
     	}
     }
 

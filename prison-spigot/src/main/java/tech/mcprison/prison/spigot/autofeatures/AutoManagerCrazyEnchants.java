@@ -4,9 +4,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredListener;
 
 import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.Prison;
@@ -15,82 +17,25 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.autofeatures.AutoManager.AutoManagerBlockBreakEventListener;
+import tech.mcprison.prison.spigot.autofeatures.events.PrisonEventLManager;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 
 public class AutoManagerCrazyEnchants
 	extends AutoManagerFeatures
+	implements PrisonEventLManager
 {
 	
 	public AutoManagerCrazyEnchants() {
 		super();
 	}
 	
-	public void registerBlastUseEvents( SpigotPrison spigotPrison ) {
+	@Override
+	public void registerEvents( SpigotPrison spigotPrison ) {
 		
 		new AutoManagerBlastUseEventListener().initialize();
 		
-//    	boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
-//    	
-//    	if ( !isCEBlockExplodeEnabled ) {
-//    		return;
-//    	}
-//		
-//		// Check to see if the class BlastUseEvent even exists:
-//		try {
-//			Output.get().logInfo( "AutoManager: checking if loaded: CrazyEnchants" );
-//			
-//			Class.forName( "me.badbones69.crazyenchantments.api.events.BlastUseEvent", false, 
-//							this.getClass().getClassLoader() );
-//			
-//			Output.get().logInfo( "AutoManager: Trying to register CrazyEnchants" );
-//			
-//			String cePriority = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
-//			BlockBreakPriority crazyEnchantsPriority = BlockBreakPriority.fromString( cePriority );
-//			
-//			
-//
-//			
-//			switch ( crazyEnchantsPriority )
-//			{
-//				case LOWEST:
-//					Bukkit.getPluginManager().registerEvents( 
-//							new AutoManagerBlastUseEventListenerLowest(), spigotPrison);
-//					break;
-//					
-//				case LOW:
-//					Bukkit.getPluginManager().registerEvents( 
-//							new AutoManagerBlastUseEventListenerLow(), spigotPrison);
-//					break;
-//					
-//				case NORMAL:
-//					Bukkit.getPluginManager().registerEvents( 
-//							new AutoManagerBlastUseEventListenerNormal(), spigotPrison);
-//					break;
-//					
-//				case HIGH:
-//					Bukkit.getPluginManager().registerEvents( 
-//							new AutoManagerBlastUseEventListenerHigh(), spigotPrison);
-//					break;
-//					
-//				case HIGHEST:
-//					Bukkit.getPluginManager().registerEvents( 
-//							new AutoManagerBlastUseEventListenerHighest(), spigotPrison);
-//					break;
-//				case DISABLED:
-//					Output.get().logInfo( "AutoManager Crazy Enchant's BlastUseEvent handling has been DISABLED." );
-//					break;
-//					
-//					
-//				default:
-//					break;
-//			}
-//			
-//		}
-//		catch ( ClassNotFoundException e ) {
-//			// CrazyEnchants is not loaded... so ignore.
-//			Output.get().logInfo( "AutoManager: CrazyEnchants is not loaded" );
-//		}
 	}
 
 	
@@ -105,9 +50,9 @@ public class AutoManagerCrazyEnchants
 		}
 		
 		public void initialize() {
-	    	boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
+	    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
 	    	
-	    	if ( !isCEBlockExplodeEnabled ) {
+	    	if ( !isEventEnabled ) {
 	    		return;
 	    	}
 			
@@ -121,12 +66,12 @@ public class AutoManagerCrazyEnchants
 				Output.get().logInfo( "AutoManager: Trying to register CrazyEnchants" );
 
 				
-				String ceP = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
-				BlockBreakPriority cePriority = BlockBreakPriority.fromString( ceP );
+				String eP = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
+				BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
 
-				if ( cePriority != BlockBreakPriority.DISABLED ) {
+				if ( eventPriority != BlockBreakPriority.DISABLED ) {
 					
-					EventPriority ePriority = EventPriority.valueOf( cePriority.name().toUpperCase() );           
+					EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
 					
 					PluginManager pm = Bukkit.getServer().getPluginManager();
 
@@ -161,10 +106,30 @@ public class AutoManagerCrazyEnchants
 	}
    
 	
-	public void dumpEventListeners() {
-    	boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
+    @Override
+    public void unregisterListeners() {
     	
-    	if ( !isCEBlockExplodeEnabled ) {
+    	AutoManagerBlastUseEventListener listener = null;
+    	for ( RegisteredListener lstnr : BlastUseEvent.getHandlerList().getRegisteredListeners() )
+		{
+			if ( lstnr.getListener() instanceof AutoManagerBlockBreakEventListener ) {
+				listener = (AutoManagerBlastUseEventListener) lstnr.getListener();
+				break;
+			}
+		}
+
+    	if ( listener != null ) {
+    		
+			HandlerList.unregisterAll( listener );
+    	}
+    	
+    }
+	
+	@Override
+	public void dumpEventListeners() {
+    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
+    	
+    	if ( !isEventEnabled ) {
     		return;
     	}
 		
@@ -176,7 +141,7 @@ public class AutoManagerCrazyEnchants
 			
 
 			ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
-					"BlockBreakEvent", 
+					"BlastUseEvent", 
 					new SpigotHandlerList( BlastUseEvent.getHandlerList()) );
 
 			if ( eventDisplay != null ) {
@@ -192,55 +157,4 @@ public class AutoManagerCrazyEnchants
 		}
 	}
     
-//    public class AutoManagerBlastUseEventListenerLowest 
-//		extends AutoManager
-//		implements Listener {
-//    	
-//        @EventHandler(priority=EventPriority.LOWEST) 
-//        public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-//        	super.onCrazyEnchantsBlockExplode( e );
-//        }
-//    }
-//    
-//    public class AutoManagerBlastUseEventListenerLow 
-//	    extends AutoManager
-//	    implements Listener {
-//    	
-//    	@EventHandler(priority=EventPriority.LOW) 
-//    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-//    		super.onCrazyEnchantsBlockExplode( e );
-//    	}
-//    }
-//    
-//    public class AutoManagerBlastUseEventListenerNormal 
-//	    extends AutoManager
-//	    implements Listener {
-//    	
-//    	@EventHandler(priority=EventPriority.NORMAL) 
-//    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-//    		super.onCrazyEnchantsBlockExplode( e );
-//    	}
-//    }
-//    
-//    public class AutoManagerBlastUseEventListenerHigh 
-//	    extends AutoManager
-//	    implements Listener {
-//    	
-//    	@EventHandler(priority=EventPriority.HIGH) 
-//    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-//    		super.onCrazyEnchantsBlockExplode( e );
-//    	}
-//    }
-//    
-//    public class AutoManagerBlastUseEventListenerHighest 
-//	    extends AutoManager
-//	    implements Listener {
-//    	
-//    	@EventHandler(priority=EventPriority.HIGHEST) 
-//    	public void onCrazyEnchantsBlockExplodeLow(BlastUseEvent e) {
-//    		super.onCrazyEnchantsBlockExplode( e );
-//    	}
-//    }
-    
-
 }

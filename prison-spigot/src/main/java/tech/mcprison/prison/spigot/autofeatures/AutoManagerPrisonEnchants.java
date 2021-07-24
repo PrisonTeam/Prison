@@ -1,97 +1,100 @@
 package tech.mcprison.prison.spigot.autofeatures;
 
 import org.bukkit.Bukkit;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.EventExecutor;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredListener;
 
 import me.pulsi_.prisonenchants.enchantments.custom.explosive.ExplosiveEvent;
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.output.ChatDisplay;
+import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.autofeatures.events.PrisonEventLManager;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
+import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 
 public class AutoManagerPrisonEnchants
-	extends AutoManagerFeatures {
+	extends AutoManagerFeatures 
+	implements PrisonEventLManager {
 
 	public AutoManagerPrisonEnchants() {
 		super();
 	}
 
 
-	public void registerExplosiveEvents( SpigotPrison spigotPrison ) {
+	@Override
+	public void registerEvents( SpigotPrison spigotPrison ) {
 	
-		boolean isPEExplosiveEnabled = isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
+		new AutoManagerExplosiveEventListener().initialize();
 		
-		if ( !isPEExplosiveEnabled ) {
-			return;
-		}
-	
-	
-		// Check to see if the class BlastUseEvent even exists:
-		try {
-			Output.get().logInfo( "OnBlockBreakEventListener: checking if loaded: PrisonEnchants" );
-			
-			Class.forName( "me.pulsi_.prisonenchants.enchantments.custom.explosive.ExplosiveEvent", false, 
-							this.getClass().getClassLoader() );
-			
-			Output.get().logInfo( "OnBlockBreakEventListener: Trying to register PrisonEnchants" );
-			
-			
-			String pePriority = getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
-			BlockBreakPriority prisonEnchantsPriority = BlockBreakPriority.fromString( pePriority );
-			
-			// always register a monitor event:
-			if ( prisonEnchantsPriority != BlockBreakPriority.DISABLED ) {
-				Bukkit.getPluginManager().registerEvents( 
-						new AutoManagerExplosiveEventListenerMonitor(), spigotPrison);
-			}
-			
-			
-			switch ( prisonEnchantsPriority )
-			{
-				case LOWEST:
-					Bukkit.getPluginManager().registerEvents( 
-							new AutoManagerExplosiveEventListenerLowest(), spigotPrison);
-					break;
-					
-				case LOW:
-					Bukkit.getPluginManager().registerEvents( 
-							new AutoManagerExplosiveEventListenerLow(), spigotPrison);
-					break;
-					
-				case NORMAL:
-					Bukkit.getPluginManager().registerEvents( 
-							new AutoManagerExplosiveEventListenerNormal(), spigotPrison);
-					break;
-					
-				case HIGH:
-					Bukkit.getPluginManager().registerEvents( 
-							new AutoManagerExplosiveEventListenerHigh(), spigotPrison);
-					break;
-					
-				case HIGHEST:
-					Bukkit.getPluginManager().registerEvents( 
-							new AutoManagerExplosiveEventListenerHighest(), spigotPrison);
-					break;
-				case DISABLED:
-					Output.get().logInfo( "AutoManagerPrisonEnchants PrisonEnchants' ExplosiveEvent " +
-								"handling has been DISABLED." );
-					break;
-					
-					
-				default:
-					break;
-			}
-			
-		}
-		catch ( ClassNotFoundException e ) {
-			// PrisonEnchants is not loaded... so ignore.
-			Output.get().logInfo( "AutoManagerPrisonEnchants: PrisonEnchants is not loaded" );
-		}
 	}
 
+	
+	public class AutoManagerExplosiveEventListener 
+		extends AutoManager
+		implements Listener {
+		
+		@EventHandler(priority=EventPriority.LOW) 
+		public void onPrisonEnchantsExplosiveEvent(ExplosiveEvent e) {
+			super.onPrisonEnchantsExplosiveEvent( e );
+		}
+		
+		public void initialize() {
+	    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
+	    	
+	    	if ( !isEventEnabled ) {
+	    		return;
+	    	}
+			
+			// Check to see if the class ExplosiveEvent even exists:
+			try {
+				Output.get().logInfo( "AutoManager: checking if loaded: PrisonEnchants" );
+				
+				Class.forName( "me.pulsi_.prisonenchants.enchantments.custom.explosive.ExplosiveEvent", false, 
+								this.getClass().getClassLoader() );
+				
+				Output.get().logInfo( "AutoManager: Trying to register PrisonEnchants" );
 
+				
+				String eP = getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
+				BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
+
+				if ( eventPriority != BlockBreakPriority.DISABLED ) {
+					
+					EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
+					
+					PluginManager pm = Bukkit.getServer().getPluginManager();
+
+					pm.registerEvent(ExplosiveEvent.class, this, ePriority,
+							new EventExecutor() {
+								public void execute(Listener l, Event e) { 
+									((AutoManagerExplosiveEventListener)l)
+													.onPrisonEnchantsExplosiveEvent((ExplosiveEvent)e);
+								}
+							},
+							SpigotPrison.getInstance());
+					
+				}
+				
+			}
+			catch ( ClassNotFoundException e ) {
+				// PrisonEnchants is not loaded... so ignore.
+				Output.get().logInfo( "AutoManager: PrisonEnchants is not loaded" );
+			}
+			catch ( Exception e ) {
+				Output.get().logInfo( "AutoManager: PrisonEnchants failed to load. [%s]", e.getMessage() );
+			}
+		}
+
+	}
 
    
 	public class AutoManagerExplosiveEventListenerMonitor 
@@ -104,53 +107,56 @@ public class AutoManagerPrisonEnchants
 	    }
 	}
 
-	public class AutoManagerExplosiveEventListenerLowest 
-	    extends AutoManager
-	    implements Listener {
-	    	
-		@EventHandler(priority=EventPriority.LOWEST) 
-		public void onPrisonEnchantsExplosiveEventLowest(ExplosiveEvent e) {
-			super.onPrisonEnchantsExplosiveEvent( e );
+    @Override
+    public void unregisterListeners() {
+    	
+    	AutoManagerExplosiveEventListener listener = null;
+    	for ( RegisteredListener lstnr : ExplosiveEvent.getHandlerList().getRegisteredListeners() )
+		{
+			if ( lstnr.getListener() instanceof AutoManagerExplosiveEventListener ) {
+				listener = (AutoManagerExplosiveEventListener) lstnr.getListener();
+				break;
+			}
 		}
-	}
+
+    	if ( listener != null ) {
+    		
+			HandlerList.unregisterAll( listener );
+    	}
+    	
+    }
 	
-	public class AutoManagerExplosiveEventListenerLow 
-	    extends AutoManager
-	    implements Listener {
+	@Override
+	public void dumpEventListeners() {
+    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
+    	
+    	if ( !isEventEnabled ) {
+    		return;
+    	}
 		
-		@EventHandler(priority=EventPriority.LOW) 
-		public void onPrisonEnchantsExplosiveEventLow(ExplosiveEvent e) {
-			super.onPrisonEnchantsExplosiveEvent( e );
+		// Check to see if the class ExplosiveEvent even exists:
+		try {
+			
+			Class.forName( "me.pulsi_.prisonenchants.enchantments.custom.explosive.ExplosiveEvent", false, 
+							this.getClass().getClassLoader() );
+			
+
+			ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
+					"ExplosiveEvent", 
+					new SpigotHandlerList( ExplosiveEvent.getHandlerList()) );
+
+			if ( eventDisplay != null ) {
+				Output.get().logInfo( "" );
+				eventDisplay.toLog( LogLevel.DEBUG );
+			}
+		}
+		catch ( ClassNotFoundException e ) {
+			// PrisonEnchants is not loaded... so ignore.
+		}
+		catch ( Exception e ) {
+			Output.get().logInfo( "AutoManager: PrisonEnchants failed to load. [%s]", e.getMessage() );
 		}
 	}
-	
-	public class AutoManagerExplosiveEventListenerNormal 
-	    extends AutoManager
-	    implements Listener {
-		
-		@EventHandler(priority=EventPriority.NORMAL) 
-		public void onPrisonEnchantsExplosiveEventNormal(ExplosiveEvent e) {
-			super.onPrisonEnchantsExplosiveEvent( e );
-		}
-	}
-	
-	public class AutoManagerExplosiveEventListenerHigh 
-	    extends AutoManager
-	    implements Listener {
-		
-		@EventHandler(priority=EventPriority.HIGH) 
-		public void onPrisonEnchantsExplosiveEventHigh(ExplosiveEvent e) {
-			super.onPrisonEnchantsExplosiveEvent( e );
-		}
-	}
-	
-	public class AutoManagerExplosiveEventListenerHighest 
-	    extends AutoManager
-	    implements Listener {
-		
-		@EventHandler(priority=EventPriority.HIGHEST) 
-		public void onPrisonEnchantsExplosiveEventHighest(ExplosiveEvent e) {
-			super.onPrisonEnchantsExplosiveEvent( e );
-		}
-	}
+    
+
 }

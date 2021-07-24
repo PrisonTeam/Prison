@@ -88,6 +88,9 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerCrazyEnchants;
+import tech.mcprison.prison.spigot.autofeatures.AutoManagerPrisonEnchants;
+import tech.mcprison.prison.spigot.autofeatures.AutoManagerTokenEnchant;
+import tech.mcprison.prison.spigot.autofeatures.AutoManagerZenchantments;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
@@ -2020,8 +2023,18 @@ public class SpigotPlatform
 		
 		
 		// Dump the event listeners for the following events if they are active on the server:
+
+		AutoManagerTokenEnchant tokenEnchant = new AutoManagerTokenEnchant();
+		tokenEnchant.dumpEventListeners();
+		
 		AutoManagerCrazyEnchants crazyEnchants = new AutoManagerCrazyEnchants();
 		crazyEnchants.dumpEventListeners();
+		
+		AutoManagerPrisonEnchants prisonEnchants = new AutoManagerPrisonEnchants();
+		prisonEnchants.dumpEventListeners();
+		
+		AutoManagerZenchantments zenchantments = new AutoManagerZenchantments();
+		zenchantments.dumpEventListeners();
 		
 	}
 	

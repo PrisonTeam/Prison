@@ -1,20 +1,31 @@
 package tech.mcprison.prison.spigot.autofeatures;
 
 import org.bukkit.Bukkit;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.EventExecutor;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredListener;
 
 import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
+import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.output.ChatDisplay;
+import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.autofeatures.events.PrisonEventLManager;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
+import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 
 public class AutoManagerTokenEnchant 
 	extends AutoManagerFeatures
-	{
+	implements PrisonEventLManager {
 
 	public AutoManagerTokenEnchant() {
         super();
@@ -22,46 +33,10 @@ public class AutoManagerTokenEnchant
     }
 	
 	
-	public void registerBlockBreakEvents(SpigotPrison spigotPrison ) {
+	@Override
+	public void registerEvents(SpigotPrison spigotPrison ) {
 	
-		
-		String bbePriority = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
-		BlockBreakPriority blockBreakPriority = BlockBreakPriority.fromString( bbePriority );
-		
-		switch ( blockBreakPriority )
-		{
-			case LOWEST:
-				Bukkit.getPluginManager().registerEvents( 
-						new AutoManagerTokenEnchantEventLowest(), spigotPrison);
-				break;
-				
-			case LOW:
-				Bukkit.getPluginManager().registerEvents( 
-						new AutoManagerTokenEnchantEventLow(), spigotPrison);
-				break;
-				
-			case NORMAL:
-				Bukkit.getPluginManager().registerEvents( 
-						new AutoManagerTokenEnchantEventNormal(), spigotPrison);
-				break;
-				
-			case HIGH:
-				Bukkit.getPluginManager().registerEvents( 
-						new AutoManagerTokenEnchantEventHigh(), spigotPrison);
-				break;
-				
-			case HIGHEST:
-				Bukkit.getPluginManager().registerEvents( 
-						new AutoManagerTokenEnchantEventHighest(), spigotPrison);
-				break;
-
-			case DISABLED:
-				Output.get().logInfo( "AutoManager TokenEnchant BlockExplodeEvent handling has been DISABLED." );
-				break;
-
-			default:
-				break;
-		}
+		new AutoManagerTokenEnchantEventListener().initialize();
 		
 	}
 
@@ -74,54 +49,115 @@ public class AutoManagerTokenEnchant
     }
     
     
-    public class AutoManagerTokenEnchantEventLowest
+    public class AutoManagerTokenEnchantEventListener
 		extends AutoManagerTokenEnchant
 		implements Listener {
     	
-        @EventHandler(priority=EventPriority.LOWEST) 
-        public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
+        @EventHandler(priority=EventPriority.LOW) 
+        public void onTEBlockExplode(TEBlockExplodeEvent e) {
         	super.onTEBlockExplode( e );
         }
+        
+		public void initialize() {
+	    	boolean isEventEnabled = isBoolean( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
+	    	
+	    	if ( !isEventEnabled ) {
+	    		return;
+	    	}
+			
+			// Check to see if the class TEBlockExplodeEvent even exists:
+			try {
+				Output.get().logInfo( "AutoManager: checking if loaded: TokenEnchant" );
+				
+				Class.forName( "com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent", false, 
+								this.getClass().getClassLoader() );
+				
+				Output.get().logInfo( "AutoManager: Trying to register TokenEnchant" );
+
+				
+				String eP = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
+				BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
+
+				if ( eventPriority != BlockBreakPriority.DISABLED ) {
+					
+					EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
+					
+					PluginManager pm = Bukkit.getServer().getPluginManager();
+
+					pm.registerEvent(BlastUseEvent.class, this, ePriority,
+							new EventExecutor() {
+								public void execute(Listener l, Event e) { 
+									((AutoManagerTokenEnchantEventListener)l)
+													.onTEBlockExplode((TEBlockExplodeEvent)e);
+								}
+							},
+							SpigotPrison.getInstance());
+					
+				}
+				
+			}
+			catch ( ClassNotFoundException e ) {
+				// TokenEnchant is not loaded... so ignore.
+				Output.get().logInfo( "AutoManager: TokenEnchant is not loaded" );
+			}
+			catch ( Exception e ) {
+				Output.get().logInfo( "AutoManager: TokenEnchant failed to load. [%s]", e.getMessage() );
+			}
+		}
+
     }
     
-    public class AutoManagerTokenEnchantEventLow
-	    extends AutoManagerTokenEnchant
-	    implements Listener {
+	
+    @Override
+    public void unregisterListeners() {
     	
-    	@EventHandler(priority=EventPriority.LOW) 
-    	public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
-    		super.onTEBlockExplode( e );
+    	AutoManagerTokenEnchantEventListener listener = null;
+    	for ( RegisteredListener lstnr : TEBlockExplodeEvent.getHandlerList().getRegisteredListeners() )
+		{
+			if ( lstnr.getListener() instanceof AutoManagerTokenEnchantEventListener ) {
+				listener = (AutoManagerTokenEnchantEventListener) lstnr.getListener();
+				break;
+			}
+		}
+
+    	if ( listener != null ) {
+    		
+			HandlerList.unregisterAll( listener );
     	}
+    	
     }
     
-    public class AutoManagerTokenEnchantEventNormal
-	    extends AutoManagerTokenEnchant
-	    implements Listener {
+    @Override
+	public void dumpEventListeners() {
+    	boolean isEventEnabled = isBoolean( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
     	
-    	@EventHandler(priority=EventPriority.NORMAL) 
-    	public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
-    		super.onTEBlockExplode( e );
+    	if ( !isEventEnabled ) {
+    		return;
     	}
-    }
+		
+		// Check to see if the class BlastUseEvent even exists:
+		try {
+			
+			Class.forName( "com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent", false, 
+							this.getClass().getClassLoader() );
+			
+
+			ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
+					"TEBlockExplodeEvent", 
+					new SpigotHandlerList( TEBlockExplodeEvent.getHandlerList()) );
+
+			if ( eventDisplay != null ) {
+				Output.get().logInfo( "" );
+				eventDisplay.toLog( LogLevel.DEBUG );
+			}
+		}
+		catch ( ClassNotFoundException e ) {
+			// TokenEnchant is not loaded... so ignore.
+		}
+		catch ( Exception e ) {
+			Output.get().logInfo( "AutoManager: TokenEnchant failed to load. [%s]", e.getMessage() );
+		}
+	}
     
-    public class AutoManagerTokenEnchantEventHigh
-	    extends AutoManagerTokenEnchant
-	    implements Listener {
-    	
-    	@EventHandler(priority=EventPriority.HIGH) 
-    	public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
-    		super.onTEBlockExplode( e );
-    	}
-    }
-    
-    public class AutoManagerTokenEnchantEventHighest
-	    extends AutoManagerTokenEnchant
-	    implements Listener {
-    	
-    	@EventHandler(priority=EventPriority.HIGHEST) 
-    	public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
-    		super.onTEBlockExplode( e );
-    	}
-    }
 	
 }
