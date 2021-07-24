@@ -873,18 +873,41 @@ public class PrisonCommand
     	AutoFeaturesWrapper afw = AutoFeaturesWrapper.getInstance();
     	
     	display.addText( "&3Selected Settings from &bplugins/Prison/autoFeaturesConfigs.yml&3:" );
-    	display.addText( "&b  Normal Drops (if auto pickup is off):" );
-    	display.addText( "&b    options.normalDrop.isProcessNormalDropsEvents:  %s", 
-    									afw.isBoolean( AutoFeatures.handleNormalDropsEvents ) );
-    	display.addText( "&b    options.normalDrop.isProcessTokensEnchantExplosiveEvents:  %s", 
-    									afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents ) );
-    	display.addText( "&b    options.normalDrop.isProcessTokensEnchantExplosiveEvents:  %s", 
-    									afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents ) );
-
-    	
     	display.addText( "&b " );
     	display.addText( "&b   options.general.isAutoManagerEnabled %s", 
-    									afw.isBoolean( AutoFeatures.isAutoManagerEnabled ));
+    			afw.isBoolean( AutoFeatures.isAutoManagerEnabled ));
+    	
+    	
+    	
+    	
+    	display.addText( "&b " );
+    	display.addText( "&b    options.blockBreakEvents.isProcessTokensEnchantExplosiveEvents:  %s", 
+    			afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents ) );
+    	display.addText( "&b    options.blockBreakEvents.TokenEnchantBlockExplodeEventPriority:  %s", 
+    			afw.getMessage( AutoFeatures.isProcessTokensEnchantExplosiveEvents ) );
+    	
+    	display.addText( "&b    options.blockBreakEvents.isProcessCrazyEnchantsBlockExplodeEvents:  %s", 
+    			afw.isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents ) );
+    	display.addText( "&b    options.blockBreakEvents.CrazyEnchantsBlastUseEventPriority:  %s", 
+    			afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority ) );
+    	
+    	display.addText( "&b    options.blockBreakEvents.isProcessZenchantsBlockExplodeEvents:  %s", 
+    			afw.isBoolean( AutoFeatures.isProcessZenchantsBlockExplodeEvents ) );
+    	display.addText( "&b    options.blockBreakEvents.ZenchantmentsBlockShredEventPriority:  %s", 
+    			afw.getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority ) );
+    	
+    	display.addText( "&b    options.blockBreakEvents.isProcessPrisonEnchantsExplosiveEvents:  %s", 
+    			afw.isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents ) );
+    	display.addText( "&b    options.blockBreakEvents.PrisonEnchantsExplosiveEventPriority:  %s", 
+    			afw.getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority ) );
+    	
+    	
+    	display.addText( "&b " );
+    	display.addText( "&b  Normal Drops (if auto pickup is off):" );
+    	display.addText( "&b    options.normalDrop.isProcessNormalDropsEvents:  %s", 
+    			afw.isBoolean( AutoFeatures.handleNormalDropsEvents ) );
+    	
+    	display.addText( "&b " );
     	display.addText( "&7  NOTE: If this is enabled, then lore and perms will override the settings for " );
     	display.addText( "&7        pickup, smelt, and block when they are turned off." );
     	
