@@ -16,6 +16,7 @@ import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
+import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 
 public class AutoManagerCrazyEnchants
 	extends AutoManagerFeatures
@@ -159,6 +160,8 @@ public class AutoManagerCrazyEnchants
 		}
 	}
    
+	
+	public void dumpEventListeners() {
     	boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
     	
     	if ( !isCEBlockExplodeEnabled ) {
@@ -167,15 +170,25 @@ public class AutoManagerCrazyEnchants
 		
 		// Check to see if the class BlastUseEvent even exists:
 		try {
-			Output.get().logInfo( "AutoManager: checking if loaded: CrazyEnchants" );
 			
 			Class.forName( "me.badbones69.crazyenchantments.api.events.BlastUseEvent", false, 
 							this.getClass().getClassLoader() );
 			
+
+			ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
+					"BlockBreakEvent", 
+					new SpigotHandlerList( BlastUseEvent.getHandlerList()) );
+
+			if ( eventDisplay != null ) {
+				Output.get().logInfo( "" );
+				eventDisplay.toLog( LogLevel.DEBUG );
 			}
 		}
 		catch ( ClassNotFoundException e ) {
 			// CrazyEnchants is not loaded... so ignore.
+		}
+		catch ( Exception e ) {
+			Output.get().logInfo( "AutoManager: CrazyEnchants failed to load. [%s]", e.getMessage() );
 		}
 	}
     

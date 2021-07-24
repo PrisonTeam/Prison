@@ -24,6 +24,14 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.7 2021-07-24
 
 
+* **Setup the ability to log more than just the BlockBreakEvent.**
+It it mow able to log details to Lists so they can be included in other output, such as support submits.
+
+
+* **Rewrote how the event listener is registered so the priority is dynamic.**
+This appears to be working well.
+
+
 * **clean up some of the /prison version all commands to better reflect the actual details with dependencies with the settings for auto features.**
 This should help better convey what the settings are doing, especially when a setting disables another setting.  This should help reduce support issues.
 

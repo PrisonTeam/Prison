@@ -41,7 +41,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatEvent;
@@ -67,6 +66,7 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.internal.platform.Capability;
+import tech.mcprison.prison.internal.platform.HandlerList;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.mines.PrisonMines;
@@ -87,9 +87,11 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
+import tech.mcprison.prison.spigot.autofeatures.AutoManagerCrazyEnchants;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
+import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 import tech.mcprison.prison.spigot.game.SpigotOfflinePlayer;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
@@ -1997,7 +1999,13 @@ public class SpigotPlatform
 	@Override
 	public void dumpEventListenersBlockBreakEvents() {
 		
-		dumpEventListeners( "BlockBreakEvent", BlockBreakEvent.getHandlerList() );
+		HandlerList handlerList = new SpigotHandlerList( BlockBreakEvent.getHandlerList() );
+		ChatDisplay eventDisplay = dumpEventListenersChatDisplay( 
+										"BlockBreakEvent", handlerList );
+		if ( eventDisplay != null ) {
+			eventDisplay.toLog( LogLevel.DEBUG );
+		}
+		
 		
 		Output.get().logInfo( "&2NOTE: Prison Block Event Listeners:" );
 		
@@ -2009,16 +2017,32 @@ public class SpigotPlatform
 								"Mine Sweeper, and zero block conditions." );
 		Output.get().logInfo( "&2. . AutoManager and enchantment event listeners are " +
 								"identified by their class names." );
+		
+		
+		// Dump the event listeners for the following events if they are active on the server:
+		AutoManagerCrazyEnchants crazyEnchants = new AutoManagerCrazyEnchants();
+		crazyEnchants.dumpEventListeners();
+		
 	}
 	
 	@Override
 	public void dumpEventListenersPlayerChatEvents() {
 		
-		dumpEventListeners( "AsyncPlayerChatEvent", AsyncPlayerChatEvent.getHandlerList() );
+		ChatDisplay eventDisplay = dumpEventListenersChatDisplay(
+								"AsyncPlayerChatEvent", 
+								new SpigotHandlerList( AsyncPlayerChatEvent.getHandlerList()) );
+		if ( eventDisplay != null ) {
+			eventDisplay.toLog( LogLevel.DEBUG );
+		}
 			
 		if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.17.0") < 0 ) {
 			
-			dumpEventListeners( "PlayerChatEvent", PlayerChatEvent.getHandlerList() );
+			eventDisplay = dumpEventListenersChatDisplay(
+								"PlayerChatEvent", 
+								new SpigotHandlerList( PlayerChatEvent.getHandlerList()) );
+			if ( eventDisplay != null ) {
+				eventDisplay.toLog( LogLevel.DEBUG );
+			}
 		}
 	}
 	
@@ -2040,25 +2064,50 @@ public class SpigotPlatform
 	 * @param eventType
 	 * @param handlerList
 	 */
-	private void dumpEventListeners( String eventType, HandlerList handlerList ) {
+	@Override
+	public List<String> dumpEventListenersList( String eventType, HandlerList handlerList ) {
+		List<String> results = new ArrayList<>();
 		
-		RegisteredListener[] listeners = handlerList.getRegisteredListeners();
+		RegisteredListener[] listeners = ((SpigotHandlerList) handlerList).getRegisteredListeners();
 		
-		ChatDisplay display = new ChatDisplay("Event Dump: " + eventType );
-		display.addText("&8All registered EventListeners (%d):", listeners.length );
+		// Set the title in position 0:
+		results.add( "Event Dump: " + eventType );
+
+		results.add( String.format( "&8All registered EventListeners (%d):", listeners.length ));
 		
 		for ( RegisteredListener eventListner : listeners ) {
 			String plugin = eventListner.getPlugin().getName();
 			EventPriority priority = eventListner.getPriority();
 			String listener = eventListner.getListener().getClass().getName();
 			
-			String message = String.format( "&3  Plugin: &7%s   %s  &3(%s)", 
+			String message = String.format( "&3. Plugin: &7%s   %s  &3(%s)", 
 					plugin, priority.name(), listener);
 			
-			display.addText( message );
+			results.add( message );
 		}
 		
-		display.toLog( LogLevel.DEBUG );
+		return results;
+	}
+	
+	@Override
+	public ChatDisplay dumpEventListenersChatDisplay( String eventType, HandlerList handlerList ) {
+		ChatDisplay display = null;
+		
+		List<String> details = dumpEventListenersList( eventType, handlerList );
+		
+		if ( details.size() > 0 ) {
+			
+			// Title is the first entry:
+			display = new ChatDisplay( details.get( 0 ) );
+
+			for ( int x = 1; x < details.size(); x++ ) {
+				display.addText( details.get( x ) );
+			}
+		}
+		
+		// display.toLog( LogLevel.DEBUG );
+		
+		return display;
 	}
 
 	/**

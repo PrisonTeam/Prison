@@ -38,13 +38,14 @@ import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.internal.platform.Capability;
+import tech.mcprison.prison.internal.platform.HandlerList;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.ChatDisplay;
-import tech.mcprison.prison.placeholders.Placeholders;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceholderFlags;
+import tech.mcprison.prison.placeholders.Placeholders;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.Location;
@@ -373,4 +374,34 @@ public class TestPlatform implements Platform {
 	public String getRanksListString() {
 		return "";
 	}
+
+	public boolean isSuppressOutput()
+	{
+		return suppressOutput;
+	}
+
+	public void setSuppressOutput( boolean suppressOutput )
+	{
+		this.suppressOutput = suppressOutput;
+	}
+
+	public void setPluginDirectory( File pluginDirectory )
+	{
+		this.pluginDirectory = pluginDirectory;
+	}
+
+	@Override
+	public List<String> dumpEventListenersList( String eventType, HandlerList handlerList )
+	{
+		return new ArrayList<>();
+	}
+
+	@Override
+	public ChatDisplay dumpEventListenersChatDisplay( String eventType, HandlerList handlerList )
+	{
+		ChatDisplay chatDisplay = new ChatDisplay( "Test Event Listing" );
+		return chatDisplay;
+	}
+	
+	
 }
