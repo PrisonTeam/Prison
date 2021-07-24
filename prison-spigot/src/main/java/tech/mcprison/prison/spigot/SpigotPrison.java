@@ -56,8 +56,8 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.managers.RankManager;
-import tech.mcprison.prison.spigot.autofeatures.AutoManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
 import tech.mcprison.prison.spigot.backpacks.BackpacksListeners;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBackpackCommands;
@@ -350,7 +350,7 @@ public class SpigotPrison extends JavaPlugin {
     		// been setup.  The following line will allow it to be setup so the setting can be accessed.
     		// The proper way to access the settings are through... 
     		//     AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig()
-    		autoFeatures = new AutoManager();
+    		autoFeatures = new AutoManagerBlockBreakEvents();
     	}
     	
 		return autoFeatures;

@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.autofeatures;
+package tech.mcprison.prison.spigot.autofeatures.events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
@@ -19,7 +19,7 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.autofeatures.events.PrisonEventLManager;
+import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 import zedly.zenchantments.BlockShredEvent;
@@ -29,12 +29,12 @@ import zedly.zenchantments.BlockShredEvent;
  * @author GABRYCA
  * @author RoyalBlueRanger
  */
-public class AutoManager 
+public class AutoManagerBlockBreakEvents 
 	extends AutoManagerFeatures
 	implements PrisonEventLManager
 	{
 	
-	public AutoManager() {
+	public AutoManagerBlockBreakEvents() {
         super();
    
         // NOTE: Set in SpigotPrison.
@@ -60,7 +60,7 @@ public class AutoManager
 	
 	
     public class AutoManagerBlockBreakEventListener 
-	    extends AutoManager
+	    extends AutoManagerBlockBreakEvents
 	    implements Listener {
 		
 		@EventHandler(priority=EventPriority.NORMAL) 

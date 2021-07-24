@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.7 2021-07-24
 
 
+* **Move the event listener managers in to a common package to prepare to extend them to the non-auto features event listeners.**
+
+
 * **Rewriting how the event listeners are being registered.**
 Added ability to unregister.  This is working, but is only for the auto pickups.  WIll need more work to hook up to the non-auto manager.
 

@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.autofeatures;
+package tech.mcprison.prison.spigot.autofeatures.events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
@@ -17,8 +17,7 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.autofeatures.AutoManager.AutoManagerBlockBreakEventListener;
-import tech.mcprison.prison.spigot.autofeatures.events.PrisonEventLManager;
+import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 
@@ -41,7 +40,7 @@ public class AutoManagerCrazyEnchants
 	
 	
 	public class AutoManagerBlastUseEventListener
-		extends AutoManager
+		extends AutoManagerBlockBreakEvents
 		implements Listener {
 		
 		@EventHandler(priority=EventPriority.LOW) 
@@ -112,7 +111,7 @@ public class AutoManagerCrazyEnchants
     	AutoManagerBlastUseEventListener listener = null;
     	for ( RegisteredListener lstnr : BlastUseEvent.getHandlerList().getRegisteredListeners() )
 		{
-			if ( lstnr.getListener() instanceof AutoManagerBlockBreakEventListener ) {
+			if ( lstnr.getListener() instanceof AutoManagerBlastUseEventListener ) {
 				listener = (AutoManagerBlastUseEventListener) lstnr.getListener();
 				break;
 			}

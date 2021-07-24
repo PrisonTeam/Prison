@@ -7,7 +7,7 @@ import me.pulsi_.prisonenchants.enchantments.custom.explosive.ExplosiveEvent;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.autofeatures.AutoManager;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
 import zedly.zenchantments.BlockShredEvent;
 
 /**
@@ -134,7 +134,7 @@ public class OnBlockBreakEventListener
 			// Only register Auto Manager if it is enabled:
 			if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
 				
-				AutoManager autoManager = new AutoManager();
+				AutoManagerBlockBreakEvents autoManager = new AutoManagerBlockBreakEvents();
 				autoManager.registerEvents( spigotPrison );
 			}
 				

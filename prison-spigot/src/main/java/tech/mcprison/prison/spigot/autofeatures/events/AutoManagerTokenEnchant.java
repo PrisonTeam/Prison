@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.autofeatures;
+package tech.mcprison.prison.spigot.autofeatures.events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
@@ -19,7 +19,7 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.autofeatures.events.PrisonEventLManager;
+import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 
