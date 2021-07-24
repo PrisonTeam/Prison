@@ -14,6 +14,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.rank.SpigotConfirmPrestigeGUI;
 
@@ -44,7 +45,7 @@ public class PrisonSpigotPrestigeCommands
 	public void prestigesPrestigeCommand(CommandSender sender) {
 
 		if ( isPrisonConfig( "prestiges" ) || isPrisonConfig( "prestige.enabled" ) ) {
-			sender.dispatchCommand("rankup prestiges");
+			prisonManagerPrestige(sender);
 		}
 	}
 
@@ -103,7 +104,6 @@ public class PrisonSpigotPrestigeCommands
             	else {
             		prestigeByChat( sender );
             	}
-
             }
         }
     }

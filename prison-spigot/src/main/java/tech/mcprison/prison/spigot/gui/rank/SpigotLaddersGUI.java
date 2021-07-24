@@ -39,7 +39,6 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         // Init variable
         LadderManager lm = PrisonRanks.getInstance().getLadderManager();
 
-
         // If the inventory is empty
         if (lm.getLadders().size() == 0){
             Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.NoLadders"));
@@ -50,7 +49,6 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         // Get the dimensions and if needed increases them
         int dimension = 54;
         int pageSize = 45;
-
 
         // Create the inventory and set up the owner, dimensions or number of slots, and title
         Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3RanksManager -> Ladders"));
