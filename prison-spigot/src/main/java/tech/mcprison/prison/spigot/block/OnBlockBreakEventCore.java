@@ -1557,7 +1557,8 @@ public class OnBlockBreakEventCore
 			}
 		}
 		
-		if ( Output.get().isDebug( DebugTarget.blockBreak ) || Output.get().isDebug( DebugTarget.blockBreakXpCalcs )) {
+		if ( Output.get().isDebug() || Output.get().isDebug( DebugTarget.blockBreak ) || 
+				Output.get().isDebug( DebugTarget.blockBreakXpCalcs )) {
 			
 			String message = String.format( "XP calculations: %s %s  blocks: %d  xp: %d  bonusXp: %d " +
 					" isCalculateXPEnabled: %s  givePlayerXPAsOrbDrops %s ",
@@ -1565,7 +1566,7 @@ public class OnBlockBreakEventCore
 					Boolean.toString( isBoolean(AutoFeatures.isCalculateXPEnabled) ), 
 					Boolean.toString( isBoolean( AutoFeatures.givePlayerXPAsOrbDrops ) ) );
 			
-			if ( Output.get().isDebug( DebugTarget.blockBreak ) ) {
+			if ( Output.get().isDebug() || Output.get().isDebug( DebugTarget.blockBreak ) ) {
 				debugInfo.append( "(" ).append( message ).append( ")" );
 				
 			}
