@@ -21,7 +21,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.7 2021-07-25
+# v3.2.10-alpha.8 2021-07-25
+
+
+
+
+* **v3.2.10-alpha.8 2021-07-25**
 
 
 * **Auto features: Removed unused classes and cleaned up a few things.  Fixed a reference to one of the deleted classes.**
