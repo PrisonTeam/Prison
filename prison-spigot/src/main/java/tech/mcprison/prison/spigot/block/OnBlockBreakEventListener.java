@@ -130,25 +130,6 @@ public class OnBlockBreakEventListener
 			new AutoManagerBlockBreakEvents().registerEvents();
 			
 			
-			
-//			
-//			// AutoManager should be registered first:
-//			// Only register Auto Manager if it is enabled:
-//			if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
-//				
-//				AutoManagerBlockBreakEvents autoManager = new AutoManagerBlockBreakEvents();
-//				autoManager.registerEvents( spigotPrison );
-//			}
-//				
-//				
-//			
-//			// Registers all of the non-AutoManager block events:
-//			OnBlockBreakEventBlockBreakEvents listeners = new OnBlockBreakEventBlockBreakEvents();
-//			listeners.registerBlockBreakEvents( spigotPrison );
-
-
-			
-//	    Bukkit.getPluginManager().registerEvents(new OnBlockBreakEventListener(), spigotPrison);
 		}
 		
 		else {
@@ -157,109 +138,6 @@ public class OnBlockBreakEventListener
 		}
 		
 	}
-
-//	
-//    /**
-//     * <p>The EventPriorty.MONITOR means that the state of the event is OVER AND DONE,
-//     * so this function CANNOT do anything with the block, other than "monitor" what
-//     * happened.  That is all we need to do, is to just count the number of blocks within
-//     * a mine that have been broken.
-//     * </p>
-//     * 
-//     * <p><b>Note:</b> Because this is a MONITOR event, we cannot do anything with the 
-//     * target block here. Mostly because everything has already been done with it, and 
-//     * this is only intended to MONITOR the final results. 
-//     * </p>
-//     * 
-//     * <p>One interesting fact about this monitoring is that we know that a block was broken,
-//     * not because of what is left (should be air), but because this function was called.
-//     * There is a chance that the event was canceled and the block remains unbroken, which
-//     * is what WorldGuard would do.  But the event will also be canceled when auto pickup is
-//     * enabled, and at that point the BlockType will be air.
-//     * </p>
-//     * 
-//     * <p>If the event is canceled it's important to check to see that the BlockType is Air,
-//     * since something already broke the block and took the drop.  
-//     * If it is not canceled we still need to count it since it will be a normal drop.  
-//     * </p>
-//     * 
-//     * @param e
-//     */
-//    @EventHandler(priority=EventPriority.MONITOR) 
-//    public void onBlockBreakMonitor(BlockBreakEvent e) {
-//
-//    	genericBlockEventMonitor( e );
-//    }
-//    
-//    @EventHandler(priority=EventPriority.MONITOR) 
-//    public void onBlockShredBreakMonitor(BlockShredEvent e) {
-//    	genericBlockEventMonitor( e );
-//    }
-//    
-////    @EventHandler(priority=EventPriority.MONITOR) 
-////    public void onTEBlockExplodeMonitor(TEBlockExplodeEvent e) {
-////    
-////    	genericBlockExplodeEventMonitor( e );
-////    }
-//
-//    @EventHandler(priority=EventPriority.MONITOR) 
-//	public void onCrazyEnchantsBlockExplodeMonitor( BlastUseEvent e ) {
-//		
-//    	genericBlockExplodeEventMonitor( e );
-//	}
-//    
-    
-    
-//    public void onBlockBreak(BlockBreakEvent e) {
-//
-//    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
-//    		genericBlockEvent( e );
-//    	}
-//    }
-//    
-//    public void onBlockShredBreak(BlockShredEvent e) {
-//
-//    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
-//    		genericBlockEvent( e, false, false, false );
-//    	}
-//    	else {
-//    		genericBlockEvent( e, false, true, false );
-//    	}
-//    }
-    
-    
-//    public void onCrazyEnchantsBlockExplode( Object obj ) {
-//    	
-//    	boolean isCEBlockExplodeEnabled = isBoolean( 
-//    				AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
-//    	
-//    	if ( isCEBlockExplodeEnabled ) {
-//    		BlastUseEvent e = (BlastUseEvent) obj;
-//    		
-//    		// if autoManager is turned off, then only process the blockEvents
-//    		genericBlockExplodeEvent( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
-//    	}
-//    }
-    
-//    public void onPrisonEnchantsExplosiveEvent( Object obj ) {
-//    	ExplosiveEvent e = (ExplosiveEvent) obj;
-//    	// if autoManager is turned off, then only process the blockEvents
-//    	genericExplosiveEvent( e, false, !isBoolean(AutoFeatures.isAutoManagerEnabled), false );
-//    }
-    
-////    @EventHandler(priority=EventPriority.LOW) 
-////    public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
-////
-////    	boolean isTEExplosiveEnabled = isBoolean( 
-////							    AutoFeatures.isProcessTokensEnchantExplosiveEvents );
-////    	
-////    	if ( isTEExplosiveEnabled ) {
-////    		
-////    		genericBlockExplodeEvent( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
-////    	}
-////    }
-
-
 
 
 }

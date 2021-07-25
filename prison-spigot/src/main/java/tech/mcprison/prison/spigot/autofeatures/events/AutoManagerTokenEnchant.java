@@ -18,7 +18,6 @@ import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
-import tech.mcprison.prison.spigot.block.OnBlockBreakEventTokenEnchant;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 
 public class AutoManagerTokenEnchant 
@@ -49,7 +48,7 @@ public class AutoManagerTokenEnchant
     }
     
     public class OnBlockBreakEventTokenEnchantEventListener
-	    extends OnBlockBreakEventTokenEnchant
+	    extends AutoManagerTokenEnchant
 	    implements Listener {
     	
     	@EventHandler(priority=EventPriority.NORMAL) 
@@ -59,7 +58,7 @@ public class AutoManagerTokenEnchant
     }
     
     public class OnBlockBreakEventTokenEnchantEventListenerMonitor
-	    extends OnBlockBreakEventTokenEnchant
+	    extends AutoManagerTokenEnchant
 	    implements Listener {
     	
     	@EventHandler(priority=EventPriority.MONITOR) 

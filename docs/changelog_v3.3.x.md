@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.7 2021-07-25
 
 
+* **Auto features: Removed unused classes and cleaned up a few things.  Fixed a reference to one of the deleted classes.**
+
+
 * **Auto features events: Added an abstract class to manage the unregisterListeners in one place, to eliminate duplication of code.**
 
 
