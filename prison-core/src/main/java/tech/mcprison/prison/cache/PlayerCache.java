@@ -17,10 +17,10 @@ import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 
 public class PlayerCache {
 	
-	public static final String PLAYER_CACHE_WRITE_DELAY = "playercache.write_delay";
+	public static final String PLAYER_CACHE_WRITE_DELAY_CONFIG_NAME = "playercache.write_delay";
 	public static final long PLAYER_CACHE_WRITE_DELAY_VALUE_MS = 60000; // 60 seconds
 	
-	public static final String PLAYER_CACHE_TIME_TO_LIVE = "playercache.time_to_live";
+	public static final String PLAYER_CACHE_TIME_TO_LIVE_CONFIG_NAME = "playercache.time_to_live";
 	public static final long PLAYER_CACHE_TIME_TO_LIVE_VALUE_MS = 30 * 60 * 1000; // 30 mins
 	
 	private static PlayerCache instance;
@@ -81,8 +81,6 @@ public class PlayerCache {
 		
 		checkTimersTask = submitCacheUpdatePlayerStats();
 
-		log( "PlayerCache: " + 
-				"  " + PLAYER_CACHE_WRITE_DELAY + ": " + getWriteDelay() );
 	}
 	
 	/**

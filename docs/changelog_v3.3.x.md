@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.7 2021-07-25
 
 
+* **Change to player cache field that was not so clear with it's name.**
+It's supposed to be the config field name, but the description did not reflect that.
+
+
 * **Fixed GuiUtility button add lore method:** The method to add a line to an already existing button got now fixed.
 
 
