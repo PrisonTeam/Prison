@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.7 2021-07-25
 
 
+* **Auto features events: Added an abstract class to manage the unregisterListeners in one place, to eliminate duplication of code.**
+
+
 * **For the command /prison reload autoFeatures hooked it up to include unregistering all of the event listeners that auto features setup, then it uses the configurations to reregister them all.**
 
 

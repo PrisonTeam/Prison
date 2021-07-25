@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
@@ -16,14 +15,12 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 
 public class AutoManagerPrisonEnchants
-	extends AutoManagerFeatures 
-	implements PrisonEventManager {
+	extends AutoManagerEventsManager {
 
 	public AutoManagerPrisonEnchants() {
 		super();
@@ -156,43 +153,11 @@ public class AutoManagerPrisonEnchants
 	}
 
    
-//	public class AutoManagerExplosiveEventListenerMonitor 
-//		extends AutoManagerBlockBreakEvents
-//		implements Listener {
-//		
-//	    @EventHandler(priority=EventPriority.MONITOR) 
-//	    public void onPrisonEnchantsExplosiveEventMonitor(ExplosiveEvent e) {
-//	    	super.onPrisonEnchantsExplosiveEvent( e );
-//	    }
-//	}
 
     @Override
     public void unregisterListeners() {
     	
-    	SpigotPrison prison = SpigotPrison.getInstance();
-    	
-    	while ( prison.getRegisteredBlockListeners().size() > 0 ) {
-    		Listener listener = prison.getRegisteredBlockListeners().remove( 0 );
-    		
-    		if ( listener != null ) {
-    			
-    			HandlerList.unregisterAll( listener );
-    		}
-    	}
-    	
-//    	AutoManagerExplosiveEventListener listener = null;
-//    	for ( RegisteredListener lstnr : ExplosiveEvent.getHandlerList().getRegisteredListeners() )
-//		{
-//			if ( lstnr.getListener() instanceof AutoManagerExplosiveEventListener ) {
-//				listener = (AutoManagerExplosiveEventListener) lstnr.getListener();
-//				break;
-//			}
-//		}
-//
-//    	if ( listener != null ) {
-//    		
-//			HandlerList.unregisterAll( listener );
-//    	}
+    	super.unregisterListeners();
     	
     }
 	

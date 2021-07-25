@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
@@ -16,13 +15,11 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 
 public class AutoManagerCrazyEnchants
-	extends AutoManagerFeatures
-	implements PrisonEventManager
+	extends AutoManagerEventsManager
 {
 	
 	public AutoManagerCrazyEnchants() {
@@ -163,31 +160,8 @@ public class AutoManagerCrazyEnchants
     @Override
     public void unregisterListeners() {
     	
-    	SpigotPrison prison = SpigotPrison.getInstance();
-    	
-    	while ( prison.getRegisteredBlockListeners().size() > 0 ) {
-    		Listener listener = prison.getRegisteredBlockListeners().remove( 0 );
-    		
-    		if ( listener != null ) {
-    			
-    			HandlerList.unregisterAll( listener );
-    		}
-    	}
-    	
-//    	AutoManagerBlastUseEventListener listener = null;
-//    	for ( RegisteredListener lstnr : BlastUseEvent.getHandlerList().getRegisteredListeners() )
-//		{
-//			if ( lstnr.getListener() instanceof AutoManagerBlastUseEventListener ) {
-//				listener = (AutoManagerBlastUseEventListener) lstnr.getListener();
-//				break;
-//			}
-//		}
-//
-//    	if ( listener != null ) {
-//    		
-//			HandlerList.unregisterAll( listener );
-//    	}
-//    	
+    	super.unregisterListeners();
+
     }
 	
 	@Override

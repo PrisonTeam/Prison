@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.plugin.EventExecutor;
@@ -16,15 +15,13 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 
 
 public class AutoManagerBlockBreakEvents 
-	extends AutoManagerFeatures
-	implements PrisonEventManager
+	extends AutoManagerEventsManager
 	{
 	
 	public AutoManagerBlockBreakEvents() {
@@ -164,37 +161,7 @@ public class AutoManagerBlockBreakEvents
     @Override
     public void unregisterListeners() {
     	
-    	SpigotPrison prison = SpigotPrison.getInstance();
-    	
-    	while ( prison.getRegisteredBlockListeners().size() > 0 ) {
-    		Listener listener = prison.getRegisteredBlockListeners().remove( 0 );
-    		
-    		if ( listener != null ) {
-    			
-    			HandlerList.unregisterAll( listener );
-    		}
-    	}
-    	
-    	
-//    	AutoManagerBlockBreakEventListener listener = null;
-//    	for ( RegisteredListener lstnr : BlockBreakEvent.getHandlerList().getRegisteredListeners() )
-//		{
-//			if ( lstnr.getListener() instanceof AutoManagerBlockBreakEventListener ) {
-//				listener = (AutoManagerBlockBreakEventListener) lstnr.getListener();
-//				break;
-//			}
-//		}
-//
-//    	if ( listener != null ) {
-//    		
-//			HandlerList.unregisterAll( listener );
-//    	}
-//    	
-//		
-//		new AutoManagerCrazyEnchants().unregisterListeners();
-//		new AutoManagerPrisonEnchants().unregisterListeners();
-//		new AutoManagerTokenEnchant().unregisterListeners();
-//		new AutoManagerZenchantments().unregisterListeners();
+    	super.unregisterListeners();
     }
 
 	
