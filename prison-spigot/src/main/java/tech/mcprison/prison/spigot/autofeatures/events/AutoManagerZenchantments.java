@@ -113,8 +113,12 @@ public class AutoManagerZenchantments
     				pm.registerEvent(BlockShredEvent.class, autoManagerlListener, ePriority,
     						new EventExecutor() {
     					public void execute(Listener l, Event e) { 
-    						((AutoManagerBlockShredEventListener)l)
-    								.onBlockShredBreak((BlockShredEvent)e);
+        					if ( l instanceof AutoManagerBlockShredEventListener ) {
+        						AutoManagerBlockShredEventListener lmon = 
+        											(AutoManagerBlockShredEventListener) l;
+        						lmon.onBlockShredBreak((BlockShredEvent)e);
+        					}
+
     					}
     				},
     				prison);
@@ -124,18 +128,24 @@ public class AutoManagerZenchantments
     			pm.registerEvent(BlockShredEvent.class, normalListener, ePriority,
     					new EventExecutor() {
     				public void execute(Listener l, Event e) { 
-    					((OnBlockBreakBlockShredEventListener)l)
-    							.onBlockShredBreak((BlockShredEvent)e);
+    					if ( l instanceof OnBlockBreakBlockShredEventListener ) {
+    						OnBlockBreakBlockShredEventListener lmon = 
+    											(OnBlockBreakBlockShredEventListener) l;
+    						lmon.onBlockShredBreak((BlockShredEvent)e);
+    					}
     				}
     			},
     			prison);
     			prison.getRegisteredBlockListeners().add( normalListener );
     			
-    			pm.registerEvent(BlockShredEvent.class, normalListenerMonitor, ePriority,
+    			pm.registerEvent(BlockShredEvent.class, normalListenerMonitor, EventPriority.MONITOR,
     					new EventExecutor() {
     				public void execute(Listener l, Event e) { 
-    					((OnBlockBreakBlockShredEventListenerMonitor)l)
-    								.onBlockShredBreakMonitor((BlockShredEvent)e);
+    					if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor ) {
+    						OnBlockBreakBlockShredEventListenerMonitor lmon = 
+    											(OnBlockBreakBlockShredEventListenerMonitor) l;
+    						lmon.onBlockShredBreakMonitor((BlockShredEvent)e);
+    					}
     				}
     			},
     			prison);
@@ -203,7 +213,7 @@ public class AutoManagerZenchantments
     		
     		if ( eventDisplay != null ) {
     			Output.get().logInfo( "" );
-    			eventDisplay.toLog( LogLevel.DEBUG );
+    			eventDisplay.toLog( LogLevel.INFO );
     		}
     	}
     	catch ( ClassNotFoundException e ) {

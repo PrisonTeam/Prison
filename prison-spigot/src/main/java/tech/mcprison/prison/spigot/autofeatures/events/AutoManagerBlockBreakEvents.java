@@ -132,7 +132,7 @@ public class AutoManagerBlockBreakEvents
     			prison.getRegisteredBlockListeners().add( normalListener );
 
     			
-    			pm.registerEvent(BlockBreakEvent.class, normalListenerMonitor, ePriority,
+    			pm.registerEvent(BlockBreakEvent.class, normalListenerMonitor, EventPriority.MONITOR,
     					new EventExecutor() {
     				public void execute(Listener l, Event e) { 
     					((OnBlockBreakEventListenerNormalMonitor)l)

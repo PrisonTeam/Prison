@@ -2006,7 +2006,7 @@ public class SpigotPlatform
 		ChatDisplay eventDisplay = dumpEventListenersChatDisplay( 
 										"BlockBreakEvent", handlerList );
 		if ( eventDisplay != null ) {
-			eventDisplay.toLog( LogLevel.DEBUG );
+			eventDisplay.toLog( LogLevel.INFO );
 		}
 		
 		
@@ -2024,8 +2024,6 @@ public class SpigotPlatform
 		
 		// Dump the event listeners for the following events if they are active on the server:
 
-		AutoManagerTokenEnchant tokenEnchant = new AutoManagerTokenEnchant();
-		tokenEnchant.dumpEventListeners();
 		
 		AutoManagerCrazyEnchants crazyEnchants = new AutoManagerCrazyEnchants();
 		crazyEnchants.dumpEventListeners();
@@ -2033,6 +2031,9 @@ public class SpigotPlatform
 		AutoManagerPrisonEnchants prisonEnchants = new AutoManagerPrisonEnchants();
 		prisonEnchants.dumpEventListeners();
 		
+		AutoManagerTokenEnchant tokenEnchant = new AutoManagerTokenEnchant();
+		tokenEnchant.dumpEventListeners();
+
 		AutoManagerZenchantments zenchantments = new AutoManagerZenchantments();
 		zenchantments.dumpEventListeners();
 		
@@ -2045,7 +2046,7 @@ public class SpigotPlatform
 								"AsyncPlayerChatEvent", 
 								new SpigotHandlerList( AsyncPlayerChatEvent.getHandlerList()) );
 		if ( eventDisplay != null ) {
-			eventDisplay.toLog( LogLevel.DEBUG );
+			eventDisplay.toLog( LogLevel.INFO );
 		}
 			
 		if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.17.0") < 0 ) {
@@ -2054,7 +2055,7 @@ public class SpigotPlatform
 								"PlayerChatEvent", 
 								new SpigotHandlerList( PlayerChatEvent.getHandlerList()) );
 			if ( eventDisplay != null ) {
-				eventDisplay.toLog( LogLevel.DEBUG );
+				eventDisplay.toLog( LogLevel.INFO );
 			}
 		}
 	}

@@ -23,6 +23,8 @@ These build logs represent the work that has been going on within prison.
 
 # v3.2.10-alpha.7 2021-07-25
 
+* **Adjustments to get the new event listeners working fully.  Still need to hook them up to the reloading.**
+
 
 * **Next step in rewriting how the event listeners are setup...**
 
