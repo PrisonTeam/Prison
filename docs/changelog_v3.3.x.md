@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.7 2021-07-25
 
 
+* **Fixes a major problem with how Zenchantments works because the plugin extends the BlockBreakEvent with their BlockShredEvent.**
+It has issues.. but... this ensures that the correct event is being trapped.
+
+
 * **Change to player cache field that was not so clear with it's name.**
 It's supposed to be the config field name, but the description did not reflect that.
 

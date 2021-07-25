@@ -113,12 +113,13 @@ public class AutoManagerZenchantments
     				pm.registerEvent(BlockShredEvent.class, autoManagerlListener, ePriority,
     						new EventExecutor() {
     					public void execute(Listener l, Event e) { 
-        					if ( l instanceof AutoManagerBlockShredEventListener ) {
-        						AutoManagerBlockShredEventListener lmon = 
-        											(AutoManagerBlockShredEventListener) l;
-        						lmon.onBlockShredBreak((BlockShredEvent)e);
-        					}
-
+        					if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor && 
+           						 e instanceof BlockShredEvent ) {
+           						OnBlockBreakBlockShredEventListenerMonitor lmon = 
+           											(OnBlockBreakBlockShredEventListenerMonitor) l;
+           						BlockShredEvent event = (BlockShredEvent) e;
+           						lmon.onBlockShredBreakMonitor( event );
+           					}
     					}
     				},
     				prison);
@@ -128,11 +129,13 @@ public class AutoManagerZenchantments
     			pm.registerEvent(BlockShredEvent.class, normalListener, ePriority,
     					new EventExecutor() {
     				public void execute(Listener l, Event e) { 
-    					if ( l instanceof OnBlockBreakBlockShredEventListener ) {
-    						OnBlockBreakBlockShredEventListener lmon = 
-    											(OnBlockBreakBlockShredEventListener) l;
-    						lmon.onBlockShredBreak((BlockShredEvent)e);
-    					}
+    					if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor && 
+       						 e instanceof BlockShredEvent ) {
+       						OnBlockBreakBlockShredEventListenerMonitor lmon = 
+       											(OnBlockBreakBlockShredEventListenerMonitor) l;
+       						BlockShredEvent event = (BlockShredEvent) e;
+       						lmon.onBlockShredBreakMonitor( event );
+       					}
     				}
     			},
     			prison);
@@ -141,10 +144,12 @@ public class AutoManagerZenchantments
     			pm.registerEvent(BlockShredEvent.class, normalListenerMonitor, EventPriority.MONITOR,
     					new EventExecutor() {
     				public void execute(Listener l, Event e) { 
-    					if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor ) {
+    					if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor && 
+    						 e instanceof BlockShredEvent ) {
     						OnBlockBreakBlockShredEventListenerMonitor lmon = 
     											(OnBlockBreakBlockShredEventListenerMonitor) l;
-    						lmon.onBlockShredBreakMonitor((BlockShredEvent)e);
+    						BlockShredEvent event = (BlockShredEvent) e;
+    						lmon.onBlockShredBreakMonitor( event );
     					}
     				}
     			},
