@@ -175,8 +175,10 @@ public class Button extends SpigotGUIComponents{
      * @param line - String.
      * */
     public void addButtonLoreLine(String line){
-        if (buttonItem.getItemMeta() != null && buttonItem.getItemMeta().getLore() != null){
-            buttonItem.getItemMeta().getLore().add(SpigotPrison.format(line));
+        if (getButtonLore() != null){
+            List<String> lore = getButtonLore();
+            lore.add(SpigotPrison.format(line));
+            setButtonLore(lore);
         } else {
             setButtonLore(createLore(SpigotPrison.format(line)));
         }

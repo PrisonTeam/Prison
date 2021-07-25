@@ -23,6 +23,10 @@ These build logs represent the work that has been going on within prison.
 
 # v3.2.10-alpha.7 2021-07-25
 
+
+* **Fixed GuiUtility button add lore method:** The method to add a line to an already existing button got now fixed.
+
+
 * **Adjustments to get the new event listeners working fully.  Still need to hook them up to the reloading.**
 
 
@@ -61,7 +65,7 @@ Fixed an issue with auto smelt and auto block where it was not using the config 
 Added more debugInfo messages to better understand what's going on when something is not working correctly.
 
 
-* **Added a note on how fortune works... it's been confusing... **
+* **Added a note on how fortune works... it's been confusing...**
 
 
 * **Updates to the liner to allow the use of '*all*' for the mine name to apply the same pattern to all mines.**
