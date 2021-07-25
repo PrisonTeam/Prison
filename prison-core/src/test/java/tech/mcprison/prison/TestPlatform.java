@@ -403,5 +403,15 @@ public class TestPlatform implements Platform {
 		return chatDisplay;
 	}
 	
-	
+	/**
+	 * <p>This only reloads the event listeners that auto features uses.  This is called by
+	 * the command "/prison reload autoFeatures".  
+	 * </p>
+	 * 
+	 * <code>tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.reloadConfig()</code>
+	 * 
+	 */
+	public void reloadAutoFeaturesEventListeners() {
+		
+	}
 }

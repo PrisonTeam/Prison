@@ -580,6 +580,9 @@ public class AutoFeaturesFileConfig {
 		List<AutoFeatures> dne = yamlFileIO.loadYamlAutoFeatures( getConfig() );
 		
 		dne.size();
+		
+		// need to reload the auto features event listeners:
+		Prison.get().getPlatform().reloadAutoFeaturesEventListeners();
     }
     
 

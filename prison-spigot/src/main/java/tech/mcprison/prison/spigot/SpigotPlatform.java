@@ -87,6 +87,7 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerCrazyEnchants;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonEnchants;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerTokenEnchant;
@@ -2123,6 +2124,28 @@ public class SpigotPlatform
 		
 		return display;
 	}
+	
+	/**
+	 * <p>This only reloads the event listeners that auto features uses.  This is called by
+	 * the command "/prison reload autoFeatures".  
+	 * </p>
+	 * 
+	 * <code>tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.reloadConfig()</code>
+	 * 
+	 */
+	public void reloadAutoFeaturesEventListeners() {
+		
+		AutoManagerBlockBreakEvents autoFeaturesEvents = new AutoManagerBlockBreakEvents();
+		
+		// NOTE: The unregisterListeners() will remove ALL auto features events that were
+		//       registered, no matter which listeners were enabled.
+		autoFeaturesEvents.unregisterListeners();
+
+		// NOTE: The registerEvents() will register all event listeners based upon what's 
+		//       in the auto features configuration file.
+		autoFeaturesEvents.registerEvents();
+		
+	}
 
 	/**
 	 * <p>This feature will be similar to the WorldGuard's command 
@@ -2172,4 +2195,5 @@ public class SpigotPlatform
 		
 		return Text.stripColor( sb.toString() );
 	}
+	
 }

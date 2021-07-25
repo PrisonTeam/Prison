@@ -402,5 +402,16 @@ public interface Platform {
 
 	ChatDisplay dumpEventListenersChatDisplay( String eventType, HandlerList handlerList );
 
+
+	/**
+	 * <p>This only reloads the event listeners that auto features uses.  This is called by
+	 * the command "/prison reload autoFeatures".  
+	 * </p>
+	 * 
+	 * <code>tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.reloadConfig()</code>
+	 * 
+	 */
+	public void reloadAutoFeaturesEventListeners();
+
 	
 }
