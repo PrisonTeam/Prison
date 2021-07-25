@@ -8,7 +8,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredListener;
 
 import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
@@ -21,11 +20,12 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
+import tech.mcprison.prison.spigot.block.OnBlockBreakEventTokenEnchant;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 
 public class AutoManagerTokenEnchant 
 	extends AutoManagerFeatures
-	implements PrisonEventLManager {
+	implements PrisonEventManager {
 
 	public AutoManagerTokenEnchant() {
         super();
@@ -34,96 +34,154 @@ public class AutoManagerTokenEnchant
 	
 	
 	@Override
-	public void registerEvents(SpigotPrison spigotPrison ) {
+	public void registerEvents() {
 	
-		new AutoManagerTokenEnchantEventListener().initialize();
+		initialize();
 		
 	}
 
 	
-    public void onTEBlockExplode(TEBlockExplodeEvent e) {
-    	if ( !e.isCancelled() ) {
-    	    
-    		genericBlockExplodeEventAutoManager( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
-    	}
-    }
-    
-    
     public class AutoManagerTokenEnchantEventListener
 		extends AutoManagerTokenEnchant
 		implements Listener {
     	
         @EventHandler(priority=EventPriority.LOW) 
         public void onTEBlockExplode(TEBlockExplodeEvent e) {
-        	super.onTEBlockExplode( e );
+        	genericBlockExplodeEventAutoManager( e );
         }
-        
-		public void initialize() {
-	    	boolean isEventEnabled = isBoolean( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
-	    	
-	    	if ( !isEventEnabled ) {
-	    		return;
-	    	}
-			
-			// Check to see if the class TEBlockExplodeEvent even exists:
-			try {
-				Output.get().logInfo( "AutoManager: checking if loaded: TokenEnchant" );
-				
-				Class.forName( "com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent", false, 
-								this.getClass().getClassLoader() );
-				
-				Output.get().logInfo( "AutoManager: Trying to register TokenEnchant" );
+    }
+    
+    public class OnBlockBreakEventTokenEnchantEventListener
+	    extends OnBlockBreakEventTokenEnchant
+	    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.NORMAL) 
+    	public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
+    		genericBlockExplodeEvent( e );
+    	}
+    }
+    
+    public class OnBlockBreakEventTokenEnchantEventListenerMonitor
+	    extends OnBlockBreakEventTokenEnchant
+	    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.MONITOR) 
+    	public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
+    		genericBlockExplodeEventMonitor( e );
+    	}
+    }
+    
+    @Override
+    public void initialize() {
+    	boolean isEventEnabled = isBoolean( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
+    	
+    	if ( !isEventEnabled ) {
+    		return;
+    	}
+    	
+    	// Check to see if the class TEBlockExplodeEvent even exists:
+    	try {
+    		Output.get().logInfo( "AutoManager: checking if loaded: TokenEnchant" );
+    		
+    		Class.forName( "com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent", false, 
+    				this.getClass().getClassLoader() );
+    		
+    		Output.get().logInfo( "AutoManager: Trying to register TokenEnchant" );
+    		
+    		
+    		String eP = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
+    		BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
+    		
+    		if ( eventPriority != BlockBreakPriority.DISABLED ) {
+    			
+    			EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
+    			
+    			
+    			OnBlockBreakEventTokenEnchantEventListener normalListener = 
+    										new OnBlockBreakEventTokenEnchantEventListener();
+    			OnBlockBreakEventTokenEnchantEventListenerMonitor normalListenerMonitor = 
+    										new OnBlockBreakEventTokenEnchantEventListenerMonitor();
 
-				
-				String eP = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
-				BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
+    			
+    			SpigotPrison prison = SpigotPrison.getInstance();
 
-				if ( eventPriority != BlockBreakPriority.DISABLED ) {
-					
-					EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
-					
-					PluginManager pm = Bukkit.getServer().getPluginManager();
+    			PluginManager pm = Bukkit.getServer().getPluginManager();
+    			
+    			if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
 
-					pm.registerEvent(BlastUseEvent.class, this, ePriority,
-							new EventExecutor() {
-								public void execute(Listener l, Event e) { 
-									((AutoManagerTokenEnchantEventListener)l)
-													.onTEBlockExplode((TEBlockExplodeEvent)e);
-								}
-							},
-							SpigotPrison.getInstance());
-					
-				}
-				
-			}
-			catch ( ClassNotFoundException e ) {
-				// TokenEnchant is not loaded... so ignore.
-				Output.get().logInfo( "AutoManager: TokenEnchant is not loaded" );
-			}
-			catch ( Exception e ) {
-				Output.get().logInfo( "AutoManager: TokenEnchant failed to load. [%s]", e.getMessage() );
-			}
-		}
-
+    				AutoManagerTokenEnchantEventListener autoManagerlListener = 
+    						new AutoManagerTokenEnchantEventListener();
+    				
+    				pm.registerEvent(BlastUseEvent.class, autoManagerlListener, ePriority,
+    						new EventExecutor() {
+    					public void execute(Listener l, Event e) { 
+	    						((AutoManagerTokenEnchantEventListener)l)
+	    							.onTEBlockExplode((TEBlockExplodeEvent)e);
+	    					}
+	    				},
+						prison);
+    				prison.getRegisteredBlockListeners().add( autoManagerlListener );
+    			}
+    			
+    			pm.registerEvent(BlastUseEvent.class, normalListener, ePriority,
+    					new EventExecutor() {
+    				public void execute(Listener l, Event e) { 
+	    					((OnBlockBreakEventTokenEnchantEventListener)l)
+	    						.onTEBlockExplodeLow((TEBlockExplodeEvent)e);
+	    				}
+	    			},
+	    			prison);
+    			prison.getRegisteredBlockListeners().add( normalListener );
+    			
+    			pm.registerEvent(BlastUseEvent.class, normalListenerMonitor, EventPriority.MONITOR,
+    					new EventExecutor() {
+    				public void execute(Listener l, Event e) { 
+	    					((OnBlockBreakEventTokenEnchantEventListener)l)
+	    						.onTEBlockExplodeLow((TEBlockExplodeEvent)e);
+    					}
+	    			},
+	    			prison);
+    			prison.getRegisteredBlockListeners().add( normalListenerMonitor );
+    		}
+    		
+    	}
+    	catch ( ClassNotFoundException e ) {
+    		// TokenEnchant is not loaded... so ignore.
+    		Output.get().logInfo( "AutoManager: TokenEnchant is not loaded" );
+    	}
+    	catch ( Exception e ) {
+    		Output.get().logInfo( "AutoManager: TokenEnchant failed to load. [%s]", e.getMessage() );
+    	}
     }
     
 	
     @Override
     public void unregisterListeners() {
-    	
-    	AutoManagerTokenEnchantEventListener listener = null;
-    	for ( RegisteredListener lstnr : TEBlockExplodeEvent.getHandlerList().getRegisteredListeners() )
-		{
-			if ( lstnr.getListener() instanceof AutoManagerTokenEnchantEventListener ) {
-				listener = (AutoManagerTokenEnchantEventListener) lstnr.getListener();
-				break;
-			}
-		}
 
-    	if ( listener != null ) {
+    	SpigotPrison prison = SpigotPrison.getInstance();
+    	
+    	while ( prison.getRegisteredBlockListeners().size() > 0 ) {
+    		Listener listener = prison.getRegisteredBlockListeners().remove( 0 );
     		
-			HandlerList.unregisterAll( listener );
+    		if ( listener != null ) {
+    			
+    			HandlerList.unregisterAll( listener );
+    		}
     	}
+    	
+//    	AutoManagerTokenEnchantEventListener listener = null;
+//    	for ( RegisteredListener lstnr : TEBlockExplodeEvent.getHandlerList().getRegisteredListeners() )
+//		{
+//			if ( lstnr.getListener() instanceof AutoManagerTokenEnchantEventListener ) {
+//				listener = (AutoManagerTokenEnchantEventListener) lstnr.getListener();
+//				break;
+//			}
+//		}
+//
+//    	if ( listener != null ) {
+//    		
+//			HandlerList.unregisterAll( listener );
+//    	}
     	
     }
     

@@ -102,6 +102,8 @@ public class AutoFeaturesFileConfig {
 				
 			autoFeatures(options),
 			
+				isAutoFeaturesEnabled(autoFeatures, true),
+			
 				autoPickupEnabled(autoFeatures, true),
 				autoSmeltEnabled(autoFeatures, true),
 				autoBlockEnabled(autoFeatures, true),

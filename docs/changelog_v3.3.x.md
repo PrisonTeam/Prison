@@ -21,7 +21,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.7 2021-07-24
+# v3.2.10-alpha.7 2021-07-25
+
+
+* **Next step in rewriting how the event listeners are setup...**
 
 
 * **Move the event listener managers in to a common package to prepare to extend them to the non-auto features event listeners.**

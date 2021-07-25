@@ -8,7 +8,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredListener;
 
 import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.Prison;
@@ -23,7 +22,7 @@ import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 
 public class AutoManagerCrazyEnchants
 	extends AutoManagerFeatures
-	implements PrisonEventLManager
+	implements PrisonEventManager
 {
 	
 	public AutoManagerCrazyEnchants() {
@@ -31,61 +30,118 @@ public class AutoManagerCrazyEnchants
 	}
 	
 	@Override
-	public void registerEvents( SpigotPrison spigotPrison ) {
+	public void registerEvents() {
 		
-		new AutoManagerBlastUseEventListener().initialize();
+		initialize();
 		
 	}
 
-	
-	
+		
 	public class AutoManagerBlastUseEventListener
-		extends AutoManagerBlockBreakEvents
+		extends AutoManagerCrazyEnchants
 		implements Listener {
 		
-		@EventHandler(priority=EventPriority.LOW) 
+		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onCrazyEnchantsBlockExplode(BlastUseEvent e) {
-			super.onCrazyEnchantsBlockExplode( e );
+			genericBlockExplodeEventAutoManager( e );
+		}
+	}
+	
+    public class OnBlockBreakBlastUseEventListener 
+		extends AutoManagerCrazyEnchants
+		implements Listener {
+    	
+        @EventHandler(priority=EventPriority.NORMAL) 
+        public void onCrazyEnchantsBlockExplode(BlastUseEvent e) {
+        	genericBlockExplodeEvent( e );
+        }
+    }
+    
+    public class OnBlockBreakBlastUseEventListenerMonitor
+	    extends AutoManagerCrazyEnchants
+	    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.MONITOR) 
+    	public void onCrazyEnchantsBlockExplode(BlastUseEvent e) {
+    		genericBlockExplodeEventMonitor( e );
+    	}
+    }
+    
+
+	@Override
+	public void initialize() {
+		boolean isEventEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
+		
+		if ( !isEventEnabled ) {
+			return;
 		}
 		
-		public void initialize() {
-	    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
-	    	
-	    	if ( !isEventEnabled ) {
-	    		return;
-	    	}
+		// Check to see if the class BlastUseEvent even exists:
+		try {
+			Output.get().logInfo( "AutoManager: checking if loaded: CrazyEnchants" );
 			
-			// Check to see if the class BlastUseEvent even exists:
-			try {
-				Output.get().logInfo( "AutoManager: checking if loaded: CrazyEnchants" );
+			Class.forName( "me.badbones69.crazyenchantments.api.events.BlastUseEvent", false, 
+					this.getClass().getClassLoader() );
+			
+			Output.get().logInfo( "AutoManager: Trying to register CrazyEnchants" );
+			
+			String eP = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
+			BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
+			
+			if ( eventPriority != BlockBreakPriority.DISABLED ) {
 				
-				Class.forName( "me.badbones69.crazyenchantments.api.events.BlastUseEvent", false, 
-								this.getClass().getClassLoader() );
+				EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
 				
-				Output.get().logInfo( "AutoManager: Trying to register CrazyEnchants" );
-
 				
-				String eP = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
-				BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
-
-				if ( eventPriority != BlockBreakPriority.DISABLED ) {
+				OnBlockBreakBlastUseEventListener normalListener = 
+											new OnBlockBreakBlastUseEventListener();
+				OnBlockBreakBlastUseEventListenerMonitor normalListenerMonitor = 
+											new OnBlockBreakBlastUseEventListenerMonitor();
+				
+				
+				SpigotPrison prison = SpigotPrison.getInstance();
+				
+				PluginManager pm = Bukkit.getServer().getPluginManager();
+				
+				if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
 					
-					EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
-					
-					PluginManager pm = Bukkit.getServer().getPluginManager();
+					AutoManagerBlastUseEventListener autoManagerlListener = 
+														new AutoManagerBlastUseEventListener();
 
-					pm.registerEvent(BlastUseEvent.class, this, ePriority,
+					pm.registerEvent(BlastUseEvent.class, autoManagerlListener, ePriority,
 							new EventExecutor() {
-								public void execute(Listener l, Event e) { 
-									((AutoManagerBlastUseEventListener)l)
-													.onCrazyEnchantsBlockExplode((BlastUseEvent)e);
-								}
-							},
-							SpigotPrison.getInstance());
-					
+						public void execute(Listener l, Event e) { 
+							((AutoManagerBlastUseEventListener)l)
+							.onCrazyEnchantsBlockExplode((BlastUseEvent)e);
+						}
+					},
+					prison);
+					prison.getRegisteredBlockListeners().add( autoManagerlListener );
 				}
 				
-				// The following is paper code:
+				pm.registerEvent(BlastUseEvent.class, normalListener, ePriority,
+						new EventExecutor() {
+						public void execute(Listener l, Event e) { 
+							((OnBlockBreakBlastUseEventListener)l)
+							.onCrazyEnchantsBlockExplode((BlastUseEvent)e);
+					}
+				},
+				prison);
+				prison.getRegisteredBlockListeners().add( normalListener );
+				
+				pm.registerEvent(BlastUseEvent.class, normalListenerMonitor, EventPriority.MONITOR,
+						new EventExecutor() {
+						public void execute(Listener l, Event e) { 
+							((OnBlockBreakBlastUseEventListenerMonitor)l)
+							.onCrazyEnchantsBlockExplode((BlastUseEvent)e);
+					}
+				},
+				prison);
+				prison.getRegisteredBlockListeners().add( normalListenerMonitor );
+				
+			}
+			
+			// The following is paper code:
 //				var executor = EventExecutor
 //						.create( AutoManagerBlastUseEventListener.class
 //								.getDeclaredMethod( "onCrazyEnchantsBlockExplode", BlastUseEvent.class ),
@@ -93,14 +149,13 @@ public class AutoManagerCrazyEnchants
 //				
 //				Bukkit.getServer().getPluginManager()
 //					.register( BlastUseEvent.class, this, EventPriority.LOW, executor, SpigotPrison.getInstance() );
-			}
-			catch ( ClassNotFoundException e ) {
-				// CrazyEnchants is not loaded... so ignore.
-				Output.get().logInfo( "AutoManager: CrazyEnchants is not loaded" );
-			}
-			catch ( Exception e ) {
-				Output.get().logInfo( "AutoManager: CrazyEnchants failed to load. [%s]", e.getMessage() );
-			}
+		}
+		catch ( ClassNotFoundException e ) {
+			// CrazyEnchants is not loaded... so ignore.
+			Output.get().logInfo( "AutoManager: CrazyEnchants is not loaded" );
+		}
+		catch ( Exception e ) {
+			Output.get().logInfo( "AutoManager: CrazyEnchants failed to load. [%s]", e.getMessage() );
 		}
 	}
    
@@ -108,20 +163,31 @@ public class AutoManagerCrazyEnchants
     @Override
     public void unregisterListeners() {
     	
-    	AutoManagerBlastUseEventListener listener = null;
-    	for ( RegisteredListener lstnr : BlastUseEvent.getHandlerList().getRegisteredListeners() )
-		{
-			if ( lstnr.getListener() instanceof AutoManagerBlastUseEventListener ) {
-				listener = (AutoManagerBlastUseEventListener) lstnr.getListener();
-				break;
-			}
-		}
-
-    	if ( listener != null ) {
+    	SpigotPrison prison = SpigotPrison.getInstance();
+    	
+    	while ( prison.getRegisteredBlockListeners().size() > 0 ) {
+    		Listener listener = prison.getRegisteredBlockListeners().remove( 0 );
     		
-			HandlerList.unregisterAll( listener );
+    		if ( listener != null ) {
+    			
+    			HandlerList.unregisterAll( listener );
+    		}
     	}
     	
+//    	AutoManagerBlastUseEventListener listener = null;
+//    	for ( RegisteredListener lstnr : BlastUseEvent.getHandlerList().getRegisteredListeners() )
+//		{
+//			if ( lstnr.getListener() instanceof AutoManagerBlastUseEventListener ) {
+//				listener = (AutoManagerBlastUseEventListener) lstnr.getListener();
+//				break;
+//			}
+//		}
+//
+//    	if ( listener != null ) {
+//    		
+//			HandlerList.unregisterAll( listener );
+//    	}
+//    	
     }
 	
 	@Override

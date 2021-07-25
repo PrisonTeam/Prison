@@ -166,19 +166,26 @@ public class OnBlockBreakEventCore
     	genericBlockEvent( e, false, false, false );
     }
 
-    protected void genericBlockEventAutoManager( BlockBreakEvent e, boolean blockEventsOnly ) {
+    protected void genericBlockEventAutoManager( BlockBreakEvent e ) {
+    	// NOTE: If autoManager is turned off, then process only the blockEvents:
+    	boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
     	genericBlockEvent( e, false, blockEventsOnly, true );
     }
+    
     
 	protected void genericBlockExplodeEventMonitor( TEBlockExplodeEvent e ) {
 		genericBlockExplodeEvent( e, true, false, false );
 	}
 	
-	protected void genericBlockExplodeEvent( TEBlockExplodeEvent e, boolean blockEventsOnly ) {
+	protected void genericBlockExplodeEvent( TEBlockExplodeEvent e ) {
+		// NOTE: If autoManager is turned off, then process only the blockEvents:
+		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
 		genericBlockExplodeEvent( e, false, blockEventsOnly, false );
 	}
 	
-	protected void genericBlockExplodeEventAutoManager( TEBlockExplodeEvent e, boolean blockEventsOnly ) {
+	protected void genericBlockExplodeEventAutoManager( TEBlockExplodeEvent e ) {
+		// NOTE: If autoManager is turned off, then process only the blockEvents:
+		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
 		genericBlockExplodeEvent( e, false, blockEventsOnly, true );
 	}
 	
@@ -187,11 +194,15 @@ public class OnBlockBreakEventCore
 		genericBlastUseEvent( e, true, false, false );
 	}
 	
-	protected void genericBlockExplodeEvent( BlastUseEvent e, boolean blockEventsOnly ) {
+	protected void genericBlockExplodeEvent( BlastUseEvent e ) {
+		// NOTE: If autoManager is turned off, then process only the blockEvents:
+		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
 		genericBlastUseEvent( e, false, blockEventsOnly, false );
 	}
 
-	protected void genericBlockExplodeEventAutoManager( BlastUseEvent e, boolean blockEventsOnly ) {
+	protected void genericBlockExplodeEventAutoManager( BlastUseEvent e ) {
+		// NOTE: If autoManager is turned off, then process only the blockEvents:
+		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
 		genericBlastUseEvent( e, true, blockEventsOnly, true );
 	}
 	
@@ -200,11 +211,15 @@ public class OnBlockBreakEventCore
 		genericExplosiveEvent( e, true, false, false );
 	}
 	
-	protected void genericBlockExplodeEvent( ExplosiveEvent e, boolean blockEventsOnly ) {
+	protected void genericBlockExplodeEvent( ExplosiveEvent e ) {
+		// NOTE: If autoManager is turned off, then process only the blockEvents:
+		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
 		genericExplosiveEvent( e, false, blockEventsOnly, false );
 	}
 	
-	protected void genericBlockExplodeEventAutoManager( ExplosiveEvent e, boolean blockEventsOnly ) {
+	protected void genericBlockExplodeEventAutoManager( ExplosiveEvent e ) {
+		// NOTE: If autoManager is turned off, then process only the blockEvents:
+		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
 		genericExplosiveEvent( e, true, blockEventsOnly, true );
 	}
 	

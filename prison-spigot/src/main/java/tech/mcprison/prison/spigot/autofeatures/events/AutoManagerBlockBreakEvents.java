@@ -9,10 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredListener;
 
-import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
-import me.pulsi_.prisonenchants.enchantments.custom.explosive.ExplosiveEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.output.ChatDisplay;
@@ -20,41 +17,33 @@ import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
+import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
-import zedly.zenchantments.BlockShredEvent;
 
 
-/**
- * @author GABRYCA
- * @author RoyalBlueRanger
- */
 public class AutoManagerBlockBreakEvents 
 	extends AutoManagerFeatures
-	implements PrisonEventLManager
+	implements PrisonEventManager
 	{
 	
 	public AutoManagerBlockBreakEvents() {
         super();
    
-        // NOTE: Set in SpigotPrison.
-//        // Save this instance within the SpigotPrison instance so it can be accessed
-//        // from non-event listeners:
-//        SpigotPrison.getInstance().setAutoFeatures( this );
     }
 
 	
 	@Override
-	public void registerEvents(SpigotPrison spigotPrison ) {
+	public void registerEvents() {
 	
 		
-		new AutoManagerBlockBreakEventListener().initialize();
+		initialize();
 		
-		new AutoManagerCrazyEnchants().registerEvents( spigotPrison );
-		new AutoManagerPrisonEnchants().registerEvents( spigotPrison );
-		new AutoManagerTokenEnchant().registerEvents( spigotPrison );
-		new AutoManagerZenchantments().registerEvents( spigotPrison );
 		
+		new AutoManagerCrazyEnchants().registerEvents();
+		new AutoManagerPrisonEnchants().registerEvents();
+		new AutoManagerTokenEnchant().registerEvents();
+		new AutoManagerZenchantments().registerEvents();
 		
 	}
 	
@@ -65,66 +54,147 @@ public class AutoManagerBlockBreakEvents
 		
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onBlockBreak(BlockBreakEvent e) {
-			super.onBlockBreak( e );
+			genericBlockEventAutoManager( e );
 		}
-		
-		public void initialize() {
+	}
+    
+    public class OnBlockBreakEventListenerNormal
+	    extends OnBlockBreakEventListener
+	    implements Listener {
+    	
+    	@EventHandler(priority=EventPriority.NORMAL) 
+    	public void onBlockBreak(BlockBreakEvent e) {
+    		genericBlockEvent( e );
+    	}
+    }
+    
+	public class OnBlockBreakEventListenerNormalMonitor
+		extends OnBlockBreakEventListener
+		implements Listener {
 			
-			// Check to see if the class BlockBreakEvent even exists:
-			try {
-				
-				Output.get().logInfo( "AutoManager: Trying to register BlockBreakEvent" );
-				
-				String eP = getMessage( AutoFeatures.blockBreakEventPriority );
-				BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
-
-				if ( eventPriority != BlockBreakPriority.DISABLED ) {
-					
-					EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
-					
-					PluginManager pm = Bukkit.getServer().getPluginManager();
-
-					pm.registerEvent(BlockBreakEvent.class, this, ePriority,
-							new EventExecutor() {
-								public void execute(Listener l, Event e) { 
-									((AutoManagerBlockBreakEventListener)l)
-													.onBlockBreak((BlockBreakEvent)e);
-								}
-							},
-							SpigotPrison.getInstance());
-					
-				}
-				
-			}
-			catch ( Exception e ) {
-				Output.get().logInfo( "AutoManager: BlockBreakEvent failed to load. [%s]", e.getMessage() );
-			}
+		@EventHandler(priority=EventPriority.MONITOR) 
+		public void onBlockBreak(BlockBreakEvent e) {
+			genericBlockEventMonitor( e );
 		}
-
 	}
 
+    public void initialize() {
+    	
+    	// Check to see if the class BlockBreakEvent even exists:
+    	try {
+    		
+    		Output.get().logInfo( "AutoManager: Trying to register BlockBreakEvent" );
+    		
+    		String eP = getMessage( AutoFeatures.blockBreakEventPriority );
+    		BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
+    		
+    		if ( eventPriority != BlockBreakPriority.DISABLED ) {
+    			
+    			EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
+    			
+    			
+				
+				
+    			OnBlockBreakEventListenerNormal normalListener = 
+												new OnBlockBreakEventListenerNormal();
+    			OnBlockBreakEventListenerNormalMonitor normalListenerMonitor = 
+												new OnBlockBreakEventListenerNormalMonitor();
+				
+
+    			SpigotPrison prison = SpigotPrison.getInstance();
+    			
+    			PluginManager pm = Bukkit.getServer().getPluginManager();
+    			
+    			if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
+    				
+    				AutoManagerBlockBreakEventListener autoManagerlListener = 
+    											new AutoManagerBlockBreakEventListener();
+    				
+    				pm.registerEvent(BlockBreakEvent.class, autoManagerlListener, ePriority,
+    						new EventExecutor() {
+    					public void execute(Listener l, Event e) { 
+    						((AutoManagerBlockBreakEventListener)l)
+    									.onBlockBreak((BlockBreakEvent)e);
+    					}
+    				},
+					prison);
+    				prison.getRegisteredBlockListeners().add( autoManagerlListener );
+    			}
+    			
+    			pm.registerEvent(BlockBreakEvent.class, normalListener, ePriority,
+    					new EventExecutor() {
+    				public void execute(Listener l, Event e) { 
+    					((OnBlockBreakEventListenerNormal)l)
+    								.onBlockBreak((BlockBreakEvent)e);
+    				}
+    			},
+    			prison);
+    			prison.getRegisteredBlockListeners().add( normalListener );
+
+    			
+    			pm.registerEvent(BlockBreakEvent.class, normalListenerMonitor, ePriority,
+    					new EventExecutor() {
+    				public void execute(Listener l, Event e) { 
+    					((OnBlockBreakEventListenerNormalMonitor)l)
+    								.onBlockBreak((BlockBreakEvent)e);
+    				}
+    			},
+    			prison);
+    			prison.getRegisteredBlockListeners().add( normalListenerMonitor );
+    			
+    		}
+    		
+    	}
+    	catch ( Exception e ) {
+    		Output.get().logInfo( "AutoManager: BlockBreakEvent failed to load. [%s]", e.getMessage() );
+    	}
+    }
+    
+    
+    /**
+     * <p>If one BlockBreak related event needs to be unregistered, then this function will
+     * unregisters all of them that has been registered through the auto features.  If 
+     * this function is called by different functions, the results will be the same. If
+     * they are ran back-to-back, then only the first call will remove all the Listeners
+     * and the other calls will do nothing since the source ArrayList will be emptied 
+     * and there would be nothing to remove.
+     * </p>
+     * 
+     */
     @Override
     public void unregisterListeners() {
     	
-    	AutoManagerBlockBreakEventListener listener = null;
-    	for ( RegisteredListener lstnr : BlockBreakEvent.getHandlerList().getRegisteredListeners() )
-		{
-			if ( lstnr.getListener() instanceof AutoManagerBlockBreakEventListener ) {
-				listener = (AutoManagerBlockBreakEventListener) lstnr.getListener();
-				break;
-			}
-		}
-
-    	if ( listener != null ) {
+    	SpigotPrison prison = SpigotPrison.getInstance();
+    	
+    	while ( prison.getRegisteredBlockListeners().size() > 0 ) {
+    		Listener listener = prison.getRegisteredBlockListeners().remove( 0 );
     		
-			HandlerList.unregisterAll( listener );
+    		if ( listener != null ) {
+    			
+    			HandlerList.unregisterAll( listener );
+    		}
     	}
     	
-		
-		new AutoManagerCrazyEnchants().unregisterListeners();
-		new AutoManagerPrisonEnchants().unregisterListeners();
-		new AutoManagerTokenEnchant().unregisterListeners();
-		new AutoManagerZenchantments().unregisterListeners();
+    	
+//    	AutoManagerBlockBreakEventListener listener = null;
+//    	for ( RegisteredListener lstnr : BlockBreakEvent.getHandlerList().getRegisteredListeners() )
+//		{
+//			if ( lstnr.getListener() instanceof AutoManagerBlockBreakEventListener ) {
+//				listener = (AutoManagerBlockBreakEventListener) lstnr.getListener();
+//				break;
+//			}
+//		}
+//
+//    	if ( listener != null ) {
+//    		
+//			HandlerList.unregisterAll( listener );
+//    	}
+//    	
+//		
+//		new AutoManagerCrazyEnchants().unregisterListeners();
+//		new AutoManagerPrisonEnchants().unregisterListeners();
+//		new AutoManagerTokenEnchant().unregisterListeners();
+//		new AutoManagerZenchantments().unregisterListeners();
     }
 
 	
@@ -184,28 +254,28 @@ public class AutoManagerBlockBreakEvents
 //    	}
 //    }
 
-    /**
-     * <p>The optimized logic on how an BlockBreakEvent is handled is within the OnBlockBreakEventListener
-     * class and optimizes mine reuse.
-     * </p>
-     *
-     */
-    public void onBlockBreak(BlockBreakEvent e) {
-
-    	// NOTE: If autoManager is turned off, then process only the blockEvents:
-    	genericBlockEventAutoManager( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
-    }
-    
-    /**
-     * <p>The use of e.getBlock != null is added to "use" the BlockShredEvent to prevent
-     * the complier from falsely triggering a Not Used warning.
-     * </p>
-     */
-    public void onBlockShredBreak(BlockShredEvent e) {
-
-    	// NOTE: If autoManager is turned off, then process only the blockEvents:
-    	genericBlockEventAutoManager( e, !( isBoolean(AutoFeatures.isAutoManagerEnabled) && e.getBlock() != null ) );
-    }
+//    /**
+//     * <p>The optimized logic on how an BlockBreakEvent is handled is within the OnBlockBreakEventListener
+//     * class and optimizes mine reuse.
+//     * </p>
+//     *
+//     */
+//    public void onBlockBreak(BlockBreakEvent e) {
+//
+//    	// NOTE: If autoManager is turned off, then process only the blockEvents:
+//    	genericBlockEventAutoManager( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
+//    }
+//    
+//    /**
+//     * <p>The use of e.getBlock != null is added to "use" the BlockShredEvent to prevent
+//     * the complier from falsely triggering a Not Used warning.
+//     * </p>
+//     */
+//    public void onBlockShredBreak(BlockShredEvent e) {
+//
+//    	// NOTE: If autoManager is turned off, then process only the blockEvents:
+//    	genericBlockEventAutoManager( e, !( isBoolean(AutoFeatures.isAutoManagerEnabled) && e.getBlock() != null ) );
+//    }
     
 //    @EventHandler(priority=EventPriority.LOW) 
 //    public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
@@ -216,26 +286,26 @@ public class AutoManagerBlockBreakEvents
 //    }
 //    
     
-    
-    public void onCrazyEnchantsBlockExplode( Object obj ) {
-    	BlastUseEvent e = (BlastUseEvent) obj;
-    	if ( !e.isCancelled() ) {
-
-    		// NOTE: If autoManager is turned off, then process only the blockEvents:
-    		genericBlockExplodeEventAutoManager( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
-    	}
-    }
-    
-    
-    
-    public void onPrisonEnchantsExplosiveEvent( Object obj ) {
-    	ExplosiveEvent e = (ExplosiveEvent) obj;
-    	if ( !e.isCancelled() ) {
-    		
-    		// NOTE: If autoManager is turned off, then process only the blockEvents:
-    		genericBlockExplodeEventAutoManager( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
-    	}
-    }
-    
+//    
+//    public void onCrazyEnchantsBlockExplode( Object obj ) {
+//    	BlastUseEvent e = (BlastUseEvent) obj;
+//    	if ( !e.isCancelled() ) {
+//
+//    		// NOTE: If autoManager is turned off, then process only the blockEvents:
+//    		genericBlockExplodeEventAutoManager( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
+//    	}
+//    }
+//    
+//    
+//    
+//    public void onPrisonEnchantsExplosiveEvent( Object obj ) {
+//    	ExplosiveEvent e = (ExplosiveEvent) obj;
+//    	if ( !e.isCancelled() ) {
+//    		
+//    		// NOTE: If autoManager is turned off, then process only the blockEvents:
+//    		genericBlockExplodeEventAutoManager( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
+//    	}
+//    }
+//    
     
 }

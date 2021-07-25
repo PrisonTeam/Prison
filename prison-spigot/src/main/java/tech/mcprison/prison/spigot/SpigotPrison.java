@@ -20,7 +20,9 @@ package tech.mcprison.prison.spigot;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -34,6 +36,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.inventivetalent.update.spiget.SpigetUpdate;
@@ -119,6 +122,9 @@ public class SpigotPrison extends JavaPlugin {
     private PrisonBlockTypes prisonBlockTypes;
 
     private static boolean isBackPacksEnabled = false;
+    
+    
+    private List<Listener> registeredBlockListeners;
 
     public static SpigotPrison getInstance(){
         return config;
@@ -128,6 +134,8 @@ public class SpigotPrison extends JavaPlugin {
     	super();
     	
     	config = this;
+    	
+    	this.registeredBlockListeners = new ArrayList<>();
     }
 
     @Override
@@ -825,5 +833,9 @@ public class SpigotPrison extends JavaPlugin {
 		}
 		
 		return prisonBlockTypes;
+	}
+
+	public List<Listener> getRegisteredBlockListeners() {
+		return registeredBlockListeners;
 	}
 }

@@ -1,14 +1,8 @@
 package tech.mcprison.prison.spigot.block;
 
-import org.bukkit.event.block.BlockBreakEvent;
-
-import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
-import me.pulsi_.prisonenchants.enchantments.custom.explosive.ExplosiveEvent;
-import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
-import zedly.zenchantments.BlockShredEvent;
 
 /**
  * <p>This is a pivotal class that "monitors" onBlockBreak events so it can
@@ -130,19 +124,27 @@ public class OnBlockBreakEventListener
 		
 		if ( isEnabled() ) {
 			
-			// AutoManager should be registered first:
-			// Only register Auto Manager if it is enabled:
-			if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
-				
-				AutoManagerBlockBreakEvents autoManager = new AutoManagerBlockBreakEvents();
-				autoManager.registerEvents( spigotPrison );
-			}
-				
-				
 			
-			// Registers all of the non-AutoManager block events:
-			OnBlockBreakEventListeners listeners = new OnBlockBreakEventListeners();
-			listeners.registerBlockBreakEvents( spigotPrison );
+			// This will register all events that should be enabled, for both
+			// auto manager and the normal events too.
+			new AutoManagerBlockBreakEvents().registerEvents();
+			
+			
+			
+//			
+//			// AutoManager should be registered first:
+//			// Only register Auto Manager if it is enabled:
+//			if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+//				
+//				AutoManagerBlockBreakEvents autoManager = new AutoManagerBlockBreakEvents();
+//				autoManager.registerEvents( spigotPrison );
+//			}
+//				
+//				
+//			
+//			// Registers all of the non-AutoManager block events:
+//			OnBlockBreakEventBlockBreakEvents listeners = new OnBlockBreakEventBlockBreakEvents();
+//			listeners.registerBlockBreakEvents( spigotPrison );
 
 
 			
@@ -208,42 +210,42 @@ public class OnBlockBreakEventListener
 //    
     
     
-    public void onBlockBreak(BlockBreakEvent e) {
-
-    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
-    		genericBlockEvent( e );
-    	}
-    }
+//    public void onBlockBreak(BlockBreakEvent e) {
+//
+//    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+//    		genericBlockEvent( e );
+//    	}
+//    }
+//    
+//    public void onBlockShredBreak(BlockShredEvent e) {
+//
+//    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+//    		genericBlockEvent( e, false, false, false );
+//    	}
+//    	else {
+//    		genericBlockEvent( e, false, true, false );
+//    	}
+//    }
     
-    public void onBlockShredBreak(BlockShredEvent e) {
-
-    	if ( isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
-    		genericBlockEvent( e, false, false, false );
-    	}
-    	else {
-    		genericBlockEvent( e, false, true, false );
-    	}
-    }
     
+//    public void onCrazyEnchantsBlockExplode( Object obj ) {
+//    	
+//    	boolean isCEBlockExplodeEnabled = isBoolean( 
+//    				AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
+//    	
+//    	if ( isCEBlockExplodeEnabled ) {
+//    		BlastUseEvent e = (BlastUseEvent) obj;
+//    		
+//    		// if autoManager is turned off, then only process the blockEvents
+//    		genericBlockExplodeEvent( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
+//    	}
+//    }
     
-    public void onCrazyEnchantsBlockExplode( Object obj ) {
-    	
-    	boolean isCEBlockExplodeEnabled = isBoolean( 
-    				AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
-    	
-    	if ( isCEBlockExplodeEnabled ) {
-    		BlastUseEvent e = (BlastUseEvent) obj;
-    		
-    		// if autoManager is turned off, then only process the blockEvents
-    		genericBlockExplodeEvent( e, !isBoolean(AutoFeatures.isAutoManagerEnabled) );
-    	}
-    }
-    
-    public void onPrisonEnchantsExplosiveEvent( Object obj ) {
-    	ExplosiveEvent e = (ExplosiveEvent) obj;
-    	// if autoManager is turned off, then only process the blockEvents
-    	genericExplosiveEvent( e, false, !isBoolean(AutoFeatures.isAutoManagerEnabled), false );
-    }
+//    public void onPrisonEnchantsExplosiveEvent( Object obj ) {
+//    	ExplosiveEvent e = (ExplosiveEvent) obj;
+//    	// if autoManager is turned off, then only process the blockEvents
+//    	genericExplosiveEvent( e, false, !isBoolean(AutoFeatures.isAutoManagerEnabled), false );
+//    }
     
 ////    @EventHandler(priority=EventPriority.LOW) 
 ////    public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
