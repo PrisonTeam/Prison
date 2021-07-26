@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-26
 
 
+* **A couple of updates for CMI economy.**
+Added a note on what value to try first for cmi with prison.
+
+
 * **Changed some logging information from debug to info so it will be registered when requested by the admin.**
 
 

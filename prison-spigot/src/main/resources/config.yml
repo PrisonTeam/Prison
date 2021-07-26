@@ -180,6 +180,9 @@ prison-mines:
 #
 #   It's an all or nothing situation when you enable this feature.
 #
+# It's been reported that the correct value to use for CMI is: Economy_CMI
+# Vault may report CMIEconomy but that is wrong.
+#
 # Warning: Other plugins that depend upon and use Prison may fail.  If they do fail 
 # because of a delayed start, then that is beyond the scope of support that can
 # be provided by Prison.  Delayed start is provided to get CMI working.  
