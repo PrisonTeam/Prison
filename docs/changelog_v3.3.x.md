@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-26
 
 
+* **Started to add a PlayerUtil and SpigotPlayerUtil to prison.**
+This will allow an easier access to specific player values in other parts of prison with just a single call to a util function.  This will be used with a number of new placeholders.
+
+
 * **Removal of a function from the prison Player object that is no longer being used.**
 
 

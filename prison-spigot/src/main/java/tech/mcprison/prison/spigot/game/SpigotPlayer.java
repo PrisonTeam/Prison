@@ -506,6 +506,77 @@ public class SpigotPlayer
 		}
 	}
 	
+	public int getMaximumAir() {
+		int results = 0;
+		
+		if ( getWrapper() != null ) {
+			results = getWrapper().getMaximumAir();
+		}
+		
+		return results;
+	}
+	
+	public int getRemainingAir() {
+		int results = 0;
+		
+		if ( getWrapper() != null ) {
+			results = getWrapper().getRemainingAir();
+		}
+		
+		return results;
+	}
+	
+	public int getFoodLevel() {
+		int results = 0;
+		
+		if ( getWrapper() != null ) {
+			results = getWrapper().getFoodLevel();
+		}
+		
+		return results;
+	}
+	
+	public double getExhaustion() {
+		double results = 0;
+		
+		if ( getWrapper() != null ) {
+			results = getWrapper().getExhaustion();
+		}
+		
+		return results;
+	}
+	
+	public double getExp() {
+		double results = 0;
+		
+		if ( getWrapper() != null ) {
+			results = getWrapper().getExp();
+		}
+		
+		return results;
+	}
+	
+	public int getLevel() {
+		int results = 0;
+		
+		if ( getWrapper() != null ) {
+			results = getWrapper().getLevel();
+		}
+		
+		return results;
+	}
+	
+	
+	public double getWalkSpeed() {
+		double results = 0;
+		
+		if ( getWrapper() != null ) {
+			results = getWrapper().getWalkSpeed();
+		}
+		
+		return results;
+	}
+	
 	@Override
 	public void setTitle( String title, String subtitle, int fadeIn, int stay, int fadeOut ) {
 		if ( getWrapper() != null) {
