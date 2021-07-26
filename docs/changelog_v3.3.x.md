@@ -21,7 +21,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.8 2021-07-25
+# v3.2.10-alpha.8 2021-07-26
+
+
+* **PrisonEnchants changed the class name of their event.**
+This updates prison's code and changes the api jar file.
 
 
 * **Created a new group within auto features for durability related items and created a new group autoManager just for the isAutoManagerEnabled to get it out of the options.general grouping since that is the main "switch" and it is getting lost in the configs.**

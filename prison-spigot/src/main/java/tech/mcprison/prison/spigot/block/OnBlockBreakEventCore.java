@@ -18,7 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
 import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
-import me.pulsi_.prisonenchants.enchantments.custom.explosive.ExplosiveEvent;
+import me.pulsi_.prisonenchants.events.PrisonExplosionEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
@@ -207,17 +207,17 @@ public class OnBlockBreakEventCore
 	}
 	
 	
-	protected void genericBlockExplodeEventMonitor( ExplosiveEvent e ) {
+	protected void genericBlockExplodeEventMonitor( PrisonExplosionEvent e ) {
 		genericExplosiveEvent( e, true, false, false );
 	}
 	
-	protected void genericBlockExplodeEvent( ExplosiveEvent e ) {
+	protected void genericBlockExplodeEvent( PrisonExplosionEvent e ) {
 		// NOTE: If autoManager is turned off, then process only the blockEvents:
 		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
 		genericExplosiveEvent( e, false, blockEventsOnly, false );
 	}
 	
-	protected void genericBlockExplodeEventAutoManager( ExplosiveEvent e ) {
+	protected void genericBlockExplodeEventAutoManager( PrisonExplosionEvent e ) {
 		// NOTE: If autoManager is turned off, then process only the blockEvents:
 		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
 		genericExplosiveEvent( e, true, blockEventsOnly, true );
@@ -1012,7 +1012,7 @@ public class OnBlockBreakEventCore
 	 * 
 	 * @param e
 	 */
-	protected void genericExplosiveEvent( ExplosiveEvent e, boolean monitor, boolean blockEventsOnly, 
+	protected void genericExplosiveEvent( PrisonExplosionEvent e, boolean monitor, boolean blockEventsOnly, 
 			boolean autoManager ) {
 
 		// Register all external events such as mcMMO and EZBlocks:
@@ -1176,8 +1176,7 @@ public class OnBlockBreakEventCore
     				else if ( mine.isInMineExact( sBlock.getLocation() ) ) {
     					
     					explodedBlocks.add( sBlock );
-    					e.getBrokenBlocks().add( blk );
-    					
+//    					e.getBrokenBlocks().add( blk );
     						
     					// check all external events such as mcMMO and EZBlocks:
     					OnBlockBreakExternalEvents.getInstance().checkAllExternalEvents( e.getPlayer(), blk );
@@ -1854,6 +1853,10 @@ public class OnBlockBreakEventCore
 						durabilityResistance, durabilityLevel, 
 						(toolBreak ? "[Broke]" : "") );
 				
+//				if ( Output.get().isDebug() || Output.get().isDebug( DebugTarget.blockBreak ) ) {
+//					debugInfo.append( "(" ).append( message ).append( ")" );
+//					
+//				}
 				Output.get().logDebug( DebugTarget.blockBreakDurability, message );
 			}
 			
