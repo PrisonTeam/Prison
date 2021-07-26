@@ -24,6 +24,7 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-25
 
 
+* **Backpacks admin GUI now uses PrisonGUI Utility.**
 
 
 * **v3.2.10-alpha.8 2021-07-25**

@@ -9,6 +9,8 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 import java.util.List;
@@ -30,25 +32,17 @@ public class BackpacksAdminGUI extends SpigotGUIComponents {
         }
 
         int dimension = 27;
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Backpacks-Admin"));
+        PrisonGUI gui = new PrisonGUI(p, dimension, "&3" + "Backpacks-Admin");
 
         // List Button.
         List<String> lore = createLore(
                 messages.getString("Lore.ClickToOpen")
         );
-        ItemStack listButton = createButton(XMaterial.CHEST.parseItem(), lore, "&3Backpacks-List");
 
-        ItemStack settingsButton = createButton(XMaterial.PAPER.parseItem(), lore, "&3Backpack-Settings");
+        gui.addButton(new Button(11, XMaterial.CHEST, lore, "&3Backpacks-List"));
+        gui.addButton(new Button(15, XMaterial.PAPER, lore, "&3Backpack-Settings"));
+        gui.addButton(new Button(dimension -1, XMaterial.RED_STAINED_GLASS_PANE, createLore(messages.getString("Lore.ClickToClose")), "&c" + "Close"));
 
-        List<String> closeGUILore = createLore(
-                messages.getString("Lore.ClickToClose")
-        );
-
-        ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
-        inv.setItem(dimension-1, closeGUI);
-
-        inv.setItem(11, listButton);
-        inv.setItem(15, settingsButton);
-        openGUI(p, inv);
+        gui.open();
     }
 }
