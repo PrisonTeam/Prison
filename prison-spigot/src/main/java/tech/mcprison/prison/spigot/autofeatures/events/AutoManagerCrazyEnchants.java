@@ -185,7 +185,7 @@ public class AutoManagerCrazyEnchants
 
 			if ( eventDisplay != null ) {
 				Output.get().logInfo( "" );
-				eventDisplay.toLog( LogLevel.DEBUG );
+				eventDisplay.toLog( LogLevel.INFO );
 			}
 		}
 		catch ( ClassNotFoundException e ) {

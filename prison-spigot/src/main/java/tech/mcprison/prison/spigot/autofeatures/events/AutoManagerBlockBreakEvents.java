@@ -177,7 +177,7 @@ public class AutoManagerBlockBreakEvents
 
 			if ( eventDisplay != null ) {
 				Output.get().logInfo( "" );
-				eventDisplay.toLog( LogLevel.DEBUG );
+				eventDisplay.toLog( LogLevel.INFO );
 			}
 		}
 		catch ( Exception e ) {
