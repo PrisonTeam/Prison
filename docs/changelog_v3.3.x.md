@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-25
 
 
+* **Created a new group within auto features for durability related items and created a new group autoManager just for the isAutoManagerEnabled to get it out of the options.general grouping since that is the main "switch" and it is getting lost in the configs.**
+There was too many for the general group, and they were not being kept together, especially since we have a comment now.
+
+
 * **Backpacks admin GUI now uses PrisonGUI Utility.**
 
 

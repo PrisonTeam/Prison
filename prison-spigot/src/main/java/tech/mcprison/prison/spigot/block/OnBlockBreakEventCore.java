@@ -1735,18 +1735,20 @@ public class OnBlockBreakEventCore
 	private boolean isToolDisabled( Player player ) {
 		boolean results = false;
 
-		if ( isBoolean( AutoFeatures.isDisableToolWhenWornOutPreventBreakage ) ) {
+		if ( isBoolean( AutoFeatures.isPreventToolBreakage ) ) {
 			
 			SpigotItemStack itemInHand =
 					SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
 			
 			if ( itemInHand != null && !itemInHand.isAir() ) {
+				int breakageThreshold = getInteger( AutoFeatures.preventToolBreakageThreshold );
 				
 				Compatibility compat = SpigotPrison.getInstance().getCompatibility();
 				int maxDurability = compat.getDurabilityMax( itemInHand );
 				int durability = compat.getDurability( itemInHand );
 				
-				results = ( maxDurability > 0 && durability >= maxDurability );
+				results = ( maxDurability > 0 && 
+						(durability + breakageThreshold) >= maxDurability );
 			}
 		}
 			

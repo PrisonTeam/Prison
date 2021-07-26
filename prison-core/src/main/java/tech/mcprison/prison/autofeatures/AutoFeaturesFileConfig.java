@@ -23,6 +23,15 @@ public class AutoFeaturesFileConfig {
     public enum AutoFeatures {
 
     	
+    	autoManager,
+    	
+	    	isAutoManagerEnabled(autoManager, true),
+	    	isAutoManagerEnabled__ReadMe(autoManager, 
+	    			"Set to 'false' to turn off all auto manager features.  " +
+	    					"Otherwise this must be set to 'true' to allow any of the " +
+	    			"options to work."),
+	    	
+	    	
     	messages,
     	
 	    	inventoryIsFull(messages, "&cWARNING! Your inventory's full!"),
@@ -57,11 +66,7 @@ public class AutoFeaturesFileConfig {
 		    	
 	    	general(options),
 	    	
-		    	isAutoManagerEnabled(general, true),
 		    	
-		    	
-		    	isDisableToolWhenWornOutPreventBreakage(general, false),
-		    	isCalculateDurabilityEnabled(general, false),
 		    	
 		    	isCalculateSilkEnabled(general, true),
 		    	isCalculateDropAdditionsEnabled(general, true),
@@ -114,6 +119,17 @@ public class AutoFeaturesFileConfig {
     			handleNormalDropsEvents(normalDrop, true),
     			normalDropSmelt(normalDrop, true),
     			normalDropBlock(normalDrop, true),
+    			
+
+    		durability(options),
+    		
+    			isCalculateDurabilityEnabled(durability, false),
+    			
+    			preventToolBreakageThreshold__ReadMe(durability, 
+    					"This option stops the tool from losing any more durability " +
+    					"once it hits the number specified with the threshold"),
+    			isPreventToolBreakage(durability, false),
+    			preventToolBreakageThreshold(durability, 10),
     			
     			
     		fortuneFeature(options),
