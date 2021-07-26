@@ -144,10 +144,10 @@ public class TestPlayer
         return null;
     }
     
-    @Override
-    public void printDebugInventoryInformationToConsole() {
-    	
-    }
+//    @Override
+//    public void printDebugInventoryInformationToConsole() {
+//    	
+//    }
     
     public void recalculatePermissions() {
     	

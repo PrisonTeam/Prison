@@ -3,7 +3,6 @@ package tech.mcprison.prison.ranks.commands;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.internal.CommandSender;
-import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.FancyMessageComponent;
@@ -317,28 +316,28 @@ public class RanksCommandsPerms
 	// description = "For listing what's in a player's inventory by dumping it
 	// to console.",
 	// onlyPlayers = false )
-	public void ranksPlayerInventoryCommand( CommandSender sender,
-			@Arg( name = "player", def = "", description = "Player name" ) String playerName )
-	{
-
-		Player player = getPlayer( sender, playerName );
-
-		if ( player == null )
-		{
-			sender.sendMessage( "&3You must be a player in the game to run this command, and/or the player must be online." );
-			return;
-		}
-
-		// Player player = getPlayer( sender );
-		//
-		// if (player == null || !player.isOnline()) {
-		// sender.sendMessage( "&3You must be a player in the game to run this
-		// command." );
-		// return;
-		// }
-
-		player.printDebugInventoryInformationToConsole();
-	}
+//	public void ranksPlayerInventoryCommand( CommandSender sender,
+//			@Arg( name = "player", def = "", description = "Player name" ) String playerName )
+//	{
+//
+//		Player player = getPlayer( sender, playerName );
+//
+//		if ( player == null )
+//		{
+//			sender.sendMessage( "&3You must be a player in the game to run this command, and/or the player must be online." );
+//			return;
+//		}
+//
+//		// Player player = getPlayer( sender );
+//		//
+//		// if (player == null || !player.isOnline()) {
+//		// sender.sendMessage( "&3You must be a player in the game to run this
+//		// command." );
+//		// return;
+//		// }
+//
+//		player.printDebugInventoryInformationToConsole();
+//	}
 
 
 }

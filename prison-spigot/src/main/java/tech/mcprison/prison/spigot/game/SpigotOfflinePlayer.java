@@ -167,10 +167,10 @@ public class SpigotOfflinePlayer
 		return null;
 	}
 
-	@Override
-	public void printDebugInventoryInformationToConsole() {
-		
-	}
+//	@Override
+//	public void printDebugInventoryInformationToConsole() {
+//		
+//	}
 	
 	public OfflinePlayer getWrapper() {
 		return offlinePlayer;

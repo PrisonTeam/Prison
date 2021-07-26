@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-26
 
 
+* **Removal of a function from the prison Player object that is no longer being used.**
+
+
 * **A couple of updates for CMI economy.**
 Added a note on what value to try first for cmi with prison.
 

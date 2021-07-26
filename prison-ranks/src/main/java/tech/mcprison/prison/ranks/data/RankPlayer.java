@@ -671,10 +671,10 @@ public class RankPlayer
 		return null;
 	}
 
-	@Override
-	public void printDebugInventoryInformationToConsole() {
-		
-	}
+//	@Override
+//	public void printDebugInventoryInformationToConsole() {
+//		
+//	}
 	
 	/**
 	 * <p>Player is not cached in this class, so if using it in a function 
