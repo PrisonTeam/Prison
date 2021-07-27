@@ -208,7 +208,7 @@ public class SpigotPlayerUtil
 	}
 	
 	@Override
-	public int getItemInHandDurability() {
+	public int getItemInHandDurabilityUsed() {
 		int results = 0;
 		
 		SpigotItemStack itemStack = getItemInHand();
@@ -230,6 +230,22 @@ public class SpigotPlayerUtil
 		if ( itemStack != null ) {
 			Compatibility compat = SpigotPrison.getInstance().getCompatibility();
 			results = compat.getDurabilityMax( itemStack );
+		}
+		
+		return results;
+	}
+
+	@Override
+	public int getItemInHandDurabilityRemaining() {
+		int results = 0;
+		
+		SpigotItemStack itemStack = getItemInHand();
+		
+		if ( itemStack != null ) {
+			Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+			int durabilityUsed = compat.getDurability( itemStack );
+			int durabilityMax = compat.getDurabilityMax( itemStack );
+			results = durabilityMax - durabilityUsed;
 		}
 		
 		return results;

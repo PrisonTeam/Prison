@@ -250,6 +250,7 @@ public class PlaceholderManager {
 
 		
 		
+		
 		prison_pbt(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
 		prison_pbtm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
 		
@@ -268,8 +269,10 @@ public class PlaceholderManager {
 		prison_ptdata(PlaceholderFlags.PLAYER),
 		prison_ptlore(PlaceholderFlags.PLAYER),
 		
-		prison_ptd(PlaceholderFlags.PLAYER),
+		prison_ptdu(PlaceholderFlags.PLAYER),
 		prison_ptdm(PlaceholderFlags.PLAYER),
+		prison_ptdr(PlaceholderFlags.PLAYER),
+		
 		prison_ptef(PlaceholderFlags.PLAYER),
 		prison_ptee(PlaceholderFlags.PLAYER),
 		prison_ptes(PlaceholderFlags.PLAYER),
@@ -291,8 +294,10 @@ public class PlaceholderManager {
 		prison_player_tool_lore(prison_ptlore, PlaceholderFlags.PLAYER),
 		
 		
-		prison_player_tool_durability(prison_ptd, PlaceholderFlags.PLAYER),
+		prison_player_tool_durability_used(prison_ptdu, PlaceholderFlags.PLAYER),
 		prison_player_tool_durability_max(prison_ptdm, PlaceholderFlags.PLAYER),
+		prison_player_tool_durability_remaining(prison_ptdr, PlaceholderFlags.PLAYER),
+
 		prison_player_tool_enchantment_fortune(prison_ptef, PlaceholderFlags.PLAYER),
 		prison_player_tool_enchantment_efficency(prison_ptee, PlaceholderFlags.PLAYER),
 		prison_player_tool_enchantment_silk(prison_ptes, PlaceholderFlags.PLAYER),

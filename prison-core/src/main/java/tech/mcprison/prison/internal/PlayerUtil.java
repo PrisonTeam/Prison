@@ -110,9 +110,11 @@ public abstract class PlayerUtil
 	
 	public abstract String getItemInHandItemMaterial();
 	
-	public abstract int getItemInHandDurability();
+	public abstract int getItemInHandDurabilityUsed();
 	
 	public abstract int getItemInHandDurabilityMax();
+
+	public abstract int getItemInHandDurabilityRemaining();
 	
 	public abstract int getItemInHandEnchantmentFortune();
 	

@@ -2188,8 +2188,9 @@ public class SpigotPlatform
 		Output.get().logInfo("Player Tool Item Type: %s", playerUtil.getItemInHandItemType() );
 		Output.get().logInfo("Player Tool Item Material: %s", playerUtil.getItemInHandItemMaterial() );
 		
-		Output.get().logInfo("Player Tool Durability: %s", playerUtil.getItemInHandDurability() );
+		Output.get().logInfo("Player Tool Durability Used: %s", playerUtil.getItemInHandDurabilityUsed() );
 		Output.get().logInfo("Player Tool Durability Max: %s", playerUtil.getItemInHandDurabilityMax() );
+		Output.get().logInfo("Player Tool Durability Remaining: %s", playerUtil.getItemInHandDurabilityRemaining() );
 
 		
 		Output.get().logInfo("Player Tool Enchantment Efficency: %s", playerUtil.getItemInHandEnchantmentEfficency() );
