@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-27
 
 
+* **Bug fixes with the setup of token enchant event ilsteners.**
+
+
 * **Added many more features to SpigotPlayerUtil and getting ready for the new placeholders.**
 
 

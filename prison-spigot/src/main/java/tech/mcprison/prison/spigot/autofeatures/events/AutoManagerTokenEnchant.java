@@ -10,7 +10,6 @@ import org.bukkit.plugin.PluginManager;
 
 import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
-import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.output.ChatDisplay;
@@ -69,7 +68,7 @@ public class AutoManagerTokenEnchant
     
     @Override
     public void initialize() {
-    	boolean isEventEnabled = isBoolean( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
+    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
     	
     	if ( !isEventEnabled ) {
     		return;
@@ -108,7 +107,7 @@ public class AutoManagerTokenEnchant
     				AutoManagerTokenEnchantEventListener autoManagerlListener = 
     						new AutoManagerTokenEnchantEventListener();
     				
-    				pm.registerEvent(BlastUseEvent.class, autoManagerlListener, ePriority,
+    				pm.registerEvent(TEBlockExplodeEvent.class, autoManagerlListener, ePriority,
     						new EventExecutor() {
     					public void execute(Listener l, Event e) { 
 	    						((AutoManagerTokenEnchantEventListener)l)
@@ -119,7 +118,7 @@ public class AutoManagerTokenEnchant
     				prison.getRegisteredBlockListeners().add( autoManagerlListener );
     			}
     			
-    			pm.registerEvent(BlastUseEvent.class, normalListener, ePriority,
+    			pm.registerEvent(TEBlockExplodeEvent.class, normalListener, ePriority,
     					new EventExecutor() {
     				public void execute(Listener l, Event e) { 
 	    					((OnBlockBreakEventTokenEnchantEventListener)l)
@@ -129,7 +128,7 @@ public class AutoManagerTokenEnchant
 	    			prison);
     			prison.getRegisteredBlockListeners().add( normalListener );
     			
-    			pm.registerEvent(BlastUseEvent.class, normalListenerMonitor, EventPriority.MONITOR,
+    			pm.registerEvent(TEBlockExplodeEvent.class, normalListenerMonitor, EventPriority.MONITOR,
     					new EventExecutor() {
     				public void execute(Listener l, Event e) { 
 	    					((OnBlockBreakEventTokenEnchantEventListener)l)
@@ -160,13 +159,13 @@ public class AutoManagerTokenEnchant
     
     @Override
 	public void dumpEventListeners() {
-    	boolean isEventEnabled = isBoolean( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
+    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
     	
     	if ( !isEventEnabled ) {
     		return;
     	}
 		
-		// Check to see if the class BlastUseEvent even exists:
+		// Check to see if the class TEBlockExplodeEvent even exists:
 		try {
 			
 			Class.forName( "com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent", false, 
