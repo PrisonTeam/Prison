@@ -3083,7 +3083,7 @@ public class MinesCommands
         	String message = String.format( "Valid Placeholders that can be used with blockEvents: [%s]", 
         							placeholders );
         	
-        	Output.get().logInfo( message );
+        	sender.sendMessage( message );
         	return;
         }
 
@@ -4064,7 +4064,7 @@ public class MinesCommands
         	String message = String.format( "Valid Placeholders that can be used with mine commands: [%s]", 
         							placeholders );
         	
-        	Output.get().logInfo( message );
+        	sender.sendMessage( message );
         	return;
         }
 
@@ -4100,8 +4100,9 @@ public class MinesCommands
 
         pMines.getMineManager().saveMine( m );
         
-        Output.get().sendInfo(sender, "&7Added command '&b%s&7' to the mine '&b%s&7'.", 
-        		newComand, m.getTag());
+        sender.sendMessage(
+        		String.format( "&7Added command '&b%s&7' to the mine '&b%s&7'.", 
+        		newComand, m.getTag()) );
 
     }
     

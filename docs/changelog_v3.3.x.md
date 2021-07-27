@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-27
 
 
+* **For various add commands, the messages for the 'placeholders' was being sent to the console instead of the player issuing the command.  This was an issue in game, but not the console.**
+
+
 * **Placeholders durability: add support for a percentage and bars.**
 
 

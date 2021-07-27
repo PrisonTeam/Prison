@@ -104,7 +104,7 @@ public class PlayerCacheFiles
 			e.printStackTrace();
 		}
 		
-		if ( success && playerFile.delete() ) {
+		if ( success && ( !playerFile.exists() || playerFile.delete()) ) {
 			outTemp.renameTo( playerFile );
 		}
 	}

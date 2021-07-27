@@ -62,7 +62,7 @@ public class CommandCommands
         	
         	String message = ranksCommandAddPlaceholdersMsg( placeholders );
         	
-        	Output.get().logInfo( message );
+        	sender.sendMessage( message );
         	return;
         }
         
@@ -224,7 +224,7 @@ public class CommandCommands
         	
         	String message = ladderCommandAddPlaceholdersMsg( placeholders );
         	
-        	Output.get().logInfo( message );
+        	sender.sendMessage( message );
         	return;
         }
         
