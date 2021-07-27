@@ -272,6 +272,8 @@ public class PlaceholderManager {
 		prison_ptdu(PlaceholderFlags.PLAYER),
 		prison_ptdm(PlaceholderFlags.PLAYER),
 		prison_ptdr(PlaceholderFlags.PLAYER),
+		prison_ptdp(PlaceholderFlags.PLAYER),
+		prison_ptdb(PlaceholderFlags.PLAYER),
 		
 		prison_ptef(PlaceholderFlags.PLAYER),
 		prison_ptee(PlaceholderFlags.PLAYER),
@@ -297,6 +299,9 @@ public class PlaceholderManager {
 		prison_player_tool_durability_used(prison_ptdu, PlaceholderFlags.PLAYER),
 		prison_player_tool_durability_max(prison_ptdm, PlaceholderFlags.PLAYER),
 		prison_player_tool_durability_remaining(prison_ptdr, PlaceholderFlags.PLAYER),
+
+		prison_player_tool_durability_percent(prison_ptdp, PlaceholderFlags.PLAYER),
+		prison_player_tool_durability_bar(prison_ptdb, PlaceholderFlags.PLAYER),
 
 		prison_player_tool_enchantment_fortune(prison_ptef, PlaceholderFlags.PLAYER),
 		prison_player_tool_enchantment_efficency(prison_ptee, PlaceholderFlags.PLAYER),

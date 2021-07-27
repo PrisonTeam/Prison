@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-27
 
 
+* **Placeholders durability: add support for a percentage and bars.**
+
+
 * **3 new Backpacks GUIs for admins now use PrisonGUI Utility.**
 
 
