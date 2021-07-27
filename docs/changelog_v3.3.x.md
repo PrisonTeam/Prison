@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-27
 
 
+* **3 new Backpacks GUIs for admins now use PrisonGUI Utility.**
+
+
 * **Bug fixes with the setup of token enchant event listeners.**
 
 
