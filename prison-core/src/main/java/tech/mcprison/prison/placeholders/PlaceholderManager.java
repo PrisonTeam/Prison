@@ -257,6 +257,57 @@ public class PlaceholderManager {
 		prison_player_blocks_total_minename(prison_pbtm, PlaceholderFlags.MINEPLAYERS),
 		
 		
+		
+		// Player tools:
+		
+/*		
+		prison_ptid(PlaceholderFlags.PLAYER),
+		prison_ptn(PlaceholderFlags.PLAYER),
+		prison_ptmt(PlaceholderFlags.PLAYER),
+		prison_ptt(PlaceholderFlags.PLAYER),
+		prison_ptdata(PlaceholderFlags.PLAYER),
+		prison_ptlore(PlaceholderFlags.PLAYER),
+		
+		prison_ptd(PlaceholderFlags.PLAYER),
+		prison_ptdm(PlaceholderFlags.PLAYER),
+		prison_ptef(PlaceholderFlags.PLAYER),
+		prison_ptee(PlaceholderFlags.PLAYER),
+		prison_ptes(PlaceholderFlags.PLAYER),
+		prison_pteu(PlaceholderFlags.PLAYER),
+		prison_ptem(PlaceholderFlags.PLAYER),
+		prison_ptel(PlaceholderFlags.PLAYER),
+
+		prison_ph(PlaceholderFlags.PLAYER),
+		prison_phm(PlaceholderFlags.PLAYER),
+		prison_pas(PlaceholderFlags.PLAYER),
+		prison_pms(PlaceholderFlags.PLAYER),
+
+		
+		prison_player_tool_id(prison_ptid, PlaceholderFlags.PLAYER),
+		prison_player_tool_name(prison_ptn, PlaceholderFlags.PLAYER),
+		prison_player_tool_material_type(prison_ptmt, PlaceholderFlags.PLAYER),
+		prison_player_tool_type(prison_ptt, PlaceholderFlags.PLAYER),
+		prison_player_tool_data(prison_ptdata, PlaceholderFlags.PLAYER),
+		prison_player_tool_lore(prison_ptlore, PlaceholderFlags.PLAYER),
+		
+		
+		prison_player_tool_durability(prison_ptd, PlaceholderFlags.PLAYER),
+		prison_player_tool_durability_max(prison_ptdm, PlaceholderFlags.PLAYER),
+		prison_player_tool_enchantment_fortune(prison_ptef, PlaceholderFlags.PLAYER),
+		prison_player_tool_enchantment_efficency(prison_ptee, PlaceholderFlags.PLAYER),
+		prison_player_tool_enchantment_silk(prison_ptes, PlaceholderFlags.PLAYER),
+		prison_player_tool_enchantment_unbreaking(prison_pteu, PlaceholderFlags.PLAYER),
+		prison_player_tool_enchantment_mending(prison_ptem, PlaceholderFlags.PLAYER),
+		prison_player_tool_enchantment_luck(prison_ptel, PlaceholderFlags.PLAYER),
+		
+		
+		prison_player_health(prison_ph, PlaceholderFlags.PLAYER),
+		prison_player_health_max(prison_phm, PlaceholderFlags.PLAYER),
+		prison_player_attack_speed(prison_pas, PlaceholderFlags.PLAYER),
+		prison_player_movement_speed(prison_pms, PlaceholderFlags.PLAYER),
+
+*/
+		
 		// Mine aliases:
 		
 		

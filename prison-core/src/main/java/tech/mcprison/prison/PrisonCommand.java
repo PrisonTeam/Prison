@@ -986,7 +986,8 @@ public class PrisonCommand
     		@Wildcard(join=true)
     		@Arg(name = "targets", def = " ",
     				description = "Optional. Enable or disable a debugging target. " +
-    					"[on, off, targets, jarScan, blockBreakListeners, chatListeners, testLocale] " +
+    					"[on, off, targets, jarScan, blockBreakListeners, chatListeners, " +
+    					"testPlayerUtil, testLocale] " +
     				"Use 'targets' to list all available targets.  Use 'on' or 'off' to toggle " +
     				"on and off individual targets, or all targets if no target is specified.  " +
     				"jarScan will identify what Java version compiled the class files within the listed jars"
@@ -1029,6 +1030,14 @@ public class PrisonCommand
     		return;
     	}
     	
+    	if ( targets != null && "testPlayerUtil".equalsIgnoreCase( targets ) ) {
+    		
+    		Player player = getPlayer( sender, "RoyalBlueRanger" );
+    		Prison.get().getPlatform().testPlayerUtil( player.getUUID() );
+    		
+    		return;
+    	}
+    	
     	
     	Output.get().applyDebugTargets( targets );
     	
@@ -1055,7 +1064,8 @@ public class PrisonCommand
     }
     
     
-    @Command(identifier = "prison findCmd", 
+
+	@Command(identifier = "prison findCmd", 
     		description = "For internal use only. Do not use.  This command is used by internal code to look up " +
     				"a command to get the registered command.  Example would be when prison is registering  the " +
     				"command '/backpack' and it's already been registered, bukkit would then try to register prison's " +

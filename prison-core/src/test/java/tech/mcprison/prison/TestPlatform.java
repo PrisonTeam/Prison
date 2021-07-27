@@ -361,6 +361,11 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
+	public void testPlayerUtil( UUID uuid ) {
+		
+	}
+	
+	@Override
 	public void saveResource( String string, boolean replace ) {
 		
 	}

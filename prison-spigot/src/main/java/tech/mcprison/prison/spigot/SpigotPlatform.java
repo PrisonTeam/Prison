@@ -98,6 +98,7 @@ import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 import tech.mcprison.prison.spigot.game.SpigotOfflinePlayer;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.game.SpigotPlayerUtil;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.placeholder.SpigotPlaceholders;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
@@ -2162,6 +2163,45 @@ public class SpigotPlatform
 	}
 	
 	@Override
+	public void testPlayerUtil( UUID uuid )
+	{
+		SpigotPlayerUtil playerUtil = new SpigotPlayerUtil( uuid );
+		
+		Output.get().logInfo("Player UUID: %s", playerUtil.getPlayerUuid() );
+		
+		Output.get().logInfo("Player Level: %d", playerUtil.getLevel() );
+		Output.get().logInfo("Player XP: %s", Double.toString( playerUtil.getExp() ));
+		Output.get().logInfo("Player Air Max: %d", playerUtil.getMaximumAir() );
+		Output.get().logInfo("Player Air Remaining: %d", playerUtil.getRemainingAir() );
+
+		
+		Output.get().logInfo("Player Exhaustion: %s", Double.toString( playerUtil.getExhaustion() ));
+		Output.get().logInfo("Player Food Level: %d", playerUtil.getFoodLevel() );
+		Output.get().logInfo("Player Health Max: %s", Double.toString( playerUtil.getMaxHealth() ));
+		Output.get().logInfo("Player Health Current: %s", Double.toString( playerUtil.getHealth() ));
+		Output.get().logInfo("Player Walk Speed: %s", Double.toString( playerUtil.getWalkSpeed() ));
+		
+		
+		Output.get().logInfo("Player Tool Name: %s", playerUtil.getItemInHandName() );
+		Output.get().logInfo("Player Tool Display Name: %s", playerUtil.getItemInHandDisplayName() );
+		
+		Output.get().logInfo("Player Tool Item Type: %s", playerUtil.getItemInHandItemType() );
+		Output.get().logInfo("Player Tool Item Material: %s", playerUtil.getItemInHandItemMaterial() );
+		
+		Output.get().logInfo("Player Tool Durability: %s", playerUtil.getItemInHandDurability() );
+		Output.get().logInfo("Player Tool Durability Max: %s", playerUtil.getItemInHandDurabilityMax() );
+
+		
+		Output.get().logInfo("Player Tool Enchantment Efficency: %s", playerUtil.getItemInHandEnchantmentEfficency() );
+		Output.get().logInfo("Player Tool Enchantment Fortune: %s", playerUtil.getItemInHandEnchantmentFortune() );
+		Output.get().logInfo("Player Tool Enchantment Luck: %s", playerUtil.getItemInHandEnchantmentLuck() );
+		Output.get().logInfo("Player Tool Enchantment Mending: %s", playerUtil.getItemInHandEnchantmentMending() );
+		Output.get().logInfo("Player Tool Enchantment Silk Touch: %s", playerUtil.getItemInHandEnchantmentSilkTouch() );
+		
+		
+	}
+	
+	@Override
 	public void saveResource( String fileName, boolean replace ) {
 		SpigotPrison.getInstance().saveResource( fileName, replace );
 	}
@@ -2195,5 +2235,7 @@ public class SpigotPlatform
 		
 		return Text.stripColor( sb.toString() );
 	}
+
+
 	
 }

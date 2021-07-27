@@ -369,6 +369,9 @@ public interface Platform {
 
 	public void traceEventListenersBlockBreakEvents( CommandSender sender );
 
+	
+	public void testPlayerUtil( UUID uuid );
+	
 
 	public void saveResource( String string, boolean replace );
 
