@@ -92,7 +92,13 @@ public abstract class PlayerUtil
 	
 	public abstract int getFoodLevel();
 	
-	public abstract double getExhaustion();
+	public abstract void setFoodLevel( int foodLevel );
+	
+	public abstract void incrementFoodExhaustionBlockBreak();
+	
+	public abstract double getFoodSaturation();
+	
+	public abstract double getFoodExhaustion();
 	
 	public abstract double getExp();
 	

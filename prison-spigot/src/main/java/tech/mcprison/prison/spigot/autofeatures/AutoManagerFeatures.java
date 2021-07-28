@@ -193,7 +193,7 @@ public class AutoManagerFeatures
 			
 			if ( count > 0 ) {
 				processBlockBreakage( spigotBlock, mine, player, count, BlockEventType.blockBreak,
-										null, itemInHand, debugInfo );
+										null, itemInHand, true, debugInfo );
 
     			cancel = true;
 			}
@@ -368,11 +368,13 @@ public class AutoManagerFeatures
 		
 		int totalCount = 0;
 
-		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
+		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility()
+													.getPrisonItemInMainHand( player );
 
 		debugInfo.append( "(applyAutoEvents multi-blocks: " + explodedBlocks.size() );
 		
 		// The explodedBlocks list have already been validated as being within the mine:
+		boolean applyExhaustion = true;
 		for ( SpigotBlock spigotBlock : explodedBlocks ) {
 			
 			if ( spigotBlock != null && !spigotBlock.isEmpty() ) {
@@ -383,7 +385,9 @@ public class AutoManagerFeatures
 				if ( drop > 0 ) {
 					
 					processBlockBreakage( spigotBlock, mine, player, drop, 
-							blockEventType, triggered, itemInHand, debugInfo );
+							blockEventType, triggered, itemInHand, 
+							applyExhaustion, debugInfo );
+					applyExhaustion = false;
 				}
 			}
 		}

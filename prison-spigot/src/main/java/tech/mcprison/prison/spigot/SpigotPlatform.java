@@ -2175,8 +2175,10 @@ public class SpigotPlatform
 		Output.get().logInfo("Player Air Remaining: %d", playerUtil.getRemainingAir() );
 
 		
-		Output.get().logInfo("Player Exhaustion: %s", Double.toString( playerUtil.getExhaustion() ));
 		Output.get().logInfo("Player Food Level: %d", playerUtil.getFoodLevel() );
+		Output.get().logInfo("Player Food Exhaustion: %s", Double.toString( playerUtil.getFoodExhaustion() ));
+		Output.get().logInfo("Player Food Saturation: %s", Double.toString( playerUtil.getFoodSaturation() ));
+		
 		Output.get().logInfo("Player Health Max: %s", Double.toString( playerUtil.getMaxHealth() ));
 		Output.get().logInfo("Player Health Current: %s", Double.toString( playerUtil.getHealth() ));
 		Output.get().logInfo("Player Walk Speed: %s", Double.toString( playerUtil.getWalkSpeed() ));

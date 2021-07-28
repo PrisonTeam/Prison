@@ -3,6 +3,9 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
+* Add hunger to auto features calculations
+
+
 * prison command handler:
   - Add command cooldowns - time in ticks - And cooldownTypes: server, player
 

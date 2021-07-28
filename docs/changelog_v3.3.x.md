@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-27
 
 
+* **Auto Features: Added food exhaustion calculations.**
+Now on each block break,  Configurable to be disabled.  For explosions events, only applies to the one block they actually mined.
+
+
 * **For various add commands, the messages for the 'placeholders' was being sent to the console instead of the player issuing the command.  This was an issue in game, but not the console.**
 
 

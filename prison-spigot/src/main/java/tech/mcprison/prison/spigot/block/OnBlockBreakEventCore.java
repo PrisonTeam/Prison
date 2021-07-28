@@ -1324,7 +1324,7 @@ public class OnBlockBreakEventCore
 			debugInfo.append( "(doAction processBlockBreakage) " );
 			
 			aMan.processBlockBreakage( spigotBlock, mine, player, drop, BlockEventType.blockBreak, 
-								null, itemInHand, debugInfo );
+								null, itemInHand, true, debugInfo );
 			
 			cancel = true;
 			
@@ -1362,6 +1362,7 @@ public class OnBlockBreakEventCore
 		debugInfo.append( "(doAction multi-blocks: " + explodedBlocks.size() );
 		
 		// The explodedBlocks list have already been validated as being within the mine:
+		boolean applyExhaustion = true;
 		for ( SpigotBlock spigotBlock : explodedBlocks ) {
 			
 			
@@ -1372,7 +1373,9 @@ public class OnBlockBreakEventCore
 			if ( drop > 0 ) {
 				
 				aMan.processBlockBreakage( spigotBlock, mine, player, drop, 
-						blockEventType, triggered, itemInHand, debugInfo );
+						blockEventType, triggered, itemInHand, 
+						applyExhaustion, debugInfo );
+				applyExhaustion = false;
 				
 				aMan.autosellPerBlockBreak( player );
 			}
@@ -1477,7 +1480,7 @@ public class OnBlockBreakEventCore
 	public void processBlockBreakage( SpigotBlock spigotBlock, 
 			Mine mine, Player player, int count,
 			BlockEventType blockEventType, String triggered, SpigotItemStack itemInHand,
-			StringBuilder debugInfo )
+			boolean applyExhaustion, StringBuilder debugInfo )
 	{
 		MineTargetPrisonBlock targetBlock = null;
 		
@@ -1519,6 +1522,9 @@ public class OnBlockBreakEventCore
 				calculateAndApplyDurability( player, itemInHand, durabilityResistance );
 			}
 			
+			if ( applyExhaustion && isBoolean( AutoFeatures.isCalculateFoodExhustion ) ) {
+				sPlayer.incrementFoodExhaustionBlockBreak();
+			}
 			
 			// A block was broke... so record that event on the tool:	
 			itemLoreCounter( itemInHand, getMessage( AutoFeatures.loreBlockBreakCountName ), 1 );

@@ -83,10 +83,46 @@ public class SpigotPlayerUtil
 	}
 
 	@Override
-	public double getExhaustion() {
+	public void setFoodLevel( int foodLevel ) {
+		if ( isActive() ) {
+			spigotPlayer.getWrapper().setFoodLevel( foodLevel );
+		}
+	}
+	
+	@Override
+	public double getFoodExhaustion() {
 		double results = 0;
 		if ( isActive() ) {
-			results = spigotPlayer.getExhaustion();
+			results = spigotPlayer.getFoodExhaustion();
+		}
+		return results;
+	}
+	
+	
+	/**
+ 	 * <p>This increments the player's exhaustion level each time they
+ 	 * break a block.  The exhaustion level should increase only by 
+ 	 * 0.005 per block.</p>
+ 	 * 
+ 	 * <p>Since the player is swinging the pickaxe, the hunger should only apply 
+ 	 * when they break a target block that they actually hit, not all of the
+ 	 * blocks that are the product of an enchantment, or an explosion.
+ 	 * </p>
+ 	 * 
+ 	 * https://minecraft.fandom.com/wiki/Hunger
+	 */
+	@Override
+	public void incrementFoodExhaustionBlockBreak() {
+		if ( isActive() ) {
+			spigotPlayer.incrementFoodExhaustionBlockBreak();
+		}
+	}
+	
+	@Override
+	public double getFoodSaturation() {
+		double results = 0;
+		if ( isActive() ) {
+			results = spigotPlayer.getWrapper().getSaturation();
 		}
 		return results;
 	}
@@ -250,6 +286,7 @@ public class SpigotPlayerUtil
 		
 		return results;
 	}
+	
 	
 	private int getEnchantment( String enchant ) {
 		int results = 0;

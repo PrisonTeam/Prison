@@ -67,6 +67,7 @@ public class AutoFeaturesFileConfig {
 	    	general(options),
 	    	
 		    	
+	    		isCalculateFoodExhustion(general, true),
 		    	
 		    	isCalculateSilkEnabled(general, true),
 		    	isCalculateDropAdditionsEnabled(general, true),
