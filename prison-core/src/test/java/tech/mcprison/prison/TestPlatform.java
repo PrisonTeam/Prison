@@ -33,6 +33,7 @@ import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.PlayerUtil;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
@@ -395,6 +396,11 @@ public class TestPlatform implements Platform {
 		this.pluginDirectory = pluginDirectory;
 	}
 
+	@Override
+	public PlayerUtil getPlayerUtil( UUID playerUuid ) {
+		return null;
+	}
+	
 	@Override
 	public List<String> dumpEventListenersList( String eventType, HandlerList handlerList )
 	{

@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-29
 
 
+* **Setup the Platform to be able to provide a SpigotPlayerUtil object.**
+This is needed for placeholder support and a few other things.
+
+
 * **There was a concurrent modification exception on the line with** `playerData.setDirty( false );`.
 These changes will not prevent that issue, but it will trap it so it does not register in the log files.  If this happens, then the player's cache will be saved on the next attempt.  This should be a rare event.
 The changes needed are more complex that this simple "fix" and will be made in the near future.

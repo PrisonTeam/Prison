@@ -28,6 +28,7 @@ import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.PlayerUtil;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
@@ -381,7 +382,10 @@ public interface Platform {
 
 	public String getRanksListString();
 
+	
+	public PlayerUtil getPlayerUtil( UUID playerUuid );
 
+	
 	/**
 	 * <p>Some information on events...
 	 * </p>
@@ -415,6 +419,7 @@ public interface Platform {
 	 * 
 	 */
 	public void reloadAutoFeaturesEventListeners();
+
 
 	
 }

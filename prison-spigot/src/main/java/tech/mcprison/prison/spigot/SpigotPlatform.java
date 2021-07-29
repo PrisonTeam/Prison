@@ -61,6 +61,7 @@ import tech.mcprison.prison.convert.ConversionResult;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.PlayerUtil;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
@@ -1999,6 +2000,11 @@ public class SpigotPlatform
 		return results;
 	}
 	
+	
+	@Override
+	public PlayerUtil getPlayerUtil( UUID playerUuid ) {
+		return new SpigotPlayerUtil( playerUuid );
+	}
 	
 	
 	@Override
