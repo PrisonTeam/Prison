@@ -1043,6 +1043,19 @@ public class PlayerManager
     		}
     	}
     	
+    	
+    	// NOTE: Only for the last rank on the default ladder, use the text value
+    	//       from the language file to display in the place of the empty tag.
+    	//       The idea is that if prestiges is enabled, then this is a way to 
+    	//       indicate the player could prestige as the next step.
+    	if ( sb.length() == 0 && "default".equalsIgnoreCase( ladderName ) ) {
+    		String replacementText = lastRankMessageForDefaultLadder();
+    		if ( replacementText != null && !replacementText.trim().isEmpty() ) {
+    			
+    			sb.append( replacementText );
+    		}
+    	}
+    	
     	return sb.toString();
     }
     

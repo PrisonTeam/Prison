@@ -78,6 +78,15 @@ public class PlayerManagerMessages
 				.localize();
 	}
 	
+	
+	protected String lastRankMessageForDefaultLadder() {
+		
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_playerManager__last_rank_message_for__" +
+						"prison_rankup_rank_tag_default" )
+				.localize();
+	}
+	
 
 
 	

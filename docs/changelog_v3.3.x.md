@@ -24,6 +24,11 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-29
 
 
+* **Provided a way to specify a last next rank message for the placeholder:**
+prison_rankup_rank_tag_default
+This will only apply on the default ladder and when the next rank tag is empty.
+
+
 * **Started to look in to providing the ability to import player ranks** based upon perms, but ran in to an issue that if the player is not online, then it can be very difficult to get their actual perms.  Would not be able to get a listing of all perms, as if they were online, so it would make this less flexible.
 This has been canned because the person who was needing it, is no longer needing it.  May revisit in the future.
 
