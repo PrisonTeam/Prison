@@ -926,6 +926,61 @@ public class RanksCommands
     
     
     
+//    @Command(identifier = "ranks import byPerms", description = "This resets 'all' player's ranks based " +
+//    		"upon a series of permissions.  An example of a permission may be 'permission.mine.A'. Basically " +
+//    		"a standard prefix, followed by a rank name, or mine name.  This is a very dangerous command to " +
+//    		"run because it will reset many player's ranks. All ranks can be reset back to a " +
+//    		"spcific rank with the command '/ranks set rank *all* A default`. " +
+//    		"It is highly recommended to backup your server, and Prison's plugin folder.  Plus you should" +
+//    		"reset all your players to the default rank on the 'default' " +
+//    		"ladder.  Usually the default rank is 'a', but please confirm before resetting all ranks.  "
+//    		, 
+//    		onlyPlayers = false, aliases="ranks stats")
+    public void ranksImportByPermissions(CommandSender sender,
+    			@Arg(name = "ladderName", def = "default", 
+    						description = "Ladder Name. Required: [default]") String ladderName,
+    			
+    			@Arg(name = "permission", description = "This is the full permission name, but use " +
+    					"a '{rank}' placeholder to indicate where the rank name should be. ") String permission,
+    			@Arg(name = "options", def = "", 
+    				description = "Work in progress.. options will be added in the future. " +
+    						"[]") String options){
+
+    	
+    	if ( !ladderName.equalsIgnoreCase( "all" ) && 
+    			PrisonRanks.getInstance().getLadderManager().getLadder( ladderName ) == null ) {
+    		ranksPlayersInvalidLadderMsg( sender, ladderName );
+    		return;
+    	}
+    	
+    	
+//    	RanksByLadderOptions option = RanksByLadderOptions.fromString( action );
+//    	if ( option == null ) {
+//    		ranksPlayersInvalidActionMsg( sender, action );
+//    		return;
+//    	}
+    	
+//    	boolean includeAll = action.equalsIgnoreCase( "all" );
+//    	PrisonRanks.getInstance().getRankManager().ranksByLadders( sender, ladderName, option );
+    	
+//    	Output.get().logInfo( "Ranks by ladders:" );
+//    	
+//    	for ( RankLadder ladder : PrisonRanks.getInstance().getLadderManager().getLadders() ) {
+//    		if ( ladderName.equalsIgnoreCase( "all" ) || ladderName.equalsIgnoreCase( ladder.name ) ) {
+//    			
+//    			boolean includeAll = action.equalsIgnoreCase( "all" );
+//    			String ladderRanks = ladder.listAllRanks( includeAll );
+//    			
+//    			sender.sendMessage( ladderRanks );
+//    		}
+//			
+//		}
+    	
+    }
+    
+    
+    
+    
     @Command(identifier = "ranks player", description = "Shows a player their rank", 
     		onlyPlayers = false, altPermissions = "ranks.admin" )
     public void rankPlayer(CommandSender sender,
