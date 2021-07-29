@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import tech.mcprison.prison.output.Output;
+
 /**
  * <p>This class provide periodical saving of all player data.  
  * This ensures that it's at least stored every once in a while. 
@@ -60,8 +62,19 @@ public class PlayerCacheSaveAllPlayersTask
 			
 			if ( playerData.isDirty() ) {
 				
-				playerData.setDirty( false );
-				pCache.getCacheFiles().toJsonFile( playerData );
+				try
+				{
+					playerData.setDirty( false );
+					pCache.getCacheFiles().toJsonFile( playerData );
+				}
+				catch ( Exception e )
+				{
+					String message = String.format( 
+							"PlayerCache: Error trying to save a player's " +
+							"cache data. Will try again later. " +
+							"%s", e.getMessage() );
+					Output.get().logError( message, e );
+				}
 			}
 			
 			// If a cached item is found with the player being offline, then 
@@ -73,11 +86,18 @@ public class PlayerCacheSaveAllPlayersTask
 		}
 		
 		
-		for ( PlayerCachePlayerData playerData : purge )
-		{
-			pCache.getPlayers().remove( playerData.getPlayerUuid() );
+		for ( PlayerCachePlayerData playerData : purge ) {
+			try {
+				if ( !playerData.isDirty() ) {
+					
+					pCache.getPlayers().remove( playerData.getPlayerUuid() );
+				}
+			}
+			catch ( Exception e ) {
+				// Ignore any possible errors. They will be addressed on the next
+				// run of this task.
+			}
 		}
 		
 	}
-
 }

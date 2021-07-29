@@ -21,7 +21,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.8 2021-07-27
+# v3.2.10-alpha.8 2021-07-29
+
+
+* **There was a concurrent modification exception on the line with** `playerData.setDirty( false );`.
+These changes will not prevent that issue, but it will trap it so it does not register in the log files.  If this happens, then the player's cache will be saved on the next attempt.  This should be a rare event.
+The changes needed are more complex that this simple "fix" and will be made in the near future.
 
 
 * **Prison Mines Blocks Set Percentage GUI now uses PrisonGUI Utility.**
