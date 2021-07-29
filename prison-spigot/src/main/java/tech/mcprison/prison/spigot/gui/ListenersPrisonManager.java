@@ -1303,14 +1303,32 @@ public class ListenersPrisonManager implements Listener {
 
     private void mineBlockPercentage(InventoryClickEvent e, Player p, String[] parts) {
 
+        if (parts[0].equalsIgnoreCase("Close")){
+            p.closeInventory();
+            return;
+        }
+
         // Rename the parts
-        String part1 = parts[0];
-        String part2 = parts[1];
-        String part3 = parts[2];
+        String part1;
+        String part2;
+        String part3;
+
+        try{
+
+            part1 = parts[0];
+            part2 = parts[1];
+            part3 = parts[2];
+
+        } catch (ArrayIndexOutOfBoundsException ex){
+            return;
+        }
         
         // If Close, part 4 won't be defined so handle the close first.
-        if (part1.equalsIgnoreCase( "Close" )) {
-        	int pos = 0;
+
+        // What?
+        /*if (part1.equalsIgnoreCase( "Close" )) {
+
+            int pos = 0;
         	try {
         		pos = Integer.parseInt( part3 );
         	}
@@ -1322,9 +1340,12 @@ public class ListenersPrisonManager implements Listener {
 
             gui.open();
             return;
-        }
+        }*/
         
-        String part4 = parts[3];
+        String part4 = null;
+        try{
+            part4 = parts[3];
+        } catch(ArrayIndexOutOfBoundsException ignored){}
 
         // Initialize the variable
         double decreaseOrIncreaseValue = 0;
@@ -1349,7 +1370,9 @@ public class ListenersPrisonManager implements Listener {
             if (e.isLeftClick()){
 
                 // Execute the command
-                Bukkit.dispatchCommand(p,"mines block set " + part2 + " " + part3 + " " + part4);
+                if (part4 != null) {
+                    Bukkit.dispatchCommand(p, "mines block set " + part2 + " " + part3 + " " + part4);
+                }
 
                 // Cancel the event
                 e.setCancelled(true);
@@ -1384,7 +1407,7 @@ public class ListenersPrisonManager implements Listener {
         double val = Double.parseDouble(part3);
 
         // Check the calculator symbol
-        if (part4.equals("-")){
+        if (part4 != null && part4.equals("-")){
 
             // Check if the value's already too low
             if (!((val -  decreaseOrIncreaseValue) < 0)) {
@@ -1412,7 +1435,7 @@ public class ListenersPrisonManager implements Listener {
             gui.open();
 
             // Check the calculator symbol
-        } else if (part4.equals("+")) {
+        } else if (part4 != null && part4.equals("+")) {
 
             // Check if the value isn't too high
             if (!((val + decreaseOrIncreaseValue) > 100)) {

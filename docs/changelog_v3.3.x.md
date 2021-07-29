@@ -24,6 +24,18 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-27
 
 
+* **Prison Mines Blocks Set Percentage GUI now uses PrisonGUI Utility.**
+
+
+* **Prison Mine Blocks List GUI now uses PrisonGUI Utility.**
+
+
+* **Prison Blocks List GUI now uses PrisonGUI Utility.**
+
+
+* **Fixed some errors of the Prison Mines Blocks Set Percentage GUI:** There were some ArrayOutOfBonds exceptions.
+
+
 * **Auto Features: Added food exhaustion calculations.**
 Now on each block break,  Configurable to be disabled.  For explosions events, only applies to the one block they actually mined.
 
