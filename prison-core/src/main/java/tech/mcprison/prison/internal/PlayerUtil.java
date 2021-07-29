@@ -82,6 +82,8 @@ public abstract class PlayerUtil
 	
 	public abstract boolean isActive();
 	
+	public abstract double getHealth();
+	
 	public abstract double getMaxHealth();
 	
 	public abstract void setMaxHealth( double maxHealth );
@@ -102,6 +104,8 @@ public abstract class PlayerUtil
 	
 	public abstract double getExp();
 	
+	public abstract int getExpToLevel();
+	
 	public abstract int getLevel();
 	
 	public abstract double getWalkSpeed();
@@ -109,6 +113,8 @@ public abstract class PlayerUtil
 	public abstract ItemStack getPrisonItemStack();
 	
 	public abstract String getItemInHandName();
+	
+	public abstract String getItemInHandDisplayID();
 	
 	public abstract String getItemInHandDisplayName();
 	
@@ -121,12 +127,16 @@ public abstract class PlayerUtil
 	public abstract int getItemInHandDurabilityMax();
 
 	public abstract int getItemInHandDurabilityRemaining();
+
+	public abstract double getItemInHandDurabilityPercent();
 	
 	public abstract int getItemInHandEnchantmentFortune();
 	
 	public abstract int getItemInHandEnchantmentEfficency();
 	
 	public abstract int getItemInHandEnchantmentSilkTouch();
+
+	public abstract int getItemInHandEnchantmentUnbreaking();
 	
 	public abstract int getItemInHandEnchantmentMending();
 	

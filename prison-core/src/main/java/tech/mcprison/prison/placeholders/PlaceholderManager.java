@@ -23,6 +23,12 @@ public class PlaceholderManager {
     
     private PlaceholderProgressBarConfig progressBarConfig;
     
+    public enum placeholderFlagType {
+    	supress,
+    	sequence,
+    	normal
+    }
+    
     public enum PlaceholderFlags {
     	
     	PLAYER,
@@ -42,12 +48,15 @@ public class PlaceholderManager {
     	;
     	
     	private final boolean sequence;
+    	private final String desc;
     	
     	private PlaceholderFlags() {
     		this.sequence = false;
+    		this.desc = null;
     	}
     	private PlaceholderFlags( boolean hasSequence ) {
     		this.sequence = hasSequence;
+    		this.desc = null;
     	}
     	
     	/**
@@ -261,37 +270,49 @@ public class PlaceholderManager {
 		
 		// Player tools:
 		
-/*		
-		prison_ptid(PlaceholderFlags.PLAYER),
-		prison_ptn(PlaceholderFlags.PLAYER),
-		prison_ptmt(PlaceholderFlags.PLAYER),
-		prison_ptt(PlaceholderFlags.PLAYER),
-		prison_ptdata(PlaceholderFlags.PLAYER),
-		prison_ptlore(PlaceholderFlags.PLAYER),
+/* */		
+		prison_ptid(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_ptn(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_ptmt(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_ptt(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_ptdata(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_ptlore(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
 		
-		prison_ptdu(PlaceholderFlags.PLAYER),
-		prison_ptdm(PlaceholderFlags.PLAYER),
-		prison_ptdr(PlaceholderFlags.PLAYER),
-		prison_ptdp(PlaceholderFlags.PLAYER),
-		prison_ptdb(PlaceholderFlags.PLAYER),
+		prison_ptdu(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_ptdm(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_ptdr(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_ptdp(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_ptdb(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
 		
-		prison_ptef(PlaceholderFlags.PLAYER),
-		prison_ptee(PlaceholderFlags.PLAYER),
-		prison_ptes(PlaceholderFlags.PLAYER),
-		prison_pteu(PlaceholderFlags.PLAYER),
-		prison_ptem(PlaceholderFlags.PLAYER),
-		prison_ptel(PlaceholderFlags.PLAYER),
+		prison_ptef(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_ptee(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_ptes(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_pteu(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_ptem(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_ptel(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
 
-		prison_ph(PlaceholderFlags.PLAYER),
-		prison_phm(PlaceholderFlags.PLAYER),
-		prison_pas(PlaceholderFlags.PLAYER),
-		prison_pms(PlaceholderFlags.PLAYER),
+		prison_ph(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_phm(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_pam(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_par(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		
+		prison_pfl(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_pfs(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_pfe(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		
+		prison_pxp(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_pxptl(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_pl(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_pws(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+//		prison_pas(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+//		prison_pms(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
 
 		
 		prison_player_tool_id(prison_ptid, PlaceholderFlags.PLAYER),
 		prison_player_tool_name(prison_ptn, PlaceholderFlags.PLAYER),
-		prison_player_tool_material_type(prison_ptmt, PlaceholderFlags.PLAYER),
 		prison_player_tool_type(prison_ptt, PlaceholderFlags.PLAYER),
+		prison_player_tool_material_type(prison_ptmt, PlaceholderFlags.PLAYER),
+		
 		prison_player_tool_data(prison_ptdata, PlaceholderFlags.PLAYER),
 		prison_player_tool_lore(prison_ptlore, PlaceholderFlags.PLAYER),
 		
@@ -303,20 +324,34 @@ public class PlaceholderManager {
 		prison_player_tool_durability_percent(prison_ptdp, PlaceholderFlags.PLAYER),
 		prison_player_tool_durability_bar(prison_ptdb, PlaceholderFlags.PLAYER),
 
+		
 		prison_player_tool_enchantment_fortune(prison_ptef, PlaceholderFlags.PLAYER),
 		prison_player_tool_enchantment_efficency(prison_ptee, PlaceholderFlags.PLAYER),
-		prison_player_tool_enchantment_silk(prison_ptes, PlaceholderFlags.PLAYER),
+		prison_player_tool_enchantment_silktouch(prison_ptes, PlaceholderFlags.PLAYER),
 		prison_player_tool_enchantment_unbreaking(prison_pteu, PlaceholderFlags.PLAYER),
 		prison_player_tool_enchantment_mending(prison_ptem, PlaceholderFlags.PLAYER),
 		prison_player_tool_enchantment_luck(prison_ptel, PlaceholderFlags.PLAYER),
 		
 		
+
+		
 		prison_player_health(prison_ph, PlaceholderFlags.PLAYER),
 		prison_player_health_max(prison_phm, PlaceholderFlags.PLAYER),
-		prison_player_attack_speed(prison_pas, PlaceholderFlags.PLAYER),
-		prison_player_movement_speed(prison_pms, PlaceholderFlags.PLAYER),
+		prison_player_air_max(prison_pam, PlaceholderFlags.PLAYER),
+		prison_player_air_remaining(prison_par, PlaceholderFlags.PLAYER),
+		prison_player_food_level(prison_pfl, PlaceholderFlags.PLAYER),
+		prison_player_food_saturation(prison_pfs, PlaceholderFlags.PLAYER),
+		prison_player_food_exhaustion(prison_pfe, PlaceholderFlags.PLAYER),
 
-*/
+		prison_player_xp(prison_pxp, PlaceholderFlags.PLAYER),
+		prison_player_xp_to_level(prison_pxptl, PlaceholderFlags.PLAYER),
+		prison_player_level(prison_pl, PlaceholderFlags.PLAYER),
+		prison_player_walk_speed(prison_pws, PlaceholderFlags.PLAYER),
+		
+//		prison_player_attack_speed(prison_pas, PlaceholderFlags.PLAYER),
+//		prison_player_movement_speed(prison_pms, PlaceholderFlags.PLAYER),
+
+/* */
 		
 		// Mine aliases:
 		

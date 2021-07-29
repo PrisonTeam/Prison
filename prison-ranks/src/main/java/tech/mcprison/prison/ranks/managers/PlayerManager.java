@@ -32,6 +32,7 @@ import com.google.common.eventbus.Subscribe;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.PlayerUtil;
 import tech.mcprison.prison.internal.events.player.PlayerJoinEvent;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.ManagerPlaceholders;
@@ -1281,92 +1282,233 @@ public class PlayerManager
 						break;
 						
 						
-//					case prison_player_tool_id:
-//					case prison_ptid:
-//						
-//						break;
-//						
-//					case prison_player_tool_name:
-//					case prison_ptn:
-//
-//						break;
-//						
-//					case prison_player_tool_material_type:
-//					case prison_ptmt:
-//						
-//						break;
-//
-//					case prison_player_tool_type:
-//					case prison_ptt:
-//						
-//						break;
-//						
-//					case prison_player_tool_data:
-//					case prison_ptdata:
-//						
-//						break;
-//						
-//					case prison_player_tool_lore:
-//					case prison_ptl:
-//						
-//						break;
-//						
-//						
-//					case prison_player_tool_durability:
-//					case prison_ptd:
-//						
-//						break;
-//						
-//					case prison_player_tool_durability_max:
-//					case prison_ptdm:
-//						
-//						break;
-//						
-//					case prison_player_tool_enchantment_fortune:
-//					case prison_ptef:
-//						
-//						break;
-//						
-//					case prison_player_tool_enchantment_efficency:
-//					case prison_ptee:
-//						
-//						break;
-//						
-//					case prison_player_tool_enchantment_silk:
-//					case prison_ptes:
-//						
-//						break;
-//						
-//					case prison_player_tool_enchantment_unbreaking:
-//					case prison_pteu:
-//						
-//						break;
-//						
-//					case prison_player_health:
-//					case prison_ph:
-//						
-//						break;
-//						
-//					case prison_player_health_max:
-//					case prison_phm:
-//						
-//						break;
-//						
-//					case prison_player_attack_speed:
-//					case prison_pas:
-//						
-//						break;
-//						
-//					case prison_player_luck:
-//					case prison_pl:
-//						
-//						break;
-//						
-//					case prison_player_movement_speed:
-//					case prison_pms:
-//
-//						break;
+						
+						
+					case prison_player_tool_id:
+					case prison_ptid:
+						{
+							
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = pUtil.getItemInHandDisplayID();
+						}
+						break;
+						
+					case prison_player_tool_name:
+					case prison_ptn:
+						{
+							
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = pUtil.getItemInHandDisplayName();
+						}
+						break;
+						
+					case prison_player_tool_material_type:
+					case prison_ptmt:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = pUtil.getItemInHandItemMaterial();
+						}
+						break;
 
+					case prison_player_tool_type:
+					case prison_ptt:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = pUtil.getItemInHandItemType();
+						}
+						break;
+						
+					case prison_player_tool_data:
+					case prison_ptdata:
+						
+						break;
+						
+					case prison_player_tool_lore:
+					case prison_ptlore:
+						
+						break;
+						
+						
+					case prison_player_tool_durability_used:
+					case prison_ptdu:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Integer.toString( pUtil.getItemInHandDurabilityUsed() );
+						}
+						break;
+						
+					case prison_player_tool_durability_max:
+					case prison_ptdm:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Integer.toString( pUtil.getItemInHandDurabilityMax() );
+						}
+						break;
+
+					case prison_player_tool_durability_remaining:
+					case prison_ptdr:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Integer.toString( pUtil.getItemInHandDurabilityRemaining() );
+						}
+						break;
+					case prison_player_tool_durability_percent:
+					case prison_ptdp:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Double.toString( pUtil.getItemInHandDurabilityPercent() );
+						}
+						break;
+					case prison_player_tool_durability_bar:
+					case prison_ptdb:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							
+							int max = pUtil.getItemInHandDurabilityMax();
+							int used = pUtil.getItemInHandDurabilityUsed();
+							
+							results = Prison.get().getPlaceholderManager().
+													getProgressBar( used, max, false, attribute );
+						}
+						break;
+						
+					case prison_player_tool_enchantment_fortune:
+					case prison_ptef:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Integer.toString( pUtil.getItemInHandEnchantmentFortune() );
+						}
+						break;
+						
+					case prison_player_tool_enchantment_efficency:
+					case prison_ptee:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Integer.toString( pUtil.getItemInHandEnchantmentEfficency() );
+						}
+						break;
+						
+					case prison_player_tool_enchantment_silktouch:
+					case prison_ptes:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Integer.toString( pUtil.getItemInHandEnchantmentSilkTouch() );
+						}
+						break;
+						
+					case prison_player_tool_enchantment_unbreaking:
+					case prison_pteu:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Integer.toString( pUtil.getItemInHandEnchantmentUnbreaking() );
+						}
+						break;
+						
+					case prison_player_tool_enchantment_luck:
+					case prison_ptel:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Integer.toString( pUtil.getItemInHandEnchantmentLuck() );
+						}
+						break;
+						
+					case prison_player_tool_enchantment_mending:
+					case prison_ptem:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Integer.toString( pUtil.getItemInHandEnchantmentMending() );
+						}
+						break;
+						
+					case prison_player_health:
+					case prison_ph:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Double.toString( pUtil.getHealth() );
+						}
+						break;
+						
+					case prison_player_health_max:
+					case prison_phm:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Double.toString( pUtil.getMaxHealth() );
+						}
+						break;
+						
+					case prison_player_air_max:
+					case prison_pam:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Integer.toString( pUtil.getMaximumAir() );
+						}
+						break;
+						
+					case prison_player_air_remaining:
+					case prison_par:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Integer.toString( pUtil.getRemainingAir() );
+						}
+						break;
+						
+					case prison_player_food_level:
+					case prison_pfl:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Integer.toString( pUtil.getFoodLevel() );
+						}
+						break;
+						
+					case prison_player_food_exhaustion:
+					case prison_pfe:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Double.toString( pUtil.getFoodExhaustion() );
+						}
+						break;
+						
+					case prison_player_food_saturation:
+					case prison_pfs:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Double.toString( pUtil.getFoodSaturation() );
+						}
+						break;
+						
+					case prison_player_level:
+					case prison_pl:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Integer.toString( pUtil.getLevel() );
+						}
+						break;
+						
+					case prison_player_walk_speed:
+					case prison_pws:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Double.toString( pUtil.getWalkSpeed() );
+						}
+						break;
+						
+					case prison_player_xp:
+					case prison_pxp:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Double.toString( pUtil.getExp() );
+						}
+						break;
+						
+					case prison_player_xp_to_level:
+					case prison_pxptl:
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = Double.toString( pUtil.getExpToLevel() );
+						}
+						break;
+
+						
 					default:
 						break;
 				}

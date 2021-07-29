@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-29
 
 
+* **About 56 new placeholders!** SpigotPlayerUtil has been updated to provide support for all of the functionality that it needs.  It's been hooked up to the placeholders so they should be functional. 
+
+
 * **Setup the Platform to be able to provide a SpigotPlayerUtil object.**
 This is needed for placeholder support and a few other things.
 

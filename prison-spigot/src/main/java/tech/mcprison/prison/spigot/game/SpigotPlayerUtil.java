@@ -30,7 +30,7 @@ public class SpigotPlayerUtil
 		return spigotPlayer != null;
 	}
 	
-	
+	@Override
 	public double getHealth() {
 		double results = 0;
 		if ( isActive() ) {
@@ -135,6 +135,15 @@ public class SpigotPlayerUtil
 		}
 		return results;
 	}
+	
+	@Override
+	public int getExpToLevel() {
+		int results = 0;
+		if ( isActive() ) {
+			results = spigotPlayer.getWrapper().getExpToLevel();
+		}
+		return results;
+	}
 
 	@Override
 	public int getLevel() {
@@ -167,6 +176,20 @@ public class SpigotPlayerUtil
 	@Override
 	public ItemStack getPrisonItemStack() {
 		return getItemInHand();
+	}
+	
+	@Override
+	public String getItemInHandDisplayID()
+	{
+		String results = "";
+		
+		SpigotItemStack itemStack = getItemInHand();
+		
+		if ( itemStack != null ) {
+			results = itemStack.getBukkitStack().getType().name();
+		}
+		
+		return results;
 	}
 	
 	@Override
@@ -287,6 +310,23 @@ public class SpigotPlayerUtil
 		return results;
 	}
 	
+	@Override
+	public double getItemInHandDurabilityPercent() {
+		double results = 0;
+		
+		SpigotItemStack itemStack = getItemInHand();
+		
+		if ( itemStack != null ) {
+			Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+			int durabilityUsed = compat.getDurability( itemStack );
+			int durabilityMax = compat.getDurabilityMax( itemStack );
+			
+			results = (durabilityUsed / (double) durabilityMax) * 100.0d;
+		}
+		
+		return results;
+	}
+	
 	
 	private int getEnchantment( String enchant ) {
 		int results = 0;
@@ -338,6 +378,11 @@ public class SpigotPlayerUtil
 	}
 	
 	@Override
+	public int getItemInHandEnchantmentUnbreaking() {
+		return getEnchantment( "UNBREAKING" );
+	}
+	
+	@Override
 	public int getItemInHandEnchantmentMending() {
 		return getEnchantment( "MENDING" );
 	}
@@ -356,5 +401,7 @@ public class SpigotPlayerUtil
 	public void setSpigotPlayer( SpigotPlayer spigotPlayer ) {
 		this.spigotPlayer = spigotPlayer;
 	}
+
+
 
 }
