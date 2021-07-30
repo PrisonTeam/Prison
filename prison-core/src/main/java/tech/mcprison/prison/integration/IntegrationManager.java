@@ -301,7 +301,7 @@ public class IntegrationManager {
 		List<String> placeholders = PrisonPlaceHolders.getAllChatList(true);
 //		StringBuilder sb = new StringBuilder();
 		for ( String placeholder : placeholders ) {
-			results.add( new TextComponent( "      " + placeholder ));
+			results.add( new TextComponent( "  " + placeholder ));
 			
 //			if ( sb.length() == 0) {
 //				sb.append( "      " );

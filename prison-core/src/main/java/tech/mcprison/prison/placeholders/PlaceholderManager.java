@@ -668,20 +668,46 @@ public class PlaceholderManager {
 			
 			boolean hasDeprecated = false;
 			
-			for ( PrisonPlaceHolders ph : values() )
+			int totalCount = 0;
+			for ( PlaceholderFlags type : PlaceholderFlags.values() )
 			{
-				if ( !omitSuppressable || omitSuppressable && !ph.isSuppressed() && !ph.isAlias() ) {
-					if ( !hasDeprecated && ph.isSuppressed() ) {
-						hasDeprecated = true;
-					}
-					
-					results.add( ph.getChatText() );
+				if ( type == PlaceholderFlags.ALIAS || type == PlaceholderFlags.SUPRESS ) {
+					break;
 				}
+				
+				int pos = results.size();
+				results.add( "  &7" + type.name() );
+				
+
+				int count = 0;
+				for ( PrisonPlaceHolders ph : values() )
+				{
+					if ( ph.getFlags().contains( type ) &&
+							( !omitSuppressable || 
+							omitSuppressable && !ph.isSuppressed() && !ph.isAlias() )) {
+						
+						if ( !hasDeprecated && ph.isSuppressed() ) {
+							hasDeprecated = true;
+						}
+						
+						results.add( "    " + ph.getChatText() );
+						
+						count++;
+						totalCount++;
+					}
+				}
+				
+				results.set( pos, results.get( pos ) + 
+						" (" + (count * 2) + ", " + count + " aliases):");
 			}
+			
 			
 			if ( hasDeprecated ) {
 				results.add( " &2(&4*&2=&4suppressed&2)" );
 			}
+			
+			results.add( 0, "&7Available PlaceHolders" +
+					" (" + (totalCount * 2) +  ", " + totalCount + " aliases):");
 			
 			return results;
 		}
