@@ -296,7 +296,7 @@ public class IntegrationManager {
      */
 	public void getPlaceholderTemplateList( List<DisplayComponent> results )
 	{
-		results.add( new TextComponent( "  &7Available PlaceHolders: " ));
+		//results.add( new TextComponent( "  &7Available PlaceHolders: " ));
 
 		List<String> placeholders = PrisonPlaceHolders.getAllChatList(true);
 //		StringBuilder sb = new StringBuilder();

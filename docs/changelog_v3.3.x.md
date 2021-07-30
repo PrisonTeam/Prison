@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-29
 
 
+* **Provide break the list of placeholders down by placeholder types, along with sub total counts.**
+Also added total count at the top of the list.  Breaking down the large list in to sub-types will make it easier to read the list.
+
+
 * **Provided a way to specify a last next rank message for the placeholder:**
 prison_rankup_rank_tag_default
 This will only apply on the default ladder and when the next rank tag is empty.
