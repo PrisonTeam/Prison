@@ -8,6 +8,7 @@ import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.features.MineLinerData.LadderType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
@@ -416,6 +417,10 @@ public class MineLinerBuilder {
 		
 		boolean results = false;
 		
+		if ( getLadderType() == LadderType.none ) {
+			return results;
+		}
+		
 		// Skip if the face or corners of liner.
 		if ( min != max && curr != min && curr != max ) {
 			
@@ -427,24 +432,51 @@ public class MineLinerBuilder {
 			// The following is actually 3 blocks since max and min are
 			// skipped due to being corners.  So if the min is 1 to 3 blocks
 			// wide, always have ladders that wide.
-			results = len <= 5;
 			
-			if ( len > 5 ) {
+			if ( getLadderType() == LadderType.normal ) {
 				
+				results = len <= 5;
 				
-				if ( curr == (min + mid) ) {
-					results = true;
+				if ( len > 5 ) {
+					
+					
+					if ( curr == (min + mid) ) {
+						results = true;
+					}
+					else {
+						results = isEven ?
+								// if distance is even, then next ladder position is mid - 1
+								( curr == min + mid + 1 ) :
+									// If odd, then one above and below mid:
+									( curr == min + mid + 1 || curr == min + mid - 1);
+					}
+					
 				}
-				else {
-					results = isEven ?
-						// if distance is even, then next ladder position is mid - 1
-						 ( curr == min + mid + 1 ) :
-						// If odd, then one above and below mid:
-						( curr == min + mid + 1 || curr == min + mid - 1);
-				}
-
+				
 			}
-
+			else if ( getLadderType() == LadderType.wide ) {
+				
+				results = len <= 7;
+				
+				if ( len > 7 ) {
+					
+					
+					if ( curr == (min + mid) ) {
+						results = true;
+					}
+					else {
+						results = isEven ?
+								// if distance is even, then next ladder position is mid - 1 through mid + 2
+								( curr >= (min + mid -1) && curr <= (min + mid + 2 ) ) :
+									
+									// If odd, then one above and below mid:
+									( curr >= (min + mid - 2) && curr <= (min + mid + 2));
+					}
+					
+				}
+			}
+			
+			
 //			Output.get().logInfo( "#### isLadderBlock: curr=%d min=%d max=%d  " +
 //					"  len=%d  mid=%d  " +
 //					"isEven=%s  results=%s " +
@@ -913,6 +945,10 @@ public class MineLinerBuilder {
 	}
 	public void setForced( boolean isForced ) {
 		this.isForced = isForced;
+	}
+
+	public LadderType getLadderType() {
+		return mine.getLinerData().getLadderType();
 	}
 	
 }

@@ -21,7 +21,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.8 2021-07-29
+# v3.2.10-alpha.8 2021-07-30
+
+
+* **Update the custom ladder type feature in mine liners.**
+Now you can select none, normal, and wide.
 
 
 * **Provide break the list of placeholders down by placeholder types, along with sub total counts.**

@@ -47,6 +47,7 @@ import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.mines.features.MineLinerBuilder;
 import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
+import tech.mcprison.prison.mines.features.MineLinerData.LadderType;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.mines.tasks.MineTeleportWarmUpTask;
@@ -2296,38 +2297,53 @@ public class MinesCommands
     }
     
     @Command(identifier = "mines set liner", permissions = "mines.set", 
-    			description = "Change the blocks that line the mine.")
+    			description = "Change the blocks that line the mine, or change the way the ladders are generated. " +
+    					"The liner will only generate if there are blocks where the liner is trying to be placed; this " +
+    					"allows the liner to stop at ground level if the mine is higher than the surrounding ground. " +
+    					"If the mine is generated in air, or in a void world, the liner will not be generated unless the " +
+    					"'force' option is specified.")
     public void setLinerCommand(CommandSender sender,
     		@Arg(name = "mineName", description = "The name of the mine, or '*all*' to apply to all mines.") String mineName,
-    		@Arg(name = "edge", description = "Edge to use [top, bottom, north, east, south, west, walls]", def = "walls") String edge, 
+    		@Arg(name = "edge", description = "Edge to use [top, bottom, north, east, south, west, walls] " +
+    				"Use 'ladderType' for the Edge: &3[&7none normal wide&3]  Where 'normal' is " + 
+    				"1 to 3 ladders wide.  'Wide' is up to 5 wide.", def = "walls") String edge, 
     		//@Arg(name = "adjustment", description = "How to adust the size [smaller, larger]", def = "larger") String adjustment,
     		@Arg(name = "pattern", description = "pattern to use. '?' for a list of all patterns. " +
     				"'repair' will attempt to repair missing blocks outside of the liner. " +
-    				"'remove' will remove the liner from the mine. 'removeAll' removes alll liners. [?]", 
+    				"'remove' will remove the liner from the mine. 'removeAll' removes all liners from the mine. [?]", 
     				def = "bright") String pattern,
     		@Arg(name = "force", description = "Force liner if air [force no]", def = "no") String force
     		
     		) {
     	
+    	if ( mineName != null && "?".equals( mineName ) || 
+    			pattern != null && "?".equals( pattern ) || edge != null && "?".equals( edge )) {
+    		
+    		sender.sendMessage( "&cAvailable Edges: &3[&7top bottom north east south west walls&3]" );
+    		sender.sendMessage( "&3Available Patterns: [&7" + LinerPatterns.toStringAll() + "&3]" );
+    		sender.sendMessage( "&cUse 'ladderType' for the Edge: &3[&7none normal wide&3]  Where 'normal' is " +
+    				"1 to 3 ladders wide.  'Wide' is up to 5 wide." );
+    		return;
+    	}
+    	
     	if ( !"*all*".equalsIgnoreCase( mineName ) && !performCheckMineExists(sender, mineName)) {
     		return;
     	}
     	
-    	if ( pattern != null && "?".equals( pattern ) || edge != null && "?".equals( edge )) {
-    		
-    		sender.sendMessage( "&cAvailable Edges: &3[&7top bottom north east south west walls&3]" );
-    		sender.sendMessage( "&3Available Patterns: [&7" + LinerPatterns.toStringAll() + "&3]" );
-    		return;
-    	}
-    	
     	Edges e = Edges.fromString( edge );
-    	if ( e == null ) {
+    	LinerPatterns linerPattern = LinerPatterns.fromString( pattern );
+    	LadderType ladderType = ( e == null && edge != null && edge.equalsIgnoreCase( "ladderType" ) ? 
+    								LadderType.fromString( pattern ) : null );
+    	
+ 
+
+    	if ( e == null && ladderType == null ) {
     		sender.sendMessage( "&cInvalid edge value. &3[&7top bottom north east south west walls&3]" );
+    		sender.sendMessage( "&cUse 'ladderType' for the Edge with &3[&7none normal wide&3] as the patterns." );
     		return;
     	}
     	
-    	LinerPatterns linerPattern = LinerPatterns.fromString( pattern );
-    	if ( linerPattern == null ) {
+    	if ( linerPattern == null && ladderType == null ) {
     		sender.sendMessage( "&cInvalid pattern.&3 Select one of these: [&7" + 
     							LinerPatterns.toStringAll() + "&3]" );
     		return;
@@ -2357,12 +2373,20 @@ public class MinesCommands
     	
     	for ( Mine mine : mines )
 		{
+    		boolean resetLiner = false;
+    		
 //	    	if ( mine.isVirtual() ) {
 //  	  		sender.sendMessage( "&cMine is a virtual mine.&7 Use &a/mines set area &7to enable the mine." );
 //    			return;
 //   	 	}
-    		
-    		if ( linerPattern == LinerPatterns.removeAll ) {
+    		if ( ladderType != null ) {
+    			mine.getLinerData().setLadderType( ladderType );
+    			sender.sendMessage( "&7The liner's ladderType has been set to '" + ladderType.name() + 
+    					"' for mine " + mine.getName() );
+
+    			resetLiner = true;
+    		}
+    		else if ( linerPattern == LinerPatterns.removeAll ) {
     			
     			mine.getLinerData().removeAll();
     			sender.sendMessage( "&7All liners have been removed from mine " + mine.getName() );
@@ -2374,16 +2398,18 @@ public class MinesCommands
     		else {
     			mine.getLinerData().setLiner( e, linerPattern, isForced );
 
-    			// Do not try to update the liner if it's a virtual mine:
-    			if ( !mine.isVirtual() ) {
-    				new MineLinerBuilder( mine, e, linerPattern, isForced );
-    			}
+    			resetLiner = true;
     		}
     		
     		pMines.getMineManager().saveMine( mine );
-			
+
+    		// Do not try to update the liner if it's a virtual mine:
+    		if ( resetLiner && !mine.isVirtual() ) {
+    			
+    			new MineLinerBuilder( mine, e, linerPattern, isForced );
+    		}
+    		
 		}
-    	
     }
     
     
