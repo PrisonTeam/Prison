@@ -405,8 +405,9 @@ public class MineLinerBuilder {
 	 * equal to min or max (the corners).
 	 * </p>
 	 * 
-	 * <p>If the mine on the edge is 3 blocks or less in width, have them all
-	 * be ladders.  
+	 * <p>This now support multiple ladder types such as: none and full.  And
+	 * normal, wide, and jumbo.
+	 * </p>
 	 * 
 	 * @param curr
 	 * @param min
@@ -421,6 +422,11 @@ public class MineLinerBuilder {
 			return results;
 		}
 		
+		// Note: full ladder cannot include both ends since those are the other walls.
+		if ( getLadderType() == LadderType.full ) {
+			return curr > min && curr < max;
+		}
+		
 		// Skip if the face or corners of liner.
 		if ( min != max && curr != min && curr != max ) {
 			
@@ -433,48 +439,72 @@ public class MineLinerBuilder {
 			// skipped due to being corners.  So if the min is 1 to 3 blocks
 			// wide, always have ladders that wide.
 			
-			if ( getLadderType() == LadderType.normal ) {
+			int range = 1;
+			switch ( getLadderType() )
+			{
+				case wide:
+					range = 2;
+					break;
 				
-				results = len <= 5;
-				
-				if ( len > 5 ) {
+				case jumbo:
+					range = 3;
+					break;
 					
-					
-					if ( curr == (min + mid) ) {
-						results = true;
-					}
-					else {
-						results = isEven ?
-								// if distance is even, then next ladder position is mid - 1
-								( curr == min + mid + 1 ) :
-									// If odd, then one above and below mid:
-									( curr == min + mid + 1 || curr == min + mid - 1);
-					}
-					
-				}
-				
+				case normal:
+				default:
+					range = 1;
 			}
-			else if ( getLadderType() == LadderType.wide ) {
 				
-				results = len <= 7;
-				
-				if ( len > 7 ) {
-					
-					
-					if ( curr == (min + mid) ) {
-						results = true;
-					}
-					else {
-						results = isEven ?
-								// if distance is even, then next ladder position is mid - 1 through mid + 2
-								( curr >= (min + mid -1) && curr <= (min + mid + 2 ) ) :
-									
-									// If odd, then one above and below mid:
-									( curr >= (min + mid - 2) && curr <= (min + mid + 2));
-					}
-					
-				}
-			}
+			results = isEven ?
+					// if distance is even, then next ladder position is mid - range + 1 through mid + range
+					( curr >= (min + mid - range + 1) && curr <= (min + mid + range ) ) :
+						
+						// If odd, then plus/minus range above and below mid:
+						( curr >= (min + mid - range) && curr <= (min + mid + range));
+			
+			
+//			if ( getLadderType() == LadderType.normal ) {
+//				
+//				results = len <= 5;
+//				
+//				if ( len > 5 ) {
+//					
+//					
+//					if ( curr == (min + mid) ) {
+//						results = true;
+//					}
+//					else {
+//						results = isEven ?
+//								// if distance is even, then next ladder position is mid - 1
+//								( curr == min + mid + 1 ) :
+//									// If odd, then one above and below mid:
+//									( curr == min + mid + 1 || curr == min + mid - 1);
+//					}
+//					
+//				}
+//				
+//			}
+//			else if ( getLadderType() == LadderType.wide ) {
+//				
+//				results = len <= 7;
+//				
+//				if ( len > 7 ) {
+//					
+//					
+//					if ( curr == (min + mid) ) {
+//						results = true;
+//					}
+//					else {
+//						results = isEven ?
+//								// if distance is even, then next ladder position is mid - 1 through mid + 2
+//								( curr >= (min + mid - range + 1) && curr <= (min + mid + range ) ) :
+//									
+//									// If odd, then one above and below mid:
+//									( curr >= (min + mid - range) && curr <= (min + mid + range));
+//					}
+//					
+//				}
+//			}
 			
 			
 //			Output.get().logInfo( "#### isLadderBlock: curr=%d min=%d max=%d  " +

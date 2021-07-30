@@ -2305,8 +2305,9 @@ public class MinesCommands
     public void setLinerCommand(CommandSender sender,
     		@Arg(name = "mineName", description = "The name of the mine, or '*all*' to apply to all mines.") String mineName,
     		@Arg(name = "edge", description = "Edge to use [top, bottom, north, east, south, west, walls] " +
-    				"Use 'ladderType' for the Edge: &3[&7none normal wide&3]  Where 'normal' is " + 
-    				"1 to 3 ladders wide.  'Wide' is up to 5 wide.", def = "walls") String edge, 
+    				"Use 'ladderType' for the Edge: &3[&7none normal wide jumbo full&3]  Where 'normal' is " + 
+    				"1 to 3 ladders wide.  'Wide' is up to 5 wide. 'Jumbo' is up to 7 wide. And 'full' " +
+    				"is the full width.", def = "walls") String edge, 
     		//@Arg(name = "adjustment", description = "How to adust the size [smaller, larger]", def = "larger") String adjustment,
     		@Arg(name = "pattern", description = "pattern to use. '?' for a list of all patterns. " +
     				"'repair' will attempt to repair missing blocks outside of the liner. " +
@@ -2321,8 +2322,8 @@ public class MinesCommands
     		
     		sender.sendMessage( "&cAvailable Edges: &3[&7top bottom north east south west walls&3]" );
     		sender.sendMessage( "&3Available Patterns: [&7" + LinerPatterns.toStringAll() + "&3]" );
-    		sender.sendMessage( "&cUse 'ladderType' for the Edge: &3[&7none normal wide&3]  Where 'normal' is " +
-    				"1 to 3 ladders wide.  'Wide' is up to 5 wide." );
+    		sender.sendMessage( "&cUse 'ladderType' for the Edge: &3[&7none normal wide jumbo full&3]  Where 'normal' is " +
+    				"1 to 3 ladders wide.  'Wide' is up to 5 wide. 'Jumbo' is up to 7 wide. And 'full' is the full width." );
     		return;
     	}
     	
@@ -2339,7 +2340,7 @@ public class MinesCommands
 
     	if ( e == null && ladderType == null ) {
     		sender.sendMessage( "&cInvalid edge value. &3[&7top bottom north east south west walls&3]" );
-    		sender.sendMessage( "&cUse 'ladderType' for the Edge with &3[&7none normal wide&3] as the patterns." );
+    		sender.sendMessage( "&cUse 'ladderType' for the Edge with &3[&7none normal wide jumbo full&3] as the patterns." );
     		return;
     	}
     	

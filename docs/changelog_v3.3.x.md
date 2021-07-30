@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-30
 
 
+* **Added support for jumbo and full ladder types with the mine liners.**
+
+
 * **Update the custom ladder type feature in mine liners.**
 Now you can select none, normal, and wide.
 

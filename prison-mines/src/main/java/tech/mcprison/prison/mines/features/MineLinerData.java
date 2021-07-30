@@ -30,7 +30,9 @@ public class MineLinerData {
 	public enum LadderType {
 		none,
 		normal,
-		wide;
+		wide,
+		jumbo,
+		full;
 		
 		public static LadderType fromString( String value ) {
 			LadderType results = null;
