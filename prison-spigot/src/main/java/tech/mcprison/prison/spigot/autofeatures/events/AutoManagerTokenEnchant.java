@@ -51,7 +51,7 @@ public class AutoManagerTokenEnchant
 	    implements Listener {
     	
     	@EventHandler(priority=EventPriority.NORMAL) 
-    	public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
+    	public void onTEBlockExplode(TEBlockExplodeEvent e) {
     		genericBlockExplodeEvent( e );
     	}
     }
@@ -61,7 +61,7 @@ public class AutoManagerTokenEnchant
 	    implements Listener {
     	
     	@EventHandler(priority=EventPriority.MONITOR) 
-    	public void onTEBlockExplodeLow(TEBlockExplodeEvent e) {
+    	public void onTEBlockExplode(TEBlockExplodeEvent e) {
     		genericBlockExplodeEventMonitor( e );
     	}
     }
@@ -122,7 +122,7 @@ public class AutoManagerTokenEnchant
     					new EventExecutor() {
     				public void execute(Listener l, Event e) { 
 	    					((OnBlockBreakEventTokenEnchantEventListener)l)
-	    						.onTEBlockExplodeLow((TEBlockExplodeEvent)e);
+	    						.onTEBlockExplode((TEBlockExplodeEvent)e);
 	    				}
 	    			},
 	    			prison);
@@ -131,8 +131,8 @@ public class AutoManagerTokenEnchant
     			pm.registerEvent(TEBlockExplodeEvent.class, normalListenerMonitor, EventPriority.MONITOR,
     					new EventExecutor() {
     				public void execute(Listener l, Event e) { 
-	    					((OnBlockBreakEventTokenEnchantEventListener)l)
-	    						.onTEBlockExplodeLow((TEBlockExplodeEvent)e);
+	    					((OnBlockBreakEventTokenEnchantEventListenerMonitor)l)
+	    						.onTEBlockExplode((TEBlockExplodeEvent)e);
     					}
 	    			},
 	    			prison);

@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-30
 
 
+* **Found a bug in the TokenEnchant event listener class.**
+It was casting to the wrong class for the Monitor event.
+
+
 * **Fixed an issue with PlayerCache and mining duration.**
 Also added logging if unable to rename a temp file.
 
