@@ -579,15 +579,34 @@ public class AutoManagerFeatures
 		smelts.add( XMaterial.COBBLESTONE );
 		smelts.add( XMaterial.GOLD_ORE );
 		smelts.add( XMaterial.NETHER_GOLD_ORE );
+		smelts.add( XMaterial.DEEPSLATE_GOLD_ORE );
+		smelts.add( XMaterial.RAW_GOLD );
+		
 		smelts.add( XMaterial.IRON_ORE );
+		smelts.add( XMaterial.DEEPSLATE_IRON_ORE );
+		smelts.add( XMaterial.RAW_IRON );
+		
 		smelts.add( XMaterial.COAL_ORE );
+		smelts.add( XMaterial.DEEPSLATE_COAL_ORE );
+		
 		smelts.add( XMaterial.DIAMOND_ORE );
+		smelts.add( XMaterial.DEEPSLATE_DIAMOND_ORE );
+		
 		smelts.add( XMaterial.EMERALD_ORE );
+		smelts.add( XMaterial.DEEPSLATE_EMERALD_ORE );
+		
 		smelts.add( XMaterial.LAPIS_ORE );
+		smelts.add( XMaterial.DEEPSLATE_LAPIS_ORE );
+		
 		smelts.add( XMaterial.REDSTONE_ORE );
+		smelts.add( XMaterial.DEEPSLATE_REDSTONE_ORE );
+		
 		smelts.add( XMaterial.NETHER_QUARTZ_ORE );
 		smelts.add( XMaterial.ANCIENT_DEBRIS );
+		
 		smelts.add( XMaterial.COPPER_ORE );
+		smelts.add( XMaterial.DEEPSLATE_COPPER_ORE );
+		smelts.add( XMaterial.RAW_COPPER );
 		
 		
 		for ( XMaterial xMat : smelts ) {
@@ -1051,26 +1070,35 @@ public class AutoManagerFeatures
 					break;
 
 				case "gold_ore":
+				case "nether_gold_ore":
+				case "deepslate_gold_ore":
+				case "raw_gold":
 					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 					break;
 
 				case "iron_ore":
+				case "deepslate_iron_ore":
+				case "raw_iron":
 					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 					break;
 
 				case "coal_ore":
+				case "deepslate_coal_ore":
 					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 					break;
 
 				case "diamond_ore":
+				case "deepslate_diamond_ore":
 					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 					break;
 
 				case "redstone_ore":
+				case "deepslate_redstone_ore":
 					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 					break;
 
 				case "emerald_ore":
+				case "deepslate_emerald_ore":
 					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 					break;
 
@@ -1079,6 +1107,7 @@ public class AutoManagerFeatures
 					break;
 
 				case "lapis_ore":
+				case "deepslate_lapis_ore":
 					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 					break;
 
@@ -1090,6 +1119,12 @@ public class AutoManagerFeatures
 					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
 					break;
 
+				case "copper_ore": 
+				case "deepslate_copper_ore": 
+				case "raw_copper": 
+					count += autoPickup( p, itemInHand, block, isAutoSmelt, isAutoBlock, debugInfo );
+					break;
+					
 				default:
 					break;
 			}
@@ -1127,36 +1162,45 @@ public class AutoManagerFeatures
 					
 				case GOLD_ORE:
 				case NETHER_GOLD_ORE:
+				case DEEPSLATE_GOLD_ORE:
+				case RAW_GOLD:
 					autoSmelt( isAll || isBoolean( AutoFeatures.smeltGoldOre ), source, XMaterial.GOLD_INGOT, p );
 					results = XMaterial.GOLD_INGOT;
 					break;
 					
 				case IRON_ORE:
+				case DEEPSLATE_IRON_ORE:
+				case RAW_IRON:
 					autoSmelt( isAll || isBoolean( AutoFeatures.smeltIronOre ), source, XMaterial.IRON_INGOT, p );
 					results = XMaterial.IRON_INGOT;
 					break;
 					
 				case COAL_ORE:
+				case DEEPSLATE_COAL_ORE:
 					autoSmelt( isAll || isBoolean( AutoFeatures.smeltCoalOre ), source, XMaterial.COAL, p );
 					results = XMaterial.COAL;
 					break;
 					
 				case DIAMOND_ORE:
+				case DEEPSLATE_DIAMOND_ORE:
 					autoSmelt( isAll || isBoolean( AutoFeatures.smeltDiamondlOre ), source, XMaterial.DIAMOND, p );
 					results = XMaterial.DIAMOND;
 					break;
 					
 				case EMERALD_ORE:
+				case DEEPSLATE_EMERALD_ORE:
 					autoSmelt( isAll || isBoolean( AutoFeatures.smeltEmeraldOre ), source, XMaterial.EMERALD, p );
 					results = XMaterial.EMERALD;
 					break;
 					
 				case LAPIS_ORE:
+				case DEEPSLATE_LAPIS_ORE:
 					autoSmelt( isAll || isBoolean( AutoFeatures.smeltLapisOre ), source, XMaterial.LAPIS_LAZULI, p );
 					results = XMaterial.LAPIS_LAZULI;
 					break;
 					
 				case REDSTONE_ORE:
+				case DEEPSLATE_REDSTONE_ORE:
 					autoSmelt( isAll || isBoolean( AutoFeatures.smeltRedstoneOre ), source, XMaterial.REDSTONE, p );
 					results = XMaterial.REDSTONE;
 					break;
@@ -1173,6 +1217,8 @@ public class AutoManagerFeatures
 
 				// v1.17 !!
 				case COPPER_ORE:
+				case DEEPSLATE_COPPER_ORE:
+				case RAW_COPPER:
 					autoSmelt( isAll || isBoolean( AutoFeatures.smeltCopperOre ), source, XMaterial.COPPER_INGOT, p );
 					results = XMaterial.COPPER_INGOT;
 					break;
@@ -1300,6 +1346,9 @@ public class AutoManagerFeatures
 					
 				case GOLD_ORE:
 				case NETHER_GOLD_ORE:
+				case DEEPSLATE_GOLD_ORE:
+				case RAW_GOLD:
+					
 					if ( isAll || isBoolean( AutoFeatures.smeltGoldOre ) ) {
 						
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.GOLD_INGOT, 1 );
@@ -1307,6 +1356,8 @@ public class AutoManagerFeatures
 					break;
 					
 				case IRON_ORE:
+				case DEEPSLATE_IRON_ORE:
+				case RAW_IRON:
 					if ( isAll || isBoolean( AutoFeatures.smeltIronOre ) ) {
 						
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.IRON_INGOT, 1 );
@@ -1314,6 +1365,7 @@ public class AutoManagerFeatures
 					break;
 					
 				case COAL_ORE:
+				case DEEPSLATE_COAL_ORE:
 					if ( isAll || isBoolean( AutoFeatures.smeltCoalOre ) ) {
 						
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COAL,11 );
@@ -1321,6 +1373,7 @@ public class AutoManagerFeatures
 					break;
 					
 				case DIAMOND_ORE:
+				case DEEPSLATE_DIAMOND_ORE:
 					if ( isAll || isBoolean( AutoFeatures.smeltDiamondlOre ) ) {
 						
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.DIAMOND, 1 );
@@ -1328,6 +1381,7 @@ public class AutoManagerFeatures
 					break;
 					
 				case EMERALD_ORE:
+				case DEEPSLATE_EMERALD_ORE:
 					if ( isAll || isBoolean( AutoFeatures.smeltEmeraldOre ) ) {
 						
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.EMERALD, 1 );
@@ -1335,6 +1389,7 @@ public class AutoManagerFeatures
 					break;
 					
 				case LAPIS_ORE:
+				case DEEPSLATE_LAPIS_ORE:
 					if ( isAll || isBoolean( AutoFeatures.smeltLapisOre ) ) {
 						
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.LAPIS_LAZULI, 1 );
@@ -1342,6 +1397,7 @@ public class AutoManagerFeatures
 					break;
 					
 				case REDSTONE_ORE:
+				case DEEPSLATE_REDSTONE_ORE:
 					if ( isAll || isBoolean( AutoFeatures.smeltRedstoneOre ) ) {
 						
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.REDSTONE, 1 );
@@ -1364,6 +1420,8 @@ public class AutoManagerFeatures
 
 				// v1.17 !!
 				case COPPER_ORE:
+				case DEEPSLATE_COPPER_ORE:
+				case RAW_COPPER:
 					if ( isAll || isBoolean( AutoFeatures.smeltCopperOre ) ) {
 						
 						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COPPER_INGOT, 1);

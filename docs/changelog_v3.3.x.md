@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-31
 
 
+* **Updated smelting to use the newer 1.17 blocks, such as all of the deepslate variations, and the raw iron, raw copper, and raw gold.**
+Updated all code that had these variations.
+
+
 * **Updated the XP calculations to include the newer blocks from 1.17**
 
 
