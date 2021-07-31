@@ -24,6 +24,21 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-31
 
 
+* **Mines Reset Time GUI now uses PrisonGUI utility.**
+
+
+* **Mines Set Notification Mode GUI now uses PrisonGUI utility.**
+
+
+* **Mines Notification Radius GUI now uses PrisonGUI utility.**
+
+
+* **Mines Blocks Set Percentage GUI now uses PrisonGUI utility.**
+
+
+* **Updated Buttons PrisonGUI Utility to support enchantments.**
+
+
 * **For the fortune calculations, converted the use of the old block model over to use XMaterial instead.**
 Updated to include the newest 1.17 blocks too.
 

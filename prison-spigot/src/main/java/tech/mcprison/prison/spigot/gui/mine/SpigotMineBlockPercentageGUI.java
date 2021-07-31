@@ -13,7 +13,7 @@ import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 import java.util.List;
 
 /**
- * @author GABRYCA
+ * @author GABRYCA (AnonymousGCA)
  */
 public class SpigotMineBlockPercentageGUI extends SpigotGUIComponents {
 

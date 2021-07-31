@@ -2,6 +2,7 @@ package tech.mcprison.prison.spigot.gui.guiutility;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.spigot.SpigotPrison;
 
@@ -182,6 +183,10 @@ public class Button extends SpigotGUIComponents{
         } else {
             setButtonLore(createLore(SpigotPrison.format(line)));
         }
+    }
+
+    public void addUnsafeEnchantment(Enchantment enchant, int level){
+        buttonItem.addUnsafeEnchantment(enchant, level);
     }
 
     /**
