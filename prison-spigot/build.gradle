@@ -105,7 +105,7 @@ dependencies {
 //    implementation 'com.github.cryptomorin:xseries:b95d195482'
     
     // https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
-	implementation 'com.github.cryptomorin:XSeries:8.2.0'
+	implementation 'com.github.cryptomorin:XSeries:8.3.0'
     
 
 
@@ -187,7 +187,7 @@ shadowJar {
 
         include(dependency('me.clip:placeholderapi:2.10.9'))
 
-        include(dependency('com.github.cryptomorin:XSeries:8.2.0'))
+        include(dependency('com.github.cryptomorin:XSeries:8.3.0'))
         
         //include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
         //include(dependency('me.badbones69:crazyenchantments-plugin:1.8-Dev-Build-v8'))
