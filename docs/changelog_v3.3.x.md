@@ -21,7 +21,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.8 2021-07-30
+# v3.2.10-alpha.8 2021-07-31
+
+
+* **Remove the dump of block break events from the command /prison version all since it was appearing first.**
+It will need to be rewritten to capture in a list of strings.
 
 
 * **Added mining time by Mine.**

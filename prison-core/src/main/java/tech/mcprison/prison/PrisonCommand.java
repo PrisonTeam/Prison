@@ -390,9 +390,9 @@ public class PrisonCommand
 //        display.text( pluginDetails );
         
 
-        if ( !isBasic ) {
-        	Prison.get().getPlatform().dumpEventListenersBlockBreakEvents();
-        }
+//        if ( !isBasic ) {
+//        	Prison.get().getPlatform().dumpEventListenersBlockBreakEvents();
+//        }
         
         
         Prison.get().getPlatform().getWorldLoadErrors( display );
