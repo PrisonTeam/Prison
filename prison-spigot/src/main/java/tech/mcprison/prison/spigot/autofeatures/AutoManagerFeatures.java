@@ -37,8 +37,8 @@ import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventCore;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Text;
@@ -1663,41 +1663,41 @@ public class AutoManagerFeatures
 				// Due to variations with gold and wood PickAxe need to use a dynamic
 				// Material name selection which will fit for the version of MC that is
 				// being ran.
-				BlockType block = blocks.getMaterial();
+
+				XMaterial xMat = XMaterial.matchXMaterial( blocks.getBukkitStack() );
 				
 				// These need to be processed first due to special drop amounts for these items, and 
 				// in the next group there is the isCalculateAltFortuneOnAllBlocksEnabled setting that
 				// would override these values if it were to be processed first.
-				if ( block == BlockType.GLOWSTONE ||
-						block == BlockType.GLOWSTONE_DUST ||
-						block == BlockType.REDSTONE ||
-						block == BlockType.SEA_LANTERN ||
-						block == BlockType.GLOWING_REDSTONE_ORE ||
-						block == BlockType.REDSTONE_ORE ||
-						block == BlockType.PRISMARINE ||
+				if ( xMat == XMaterial.GLOWSTONE ||
+						xMat == XMaterial.GLOWSTONE_DUST ||
+						xMat == XMaterial.REDSTONE ||
+						xMat == XMaterial.SEA_LANTERN ||
+						xMat == XMaterial.REDSTONE_ORE ||
+						xMat == XMaterial.PRISMARINE ||
 						
-						block == BlockType.BEETROOT_SEEDS ||
-						block == BlockType.CARROT ||
-						block == BlockType.MELON ||
-						block == BlockType.MELON_SEEDS ||
-						block == BlockType.NETHER_WART ||
-						block == BlockType.POTATO ||
-						block == BlockType.GRASS ||
-						block == BlockType.WHEAT ) {
+						xMat == XMaterial.BEETROOT_SEEDS ||
+						xMat == XMaterial.CARROT ||
+						xMat == XMaterial.MELON ||
+						xMat == XMaterial.MELON_SEEDS ||
+						xMat == XMaterial.NETHER_WART ||
+						xMat == XMaterial.POTATO ||
+						xMat == XMaterial.GRASS ||
+						xMat == XMaterial.WHEAT ) {
 					multiplier = getRandom().nextInt( fortuneLevel );
 					
 					// limits slightly greater than standard:
-					if (block == BlockType.GLOWSTONE) {
+					if ( xMat == XMaterial.GLOWSTONE) {
 						// standard: 4
 						if (multiplier > 5) {
 							multiplier = 5;
 						}
-					} else if (block == BlockType.SEA_LANTERN) {
+					} else if ( xMat == XMaterial.SEA_LANTERN) {
 						// standard: 5
 						if (multiplier > 6) {
 							multiplier = 6;
 						}
-					} else if (block == BlockType.MELON) {
+					} else if ( xMat == XMaterial.MELON) {
 						// standard: 9
 						if (multiplier > 11) {
 							multiplier = 11;
@@ -1720,34 +1720,54 @@ public class AutoManagerFeatures
 				else if ( 
 						isBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled ) ||
 						
-						block == BlockType.COAL_ORE ||
-						block == BlockType.DIAMOND_ORE ||
-						block == BlockType.EMERALD_ORE ||
-						block == BlockType.IRON_ORE ||
-						block == BlockType.LAPIS_LAZULI_ORE ||
-						block == BlockType.LAPIS_ORE ||
-						block == BlockType.GOLD_ORE ||
-						block == BlockType.NETHER_GOLD_ORE ||
-						block == BlockType.NETHER_QUARTZ_ORE ||
 						
-						block == BlockType.BLOCK_OF_COAL ||
-						block == BlockType.COAL ||
-						block == BlockType.COAL_BLOCK ||
-						block == BlockType.DIAMOND ||
-						block == BlockType.DIAMOND_BLOCK ||
-						block == BlockType.EMERALD ||
-						block == BlockType.EMERALD_BLOCK ||
-						block == BlockType.GOLD_BLOCK ||
-						block == BlockType.IRON_BLOCK ||
-						block == BlockType.LAPIS_BLOCK ||
-						block == BlockType.LAPIS_LAZULI_BLOCK ||
-						block == BlockType.NETHER_WART_BLOCK ||
-						block == BlockType.NETHERITE_BLOCK ||
-						block == BlockType.PURPUR_BLOCK ||
-						block == BlockType.QUARTZ_BLOCK ||
-						block == BlockType.REDSTONE_BLOCK ||
-						block == BlockType.SLIME_BLOCK ||
-						block == BlockType.SNOW_BLOCK
+						xMat == XMaterial.GOLD_ORE ||
+						xMat == XMaterial.NETHER_GOLD_ORE ||
+						xMat == XMaterial.DEEPSLATE_GOLD_ORE ||
+						xMat == XMaterial.RAW_GOLD ||
+						xMat == XMaterial.GOLD_BLOCK ||
+
+						xMat == XMaterial.IRON_ORE ||
+						xMat == XMaterial.DEEPSLATE_IRON_ORE ||
+						xMat == XMaterial.RAW_IRON ||
+						xMat == XMaterial.IRON_BLOCK ||
+
+						xMat == XMaterial.COAL_ORE ||
+						xMat == XMaterial.DEEPSLATE_COAL_ORE ||
+						xMat == XMaterial.COAL ||
+						xMat == XMaterial.COAL_BLOCK ||
+						
+						xMat == XMaterial.DIAMOND_ORE ||
+						xMat == XMaterial.DEEPSLATE_DIAMOND_ORE ||
+						xMat == XMaterial.DIAMOND ||
+						xMat == XMaterial.DIAMOND_BLOCK ||
+						
+						xMat == XMaterial.EMERALD_ORE ||
+						xMat == XMaterial.DEEPSLATE_EMERALD_ORE ||
+						xMat == XMaterial.EMERALD ||
+						xMat == XMaterial.EMERALD_BLOCK ||
+
+						xMat == XMaterial.LAPIS_ORE ||
+						xMat == XMaterial.DEEPSLATE_LAPIS_ORE ||
+						xMat == XMaterial.LAPIS_BLOCK ||
+						
+						xMat == XMaterial.NETHER_QUARTZ_ORE ||
+						xMat == XMaterial.QUARTZ_BLOCK ||
+						
+						xMat == XMaterial.REDSTONE_ORE ||
+						xMat == XMaterial.REDSTONE_BLOCK ||
+						xMat == XMaterial.DEEPSLATE_REDSTONE_ORE ||
+						
+						xMat == XMaterial.COPPER_ORE ||
+						xMat == XMaterial.DEEPSLATE_COPPER_ORE ||
+						xMat == XMaterial.RAW_COPPER ||
+						
+
+						xMat == XMaterial.NETHER_WART_BLOCK ||
+						xMat == XMaterial.NETHERITE_BLOCK ||
+						xMat == XMaterial.PURPUR_BLOCK ||
+						xMat == XMaterial.SLIME_BLOCK ||
+						xMat == XMaterial.SNOW_BLOCK
 						) {
 					
 					multiplier = calculateFortuneMultiplier( fortuneLevel, multiplier );
