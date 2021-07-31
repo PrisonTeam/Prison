@@ -1622,26 +1622,44 @@ public class OnBlockBreakEventCore
 		int xp = 0;
 
 		switch (blockName.toLowerCase()) {
+
+			case "gold_ore":
+			case "nether_gold_ore":
+			case "deepslate_gold_ore":
+			case "raw_gold":
+				
+			case "iron_ore":
+			case "deepslate_iron_ore":
+			case "raw_iron":
+				
+			case "copper_ore": 
+			case "deepslate_copper_ore": 
+			case "raw_copper": 	
+				xp = getRandom().nextInt( 1 );
+				break;
+			
 			case "coal_ore":
+			case "deepslate_coal_ore":
 			case "coal":
 				xp = getRandom().nextInt( 2 );
 				break;
 
-			case "nether_gold_ore":
-				xp = getRandom().nextInt( 1 );
-				break;
 
 			case "diamond_ore":
+			case "deepslate_diamond_ore":
 			case "emerald_ore":
+			case "deepslate_emerald_ore":
 				xp = getRandom().nextInt( 4 ) + 3;
 				break;
 
 			case "lapis_ore":
 			case "nether_quartz_ore":
+			case "deepslate_lapis_ore":
 				xp = getRandom().nextInt( 3 ) + 2;
 				break;
 
 			case "redstone_ore":
+			case "deepslate_redstone_ore":
 				xp = getRandom().nextInt( 4 ) + 1;
 				break;
 

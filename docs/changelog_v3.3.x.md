@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-31
 
 
+* **Updated the XP calculations to include the newer blocks from 1.17**
+
+
 * **Upgrade XSeries from v8.2.0 to v8.3.0**
 
 
