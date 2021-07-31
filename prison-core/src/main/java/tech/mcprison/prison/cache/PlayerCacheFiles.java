@@ -15,6 +15,7 @@ import com.google.gson.JsonSyntaxException;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.output.Output;
 
 /**
  * <p>This class is intended to be kept online and active for the full
@@ -106,6 +107,19 @@ public class PlayerCacheFiles
 		
 		if ( success && ( !playerFile.exists() || playerFile.delete()) ) {
 			outTemp.renameTo( playerFile );
+		}
+		else {
+		
+			boolean removed = false;
+			if ( outTemp.exists() ) {
+				removed = outTemp.delete();
+			}
+
+			String message = String.format( 
+					"Unable to rename PlayerCache temp file. It was %sremoved: %s", 
+					(removed ? "" : "not "), outTemp.getAbsolutePath() );
+			
+			Output.get().logWarn( message );
 		}
 	}
 	

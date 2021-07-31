@@ -64,7 +64,7 @@ public class PlayerCachePlayerData {
 	private TreeMap<String, Integer> blocksByType;
 	
 	
-	private TreeMap<String, Double> earningsPerMinute;
+	private transient TreeMap<String, Double> earningsPerMinute;
 	
 	
 	// This is the time when the "session" was started:
@@ -155,6 +155,14 @@ public class PlayerCachePlayerData {
 			return;
 		}
 		
+		// temp fix:
+		if ( onlineTimeTotal < 0 ) {
+			onlineTimeTotal = 0;
+		}
+		if ( onlineMiningTimeTotal < 0 ) {
+			onlineMiningTimeTotal = 0;
+		}
+		
 		if ( sessionType == targetType && sessionType != SessionType.mining) {
 			// No change in status
 			
@@ -210,7 +218,8 @@ public class PlayerCachePlayerData {
 				// Calculate the end point of the mining session, which will be 30 seconds after 
 				// the last time check:
 				final long tempTime = sessionTimingLastCheck + SESSION_TIMEOUT_MINING_MS;
-				final long miningDuration = sessionTimingStart - tempTime;
+				final long miningDuration = tempTime - sessionTimingStart;
+//				final long miningDuration = sessionTimingStart - tempTime;
 				onlineTimeTotal += miningDuration;
 				onlineMiningTimeTotal += miningDuration;
 				
