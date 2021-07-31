@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-30
 
 
+* **Added mining time by Mine.**
+This will also track in which mine, players are mining.
+
+
 * **Found a bug in the TokenEnchant event listener class.**
 It was casting to the wrong class for the Monitor event.
 

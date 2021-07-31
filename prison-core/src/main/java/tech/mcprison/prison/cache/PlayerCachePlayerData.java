@@ -63,6 +63,9 @@ public class PlayerCachePlayerData {
 	private TreeMap<String, Integer> blocksByMine;
 	private TreeMap<String, Integer> blocksByType;
 	
+	private TreeMap<String, Long> timeByMine;
+	private String lastMine = null;
+
 	
 	private transient TreeMap<String, Double> earningsPerMinute;
 	
@@ -91,6 +94,9 @@ public class PlayerCachePlayerData {
 		
 		this.blocksByMine = new TreeMap<>();
 		this.blocksByType = new TreeMap<>();
+
+		this.timeByMine = new TreeMap<>();
+		this.lastMine = null;
 		
 		this.earningsPerMinute = new TreeMap<>();
 		
@@ -126,7 +132,7 @@ public class PlayerCachePlayerData {
 		if ( isOnline() ) {
 			
 			// Do not change the session type, so pass it the current:
-			checkTimersMining( sessionType );
+			checkTimersMining( sessionType, getLastMine() );
 			
 		}
 	}
@@ -147,8 +153,9 @@ public class PlayerCachePlayerData {
 	 * </p>
 	 * 
 	 * <p>If prior session type was mining, then do nothing if the last 
+	 * @param mine 
 	 */
-	private void checkTimersMining( SessionType targetType ) {
+	private void checkTimersMining( SessionType targetType, String mine ) {
 		final long currentTime = System.currentTimeMillis();
 
 		if ( !isOnline() ) {
@@ -213,7 +220,8 @@ public class PlayerCachePlayerData {
 			// last check plus the mining timeout value.  Then set session start to 
 			// that position.
 			
-			else if ( duration > SESSION_TIMEOUT_MINING_MS ) {
+			else if ( duration > SESSION_TIMEOUT_MINING_MS || getLastMine() == null ||
+					mine.equalsIgnoreCase( getLastMine() )) {
 				
 				// Calculate the end point of the mining session, which will be 30 seconds after 
 				// the last time check:
@@ -222,6 +230,8 @@ public class PlayerCachePlayerData {
 //				final long miningDuration = sessionTimingStart - tempTime;
 				onlineTimeTotal += miningDuration;
 				onlineMiningTimeTotal += miningDuration;
+				
+				addTimeToMine( mine, miningDuration );
 				
 				// Set new session to this boundary:
 				sessionTimingStart = tempTime;
@@ -243,9 +253,10 @@ public class PlayerCachePlayerData {
 				
 			}
 		}
-		
 
 	}
+
+
 
 	public void addBlock( String mine, String blockName, int quantity )
 	{
@@ -262,7 +273,7 @@ public class PlayerCachePlayerData {
 				addBlockByMine( mine, quantity );
 			}
 			
-			checkTimersMining( SessionType.mining );
+			checkTimersMining( SessionType.mining, mine );
 			dirty = true;
 		}
 	}
@@ -287,6 +298,20 @@ public class PlayerCachePlayerData {
 		getBlocksByMine().put( mine, qty );
 	}
 	
+	private void addTimeToMine( String mine, long miningDuration )
+	{
+		if ( mine != null && !mine.trim().isEmpty() ) {
+			
+			long duration = miningDuration;
+			
+			if ( getTimeByMine().containsKey( mine ) ) {
+				duration += getTimeByMine().get( mine );
+			}
+			
+			setLastMine( mine );
+			getTimeByMine().put( mine, duration );
+		}
+	}
 	
 	/**
 	 * This stores the earnings from the player so they can
@@ -450,6 +475,20 @@ public class PlayerCachePlayerData {
 	}
 	public void setBlocksByType( TreeMap<String, Integer> blocksByType ) {
 		this.blocksByType = blocksByType;
+	}
+
+	public TreeMap<String, Long> getTimeByMine() {
+		return timeByMine;
+	}
+	public void setTimeByMine( TreeMap<String, Long> timeByMine ) {
+		this.timeByMine = timeByMine;
+	}
+
+	public String getLastMine() {
+		return lastMine;
+	}
+	public void setLastMine( String lastMine ) {
+		this.lastMine = lastMine;
 	}
 
 	public boolean isDirty() {
