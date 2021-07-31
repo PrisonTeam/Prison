@@ -24,6 +24,14 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-31
 
 
+* **Mines Blocks List GUI now uses PrisonGUI utility.**
+
+
+* **Fixed Mines Blocks List GUI (the one that shows the blocks currently in the mine).** The GUI wasn't translating
+correctly blocks, and showing a "barrier" instead of the block, the GUI was working anyway, just
+  not good looking, now it's fixed for newer versions.
+
+
 * **Mines Reset Time GUI now uses PrisonGUI utility.**
 
 

@@ -185,6 +185,12 @@ public class Button extends SpigotGUIComponents{
         }
     }
 
+    /**
+     * Add an unsafe enchantment to the button.
+     *
+     * @param enchant - Enchantment.
+     * @param level - int.
+     * */
     public void addUnsafeEnchantment(Enchantment enchant, int level){
         buttonItem.addUnsafeEnchantment(enchant, level);
     }
