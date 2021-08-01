@@ -2,11 +2,8 @@ package tech.mcprison.prison.spigot.gui.mine;
 
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
 
@@ -19,6 +16,8 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.configs.GuiConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 /**
@@ -48,8 +47,6 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         // Get the dimensions and if needed increases them
         int dimension = (int) Math.ceil(mines.getSortedList().size() / 9D) * 9;
 
-        // Load config
-
         // If the inventory is empty
         if (dimension == 0){
             Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.NoMines"));
@@ -64,99 +61,80 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             return;
         }
 
-        // Create the inventory and set up the owner, dimensions or number of slots, and title
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format(guiConfig.getString("Options.Titles.PlayerMinesGUI")));
+        // Create GUI.
+        PrisonGUI gui = new PrisonGUI(p, dimension, guiConfig.getString("Options.Titles.PlayerMinesGUI"));
 
         // Make the buttons for every Mine with info
         for (Mine m : mines.getSortedList()) {
 
-            if (guiBuilder(inv, m)) return;
-        }
+            // Init the lore array with default values for ladders
+            List<String> minesLore = createLore(
+            );
 
-        // Open the inventory
-        openGUI(p, inv);
-    }
+            Material material;
 
-    private boolean guiBuilder(Inventory inv, Mine m) {
-        try {
-            buttonsSetup(inv, m);
-        } catch (NullPointerException ex){
-            Output.get().sendWarn(new SpigotPlayer(p),"&cThere's a null value in the GuiConfig.yml [broken]");
-            ex.printStackTrace();
-            return true;
-        }
-        return false;
-    }
+            GuiConfig guiConfigClass = new GuiConfig();
+            guiConfig = guiConfigClass.getFileGuiConfig();
+            String permission = SpigotPrison.format(permissionWarpPlugin);
 
-    private void buttonsSetup(Inventory inv, Mine m) {
+            // Get Mine Name.
+            String mineName = m.getName();
 
-        // Init the lore array with default values for ladders
-        List<String> minesLore = createLore(
-        );
+            // Add mineName lore for TP.
+            minesLore.add(SpigotPrison.format("&3" + mineName));
 
-        ItemStack itemMines;
-        Material material;
-
-        GuiConfig guiConfigClass = new GuiConfig();
-        guiConfig = guiConfigClass.getFileGuiConfig();
-        String permission = SpigotPrison.format(permissionWarpPlugin);
-
-        // Get Mine Name.
-        String mineName = m.getName();
-
-        // Add mineName lore for TP.
-        minesLore.add(SpigotPrison.format("&3" + mineName));
-
-        // The valid names to use for Options.Mines.MaterialType.<MaterialName> must be
-        // based upon the XMaterial enumeration name, or supported past names.
-        Material mineMaterial = null;
-        String materialTypeStr = guiConfig.getString("Options.Mines.MaterialType." + m.getName());
-        if ( materialTypeStr != null && materialTypeStr.trim().length() > 0 ) {
-        	XMaterial mineXMaterial = SpigotUtil.getXMaterial( materialTypeStr );
-        	if ( mineXMaterial != null ) {
-        		mineMaterial = mineXMaterial.parseMaterial();
-        	}
-        	else {
-        		Output.get().logInfo( "Warning: A block was specified for mine %s but it was " +
-        				"unable to be mapped to an XMaterial type. Key = " +
-        				"[Options.Mines.MaterialType.%s] value = " +
-        				"[%s] Please use valid material names as found in the XMaterial " +
-        				"source on git hub: " +
-        				"https://github.com/CryptoMorin/XSeries/blob/master/src/main/java/" +
-        				"com/cryptomorin/xseries/XMaterial.java ", 
-        				m.getName(), m.getName(), mineXMaterial );
-        	}
-        }
-
-        if (m.hasMiningAccess(spigotPlayer) || p.hasPermission(permission + m.getName()) || 
-        						p.hasPermission(permission.substring(0, permission.length() - 1))){
-            material = ( mineMaterial == null ? Material.COAL_ORE : mineMaterial);
-            minesLore.add(SpigotPrison.format(statusUnlockedMine));
-            minesLore.add(SpigotPrison.format(clickToTeleport));
-        } else {
-            material = XMaterial.REDSTONE_BLOCK.parseMaterial();
-            minesLore.add(SpigotPrison.format(statusLockedMine));
-        }
-
-        // Get mine Tag.
-        String mineTag = m.getTag();
-
-        // Check if mineName's null (which shouldn't be) and do actions.
-        if (mineName != null) {
-
-            if (mineTag == null || mineTag.equalsIgnoreCase("null")){
-                mineTag = mineName;
+            // The valid names to use for Options.Mines.MaterialType.<MaterialName> must be
+            // based upon the XMaterial enumeration name, or supported past names.
+            Material mineMaterial = null;
+            String materialTypeStr = guiConfig.getString("Options.Mines.MaterialType." + m.getName());
+            if ( materialTypeStr != null && materialTypeStr.trim().length() > 0 ) {
+                XMaterial mineXMaterial = SpigotUtil.getXMaterial( materialTypeStr );
+                if ( mineXMaterial != null ) {
+                    mineMaterial = mineXMaterial.parseMaterial();
+                }
+                else {
+                    Output.get().logInfo( "Warning: A block was specified for mine %s but it was " +
+                                    "unable to be mapped to an XMaterial type. Key = " +
+                                    "[Options.Mines.MaterialType.%s] value = " +
+                                    "[%s] Please use valid material names as found in the XMaterial " +
+                                    "source on git hub: " +
+                                    "https://github.com/CryptoMorin/XSeries/blob/master/src/main/java/" +
+                                    "com/cryptomorin/xseries/XMaterial.java ",
+                            m.getName(), m.getName(), mineXMaterial );
+                }
             }
 
-            if (material == null){
-                material = Material.COAL_ORE;
+            if (m.hasMiningAccess(spigotPlayer) || p.hasPermission(permission + m.getName()) ||
+                    p.hasPermission(permission.substring(0, permission.length() - 1))){
+                material = ( mineMaterial == null ? Material.COAL_ORE : mineMaterial);
+                minesLore.add(SpigotPrison.format(statusUnlockedMine));
+                minesLore.add(SpigotPrison.format(clickToTeleport));
+            } else {
+                material = XMaterial.REDSTONE_BLOCK.parseMaterial();
+                minesLore.add(SpigotPrison.format(statusLockedMine));
             }
 
-            // Create the button.
-            itemMines = createButton(new ItemStack(material, 1), minesLore, SpigotPrison.format("&3" + mineTag));
+            // Get mine Tag.
+            String mineTag = m.getTag();
 
-            // Add the button to the inventory.
-            inv.addItem(itemMines);
+            // Check if mineName's null (which shouldn't be) and do actions.
+            if (mineName != null) {
+
+                if (mineTag == null || mineTag.equalsIgnoreCase("null")){
+                    mineTag = mineName;
+                }
+
+                if (material == null){
+                    material = Material.COAL_ORE;
+                }
+
+                // Add the button to the inventory.
+                gui.addButton(new Button(null, XMaterial.matchXMaterial(material), minesLore, "&3" + mineTag));
+            }
+
         }
+
+        // Open the GUI.
+        gui.open();
     }
 }

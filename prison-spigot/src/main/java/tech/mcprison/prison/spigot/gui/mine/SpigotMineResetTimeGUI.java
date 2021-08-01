@@ -57,7 +57,6 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents {
         // Create a button and set the position
         gui.addButton(new Button(22, watch, confirmButtonLore, "&3" + "Confirm: " + mineName + " " + val));
 
-
         // Increase button
         gui.addButton(new Button(7, increaseMat, changeIncreaseValueLore, "&3" + mineName + " " + val + " + 1"));
         gui.addButton(new Button(16, increaseMat, 5, changeIncreaseValueLore, "&3" + mineName + " " + val + " + 5"));

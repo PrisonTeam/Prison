@@ -105,6 +105,7 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
             gui.addButton(disabledMode);
         }
 
+        // Open GUI.
         gui.open();
     }
 }

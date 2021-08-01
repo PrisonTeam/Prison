@@ -3,13 +3,11 @@ package tech.mcprison.prison.spigot.gui.mine;
 import java.util.List;
 
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
-import tech.mcprison.prison.mines.data.BlockOld;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
@@ -93,15 +91,15 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
                 // Add the button to the GUI.
                 gui.addButton(new Button(null, xMat, blockslore, "&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
         	}
-        } else {
-        	
+        } /*else {
+
         	// For every block makes a button
         	for (BlockOld block : m.getBlocks()) {
-        		
+
         		// Get the block material as a string and displayname
         		String blockmaterial = block.getType().name();
         		String blockmaterialdisplay = blockmaterial;
-        		
+
         		// Check if a block's air and changed the item of it to BARRIER
         		if (blockmaterial.equalsIgnoreCase("air")){
         			blockmaterial = "BARRIER";
@@ -134,7 +132,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
                 // Add the button to the GUI.
                 gui.addButton(new Button(null, XMaterial.valueOf(blockmaterial), blockslore, "&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
         	}
-        }
+        }*/
 
         // Open the inventory
         gui.open();
