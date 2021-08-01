@@ -21,6 +21,9 @@ is going on in each build so you have a better idea if it may be something
 that you need.
 
 
+## NOTE:
+* **A big amount of changelogs for 3.2.x version are listed under [changelog_v3.3.x.md](changelog_v3.3.x.md), this's 
+  because of an early release of 3.3.x, then lately renamed back to 3.2.x, sorry for the confusion but just to know, newer changelogs are there.**
 
 
 

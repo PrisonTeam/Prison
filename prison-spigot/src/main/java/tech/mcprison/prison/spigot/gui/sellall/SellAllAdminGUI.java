@@ -1,13 +1,12 @@
 package tech.mcprison.prison.spigot.gui.sellall;
 
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 import java.util.List;
@@ -26,7 +25,6 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
 
     public void open() {
 
-
         if (!SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true")){
             Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.SellAllIsDisabled"));
             return;
@@ -34,52 +32,44 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
 
         updateSellAllConfig();
 
-        Inventory inv = buttonsSetup();
-
-        openGUI(p, inv);
-    }
-
-
-    private boolean guiBuilder() {
-        try {
-            buttonsSetup();
-        } catch (NullPointerException ex){
-            Output.get().sendWarn(new SpigotPlayer(p), "&cThere's a null value in the GuiConfig.yml [broken]");
-            ex.printStackTrace();
-            return true;
-        }
-        return false;
-    }
-
-    private Inventory buttonsSetup() {
-
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Prison -> SellAll-Admin"));
+        PrisonGUI gui = new PrisonGUI(p, dimension, "&3Prison -> SellAll-Admin");
 
         List<String> blocksLore = createLore(
                 messages.getString("Lore.ClickToOpen")
         );
-
-        ItemStack autoSellButton;
+        List<String> closeGUILore = createLore(
+                messages.getString("Lore.ClickToClose")
+        );
+        List<String> setCurrencyLore = createLore(
+                messages.getString("Lore.SellAllActiveCurrency") + sellAllConfig.getString("Options.SellAll_Currency"),
+                messages.getString("Lore.ClickToEdit"),
+                "",
+                messages.getString("Lore.SellAllCurrencyInfo")
+        );
+        List<String> multipliersLore = createLore(
+                messages.getString("Lore.ClickToOpen"),
+                "",
+                messages.getString("Lore.PrestigeMultiplierInfoGUI")
+        );
         List<String> autoSellLore;
+        List<String> sellAllDelayLore;
+
+        Button autoSellButton;
+        Button sellAllDelayButton;
+
         if (sellAllConfig.getString("Options.Full_Inv_AutoSell").equalsIgnoreCase("true")){
             autoSellLore = createLore(
                     messages.getString("Lore.ClickToOpen"),
                     messages.getString("Lore.RightClickToDisable")
             );
-            autoSellButton = createButton(XMaterial.CHEST.parseItem(), autoSellLore, "&3AutoSell");
+            autoSellButton = new Button(13, XMaterial.CHEST, autoSellLore, "&3AutoSell");
         } else {
             autoSellLore = createLore(
                     messages.getString("Lore.RightClickToEnable")
             );
-            autoSellButton = createButton(XMaterial.CHEST.parseItem(), autoSellLore, "&cAutoSell-Disabled");
+            autoSellButton = new Button(13, XMaterial.CHEST, autoSellLore, "&cAutoSell-Disabled");
         }
 
-        List<String> closeGUILore = createLore(
-                messages.getString("Lore.ClickToClose")
-        );
-
-        ItemStack sellAllDelayButton;
-        List<String> sellAllDelayLore;
         if (sellAllConfig.getString("Options.Sell_Delay_Enabled").equalsIgnoreCase("true")){
 
             sellAllDelayLore = createLore(
@@ -91,7 +81,7 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
                     messages.getString("Lore.SellAllDelayInfo2")
             );
 
-            sellAllDelayButton = createButton(XMaterial.CLOCK.parseItem(), sellAllDelayLore, "&3Delay-Enabled");
+            sellAllDelayButton = new Button(11, XMaterial.CLOCK, sellAllDelayLore, "&3Delay-Enabled");
         } else {
 
             sellAllDelayLore = createLore(
@@ -101,21 +91,8 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
                     messages.getString("Lore.SellAllDelayInfo2")
             );
 
-            sellAllDelayButton = createButton(XMaterial.CLOCK.parseItem(), sellAllDelayLore, "&cDelay-Disabled");
+            sellAllDelayButton = new Button(11, XMaterial.CLOCK, sellAllDelayLore, "&cDelay-Disabled");
         }
-
-        List<String> setCurrencyLore = createLore(
-                messages.getString("Lore.SellAllActiveCurrency") + sellAllConfig.getString("Options.SellAll_Currency"),
-                messages.getString("Lore.ClickToEdit"),
-                "",
-                messages.getString("Lore.SellAllCurrencyInfo")
-        );
-
-        List<String> multipliersLore = createLore(
-                messages.getString("Lore.ClickToOpen"),
-                "",
-          messages.getString("Lore.PrestigeMultiplierInfoGUI")
-        );
 
         try {
             if (sellAllConfig.getConfigurationSection("Multiplier") == null) {
@@ -127,18 +104,13 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
             multipliersLore.add(SpigotPrison.format(messages.getString("Lore.EmptyMultiplier")));
         }
 
-        ItemStack setCurrencyButton = createButton(XMaterial.EMERALD.parseItem(), setCurrencyLore, SpigotPrison.format("&3SellAll-Currency"));
-        ItemStack multipliersButton = createButton(XMaterial.PAPER.parseItem(), multipliersLore, SpigotPrison.format("&3Prestige-Multipliers"));
-        ItemStack blocksButton = createButton(XMaterial.DIAMOND_ORE.parseItem(), blocksLore, "&3Blocks-Shop");
-        ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
+        gui.addButton(new Button(15, XMaterial.EMERALD, setCurrencyLore, SpigotPrison.format("&3SellAll-Currency")));
+        gui.addButton(new Button(8, XMaterial.PAPER, multipliersLore, SpigotPrison.format("&3Prestige-Multipliers")));
+        gui.addButton(new Button(0, XMaterial.DIAMOND_ORE, blocksLore, "&3Blocks-Shop"));
+        gui.addButton(new Button(dimension-1, XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, SpigotPrison.format("&c" + "Close")));
+        gui.addButton(sellAllDelayButton);
+        gui.addButton(autoSellButton);
 
-        inv.setItem(0, blocksButton);
-        inv.setItem(8, multipliersButton);
-        inv.setItem(11, sellAllDelayButton);
-        inv.setItem(13, autoSellButton);
-        inv.setItem(15, setCurrencyButton);
-        inv.setItem(dimension - 1, closeGUI);
-
-        return inv;
+        gui.open();
     }
 }

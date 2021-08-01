@@ -3,7 +3,6 @@ package tech.mcprison.prison.spigot.gui.sellall;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
@@ -85,6 +84,5 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
             }
         }
         gui.open();
-
     }
 }

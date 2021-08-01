@@ -24,6 +24,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-07-31
 
 
+* **All SellAll GUIs now use PrisonGUI Utility.**
+
+
 * **All Mines GUIs now use PrisonGUI Utility.**
 
 

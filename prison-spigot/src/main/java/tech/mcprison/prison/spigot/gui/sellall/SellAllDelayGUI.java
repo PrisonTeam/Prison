@@ -1,14 +1,10 @@
 package tech.mcprison.prison.spigot.gui.sellall;
 
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 import java.util.List;
@@ -20,8 +16,6 @@ public class SellAllDelayGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final int val;
-    private int dimension = 45;
-    private Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3SellAll -> Delay"));
 
 
     public SellAllDelayGUI(Player p, int val){
@@ -33,24 +27,8 @@ public class SellAllDelayGUI extends SpigotGUIComponents {
 
         updateSellAllConfig();
 
-        if (guiBuilder()) return;
-
-        // Open the inventory
-        openGUI(p, inv);
-    }
-
-    private boolean guiBuilder() {
-        try {
-            buttonsSetup();
-        } catch (NullPointerException ex){
-            Output.get().sendWarn(new SpigotPlayer(p), "&cThere's a null value in the GuiConfig.yml [broken]");
-            ex.printStackTrace();
-            return true;
-        }
-        return false;
-    }
-
-    private void buttonsSetup() {
+        int dimension = 45;
+        PrisonGUI gui = new PrisonGUI(p, dimension, "&3SellAll -> Delay");
 
         // Create a new lore
         List<String> changeDecreaseValueLore;
@@ -66,39 +44,27 @@ public class SellAllDelayGUI extends SpigotGUIComponents {
                 messages.getString("Lore.ClickToIncrease")
         );
 
-        Material decreaseMat = XMaterial.REDSTONE_BLOCK.parseMaterial();
-        ItemStack decreaseStack = XMaterial.REDSTONE_BLOCK.parseItem();
+        XMaterial decreaseMat = XMaterial.REDSTONE_BLOCK;
+        XMaterial increaseMat = XMaterial.EMERALD_BLOCK;
 
         // Decrease button
-        ItemStack decreaseOf1 = createButton(decreaseStack, changeDecreaseValueLore, SpigotPrison.format("&3Delay " + + val + " - 1" ));
-        inv.setItem(1, decreaseOf1);
-        ItemStack decreaseOf5 = createButton(new ItemStack(decreaseMat, 10), changeDecreaseValueLore, SpigotPrison.format("&3Delay " + val + " - 10"));
-        inv.setItem(10, decreaseOf5);
-        ItemStack decreaseOf10 = createButton(decreaseStack, changeDecreaseValueLore, SpigotPrison.format("&3Delay " + val + " - 100"));
-        inv.setItem(19, decreaseOf10);
-        ItemStack decreaseOf50 = createButton(decreaseStack, changeDecreaseValueLore, SpigotPrison.format("&3Delay " + val + " - 1000"));
-        inv.setItem(28, decreaseOf50);
-        ItemStack decreaseOf100 = createButton(decreaseStack, changeDecreaseValueLore, SpigotPrison.format("&3Delay " + val + " - 10000"));
-        inv.setItem(37, decreaseOf100);
-
+        gui.addButton(new Button(1, decreaseMat, changeDecreaseValueLore, SpigotPrison.format("&3Delay " + + val + " - 1" )));
+        gui.addButton(new Button(10, decreaseMat, 10, changeDecreaseValueLore, SpigotPrison.format("&3Delay " + val + " - 10")));
+        gui.addButton(new Button(19, decreaseMat, changeDecreaseValueLore, "&3Delay " + val + " - 100"));
+        gui.addButton(new Button(28, decreaseMat, changeDecreaseValueLore, "&3Delay " + val + " - 1000"));
+        gui.addButton(new Button(37, decreaseMat, changeDecreaseValueLore, "&3Delay " + val + " - 10000"));
 
         // Create a button and set the position
-        ItemStack confirmButton = createButton(XMaterial.CLOCK.parseItem(), confirmButtonLore, SpigotPrison.format("&3Confirm: Delay " + val));
-        inv.setItem(22, confirmButton);
+        gui.addButton(new Button(22, XMaterial.CLOCK, confirmButtonLore, "&3Confirm: Delay " + val));
 
-        Material increaseMat = XMaterial.EMERALD_BLOCK.parseMaterial();
-        ItemStack increaseStack = XMaterial.EMERALD_BLOCK.parseItem();
 
         // Increase button
-        ItemStack increseOf1 = createButton(increaseStack, changeIncreaseValueLore, SpigotPrison.format("&3Delay " + val + " + 1" ));
-        inv.setItem(7, increseOf1);
-        ItemStack increaseOf5 = createButton(new ItemStack(increaseMat, 10), changeIncreaseValueLore, SpigotPrison.format("&3Delay " + val + " + 10"));
-        inv.setItem(16, increaseOf5);
-        ItemStack increaseOf10 = createButton(increaseStack, changeIncreaseValueLore, SpigotPrison.format("&3Delay " + val + " + 100"));
-        inv.setItem(25, increaseOf10);
-        ItemStack increaseOf50 = createButton(increaseStack, changeIncreaseValueLore, SpigotPrison.format("&3Delay " + val + " + 1000"));
-        inv.setItem(34, increaseOf50);
-        ItemStack increaseOf100 = createButton(increaseStack, changeIncreaseValueLore, SpigotPrison.format("&3Delay " + val + " + 10000"));
-        inv.setItem(43, increaseOf100);
+        gui.addButton(new Button(7, increaseMat, changeIncreaseValueLore, "&3Delay " + val + " + 1"));
+        gui.addButton(new Button(16, increaseMat, 10, changeIncreaseValueLore, "&3Delay " + val + " + 10"));
+        gui.addButton(new Button(25, increaseMat, changeIncreaseValueLore,"&3Delay " + val + " + 100"));
+        gui.addButton(new Button(34, increaseMat, changeIncreaseValueLore, "&3Delay " + val + " + 1000"));
+        gui.addButton(new Button(43, increaseMat, changeIncreaseValueLore, "&3Delay " + val + " + 10000"));
+
+        gui.open();
     }
 }
