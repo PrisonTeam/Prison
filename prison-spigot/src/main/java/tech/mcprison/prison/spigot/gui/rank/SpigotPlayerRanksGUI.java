@@ -9,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
@@ -29,6 +28,8 @@ import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 /**
@@ -123,32 +124,12 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         // Create the inventory and set up the owner, dimensions or number of slots, and title
         int dimension = (int) (Math.ceil(ladder.getRanks().size() / 9D) * 9) + 9;
 
-        // Create the inventory
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format(guiConfig.getString("Options.Titles.PlayerRanksGUI")));
-
         // Get many parameters
         Rank rank = ladder.getLowestRank().get();
         Rank playerRank = getRankPlayer().getRank(guiConfig.getString("Options.Ranks.Ladder"));
 
-        // Call the whole GUI and build it
-        if (guiBuilder(dimension, inv, rank, playerRank)) return;
 
-        // Open the inventory
-        openGUI(getPlayer(), inv);
-    }
-
-    private boolean guiBuilder( int dimension, Inventory inv, Rank rank, Rank playerRank) {
-        try {
-            buttonsSetup(dimension, inv, rank, playerRank);
-        } catch (NullPointerException ex){
-            Output.get().sendWarn(new SpigotPlayer(getPlayer()), "&cThere's a null value in the GuiConfig.yml [broken]");
-            ex.printStackTrace();
-            return true;
-        }
-        return false;
-    }
-
-    private void buttonsSetup(int dimension, Inventory inv, Rank rank, Rank playerRank) {
+        PrisonGUI gui = new PrisonGUI(getPlayer(), dimension, guiConfig.getString("Options.Titles.PlayerRanksGUI"));
 
         // Not sure how you want to represent this:
         Material materialHas = Material.getMaterial(guiConfig.getString("Options.Ranks.Item_gotten_rank"));
@@ -198,7 +179,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
                 }
             }
 
-            inv.addItem(itemRank);
+            gui.addButton(new Button(null, itemRank));
             rank = rank.getRankNext();
         }
 
@@ -207,7 +188,10 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
                 messages.getString("Lore.ClickToRankup")
         );
 
-        ItemStack rankupButton = createButton(XMaterial.EMERALD_BLOCK.parseItem(), rankupLore, SpigotPrison.format(messages.getString("Lore.Rankup")));
-        inv.setItem(dimension - 5, rankupButton);
+        // Add button.
+        gui.addButton(new Button(dimension - 5, XMaterial.EMERALD_BLOCK, rankupLore, SpigotPrison.format(messages.getString("Lore.Rankup"))));
+
+        // Open GUI.
+        gui.open();
     }
 }

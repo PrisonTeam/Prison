@@ -1,12 +1,8 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
@@ -15,6 +11,8 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 import java.text.DecimalFormat;
@@ -54,8 +52,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         int dimension = 54;
         int pageSize = 45;
 
-        // Create the inventory and set up the owner, dimensions or number of slots, and title
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Ladders -> Ranks"));
+        PrisonGUI gui = new PrisonGUI(p, dimension, "&3" + "Ladders -> Ranks");
 
         // Global Strings.
         String loreShiftRightClickDelete = messages.getString("Lore.ShiftAndRightClickToDelete");
@@ -100,28 +97,23 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
             ranksLore.add("");
             //getCommands(ranksLore, rank);
 
-            // Make the button with materials, amount, lore and name
-            ItemStack itemRank = createButton(XMaterial.TRIPWIRE_HOOK.parseItem(), ranksLore, SpigotPrison.format("&3" + rank.getName()));
-
             // Add the button to the inventory
-            inv.setItem(i - counter, itemRank);
+            gui.addButton(new Button(i - counter, XMaterial.TRIPWIRE_HOOK, ranksLore, SpigotPrison.format("&3" + rank.getName())));
         }
 
         if (i < ladder.get().getRanks().size()) {
             List<String> nextPageLore = createLore(messages.getString("Lore.ClickToNextPage"));
 
-            ItemStack nextPageButton = createButton(Material.BOOK, 1, nextPageLore, "&7Next " + (i + 1));
-            inv.setItem(53, nextPageButton);
+            gui.addButton(new Button(53, XMaterial.BOOK, 1, nextPageLore, "&7Next " + (i + 1)));
         }
         if (i >= (pageSize * 2)) {
             List<String> priorPageLore = createLore(messages.getString("Lore.ClickToPriorPage"));
 
-            ItemStack priorPageButton = createButton(Material.BOOK, 1, priorPageLore,
-                    "&7Prior " + (i - (pageSize * 2) - 1));
-            inv.setItem(51, priorPageButton);
+            gui.addButton(new Button(51, XMaterial.BOOK, 1, priorPageLore,
+                    "&7Prior " + (i - (pageSize * 2) - 1)));
         }
 
-        // Open the inventory
-        openGUI(p, inv);
+        // Open the GUI.
+        gui.open();
     }
 }

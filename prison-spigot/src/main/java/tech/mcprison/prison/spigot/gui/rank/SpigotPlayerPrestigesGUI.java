@@ -7,7 +7,6 @@ import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
@@ -26,6 +25,8 @@ import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 /**
@@ -118,29 +119,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         // Create the inventory and set up the owner, dimensions or number of slots, and title
         int dimension = (int) (Math.ceil(ladder.getRanks().size() / 9D) * 9) + 9;
 
-        // Create an inventory
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format(guiConfig.getString("Options.Titles.PlayerPrestigesGUI")));
-
-        // guiBuilder and validation
-        if (guiBuilder(ladder, dimension, inv)) return;
-
-        // Open the inventory
-        openGUI(getPlayer(), inv);
-    }
-
-    private boolean guiBuilder(RankLadder ladder, int dimension, Inventory inv) {
-        try {
-            buttonsSetup(ladder, dimension, inv);
-        } catch (NullPointerException ex){
-            Output.get().sendWarn(new SpigotPlayer(getPlayer()), "&cThere's a null value in the GuiConfig.yml [broken]");
-            ex.printStackTrace();
-            return true;
-        }
-        return false;
-    }
-
-    private void buttonsSetup(RankLadder ladder, int dimension, Inventory inv) {
-
+        PrisonGUI gui = new PrisonGUI(getPlayer(), dimension, guiConfig.getString("Options.Titles.PlayerPrestigesGUI"));
 
         if ( ladder == null ){
             Output.get().sendWarn(new SpigotPlayer(player), messages.getString("Message.LadderPrestigesNotFound"));
@@ -200,7 +179,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
                     }
                 }
             }
-            inv.addItem(itemrank);
+            gui.addButton(new Button(null, itemrank));
 
             rank = rank.getRankNext();
         }
@@ -210,7 +189,10 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
                 messages.getString("Lore.ClickToRankup")
         );
 
-        ItemStack rankupButton = createButton(XMaterial.EMERALD_BLOCK.parseItem(), rankupLore, SpigotPrison.format("&aPrestige"));
-        inv.setItem(dimension - 5, rankupButton);
+        // Add button to GUI.
+        gui.addButton(new Button(dimension - 5, XMaterial.EMERALD_BLOCK, rankupLore, SpigotPrison.format("&aPrestige")));
+
+        // Open GUI.
+        gui.open();
     }
 }
