@@ -27,6 +27,9 @@ These build logs represent the work that has been going on within prison.
 * **All GUIs now use PrisonGUI Utility, finally it should be done now.**
 
 
+* **2 more autofeatures GUIs now use PrisonGUI Utility.**
+
+
 * **All SellAll GUIs now use PrisonGUI Utility.**
 
 

@@ -6,7 +6,6 @@ import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
-
 /**
  * @author GABRYCA
  */

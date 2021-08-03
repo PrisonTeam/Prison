@@ -1,17 +1,13 @@
 package tech.mcprison.prison.spigot.gui.autofeatures;
 
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 import java.util.List;
@@ -30,32 +26,12 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
 
     public void open() {
 
-        // Create the inventory and set up the owner, dimensions or number of slots, and title
         int dimension = 36;
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3AutoFeatures -> AutoPickup"));
-
-        if (guiBuilder(inv)) return;
-
-        openGUI(p, inv);
-    }
-
-    private boolean guiBuilder(Inventory inv) {
-        try {
-            buttonsSetup(inv);
-        } catch (NullPointerException ex){
-            Output.get().sendWarn(new SpigotPlayer(p), "&cThere's a null value in the GuiConfig.yml [broken]");
-            ex.printStackTrace();
-            return true;
-        }
-        return false;
-    }
-
-    private void buttonsSetup(Inventory inv) {
-
+        PrisonGUI gui = new PrisonGUI(p, dimension, "&3AutoFeatures -> AutoPickup");
 
         List<String> enabledLore = createLore(
                 messages.getString("Lore.ShiftAndRightClickToDisable")
-                );
+        );
 
         List<String> disabledLore = createLore(
                 messages.getString("Lore.RightClickToEnable")
@@ -65,119 +41,86 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
                 messages.getString("Lore.ClickToClose")
         );
 
-        ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
-        inv.setItem(35, closeGUI);
+        gui.addButton(new Button(35, XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, SpigotPrison.format("&c" + "Close")));
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.pickupAllBlocks ) ) {
-            ItemStack Enabled = createButton(XMaterial.LIME_STAINED_GLASS_PANE.parseItem(), enabledLore, SpigotPrison.format("&a" + "All_Blocks Enabled"));
-            inv.addItem(Enabled);
+            gui.addButton(new Button(null, XMaterial.LIME_STAINED_GLASS_PANE, enabledLore, SpigotPrison.format("&a" + "All_Blocks Enabled")));
         } else {
-            ItemStack Disabled = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), disabledLore, SpigotPrison.format("&c" + "All_Blocks Disabled"));
-            inv.addItem(Disabled);
+            gui.addButton(new Button(null, XMaterial.RED_STAINED_GLASS_PANE, disabledLore, SpigotPrison.format("&c" + "All_Blocks Disabled")));
         }
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.pickupCobbleStone ) ) {
-            ItemStack Enabled = createButton(XMaterial.COBBLESTONE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Cobblestone Enabled"));
-            inv.addItem(Enabled);
+            gui.addButton(new Button(null, XMaterial.COBBLESTONE, enabledLore, SpigotPrison.format("&a" + "Cobblestone Enabled")));
         } else {
-            ItemStack Disabled = createButton(XMaterial.COBBLESTONE.parseItem(), disabledLore, SpigotPrison.format("&c" + "Cobblestone Disabled"));
-            inv.addItem(Disabled);
+            gui.addButton(new Button(null, XMaterial.COBBLESTONE, disabledLore, SpigotPrison.format("&c" + "Cobblestone Disabled")));
         }
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.pickupStone ) ) {
-        	ItemStack Enabled = createButton(XMaterial.STONE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Stone Enabled"));
-        	inv.addItem(Enabled);
+            gui.addButton(new Button(null, XMaterial.STONE, enabledLore, SpigotPrison.format("&a" + "Stone Enabled")));
         } else {
-        	ItemStack Disabled = createButton(XMaterial.STONE.parseItem(), disabledLore, SpigotPrison.format("&c" + "Stone Disabled"));
-        	inv.addItem(Disabled);
+            gui.addButton(new Button(null, XMaterial.STONE, disabledLore, SpigotPrison.format("&c" + "Stone Disabled")));
         }
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.pickupGoldOre ) ) {
-        	ItemStack Enabled = createButton(XMaterial.GOLD_ORE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Gold_Ore Enabled"));
-        	inv.addItem(Enabled);
+            gui.addButton(new Button(null, XMaterial.GOLD_ORE, enabledLore, SpigotPrison.format("&a" + "Gold_Ore Enabled")));
         } else {
-        	ItemStack Disabled = createButton(XMaterial.GOLD_ORE.parseItem(), disabledLore, SpigotPrison.format("&c" + "Gold_Ore Disabled"));
-        	inv.addItem(Disabled);
+            gui.addButton(new Button(null, XMaterial.GOLD_ORE, disabledLore, SpigotPrison.format("&c" + "Gold_Ore Disabled")));
         }
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.pickupIronOre ) ) {
-            ItemStack Enabled = createButton(XMaterial.IRON_ORE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Iron_Ore Enabled"));
-            inv.addItem(Enabled);
+            gui.addButton(new Button(null, XMaterial.IRON_ORE, enabledLore, SpigotPrison.format("&a" + "Iron_Ore Enabled")));
         } else {
-            ItemStack Disabled = createButton(XMaterial.IRON_ORE.parseItem(), disabledLore, SpigotPrison.format("&c" + "Iron_Ore Disabled"));
-            inv.addItem(Disabled);
+            gui.addButton(new Button(null, XMaterial.IRON_ORE, disabledLore, SpigotPrison.format("&c" + "Iron_Ore Disabled")));
         }
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.pickupCoalOre ) ) {
-            ItemStack Enabled = createButton(XMaterial.COAL_ORE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Coal_Ore Enabled"));
-            inv.addItem(Enabled);
+            gui.addButton(new Button(null, XMaterial.COAL_ORE, enabledLore, SpigotPrison.format("&a" + "Coal_Ore Enabled")));
         } else {
-            ItemStack Disabled = createButton(XMaterial.COAL_ORE.parseItem(), disabledLore, SpigotPrison.format("&c" + "Coal_Ore Disabled"));
-            inv.addItem(Disabled);
+            gui.addButton(new Button(null, XMaterial.COAL_ORE, disabledLore, SpigotPrison.format("&c" + "Coal_Ore Disabled")));
         }
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.pickupDiamondOre ) ) {
-            ItemStack Enabled = createButton(XMaterial.DIAMOND_ORE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Diamond_Ore Enabled"));
-            inv.addItem(Enabled);
+            gui.addButton(new Button(null, XMaterial.DIAMOND_ORE, enabledLore, SpigotPrison.format("&a" + "Diamond_Ore Enabled")));
         } else {
-            ItemStack Disabled = createButton(XMaterial.DIAMOND_ORE.parseItem(), disabledLore, SpigotPrison.format("&c" + "Diamond_Ore Disabled"));
-            inv.addItem(Disabled);
+            gui.addButton(new Button(null, XMaterial.DIAMOND_ORE, disabledLore, SpigotPrison.format("&c" + "Diamond_Ore Disabled")));
         }
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.pickupRedStoneOre ) ) {
-            ItemStack Enabled = createButton(XMaterial.REDSTONE_ORE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Redstone_Ore Enabled"));
-            inv.addItem(Enabled);
+            gui.addButton(new Button(null, XMaterial.REDSTONE_ORE, enabledLore, SpigotPrison.format("&a" + "Redstone_Ore Enabled")));
         } else {
-            ItemStack Disabled = createButton(XMaterial.REDSTONE_ORE.parseItem(), disabledLore, SpigotPrison.format("&c" + "Redstone_Ore Disabled"));
-            inv.addItem(Disabled);
+            gui.addButton(new Button(null, XMaterial.REDSTONE_ORE, disabledLore, SpigotPrison.format("&c" + "Redstone_Ore Disabled")));
         }
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.pickupEmeraldOre ) ) {
-            ItemStack Enabled = createButton(XMaterial.EMERALD_ORE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Emerald_Ore Enabled"));
-            inv.addItem(Enabled);
+            gui.addButton(new Button(null, XMaterial.EMERALD_ORE, enabledLore, SpigotPrison.format("&a" + "Emerald_Ore Enabled")));
         } else {
-            ItemStack Disabled = createButton(XMaterial.EMERALD_ORE.parseItem(), disabledLore, SpigotPrison.format("&c" + "Emerald_Ore Disabled"));
-            inv.addItem(Disabled);
+            gui.addButton(new Button(null, XMaterial.EMERALD_ORE, disabledLore, SpigotPrison.format("&c" + "Emerald_Ore Disabled")));
         }
 
-        Material quartzOre = Material.matchMaterial( "quartz_ore" );
-        if ( quartzOre == null ) {
-        	quartzOre = Material.matchMaterial( "nether_quartz_ore" );
-        }
         if ( afConfig.isFeatureBoolean( AutoFeatures.pickupQuartzOre ) ) {
-            ItemStack Enabled = createButton(quartzOre, 1, enabledLore, SpigotPrison.format("&a" + "Quartz_Ore Enabled"));
-            inv.addItem(Enabled);
+            gui.addButton(new Button(null, XMaterial.NETHER_QUARTZ_ORE, 1, enabledLore, SpigotPrison.format("&a" + "Quartz_Ore Enabled")));
         } else {
-            ItemStack Disabled = createButton(quartzOre, 1, disabledLore, SpigotPrison.format("&c" + "Quartz_Ore Disabled"));
-            inv.addItem(Disabled);
+            gui.addButton(new Button(null, XMaterial.NETHER_QUARTZ_ORE, 1, disabledLore, SpigotPrison.format("&c" + "Quartz_Ore Disabled")));
         }
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.pickupLapisOre ) ) {
-            ItemStack Enabled = createButton(XMaterial.LAPIS_ORE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Lapis_Ore Enabled"));
-            inv.addItem(Enabled);
+            gui.addButton(new Button(null, XMaterial.LAPIS_ORE, enabledLore, SpigotPrison.format("&a" + "Lapis_Ore Enabled")));
         } else {
-            ItemStack Disabled = createButton(XMaterial.LAPIS_ORE.parseItem(), disabledLore, SpigotPrison.format("&c" + "Lapis_Ore Disabled"));
-            inv.addItem(Disabled);
+            gui.addButton(new Button(null, XMaterial.LAPIS_ORE, disabledLore, SpigotPrison.format("&c" + "Lapis_Ore Disabled")));
         }
 
-        Material snowBall = Material.matchMaterial( "snow_ball" );
-        if ( snowBall == null ) {
-        	snowBall = Material.matchMaterial( "snowball" );
-        }
         if ( afConfig.isFeatureBoolean( AutoFeatures.pickupSnowBall ) ) {
-            ItemStack Enabled = createButton(snowBall, 1, enabledLore, SpigotPrison.format("&a" + "Snow_Ball Enabled"));
-            inv.addItem(Enabled);
+            gui.addButton(new Button(null, XMaterial.SNOWBALL, 1, enabledLore, SpigotPrison.format("&a" + "Snow_Ball Enabled")));
         } else {
-            ItemStack Disabled = createButton(snowBall, 1, disabledLore, SpigotPrison.format("&c" + "Snow_Ball Disabled"));
-            inv.addItem(Disabled);
+            gui.addButton(new Button(null, XMaterial.SNOWBALL, 1, disabledLore, SpigotPrison.format("&c" + "Snow_Ball Disabled")));
         }
 
         if ( afConfig.isFeatureBoolean( AutoFeatures.pickupGlowstoneDust ) ) {
-            ItemStack Enabled = createButton(XMaterial.GLOWSTONE_DUST.parseItem(), enabledLore, SpigotPrison.format("&a" + "Glowstone_Dust Enabled"));
-            inv.addItem(Enabled);
+            gui.addButton(new Button(null, XMaterial.GLOWSTONE_DUST, enabledLore, SpigotPrison.format("&a" + "Glowstone_Dust Enabled")));
         } else {
-            ItemStack Disabled = createButton(XMaterial.GLOWSTONE_DUST.parseItem(), disabledLore, SpigotPrison.format("&c" + "Glowstone_Dust Disabled"));
-            inv.addItem(Disabled);
+            gui.addButton(new Button(null, XMaterial.GLOWSTONE_DUST, disabledLore, SpigotPrison.format("&c" + "Glowstone_Dust Disabled")));
         }
+
+        gui.open();
     }
 }
