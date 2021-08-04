@@ -24,6 +24,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.8 2021-08-04
 
 
+* **Modify the block break events to merge most of the preliminary processing from all of the different kind of block events.**
+This enables a single function to be able to handle most of the initial setup processes for all of the different block break events.  This will reduce the amount of code, eliminate possible errors, and make it a lot easier to enable more events to be processed.
+
+
 * **Add the option for using '*all*' for mine name for adding block events, which will add the event to all mines.**
 
 
