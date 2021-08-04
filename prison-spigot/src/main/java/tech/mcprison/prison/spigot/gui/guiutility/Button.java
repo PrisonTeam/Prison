@@ -119,6 +119,37 @@ public class Button extends SpigotGUIComponents{
     }
 
     /**
+     * Create button.
+     *
+     * @param position - int.
+     * @param buttonMaterial - Material.
+     * @param amount - int.
+     * @param lore - ButtonLore.
+     * @param title - String.
+     * */
+    public Button(Integer position, XMaterial buttonMaterial, int amount, ButtonLore lore, String title){
+        if (position == null || position < 54) {
+            this.position = position;
+            this.buttonItem = createButton(buttonMaterial.parseMaterial(), amount, lore.getLore(), SpigotPrison.format(title));
+        }
+    }
+
+    /**
+     * Create button.
+     *
+     * @param position - int.
+     * @param buttonMaterial - Material.
+     * @param lore - ButtonLore.
+     * @param title - String.
+     * */
+    public Button(Integer position, XMaterial buttonMaterial, ButtonLore lore, String title){
+        if (position == null || position < 54) {
+            this.position = position;
+            this.buttonItem = createButton(buttonMaterial.parseItem(), lore.getLore(), SpigotPrison.format(title));
+        }
+    }
+
+    /**
      * Set button item.
      * */
     public void setButtonItem(ItemStack item){
@@ -160,13 +191,26 @@ public class Button extends SpigotGUIComponents{
     /**
      * Set button lore.
      *
-     * @param lore - List<String>
+     * @param lore - List
      * */
     public void setButtonLore(List<String> lore){
         if (buttonItem.getItemMeta() != null) {
             buttonItem = createButton(buttonItem, lore, buttonItem.getItemMeta().getDisplayName());
         } else {
             buttonItem = createButton(buttonItem, lore, buttonItem.getType().name());
+        }
+    }
+
+    /**
+     * Set button lore.
+     *
+     * @param lore - ButtonLore.
+     * */
+    public void setButtonLore(ButtonLore lore){
+        if (buttonItem.getItemMeta() != null) {
+            buttonItem = createButton(buttonItem, lore.getLore(), buttonItem.getItemMeta().getDisplayName());
+        } else {
+            buttonItem = createButton(buttonItem, lore.getLore(), buttonItem.getType().name());
         }
     }
 

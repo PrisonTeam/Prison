@@ -25,8 +25,11 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.9 2021-08-04
 
 
+* **Minor design changes to the main GUI /gui**: to apply them you should reset (delete it) your en_US.yml at this path ->
+  Prison/module_conf/lang/en_US.yml. More changes will come in the future.
 
 
+* **ButtonLore is quite ready and already in use for the /gui main GUI, only the first page uses it.**
 
 
 * **Started working on a new ButtonLore Utility that will be included in the SpigotGUI Utility.**

@@ -80,7 +80,7 @@ public class SpigotMineBlockPercentageGUI extends SpigotGUIComponents {
         if ( xMat == null ) {
             xMat = XMaterial.STONE;
         }
-        gui.addButton(new Button(4, xMat, 1, null, "&3" + xMat));
+        gui.addButton(new Button(4, xMat, 1, "&3" + xMat));
 
         gui.open();
     }

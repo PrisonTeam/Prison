@@ -125,7 +125,7 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.LeftClickToReset","&aLeft Click to reset");
         dataConfig("Lore.LeftClickToEdit", "&aLeft-Click to edit value");
         dataConfig("Lore.ManageResetTime","&8Manage the reset time of Mine.");
-        dataConfig("Lore.MinesButton","&8Mines GUI manager.");
+        dataConfig("Lore.MinesButton","&3Mines GUI manager.");
         dataConfig("Lore.MineName", "&3Mine Name: &f");
         dataConfig("Lore.Multiplier", "&3Multiplier: &f");
         dataConfig("Lore.Name","&3Rank Name: &7");
@@ -143,12 +143,12 @@ public class MessagesConfig extends SpigotConfigComponents{
         dataConfig("Lore.Price2","&8Price: &a$");
         dataConfig("Lore.Price3","&3Rank Price: &a$");
         dataConfig("Lore.Percentage", "&8Percentage: ");
-        dataConfig("Lore.PrisonTasksButton","&8Prison Tasks Manager.");
+        dataConfig("Lore.PrisonTasksButton","&3Prison Tasks Manager.");
         dataConfig("Lore.ResetTime","&3Reset time(s): &7");
         dataConfig("Lore.Radius","&8Radius: ");
         dataConfig("Lore.RankupCommands","&8&l|&3RankUPCommands&8| &8&l- &3");
         dataConfig("Lore.Rankup","&aRankup");
-        dataConfig("Lore.RanksButton","&8Ranks GUI manager.");
+        dataConfig("Lore.RanksButton","&3Ranks GUI manager.");
         dataConfig("Lore.ResetButton","&8Resets the mine.");
         dataConfig("Lore.RightClickToCancel","&cRight-Click to cancel.");
         dataConfig("Lore.RightClickToEnable","&cRight-Click to &aenable&c.");

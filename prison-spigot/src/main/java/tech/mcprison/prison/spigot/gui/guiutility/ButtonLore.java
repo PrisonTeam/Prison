@@ -1,5 +1,7 @@
 package tech.mcprison.prison.spigot.gui.guiutility;
 
+import tech.mcprison.prison.spigot.SpigotPrison;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +16,7 @@ public class ButtonLore extends SpigotGUIComponents{
     private String colorIDBracket = "&8";
     private String colorIDAction = "&8";
     private String colorIDDescription = "&3";
-    private String bracketDef = "----------------------------";
+    private String bracketDef = "-----------------------";
 
     /**
      * Initialize a button lore with basic info (can also be empty).
@@ -24,7 +26,7 @@ public class ButtonLore extends SpigotGUIComponents{
      * &8descriptionAction
      *
      * &8----------------------------
-     * description
+     * &3description
      * &8----------------------------
      *
      * @param descriptionAction - List
@@ -33,14 +35,38 @@ public class ButtonLore extends SpigotGUIComponents{
     public ButtonLore(List<String> descriptionAction, List<String> description){
         if (!descriptionAction.isEmpty()) {
             for (String dAction : descriptionAction) {
-                this.descriptionAction.add(colorIDAction + dAction);
+                this.descriptionAction.add(SpigotPrison.format(colorIDAction + dAction));
             }
         }
 
         if (!description.isEmpty()) {
             for (String descriptionLore : description) {
-                this.description.add(colorIDDescription + descriptionLore);
+                this.description.add(SpigotPrison.format(colorIDDescription + descriptionLore));
             }
+        }
+    }
+
+    /**
+     * Initialize a button lore with basic info (can also be empty).
+     *
+     * The final format, if all requirements are met, is as follow:
+     *
+     * &8descriptionAction
+     *
+     * &8----------------------------
+     * &3description
+     * &8----------------------------
+     *
+     * @param descriptionAction - String.
+     * @param description - String.
+     * */
+    public ButtonLore(String descriptionAction, String description){
+        if (descriptionAction != null) {
+            this.descriptionAction.add(SpigotPrison.format(colorIDAction + descriptionAction));
+        }
+
+        if (description != null) {
+            this.description.add(SpigotPrison.format(colorIDDescription + description));
         }
     }
 
@@ -52,8 +78,18 @@ public class ButtonLore extends SpigotGUIComponents{
     public void setLoreAction(List<String> descriptionAction){
         this.descriptionAction = new ArrayList<>();
         for (String dAction : descriptionAction) {
-            this.descriptionAction.add(colorIDAction + dAction);
+            this.descriptionAction.add(SpigotPrison.format(colorIDAction + dAction));
         }
+    }
+
+    /**
+     *  Set description action.
+     *
+     * @param descriptionAction - String.
+     * */
+    public void setLoreAction(String descriptionAction){
+        this.descriptionAction = new ArrayList<>();
+        this.descriptionAction.add(SpigotPrison.format(colorIDAction + descriptionAction));
     }
 
     /**
@@ -64,8 +100,18 @@ public class ButtonLore extends SpigotGUIComponents{
     public void setLoreDescription(List<String> description){
         this.description = new ArrayList<>();
         for (String descriptionLore : description) {
-            this.description.add(colorIDDescription + descriptionLore);
+            this.description.add(SpigotPrison.format(colorIDDescription + descriptionLore));
         }
+    }
+
+    /**
+     * Set description.
+     *
+     * @param description - String.
+     * */
+    public void setLoreDescription(String description){
+        this.description = new ArrayList<>();
+        this.description.add(SpigotPrison.format(colorIDDescription + description));
     }
 
     /**
@@ -145,11 +191,14 @@ public class ButtonLore extends SpigotGUIComponents{
      * @return lore - List
      * */
     public List<String> getLore(){
-        this.lore.addAll(descriptionAction);
-        this.lore.add("");
-        this.lore.add(addBracket());
-        this.lore.addAll(description);
-        this.lore.add(addBracket());
-        return this.lore;
+        lore.addAll(descriptionAction);
+
+        if (!description.isEmpty()) {
+            lore.add("");
+            lore.add(SpigotPrison.format(addBracket()));
+            lore.addAll(description);
+            lore.add(SpigotPrison.format(addBracket()));
+        }
+        return lore;
     }
 }
