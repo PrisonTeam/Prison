@@ -3,7 +3,43 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
-* Add hunger to auto features calculations
+* Add an *all* for mine names under blockEvent add:
+
+
+* Eliminate the following message from logging an error, but just keep a note in the code:
+ - Cannot initialize NMS components - ClassNotFoundException - NMS is not functional - net.minecraft.server.v1_17_R1.EntityPlayer
+ - This does not appear to have much of an impact at this time.
+ 
+
+* DONE: On default ladder, at top rank, if prestige is enabled, then show a message that can be configured.
+
+
+* DONE: Add hunger to auto features calculations
+
+
+* add all commands to the server.yml file.  spigot 1.17.1 is getting fussy.
+
+
+* Conversion tool to import SuperiorPrison users:
+  - rank is based upon perms `permission.mine.A` and they keep former rank perms.
+  - No prestiges
+  - able to reset ranks so conversion can be ran multiple times.
+  - Unable to really do this due to offline players not having access to the perms.  As such, and also due to the need ceasing to exist, this has been put on the back burner.
+
+
+* extended fortune : Apply fortune to all blocks that bukkit does not apply them to.
+
+
+* DONE: /prison placeholders list - group by placeholder type.
+
+
+* DONE: Placeholders for items in hand: name, 
+
+
+* DONE: try out the new event priority code. if it works, apply it to all classes
+
+
+* hook up alternative processing to have prison force the running of another plugin if a setting is enabled. This way prison can "control" how it processes the "left-overs".
 
 
 * prison command handler:

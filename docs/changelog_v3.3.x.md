@@ -21,10 +21,20 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.8 2021-08-04
+
+# v3.2.10-alpha.9 2021-08-04
+
+
+
+
 
 
 * **Started working on a new ButtonLore Utility that will be included in the SpigotGUI Utility.**
+
+
+* **v3.2.10-alpha.9 2021-08-04**
+Released...
+Upgraded gradle to use v6.1.0 of Jengleman's ShadowJar... was v5.2.0.
 
 
 * **Modify the block break events to merge most of the preliminary processing from all of the different kind of block events.**
