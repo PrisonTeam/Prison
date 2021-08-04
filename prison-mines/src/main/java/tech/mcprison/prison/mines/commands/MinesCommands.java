@@ -3075,7 +3075,8 @@ public class MinesCommands
 	    		docURLs = {"https://prisonteam.github.io/Prison/prison_docs_115_using_BlockEvents.html",
 	    				"https://prisonteam.github.io/Prison/prison_docs_111_mine_commands.html" } )
     public void blockEventAdd(CommandSender sender, 
-    			@Arg(name = "mineName", description = "mine name, or 'placeholders' for a list of possible placeholders that " +
+    			@Arg(name = "mineName", description = "mine name, '*all*' to apply to all mines, or " +
+    					"'placeholders' for a list of possible placeholders that " +
     					"you can use with blockEvents") String mineName,
     			@Arg(name = "percent", def = "100.0",
     					description = "Percent chance between 0.0000 and 100.0") Double chance,
@@ -3121,7 +3122,9 @@ public class MinesCommands
             command = command.replaceFirst("/", "");
         }
 
-        if (!performCheckMineExists(sender, mineName)) {
+        if ( mineName == null && !performCheckMineExists(sender, mineName) || 
+        		mineName != null && !"*all*".equalsIgnoreCase( mineName ) &&
+        		!performCheckMineExists(sender, mineName)) {
             return;
         }
         
@@ -3167,46 +3170,63 @@ public class MinesCommands
 //        }
 
         
-        setLastMineReferenced(mineName);
-        
-        PrisonMines pMines = PrisonMines.getInstance();
-//    	MineManager mMan = pMines.getMineManager();
-        Mine m = pMines.getMine(mineName);
-        
         if ( command == null || command.trim().length() == 0 ) {
         	sender.sendMessage( 
         			String.format( "&7Please provide a valid BlockEvent command: command=[%s]", command) );
         	return;
         }
         
-        MineBlockEvent blockEvent = new MineBlockEvent( chance, perm, command, taskMode );
-        m.getBlockEvents().add( blockEvent );
-
-        pMines.getMineManager().saveMine( m );
         
-        Output.get().sendInfo(sender, "&7Added BlockEvent command '&b%s&7' " +
-        		"&7to the mine '&b%s&7' with " +
-        		"the optional permission %s. Using the mode %s.", 
-        		command, m.getTag(), 
-        		perm == null || perm.trim().length() == 0 ? "&3none&7" : "'&3" + perm + "&7'",
-        		mode );
-
-		String.format("&7Notice: &3The default eventType has been set to &7all&3. If you need " +
-				"to change it to something else, then use the command &7/mines blockEvent eventType help&3. " +
-				"[all, blockBreak, TEXplosion] The event type is what causes the block to break. " +
-				"Token Enchant's Explosion events are covered and can be focused with the " +
-				"triggered parameter." );
-
+        PrisonMines pMines = PrisonMines.getInstance();
+//    	MineManager mMan = pMines.getMineManager();
         
+        List<Mine> mines = new ArrayList<>();
+        
+        if ( "*all*".equalsIgnoreCase( mineName ) ) {
+        	mines.addAll( pMines.getMines() );
+        }
+        else {
+        	setLastMineReferenced(mineName);
+        	
+        	Mine m = pMines.getMine(mineName);
+        	mines.add( m );
+        }
+        
+        for ( Mine m : mines )
+		{
+			
+        	MineBlockEvent blockEvent = new MineBlockEvent( chance, perm, command, taskMode );
+        	m.getBlockEvents().add( blockEvent );
+        	
+        	pMines.getMineManager().saveMine( m );
+        	
+        	Output.get().sendInfo(sender, "&7Added BlockEvent command '&b%s&7' " +
+        			"&7to the mine '&b%s&7' with " +
+        			"the optional permission %s. Using the mode %s.", 
+        			command, m.getTag(), 
+        			perm == null || perm.trim().length() == 0 ? "&3none&7" : "'&3" + perm + "&7'",
+        					mode );
+        	
+//        	String.format("&7Notice: &3The default eventType has been set to &7all&3. If you need " +
+//        			"to change it to something else, then use the command &7/mines blockEvent eventType help&3. " +
+//        			"[all, blockBreak, TEXplosion] The event type is what causes the block to break. " +
+//        			"Token Enchant's Explosion events are covered and can be focused with the " +
+//        			"triggered parameter." );
+        	
+        	
 //        if ( eType == BlockEventType.eventTEXplosion ) {
 //        	sender.sendMessage( "&7Notice: &3Since the event type is for TokenEnchant's eventTEXplosion, " +
 //        			"then you may set the value of &7triggered&7 with the command " +
 //        			"&7/mines blockEvent triggered help&3." );
 //        }
+		}
 
         
-        // Redisplay the event list:
-        blockEventList( sender, mineName );
+        if ( !"*all*".equalsIgnoreCase( mineName ) ) {
+        	
+        	// Redisplay the event list:
+        	blockEventList( sender, mineName );
+        }
 
     }
 

@@ -21,7 +21,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# v3.2.10-alpha.8 2021-07-31
+# v3.2.10-alpha.8 2021-08-04
+
+
+* **Add the option for using '*all*' for mine name for adding block events, which will add the event to all mines.**
 
 
 * **All GUIs now use PrisonGUI Utility, finally it should be done now.**
