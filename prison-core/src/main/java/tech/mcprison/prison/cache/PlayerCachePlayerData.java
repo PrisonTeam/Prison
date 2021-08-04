@@ -66,6 +66,8 @@ public class PlayerCachePlayerData {
 	private TreeMap<String, Long> timeByMine;
 	private String lastMine = null;
 
+	private TreeMap<String, Double> earningsByMine;
+
 	
 	private transient TreeMap<String, Double> earningsPerMinute;
 	
@@ -98,6 +100,8 @@ public class PlayerCachePlayerData {
 		this.timeByMine = new TreeMap<>();
 		this.lastMine = null;
 		
+		this.earningsByMine = new TreeMap<>();
+
 		this.earningsPerMinute = new TreeMap<>();
 		
 		this.sessionType = SessionType.active;
@@ -298,6 +302,17 @@ public class PlayerCachePlayerData {
 		getBlocksByMine().put( mine, qty );
 	}
 	
+	private void addEarningsByMine( String mine, double amount ) {
+		double amt = amount;
+		
+		if ( getEarningsByMine().containsKey( mine ) ) {
+			amt += getEarningsByMine().get( mine );
+			
+		}
+		
+		getEarningsByMine().put( mine, amt );
+	}
+	
 	private void addTimeToMine( String mine, long miningDuration )
 	{
 		if ( mine != null && !mine.trim().isEmpty() ) {
@@ -333,6 +348,17 @@ public class PlayerCachePlayerData {
 			earningsPerMinute.remove( 
 					earningsPerMinute.firstEntry().getKey() );
 		}
+		
+		
+		// If earnings are within the session timeout for mining, then add the 
+		// earnings to the moneyByMine:
+		if ( sessionType == SessionType.mining && getLastMine() != null ) {
+			long duration = System.currentTimeMillis() - sessionTimingLastCheck;
+			if ( duration < SESSION_TIMEOUT_MINING_MS ) {
+				addEarningsByMine( getLastMine(), earnings );
+			}
+		}
+		
 	}
 	
 	/**
@@ -489,6 +515,13 @@ public class PlayerCachePlayerData {
 	}
 	public void setLastMine( String lastMine ) {
 		this.lastMine = lastMine;
+	}
+
+	public TreeMap<String, Double> getEarningsByMine() {
+		return earningsByMine;
+	}
+	public void setEarningsByMine( TreeMap<String, Double> earningsByMine ) {
+		this.earningsByMine = earningsByMine;
 	}
 
 	public boolean isDirty() {

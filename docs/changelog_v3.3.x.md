@@ -25,6 +25,11 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.9 2021-08-04
 
 
+* **Added the recording of earnings per mine.**
+The add earnings must be called within the time limit as defined by the session timeout for mining, which is currently 15 seconds.
+If something is sold outside of that session timeout, then it will not be attributed to the mine.
+
+
 * **Minor design changes to the main GUI /gui**: to apply them you should reset (delete it) your en_US.yml at this path ->
   Prison/module_conf/lang/en_US.yml. More changes will come in the future.
 
