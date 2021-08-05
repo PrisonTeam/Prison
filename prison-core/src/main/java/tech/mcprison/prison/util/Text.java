@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import tech.mcprison.prison.Prison;
+
 /**
  * Provides utilities for manipulating text.
  *
@@ -445,12 +447,15 @@ public class Text {
         int eatLeft = (centerlen / 2) - balance;
         int eatRight = (centerlen - eatLeft) + balance;
 
+        String prisonVersion = " &5(" + Prison.get().getPlatform().getPluginVersion() + ")";
+        
         if (eatLeft < pivot) {
             return translateAmpColorCodes(
                 "&8" + (headingLine.substring(0, pivot - eatLeft)) + " " + center + " &8"
-                    + (headingLine.substring(pivot + eatRight)));
+                    + (headingLine.substring(pivot + eatRight)))
+            		 + prisonVersion;
         } else {
-            return center;
+            return center + prisonVersion;
         }
     }
 
