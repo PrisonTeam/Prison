@@ -22,7 +22,15 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.10-alpha.9 2021-08-04
+# v3.2.10-alpha.9 2021-08-05
+
+
+* **Fixed an issue with spigot 1.17.1 where they appear to be extending the BlockBreakEvent for FurnaceExtractEvent but not isolating the listeners.**
+Forced to check to ensure the event is actually a BlockBreakEvent to ensure the correct event is really being fired correctly.
+
+
+* **Added prison's version to the chat display's title.**
+is will help support since it wil help show us what version someone is using.
 
 
 * **Added the recording of earnings per mine.**

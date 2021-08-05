@@ -109,9 +109,12 @@ public class AutoManagerBlockBreakEvents
     				
     				pm.registerEvent(BlockBreakEvent.class, autoManagerlListener, ePriority,
     						new EventExecutor() {
-    					public void execute(Listener l, Event e) { 
-    						((AutoManagerBlockBreakEventListener)l)
-    									.onBlockBreak((BlockBreakEvent)e);
+    					public void execute(Listener l, Event e) {
+    						if ( l instanceof AutoManagerBlockBreakEventListener && 
+              						 e instanceof BlockBreakEvent ) {
+    							((AutoManagerBlockBreakEventListener)l)
+    											.onBlockBreak((BlockBreakEvent)e);
+    						}
     					}
     				},
 					prison);
@@ -120,9 +123,12 @@ public class AutoManagerBlockBreakEvents
     			
     			pm.registerEvent(BlockBreakEvent.class, normalListener, ePriority,
     					new EventExecutor() {
-    				public void execute(Listener l, Event e) { 
-    					((OnBlockBreakEventListenerNormal)l)
-    								.onBlockBreak((BlockBreakEvent)e);
+    				public void execute(Listener l, Event e) {
+    					if ( l instanceof OnBlockBreakEventListenerNormal && 
+         						 e instanceof BlockBreakEvent ) {
+    						((OnBlockBreakEventListenerNormal)l)
+    											.onBlockBreak((BlockBreakEvent)e);
+    					}
     				}
     			},
     			prison);
@@ -132,8 +138,11 @@ public class AutoManagerBlockBreakEvents
     			pm.registerEvent(BlockBreakEvent.class, normalListenerMonitor, EventPriority.MONITOR,
     					new EventExecutor() {
     				public void execute(Listener l, Event e) { 
-    					((OnBlockBreakEventListenerNormalMonitor)l)
-    								.onBlockBreak((BlockBreakEvent)e);
+    					if ( l instanceof OnBlockBreakEventListenerNormalMonitor && 
+        						 e instanceof BlockBreakEvent ) {
+    						((OnBlockBreakEventListenerNormalMonitor)l)
+    										.onBlockBreak((BlockBreakEvent)e);
+    					}
     				}
     			},
     			prison);
