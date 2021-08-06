@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
@@ -31,19 +32,10 @@ public class SellAllPriceGUI extends SpigotGUIComponents {
         int dimension = 45;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3SellAll -> ItemValue");
 
-        // Create a new lore
-        List<String> changeDecreaseValueLore;
-        changeDecreaseValueLore = createLore(
-                messages.getString("Lore.ClickToDecrease")
-        );
-        List<String> confirmButtonLore = createLore(
-                messages.getString("Lore.LeftClickToConfirm"),
-                messages.getString("Lore.Price2") + val,
-                messages.getString("Lore.RightClickToCancel")
-        );
-        List<String> changeIncreaseValueLore = createLore(
-                messages.getString("Lore.ClickToIncrease")
-        );
+        ButtonLore changeDecreaseValueLore = new ButtonLore(messages.getString("Lore.ClickToDecrease"), null);
+        ButtonLore confirmButtonLore = new ButtonLore(createLore(
+                messages.getString("Lore.LeftClickToConfirm"), messages.getString("Lore.RightClickToCancel")), createLore(messages.getString("Lore.Price2") + val));
+        ButtonLore changeIncreaseValueLore = new ButtonLore(messages.getString("Lore.ClickToIncrease"), null);
 
         XMaterial decreaseMat = XMaterial.REDSTONE_BLOCK;
         XMaterial increaseMat = XMaterial.EMERALD_BLOCK;

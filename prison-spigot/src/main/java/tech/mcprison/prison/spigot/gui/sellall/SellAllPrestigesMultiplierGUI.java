@@ -3,6 +3,7 @@ package tech.mcprison.prison.spigot.gui.sellall;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
@@ -45,13 +46,12 @@ public class SellAllPrestigesMultiplierGUI extends SpigotGUIComponents {
             for (String prestige : sellAllConfig.getConfigurationSection("Multiplier").getKeys(false)) {
 
                 if (flagValue == i) {
-                    List<String> loreMult = createLore(
-                            lorePrestigeName + sellAllConfig.getString("Multiplier." + prestige + ".PRESTIGE_NAME"),
-                            lorePrestigeMultiplier + sellAllConfig.getString("Multiplier." + prestige + ".MULTIPLIER"),
-                            "",
+
+                    ButtonLore loreMult = new ButtonLore(createLore(
                             loreClickToEdit,
-                            loreClickToDelete
-                    );
+                            loreClickToDelete), createLore(
+                                    lorePrestigeName + sellAllConfig.getString("Multiplier." + prestige + ".PRESTIGE_NAME"),
+                            lorePrestigeMultiplier + sellAllConfig.getString("Multiplier." + prestige + ".MULTIPLIER")));
 
                     gui.addButton(new Button(null, XMaterial.PAPER, loreMult, sellAllConfig.getString("Multiplier." + prestige + ".PRESTIGE_NAME")));
                 }
@@ -60,15 +60,10 @@ public class SellAllPrestigesMultiplierGUI extends SpigotGUIComponents {
         }
 
         if (i < sellAllConfig.getConfigurationSection("Multiplier").getKeys(false).size()) {
-            List<String> nextPageLore = createLore(messages.getString("Lore.ClickToNextPage"));
-
-            gui.addButton(new Button(53, XMaterial.BOOK, nextPageLore, "&7Next " + (i + 1)));
+            gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(messages.getString("Lore.ClickToNextPage"), null), "&7Next " + (i + 1)));
         }
         if (i >= (pageSize * 2)) {
-            List<String> priorPageLore = createLore(messages.getString("Lore.ClickToPriorPage"));
-
-
-            gui.addButton(new Button(51, XMaterial.BOOK, priorPageLore, "&7Prior " + (i - (pageSize * 2) - 1)));
+            gui.addButton(new Button(51, XMaterial.BOOK, new ButtonLore(messages.getString("Lore.ClickToPriorPage"), null), "&7Prior " + (i - (pageSize * 2) - 1)));
         }
 
         gui.open();

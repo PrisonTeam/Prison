@@ -7,11 +7,13 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
-import java.util.List;
-
+/**
+ * @author AnonymousGCA (GABRYCA)
+ * */
 public class BackpacksListPlayerGUI extends SpigotGUIComponents {
 
     private final Player p;
@@ -30,18 +32,10 @@ public class BackpacksListPlayerGUI extends SpigotGUIComponents {
         int dimension = 54;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3" + p.getName() + " -> Backpacks");
 
-        List<String> loreAddBackpackButton = createLore(
-                messages.getString("Lore.ClickToAddBackpack"),
-                " ",
-                "&8-----------------------",
-                " ",
-                messages.getString("Lore.ClickToAddBackpackInst0"),
+        ButtonLore loreAddBackpackButton = new ButtonLore(createLore(messages.getString("Lore.ClickToAddBackpack")), createLore(messages.getString("Lore.ClickToAddBackpackInst0"),
                 messages.getString("Lore.ClickToAddBackpackInst1"),
                 messages.getString("Lore.ClickToAddBackpackInst2"),
-                messages.getString("Lore.ClickToAddBackpackInst3"),
-                " ",
-                "&8-----------------------"
-        );
+                messages.getString("Lore.ClickToAddBackpackInst3")));
 
         // Global Strings.
         String loreClickToOpen = messages.getString("Lore.ClickToOpen");
@@ -49,16 +43,15 @@ public class BackpacksListPlayerGUI extends SpigotGUIComponents {
         if (!BackpacksUtil.get().getBackpacksIDs(p).isEmpty()) {
             int slot = 0;
             for (String id : BackpacksUtil.get().getBackpacksIDs(p)) {
-                List<String> lore = createLore(
-                        loreClickToOpen,
-                        " "
-                );
+
+                ButtonLore lore = new ButtonLore(loreClickToOpen, null);
+
                 if (slot < 45) {
                     if (id != null) {
-                        lore.add(SpigotPrison.format("&3/backpack " + id));
+                        lore.setLoreDescription(SpigotPrison.format("&3/backpack " + id));
                         gui.addButton(new Button(slot, XMaterial.CHEST, lore, "&3Backpack-" + id));
                     } else {
-                        lore.add(SpigotPrison.format("&3/backpack"));
+                        lore.setLoreDescription(SpigotPrison.format("&3/backpack"));
                         gui.addButton(new Button(slot, XMaterial.CHEST, lore, "&3Backpack"));
                     }
                     slot++;
@@ -70,11 +63,7 @@ public class BackpacksListPlayerGUI extends SpigotGUIComponents {
             gui.addButton(new Button(49, XMaterial.EMERALD_BLOCK, loreAddBackpackButton, "&aNew Backpack"));
         }
 
-        List<String> closeGUILore = createLore(
-                messages.getString("Lore.ClickToClose")
-        );
-
-        gui.addButton(new Button(dimension-1, XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, "&c" + "Close"));
+        gui.addButton(new Button(dimension-1, XMaterial.RED_STAINED_GLASS_PANE, new ButtonLore(messages.getString("Lore.ClickToClose"), null), "&c" + "Close"));
 
         gui.open();
     }

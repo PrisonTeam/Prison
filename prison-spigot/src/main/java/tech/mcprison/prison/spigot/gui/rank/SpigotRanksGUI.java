@@ -12,6 +12,7 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
@@ -71,20 +72,17 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         int i = counter;
         for ( ; i < ladder.get().getRanks().size() && i < counter + pageSize; i++ ) {
 
-            // Init the lore array with default values for ladders
-            List<String> ranksLore = createLore(
+            ButtonLore ranksLore = new ButtonLore(createLore(
                     loreShiftRightClickDelete,
-                    loreClickToManageRank,
-                    "",
-                    loreInfo);
+                    loreClickToManageRank), createLore(loreInfo));
 
             Rank rank = ladder.get().getRanks().get(i);
 
             // Add the RankID Lore
-            ranksLore.add(SpigotPrison.format(loreId + rank.getId()));
-            ranksLore.add(SpigotPrison.format(loreName + rank.getName()));
-            ranksLore.add(SpigotPrison.format(loreTag2 + ChatColor.translateAlternateColorCodes('&', rank.getTag())));
-            ranksLore.add(SpigotPrison.format(lorePrice3 + PlaceholdersUtil.formattedKmbtSISize(rank.getCost(), formatDecimal, "")));
+            ranksLore.addLineLoreDescription(SpigotPrison.format(loreId + rank.getId()));
+            ranksLore.addLineLoreDescription(SpigotPrison.format(loreName + rank.getName()));
+            ranksLore.addLineLoreDescription(SpigotPrison.format(loreTag2 + ChatColor.translateAlternateColorCodes('&', rank.getTag())));
+            ranksLore.addLineLoreDescription(SpigotPrison.format(lorePrice3 + PlaceholdersUtil.formattedKmbtSISize(rank.getCost(), formatDecimal, "")));
 
             // Init a variable
             List<RankPlayer> players =
@@ -93,23 +91,17 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
                             .collect(Collectors.toList());
 
             // Add the number of players with this rank
-            ranksLore.add(SpigotPrison.format(lorePlayersWithRank + players.size()));
-            ranksLore.add("");
-            //getCommands(ranksLore, rank);
+            ranksLore.addLineLoreDescription(SpigotPrison.format(lorePlayersWithRank + players.size()));
 
             // Add the button to the inventory
             gui.addButton(new Button(i - counter, XMaterial.TRIPWIRE_HOOK, ranksLore, SpigotPrison.format("&3" + rank.getName())));
         }
 
         if (i < ladder.get().getRanks().size()) {
-            List<String> nextPageLore = createLore(messages.getString("Lore.ClickToNextPage"));
-
-            gui.addButton(new Button(53, XMaterial.BOOK, 1, nextPageLore, "&7Next " + (i + 1)));
+            gui.addButton(new Button(53, XMaterial.BOOK, 1, new ButtonLore(messages.getString("Lore.ClickToNextPage"), null), "&7Next " + (i + 1)));
         }
         if (i >= (pageSize * 2)) {
-            List<String> priorPageLore = createLore(messages.getString("Lore.ClickToPriorPage"));
-
-            gui.addButton(new Button(51, XMaterial.BOOK, 1, priorPageLore,
+            gui.addButton(new Button(51, XMaterial.BOOK, 1, new ButtonLore(messages.getString("Lore.ClickToPriorPage"), null),
                     "&7Prior " + (i - (pageSize * 2) - 1)));
         }
 

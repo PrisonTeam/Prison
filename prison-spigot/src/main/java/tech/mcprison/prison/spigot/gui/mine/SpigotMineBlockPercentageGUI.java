@@ -7,6 +7,7 @@ import com.cryptomorin.xseries.XMaterial;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
@@ -35,18 +36,9 @@ public class SpigotMineBlockPercentageGUI extends SpigotGUIComponents {
         int dimension = 45;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3MineInfo -> BlockPercentage");
 
-        // Create a new lore
-        List<String> changeDecreaseValueLore = createLore(
-                messages.getString("Lore.ClickToDecrease")
-        );
-        List<String> confirmButtonLore = createLore(
-                messages.getString("Lore.LeftClickToConfirm"),
-                messages.getString("Lore.Percentage") + val,
-                messages.getString("Lore.RightClickToCancel")
-        );
-        List<String> changeIncreaseValueLore = createLore(
-                messages.getString("Lore.ClickToIncrease")
-        );
+        ButtonLore changeDecreaseValueLore = new ButtonLore(messages.getString("Lore.ClickToDecrease"), null);
+        ButtonLore confirmButtonLore = new ButtonLore(createLore(messages.getString("Lore.LeftClickToConfirm"), messages.getString("Lore.RightClickToCancel")), createLore(messages.getString("Lore.Percentage") + val));
+        ButtonLore changeIncreaseValueLore = new ButtonLore(messages.getString("Lore.ClickToIncrease"), null);
 
         XMaterial decreaseMaterial = XMaterial.REDSTONE_BLOCK;
 
@@ -69,8 +61,7 @@ public class SpigotMineBlockPercentageGUI extends SpigotGUIComponents {
         gui.addButton(new Button(43, increaseMat, changeIncreaseValueLore, "&3" + mineName + " " + blockName +  " " + val + " + 100" + " &0" + counter));
 
         // Close gui:
-        List<String> closeGUILore = createLore( messages.getString("Lore.ClickToClose") );
-        gui.addButton(new Button(40, XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, "&c" + "Close" + " &0" + mineName + " " + counter));
+        gui.addButton(new Button(40, XMaterial.RED_STAINED_GLASS_PANE, new ButtonLore(messages.getString("Lore.ClickToClose"), null), "&c" + "Close" + " &0" + mineName + " " + counter));
 
         // Show the selected block at the top center position:
         XMaterial xMat = SpigotUtil.getXMaterial( blockName );

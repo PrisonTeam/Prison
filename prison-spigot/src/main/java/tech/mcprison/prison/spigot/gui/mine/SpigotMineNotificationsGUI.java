@@ -7,10 +7,9 @@ import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-
-import java.util.List;
 
 /**
  * @author GABRYCA
@@ -36,19 +35,10 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
         Mine m = pMines.getMine(mineName);
         String enabledOrDisabled = m.getNotificationMode().name();
 
-        // Create a new lore
-        List<String> modeWithinLore = createLore(
-                messages.getString("Lore.ClickToChoose"),
-                messages.getString("Lore.ActivateWithinMode"));
-        List<String> modeRadiusLore = createLore(
-                messages.getString("Lore.ClickToChoose"),
-                messages.getString("Lore.ActivateRadiusMode"));
-        List<String> disabledModeLore = createLore(
-                messages.getString("Lore.ClickToChoose"),
-                messages.getString("Lore.DisableNotifications"));
-        List<String> closeGUILore = createLore(
-                messages.getString("Lore.ClickToClose")
-        );
+        ButtonLore modeWithinLore = new ButtonLore(messages.getString("Lore.ClickToChoose"), messages.getString("Lore.ActivateWithinMode"));
+        ButtonLore modeRadiusLore = new ButtonLore(messages.getString("Lore.ClickToChoose"), messages.getString("Lore.ActivateRadiusMode"));
+        ButtonLore disabledModeLore = new ButtonLore(messages.getString("Lore.ClickToChoose"), messages.getString("Lore.DisableNotifications"));
+        ButtonLore closeGUILore = new ButtonLore(messages.getString("Lore.ClickToClose"), null);
 
         // Add button.
         gui.addButton(new Button(26, XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, "&c" + "Close"));
@@ -57,17 +47,17 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
         if (enabledOrDisabled.equalsIgnoreCase("disabled")){
 
             // Add the selected lore
-            disabledModeLore.add(SpigotPrison.format(messages.getString("Lore.Selected")));
+            disabledModeLore.addLineLoreDescription(SpigotPrison.format(messages.getString("Lore.Selected")));
 
         } else if (enabledOrDisabled.equalsIgnoreCase("within")){
 
             // Add the selected lore
-            modeWithinLore.add(SpigotPrison.format(messages.getString("Lore.Selected")));
+            modeWithinLore.addLineLoreDescription(SpigotPrison.format(messages.getString("Lore.Selected")));
 
         } else if (enabledOrDisabled.equalsIgnoreCase("radius")){
 
             // Add the selected lore
-            modeRadiusLore.add(SpigotPrison.format(messages.getString("Lore.Selected")));
+            modeRadiusLore.addLineLoreDescription(SpigotPrison.format(messages.getString("Lore.Selected")));
 
         }
 

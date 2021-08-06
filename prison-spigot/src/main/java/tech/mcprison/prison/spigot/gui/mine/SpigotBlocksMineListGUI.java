@@ -7,6 +7,7 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
@@ -36,10 +37,7 @@ public class SpigotBlocksMineListGUI extends SpigotGUIComponents {
         // Create the inventory
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3Select -> ShowBlock");
 
-        // Lore of block setup
-        List<String> blockLoreSetup = createLore(
-                messages.getString("Lore.ClickToSelect")
-        );
+        ButtonLore lore = new ButtonLore(messages.getString("Lore.ClickToSelect"), null);
 
         // This will skip all BlockTypes that are invalid for the versions of MC that the server is running:
         PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
@@ -59,18 +57,14 @@ public class SpigotBlocksMineListGUI extends SpigotGUIComponents {
                 xMat = XMaterial.STONE;
             }
 
-            gui.addButton(new Button(null, xMat, blockLoreSetup, "&3" +
+            gui.addButton(new Button(null, xMat, lore, "&3" +
                     prisonBlock.getBlockName().toUpperCase() + " " + mineName + " " + counter));
         }
         if ( i < blockTypes.size() ) {
-            List<String> nextPageLore = createLore(  messages.getString("Lore.ClickToNextPage") );
-
-            gui.addButton(new Button(53, XMaterial.BOOK, nextPageLore, "&7Next " + mineName + " " + (i + 1)));
+            gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(messages.getString("Lore.ClickToNextPage"), null), "&7Next " + mineName + " " + (i + 1)));
         }
         if ( i >= (pageSize * 2) ) {
-            List<String> priorPageLore = createLore(  messages.getString("Lore.ClickToPriorPage") );
-
-            gui.addButton(new Button(51, XMaterial.BOOK, priorPageLore, "&7Prior " + mineName + " " + (i - (pageSize * 2) - 1)));
+            gui.addButton(new Button(51, XMaterial.BOOK, new ButtonLore(messages.getString("Lore.ClickToPriorPage"), null), "&7Prior " + mineName + " " + (i - (pageSize * 2) - 1)));
         }
 
         // Open the inventory

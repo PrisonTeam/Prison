@@ -1,7 +1,5 @@
 package tech.mcprison.prison.spigot.gui.autofeatures;
 
-import java.util.List;
-
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
 
@@ -9,6 +7,7 @@ import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
@@ -29,17 +28,11 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
         // Create the inventory and set up the owner, dimensions or number of slots, and title
         PrisonGUI gui = new PrisonGUI(p, 36, "&3AutoFeatures -> AutoBlock");
 
-        List<String> enabledLore = createLore(
-                messages.getString("Lore.ShiftAndRightClickToDisable")
-        );
-        List<String> disabledLore = createLore(
-                messages.getString("Lore.RightClickToEnable")
-        );
-        List<String> closeGUILore = createLore(
-                messages.getString("Lore.ClickToClose")
-        );
+        // Lores
+        ButtonLore enabledLore = new ButtonLore(messages.getString("Lore.ShiftAndRightClickToDisable"), null);
+        ButtonLore disabledLore = new ButtonLore(messages.getString("Lore.RightClickToEnable"), null);
 
-        gui.addButton(new Button(35, XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, SpigotPrison.format("&c" + "Close")));
+        gui.addButton(new Button(35, XMaterial.RED_STAINED_GLASS_PANE, new ButtonLore(messages.getString("Lore.ClickToClose"), null), SpigotPrison.format("&c" + "Close")));
 
         if (afConfig != null) {
 

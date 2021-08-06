@@ -3,10 +3,9 @@ package tech.mcprison.prison.spigot.gui.mine;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-
-import java.util.List;
 
 /**
  * @author GABRYCA
@@ -27,11 +26,8 @@ public class SpigotMinesConfirmGUI extends SpigotGUIComponents {
         int dimension = 9;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3Mines -> Delete");
 
-        // Blocks of the mine
-        List<String> confirmLore = createLore(
-                messages.getString("Lore.ClickToConfirm"));
-        List<String> cancelLore = createLore(
-                messages.getString("Lore.ClickToCancel"));
+        ButtonLore confirmLore = new ButtonLore(messages.getString("Lore.ClickToConfirm"), null);
+        ButtonLore cancelLore = new ButtonLore(messages.getString("Lore.ClickToCancel"), null);
 
 
         // Position of the button

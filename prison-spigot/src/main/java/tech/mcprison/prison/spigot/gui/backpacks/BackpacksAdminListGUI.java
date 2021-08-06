@@ -5,12 +5,15 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
-import java.util.List;
 import java.util.Set;
 
+/**
+ * @author AnonymousGCA (GABRYCA)
+ * */
 public class BackpacksAdminListGUI extends SpigotGUIComponents {
 
     private final Player p;
@@ -53,16 +56,11 @@ public class BackpacksAdminListGUI extends SpigotGUIComponents {
                             }
                         }
                         if (id != null) {
-                            List<String> backpacksLore = createLore(
-                                    loreShiftAndRightClickToDelete,
-                                    "&8----------------",
-                                    " ",
+
+                            ButtonLore backpacksLore = new ButtonLore(createLore(loreShiftAndRightClickToDelete), createLore(
                                     loreInfo,
                                     lorePlayerOwner + name,
-                                    loreBackpackID + id,
-                                    " ",
-                                    "&8----------------"
-                            );
+                                    loreBackpackID + id));
 
                             gui.addButton(new Button(backpacksFound, XMaterial.CHEST, backpacksLore, "&3" + "Backpack " + name + " " + id));
                             backpacksFound++;

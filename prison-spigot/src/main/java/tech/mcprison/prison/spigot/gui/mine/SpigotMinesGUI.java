@@ -9,9 +9,9 @@ import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.PrisonSetupGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
@@ -73,28 +73,25 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
 
             Mine m = mines.getSortedList().get(i);
 
-            // Init the lore array with default values for ladders
-            List<String> minesLore = createLore(
+            ButtonLore minesLore = new ButtonLore(createLore(
                     loreLeftClickOpen,
-                    loreShiftRightClickToDelete,
-                    "",
-                    loreInfo
-            );
+                    loreShiftRightClickToDelete
+            ), createLore(loreInfo));
 
             // Add a lore
-            minesLore.add(SpigotPrison.format(loreWorld +  m.getWorldName()));
+            minesLore.addLineLoreDescription(loreWorld +  m.getWorldName());
             String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
-            minesLore.add(SpigotPrison.format(loreSpawnPoint + spawnPoint));
-            minesLore.add(SpigotPrison.format(loreResetTime + m.getResetTime()));
+            minesLore.addLineLoreDescription(loreSpawnPoint + spawnPoint);
+            minesLore.addLineLoreDescription(loreResetTime + m.getResetTime());
 
             if (!m.isVirtual()) {
                 // Add a lore
-                minesLore.add(SpigotPrison.format(loreSizeOfMine + m.getBounds().getDimensions()));
-                minesLore.add(SpigotPrison.format(loreVolume + m.getBounds().getTotalBlockCount()));
+                minesLore.addLineLoreDescription(loreSizeOfMine + m.getBounds().getDimensions());
+                minesLore.addLineLoreDescription(loreVolume + m.getBounds().getTotalBlockCount());
             }
 
             // Add a lore
-            minesLore.add(SpigotPrison.format(loreBlocks));
+            minesLore.addLineLoreDescription(loreBlocks);
 
             // Init some variables and do the actions
             DecimalFormat dFmt = new DecimalFormat("##0.00");
@@ -108,7 +105,7 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
 
                     String blockName =
                             StringUtils.capitalize(block.getBlockName().replaceAll("_", " ").toLowerCase());
-                    minesLore.add(SpigotPrison.format("&7" + chance + "% - " + block.getBlockName() + "   (" + blockName + ")"));
+                    minesLore.addLineLoreDescription("&7" + chance + "% - " + block.getBlockName() + "   (" + blockName + ")");
                 }
             } /*else {
 
@@ -122,21 +119,17 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
             }*/
 
             if (totalChance < 100.0d) {
-                minesLore.add(SpigotPrison.format("&e " + dFmt.format(100.0d - totalChance) + "%  - Air"));
+                minesLore.addLineLoreDescription("&e " + dFmt.format(100.0d - totalChance) + "%  - Air");
             }
 
             gui.addButton(new Button(null, XMaterial.COAL_ORE, minesLore, "&3" + m.getName()));
         }
 
         if (i < mines.getSortedList().size()) {
-            List<String> nextPageLore = createLore(messages.getString("Lore.ClickToNextPage"));
-
-            gui.addButton(new Button(53, XMaterial.BOOK, nextPageLore, "&7Next " + (i + 1)));
+            gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(messages.getString("Lore.ClickToNextPage"), null), "&7Next " + (i + 1)));
         }
         if (i >= (pageSize * 2)) {
-            List<String> priorPageLore = createLore(messages.getString("Lore.ClickToPriorPage"));
-
-            gui.addButton(new Button(51, XMaterial.BOOK, priorPageLore, "&7Prior " + (i - (pageSize * 2) - 1)));
+            gui.addButton(new Button(51, XMaterial.BOOK, new ButtonLore(messages.getString("Lore.ClickToPriorPage"), null), "&7Prior " + (i - (pageSize * 2) - 1)));
         }
 
         // Open the GUI.

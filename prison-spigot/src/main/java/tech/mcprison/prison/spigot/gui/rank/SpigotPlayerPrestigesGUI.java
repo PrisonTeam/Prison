@@ -26,6 +26,7 @@ import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
@@ -136,8 +137,8 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         Rank playerRank = getRankPlayer().getRank("prestiges");
 
         // Not sure how you want to represent this:
-        Material materialHas = Material.getMaterial(guiConfig.getString("Options.Ranks.Item_gotten_rank"));
-        Material materialHasNot = Material.getMaterial(guiConfig.getString("Options.Ranks.Item_not_gotten_rank"));
+        XMaterial materialHas = XMaterial.valueOf(guiConfig.getString("Options.Ranks.Item_gotten_rank"));
+        XMaterial materialHasNot = XMaterial.valueOf(guiConfig.getString("Options.Ranks.Item_not_gotten_rank"));
 
         // Variables.
         boolean playerHasThisRank = true;
@@ -153,21 +154,16 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         int amount = 1;
         while ( rank != null ) {
 
-            List<String> ranksLore = createLore(
-                    loreInfo,
-                    lorePrice3 + rank.getCost()
-            );
+            ButtonLore ranksLore = new ButtonLore(loreInfo, lorePrice3 + rank.getCost());
 
             if (placeholderAPINotNull) {
                 if (hackyCounterEnchant == 1) {
                     hackyCounterEnchant++;
-                    ranksLore.add(SpigotPrison.format(PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(player.getUniqueId()), "%prison_rcb_prestiges%")));
+                    ranksLore.addLineLoreDescription(SpigotPrison.format(PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(player.getUniqueId()), "%prison_rcb_prestiges%")));
                 }
             }
 
-            ItemStack itemrank = createButton(
-                    (playerHasThisRank ? materialHas : materialHasNot),
-                    amount++, ranksLore, SpigotPrison.format(rank.getTag()));
+            Button itemrank = new Button(null, playerHasThisRank ? materialHas : materialHasNot, amount++, ranksLore, rank.getTag());
             if (playerRank != null && playerRank.equals( rank )){
                 playerHasThisRank = false;
             }
@@ -179,15 +175,12 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
                     }
                 }
             }
-            gui.addButton(new Button(null, itemrank));
+            gui.addButton(itemrank);
 
             rank = rank.getRankNext();
         }
 
-        List<String> rankupLore = createLore(
-                messages.getString("Lore.IfYouHaveEnoughMoney"),
-                messages.getString("Lore.ClickToRankup")
-        );
+        ButtonLore rankupLore = new ButtonLore(messages.getString("Lore.ClickToRankup"), messages.getString("Lore.IfYouHaveEnoughMoney"));
 
         // Add button to GUI.
         gui.addButton(new Button(dimension - 5, XMaterial.EMERALD_BLOCK, rankupLore, SpigotPrison.format("&aPrestige")));

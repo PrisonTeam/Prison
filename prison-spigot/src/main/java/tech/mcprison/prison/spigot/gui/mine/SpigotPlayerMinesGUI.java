@@ -1,7 +1,5 @@
 package tech.mcprison.prison.spigot.gui.mine;
 
-import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -17,6 +15,7 @@ import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.configs.GuiConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
@@ -68,8 +67,7 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         for (Mine m : mines.getSortedList()) {
 
             // Init the lore array with default values for ladders
-            List<String> minesLore = createLore(
-            );
+            ButtonLore minesLore = new ButtonLore();
 
             Material material;
 
@@ -81,7 +79,7 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             String mineName = m.getName();
 
             // Add mineName lore for TP.
-            minesLore.add(SpigotPrison.format("&3" + mineName));
+            minesLore.addLineLoreAction(SpigotPrison.format("&3" + mineName));
 
             // The valid names to use for Options.Mines.MaterialType.<MaterialName> must be
             // based upon the XMaterial enumeration name, or supported past names.
@@ -107,11 +105,11 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             if (m.hasMiningAccess(spigotPlayer) || p.hasPermission(permission + m.getName()) ||
                     p.hasPermission(permission.substring(0, permission.length() - 1))){
                 material = ( mineMaterial == null ? Material.COAL_ORE : mineMaterial);
-                minesLore.add(SpigotPrison.format(statusUnlockedMine));
-                minesLore.add(SpigotPrison.format(clickToTeleport));
+                minesLore.addLineLoreDescription(SpigotPrison.format(statusUnlockedMine));
+                minesLore.addLineLoreDescription(SpigotPrison.format(clickToTeleport));
             } else {
                 material = XMaterial.REDSTONE_BLOCK.parseMaterial();
-                minesLore.add(SpigotPrison.format(statusLockedMine));
+                minesLore.addLineLoreDescription(SpigotPrison.format(statusLockedMine));
             }
 
             // Get mine Tag.

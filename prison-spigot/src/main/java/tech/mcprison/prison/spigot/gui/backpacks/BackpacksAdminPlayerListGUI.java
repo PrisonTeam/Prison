@@ -7,12 +7,15 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
-import java.util.List;
 import java.util.Set;
 
+/**
+ * @author AnonymousGCA (GABRYCA)
+ * */
 public class BackpacksAdminPlayerListGUI extends SpigotGUIComponents {
 
     private final Player p;
@@ -41,9 +44,7 @@ public class BackpacksAdminPlayerListGUI extends SpigotGUIComponents {
             return;
         }
 
-        List<String> backpackLore = createLore(
-                clickToOpen
-        );
+        ButtonLore backpackLore = new ButtonLore(clickToOpen, null);
 
         int playersFound = 0;
         for (String uuid : playerUUID) {

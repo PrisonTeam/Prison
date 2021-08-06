@@ -9,10 +9,9 @@ import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-
-import java.util.List;
 
 /**
  * @author GABRYCA
@@ -50,10 +49,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3RanksManager -> Ladders");
 
-        // Global ladders lore.
-        List<String> laddersLore = createLore(
-                messages.getString("Lore.ClickToOpen"),
-                messages.getString("Lore.ShiftAndRightClickToDelete"));
+        ButtonLore laddersLore = new ButtonLore(messages.getString("Lore.ClickToOpen"), messages.getString("Lore.ShiftAndRightClickToDelete"));
 
         // Only loop over the blocks that we need to show:
         int i = counter;
@@ -66,14 +62,10 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         }
 
         if (i < lm.getLadders().size()) {
-            List<String> nextPageLore = createLore(messages.getString("Lore.ClickToNextPage"));
-
-            gui.addButton(new Button(53, XMaterial.BOOK, 1, nextPageLore, "&7Next " + (i + 1)));
+            gui.addButton(new Button(53, XMaterial.BOOK, 1, new ButtonLore(messages.getString("Lore.ClickToNextPage"), null), "&7Next " + (i + 1)));
         }
         if (i >= (pageSize * 2)) {
-            List<String> priorPageLore = createLore(messages.getString("Lore.ClickToPriorPage"));
-
-            gui.addButton(new Button(51, XMaterial.BOOK, 1, priorPageLore,
+            gui.addButton(new Button(51, XMaterial.BOOK, 1, new ButtonLore(messages.getString("Lore.ClickToPriorPage"), null),
                     "&7Prior " + (i - (pageSize * 2) - 1)));
         }
 

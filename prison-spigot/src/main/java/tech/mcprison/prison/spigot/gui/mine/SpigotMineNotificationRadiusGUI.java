@@ -3,10 +3,9 @@ package tech.mcprison.prison.spigot.gui.mine;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-
-import java.util.List;
 
 /**
  * @author GABRYCA (AnonymousGCA)
@@ -31,18 +30,11 @@ public class SpigotMineNotificationRadiusGUI extends SpigotGUIComponents {
         int dimension = 45;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3MineNotifications -> Radius");
 
-        // Create new lore
-        List<String> changeDecreaseValueLore = createLore(
-                messages.getString("Lore.ClickToDecrease")
-        );
-        List<String> confirmButtonLore = createLore(
-                messages.getString("Lore.LeftClickToConfirm"),
+        ButtonLore changeDecreaseValueLore = new ButtonLore(messages.getString("Lore.ClickToDecrease"), null);
+        ButtonLore confirmButtonLore = new ButtonLore(createLore(messages.getString("Lore.LeftClickToConfirm")), createLore(
                 messages.getString("Lore.Radius") + val,
-                messages.getString("Lore.RightClickToCancel")
-        );
-        List<String> changeIncreaseValueLore = createLore(
-                messages.getString("Lore.ClickToIncrease")
-        );
+                messages.getString("Lore.RightClickToCancel")));
+        ButtonLore changeIncreaseValueLore = new ButtonLore(messages.getString("Lore.ClickToIncrease"), null);
 
         // XMaterials.
         XMaterial decreaseMat = XMaterial.REDSTONE_BLOCK;

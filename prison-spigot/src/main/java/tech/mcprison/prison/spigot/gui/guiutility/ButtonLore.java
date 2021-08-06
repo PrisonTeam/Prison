@@ -10,13 +10,12 @@ import java.util.List;
  * */
 public class ButtonLore extends SpigotGUIComponents{
 
-    private List<String> lore = new ArrayList<>();
     private List<String> descriptionAction = new ArrayList<>();
     private List<String> description = new ArrayList<>();
     private String colorIDBracket = "&8";
     private String colorIDAction = "&8";
     private String colorIDDescription = "&3";
-    private String bracketDef = "-----------------------";
+    private String bracketDef = "--------------------";
 
     /**
      * Initialize a button lore with basic info (can also be empty).
@@ -45,6 +44,8 @@ public class ButtonLore extends SpigotGUIComponents{
             }
         }
     }
+
+    public ButtonLore(){}
 
     /**
      * Initialize a button lore with basic info (can also be empty).
@@ -76,7 +77,7 @@ public class ButtonLore extends SpigotGUIComponents{
      * @param descriptionAction - List.
      * */
     public void setLoreAction(List<String> descriptionAction){
-        this.descriptionAction = new ArrayList<>();
+        this.descriptionAction.clear();
         for (String dAction : descriptionAction) {
             this.descriptionAction.add(SpigotPrison.format(colorIDAction + dAction));
         }
@@ -88,8 +89,17 @@ public class ButtonLore extends SpigotGUIComponents{
      * @param descriptionAction - String.
      * */
     public void setLoreAction(String descriptionAction){
-        this.descriptionAction = new ArrayList<>();
+        this.descriptionAction.clear();
         this.descriptionAction.add(SpigotPrison.format(colorIDAction + descriptionAction));
+    }
+
+    /**
+     * Add line to action lore.
+     *
+     * @param line - String.
+     * */
+    public void addLineLoreAction(String line){
+        this.descriptionAction.add(SpigotPrison.format(line));
     }
 
     /**
@@ -98,7 +108,7 @@ public class ButtonLore extends SpigotGUIComponents{
      * @param description - List.
      * */
     public void setLoreDescription(List<String> description){
-        this.description = new ArrayList<>();
+        this.description.clear();
         for (String descriptionLore : description) {
             this.description.add(SpigotPrison.format(colorIDDescription + descriptionLore));
         }
@@ -110,8 +120,17 @@ public class ButtonLore extends SpigotGUIComponents{
      * @param description - String.
      * */
     public void setLoreDescription(String description){
-        this.description = new ArrayList<>();
+        this.description.clear();
         this.description.add(SpigotPrison.format(colorIDDescription + description));
+    }
+
+    /**
+     * Add line to description lore.
+     *
+     * @param line - String.
+     * */
+    public void addLineLoreDescription(String line){
+        this.description.add(SpigotPrison.format(line));
     }
 
     /**
@@ -171,6 +190,20 @@ public class ButtonLore extends SpigotGUIComponents{
     }
 
     /**
+     * Get button lore description.
+     * */
+    public List<String> getLoreDescription(){
+        return description;
+    }
+
+    /**
+     * Get button lore action.
+     * */
+    public List<String> getLoreAction(){
+        return descriptionAction;
+    }
+
+    /**
      * This will return the lore with the global format:
      *
      * &8descriptionAction
@@ -191,7 +224,12 @@ public class ButtonLore extends SpigotGUIComponents{
      * @return lore - List
      * */
     public List<String> getLore(){
-        lore.addAll(descriptionAction);
+
+        List<String> lore = new ArrayList<>();
+
+        if (!descriptionAction.isEmpty()) {
+            lore.addAll(descriptionAction);
+        }
 
         if (!description.isEmpty()) {
             lore.add("");

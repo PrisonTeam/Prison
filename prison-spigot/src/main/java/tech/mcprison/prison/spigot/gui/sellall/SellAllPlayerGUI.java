@@ -6,10 +6,10 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -59,26 +59,15 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
             if (itemsRead >= startingItem) {
 
                 if (startingItem != 0){
-
-                    List<String> priorPageLore = createLore(messages.getString("Lore.ClickToPriorPage"));
-                    gui.addButton(new Button(45, XMaterial.BOOK, priorPageLore, "&7Prior " + (startingItem - 45)));
-
+                    gui.addButton(new Button(45, XMaterial.BOOK, new ButtonLore(messages.getString("Lore.ClickToPriorPage"), null), "&7Prior " + (startingItem - 45)));
                 }
 
                 if (itemsAdded >= 45){
-
-                    List<String> nextPageLore = createLore(messages.getString("Lore.ClickToNextPage"));
-                    gui.addButton(new Button(53, XMaterial.BOOK, nextPageLore, "&7Next " + (startingItem + itemsAdded)));
-
+                    gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(messages.getString("Lore.ClickToNextPage"), null), "&7Next " + (startingItem + itemsAdded)));
                 }
 
                 if (itemsAdded < 45) {
-
-                    List<String> itemsLore = createLore(
-                            loreValue + sellAllConfig.getString("Items." + key + ".ITEM_VALUE")
-                    );
-
-                    gui.addButton(new Button(null, SpigotUtil.getXMaterial(sellAllConfig.getString("Items." + key + ".ITEM_ID")), itemsLore, "&3" + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
+                    gui.addButton(new Button(null, SpigotUtil.getXMaterial(sellAllConfig.getString("Items." + key + ".ITEM_ID")), new ButtonLore(null, loreValue + sellAllConfig.getString("Items." + key + ".ITEM_VALUE")), "&3" + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
                     itemsAdded++;
                 }
             }

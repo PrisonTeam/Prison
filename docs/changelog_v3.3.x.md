@@ -25,6 +25,18 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.9 2021-08-05
 
 
+* **ButtonLore Utility got a couple of new methods.**
+
+
+* **Some GUIs were still using the old deprecated buttons. This got fixed.**
+
+
+* **All GUIs got a new common lore Format.**
+
+
+* **All GUIs now use ButtonLore utility and lore format.**
+
+
 * **Fixed an issue with spigot 1.17.1 where they appear to be extending the BlockBreakEvent for FurnaceExtractEvent but not isolating the listeners.**
 Forced to check to ensure the event is actually a BlockBreakEvent to ensure the correct event is really being fired correctly.
 

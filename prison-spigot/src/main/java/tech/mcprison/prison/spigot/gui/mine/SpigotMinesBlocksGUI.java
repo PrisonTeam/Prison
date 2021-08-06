@@ -12,6 +12,7 @@ import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
@@ -45,9 +46,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         Mine m = PrisonMines.getInstance().getMine(mineName);
 		boolean useNewBlockModel = Prison.get().getPlatform().isUseNewPrisonBlockModel();
 
-        List<String> addBlockLore = createLore(
-                messages.getString("Lore.ClickToAddBlock")
-        );
+        ButtonLore addBlockLore = new ButtonLore(messages.getString("Lore.ClickToAddBlock"), null);
 
         // Add the button to the GUI.
         gui.addButton(new Button(dimension - 1, XMaterial.LIME_STAINED_GLASS_PANE, addBlockLore, "&a" + "Add" + " " + mineName));
@@ -76,20 +75,14 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
                     xMat = XMaterial.STONE;
                 }
 
-                // Create the lore
-                List<String> blockslore = createLore(
-                        loreShiftRightClickToDelete,
-                        loreClickToEditBlock,
-                        "",
-                        loreInfo
-                );
+                ButtonLore blocksLore = new ButtonLore(createLore(loreClickToEditBlock, loreShiftRightClickToDelete), createLore(loreInfo));
 
                 // Add a lore
-                blockslore.add(SpigotPrison.format(loreChance + block.getChance() + "%"));
-                blockslore.add(SpigotPrison.format(loreBlockType + blockmaterial));
+                blocksLore.addLineLoreDescription(SpigotPrison.format(loreChance + block.getChance() + "%"));
+                blocksLore.addLineLoreDescription(SpigotPrison.format(loreBlockType + blockmaterial));
 
                 // Add the button to the GUI.
-                gui.addButton(new Button(null, xMat, blockslore, "&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
+                gui.addButton(new Button(null, xMat, blocksLore, "&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
         	}
         } /*else {
 

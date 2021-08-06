@@ -3,10 +3,9 @@ package tech.mcprison.prison.spigot.gui.mine;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-
-import java.util.List;
 
 /**
  * @author GABRYCA
@@ -29,18 +28,10 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents {
         int dimension = 45;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3MineInfo -> ResetTime");
 
-        // Create a new lore
-        List<String> changeDecreaseValueLore = createLore(
-                messages.getString("Lore.ClickToDecrease")
-        );
-        List<String> confirmButtonLore = createLore(
-                messages.getString("Lore.LeftClickToConfirm"),
-                messages.getString("Lore.Time") + val,
-                messages.getString("Lore.RightClickToCancel")
-        );
-        List<String> changeIncreaseValueLore = createLore(
-                messages.getString("Lore.ClickToIncrease")
-        );
+
+        ButtonLore changeDecreaseValueLore = new ButtonLore(messages.getString("Lore.ClickToDecrease"), null);
+        ButtonLore confirmButtonLore = new ButtonLore(createLore(messages.getString("Lore.LeftClickToConfirm"), messages.getString("Lore.RightClickToCancel")), createLore(messages.getString("Lore.Time") + val));
+        ButtonLore changeIncreaseValueLore = new ButtonLore(messages.getString("Lore.ClickToIncrease"), null);
 
         // XMaterials.
         XMaterial decreaseMat = XMaterial.REDSTONE_BLOCK;

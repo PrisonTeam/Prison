@@ -4,10 +4,9 @@ import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-
-import java.util.List;
 
 /**
  * @author GABRYCA
@@ -30,19 +29,9 @@ public class SellAllDelayGUI extends SpigotGUIComponents {
         int dimension = 45;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3SellAll -> Delay");
 
-        // Create a new lore
-        List<String> changeDecreaseValueLore;
-        changeDecreaseValueLore = createLore(
-                messages.getString("Lore.ClickToDecrease")
-        );
-        List<String> confirmButtonLore = createLore(
-                messages.getString("Lore.LeftClickToConfirm"),
-                messages.getString("Lore.DelaySellAll") + val + "s",
-                messages.getString("Lore.RightClickToCancel")
-        );
-        List<String> changeIncreaseValueLore = createLore(
-                messages.getString("Lore.ClickToIncrease")
-        );
+        ButtonLore changeDecreaseValueLore = new ButtonLore(messages.getString("Lore.ClickToDecrease"), null);
+        ButtonLore confirmButtonLore = new ButtonLore(createLore(messages.getString("Lore.LeftClickToConfirm"), messages.getString("Lore.RightClickToCancel")), createLore(messages.getString("Lore.DelaySellAll") + val + "s"));
+        ButtonLore changeIncreaseValueLore = new ButtonLore(messages.getString("Lore.ClickToIncrease"), null);
 
         XMaterial decreaseMat = XMaterial.REDSTONE_BLOCK;
         XMaterial increaseMat = XMaterial.EMERALD_BLOCK;
@@ -56,7 +45,6 @@ public class SellAllDelayGUI extends SpigotGUIComponents {
 
         // Create a button and set the position
         gui.addButton(new Button(22, XMaterial.CLOCK, confirmButtonLore, "&3Confirm: Delay " + val));
-
 
         // Increase button
         gui.addButton(new Button(7, increaseMat, changeIncreaseValueLore, "&3Delay " + val + " + 1"));

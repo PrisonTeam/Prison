@@ -4,10 +4,9 @@ import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-
-import java.util.List;
 
 /**
  * @author GABRYCA
@@ -26,17 +25,13 @@ public class SpigotConfirmPrestigeGUI extends SpigotGUIComponents {
         int dimension = 9;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3Prestige -> Confirmation");
 
-        // Blocks of the mine
-        List<String> confirmLore = createLore(
-                messages.getString("Lore.ClickToConfirm"),
+        ButtonLore confirmLore = new ButtonLore(createLore(messages.getString("Lore.ClickToConfirm")), createLore(
                 messages.getString("Lore.PrestigeWarning"),
                 messages.getString("Lore.PrestigeWarning2"),
-                messages.getString("Lore.PrestigeWarning3")
-        );
+                messages.getString("Lore.PrestigeWarning3")));
 
-        // Blocks of the mine
-        List<String> cancelLore = createLore(
-                messages.getString("Lore.ClickToCancel"));
+        ButtonLore cancelLore = new ButtonLore(messages.getString("Lore.ClickToCancel"), null);
+
 
         // Create the button, set up the material, amount, lore and name
         gui.addButton(new Button(2, XMaterial.EMERALD_BLOCK, confirmLore, SpigotPrison.format("&3" + "Confirm: Prestige")));
