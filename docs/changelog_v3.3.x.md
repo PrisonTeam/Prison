@@ -22,7 +22,12 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.10-alpha.9 2021-08-06
+# v3.2.10-alpha.9 2021-08-07
+
+
+* **Fixed a problem with block constrains, the min number of blocks, when no blocks were initially added to the mine.**
+When revisiting to ensure the min amount is set, it did not have the correct values set for the ranges. 
+This has been fixed by adding a low and high limit field that not does record the actual block positions of this block type, but of the limits as defined by the constraints.  This allows adding more blocks to reach the min amount, when no block has been added before.
 
 
 * **Prevent the use of % in the ranks and ladder commands.**

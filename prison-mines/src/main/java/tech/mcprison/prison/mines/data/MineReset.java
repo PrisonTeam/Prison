@@ -520,6 +520,10 @@ public abstract class MineReset
 		resetResetBlockCounts();
 		
 		
+		// setup the monitoring of the blocks that have constraints:
+		List<PrisonBlockStatusData> constrainedBlocks = null;
+		
+		
 		
 		int airCount = 0;
 		int currentLevel = 0;
@@ -534,6 +538,9 @@ public abstract class MineReset
 //					MineTargetBlock mtb = null;
 					
 					if ( isUseNewBlockModel() ) {
+						
+						// track the constraints:
+						trackConstraints( currentLevel, constrainedBlocks );
 						
 						PrisonBlock prisonBlock = randomlySelectPrisonBlock( random, currentLevel );
 						
@@ -589,7 +596,60 @@ public abstract class MineReset
 		
     }
     
-    /**
+    private void trackConstraints( int currentLevel, List<PrisonBlockStatusData> constrainedBlocks )
+	{
+    	
+    	// If the constrainedBlocks list has not be configured, set it up with the 
+    	// blocks that have constraints:
+		if ( constrainedBlocks == null ) {
+			
+			constrainedBlocks = new ArrayList<>();
+			
+			for (PrisonBlock block : getPrisonBlocks()) {
+				if ( block.getConstraintExcludeTopLayers() > 0 || 
+						block.getConstraintExcludeBottomLayers() > 0 ) {
+					
+					constrainedBlocks.add( block );
+				}
+			}
+		}
+		
+
+		// If there are any constrained blocks, then need to record 
+		for ( PrisonBlockStatusData block : constrainedBlocks ) {
+			
+			// If exclude top layers is enabled, then only try to set the 
+			// rangeBlockCountLowLimit once since we need the lowest possible 
+			// value.  The inital value for getRangeBlockCountLowLimit is -1.
+			if ( block.getConstraintExcludeTopLayers() > 0 && 
+					block.getRangeBlockCountLowLimit() <= 0 &&
+					currentLevel > block.getConstraintExcludeTopLayers() ) {
+				
+				int targetBlockPosition = getMineTargetPrisonBlocks().size();
+				block.setRangeBlockCountLowLimit( targetBlockPosition );
+			}
+			
+			// If exclude bottom layer is enabled, then we need to track every number
+			// until the currentLevel exceeds the getConstraintExcludeBottomLayers value.
+			// If exclude top layers, then do not record for the bottom layers until 
+			// the top layers is cleared.
+			if ( (block.getConstraintExcludeTopLayers() > 0 && 
+					currentLevel > block.getConstraintExcludeTopLayers() ||
+					block.getConstraintExcludeTopLayers() == 0) &&
+					
+					block.getConstraintExcludeBottomLayers() > 0 && 
+					block.getConstraintExcludeBottomLayers() < currentLevel 
+					) { 
+				
+				int targetBlockPosition = getMineTargetPrisonBlocks().size();
+				block.setRangeBlockCountHighLimit( targetBlockPosition );
+				
+			}
+		}
+		
+	}
+
+	/**
      * <p>Yeah I know, it has async in the name of the function, but it still can only
      * be ran synchronously.  The async part implies this is the reset "part" for the
      * async workflow.
@@ -1358,38 +1418,43 @@ public abstract class MineReset
     			
 //    			int maxSize = getMineTargetPrisonBlocks().size();
     			
-    			int rangeLow = block.getRangeBlockCountLow();
-    			int rangeHigh = block.getRangeBlockCountHigh();
+    			int rangeLow = block.getRangeBlockCountLowLimit();
+    			int rangeHigh = block.getRangeBlockCountHighLimit();
+//    			int rangeLow = block.getRangeBlockCountLow();
+//    			int rangeHigh = block.getRangeBlockCountHigh();
     			
     			
     			// Each block has a valid range in which it can spawn in the mine.  This range
     			// is honored by using the rangeHigh and rangeLow values.
     			int rndPos = ((int) Math.round( Math.random() * (rangeHigh - rangeLow) )) + rangeLow;
     			
-    			MineTargetPrisonBlock targetBlock = getMineTargetPrisonBlocks().get( rndPos );
-    			
-    			if ( targetBlock != null && 
-    					targetBlock.getPrisonBlock().getConstraintMin() == 0 &&
-    					targetBlock.getPrisonBlock().getConstraintMax() == 0 &&
-    					!targetBlock.getPrisonBlock().getBlockName().equalsIgnoreCase( 
-    							block.getBlockName() ) ) {
+    			if ( rndPos < getMineTargetPrisonBlocks().size() ) {
     				
-    				// decrement the block count on the block being removed:
-    				if ( targetBlock.getPrisonBlock().isAir() ) {
+    				MineTargetPrisonBlock targetBlock = getMineTargetPrisonBlocks().get( rndPos );
+    				
+    				if ( targetBlock != null && 
+    						targetBlock.getPrisonBlock().getConstraintMin() == 0 &&
+    						targetBlock.getPrisonBlock().getConstraintMax() == 0 &&
+    						!targetBlock.getPrisonBlock().getBlockName().equalsIgnoreCase( 
+    								block.getBlockName() ) ) {
     					
-    					// Need to remove one from the air count fields:
-    					setAirCountOriginal( getAirCountOriginal() - 1 );
-    					setAirCount( getAirCount() - 1 );
+    					// decrement the block count on the block being removed:
+    					if ( targetBlock.getPrisonBlock().isAir() ) {
+    						
+    						// Need to remove one from the air count fields:
+    						setAirCountOriginal( getAirCountOriginal() - 1 );
+    						setAirCount( getAirCount() - 1 );
+    						
+    					}
+    					else {
+    						targetBlock.getPrisonBlock().decrementResetBlockCount();
+    					}
     					
+    					
+    					// Add the new block and increment it's count:
+    					targetBlock.setPrisonBlock( block );
+    					block.incrementResetBlockCount();
     				}
-    				else {
-    					targetBlock.getPrisonBlock().decrementResetBlockCount();
-    				}
-    				
-    				
-    				// Add the new block and increment it's count:
-    				targetBlock.setPrisonBlock( block );
-    				block.incrementResetBlockCount();
     			}
     		}
     	}

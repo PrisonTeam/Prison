@@ -3,18 +3,34 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
-* Add an *all* for mine names under blockEvent add:
+- hybrid placeholder graphs - hybars
+  - super impose text in the graph and have it still be colored correctly.
+  - text can be centered, such as the percentage that is feeding the bar
+  - For wider bars, the title could be left justified, and the percentage right justified
+  
+
+DONE: - Block constraint error when there are no blocks spawned when applying min to add more...
+  - if rangeHigh and rangeLow are zero, or the same, then need to set the high and low values.
+  - May need to even set them when there are only a few?
+  - maybe rangeHigh and rangeLow should be the actual limits, and not the high and low range of where those blocks actually spawned?  Right now it's actual spawned blocks, but if either, or both are 5000 blocks from the true limit, then the range of actual adjustments is artificially limited and narrowed.
+  - Maybe add 2 new fields: rangeHighLimit and rangeLowLimit that is the actual boundaries? These could be used to help normal spawning? 
+
+
+
+* On prison support submit mines, include /mines info a all?
+ - 
+
+
+* The command /mines delete does not appear to be working
+
+
+To all headers that are displayed in prison commands, show the prison's version to the far right.
 
 
 * Eliminate the following message from logging an error, but just keep a note in the code:
  - Cannot initialize NMS components - ClassNotFoundException - NMS is not functional - net.minecraft.server.v1_17_R1.EntityPlayer
  - This does not appear to have much of an impact at this time.
  
-
-* DONE: On default ladder, at top rank, if prestige is enabled, then show a message that can be configured.
-
-
-* DONE: Add hunger to auto features calculations
 
 
 * add all commands to the server.yml file.  spigot 1.17.1 is getting fussy.
@@ -28,16 +44,7 @@
 
 
 * extended fortune : Apply fortune to all blocks that bukkit does not apply them to.
-
-
-* DONE: /prison placeholders list - group by placeholder type.
-
-
-* DONE: Placeholders for items in hand: name, 
-
-
-* DONE: try out the new event priority code. if it works, apply it to all classes
-
+ - Maybe do this through a list instead of blindly applying fortune to all blocks with a qty of 1?  Some fortune calculations will result in a qty of one.
 
 * hook up alternative processing to have prison force the running of another plugin if a setting is enabled. This way prison can "control" how it processes the "left-overs".
 
@@ -50,12 +57,12 @@
  * DONE: Money earned per minute with placeholders
  * Add placeholders for blocks counts
  * Add placeholders for time onlines
- * Add time mining: per mine
+ * DONE: Add time mining: per mine
  * Tracking by items such as mines or ranks, where the player's status can be reset, presents some problems.  Such as the block counts need to be reset for those items, but yet, we need to store them for historical purposes too.  So if someone prestiges 10 times, then there will be 10 different times through mine/rank A.  If block counts become a requirement for rankups, which it will, then the block counts for that mine must be reset back to zero.  So there must be a "current" and "historical" tracking.
  
+ 
  Player Cache possibilities?  
- * blocks per rank?
- * time mining per rank?
+ * DONE: money earned per mine?
  
 
 * When adding a new rank or mine, auto reload all placeholders so they pick up the new entry.
@@ -79,7 +86,6 @@
 * Test BlockEvent perms... they appear like they don't work.
 
 
-* DONE: Issue with placeholders bars and rankup costs...
 
 
 * Add support for BOSS BAR when holding pick axe.  Maybe setup placeholders in the config.yml?
@@ -99,19 +105,10 @@
 - Was able to reproduce this at a later time
 
 
-* DONE: prison should "scan" offline players upon startup and auto add anyone not already hooked up.  This will help reduce a lot of questions and make the first experience with prison smoother.... 
-
-
-
-* DONE: Bug: placeholders are not working correctly when player is offline...
-  - Example with the bar graph placeholders.
-
-
-
 
 * Add optional block counts to level up.  So if money and block counts are used, then both have to be satisfied.
 If only one, then only one of those would be used.
-- Count only the block mined and not the results of fortune.  It will be easier to control how much mining a player does by ruling out the results of fortune... after all, it's "Blocks Broken" and not "Blocks Received".
+- DONE: Count only the block mined and not the results of fortune.  It will be easier to control how much mining a player does by ruling out the results of fortune... after all, it's "Blocks Broken" and not "Blocks Received".
 
 
 - Virtual Inventory Items from mining... With the player object, not only keep track of blocks mined, but have a virtual inventory to track what they have collected.
@@ -203,8 +200,6 @@ it's unknown why it's happening.
  - Based upon total count of blocks broken.  Example, after a player breaks 1,000 blocks, then fire a BlockEvent.
  
 
- 
-* DONE: ladder commands
 
 
 * global virtual mine:  To apply mine commands & blockEvents to all other mines.
@@ -298,12 +293,6 @@ Maybe: Have an alt block list for mines were blocks that are not actually
 
 
 
-
-- blockEvent
-  - DONE: simplify add - use common defaults - can change features with the other commands
-  - DONE: Add a target block name
-  - Not an issue: "Use of placeholders is failing %prison_ is failing on %p"  Turned out they were trying to use %player% instead of {player}.
-  
   
   
 - auto features
@@ -382,24 +371,12 @@ We know what blocks are in the mine and the percentages.  If people equally mine
 
 
 
-* **Commands - Enhancement**
-Be able to select rank and mine commands for edit and deletion, or even moving, with line numbers.
-
-
-
-* **Rank Commands - Edit and delete**
-Add line numbers and enable the ability to edit and delete by line number.
-
-
 
 
 
 * **Update config.yml when changes are detected**
 Preserving the current settings, replace the out of date config.yml file with the latest that is stored within the jar.  Updating the settings as it goes.
 
-
-* **Ladder commands - global for all ranks in that ladder**
-Add new placeholders for ladder commands to be able to have generic ladder commands that will apply and be ran for all ranks. May be able to eliminate the need for most rank commands.
 
 
 
@@ -442,7 +419,50 @@ Offers for translation:
 
 
 
-# Features recently added since v3.2.6
+# Features recently added since v3.2.9
+
+
+* DONE: Add an *all* for mine names under blockEvent add:
+
+ 
+* DONE: ladder commands
+
+
+
+* DONE: On default ladder, at top rank, if prestige is enabled, then show a message that can be configured.
+
+
+* DONE: Add hunger to auto features calculations
+
+
+* DONE: /prison placeholders list - group by placeholder type.
+
+
+* DONE: Placeholders for items in hand: name, 
+
+
+* DONE: try out the new event priority code. if it works, apply it to all classes
+
+ Player Cache possibilities:
+ * DONE: blocks per mine?
+ * DONE: time mining per mine?
+ 
+ 
+* DONE: Issue with placeholders bars and rankup costs...
+
+
+* DONE: prison should "scan" offline players upon startup and auto add anyone not already hooked up.  This will help reduce a lot of questions and make the first experience with prison smoother.... 
+
+
+* DONE: Bug: placeholders are not working correctly when player is offline...
+  - Example with the bar graph placeholders.
+
+
+- blockEvent
+  - DONE: simplify add - use common defaults - can change features with the other commands
+  - DONE: Add a target block name
+  - Not an issue: "Use of placeholders is failing %prison_ is failing on %p"  Turned out they were trying to use %player% instead of {player}.
+  
 
 
 
@@ -456,6 +476,18 @@ Completed for v3.2.9:
 * DONE: Ladder commands:
 
 * DONE: Delete by line number:
+
+
+* **Commands - Enhancement**
+DONE: Be able to select rank and mine commands for edit and deletion, or even moving, with line numbers.
+
+
+* **Rank Commands - Edit and delete**
+DONE: Add line numbers and enable the ability to edit and delete by line number.
+
+
+* **Ladder commands - global for all ranks in that ladder**
+DONE: Add new placeholders for ladder commands to be able to have generic ladder commands that will apply and be ran for all ranks. May be able to eliminate the need for most rank commands.
 
 
 

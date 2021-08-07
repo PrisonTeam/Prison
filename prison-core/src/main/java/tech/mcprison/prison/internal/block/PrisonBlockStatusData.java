@@ -29,6 +29,9 @@ public abstract class PrisonBlockStatusData {
 	private int rangeBlockCountLow;
 	private int rangeBlockCountHigh;
 	
+	private int rangeBlockCountLowLimit;
+	private int rangeBlockCountHighLimit;
+	
 	
 	public PrisonBlockStatusData( String blockName, double chance, long blockCountTotal ) {
 		super();
@@ -51,6 +54,9 @@ public abstract class PrisonBlockStatusData {
 		
 		this.rangeBlockCountLow = -1;
 		this.rangeBlockCountHigh = -1;
+		
+		this.rangeBlockCountLowLimit = -1;
+		this.rangeBlockCountHighLimit = -1;
 	}
 	
 	public void resetAfterSave() {
@@ -378,6 +384,20 @@ public abstract class PrisonBlockStatusData {
 	}
 	public void setRangeBlockCountHigh( int rangeBlockCountHigh ) {
 		this.rangeBlockCountHigh = rangeBlockCountHigh;
+	}
+
+	public int getRangeBlockCountLowLimit() {
+		return rangeBlockCountLowLimit;
+	}
+	public void setRangeBlockCountLowLimit( int rangeBlockCountLowLimit ) {
+		this.rangeBlockCountLowLimit = rangeBlockCountLowLimit;
+	}
+
+	public int getRangeBlockCountHighLimit() {
+		return rangeBlockCountHighLimit;
+	}
+	public void setRangeBlockCountHighLimit( int rangeBlockCountHighLimit ) {
+		this.rangeBlockCountHighLimit = rangeBlockCountHighLimit;
 	}
 
 }

@@ -715,12 +715,20 @@ public abstract class MineData
 			
     		// Reset the block count for the reset event since the mine will be regenerated:
     		block.setBlockPlacedCount( 0 );
+    		block.setRangeBlockCountLow( -1 );
+    		block.setRangeBlockCountHigh( -1 );
+    		block.setRangeBlockCountLowLimit( -1 );
+    		block.setRangeBlockCountHighLimit( -1 );
 		}
     	
     	for ( PrisonBlockStatusData block : getPrisonBlocks() ) {
     		
     		// Reset the block count for the reset event since the mine will be regenerated:
     		block.setBlockPlacedCount( 0 );
+    		block.setRangeBlockCountLow( -1 );
+    		block.setRangeBlockCountHigh( -1 );
+    		block.setRangeBlockCountLowLimit( -1 );
+    		block.setRangeBlockCountHighLimit( -1 );
     	}
     	
 //    	for ( PrisonBlockStatusData blockStats : getBlockStats().values() ) {
