@@ -2226,6 +2226,10 @@ public class SpigotPlatform
     	mc.getMinesList( display, MineManager.MineSortOrder.sortOrder, "all", null );
   
     	StringBuilder sb = display.toStringBuilder();
+    	
+    	sb.append( "\n" );
+    	
+    	mc.allMinesInfoDetails( sb );
 		
     	return Text.stripColor( sb.toString() );
 	}

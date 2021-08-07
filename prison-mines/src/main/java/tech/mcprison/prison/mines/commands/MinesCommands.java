@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
@@ -60,8 +61,8 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.selection.Selection;
-import tech.mcprison.prison.tasks.PrisonCommandTask.TaskMode;
 import tech.mcprison.prison.tasks.PrisonCommandTask;
+import tech.mcprison.prison.tasks.PrisonCommandTask.TaskMode;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Bounds.Edges;
@@ -737,7 +738,57 @@ public class MinesCommands
 
     	
 
-        DecimalFormat dFmt = new DecimalFormat("#,##0");
+        ChatDisplay chatDisplay = mineInfoDetails( sender, mMan.isMineStats(), m, cmdPageData );
+
+        
+        int blockSize = 0;
+        if ( m.isUseNewBlockModel() ) {
+        	blockSize =  m.getPrisonBlocks().size();
+        }
+        else {
+        	blockSize = m.getBlocks().size();
+        }
+        
+        String message = blockSize != 0 ? null : " &cNo Blocks Defined";
+        cmdPageData.generatePagedCommandFooter( chatDisplay, message );
+        
+        chatDisplay.send(sender);
+        
+        // If show all, then include the mine's commands and blockEvents:
+        // These are different commands, so they will be in different chatDisplay objects
+        // so cannot weave them together:
+      //  if ( cmdPageData.isShowAll() ) {
+        	//commandList( sender, m.getName() );
+        	
+        	//blockEventList( sender, m.getName() );
+      //  }
+    }
+
+    public void allMinesInfoDetails( StringBuilder sb ) {
+    	
+    	PrisonMines pMines = PrisonMines.getInstance();
+    	MineManager mMan = pMines.getMineManager();
+    	
+    	for ( Mine mine : mMan.getMines() ) {
+
+    		PrisonCommand.printFooter( sb );
+    		
+    		CommandPagedData cmdPageData = new CommandPagedData(
+    				"/mines info " + mine.getName(), mine.getPrisonBlocks().size(),
+    				1, "all" );
+    		
+    		ChatDisplay chatDisplay = mineInfoDetails( null, mMan.isMineStats(), mine, cmdPageData );
+    		
+    		sb.append( chatDisplay.toStringBuilder() );
+		}
+
+    	PrisonCommand.printFooter( sb );
+    }
+    
+    
+	private ChatDisplay mineInfoDetails( CommandSender sender, boolean isMineStats, Mine m, CommandPagedData cmdPageData )
+	{
+		DecimalFormat dFmt = new DecimalFormat("#,##0");
         DecimalFormat fFmt = new DecimalFormat("#,##0.00");
         
         ChatDisplay chatDisplay = new ChatDisplay("&bMine: &3" + m.getName());
@@ -805,7 +856,7 @@ public class MinesCommands
         		String minCoords = m.getBounds().getMin().toBlockCoordinates();
         		String maxCoords = m.getBounds().getMax().toBlockCoordinates();
         		chatDisplay.addText("&3Bounds: &7%s &8to &7%s", minCoords, maxCoords);
-        		Player player = getPlayer( sender );
+        		Player player = sender == null ? null : getPlayer( sender );
         		
         		chatDisplay.addText("&3Center: &7%s   &3%s &7%s", 
         				m.getBounds().getCenter().toBlockCoordinates(), 
@@ -817,7 +868,7 @@ public class MinesCommands
         		String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
         		chatDisplay.addText("&3Spawnpoint: &7%s", spawnPoint);
         		
-        		if ( cmdPageData.isShowAll() || mMan.isMineStats() ) {
+        		if ( cmdPageData.isShowAll() || isMineStats ) {
         			RowComponent rowStats = new RowComponent();
         			rowStats.addTextComponent( "  -- &7 Stats :: " );
         			rowStats.addTextComponent( m.statsMessage() );
@@ -1063,7 +1114,6 @@ public class MinesCommands
         			( m.isUseNewBlockModel() ? "New" : "Old") );
         }
         
-        int blockSize = 0;
         if ( cmdPageData.isShowAll() || cmdPageData.getCurPage() > 1 ) {
 //        	if ( cmdPageData.isDebug() ) {
 //        		chatDisplay.addText( "&3Block model: &7%s", 
@@ -1076,28 +1126,29 @@ public class MinesCommands
         	BulletedListComponent list = getBlocksList(m, cmdPageData, true );
         	chatDisplay.addComponent(list);
         }
-
-        if ( m.isUseNewBlockModel() ) {
-        	blockSize =  m.getPrisonBlocks().size();
-        }
-        else {
-        	blockSize = m.getBlocks().size();
-        }
         
-        String message = blockSize != 0 ? null : " &cNo Blocks Defined";
-        cmdPageData.generatePagedCommandFooter( chatDisplay, message );
-        
-        chatDisplay.send(sender);
-        
-        // If show all, then include the mine's commands and blockEvents:
-        // These are different commands, so they will be in different chatDisplay objects
-        // so cannot weave them together:
         if ( cmdPageData.isShowAll() ) {
-        	commandList( sender, m.getName() );
         	
-        	blockEventList( sender, m.getName() );
+        	// Include all the commands for this mine:
+        	ChatDisplay commandDisplay = minesCommandList( m );
+        	chatDisplay.addChatDisplay( commandDisplay );
+        	
+        	
+        	// Include all the blockEvent commands:
+            ChatDisplay blockEventDisplay = new ChatDisplay("BlockEvent Commands for " + m.getTag());
+            blockEventDisplay.addText("&8Hover over values for more information and clickable actions.");
+
+            generateBlockEventListing( m, blockEventDisplay, false );
+            
+            blockEventDisplay.addComponent(new FancyMessageComponent(
+                new FancyMessage("&7[&a+&7] Add").suggest("/mines blockEvent add " + m.getName() + " [chance] [perm] [cmd] /")
+                    .tooltip("&7Add a new BockEvent command.")));
+
+            chatDisplay.addChatDisplay( blockEventDisplay );
         }
-    }
+        
+		return chatDisplay;
+	}
 
 
 	
@@ -3989,37 +4040,44 @@ public class MinesCommands
         }
 
 
-        ChatDisplay display = new ChatDisplay("ResetCommand for " + m.getName());
-        display.addText("&8Click a command to remove it.");
-        BulletedListComponent.BulletedListBuilder builder =
-            new BulletedListComponent.BulletedListBuilder();
-
-        int rowNumber = 1;
-        for (String command : m.getResetCommands()) {
-        	
-        	
-        	RowComponent row = new RowComponent();
-        	
-        	row.addTextComponent( " &3Row: &d%d  ", rowNumber++ );
-        	
-        	FancyMessage msg = new FancyMessage( "&a'&7" + command + "&a'" );
-            row.addFancy( msg );
-            
-        	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
-        			.suggest("/mines command remove " + m.getName() + " " + rowNumber )
-        			.tooltip("Click to Remove this Mine Command");
-        	row.addFancy( msgRemove );
-	
-            builder.add( row );
-
-        }
-
-        display.addComponent(builder.build());
-        display.addComponent(new FancyMessageComponent(
-            new FancyMessage("&7[&a+&7] Add").suggest("/mines command add " + mineName + " /")
-                .tooltip("&7Add a new command.")));
+        ChatDisplay display = minesCommandList( m );
+        
         display.send(sender);
     }
+
+private ChatDisplay minesCommandList( Mine m )
+{
+	ChatDisplay display = new ChatDisplay("ResetCommand for " + m.getName());
+	display.addText("&8Click a command to remove it.");
+	BulletedListComponent.BulletedListBuilder builder =
+	    new BulletedListComponent.BulletedListBuilder();
+
+	int rowNumber = 1;
+	for (String command : m.getResetCommands()) {
+		
+		
+		RowComponent row = new RowComponent();
+		
+		row.addTextComponent( " &3Row: &d%d  ", rowNumber++ );
+		
+		FancyMessage msg = new FancyMessage( "&a'&7" + command + "&a'" );
+	    row.addFancy( msg );
+	    
+		FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
+				.suggest("/mines command remove " + m.getName() + " " + rowNumber )
+				.tooltip("Click to Remove this Mine Command");
+		row.addFancy( msgRemove );
+
+	    builder.add( row );
+
+	}
+
+	display.addComponent(builder.build());
+	display.addComponent(new FancyMessageComponent(
+	    new FancyMessage("&7[&a+&7] Add").suggest("/mines command add " + m.getName() + " /")
+	        .tooltip("&7Add a new command.")));
+	return display;
+}
 
 
 	@Command(identifier = "mines command remove", description = "Removes a command from a mine.", 

@@ -1274,7 +1274,14 @@ public class PrisonCommand
     	
     	StringBuilder text = new StringBuilder();
     	
+    	text.append( "\n" );
+    	text.append( "Table of contents:\n" );
+    	text.append( "  1. Mine list - All mines including virtual mines: /mines list all\n" );
+    	text.append( "  2. Mine info - All mines: /mines info <mineName> all\n" );
+    	text.append( "  3. Mine files - Raw JSON dump of all mine configuration files.\n" );
+    	text.append( "\n" );
     	
+    	// Display a list of all mines, then display the /mines info <mineName> all for each:
     	text.append( Prison.get().getPlatform().getMinesListString() );
     	printFooter( text );
     	
@@ -1353,7 +1360,7 @@ public class PrisonCommand
 		printFooter( sb );
 	}
 	
-	public void printFooter( StringBuilder sb ) {
+	public static void printFooter( StringBuilder sb ) {
 		
 		sb.append( "\n" );
 		sb.append( "===  ---  ===   ---   ===   ---   ===   ---   ===  ---  ===\n" );
