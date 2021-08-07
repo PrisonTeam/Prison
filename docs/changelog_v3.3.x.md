@@ -22,7 +22,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.10-alpha.9 2021-08-05
+# v3.2.10-alpha.9 2021-08-06
+
+
+* **Prevent the use of % in the ranks and ladder commands.**
+Could not use them before, but they would cause errors when messaging details about the commands.  Now the command will be rejected and it will have to be submitted correctly.
 
 
 * **ButtonLore Utility got a couple of new methods.**

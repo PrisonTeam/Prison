@@ -49,6 +49,11 @@ public class CommandCommands
             command = command.replaceFirst("/", "");
         }
 
+        if ( command.contains( "%" ) ) {
+        	ranksCommandAddCannotUsePercentSymbols( sender );
+        	return;
+        }
+        
         if ( rankName != null && "placeholders".equalsIgnoreCase( rankName ) ) {
         	
         	String placeholders = 
@@ -211,6 +216,11 @@ public class CommandCommands
     					@Wildcard String command) {
         if (command.startsWith("/")) {
             command = command.replaceFirst("/", "");
+        }
+        
+        if ( command.contains( "%" ) ) {
+        	ranksCommandAddCannotUsePercentSymbols( sender );
+        	return;
         }
 
         if ( ladderName != null && "placeholders".equalsIgnoreCase( ladderName ) ) {
