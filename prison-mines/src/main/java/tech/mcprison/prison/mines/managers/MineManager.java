@@ -980,7 +980,77 @@ public class MineManager
 						}
 					
 						break;
-					
+
+						
+						
+					case prison_top_mine_block_line_header_minename:
+					case prison_tmbl_header_minename:
+						{
+							results = "BlockName     Chance   Placed Remaining   Totals";
+						}
+						break;
+						
+						
+					case prison_top_mine_block_line_nnn_minename:
+					case prison_tmbl_nnn_minename:
+						{
+							List<PrisonBlock> blocks = mine.getPrisonBlocks();
+							if ( sequence > 0 && sequence <= blocks.size() ) {
+								PrisonBlock block = blocks.get( sequence - 1 );
+								
+								if ( block != null ) {
+									
+									String message = String.format( 
+											"%-13s %6.2f  %7d   %7d %8s", 
+											
+											block.getBlockName(),
+											block.getChance(),
+											((long) block.getBlockPlacedCount() ),
+											((long) block.getBlockPlacedCount() - block.getBlockCountUnsaved() ),
+											
+											PlaceholdersUtil.formattedKmbtSISize( block.getBlockCountTotal(), iFmt, "" )
+											);
+									
+									results = message;
+								}
+							}
+						}
+						break;
+						
+					case prison_top_mine_block_line_totals_minename:
+					case prison_tmbl_totals_minename:
+						{
+							List<PrisonBlock> blocks = mine.getPrisonBlocks();
+
+							double tChance = 0d;
+							int tPlaced = 0;
+							int tRemoved = 0;
+							long tTotals = 0;
+							
+							for ( PrisonBlock pBlock : blocks ) {
+								tChance += pBlock.getChance();
+								
+								tPlaced += pBlock.getBlockPlacedCount();
+								tRemoved += (pBlock.getBlockPlacedCount() - pBlock.getBlockCountUnsaved());
+								tTotals += pBlock.getBlockCountTotal();
+							}
+							
+							String message = String.format( 
+									"              %6.2f  %7d   %7d %8s", 
+									
+									tChance,
+									tPlaced,
+									tRemoved,
+									
+									PlaceholdersUtil.formattedKmbtSISize( tTotals, iFmt, "" )
+									);
+							
+							results = message;
+						}
+						break;
+
+						
+						
 					case prison_top_mine_block_name_nnn_minename:
 					case prison_tmbn_nnn_minename:
 						{

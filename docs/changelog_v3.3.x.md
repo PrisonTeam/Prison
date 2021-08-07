@@ -25,6 +25,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.9 2021-08-07
 
 
+* **Added 6 new placeholders to provide the whole line for the prison_top_mine_block_ plus the heading and total line.**
+
+
 * **Placeholders with _nnn_ numeric ranges: Fixes a potential problem of where it was unable to match a placeholder if placeholder escape characters were not used.**
 Now it will properly identify and match the series.
 

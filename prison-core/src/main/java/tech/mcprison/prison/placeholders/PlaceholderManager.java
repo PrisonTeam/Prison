@@ -501,6 +501,10 @@ public class PlaceholderManager {
 		
 		
 		
+		prison_tmbl_header_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_tmbl_nnn_minename(PlaceholderFlags.STATSMINES, PlaceholderFlags.ALIAS),
+		prison_tmbl_totals_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+
 		prison_tmbn_nnn_minename(PlaceholderFlags.STATSMINES, PlaceholderFlags.ALIAS),
 		prison_tmbc_nnn_minename(PlaceholderFlags.STATSMINES, PlaceholderFlags.ALIAS),
 		prison_tmbpl_nnn_minename(PlaceholderFlags.STATSMINES, PlaceholderFlags.ALIAS),
@@ -509,6 +513,10 @@ public class PlaceholderManager {
 		prison_tmbt_nnn_minename(PlaceholderFlags.STATSMINES, PlaceholderFlags.ALIAS),
 		
 		
+		prison_top_mine_block_line_header_minename(prison_tmbl_header_minename, PlaceholderFlags.MINES),
+		prison_top_mine_block_line_nnn_minename(prison_tmbl_nnn_minename, PlaceholderFlags.STATSMINES),
+		prison_top_mine_block_line_totals_minename(prison_tmbl_totals_minename, PlaceholderFlags.MINES),
+
 		prison_top_mine_block_name_nnn_minename(prison_tmbn_nnn_minename, PlaceholderFlags.STATSMINES),
 		prison_top_mine_block_chance_nnn_minename(prison_tmbc_nnn_minename, PlaceholderFlags.STATSMINES),
 		prison_top_mine_block_placed_nnn_minename(prison_tmbpl_nnn_minename, PlaceholderFlags.STATSMINES),
