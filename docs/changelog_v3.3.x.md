@@ -25,6 +25,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.9 2021-08-07
 
 
+* **Placeholders with _nnn_ numeric ranges: Fixes a potential problem of where it was unable to match a placeholder if placeholder escape characters were not used.**
+Now it will properly identify and match the series.
+
+
 * **Fixed a problem with block constrains, the min number of blocks, when no blocks were initially added to the mine.**
 When revisiting to ensure the min amount is set, it did not have the correct values set for the ranges. 
 This has been fixed by adding a low and high limit field that not does record the actual block positions of this block type, but of the limits as defined by the constraints.  This allows adding more blocks to reach the min amount, when no block has been added before.

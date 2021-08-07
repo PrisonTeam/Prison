@@ -91,16 +91,28 @@ public class PlaceHolderKey {
 		}
 		
 		
-		checkIdentifier( key, text, textLowercase, "{", "}", results );
-		
-		if ( textLowercase.contains( key ) || 
-				checkIdentifier( key, text, textLowercase, "{", "}", results ) ||
-				checkIdentifier( key, text, textLowercase, "%", "%", results )
-				) {
+		// If the text is an exact match to the key (no escape characters):
+		if ( textLowercase.equalsIgnoreCase( key ) ) {
 			
-			// Nothing to do, since it was already done within this if statement.
+			results.setIdentifier( textLowercase );
+			results.setPlaceholder( this );
 			
+		}
+		else {
 			
+			checkIdentifier( key, text, textLowercase, "{", "}", results );
+			
+			if ( textLowercase.equalsIgnoreCase( key ) ||
+					textLowercase.contains( key ) || 
+					checkIdentifier( key, text, textLowercase, "{", "}", results ) ||
+					checkIdentifier( key, text, textLowercase, "%", "%", results )
+					) {
+				
+				
+				
+				// Nothing to do, since it was already done within this if statement.
+				
+				
 //			// Performing all the String searching and indexing can be expensive, especially
 //			// since there can be thousands of PlaceHolderKeys on a server.  So to provide
 //			// a quick proof to see if additional, more complex calculations should be
@@ -131,7 +143,8 @@ public class PlaceHolderKey {
 ////							pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, identifier ) );
 //				}
 //			}
-			
+				
+			}
 		}
 
 		
