@@ -1,6 +1,8 @@
 package tech.mcprison.prison.discord;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
+import java.util.TreeMap;
 
 import org.junit.Test;
 
@@ -11,7 +13,7 @@ public class PrisonPasteChatTest
 
 	public PrisonPasteChatTest()
 	{
-		super( "jUnitTextSupportName" );
+		super( "jUnitTextSupportName", new TreeMap<String, String>() );
 	}
 
 	@Test

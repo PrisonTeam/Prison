@@ -71,12 +71,15 @@ public class PrisonCommand
 	private List<String> prisonStartupDetails;
 	
 	private String supportName = null;
+	private TreeMap<String, String> supportURLs;
 	
 	
 	public PrisonCommand() {
 		super();
 		
 		this.prisonStartupDetails = new ArrayList<>();
+		
+		this.supportURLs = new TreeMap<>();
 		
 	}
 	
@@ -1128,9 +1131,11 @@ public class PrisonCommand
     	ChatDisplay display = displayVersion("ALL");
 		StringBuilder text = display.toStringBuilder();
 		
-		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName() );
+		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
 		
 		String helpURL = pasteChat.post( text.toString() );
+		
+		getSupportURLs().put( "Submit version:", helpURL );
 		
 		if ( helpURL != null ) {
 			
@@ -1182,9 +1187,11 @@ public class PrisonCommand
 		}
     	
 
-    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName() );
+    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
     	
     	String helpURL = pasteChat.postKeepColorCodes( text.toString() );
+    	
+    	getSupportURLs().put( "Submit configs:", helpURL );
     	
     	if ( helpURL != null ) {
     		
@@ -1234,9 +1241,11 @@ public class PrisonCommand
     	}
     	
     	
-    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName() );
+    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
     	
     	String helpURL = pasteChat.postKeepColorCodes( text.toString() );
+    	
+    	getSupportURLs().put( "Submit ranks:", helpURL );
     	
     	if ( helpURL != null ) {
     		
@@ -1294,9 +1303,11 @@ public class PrisonCommand
     	}
     	
     	
-    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName() );
+    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
     	
     	String helpURL = pasteChat.postKeepColorCodes( text.toString() );
+    	
+    	getSupportURLs().put( "Submit mines:", helpURL );
     	
     	if ( helpURL != null ) {
     		
@@ -1414,9 +1425,11 @@ public class PrisonCommand
     		
     		if ( logText != null ) {
     			
-    			PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName() );
+    			PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
     			
     			String helpURL = pasteChat.post( logText.toString() );
+    			
+    			getSupportURLs().put( "Submit lastlog:", helpURL );
     			
     			if ( helpURL != null ) {
     				
@@ -1524,6 +1537,13 @@ public class PrisonCommand
 	}
 	public void setSupportName( String supportName ) {
 		this.supportName = supportName;
+	}
+
+	public TreeMap<String, String> getSupportURLs() {
+		return supportURLs;
+	}
+	public void setSupportURLs( TreeMap<String, String> supportURLs ) {
+		this.supportURLs = supportURLs;
 	}
 
 }

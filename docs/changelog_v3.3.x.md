@@ -25,6 +25,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.9 2021-08-07
 
 
+* **Add the capture and display of all support submit URLs in each additonal submission.**
+
+
 * **Expand '/prison support submit mines' details by including the '/mines info <mineName> all' command.** 
 Had to redesign some of the mine commands to be able to capture all of those details.  Added a table of contents to the submission so it's clear all these details are included, since it could be a HUGE file.
 

@@ -9,6 +9,8 @@ import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
+import java.util.TreeMap;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -69,11 +71,13 @@ public class PrisonPasteChat {
 	private static final String SUBMISSION_SIZE_PLACEHOLDER = "{submissionSizeInBytes-------}";
 	
 	private String supportName;
+	private TreeMap<String, String> supportURLs;
 	
-	public PrisonPasteChat( String supportName ) {
+	public PrisonPasteChat( String supportName, TreeMap<String, String> supportURLs ) {
 		super();
 		
 		this.supportName = supportName;
+		this.supportURLs = supportURLs;
 	}
 	
 	public String post( String text ) {
@@ -190,13 +194,24 @@ public class PrisonPasteChat {
 		
 		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
 		
-		sb.append( "Support Name:    " ).append( supportName ).append( "\n" );
-		sb.append( "Submission Date: " ).append( sdFmt.format( new Date() ) ).append( "\n" );
-		sb.append( "Submission Size: " ).append( SUBMISSION_SIZE_PLACEHOLDER ).append( "\n" );
+		sb.append( "Support Name:     " ).append( supportName ).append( "\n" );
+		sb.append( "Submission Date:  " ).append( sdFmt.format( new Date() ) ).append( "\n" );
+		sb.append( "Submission Size:  " ).append( SUBMISSION_SIZE_PLACEHOLDER ).append( "\n" );
+		
+		sb.append( "\n" );
+		
+		Set<String> urlKeys = getSupportURLs().keySet();
+		for ( String key : urlKeys ) {
+			sb.append( padSpaces(key) ).append( getSupportURLs().get( key ) ).append( "\n" );
+		}
 		
 		sb.append( "\n" );
 		
 		return sb.toString();
+	}
+	
+	private String padSpaces( String keyName ) {
+		return (keyName + "                     ").substring( 0,18 );
 	}
 	
 	private String postPaste( String text, boolean raw ) 
@@ -253,6 +268,13 @@ public class PrisonPasteChat {
 		}
 		
 		return results;
+	}
+	
+	public TreeMap<String, String> getSupportURLs() {
+		return supportURLs;
+	}
+	public void setSupportURLs( TreeMap<String, String> supportURLs ) {
+		this.supportURLs = supportURLs;
 	}
 	
 }
