@@ -65,6 +65,7 @@ import tech.mcprison.prison.tasks.PrisonCommandTask;
 import tech.mcprison.prison.tasks.PrisonCommandTask.TaskMode;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 import tech.mcprison.prison.util.Bounds;
+import tech.mcprison.prison.util.JumboTextFont;
 import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.Text;
 
@@ -772,6 +773,9 @@ public class MinesCommands
     	for ( Mine mine : mMan.getMines() ) {
 
     		PrisonCommand.printFooter( sb );
+    		
+    		JumboTextFont.makeJumboFontText( mine.getName(), sb );
+    		sb.append( "\n" );
     		
     		CommandPagedData cmdPageData = new CommandPagedData(
     				"/mines info " + mine.getName(), mine.getPrisonBlocks().size(),

@@ -25,7 +25,11 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.9 2021-08-07
 
 
-* **Add the capture and display of all support submit URLs in each additonal submission.**
+* **Created a JumboTextFont to be included in the prison support submit documents.**
+Hooked up to mines.  This will make it easier to identify the various mines in the listings.
+
+
+* **Add the capture and display of all support submit URLs in each additional submission.**
 
 
 * **Expand '/prison support submit mines' details by including the '/mines info <mineName> all' command.** 

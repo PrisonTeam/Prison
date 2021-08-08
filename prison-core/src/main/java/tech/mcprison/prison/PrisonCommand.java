@@ -53,6 +53,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.troubleshoot.TroubleshootResult;
 import tech.mcprison.prison.troubleshoot.Troubleshooter;
+import tech.mcprison.prison.util.JumboTextFont;
 import tech.mcprison.prison.util.PrisonJarReporter;
 
 /**
@@ -1305,7 +1306,7 @@ public class PrisonCommand
     	
     	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
     	
-    	String helpURL = pasteChat.postKeepColorCodes( text.toString() );
+    	String helpURL = pasteChat.post( text.toString() );
     	
     	getSupportURLs().put( "Submit mines:", helpURL );
     	
@@ -1344,6 +1345,10 @@ public class PrisonCommand
 		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
     	
     	sb.append( "\n" );
+
+    	JumboTextFont.makeJumboFontText( file.getName(), sb );
+    	
+    	sb.append( "\n" );
     	
 		sb.append( "File Name:   " ).append( file.getName() ).append( "\n" );
 		sb.append( "File Path:   " ).append( file.getAbsolutePath() ).append( "\n" );
@@ -1373,11 +1378,11 @@ public class PrisonCommand
 	
 	public static void printFooter( StringBuilder sb ) {
 		
-		sb.append( "\n" );
+		sb.append( "\n\n\n" );
 		sb.append( "===  ---  ===   ---   ===   ---   ===   ---   ===  ---  ===\n" );
 		sb.append( "=== # # ### # # # ### # # # ### # # # ### # # # ### # # ===\n" );
 		sb.append( "===  ---  ===   ---   ===   ---   ===   ---   ===  ---  ===\n" );
-		sb.append( "\n" );
+		sb.append( "\n\n" );
 		
 	}
 
