@@ -1244,7 +1244,7 @@ public class PrisonCommand
     	
     	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
     	
-    	String helpURL = pasteChat.postKeepColorCodes( text.toString() );
+    	String helpURL = pasteChat.post( text.toString() );
     	
     	getSupportURLs().put( "Submit ranks:", helpURL );
     	

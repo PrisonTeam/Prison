@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
@@ -36,7 +37,9 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerName;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
+import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.ranks.managers.RankManager.RanksByLadderOptions;
+import tech.mcprison.prison.util.JumboTextFont;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -573,7 +576,7 @@ public class RanksCommands
         else {
         	display = new ChatDisplay( "List ALL Ranks" );
         	
-        	listAllRanks( display, hasPerm );
+        	listAllRanksByLadders( display, hasPerm );
         }
         
 
@@ -616,12 +619,32 @@ public class RanksCommands
 
     }
 
-	public void listAllRanks( ChatDisplay display, boolean hasPerm )
+	public void listAllRanksByLadders( ChatDisplay display, boolean hasPerm )
 	{
-		List<RankLadder> ladders = PrisonRanks.getInstance().getLadderManager().getLadders();
+//		List<RankLadder> ladders = PrisonRanks.getInstance().getLadderManager().getLadders();
 		
-		for ( RankLadder rLadder : ladders ) {
-			ChatDisplay cDisp = listRanksOnLadder( rLadder, hasPerm );
+//		for ( RankLadder rLadder : ladders ) {
+//			ChatDisplay cDisp = listRanksOnLadder( rLadder, hasPerm );
+//			
+//			if ( display == null ) {
+//				display = cDisp;
+//			}
+//			else {
+//				display.addEmptyLine();
+//				
+//				display.addChatDisplay( cDisp );
+//			}
+//			
+//		}
+		
+    	// Track which ranks were included in the ladders listed:
+    	List<Rank> ranksIncluded = new ArrayList<>();
+    	
+    	for ( RankLadder ladder : PrisonRanks.getInstance().getLadderManager().getLadders() ) {
+    		List<Rank> ladderRanks = ladder.getRanks();
+    		ranksIncluded.addAll( ladderRanks );
+    		
+    		ChatDisplay cDisp = listRanksOnLadder( ladder, hasPerm );
 			
 			if ( display == null ) {
 				display = cDisp;
@@ -632,7 +655,82 @@ public class RanksCommands
 				display.addChatDisplay( cDisp );
 			}
 			
+    	}
+    	
+    	// Next we need to get a list of all ranks that were not included. Create a temp ladder so they
+    	// can be printed out with them:
+    	List<Rank> ranksExcluded = new ArrayList<>( PrisonRanks.getInstance().getRankManager().getRanks() );
+    	ranksExcluded.removeAll( ranksIncluded );
+    	
+    	if ( ranksExcluded.size() > 0 ) {
+    		RankLadder noLadder = new RankLadder( -1, "No Ladder" );
+    		
+    		for ( Rank rank : ranksExcluded ) {
+    			noLadder.addRank( rank );
+			}
+    		
+    		ChatDisplay cDisp = listRanksOnLadder( noLadder, hasPerm );
+			
+			if ( display == null ) {
+				display = cDisp;
+			}
+			else {
+				display.addEmptyLine();
+				
+				display.addChatDisplay( cDisp );
+			}
+    	}
+    	
+	}
+	
+	public void listAllRanksByInfo( StringBuilder sb )
+	{
+		
+		// Track which ranks were included in the ladders listed:
+		List<Rank> ranksIncluded = new ArrayList<>();
+		
+		for ( RankLadder ladder : PrisonRanks.getInstance().getLadderManager().getLadders() ) {
+			List<Rank> ladderRanks = ladder.getRanks();
+			ranksIncluded.addAll( ladderRanks );
+			
+			for ( Rank rank : ladderRanks )
+			{
+				
+				PrisonCommand.printFooter( sb );
+				
+				JumboTextFont.makeJumboFontText( rank.getName(), sb );
+				sb.append( "\n" );
+				
+				ChatDisplay chatDisplay = rankInfoDetails( null, rank, "all" );
+				
+				sb.append( chatDisplay.toStringBuilder() );
+			}
 		}
+		
+		
+		
+		// Next we need to get a list of all ranks that were not included. Create a temp ladder so they
+		// can be printed out with them:
+		List<Rank> ranksExcluded = new ArrayList<>( PrisonRanks.getInstance().getRankManager().getRanks() );
+		ranksExcluded.removeAll( ranksIncluded );
+		
+		if ( ranksExcluded.size() > 0 ) {
+			
+			for ( Rank rank : ranksExcluded )
+			{
+				
+				PrisonCommand.printFooter( sb );
+				
+				JumboTextFont.makeJumboFontText( rank.getName(), sb );
+				sb.append( "\n" );
+				
+				ChatDisplay chatDisplay = rankInfoDetails( null, rank, "all" );
+				
+				sb.append( chatDisplay.toStringBuilder() );
+			}
+			
+		}
+		
 	}
 
 	private ChatDisplay listRanksOnLadder( RankLadder ladder, boolean hasPerm )
@@ -747,11 +845,51 @@ public class RanksCommands
         }
 
 
-        ChatDisplay display = new ChatDisplay( ranksInfoHeaderMsg( rank.getTag() ));
+        ChatDisplay display = rankInfoDetails( sender, rank, options );
+
+        display.send(sender);
+        
+//        if ( options != null && "all".equalsIgnoreCase( options )) {
+        	
+        	//getRankCommandCommands().commandLadderList( sender, rank.getLadder().getName(), "noRemoves" );
+        	
+//        	getRankCommandCommands().commandList( sender, rankName, "noRemoves" );
+//        }
+    }
+
+
+    public void allRanksInfoDetails( StringBuilder sb ) {
+    	
+    	PrisonRanks pRanks = PrisonRanks.getInstance();
+    	RankManager rMan = pRanks.getRankManager();
+    	
+    	for ( Rank rank : rMan.getRanks() ) {
+
+    		PrisonCommand.printFooter( sb );
+    		
+    		JumboTextFont.makeJumboFontText( rank.getName(), sb );
+    		sb.append( "\n" );
+    		
+    		ChatDisplay chatDisplay = rankInfoDetails( null, rank, "all" );
+    		
+    		sb.append( chatDisplay.toStringBuilder() );
+		}
+
+    	PrisonCommand.printFooter( sb );
+    }
+    
+    
+	private ChatDisplay rankInfoDetails( CommandSender sender, Rank rank, String options )
+	{
+		ChatDisplay display = new ChatDisplay( ranksInfoHeaderMsg( rank.getTag() ));
 
         display.addText( ranksInfoNameMsg( rank.getName() ));
         display.addText( ranksInfoTagMsg( rank.getTag() ));
-        display.addText( ranksInfoLadderMsg( rank.getLadder().getName() ));
+        
+        display.addText( 
+        		ranksInfoLadderMsg( rank.getLadder() != null ? 
+        				rank.getLadder().getName() : "(not linked to any ladder)" ));
+        
         
         if ( rank.getMines().size() == 0 ) {
         	display.addText( ranksInfoNotLinkedToMinesMsg() );
@@ -780,7 +918,7 @@ public class RanksCommands
         		.collect(Collectors.toList());
         display.addText( ranksInfoPlayersWithRankMsg( players.size() ));
 
-        if (sender.hasPermission("ranks.admin")) {
+        if ( sender == null || sender.hasPermission("ranks.admin")) {
             // This is admin-exclusive content
 
 //            display.addText("&8[Admin Only]");
@@ -791,16 +929,21 @@ public class RanksCommands
                     .tooltip( ranksInfoRankDeleteToolTipMsg() );
             display.addComponent(new FancyMessageComponent(del));
         }
-
-        display.send(sender);
         
         if ( options != null && "all".equalsIgnoreCase( options )) {
         	
-        	getRankCommandCommands().commandLadderList( sender, rank.getLadder().getName(), "noRemoves" );
+        	if ( rank.getLadder() != null ) {
+        		
+        		ChatDisplay cmdLadderDisplays = getRankCommandCommands().commandLadderListDetail( rank.getLadder(), true );
+        		display.addChatDisplay( cmdLadderDisplays );
+        	}
         	
-        	getRankCommandCommands().commandList( sender, rankName, "noRemoves" );
+        	ChatDisplay cmdLadderCmdsDisplays = getRankCommandCommands().commandListDetails( rank, true );
+        	display.addChatDisplay( cmdLadderCmdsDisplays );
         }
-    }
+        
+		return display;
+	}
 
 
     @Command(identifier = "ranks set cost", description = "Modifies a ranks cost", 

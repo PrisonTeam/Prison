@@ -2219,7 +2219,8 @@ public class SpigotPlatform
 	@Override
 	public String getMinesListString() {
 		
-		MinesCommands mc = new MinesCommands();
+		
+		MinesCommands mc = PrisonMines.getInstance().getMinesCommands();
 		
     	
     	ChatDisplay display = new ChatDisplay("Mines");
@@ -2231,22 +2232,30 @@ public class SpigotPlatform
     	
     	mc.allMinesInfoDetails( sb );
 		
-    	return Text.stripColor( sb.toString() );
+    	return sb.toString();
+//    	return Text.stripColor( sb.toString() );
 	}
 	
 	@Override
 	public String getRanksListString() {
 		
-		RanksCommands rc = new RanksCommands();
+		RanksCommands rc = 
+					PrisonRanks.getInstance().getRankManager().getRanksCommands();
 		
 		
 		ChatDisplay display = new ChatDisplay("Ranks");
 		
-		rc.listAllRanks( display, true );
+		rc.listAllRanksByLadders( display, true );
 		
 		StringBuilder sb = display.toStringBuilder();
 		
-		return Text.stripColor( sb.toString() );
+    	sb.append( "\n" );
+    	
+    	rc.listAllRanksByInfo( sb );
+//    	rc.allRanksInfoDetails( sb );
+		
+    	return sb.toString();
+//		return Text.stripColor( sb.toString() );
 	}
 
 

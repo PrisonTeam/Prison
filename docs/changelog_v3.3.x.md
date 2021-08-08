@@ -25,6 +25,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.9 2021-08-08
 
 
+* **Added JumboTextFonts to prison support submit ranks.**
+Fixed a few issues and added more characters to the fonts.  Added /ranks info <rankName> all to the ranks output for more detailed information.
+
+
 * **Found and fixed an obscure bug with regular expression quotes.**
 It was duplicating text and making the results much larger than what they should have been.
 
