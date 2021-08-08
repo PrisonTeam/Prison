@@ -348,9 +348,8 @@ public class Text {
     			sb.append( translateHexColorCodesCore( text, targetColorCode ) );
     		}
     		else {
-    			
     			while ( idxStart >= 0 ) {
-    				sb.append( translateHexColorCodesCore( text.substring( 0, idxStart ), targetColorCode) );
+    				sb.append( translateHexColorCodesCore( text.substring( idxEnd + 1, idxStart ), targetColorCode) );
     				
     				idxEnd = text.indexOf( "\\E", idxStart );
     				
@@ -359,10 +358,13 @@ public class Text {
     					idxStart = -1;
     				}
     				else {
-    					sb.append( text.substring( idxStart, idxEnd ) );
+    					sb.append( text.substring( idxStart, idxEnd + 1 ) );
     					
     					idxStart = text.indexOf( "\\Q", idxEnd );
     				}
+    			}
+    			if ( idxEnd < text.length() ) {
+    				sb.append( text.substring( idxEnd + 1 ) );
     			}
     		}
     	}
