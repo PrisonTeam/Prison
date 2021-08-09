@@ -25,6 +25,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.9 2021-08-09
 
 
+* **Added a spigot module en_US.properties language file.**
+
+
 * **Added a new function to the PrisonEventManager to return the list of event listeners as a string so they can be logged to the console, or through helpch.at which is not yet hooked up.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
 
