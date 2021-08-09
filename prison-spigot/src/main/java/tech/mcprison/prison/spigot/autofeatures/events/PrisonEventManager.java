@@ -14,4 +14,7 @@ public interface PrisonEventManager
 	
 	public void dumpEventListeners();
 	
+	
+	public void dumpEventListeners( StringBuilder sb );
+	
 }

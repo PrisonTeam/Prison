@@ -12,7 +12,6 @@ import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.output.ChatDisplay;
-import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
@@ -166,26 +165,44 @@ public class AutoManagerCrazyEnchants
 	
 	@Override
 	public void dumpEventListeners() {
-    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
-    	
-    	if ( !isEventEnabled ) {
-    		return;
-    	}
+		
+		StringBuilder sb = new StringBuilder();
+		
+		dumpEventListeners( sb );
+		
+		if ( sb.length() > 0 ) {
+
+			
+			for ( String line : sb.toString().split( "\n" ) ) {
+				
+				Output.get().logInfo( line );
+			}
+		}
+		
+	}
+    
+	
+	@Override
+	public void dumpEventListeners( StringBuilder sb ) {
+		boolean isEventEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
+		
+		if ( !isEventEnabled ) {
+			return;
+		}
 		
 		// Check to see if the class BlastUseEvent even exists:
 		try {
 			
 			Class.forName( "me.badbones69.crazyenchantments.api.events.BlastUseEvent", false, 
-							this.getClass().getClassLoader() );
+					this.getClass().getClassLoader() );
 			
-
+			
 			ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
 					"BlastUseEvent", 
 					new SpigotHandlerList( BlastUseEvent.getHandlerList()) );
-
+			
 			if ( eventDisplay != null ) {
-				Output.get().logInfo( "" );
-				eventDisplay.toLog( LogLevel.INFO );
+				sb.append( eventDisplay.toStringBuilder() );
 			}
 		}
 		catch ( ClassNotFoundException e ) {
@@ -195,5 +212,5 @@ public class AutoManagerCrazyEnchants
 			Output.get().logInfo( "AutoManager: CrazyEnchants failed to load. [%s]", e.getMessage() );
 		}
 	}
-    
+	
 }

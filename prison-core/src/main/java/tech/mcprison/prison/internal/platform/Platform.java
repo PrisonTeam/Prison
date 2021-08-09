@@ -363,9 +363,9 @@ public interface Platform {
 	public List<String> getActiveFeatures();
 
 
-	public void dumpEventListenersBlockBreakEvents();
+	public String dumpEventListenersBlockBreakEvents();
 	
-	public void dumpEventListenersPlayerChatEvents();
+	public String dumpEventListenersPlayerChatEvents();
 
 
 	public void traceEventListenersBlockBreakEvents( CommandSender sender );
@@ -404,10 +404,10 @@ public interface Platform {
 	 * @param eventType
 	 * @param handlerList
 	 */
-	List<String> dumpEventListenersList( String eventType, HandlerList handlerList );
+	public List<String> dumpEventListenersList( String eventType, HandlerList handlerList );
 
 
-	ChatDisplay dumpEventListenersChatDisplay( String eventType, HandlerList handlerList );
+	public ChatDisplay dumpEventListenersChatDisplay( String eventType, HandlerList handlerList );
 
 
 	/**

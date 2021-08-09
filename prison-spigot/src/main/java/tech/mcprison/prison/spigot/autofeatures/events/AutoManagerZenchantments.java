@@ -11,7 +11,6 @@ import org.bukkit.plugin.PluginManager;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.output.ChatDisplay;
-import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
@@ -171,9 +170,27 @@ public class AutoManagerZenchantments
     	
     }
 	
-    
+	@Override
+	public void dumpEventListeners() {
+		
+		StringBuilder sb = new StringBuilder();
+		
+		dumpEventListeners( sb );
+		
+		if ( sb.length() > 0 ) {
+
+			
+			for ( String line : sb.toString().split( "\n" ) ) {
+				
+				Output.get().logInfo( line );
+			}
+		}
+		
+	}
+	
+	
     @Override
-    public void dumpEventListeners() {
+    public void dumpEventListeners( StringBuilder sb ) {
     	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessZenchantsBlockExplodeEvents );
     	
     	if ( !isEventEnabled ) {
@@ -192,8 +209,7 @@ public class AutoManagerZenchantments
     				new SpigotHandlerList( BlockShredEvent.getHandlerList()) );
     		
     		if ( eventDisplay != null ) {
-    			Output.get().logInfo( "" );
-    			eventDisplay.toLog( LogLevel.INFO );
+    			sb.append( eventDisplay.toStringBuilder() );
     		}
     	}
     	catch ( ClassNotFoundException e ) {

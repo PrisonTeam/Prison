@@ -347,13 +347,13 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
-	public void dumpEventListenersBlockBreakEvents() {
-		
+	public String dumpEventListenersBlockBreakEvents() {
+		return "";
 	}
 	
 	@Override
-	public void dumpEventListenersPlayerChatEvents() {
-		
+	public String dumpEventListenersPlayerChatEvents() {
+		return "";
 	}
 	
 	@Override

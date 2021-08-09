@@ -990,7 +990,7 @@ public class PrisonCommand
     		@Wildcard(join=true)
     		@Arg(name = "targets", def = " ",
     				description = "Optional. Enable or disable a debugging target. " +
-    					"[on, off, targets, jarScan, blockBreakListeners, chatListeners, " +
+    					"[on, off, targets, jarScan, " +
     					"testPlayerUtil, testLocale] " +
     				"Use 'targets' to list all available targets.  Use 'on' or 'off' to toggle " +
     				"on and off individual targets, or all targets if no target is specified.  " +
@@ -1006,26 +1006,6 @@ public class PrisonCommand
     		return;
     	}
     	
-    	if ( targets != null && "blockBreakListeners".equalsIgnoreCase( targets ) ) {
-    		
-    		Prison.get().getPlatform().dumpEventListenersBlockBreakEvents();
-    		
-    		return;
-    	}
-    	
-    	if ( targets != null && "traceBlockBreakListeners".equalsIgnoreCase( targets ) ) {
-    		
-    		Prison.get().getPlatform().traceEventListenersBlockBreakEvents( sender );
-    		
-    		return;
-    	}
-    	
-    	if ( targets != null && "chatListeners".equalsIgnoreCase( targets ) ) {
-    		
-    		Prison.get().getPlatform().dumpEventListenersPlayerChatEvents();
-    		
-    		return;
-    	}
     	
     	if ( targets != null && "testLocale".equalsIgnoreCase( targets ) ) {
     		
@@ -1485,7 +1465,52 @@ public class PrisonCommand
 	}
     
 
-    
+	@Command(identifier = "prison support listeners", 
+    		description = "For Prison support: Provide a 'dump' of all event listeners.", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportListenersDump(CommandSender sender,
+    		@Arg(name = "listener", def = " ",
+			description = "Provides a detailed list of all registered event listeners for" +
+					"the various event types.  BlockBreak listeners will include all " +
+					"listeners that are being monitored within auto features. " +
+				"[blockBreak, traceBlockBreak, chat]"
+					) String listener
+    		) {
+		
+		if ( listener == null ) {
+			String message = "You must supply a listener in order to use this command.";
+			sender.sendMessage( message );
+			return;
+		}
+		
+		String results = null;
+		
+    	if ( "blockBreak".equalsIgnoreCase( listener ) ) {
+    		
+    		results = Prison.get().getPlatform().dumpEventListenersBlockBreakEvents();
+    	}
+    	
+    	if ( "chat".equalsIgnoreCase( listener ) ) {
+    		
+    		results = Prison.get().getPlatform().dumpEventListenersPlayerChatEvents();
+    	}
+    	
+    	if ( "traceBlockBreak".equalsIgnoreCase( listener ) ) {
+    		
+    		Prison.get().getPlatform().traceEventListenersBlockBreakEvents( sender );
+    		
+    		return;
+    	}
+    	
+		if ( results != null ) {
+
+			for ( String line : results.split( "\n" ) ) {
+				
+				Output.get().logInfo( line );
+			}
+		}
+
+	} 
     
     
 // This functionality should not be available in v3.2.1!  If someone is still running Prison 2.x.x 

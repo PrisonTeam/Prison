@@ -41,7 +41,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.plugin.Plugin;
@@ -2008,53 +2007,51 @@ public class SpigotPlatform
 	
 	
 	@Override
-	public void dumpEventListenersBlockBreakEvents() {
-		
-		HandlerList handlerList = new SpigotHandlerList( BlockBreakEvent.getHandlerList() );
-		ChatDisplay eventDisplay = dumpEventListenersChatDisplay( 
-										"BlockBreakEvent", handlerList );
-		if ( eventDisplay != null ) {
-			eventDisplay.toLog( LogLevel.INFO );
-		}
-		
-		
-		Output.get().logInfo( "&2NOTE: Prison Block Event Listeners:" );
-		
-		Output.get().logInfo( "&2. . Prison Internal BlockBreakEvents: " +
-								"tech.mcprison.prison.spigot.SpigotListener" );
-		Output.get().logInfo( "&2. . Auto Feature Core: Non-AutoManager: " +
-								"OnBlockBreakEventListeners$OnBlockBreakEventListener*" );
-		Output.get().logInfo( "&2. . Prison MONITOR Events manages block counts, " +
-								"Mine Sweeper, and zero block conditions." );
-		Output.get().logInfo( "&2. . AutoManager and enchantment event listeners are " +
-								"identified by their class names." );
-		
+	public String dumpEventListenersBlockBreakEvents() {
+		StringBuilder sb = new StringBuilder();
 		
 		// Dump the event listeners for the following events if they are active on the server:
-
+		
+		AutoManagerBlockBreakEvents blockEvents = new AutoManagerBlockBreakEvents();
+		blockEvents.dumpEventListeners( sb );
+		
+		
+		sb.append( "&2NOTE: Prison Block Event Listeners:" );
+		
+		sb.append( "&2. . Prison Internal BlockBreakEvents: " +
+									"tech.mcprison.prison.spigot.SpigotListener" );
+		sb.append( "&2. . Auto Feature Core: Non-AutoManager: " +
+									"OnBlockBreakEventListeners$OnBlockBreakEventListener*" );
+		sb.append( "&2. . Prison MONITOR Events manages block counts, " +
+									"Mine Sweeper, and zero block conditions." );
+		sb.append( "&2. . AutoManager and enchantment event listeners are " +
+									"identified by their class names." );
+		
 		
 		AutoManagerCrazyEnchants crazyEnchants = new AutoManagerCrazyEnchants();
-		crazyEnchants.dumpEventListeners();
+		crazyEnchants.dumpEventListeners( sb );
 		
 		AutoManagerPrisonEnchants prisonEnchants = new AutoManagerPrisonEnchants();
-		prisonEnchants.dumpEventListeners();
+		prisonEnchants.dumpEventListeners( sb );
 		
 		AutoManagerTokenEnchant tokenEnchant = new AutoManagerTokenEnchant();
-		tokenEnchant.dumpEventListeners();
+		tokenEnchant.dumpEventListeners( sb );
 
 		AutoManagerZenchantments zenchantments = new AutoManagerZenchantments();
-		zenchantments.dumpEventListeners();
+		zenchantments.dumpEventListeners( sb );
 		
+		return sb.toString();
 	}
 	
 	@Override
-	public void dumpEventListenersPlayerChatEvents() {
+	public String dumpEventListenersPlayerChatEvents() {
+		StringBuilder sb = new StringBuilder();
 		
 		ChatDisplay eventDisplay = dumpEventListenersChatDisplay(
 								"AsyncPlayerChatEvent", 
 								new SpigotHandlerList( AsyncPlayerChatEvent.getHandlerList()) );
 		if ( eventDisplay != null ) {
-			eventDisplay.toLog( LogLevel.INFO );
+			sb.append( eventDisplay.toStringBuilder() );
 		}
 			
 		if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.17.0") < 0 ) {
@@ -2063,9 +2060,11 @@ public class SpigotPlatform
 								"PlayerChatEvent", 
 								new SpigotHandlerList( PlayerChatEvent.getHandlerList()) );
 			if ( eventDisplay != null ) {
-				eventDisplay.toLog( LogLevel.INFO );
+				sb.append( eventDisplay.toStringBuilder() );
 			}
 		}
+		
+		return sb.toString();
 	}
 	
 	/**
@@ -2165,7 +2164,7 @@ public class SpigotPlatform
 	public void traceEventListenersBlockBreakEvents( tech.mcprison.prison.internal.CommandSender sender )
 	{
 		// TODO Auto-generated method stub
-		
+		Output.get().logInfo( "This feature is not enabled yet." );
 	}
 	
 	@Override
