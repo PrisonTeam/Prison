@@ -8,17 +8,25 @@ public class JumboTextFontTest
 	@Test
 	public final void test()
 	{
-		testPrint( "ABC, CDEFG." );
+		testPrint( "AaBbCcDd" );
 		
-		testPrint( "HIJKL? ABC." );
+		testPrint( "ABCDEFGHIJ" );
 
-		testPrint( "MNOPQRST" );
+		testPrint( "KLMNOPQRST" );
 		
 		testPrint( "UVWXYZ!?" );
 
 		testPrint( "1234567890" );
 		
-		testPrint( "ABC ?/!\\,? CBA" );
+		testPrint( "ABC Aa, Bb. Cd!" );
+		
+		testPrint( "abcdefghij");
+		
+		testPrint( "klmnopqrst" );
+		
+		testPrint( "uvwxyz" );
+		
+		testPrint( "aA/_-+=_\\Bb" );
 
 	}
 

@@ -25,6 +25,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.9 2021-08-10
 
 
+* **Updates to the JumboTextFont by adding most of the lowercase characters.**
+
+
 * **Alter the use of accessing the player to help eliminate the risk of concurrent modification events.**
 
 

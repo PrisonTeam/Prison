@@ -7,7 +7,7 @@ public enum JumboTextFont {
 
 	A("A", 5, "  A  ", " A A ", "AAAAA", "A   A", "A   A" ),
 	B("B", 5, "BBBB ", "B   B", "BBBB ", "B   B", "BBBB " ),
-	C("C", 5, " CCC ", "C   C", "C    ", "C   C", " CCC " ),
+	C("C", 5, " CCC ", "C    ", "C    ", "C    ", " CCC " ),
 	D("D", 5, "DDDD ", "D   D", "D   D", "D   D", "DDDD " ),
 	E("E", 5, "EEEEE", "E    ", "EEEE ", "E    ", "EEEEE" ),
 	F("F", 5, "FFFFF", "F    ", "FFF  ", "F    ", "F    " ),
@@ -53,9 +53,37 @@ public enum JumboTextFont {
 	slash("/", 5, "    /", "   / ", "  /  ", " /   ", "/    " ),
 	backslash("\\", 5, "\\    ", " \\   ", "  \\  ", "   \\ ", "    \\" ),
 	underscore("_", 5, "     ", "     ", "     ", "     ", "#####" ),
-	plus("+", 5, "  +  ", "  +  ", "+++++", "  +  ", "  +  " ),
-	minus("-", 5, "     ", "     ", "-----", "     ", "     " ),
-	equal("=", 5, "     ", "=====", "     ", "=====", "     " )
+	plus("+", 3, "   ", "   ", " + ", "+++", " + " ),
+	minus("-", 3, "   ", "   ", "   ", "---", "   " ),
+	equal("=", 3, "   ", "   ", "===", "   ", "===" ),
+	
+	a("a", 5, "     ", "     ", " aaa ", "a  aa", " aa a" ),
+	b("b", 5, "b    ", "b    ", "bbbb ", "b   b", "bbbb " ),
+	c("c", 5, "     ", "     ", " ccc ", "c    ", " ccc " ),
+	d("d", 5, "    d", "    d", " dddd", "d   d", " dddd" ),
+	//e("e", 5, "     ", " eee ", "e   e", "eeeee", "e    ", " eee " ) // bad lowercase
+	f("f", 4, "  ff", " f  ", "ffff", " f  ", " f  " ),
+	//g
+	h("h", 5, "h    ", "h    ", "hhhh ", "h   h", "h   h" ),
+	i("i", 1, "i", " ", "i", "i", "i" ),
+	j("j", 2, " j", "  ", " j", " j", "jj" ),
+	k("k", 5, "k    ", "k   k", "k k  ", "kk   ", "k  k " ),
+	l("l", 2, "l ", "l ", "l ", "l ", "ll" ),
+	//m
+	m("m", 5, "     ", "     ", "mm mm", "m m m", "m m m" ),
+	n("n", 5, "     ", "     ", "n nn ", "nn  n", "n   n" ),
+	o("o", 5, "     ", "     ", " ooo ", "o   o", " ooo " ),
+	//p
+	//q
+	r("r", 4, "    ", "    ", "r rr", "rr  ", "r   " ),
+	//s
+	t("t", 5, "     ", "  t  ", "ttttt", "  t  ", "  t  " ),
+	u("u", 5, "     ", "     ", "u   u", "u   u", " uuu " ),
+	v("v", 5, "     ", "     ", "v   v", " v v ", "  v  " ),
+	w("w", 5, "     ", "     ", "w w w", "w w w", " w w " ),
+	x("x", 3, "   ", "   ", "x x", " x ", "x x" ),
+	//y
+	z("z", 3, "   ", "   ", "zzz", " z ", "zzz" )
 	;
 	
 	
@@ -87,15 +115,15 @@ public enum JumboTextFont {
 	
 	public static void makeJumboFontText( String text, StringBuilder sb ) {
 		
-		// Temp until lowercase is added:
-		text = text.toUpperCase();
+//		// Temp until lowercase is added:
+//		text = text.toUpperCase();
 		
 		List<StringBuilder> texts = JumboTextFont.textLines( text );
 		
 		for ( StringBuilder sbLine : texts ) {
 			sb.append( sbLine ).append( "\n" );
 		}
-
+		
 	}
 	
 	private static List<StringBuilder> textLines( String word ) {
@@ -145,6 +173,12 @@ public enum JumboTextFont {
 					break;
 				}
 			}
+		}
+		
+		if ( results == null && Character.isLowerCase( letter.charAt( 0 ) ) ) {
+			// The letter is lowercase and could not hit on a lowercase character,
+			// so uppercase it and try again:
+			results = findMatch( letter.toUpperCase() );
 		}
 		
 		return results;
