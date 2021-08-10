@@ -25,6 +25,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.9 2021-08-10
 
 
+* **Added the event level MONITOR and changed the event listeners to only register the MONITOR event when the config is set to MONITOR.**
+
+
 * **Updates to the JumboTextFont by adding most of the lowercase characters.**
 
 

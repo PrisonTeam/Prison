@@ -98,7 +98,9 @@ public class OnBlockBreakEventListener
 		LOW,
 		NORMAL,
 		HIGH,
-		HIGHEST;
+		HIGHEST,
+		MONITOR
+		;
 		
 		public static BlockBreakPriority fromString( String value ) {
 			BlockBreakPriority results = BlockBreakPriority.LOW;

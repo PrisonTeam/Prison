@@ -90,8 +90,6 @@ public class AutoManagerPrisonEnchants
 				EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
 				
 				
-				OnBlockBreakExplosiveEventListener normalListener = 
-												new OnBlockBreakExplosiveEventListener();
 				OnBlockBreakExplosiveEventListenerMonitor normalListenerMonitor = 
 												new OnBlockBreakExplosiveEventListenerMonitor();
 				
@@ -101,32 +99,37 @@ public class AutoManagerPrisonEnchants
 				
 				PluginManager pm = Bukkit.getServer().getPluginManager();
 				
-				if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
+				if ( eventPriority != BlockBreakPriority.MONITOR ) {
 					
-					AutoManagerExplosiveEventListener autoManagerlListener = 
-							new AutoManagerExplosiveEventListener();
-
-					pm.registerEvent(PrisonExplosionEvent.class, autoManagerlListener, ePriority,
+					if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
+						
+						AutoManagerExplosiveEventListener autoManagerlListener = 
+								new AutoManagerExplosiveEventListener();
+						
+						pm.registerEvent(PrisonExplosionEvent.class, autoManagerlListener, ePriority,
+								new EventExecutor() {
+							public void execute(Listener l, Event e) { 
+								((AutoManagerExplosiveEventListener)l)
+								.onPrisonEnchantsExplosiveEvent((PrisonExplosionEvent)e);
+							}
+						},
+								prison);
+						prison.getRegisteredBlockListeners().add( autoManagerlListener );
+					}
+					
+					OnBlockBreakExplosiveEventListener normalListener = 
+							new OnBlockBreakExplosiveEventListener();
+					
+					pm.registerEvent(PrisonExplosionEvent.class, normalListener, ePriority,
 							new EventExecutor() {
 						public void execute(Listener l, Event e) { 
-							((AutoManagerExplosiveEventListener)l)
-										.onPrisonEnchantsExplosiveEvent((PrisonExplosionEvent)e);
+							((OnBlockBreakExplosiveEventListener)l)
+							.onPrisonEnchantsExplosiveEvent((PrisonExplosionEvent)e);
 						}
 					},
-					prison);
-					prison.getRegisteredBlockListeners().add( autoManagerlListener );
+							prison);
+					prison.getRegisteredBlockListeners().add( normalListener );
 				}
-
-				
-				pm.registerEvent(PrisonExplosionEvent.class, normalListener, ePriority,
-						new EventExecutor() {
-					public void execute(Listener l, Event e) { 
-						((OnBlockBreakExplosiveEventListener)l)
-										.onPrisonEnchantsExplosiveEvent((PrisonExplosionEvent)e);
-					}
-				},
-				prison);
-				prison.getRegisteredBlockListeners().add( normalListener );
 				
 				pm.registerEvent(PrisonExplosionEvent.class, normalListenerMonitor, EventPriority.MONITOR,
 						new EventExecutor() {

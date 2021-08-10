@@ -89,8 +89,6 @@ public class AutoManagerCrazyEnchants
 				EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
 				
 				
-				OnBlockBreakBlastUseEventListener normalListener = 
-											new OnBlockBreakBlastUseEventListener();
 				OnBlockBreakBlastUseEventListenerMonitor normalListenerMonitor = 
 											new OnBlockBreakBlastUseEventListenerMonitor();
 				
@@ -99,31 +97,37 @@ public class AutoManagerCrazyEnchants
 				
 				PluginManager pm = Bukkit.getServer().getPluginManager();
 				
-				if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
+				if ( eventPriority != BlockBreakPriority.MONITOR ) {
 					
-					AutoManagerBlastUseEventListener autoManagerlListener = 
-														new AutoManagerBlastUseEventListener();
+					if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
+						
+						AutoManagerBlastUseEventListener autoManagerlListener = 
+								new AutoManagerBlastUseEventListener();
+						
+						pm.registerEvent(BlastUseEvent.class, autoManagerlListener, ePriority,
+								new EventExecutor() {
+							public void execute(Listener l, Event e) { 
+								((AutoManagerBlastUseEventListener)l)
+								.onCrazyEnchantsBlockExplode((BlastUseEvent)e);
+							}
+						},
+								prison);
+						prison.getRegisteredBlockListeners().add( autoManagerlListener );
+					}
+					
+					OnBlockBreakBlastUseEventListener normalListener = 
+							new OnBlockBreakBlastUseEventListener();
 
-					pm.registerEvent(BlastUseEvent.class, autoManagerlListener, ePriority,
+					pm.registerEvent(BlastUseEvent.class, normalListener, ePriority,
 							new EventExecutor() {
-						public void execute(Listener l, Event e) { 
-							((AutoManagerBlastUseEventListener)l)
-							.onCrazyEnchantsBlockExplode((BlastUseEvent)e);
-						}
-					},
-					prison);
-					prison.getRegisteredBlockListeners().add( autoManagerlListener );
-				}
-				
-				pm.registerEvent(BlastUseEvent.class, normalListener, ePriority,
-						new EventExecutor() {
 						public void execute(Listener l, Event e) { 
 							((OnBlockBreakBlastUseEventListener)l)
 							.onCrazyEnchantsBlockExplode((BlastUseEvent)e);
-					}
-				},
-				prison);
-				prison.getRegisteredBlockListeners().add( normalListener );
+						}
+					},
+							prison);
+					prison.getRegisteredBlockListeners().add( normalListener );
+				}
 				
 				pm.registerEvent(BlastUseEvent.class, normalListenerMonitor, EventPriority.MONITOR,
 						new EventExecutor() {

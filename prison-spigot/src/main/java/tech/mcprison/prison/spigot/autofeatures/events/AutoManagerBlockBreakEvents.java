@@ -90,9 +90,6 @@ public class AutoManagerBlockBreakEvents
     			
     			
 				
-				
-    			OnBlockBreakEventListenerNormal normalListener = 
-												new OnBlockBreakEventListenerNormal();
     			OnBlockBreakEventListenerNormalMonitor normalListenerMonitor = 
 												new OnBlockBreakEventListenerNormalMonitor();
 				
@@ -101,38 +98,45 @@ public class AutoManagerBlockBreakEvents
     			
     			PluginManager pm = Bukkit.getServer().getPluginManager();
     			
-    			if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
+    			if ( eventPriority != BlockBreakPriority.MONITOR ) {
     				
-    				AutoManagerBlockBreakEventListener autoManagerlListener = 
-    											new AutoManagerBlockBreakEventListener();
+    				if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
+    					
+    					AutoManagerBlockBreakEventListener autoManagerlListener = 
+    							new AutoManagerBlockBreakEventListener();
+    					
+    					pm.registerEvent(BlockBreakEvent.class, autoManagerlListener, ePriority,
+    							new EventExecutor() {
+    						public void execute(Listener l, Event e) {
+    							if ( l instanceof AutoManagerBlockBreakEventListener && 
+    									e instanceof BlockBreakEvent ) {
+    								((AutoManagerBlockBreakEventListener)l)
+    								.onBlockBreak((BlockBreakEvent)e);
+    							}
+    						}
+    					},
+    							prison);
+    					prison.getRegisteredBlockListeners().add( autoManagerlListener );
+    				}
     				
-    				pm.registerEvent(BlockBreakEvent.class, autoManagerlListener, ePriority,
+    				OnBlockBreakEventListenerNormal normalListener = 
+    						new OnBlockBreakEventListenerNormal();
+    				
+    				pm.registerEvent(BlockBreakEvent.class, normalListener, ePriority,
     						new EventExecutor() {
     					public void execute(Listener l, Event e) {
-    						if ( l instanceof AutoManagerBlockBreakEventListener && 
-              						 e instanceof BlockBreakEvent ) {
-    							((AutoManagerBlockBreakEventListener)l)
-    											.onBlockBreak((BlockBreakEvent)e);
+    						if ( l instanceof OnBlockBreakEventListenerNormal && 
+    								e instanceof BlockBreakEvent ) {
+    							((OnBlockBreakEventListenerNormal)l)
+    							.onBlockBreak((BlockBreakEvent)e);
     						}
     					}
     				},
-					prison);
-    				prison.getRegisteredBlockListeners().add( autoManagerlListener );
+    						prison);
+    				prison.getRegisteredBlockListeners().add( normalListener );
+    				
     			}
     			
-    			pm.registerEvent(BlockBreakEvent.class, normalListener, ePriority,
-    					new EventExecutor() {
-    				public void execute(Listener l, Event e) {
-    					if ( l instanceof OnBlockBreakEventListenerNormal && 
-         						 e instanceof BlockBreakEvent ) {
-    						((OnBlockBreakEventListenerNormal)l)
-    											.onBlockBreak((BlockBreakEvent)e);
-    					}
-    				}
-    			},
-    			prison);
-    			prison.getRegisteredBlockListeners().add( normalListener );
-
     			
     			pm.registerEvent(BlockBreakEvent.class, normalListenerMonitor, EventPriority.MONITOR,
     					new EventExecutor() {

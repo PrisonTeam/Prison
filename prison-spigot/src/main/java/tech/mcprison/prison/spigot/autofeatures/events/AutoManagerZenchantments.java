@@ -91,8 +91,6 @@ public class AutoManagerZenchantments
     			EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
     			
     			
-    			OnBlockBreakBlockShredEventListener normalListener = 
-												new OnBlockBreakBlockShredEventListener();
     			OnBlockBreakBlockShredEventListenerMonitor normalListenerMonitor = 
 												new OnBlockBreakBlockShredEventListenerMonitor();
     			
@@ -101,41 +99,47 @@ public class AutoManagerZenchantments
     			
     			PluginManager pm = Bukkit.getServer().getPluginManager();
     			
-    			if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
+    			if ( eventPriority != BlockBreakPriority.MONITOR ) {
     				
-    				AutoManagerBlockShredEventListener autoManagerlListener = 
-    											new AutoManagerBlockShredEventListener();
+    				if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
+    					
+    					AutoManagerBlockShredEventListener autoManagerlListener = 
+    							new AutoManagerBlockShredEventListener();
+    					
+    					pm.registerEvent(BlockShredEvent.class, autoManagerlListener, ePriority,
+    							new EventExecutor() {
+    						public void execute(Listener l, Event e) { 
+    							if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor && 
+    									e instanceof BlockShredEvent ) {
+    								OnBlockBreakBlockShredEventListenerMonitor lmon = 
+    										(OnBlockBreakBlockShredEventListenerMonitor) l;
+    								BlockShredEvent event = (BlockShredEvent) e;
+    								lmon.onBlockShredBreakMonitor( event );
+    							}
+    						}
+    					},
+    							prison);
+    					prison.getRegisteredBlockListeners().add( autoManagerlListener );
+    				}
     				
-    				pm.registerEvent(BlockShredEvent.class, autoManagerlListener, ePriority,
+    				OnBlockBreakBlockShredEventListener normalListener = 
+    						new OnBlockBreakBlockShredEventListener();
+
+    				pm.registerEvent(BlockShredEvent.class, normalListener, ePriority,
     						new EventExecutor() {
     					public void execute(Listener l, Event e) { 
-        					if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor && 
-           						 e instanceof BlockShredEvent ) {
-           						OnBlockBreakBlockShredEventListenerMonitor lmon = 
-           											(OnBlockBreakBlockShredEventListenerMonitor) l;
-           						BlockShredEvent event = (BlockShredEvent) e;
-           						lmon.onBlockShredBreakMonitor( event );
-           					}
+    						if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor && 
+    								e instanceof BlockShredEvent ) {
+    							OnBlockBreakBlockShredEventListenerMonitor lmon = 
+    									(OnBlockBreakBlockShredEventListenerMonitor) l;
+    							BlockShredEvent event = (BlockShredEvent) e;
+    							lmon.onBlockShredBreakMonitor( event );
+    						}
     					}
     				},
-    				prison);
-    				prison.getRegisteredBlockListeners().add( autoManagerlListener );
+    						prison);
+    				prison.getRegisteredBlockListeners().add( normalListener );
     			}
-    			
-    			pm.registerEvent(BlockShredEvent.class, normalListener, ePriority,
-    					new EventExecutor() {
-    				public void execute(Listener l, Event e) { 
-    					if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor && 
-       						 e instanceof BlockShredEvent ) {
-       						OnBlockBreakBlockShredEventListenerMonitor lmon = 
-       											(OnBlockBreakBlockShredEventListenerMonitor) l;
-       						BlockShredEvent event = (BlockShredEvent) e;
-       						lmon.onBlockShredBreakMonitor( event );
-       					}
-    				}
-    			},
-    			prison);
-    			prison.getRegisteredBlockListeners().add( normalListener );
     			
     			pm.registerEvent(BlockShredEvent.class, normalListenerMonitor, EventPriority.MONITOR,
     					new EventExecutor() {
