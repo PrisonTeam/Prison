@@ -25,6 +25,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.9 2021-08-10
 
 
+* **Added a missing ranks message: when removing a player from a rank and it fails.**
+
+
 * **LocalManager.getLocale: Fixed an issue with player being null when the player object originated from a task processing offline players.**
 
 
