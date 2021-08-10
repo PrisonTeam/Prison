@@ -22,7 +22,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.10-alpha.9 2021-08-09
+# v3.2.10-alpha.9 2021-08-10
+
+
+* **Alter the use of accessing the player to help eliminate the risk of concurrent modification events.**
 
 
 * **Added a spigot module en_US.properties language file.**

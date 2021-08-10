@@ -2,7 +2,6 @@ package tech.mcprison.prison.cache;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import tech.mcprison.prison.output.Output;
 
@@ -54,13 +53,13 @@ public class PlayerCacheSaveAllPlayersTask
 		
 		List<PlayerCachePlayerData> purge = new ArrayList<>();
 		
-		Set<String> keys = pCache.getPlayers().keySet();
+		List<String> keys = new ArrayList<>( pCache.getPlayers().keySet() );
 		
 		for ( String key : keys )
 		{
 			PlayerCachePlayerData playerData = pCache.getPlayers().get( key );
 			
-			if ( playerData.isDirty() ) {
+			if ( playerData != null && playerData.isDirty() ) {
 				
 				try
 				{
@@ -80,7 +79,7 @@ public class PlayerCacheSaveAllPlayersTask
 			// If a cached item is found with the player being offline, then 
 			// purge them from the cache.  They were usually added only because
 			// some process had to inspect their stats, so they are safe to remove.
-			if ( !playerData.isOnline() ) {
+			if (  playerData != null && !playerData.isOnline() ) {
 				purge.add( playerData );
 			}
 		}
