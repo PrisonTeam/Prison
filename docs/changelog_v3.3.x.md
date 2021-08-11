@@ -22,7 +22,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.10-alpha.9 2021-08-10
+# v3.2.10-alpha.10 2021-08-11
+
+
+
+* **v3.2.10-alpha.10 2021-08-11**
 
 
 * **Added a missing ranks message: when removing a player from a rank and it fails.**
