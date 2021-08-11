@@ -83,6 +83,7 @@ import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.commands.RanksCommands;
+import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
@@ -1258,7 +1259,8 @@ public class SpigotPlatform
     		RankPlayer rankPlayer = pm.getPlayer( player );
 
     		if ( rankPlayer != null ) {
-    			Rank rank = rankPlayer.getRank( "default" );
+    			PlayerRank pRank = rankPlayer.getRank( "default" );
+    			Rank rank = pRank.getRank();
     			
     			if ( rank != null ) {
     				

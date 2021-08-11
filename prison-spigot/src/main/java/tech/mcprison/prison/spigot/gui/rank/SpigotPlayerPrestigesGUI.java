@@ -1,13 +1,9 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
-import java.util.List;
-
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import com.cryptomorin.xseries.XMaterial;
@@ -18,6 +14,7 @@ import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
@@ -122,10 +119,11 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
 
         PrisonGUI gui = new PrisonGUI(getPlayer(), dimension, guiConfig.getString("Options.Titles.PlayerPrestigesGUI"));
 
-        if ( ladder == null ){
-            Output.get().sendWarn(new SpigotPlayer(player), messages.getString("Message.LadderPrestigesNotFound"));
-            return;
-        }
+        // dead code:
+//        if ( ladder == null ){
+//            Output.get().sendWarn(new SpigotPlayer(player), messages.getString("Message.LadderPrestigesNotFound"));
+//            return;
+//        }
 
         if (!ladder.getLowestRank().isPresent()){
             Output.get().sendWarn(new SpigotPlayer(player), messages.getString("Message.NoRanksPrestigesLadder"));
@@ -134,7 +132,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
 
         Rank rank = ladder.getLowestRank().get();
 
-        Rank playerRank = getRankPlayer().getRank("prestiges");
+        Rank playerRank = getRankPlayer().getRank("prestiges").getRank();
 
         // Not sure how you want to represent this:
         XMaterial materialHas = XMaterial.valueOf(guiConfig.getString("Options.Ranks.Item_gotten_rank"));
@@ -154,7 +152,8 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         int amount = 1;
         while ( rank != null ) {
 
-            ButtonLore ranksLore = new ButtonLore(loreInfo, lorePrice3 + rank.getCost());
+        	PlayerRank pRank = getRankPlayer().getRank( rank.getLadder() );
+            ButtonLore ranksLore = new ButtonLore(loreInfo, lorePrice3 + pRank.getRankCost());
 
             if (placeholderAPINotNull) {
                 if (hackyCounterEnchant == 1) {

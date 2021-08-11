@@ -1,16 +1,22 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
-import com.cryptomorin.xseries.XMaterial;
+import java.text.DecimalFormat;
+
 import org.bukkit.entity.Player;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
+import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-
-import java.text.DecimalFormat;
 
 /**
  * @author GABRYCA
@@ -40,9 +46,12 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
         // Decimal Rank cost format.
         DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
 
+        RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( new SpigotPlayer(p) );
+        PlayerRank pRank = rankPlayer.getRank( rank.getLadder() );
+        
         ButtonLore editPriceLore = new ButtonLore(createLore(messages.getString("Lore.ClickToOpen")), createLore(
                 messages.getString("Lore.Info"),
-                messages.getString("Lore.Price") + PlaceholdersUtil.formattedKmbtSISize(rank.getCost(), formatDecimal, "")));
+                messages.getString("Lore.Price") + PlaceholdersUtil.formattedKmbtSISize(pRank.getRankCost(), formatDecimal, "")));
 
         ButtonLore editTagLore = new ButtonLore(createLore(messages.getString("Lore.ClickToOpen")), createLore(
                 messages.getString("Lore.Info"),

@@ -230,7 +230,7 @@ public class PrisonRanks
         		@SuppressWarnings( "unused" )
 				String rp = rPlayer.toString();
 				
-        		Rank rankOnDefault = rPlayer.getRank( defaultLadder );
+        		Rank rankOnDefault = rPlayer.getRank( defaultLadder ).getRank();
         		
 //        		Output.get().logInfo( "#### %s  ladder = %s  isRankNull= %s  rank= %s %s [%s]" ,
 //        				rPlayer.getName(),

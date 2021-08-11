@@ -27,6 +27,7 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
@@ -229,7 +230,7 @@ public class RankUtil
     				String rankName, String playerName, String executorName, 
     				PromoteForceCharge pForceCharge ) {
     	
-    	RankupResults results = new RankupResults(command, playerName, executorName, ladderName, rankName);
+    	RankupResults results = new RankupResults(command, rankPlayer, executorName, ladderName, rankName);
     	
     	switch ( command ) {
 			case rankup:
@@ -327,18 +328,18 @@ public class RankUtil
         }
         
 
-        Rank originalRank = rankPlayer.getRank(ladder.getName());
+        PlayerRank originalRank = rankPlayer.getRank(ladder.getName());
 //        Optional<Rank> currentRankOptional = player.getRank(ladder);
 //        Rank originalRank = currentRankOptional.orElse( null );
         
         results.addTransaction( RankupTransactions.orginal_rank );
-        results.setOriginalRank( originalRank );
+        results.setOriginalRank( originalRank.getRank() );
        
         
         /**
          * calculate the target rank:
          */
-        Rank targetRank = calculateTargetRank( command, results, originalRank, ladder, 
+        Rank targetRank = calculateTargetRank( command, results, originalRank.getRank(), ladder, 
         				ladderName, rankName );
         
         if ( results.getStatus() != RankupStatus.IN_PROGRESS ) {
@@ -388,14 +389,14 @@ public class RankUtil
         
         
 //        String currency = "";
-        double nextRankCost = targetRank.getCost();
-        double currentRankCost = (originalRank == null ? 0 : originalRank.getCost());
+        double nextRankCost = results.getRankPlayer().getRank( targetRank.getLadder() ).getRankCost();
+        double currentRankCost = (originalRank == null ? 0 : originalRank.getRankCost() );
         
         
         results.addTransaction( RankupTransactions.fireRankupEvent );
         
         // Fire the rankup event to see if it should be canceled.
-        RankUpEvent rankupEvent = new RankUpEvent(rankPlayer, originalRank, targetRank, nextRankCost, 
+        RankUpEvent rankupEvent = new RankUpEvent(rankPlayer, originalRank.getRank(), targetRank, nextRankCost, 
         								command, pForceCharge );
         Prison.get().getEventBus().post(rankupEvent);
 
@@ -445,7 +446,7 @@ public class RankUtil
         			
     			results.addTransaction( RankupTransactions.player_balance_increased);
     			if ( originalRank != null ) {
-    				rankPlayer.addBalance( originalRank.getCurrency(), currentRankCost );
+    				rankPlayer.addBalance( originalRank.getRank().getCurrency(), currentRankCost );
     			}
     		} else {
     			// Should never hit this code!!
@@ -488,7 +489,10 @@ public class RankUtil
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.balanceFinal, Double.toString( results.getBalanceFinal()) );
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.currency, results.getCurrency() );
 				
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.rankupCost, Double.toString( results.getTargetRank().getCost() ) );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.originalRankCost, 
+								Double.toString( results.getPlayerRankOriginal().getRankCost() ) );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.rankupCost, 
+						Double.toString( results.getPlayerRankTarget().getRankCost() ) );
 				
 				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.ladder, results.getLadderName() );
@@ -738,13 +742,13 @@ public class RankUtil
     					
     				case player_balance_decreased:
     					sb.append( "=" );
-    					sb.append( tRank == null ? "" : dFmt.format( tRank.getCost() ) );
+    					sb.append( tRank == null ? "" : dFmt.format( results.getPlayerRankTarget().getRankCost() ) );
     					
     					break;
     					
     				case player_balance_increased:
     					sb.append( "=" );
-    					sb.append( tRank == null ? "" : dFmt.format( oRank.getCost() ) );
+    					sb.append( tRank == null ? "" : dFmt.format( results.getPlayerRankOriginal().getRankCost() ) );
     					
     					break;
     					
@@ -781,7 +785,7 @@ public class RankUtil
     			"runtime=%s ms message=[%s] ", 
     			
     			results.getCommand().name(), 
-    			results.getPlayer(), 
+    			results.getRankPlayer().getName(), 
     			(results.getExecutor() == null ? "(see player)" : results.getExecutor()), 
     			(results.getStatus() == null ? "" : results.getStatus().name()),
     			
@@ -790,11 +794,11 @@ public class RankUtil
     			
     			
     			(oRank == null ? "none" : oRank.getName()), 
-    			(oRank == null ? "" : " " + dFmt.format( oRank.getCost())), 
+    			(oRank == null ? "" : " " + dFmt.format( results.getPlayerRankTarget().getRankCost() )), 
     			(oRank == null || oRank.getCurrency() == null ? "" : " " + oRank.getCurrency()),
     			
     			(tRank == null ? "none" : tRank.getName()), 
-    			(tRank == null ? "" : " " + dFmt.format( tRank.getCost())), 
+    			(tRank == null ? "" : " " + dFmt.format( results.getPlayerRankOriginal().getRankCost())), 
     			(tRank == null || tRank.getCurrency() == null ? "" : " " + tRank.getCurrency()),
 				
 				iFmt.format( results.getElapsedTime() ),

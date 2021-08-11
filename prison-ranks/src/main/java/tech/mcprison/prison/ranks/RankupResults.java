@@ -6,18 +6,23 @@ import java.util.List;
 import tech.mcprison.prison.ranks.RankUtil.RankupCommands;
 import tech.mcprison.prison.ranks.RankUtil.RankupStatus;
 import tech.mcprison.prison.ranks.RankUtil.RankupTransactions;
+import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 
 public class RankupResults {
 	
 	private RankupCommands command;
 	
-	private String player;
+	RankPlayer rankPlayer;
+//	private String player;
 	private String executor;
 	
     private RankupStatus status;
     private String ladderName;
 	private String rankName;
+	private PlayerRank playerRankOriginal;
+	private PlayerRank playerRankTarget;
     private Rank originalRank;
     private Rank targetRank;
     private String message;
@@ -34,7 +39,7 @@ public class RankupResults {
     private long timestampStart = 0;
     private long timestampStop = 0;
     
-    public RankupResults(RankupCommands command, String playerName, String executorName,
+    public RankupResults(RankupCommands command, RankPlayer rankPlayer, String executorName,
     		String ladderName, String rankName) {
         super();
         
@@ -43,7 +48,9 @@ public class RankupResults {
     	this.transactions = new ArrayList<>();
         
     	this.command = command;
-        this.player = playerName;
+    	
+    	this.rankPlayer = rankPlayer;
+//        this.player = playerName;
         this.executor = executorName;
         
         this.ladderName = ladderName;
@@ -81,13 +88,21 @@ public class RankupResults {
 	public void setCommand( RankupCommands command ) {
 		this.command = command;
 	}
+	
+	public RankPlayer getRankPlayer() {
+		return rankPlayer;
+	}
+	public void setRankPlayer( RankPlayer rankPlayer ) {
+		this.rankPlayer = rankPlayer;
+	}
 
-	public String getPlayer() {
-		return player;
-	}
-	public void setPlayer( String player ) {
-		this.player = player;
-	}
+//	public String getPlayer() {
+//		return player;
+//	}
+//	public void setPlayer( String player ) {
+//		this.player = player;
+//	}
+
 
 	public String getExecutor() {
 		return executor;
@@ -115,6 +130,25 @@ public class RankupResults {
 	}
 	public void setStatus( RankupStatus status ) {
 		this.status = status;
+	}
+
+	public PlayerRank getPlayerRankOriginal() {
+		if ( playerRankOriginal == null ) {
+			PlayerRank pRank = rankPlayer.getRank( originalRank.getLadder() );
+			playerRankOriginal = pRank;
+		}
+		return playerRankOriginal;
+	}
+
+	public PlayerRank getPlayerRankTarget() {
+		if ( playerRankTarget == null && targetRank.getRankNext() != null ) {
+
+			PlayerRank pRank = rankPlayer.getRank( originalRank.getLadder() );
+			PlayerRank pRankNext = new PlayerRank( targetRank, pRank.getRankMultiplier() );
+
+			playerRankOriginal = pRankNext;
+		}
+		return playerRankTarget;
 	}
 
 	public Rank getOriginalRank() {

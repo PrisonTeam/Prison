@@ -62,7 +62,7 @@ public class RankPlayer
     private UUID uid;
     
     
-    private TreeMap<RankLadder, Rank> ladderRanks;
+    private TreeMap<RankLadder, PlayerRank> ladderRanks;
     
     // ranks is the storage structure used to save the player's ladder & ranks:
     private HashMap<String, Integer> ranksRefs; // <Ladder Name, Rank ID>
@@ -179,9 +179,10 @@ public class RankPlayer
     public String getRanks() {
     	StringBuilder sb  = new StringBuilder();
     	
-    	for ( Rank rank : getLadderRanks().values() ) {
-			sb.append( rank.getLadder() == null ? "--" : rank.getLadder().getName() )
-				.append( ":" ).append( rank.getName() ).append( " " );
+    	for ( PlayerRank rank : getLadderRanks().values() ) {
+    		
+			sb.append( rank.getRank().getLadder() == null ? "--" : rank.getRank().getLadder().getName() )
+				.append( ":" ).append( rank.getRank().getName() ).append( " " );
 		}
     	
     	return sb.toString();
@@ -323,7 +324,6 @@ public class RankPlayer
      * Add a rank to this player.
      * If a rank on this ladder is already attached, it will automatically be removed and replaced with this new one.
      *
-     * @param ladder The {@link RankLadder} that this rank belongs to.
      * @param rank   The {@link Rank} to add.
      * @throws IllegalArgumentException If the rank specified is not on this ladder.
      */
@@ -344,9 +344,39 @@ public class RankPlayer
         }
 
         ranksRefs.put(ladderName, rank.getId());
-        ladderRanks.put( rank.getLadder(), rank );
+        
+        PlayerRank pRank = new PlayerRank( rank );
+        
+        ladderRanks.put( rank.getLadder(), pRank );
+        
+        // Calculate and apply the rank multipliers:
+        recalculateRankMultipliers();
     }
 
+    public void recalculateRankMultipliers() {
+    	double multiplier = 0;
+    	
+    	// First gather and calculate the multipliers:
+    	Set<RankLadder> keys = ladderRanks.keySet();
+    	for ( RankLadder rankLadder : keys )
+		{
+    		PlayerRank pRank = ladderRanks.get( rankLadder );
+    		
+    		double rankMultiplier = pRank.getLadderBasedRankMultiplier();
+    		multiplier += rankMultiplier;
+		}
+    	
+    	// We now have the multipliers, so apply them to all ranks:
+    	for ( RankLadder rankLadder : keys )
+		{
+    		PlayerRank pRank = ladderRanks.get( rankLadder );
+			
+    		pRank.applyMultiplier( multiplier );
+//    		pRank.setRankCost( pRank.getRank().getCost() * (1.0 + multiplier) );
+		}
+    	
+    }
+    
     /**
      * Remove a rank from this player.
      * This will also remove the ladder from this player.
@@ -412,7 +442,7 @@ public class RankPlayer
      * @param ladder The ladder to check.
      * @return An optional containing the {@link Rank} if found, or empty if there isn't a rank by that ladder for this player.
      */
-    public Rank getRank(RankLadder ladder) {
+    public PlayerRank getRank(RankLadder ladder) {
     	
     	Set<RankLadder> keys = ladderRanks.keySet();
     	for ( RankLadder key : keys )
@@ -437,7 +467,7 @@ public class RankPlayer
      * @param ladder The ladder name to check.
      * @return The {@link Rank} if found, otherwise null;
      */
-    public Rank getRank( String ladderName ) {
+    public PlayerRank getRank( String ladderName ) {
     	
     	RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
     	return getRank( ladder );
@@ -468,7 +498,7 @@ public class RankPlayer
      *
      * @return The map containing this data.
      */
-    public Map<RankLadder, Rank> getLadderRanks() {
+    public Map<RankLadder, PlayerRank> getLadderRanks() {
     	
     	if ( ladderRanks.isEmpty() && !ranksRefs.isEmpty() ) {
     		
@@ -485,8 +515,13 @@ public class RankPlayer
     				continue; // Skip it
     			}
     			
-    			ladderRanks.put(ladder, rank);
+    			PlayerRank pRank = new PlayerRank( rank );
+    			
+    			ladderRanks.put(ladder, pRank);
     		}
+    		
+    		// Need to recalculate all rank multipliers:
+    		recalculateRankMultipliers();
     	}
 
         return ladderRanks;
@@ -509,7 +544,7 @@ public class RankPlayer
     	
     	if ( targetRank != null && targetRank.getLadder() != null ) {
     		
-    		Rank rank = getRank( targetRank.getLadder() );
+    		Rank rank = getRank( targetRank.getLadder() ).getRank();
     		if ( rank != null && 
     				rank.getLadder().equals( targetRank.getLadder() ) ) {
     			

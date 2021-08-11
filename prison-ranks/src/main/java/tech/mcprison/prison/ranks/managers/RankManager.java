@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
@@ -47,6 +46,7 @@ import tech.mcprison.prison.ranks.commands.CommandCommands;
 import tech.mcprison.prison.ranks.commands.LadderCommands;
 import tech.mcprison.prison.ranks.commands.RankUpCommand;
 import tech.mcprison.prison.ranks.commands.RanksCommands;
+import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
@@ -347,7 +347,7 @@ public class RankManager
         	
             // Move each player in this ladder to the new rank
             PrisonRanks.getInstance().getPlayerManager().getPlayers().forEach(rankPlayer -> {
-            	Rank curRank = rankPlayer.getRank(ladder.getName());
+            	Rank curRank = rankPlayer.getRank(ladder.getName()).getRank();
                 if ( curRank != null && rank.equals( curRank ) ) {
                     rankPlayer.removeRank(curRank);
                     if ( newRank != null ) {
@@ -633,7 +633,7 @@ public class RankManager
 
 	private String getRankCost( Rank rank, PlaceholderAttribute attribute, boolean formatted )
 	{
-		double cost = rank.getCost();
+		double cost = PlayerRank.getRawRankCost( rank );
 		
 		String resultsx = null;
 		DecimalFormat dFmt = new DecimalFormat("#,##0");
@@ -779,6 +779,12 @@ public class RankManager
 					results = getRankCost( rank, attribute, true );
 					break;
 					
+				case prison_rank__cost_multiplier_rankname:
+				case prison_r_cm_rankname:
+					results = Double.toString( PlayerRank.getLadderBaseRankdMultiplier( rank ) );
+					break;
+					
+					
 				case prison_rank__currency_rankname:
 				case prison_r_cu_rankname:
 					results = rank.getCurrency() == null ? "default" : rank.getCurrency();
@@ -791,12 +797,14 @@ public class RankManager
 					
 				case prison_rank__player_count_rankname:
 				case prison_r_pc_rankname:
-					List<RankPlayer> players =
-					PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
-					.filter(rPlayer -> rPlayer.getLadderRanks().values().contains(rank))
-					.collect(Collectors.toList());
+					int playerCount = rank.getPlayers().size();
 					
-					results = Integer.toString( players.size() );
+//					List<RankPlayer> players =
+//					PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
+//					.filter(rPlayer -> rPlayer.getLadderRanks().values().contains(rank))
+//					.collect(Collectors.toList());
+					
+					results = Integer.toString( playerCount );
 					break;
 					
 				case prison_rank__linked_mines_rankname:
@@ -1029,20 +1037,20 @@ public class RankManager
 	{
 		double cost = 0;
 		// Get player's rank:
-		Rank playerRank = rankPlayer.getRank( rank.getLadder() );
+		PlayerRank playerRank = rankPlayer.getRank( rank.getLadder() );
 		if ( playerRank != null ) {
 			
-			if ( rank.getPosition() < playerRank.getPosition() ) {
+			if ( rank.getPosition() < playerRank.getRank().getPosition() ) {
 				cost = 0;
 			}
 			else {
-				cost = playerRank.getCost();
-				Rank nextRank = playerRank;
+				cost = playerRank.getRankCost();
+				Rank nextRank = playerRank.getRank();
 				
 				while ( nextRank != null &&
 						nextRank.getPosition() < rank.getPosition() ) {
 					
-					cost += playerRank.getCost();
+					cost += playerRank.getRankCost();
 					nextRank = nextRank.getRankNext();
 				}
 			}

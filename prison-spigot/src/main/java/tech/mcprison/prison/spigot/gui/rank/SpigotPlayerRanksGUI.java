@@ -18,6 +18,7 @@ import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
@@ -124,7 +125,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
         // Get many parameters
         Rank rank = ladder.getLowestRank().get();
-        Rank playerRank = getRankPlayer().getRank(guiConfig.getString("Options.Ranks.Ladder"));
+        Rank playerRank = getRankPlayer().getRank(guiConfig.getString("Options.Ranks.Ladder")).getRank();
 
         PrisonGUI gui = new PrisonGUI(getPlayer(), dimension, guiConfig.getString("Options.Titles.PlayerRanksGUI"));
 
@@ -148,7 +149,8 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
             ButtonLore ranksLore = new ButtonLore();
 
             for (String stringValue : configCustomLore) {
-                stringValue = stringValue.replace("{rankPrice}", PlaceholdersUtil.formattedKmbtSISize(rank.getCost(), formatDecimal, ""));
+            	PlayerRank pRank = getRankPlayer().getRank( rank.getLadder() );
+                stringValue = stringValue.replace("{rankPrice}", PlaceholdersUtil.formattedKmbtSISize(pRank.getRankCost(), formatDecimal, ""));
                 stringValue = stringValue.replace("{rankName}", rank.getName());
                 stringValue = stringValue.replace("{rankTag}", SpigotPrison.format(rank.getTag()));
                 ranksLore.addLineLoreAction(stringValue);

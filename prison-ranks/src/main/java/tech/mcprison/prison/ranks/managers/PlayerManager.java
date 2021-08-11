@@ -46,6 +46,7 @@ import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
 import tech.mcprison.prison.placeholders.PlaceholderResults;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
@@ -186,9 +187,9 @@ public class PlayerManager
     public void connectPlayersToRanks() {
     	for ( RankPlayer player : players ) {
 			
-    		for ( Rank rank : player.getLadderRanks().values() ) {
+    		for ( PlayerRank pRank : player.getLadderRanks().values() ) {
     			
-    			rank.addPlayer( player );
+    			pRank.getRank().addPlayer( player );
     		}
 		}
     }
@@ -377,14 +378,14 @@ public class PlayerManager
     	StringBuilder sb = new StringBuilder();
 
 		if ( !rankPlayer.getLadderRanks().isEmpty()) {
-			for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getLadderRanks().entrySet()) {
+			for (Map.Entry<RankLadder, PlayerRank> entry : rankPlayer.getLadderRanks().entrySet()) {
 				if ( ladderName == null ||
 					 ladderName != null && entry.getKey().getName().equalsIgnoreCase( ladderName )) {
 					
 					if ( sb.length() > 0 ) {
 						sb.append(" ");
 					}
-					sb.append(entry.getValue().getName());
+					sb.append(entry.getValue().getRank().getName());
 				}
 			}
 		}
@@ -398,7 +399,7 @@ public class PlayerManager
     	StringBuilder sb = new StringBuilder();
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
-    		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getLadderRanks().entrySet()) {
+    		for (Map.Entry<RankLadder, PlayerRank> entry : rankPlayer.getLadderRanks().entrySet()) {
     			if ( ladderName == null ||
     					ladderName != null && entry.getKey().getName().equalsIgnoreCase( ladderName )) {
     				
@@ -406,7 +407,7 @@ public class PlayerManager
     					sb.append(" ");
     				}
     				
-    				int rankNumber = rankNumber(entry.getValue());
+    				int rankNumber = rankNumber(entry.getValue().getRank());
     				
     				if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
     					PlaceholderAttributeNumberFormat attributeNF = 
@@ -447,14 +448,14 @@ public class PlayerManager
     	StringBuilder sb = new StringBuilder();
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
-    		for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getLadderRanks().entrySet()) {
+    		for (Map.Entry<RankLadder, PlayerRank> entry : rankPlayer.getLadderRanks().entrySet()) {
     			if ( ladderName == null ||
    					 ladderName != null && entry.getKey().getName().equalsIgnoreCase( ladderName )) {
 
 //					if ( sb.length() > 0 ) {
 //  	  				sb.append(" ");
 //    				}
-    				sb.append(entry.getValue().getTag());
+    				sb.append(entry.getValue().getRank().getTag());
     			}
     		}
     	}
@@ -466,8 +467,8 @@ public class PlayerManager
     	List<Rank> results = new ArrayList<>();
 
 		if ( !rankPlayer.getLadderRanks().isEmpty()) {
-			for (Map.Entry<RankLadder, Rank> entry : rankPlayer.getLadderRanks().entrySet()) {
-				results.add( entry.getValue() );
+			for (Map.Entry<RankLadder, PlayerRank> entry : rankPlayer.getLadderRanks().entrySet()) {
+				results.add( entry.getValue().getRank() );
 			}
 		}
 
@@ -480,7 +481,7 @@ public class PlayerManager
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
     			
-    			Rank rank = rankPlayer.getRank( ladder );
+    			Rank rank = rankPlayer.getRank( ladder ).getRank();
 				if ( rank != null && rank.getRankNext() != null ) {
 					Rank nextRank = rank.getRankNext();
 					
@@ -504,15 +505,16 @@ public class PlayerManager
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				Rank rank = rankPlayer.getRank( ladder );
-    				if ( rank != null && rank.getRankNext() != null ) {
-    					Rank nextRank = rank.getRankNext();
+    				PlayerRank pRank = rankPlayer.getRank( ladder );
+    				if ( pRank != null && pRank.getRank().getRankNext() != null ) {
+    					Rank nextRank = pRank.getRank().getRankNext();
+    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
     					if ( sb.length() > 0 ) {
     						sb.append(", ");
     					}
     					
-    					double cost = nextRank.getCost();
+    					double cost = nextPRank.getRankCost();
     					
     					if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
     						PlaceholderAttributeNumberFormat attributeNF = 
@@ -559,17 +561,18 @@ public class PlayerManager
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				Rank rank = rankPlayer.getRank( ladder );
-    				if ( rank != null && rank.getRankNext() != null ) {
-    					Rank nextRank = rank.getRankNext();
+    				PlayerRank pRank = rankPlayer.getRank( ladder );
+    				if ( pRank != null && pRank.getRank().getRankNext() != null ) {
+    					Rank nextRank = pRank.getRank().getRankNext();
+    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
     					if ( sb.length() > 0 ) {
     						sb.append(",  ");
     					}
     					
 //    					Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
-    					double cost = nextRank.getCost();
-    					double balance = rankPlayer.getBalance( rank.getCurrency() );
+    					double cost = nextPRank.getRankCost();
+    					double balance = rankPlayer.getBalance( pRank.getRank().getCurrency() );
 //    					double balance = getPlayerBalance(prisonPlayer,nextRank);
     					
     					double percent = (balance < 0 ? 0 : 
@@ -613,15 +616,17 @@ public class PlayerManager
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				Rank rank = rankPlayer.getRank( ladder );
+    				PlayerRank pRank = rankPlayer.getRank( ladder );
+    				Rank rank = pRank.getRank();
     				if ( rank != null && rank.getRankNext() != null ) {
     					Rank nextRank = rank.getRankNext();
+    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
     					if ( sb.length() > 0 ) {
     						sb.append(",  ");
     					}
     					
-    					double cost = nextRank.getCost();
+    					double cost = nextPRank.getRankCost();
     					double balance = rankPlayer.getBalance( rank.getCurrency() );
 //    					double balance = getPlayerBalance(prisonPlayer,nextRank);
     					
@@ -676,15 +681,17 @@ public class PlayerManager
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				Rank rank = rankPlayer.getRank( ladder );
+    				PlayerRank pRank = rankPlayer.getRank( ladder );
+    				Rank rank = pRank.getRank();
     				if ( rank != null && rank.getRankNext() != null ) {
     					Rank nextRank = rank.getRankNext();
+    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
     					if ( sb.length() > 0 ) {
     						sb.append(",  ");
     					}
     					
-    					double cost = nextRank.getCost();
+    					double cost = nextPRank.getRankCost();
     					double balance = rankPlayer.getBalance( rank.getCurrency() );
 //    					double balance = getPlayerBalance(prisonPlayer,nextRank);
     					
@@ -744,15 +751,17 @@ public class PlayerManager
 			if ( ladderName == null ||
 					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
 				
-				Rank rank = rankPlayer.getRank( ladder );
+				PlayerRank pRank = rankPlayer.getRank( ladder );
+				Rank rank = pRank.getRank();
 				if ( rank != null && rank.getRankNext() != null ) {
 					Rank nextRank = rank.getRankNext();
-				
+					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
+					
 					if ( sb.length() > 0 ) {
 						sb.append(",  ");
 					}
 					
-					double cost = nextRank.getCost();
+					double cost = nextPRank.getRankCost();
 					double balance = rankPlayer.getBalance( rank.getCurrency() );
 //					double balance = getPlayerBalance(prisonPlayer,nextRank);
 					
@@ -804,15 +813,17 @@ public class PlayerManager
 			  if ( ladderName == null ||
 					  ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
 
-				  Rank rank = rankPlayer.getRank( ladder );
+				  PlayerRank pRank = rankPlayer.getRank( ladder );
+				  Rank rank = pRank.getRank();
 				  if ( rank != null && rank.getRankNext() != null ) {
 					  Rank nextRank = rank.getRankNext();
-
+					  PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
+					  
 					  if ( sb.length() > 0 ) {
 						  sb.append(",  ");
 					  }
 
-					  double cost = nextRank.getCost();
+					  double cost = nextPRank.getRankCost();
 					  double balance = rankPlayer.getBalance( rank.getCurrency() );
 //					  double balance = getPlayerBalance(prisonPlayer,nextRank);
 
@@ -882,7 +893,8 @@ public class PlayerManager
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				Rank rank = rankPlayer.getRank( ladder );
+    				PlayerRank pRank = rankPlayer.getRank( ladder );
+    				Rank rank = pRank.getRank();
     				if ( rank != null ) {
     					if ( sb.length() > 0 ) {
     						sb.append(",  ");
@@ -1003,7 +1015,10 @@ public class PlayerManager
     			
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
-    				Rank rank = rankPlayer.getRank( ladder );
+    				
+    				PlayerRank pRank = rankPlayer.getRank( ladder );
+    				Rank rank = pRank.getRank();
+    				
   				  	if ( rank != null && rank.getRankNext() != null ) {
   				  		Rank nextRank = rank.getRankNext();
   				  		
@@ -1029,7 +1044,8 @@ public class PlayerManager
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				Rank rank = rankPlayer.getRank( ladder );
+    				PlayerRank pRank = rankPlayer.getRank( ladder );
+    				Rank rank = pRank.getRank();
   				  	if ( rank != null && rank.getRankNext() != null ) {
   				  		Rank nextRank = rank.getRankNext();
   				  		
@@ -1192,9 +1208,12 @@ public class PlayerManager
 					case prison_rlp_laddername:
 						{
 							// rank may be null:
-							Rank rank = rankPlayer.getRank( ladderName );
-							
-							results = rank == null ? "" : Integer.toString( rank.getPosition() );
+							PlayerRank pRank = rankPlayer.getRank( ladderName );
+							if ( pRank != null ) {
+								Rank rank = pRank.getRank();
+								
+								results = rank == null ? "" : Integer.toString( rank.getPosition() );
+							}
 						}
 						break;
 						

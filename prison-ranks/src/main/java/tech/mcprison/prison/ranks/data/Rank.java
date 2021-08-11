@@ -65,7 +65,9 @@ public class Rank
     // The commands that are run when this rank is attained.
     private List<String> rankUpCommands;
 
-    
+ 
+    // permissions in ranks is obsolete and is being removed. It can never work with vault.
+    // And Access by Ranks replaces this.
     private List<String> permissions;
     private List<String> permissionGroups;
     
@@ -440,10 +442,10 @@ public class Rank
 		this.tag = tag;
 	}
 
-	public double getCost() {
+	protected double getCost() {
 		return cost;
 	}
-	public void setCost( double cost ) {
+	protected void setCost( double cost ) {
 		this.cost = cost;
 	}
 

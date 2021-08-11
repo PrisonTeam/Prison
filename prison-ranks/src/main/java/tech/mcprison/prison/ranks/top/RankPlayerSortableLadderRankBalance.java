@@ -3,6 +3,7 @@ package tech.mcprison.prison.ranks.top;
 import java.util.Comparator;
 
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
@@ -84,8 +85,8 @@ public class RankPlayerSortableLadderRankBalance
 			results = 1;
 		}
 		else {
-			Rank r1 = rp1.getRank( getLadder().getName() );
-			Rank r2 = rp2.getRank( getLadder().getName() );
+			Rank r1 = rp1.getRank( getLadder().getName() ).getRank();
+			Rank r2 = rp2.getRank( getLadder().getName() ).getRank();
 			
 			if ( r1 == null ) {
 				results = -1;
@@ -115,8 +116,8 @@ public class RankPlayerSortableLadderRankBalance
 						RankPlayerBalance bal1 = rp1.getCachedRankPlayerBalance( currency );
 						RankPlayerBalance bal2 = rp2.getCachedRankPlayerBalance( currency );
 						
-						double topScore1 = calculateTopScore( r1, bal1.getBalance() );
-						double topScore2 = calculateTopScore( r2, bal2.getBalance() );
+						double topScore1 = calculateTopScore( rp1, r1, bal1.getBalance() );
+						double topScore2 = calculateTopScore( rp2, r2, bal2.getBalance() );
 						
 						results = Double.compare( topScore1, topScore2 );
 						
@@ -150,13 +151,18 @@ public class RankPlayerSortableLadderRankBalance
 	 * @param balance
 	 * @return
 	 */
-	private double calculateTopScore( Rank rank, double balance ) {
+	private double calculateTopScore( RankPlayer rp1, Rank rank, double balance ) {
 		double topScore = 0;
 		
 		if ( balance != 0 ) {
 			Rank nextRank = rank.getRankNext();
 			
-			double nextRankCost = nextRank == null ? rank.getCost() : nextRank.getCost();
+			PlayerRank pRank = rp1.getRank( rank.getLadder() );
+			
+			PlayerRank pRankNext =  nextRank == null ? null : 
+								new PlayerRank( nextRank, pRank.getRankMultiplier() );
+			
+			double nextRankCost = nextRank == null ? pRank.getRankCost() : pRankNext.getRankCost();
 			
 			topScore = nextRankCost / balance;
 			

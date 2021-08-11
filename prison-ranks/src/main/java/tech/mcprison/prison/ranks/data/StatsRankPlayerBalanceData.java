@@ -31,7 +31,14 @@ public class StatsRankPlayerBalanceData
 		
 		// The "cost" should be the cost of the next rank.  If the next rank does not exist,
 		// then it should be the current rank.
-		double cost = rank.getRankNext() == null ? rank.getCost() : rank.getRankNext().getCost();
+		PlayerRank pRank = player.getRank( rank.getLadder() );
+		double cost = pRank.getRankCost();  // This is the fallback value if nextRank doesn't exist.
+
+		if ( rank.getRankNext() != null ) {
+			PlayerRank pRankNext = new PlayerRank( rank.getRankNext(), pRank.getRankMultiplier() );
+			cost = pRankNext.getRankCost();
+		}
+//		double cost = rank.getRankNext() == null ? rank.getCost() : rank.getRankNext().getCost();
 		double penalty = 0d;
 		
 		// Do not apply the penalty if cost is zero:

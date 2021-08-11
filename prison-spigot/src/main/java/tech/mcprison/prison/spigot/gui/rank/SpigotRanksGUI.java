@@ -1,25 +1,24 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
-import com.cryptomorin.xseries.XMaterial;
+import java.text.DecimalFormat;
+import java.util.Optional;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
-import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
-import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-
-import java.text.DecimalFormat;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author GABRYCA
@@ -78,20 +77,27 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
             Rank rank = ladder.get().getRanks().get(i);
 
+            // Can only use the raw rank costs since this is not tied to a player:
+            double rawRankCost = PlayerRank.getRawRankCost( rank );
+            // NOTE: The following ladderBaseRankMultiplier is just for the current ladder, but the player's 
+            //       adjusted rank cost is the sum of all ladder's multipliers applied to each raw rank cost.
+//            double ladderBaseRankMultiplier = PlayerRank.getLadderBaseRankdMultiplier( rank );
+            
             // Add the RankID Lore
             ranksLore.addLineLoreDescription(SpigotPrison.format(loreId + rank.getId()));
             ranksLore.addLineLoreDescription(SpigotPrison.format(loreName + rank.getName()));
             ranksLore.addLineLoreDescription(SpigotPrison.format(loreTag2 + ChatColor.translateAlternateColorCodes('&', rank.getTag())));
-            ranksLore.addLineLoreDescription(SpigotPrison.format(lorePrice3 + PlaceholdersUtil.formattedKmbtSISize(rank.getCost(), formatDecimal, "")));
+            ranksLore.addLineLoreDescription(SpigotPrison.format(lorePrice3 + PlaceholdersUtil.formattedKmbtSISize(rawRankCost, formatDecimal, "")));
 
             // Init a variable
-            List<RankPlayer> players =
-                    PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
-                            .filter(rankPlayer -> rankPlayer.getLadderRanks().containsValue(rank))
-                            .collect(Collectors.toList());
+            int playerCount = rank.getPlayers().size();
+//            List<RankPlayer> players =
+//                    PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
+//                            .filter(rankPlayer -> rankPlayer.getLadderRanks().containsValue(rank))
+//                            .collect(Collectors.toList());
 
             // Add the number of players with this rank
-            ranksLore.addLineLoreDescription(SpigotPrison.format(lorePlayersWithRank + players.size()));
+            ranksLore.addLineLoreDescription(SpigotPrison.format(lorePlayersWithRank + playerCount));
 
             // Add the button to the inventory
             gui.addButton(new Button(i - counter, XMaterial.TRIPWIRE_HOOK, ranksLore, SpigotPrison.format("&3" + rank.getName())));

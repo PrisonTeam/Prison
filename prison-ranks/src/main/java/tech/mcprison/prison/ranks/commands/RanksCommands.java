@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
@@ -31,6 +30,7 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.FancyMessageComponent;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
@@ -779,11 +779,13 @@ public class RanksCommands
         	String tagNoColor = Text.stripColor( tag );
         	
         	String text =
-        			String.format("%-8s &3%-8s %s&7%17s &3(rankId: %s%s%s) %s&7 %s%s", 
+        			String.format("%-8s &3%-8s %s&7%17s %d &3(rankId: %s%s%s) %s&7 %s%s", 
         					textRankName, 
         					tagNoColor, 
         					(defaultRank ? "{def}" : ""),
-        					Text.numberToDollars(rank.getCost()),
+        					Text.numberToDollars( PlayerRank.getRawRankCost( rank ) ),
+        					
+        					PlayerRank.getLadderBaseRankdMultiplier( rank ),
         					
         					Integer.toString( rank.getId() ),
         					(rank.getRankPrior() == null ? "" : " -"),
@@ -908,15 +910,18 @@ public class RanksCommands
         	display.addText( ranksInfoLinkedMinesMsg( sb.toString() ));
         }
 
-        display.addText( ranksInfoCostMsg( rank.getCost() ));
+        // NOTE: Since rank info is NOT tied to a PlayerRank we cannot figure out the
+        //       the actual cost, but we can calculate the ladder's multiplier.  This 
+        //       will not be the player's total multiplier.
+        display.addText( ranksInfoCostMsg( PlayerRank.getRawRankCost( rank ) ));
+        
+        double ladderRankCostMultiplier = PlayerRank.getLadderBaseRankdMultiplier( rank );
+        display.addText( "(%d)", ladderRankCostMultiplier );
         
         display.addText( ranksInfoCurrencyMsg( (rank.getCurrency() == null ? "&cdefault" : rank.getCurrency()) ));
         
-        List<RankPlayer> players =
-        		PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
-        		.filter(rankPlayer -> rankPlayer.getLadderRanks().values().contains(rank))
-        		.collect(Collectors.toList());
-        display.addText( ranksInfoPlayersWithRankMsg( players.size() ));
+        int numberOfPlayersOnRank = rank.getPlayers().size();
+        display.addText( ranksInfoPlayersWithRankMsg( numberOfPlayersOnRank ));
 
         if ( sender == null || sender.hasPermission("ranks.admin")) {
             // This is admin-exclusive content
@@ -946,22 +951,28 @@ public class RanksCommands
 	}
 
 
-    @Command(identifier = "ranks set cost", description = "Modifies a ranks cost", 
+    @Command(identifier = "ranks set cost", description = "Sets a rank's raw cost. The ladder's rank cost " +
+    		"multipliers are not applied to this value, and they will impact the actual price that a " +
+    		"player will have to pay.  Every player may have to pay a different price for this rank, if " +
+    		"ladder rank multipiers are used, and players have different ranks in the ladders that " +
+    		"have them enabled.", 
     							onlyPlayers = false, permissions = "ranks.set")
     public void setCost(CommandSender sender, 
     		@Arg(name = "rankName") String rankName, 
-    		@Arg(name = "cost", description = "The cost of this rank.") double cost){
+    		@Arg(name = "rawCost", description = "The raw cost of this rank.") double rawCost) {
+    	
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if ( rank == null ) {
         	rankDoesNotExistMsg( sender, rankName );
             return;
         }
         
-        rank.setCost( cost );
+        
+        PlayerRank.setRawRankCost( rank, rawCost );
         
         PrisonRanks.getInstance().getRankManager().saveRank(rank);
         
-        rankSetCostSuccessfulMsg( sender, rankName, cost );
+        rankSetCostSuccessfulMsg( sender, rankName, rawCost );
     }
     
 
@@ -1155,12 +1166,14 @@ public class RanksCommands
 			}
 			
 			
-			Map<RankLadder, Rank> rankLadders = rankPlayer.getLadderRanks();
+			Map<RankLadder, PlayerRank> rankLadders = rankPlayer.getLadderRanks();
 			
 			for ( RankLadder rankLadder : rankLadders.keySet() )
 			{
-				Rank rank = rankLadders.get( rankLadder );
+				PlayerRank pRank = rankLadders.get( rankLadder );
+				Rank rank = pRank.getRank();
 				Rank nextRank = rank.getRankNext();
+				PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
 				
 				String messageRank = ranksPlayerLadderInfoMsg( 
 						player.getDisplayName(), 
@@ -1172,7 +1185,8 @@ public class RanksCommands
 				} else {
 					messageRank += ranksPlayerLadderNextRankMsg( 
 							nextRank.getName(), 
-							dFmt.format( nextRank.getCost() ) );
+							dFmt.format( nextPRank.getRankCost() ) );
+//							dFmt.format( nextRank.getCost() ) );
 
 					if ( nextRank.getCurrency() != null ) {
 						messageRank += ranksPlayerLadderNextRankCurrencyMsg( nextRank.getCurrency() );

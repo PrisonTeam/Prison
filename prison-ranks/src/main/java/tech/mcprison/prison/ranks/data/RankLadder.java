@@ -46,7 +46,7 @@ public class RankLadder
     private String name;
     private List<Rank> ranks;
     
-    private int maxPrestige;
+//    private int maxPrestige;
    
     
     private List<String> permissions;
@@ -56,6 +56,9 @@ public class RankLadder
     // The commands that are run when this rank is attained.
     private List<String> rankUpCommands;
 
+    
+    private double rankCostMultiplierPerRank = 0.0d;
+    
     
     private boolean dirty = false;
 
@@ -156,6 +159,8 @@ public class RankLadder
         		// Rank not found. Try to create it? The name maybe wrong.
         		String rankName = rRankName != null && !rRankName.trim().isEmpty() ?
         					rRankName : "Rank " + rRankId;
+        		
+        		// NOTE: The following is valid use of getCost():
         		double cost = getRanks().size() == 0 ? 0 : 
         					getRanks().get( getRanks().size() - 1 ).getCost() * 3;
         		Rank newRank = new Rank( rRankId, rankName, null, cost );
@@ -171,7 +176,11 @@ public class RankLadder
         	
         }
         
-        this.maxPrestige = RankUtil.doubleToInt(document.get("maxPrestige"));
+//        this.maxPrestige = RankUtil.doubleToInt(document.get("maxPrestige"));
+        
+        
+        Double rankCostMultiplier = (Double) document.get( "rankCostMultiplierPerRank" );
+        setRankCostMultiplierPerRank( rankCostMultiplier == null ? 0 : rankCostMultiplier );
         
 		
 		getPermissions().clear();
@@ -229,7 +238,9 @@ public class RankLadder
 //        ret.put("ranks", this.ranks);
         
         
-        ret.put("maxPrestige", this.maxPrestige);
+        ret.put( "rankCostMultiplierPerRank", getRankCostMultiplierPerRank() );
+        
+//        ret.put("maxPrestige", this.maxPrestige);
         
         ret.put( "permissions", getPermissions() );
         ret.put( "permissionGroups", getPermissionGroups() );
@@ -496,12 +507,12 @@ public class RankLadder
 		this.name = name;
 	}
 
-	public int getMaxPrestige() {
-		return maxPrestige;
-	}
-	public void setMaxPrestige( int maxPrestige ) {
-		this.maxPrestige = maxPrestige;
-	}
+//	public int getMaxPrestige() {
+//		return maxPrestige;
+//	}
+//	public void setMaxPrestige( int maxPrestige ) {
+//		this.maxPrestige = maxPrestige;
+//	}
 
 	public List<String> getRankUpCommands() {
 		if ( rankUpCommands == null ) {
@@ -526,6 +537,13 @@ public class RankLadder
 	}
 	public void setPermissionGroups( List<String> permissionGroups ) {
 		this.permissionGroups = permissionGroups;
+	}
+
+	public double getRankCostMultiplierPerRank() {
+		return rankCostMultiplierPerRank;
+	}
+	public void setRankCostMultiplierPerRank( double rankCostMultiplierPerRank ) {
+		this.rankCostMultiplierPerRank = rankCostMultiplierPerRank;
 	}
 
 	public boolean isDirty() {

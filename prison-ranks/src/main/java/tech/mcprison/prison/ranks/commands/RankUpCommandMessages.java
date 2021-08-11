@@ -192,7 +192,7 @@ public class RankUpCommandMessages
 	    		.getLocalizable( "ranks_rankup__rankup_cant_afford" )
 	    		.withReplacements(
 				
-    				dFmt.format( results.getTargetRank() == null ? 0 : results.getTargetRank().getCost()), 
+    				dFmt.format( results.getTargetRank() == null ? 0 : results.getPlayerRankTarget().getRankCost()), 
                     results.getTargetRank().getCurrency() == null ? "" : results.getTargetRank().getCurrency()
 				)
 	    		.sendTo( sender );

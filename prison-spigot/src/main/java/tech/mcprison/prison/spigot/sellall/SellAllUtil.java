@@ -1589,10 +1589,10 @@ public class SellAllUtil {
     private double getMultiplierByRank(SpigotPlayer sPlayer, Module module, double multiplier) {
         if (module != null) {
             PrisonRanks rankPlugin = (PrisonRanks) module;
-            if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()) != null) {
+            if (rankPlugin.getPlayerManager().getPlayer(sPlayer) != null) {
                 String playerRankName;
                 try {
-                    playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).getRank("prestiges").getName();
+                    playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer).getRank("prestiges").getRank().getName();
                 } catch (NullPointerException ex) {
                     playerRankName = null;
                 }

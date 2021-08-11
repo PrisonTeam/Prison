@@ -35,8 +35,10 @@ import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
@@ -1810,7 +1812,10 @@ public class ListenersPrisonManager implements Listener {
 
             // Check and open a GUI.
             if(rank != null) {
-                SpigotRankPriceGUI gui = new SpigotRankPriceGUI(p, (int) rank.getCost(), rank.getName());
+                RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( new SpigotPlayer(p) );
+                PlayerRank pRank = rankPlayer.getRank( rank.getLadder() );
+                
+                SpigotRankPriceGUI gui = new SpigotRankPriceGUI(p, pRank.getRankCost().intValue(), rank.getName());
                 gui.open();
             }
 

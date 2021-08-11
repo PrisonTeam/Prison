@@ -25,6 +25,11 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.10 2021-08-11
 
 
+* **Initial setup of ladder rank cost multipliers.**
+All ladders a player has, will contribute to the total rank cost multiplier value, and all ranks for that player will have their cost adjusted.  
+Overall this will allow an increasing rank cost as players rankup on the prestige ladder, and/or it can help reduce rank costs if donor ranks provide a negative adjustment.
+Currently there is no way to set the ladder's multiplier... that's next.  But everything else is hooked up and should be functional.
+
 
 * **v3.2.10-alpha.10 2021-08-11**
 
