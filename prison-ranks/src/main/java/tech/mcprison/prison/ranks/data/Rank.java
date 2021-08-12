@@ -68,8 +68,8 @@ public class Rank
  
     // permissions in ranks is obsolete and is being removed. It can never work with vault.
     // And Access by Ranks replaces this.
-    private List<String> permissions;
-    private List<String> permissionGroups;
+//    private List<String> permissions;
+//    private List<String> permissionGroups;
     
     
     private transient Rank rankPrior;
@@ -95,8 +95,8 @@ public class Rank
     	this.mines = new ArrayList<>();
     	this.mineStrings = new ArrayList<>();
     	
-    	this.permissions = new ArrayList<>();
-    	this.permissionGroups =  new ArrayList<>();
+//    	this.permissions = new ArrayList<>();
+//    	this.permissionGroups =  new ArrayList<>();
     	
     	this.players = new ArrayList<>();
     	
@@ -173,24 +173,24 @@ public class Rank
 			}
 			
 			
-			getPermissions().clear();
-			Object perms = document.get( "permissions" );
-			if ( perms != null ) {
-				List<String> permissions = (List<String>) perms;
-				for ( String permission : permissions ) {
-					getPermissions().add( permission );
-				}
-			}
-	        
-			
-			getPermissionGroups().clear();
-			Object permsGroups = document.get( "permissionGroups" );
-			if ( perms != null ) {
-				List<String> permissionGroups = (List<String>) permsGroups;
-				for ( String permissionGroup : permissionGroups ) {
-					getPermissionGroups().add( permissionGroup );
-				}
-			}
+//			getPermissions().clear();
+//			Object perms = document.get( "permissions" );
+//			if ( perms != null ) {
+//				List<String> permissions = (List<String>) perms;
+//				for ( String permission : permissions ) {
+//					getPermissions().add( permission );
+//				}
+//			}
+//	        
+//			
+//			getPermissionGroups().clear();
+//			Object permsGroups = document.get( "permissionGroups" );
+//			if ( perms != null ) {
+//				List<String> permissionGroups = (List<String>) permsGroups;
+//				for ( String permissionGroup : permissionGroups ) {
+//					getPermissionGroups().add( permissionGroup );
+//				}
+//			}
 			
 		}
 		catch ( Exception e )
@@ -231,53 +231,53 @@ public class Rank
         }
         ret.put("mines", mineStrings);
         
-        ret.put( "permissions", getPermissions() );
-        ret.put( "permissionGroups", getPermissionGroups() );
+//        ret.put( "permissions", getPermissions() );
+//        ret.put( "permissionGroups", getPermissionGroups() );
         
         return ret;
     }
     
     
 
-    /**
-     * <p>Identifies of the Ladder contains a permission.
-     * </p>
-     * 
-     * @param permission
-     * @return
-     */
-	public boolean hasPermission( String permission ) {
-		boolean results = false;
-		
-		for ( String perm : getPermissions() ) {
-			if ( perm.equalsIgnoreCase( permission ) ) {
-				results = true;
-				break;
-			}
-		}
-		
-		return results;
-	}
+//    /**
+//     * <p>Identifies of the Ladder contains a permission.
+//     * </p>
+//     * 
+//     * @param permission
+//     * @return
+//     */
+//	public boolean hasPermission( String permission ) {
+//		boolean results = false;
+//		
+//		for ( String perm : getPermissions() ) {
+//			if ( perm.equalsIgnoreCase( permission ) ) {
+//				results = true;
+//				break;
+//			}
+//		}
+//		
+//		return results;
+//	}
 	
-	/**
-	 * <p>Identifies if the Ladder contains a permission group.
-	 * </p>
-	 * 
-	 * @param permissionGroup
-	 * @return
-	 */
-	public boolean hasPermissionGroup( String permissionGroup ) {
-		boolean results = false;
-		
-		for ( String perm : getPermissionGroups() ) {
-			if ( perm.equalsIgnoreCase( permissionGroup ) ) {
-				results = true;
-				break;
-			}
-		}
-		
-		return results;
-	}
+//	/**
+//	 * <p>Identifies if the Ladder contains a permission group.
+//	 * </p>
+//	 * 
+//	 * @param permissionGroup
+//	 * @return
+//	 */
+//	public boolean hasPermissionGroup( String permissionGroup ) {
+//		boolean results = false;
+//		
+//		for ( String perm : getPermissionGroups() ) {
+//			if ( perm.equalsIgnoreCase( permissionGroup ) ) {
+//				results = true;
+//				break;
+//			}
+//		}
+//		
+//		return results;
+//	}
 
     
 	public StatsRankPlayerBalance getStatsPlayerBlance() {
@@ -466,19 +466,19 @@ public class Rank
 		this.rankUpCommands = rankUpCommands;
 	}
 	
-	public List<String> getPermissions() {
-		return permissions;
-	}
-	public void setPermissions( List<String> permissions ) {
-		this.permissions = permissions;
-	}
-
-	public List<String> getPermissionGroups() {
-		return permissionGroups;
-	}
-	public void setPermissionGroups( List<String> permissionGroups ) {
-		this.permissionGroups = permissionGroups;
-	}
+//	public List<String> getPermissions() {
+//		return permissions;
+//	}
+//	public void setPermissions( List<String> permissions ) {
+//		this.permissions = permissions;
+//	}
+//
+//	public List<String> getPermissionGroups() {
+//		return permissionGroups;
+//	}
+//	public void setPermissionGroups( List<String> permissionGroups ) {
+//		this.permissionGroups = permissionGroups;
+//	}
 
 	public Rank getRankPrior() {
 		return rankPrior;
