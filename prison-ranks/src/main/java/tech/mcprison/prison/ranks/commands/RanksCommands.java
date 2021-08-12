@@ -779,7 +779,7 @@ public class RanksCommands
         	String tagNoColor = Text.stripColor( tag );
         	
         	String text =
-        			String.format("%-8s &3%-8s %s&7%17s %d &3(rankId: %s%s%s) %s&7 %s%s", 
+        			String.format("%-8s &3%-8s %s&7%17s %f &3(rankId: %s%s%s) %s&7 %s%s", 
         					textRankName, 
         					tagNoColor, 
         					(defaultRank ? "{def}" : ""),
@@ -915,8 +915,22 @@ public class RanksCommands
         //       will not be the player's total multiplier.
         display.addText( ranksInfoCostMsg( PlayerRank.getRawRankCost( rank ) ));
         
+        
+        
+        // Add the raw ladder rank multiplier here:
+        
+        
+        // The following is the rank adjusted rank multiplier
         double ladderRankCostMultiplier = PlayerRank.getLadderBaseRankdMultiplier( rank );
-        display.addText( "(%d)", ladderRankCostMultiplier );
+        String cmdLadderRankCostMult = "/ranks ladder rankMultiplier " + rank.getName() + " " + ladderRankCostMultiplier;
+        display.addComponent(new FancyMessageComponent(
+    			new FancyMessage(
+    					String.format( "&7Ladder Rank Cost Multiplier: &3%f&7",
+    							ladderRankCostMultiplier
+    							)).suggest( cmdLadderRankCostMult )
+    			.tooltip( "Ladder Rank Cost Multiplier" )));
+    	
+
         
         display.addText( ranksInfoCurrencyMsg( (rank.getCurrency() == null ? "&cdefault" : rank.getCurrency()) ));
         

@@ -25,6 +25,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.10 2021-08-12
 
 
+* **Bug fix: Fixed a few issues with PlayerRank object not being set correctly everywhere.**
+Was also checking the wrong object for null.  These fix about 3 different NPEs.
+
+
 * **Removal of the obsolete ranks related permissions and permission groups.**
 This was a failed attempt to automate the user of permissions with ranks.  This did not work, since vault does not support the creation of permission groups, plus a few other issues and limitations with vault.
 

@@ -483,6 +483,12 @@ public class RankUtil
         			( !cmd.contains( "{firstJoin}" ) || 
         			   cmd.contains( "{firstJoin}" ) && command == RankupCommands.firstJoin )  ) {
         		
+        		PlayerRank opRank = results.getPlayerRankOriginal();
+        		PlayerRank tpRank = results.getPlayerRankTarget();
+        		
+        		Rank oRank = results.getOriginalRank();
+        		Rank tRank = results.getTargetRank();
+        		
 				PrisonCommandTask cmdTask = new PrisonCommandTask( command.name() );
 				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.balanceInitial, Double.toString( results.getBalanceInitial()) );
@@ -490,20 +496,21 @@ public class RankUtil
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.currency, results.getCurrency() );
 				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.originalRankCost, 
-								Double.toString( results.getPlayerRankOriginal().getRankCost() ) );
+								opRank == null ? "" : Double.toString( opRank.getRankCost() ) );
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.rankupCost, 
-						Double.toString( results.getPlayerRankTarget().getRankCost() ) );
+								tpRank == null ? "" : Double.toString( tpRank.getRankCost() ) );
 				
 				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.ladder, results.getLadderName() );
+				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.rank,
-									(results.getOriginalRank() == null ? "none" : results.getOriginalRank().getName()) );
+									(oRank == null ? "none" : oRank.getName()) );
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.rankTag, 
-									(results.getOriginalRank() == null ? "none" : results.getOriginalRank().getTag()) );
+									(oRank == null ? "none" : oRank.getTag()) );
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.targetRank, 
-									(results.getTargetRank() == null ? "none" : results.getTargetRank().getName()) );
+									(tRank == null ? "none" : tRank.getName()) );
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.targetRankTag, 
-									(results.getTargetRank() == null ? "none" : results.getTargetRank().getTag()) );
+									(tRank == null ? "none" : tRank.getTag()) );
 				
 				if ( command == RankupCommands.firstJoin && cmd.contains( "{firstJoin}" ) ) {
 					cmd = cmd.replace( "{firstJoin}", "" );
@@ -701,7 +708,10 @@ public class RankUtil
     	DecimalFormat iFmt = new DecimalFormat("#,##0");
 
     	Rank oRank = results.getOriginalRank();
+    	PlayerRank opRank = results.getPlayerRankOriginal();
+    	
     	Rank tRank = results.getTargetRank();
+    	PlayerRank tpRank = results.getPlayerRankTarget();
     	
     	for ( RankupTransactions rt : RankupTransactions.values() ) {
     		
@@ -742,13 +752,13 @@ public class RankUtil
     					
     				case player_balance_decreased:
     					sb.append( "=" );
-    					sb.append( tRank == null ? "" : dFmt.format( results.getPlayerRankTarget().getRankCost() ) );
+    					sb.append( tpRank == null ? "" : dFmt.format( tpRank.getRankCost() ) );
     					
     					break;
     					
     				case player_balance_increased:
     					sb.append( "=" );
-    					sb.append( tRank == null ? "" : dFmt.format( results.getPlayerRankOriginal().getRankCost() ) );
+    					sb.append( opRank == null ? "" : dFmt.format( opRank.getRankCost() ) );
     					
     					break;
     					
@@ -794,11 +804,11 @@ public class RankUtil
     			
     			
     			(oRank == null ? "none" : oRank.getName()), 
-    			(oRank == null ? "" : " " + dFmt.format( results.getPlayerRankTarget().getRankCost() )), 
+    			(opRank == null ? "" : " " + dFmt.format( opRank.getRankCost() )), 
     			(oRank == null || oRank.getCurrency() == null ? "" : " " + oRank.getCurrency()),
     			
     			(tRank == null ? "none" : tRank.getName()), 
-    			(tRank == null ? "" : " " + dFmt.format( results.getPlayerRankOriginal().getRankCost())), 
+    			(tpRank == null ? "" : " " + dFmt.format( tpRank.getRankCost())), 
     			(tRank == null || tRank.getCurrency() == null ? "" : " " + tRank.getCurrency()),
 				
 				iFmt.format( results.getElapsedTime() ),

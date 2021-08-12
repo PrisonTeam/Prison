@@ -8,9 +8,11 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
-import tech.mcprison.prison.ranks.RankupResults;
 import tech.mcprison.prison.ranks.RankUtil.PromoteForceCharge;
 import tech.mcprison.prison.ranks.RankUtil.RankupStatus;
+import tech.mcprison.prison.ranks.RankupResults;
+import tech.mcprison.prison.ranks.data.PlayerRank;
+import tech.mcprison.prison.ranks.data.Rank;
 
 public class RankUpCommandMessages 
 		extends BaseCommands {
@@ -146,12 +148,16 @@ public class RankUpCommandMessages
     	String messagNoPlayerName = PrisonRanks.getInstance().getRanksMessages()
     			.getLocalizable( "ranks_rankup__rankup_no_player_name" ).localize();
     	
+//		PlayerRank tpRank = results.getPlayerRankTarget();
+		Rank tRank = results.getTargetRank();
+		
+    	
     	Localizable localManager = PrisonRanks.getInstance().getRanksMessages()
     			.getLocalizable( messageId )
     			.withReplacements(
     					
     					(playerName == null ? messagNoPlayerName : playerName),
-    					(results.getTargetRank() == null ? "" : results.getTargetRank().getName()), 
+    					(tRank == null ? "" : tRank.getName()), 
     					(results.getMessage() != null ? results.getMessage() : "")
     				);
     	
@@ -173,7 +179,7 @@ public class RankUpCommandMessages
         		.withReplacements(
     				
     				(playerName == null ? messagNoPlayerNameBroadcast : playerName),
-    				(results.getTargetRank() == null ? "" : results.getTargetRank().getName()), 
+    				(tRank == null ? "" : tRank.getName()), 
     				(results.getMessage() != null ? results.getMessage() : "")
     			)
         		.broadcast();
@@ -188,12 +194,15 @@ public class RankUpCommandMessages
 		
 		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
     	
+		PlayerRank tpRank = results.getPlayerRankTarget();
+		Rank tRank = results.getTargetRank();
+		
     	PrisonRanks.getInstance().getRanksMessages()
 	    		.getLocalizable( "ranks_rankup__rankup_cant_afford" )
 	    		.withReplacements(
 				
-    				dFmt.format( results.getTargetRank() == null ? 0 : results.getPlayerRankTarget().getRankCost()), 
-                    results.getTargetRank().getCurrency() == null ? "" : results.getTargetRank().getCurrency()
+    				dFmt.format( tpRank == null ? 0 : tpRank.getRankCost()), 
+    				tRank == null || tRank.getCurrency() == null ? "" : results.getTargetRank().getCurrency()
 				)
 	    		.sendTo( sender );
 	}
