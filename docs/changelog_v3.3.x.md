@@ -25,6 +25,14 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.10 2021-08-13
 
 
+* **General changes to code that uses getRank() that returns a PlayerData object... **
+Since that is a player's instance of a rank, this may be null for a lot of players.  A lot of the old code would not take in to consideration that there may be no value, so hence the NPEs that we've been seeing.  This should address a lot of the potential issues.
+
+
+* **Found situations where players are not on a ladder and its causing issues.**
+Need to expand to other code...
+
+
 * **Bump to v3.2.10-alpha.10f.**
 Will be trying to release a more formal alpha later today.
 

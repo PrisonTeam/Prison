@@ -71,6 +71,7 @@ public class RankUtil
 		RANKUP_FAILURE_RANK_DOES_NOT_EXIST,
 		RANKUP_FAILURE_RANK_IS_NOT_IN_LADDER,
 		RANKUP_FAILURE_CURRENCY_IS_NOT_SUPPORTED,
+		RANKUP_FAILURE_NO_PLAYERRANK,
 		
 		RANKUP_EVENT_CANCELED,
 		
@@ -153,7 +154,9 @@ public class RankUtil
 		demote_successful, 
 
 		failure_exception_caught_check_server_logs, 
-		successfully_saved_player_rank_data
+		successfully_saved_player_rank_data,
+		
+		failure_orginal_playerRank_does_not_exist
 		
 		;
 	}
@@ -328,7 +331,17 @@ public class RankUtil
         }
         
 
+        // This should never be null, since if a player is not on this ladder, then they 
+        // should never make it this far in to this code:
         PlayerRank originalRank = rankPlayer.getRank(ladder.getName());
+        
+        if ( originalRank == null ) {
+        	
+        	results.addTransaction( RankupStatus.RANKUP_FAILURE_NO_PLAYERRANK, 
+        					RankupTransactions.failure_orginal_playerRank_does_not_exist );
+        	return;
+        }
+        
 //        Optional<Rank> currentRankOptional = player.getRank(ladder);
 //        Rank originalRank = currentRankOptional.orElse( null );
         

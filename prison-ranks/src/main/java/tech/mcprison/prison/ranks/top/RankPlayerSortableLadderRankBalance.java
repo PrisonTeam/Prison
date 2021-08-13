@@ -85,8 +85,10 @@ public class RankPlayerSortableLadderRankBalance
 			results = 1;
 		}
 		else {
-			Rank r1 = rp1.getRank( getLadder().getName() ).getRank();
-			Rank r2 = rp2.getRank( getLadder().getName() ).getRank();
+			Rank r1 = rp1.getRank( getLadder() ) == null ? 
+							null : rp1.getRank( getLadder() ).getRank();
+			Rank r2 = rp2.getRank( getLadder() ) == null ? 
+							null : rp2.getRank( getLadder() ).getRank();
 			
 			if ( r1 == null ) {
 				results = -1;

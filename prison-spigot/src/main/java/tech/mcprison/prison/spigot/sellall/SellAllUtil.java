@@ -34,6 +34,8 @@ import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.PlayerRank;
+import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
@@ -1592,7 +1594,11 @@ public class SellAllUtil {
             if (rankPlugin.getPlayerManager().getPlayer(sPlayer) != null) {
                 String playerRankName;
                 try {
-                    playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer).getRank("prestiges").getRank().getName();
+                	RankPlayer rankPlayer = rankPlugin.getPlayerManager().getPlayer(sPlayer);
+                	PlayerRank pRank = rankPlayer == null ? null : rankPlayer.getRank("prestiges");
+                	Rank rank = pRank == null ? null : pRank.getRank();
+                	
+                    playerRankName = rank == null ? null : rank.getName();
                 } catch (NullPointerException ex) {
                     playerRankName = null;
                 }

@@ -125,7 +125,9 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
         // Get many parameters
         Rank rank = ladder.getLowestRank().get();
-        Rank playerRank = getRankPlayer().getRank(guiConfig.getString("Options.Ranks.Ladder")).getRank();
+        PlayerRank playerRankRank = getRankPlayer().getRank(guiConfig.getString("Options.Ranks.Ladder"));
+        
+        Rank playerRank = playerRankRank == null ? null : playerRankRank.getRank();
 
         PrisonGUI gui = new PrisonGUI(getPlayer(), dimension, guiConfig.getString("Options.Titles.PlayerRanksGUI"));
 

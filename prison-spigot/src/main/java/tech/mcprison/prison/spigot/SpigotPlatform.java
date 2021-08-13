@@ -1258,8 +1258,9 @@ public class SpigotPlatform
     		Player player = pm.getPlayer( sender );
     		RankPlayer rankPlayer = pm.getPlayer( player );
 
-    		if ( rankPlayer != null ) {
+    		if ( rankPlayer != null && rankPlayer.getRank( "default" ) != null ) {
     			PlayerRank pRank = rankPlayer.getRank( "default" );
+    			
     			Rank rank = pRank.getRank();
     			
     			if ( rank != null ) {
