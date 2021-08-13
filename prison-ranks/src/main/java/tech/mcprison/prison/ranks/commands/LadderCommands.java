@@ -93,66 +93,66 @@ public class LadderCommands
         display.send(sender);
     }
 
-    @Command(identifier = "ranks ladder listranks", description = "Lists the ranks within a ladder.", 
-    								onlyPlayers = false, permissions = "ranks.ladder")
-    public void ladderInfo(
-    		CommandSender sender, 
-    		@Arg(name = "ladderName", def = "default", 
-    		description = "The ladder name to display the ranks on. " +
-    				"Defaults to the default ladder") String ladderName
-    		
-    		) {
-        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
-
-        if ( ladder == null ) {
-        	ladderDoesNotExistsMsg( sender, ladderName );
-            return;
-        }
-
-        ChatDisplay display = new ChatDisplay(ladder.getName());
-        display.addText( ladderHasRankMsg() );
-
-        BulletedListComponent.BulletedListBuilder builder =
-            new BulletedListComponent.BulletedListBuilder();
-        
-        boolean first = true;
-        for (Rank rank : ladder.getRanks()) {
-//        	Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankPos.getRankId());
-        	if ( rank == null ) {
-        		continue;
-        	}
-        	
-//            Optional<Rank> rankOptional =
-//                PrisonRanks.getInstance().getRankManager().getRankOptional(rankPos.getRankId());
-//            if(!rankOptional.isPresent()) {
-//                continue; // Skip it
-//            }
-            
-            boolean defaultRank = ("default".equalsIgnoreCase( ladderName ) && first);
-            
-            String defaultRankValue = ladderDefaultRankMsg();
-
-            builder.add("&3(#%s) &8- &3%s (rankId: %s%s%s) %s", 
-            		Integer.toString( rank.getPosition() ),
-            		rank.getName(),
-            		
-            		Integer.toString( rank.getId() ),
-            		(rank.getRankPrior() == null ? "" : " -"),
-            		(rank.getRankNext() == null ? "" : " +"),
-            		
-                (defaultRank ? defaultRankValue : "")
-            	);
-            first = false;
-        }
-
-        String seeRanksList = ladderSeeRanksListMsg();
-        
-        builder.add( seeRanksList );
-        
-        display.addComponent(builder.build());
-        
-        display.send(sender);
-    }
+//    @Command(identifier = "ranks ladder listranks", description = "Lists the ranks within a ladder.", 
+//    								onlyPlayers = false, permissions = "ranks.ladder")
+//    public void ladderInfo(
+//    		CommandSender sender, 
+//    		@Arg(name = "ladderName", def = "default", 
+//    		description = "The ladder name to display the ranks on. " +
+//    				"Defaults to the default ladder") String ladderName
+//    		
+//    		) {
+//        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+//
+//        if ( ladder == null ) {
+//        	ladderDoesNotExistsMsg( sender, ladderName );
+//            return;
+//        }
+//
+//        ChatDisplay display = new ChatDisplay(ladder.getName());
+//        display.addText( ladderHasRankMsg() );
+//
+//        BulletedListComponent.BulletedListBuilder builder =
+//            new BulletedListComponent.BulletedListBuilder();
+//        
+//        boolean first = true;
+//        for (Rank rank : ladder.getRanks()) {
+////        	Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankPos.getRankId());
+//        	if ( rank == null ) {
+//        		continue;
+//        	}
+//        	
+////            Optional<Rank> rankOptional =
+////                PrisonRanks.getInstance().getRankManager().getRankOptional(rankPos.getRankId());
+////            if(!rankOptional.isPresent()) {
+////                continue; // Skip it
+////            }
+//            
+//            boolean defaultRank = ("default".equalsIgnoreCase( ladderName ) && first);
+//            
+//            String defaultRankValue = ladderDefaultRankMsg();
+//
+//            builder.add("&3(#%s) &8- &3%s (rankId: %s%s%s) %s", 
+//            		Integer.toString( rank.getPosition() ),
+//            		rank.getName(),
+//            		
+//            		Integer.toString( rank.getId() ),
+//            		(rank.getRankPrior() == null ? "" : " -"),
+//            		(rank.getRankNext() == null ? "" : " +"),
+//            		
+//                (defaultRank ? defaultRankValue : "")
+//            	);
+//            first = false;
+//        }
+//
+//        String seeRanksList = ladderSeeRanksListMsg();
+//        
+//        builder.add( seeRanksList );
+//        
+//        display.addComponent(builder.build());
+//        
+//        display.send(sender);
+//    }
     
     @Command(identifier = "ranks ladder moveRank", description = "Moves a rank to a new " +
     		"ladder position or a new ladder.", 
@@ -170,8 +170,8 @@ public class LadderCommands
     	ladderAddRank(sender, ladderName, rankName, position );
     }
 
-    @Command(identifier = "ranks ladder addrank", description = "Adds a rank to a ladder, or move a rank.", 
-    								onlyPlayers = false, permissions = "ranks.ladder")
+//    @Command(identifier = "ranks ladder addrank", description = "Adds a rank to a ladder, or move a rank.", 
+//    								onlyPlayers = false, permissions = "ranks.ladder")
     public void ladderAddRank(CommandSender sender, 
     		@Arg(name = "ladderName") String ladderName,
 	        @Arg(name = "rankName") String rankName,
@@ -215,8 +215,8 @@ public class LadderCommands
         }
     }
 
-    @Command(identifier = "ranks ladder delrank", description = "Removes a rank from a ladder.", 
-    											onlyPlayers = false, permissions = "ranks.ladder")
+//    @Command(identifier = "ranks ladder delrank", description = "Removes a rank from a ladder.", 
+//    											onlyPlayers = false, permissions = "ranks.ladder")
     public void ladderRemoveRank(CommandSender sender, @Arg(name = "ladderName") String ladderName,
         @Arg(name = "rankName") String rankName) {
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);

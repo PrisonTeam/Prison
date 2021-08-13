@@ -641,7 +641,8 @@ public class MinesCommands
         	
         	pMines.getMinesMessages().getLocalizable("mine_deleted").sendTo(sender);
         	
-        } else if ( getConfirmTimestamp() == null || ((now - getConfirmTimestamp()) >= 1000 * 60 ) ) {
+        } 
+        else if ( getConfirmTimestamp() == null || ((now - getConfirmTimestamp()) >= 1000 * 60 ) ) {
         	setConfirmTimestamp( now );
 
         	ChatDisplay chatDisplay = new ChatDisplay("&cDelete " + mineName);
