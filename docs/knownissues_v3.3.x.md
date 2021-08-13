@@ -3,6 +3,18 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
+* Fix the "next rank" value with PlayerRanks.... it's wrong... needs to recalc with the new rank.
+
+
+* /ranks ladder moveRank did not work to move from one ladder to another
+
+
+* Add a rank cost multiplier to either ladders or ranks, or both.  Sum all active ranks a player has to get the total multiplier to use for rank costs.
+
+
+* Add a `*all*` for mine name on remove mines blockEvents.
+
+
 - hybrid placeholder graphs - hybars
   - super impose text in the graph and have it still be colored correctly.
   - text can be centered, such as the percentage that is feeding the bar
@@ -17,14 +29,14 @@ DONE: - Block constraint error when there are no blocks spawned when applying mi
 
 
 
-* On prison support submit mines, include /mines info a all?
- - 
+* DONE: On prison support submit mines, include /mines info a all?
 
 
 * The command /mines delete does not appear to be working
+ - Cannot reproduce
+ 
 
-
-To all headers that are displayed in prison commands, show the prison's version to the far right.
+* DONE: To all headers that are displayed in prison commands, show the prison's version to the far right.
 
 
 * Eliminate the following message from logging an error, but just keep a note in the code:

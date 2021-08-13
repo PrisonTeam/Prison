@@ -22,7 +22,13 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.10-alpha.10 2021-08-12
+# v3.2.10-alpha.10 2021-08-13
+
+
+* **v3.2.10-alpha.10e 2021-08-13**
+
+
+* **More adjustments to rankups and PlayerRanks.**  I think I've addressed all issues with ranks.
 
 
 * **Remove three redundant ladder commands dealing with ranks: listranks, addrank, and delrank.**
