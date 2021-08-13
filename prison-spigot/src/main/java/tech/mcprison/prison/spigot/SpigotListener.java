@@ -18,9 +18,11 @@
 
 package tech.mcprison.prison.spigot;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -36,13 +38,22 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.plugin.EventExecutor;
+import org.bukkit.plugin.PluginManager;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.internal.events.Cancelable;
 import tech.mcprison.prison.internal.events.player.PlayerChatEvent;
 import tech.mcprison.prison.internal.events.player.PlayerPickUpItemEvent;
 import tech.mcprison.prison.internal.events.player.PlayerSuffocationEvent;
 import tech.mcprison.prison.internal.events.world.PrisonWorldLoadEvent;
+import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents.AutoManagerBlockBreakEventListener;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents.OnBlockBreakEventListenerNormal;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents.OnBlockBreakEventListenerNormalMonitor;
+import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
+import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
@@ -66,33 +77,85 @@ public class SpigotListener implements Listener {
 
     public SpigotListener() {
     	super();
+    	
+    	initialize();
     }
 
+    public void initialize() {
+    	
+    	// Check to see if the class BlockBreakEvent even exists:
+    	try {
+    		
+    		Output.get().logInfo( "SpigotListener: Trying to register events" );
+    		
+    		SpigotPrison prison = SpigotPrison.getInstance();
+    		PluginManager pm = Bukkit.getServer().getPluginManager();
+    		
+    		
+    		String chatEventPriorityString = Prison.get().getPlatform().getConfigString( 
+    					"prison-events.AsyncPlayerChatEvent.priority", BlockBreakPriority.NORMAL.name() );
+    		
+    		
+    		BlockBreakPriority chatEventPriority = BlockBreakPriority.fromString( chatEventPriorityString );
+    		
+    		if ( chatEventPriority != BlockBreakPriority.DISABLED ) {
+    			
+    			EventPriority ePriority = EventPriority.valueOf( chatEventPriority.name().toUpperCase() );           
+    			
+    			OnPlayerChatListener chatListener = new OnPlayerChatListener();
+    		    // onPlayerChat
+
+    			pm.registerEvent(AsyncPlayerChatEvent.class, chatListener, ePriority,
+    					new EventExecutor() {
+		    				public void execute(Listener l, Event e) {
+		    					if ( l instanceof OnPlayerChatListener && 
+		    							e instanceof AsyncPlayerChatEvent ) {
+		    						((OnPlayerChatListener)l)
+		    						.onPlayerChat( (AsyncPlayerChatEvent) e );
+		    					}
+		    				}
+		    			},
+    					prison);
+    			//prison.getRegisteredListeners().add( chatListener );
+    			
+    		}
+    		
+    	}
+    	catch ( Exception e ) {
+    		Output.get().logInfo( "AutoManager: BlockBreakEvent failed to load. [%s]", e.getMessage() );
+    	}
+    }
+    
+    
     // Do not use this init() function since it is non-standard in how 
     // prison is registering events. See SpigotPrison.onEnable().
 //    public void init() {
 //        Bukkit.getServer().getPluginManager().registerEvents(this, SpigotPrison.getInstance());
 //    }
 
-    @EventHandler public void onPlayerJoin(PlayerJoinEvent e) {
+    @EventHandler 
+    public void onPlayerJoin(PlayerJoinEvent e) {
         Prison.get().getEventBus().post(
             new tech.mcprison.prison.internal.events.player.PlayerJoinEvent(
                 new SpigotPlayer(e.getPlayer())));
     }
 
-    @EventHandler public void onPlayerQuit(PlayerQuitEvent e) {
+    @EventHandler 
+    public void onPlayerQuit(PlayerQuitEvent e) {
         Prison.get().getEventBus().post(
             new tech.mcprison.prison.internal.events.player.PlayerQuitEvent(
                 new SpigotPlayer(e.getPlayer())));
     }
 
-    @EventHandler public void onPlayerKicked(PlayerKickEvent e) {
+    @EventHandler 
+    public void onPlayerKicked(PlayerKickEvent e) {
         Prison.get().getEventBus().post(
             new tech.mcprison.prison.internal.events.player.PlayerKickEvent(
                 new SpigotPlayer(e.getPlayer()), e.getReason()));
     }
 
-	@EventHandler public void onPlayerSuffocation( EntityDamageEvent e ) {
+	@EventHandler 
+	public void onPlayerSuffocation( EntityDamageEvent e ) {
 		Entity entity = e.getEntity();
 		
 		if ( entity instanceof Player && e.getCause().equals( 
@@ -107,7 +170,8 @@ public class SpigotListener implements Listener {
 		}
 	}
     
-	@EventHandler public void onBlockPlace(BlockPlaceEvent e) {
+	@EventHandler 
+	public void onBlockPlace(BlockPlaceEvent e) {
         org.bukkit.Location block = e.getBlockPlaced().getLocation();
         BlockType blockType = SpigotUtil.blockToBlockType( e.getBlock() );
         
@@ -119,7 +183,8 @@ public class SpigotListener implements Listener {
         Prison.get().getEventBus().post(event);
         doCancelIfShould(event, e);
     }
-	@EventHandler public void onBlockBreak(BlockBreakEvent e) {
+	@EventHandler 
+	public void onBlockBreak(BlockBreakEvent e) {
         org.bukkit.Location block = e.getBlock().getLocation();
         BlockType blockType = SpigotUtil.blockToBlockType( e.getBlock() );
         
@@ -147,7 +212,8 @@ public class SpigotListener implements Listener {
     	Prison.get().getEventBus().post(pwlEvent);
     }
 
-    @EventHandler public void onPlayerInteract(PlayerInteractEvent e) {
+    @EventHandler 
+    public void onPlayerInteract(PlayerInteractEvent e) {
         // TODO Accept air events (block is null when air is clicked...)
 
         // Check to see if we support the Action
@@ -179,7 +245,8 @@ public class SpigotListener implements Listener {
         doCancelIfShould(event, e);
     }
 
-    @EventHandler public void onPlayerDropItem(PlayerDropItemEvent e) {
+    @EventHandler
+    public void onPlayerDropItem(PlayerDropItemEvent e) {
         tech.mcprison.prison.internal.events.player.PlayerDropItemEvent event =
             new tech.mcprison.prison.internal.events.player.PlayerDropItemEvent(
                 new SpigotPlayer(e.getPlayer()),
@@ -192,7 +259,8 @@ public class SpigotListener implements Listener {
     //      PlayerPickupItemEvent was deprecated and may not exist in newer releases.
     //      Need to research this and find an alternative and push this back in to 
     //      the compatibility classes.
-	@EventHandler public void onPlayerPickUpItem(PlayerPickupItemEvent e) {
+	@EventHandler 
+	public void onPlayerPickUpItem(PlayerPickupItemEvent e) {
         PlayerPickUpItemEvent event = new PlayerPickUpItemEvent(new SpigotPlayer(e.getPlayer()),
             SpigotUtil.bukkitItemStackToPrison(e.getItem().getItemStack()));
         Prison.get().getEventBus().post(event);
@@ -208,16 +276,35 @@ public class SpigotListener implements Listener {
 		}
 	}
 	
-    @EventHandler(priority=EventPriority.LOW) 
-    public void onPlayerChat(AsyncPlayerChatEvent e) {
-        PlayerChatEvent event =
-            new PlayerChatEvent(new SpigotPlayer(e.getPlayer()), e.getMessage(), e.getFormat());
-        Prison.get().getEventBus().post(event);
-        e.setFormat(ChatColor.translateAlternateColorCodes('&', event.getFormat() + "&r"));
-        e.setMessage(event.getMessage());
-        doCancelIfShould(event, e);
-    }
+//    @EventHandler(priority=EventPriority.LOW) 
+//    public void onPlayerChat(AsyncPlayerChatEvent e) {
+//        PlayerChatEvent event =
+//            new PlayerChatEvent(new SpigotPlayer(e.getPlayer()), e.getMessage(), e.getFormat());
+//        Prison.get().getEventBus().post(event);
+//        e.setFormat(ChatColor.translateAlternateColorCodes('&', event.getFormat() + "&r"));
+//        e.setMessage(event.getMessage());
+//        doCancelIfShould(event, e);
+//    }
 
+    
+	public class OnPlayerChatListener
+		implements Listener {
+			
+		@EventHandler(priority=EventPriority.NORMAL) 
+	    public void onPlayerChat(AsyncPlayerChatEvent e) {
+	        PlayerChatEvent event =
+	            new PlayerChatEvent(new SpigotPlayer(e.getPlayer()), e.getMessage(), e.getFormat());
+	        
+	        Prison.get().getEventBus().post(event);
+	        
+	        e.setFormat(ChatColor.translateAlternateColorCodes('&', event.getFormat() + "&r"));
+	        e.setMessage(event.getMessage());
+	        
+	        doCancelIfShould(event, e);
+	    }
+	}
+
+    
     private void doCancelIfShould(Cancelable ours, Cancellable theirs) {
         if(ours.isCanceled()) {
             // We shouldn't set this to false, because some event handlers check for that.

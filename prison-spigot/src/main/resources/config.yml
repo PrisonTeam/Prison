@@ -1,8 +1,8 @@
-# == == == == == === == == == == == #
-#      Prison 3 Configuration       #
-# Be sure to check your formatting! #
-#      This must be valid yml.      #
-# == == == == == === == == == == == #
+# == == == == == == ==== == == == == == #
+#      Prison 3.2.x Configuration       #
+#   Be sure to check your formatting!   #
+#        This must be valid yml.        #
+# == == == == == == ==== == == == == == #
 #
 #  New features have been recently added to prison.  These new features 
 #  can add a lot of value to your server, but they may also be in the 
@@ -211,4 +211,12 @@ delayedPrisonStartup:
   triggers:
     vault: true
     vault-economy-name: Economy_Essentials
+
+
+# The following changes the event priority for prison's listener for the 
+# given events. 
+# Currently, only AsyncPlayerChatEvent is able to be set. Default is LOW.
+prison-events:
+  AsyncPlayerChatEvent:
+    priority: LOW
 

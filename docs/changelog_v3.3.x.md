@@ -25,6 +25,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.10 2021-08-12
 
 
+* **Setup the AsyncPlayerChatEvent listener within Prison to be able to dynamically set the priority based upon a new setting in the config.yml file.**
+
+
 * **Bug fixes: Fixed some issues with the use of the new PlayerRank object.**
 They were not always not-null, and there were some instances of the wrong variable being used.
 
