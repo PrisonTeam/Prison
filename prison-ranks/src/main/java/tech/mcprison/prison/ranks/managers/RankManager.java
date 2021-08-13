@@ -905,7 +905,7 @@ public class RankManager
 				case prison_rank__player_cost_rankname:
 				case prison_r_pcst_rankname:
 					{
-						double cost = calclateRankCost( rankPlayer, rank );
+						double cost = calculateRankCost( rankPlayer, rank );
 						
 						if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
     						PlaceholderAttributeNumberFormat attributeNF = 
@@ -922,7 +922,7 @@ public class RankManager
 				case prison_rank__player_cost_formatted_rankname:
 				case prison_r_pcf_rankname:
 					{
-						double cost = calclateRankCost( rankPlayer, rank );
+						double cost = calculateRankCost( rankPlayer, rank );
 						
 						if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
     						PlaceholderAttributeNumberFormat attributeNF = 
@@ -940,7 +940,7 @@ public class RankManager
 				case prison_rank__player_cost_remaining_rankname:
 				case prison_r_pcr_rankname:
 					{
-						double cost = calclateRankCost( rankPlayer, rank );
+						double cost = calculateRankCost( rankPlayer, rank );
 						double balance = rankPlayer.getBalance( rank.getCurrency() );
 //						double balance = pm.getPlayerBalance( rankPlayer, rank);
 						
@@ -965,7 +965,7 @@ public class RankManager
 				case prison_rank__player_cost_remaining_formatted_rankname:
 				case prison_r_pcrf_rankname:
 					{
-						double cost = calclateRankCost( rankPlayer, rank );
+						double cost = calculateRankCost( rankPlayer, rank );
 						double balance = rankPlayer.getBalance( rank.getCurrency() );
 //						double balance = pm.getPlayerBalance( rankPlayer, rank);
 						
@@ -994,7 +994,7 @@ public class RankManager
 				case prison_rank__player_cost_percent_rankname:
 				case prison_r_pcp_rankname:
 					{
-						double cost = calclateRankCost( rankPlayer, rank );
+						double cost = calculateRankCost( rankPlayer, rank );
 						double balance = rankPlayer.getBalance( rank.getCurrency() );
 //						double balance = pm.getPlayerBalance( rankPlayer, rank);
 						
@@ -1009,7 +1009,7 @@ public class RankManager
 				case prison_rank__player_cost_bar_rankname:
 				case prison_r_pcb_rankname:
 					{
-						double cost = calclateRankCost( rankPlayer, rank );
+						double cost = calculateRankCost( rankPlayer, rank );
 						double balance = rankPlayer.getBalance( rank.getCurrency() );
 //						double balance = pm.getPlayerBalance( rankPlayer, rank);
 						
@@ -1033,13 +1033,17 @@ public class RankManager
 		return results;
     }
 
-	private double calclateRankCost( RankPlayer rankPlayer, Rank rank )
+	private double calculateRankCost( RankPlayer rankPlayer, Rank rank )
 	{
 		double cost = 0;
 		// Get player's rank:
 		PlayerRank playerRank = rankPlayer.getRank( rank.getLadder() );
 		if ( playerRank != null ) {
 			
+			
+			// If the player is at a higher rank, then the cost will be 
+			// zero for the rank that is being passed in, since the player has
+			// already paid for that rank.
 			if ( rank.getPosition() < playerRank.getRank().getPosition() ) {
 				cost = 0;
 			}
@@ -1049,6 +1053,8 @@ public class RankManager
 				
 				while ( nextRank != null &&
 						nextRank.getPosition() < rank.getPosition() ) {
+					
+					playerRank = new PlayerRank(nextRank);
 					
 					cost += playerRank.getRankCost();
 					nextRank = nextRank.getRankNext();

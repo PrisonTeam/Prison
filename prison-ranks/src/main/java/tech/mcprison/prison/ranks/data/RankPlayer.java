@@ -443,16 +443,20 @@ public class RankPlayer
      * @return An optional containing the {@link Rank} if found, or empty if there isn't a rank by that ladder for this player.
      */
     public PlayerRank getRank(RankLadder ladder) {
+    	PlayerRank results = null;
     	
-    	Set<RankLadder> keys = ladderRanks.keySet();
-    	for ( RankLadder key : keys )
-		{
-    		if ( key.getName().equalsIgnoreCase( ladder.getName() ) ) {
-    			return ladderRanks.get( key );
+    	if ( ladder != null ) {
+    		
+    		Set<RankLadder> keys = ladderRanks.keySet();
+    		for ( RankLadder key : keys )
+    		{
+    			if ( key != null && key.getName().equalsIgnoreCase( ladder.getName() ) ) {
+    				results = ladderRanks.get( key );
+    			}
     		}
-		}
+    	}
 
-    	return null;
+    	return results;
     	
 //        if (!ranksRefs.containsKey(ladder.getName())) {
 //            return null;

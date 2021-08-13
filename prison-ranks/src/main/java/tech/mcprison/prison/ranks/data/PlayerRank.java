@@ -12,6 +12,11 @@ public class PlayerRank
 		super();
 		
 		this.rank = rank;
+		
+		double rankMultiplier = getLadderBasedRankMultiplier();
+		
+		setRankCost( rankMultiplier );
+//		this.rankCost = rank.getCost() * (1.0 + rankMultiplier);
 	}
 	
 	public PlayerRank( Rank rank, double rankMultiplier ) {
@@ -19,21 +24,26 @@ public class PlayerRank
 		
 		this.rankMultiplier = rankMultiplier;
 		
-		this.rankCost = rank.getCost() * (1.0 + rankMultiplier);
+		setRankCost( rankMultiplier );
+//		this.rankCost = rank.getCost() * (1.0 + rankMultiplier);
 	}
 	
 	public void applyMultiplier( double rankMultiplier ) {
 		
 		this.rankMultiplier = rankMultiplier;
 		
+		setRankCost( rankMultiplier );
+//		this.rankCost = rank.getCost() * (1.0 + rankMultiplier);
+	}
+	
+	private void setRankCost( double rankMultiplier ) {
+		
 		this.rankCost = rank.getCost() * (1.0 + rankMultiplier);
 	}
 	
 	public double getLadderBasedRankMultiplier() {
-		double ladderMultiplier = rank.getLadder().getRankCostMultiplierPerRank();
-		double rankMultiplier = ladderMultiplier * rank.getPosition();
 		
-		return rankMultiplier;
+		return getLadderBaseRankdMultiplier( getRank() );
 	}
 	
 	public static double getLadderBaseRankdMultiplier( Rank rank ) {

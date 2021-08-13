@@ -25,6 +25,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.10 2021-08-13
 
 
+* **Fixed a typo in the name of a function.  Prevent a possible NPE.  Revised how one of the PlayerRank constructors works so it will actually calculate the correct multiplier.**
+
+
 * **v3.2.10-alpha.10e 2021-08-13**
 
 
