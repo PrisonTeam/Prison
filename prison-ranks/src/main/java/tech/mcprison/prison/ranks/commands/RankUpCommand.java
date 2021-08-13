@@ -427,10 +427,11 @@ public class RankUpCommand
     			if ( targetPlayer != null ) {
     				
     				boolean isSameRank = rank.equalsIgnoreCase("*same*");
+    				PlayerRank pRank = player.getRank( ladder );
     				String rankNameCurrent = isSameRank && 
-    							player.getRank( ladder ) != null && 
-		    						player.getRank( ladder ).getRank() != null ? 
-		    								player.getRank( ladder ).getRank().getName() : "";
+    							pRank != null && 
+		    						pRank.getRank() != null ? 
+		    								pRank.getRank().getName() : "";
     				
     				String targetRank = isSameRank ? rankNameCurrent : rank;
     				setPlayerRank( targetPlayer, targetRank, ladder, sender );

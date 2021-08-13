@@ -333,7 +333,7 @@ public class RankUtil
 
         // This should never be null, since if a player is not on this ladder, then they 
         // should never make it this far in to this code:
-        PlayerRank originalRank = rankPlayer.getRank(ladder.getName());
+        PlayerRank originalRank = rankPlayer.getRank(ladder);
         
         if ( originalRank == null ) {
         	
