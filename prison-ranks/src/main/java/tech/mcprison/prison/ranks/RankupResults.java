@@ -139,17 +139,25 @@ public class RankupResults {
 		}
 		return playerRankOriginal;
 	}
+	public void setPlayerRankOriginal( PlayerRank playerRankOriginal ) {
+		this.playerRankOriginal = playerRankOriginal;
+	}
 
 	public PlayerRank getPlayerRankTarget() {
-		if ( playerRankTarget == null && targetRank.getRankNext() != null ) {
+		if ( playerRankTarget == null && 
+				getOriginalRank() != null && getOriginalRank().getRankNext() != null ) {
 
 			PlayerRank pRank = rankPlayer.getRank( originalRank.getLadder() );
 			PlayerRank pRankNext = new PlayerRank( targetRank, pRank.getRankMultiplier() );
 
-			playerRankOriginal = pRankNext;
+			playerRankTarget = pRankNext;
 		}
 		return playerRankTarget;
 	}
+	public void setPlayerRankTarget( PlayerRank playerRankTarget ) {
+		this.playerRankTarget = playerRankTarget;
+	}
+	
 
 	public Rank getOriginalRank() {
 		return originalRank;

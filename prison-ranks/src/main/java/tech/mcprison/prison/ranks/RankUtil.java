@@ -333,8 +333,8 @@ public class RankUtil
 //        Rank originalRank = currentRankOptional.orElse( null );
         
         results.addTransaction( RankupTransactions.orginal_rank );
+        results.setPlayerRankOriginal( originalRank );
         results.setOriginalRank( originalRank.getRank() );
-       
         
         /**
          * calculate the target rank:
@@ -342,6 +342,7 @@ public class RankUtil
         Rank targetRank = calculateTargetRank( command, results, originalRank.getRank(), ladder, 
         				ladderName, rankName );
         
+       
         if ( results.getStatus() != RankupStatus.IN_PROGRESS ) {
         	// Failed while calculatingTargetRank so return now:
         	return;
@@ -384,6 +385,10 @@ public class RankUtil
         	return;
         }
         
+
+        PlayerRank pRankNext = new PlayerRank( targetRank, originalRank.getRankMultiplier() );
+		
+		results.setPlayerRankTarget( pRankNext );
         results.setTargetRank( targetRank );
 
         

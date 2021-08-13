@@ -1187,7 +1187,9 @@ public class RanksCommands
 				PlayerRank pRank = rankLadders.get( rankLadder );
 				Rank rank = pRank.getRank();
 				Rank nextRank = rank.getRankNext();
-				PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
+				
+				PlayerRank nextPRank = nextRank == null ? null :
+									new PlayerRank( nextRank, pRank.getRankMultiplier() );
 				
 				String messageRank = ranksPlayerLadderInfoMsg( 
 						player.getDisplayName(), 
@@ -1199,7 +1201,7 @@ public class RanksCommands
 				} else {
 					messageRank += ranksPlayerLadderNextRankMsg( 
 							nextRank.getName(), 
-							dFmt.format( nextPRank.getRankCost() ) );
+							( nextRank == null ? "0" : dFmt.format( nextPRank.getRankCost()) ) );
 //							dFmt.format( nextRank.getCost() ) );
 
 					if ( nextRank.getCurrency() != null ) {
