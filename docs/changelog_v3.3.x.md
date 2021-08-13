@@ -25,6 +25,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.10 2021-08-12
 
 
+* **There was a report that the mine would continue to reset after it was deleted.**
+Cleaned up a few things and added a boolean field to indicate it's delete.  If its set to deleted, then it will prevent the resets from happening.  Just as a safety check.  Not 100% sure that this was actually an issue.
+
+
 * **Setup the AsyncPlayerChatEvent listener within Prison to be able to dynamically set the priority based upon a new setting in the config.yml file.**
 
 

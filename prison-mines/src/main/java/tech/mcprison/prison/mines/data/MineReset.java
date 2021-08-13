@@ -171,6 +171,12 @@ public abstract class MineReset
      * </p>
      */
     protected void resetSynchonously() {
+    	
+    	if ( isDeleted() ) {
+    		// if the mine is deleted, just return without doing anything. This will
+    		// cancel the job.
+    		return;
+    	}
 
 		long start = System.currentTimeMillis();
 		
@@ -204,8 +210,9 @@ public abstract class MineReset
 	private void resetSynchonouslyInternal() {
 		try {
 			
-			if ( isVirtual() ) {
+			if ( isVirtual() || isDeleted() ) {
 				// Mine is virtual and cannot be reset.  Just skip this with no error messages.
+				// If the mine is deleted, just return without doing anything.
 				return;
 			}
 			
@@ -493,7 +500,7 @@ public abstract class MineReset
      */
     protected void generateBlockListAsync() {
 		
-    	if ( isVirtual() ) {
+    	if ( isVirtual() || isDeleted() ) {
     		// ignore and generate no error messages:
     		return;
     	}

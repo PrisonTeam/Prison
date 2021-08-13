@@ -462,8 +462,11 @@ public abstract class MineScheduler
 	 * 
 	 */
 	public void terminateJob() {
-		getJobStack().clear();
 		
+		setDeleted( true );
+		
+		getJobStack().clear();
+	
 		int taskId = getTaskId();
 		
 		PrisonTaskSubmitter.cancelTask( taskId );

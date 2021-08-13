@@ -141,6 +141,8 @@ public abstract class MineData
     private long mineSweeperTotalMs;
     private long mineSweeperBlocksChanged;
     
+    private transient boolean isDeleted = false; 
+    
 
     public enum MineNotificationMode {
     	disabled,
@@ -1266,6 +1268,13 @@ public abstract class MineData
 	}
 	public void setMineSweeperBlocksChanged( long mineSweeperBlocksChanged ) {
 		this.mineSweeperBlocksChanged = mineSweeperBlocksChanged;
+	}
+
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+	public void setDeleted( boolean isDeleted ) {
+		this.isDeleted = isDeleted;
 	}
 
 }
