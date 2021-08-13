@@ -25,6 +25,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.10 2021-08-12
 
 
+
+* **Fixed an issue with the regular expression block quote... didn't need the second backslash.**
+
+
 * **Bug fix: Fixed a few issues with PlayerRank object not being set correctly everywhere.**
 Was also checking the wrong object for null.  These fix about 3 different NPEs.
 
