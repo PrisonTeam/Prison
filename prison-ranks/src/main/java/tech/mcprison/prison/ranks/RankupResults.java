@@ -145,7 +145,8 @@ public class RankupResults {
 
 	public PlayerRank getPlayerRankTarget() {
 		if ( playerRankTarget == null && 
-				getOriginalRank() != null && getOriginalRank().getRankNext() != null ) {
+				getOriginalRank() != null && getOriginalRank().getRankNext() != null &&
+				targetRank != null ) {
 
 			PlayerRank pRank = rankPlayer.getRank( originalRank.getLadder() );
 			PlayerRank pRankNext = new PlayerRank( targetRank, pRank.getRankMultiplier() );

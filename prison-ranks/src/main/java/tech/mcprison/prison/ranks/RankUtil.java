@@ -394,7 +394,7 @@ public class RankUtil
         
         
 //        String currency = "";
-        double nextRankCost = results.getRankPlayer().getRank( targetRank.getLadder() ).getRankCost();
+        double nextRankCost = pRankNext.getRankCost();
         double currentRankCost = (originalRank == null ? 0 : originalRank.getRankCost() );
         
         

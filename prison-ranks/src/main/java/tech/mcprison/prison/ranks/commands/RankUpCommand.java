@@ -345,6 +345,10 @@ public class RankUpCommand
         UUID playerUuid = player.getUUID();
         
 		ladder = confirmLadder( sender, ladder );
+		if ( ladder == null ) {
+			// Already displayed error message about ladder not existing:
+			return;
+		}
 
         RankPlayer rankPlayer = getRankPlayer( sender, playerUuid, player.getName() );
         Rank pRank = rankPlayer.getRank( ladder ).getRank();

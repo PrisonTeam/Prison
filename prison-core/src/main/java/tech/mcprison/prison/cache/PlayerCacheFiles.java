@@ -285,7 +285,8 @@ public class PlayerCacheFiles
 			for ( File file : files )
 			{
 				PlayerCachePlayerData temp = fromJsonFile( file );
-				if ( temp.getPlayerUuid().equalsIgnoreCase( player.getUUID().toString() ) ) {
+				if ( temp != null && temp.getPlayerUuid().equalsIgnoreCase( 
+								player.getUUID().toString() ) ) {
 					
 					results = temp;
 					results.setPlayerFile( file );
