@@ -249,5 +249,63 @@ public class LadderCommands
     }
 
 
+	@Command( identifier = "ranks ladder rankCostMultiplier", 
+			description = "Sets or removes a ladder's Rank Cost Multiplier.  Setting the " +
+					"value to zero will remove the multiplier from the calculations.  The " +
+					"Rank Cost Multiplier from all ladders a player has active, will be " +
+					"summed together and applied to the cost of all of their ranks. The Rank " +
+					"Cost Multiplier represents a percentage, and can be either postive or " +
+					"negative. ", 
+			onlyPlayers = false, permissions = "ranks.ladder" )
+	public void ladderSetRankCostMultiplier( CommandSender sender, 
+			@Arg( name = "ladderName" ) String ladderName,
+			@Arg( name = "rankCostMultiplier", def = "0", 
+			description = "Sets the Rank Cost Multiplier for the ladder, which will be " +
+					"applied to each rank, multiplied by the position of the rank.  " +
+					"A value of zero is disabled.  The value is expressed in " +
+					"percentages.") Double rankCostMultiplier )
+	{
+		RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
+
+		if ( ladder == null )
+		{
+			ladderDoesNotExistsMsg( sender, ladderName );
+			return;
+		}
+
+		if ( rankCostMultiplier == null ) {
+			// rankCostMultiplier may never be null?
+		}
+		
+		if ( ladder.getRankCostMultiplierPerRank() == rankCostMultiplier ) {
+			// No change:
+			
+			ladderSetRankCostMultiplierNoChangeMsg( sender, ladderName, rankCostMultiplier );
+			
+			return;
+		}
+
+		if ( rankCostMultiplier < -100d || rankCostMultiplier > 100d ) {
+			
+			ladderSetRankCostMultiplierOutOfRangeMsg( sender, rankCostMultiplier );
+			return;
+		}
+		
+		double oldRankCostMultiplier = ladder.getRankCostMultiplierPerRank() * 100;
+		
+		ladder.setRankCostMultiplierPerRank( rankCostMultiplier / 100 );
+
+		if ( PrisonRanks.getInstance().getLadderManager().save( ladder ) )
+		{
+			ladderSetRankCostMultiplierSavedMsg( sender, ladderName, 
+										rankCostMultiplier, oldRankCostMultiplier );
+
+		}
+		else
+		{
+			ladderErrorSavingMsg( sender );
+		}
+	}
+
   
 }

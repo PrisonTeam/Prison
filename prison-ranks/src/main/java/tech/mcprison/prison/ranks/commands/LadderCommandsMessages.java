@@ -1,5 +1,7 @@
 package tech.mcprison.prison.ranks.commands;
 
+import java.text.DecimalFormat;
+
 import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.ranks.PrisonRanks;
@@ -166,7 +168,46 @@ public class LadderCommandsMessages
 				.sendTo( sender );
 	}
 	
+	protected void ladderSetRankCostMultiplierSavedMsg( CommandSender sender, String ladderName, 
+			double rankCostMultiplier, double oldRankCostMultiplier )
+	{
+
+		DecimalFormat fFmt = new DecimalFormat("#,##0.00000");
+		
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_LadderCommands__ladder_set_rank_cost_multiplier" )
+		.withReplacements( 
+				ladderName, 
+				fFmt.format( rankCostMultiplier ), 
+				fFmt.format( oldRankCostMultiplier) )
+		.sendTo( sender );
+	}
+
+	protected void ladderSetRankCostMultiplierNoChangeMsg( CommandSender sender, String ladderName, 
+			double rankCostMultiplier )
+	{
+
+		DecimalFormat fFmt = new DecimalFormat("#,##0.00000");
+		
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_LadderCommands__ladder_rank_cost_multiplier_no_change" )
+		.withReplacements( 
+				ladderName, 
+				fFmt.format( rankCostMultiplier ) )
+		.sendTo( sender );
+	}
 	
-	
+	protected void ladderSetRankCostMultiplierOutOfRangeMsg( CommandSender sender,
+			double rankCostMultiplier )
+	{
+		
+		DecimalFormat fFmt = new DecimalFormat("#,##0.00000");
+		
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_LadderCommands__ladder_rank_cost_multiplier_out_of_range" )
+		.withReplacements( 
+				fFmt.format( rankCostMultiplier ) )
+		.sendTo( sender );
+	}
 	
 }

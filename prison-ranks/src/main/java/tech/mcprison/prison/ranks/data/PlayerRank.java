@@ -38,7 +38,9 @@ public class PlayerRank
 	
 	public static double getLadderBaseRankdMultiplier( Rank rank ) {
 		double ladderMultiplier = rank.getLadder().getRankCostMultiplierPerRank();
-		double rankMultiplier = ladderMultiplier * rank.getPosition();
+		
+		// Because it's zero based... so add a 1
+		double rankMultiplier = ladderMultiplier * (1 + rank.getPosition());
 		
 		return rankMultiplier;
 	}
