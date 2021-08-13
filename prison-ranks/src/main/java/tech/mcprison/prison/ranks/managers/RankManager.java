@@ -160,9 +160,12 @@ public class RankManager
     
     private void resetRankPositions( Rank rank ) {
     	
-    	for ( Rank r : rank.getLadder().getRanks() ) {
-			r.resetPosition();
-		}
+    	if ( rank != null && rank.getLadder() != null ) {
+    		
+    		for ( Rank r : rank.getLadder().getRanks() ) {
+    			r.resetPosition();
+    		}
+    	}
     }
     
     
@@ -347,14 +350,17 @@ public class RankManager
         	
             // Move each player in this ladder to the new rank
             PrisonRanks.getInstance().getPlayerManager().getPlayers().forEach(rankPlayer -> {
-            	Rank curRank = rankPlayer.getRank(ladder.getName()).getRank();
-                if ( curRank != null && rank.equals( curRank ) ) {
-                    rankPlayer.removeRank(curRank);
-                    if ( newRank != null ) {
-                    	rankPlayer.addRank(newRank);
-                    }
-                    
-                    PrisonRanks.getInstance().getPlayerManager().savePlayer(rankPlayer);
+            	PlayerRank pRank = rankPlayer.getRank(ladder);
+            	if ( pRank != null && pRank.getRank() != null ) {
+            		
+            		Rank curRank = pRank.getRank();
+            		if ( curRank != null && rank.equals( curRank ) ) {
+            			rankPlayer.removeRank(curRank);
+            			if ( newRank != null ) {
+            				rankPlayer.addRank(newRank);
+            			}
+            			
+            			PrisonRanks.getInstance().getPlayerManager().savePlayer(rankPlayer);
 //                    try {
 //                    } catch (IOException e) {
 //                    	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
@@ -362,14 +368,15 @@ public class RankManager
 //                    	
 //                    	Output.get().logError( localManagerLog.localize() );
 //                    }
-                    
-                    Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
-                    		.getLocalizable( "ranks_rankManager__cannot_save_player_file" )
-                    		.withReplacements( 
-                    					rankPlayer.getName(),
-                    					newRank.getName() );
-                    PrisonAPI.debug( localManagerLog.localize() );
-                }
+            			
+            			Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+            					.getLocalizable( "ranks_rankManager__cannot_save_player_file" )
+            					.withReplacements( 
+            							rankPlayer.getName(),
+            							newRank.getName() );
+            			PrisonAPI.debug( localManagerLog.localize() );
+            		}
+            	}
             });
             
             
@@ -1054,6 +1061,7 @@ public class RankManager
 				while ( nextRank != null &&
 						nextRank.getPosition() < rank.getPosition() ) {
 					
+					// Need to calculate the next PlayerRank value for the next rank:
 					playerRank = new PlayerRank(nextRank);
 					
 					cost += playerRank.getRankCost();
