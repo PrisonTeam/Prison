@@ -922,9 +922,20 @@ public class RanksCommands
         display.addText( ranksInfoNameMsg( rank.getName() ));
         display.addText( ranksInfoTagMsg( rank.getTag() ));
         
-        display.addText( 
-        		ranksInfoLadderMsg( rank.getLadder() != null ? 
-        				rank.getLadder().getName() : "(not linked to any ladder)" ));
+        
+        RowComponent row = new RowComponent();
+        
+        row.addTextComponent( ranksInfoLadderMsg( rank.getLadder() != null ? 
+				rank.getLadder().getName() : "(not linked to any ladder)" ) );
+        
+        
+        if ( rank.getLadder() != null ) {
+        	row.addTextComponent( "      " );
+        	
+        	row.addTextComponent( "&3Ladder Position: &7%d", rank.getPosition() );
+        }
+        
+        display.addComponent( row );
         
         
         if ( rank.getMines().size() == 0 ) {
@@ -944,6 +955,9 @@ public class RanksCommands
         	display.addText( ranksInfoLinkedMinesMsg( sb.toString() ));
         }
 
+        
+        
+        
         // NOTE: Since rank info is NOT tied to a PlayerRank we cannot figure out the
         //       the actual cost, but we can calculate the ladder's multiplier.  This 
         //       will not be the player's total multiplier.
@@ -952,15 +966,18 @@ public class RanksCommands
         
         
         // Add the raw ladder rank multiplier here:
-        
+        DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
         
         // The following is the rank adjusted rank multiplier
-        double ladderRankCostMultiplier = PlayerRank.getLadderBaseRankdMultiplier( rank );
-        String cmdLadderRankCostMult = "/ranks ladder rankMultiplier " + rank.getName() + " " + ladderRankCostMultiplier;
+        double rankCostMultiplier = PlayerRank.getLadderBaseRankdMultiplier( rank );
+        double ladderBaseMultiplier = rank.getLadder() == null ? 0 : rank.getLadder().getRankCostMultiplierPerRank();
+        
+        String cmdLadderRankCostMult = "/ranks ladder rankMultiplier " + rank.getName() + " " + ladderBaseMultiplier;
         display.addComponent(new FancyMessageComponent(
     			new FancyMessage(
-    					String.format( "&7Ladder Rank Cost Multiplier: &3%f&7",
-    							ladderRankCostMultiplier
+    					String.format( "&3Rank Cost Multiplier: &7%s  &3Ladder Base Multiplier: &7%s",
+    							fFmt.format( rankCostMultiplier ),
+    							fFmt.format( ladderBaseMultiplier )
     							)).suggest( cmdLadderRankCostMult )
     			.tooltip( "Ladder Rank Cost Multiplier" )));
     	
