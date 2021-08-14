@@ -226,6 +226,24 @@ public class RanksCommandsMessages
 				.localize();
 	}
 	
+	protected String ranksListLadderCostMultiplierMsg( double multiplier ) {
+		
+		DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
+		
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_rankCommands__ranks_list_ladder_cost_multplier" )
+				.withReplacements(
+					fFmt.format( multiplier )	)
+				.localize();
+	}
+	
+	protected String ranksListEditLadderCostMultiplierMsg() {
+		
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_rankCommands__ranks_list_ladder_edit_cost_multplier" )
+				.localize();
+	}
+	
 	protected String ranksListClickToEditMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_list_click_to_edit" )

@@ -22,7 +22,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.10-alpha.10 2021-08-13
+# v3.2.10-alpha.10 2021-08-14
+
+
+* **Work on /ranks list to improve the content to better present the rank cost multiplier.**
 
 
 * **General changes to code that uses getRank() that returns a PlayerData object... **

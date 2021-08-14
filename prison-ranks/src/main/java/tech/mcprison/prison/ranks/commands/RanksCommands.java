@@ -29,6 +29,7 @@ import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.FancyMessageComponent;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
@@ -582,9 +583,7 @@ public class RanksCommands
 
         
         if ( hasPerm ) {
-        	display.addComponent(new FancyMessageComponent(
-        			new FancyMessage("&7[&a+&7] Add").suggest("/ranks create ")
-        			.tooltip( ranksListCreateNewRankMsg() )));
+        	
         	
         	List<String> others = new ArrayList<>();
         	for (RankLadder other : PrisonRanks.getInstance().getLadderManager().getLadders()) {
@@ -738,6 +737,9 @@ public class RanksCommands
 		String rankHeader = ranksListHeaderMsg( ladder.getName() );
         ChatDisplay display = new ChatDisplay( rankHeader );
         
+        display.addText( ranksListLadderCostMultiplierMsg( 
+        							ladder.getRankCostMultiplierPerRank() ) );
+        
         if ( hasPerm ) {
         	display.addText( ranksListClickToEditMsg() );
         }
@@ -749,6 +751,8 @@ public class RanksCommands
         
         BulletedListComponent.BulletedListBuilder builder =
         		new BulletedListComponent.BulletedListBuilder();
+        
+        DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
         
         boolean first = true;
         for (Rank rank : ladder.getRanks()) {
@@ -779,13 +783,13 @@ public class RanksCommands
         	String tagNoColor = Text.stripColor( tag );
         	
         	String text =
-        			String.format("%-8s &3%-8s %s&7%17s %f &3(rankId: %s%s%s) %s&7 %s%s", 
+        			String.format("%-8s &3%-8s %s&7%17s &b%s &3(rankId: %s%s%s) %s&7 %s%s", 
         					textRankName, 
         					tagNoColor, 
         					(defaultRank ? "{def}" : ""),
         					Text.numberToDollars( PlayerRank.getRawRankCost( rank ) ),
         					
-        					PlayerRank.getLadderBaseRankdMultiplier( rank ),
+        					fFmt.format( PlayerRank.getLadderBaseRankdMultiplier( rank ) ),
         					
         					Integer.toString( rank.getId() ),
         					(rank.getRankPrior() == null ? "" : " -"),
@@ -825,7 +829,37 @@ public class RanksCommands
         }
         
         display.addComponent(builder.build());
+        
+        
+        if ( hasPerm ) {
+        	
+        	RowComponent row = new RowComponent();
+        	
+        	row.addFancy(
+        			new FancyMessage("&7[&a+&7] Add a new Rank")
+        			.suggest("/ranks create <rank> <cost> " + ladder.getName() + " <tag>")
+        			.tooltip( ranksListCreateNewRankMsg() ));
+        	
+        	row.addTextComponent( "      " );
+        	
+        	row.addFancy(
+        			new FancyMessage("&7[&a+&7] Edit Ladder Rank Cost Multiplier")
+        			.suggest("/ranks ladder rankCostMultiplier " + 
+        								ladder.getName() + " " + ladder.getRankCostMultiplierPerRank())
+        			.tooltip( ranksListEditLadderCostMultiplierMsg() ));
+        	
+        	display.addComponent( row );
 
+        	
+        	// Include the listing of all ladder commands at the end of the list of ranks:
+        	ChatDisplay cmdLadderDisplays = 
+        			getRankCommandCommands().commandLadderListDetail( ladder, true );
+        	
+        	display.addChatDisplay( cmdLadderDisplays );
+        	
+        }
+
+        
 		return display;
 	}
 
