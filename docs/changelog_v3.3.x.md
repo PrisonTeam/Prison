@@ -22,7 +22,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.10-alpha.10 2021-08-14
+# v3.2.10-alpha.11 2021-08-15
+
+
+* **v3.2.10-alpha.11 2021-08-15**
+Bump the version
 
 
 * **Changed the /ranks info to show the ranks multiplier information.**
