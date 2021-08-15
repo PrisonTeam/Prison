@@ -991,7 +991,7 @@ public class PrisonCommand
     		@Arg(name = "targets", def = " ",
     				description = "Optional. Enable or disable a debugging target. " +
     					"[on, off, targets, jarScan, " +
-    					"testPlayerUtil, testLocale] " +
+    					"testPlayerUtil, testLocale, rankup] " +
     				"Use 'targets' to list all available targets.  Use 'on' or 'off' to toggle " +
     				"on and off individual targets, or all targets if no target is specified.  " +
     				"jarScan will identify what Java version compiled the class files within the listed jars"

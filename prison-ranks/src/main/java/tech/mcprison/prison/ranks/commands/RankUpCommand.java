@@ -26,6 +26,7 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
 import tech.mcprison.prison.ranks.RankUtil.PromoteForceCharge;
@@ -68,10 +69,18 @@ public class RankUpCommand
     		) {
 
     	// Not supposed to check perms here... But it is a simple check, and it if works...
-    	if ( sender.hasPermission("ranks.rankupmax." + ladder) || sender.hasPermission("ranks.rankupmax.prestiges")) {
+    	if ( sender.hasPermission("ranks.rankupmax." + ladder) 
+    			// || sender.hasPermission("ranks.rankupmax.prestiges")
+    			) {
+    		Output.get().logDebug( DebugTarget.rankup, 
+    				"Rankup: cmd '/rankupmax %s'  Passed perm check: ranks.rankupmax.%s", 
+    				ladder, ladder );
 			rankUpPrivate(sender, ladder, RankupModes.MAX_RANKS, "ranks.rankupmax.");
 		}
     	else {
+    		Output.get().logDebug( DebugTarget.rankup, 
+    				"Rankup: Failed: cmd '/rankupmax %s'  Does not have the permission ranks.rankupmax.%s", 
+    				ladder, ladder );
     		rankupMaxNoPermissionMsg( sender, "ranks.rankupmax." + ladder );
     	}
     }
@@ -86,6 +95,9 @@ public class RankUpCommand
         	Output.get().logInfo( rankupCannotRunFromConsoleMsg() );
         	return;
         }
+		Output.get().logDebug( DebugTarget.rankup, 
+				"Rankup: cmd '/rankup %s'  Processing ranks.rankup.%s", 
+				ladder, ladder );
         
     	rankUpPrivate(sender, ladder, RankupModes.ONE_RANK, "ranks.rankup." );
     }
@@ -100,6 +112,9 @@ public class RankUpCommand
         				Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ))) && 
 		        	!ladder.equalsIgnoreCase("default") && 
 		        	!sender.hasPermission(permission + ladder.toLowerCase())) {
+
+        	Output.get().logDebug( DebugTarget.rankup, 
+        			"Rankup: rankUpPrivate: failed rankup perm check");
         	
         	rankupMaxNoPermissionMsg( sender, permission + ladder );
             return;
@@ -131,6 +146,11 @@ public class RankUpCommand
 
         RankPlayer rankPlayer = getRankPlayer( sender, player.getUUID(), player.getName() );
         PlayerRank playerRank = rankPlayer.getRank( ladder );
+        
+        Output.get().logDebug( DebugTarget.rankup, 
+    			"Rankup: rankUpPrivate: RankPlayer %s  PlayerRank %s", 
+    					(rankPlayer == null ? "null" : "true"), 
+    					(playerRank == null ? "null" : "true") );
         
         // If a player has a rank on the ladder:
         if ( playerRank != null ) {
@@ -241,6 +261,8 @@ public class RankUpCommand
 	private void prestigePlayer(CommandSender sender, Player player, RankPlayer rankPlayer, 
 						Rank pRankAfter, LadderManager lm ) {
 		
+       	Output.get().logDebug( DebugTarget.rankup, "Rankup: prestigePlayer: ");
+
 		Platform platform = Prison.get().getPlatform();
 		boolean resetBalance = platform.getConfigBooleanTrue( "prestige.resetMoney" );
 		boolean resetDefaultLadder = platform.getConfigBooleanTrue( "prestige.resetDefaultLadder" );
@@ -483,6 +505,8 @@ public class RankUpCommand
 	private void setPlayerRank( Player player, String rank, String ladderName, CommandSender sender ) {
 		UUID playerUuid = player.getUUID();
         
+       	Output.get().logDebug( DebugTarget.rankup, "Rankup: setPlayerRank: ");
+	
 		ladderName = confirmLadder( sender, ladderName );
 
         RankPlayer rankPlayer = getRankPlayer( sender, playerUuid, player.getName() );

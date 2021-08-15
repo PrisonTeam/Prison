@@ -27,6 +27,7 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
@@ -323,7 +324,8 @@ public class RankUtil
     		String rankName, 
     		PromoteForceCharge pForceCharge) {
 
-        
+    	Output.get().logDebug( DebugTarget.rankup, "Rankup: rankupPlayerInternal: ");
+    	
         RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
         if( ladder == null ) {
         	results.addTransaction( RankupStatus.RANKUP_FAILURE_COULD_NOT_LOAD_LADDER, RankupTransactions.failed_ladder );

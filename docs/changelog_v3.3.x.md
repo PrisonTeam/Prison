@@ -25,6 +25,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.11 2021-08-15
 
 
+* **Added some rankup debug logging details.**
+Enable with `/prison debug rankup`.
+
+
 * **v3.2.10-alpha.11 2021-08-15**
 Bump the version
 

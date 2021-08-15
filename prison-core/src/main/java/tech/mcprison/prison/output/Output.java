@@ -65,6 +65,8 @@ public class Output
     	blockBreakDurability, 
     	blockBreakFortune,
     	blockBreakXpCalcs,
+    	
+    	rankup,
     	support
     	;
     	
