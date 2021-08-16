@@ -281,7 +281,8 @@ public class Output
     	
     	if ( isDebug( debugTarget ) ) {
     		
-    		logDebug(message, args );
+    		log(message, LogLevel.DEBUG, args);
+//    		logDebug(message, args );
     	}
     	
 //    	// The following is not yet enabled since the user interfaces are not in place to manage the set:
