@@ -3,13 +3,33 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
+
+1. Final testing of ladder rank multipliers
+2. Fix next rank value with PlayerRanks
+3. /ranks ladder moveRank not working
+4. Add 
+
+
+* Start on mine bombs
+ 1. Select size of bomb - 
+ 2. Select list of blocks
+ 3. Identify items to use as bombs
+ 4. Throw bomb
+ 5. fire event
+
+
+* placeholder for total block counts and other playercache stats
+
+
+
 * Fix the "next rank" value with PlayerRanks.... it's wrong... needs to recalc with the new rank.
+* Need to be more dynamic when a ladder's rank cost multiplier is set, the player's multiplier needs to be recalculated.
 
 
 * /ranks ladder moveRank did not work to move from one ladder to another
 
 
-* Add a rank cost multiplier to either ladders or ranks, or both.  Sum all active ranks a player has to get the total multiplier to use for rank costs.
+* Add a rank cost multiplier to ladders.  Sum all active ranks a player has to get the total multiplier to use for rank costs.
 
 
 * Add a `*all*` for mine name on remove mines blockEvents.
@@ -21,23 +41,7 @@
   - For wider bars, the title could be left justified, and the percentage right justified
   
 
-DONE: - Block constraint error when there are no blocks spawned when applying min to add more...
-  - if rangeHigh and rangeLow are zero, or the same, then need to set the high and low values.
-  - May need to even set them when there are only a few?
-  - maybe rangeHigh and rangeLow should be the actual limits, and not the high and low range of where those blocks actually spawned?  Right now it's actual spawned blocks, but if either, or both are 5000 blocks from the true limit, then the range of actual adjustments is artificially limited and narrowed.
-  - Maybe add 2 new fields: rangeHighLimit and rangeLowLimit that is the actual boundaries? These could be used to help normal spawning? 
-
-
-
-* DONE: On prison support submit mines, include /mines info a all?
-
-
-* The command /mines delete does not appear to be working
- - Cannot reproduce
  
-
-* DONE: To all headers that are displayed in prison commands, show the prison's version to the far right.
-
 
 * Eliminate the following message from logging an error, but just keep a note in the code:
  - Cannot initialize NMS components - ClassNotFoundException - NMS is not functional - net.minecraft.server.v1_17_R1.EntityPlayer
@@ -134,10 +138,6 @@ If only one, then only one of those would be used.
 * Add support for mineTinker
 https://www.spigotmc.org/resources/minetinker-50-modifiers-tools-and-armor.58940/
 
-
-
-* If automanager is turned off, and /prison reload automanager is ran, it will reload the settings, but the event listeners are only registered upon server startup.  So if that condition happens... should display a warning indicating the server must be restarted.
-- Add a warning about event priority changes needing a server restart:
 
 
 
@@ -276,7 +276,7 @@ Auto features not working outside of the mines.
 
 
 
-- Add blocks mined for players
+- DONE: Add blocks mined for players
 
 
 
@@ -350,16 +350,6 @@ Maybe: Have an alt block list for mines were blocks that are not actually
  
 
 
-* DONE **Get new block model working**
-  *  Start to enable and test various functions
-  *  Add in Custom Items Integration
-     *  Code Integration for CI - Key to specific version due to api changes
-     *  Pull in custom blocks from CI API
-     *  Place blocks with CI api
-     *  Not sure how block break would work with CI api?
-     *  Setup sellall to work with CI api
-     
-
 
 * **Combine a few commands & Other short Notes:**
  - DONE: Combine `/mines set rank` and `/mines set norank`
@@ -432,6 +422,39 @@ Offers for translation:
 
 
 # Features recently added since v3.2.9
+
+
+
+* NOT-AN-ISSUE: If automanager is turned off, and /prison reload automanager is ran, it will reload the settings, but the event listeners are only registered upon server startup.  So if that condition happens... should display a warning indicating the server must be restarted.
+- NOT-AN-ISSUE: Add a warning about event priority changes needing a server restart:
+-- NOTE: these are no longer an issue since event listeners are reloaded when the auto features are reloaded.
+
+
+
+* DONE **Get new block model working**
+  *  Start to enable and test various functions
+  *  Add in Custom Items Integration
+     *  Code Integration for CI - Key to specific version due to api changes
+     *  Pull in custom blocks from CI API
+     *  Place blocks with CI api
+     *  Not sure how block break would work with CI api?
+     *  Setup sellall to work with CI api
+     
+
+
+DONE: - Block constraint error when there are no blocks spawned when applying min to add more...
+  - if rangeHigh and rangeLow are zero, or the same, then need to set the high and low values.
+  - May need to even set them when there are only a few?
+  - maybe rangeHigh and rangeLow should be the actual limits, and not the high and low range of where those blocks actually spawned?  Right now it's actual spawned blocks, but if either, or both are 5000 blocks from the true limit, then the range of actual adjustments is artificially limited and narrowed.
+  - Maybe add 2 new fields: rangeHighLimit and rangeLowLimit that is the actual boundaries? These could be used to help normal spawning? 
+
+
+* DONE: On prison support submit mines, include /mines info a all?
+
+* DONE: To all headers that are displayed in prison commands, show the prison's version to the far right.
+
+
+* CANNOT REPRODUCDE: The command /mines delete does not appear to be working - User error?
 
 
 * DONE: Add an *all* for mine names under blockEvent add:
