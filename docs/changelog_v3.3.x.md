@@ -22,7 +22,12 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.10-alpha.11 2021-08-15
+# v3.2.10-alpha.12 2021-08-16
+
+
+
+* **v3.2.10-alpha.12 2021-08-16**
+Released alpha.12
 
 
 * **Updates to fix the prestige issues.**
