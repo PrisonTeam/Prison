@@ -144,95 +144,115 @@ public class RankUpCommand
 			return;
 		}
 
+		LadderManager lm = PrisonRanks.getInstance().getLadderManager();
+		RankLadder targetLadder = lm.getLadder( ladder );
+		
+       	if ( targetLadder == null ){
+    		rankupErrorNoLadderMsg( sender, ladder );
+    		return;
+    	}
+    	
+    	if (!targetLadder.getLowestRank().isPresent()){
+    		rankupErrorNoRankOnLadderMsg( sender, ladder );
+    		return;
+    	}
+		
+
         RankPlayer rankPlayer = getRankPlayer( sender, player.getUUID(), player.getName() );
-        PlayerRank playerRank = rankPlayer.getRank( ladder );
+        PlayerRank playerRankCurrent = rankPlayer.getRank( ladder );
+        PlayerRank playerRankTarget = 
+        		PlayerRank.getTargetPlayerRankForPlayer( rankPlayer,
+        				playerRankCurrent == null ? targetLadder.getLowestRank().get() :
+        					playerRankCurrent.getRank()
+        				);
+        		
         
         Output.get().logDebug( DebugTarget.rankup, 
-    			"Rankup: rankUpPrivate: RankPlayer %s  PlayerRank %s", 
+    			"Rankup: rankUpPrivate: RankPlayer %s  playerRankTarget %s", 
     					(rankPlayer == null ? "null" : "true"), 
-    					(playerRank == null ? "null" : "true") );
+    					(playerRankTarget == null ? "null" : "true") );
         
-        // If a player has a rank on the ladder:
-        if ( playerRank != null ) {
+        // If a player has a rank on the ladder get their rank, otherwise null:
+        Rank pRankTarget = playerRankTarget.getRank();
+        
+        Rank pRankAfter = null;
+        boolean canPrestige = false;
+        
+        // If the player is trying to prestige, then the following must be ran to setup the prestige checks:
+        if (ladder.equalsIgnoreCase("prestiges")) {
+
+        	RankLadder rankLadder = lm.getLadder("default");
         	
-        	Rank pRank = playerRank.getRank();
+        	if ( rankLadder == null ){
+        		rankupErrorNoDefaultLadderMsg( sender );
+        		return;
+        	}
+        	
+        	if (!rankLadder.getLowestRank().isPresent()){
+        		rankupErrorNoLowerRankMsg( sender );
+        		return;
+        	}
+        	
         	// gets the rank on the default ladder. Used if ladder is not default.
-        	Rank pRankSecond = rankPlayer.getRank("default").getRank(); 
-        	Rank pRankAfter = null;
-        	LadderManager lm = PrisonRanks.getInstance().getLadderManager();
-        	boolean canPrestige = false;
+        	PlayerRank pRankDefaultLadder = rankPlayer.getRank("default");
+        	if ( pRankDefaultLadder == null ) {
+        		rankupErrorPlayerNotOnDefaultLadder( sender, rankPlayer );
+        	}
         	
-        	// If the player is trying to prestige, then the following must be ran to setup the prestige checks:
-        	if (ladder.equalsIgnoreCase("prestiges")) {
-        		
-        		RankLadder rankLadder = lm.getLadder("default");
-        		
-        		if ( rankLadder == null ){
-        			
-        			rankupErrorNoDefaultLadderMsg( sender );
-        			return;
-        		}
-        		if (!rankLadder.getLowestRank().isPresent()){
-        			rankupErrorNoLowerRankMsg( sender );
-        			return;
-        		}
-        		
-        		Rank rank = rankLadder.getLowestRank().get();
-        		
-        		while (rank.getRankNext() != null) {
-        			rank = rank.getRankNext();
-        		}
-        		
-        		if (!(rank == pRankSecond)) {
-        			rankupNotAtLastRankMsg( sender );
-        			return;
-        		}
-        		
-        		// IF everything's ready, this will be true if and only if pRank is not null,
-        		// and the prestige method will start
-        		canPrestige = true;
+        	Rank playersRankOnDefaultLadder = pRankDefaultLadder.getRank();
+        	// On the default ladder, the player must be at the last rank:
+        	// The last rank will never have a rankNext (it will be null):
+        	if ( playersRankOnDefaultLadder.getRankNext() != null ) {
+        		rankupNotAtLastRankMsg( sender );
+        		return;
+        	}
+        	
+        	// IF everything's ready, this will be true if and only if pRank is not null,
+        	// and the prestige method will start
+        	canPrestige = true;
+        }
+        
+        
+        // Get currency if it exists, otherwise it will be null if the Rank has no currency:
+        String currency = rankPlayer == null || pRankTarget == null ? null : pRankTarget.getCurrency();
+        
+        boolean rankupWithSuccess = false;
+        
+        if (rankPlayer != null ) {
+        	
+        	// Performs the actual rankup here:
+        	RankupResults results = new RankUtil().rankupPlayer(player, rankPlayer, ladder, sender.getName());
+        	
+        	processResults( sender, player.getName(), results, null, ladder, currency );
+        	
+        	// If the last rankup attempt was successful and they are trying to rankup as many times as possible: 
+        	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS && 
+        			!ladder.equals("prestiges")) {
+        		rankUpPrivate( sender, ladder, mode, permission );
+        	}
+        	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS){
+        		rankupWithSuccess = true;
         	}
         	
         	
-        	// Get currency if it exists, otherwise it will be null if the Rank has no currency:
-        	String currency = rankPlayer == null || pRank == null ? null : pRank.getCurrency();
+        	// Get the player rank after
+        	PlayerRank playerRankAfter = rankPlayer.getRank( ladder );
         	
-        	boolean rankupWithSuccess = false;
-        	
-        	if (rankPlayer != null ) {
+        	if ( playerRankAfter != null ) {
         		
-        		// Performs the actual rankup here:
-        		RankupResults results = new RankUtil().rankupPlayer(player, rankPlayer, ladder, sender.getName());
-        		
-        		processResults( sender, player.getName(), results, null, ladder, currency );
-        		
-        		// If the last rankup attempt was successful and they are trying to rankup as many times as possible: 
-        		if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS && 
-        				!ladder.equals("prestiges")) {
-        			rankUpPrivate( sender, ladder, mode, permission );
-        		}
-        		if (results.getStatus() == RankupStatus.RANKUP_SUCCESS){
-        			rankupWithSuccess = true;
-        		}
-        		
-        		
-        		// Get the player rank after
-        		PlayerRank playerRankAfter = rankPlayer.getRank( ladder );
-                
-                if ( playerRankAfter != null ) {
-                	
-                	pRankAfter = playerRankAfter.getRank();
-                }
-        		
-        		// Prestige method if canPrestige and a successful rankup. pRank cannot be the same as pRankAfter:
-        		if ( canPrestige && rankupWithSuccess && pRankAfter != null && pRank != pRankAfter ) {
-        			prestigePlayer( sender, player, rankPlayer, pRankAfter, lm );
-        		}
-        		else if ( canPrestige ) {
-        			rankupNotAbleToPrestigeMsg( sender );
-        		}
-        		
+        		pRankAfter = playerRankAfter.getRank();
         	}
+        	
+        	// Prestige method if canPrestige and a successful rankup. 
+        	// pRankTarget now contains the target rank prior to processing the rankup.  SO it should be
+        	// the same as pRankAfter, but if it is wrong, then rankupWithSuccess will not be true.  So ignore...
+        	if ( canPrestige && rankupWithSuccess && pRankAfter != null ) {
+        		prestigePlayer( sender, player, rankPlayer, pRankAfter, lm );
+        	}
+        	else if ( canPrestige ) {
+        		rankupNotAbleToPrestigeMsg( sender );
+        	}
+        	
         }
 	}
 

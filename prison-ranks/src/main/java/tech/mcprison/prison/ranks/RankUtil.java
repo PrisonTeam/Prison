@@ -332,13 +332,17 @@ public class RankUtil
         	return;
         }
         
+        results.setLadder( ladder );
 
         // This should never be null, since if a player is not on this ladder, then they 
         // should never make it this far in to this code:
+        // Um... not true when performing a prestige for the first time.... lol
+        
         PlayerRank originalRank = rankPlayer.getRank(ladder);
         
-        if ( originalRank == null ) {
+        if ( originalRank == null && ladder.getName().equals( "default" ) ) {
         	
+        	// Only default ladder should be logged as an error if there is no rank:
         	results.addTransaction( RankupStatus.RANKUP_FAILURE_NO_PLAYERRANK, 
         					RankupTransactions.failure_orginal_playerRank_does_not_exist );
         	return;
@@ -349,13 +353,13 @@ public class RankUtil
         
         results.addTransaction( RankupTransactions.orginal_rank );
         results.setPlayerRankOriginal( originalRank );
-        results.setOriginalRank( originalRank.getRank() );
+        results.setOriginalRank( originalRank == null ? null : originalRank.getRank() );
         
         /**
-         * calculate the target rank:
+         * calculate the target rank.  In this function the original rank is updated within the
+         * results object, so from here on out, use the results object for original rank.
          */
-        Rank targetRank = calculateTargetRank( command, results, originalRank.getRank(), ladder, 
-        				ladderName, rankName );
+        Rank targetRank = calculateTargetRank( command, results, rankName );
         
        
         if ( results.getStatus() != RankupStatus.IN_PROGRESS ) {
@@ -401,22 +405,31 @@ public class RankUtil
         }
         
 
-        PlayerRank pRankNext = new PlayerRank( targetRank, originalRank.getRankMultiplier() );
+        // This calculates the target rank, and takes in to consideration the player's existing rank:
+        PlayerRank pRankNext = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
+//        		new PlayerRank( targetRank, originalRank.getRankMultiplier() );
 		
+        // If player does not have a rank on this ladder, then grab the first rank on the ladder since they need
+        // to be added to the ladder.
+        if ( pRankNext == null ) {
+        	pRankNext = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, ladder.getLowestRank().get() );
+        }
+        
+        	
 		results.setPlayerRankTarget( pRankNext );
         results.setTargetRank( targetRank );
-
         
         
 //        String currency = "";
         double nextRankCost = pRankNext.getRankCost();
-        double currentRankCost = (originalRank == null ? 0 : originalRank.getRankCost() );
+        double currentRankCost = ( results.getPlayerRankOriginal() == null ? 0 : 
+        				results.getPlayerRankOriginal().getRankCost() );
         
         
         results.addTransaction( RankupTransactions.fireRankupEvent );
         
         // Fire the rankup event to see if it should be canceled.
-        RankUpEvent rankupEvent = new RankUpEvent(rankPlayer, originalRank.getRank(), targetRank, nextRankCost, 
+        RankUpEvent rankupEvent = new RankUpEvent(rankPlayer, results.getOriginalRank(), targetRank, nextRankCost, 
         								command, pForceCharge );
         Prison.get().getEventBus().post(rankupEvent);
 
@@ -465,8 +478,8 @@ public class RankUtil
         		if ( pForceCharge == PromoteForceCharge.refund_player) {
         			
     			results.addTransaction( RankupTransactions.player_balance_increased);
-    			if ( originalRank != null ) {
-    				rankPlayer.addBalance( originalRank.getRank().getCurrency(), currentRankCost );
+    			if ( results.getOriginalRank() != null ) {
+    				rankPlayer.addBalance( results.getOriginalRank().getCurrency(), currentRankCost );
     			}
     		} else {
     			// Should never hit this code!!
@@ -598,19 +611,23 @@ public class RankUtil
 
     
     private Rank calculateTargetRank(RankupCommands command, RankupResults results, 
-    		Rank originalRank, RankLadder ladder, String ladderName, String rankName ) {
+    		// Rank originalRank, // RankLadder ladder, String ladderName, 
+    		String rankName ) {
     	Rank targetRank = null;
     	
     	
         // For all commands except for setrank, if the player does not have a current rank, then
         // set it to the default and skip all other rank processing:
+    	
+    	// NOTE: With new processing using PlayerRank, not sure if the default rank should be set to anything... 
+    	//       I'm thinking no...
         
-        if ( originalRank == null && 
+        if ( results.getOriginalRank() == null && 
         		( command == RankupCommands.rankup || 
         		  command == RankupCommands.promote ||
         		  command == RankupCommands.demote )) {
         	// Set the default rank:
-            Optional<Rank> lowestRank = ladder.getLowestRank();
+            Optional<Rank> lowestRank = results.getLadder().getLowestRank();
 //            Optional<Rank> lowestRank = ladder.getByPosition(0);
             if (!lowestRank.isPresent()) {
             	results.addTransaction( RankupStatus.RANKUP_NO_RANKS, 
@@ -621,10 +638,10 @@ public class RankUtil
             targetRank = lowestRank.get();
             
             // need to set this to a valid value:
-            originalRank = lowestRank.get();
+            results.setOriginalRank( lowestRank.get() );
         }
         
-        if ( originalRank == null ) {
+        if ( results.getOriginalRank() == null ) {
         	results.addTransaction( RankupTransactions.original_rank_is_null );
         	
         }
@@ -640,8 +657,8 @@ public class RankUtil
         		return targetRank;
         	}
         	 
-        	else if ("default".equalsIgnoreCase( ladderName ) && rankName == null ) {
-	        	Optional<Rank> lowestRank = ladder.getLowestRank();
+        	else if ("default".equalsIgnoreCase( results.getLadder().getName() ) && rankName == null ) {
+	        	Optional<Rank> lowestRank = results.getLadder().getLowestRank();
 	        	if ( lowestRank.isPresent() ) {
 	        		targetRank = lowestRank.get();
 	        		rankName = targetRank.getName();
@@ -657,7 +674,7 @@ public class RankUtil
         		
         		if ( targetRank != null ) {
         			
-        			if ( !ladder.containsRank( targetRank )) {
+        			if ( !results.getLadder().containsRank( targetRank )) {
         				results.addTransaction( RankupStatus.RANKUP_FAILURE_RANK_IS_NOT_IN_LADDER, 
         						RankupTransactions.failed_rank_not_in_ladder );
         				return targetRank;
@@ -683,26 +700,26 @@ public class RankUtil
         		// Trying to promote: 
 //        		nextRankOptional = ladder.getNext(ladder.getPositionOfRank(currentRankOptional.get()));
         		
-        		if ( originalRank.getRankNext() == null ) {
+        		if ( results.getOriginalRank().getRankNext() == null ) {
         			// We're already at the highest rank.
         			results.addTransaction( RankupStatus.RANKUP_HIGHEST, 
         								RankupTransactions.no_higher_rank_found );
         			return targetRank;
         		}
-        		targetRank = originalRank.getRankNext();
+        		targetRank = results.getOriginalRank().getRankNext();
         		results.addTransaction( RankupTransactions.set_to_next_higher_rank );
 
         	} else if ( command == RankupCommands.demote ) {
         		// Trying to demote:
 //        		nextRankOptional = ladder.getPrevious(ladder.getPositionOfRank(currentRankOptional.get()));
         		
-        		if ( originalRank.getRankPrior() == null ) {
+        		if ( results.getOriginalRank().getRankPrior() == null ) {
         			// We're already at the lowest rank.
         			results.addTransaction( RankupStatus.RANKUP_LOWEST, 
         								RankupTransactions.no_lower_rank_found );
         			return targetRank;
         		}
-        		targetRank = originalRank.getRankPrior();
+        		targetRank = results.getOriginalRank().getRankPrior();
         		results.addTransaction( RankupTransactions.set_to_prior_lower_rank );
         	}
         }

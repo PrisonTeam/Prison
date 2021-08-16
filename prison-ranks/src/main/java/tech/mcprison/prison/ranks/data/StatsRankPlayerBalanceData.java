@@ -35,7 +35,11 @@ public class StatsRankPlayerBalanceData
 		double cost = pRank.getRankCost();  // This is the fallback value if nextRank doesn't exist.
 
 		if ( rank.getRankNext() != null ) {
-			PlayerRank pRankNext = new PlayerRank( rank.getRankNext(), pRank.getRankMultiplier() );
+			
+	        // This calculates the target rank, and takes in to consideration the player's existing rank:
+	        PlayerRank pRankNext = PlayerRank.getTargetPlayerRankForPlayer( player, rank.getRankNext() );
+			
+			//PlayerRank pRankNext = new PlayerRank( rank.getRankNext(), pRank.getRankMultiplier() );
 			cost = pRankNext.getRankCost();
 		}
 //		double cost = rank.getRankNext() == null ? rank.getCost() : rank.getRankNext().getCost();

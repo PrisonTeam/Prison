@@ -161,8 +161,11 @@ public class RankPlayerSortableLadderRankBalance
 			
 			PlayerRank pRank = rp1.getRank( rank.getLadder() );
 			
-			PlayerRank pRankNext =  nextRank == null ? null : 
-								new PlayerRank( nextRank, pRank.getRankMultiplier() );
+	        // This calculates the target rank, and takes in to consideration the player's existing rank:
+	        PlayerRank pRankNext = PlayerRank.getTargetPlayerRankForPlayer( rp1, nextRank );
+
+//			PlayerRank pRankNext =  nextRank == null ? null : 
+//								new PlayerRank( nextRank, pRank.getRankMultiplier() );
 			
 			double nextRankCost = nextRank == null ? pRank.getRankCost() : pRankNext.getRankCost();
 			

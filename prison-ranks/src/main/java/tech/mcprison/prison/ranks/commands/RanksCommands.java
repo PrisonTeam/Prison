@@ -1239,8 +1239,11 @@ public class RanksCommands
 				Rank rank = pRank.getRank();
 				Rank nextRank = rank.getRankNext();
 				
-				PlayerRank nextPRank = nextRank == null ? null :
-									new PlayerRank( nextRank, pRank.getRankMultiplier() );
+		        // This calculates the target rank, and takes in to consideration the player's existing rank:
+		        PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+
+//				PlayerRank nextPRank = nextRank == null ? null :
+//									new PlayerRank( nextRank, pRank.getRankMultiplier() );
 				
 				String messageRank = ranksPlayerLadderInfoMsg( 
 						player.getDisplayName(), 

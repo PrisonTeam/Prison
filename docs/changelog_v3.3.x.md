@@ -25,6 +25,11 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.11 2021-08-15
 
 
+* **Updates to fix the prestige issues.**
+Moved more of the processing in to the PlayerRank object to reduce issues. Shutdown one of the constructors since it could lead to the wrong amounts.
+Prestige was fixed by rewriting the way the rankup handled the ranks and playerRanks.
+
+
 * **Fixed an issue with logging when using a debug target mode.**
 It was not logging when the global debug was off.
 

@@ -154,8 +154,12 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         int amount = 1;
         while ( rank != null ) {
 
-        	PlayerRank pRank = getRankPlayer().getRank( rank.getLadder() );
-            ButtonLore ranksLore = new ButtonLore(loreInfo, lorePrice3 + pRank.getRankCost());
+        	// Need to create a new PlayerRank specifically for the player which takes in to consideration 
+        	// all of their multipliers.
+        	PlayerRank targetPlayerRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, rank );
+        	double cost = targetPlayerRank == null ? -1 : targetPlayerRank.getRankCost(); 
+        	
+            ButtonLore ranksLore = new ButtonLore(loreInfo, lorePrice3 + cost );
 
             if (placeholderAPINotNull) {
                 if (hackyCounterEnchant == 1) {

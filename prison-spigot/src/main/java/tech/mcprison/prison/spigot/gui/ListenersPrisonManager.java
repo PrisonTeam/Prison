@@ -34,6 +34,7 @@ import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
@@ -67,7 +68,14 @@ import tech.mcprison.prison.spigot.gui.rank.SpigotRankManagerGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankPriceGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankUPCommandsGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
-import tech.mcprison.prison.spigot.gui.sellall.*;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminAutoSellGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminBlocksGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllDelayGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllPrestigesMultiplierGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllPrestigesSetMultiplierGUI;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllPriceGUI;
 
 /**
  * @author GABRYCA
@@ -1761,12 +1769,18 @@ public class ListenersPrisonManager implements Listener {
 
         // Check the button name and do the actions.
         if (buttonNameMain.equalsIgnoreCase("Confirm: Prestige")){
-            // Execute the command.
-            Bukkit.dispatchCommand(p, "rankup prestiges");
+        	Output.get().logDebug( DebugTarget.rankup, "rankup: GUI: 'Confirm: Prestige'   calling: '/rankup prestiges'" );
+        	
+        	// Execute the command.
+        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "rankup" );
+
+            Bukkit.dispatchCommand(p, registeredCmd + " prestiges");
             // Close the inventory.
             p.closeInventory();
         } else if (buttonNameMain.equalsIgnoreCase("Cancel: Don't Prestige")){
-            // Send a message to the player.
+        	Output.get().logDebug( DebugTarget.rankup, "rankup: GUI/: 'Cancel: Don't Prestige'   sendInfo: 'cancelled'" );
+
+        	// Send a message to the player.
             Output.get().sendInfo(new SpigotPlayer(p), "&cCancelled");
             // Close the inventory.
             p.closeInventory();

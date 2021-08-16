@@ -13,6 +13,7 @@ import tech.mcprison.prison.ranks.RankUtil.RankupStatus;
 import tech.mcprison.prison.ranks.RankupResults;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 
 public class RankUpCommandMessages 
 		extends BaseCommands {
@@ -52,6 +53,28 @@ public class RankUpCommandMessages
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__error_no_lower_rank" )
 				.sendTo( sender );
+	}
+	
+	protected void rankupErrorNoLadderMsg( CommandSender sender, String ladderName ) {
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_rankup__error_no_ladder" )
+		.withReplacements( ladderName )
+		.sendTo( sender );
+	}
+	
+	protected void rankupErrorNoRankOnLadderMsg( CommandSender sender, String ladderName ) {
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_rankup__error_no_lower_rank_on_ladder" )
+		.withReplacements( ladderName )
+		.sendTo( sender );
+	}
+	
+	protected void rankupErrorPlayerNotOnDefaultLadder( CommandSender sender, 
+							RankPlayer rankPlayer ) {
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_rankup__error_player_not_on_default_ladder" )
+		.withReplacements( rankPlayer.getName() )
+		.sendTo( sender );
 	}
 	
 	protected void rankupNotAtLastRankMsg( CommandSender sender ) {

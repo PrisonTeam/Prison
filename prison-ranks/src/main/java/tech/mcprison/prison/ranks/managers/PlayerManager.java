@@ -508,7 +508,11 @@ public class PlayerManager
     				PlayerRank pRank = rankPlayer.getRank( ladder );
     				if ( pRank != null && pRank.getRank().getRankNext() != null ) {
     					Rank nextRank = pRank.getRank().getRankNext();
-    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
+    					
+    			        // This calculates the target rank, and takes in to consideration the player's existing rank:
+    			        PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+
+    					//PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
     					if ( sb.length() > 0 ) {
     						sb.append(", ");
@@ -564,7 +568,11 @@ public class PlayerManager
     				PlayerRank pRank = rankPlayer.getRank( ladder );
     				if ( pRank != null && pRank.getRank().getRankNext() != null ) {
     					Rank nextRank = pRank.getRank().getRankNext();
-    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
+    					
+    			        // This calculates the target rank, and takes in to consideration the player's existing rank:
+    			        PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+
+//    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
     					if ( sb.length() > 0 ) {
     						sb.append(",  ");
@@ -620,7 +628,11 @@ public class PlayerManager
     				Rank rank = pRank.getRank();
     				if ( rank != null && rank.getRankNext() != null ) {
     					Rank nextRank = rank.getRankNext();
-    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
+    					
+    			        // This calculates the target rank, and takes in to consideration the player's existing rank:
+    			        PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+
+//    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
     					if ( sb.length() > 0 ) {
     						sb.append(",  ");
@@ -685,7 +697,11 @@ public class PlayerManager
     				Rank rank = pRank.getRank();
     				if ( rank != null && rank.getRankNext() != null ) {
     					Rank nextRank = rank.getRankNext();
-    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
+    					
+    			        // This calculates the target rank, and takes in to consideration the player's existing rank:
+    			        PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+
+//    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
     					if ( sb.length() > 0 ) {
     						sb.append(",  ");
@@ -755,7 +771,11 @@ public class PlayerManager
 				Rank rank = pRank.getRank();
 				if ( rank != null && rank.getRankNext() != null ) {
 					Rank nextRank = rank.getRankNext();
-					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
+					
+			        // This calculates the target rank, and takes in to consideration the player's existing rank:
+			        PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+
+//					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
 					
 					if ( sb.length() > 0 ) {
 						sb.append(",  ");
@@ -816,8 +836,13 @@ public class PlayerManager
 				  PlayerRank pRank = rankPlayer.getRank( ladder );
 				  Rank rank = pRank.getRank();
 				  if ( rank != null && rank.getRankNext() != null ) {
+
 					  Rank nextRank = rank.getRankNext();
-					  PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
+					  
+  			          // This calculates the target rank, and takes in to consideration the player's existing rank:
+  			          PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+
+//					  PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
 					  
 					  if ( sb.length() > 0 ) {
 						  sb.append(",  ");
