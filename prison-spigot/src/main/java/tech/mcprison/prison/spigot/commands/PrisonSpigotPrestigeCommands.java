@@ -52,7 +52,7 @@ public class PrisonSpigotPrestigeCommands
   		  aliases = {"prisonmanager prestige"} )
     public void prisonManagerPrestige(CommandSender sender ) {
 
-        if ( isPrisonConfig("prestiges") || isPrisonConfig( "prestige.enabled" ) ) {
+        if ( isPrisonConfig( "prestige.enabled" ) ) {
 
             if ( PrisonRanks.getInstance().getLadderManager().getLadder("prestiges") == null ) {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ranks ladder create prestiges");
@@ -89,7 +89,7 @@ public class PrisonSpigotPrestigeCommands
             	}
 
 
-            	if ( isPrisonConfig( "prestige-confirm-gui") ) {
+            	if ( isPrisonConfig( "prestige.confirmation-enabled") && isPrisonConfig( "prestige.prestige-confirm-gui") ) {
             		try {
 
             			Player player = getSpigotPlayer( sender );
@@ -100,10 +100,17 @@ public class PrisonSpigotPrestigeCommands
             			prestigeByChat( sender );
             		}
             	}
-            	else {
+            	else if ( isPrisonConfig( "prestige.confirmation-enabled") ) {
             		prestigeByChat( sender );
             	}
+            	else {
+            		// Bypassing prestige confirmations:
+            		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rankup prestiges");
+            	}
             }
+        }
+        else {
+        	sender.sendMessage( "Prestiges are disabled. Refresh and then reconfigure config.yml and try again." );
         }
     }
 
@@ -112,12 +119,12 @@ public class PrisonSpigotPrestigeCommands
 		ListenersPrisonManager listenersPrisonManager = ListenersPrisonManager.get();
 		listenersPrisonManager.chatEventActivator();
 
-        Output.get().sendInfo(sender, SpigotPrison.format(getPrisonConfig("Lore.PrestigeWarning") +
+        sender.sendMessage( SpigotPrison.format(getPrisonConfig("Lore.PrestigeWarning") +
         		getPrisonConfig("Lore.PrestigeWarning2") +
         		getPrisonConfig("Lore.PrestigeWarning3")));
         
-        Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.ConfirmPrestige")));
-        Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.CancelPrestige")));
+        sender.sendMessage( SpigotPrison.format(messages.getString("Message.ConfirmPrestige")));
+        sender.sendMessage( SpigotPrison.format(messages.getString("Message.CancelPrestige")));
 
         final Player player = getSpigotPlayer( sender );
 

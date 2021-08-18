@@ -34,15 +34,21 @@ send-metrics: true
 # If an alert is being shown, it can be disabled online by acknowledging it.
 show-alerts: true
 
-# NEW: Prison now has prestiges! 
-# https://github.com/PrisonTeam/Prison/blob/bleeding/docs/prison_docs_107_setting_up_prestiges.md
-# Note: "prestiges: true" is deprecated and will be removed in the future. 
-prestiges: true
 
+# # Prestige related configuration settings:
+#
+# Options to reset the money, and/or reset the default ladder.
+# Confirmation requires action from the player. If GUI is disabled, then it will use 
+# the command based confiration.  If confirm-enabled is false, then no confirmation
+# will be used.
 prestige:
   enabled: true
   resetMoney: true
   resetDefaultLadder: true
+  confirmation-enabled: true
+  prestige-confirm-gui: true
+
+
 
 # NEW: This enables new physics to be applied when jumpping on slime blocks.
 # When holding different items, like some block types or picks, the player can
@@ -53,10 +59,6 @@ slime-fun: false
 # please check the GuiConfig.yml. 
 # Access with /gui
 prison-gui-enabled: true
-
-# NEW: /prestige will open a confirmation GUI if this's on true, if on false 
-# will use a chat confirmation instead.
-prestige-confirm-gui: true
 
 # There're more options for the GUIs, please edit the GuiConfig.yml
 

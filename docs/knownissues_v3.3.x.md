@@ -5,7 +5,7 @@
 
 TODOs for v3.2.10 release:
 1. Final testing of ladder rank multipliers
-2. /ranks ladder moveRank not working
+2. DONE: /ranks ladder moveRank not working
 3. Forced global refresh of rank multipliers when a ladder multiplier is changed.
   - Should be simple
   - Run as async task
@@ -28,9 +28,9 @@ TODOs for v3.2.10 release:
 
 
 
-* Enable and disable confirmations for prestiges
- - Put in config.yml under the existing: prestiges. settings.
- - Move the GUI confirm to the same group of prestiges. settings.
+* DONE: Enable and disable confirmations for prestiges
+ - DONE: Put in config.yml under the existing: prestiges. settings.
+ - DONE: Move the GUI confirm to the same group of prestiges. settings.
 
 
 
