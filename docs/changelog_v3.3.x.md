@@ -25,6 +25,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.12 2021-08-18
 
 
+* **Fixed bug with `/ranks ladder moveRank`.**
+It was not removing the rank from the source ladder, but was also adding it to the destination ladder.  This was fixed and is now working correctly.
+
+
 * **Removed the remainder of the ladder/rank permissions that were never used.**
 
 

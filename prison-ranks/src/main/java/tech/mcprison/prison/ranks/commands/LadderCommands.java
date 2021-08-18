@@ -166,7 +166,7 @@ public class LadderCommands
     	
     	ladderMoveRankNoticeMsg( sender );
     	
-    	ladderRemoveRank( sender, ladderName, rankName );
+    	ladderRemoveRank( sender, rankName );
     	ladderAddRank(sender, ladderName, rankName, position );
     }
 
@@ -217,14 +217,17 @@ public class LadderCommands
 
 //    @Command(identifier = "ranks ladder delrank", description = "Removes a rank from a ladder.", 
 //    											onlyPlayers = false, permissions = "ranks.ladder")
-    public void ladderRemoveRank(CommandSender sender, @Arg(name = "ladderName") String ladderName,
-        @Arg(name = "rankName") String rankName) {
-        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+    public void ladderRemoveRank(CommandSender sender, 
+//    	@Arg(name = "ladderName", description = "Then intended ladder to remove the rank from. " +
+//    			"But note, this is ignored and the real ladder used is the ladder tied to the rank.") String ladderName,
+//        @Arg(name = "rankName") 
+    		String rankName) {
+//        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
         
-        if ( ladder == null ) {
-        	ladderDoesNotExistsMsg( sender, ladderName );
-            return;
-        }
+//        if ( ladder == null ) {
+//        	ladderDoesNotExistsMsg( sender, ladderName );
+//            return;
+//        }
 
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
 //        Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRankOptional(rankName);
@@ -233,13 +236,16 @@ public class LadderCommands
             return;
         }
 
+        RankLadder ladder = rank.getLadder();
+        
         ladder.removeRank( rank );
 //        ladder.removeRank(ladder.getPositionOfRank(rank));
 
         if ( PrisonRanks.getInstance().getLadderManager().save(ladder) ) {
 
-            ladderRemovedRankFromLadderMsg( sender, rankName, ladderName );
+            ladderRemovedRankFromLadderMsg( sender, rankName, ladder.getName() );
             
+            PrisonRanks.getInstance().getRankManager().saveRank( rank );
         } 
         else {
         	ladderErrorRemovingingMsg( sender );
