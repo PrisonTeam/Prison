@@ -22,8 +22,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.10-alpha.12 2021-08-16
+# v3.2.10-alpha.12 2021-08-17
 
+
+* **Add to the World object, a function to set the block.**
+The SpigotWorld class uses prison's compatibility functions to perform this action.
 
 
 * **v3.2.10-alpha.12 2021-08-16**

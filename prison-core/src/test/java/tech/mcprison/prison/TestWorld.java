@@ -18,12 +18,13 @@
 
 package tech.mcprison.prison;
 
+import java.util.List;
+
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.util.Location;
-
-import java.util.List;
 
 /**
  * @author Faizaan A. Datoo
@@ -48,5 +49,7 @@ public class TestWorld implements World {
         return null;
     }
 
-
+    @Override
+    public void setBlock( PrisonBlock block, int x, int y, int z ) {
+    }
 }
