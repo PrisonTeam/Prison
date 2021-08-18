@@ -9,6 +9,11 @@ TODOs for v3.2.10 release:
 3. Forced global refresh of rank multipliers when a ladder multiplier is changed.
   - Should be simple
   - Run as async task
+  - Force update when updating a ladder's multiplier - all players
+  - DONE: Force update when changing ranks - only targeted player
+4. Add ladder base cost multiplier to /ranks autoConfigure.  Start with a simple 10%.
+  - Include message that it's enabled and how to change it or disable it:
+  - /ranks ladder rankCostMultiplier prestiges 0
 
 
 * DONE: Add a rank cost multiplier to ladders.  Sum all active ranks a player has to get the total multiplier to use for rank costs.
@@ -27,11 +32,12 @@ TODOs for v3.2.10 release:
  6. Post-fire effects: sound & particles (low priority)
 
 
-
-* DONE: Enable and disable confirmations for prestiges
- - DONE: Put in config.yml under the existing: prestiges. settings.
- - DONE: Move the GUI confirm to the same group of prestiges. settings.
-
+* Maybe provide a /rankcost command?  Show current player rank costs with rank cost multipliers applied
+ - /rankcost <player> <optional-ranks>
+ - Optional ranks can be provided as parameters and it will adjust the calculations.
+   - Example: /rankcost RoyalBlueRanger A p5
+    * will show the rank costs based upon rank A and p5, not matter the players current ranks
+ - Will allow players to better understand what rankup costs will be if they prestige twice or 10 times.
 
 
 * placeholder for total block counts and other playercache stats
@@ -131,9 +137,7 @@ it's unknown why it's happening.
    - track location of player... if the player has not moved in over x-ticks, then mark them as afk.  distance traveled is an important aspect... so afk machines may keep them moving in a 1 block radius.  Might be able to see if a player is being pushed by water or pistons? 
  
  
- Player Cache possibilities?  
- * DONE: money earned per mine?
- 
+
 
 
 * When adding block stats.... add player online stats.
@@ -143,9 +147,6 @@ it's unknown why it's happening.
 
 
 * Enable mine sweeper when auto features is disabled.  Not sure if this is still needed?
-
-
-* DONE: Make ranks more expensive on each prestige....
 
 
 
@@ -461,6 +462,18 @@ Offers for translation:
 
 # Features recently added since v3.2.9
 
+
+
+* DONE: Enable and disable confirmations for prestiges
+ - DONE: Put in config.yml under the existing: prestiges. settings.
+ - DONE: Move the GUI confirm to the same group of prestiges. settings.
+
+
+ Player Cache possibilities?  
+ * DONE: money earned per mine?
+ 
+
+* DONE: Make ranks more expensive on each prestige....
 
 
 * NOT-AN-ISSUE: If automanager is turned off, and /prison reload automanager is ran, it will reload the settings, but the event listeners are only registered upon server startup.  So if that condition happens... should display a warning indicating the server must be restarted.

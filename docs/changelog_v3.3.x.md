@@ -25,6 +25,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.12 2021-08-18
 
 
+* **After a change in a player's rank, have the player's Rank Cost Multipliers recalculated.**
+
+
 * **The command /ranks player <playerName> perms was generating an error with offline players so this fixes that issue.**
 
 

@@ -493,7 +493,10 @@ public class RankUtil
         	results.addTransaction( RankupTransactions.zero_cost_to_player );
         }
 
+        // Actually apply the new rank here:
         rankPlayer.addRank(targetRank);
+        
+
 
         if ( !savePlayerRank( results, rankPlayer ) ) {
         	return;
@@ -567,6 +570,13 @@ public class RankUtil
         results.setRankupCommandsExecuted( count );
         results.addTransaction( RankupTransactions.rankupCommandsCompleted );
 
+        
+        
+        // Recalculate the rankup cost multipliers to apply to the next rankup.
+        // This must be done AFTER the ranks commands sets up the placeholder 
+        // values so they will reflect the correct amounts.
+        rankPlayer.recalculateRankMultipliers();
+        
         
 //        results.addTransaction( RankupTransactions.fireRankupEvent );
 //        
