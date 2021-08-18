@@ -113,8 +113,7 @@ public class VaultPermissions
 		
 		boolean hasGroupSupport = permissions.hasGroupSupport();
 		
-//		if ( holder.isOnline() ) 
-		{
+		if ( holder.isOnline() && holder instanceof SpigotPlayer ) {
 			results.add( String.format( "[vault: Group support is %senabled.]", 
 					(hasGroupSupport ? "" : "NOT ")) );
 			
@@ -125,11 +124,10 @@ public class VaultPermissions
 			}
 			
 		}
-			
 		
-//		else {
-//			results.add( "[vault: Player is offline. Perms cannot be accessed.]" );
-//		}
+		else {
+			results.add( "[vault: Player is offline. Perms cannot be accessed.]" );
+		}
 		
 		return results;
 	}

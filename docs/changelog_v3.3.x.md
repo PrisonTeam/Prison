@@ -25,7 +25,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.12 2021-08-18
 
 
-* **Change config.yml to enable and disable prestige confirmations.**
+* **The command /ranks player <playerName> perms was generating an error with offline players so this fixes that issue.**
+
+
+* **Changed config.yml to enable and disable prestige confirmations.**
 Updated the GUI to support this.  Settings where changed and config.yml may need to be reset when updating prison to use these new features.
 
 
