@@ -3,33 +3,79 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
-
+TODOs for v3.2.10 release:
 1. Final testing of ladder rank multipliers
-2. Fix next rank value with PlayerRanks
-3. /ranks ladder moveRank not working
-4. Add 
+2. /ranks ladder moveRank not working
+3. Forced global refresh of rank multipliers when a ladder multiplier is changed.
+  - Should be simple
+  - Run as async task
+
+
+* DONE: Add a rank cost multiplier to ladders.  Sum all active ranks a player has to get the total multiplier to use for rank costs.
+* DONE: Fix the "next rank" value with PlayerRanks.... needs to recalc with the new rank.
+* When a ladder's rate cost multiplier is changed, need to recalculate all player's multipliers.  Setup a task?
+
 
 
 * Start on mine bombs
- 1. Select size of bomb - 
- 2. Select list of blocks
- 3. Identify items to use as bombs
- 4. Throw bomb
+ 1. Select size of bomb. Configuration. 
+   1a. Identify items to use as bombs
+ 2. DONE: Select list of blocks
+ 3. Throw bomb, or place bomb... start processing count down.
+ 4. Pre-fire effects: sound & particles (low priority)
  5. fire event
+ 6. Post-fire effects: sound & particles (low priority)
+
+
+
+* Enable and disable confirmations for prestiges
+ - Put in config.yml under the existing: prestiges. settings.
+ - Move the GUI confirm to the same group of prestiges. settings.
+
 
 
 * placeholder for total block counts and other playercache stats
 
 
 
-* Fix the "next rank" value with PlayerRanks.... it's wrong... needs to recalc with the new rank.
-* Need to be more dynamic when a ladder's rank cost multiplier is set, the player's multiplier needs to be recalculated.
+**Possible bugs/issues:**
+
+* DONE: /ranks ladder moveRank did not work to move from one ladder to another
+
+* When adding a new rank or mine, auto reload all placeholders so they pick up the new entry.
+
+* Test BlockEvent perms... they appear like they don't work.
+
+* If ranks module fails due to no economy, try to make that a little more obvious.
+
+* If no ranks are defined and the placeholders are attempted to be used, it is causing some errors.  No economy plugin so Ranks did not load. {prison_rank_tag} was causing an error with /prison placeholder test.  "Server: Invalid json. Unterminated escape sequence..."
+The ranks module did not load due to no economy.
+
+* Sometimes Player Ranks lores placeholders from placeholderAPI aren't working, 
+it's unknown why it's happening.
+
+* Auto features - disable lore by default - Maybe provide finer grained control on lore features?
 
 
-* /ranks ladder moveRank did not work to move from one ladder to another
+
+**Document updates needed:**
+
+1. Document how to use Ladder Rank Cost Multipliers
+
+2. Document that to get TE explosions to work, you must also create WG regions in the mine.
+  - may be able to bypass with creative use of Access by Ranks (have prison directly fire the BlockBreakEvents within TE's functions?)
+  
+3. BlockEvent docs need to be updated to reflect recent changes (select by number).
+
+4. Review commands listed in TOC.  Remove obsolete commands (some ladder commands were removed).
 
 
-* Add a rank cost multiplier to ladders.  Sum all active ranks a player has to get the total multiplier to use for rank costs.
+
+* Top Lists - Command based
+ - Top ranked players by server
+ - Top ranked players by mine
+ - Top ranked players by blocks?  
+
 
 
 * Add a `*all*` for mine name on remove mines blockEvents.
@@ -41,6 +87,11 @@
   - For wider bars, the title could be left justified, and the percentage right justified
   
 
+
+* mine groups
+ - Have global sharing of BlockEvents
+ - groups cannot be in more than one world
+ - all mines must be a part of a group
  
 
 * Eliminate the following message from logging an error, but just keep a note in the code:
@@ -75,31 +126,26 @@
  * Add placeholders for time onlines
  * DONE: Add time mining: per mine
  * Tracking by items such as mines or ranks, where the player's status can be reset, presents some problems.  Such as the block counts need to be reset for those items, but yet, we need to store them for historical purposes too.  So if someone prestiges 10 times, then there will be 10 different times through mine/rank A.  If block counts become a requirement for rankups, which it will, then the block counts for that mine must be reset back to zero.  So there must be a "current" and "historical" tracking.
+  - Online stats:
+   - track which players are online... may need to get the active player list every minute?  freq could be configurable.
+   - track location of player... if the player has not moved in over x-ticks, then mark them as afk.  distance traveled is an important aspect... so afk machines may keep them moving in a 1 block radius.  Might be able to see if a player is being pushed by water or pistons? 
  
  
  Player Cache possibilities?  
  * DONE: money earned per mine?
  
 
-* When adding a new rank or mine, auto reload all placeholders so they pick up the new entry.
-
 
 * When adding block stats.... add player online stats.
   - add events that run, similar to blockEvents, but maybe call them statsEvents?
   - So after so many blocks are mined... or so many minutes a player is online, run a command
   
-  - Online stats:
-   - track which players are online... may need to get the active player list every minute?  freq could be configurable.
-   - track location of player... if the player has not moved in over x-ticks, then mark them as afk.  distance traveled is an important aspect... so afk machines may keep them moving in a 1 block radius.  Might be able to see if a player is being pushed by water or pistons? 
 
 
 * Enable mine sweeper when auto features is disabled.  Not sure if this is still needed?
 
 
-* Make ranks more expensive on each prestige....
-
-
-* Test BlockEvent perms... they appear like they don't work.
+* DONE: Make ranks more expensive on each prestige....
 
 
 
@@ -107,8 +153,10 @@
 * Add support for BOSS BAR when holding pick axe.  Maybe setup placeholders in the config.yml?
 - Example would be showing the bar and percent to next rank.
 
-* Add mine notifications by Rank
 
+* Add mine notifications by Rank
+ - I forget what this is.... 
+ 
 
 * Prestiges: Rewrite and enhance so as to make it "automatic" without the need to create ranks
 * Externalize the mines module on multi-lang
@@ -141,9 +189,6 @@ https://www.spigotmc.org/resources/minetinker-50-modifiers-tools-and-armor.58940
 
 
 
-* If ranks module fails due to no economy, try to make that a little more obvious.
-
-
 
 
 * Plugin exception handling has problems
@@ -163,10 +208,6 @@ https://www.spigotmc.org/resources/minetinker-50-modifiers-tools-and-armor.58940
   * Option to name all mines: list of mines.  Permit non A, B, C naming.
   * list world guard commands to protect the world (would then have functional world)
   
-
-* If no ranks are defined and the placeholders are attempted to be used, it is causing some errors.  No economy plugin so Ranks did not load. {prison_rank_tag} was causing an error with /prison placeholder test.  "Server: Invalid json. Unterminated escape sequence..."
-The ranks module did not load due to no economy.
-
 
 
 
@@ -199,9 +240,6 @@ The ranks module did not load due to no economy.
  - http://www.pinyin.info/tools/converter/chars2uninumbers.html
  
 
-
-* Sometimes Player Ranks lores placeholders from placeholderAPI aren't working, 
-it's unknown why it's happening.
 
 
 * Fix per rank progress bars.  This includes adding a new placeholder series since you will have to include the rank name in the placeholder.  Current ladder placeholders are based upon the player's current rank only.  
