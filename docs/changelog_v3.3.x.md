@@ -22,7 +22,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.10-alpha.12 2021-08-17
+# v3.2.10-alpha.12 2021-08-18
+
+
+* **Removed the remainder of the ladder/rank permissions that were never used.**
 
 
 * **Start to setup MineBombs basics.**
