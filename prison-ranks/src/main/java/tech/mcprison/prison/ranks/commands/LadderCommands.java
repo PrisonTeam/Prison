@@ -71,6 +71,11 @@ public class LadderCommands
         	return;
         }
         
+        if ( ladder.getRanks().size() > 0 ) {
+        	ladderDeleteCannotDeleteWithRanksMsg( sender );
+        	return;
+        }
+        
         if ( PrisonRanks.getInstance().getLadderManager().removeLadder(ladder) ) {
         	ladderDeletedMsg( sender, ladderName );
 

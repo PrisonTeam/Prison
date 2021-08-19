@@ -22,7 +22,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.10-alpha.12 2021-08-18
+# v3.2.10-alpha.12 2021-08-19
+
+
+* **Changed the /ranks ladder delete command to prevent a ladder from being deleted if it has any ranks associated with it.**
+To delete a ladder with ranks would corrupt the ranks.  The ranks would have to be removed first to ensure no players are on the ranks.
 
 
 * **After a change in a player's rank, have the player's Rank Cost Multipliers recalculated.**

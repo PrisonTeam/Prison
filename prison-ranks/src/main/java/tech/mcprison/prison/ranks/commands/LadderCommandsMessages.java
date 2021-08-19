@@ -64,6 +64,12 @@ public class LadderCommandsMessages
 				.getLocalizable( "ranks_LadderCommands__ladder_cannot_delete_prestiges" )
 				.sendTo( sender );
 	}
+	
+	protected void ladderDeleteCannotDeleteWithRanksMsg( CommandSender sender ) {
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_LadderCommands__ladder_cannot_delete_with_ranks" )
+		.sendTo( sender );
+	}
 
 	protected void ladderDeletedMsg( CommandSender sender, String ladderName ) {
 		PrisonRanks.getInstance().getRanksMessages()
