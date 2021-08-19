@@ -536,6 +536,10 @@ public class RanksCommands
 
         if ( PrisonRanks.getInstance().getRankManager().removeRank(rank) ) {
         	rankWasRemovedMsg( sender, rankName );
+        	
+            // Recalculate the ladder's base rank cost multiplier:
+            PlayerRankRefreshTask rankRefreshTask = new PlayerRankRefreshTask();
+            rankRefreshTask.submitAsyncTPSTask();
         } else {
         	rankDeleteErrorMsg( sender, rankName );
         }
