@@ -495,7 +495,7 @@ public class RankUpCommand
     }
 
     
-    @Command(identifier = "ranks remove rank", description = "Removes a player from a specified ladder " +
+    @Command(identifier = "ranks removeRank", description = "Removes a player from a specified ladder " +
     		"(delete player rank). This is an alias for /ranks set rank <playerName> -remove- <ladder>.", 
     		permissions = "ranks.setrank", onlyPlayers = false) 
     public void removeRank(CommandSender sender,

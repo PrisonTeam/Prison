@@ -86,11 +86,11 @@ public class RanksCommands
     	sender.dispatchCommand( "ranks perms help" );
     }
     
-    @Command(identifier = "ranks remove", 
-    		onlyPlayers = false, permissions = "prison.commands")
-    public void ranksRemoveSubcommands(CommandSender sender) {
-    	sender.dispatchCommand( "ranks remove help" );
-    }
+//    @Command(identifier = "ranks remove", 
+//    		onlyPlayers = false, permissions = "prison.commands")
+//    public void ranksRemoveSubcommands(CommandSender sender) {
+//    	sender.dispatchCommand( "ranks remove help" );
+//    }
     
     @Command(identifier = "ranks set", 
     		onlyPlayers = false, permissions = "prison.commands")

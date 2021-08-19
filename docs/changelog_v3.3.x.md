@@ -25,6 +25,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.12 2021-08-19
 
 
+* **Renamed the command `/ranks remove rank` to `/ranks removeRank` since the prior command was a single command within it's own sub-group.**
+This change will now list the command with the others when using `/ranks`.  It was "lost" and "hidden" and admins were not able to find it that easily.
+
+
 * **Changed the /ranks ladder delete command to prevent a ladder from being deleted if it has any ranks associated with it.**
 To delete a ladder with ranks would corrupt the ranks.  The ranks would have to be removed first to ensure no players are on the ranks.
 
