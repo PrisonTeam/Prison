@@ -189,7 +189,8 @@ public class RanksCommands
 			"in preexisting " +
 			"mines. To keep preexisting blocks, use 'forceKeepBlocks' with the 'force' option. " +
 			"Default values [full price=50000 mult=1.5]", 
-			onlyPlayers = false, permissions = "ranks.set")
+			onlyPlayers = false, permissions = "ranks.set", 
+			aliases = {"prison autoConfigure"} )
 	public void autoConfigureRanks(CommandSender sender, 
 			@Wildcard(join=true)
 			@Arg(name = "options", 

@@ -25,6 +25,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.12 2021-08-19
 
 
+* **For the /ranks autoConfigure command, setup an alias to /prison autoConfigure.**
+
+
 * **Setup a task that is to be ran whenever there is a rank change within a ladder, or if the ladder has the base rank cost multiplier changed.**
 This helps to ensure that the rank costs are correct for all players.
 
