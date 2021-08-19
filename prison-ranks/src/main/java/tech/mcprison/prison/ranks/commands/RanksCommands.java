@@ -32,6 +32,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRank;
+import tech.mcprison.prison.ranks.data.PlayerRankRefreshTask;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
@@ -167,6 +168,10 @@ public class RanksCommands
             
             // Tell the player the good news!
             rankCreatedSuccessfullyMsg( sender, name, ladder, tag );
+            
+            // Recalculate the ladder's base rank cost multiplier:
+            PlayerRankRefreshTask rankRefreshTask = new PlayerRankRefreshTask();
+            rankRefreshTask.submitAsyncTPSTask();
         } 
         else {
         	errorCouldNotSaveLadderMsg( sender, rankLadder.getName() );

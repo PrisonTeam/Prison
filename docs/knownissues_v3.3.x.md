@@ -6,19 +6,20 @@
 TODOs for v3.2.10 release:
 1. Final testing of ladder rank multipliers
 2. DONE: /ranks ladder moveRank not working
-3. Forced global refresh of rank multipliers when a ladder multiplier is changed.
+3. DONE: Forced global refresh of rank multipliers when a ladder multiplier is changed.
   - Should be simple
   - Run as async task
   - Force update when updating a ladder's multiplier - all players
   - DONE: Force update when changing ranks - only targeted player
-4. Add ladder base cost multiplier to /ranks autoConfigure.  Start with a simple 10%.
+4. DONE: Add ladder base cost multiplier to /ranks autoConfigure.  Start with a simple 10%.
   - Include message that it's enabled and how to change it or disable it:
   - /ranks ladder rankCostMultiplier prestiges 0
+5. Add to /ranks player the detail information on rank cost multipliers
 
 
 * DONE: Add a rank cost multiplier to ladders.  Sum all active ranks a player has to get the total multiplier to use for rank costs.
 * DONE: Fix the "next rank" value with PlayerRanks.... needs to recalc with the new rank.
-* When a ladder's rate cost multiplier is changed, need to recalculate all player's multipliers.  Setup a task?
+* DONE: When a ladder's rate cost multiplier is changed, need to recalculate all player's multipliers.  Setup a task?
 
 
 

@@ -25,6 +25,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.12 2021-08-19
 
 
+* **Setup a task that is to be ran whenever there is a rank change within a ladder, or if the ladder has the base rank cost multiplier changed.**
+This helps to ensure that the rank costs are correct for all players.
+
+
 * **Renamed the command `/ranks remove rank` to `/ranks removeRank` since the prior command was a single command within it's own sub-group.**
 This change will now list the command with the others when using `/ranks`.  It was "lost" and "hidden" and admins were not able to find it that easily.
 

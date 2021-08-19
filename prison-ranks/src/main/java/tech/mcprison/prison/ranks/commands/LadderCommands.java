@@ -6,6 +6,7 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.PlayerRankRefreshTask;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 
@@ -211,6 +212,11 @@ public class LadderCommands
         if ( PrisonRanks.getInstance().getLadderManager().save(ladder) ) {
             
             ladderAddedRankMsg( sender, ladderName, rankName, position );
+            
+            // Recalculate the ladder's base rank cost multiplier:
+            PlayerRankRefreshTask rankRefreshTask = new PlayerRankRefreshTask();
+            rankRefreshTask.submitAsyncTPSTask();
+
         } 
         else {
         	
@@ -251,6 +257,10 @@ public class LadderCommands
             ladderRemovedRankFromLadderMsg( sender, rankName, ladder.getName() );
             
             PrisonRanks.getInstance().getRankManager().saveRank( rank );
+            
+            // Recalculate the ladder's base rank cost multiplier:
+            PlayerRankRefreshTask rankRefreshTask = new PlayerRankRefreshTask();
+            rankRefreshTask.submitAsyncTPSTask();
         } 
         else {
         	ladderErrorRemovingingMsg( sender );
@@ -311,6 +321,9 @@ public class LadderCommands
 			ladderSetRankCostMultiplierSavedMsg( sender, ladderName, 
 										rankCostMultiplier, oldRankCostMultiplier );
 
+            // Recalculate the ladder's base rank cost multiplier:
+            PlayerRankRefreshTask rankRefreshTask = new PlayerRankRefreshTask();
+            rankRefreshTask.submitAsyncTPSTask();
 		}
 		else
 		{
