@@ -25,6 +25,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.12 2021-08-19
 
 
+* **Ranks autoConfigure: Add to the prestiges ladder the base rank cost multiplier of 10 percent.**
+Provide a few messages to document it when the /ranks autoConfigure command is ran.
+
+
 * **For the /ranks autoConfigure command, setup an alias to /prison autoConfigure.**
 
 

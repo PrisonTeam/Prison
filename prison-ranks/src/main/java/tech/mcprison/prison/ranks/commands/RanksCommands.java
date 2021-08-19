@@ -466,6 +466,20 @@ public class RanksCommands
 			autoConfigNoRanksCreatedMsg( sender );
 		}
 		else {
+			
+			// Set the prestiges ladder with a 10% base rank cost multiplier
+			double rankCostMultiplier = 0.10;
+			
+			RankLadder prestiges = PrisonRanks.getInstance().getLadderManager().getLadder( "prestiges" );
+			prestiges.setRankCostMultiplierPerRank( rankCostMultiplier );
+			PrisonRanks.getInstance().getLadderManager().save( prestiges );
+			
+			// Log that the rank cost multiplier has been applied to the ladder
+			// with information on how to change it.
+			autoConfigLadderRankCostMultiplierInfoMsg( sender, rankCostMultiplier );
+			autoConfigLadderRankCostMultiplierCmdMsg( sender );
+			
+			
 			autoConfigRanksCreatedMsg( sender, Integer.toString( countRanks ) );
 			
 			if ( countRankCmds == 0 ) {
