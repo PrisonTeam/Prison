@@ -22,7 +22,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.10-alpha.12 2021-08-20
+# v3.2.10-alpha.13 2021-08-20
+
+
+* **v3.2.10-alpha.13 2021-08-20**
 
 
 * **Fixed an issue with null for the playerUuid..**
