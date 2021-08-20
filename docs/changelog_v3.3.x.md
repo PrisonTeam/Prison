@@ -22,7 +22,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.10-alpha.12 2021-08-19
+# v3.2.10-alpha.12 2021-08-20
+
+
+* **Fixes a bug when checking offline players which was returning a null with rPlayer.getRank().  Was fixed.**
 
 
 * **Ranks autoConfigure: Add to the prestiges ladder the base rank cost multiplier of 10 percent.**

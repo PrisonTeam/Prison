@@ -230,17 +230,22 @@ public class PrisonRanks
         		@SuppressWarnings( "unused" )
 				String rp = rPlayer.toString();
 				
-        		Rank rankOnDefault = rPlayer.getRank( defaultLadder ).getRank();
+        		Rank rankOnDefault = null;
         		
-//        		Output.get().logInfo( "#### %s  ladder = %s  isRankNull= %s  rank= %s %s [%s]" ,
-//        				rPlayer.getName(),
-//        				defaultLadder.getName(), 
-//        				(rankOnDefault == null ? "true" : "false"), (rankOnDefault == null ? "null" : rankOnDefault.getName()),
-//        				(rankOnDefaultStr == null ? "true" : "false"), (rankOnDefaultStr == null ? "null" : rankOnDefaultStr.getName()),
-//        				rp );
-        		
+        		if ( rPlayer.getRank( defaultLadder ) != null ) {
+        			
+        			rankOnDefault = rPlayer.getRank( defaultLadder ).getRank();
+        			
+//        			Output.get().logInfo( "#### %s  ladder = %s  isRankNull= %s  rank= %s %s [%s]" ,
+//        					rPlayer.getName(),
+//        					defaultLadder.getName(), 
+//        					(rankOnDefault == null ? "true" : "false"), (rankOnDefault == null ? "null" : rankOnDefault.getName()),
+//        					(rankOnDefaultStr == null ? "true" : "false"), (rankOnDefaultStr == null ? "null" : rankOnDefaultStr.getName()),
+//        					rp );
+        			
+        		}
         		if ( rankOnDefault == null ) {
-    
+        			
         			rankupCommands.setPlayerRank( rPlayer, defaultRank );
         			
         			if ( rPlayer.getRank( defaultLadder ) != null ) {
@@ -252,6 +257,7 @@ public class PrisonRanks
         			
         			fixedPlayers++;
         		}
+        		
 			}
         	if ( addedPlayers > 0 || fixedPlayers > 0 ) {
         		
