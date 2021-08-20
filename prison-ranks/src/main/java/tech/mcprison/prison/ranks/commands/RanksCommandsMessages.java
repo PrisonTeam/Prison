@@ -497,12 +497,12 @@ public class RanksCommandsMessages
 				.sendTo( sender );
 	}
 
-	protected String ranksPlayerLadderInfoMsg( String playerName, 
+	protected String ranksPlayerLadderInfoMsg(
 					String ladderName, String rankName ) {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_ladder_info" )
 				.withReplacements( 
-						playerName, ladderName, rankName )
+						ladderName, rankName )
 				.localize();
 	}
 

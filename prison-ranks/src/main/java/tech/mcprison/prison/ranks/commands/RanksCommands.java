@@ -1270,7 +1270,6 @@ public class RanksCommands
 //									new PlayerRank( nextRank, pRank.getRankMultiplier() );
 				
 				String messageRank = ranksPlayerLadderInfoMsg( 
-						player.getDisplayName(), 
 						rankLadder.getName(),
 						rank.getName() );
 				
