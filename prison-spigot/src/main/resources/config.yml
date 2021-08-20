@@ -212,7 +212,8 @@ delayedPrisonStartup:
   inspect-vault: true
   triggers:
     vault: true
-    vault-economy-name: Economy_Essentials
+    vault-economy-name: Economy_CMI
+#    vault-economy-name: Economy_Essentials
 
 
 # The following changes the event priority for prison's listener for the 
