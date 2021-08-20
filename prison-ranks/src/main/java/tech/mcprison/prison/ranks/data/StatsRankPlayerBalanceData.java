@@ -32,31 +32,34 @@ public class StatsRankPlayerBalanceData
 		// The "cost" should be the cost of the next rank.  If the next rank does not exist,
 		// then it should be the current rank.
 		PlayerRank pRank = player.getRank( rank.getLadder() );
-		double cost = pRank.getRankCost();  // This is the fallback value if nextRank doesn't exist.
-
-		if ( rank.getRankNext() != null ) {
+		if ( pRank != null ) {
 			
-	        // This calculates the target rank, and takes in to consideration the player's existing rank:
-	        PlayerRank pRankNext = PlayerRank.getTargetPlayerRankForPlayer( player, rank.getRankNext() );
+			double cost = pRank.getRankCost();  // This is the fallback value if nextRank doesn't exist.
 			
-			//PlayerRank pRankNext = new PlayerRank( rank.getRankNext(), pRank.getRankMultiplier() );
-			cost = pRankNext.getRankCost();
-		}
+			if ( rank.getRankNext() != null ) {
+				
+				// This calculates the target rank, and takes in to consideration the player's existing rank:
+				PlayerRank pRankNext = PlayerRank.getTargetPlayerRankForPlayer( player, rank.getRankNext() );
+				
+				//PlayerRank pRankNext = new PlayerRank( rank.getRankNext(), pRank.getRankMultiplier() );
+				cost = pRankNext.getRankCost();
+			}
 //		double cost = rank.getRankNext() == null ? rank.getCost() : rank.getRankNext().getCost();
-		double penalty = 0d;
-		
-		// Do not apply the penalty if cost is zero:
-		if ( isPenaltyEnabled && cost > 0 ) {
-			score = balance > cost ? cost : score;
+			double penalty = 0d;
 			
-			double excess = balance > cost ? balance - cost : 0d;
-			penalty = excess * 0.2d;
-		}
-		
-		score = (score - penalty);
-		
-		if ( cost > 0 ) {
-			score /= cost * 100.0d;
+			// Do not apply the penalty if cost is zero:
+			if ( isPenaltyEnabled && cost > 0 ) {
+				score = balance > cost ? cost : score;
+				
+				double excess = balance > cost ? balance - cost : 0d;
+				penalty = excess * 0.2d;
+			}
+			
+			score = (score - penalty);
+			
+			if ( cost > 0 ) {
+				score /= cost * 100.0d;
+			}
 		}
 		
 		setScore( score );

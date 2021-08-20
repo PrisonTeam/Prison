@@ -49,7 +49,7 @@ public class PlayerRank
 	public static double getLadderBaseRankdMultiplier( Rank rank ) {
 		double rankMultiplier = 0;
 		
-		if ( rank != null ) {
+		if ( rank != null && rank.getLadder() != null ) {
 			double ladderMultiplier = rank.getLadder().getRankCostMultiplierPerRank();
 			
 			// Because it's zero based... so add a 1

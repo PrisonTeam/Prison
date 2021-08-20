@@ -25,6 +25,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.12 2021-08-20
 
 
+* **Fixed a few issues with ranks, a NPEs.**
+
+
 * **The text for ladder info was changed to remove player's name, which does not make sense to include, especially if ran from console.**
 
 
