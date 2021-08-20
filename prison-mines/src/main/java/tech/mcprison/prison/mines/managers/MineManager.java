@@ -1417,17 +1417,20 @@ public class MineManager
     	Player player = null;
     	Player playerAlt = null;
     	
-    	// First try to match on UUID
-		for ( Player p : Prison.get().getPlatform().getOnlinePlayers() ) {
-			if ( p.getUUID().compareTo( playerUuid ) == 0 ) {
-				player = p;
-				break;
-			} 
-			else if ( p.getName().equalsIgnoreCase( playerName ) ) {
-				// If we get a hit on the name, save it as an alt...
-				playerAlt = p;
-			}
-		}
+    	if ( playerUuid != null ) {
+    		
+    		// First try to match on UUID
+    		for ( Player p : Prison.get().getPlatform().getOnlinePlayers() ) {
+    			if ( p.getUUID().compareTo( playerUuid ) == 0 ) {
+    				player = p;
+    				break;
+    			} 
+    			else if ( p.getName().equalsIgnoreCase( playerName ) ) {
+    				// If we get a hit on the name, save it as an alt...
+    				playerAlt = p;
+    			}
+    		}
+    	}
 		
 		if ( player == null ) {
 			for ( Player p : Prison.get().getPlatform().getOfflinePlayers() ) {

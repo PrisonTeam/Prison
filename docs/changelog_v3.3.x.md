@@ -25,6 +25,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.12 2021-08-20
 
 
+* **Fixed an issue with null for the playerUuid..**
+it's rare, but it could be null.  This prevents the failures.
+
+
 * **Fixed a few issues with ranks, a NPEs.**
 
 
