@@ -994,6 +994,9 @@ public class RanksCommands
 	private ChatDisplay rankInfoDetails( CommandSender sender, Rank rank, String options )
 	{
 		ChatDisplay display = new ChatDisplay( ranksInfoHeaderMsg( rank.getTag() ));
+		
+		boolean isOp = sender.isOp();
+		boolean isConsole = !sender.isPlayer();
 
         display.addText( ranksInfoNameMsg( rank.getName() ));
         display.addText( ranksInfoTagMsg( rank.getTag() ));
@@ -1064,19 +1067,19 @@ public class RanksCommands
         int numberOfPlayersOnRank = rank.getPlayers().size();
         display.addText( ranksInfoPlayersWithRankMsg( numberOfPlayersOnRank ));
 
-        if ( sender == null || sender.hasPermission("ranks.admin")) {
+        if ( isOp || isConsole || sender == null || sender.hasPermission("ranks.admin")) {
             // This is admin-exclusive content
 
 //            display.addText("&8[Admin Only]");
             display.addText( ranksInfoRankIdMsg( rank.getId() ));
 
             FancyMessage del =
-                new FancyMessage( ranksInfoRankDeleteMessageMsg() ).command("/ranks delete " + rank.getName())
+                new FancyMessage( ranksInfoRankDeleteMessageMsg() ) // .command("/ranks delete " + rank.getName())
                     .tooltip( ranksInfoRankDeleteToolTipMsg() );
             display.addComponent(new FancyMessageComponent(del));
         }
         
-        if ( options != null && "all".equalsIgnoreCase( options )) {
+        if ( isOp && options != null && "all".equalsIgnoreCase( options )) {
         	
         	if ( rank.getLadder() != null ) {
         		

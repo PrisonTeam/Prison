@@ -25,6 +25,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.13 2021-08-21
 
 
+* **reduce what is shown on /rank if for non-op players.**
+
+
 * **Decrease the autoConfigure's prestige costs from 2 B to just 1 B.**
 
 
