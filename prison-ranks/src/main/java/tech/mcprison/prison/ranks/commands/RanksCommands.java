@@ -12,6 +12,7 @@ import java.util.Set;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
@@ -527,7 +528,11 @@ public class RanksCommands
 			}
 		}
 
+		
+		// Reload the placeholders and autoFeatures:
 		Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
+		
+		AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig().reloadConfig();
 		
 		if ( countRanksForced > 0 ) {
 			// message about number of ranks that preexisting and were force:
