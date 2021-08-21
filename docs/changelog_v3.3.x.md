@@ -25,6 +25,11 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.13 2021-08-20
 
 
+* **Redesign the /mines info command to reduce and compact the listing.**
+`/mines info <mineName>` is the reduced listing where disabled features are not shown. `/mines info <mineName> all` is the expanded listing that includes more details.
+Reworked the block list to use the String.format for spacing instead of manual adjustments.
+
+
 * **v3.2.10-alpha.13 2021-08-20**
 
 

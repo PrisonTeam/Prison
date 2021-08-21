@@ -273,34 +273,31 @@ public class MinesBlockCommands
 
 			String percent = dFmt.format( block.getChance() ) + "%";
 
-			String text = String.format( "&7%s - %s", percent, block.getBlockName() );
-			// Minor padding after the name and chance:
-			if ( text.length() < 30 )
-			{
-				text += "                              ".substring( text.length() );
-			}
+			String text = String.format( "&7%6s - %-20s  ", percent, block.getBlockName() );
 			FancyMessage msg = new FancyMessage( text )
 					.suggest( "/mines block set " + mine.getName() + " " + block.getBlockName() + " %" )
 					.tooltip( "&7Click to edit the block's chance." );
 			row.addFancy( msg );
 		}
 
-		String text1 = formatStringPadRight( (totals ? "      &b%s" : "  &3Pl: &7%s"), 16,
+		String text1 = String.format( (totals ? "&b%-7s " : "&3Pl: &7%-7s "),
 				iFmt.format( block.getBlockPlacedCount() ) );
 		FancyMessage msg1 = new FancyMessage( text1 ).tooltip( "&7Number of blocks of this type &3Pl&7aced in this mine." );
 		row.addFancy( msg1 );
 
-		String text2 = formatStringPadRight( (totals ? "    &b%s" : "  &3Rm: &7%s"), 16,
+		
+		String text2 = String.format( (totals ? "&b%-7s " : "&3Rm: &7%-7s "), 
 				iFmt.format( block.getBlockPlacedCount() - block.getBlockCountUnsaved() ) );
 		FancyMessage msg2 = new FancyMessage( text2 ).tooltip( "&7Number of blocks of this type &3R&7e&3m&7aining." );
 		row.addFancy( msg2 );
 
-		FancyMessage msg3 = new FancyMessage( String.format( (totals ? " &b%s" : "  &3T: &7%s"),
+		
+		FancyMessage msg3 = new FancyMessage( String.format( (totals ? "&b%-11s " : "&3T: &7%-11s"),
 				PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountTotal(), dFmt, "" ) ) )
 						.tooltip( "&3T&7otal blocks of this type that have been mined." );
 		row.addFancy( msg3 );
 
-		FancyMessage msg4 = new FancyMessage( String.format( (totals ? "      &b%s" : "  &3S: &7%s"),
+		FancyMessage msg4 = new FancyMessage( String.format( (totals ? "&b%-9s" : "  &3S: &7%-9s"),
 				PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountTotal(), dFmt, "" ) ) )
 						.tooltip( "&7Blocks of this type that have been mined since the server was &3S&7tarted." );
 		row.addFancy( msg4 );
