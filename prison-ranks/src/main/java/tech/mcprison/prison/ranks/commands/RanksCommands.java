@@ -106,10 +106,29 @@ public class RanksCommands
         @Arg(name = "cost", description = "The cost of this rank.") double cost,
         @Arg(name = "ladder", description = "The ladder to put this rank on.", def = "default")
             String ladder,
+            
+        @Arg(name = "tag", description = "The tag to use for this rank.", def = "none")
+            		String tag,
+            		
         @Wildcard(join=true)
-        	@Arg(name = "tag", description = "The tag to use for this rank.", def = "none")
-            		String tag) {
+		@Arg(name = "options", def = " ", 
+		description = "Options for rank creation. " +
+				"Use 'noPlaceholderUpdate' to prevent reloading all placeholders when " +
+				"creating this rank. This is useful if you have multiple ranks " +
+				"you want to create. " +
+				"[noPlaceholderUpdate]") String options
+    		) {
 		
+		// The tag may actually bleed over in to options, so combine both together with one space:
+		if ( options != null && !options.trim().isEmpty() ) {
+			tag += " " + options;
+		}
+		
+    	boolean updatePlaceholders = !tag.toLowerCase().contains( "noplaceholderupdate" );
+    	if ( !updatePlaceholders ) {
+    		tag = tag.replaceAll( "(?i)noPlaceholderUpdate", "" ).trim();
+    	}
+
 		boolean success = false;
 
         // Ensure a rank with the name doesn't already exist
@@ -166,12 +185,19 @@ public class RanksCommands
             
             success = true;
             
-            // Tell the player the good news!
-            rankCreatedSuccessfullyMsg( sender, name, ladder, tag );
+            if ( updatePlaceholders ) {
+            	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
+            }
+            
             
             // Recalculate the ladder's base rank cost multiplier:
             PlayerRankRefreshTask rankRefreshTask = new PlayerRankRefreshTask();
             rankRefreshTask.submitAsyncTPSTask();
+
+            
+            // Tell the player the good news!
+            rankCreatedSuccessfullyMsg( sender, name, ladder, tag );
+            
         } 
         else {
         	errorCouldNotSaveLadderMsg( sender, rankLadder.getName() );
@@ -371,7 +397,7 @@ public class RanksCommands
 	        	
 	        	boolean forceRank = force && PrisonRanks.getInstance().getRankManager().getRank( rankName ) != null;
 	        	if ( forceRank ||
-	        			createRank(sender, rankName, price, "default", tag) ) {
+	        			createRank(sender, rankName, price, "default", tag, "noPlaceholderUpdate") ) {
 	        		
 	        		if ( forceRank ) {
 	        			countRanksForced++;
@@ -489,6 +515,8 @@ public class RanksCommands
 				autoConfigRankCmdsCreatedMsg( sender, Integer.toString( countRanks ) );
 			}
 		}
+
+		Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
 		
 		if ( countRanksForced > 0 ) {
 			// message about number of ranks that preexisting and were force:
@@ -513,6 +541,7 @@ public class RanksCommands
 		}
 
 		Output.get().logInfo( "");
+		
 		
 		
 	}
@@ -549,11 +578,14 @@ public class RanksCommands
         }
 
         if ( PrisonRanks.getInstance().getRankManager().removeRank(rank) ) {
-        	rankWasRemovedMsg( sender, rankName );
+
+        	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
         	
             // Recalculate the ladder's base rank cost multiplier:
             PlayerRankRefreshTask rankRefreshTask = new PlayerRankRefreshTask();
             rankRefreshTask.submitAsyncTPSTask();
+            
+            rankWasRemovedMsg( sender, rankName );
         } else {
         	rankDeleteErrorMsg( sender, rankName );
         }

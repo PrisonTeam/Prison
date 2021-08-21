@@ -203,30 +203,38 @@ public class MinesCommands
     
     
     
-    @Command(identifier = "mines create", description = "Creates a new mine, or even a virtual mine.", 
+    @Command(identifier = "mines create", description = "Creates a new mine, or even a virtual mine. " +
+    		"If the option 'virtual' is used, then you can create the mine offline within the console. " +
+    		"You'll have to use `/mines set area help` later to position the in a world.  If you are not " +
+    		"creating a virtual mine, then you must be in game, and have already selected an area " +
+    		"with the `/mines wand` tool. If an area is not selected, then this command will fail.", 
     		onlyPlayers = false, permissions = "mines.create")
     public void createCommand(CommandSender sender,
-    		@Arg(name = "virtual", description = "Create a virtual mine in name only; no physical location. " +
-    				"This allows the mine to be predefined before specifying the coordinates. Use [virtual]. ", 
-    				def = "") 
-    					String virtualMine,
-    		@Wildcard(join=true)
-    		@Arg(name = "mineName", description = "The name of the new mine.", def = " ") String mineName
-    		) {
-    	boolean virtual = false;
-    	
-    	if ( virtualMine != null && virtualMine.trim().length() > 0 ) {
-    		if ( "virtual".equalsIgnoreCase( virtualMine.trim()) ) {
-    			virtual = true;
-    		}
-    		else {
-    			// Combine virtualMine to the beginning of the mineName if it exists.  It was not
-    			// intended to be the virtualMine parameter. Yes, adding a space will be an error, but
-    			// they added it any way.
-    			mineName = virtualMine + (mineName == null ? "" : " " + mineName.trim() ).trim();
-    		}
-    	}
+    		@Arg(name = "mineName", description = "The name of the new mine.", def = " ") 
+    			String mineName,
 
+    		@Wildcard(join=true)
+    		@Arg(name = "options", def = " ", 
+    		description = "Options for mine creation. Use 'virtual' to create a virtual mine in " +
+    				"name only; no physical location. This allows the mine to be predefined before " +
+    				"specifying the coordinates.  " +
+    				"Use 'noPlaceholderUpdate' to prevent reloading all " +
+    				"placeholders when creating this mine. This is useful if you have multiple mines " +
+    				"you want to create. " +
+    				"[virtual noPlaceholderUpdate]") String options
+    		) {
+    	options = options == null ? "" : options.trim();
+    	
+    	boolean virtual = mineName.toLowerCase().contains( "virtual" );
+    	if ( virtual && !options.isEmpty() ) {
+    		// The option virtual was used in the mineName.  Swap fields.
+    		mineName = options.contains( " "  ) ? options.split( " " )[0] : options;
+    	}
+    	else {
+    		virtual = options.toLowerCase().contains( "virtual" );
+    	}
+    	boolean updatePlaceholders = !options.toLowerCase().contains( "noplaceholderupdate" );
+    	
         if ( mineName == null || mineName.contains( " " ) || mineName.trim().length() == 0 ) {
         	sendMessage( sender, "&3Names cannot contain spaces or be empty. &b[&d" + mineName + "&b]" );
     		return;
@@ -236,7 +244,8 @@ public class MinesCommands
     	Player player = getPlayer( sender );
     	
     	if ( !virtual && (player == null || !player.isOnline())) {
-    		sendMessage( sender, "&3You must be a player in the game to run this command." );
+    		sendMessage( sender, "&3You must be a player in the game to run this command.  " +
+    				"You also need to have selected an area with the `/mines wand` tool. " );
     		return;
     	}
 
@@ -275,9 +284,15 @@ public class MinesCommands
         Mine mine = new Mine(mineName, selection);
         pMines.getMineManager().add(mine);
         
+        if ( updatePlaceholders ) {
+        	
+        	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
+        }
+        
         if ( mine.isVirtual() ) {
         	sendMessage( sender, "&3Virtual mine created: use command " +
-        			"&7/mines set area &3 to enable as a normal mine." );
+        			"&7'/mines set area help'&3 set an area within a world to " +
+        			"enable as a normal mine." );
         }
         else {
         	pMines.getMinesMessages().getLocalizable("mine_created").sendTo(sender);
@@ -330,6 +345,9 @@ public class MinesCommands
     	
 
     	pMines.getMineManager().rename(mine, newName);
+    	
+    	
+    	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
     	
     	
     	sender.sendMessage( String.format( "&3Mine &d%s &3was successfully renamed to &d%s&3.", mineName, newName) );
@@ -531,7 +549,8 @@ public class MinesCommands
         setLastMineReferenced(mineName);
         
         pMines.getMineManager().saveMine(mine);
-
+        
+        
         if ( tag == null ) {
         	sender.sendMessage( 
         			String.format( "&cThe tag name was cleared for the mine %s.", 
@@ -638,6 +657,10 @@ public class MinesCommands
         	mine.terminateJob();
         	
         	setLastMineReferenced(null);
+        	
+        	
+        	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
+        	
         	
         	pMines.getMinesMessages().getLocalizable("mine_deleted").sendTo(sender);
         	

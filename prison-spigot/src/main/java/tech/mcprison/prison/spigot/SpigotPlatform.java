@@ -1161,7 +1161,7 @@ public class SpigotPlatform
 			MineManager mm = PrisonMines.getInstance().getMineManager();
 			Mine mine = mm.getMine( name );
 			if ( mine == null ) {
-				PrisonMines.getInstance().getMinesCommands().createCommand( sender, "virtual", name );
+				PrisonMines.getInstance().getMinesCommands().createCommand( sender, name, "virtual noPlaceholderUpdate" );
 				mine = mm.getMine( name );
 				mine.setTag( tag );
 				
@@ -1175,7 +1175,7 @@ public class SpigotPlatform
 		else if ( elementType == ModuleElementType.RANK &&
 								PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
 			RankManager rm = PrisonRanks.getInstance().getRankManager();
-			rm.getRanksCommands().createRank( sender, name, 0, "default", tag );
+			rm.getRanksCommands().createRank( sender, name, 0, "default", tag, "" );
 			
 			Rank rank = rm.getRank( name );
 			

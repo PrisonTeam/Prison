@@ -25,6 +25,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.13 2021-08-21
 
 
+* **Have placeholders reload after mines or ranks are created, removed, or renamed.**
+Create mine and create rank now has an option to suppress updating placeholders since commands like autoConfigure will cause tons of messages to be generated.  The placeholders are regenerated after all mines and ranks are created.
+
 
 * **Command '/mines set area' fixed confirmation to use yes or confirm.**
 Added the ability to set size when using feet.  The size is what is used with the '/mines set size' command.  So 20 width is really 41 since it's adding 40 blocks in all directions.
