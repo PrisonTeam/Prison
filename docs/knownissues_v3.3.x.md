@@ -3,19 +3,26 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
-TODOs for v3.2.10 release:
-1. Final testing of ladder rank multipliers
+
+# TODOs for v3.2.10 release:
+
+1. DONE: Final testing of ladder rank multipliers
 2. DONE: /ranks ladder moveRank not working
 3. DONE: Forced global refresh of rank multipliers when a ladder multiplier is changed.
   - Should be simple
   - Run as async task
-  - Force update when updating a ladder's multiplier - all players
+  - DONE: Force update when updating a ladder's multiplier - all players
   - DONE: Force update when changing ranks - only targeted player
 4. DONE: Add ladder base cost multiplier to /ranks autoConfigure.  Start with a simple 10%.
   - Include message that it's enabled and how to change it or disable it:
   - /ranks ladder rankCostMultiplier prestiges 0
 5. Add to /ranks player the detail information on rank cost multipliers
+6. DONE: For '/ranks autoConfigure' add an alias to '/prison autoConfigure'
 
+7. Change /ranks list so if non-op it does not show all the extra details.  A simplified list for plain players.
+
+
+### Others
 
 * DONE: Add a rank cost multiplier to ladders.  Sum all active ranks a player has to get the total multiplier to use for rank costs.
 * DONE: Fix the "next rank" value with PlayerRanks.... needs to recalc with the new rank.
@@ -23,14 +30,18 @@ TODOs for v3.2.10 release:
 
 
 
-* Start on mine bombs
+# Start on mine bombs
+
  1. Select size of bomb. Configuration. 
    1a. Identify items to use as bombs
- 2. DONE: Select list of blocks
+   1b. Bomb size
+   1c. Bomb explosion pattern. Currently only sphere, but could include other shapes.
+ 2. DONE: Select list of blocks that will be effected by bomb explosion
  3. Throw bomb, or place bomb... start processing count down.
  4. Pre-fire effects: sound & particles (low priority)
  5. fire event
  6. Post-fire effects: sound & particles (low priority)
+ 7. Hook up prison's event handler for prison's explosion event
 
 
 * Maybe provide a /rankcost command?  Show current player rank costs with rank cost multipliers applied
@@ -41,11 +52,34 @@ TODOs for v3.2.10 release:
  - Will allow players to better understand what rankup costs will be if they prestige twice or 10 times.
 
 
+
+# **Mine Valuation Score** - **MVS** 
+ - Calculate an estimated value for a mine based upon an inventory full.
+ - **Total Blocks** = 2,304 = 9 x 4 x 64
+ - For each block, it's percent chance will be multiplied by the **Total Blocks** to get the number used in valuation.
+ - **BVS** = **Block Valuation Score** will be calculated by how many blocks are represented, times the block's value in /SELLALL
+ - **MVS** = **Rank Cost** divided by sum of all **Block Valuation Scores**
+ - Use block chances to determine amounts of each block. Ignore total stack sizes.
+ - Calculate how many inventory fulls it will take to reach the next rankup cost.
+ - This is a difficult calculation since it is based upon another rank's cost
+ - This will give a score value on Mine Valuation.
+ - MVS 1.0 or less indicates seriously easy and unbalanced.
+ - MVS 20.0 would be normalish range
+ - MVS 50.0 or higher would be considered extreme
+ - Prestiges Valuations should be calculated on the highest rank of the default ladder.
+ -Pickaxe enchantments, such as eff and fortune, will have a huge impact on how fast a player can rankup, but the Mine Valuation cannot take that in to consideration.
+  
+
+### others
+
 * placeholder for total block counts and other playercache stats
 
+* Include sellall costs in block lists
 
 
-**Possible bugs/issues:**
+
+
+# **Possible bugs/issues:**
 
 * DONE: /ranks ladder moveRank did not work to move from one ladder to another
 
@@ -65,7 +99,7 @@ it's unknown why it's happening.
 
 
 
-**Document updates needed:**
+# **Document updates needed:**
 
 1. Document how to use Ladder Rank Cost Multipliers
 
