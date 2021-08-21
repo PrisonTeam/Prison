@@ -78,7 +78,8 @@ public class PlayerRank
 			
 			// Get the player's total rankMultiplier from the default ladder 
 			// because they will always have a rank there:
-			double playerMultipler = player.getRank( "default" ).getRankMultiplier();
+			PlayerRank pRank = player.getRank( "default" );
+			double playerMultipler = pRank == null ? 0 : pRank.getRankMultiplier();
 			
 			// So the actual rank multiplier that needs to be used, is based upon the 
 			// Player's current multiplier PLUS the multiplier for the target rank 
