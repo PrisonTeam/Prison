@@ -1383,6 +1383,7 @@ public class MinesCommands
 	{
     	BulletedListComponent.BulletedListBuilder builder =
     			new BulletedListComponent.BulletedListBuilder();
+    	
     	    	
     	DecimalFormat dFmt = new DecimalFormat("#,##0");
     	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
@@ -1473,8 +1474,12 @@ public class MinesCommands
             	
             	//builder.add(row.getFancy());
             	
+            	if ( m.isVirtual() ) {
+            		
+            		row.addTextComponent( "&6Virtual Mine" );
+            	}
             	
-            	if ( !m.isVirtual() ) {
+            	else {
 //            		RowComponent row2 = new RowComponent();
 //            	row2.addTextComponent( "            &3Rem: " );
             		
@@ -1569,10 +1574,10 @@ public class MinesCommands
 //       	 
 //       	 row.addTextComponent( "&7 - &b");
             		
-            		builder.add(row.getFancy());
             		
             	}
             	
+            	builder.add(row.getFancy());
             	
             	
             	if ( !m.isVirtual() && isMineStatsEnabled ) {
