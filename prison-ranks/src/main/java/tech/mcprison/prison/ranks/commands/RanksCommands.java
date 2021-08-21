@@ -478,6 +478,17 @@ public class RanksCommands
 	        }
 		}
 		
+		int prestigesCount = 0;
+		
+		// add in 10 prestiges at 2 billion each:
+		double prestigeCost = 2000000000;
+		
+		for ( int i = 0; i < 10; i++ ) {
+			String name = "P" + (i + 1);
+			String tag = "&5[&d+" + (i > 0 ? i + 1 : "" ) + "&5]";
+			createRank(sender, name, (prestigeCost * (i + 1) ), "prestiges", tag, "noPlaceholderUpdate");
+			prestigesCount++;
+		}
 		
 		// If mines were created, go ahead and auto assign blocks to the mines:
 		if ( countMines > 0 || countMinesForced > 0 ) {
@@ -540,6 +551,10 @@ public class RanksCommands
 			// message about number of mines that preexisting and were force:
 		}
 
+		if ( prestigesCount > 0 ) {
+			sender.sendMessage( "Created " + prestigesCount + " prestige ranks (temp message)." );
+		}
+		
 		Output.get().logInfo( "");
 		
 		
@@ -1272,6 +1287,16 @@ public class RanksCommands
 
     	PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
 		RankPlayer rankPlayer = pm.getPlayer(player.getUUID(), player.getName());
+		
+		String msg1 = String.format( "&c%s:", rankPlayer.getName() );
+		sendToPlayerAndConsole( sender, msg1 );
+		
+		DecimalFormat fFmt = new DecimalFormat("0.0000");
+		String msg2 = String.format( "  &7Rank Cost Multiplier: &f", 
+						fFmt.format( rankPlayer.getSellAllMultiplier() ));
+		sendToPlayerAndConsole( sender, msg2 );
+
+		
 		
 		if ( rankPlayer != null ) {
 			DecimalFormat dFmt = new DecimalFormat("#,##0.00");

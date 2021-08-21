@@ -25,6 +25,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.13 2021-08-21
 
 
+* **Now `/ranks autoConfigure` creates 10 prestiges ranks.  **
+
+
 * **Have placeholders reload after mines or ranks are created, removed, or renamed.**
 Create mine and create rank now has an option to suppress updating placeholders since commands like autoConfigure will cause tons of messages to be generated.  The placeholders are regenerated after all mines and ranks are created.
 
