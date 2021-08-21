@@ -2167,8 +2167,15 @@ public class MinesCommands
         		"which is useful in void worlds or when flying and can be enlarged with " +
         		"&7/mines set size help&3 . &2[&7wand feet&2]", 
         				def = "wand") String source,
-        @Arg(name = "confirm", description = "If the mine is greater than 20k blocks you will have " +
-        		"to confirm the area.", def = "---") String confirm
+        @Wildcard(join=true)
+        @Arg(name = "options", description = "<width> <bottom> <top> <confirm> " +
+        		"Options and confirmation for large mines. " +
+        		"When setting a mine's area, if you use 'feet' for a source, you can also " +
+        		"specify the <width> of the walls and the <depth> of the mine and the " +
+        		"<top> of the mine.  " +
+        		"If the mine is greater than 20k blocks you will have " +
+        		"to confirm the area with 'confirm' or 'yes' to ensure it does not destroy builds.", 
+        		def = "---") String options
         ) {
     	
     	if (!performCheckMineExists(sender, mineName)) {
@@ -2214,13 +2221,19 @@ public class MinesCommands
         DecimalFormat dFmt = new DecimalFormat("#,##0");
         Bounds selectedBounds = selection.asBounds();
         
-        if ( selectedBounds.getTotalBlockCount() > 20000 && 
-        		(confirm == null || !"yes".equalsIgnoreCase( confirm ) )) {
+        if ( selectedBounds.getTotalBlockCount() > 25000 && 
+        		(options == null || !options.toLowerCase().contains( "confirm" ) ||
+        		!options.toLowerCase().contains( "yes" ))) {
         	String message = String.format( "&7Warning: This mine has a size of %s. If this is " +
-        			"intentional, then please re-submit this command with a confirmation of 'yes' " +
-        			"as a final parameter.  ", dFmt.format( selectedBounds.getTotalBlockCount() ) );
+        			"intentional, then please re-submit this command with adding the " +
+        			"keyword of either 'confirm' or 'yes' to the end of the command. ",
+        			dFmt.format( selectedBounds.getTotalBlockCount() ) );
         	sender.sendMessage( message );
         	return;
+        }
+        else if ( options.toLowerCase().contains( "confirm" ) || 
+        		!options.toLowerCase().contains( "yes" ) ) {
+        	options = options.replace( "(?i)confirm|yes", "" ).trim();
         }
 
         // TODO check to see if they are the same boundaries, if not, don't change...
@@ -2255,6 +2268,44 @@ public class MinesCommands
         
         // adjustSize to zero to reset set all liners:
         m.adjustSize( Edges.walls, 0 );
+        
+        if ( options.length() > 0 ) {
+        	String[] opts = options.split( " " );
+        	
+        	// Try to set the size of the wall: Increase by:
+        	if ( opts.length > 0 ) {
+        		try {
+        			int size = Integer.parseInt( opts[0] );
+        			setSizeCommand( sender, mineName, "walls", size );
+        		}
+        		catch ( Exception e ) {
+        			// ignore error
+        		}
+        	}
+        	
+        	// Try to set the size of the bottom: Increase by:
+        	if ( opts.length > 1 ) {
+        		try {
+        			int size = Integer.parseInt( opts[1] );
+        			setSizeCommand( sender, mineName, "bottom", size );
+        		}
+        		catch ( Exception e ) {
+        			// ignore error
+        		}
+        	}
+        	
+        	// Try to set the size of the wall: Increase by:
+        	if ( opts.length > 2 ) {
+        		try {
+        			int size = Integer.parseInt( opts[2] );
+        			setSizeCommand( sender, mineName, "top", size );
+        		}
+        		catch ( Exception e ) {
+        			// ignore error
+        		}
+        	}
+        	
+        }
     }
 
     

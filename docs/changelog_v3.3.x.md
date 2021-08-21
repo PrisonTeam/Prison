@@ -22,7 +22,13 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.10-alpha.13 2021-08-20
+# v3.2.10-alpha.13 2021-08-21
+
+
+
+* **Command '/mines set area' fixed confirmation to use yes or confirm.**
+Added the ability to set size when using feet.  The size is what is used with the '/mines set size' command.  So 20 width is really 41 since it's adding 40 blocks in all directions.
+
 
 
 * **Redesign the /mines info command to reduce and compact the listing.**
