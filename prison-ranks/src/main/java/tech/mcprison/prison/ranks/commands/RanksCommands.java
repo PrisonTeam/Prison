@@ -481,8 +481,8 @@ public class RanksCommands
 		
 		int prestigesCount = 0;
 		
-		// add in 10 prestiges at 2 billion each:
-		double prestigeCost = 2000000000;
+		// add in 10 prestiges at 1 billion each:
+		double prestigeCost = 1000000000;
 		
 		for ( int i = 0; i < 10; i++ ) {
 			String name = "P" + (i + 1);

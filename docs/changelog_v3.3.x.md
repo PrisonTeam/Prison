@@ -25,6 +25,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.13 2021-08-21
 
 
+* **Decrease the autoConfigure's prestige costs from 2 B to just 1 B.**
+
+
 * **Reload auto features after running ranks autoconfigure to enable the auto pickup.**
 It wasn't working right after generating the mines.
 
