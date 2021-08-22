@@ -2249,7 +2249,8 @@ public class SpigotPlatform
 		
 		ChatDisplay display = new ChatDisplay("Ranks");
 		
-		rc.listAllRanksByLadders( display, true );
+		RankPlayer rPlayer = null;
+		rc.listAllRanksByLadders( display, true, rPlayer );
 		
 		StringBuilder sb = display.toStringBuilder();
 		

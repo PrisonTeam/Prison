@@ -655,15 +655,18 @@ public class RanksCommands
 //            }
 //        }
         
+        RankPlayer rPlayer = 
+        		PrisonRanks.getInstance().getPlayerManager().getPlayer( getPlayer(sender) );
+        
         ChatDisplay display = null;
         
         if ( ladder != null ) {
-        	display = listRanksOnLadder( ladder, hasPerm );
+        	display = listRanksOnLadder( ladder, hasPerm, rPlayer );
         }
         else {
         	display = new ChatDisplay( "List ALL Ranks" );
         	
-        	listAllRanksByLadders( display, hasPerm );
+        	listAllRanksByLadders( display, hasPerm, rPlayer );
         }
         
 
@@ -704,7 +707,7 @@ public class RanksCommands
 
     }
 
-	public void listAllRanksByLadders( ChatDisplay display, boolean hasPerm )
+	public void listAllRanksByLadders( ChatDisplay display, boolean hasPerm, RankPlayer rPlayer )
 	{
 //		List<RankLadder> ladders = PrisonRanks.getInstance().getLadderManager().getLadders();
 		
@@ -729,7 +732,7 @@ public class RanksCommands
     		List<Rank> ladderRanks = ladder.getRanks();
     		ranksIncluded.addAll( ladderRanks );
     		
-    		ChatDisplay cDisp = listRanksOnLadder( ladder, hasPerm );
+    		ChatDisplay cDisp = listRanksOnLadder( ladder, hasPerm, rPlayer );
 			
 			if ( display == null ) {
 				display = cDisp;
@@ -754,7 +757,7 @@ public class RanksCommands
     			noLadder.addRank( rank );
 			}
     		
-    		ChatDisplay cDisp = listRanksOnLadder( noLadder, hasPerm );
+    		ChatDisplay cDisp = listRanksOnLadder( noLadder, hasPerm, rPlayer );
 			
 			if ( display == null ) {
 				display = cDisp;
@@ -818,7 +821,7 @@ public class RanksCommands
 		
 	}
 
-	private ChatDisplay listRanksOnLadder( RankLadder ladder, boolean hasPerm )
+	private ChatDisplay listRanksOnLadder( RankLadder ladder, boolean hasPerm, RankPlayer rPlayer )
 	{
 		String rankHeader = ranksListHeaderMsg( ladder.getName() );
         ChatDisplay display = new ChatDisplay( rankHeader );
@@ -880,11 +883,34 @@ public class RanksCommands
 //        	String tagNoColor = Text.stripColor( tag );
         	
         	
+        	// If rank list is being generated for a console or op'd player, then show the ladder's rank multiplier,
+        	// but if generating for a player, then show total multiplier accross all ladders.
+        	PlayerRank pRank = null;
+        	double rankCost = 0;
+        	double rMulti = 0;
+        	
+        	if ( hasPerm || rPlayer == null ) {
+        		
+        		rankCost = PlayerRank.getRawRankCost( rank );
+        		rMulti = PlayerRank.getLadderBaseRankdMultiplier( rank );
+
+        	}
+        	else {
+        		pRank = PlayerRank.getTargetPlayerRankForPlayer( rPlayer, rank );
+        		rankCost = pRank.getRankCost();
+        		
+        		rMulti = pRank.getRankMultiplier();
+        	}
+        	
+        	
+        	
         	String textCmdCount = ( hasPerm ? 
         			ranksListCommandCountMsg(rank.getRankUpCommands().size())
         			: "" );
         	String textCurrency = (rank.getCurrency() == null ? "" : 
         		ranksListCurrencyMsg( rank.getCurrency() ));
+        	
+        	String rankMultiplier = rMulti == 0d ? "" : fFmt.format( rMulti );
         	
         	String players = rank.getPlayers().size() == 0 ? "" : 
         		" &dPlayers: &3" + rank.getPlayers().size();
@@ -899,10 +925,10 @@ public class RanksCommands
         	String text =
         			String.format("&3%s &7%-17s%s&7 &b%s &3%s %s&7 %s%s", 
         					textRankNameString, 
-        					Text.numberToDollars( PlayerRank.getRawRankCost( rank ) ),
+        					Text.numberToDollars( rankCost ),
         					(defaultRank ? "{def}" : ""),
         					
-        					fFmt.format( PlayerRank.getLadderBaseRankdMultiplier( rank ) ),
+        					rankMultiplier,
         					
         					rawRankId,
         					
@@ -942,7 +968,7 @@ public class RanksCommands
         display.addComponent(builder.build());
         
         
-        if ( hasPerm ) {
+        if ( hasPerm && !"No Ladder".equals( ladder.getName() ) ) {
         	
         	RowComponent row = new RowComponent();
         	
@@ -970,6 +996,47 @@ public class RanksCommands
         	
         }
 
+        if ( rPlayer != null && !"No Ladder".equals( ladder.getName() ) ) {
+        	double ladderMultiplier = ladder.getRankCostMultiplierPerRank();
+        	double playerMultiplier = rPlayer.getRank( ladder ) != null ? rPlayer.getRank( ladder ).getRankMultiplier() : 0;
+        	
+        	if ( playerMultiplier == 0 ) {
+        		display.addText( "&3You have no Ladder Rank Multipliers enabled. The rank costs are not adjusted." );
+        	}
+        	else {
+        		display.addText( "&3Your current total Rank Multiplier: &7%s.", 
+        				fFmt.format( playerMultiplier ) );
+        		
+        		if ( ladderMultiplier == 0 ) {
+        			display.addText( "&3This ladder has no Rank Multiplier so all ranks on this ladder " +
+        					"have the same multiplier." );
+        		} 
+        		else {
+        			display.addText( "&3This ladder has a Rank Multiplier so each rank has " + 
+        					"a differnt multiplier." );
+        		}
+        		
+        		Set<RankLadder> ladders = rPlayer.getLadderRanks().keySet();
+        		for ( RankLadder rLadder : ladders ) {
+					if ( rLadder.getRankCostMultiplierPerRank() != 0d ) {
+						
+						Rank r = rPlayer.getLadderRanks().get( rLadder ).getRank();
+						display.addText( "&3  BaseMult: &7%7s  &3CurrMult: &7%7s  &7%s  &7%s  ", 
+								fFmt.format( rLadder.getRankCostMultiplierPerRank() ),
+								fFmt.format( PlayerRank.getLadderBaseRankdMultiplier( r )),
+								rLadder.getName(), 
+								r.getTag()
+								);
+						
+//						display.addText( "&3  Ladder: &7%-9s  &3Rank: &7%-8s  &3Base Mult: %7s", 
+//								rLadder.getName(), 
+//								rPlayer.getLadderRanks().get( rLadder ).getRank().getTag(),
+//								fFmt.format( rLadder.getRankCostMultiplierPerRank() ) );
+					}
+				}
+        	}
+        	
+        }
         
 		return display;
 	}
