@@ -63,6 +63,13 @@ public class AutoFeaturesFileConfig {
 		    	isProcessPrisonEnchantsExplosiveEvents(blockBreakEvents, false),
 		    	PrisonEnchantsExplosiveEventPriority(blockBreakEvents, "DISABLED"),
 		    	
+		    	isProcessPrisons_ExplosiveBlockBreakEvents(blockBreakEvents, false),
+		    	ProcessPrisons_ExplosiveBlockBreakEvents(blockBreakEvents, "DISABLED"),
+		    	
+		    	
+		    	blockBreakEvents__ReadMe(blockBreakEvents, 
+		    			"Use the following event priorities with the blockBreakEvents: " +
+		    			"DISABLED, LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR" ),
 		    	
 	    	general(options),
 	    	
@@ -217,6 +224,13 @@ public class AutoFeaturesFileConfig {
 		    	blockGlowstone(blockFeature, true),
 		    	blockCopperBlock(blockFeature, true),
 		    	
+		    	
+//		    eventInjector(options),
+//		    	eventInjectorEnabled(eventInjector, false),
+//		    	
+//		    	eventInjectorData(eventInjector),
+		    	
+		    
 		    	
 	    	debug(options),
 	    		isDebugSupressOnBlockBreakEventCancels(debug, false),

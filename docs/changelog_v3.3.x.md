@@ -25,6 +25,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.14b 2021-08-22
 
 
+* **Added support for Prison's own ExplosiveBlockBreakEvent.**
+This will be used for Prison's up coming Prison Bombs.  Also this can be used by other plugins too.
+
+
 * **Update the PrisonEnchants code for handing their PEExplosionEvent object.**
 
 
