@@ -1083,10 +1083,10 @@ public class RanksCommands
 //            display.addText("&8[Admin Only]");
             display.addText( ranksInfoRankIdMsg( rank.getId() ));
 
-            FancyMessage del =
-                new FancyMessage( ranksInfoRankDeleteMessageMsg() ) // .command("/ranks delete " + rank.getName())
-                    .tooltip( ranksInfoRankDeleteToolTipMsg() );
-            display.addComponent(new FancyMessageComponent(del));
+//            FancyMessage del =
+//                new FancyMessage( ranksInfoRankDeleteMessageMsg() ).command("/ranks delete " + rank.getName())
+//                    .tooltip( ranksInfoRankDeleteToolTipMsg() );
+//            display.addComponent(new FancyMessageComponent(del));
         }
         
         if ( isOp && options != null && "all".equalsIgnoreCase( options )) {
@@ -1476,9 +1476,10 @@ public class RanksCommands
 //			}
 //			sender.sendMessage( message );
 			
-		} else {
-			ranksPlayerNoRanksFoundMsg( sender, player.getDisplayName() );
 		}
+//		else {
+//			ranksPlayerNoRanksFoundMsg( sender, player.getDisplayName() );
+//		}
     }
 
     
