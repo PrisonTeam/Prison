@@ -22,7 +22,13 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.10-alpha.13 2021-08-21
+# v3.2.10-alpha.14 2021-08-21
+
+
+* **Added virtual checks to prevent placeholders from trying to access mine features that do not exist.**
+
+
+* **v3.2.10-alpha.14 2021-08-21**
 
 
 * **reduce what is shown on /rank if for non-op players.**

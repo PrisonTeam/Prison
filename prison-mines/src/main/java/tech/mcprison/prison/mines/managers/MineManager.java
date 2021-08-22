@@ -830,6 +830,7 @@ public class MineManager
 					case prison_mines_timeleft_playermines:
 						// NOTE: timeleft can vary based upon server loads:
 						
+						if ( !mine.isVirtual() )
 						{
 	        				if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
 	        					PlaceholderAttributeNumberFormat attributeNF = 
@@ -847,8 +848,10 @@ public class MineManager
 					case prison_mtlb_pm:
 					case prison_mines_timeleft_bar_playermines:
 						// NOTE: timeleft can vary based upon server loads:
+						if ( !mine.isVirtual() ) {
+							results = getRemainingTimeBar( mine, attribute );
+						}
 						
-						results = getRemainingTimeBar( mine, attribute );
 						break;
 						
 					case prison_mtlf_minename:
@@ -857,6 +860,7 @@ public class MineManager
 					case prison_mines_timeleft_formatted_playermines:
 						// NOTE: timeleft can vary based upon server loads:
 						
+						if ( !mine.isVirtual() )
 						{
 	        				if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
 	        					PlaceholderAttributeNumberFormat attributeNF = 
@@ -874,6 +878,8 @@ public class MineManager
 					case prison_mines_size_minename:
 					case prison_ms_pm:
 					case prison_mines_size_playermines:
+						
+						if ( !mine.isVirtual() )
 						{
 	        				if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
 	        					PlaceholderAttributeNumberFormat attributeNF = 
@@ -892,17 +898,21 @@ public class MineManager
 					case prison_mines_remaining_minename:
 					case prison_mr_pm:
 					case prison_mines_remaining_playermines:
-						int remainingBlocks = mine.getRemainingBlockCount();
-						{
-	        				if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
-	        					PlaceholderAttributeNumberFormat attributeNF = 
-	        													(PlaceholderAttributeNumberFormat) attribute;
-	        					results = attributeNF.format( (long) remainingBlocks );
-	        				}
-	        				else {
-	        					
-	        					results = iFmt.format( remainingBlocks );
-	        				}
+						
+						if ( !mine.isVirtual() ) {
+							
+							int remainingBlocks = mine.getRemainingBlockCount();
+							{
+								if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+									PlaceholderAttributeNumberFormat attributeNF = 
+											(PlaceholderAttributeNumberFormat) attribute;
+									results = attributeNF.format( (long) remainingBlocks );
+								}
+								else {
+									
+									results = iFmt.format( remainingBlocks );
+								}
+							}
 						}
 
 						break;
@@ -911,12 +921,16 @@ public class MineManager
 					case prison_mines_remaining_bar_minename:
 					case prison_mrb_pm:
 					case prison_mines_remaining_bar_playermines:
-						int totalBlocks = mine.getBounds().getTotalBlockCount();
-						int blocksRemaining = mine.getRemainingBlockCount();
 						
-						results = Prison.get().getPlaceholderManager().
+						if ( !mine.isVirtual() ) {
+							
+							int totalBlocks = mine.getBounds().getTotalBlockCount();
+							int blocksRemaining = mine.getRemainingBlockCount();
+							
+							results = Prison.get().getPlaceholderManager().
 									getProgressBar( ((double) blocksRemaining), ((double) totalBlocks), 
 											false, attribute );
+						}
 						break;
 						
 					case prison_mp_minename:
@@ -924,14 +938,19 @@ public class MineManager
 					case prison_mp_pm:
 					case prison_mines_percent_playermines:
 						// mine.refreshAirCount(); // async & delayed : Very high cost
-						double percentRemaining = mine.getPercentRemainingBlockCount();
-						results = dFmt.format( percentRemaining );
+						
+						if ( !mine.isVirtual() ) {
+							
+							double percentRemaining = mine.getPercentRemainingBlockCount();
+							results = dFmt.format( percentRemaining );
+						}
 						break;
 						
 					case prison_mpc_minename:
 					case prison_mines_player_count_minename:
 					case prison_mpc_pm:
 					case prison_mines_player_count_playermines:
+						if ( !mine.isVirtual() )
 						{
 	        				if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
 	        					PlaceholderAttributeNumberFormat attributeNF = 
@@ -949,6 +968,7 @@ public class MineManager
 					case prison_mines_blocks_mined_minename:
 					case prison_mbm_pm:
 					case prison_mines_blocks_mined_playermines:
+						if ( !mine.isVirtual() )
 						{
 	        				if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
 	        					PlaceholderAttributeNumberFormat attributeNF = 
@@ -985,6 +1005,7 @@ public class MineManager
 						
 					case prison_top_mine_block_line_header_minename:
 					case prison_tmbl_header_minename:
+						if ( !mine.isVirtual() )
 						{
 							results = "BlockName     Chance   Placed Remaining   Totals";
 						}
@@ -993,6 +1014,7 @@ public class MineManager
 						
 					case prison_top_mine_block_line_nnn_minename:
 					case prison_tmbl_nnn_minename:
+						if ( !mine.isVirtual() )
 						{
 							List<PrisonBlock> blocks = mine.getPrisonBlocks();
 							if ( sequence > 0 && sequence <= blocks.size() ) {
@@ -1019,6 +1041,7 @@ public class MineManager
 						
 					case prison_top_mine_block_line_totals_minename:
 					case prison_tmbl_totals_minename:
+						if ( !mine.isVirtual() )
 						{
 							List<PrisonBlock> blocks = mine.getPrisonBlocks();
 
@@ -1053,6 +1076,7 @@ public class MineManager
 						
 					case prison_top_mine_block_name_nnn_minename:
 					case prison_tmbn_nnn_minename:
+						if ( !mine.isVirtual() )
 						{
 							List<PrisonBlock> blocks = mine.getPrisonBlocks();
 							if ( sequence > 0 && sequence <= blocks.size() ) {
@@ -1067,6 +1091,7 @@ public class MineManager
 						
 					case prison_top_mine_block_chance_nnn_minename:
 					case prison_tmbc_nnn_minename:
+						if ( !mine.isVirtual() )
 						{
 							List<PrisonBlock> blocks = mine.getPrisonBlocks();
 							if ( sequence > 0 && sequence <= blocks.size() ) {
@@ -1089,6 +1114,7 @@ public class MineManager
 						
 					case prison_top_mine_block_placed_nnn_minename:
 					case prison_tmbpl_nnn_minename:
+						if ( !mine.isVirtual() )
 						{
 							List<PrisonBlock> blocks = mine.getPrisonBlocks();
 							if ( sequence > 0 && sequence <= blocks.size() ) {
@@ -1111,6 +1137,7 @@ public class MineManager
 						
 					case prison_top_mine_block_remaing_nnn_minename:
 					case prison_tmbr_nnn_minename:
+						if ( !mine.isVirtual() )
 						{
 							List<PrisonBlock> blocks = mine.getPrisonBlocks();
 							if ( sequence > 0 && sequence <= blocks.size() ) {
@@ -1134,6 +1161,7 @@ public class MineManager
 						
 					case prison_top_mine_block_remaing_bar_nnn_minename:
 					case prison_tmbrb_nnn_minename:
+						if ( !mine.isVirtual() )
 						{
 							List<PrisonBlock> blocks = mine.getPrisonBlocks();
 							if ( sequence > 0 && sequence <= blocks.size() ) {
@@ -1153,6 +1181,7 @@ public class MineManager
 						
 					case prison_top_mine_block_total_nnn_minename:
 					case prison_tmbt_nnn_minename:
+						if ( !mine.isVirtual() )
 						{
 							List<PrisonBlock> blocks = mine.getPrisonBlocks();
 							if ( sequence > 0 && sequence <= blocks.size() ) {
@@ -1176,6 +1205,7 @@ public class MineManager
 						
     				case prison_pbt:
     				case prison_player_blocks_total:
+    					if ( !mine.isVirtual() )
     					{
     						long blocksTotal = PlayerCache.getInstance().getPlayerBlocksTotal( player );
     						
@@ -1194,6 +1224,7 @@ public class MineManager
 						
 					case prison_pbtm:
 					case prison_player_blocks_total_minename:
+						if ( !mine.isVirtual() )
 						{
     						long blocksTotalByMine = PlayerCache.getInstance()
     												.getPlayerBlocksTotalByMine( player, mine.getName() );
@@ -1216,7 +1247,7 @@ public class MineManager
 						break;
 				}
 				
-				if ( attribute != null && attribute instanceof PlaceholderAttributeText ) {
+				if ( results != null && attribute != null && attribute instanceof PlaceholderAttributeText ) {
 					PlaceholderAttributeText attributeText = (PlaceholderAttributeText) attribute;
 					
 					results = attributeText.format( results );
@@ -1392,8 +1423,6 @@ public class MineManager
 //						(player == null ? "(null)" : player.getName()), placeHolderKey.getPlaceholder().name(),
 //						player.getLocation().toBlockCoordinates() );
 		
-		if ( mine != null ) {
-		}
 		results = getTranslateMinesPlaceHolder( player, placeHolderKey, mine, 
 				attribute, position );
 		
