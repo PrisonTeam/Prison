@@ -25,6 +25,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.14b 2021-08-22
 
 
+* **Some adjustments to `/ranks list` to remove "admin stuff" from the list for non-admins.**
+
+
 * **v3.2.10-alpha.14b 2021-08-22**
 
 

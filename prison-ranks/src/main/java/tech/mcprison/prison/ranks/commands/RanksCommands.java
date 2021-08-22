@@ -624,14 +624,14 @@ public class RanksCommands
     @Command(identifier = "ranks list", description = "Lists all the ranks on the server by" +
     		"ladder.  If 'all' is used instead of a ladder name, then it will print all " +
     		"ranks.", 
-    							onlyPlayers = false, altPermissions = "ranks.list"
+    			onlyPlayers = false, altPermissions = "ranks.list"
     							)
     public void listRanks(CommandSender sender,
         @Arg(name = "ladderName", def = "default", 
         	description = "A ladder name, or 'all' to list all ranks by ladder.") String ladderName) {
 
     	boolean hasPerm = sender.hasPermission("ranks.list") ||
-    					sender.isOp();
+    					sender.isOp() || !sender.isPlayer();
     	
         RankLadder ladder =
         			PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
@@ -840,14 +840,46 @@ public class RanksCommands
         
         DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
         
+        // Here's the deal... With color codes, Java's String.format() cannot detect the correct
+        // length of a tag. So go through all tags, strip the colors, and see how long they are.
+        // We need to know the max length so we can pad the others with periods to align all costs.
+        int maxRankNameSize = 0;
+        int maxRankTagNoColorSize = 0;
+        for (Rank rank : ladder.getRanks()) {
+        	if ( rank.getName().length() > maxRankNameSize ) {
+        		maxRankNameSize = rank.getName().length();
+        	}
+        	String tag = rank.getTag() == null ? "" : rank.getTag();
+        	String tagNoColor = Text.stripColor( tag );
+        	if ( tagNoColor.length() > maxRankTagNoColorSize ) {
+        		maxRankTagNoColorSize = tagNoColor.length();
+        	}
+        }
+        
+        
         boolean first = true;
         for (Rank rank : ladder.getRanks()) {
         	
         	boolean defaultRank = ("default".equalsIgnoreCase( ladder.getName() ) && first);
         	
-        	String textRankName = ( hasPerm ?
-        			String.format( "&3%s " , rank.getName() )
-        			: "");
+        	
+        	// Since the formatting gets confused with color formatting, we must 
+        	// strip the color codes and then inject them back in.  So instead, this
+        	// provides the formatting rules for both name and rank tag, thus 
+        	// taking in to consideration the color codes and if the hasPerms is
+        	// true. To prevent variable space issues, the difference is filled in with periods.
+        	String textRankNameString = padRankName( rank, maxRankNameSize, maxRankTagNoColorSize, hasPerm );
+        	
+//        	// trick it to deal correctly with tags.  Tags can have many colors, but
+//        	// it will render as if it had the colors stripped.  So first generate the
+//        	// formatted text with tagNoColor, then replace the no color tag with the
+//        	// normal tag.
+//        	// If tag is null, show it as an empty String.  Normally rank name will
+//        	// be used, but at least this show's it is not set.
+//        	String tag = rank.getTag() == null ? "" : rank.getTag();
+//        	String tagNoColor = Text.stripColor( tag );
+        	
+        	
         	String textCmdCount = ( hasPerm ? 
         			ranksListCommandCountMsg(rank.getRankUpCommands().size())
         			: "" );
@@ -857,41 +889,34 @@ public class RanksCommands
         	String players = rank.getPlayers().size() == 0 ? "" : 
         		" &dPlayers: &3" + rank.getPlayers().size();
         	
-        	
-        	// Since the formatting gets confused with color formatting, we must 
-        	// trick it to deal correctly with tags.  Tags can have many colors, but
-        	// it will render as if it had the colors stripped.  So first generate the
-        	// formatted text with tagNoColor, then replace the no color tag with the
-        	// normal tag.
-        	// If tag is null, show it as an empty String.  Normally rank name will
-        	// be used, but at least this show's it is not set.
-        	String tag = rank.getTag() == null ? "" : rank.getTag();
-        	String tagNoColor = Text.stripColor( tag );
+        	String rawRankId = ( hasPerm ?
+        			String.format( "(rankId: %s%s%s)",
+        					Integer.toString( rank.getId() ),
+        					(rank.getRankPrior() == null ? "" : " -"),
+        					(rank.getRankNext() == null ? "" : " +") )
+        			: "");
         	
         	String text =
-        			String.format("%-8s &3%-8s %s&7%17s &b%s &3(rankId: %s%s%s) %s&7 %s%s", 
-        					textRankName, 
-        					tagNoColor, 
-        					(defaultRank ? "{def}" : ""),
+        			String.format("&3%s &7%-17s%s&7 &b%s &3%s %s&7 %s%s", 
+        					textRankNameString, 
         					Text.numberToDollars( PlayerRank.getRawRankCost( rank ) ),
+        					(defaultRank ? "{def}" : ""),
         					
         					fFmt.format( PlayerRank.getLadderBaseRankdMultiplier( rank ) ),
         					
-        					Integer.toString( rank.getId() ),
-        					(rank.getRankPrior() == null ? "" : " -"),
-        					(rank.getRankNext() == null ? "" : " +"),
+        					rawRankId,
         					
         					textCurrency,
         					textCmdCount,
         					players
         					);
         	
-        	// Swap the color tag back in:
-        	text = text.replace( tagNoColor, tag );
+//        	// Swap the color tag back in:
+//        	text = text.replace( tagNoColor, tag );
         	
         	if ( defaultRank ) {
         		// Swap out the default placeholder for the actual content:
-        		text = text.replace( " {def}&7        ", "&c(&9Default&c)&7" );
+        		text = text.replace( "{def}", "&c(&9Default&c)" );
         	}
         	
         	String rankName = rank.getName();
@@ -949,7 +974,29 @@ public class RanksCommands
 		return display;
 	}
 
-    @Command(identifier = "ranks info", description = "Information about a rank.  Use of the option of 'ALL' then " +
+	private String padRankName( Rank rank, int maxRankNameSize, int maxRankTagNoColorSize, boolean hasPerm ) {
+		return padRankName( rank.getName(), rank.getTag(), maxRankNameSize, maxRankTagNoColorSize, hasPerm );
+	}
+    protected String padRankName( String rankName, String rankTag, int maxRankNameSize, int maxRankTagNoColorSize, boolean hasPerm )
+	{
+    	StringBuilder sb = new StringBuilder();
+    	
+    	int tLen = (hasPerm ? maxRankNameSize + 1 : 0) + maxRankTagNoColorSize;
+    	String name = hasPerm ? rankName + " " : "";
+    	String tag = rankTag == null ? "" : rankTag;
+    	String tagNoColor = Text.stripColor( tag );
+    	
+    	sb.append( name ).append( tag ).append( "&8" );
+    	
+    	int length = name.length() + tagNoColor.length();
+    	while ( length++ < tLen ) {
+    		sb.append( "." );
+    	}
+    	
+		return sb.toString();
+	}
+
+	@Command(identifier = "ranks info", description = "Information about a rank.  Use of the option of 'ALL' then " +
     							"rank commands will be included too.", 
     							onlyPlayers = false, permissions = "ranks.info", 
     							altPermissions = "ranks.admin" )
