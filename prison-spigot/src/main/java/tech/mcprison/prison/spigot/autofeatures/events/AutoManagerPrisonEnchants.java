@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
 
-import me.pulsi_.prisonenchants.events.PrisonExplosionEvent;
+import me.pulsi_.prisonenchants.events.PEExplosionEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.output.ChatDisplay;
@@ -39,7 +39,10 @@ public class AutoManagerPrisonEnchants
 		implements Listener {
 		
 		@EventHandler(priority=EventPriority.NORMAL) 
-		public void onPrisonEnchantsExplosiveEvent(PrisonExplosionEvent e) {
+		public void onPrisonEnchantsExplosiveEvent(PEExplosionEvent e) {
+			
+//			me.pulsi_.prisonenchants.events.PEExplosionEvent
+			
 			genericBlockExplodeEventAutoManager( e );
 		}
 	}
@@ -49,7 +52,7 @@ public class AutoManagerPrisonEnchants
 	    implements Listener {
 		
 		@EventHandler(priority=EventPriority.NORMAL) 
-		public void onPrisonEnchantsExplosiveEvent(PrisonExplosionEvent e) {
+		public void onPrisonEnchantsExplosiveEvent(PEExplosionEvent e) {
 			genericBlockExplodeEvent( e );
 		}
 	}
@@ -59,7 +62,7 @@ public class AutoManagerPrisonEnchants
 		implements Listener {
 		
 		@EventHandler(priority=EventPriority.MONITOR) 
-		public void onPrisonEnchantsExplosiveEvent(PrisonExplosionEvent e) {
+		public void onPrisonEnchantsExplosiveEvent(PEExplosionEvent e) {
 			genericBlockExplodeEventMonitor( e );
 		}
 	}
@@ -106,11 +109,11 @@ public class AutoManagerPrisonEnchants
 						AutoManagerExplosiveEventListener autoManagerlListener = 
 								new AutoManagerExplosiveEventListener();
 						
-						pm.registerEvent(PrisonExplosionEvent.class, autoManagerlListener, ePriority,
+						pm.registerEvent(PEExplosionEvent.class, autoManagerlListener, ePriority,
 								new EventExecutor() {
 							public void execute(Listener l, Event e) { 
 								((AutoManagerExplosiveEventListener)l)
-								.onPrisonEnchantsExplosiveEvent((PrisonExplosionEvent)e);
+								.onPrisonEnchantsExplosiveEvent((PEExplosionEvent)e);
 							}
 						},
 								prison);
@@ -120,22 +123,22 @@ public class AutoManagerPrisonEnchants
 					OnBlockBreakExplosiveEventListener normalListener = 
 							new OnBlockBreakExplosiveEventListener();
 					
-					pm.registerEvent(PrisonExplosionEvent.class, normalListener, ePriority,
+					pm.registerEvent(PEExplosionEvent.class, normalListener, ePriority,
 							new EventExecutor() {
 						public void execute(Listener l, Event e) { 
 							((OnBlockBreakExplosiveEventListener)l)
-							.onPrisonEnchantsExplosiveEvent((PrisonExplosionEvent)e);
+							.onPrisonEnchantsExplosiveEvent((PEExplosionEvent)e);
 						}
 					},
 							prison);
 					prison.getRegisteredBlockListeners().add( normalListener );
 				}
 				
-				pm.registerEvent(PrisonExplosionEvent.class, normalListenerMonitor, EventPriority.MONITOR,
+				pm.registerEvent(PEExplosionEvent.class, normalListenerMonitor, EventPriority.MONITOR,
 						new EventExecutor() {
 					public void execute(Listener l, Event e) { 
 						((OnBlockBreakExplosiveEventListenerMonitor)l)
-										.onPrisonEnchantsExplosiveEvent((PrisonExplosionEvent)e);
+										.onPrisonEnchantsExplosiveEvent((PEExplosionEvent)e);
 					}
 				},
 				prison);
@@ -199,7 +202,7 @@ public class AutoManagerPrisonEnchants
 
 			ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
 					"ExplosiveEvent", 
-					new SpigotHandlerList( PrisonExplosionEvent.getHandlerList()) );
+					new SpigotHandlerList( PEExplosionEvent.getHandlerList()) );
 
 			if ( eventDisplay != null ) {
 				sb.append( eventDisplay.toStringBuilder() );
