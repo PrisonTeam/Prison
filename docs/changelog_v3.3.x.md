@@ -25,6 +25,10 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.14 2021-08-21
 
 
+* **Hook up the process to have all unjoined players added to prison by giving them the default rank.**
+This is also ran now at the end of the /ranks autoConfigure to ensure all players are hooked up as soon as the default ladder and it's ranks exists.
+
+
 * **Player join bug: Fixed a bug... if a player is not on the default ladder, then this was preventing them from being added.**
 
 

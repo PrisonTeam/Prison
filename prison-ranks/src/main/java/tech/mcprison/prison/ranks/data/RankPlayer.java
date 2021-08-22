@@ -548,17 +548,21 @@ public class RankPlayer
     	
     	if ( targetRank != null && targetRank.getLadder() != null ) {
     		
-    		Rank rank = getRank( targetRank.getLadder() ).getRank();
-    		if ( rank != null && 
-    				rank.getLadder().equals( targetRank.getLadder() ) ) {
+    		PlayerRank pRank = getRank( targetRank.getLadder() );
+    		if ( pRank != null ) {
     			
-    			hasAccess = rank.equals( targetRank );
-    			Rank priorRank = rank.getRankPrior();
-    			
-    			while ( !hasAccess && priorRank != null ) {
+    			Rank rank = pRank.getRank();
+    			if ( rank != null && 
+    					rank.getLadder().equals( targetRank.getLadder() ) ) {
     				
-    				hasAccess = priorRank.equals( targetRank );
-    				priorRank = priorRank.getRankPrior();
+    				hasAccess = rank.equals( targetRank );
+    				Rank priorRank = rank.getRankPrior();
+    				
+    				while ( !hasAccess && priorRank != null ) {
+    					
+    					hasAccess = priorRank.equals( targetRank );
+    					priorRank = priorRank.getRankPrior();
+    				}
     			}
     		}
     	}

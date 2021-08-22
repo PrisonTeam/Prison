@@ -201,8 +201,39 @@ public class PrisonRanks
 
         
         
+        // Check all players to see if any need to join:
+        checkAllPlayersForJoin();
         
-        // If there is a default rank on the default ladder, then
+        
+        
+        // Load up all else
+
+        new FirstJoinHandler();
+        new ChatHandler();
+        ConversionManager.getInstance().registerConversionAgent(new RankConversionAgent());
+
+
+        logStartupMessage( prisonRanksStatusLoadedRanksMsg( getRankCount() ) );
+        
+        logStartupMessage( prisonRanksStatusLoadedLaddersMsg( getladderCount() ) );
+        
+        logStartupMessage( prisonRanksStatusLoadedPlayersMsg( getPlayersCount() ) );
+        
+
+        // Display all Ranks in each ladder:
+        PrisonRanks.getInstance().getRankManager().ranksByLadders( RanksByLadderOptions.allRanks );
+//    	boolean includeAll = true;
+//    	PrisonRanks.getInstance().getRankManager().ranksByLadders( includeAll );
+        
+    }
+
+
+	public void checkAllPlayersForJoin()
+	{
+		
+		RankUpCommand rankupCommands = rankManager.getRankupCommands();
+		
+		// If there is a default rank on the default ladder, then
         // check to see if there are any players not in prison: add them:
         RankLadder defaultLadder = getLadderManager().getLadder( "default" );
         if ( defaultLadder != null && defaultLadder.getRanks().size() > 0 ) {
@@ -264,29 +295,7 @@ public class PrisonRanks
         		Output.get().logInfo( prisonRankAddedAndFixedPlayers( addedPlayers, fixedPlayers ) );
         	}
         }
-        
-        
-        
-        // Load up all else
-
-        new FirstJoinHandler();
-        new ChatHandler();
-        ConversionManager.getInstance().registerConversionAgent(new RankConversionAgent());
-
-
-        logStartupMessage( prisonRanksStatusLoadedRanksMsg( getRankCount() ) );
-        
-        logStartupMessage( prisonRanksStatusLoadedLaddersMsg( getladderCount() ) );
-        
-        logStartupMessage( prisonRanksStatusLoadedPlayersMsg( getPlayersCount() ) );
-        
-
-        // Display all Ranks in each ladder:
-        PrisonRanks.getInstance().getRankManager().ranksByLadders( RanksByLadderOptions.allRanks );
-//    	boolean includeAll = true;
-//    	PrisonRanks.getInstance().getRankManager().ranksByLadders( includeAll );
-        
-    }
+	}
 
 
     /**

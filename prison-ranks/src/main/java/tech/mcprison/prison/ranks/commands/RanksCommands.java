@@ -534,6 +534,16 @@ public class RanksCommands
 		
 		AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig().reloadConfig();
 		
+		
+		// Reset all player to the first rank on the default ladder:
+		PrisonRanks.getInstance().checkAllPlayersForJoin();
+		
+//		RankLadder defaultLadder = PrisonRanks.getInstance().getLadderManager().getLadder( "default" );
+//		Rank defaultRank = defaultLadder.getLowestRank().get();
+//		PrisonRanks.getInstance().getRankManager().getRankupCommands()
+//				.setRank( sender, "*all*", "*join*", defaultLadder.getName() );
+		
+		
 		if ( countRanksForced > 0 ) {
 			// message about number of ranks that preexisting and were force:
 		}
