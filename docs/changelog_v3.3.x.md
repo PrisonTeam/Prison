@@ -22,7 +22,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.10-alpha.14 2021-08-22
+# v3.2.10-alpha.14b 2021-08-22
+
+
+* **v3.2.10-alpha.14b 2021-08-22**
 
 
 * **Removed the option to delete a rank from the ranks info command since it should not be that easy to remove a rank, which could easily be clicked on in game.**
