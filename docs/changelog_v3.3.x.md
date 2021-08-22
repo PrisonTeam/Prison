@@ -25,6 +25,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.14 2021-08-21
 
 
+* **Player join bug: Fixed a bug... if a player is not on the default ladder, then this was preventing them from being added.**
+
+
 * **Added virtual checks to prevent placeholders from trying to access mine features that do not exist.**
 
 

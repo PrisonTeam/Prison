@@ -340,13 +340,13 @@ public class RankUtil
         
         PlayerRank originalRank = rankPlayer.getRank(ladder);
         
-        if ( originalRank == null && ladder.getName().equals( "default" ) ) {
-        	
-        	// Only default ladder should be logged as an error if there is no rank:
-        	results.addTransaction( RankupStatus.RANKUP_FAILURE_NO_PLAYERRANK, 
-        					RankupTransactions.failure_orginal_playerRank_does_not_exist );
-        	return;
-        }
+//        if ( originalRank == null && ladder.getName().equals( "default" ) ) {
+//        	
+//        	// Only default ladder should be logged as an error if there is no rank:
+//        	results.addTransaction( RankupStatus.RANKUP_FAILURE_NO_PLAYERRANK, 
+//        					RankupTransactions.failure_orginal_playerRank_does_not_exist );
+//        	return;
+//        }
         
 //        Optional<Rank> currentRankOptional = player.getRank(ladder);
 //        Rank originalRank = currentRankOptional.orElse( null );
