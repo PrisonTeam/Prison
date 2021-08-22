@@ -25,6 +25,11 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.14b 2021-08-22
 
 
+
+
+* **Fix a problem with NPE when getting the player's Locale when it wasn't set.**
+
+
 * **More adjustments to the /ranks list to add information about the player's current multipliers on all the ladders.**
 This makes it easier to understand why the rank multiplier is a specific value.
 

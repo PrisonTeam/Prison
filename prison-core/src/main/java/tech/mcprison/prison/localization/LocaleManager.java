@@ -700,7 +700,8 @@ public class LocaleManager {
     }
 
     String getLocale(Player player) {
-        return player != null ? player.getLocale().orElse(getDefaultLocale()) : getDefaultLocale();
+        return player != null && player.getLocale() != null ? 
+        		player.getLocale().orElse(getDefaultLocale()) : getDefaultLocale();
     }
 
 	public String getInternalPath() {
