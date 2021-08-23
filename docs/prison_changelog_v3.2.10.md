@@ -16,6 +16,42 @@ These build logs represent the work that has been going on within prison.
 
 
 
+#Build v3.2.10 2021-08-23
+
+* Many new placeholders added.  Prison now has 240 base placeholders including their aliases.
+
+* Numerous improvements and bug fixes in many areas
+
+* Improvements in multi-language support. Able to support UTF-8 encoding.
+
+* Player Cache: Improvements and enabling tracking of blocks broken, time spent in the mines, earnings, and online time.  This will be used to enable many new placeholders and more features in the near future.
+
+* Auto add all players on the server that are not in prison.
+
+* Enable `/prison support submit` features where players can get better support by making it easier to share their configuration settings. Using paste.helpch.at.
+
+* Provide a more robust support system in prison, in addition to the support submit features.  Can now enable more debug mode targets to better trackdown potential issues.
+
+* Prison now supports reloadable locales and auto features.  For the auto features, it also reregisters the block break events listeners that auto features use.
+
+* Rewrote some of the auto features to resolve some obscure issues, and to provide performance improvements and greater flexibility.
+
+
+* Redesigned the commands `/ranks list`, `/ranks info`, `/mines list`, and `/mines info`
+
+* Modified the way Prison edits commands (ranks, mines, blockEvents) so the row numbers can be used instead of copying and pasting the whole command(s).
+
+* Update many of the internal libraries.
+
+* Rewrites of the GUIs and Sellall features.
+
+* Expand Prison's utils features. Added a few more utilities.
+
+* Added support for Ladder Base Rank Cost Multipliers which enables the ability to make rank costs more expensive when prestiging.
+
+
+
+
 # v3.2.10 2021-08-22
 
 * **Prison Release v3.2.10**
