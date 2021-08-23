@@ -1,5 +1,8 @@
 package tech.mcprison.prison.placeholders;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
 
 public class PlaceHolderKey {
@@ -9,6 +12,11 @@ public class PlaceHolderKey {
 	private String data;
 	private boolean primary = true;
 	private String aliasName;
+	
+	
+	// NOTE: Pattern is thread safe so make it static.  Matcher is not thead safe.
+	public static Pattern PLACEHOLDER_SEQUENCE_PATTERN = Pattern.compile( "(\\_([0-9]+)\\_)" );
+	
 	
 	public PlaceHolderKey( String key, PrisonPlaceHolders placeholder ) {
 		this(key, placeholder, true);
@@ -40,19 +48,71 @@ public class PlaceHolderKey {
 	public PlaceholderResults getIdentifier( String text ) {
 		PlaceholderResults results = new PlaceholderResults(this);
 
+		
 		String textLowercase = text.toLowerCase();
 		String key = getKey().toLowerCase();
 		
-		checkIdentifier( key, text, textLowercase, "{", "}", results );
 		
-		if ( textLowercase.contains( key ) || 
-				checkIdentifier( key, text, textLowercase, "{", "}", results ) ||
-				checkIdentifier( key, text, textLowercase, "%", "%", results )
-				) {
+		// For placeholders with sequence numbers, such as _nnn_, will need to search
+		// for 1 to 3 digits and replace the number in the "text" with _nnn_ and also
+		// need to store that numeric value in the PlaceholderResults object.
+		if ( getPlaceholder().hasSequence() ) {
 			
-			// Nothing to do, since it was already done within this if statement.
+			Matcher matcher = PLACEHOLDER_SEQUENCE_PATTERN.matcher( textLowercase );
+			if ( matcher.find() ) {
+				
+				//String group0 = matcher.group( 0 );
+				String group1 = matcher.group( 1 );
+				String group2 = matcher.group( 2 );
+				
+				textLowercase = textLowercase.replace( group1, "_nnn_" );
+				
+//			Output.get().logInfo( "### PlaceHolderKey: seq pattern detected: " + placeholder.name() + 
+//					"  group0= " + group0 + " group1= " + group1 + " group2= " + group2 + "  replacedText: " + textLowercase );
+				
+				results.setNumericSequencePattern( group1 );
+				
+				// a value of -1 indicates it was not able to be parsed:
+				int parsed = -1;
+				
+				try {
+					parsed = Integer.parseInt( group2 );
+				}
+				catch ( NumberFormatException e ) {
+					// Not a number so ignore... but based upon matcher.find() it should be... Hmm...
+				}
+				
+				results.setNumericSequence( parsed );
+				
+				
+				// DO something more:
+				
+			}
+		}
+		
+		
+		// If the text is an exact match to the key (no escape characters):
+		if ( textLowercase.equalsIgnoreCase( key ) ) {
 			
+			results.setIdentifier( textLowercase );
+			results.setPlaceholder( this );
 			
+		}
+		else {
+			
+			checkIdentifier( key, text, textLowercase, "{", "}", results );
+			
+			if ( textLowercase.equalsIgnoreCase( key ) ||
+					textLowercase.contains( key ) || 
+					checkIdentifier( key, text, textLowercase, "{", "}", results ) ||
+					checkIdentifier( key, text, textLowercase, "%", "%", results )
+					) {
+				
+				
+				
+				// Nothing to do, since it was already done within this if statement.
+				
+				
 //			// Performing all the String searching and indexing can be expensive, especially
 //			// since there can be thousands of PlaceHolderKeys on a server.  So to provide
 //			// a quick proof to see if additional, more complex calculations should be
@@ -83,7 +143,8 @@ public class PlaceHolderKey {
 ////							pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, identifier ) );
 //				}
 //			}
-			
+				
+			}
 		}
 
 		
@@ -108,15 +169,27 @@ public class PlaceHolderKey {
 		String test2 = escLeft + key + 
 				PlaceholderManager.PRISON_PLACEHOLDER_ATTRIBUTE_SEPARATOR;
 		
+		int adjustment = 0;
+		// If the text contains a sequence, then calculate the adjustment position based upon 
+		// the length of '_nnn_' compared to the original value. 
+		// These adjustments will align properly with 'text'. 
+		if ( results.getNumericSequence() >= 0 && results.getNumericSequencePattern() != null ) {
+			adjustment = 5 - results.getNumericSequencePattern().length();
+		}
+
 		// Warning this is not case insensitive in the results:
 		if ( textLowercase.contains( test1 ) ) {
 			
 			int idx = textLowercase.indexOf( test1 );
 			int idxStart = idx + 1;
-			int idxEnd = idx + test1.length() - 1;
+
+			
+			int idxEnd = idx + test1.length() - 1 - adjustment;
 			String identifier = text.substring( idxStart, idxEnd);
 			
 			results.setIdentifier( identifier, escLeft, escRight );
+			results.setPlaceholder( this );
+			
 //			results.setIdentifier( key, escLeft, escRight );
 			foundIdentifier = true;
 		}
@@ -128,16 +201,34 @@ public class PlaceHolderKey {
 			String key2 = escRight;
 			
 			int idx = text.indexOf( key1 );
-			int idx2 = ( idx == -1 ? -1 : text.indexOf( key2, idx + key1.length() - 1 ) );
+			int idx2 = ( idx == -1 ? -1 : text.indexOf( key2, idx + key1.length() - 1 ) ) - adjustment;
 			if ( idx > -1 && idx2 > -1 ) {
 				
 				String identifier = text.substring( idx + 1, idx2 );
+				
 				results.setIdentifier( identifier, escLeft, escRight );
+				results.setPlaceholder( this );
+
 				foundIdentifier = true;
 //				results = results.replace("{" + identifier + "}", 
 //						pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, identifier ) );
 			}
 		}
+//		else if ( textLowercase.contains( key ) ) {
+//			
+//			int idx = textLowercase.indexOf( key );
+//			int idxStart = idx + 1;
+//
+//			
+//			int idxEnd = idx + key.length() - 1 - adjustment;
+//			String identifier = text.substring( idxStart, idxEnd);
+//			
+//			results.setIdentifier( identifier, "", "" );
+//			results.setPlaceholder( this );
+//			
+////			results.setIdentifier( key, escLeft, escRight );
+//			foundIdentifier = true;
+//		}
 		
 		return foundIdentifier;
 	}

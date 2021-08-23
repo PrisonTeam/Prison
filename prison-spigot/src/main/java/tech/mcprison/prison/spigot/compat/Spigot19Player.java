@@ -4,9 +4,11 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
+
 public abstract class Spigot19Player
-		extends CompatibilityCache
-		implements CompatibilityPlayer
+		extends Spigot18Blocks
 {
 	public void setMaxHealth( Player player, double maxHealth ) {
 		
@@ -30,5 +32,19 @@ public abstract class Spigot19Player
 		}
 		
 		return maxHealth;
+	}
+	
+	@Override
+	@SuppressWarnings( "deprecation" )
+	public void sendTitle( Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut ) {
+		player.sendTitle( title, subtitle );
+	}
+
+	@Override
+	public void sendActionBar( Player player, String actionBar ) {
+		player.spigot().sendMessage( ChatMessageType.ACTION_BAR, 
+					new TextComponent( actionBar ) );
+
+//		player.sendTitle( "", actionBar );
 	}
 }

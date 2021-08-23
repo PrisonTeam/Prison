@@ -38,12 +38,8 @@ public class Rank
 		implements PrisonSortable,
 					ModuleElement {
 
-    /*
-     * Fields & Constants
-     */
-	
-	// This is to help eliminate RankLadder.PositionRank object:
-	private int position; 
+//	// This is to help eliminate RankLadder.PositionRank object:
+	private transient int position = -1; 
 
     // The unique identifier used to distinguish this rank from others - this never changes.
     private int id;
@@ -69,9 +65,11 @@ public class Rank
     // The commands that are run when this rank is attained.
     private List<String> rankUpCommands;
 
-    
-    private List<String> permissions;
-    private List<String> permissionGroups;
+ 
+    // permissions in ranks is obsolete and is being removed. It can never work with vault.
+    // And Access by Ranks replaces this.
+//    private List<String> permissions;
+//    private List<String> permissionGroups;
     
     
     private transient Rank rankPrior;
@@ -84,9 +82,10 @@ public class Rank
     
     private transient RankLadder ladder;
     
-    /*
-     * Document-related
-     */
+    private transient final List<RankPlayer> players;
+    
+    private transient final StatsRankPlayerBalance statsPlayerBlance;
+    
 
     public Rank() {
     	super();
@@ -96,15 +95,19 @@ public class Rank
     	this.mines = new ArrayList<>();
     	this.mineStrings = new ArrayList<>();
     	
-    	this.permissions = new ArrayList<>();
-    	this.permissionGroups =  new ArrayList<>();
+//    	this.permissions = new ArrayList<>();
+//    	this.permissionGroups =  new ArrayList<>();
+    	
+    	this.players = new ArrayList<>();
+    	
+    	this.statsPlayerBlance = new StatsRankPlayerBalance( this );
     	
     }
     
-    public Rank( int position, int id, String name, String tag, double cost ) {
+    public Rank( int id, String name, String tag, double cost ) {
     	this();
     	
-    	this.position = position;
+//    	this.position = position;
     	
     	this.id = id;
     	this.name = name;
@@ -121,7 +124,9 @@ public class Rank
      * @param name
      */
     protected Rank( String name ) {
-    	this.position = 0;
+    	this();
+    	
+//    	this.position = 0;
     	this.id = 0;
     	this.name = name;
     }
@@ -132,8 +137,8 @@ public class Rank
     	
         try
 		{
-        	Object pos = document.get("position");
-        	this.position = RankUtil.doubleToInt( pos == null ? 0.0d : pos );
+//        	Object pos = document.get("position");
+//        	this.position = RankUtil.doubleToInt( pos == null ? 0.0d : pos );
         	
 			this.id = RankUtil.doubleToInt(document.get("id"));
 			this.name = (String) document.get("name");
@@ -168,24 +173,24 @@ public class Rank
 			}
 			
 			
-			getPermissions().clear();
-			Object perms = document.get( "permissions" );
-			if ( perms != null ) {
-				List<String> permissions = (List<String>) perms;
-				for ( String permission : permissions ) {
-					getPermissions().add( permission );
-				}
-			}
-	        
-			
-			getPermissionGroups().clear();
-			Object permsGroups = document.get( "permissionGroups" );
-			if ( perms != null ) {
-				List<String> permissionGroups = (List<String>) permsGroups;
-				for ( String permissionGroup : permissionGroups ) {
-					getPermissionGroups().add( permissionGroup );
-				}
-			}
+//			getPermissions().clear();
+//			Object perms = document.get( "permissions" );
+//			if ( perms != null ) {
+//				List<String> permissions = (List<String>) perms;
+//				for ( String permission : permissions ) {
+//					getPermissions().add( permission );
+//				}
+//			}
+//	        
+//			
+//			getPermissionGroups().clear();
+//			Object permsGroups = document.get( "permissionGroups" );
+//			if ( perms != null ) {
+//				List<String> permissionGroups = (List<String>) permsGroups;
+//				for ( String permissionGroup : permissionGroups ) {
+//					getPermissionGroups().add( permissionGroup );
+//				}
+//			}
 			
 		}
 		catch ( Exception e )
@@ -200,7 +205,7 @@ public class Rank
 
     public Document toDocument() {
         Document ret = new Document();
-        ret.put("position", this.position );
+//        ret.put("position", this.position );
         ret.put("id", this.id);
         ret.put("name", this.name);
         ret.put("tag", this.tag);
@@ -226,55 +231,84 @@ public class Rank
         }
         ret.put("mines", mineStrings);
         
-        ret.put( "permissions", getPermissions() );
-        ret.put( "permissionGroups", getPermissionGroups() );
+//        ret.put( "permissions", getPermissions() );
+//        ret.put( "permissionGroups", getPermissionGroups() );
         
         return ret;
     }
     
     
 
-    /**
-     * <p>Identifies of the Ladder contains a permission.
-     * </p>
-     * 
-     * @param permission
-     * @return
-     */
-	public boolean hasPermission( String permission ) {
-		boolean results = false;
-		
-		for ( String perm : getPermissions() ) {
-			if ( perm.equalsIgnoreCase( permission ) ) {
-				results = true;
-				break;
-			}
-		}
-		
-		return results;
-	}
+//    /**
+//     * <p>Identifies of the Ladder contains a permission.
+//     * </p>
+//     * 
+//     * @param permission
+//     * @return
+//     */
+//	public boolean hasPermission( String permission ) {
+//		boolean results = false;
+//		
+//		for ( String perm : getPermissions() ) {
+//			if ( perm.equalsIgnoreCase( permission ) ) {
+//				results = true;
+//				break;
+//			}
+//		}
+//		
+//		return results;
+//	}
 	
-	/**
-	 * <p>Identifies if the Ladder contains a permission group.
-	 * </p>
-	 * 
-	 * @param permissionGroup
-	 * @return
-	 */
-	public boolean hasPermissionGroup( String permissionGroup ) {
-		boolean results = false;
-		
-		for ( String perm : getPermissionGroups() ) {
-			if ( perm.equalsIgnoreCase( permissionGroup ) ) {
-				results = true;
-				break;
-			}
-		}
-		
-		return results;
-	}
+//	/**
+//	 * <p>Identifies if the Ladder contains a permission group.
+//	 * </p>
+//	 * 
+//	 * @param permissionGroup
+//	 * @return
+//	 */
+//	public boolean hasPermissionGroup( String permissionGroup ) {
+//		boolean results = false;
+//		
+//		for ( String perm : getPermissionGroups() ) {
+//			if ( perm.equalsIgnoreCase( permissionGroup ) ) {
+//				results = true;
+//				break;
+//			}
+//		}
+//		
+//		return results;
+//	}
 
     
+	public StatsRankPlayerBalance getStatsPlayerBlance() {
+		return statsPlayerBlance;
+	}
+
+
+	/**
+	 * <p>This adds players to this rank.  It prevents duplicates.
+	 * </p>
+	 * 
+	 * @param player
+	 */
+	public void addPlayer( RankPlayer player ) {
+		
+		if ( !getPlayers().contains( player ) ) {
+			getPlayers().add( player );
+			
+			getStatsPlayerBlance().addPlayer( player );
+		}
+	}
+
+	public void removePlayer( RankPlayer player ) {
+		
+		if ( getPlayers().contains( player ) ) {
+			getPlayers().remove( player );
+			
+			getStatsPlayerBlance().removePlayer( player );
+		}
+	}
+	
     @Override
     public String toString() {
     	return "Rank: " + id + " " + name;
@@ -297,10 +331,15 @@ public class Rank
     	this.ladder = ladder;
     }
     
-    /*
-     * equals() and hashCode()
-     */
 
+    /**
+     * The test of equality should only be done upon the rank id.
+     * This function is pretty much useless since you can only have
+     * one rank with the same rank ID and with the same name.  So it
+     * is sufficient to only check if the rank.id matches.  
+     * The other fields, such as name, cost, currency, and tag 
+     * are pretty much meaningless to use in this test.
+     */
     @Override 
     public boolean equals(Object o) {
         if (this == o) {
@@ -312,23 +351,26 @@ public class Rank
 
         Rank rank = (Rank) o;
 
-        if (id != rank.id) {
-            return false;
-        }
-        if (Double.compare(rank.cost, cost) != 0) {
-            return false;
-        }
+        // Rank.id is unique and there should never be two with the same rank.
         
-        if ( currency != null && rank.currency == null || 
-        		currency != null && rank.currency != null && 
-        				!currency.equals( rank.currency ) ) {
-        	return false;
-        }
-        	
-        if (!name.equals(rank.name)) {
-            return false;
-        }
-        return tag != null ? tag.equals(rank.tag) : rank.tag == null;
+        return id == rank.id;
+//        if (id != rank.id) {
+//            return false;
+//        }
+//        if (Double.compare(rank.cost, cost) != 0) {
+//            return false;
+//        }
+//        
+//        if ( currency != null && rank.currency == null || 
+//        		currency != null && rank.currency != null && 
+//        				!currency.equals( rank.currency ) ) {
+//        	return false;
+//        }
+//        	
+//        if (!name.equals(rank.name)) {
+//            return false;
+//        }
+//        return tag != null ? tag.equals(rank.tag) : rank.tag == null;
     }
 
     @Override 
@@ -344,13 +386,40 @@ public class Rank
         return result;
     }
 
-    
+    /**
+     * This new implementation of position is lazy loaded and should never be saved.
+     * This is to provide a quick reference to the position within the ladder's rank's
+     * ArrayList. This should never be used to access a rank or to refer to a rank; the
+     * actual objects should be used for that.
+     * 
+     * @return
+     */
 	public int getPosition() {
+		if ( position == -1 && getLadder() != null ) {
+			
+			position = 0;
+			for ( Rank r : getLadder().getRanks() ) {
+				if ( r == this ) {
+					break;
+				}
+				position++;
+			}
+
+		}
 		return position;
 	}
-	public void setPosition( int position ) {
-		this.position = position;
+	/**
+	 * This will force the rank's position to be reset the next time it is 
+	 * accessed.
+	 * 
+	 */
+	public void resetPosition() {
+		position = -1;
 	}
+	
+//	public void setPosition( int position ) {
+//		this.position = position;
+//	}
 
 	public int getId() {
 		return id;
@@ -373,10 +442,10 @@ public class Rank
 		this.tag = tag;
 	}
 
-	public double getCost() {
+	protected double getCost() {
 		return cost;
 	}
-	public void setCost( double cost ) {
+	protected void setCost( double cost ) {
 		this.cost = cost;
 	}
 
@@ -397,19 +466,19 @@ public class Rank
 		this.rankUpCommands = rankUpCommands;
 	}
 	
-	public List<String> getPermissions() {
-		return permissions;
-	}
-	public void setPermissions( List<String> permissions ) {
-		this.permissions = permissions;
-	}
-
-	public List<String> getPermissionGroups() {
-		return permissionGroups;
-	}
-	public void setPermissionGroups( List<String> permissionGroups ) {
-		this.permissionGroups = permissionGroups;
-	}
+//	public List<String> getPermissions() {
+//		return permissions;
+//	}
+//	public void setPermissions( List<String> permissions ) {
+//		this.permissions = permissions;
+//	}
+//
+//	public List<String> getPermissionGroups() {
+//		return permissionGroups;
+//	}
+//	public void setPermissionGroups( List<String> permissionGroups ) {
+//		this.permissionGroups = permissionGroups;
+//	}
 
 	public Rank getRankPrior() {
 		return rankPrior;
@@ -449,6 +518,9 @@ public class Rank
 	public void setMineStrings( List<String> mineStrings ) {
 		this.mineStrings = mineStrings;
 	}
-    
-	
+
+	public List<RankPlayer> getPlayers() {
+		return players;
+	}
+
 }

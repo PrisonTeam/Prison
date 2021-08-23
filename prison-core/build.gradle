@@ -18,6 +18,10 @@
 
 apply plugin: 'eclipse'
 apply plugin: 'idea'
+apply plugin: 'java'
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = "UTF-8"
 
 repositories {
     mavenCentral()

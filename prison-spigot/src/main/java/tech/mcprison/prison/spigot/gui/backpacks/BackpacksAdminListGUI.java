@@ -1,18 +1,19 @@
 package tech.mcprison.prison.spigot.gui.backpacks;
 
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
+import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
+import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
-import java.util.List;
 import java.util.Set;
 
+/**
+ * @author AnonymousGCA (GABRYCA)
+ * */
 public class BackpacksAdminListGUI extends SpigotGUIComponents {
 
     private final Player p;
@@ -31,7 +32,7 @@ public class BackpacksAdminListGUI extends SpigotGUIComponents {
     public void open(){
 
         int dimension = 54;
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Backpacks-Admin-List"));
+        PrisonGUI gui = new PrisonGUI(p, dimension, "&3" + "Backpacks-Admin-List");
 
         Set<String> playerUUID = backpacksData.getConfigurationSection("Inventories").getKeys(false);
 
@@ -55,28 +56,22 @@ public class BackpacksAdminListGUI extends SpigotGUIComponents {
                             }
                         }
                         if (id != null) {
-                            List<String> backpacksLore = createLore(
-                                    loreShiftAndRightClickToDelete,
-                                    "&8----------------",
-                                    " ",
+
+                            ButtonLore backpacksLore = new ButtonLore(createLore(loreShiftAndRightClickToDelete), createLore(
                                     loreInfo,
                                     lorePlayerOwner + name,
-                                    loreBackpackID + id,
-                                    " ",
-                                    "&8----------------"
-                            );
+                                    loreBackpackID + id));
 
-                            ItemStack backpackButton = createButton(XMaterial.CHEST.parseItem(), backpacksLore, "&3" + "Backpack " + name + " " + id);
-                            inv.setItem(backpacksFound, backpackButton);
+                            gui.addButton(new Button(backpacksFound, XMaterial.CHEST, backpacksLore, "&3" + "Backpack " + name + " " + id));
                             backpacksFound++;
                         }
                     } else {
-                        openGUI(p, inv);
+                        gui.open();
                         return;
                     }
                 }
             }
         }
-        openGUI(p, inv);
+        gui.open();
     }
 }

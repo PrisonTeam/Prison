@@ -1,19 +1,17 @@
 package tech.mcprison.prison.spigot.gui.autofeatures;
 
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
+import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-
-import java.util.List;
 
 /**
  * @author GABRYCA
@@ -29,63 +27,37 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
 
     public void open() {
 
-        // Create the inventory and set up the owner, dimensions or number of slots, and title
         int dimension = 36;
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3AutoFeatures -> AutoSmelt"));
+        PrisonGUI gui = new PrisonGUI(p, dimension, "&3AutoFeatures -> AutoSmelt");
 
-        if (guiBuilder(inv)) return;
+        ButtonLore enabledLore = new ButtonLore(messages.getString("Lore.ShiftAndRightClickToDisable"), null);
+        ButtonLore disabledLore = new ButtonLore(messages.getString("Lore.RightClickToEnable"), null);
+        ButtonLore closeGUILore = new ButtonLore(messages.getString("Lore.ClickToClose"), null);
 
-        openGUI(p, inv);
-    }
+        gui.addButton(new Button(35, XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, SpigotPrison.format("&c" + "Close")));
 
-    private boolean guiBuilder(Inventory inv) {
-        try {
-            buttonsSetup(inv);
-        } catch (NullPointerException ex){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
-            ex.printStackTrace();
-            return true;
-        }
-        return false;
-    }
+        if(afConfig != null) {
+            if (afConfig.isFeatureBoolean(AutoFeatures.smeltAllBlocks)) {
+                gui.addButton(new Button(null, XMaterial.LIME_STAINED_GLASS_PANE, enabledLore, SpigotPrison.format("&a" + "All_Ores Enabled")));
+            } else {
+                gui.addButton(new Button(null, XMaterial.RED_STAINED_GLASS_PANE, disabledLore, SpigotPrison.format("&c" + "All_Ores Disabled")));
+            }
 
-    private void buttonsSetup(Inventory inv) {
+            if (afConfig.isFeatureBoolean(AutoFeatures.smeltGoldOre)) {
+                gui.addButton(new Button(null, XMaterial.GOLD_ORE, enabledLore, SpigotPrison.format("&a" + "Gold_Ore Enabled")));
+            } else {
+                gui.addButton(new Button(null, XMaterial.GOLD_ORE, disabledLore, SpigotPrison.format("&c" + "Gold_Ore Disabled")));
+            }
 
-        List<String> enabledLore = createLore(
-                messages.getString("Lore.ShiftAndRightClickToDisable")
-        );
-        List<String> disabledLore = createLore(
-                messages.getString("Lore.RightClickToEnable")
-        );
-        List<String> closeGUILore = createLore(
-                messages.getString("Lore.ClickToClose")
-        );
-
-        ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
-        inv.setItem(35, closeGUI);
-
-        if ( afConfig.isFeatureBoolean( AutoFeatures.smeltAllBlocks ) ) {
-            ItemStack Enabled = createButton(XMaterial.LIME_STAINED_GLASS_PANE.parseItem(), enabledLore, SpigotPrison.format("&a" + "All_Ores Enabled"));
-            inv.addItem(Enabled);
+            if (afConfig.isFeatureBoolean(AutoFeatures.smeltIronOre)) {
+                gui.addButton(new Button(null, XMaterial.IRON_ORE, enabledLore, SpigotPrison.format("&a" + "Iron_Ore Enabled")));
+            } else {
+                gui.addButton(new Button(null, XMaterial.IRON_ORE, disabledLore, SpigotPrison.format("&c" + "Iron_Ore Disabled")));
+            }
         } else {
-            ItemStack Disabled = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), disabledLore, SpigotPrison.format("&c" + "All_Ores Disabled"));
-            inv.addItem(Disabled);
+            Output.get().sendError(new SpigotPlayer(p), "An error occurred, the AutoFeatures Config is broken or missing!");
         }
 
-        if ( afConfig.isFeatureBoolean( AutoFeatures.smeltGoldOre ) ) {
-            ItemStack Enabled = createButton(XMaterial.GOLD_ORE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Gold_Ore Enabled"));
-            inv.addItem(Enabled);
-        } else {
-            ItemStack Disabled = createButton(XMaterial.GOLD_ORE.parseItem(), disabledLore, SpigotPrison.format("&c" + "Gold_Ore Disabled"));
-            inv.addItem(Disabled);
-        }
-
-        if ( afConfig.isFeatureBoolean( AutoFeatures.smeltIronOre ) ) {
-            ItemStack Enabled = createButton(XMaterial.IRON_ORE.parseItem(), enabledLore, SpigotPrison.format("&a" + "Iron_Ore Enabled"));
-            inv.addItem(Enabled);
-        } else {
-            ItemStack Disabled = createButton(XMaterial.IRON_ORE.parseItem(), disabledLore, SpigotPrison.format("&c" + "Iron_Ore Disabled"));
-            inv.addItem(Disabled);
-        }
+        gui.open();
     }
 }

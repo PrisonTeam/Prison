@@ -3,33 +3,217 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
+
+# TODOs for v3.2.10 release:
+
+1. DONE: Final testing of ladder rank multipliers
+2. DONE: /ranks ladder moveRank not working
+3. DONE: Forced global refresh of rank multipliers when a ladder multiplier is changed.
+  - Should be simple
+  - Run as async task
+  - DONE: Force update when updating a ladder's multiplier - all players
+  - DONE: Force update when changing ranks - only targeted player
+4. DONE: Add ladder base cost multiplier to /ranks autoConfigure.  Start with a simple 10%.
+  - Include message that it's enabled and how to change it or disable it:
+  - /ranks ladder rankCostMultiplier prestiges 0
+5. Add to /ranks player the detail information on rank cost multipliers
+6. DONE: For '/ranks autoConfigure' add an alias to '/prison autoConfigure'
+
+7. DONE: Change /ranks list so if non-op it does not show all the extra details.  A simplified list for plain players.
+
+8. Liners: Some are only for later releases and do not work with 1.8.8.  So need to setup something to restrict the liners that are not functional for the older releases of spigot.
+
+9. Hook up Prison's Explosion event. 
+
+
+### Others
+
+* DONE: Add a rank cost multiplier to ladders.  Sum all active ranks a player has to get the total multiplier to use for rank costs.
+* DONE: Fix the "next rank" value with PlayerRanks.... needs to recalc with the new rank.
+* DONE: When a ladder's rate cost multiplier is changed, need to recalculate all player's multipliers.  Setup a task?
+
+
+
+# Start on mine bombs
+
+ 1. Select size of bomb. Configuration. 
+   1a. Identify items to use as bombs
+   1b. Bomb size
+   1c. Bomb explosion pattern. Currently only sphere, but could include other shapes.
+ 2. DONE: Select list of blocks that will be effected by bomb explosion
+ 3. Throw bomb, or place bomb... start processing count down.
+ 4. Pre-fire effects: sound & particles (low priority)
+ 5. fire event
+ 6. Post-fire effects: sound & particles (low priority)
+ 7. Hook up prison's event handler for prison's explosion event
+
+
+* DONE: Modified /ranks list to provide this feature
+ - Maybe provide a /rankcost command?  Show current player rank costs with rank cost multipliers applied
+ - /rankcost <player> <optional-ranks>
+ - Optional ranks can be provided as parameters and it will adjust the calculations.
+   - Example: /rankcost RoyalBlueRanger A p5
+   * will show the rank costs based upon rank A and p5, no matter the players current ranks
+ - Will allow players to better understand what rankup costs will be if they prestige twice or 10 times.
+
+
+
+# **Mine Valuation Score** - **MVS** 
+ - Calculate an estimated value for a mine based upon an inventory full.
+ - **Total Blocks** = 2,304 = 9 x 4 x 64
+ - For each block, it's percent chance will be multiplied by the **Total Blocks** to get the number used in valuation.
+ - **BVS** = **Block Valuation Score** will be calculated by how many blocks are represented, times the block's value in /SELLALL
+ - **MVS** = **Rank Cost** divided by sum of all **Block Valuation Scores**
+ - Use block chances to determine amounts of each block. Ignore total stack sizes.
+ - Calculate how many inventory fulls it will take to reach the next rankup cost.
+ - This is a difficult calculation since it is based upon another rank's cost
+ - This will give a score value on Mine Valuation.
+ - MVS 1.0 or less indicates seriously easy and unbalanced.
+ - MVS 20.0 would be normalish range
+ - MVS 50.0 or higher would be considered extreme
+ - Prestiges Valuations should be calculated on the highest rank of the default ladder.
+ -Pickaxe enchantments, such as eff and fortune, will have a huge impact on how fast a player can rankup, but the Mine Valuation cannot take that in to consideration.
+  
+
+### others
+
+* placeholder for total block counts and other playercache stats
+
+* Include sellall costs in block lists
+
+
+
+
+# **Possible bugs/issues:**
+
+* DONE: /ranks ladder moveRank did not work to move from one ladder to another
+
+* DONE: When adding a new rank or mine, auto reload all placeholders so they pick up the new entry.
+
+* Test BlockEvent perms... they appear like they don't work.
+
+* If ranks module fails due to no economy, try to make that a little more obvious.
+
+* If no ranks are defined and the placeholders are attempted to be used, it is causing some errors.  No economy plugin so Ranks did not load. {prison_rank_tag} was causing an error with /prison placeholder test.  "Server: Invalid json. Unterminated escape sequence..."
+The ranks module did not load due to no economy.
+
+* Sometimes Player Ranks lores placeholders from placeholderAPI aren't working, 
+it's unknown why it's happening.
+
+* Auto features - disable lore by default - Maybe provide finer grained control on lore features?
+
+
+
+# **Document updates needed:**
+
+1. Document how to use Ladder Rank Cost Multipliers
+
+2. Document that to get TE explosions to work, you must also create WG regions in the mine.
+  - may be able to bypass with creative use of Access by Ranks (have prison directly fire the BlockBreakEvents within TE's functions?)
+  
+3. BlockEvent docs need to be updated to reflect recent changes (select by number).
+
+4. Review commands listed in TOC.  Remove obsolete commands (some ladder commands were removed).
+
+
+
+* Top Lists - Command based
+ - Top ranked players by server
+ - Top ranked players by mine
+ - Top ranked players by blocks?  
+
+
+
+* Add a `*all*` for mine name on remove mines blockEvents.
+
+
+- hybrid placeholder graphs - hybars
+  - super impose text in the graph and have it still be colored correctly.
+  - text can be centered, such as the percentage that is feeding the bar
+  - For wider bars, the title could be left justified, and the percentage right justified
+  
+
+
+* mine groups
+ - Have global sharing of BlockEvents
+ - groups cannot be in more than one world
+ - all mines must be a part of a group
+ 
+
+* Eliminate the following message from logging an error, but just keep a note in the code:
+ - Cannot initialize NMS components - ClassNotFoundException - NMS is not functional - net.minecraft.server.v1_17_R1.EntityPlayer
+ - This does not appear to have much of an impact at this time.
+ 
+
+
+* add all commands to the server.yml file.  spigot 1.17.1 is getting fussy.
+
+
+* Conversion tool to import SuperiorPrison users:
+  - rank is based upon perms `permission.mine.A` and they keep former rank perms.
+  - No prestiges
+  - able to reset ranks so conversion can be ran multiple times.
+  - Unable to really do this due to offline players not having access to the perms.  As such, and also due to the need ceasing to exist, this has been put on the back burner.
+
+
+* extended fortune : Apply fortune to all blocks that bukkit does not apply them to.
+ - Maybe do this through a list instead of blindly applying fortune to all blocks with a qty of 1?  Some fortune calculations will result in a qty of one.
+
+* hook up alternative processing to have prison force the running of another plugin if a setting is enabled. This way prison can "control" how it processes the "left-overs".
+
+
+* prison command handler:
+  - Add command cooldowns - time in ticks - And cooldownTypes: server, player
+
+
+* Player Cache:
+ * DONE: Money earned per minute with placeholders
+ * Add placeholders for blocks counts
+ * Add placeholders for time onlines
+ * DONE: Add time mining: per mine
+ * Tracking by items such as mines or ranks, where the player's status can be reset, presents some problems.  Such as the block counts need to be reset for those items, but yet, we need to store them for historical purposes too.  So if someone prestiges 10 times, then there will be 10 different times through mine/rank A.  If block counts become a requirement for rankups, which it will, then the block counts for that mine must be reset back to zero.  So there must be a "current" and "historical" tracking.
+  - Online stats:
+   - track which players are online... may need to get the active player list every minute?  freq could be configurable.
+   - track location of player... if the player has not moved in over x-ticks, then mark them as afk.  distance traveled is an important aspect... so afk machines may keep them moving in a 1 block radius.  Might be able to see if a player is being pushed by water or pistons? 
+ 
+ 
+
+
+
+* When adding block stats.... add player online stats.
+  - add events that run, similar to blockEvents, but maybe call them statsEvents?
+  - So after so many blocks are mined... or so many minutes a player is online, run a command
+  
+
+
+* Enable mine sweeper when auto features is disabled.  Not sure if this is still needed?
+
+
+
+
+* Add support for BOSS BAR when holding pick axe.  Maybe setup placeholders in the config.yml?
+- Example would be showing the bar and percent to next rank.
+
+
+* Add mine notifications by Rank
+ - I forget what this is.... 
+ 
+
+* Prestiges: Rewrite and enhance so as to make it "automatic" without the need to create ranks
+* Externalize the mines module on multi-lang
+* Add top-n rankings for mines and maybe other ratings
+* Add block break counts to players
+
+
+
 * Issue with decay functions or at least it shows the problem exists.  Enable a decay such as obby or rainbow, then test to confirm it works.  Then enchant a tool (increase it's eff).  Then test again and it does not.  This was seen happening while OP'd.  May not be related to decays, but it appears as if enchanting causes the pick to bypass prison?
 - Was able to reproduce this at a later time
-
-
-* prison should "scan" offline players upon startup and auto add anyone not already hooked up.  This will help reduce a lot of questions and make the first experience with prison smoother.... 
-
-
-* DONE: BlockEvents - add block filters - tested successfully
-
-
-* DONE: decay:  Add a util function to respawn the block that was mined... use it with blockEvents.
-
-
-* DONE: Ladder commands:
-
-* DONE: Delete by line number:
-
-
-* Bug: placeholders are not working correctly when player is offline...
-  - Example with the bar graph placeholders.
-
 
 
 
 * Add optional block counts to level up.  So if money and block counts are used, then both have to be satisfied.
 If only one, then only one of those would be used.
-- Count only the block mined and not the results of fortune.  It will be easier to control how much mining a player does by ruling out the results of fortune... after all, it's "Blocks Broken" and not "Blocks Received".
+- DONE: Count only the block mined and not the results of fortune.  It will be easier to control how much mining a player does by ruling out the results of fortune... after all, it's "Blocks Broken" and not "Blocks Received".
 
 
 - Virtual Inventory Items from mining... With the player object, not only keep track of blocks mined, but have a virtual inventory to track what they have collected.
@@ -44,13 +228,6 @@ If only one, then only one of those would be used.
 https://www.spigotmc.org/resources/minetinker-50-modifiers-tools-and-armor.58940/
 
 
-
-* If automanager is turned off, and /prison reload automanager is ran, it will reload the settings, but the event listeners are only registered upon server startup.  So if that condition happens... should display a warning indicating the server must be restarted.
-- Add a warning about event priority changes needing a server restart:
-
-
-
-* If ranks module fails due to no economy, try to make that a little more obvious.
 
 
 
@@ -72,10 +249,6 @@ https://www.spigotmc.org/resources/minetinker-50-modifiers-tools-and-armor.58940
   * Option to name all mines: list of mines.  Permit non A, B, C naming.
   * list world guard commands to protect the world (would then have functional world)
   
-
-* If no ranks are defined and the placeholders are attempted to be used, it is causing some errors.  No economy plugin so Ranks did not load. {prison_rank_tag} was causing an error with /prison placeholder test.  "Server: Invalid json. Unterminated escape sequence..."
-The ranks module did not load due to no economy.
-
 
 
 
@@ -109,9 +282,6 @@ The ranks module did not load due to no economy.
  
 
 
-* Sometimes Player Ranks lores placeholders from placeholderAPI aren't working, 
-it's unknown why it's happening.
-
 
 * Fix per rank progress bars.  This includes adding a new placeholder series since you will have to include the rank name in the placeholder.  Current ladder placeholders are based upon the player's current rank only.  
 
@@ -121,8 +291,6 @@ it's unknown why it's happening.
  - Based upon total count of blocks broken.  Example, after a player breaks 1,000 blocks, then fire a BlockEvent.
  
 
- 
-* ladder commands
 
 
 * global virtual mine:  To apply mine commands & blockEvents to all other mines.
@@ -187,7 +355,7 @@ Auto features not working outside of the mines.
 
 
 
-- Add blocks mined for players
+- DONE: Add blocks mined for players
 
 
 
@@ -216,12 +384,6 @@ Maybe: Have an alt block list for mines were blocks that are not actually
 
 
 
-
-- blockEvent
-  - DONE: simplify add - use common defaults - can change features with the other commands
-  - DONE: Add a target block name
-  - Not an issue: "Use of placeholders is failing %prison_ is failing on %p"  Turned out they were trying to use %player% instead of {player}.
-  
   
   
 - auto features
@@ -267,16 +429,6 @@ Maybe: Have an alt block list for mines were blocks that are not actually
  
 
 
-* DONE **Get new block model working**
-  *  Start to enable and test various functions
-  *  Add in Custom Items Integration
-     *  Code Integration for CI - Key to specific version due to api changes
-     *  Pull in custom blocks from CI API
-     *  Place blocks with CI api
-     *  Not sure how block break would work with CI api?
-     *  Setup sellall to work with CI api
-     
-
 
 * **Combine a few commands & Other short Notes:**
  - DONE: Combine `/mines set rank` and `/mines set norank`
@@ -300,24 +452,12 @@ We know what blocks are in the mine and the percentages.  If people equally mine
 
 
 
-* **Commands - Enhancement**
-Be able to select rank and mine commands for edit and deletion, or even moving, with line numbers.
-
-
-
-* **Rank Commands - Edit and delete**
-Add line numbers and enable the ability to edit and delete by line number.
-
-
 
 
 
 * **Update config.yml when changes are detected**
 Preserving the current settings, replace the out of date config.yml file with the latest that is stored within the jar.  Updating the settings as it goes.
 
-
-* **Ladder commands - global for all ranks in that ladder**
-Add new placeholders for ladder commands to be able to have generic ladder commands that will apply and be ran for all ranks. May be able to eliminate the need for most rank commands.
 
 
 
@@ -360,7 +500,121 @@ Offers for translation:
 
 
 
-# Features recently added since v3.2.6
+# Features recently added since v3.2.9
+
+
+
+* DONE: Enable and disable confirmations for prestiges
+ - DONE: Put in config.yml under the existing: prestiges. settings.
+ - DONE: Move the GUI confirm to the same group of prestiges. settings.
+
+
+ Player Cache possibilities?  
+ * DONE: money earned per mine?
+ 
+
+* DONE: Make ranks more expensive on each prestige....
+
+
+* NOT-AN-ISSUE: If automanager is turned off, and /prison reload automanager is ran, it will reload the settings, but the event listeners are only registered upon server startup.  So if that condition happens... should display a warning indicating the server must be restarted.
+- NOT-AN-ISSUE: Add a warning about event priority changes needing a server restart:
+-- NOTE: these are no longer an issue since event listeners are reloaded when the auto features are reloaded.
+
+
+
+* DONE **Get new block model working**
+  *  Start to enable and test various functions
+  *  Add in Custom Items Integration
+     *  Code Integration for CI - Key to specific version due to api changes
+     *  Pull in custom blocks from CI API
+     *  Place blocks with CI api
+     *  Not sure how block break would work with CI api?
+     *  Setup sellall to work with CI api
+     
+
+
+DONE: - Block constraint error when there are no blocks spawned when applying min to add more...
+  - if rangeHigh and rangeLow are zero, or the same, then need to set the high and low values.
+  - May need to even set them when there are only a few?
+  - maybe rangeHigh and rangeLow should be the actual limits, and not the high and low range of where those blocks actually spawned?  Right now it's actual spawned blocks, but if either, or both are 5000 blocks from the true limit, then the range of actual adjustments is artificially limited and narrowed.
+  - Maybe add 2 new fields: rangeHighLimit and rangeLowLimit that is the actual boundaries? These could be used to help normal spawning? 
+
+
+* DONE: On prison support submit mines, include /mines info a all?
+
+* DONE: To all headers that are displayed in prison commands, show the prison's version to the far right.
+
+
+* CANNOT REPRODUCDE: The command /mines delete does not appear to be working - User error?
+
+
+* DONE: Add an *all* for mine names under blockEvent add:
+
+ 
+* DONE: ladder commands
+
+
+
+* DONE: On default ladder, at top rank, if prestige is enabled, then show a message that can be configured.
+
+
+* DONE: Add hunger to auto features calculations
+
+
+* DONE: /prison placeholders list - group by placeholder type.
+
+
+* DONE: Placeholders for items in hand: name, 
+
+
+* DONE: try out the new event priority code. if it works, apply it to all classes
+
+ Player Cache possibilities:
+ * DONE: blocks per mine?
+ * DONE: time mining per mine?
+ 
+ 
+* DONE: Issue with placeholders bars and rankup costs...
+
+
+* DONE: prison should "scan" offline players upon startup and auto add anyone not already hooked up.  This will help reduce a lot of questions and make the first experience with prison smoother.... 
+
+
+* DONE: Bug: placeholders are not working correctly when player is offline...
+  - Example with the bar graph placeholders.
+
+
+- blockEvent
+  - DONE: simplify add - use common defaults - can change features with the other commands
+  - DONE: Add a target block name
+  - Not an issue: "Use of placeholders is failing %prison_ is failing on %p"  Turned out they were trying to use %player% instead of {player}.
+  
+
+
+
+Completed for v3.2.9:
+
+
+* DONE: BlockEvents - add block filters - tested successfully
+
+* DONE: decay:  Add a util function to respawn the block that was mined... use it with blockEvents.
+
+* DONE: Ladder commands:
+
+* DONE: Delete by line number:
+
+
+* **Commands - Enhancement**
+DONE: Be able to select rank and mine commands for edit and deletion, or even moving, with line numbers.
+
+
+* **Rank Commands - Edit and delete**
+DONE: Add line numbers and enable the ability to edit and delete by line number.
+
+
+* **Ladder commands - global for all ranks in that ladder**
+DONE: Add new placeholders for ladder commands to be able to have generic ladder commands that will apply and be ran for all ranks. May be able to eliminate the need for most rank commands.
+
 
 
 

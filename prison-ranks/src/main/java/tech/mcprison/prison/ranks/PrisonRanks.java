@@ -26,6 +26,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.integration.IntegrationType;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.modules.ModuleStatus;
 import tech.mcprison.prison.output.LogLevel;
@@ -34,7 +35,9 @@ import tech.mcprison.prison.ranks.commands.CommandCommands;
 import tech.mcprison.prison.ranks.commands.LadderCommands;
 import tech.mcprison.prison.ranks.commands.RankUpCommand;
 import tech.mcprison.prison.ranks.commands.RanksCommands;
+import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
@@ -157,6 +160,7 @@ public class PrisonRanks
 
 
         playerManager = new PlayerManager(initCollection("players"));
+        
         try {
             playerManager.loadPlayers();
         } 
@@ -171,6 +175,13 @@ public class PrisonRanks
         	logStartupMessageError( prisonRanksFailedToLoadPlayFileMsg( e.getMessage() ));
         }
 
+
+        
+        // Hook up all players to the ranks:
+        playerManager.connectPlayersToRanks();
+        
+        
+        
         // Load up the commands
 
         CommandCommands rankCommandCommands = new CommandCommands();
@@ -188,6 +199,13 @@ public class PrisonRanks
         Prison.get().getCommandHandler().registerCommands( rankupCommands );
         Prison.get().getCommandHandler().registerCommands( ladderCommands );
 
+        
+        
+        // Check all players to see if any need to join:
+        checkAllPlayersForJoin();
+        
+        
+        
         // Load up all else
 
         new FirstJoinHandler();
@@ -208,6 +226,76 @@ public class PrisonRanks
 //    	PrisonRanks.getInstance().getRankManager().ranksByLadders( includeAll );
         
     }
+
+
+	public void checkAllPlayersForJoin()
+	{
+		
+		RankUpCommand rankupCommands = rankManager.getRankupCommands();
+		
+		// If there is a default rank on the default ladder, then
+        // check to see if there are any players not in prison: add them:
+        RankLadder defaultLadder = getLadderManager().getLadder( "default" );
+        if ( defaultLadder != null && defaultLadder.getRanks().size() > 0 ) {
+        	int addedPlayers = 0;
+        	int fixedPlayers = 0;
+        	
+        	for ( Player player : Prison.get().getPlatform().getOfflinePlayers() ) {
+        		
+        		// getPlayer() will add a player who does not exist:
+        		RankPlayer rPlayer = playerManager.getPlayer( player );
+        		if ( rPlayer != null ) {
+        			if ( rPlayer.checkName( player.getName() ) ) {
+        				playerManager.savePlayer( rPlayer );
+        				addedPlayers++;
+        			}
+        		}
+        	}
+        	
+        	
+        	// If any player does not have a rank on the default ladder, then add the default 
+        	// ladder and rank:
+        	Rank defaultRank = defaultLadder.getLowestRank().get();
+        	for ( RankPlayer rPlayer : playerManager.getPlayers() ) {
+        		
+        		@SuppressWarnings( "unused" )
+				String rp = rPlayer.toString();
+				
+        		Rank rankOnDefault = null;
+        		
+        		if ( rPlayer.getRank( defaultLadder ) != null ) {
+        			
+        			rankOnDefault = rPlayer.getRank( defaultLadder ).getRank();
+        			
+//        			Output.get().logInfo( "#### %s  ladder = %s  isRankNull= %s  rank= %s %s [%s]" ,
+//        					rPlayer.getName(),
+//        					defaultLadder.getName(), 
+//        					(rankOnDefault == null ? "true" : "false"), (rankOnDefault == null ? "null" : rankOnDefault.getName()),
+//        					(rankOnDefaultStr == null ? "true" : "false"), (rankOnDefaultStr == null ? "null" : rankOnDefaultStr.getName()),
+//        					rp );
+        			
+        		}
+        		if ( rankOnDefault == null ) {
+        			
+        			rankupCommands.setPlayerRank( rPlayer, defaultRank );
+        			
+        			if ( rPlayer.getRank( defaultLadder ) != null ) {
+        				
+        				String message = prisonRankAddedNewPlayer( rPlayer.getName() );
+        				
+        				Output.get().logInfo( message );
+        			}
+        			
+        			fixedPlayers++;
+        		}
+        		
+			}
+        	if ( addedPlayers > 0 || fixedPlayers > 0 ) {
+        		
+        		Output.get().logInfo( prisonRankAddedAndFixedPlayers( addedPlayers, fixedPlayers ) );
+        	}
+        }
+	}
 
 
     /**

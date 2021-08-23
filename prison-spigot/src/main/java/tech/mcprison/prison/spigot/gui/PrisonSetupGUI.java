@@ -1,18 +1,11 @@
 package tech.mcprison.prison.spigot.gui;
 
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-
-import java.util.List;
 
 /**
  * @author GABRYCA
@@ -30,9 +23,8 @@ public class PrisonSetupGUI extends SpigotGUIComponents {
         // Create Prison GUI.
         PrisonGUI gui = new PrisonGUI(p, 9, "&3Prison Setup -> Confirmation");
 
-        // Add button.
-        gui.addButton(new Button(2, XMaterial.EMERALD_BLOCK, createLore(
-                messages.getString("Lore.ClickToConfirm"),
+        // Create lore.
+        ButtonLore lore = new ButtonLore(createLore(messages.getString("Lore.ClickToConfirm")), createLore(
                 messages.getString("Lore.noRanksFoundSetup"),
                 messages.getString("Lore.noRanksFoundSetup1"),
                 messages.getString("Lore.noRanksFoundSetup2"),
@@ -41,8 +33,10 @@ public class PrisonSetupGUI extends SpigotGUIComponents {
                 messages.getString("Lore.noRanksFoundSetup5"),
                 messages.getString("Lore.noRanksFoundSetup6"),
                 messages.getString("Lore.noRanksFoundSetup7"),
-                messages.getString("Lore.noRanksFoundSetup8")
-        ), "&3" + "Confirm: Setup"));
+                messages.getString("Lore.noRanksFoundSetup8")));
+
+        // Add button.
+        gui.addButton(new Button(2, XMaterial.EMERALD_BLOCK, lore, "&3" + "Confirm: Setup"));
 
         // Add button.
         gui.addButton(new Button(6, XMaterial.REDSTONE_BLOCK, createLore(

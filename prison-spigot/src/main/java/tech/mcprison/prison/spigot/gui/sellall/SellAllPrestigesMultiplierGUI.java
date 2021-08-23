@@ -1,14 +1,10 @@
 package tech.mcprison.prison.spigot.gui.sellall;
 
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
+import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 import java.util.List;
@@ -20,8 +16,6 @@ public class SellAllPrestigesMultiplierGUI extends SpigotGUIComponents {
 
     private final Player p;
     private int counter;
-    private int dimension = 45;
-    private Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3SellAll -> Multipliers"));
 
     public SellAllPrestigesMultiplierGUI(Player p, int counter){
         this.p = p;
@@ -32,24 +26,8 @@ public class SellAllPrestigesMultiplierGUI extends SpigotGUIComponents {
 
         updateSellAllConfig();
 
-        if (guiBuilder()) return;
-
-        // Open the inventory
-        openGUI(p, inv);
-    }
-
-    private boolean guiBuilder() {
-        try {
-            buttonsSetup();
-        } catch (NullPointerException ex){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
-            ex.printStackTrace();
-            return true;
-        }
-        return false;
-    }
-
-    private void buttonsSetup() {
+        int dimension = 45;
+        PrisonGUI gui = new PrisonGUI(p, dimension, "&3SellAll -> Multipliers");
 
         // Page elements.
         int pageSize = 45;
@@ -68,34 +46,26 @@ public class SellAllPrestigesMultiplierGUI extends SpigotGUIComponents {
             for (String prestige : sellAllConfig.getConfigurationSection("Multiplier").getKeys(false)) {
 
                 if (flagValue == i) {
-                    List<String> loreMult = createLore(
-                            lorePrestigeName + sellAllConfig.getString("Multiplier." + prestige + ".PRESTIGE_NAME"),
-                            lorePrestigeMultiplier + sellAllConfig.getString("Multiplier." + prestige + ".MULTIPLIER"),
-                            "",
+
+                    ButtonLore loreMult = new ButtonLore(createLore(
                             loreClickToEdit,
-                            loreClickToDelete
-                    );
+                            loreClickToDelete), createLore(
+                                    lorePrestigeName + sellAllConfig.getString("Multiplier." + prestige + ".PRESTIGE_NAME"),
+                            lorePrestigeMultiplier + sellAllConfig.getString("Multiplier." + prestige + ".MULTIPLIER")));
 
-                    ItemStack prestMultiplierButton = createButton(XMaterial.PAPER.parseItem(), loreMult, sellAllConfig.getString("Multiplier." + prestige + ".PRESTIGE_NAME"));
-
-                    inv.addItem(prestMultiplierButton);
+                    gui.addButton(new Button(null, XMaterial.PAPER, loreMult, sellAllConfig.getString("Multiplier." + prestige + ".PRESTIGE_NAME")));
                 }
                 flagValue++;
             }
         }
 
         if (i < sellAllConfig.getConfigurationSection("Multiplier").getKeys(false).size()) {
-            List<String> nextPageLore = createLore(messages.getString("Lore.ClickToNextPage"));
-
-            ItemStack nextPageButton = createButton(Material.BOOK, 1, nextPageLore, "&7Next " + (i + 1));
-            inv.setItem(53, nextPageButton);
+            gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(messages.getString("Lore.ClickToNextPage"), null), "&7Next " + (i + 1)));
         }
         if (i >= (pageSize * 2)) {
-            List<String> priorPageLore = createLore(messages.getString("Lore.ClickToPriorPage"));
-
-            ItemStack priorPageButton = createButton(Material.BOOK, 1, priorPageLore,
-                    "&7Prior " + (i - (pageSize * 2) - 1));
-            inv.setItem(51, priorPageButton);
+            gui.addButton(new Button(51, XMaterial.BOOK, new ButtonLore(messages.getString("Lore.ClickToPriorPage"), null), "&7Prior " + (i - (pageSize * 2) - 1)));
         }
+
+        gui.open();
     }
 }

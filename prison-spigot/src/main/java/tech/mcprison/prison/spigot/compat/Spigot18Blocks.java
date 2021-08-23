@@ -37,6 +37,7 @@ public abstract class Spigot18Blocks
 	 * @return
 	 */
 	@SuppressWarnings( "deprecation" )
+	@Override
 	public BlockType getBlockType(Block spigotBlock) {
 		BlockType results = BlockType.NULL_BLOCK;
 		
@@ -77,7 +78,7 @@ public abstract class Spigot18Blocks
         return results == BlockType.NULL_BLOCK ? null : results;
     }
 	
-	
+	@Override
 	public PrisonBlock getPrisonBlock(Block spigotBlock) {
 		PrisonBlock pBlock = null;
 		
@@ -95,6 +96,7 @@ public abstract class Spigot18Blocks
 	
 	
 	@SuppressWarnings( "deprecation" )
+	@Override
 	public BlockType getBlockType( ItemStack spigotStack ) {
 		BlockType results = BlockType.NULL_BLOCK;
 		
@@ -198,6 +200,7 @@ public abstract class Spigot18Blocks
 	}
 	
 	@SuppressWarnings( "deprecation" )
+	@Override
 	public XMaterial getXMaterial( Block spigotBlock ) {
 		XMaterial results = NULL_TOKEN;
 		
@@ -246,6 +249,7 @@ public abstract class Spigot18Blocks
 		return results == NULL_TOKEN ? null : results;
 	}
 	
+	@Override
 	public XMaterial getXMaterial( PrisonBlock prisonBlock ) {
 		XMaterial results = NULL_TOKEN;
 		
@@ -266,7 +270,7 @@ public abstract class Spigot18Blocks
 	}
 	
 
-
+	@Override
 	public XMaterial getXMaterial( BlockType blockType ) {
 		XMaterial results = NULL_TOKEN;
 		
@@ -346,7 +350,7 @@ public abstract class Spigot18Blocks
 //	}
 
 
-	
+	@Override
 	public void updateSpigotBlock( BlockType blockType, Block spigotBlock ) {
     	
     	if ( blockType != null && blockType != BlockType.IGNORE && spigotBlock != null ) {
@@ -361,6 +365,7 @@ public abstract class Spigot18Blocks
     }
 	
 	
+	@Override
 	public void updateSpigotBlock( PrisonBlock prisonBlock, Block spigotBlock ) {
 		
 		if ( prisonBlock != null && 
@@ -377,6 +382,7 @@ public abstract class Spigot18Blocks
 	}
 	
 	@SuppressWarnings( "deprecation" )
+	@Override
 	public void updateSpigotBlock( XMaterial xMat, Block spigotBlock ) {
 		
 		if ( xMat != null ) {
@@ -428,6 +434,7 @@ public abstract class Spigot18Blocks
 	 * 
 	 * @return
 	 */
+	@Override
 	public BlockTestStats testCountAllBlockTypes() {
 		BlockTestStats stats = new BlockTestStats();
 		
@@ -462,7 +469,7 @@ public abstract class Spigot18Blocks
 	}
 	
 	
-	
+	@Override
 	public int getDurabilityMax( SpigotItemStack itemInHand ) {
 		int results = 0;
 		
@@ -518,7 +525,7 @@ public abstract class Spigot18Blocks
 //	}
 	
 	
-
+	@Override
 	public void setBlockFace( Block spigotBlock, BlockFace blockFace ) {
 		
 		

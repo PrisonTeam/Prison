@@ -40,10 +40,12 @@ public class Spigot113
     	return playerInventory.getItemInMainHand();
     }
    
+	@Override
     public SpigotItemStack getPrisonItemInMainHand(PlayerInteractEvent e) {
     	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( e ) );
     }
     
+	@Override
     public SpigotItemStack getPrisonItemInMainHand(Player player) {
     	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player ) );
     }
@@ -58,6 +60,7 @@ public class Spigot113
     	return getItemInOffHand(player.getInventory());
     }
     
+    @Override
     public ItemStack getItemInOffHand(PlayerInventory playerInventory) {
     	return playerInventory.getItemInOffHand();
     }

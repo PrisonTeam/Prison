@@ -91,4 +91,13 @@ public @interface Command {
     public String[] aliases() default {};
     
     
+    /**
+     * This is a list of URLs that should point back to the documentation that is appropriate 
+     * to the command that these URLs are tied to.
+     * 
+     * @return
+     */
+    public String[] docURLs() default {};
+    
+    
 }

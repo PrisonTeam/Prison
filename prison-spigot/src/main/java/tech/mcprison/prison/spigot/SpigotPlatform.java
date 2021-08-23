@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -41,8 +40,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.plugin.Plugin;
@@ -62,14 +59,17 @@ import tech.mcprison.prison.convert.ConversionResult;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.PlayerUtil;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.internal.platform.Capability;
+import tech.mcprison.prison.internal.platform.HandlerList;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.mines.commands.MinesCommands;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.mines.managers.MineManager;
@@ -81,15 +81,24 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.commands.RanksCommands;
+import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerCrazyEnchants;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonEnchants;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerTokenEnchant;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerZenchantments;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
+import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 import tech.mcprison.prison.spigot.game.SpigotOfflinePlayer;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.game.SpigotPlayerUtil;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.placeholder.SpigotPlaceholders;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
@@ -278,6 +287,21 @@ public class SpigotPlatform
     public Optional<Player> getOfflinePlayer(UUID uuid) {
     	return getOfflinePlayer(null, uuid);
     }
+    
+	@Override
+    public List<Player> getOfflinePlayers() {
+    	List<Player> players = new ArrayList<>();
+    	
+    	for ( OfflinePlayer oPlayer : Bukkit.getOfflinePlayers() ) {
+			if ( oPlayer != null ) {
+				
+				players.add( new SpigotOfflinePlayer( oPlayer ) );
+			}
+    	}
+    	
+    	return players;
+    }
+    
     private Optional<Player> getOfflinePlayer(String name, UUID uuid) {
     	Player player = null;
     	
@@ -778,6 +802,11 @@ public class SpigotPlatform
 		return SpigotPrison.getInstance().getConfig().getString( key );
 	}
 	
+	@Override
+	public String getConfigString( String key, String defaultValue ) {
+		return SpigotPrison.getInstance().getConfig().getString( key, defaultValue );
+	}
+	
 	/**
 	 * <p>This returns the boolean value that is associated with the key.
 	 * It has to match on true to return a true value.  If the key does
@@ -1131,7 +1160,7 @@ public class SpigotPlatform
 			MineManager mm = PrisonMines.getInstance().getMineManager();
 			Mine mine = mm.getMine( name );
 			if ( mine == null ) {
-				PrisonMines.getInstance().getMinesCommands().createCommand( sender, "virtual", name );
+				PrisonMines.getInstance().getMinesCommands().createCommand( sender, name, "virtual noPlaceholderUpdate" );
 				mine = mm.getMine( name );
 				mine.setTag( tag );
 				
@@ -1145,7 +1174,7 @@ public class SpigotPlatform
 		else if ( elementType == ModuleElementType.RANK &&
 								PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
 			RankManager rm = PrisonRanks.getInstance().getRankManager();
-			rm.getRanksCommands().createRank( sender, name, 0, "default", tag );
+			rm.getRanksCommands().createRank( sender, name, 0, "default", tag, "" );
 			
 			Rank rank = rm.getRank( name );
 			
@@ -1228,8 +1257,10 @@ public class SpigotPlatform
     		Player player = pm.getPlayer( sender );
     		RankPlayer rankPlayer = pm.getPlayer( player );
 
-    		if ( rankPlayer != null ) {
-    			Rank rank = rankPlayer.getRank( "default" );
+    		if ( rankPlayer != null && rankPlayer.getRank( "default" ) != null ) {
+    			PlayerRank pRank = rankPlayer.getRank( "default" );
+    			
+    			Rank rank = pRank.getRank();
     			
     			if ( rank != null ) {
     				
@@ -1323,6 +1354,11 @@ public class SpigotPlatform
 		return isAccessible;
 	}
 
+	/**
+	 * This function will try to enable Access by Rank on all mines that are linked to ranks.
+	 * This will be applied to mines and ranks that would not normally be generated by 
+	 * the autoConfigure process.
+	 */
 	@Override
 	public void autoCreateConfigureMines() {
 		
@@ -1366,7 +1402,7 @@ public class SpigotPlatform
 	 * 
 	 */
 	@Override
-	public void autoCreateMineBlockAssignment( boolean forceKeepBlocks ) {
+	public void autoCreateMineBlockAssignment( List<String> rankMineNames, boolean forceKeepBlocks ) {
 		List<String> blockList = new ArrayList<>(); 
 		
 		
@@ -1405,7 +1441,7 @@ public class SpigotPlatform
         }
 		
 		MineManager mm = PrisonMines.getInstance().getMineManager();
-		List<Mine> mines = mm.getMines();
+		//List<Mine> mines = mm.getMines();
 		
 		List<Double> percents = new ArrayList<>();
 		percents.add(5d);
@@ -1417,7 +1453,9 @@ public class SpigotPlatform
 		int mineBlockSize = percents.size();
 		
 		int startPos = 1;
-		for ( Mine mine : mines ) {
+		for ( String mineName : rankMineNames ) {
+			
+			Mine mine = mm.getMine( mineName );
 			
 			boolean hasBlocks = mine.getPrisonBlocks().size() > 0 || mine.getBlocks().size() > 0;
 			
@@ -1517,19 +1555,22 @@ public class SpigotPlatform
 	}
 	
 	@Override
-	public void autoCreateMineLinerAssignment() {
+	public void autoCreateMineLinerAssignment( List<String> rankMineNames, 
+			boolean forceLinersBottom, boolean forceLinersWalls ) {
 		
 		MineManager mm = PrisonMines.getInstance().getMineManager();
-		List<Mine> mines = mm.getMines();
+//		List<Mine> mines = mm.getMines();
 		
-		for ( Mine mine : mines ) {
+		for ( String mineName : rankMineNames ) {
 			
+			Mine mine = mm.getMine( mineName );
+
 			String mineLinerData = mine.getLinerData().toSaveString();
 			boolean createLiner = mineLinerData.trim().isEmpty();
 			
 			if ( createLiner ) {
-				mine.getLinerData().setLiner( Edges.walls, getRandomLinerType(), true );
-				mine.getLinerData().setLiner( Edges.bottom, getRandomLinerType(), true );
+				mine.getLinerData().setLiner( Edges.walls, getRandomLinerType(), forceLinersWalls );
+				mine.getLinerData().setLiner( Edges.bottom, getRandomLinerType(), forceLinersBottom );
 
 				mineLinerData = mine.getLinerData().toSaveString();
 				
@@ -1545,11 +1586,23 @@ public class SpigotPlatform
 	}
 	
 	private LinerPatterns getRandomLinerType() {
-		LinerPatterns[] liners = LinerPatterns.values();
 		
-		// Exclude the last LinerPattern since it is "repair".
-		int pos = new Random().nextInt( liners.length - 1 );
-		return liners[pos];
+		// Get a random pattern, filtered for this version of spigot:
+		LinerPatterns results = LinerPatterns.getRandomLinerPattern();
+		
+//		LinerPatterns[] liners = LinerPatterns.values();
+//		
+//		// Exclude the last 3 LinerPatterns since they are "repair", "remove" and "removeAll".
+//		int pos = new Random().nextInt( liners.length - 3 );
+//		LinerPatterns liner = liners[pos];
+//		
+//		// Just in case any of these are selected, choose another:
+//		if ( liner ==LinerPatterns.remove || liner == LinerPatterns.removeAll || liner == LinerPatterns.repair ) {
+//			liner = getRandomLinerType();
+//		}
+//		return liner;
+		
+		return results;
 	}
 	
 	/**
@@ -1805,19 +1858,40 @@ public class SpigotPlatform
     				blockBreakPriority.name() ) );
     		
     		String tebePriority = afw.getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
+    		boolean isTebeEnabled = afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
     		BlockBreakPriority tebEventPriority = BlockBreakPriority.fromString( tebePriority );
-    		results.add( String.format(".   Token Enchant BlockExplodeEvent Priority:&b %s", 
-    				tebEventPriority.name() ) );
+    		results.add( String.format("%s.   Token Enchant BlockExplodeEvent Priority:&b %s %s", 
+    				(isTebeEnabled ? "" : "+" ), 
+    				tebEventPriority.name(),
+    				(isTebeEnabled ? "&2Enabled" : "&cDisabled")
+    				) );
     		
     		String cebuePriority = afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
+    		boolean isCebueEnabled = afw.isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
     		BlockBreakPriority cebuEventPriority = BlockBreakPriority.fromString( cebuePriority );
-    		results.add( String.format(".   Crazy Enchant BlastUseEvent Priority:&b %s", 
-    				cebuEventPriority.name() ) );
+    		results.add( String.format("%s.   Crazy Enchant BlastUseEvent Priority:&b %s %s", 
+    				(isCebueEnabled ? "" : "+" ), 
+    				cebuEventPriority.name(),
+    				(isCebueEnabled ? "&2Enabled" : "&cDisabled")
+    				 ) );
     		
     		String zbsePriority = afw.getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
+    		boolean isZbseEnabled = afw.isBoolean( AutoFeatures.isProcessZenchantsBlockExplodeEvents );
     		BlockBreakPriority zbsEventPriority = BlockBreakPriority.fromString( zbsePriority );
-    		results.add( String.format(".   Zenchantments BlockShredEvent Priority:&b %s", 
-    				zbsEventPriority.name() ) );
+    		results.add( String.format("%s.   Zenchantments BlockShredEvent Priority:&b %s %s", 
+    				(isZbseEnabled ? "" : "+" ), 
+    				zbsEventPriority.name(),
+    				(isZbseEnabled ? "&2Enabled" : "&cDisabled")
+    				 ) );
+
+    		String peeePriority = afw.getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
+    		boolean isPeeeeEnabled = afw.isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
+    		BlockBreakPriority peeEventPriority = BlockBreakPriority.fromString( peeePriority );
+    		results.add( String.format("%s.   PrisonEnchants BlockExplodeEvent Priority:&b %s %s", 
+    				(isPeeeeEnabled ? "" : "+" ),
+    				peeEventPriority.name(),
+    				(isPeeeeEnabled ? "&2Enabled" : "&cDisabled")
+    				) );
     		
     		results.add( " " );
     		
@@ -1830,55 +1904,69 @@ public class SpigotPlatform
     			afw.isBoolean( AutoFeatures.autoBlockEnabled ))) );
     		
     		
-    		results.add( String.format(".   Handle Normal Drops:&b %s", (isAutoPickup ? "disabled by AutoPickup" :
-    			afw.isBoolean( AutoFeatures.handleNormalDropsEvents ))) );
-    		results.add( String.format(".   Normal Drop Smelt:&b %s", (isAutoPickup ? "disabled" :
-    			afw.isBoolean( AutoFeatures.normalDropSmelt ))) );
-    		results.add( String.format(".   Normal Drop Block:&b %s", (isAutoPickup ? "disabled" :
-    			afw.isBoolean( AutoFeatures.normalDropBlock ))) );
+    		results.add( String.format("%s.   Handle Normal Drops:&b %s %s", 
+    				(isAutoPickup ? "+" : ""), 
+    				(afw.isBoolean( AutoFeatures.handleNormalDropsEvents ) ? "&2Enabled" : "&cDisabled" ),
+    				(isAutoPickup ? "&d[disabled by Exended Bukkit Fortune]" : "") ) );
+    		results.add( String.format("%s.   Normal Drop Smelt:&b %s", 
+    				(isAutoPickup ? "+" : ""), 
+    				(afw.isBoolean( AutoFeatures.normalDropSmelt ) ? "&2Enabled" : "&cDisabled" ),
+    				(isAutoPickup ? "&d[disabled by Exended Bukkit Fortune]" : "") ) );
+    				
+    		results.add( String.format("%s.   Normal Drop Block:&b %s", 
+    				(isAutoPickup ? "+" : ""), 
+		    		(afw.isBoolean( AutoFeatures.normalDropBlock ) ? "&2Enabled" : "&cDisabled" ),
+		    		(isAutoPickup ? "&d[disabled by Exended Bukkit Fortune]" : "") ) );
     		
     		
     		
     		results.add( " " );
     		
-    		results.add( String.format("+.   Calculate Durability:&b %s", 
-    				afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled )) );
+    		boolean isDurabilityEnabled = afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled );
+    		results.add( String.format("%s.   Calculate Durability:&b %s", 
+    				(isDurabilityEnabled ? "" : "+"), 
+    				isDurabilityEnabled) );
     		
     		
     		boolean isCalcFortune = afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled );
     		results.add( String.format(".   Calculate Fortune:&b %s", isCalcFortune) );
-    		results.add( String.format("+.  .  Max Fortune Multiplier:&b %s", 
+    		results.add( String.format("+.  .  Max Fortune Level:&b %s  &3(0 = no max Level)", 
     				afw.getInteger( AutoFeatures.fortuneMultiplierMax )) );
     		
     		boolean isExtendedBukkitFortune = afw.isBoolean( AutoFeatures.isExtendBukkitFortuneCalculationsEnabled );
     		results.add( String.format(".  .  Extended Bukkit Fortune Enabled:&b %s", 
     				isExtendedBukkitFortune) );
+    		
     		results.add( String.format("+.  .  Extended Bukkit Fortune Factor Percent Range Low:&b %s", 
     				afw.getInteger( AutoFeatures.extendBukkitFortuneFactorPercentRangeLow )) );
     		results.add( String.format("+.  .  Extended Bukkit Fortune Factor Percent Range High:&b %s", 
     				afw.getInteger( AutoFeatures.extendBukkitFortuneFactorPercentRangeHigh )) );
     		
     		
-    		results.add( String.format(".  .  Calculate Alt Fortune Enabled:&b %s", ( isExtendedBukkitFortune ? "disabled" :
-    			afw.isBoolean( AutoFeatures.isCalculateAltFortuneEnabled ))) );
-    		results.add( String.format("+.  .  Calculate Alt Fortune on all Blocks:&b %s", 
-    				afw.isBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled )) );
+    		results.add( "+&3NOTE: If you enable Extended Bukkit Fortune, then it auto disables the following Alt Fortune Cals." );
+    		results.add( "+&3NOTE: First try Extended Bukkit Fortune and if it does not work, then disable it and use " +
+    				"Alt Fortune." );
+    		results.add( String.format("%s.  .  Calculate Alt Fortune Enabled:&b %s %s", 
+    				(isExtendedBukkitFortune ? "+" : "" ), 
+    				( afw.isBoolean( AutoFeatures.isCalculateAltFortuneEnabled) ? "&2Enabled" : "&cDisabled"),
+    				( isExtendedBukkitFortune ? "&d[disabled by Exended Bukkit Fortune]" : "")) );
+    		results.add( String.format("%s.  .  Calculate Alt Fortune on all Blocks:&b %s %s", 
+    				(isExtendedBukkitFortune ? "+" : "" ), 
+    				( afw.isBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled) ? "&2Enabled" : "&cDisabled"),
+    				( isExtendedBukkitFortune ? "&d[disabled by Exended Bukkit Fortune]" : "")) );
     		
     		
     		results.add( " " );
     		
     		
-    		results.add( String.format("+.   Calculate XP:&b %s", 
-    				afw.isBoolean( AutoFeatures.isCalculateXPEnabled )) );
-    		results.add( String.format("+.   Drop XP as Orbs:&b %s", 
+    		boolean isXpEnabled = afw.isBoolean( AutoFeatures.isCalculateXPEnabled );
+    		results.add( String.format("%s.   Calculate XP:&b %s", 
+    				(isXpEnabled ? "" : "+"),
+    				isXpEnabled ) );
+    		results.add( String.format("%s.   Drop XP as Orbs:&b %s", 
+    				(isXpEnabled ? "" : "+"),
     				afw.isBoolean( AutoFeatures.givePlayerXPAsOrbDrops )) );
     		
-    		results.add( String.format("+.   Process TokensEnchant Explosive Events:&b %s", 
-    				afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents )) );
-    		results.add( String.format("+.   Process Crazy Enchants Block Explode Events:&b %s", 
-    				afw.isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents )) );
-    		results.add( String.format("+.   Process McMMO BlockBreakEvents:&b %s", 
-    				afw.isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents )) );
     		
     		
     		
@@ -1920,33 +2008,73 @@ public class SpigotPlatform
 	}
 	
 	
+	@Override
+	public PlayerUtil getPlayerUtil( UUID playerUuid ) {
+		return new SpigotPlayerUtil( playerUuid );
+	}
+	
 	
 	@Override
-	public void dumpEventListenersBlockBreakEvents() {
+	public String dumpEventListenersBlockBreakEvents() {
+		StringBuilder sb = new StringBuilder();
 		
-		dumpEventListeners( "BlockBreakEvent", BlockBreakEvent.getHandlerList() );
+		// Dump the event listeners for the following events if they are active on the server:
 		
-		Output.get().logInfo( "&2NOTE: Prison Block Event Listeners:" );
+		AutoManagerBlockBreakEvents blockEvents = new AutoManagerBlockBreakEvents();
+		blockEvents.dumpEventListeners( sb );
 		
-		Output.get().logInfo( "&2. . Prison Internal BlockBreakEvents: " +
-								"tech.mcprison.prison.spigot.SpigotListener" );
-		Output.get().logInfo( "&2. . Auto Feature Core: Non-AutoManager: " +
-								"OnBlockBreakEventListeners$OnBlockBreakEventListener*" );
-		Output.get().logInfo( "&2. . Prison MONITOR Events manages block counts, " +
-								"Mine Sweeper, and zero block conditions." );
-		Output.get().logInfo( "&2. . AutoManager and enchantment event listeners are " +
-								"identified by their class names." );
+		
+		sb.append( "\n" );
+		sb.append( "&2NOTE: Prison Block Event Listeners:\n" );
+		
+		sb.append( "&2. . Prison Internal BlockBreakEvents: " +
+									"tech.mcprison.prison.spigot.SpigotListener\n" );
+		sb.append( "&2. . Auto Feature Core: Non-AutoManager: " +
+									"OnBlockBreakEventListeners$OnBlockBreakEventListener*\n" );
+		sb.append( "&2. . Prison MONITOR Events manages block counts, " +
+									"Mine Sweeper, and zero block conditions.\n" );
+		sb.append( "&2. . AutoManager and enchantment event listeners are " +
+									"identified by their class names.\n" );
+		sb.append( "\n" );
+		
+		
+		AutoManagerCrazyEnchants crazyEnchants = new AutoManagerCrazyEnchants();
+		crazyEnchants.dumpEventListeners( sb );
+		
+		AutoManagerPrisonEnchants prisonEnchants = new AutoManagerPrisonEnchants();
+		prisonEnchants.dumpEventListeners( sb );
+		
+		AutoManagerTokenEnchant tokenEnchant = new AutoManagerTokenEnchant();
+		tokenEnchant.dumpEventListeners( sb );
+
+		AutoManagerZenchantments zenchantments = new AutoManagerZenchantments();
+		zenchantments.dumpEventListeners( sb );
+		
+		return sb.toString();
 	}
 	
 	@Override
-	public void dumpEventListenersPlayerChatEvents() {
+	public String dumpEventListenersPlayerChatEvents() {
+		StringBuilder sb = new StringBuilder();
 		
-		dumpEventListeners( "AsyncPlayerChatEvent", AsyncPlayerChatEvent.getHandlerList() );
+		ChatDisplay eventDisplay = dumpEventListenersChatDisplay(
+								"AsyncPlayerChatEvent", 
+								new SpigotHandlerList( AsyncPlayerChatEvent.getHandlerList()) );
+		if ( eventDisplay != null ) {
+			sb.append( eventDisplay.toStringBuilder() );
+		}
 			
 		if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.17.0") < 0 ) {
 			
-			dumpEventListeners( "PlayerChatEvent", PlayerChatEvent.getHandlerList() );
+			eventDisplay = dumpEventListenersChatDisplay(
+								"PlayerChatEvent", 
+								new SpigotHandlerList( PlayerChatEvent.getHandlerList()) );
+			if ( eventDisplay != null ) {
+				sb.append( eventDisplay.toStringBuilder() );
+			}
 		}
+		
+		return sb.toString();
 	}
 	
 	/**
@@ -1967,25 +2095,72 @@ public class SpigotPlatform
 	 * @param eventType
 	 * @param handlerList
 	 */
-	private void dumpEventListeners( String eventType, HandlerList handlerList ) {
+	@Override
+	public List<String> dumpEventListenersList( String eventType, HandlerList handlerList ) {
+		List<String> results = new ArrayList<>();
 		
-		RegisteredListener[] listeners = handlerList.getRegisteredListeners();
+		RegisteredListener[] listeners = ((SpigotHandlerList) handlerList).getRegisteredListeners();
 		
-		ChatDisplay display = new ChatDisplay("Event Dump: " + eventType );
-		display.addText("&8All registered EventListeners (%d):", listeners.length );
+		// Set the title in position 0:
+		results.add( "Event Dump: " + eventType );
+
+		results.add( String.format( "&8All registered EventListeners (%d):", listeners.length ));
 		
 		for ( RegisteredListener eventListner : listeners ) {
 			String plugin = eventListner.getPlugin().getName();
 			EventPriority priority = eventListner.getPriority();
 			String listener = eventListner.getListener().getClass().getName();
 			
-			String message = String.format( "&3  Plugin: &7%s   %s  &3(%s)", 
+			String message = String.format( "&3. Plugin: &7%s   %s  &3(%s)", 
 					plugin, priority.name(), listener);
 			
-			display.addText( message );
+			results.add( message );
 		}
 		
-		display.toLog( LogLevel.DEBUG );
+		return results;
+	}
+	
+	@Override
+	public ChatDisplay dumpEventListenersChatDisplay( String eventType, HandlerList handlerList ) {
+		ChatDisplay display = null;
+		
+		List<String> details = dumpEventListenersList( eventType, handlerList );
+		
+		if ( details.size() > 0 ) {
+			
+			// Title is the first entry:
+			display = new ChatDisplay( details.get( 0 ) );
+
+			for ( int x = 1; x < details.size(); x++ ) {
+				display.addText( details.get( x ) );
+			}
+		}
+		
+		// display.toLog( LogLevel.DEBUG );
+		
+		return display;
+	}
+	
+	/**
+	 * <p>This only reloads the event listeners that auto features uses.  This is called by
+	 * the command "/prison reload autoFeatures".  
+	 * </p>
+	 * 
+	 * <code>tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.reloadConfig()</code>
+	 * 
+	 */
+	public void reloadAutoFeaturesEventListeners() {
+		
+		AutoManagerBlockBreakEvents autoFeaturesEvents = new AutoManagerBlockBreakEvents();
+		
+		// NOTE: The unregisterListeners() will remove ALL auto features events that were
+		//       registered, no matter which listeners were enabled.
+		autoFeaturesEvents.unregisterListeners();
+
+		// NOTE: The registerEvents() will register all event listeners based upon what's 
+		//       in the auto features configuration file.
+		autoFeaturesEvents.registerEvents();
+		
 	}
 
 	/**
@@ -1999,7 +2174,100 @@ public class SpigotPlatform
 	public void traceEventListenersBlockBreakEvents( tech.mcprison.prison.internal.CommandSender sender )
 	{
 		// TODO Auto-generated method stub
+		Output.get().logInfo( "This feature is not enabled yet." );
+	}
+	
+	@Override
+	public void testPlayerUtil( UUID uuid )
+	{
+		SpigotPlayerUtil playerUtil = new SpigotPlayerUtil( uuid );
+		
+		Output.get().logInfo("Player UUID: %s", playerUtil.getPlayerUuid() );
+		
+		Output.get().logInfo("Player Level: %d", playerUtil.getLevel() );
+		Output.get().logInfo("Player XP: %s", Double.toString( playerUtil.getExp() ));
+		Output.get().logInfo("Player Air Max: %d", playerUtil.getMaximumAir() );
+		Output.get().logInfo("Player Air Remaining: %d", playerUtil.getRemainingAir() );
+
+		
+		Output.get().logInfo("Player Food Level: %d", playerUtil.getFoodLevel() );
+		Output.get().logInfo("Player Food Exhaustion: %s", Double.toString( playerUtil.getFoodExhaustion() ));
+		Output.get().logInfo("Player Food Saturation: %s", Double.toString( playerUtil.getFoodSaturation() ));
+		
+		Output.get().logInfo("Player Health Max: %s", Double.toString( playerUtil.getMaxHealth() ));
+		Output.get().logInfo("Player Health Current: %s", Double.toString( playerUtil.getHealth() ));
+		Output.get().logInfo("Player Walk Speed: %s", Double.toString( playerUtil.getWalkSpeed() ));
+		
+		
+		Output.get().logInfo("Player Tool Name: %s", playerUtil.getItemInHandName() );
+		Output.get().logInfo("Player Tool Display Name: %s", playerUtil.getItemInHandDisplayName() );
+		
+		Output.get().logInfo("Player Tool Item Type: %s", playerUtil.getItemInHandItemType() );
+		Output.get().logInfo("Player Tool Item Material: %s", playerUtil.getItemInHandItemMaterial() );
+		
+		Output.get().logInfo("Player Tool Durability Used: %s", playerUtil.getItemInHandDurabilityUsed() );
+		Output.get().logInfo("Player Tool Durability Max: %s", playerUtil.getItemInHandDurabilityMax() );
+		Output.get().logInfo("Player Tool Durability Remaining: %s", playerUtil.getItemInHandDurabilityRemaining() );
+
+		
+		Output.get().logInfo("Player Tool Enchantment Efficency: %s", playerUtil.getItemInHandEnchantmentEfficency() );
+		Output.get().logInfo("Player Tool Enchantment Fortune: %s", playerUtil.getItemInHandEnchantmentFortune() );
+		Output.get().logInfo("Player Tool Enchantment Luck: %s", playerUtil.getItemInHandEnchantmentLuck() );
+		Output.get().logInfo("Player Tool Enchantment Mending: %s", playerUtil.getItemInHandEnchantmentMending() );
+		Output.get().logInfo("Player Tool Enchantment Silk Touch: %s", playerUtil.getItemInHandEnchantmentSilkTouch() );
+		
 		
 	}
+	
+	@Override
+	public void saveResource( String fileName, boolean replace ) {
+		SpigotPrison.getInstance().saveResource( fileName, replace );
+	}
+	
+	
+	@Override
+	public String getMinesListString() {
+		
+		
+		MinesCommands mc = PrisonMines.getInstance().getMinesCommands();
+		
+    	
+    	ChatDisplay display = new ChatDisplay("Mines");
+    	mc.getMinesList( display, MineManager.MineSortOrder.sortOrder, "all", null );
+  
+    	StringBuilder sb = display.toStringBuilder();
+    	
+    	sb.append( "\n" );
+    	
+    	mc.allMinesInfoDetails( sb );
+		
+    	return sb.toString();
+//    	return Text.stripColor( sb.toString() );
+	}
+	
+	@Override
+	public String getRanksListString() {
+		
+		RanksCommands rc = 
+					PrisonRanks.getInstance().getRankManager().getRanksCommands();
+		
+		
+		ChatDisplay display = new ChatDisplay("Ranks");
+		
+		RankPlayer rPlayer = null;
+		rc.listAllRanksByLadders( display, true, rPlayer );
+		
+		StringBuilder sb = display.toStringBuilder();
+		
+    	sb.append( "\n" );
+    	
+    	rc.listAllRanksByInfo( sb );
+//    	rc.allRanksInfoDetails( sb );
+		
+    	return sb.toString();
+//		return Text.stripColor( sb.toString() );
+	}
+
+
 	
 }

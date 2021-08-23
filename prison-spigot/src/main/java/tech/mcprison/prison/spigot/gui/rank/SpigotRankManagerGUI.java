@@ -1,20 +1,22 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
-import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import java.text.DecimalFormat;
+
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import tech.mcprison.prison.output.Output;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
+import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
+import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-
-import java.text.DecimalFormat;
-import java.util.List;
 
 /**
  * @author GABRYCA
@@ -36,84 +38,34 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
             return;
         }
 
-        // Create the inventory and set up the owner, dimensions or number of slots, and title
         int dimension = 27;
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3" + "Ranks -> RankManager"));
+        PrisonGUI gui = new PrisonGUI(p, dimension, "&3" + "Ranks -> RankManager");
 
-        if (guiBuilder(inv)) return;
-
-        // Open the inventory
-        openGUI(p, inv);
-    }
-
-    private boolean guiBuilder(Inventory inv) {
-        try {
-            buttonsSetup(inv);
-        } catch (NullPointerException ex){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
-            ex.printStackTrace();
-            return true;
-        }
-        return false;
-    }
-
-    private void buttonsSetup(Inventory inv) {
-
-        // Create the lore
-        List<String> rankupCommandsLore = createLore(
-                messages.getString("Lore.ClickToOpen")
-        );
-
-        // SpigotRanksGUI.getCommands(rankupCommandsLore, rank);
+        ButtonLore rankupCommandsLore = new ButtonLore(messages.getString("Lore.ClickToOpen"), null);
 
         // Decimal Rank cost format.
         DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
 
-        // Create the lore
-        List<String> editPriceLore = createLore(
-                messages.getString("Lore.ClickToOpen"),
-                "",
-                "&8-----------------------",
-                " ",
+        RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( new SpigotPlayer(p) );
+        PlayerRank pRank = rankPlayer.getRank( rank.getLadder() );
+        
+        ButtonLore editPriceLore = new ButtonLore(createLore(messages.getString("Lore.ClickToOpen")), createLore(
                 messages.getString("Lore.Info"),
-                messages.getString("Lore.Price") + PlaceholdersUtil.formattedKmbtSISize(rank.getCost(), formatDecimal, ""),
-                " ",
-                "&8-----------------------"
-                );
+                messages.getString("Lore.Price") + PlaceholdersUtil.formattedKmbtSISize(pRank.getRankCost(), formatDecimal, "")));
 
-        List<String> editTagLore = createLore(
-                messages.getString("Lore.ClickToOpen"),
-                "",
-                "&8-----------------------",
-                " ",
+        ButtonLore editTagLore = new ButtonLore(createLore(messages.getString("Lore.ClickToOpen")), createLore(
                 messages.getString("Lore.Info"),
-                messages.getString("Lore.Tag") + rank.getTag(),
-                " ",
-                "&8-----------------------"
-                );
+                messages.getString("Lore.Tag") + rank.getTag()));
+
+
+        ButtonLore closeGUILore = new ButtonLore(messages.getString("Lore.ClickToClose"), null);
 
         // Create the button
-        Material commandMinecart = Material.matchMaterial( "command_minecart" );
-        if ( commandMinecart == null ) {
-        	commandMinecart = Material.matchMaterial( "command_block_minecart" );
-        }
+        gui.addButton(new Button(26, XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, SpigotPrison.format("&c" + "Close")));
+        gui.addButton(new Button(10, XMaterial.COMMAND_BLOCK_MINECART, rankupCommandsLore, SpigotPrison.format("&3" + "RankupCommands" +  " " + rank.getName())));
+        gui.addButton(new Button(13, XMaterial.GOLD_NUGGET, editPriceLore, SpigotPrison.format("&3" + "RankPrice" +  " " + rank.getName())));
+        gui.addButton(new Button(16, XMaterial.NAME_TAG, editTagLore, SpigotPrison.format("&3" + "RankTag" +  " " + rank.getName())));
 
-        List<String> closeGUILore = createLore(
-                messages.getString("Lore.ClickToClose")
-        );
-
-
-        // Create the button
-        ItemStack closeGUI = createButton(XMaterial.RED_STAINED_GLASS_PANE.parseItem(), closeGUILore, SpigotPrison.format("&c" + "Close"));
-        ItemStack rankupCommands = createButton(XMaterial.matchXMaterial(commandMinecart).parseItem(), rankupCommandsLore, SpigotPrison.format("&3" + "RankupCommands" +  " " + rank.getName()));
-        ItemStack rankPrice = createButton(XMaterial.GOLD_NUGGET.parseItem(), editPriceLore, SpigotPrison.format("&3" + "RankPrice" +  " " + rank.getName()));
-        ItemStack rankTag = createButton(XMaterial.NAME_TAG.parseItem(), editTagLore, SpigotPrison.format("&3" + "RankTag" +  " " + rank.getName()));
-
-        // Set the position and add it to the inventory
-        inv.setItem(10, rankupCommands);
-        inv.setItem(13, rankPrice);
-        inv.setItem(16, rankTag);
-        inv.setItem(26, closeGUI);
+        gui.open();
     }
-
 }

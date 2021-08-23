@@ -1,11 +1,13 @@
 package tech.mcprison.prison.ranks.commands;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.PlayerRankRefreshTask;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 
@@ -40,6 +42,10 @@ public class LadderCommands
 
         if ( PrisonRanks.getInstance().getLadderManager().save(rankLadder) ) {
 
+        	
+        	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
+        	
+        	
         	ladderAddCreatedMsg( sender, ladderName );
             
         }
@@ -71,6 +77,11 @@ public class LadderCommands
         	return;
         }
         
+        if ( ladder.getRanks().size() > 0 ) {
+        	ladderDeleteCannotDeleteWithRanksMsg( sender );
+        	return;
+        }
+        
         if ( PrisonRanks.getInstance().getLadderManager().removeLadder(ladder) ) {
         	ladderDeletedMsg( sender, ladderName );
 
@@ -93,55 +104,66 @@ public class LadderCommands
         display.send(sender);
     }
 
-    @Command(identifier = "ranks ladder listranks", description = "Lists the ranks within a ladder.", 
-    								onlyPlayers = false, permissions = "ranks.ladder")
-    public void ladderInfo(CommandSender sender, @Arg(name = "ladderName") String ladderName) {
-        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
-
-        if ( ladder == null ) {
-        	ladderDoesNotExistsMsg( sender, ladderName );
-            return;
-        }
-
-        ChatDisplay display = new ChatDisplay(ladder.getName());
-        display.addText( ladderHasRankMsg() );
-
-        BulletedListComponent.BulletedListBuilder builder =
-            new BulletedListComponent.BulletedListBuilder();
-        
-        boolean first = true;
-        for (Rank rank : ladder.getRanks()) {
-//        	Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankPos.getRankId());
-        	if ( rank == null ) {
-        		continue;
-        	}
-        	
-//            Optional<Rank> rankOptional =
-//                PrisonRanks.getInstance().getRankManager().getRankOptional(rankPos.getRankId());
-//            if(!rankOptional.isPresent()) {
-//                continue; // Skip it
-//            }
-            
-            boolean defaultRank = ("default".equalsIgnoreCase( ladderName ) && first);
-            
-            String defaultRankValue = ladderDefaultRankMsg();
-
-            builder.add("&3(#%s) &8- &3%s %s", 
-            		Integer.toString( rank.getPosition() ),
-            		rank.getName(), 
-                (defaultRank ? defaultRankValue : "")
-            	);
-            first = false;
-        }
-
-        String seeRanksList = ladderSeeRanksListMsg();
-        
-        builder.add( seeRanksList );
-        
-        display.addComponent(builder.build());
-        
-        display.send(sender);
-    }
+//    @Command(identifier = "ranks ladder listranks", description = "Lists the ranks within a ladder.", 
+//    								onlyPlayers = false, permissions = "ranks.ladder")
+//    public void ladderInfo(
+//    		CommandSender sender, 
+//    		@Arg(name = "ladderName", def = "default", 
+//    		description = "The ladder name to display the ranks on. " +
+//    				"Defaults to the default ladder") String ladderName
+//    		
+//    		) {
+//        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+//
+//        if ( ladder == null ) {
+//        	ladderDoesNotExistsMsg( sender, ladderName );
+//            return;
+//        }
+//
+//        ChatDisplay display = new ChatDisplay(ladder.getName());
+//        display.addText( ladderHasRankMsg() );
+//
+//        BulletedListComponent.BulletedListBuilder builder =
+//            new BulletedListComponent.BulletedListBuilder();
+//        
+//        boolean first = true;
+//        for (Rank rank : ladder.getRanks()) {
+////        	Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankPos.getRankId());
+//        	if ( rank == null ) {
+//        		continue;
+//        	}
+//        	
+////            Optional<Rank> rankOptional =
+////                PrisonRanks.getInstance().getRankManager().getRankOptional(rankPos.getRankId());
+////            if(!rankOptional.isPresent()) {
+////                continue; // Skip it
+////            }
+//            
+//            boolean defaultRank = ("default".equalsIgnoreCase( ladderName ) && first);
+//            
+//            String defaultRankValue = ladderDefaultRankMsg();
+//
+//            builder.add("&3(#%s) &8- &3%s (rankId: %s%s%s) %s", 
+//            		Integer.toString( rank.getPosition() ),
+//            		rank.getName(),
+//            		
+//            		Integer.toString( rank.getId() ),
+//            		(rank.getRankPrior() == null ? "" : " -"),
+//            		(rank.getRankNext() == null ? "" : " +"),
+//            		
+//                (defaultRank ? defaultRankValue : "")
+//            	);
+//            first = false;
+//        }
+//
+//        String seeRanksList = ladderSeeRanksListMsg();
+//        
+//        builder.add( seeRanksList );
+//        
+//        display.addComponent(builder.build());
+//        
+//        display.send(sender);
+//    }
     
     @Command(identifier = "ranks ladder moveRank", description = "Moves a rank to a new " +
     		"ladder position or a new ladder.", 
@@ -155,12 +177,12 @@ public class LadderCommands
     	
     	ladderMoveRankNoticeMsg( sender );
     	
-    	ladderRemoveRank( sender, ladderName, rankName );
+    	ladderRemoveRank( sender, rankName );
     	ladderAddRank(sender, ladderName, rankName, position );
     }
 
-    @Command(identifier = "ranks ladder addrank", description = "Adds a rank to a ladder, or move a rank.", 
-    								onlyPlayers = false, permissions = "ranks.ladder")
+//    @Command(identifier = "ranks ladder addrank", description = "Adds a rank to a ladder, or move a rank.", 
+//    								onlyPlayers = false, permissions = "ranks.ladder")
     public void ladderAddRank(CommandSender sender, 
     		@Arg(name = "ladderName") String ladderName,
 	        @Arg(name = "rankName") String rankName,
@@ -181,7 +203,7 @@ public class LadderCommands
             return;
         }
 
-        if (ladder.containsRank(rank.getId())) {
+        if (ladder.containsRank( rank )) {
         	ladderAlreadyHasRankMsg( sender, ladderName, rankName );
             return;
         }
@@ -194,6 +216,13 @@ public class LadderCommands
 
         if ( PrisonRanks.getInstance().getLadderManager().save(ladder) ) {
             
+        	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
+        	
+        	
+            // Recalculate the ladder's base rank cost multiplier:
+            PlayerRankRefreshTask rankRefreshTask = new PlayerRankRefreshTask();
+            rankRefreshTask.submitAsyncTPSTask();
+
             ladderAddedRankMsg( sender, ladderName, rankName, position );
         } 
         else {
@@ -204,16 +233,19 @@ public class LadderCommands
         }
     }
 
-    @Command(identifier = "ranks ladder delrank", description = "Removes a rank from a ladder.", 
-    											onlyPlayers = false, permissions = "ranks.ladder")
-    public void ladderRemoveRank(CommandSender sender, @Arg(name = "ladderName") String ladderName,
-        @Arg(name = "rankName") String rankName) {
-        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
+//    @Command(identifier = "ranks ladder delrank", description = "Removes a rank from a ladder.", 
+//    											onlyPlayers = false, permissions = "ranks.ladder")
+    public void ladderRemoveRank(CommandSender sender, 
+//    	@Arg(name = "ladderName", description = "Then intended ladder to remove the rank from. " +
+//    			"But note, this is ignored and the real ladder used is the ladder tied to the rank.") String ladderName,
+//        @Arg(name = "rankName") 
+    		String rankName) {
+//        RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
         
-        if ( ladder == null ) {
-        	ladderDoesNotExistsMsg( sender, ladderName );
-            return;
-        }
+//        if ( ladder == null ) {
+//        	ladderDoesNotExistsMsg( sender, ladderName );
+//            return;
+//        }
 
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
 //        Optional<Rank> rank = PrisonRanks.getInstance().getRankManager().getRankOptional(rankName);
@@ -222,12 +254,26 @@ public class LadderCommands
             return;
         }
 
-        ladder.removeRank(ladder.getPositionOfRank(rank));
+        RankLadder ladder = rank.getLadder();
+        
+        ladder.removeRank( rank );
+//        ladder.removeRank(ladder.getPositionOfRank(rank));
 
         if ( PrisonRanks.getInstance().getLadderManager().save(ladder) ) {
 
-            ladderRemovedRankFromLadderMsg( sender, rankName, ladderName );
             
+            PrisonRanks.getInstance().getRankManager().saveRank( rank );
+            
+            
+            Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
+            
+            
+            // Recalculate the ladder's base rank cost multiplier:
+            PlayerRankRefreshTask rankRefreshTask = new PlayerRankRefreshTask();
+            rankRefreshTask.submitAsyncTPSTask();
+
+            
+            ladderRemovedRankFromLadderMsg( sender, rankName, ladder.getName() );
         } 
         else {
         	ladderErrorRemovingingMsg( sender );
@@ -236,6 +282,67 @@ public class LadderCommands
 
     }
 
+
+	@Command( identifier = "ranks ladder rankCostMultiplier", 
+			description = "Sets or removes a ladder's Rank Cost Multiplier.  Setting the " +
+					"value to zero will remove the multiplier from the calculations.  The " +
+					"Rank Cost Multiplier from all ladders a player has active, will be " +
+					"summed together and applied to the cost of all of their ranks. The Rank " +
+					"Cost Multiplier represents a percentage, and can be either postive or " +
+					"negative. ", 
+			onlyPlayers = false, permissions = "ranks.ladder" )
+	public void ladderSetRankCostMultiplier( CommandSender sender, 
+			@Arg( name = "ladderName" ) String ladderName,
+			@Arg( name = "rankCostMultiplier", def = "0", 
+			description = "Sets the Rank Cost Multiplier for the ladder, which will be " +
+					"applied to each rank, multiplied by the position of the rank.  " +
+					"A value of zero is disabled.  The value is expressed in " +
+					"percentages.") Double rankCostMultiplier )
+	{
+		RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
+
+		if ( ladder == null )
+		{
+			ladderDoesNotExistsMsg( sender, ladderName );
+			return;
+		}
+
+		if ( rankCostMultiplier == null ) {
+			// rankCostMultiplier may never be null?
+		}
+		
+		if ( ladder.getRankCostMultiplierPerRank() == rankCostMultiplier ) {
+			// No change:
+			
+			ladderSetRankCostMultiplierNoChangeMsg( sender, ladderName, rankCostMultiplier );
+			
+			return;
+		}
+
+		if ( rankCostMultiplier < -100d || rankCostMultiplier > 100d ) {
+			
+			ladderSetRankCostMultiplierOutOfRangeMsg( sender, rankCostMultiplier );
+			return;
+		}
+		
+		double oldRankCostMultiplier = ladder.getRankCostMultiplierPerRank() * 100;
+		
+		ladder.setRankCostMultiplierPerRank( rankCostMultiplier / 100 );
+
+		if ( PrisonRanks.getInstance().getLadderManager().save( ladder ) )
+		{
+			ladderSetRankCostMultiplierSavedMsg( sender, ladderName, 
+										rankCostMultiplier, oldRankCostMultiplier );
+
+            // Recalculate the ladder's base rank cost multiplier:
+            PlayerRankRefreshTask rankRefreshTask = new PlayerRankRefreshTask();
+            rankRefreshTask.submitAsyncTPSTask();
+		}
+		else
+		{
+			ladderErrorSavingMsg( sender );
+		}
+	}
 
   
 }

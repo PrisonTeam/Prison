@@ -2,12 +2,15 @@ package tech.mcprison.prison.mines.features;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.features.MineLinerData.LadderType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
@@ -30,31 +33,63 @@ public class MineLinerBuilder {
 	
 	public enum LinerPatterns {
 		
-		bright,
-		white,
+		bright( 1, 8 ),
+		white( 1, 8 ),
 		
-		blackAndWhite,
-		seaEchos,
-		obby,
-		bedrock,
-		glowingPlanks,
-		darkOakPrismarine,
-		beacon,
-		bricked,
+		blackAndWhite( 1, 8 ),
+		seaEchos( 1, 8 ),
+		obby( 1, 8 ),
+		bedrock( 1, 8 ),
+		glowstone( 1, 8 ),
+		glowingPlanks( 1, 8 ),
+		darkOakPrismarine( 1, 8 ),
+		beacon( 1, 8 ),
+		bricked( 1, 8 ),
 		
-		darkForest,
-		theColors,
+		darkForest( 1, 8 ),
+		theColors( 1, 8 ),
 		
-		stronghold,
-		ruins,
-		zaged,
-		crimsonWaste,
-		cryingGold,
+		stronghold( 1, 17 ), // deepslate_bricks
+		ruins( 1, 16 ), // blackstone
+		zaged( 1, 16 ), // crying_obsidian
+		crimsonWaste( 1, 16 ), // crimson_hyphae
+		cryingGold( 1, 16 ), // crying_obsidian
 		
 		repair,
 		remove,
 		removeAll
 		;
+		
+		private final int versionMajor; 
+		private final int versionMinor;
+		private final boolean pattern;
+		
+		private LinerPatterns( int versionMajor, int versionMinor ) {
+			
+			this.versionMajor = versionMajor;
+			this.versionMinor = versionMinor;
+			
+			this.pattern = true;
+		}
+		private LinerPatterns() {
+			
+			this.versionMajor = 1;
+			this.versionMinor = 8;
+			
+			this.pattern = false;
+		}
+		
+		public int getVersionMajor() {
+			return versionMajor;
+		}
+
+		public int getVersionMinor() {
+			return versionMinor;
+		}
+
+		public boolean isPattern() {
+			return pattern;
+		}
 		
 		public static LinerPatterns fromString( String pattern ) {
 			LinerPatterns results = null;
@@ -70,21 +105,64 @@ public class MineLinerBuilder {
 			return results;
 		}
 
+		/**
+		 * <p>This function will provide a list of all patterns available, filtered
+		 * on compatible versions of the blocks used for the server version. This 
+		 * also include non-patterns too.
+		 * </p>
+		 * 
+		 * @return
+		 */
 		public static String toStringAll() {
 			StringBuilder sb = new StringBuilder();
 			
+			List<Integer> verMajMin = Prison.get().getMVersionMajMin();
+			int versionMin =  verMajMin.size() > 1 ? verMajMin.get(1) : 8;
+
 			for ( LinerPatterns pattern : values() )
 			{
-				if ( sb.length() > 0 ) {
-					sb.append( " " );
+				if ( !pattern.isPattern() ||
+						pattern.isPattern() && pattern.getVersionMinor() <= versionMin ) {
+					
+					if ( sb.length() > 0 ) {
+						sb.append( " " );
+					}
+					
+					sb.append(  pattern.name() );
 				}
-				
-				sb.append(  pattern.name() );
 			}
 			
 			return sb.toString();
 		}
 
+		
+		/**
+		 * <p>Will try to get a random liner pattern, filtered by 
+		 * non-patterns (repair, remove, removeAll) and for liners that 
+		 * would be incompatible for the given version of minecraft or spigot.
+		 * </p>
+		 * 
+		 * @return
+		 */
+		public static LinerPatterns getRandomLinerPattern() {
+			LinerPatterns results = null;
+			
+			List<Integer> verMajMin = Prison.get().getMVersionMajMin();
+			int versionMin =  verMajMin.size() > 1 ? verMajMin.get(1) : 8;
+			
+			int attempts = 0;
+			while ( results == null && attempts++ < 10 ) {
+				
+				int pos = new Random().nextInt( values().length );
+				LinerPatterns temp = values()[pos];
+				if ( temp.isPattern() && temp.getVersionMinor() <= versionMin ) {
+					results = temp;
+				}
+			}
+			
+			return results == null ? bright : results;
+		}
+		
 	}
 	
 	/** 
@@ -403,8 +481,9 @@ public class MineLinerBuilder {
 	 * equal to min or max (the corners).
 	 * </p>
 	 * 
-	 * <p>If the mine on the edge is 3 blocks or less in width, have them all
-	 * be ladders.  
+	 * <p>This now support multiple ladder types such as: none and full.  And
+	 * normal, wide, and jumbo.
+	 * </p>
 	 * 
 	 * @param curr
 	 * @param min
@@ -414,6 +493,15 @@ public class MineLinerBuilder {
 	private boolean isLadderBlock( int curr, int min, int max ) {
 		
 		boolean results = false;
+		
+		if ( getLadderType() == LadderType.none ) {
+			return results;
+		}
+		
+		// Note: full ladder cannot include both ends since those are the other walls.
+		if ( getLadderType() == LadderType.full ) {
+			return curr > min && curr < max;
+		}
 		
 		// Skip if the face or corners of liner.
 		if ( min != max && curr != min && curr != max ) {
@@ -426,24 +514,75 @@ public class MineLinerBuilder {
 			// The following is actually 3 blocks since max and min are
 			// skipped due to being corners.  So if the min is 1 to 3 blocks
 			// wide, always have ladders that wide.
-			results = len <= 5;
 			
-			if ( len > 5 ) {
+			int range = 1;
+			switch ( getLadderType() )
+			{
+				case wide:
+					range = 2;
+					break;
 				
-				
-				if ( curr == (min + mid) ) {
-					results = true;
-				}
-				else {
-					results = isEven ?
-						// if distance is even, then next ladder position is mid - 1
-						 ( curr == min + mid + 1 ) :
-						// If odd, then one above and below mid:
-						( curr == min + mid + 1 || curr == min + mid - 1);
-				}
-
+				case jumbo:
+					range = 3;
+					break;
+					
+				case normal:
+				default:
+					range = 1;
 			}
-
+				
+			results = isEven ?
+					// if distance is even, then next ladder position is mid - range + 1 through mid + range
+					( curr >= (min + mid - range + 1) && curr <= (min + mid + range ) ) :
+						
+						// If odd, then plus/minus range above and below mid:
+						( curr >= (min + mid - range) && curr <= (min + mid + range));
+			
+			
+//			if ( getLadderType() == LadderType.normal ) {
+//				
+//				results = len <= 5;
+//				
+//				if ( len > 5 ) {
+//					
+//					
+//					if ( curr == (min + mid) ) {
+//						results = true;
+//					}
+//					else {
+//						results = isEven ?
+//								// if distance is even, then next ladder position is mid - 1
+//								( curr == min + mid + 1 ) :
+//									// If odd, then one above and below mid:
+//									( curr == min + mid + 1 || curr == min + mid - 1);
+//					}
+//					
+//				}
+//				
+//			}
+//			else if ( getLadderType() == LadderType.wide ) {
+//				
+//				results = len <= 7;
+//				
+//				if ( len > 7 ) {
+//					
+//					
+//					if ( curr == (min + mid) ) {
+//						results = true;
+//					}
+//					else {
+//						results = isEven ?
+//								// if distance is even, then next ladder position is mid - 1 through mid + 2
+//								( curr >= (min + mid - range + 1) && curr <= (min + mid + range ) ) :
+//									
+//									// If odd, then one above and below mid:
+//									( curr >= (min + mid - range) && curr <= (min + mid + range));
+//					}
+//					
+//				}
+//			}
+			
+			
 //			Output.get().logInfo( "#### isLadderBlock: curr=%d min=%d max=%d  " +
 //					"  len=%d  mid=%d  " +
 //					"isEven=%s  results=%s " +
@@ -527,8 +666,8 @@ public class MineLinerBuilder {
 			case blackAndWhite:
 				String[][] baw =
 				{
-						{ "obsidian", "pillar_quartz_block" },
-						{ "pillar_quartz_block", "coal_block" }
+						{ "obsidian", "quartz_pillar" },
+						{ "quartz_pillar", "coal_block" }
 				};
 				pattern2d = baw;
 				break;
@@ -537,9 +676,9 @@ public class MineLinerBuilder {
 			case seaEchos:
 				String[][] seaEchos =
 				{
-						{ "pillar_quartz_block", "pillar_quartz_block", "pillar_quartz_block" },
-						{ "pillar_quartz_block", "obsidian", "obsidian" },
-						{ "pillar_quartz_block", "obsidian", "sea_lantern" },
+						{ "quartz_pillar", "quartz_pillar", "quartz_pillar" },
+						{ "quartz_pillar", "obsidian", "obsidian" },
+						{ "quartz_pillar", "obsidian", "sea_lantern" },
 				};
 				pattern2d = seaEchos;
 				break;
@@ -649,6 +788,15 @@ public class MineLinerBuilder {
 						{ "bedrock" }
 				};
 				pattern2d = bedrock;
+				break;
+				
+				
+			case glowstone:
+				String[][] glowstone =
+				{
+						{ "glowstone" }
+				};
+				pattern2d = glowstone;
 				break;
 				
 				
@@ -869,6 +1017,33 @@ public class MineLinerBuilder {
 		
 	}
 
+	
+//	public boolean isPatternValidForSpigotVersion() {
+//		boolean results = true;
+//		
+//		try {
+//			
+//			String v = Prison.get().getMinecraftVersion();
+//			
+//			String versionStr = v.substring( v.indexOf( "(MC:" ) + 4, v.lastIndexOf( "." ) );
+//			
+//			
+//			Output.get().logInfo( "#### MineLinerBuilder : " + 
+//					getPattern() + " " + getPatternMinVersion() + " : " +
+//					"Prison Version: " + v + "  " + versionStr );
+//		
+//			double version = Double.parseDouble( versionStr );
+//			
+//			if ( version < getPatternMinVersion() ) {
+//				
+//			}
+//		}
+//		catch ( NumberFormatException e ) {
+//			// ignore... just use all patterns
+//		}
+//		
+//		return results;
+//	}
 
 	public List<List<List<String>>> getPattern3d() {
 		return pattern3d;
@@ -903,6 +1078,10 @@ public class MineLinerBuilder {
 	}
 	public void setForced( boolean isForced ) {
 		this.isForced = isForced;
+	}
+
+	public LadderType getLadderType() {
+		return mine.getLinerData().getLadderType();
 	}
 	
 }

@@ -11,7 +11,6 @@ import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.FancyMessageComponent;
 import tech.mcprison.prison.output.LogLevel;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
@@ -50,6 +49,11 @@ public class CommandCommands
             command = command.replaceFirst("/", "");
         }
 
+        if ( command.contains( "%" ) ) {
+        	ranksCommandAddCannotUsePercentSymbols( sender );
+        	return;
+        }
+        
         if ( rankName != null && "placeholders".equalsIgnoreCase( rankName ) ) {
         	
         	String placeholders = 
@@ -62,7 +66,7 @@ public class CommandCommands
         	
         	String message = ranksCommandAddPlaceholdersMsg( placeholders );
         	
-        	Output.get().logInfo( message );
+        	sender.sendMessage( message );
         	return;
         }
         
@@ -159,7 +163,15 @@ public class CommandCommands
         
         boolean noRemoves = options != null && "noRemoves".equalsIgnoreCase( options );
 
-        ChatDisplay display = new ChatDisplay( ranksCommandListCmdHeaderMsg( rank.getTag() ));
+        ChatDisplay display = commandListDetails(  rank, noRemoves );
+        display.send(sender);
+    }
+
+ 
+    
+	protected ChatDisplay commandListDetails( Rank rank, boolean noRemoves )
+	{
+		ChatDisplay display = new ChatDisplay( ranksCommandListCmdHeaderMsg( rank.getTag() ));
         if ( !noRemoves ) {
         	
         	display.addText( ranksCommandListClickCmdToRemoveMsg() );
@@ -179,7 +191,7 @@ public class CommandCommands
             
             if ( !noRemoves ) {
             	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
-            			.suggest("/ranks command remove " + rankName + " " + rowNumber )
+            			.suggest("/ranks command remove " + rank.getName() + " " + rowNumber )
             			.tooltip( ranksCommandListClickToRemoveMsg() );
             	row.addFancy( msgRemove );
             }
@@ -191,10 +203,10 @@ public class CommandCommands
         display.addComponent(builder.build());
         display.addComponent(new FancyMessageComponent(
             new FancyMessage( ranksCommandListAddButtonMsg() )
-            	.suggest("/ranks command add " + rankName + " /")
+            	.suggest("/ranks command add " + rank.getName() + " /")
                 .tooltip( ranksCommandListAddNewCommandToolTipMsg() )));
-        display.send(sender);
-    }
+		return display;
+	}
 
     
 
@@ -213,6 +225,11 @@ public class CommandCommands
         if (command.startsWith("/")) {
             command = command.replaceFirst("/", "");
         }
+        
+        if ( command.contains( "%" ) ) {
+        	ranksCommandAddCannotUsePercentSymbols( sender );
+        	return;
+        }
 
         if ( ladderName != null && "placeholders".equalsIgnoreCase( ladderName ) ) {
         	
@@ -224,7 +241,7 @@ public class CommandCommands
         	
         	String message = ladderCommandAddPlaceholdersMsg( placeholders );
         	
-        	Output.get().logInfo( message );
+        	sender.sendMessage( message );
         	return;
         }
         
@@ -321,7 +338,15 @@ public class CommandCommands
         
         boolean noRemoves = options != null && "noRemoves".equalsIgnoreCase( options );
 
-        ChatDisplay display = new ChatDisplay( ladderCommandListCmdHeaderMsg( ladder.getName() ));
+        ChatDisplay display = commandLadderListDetail( ladder, noRemoves );
+        
+        
+        display.send(sender);
+    }
+
+	protected ChatDisplay commandLadderListDetail( RankLadder ladder, boolean noRemoves )
+	{
+		ChatDisplay display = new ChatDisplay( ladderCommandListCmdHeaderMsg( ladder.getName() ));
         if ( !noRemoves ) {
         	display.addText( ranksCommandListClickCmdToRemoveMsg() );
         }
@@ -342,7 +367,7 @@ public class CommandCommands
             if ( !noRemoves ) {
             	
             	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
-            			.suggest("/ranks ladder command remove " + ladderName + " " + rowNumber )
+            			.suggest("/ranks ladder command remove " + ladder.getName() + " " + rowNumber )
             			.tooltip( ranksCommandListClickToRemoveMsg() );
             	row.addFancy( msgRemove );
             }
@@ -354,10 +379,10 @@ public class CommandCommands
         display.addComponent(builder.build());
         display.addComponent(new FancyMessageComponent(
             new FancyMessage( ranksCommandListAddButtonMsg() )
-            	.suggest("/ranks ladder command add " + ladderName + " /")
+            	.suggest("/ranks ladder command add " + ladder.getName() + " /")
                 .tooltip( ranksCommandListAddNewCommandToolTipMsg() )));
-        display.send(sender);
-    }
+		return display;
+	}
 
     
 }

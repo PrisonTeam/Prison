@@ -25,6 +25,29 @@ public class MineLinerData {
 	private boolean forceTop;
 	private boolean forceBottom;
 	
+	private LadderType ladderType;
+	
+	public enum LadderType {
+		none,
+		normal,
+		wide,
+		jumbo,
+		full;
+		
+		public static LadderType fromString( String value ) {
+			LadderType results = null;
+			
+			for ( LadderType ladder : values() )
+			{
+				if ( ladder.name().equalsIgnoreCase( value ) ) {
+					results = ladder;
+				}
+			}
+			
+			return results;
+		}
+	}
+	
 	public MineLinerData() {
 		super();
 		
@@ -48,6 +71,8 @@ public class MineLinerData {
 		
 		this.forceTop = false;
 		this.forceBottom = false;
+		
+		this.ladderType = LadderType.normal;
 	}
 
 	public MineLinerData( String walls, String bottom ) {
@@ -96,6 +121,8 @@ public class MineLinerData {
 		addSaveString( sb, Edges.top, getTop(), isForceTop(), color1, color2 );
 		addSaveString( sb, Edges.bottom, getBottom(), isForceBottom(), color1, color2 );
 		
+		addSaveString( sb, getLadderType(), color1, color2 );
+		
 		return sb.toString();
 	}
 	
@@ -125,8 +152,31 @@ public class MineLinerData {
 		}
 	}
 	
+	/**
+	 * <p>This builds the entry for the ladderType. If the StringBuilder is
+	 * empty, then do not generate the ladder entry.
+	 * </p>
+	 * 
+	 * @param sb
+	 * @param ladderType
+	 * @param color1
+	 * @param color2
+	 */
+	private void addSaveString( StringBuilder sb, LadderType ladderType,
+			String color1, String color2 ) {
+		
+		if ( sb.length() > 0 ) {
+			sb.append( "," );
+			
+			sb.append( color1 ).append( "ladderType" ).append( ":" )
+					.append( color2 ).append( ladderType.name() );
+		}
+		
+	}
+	
 	public static MineLinerData fromSaveString( String savedLiner ) {
 		MineLinerData results = new MineLinerData();
+		results.setLadderType( LadderType.normal );
 		
 		if ( savedLiner != null && savedLiner.trim().length() > 0 ) {
 			
@@ -140,7 +190,17 @@ public class MineLinerData {
 					boolean forced = edgePatternName.length > 2 && 
 										"forced".equalsIgnoreCase( edgePatternName[2] );
 
-					results.setLiner( edge, pattern, forced );
+					if ( edge != null ) {
+						results.setLiner( edge, pattern, forced );
+					}
+					else if ( "ladderType".equalsIgnoreCase( edgePatternName[0] ) ) {
+						LadderType lType = LadderType.fromString( pattern );
+						if ( lType == null ) {
+							lType = LadderType.normal;
+						}
+						results.setLadderType( lType );
+					}
+					
 				}
 			}
 		}
@@ -395,5 +455,11 @@ public class MineLinerData {
 		this.forceBottom = forceBottom;
 	}
 
+	public LadderType getLadderType() {
+		return ladderType;
+	}
+	public void setLadderType( LadderType ladderType ) {
+		this.ladderType = ladderType;
+	}
 	
 }

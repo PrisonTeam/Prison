@@ -98,7 +98,7 @@ public class PrisonGUI extends SpigotGUIComponents{
                     openGUI(p, inv);
                 } else {
                     SpigotPlayer spigotPlayer = new SpigotPlayer(p);
-                    Output.get().sendWarn(spigotPlayer, SpigotPrison.format("Sorry, you don't have the permission! [" + permission + "]"));
+                    Output.get().sendWarn(spigotPlayer, "Sorry, you don't have the permission! [" + permission + "]");
                 }
             } else {
                 openGUI(p, inv);

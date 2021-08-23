@@ -1,16 +1,11 @@
 package tech.mcprison.prison.spigot.gui.mine;
 
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
+import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-
-import java.util.List;
 
 /**
  * @author GABRYCA
@@ -27,41 +22,19 @@ public class SpigotMinesConfirmGUI extends SpigotGUIComponents {
 
     public void open(){
 
-        // Create the inventory
+        // Create GUI.
         int dimension = 9;
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3Mines -> Delete"));
+        PrisonGUI gui = new PrisonGUI(p, dimension, "&3Mines -> Delete");
 
-        if (guiBuilder(inv)) return;
+        ButtonLore confirmLore = new ButtonLore(messages.getString("Lore.ClickToConfirm"), null);
+        ButtonLore cancelLore = new ButtonLore(messages.getString("Lore.ClickToCancel"), null);
 
-        // Open the inventory
-        openGUI(p, inv);
-    }
-
-    private boolean guiBuilder(Inventory inv) {
-        try {
-            buttonsSetup(inv);
-        } catch (NullPointerException ex){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
-            ex.printStackTrace();
-            return true;
-        }
-        return false;
-    }
-
-    private void buttonsSetup(Inventory inv) {
-
-        // Blocks of the mine
-        List<String> confirmLore = createLore(
-                messages.getString("Lore.ClickToConfirm"));
-        List<String> cancelLore = createLore(
-                messages.getString("Lore.ClickToCancel"));
-
-        // Create the button, set up the material, amount, lore and name
-        ItemStack confirm = createButton(XMaterial.EMERALD_BLOCK.parseItem(), confirmLore, SpigotPrison.format("&3" + "Confirm: " + mineName));
-        ItemStack cancel = createButton(XMaterial.REDSTONE_BLOCK.parseItem(), cancelLore, SpigotPrison.format("&3" + "Cancel: " + mineName));
 
         // Position of the button
-        inv.setItem(2, confirm);
-        inv.setItem(6, cancel);
+        gui.addButton(new Button(2, XMaterial.EMERALD_BLOCK, confirmLore, "&3" + "Confirm: " + mineName));
+        gui.addButton(new Button(6, XMaterial.REDSTONE_BLOCK, cancelLore, "&3" + "Cancel: " + mineName));
+
+        // Open GUI.
+        gui.open();
     }
 }

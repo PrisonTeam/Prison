@@ -6,7 +6,12 @@ public class PlaceholderResults
 	private String escapeLeft;
 	private String esccapeRight;
 	
+	private String numericSequencePattern;
+	private int numericSequence = -1;
+	
 	private String identifier;
+	
+
 	
 	public PlaceholderResults( PlaceHolderKey placeholder ) {
 		super();
@@ -60,6 +65,20 @@ public class PlaceholderResults
 	}
 	public void setIdentifier( String identifier ) {
 		this.identifier = identifier;
+	}
+
+	public String getNumericSequencePattern() {
+		return numericSequencePattern;
+	}
+	public void setNumericSequencePattern( String numericSequencePattern ) {
+		this.numericSequencePattern = numericSequencePattern;
+	}
+
+	public int getNumericSequence() {
+		return numericSequence;
+	}
+	public void setNumericSequence( int numericSequence ) {
+		this.numericSequence = numericSequence;
 	}
 
 	public String getEscapeLeft() {

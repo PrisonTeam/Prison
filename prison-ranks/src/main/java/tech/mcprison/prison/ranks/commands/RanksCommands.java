@@ -8,10 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.PrisonCommand;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
@@ -29,14 +30,19 @@ import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.FancyMessageComponent;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.PlayerRank;
+import tech.mcprison.prison.ranks.data.PlayerRankRefreshTask;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerName;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
+import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.ranks.managers.RankManager.RanksByLadderOptions;
+import tech.mcprison.prison.util.JumboTextFont;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -46,6 +52,10 @@ public class RanksCommands
 			extends RanksCommandsMessages {
 	
 	private CommandCommands rankCommandCommands = null;
+	
+	public RanksCommands() {
+		super( "RanksCommands" );
+	}
 	
 	public RanksCommands( CommandCommands rankCommandCommands ) {
 		super( "RanksCommands" );
@@ -78,11 +88,11 @@ public class RanksCommands
     	sender.dispatchCommand( "ranks perms help" );
     }
     
-    @Command(identifier = "ranks remove", 
-    		onlyPlayers = false, permissions = "prison.commands")
-    public void ranksRemoveSubcommands(CommandSender sender) {
-    	sender.dispatchCommand( "ranks remove help" );
-    }
+//    @Command(identifier = "ranks remove", 
+//    		onlyPlayers = false, permissions = "prison.commands")
+//    public void ranksRemoveSubcommands(CommandSender sender) {
+//    	sender.dispatchCommand( "ranks remove help" );
+//    }
     
     @Command(identifier = "ranks set", 
     		onlyPlayers = false, permissions = "prison.commands")
@@ -97,10 +107,29 @@ public class RanksCommands
         @Arg(name = "cost", description = "The cost of this rank.") double cost,
         @Arg(name = "ladder", description = "The ladder to put this rank on.", def = "default")
             String ladder,
+            
+        @Arg(name = "tag", description = "The tag to use for this rank.", def = "none")
+            		String tag,
+            		
         @Wildcard(join=true)
-        	@Arg(name = "tag", description = "The tag to use for this rank.", def = "none")
-            		String tag) {
+		@Arg(name = "options", def = " ", 
+		description = "Options for rank creation. " +
+				"Use 'noPlaceholderUpdate' to prevent reloading all placeholders when " +
+				"creating this rank. This is useful if you have multiple ranks " +
+				"you want to create. " +
+				"[noPlaceholderUpdate]") String options
+    		) {
 		
+		// The tag may actually bleed over in to options, so combine both together with one space:
+		if ( options != null && !options.trim().isEmpty() ) {
+			tag += " " + options;
+		}
+		
+    	boolean updatePlaceholders = !tag.toLowerCase().contains( "noplaceholderupdate" );
+    	if ( !updatePlaceholders ) {
+    		tag = tag.replaceAll( "(?i)noPlaceholderUpdate", "" ).trim();
+    	}
+
 		boolean success = false;
 
         // Ensure a rank with the name doesn't already exist
@@ -157,8 +186,19 @@ public class RanksCommands
             
             success = true;
             
+            if ( updatePlaceholders ) {
+            	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
+            }
+            
+            
+            // Recalculate the ladder's base rank cost multiplier:
+            PlayerRankRefreshTask rankRefreshTask = new PlayerRankRefreshTask();
+            rankRefreshTask.submitAsyncTPSTask();
+
+            
             // Tell the player the good news!
             rankCreatedSuccessfullyMsg( sender, name, ladder, tag );
+            
         } 
         else {
         	errorCouldNotSaveLadderMsg( sender, rankLadder.getName() );
@@ -169,27 +209,47 @@ public class RanksCommands
 
 	
 	@Command(identifier = "ranks autoConfigure", description = "Auto configures Ranks and Mines using " +
-			"single letters A through Z for both the rank and mine names. If both ranks and mines are " +
+			"single letters A through Z for both the rank and mine names. Both ranks and mines are " +
 			"generated, they will also be linked together automatically. To set the starting price use " +
-			"price=x. To set multiplier mult=x. Cannot autoConfigure if any ranks or mines are defined, " +
-			"but 'force' will attempt it but at your risk and will replace all blocks in preexisting " +
+			"price=x. To set multiplier mult=x. AutoConfigure will try to merge any preexsiting ranks " +
+			"and mines, but you must use the 'force' keyword in 'options'. Force will replace all blocks " +
+			"in preexisting " +
 			"mines. To keep preexisting blocks, use 'forceKeepBlocks' with the 'force' option. " +
 			"Default values [full price=50000 mult=1.5]", 
-			onlyPlayers = false, permissions = "ranks.set")
+			onlyPlayers = false, permissions = "ranks.set", 
+			aliases = {"prison autoConfigure"} )
 	public void autoConfigureRanks(CommandSender sender, 
 			@Wildcard(join=true)
 			@Arg(name = "options", 
-				description = "Options: [full ranks mines price=x mult=x force forceKeepBlocks]", 
+				description = "Options: [full ranks mines price=x mult=x force forceKeepBlocks dontForceLinerWalls dontForceLinerBottoms]", 
 				def = "full") String options
 			) {
 		
-		boolean forceKeepBlocks = options != null && options.contains( "forceKeepBlocks" );
-		if ( forceKeepBlocks ) {
-			options = options.replace( "forceKeepBlocks", "" ).trim();
+		// force options to lower case to work better with mixed case usage:
+		options = options == null ? "" : options.toLowerCase().trim();
+		
+		boolean force = false;
+		boolean forceLinersWalls = true;
+		boolean forceLinersBottom = true;
+		boolean forceKeepBlocks = false;
+		
+		
+		if ( options.contains( "forcekeepblocks" ) ) {
+			forceKeepBlocks = true;
+			options = options.replace( "forcekeepblocks", "" ).trim();
 		}
 		
-		boolean force = options != null && options.contains( "force" );
-		if ( force ) {
+		if ( options.contains( "dontforcelinerwalls" ) ) {
+			forceLinersWalls = false;
+			options = options.replace( "dontforcelinerwalls", "" ).trim();
+		}
+		if ( options.contains( "dontforcelinerbottoms" ) ) {
+			forceLinersBottom = false;
+			options = options.replace( "dontforcelinerbottoms", "" ).trim();
+		}
+		
+		if ( options.contains( "force" ) ) {
+			force = true;
 			options = options.replace( "force", "" ).trim();
 		}
 		
@@ -206,7 +266,7 @@ public class RanksCommands
 			autoConfigForceWarningMsg( sender );
 		}
 		
-		String optionHelp = "&b[&7full ranks mines price=&dx &7mult=&dx &7force forceKeepBlocks&b]";
+		String optionHelp = "&b[&7full ranks mines price=&dx &7mult=&dx &7force forceKeepBlocks dontForceLinerWalls dontForceLinerBottoms&b]";
 		boolean ranks = false;
 		boolean mines = false;
 		double startingPrice = 50000;
@@ -313,6 +373,8 @@ public class RanksCommands
 		int countMinesForced = 0;
 		int countLinked = 0;
 		
+		List<String> rankMineNames = new ArrayList<>();
+		
 		if ( ranks ) {
 			
 	        int colorID = 1;
@@ -322,6 +384,9 @@ public class RanksCommands
 	        
 	        for ( char cRank = 'A'; cRank <= 'Z'; cRank++) {
 	        	String rankName = Character.toString( cRank );
+	        	
+	        	rankMineNames.add( rankName );
+	        	
 	        	String tag = "&7[&" + Integer.toHexString((colorID++ % 15) + 1) + rankName + "&7]";
 	        	
 	        	if ( firstRankName == null ) {
@@ -333,7 +398,7 @@ public class RanksCommands
 	        	
 	        	boolean forceRank = force && PrisonRanks.getInstance().getRankManager().getRank( rankName ) != null;
 	        	if ( forceRank ||
-	        			createRank(sender, rankName, price, "default", tag) ) {
+	        			createRank(sender, rankName, price, "default", tag, "noPlaceholderUpdate") ) {
 	        		
 	        		if ( forceRank ) {
 	        			countRanksForced++;
@@ -414,10 +479,22 @@ public class RanksCommands
 	        }
 		}
 		
+		int prestigesCount = 0;
+		
+		// add in 10 prestiges at 1 billion each:
+		double prestigeCost = 1000000000;
+		
+		for ( int i = 0; i < 10; i++ ) {
+			String name = "P" + (i + 1);
+			String tag = "&5[&d+" + (i > 0 ? i + 1 : "" ) + "&5]";
+			createRank(sender, name, (prestigeCost * (i + 1) ), "prestiges", tag, "noPlaceholderUpdate");
+			prestigesCount++;
+		}
+		
 		// If mines were created, go ahead and auto assign blocks to the mines:
 		if ( countMines > 0 || countMinesForced > 0 ) {
-			Prison.get().getPlatform().autoCreateMineBlockAssignment( forceKeepBlocks );
-			Prison.get().getPlatform().autoCreateMineLinerAssignment();
+			Prison.get().getPlatform().autoCreateMineBlockAssignment( rankMineNames, forceKeepBlocks );
+			Prison.get().getPlatform().autoCreateMineLinerAssignment( rankMineNames, forceLinersBottom, forceLinersWalls );
 			
 			Prison.get().getPlatform().autoCreateConfigureMines();
 		}
@@ -427,6 +504,20 @@ public class RanksCommands
 			autoConfigNoRanksCreatedMsg( sender );
 		}
 		else {
+			
+			// Set the prestiges ladder with a 10% base rank cost multiplier
+			double rankCostMultiplier = 0.10;
+			
+			RankLadder prestiges = PrisonRanks.getInstance().getLadderManager().getLadder( "prestiges" );
+			prestiges.setRankCostMultiplierPerRank( rankCostMultiplier );
+			PrisonRanks.getInstance().getLadderManager().save( prestiges );
+			
+			// Log that the rank cost multiplier has been applied to the ladder
+			// with information on how to change it.
+			autoConfigLadderRankCostMultiplierInfoMsg( sender, rankCostMultiplier );
+			autoConfigLadderRankCostMultiplierCmdMsg( sender );
+			
+			
 			autoConfigRanksCreatedMsg( sender, Integer.toString( countRanks ) );
 			
 			if ( countRankCmds == 0 ) {
@@ -436,6 +527,22 @@ public class RanksCommands
 				autoConfigRankCmdsCreatedMsg( sender, Integer.toString( countRanks ) );
 			}
 		}
+
+		
+		// Reload the placeholders and autoFeatures:
+		Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
+		
+		AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig().reloadConfig();
+		
+		
+		// Reset all player to the first rank on the default ladder:
+		PrisonRanks.getInstance().checkAllPlayersForJoin();
+		
+//		RankLadder defaultLadder = PrisonRanks.getInstance().getLadderManager().getLadder( "default" );
+//		Rank defaultRank = defaultLadder.getLowestRank().get();
+//		PrisonRanks.getInstance().getRankManager().getRankupCommands()
+//				.setRank( sender, "*all*", "*join*", defaultLadder.getName() );
+		
 		
 		if ( countRanksForced > 0 ) {
 			// message about number of ranks that preexisting and were force:
@@ -459,7 +566,12 @@ public class RanksCommands
 			// message about number of mines that preexisting and were force:
 		}
 
+		if ( prestigesCount > 0 ) {
+			sender.sendMessage( "Created " + prestigesCount + " prestige ranks (temp message)." );
+		}
+		
 		Output.get().logInfo( "");
+		
 		
 		
 	}
@@ -496,30 +608,43 @@ public class RanksCommands
         }
 
         if ( PrisonRanks.getInstance().getRankManager().removeRank(rank) ) {
-        	rankWasRemovedMsg( sender, rankName );
+
+        	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
+        	
+            // Recalculate the ladder's base rank cost multiplier:
+            PlayerRankRefreshTask rankRefreshTask = new PlayerRankRefreshTask();
+            rankRefreshTask.submitAsyncTPSTask();
+            
+            rankWasRemovedMsg( sender, rankName );
         } else {
         	rankDeleteErrorMsg( sender, rankName );
         }
     }
 
-    @Command(identifier = "ranks list", description = "Lists all the ranks on the server.", 
-    							onlyPlayers = false, altPermissions = "ranks.list"
+    @Command(identifier = "ranks list", description = "Lists all the ranks on the server by" +
+    		"ladder.  If 'all' is used instead of a ladder name, then it will print all " +
+    		"ranks.", 
+    			onlyPlayers = false, altPermissions = "ranks.list"
     							)
     public void listRanks(CommandSender sender,
-        @Arg(name = "ladderName", def = "default") String ladderName) {
+        @Arg(name = "ladderName", def = "default", 
+        	description = "A ladder name, or 'all' to list all ranks by ladder.") String ladderName) {
 
     	boolean hasPerm = sender.hasPermission("ranks.list") ||
-    					sender.isOp();
+    					sender.isOp() || !sender.isPlayer();
     	
         RankLadder ladder =
         			PrisonRanks.getInstance().getLadderManager().getLadder(ladderName);
 
-        if ( ladder == null ) {
+        if ( ladder == null && !"all".equalsIgnoreCase( ladderName ) ) {
         	ladderDoesNotExistMsg( sender, ladderName );
             return;
         }
 
-        Rank rank = ladder.getLowestRank().orElse( null );
+        
+        if ( ladder != null && ladder.getRanks().size() == 0 ) {
+        	ladderHasNoRanksMsg( sender, ladderName );
+        }
 
 //        Rank rank = null;
 //        for (Rank pRank : ladder.getPositionRanks()) {
@@ -530,86 +655,24 @@ public class RanksCommands
 //            }
 //        }
         
-
-        String rankHeader = ranksListHeaderMsg( ladderName );
-        ChatDisplay display = new ChatDisplay( rankHeader );
+        RankPlayer rPlayer = 
+        		PrisonRanks.getInstance().getPlayerManager().getPlayer( getPlayer(sender) );
         
-        if ( hasPerm ) {
-        	display.addText( ranksListClickToEditMsg() );
+        ChatDisplay display = null;
+        
+        if ( ladder != null ) {
+        	display = listRanksOnLadder( ladder, hasPerm, rPlayer );
+        }
+        else {
+        	display = new ChatDisplay( "List ALL Ranks" );
+        	
+        	listAllRanksByLadders( display, hasPerm, rPlayer );
         }
         
 
-        BulletedListComponent.BulletedListBuilder builder =
-            new BulletedListComponent.BulletedListBuilder();
-        
-        boolean first = true;
-        while ( rank != null ) {
-        	
-            boolean defaultRank = ("default".equalsIgnoreCase( ladderName ) && first);
-            
-            String textRankName = ( hasPerm ?
-            							String.format( "&3%s " , rank.getName() )
-            							: "");
-            String textCmdCount = ( hasPerm ? 
-            					ranksListCommandCountMsg(rank.getRankUpCommands().size())
-            							: "" );
-            String textCurrency = (rank.getCurrency() == null ? "" : 
-            								ranksListCurrencyMsg( rank.getCurrency() ));
-            
-            String text =
-                String.format("%s &9[&3%s&9] &7- %s&7%s%s%s", 
-                			textRankName, rank.getTag(), 
-                			(defaultRank ? "&b(&9Default&b) &7- " : ""),
-                			Text.numberToDollars(rank.getCost()),
-                			textCurrency,
-                			textCmdCount );
-            
-            String rankName = rank.getName();
-            if ( rankName.contains( "&" ) ) {
-            	rankName = rankName.replace( "&", "-" );
-            }
-            FancyMessage msg = null;
-            if ( hasPerm ) {
-            	msg = new FancyMessage(text).command("/ranks info " + rankName)
-            			.tooltip( ranksListClickToViewMsg() );
-            }
-            else {
-            	msg = new FancyMessage(text);
-            }
-            
-            builder.add(msg);
-        	
-        	rank = rank.getRankNext();
-        	first = false;
-        }
-        
-//        for (RankLadder.PositionRank pos : ranks) {
-//            Optional<Rank> rankOptional = ladder.get().getByPosition(pos.getPosition());
-//            if (!rankOptional.isPresent()) {
-//                continue; // Skip it
-//            }
-//            Rank rank = rankOptional.get();
-//
-//            boolean defaultRank = ("default".equalsIgnoreCase( ladderName ) && first);
-//            
-//            String text =
-//                String.format("&3%s &9[&3%s&9] &7- %s&7%s &7- Commands: &3%d", 
-//                			rank.name, rank.tag, 
-//                			(defaultRank ? "&b(&9Default&b) &7-" : ""),
-//                			Text.numberToDollars(rank.cost),
-//                			rank.rankUpCommands.size());
-//            FancyMessage msg = new FancyMessage(text).command("/ranks info " + rank.name)
-//                .tooltip("&7Click to view info.");
-//            builder.add(msg);
-//            first = false;
-//        }
-
-        display.addComponent(builder.build());
         
         if ( hasPerm ) {
-        	display.addComponent(new FancyMessageComponent(
-        			new FancyMessage("&7[&a+&7] Add").suggest("/ranks create ")
-        			.tooltip( ranksListCreateNewRankMsg() )));
+        	
         	
         	List<String> others = new ArrayList<>();
         	for (RankLadder other : PrisonRanks.getInstance().getLadderManager().getLadders()) {
@@ -633,7 +696,7 @@ public class RanksCommands
         				msg.then(" &8and ");
         			}
         			msg.then("&7" + other).tooltip( ranksListClickToView2Msg() ).command(other);
-        			msg.then(i == others.size() ? "&8." : "&8,");
+        			msg.then(i == others.size() ? "&8." : "&8, ");
         		}
         		display.addComponent(new FancyMessageComponent(msg));
         	}
@@ -644,7 +707,363 @@ public class RanksCommands
 
     }
 
-    @Command(identifier = "ranks info", description = "Information about a rank.  Use of the option of 'ALL' then " +
+	public void listAllRanksByLadders( ChatDisplay display, boolean hasPerm, RankPlayer rPlayer )
+	{
+//		List<RankLadder> ladders = PrisonRanks.getInstance().getLadderManager().getLadders();
+		
+//		for ( RankLadder rLadder : ladders ) {
+//			ChatDisplay cDisp = listRanksOnLadder( rLadder, hasPerm );
+//			
+//			if ( display == null ) {
+//				display = cDisp;
+//			}
+//			else {
+//				display.addEmptyLine();
+//				
+//				display.addChatDisplay( cDisp );
+//			}
+//			
+//		}
+		
+    	// Track which ranks were included in the ladders listed:
+    	List<Rank> ranksIncluded = new ArrayList<>();
+    	
+    	for ( RankLadder ladder : PrisonRanks.getInstance().getLadderManager().getLadders() ) {
+    		List<Rank> ladderRanks = ladder.getRanks();
+    		ranksIncluded.addAll( ladderRanks );
+    		
+    		ChatDisplay cDisp = listRanksOnLadder( ladder, hasPerm, rPlayer );
+			
+			if ( display == null ) {
+				display = cDisp;
+			}
+			else {
+				display.addEmptyLine();
+				
+				display.addChatDisplay( cDisp );
+			}
+			
+    	}
+    	
+    	// Next we need to get a list of all ranks that were not included. Create a temp ladder so they
+    	// can be printed out with them:
+    	List<Rank> ranksExcluded = new ArrayList<>( PrisonRanks.getInstance().getRankManager().getRanks() );
+    	ranksExcluded.removeAll( ranksIncluded );
+    	
+    	if ( ranksExcluded.size() > 0 ) {
+    		RankLadder noLadder = new RankLadder( -1, "No Ladder" );
+    		
+    		for ( Rank rank : ranksExcluded ) {
+    			noLadder.addRank( rank );
+			}
+    		
+    		ChatDisplay cDisp = listRanksOnLadder( noLadder, hasPerm, rPlayer );
+			
+			if ( display == null ) {
+				display = cDisp;
+			}
+			else {
+				display.addEmptyLine();
+				
+				display.addChatDisplay( cDisp );
+			}
+    	}
+    	
+	}
+	
+	public void listAllRanksByInfo( StringBuilder sb )
+	{
+		
+		// Track which ranks were included in the ladders listed:
+		List<Rank> ranksIncluded = new ArrayList<>();
+		
+		for ( RankLadder ladder : PrisonRanks.getInstance().getLadderManager().getLadders() ) {
+			List<Rank> ladderRanks = ladder.getRanks();
+			ranksIncluded.addAll( ladderRanks );
+			
+			for ( Rank rank : ladderRanks )
+			{
+				
+				PrisonCommand.printFooter( sb );
+				
+				JumboTextFont.makeJumboFontText( rank.getName(), sb );
+				sb.append( "\n" );
+				
+				ChatDisplay chatDisplay = rankInfoDetails( null, rank, "all" );
+				
+				sb.append( chatDisplay.toStringBuilder() );
+			}
+		}
+		
+		
+		
+		// Next we need to get a list of all ranks that were not included. Create a temp ladder so they
+		// can be printed out with them:
+		List<Rank> ranksExcluded = new ArrayList<>( PrisonRanks.getInstance().getRankManager().getRanks() );
+		ranksExcluded.removeAll( ranksIncluded );
+		
+		if ( ranksExcluded.size() > 0 ) {
+			
+			for ( Rank rank : ranksExcluded )
+			{
+				
+				PrisonCommand.printFooter( sb );
+				
+				JumboTextFont.makeJumboFontText( rank.getName(), sb );
+				sb.append( "\n" );
+				
+				ChatDisplay chatDisplay = rankInfoDetails( null, rank, "all" );
+				
+				sb.append( chatDisplay.toStringBuilder() );
+			}
+			
+		}
+		
+	}
+
+	private ChatDisplay listRanksOnLadder( RankLadder ladder, boolean hasPerm, RankPlayer rPlayer )
+	{
+		String rankHeader = ranksListHeaderMsg( ladder.getName() );
+        ChatDisplay display = new ChatDisplay( rankHeader );
+        
+        display.addText( ranksListLadderCostMultiplierMsg( 
+        							ladder.getRankCostMultiplierPerRank() ) );
+        
+        if ( hasPerm ) {
+        	display.addText( ranksListClickToEditMsg() );
+        }
+        
+        
+        if ( ladder.getRanks().size() == 0 ) {
+        	display.addText( ladderHasNoRanksTextMsg() );
+        }
+        
+        BulletedListComponent.BulletedListBuilder builder =
+        		new BulletedListComponent.BulletedListBuilder();
+        
+        DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
+        
+        // Here's the deal... With color codes, Java's String.format() cannot detect the correct
+        // length of a tag. So go through all tags, strip the colors, and see how long they are.
+        // We need to know the max length so we can pad the others with periods to align all costs.
+        int maxRankNameSize = 0;
+        int maxRankTagNoColorSize = 0;
+        for (Rank rank : ladder.getRanks()) {
+        	if ( rank.getName().length() > maxRankNameSize ) {
+        		maxRankNameSize = rank.getName().length();
+        	}
+        	String tag = rank.getTag() == null ? "" : rank.getTag();
+        	String tagNoColor = Text.stripColor( tag );
+        	if ( tagNoColor.length() > maxRankTagNoColorSize ) {
+        		maxRankTagNoColorSize = tagNoColor.length();
+        	}
+        }
+        
+        
+        boolean first = true;
+        for (Rank rank : ladder.getRanks()) {
+        	
+        	boolean defaultRank = ("default".equalsIgnoreCase( ladder.getName() ) && first);
+        	
+        	
+        	// Since the formatting gets confused with color formatting, we must 
+        	// strip the color codes and then inject them back in.  So instead, this
+        	// provides the formatting rules for both name and rank tag, thus 
+        	// taking in to consideration the color codes and if the hasPerms is
+        	// true. To prevent variable space issues, the difference is filled in with periods.
+        	String textRankNameString = padRankName( rank, maxRankNameSize, maxRankTagNoColorSize, hasPerm );
+        	
+//        	// trick it to deal correctly with tags.  Tags can have many colors, but
+//        	// it will render as if it had the colors stripped.  So first generate the
+//        	// formatted text with tagNoColor, then replace the no color tag with the
+//        	// normal tag.
+//        	// If tag is null, show it as an empty String.  Normally rank name will
+//        	// be used, but at least this show's it is not set.
+//        	String tag = rank.getTag() == null ? "" : rank.getTag();
+//        	String tagNoColor = Text.stripColor( tag );
+        	
+        	
+        	// If rank list is being generated for a console or op'd player, then show the ladder's rank multiplier,
+        	// but if generating for a player, then show total multiplier accross all ladders.
+        	PlayerRank pRank = null;
+        	double rankCost = 0;
+        	double rMulti = 0;
+        	
+        	if ( hasPerm || rPlayer == null ) {
+        		
+        		rankCost = PlayerRank.getRawRankCost( rank );
+        		rMulti = PlayerRank.getLadderBaseRankdMultiplier( rank );
+
+        	}
+        	else {
+        		pRank = PlayerRank.getTargetPlayerRankForPlayer( rPlayer, rank );
+        		rankCost = pRank.getRankCost();
+        		
+        		rMulti = pRank.getRankMultiplier();
+        	}
+        	
+        	
+        	
+        	String textCmdCount = ( hasPerm ? 
+        			ranksListCommandCountMsg(rank.getRankUpCommands().size())
+        			: "" );
+        	String textCurrency = (rank.getCurrency() == null ? "" : 
+        		ranksListCurrencyMsg( rank.getCurrency() ));
+        	
+        	String rankMultiplier = rMulti == 0d ? "" : fFmt.format( rMulti );
+        	
+        	String players = rank.getPlayers().size() == 0 ? "" : 
+        		" &dPlayers: &3" + rank.getPlayers().size();
+        	
+        	String rawRankId = ( hasPerm ?
+        			String.format( "(rankId: %s%s%s)",
+        					Integer.toString( rank.getId() ),
+        					(rank.getRankPrior() == null ? "" : " -"),
+        					(rank.getRankNext() == null ? "" : " +") )
+        			: "");
+        	
+        	String text =
+        			String.format("&3%s &7%-17s%s&7 &b%s &3%s %s&7 %s%s", 
+        					textRankNameString, 
+        					Text.numberToDollars( rankCost ),
+        					(defaultRank ? "{def}" : ""),
+        					
+        					rankMultiplier,
+        					
+        					rawRankId,
+        					
+        					textCurrency,
+        					textCmdCount,
+        					players
+        					);
+        	
+//        	// Swap the color tag back in:
+//        	text = text.replace( tagNoColor, tag );
+        	
+        	if ( defaultRank ) {
+        		// Swap out the default placeholder for the actual content:
+        		text = text.replace( "{def}", "&c(&9Default&c)" );
+        	}
+        	
+        	String rankName = rank.getName();
+        	if ( rankName.contains( "&" ) ) {
+        		rankName = rankName.replace( "&", "-" );
+        	}
+        	FancyMessage msg = null;
+        	if ( hasPerm ) {
+        		msg = new FancyMessage(text).command("/ranks info " + rankName)
+        				.tooltip( ranksListClickToViewMsg() );
+        	}
+        	else {
+        		msg = new FancyMessage(text);
+        	}
+        	
+        	builder.add(msg);
+        	
+//        		rank = rank.getRankNext();
+        	first = false;
+        	
+        }
+        
+        display.addComponent(builder.build());
+        
+        
+        if ( hasPerm && !"No Ladder".equals( ladder.getName() ) ) {
+        	
+        	RowComponent row = new RowComponent();
+        	
+        	row.addFancy(
+        			new FancyMessage("&7[&a+&7] Add a new Rank")
+        			.suggest("/ranks create <rank> <cost> " + ladder.getName() + " <tag>")
+        			.tooltip( ranksListCreateNewRankMsg() ));
+        	
+        	row.addTextComponent( "      " );
+        	
+        	row.addFancy(
+        			new FancyMessage("&7[&a+&7] Edit Ladder Rank Cost Multiplier")
+        			.suggest("/ranks ladder rankCostMultiplier " + 
+        								ladder.getName() + " " + ladder.getRankCostMultiplierPerRank())
+        			.tooltip( ranksListEditLadderCostMultiplierMsg() ));
+        	
+        	display.addComponent( row );
+
+        	
+        	// Include the listing of all ladder commands at the end of the list of ranks:
+        	ChatDisplay cmdLadderDisplays = 
+        			getRankCommandCommands().commandLadderListDetail( ladder, true );
+        	
+        	display.addChatDisplay( cmdLadderDisplays );
+        	
+        }
+
+        if ( rPlayer != null && !"No Ladder".equals( ladder.getName() ) ) {
+        	double ladderMultiplier = ladder.getRankCostMultiplierPerRank();
+        	double playerMultiplier = rPlayer.getRank( ladder ) != null ? rPlayer.getRank( ladder ).getRankMultiplier() : 0;
+        	
+        	if ( playerMultiplier == 0 ) {
+        		display.addText( "&3You have no Ladder Rank Multipliers enabled. The rank costs are not adjusted." );
+        	}
+        	else {
+        		display.addText( "&3Your current total Rank Multiplier: &7%s.", 
+        				fFmt.format( playerMultiplier ) );
+        		
+        		if ( ladderMultiplier == 0 ) {
+        			display.addText( "&3This ladder has no Rank Multiplier so all ranks on this ladder " +
+        					"have the same multiplier." );
+        		} 
+        		else {
+        			display.addText( "&3This ladder has a Rank Multiplier so each rank has " + 
+        					"a differnt multiplier." );
+        		}
+        		
+        		Set<RankLadder> ladders = rPlayer.getLadderRanks().keySet();
+        		for ( RankLadder rLadder : ladders ) {
+					if ( rLadder.getRankCostMultiplierPerRank() != 0d ) {
+						
+						Rank r = rPlayer.getLadderRanks().get( rLadder ).getRank();
+						display.addText( "&3  BaseMult: &7%7s  &3CurrMult: &7%7s  &7%s  &7%s  ", 
+								fFmt.format( rLadder.getRankCostMultiplierPerRank() ),
+								fFmt.format( PlayerRank.getLadderBaseRankdMultiplier( r )),
+								rLadder.getName(), 
+								r.getTag()
+								);
+						
+//						display.addText( "&3  Ladder: &7%-9s  &3Rank: &7%-8s  &3Base Mult: %7s", 
+//								rLadder.getName(), 
+//								rPlayer.getLadderRanks().get( rLadder ).getRank().getTag(),
+//								fFmt.format( rLadder.getRankCostMultiplierPerRank() ) );
+					}
+				}
+        	}
+        	
+        }
+        
+		return display;
+	}
+
+	private String padRankName( Rank rank, int maxRankNameSize, int maxRankTagNoColorSize, boolean hasPerm ) {
+		return padRankName( rank.getName(), rank.getTag(), maxRankNameSize, maxRankTagNoColorSize, hasPerm );
+	}
+    protected String padRankName( String rankName, String rankTag, int maxRankNameSize, int maxRankTagNoColorSize, boolean hasPerm )
+	{
+    	StringBuilder sb = new StringBuilder();
+    	
+    	int tLen = (hasPerm ? maxRankNameSize + 1 : 0) + maxRankTagNoColorSize;
+    	String name = hasPerm ? rankName + " " : "";
+    	String tag = rankTag == null ? "" : rankTag;
+    	String tagNoColor = Text.stripColor( tag );
+    	
+    	sb.append( name ).append( tag ).append( "&8" );
+    	
+    	int length = name.length() + tagNoColor.length();
+    	while ( length++ < tLen ) {
+    		sb.append( "." );
+    	}
+    	
+		return sb.toString();
+	}
+
+	@Command(identifier = "ranks info", description = "Information about a rank.  Use of the option of 'ALL' then " +
     							"rank commands will be included too.", 
     							onlyPlayers = false, permissions = "ranks.info", 
     							altPermissions = "ranks.admin" )
@@ -662,11 +1081,65 @@ public class RanksCommands
         }
 
 
-        ChatDisplay display = new ChatDisplay( ranksInfoHeaderMsg( rank.getTag() ));
+        ChatDisplay display = rankInfoDetails( sender, rank, options );
+
+        display.send(sender);
+        
+//        if ( options != null && "all".equalsIgnoreCase( options )) {
+        	
+        	//getRankCommandCommands().commandLadderList( sender, rank.getLadder().getName(), "noRemoves" );
+        	
+//        	getRankCommandCommands().commandList( sender, rankName, "noRemoves" );
+//        }
+    }
+
+
+    public void allRanksInfoDetails( StringBuilder sb ) {
+    	
+    	PrisonRanks pRanks = PrisonRanks.getInstance();
+    	RankManager rMan = pRanks.getRankManager();
+    	
+    	for ( Rank rank : rMan.getRanks() ) {
+
+    		PrisonCommand.printFooter( sb );
+    		
+    		JumboTextFont.makeJumboFontText( rank.getName(), sb );
+    		sb.append( "\n" );
+    		
+    		ChatDisplay chatDisplay = rankInfoDetails( null, rank, "all" );
+    		
+    		sb.append( chatDisplay.toStringBuilder() );
+		}
+
+    	PrisonCommand.printFooter( sb );
+    }
+    
+    
+	private ChatDisplay rankInfoDetails( CommandSender sender, Rank rank, String options )
+	{
+		ChatDisplay display = new ChatDisplay( ranksInfoHeaderMsg( rank.getTag() ));
+		
+		boolean isOp = sender.isOp();
+		boolean isConsole = !sender.isPlayer();
 
         display.addText( ranksInfoNameMsg( rank.getName() ));
         display.addText( ranksInfoTagMsg( rank.getTag() ));
-        display.addText( ranksInfoLadderMsg( rank.getLadder().getName() ));
+        
+        
+        RowComponent row = new RowComponent();
+        
+        row.addTextComponent( ranksInfoLadderMsg( rank.getLadder() != null ? 
+				rank.getLadder().getName() : "(not linked to any ladder)" ) );
+        
+        
+        if ( rank.getLadder() != null ) {
+        	row.addTextComponent( "      " );
+        	
+        	row.addTextComponent( "&3Ladder Position: &7%d", rank.getPosition() );
+        }
+        
+        display.addComponent( row );
+        
         
         if ( rank.getMines().size() == 0 ) {
         	display.addText( ranksInfoNotLinkedToMinesMsg() );
@@ -685,55 +1158,89 @@ public class RanksCommands
         	display.addText( ranksInfoLinkedMinesMsg( sb.toString() ));
         }
 
-        display.addText( ranksInfoCostMsg( rank.getCost() ));
+        
+        
+        
+        // NOTE: Since rank info is NOT tied to a PlayerRank we cannot figure out the
+        //       the actual cost, but we can calculate the ladder's multiplier.  This 
+        //       will not be the player's total multiplier.
+        display.addText( ranksInfoCostMsg( PlayerRank.getRawRankCost( rank ) ));
+        
+        
+        
+        // Add the raw ladder rank multiplier here:
+        DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
+        
+        // The following is the rank adjusted rank multiplier
+        double rankCostMultiplier = PlayerRank.getLadderBaseRankdMultiplier( rank );
+        double ladderBaseMultiplier = rank.getLadder() == null ? 0 : rank.getLadder().getRankCostMultiplierPerRank();
+        
+        String cmdLadderRankCostMult = "/ranks ladder rankMultiplier " + rank.getName() + " " + ladderBaseMultiplier;
+        display.addComponent(new FancyMessageComponent(
+    			new FancyMessage(
+    					String.format( "&3Rank Cost Multiplier: &7%s  &3Ladder Base Multiplier: &7%s",
+    							fFmt.format( rankCostMultiplier ),
+    							fFmt.format( ladderBaseMultiplier )
+    							)).suggest( cmdLadderRankCostMult )
+    			.tooltip( "Ladder Rank Cost Multiplier" )));
+    	
+
         
         display.addText( ranksInfoCurrencyMsg( (rank.getCurrency() == null ? "&cdefault" : rank.getCurrency()) ));
         
-        List<RankPlayer> players =
-        		PrisonRanks.getInstance().getPlayerManager().getPlayers().stream()
-        		.filter(rankPlayer -> rankPlayer.getLadderRanks().values().contains(rank))
-        		.collect(Collectors.toList());
-        display.addText( ranksInfoPlayersWithRankMsg( players.size() ));
+        int numberOfPlayersOnRank = rank.getPlayers().size();
+        display.addText( ranksInfoPlayersWithRankMsg( numberOfPlayersOnRank ));
 
-        if (sender.hasPermission("ranks.admin")) {
+        if ( isOp || isConsole || sender == null || sender.hasPermission("ranks.admin")) {
             // This is admin-exclusive content
 
 //            display.addText("&8[Admin Only]");
             display.addText( ranksInfoRankIdMsg( rank.getId() ));
 
-            FancyMessage del =
-                new FancyMessage( ranksInfoRankDeleteMessageMsg() ).command("/ranks delete " + rank.getName())
-                    .tooltip( ranksInfoRankDeleteToolTipMsg() );
-            display.addComponent(new FancyMessageComponent(del));
+//            FancyMessage del =
+//                new FancyMessage( ranksInfoRankDeleteMessageMsg() ).command("/ranks delete " + rank.getName())
+//                    .tooltip( ranksInfoRankDeleteToolTipMsg() );
+//            display.addComponent(new FancyMessageComponent(del));
         }
-
-        display.send(sender);
         
-        if ( options != null && "all".equalsIgnoreCase( options )) {
+        if ( isOp && options != null && "all".equalsIgnoreCase( options )) {
         	
-        	getRankCommandCommands().commandLadderList( sender, rank.getLadder().getName(), "noRemoves" );
+        	if ( rank.getLadder() != null ) {
+        		
+        		ChatDisplay cmdLadderDisplays = getRankCommandCommands().commandLadderListDetail( rank.getLadder(), true );
+        		display.addChatDisplay( cmdLadderDisplays );
+        	}
         	
-        	getRankCommandCommands().commandList( sender, rankName, "noRemoves" );
+        	ChatDisplay cmdLadderCmdsDisplays = getRankCommandCommands().commandListDetails( rank, true );
+        	display.addChatDisplay( cmdLadderCmdsDisplays );
         }
-    }
+        
+		return display;
+	}
 
 
-    @Command(identifier = "ranks set cost", description = "Modifies a ranks cost", 
+    @Command(identifier = "ranks set cost", description = "Sets a rank's raw cost. The ladder's rank cost " +
+    		"multipliers are not applied to this value, and they will impact the actual price that a " +
+    		"player will have to pay.  Every player may have to pay a different price for this rank, if " +
+    		"ladder rank multipiers are used, and players have different ranks in the ladders that " +
+    		"have them enabled.", 
     							onlyPlayers = false, permissions = "ranks.set")
     public void setCost(CommandSender sender, 
     		@Arg(name = "rankName") String rankName, 
-    		@Arg(name = "cost", description = "The cost of this rank.") double cost){
+    		@Arg(name = "rawCost", description = "The raw cost of this rank.") double rawCost) {
+    	
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
         if ( rank == null ) {
         	rankDoesNotExistMsg( sender, rankName );
             return;
         }
         
-        rank.setCost( cost );
+        
+        PlayerRank.setRawRankCost( rank, rawCost );
         
         PrisonRanks.getInstance().getRankManager().saveRank(rank);
         
-        rankSetCostSuccessfulMsg( sender, rankName, cost );
+        rankSetCostSuccessfulMsg( sender, rankName, rawCost );
     }
     
 
@@ -841,6 +1348,61 @@ public class RanksCommands
     
     
     
+//    @Command(identifier = "ranks import byPerms", description = "This resets 'all' player's ranks based " +
+//    		"upon a series of permissions.  An example of a permission may be 'permission.mine.A'. Basically " +
+//    		"a standard prefix, followed by a rank name, or mine name.  This is a very dangerous command to " +
+//    		"run because it will reset many player's ranks. All ranks can be reset back to a " +
+//    		"spcific rank with the command '/ranks set rank *all* A default`. " +
+//    		"It is highly recommended to backup your server, and Prison's plugin folder.  Plus you should" +
+//    		"reset all your players to the default rank on the 'default' " +
+//    		"ladder.  Usually the default rank is 'a', but please confirm before resetting all ranks.  "
+//    		, 
+//    		onlyPlayers = false, aliases="ranks stats")
+    public void ranksImportByPermissions(CommandSender sender,
+    			@Arg(name = "ladderName", def = "default", 
+    						description = "Ladder Name. Required: [default]") String ladderName,
+    			
+    			@Arg(name = "permission", description = "This is the full permission name, but use " +
+    					"a '{rank}' placeholder to indicate where the rank name should be. ") String permission,
+    			@Arg(name = "options", def = "", 
+    				description = "Work in progress.. options will be added in the future. " +
+    						"[]") String options){
+
+    	
+    	if ( !ladderName.equalsIgnoreCase( "all" ) && 
+    			PrisonRanks.getInstance().getLadderManager().getLadder( ladderName ) == null ) {
+    		ranksPlayersInvalidLadderMsg( sender, ladderName );
+    		return;
+    	}
+    	
+    	
+//    	RanksByLadderOptions option = RanksByLadderOptions.fromString( action );
+//    	if ( option == null ) {
+//    		ranksPlayersInvalidActionMsg( sender, action );
+//    		return;
+//    	}
+    	
+//    	boolean includeAll = action.equalsIgnoreCase( "all" );
+//    	PrisonRanks.getInstance().getRankManager().ranksByLadders( sender, ladderName, option );
+    	
+//    	Output.get().logInfo( "Ranks by ladders:" );
+//    	
+//    	for ( RankLadder ladder : PrisonRanks.getInstance().getLadderManager().getLadders() ) {
+//    		if ( ladderName.equalsIgnoreCase( "all" ) || ladderName.equalsIgnoreCase( ladder.name ) ) {
+//    			
+//    			boolean includeAll = action.equalsIgnoreCase( "all" );
+//    			String ladderRanks = ladder.listAllRanks( includeAll );
+//    			
+//    			sender.sendMessage( ladderRanks );
+//    		}
+//			
+//		}
+    	
+    }
+    
+    
+    
+    
     @Command(identifier = "ranks player", description = "Shows a player their rank", 
     		onlyPlayers = false, altPermissions = "ranks.admin" )
     public void rankPlayer(CommandSender sender,
@@ -858,6 +1420,16 @@ public class RanksCommands
     	PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
 		RankPlayer rankPlayer = pm.getPlayer(player.getUUID(), player.getName());
 		
+		String msg1 = String.format( "&c%s:", rankPlayer.getName() );
+		sendToPlayerAndConsole( sender, msg1 );
+		
+		DecimalFormat fFmt = new DecimalFormat("0.0000");
+		String msg2 = String.format( "  &7Rank Cost Multiplier: &f", 
+						fFmt.format( rankPlayer.getSellAllMultiplier() ));
+		sendToPlayerAndConsole( sender, msg2 );
+
+		
+		
 		if ( rankPlayer != null ) {
 			DecimalFormat dFmt = new DecimalFormat("#,##0.00");
 			
@@ -872,15 +1444,21 @@ public class RanksCommands
 			}
 			
 			
-			Map<RankLadder, Rank> rankLadders = rankPlayer.getLadderRanks();
+			Map<RankLadder, PlayerRank> rankLadders = rankPlayer.getLadderRanks();
 			
 			for ( RankLadder rankLadder : rankLadders.keySet() )
 			{
-				Rank rank = rankLadders.get( rankLadder );
+				PlayerRank pRank = rankLadders.get( rankLadder );
+				Rank rank = pRank.getRank();
 				Rank nextRank = rank.getRankNext();
 				
+		        // This calculates the target rank, and takes in to consideration the player's existing rank:
+		        PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+
+//				PlayerRank nextPRank = nextRank == null ? null :
+//									new PlayerRank( nextRank, pRank.getRankMultiplier() );
+				
 				String messageRank = ranksPlayerLadderInfoMsg( 
-						player.getDisplayName(), 
 						rankLadder.getName(),
 						rank.getName() );
 				
@@ -889,7 +1467,8 @@ public class RanksCommands
 				} else {
 					messageRank += ranksPlayerLadderNextRankMsg( 
 							nextRank.getName(), 
-							dFmt.format( nextRank.getCost() ) );
+							( nextRank == null ? "0" : dFmt.format( nextPRank.getRankCost()) ) );
+//							dFmt.format( nextRank.getCost() ) );
 
 					if ( nextRank.getCurrency() != null ) {
 						messageRank += ranksPlayerLadderNextRankCurrencyMsg( nextRank.getCurrency() );
@@ -1011,9 +1590,10 @@ public class RanksCommands
 //			}
 //			sender.sendMessage( message );
 			
-		} else {
-			ranksPlayerNoRanksFoundMsg( sender, player.getDisplayName() );
 		}
+//		else {
+//			ranksPlayerNoRanksFoundMsg( sender, player.getDisplayName() );
+//		}
     }
 
     

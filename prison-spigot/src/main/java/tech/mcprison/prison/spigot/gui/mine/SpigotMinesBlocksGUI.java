@@ -3,20 +3,17 @@ package tech.mcprison.prison.spigot.gui.mine;
 import java.util.List;
 
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
-import tech.mcprison.prison.mines.data.BlockOld;
 import tech.mcprison.prison.mines.data.Mine;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
+import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 /**
@@ -42,27 +39,20 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
     public void open(){
 
+        int dimension = 54;
+        PrisonGUI gui = new PrisonGUI(p, dimension, "&3MineInfo -> Blocks");
+
         // Get Mine
         Mine m = PrisonMines.getInstance().getMine(mineName);
-
-        // Get the dimensions and if needed increases them
-        int dimension = 54;
-        
 		boolean useNewBlockModel = Prison.get().getPlatform().isUseNewPrisonBlockModel();
 
-        // Create the inventory
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3MineInfo -> Blocks"));
+        ButtonLore addBlockLore = new ButtonLore(messages.getString("Lore.ClickToAddBlock"), null);
 
-        List<String> addBlockLore = createLore(
-                messages.getString("Lore.ClickToAddBlock")
-        );
-
-        // Add the button to the inventory
-        ItemStack addBlockButton = createButton(XMaterial.LIME_STAINED_GLASS_PANE.parseItem(), addBlockLore, SpigotPrison.format("&a" + "Add" + " " + mineName));
-        inv.setItem(dimension - 1, addBlockButton);
+        // Add the button to the GUI.
+        gui.addButton(new Button(dimension - 1, XMaterial.LIME_STAINED_GLASS_PANE, addBlockLore, "&a" + "Add" + " " + mineName));
 
         if (useNewBlockModel) {
-        	
+
         	// For every block makes a button
         	for (PrisonBlock block : m.getPrisonBlocks()) {
         		
@@ -75,114 +65,69 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         			blockmaterial = "BARRIER";
         			blockmaterialdisplay = blockmaterial;
         		}
-        		
-        		if (guiBuilder(inv, block, blockmaterial, blockmaterialdisplay)) return;
+
+        		// Get XMaterial.
+                XMaterial xMat = SpigotUtil.getXMaterial(blockmaterial);
+                if (PrisonBlock.IGNORE.getBlockName().equalsIgnoreCase(blockmaterial)) {
+                    xMat = XMaterial.BARRIER;
+                }
+                if (xMat == null ) {
+                    xMat = XMaterial.STONE;
+                }
+
+                ButtonLore blocksLore = new ButtonLore(createLore(loreClickToEditBlock, loreShiftRightClickToDelete), createLore(loreInfo));
+
+                // Add a lore
+                blocksLore.addLineLoreDescription(SpigotPrison.format(loreChance + block.getChance() + "%"));
+                blocksLore.addLineLoreDescription(SpigotPrison.format(loreBlockType + blockmaterial));
+
+                // Add the button to the GUI.
+                gui.addButton(new Button(null, xMat, blocksLore, "&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
         	}
-        } else {
-        	
+        } /*else {
+
         	// For every block makes a button
         	for (BlockOld block : m.getBlocks()) {
-        		
+
         		// Get the block material as a string and displayname
         		String blockmaterial = block.getType().name();
         		String blockmaterialdisplay = blockmaterial;
-        		
+
         		// Check if a block's air and changed the item of it to BARRIER
         		if (blockmaterial.equalsIgnoreCase("air")){
         			blockmaterial = "BARRIER";
         			blockmaterialdisplay = blockmaterial;
         		}
-        		
-        		if (guiBuilder(inv, block, blockmaterial, blockmaterialdisplay)) return;
+
+                // Create the lore
+                List<String> blockslore = createLore(
+                        loreShiftRightClickToDelete,
+                        loreClickToEditBlock,
+                        "",
+                        loreInfo
+                );
+
+                boolean isEnum = true;
+                try {
+                    Material.valueOf(blockmaterial);
+                } catch (Exception e) {
+                    isEnum = false;
+                }
+
+                if (!(isEnum)) {
+                    blockmaterial = "BARRIER";
+                }
+
+                // Add a lore
+                blockslore.add(SpigotPrison.format(loreChance + block.getChance() + "%"));
+                blockslore.add(SpigotPrison.format(loreBlockType + blockmaterial));
+
+                // Add the button to the GUI.
+                gui.addButton(new Button(null, XMaterial.valueOf(blockmaterial), blockslore, "&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
         	}
-        }
+        }*/
 
         // Open the inventory
-        openGUI(p, inv);
-    }
-
-    private boolean guiBuilder(Inventory inv, PrisonBlock block, String blockmaterial, String blockmaterialdisplay) {
-        try {
-            buttonsSetup(inv, block, blockmaterial, blockmaterialdisplay);
-        } catch (NullPointerException ex){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
-            ex.printStackTrace();
-            return true;
-        }
-        return false;
-    }
-    
-    private boolean guiBuilder(Inventory inv, BlockOld block, String blockmaterial, String blockmaterialdisplay) {
-    	try {
-    		buttonsSetup(inv, block, blockmaterial, blockmaterialdisplay);
-    	} catch (NullPointerException ex){
-    		Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
-    		ex.printStackTrace();
-    		return true;
-    	}
-    	return false;
-    }
-
-    private void buttonsSetup(Inventory inv, PrisonBlock block, String blockmaterial, String blockmaterialdisplay) {
-
-        // Create the lore
-        List<String> blockslore = createLore(
-                loreShiftRightClickToDelete,
-                loreClickToEditBlock,
-                "",
-                loreInfo
-        );
-
-
-        boolean isEnum = true;
-        try {
-            Material.valueOf(blockmaterial);
-        } catch (Exception e) {
-            isEnum = false;
-        }
-
-        if (!(isEnum)) {
-            blockmaterial = "BARRIER";
-        }
-
-        // Add a lore
-        blockslore.add(SpigotPrison.format(loreChance + block.getChance() + "%"));
-        blockslore.add(SpigotPrison.format(loreBlockType + blockmaterial));
-
-        // Make the item
-        ItemStack block1 = createButton(XMaterial.valueOf(blockmaterial).parseItem(), blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
-        inv.addItem(block1);
-    }
-
-    private void buttonsSetup(Inventory inv, BlockOld block, String blockmaterial, String blockmaterialdisplay) {
-
-        // Create the lore
-    	List<String> blockslore = createLore(
-    			loreShiftRightClickToDelete,
-    			loreClickToEditBlock,
-    			"",
-    			loreInfo
-        );
-
-    	boolean isEnum = true;
-    	try {
-    		Material.valueOf(blockmaterial);
-    	} catch (Exception e) {
-    		isEnum = false;
-    	}
-
-    	if (!(isEnum)) {
-    		blockmaterial = "BARRIER";
-    	}
-
-    	// Add a lore
-    	blockslore.add(SpigotPrison.format(loreChance + block.getChance() + "%"));
-    	blockslore.add(SpigotPrison.format(loreBlockType + blockmaterial));
-
-    	// Make the item
-    	ItemStack block1 = createButton(XMaterial.valueOf(blockmaterial).parseItem(), blockslore, SpigotPrison.format("&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
-
-    	// Add the item to the inventory
-    	inv.addItem(block1);
+        gui.open();
     }
 }

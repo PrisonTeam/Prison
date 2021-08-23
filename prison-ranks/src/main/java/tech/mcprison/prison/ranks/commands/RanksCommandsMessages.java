@@ -40,6 +40,20 @@ public class RanksCommandsMessages
 				.sendTo( sender );
 	}
 	
+	protected void ladderHasNoRanksMsg( CommandSender sender, String ladderName ) {
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_rankCommands__ladder_has_no_ranks" )
+		.withReplacements( 
+				ladderName )
+		.sendTo( sender );
+	}
+	
+	protected String ladderHasNoRanksTextMsg() {
+		return PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_rankCommands__ladder_has_no_ranks_text" )
+		.localize();
+	}
+	
 	protected void rankDoesNotExistMsg( CommandSender sender, String rankName ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__rank_does_not_exist" )
@@ -120,6 +134,23 @@ public class RanksCommandsMessages
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__auto_config_no_ranks_created" )
 				.sendTo( sender );
+	}
+	
+	protected void autoConfigLadderRankCostMultiplierInfoMsg( CommandSender sender,
+			double rankCostMultiplier ) {
+		DecimalFormat dFmt = new DecimalFormat("0.0000");
+		
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_rankCommands__auto_config_ladder_rank_cost_multiplier_info" )
+		.withReplacements(
+				dFmt.format( rankCostMultiplier ) )
+		.sendTo( sender );
+	}
+	
+	protected void autoConfigLadderRankCostMultiplierCmdMsg( CommandSender sender ) {
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_rankCommands__auto_config_ladder_rank_cost_multiplier_command_example" )
+		.sendTo( sender );
 	}
 	
 	protected void autoConfigRanksCreatedMsg( CommandSender sender, 
@@ -209,6 +240,24 @@ public class RanksCommandsMessages
 				.getLocalizable( "ranks_rankCommands__ranks_list_header" )
 				.withReplacements( 
 						ladderName )
+				.localize();
+	}
+	
+	protected String ranksListLadderCostMultiplierMsg( double multiplier ) {
+		
+		DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
+		
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_rankCommands__ranks_list_ladder_cost_multplier" )
+				.withReplacements(
+					fFmt.format( multiplier )	)
+				.localize();
+	}
+	
+	protected String ranksListEditLadderCostMultiplierMsg() {
+		
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_rankCommands__ranks_list_ladder_edit_cost_multplier" )
 				.localize();
 	}
 	
@@ -448,12 +497,12 @@ public class RanksCommandsMessages
 				.sendTo( sender );
 	}
 
-	protected String ranksPlayerLadderInfoMsg( String playerName, 
+	protected String ranksPlayerLadderInfoMsg(
 					String ladderName, String rankName ) {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__player_ladder_info" )
 				.withReplacements( 
-						playerName, ladderName, rankName )
+						ladderName, rankName )
 				.localize();
 	}
 

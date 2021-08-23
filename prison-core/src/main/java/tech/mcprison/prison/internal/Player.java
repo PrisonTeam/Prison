@@ -47,6 +47,8 @@ public interface Player
      */
     String getDisplayName();
 
+    public String toString();
+    
     /**
      * Sets the player's display name (nickname).
      *
@@ -131,10 +133,17 @@ public interface Player
     void updateInventory();
     
     
-    /**
-     * Dumps the inventory contents of the player to the console.
-     * 
-     */
-    public void printDebugInventoryInformationToConsole();
+//    /**
+//     * Dumps the inventory contents of the player to the console.
+//     * 
+//     */
+//    public void printDebugInventoryInformationToConsole();
     
+
+    public void setTitle( String title, String subtitle, int fadeIn, int stay, int fadeOut );
+	
+    
+	public void setActionBar( String actionBar );
+	
+	
 }

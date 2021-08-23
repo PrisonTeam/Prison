@@ -337,7 +337,7 @@ The following commands are intended for the use of admins only.  They are to be 
 /ranks set rank [playerName] [rankName] [ladder]
 
 /ranks set rank [playerName] -remove- [ladder]
-/ranks remove rank [playerName] [ladder] 
+/ranks removeRank [playerName] [ladder] 
 
 /ranks promote help
 /ranks demote help
@@ -360,7 +360,7 @@ The parameter **ladder** is optional, and if not specified will default to the `
 The parameter **rankName** is required and identifies what rank to set the player to.  If there is more than one level of promotion or demotion, then there is a risk of corruption of the player's rank and missing permissions with promotions, or permissions the player should not have access to with demotions.
 
 
-For the command `/ranks set rank` the parameter for **rankName** can be set to a value of `-remove-` to remove the player from the specified ladder.  An alias for this command is `/ranks remove rank [player] [ladder]`.
+For the command `/ranks set rank` the parameter for **rankName** can be set to a value of `-remove-` to remove the player from the specified ladder.  An alias for this command is `/ranks removeRank [player] [ladder]`.
 
 
 The parameter **chargePlayers** will require that the player has enough of the specific currency for promotions, and will subtract that amount from their bank balance.  If they do not have enough funds, then they will not be ranked up, just as if they ran the command.  If the player is being demoted and this parameter is used, then the player will be issued a refund for the prior rank.  

@@ -41,11 +41,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.CodeSource;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -115,6 +117,8 @@ public class LocaleManager {
     private String internalPath;
     
     private File localFolder;
+    
+    private static final List<LocaleManager> registeredInstances = new ArrayList<>();
 
     /**
      * Constructs a new {@link LocaleManager} owned by the given {@link PluginEntity}.
@@ -128,6 +132,26 @@ public class LocaleManager {
         
         this.localFolder = getLocalDataFolder();
         
+        getRegisteredInstances().add( this );
+        
+        reload();
+    }
+
+    public LocaleManager(PluginEntity module) {
+        this(module, LOCALE_FOLDER);
+    }
+    
+    
+    public void reload() {
+    	
+    	// Reset configs:
+    	configs.clear();
+    	
+    	
+        // Always get the config's default-language settings to ensure we are always
+        // accessing the correct files.
+        setDefaultLocale( Prison.get().getPlatform().getConfigString( "default-language", "en_US" ));
+        
         
         // Check to see if there are any updates that need to be applied to the 
         // the properties files that are local.
@@ -139,16 +163,20 @@ public class LocaleManager {
         // Load the shipped locales first first from the prison jar file:
         loadShippedLocales();
         
-        // Then any custom locales will overried and replace the internal locales:
+        
+        // Then any custom locales will override and replace the internal locales:
         loadCustomLocales(); // custom locales will override
-    }
 
-    public LocaleManager(PluginEntity module) {
-        this(module, LOCALE_FOLDER);
     }
     
     
-    @Override
+    
+    public static List<LocaleManager> getRegisteredInstances()
+	{
+		return registeredInstances;
+	}
+
+	@Override
     public String toString() {
     	StringBuilder sb = new StringBuilder();
     	
@@ -367,11 +395,11 @@ public class LocaleManager {
 				) {
 			prop.load( fr );
 			
-			boolean hasVersion = prop.containsKey( "ranks_messages__version" );
-			String version = prop.getProperty( "ranks_messages__version" );
+			boolean hasVersion = prop.containsKey( "messages__version" );
+			String version = prop.getProperty( "messages__version" );
 			
-			boolean hasAutoRefresh = prop.containsKey( "ranks_messages__auto_refresh" );
-			String autoRefresh = prop.getProperty( "ranks_messages__auto_refresh" );
+			boolean hasAutoRefresh = prop.containsKey( "messages__auto_refresh" );
+			String autoRefresh = prop.getProperty( "messages__auto_refresh" );
 			
 			if ( hasVersion && version != null && !version.trim().isEmpty() ) {
 				pfd.setLocalVersion( version );
@@ -396,11 +424,11 @@ public class LocaleManager {
     		
     		prop.load( new StringReader( propertiesData ) );
     		
-    		boolean hasVersion = prop.containsKey( "ranks_messages__version" );
-    		String version = prop.getProperty( "ranks_messages__version" );
+    		boolean hasVersion = prop.containsKey( "messages__version" );
+    		String version = prop.getProperty( "messages__version" );
     		
-    		boolean hasAutoRefresh = prop.containsKey( "ranks_messages__auto_refresh" );
-    		String autoRefresh = prop.getProperty( "ranks_messages__auto_refresh" );
+    		boolean hasAutoRefresh = prop.containsKey( "messages__auto_refresh" );
+    		String autoRefresh = prop.getProperty( "messages__auto_refresh" );
     		
     		if ( hasVersion && version != null && !version.trim().isEmpty() ) {
     			pfd.setJarVersion( version );
@@ -433,15 +461,15 @@ public class LocaleManager {
     				} 
     				catch (IOException ex) {
     					Output.get().logWarn(
-    							"Failed to load custom locale \"" + locale.getName() +
-    							"\" for plugin " + getOwningPlugin() + " (" + 
+    							"Failed to load custom locale " + locale.getName() +
+    							" for plugin " + getOwningPlugin() + " (" + 
     							ex.getMessage() + ")");
     				}
     			} 
     			else {
-    				Output.get().logWarn("Found subfolder \"" + locale.getName() +
-			    				"\" within locale folder \"" + LOCALE_FOLDER +
-			    				"\" in data folder for plugin " + getOwningPlugin() +
+    				Output.get().logWarn("Found subfolder " + locale.getName() +
+			    				" within locale folder " + LOCALE_FOLDER +
+			    				" in data folder for plugin " + getOwningPlugin() +
 			    				" - not loading");
     			}
     		}
@@ -578,18 +606,38 @@ public class LocaleManager {
     private void loadLocale(String name, InputStream is, boolean printStackTrace) {
     	
         try {
-            Properties temp = new Properties();
-            temp.load(is);
+
+        	
+        	Properties temp = new Properties();
+//            temp.load(is);
+
+        	// The InputStream is part of a zipEntry so it cannot be closed, or it will close the zip stream
+            BufferedReader br = new BufferedReader( new InputStreamReader( is, Charset.forName("UTF-8") ));
+            String line = br.readLine();
+            
+            while ( line != null ) {
+            	if ( !line.startsWith( "#" ) && line.contains( "=" ) ) {
+            		
+            		String[] keyValue = line.split( "\\=" );
+            		String value = (keyValue.length > 1 ? keyValue[1] : ""); // StringEscapeUtils.escapeJava( keyValue[1] );
+            		temp.put( keyValue[0], value );
+            	}
+            	
+            	line = br.readLine();
+            }
+            
+            
             Properties config;
             if (configs.containsKey(name)) {
                 config = configs.get(name);
+                
                 for (Map.Entry<Object, Object> e : temp.entrySet()) {
                     config.put(e.getKey(), e.getValue());
                 }
             } else {
                 config = temp;
+                configs.put(name, config);
             }
-            configs.put(name, config);
         } 
         catch (IOException ex) {
             if (printStackTrace) {
@@ -619,6 +667,12 @@ public class LocaleManager {
      * @since 1.0
      */
     public String getDefaultLocale() {
+    	if ( defaultLocale == null ) {
+    		defaultLocale = Prison.get().getPlatform().getConfigString( "default-language", "en_US" );
+    		if ( defaultLocale == null ) {
+    			defaultLocale = "en_US";
+    		}
+    	}
         return defaultLocale;
     }
 
@@ -646,7 +700,8 @@ public class LocaleManager {
     }
 
     String getLocale(Player player) {
-        return player.getLocale().orElse(getDefaultLocale());
+        return player != null && player.getLocale() != null ? 
+        		player.getLocale().orElse(getDefaultLocale()) : getDefaultLocale();
     }
 
 	public String getInternalPath() {

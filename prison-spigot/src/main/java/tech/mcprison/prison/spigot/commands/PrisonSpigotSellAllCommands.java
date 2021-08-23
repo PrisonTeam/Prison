@@ -255,12 +255,12 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
 
         if (!getBoolean(sellAllUtil.sellAllConfig.getString("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Enabled"))){
-            sellAllSellCommand(sender, "");
+            sellAllSellCommand(sender, "silent");
             return;
         }
 
         SellAllUtil.get().addToAutoSellTask(p);
-        sellAllSellCommand(sender, "");
+        sellAllSellCommand(sender, "silent");
     }
 
 

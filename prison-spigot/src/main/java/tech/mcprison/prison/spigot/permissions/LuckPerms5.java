@@ -94,7 +94,12 @@ public class LuckPerms5
 	public boolean hasIntegrated() {
 		return (permsWrapper != null);
 	}
-
+    
+    @Override
+    public void disableIntegration() {
+    	permsWrapper = null;
+    }
+    
 	@Override
 	public String getPluginSourceURL() {
 		return "https://luckperms.net/";

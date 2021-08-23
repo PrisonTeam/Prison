@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
@@ -47,6 +48,7 @@ import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.mines.features.MineLinerBuilder;
 import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
+import tech.mcprison.prison.mines.features.MineLinerData.LadderType;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.mines.tasks.MineTeleportWarmUpTask;
@@ -59,11 +61,13 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.selection.Selection;
-import tech.mcprison.prison.tasks.PrisonCommandTask.TaskMode;
 import tech.mcprison.prison.tasks.PrisonCommandTask;
+import tech.mcprison.prison.tasks.PrisonCommandTask.TaskMode;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 import tech.mcprison.prison.util.Bounds;
+import tech.mcprison.prison.util.JumboTextFont;
 import tech.mcprison.prison.util.Bounds.Edges;
+import tech.mcprison.prison.util.Text;
 
 /**
  * @author Dylan M. Perks
@@ -199,30 +203,38 @@ public class MinesCommands
     
     
     
-    @Command(identifier = "mines create", description = "Creates a new mine, or even a virtual mine.", 
+    @Command(identifier = "mines create", description = "Creates a new mine, or even a virtual mine. " +
+    		"If the option 'virtual' is used, then you can create the mine offline within the console. " +
+    		"You'll have to use `/mines set area help` later to position the in a world.  If you are not " +
+    		"creating a virtual mine, then you must be in game, and have already selected an area " +
+    		"with the `/mines wand` tool. If an area is not selected, then this command will fail.", 
     		onlyPlayers = false, permissions = "mines.create")
     public void createCommand(CommandSender sender,
-    		@Arg(name = "virtual", description = "Create a virtual mine in name only; no physical location. " +
-    				"This allows the mine to be predefined before specifying the coordinates. Use [virtual]. ", 
-    				def = "") 
-    					String virtualMine,
-    		@Wildcard(join=true)
-    		@Arg(name = "mineName", description = "The name of the new mine.", def = " ") String mineName
-    		) {
-    	boolean virtual = false;
-    	
-    	if ( virtualMine != null && virtualMine.trim().length() > 0 ) {
-    		if ( "virtual".equalsIgnoreCase( virtualMine.trim()) ) {
-    			virtual = true;
-    		}
-    		else {
-    			// Combine virtualMine to the beginning of the mineName if it exists.  It was not
-    			// intended to be the virtualMine parameter. Yes, adding a space will be an error, but
-    			// they added it any way.
-    			mineName = virtualMine + (mineName == null ? "" : " " + mineName.trim() ).trim();
-    		}
-    	}
+    		@Arg(name = "mineName", description = "The name of the new mine.", def = " ") 
+    			String mineName,
 
+    		@Wildcard(join=true)
+    		@Arg(name = "options", def = " ", 
+    		description = "Options for mine creation. Use 'virtual' to create a virtual mine in " +
+    				"name only; no physical location. This allows the mine to be predefined before " +
+    				"specifying the coordinates.  " +
+    				"Use 'noPlaceholderUpdate' to prevent reloading all " +
+    				"placeholders when creating this mine. This is useful if you have multiple mines " +
+    				"you want to create. " +
+    				"[virtual noPlaceholderUpdate]") String options
+    		) {
+    	options = options == null ? "" : options.trim();
+    	
+    	boolean virtual = mineName.toLowerCase().contains( "virtual" );
+    	if ( virtual && !options.isEmpty() ) {
+    		// The option virtual was used in the mineName.  Swap fields.
+    		mineName = options.contains( " "  ) ? options.split( " " )[0] : options;
+    	}
+    	else {
+    		virtual = options.toLowerCase().contains( "virtual" );
+    	}
+    	boolean updatePlaceholders = !options.toLowerCase().contains( "noplaceholderupdate" );
+    	
         if ( mineName == null || mineName.contains( " " ) || mineName.trim().length() == 0 ) {
         	sendMessage( sender, "&3Names cannot contain spaces or be empty. &b[&d" + mineName + "&b]" );
     		return;
@@ -232,7 +244,8 @@ public class MinesCommands
     	Player player = getPlayer( sender );
     	
     	if ( !virtual && (player == null || !player.isOnline())) {
-    		sendMessage( sender, "&3You must be a player in the game to run this command." );
+    		sendMessage( sender, "&3You must be a player in the game to run this command.  " +
+    				"You also need to have selected an area with the `/mines wand` tool. " );
     		return;
     	}
 
@@ -271,9 +284,15 @@ public class MinesCommands
         Mine mine = new Mine(mineName, selection);
         pMines.getMineManager().add(mine);
         
+        if ( updatePlaceholders ) {
+        	
+        	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
+        }
+        
         if ( mine.isVirtual() ) {
         	sendMessage( sender, "&3Virtual mine created: use command " +
-        			"&7/mines set area &3 to enable as a normal mine." );
+        			"&7'/mines set area help'&3 set an area within a world to " +
+        			"enable as a normal mine." );
         }
         else {
         	pMines.getMinesMessages().getLocalizable("mine_created").sendTo(sender);
@@ -326,6 +345,9 @@ public class MinesCommands
     	
 
     	pMines.getMineManager().rename(mine, newName);
+    	
+    	
+    	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
     	
     	
     	sender.sendMessage( String.format( "&3Mine &d%s &3was successfully renamed to &d%s&3.", mineName, newName) );
@@ -527,7 +549,8 @@ public class MinesCommands
         setLastMineReferenced(mineName);
         
         pMines.getMineManager().saveMine(mine);
-
+        
+        
         if ( tag == null ) {
         	sender.sendMessage( 
         			String.format( "&cThe tag name was cleared for the mine %s.", 
@@ -635,9 +658,14 @@ public class MinesCommands
         	
         	setLastMineReferenced(null);
         	
+        	
+        	Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
+        	
+        	
         	pMines.getMinesMessages().getLocalizable("mine_deleted").sendTo(sender);
         	
-        } else if ( getConfirmTimestamp() == null || ((now - getConfirmTimestamp()) >= 1000 * 60 ) ) {
+        } 
+        else if ( getConfirmTimestamp() == null || ((now - getConfirmTimestamp()) >= 1000 * 60 ) ) {
         	setConfirmTimestamp( now );
 
         	ChatDisplay chatDisplay = new ChatDisplay("&cDelete " + mineName);
@@ -735,13 +763,80 @@ public class MinesCommands
 
     	
 
-        DecimalFormat dFmt = new DecimalFormat("#,##0");
+        ChatDisplay chatDisplay = mineInfoDetails( sender, mMan.isMineStats(), m, cmdPageData );
+
+        
+        int blockSize = 0;
+        if ( m.isUseNewBlockModel() ) {
+        	blockSize =  m.getPrisonBlocks().size();
+        }
+        else {
+        	blockSize = m.getBlocks().size();
+        }
+        
+        String message = blockSize != 0 ? null : " &cNo Blocks Defined";
+        cmdPageData.generatePagedCommandFooter( chatDisplay, message );
+        
+        chatDisplay.send(sender);
+        
+        // If show all, then include the mine's commands and blockEvents:
+        // These are different commands, so they will be in different chatDisplay objects
+        // so cannot weave them together:
+      //  if ( cmdPageData.isShowAll() ) {
+        	//commandList( sender, m.getName() );
+        	
+        	//blockEventList( sender, m.getName() );
+      //  }
+    }
+
+    public void allMinesInfoDetails( StringBuilder sb ) {
+    	
+    	PrisonMines pMines = PrisonMines.getInstance();
+    	MineManager mMan = pMines.getMineManager();
+    	
+    	for ( Mine mine : mMan.getMines() ) {
+
+    		PrisonCommand.printFooter( sb );
+    		
+    		JumboTextFont.makeJumboFontText( mine.getName(), sb );
+    		sb.append( "\n" );
+    		
+    		CommandPagedData cmdPageData = new CommandPagedData(
+    				"/mines info " + mine.getName(), mine.getPrisonBlocks().size(),
+    				1, "all" );
+    		
+    		ChatDisplay chatDisplay = mineInfoDetails( null, mMan.isMineStats(), mine, cmdPageData );
+    		
+    		sb.append( chatDisplay.toStringBuilder() );
+		}
+
+    	PrisonCommand.printFooter( sb );
+    }
+    
+    
+	private ChatDisplay mineInfoDetails( CommandSender sender, boolean isMineStats, Mine m, CommandPagedData cmdPageData )
+	{
+		DecimalFormat dFmt = new DecimalFormat("#,##0");
         DecimalFormat fFmt = new DecimalFormat("#,##0.00");
         
         ChatDisplay chatDisplay = new ChatDisplay("&bMine: &3" + m.getName());
 
-        chatDisplay.addText("&7Server runtime: %s", Prison.get().getServerRuntimeFormatted() );;
-
+        {
+        	RowComponent row = new RowComponent();
+        	row.addTextComponent("&7Server runtime: %s      ", 
+        			Prison.get().getServerRuntimeFormatted() );
+        	
+        	double tps = Prison.get().getPrisonTPS().getAverageTPS();
+        	String tpsFmt = tps >= 18.5 ? "&a" :
+        					tps >= 16.0 ? "&e" : 
+        					tps >= 14.0 ? "&6" :  
+        								  "&c";
+        	row.addTextComponent("&7TPS: %s%s", 
+        			tpsFmt,
+        			fFmt.format( tps));
+        	
+        	chatDisplay.addComponent( row );
+        }
 
         // Display Mine Info only:
         if ( cmdPageData.getCurPage() == 1 ) {
@@ -755,23 +850,26 @@ public class MinesCommands
         	}
         	
         	
-        	if ( m.isMineAccessByRank() && m.isTpAccessByRank() ) {
+        	boolean mineAccessByRank = m.isMineAccessByRank();
+        	boolean tpAccessByRank = m.isTpAccessByRank();
+        	
+        	if ( mineAccessByRank && tpAccessByRank ) {
         		RowComponent row = new RowComponent();
         		row.addTextComponent( "&3Mine Access by Rank.   TP Access by Rank." );
         		chatDisplay.addComponent( row );
         	}
-        	else if ( !m.isMineAccessByRank() && m.isTpAccessByRank() ) {
+        	else if ( !mineAccessByRank && tpAccessByRank ) {
         		RowComponent row = new RowComponent();
         		row.addTextComponent( "&3TP Access by Rank." );
         		chatDisplay.addComponent( row );
         	}
-        	if ( m.isMineAccessByRank() && !m.isTpAccessByRank() ) {
+        	if ( mineAccessByRank && !tpAccessByRank ) {
         		RowComponent row = new RowComponent();
         		row.addTextComponent( "&3Mine Access by Rank." );
         		chatDisplay.addComponent( row );
         	}
         	
-        	if ( !m.isMineAccessByRank() ) {
+        	if ( !mineAccessByRank ) {
         		RowComponent row = new RowComponent();
         		row.addTextComponent( "&3Mine Access Permission: &7%s   &3(Should use Access by Rank)", 
         				( m.getAccessPermission() == null ? "&2none" : m.getAccessPermission() ) );
@@ -779,40 +877,48 @@ public class MinesCommands
         	}
         	
         	
-        	String noTagMessag = String.format( "&7(not set) &3Will default to mine name if used." );
-        	chatDisplay.addText("&3Tag: &7%s", m.getTag() == null ? noTagMessag : m.getTag());
+        	{
+        		RowComponent row = new RowComponent();
+
+        		String noTagMessag = String.format( "&7(not set)" );
+        		row.addTextComponent("&3Tag:  &7%-11s  ", 
+        				m.getTag() == null ? noTagMessag : m.getTag());
+        		
+        		if ( m.getRank() == null ) {
+        			row.addTextComponent( "&3No rank is linked to this mine." );
+        		}
+        		else {
+        			row.addTextComponent( "&3Rank: &7%s", m.getRank() );
+        		}
+        		
+        		
+        		chatDisplay.addComponent( row );
+        	}
+        	
+        	
+        	if ( !m.isVirtual() ) {
+        	}
+        	
         	
         	if ( !m.isVirtual() ) {
         		String worldName = m.getWorld().isPresent() ? m.getWorld().get().getName() : "&cmissing";
-        		chatDisplay.addText("&3World: &7%s", worldName);
-        	}
-        	
-        	
-        	if ( m.getRank() == null ) {
-        		chatDisplay.addText( "&3No rank is linked to this mine." );
-        	}
-        	else {
-        		chatDisplay.addText( "&3Rank: &7%s", m.getRank() );
-        	}
-        	
-        	
-        	if ( !m.isVirtual() ) {
-        		String minCoords = m.getBounds().getMin().toBlockCoordinates();
-        		String maxCoords = m.getBounds().getMax().toBlockCoordinates();
-        		chatDisplay.addText("&3Bounds: &7%s &8to &7%s", minCoords, maxCoords);
-        		Player player = getPlayer( sender );
-        		
-        		chatDisplay.addText("&3Center: &7%s   &3%s &7%s", 
+        		Player player = sender == null ? null : getPlayer( sender );
+        		chatDisplay.addText("&3World: &7%-10s  &3Center: &7%s   &3%s &7%s",
+        				worldName,
         				m.getBounds().getCenter().toBlockCoordinates(), 
         				(player == null ? "" : "Distance:"),
         				(player == null ? "" : fFmt.format( m.getBounds().getDistance3d( player.getLocation() ) ))
         				);
         		
         		
+        		String minCoords = m.getBounds().getMin().toBlockCoordinates();
+        		String maxCoords = m.getBounds().getMax().toBlockCoordinates();
+        		chatDisplay.addText("&3Bounds: &7%s &8to &7%s", minCoords, maxCoords);
+        		
         		String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
         		chatDisplay.addText("&3Spawnpoint: &7%s", spawnPoint);
         		
-        		if ( cmdPageData.isShowAll() || mMan.isMineStats() ) {
+        		if ( cmdPageData.isShowAll() || isMineStats ) {
         			RowComponent rowStats = new RowComponent();
         			rowStats.addTextComponent( "  -- &7 Stats :: " );
         			rowStats.addTextComponent( m.statsMessage() );
@@ -828,10 +934,10 @@ public class MinesCommands
           	
           	if ( !m.isVirtual() ) {
           		RowComponent row = new RowComponent();
-          		row.addTextComponent( "&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
+          		row.addTextComponent( "&3Size: &7%d&8x&7%d&8x&7%d     ", Math.round(m.getBounds().getWidth()),
           				Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()) );
           		
-          		row.addTextComponent( "    &3Volume: &7%s &3Blocks", 
+          		row.addTextComponent( "&3Volume: &7%s &3Blocks", 
           				dFmt.format( Math.round(m.getBounds().getTotalBlockCount())) );
           		chatDisplay.addComponent( row );
           	}
@@ -856,21 +962,14 @@ public class MinesCommands
         	
         	
           	
-          	{
+          	 if ( !cmdPageData.isShowAll() ) {
           		RowComponent row = new RowComponent();
-          		row.addTextComponent( "&3Mine Command Count: &7%d", 
-          				m.getResetCommands().size() );
-          		chatDisplay.addComponent( row );
-          	}
-          	
-          	
-          	
-          	{
-          		RowComponent row = new RowComponent();
-          		row.addTextComponent( "&3Mine BlockEvent Count: &7%d", 
+          		row.addTextComponent( "&3Mine Command Count: &7%d    &3BlockEvent Count: &7%d", 
+          				m.getResetCommands().size(), 
           				m.getBlockEvents().size() );
           		chatDisplay.addComponent( row );
           	}
+          	
           	
           	
         	{
@@ -889,7 +988,7 @@ public class MinesCommands
         		if ( m.isUsePagingOnReset() ) {
         			row.addTextComponent( "    &7-= &5Reset Paging Enabled &7=-" );
         		}
-        		else {
+        		else if ( cmdPageData.isShowAll() ) {
         			row.addTextComponent( "    &7-= &3Reset Paging Disabled &7=-" );
         		}
         		
@@ -926,17 +1025,12 @@ public class MinesCommands
         		chatDisplay.addComponent( row );
         	}
         	
-        	{
+        	if ( m.isUseNotificationPermission() || 
+        			!m.isUseNotificationPermission() && cmdPageData.isShowAll() ) {
         		RowComponent row = new RowComponent();
         		row.addTextComponent( "&3Notifications Filtered by Permissions: %s", 
-        				( m.isUseNotificationPermission() ? "&2Enabled" : "&dDisabled" ) );
-        		chatDisplay.addComponent( row );
-        	}
-        	
-        	{
-        		RowComponent row = new RowComponent();
-        		row.addTextComponent( "&3Notification Permission: &7%s", 
-        				m.getMineNotificationPermissionName() );
+        				( m.isUseNotificationPermission() ?
+        						m.getMineNotificationPermissionName() : "&dDisabled" ) );
         		chatDisplay.addComponent( row );
         	}
         	
@@ -945,10 +1039,14 @@ public class MinesCommands
 
         	
         	{
-        		RowComponent row = new RowComponent();
-        		if ( m.isZeroBlockResetDisabled() ) {
+
+        		if ( m.isZeroBlockResetDisabled() && cmdPageData.isShowAll() ) {
+        			RowComponent row = new RowComponent();
         			row.addTextComponent( "&3Zero Blocks Reset Delay: &cDISABLED");
-        		} else {
+        			chatDisplay.addComponent( row );
+        		} 
+        		else if ( !m.isZeroBlockResetDisabled() ) {
+        			RowComponent row = new RowComponent();
         			if ( m.getResetThresholdPercent() == 0 ) {
         				row.addTextComponent( "&3Zero Blocks Reset Delay: &7%s &3Seconds",
         						fFmt.format( m.getZeroBlockResetDelaySec() ));
@@ -957,26 +1055,29 @@ public class MinesCommands
         				row.addTextComponent( "&7Threshold &3Reset Delay: &7%s &3Seconds",
         						fFmt.format( m.getZeroBlockResetDelaySec() ));
         			}
+        			chatDisplay.addComponent( row );
         		}
         		
-        		chatDisplay.addComponent( row );
         	}
         	
         	
         	if ( !m.isVirtual() ) {
-        		RowComponent row = new RowComponent();
-        		if ( m.getResetThresholdPercent() == 0 ) {
+        		if ( m.getResetThresholdPercent() == 0 && cmdPageData.isShowAll() ) {
+        			RowComponent row = new RowComponent();
         			row.addTextComponent( "&3Reset Threshold: &cDISABLED");
-        		} else {
+        			chatDisplay.addComponent( row );
+        		} 
+        		else if ( m.getResetThresholdPercent() > 0 )  {
+        			RowComponent row = new RowComponent();
         			
         			double blocks =  m.getBounds().getTotalBlockCount() * 
         					m.getResetThresholdPercent() / 100.0d;
         			row.addTextComponent( "&3Reset Threshold: &7%s &3Percent (&7%s &3blocks)",
         					fFmt.format( m.getResetThresholdPercent() ),
         					dFmt.format( blocks ) );
+        			chatDisplay.addComponent( row );
         		}
         		
-        		chatDisplay.addComponent( row );
         	}
         	
         	
@@ -992,7 +1093,8 @@ public class MinesCommands
         					dFmt.format( m.getSkipResetBypassCount() ));
         			chatDisplay.addComponent( row2 );
         		}
-        	} else {
+        	} 
+        	else if ( cmdPageData.isShowAll() ) {
         		RowComponent row = new RowComponent();
         		row.addTextComponent( "&3Skip Mine Reset if no Activity: &cnot set");
         		chatDisplay.addComponent( row );
@@ -1024,7 +1126,7 @@ public class MinesCommands
         		}
 
         	}
-        	else {
+        	else if ( cmdPageData.isShowAll() ) {
         		RowComponent row = new RowComponent();
         		row.addTextComponent( "&3Mine Sweeper:  &cDisabled&3 ");
         		chatDisplay.addComponent( row );
@@ -1052,12 +1154,11 @@ public class MinesCommands
         	
         }
 
-        {
+        if ( cmdPageData.isShowAll() ) {
         	chatDisplay.addText( "&3Block model: &7%s", 
         			( m.isUseNewBlockModel() ? "New" : "Old") );
         }
         
-        int blockSize = 0;
         if ( cmdPageData.isShowAll() || cmdPageData.getCurPage() > 1 ) {
 //        	if ( cmdPageData.isDebug() ) {
 //        		chatDisplay.addText( "&3Block model: &7%s", 
@@ -1070,28 +1171,29 @@ public class MinesCommands
         	BulletedListComponent list = getBlocksList(m, cmdPageData, true );
         	chatDisplay.addComponent(list);
         }
-
-        if ( m.isUseNewBlockModel() ) {
-        	blockSize =  m.getPrisonBlocks().size();
-        }
-        else {
-        	blockSize = m.getBlocks().size();
-        }
         
-        String message = blockSize != 0 ? null : " &cNo Blocks Defined";
-        cmdPageData.generatePagedCommandFooter( chatDisplay, message );
-        
-        chatDisplay.send(sender);
-        
-        // If show all, then include the mine's commands and blockEvents:
-        // These are different commands, so they will be in different chatDisplay objects
-        // so cannot weave them together:
         if ( cmdPageData.isShowAll() ) {
-        	commandList( sender, m.getName() );
         	
-        	blockEventList( sender, m.getName() );
+        	// Include all the commands for this mine:
+        	ChatDisplay commandDisplay = minesCommandList( m );
+        	chatDisplay.addChatDisplay( commandDisplay );
+        	
+        	
+        	// Include all the blockEvent commands:
+            ChatDisplay blockEventDisplay = new ChatDisplay("BlockEvent Commands for " + m.getTag());
+            blockEventDisplay.addText("&8Hover over values for more information and clickable actions.");
+
+            generateBlockEventListing( m, blockEventDisplay, false );
+            
+            blockEventDisplay.addComponent(new FancyMessageComponent(
+                new FancyMessage("&7[&a+&7] Add").suggest("/mines blockEvent add " + m.getName() + " [chance] [perm] [cmd] /")
+                    .tooltip("&7Add a new BockEvent command.")));
+
+            chatDisplay.addChatDisplay( blockEventDisplay );
         }
-    }
+        
+		return chatDisplay;
+	}
 
 
 	
@@ -1194,8 +1296,6 @@ public class MinesCommands
             @Arg(name = "page", def = "1", 
             	description = "Page of search results (optional) [1-n, ALL]") String page 
     		) {
-        ChatDisplay display = new ChatDisplay("Mines");
-        display.addText("&8Click a mine's name to see more information.");
     	Player player = getPlayer( sender );
     	
     	MineSortOrder sortOrder = MineSortOrder.fromString( sort );
@@ -1224,7 +1324,20 @@ public class MinesCommands
     		}
     	}
 
-        PrisonMines pMines = PrisonMines.getInstance();
+    	ChatDisplay display = new ChatDisplay("Mines");
+    	display.addText("&8Click a mine's name to see more information.");
+
+    	
+    	getMinesList( display, sortOrder, page, player );
+    	
+        
+        
+        display.send(sender);
+    }
+
+	public void getMinesList( ChatDisplay display, MineSortOrder sortOrder, String page, Player player )
+	{
+		PrisonMines pMines = PrisonMines.getInstance();
     	MineManager mMan = pMines.getMineManager();
     	
     	
@@ -1252,18 +1365,17 @@ public class MinesCommands
         
         CommandPagedData cmdPageData = new CommandPagedData(
         		"/mines list " + sortOrder.name(), sortedMines.getSortedList().size(),
-        		0, page, 7 );
+        		0, page, 14 );
         
         BulletedListComponent list = 
         		getMinesLineItemList(sortedMines, player, cmdPageData, mMan.isMineStats());
     	
     	display.addComponent(list);
     	
-        
-        cmdPageData.generatePagedCommandFooter( display );
-        
-        display.send(sender);
-    }
+    	cmdPageData.generatePagedCommandFooter( display );
+    	
+    	
+	}
 
 
     private BulletedListComponent getMinesLineItemList( PrisonSortableResults sortedMines, Player player,
@@ -1271,6 +1383,7 @@ public class MinesCommands
 	{
     	BulletedListComponent.BulletedListBuilder builder =
     			new BulletedListComponent.BulletedListBuilder();
+    	
     	    	
     	DecimalFormat dFmt = new DecimalFormat("#,##0");
     	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
@@ -1302,41 +1415,25 @@ public class MinesCommands
             	}
             	
             	
+            	String name = m.getName();
+            	if ( name.length() < 6 ) {
+            		name += "      ".substring( 0, (6-name.length()) );
+            	}
             	row.addFancy( 
-            			new FancyMessage( String.format("&7%s ", m.getTag()) )
+            			new FancyMessage( String.format("&7%s ", name) )
             					.command("/mines info " + m.getName())
             					.tooltip("&7Mine " + m.getTag() + ": Click to view more info."));
             	
+            	
             	if ( m.getTag() != null && m.getTag().trim().length() > 0 ) {
-            		row.addTextComponent( "%s ", m.getTag() );
+            		String tag = m.getTag();
+            		String tagNoColor = Text.stripColor( tag );
+            		if ( tagNoColor.length() < 6 ) {
+            			tag += "      ".substring( 0, (6 - tagNoColor.length()) );
+            		}
+            		row.addTextComponent( "%s ", tag );
             	}
             	
-            	boolean hasCmds = m.getResetCommands().size() > 0;
-            	if ( hasCmds ) {
-            		row.addFancy( 
-                			new FancyMessage( String.format(" &cCmds: &7%s  ", 
-                					Integer.toString( m.getResetCommands().size() )) )
-                					.command("/mines commands list " + m.getName())
-                					.tooltip("&7Click to view commands."));
-            	}
-
-            	
-            	
-            	if ( m.isVirtual() ) {
-            		row.addFancy(  
-            				new FancyMessage( "&cVIRTUAL " )
-            				.command("/mines set area " + m.getName())
-            				.tooltip("&7Click to set the mine's area to make it a real mine. "));
-            	}
-            	
-            	
-            	if ( !m.isEnabled() ) {
-            		row.addFancy(  
-            				new FancyMessage( "&cDISABLED!! " )
-            				.command("/mines info " + m.getName())
-            				.tooltip("&7Click to view possible reason why the mine is " +
-            						"disabled. World may not exist? "));
-            	}
             	
             	if ( !m.isVirtual() ) {
             		row.addFancy( 
@@ -1344,13 +1441,6 @@ public class MinesCommands
             				.tooltip("&7Click to TP to the mine"));
             	}
             	
-            	
-            	if ( m.isUsePagingOnReset() ) {
-            		row.addFancy( 
-            				new FancyMessage("&5Paged ")
-            				.tooltip("&7Paging Used during Mine Reset"));
-            	}
-
             	
             	row.addTextComponent( "  &3(&2R: " );
             	
@@ -1382,39 +1472,94 @@ public class MinesCommands
             		
             	}
             	
-            	builder.add(row.getFancy());
+            	//builder.add(row.getFancy());
             	
+            	if ( m.isVirtual() ) {
+            		
+            		row.addTextComponent( "&6Virtual Mine" );
+            	}
             	
-            	if ( !m.isVirtual() ) {
-            		RowComponent row2 = new RowComponent();
+            	else {
+//            		RowComponent row2 = new RowComponent();
 //            	row2.addTextComponent( "            &3Rem: " );
             		
             		// Right justify the total blocks mined, with 1000's separators:
-            		String blocksMined = "                 " + dFmt.format( m.getTotalBlocksMined() );
-            		blocksMined = blocksMined.substring( blocksMined.length() - 10);
+            		String blocksMined = "          " + dFmt.format( m.getTotalBlocksMined() );
+//            		String blocksMined = "                 " + dFmt.format( m.getTotalBlocksMined() );
+            		blocksMined = blocksMined.substring( blocksMined.length() - 8);
             		
-            		row2.addFancy( 
+            		row.addFancy( 
             				new FancyMessage( String.format("  %s  &3Rem: ", blocksMined)).
             				tooltip( "Blocks mined" ) );
             		
-            		row2.addFancy( 
+            		row.addFancy( 
             				new FancyMessage(fFmt.format(m.getPercentRemainingBlockCount())).
             				tooltip( "Percent Blocks Remaining" ) );
             		
-            		row2.addTextComponent( "%%  &3RCnt: &7" );
+            		row.addTextComponent( "%%  &3RCnt: &7" );
             		
-            		row2.addFancy( 
+            		row.addFancy( 
             				new FancyMessage(dFmt.format(m.getResetCount())).
             				tooltip( "Times the mine was reset." ) );
             		
             		if ( !m.isVirtual() ) {
             			
-            			row2.addTextComponent( " &3 Vol: &7" );
-            			row2.addFancy( 
+            			row.addTextComponent( " &3 Vol: &7" );
+            			row.addFancy( 
             					new FancyMessage(dFmt.format(m.getBounds().getTotalBlockCount())).
             					tooltip( "Volume in Blocks" ) );
             		}
             		
+            		
+
+                	
+                	
+                	boolean hasCmds = m.getResetCommands().size() > 0;
+                	if ( hasCmds ) {
+                		row.addFancy( 
+                    			new FancyMessage( String.format(" &cCmds: &7%s  ", 
+                    					Integer.toString( m.getResetCommands().size() )) )
+                    					.command("/mines commands list " + m.getName())
+                    					.tooltip("&7Click to view commands."));
+                	}
+
+                	
+                	
+                	boolean hasBlockEvents = m.getBlockEvents().size() > 0;
+                	if ( hasBlockEvents ) {
+                		row.addFancy( 
+                				new FancyMessage( String.format(" &cbEvs: &7%s  ", 
+                						Integer.toString( m.getBlockEvents().size() )) )
+                				.command("/mines blockEvent list " + m.getName())
+                				.tooltip("&7Click to view blockEvents."));
+                	}
+                	
+                	
+                	
+                	if ( m.isVirtual() ) {
+                		row.addFancy(  
+                				new FancyMessage( "&cVIRTUAL " )
+                				.command("/mines set area " + m.getName())
+                				.tooltip("&7Click to set the mine's area to make it a real mine. "));
+                	}
+                	
+                	
+                	if ( !m.isEnabled() ) {
+                		row.addFancy(  
+                				new FancyMessage( "&cDISABLED!! " )
+                				.command("/mines info " + m.getName())
+                				.tooltip("&7Click to view possible reason why the mine is " +
+                						"disabled. World may not exist? "));
+                	}
+                	
+                	
+                	if ( m.isUsePagingOnReset() ) {
+                		row.addFancy( 
+                				new FancyMessage("&5Paged ")
+                				.tooltip("&7Paging Used during Mine Reset"));
+                	}
+
+      
             		
 //       	 String noteMode = m.getNotificationMode().name() + 
 //       			 ( m.getNotificationMode() == MineNotificationMode.radius ? 
@@ -1429,10 +1574,10 @@ public class MinesCommands
 //       	 
 //       	 row.addTextComponent( "&7 - &b");
             		
-            		builder.add(row2.getFancy());
             		
             	}
             	
+            	builder.add(row.getFancy());
             	
             	
             	if ( !m.isVirtual() && isMineStatsEnabled ) {
@@ -2050,8 +2195,15 @@ public class MinesCommands
         		"which is useful in void worlds or when flying and can be enlarged with " +
         		"&7/mines set size help&3 . &2[&7wand feet&2]", 
         				def = "wand") String source,
-        @Arg(name = "confirm", description = "If the mine is greater than 20k blocks you will have " +
-        		"to confirm the area.", def = "---") String confirm
+        @Wildcard(join=true)
+        @Arg(name = "options", description = "<width> <bottom> <top> <confirm> " +
+        		"Options and confirmation for large mines. " +
+        		"When setting a mine's area, if you use 'feet' for a source, you can also " +
+        		"specify the <width> of the walls and the <depth> of the mine and the " +
+        		"<top> of the mine.  " +
+        		"If the mine is greater than 20k blocks you will have " +
+        		"to confirm the area with 'confirm' or 'yes' to ensure it does not destroy builds.", 
+        		def = "---") String options
         ) {
     	
     	if (!performCheckMineExists(sender, mineName)) {
@@ -2097,13 +2249,19 @@ public class MinesCommands
         DecimalFormat dFmt = new DecimalFormat("#,##0");
         Bounds selectedBounds = selection.asBounds();
         
-        if ( selectedBounds.getTotalBlockCount() > 20000 && 
-        		(confirm == null || !"yes".equalsIgnoreCase( confirm ) )) {
+        if ( selectedBounds.getTotalBlockCount() > 25000 && 
+        		(options == null || !options.toLowerCase().contains( "confirm" ) ||
+        		!options.toLowerCase().contains( "yes" ))) {
         	String message = String.format( "&7Warning: This mine has a size of %s. If this is " +
-        			"intentional, then please re-submit this command with a confirmation of 'yes' " +
-        			"as a final parameter.  ", dFmt.format( selectedBounds.getTotalBlockCount() ) );
+        			"intentional, then please re-submit this command with adding the " +
+        			"keyword of either 'confirm' or 'yes' to the end of the command. ",
+        			dFmt.format( selectedBounds.getTotalBlockCount() ) );
         	sender.sendMessage( message );
         	return;
+        }
+        else if ( options.toLowerCase().contains( "confirm" ) || 
+        		!options.toLowerCase().contains( "yes" ) ) {
+        	options = options.replace( "(?i)confirm|yes", "" ).trim();
         }
 
         // TODO check to see if they are the same boundaries, if not, don't change...
@@ -2138,6 +2296,44 @@ public class MinesCommands
         
         // adjustSize to zero to reset set all liners:
         m.adjustSize( Edges.walls, 0 );
+        
+        if ( options.length() > 0 ) {
+        	String[] opts = options.split( " " );
+        	
+        	// Try to set the size of the wall: Increase by:
+        	if ( opts.length > 0 ) {
+        		try {
+        			int size = Integer.parseInt( opts[0] );
+        			setSizeCommand( sender, mineName, "walls", size );
+        		}
+        		catch ( Exception e ) {
+        			// ignore error
+        		}
+        	}
+        	
+        	// Try to set the size of the bottom: Increase by:
+        	if ( opts.length > 1 ) {
+        		try {
+        			int size = Integer.parseInt( opts[1] );
+        			setSizeCommand( sender, mineName, "bottom", size );
+        		}
+        		catch ( Exception e ) {
+        			// ignore error
+        		}
+        	}
+        	
+        	// Try to set the size of the wall: Increase by:
+        	if ( opts.length > 2 ) {
+        		try {
+        			int size = Integer.parseInt( opts[2] );
+        			setSizeCommand( sender, mineName, "top", size );
+        		}
+        		catch ( Exception e ) {
+        			// ignore error
+        		}
+        	}
+        	
+        }
     }
 
     
@@ -2253,38 +2449,54 @@ public class MinesCommands
     }
     
     @Command(identifier = "mines set liner", permissions = "mines.set", 
-    			description = "Change the blocks that line the mine.")
+    			description = "Change the blocks that line the mine, or change the way the ladders are generated. " +
+    					"The liner will only generate if there are blocks where the liner is trying to be placed; this " +
+    					"allows the liner to stop at ground level if the mine is higher than the surrounding ground. " +
+    					"If the mine is generated in air, or in a void world, the liner will not be generated unless the " +
+    					"'force' option is specified.")
     public void setLinerCommand(CommandSender sender,
-    		@Arg(name = "mineName", description = "The name of the mine") String mineName,
-    		@Arg(name = "edge", description = "Edge to use [top, bottom, north, east, south, west, walls]", def = "walls") String edge, 
-    		//@Arg(name = "adjustment", description = "How to adust the size [smaller, larger]", def = "larger") String adjustment,
+    		@Arg(name = "mineName", description = "The name of the mine, or '*all*' to apply to all mines.") String mineName,
+    		@Arg(name = "edge", description = "Edge to use [top, bottom, north, east, south, west, walls] " +
+    				"Use 'ladderType' for the Edge: &3[&7none normal wide jumbo full&3]  Where 'normal' is " + 
+    				"1 to 3 ladders wide.  'Wide' is up to 5 wide. 'Jumbo' is up to 7 wide. And 'full' " +
+    				"is the full width.", def = "walls") String edge, 
+    		//@Arg(name = "adjustment", description = "How to adjust the size [smaller, larger]", def = "larger") String adjustment,
     		@Arg(name = "pattern", description = "pattern to use. '?' for a list of all patterns. " +
     				"'repair' will attempt to repair missing blocks outside of the liner. " +
-    				"'remove' will remove the liner from the mine. 'removeAll' removes alll liners. [?]", 
+    				"'remove' will remove the liner from the mine. 'removeAll' removes all liners from the mine. [?]", 
     				def = "bright") String pattern,
     		@Arg(name = "force", description = "Force liner if air [force no]", def = "no") String force
     		
     		) {
     	
-    	if (!performCheckMineExists(sender, mineName)) {
-    		return;
-    	}
-    	
-    	if ( pattern != null && "?".equals( pattern ) || edge != null && "?".equals( edge )) {
+    	if ( mineName != null && "?".equals( mineName ) || 
+    			pattern != null && "?".equals( pattern ) || edge != null && "?".equals( edge )) {
     		
     		sender.sendMessage( "&cAvailable Edges: &3[&7top bottom north east south west walls&3]" );
     		sender.sendMessage( "&3Available Patterns: [&7" + LinerPatterns.toStringAll() + "&3]" );
+    		sender.sendMessage( "&cUse 'ladderType' for the Edge: &3[&7none normal wide jumbo full&3]  Where 'normal' is " +
+    				"1 to 3 ladders wide.  'Wide' is up to 5 wide. 'Jumbo' is up to 7 wide. And 'full' is the full width." );
+    		return;
+    	}
+    	
+    	if ( !"*all*".equalsIgnoreCase( mineName ) && !performCheckMineExists(sender, mineName)) {
     		return;
     	}
     	
     	Edges e = Edges.fromString( edge );
-    	if ( e == null ) {
+    	LinerPatterns linerPattern = LinerPatterns.fromString( pattern );
+    	LadderType ladderType = ( e == null && edge != null && edge.equalsIgnoreCase( "ladderType" ) ? 
+    								LadderType.fromString( pattern ) : null );
+    	
+ 
+
+    	if ( e == null && ladderType == null ) {
     		sender.sendMessage( "&cInvalid edge value. &3[&7top bottom north east south west walls&3]" );
+    		sender.sendMessage( "&cUse 'ladderType' for the Edge with &3[&7none normal wide jumbo full&3] as the patterns." );
     		return;
     	}
     	
-    	LinerPatterns linerPattern = LinerPatterns.fromString( pattern );
-    	if ( linerPattern == null ) {
+    	if ( linerPattern == null && ladderType == null ) {
     		sender.sendMessage( "&cInvalid pattern.&3 Select one of these: [&7" + 
     							LinerPatterns.toStringAll() + "&3]" );
     		return;
@@ -2301,28 +2513,56 @@ public class MinesCommands
     	}
     	
     	PrisonMines pMines = PrisonMines.getInstance();
-    	Mine mine = pMines.getMine(mineName);
     	
-//    	if ( mine.isVirtual() ) {
-//    		sender.sendMessage( "&cMine is a virtual mine.&7 Use &a/mines set area &7to enable the mine." );
-//    		return;
-//    	}
+    	List<Mine> mines = new ArrayList<>();
     	
-    	if ( linerPattern == LinerPatterns.removeAll ) {
-    		
-    		mine.getLinerData().removeAll();
-    		sender.sendMessage( "&7All liners have been removed from mine " + mine.getName() );
-    	}
-    	else if ( linerPattern == LinerPatterns.remove ) {
-    		mine.getLinerData().remove( e );
-    		sender.sendMessage( "&7The liner for the " + e.name() + " has been removed from mine " + mine.getName() );
+    	if ( "*all*".equalsIgnoreCase( mineName ) ) {
+    		mines.addAll( pMines.getMines() );
     	}
     	else {
-    		mine.getLinerData().setLiner( e, linerPattern, isForced );
-    		new MineLinerBuilder( mine, e, linerPattern, isForced );
+    		mines.add( pMines.getMine(mineName) );
+    		
     	}
     	
-    	pMines.getMineManager().saveMine( mine );
+    	for ( Mine mine : mines )
+		{
+    		boolean resetLiner = false;
+    		
+//	    	if ( mine.isVirtual() ) {
+//  	  		sender.sendMessage( "&cMine is a virtual mine.&7 Use &a/mines set area &7to enable the mine." );
+//    			return;
+//   	 	}
+    		if ( ladderType != null ) {
+    			mine.getLinerData().setLadderType( ladderType );
+    			sender.sendMessage( "&7The liner's ladderType has been set to '" + ladderType.name() + 
+    					"' for mine " + mine.getName() );
+
+    			resetLiner = true;
+    		}
+    		else if ( linerPattern == LinerPatterns.removeAll ) {
+    			
+    			mine.getLinerData().removeAll();
+    			sender.sendMessage( "&7All liners have been removed from mine " + mine.getName() );
+    		}
+    		else if ( linerPattern == LinerPatterns.remove ) {
+    			mine.getLinerData().remove( e );
+    			sender.sendMessage( "&7The liner for the " + e.name() + " has been removed from mine " + mine.getName() );
+    		}
+    		else {
+    			mine.getLinerData().setLiner( e, linerPattern, isForced );
+
+    			resetLiner = true;
+    		}
+    		
+    		pMines.getMineManager().saveMine( mine );
+
+    		// Do not try to update the liner if it's a virtual mine:
+    		if ( resetLiner && !mine.isVirtual() ) {
+    			
+    			new MineLinerBuilder( mine, e, linerPattern, isForced );
+    		}
+    		
+		}
     }
     
     
@@ -2813,14 +3053,14 @@ public class MinesCommands
 
         DecimalFormat dFmt = new DecimalFormat("0.00000");
         
-        int rowNumber = 1;
+        int rowNumber = 0;
         for (MineBlockEvent blockEvent : m.getBlockEvents()) {
         	
         	RowComponent row = new RowComponent();
         	
         	String chance = dFmt.format( blockEvent.getChance() );
         	
-        	row.addTextComponent( " &3Row: &d%d  ", rowNumber++ );
+        	row.addTextComponent( " &3Row: &d%d  ", ++rowNumber );
         	
         	FancyMessage msgPercent = new FancyMessage( String.format( "&7%s%% ", chance ) )
         			.suggest( "/mines blockEvent percent " + m.getName() + " " + rowNumber + " [%]" )
@@ -2976,29 +3216,35 @@ public class MinesCommands
 
 	
 
-	@Command(identifier = "mines blockEvent add", description = "Adds a BlockBreak command to a mine. " +
+	@Command(identifier = "mines blockEvent add", description = "Adds a BlockBreak command to a mine.  " +
+			"For each block that is broke there will be a chance to run one of these commands. \n" +
 			"To send messages use {msg} or {broadcast} followed by the formatted message. " +
-			"Can use placeholders {player} and {player_uid}. Use ; between multiple commands. " +
-			"Example: 'token give {player} 1;{msg} &7You got &31 &7token!;tpa a'", 
-    		onlyPlayers = false, permissions = "mines.set")
+			"Can use placeholders {player} and {player_uid}. Use ; between multiple commands. \n" +
+			"Example: &7\\Q'token give {player} 1;{msg} &7You got &31 &7token!;tpa a'\\E&3 \n" +
+			"This command defaults to no permission and 'sync' task mode; " +
+			"see '/mines blockEvent' for more blockEvent options.", 
+    		onlyPlayers = false, permissions = "mines.set", 
+	    		docURLs = {"https://prisonteam.github.io/Prison/prison_docs_115_using_BlockEvents.html",
+	    				"https://prisonteam.github.io/Prison/prison_docs_111_mine_commands.html" } )
     public void blockEventAdd(CommandSender sender, 
-    			@Arg(name = "mineName", description = "mine name, or 'placeholders' for a list of possible placeholders that " +
+    			@Arg(name = "mineName", description = "mine name, '*all*' to apply to all mines, or " +
+    					"'placeholders' for a list of possible placeholders that " +
     					"you can use with blockEvents") String mineName,
     			@Arg(name = "percent", def = "100.0",
     					description = "Percent chance between 0.0000 and 100.0") Double chance,
-    			@Arg(name = "permission", def = "none",
-    					description = "Optional permission that the player must have, or [none] for no perm." 
-    								) String perm,
+//    			@Arg(name = "permission", def = "none",
+//    					description = "Optional permission that the player must have, or [none] for no perm." 
+//    								) String perm,
 //    			@Arg(name = "eventType", def = "eventTypeAll",
 //    					description = "EventType to trigger BlockEvent: [eventTypeAll, eventBlockBreak, eventTEXplosion]"
 //    								) String eventType,
 //    			@Arg(name = "triggered", def = "none",
 //    					description = "TE Explosion Triggered sources. Requires TokenEnchant v18.11.0 or newer. [none, ...]"
 //    					) String triggered,
-    			@Arg(name = "taskMode", description = "Processing task mode to run the task as console. " +
-    								"Player runs as player. " +
-    								"[inline, inlinePlayer, sync, syncPlayer]",
-    					def = "inline") String mode,
+//    			@Arg(name = "taskMode", description = "Processing task mode to run the task as console. " +
+//    								"Player runs as player. " +
+//    								"[inline, inlinePlayer, sync, syncPlayer]",
+//    					def = "inline") String mode,
     			@Arg(name = "command") @Wildcard String command) {
     	
 		// Note: async is not an option since the bukkit dispatchCommand will run it as sync.
@@ -3017,16 +3263,20 @@ public class MinesCommands
         	String message = String.format( "Valid Placeholders that can be used with blockEvents: [%s]", 
         							placeholders );
         	
-        	Output.get().logInfo( message );
+        	sender.sendMessage( message );
         	return;
         }
 
+        String perm = "none";
+        String mode = "sync"; // "inline";
 		
     	if (command.startsWith("/")) {
             command = command.replaceFirst("/", "");
         }
 
-        if (!performCheckMineExists(sender, mineName)) {
+        if ( mineName == null && !performCheckMineExists(sender, mineName) || 
+        		mineName != null && !"*all*".equalsIgnoreCase( mineName ) &&
+        		!performCheckMineExists(sender, mineName)) {
             return;
         }
         
@@ -3072,46 +3322,63 @@ public class MinesCommands
 //        }
 
         
-        setLastMineReferenced(mineName);
-        
-        PrisonMines pMines = PrisonMines.getInstance();
-//    	MineManager mMan = pMines.getMineManager();
-        Mine m = pMines.getMine(mineName);
-        
         if ( command == null || command.trim().length() == 0 ) {
         	sender.sendMessage( 
         			String.format( "&7Please provide a valid BlockEvent command: command=[%s]", command) );
         	return;
         }
         
-        MineBlockEvent blockEvent = new MineBlockEvent( chance, perm, command, taskMode );
-        m.getBlockEvents().add( blockEvent );
-
-        pMines.getMineManager().saveMine( m );
         
-        Output.get().sendInfo(sender, "&7Added BlockEvent command '&b%s&7' " +
-        		"&7to the mine '&b%s&7' with " +
-        		"the optional permission %s. Using the mode %s.", 
-        		command, m.getTag(), 
-        		perm == null || perm.trim().length() == 0 ? "&3none&7" : "'&3" + perm + "&7'",
-        		mode );
-
-		String.format("&7Notice: &3The default eventType has been set to &7all&3. If you need " +
-				"to change it to something else, then use the command &7/mines blockEvent eventType help&3. " +
-				"[all, blockBreak, TEXplosion] The event type is what causes the block to break. " +
-				"Token Enchant's Explosion events are covered and can be focused with the " +
-				"triggered parameter." );
-
+        PrisonMines pMines = PrisonMines.getInstance();
+//    	MineManager mMan = pMines.getMineManager();
         
+        List<Mine> mines = new ArrayList<>();
+        
+        if ( "*all*".equalsIgnoreCase( mineName ) ) {
+        	mines.addAll( pMines.getMines() );
+        }
+        else {
+        	setLastMineReferenced(mineName);
+        	
+        	Mine m = pMines.getMine(mineName);
+        	mines.add( m );
+        }
+        
+        for ( Mine m : mines )
+		{
+			
+        	MineBlockEvent blockEvent = new MineBlockEvent( chance, perm, command, taskMode );
+        	m.getBlockEvents().add( blockEvent );
+        	
+        	pMines.getMineManager().saveMine( m );
+        	
+        	Output.get().sendInfo(sender, "&7Added BlockEvent command '&b%s&7' " +
+        			"&7to the mine '&b%s&7' with " +
+        			"the optional permission %s. Using the mode %s.", 
+        			command, m.getTag(), 
+        			perm == null || perm.trim().length() == 0 ? "&3none&7" : "'&3" + perm + "&7'",
+        					mode );
+        	
+//        	String.format("&7Notice: &3The default eventType has been set to &7all&3. If you need " +
+//        			"to change it to something else, then use the command &7/mines blockEvent eventType help&3. " +
+//        			"[all, blockBreak, TEXplosion] The event type is what causes the block to break. " +
+//        			"Token Enchant's Explosion events are covered and can be focused with the " +
+//        			"triggered parameter." );
+        	
+        	
 //        if ( eType == BlockEventType.eventTEXplosion ) {
 //        	sender.sendMessage( "&7Notice: &3Since the event type is for TokenEnchant's eventTEXplosion, " +
 //        			"then you may set the value of &7triggered&7 with the command " +
 //        			"&7/mines blockEvent triggered help&3." );
 //        }
+		}
 
         
-        // Redisplay the event list:
-        blockEventList( sender, mineName );
+        if ( !"*all*".equalsIgnoreCase( mineName ) ) {
+        	
+        	// Redisplay the event list:
+        	blockEventList( sender, mineName );
+        }
 
     }
 
@@ -3874,37 +4141,44 @@ public class MinesCommands
         }
 
 
-        ChatDisplay display = new ChatDisplay("ResetCommand for " + m.getName());
-        display.addText("&8Click a command to remove it.");
-        BulletedListComponent.BulletedListBuilder builder =
-            new BulletedListComponent.BulletedListBuilder();
-
-        int rowNumber = 1;
-        for (String command : m.getResetCommands()) {
-        	
-        	
-        	RowComponent row = new RowComponent();
-        	
-        	row.addTextComponent( " &3Row: &d%d  ", rowNumber++ );
-        	
-        	FancyMessage msg = new FancyMessage( "&a'&7" + command + "&a'" );
-            row.addFancy( msg );
-            
-        	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
-        			.suggest("/mines command remove " + m.getName() + " " + rowNumber )
-        			.tooltip("Click to Remove this Mine Command");
-        	row.addFancy( msgRemove );
-	
-            builder.add( row );
-
-        }
-
-        display.addComponent(builder.build());
-        display.addComponent(new FancyMessageComponent(
-            new FancyMessage("&7[&a+&7] Add").suggest("/mines command add " + mineName + " /")
-                .tooltip("&7Add a new command.")));
+        ChatDisplay display = minesCommandList( m );
+        
         display.send(sender);
     }
+
+private ChatDisplay minesCommandList( Mine m )
+{
+	ChatDisplay display = new ChatDisplay("ResetCommand for " + m.getName());
+	display.addText("&8Click a command to remove it.");
+	BulletedListComponent.BulletedListBuilder builder =
+	    new BulletedListComponent.BulletedListBuilder();
+
+	int rowNumber = 1;
+	for (String command : m.getResetCommands()) {
+		
+		
+		RowComponent row = new RowComponent();
+		
+		row.addTextComponent( " &3Row: &d%d  ", rowNumber++ );
+		
+		FancyMessage msg = new FancyMessage( "&a'&7" + command + "&a'" );
+	    row.addFancy( msg );
+	    
+		FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
+				.suggest("/mines command remove " + m.getName() + " " + rowNumber )
+				.tooltip("Click to Remove this Mine Command");
+		row.addFancy( msgRemove );
+
+	    builder.add( row );
+
+	}
+
+	display.addComponent(builder.build());
+	display.addComponent(new FancyMessageComponent(
+	    new FancyMessage("&7[&a+&7] Add").suggest("/mines command add " + m.getName() + " /")
+	        .tooltip("&7Add a new command.")));
+	return display;
+}
 
 
 	@Command(identifier = "mines command remove", description = "Removes a command from a mine.", 
@@ -3996,7 +4270,7 @@ public class MinesCommands
         	String message = String.format( "Valid Placeholders that can be used with mine commands: [%s]", 
         							placeholders );
         	
-        	Output.get().logInfo( message );
+        	sender.sendMessage( message );
         	return;
         }
 
@@ -4032,8 +4306,9 @@ public class MinesCommands
 
         pMines.getMineManager().saveMine( m );
         
-        Output.get().sendInfo(sender, "&7Added command '&b%s&7' to the mine '&b%s&7'.", 
-        		newComand, m.getTag());
+        sender.sendMessage(
+        		String.format( "&7Added command '&b%s&7' to the mine '&b%s&7'.", 
+        		newComand, m.getTag()) );
 
     }
     

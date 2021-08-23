@@ -20,6 +20,9 @@ import java.util.Date
 
 apply plugin: 'java'
 
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = "UTF-8"
+
 ext.targetArchiveClassifier = 'Java1.8'
 //ext.targetArchiveClassifier = 'Java16'
 
@@ -91,7 +94,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:5.2.0'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:6.1.0'
     }
 
 }

@@ -21,6 +21,7 @@ package tech.mcprison.prison.internal;
 import java.util.List;
 
 import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.util.Location;
 
 /**
@@ -47,5 +48,9 @@ public interface World {
      * @param location The {@link Location} of the block.
      */
     public Block getBlockAt(Location location);
+    
+    
+    
+    public void setBlock( PrisonBlock block, int x, int y, int z );
 
 }

@@ -33,18 +33,20 @@ import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.PlayerUtil;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.internal.platform.Capability;
+import tech.mcprison.prison.internal.platform.HandlerList;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.ChatDisplay;
+import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceholderFlags;
 import tech.mcprison.prison.placeholders.Placeholders;
-import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceHolderFlags;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.Location;
@@ -82,7 +84,12 @@ public class TestPlatform implements Platform {
     @Override public List<Player> getOnlinePlayers() {
         return new ArrayList<>();
     }
-
+    @Override
+    public List<Player> getOfflinePlayers() {
+    	List<Player> players = new ArrayList<>();
+    	return players;
+    }
+    
     @Override
 	public Optional<Player> getOfflinePlayer( String name ) {
 		return null;
@@ -199,8 +206,8 @@ public class TestPlatform implements Platform {
 
     
     
-    public Map<PlaceHolderFlags, Integer> getPlaceholderDetailCounts() {
-    	Map<PlaceHolderFlags, Integer> placeholderDetails = new TreeMap<>();
+    public Map<PlaceholderFlags, Integer> getPlaceholderDetailCounts() {
+    	Map<PlaceholderFlags, Integer> placeholderDetails = new TreeMap<>();
     	
     	return placeholderDetails;
     }
@@ -233,6 +240,11 @@ public class TestPlatform implements Platform {
 	@Override
 	public String getConfigString( String key ) {
 		return null;
+	}
+	
+	@Override
+	public String getConfigString( String key, String defaultValue ) {
+		return defaultValue;
 	}
 	
 	@Override
@@ -313,12 +325,13 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
-	public void autoCreateMineBlockAssignment( boolean forceKeepBlocks ) {
+	public void autoCreateMineBlockAssignment( List<String> rankMineNames, boolean forceKeepBlocks ) {
 		
 	}
 	
 	@Override
-	public void autoCreateMineLinerAssignment() {
+	public void autoCreateMineLinerAssignment( List<String> rankMineNames, 
+					boolean forceLinersBottom, boolean forceLinersWalls ) {
 		
 	}
 	
@@ -334,13 +347,13 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
-	public void dumpEventListenersBlockBreakEvents() {
-		
+	public String dumpEventListenersBlockBreakEvents() {
+		return "";
 	}
 	
 	@Override
-	public void dumpEventListenersPlayerChatEvents() {
-		
+	public String dumpEventListenersPlayerChatEvents() {
+		return "";
 	}
 	
 	@Override
@@ -348,4 +361,68 @@ public class TestPlatform implements Platform {
 		
 	}
 	
+	@Override
+	public void testPlayerUtil( UUID uuid ) {
+		
+	}
+	
+	@Override
+	public void saveResource( String string, boolean replace ) {
+		
+	}
+	
+	@Override
+	public String getMinesListString() {
+		return "";
+	}
+	
+	@Override
+	public String getRanksListString() {
+		return "";
+	}
+
+	public boolean isSuppressOutput()
+	{
+		return suppressOutput;
+	}
+
+	public void setSuppressOutput( boolean suppressOutput )
+	{
+		this.suppressOutput = suppressOutput;
+	}
+
+	public void setPluginDirectory( File pluginDirectory )
+	{
+		this.pluginDirectory = pluginDirectory;
+	}
+
+	@Override
+	public PlayerUtil getPlayerUtil( UUID playerUuid ) {
+		return null;
+	}
+	
+	@Override
+	public List<String> dumpEventListenersList( String eventType, HandlerList handlerList )
+	{
+		return new ArrayList<>();
+	}
+
+	@Override
+	public ChatDisplay dumpEventListenersChatDisplay( String eventType, HandlerList handlerList )
+	{
+		ChatDisplay chatDisplay = new ChatDisplay( "Test Event Listing" );
+		return chatDisplay;
+	}
+	
+	/**
+	 * <p>This only reloads the event listeners that auto features uses.  This is called by
+	 * the command "/prison reload autoFeatures".  
+	 * </p>
+	 * 
+	 * <code>tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.reloadConfig()</code>
+	 * 
+	 */
+	public void reloadAutoFeaturesEventListeners() {
+		
+	}
 }

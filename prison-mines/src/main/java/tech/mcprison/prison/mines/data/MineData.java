@@ -141,6 +141,8 @@ public abstract class MineData
     private long mineSweeperTotalMs;
     private long mineSweeperBlocksChanged;
     
+    private transient boolean isDeleted = false; 
+    
 
     public enum MineNotificationMode {
     	disabled,
@@ -705,7 +707,7 @@ public abstract class MineData
     		blockStats.setBlockCountUnsaved( 0 );
     		
     		// Reset the block count for the reset event since the mine will be regenerated:
-    		blockStats.setResetBlockCount( 0 );
+    		blockStats.setBlockPlacedCount( 0 );
     	}
     }
 
@@ -714,13 +716,21 @@ public abstract class MineData
     	for ( PrisonBlockStatusData block : getBlocks() ) {
 			
     		// Reset the block count for the reset event since the mine will be regenerated:
-    		block.setResetBlockCount( 0 );
+    		block.setBlockPlacedCount( 0 );
+    		block.setRangeBlockCountLow( -1 );
+    		block.setRangeBlockCountHigh( -1 );
+    		block.setRangeBlockCountLowLimit( -1 );
+    		block.setRangeBlockCountHighLimit( -1 );
 		}
     	
     	for ( PrisonBlockStatusData block : getPrisonBlocks() ) {
     		
     		// Reset the block count for the reset event since the mine will be regenerated:
-    		block.setResetBlockCount( 0 );
+    		block.setBlockPlacedCount( 0 );
+    		block.setRangeBlockCountLow( -1 );
+    		block.setRangeBlockCountHigh( -1 );
+    		block.setRangeBlockCountLowLimit( -1 );
+    		block.setRangeBlockCountHighLimit( -1 );
     	}
     	
 //    	for ( PrisonBlockStatusData blockStats : getBlockStats().values() ) {
@@ -1258,6 +1268,13 @@ public abstract class MineData
 	}
 	public void setMineSweeperBlocksChanged( long mineSweeperBlocksChanged ) {
 		this.mineSweeperBlocksChanged = mineSweeperBlocksChanged;
+	}
+
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+	public void setDeleted( boolean isDeleted ) {
+		this.isDeleted = isDeleted;
 	}
 
 }

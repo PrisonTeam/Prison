@@ -26,6 +26,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import tech.mcprison.prison.integration.PermissionIntegration;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
@@ -92,7 +93,12 @@ public class VaultPermissions
     @Override public boolean hasIntegrated() {
         return permissions != null;
     }
-
+    
+    @Override
+    public void disableIntegration() {
+    	permissions = null;
+    }
+    
     /**
      * <p>Vault is unable to return a list of permissions for the players when they
      * are offline.  Vault can only return lists of groups the player is in.  And
@@ -107,7 +113,7 @@ public class VaultPermissions
 		
 		boolean hasGroupSupport = permissions.hasGroupSupport();
 		
-		if ( holder.isOnline() ) {
+		if ( holder.isOnline() && holder instanceof SpigotPlayer ) {
 			results.add( String.format( "[vault: Group support is %senabled.]", 
 					(hasGroupSupport ? "" : "NOT ")) );
 			
@@ -116,12 +122,22 @@ public class VaultPermissions
 			for ( String group : groups ) {
 				results.add( group );
 			}
+			
 		}
-//		else {
-//			results.add( "[vault: Player is offline. Perms cannot be accessed.]" );
-//		}
+		
+		else {
+			results.add( "[vault: Player is offline. Perms cannot be accessed.]" );
+		}
 		
 		return results;
 	}
 
+	
+	public boolean checkPermission( Player holder, World world, String permission ) {
+
+		SpigotPlayer player = (SpigotPlayer) holder;
+		
+		return permissions.playerHas( world.getName(), player.getWrapper(), permission );
+		
+	}
 }

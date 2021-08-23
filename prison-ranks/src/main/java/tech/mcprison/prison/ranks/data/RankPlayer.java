@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -37,8 +38,10 @@ import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.ranks.FirstJoinHandlerMessages;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
+import tech.mcprison.prison.ranks.events.FirstJoinEvent;
 import tech.mcprison.prison.ranks.top.RankPlayerBalance;
 import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.util.Gamemode;
@@ -59,7 +62,7 @@ public class RankPlayer
     private UUID uid;
     
     
-    private HashMap<RankLadder, Rank> ladderRanks;
+    private TreeMap<RankLadder, PlayerRank> ladderRanks;
     
     // ranks is the storage structure used to save the player's ladder & ranks:
     private HashMap<String, Integer> ranksRefs; // <Ladder Name, Rank ID>
@@ -85,7 +88,7 @@ public class RankPlayer
     public RankPlayer() {
     	super();
     	
-    	this.ladderRanks = new HashMap<>();
+    	this.ladderRanks = new TreeMap<>();
     	
         this.ranksRefs = new HashMap<>();
         //this.prestige = new HashMap<>();
@@ -167,9 +170,23 @@ public class RankPlayer
         return ret;
     }
 
-    /*
-     * Methods
-     */
+
+    @Override
+    public String toString() {
+    	return getName() + " " + getRanks();
+    }
+    
+    public String getRanks() {
+    	StringBuilder sb  = new StringBuilder();
+    	
+    	for ( PlayerRank rank : getLadderRanks().values() ) {
+    		
+			sb.append( rank.getRank().getLadder() == null ? "--" : rank.getRank().getLadder().getName() )
+				.append( ":" ).append( rank.getRank().getName() ).append( " " );
+		}
+    	
+    	return sb.toString();
+    }
     
     public UUID getUUID() {
     	return uid;
@@ -212,7 +229,8 @@ public class RankPlayer
     		String name = getLastName();
     		
     		// Check if the last name in the list is not the same as the name passed:
-    		if ( name != null && !name.equalsIgnoreCase( playerName ) ) {
+    		if ( name == null || 
+    				name != null && !name.equalsIgnoreCase( playerName ) ) {
     			
     			RankPlayerName rpn = new RankPlayerName( playerName, System.currentTimeMillis() );
     			getNames().add( rpn );
@@ -264,10 +282,48 @@ public class RankPlayer
     
     
     /**
+     * <p>This function will check to see if the player is on the default rank on 
+     * the default ladder.  If not, then it will add them.  
+     * </p>
+     * 
+     * <p>This is safe to run on anyone, even if they already are on the default ladder.
+     * </p>
+     * 
+     * <p>Note, this will not save the player's new rank.  The save function must be
+     * managed and called outside of this.
+     * </p>
+     */
+    public void firstJoin() {
+    	
+    	RankLadder defaultLadder = PrisonRanks.getInstance().getDefaultLadder();
+    	
+    	if ( !getLadderRanks().containsKey( defaultLadder ) ) {
+    		
+    		Optional<Rank> firstRank = defaultLadder.getLowestRank();
+    		
+    		if ( firstRank.isPresent() ) {
+    			Rank rank = firstRank.get();
+    			
+    			addRank( rank );
+    			
+    			Prison.get().getEventBus().post(new FirstJoinEvent( this ));
+    			
+    			FirstJoinHandlerMessages messages = new FirstJoinHandlerMessages();
+    			Output.get().logWarn( messages.firstJoinSuccess( getName() ) );
+    			
+    		} else {
+    			
+    			FirstJoinHandlerMessages messages = new FirstJoinHandlerMessages();
+    			Output.get().logWarn( messages.firstJoinWarningNoRanksOnServer() );
+    		}
+    	}
+    	
+    }
+    
+    /**
      * Add a rank to this player.
      * If a rank on this ladder is already attached, it will automatically be removed and replaced with this new one.
      *
-     * @param ladder The {@link RankLadder} that this rank belongs to.
      * @param rank   The {@link Rank} to add.
      * @throws IllegalArgumentException If the rank specified is not on this ladder.
      */
@@ -288,9 +344,39 @@ public class RankPlayer
         }
 
         ranksRefs.put(ladderName, rank.getId());
-        ladderRanks.put( rank.getLadder(), rank );
+        
+        PlayerRank pRank = new PlayerRank( rank );
+        
+        ladderRanks.put( rank.getLadder(), pRank );
+        
+        // Calculate and apply the rank multipliers:
+        recalculateRankMultipliers();
     }
 
+    public void recalculateRankMultipliers() {
+    	double multiplier = 0;
+    	
+    	// First gather and calculate the multipliers:
+    	Set<RankLadder> keys = ladderRanks.keySet();
+    	for ( RankLadder rankLadder : keys )
+		{
+    		PlayerRank pRank = ladderRanks.get( rankLadder );
+    		
+    		double rankMultiplier = pRank.getLadderBasedRankMultiplier();
+    		multiplier += rankMultiplier;
+		}
+    	
+    	// We now have the multipliers, so apply them to all ranks:
+    	for ( RankLadder rankLadder : keys )
+		{
+    		PlayerRank pRank = ladderRanks.get( rankLadder );
+			
+    		pRank.applyMultiplier( multiplier );
+//    		pRank.setRankCost( pRank.getRank().getCost() * (1.0 + multiplier) );
+		}
+    	
+    }
+    
     /**
      * Remove a rank from this player.
      * This will also remove the ladder from this player.
@@ -356,13 +442,21 @@ public class RankPlayer
      * @param ladder The ladder to check.
      * @return An optional containing the {@link Rank} if found, or empty if there isn't a rank by that ladder for this player.
      */
-    public Rank getRank(RankLadder ladder) {
+    public PlayerRank getRank(RankLadder ladder) {
+    	PlayerRank results = null;
     	
-    	if ( ladder == null || !ladderRanks.containsKey( ladder ) ) {
-    		return null;
+    	if ( ladder != null ) {
+    		
+    		Set<RankLadder> keys = ladderRanks.keySet();
+    		for ( RankLadder key : keys )
+    		{
+    			if ( key != null && key.getName().equalsIgnoreCase( ladder.getName() ) ) {
+    				results = ladderRanks.get( key );
+    			}
+    		}
     	}
-    	
-    	return ladderRanks.get( ladder );
+
+    	return results;
     	
 //        if (!ranksRefs.containsKey(ladder.getName())) {
 //            return null;
@@ -377,7 +471,7 @@ public class RankPlayer
      * @param ladder The ladder name to check.
      * @return The {@link Rank} if found, otherwise null;
      */
-    public Rank getRank( String ladderName ) {
+    public PlayerRank getRank( String ladderName ) {
     	
     	RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
     	return getRank( ladder );
@@ -408,7 +502,7 @@ public class RankPlayer
      *
      * @return The map containing this data.
      */
-    public Map<RankLadder, Rank> getLadderRanks() {
+    public Map<RankLadder, PlayerRank> getLadderRanks() {
     	
     	if ( ladderRanks.isEmpty() && !ranksRefs.isEmpty() ) {
     		
@@ -425,8 +519,13 @@ public class RankPlayer
     				continue; // Skip it
     			}
     			
-    			ladderRanks.put(ladder, rank);
+    			PlayerRank pRank = new PlayerRank( rank );
+    			
+    			ladderRanks.put(ladder, pRank);
     		}
+    		
+    		// Need to recalculate all rank multipliers:
+    		recalculateRankMultipliers();
     	}
 
         return ladderRanks;
@@ -449,17 +548,21 @@ public class RankPlayer
     	
     	if ( targetRank != null && targetRank.getLadder() != null ) {
     		
-    		Rank rank = getRank( targetRank.getLadder() );
-    		if ( rank != null && 
-    				rank.getLadder().equals( targetRank.getLadder() ) ) {
+    		PlayerRank pRank = getRank( targetRank.getLadder() );
+    		if ( pRank != null ) {
     			
-    			hasAccess = rank.equals( targetRank );
-    			Rank priorRank = rank.getRankPrior();
-    			
-    			while ( !hasAccess && priorRank != null ) {
+    			Rank rank = pRank.getRank();
+    			if ( rank != null && 
+    					rank.getLadder().equals( targetRank.getLadder() ) ) {
     				
-    				hasAccess = priorRank.equals( targetRank );
-    				priorRank = priorRank.getRankPrior();
+    				hasAccess = rank.equals( targetRank );
+    				Rank priorRank = rank.getRankPrior();
+    				
+    				while ( !hasAccess && priorRank != null ) {
+    					
+    					hasAccess = priorRank.equals( targetRank );
+    					priorRank = priorRank.getRankPrior();
+    				}
     			}
     		}
     	}
@@ -611,10 +714,10 @@ public class RankPlayer
 		return null;
 	}
 
-	@Override
-	public void printDebugInventoryInformationToConsole() {
-		
-	}
+//	@Override
+//	public void printDebugInventoryInformationToConsole() {
+//		
+//	}
 	
 	/**
 	 * <p>Player is not cached in this class, so if using it in a function 
@@ -888,5 +991,13 @@ public class RankPlayer
 		List<String> results = new ArrayList<>();
 		
 		return results;
+	}
+	
+	@Override
+	public void setTitle( String title, String subtitle, int fadeIn, int stay, int fadeOut ) {
+	}
+	
+	@Override
+	public void setActionBar( String actionBar ) {
 	}
 }

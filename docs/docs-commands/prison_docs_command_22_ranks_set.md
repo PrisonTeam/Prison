@@ -11,6 +11,8 @@ Manages a rank or player.
 
 ## SubCommands:
 
+(incomplete listing)
+
 - `/ranks set cost [rankName] [cost]`
 - `/ranks set currency [rankName] [currency]`
 - `/ranks set rank [playerName] [rankName] [ladder]`

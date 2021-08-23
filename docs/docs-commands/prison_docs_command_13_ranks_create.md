@@ -15,7 +15,7 @@ Create a rank.
 
 ## How to use the command
 
-Execute the command himself following the format like in the example:
+Execute the command itself following the format like in the example:
 
 - `/ranks create [rankName] [cost] [ladder] [tag]`
 - `/ranks create A 100 default &3[&1A&3]&f`

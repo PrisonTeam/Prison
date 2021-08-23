@@ -144,10 +144,10 @@ public class TestPlayer
         return null;
     }
     
-    @Override
-    public void printDebugInventoryInformationToConsole() {
-    	
-    }
+//    @Override
+//    public void printDebugInventoryInformationToConsole() {
+//    	
+//    }
     
     public void recalculatePermissions() {
     	
@@ -187,4 +187,11 @@ public class TestPlayer
     	return 1.0;
     }
     
+	@Override
+	public void setTitle( String title, String subtitle, int fadeIn, int stay, int fadeOut ) {
+	}
+	
+	@Override
+	public void setActionBar( String actionBar ) {
+	}
 }

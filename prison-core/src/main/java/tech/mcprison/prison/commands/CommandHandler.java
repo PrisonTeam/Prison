@@ -28,6 +28,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.handlers.BlockArgumentHandler;
 import tech.mcprison.prison.commands.handlers.DoubleArgumentHandler;
 import tech.mcprison.prison.commands.handlers.DoubleClassArgumentHandler;
@@ -41,8 +42,10 @@ import tech.mcprison.prison.commands.handlers.WorldArgumentHandler;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.ChatColor;
 
@@ -128,33 +131,36 @@ public class CommandHandler {
         }
 
         @Override 
-        public String[] getHelpMessage(RegisteredCommand command) {
-            ArrayList<String> message = new ArrayList<String>();
+        public ChatDisplay getHelpMessage(RegisteredCommand command) {
+        	
+            ChatDisplay chatDisplay = new ChatDisplay(
+            		String.format( "Cmd: &7%s", 
+            					getUsageNoParameters(command)) );
 
             if (command.isSet() && command.getDescription() != null && !command.getDescription().isEmpty()) {
-                message.add(ChatColor.DARK_AQUA + command.getDescription());
+            	chatDisplay.addText(ChatColor.DARK_AQUA + command.getDescription());
             }
 
-            message.add(getUsage(command));
+            chatDisplay.addText(getUsage(command));
 
             if (command.isSet()) {
                 for (CommandArgument argument : command.getArguments()) {
-                    message.add(formatArgument(argument));
+                	chatDisplay.addText(formatArgument(argument));
                 }
                 if (command.getWildcard() != null) {
-                    message.add(formatArgument(command.getWildcard()));
+                	chatDisplay.addText(formatArgument(command.getWildcard()));
                 }
                 List<Flag> flags = command.getFlags();
                 if (flags.size() > 0) {
-                    message.add(ChatColor.DARK_AQUA + "Flags:");
+                	chatDisplay.addText(ChatColor.DARK_AQUA + "Flags:");
                     for (Flag flag : flags) {
                         StringBuilder args = new StringBuilder();
                         for (FlagArgument argument : flag.getArguments()) {
                             args.append(" [" + argument.getName() + "]");
                         }
-                        message.add("-" + flag.getIdentifier() + ChatColor.AQUA + args.toString());
+                        chatDisplay.addText("-" + flag.getIdentifier() + ChatColor.AQUA + args.toString());
                         for (FlagArgument argument : flag.getArguments()) {
-                            message.add(formatArgument(argument));
+                        	chatDisplay.addText(formatArgument(argument));
                         }
                     }
                 }
@@ -181,11 +187,11 @@ public class CommandHandler {
             		}
             		
             		if ( sb.length() > 0 ) {
-            			message.add(ChatColor.DARK_AQUA + "Permissions:");
+            			chatDisplay.addText(ChatColor.DARK_AQUA + "Permissions:");
             			
             			sb.insert( 0, ChatColor.AQUA );
             			sb.insert( 0, "   " );
-            			message.add( sb.toString() );
+            			chatDisplay.addText( sb.toString() );
             		}
                 	
                 }
@@ -205,10 +211,36 @@ public class CommandHandler {
                 	}
                 	
                 	if ( sb.length() > 0 ) {
-                		message.add(ChatColor.DARK_AQUA + "Aliases:");
+                		chatDisplay.addText(ChatColor.DARK_AQUA + "Aliases:");
                 		
                 		sb.insert( 0, "   " );
-                		message.add( sb.toString() );
+                		chatDisplay.addText( sb.toString() );
+                	}
+                	
+                }
+                if ( command.getDocURLs() != null && command.getDocURLs().length > 0 ) {
+                	
+                	chatDisplay.addText(ChatColor.DARK_AQUA + "Documentation:");
+
+                	for ( String docURL : command.getDocURLs() ) {
+                		RowComponent row = new RowComponent();
+                		
+                		row.addTextComponent( "    " );
+                		FancyMessage fMessage = new FancyMessage( docURL ).link( docURL )
+                				.tooltip( "Click to open link" );
+                		row.addFancy( fMessage );
+                		
+                		chatDisplay.addComponent( row );
+                		
+                		
+                		
+//                		StringBuilder sb = new StringBuilder();
+//                		
+//                		sb.append( "    " ).append( ChatColor.DARK_BLUE ).append( "[" )
+//                					.append( ChatColor.AQUA ).append( docURL )
+//                					.append( ChatColor.DARK_BLUE ).append( "]" );
+//
+//                		chatDisplay.addText( sb.toString() );
                 	}
                 	
                 }
@@ -216,7 +248,7 @@ public class CommandHandler {
 
             List<RegisteredCommand> subcommands = command.getSuffixes();
             if (subcommands.size() > 0) {
-                message.add(ChatColor.DARK_AQUA + "Subcommands:");
+            	chatDisplay.addText(ChatColor.DARK_AQUA + "Subcommands:");
                 // Force a sorting by use of a TreeSet. Collections.sort() would not work.
                 TreeSet<String> subCommandSet = new TreeSet<>();
                 for (RegisteredCommand scommand : subcommands) {
@@ -233,7 +265,7 @@ public class CommandHandler {
                 }
                 
                 for (String subCmd : subCommandSet) {
-                	message.add(subCmd);
+                	chatDisplay.addText(subCmd);
                 }
             }
             
@@ -242,17 +274,26 @@ public class CommandHandler {
             	
             	ArrayList<String> rootCommandsMessages = buildHelpRootCommands();
             	if ( rootCommandsMessages.size() > 1 ) {
-            		message.addAll( rootCommandsMessages );
+            		for ( String rootCmd : rootCommandsMessages )
+					{
+            			chatDisplay.addText( rootCmd );
+					}
+            		
             	}
 
             	ArrayList<String> aliasesMessages = buildHelpAliases();
             	if ( aliasesMessages.size() > 1 ) {
-            		message.addAll( aliasesMessages );
+            		for ( String alias : aliasesMessages )
+					{
+            			chatDisplay.addText( alias );
+					}
+            		
             	}
             }
             
 
-            return message.toArray(new String[0]);
+            return chatDisplay;
+//            return message.toArray(new String[0]);
         }
 
 		private ArrayList<String> buildHelpRootCommands() {
@@ -388,6 +429,25 @@ public class CommandHandler {
         		}
         	}
         	return commandLabel;
+        }
+        
+        @Override
+        public String getUsageNoParameters(RegisteredCommand command) {
+            StringBuilder usage = new StringBuilder();
+
+            String cmdLabel = getRootCommandRegisteredLabel( command );
+            usage.append(cmdLabel);
+
+            RegisteredCommand parent = command.getParent();
+            while (parent != null) {
+            	String label = getRootCommandRegisteredLabel( parent );
+                usage.insert(0, label + " ");
+                parent = parent.getParent();
+            }
+
+            usage.insert(0, "/");
+            
+            return usage.toString();
         }
         
         @Override 

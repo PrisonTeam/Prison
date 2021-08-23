@@ -126,5 +126,9 @@ public class TextTest
 		assertEquals("This ^7is ^x^a^3^b^4^c^5 ^ra test ^x^1^2^3^4^5^6 test", replaceColorCodeWithx(
 				translateAmpColorCodesAltHexCode("This &7is #a3b4c5 &Ra test #123456 test"), '^' ));
 		
+		// Test with two complete quote:
+		assertEquals("This ^7is ^x^a^3^b^4^c^5 ^ra test #123456 test test2 #778899 test", replaceColorCodeWithx(
+				translateColorCodes("This &7is #a3b4c5 &Ra test \\Q#123456 test\\E test2 \\Q#778899 test\\E", '&'), '^' ));
+		
 	}
 }

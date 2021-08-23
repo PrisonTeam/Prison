@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.block.Block;
@@ -11,6 +12,7 @@ import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
  * <p>This is an event that prison calls before processing the blocks that
@@ -54,15 +56,45 @@ public class PrisonMinesBlockBreakEvent
 	private static final HandlerList handlers = new HandlerList();
 	
 	private Mine mine;
+	
 	private SpigotBlock spigotBlock;
-
+	private SpigotPlayer spigotPlayer;
+	
 	//private SpigotBlock overRideSpigotBlock;
 	
 	private List<SpigotBlock> explodedBlocks;
 	
 	private BlockEventType blockEventType;
 	private String triggered;
+	
+	private boolean cancelOriginalEvent = false;
+	private boolean monitor = false;
+	private boolean blockEventsOnly = false;
+	
+	private List<Block> unprocessedRawBlocks;
+	
 
+	public PrisonMinesBlockBreakEvent( Block theBlock, Player player, 
+			SpigotBlock spigotBlock, SpigotPlayer spigotPlayer,
+			boolean monitor, boolean blockEventsOnly,
+			BlockEventType blockEventType, String triggered) {
+		
+		super( theBlock, player );
+
+		this.spigotBlock = spigotBlock;
+		this.spigotPlayer = spigotPlayer;
+		
+		this.monitor = monitor;
+		this.blockEventsOnly = blockEventsOnly;
+		
+		this.blockEventType = blockEventType;
+		this.triggered = triggered;
+		
+		this.explodedBlocks = new ArrayList<>();
+		this.unprocessedRawBlocks = new ArrayList<>();
+		
+	}
+	
 	public PrisonMinesBlockBreakEvent( Block theBlock, Player player, 
 			Mine mine, SpigotBlock spigotBlock, 
 			List<SpigotBlock> explodedBlocks, 
@@ -145,6 +177,13 @@ public class PrisonMinesBlockBreakEvent
 		this.spigotBlock = spigotBlock;
 	}
 
+	public SpigotPlayer getSpigotPlayer() {
+		return spigotPlayer;
+	}
+	public void setSpigotPlayer( SpigotPlayer spigotPlayer ) {
+		this.spigotPlayer = spigotPlayer;
+	}
+
 	public List<SpigotBlock> getExplodedBlocks() {
 		return explodedBlocks;
 	}
@@ -173,6 +212,34 @@ public class PrisonMinesBlockBreakEvent
 //		this.overRideSpigotBlock = overRideSpigotBlock;
 //	}
 	
+	public boolean isCancelOriginalEvent() {
+		return cancelOriginalEvent;
+	}
+	public void setCancelOriginalEvent( boolean cancelOriginalEvent ) {
+		this.cancelOriginalEvent = cancelOriginalEvent;
+	}
+
+	public boolean isMonitor() {
+		return monitor;
+	}
+	public void setMonitor( boolean monitor ) {
+		this.monitor = monitor;
+	}
+	
+	public boolean isBlockEventsOnly() {
+		return blockEventsOnly;
+	}
+	public void setBlockEventsOnly( boolean blockEventsOnly ) {
+		this.blockEventsOnly = blockEventsOnly;
+	}
+
+	public List<Block> getUnprocessedRawBlocks() {
+		return unprocessedRawBlocks;
+	}
+	public void setUnprocessedRawBlocks( List<Block> unprocessedRawBlocks ) {
+		this.unprocessedRawBlocks = unprocessedRawBlocks;
+	}
+
 	@Override
     public HandlerList getHandlers() {
         return handlers;

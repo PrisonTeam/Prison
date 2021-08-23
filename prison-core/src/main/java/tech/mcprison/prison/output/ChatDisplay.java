@@ -83,6 +83,7 @@ public class ChatDisplay {
     }
     
     public void sendtoOutputLogInfo() {
+    	Output.get().logInfo( title );
         for (DisplayComponent component : displayComponents) {
         	Output.get().logInfo( component.text() );
         }
@@ -109,6 +110,23 @@ public class ChatDisplay {
     	
     	return sb;
     }
-    
 
+	public void addChatDisplay( ChatDisplay cDisp )
+	{
+
+		addComponent(new TextComponent(cDisp.getTitle()));
+		
+    	for (DisplayComponent component : cDisp.getDisplayComponents() ) {
+    		addComponent( component );
+    	}
+	}
+
+	protected String getTitle() {
+		return title;
+	}
+
+	protected LinkedList<DisplayComponent> getDisplayComponents() {
+		return displayComponents;
+	}
+    
 }

@@ -20,7 +20,9 @@ package tech.mcprison.prison.spigot;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -34,6 +36,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.inventivetalent.update.spiget.SpigetUpdate;
@@ -56,8 +59,8 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.managers.RankManager;
-import tech.mcprison.prison.spigot.autofeatures.AutoManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
 import tech.mcprison.prison.spigot.backpacks.BackpacksListeners;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBackpackCommands;
@@ -119,6 +122,9 @@ public class SpigotPrison extends JavaPlugin {
     private PrisonBlockTypes prisonBlockTypes;
 
     private static boolean isBackPacksEnabled = false;
+    
+    
+    private List<Listener> registeredBlockListeners;
 
     public static SpigotPrison getInstance(){
         return config;
@@ -128,6 +134,8 @@ public class SpigotPrison extends JavaPlugin {
     	super();
     	
     	config = this;
+    	
+    	this.registeredBlockListeners = new ArrayList<>();
     }
 
     @Override
@@ -173,7 +181,11 @@ public class SpigotPrison extends JavaPlugin {
         // Create the core directory structure if it is missing:
         initDataDir();
 
-        // Setup some of the key data structures and object requried to be in place
+//        // Setup the localManager (when instantiating Prison) and set the default language:
+//        Prison.get().getLocaleManager().setDefaultLocale(
+//        		getConfig().getString("default-language", "en_US"));
+
+        // Setup some of the key data structures and object required to be in place
         // prior to starting up:
         initCommandMap();
         this.scheduler = new SpigotScheduler(this);
@@ -182,8 +194,6 @@ public class SpigotPrison extends JavaPlugin {
         Prison.get()
         		.init(new SpigotPlatform(this), Bukkit.getVersion());
         
-        Prison.get().getLocaleManager().setDefaultLocale(
-        		getConfig().getString("default-language", "en_US"));
         
         this.compatibility = SpigotCompatibility.getInstance();
 //        initCompatibility();  Obsolete...
@@ -219,7 +229,10 @@ public class SpigotPrison extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ListenersPrisonManager(),this);
 
         
-        Bukkit.getPluginManager().registerEvents(new SlimeBlockFunEventListener(), this);
+        if ( getConfig().getBoolean( "slime-fun" ) ) {
+        	Bukkit.getPluginManager().registerEvents(new SlimeBlockFunEventListener(), this);
+        }
+        
         Bukkit.getPluginManager().registerEvents(new SpigotListener(), this);
 
         try {
@@ -345,7 +358,7 @@ public class SpigotPrison extends JavaPlugin {
     		// been setup.  The following line will allow it to be setup so the setting can be accessed.
     		// The proper way to access the settings are through... 
     		//     AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig()
-    		autoFeatures = new AutoManager();
+    		autoFeatures = new AutoManagerBlockBreakEvents();
     	}
     	
 		return autoFeatures;
@@ -734,7 +747,27 @@ public class SpigotPrison extends JavaPlugin {
 
 	private void applyDeferredIntegrationInitializations() {
     	for ( Integration deferredIntegration : PrisonAPI.getIntegrationManager().getDeferredIntegrations() ) {
-    		deferredIntegration.deferredInitialization();
+    		
+    		try {
+    			if ( deferredIntegration.isRegistered() && deferredIntegration.hasIntegrated() ) {
+    				
+    				deferredIntegration.deferredInitialization();
+    			}
+    		}
+    		catch ( Exception e ) {
+    			
+
+    			PrisonAPI.getIntegrationManager().removeIntegration( deferredIntegration );
+    			
+        		Output.get().logWarn( 
+        				String.format( "Warning: An integration failed during deferred integration. " +
+        				"Disabling the integration to protect Prison: %s %s %s[%s]", 
+        				deferredIntegration.getKeyName(), deferredIntegration.getVersion(),
+        				(deferredIntegration.getDebugInfo() == null ? 
+        							"no debug info" : deferredIntegration.getDebugInfo()) ));
+    			
+    		}
+
     	}
     }
     
@@ -800,5 +833,9 @@ public class SpigotPrison extends JavaPlugin {
 		}
 		
 		return prisonBlockTypes;
+	}
+
+	public List<Listener> getRegisteredBlockListeners() {
+		return registeredBlockListeners;
 	}
 }

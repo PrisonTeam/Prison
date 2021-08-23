@@ -51,7 +51,8 @@ public class LuckPermissionsWrapper
     	editPermission(holder.getUUID(), permission, LPPermissionType.PERM_GROUP_REMOVE );
     }
 
-    protected void editPermission(UUID uuid, String permission, LPPermissionType permissionType) {
+    @SuppressWarnings( "deprecation" )
+	protected void editPermission(UUID uuid, String permission, LPPermissionType permissionType) {
         // get the user
         User user = api.getUser(uuid);
         if (user == null) {

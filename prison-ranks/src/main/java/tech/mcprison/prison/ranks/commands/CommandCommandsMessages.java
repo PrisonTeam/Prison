@@ -11,6 +11,12 @@ public class CommandCommandsMessages
 		super( cmdGroup );
 	}
 
+	protected void ranksCommandAddCannotUsePercentSymbols( CommandSender sender ) {
+		PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_commandCommands__command_add_cannot_use_percent_symbols" )
+				.sendTo( sender );
+	}
+	
 	protected String ranksCommandAddPlaceholdersMsg( String placeholders ) {
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_commandCommands__command_add_placeholders" )

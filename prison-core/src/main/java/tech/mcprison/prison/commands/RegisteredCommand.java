@@ -29,6 +29,7 @@ import java.util.Map;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 
@@ -47,6 +48,9 @@ public class RegisteredCommand
     private String[] permissions;
     private String[] altPermissions;
     private String[] aliases;
+    private String[] docURLs;
+    
+    
     private List<RegisteredCommand> registeredAliases;
     private RegisteredCommand parentOfAlias;
     
@@ -297,7 +301,7 @@ public class RegisteredCommand
         return flags;
     }
 
-    public String[] getHelpMessage() {
+    public ChatDisplay getHelpMessage() {
         return handler.getHelpHandler().getHelpMessage(this);
     }
 
@@ -326,6 +330,10 @@ public class RegisteredCommand
 
     public String[] getAliases() {
 		return aliases;
+	}
+
+	public String[] getDocURLs() {
+		return docURLs;
 	}
 
 	public List<RegisteredCommand> getRegisteredAliases() {
@@ -375,7 +383,8 @@ public class RegisteredCommand
     }
 
     public void sendHelpMessage(CommandSender sender) {
-        sender.sendMessage(getHelpMessage());
+    	
+    	getHelpMessage().send( sender );
     }
 
     void set(Object methodInstance, Method method) {
@@ -388,6 +397,7 @@ public class RegisteredCommand
         this.permissions = command.permissions();
         this.altPermissions = command.altPermissions();
         this.aliases = command.aliases();
+        this.docURLs = command.docURLs();
         
         this.onlyPlayers = command.onlyPlayers();
 

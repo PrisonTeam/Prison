@@ -1,20 +1,17 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
+import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-
-import java.util.List;
 
 /**
  * @author GABRYCA
@@ -39,10 +36,9 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         // Init variable
         LadderManager lm = PrisonRanks.getInstance().getLadderManager();
 
-
         // If the inventory is empty
         if (lm.getLadders().size() == 0){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.NoLadders")));
+            Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.NoLadders"));
             p.closeInventory();
             return;
         }
@@ -51,14 +47,9 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         int dimension = 54;
         int pageSize = 45;
 
+        PrisonGUI gui = new PrisonGUI(p, dimension, "&3RanksManager -> Ladders");
 
-        // Create the inventory and set up the owner, dimensions or number of slots, and title
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3RanksManager -> Ladders"));
-
-        // Global ladders lore.
-        List<String> laddersLore = createLore(
-                messages.getString("Lore.ClickToOpen"),
-                messages.getString("Lore.ShiftAndRightClickToDelete"));
+        ButtonLore laddersLore = new ButtonLore(messages.getString("Lore.ClickToOpen"), messages.getString("Lore.ShiftAndRightClickToDelete"));
 
         // Only loop over the blocks that we need to show:
         int i = counter;
@@ -66,28 +57,19 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 
             RankLadder ladder = lm.getLadder(i);
 
-            // Create the button
-            ItemStack itemLadder = createButton(XMaterial.LADDER.parseItem(), laddersLore, SpigotPrison.format("&3" + ladder.getName()));
-
             // Add the button to the inventory
-            inv.addItem(itemLadder);
+            gui.addButton(new Button(null, XMaterial.LADDER, laddersLore, SpigotPrison.format("&3" + ladder.getName())));
         }
 
         if (i < lm.getLadders().size()) {
-            List<String> nextPageLore = createLore(messages.getString("Lore.ClickToNextPage"));
-
-            ItemStack nextPageButton = createButton(Material.BOOK, 1, nextPageLore, "&7Next " + (i + 1));
-            inv.setItem(53, nextPageButton);
+            gui.addButton(new Button(53, XMaterial.BOOK, 1, new ButtonLore(messages.getString("Lore.ClickToNextPage"), null), "&7Next " + (i + 1)));
         }
         if (i >= (pageSize * 2)) {
-            List<String> priorPageLore = createLore(messages.getString("Lore.ClickToPriorPage"));
-
-            ItemStack priorPageButton = createButton(Material.BOOK, 1, priorPageLore,
-                    "&7Prior " + (i - (pageSize * 2) - 1));
-            inv.setItem(51, priorPageButton);
+            gui.addButton(new Button(51, XMaterial.BOOK, 1, new ButtonLore(messages.getString("Lore.ClickToPriorPage"), null),
+                    "&7Prior " + (i - (pageSize * 2) - 1)));
         }
 
         // Open the inventory
-        openGUI(p, inv);
+        gui.open();
     }
 }

@@ -32,6 +32,12 @@ public class SpigotOfflinePlayer
 		return offlinePlayer.getName();
 	}
 
+    @Override
+    public String toString() {
+    	return getName();
+    }
+    
+    
 	@Override
 	public void dispatchCommand( String command ) {
 		
@@ -104,7 +110,7 @@ public class SpigotOfflinePlayer
 
 	@Override
 	public Location getLocation() {
-		Output.get().logError( "SpigotOfflinePlayer.getLocation: Offline players have no location." );
+//		Output.get().logError( "SpigotOfflinePlayer.getLocation: Offline players have no location." );
 		return null;
 	}
 
@@ -161,10 +167,10 @@ public class SpigotOfflinePlayer
 		return null;
 	}
 
-	@Override
-	public void printDebugInventoryInformationToConsole() {
-		
-	}
+//	@Override
+//	public void printDebugInventoryInformationToConsole() {
+//		
+//	}
 	
 	public OfflinePlayer getWrapper() {
 		return offlinePlayer;
@@ -286,5 +292,13 @@ public class SpigotOfflinePlayer
     	
     	return results;
     }
+    
+	@Override
+	public void setTitle( String title, String subtitle, int fadeIn, int stay, int fadeOut ) {
+	}
+	
+	@Override
+	public void setActionBar( String actionBar ) {
+	}
     
 }

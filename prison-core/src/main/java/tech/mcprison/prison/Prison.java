@@ -20,7 +20,9 @@ package tech.mcprison.prison;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Optional;
 
 import com.google.common.eventbus.EventBus;
@@ -74,6 +76,7 @@ public class Prison
     public static final int API_LEVEL = 3;
     
     private String minecraftVersion;
+    private List<Integer> versionMajMin;
     
     private long serverStartupTime;
 
@@ -118,8 +121,25 @@ public class Prison
         return instance;
     }
 
-    // Public methods
 
+    /**
+     * Lazy load LocalManager which ensures Prison is already loaded so 
+     * can get the default language to use from the plugin configs.
+     * 
+     * Returns the {@link LocaleManager} for the plugin. This contains the global messages that Prison
+     * uses to run its command library, and the like. {@link Module}s have their own {@link
+     * LocaleManager}s, so that each module can have independent localization.
+     *
+     * @return The global locale manager instance.
+     */
+    public LocaleManager getLocaleManager() {
+    		
+    	if ( this.localeManager == null ) {
+    		this.localeManager = new LocaleManager(this, "lang/core");
+    	}
+        return localeManager;
+    }
+    
     /**
      * Initializes prison-core. In the implementations, this should be called when the plugin is
      * enabled. After this is called, every getter in this class will return a value.
@@ -129,6 +149,7 @@ public class Prison
     public boolean init(Platform platform, String minecraftVersion) {
         long startTime = System.currentTimeMillis();
 
+        
         this.platform = platform;
         this.minecraftVersion = minecraftVersion;
         
@@ -142,7 +163,11 @@ public class Prison
         this.prisonTPS = new PrisonTPS();
         this.prisonTPS.submitAsyncTPSTask();
 
+        
+        // Setup the LocalManager if it is not yet started:
+        getLocaleManager();
 
+        
         sendBanner();
         
         
@@ -500,7 +525,10 @@ public class Prison
 
     private void initManagers() {
         // Now we initialize the API
-        this.localeManager = new LocaleManager(this, "lang/core");
+    	
+    	// LocalManager must be initialized ASAP due to dependencies with
+    	// Output components:
+//        this.localeManager = new LocaleManager(this, "lang/core");
         this.errorManager = new ErrorManager(this);
         this.eventBus = new EventBus(new EventExceptionHandler());
         this.moduleManager = new ModuleManager();
@@ -549,6 +577,37 @@ public class Prison
 	{
 		return minecraftVersion;
 	}
+    
+    public List<Integer> getMVersionMajMin() {
+    	if ( versionMajMin == null ) {
+			
+    		this.versionMajMin = new ArrayList<>();
+    		
+    		String v = Prison.get().getMinecraftVersion();
+			String versionStr = v.substring( v.indexOf( "(MC:" ) + 4, v.lastIndexOf( ")" ) );
+			String[] vMN = versionStr.split( "\\." );
+			
+			for ( int x = 0; x < vMN.length; x++ ) {
+				String ver = vMN[x];
+				
+				try {
+					this.versionMajMin.add( 
+							Integer.parseInt( ver.trim() ) );
+				}
+				catch ( NumberFormatException e ) {
+					// ignore... just break out:
+					break;
+				}
+			}
+			
+//			Output.get().logInfo( "#### Prison.getMVersionMajMin() : " + 
+//					( versionMajMin != null && versionMajMin.size() > 0 ? versionMajMin.get(0) : "?" ) + " " +
+//					( versionMajMin != null && versionMajMin.size() > 1 ? versionMajMin.get(1) : "?" ) + " " +
+//					( versionMajMin != null && versionMajMin.size() > 2 ? versionMajMin.get(2) : "?" )
+//					);
+    	}
+    	return versionMajMin;
+    }
 
 	@Override
     public String getName() {
@@ -575,16 +634,7 @@ public class Prison
         return dataFolder;
     }
 
-    /**
-     * Returns the {@link LocaleManager} for the plugin. This contains the global messages that Prison
-     * uses to run its command library, and the like. {@link Module}s have their own {@link
-     * LocaleManager}s, so that each module can have independent localization.
-     *
-     * @return The global locale manager instance.
-     */
-    public LocaleManager getLocaleManager() {
-        return localeManager;
-    }
+
 
     /**
      * Returns the core's {@link ErrorManager}. For modules, you should use your own module's error manager via {@link Module#getErrorManager()}.

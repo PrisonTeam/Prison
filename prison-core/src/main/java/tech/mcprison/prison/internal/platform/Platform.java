@@ -28,6 +28,7 @@ import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.PlayerUtil;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
@@ -81,7 +82,10 @@ public interface Platform {
      * Returns a list of all online players.
      */
     List<Player> getOnlinePlayers();
-
+    
+	public List<Player> getOfflinePlayers();
+	
+	
 // NOTE: Disabling for now.  There is an internal failure within the Prison code base when trying 
 //       to use this, so will revisit in the future.
     public Optional<Player> getOfflinePlayer(String name);
@@ -261,6 +265,8 @@ public interface Platform {
 	
 	public String getConfigString( String key );
 	
+	public String getConfigString( String key, String defaultValue );
+	
 	
 	/**
 	 * <p>This returns the boolean value that is associated with the key.
@@ -339,10 +345,11 @@ public interface Platform {
 	public boolean isMineAccessibleByRank( Player player, ModuleElement mine );
 	
 	
-	public void autoCreateMineBlockAssignment( boolean forceKeepBlocks );
+	public void autoCreateMineBlockAssignment( List<String> rankMineNames, boolean forceKeepBlocks );
 
 
-	public void autoCreateMineLinerAssignment();
+	public void autoCreateMineLinerAssignment( List<String> rankMineNames, 
+					boolean forceLinersBottom, boolean forceLinersWalls );
 	
 	
 	public void autoCreateConfigureMines();
@@ -356,11 +363,63 @@ public interface Platform {
 	public List<String> getActiveFeatures();
 
 
-	public void dumpEventListenersBlockBreakEvents();
+	public String dumpEventListenersBlockBreakEvents();
 	
-	public void dumpEventListenersPlayerChatEvents();
+	public String dumpEventListenersPlayerChatEvents();
 
 
 	public void traceEventListenersBlockBreakEvents( CommandSender sender );
+
+	
+	public void testPlayerUtil( UUID uuid );
+	
+
+	public void saveResource( String string, boolean replace );
+
+
+	public String getMinesListString();
+
+
+	public String getRanksListString();
+
+	
+	public PlayerUtil getPlayerUtil( UUID playerUuid );
+
+	
+	/**
+	 * <p>Some information on events...
+	 * </p>
+	 * 
+	 * https://bukkit.fandom.com/wiki/Event_API_Reference
+	 * 
+	 * <p>When changing values of an event the changes of one with the higher priority will 
+	 * override any changes done before by a listener with a lower priority so that in the 
+	 * end the one with the highest priority can have the final say in the actually outcome. 
+	 * <b>To achieve this priority order listeners are called from the ones with the 
+	 * lowest to the ones with the highest priority. Any listener with the MONITOR 
+	 * priority is called last.</b> 
+	 * 
+	 * </p>
+	 * 
+	 * @param eventType
+	 * @param handlerList
+	 */
+	public List<String> dumpEventListenersList( String eventType, HandlerList handlerList );
+
+
+	public ChatDisplay dumpEventListenersChatDisplay( String eventType, HandlerList handlerList );
+
+
+	/**
+	 * <p>This only reloads the event listeners that auto features uses.  This is called by
+	 * the command "/prison reload autoFeatures".  
+	 * </p>
+	 * 
+	 * <code>tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.reloadConfig()</code>
+	 * 
+	 */
+	public void reloadAutoFeaturesEventListeners();
+
+
 	
 }

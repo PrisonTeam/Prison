@@ -3,6 +3,7 @@ package tech.mcprison.prison.ranks.top;
 import java.util.Comparator;
 
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
@@ -84,8 +85,10 @@ public class RankPlayerSortableLadderRankBalance
 			results = 1;
 		}
 		else {
-			Rank r1 = rp1.getRank( getLadder().getName() );
-			Rank r2 = rp2.getRank( getLadder().getName() );
+			Rank r1 = rp1.getRank( getLadder() ) == null ? 
+							null : rp1.getRank( getLadder() ).getRank();
+			Rank r2 = rp2.getRank( getLadder() ) == null ? 
+							null : rp2.getRank( getLadder() ).getRank();
 			
 			if ( r1 == null ) {
 				results = -1;
@@ -95,38 +98,37 @@ public class RankPlayerSortableLadderRankBalance
 			}
 			else {
 				
-				// If ladder is not null, then compare the rank positions:
-				if ( getLadder() != null ) {
+				if ( r1.equals( r2 ) ) {
+					results = 0;
+				}
+				
+				else {
 					
 					// compare the Ranks' position.  Ranks with higher position are greater:
 					
-					int pos1 = getLadder().getPositionOfRank( r1 );
-					int pos2 = getLadder().getPositionOfRank( r2 );
-					
-					results = Integer.compare( pos1, pos2 );
-				}
-				
-				// results == 0 then so far the two RankPlayers share the same rank:
-				if ( results == 0 ) {
-					// Need to compare the player's balance:
-					
-					String currency = r1.getCurrency();
-					
-					
-					RankPlayerBalance bal1 = rp1.getCachedRankPlayerBalance( currency );
-					RankPlayerBalance bal2 = rp2.getCachedRankPlayerBalance( currency );
-					
-					double topScore1 = calculateTopScore( r1, bal1.getBalance() );
-					double topScore2 = calculateTopScore( r2, bal2.getBalance() );
-					
-					results = Double.compare( topScore1, topScore2 );
-					
+					results = Integer.compare( r1.getPosition(), r2.getPosition() );
+
+					// results == 0 then so far the two RankPlayers share the same rank:
 					if ( results == 0 ) {
-						results = rp1.getName().compareToIgnoreCase( rp2.getName() );
+						// Need to compare the player's balance:
+						
+						String currency = r1.getCurrency();
+						
+						
+						RankPlayerBalance bal1 = rp1.getCachedRankPlayerBalance( currency );
+						RankPlayerBalance bal2 = rp2.getCachedRankPlayerBalance( currency );
+						
+						double topScore1 = calculateTopScore( rp1, r1, bal1.getBalance() );
+						double topScore2 = calculateTopScore( rp2, r2, bal2.getBalance() );
+						
+						results = Double.compare( topScore1, topScore2 );
+						
+						if ( results == 0 ) {
+							results = rp1.getName().compareToIgnoreCase( rp2.getName() );
+						}
+						
 					}
-					
 				}
-				
 				
 			}
 
@@ -151,13 +153,21 @@ public class RankPlayerSortableLadderRankBalance
 	 * @param balance
 	 * @return
 	 */
-	private double calculateTopScore( Rank rank, double balance ) {
+	private double calculateTopScore( RankPlayer rp1, Rank rank, double balance ) {
 		double topScore = 0;
 		
 		if ( balance != 0 ) {
 			Rank nextRank = rank.getRankNext();
 			
-			double nextRankCost = nextRank == null ? rank.getCost() : nextRank.getCost();
+			PlayerRank pRank = rp1.getRank( rank.getLadder() );
+			
+	        // This calculates the target rank, and takes in to consideration the player's existing rank:
+	        PlayerRank pRankNext = PlayerRank.getTargetPlayerRankForPlayer( rp1, nextRank );
+
+//			PlayerRank pRankNext =  nextRank == null ? null : 
+//								new PlayerRank( nextRank, pRank.getRankMultiplier() );
+			
+			double nextRankCost = nextRank == null ? pRank.getRankCost() : pRankNext.getRankCost();
 			
 			topScore = nextRankCost / balance;
 			

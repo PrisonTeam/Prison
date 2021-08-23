@@ -1,8 +1,8 @@
-# == == == == == === == == == == == #
-#      Prison 3 Configuration       #
-# Be sure to check your formatting! #
-#      This must be valid yml.      #
-# == == == == == === == == == == == #
+# == == == == == == ==== == == == == == #
+#      Prison 3.2.x Configuration       #
+#   Be sure to check your formatting!   #
+#        This must be valid yml.        #
+# == == == == == == ==== == == == == == #
 #
 #  New features have been recently added to prison.  These new features 
 #  can add a lot of value to your server, but they may also be in the 
@@ -34,15 +34,21 @@ send-metrics: true
 # If an alert is being shown, it can be disabled online by acknowledging it.
 show-alerts: true
 
-# NEW: Prison now has prestiges! 
-# https://github.com/PrisonTeam/Prison/blob/bleeding/docs/prison_docs_107_setting_up_prestiges.md
-# Note: "prestiges: true" is deprecated and will be removed in the future. 
-prestiges: true
 
+# # Prestige related configuration settings:
+#
+# Options to reset the money, and/or reset the default ladder.
+# Confirmation requires action from the player. If GUI is disabled, then it will use 
+# the command based confiration.  If confirm-enabled is false, then no confirmation
+# will be used.
 prestige:
   enabled: true
   resetMoney: true
   resetDefaultLadder: true
+  confirmation-enabled: true
+  prestige-confirm-gui: true
+
+
 
 # NEW: This enables new physics to be applied when jumpping on slime blocks.
 # When holding different items, like some block types or picks, the player can
@@ -53,10 +59,6 @@ slime-fun: false
 # please check the GuiConfig.yml. 
 # Access with /gui
 prison-gui-enabled: true
-
-# NEW: /prestige will open a confirmation GUI if this's on true, if on false 
-# will use a chat confirmation instead.
-prestige-confirm-gui: true
 
 # There're more options for the GUIs, please edit the GuiConfig.yml
 
@@ -115,6 +117,21 @@ storageType: "json"
 
 
 
+# Hesitancy Delay Penalty - The purpose of the Hesitancy Delay Penalty is to encourage players
+# to rankup to the next rank.  Once a player exceeds the rankup cost, they start to incurr a 
+# rankup penalty.  The penalty would be based upon the amount over the rankup cost.  So if a player
+# has 1.1 million, then only 0.1 million will be subject to the penalty and the penalty will be 20%.
+# The max value a player can achieve for a rank will be the rankup cost, then the Hesitancy 
+# Delay Penalty will be subtracted from that amount. 
+# For example, if the rankup cost would be 1.0 million and a player has 1.1 million, then their 
+# max "score" they can achieve is 1.0 million, but the 20% penalty on the 0.1 million will be 
+# subtracted from the "score".  So their adjusted score would be:
+#   1.0 million - 0.1 million * 0.2 = 1.0 m - 20,000 = 0.8 m
+#
+top-stats:
+  rank-players:
+    hesitancy-delay-penalty: true
+
 
 # NEW: 
 # Prison mines reset gap is the number of milliseconds that are used to 
@@ -165,6 +182,9 @@ prison-mines:
 #
 #   It's an all or nothing situation when you enable this feature.
 #
+# It's been reported that the correct value to use for CMI is: Economy_CMI
+# Vault may report CMIEconomy but that is wrong.
+#
 # Warning: Other plugins that depend upon and use Prison may fail.  If they do fail 
 # because of a delayed start, then that is beyond the scope of support that can
 # be provided by Prison.  Delayed start is provided to get CMI working.  
@@ -192,5 +212,14 @@ delayedPrisonStartup:
   inspect-vault: true
   triggers:
     vault: true
-    vault-economy-name: Economy_Essentials
+    vault-economy-name: Economy_CMI
+#    vault-economy-name: Economy_Essentials
+
+
+# The following changes the event priority for prison's listener for the 
+# given events. 
+# Currently, only AsyncPlayerChatEvent is able to be set. Default is LOW.
+prison-events:
+  AsyncPlayerChatEvent:
+    priority: LOW
 

@@ -23,6 +23,15 @@ public class AutoFeaturesFileConfig {
     public enum AutoFeatures {
 
     	
+    	autoManager,
+    	
+	    	isAutoManagerEnabled(autoManager, true),
+	    	isAutoManagerEnabled__ReadMe(autoManager, 
+	    			"Set to 'false' to turn off all auto manager features.  " +
+	    					"Otherwise this must be set to 'true' to allow any of the " +
+	    			"options to work."),
+	    	
+	    	
     	messages,
     	
 	    	inventoryIsFull(messages, "&cWARNING! Your inventory's full!"),
@@ -51,13 +60,21 @@ public class AutoFeaturesFileConfig {
 		    	isProcessZenchantsBlockExplodeEvents(blockBreakEvents, false),
 		    	ZenchantmentsBlockShredEventPriority(blockBreakEvents, "DISABLED"),
 	    	
+		    	isProcessPrisonEnchantsExplosiveEvents(blockBreakEvents, false),
+		    	PrisonEnchantsExplosiveEventPriority(blockBreakEvents, "DISABLED"),
+		    	
+		    	isProcessPrisons_ExplosiveBlockBreakEvents(blockBreakEvents, false),
+		    	ProcessPrisons_ExplosiveBlockBreakEvents(blockBreakEvents, "DISABLED"),
+		    	
+		    	
+		    	blockBreakEvents__ReadMe(blockBreakEvents, 
+		    			"Use the following event priorities with the blockBreakEvents: " +
+		    			"DISABLED, LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR" ),
 		    	
 	    	general(options),
 	    	
-		    	isAutoManagerEnabled(general, true),
 		    	
-		    	
-		    	isCalculateDurabilityEnabled(general, false),
+	    		isCalculateFoodExhustion(general, true),
 		    	
 		    	isCalculateSilkEnabled(general, true),
 		    	isCalculateDropAdditionsEnabled(general, true),
@@ -98,6 +115,8 @@ public class AutoFeaturesFileConfig {
 				
 			autoFeatures(options),
 			
+				isAutoFeaturesEnabled(autoFeatures, true),
+			
 				autoPickupEnabled(autoFeatures, true),
 				autoSmeltEnabled(autoFeatures, true),
 				autoBlockEnabled(autoFeatures, true),
@@ -108,6 +127,17 @@ public class AutoFeaturesFileConfig {
     			handleNormalDropsEvents(normalDrop, true),
     			normalDropSmelt(normalDrop, true),
     			normalDropBlock(normalDrop, true),
+    			
+
+    		durability(options),
+    		
+    			isCalculateDurabilityEnabled(durability, false),
+    			
+    			preventToolBreakageThreshold__ReadMe(durability, 
+    					"This option stops the tool from losing any more durability " +
+    					"once it hits the number specified with the threshold"),
+    			isPreventToolBreakage(durability, false),
+    			preventToolBreakageThreshold(durability, 10),
     			
     			
     		fortuneFeature(options),
@@ -120,6 +150,11 @@ public class AutoFeaturesFileConfig {
 	    		isExtendBukkitFortuneCalculationsEnabled(fortuneFeature, true),
 	    		extendBukkitFortuneFactorPercentRangeLow(fortuneFeature, 70 ),
 	    		extendBukkitFortuneFactorPercentRangeHigh(fortuneFeature, 110 ),
+	    		extendBukkitFortune__ReadMe(fortuneFeature, "To get fortune to work, First " +
+	    				"try to use the extendedBukkitFortune (set it to true). If it won't " +
+	    				"work, then you must disable it (set it to false), then enable " +
+	    				"CalculateAltFortune. AltFortune will never work if " +
+	    				"extendedBukkitFortune is enabled." ),
 	    		
 	    		
 	    		isCalculateAltFortuneEnabled(fortuneFeature, false),
@@ -172,28 +207,36 @@ public class AutoFeaturesFileConfig {
 	   
 	    	
 	    	blockFeature(options),
-		    	autoBlockLimitToMines(blockFeature, true),
-		    	autoBlockAllBlocks(blockFeature, true),
+		    	blockLimitToMines(blockFeature, true),
+		    	blockAllBlocks(blockFeature, true),
 
 		    	
-		    	autoBlockGoldBlock(blockFeature, true),
-		    	autoBlockIronBlock(blockFeature, true),
-		    	autoBlockCoalBlock(blockFeature, true),
-		    	autoBlockDiamondBlock(blockFeature, true),
-		    	autoBlockRedstoneBlock(blockFeature, true),
-		    	autoBlockEmeraldBlock(blockFeature, true),
-		    	autoBlockQuartzBlock(blockFeature, true),
-		    	autoBlockPrismarineBlock(blockFeature, true),
-		    	autoBlockLapisBlock(blockFeature, true),
-		    	autoBlockSnowBlock(blockFeature, true),
-		    	autoBlockGlowstone(blockFeature, true),
-		    	autoBlockCopperBlock(blockFeature, true),
+		    	blockGoldBlock(blockFeature, true),
+		    	blockIronBlock(blockFeature, true),
+		    	blockCoalBlock(blockFeature, true),
+		    	blockDiamondBlock(blockFeature, true),
+		    	blockRedstoneBlock(blockFeature, true),
+		    	blockEmeraldBlock(blockFeature, true),
+		    	blockQuartzBlock(blockFeature, true),
+		    	blockPrismarineBlock(blockFeature, true),
+		    	blockLapisBlock(blockFeature, true),
+		    	blockSnowBlock(blockFeature, true),
+		    	blockGlowstone(blockFeature, true),
+		    	blockCopperBlock(blockFeature, true),
 		    	
+		    	
+//		    eventInjector(options),
+//		    	eventInjectorEnabled(eventInjector, false),
+//		    	
+//		    	eventInjectorData(eventInjector),
+		    	
+		    
 		    	
 	    	debug(options),
 	    		isDebugSupressOnBlockBreakEventCancels(debug, false),
 	    		isDebugSupressOnTEExplodeEventCancels(debug, false),
-	    		isDebugSupressOnCEBlastUseEventCancels(debug, false)
+	    		isDebugSupressOnCEBlastUseEventCancels(debug, false), 
+	    		isDebugSupressOnPEExplosiveEventCancels(debug, false)
 
     	;
 
@@ -568,6 +611,9 @@ public class AutoFeaturesFileConfig {
 		List<AutoFeatures> dne = yamlFileIO.loadYamlAutoFeatures( getConfig() );
 		
 		dne.size();
+		
+		// need to reload the auto features event listeners:
+		Prison.get().getPlatform().reloadAutoFeaturesEventListeners();
     }
     
 

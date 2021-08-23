@@ -4,7 +4,13 @@ package tech.mcprison.prison.spigot.sellall;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -21,12 +27,15 @@ import com.cryptomorin.xseries.XMaterial;
 import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.PlayerRank;
+import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
@@ -44,7 +53,7 @@ import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
 public class SellAllUtil {
 
     private static SellAllUtil instance;
-    private final boolean isEnabled = isEnabled();
+//    private final boolean isEnabled = isEnabled();
     private File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
     public Configuration sellAllConfig = SpigotPrison.getInstance().updateSellAllConfig();
     public static List<String> activePlayerDelay = new ArrayList<>();
@@ -1510,7 +1519,7 @@ public class SellAllUtil {
                 // Check if the sender has the required permission.
                 String permission = sellAllConfig.getString("Options.Player_GUI_Permission");
                 if (permission != null && p.hasPermission(permission)) {
-                    SellAllPlayerGUI gui = new SellAllPlayerGUI(p);
+                    SellAllPlayerGUI gui = new SellAllPlayerGUI(p, 0);
                     gui.open();
                     // If missing will send a missing permission error message.
                 } else {
@@ -1518,7 +1527,7 @@ public class SellAllUtil {
                 }
                 // Because a permission isn't required, it'll open directly the GUI.
             } else {
-                SellAllPlayerGUI gui = new SellAllPlayerGUI(p);
+                SellAllPlayerGUI gui = new SellAllPlayerGUI(p, 0);
                 gui.open();
             }
             return true;
@@ -1572,7 +1581,7 @@ public class SellAllUtil {
             return true;
         }
 
-        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").containsRank(rankPlugin.getRankManager().getRank(prestige).getId());
+        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").containsRank(rankPlugin.getRankManager().getRank(prestige));
         if (!isInPrestigeLadder) {
             return true;
         }
@@ -1582,10 +1591,14 @@ public class SellAllUtil {
     private double getMultiplierByRank(SpigotPlayer sPlayer, Module module, double multiplier) {
         if (module != null) {
             PrisonRanks rankPlugin = (PrisonRanks) module;
-            if (rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()) != null) {
+            if (rankPlugin.getPlayerManager().getPlayer(sPlayer) != null) {
                 String playerRankName;
                 try {
-                    playerRankName = rankPlugin.getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName()).getRank("prestiges").getName();
+                	RankPlayer rankPlayer = rankPlugin.getPlayerManager().getPlayer(sPlayer);
+                	PlayerRank pRank = rankPlayer == null ? null : rankPlayer.getRank("prestiges");
+                	Rank rank = pRank == null ? null : pRank.getRank();
+                	
+                    playerRankName = rank == null ? null : rank.getName();
                 } catch (NullPointerException ex) {
                     playerRankName = null;
                 }
@@ -1667,6 +1680,10 @@ public class SellAllUtil {
             moneyToGive = moneyToGive * getMultiplier(sPlayer);
         }
 
+        // Log the amount of money earned to generate the average earned per minute for the player:
+        if ( moneyToGive > 0 ) {
+        	PlayerCache.getInstance().addPlayerEarnings( sPlayer, moneyToGive );
+        }
         return moneyToGive;
     }
 

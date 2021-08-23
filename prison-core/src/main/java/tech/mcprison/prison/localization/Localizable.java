@@ -66,6 +66,8 @@ public class Localizable {
     private Localizable[] locReplacements = new Localizable[0];
     private String prefix = "";
     private String suffix = "";
+    
+    private boolean failSilently = false;
 
     Localizable(LocaleManager parent, String key) {
         this.parent = parent;
@@ -92,6 +94,47 @@ public class Localizable {
         return key;
     }
 
+    /**
+     * This identifies if the message id (key) is to be printed if Prison is unable to load
+     * the message files.  By default, the message id is always displayed if the message files
+     * cannot be loaded.
+     * 
+     * @return
+     */
+    public boolean isFailSilently() {
+    	return failSilently;
+    }
+    
+    /**
+     * This sets the Localization to fail silently if it cannot load the message files.
+     * This is a very dangerous setting to use, and should only be used in very rare 
+     * situations where a failure will not be an issue.  The problem with using this
+     * setting is that nobody may ever know that there is a failure, so it may never
+     * be fixed.
+     * 
+     * One area where it is used is with the Output.get() settings since those are heavily
+     * used.  Suppressing the prefixes and color codes that Output.get() tries to load from
+     * the message files will not prevent Prison from performing any logging.  But if
+     * the message IDs are shown instead, it could make the logging difficult to read.
+     * 
+     * @return
+     */
+    public Localizable setFailSilently() {
+    	this.failSilently = true;
+    	return this;
+    }
+    
+    /**
+     * This disables the failSilently setting so message IDs will be shown if there are 
+     * failures in reading from the message files.
+     * 
+     * @return
+     */
+    public Localizable setFailNormally() {
+    	this.failSilently = false;
+    	return this;
+    }
+    
     /**
      * Sets the replacements for placeholder sequences in this
      * {@link Localizable}.
@@ -239,9 +282,17 @@ public class Localizable {
             System.arraycopy(fallbacks, 1, newFallbacks, 0,
                 newFallbacks.length); // drop the first element
             return localizeIn(fallbacks[0], true, newFallbacks); // try the next fallback
-        } else if (!locale.equals(getParent().getDefaultLocale())) {
+        } 
+        else if (!locale.equals(getParent().getDefaultLocale())) {
             return localizeIn(getParent().getDefaultLocale(), true); // try the default locale
-        } else {
+        } 
+        else if ( isFailSilently() ) {
+        	// NOTE: The message file was unable to be loaded, but failSilently was enabled so return an
+        	//       empty String:
+        	return "";
+        }
+        else {
+        	// NOTE: The message file was unable to be loaded so default by printing out the message key (id):
             return prefix + getKey() + suffix; // last resort if no locale is available
         }
     }

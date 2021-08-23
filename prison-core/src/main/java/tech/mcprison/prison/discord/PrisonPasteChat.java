@@ -9,6 +9,8 @@ import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
+import java.util.TreeMap;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -65,27 +67,44 @@ public class PrisonPasteChat {
 	private static final String hastebinURLraw = "raw/";
 //	private static final String hastebinURL = "https://hastebin.com/documents";
 	
-	public static final int HASTEBIN_MAX_LENGTH = 200000;
+	public static final int HASTEBIN_MAX_LENGTH = 390000;
 	private static final String SUBMISSION_SIZE_PLACEHOLDER = "{submissionSizeInBytes-------}";
 	
 	private String supportName;
+	private TreeMap<String, String> supportURLs;
 	
-	public PrisonPasteChat( String supportName ) {
+	public PrisonPasteChat( String supportName, TreeMap<String, String> supportURLs ) {
 		super();
 		
 		this.supportName = supportName;
+		this.supportURLs = supportURLs;
 	}
 	
-	public String post ( String text ) {
-		return post( text, false );
+	public String post( String text ) {
+		return post( text, false, false );
 	}
 
-	public String post( String text, boolean raw ) {
+	/**
+	 * <p>This posts the text, but during the cleaning process it keeps the
+	 * color codes.  This is good for configuration files.  This is bad for
+	 * processed, and already translated output and log files.
+	 * </p>
+	 * 
+	 * @param text
+	 * @return
+	 */
+	public String postKeepColorCodes( String text ) {
+		return post( text, false, true );
+	}
+	
+	public String post( String text, boolean raw, boolean keepColorCodes ) {
 		String results = null;
 		
 		try {
 			
-			String cleanedText = cleanText( text );
+			String cleanedText = cleanText( text, keepColorCodes );
+			
+			cleanedText = addHeaders( cleanedText );
 			
 			results = postPaste( cleanedText, raw );
 		}
@@ -97,11 +116,33 @@ public class PrisonPasteChat {
 		return results;
 	}
 
-	private String cleanText( String text )
+	/**
+	 * <p>This function will clean up the text by removing a lot of the 
+	 * junk color codes (the unicode fails) and also remove translated color
+	 * codes that have already been converted.
+	 * </p>
+	 * 
+	 * <p>The option keepcolorCodes will preserve the & color codes.  It does this
+	 * by first converting them to an arbitrary placeholder, then the text is
+	 * cleaned, then the temporary placeholders are converted back to &.
+	 * </p>
+	 * 
+	 * @param text
+	 * @param keepColorCodes
+	 * @return
+	 */
+	protected String cleanText( String text, boolean keepColorCodes )
 	{
-		String cleanedText = Text.stripColor( text );
+		String cleanedText = text;
 		
-		cleanedText = setupSupportPrefix() + 
+		if ( keepColorCodes ) {
+			cleanedText = cleanedText.replaceAll("&", "^amp^");
+		}
+		
+		cleanedText = Text.stripColor( cleanedText );
+
+		
+		cleanedText = 
 				cleanedText.replaceAll( 
 						"\\[m|\\[0;30;1m|\\[0;31;1m|\\[0;32;1m|\\[0;33;1m|\\[0;34;1m|\\[0;35;1m|" +
 						"\\[0;36;1m|\\[0;37;1m|\\[0;38;1m|\\[0;39;1m|" +
@@ -110,21 +151,41 @@ public class PrisonPasteChat {
 						"",
 						"" );
 		
+		if ( keepColorCodes ) {
+			cleanedText = cleanedText.replaceAll("\\^amp\\^", "&");
+		}
+		
 		// Max length of 400,000 characters:  Trim and send first section only.
 		if ( cleanedText.length() > HASTEBIN_MAX_LENGTH ) {
 			cleanedText = cleanedText.substring( 0, HASTEBIN_MAX_LENGTH );
 		}
 		
 		
+//		// Injects the size back in to the text without changing the total length of the text:
+//		int size = cleanedText.length();
+//		DecimalFormat dFmt = new DecimalFormat("#,##0");
+//		String sizeString = (dFmt.format( size ) + " bytes                        ")
+//									.substring( 0, SUBMISSION_SIZE_PLACEHOLDER.length() );
+//		
+//		cleanedText = cleanedText.replace( SUBMISSION_SIZE_PLACEHOLDER, sizeString );
+		
+		return cleanedText;
+	}
+	
+	private String addHeaders( String text ) {
+		
+		text = setupSupportPrefix() + text;
+		
 		// Injects the size back in to the text without changing the total length of the text:
-		int size = cleanedText.length();
+		int size = text.length();
+		
 		DecimalFormat dFmt = new DecimalFormat("#,##0");
 		String sizeString = (dFmt.format( size ) + " bytes                        ")
 									.substring( 0, SUBMISSION_SIZE_PLACEHOLDER.length() );
 		
-		cleanedText = cleanedText.replace( SUBMISSION_SIZE_PLACEHOLDER, sizeString );
+		text = text.replace( SUBMISSION_SIZE_PLACEHOLDER, sizeString );
 		
-		return cleanedText;
+		return text;
 	}
 	
 	private String setupSupportPrefix() {
@@ -133,13 +194,24 @@ public class PrisonPasteChat {
 		
 		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
 		
-		sb.append( "Support Name:    " ).append( supportName ).append( "\n" );
-		sb.append( "Submission Date: " ).append( sdFmt.format( new Date() ) ).append( "\n" );
-		sb.append( "Submission Size: " ).append( SUBMISSION_SIZE_PLACEHOLDER ).append( "\n" );
+		sb.append( "Support Name:     " ).append( supportName ).append( "\n" );
+		sb.append( "Submission Date:  " ).append( sdFmt.format( new Date() ) ).append( "\n" );
+		sb.append( "Submission Size:  " ).append( SUBMISSION_SIZE_PLACEHOLDER ).append( "\n" );
+		
+		sb.append( "\n" );
+		
+		Set<String> urlKeys = getSupportURLs().keySet();
+		for ( String key : urlKeys ) {
+			sb.append( padSpaces(key) ).append( getSupportURLs().get( key ) ).append( "\n" );
+		}
 		
 		sb.append( "\n" );
 		
 		return sb.toString();
+	}
+	
+	private String padSpaces( String keyName ) {
+		return (keyName + "                     ").substring( 0,18 );
 	}
 	
 	private String postPaste( String text, boolean raw ) 
@@ -196,6 +268,13 @@ public class PrisonPasteChat {
 		}
 		
 		return results;
+	}
+	
+	public TreeMap<String, String> getSupportURLs() {
+		return supportURLs;
+	}
+	public void setSupportURLs( TreeMap<String, String> supportURLs ) {
+		this.supportURLs = supportURLs;
 	}
 	
 }

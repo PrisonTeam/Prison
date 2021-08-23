@@ -462,8 +462,11 @@ public abstract class MineScheduler
 	 * 
 	 */
 	public void terminateJob() {
-		getJobStack().clear();
 		
+		setDeleted( true );
+		
+		getJobStack().clear();
+	
 		int taskId = getTaskId();
 		
 		PrisonTaskSubmitter.cancelTask( taskId );
@@ -591,7 +594,7 @@ public abstract class MineScheduler
 
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockChance, dFmt.format( originalBlock.getChance() ) );
 				
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blocksPlaced, Integer.toString( originalBlock.getResetBlockCount() ));
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.blocksPlaced, Integer.toString( originalBlock.getBlockPlacedCount() ));
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockRemaining, Long.toString( originalBlock.getBlockCountUnsaved() ));
 				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.blocksMinedTotal, originalBlock.getBlockName() );

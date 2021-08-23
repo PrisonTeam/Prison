@@ -78,6 +78,7 @@ public class PrisonCommandTask {
 		balanceInitial(CommandEnvironment.rank_commands),
 		balanceFinal(CommandEnvironment.rank_commands),
 		currency(CommandEnvironment.rank_commands),
+		originalRankCost(CommandEnvironment.rank_commands),
 		rankupCost(CommandEnvironment.rank_commands),
 
 		ladder(CommandEnvironment.rank_commands),

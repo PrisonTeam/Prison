@@ -37,9 +37,13 @@ public class SpigotCompatibility {
 					
 					results = new Spigot18();
 				}
-				else if ( svData.compareTo( new BluesSemanticVersionData( "1.13.0" ) ) < 0 ) {
+				else if ( svData.compareTo( new BluesSemanticVersionData( "1.10.0" ) ) < 0 ) {
 					
 					results = new Spigot19();
+				}
+				else if ( svData.compareTo( new BluesSemanticVersionData( "1.13.0" ) ) < 0 ) {
+					
+					results = new Spigot110();
 				}
 				else {
 					

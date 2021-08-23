@@ -128,7 +128,12 @@ public class EssentialsEconomy
     public boolean hasIntegrated() {
         return wrapper != null;
     }
-
+    
+    @Override
+    public void disableIntegration() {
+    	wrapper = null;
+    }
+    
     @Override
     public String getDisplayName()
     {

@@ -15,7 +15,7 @@ Delete a rank.
 
 ## How to use the command
 
-Execute the command himself like in the example to delete a rank:
+Execute the command itself like in the example to delete a rank:
 
 - `/ranks delete [rankName]`
 - `/ranks delete A`

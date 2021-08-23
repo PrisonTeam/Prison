@@ -26,12 +26,14 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.RankUtil;
 import tech.mcprison.prison.ranks.RankUtil.PromoteForceCharge;
 import tech.mcprison.prison.ranks.RankUtil.RankupModes;
 import tech.mcprison.prison.ranks.RankUtil.RankupStatus;
 import tech.mcprison.prison.ranks.RankupResults;
+import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
@@ -67,10 +69,18 @@ public class RankUpCommand
     		) {
 
     	// Not supposed to check perms here... But it is a simple check, and it if works...
-    	if ( sender.hasPermission("ranks.rankupmax." + ladder) || sender.hasPermission("ranks.rankupmax.prestiges")) {
+    	if ( sender.hasPermission("ranks.rankupmax." + ladder) 
+    			// || sender.hasPermission("ranks.rankupmax.prestiges")
+    			) {
+    		Output.get().logDebug( DebugTarget.rankup, 
+    				"Rankup: cmd '/rankupmax %s'  Passed perm check: ranks.rankupmax.%s", 
+    				ladder, ladder );
 			rankUpPrivate(sender, ladder, RankupModes.MAX_RANKS, "ranks.rankupmax.");
 		}
     	else {
+    		Output.get().logDebug( DebugTarget.rankup, 
+    				"Rankup: Failed: cmd '/rankupmax %s'  Does not have the permission ranks.rankupmax.%s", 
+    				ladder, ladder );
     		rankupMaxNoPermissionMsg( sender, "ranks.rankupmax." + ladder );
     	}
     }
@@ -85,6 +95,9 @@ public class RankUpCommand
         	Output.get().logInfo( rankupCannotRunFromConsoleMsg() );
         	return;
         }
+		Output.get().logDebug( DebugTarget.rankup, 
+				"Rankup: cmd '/rankup %s'  Processing ranks.rankup.%s", 
+				ladder, ladder );
         
     	rankUpPrivate(sender, ladder, RankupModes.ONE_RANK, "ranks.rankup." );
     }
@@ -99,6 +112,9 @@ public class RankUpCommand
         				Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ))) && 
 		        	!ladder.equalsIgnoreCase("default") && 
 		        	!sender.hasPermission(permission + ladder.toLowerCase())) {
+
+        	Output.get().logDebug( DebugTarget.rankup, 
+        			"Rankup: rankUpPrivate: failed rankup perm check");
         	
         	rankupMaxNoPermissionMsg( sender, permission + ladder );
             return;
@@ -128,72 +144,109 @@ public class RankUpCommand
 			return;
 		}
 
-        RankPlayer rankPlayer = getRankPlayer( sender, player.getUUID(), player.getName() );
-        Rank pRank = rankPlayer.getRank( ladder );
-        // gets the rank on the default ladder. Used if ladder is not default.
-		Rank pRankSecond = rankPlayer.getRank("default"); 
-		Rank pRankAfter = null;
 		LadderManager lm = PrisonRanks.getInstance().getLadderManager();
-		boolean canPrestige = false;
+		RankLadder targetLadder = lm.getLadder( ladder );
+		
+       	if ( targetLadder == null ){
+    		rankupErrorNoLadderMsg( sender, ladder );
+    		return;
+    	}
+    	
+    	if (!targetLadder.getLowestRank().isPresent()){
+    		rankupErrorNoRankOnLadderMsg( sender, ladder );
+    		return;
+    	}
+		
 
-		// If the player is trying to prestige, then the following must be ran to setup the prestige checks:
-		if (ladder.equalsIgnoreCase("prestiges")) {
+        RankPlayer rankPlayer = getRankPlayer( sender, player.getUUID(), player.getName() );
+        PlayerRank playerRankCurrent = rankPlayer.getRank( ladder );
+        PlayerRank playerRankTarget = 
+        		PlayerRank.getTargetPlayerRankForPlayer( rankPlayer,
+        				playerRankCurrent == null ? targetLadder.getLowestRank().get() :
+        					playerRankCurrent.getRank()
+        				);
+        		
+        
+        Output.get().logDebug( DebugTarget.rankup, 
+    			"Rankup: rankUpPrivate: RankPlayer %s  playerRankTarget %s", 
+    					(rankPlayer == null ? "null" : "true"), 
+    					(playerRankTarget == null ? "null" : "true") );
+        
+        // If a player has a rank on the ladder get their rank, otherwise null:
+        Rank pRankTarget = playerRankTarget.getRank();
+        
+        Rank pRankAfter = null;
+        boolean canPrestige = false;
+        
+        // If the player is trying to prestige, then the following must be ran to setup the prestige checks:
+        if (ladder.equalsIgnoreCase("prestiges")) {
 
-			RankLadder rankLadder = lm.getLadder("default");
-			
-			if ( rankLadder == null ){
-				
-				rankupErrorNoDefaultLadderMsg( sender );
-				return;
-			}
-			if (!rankLadder.getLowestRank().isPresent()){
-				rankupErrorNoLowerRankMsg( sender );
-				return;
-			}
-
-			Rank rank = rankLadder.getLowestRank().get();
-
-			while (rank.getRankNext() != null) {
-				rank = rank.getRankNext();
-			}
-
-			if (!(rank == pRankSecond)) {
-				rankupNotAtLastRankMsg( sender );
-				return;
-			}
-			
-			// IF everything's ready, this will be true if and only if pRank is not null,
-			// and the prestige method will start
-			canPrestige = true;
-		}
+        	RankLadder rankLadder = lm.getLadder("default");
+        	
+        	if ( rankLadder == null ){
+        		rankupErrorNoDefaultLadderMsg( sender );
+        		return;
+        	}
+        	
+        	if (!rankLadder.getLowestRank().isPresent()){
+        		rankupErrorNoLowerRankMsg( sender );
+        		return;
+        	}
+        	
+        	// gets the rank on the default ladder. Used if ladder is not default.
+        	PlayerRank pRankDefaultLadder = rankPlayer.getRank("default");
+        	if ( pRankDefaultLadder == null ) {
+        		rankupErrorPlayerNotOnDefaultLadder( sender, rankPlayer );
+        	}
+        	
+        	Rank playersRankOnDefaultLadder = pRankDefaultLadder.getRank();
+        	// On the default ladder, the player must be at the last rank:
+        	// The last rank will never have a rankNext (it will be null):
+        	if ( playersRankOnDefaultLadder.getRankNext() != null ) {
+        		rankupNotAtLastRankMsg( sender );
+        		return;
+        	}
+        	
+        	// IF everything's ready, this will be true if and only if pRank is not null,
+        	// and the prestige method will start
+        	canPrestige = true;
+        }
+        
         
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
-        String currency = rankPlayer == null || pRank == null ? null : pRank.getCurrency();
-
-		boolean rankupWithSuccess = false;
-
+        String currency = rankPlayer == null || pRankTarget == null ? null : pRankTarget.getCurrency();
+        
+        boolean rankupWithSuccess = false;
+        
         if (rankPlayer != null ) {
         	
         	// Performs the actual rankup here:
         	RankupResults results = new RankUtil().rankupPlayer(player, rankPlayer, ladder, sender.getName());
         	
         	processResults( sender, player.getName(), results, null, ladder, currency );
-
+        	
         	// If the last rankup attempt was successful and they are trying to rankup as many times as possible: 
         	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS && 
-        									!ladder.equals("prestiges")) {
+        			!ladder.equals("prestiges")) {
         		rankUpPrivate( sender, ladder, mode, permission );
         	}
         	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS){
         		rankupWithSuccess = true;
-			}
-
-        	// Get the player rank after
-        	pRankAfter = rankPlayer.getRank(ladder);
-
+        	}
         	
-        	// Prestige method if canPrestige and a successful rankup. pRank cannot be the same as pRankAfter:
-        	if ( canPrestige && rankupWithSuccess && pRankAfter != null && pRank != pRankAfter ) {
+        	
+        	// Get the player rank after
+        	PlayerRank playerRankAfter = rankPlayer.getRank( ladder );
+        	
+        	if ( playerRankAfter != null ) {
+        		
+        		pRankAfter = playerRankAfter.getRank();
+        	}
+        	
+        	// Prestige method if canPrestige and a successful rankup. 
+        	// pRankTarget now contains the target rank prior to processing the rankup.  SO it should be
+        	// the same as pRankAfter, but if it is wrong, then rankupWithSuccess will not be true.  So ignore...
+        	if ( canPrestige && rankupWithSuccess && pRankAfter != null ) {
         		prestigePlayer( sender, player, rankPlayer, pRankAfter, lm );
         	}
         	else if ( canPrestige ) {
@@ -228,6 +281,8 @@ public class RankUpCommand
 	private void prestigePlayer(CommandSender sender, Player player, RankPlayer rankPlayer, 
 						Rank pRankAfter, LadderManager lm ) {
 		
+       	Output.get().logDebug( DebugTarget.rankup, "Rankup: prestigePlayer: ");
+
 		Platform platform = Prison.get().getPlatform();
 		boolean resetBalance = platform.getConfigBooleanTrue( "prestige.resetMoney" );
 		boolean resetDefaultLadder = platform.getConfigBooleanTrue( "prestige.resetDefaultLadder" );
@@ -246,10 +301,20 @@ public class RankUpCommand
 //				PrisonAPI.dispatchCommand("ranks set rank " + player.getName() + " " + 
 //						lm.getLadder("default").getLowestRank().get().getName() + " default");
 				// Get that rank
-				Rank pRankSecond = rankPlayer.getRank("default");
-				// Check if the ranks match
-
-				if (pRankSecond != lm.getLadder("default").getLowestRank().get()) {
+				
+				PlayerRank playerRankSecond = rankPlayer.getRank("default");
+				if ( playerRankSecond != null ) {
+					
+					Rank pRankSecond = playerRankSecond.getRank();
+					// Check if the ranks match
+					
+					if (pRankSecond != lm.getLadder("default").getLowestRank().get()) {
+						
+						rankupNotAbleToResetRankMsg( sender );
+						success = false;
+					}
+				}
+				else {
 					
 					rankupNotAbleToResetRankMsg( sender );
 					success = false;
@@ -304,18 +369,26 @@ public class RankUpCommand
 		ladder = confirmLadder( sender, ladder );
 
         RankPlayer rankPlayer = getRankPlayer( sender, playerUuid, player.getName() );
-        Rank pRank = rankPlayer.getRank( ladder );
+        PlayerRank playerRank = rankPlayer.getRank( ladder );
         
-        // Get currency if it exists, otherwise it will be null if the Rank has no currency:
-        String currency = rankPlayer == null || pRank == null ? null : pRank.getCurrency();
-        
-        
-
-        if ( ladder != null && rankPlayer != null ) {
-        	RankupResults results = new RankUtil().promotePlayer(player, rankPlayer, ladder, 
-        												player.getName(), sender.getName(), pForceCharge);
+        if ( playerRank != null ) {
         	
-        	processResults( sender, player.getName(), results, null, ladder, currency );
+        	Rank pRank = playerRank.getRank();
+        	
+        	// Get currency if it exists, otherwise it will be null if the Rank has no currency:
+        	String currency = rankPlayer == null || pRank == null ? null : pRank.getCurrency();
+        	
+        	
+        	
+        	if ( ladder != null && rankPlayer != null ) {
+        		RankupResults results = new RankUtil().promotePlayer(player, rankPlayer, ladder, 
+        				player.getName(), sender.getName(), pForceCharge);
+        		
+        		processResults( sender, player.getName(), results, null, ladder, currency );
+        	}
+        }
+        else {
+        	// Message: Player is not on the ladder
         }
     }
 
@@ -345,18 +418,30 @@ public class RankUpCommand
         UUID playerUuid = player.getUUID();
         
 		ladder = confirmLadder( sender, ladder );
+		if ( ladder == null ) {
+			// Already displayed error message about ladder not existing:
+			return;
+		}
 
         RankPlayer rankPlayer = getRankPlayer( sender, playerUuid, player.getName() );
-        Rank pRank = rankPlayer.getRank( ladder );
+        PlayerRank playerRank = rankPlayer.getRank( ladder );
         
-        // Get currency if it exists, otherwise it will be null if the Rank has no currency:
-        String currency = rankPlayer == null || pRank == null ? null : pRank.getCurrency();
-
-        if ( ladder != null && rankPlayer != null ) {
-        	RankupResults results = new RankUtil().demotePlayer(player, rankPlayer, ladder, 
-        												player.getName(), sender.getName(), pForceCharge);
+        if ( playerRank != null ) {
         	
-        	processResults( sender, player.getName(), results, null, ladder, currency );
+        	Rank pRank = playerRank.getRank();
+        	
+        	// Get currency if it exists, otherwise it will be null if the Rank has no currency:
+        	String currency = rankPlayer == null || pRank == null ? null : pRank.getCurrency();
+        	
+        	if ( ladder != null && rankPlayer != null ) {
+        		RankupResults results = new RankUtil().demotePlayer(player, rankPlayer, ladder, 
+        				player.getName(), sender.getName(), pForceCharge);
+        		
+        		processResults( sender, player.getName(), results, null, ladder, currency );
+        	}
+        }
+        else {
+        	// Message: Player is not on the ladder
         }
     }
 
@@ -383,7 +468,15 @@ public class RankUpCommand
     			Player targetPlayer = getPlayer( null, player.getName() );
     			if ( targetPlayer != null ) {
     				
-    				String targetRank = rank.equalsIgnoreCase("*same*") ? player.getRank( ladder ).getName() : rank;
+    				boolean isSameRank = rank.equalsIgnoreCase("*same*");
+
+    				PlayerRank pRank = player.getRank( ladder );
+    				String rankNameCurrent = isSameRank && 
+    						pRank != null && 
+    						pRank.getRank() != null ? 
+    								pRank.getRank().getName() : "";
+    				
+    				String targetRank = isSameRank ? rankNameCurrent : rank;
     				setPlayerRank( targetPlayer, targetRank, ladder, sender );
     			}
     		}
@@ -403,7 +496,7 @@ public class RankUpCommand
     }
 
     
-    @Command(identifier = "ranks remove rank", description = "Removes a player from a specified ladder " +
+    @Command(identifier = "ranks removeRank", description = "Removes a player from a specified ladder " +
     		"(delete player rank). This is an alias for /ranks set rank <playerName> -remove- <ladder>.", 
     		permissions = "ranks.setrank", onlyPlayers = false) 
     public void removeRank(CommandSender sender,
@@ -415,22 +508,43 @@ public class RankUpCommand
     }
     
     
-	private void setPlayerRank( Player player, String rank, String ladder, CommandSender sender ) {
+    public void setPlayerRank( RankPlayer rankPlayer, Rank pRank ) {
+        
+        if ( rankPlayer != null ) {
+        	RankupResults results = 
+        			new RankUtil().setRank(rankPlayer, rankPlayer, 
+        						pRank.getLadder().getName(), pRank.getName(), 
+        												rankPlayer.getName(), rankPlayer.getName());
+        	
+        	processResults( rankPlayer, rankPlayer.getName(), results, 
+        			pRank.getName(), pRank.getLadder().getName(), 
+        			pRank.getCurrency() );
+        }
+    }
+    
+    
+	private void setPlayerRank( Player player, String rank, String ladderName, CommandSender sender ) {
 		UUID playerUuid = player.getUUID();
         
-		ladder = confirmLadder( sender, ladder );
+       	Output.get().logDebug( DebugTarget.rankup, "Rankup: setPlayerRank: ");
+	
+		ladderName = confirmLadder( sender, ladderName );
 
         RankPlayer rankPlayer = getRankPlayer( sender, playerUuid, player.getName() );
-        Rank pRank = rankPlayer.getRank( ladder );
         
-        // Get currency if it exists, otherwise it will be null if the Rank has no currency:
-        String currency = rankPlayer == null || pRank == null ? null : pRank.getCurrency();
+        if ( ladderName != null && rankPlayer != null ) {
 
-        if ( ladder != null && rankPlayer != null ) {
-        	RankupResults results = new RankUtil().setRank(player, rankPlayer, ladder, rank, 
-        												player.getName(), sender.getName());
+//        	RankLadder rLadder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
         	
-        	processResults( sender, player.getName(), results, rank, ladder, currency );
+        	Rank pRank = PrisonRanks.getInstance().getRankManager().getRank( rank );
+        	
+        	// Get currency if it exists, otherwise it will be null if the Rank has no currency:
+        	String currency = rankPlayer == null || pRank == null ? null : pRank.getCurrency();
+        	
+        	RankupResults results = new RankUtil().setRank(player, rankPlayer, ladderName, rank, 
+        			player.getName(), sender.getName());
+        	
+        	processResults( sender, player.getName(), results, rank, ladderName, currency );
         }
 	}
 

@@ -1,16 +1,16 @@
 package tech.mcprison.prison.spigot.gui.sellall;
 
-import org.bukkit.Bukkit;
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.guiutility.Button;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
+import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -19,36 +19,26 @@ import java.util.Set;
 public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
 
     private final Player p;
-    boolean itemsNotNull = true;
+    private final int startingItem;
 
-    public SellAllAdminBlocksGUI(Player p){
+    public SellAllAdminBlocksGUI(Player p, int startingItem){
         this.p = p;
+        this.startingItem = startingItem;
     }
 
     public void open() {
 
         updateSellAllConfig();
 
-        Inventory inv = buttonsSetup();
-        if (inv == null && !itemsNotNull) {
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllGUIEmpty")));
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllGUIEmpty2")));
-            return;
-        } else if (inv == null){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.TooManySellAllItems")));
-            return;
-        }
-
-        openGUI(p, inv);
-    }
-
-    private Inventory buttonsSetup() {
+        PrisonGUI gui = new PrisonGUI(p, 54, "&3SellAll -> Blocks");
 
         boolean emptyInv = false;
-        int dimension = 9;
 
         try {
             if (sellAllConfig.getConfigurationSection("Items") == null) {
+                emptyInv = true;
+            }
+            if (sellAllConfig.getConfigurationSection("Items").getKeys(false).size() == 0){
                 emptyInv = true;
             }
         } catch (NullPointerException e){
@@ -56,31 +46,14 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
         }
 
         if (emptyInv){
-            p.closeInventory();
-            return null;
+            SpigotPlayer spigotPlayer = new SpigotPlayer(p);
+            Output.get().sendWarn(spigotPlayer, messages.getString("Message.SellAllGUIEmpty"));
+            Output.get().sendWarn(spigotPlayer, messages.getString("Message.SellAllGUIEmpty2"));
+            return;
         }
 
         // Get the Items config section
         Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
-
-        if (items.size() == 0){
-            itemsNotNull = false;
-            p.closeInventory();
-            return null;
-        }
-
-        // Get the dimensions and if needed increases them
-        dimension = (int) Math.ceil(items.size() / 9D) * 9;
-
-        // Check if there're too many blocks.
-        if (dimension > 54){
-            itemsNotNull = true;
-            p.closeInventory();
-            return null;
-        }
-
-        // Inventory of GUI.
-        Inventory inv = Bukkit.createInventory(null, dimension, SpigotPrison.format("&3SellAll -> Blocks"));
 
         // Global strings.
         String loreLine1 = messages.getString("Lore.RightClickToDelete");
@@ -91,32 +64,32 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
 
         boolean sellAllPerBlockPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"));
 
+        int itemsAdded = 0, itemsRead = 0;
         for (String key : items) {
-            List<String> itemsLore = createLore(
-                    loreLine1,
-                    loreLine2,
-                    loreValue + sellAllConfig.getString("Items." + key + ".ITEM_VALUE")
-            );
+            itemsRead++;
 
-            if (sellAllPerBlockPermissionEnabled){
-                itemsLore.add("");
-                itemsLore.add(SpigotPrison.format(lorePermission + "&7" + permissionSellAllBlock + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
+            if (itemsRead >= startingItem) {
+
+                if (startingItem != 0){
+                    gui.addButton(new Button(45, XMaterial.BOOK, new ButtonLore(messages.getString("Lore.ClickToPriorPage"), null), "&7Prior " + (startingItem - 45)));
+                }
+
+                if (itemsAdded >= 45){
+                    gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(messages.getString("Lore.ClickToNextPage"), null), "&7Next " + (startingItem + itemsAdded)));
+                }
+
+                if (itemsAdded < 45) {
+                    ButtonLore itemsLore = new ButtonLore(createLore(loreLine1, loreLine2), createLore(loreValue + sellAllConfig.getString("Items." + key + ".ITEM_VALUE")));
+
+                    if (sellAllPerBlockPermissionEnabled) {
+                        itemsLore.addLineLoreDescription(SpigotPrison.format(lorePermission + "&7" + permissionSellAllBlock + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
+                    }
+
+                    gui.addButton(new Button(null, SpigotUtil.getXMaterial(sellAllConfig.getString("Items." + key + ".ITEM_ID")), itemsLore, "&3" + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
+                    itemsAdded++;
+                }
             }
-
-            ItemStack item = createButton(SpigotUtil.getItemStack(SpigotUtil.getXMaterial(sellAllConfig.getString("Items." + key + ".ITEM_ID")), 1), itemsLore, SpigotPrison.format("&3" + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
-            inv.addItem(item);
         }
-        return inv;
-    }
-
-    private boolean guiBuilder() {
-        try {
-            buttonsSetup();
-        } catch (NullPointerException ex){
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format("&cThere's a null value in the GuiConfig.yml [broken]"));
-            ex.printStackTrace();
-            return true;
-        }
-        return false;
+        gui.open();
     }
 }

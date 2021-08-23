@@ -284,16 +284,22 @@ public class LadderManager
      * @param rankId The ID of the rank to check each ladder against.
      * @return A list of {@link RankLadder}s with the matched criteria.
      */
-    public List<RankLadder> getLaddersWithRank(int rankId) {
-        return loadedLadders.stream().filter(rankLadder -> rankLadder.containsRank(rankId))
-            .collect(Collectors.toList());
-    }
+//    public List<RankLadder> getLaddersWithRank(int rankId) {
+//        return loadedLadders.stream().filter(rankLadder -> rankLadder.containsRank(rankId))
+//            .collect(Collectors.toList());
+//    }
 
+    /**
+     * <p>This returns the ladder that has the specified rank.  The ladder 
+     * should already be tied to the rank
+     * @param rank
+     * @return
+     */
 	public RankLadder getLadder( Rank rank ) {
 		RankLadder results = null;
 		
 		for ( RankLadder rankLadder : loadedLadders ) {
-			if ( rankLadder.containsRank( rank.getId() )) {
+			if ( rankLadder.containsRank( rank )) {
 				results = rankLadder;
 				break;
 			}

@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import tech.mcprison.prison.Prison;
+
 /**
  * Provides utilities for manipulating text.
  *
@@ -346,9 +348,8 @@ public class Text {
     			sb.append( translateHexColorCodesCore( text, targetColorCode ) );
     		}
     		else {
-    			
     			while ( idxStart >= 0 ) {
-    				sb.append( translateHexColorCodesCore( text.substring( 0, idxStart ), targetColorCode) );
+    				sb.append( translateHexColorCodesCore( text.substring( idxEnd + 1, idxStart ), targetColorCode) );
     				
     				idxEnd = text.indexOf( "\\E", idxStart );
     				
@@ -357,10 +358,13 @@ public class Text {
     					idxStart = -1;
     				}
     				else {
-    					sb.append( text.substring( idxStart, idxEnd ) );
+    					sb.append( text.substring( idxStart, idxEnd + 1 ) );
     					
     					idxStart = text.indexOf( "\\Q", idxEnd );
     				}
+    			}
+    			if ( idxEnd < text.length() ) {
+    				sb.append( text.substring( idxEnd + 1 ) );
     			}
     		}
     	}
@@ -445,12 +449,15 @@ public class Text {
         int eatLeft = (centerlen / 2) - balance;
         int eatRight = (centerlen - eatLeft) + balance;
 
+        String prisonVersion = " &5(" + Prison.get().getPlatform().getPluginVersion() + ")";
+        
         if (eatLeft < pivot) {
             return translateAmpColorCodes(
                 "&8" + (headingLine.substring(0, pivot - eatLeft)) + " " + center + " &8"
-                    + (headingLine.substring(pivot + eatRight)));
+                    + (headingLine.substring(pivot + eatRight)))
+            		 + prisonVersion;
         } else {
-            return center;
+            return center + prisonVersion;
         }
     }
 

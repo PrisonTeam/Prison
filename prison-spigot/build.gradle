@@ -20,6 +20,9 @@ group 'tech.mcprison'
 
 apply plugin: 'java'
 
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = "UTF-8"
+
 //sourceCompatibility = 1.8
 
 repositories {
@@ -50,12 +53,7 @@ repositories {
     		includeGroup 'me.clip'
     	}
     }
-    maven { 
-    	url = 'https://mvnrepository.com/artifact/org.apache.commons/commons-lang3' 
-    	content {
-    		includeGroup 'org.apache.commons'
-    	}
-    }
+    maven { url = "https://mvnrepository.com/artifact/org.apache.commons/commons-lang3/" }
 
 
     maven { 
@@ -107,14 +105,8 @@ dependencies {
 //    implementation 'com.github.cryptomorin:xseries:b95d195482'
     
     // https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
-	implementation 'com.github.cryptomorin:XSeries:8.1.0'
+	implementation 'com.github.cryptomorin:XSeries:8.3.0'
     
-//	implementation 'com.github.cryptomorin:XSeries:7.9.1.1'
-//	implementation 'com.github.cryptomorin:XSeries:7.8.0'
-//	implementation 'com.github.cryptomorin:XSeries:7.6.0.0.1'
-//	implementation 'com.github.cryptomorin:XSeries:7.5.4'
-//	implementation 'com.github.cryptomorin:XSeries:7.2.1'
-//	implementation 'com.github.cryptomorin:XSeries:6.3.2.1'
 
 
 //  This includes 535KB when all we need is 1 class! 
@@ -188,7 +180,6 @@ processResources {
 shadowJar {
     dependencies {
         include(dependency('org.apache.commons:commons-lang3:3.12.0'))
-//        include(dependency('org.apache.commons:commons-lang3:3.10'))
         include(dependency('com.google.code.gson:gson:2.8.6'))
         
         include(dependency('org.bstats:bstats-base:2.2.1'))
@@ -196,8 +187,7 @@ shadowJar {
 
         include(dependency('me.clip:placeholderapi:2.10.9'))
 
-//        include(dependency('com.github.cryptomorin:xseries:b95d195482'))
-        include(dependency('com.github.cryptomorin:XSeries:8.1.0'))
+        include(dependency('com.github.cryptomorin:XSeries:8.3.0'))
         
         //include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
         //include(dependency('me.badbones69:crazyenchantments-plugin:1.8-Dev-Build-v8'))

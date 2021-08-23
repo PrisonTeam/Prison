@@ -143,6 +143,11 @@ public class GemsEconomy
     }
 
     @Override
+    public void disableIntegration() {
+    	wrapper = null;
+    }
+    
+    @Override
     public String getDisplayName()
     {
     	return super.getDisplayName() + 

@@ -23,7 +23,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -41,6 +43,7 @@ import tech.mcprison.prison.integration.IntegrationManager;
 import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleStatus;
 import tech.mcprison.prison.output.BulletedListComponent;
@@ -50,6 +53,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.troubleshoot.TroubleshootResult;
 import tech.mcprison.prison.troubleshoot.Troubleshooter;
+import tech.mcprison.prison.util.JumboTextFont;
 import tech.mcprison.prison.util.PrisonJarReporter;
 
 /**
@@ -58,7 +62,8 @@ import tech.mcprison.prison.util.PrisonJarReporter;
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-public class PrisonCommand {
+public class PrisonCommand 
+		extends PrisonCommandMessages {
 
 	private List<String> registeredPlugins = new ArrayList<>();
 	
@@ -67,12 +72,15 @@ public class PrisonCommand {
 	private List<String> prisonStartupDetails;
 	
 	private String supportName = null;
+	private TreeMap<String, String> supportURLs;
 	
 	
 	public PrisonCommand() {
 		super();
 		
 		this.prisonStartupDetails = new ArrayList<>();
+		
+		this.supportURLs = new TreeMap<>();
 		
 	}
 	
@@ -386,6 +394,10 @@ public class PrisonCommand {
 //        display.text( pluginDetails );
         
 
+//        if ( !isBasic ) {
+//        	Prison.get().getPlatform().dumpEventListenersBlockBreakEvents();
+//        }
+        
         
         Prison.get().getPlatform().getWorldLoadErrors( display );
 
@@ -539,12 +551,24 @@ public class PrisonCommand {
                 new BulletedListComponent.BulletedListBuilder();
         
         
-    	UUID playerUuid = (player == null ? null : player.getUUID());
+    	UUID playerUuid = player == null ? null : player.getUUID();
+    	playerName = player != null ? player.getName() :
+    			(playerName.isEmpty() ? sender.getName() : playerName);
+    	
     	String translated = Prison.get().getPlatform().getPlaceholders()
-    					.placeholderTranslateText( playerUuid, sender.getName(), text );
+    					.placeholderTranslateText( playerUuid, playerName, text );
     	
     	builder.add( String.format( "&a    Include one or more Prison placeholders with other text..."));
     	builder.add( String.format( "&a    Use { } to escape the placeholders."));
+    	
+    	// Show player info here like with the search:
+        if ( player != null ) {
+        	builder.add( String.format( "&a    Player: &7%s  &aPlayerUuid: &7%s", player.getName(), 
+        			(playerUuid == null ? "null" : playerUuid.toString())));
+        	
+        }
+        
+    	
     	builder.add( String.format( "&7  Original:   \\Q%s\\E", text));
     	builder.add( String.format( "&7  Translated: %s", translated));
     	
@@ -590,7 +614,7 @@ public class PrisonCommand {
     public void placeholdersSearchCommand(CommandSender sender,
     		@Arg(name = "playerName", description = "Player name to use with player rank placeholders (optional)", 
     				def = "." ) String playerName,
-    		@Arg(name = "pageNumber", description = "page number of results to display", def = "." ) String pageNumber,
+    		@Arg(name = "pageNumber", description = "page number of results to display (optional)", def = "." ) String pageNumber,
     		@Wildcard(join=true)
     		@Arg(name = "patterns", description = "Patterns of placeholders to search for" ) String patterns ) {
     
@@ -680,7 +704,7 @@ public class PrisonCommand {
         
         CommandPagedData cmdPageData = new CommandPagedData(
         		"/prison placeholders search", placeholders.size(),
-        		0, Integer.toString( page ), 12 );
+        		0, Integer.toString( page ), 20 );
         // Need to provide more "parts" to the command that follows the page number:
         cmdPageData.setPageCommandSuffix( patterns );
     	
@@ -750,6 +774,24 @@ public class PrisonCommand {
 
     	sender.sendMessage( message );
     }
+
+    
+    @Command(identifier = "prison reload locales", 
+    		description = "Locales reload: This will reload all of the language files that are being used " +
+    				"within prison. Based upon the configuration settings, this will load the proper locales.", 
+    		onlyPlayers = false, permissions = "prison.reload")
+    public void localesReloadCommand(CommandSender sender ) {
+    	
+    	for ( LocaleManager LocalManager : LocaleManager.getRegisteredInstances() ) {
+    		LocalManager.reload();
+    	}
+    	
+    	String message = "Locales reload was attempted. " +
+    			"No guarentees that it worked 100%. Restart server if any doubts.";
+    	
+    	sender.sendMessage( message );
+    }
+    
     
     @Command(identifier = "prison reload autoFeatures", 
     		description = "AutoFeatures reload: Reloads the auto features settings. The current " +
@@ -835,18 +877,41 @@ public class PrisonCommand {
     	AutoFeaturesWrapper afw = AutoFeaturesWrapper.getInstance();
     	
     	display.addText( "&3Selected Settings from &bplugins/Prison/autoFeaturesConfigs.yml&3:" );
-    	display.addText( "&b  Normal Drops (if auto pickup is off):" );
-    	display.addText( "&b    options.normalDrop.isProcessNormalDropsEvents:  %s", 
-    									afw.isBoolean( AutoFeatures.handleNormalDropsEvents ) );
-    	display.addText( "&b    options.normalDrop.isProcessTokensEnchantExplosiveEvents:  %s", 
-    									afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents ) );
-    	display.addText( "&b    options.normalDrop.isProcessTokensEnchantExplosiveEvents:  %s", 
-    									afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents ) );
-
-    	
     	display.addText( "&b " );
     	display.addText( "&b   options.general.isAutoManagerEnabled %s", 
-    									afw.isBoolean( AutoFeatures.isAutoManagerEnabled ));
+    			afw.isBoolean( AutoFeatures.isAutoManagerEnabled ));
+    	
+    	
+    	
+    	
+    	display.addText( "&b " );
+    	display.addText( "&b    options.blockBreakEvents.isProcessTokensEnchantExplosiveEvents:  %s", 
+    			afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents ) );
+    	display.addText( "&b    options.blockBreakEvents.TokenEnchantBlockExplodeEventPriority:  %s", 
+    			afw.getMessage( AutoFeatures.isProcessTokensEnchantExplosiveEvents ) );
+    	
+    	display.addText( "&b    options.blockBreakEvents.isProcessCrazyEnchantsBlockExplodeEvents:  %s", 
+    			afw.isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents ) );
+    	display.addText( "&b    options.blockBreakEvents.CrazyEnchantsBlastUseEventPriority:  %s", 
+    			afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority ) );
+    	
+    	display.addText( "&b    options.blockBreakEvents.isProcessZenchantsBlockExplodeEvents:  %s", 
+    			afw.isBoolean( AutoFeatures.isProcessZenchantsBlockExplodeEvents ) );
+    	display.addText( "&b    options.blockBreakEvents.ZenchantmentsBlockShredEventPriority:  %s", 
+    			afw.getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority ) );
+    	
+    	display.addText( "&b    options.blockBreakEvents.isProcessPrisonEnchantsExplosiveEvents:  %s", 
+    			afw.isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents ) );
+    	display.addText( "&b    options.blockBreakEvents.PrisonEnchantsExplosiveEventPriority:  %s", 
+    			afw.getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority ) );
+    	
+    	
+    	display.addText( "&b " );
+    	display.addText( "&b  Normal Drops (if auto pickup is off):" );
+    	display.addText( "&b    options.normalDrop.isProcessNormalDropsEvents:  %s", 
+    			afw.isBoolean( AutoFeatures.handleNormalDropsEvents ) );
+    	
+    	display.addText( "&b " );
     	display.addText( "&7  NOTE: If this is enabled, then lore and perms will override the settings for " );
     	display.addText( "&7        pickup, smelt, and block when they are turned off." );
     	
@@ -925,7 +990,8 @@ public class PrisonCommand {
     		@Wildcard(join=true)
     		@Arg(name = "targets", def = " ",
     				description = "Optional. Enable or disable a debugging target. " +
-    					"[on, off, targets, jarScan, blockBreakListeners, chatListeners] " +
+    					"[on, off, targets, jarScan, " +
+    					"testPlayerUtil, testLocale, rankup] " +
     				"Use 'targets' to list all available targets.  Use 'on' or 'off' to toggle " +
     				"on and off individual targets, or all targets if no target is specified.  " +
     				"jarScan will identify what Java version compiled the class files within the listed jars"
@@ -940,23 +1006,18 @@ public class PrisonCommand {
     		return;
     	}
     	
-    	if ( targets != null && "blockBreakListeners".equalsIgnoreCase( targets ) ) {
+    	
+    	if ( targets != null && "testLocale".equalsIgnoreCase( targets ) ) {
     		
-    		Prison.get().getPlatform().dumpEventListenersBlockBreakEvents();
+    		coreDebugTestLocaleseMsg( sender );
     		
     		return;
     	}
     	
-    	if ( targets != null && "traceBlockBreakListeners".equalsIgnoreCase( targets ) ) {
+    	if ( targets != null && "testPlayerUtil".equalsIgnoreCase( targets ) ) {
     		
-    		Prison.get().getPlatform().traceEventListenersBlockBreakEvents( sender );
-    		
-    		return;
-    	}
-    	
-    	if ( targets != null && "chatListeners".equalsIgnoreCase( targets ) ) {
-    		
-    		Prison.get().getPlatform().dumpEventListenersPlayerChatEvents();
+    		Player player = getPlayer( sender, "RoyalBlueRanger" );
+    		Prison.get().getPlatform().testPlayerUtil( player.getUUID() );
     		
     		return;
     	}
@@ -987,7 +1048,8 @@ public class PrisonCommand {
     }
     
     
-    @Command(identifier = "prison findCmd", 
+
+	@Command(identifier = "prison findCmd", 
     		description = "For internal use only. Do not use.  This command is used by internal code to look up " +
     				"a command to get the registered command.  Example would be when prison is registering  the " +
     				"command '/backpack' and it's already been registered, bukkit would then try to register prison's " +
@@ -1050,9 +1112,11 @@ public class PrisonCommand {
     	ChatDisplay display = displayVersion("ALL");
 		StringBuilder text = display.toStringBuilder();
 		
-		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName() );
+		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
 		
 		String helpURL = pasteChat.post( text.toString() );
+		
+		getSupportURLs().put( "Submit version:", helpURL );
 		
 		if ( helpURL != null ) {
 			
@@ -1061,15 +1125,262 @@ public class PrisonCommand {
 			Output.get().logInfo( "Paste this URL: %s", helpURL );
 		}
 		else {
-			// Do nothing since if helpURL is null, then it has probably
-			// already sent an error message.
+    		Output.get().logInfo( "There was an error trying to generate the paste.helpch.at URL." );
 		}
 		
     	
     }
     
+    @Command(identifier = "prison support submit configs", 
+    		description = "For Prison support: This will copy the contents of Prison's config " +
+    				"file to paste.helpch.at so it can be easily shared with Prison's " +
+    				"support staff.  This will include the following: config.yml plugin.yml " +
+    				"autoFeaturesConfig.yml modules.yml module_conf/mines/config.json " +
+    				"SellAllConfig.yml GuiConfig.yml backpacks/backpacksconfig.yml", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportSubmitConfigs(CommandSender sender
+    		) {
+    	
+    	
+    	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
+    		Output.get().logInfo( "The support name needs to be set prior to using this command." );
+    		Output.get().logInfo( "Use &7/prison support setSupportName help" );
+    		
+    		return;
+    	}
+    	
+    	Prison.get().getPlatform().saveResource( "plugin.yml", true );
+    	
+    	String fileNames = "config.yml plugin.yml autoFeaturesConfig.yml modules.yml module_conf/mines/config.json " +
+    			"SellAllConfig.yml GuiConfig.yml backpacks/backpacksconfig.yml";
+    	List<File> files = convertNamesToFiles( fileNames );
+    	
+    	
+    	StringBuilder text = new StringBuilder();
+
+    	for ( File file : files ) {
+			
+    		addFileToText( file, text );
+    		
+    		if ( file.getName().equalsIgnoreCase( "plugin.yml" ) ) {
+    			file.delete();
+    		}
+		}
+    	
+
+    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
+    	
+    	String helpURL = pasteChat.postKeepColorCodes( text.toString() );
+    	
+    	getSupportURLs().put( "Submit configs:", helpURL );
+    	
+    	if ( helpURL != null ) {
+    		
+    		Output.get().logInfo( "Prison's support information has been pasted. Copy and " +
+    				"paste this URL in to Prison's Discord server." );
+    		Output.get().logInfo( "Paste this URL: %s", helpURL );
+    	}
+    	else {
+    		Output.get().logInfo( "There was an error trying to generate the paste.helpch.at URL." );
+    	}
+    	
+    	
+    }
     
-    @Command(identifier = "prison support submit latestLog", 
+    @Command(identifier = "prison support submit ranks", 
+    		description = "For Prison support: This will copy the contents of Prison's " +
+    				"ladders and ranks configs to paste.helpch.at so it can be " +
+    				"easily shared with Prison's support staff.", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportSubmitRanks(CommandSender sender
+    		) {
+    	
+    	
+    	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
+    		Output.get().logInfo( "The support name needs to be set prior to using this command." );
+    		Output.get().logInfo( "Use &7/prison support setSupportName help" );
+    		
+    		return;
+    	}
+    	
+    	
+    	List<File> files = listFiles( "data_storage/ranksDb/ladders/", ".json" );
+    	files.addAll( listFiles( "data_storage/ranksDb/ranks/", ".json" ) );
+    	
+    	
+    	StringBuilder text = new StringBuilder();
+    	
+    	
+    	text.append( Prison.get().getPlatform().getRanksListString() );
+    	printFooter( text );
+ 
+    	
+    	for ( File file : files ) {
+    		
+    		addFileToText( file, text );
+    		
+    	}
+    	
+    	
+    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
+    	
+    	String helpURL = pasteChat.post( text.toString() );
+    	
+    	getSupportURLs().put( "Submit ranks:", helpURL );
+    	
+    	if ( helpURL != null ) {
+    		
+    		Output.get().logInfo( "Prison's support information has been pasted. Copy and " +
+    				"paste this URL in to Prison's Discord server." );
+    		Output.get().logInfo( "Paste this URL: %s", helpURL );
+    	}
+    	else {
+    		Output.get().logInfo( "There was an error trying to generate the paste.helpch.at URL." );
+    	}
+    	
+    	
+    }
+    
+    
+    @Command(identifier = "prison support submit mines", 
+    		description = "For Prison support: This will copy the contents of Prison's " +
+    				"mines configs to paste.helpch.at so it can be " +
+    				"easily shared with Prison's support staff.", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportSubmitMines(CommandSender sender
+    		) {
+    	
+    	
+    	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
+    		Output.get().logInfo( "The support name needs to be set prior to using this command." );
+    		Output.get().logInfo( "Use &7/prison support setSupportName help" );
+    		
+    		return;
+    	}
+    	
+    	
+    	List<File> files = listFiles( "data_storage/mines/mines/", ".json" );
+    	
+    	
+    	StringBuilder text = new StringBuilder();
+    	
+    	text.append( "\n" );
+    	text.append( "Table of contents:\n" );
+    	text.append( "  1. Mine list - All mines including virtual mines: /mines list all\n" );
+    	text.append( "  2. Mine info - All mines: /mines info <mineName> all\n" );
+    	text.append( "  3. Mine files - Raw JSON dump of all mine configuration files.\n" );
+    	text.append( "\n" );
+    	
+    	// Display a list of all mines, then display the /mines info <mineName> all for each:
+    	text.append( Prison.get().getPlatform().getMinesListString() );
+    	printFooter( text );
+    	
+    	
+    	
+    	for ( File file : files ) {
+    		
+    		addFileToText( file, text );
+    		
+    	}
+    	
+    	
+    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
+    	
+    	String helpURL = pasteChat.post( text.toString() );
+    	
+    	getSupportURLs().put( "Submit mines:", helpURL );
+    	
+    	if ( helpURL != null ) {
+    		
+    		Output.get().logInfo( "Prison's support information has been pasted. Copy and " +
+    				"paste this URL in to Prison's Discord server." );
+    		Output.get().logInfo( "Paste this URL: %s", helpURL );
+    	}
+    	else {
+    		Output.get().logInfo( "There was an error trying to generate the paste.helpch.at URL." );
+    	}
+    	
+    	
+    }
+    
+    
+    private List<File> listFiles( String path, String fileSuffix ) {
+    	List<File> files = new ArrayList<>();
+		
+		File dataFolder = Prison.get().getDataFolder();
+		File filePaths = new File( dataFolder, path );
+		
+		for ( File file : filePaths.listFiles() ) {
+			if ( file.getName().toLowerCase().endsWith( fileSuffix.toLowerCase() )) {
+				files.add( file );
+			}
+		}
+		
+		return files;
+	}
+
+	private void addFileToText( File file, StringBuilder sb )
+	{
+    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+    	
+    	sb.append( "\n" );
+
+    	JumboTextFont.makeJumboFontText( file.getName(), sb );
+    	
+    	sb.append( "\n" );
+    	
+		sb.append( "File Name:   " ).append( file.getName() ).append( "\n" );
+		sb.append( "File Path:   " ).append( file.getAbsolutePath() ).append( "\n" );
+		sb.append( "File Size:   " ).append( dFmt.format( file.length() ) ).append( " bytes\n" );
+		sb.append( "File Date:   " ).append( sdFmt.format( new Date(file.lastModified()) ) ).append( " bytes\n" );
+		sb.append( "File Stats:  " )
+					.append( file.exists() ? "EXISTS " : "" )
+					.append( file.canRead() ? "READABLE " : "" )
+					.append( file.canWrite() ? "WRITEABLE " : "" )
+					.append( "\n" );
+		
+		sb.append( "\n" );
+		sb.append( "=== ---  ---   ---   ---   ---   ---   ---   ---  --- ===\n" );
+		sb.append( "\n" );
+
+		
+		if ( file.exists() && file.canRead() ) {
+			readFileToStringBulider( file, sb );
+		}
+		else {
+			sb.append( "Warning: The file is not readable so it cannot be included.\n" );
+		}
+		
+		
+		printFooter( sb );
+	}
+	
+	public static void printFooter( StringBuilder sb ) {
+		
+		sb.append( "\n\n\n" );
+		sb.append( "===  ---  ===   ---   ===   ---   ===   ---   ===  ---  ===\n" );
+		sb.append( "=== # # ### # # # ### # # # ### # # # ### # # # ### # # ===\n" );
+		sb.append( "===  ---  ===   ---   ===   ---   ===   ---   ===  ---  ===\n" );
+		sb.append( "\n\n" );
+		
+	}
+
+	private List<File> convertNamesToFiles( String fileNames )
+	{
+		List<File> files = new ArrayList<>();
+		
+		File dataFolder = Prison.get().getDataFolder();
+		
+		for ( String fileName : fileNames.split( " " )) {
+			File file = new File( dataFolder, fileName );
+			files.add( file );
+		}
+		
+		return files;
+	}
+
+	@Command(identifier = "prison support submit latestLog", 
     		description = "For Prison support: This will copy the contents of `logs/latest.log` " +
     				"to paste.helpch.at so it can be easily shared with Prison's support staff .", 
     				onlyPlayers = false, permissions = "prison.debug" )
@@ -1094,39 +1405,16 @@ public class PrisonCommand {
     	StringBuilder logText = new StringBuilder();
     	
     	if ( latestLogFile.exists() && latestLogFile.canRead() ) {
-    		try (
-    				BufferedReader br = Files.newBufferedReader( latestLogFile.toPath() );
-    			) {
-    			String line = br.readLine();
-    			while ( line != null && logText.length() < PrisonPasteChat.HASTEBIN_MAX_LENGTH ) {
-    				
-    				logText.append( line ).append( "\n" );
-    				
-    				line = br.readLine();
-    			}
-    			
-    			if ( logText.length() > PrisonPasteChat.HASTEBIN_MAX_LENGTH ) {
-    				
-    				String trimMessage = "\n\n### Log has been trimmed to a max length of " +
-    						PrisonPasteChat.HASTEBIN_MAX_LENGTH + "\n";
-    				int pos = PrisonPasteChat.HASTEBIN_MAX_LENGTH - trimMessage.length();
-    				
-    				logText.insert( pos, trimMessage );
-    				logText.setLength( PrisonPasteChat.HASTEBIN_MAX_LENGTH );
-    			}
-    			
-			}
-			catch ( IOException e ) {
-				Output.get().logInfo( "Failed to read log file: %s  [%s]", 
-						latestLogFile.getAbsolutePath(), e.getMessage() );
-				return;
-			}
+    		
+    		readFileToStringBulider( latestLogFile, logText );
     		
     		if ( logText != null ) {
     			
-    			PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName() );
+    			PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
     			
     			String helpURL = pasteChat.post( logText.toString() );
+    			
+    			getSupportURLs().put( "Submit lastlog:", helpURL );
     			
     			if ( helpURL != null ) {
     				
@@ -1144,9 +1432,85 @@ public class PrisonCommand {
     	
     	Output.get().logInfo( "Unable to send log file.  Unknown reason why." );
     }
+
+	private void readFileToStringBulider( File textFile, StringBuilder text )
+	{
+		try (
+				BufferedReader br = Files.newBufferedReader( textFile.toPath() );
+			) {
+			String line = br.readLine();
+			while ( line != null && text.length() < PrisonPasteChat.HASTEBIN_MAX_LENGTH ) {
+				
+				text.append( line ).append( "\n" );
+				
+				line = br.readLine();
+			}
+			
+			if ( text.length() > PrisonPasteChat.HASTEBIN_MAX_LENGTH ) {
+				
+				String trimMessage = "\n\n### Log has been trimmed to a max length of " +
+						PrisonPasteChat.HASTEBIN_MAX_LENGTH + "\n";
+				int pos = PrisonPasteChat.HASTEBIN_MAX_LENGTH - trimMessage.length();
+				
+				text.insert( pos, trimMessage );
+				text.setLength( PrisonPasteChat.HASTEBIN_MAX_LENGTH );
+			}
+			
+		}
+		catch ( IOException e ) {
+			Output.get().logInfo( "Failed to read log file: %s  [%s]", 
+					textFile.getAbsolutePath(), e.getMessage() );
+			return;
+		}
+	}
     
 
-    
+	@Command(identifier = "prison support listeners", 
+    		description = "For Prison support: Provide a 'dump' of all event listeners.", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportListenersDump(CommandSender sender,
+    		@Arg(name = "listener", def = " ",
+			description = "Provides a detailed list of all registered event listeners for" +
+					"the various event types.  BlockBreak listeners will include all " +
+					"listeners that are being monitored within auto features. " +
+				"[blockBreak, traceBlockBreak, chat]"
+					) String listener
+    		) {
+		
+		if ( listener == null ) {
+			String message = "You must supply a listener in order to use this command.";
+			sender.sendMessage( message );
+			return;
+		}
+		
+		String results = null;
+		
+    	if ( "blockBreak".equalsIgnoreCase( listener ) ) {
+    		
+    		results = Prison.get().getPlatform().dumpEventListenersBlockBreakEvents();
+    	}
+    	
+    	if ( "chat".equalsIgnoreCase( listener ) ) {
+    		
+    		results = Prison.get().getPlatform().dumpEventListenersPlayerChatEvents();
+    	}
+    	
+    	if ( "traceBlockBreak".equalsIgnoreCase( listener ) ) {
+    		
+    		Prison.get().getPlatform().traceEventListenersBlockBreakEvents( sender );
+    		
+    		return;
+    	}
+    	
+		if ( results != null ) {
+
+			for ( String line : results.split( "\n" ) ) {
+				
+				Output.get().logInfo( line );
+			}
+		}
+
+	} 
     
     
 // This functionality should not be available in v3.2.1!  If someone is still running Prison 2.x.x 
@@ -1203,6 +1567,13 @@ public class PrisonCommand {
 	}
 	public void setSupportName( String supportName ) {
 		this.supportName = supportName;
+	}
+
+	public TreeMap<String, String> getSupportURLs() {
+		return supportURLs;
+	}
+	public void setSupportURLs( TreeMap<String, String> supportURLs ) {
+		this.supportURLs = supportURLs;
 	}
 
 }
