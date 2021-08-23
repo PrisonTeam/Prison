@@ -45,28 +45,48 @@
 
 [Prison Auto Configure / Prison Quick Start!](prison_docs_100_setting_up_auto_configure.md)
 
-Prison now has a new set of features that can help you get up and running faster than ever!  
+Prison now has a new set of features that can help you get up and running faster than ever! With the latest version of Prison, you can even have a functional Prison server running with just two Prison commands.  See below for more information.
+
+
+**It is strongly recommended that the '/ranks autoConfigure' should always be ran first.**  Prison's Auto Configure sets up so many features, that it can help resolve many initial issues.
 
 
 Before you try to setup Prison, you really need to install an Economy or the Ranks module will not be enabled.  It is strongly suggested you install the following plugins:  Vault, EssentialsX, EssentialsX-Chat, PlaceholderAPI, LuckPerms, WorldEdit, WorldGuard (or Fast Async World Edit, FAWE, on newer versions of Spigot).
 
 
-`/ranks autoConfigure`. It can auto create your ranks and virtual mines, A through Z, it will link the mines to the ranks, setup the Mine Access By Rank and TP Access By Rank.  It will also setup the Mine as a Virtual Mine will and assign blocks of increasing values to all mines.  Each mine will also be assigned a random liner.  The Ranks autoConfigure will also enable sellall and load over 90 default blocks for your shop.
+`/ranks autoConfigure`. It can auto create your ranks and virtual mines, A through Z, it will link the mines to the ranks, setup the Mine Access By Rank and TP Access By Rank.  It will also setup the Mine as a Virtual Mine will and assign blocks of increasing values to all mines.  Each mine will also be assigned a random liner.  The Ranks autoConfigure will also enable sellall and load over 90 default blocks for your shop.  Auto features will be enabled (auto pickup, auto smelt, and auto blocking).  
+
+Some of the newer features that are enabled with `/ranks autoConfigure` are: Ladder Base Rank Cost Multiplier (ranks cost more every time you prestige), auto configure 10 prestige levels, and improved placement of the mine. Based upon where you are standing, you can now define both the location of the mine, and the size.
 
 Once it generates all the virtual mines, all you need to do is to use the command `/mines set area help` on all mines to make them physical mines and then prison will be ready to use.  Plus there are many new features to help provide the finishing touches in almost no time.
  
+Auto configure can get you up and running with as little as two commands.  The first command is: `/ranks autoConfigure`.  Then the second command you run while you are in game, and it defines the mine for you in the world.  It's based upon where you are standing to make it "simple": `/mines set area A feet 10 6`. This last command tells prison to place the mine at your feet and to expand the walls outward by 10 blocks in all directions, and push the bottom of the mine down by 6 blocks.  The result will be a mine that is 21 x 21 x 7.
+
+
  - `/ranks autoConfigure`
+ - `/mines set area a feet 10 6`
+ 
+ At this point you have a 1 mine functional prison server.  Of course you will want to add more mines, but this is a quick overview of the basics on getting up and running.
+ 
+ 
+ To see the blocks at this point, just reset the mine:
+ 
+ - `/mines reset a`
+ 
+ Then to protect the world so players cannot break your builds, you need to setup a global WorldGuard region for that world:
+ 
+ - `/rg flag __global__ -w world passthrough deny`
+ 
+ 
+ For more information, check out the following commands.
+ 
  - `/mines set area help`
  - `/mines set tracer help`
  - `/mines set size help`
  - `/mines set liner help`
  
  
- To protect your world, you need to use the following WorldGuard command:
- 
- ```
-/rg flag __global__ passthrough deny
- ```
+
  
  [Prison Auto Configure / Prison Quick Start Guide!](prison_docs_100_setting_up_auto_configure.md)
 
@@ -113,7 +133,7 @@ Once it generates all the virtual mines, all you need to do is to use the comman
 **RANKS COMMANDS**:
 
 - [/ranks autoConfigure \[arg\] \[startPrice\] \[multiplier\] ](docs-commands/prison_docs_command_42_ranks_autoconfigure.md) `ranks.set`
-- [/ranks \[ladder\] ](docs-commands/prison_docs_command_11_ranks.md) `ranks.admin`
+- /ranks \[ladder\]  `ranks.admin`
 - [/ranks command](docs-commands/prison_docs_command_12_ranks_command.md) `prison.alerts`
 - [/ranks create \[rankName\] \[cost\] \[ladder\] \[tag\] ](docs-commands/prison_docs_command_13_ranks_create.md) `ranks.create`
 - [/ranks delete \[rankName\] ](docs-commands/prison_docs_command_14_ranks_delete.md) `ranks.delete`
@@ -128,29 +148,30 @@ Once it generates all the virtual mines, all you need to do is to use the comman
 
 **MINES COMMANDS: _Guidebook TO-DO_** (Work-In-Progress)
 
-- [/mines](docs-commands/prison_docs_command_23_mines.md) `mines.admin`
-- [/mines block](docs-commands/prison_docs_command_24_mines_block.md) `mines.admin`
-- [/mines command](docs-commands/prison_docs_command_25_mines_command.md) `mines.admin`
-- [/mines create \[mineName\] ](docs-commands/prison_docs_command_26_mines_create.md) `mines.create`
-- [/mines delete \[mineName\] \[confirm\] ](docs-commands/prison_docs_command_27_mines_delete.md) `mines.delete`
-- [/mines info \[mineName\] \[page\] ](docs-commands/prison_docs_command_28_mines_info.md) `mines.info`
-- [/mines list \[page\] ](docs-commands/prison_docs_command_29_mines_list.md) `mines.list`
-- [/mines rename \[page\] ](docs-commands/prison_docs_command_41_mines_rename.md) `mines.rename`
-- [/mines reset \[mineName\] ](docs-commands/prison_docs_command_30_mines_reset.md) `mines.reset`
-- [/mines set](docs-commands/prison_docs_command_31_mines_set.md) `mines.admin`
-- [/mines stats](docs-commands/prison_docs_command_32_mines_stats.md) `mines.stats`
-- [/mines tp \[mineName\] ](docs-commands/prison_docs_command_33_mines_tp.md) `mines.tp` `mines.tp.[mineName]`
-- [/mines wand](docs-commands/prison_docs_command_34_mines_wand.md) `mines.wand`
-- [/mines whereami](docs-commands/prison_docs_command_35_mines_whereami.md) `mines.whereami`
+- /mines `mines.admin`
+- /mines blockEvents
+- /mines block `mines.admin`
+- /mines command `mines.admin`
+- /mines create \[mineName\]  `mines.create`
+- /mines delete \[mineName\] \[confirm\]  `mines.delete`
+- /mines info \[mineName\] \[page\]  `mines.info`
+- /mines list \[page\]  `mines.list`
+- /mines rename \[page\]  `mines.rename`
+- /mines reset \[mineName\]  `mines.reset`
+- /mines set  `mines.admin`
+- /mines stats  `mines.stats`
+- /mines tp \[mineName\]  `mines.tp` `mines.tp.[mineName]`
+- /mines wand  `mines.wand`
+- /mines whereami  `mines.whereami`
 
 **MORE COMMANDS: _Guidebook TO-DO_** (Work-In-Progress)
 
-- [/sellall](docs-commands/prison_docs_command_10_sellall.md) `prison.admin` `none for GUI`
-- [/prisonmanager](docs-commands/prison_docs_command_36_prisonmanager.md) `prison.admin for Admin GUI` `none for Players GUIs`
-- [/prestiges](docs-commands/prison_docs_command_37_prestiges.md) `none`
-- [/prestige](docs-commands/prison_docs_command_38_prestige.md) `ranks.user` `ranks.rankup.prestiges`
-- [/rankupMax \[ladder\]](docs-commands/prison_docs_command_39_rankupmax.md) `ranks.user` `ranks.rankupmax` `ranks.rankupmax.[ladderName]`
-- [/rankup \[ladder\]](docs-commands/prison_docs_command_40_rankup.md) `ranks.user` `ranks.rankup.[ladderName]`
+- /sellall `prison.admin` `none for GUI`
+- /prisonmanager `prison.admin for Admin GUI` `none for Players GUIs`
+- /prestiges `none`
+- /prestige `ranks.user` `ranks.rankup.prestiges`
+- /rankupMax \[ladder\] `ranks.user` `ranks.rankupmax` `ranks.rankupmax.[ladderName]`
+- /rankup \[ladder\] `ranks.user` `ranks.rankup.[ladderName]`
 - /gui \[gui\]
 - [/backpack](docs-commands/prison_docs_command_43_backpack.md)
 

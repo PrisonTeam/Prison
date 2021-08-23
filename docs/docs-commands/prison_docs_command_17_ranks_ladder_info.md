@@ -11,22 +11,19 @@ Edit a rank on the ladder side, like moving it from a ladder to another or also 
 
 ## SubCommands:
 
-- `/ranks ladder addrank [ladderName] [rankName] [position]`
+- `/ranks command` Sub-commands for Ladder commands
 - `/ranks ladder create [ladderName]`
 - `/ranks ladder delete [ladderName]`
-- `/ranks ladder delrank [ladderName] [rankName]`
-- `/ranks ladder listranks [ladderName]`
-- `/ranks ladder list`
+- `/ranks ladder list` Lists ladders
+- `/ranks ladder moveRank [ladderName] [rankName] [position]`
+- `/ranks ladder rankCostMultiplier [ladderName] [rankCostMultiplier]`
 
 ## How to use the command
 
 Execute the command or its variables like in the examples:
 
-- `/ranks ladder addranks default A 1` This will move the Ranks A from whatever it's to the default ladder as the first rank. 
 - `/ranks ladder create coolLadder` This will create a ladder named "coolLadder".
 - `/ranks ladder delete coolLadder` This will delete the ladder named "coolLadder" if found.
-- `/ranks ladder delrank default A` Delete a rank from the specified ladder.
-- `/ranks ladder listranks default` Shows a list of ranks of the "default" in the example.
 - `/ranks ladder list` Shows a list of ladders.
 
 ### Command Format

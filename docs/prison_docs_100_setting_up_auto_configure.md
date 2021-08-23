@@ -14,6 +14,7 @@ This document provides information on how to get started quickly using Prison's 
 This document covers how to run `/ranks autoConfigure`, it's options, and what to do after the command runs.
 
 
+
 Prison's Auto Configure will perform most of the basic configurations to get you up and running quickly.  This feature will perform the following tasks for you:
 
 
@@ -29,16 +30,23 @@ Prison's Auto Configure will perform most of the basic configurations to get you
 * Auto Configure now uses a new feature called Access by Rank.  This is automatically enabled for Mine Access and Access to TP for the players.  Access by Rank eliminates the need to use perms for these access.  As a player ranks up, they will gain access to ranks and mines, but all prior ranks and mines will automatically be included. 
 
 
+* Auto assign random Mine Liners to each mine. 
+
+
+* Auto generate 10 Prestige Ranks and have them enabled by default.
+
+
+* Enable Ladder Base Rank Cost Multiplier for the Prestiges ladder.  Once a player prestiges, this will enable a rank cost multiplier that will increase all rank cost.  As the player ranks upon the prestiges ladder, the rank costs will increase.
+
+
 * Enable Prison's Sellall feature and preload the default shop prices with about 98 items and blocks.  These defaults settings will allow your players to sell what they mine.
 
 
 * Enable Prison's Auto Features.  This includes, by default, auto pickup, auto smelt, and auto block.  It also enables other features such as providing XP for certain blocks, fortune, etc.  
 
 
-* ~~Enable Mine Access Permissions for each mine.~~  ~~The actual commands that are used are based upon the economy plugin that you have installed when you run this command.~~  ~~This allows prison to work with the minimal configurations of external plugins such as WorldGuard; all you need to do is to enable WorldGuard's global region with the flag `passthrough deny`. ~~  Notice: do not use the access by permissions since Access by Rank replaces it, but it can still be used if you want.
 
 
-* ~~Setup some of the most basic rank commands that will give your players the permissions needed to access the mines associated with their rank, and to TP to those mines.~~  Note: Permissions are no longer setup since prison does not need them for TP or Mine Access.  If you need to add any permission you would have to manually add them as usual to either Rank commands, or better yet, ladder commands: `/ranks command add help` and `/ranks ladder command add help`.  Both of these have the same extended set of placeholders that can be used and the list can be provided with: `/ranks command add placeholders`.
 
 
 
@@ -561,56 +569,6 @@ Note: This list of commands for Rank A is how all the other ranks will look, but
 [04:21:51 INFO]: Click a command to remove it.
 [04:21:51 INFO]: * /lp user {player} permission set mines.a
 [04:21:51 INFO]: * /lp user {player} permission set mines.tp.a
-[04:21:51 INFO]: * /lp user {player} permission unset mines.b
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.b
-[04:21:51 INFO]: * /lp user {player} permission unset mines.c
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.c
-[04:21:51 INFO]: * /lp user {player} permission unset mines.d
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.d
-[04:21:51 INFO]: * /lp user {player} permission unset mines.e
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.e
-[04:21:51 INFO]: * /lp user {player} permission unset mines.f
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.f
-[04:21:51 INFO]: * /lp user {player} permission unset mines.g
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.g
-[04:21:51 INFO]: * /lp user {player} permission unset mines.h
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.h
-[04:21:51 INFO]: * /lp user {player} permission unset mines.i
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.i
-[04:21:51 INFO]: * /lp user {player} permission unset mines.j
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.j
-[04:21:51 INFO]: * /lp user {player} permission unset mines.k
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.k
-[04:21:51 INFO]: * /lp user {player} permission unset mines.l
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.l
-[04:21:51 INFO]: * /lp user {player} permission unset mines.m
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.m
-[04:21:51 INFO]: * /lp user {player} permission unset mines.n
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.n
-[04:21:51 INFO]: * /lp user {player} permission unset mines.o
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.o
-[04:21:51 INFO]: * /lp user {player} permission unset mines.p
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.p
-[04:21:51 INFO]: * /lp user {player} permission unset mines.q
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.q
-[04:21:51 INFO]: * /lp user {player} permission unset mines.r
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.r
-[04:21:51 INFO]: * /lp user {player} permission unset mines.s
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.s
-[04:21:51 INFO]: * /lp user {player} permission unset mines.t
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.t
-[04:21:51 INFO]: * /lp user {player} permission unset mines.u
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.u
-[04:21:51 INFO]: * /lp user {player} permission unset mines.v
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.v
-[04:21:51 INFO]: * /lp user {player} permission unset mines.w
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.w
-[04:21:51 INFO]: * /lp user {player} permission unset mines.x
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.x
-[04:21:51 INFO]: * /lp user {player} permission unset mines.y
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.y
-[04:21:51 INFO]: * /lp user {player} permission unset mines.z
-[04:21:51 INFO]: * /lp user {player} permission unset mines.tp.z
 [04:21:51 INFO]: [+] Add
 >
 ```
@@ -686,8 +644,14 @@ To convert the virtual mines you need to define mine's area.  There are two prim
 
 Use your feet - seriously ;)
 - Stand where you want the mine.  Or if it is a void world, fly to the position.
-- `/mines set area <mineName> feet`
-- This will create a 1x1x1 mine located at your feet.  It will include the liner.
+- `/mines set area <mineName> feet 20 7`
+- This will initially create a 1x1x1 mine located at your feet along with the liner.  
+- The keyword `feet` identifies that the coordinates for the location of the mine is based upon your feet location.
+- The first number, 20, is used to expand the walls by 20 blocks in all directions.  The result will be a mine with a width of 41 and a depth of 41 blocks.
+- The second number, 7, indicates the increase of the bottom of the mine.  The result will be a mine with a depth of 8 blocks (1 block for the initial size, plus 8 more).
+
+
+This one command actually runs the next two commands automatically:
 
 
 - `/mines set size <mineName> wall 20`
@@ -696,13 +660,14 @@ Use your feet - seriously ;)
 - If a void world, you may need to `force` the liner.  Now would also be a good time to change it if you wish.
 
 
-- `/mines set liner <mineName> ?` 
+- `/mines set liner ?` 
 - Will show all available edges and patterns.
     - **Available Edges: [top bottom north east south west walls]**
-    - **Available Patterns: [bright white blackAndWhite seaEchos obby bedrock glowingPlanks darkOakPrismarine beacon bricked repair remove removeAll]**
+    - **Available Patterns for spigot 1.8.8: [bright white blackAndWhite seaEchos obby bedrock glowstone glowingPlanks darkOakPrismarine beacon bricked darkForest theColors repair remove removeAll]**
 - `/mines set liner <mineName> walls bright force`
 - `/mines set liner <mineName> bottom seaEchos force`
 
+Note: You can also set the ladder widths.  Please use the 'help' keyword for more information.
 
 
 

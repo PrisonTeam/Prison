@@ -15,7 +15,7 @@ Demote a player of a rank depending on the ladder you want.
 
 ## How to use the command
 
-Execute the command himself following the format shown in the example to demote a player:
+Execute the command itself following the format shown in the example to demote a player:
 
 - `/ranks demote [playerName] [ladder] [chargePlayers]`
 - `/ranks demote GABRYCA default`

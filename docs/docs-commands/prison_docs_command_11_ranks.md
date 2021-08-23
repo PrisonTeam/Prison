@@ -25,7 +25,7 @@ Main Prison Ranks command which will show all the subcommands to admins and open
 
 ## How to use the command
 
-Execute the command himself to get a list of commands like in the example: `/ranks`.
+Execute the command itself to get a list of commands like in the example: `/ranks`.
 This will also open a GUI to players showing a list of the ranks, you can enable or disable this in the config.yml.
 
 ### Command Format

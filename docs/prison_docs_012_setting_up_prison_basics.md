@@ -12,6 +12,7 @@ This document provides a quick overview on how to install Prison and get it runn
 
 # Download Prison
 
+
 Download Prison from one of the following sites:
 * [spigotmc.org's Prison History Page](https://www.spigotmc.org/resources/prison.1223/history).
 * [Polymart.org](https://polymart.org/resource/prison-1-8-x-1-17.678)
@@ -21,12 +22,10 @@ Download Prison from one of the following sites:
 
 Setting up Prison is simple:
 
-* Download Prison - Current Release
-    - Go to the SpigotMC.org Prison's resource page:
-        - [Prison Downloads](https://www.spigotmc.org/resources/prison.1223/history "Prison download can be found under the Version History tab")
-    - Click on the Version History tab if needed
-    - Choose the latest version to download
-    
+* **Download Prison - Current Releases**
+    - Prison's published releases
+
+    	
 * **Download Prison's Pre-Release Version**
     - Useful to access newer features and fixes
     - You can always find the latest alpha build on the Discord Server in the #alpha-versions channel:
@@ -40,7 +39,11 @@ Setting up Prison is simple:
 
 * Prison's startup information contains a lot of information.  If you ever have issues, check that information first since it probably will identify what the issues are.
 
-* Follow Prison's documentation on customization, but at this point it's ready for use. 
+
+* It is strongly suggested that `/ranks autoConfigure` is ran to initially setup your Prison environment.
+
+
+* Follow Prison's documentation on customization; at this point it's ready for use. 
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
@@ -134,7 +137,7 @@ It should also be noted that because of some of the limitations of MVdW, not all
 * **WorldGuard** - Recommended - Used to protect your worlds.  At a minimum setup the `__global__` region to protect your world from players.
 
 ```
-/rg flag __global__ passthrough deny
+/rg flag __global__ -w world passthrough deny
 ```
 
 
@@ -154,6 +157,9 @@ It should also be noted that because of some of the limitations of MVdW, not all
 
 * **TokenEnchant** - Recommended - Premium Plugin - This is one of the few recommended premium plugins that we would recommend, but it works very well with prison.  It took a lot of effort to get this to work with Prison, but is perhaps the most supported one too.  Keep in mind that it is premium and they also charge for other add on features, so the initial cost may not be your final cost.  
 [https://polymart.org/resource/tokenenchant-1-7-10-1-17.155](https://polymart.org/resource/tokenenchant-1-7-10-1-17.155)
+
+
+* **Prison Enchants** Newest supported enchantment plugin supported.  More information will be added soon.
 
 
 * **Crazy Enchantments** - Optional - Some support is provided for Crazy Enchantments, but it may not be at 100% in all areas. This is an open source project and supports Spigot 1.8 through 1.16.
