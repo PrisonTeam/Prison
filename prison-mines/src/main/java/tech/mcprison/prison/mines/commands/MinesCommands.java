@@ -2460,7 +2460,7 @@ public class MinesCommands
     				"Use 'ladderType' for the Edge: &3[&7none normal wide jumbo full&3]  Where 'normal' is " + 
     				"1 to 3 ladders wide.  'Wide' is up to 5 wide. 'Jumbo' is up to 7 wide. And 'full' " +
     				"is the full width.", def = "walls") String edge, 
-    		//@Arg(name = "adjustment", description = "How to adust the size [smaller, larger]", def = "larger") String adjustment,
+    		//@Arg(name = "adjustment", description = "How to adjust the size [smaller, larger]", def = "larger") String adjustment,
     		@Arg(name = "pattern", description = "pattern to use. '?' for a list of all patterns. " +
     				"'repair' will attempt to repair missing blocks outside of the liner. " +
     				"'remove' will remove the liner from the mine. 'removeAll' removes all liners from the mine. [?]", 

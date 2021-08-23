@@ -20,7 +20,9 @@ package tech.mcprison.prison;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Optional;
 
 import com.google.common.eventbus.EventBus;
@@ -74,6 +76,7 @@ public class Prison
     public static final int API_LEVEL = 3;
     
     private String minecraftVersion;
+    private List<Integer> versionMajMin;
     
     private long serverStartupTime;
 
@@ -574,6 +577,37 @@ public class Prison
 	{
 		return minecraftVersion;
 	}
+    
+    public List<Integer> getMVersionMajMin() {
+    	if ( versionMajMin == null ) {
+			
+    		this.versionMajMin = new ArrayList<>();
+    		
+    		String v = Prison.get().getMinecraftVersion();
+			String versionStr = v.substring( v.indexOf( "(MC:" ) + 4, v.lastIndexOf( ")" ) );
+			String[] vMN = versionStr.split( "\\." );
+			
+			for ( int x = 0; x < vMN.length; x++ ) {
+				String ver = vMN[x];
+				
+				try {
+					this.versionMajMin.add( 
+							Integer.parseInt( ver.trim() ) );
+				}
+				catch ( NumberFormatException e ) {
+					// ignore... just break out:
+					break;
+				}
+			}
+			
+//			Output.get().logInfo( "#### Prison.getMVersionMajMin() : " + 
+//					( versionMajMin != null && versionMajMin.size() > 0 ? versionMajMin.get(0) : "?" ) + " " +
+//					( versionMajMin != null && versionMajMin.size() > 1 ? versionMajMin.get(1) : "?" ) + " " +
+//					( versionMajMin != null && versionMajMin.size() > 2 ? versionMajMin.get(2) : "?" )
+//					);
+    	}
+    	return versionMajMin;
+    }
 
 	@Override
     public String getName() {

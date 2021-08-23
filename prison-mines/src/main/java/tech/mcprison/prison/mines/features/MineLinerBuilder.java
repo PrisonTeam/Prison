@@ -2,7 +2,9 @@ package tech.mcprison.prison.mines.features;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.BlockFace;
@@ -31,32 +33,63 @@ public class MineLinerBuilder {
 	
 	public enum LinerPatterns {
 		
-		bright,
-		white,
+		bright( 1, 8 ),
+		white( 1, 8 ),
 		
-		blackAndWhite,
-		seaEchos,
-		obby,
-		bedrock,
-		glowstone,
-		glowingPlanks,
-		darkOakPrismarine,
-		beacon,
-		bricked,
+		blackAndWhite( 1, 8 ),
+		seaEchos( 1, 8 ),
+		obby( 1, 8 ),
+		bedrock( 1, 8 ),
+		glowstone( 1, 8 ),
+		glowingPlanks( 1, 8 ),
+		darkOakPrismarine( 1, 8 ),
+		beacon( 1, 8 ),
+		bricked( 1, 8 ),
 		
-		darkForest,
-		theColors,
+		darkForest( 1, 8 ),
+		theColors( 1, 8 ),
 		
-		stronghold,
-		ruins,
-		zaged,
-		crimsonWaste,
-		cryingGold,
+		stronghold( 1, 17 ), // deepslate_bricks
+		ruins( 1, 16 ), // blackstone
+		zaged( 1, 16 ), // crying_obsidian
+		crimsonWaste( 1, 16 ), // crimson_hyphae
+		cryingGold( 1, 16 ), // crying_obsidian
 		
 		repair,
 		remove,
 		removeAll
 		;
+		
+		private final int versionMajor; 
+		private final int versionMinor;
+		private final boolean pattern;
+		
+		private LinerPatterns( int versionMajor, int versionMinor ) {
+			
+			this.versionMajor = versionMajor;
+			this.versionMinor = versionMinor;
+			
+			this.pattern = true;
+		}
+		private LinerPatterns() {
+			
+			this.versionMajor = 1;
+			this.versionMinor = 8;
+			
+			this.pattern = false;
+		}
+		
+		public int getVersionMajor() {
+			return versionMajor;
+		}
+
+		public int getVersionMinor() {
+			return versionMinor;
+		}
+
+		public boolean isPattern() {
+			return pattern;
+		}
 		
 		public static LinerPatterns fromString( String pattern ) {
 			LinerPatterns results = null;
@@ -72,21 +105,64 @@ public class MineLinerBuilder {
 			return results;
 		}
 
+		/**
+		 * <p>This function will provide a list of all patterns available, filtered
+		 * on compatible versions of the blocks used for the server version. This 
+		 * also include non-patterns too.
+		 * </p>
+		 * 
+		 * @return
+		 */
 		public static String toStringAll() {
 			StringBuilder sb = new StringBuilder();
 			
+			List<Integer> verMajMin = Prison.get().getMVersionMajMin();
+			int versionMin =  verMajMin.size() > 1 ? verMajMin.get(1) : 8;
+
 			for ( LinerPatterns pattern : values() )
 			{
-				if ( sb.length() > 0 ) {
-					sb.append( " " );
+				if ( !pattern.isPattern() ||
+						pattern.isPattern() && pattern.getVersionMinor() <= versionMin ) {
+					
+					if ( sb.length() > 0 ) {
+						sb.append( " " );
+					}
+					
+					sb.append(  pattern.name() );
 				}
-				
-				sb.append(  pattern.name() );
 			}
 			
 			return sb.toString();
 		}
 
+		
+		/**
+		 * <p>Will try to get a random liner pattern, filtered by 
+		 * non-patterns (repair, remove, removeAll) and for liners that 
+		 * would be incompatible for the given version of minecraft or spigot.
+		 * </p>
+		 * 
+		 * @return
+		 */
+		public static LinerPatterns getRandomLinerPattern() {
+			LinerPatterns results = null;
+			
+			List<Integer> verMajMin = Prison.get().getMVersionMajMin();
+			int versionMin =  verMajMin.size() > 1 ? verMajMin.get(1) : 8;
+			
+			int attempts = 0;
+			while ( results == null && attempts++ < 10 ) {
+				
+				int pos = new Random().nextInt( values().length );
+				LinerPatterns temp = values()[pos];
+				if ( temp.isPattern() && temp.getVersionMinor() <= versionMin ) {
+					results = temp;
+				}
+			}
+			
+			return results == null ? bright : results;
+		}
+		
 	}
 	
 	/** 
@@ -941,6 +1017,33 @@ public class MineLinerBuilder {
 		
 	}
 
+	
+//	public boolean isPatternValidForSpigotVersion() {
+//		boolean results = true;
+//		
+//		try {
+//			
+//			String v = Prison.get().getMinecraftVersion();
+//			
+//			String versionStr = v.substring( v.indexOf( "(MC:" ) + 4, v.lastIndexOf( "." ) );
+//			
+//			
+//			Output.get().logInfo( "#### MineLinerBuilder : " + 
+//					getPattern() + " " + getPatternMinVersion() + " : " +
+//					"Prison Version: " + v + "  " + versionStr );
+//		
+//			double version = Double.parseDouble( versionStr );
+//			
+//			if ( version < getPatternMinVersion() ) {
+//				
+//			}
+//		}
+//		catch ( NumberFormatException e ) {
+//			// ignore... just use all patterns
+//		}
+//		
+//		return results;
+//	}
 
 	public List<List<List<String>>> getPattern3d() {
 		return pattern3d;

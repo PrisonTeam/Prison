@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -1587,17 +1586,23 @@ public class SpigotPlatform
 	}
 	
 	private LinerPatterns getRandomLinerType() {
-		LinerPatterns[] liners = LinerPatterns.values();
 		
-		// Exclude the last 3 LinerPatterns since they are "repair", "remove" and "removeAll".
-		int pos = new Random().nextInt( liners.length - 3 );
-		LinerPatterns liner = liners[pos];
+		// Get a random pattern, filtered for this version of spigot:
+		LinerPatterns results = LinerPatterns.getRandomLinerPattern();
 		
-		// Just in case any of these are selected, choose another:
-		if ( liner ==LinerPatterns.remove || liner == LinerPatterns.removeAll || liner == LinerPatterns.repair ) {
-			liner = getRandomLinerType();
-		}
-		return liner;
+//		LinerPatterns[] liners = LinerPatterns.values();
+//		
+//		// Exclude the last 3 LinerPatterns since they are "repair", "remove" and "removeAll".
+//		int pos = new Random().nextInt( liners.length - 3 );
+//		LinerPatterns liner = liners[pos];
+//		
+//		// Just in case any of these are selected, choose another:
+//		if ( liner ==LinerPatterns.remove || liner == LinerPatterns.removeAll || liner == LinerPatterns.repair ) {
+//			liner = getRandomLinerType();
+//		}
+//		return liner;
+		
+		return results;
 	}
 	
 	/**
