@@ -590,8 +590,8 @@ public class MineLinerBuilder {
 			case blackAndWhite:
 				String[][] baw =
 				{
-						{ "obsidian", "pillar_quartz_block" },
-						{ "pillar_quartz_block", "coal_block" }
+						{ "obsidian", "quartz_pillar" },
+						{ "quartz_pillar", "coal_block" }
 				};
 				pattern2d = baw;
 				break;
@@ -600,9 +600,9 @@ public class MineLinerBuilder {
 			case seaEchos:
 				String[][] seaEchos =
 				{
-						{ "pillar_quartz_block", "pillar_quartz_block", "pillar_quartz_block" },
-						{ "pillar_quartz_block", "obsidian", "obsidian" },
-						{ "pillar_quartz_block", "obsidian", "sea_lantern" },
+						{ "quartz_pillar", "quartz_pillar", "quartz_pillar" },
+						{ "quartz_pillar", "obsidian", "obsidian" },
+						{ "quartz_pillar", "obsidian", "sea_lantern" },
 				};
 				pattern2d = seaEchos;
 				break;
