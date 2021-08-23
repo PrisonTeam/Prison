@@ -22,7 +22,9 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# v3.2.10-alpha.14b 2021-08-22
+# v3.2.10 2021-08-22
+
+* **Prison Release v3.2.10**
 
 
 * **Updated to the support of the Prison's ExplosiveBlockBreakEvent. There were a few adjustments that were needed.**
