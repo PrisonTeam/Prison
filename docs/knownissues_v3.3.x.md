@@ -19,7 +19,11 @@
 5. Add to /ranks player the detail information on rank cost multipliers
 6. DONE: For '/ranks autoConfigure' add an alias to '/prison autoConfigure'
 
-7. Change /ranks list so if non-op it does not show all the extra details.  A simplified list for plain players.
+7. DONE: Change /ranks list so if non-op it does not show all the extra details.  A simplified list for plain players.
+
+8. Liners: Some are only for later releases and do not work with 1.8.8.  So need to setup something to restrict the liners that are not functional for the older releases of spigot.
+
+9. Hook up Prison's Explosion event. 
 
 
 ### Others
@@ -44,11 +48,12 @@
  7. Hook up prison's event handler for prison's explosion event
 
 
-* Maybe provide a /rankcost command?  Show current player rank costs with rank cost multipliers applied
+* DONE: Modified /ranks list to provide this feature
+ - Maybe provide a /rankcost command?  Show current player rank costs with rank cost multipliers applied
  - /rankcost <player> <optional-ranks>
  - Optional ranks can be provided as parameters and it will adjust the calculations.
    - Example: /rankcost RoyalBlueRanger A p5
-    * will show the rank costs based upon rank A and p5, not matter the players current ranks
+   * will show the rank costs based upon rank A and p5, no matter the players current ranks
  - Will allow players to better understand what rankup costs will be if they prestige twice or 10 times.
 
 
@@ -83,7 +88,7 @@
 
 * DONE: /ranks ladder moveRank did not work to move from one ladder to another
 
-* When adding a new rank or mine, auto reload all placeholders so they pick up the new entry.
+* DONE: When adding a new rank or mine, auto reload all placeholders so they pick up the new entry.
 
 * Test BlockEvent perms... they appear like they don't work.
 
