@@ -8,7 +8,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
 
-import me.pulsi_.prisonenchants.events.PEExplosionEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.output.ChatDisplay;
@@ -71,7 +70,7 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 
 	@Override
 	public void initialize() {
-		boolean isEventEnabled = isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
+		boolean isEventEnabled = isBoolean( AutoFeatures.isProcessPrisons_ExplosiveBlockBreakEvents );
 		
 		if ( !isEventEnabled ) {
 			return;
@@ -82,7 +81,7 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 			Output.get().logInfo( "AutoManager: Trying to register ExplosiveBlockBreakEvent Listener" );
 			
 			
-			String eP = getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
+			String eP = getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEvents );
 			BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
 			
 			if ( eventPriority != BlockBreakPriority.DISABLED ) {
@@ -189,20 +188,13 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 		// Check to see if the class ExplosiveEvent even exists:
 		try {
 			
-			Class.forName( "me.pulsi_.prisonenchants.enchantments.custom.explosive.ExplosiveEvent", false, 
-							this.getClass().getClassLoader() );
-			
-
 			ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
-					"ExplosiveEvent", 
-					new SpigotHandlerList( PEExplosionEvent.getHandlerList()) );
+					"ExplosiveBlockBreakEvent", 
+					new SpigotHandlerList( ExplosiveBlockBreakEvent.getHandlerList()) );
 
 			if ( eventDisplay != null ) {
 				sb.append( eventDisplay.toStringBuilder() );
 			}
-		}
-		catch ( ClassNotFoundException e ) {
-			// PrisonEnchants is not loaded... so ignore.
 		}
 		catch ( Exception e ) {
 			Output.get().logInfo( "AutoManager: PrisonEnchants failed to load. [%s]", e.getMessage() );

@@ -25,6 +25,9 @@ These build logs represent the work that has been going on within prison.
 # v3.2.10-alpha.14b 2021-08-22
 
 
+* **Updated to the support of the Prison's ExplosiveBlockBreakEvent. There were a few adjustments that were needed.**
+
+
 * **Some blocks within the liners are not compatible with all versions of bukkit/spigot/minecraft.**
 Added minimal versions to the patterns so as to help prevent the use of the wrong patterns for the server version.
 
