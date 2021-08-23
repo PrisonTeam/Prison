@@ -7,7 +7,7 @@
 
 * **[Prison README](prison_readme.md)** High level information, plus how to use with gradle builds.
 * **[Prison License](prison_license.md)** GNU General Public License
-* **[Prison Change logs](changelog_v3.3.x.md)** Detailed changes to prison.
+* **[Prison Change logs](prison_changelogs.md)** Detailed changes to prison.
 * **[Prison Known Issues](knownissues_v3.3.x.md)** Known Issues and To Do's.
 * **[Prison Discord Server](https://discord.gg/DCJ3j6r)** Get help here.
 
@@ -16,24 +16,16 @@
 
 
 ## Build logs
- - **[v3.3.0.alpha.3 - Current](changelog_v3.3.x.md)**
- - **[v3.2.0 - 2019-12-03](prison_changelog_v3.2.0.md)**&nbsp;&nbsp;
-**[v3.2.1 - 2020-09-27](prison_changelog_v3.2.1.md)**&nbsp;&nbsp;
-**[v3.2.2 - 2020-11-21](prison_changelog_v3.2.2.md)**&nbsp;&nbsp;
-**[v3.2.3 - 2020-12-25](prison_changelog_v3.2.3.md)**&nbsp;&nbsp;
-**[v3.2.4 - 2021-03-01](prison_changelog_v3.2.4.md)**&nbsp;&nbsp;
-**[v3.2.5 - 2021-04-01](prison_changelog_v3.2.5.md)**&nbsp;&nbsp;
-**[v3.2.6 - 2021-04-11](prison_changelog_v3.2.6.md)**&nbsp;&nbsp;
-**[v3.2.7 - 2021-05-02](prison_changelog_v3.2.7.md)**&nbsp;&nbsp;
-**[v3.2.8 - 2021-06-17](prison_changelog_v3.2.8.md)**&nbsp;&nbsp;
-**[v3.2.9 - 2021-07-03](prison_changelog_v3.2.9.md)**
+ - **[v3.3.0-alpha - Current](changelog_v3.3.x.md)**
+ - [v3.2.0 through v3.2.10](prison_changelogs.md)
+ 
 
 
  
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
 
-# Prison Now Fully Supports Spigot 1.17 and Java 16 !!
+# Prison Now Fully Supports Spigot 1.17.1 and Java 16 !!
 
 
 ## Prison now has Access By Rank to Reduce the number of Permissions needed!
