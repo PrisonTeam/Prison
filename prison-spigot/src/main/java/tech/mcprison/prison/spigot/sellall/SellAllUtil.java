@@ -1,17 +1,8 @@
 package tech.mcprison.prison.spigot.sellall;
 
-
-import java.io.File;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
+import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
+import com.cryptomorin.xseries.XMaterial;
+import com.cryptomorin.xseries.XSound;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -21,18 +12,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import com.cryptomorin.xseries.XMaterial;
-
-import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
@@ -45,892 +30,605 @@ import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+
 /**
- * SellAllUtil class, this will replace the whole SellAll mess of a code of SellAllPrisonCommands.
- *
- * @author GABRYCA
- */
+ * @author AnonymousGCA (GABRYCA)
+ * */
 public class SellAllUtil {
 
     private static SellAllUtil instance;
-//    private final boolean isEnabled = isEnabled();
-    private File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-    public Configuration sellAllConfig = SpigotPrison.getInstance().updateSellAllConfig();
-    public static List<String> activePlayerDelay = new ArrayList<>();
-    public static Map<Player, Double> activeAutoSellPlayers = new HashMap<>();
-//    public boolean signUsed = false;
+    private static final boolean isEnabled = getBoolean(SpigotPrison.getInstance().getConfig().getString("sellall"));
     private final Compatibility compat = SpigotPrison.getInstance().getCompatibility();
     private final ItemStack lapisLazuli = compat.getLapisItemStack();
-    private String idBeingProcessedBackpack = null;
-    public inventorySellMode mode = inventorySellMode.PlayerInventory;
-    private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
+    public Configuration sellAllConfig;
+    private HashMap<XMaterial, Double> sellAllBlocks;
+    private HashMap<String, Double> sellAllPrestigeMultipliers;
+    private HashMap<Player, Double> autoSellEarningsNotificationWaiting = new HashMap<>();
+    private ArrayList<XMaterial> sellAllItemTriggers;
+    private ArrayList<Player> activePlayerDelay = new ArrayList<>();
+    private List<String> sellAllDisabledWorlds;
+    private Configuration messages;
+    private double defaultMultiplier;
+    private int defaultSellAllDelay;
+    private int defaultAutoSellEarningNotificationDelay;
+    private Sound sellAllSoundSuccess;
+    private Sound sellAllSoundFail;
+    public String sellAllSignTag;
+    public String sellAllCurrency;
+    public String permissionSellAllSell;
+    public String permissionBypassSign;
+    public String permissionGUI;
+    public String permissionPlayerGUI;
+    public String permissionPrefixBlocks;
+    public String permissionUseSign;
+    public String permissionAutoSellPerUserToggleable;
+    public String permissionItemTrigger;
+    public boolean isPerBlockPermissionEnabled;
+    public boolean isAutoSellEnabled;
+    public boolean isAutoSellPerUserToggleable;
+    public boolean isAutoSellPerUserToggleablePermEnabled;
+    public boolean isAutoSellNotificationEnabled;
+    public boolean isAutoSellEarningNotificationDelayEnabled;
+    public boolean isSellAllDelayEnabled;
+    public boolean isSellAllSellPermissionEnabled;
+    public boolean isSellAllItemTriggerEnabled;
+    public boolean isSellAllItemTriggerPermissionEnabled;
+    public boolean isSellAllGUIEnabled;
+    public boolean isSellAllPlayerGUIEnabled;
+    public boolean isSellAllGUIPermissionEnabled;
+    public boolean isSellAllPlayerGUIPermissionEnabled;
+    public boolean isSellAllMultiplierEnabled;
+    public boolean isSellAllPermissionMultiplierOnlyHigherEnabled;
+    public boolean isSellAllSignEnabled;
+    public boolean isSellAllBySignOnlyEnabled;
+    public boolean isSellAllSignNotifyEnabled;
+    public boolean isSellAllSignPermissionToUseEnabled;
+    public boolean isSellAllNotificationEnabled;
+    public boolean isSellAllSoundEnabled;
+    public boolean isSellAllBackpackItemsEnabled;
+    public boolean isSellAllMinesBackpacksPluginEnabled;
 
     /**
-     * SellAll mode.
-     */
-    public enum inventorySellMode {
-        PlayerInventory,
-        MinesBackPack,
-        PrisonBackPackSingle,
-        PrisonBackPackMultiples
-    }
-
-    /**
-     * Get SellAll instance.
-     */
+     * Get cached instance of SellAllUtil, if present, if not then Initialize it, if SellAll is disabled return null.
+     *
+     * @return SellAllUtil.
+     * */
     public static SellAllUtil get() {
-        return instanceUpdater();
-    }
-
-    public Configuration getSellAllConfig(){
-        return sellAllConfig;
-    }
-
-//    /**
-//     * Use this to toggle the SellAllSign, essentially this will tell to the SellAll Sell command that you're using a sign
-//     * for SellAll.
-//     */
-//    public void toggleSellAllSign() {
-//        sellAllSignToggler();
-//    }
-
-    /**
-     * Get the money to give to the Player depending on the multiplier.
-     * This can be a bit like the SellAll Sell command, but without sellall sounds and options.
-     *
-     * @param player      - Player
-     * @param removeItems - True to remove the items from the Player, False to get only the value of the Money + Multiplier
-     *                    - Without touching the Player's inventory.
-     * @return money
-     */
-    public double getMoneyWithMultiplier(Player player, boolean removeItems) {
-        return getMoneyFinal(player, removeItems);
-    }
-
-    /**
-     * Get the player multiplier, requires SpigotPlayer.
-     *
-     * @param sPlayer SpigotPlayer
-     * @return multiplier
-     */
-    public double getMultiplier(SpigotPlayer sPlayer) {
-        return getMultiplierMethod(sPlayer);
-    }
-
-    /**
-     * Set sellSll currency by name
-     *
-     * @param currency - String currency name
-     * @return error - true if an error occurred.
-     */
-    public boolean setCurrency(String currency) {
-        return sellAllCurrencySaver(currency);
-    }
-
-    /**
-     * Check if SellAll's enabled.
-     */
-    public boolean isEnabled() {
-        return getBoolean(SpigotPrison.getInstance().getConfig().getString("sellall"));
-    }
-
-    /**
-     * SellAll config updater.
-     */
-    public void updateSellAllConfig() {
-        sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-        sellAllConfig = YamlConfiguration.loadConfiguration(sellAllFile);
-    }
-
-    /**
-     * Enable or disable SellAllDelay
-     *
-     * @param enableBoolean - True to enable and False to disable.
-     * @return error - True if an error occurred.
-     */
-    public boolean enableDelay(boolean enableBoolean) {
-        return sellAllDelayToggle(enableBoolean);
-    }
-
-    /**
-     * Set SellAll delay.
-     *
-     * @param delayValue
-     * @return error - True if error occurred.
-     */
-    public boolean setDelay(int delayValue) {
-        return sellAllDelaySave(delayValue);
-    }
-
-    /**
-     * Enable or disable SellAll AutoSell.
-     *
-     * @param enableBoolean - True to enable or False to disable
-     * @return error - True if error occurred.
-     */
-    public boolean enableAutoSell(boolean enableBoolean) {
-        return sellAllAutoSellToggle(enableBoolean);
-    }
-
-    /**
-     * Enable or disable perUserToggleable autoSell.
-     *
-     * @param enableBoolean - True to enable or False to disable
-     * @return error - True if error occurred.
-     */
-    public boolean enableAutoSellPerUserToggleable(boolean enableBoolean) {
-        return sellAllAutoSellPerUserToggleableToggle(enableBoolean);
-    }
-
-    /**
-     * Enable or disable autosell to a player.
-     *
-     * @param p - Player
-     *
-     * @return error - True if error occurred, false if success.
-     * */
-    public boolean autoSellPlayerToggle(Player p) {
-        return sellAllAutoSellPlayerToggle(p);
-    }
-
-    /**
-     * SellAll Sell command essentially, but in a method.
-     * NOTE: It applies sellAll options from the config, except the sellAll permission one.
-     *
-     * @param p - Player affected by sellall.
-     */
-    public void sellAllSell(Player p) {
-        sellAllSellPlayer(p);
-    }
-    
-    public void sellAllSell(Player p, boolean notifications, boolean bySignOnly) {
-    	sellAllSellPlayer(p, notifications, bySignOnly);
-    }
-
-    /**
-     * Open SellAll GUI for Players or Admins depending on their status and/or permissions.
-     *
-     * @param p - Player that should open the GUI.
-     * @return boolean - True if a GUI got open with success, false if Disabled or missing all permissions.
-     */
-    public boolean openGUI(Player p) {
-        return sellAllOpenGUI(p);
-    }
-
-    /**
-     * Add SellAll Block by ID.
-     *
-     * @param itemID - String name of Block.
-     * @param value  - Value of the block when sold.
-     * @return error - True if an error occurred, false if success.
-     */
-    public boolean addBlock(String itemID, Double value) {
-        return sellAllAddBlockAction(itemID, value);
-    }
-
-    /**
-     * Add SellAll Block by Material.
-     *
-     * @param material - Material of Block.
-     * @param value    - Value of the block when sold.
-     * @return error - True if an error occurred, false if success.
-     */
-    public boolean addBlock(Material material, Double value) {
-        return sellAllAddBlockAction(material, value);
-    }
-
-    /**
-     * Add SellAll Block by ItemStack.
-     *
-     * @param itemStack - ItemStack of Block.
-     * @param value     - Value of the block when sold.
-     * @return error - True if an error occurred, false if success.
-     */
-    public boolean addBlock(ItemStack itemStack, Double value) {
-        return sellAllAddBlockAction(itemStack, value);
-    }
-
-    /**
-     * Add SellAll Block by ItemStack.
-     *
-     * @param xMaterial - XMaterial of Block.
-     * @param value     - Value of the block when sold.
-     * @return error - True if an error occurred, false if success.
-     */
-    public boolean addBlock(XMaterial xMaterial, Double value) {
-        return sellAllAddBlockAction(xMaterial, value);
-    }
-
-    /**
-     * <p>This will add the XMaterial and value to the sellall.
-     * This will update even if the sellall has not been enabled.
-     * </p>
-     *
-     * @param blockAdd - XMaterial of the Block to add.
-     * @param value    - Double value when sold.
-     */
-    public void sellAllAddCommand(XMaterial blockAdd, Double value) {
-        sellAllAddCommandMethod(blockAdd, value);
-    }
-
-    /**
-     * Remove/Delete SellAll Block from the config.
-     *
-     * @param itemID - String name of Block.
-     * @return error - True if an error occurred or missing item in the config, False if success.
-     */
-    public boolean deleteBlock(String itemID) {
-        return sellAllDeleteAction(itemID);
-    }
-
-    /**
-     * Remove/Delete SellAll Block from the config.
-     *
-     * @param material - Material of Block.
-     * @return error - True if an error occurred or missing item in the config, False if success.
-     */
-    public boolean deleteBlock(Material material) {
-        return sellAllDeleteAction(material);
-    }
-
-    /**
-     * Remove/Delete SellAll Block from the config.
-     *
-     * @param itemStack - ItemStack of Block.
-     * @return error - True if an error occurred or missing item in the config, False if success.
-     */
-    public boolean deleteBlock(ItemStack itemStack) {
-        return sellAllDeleteAction(itemStack);
-    }
-
-    /**
-     * Remove/Delete SellAll Block from the config.
-     *
-     * @param xMaterial - XMaterial of Block.
-     * @return error - True if an error occurred or missing item in the config, False if success.
-     */
-    public boolean deleteBlock(XMaterial xMaterial) {
-        return sellAllDeleteAction(xMaterial);
-    }
-
-    /**
-     * Edit SellAll Block.
-     *
-     * @param itemID - String name of Block.
-     * @param value  - Double value when Sold.
-     *
-     * @return error - True if error occurred or block is missing in the config, False if success.
-     */
-    public boolean editBlock(String itemID, Double value) {
-        return sellAllEditBlockAction(itemID, value);
-    }
-
-    /**
-     * Edit SellAll Block.
-     *
-     * @param material - Material of Block.
-     * @param value  - Double value when Sold.
-     *
-     * @return error - True if error occurred or block is missing in the config, False if success.
-     */
-    public boolean editBlock(Material material, Double value) {
-        return sellAllEditBlockAction(material, value);
-    }
-
-    /**
-     * Edit SellAll Block.
-     *
-     * @param itemStack - ItemStack of Block.
-     * @param value  - Double value when Sold.
-     *
-     * @return error - True if error occurred or block is missing in the config, False if success.
-     */
-    public boolean editBlock(ItemStack itemStack, Double value) {
-        return sellAllEditBlockAction(itemStack, value);
-    }
-
-    /**
-     * Edit SellAll Block.
-     *
-     * @param xMaterial - XMaterial of Block.
-     * @param value  - Double value when Sold.
-     *
-     * @return error - True if error occurred or block is missing in the config, False if success.
-     */
-    public boolean editBlock(XMaterial xMaterial, Double value) {
-        return sellAllEditBlockAction(xMaterial, value);
-    }
-
-    /**
-     * Add SellAll Multiplier.
-     *
-     * @param prestige - Prestige name to hook.
-     * @param multiplier - Multiplier Double Value.
-     *
-     * @return error - True if error occurred and false if success.
-     * */
-    public boolean addMultiplier(String prestige, Double multiplier) {
-        return sellAllAddMultiplierAction(prestige, multiplier);
-    }
-
-    /**
-     * Delete SellAll Multiplier.
-     *
-     * @param prestige - Prestige with the multiplier
-     *
-     * @return error - True if error occurred or the Multiplier wasn't found, false if success.
-     * */
-    public boolean deleteMultiplier(String prestige) {
-        return sellAllDeleteMultiplierAction(prestige);
-    }
-
-    /**
-     * Enable or disable SellAll Item Trigger feature.
-     * This's a feature that makes the player able to Shift and Right click
-     * On an item in his hand to trigger sellall.
-     *
-     * @param enableInput - True to enable, False to disable.
-     *
-     * @return error - True if error occurred, False if success.
-     * */
-    public boolean toggleItemTrigger(boolean enableInput) {
-        return sellAllItemToggle(enableInput);
-    }
-
-    /**
-     * Add an Item to the SellAll item Triggers.
-     *
-     * @param itemID - String name of the Item
-     *
-     * @return error - True if an error occurred, False if success.
-     * */
-    public boolean addItemTrigger(String itemID) {
-        return sellAllAddTrigger(itemID);
-    }
-
-    /**
-     * Add an Item to the SellAll item Triggers.
-     *
-     * @param itemMaterial - XMaterial of the Item
-     *
-     * @return error - True if an error occurred, False if success.
-     * */
-    public boolean addItemTrigger(XMaterial itemMaterial) {
-        return sellAllAddTrigger(itemMaterial);
-    }
-
-    /**
-     * Add an Item to the SellAll item Triggers.
-     *
-     * @param itemMaterial - Material of the Item
-     *
-     * @return error - True if an error occurred, False if success.
-     * */
-    public boolean addItemTrigger(Material itemMaterial) {
-        return sellAllAddTrigger(itemMaterial);
-    }
-
-    /**
-     * Add an Item to the SellAll item Triggers.
-     *
-     * @param itemStack - ItemStack of the Item
-     *
-     * @return error - True if an error occurred, False if success.
-     * */
-    public boolean addItemTrigger(ItemStack itemStack) {
-        return sellAllAddTrigger(itemStack);
-    }
-
-    /**
-     * Delete a sellAll Item trigger.
-     *
-     * @param itemID - Name of the item.
-     *
-     * @return error - True if error occurred or item not found, False if success.
-     * */
-    public boolean deleteItemTrigger(String itemID) {
-        return sellAllDeleteTrigger(itemID);
-    }
-
-    /**
-     * Delete a sellAll Item trigger.
-     *
-     * @param itemMaterial - Material of the item.
-     *
-     * @return error - True if error occurred or item not found, False if success.
-     * */
-    public boolean deleteItemTrigger(XMaterial itemMaterial) {
-        return sellAllDeleteTrigger(itemMaterial);
-    }
-
-    /**
-     * Delete a sellall Item trigger.
-     *
-     * @param itemMaterial - Material of the item.
-     *
-     * @return error - True if error occurred or item not found, False if success.
-     * */
-    public boolean deleteItemTrigger(Material itemMaterial) {
-        return sellAllDeleteTrigger(itemMaterial);
-    }
-
-    /**
-     * Delete a sellAll Item trigger.
-     *
-     * @param itemStack - ItemStack of the item.
-     *
-     * @return error - True if error occurred or item not found, False if success.
-     * */
-    public boolean deleteItemTrigger(ItemStack itemStack) {
-        return sellAllDeleteTrigger(itemStack);
-    }
-
-    /**
-     * Check if the world the player is in is disabled.
-     *
-     * @param p - Player
-     *
-     * @return boolean - true if the player is in a disabled world, false if not.
-     * */
-    public boolean isDisabledWorld(Player p) {
-        return playerPositionIsDisabledWorld(p);
-    }
-
-    /**
-     * Add Player to AutoSell delay for earned money notification.
-     * This will add the player only if missing, if already added then will do nothing.
-     * */
-    public void addToAutoSellTask(Player p) {
-        if (!activeAutoSellPlayers.containsKey(p) && getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Enabled"))) {
-            activeAutoSellPlayers.put(p, 0.00);
-            int delay = Integer.parseInt(sellAllConfig.getString("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Delay_Seconds"));
-            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> taskSellAllAutoActions(p), 20L * delay);
+        if (!isEnabled){
+            return null;
         }
+        if (instance == null){
+            instance = new SellAllUtil();
+            instance.initCachedData();
+        }
+        return instance;
     }
 
     /**
-     * Remove Player from AutoSell delay for earned money notification.
-     * This's usually handled only internally and should be used only for some rare exceptions.
+     * Return boolean value from String.
+     *
+     * @return boolean.
      * */
-    public void removeFromAutoSellTask(Player p){
-        activeAutoSellPlayers.remove(p);
-    }
-
-    /**
-     * Java getBoolean's broken so I made my own.
-     */
-    public boolean getBoolean(String string) {
+    public static boolean getBoolean(String string) {
         return string != null && string.equalsIgnoreCase("true");
     }
 
-
-
-    private boolean playerPositionIsDisabledWorld(Player p) {
-        updateSellAllConfig();
-        String worldName = p.getWorld().getName();
-        List<String> disabledWorlds = sellAllConfig.getStringList("Options.DisabledWorlds");
-        return disabledWorlds.contains(worldName);
+    /**
+     * Get an ArrayList of SellAllItemTriggers as XMaterials.
+     * These items will trigger sellall when a player hold them and then do shift+right click in the air.
+     *
+     * @return ArrayList of XMaterials.
+     * */
+    public ArrayList<XMaterial> getItemTriggerXMaterials(){
+        return sellAllItemTriggers;
     }
 
-    private boolean sellAllDeleteTrigger(ItemStack itemStack) {
-        try {
-            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("ShiftAndRightClickSellAll.Items." + itemStack.getType().name() + ".ITEM_ID", null);
-            conf.set("ShiftAndRightClickSellAll.Items." + itemStack.getType().name(), null);
-            conf.save(sellAllFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return true;
+    /**
+     * Get an ArrayList of SellAllItemTriggers as Materials.
+     * This will essentially do a conversion of the cached internal XMaterial ArrayList of SellAllItemTriggers.
+     *
+     * @return ArrayList of Materials.
+     * */
+    public ArrayList<Material> getItemTriggerMaterials(){
+        if (sellAllItemTriggers == null || sellAllItemTriggers.isEmpty()){
+            return new ArrayList<>();
         }
-        updateSellAllConfig();
-        return false;
+
+        ArrayList<Material> materials = new ArrayList<>();
+
+        for (XMaterial xMaterial : sellAllItemTriggers){
+            materials.add(xMaterial.parseMaterial());
+        }
+
+        return materials;
     }
 
-    private boolean sellAllDeleteTrigger(Material itemMaterial) {
-        try {
-            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("ShiftAndRightClickSellAll.Items." + itemMaterial.name() + ".ITEM_ID", null);
-            conf.set("ShiftAndRightClickSellAll.Items." + itemMaterial.name(), null);
-            conf.save(sellAllFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return true;
+    /**
+     * Get SellAll XMaterial or Lapis (As Lapis is weird) from an ItemStack.
+     *
+     * @param itemStack - ItemStack.
+     *
+     * @return XMaterial.
+     * */
+    public XMaterial getXMaterialOrLapis(ItemStack itemStack) {
+        if (itemStack.isSimilar(lapisLazuli)) {
+            return XMaterial.LAPIS_LAZULI;
         }
-        updateSellAllConfig();
-        return false;
+        return XMaterial.matchXMaterial(itemStack);
     }
 
-    private boolean sellAllDeleteTrigger(XMaterial itemMaterial) {
-        try {
-            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("ShiftAndRightClickSellAll.Items." + itemMaterial.name() + ".ITEM_ID", null);
-            conf.set("ShiftAndRightClickSellAll.Items." + itemMaterial.name(), null);
-            conf.save(sellAllFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return true;
-        }
-        updateSellAllConfig();
-        return false;
+    /**
+     * Return SellAll Blocks HashMap cached values.
+     *
+     * @return HashMap of XMaterial-Double.
+     * */
+    public HashMap<XMaterial, Double> getSellAllBlocks() {
+        return sellAllBlocks;
     }
 
-    private boolean sellAllDeleteTrigger(String itemID) {
-        if (sellAllConfig.getString("Options.ShiftAndRightClickSellAll.Items." + itemID + ".ITEM_ID") == null){
-            return true;
-        }
-
-        try {
-            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("ShiftAndRightClickSellAll.Items." + itemID + ".ITEM_ID", null);
-            conf.set("ShiftAndRightClickSellAll.Items." + itemID, null);
-            conf.save(sellAllFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return true;
-        }
-        updateSellAllConfig();
-        return false;
+    /**
+     * Return SellAll Prestige Multiplier HashMap read before from config on init.
+     *
+     * HashMap details:
+     * String is the name of the Prestige.
+     * Double is the multiplier (default 1).
+     *
+     * @return HashMap of String-Double.
+     * */
+    public HashMap<String, Double> getPrestigeMultipliers() {
+        return sellAllPrestigeMultipliers;
     }
 
-    private boolean sellAllAddTrigger(ItemStack blockAdd) {
-        try {
-            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("ShiftAndRightClickSellAll.Items." + blockAdd.getType().name() + ".ITEM_ID", blockAdd.getType().name());
-            conf.save(sellAllFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return true;
-        }
-        updateSellAllConfig();
-        return false;
-    }
+    /**
+     * Get HashMap of XMaterials and amounts from an Inventory.
+     *
+     * @param inv - Inventory.
+     *
+     * @return HashMap of XMaterials and Integers.
+     * */
+    public HashMap<XMaterial, Integer> getXMaterialsHashMapFromInventory(Inventory inv){
 
-    private boolean sellAllAddTrigger(Material blockAdd) {
-        try {
-            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("ShiftAndRightClickSellAll.Items." + blockAdd.name() + ".ITEM_ID", blockAdd.name());
-            conf.save(sellAllFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return true;
-        }
-        updateSellAllConfig();
-        return false;
-    }
-
-    private boolean sellAllAddTrigger(XMaterial blockAdd) {
-        try {
-            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("ShiftAndRightClickSellAll.Items." + blockAdd.name() + ".ITEM_ID", blockAdd.name());
-            conf.save(sellAllFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return true;
-        }
-        updateSellAllConfig();
-        return false;
-    }
-
-    private boolean sellAllAddTrigger(String itemID) {
-        try {
-            XMaterial blockAdd;
-            try {
-                blockAdd = XMaterial.valueOf(itemID);
-            } catch (IllegalArgumentException ex) {
-                return true;
-            }
-
-            try {
-                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-                conf.set("ShiftAndRightClickSellAll.Items." + itemID + ".ITEM_ID", blockAdd.name());
-                conf.save(sellAllFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return true;
-            }
-        } catch (IllegalArgumentException ex) {
-            return true;
-        }
-        updateSellAllConfig();
-        return false;
-    }
-
-    private boolean sellAllItemToggle(boolean enableInput) {
-        try {
-            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Options.ShiftAndRightClickSellAll.Enabled", enableInput);
-            conf.save(sellAllFile);
-        } catch (IOException e) {
-            return true;
-        }
-        updateSellAllConfig();
-        return false;
-    }
-
-    private boolean sellAllDeleteMultiplierAction(String prestige) {
-        if (sellAllConfig.getConfigurationSection("Multiplier." + prestige) == null){
-            return true;
-        }
-
-        try {
-            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Multiplier." + prestige, null);
-            conf.save(sellAllFile);
-        } catch (IOException e) {
-            return true;
-        }
-        updateSellAllConfig();
-        return false;
-    }
-
-    private boolean sellAllAddMultiplierAction(String prestige, Double multiplier) {
-        if (addMultiplierConditions(prestige)) return true;
-
-        try {
-            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Multiplier." + prestige + ".PRESTIGE_NAME", prestige);
-            conf.set("Multiplier." + prestige + ".MULTIPLIER", multiplier);
-            conf.save(sellAllFile);
-        } catch (IOException e) {
-            return true;
-        }
-        updateSellAllConfig();
-        return false;
-    }
-
-    private boolean sellAllEditBlockAction(XMaterial xMaterial, Double value) {
-        if (sellAllConfig.getConfigurationSection("Items." + xMaterial.name()) == null) {
-            return true;
-        }
-
-        try {
-            try {
-                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-                conf.set("Items." + xMaterial.name() + ".ITEM_ID", xMaterial.name());
-                conf.set("Items." + xMaterial.name() + ".ITEM_VALUE", value);
-                if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
-                    conf.set("Items." + xMaterial.name() + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + xMaterial.name());
+        HashMap<XMaterial, Integer> xMaterialIntegerHashMap = new HashMap<>();
+        for (ItemStack itemStack : inv.getContents()){
+            if (itemStack != null){
+                XMaterial xMaterial = getXMaterialOrLapis(itemStack);
+                if (xMaterialIntegerHashMap.containsKey(xMaterial) && xMaterialIntegerHashMap.get(xMaterial) != 0){
+                    xMaterialIntegerHashMap.put(xMaterial, xMaterialIntegerHashMap.get(xMaterial) + itemStack.getAmount());
+                } else {
+                    xMaterialIntegerHashMap.put(xMaterial, itemStack.getAmount());
                 }
-                conf.save(sellAllFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return true;
             }
-        } catch (IllegalArgumentException ex) {
-            return true;
         }
-        updateSellAllConfig();
-        return false;
+
+        return xMaterialIntegerHashMap;
     }
 
-    private boolean sellAllEditBlockAction(ItemStack itemStack, Double value) {
-        if (sellAllConfig.getConfigurationSection("Items." + itemStack.getType().name()) == null) {
-            return true;
-        }
 
-        try {
-            XMaterial xMaterial;
-            try {
-                xMaterial = XMaterial.matchXMaterial(itemStack);
-            } catch (IllegalArgumentException ex) {
-                return true;
-            }
+    /**
+     * get HashMap of XMaterials and Amounts from an ArrayList of ItemStacks.
+     *
+     * @param itemStacks - ArrayList of ItemStacks.
+     *
+     * @return HashMap of XMaterials and Integers.
+     * */
+    public HashMap<XMaterial, Integer> getXMaterialsHashMapFromArrayList(ArrayList<ItemStack> itemStacks){
 
-            try {
-                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-                conf.set("Items." + xMaterial.name() + ".ITEM_ID", xMaterial.name());
-                conf.set("Items." + xMaterial.name() + ".ITEM_VALUE", value);
-                if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
-                    conf.set("Items." + xMaterial.name() + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + xMaterial.name());
+        HashMap<XMaterial, Integer> xMaterialIntegerHashMap = new HashMap<>();
+        for (ItemStack itemStack : itemStacks){
+            if (itemStack != null){
+                XMaterial xMaterial = getXMaterialOrLapis(itemStack);
+                if (xMaterialIntegerHashMap.containsKey(xMaterial) && xMaterialIntegerHashMap.get(xMaterial) != 0){
+                    xMaterialIntegerHashMap.put(xMaterial, xMaterialIntegerHashMap.get(xMaterial) + itemStack.getAmount());
+                } else {
+                    xMaterialIntegerHashMap.put(xMaterial, itemStack.getAmount());
                 }
-                conf.save(sellAllFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return true;
             }
-        } catch (IllegalArgumentException ex) {
-            return true;
         }
-        updateSellAllConfig();
-        return false;
+
+        return xMaterialIntegerHashMap;
     }
 
-    private boolean sellAllEditBlockAction(Material material, Double value) {
-        if (sellAllConfig.getConfigurationSection("Items." + material.name()) == null) {
-            return true;
+    /**
+     * Get SellAll Player Multiplier.
+     *
+     * @param p - Player.
+     *
+     * @return double.
+     * */
+    public double getPlayerMultiplier(Player p){
+
+        if (!isSellAllMultiplierEnabled){
+            return 1;
         }
 
-        try {
-            XMaterial xMaterial;
-            try {
-                xMaterial = XMaterial.matchXMaterial(material);
-            } catch (IllegalArgumentException ex) {
-                return true;
-            }
+        // Get Ranks module.
+        ModuleManager modMan = Prison.get().getModuleManager();
+        Module module = modMan == null ? null : modMan.getModule(PrisonRanks.MODULE_NAME).orElse(null);
+        SpigotPlayer sPlayer = new SpigotPlayer(p);
+        double multiplier = defaultMultiplier;
 
-            try {
-                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-                conf.set("Items." + xMaterial.name() + ".ITEM_ID", xMaterial.name());
-                conf.set("Items." + xMaterial.name() + ".ITEM_VALUE", value);
-                if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
-                    conf.set("Items." + xMaterial.name() + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + xMaterial.name());
+        // Get multiplier depending on Player + Prestige. NOTE that prestige multiplier will replace
+        // the actual default multiplier.
+        if (module != null) {
+            PrisonRanks rankPlugin = (PrisonRanks) module;
+            if (rankPlugin.getPlayerManager().getPlayer(sPlayer) != null) {
+                String playerRankName;
+                try {
+                    RankPlayer rankPlayer = rankPlugin.getPlayerManager().getPlayer(sPlayer);
+                    PlayerRank pRank = rankPlayer == null ? null : rankPlayer.getRank("prestiges");
+                    Rank rank = pRank == null ? null : pRank.getRank();
+
+                    playerRankName = rank == null ? null : rank.getName();
+                } catch (NullPointerException ex) {
+                    playerRankName = null;
                 }
-                conf.save(sellAllFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return true;
-            }
-        } catch (IllegalArgumentException ex) {
-            return true;
-        }
-        updateSellAllConfig();
-        return false;
-    }
-
-    private boolean sellAllEditBlockAction(String itemID, Double value) {
-        if (sellAllConfig.getConfigurationSection("Items." + itemID) == null) {
-            return true;
-        }
-
-        try {
-            XMaterial xMaterial;
-            try {
-                xMaterial = XMaterial.valueOf(itemID);
-            } catch (IllegalArgumentException ex) {
-                return true;
-            }
-
-            try {
-                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-                conf.set("Items." + itemID + ".ITEM_ID", xMaterial.name());
-                conf.set("Items." + itemID + ".ITEM_VALUE", value);
-                if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
-                    conf.set("Items." + itemID + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + xMaterial.name());
+                if (playerRankName != null) {
+                    String multiplierRankString = sellAllConfig.getString("Multiplier." + playerRankName + ".MULTIPLIER");
+                    if (multiplierRankString != null && sellAllPrestigeMultipliers.containsKey(playerRankName)){
+                        multiplier = sellAllPrestigeMultipliers.get(playerRankName);
+                    }
                 }
-                conf.save(sellAllFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return true;
             }
-        } catch (IllegalArgumentException ex) {
-            return true;
         }
-        updateSellAllConfig();
-        return false;
+
+        // Get Multiplier from multipliers permission's if there's any.
+        List<String> perms = sPlayer.getPermissions("prison.sellall.multiplier.");
+        double multiplierExtraByPerms = 0;
+        for (String multByPerm : perms) {
+            double multByPermDouble = Double.parseDouble(multByPerm.substring(26));
+            if (!isSellAllPermissionMultiplierOnlyHigherEnabled) {
+                multiplierExtraByPerms += multByPermDouble;
+            } else if (multByPermDouble > multiplierExtraByPerms) {
+                multiplierExtraByPerms = multByPermDouble;
+            }
+        }
+        multiplier += multiplierExtraByPerms;
+
+        return multiplier;
     }
 
-    private boolean sellAllDeleteAction(XMaterial xMaterial) {
-        if (sellAllConfig.getConfigurationSection("Items." + xMaterial.name()) == null) {
-            return true;
+    /**
+     * Get SellAll Money to give, it requires Player because of SellAll perBlockPermission as an option.
+     * NOTE: This WON'T remove blocks from the HashMap when sold, and won't edit Inventories of Players,
+     * but only return the amount of money that the Player would get if he sells now everything from the
+     * specified HashMap of XMaterials and Integers.
+     *
+     * Will also calculate the Multiplier of the Player.
+     *
+     * Get SellAll Sell value of HashMap values.
+     * NOTE: If there aren't blocks in the SellAll shop this will return 0.
+     * NOTE: This method WON'T remove blocks from HashMap, but only return a double value.
+     *
+     * @param p - Player.
+     * @param xMaterialIntegerHashMap - HashMap of XMaterial-Integer (Blocks of origin).
+     *
+     * @return double.
+     * */
+    public double getSellMoney(Player p, HashMap<XMaterial, Integer> xMaterialIntegerHashMap){
+
+        if (sellAllBlocks.isEmpty()){
+            return 0;
         }
 
-        try {
-            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Items." + xMaterial.name(), null);
-            conf.save(sellAllFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return true;
+        double multiplier = getPlayerMultiplier(p);
+        double earned = 0;
+        for (HashMap.Entry<XMaterial, Integer> xMaterialIntegerEntry : xMaterialIntegerHashMap.entrySet()){
+            if (sellAllBlocks.containsKey(xMaterialIntegerEntry.getKey())){
+                // This is stupid but right now I'm too confused, sorry.
+                if (isPerBlockPermissionEnabled && !p.hasPermission(permissionPrefixBlocks + xMaterialIntegerEntry.getKey().name())){
+                    // Nothing will change.
+                } else {
+                    earned += xMaterialIntegerEntry.getValue() * sellAllBlocks.get(xMaterialIntegerEntry.getKey());
+                }
+            }
         }
-        updateSellAllConfig();
-        return false;
+
+        return earned * multiplier;
     }
 
-    private boolean sellAllDeleteAction(ItemStack itemStack) {
-
-        XMaterial xMaterial;
-        try {
-            xMaterial = XMaterial.matchXMaterial(itemStack);
-        } catch (IllegalArgumentException ex) {
-            return true;
-        }
-
-        if (sellAllConfig.getConfigurationSection("Items." + xMaterial.name()) == null) {
-            return true;
-        }
-
-        try {
-            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Items." + xMaterial.name(), null);
-            conf.save(sellAllFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return true;
-        }
-        updateSellAllConfig();
-        return false;
+    /**
+     * Get SellAll Money to give, it requires Player because of SellAll perBlockPermission as an option.
+     * NOTE: This WON'T remove blocks from the ArrayList when sold, and won't edit Inventories of Players,
+     * but only return the amount of money that the Player would get if he sells now everything from the
+     * specified ArrayList of ItemStacks.
+     *
+     * Will also calculate the Multiplier of the Player.
+     *
+     * Get SellAll Sell value of ArrayList of itemstack.
+     * NOTE: If there aren't blocks in the SellAll shop this will return 0.
+     * NOTE: This method WON'T remove blocks from HashMap, but only return a double value.
+     *
+     * @param p - Player.
+     * @param itemStacks - ArrayList of ItemStacks (Blocks of origin).
+     *
+     * @return double.
+     * */
+    public double getSellMoney(Player p, ArrayList<ItemStack> itemStacks){
+        HashMap<XMaterial, Integer> xMaterialIntegerHashMap = getXMaterialsHashMapFromArrayList(itemStacks);
+        return getSellMoney(p, xMaterialIntegerHashMap);
     }
 
-    private boolean sellAllDeleteAction(Material material) {
+    /**
+     * Get SellAll Sell Money, calculated from all the enabled backpacks (from sellAll config and integrations) and
+     * main inventory.
+     * NOTE: This WON'T remove blocks from Inventories/Backpacks, but only return their value.
+     *
+     * Will also calculate the Multiplier of the Player.
+     *
+     * NOTE: If there aren't blocks in the SellAll shop this will return 0.
+     * NOTE: This method WON'T remove blocks from HashMap, but only return a double value.
+     *
+     * @param p - Player.
+     *
+     * @return double.
+     * */
+    public double getSellMoney(Player p){
 
-        XMaterial xMaterial;
-        try {
-            xMaterial = XMaterial.matchXMaterial(material);
-        } catch (IllegalArgumentException ex) {
-            return true;
+        if (sellAllBlocks.isEmpty()){
+            return 0;
         }
 
-        if (sellAllConfig.getConfigurationSection("Items." + xMaterial.name()) == null) {
-            return true;
-        }
-
-        try {
-            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Items." + xMaterial.name(), null);
-            conf.save(sellAllFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return true;
-        }
-        updateSellAllConfig();
-        return false;
+        return getSellMoney(p, getHashMapOfPlayerInventories(p));
     }
 
-    private boolean sellAllDeleteAction(String itemID) {
-
-        XMaterial xMaterial;
-        try {
-            xMaterial = XMaterial.valueOf(itemID);
-        } catch (IllegalArgumentException ex) {
-            return true;
+    /**
+     * Get HashMap with all the items of a Player.
+     *
+     * Return HashMap of XMaterial-Integer.
+     *
+     * @param p - Player.
+     *
+     * @return HashMap - XMaterial-Integer.
+     * */
+    private HashMap<XMaterial, Integer> getHashMapOfPlayerInventories(Player p) {
+        HashMap<XMaterial, Integer> xMaterialIntegerHashMap = new HashMap<>();
+        if (isSellAllBackpackItemsEnabled && getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks"))){
+            BackpacksUtil backpacksUtil = BackpacksUtil.get();
+            if (backpacksUtil.isMultipleBackpacksEnabled()){
+                for (String id : backpacksUtil.getBackpacksIDs(p)){
+                    xMaterialIntegerHashMap = addInventoryToHashMap(xMaterialIntegerHashMap, backpacksUtil.getBackpack(p, id));
+                }
+            } else {
+                xMaterialIntegerHashMap = addInventoryToHashMap(xMaterialIntegerHashMap, backpacksUtil.getBackpack(p));
+            }
         }
 
-        if (sellAllConfig.getConfigurationSection("Items." + xMaterial.name()) == null) {
-            return true;
+        if (isSellAllMinesBackpacksPluginEnabled && IntegrationMinepacksPlugin.getInstance().isEnabled()){
+            Backpack backpack = IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p);
+            if (backpack != null) {
+                xMaterialIntegerHashMap = addInventoryToHashMap(xMaterialIntegerHashMap, backpack.getInventory());
+            }
         }
 
-        try {
-            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Items." + xMaterial.name(), null);
-            conf.save(sellAllFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return true;
-        }
-        updateSellAllConfig();
-        return false;
+        xMaterialIntegerHashMap = addInventoryToHashMap(xMaterialIntegerHashMap, p.getInventory());
+        return xMaterialIntegerHashMap;
     }
 
-    private boolean sellAllAddBlockAction(XMaterial xMaterial, Double value) {
+    /**
+     * Get AutoSell Player toggle if available.
+     * If he enabled it, AutoSell will work, otherwise it won't.
+     * If he never used the toggle command, this will return true, just like if he enabled it in the first place.
+     *
+     * @param p - Player.
+     *
+     * @return boolean.
+     * */
+    public boolean isPlayerAutoSellEnabled(Player p){
+        if (sellAllConfig.getString("Users." + p.getUniqueId() + ".isEnabled") == null){
+            return true;
+        }
+
+        return getBoolean(sellAllConfig.getString("Users." + p.getUniqueId() + ".isEnabled"));
+    }
+
+    /**
+     * Check if Player is in a disabled world, where he can't use sellall sell.
+     *
+     * Return True if he's in a disabled world, False if not.
+     *
+     * @return boolean.
+     * */
+    public boolean isPlayerInDisabledWorld(Player p){
+        return sellAllDisabledWorlds.contains(p.getWorld().getName());
+    }
+
+    /**
+     * Check if Player is waiting for the end of SellAll Sell Delay.
+     *
+     * Return True if he's still waiting, False if not.
+     *
+     * @param p - Player.
+     *
+     * @return boolean.
+     * */
+    public boolean isPlayerWaitingSellAllDelay(Player p){
+        return activePlayerDelay.contains(p);
+    }
+
+    /**
+     * Check if Player is waiting for the end of the AutoSell Delay notification.
+     *
+     * Return true if Player is found.
+     *
+     * @param p - Player.
+     *
+     * @return boolean.
+     * */
+    public boolean isPlayerWaitingAutoSellNotification(Player p){
+        return autoSellEarningsNotificationWaiting.containsKey(p);
+    }
+
+    /**
+     * Check if specified string item name is a valid item.
+     *
+     * @param item - String.
+     *
+     * @return boolean.
+     * */
+    public boolean isValidItem(String item){
+        return XMaterial.matchXMaterial(item).isPresent();
+    }
+
+    /**
+     * Update SellAll Cached config.
+     * */
+    public void updateConfig(){
+        sellAllConfig = SpigotPrison.getInstance().updateSellAllConfig();
+    }
+
+    /**
+     * Init options that will be cached.
+     * */
+    private void initCachedData() {
+        sellAllConfig = SpigotPrison.getInstance().updateSellAllConfig();
+        messages = SpigotPrison.getInstance().getMessagesConfig();
+        permissionSellAllSell = sellAllConfig.getString("Options.Sell_Permission");
+        permissionBypassSign = sellAllConfig.getString("Options.SellAll_By_Sign_Bypass_Permission");
+        permissionUseSign = sellAllConfig.getString("Options.SellAll_Sign_Use_Permission");
+        permissionGUI = sellAllConfig.getString("Options.GUI_Permission");
+        permissionPlayerGUI = sellAllConfig.getString("Options.Player_GUI_Permission");
+        permissionPrefixBlocks = sellAllConfig.getString("Options.Sell_Per_Block_Permission");
+        permissionAutoSellPerUserToggleable = sellAllConfig.getString("Options.Full_Inv_AutoSell_PerUserToggleable_Permission");
+        permissionItemTrigger = sellAllConfig.getString("Options.ShiftAndRightClickSellAll.Permission");
+        sellAllCurrency = sellAllConfig.getString("Options.SellAll_Currency");
+        sellAllSoundSuccess = XSound.matchXSound("Options.Sell_Sound_Success_Name").orElse(XSound.ENTITY_PLAYER_LEVELUP).parseSound();
+        sellAllSoundFail = XSound.matchXSound("Options.Sell_Sound_Fail_Name").orElse(XSound.BLOCK_ANVIL_PLACE).parseSound();
+        sellAllSignTag = SpigotPrison.format(sellAllConfig.getString("Options.SellAll_Sign_Visible_Tag"));
+        sellAllBlocks = initSellAllBlocks();
+        sellAllPrestigeMultipliers = initPrestigeMultipliers();
+        sellAllItemTriggers = initSellAllItemTrigger();
+        sellAllDisabledWorlds = initSellAllDisabledWorlds();
+        defaultMultiplier = Double.parseDouble(sellAllConfig.getString("Options.Multiplier_Default"));
+        defaultSellAllDelay = Integer.parseInt(sellAllConfig.getString("Options.Sell_Delay_Seconds"));
+        defaultAutoSellEarningNotificationDelay = Integer.parseInt(sellAllConfig.getString("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Delay_Seconds"));
+        isPerBlockPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"));
+        isAutoSellEnabled = getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell"));
+        isAutoSellNotificationEnabled = getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_Notification"));
+        isAutoSellEarningNotificationDelayEnabled = getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Enabled"));
+        isAutoSellPerUserToggleable = getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable"));
+        isAutoSellPerUserToggleablePermEnabled = getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable_Need_Perm"));
+        isSellAllNotificationEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Notify_Enabled"));
+        isSellAllSoundEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Sound_Enabled"));
+        isSellAllBackpackItemsEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Prison_BackPack_Items"));
+        isSellAllMinesBackpacksPluginEnabled = getBoolean(sellAllConfig.getString("Options.Sell_MinesBackPacks_Plugin_Backpack"));
+        isSellAllDelayEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Delay_Enabled"));
+        isSellAllSellPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Permission_Enabled"));
+        isSellAllItemTriggerEnabled = getBoolean(sellAllConfig.getString("Options.ShiftAndRightClickSellAll.Enabled"));
+        isSellAllItemTriggerPermissionEnabled = getBoolean(sellAllConfig.getString("Options.ShiftAndRightClickSellAll.PermissionEnabled"));
+        isSellAllGUIEnabled = getBoolean(sellAllConfig.getString("Options.GUI_Enabled"));
+        isSellAllPlayerGUIEnabled = getBoolean(sellAllConfig.getString("Options.Player_GUI_Enabled"));
+        isSellAllGUIPermissionEnabled = getBoolean(sellAllConfig.getString("Options.GUI_Permission_Enabled"));
+        isSellAllPlayerGUIPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Player_GUI_Permission_Enabled"));
+        isSellAllMultiplierEnabled = getBoolean(sellAllConfig.getString("Options.Multiplier_Enabled"));
+        isSellAllPermissionMultiplierOnlyHigherEnabled = getBoolean(sellAllConfig.getString("Options.Multiplier_Permission_Only_Higher"));
+        isSellAllSignEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Enabled"));
+        isSellAllSignNotifyEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Notify"));
+        isSellAllSignPermissionToUseEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Use_Permission_Enabled"));
+        isSellAllBySignOnlyEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_By_Sign_Only"));
+    }
+
+    /**
+     * Loads sellAll blocks from SellAllConfig.yml
+     * With XMaterials and double values (money).
+     *
+     * @return HashMap XMaterial-Double.
+     * */
+    public HashMap<XMaterial, Double> initSellAllBlocks(){
+
+        HashMap<XMaterial, Double> sellAllXMaterials = new HashMap<>();
+
+        if (sellAllConfig.getConfigurationSection("Items") == null){
+            return sellAllXMaterials;
+        }
+
+        for (String key : sellAllConfig.getConfigurationSection("Items").getKeys(false)) {
+
+            String itemID = sellAllConfig.getString("Items." + key + ".ITEM_ID");
+
+            Optional<XMaterial> iMatOptional = XMaterial.matchXMaterial(itemID);
+            XMaterial itemMaterial = iMatOptional.orElse(null);
+
+            if (itemMaterial != null) {
+                String valueString = sellAllConfig.getString("Items." + key + ".ITEM_VALUE");
+                if (valueString != null) {
+                    try {
+                        double value = Double.parseDouble(valueString);
+                        sellAllXMaterials.put(itemMaterial, value);
+                    } catch (NumberFormatException ignored) {
+                    }
+                }
+            }
+        }
+        return sellAllXMaterials;
+    }
+
+    /**
+     * Init sellAll Prestige Multipliers.
+     *
+     * @return HashMap String-Double.
+     * */
+    public HashMap<String, Double> initPrestigeMultipliers(){
+
+        HashMap<String, Double> prestigeMultipliers = new HashMap<>();
+
+        if (sellAllConfig.getConfigurationSection("Multiplier") == null){
+            return prestigeMultipliers;
+        }
+
+        for (String key : sellAllConfig.getConfigurationSection("Multiplier").getKeys(false)){
+            prestigeMultipliers.put(sellAllConfig.getString("Multiplier." + key + ".PRESTIGE_NAME"), sellAllConfig.getDouble("Multiplier." + key + ".MULTIPLIER"));
+        }
+        return prestigeMultipliers;
+    }
+
+    /**
+     * Read SellAll Item Triggers and return them in an ArrayList of XMaterials.
+     * NOTE: This needs to be enabled, otherwise will return null.
+     *
+     * @return ArrayList of XMaterials.
+     * */
+    public ArrayList<XMaterial> initSellAllItemTrigger(){
+
+        ArrayList<XMaterial> xMaterials = new ArrayList<>();
+
+        if (!isSellAllItemTriggerEnabled){
+            return xMaterials;
+        }
+
+        if (sellAllConfig.getConfigurationSection("ShiftAndRightClickSellAll.Items") == null){
+            return xMaterials;
+        }
+
+        for (String xMaterialID : sellAllConfig.getConfigurationSection("ShiftAndRightClickSellAll.Items").getKeys(false)){
+            Optional<XMaterial> xMaterialRead = XMaterial.matchXMaterial(sellAllConfig.getString("ShiftAndRightClickSellAll.Items." + xMaterialID + ".ITEM_ID"));
+            xMaterialRead.ifPresent(xMaterials::add);
+        }
+
+        return xMaterials;
+    }
+
+    /**
+     * Get List of names of disabled worlds.
+     * If a Player is in one of these worlds, he won't be able to use SellAll.
+     * */
+    public List<String> initSellAllDisabledWorlds(){
+        return sellAllConfig.getStringList("Options.DisabledWorlds");
+    }
+
+    /**
+     * Add a block to SellAll config.
+     *
+     * Return True if no error occurred, false if error.
+     *
+     * @param xMaterial - XMaterial of block to add.
+     * @param value - Value of the block to add.
+     *
+     * @return boolean.
+     * */
+    public boolean addSellAllBlock(XMaterial xMaterial, double value){
         try {
             File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
@@ -942,358 +640,679 @@ public class SellAllUtil {
             conf.save(sellAllFile);
         } catch (IOException e) {
             e.printStackTrace();
-            return true;
+            return false;
         }
-        updateSellAllConfig();
-        return false;
+        updateConfig();
+        sellAllBlocks.put(xMaterial, value);
+        return true;
     }
 
-    private boolean sellAllAddBlockAction(ItemStack itemStack, Double value) {
-        try {
-            XMaterial blockAdd;
-            try {
-                blockAdd = XMaterial.matchXMaterial(itemStack);
-            } catch (IllegalArgumentException ex) {
-                return true;
-            }
-
-            try {
-                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-                conf.set("Items." + blockAdd.name() + ".ITEM_ID", blockAdd.name());
-                conf.set("Items." + blockAdd.name() + ".ITEM_VALUE", value);
-                if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
-                    conf.set("Items." + blockAdd.name() + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + blockAdd.name());
-                }
-                conf.save(sellAllFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return true;
-            }
-        } catch (IllegalArgumentException ex) {
-            return true;
-        }
-        updateSellAllConfig();
-        return false;
+    /**
+     * Add a block to SellAll config.
+     *
+     * Return True if no error occurred, false if error.
+     *
+     * @param material - Material of block to add.
+     * @param value - Value of the block to add.
+     *
+     * @return boolean.
+     * */
+    public boolean addSellAllBlock(Material material, double value){
+        return addSellAllBlock(XMaterial.matchXMaterial(material), value);
     }
 
-    private boolean sellAllAddBlockAction(Material material, Double value) {
-        try {
-            XMaterial blockAdd;
-            try {
-                blockAdd = XMaterial.matchXMaterial(material);
-            } catch (IllegalArgumentException ex) {
-                return true;
-            }
+    /**
+     * Add Multiplier to SellAll depending on the Prestige Rank (Rank from the prestiges ladder).
+     *
+     * Return true if edited with success, false if error or Prestige not found.
+     *
+     * @param prestigeName - Name of the Prestige as String.
+     * @param multiplier - Double value.
+     *
+     * @return boolean.
+     * */
+    public boolean addPrestigeMultiplier(String prestigeName, double multiplier){
 
-            try {
-                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-                conf.set("Items." + blockAdd.name() + ".ITEM_ID", blockAdd.name());
-                conf.set("Items." + blockAdd.name() + ".ITEM_VALUE", value);
-                if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
-                    conf.set("Items." + blockAdd.name() + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + blockAdd.name());
-                }
-                conf.save(sellAllFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return true;
-            }
-        } catch (IllegalArgumentException ex) {
-            return true;
+        PrisonRanks rankPlugin = (PrisonRanks) (Prison.get().getModuleManager() == null ? null : Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME).orElse(null));
+        if (rankPlugin == null) {
+            return false;
         }
-        updateSellAllConfig();
-        return false;
-    }
 
-    private boolean sellAllAddBlockAction(String itemID, Double value) {
-        try {
-            XMaterial blockAdd;
-            try {
-                blockAdd = XMaterial.valueOf(itemID);
-            } catch (IllegalArgumentException ex) {
-                return true;
-            }
-
-            try {
-                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-                conf.set("Items." + blockAdd.name() + ".ITEM_ID", blockAdd.name());
-                conf.set("Items." + blockAdd.name() + ".ITEM_VALUE", value);
-                if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
-                    conf.set("Items." + blockAdd.name() + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + blockAdd.name());
-                }
-                conf.save(sellAllFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return true;
-            }
-        } catch (IllegalArgumentException ex) {
-            return true;
+        boolean isPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges") != null;
+        if (!isPrestigeLadder) {
+            return false;
         }
-        updateSellAllConfig();
-        return false;
-    }
 
-    private void sellAllAddCommandMethod(XMaterial xMaterial, Double value) {
-        String itemID = xMaterial.name();
+        boolean isARank = rankPlugin.getRankManager().getRank(prestigeName) != null;
+        if (!isARank) {
+            return false;
+        }
 
-        // If the block or item was already configured, then skip this:
-        if (sellAllConfig.getConfigurationSection("Items." + itemID) != null) {
-            return;
+        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").containsRank(rankPlugin.getRankManager().getRank(prestigeName));
+        if (!isInPrestigeLadder) {
+            return false;
         }
 
         try {
             File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Items." + itemID + ".ITEM_ID", xMaterial.name());
-            conf.set("Items." + itemID + ".ITEM_VALUE", value);
-            if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
-                conf.set("Items." + itemID + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + xMaterial.name());
-            }
+            conf.set("Multiplier." + prestigeName + ".PRESTIGE_NAME", prestigeName);
+            conf.set("Multiplier." + prestigeName + ".MULTIPLIER", multiplier);
             conf.save(sellAllFile);
         } catch (IOException e) {
-            Output.get().logError(SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")), e);
-            return;
+            e.printStackTrace();
+            return false;
         }
-
-        Output.get().logInfo(SpigotPrison.format("&3 ITEM [" + itemID + ", " + value + messages.getString("Message.SellAllAddSuccess")));
-        sellAllConfigUpdater();
+        sellAllPrestigeMultipliers.put(prestigeName, multiplier);
+        updateConfig();
+        return true;
     }
 
-    private boolean sellAllOpenGUI(Player p) {
-        updateSellAllConfig();
-        // If the Admin GUI's enabled will enter do this, if it isn't it'll try to open the Player GUI.
-        boolean guiEnabled = getBoolean(sellAllConfig.getString("Options.GUI_Enabled"));
-        if (guiEnabled) {
-            // Check if a permission's required, if it isn't it'll open immediately the GUI.
-            if (getBoolean(sellAllConfig.getString("Options.GUI_Permission_Enabled"))) {
-                // Check if the sender have the required permission.
-                String guiPermission = sellAllConfig.getString("Options.GUI_Permission");
-                if (guiPermission != null && p.hasPermission(guiPermission)) {
-                    SellAllAdminGUI gui = new SellAllAdminGUI(p);
-                    gui.open();
-                    return true;
-                    // Try to open the Player GUI anyway.
-                } else if (sellAllPlayerGUI(p)) return true;
-                // Open the Admin GUI because a permission isn't required.
-            } else {
-                SellAllAdminGUI gui = new SellAllAdminGUI(p);
-                gui.open();
-                return true;
-            }
+    /**
+     * Add SellAll Item Trigger.
+     *
+     * Return true if run with success, false if error or item already added.
+     *
+     * @param xMaterial - XMaterial to add.
+     *
+     * @return boolean.
+     * */
+    public boolean addItemTrigger(XMaterial xMaterial){
+        if (sellAllItemTriggers.contains(xMaterial)){
+            return false;
         }
 
-        // If the admin GUI's disabled, it'll try to use the Player GUI anyway.
-        return sellAllPlayerGUI(p);
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("ShiftAndRightClickSellAll.Items." + xMaterial.name() + ".ITEM_ID", xMaterial.name());
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        sellAllItemTriggers.add(xMaterial);
+        updateConfig();
+        return true;
     }
 
-    private void sellAllSellPlayer(Player p) {
-    	sellAllSellPlayer( p, true, false );
+    /**
+     * Add SellAll Item Trigger.
+     *
+     * Return true if success, false if error or already added item.
+     *
+     * @param material - Material to add.
+     *
+     * @return boolean.
+     * */
+    public boolean addItemTrigger(Material material){
+        return addItemTrigger(XMaterial.matchXMaterial(material));
     }
-    private void sellAllSellPlayer(Player p, boolean notifications, boolean bySignOnly) {
 
-        updateSellAllConfig();
+    /**
+     * Add Player to active delay.
+     * He'll be removed at the end of it.
+     * Also start delay.
+     *
+     * @param p - Player.
+     * */
+    public void addToDelay(Player p){
+        if (!isPlayerWaitingSellAllDelay(p)){
+            activePlayerDelay.add(p);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> removeFromDelay(p), 20L * defaultSellAllDelay);
+        }
+    }
 
-        boolean sellAllSignEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Enabled"));
-        boolean sellAllBySignOnlyEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_By_Sign_Only"));
-        String byPassPermission = sellAllConfig.getString("Options.SellAll_By_Sign_Bypass_Permission");
-        if (sellAllSignEnabled && sellAllBySignOnlyEnabled && (byPassPermission == null || byPassPermission != null && !p.hasPermission(byPassPermission))) {
-            if (!bySignOnly) {
-                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllSignOnly")));
-                return;
-            }
+    /**
+     * Add Player to active delay for AutoSell Notification.
+     *
+     * Return true if added with success, False if error or Player already added or disabled.
+     *
+     * @param p - Player.
+     *
+     * @return boolean.
+     * */
+    public boolean addToAutoSellNotificationDelay(Player p){
+
+        if (!isAutoSellEarningNotificationDelayEnabled){
+            return false;
         }
 
-//        if (signUsed) signUsed = false;
+        if (!isPlayerWaitingAutoSellNotification(p)){
+            autoSellEarningsNotificationWaiting.put(p, 0.00);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> removeFromAutoSellDelayAndNotify(p), 20L * defaultAutoSellEarningNotificationDelay);
+            return true;
+        }
 
-        boolean sellSoundEnabled = notifications && getBoolean(sellAllConfig.getString("Options.Sell_Sound_Enabled"));
-        Compatibility compat = SpigotPrison.getInstance().getCompatibility();
-        if (!(sellAllConfig.getConfigurationSection("Items.") == null)) {
+        return false;
+    }
 
-            if (sellAllCommandDelay(p)) return;
+    /**
+     * Add balance to Delayed earnings of AutoSell Notification.
+     *
+     * @param p - Player.
+     * @param value - double.
+     * */
+    public void addDelayedEarningAutoSellNotification(Player p, double value){
+        if (isPlayerWaitingAutoSellNotification(p)){
+            autoSellEarningsNotificationWaiting.put(p, autoSellEarningsNotificationWaiting.get(p) + value);
+        }
+    }
 
-            // Get Spigot Player.
-            SpigotPlayer sPlayer = new SpigotPlayer(p);
-
-            // Get money to give + multiplier.
-            double moneyToGive = getMoneyWithMultiplier(p, true);
-
-            // Check if Ranks are enabled.
-            ModuleManager modMan = Prison.get().getModuleManager();
-            Module module = modMan == null ? null : modMan.getModule( PrisonRanks.MODULE_NAME ).orElse( null );
-            PrisonRanks rankPlugin = (PrisonRanks) module;
-            if (rankPlugin == null){
-                Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format("Ranks are disabled, you can't use this without Ranks enabled!"));
-                return;
-            }
-
-            RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
-            String currency = sellAllConfig.getString("Options.SellAll_Currency");
-            if (currency != null && currency.equalsIgnoreCase("default")) currency = null;
-
-            rankPlayer.addBalance(currency, moneyToGive);
-
-            boolean sellNotifyEnabled = notifications && getBoolean(sellAllConfig.getString("Options.Sell_Notify_Enabled"));
-            if (moneyToGive < 0.001) {
-                if (sellSoundEnabled) {
-                    Sound sound;
-                    try {
-                        sound = Sound.valueOf(sellAllConfig.getString("Options.Sell_Sound_Fail_Name"));
-                    } catch (IllegalArgumentException ex) {
-                        sound = compat.getAnvilSound();
-                    }
-                    p.playSound(p.getLocation(), sound, 3, 1);
-                }
-                if (sellNotifyEnabled) {
-                    Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllNothingToSell")));
-                }
-            } else {
-                if (activeAutoSellPlayers.containsKey(p) && getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Enabled"))) {
-                    activeAutoSellPlayers.put(p, activeAutoSellPlayers.get(p) + moneyToGive);
+    private HashMap<XMaterial, Integer> addInventoryToHashMap(HashMap<XMaterial, Integer> xMaterialIntegerHashMap, Inventory inv) {
+        for (ItemStack itemStack : inv.getContents()){
+            if (itemStack != null){
+                XMaterial xMaterial = getXMaterialOrLapis(itemStack);
+                if (xMaterialIntegerHashMap.containsKey(xMaterial)){
+                    xMaterialIntegerHashMap.put(xMaterial, xMaterialIntegerHashMap.get(xMaterial) + itemStack.getAmount());
                 } else {
-                    if (sellSoundEnabled) {
-                        Sound sound;
-                        try {
-                            sound = Sound.valueOf(sellAllConfig.getString("Options.Sell_Sound_Success_Name"));
-                        } catch (IllegalArgumentException ex) {
-                            sound = compat.getLevelUpSound();
-                        }
-                        p.playSound(p.getLocation(), sound, 3, 1);
-                    }
-                    if (sellNotifyEnabled) {
-                        DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
-                        Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllYouGotMoney") + PlaceholdersUtil.formattedKmbtSISize(moneyToGive, formatDecimal, "")));
-                    }
+                    xMaterialIntegerHashMap.put(xMaterial, itemStack.getAmount());
                 }
             }
-        } else {
-            if (sellSoundEnabled) {
-                Sound sound;
-                try {
-                    sound = Sound.valueOf(sellAllConfig.getString("Options.Sell_Sound_Fail_Name"));
-                } catch (IllegalArgumentException ex) {
-                    sound = compat.getAnvilSound();
-                }
-                p.playSound(p.getLocation(), sound, 3, 1);
-            }
-            Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllEmpty")));
         }
+        return xMaterialIntegerHashMap;
     }
 
-    private static SellAllUtil instanceUpdater() {
-        if (SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true") && instance == null) {
-            instance = new SellAllUtil();
+    /**
+     * Check if Player meets requirements to use SellAll.
+     *
+     * This will return true if everything is meet, False if even only isn't.
+     * What will be checked is:
+     * - Is in a world where SellAll Sell isn't locked by config.
+     * - Check if SellAll Signs and SellAll by Sign only is enabled and Player isn't selling through a Sign right now or
+     * doesn't have the bypass permission (To tell to this method if Player is selling through a sign, please set the boolean
+     * parameter to true).
+     * - Check if a permission to sell is required and then if the Player has it.
+     * - Check if SellAll Delay is enabled and Player did wait until the end of it.
+     *
+     * @param p - Player.
+     * @param isUsingSign - boolean.
+     *
+     * @return boolean.
+     * */
+    public boolean canPlayerSell(Player p, boolean isUsingSign){
+
+        if (isSellAllSellPermissionEnabled && !p.hasPermission(permissionSellAllSell)){
+            return false;
         }
 
-        return instance;
+        if (isPlayerInDisabledWorld(p)){
+            return false;
+        }
+
+        if (isSellAllSignEnabled && isSellAllBySignOnlyEnabled && !isUsingSign && !p.hasPermission(permissionBypassSign)){
+            return false;
+        }
+
+        if (isSellAllDelayEnabled && isPlayerWaitingSellAllDelay(p)){
+            return false;
+        }
+
+        return true;
     }
 
-    private boolean sellAllAutoSellPerUserToggleableToggle(boolean enableBoolean) {
+
+    /**
+     * Edit price of a block.
+     *
+     * Return true if edited with success, false if error or block not found.
+     *
+     * @param xMaterial - XMaterial to edit.
+     * @param value - New price as a double.
+     *
+     * @return boolean.
+     * */
+    public boolean editPrice(XMaterial xMaterial, double value){
+
+        if (!sellAllBlocks.containsKey(xMaterial)){
+            return false;
+        }
+
         try {
             File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Options.Full_Inv_AutoSell_perUserToggleable", enableBoolean);
+            conf.set("Items." + xMaterial.name() + ".ITEM_ID", xMaterial.name());
+            conf.set("Items." + xMaterial.name() + ".ITEM_VALUE", value);
+            if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
+                conf.set("Items." + xMaterial + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + xMaterial.name());
+            }
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        updateConfig();
+        sellAllBlocks.put(xMaterial, value);
+        return true;
+    }
+
+    /**
+     * Edit price of a block using Material.
+     *
+     * Return true if edited with success, false if error or not found.
+     *
+     * @param material - Material.
+     * @param value - New price as a double.
+     *
+     * @return boolean,
+     * */
+    public boolean editPrice(Material material, double value){
+        return editPrice(XMaterial.matchXMaterial(material), value);
+    }
+
+    /**
+     * Edit Prestige Multiplier value.
+     *
+     * Return true if success, false if error or not found.
+     *
+     * @param prestigeName - String.
+     * @param multiplier - Double value.
+     * */
+    public boolean editPrestigeMultiplier(String prestigeName, double multiplier) {
+
+        if (!sellAllPrestigeMultipliers.containsKey(prestigeName)) {
+            return false;
+        }
+
+        return addPrestigeMultiplier(prestigeName, multiplier);
+    }
+
+    /**
+     * Remove block by XMaterial name.
+     *
+     * Return true if removed with success, false if not found or error.
+     *
+     * @param xMaterial - XMaterial to remove.
+     *
+     * @return boolean.
+     * */
+    public boolean removeSellAllBlock(XMaterial xMaterial){
+
+        if (!sellAllBlocks.containsKey(xMaterial)){
+            return false;
+        }
+
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("Items." + xMaterial.name(), null);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        updateConfig();
+        sellAllBlocks.remove(xMaterial);
+        return true;
+    }
+
+    /**
+     * Remove block by XMaterial name.
+     *
+     * Return true if removed with success, false if not found or error.
+     *
+     * @param material - XMaterial to remove.
+     *
+     * @return boolean.
+     * */
+    public boolean removeSellAllBlock(Material material){
+        return removeSellAllBlock(XMaterial.matchXMaterial(material));
+    }
+
+    /**
+     * Remove a Prestige Multiplier by name.
+     *
+     * Return true if success, false if error or not found.
+     *
+     * @param prestigeName - String.
+     *
+     * @return boolean.
+     * */
+    public boolean removePrestigeMultiplier(String prestigeName){
+
+        if (!sellAllPrestigeMultipliers.containsKey(prestigeName)){
+            return false;
+        }
+
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("Multiplier." + prestigeName, null);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            return false;
+        }
+        sellAllPrestigeMultipliers.remove(prestigeName);
+        updateConfig();
+        return true;
+    }
+
+    /**
+     * Delete SellAll Item Trigger.
+     *
+     * Return true if success, false if error or item not found.
+     *
+     * @param xMaterial - XMaterial to remove.
+     *
+     * @return boolean.
+     * */
+    public boolean removeItemTrigger(XMaterial xMaterial){
+
+        if (!sellAllItemTriggers.contains(xMaterial)){
+            return false;
+        }
+
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("ShiftAndRightClickSellAll.Items." + xMaterial.name() + ".ITEM_ID", null);
+            conf.set("ShiftAndRightClickSellAll.Items." + xMaterial.name(), null);
             conf.save(sellAllFile);
         } catch (IOException e) {
             e.printStackTrace();
             return true;
         }
-        updateSellAllConfig();
-        return false;
+        sellAllItemTriggers.remove(xMaterial);
+        updateConfig();
+        return true;
     }
 
-    private boolean sellAllAutoSellToggle(boolean enableBoolean) {
-        try {
-            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Options.Full_Inv_AutoSell", enableBoolean);
-            conf.save(sellAllFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return true;
+    /**
+     * Delete SellAll Item Trigger.
+     *
+     * Return true if success, false if error or item not found.
+     *
+     * @param material - Material to remove.
+     *
+     * @return boolean.
+     * */
+    public boolean removeItemTrigger(Material material){
+        return removeItemTrigger(XMaterial.matchXMaterial(material));
+    }
+
+    /**
+     * Remove Sellable Blocks from HashMap of XMaterial-Integer given as a parameter.
+     * NOTE: If there aren't blocks in the SellAll shop, nothing will change.
+     * NOTE: This method will remove blocks from the HashMap, but it WON'T return the value of money, for that please use
+     * the getSellAllSellMoney method.
+     *
+     * @param p - Player.
+     * @param xMaterialIntegerHashMap - HashMap of XMaterial-Integer (Blocks of origin).
+     *
+     *
+     * @return HashMap - XMaterial-Integer.
+     * */
+    public HashMap<XMaterial, Integer> removeSellableItems(Player p, HashMap<XMaterial, Integer> xMaterialIntegerHashMap){
+
+        if (sellAllBlocks.isEmpty()){
+            return xMaterialIntegerHashMap;
         }
-        sellAllConfigUpdater();
-        return false;
+
+        /* Not necessary now, as this only removes what's sellable, this should be checked in another place before.
+        if (isPlayerInDisabledWorld(p)){
+            return xMaterialIntegerHashMap;
+        }
+         */
+
+        for (HashMap.Entry<XMaterial, Integer> xMaterialIntegerEntry : xMaterialIntegerHashMap.entrySet()){
+            if (sellAllBlocks.containsKey(xMaterialIntegerEntry.getKey())){
+                // This is stupid but right now I'm too confused, sorry.
+                if (isPerBlockPermissionEnabled && !p.hasPermission(permissionPrefixBlocks + xMaterialIntegerEntry.getKey().name())){
+                    // Nothing will happen.
+                } else {
+                    xMaterialIntegerHashMap.remove(xMaterialIntegerEntry.getKey());
+                }
+            }
+        }
+
+        return xMaterialIntegerHashMap;
     }
 
-    private boolean sellAllAutoSellPlayerToggle(Player p) {
-        // Get Player UUID.
-        UUID playerUUID = p.getUniqueId();
+    /**
+     * Remove Sellable Blocks from ArrayList of ItemStacks given as a parameter.
+     * NOTE: If there aren't blocks in the SellAll shop, nothing will change.
+     * NOTE: This method will remove blocks from the HashMap, but it WON'T return the value of money, for that please use
+     * the getSellAllSellMoney method.
+     *
+     * @param p - Player.
+     * @param itemStacks - ItemStacks.
+     *
+     * @return ArrayList - ItemStacks.
+     * */
+    public ArrayList<ItemStack> removeSellableItems(Player p, ArrayList<ItemStack> itemStacks){
+        
+        if (sellAllBlocks.isEmpty()){
+            return itemStacks;
+        }
+        
+        HashMap<XMaterial, Integer> xMaterialIntegerHashMap = getXMaterialsHashMapFromArrayList(itemStacks);
 
-        if (sellAllConfig.getString("Users." + playerUUID + ".isEnabled") != null){
+        xMaterialIntegerHashMap = removeSellableItems(p, xMaterialIntegerHashMap);
 
-            boolean isEnabled = getBoolean(sellAllConfig.getString("Users." + playerUUID + ".isEnabled"));
-            try {
-                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-                conf.set("Users." + playerUUID + ".isEnabled", !isEnabled);
-                conf.save(sellAllFile);
-            } catch (IOException e) {
-                Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
-                e.printStackTrace();
-                return true;
+        ArrayList<ItemStack> newItemStacks = new ArrayList<>();
+        for (HashMap.Entry<XMaterial, Integer> xMaterialIntegerEntry : xMaterialIntegerHashMap.entrySet()){
+            Material material = xMaterialIntegerEntry.getKey().parseMaterial();
+            if (material != null) {
+                newItemStacks.add(new ItemStack(material, xMaterialIntegerEntry.getValue()));
             }
+        }
 
-            if (isEnabled){
-                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllAutoDisabled")));
+        return newItemStacks;
+    }
+    
+    /**
+     * Remove Sellable blocks from an Inventory of a Player.
+     * 
+     * Return an Inventory with the unsold items.
+     * 
+     * @param p - Player.
+     * @param inv - Inventory.
+     *            
+     * @return inv - Inventory.           
+     * */
+    public Inventory removeSellableItems(Player p, Inventory inv){
+        if (sellAllBlocks.isEmpty()){
+            return inv;
+        }
+        
+        for (ItemStack itemStack : inv.getContents()){
+            if (itemStack != null){
+                XMaterial xMaterial = getXMaterialOrLapis(itemStack);
+                if (sellAllBlocks.containsKey(xMaterial)){
+                    if (isPerBlockPermissionEnabled && !p.hasPermission(permissionPrefixBlocks + xMaterial.name())){
+                        // Nothing will change.
+                    } else {
+                        inv.remove(itemStack);
+                    }
+                }
+            }
+        }
+        
+        return inv;
+    }
+    
+    /**
+     * Remove Sellable blocks from all Player inventories directly hooked.
+     * 
+     * @param p - Player.
+     * */
+    public void removeSellableItems(Player p){
+
+        if (sellAllBlocks.isEmpty()){
+            return;
+        }
+
+        if (isSellAllBackpackItemsEnabled && getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks"))){
+            BackpacksUtil backpacksUtil = BackpacksUtil.get();
+            if (backpacksUtil.isMultipleBackpacksEnabled()){
+                for (String id : backpacksUtil.getBackpacksIDs(p)){
+                    backpacksUtil.setInventory(p, removeSellableItems(p, backpacksUtil.getBackpack(p, id)), id);
+                }
             } else {
-                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllAutoEnabled")));
+                backpacksUtil.setInventory(p, removeSellableItems(p, backpacksUtil.getBackpack(p)));
             }
-
-        } else {
-
-            // Enable it for the first time
-            try {
-                File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
-                FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-                conf.set("Users." + playerUUID + ".isEnabled", true);
-                conf.set("Users." + playerUUID + ".name", p.getName());
-                conf.save(sellAllFile);
-            } catch (IOException e) {
-                Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
-                e.printStackTrace();
-                return true;
-            }
-
-            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllAutoEnabled")));
         }
-        return false;
+
+        if (isSellAllMinesBackpacksPluginEnabled && IntegrationMinepacksPlugin.getInstance().isEnabled()){
+            Backpack backpack = IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p);
+            if (backpack != null) {
+                removeSellableItems(p, backpack.getInventory());
+            }
+        }
+
+        removeSellableItems(p, p.getInventory());
     }
 
-    private boolean sellAllDelaySave(int delayValue) {
+    /**
+     * Remove Player from delay.
+     *
+     * @param p - Player.
+     * */
+    public void removeFromDelay(Player p){
+        activePlayerDelay.remove(p);
+    }
+
+    /**
+     * Remove Player from AutoSell Delay Notification and also send a notification to him with the balance until then.
+     *
+     * @param p - Player.
+     * */
+    public void removeFromAutoSellDelayAndNotify(Player p){
+        if (autoSellEarningsNotificationWaiting.containsKey(p) && autoSellEarningsNotificationWaiting.get(p) > 0.00){
+            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllAutoSellEarnedMoney") + autoSellEarningsNotificationWaiting.get(p) + messages.getString("Message.SellAllAutoSellEarnedMoneyCurrency")));
+        }
+        autoSellEarningsNotificationWaiting.remove(p);
+    }
+
+    /**
+     * Set SellAll item trigger.
+     *
+     * Return true if run with success, false if error or already enabled/disabled.
+     *
+     * @param isEnabled - True to enable, False to disable.
+     *
+     * @return boolean.
+     * */
+    public boolean setItemTrigger(Boolean isEnabled){
+        if (isSellAllItemTriggerEnabled == isEnabled){
+            return false;
+        }
+
         try {
             File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Options.Sell_Delay_Seconds", delayValue);
+            conf.set("Options.ShiftAndRightClickSellAll.Enabled", isEnabled);
             conf.save(sellAllFile);
         } catch (IOException e) {
-            e.printStackTrace();
             return true;
         }
-        sellAllConfigUpdater();
-        return false;
+        isSellAllItemTriggerEnabled = isEnabled;
+        updateConfig();
+        return true;
     }
 
-    private boolean sellAllDelayToggle(boolean enableBoolean) {
+    /**
+     * Set SellAll AutoSell.
+     *
+     * Return true if success, false if error or already enabled/disabled.
+     *
+     * @param isEnabled - True to enable, False to disable.
+     *
+     * @return boolean.
+     * */
+    public boolean setAutoSell(Boolean isEnabled){
+        if (isAutoSellEnabled == isEnabled){
+            return false;
+        }
+
         try {
             File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Options.Sell_Delay_Enabled", enableBoolean);
+            conf.set("Options.Full_Inv_AutoSell", isEnabled);
             conf.save(sellAllFile);
         } catch (IOException e) {
             e.printStackTrace();
-            return true;
+            return false;
         }
-        sellAllConfigUpdater();
-        return false;
+
+        isAutoSellEnabled = isEnabled;
+        updateConfig();
+        return true;
     }
 
-    private boolean sellAllCurrencySaver(String currency) {
+    /**
+     * Set AutoSell Player.
+     *
+     * Return True if success, False if error or already enabled/disabled or missing permission.
+     *
+     * @param p - Player.
+     * @param enable - boolean.
+     *
+     * @return boolean.
+     * */
+    public boolean setAutoSellPlayer(Player p, boolean enable){
+        if (!isAutoSellEnabled || !isAutoSellPerUserToggleable){
+            return false;
+        }
 
+        if (isAutoSellPerUserToggleablePermEnabled && !p.hasPermission(permissionAutoSellPerUserToggleable)){
+            return false;
+        }
+
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("Users." + p.getUniqueId() + ".isEnabled", enable);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Set SellAllAutoSellPerUserToggleable.
+     *
+     * Return true if success, false if error or already enabled/disabled.
+     *
+     * @param isEnabled - True to enable, False to disable.
+     *
+     * @return boolean.
+     * */
+    public boolean setAutoSellPerUserToggleable(boolean isEnabled){
+        if (isAutoSellPerUserToggleable == isEnabled){
+            return false;
+        }
+
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("Options.Full_Inv_AutoSell_perUserToggleable", isEnabled);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        isAutoSellPerUserToggleable = isEnabled;
+        updateConfig();
+        return true;
+    }
+
+    /**
+     * Set SellAll Currency by name.
+     *
+     * Return True if success, False if error or invalid currency.
+     *
+     * @param currency - String.
+     *
+     * @return boolean.
+     * */
+    public boolean setCurrency(String currency){
         EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager().getEconomyForCurrency(currency);
         if (currencyEcon == null && !currency.equalsIgnoreCase("default")) {
-            return true;
+            return false;
         }
 
         try {
@@ -1303,421 +1322,277 @@ public class SellAllUtil {
             conf.save(sellAllFile);
         } catch (IOException e) {
             e.printStackTrace();
-            return true;
+            return false;
         }
-
-        sellAllConfigUpdater();
-        return false;
+        sellAllCurrency = currency;
+        updateConfig();
+        return true;
     }
 
-    private double getNewMoneyToGive(Player p, boolean removeItems) {
-        // Money to give value, Player Inventory, Items config section.
-        double moneyToGive = 0;
-        Inventory inv = p.getInventory();
-        Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
-
-        // Get values and XMaterials from config.
-        HashMap<XMaterial, Double> sellAllXMaterials = getDoubleXMaterialHashMap(items);
-
-        // Get the items from the player inventory and for each of them check the conditions.
-        mode = inventorySellMode.PlayerInventory;
-        for (ItemStack itemStack : inv.getContents()) {
-            moneyToGive += getNewMoneyToGiveManager(p, inv, itemStack, removeItems, sellAllXMaterials);
+    /**
+     * Enable or disable SellAll delay.
+     *
+     * Return True if success, False if error.
+     *
+     * @param enabled - Boolean.
+     *
+     * @return boolean.
+     * */
+    public boolean setDelayEnable(boolean enabled){
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("Options.Sell_Delay_Enabled", enabled);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
-
-        // Check option and if enabled.
-        if (IntegrationMinepacksPlugin.getInstance().isEnabled() &&
-                getBoolean(sellAllConfig.getString("Options.Sell_MinesBackPacks_Plugin_Backpack"))) {
-
-            // Get money to give depending on Mines Backpacks plugin.
-            moneyToGive = sellAllGetMoneyToGiveMinesBackpacksPlugin(p, removeItems, moneyToGive, sellAllXMaterials);
-        }
-
-        // Check if enabled Prison backpacks and sellall on it.
-        if (getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks")) &&
-                getBoolean(sellAllConfig.getString("Options.Sell_Prison_BackPack_Items"))) {
-
-            // Get money to give from the Prison backpacks.
-            moneyToGive = sellAllGetMoneyToGivePrisonBackpacks(p, removeItems, moneyToGive, sellAllXMaterials);
-        }
-
-        return moneyToGive;
+        isSellAllDelayEnabled = enabled;
+        updateConfig();
+        return true;
     }
 
-    private double sellAllGetMoneyToGivePrisonBackpacks(Player p, boolean removeItems, double moneyToGive, HashMap<XMaterial, Double> sellAllXMaterials) {
-        if (BackpacksUtil.get().isMultipleBackpacksEnabled()) {
-            if (!BackpacksUtil.get().getBackpacksIDs(p).isEmpty()) {
-                for (String id : BackpacksUtil.get().getBackpacksIDs(p)) {
-                    // If the backpack's the default one with a null ID then use this, if not get something else.
-                    if (id == null) {
+    /**
+     * Set SellAll Delay.
+     *
+     * Return True if success, False if error.
+     *
+     * @param delay - Integer.
+     *
+     * @return boolean.
+     * */
+    public boolean setDelay(int delay){
+        try {
+            File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
+            FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
+            conf.set("Options.Sell_Delay_Seconds", delay);
+            conf.save(sellAllFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        defaultSellAllDelay = delay;
+        updateConfig();
+        return true;
+    }
 
-                        Inventory backPack = BackpacksUtil.get().getBackpack(p);
-                        mode = inventorySellMode.PrisonBackPackSingle;
+    /**
+     * Sell removing items from Inventories and checking all the possible conditions that a Player must meet to sell
+     * items, this includes method parameters like:
+     * - Is using SellAll Sign.
+     * - If tell the Player how much did he earn (if this's disabled by config, the parameter will be ignored).
+     * - If do this action without making the player notice it, disabling sounds and all messages.
+     * - If tell the Player to wait the end of SellAll Delay if not ended (if this's disabled by config, the parameter will be ignored).
+     * - If tell the Player how much did he earn only after a delay (AutoSell Delay Earnings will use this option for example).
+     * - If play sound on SellAll Sell (If sounds are disabled from the config, this parameter will be ignored.
+     *
+     * Return True if success, False if error or nothing changed or Player not meeting requirements.
+     *
+     * Default usage of this method: sellAllSell(p, false, false, true, false, false, true);
+     *
+     * @param p - Player.
+     * @param isUsingSign - boolean.
+     * @param completelySilent - boolean.
+     * @param notifyPlayerEarned - boolean.
+     * @param notifyPlayerDelay - boolean.
+     * @param notifyPlayerEarningDelay - boolean.
+     * @param playSoundOnSellAll - boolean.
+     *
+     * @return boolean.
+     * */
+    public boolean sellAllSell(Player p, boolean isUsingSign, boolean completelySilent, boolean notifyPlayerEarned, boolean notifyPlayerDelay, boolean notifyPlayerEarningDelay, boolean playSoundOnSellAll){
+        if (!isUsingSign && isSellAllSignEnabled && isSellAllBySignOnlyEnabled && !p.hasPermission(permissionBypassSign)){
+            if (!completelySilent) {
+                Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.SellAllSignOnly"));
+            }
+            return false;
+        }
 
-                        if (backPack != null) {
-                            for (ItemStack itemStack : backPack.getContents()) {
-                                if (itemStack != null) {
-                                    moneyToGive += getNewMoneyToGiveManager(p, backPack, itemStack, removeItems, sellAllXMaterials);
-                                }
-                            }
-                            BackpacksUtil.get().setInventory(p, backPack);
-                        }
+        if (isSellAllDelayEnabled && isPlayerWaitingSellAllDelay(p)){
+            if (notifyPlayerDelay && !completelySilent) {
+                Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.SellAllWaitDelay"));
+            }
+            return false;
+        }
 
+        if (sellAllBlocks.isEmpty()){
+            if (!completelySilent){
+                Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.SellAllEmpty"));
+            }
+            return false;
+        }
+
+        double money = getSellMoney(p);
+        if (money != 0){
+
+            SpigotPlayer sPlayer = new SpigotPlayer(p);
+            RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
+            if (sellAllCurrency != null && sellAllCurrency.equalsIgnoreCase("default")) sellAllCurrency = null;
+            removeSellableItems(p);
+            rankPlayer.addBalance(sellAllCurrency, money);
+
+            if (isSellAllDelayEnabled){
+                addToDelay(p);
+            }
+
+            if (!completelySilent) {
+                if (isSellAllSoundEnabled && playSoundOnSellAll) {
+                    p.playSound(p.getLocation(), sellAllSoundSuccess, 3, 1);
+                }
+
+                if (notifyPlayerEarningDelay && isAutoSellEarningNotificationDelayEnabled){
+                    if (!isPlayerWaitingAutoSellNotification(p)){
+                        addToAutoSellNotificationDelay(p);
                     } else {
-
-                        Inventory backPack = BackpacksUtil.get().getBackpack(p, id);
-                        mode = inventorySellMode.PrisonBackPackMultiples;
-                        idBeingProcessedBackpack = id;
-                        if (backPack != null) {
-                            for (ItemStack itemStack : backPack.getContents()) {
-                                if (itemStack != null) {
-                                    moneyToGive += getNewMoneyToGiveManager(p, backPack, itemStack, removeItems, sellAllXMaterials);
-                                }
-                            }
-                            BackpacksUtil.get().setInventory(p, backPack, id);
-                        }
+                        addDelayedEarningAutoSellNotification(p, money);
                     }
+                } else if (notifyPlayerEarned){
+                   Output.get().sendInfo(sPlayer, messages.getString("Message.SellAllYouGotMoney") + money);
                 }
-                idBeingProcessedBackpack = null;
             }
-
+            return true;
         } else {
-            // Set mode and get Prison Backpack inventory
-            mode = inventorySellMode.PrisonBackPackSingle;
-            Inventory backPack = BackpacksUtil.get().getBackpack(p);
-
-            if (backPack != null) {
-                for (ItemStack itemStack : backPack.getContents()) {
-                    if (itemStack != null) {
-                        moneyToGive += getNewMoneyToGiveManager(p, backPack, itemStack, removeItems, sellAllXMaterials);
-                    }
+            if (!completelySilent){
+                if (isSellAllSoundEnabled && playSoundOnSellAll) {
+                    p.playSound(p.getLocation(), sellAllSoundFail, 3, 1);
                 }
-                BackpacksUtil.get().setInventory(p, backPack);
+                Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.SellAllNothingToSell"));
             }
+            return false;
         }
-        return moneyToGive;
-    }
-
-    private double sellAllGetMoneyToGiveMinesBackpacksPlugin(Player p, boolean removeItems, double moneyToGive, HashMap<XMaterial, Double> sellAllXMaterials) {
-        // Set mode and get backpack
-        mode = inventorySellMode.MinesBackPack;
-        Backpack backPack = IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p);
-
-        if (backPack != null) {
-            Inventory inv = backPack.getInventory();
-            for (ItemStack itemStack : inv.getContents()) {
-                if (itemStack != null) {
-                    moneyToGive += getNewMoneyToGiveManager(p, inv, itemStack, removeItems, sellAllXMaterials);
-                }
-            }
-        }
-        return moneyToGive;
-    }
-
-    private HashMap<XMaterial, Double> getDoubleXMaterialHashMap(Set<String> items) {
-        HashMap<XMaterial, Double> sellAllXMaterials = new HashMap<>();
-        for (String key : items) {
-            // ItemID
-//            XMaterial itemMaterial = null;
-            String itemID = sellAllConfig.getString("Items." + key + ".ITEM_ID");
-
-            // NOTE: XMaterial is an exhaustive matching algorythem and will match on more than just the XMaterial enum name.
-            // WARNING: Do not use XMaterial.valueOf() since that only matches on enum name and appears to fail if the internal cache is empty?
-            Optional<XMaterial> iMatOptional = XMaterial.matchXMaterial(itemID);
-            XMaterial itemMaterial = iMatOptional.orElse(null);
-
-            if (itemMaterial != null) {
-                String valueString = sellAllConfig.getString("Items." + key + ".ITEM_VALUE");
-                if (valueString != null) {
-                    try {
-                        // If we cannot get a valid value, then there is no point in adding the
-                        // itemMaterial to the hash since it will be zero anyway:
-                        double value = Double.parseDouble(valueString);
-                        sellAllXMaterials.put(itemMaterial, value);
-                    } catch (NumberFormatException ignored) {
-                    }
-                }
-
-            }
-        }
-        return sellAllXMaterials;
-    }
-
-    private double getNewMoneyToGiveManager(Player p, Inventory inv, ItemStack itemStack, boolean removeItems, HashMap<XMaterial, Double> sellAllXMaterials) {
-
-        double moneyToGive = 0;
-
-        if (itemStack != null) {
-
-            boolean perBlockPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"));
-            String permission = sellAllConfig.getString("Options.Sell_Per_Block_Permission");
-
-
-            // First map itemStack to XMaterial:
-            try {
-                XMaterial invMaterial = getXMaterialOrLapis(itemStack);
-
-                if (invMaterial != null && sellAllXMaterials.containsKey(invMaterial)) {
-                    Double itemValue = sellAllXMaterials.get(invMaterial);
-                    int amount = itemStack.getAmount();
-
-                    // Check if per-block permission's enabled and if player has permission.
-                    if (perBlockPermissionEnabled) {
-                        permission = permission + invMaterial.name();
-
-                        // Check if player have this permission, if not return 0 money earned for this item and don't remove it.
-                        if (!p.hasPermission(permission)) {
-                            return 0;
-                        }
-                    }
-
-                    if (removeItems) {
-                        if (mode == inventorySellMode.PlayerInventory) {
-                            inv.remove(itemStack);
-                        } else if (IntegrationMinepacksPlugin.getInstance().isEnabled() && mode == inventorySellMode.MinesBackPack) {
-                            inv.remove(itemStack);
-                        } else if (mode == inventorySellMode.PrisonBackPackSingle) {
-                            inv.remove(itemStack);
-                        } else if (mode == inventorySellMode.PrisonBackPackMultiples) {
-                            if (idBeingProcessedBackpack != null) {
-                                inv.remove(itemStack);
-                            }
-                        }
-                    }
-
-                    if (itemValue != null && amount > 0) {
-                        moneyToGive += itemValue * amount;
-                    }
-                }
-            } catch (IllegalArgumentException ignored) {
-            }
-        }
-        return moneyToGive;
-    }
-
-    private XMaterial getXMaterialOrLapis(ItemStack itemStack) {
-        if (itemStack.isSimilar(lapisLazuli)) {
-            return XMaterial.LAPIS_LAZULI;
-        }
-        return XMaterial.matchXMaterial(itemStack);
     }
 
     /**
-     * Open SellAll GUI for Players if enabled.
+     * Sell removing items from Inventories and checking all the possible conditions that a Player must meet to sell
+     * items, this includes method parameters like:
+     * - Is using SellAll Sign.
+     * - If tell the Player how much did he earn (if this's disabled by config, the parameter will be ignored).
+     * - If do this action without making the player notice it, disabling sounds and all messages.
+     * - If tell the Player to wait the end of SellAll Delay if not ended (if this's disabled by config, the parameter will be ignored).
+     * - If tell the Player how much did he earn only after a delay (AutoSell Delay Earnings will use this option for example).
+     * - If play sound on SellAll Sell (If sounds are disabled from the config, this parameter will be ignored.
      *
-     * @param p Player
-     * @return boolean
-     */
-    private boolean sellAllPlayerGUI(Player p) {
-
-        // Check if the Player GUI's enabled.
-        boolean playerGUIEnabled = getBoolean(sellAllConfig.getString("Options.Player_GUI_Enabled"));
-        if (playerGUIEnabled) {
-            // Check if a permission's required, if not it'll open directly the Player's GUI.
-            boolean playerGUIPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Player_GUI_Permission_Enabled"));
-            if (playerGUIPermissionEnabled) {
-                // Check if the sender has the required permission.
-                String permission = sellAllConfig.getString("Options.Player_GUI_Permission");
-                if (permission != null && p.hasPermission(permission)) {
-                    SellAllPlayerGUI gui = new SellAllPlayerGUI(p, 0);
-                    gui.open();
-                    // If missing will send a missing permission error message.
-                } else {
-                    Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + " [" + permission + "]"));
-                }
-                // Because a permission isn't required, it'll open directly the GUI.
-            } else {
-                SellAllPlayerGUI gui = new SellAllPlayerGUI(p, 0);
-                gui.open();
-            }
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Check if a player's waiting for his delay to end.
-     * Check if SellAllDelay's enabled.
+     * NOTE: With this method you can add an ArrayList of ItemStacks to sell, remove sold items (this will return the ArrayList without
+     * sold items), and give money to the player, also note that this will also trigger the usual sellall sell and sell everything sellable
+     * from all inventories and enabled backpacks of the Player.
      *
-     * @param p Player
-     * @return boolean
-     */
-    private boolean sellAllCommandDelay(Player p) {
+     * Return True if success, False if error or nothing changed or Player not meeting requirements.
+     *
+     * Default usage of this method: sellAllSell(p, false, false, true, false, false, true);
+     *
+     * @param p - Player.
+     * @param itemStacks - ArrayList of ItemStacks.
+     * @param isUsingSign - boolean.
+     * @param completelySilent - boolean.
+     * @param notifyPlayerEarned - boolean.
+     * @param notifyPlayerDelay - boolean.
+     * @param notifyPlayerEarningDelay - boolean.
+     * @param playSoundOnSellAll - boolean.
+     *
+     * @return boolean.
+     * */
+    public ArrayList<ItemStack> sellAllSell(Player p, ArrayList<ItemStack> itemStacks, boolean isUsingSign, boolean completelySilent, boolean notifyPlayerEarned, boolean notifyPlayerDelay, boolean notifyPlayerEarningDelay, boolean playSoundOnSellAll){
+        if (!isUsingSign && isSellAllSignEnabled && isSellAllBySignOnlyEnabled && !p.hasPermission(permissionBypassSign)){
+            if (!completelySilent) {
+                Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.SellAllSignOnly"));
+            }
+            return itemStacks;
+        }
 
-        boolean sellDelayEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Delay_Enabled"));
-        if (sellDelayEnabled) {
+        if (isSellAllDelayEnabled && isPlayerWaitingSellAllDelay(p)){
+            if (notifyPlayerDelay && !completelySilent) {
+                Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.SellAllWaitDelay"));
+            }
+            return itemStacks;
+        }
 
-            if (activePlayerDelay.contains(p.getName())) {
-                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllWaitDelay")));
-                return true;
+        if (sellAllBlocks.isEmpty()){
+            if (!completelySilent){
+                Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.SellAllEmpty"));
+            }
+            return itemStacks;
+        }
+
+        double arrayListMoney = getSellMoney(p, itemStacks);
+        if (arrayListMoney != 0.00){
+            itemStacks = removeSellableItems(p, itemStacks);
+        }
+
+        double money = getSellMoney(p) + arrayListMoney;
+        if (money != 0){
+
+            SpigotPlayer sPlayer = new SpigotPlayer(p);
+            RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
+            if (sellAllCurrency != null && sellAllCurrency.equalsIgnoreCase("default")) sellAllCurrency = null;
+            removeSellableItems(p);
+            rankPlayer.addBalance(sellAllCurrency, money);
+
+            if (isSellAllDelayEnabled){
+                addToDelay(p);
             }
 
-            addPlayerToDelay(p);
-
-            String delayInSeconds = sellAllConfig.getString("Options.Sell_Delay_Seconds");
-            if (delayInSeconds == null) {
-                delayInSeconds = "1";
-            }
-            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> removePlayerFromDelay(p), 20L * Integer.parseInt(delayInSeconds));
-        }
-
-        return false;
-    }
-
-    private boolean addMultiplierConditions(String prestige) {
-
-        PrisonRanks rankPlugin = (PrisonRanks) (Prison.get().getModuleManager() == null ? null : Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME).orElse(null));
-        if (rankPlugin == null) {
-            return true;
-        }
-
-        boolean isPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges") != null;
-        if (!isPrestigeLadder) {
-            return true;
-        }
-
-        boolean isARank = rankPlugin.getRankManager().getRank(prestige) != null;
-        if (!isARank) {
-            return true;
-        }
-
-        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").containsRank(rankPlugin.getRankManager().getRank(prestige));
-        if (!isInPrestigeLadder) {
-            return true;
-        }
-        return false;
-    }
-
-    private double getMultiplierByRank(SpigotPlayer sPlayer, Module module, double multiplier) {
-        if (module != null) {
-            PrisonRanks rankPlugin = (PrisonRanks) module;
-            if (rankPlugin.getPlayerManager().getPlayer(sPlayer) != null) {
-                String playerRankName;
-                try {
-                	RankPlayer rankPlayer = rankPlugin.getPlayerManager().getPlayer(sPlayer);
-                	PlayerRank pRank = rankPlayer == null ? null : rankPlayer.getRank("prestiges");
-                	Rank rank = pRank == null ? null : pRank.getRank();
-                	
-                    playerRankName = rank == null ? null : rank.getName();
-                } catch (NullPointerException ex) {
-                    playerRankName = null;
+            if (!completelySilent) {
+                if (isSellAllSoundEnabled && playSoundOnSellAll) {
+                    p.playSound(p.getLocation(), sellAllSoundSuccess, 3, 1);
                 }
-                if (playerRankName != null) {
-                    String multiplierRankString = sellAllConfig.getString("Multiplier." + playerRankName + ".MULTIPLIER");
-                    if (multiplierRankString != null) {
-                        try {
-                            multiplier = Double.parseDouble(multiplierRankString);
-                        } catch (NumberFormatException ignored) {
-                        }
+
+                if (notifyPlayerEarningDelay && isAutoSellEarningNotificationDelayEnabled){
+                    if (!isPlayerWaitingAutoSellNotification(p)){
+                        addToAutoSellNotificationDelay(p);
+                    } else {
+                        addDelayedEarningAutoSellNotification(p, money);
                     }
+                } else if (notifyPlayerEarned){
+                    Output.get().sendInfo(sPlayer, messages.getString("Message.SellAllYouGotMoney") + money);
                 }
             }
-        }
-        return multiplier;
-    }
-
-    private double getMultiplierExtraByPerms(List<String> perms, double multiplierExtraByPerms) {
-        boolean multiplierPermissionHighOption = getBoolean(sellAllConfig.getString("Options.Multiplier_Permission_Only_Higher"));
-        for (String multByPerm : perms) {
-            double multByPermDouble = Double.parseDouble(multByPerm.substring(26));
-            if (!multiplierPermissionHighOption) {
-                multiplierExtraByPerms += multByPermDouble;
-            } else if (multByPermDouble > multiplierExtraByPerms) {
-                multiplierExtraByPerms = multByPermDouble;
+            return itemStacks;
+        } else {
+            if (!completelySilent){
+                if (isSellAllSoundEnabled && playSoundOnSellAll) {
+                    p.playSound(p.getLocation(), sellAllSoundFail, 3, 1);
+                }
+                Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.SellAllNothingToSell"));
             }
+            return itemStacks;
         }
-        return multiplierExtraByPerms;
     }
 
     /**
-     * Get sellAllConfig updated.
-     */
-    private void sellAllConfigUpdater() {
-
-        // Get updated config.
-        sellAllConfig = YamlConfiguration.loadConfiguration(new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml"));
-    }
-
-    /**
-     * Add a Player to delay.
+     * Open SellAll GUI to the specified Player.
+     * NOTE: SellAll GUI must be enabled from the config or nothing will happen.
+     * NOTE #2: A Player if admin will open another GUI if meets requirements, if not it will try to check
+     * if it meets the normal Player GUI requirements and open that one instead.
      *
-     * @param p Player
-     */
-    private void addPlayerToDelay(Player p) {
-
-        if (!isEnabled()) return;
-
-        if (!activePlayerDelay.contains(p.getName())) {
-            activePlayerDelay.add(p.getName());
-        }
-    }
-
-    /**
-     * Removes a Player from delay.
+     * Return true if success, false if error, disabled or missing permission.
      *
-     * @param p Player
-     */
-    private void removePlayerFromDelay(Player p) {
-
-        if (!isEnabled()) return;
-
-        activePlayerDelay.remove(p.getName());
-    }
-
-//    private void sellAllSignToggler() {
-//        if (!signUsed) {
-//            signUsed = true;
-//        }
-//    }
-
-    private double getMoneyFinal(Player player, boolean removeItems) {
-        SpigotPlayer sPlayer = new SpigotPlayer(player);
-
-        // Get money to give
-        double moneyToGive = getNewMoneyToGive(sPlayer.getWrapper(), removeItems);
-        boolean multiplierEnabled = getBoolean(sellAllConfig.getString("Options.Multiplier_Enabled"));
-        if (multiplierEnabled) {
-            moneyToGive = moneyToGive * getMultiplier(sPlayer);
+     * @param p - Player.
+     *
+     * @return boolean.
+     * */
+    public boolean openSellAllGUI(Player p){
+        if (!isSellAllGUIEnabled){
+            return false;
         }
 
-        // Log the amount of money earned to generate the average earned per minute for the player:
-        if ( moneyToGive > 0 ) {
-        	PlayerCache.getInstance().addPlayerEarnings( sPlayer, moneyToGive );
-        }
-        return moneyToGive;
-    }
+        if (isSellAllGUIPermissionEnabled && !p.hasPermission(permissionGUI)){
 
-    private double getMultiplierMethod(SpigotPlayer sPlayer) {
-        // Get Ranks module.
-        ModuleManager modMan = Prison.get().getModuleManager();
-        Module module = modMan == null ? null : modMan.getModule(PrisonRanks.MODULE_NAME).orElse(null);
-
-        // Get default multiplier
-        String multiplierString = sellAllConfig.getString("Options.Multiplier_Default");
-        double multiplier = 0;
-        if (multiplierString != null) {
-            multiplier = Double.parseDouble(multiplierString);
-        }
-
-        // Get multiplier depending on Player + Prestige. NOTE that prestige multiplier will replace
-        // the actual default multiplier.
-        multiplier = getMultiplierByRank(sPlayer, module, multiplier);
-
-        // Get Multiplier from multipliers permission's if there's any.
-        List<String> perms = sPlayer.getPermissions("prison.sellall.multiplier.");
-        double multiplierExtraByPerms = 0;
-        multiplierExtraByPerms = getMultiplierExtraByPerms(perms, multiplierExtraByPerms);
-        multiplier += multiplierExtraByPerms;
-
-        return multiplier;
-    }
-
-    private void taskSellAllAutoActions(Player p) {
-        if (activeAutoSellPlayers.containsKey(p)) {
-            if (activeAutoSellPlayers.get(p) != 0.00) {
-                Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllAutoSellEarnedMoney") + activeAutoSellPlayers.get(p) + messages.getString("Message.SellAllAutoSellEarnedMoneyCurrency")));
+            if (!isSellAllPlayerGUIEnabled){
+                return false;
             }
-            activeAutoSellPlayers.remove(p);
+
+            if (isSellAllPlayerGUIPermissionEnabled && !p.hasPermission(permissionPlayerGUI)){
+                return false;
+            }
+
+            SellAllPlayerGUI gui = new SellAllPlayerGUI(p, 0);
+            gui.open();
+            return true;
         }
+
+        SellAllAdminGUI gui = new SellAllAdminGUI(p);
+        gui.open();
+        return true;
     }
 }

@@ -30,9 +30,7 @@ that you need.
 # v3.2.6 2021-04-11
 
 
-
 * **v3.2.6 2021-04-11**
-
 
 * **Start to add in a PrisonMinesBlockEventEvent class.**
 It has been disabled because it cannot be used yet; the BlockEvents need to under go some major changes to support its use.

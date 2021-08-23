@@ -61,9 +61,9 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
 
             sellAllDelayLore.setLoreAction(createLore(
                     messages.getString("Lore.ClickToOpen"),
-                    messages.getString("Lore.DelaySellAll") + sellAllConfig.getString("Options.Sell_Delay_Seconds") + "s",
                     messages.getString("Lore.RightClickToDisable")));
             sellAllDelayLore.setLoreDescription(createLore(
+                    messages.getString("Lore.DelaySellAll") + sellAllConfig.getString("Options.Sell_Delay_Seconds") + "s",
                     messages.getString("Lore.SellAllDelayInfo"),
                     messages.getString("Lore.SellAllDelayInfo2")));
 

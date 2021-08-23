@@ -378,7 +378,7 @@ public class PrisonSpigotAPI {
 	public SellAllUtil getPrisonSellAll(){
 
 		if (sellAll == null){
-			sellAll = SellAllUtil.get();
+			sellAll = SpigotPrison.getInstance().getSellAllUtil();
 		}
 
 		return sellAll;
@@ -396,11 +396,11 @@ public class PrisonSpigotAPI {
 	public Double getSellAllMoneyWithMultiplier(Player player){
 
 	    if (sellAll == null){
-	        sellAll = SellAllUtil.get();
+	        sellAll = SpigotPrison.getInstance().getSellAllUtil();
         }
 
 		if (sellAll != null){
-			return sellAll.getMoneyWithMultiplier(player, false);
+			return sellAll.getSellMoney(player);
 		}
 
 		return null;

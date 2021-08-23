@@ -724,7 +724,7 @@ public class AutoFeaturesFileConfig {
 	 * initial saving of the data since the original file will not be deleted first.
 	 * </p>
 	 * 
-	 * @param afConfig
+	 * @param config
 	 * @return
 	 */
 	private boolean saveConf( Map<String, ValueNode> config ) {

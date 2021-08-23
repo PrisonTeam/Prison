@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -43,6 +42,7 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
+import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
@@ -76,6 +76,7 @@ import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPrestigesMultiplierGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPrestigesSetMultiplierGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPriceGUI;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 
 /**
  * @author GABRYCA
@@ -92,9 +93,6 @@ public class ListenersPrisonManager implements Listener {
     private final Configuration config = SpigotPrison.getInstance().getConfig();
     private final Configuration guiConfig = SpigotPrison.getInstance().getGuiConfig();
 
-    // NOTE: sellAllConfig will be null if sellall is not enbled.
-	private Configuration sellAllConfig = SpigotPrison.getInstance().updateSellAllConfig();
-    
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     boolean guiNotEnabled = !(config.getString("prison-gui-enabled").equalsIgnoreCase("true"));
     private Optional<RankLadder> ladder;
@@ -144,19 +142,19 @@ public class ListenersPrisonManager implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onSignEditing(SignChangeEvent e){
 
-        sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
-
-        if (sellAllConfig == null){
+        if (!SpigotPrison.getInstance().isSellAllEnabled()){
             return;
         }
 
+        SellAllUtil sellAllUtil = SpigotPrison.getInstance().getSellAllUtil();
+
         // Check if the feature's enabled
-        if (!getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Enabled"))){
+        if (!sellAllUtil.isSellAllSignEnabled){
             return;
         }
 
         Player p = e.getPlayer();
-        String signTag = sellAllConfig.getString("Options.SellAll_Sign_Visible_Tag");
+        String signTag = sellAllUtil.sellAllSignTag;;
         if (signTag == null){
             signTag = "&7[&3SellAll&7]";
         }
@@ -179,43 +177,42 @@ public class ListenersPrisonManager implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerInteractEvent(PlayerInteractEvent e){
 
-        sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
-        if (sellAllConfig != null) {
+        if (!SpigotPrison.getInstance().isSellAllEnabled()){
+            return;
+        }
 
-            // Check if SellAll Shift + Right Click is enabled.
-            boolean sellAllTriggerEnabled = getBoolean(sellAllConfig.getString("Options.ShiftAndRightClickSellAll.Enabled"));
-            if (sellAllTriggerEnabled) {
-                // Check if the action if Shift + Right Click.
-                Player p = e.getPlayer();
-                if (e.getAction().equals(Action.RIGHT_CLICK_AIR) && p.isSneaking()) {
+        SellAllUtil sellAllUtil = SpigotPrison.getInstance().getSellAllUtil();
 
-                    // Check if a permission's required.
-                    boolean permissionSellAllTriggerEnabled = getBoolean(sellAllConfig.getString("Options.ShiftAndRightClickSellAll.PermissionEnabled"));
-                    if (permissionSellAllTriggerEnabled) {
-                        String permission = sellAllConfig.getString("Options.ShiftAndRightClickSellAll.Permission");
-                        if (permission != null && !p.hasPermission(permission)) {
-                            return;
-                        }
+        // Check if SellAll Shift + Right Click is enabled.
+        if (sellAllUtil.isSellAllItemTriggerEnabled) {
+            // Check if the action if Shift + Right Click.
+            Player p = e.getPlayer();
+            if (e.getAction().equals(Action.RIGHT_CLICK_AIR) && p.isSneaking()) {
+
+                // Check if a permission's required.
+                if (sellAllUtil.isSellAllItemTriggerPermissionEnabled) {
+                    String permission = sellAllUtil.permissionItemTrigger;
+                    if (permission != null && !p.hasPermission(permission)) {
+                        return;
                     }
+                }
 
-                    // Get the Items config section
-                    Set<String> items = null;
-                    try {
-                        items = sellAllConfig.getConfigurationSection("ShiftAndRightClickSellAll.Items").getKeys(false);
-                    } catch (NullPointerException ignored) {}
-                    if (items != null && items.size() != 0) {
-                        for (String itemID : items) {
-                            XMaterial xMaterialConf = SpigotUtil.getXMaterial(sellAllConfig.getString("ShiftAndRightClickSellAll.Items." + itemID + ".ITEM_ID"));
-                            XMaterial inHandXMaterial = null;
-                            if (e.getItem() != null){
-                                inHandXMaterial = SpigotUtil.getXMaterial(e.getItem().getType());
-                            }
-                            if (inHandXMaterial != null && xMaterialConf == inHandXMaterial) {
-                            	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
+                // Get the Items config section
+                ArrayList<XMaterial> items = sellAllUtil.getItemTriggerXMaterials();
+
+                if (items != null && items.size() != 0) {
+                    XMaterial inHandXMaterial = null;
+                    if (e.getItem() != null){
+                        inHandXMaterial = SpigotUtil.getXMaterial(e.getItem().getType());
+                    }
+                    if (inHandXMaterial != null) {
+                        for (XMaterial xMaterialConf : items) {
+                            if (xMaterialConf == inHandXMaterial) {
+                                String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand("sellall sell");
                                 Bukkit.dispatchCommand(p, registeredCmd);
                                 return;
-                            } else if (xMaterialConf == SpigotUtil.getXMaterial(p.getInventory().getItemInMainHand().getType())){
-                                String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
+                            } else if (xMaterialConf == SpigotUtil.getXMaterial(p.getInventory().getItemInMainHand().getType())) {
+                                String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand("sellall sell");
                                 Bukkit.dispatchCommand(p, registeredCmd);
                                 return;
                             }
@@ -223,63 +220,56 @@ public class ListenersPrisonManager implements Listener {
                     }
                 }
             }
+        }
 
-            // Check if the feature's enabled.
-            boolean sellAllSignEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Enabled"));
-            if (sellAllSignEnabled) {
+        // Check if the feature's enabled.
+        if (sellAllUtil.isSellAllSignEnabled) {
 
-                // Get clicked block.
-                Material clickedBlock = null;
-                if (e.getClickedBlock() != null){
-                    clickedBlock = e.getClickedBlock().getType();
+            // Get clicked block.
+            Material clickedBlock = null;
+            if (e.getClickedBlock() != null){
+                clickedBlock = e.getClickedBlock().getType();
+            }
+
+            // Check if the clicked block's a sign
+            if (clickedBlock == Material.SIGN || clickedBlock == Material.WALL_SIGN) {
+
+                // Get the player
+                Player p = e.getPlayer();
+                String signTag = sellAllUtil.sellAllSignTag;
+                if (signTag == null) {
+                    signTag = "&7[&3SellAll&7]";
                 }
 
-                // Check if the clicked block's a sign
-                if (clickedBlock == Material.SIGN || clickedBlock == Material.WALL_SIGN) {
+                // Get the action
+                Action action = e.getAction();
 
-                    // Get the player
-                    Player p = e.getPlayer();
-                    String signTag = sellAllConfig.getString("Options.SellAll_Sign_Visible_Tag");
-                    if (signTag == null) {
-                        signTag = "&7[&3SellAll&7]";
-                    }
+                // Check if the action's a click
+                if (action == Action.RIGHT_CLICK_BLOCK || action == Action.LEFT_CLICK_BLOCK) {
 
-                    // Get the action
-                    Action action = e.getAction();
+                    // Get sign
+                    Sign sign = (Sign) e.getClickedBlock().getState();
 
-                    // Check if the action's a click
-                    if (action == Action.RIGHT_CLICK_BLOCK || action == Action.LEFT_CLICK_BLOCK) {
+                    // If there aren't lines in the sign this will void an error
+                    try {
 
-                        // Get sign
-                        Sign sign = (Sign) e.getClickedBlock().getState();
-
-                        // If there aren't lines in the sign this will void an error
-                        try {
-
-                            // Check if the first like of the sign have the right tag
-                            if (sign.getLine(0).equalsIgnoreCase(SpigotPrison.format(signTag))) {
-
-                                if (sellAllConfig.getString("Options.SellAll_Sign_Use_Permission_Enabled").equalsIgnoreCase("true") && !p.hasPermission(sellAllConfig.getString("Options.SellAll_Sign_Use_Permission"))) {
-                                    Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.SellAllSignMissingPermission") + " [&3" + sellAllConfig.getString("Options.SellAll_Sign_Use_Permission") + "&7]");
-                                    return;
-                                }
-
-                                boolean bySignOnly = sellAllConfig.getString("Options.SellAll_By_Sign_Only").equalsIgnoreCase("true");
-                                //                                    SellAllUtil sellAll = SellAllUtil.get();
-                                //                                    if (sellAll != null) {
-                                //                                        sellAll.toggleSellAllSign();
-                                //                                    }
-
-                                if (sellAllConfig.getString("Options.SellAll_Sign_Notify").equalsIgnoreCase("true")) {
-                                    Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.SellAllSignNotify"));
-                                }
-
-                                // Execute the sellall command
-                                String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
-                                Bukkit.dispatchCommand(p, registeredCmd + ( bySignOnly ? " bySignOnly" : ""));
+                        // Check if the first like of the sign have the right tag
+                        if (sign.getLine(0).equalsIgnoreCase(SpigotPrison.format(signTag))) {
+                            String permissionUseSign = sellAllUtil.permissionUseSign;
+                            if (sellAllUtil.isSellAllSignPermissionToUseEnabled && !p.hasPermission(permissionUseSign)) {
+                                Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.SellAllSignMissingPermission") + " [&3" + permissionUseSign + "&7]");
+                                return;
                             }
-                        } catch (IndexOutOfBoundsException ignored) {}
-                    }
+
+                            if (sellAllUtil.isSellAllSignNotifyEnabled) {
+                                Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.SellAllSignNotify"));
+                            }
+
+                            if (PrisonSpigotSellAllCommands.get() != null){
+                                PrisonSpigotSellAllCommands.get().sellAllSell(p);
+                            }
+                        }
+                    } catch (IndexOutOfBoundsException ignored) {}
                 }
             }
         }
@@ -328,8 +318,6 @@ public class ListenersPrisonManager implements Listener {
 
         // Check if the boolean is true, this's set manually
         if (isChatEventActive) {
-
-            sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
 
             // Get the player
             Player p = e.getPlayer();
@@ -406,7 +394,6 @@ public class ListenersPrisonManager implements Listener {
             String[] parts;
             Module module;
             String title;
-            sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
 
             try {
                 // Get parameters.
@@ -968,6 +955,8 @@ public class ListenersPrisonManager implements Listener {
             return;
         } else {
 
+            Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
+
             // Open setMultiplierGUI
             String doubleString = sellAllConfig.getString("Multiplier." + parts[0] + ".MULTIPLIER");
             if (doubleString != null) {
@@ -1132,6 +1121,8 @@ public class ListenersPrisonManager implements Listener {
     }
 
     private void sellAllAdminGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
+
+        Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
         switch (buttonNameMain){
 
             case "Blocks-Shop":{
@@ -1606,6 +1597,8 @@ public class ListenersPrisonManager implements Listener {
             p.closeInventory();
 
         } else if (e.isLeftClick()){
+
+            Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
 
             String valueString = sellAllConfig.getString("Items." + parts[0] + ".ITEM_VALUE");
             if (valueString != null) {

@@ -174,9 +174,9 @@ public abstract class SpigotGUIComponents {
      * Reload sellall config for GUIs.
      * */
     public static void updateSellAllConfig(){
-        SellAllUtil util = SellAllUtil.get();
-        util.updateSellAllConfig();
-        sellAllConfig = util.getSellAllConfig();
+        SellAllUtil util = SpigotPrison.getInstance().getSellAllUtil();
+        util.updateConfig();
+        sellAllConfig = util.sellAllConfig;
     }
 
     public static void updateGUIConfig(){

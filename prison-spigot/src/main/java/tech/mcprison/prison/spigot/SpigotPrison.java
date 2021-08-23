@@ -86,6 +86,7 @@ import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.slime.SlimeBlockFunEventListener;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.tasks.PrisonInitialStartupTask;
@@ -122,6 +123,7 @@ public class SpigotPrison extends JavaPlugin {
     private PrisonBlockTypes prisonBlockTypes;
 
     private static boolean isBackPacksEnabled = false;
+    private static boolean isSellAllEnabled = false;
     
     
     private List<Listener> registeredBlockListeners;
@@ -243,6 +245,14 @@ public class SpigotPrison extends JavaPlugin {
             Bukkit.getPluginManager().registerEvents(new BackpacksListeners(), this);
         }
 
+        try {
+            isSellAllEnabled = getConfig().getBoolean("sellall");
+        } catch (NullPointerException ignored){}
+
+        if (isSellAllEnabled){
+            SellAllUtil.get();
+        }
+
         initIntegrations();
         
         
@@ -330,7 +340,7 @@ public class SpigotPrison extends JavaPlugin {
     }
 
     public FileConfiguration updateSellAllConfig() {
-        // Let this like this or it wont update when you do /Sellall etc and will need a server restart.
+        // Let this like this or it won't update when you do /Sellall etc and will need a server restart.
         sellAllConfig = new SellAllConfig();
         sellAllConfig.initialize();
         return sellAllConfig.getFileSellAllConfig();
@@ -363,6 +373,14 @@ public class SpigotPrison extends JavaPlugin {
     	
 		return autoFeatures;
 	}
+
+	public SellAllUtil getSellAllUtil(){
+        return SellAllUtil.get();
+    }
+
+    public boolean isSellAllEnabled(){
+        return isSellAllEnabled;
+    }
 
 	public void setAutoFeatures( AutoManagerFeatures autoFeatures ) {
 		this.autoFeatures = autoFeatures;
@@ -644,7 +662,7 @@ public class SpigotPrison extends JavaPlugin {
 //        }
 
         // Load sellAll if enabled
-        if (PrisonSpigotSellAllCommands.isEnabled()){
+        if (isSellAllEnabled){
             Prison.get().getCommandHandler().registerCommands(new PrisonSpigotSellAllCommands());
         }
 

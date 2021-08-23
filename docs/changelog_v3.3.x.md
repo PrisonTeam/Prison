@@ -12,7 +12,18 @@ These build logs represent the work that has been going on within prison.
 
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
+# 3.2.11 2021-08-23
 
+* **Much better performance for SellAll generally.**
+
+
+* **SellAll Commands internal changes.**
+
+
+* **Minor changes to GUIs:** Some fixes and visual changes.
+
+
+* **SellAllUtil Rewrite:** New internals for SellAll and SellAll API.
 
 # v3.2.10 2021-08-22
 
