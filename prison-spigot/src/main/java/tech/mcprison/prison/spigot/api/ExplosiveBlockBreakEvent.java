@@ -50,15 +50,16 @@ public class ExplosiveBlockBreakEvent
 	
 	private String triggeredBy;
 	
+	
 	public ExplosiveBlockBreakEvent( Block theBlock, Player player,
-			List<Block> explodedBlocks, String triggeredBy ) {
+						List<Block> explodedBlocks, String triggeredBy ) {
 		super( theBlock, player );
 		
 		this.explodedBlocks = explodedBlocks;
 		this.triggeredBy = triggeredBy;
 	}
 	public ExplosiveBlockBreakEvent( Block theBlock, Player player,
-			List<Block> explodedBlocks ) {
+						List<Block> explodedBlocks ) {
 		this( theBlock, player, explodedBlocks, null );
 	}
 	public ExplosiveBlockBreakEvent( Block theBlock, Player player ) {
@@ -107,7 +108,8 @@ public class ExplosiveBlockBreakEvent
 	public HandlerList getHandlers(){
 		return handlers;
 	}
-	public static HandlerList getHandlersList(){
+	
+	public static HandlerList getHandlerList(){
 		return handlers;
 	}
 }

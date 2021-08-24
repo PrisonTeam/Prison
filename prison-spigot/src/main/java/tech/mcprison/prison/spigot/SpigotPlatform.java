@@ -90,6 +90,7 @@ import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerCrazyEnchants;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonEnchants;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonsExplosiveBlockBreakEvents;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerTokenEnchant;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerZenchantments;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
@@ -2038,11 +2039,14 @@ public class SpigotPlatform
 		sb.append( "\n" );
 		
 		
-		AutoManagerCrazyEnchants crazyEnchants = new AutoManagerCrazyEnchants();
-		crazyEnchants.dumpEventListeners( sb );
-		
 		AutoManagerPrisonEnchants prisonEnchants = new AutoManagerPrisonEnchants();
 		prisonEnchants.dumpEventListeners( sb );
+		
+		AutoManagerPrisonsExplosiveBlockBreakEvents prisonExplosiveEnchants = new AutoManagerPrisonsExplosiveBlockBreakEvents();
+		prisonExplosiveEnchants.dumpEventListeners( sb );
+		
+		AutoManagerCrazyEnchants crazyEnchants = new AutoManagerCrazyEnchants();
+		crazyEnchants.dumpEventListeners( sb );
 		
 		AutoManagerTokenEnchant tokenEnchant = new AutoManagerTokenEnchant();
 		tokenEnchant.dumpEventListeners( sb );

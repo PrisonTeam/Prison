@@ -28,13 +28,25 @@ public class AutoManagerBlockBreakEvents
    
     }
 
-	
+	/**
+	 * <p>When a listener is registered within prison's auto manager, the events
+	 * are tracked internally and can be unregistered later.  This function does not 
+	 * make it obvious the instantiated object is "stored", but it is.
+	 * </p>
+	 * 
+	 * <p>For more info on the storage of these registered events, please see:
+	 * </p>
+	 * 
+	 * <pre>SpigotPrison.getRegisteredBlockListeners()</pre>
+	 * 
+	 */
 	@Override
 	public void registerEvents() {
-	
 		
 		initialize();
 		
+		// Prison's own internal event and listener:
+		new AutoManagerPrisonsExplosiveBlockBreakEvents().registerEvents();
 		
 		new AutoManagerCrazyEnchants().registerEvents();
 		new AutoManagerPrisonEnchants().registerEvents();

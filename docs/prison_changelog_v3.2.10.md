@@ -32,7 +32,9 @@ These build logs represent the work that has been going on within prison.
 
 * Provide a more robust support system in prison, in addition to the support submit features.  Can now enable more debug mode targets to better trackdown potential issues.
 
-* Prison now supports reloadable locales and auto features.  For the auto features, it also reregisters the block break events listeners that auto features use.
+* Prison now supports reloadable locales and auto features.  For the auto features, it now unregisters all previously registered block event listeners, and the re-registers them based upon the updates to the settings in the reloaded auto features.  The server no longer needs to be restarted if the configuration settings for event listeners have changed in any way.
+
+* Auto features has undergone more refactoring to prepare for future enhancements, and to streamline the existing processes.  A few undiscovered bugs were found and fixed during these enhancements.  As a result, auto features works better with other enchantment plugins.
 
 * Rewrote some of the auto features to resolve some obscure issues, and to provide performance improvements and greater flexibility.
 
@@ -43,7 +45,7 @@ These build logs represent the work that has been going on within prison.
 
 * Update many of the internal libraries.
 
-* Rewrites of the GUIs and Sellall features.
+* Performance improvements with GUIs, backpack, and Sellall features.  Includes fixs and some layout functional improvements too.
 
 * Expand Prison's utils features. Added a few more utilities.
 
