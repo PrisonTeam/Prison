@@ -14,6 +14,13 @@ These build logs represent the work that has been going on within prison.
 
 # 3.2.11 2021-08-23
 
+
+* **Added /sellall hand command.**
+
+
+* **Minor changes to SellAll Util.**
+
+
 * **Much better performance for SellAll generally.**
 
 

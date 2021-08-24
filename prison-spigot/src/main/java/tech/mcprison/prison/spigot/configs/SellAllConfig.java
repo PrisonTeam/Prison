@@ -91,6 +91,7 @@ public class SellAllConfig extends SpigotConfigComponents {
         dataConfig("Options.SellAll_By_Sign_Only_Bypass_Permission", "prison.admin");
         dataConfig("Options.SellAll_Sign_Notify", false);
         dataConfig("Options.SellAll_Sign_Visible_Tag", "&7[&3SellAll&7]");
+        dataConfig("Options.SellAll_Hand_Enabled", true);
         dataConfig("Options.Player_GUI_Enabled", true);
         dataConfig("Options.Player_GUI_Permission_Enabled",false);
         dataConfig("Options.Player_GUI_Permission","prison.sellall.playergui");

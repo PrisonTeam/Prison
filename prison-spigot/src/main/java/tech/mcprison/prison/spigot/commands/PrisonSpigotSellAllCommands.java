@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.commands.Arg;
@@ -15,9 +16,13 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPlatform;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * @author GABRYCA
@@ -27,6 +32,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
 
     private static PrisonSpigotSellAllCommands instance;
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
+    private final Compatibility compat = SpigotPrison.getInstance().getCompatibility();
 
     /**
      * Check if SellAll's enabled.
@@ -182,7 +188,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall autosell perUserToggleable", description = "Enable AutoSell perUserToggleable", onlyPlayers = false, permissions = "prison.autosell.edit")
+    @Command(identifier = "sellall autosell perUserToggleable", description = "Enable AutoSell perUserToggleable.", onlyPlayers = false, permissions = "prison.autosell.edit")
     private void sellAllAutoSellPerUserToggleable(CommandSender sender,
                                                   @Arg(name = "boolean", description = "True to enable or false to disable", def = "null") String enable){
 
@@ -217,7 +223,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall sell", description = "SellAll sell command", onlyPlayers = true)
+    @Command(identifier = "sellall sell", description = "SellAll sell command.", onlyPlayers = true)
     public void sellAllSellCommand(CommandSender sender,
                                    @Arg(name = "notification", def="",
                                            description = "Notification about the sellall transaction. Defaults to normal. " +
@@ -250,6 +256,45 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         boolean notifications = (notification != null && "silent".equalsIgnoreCase( notification ));
 
         sellAllUtil.sellAllSell(p, false, notifications, true, true, false, true);
+    }
+
+    @Command(identifier = "sellall hand", description = "Sell only what is in your hand if sellable.", onlyPlayers = true)
+    public void sellAllSellHandCommand(CommandSender sender){
+
+        if (!isEnabled()) return;
+
+        SellAllUtil sellAllUtil = SellAllUtil.get();
+
+        if (sellAllUtil == null){
+            return;
+        }
+
+        if (!sellAllUtil.isSellAllHandEnabled){
+            Output.get().sendWarn(sender, "The command /sellall hand is disabled from the config!");
+            return;
+        }
+
+        Player p = getSpigotPlayer(sender);
+
+        if (p == null){
+            Output.get().sendInfo(sender, SpigotPrison.format("&cSorry but you can't use that from the console!"));
+            return;
+        }
+
+        if (sellAllUtil.isPlayerInDisabledWorld(p)) return;
+
+        if (sellAllUtil.isSellAllSellPermissionEnabled){
+            String permission = sellAllUtil.permissionSellAllSell;
+            if (permission == null || !p.hasPermission(permission)){
+                Output.get().sendWarn(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllMissingPermission") + " [" + permission + "]"));
+                return;
+            }
+        }
+
+        ArrayList<ItemStack> itemStacks = new ArrayList<>();
+        itemStacks.add(compat.getItemInMainHand(p));
+
+        sellAllUtil.sellAllSell(p, itemStacks, false, false, true, true, false, true, true);
     }
 
     public void sellAllSell(Player p){

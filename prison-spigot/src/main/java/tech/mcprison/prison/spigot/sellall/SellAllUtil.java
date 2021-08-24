@@ -90,6 +90,7 @@ public class SellAllUtil {
     public boolean isSellAllSoundEnabled;
     public boolean isSellAllBackpackItemsEnabled;
     public boolean isSellAllMinesBackpacksPluginEnabled;
+    public boolean isSellAllHandEnabled;
 
     /**
      * Get cached instance of SellAllUtil, if present, if not then Initialize it, if SellAll is disabled return null.
@@ -528,6 +529,7 @@ public class SellAllUtil {
         isSellAllSignNotifyEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Notify"));
         isSellAllSignPermissionToUseEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Use_Permission_Enabled"));
         isSellAllBySignOnlyEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_By_Sign_Only"));
+        isSellAllHandEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Hand_Enabled"));
     }
 
     /**
@@ -1472,6 +1474,7 @@ public class SellAllUtil {
      * - If tell the Player to wait the end of SellAll Delay if not ended (if this's disabled by config, the parameter will be ignored).
      * - If tell the Player how much did he earn only after a delay (AutoSell Delay Earnings will use this option for example).
      * - If play sound on SellAll Sell (If sounds are disabled from the config, this parameter will be ignored.
+     * - If Sell only stuff from the input arrayList and not sell what is in the many Player inventories and supported backpacks.
      *
      * NOTE: With this method you can add an ArrayList of ItemStacks to sell, remove sold items (this will return the ArrayList without
      * sold items), and give money to the player, also note that this will also trigger the usual sellall sell and sell everything sellable
@@ -1479,7 +1482,7 @@ public class SellAllUtil {
      *
      * Return True if success, False if error or nothing changed or Player not meeting requirements.
      *
-     * Default usage of this method: sellAllSell(p, false, false, true, false, false, true);
+     * Default usage of this method: sellAllSell(p, false, false, true, false, false, true, false);
      *
      * @param p - Player.
      * @param itemStacks - ArrayList of ItemStacks.
@@ -1489,10 +1492,11 @@ public class SellAllUtil {
      * @param notifyPlayerDelay - boolean.
      * @param notifyPlayerEarningDelay - boolean.
      * @param playSoundOnSellAll - boolean.
+     * @param sellInputArrayListOnly - boolean.
      *
      * @return boolean.
      * */
-    public ArrayList<ItemStack> sellAllSell(Player p, ArrayList<ItemStack> itemStacks, boolean isUsingSign, boolean completelySilent, boolean notifyPlayerEarned, boolean notifyPlayerDelay, boolean notifyPlayerEarningDelay, boolean playSoundOnSellAll){
+    public ArrayList<ItemStack> sellAllSell(Player p, ArrayList<ItemStack> itemStacks, boolean isUsingSign, boolean completelySilent, boolean notifyPlayerEarned, boolean notifyPlayerDelay, boolean notifyPlayerEarningDelay, boolean playSoundOnSellAll, boolean sellInputArrayListOnly){
         if (!isUsingSign && isSellAllSignEnabled && isSellAllBySignOnlyEnabled && !p.hasPermission(permissionBypassSign)){
             if (!completelySilent) {
                 Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.SellAllSignOnly"));
@@ -1519,7 +1523,13 @@ public class SellAllUtil {
             itemStacks = removeSellableItems(p, itemStacks);
         }
 
-        double money = getSellMoney(p) + arrayListMoney;
+        double money;
+        if (sellInputArrayListOnly){
+            money = arrayListMoney;
+        } else {
+            money = getSellMoney(p) + arrayListMoney;
+        }
+
         if (money != 0){
 
             SpigotPlayer sPlayer = new SpigotPlayer(p);
@@ -1547,7 +1557,6 @@ public class SellAllUtil {
                     Output.get().sendInfo(sPlayer, messages.getString("Message.SellAllYouGotMoney") + money);
                 }
             }
-            return itemStacks;
         } else {
             if (!completelySilent){
                 if (isSellAllSoundEnabled && playSoundOnSellAll) {
@@ -1555,8 +1564,8 @@ public class SellAllUtil {
                 }
                 Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.SellAllNothingToSell"));
             }
-            return itemStacks;
         }
+        return itemStacks;
     }
 
     /**
