@@ -37,6 +37,7 @@ import tech.mcprison.prison.spigot.api.ExplosiveBlockBreakEvent;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.compat.Compatibility;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.integrations.IntegrationCrazyEnchantmentsPickaxes;
 import tech.mcprison.prison.spigot.utils.BlockUtils;
@@ -1577,7 +1578,7 @@ public class OnBlockBreakEventCore
 		boolean cancel = false;
 		debugInfo.append( "(doAction: starting EventCore) " );
 		
-		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
+		SpigotItemStack itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
 		
 		AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
 		
@@ -1632,7 +1633,7 @@ public class OnBlockBreakEventCore
 	
 		int totalCount = 0;
 		
-		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
+		SpigotItemStack itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
 		
 		AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
 		
@@ -2038,12 +2039,12 @@ public class OnBlockBreakEventCore
 		if ( isBoolean( AutoFeatures.isPreventToolBreakage ) ) {
 			
 			SpigotItemStack itemInHand =
-					SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
+					SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
 			
 			if ( itemInHand != null && !itemInHand.isAir() ) {
 				int breakageThreshold = getInteger( AutoFeatures.preventToolBreakageThreshold );
 				
-				Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+				Compatibility compat = SpigotCompatibility.getInstance();
 				int maxDurability = compat.getDurabilityMax( itemInHand );
 				int durability = compat.getDurability( itemInHand );
 				
@@ -2096,7 +2097,7 @@ public class OnBlockBreakEventCore
 
 		if ( itemInHand != null && !itemInHand.isAir() ) {
 			
-			Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+			Compatibility compat = SpigotCompatibility.getInstance();
 			int maxDurability = compat.getDurabilityMax( itemInHand );
 			int durability = compat.getDurability( itemInHand );
 			
