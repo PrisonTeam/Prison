@@ -25,6 +25,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.compat.Compatibility;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.configs.BackpacksConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
@@ -40,7 +41,7 @@ public class BackpacksUtil {
     private FileConfiguration backpacksDataConfig = YamlConfiguration.loadConfiguration(backpacksFile);
     public static List<String> openBackpacks = new ArrayList<>();
     public static List<String> backpackEdited = new ArrayList<>();
-    private final Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+    private final Compatibility compat = SpigotCompatibility.getInstance();
     private final int backpackDefaultSize = Integer.parseInt(backpacksConfig.getString("Options.BackPack_Default_Size"));
 
     /**

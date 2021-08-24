@@ -11,7 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.ItemStack;
-import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.util.BlockType;
 
 public class SpigotItemStack
@@ -44,7 +44,7 @@ public class SpigotItemStack
         	// in the bukkitStack:
         	int amount = bukkitStack.getAmount();
         	
-        	BlockType type = SpigotPrison.getInstance().getCompatibility()
+        	BlockType type = SpigotCompatibility.getInstance()
         			.getBlockType( bukkitStack );
 //        BlockType type = materialToBlockType(bukkitStack.getType());
         	

@@ -49,6 +49,7 @@ import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.BlockTestStats;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
 import tech.mcprison.prison.util.BlockType;
@@ -90,7 +91,7 @@ public class SpigotUtil {
      */
     public static XMaterial getXMaterial( BlockType prisonBlockType ) {
     	
-    	XMaterial xMat = SpigotPrison.getInstance().getCompatibility()
+    	XMaterial xMat = SpigotCompatibility.getInstance()
     						.getXMaterial( prisonBlockType );
     	
     	return xMat;
@@ -112,7 +113,7 @@ public class SpigotUtil {
 
     
 	public static BlockType blockToBlockType( Block spigotBlock ) {
-		BlockType results = SpigotPrison.getInstance().getCompatibility()
+		BlockType results = SpigotCompatibility.getInstance()
 				.getBlockType( spigotBlock );
 		
 //		
@@ -809,7 +810,7 @@ public class SpigotUtil {
 		}
 		
 		// Next test all of the spigot/bukkit Materials:
-		BlockTestStats stats = SpigotPrison.getInstance().getCompatibility()
+		BlockTestStats stats = SpigotCompatibility.getInstance()
 										.testCountAllBlockTypes();
 		
 		

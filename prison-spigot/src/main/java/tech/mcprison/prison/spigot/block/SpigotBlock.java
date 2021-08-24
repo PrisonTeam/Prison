@@ -34,8 +34,8 @@ import tech.mcprison.prison.internal.block.BlockState;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 
@@ -88,7 +88,7 @@ public class SpigotBlock implements Block {
     }
 
     @Override public BlockType getType() {
-    	return SpigotPrison.getInstance().getCompatibility().getBlockType( getWrapper() );
+    	return SpigotCompatibility.getInstance().getBlockType( getWrapper() );
 //        return SpigotUtil.materialToBlockType(bBlock.getType());
     }
 
@@ -110,7 +110,7 @@ public class SpigotBlock implements Block {
     	}
 
     	if ( results == null ) {
-    		results = SpigotPrison.getInstance().getCompatibility().getPrisonBlock( getWrapper() );
+    		results = SpigotCompatibility.getInstance().getPrisonBlock( getWrapper() );
     	}
 
     	if ( results.getLocation() == null && getLocation() != null ) {
@@ -171,8 +171,8 @@ public class SpigotBlock implements Block {
 		{
 			case minecraft:
 				{
-					SpigotPrison.getInstance().getCompatibility().
-									updateSpigotBlock( prisonBlock, getWrapper() );
+					SpigotCompatibility.getInstance().
+								updateSpigotBlock( prisonBlock, getWrapper() );
 				}
 				
 				
@@ -203,7 +203,7 @@ public class SpigotBlock implements Block {
     
     public void setBlockFace( BlockFace blockFace ) {
     	
-    	SpigotPrison.getInstance().getCompatibility()
+    	SpigotCompatibility.getInstance()
 					.setBlockFace( getWrapper(), blockFace );
     }
     /**
@@ -215,7 +215,7 @@ public class SpigotBlock implements Block {
 	@Override 
 	public void setType(BlockType blockType) {
     	
-		SpigotPrison.getInstance().getCompatibility()
+		SpigotCompatibility.getInstance()
 						.updateSpigotBlock( blockType, getWrapper() );
 		
 //    	if ( type != null && type != BlockType.IGNORE ) {

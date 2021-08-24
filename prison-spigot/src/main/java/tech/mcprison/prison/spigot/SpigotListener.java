@@ -42,19 +42,15 @@ import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.internal.events.Cancelable;
 import tech.mcprison.prison.internal.events.player.PlayerChatEvent;
 import tech.mcprison.prison.internal.events.player.PlayerPickUpItemEvent;
 import tech.mcprison.prison.internal.events.player.PlayerSuffocationEvent;
 import tech.mcprison.prison.internal.events.world.PrisonWorldLoadEvent;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents.AutoManagerBlockBreakEventListener;
-import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents.OnBlockBreakEventListenerNormal;
-import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents.OnBlockBreakEventListenerNormalMonitor;
-import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
 import tech.mcprison.prison.spigot.compat.Compatibility;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.util.BlockType;
@@ -226,7 +222,7 @@ public class SpigotListener implements Listener {
 
         // This one's a workaround for the double-interact event glitch.
         // The wand can only be used in the main hand
-        if ( SpigotPrison.getInstance().getCompatibility().getHand(e) != 
+        if ( SpigotCompatibility.getInstance().getHand(e) != 
         								Compatibility.EquipmentSlot.HAND) {
             return;
         }
@@ -236,7 +232,7 @@ public class SpigotListener implements Listener {
             new tech.mcprison.prison.internal.events.player.PlayerInteractEvent(
                 new SpigotPlayer(e.getPlayer()),
                 		SpigotUtil.bukkitItemStackToPrison(
-                				SpigotPrison.getInstance().getCompatibility().getItemInMainHand(e)),
+                				SpigotCompatibility.getInstance().getItemInMainHand(e)),
                 tech.mcprison.prison.internal.events.player.PlayerInteractEvent.Action
                     .valueOf(e.getAction().name()),
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),

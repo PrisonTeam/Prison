@@ -14,10 +14,11 @@ import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.compat.Compatibility;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 
 public class BackpacksListeners implements Listener {
 
-    Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+    Compatibility compat = SpigotCompatibility.getInstance();
 
     @EventHandler
     public void onPlayerJoinBackpack(PlayerJoinEvent e){

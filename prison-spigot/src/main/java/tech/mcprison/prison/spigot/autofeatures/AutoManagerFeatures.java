@@ -38,6 +38,7 @@ import tech.mcprison.prison.spigot.block.OnBlockBreakEventCore;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.BlockType;
@@ -187,7 +188,7 @@ public class AutoManagerFeatures
 //					mine.getRemainingBlockCount() + " [" + block.toString() + "]"
 //					);
 
-			SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
+			SpigotItemStack itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
 
 			int count = applyAutoEvents( player, spigotBlock, mine, debugInfo );
 			
@@ -211,7 +212,7 @@ public class AutoManagerFeatures
 	private int applyAutoEvents( Player player, SpigotBlock block, Mine mine, StringBuilder debugInfo ) {
 		int count = 0;
 		
-		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getPrisonItemInMainHand( player );
+		SpigotItemStack itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
 
 		
 		boolean isLoreEnabled = isBoolean( AutoFeatures.isLoreEnabled );
@@ -368,7 +369,7 @@ public class AutoManagerFeatures
 		
 		int totalCount = 0;
 
-		SpigotItemStack itemInHand = SpigotPrison.getInstance().getCompatibility()
+		SpigotItemStack itemInHand = SpigotCompatibility.getInstance()
 													.getPrisonItemInMainHand( player );
 
 		debugInfo.append( "(applyAutoEvents multi-blocks: " + explodedBlocks.size() );
@@ -919,7 +920,7 @@ public class AutoManagerFeatures
 	protected double doesItemHaveAutoFeatureLore( ItemLoreEnablers loreEnabler, Player player ) {
 		double results = 0.0;
 
-		ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( player );
+		ItemStack itemInHand = SpigotCompatibility.getInstance().getItemInMainHand( player );
 		if ( itemInHand != null && itemInHand.getType() != Material.AIR &&
 				itemInHand.getItemMeta() != null ) { // (itemInHand.hasItemMeta()) { NOTE: hasItemMeta() always returns nulls
 			

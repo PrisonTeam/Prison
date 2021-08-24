@@ -34,9 +34,9 @@ import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.compat.SpigotNMSPlayer;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboard;
@@ -494,14 +494,14 @@ public class SpigotPlayer
 		double maxHealth = 0;
 		if ( getWrapper() != null ) {
 			
-			maxHealth = SpigotPrison.getInstance().getCompatibility()
+			maxHealth = SpigotCompatibility.getInstance()
 								.getMaxHealth( getWrapper() );
 		}
 		return maxHealth;
 	}
 	public void setMaxHealth( double maxHealth ) {
 		if ( getWrapper() != null ) {
-			SpigotPrison.getInstance().getCompatibility()
+			SpigotCompatibility.getInstance()
 								.setMaxHealth( getWrapper(), maxHealth );
 		}
 	}
@@ -605,7 +605,7 @@ public class SpigotPlayer
 	@Override
 	public void setTitle( String title, String subtitle, int fadeIn, int stay, int fadeOut ) {
 		if ( getWrapper() != null) {
-			SpigotPrison.getInstance().getCompatibility()
+			SpigotCompatibility.getInstance()
 					.sendTitle( getWrapper(), title, subtitle, fadeIn, stay, fadeOut );
 		}
 	}
@@ -613,7 +613,7 @@ public class SpigotPlayer
 	@Override
 	public void setActionBar( String actionBar ) {
 		if ( getWrapper() != null) {
-			SpigotPrison.getInstance().getCompatibility()
+			SpigotCompatibility.getInstance()
 					.sendActionBar( getWrapper(), actionBar );
 		}
 	}

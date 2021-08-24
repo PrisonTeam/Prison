@@ -44,6 +44,7 @@ import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
@@ -388,7 +389,7 @@ public class ListenersPrisonManager implements Listener {
             // GUIs must have the good conditions to work.
             if (guiConditions(e, p)) return;
 
-            Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+            Compatibility compat = SpigotCompatibility.getInstance();
 
             String buttonNameMain;
             String[] parts;

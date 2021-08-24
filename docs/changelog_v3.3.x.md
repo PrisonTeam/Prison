@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-08-24
 
 
+* **Transitioning over to the correct way to get the compatibility object.**
+Just a few classes are using the old way, but they will be switched over when they are done with the edits.
+
+
 * **Fixed the way some of the language files were being generated**
 so it can include the spigot module, which makes it self-contained for actual Modules, since it's always based upon the module name. 
 Core and spigot are not technically modules, so they have special setups.

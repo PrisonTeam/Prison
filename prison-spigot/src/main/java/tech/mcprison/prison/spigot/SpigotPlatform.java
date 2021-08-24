@@ -95,6 +95,7 @@ import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerTokenEnchant;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerZenchantments;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 import tech.mcprison.prison.spigot.game.SpigotOfflinePlayer;
@@ -539,7 +540,7 @@ public class SpigotPlatform
 //        state.setData((MaterialData) openable);
 //        state.update();
         
-        SpigotPrison.getInstance().getCompatibility()
+        SpigotCompatibility.getInstance()
         					.playIronDoorSound(block.getLocation());
     }
 
