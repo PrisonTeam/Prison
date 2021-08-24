@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.cryptomorin.xseries.XMaterial;
 
@@ -402,6 +403,67 @@ public abstract class Spigot18Blocks
 		}
 	}
 
+	
+	
+	
+	@Override
+	public void updateSpigotBlockAsync( BlockType blockType, Block spigotBlock ) {
+		
+		if ( blockType != null && blockType != BlockType.IGNORE && spigotBlock != null ) {
+			
+			XMaterial xMat = getXMaterial( blockType );
+			
+			if ( xMat != null ) {
+				
+				updateSpigotBlockAsync( xMat, spigotBlock );
+			}
+		}
+	}
+	
+	
+	@Override
+	public void updateSpigotBlockAsync( PrisonBlock prisonBlock, Block spigotBlock ) {
+		
+		if ( prisonBlock != null && 
+				!prisonBlock.equals( PrisonBlock.IGNORE ) && 
+				spigotBlock != null ) {
+			
+			XMaterial xMat = getXMaterial( prisonBlock );
+			
+			if ( xMat != null ) {
+				
+				updateSpigotBlockAsync( xMat, spigotBlock );
+			}
+		}
+	}
+	
+	
+	@SuppressWarnings( "deprecation" )
+	@Override
+	public void updateSpigotBlockAsync( XMaterial xMat, Block spigotBlock ) {
+		
+		if ( xMat != null ) {
+			Material newType = xMat.parseMaterial();
+			if ( newType != null ) {
+				
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+
+						BlockState bState = spigotBlock.getState();
+						 
+						// Set the block state with the new type and rawData:
+						bState.setType( newType );
+						bState.setRawData( xMat.getData() );
+						 
+						// Force the update but don't apply the physics:
+						bState.update( true, false );
+					}
+				}.runTaskLater( getPlugin(), 0 );
+				
+			}
+		}
+	}
 	
 
 	/**

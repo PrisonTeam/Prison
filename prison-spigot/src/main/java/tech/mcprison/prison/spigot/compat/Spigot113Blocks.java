@@ -7,6 +7,7 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.cryptomorin.xseries.XMaterial;
 
@@ -210,6 +211,56 @@ public abstract class Spigot113Blocks
 		}
 	}
 
+	
+	@Override
+	public void updateSpigotBlockAsync( BlockType blockType, Block spigotBlock ) {
+		
+		if ( blockType != null && blockType != BlockType.IGNORE && spigotBlock != null ) {
+			
+			XMaterial xMat = getXMaterial( blockType );
+			
+			updateSpigotBlockAsync( xMat, spigotBlock );
+		}
+	}
+	
+	
+	@Override
+	public void updateSpigotBlockAsync( PrisonBlock prisonBlock, Block spigotBlock ) {
+		
+		if ( prisonBlock != null && 
+				!prisonBlock.getBlockName().equalsIgnoreCase( InternalBlockTypes.IGNORE.name() ) && 
+				spigotBlock != null ) {
+			
+			XMaterial xMat = getXMaterial( prisonBlock );
+			
+			if ( xMat != null ) {
+				
+				updateSpigotBlockAsync( xMat, spigotBlock );
+			}
+		}
+	}
+	
+	
+	@Override
+	public void updateSpigotBlockAsync( XMaterial xMat, Block spigotBlock ) {
+		
+		if ( xMat != null ) {
+			Material newType = xMat.parseMaterial();
+			if ( newType != null ) {
+				
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+
+						// No physics update:
+						spigotBlock.setType( newType, false );
+					}
+				}.runTaskLater( getPlugin(), 0 );
+				
+			}
+		}
+	}
+	
 	/**
 	 * <p>This function is supposed to find all possible blocks available
 	 * on the server.  The number of available items, and blocks, will vary based

@@ -23,14 +23,25 @@ public interface CompatibilityBlocks
 	
 	public XMaterial getXMaterial( BlockType blockType );
 
-	public void updateSpigotBlock( BlockType blockType, Block spigotBlock );
-
-	public void updateSpigotBlock( PrisonBlock prisonBlock, Block spigotBlock );
-	
 	public BlockType getBlockType( ItemStack spigotStack );
+
+	
+	
+	public void updateSpigotBlock( BlockType blockType, Block spigotBlock );
+	
+	public void updateSpigotBlock( PrisonBlock prisonBlock, Block spigotBlock );
 	
 	public void updateSpigotBlock( XMaterial xMat, Block spigotBlock );
 	
+	
+	
+	public void updateSpigotBlockAsync( BlockType blockType, Block spigotBlock );
+	
+	public void updateSpigotBlockAsync( PrisonBlock prisonBlock, Block spigotBlock );
+	
+	public void updateSpigotBlockAsync( XMaterial xMat, Block spigotBlock );
+	
+
 	
 	public BlockTestStats testCountAllBlockTypes();
 	

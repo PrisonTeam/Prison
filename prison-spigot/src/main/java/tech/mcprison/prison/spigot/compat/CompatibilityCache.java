@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.util.BlockType;
 
 /**
@@ -30,6 +31,9 @@ public class CompatibilityCache {
 	private Map<String, XMaterial> xMaterialCache;
 	
 	
+	private final SpigotPrison plugin;
+	
+	
 	public CompatibilityCache() {
 		super();
 		
@@ -37,6 +41,8 @@ public class CompatibilityCache {
 		this.xMaterialCache = new TreeMap<>();
 		
 		initializeForcedCache();
+		
+		this.plugin = SpigotPrison.getInstance();
 	}
 
 	/**
@@ -143,6 +149,10 @@ public class CompatibilityCache {
 			// Using VOID_AIR as temp placeholder for null values:
 			xMaterialCache.put( key, xMat == null ? NULL_TOKEN : xMat );
 		}
+	}
+
+	public SpigotPrison getPlugin() {
+		return plugin;
 	}
 	
 }
