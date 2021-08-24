@@ -48,11 +48,13 @@ import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.integration.Integration;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
+import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleElementType;
+import tech.mcprison.prison.modules.PluginEntity;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
@@ -99,7 +101,9 @@ import tech.mcprison.prison.spigot.utils.PrisonUtilsModule;
  * @author Faizaan A. Datoo
  * @author GABRYCA
  */
-public class SpigotPrison extends JavaPlugin {
+public class SpigotPrison 
+	extends JavaPlugin 
+	implements PluginEntity {
 
 	private static SpigotPrison config;
 
@@ -126,6 +130,9 @@ public class SpigotPrison extends JavaPlugin {
     private static boolean isSellAllEnabled = false;
     
     
+    private LocaleManager localeManager;
+    private File moduleDataFolder;
+    
     private List<Listener> registeredBlockListeners;
 
     public static SpigotPrison getInstance(){
@@ -138,6 +145,7 @@ public class SpigotPrison extends JavaPlugin {
     	config = this;
     	
     	this.registeredBlockListeners = new ArrayList<>();
+    	
     }
 
     @Override
@@ -196,6 +204,9 @@ public class SpigotPrison extends JavaPlugin {
         Prison.get()
         		.init(new SpigotPlatform(this), Bukkit.getVersion());
         
+        
+        // Enable the spigot locale manager:
+        getLocaleManager();
         
         this.compatibility = SpigotCompatibility.getInstance();
 //        initCompatibility();  Obsolete...
@@ -328,6 +339,44 @@ public class SpigotPrison extends JavaPlugin {
     	Prison.get().deinit();
     }
 
+    
+    
+
+    /**
+     * Lazy load LocalManager which ensures Prison is already loaded so 
+     * can get the default language to use from the plugin configs.
+     * 
+     * Returns the {@link LocaleManager} for the plugin. This contains the global messages that Prison
+     * uses to run its command library, and the like. {@link Module}s have their own {@link
+     * LocaleManager}s, so that each module can have independent localization.
+     *
+     * @return The global locale manager instance.
+     */
+    public LocaleManager getLocaleManager() {
+    		
+    	if ( this.localeManager == null ) {
+    		
+    		this.localeManager = new LocaleManager(this, "lang/spigot");
+    	}
+        return localeManager;
+    }
+
+    /**
+     * Returns this module's data folder, where all data can be stored.
+     * It is located in the Prison data folder, and has the name of the module.
+     * It is automatically generated.
+     *
+     * @return The {@link File} representing the data folder.
+     */
+    public File getModuleDataFolder() {
+    	
+    	if ( moduleDataFolder == null ) {
+    		this.moduleDataFolder = Module.setupModuleDataFolder( "spigot" );
+    	}
+        return moduleDataFolder;
+    }
+    
+    
     public FileConfiguration getGuiConfig() {
     	if (guiConfig == null) {
     		guiConfig = new GuiConfig();

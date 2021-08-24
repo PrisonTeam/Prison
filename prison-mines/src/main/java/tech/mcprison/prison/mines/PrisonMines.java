@@ -178,7 +178,7 @@ public class PrisonMines extends Module {
     private void initConfig() {
         config = new MinesConfig();
 
-        File configFile = new File(getDataFolder(), "config.json");
+        File configFile = new File(getModuleDataFolder(), "config.json");
         
         if (!configFile.exists()) {
         	getJsonFileIO().saveJsonFile( configFile, config );

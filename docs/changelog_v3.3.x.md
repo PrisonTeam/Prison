@@ -15,6 +15,13 @@ These build logs represent the work that has been going on within prison.
 
 # 3.2.11-alpha.1 2021-08-24
 
+
+* **Fixed the way some of the language files were being generated**
+so it can include the spigot module, which makes it self-contained for actual Modules, since it's always based upon the module name. 
+Core and spigot are not technically modules, so they have special setups.
+Changed the Module folder from dataFolder to moduleDataFolder so it would not conflict with the SpigotPrison object.
+
+
 * **Fixed  a problem with Prison's ExplosiveBlockBreakHandler**
  in that it has a typo in the getHandlerList() and was not included with the registration processes. It also needed to be included with the generation of the listener dumps.
 

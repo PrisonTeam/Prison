@@ -37,7 +37,8 @@ public abstract class Module implements PluginEntity {
      */
 
     private String name, version;
-    private File dataFolder;
+    private File moduleDataFolder;
+    
     private int apiTarget;
     private ModuleStatus status;
     private ErrorManager errorManager;
@@ -58,18 +59,18 @@ public abstract class Module implements PluginEntity {
         this.version = version;
         this.apiTarget = target;
 
-        this.dataFolder =  setupDataFolder( name );
+        this.moduleDataFolder = setupModuleDataFolder( name );
         
         this.status = new ModuleStatus();
         this.errorManager = new ErrorManager(this);
     }
 
     
-    public static File setupDataFolder( String name ) {
+    public static File setupModuleDataFolder( String name ) {
     	File dataFolder = new File(ModuleManager.getModuleRootDefault(),
 				name.toLowerCase().replace(" ", "_"));
 		if (!dataFolder.exists()) {
-		    dataFolder.mkdir();
+		    dataFolder.mkdirs();
 		}
 		return dataFolder;
     }
@@ -185,8 +186,8 @@ public abstract class Module implements PluginEntity {
      *
      * @return The {@link File} representing the data folder.
      */
-    public File getDataFolder() {
-        return dataFolder;
+    public File getModuleDataFolder() {
+        return moduleDataFolder;
     }
 
 }
