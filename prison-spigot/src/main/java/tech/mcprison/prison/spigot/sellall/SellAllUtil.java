@@ -1535,7 +1535,10 @@ public class SellAllUtil {
             SpigotPlayer sPlayer = new SpigotPlayer(p);
             RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
             if (sellAllCurrency != null && sellAllCurrency.equalsIgnoreCase("default")) sellAllCurrency = null;
-            removeSellableItems(p);
+
+            if (!sellInputArrayListOnly) {
+                removeSellableItems(p);
+            }
             rankPlayer.addBalance(sellAllCurrency, money);
 
             if (isSellAllDelayEnabled){
