@@ -16,6 +16,8 @@ import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
+import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask;
+import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask.MineResetType;
 import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonCommandTask;
@@ -93,7 +95,7 @@ public abstract class MineScheduler
 		}
 	}
 	
-	public enum MineResetType {
+	public enum MineResetScheduleType {
 		NORMAL,
 		FORCED;
 	}
@@ -123,7 +125,7 @@ public abstract class MineScheduler
 		private MineJobAction action;
 		private double delayActionSec;
 		private double resetInSec;
-		private MineResetType resetType;
+		private MineResetScheduleType resetType;
 		private List<MineResetActions> resetActions;
 		
 		public MineJob( MineJobAction action, double delayActionSec, double resetInSec )
@@ -134,12 +136,12 @@ public abstract class MineScheduler
 			this.delayActionSec = delayActionSec;
 			this.resetInSec = resetInSec;
 			
-			this.resetType = MineResetType.NORMAL;
+			this.resetType = MineResetScheduleType.NORMAL;
 			
 			this.resetActions = new ArrayList<>();
 		}
 		
-		public MineJob( MineJobAction action, double delayActionSec, double resetInSec, MineResetType resetType )
+		public MineJob( MineJobAction action, double delayActionSec, double resetInSec, MineResetScheduleType resetType )
 		{
 			this( action, delayActionSec, resetInSec );
 			
@@ -186,10 +188,10 @@ public abstract class MineScheduler
 			this.resetInSec = resetInSec;
 		}
 
-		public MineResetType getResetType() {
+		public MineResetScheduleType getResetType() {
 			return resetType;
 		}
-		public void setResetType( MineResetType resetType ) {
+		public void setResetType( MineResetScheduleType resetType ) {
 			this.resetType = resetType;
 		}
 
@@ -325,7 +327,7 @@ public abstract class MineScheduler
 		//checkWorld();
 		
 		boolean forced = getCurrentJob() != null && 
-							getCurrentJob().getResetType() == MineResetType.FORCED;
+							getCurrentJob().getResetType() == MineResetScheduleType.FORCED;
 		
     	boolean skip = !forced && 
     			isSkipResetEnabled() && 
@@ -363,7 +365,12 @@ public abstract class MineScheduler
 
 			case RESET_ASYNC:
 				if ( !skip ) {
-					resetAsynchonously();
+					
+					MinePagedResetAsyncTask resetTask = 
+								new MinePagedResetAsyncTask( (Mine) this, MineResetType.paged );
+		    		resetTask.submitTaskAsync();
+		    		
+//					resetAsynchonously();
 				} else {
 					incrementSkipResetBypassCount();
 				}
@@ -373,7 +380,12 @@ public abstract class MineScheduler
 			case RESET_SYNC:
 				// synchronous reset.  Will be phased out in the future?
 				if ( !skip ) {
-					resetSynchonously();
+
+					MinePagedResetAsyncTask resetTask = 
+							new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal );
+					resetTask.submitTaskAsync();
+					
+//					resetSynchonously();
 				} else {
 					incrementSkipResetBypassCount();
 				}
@@ -689,7 +701,7 @@ public abstract class MineScheduler
 				)) {
 			
 			// submit a manual reset since the mine is empty:
-			manualReset( MineResetType.NORMAL, getZeroBlockResetDelaySec() );
+			manualReset( MineResetScheduleType.NORMAL, getZeroBlockResetDelaySec() );
 			reset = true;
 		}
 		return reset;
@@ -701,21 +713,21 @@ public abstract class MineScheduler
 	 * 
 	 */
 	public void manualReset() {
-		manualReset( MineResetType.FORCED );
+		manualReset( MineResetScheduleType.FORCED );
 	}
-	public void manualReset( MineResetType resetType ) {
+	public void manualReset( MineResetScheduleType resetType ) {
 		
 		if ( !isVirtual() ) {
 			manualReset( resetType, 0 );
 		}
 	}
 	
-	private void manualReset( MineResetType resetType, double delayActionSec ) {
+	private void manualReset( MineResetScheduleType resetType, double delayActionSec ) {
 		List<MineResetActions> resetActions = new ArrayList<>();
 		
 		manualReset( resetType, delayActionSec, resetActions );
 	}
-	public void manualReset( MineResetType resetType, List<MineResetActions> resetActions ) {
+	public void manualReset( MineResetScheduleType resetType, List<MineResetActions> resetActions ) {
 		
 		manualReset( resetType, 0, resetActions );
 	}
@@ -732,7 +744,7 @@ public abstract class MineScheduler
 	 * @param delayActionSec Delay in seconds before resetting mine. 
 	 * 
 	 */
-	private void manualReset( MineResetType resetType, double delayActionSec, 
+	private void manualReset( MineResetScheduleType resetType, double delayActionSec, 
 			List<MineResetActions> resetActions ) {
 		
 		if ( isVirtual() ) {

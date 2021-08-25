@@ -33,7 +33,7 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MineScheduler.MineResetActions;
-import tech.mcprison.prison.mines.data.MineScheduler.MineResetType;
+import tech.mcprison.prison.mines.data.MineScheduler.MineResetScheduleType;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.ManagerPlaceholders;
@@ -482,7 +482,7 @@ public class MineManager
 	 * @param resetType
 	 * @param resetActions 
 	 */
-	public void resetAllMines( MineResetType resetType, List<MineResetActions> resetActions ) {
+	public void resetAllMines( MineResetScheduleType resetType, List<MineResetActions> resetActions ) {
 
 		cancelResetAllMines();
 		

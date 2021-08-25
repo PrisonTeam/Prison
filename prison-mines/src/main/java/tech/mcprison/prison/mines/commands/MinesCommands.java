@@ -42,7 +42,7 @@ import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MineData;
 import tech.mcprison.prison.mines.data.MineData.MineNotificationMode;
 import tech.mcprison.prison.mines.data.MineScheduler.MineResetActions;
-import tech.mcprison.prison.mines.data.MineScheduler.MineResetType;
+import tech.mcprison.prison.mines.data.MineScheduler.MineResetScheduleType;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
@@ -1211,7 +1211,7 @@ public class MinesCommands
         // make sure not null and set to lower case:
         options = ( options == null ? "" : options.trim().toLowerCase());
 
-        MineResetType resetType = MineResetType.FORCED;
+        MineResetScheduleType resetType = MineResetScheduleType.FORCED;
         List<MineResetActions> resetActions = new ArrayList<>();
         
         

@@ -32,7 +32,7 @@ import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.mines.commands.MinesCommands;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MineScheduler.MineResetActions;
-import tech.mcprison.prison.mines.data.MineScheduler.MineResetType;
+import tech.mcprison.prison.mines.data.MineScheduler.MineResetScheduleType;
 import tech.mcprison.prison.mines.data.MinesConfig;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager;
@@ -280,7 +280,7 @@ public class PrisonMines extends Module {
 	 * @param resetType
 	 * @param resetActions 
 	 */
-	public void resetAllMines( MineResetType resetType, List<MineResetActions> resetActions ) {
+	public void resetAllMines( MineResetScheduleType resetType, List<MineResetActions> resetActions ) {
 		getMineManager().resetAllMines( resetType, resetActions );
 	}
 	

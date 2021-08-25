@@ -36,6 +36,7 @@ public class MinePagedResetAsyncTask
 	
 	public enum MineResetType {
 		normal,
+		paged,
 		clear,
 		tracer;
 	}
@@ -54,7 +55,17 @@ public class MinePagedResetAsyncTask
 	}
 	
 	
-	public void submitTask() {
+	public void submitTaskSync() {
+		submitTaskAsync();
+	}
+	public void submitTaskAsync() {
+		
+		// Prevent the task from being submitted if it is a virtual mine:
+		if ( mine.isVirtual() ) {
+			return;
+		}
+		
+		
 		long delay = 0;
 		
 		
@@ -86,7 +97,21 @@ public class MinePagedResetAsyncTask
 		pagePosition = position;
 		
 		
-		// Only print these details if stats is enabled:
+		mine.setResetPosition( position );
+		
+		mine.setResetPage( page );
+		
+//		long time = System.currentTimeMillis() - start;
+		mine.setStatsBlockUpdateTimeMS( timeElapsedPage + mine.getStatsBlockUpdateTimeMS() );
+		mine.setStatsResetTimeMS( timeElapsedPage + mine.getStatsResetTimeMS() );
+		
+		
+		mine.setStatsResetPages( page );
+		mine.setStatsResetPageBlocks( mine.getStatsResetPageBlocks() + blocksPlaced );
+		mine.setStatsResetPageMs( mine.getStatsResetPageMs() + timeElapsedPage  );
+		
+		
+		// Only print these details if stats are enabled:
 		Output.get().logInfo( "MinePagedResetAsyncTask : " + resetType.name() + 
 				" : page " + page + " of " + totalPages + " : " +
 				"  blocks = " + blocksPlaced + "  elapsed = " + timeElapsedPage + 
@@ -96,6 +121,25 @@ public class MinePagedResetAsyncTask
 	
 	@Override
 	public void run() {
+		
+		// The first time running this, need to setup the block list if a reset:
+		if ( subPage == 1 ) {
+			if ( resetType == MineResetType.normal || resetType == MineResetType.paged ) {
+				mine.generateBlockListAsync();
+				
+				// resetAsynchonouslyInitiate() will confirm if the reset should happened 
+				// and will raise Prison's mine reset event. 
+				// A return value of true means cancel the reset:
+				if ( mine.resetAsynchonouslyInitiate() ) {
+					return;
+				}
+				
+			}
+			
+			mine.asynchronouslyResetSetup();
+			
+    		
+		}
 		
 		List<MineTargetPrisonBlock> targetBlocks = mine.getMineTargetPrisonBlocks();
 
@@ -118,11 +162,13 @@ public class MinePagedResetAsyncTask
 		
 		// Keep resubmitting this task until it is completed:
 		if ( position < targetBlocks.size() ) {
-			submitTask();
+			submitTaskSync();
 		}
 		else {
 			
 			// Finished running the task:
+			mine.asynchronouslyResetFinalize();
+			
 			logStats();
 		}
 		
@@ -145,7 +191,7 @@ public class MinePagedResetAsyncTask
 				  tBlock.getPrisonBlock() instanceof PrisonBlock )
 		{
 
-			// MineResetType.normal
+			// MineResetType.normal and MineResetType.paged
 			pBlock = (PrisonBlock) tBlock.getPrisonBlock();
 		}
 		else
