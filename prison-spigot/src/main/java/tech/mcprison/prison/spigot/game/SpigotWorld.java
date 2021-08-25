@@ -56,6 +56,12 @@ public class SpigotWorld implements World {
             .collect(Collectors.toList());
     }
 
+    /**
+     * <p>This does get the actual from the world, but it only reads, and does not 
+     * update.  I cannot say this is safe to run asynchronously, but so far I have
+     * not see any related problems when it is.
+     * 
+     */
     @Override 
     public Block getBlockAt(Location location) {
         return new SpigotBlock(
@@ -71,6 +77,21 @@ public class SpigotWorld implements World {
     	
     	SpigotCompatibility.getInstance().updateSpigotBlock( block, bukkitBlock );
     }
+    
+    
+    /**
+     * <p>This function should be called from an async task, and it will
+     * drop down in to the synchronous thread to first get the block 
+     * from the world, then it will change to the specified PrisonBlock type.
+     * </p>
+     * 
+     * @param prisonBlock
+     * @param location
+     */
+	public void setBlockAsync( PrisonBlock prisonBlock, Location location ) {
+		
+		SpigotCompatibility.getInstance().updateSpigotBlockAsync( prisonBlock, location );
+	}
 
     public org.bukkit.World getWrapper() {
         return bukkitWorld;

@@ -9,6 +9,7 @@ import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.util.Location;
 
 public interface CompatibilityBlocks
 			extends CompatibilityPlayer {
@@ -33,13 +34,15 @@ public interface CompatibilityBlocks
 	
 	public void updateSpigotBlock( XMaterial xMat, Block spigotBlock );
 	
+
 	
+	public void updateSpigotBlockAsync( PrisonBlock prisonBlock, Location location );
 	
-	public void updateSpigotBlockAsync( BlockType blockType, Block spigotBlock );
-	
-	public void updateSpigotBlockAsync( PrisonBlock prisonBlock, Block spigotBlock );
-	
-	public void updateSpigotBlockAsync( XMaterial xMat, Block spigotBlock );
+//	public void updateSpigotBlockAsync( BlockType blockType, Block spigotBlock );
+//	
+//	public void updateSpigotBlockAsync( PrisonBlock prisonBlock, Block spigotBlock );
+//	
+//	public void updateSpigotBlockAsync( XMaterial xMat, Block spigotBlock );
 	
 
 	

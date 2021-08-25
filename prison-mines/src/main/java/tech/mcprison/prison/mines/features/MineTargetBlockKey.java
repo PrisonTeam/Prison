@@ -23,6 +23,13 @@ public class MineTargetBlockKey
 		this( location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ() );
 	}
 	
+	
+	public Location getLocation() {
+		Location location = new Location( world, x, y, z );
+		return location;
+	}
+	
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

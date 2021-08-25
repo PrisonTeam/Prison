@@ -21,6 +21,7 @@ package tech.mcprison.prison.util;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 
 /**
  * Represents a location in a Minecraft world.
@@ -135,6 +136,10 @@ public class Location {
 
     public Block getBlockAt() {
         return world.getBlockAt(this);
+    }
+    
+    public void setBlockAsync( PrisonBlock prisonBlock ) {
+    	world.setBlockAsync( prisonBlock, this );
     }
 
     @Override public boolean equals(Object o) {

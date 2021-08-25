@@ -52,4 +52,8 @@ public class TestWorld implements World {
     @Override
     public void setBlock( PrisonBlock block, int x, int y, int z ) {
     }
+
+	@Override
+	public void setBlockAsync( PrisonBlock prisonBlock, Location location ) {
+	}
 }

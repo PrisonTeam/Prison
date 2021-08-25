@@ -170,11 +170,9 @@ public class SpigotBlock implements Block {
     	switch ( prisonBlock.getBlockType() )
 		{
 			case minecraft:
-				{
-					SpigotCompatibility.getInstance().
-								updateSpigotBlock( prisonBlock, getWrapper() );
-				}
 				
+				SpigotCompatibility.getInstance().
+							updateSpigotBlock( prisonBlock, getWrapper() );
 				
 				break;
 

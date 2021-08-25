@@ -37,7 +37,7 @@ public interface World {
      */
     String getName();
 
-    /**O
+    /**
      * Returns a list of all the players in this world.
      */
     List<Player> getPlayers();
@@ -52,5 +52,17 @@ public interface World {
     
     
     public void setBlock( PrisonBlock block, int x, int y, int z );
+
+    
+    /**
+     * <p>This function should be called from an async task, and it will
+     * drop down in to the synchronous thread to first get the block 
+     * from the world, then it will change to the specified PrisonBlock type.
+     * </p>
+     * 
+     * @param prisonBlock
+     * @param location
+     */
+	void setBlockAsync( PrisonBlock prisonBlock, Location location );
 
 }

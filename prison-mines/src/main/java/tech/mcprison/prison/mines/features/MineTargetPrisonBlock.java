@@ -2,6 +2,7 @@ package tech.mcprison.prison.mines.features;
 
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
+import tech.mcprison.prison.util.Location;
 
 public class MineTargetPrisonBlock
 	implements Comparable<MineTargetPrisonBlock>
@@ -11,21 +12,25 @@ public class MineTargetPrisonBlock
 	private PrisonBlockStatusData prisonBlock;
 	
 	private boolean airBroke;
+	private boolean isEdge;
 	
 	
-	protected MineTargetPrisonBlock( World world, int x, int y, int z ) {
+	protected MineTargetPrisonBlock( World world, int x, int y, int z, boolean isEdge ) {
 		
 		this.blockKey = new MineTargetBlockKey( world, x, y, z );
 	}
 	
-	public MineTargetPrisonBlock( PrisonBlockStatusData prisonBlock, World world, int x, int y, int z ) {
-		this( world, x, y, z );
+	public MineTargetPrisonBlock( PrisonBlockStatusData prisonBlock, World world, 
+						int x, int y, int z, boolean isEdge ) {
+		this( world, x, y, z, isEdge );
 		
 		this.prisonBlock = prisonBlock;
 		
 		if ( prisonBlock == null || prisonBlock.isAir() ) {
 			this.airBroke = true;
 		}
+		
+		this.isEdge = isEdge;
 	}
 
 	@Override
@@ -63,10 +68,21 @@ public class MineTargetPrisonBlock
 	public void setAirBroke( boolean airBroke ) {
 		this.airBroke = airBroke;
 	}
-
 	
+	public boolean isEdge() {
+		return isEdge;
+	}
+	public void setEdge( boolean isEdge ) {
+		this.isEdge = isEdge;
+	}
+
 	@Override 
 	public int compareTo( MineTargetPrisonBlock block ) {
 		return block.getBlockKey().compareTo( block.getBlockKey() );
+	}
+
+	public Location getLocation()
+	{
+		return getBlockKey().getLocation();
 	}
 }
