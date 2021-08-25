@@ -34,7 +34,7 @@ public class AutoManagerPrisonEnchants
 	}
 
 	
-	public class AutoManagerExplosiveEventListener 
+	public class AutoManagerPEExplosiveEventListener 
 		extends AutoManagerBlockBreakEvents
 		implements Listener {
 		
@@ -47,7 +47,7 @@ public class AutoManagerPrisonEnchants
 		}
 	}
 	
-	public class OnBlockBreakExplosiveEventListener 
+	public class OnBlockBreakPEExplosiveEventListener 
 	    extends OnBlockBreakEventListener
 	    implements Listener {
 		
@@ -57,7 +57,7 @@ public class AutoManagerPrisonEnchants
 		}
 	}
 	
-	public class OnBlockBreakExplosiveEventListenerMonitor
+	public class OnBlockBreakPEExplosiveEventListenerMonitor
 		extends OnBlockBreakEventListener
 		implements Listener {
 		
@@ -79,7 +79,7 @@ public class AutoManagerPrisonEnchants
 		try {
 			Output.get().logInfo( "AutoManager: checking if loaded: PrisonEnchants" );
 			
-			Class.forName( "me.pulsi_.prisonenchants.enchantments.custom.explosive.PEExplosionEvent", false, 
+			Class.forName( "me.pulsi_.prisonenchants.events.PEExplosionEvent", false, 
 					this.getClass().getClassLoader() );
 			
 			Output.get().logInfo( "AutoManager: Trying to register PrisonEnchants" );
@@ -93,8 +93,8 @@ public class AutoManagerPrisonEnchants
 				EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
 				
 				
-				OnBlockBreakExplosiveEventListenerMonitor normalListenerMonitor = 
-												new OnBlockBreakExplosiveEventListenerMonitor();
+				OnBlockBreakPEExplosiveEventListenerMonitor normalListenerMonitor = 
+												new OnBlockBreakPEExplosiveEventListenerMonitor();
 				
 				
 				SpigotPrison prison = SpigotPrison.getInstance();
@@ -106,13 +106,13 @@ public class AutoManagerPrisonEnchants
 					
 					if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
 						
-						AutoManagerExplosiveEventListener autoManagerlListener = 
-								new AutoManagerExplosiveEventListener();
+						AutoManagerPEExplosiveEventListener autoManagerlListener = 
+								new AutoManagerPEExplosiveEventListener();
 						
 						pm.registerEvent(PEExplosionEvent.class, autoManagerlListener, ePriority,
 								new EventExecutor() {
 							public void execute(Listener l, Event e) { 
-								((AutoManagerExplosiveEventListener)l)
+								((AutoManagerPEExplosiveEventListener)l)
 								.onPrisonEnchantsExplosiveEvent((PEExplosionEvent)e);
 							}
 						},
@@ -120,13 +120,13 @@ public class AutoManagerPrisonEnchants
 						prison.getRegisteredBlockListeners().add( autoManagerlListener );
 					}
 					
-					OnBlockBreakExplosiveEventListener normalListener = 
-							new OnBlockBreakExplosiveEventListener();
+					OnBlockBreakPEExplosiveEventListener normalListener = 
+							new OnBlockBreakPEExplosiveEventListener();
 					
 					pm.registerEvent(PEExplosionEvent.class, normalListener, ePriority,
 							new EventExecutor() {
 						public void execute(Listener l, Event e) { 
-							((OnBlockBreakExplosiveEventListener)l)
+							((OnBlockBreakPEExplosiveEventListener)l)
 							.onPrisonEnchantsExplosiveEvent((PEExplosionEvent)e);
 						}
 					},
@@ -137,7 +137,7 @@ public class AutoManagerPrisonEnchants
 				pm.registerEvent(PEExplosionEvent.class, normalListenerMonitor, EventPriority.MONITOR,
 						new EventExecutor() {
 					public void execute(Listener l, Event e) { 
-						((OnBlockBreakExplosiveEventListenerMonitor)l)
+						((OnBlockBreakPEExplosiveEventListenerMonitor)l)
 										.onPrisonEnchantsExplosiveEvent((PEExplosionEvent)e);
 					}
 				},
@@ -196,7 +196,7 @@ public class AutoManagerPrisonEnchants
 		// Check to see if the class ExplosiveEvent even exists:
 		try {
 			
-			Class.forName( "me.pulsi_.prisonenchants.enchantments.custom.explosive.PEExplosionEvent", false, 
+			Class.forName( "me.pulsi_.prisonenchants.events.PEExplosionEvent", false, 
 							this.getClass().getClassLoader() );
 			
 
@@ -206,6 +206,7 @@ public class AutoManagerPrisonEnchants
 
 			if ( eventDisplay != null ) {
 				sb.append( eventDisplay.toStringBuilder() );
+				sb.append( "\n" );
 			}
 		}
 		catch ( ClassNotFoundException e ) {

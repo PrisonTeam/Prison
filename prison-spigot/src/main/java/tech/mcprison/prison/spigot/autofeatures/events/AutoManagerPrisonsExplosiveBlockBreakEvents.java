@@ -194,6 +194,7 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 
 			if ( eventDisplay != null ) {
 				sb.append( eventDisplay.toStringBuilder() );
+				sb.append( "\n" );
 			}
 		}
 		catch ( Exception e ) {

@@ -16,6 +16,14 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-08-24
 
 
+* **Tweaks to the event listener dumps for block breaks.**
+Updated the notes about prison's listeners.
+PEExplosionEvent was setup with the wrong forClass name.
+
+
+* **Setting up a new way to handle block updates in prison.  Adding functions that are intended to be use while running in an async threads.**
+
+
 * **Transitioning over to the correct way to get the compatibility object.**
 Just a few classes are using the old way, but they will be switched over when they are done with the edits.
 

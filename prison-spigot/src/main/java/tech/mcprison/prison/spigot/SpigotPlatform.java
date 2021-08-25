@@ -2032,7 +2032,9 @@ public class SpigotPlatform
 		sb.append( "&2. . Prison Internal BlockBreakEvents: " +
 									"tech.mcprison.prison.spigot.SpigotListener\n" );
 		sb.append( "&2. . Auto Feature Core: Non-AutoManager: " +
-									"OnBlockBreakEventListeners$OnBlockBreakEventListener*\n" );
+									"AutoManagerBlockBreakEvents$OnBlockBreakEventListenerNormal\n" );
+		sb.append( "&2. . Auto Feature Core: AutoManager: " +
+									"AutoManagerBlockBreakEvents$AutoManagerBlockBreakEventListener\n" );
 		sb.append( "&2. . Prison MONITOR Events manages block counts, " +
 									"Mine Sweeper, and zero block conditions.\n" );
 		sb.append( "&2. . AutoManager and enchantment event listeners are " +
@@ -2040,9 +2042,11 @@ public class SpigotPlatform
 		sb.append( "\n" );
 		
 		
+		// Pulsi_'s plugin:
 		AutoManagerPrisonEnchants prisonEnchants = new AutoManagerPrisonEnchants();
 		prisonEnchants.dumpEventListeners( sb );
 		
+		// Prison's Explosion event.  Used by mine bombs.
 		AutoManagerPrisonsExplosiveBlockBreakEvents prisonExplosiveEnchants = new AutoManagerPrisonsExplosiveBlockBreakEvents();
 		prisonExplosiveEnchants.dumpEventListeners( sb );
 		

@@ -207,6 +207,7 @@ public class AutoManagerCrazyEnchants
 			
 			if ( eventDisplay != null ) {
 				sb.append( eventDisplay.toStringBuilder() );
+				sb.append( "\n" );
 			}
 		}
 		catch ( ClassNotFoundException e ) {

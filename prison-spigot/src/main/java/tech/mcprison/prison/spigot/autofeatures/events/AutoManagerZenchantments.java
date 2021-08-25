@@ -214,6 +214,9 @@ public class AutoManagerZenchantments
     		
     		if ( eventDisplay != null ) {
     			sb.append( eventDisplay.toStringBuilder() );
+    			sb.append( "NOTE: Zenchantments uses the same HandlerList as BlockBreakEvent so " +
+    					"listeners are combined due to this bug.\n" );
+    			sb.append( "\n" );
     		}
     	}
     	catch ( ClassNotFoundException e ) {
