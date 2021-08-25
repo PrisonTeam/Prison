@@ -59,7 +59,7 @@ public class MineTracerBuilder
     	MineResetType resetType = tracer ? MineResetType.tracer : MineResetType.clear;
     			
 		MinePagedResetAsyncTask resetTask = new MinePagedResetAsyncTask( mine, resetType );
-		resetTask.submitTask();
+		resetTask.submitTaskAsync();
     }
     
 //    public void clearMine( Mine mine, boolean tracer ) {
