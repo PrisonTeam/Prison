@@ -353,6 +353,9 @@ public abstract class MineReset
     	
     	sb.append( statsMessageMineSweeper() );
     	
+    	sb.append(  "  TPS: " )
+    		.append( Prison.get().getPrisonTPS().getAverageTPSFormatted() );
+    	
     	return sb.toString();
     }
 
@@ -535,13 +538,33 @@ public abstract class MineReset
 		int airCount = 0;
 		int currentLevel = 0;
 		
+		
+		int yMin = getBounds().getyBlockMin();
+		int yMax = getBounds().getyBlockMax();
+		
+		int xMin = getBounds().getxBlockMin();
+		int xMax = getBounds().getxBlockMax();
+		
+		int zMin = getBounds().getzBlockMin();
+		int zMax = getBounds().getzBlockMax();
+		
+		
 		// The reset takes place first with the top-most layer since most mines may have
 		// the player enter from the top, and the reset will appear to be more "instant".
-		for (int y = getBounds().getyBlockMax(); y >= getBounds().getyBlockMin(); y--) {
+		for (int y = yMax; y >= yMin; y--) {
 			currentLevel++; // One based: First layer is currentLevel == 1
-			for (int x = getBounds().getxBlockMin(); x <= getBounds().getxBlockMax(); x++) {
-				for (int z = getBounds().getzBlockMin(); z <= getBounds().getzBlockMax(); z++) {
+			for (int x = xMin; x <= xMax; x++) {
+				for (int z = zMin; z <= zMax; z++) {
 					
+					
+					boolean xEdge = x == xMin || x == xMax;
+					boolean yEdge = y == yMin || y == yMax;
+					boolean zEdge = z == zMin || z == zMax;
+					
+					boolean isEdge = xEdge && yEdge || xEdge && zEdge ||
+									 yEdge && zEdge;
+					
+
 //					MineTargetBlock mtb = null;
 					
 					if ( isUseNewBlockModel() ) {
@@ -554,7 +577,7 @@ public abstract class MineReset
 						// Increment the mine's block count. This block is one of the control blocks:
 						incrementResetBlockCount( prisonBlock );
 						
-						addMineTargetPrisonBlock( prisonBlock, x, y, z );
+						addMineTargetPrisonBlock( prisonBlock, x, y, z, isEdge );
 //						mtb = new MineTargetPrisonBlock( prisonBlock, x, y, z);
 						
 						if ( prisonBlock.equals( PrisonBlock.AIR ) ) {
@@ -570,7 +593,7 @@ public abstract class MineReset
 						// Increment the mine's block count. This block is one of the control blocks:
 						incrementResetBlockCount( tBlock );
 						
-						addMineTargetPrisonBlock( tBlock, x, y, z );
+						addMineTargetPrisonBlock( tBlock, x, y, z, isEdge );
 //						mtb = new MineTargetBlock( tBlock.getType(), x, y, z);
 
 						if ( tBlock.equals( BlockOld.AIR ) ) {
@@ -925,7 +948,8 @@ public abstract class MineReset
 				// Only print these details if stats is enabled:
 				Output.get().logInfo( "MineReset.resetAsynchonouslyUpdate() :" +
 						" page " + getResetPage() + 
-						"  blocks = " + blocksPlaced + "  elapsed = " + elapsed );
+						"  blocks = " + blocksPlaced + "  elapsed = " + elapsed + 
+						" ms  TPS: " + Prison.get().getPrisonTPS().getAverageTPSFormatted() );
 			}
 
 			setResetPosition( i );
@@ -1031,22 +1055,45 @@ public abstract class MineReset
 			
 			int airCount = 0;
 			int errorCount = 0;
+			
+			
+			
+			int yMin = getBounds().getyBlockMin();
+			int yMax = getBounds().getyBlockMax();
+			
+			int xMin = getBounds().getxBlockMin();
+			int xMax = getBounds().getxBlockMax();
+			
+			int zMin = getBounds().getzBlockMin();
+			int zMax = getBounds().getzBlockMax();
+			
+			
+			
 			StringBuilder sb = new StringBuilder();
 			
-			for (int y = getBounds().getyBlockMax(); y >= getBounds().getyBlockMin(); y--) {
-				for (int x = getBounds().getxBlockMin(); x <= getBounds().getxBlockMax(); x++) {
-					for (int z = getBounds().getzBlockMin(); z <= getBounds().getzBlockMax(); z++) {
+			for (int y = yMax; y >= yMin; y--) {
+				for (int x = xMin; x <= xMax; x++) {
+					for (int z = zMin; z <= zMax; z++) {
 						
 						try {
 							Location targetBlock = new Location(world, x, y, z);
 							Block tBlock = targetBlock.getBlockAt();
+							
+							
+							boolean xEdge = x == xMin || x == xMax;
+							boolean yEdge = y == yMin || y == yMax;
+							boolean zEdge = z == zMin || z == zMax;
+							
+							boolean isEdge = xEdge && yEdge || xEdge && zEdge ||
+											 yEdge && zEdge;
+							
 							
 							if ( isUseNewBlockModel() ) {
 								
 								PrisonBlock pBlock = tBlock.getPrisonBlock();
 
 								// Increment the mine's block count. This block is one of the control blocks:
-								addMineTargetPrisonBlock( incrementResetBlockCount( pBlock ), x, y, z );
+								addMineTargetPrisonBlock( incrementResetBlockCount( pBlock ), x, y, z, isEdge );
 								
 								
 								if ( pBlock == null ||
@@ -1059,7 +1106,7 @@ public abstract class MineReset
 								BlockOld oBlock = new BlockOld( tBlock.getType() );
 
 								// Increment the mine's block count. This block is one of the control blocks:
-								addMineTargetPrisonBlock( incrementResetBlockCount( oBlock ), x, y, z );
+								addMineTargetPrisonBlock( incrementResetBlockCount( oBlock ), x, y, z, isEdge );
 								
 								
 								if ( tBlock.getType() == BlockType.AIR ) {
@@ -1560,9 +1607,9 @@ public abstract class MineReset
 	
 	
     
-    private void addMineTargetPrisonBlock( PrisonBlockStatusData block, int x, int y, int z ) {
+    private void addMineTargetPrisonBlock( PrisonBlockStatusData block, int x, int y, int z, boolean isEdge ) {
     	
-    	MineTargetPrisonBlock mtpb = new MineTargetPrisonBlock( block, getWorld().get(), x, y, z );
+    	MineTargetPrisonBlock mtpb = new MineTargetPrisonBlock( block, getWorld().get(), x, y, z, isEdge );
     	
 		getMineTargetPrisonBlocks().add( mtpb );
 		getMineTargetPrisonBlocksMap().put( mtpb.getBlockKey(), mtpb );

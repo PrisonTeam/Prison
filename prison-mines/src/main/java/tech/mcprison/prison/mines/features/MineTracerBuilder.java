@@ -1,13 +1,9 @@
 package tech.mcprison.prison.mines.features;
 
-import java.util.Optional;
-
-import tech.mcprison.prison.internal.World;
-import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask;
+import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask.MineResetType;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.util.BlockType;
-import tech.mcprison.prison.util.Location;
 
 public class MineTracerBuilder
 {
@@ -48,84 +44,103 @@ public class MineTracerBuilder
 			return results;
 		}
 	}
-    
+	
     public void clearMine( Mine mine, boolean tracer ) {
 		
     	if ( mine == null ) {
-    		Output.get().logError(" #### NPE ###");
+    		Output.get().logError(" #### Null MINE? ###");
     	}
-		try {
-			
-			if ( mine.isVirtual() ) {
-				// Mine is virtual and cannot be reset.  Just skip this with no error messages.
-				return;
-			}
-			
-			
-			// Output.get().logInfo( "MineRest.resetSynchonouslyInternal() " + getName() );
 
-			Optional<World> worldOptional = mine.getWorld();
-			World world = worldOptional.get();
-			
-			
-			PrisonBlock blockAirPB = new PrisonBlock( "AIR" );
-			BlockType blockAirBT = BlockType.AIR;
-			
-			PrisonBlock blockRedPB = new PrisonBlock( "PINK_STAINED_GLASS" );
-			BlockType blockRedBT = BlockType.PINK_STAINED_GLASS;
-
-//			PrisonBlock blockRedstonePB = new PrisonBlock( "REDSTONE_BLOCK" );
-//			BlockType blockRedstoneBT = BlockType.REDSTONE_BLOCK;
-			
-	
-			
-			// Reset the block break count before resetting the blocks:
-//			setBlockBreakCount( 0 );
-//			Random random = new Random();
-			
-			int yMin = mine.getBounds().getyBlockMin();
-			int yMax = mine.getBounds().getyBlockMax();
-			
-			int xMin = mine.getBounds().getxBlockMin();
-			int xMax = mine.getBounds().getxBlockMax();
-			
-			int zMin = mine.getBounds().getzBlockMin();
-			int zMax = mine.getBounds().getzBlockMax();
-			
-			for (int y = yMax; y >= yMin; y--) {
-//    			for (int y = getBounds().getyBlockMin(); y <= getBounds().getyBlockMax(); y++) {
-				for (int x = xMin; x <= xMax; x++) {
-					for (int z = zMin; z <= zMax; z++) {
-						Location targetBlock = new Location(world, x, y, z);
-						
-						boolean xEdge = x == xMin || x == xMax;
-						boolean yEdge = y == yMin || y == yMax;
-						boolean zEdge = z == zMin || z == zMax;
-						
-						boolean isEdge = xEdge && yEdge || xEdge && zEdge ||
-										 yEdge && zEdge;
-						
-						if ( mine.isUseNewBlockModel() ) {
-							
-							targetBlock.getBlockAt().setPrisonBlock( 
-									tracer && isEdge ? blockRedPB : blockAirPB );
-						}
-						else {
-							
-							targetBlock.getBlockAt().setType( 
-									tracer && isEdge ? blockRedBT : blockAirBT );
-						}
-					}
-				}
-			}
-			
-			
-		} 
-		catch (Exception e) {
-			Output.get().logError("&cFailed to clear mine " + mine.getName() + 
-					"  Error: [" + e.getMessage() + "]", e);
-		}
+    	if ( mine.isVirtual() ) {
+    		// Mine is virtual and cannot be reset.  Just skip this with no error messages.
+    		return;
+    	}
+		
+    	MineResetType resetType = tracer ? MineResetType.tracer : MineResetType.clear;
+    			
+		MinePagedResetAsyncTask resetTask = new MinePagedResetAsyncTask( mine, resetType );
+		resetTask.submitTask();
     }
+    
+//    public void clearMine( Mine mine, boolean tracer ) {
+//		
+//    	if ( mine == null ) {
+//    		Output.get().logError(" #### Null MINE? ###");
+//    	}
+//		try {
+//			
+//			if ( mine.isVirtual() ) {
+//				// Mine is virtual and cannot be reset.  Just skip this with no error messages.
+//				return;
+//			}
+//			
+//			
+//			// Output.get().logInfo( "MineRest.resetSynchonouslyInternal() " + getName() );
+//
+//			Optional<World> worldOptional = mine.getWorld();
+//			World world = worldOptional.get();
+//			
+//			
+//			PrisonBlock blockAirPB = new PrisonBlock( "AIR" );
+////			BlockType blockAirBT = BlockType.AIR;
+//			
+//			PrisonBlock blockRedPB = new PrisonBlock( "PINK_STAINED_GLASS" );
+////			BlockType blockRedBT = BlockType.PINK_STAINED_GLASS;
+//
+////			PrisonBlock blockRedstonePB = new PrisonBlock( "REDSTONE_BLOCK" );
+////			BlockType blockRedstoneBT = BlockType.REDSTONE_BLOCK;
+//			
+//	
+//			
+//			
+//			
+//			// Reset the block break count before resetting the blocks:
+////			setBlockBreakCount( 0 );
+////			Random random = new Random();
+//			
+//			int yMin = mine.getBounds().getyBlockMin();
+//			int yMax = mine.getBounds().getyBlockMax();
+//			
+//			int xMin = mine.getBounds().getxBlockMin();
+//			int xMax = mine.getBounds().getxBlockMax();
+//			
+//			int zMin = mine.getBounds().getzBlockMin();
+//			int zMax = mine.getBounds().getzBlockMax();
+//			
+//			for (int y = yMax; y >= yMin; y--) {
+////    			for (int y = getBounds().getyBlockMin(); y <= getBounds().getyBlockMax(); y++) {
+//				for (int x = xMin; x <= xMax; x++) {
+//					for (int z = zMin; z <= zMax; z++) {
+//						Location targetBlock = new Location(world, x, y, z);
+//						
+//						boolean xEdge = x == xMin || x == xMax;
+//						boolean yEdge = y == yMin || y == yMax;
+//						boolean zEdge = z == zMin || z == zMax;
+//						
+//						boolean isEdge = xEdge && yEdge || xEdge && zEdge ||
+//										 yEdge && zEdge;
+//						
+//						if ( mine.isUseNewBlockModel() ) {
+//							
+//							targetBlock.getBlockAt().setPrisonBlock( 
+//									tracer && isEdge ? blockRedPB : blockAirPB );
+//						}
+////						else {
+////							
+////							targetBlock.getBlockAt().setType( 
+////									tracer && isEdge ? blockRedBT : blockAirBT );
+////						}
+//					}
+//				}
+//			}
+//			
+//			
+//		} 
+//		catch (Exception e) {
+//			Output.get().logError("&cFailed to clear mine " + mine.getName() + 
+//					"  Error: [" + e.getMessage() + "]", e);
+//		}
+//    }
     
  
 }

@@ -20,6 +20,7 @@ public class PrisonBlockTypes {
 	public enum InternalBlockTypes {
 		AIR,
 		GLASS,
+		PINK_STAINED_GLASS,
 		IGNORE,
 		NULL_BLOCK
 	}
