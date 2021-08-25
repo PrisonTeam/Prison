@@ -167,6 +167,10 @@ public class PrisonTPS
 	 */
 	public static final double SUBMIT_TICKS_INTERVAL = 10;
 	
+	// When enabled for highResolution the resolution will be set to submit_ticks_interval == 1,
+	// false will be the value of SUBMIT_TICKS_INTERVAL:
+	public boolean highResolution = false;
+	
 	public static final double TARGET_TPS_AVERAGE_DURATION_IN_TICKS = 20;
 	public static final double TPS_AVERAGE_READINGS_TO_INCLUDE = 
 							TARGET_TPS_AVERAGE_DURATION_IN_TICKS / SUBMIT_TICKS_INTERVAL;
@@ -198,7 +202,8 @@ public class PrisonTPS
 	public void submitAsyncTPSTask() {
 		lastPollNano = System.nanoTime();
 		
-		PrisonTaskSubmitter.runTaskTimerAsync( this, 0, (int) SUBMIT_TICKS_INTERVAL );
+		int submitInterval = isHighResolution() ? 1 : (int) SUBMIT_TICKS_INTERVAL;
+		PrisonTaskSubmitter.runTaskTimerAsync( this, 0, submitInterval );
 	}
 	
 	
@@ -248,6 +253,16 @@ public class PrisonTPS
 		lastPollNano = timeStartNano;
 	}
 	
+	
+	
+	public boolean isHighResolution() {
+		return highResolution;
+	}
+	public void setHighResolution( boolean highResolution ) {
+		this.highResolution = highResolution;
+	}
+
+
 	/**
 	 * <p>Note that the individual TPS entries have already been
 	 * averaged based upon the value of SUBMIT_TICKS_INTERVAL, which

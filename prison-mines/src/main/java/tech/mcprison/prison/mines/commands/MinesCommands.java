@@ -2860,7 +2860,10 @@ public class MinesCommands
 
     }
     
-    @Command(identifier = "mines stats", permissions = "mines.stats", description = "Toggle stats on all mines.")
+    @Command(identifier = "mines stats", permissions = "mines.stats", 
+    		description = "Toggle stats on and off for all mine resets.  When enabled, " +
+    				"Prison's mine TPS calculations will be set to high-resolution mode " +
+    				"(1 tick vs. 10 ticks).")
     public void mineStats(CommandSender sender) {
     	
     	PrisonMines pMines = PrisonMines.getInstance();
@@ -2868,6 +2871,10 @@ public class MinesCommands
     	
     	// toggle the stats:
     	mMan.setMineStats( !mMan.isMineStats() );
+    	
+    	// When mine stats are enabled, then it will also enable the high resolution 
+    	// tracking of the Prison TPS:
+    	Prison.get().getPrisonTPS().setHighResolution( mMan.isMineStats() );
     	
     	if ( mMan.isMineStats() ) {
     		sender.sendMessage(

@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-08-25
 
 
+* **Changed prison's TPS calculation to be able to enable a high-res setting when the `/mines stats` is enabled.**
+The one problem with enabling high resolution mode is that it could show an unrealistic low TPS during a reset.  The /lag command shows a much higher TPS value.  
+
+
 * **Setup up the basics for async updates.**
 In the code that does the update, it also now reads the block to ensure that the read and update is all done in the synch thread.  Otherwise the old code would be risking chunk loading in an async thread.
 Using the Location and World to perform the async updates outside of needing access to the spigot module.
