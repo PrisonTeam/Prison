@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-08-25
 
 
+* **eliminate the block access in this class since it handles everything in the submitted task.**
+This was causing an error when it was being ran in an async thread.  When the task is submitted, it is ran synchoronously so it works correctly.
+
+
 * **Changed prison's TPS calculation to be able to enable a high-res setting when the `/mines stats` is enabled.**
 The one problem with enabling high resolution mode is that it could show an unrealistic low TPS during a reset.  The /lag command shows a much higher TPS value.  
 
