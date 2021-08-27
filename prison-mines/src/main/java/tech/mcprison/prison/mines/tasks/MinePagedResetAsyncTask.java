@@ -20,12 +20,13 @@ public class MinePagedResetAsyncTask
 	
 	private int position = 0;
 	
-	private int chunk = 5000;
 	
+	private int pageSize = 2000;
 	private int page = 0;
+	
 	private int totalPages = 0;
-	private int subPage = 0;
-	private int subPagesInAPage = 5;
+//	private int subPage = 0;
+	private int pagesPerReport = 20;
 	private int pagePosition = 0;
 	
 
@@ -51,7 +52,7 @@ public class MinePagedResetAsyncTask
 		this.timeStart = System.currentTimeMillis();
 		this.timePage = timeStart;
 		
-		this.totalPages = mine.getMineTargetPrisonBlocks().size() / (chunk * subPagesInAPage) + 1;
+		this.totalPages = (mine.getMineTargetPrisonBlocks().size() / pageSize) + 1;
 	}
 	
 	
@@ -66,21 +67,15 @@ public class MinePagedResetAsyncTask
 		}
 		
 		
-		long delay = 0;
-		
-		
-		if ( subPage++ % subPagesInAPage == 0 ) {
-			page++;
-			
-			delay = 1;
+		if ( position > 0 && page++ % pagesPerReport == 0 ) {
 			
 			if ( PrisonMines.getInstance().getMineManager().isMineStats() ) {
 				
 				logStats();
 			}
-			
 		}
 		
+		long delay = 0;
 		PrisonTaskSubmitter.runTaskLaterAsync( this, delay );
 	}
 
@@ -112,7 +107,9 @@ public class MinePagedResetAsyncTask
 		
 		
 		// Only print these details if stats are enabled:
-		Output.get().logInfo( "MinePagedResetAsyncTask : " + resetType.name() + 
+		Output.get().logInfo( "MinePagedResetAsyncTask : " +
+				mine.getName() + " " +
+				resetType.name() + 
 				" : page " + page + " of " + totalPages + " : " +
 				"  blocks = " + blocksPlaced + "  elapsed = " + timeElapsedPage + 
 				" ms  TotalElapsed = " + timeElapsedTotal + " ms  TPS " +
@@ -123,29 +120,19 @@ public class MinePagedResetAsyncTask
 	public void run() {
 		
 		// The first time running this, need to setup the block list if a reset:
-		if ( subPage == 1 ) {
-			if ( resetType == MineResetType.normal || resetType == MineResetType.paged ) {
-				mine.generateBlockListAsync();
-				
-				// resetAsynchonouslyInitiate() will confirm if the reset should happened 
-				// and will raise Prison's mine reset event. 
-				// A return value of true means cancel the reset:
-				if ( mine.resetAsynchonouslyInitiate() ) {
-					return;
-				}
-				
+		if ( position == 0 ) {
+			if ( runSetupCancelReset() ) {
+				// If the reset should be canceled then just return, and that will 
+				// terminate the reset.  There is nothing else that needs to be done.
+				return;
 			}
-			
-			mine.asynchronouslyResetSetup();
-			
-    		
 		}
 		
 		List<MineTargetPrisonBlock> targetBlocks = mine.getMineTargetPrisonBlocks();
 
-		int chunkEnd = position + chunk;
+		int pageEndPosition = position + pageSize;
 		
-		for ( int i = position; i < chunkEnd && i < targetBlocks.size(); i++ ) {
+		for ( int i = position; i < pageEndPosition && i < targetBlocks.size(); i++ ) {
 			MineTargetPrisonBlock tBlock = targetBlocks.get( i );
 			
 			final PrisonBlock pBlock = getPrisonBlock( tBlock );
@@ -166,14 +153,37 @@ public class MinePagedResetAsyncTask
 		}
 		else {
 			
-			// Finished running the task:
-			mine.asynchronouslyResetFinalize();
-			
-			logStats();
+			// Finished running the task and let it end:
+			runShutdown();
 		}
 		
 	}
 
+	
+	/**
+	 * <p>This is ran before the initial actual processing is performed.  
+	 * This calls the functions to 
+	 */
+	private boolean runSetupCancelReset() {
+		if ( resetType == MineResetType.normal || resetType == MineResetType.paged ) {
+			mine.generateBlockListAsync();
+			
+			// resetAsynchonouslyInitiate() will confirm if the reset should happened 
+			// and will raise Prison's mine reset event. 
+			// A return value of true means cancel the reset:
+			return mine.resetAsynchonouslyInitiate();
+			
+		}
+		
+		mine.asynchronouslyResetSetup();
+		return false;
+	}
+	
+	private void runShutdown() {
+
+		logStats();
+		mine.asynchronouslyResetFinalize();
+	}
 
 	private PrisonBlock getPrisonBlock( MineTargetPrisonBlock tBlock ) {
 		final PrisonBlock pBlock;

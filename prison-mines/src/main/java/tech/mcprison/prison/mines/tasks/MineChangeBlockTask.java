@@ -10,20 +10,24 @@ public class MineChangeBlockTask
 	private Location location;
 	private PrisonBlock targetBlock;
 	
+	private Location topOfMineLocation;
+	
 	public MineChangeBlockTask( Location location, PrisonBlock targetBlock ) {
 		super();
 		
 		this.location = location;
 		this.targetBlock = targetBlock;
+		
+		this.topOfMineLocation = new Location( getLocation() );
+    	this.topOfMineLocation.setY( topOfMineLocation.getBlockY() - 1 );
+		
 	}
 	
 	@Override
 	public void run() {
 		
-    	Location topOfMineLocation = new Location( getLocation() );
-    	topOfMineLocation.setY( topOfMineLocation.getBlockY() - 1 );
-    	
     	if ( topOfMineLocation.getBlockAt().isEmpty() ) {
+    		
     		// When there is no block under the glass block, spawn in a
     		// glass block so the player won't fall to their death.
     		// This block will be within the mine, so it will be replaced
