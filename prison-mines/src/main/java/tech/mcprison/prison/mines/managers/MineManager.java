@@ -1205,7 +1205,7 @@ public class MineManager
 						
     				case prison_pbt:
     				case prison_player_blocks_total:
-    					if ( !mine.isVirtual() )
+    					if ( !mine.isVirtual() && player != null )
     					{
     						long blocksTotal = PlayerCache.getInstance().getPlayerBlocksTotal( player );
     						
@@ -1224,7 +1224,7 @@ public class MineManager
 						
 					case prison_pbtm:
 					case prison_player_blocks_total_minename:
-						if ( !mine.isVirtual() )
+						if ( !mine.isVirtual() && player != null )
 						{
     						long blocksTotalByMine = PlayerCache.getInstance()
     												.getPlayerBlocksTotalByMine( player, mine.getName() );
@@ -1463,7 +1463,8 @@ public class MineManager
 		
 		if ( player == null ) {
 			for ( Player p : Prison.get().getPlatform().getOfflinePlayers() ) {
-				if ( p.getUUID().compareTo( playerUuid ) == 0 ) {
+				if ( playerUuid != null && p.getUUID() != null &&
+						p.getUUID().compareTo( playerUuid ) == 0 ) {
 					player = p;
 					break;
 				} 

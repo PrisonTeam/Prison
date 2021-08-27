@@ -13,7 +13,13 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.1 2021-08-25
+# 3.2.11-alpha.1 2021-08-27
+
+
+* **Fixed a problem with placeholders when using the search feature, but not supplying a player's name.**
+
+
+* **some internal changes to improve the resets**
 
 
 * **eliminate the block access in this class since it handles everything in the submitted task.**
