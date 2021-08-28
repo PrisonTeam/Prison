@@ -511,7 +511,7 @@ public class Mine
         List<String> mineBlockEvents = (List<String>) document.get("mineBlockEvents");
         if ( mineBlockEvents != null ) {
         	for ( String blockEvent : mineBlockEvents ) {
-        		getBlockEvents().add( MineBlockEvent.fromSaveString( blockEvent ) );
+        		getBlockEvents().add( MineBlockEvent.fromSaveString( blockEvent, this.getName() ) );
         	}
         }
         

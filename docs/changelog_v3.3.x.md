@@ -16,6 +16,13 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-08-28
 
 
+* **If the Mine's saved file data is corrupted (manually edited with incorrect data), this will prevent the mine from being loaded and will now generate an error message indicating which mine has a problem loading.  It will print out the invalid data, and it will default to a value of 0.00001.  The function has been updated to "properly" use the localized format, so if it saves in a non US way, then it should now be able to read it back in and parse it correctly.
+
+
+* **If the Mine's saved file data is corrupted (manually edited with incorrect data),**
+this will prevent the mine from being loaded and will now generate an error message indicating which mine has a problem loading.  It will print out the invalid data, and it will default to a value of 0.00001.
+
+
 * **Checking to ensure the locations are not null when loading.**
 There was a failure with bad data on the files system that was resulting in trying to resolve nulls to a location, which obviously cannot happen.
 
