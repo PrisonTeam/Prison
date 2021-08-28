@@ -675,13 +675,38 @@ public class Mine
     }
     
     private Location getLocation(Document doc, World world, String x, String y, String z) {
-    	return new Location(world, (double) doc.get(x), (double) doc.get(y), (double) doc.get(z));
+    	Location results = null;
+    	
+    	if ( world != null ) {
+    		
+    		Object xD = doc.get(x);
+    		Object yD = doc.get(y);
+    		Object zD = doc.get(z);
+    		
+    		if ( xD != null && yD != null && zD != null ) {
+    			
+    			results = new Location(world, (double) xD, (double) yD, (double) zD );
+    		}
+    		
+    	}
+    	return results;
     }
     
     private Location getLocation(Document doc, World world, String x, String y, String z, String pitch, String yaw) {
     	Location loc = getLocation(doc, world, x, y, z);
-    	loc.setPitch( ((Double) doc.get(pitch)).floatValue() );
-    	loc.setYaw( ((Double) doc.get(yaw)).floatValue() );
+    	
+    	Object pitchD = doc.get(pitch);
+    	Object yawD = doc.get(yaw);
+    	
+    	if ( pitchD != null ) {
+    		
+    		loc.setPitch( ((Double) pitchD ).floatValue() );
+    	}
+    	
+    	if ( yawD != null ) {
+    		
+    		loc.setYaw( ((Double) yawD ).floatValue() );
+    	}
     	return loc;
     }
     

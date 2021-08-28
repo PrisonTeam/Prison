@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-08-28
 
 
+* **Checking to ensure the locations are not null when loading.**
+There was a failure with bad data on the files system that was resulting in trying to resolve nulls to a location, which obviously cannot happen.
+
+
 * **There was an odd situation where the player was null, when usually they never can be, so this helps prevent possible errors.**
 The null was caused by an issue with a placeholder?  Don't really remember.
 
