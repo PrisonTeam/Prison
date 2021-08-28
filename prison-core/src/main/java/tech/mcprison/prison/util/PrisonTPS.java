@@ -166,12 +166,18 @@ public class PrisonTPS
 	 * processing overhead.
 	 */
 	public static final double SUBMIT_TICKS_INTERVAL = 10;
+	public static final double SUBMIT_TICKS_INTERVAL_HIGH_RESOLUTION = 2;
 	
 	// When enabled for highResolution the resolution will be set to submit_ticks_interval == 1,
 	// false will be the value of SUBMIT_TICKS_INTERVAL:
 	public boolean highResolution = false;
 	
-	public static final double TARGET_TPS_AVERAGE_DURATION_IN_TICKS = 20;
+	
+	// TPS_AVERAGE_READINGS_TO_INCLUDE needs to include more than just a few TPS 
+	// points to prevent wild fluxuations.  With interval at 10 and a total 
+	// duration of 120 ticks, then the readings will be 12 data points. Less will 
+	// reflect variations faster, more will smooth out the bumps and dips.
+	public static final double TARGET_TPS_AVERAGE_DURATION_IN_TICKS = 120;
 	public static final double TPS_AVERAGE_READINGS_TO_INCLUDE = 
 							TARGET_TPS_AVERAGE_DURATION_IN_TICKS / SUBMIT_TICKS_INTERVAL;
 	
@@ -199,11 +205,30 @@ public class PrisonTPS
 	public static final Object tpsLock = new Object();
 	
 	
+	// When submitted, taskId identifies the job.  A value of -1 indicates the job
+	// failed to be submitted, or is not valid.
+	private int taskId = -1;
+	
 	public void submitAsyncTPSTask() {
 		lastPollNano = System.nanoTime();
 		
+		if ( taskId > -1 ) {
+			PrisonTaskSubmitter.cancelTask( taskId );
+			
+			// reset the key values:
+			tpsHistory.clear();;
+			tpsMin = 20.0d;
+			tpsMax = 20.0d;
+			tpsSamples = 0;
+			
+			lastPollNano = System.nanoTime();
+			
+		}
+		
 		int submitInterval = isHighResolution() ? 1 : (int) SUBMIT_TICKS_INTERVAL;
-		PrisonTaskSubmitter.runTaskTimerAsync( this, 0, submitInterval );
+		int taskId = PrisonTaskSubmitter.runTaskTimerAsync( this, 0, submitInterval );
+		
+		this.taskId = taskId;
 	}
 	
 	
@@ -258,8 +283,19 @@ public class PrisonTPS
 	public boolean isHighResolution() {
 		return highResolution;
 	}
+	
+	/**
+	 * <p>If changing the resolution, then resubmit this task so
+	 * it will have the low resolution (10 ticks) or high resolution
+	 * (1 tick).
+	 * </p>
+	 * 
+	 * @param highResolution
+	 */
 	public void setHighResolution( boolean highResolution ) {
 		this.highResolution = highResolution;
+		
+		submitAsyncTPSTask();
 	}
 
 
