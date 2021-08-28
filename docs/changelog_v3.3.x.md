@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-08-28
 
 
+* **There was an odd situation where the player was null, when usually they never can be, so this helps prevent possible errors.**
+The null was caused by an issue with a placeholder?  Don't really remember.
+
+
 * **Adjustments to Prison's TPS calculations.**
 They were only taking the average of just two readings which was resulting in very unstable TPS values. Now 10 are being used.
 Enabled a new feature where the resolution can be changed from normal (a reading every tick) to high resolution (one reading every 2 ticks). When the resolution changes, the task will auto terminate and resubmit with the new settings.

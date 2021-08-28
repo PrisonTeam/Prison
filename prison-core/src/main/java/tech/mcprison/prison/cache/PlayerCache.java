@@ -222,7 +222,8 @@ public class PlayerCache {
 		
 		getStats().incrementGetPlayers();
 		
-		String playerUuid = player.getUUID().toString();
+		String playerUuid = player == null || player.getUUID() == null ? null : 
+					player.getUUID().toString();
 		if ( !getPlayers().containsKey( playerUuid ) ) {
 			
 			// Load the player's existing balance:
