@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.1 2021-08-27
+# 3.2.11-alpha.1 2021-08-28
+
+
+* **For the command /ranks autoConfigure made some adjustments to the block lists being used so the top mines have more valuable ores and blocks.  There was a shortage and the wrong blocks were being used.
 
 
 * **Fixed an auto features config setting for prison's ExplosiveBockBreakvents priority; it was missing the word priority.**
