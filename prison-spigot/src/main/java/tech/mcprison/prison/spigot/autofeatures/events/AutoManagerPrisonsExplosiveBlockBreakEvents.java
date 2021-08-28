@@ -81,7 +81,7 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 			Output.get().logInfo( "AutoManager: Trying to register ExplosiveBlockBreakEvent Listener" );
 			
 			
-			String eP = getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEvents );
+			String eP = getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
 			BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
 			
 			if ( eventPriority != BlockBreakPriority.DISABLED ) {

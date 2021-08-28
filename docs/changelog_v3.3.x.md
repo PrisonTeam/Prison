@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-08-27
 
 
+* **Fixed an auto features config setting for prison's ExplosiveBockBreakvents priority; it was missing the word priority.**
+Reworked some of the details on autofeatures as displayed through /prison version to update them to better reflect the correct settings and dependencies.
+
+
 * **Fixed a problem with placeholders when using the search feature, but not supplying a player's name.**
 
 

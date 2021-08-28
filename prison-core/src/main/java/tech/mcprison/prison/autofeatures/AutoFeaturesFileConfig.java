@@ -64,7 +64,7 @@ public class AutoFeaturesFileConfig {
 		    	PrisonEnchantsExplosiveEventPriority(blockBreakEvents, "DISABLED"),
 		    	
 		    	isProcessPrisons_ExplosiveBlockBreakEvents(blockBreakEvents, false),
-		    	ProcessPrisons_ExplosiveBlockBreakEvents(blockBreakEvents, "DISABLED"),
+		    	ProcessPrisons_ExplosiveBlockBreakEventsPriority(blockBreakEvents, "DISABLED"),
 		    	
 		    	
 		    	blockBreakEvents__ReadMe(blockBreakEvents, 

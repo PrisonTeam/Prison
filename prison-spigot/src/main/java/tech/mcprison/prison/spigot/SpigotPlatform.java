@@ -1856,13 +1856,31 @@ public class SpigotPlatform
     		
     		String bbePriority = afw.getMessage( AutoFeatures.blockBreakEventPriority );
     		BlockBreakPriority blockBreakPriority = BlockBreakPriority.fromString( bbePriority );
-    		results.add( String.format(".   Block Break Event Priority:&b %s", 
+    		results.add( String.format(".   '&7org.bukkit.BlockBreakEvent&3' Priority:&b %s", 
     				blockBreakPriority.name() ) );
+    		
+    		String pebbePriority = afw.getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
+    		boolean isPebbeEnabled = afw.isBoolean( AutoFeatures.isProcessPrisons_ExplosiveBlockBreakEvents );
+    		BlockBreakPriority pebbeEventPriority = BlockBreakPriority.fromString( pebbePriority );
+    		results.add( String.format("%s.   Prison's own '&7ExplosiveBlockBreakEvent&3' Priority:&b %s %s", 
+    				(isPebbeEnabled ? "" : "+" ), 
+    				pebbeEventPriority.name(),
+    				(isPebbeEnabled ? "&2Enabled" : "&cDisabled")
+    				) );
+    		
+    		String peeePriority = afw.getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
+    		boolean isPeeeEnabled = afw.isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
+    		BlockBreakPriority peeeEventPriority = BlockBreakPriority.fromString( peeePriority );
+    		results.add( String.format("%s.   Pulsi_'s PrisonEnchants '&7PEExplosiveEvent&3' Priority:&b %s %s", 
+    				(isPeeeEnabled ? "" : "+" ), 
+    				peeeEventPriority.name(),
+    				(isPeeeEnabled ? "&2Enabled" : "&cDisabled")
+    				) );
     		
     		String tebePriority = afw.getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
     		boolean isTebeEnabled = afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
     		BlockBreakPriority tebEventPriority = BlockBreakPriority.fromString( tebePriority );
-    		results.add( String.format("%s.   Token Enchant BlockExplodeEvent Priority:&b %s %s", 
+    		results.add( String.format("%s.   TokenEnchant '&7BlockExplodeEvent&3' Priority:&b %s %s", 
     				(isTebeEnabled ? "" : "+" ), 
     				tebEventPriority.name(),
     				(isTebeEnabled ? "&2Enabled" : "&cDisabled")
@@ -1871,7 +1889,7 @@ public class SpigotPlatform
     		String cebuePriority = afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
     		boolean isCebueEnabled = afw.isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
     		BlockBreakPriority cebuEventPriority = BlockBreakPriority.fromString( cebuePriority );
-    		results.add( String.format("%s.   Crazy Enchant BlastUseEvent Priority:&b %s %s", 
+    		results.add( String.format("%s.   CrazyEnchant '&7BlastUseEvent&3' Priority:&b %s %s", 
     				(isCebueEnabled ? "" : "+" ), 
     				cebuEventPriority.name(),
     				(isCebueEnabled ? "&2Enabled" : "&cDisabled")
@@ -1880,45 +1898,53 @@ public class SpigotPlatform
     		String zbsePriority = afw.getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
     		boolean isZbseEnabled = afw.isBoolean( AutoFeatures.isProcessZenchantsBlockExplodeEvents );
     		BlockBreakPriority zbsEventPriority = BlockBreakPriority.fromString( zbsePriority );
-    		results.add( String.format("%s.   Zenchantments BlockShredEvent Priority:&b %s %s", 
+    		results.add( String.format("%s.   Zenchantments '&7BlockShredEvent&3' Priority:&b %s %s", 
     				(isZbseEnabled ? "" : "+" ), 
     				zbsEventPriority.name(),
     				(isZbseEnabled ? "&2Enabled" : "&cDisabled")
     				 ) );
 
-    		String peeePriority = afw.getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
-    		boolean isPeeeeEnabled = afw.isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
-    		BlockBreakPriority peeEventPriority = BlockBreakPriority.fromString( peeePriority );
-    		results.add( String.format("%s.   PrisonEnchants BlockExplodeEvent Priority:&b %s %s", 
-    				(isPeeeeEnabled ? "" : "+" ),
-    				peeEventPriority.name(),
-    				(isPeeeeEnabled ? "&2Enabled" : "&cDisabled")
-    				) );
+//    		String peeePriority = afw.getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
+//    		boolean isPeeeeEnabled = afw.isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
+//    		BlockBreakPriority peeEventPriority = BlockBreakPriority.fromString( peeePriority );
+//    		results.add( String.format("%s.   PrisonEnchants BlockExplodeEvent Priority:&b %s %s", 
+//    				(isPeeeeEnabled ? "" : "+" ),
+//    				peeEventPriority.name(),
+//    				(isPeeeeEnabled ? "&2Enabled" : "&cDisabled")
+//    				) );
+//    		
+//    		results.add( " " );
     		
-    		results.add( " " );
+    		
+    		boolean isAutoFeaturesEnabled = afw.isBoolean( AutoFeatures.isAutoFeaturesEnabled );
+    		if ( !isAutoFeaturesEnabled ) {
+    			results.add( ".  AutoFeatures are disabled:" );
+    		}
     		
     		boolean isAutoPickup = afw.isBoolean( AutoFeatures.autoPickupEnabled );
-    		results.add( String.format(".   Auto Pickup:&b %s", isAutoPickup ) );
+    		results.add( String.format(".   Auto Pickup:&b %s", (!isAutoFeaturesEnabled ? "disabled" :
+    						isAutoPickup )) );
     		
-    		results.add( String.format(".   Auto Smelt:&b %s", (!isAutoPickup ? "disabled" :
-    			afw.isBoolean( AutoFeatures.autoSmeltEnabled ))) );
-    		results.add( String.format(".   Auto Block:&b %s", (!isAutoPickup ? "disabled" :
-    			afw.isBoolean( AutoFeatures.autoBlockEnabled ))) );
+    		results.add( String.format(".   Auto Smelt:&b %s", (!isAutoFeaturesEnabled ? "disabled" :
+    						afw.isBoolean( AutoFeatures.autoSmeltEnabled ))) );
+    		
+    		results.add( String.format(".   Auto Block:&b %s", (!isAutoFeaturesEnabled ? "disabled" :
+    						afw.isBoolean( AutoFeatures.autoBlockEnabled ))) );
     		
     		
     		results.add( String.format("%s.   Handle Normal Drops:&b %s %s", 
-    				(isAutoPickup ? "+" : ""), 
+    				(isAutoFeaturesEnabled ? "+" : ""), 
     				(afw.isBoolean( AutoFeatures.handleNormalDropsEvents ) ? "&2Enabled" : "&cDisabled" ),
-    				(isAutoPickup ? "&d[disabled by Exended Bukkit Fortune]" : "") ) );
+    				(isAutoFeaturesEnabled ? "&d[Overridden by AutoPickup]" : "") ) );
     		results.add( String.format("%s.   Normal Drop Smelt:&b %s", 
-    				(isAutoPickup ? "+" : ""), 
+    				(isAutoFeaturesEnabled ? "+" : ""), 
     				(afw.isBoolean( AutoFeatures.normalDropSmelt ) ? "&2Enabled" : "&cDisabled" ),
-    				(isAutoPickup ? "&d[disabled by Exended Bukkit Fortune]" : "") ) );
+    				(isAutoFeaturesEnabled ? "&d[Overridden by AutoPickup]" : "") ) );
     				
     		results.add( String.format("%s.   Normal Drop Block:&b %s", 
-    				(isAutoPickup ? "+" : ""), 
+    				(isAutoFeaturesEnabled ? "+" : ""), 
 		    		(afw.isBoolean( AutoFeatures.normalDropBlock ) ? "&2Enabled" : "&cDisabled" ),
-		    		(isAutoPickup ? "&d[disabled by Exended Bukkit Fortune]" : "") ) );
+		    		(isAutoFeaturesEnabled ? "&d[Overridden by AutoPickup]" : "") ) );
     		
     		
     		
@@ -1968,6 +1994,17 @@ public class SpigotPlatform
     		results.add( String.format("%s.   Drop XP as Orbs:&b %s", 
     				(isXpEnabled ? "" : "+"),
     				afw.isBoolean( AutoFeatures.givePlayerXPAsOrbDrops )) );
+    		
+    		boolean isFoodExhustionEnabled = afw.isBoolean( AutoFeatures.isCalculateFoodExhustion );
+    		results.add( String.format("%s.   Calculate Food Exhustion:&b %s", 
+    				(isFoodExhustionEnabled ? "" : "+"),
+    				isFoodExhustionEnabled ) );
+    		
+    		boolean isCalcAdditionalItemsEnabled = afw.isBoolean( AutoFeatures.isCalculateDropAdditionsEnabled );
+    		results.add( String.format("%s.   Calculate Additional Items in Drop:&b %s   (like flint in gravel)", 
+    				(isCalcAdditionalItemsEnabled ? "" : "+"),
+    				isCalcAdditionalItemsEnabled ) );
+    		
     		
     		
     		
