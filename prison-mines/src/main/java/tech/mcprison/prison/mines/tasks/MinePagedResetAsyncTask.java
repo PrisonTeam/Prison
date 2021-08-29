@@ -107,13 +107,16 @@ public class MinePagedResetAsyncTask
 		
 		
 		// Only print these details if stats are enabled:
-		Output.get().logInfo( "MinePagedResetAsyncTask : " +
-				mine.getName() + " " +
-				resetType.name() + 
-				" : page " + page + " of " + totalPages + " : " +
-				"  blocks = " + blocksPlaced + "  elapsed = " + timeElapsedPage + 
-				" ms  TotalElapsed = " + timeElapsedTotal + " ms  TPS " +
-				Prison.get().getPrisonTPS().getAverageTPSFormatted() );
+		if ( PrisonMines.getInstance().getMineManager().isMineStats() ) {
+			
+			Output.get().logInfo( "MinePagedResetAsyncTask : " +
+					mine.getName() + " " +
+					resetType.name() + 
+					" : page " + page + " of " + totalPages + " : " +
+					"  blocks = " + blocksPlaced + "  elapsed = " + timeElapsedPage + 
+					" ms  TotalElapsed = " + timeElapsedTotal + " ms  TPS " +
+					Prison.get().getPrisonTPS().getAverageTPSFormatted() );
+		}
 	}
 	
 	@Override

@@ -12,6 +12,7 @@ import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
+import tech.mcprison.prison.util.Location;
 
 /**
  * Custom Items 3.7.11 — New API features
@@ -112,6 +113,12 @@ public class CustomItems
 	@Override
 	public Block setCustomBlockId( Block block, String customId, boolean doBlockUpdate ) {
 		return customItemsWrapper.setCustomBlockId( block, customId, doBlockUpdate );
+	}
+	
+	
+	@Override
+	public void setCustomBlockIdAsync( PrisonBlock prisonBlock, Location location ) {
+		customItemsWrapper.setCustomBlockIdAsync( prisonBlock, location );
 	}
 	
 	@Override

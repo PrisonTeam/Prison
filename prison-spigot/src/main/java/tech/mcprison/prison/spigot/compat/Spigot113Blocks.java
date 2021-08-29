@@ -286,8 +286,10 @@ public abstract class Spigot113Blocks
 					public void run() {
 						
 						// No physics update:
-						((SpigotBlock) location.getBlockAt()).getWrapper()
-								.setType( newType, false );
+						Block spigotBlock = ((SpigotBlock) location.getBlockAt()).getWrapper();
+						
+						// For 1.13.x and higher:
+						spigotBlock.setType( newType, false );
 						
 					}
 				}.runTaskLater( getPlugin(), 0 );

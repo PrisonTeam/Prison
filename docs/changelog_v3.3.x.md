@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.1 2021-08-28
+# 3.2.11-alpha.1 2021-08-29
+
+
+* **Updates to async block updates.**
+Included changes to hook up the CustomItems to work with the async updates.
 
 
 * **Clarify some of the messages related to listing of the block events.**

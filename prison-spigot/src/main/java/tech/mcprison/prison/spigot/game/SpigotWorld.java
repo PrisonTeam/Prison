@@ -18,7 +18,14 @@
 
 package tech.mcprison.prison.spigot.game;
 
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.bukkit.Bukkit;
+
+import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.integration.CustomBlockIntegration;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
@@ -27,10 +34,6 @@ import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.util.Location;
-
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * @author Faizaan A. Datoo
@@ -90,7 +93,27 @@ public class SpigotWorld implements World {
      */
 	public void setBlockAsync( PrisonBlock prisonBlock, Location location ) {
 		
-		SpigotCompatibility.getInstance().updateSpigotBlockAsync( prisonBlock, location );
+		switch ( prisonBlock.getBlockType() )
+		{
+			case minecraft:
+				
+				SpigotCompatibility.getInstance().updateSpigotBlockAsync( prisonBlock, location );
+				
+				break;
+
+			case CustomItems:
+				{
+					CustomBlockIntegration customItemsIntegration = 
+									PrisonAPI.getIntegrationManager().getCustomBlockIntegration( prisonBlock.getBlockType() );
+					
+					customItemsIntegration.setCustomBlockIdAsync( prisonBlock, location );
+				}
+				
+				break;
+				
+			default:
+				break;
+		}
 	}
 
     public org.bukkit.World getWrapper() {
