@@ -77,12 +77,12 @@ public class AutoManagerPrisonEnchants
 		
 		// Check to see if the class ExplosiveEvent even exists:
 		try {
-			Output.get().logInfo( "AutoManager: checking if loaded: PrisonEnchants" );
+			Output.get().logInfo( "AutoManager: checking if loaded: Pulsi_'s PrisonEnchants" );
 			
 			Class.forName( "me.pulsi_.prisonenchants.events.PEExplosionEvent", false, 
 					this.getClass().getClassLoader() );
 			
-			Output.get().logInfo( "AutoManager: Trying to register PrisonEnchants" );
+			Output.get().logInfo( "AutoManager: Trying to register Pulsi_'s PrisonEnchants" );
 			
 			
 			String eP = getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
@@ -150,10 +150,10 @@ public class AutoManagerPrisonEnchants
 		}
 		catch ( ClassNotFoundException e ) {
 			// PrisonEnchants is not loaded... so ignore.
-			Output.get().logInfo( "AutoManager: PrisonEnchants is not loaded" );
+			Output.get().logInfo( "AutoManager: Pulsi_'s PrisonEnchants is not loaded" );
 		}
 		catch ( Exception e ) {
-			Output.get().logInfo( "AutoManager: PrisonEnchants failed to load. [%s]", e.getMessage() );
+			Output.get().logInfo( "AutoManager: Pulsi_'s PrisonEnchants failed to load. [%s]", e.getMessage() );
 		}
 	}
 
@@ -201,7 +201,7 @@ public class AutoManagerPrisonEnchants
 			
 
 			ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
-					"PEExplosionEvent", 
+					"Pulsi_'s PEExplosionEvent", 
 					new SpigotHandlerList( PEExplosionEvent.getHandlerList()) );
 
 			if ( eventDisplay != null ) {

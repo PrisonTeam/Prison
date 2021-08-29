@@ -16,6 +16,13 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-08-28
 
 
+* **Clarify some of the messages related to listing of the block events.**
+
+
+* **Added the ability to identify if a block is able to be affected by gravity.  Also the mine has a global setting to identify quickly if any block is gravity affected.**
+This will be used to alter the mine reset strategy to improve performance so as to hopefully eliminate long resets due to extensive lag from falling blocks.  The idea is to get all the other blocks in to place before placing the falling blocks to ensure they are less likely to fall.
+
+
 * **If the Mine's saved file data is corrupted (manually edited with incorrect data), this will prevent the mine from being loaded and will now generate an error message indicating which mine has a problem loading.  It will print out the invalid data, and it will default to a value of 0.00001.  The function has been updated to "properly" use the localized format, so if it saves in a non US way, then it should now be able to read it back in and parse it correctly.
 
 
