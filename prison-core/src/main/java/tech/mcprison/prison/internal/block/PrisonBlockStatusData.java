@@ -33,6 +33,9 @@ public abstract class PrisonBlockStatusData {
 	private int rangeBlockCountHighLimit;
 	
 	
+	private boolean gravity = false;
+	
+	
 	public PrisonBlockStatusData( String blockName, double chance, long blockCountTotal ) {
 		super();
 		
@@ -57,8 +60,11 @@ public abstract class PrisonBlockStatusData {
 		
 		this.rangeBlockCountLowLimit = -1;
 		this.rangeBlockCountHighLimit = -1;
+		
+		this.gravity = checkGravityAffects( blockName );
 	}
-	
+
+
 	public void resetAfterSave() {
 		blockCountUnsaved = 0;
 	}
@@ -91,7 +97,11 @@ public abstract class PrisonBlockStatusData {
 		String[] split = blockString.split("-");
 		if ( split != null && split.length > 0 ) {
 			
+			// The blockName is the first element. Use that to setup the PrisonBlock that
+			// will be used if the other stats that are available.
 			String blockTypeName = split[0];
+			
+			
 			// The new way to get the PrisonBlocks:  
 			//   The blocks return are cloned so they have their own instance:
 			results = Prison.get().getPlatform().getPrisonBlock( blockTypeName );
@@ -114,6 +124,8 @@ public abstract class PrisonBlockStatusData {
 	}
 	
 	public void parseFromSaveFileFormatStats( String blockString ) {
+		
+		
 		
 		if ( blockString != null ) {
 			
@@ -289,6 +301,64 @@ public abstract class PrisonBlockStatusData {
 		
 	}
 	
+	
+	/**
+	 * <p>If a block is affected by gravity, which means the block can fall, then 
+	 * this function will return a value of true.
+	 * </p>
+	 * 
+	 * <p>The items that are most likely to appear in the mine should
+	 * be at the top to allow the minimization of what is required to be
+	 * checked.
+	 * </p>
+	 * 
+	 * https://minecraft.fandom.com/wiki/Falling_Block
+	 * 
+	 * @param blockName
+	 * @return
+	 */
+	private boolean checkGravityAffects( String blockName )
+	{
+		boolean results = false;
+		
+		switch ( blockName )
+		{
+			case "sand":
+			case "red_sand":
+			case "gravel":
+				
+			case "white_concrete_powder":
+			case "orange_concrete_powder":
+			case "magenta_concrete_powder":
+			case "light_blue_concrete_powder":
+			case "yellow_concrete_powder":
+			case "lime_concrete_powder":
+			case "pink_concrete_powder":
+			case "gray_concrete_powder":
+			case "light_gray_concrete_powder":
+			case "cyan_concrete_powder":
+			case "purple_concrete_powder":
+			case "blue_concrete_powder":
+			case "brown_concrete_powder":
+			case "green_concrete_powder":
+			case "red_concrete_powder":
+			case "black_concrete_powder":
+				
+			case "anvil":
+			case "chipped_anvil":
+			case "damaged_anvil":
+				
+			case "scaffolding":
+			case "pointed_dripstone":
+			case "dragon_egg":
+			{
+				results = true;
+			}
+		}
+		return results;
+	}
+	
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -398,6 +468,13 @@ public abstract class PrisonBlockStatusData {
 	}
 	public void setRangeBlockCountHighLimit( int rangeBlockCountHighLimit ) {
 		this.rangeBlockCountHighLimit = rangeBlockCountHighLimit;
+	}
+
+	public boolean isGravity() {
+		return gravity;
+	}
+	public void setGravity( boolean gravity ) {
+		this.gravity = gravity;
 	}
 
 }

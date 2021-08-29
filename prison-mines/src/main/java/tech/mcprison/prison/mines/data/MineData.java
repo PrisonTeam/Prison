@@ -105,6 +105,20 @@ public abstract class MineData
     
     private TreeMap<String, PrisonBlockStatusData> blockStats;
     
+    /**
+     * <p>If any of the mine's blocks are effected by gravity, then this field
+     * will indicate that this mine has at least one.  This field prevents the 
+     * need to always check all the blocks. Special processing needs to be performed
+     * when resetting a mine with these blocks, since a non-gravity affected 
+     * block must be placed first, prior to placing a gravity block.  Or just leave
+     * it as is, even if it's air.  Then on a second pass, place the gravity 
+     * affected block.  Technique may vary and could be controlled by settings.
+     * </p>
+     */
+    private transient boolean hasGravityAffectedBlocks = false;
+    
+    private transient PrisonBlock tempGravityBlock = null;
+    
     
 	private int blockBreakCount = 0;
     private long totalBlocksMined = 0;
@@ -1268,6 +1282,32 @@ public abstract class MineData
 	}
 	public void setMineSweeperBlocksChanged( long mineSweeperBlocksChanged ) {
 		this.mineSweeperBlocksChanged = mineSweeperBlocksChanged;
+	}
+
+	public void checkGravityAffectedBlocks() {
+		setHasGravityAffectedBlocks( false );
+		
+		for ( PrisonBlock pBlock : getPrisonBlocks() ) {
+			
+			if ( pBlock.isGravity() ) {
+				setHasGravityAffectedBlocks( true );
+				break;
+			}
+		}
+	}
+	
+	public boolean isHasGravityAffectedBlocks() {
+		return hasGravityAffectedBlocks;
+	}
+	public void setHasGravityAffectedBlocks( boolean hasGravityAffectedBlocks ) {
+		this.hasGravityAffectedBlocks = hasGravityAffectedBlocks;
+	}
+
+	public PrisonBlock getTempGravityBlock() {
+		return tempGravityBlock;
+	}
+	public void setTempGravityBlock( PrisonBlock tempGravityBlock ) {
+		this.tempGravityBlock = tempGravityBlock;
 	}
 
 	public boolean isDeleted() {

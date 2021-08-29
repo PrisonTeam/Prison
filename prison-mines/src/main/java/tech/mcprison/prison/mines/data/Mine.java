@@ -417,21 +417,25 @@ public class Mine
 					
 					PrisonBlock prisonBlock = PrisonBlockStatusData.parseFromSaveFileFormat( docBlock );
 					
-					
-					if ( prisonBlock != null && !validateBlockNames.contains( prisonBlock.getBlockName() )) {
+					if ( prisonBlock != null ) {
 						
-						if ( prisonBlock.isLegacyBlock() ) {
-							dirty = true;
+						if ( !validateBlockNames.contains( prisonBlock.getBlockName() )) {
+							
+							if ( prisonBlock.isLegacyBlock() ) {
+								dirty = true;
+							}
+							addPrisonBlock( prisonBlock );
+							
+							validateBlockNames.add( prisonBlock.getBlockName() );
 						}
-						addPrisonBlock( prisonBlock );
+						else if ( validateBlockNames.contains( prisonBlock.getBlockName() ) ) {
+							// Detected and fixed a duplication so mark as dirty so fixed block list is saved:
+							dirty = true;
+							inconsistancy = true;
+						}
 						
-						validateBlockNames.add( prisonBlock.getBlockName() );
 					}
-					else if ( prisonBlock != null && validateBlockNames.contains( prisonBlock.getBlockName() ) ) {
-						// Detected and fixed a duplication so mark as dirty so fixed block list is saved:
-						dirty = true;
-						inconsistancy = true;
-					}
+					
 					
 					
 //					String[] split = docBlock.split("-");
@@ -476,6 +480,10 @@ public class Mine
 				}
 			}
 		}
+		
+		
+		// Check if one of the blocks is effected by gravity, and if so, set that indicator.
+		checkGravityAffectedBlocks();
 
         
         if ( isUseNewBlockModel() && 
