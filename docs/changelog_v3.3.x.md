@@ -16,6 +16,14 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-08-30
 
 
+* **Update some messages to be clearer as to what they are.**
+Removed the MONITOR from auto features since they should not have the monitor setting enabled.  The blockBreakEvent has the monitoring event.
+
+
+* **Trying to fix an error related to SpigotRankManager GUI:** I can't reproduce the issue but the NPE shouldn't
+give a stacktrace in the console anymore.
+
+
 * **If the primary block was null, which it never should be, then this prevents a failure in this section of code in the OnBlockBreakEventCore.**
 
 
@@ -23,10 +31,6 @@ These build logs represent the work that has been going on within prison.
 * **For the initial startup air count task, which is used to "reset" the block counts on a mine.**
 This does not change any blocks, but just finds out where the mine was when the server was last shut down.  This is needed to ensure we have valid counts for the mines before the first time they are reset.  The other way to update these values is to do a full mine reset which is more costly.
 There was an inconclusive error that just listed "null" as the error messags, without identifying the actual line number.  This error catching was changed to now generate a stack trace so it can be properly fixed if it occurs in the future.
-
-
-* **Trying to fix an error related to SpigotRankManager GUI:** I can't reproduce the issue but the NPE shouldn't
-give a stacktrace in the console anymore.
 
 
 * **Added a few more reporting entries on the block break handling.**

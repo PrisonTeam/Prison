@@ -205,7 +205,7 @@ public class OnBlockBreakEventCore
 	protected void genericBlockExplodeEventAutoManager( BlastUseEvent e ) {
 		// NOTE: If autoManager is turned off, then process only the blockEvents:
 		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-		genericBlastUseEvent( e, true, blockEventsOnly, true );
+		genericBlastUseEvent( e, false, blockEventsOnly, true );
 	}
 	
 	
@@ -237,7 +237,7 @@ public class OnBlockBreakEventCore
 	protected void genericBlockExplodeEventAutoManager( PEExplosionEvent e ) {
 		// NOTE: If autoManager is turned off, then process only the blockEvents:
 		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-		genericExplosiveEvent( e, true, blockEventsOnly, true );
+		genericExplosiveEvent( e, false, blockEventsOnly, true );
 	}
 	
 	
@@ -271,7 +271,7 @@ public class OnBlockBreakEventCore
 	protected void genericBlockExplodeEventAutoManager( ExplosiveBlockBreakEvent e ) {
 		// NOTE: If autoManager is turned off, then process only the blockEvents:
 		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-		genericExplosiveEvent( e, true, blockEventsOnly, true );
+		genericExplosiveEvent( e, false, blockEventsOnly, true );
 	}
 	
 	
@@ -1653,7 +1653,7 @@ public class OnBlockBreakEventCore
 		
 		AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
 		
-		debugInfo.append( "(doAction multi-blocks: " + explodedBlocks.size() );
+		debugInfo.append( "(doAction normalDrop multi-blocks: " + explodedBlocks.size() + ") ");
 		
 		// The explodedBlocks list have already been validated as being within the mine:
 		boolean applyExhaustion = true;

@@ -181,7 +181,9 @@ public class AutoManagerFeatures
 		
 		if (isBoolean(AutoFeatures.isAutoManagerEnabled) && !spigotBlock.isEmpty() ) {
 			
-			debugInfo.append( "(processAutoEvent) " );
+			
+			debugInfo.append( "(doAction autoManager processAutoEvent single-block) ");
+
 			
 //			Output.get().logInfo( "#### AutoManager.applyAutoEvents: BlockBreakEvent: :: " + mine.getName() + "  " + 
 //					"  blocks remaining= " + 
@@ -372,7 +374,9 @@ public class AutoManagerFeatures
 		SpigotItemStack itemInHand = SpigotCompatibility.getInstance()
 													.getPrisonItemInMainHand( player );
 
-		debugInfo.append( "(applyAutoEvents multi-blocks: " + explodedBlocks.size() );
+
+		debugInfo.append( "(doAction autoManager applyAutoEvents multi-blocks: " + explodedBlocks.size() + ") ");
+		
 		
 		// The explodedBlocks list have already been validated as being within the mine:
 		boolean applyExhaustion = true;
