@@ -48,10 +48,18 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
 
         RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( new SpigotPlayer(p) );
         PlayerRank pRank = rankPlayer.getRank( rank.getLadder() );
-        
+
+
+        String rankCost;
+        try {
+            rankCost = PlaceholdersUtil.formattedKmbtSISize(pRank.getRankCost(), formatDecimal, "");
+        } catch (NullPointerException ex){
+            rankCost = "Can't get";
+        }
+
         ButtonLore editPriceLore = new ButtonLore(createLore(messages.getString("Lore.ClickToOpen")), createLore(
-                messages.getString("Lore.Info"),
-                messages.getString("Lore.Price") + PlaceholdersUtil.formattedKmbtSISize(pRank.getRankCost(), formatDecimal, "")));
+                    messages.getString("Lore.Info"),
+                    messages.getString("Lore.Price") + rankCost));
 
         ButtonLore editTagLore = new ButtonLore(createLore(messages.getString("Lore.ClickToOpen")), createLore(
                 messages.getString("Lore.Info"),

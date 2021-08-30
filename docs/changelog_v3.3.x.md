@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-08-29
 
 
+* **Trying to fix an error related to SpigotRankManager GUI:** I can't reproduce the issue but the NPE shouldn't
+give a stacktrace in the console anymore.
+
+
 * **Added a few more reporting entries on the block break handling.**
 Reporting how many blocks are being processed and if it passes the validation phase.
 
