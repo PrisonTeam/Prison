@@ -477,7 +477,8 @@ public class OnBlockBreakEventCore
 		// Get the cached mine, if it exists:
 		Mine mine = getPlayerCache().get( playerUUIDLSB );
 		
-		if ( mine == null || !mine.isInMineExact( pmEvent.getSpigotBlock().getLocation() ) ) {
+		if ( mine == null || 
+				pmEvent.getSpigotBlock() != null && !mine.isInMineExact( pmEvent.getSpigotBlock().getLocation() ) ) {
 			// Look for the correct mine to use. 
 			// Set mine to null so if cannot find the right one it will return a null:
 			mine = findMineLocation( pmEvent.getSpigotBlock() );

@@ -1166,6 +1166,16 @@ public abstract class MineReset
 			World world = worldOptional.get();
 			
 			
+			if ( world == null ) {
+				Output.get().logError(
+						String.format( "MineReset: refreshAirCountAsyncTask failure: The world is invalid and " +
+								"cannot be located. mine= %s  worldName=%s ", 
+								getName(), getWorldName() ));
+
+				
+				return;
+			}
+			
 			// Reset the target block lists:
 			clearMineTargetPrisonBlocks();
 			
@@ -1210,12 +1220,14 @@ public abstract class MineReset
 								
 								PrisonBlock pBlock = tBlock.getPrisonBlock();
 
-								// Increment the mine's block count. This block is one of the control blocks:
-								addMineTargetPrisonBlock( incrementResetBlockCount( pBlock ), x, y, z, isEdge );
+								if ( pBlock != null ) {
+									
+									// Increment the mine's block count. This block is one of the control blocks:
+									addMineTargetPrisonBlock( incrementResetBlockCount( pBlock ), x, y, z, isEdge );
+									
+								}
 								
-								
-								if ( pBlock == null ||
-										pBlock.equals( PrisonBlock.AIR ) ) {
+								if ( pBlock == null || pBlock.isAir() ) {
 									airCount++;
 								}
 							}
@@ -1223,9 +1235,12 @@ public abstract class MineReset
 								
 								BlockOld oBlock = new BlockOld( tBlock.getType() );
 
-								// Increment the mine's block count. This block is one of the control blocks:
-								addMineTargetPrisonBlock( incrementResetBlockCount( oBlock ), x, y, z, isEdge );
-								
+								if ( oBlock != null ) {
+									
+									// Increment the mine's block count. This block is one of the control blocks:
+									addMineTargetPrisonBlock( incrementResetBlockCount( oBlock ), x, y, z, isEdge );
+									
+								}
 								
 								if ( tBlock.getType() == BlockType.AIR ) {
 									airCount++;
@@ -1245,7 +1260,7 @@ public abstract class MineReset
 										"MineReset.refreshAirCountAsyncTask: Error counting air blocks: " +
 												"Mine=%s coords=%s  Error: %s ", getName(), coords, e.getMessage() );
 								if ( e.getMessage() != null && e.getMessage().contains( "Asynchronous entity world add" )) {
-									Output.get().logWarn( message );
+									Output.get().logWarn( message, e );
 								} else {
 									Output.get().logWarn( message, e );
 								}
