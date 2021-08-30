@@ -19,12 +19,13 @@ import tech.mcprison.prison.mines.data.MineScheduler.MineResetActions;
 import tech.mcprison.prison.mines.events.MineResetEvent;
 import tech.mcprison.prison.mines.features.MineLinerBuilder;
 import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
-import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask;
-import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask.MineResetType;
 import tech.mcprison.prison.mines.features.MineMover;
 import tech.mcprison.prison.mines.features.MineTargetBlockKey;
 import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.mines.features.MineTracerBuilder;
+import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask;
+import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask.MineResetType;
+import tech.mcprison.prison.mines.tasks.MineTeleportTask;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonCommandTask;
 import tech.mcprison.prison.tasks.PrisonRunnable;
@@ -871,7 +872,11 @@ public abstract class MineReset
 		// If a player falls back in to the mine before it is fully done being reset, 
 		// such as could happen if there is lag or a lot going on within the server, 
 		// this will TP anyone out who would otherwise suffocate.  I hope! lol
-		teleportAllPlayersOut();
+    	
+    	MineTeleportTask teleportTask = new MineTeleportTask( (Mine) this );
+		teleportTask.submitTaskSync();
+		
+//		teleportAllPlayersOut();
 //		setStatsTeleport2TimeMS(
 //				teleportAllPlayersOut( getBounds().getyBlockMax() ) );
 		
@@ -942,7 +947,7 @@ public abstract class MineReset
 			canceled = true;
 		}
 		else {
-			long start = System.currentTimeMillis();
+//			long start = System.currentTimeMillis();
 			
 			// The all-important event
 			MineResetEvent event = new MineResetEvent(this);
@@ -951,20 +956,22 @@ public abstract class MineReset
 			canceled = event.isCanceled();
 			if (!canceled) {
 				
-				try {
-					teleportAllPlayersOut();
-//					setStatsTeleport1TimeMS(
-//							teleportAllPlayersOut( getBounds().getyBlockMax() ) );
-					
-				} catch (Exception e) {
-					Output.get().logError("&cMineReset: Failed to TP players out of mine. mine= " + 
-									getName(), e);
-					canceled = true;
-				}
+				MineTeleportTask teleportTask = new MineTeleportTask( (Mine) this );
+				teleportTask.submitTaskSync();
+//				try {
+//					teleportAllPlayersOut();
+////					setStatsTeleport1TimeMS(
+////							teleportAllPlayersOut( getBounds().getyBlockMax() ) );
+//					
+//				} catch (Exception e) {
+//					Output.get().logError("&cMineReset: Failed to TP players out of mine. mine= " + 
+//									getName(), e);
+//					canceled = true;
+//				}
 			}
 			
-			long stop = System.currentTimeMillis();
-			setStatsResetTimeMS( stop - start );
+//			long stop = System.currentTimeMillis();
+//			setStatsResetTimeMS( stop - start );
 		}
 
     	return canceled;

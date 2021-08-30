@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-08-29
 
 
+* **Some fixes for teleporting and the removal of the teleport glass block.**
+
+
 * **Updates to the PrisonEnchant's API.**
 Minor adjustments to work with the new API from PrisonEnchants.
 
