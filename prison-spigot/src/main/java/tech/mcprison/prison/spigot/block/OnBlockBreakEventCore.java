@@ -470,6 +470,7 @@ public class OnBlockBreakEventCore
 	private boolean validateEvent( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo )
 	{
 		boolean results = true;
+		
 
 		Long playerUUIDLSB = Long.valueOf( pmEvent.getPlayer().getUniqueId().getLeastSignificantBits() );
 		
@@ -553,6 +554,11 @@ public class OnBlockBreakEventCore
 		}
 		
 		
+		debugInfo.append( "blocks(" )
+			.append( pmEvent.getBlock() == null ? "0" : "1" )
+			.append( "+" )
+			.append( pmEvent.getExplodedBlocks().size() )
+			.append( ") " );
 
 		if ( isToolDisabled( pmEvent.getPlayer() ) ) {
 			
@@ -629,6 +635,14 @@ public class OnBlockBreakEventCore
 			}
 
 			results = false;
+		}
+		
+		
+		if ( results ) {
+			debugInfo.append( "(PassedValidation) " );
+		}
+		else {
+			debugInfo.append( "(ValidationFailed) " );
 		}
 
 		

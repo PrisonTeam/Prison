@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-08-29
 
 
+* **Added a few more reporting entries on the block break handling.**
+Reporting how many blocks are being processed and if it passes the validation phase.
+
+
 * **Some fixes for teleporting and the removal of the teleport glass block.**
 
 
