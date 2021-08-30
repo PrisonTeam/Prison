@@ -1353,16 +1353,17 @@ public class OnBlockBreakEventCore
        		
 
     		// Need to wrap in a Prison block so it can be used with the mines:
-    		SpigotBlock sBlock = new SpigotBlock(e.getBlock());
+    		SpigotBlock sBlock = new SpigotBlock(e.getBlockBroken());
     		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
     		
     		BlockEventType eventType = BlockEventType.PEExplosive;
-    		String triggered = e.getTriggeredBy();
+    		String triggered = null; // e.getTriggeredBy();
     		
-    		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
+    		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( e.getBlockBroken(), e.getPlayer(),
     					sBlock, sPlayer, monitor, blockEventsOnly, eventType, triggered );
     		
     		pmEvent.setUnprocessedRawBlocks( e.getExplodedBlocks() );
+    		
     		
     		if ( !validateEvent( pmEvent, debugInfo ) ) {
     			

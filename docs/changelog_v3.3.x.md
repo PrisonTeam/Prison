@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-08-29
 
 
+* **Updates to the PrisonEnchant's API.**
+Minor adjustments to work with the new API from PrisonEnchants.
+
+
 * **Updates to async block updates.**
 Included changes to hook up the CustomItems to work with the async updates.
 
