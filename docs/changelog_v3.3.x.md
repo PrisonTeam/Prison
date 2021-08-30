@@ -13,7 +13,16 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.1 2021-08-29
+# 3.2.11-alpha.1 2021-08-30
+
+
+* **If the primary block was null, which it never should be, then this prevents a failure in this section of code in the OnBlockBreakEventCore.**
+
+
+
+* **For the initial startup air count task, which is used to "reset" the block counts on a mine.**
+This does not change any blocks, but just finds out where the mine was when the server was last shut down.  This is needed to ensure we have valid counts for the mines before the first time they are reset.  The other way to update these values is to do a full mine reset which is more costly.
+There was an inconclusive error that just listed "null" as the error messags, without identifying the actual line number.  This error catching was changed to now generate a stack trace so it can be properly fixed if it occurs in the future.
 
 
 * **Added a few more reporting entries on the block break handling.**
