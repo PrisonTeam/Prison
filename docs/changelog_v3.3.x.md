@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-08-31
 
 
+* **3.2.11-alpha.1 2021-08-31**
+- Release the first alpha.1 
+
+
 * **Replace the block with air through a task to get it out of the auto features thread.**
 
 
