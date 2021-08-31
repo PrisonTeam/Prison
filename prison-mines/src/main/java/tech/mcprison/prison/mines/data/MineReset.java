@@ -359,8 +359,8 @@ public abstract class MineReset
     	
     	sb.append( statsMessageMineSweeper() );
     	
-    	sb.append(  "  TPS: " )
-    		.append( Prison.get().getPrisonTPS().getAverageTPSFormatted() );
+//    	sb.append(  "  TPS: " )
+//    		.append( Prison.get().getPrisonTPS().getAverageTPSFormatted() );
     	
     	return sb.toString();
     }

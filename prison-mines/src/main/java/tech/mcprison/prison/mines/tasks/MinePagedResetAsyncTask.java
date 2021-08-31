@@ -2,7 +2,6 @@ package tech.mcprison.prison.mines.tasks;
 
 import java.util.List;
 
-import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
@@ -114,8 +113,10 @@ public class MinePagedResetAsyncTask
 					resetType.name() + 
 					" : page " + page + " of " + totalPages + " : " +
 					"  blocks = " + blocksPlaced + "  elapsed = " + timeElapsedPage + 
-					" ms  TotalElapsed = " + timeElapsedTotal + " ms  TPS " +
-					Prison.get().getPrisonTPS().getAverageTPSFormatted() );
+					" ms  TotalElapsed = " + timeElapsedTotal + " ms"// +
+//							"  TPS " +
+//					Prison.get().getPrisonTPS().getAverageTPSFormatted()
+					);
 		}
 	}
 	
