@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-08-30
 
 
+* **If the settings isPreventToolBreage is enabled, then don't allow the tool to break.**
+
+
 * **Update some messages to be clearer as to what they are.**
 Removed the MONITOR from auto features since they should not have the monitor setting enabled.  The blockBreakEvent has the monitoring event.
 

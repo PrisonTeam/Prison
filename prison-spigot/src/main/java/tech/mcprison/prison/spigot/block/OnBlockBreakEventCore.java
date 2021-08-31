@@ -2144,16 +2144,22 @@ public class OnBlockBreakEventCore
 					}
 				}
 				
-				if (damage > 0) {
+				int newDurability = durability + damage;
+				int remainingDurability = maxDurability - newDurability;
+
+				if (damage > 0 && 
+						(!isBoolean( AutoFeatures.isPreventToolBreakage ) || 
+						  isBoolean( AutoFeatures.isPreventToolBreakage ) && 
+						  remainingDurability > getInteger( AutoFeatures.preventToolBreakageThreshold ) ) ) {
 					
 //				Compatibility compat = SpigotPrison.getInstance().getCompatibility();
 //				int maxDurability = compat.getDurabilityMax( itemInHand );
 //				int durability = compat.getDurability( itemInHand );
-					int newDurability = durability + damage;
 					
 					if (newDurability > maxDurability) {
 						// Item breaks! ;(
 						compat.breakItemInMainHand( player );
+						itemInHand = null;
 						toolBreak = true;
 					} else {
 						compat.setDurability( itemInHand, newDurability );
