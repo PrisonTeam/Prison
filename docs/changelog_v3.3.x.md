@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.1 2021-08-30
+# 3.2.11-alpha.1 2021-08-31
+
+
+* **Replace the block with air through a task to get it out of the auto features thread.**
 
 
 * **If the settings isPreventToolBreage is enabled, then don't allow the tool to break.**

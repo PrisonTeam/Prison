@@ -550,7 +550,8 @@ public class AutoManagerFeatures
 
 			
 			// Break the block and change it to air:
-			block.setPrisonBlock( PrisonBlock.AIR );;
+			AutoManagerBreakBlockTask.submitTask( block );
+//			block.setPrisonBlock( PrisonBlock.AIR );
 		}
 		
 		return count;
@@ -677,11 +678,14 @@ public class AutoManagerFeatures
 	{
 		// Auto pickup has been successful. Now clean up.
 		if ( count > 0 ) {
+			
+			// submit a task to change the block to air:
+			AutoManagerBreakBlockTask.submitTask( block );
 
-//			// Set the broken block to AIR and cancel the event
-			if ( !block.isEmpty() ) {
-				block.setPrisonBlock( PrisonBlock.AIR );
-			}
+////			// Set the broken block to AIR and cancel the event
+//			if ( !block.isEmpty() ) {
+//				block.setPrisonBlock( PrisonBlock.AIR );
+//			}
 			
 		}
 	}
