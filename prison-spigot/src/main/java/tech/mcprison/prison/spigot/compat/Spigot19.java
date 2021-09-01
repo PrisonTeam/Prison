@@ -94,7 +94,12 @@ public class Spigot19
     	((org.bukkit.inventory.PlayerInventory) inventory.getWrapper())
     			.setItemInMainHand( itemStack.getBukkitStack() );
     }
-    
+
+    @Override
+    public void setItemInMainHand(Player p, ItemStack itemStack) {
+        p.getInventory().setItemInMainHand(itemStack);
+    }
+
     @Override
     public void setItemStackInOffHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack ) {
     	

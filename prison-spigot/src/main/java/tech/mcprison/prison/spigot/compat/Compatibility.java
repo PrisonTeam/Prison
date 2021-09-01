@@ -57,6 +57,8 @@ public interface Compatibility
     public ItemStack getItemInOffHand(PlayerInventory playerInventory);
     
     public void setItemStackInMainHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack );
+
+    public void setItemInMainHand(Player p, ItemStack itemStack);
     
     public void setItemStackInOffHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack );
     

@@ -16,8 +16,10 @@ import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPlatform;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 
@@ -294,7 +296,12 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         ArrayList<ItemStack> itemStacks = new ArrayList<>();
         itemStacks.add(compat.getItemInMainHand(p));
 
-        sellAllUtil.sellAllSell(p, itemStacks, false, false, true, true, false, true, true);
+        itemStacks = sellAllUtil.sellAllSell(p, itemStacks, false, false, true, true, false, true, true);
+        if (itemStacks.isEmpty()){
+            compat.setItemInMainHand(p, XMaterial.AIR.parseItem());
+        } else {
+            compat.setItemInMainHand(p, itemStacks.get(0));
+        }
     }
 
     public void sellAllSell(Player p){
