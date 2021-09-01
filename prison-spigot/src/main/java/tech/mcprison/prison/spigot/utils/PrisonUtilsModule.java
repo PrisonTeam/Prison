@@ -121,6 +121,12 @@ public class PrisonUtilsModule
 				Prison.get().getCommandHandler().registerCommands( utils );
 				
 			}
+			
+			if ( isEnabled( "utils.bombs.enabled", true ) ) {
+				
+				PrisonUtilsMineBombs utils = new PrisonUtilsMineBombs();
+				
+				utils.setEnableMineBombs( isEnabled( "utils.bombs.bombs", true ) );
 				
 				Prison.get().getCommandHandler().registerCommands( utils );
 				
