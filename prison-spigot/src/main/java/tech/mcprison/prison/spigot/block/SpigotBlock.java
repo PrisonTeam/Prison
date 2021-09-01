@@ -113,7 +113,7 @@ public class SpigotBlock implements Block {
     		results = SpigotCompatibility.getInstance().getPrisonBlock( getWrapper() );
     	}
 
-    	if ( results.getLocation() == null && getLocation() != null ) {
+    	if ( results != null && results.getLocation() == null && getLocation() != null ) {
     		// Clone the block that was found in the mine.  This will allow us to 
     		// set the location:
     		results = new PrisonBlock( results );

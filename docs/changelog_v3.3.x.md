@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.1 2021-08-31
+# 3.2.11-alpha.1 2021-09-01
+
+
+* **Ran in to a situation where results was actually null.  So this prevents a NPE.**
 
 
 * **Fixed issue with tool's durability being cutoff right before reaching the threshold.**
