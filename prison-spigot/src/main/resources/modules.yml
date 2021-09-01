@@ -41,3 +41,7 @@ utils:
     enabled: true
     title: true
     actionBar: true
+  bombs:
+    enabled: true
+    bombs: true
+
