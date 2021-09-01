@@ -2150,7 +2150,7 @@ public class OnBlockBreakEventCore
 				if (damage > 0 && 
 						(!isBoolean( AutoFeatures.isPreventToolBreakage ) || 
 						  isBoolean( AutoFeatures.isPreventToolBreakage ) && 
-						  remainingDurability > getInteger( AutoFeatures.preventToolBreakageThreshold ) ) ) {
+						  remainingDurability >= getInteger( AutoFeatures.preventToolBreakageThreshold ) ) ) {
 					
 //				Compatibility compat = SpigotPrison.getInstance().getCompatibility();
 //				int maxDurability = compat.getDurabilityMax( itemInHand );
