@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-09-01
 
 
+* **Cleaned up some of the unused variables in the Utils titles command.**
+There were plans for more commands, but they were eliminated.  This will soon be rewritten to utilize XSeries's classes for these display items.
+
+
 * **Ran in to a situation where results was actually null.  So this prevents a NPE.**
 
 

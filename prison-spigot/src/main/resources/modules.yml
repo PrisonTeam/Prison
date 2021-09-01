@@ -40,8 +40,4 @@ utils:
   titles:
     enabled: true
     title: true
-    subtitle: true
     actionBar: true
-    clear: true
-    reset: true
-    times: true
