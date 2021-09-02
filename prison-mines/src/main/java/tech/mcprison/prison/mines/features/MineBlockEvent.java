@@ -33,6 +33,7 @@ public class MineBlockEvent {
 		TEXplosion,
 		CEXplosion,
 		PEExplosive, // PrisonEnchant: Pulsi_'s plugin
+		PrisonExplosion,
 		
 		eventTypeAll( all ),
 		eventBlockBreak( blockBreak ),

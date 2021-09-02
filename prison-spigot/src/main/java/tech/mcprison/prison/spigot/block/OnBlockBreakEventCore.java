@@ -1464,14 +1464,14 @@ public class OnBlockBreakEventCore
 		if ( !monitor && !e.isCancelled() || monitor ) {
 			
 			
-			boolean isPEExplosiveEnabled = isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
+			boolean isPPrisonExplosiveBlockBreakEnabled = isBoolean( AutoFeatures.isProcessPrisons_ExplosiveBlockBreakEvents );
 			
 			
 			// Need to wrap in a Prison block so it can be used with the mines:
 			SpigotBlock sBlock = new SpigotBlock(e.getBlock());
 			SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
 			
-			BlockEventType eventType = BlockEventType.PEExplosive;
+			BlockEventType eventType = BlockEventType.PrisonExplosion;
 			String triggered = e.getTriggeredBy();
 			
 			PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
@@ -1493,7 +1493,7 @@ public class OnBlockBreakEventCore
 			
 			
 			// now process all blocks (non-monitor):
-			else if ( isPEExplosiveEnabled && 
+			else if ( isPPrisonExplosiveBlockBreakEnabled && 
 					( pmEvent.getMine() != null || pmEvent.getMine() == null && !isBoolean( AutoFeatures.pickupLimitToMines )) ) {
 				if ( pmEvent.getExplodedBlocks().size() > 0 ) {
 					
@@ -1509,9 +1509,9 @@ public class OnBlockBreakEventCore
 					else {
 						
 						if ( doAction( pmEvent.getMine(), e.getPlayer(), pmEvent.getExplodedBlocks(), 
-								BlockEventType.PEExplosive, triggered, debugInfo ) ) {
+								BlockEventType.PrisonExplosion, triggered, debugInfo ) ) {
 							
-							if ( !isBoolean( AutoFeatures.isDebugSupressOnPEExplosiveEventCancels ) ) {
+							if ( !isBoolean( AutoFeatures.isDebugSupressOnPrisonMinesBlockBreakEventCancels ) ) {
 								
 								e.setCancelled( true );
 							}

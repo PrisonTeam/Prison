@@ -236,7 +236,8 @@ public class AutoFeaturesFileConfig {
 	    		isDebugSupressOnBlockBreakEventCancels(debug, false),
 	    		isDebugSupressOnTEExplodeEventCancels(debug, false),
 	    		isDebugSupressOnCEBlastUseEventCancels(debug, false), 
-	    		isDebugSupressOnPEExplosiveEventCancels(debug, false)
+	    		isDebugSupressOnPEExplosiveEventCancels(debug, false),
+	    		isDebugSupressOnPrisonMinesBlockBreakEventCancels(debug, false)
 
     	;
 
