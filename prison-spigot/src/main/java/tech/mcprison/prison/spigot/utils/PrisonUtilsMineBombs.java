@@ -120,6 +120,7 @@ public class PrisonUtilsMineBombs
 				
 				ExplosiveBlockBreakEvent explodeEvent = new ExplosiveBlockBreakEvent( 
 						targetBlock.getWrapper(), player.getWrapper(), blocks );
+				explodeEvent.setTriggeredBy( "minebombs" );
 				
 				Bukkit.getServer().getPluginManager().callEvent( explodeEvent );
 

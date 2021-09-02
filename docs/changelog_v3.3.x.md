@@ -13,7 +13,18 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.1 2021-09-01
+# 3.2.11-alpha.1 2021-09-02
+
+
+* **Added the trigger "minebombs" for the utils command bombs.**
+
+
+* **Adjustments to the BlockEvents and how it handles some of the event types.**
+Expanded and fixed some of the settings for prison's explosions, and PE's too. 
+Added the ability to exclude specfic triggers.
+
+
+* **Updates to the Prison's explosion event handling to correct a few problems. **
 
 
 * **Fixed SellAll Hand not removing item:** SellAll Hand didn't work properly and got now fixed.
