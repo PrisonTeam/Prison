@@ -65,8 +65,8 @@ import tech.mcprison.prison.tasks.PrisonCommandTask;
 import tech.mcprison.prison.tasks.PrisonCommandTask.TaskMode;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 import tech.mcprison.prison.util.Bounds;
-import tech.mcprison.prison.util.JumboTextFont;
 import tech.mcprison.prison.util.Bounds.Edges;
+import tech.mcprison.prison.util.JumboTextFont;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -3533,7 +3533,8 @@ public class MinesCommands
     			@Arg(name = "row") Integer row,
     			@Arg(name = "eventType", def = "all",
 					description = "EventType to trigger BlockEvent: " +
-										"[all, blockBreak, TEXplosion, CEXplosion]"
+										"[all, blockBreak, PrisonExplosion, PEExplosive, " +
+											"TEXplosion, CEXplosion]"
 							) String eventType
     			) {
     	
@@ -3580,6 +3581,14 @@ public class MinesCommands
         BlockEventType eTypeOld = blockEvent.getEventType();
         
         blockEvent.setEventType( eType );
+        
+        // If the event type does not support triggered, then set triggered to null:
+        if ( eType != BlockEventType.PrisonExplosion && 
+        	 eType != BlockEventType.TEXplosion && 
+        	 eType != BlockEventType.PEExplosive ) {
+        	
+        	blockEvent.setTriggered( null );
+        }
 
         pMines.getMineManager().saveMine( m );
         
@@ -3600,13 +3609,21 @@ public class MinesCommands
     }
 
 	
-	@Command(identifier = "mines blockEvent triggered", description = "Edits a BlockBreak triggered value.", 
+	@Command(identifier = "mines blockEvent triggered", 
+			description = "Edits a BlockBreak triggered value. The event's triggered value will " +
+					"identify which enchantment fired the explosion event. For example, 'laser' " +
+					"or 'nuked'. Provide the enchantment name to filter on that event type, or " +
+					"prefix it with '!' to exclude that event type. " +
+					" The use of this field is only supported by TokenEnchant, " +
+					"Prison's own Explosion Evennt, and Pulsi_'s PrisonEnchants' explosion events. " +
+					"Requires TokenEnchant v18.11.0 or newer.", 
 			onlyPlayers = false, permissions = "mines.set")
 	public void blockEventTriggered(CommandSender sender, 
 			@Arg(name = "mineName") String mineName,
 			@Arg(name = "row") Integer row,
 			@Arg(name = "triggered", def = "none",
-					description = "TE Explosion Triggered sources. Requires TokenEnchant v18.11.0 or newer. [none, ...]"
+					description = "The enchantment that Triggered the explosion event. Use 'none' to " +
+							"remove it. [none, ...]"
 						) String triggered
 			) {
 		
@@ -3643,11 +3660,17 @@ public class MinesCommands
 		
 		MineBlockEvent blockEvent = m.getBlockEvents().get( row - 1 );
 
+		BlockEventType eType = blockEvent.getEventType();
 		
-        if ( blockEvent.getEventType() != BlockEventType.TEXplosion && triggered != null && 
+        if ( eType != BlockEventType.PrisonExplosion && 
+        	 eType != BlockEventType.TEXplosion && 
+        	 eType != BlockEventType.PEExplosive && 
+        		triggered != null && 
         		!"none".equalsIgnoreCase( triggered ) ) {
-        	sender.sendMessage( "&7Notice: triggered is only valid exclusivly for eventTEXplosion. " +
-        			"Defaulting to none." );
+        	
+        	sender.sendMessage( "&7Notice: triggered is only valid with " +
+        			"PrisonExplosion, TEXplosion, or PEExplosive. " +
+        			"Defaulting to 'none'." );
         	triggered = null;
         }
         if ( triggered != null && "none".equalsIgnoreCase( triggered ) ) {
@@ -3662,13 +3685,21 @@ public class MinesCommands
 		pMines.getMineManager().saveMine( m );
 		
 		
-		Output.get().sendInfo(sender, "&7BlockEvent triggered &b%s&7 was changed for mine '&b%s&7'. " +
-				"Was &b%s&7. Command '&b%s&7'", 
-				(triggered == null ? "none" : triggered), 
-				m.getTag(), 
-				(oldTriggered == null ? "none" : oldTriggered), 
-				blockEvent.getCommand() );
+		sender.sendMessage( 
+				String.format( "&7BlockEvent triggered &b%s&7 was changed for mine '&b%s&7'. " +
+						"Was &b%s&7. Command '&b%s&7'", 
+						(triggered == null ? "none" : triggered), 
+						m.getTag(), 
+						(oldTriggered == null ? "none" : oldTriggered), 
+						blockEvent.getCommand()) );
 		
+		if ( triggered.startsWith( "!" ) ) {
+			sender.sendMessage( 
+					String.format( "BlockEvent triggered is negated to exclude triggered " +
+							"events of '%s'.", 
+							triggered.replace( "!", "" )));
+			
+		}
 		
 		// Redisplay the event list:
 		blockEventList( sender, mineName );

@@ -336,28 +336,63 @@ public class MineBlockEvent {
 	 * @return
 	 */
 	public boolean isFireEvent( double chance, BlockEventType eventType, 
-			MineTargetPrisonBlock targetBlock, String triggered ) {
+							MineTargetPrisonBlock targetBlock, String triggered ) {
 		boolean results = false;
 		
-		// First check chance, since that's perhaps the quickest check:
+		
+		// First check the chance and ensure the block is valid:
 		if ( chance <= getChance() &&
+				isValidBlock( targetBlock ) ) {
+			
+			// If the eventType is valid:
+			if ( getEventType() == BlockEventType.all ||
+					getEventType() == eventType ) {
 				
-				isValidBlock( targetBlock ) &&
-				
-				// Make sure we have the correct eventTypes:
-			(eventType == BlockEventType.TEXplosion && 
-				eventType == getEventType() && 
-					( getTriggered() == null || 
-						getTriggered().equalsIgnoreCase( triggered )) ||
+				// check if triggered and if valid eventTypes to support it:
+				if ( getTriggered() == null )  {
+					results = true;
+				}
+				else if ( getTriggered() != null && 
+						(eventType == BlockEventType.PrisonExplosion ||
+						 eventType == BlockEventType.TEXplosion ||
+						 eventType == BlockEventType.PEExplosive)
+						 ) {
 					
-				getEventType() == BlockEventType.all || 
-				getEventType() == eventType) ) {
-			
-			// The check for the player's perms will have to be done outside of this 
-			// function.
-			
-			results = true;
+					// triggered can be negated to be used to exclude a triggered event
+					boolean notTriggered = getTriggered().startsWith( "!" );
+					String trig = getTriggered().replace( "!", "" );
+					
+					if ( !notTriggered && trig.equalsIgnoreCase( triggered ) ||
+						 notTriggered && !trig.equalsIgnoreCase( triggered ) ) {
+						
+						results = true;
+					}
+					
+				}
+				
+			}
 		}
+				
+		
+//		// First check chance, since that's perhaps the quickest check:
+//		if ( chance <= getChance() &&
+//				
+//				isValidBlock( targetBlock ) &&
+//				
+//				// Make sure we have the correct eventTypes:
+//			(eventType == BlockEventType.TEXplosion && 
+//				eventType == getEventType() && 
+//					( getTriggered() == null || 
+//						getTriggered().equalsIgnoreCase( triggered )) ||
+//					
+//				getEventType() == BlockEventType.all || 
+//				getEventType() == eventType) ) {
+//			
+//			// The check for the player's perms will have to be done outside of this 
+//			// function.
+//			
+//			results = true;
+//		}
 		
 		
 		return results;
