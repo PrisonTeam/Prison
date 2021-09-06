@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-09-02
 
 
+* **Moved all Lores to the new .properties Language file:** Changes to the old .yml language file about Lore messages
+won't take effect, only if you edit the .properties file they will.
+
+
 * **Added the trigger "minebombs" for the utils command bombs.**
 
 

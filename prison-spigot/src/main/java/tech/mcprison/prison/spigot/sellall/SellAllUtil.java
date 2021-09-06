@@ -1482,7 +1482,7 @@ public class SellAllUtil {
      *
      * Return True if success, False if error or nothing changed or Player not meeting requirements.
      *
-     * Default usage of this method: sellAllSell(p, false, false, true, false, false, true, false);
+     * Default usage of this method: sellAllSell(p, itemStacks, false, false, true, false, false, true, false);
      *
      * @param p - Player.
      * @param itemStacks - ArrayList of ItemStacks.

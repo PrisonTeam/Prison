@@ -21,6 +21,7 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
@@ -145,8 +146,8 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         int hackyCounterEnchant = 0;
 
         // Global strings.
-        String loreInfo = messages.getString("Lore.Info");
-        String lorePrice3 = messages.getString("Lore.Price3");
+        String loreInfo = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_info);
+        String lorePrice3 = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_price);
 
         // Global boolean.
         boolean enchantmentEffectEnabled = getBoolean(guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank"));
@@ -164,7 +165,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
             if (placeholderAPINotNull) {
                 if (hackyCounterEnchant == 1) {
                     hackyCounterEnchant++;
-                    ranksLore.addLineLoreDescription(SpigotPrison.format(PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(player.getUniqueId()), "%prison_rcb_prestiges%")));
+                    ranksLore.addLineLoreDescription(PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(player.getUniqueId()), "%prison_rcb_prestiges%"));
                 }
             }
 
@@ -185,7 +186,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
             rank = rank.getRankNext();
         }
 
-        ButtonLore rankupLore = new ButtonLore(messages.getString("Lore.ClickToRankup"), messages.getString("Lore.IfYouHaveEnoughMoney"));
+        ButtonLore rankupLore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_rankup), newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_rankup_if_enough_money));
 
         // Add button to GUI.
         gui.addButton(new Button(dimension - 5, XMaterial.EMERALD_BLOCK, rankupLore, SpigotPrison.format("&aPrestige")));

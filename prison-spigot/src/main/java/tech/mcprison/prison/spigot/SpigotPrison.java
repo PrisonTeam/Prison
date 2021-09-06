@@ -73,10 +73,7 @@ import tech.mcprison.prison.spigot.commands.PrisonSpigotRanksCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
-import tech.mcprison.prison.spigot.configs.BackpacksConfig;
-import tech.mcprison.prison.spigot.configs.GuiConfig;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
-import tech.mcprison.prison.spigot.configs.SellAllConfig;
+import tech.mcprison.prison.spigot.configs.*;
 import tech.mcprison.prison.spigot.customblock.CustomItems;
 import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
 import tech.mcprison.prison.spigot.economies.GemsEconomy;
@@ -118,7 +115,8 @@ public class SpigotPrison
     
     private AutoManagerFeatures autoFeatures = null;
 //    private FileConfiguration autoFeaturesConfig = null;
-    
+
+    private NewMessagesConfig newMessagesConfig;
     private MessagesConfig messagesConfig;
     private GuiConfig guiConfig;
     private SellAllConfig sellAllConfig;
@@ -401,6 +399,13 @@ public class SpigotPrison
     	}
     	
         return messagesConfig.getFileGuiMessagesConfig();
+    }
+
+    public NewMessagesConfig getNewMessagesConfig(){
+        if (newMessagesConfig == null){
+            newMessagesConfig = NewMessagesConfig.get();
+        }
+        return newMessagesConfig;
     }
 
     public FileConfiguration getBackpacksConfig() {

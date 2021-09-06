@@ -45,6 +45,7 @@ import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
+import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
@@ -95,6 +96,7 @@ public class ListenersPrisonManager implements Listener {
     private final Configuration guiConfig = SpigotPrison.getInstance().getGuiConfig();
 
     private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
+    private final NewMessagesConfig newMessages = SpigotPrison.getInstance().getNewMessagesConfig();
     boolean guiNotEnabled = !(config.getString("prison-gui-enabled").equalsIgnoreCase("true"));
     private Optional<RankLadder> ladder;
     public ChatMode mode;
@@ -1846,7 +1848,7 @@ public class ListenersPrisonManager implements Listener {
     private void playerRanksGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         // Check the buttonName and do the actions.
-        if (buttonNameMain.equals(SpigotPrison.format(messages.getString("Lore.Rankup").substring(2)))){
+        if (buttonNameMain.equals(SpigotPrison.format(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_rankup).substring(2)))){
             Bukkit.dispatchCommand(p, "rankup " + guiConfig.getString("Options.Ranks.Ladder"));
             p.closeInventory();
         }
@@ -2349,7 +2351,7 @@ public class ListenersPrisonManager implements Listener {
             typeNotification = "within";
 
             // Execute command
-            Bukkit.dispatchCommand(p, "mines set notification " + mineName + " " + typeNotification + " " + "0");
+            Bukkit.dispatchCommand(p, "mines set notification " + mineName + " " + typeNotification + " 0");
 
             // Cancel the event and close the inventory
             e.setCancelled(true);
@@ -2375,7 +2377,7 @@ public class ListenersPrisonManager implements Listener {
             typeNotification = "disabled";
 
             // Execute the command
-            Bukkit.dispatchCommand(p, "mines set notification " + mineName + " " + typeNotification + " " + "0");
+            Bukkit.dispatchCommand(p, "mines set notification " + mineName + " " + typeNotification + " 0");
 
             // Cancel the event and close the inventory
             e.setCancelled(true);

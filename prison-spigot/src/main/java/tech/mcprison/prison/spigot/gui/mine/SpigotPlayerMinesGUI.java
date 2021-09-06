@@ -13,6 +13,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.configs.GuiConfig;
+import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
@@ -28,9 +29,9 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
     private final Player p;
     private final SpigotPlayer spigotPlayer;
     private final String permissionWarpPlugin = guiConfig.getString("Options.Mines.PermissionWarpPlugin");
-    private final String statusUnlockedMine = messages.getString("Lore.StatusUnlockedMine");
-    private final String clickToTeleport = messages.getString("Lore.ClickToTeleport");
-    private final String statusLockedMine = messages.getString("Lore.StatusLockedMine");
+    private final String statusUnlockedMine = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_unlocked);
+    private final String clickToTeleport = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_teleport);
+    private final String statusLockedMine = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_locked);
 
     public SpigotPlayerMinesGUI(Player p) {
         this.p = p;

@@ -20,6 +20,7 @@ import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
@@ -30,6 +31,7 @@ import tech.mcprison.prison.spigot.sellall.SellAllUtil;
  */
 public abstract class SpigotGUIComponents {
 
+    public static NewMessagesConfig newMessages = getNewMessages();
     public static Configuration messages = getMessages();
     public static Configuration guiConfig = getGuiConfig();
     public static Configuration sellAllConfig = getSellAll();
@@ -126,6 +128,13 @@ public abstract class SpigotGUIComponents {
     }
 
     /**
+     * Get new Messages config.
+     * */
+    protected static NewMessagesConfig getNewMessages(){
+        return SpigotPrison.getInstance().getNewMessagesConfig();
+    }
+
+    /**
      * Get Messages config.
      * */
     protected static Configuration getMessages(){
@@ -160,6 +169,14 @@ public abstract class SpigotGUIComponents {
             return null;
         }
         return AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
+    }
+
+    /**
+     * Reload new Messages config for GUIs.
+     * */
+    public static void updateNewMessages(){
+        NewMessagesConfig.get().reload();
+        newMessages = NewMessagesConfig.get();
     }
 
     /**

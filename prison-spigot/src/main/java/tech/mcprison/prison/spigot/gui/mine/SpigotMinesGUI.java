@@ -9,6 +9,7 @@ import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
+import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
 import tech.mcprison.prison.spigot.gui.PrisonSetupGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
@@ -16,7 +17,6 @@ import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 import java.text.DecimalFormat;
-import java.util.List;
 
 /**
  * @author GABRYCA
@@ -54,15 +54,15 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3MinesManager -> Mines");
 
         // Global Strings.
-        String loreLeftClickOpen = messages.getString("Lore.LeftClickToOpen");
-        String loreShiftRightClickToDelete = messages.getString("Lore.ShiftAndRightClickToDelete");
-        String loreInfo = messages.getString("Lore.Info");
-        String loreWorld = messages.getString("Lore.World");
-        String loreSpawnPoint = messages.getString("Lore.SpawnPoint");
-        String loreResetTime = messages.getString("Lore.ResetTime");
-        String loreSizeOfMine = messages.getString("Lore.SizeOfMine");
-        String loreVolume = messages.getString("Lore.Volume");
-        String loreBlocks = messages.getString("Lore.Blocks");
+        String loreLeftClickOpen = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_left_to_open);
+        String loreShiftRightClickToDelete = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete);
+        String loreInfo = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_info);
+        String loreWorld = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_world);
+        String loreSpawnPoint = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_spawnpoint);
+        String loreResetTime = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_reset_time);
+        String loreSizeOfMine = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_size);
+        String loreVolume = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_volume);
+        String loreBlocks = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_blocks);
 
         // Global boolean.
         boolean useNewBlockModel = Prison.get().getPlatform().isUseNewPrisonBlockModel();
@@ -79,19 +79,19 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
             ), createLore(loreInfo));
 
             // Add a lore
-            minesLore.addLineLoreDescription(loreWorld +  m.getWorldName());
+            minesLore.addLineLoreDescription("&7" + loreWorld + " &b" + m.getWorldName());
             String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
-            minesLore.addLineLoreDescription(loreSpawnPoint + spawnPoint);
-            minesLore.addLineLoreDescription(loreResetTime + m.getResetTime());
+            minesLore.addLineLoreDescription("&7" + loreSpawnPoint + " &b" + spawnPoint);
+            minesLore.addLineLoreDescription("&7" + loreResetTime + " &b" + m.getResetTime());
 
             if (!m.isVirtual()) {
                 // Add a lore
-                minesLore.addLineLoreDescription(loreSizeOfMine + m.getBounds().getDimensions());
-                minesLore.addLineLoreDescription(loreVolume + m.getBounds().getTotalBlockCount());
+                minesLore.addLineLoreDescription("&7" + loreSizeOfMine + " &b" + m.getBounds().getDimensions());
+                minesLore.addLineLoreDescription("&7" + loreVolume + " &b" + m.getBounds().getTotalBlockCount());
             }
 
             // Add a lore
-            minesLore.addLineLoreDescription(loreBlocks);
+            minesLore.addLineLoreDescription("&7" + loreBlocks);
 
             // Init some variables and do the actions
             DecimalFormat dFmt = new DecimalFormat("##0.00");
@@ -126,10 +126,10 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         }
 
         if (i < mines.getSortedList().size()) {
-            gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(messages.getString("Lore.ClickToNextPage"), null), "&7Next " + (i + 1)));
+            gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_next_page), null), "&7Next " + (i + 1)));
         }
         if (i >= (pageSize * 2)) {
-            gui.addButton(new Button(51, XMaterial.BOOK, new ButtonLore(messages.getString("Lore.ClickToPriorPage"), null), "&7Prior " + (i - (pageSize * 2) - 1)));
+            gui.addButton(new Button(51, XMaterial.BOOK, new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_prior_page), null), "&7Prior " + (i - (pageSize * 2) - 1)));
         }
 
         // Open the GUI.

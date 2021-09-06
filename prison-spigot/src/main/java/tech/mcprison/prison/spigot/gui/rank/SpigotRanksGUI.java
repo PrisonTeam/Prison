@@ -14,6 +14,7 @@ import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
@@ -52,17 +53,17 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         int dimension = 54;
         int pageSize = 45;
 
-        PrisonGUI gui = new PrisonGUI(p, dimension, "&3" + "Ladders -> Ranks");
+        PrisonGUI gui = new PrisonGUI(p, dimension, "&3Ladders -> Ranks");
 
         // Global Strings.
-        String loreShiftRightClickDelete = messages.getString("Lore.ShiftAndRightClickToDelete");
-        String loreClickToManageRank = messages.getString("Lore.ClickToManageRank");
-        String loreInfo = messages.getString("Lore.Info");
-        String loreId = messages.getString("Lore.Id");
-        String loreName = messages.getString("Lore.Name");
-        String loreTag2 = messages.getString("Lore.Tag2");
-        String lorePrice3 = messages.getString("Lore.Price3");
-        String lorePlayersWithRank = messages.getString("Lore.PlayersWithTheRank");
+        String loreShiftRightClickDelete = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete);
+        String loreClickToManageRank = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_manage_rank);
+        String loreInfo = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_info);
+        String loreId = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_id);
+        String loreName = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_name);
+        String loreTag2 = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_rank_tag);
+        String lorePrice3 = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_price);
+        String lorePlayersWithRank = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_players_at_rank);
 
         // Decimal Rank cost format.
         DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
@@ -84,10 +85,10 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 //            double ladderBaseRankMultiplier = PlayerRank.getLadderBaseRankdMultiplier( rank );
             
             // Add the RankID Lore
-            ranksLore.addLineLoreDescription(SpigotPrison.format(loreId + rank.getId()));
-            ranksLore.addLineLoreDescription(SpigotPrison.format(loreName + rank.getName()));
-            ranksLore.addLineLoreDescription(SpigotPrison.format(loreTag2 + ChatColor.translateAlternateColorCodes('&', rank.getTag())));
-            ranksLore.addLineLoreDescription(SpigotPrison.format(lorePrice3 + PlaceholdersUtil.formattedKmbtSISize(rawRankCost, formatDecimal, "")));
+            ranksLore.addLineLoreDescription(SpigotPrison.format(loreId + " " + rank.getId()));
+            ranksLore.addLineLoreDescription(SpigotPrison.format(loreName + " " + rank.getName()));
+            ranksLore.addLineLoreDescription(SpigotPrison.format(loreTag2 + " " + ChatColor.translateAlternateColorCodes('&', rank.getTag())));
+            ranksLore.addLineLoreDescription(SpigotPrison.format(lorePrice3 + " " + PlaceholdersUtil.formattedKmbtSISize(rawRankCost, formatDecimal, "")));
 
             // Init a variable
             int playerCount = rank.getPlayers().size();
@@ -97,17 +98,17 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 //                            .collect(Collectors.toList());
 
             // Add the number of players with this rank
-            ranksLore.addLineLoreDescription(SpigotPrison.format(lorePlayersWithRank + playerCount));
+            ranksLore.addLineLoreDescription(SpigotPrison.format(lorePlayersWithRank + " " + playerCount));
 
             // Add the button to the inventory
             gui.addButton(new Button(i - counter, XMaterial.TRIPWIRE_HOOK, ranksLore, SpigotPrison.format("&3" + rank.getName())));
         }
 
         if (i < ladder.get().getRanks().size()) {
-            gui.addButton(new Button(53, XMaterial.BOOK, 1, new ButtonLore(messages.getString("Lore.ClickToNextPage"), null), "&7Next " + (i + 1)));
+            gui.addButton(new Button(53, XMaterial.BOOK, 1, new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_next_page), null), "&7Next " + (i + 1)));
         }
         if (i >= (pageSize * 2)) {
-            gui.addButton(new Button(51, XMaterial.BOOK, 1, new ButtonLore(messages.getString("Lore.ClickToPriorPage"), null),
+            gui.addButton(new Button(51, XMaterial.BOOK, 1, new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_prior_page), null),
                     "&7Prior " + (i - (pageSize * 2) - 1)));
         }
 

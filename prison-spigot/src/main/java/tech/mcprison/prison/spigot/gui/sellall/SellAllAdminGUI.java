@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
@@ -33,12 +34,12 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
 
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3Prison -> SellAll-Admin");
 
-        ButtonLore blocksLore = new ButtonLore(messages.getString("Lore.ClickToOpen"), null);
-        ButtonLore closeGUILore = new ButtonLore(messages.getString("Lore.ClickToClose"), null);
-        ButtonLore setCurrencyLore = new ButtonLore(createLore(messages.getString("Lore.ClickToEdit")), createLore(
-                messages.getString("Lore.SellAllActiveCurrency") + sellAllConfig.getString("Options.SellAll_Currency"),
-                messages.getString("Lore.SellAllCurrencyInfo")));
-        ButtonLore multipliersLore = new ButtonLore(messages.getString("Lore.ClickToOpen"), messages.getString("Lore.PrestigeMultiplierInfoGUI"));
+        ButtonLore blocksLore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_open), null);
+        ButtonLore closeGUILore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_close), null);
+        ButtonLore setCurrencyLore = new ButtonLore(createLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_edit)), createLore(
+                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_currency) + sellAllConfig.getString("Options.SellAll_Currency"),
+                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_edit)));
+        ButtonLore multipliersLore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_open), newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_edit));
         ButtonLore autoSellLore = new ButtonLore();
         ButtonLore sellAllDelayLore = new ButtonLore();
 
@@ -47,51 +48,51 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
 
         if (sellAllConfig.getString("Options.Full_Inv_AutoSell").equalsIgnoreCase("true")){
             autoSellLore.setLoreAction(createLore(
-                    messages.getString("Lore.ClickToOpen"),
-                    messages.getString("Lore.RightClickToDisable")
+                    newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_open),
+                    newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_to_disable)
                     ));
 
             autoSellButton = new Button(13, XMaterial.CHEST, autoSellLore, "&3AutoSell");
         } else {
-            autoSellLore.setLoreAction(messages.getString("Lore.RightClickToEnable"));
+            autoSellLore.setLoreAction(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_to_enable));
             autoSellButton = new Button(13, XMaterial.CHEST, autoSellLore, "&cAutoSell-Disabled");
         }
 
         if (sellAllConfig.getString("Options.Sell_Delay_Enabled").equalsIgnoreCase("true")){
 
             sellAllDelayLore.setLoreAction(createLore(
-                    messages.getString("Lore.ClickToOpen"),
-                    messages.getString("Lore.RightClickToDisable")));
+                    newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_open),
+                    newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_to_disable)));
             sellAllDelayLore.setLoreDescription(createLore(
-                    messages.getString("Lore.DelaySellAll") + sellAllConfig.getString("Options.Sell_Delay_Seconds") + "s",
-                    messages.getString("Lore.SellAllDelayInfo"),
-                    messages.getString("Lore.SellAllDelayInfo2")));
+                    newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_delay) + sellAllConfig.getString("Options.Sell_Delay_Seconds") + "s",
+                    newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_sellall_delay_use_1),
+                    newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_sellall_delay_use_2)));
 
             sellAllDelayButton = new Button(11, XMaterial.CLOCK, sellAllDelayLore, "&3Delay-Enabled");
         } else {
 
-            sellAllDelayLore.setLoreAction(messages.getString("Lore.RightClickToEnable"));
+            sellAllDelayLore.setLoreAction(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_enable));
             sellAllDelayLore.setLoreDescription(createLore(
-                    messages.getString("Lore.SellAllDelayInfo"),
-                    messages.getString("Lore.SellAllDelayInfo2")));
+                    newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_sellall_delay_use_1),
+                    newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_sellall_delay_use_2)));
 
             sellAllDelayButton = new Button(11, XMaterial.CLOCK, sellAllDelayLore, "&cDelay-Disabled");
         }
 
         try {
             if (sellAllConfig.getConfigurationSection("Multiplier") == null) {
-                multipliersLore.addLineLoreDescription(SpigotPrison.format(messages.getString("Lore.EmptyMultiplier")));
+                multipliersLore.addLineLoreDescription(SpigotPrison.format(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_no_multipliers)));
             } else if (sellAllConfig.getConfigurationSection("Multiplier").getKeys(false).size() == 0) {
-                multipliersLore.addLineLoreDescription(SpigotPrison.format(messages.getString("Lore.EmptyMultiplier")));
+                multipliersLore.addLineLoreDescription(SpigotPrison.format(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_no_multipliers)));
             }
         } catch (NullPointerException ex){
-            multipliersLore.addLineLoreDescription(SpigotPrison.format(messages.getString("Lore.EmptyMultiplier")));
+            multipliersLore.addLineLoreDescription(SpigotPrison.format(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_no_multipliers)));
         }
 
         gui.addButton(new Button(15, XMaterial.EMERALD, setCurrencyLore, SpigotPrison.format("&3SellAll-Currency")));
         gui.addButton(new Button(8, XMaterial.PAPER, multipliersLore, SpigotPrison.format("&3Prestige-Multipliers")));
         gui.addButton(new Button(0, XMaterial.DIAMOND_ORE, blocksLore, "&3Blocks-Shop"));
-        gui.addButton(new Button(dimension-1, XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, SpigotPrison.format("&c" + "Close")));
+        gui.addButton(new Button(dimension-1, XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, SpigotPrison.format("&cClose")));
         gui.addButton(sellAllDelayButton);
         gui.addButton(autoSellButton);
 

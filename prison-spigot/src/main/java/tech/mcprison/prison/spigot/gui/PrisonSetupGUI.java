@@ -2,6 +2,7 @@ package tech.mcprison.prison.spigot.gui;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
+import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
@@ -24,23 +25,22 @@ public class PrisonSetupGUI extends SpigotGUIComponents {
         PrisonGUI gui = new PrisonGUI(p, 9, "&3Prison Setup -> Confirmation");
 
         // Create lore.
-        ButtonLore lore = new ButtonLore(createLore(messages.getString("Lore.ClickToConfirm")), createLore(
-                messages.getString("Lore.noRanksFoundSetup"),
-                messages.getString("Lore.noRanksFoundSetup1"),
-                messages.getString("Lore.noRanksFoundSetup2"),
-                messages.getString("Lore.noRanksFoundSetup3"),
-                messages.getString("Lore.noRanksFoundSetup4"),
-                messages.getString("Lore.noRanksFoundSetup5"),
-                messages.getString("Lore.noRanksFoundSetup6"),
-                messages.getString("Lore.noRanksFoundSetup7"),
-                messages.getString("Lore.noRanksFoundSetup8")));
+        ButtonLore lore = new ButtonLore(createLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_confirm)), createLore(
+                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_ranks_setup_1),
+                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_ranks_setup_2),
+                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_ranks_setup_3),
+                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_ranks_setup_4),
+                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_ranks_setup_5),
+                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_ranks_setup_6),
+                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_ranks_setup_7),
+                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_ranks_setup_8)));
 
         // Add button.
-        gui.addButton(new Button(2, XMaterial.EMERALD_BLOCK, lore, "&3" + "Confirm: Setup"));
+        gui.addButton(new Button(2, XMaterial.EMERALD_BLOCK, lore, "&3Confirm: Setup"));
 
         // Add button.
         gui.addButton(new Button(6, XMaterial.REDSTONE_BLOCK, createLore(
-                messages.getString("Lore.ClickToCancel")), "&3" + "Cancel: Setup"));
+                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_cancel)), "&3Cancel: Setup"));
 
         // Open Prison GUI.
         gui.open();

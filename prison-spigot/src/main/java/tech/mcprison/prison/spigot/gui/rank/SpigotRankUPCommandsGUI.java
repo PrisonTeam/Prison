@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
@@ -21,9 +22,9 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
     private final Rank rank;
 
     // Global Strings.
-    private final String shiftRightClickToDelete = messages.getString("Lore.ShiftAndRightClickToDelete");
-    private final String loreInfo = messages.getString("Lore.Info");
-    private final String loreCommand = messages.getString("Lore.Command");
+    private final String shiftRightClickToDelete = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete);
+    private final String loreInfo = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_info);
+    private final String loreCommand = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_command);
 
     public SpigotRankUPCommandsGUI(Player p, Rank rank) {
         this.p = p;
@@ -66,7 +67,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
             ButtonLore commandsLore = new ButtonLore(shiftRightClickToDelete, loreInfo);
 
-            commandsLore.addLineLoreDescription(SpigotPrison.format(loreCommand + command));
+            commandsLore.addLineLoreDescription(SpigotPrison.format(loreCommand + " " + command));
 
             // Add the button to the inventory
             gui.addButton(new Button(null, XMaterial.TRIPWIRE_HOOK, commandsLore, SpigotPrison.format("&3" + rank.getName() + " " + command)));

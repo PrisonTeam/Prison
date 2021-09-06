@@ -99,7 +99,7 @@ public class ButtonLore extends SpigotGUIComponents{
      * @param line - String.
      * */
     public void addLineLoreAction(String line){
-        this.descriptionAction.add(SpigotPrison.format(line));
+        this.descriptionAction.add(SpigotPrison.format(colorIDAction + line));
     }
 
     /**
@@ -130,7 +130,7 @@ public class ButtonLore extends SpigotGUIComponents{
      * @param line - String.
      * */
     public void addLineLoreDescription(String line){
-        this.description.add(SpigotPrison.format(line));
+        this.description.add(SpigotPrison.format(colorIDDescription + line));
     }
 
     /**

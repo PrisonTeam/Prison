@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
@@ -56,11 +57,11 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
         Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
 
         // Global strings.
-        String loreLine1 = messages.getString("Lore.RightClickToDelete");
-        String loreLine2 = messages.getString("Lore.LeftClickToEdit");
-        String lorePermission = messages.getString("Lore.Permission");
+        String loreLine1 = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_to_delete);
+        String loreLine2 = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_left_to_edit);
+        String lorePermission = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_permission);
         String permissionSellAllBlock = sellAllConfig.getString("Options.Sell_Per_Block_Permission");
-        String loreValue = messages.getString("Lore.Value");
+        String loreValue = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_value);
 
         boolean sellAllPerBlockPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"));
 
@@ -71,11 +72,11 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
             if (itemsRead >= startingItem) {
 
                 if (startingItem != 0){
-                    gui.addButton(new Button(45, XMaterial.BOOK, new ButtonLore(messages.getString("Lore.ClickToPriorPage"), null), "&7Prior " + (startingItem - 45)));
+                    gui.addButton(new Button(45, XMaterial.BOOK, new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_prior_page), null), "&7Prior " + (startingItem - 45)));
                 }
 
                 if (itemsAdded >= 45){
-                    gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(messages.getString("Lore.ClickToNextPage"), null), "&7Next " + (startingItem + itemsAdded)));
+                    gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_next_page), null), "&7Next " + (startingItem + itemsAdded)));
                 }
 
                 if (itemsAdded < 45) {

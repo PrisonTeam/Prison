@@ -7,6 +7,7 @@ import com.cryptomorin.xseries.XMaterial;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
@@ -30,106 +31,72 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
 
         PrisonGUI gui;
 
-        ButtonLore closeGUILore = new ButtonLore(messages.getString("Lore.ClickToClose"), null);
+        ButtonLore closeGUILore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_close), null);
 
         if (afConfig != null && afConfig.isFeatureBoolean(AutoFeatures.isAutoManagerEnabled)) {
             
-            ButtonLore disable = new ButtonLore(messages.getString("Lore.ShiftAndRightClickToDisable"), null);
-            ButtonLore enable = new ButtonLore(messages.getString("Lore.RightClickToEnable"), null);
+            ButtonLore disable = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_disable), newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_enabled));
+            ButtonLore enable = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_to_enable), newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_disabled));
 
             gui = new PrisonGUI(p, dimension, "&3PrisonManager -> AutoFeatures");
-
-            gui.addButton(new Button(dimension -1,XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, SpigotPrison.format("&c" + "Close")));
+            gui.addButton(new Button(dimension -1,XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, SpigotPrison.format("&cClose")));
 
             if (afConfig.isFeatureBoolean(AutoFeatures.playSoundIfInventoryIsFull)) {
-
-                disable.setLoreDescription(messages.getString("Lore.FullSoundEnabled"));
-                gui.addButton(new Button(0, XMaterial.LIME_STAINED_GLASS_PANE, disable, SpigotPrison.format("&a" + "Full-Inventory-Sound Enabled")));
-
+                gui.addButton(new Button(0, XMaterial.LIME_STAINED_GLASS_PANE, disable, SpigotPrison.format("&aFull-Inventory-Sound Enabled")));
             } else {
-
-                enable.setLoreDescription(messages.getString("Lore.FullSoundDisabled"));
-                gui.addButton(new Button(0, XMaterial.RED_STAINED_GLASS_PANE, enable, SpigotPrison.format("&c" + "Full-Inventory-Sound Disabled")));
-
+                gui.addButton(new Button(0, XMaterial.RED_STAINED_GLASS_PANE, enable, SpigotPrison.format("&cFull-Inventory-Sound Disabled")));
             }
 
             if (afConfig.isFeatureBoolean(AutoFeatures.hologramIfInventoryIsFull)) {
-
-                disable.setLoreDescription(messages.getString("Lore.FullHologramEnabled"));
-                gui.addButton(new Button(8, XMaterial.LIME_STAINED_GLASS_PANE, disable, SpigotPrison.format("&a" + "Full-Inventory-Hologram Enabled")));
-
+                gui.addButton(new Button(8, XMaterial.LIME_STAINED_GLASS_PANE, disable, SpigotPrison.format("&aFull-Inventory-Hologram Enabled")));
             } else {
-
-                enable.setLoreDescription(messages.getString("Lore.FullHologramDisabled"));
-                gui.addButton(new Button(8, XMaterial.RED_STAINED_GLASS_PANE, enable, SpigotPrison.format("&c" + "Full-Inventory-Hologram Disabled")));
-
+                gui.addButton(new Button(8, XMaterial.RED_STAINED_GLASS_PANE, enable, SpigotPrison.format("&cFull-Inventory-Hologram Disabled")));
             }
 
             if (afConfig.isFeatureBoolean(AutoFeatures.isAutoManagerEnabled)) {
-
-                disable.setLoreDescription(messages.getString("Lore.EnabledAll"));
-                gui.addButton(new Button(18, XMaterial.LIME_STAINED_GLASS_PANE, disable, SpigotPrison.format("&a" + "All Enabled")));
-
+                gui.addButton(new Button(18, XMaterial.LIME_STAINED_GLASS_PANE, disable, SpigotPrison.format("&aAll Enabled")));
             } else {
-
-                enable.setLoreDescription(messages.getString("Lore.DisabledAll"));
-                gui.addButton(new Button(18, XMaterial.RED_STAINED_GLASS_PANE, enable, SpigotPrison.format("&c" + "All Disabled")));
-
+                gui.addButton(new Button(18, XMaterial.RED_STAINED_GLASS_PANE, enable, SpigotPrison.format("&cAll Disabled")));
             }
 
             disable.setLoreAction(createLore(
-                    messages.getString("Lore.LeftClickToOpen"),
-                    messages.getString("Lore.ShiftAndRightClickToDisable")
+                    newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_left_to_open),
+                    newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_to_disable)
             ));
 
             enable.setLoreAction(createLore(
-                    messages.getString("Lore.LeftClickToOpen"),
-                    messages.getString("Lore.RightClickToEnable")
+                    newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_left_to_open),
+                    newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_to_enable)
             ));
 
             if (afConfig.isFeatureBoolean(AutoFeatures.autoPickupEnabled)) {
-
-                disable.setLoreDescription(messages.getString("Lore.AutoPickupGuiManager"));
-                gui.addButton(new Button(11, XMaterial.CHEST, disable, SpigotPrison.format("&3" + "AutoPickup Enabled")));
+                gui.addButton(new Button(11, XMaterial.CHEST, disable, SpigotPrison.format("&3AutoPickup Enabled")));
             } else {
-
-                enable.setLoreDescription(messages.getString("Lore.AutoPickupGuiManager"));
-                gui.addButton(new Button(11, XMaterial.CHEST, enable, SpigotPrison.format("&c" + "AutoPickup Disabled")));
+                gui.addButton(new Button(11, XMaterial.CHEST, enable, SpigotPrison.format("&cAutoPickup Disabled")));
             }
 
 
             if (afConfig.isFeatureBoolean(AutoFeatures.autoSmeltEnabled)) {
-
-                disable.setLoreDescription(messages.getString("Lore.AutoSmeltGuiManager"));
-                gui.addButton(new Button(13, XMaterial.FURNACE, disable, SpigotPrison.format("&3" + "AutoSmelt Enabled")));
+                gui.addButton(new Button(13, XMaterial.FURNACE, disable, SpigotPrison.format("&3AutoSmelt Enabled")));
             } else {
-
-                enable.setLoreDescription(messages.getString("Lore.AutoSmeltGuiManager"));
-                gui.addButton(new Button(13, XMaterial.FURNACE, enable, SpigotPrison.format("&c" + "AutoSmelt Disabled")));
+                gui.addButton(new Button(13, XMaterial.FURNACE, enable, SpigotPrison.format("&cAutoSmelt Disabled")));
             }
 
 
             if (afConfig.isFeatureBoolean(AutoFeatures.autoBlockEnabled)) {
-
-                disable.setLoreDescription(messages.getString("Lore.AutoBlockGuiManager"));
-                gui.addButton(new Button(15, XMaterial.CRAFTING_TABLE, disable, SpigotPrison.format("&3" + "AutoBlock Enabled")));
-
+                gui.addButton(new Button(15, XMaterial.CRAFTING_TABLE, disable, SpigotPrison.format("&3AutoBlock Enabled")));
             } else {
-
-                enable.setLoreDescription(messages.getString("Lore.AutoBlockGuiManager"));
-                gui.addButton(new Button(15, XMaterial.CRAFTING_TABLE, enable, SpigotPrison.format("&c" + "AutoBlock Disabled")));
+                gui.addButton(new Button(15, XMaterial.CRAFTING_TABLE, enable, SpigotPrison.format("&cAutoBlock Disabled")));
             }
 
         } else {
 
             gui = new PrisonGUI(p, 9, "&3PrisonManager -> AutoFeatures");
 
-            ButtonLore lore = new ButtonLore(messages.getString("Lore.RightClickToEnable"), messages.getString("Lore.DisabledAll"));
-
-            Button enabledOrDisabled = new Button(2, XMaterial.LIME_STAINED_GLASS_PANE, lore, SpigotPrison.format("&c" + "All Disabled"));
-
+            ButtonLore lore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_to_enable), newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_disabled));
+            Button enabledOrDisabled = new Button(2, XMaterial.LIME_STAINED_GLASS_PANE, lore, SpigotPrison.format("&cAll Disabled"));
             gui.addButton(enabledOrDisabled);
-            gui.addButton(new Button(6,XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, SpigotPrison.format("&c" + "Close")));
+            gui.addButton(new Button(6,XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, SpigotPrison.format("&cClose")));
         }
 
         gui.open();

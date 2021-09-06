@@ -14,6 +14,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.rank.SpigotConfirmPrestigeGUI;
 
@@ -118,16 +119,15 @@ public class PrisonSpigotPrestigeCommands
 
 		ListenersPrisonManager listenersPrisonManager = ListenersPrisonManager.get();
 		listenersPrisonManager.chatEventActivator();
+		NewMessagesConfig newMessages = SpigotPrison.getInstance().getNewMessagesConfig();
 
-        sender.sendMessage( SpigotPrison.format(getPrisonConfig("Lore.PrestigeWarning") +
-        		getPrisonConfig("Lore.PrestigeWarning2") +
-        		getPrisonConfig("Lore.PrestigeWarning3")));
-        
-        sender.sendMessage( SpigotPrison.format(messages.getString("Message.ConfirmPrestige")));
-        sender.sendMessage( SpigotPrison.format(messages.getString("Message.CancelPrestige")));
+		Output.get().sendInfo(sender, newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_prestige_warning_1) + " "
+				+ newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_prestige_warning_2) + " " + newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_prestige_warning_3));
+
+		Output.get().sendInfo(sender, messages.getString("Message.ConfirmPrestige"));
+		Output.get().sendInfo(sender, messages.getString("Message.CancelPrestige"));
 
         final Player player = getSpigotPlayer( sender );
-
         listenersPrisonManager.chatInteractData(player, ListenersPrisonManager.ChatMode.Prestige);
     }
 }

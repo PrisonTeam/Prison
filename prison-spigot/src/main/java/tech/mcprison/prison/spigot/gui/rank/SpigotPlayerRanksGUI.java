@@ -25,6 +25,7 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
@@ -183,10 +184,10 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
             rank = rank.getRankNext();
         }
 
-        ButtonLore rankupLore = new ButtonLore(messages.getString("Lore.ClickToRankup"), messages.getString("Lore.IfYouHaveEnoughMoney"));
+        ButtonLore rankupLore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_rankup), newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_rankup_if_enough_money));
 
         // Add button.
-        gui.addButton(new Button(dimension - 5, XMaterial.EMERALD_BLOCK, rankupLore, SpigotPrison.format(messages.getString("Lore.Rankup"))));
+        gui.addButton(new Button(dimension - 5, XMaterial.EMERALD_BLOCK, rankupLore, SpigotPrison.format(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_rankup))));
 
         // Open GUI.
         gui.open();
