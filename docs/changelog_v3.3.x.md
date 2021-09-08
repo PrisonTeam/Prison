@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-09-07
 
 
+* **Adding a player messaging component to the PlayerCache.**
+When used, this will prevent more than one of the same messages from being displayed at the same time.
+
+
 * **For the command /mines set area the confirmation of "yes" was setup incorrectly with being negated.**
 
 

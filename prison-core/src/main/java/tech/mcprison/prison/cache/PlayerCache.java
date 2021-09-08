@@ -206,6 +206,33 @@ public class PlayerCache {
 	}
 	
 	
+	/**
+	 * <p>This function will return a null if the player is not loaded in the cache.
+	 * Null is a valid value even if the player is online.
+	 * This function should NEVER be used
+	 * for any critical data such as tracking blocks, time, earnings, or inventory. 
+	 * Examples of acceptable loss would be with messaging.  Loss of a few messages is
+	 * not that critical, and actually would be a very rare situation. Example, if a 
+	 * player is mining then their cache should already be loaded so calling this function
+	 * should never find the situation where the player's cache entry does not exist.
+	 * </p>
+	 * 
+	 * <p>Since this function will fail with the return a null if the player is not loaded,
+	 * this function will not cause blocking on the runnable thread.
+	 * </p>
+	 * 
+	 * <p>If the player is not loaded, and a null is returned, then an async task
+	 * will be submitted to load it.
+	 * </p>
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public PlayerCachePlayerData getOnlinePlayer( Player player ) {
+		PlayerCachePlayerData playerData = getPlayer( player );
+				
+		return playerData;
+	}
 	
 	/**
 	 * <p>This returns the cached player object.  If they have not been loaded

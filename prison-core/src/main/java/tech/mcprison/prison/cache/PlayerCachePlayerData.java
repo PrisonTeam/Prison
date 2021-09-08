@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TreeMap;
 
+import tech.mcprison.prison.autofeatures.PlayerMessaging;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
@@ -82,6 +83,11 @@ public class PlayerCachePlayerData {
 	// sessionLastLocation is used for afk calculations:
 //	private transient Location sessionLastLocation = null;
 	
+	
+	private transient PlayerMessaging playerMessaging;
+	
+	
+	
 	private transient boolean dirty = false;
 	
 	
@@ -110,6 +116,8 @@ public class PlayerCachePlayerData {
 		this.sessionTimingLastCheck = sessionTimingStart;
 		
 //		this.sessionLastLocation = null;
+		
+		this.playerMessaging = new PlayerMessaging();
 		
 	}
 	
@@ -522,6 +530,13 @@ public class PlayerCachePlayerData {
 	}
 	public void setEarningsByMine( TreeMap<String, Double> earningsByMine ) {
 		this.earningsByMine = earningsByMine;
+	}
+
+	public PlayerMessaging getPlayerMessaging() {
+		return playerMessaging;
+	}
+	public void setPlayerMessaging( PlayerMessaging playerMessaging ) {
+		this.playerMessaging = playerMessaging;
 	}
 
 	public boolean isDirty() {
