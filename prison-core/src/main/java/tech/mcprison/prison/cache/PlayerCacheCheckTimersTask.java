@@ -1,8 +1,5 @@
 package tech.mcprison.prison.cache;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * <p>This periodically ran task will go through all cached players and update 
  * their status with the timers and earnings.  This is a light weight task 
@@ -43,21 +40,22 @@ public class PlayerCacheCheckTimersTask
 	
 		PlayerCache pCache = PlayerCache.getInstance();
 		
-		List<String> keys = new ArrayList<>( pCache.getPlayers().keySet() );
-		
-		for ( String key : keys )
-		{
-			PlayerCachePlayerData playerData = pCache.getPlayers().get( key );
+		if ( pCache.getPlayers() != null && pCache.getPlayers().keySet().size() > 0 ) {
 			
-			if ( playerData != null ) {
+			for ( String key : pCache.getPlayers().keySet() )
+			{
+				PlayerCachePlayerData playerData = pCache.getPlayers().get( key );
 				
-				playerData.checkTimers();
+				if ( playerData != null ) {
+					
+					playerData.checkTimers();
+					
+					// By adding a zero earnings, this will force the earnings "cache" to 
+					// progress, even if the player stopped mining.
+					playerData.addEarnings( 0 );
+				}
 				
-				// By adding a zero earnings, this will force the earnings "cache" to 
-				// progress, even if the player stopped mining.
-				playerData.addEarnings( 0 );
 			}
-			
 		}
 	
 	}

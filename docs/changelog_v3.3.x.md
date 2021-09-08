@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-09-08
 
 
+* **The player cache, when being shut down ran in to a problem if the players were removed when they logged off.**
+This function was making a new collection based upon the original player cache copy of players, of which, when a few of the players are removed, then they were resulting in nulls. 
+
+
 * **Prevented a problem when unloading players, and when a player is null.**
 The condition that was causing a null player was that the player was unloaded when the player left the server at the same time when the server was shut down.  Basically a race condition with two parallel async tasks trying to shut down the player cache object, each focusing on a different aspect (player vs. server).
 
