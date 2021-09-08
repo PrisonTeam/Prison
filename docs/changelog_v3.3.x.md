@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-09-08
 
 
+* **Prevented a problem when unloading players, and when a player is null.**
+The condition that was causing a null player was that the player was unloaded when the player left the server at the same time when the server was shut down.  Basically a race condition with two parallel async tasks trying to shut down the player cache object, each focusing on a different aspect (player vs. server).
+
+
 * **Hooked up XSeries' Titles to the compatibility class instead of using version specific code.**
 XSeries says they support 1.8.8 through 1.17.1.
 Deleted the support for the Spigot110 classes since it was only to support the use of the ActionBar and also the Title, which are no longer needed for 1.10+.

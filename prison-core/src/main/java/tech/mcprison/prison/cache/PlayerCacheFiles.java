@@ -90,36 +90,39 @@ public class PlayerCacheFiles
 	 */
 	public void toJsonFile( PlayerCachePlayerData player) {
 		
-		File playerFile = player.getPlayerFile();
-		File outTemp = createTempFile( playerFile );
-		boolean success = false;
-		
-		try (
-				FileWriter fw = new FileWriter( outTemp );
-				){
-			getGson().toJson( player, fw );
+		if ( player != null ) {
 			
-			success = true;
-		}
-		catch ( JsonIOException | IOException e ) {
-			e.printStackTrace();
-		}
-		
-		if ( success && ( !playerFile.exists() || playerFile.delete()) ) {
-			outTemp.renameTo( playerFile );
-		}
-		else {
-		
-			boolean removed = false;
-			if ( outTemp.exists() ) {
-				removed = outTemp.delete();
+			File playerFile = player.getPlayerFile();
+			File outTemp = createTempFile( playerFile );
+			boolean success = false;
+			
+			try (
+					FileWriter fw = new FileWriter( outTemp );
+					){
+				getGson().toJson( player, fw );
+				
+				success = true;
 			}
-
-			String message = String.format( 
-					"Unable to rename PlayerCache temp file. It was %sremoved: %s", 
-					(removed ? "" : "not "), outTemp.getAbsolutePath() );
+			catch ( JsonIOException | IOException e ) {
+				e.printStackTrace();
+			}
 			
-			Output.get().logWarn( message );
+			if ( success && ( !playerFile.exists() || playerFile.delete()) ) {
+				outTemp.renameTo( playerFile );
+			}
+			else {
+				
+				boolean removed = false;
+				if ( outTemp.exists() ) {
+					removed = outTemp.delete();
+				}
+				
+				String message = String.format( 
+						"Unable to rename PlayerCache temp file. It was %sremoved: %s", 
+						(removed ? "" : "not "), outTemp.getAbsolutePath() );
+				
+				Output.get().logWarn( message );
+			}
 		}
 	}
 	
