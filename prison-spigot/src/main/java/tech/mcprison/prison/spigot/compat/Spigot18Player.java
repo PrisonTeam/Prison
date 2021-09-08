@@ -3,6 +3,7 @@ package tech.mcprison.prison.spigot.compat;
 import org.bukkit.entity.Player;
 
 import com.cryptomorin.xseries.messages.ActionBar;
+import com.cryptomorin.xseries.messages.Titles;
 
 public abstract class Spigot18Player
 		extends CompatibilityCache
@@ -39,9 +40,11 @@ public abstract class Spigot18Player
 	 * @param fadeOut - parameter ignored
 	 */
 	@Override
-	@SuppressWarnings( "deprecation" )
 	public void sendTitle( Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut ) {
-		player.sendTitle( title, subtitle );
+		//player.sendTitle( title, subtitle );
+		
+		Titles.sendTitle( player, fadeIn, stay, fadeOut, title, subtitle );
+		
 	}
 
 	/**

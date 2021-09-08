@@ -13,7 +13,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.1 2021-09-07
+# 3.2.11-alpha.1 2021-09-08
+
+
+* **Hooked up XSeries' Titles to the compatibility class instead of using version specific code.**
+XSeries says they support 1.8.8 through 1.17.1.
+Deleted the support for the Spigot110 classes since it was only to support the use of the ActionBar and also the Title, which are no longer needed for 1.10+.
 
 
 * **Adding a player messaging component to the PlayerCache.**

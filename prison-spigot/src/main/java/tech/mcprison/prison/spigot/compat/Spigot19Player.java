@@ -5,6 +5,7 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 
 import com.cryptomorin.xseries.messages.ActionBar;
+import com.cryptomorin.xseries.messages.Titles;
 
 public abstract class Spigot19Player
 		extends Spigot18Blocks
@@ -34,9 +35,13 @@ public abstract class Spigot19Player
 	}
 	
 	@Override
-	@SuppressWarnings( "deprecation" )
+	//@SuppressWarnings( "deprecation" )
 	public void sendTitle( Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut ) {
-		player.sendTitle( title, subtitle );
+		
+		//player.sendTitle( title, subtitle );
+		
+		Titles.sendTitle( player, fadeIn, stay, fadeOut, title, subtitle );
+		
 	}
 
 	@Override
