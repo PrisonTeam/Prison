@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.1 2021-09-02
+# 3.2.11-alpha.1 2021-09-07
+
+
+* **Switch over to using XSeries for the actionBar.**
+XSeries claims it works for 1.8.8 through 1.17.1.
 
 
 * **Moved all Lores to the new .properties Language file:** Changes to the old .yml language file about Lore messages

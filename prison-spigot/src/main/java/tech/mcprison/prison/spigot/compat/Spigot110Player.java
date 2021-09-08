@@ -2,9 +2,6 @@ package tech.mcprison.prison.spigot.compat;
 
 import org.bukkit.entity.Player;
 
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
-
 public abstract class Spigot110Player
 		extends Spigot19
 {
@@ -13,11 +10,13 @@ public abstract class Spigot110Player
 		player.sendTitle( title, subtitle, fadeIn, stay, fadeOut );
 	}
 
-	@Override
-	public void sendActionBar( Player player, String actionBar ) {
-		player.spigot().sendMessage( ChatMessageType.ACTION_BAR, 
-				new TextComponent( actionBar ) );
-
-//		player.sendTitle( null, actionBar );
-	}
+	
+	// NOTE: Just use the Spigot19Player class's sendActionBar():
+//	@Override
+//	public void sendActionBar( Player player, String actionBar ) {
+//		player.spigot().sendMessage( ChatMessageType.ACTION_BAR, 
+//				new TextComponent( actionBar ) );
+//
+////		player.sendTitle( null, actionBar );
+//	}
 }

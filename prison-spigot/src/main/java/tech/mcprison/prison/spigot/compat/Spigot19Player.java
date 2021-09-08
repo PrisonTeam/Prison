@@ -4,8 +4,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import com.cryptomorin.xseries.messages.ActionBar;
 
 public abstract class Spigot19Player
 		extends Spigot18Blocks
@@ -42,8 +41,12 @@ public abstract class Spigot19Player
 
 	@Override
 	public void sendActionBar( Player player, String actionBar ) {
-		player.spigot().sendMessage( ChatMessageType.ACTION_BAR, 
-					new TextComponent( actionBar ) );
+		
+		ActionBar.sendActionBar( player, actionBar );
+		
+		// Was using the following until it was replaced with XSeries' ActionBar:
+//		player.spigot().sendMessage( ChatMessageType.ACTION_BAR, 
+//					new TextComponent( actionBar ) );
 
 //		player.sendTitle( "", actionBar );
 	}

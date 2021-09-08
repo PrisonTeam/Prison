@@ -2,6 +2,8 @@ package tech.mcprison.prison.spigot.compat;
 
 import org.bukkit.entity.Player;
 
+import com.cryptomorin.xseries.messages.ActionBar;
+
 public abstract class Spigot18Player
 		extends CompatibilityCache
 		implements CompatibilityPlayer
@@ -50,11 +52,13 @@ public abstract class Spigot18Player
 	 * @param player
 	 * @param actionBar
 	 */
-	@SuppressWarnings( "deprecation" )
 	@Override
 	public void sendActionBar( Player player, String actionBar ) {
 		
-		player.sendTitle( "", actionBar );
+		ActionBar.sendActionBar( player, actionBar );
+		
+		// Was using the following until it was replaced with XSeries' ActionBar:
+//		player.sendTitle( "", actionBar );
 
 		// The following class does not exist under spigot 1.8.8
 //		player.spigot().sendMessage( ChatMessageType.ACTION_BAR, 
