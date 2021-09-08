@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-09-07
 
 
+* **For the command /mines set area the confirmation of "yes" was setup incorrectly with being negated.**
+
+
 * **Switch over to using XSeries for the actionBar.**
 XSeries claims it works for 1.8.8 through 1.17.1.
 

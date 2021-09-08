@@ -2187,7 +2187,9 @@ public class MinesCommands
     
 
     @Command(identifier = "mines set area", permissions = "mines.set", 
-    				description = "Set the area of a mine to your current selection or a 1x1 mine under your feet.")
+    				description = "Set the area of a mine to your current selection or a 1x1 mine under your feet. " +
+    						"If you are using 'feet' as the location of the mine, then you can also set the " +
+    						"increases to the width, depth, and top. ")
     public void redefineCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
         @Arg(name = "source", description = "&3The source to use for setting the area. The &7wand&3 " +
@@ -2260,7 +2262,7 @@ public class MinesCommands
         	return;
         }
         else if ( options.toLowerCase().contains( "confirm" ) || 
-        		!options.toLowerCase().contains( "yes" ) ) {
+        			options.toLowerCase().contains( "yes" ) ) {
         	options = options.replace( "(?i)confirm|yes", "" ).trim();
         }
 
