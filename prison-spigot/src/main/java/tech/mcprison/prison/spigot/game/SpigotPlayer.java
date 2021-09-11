@@ -29,6 +29,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import tech.mcprison.prison.autofeatures.PlayerMessaging.MessageType;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
@@ -40,6 +41,7 @@ import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.compat.SpigotNMSPlayer;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboard;
+import tech.mcprison.prison.spigot.utils.tasks.PlayerMessagingTask;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
 
@@ -613,8 +615,10 @@ public class SpigotPlayer
 	@Override
 	public void setActionBar( String actionBar ) {
 		if ( getWrapper() != null) {
-			SpigotCompatibility.getInstance()
-					.sendActionBar( getWrapper(), actionBar );
+			PlayerMessagingTask.submitTask( getWrapper(), MessageType.actionBar, actionBar );
+
+//			SpigotCompatibility.getInstance()
+//					.sendActionBar( getWrapper(), actionBar );
 		}
 	}
 }

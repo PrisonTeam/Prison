@@ -7,13 +7,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
@@ -23,10 +21,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
 
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.PlayerMessaging.MessageType;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
@@ -41,7 +38,7 @@ import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
-import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
+import tech.mcprison.prison.spigot.utils.tasks.PlayerMessagingTask;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Text;
 
@@ -805,10 +802,10 @@ public class AutoManagerFeatures
 		}
 	}
 	
-	private boolean isBoolean( Configuration sellAllConfig, String config ) {
-		String configValue = sellAllConfig.getString( config );
-		return configValue != null && configValue.equalsIgnoreCase( "true" );
-	}
+//	private boolean isBoolean( Configuration sellAllConfig, String config ) {
+//		String configValue = sellAllConfig.getString( config );
+//		return configValue != null && configValue.equalsIgnoreCase( "true" );
+//	}
 	
 	private void dropAtBlock( SpigotItemStack itemStack, SpigotBlock block ) {
 		
@@ -848,23 +845,30 @@ public class AutoManagerFeatures
 			player.playSound(player.getLocation(), sound, 10F, 1F);
 		}
 
+		(new SpigotPlayer( player )).setActionBar( message );
+
 		// holographic display for showing full inventory does not work well.
 //		if ( isBoolean( AutoFeatures.hologramIfInventoryIsFull ) ) {
 //			displayMessageHologram( block, message , player);
 //		}
 //		else {
-		actionBarVersion(player, message);
+//		actionBarVersion(player, message);
 //		}
 	}
 
-	private void actionBarVersion(Player player, String message) {
-		if (new BluesSpigetSemVerComparator().compareMCVersionTo("1.9.0") < 0) {
-			displayActionBarMessage(player, message);
-		}
-		else {
-			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(SpigotPrison.format(message)));
-		}
-	}
+//	private void actionBarVersion(Player player, String message) {
+//		
+//		PlayerMessagingTask.submitTask( player, MessageType.actionBar, message );
+//		
+////		SpigotCompatibility.getInstance().sendActionBar( player, message );
+//		
+////		if (new BluesSpigetSemVerComparator().compareMCVersionTo("1.9.0") < 0) {
+////			displayActionBarMessage(player, message);
+////		}
+////		else {
+////			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(SpigotPrison.format(message)));
+////		}
+//	}
 
 	/**
 	 * This is not usable since it not only prevents the player from mining when it is
@@ -888,10 +892,10 @@ public class AutoManagerFeatures
 		Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), as::remove, (7L * 20L));
 	}
 
-	private void displayActionBarMessage(Player player, String message) {
-		SpigotPlayer prisonPlayer = new SpigotPlayer(player);
-		Prison.get().getPlatform().showActionBar(prisonPlayer, message, 80);
-	}
+//	private void displayActionBarMessage(Player player, String message) {
+//		SpigotPlayer prisonPlayer = new SpigotPlayer(player);
+//		Prison.get().getPlatform().showActionBar(prisonPlayer, message, 80);
+//	}
 
 
 	/**
