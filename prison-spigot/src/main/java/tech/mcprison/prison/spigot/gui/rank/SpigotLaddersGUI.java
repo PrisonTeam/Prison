@@ -7,7 +7,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
@@ -39,7 +39,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 
         // If the inventory is empty
         if (lm.getLadders().size() == 0){
-            Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.NoLadders"));
+            Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_ladder_empty));
             p.closeInventory();
             return;
         }
@@ -50,7 +50,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3RanksManager -> Ladders");
 
-        ButtonLore laddersLore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_open), newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete));
+        ButtonLore laddersLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open), messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete));
 
         // Only loop over the blocks that we need to show:
         int i = counter;
@@ -63,10 +63,10 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         }
 
         if (i < lm.getLadders().size()) {
-            gui.addButton(new Button(53, XMaterial.BOOK, 1, new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_next_page), null), "&7Next " + (i + 1)));
+            gui.addButton(new Button(53, XMaterial.BOOK, 1, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_next_page), null), "&7Next " + (i + 1)));
         }
         if (i >= (pageSize * 2)) {
-            gui.addButton(new Button(51, XMaterial.BOOK, 1, new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_prior_page), null),
+            gui.addButton(new Button(51, XMaterial.BOOK, 1, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_prior_page), null),
                     "&7Prior " + (i - (pageSize * 2) - 1)));
         }
 

@@ -25,6 +25,7 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.compat.Compatibility;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
@@ -50,7 +51,7 @@ public class SellAllUtil {
     private ArrayList<XMaterial> sellAllItemTriggers;
     private ArrayList<Player> activePlayerDelay = new ArrayList<>();
     private List<String> sellAllDisabledWorlds;
-    private Configuration messages;
+    private MessagesConfig messages;
     private double defaultMultiplier;
     private int defaultSellAllDelay;
     private int defaultAutoSellEarningNotificationDelay;
@@ -1181,7 +1182,7 @@ public class SellAllUtil {
      * */
     public void removeFromAutoSellDelayAndNotify(Player p){
         if (autoSellEarningsNotificationWaiting.containsKey(p) && autoSellEarningsNotificationWaiting.get(p) > 0.00){
-            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllAutoSellEarnedMoney") + autoSellEarningsNotificationWaiting.get(p) + messages.getString("Message.SellAllAutoSellEarnedMoneyCurrency")));
+            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + autoSellEarningsNotificationWaiting.get(p)));
         }
         autoSellEarningsNotificationWaiting.remove(p);
     }
@@ -1267,7 +1268,6 @@ public class SellAllUtil {
             conf.set("Users." + p.getUniqueId() + ".isEnabled", enable);
             conf.save(sellAllFile);
         } catch (IOException e) {
-            Output.get().sendError(new SpigotPlayer(p), SpigotPrison.format(messages.getString("Message.SellAllConfigSaveFail")));
             e.printStackTrace();
             return false;
         }
@@ -1391,7 +1391,7 @@ public class SellAllUtil {
      *
      * Return True if success, False if error or nothing changed or Player not meeting requirements.
      *
-     * Default usage of this method: sellAllSell(p, false, false, true, false, false, true);
+     * Default usage of this method: sellAllSell(p, false, false, true, true, false, true);
      *
      * @param p - Player.
      * @param isUsingSign - boolean.
@@ -1406,21 +1406,21 @@ public class SellAllUtil {
     public boolean sellAllSell(Player p, boolean isUsingSign, boolean completelySilent, boolean notifyPlayerEarned, boolean notifyPlayerDelay, boolean notifyPlayerEarningDelay, boolean playSoundOnSellAll){
         if (!isUsingSign && isSellAllSignEnabled && isSellAllBySignOnlyEnabled && !p.hasPermission(permissionBypassSign)){
             if (!completelySilent) {
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.SellAllSignOnly"));
+                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_sign_only));
             }
             return false;
         }
 
         if (isSellAllDelayEnabled && isPlayerWaitingSellAllDelay(p)){
             if (notifyPlayerDelay && !completelySilent) {
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.SellAllWaitDelay"));
+                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_delay_wait));
             }
             return false;
         }
 
         if (sellAllBlocks.isEmpty()){
             if (!completelySilent){
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.SellAllEmpty"));
+                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_empty));
             }
             return false;
         }
@@ -1450,7 +1450,7 @@ public class SellAllUtil {
                         addDelayedEarningAutoSellNotification(p, money);
                     }
                 } else if (notifyPlayerEarned){
-                   Output.get().sendInfo(sPlayer, messages.getString("Message.SellAllYouGotMoney") + money);
+                   Output.get().sendInfo(sPlayer, messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + money);
                 }
             }
             return true;
@@ -1459,7 +1459,7 @@ public class SellAllUtil {
                 if (isSellAllSoundEnabled && playSoundOnSellAll) {
                     p.playSound(p.getLocation(), sellAllSoundFail, 3, 1);
                 }
-                Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.SellAllNothingToSell"));
+                Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_nothing_sellable));
             }
             return false;
         }
@@ -1499,21 +1499,21 @@ public class SellAllUtil {
     public ArrayList<ItemStack> sellAllSell(Player p, ArrayList<ItemStack> itemStacks, boolean isUsingSign, boolean completelySilent, boolean notifyPlayerEarned, boolean notifyPlayerDelay, boolean notifyPlayerEarningDelay, boolean playSoundOnSellAll, boolean sellInputArrayListOnly){
         if (!isUsingSign && isSellAllSignEnabled && isSellAllBySignOnlyEnabled && !p.hasPermission(permissionBypassSign)){
             if (!completelySilent) {
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.SellAllSignOnly"));
+                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_sign_only));
             }
             return itemStacks;
         }
 
         if (isSellAllDelayEnabled && isPlayerWaitingSellAllDelay(p)){
             if (notifyPlayerDelay && !completelySilent) {
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.SellAllWaitDelay"));
+                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_delay_wait));
             }
             return itemStacks;
         }
 
         if (sellAllBlocks.isEmpty()){
             if (!completelySilent){
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.SellAllEmpty"));
+                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_empty));
             }
             return itemStacks;
         }
@@ -1557,7 +1557,7 @@ public class SellAllUtil {
                         addDelayedEarningAutoSellNotification(p, money);
                     }
                 } else if (notifyPlayerEarned){
-                    Output.get().sendInfo(sPlayer, messages.getString("Message.SellAllYouGotMoney") + money);
+                    Output.get().sendInfo(sPlayer, messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + money);
                 }
             }
         } else {
@@ -1565,7 +1565,7 @@ public class SellAllUtil {
                 if (isSellAllSoundEnabled && playSoundOnSellAll) {
                     p.playSound(p.getLocation(), sellAllSoundFail, 3, 1);
                 }
-                Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.SellAllNothingToSell"));
+                Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_nothing_sellable));
             }
         }
         return itemStacks;

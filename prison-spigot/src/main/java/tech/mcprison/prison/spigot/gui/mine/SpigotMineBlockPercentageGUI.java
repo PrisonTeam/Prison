@@ -6,13 +6,11 @@ import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-
-import java.util.List;
 
 /**
  * @author GABRYCA (AnonymousGCA)
@@ -37,9 +35,9 @@ public class SpigotMineBlockPercentageGUI extends SpigotGUIComponents {
         int dimension = 45;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3MineInfo -> BlockPercentage");
 
-        ButtonLore changeDecreaseValueLore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_decrease), null);
-        ButtonLore confirmButtonLore = new ButtonLore(createLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_confirm), newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_to_cancel)), createLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_percentage) + " " + val));
-        ButtonLore changeIncreaseValueLore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_decrease), null);
+        ButtonLore changeDecreaseValueLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_decrease), null);
+        ButtonLore confirmButtonLore = new ButtonLore(createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_confirm), messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_cancel)), createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_percentage) + " " + val));
+        ButtonLore changeIncreaseValueLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_decrease), null);
 
         XMaterial decreaseMaterial = XMaterial.REDSTONE_BLOCK;
 
@@ -62,7 +60,7 @@ public class SpigotMineBlockPercentageGUI extends SpigotGUIComponents {
         gui.addButton(new Button(43, increaseMat, changeIncreaseValueLore, "&3" + mineName + " " + blockName +  " " + val + " + 100 &0" + counter));
 
         // Close gui:
-        gui.addButton(new Button(40, XMaterial.RED_STAINED_GLASS_PANE, new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_close), null), "&cClose &0" + mineName + " " + counter));
+        gui.addButton(new Button(40, XMaterial.RED_STAINED_GLASS_PANE, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_close), null), "&cClose &0" + mineName + " " + counter));
 
         // Show the selected block at the top center position:
         XMaterial xMat = SpigotUtil.getXMaterial( blockName );

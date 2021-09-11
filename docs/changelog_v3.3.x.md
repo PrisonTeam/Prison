@@ -16,6 +16,15 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-09-08
 
 
+* **Fixed an error about backpacks and lore transition:** A single lore was being used for the backpacks utility, if a server
+was new and fresh, this would've been missing and an error could occur, this now got fixed with the full transition.
+
+
+* **Full transition of all messages to the .properties lang:** All messages are now on the .properties file and the old 
+.yml one is unused from now on, you can delete it and start translating the new one. Please note that some messages may
+be wrong, as it's still in a young stage and a lot of messages got transitioned.
+
+
 * **The player cache, when being shut down ran in to a problem if the players were removed when they logged off.**
 This function was making a new collection based upon the original player cache copy of players, of which, when a few of the players are removed, then they were resulting in nulls. 
 

@@ -40,6 +40,7 @@ import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Text;
@@ -759,62 +760,48 @@ public class AutoManagerFeatures
 	private void dropExtra( HashMap<Integer, SpigotItemStack> extra, Player player ) {
 
 		if ( extra != null && extra.size() > 0 ) {
+			if (SpigotPrison.getInstance().isSellAllEnabled()) {
 
-			
-			Configuration sellAllConfig = SpigotPrison.getInstance().updateSellAllConfig();
+				SellAllUtil sellAllUtil = SellAllUtil.get();
 
-			if ( isBoolean( sellAllConfig, "Options.Full_Inv_AutoSell") ) {
-				if ( isBoolean( sellAllConfig, "Options.Full_Inv_AutoSell_perUserToggleable") ){
-
-					UUID playerUUID = player.getUniqueId();
-
-					if (isBoolean( sellAllConfig, "Users." + playerUUID + ".isEnabled") ) {
-						
-							if (isBoolean( sellAllConfig, "Options.Full_Inv_AutoSell_Notification") ) {
-								Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(
-										SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
+				if (sellAllUtil != null && sellAllUtil.isAutoSellEnabled) {
+					if (sellAllUtil.isAutoSellPerUserToggleable) {
+						if (sellAllUtil.isPlayerAutoSellEnabled(player)) {
+							if (sellAllUtil.isAutoSellNotificationEnabled) {
+								SellAllUtil.get().sellAllSell(player, false, false, true, true, false, true);
+							} else {
+								SellAllUtil.get().sellAllSell(player, false, true, false, false, false, true);
 							}
-							
-							PrisonSpigotSellAllCommands.get().sellAllSellCommand( new SpigotPlayer( player ), "" );
-							
-//							String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
-//							Bukkit.dispatchCommand(player, registeredCmd);
-//							return;
+						}
+					} else {
+						if (sellAllUtil.isAutoSellNotificationEnabled) {
+							SellAllUtil.get().sellAllSell(player, false, false, true, true, false, true);
+						} else {
+							SellAllUtil.get().sellAllSell(player, false, true, false, false, false, true);
+						}
 					}
-				} else {
-					if (isBoolean( sellAllConfig, "Options.Full_Inv_AutoSell_Notification") ) {
-						Output.get().sendInfo(new SpigotPlayer(player), SpigotPrison.format(
-								SpigotPrison.getInstance().getMessagesConfig().getString("Message.SellAllAutoSell")));
-					}
-					PrisonSpigotSellAllCommands.get().sellAllSellCommand( new SpigotPlayer( player ), "" );
 
-//					String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
-//					Bukkit.dispatchCommand(player, registeredCmd);
-//					return;
+					// Now that something might have been sold, try to add all the extra inventory items back to the
+					// player's inventory so it is not lost then pass the moreExtras along to be handled as the
+					// configurations require.
+					HashMap<Integer, SpigotItemStack> moreExtras = new HashMap<>();
+					for (SpigotItemStack itemStack : extra.values()) {
+						moreExtras.putAll(SpigotUtil.addItemToPlayerInventory(player, itemStack));
+					}
+					extra = moreExtras;
 				}
-				
-				// Now that something might have been sold, try to add all the extra inventory items back to the 
-				// player's inventory so it is not lost then pass the moreExtras along to be handled as the 
-				// configurations require.
-				HashMap<Integer, SpigotItemStack> moreExtras = new HashMap<>();
-				for ( SpigotItemStack itemStack : extra.values() ) {
-					moreExtras.putAll( SpigotUtil.addItemToPlayerInventory( player, itemStack ));
-				}
-				extra = moreExtras;
-			}
-			
-			for ( SpigotItemStack itemStack : extra.values() ) {
-				
-				if ( isBoolean( AutoFeatures.dropItemsIfInventoryIsFull ) ) {
-					
-					SpigotUtil.dropPlayerItems( player, itemStack );
-					notifyPlayerThatInventoryIsFull( player );
-				} 
-				else {
-					notifyPlayerThatInventoryIsFullLosingItems( player );
+
+				for (SpigotItemStack itemStack : extra.values()) {
+
+					if (isBoolean(AutoFeatures.dropItemsIfInventoryIsFull)) {
+
+						SpigotUtil.dropPlayerItems(player, itemStack);
+						notifyPlayerThatInventoryIsFull(player);
+					} else {
+						notifyPlayerThatInventoryIsFullLosingItems(player);
+					}
 				}
 			}
-
 		}
 	}
 	

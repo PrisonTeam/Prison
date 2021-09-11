@@ -9,7 +9,7 @@ import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
@@ -25,11 +25,11 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
     private final String mineName;
 
     // Global Strings.
-    private final String loreShiftRightClickToDelete = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete);
-    private final String loreClickToEditBlock = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_edit);
-    private final String loreInfo = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_info);
-    private final String loreChance = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_chance);
-    private final String loreBlockType = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_blocktype);
+    private final String loreShiftRightClickToDelete = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete);
+    private final String loreClickToEditBlock = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_edit);
+    private final String loreInfo = messages.getString(MessagesConfig.StringID.spigot_gui_lore_info);
+    private final String loreChance = messages.getString(MessagesConfig.StringID.spigot_gui_lore_chance);
+    private final String loreBlockType = messages.getString(MessagesConfig.StringID.spigot_gui_lore_blocktype);
 
     public SpigotMinesBlocksGUI(Player p, String mineName){
         this.p = p;
@@ -45,7 +45,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         Mine m = PrisonMines.getInstance().getMine(mineName);
 		boolean useNewBlockModel = Prison.get().getPlatform().isUseNewPrisonBlockModel();
 
-        ButtonLore addBlockLore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_add), null);
+        ButtonLore addBlockLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_add), null);
 
         // Add the button to the GUI.
         gui.addButton(new Button(dimension - 1, XMaterial.LIME_STAINED_GLASS_PANE, addBlockLore, "&aAdd " + mineName));

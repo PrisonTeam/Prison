@@ -2,13 +2,11 @@ package tech.mcprison.prison.spigot.gui.sellall;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
-import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-
-import java.util.List;
 
 /**
  * @author GABRYCA
@@ -34,10 +32,10 @@ public class SellAllPrestigesMultiplierGUI extends SpigotGUIComponents {
         int pageSize = 45;
 
         // Global strings.
-        String lorePrestigeName = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_prestige_name);
-        String lorePrestigeMultiplier = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_multiplier);
-        String loreClickToEdit = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_edit);
-        String loreClickToDelete =  newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_to_delete);
+        String lorePrestigeName = messages.getString(MessagesConfig.StringID.spigot_gui_lore_prestige_name);
+        String lorePrestigeMultiplier = messages.getString(MessagesConfig.StringID.spigot_gui_lore_multiplier);
+        String loreClickToEdit = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_edit);
+        String loreClickToDelete =  messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_delete);
 
         // Only loop over the blocks that we need to show:
         int i = counter;
@@ -61,10 +59,10 @@ public class SellAllPrestigesMultiplierGUI extends SpigotGUIComponents {
         }
 
         if (i < sellAllConfig.getConfigurationSection("Multiplier").getKeys(false).size()) {
-            gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_next_page), null), "&7Next " + (i + 1)));
+            gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_next_page), null), "&7Next " + (i + 1)));
         }
         if (i >= (pageSize * 2)) {
-            gui.addButton(new Button(51, XMaterial.BOOK, new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_prior_page), null), "&7Prior " + (i - (pageSize * 2) - 1)));
+            gui.addButton(new Button(51, XMaterial.BOOK, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_prior_page), null), "&7Prior " + (i - (pageSize * 2) - 1)));
         }
 
         gui.open();

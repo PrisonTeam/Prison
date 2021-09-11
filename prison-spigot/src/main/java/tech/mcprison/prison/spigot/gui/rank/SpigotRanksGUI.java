@@ -14,7 +14,7 @@ import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
@@ -45,7 +45,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
         // Get the dimensions and if needed increases them
         if (!ladder.isPresent() || ladder.get().getRanks().size() == 0) {
-            Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.NoRanksFoundAdmin"));
+            Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_ranks_empty));
             return;
         }
 
@@ -56,14 +56,14 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3Ladders -> Ranks");
 
         // Global Strings.
-        String loreShiftRightClickDelete = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete);
-        String loreClickToManageRank = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_manage_rank);
-        String loreInfo = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_info);
-        String loreId = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_id);
-        String loreName = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_name);
-        String loreTag2 = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_rank_tag);
-        String lorePrice3 = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_price);
-        String lorePlayersWithRank = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_players_at_rank);
+        String loreShiftRightClickDelete = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete);
+        String loreClickToManageRank = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_manage_rank);
+        String loreInfo = messages.getString(MessagesConfig.StringID.spigot_gui_lore_info);
+        String loreId = messages.getString(MessagesConfig.StringID.spigot_gui_lore_id);
+        String loreName = messages.getString(MessagesConfig.StringID.spigot_gui_lore_name);
+        String loreTag2 = messages.getString(MessagesConfig.StringID.spigot_gui_lore_rank_tag);
+        String lorePrice3 = messages.getString(MessagesConfig.StringID.spigot_gui_lore_price);
+        String lorePlayersWithRank = messages.getString(MessagesConfig.StringID.spigot_gui_lore_players_at_rank);
 
         // Decimal Rank cost format.
         DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
@@ -105,10 +105,10 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         }
 
         if (i < ladder.get().getRanks().size()) {
-            gui.addButton(new Button(53, XMaterial.BOOK, 1, new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_next_page), null), "&7Next " + (i + 1)));
+            gui.addButton(new Button(53, XMaterial.BOOK, 1, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_next_page), null), "&7Next " + (i + 1)));
         }
         if (i >= (pageSize * 2)) {
-            gui.addButton(new Button(51, XMaterial.BOOK, 1, new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_prior_page), null),
+            gui.addButton(new Button(51, XMaterial.BOOK, 1, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_prior_page), null),
                     "&7Prior " + (i - (pageSize * 2) - 1)));
         }
 

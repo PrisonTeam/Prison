@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
@@ -30,9 +30,9 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
         PrisonGUI gui = new PrisonGUI(p, 36, "&3AutoFeatures -> AutoBlock");
 
         // Lores
-        ButtonLore enabledLore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_disable), null);
-        ButtonLore disabledLore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_to_enable), null);
-        gui.addButton(new Button(35, XMaterial.RED_STAINED_GLASS_PANE, new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_close), null), "&cClose"));
+        ButtonLore enabledLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_disable), null);
+        ButtonLore disabledLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_enable), null);
+        gui.addButton(new Button(35, XMaterial.RED_STAINED_GLASS_PANE, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_close), null), "&cClose"));
 
         if (afConfig != null) {
 

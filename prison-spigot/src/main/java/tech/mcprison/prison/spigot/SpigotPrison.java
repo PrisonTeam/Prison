@@ -116,7 +116,6 @@ public class SpigotPrison
     private AutoManagerFeatures autoFeatures = null;
 //    private FileConfiguration autoFeaturesConfig = null;
 
-    private NewMessagesConfig newMessagesConfig;
     private MessagesConfig messagesConfig;
     private GuiConfig guiConfig;
     private SellAllConfig sellAllConfig;
@@ -393,19 +392,12 @@ public class SpigotPrison
         return sellAllConfig.getFileSellAllConfig();
     }
 
-    public FileConfiguration getMessagesConfig() {
+    public MessagesConfig getMessagesConfig() {
     	if (messagesConfig == null) {
-    		messagesConfig = new MessagesConfig();
+    		messagesConfig = MessagesConfig.get();
     	}
     	
-        return messagesConfig.getFileGuiMessagesConfig();
-    }
-
-    public NewMessagesConfig getNewMessagesConfig(){
-        if (newMessagesConfig == null){
-            newMessagesConfig = NewMessagesConfig.get();
-        }
-        return newMessagesConfig;
+        return messagesConfig;
     }
 
     public FileConfiguration getBackpacksConfig() {

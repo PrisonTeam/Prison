@@ -2,7 +2,7 @@ package tech.mcprison.prison.spigot.gui.mine;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
-import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
@@ -31,11 +31,11 @@ public class SpigotMineNotificationRadiusGUI extends SpigotGUIComponents {
         int dimension = 45;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3MineNotifications -> Radius");
 
-        ButtonLore changeDecreaseValueLore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_decrease), null);
-        ButtonLore confirmButtonLore = new ButtonLore(createLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_left_to_confirm)), createLore(
-                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_radius) + " " + val,
-                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_to_cancel)));
-        ButtonLore changeIncreaseValueLore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_increase), null);
+        ButtonLore changeDecreaseValueLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_decrease), null);
+        ButtonLore confirmButtonLore = new ButtonLore(createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_left_to_confirm)), createLore(
+                messages.getString(MessagesConfig.StringID.spigot_gui_lore_radius) + " " + val,
+                messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_cancel)));
+        ButtonLore changeIncreaseValueLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_increase), null);
 
         // XMaterials.
         XMaterial decreaseMat = XMaterial.REDSTONE_BLOCK;

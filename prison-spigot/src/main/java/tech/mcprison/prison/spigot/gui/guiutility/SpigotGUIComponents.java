@@ -20,7 +20,7 @@ import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
@@ -31,8 +31,7 @@ import tech.mcprison.prison.spigot.sellall.SellAllUtil;
  */
 public abstract class SpigotGUIComponents {
 
-    public static NewMessagesConfig newMessages = getNewMessages();
-    public static Configuration messages = getMessages();
+    public static MessagesConfig messages = getMessages();
     public static Configuration guiConfig = getGuiConfig();
     public static Configuration sellAllConfig = getSellAll();
 
@@ -130,14 +129,14 @@ public abstract class SpigotGUIComponents {
     /**
      * Get new Messages config.
      * */
-    protected static NewMessagesConfig getNewMessages(){
-        return SpigotPrison.getInstance().getNewMessagesConfig();
+    protected static MessagesConfig getmessages(){
+        return SpigotPrison.getInstance().getMessagesConfig();
     }
 
     /**
      * Get Messages config.
      * */
-    protected static Configuration getMessages(){
+    protected static MessagesConfig getMessages(){
         return SpigotPrison.getInstance().getMessagesConfig();
     }
 
@@ -172,19 +171,11 @@ public abstract class SpigotGUIComponents {
     }
 
     /**
-     * Reload new Messages config for GUIs.
-     * */
-    public static void updateNewMessages(){
-        NewMessagesConfig.get().reload();
-        newMessages = NewMessagesConfig.get();
-    }
-
-    /**
      * Reload messages config for GUIs.
      * */
     public static void updateMessages(){
-        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/module_conf/lang/" + SpigotPrison.getInstance().getConfig().getString("default-language") + ".yml");
-        messages = YamlConfiguration.loadConfiguration(file);
+        MessagesConfig.get().reload();
+        messages = MessagesConfig.get();
     }
 
     /**

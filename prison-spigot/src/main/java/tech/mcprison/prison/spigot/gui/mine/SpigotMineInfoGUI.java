@@ -1,14 +1,12 @@
 package tech.mcprison.prison.spigot.gui.mine;
 
-import java.util.List;
-
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
 
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
@@ -35,25 +33,25 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         PrisonGUI gui = new PrisonGUI(p, dimension, SpigotPrison.format("&3Mines -> MineInfo"));
 
         ButtonLore resetMineLore = new ButtonLore(createLore(
-                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_left_to_reset),
-                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_to_toggle),
-                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_toggle)),
-                createLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_skip_reset_instruction_1),
-                        newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_skip_reset_instruction_2),
-                        newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_skip_reset_instruction_3),
+                messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_left_to_reset),
+                messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_toggle),
+                messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_toggle)),
+                createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_skip_reset_instruction_1),
+                        messages.getString(MessagesConfig.StringID.spigot_gui_lore_skip_reset_instruction_2),
+                        messages.getString(MessagesConfig.StringID.spigot_gui_lore_skip_reset_instruction_3),
                         "",
-                        newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_set_mine_delay_instruction_1),
-                        newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_set_mine_delay_instruction_2),
-                        newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_set_mine_delay_instruction_3)));
+                        messages.getString(MessagesConfig.StringID.spigot_gui_lore_set_mine_delay_instruction_1),
+                        messages.getString(MessagesConfig.StringID.spigot_gui_lore_set_mine_delay_instruction_2),
+                        messages.getString(MessagesConfig.StringID.spigot_gui_lore_set_mine_delay_instruction_3)));
 
-        ButtonLore mineSpawnLore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_use), newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_spawnpoint));
-        ButtonLore minesNotificationsLore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_open), newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_edit));
-        ButtonLore minesTpLore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_teleport), newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_tp_to_mine));
-        ButtonLore blocksOfTheMineLore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_open), newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_blocks));
-        ButtonLore mineResetTimeLore = new ButtonLore(createLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_open)), createLore(
-                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_reset_time) + " &7" + mine.getResetTime()));
-        ButtonLore mineRenameLore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_rename), newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_minename) + " " + mineName);
-        ButtonLore closeGUILore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_close), null);
+        ButtonLore mineSpawnLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_use), messages.getString(MessagesConfig.StringID.spigot_gui_lore_spawnpoint));
+        ButtonLore minesNotificationsLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open), messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_edit));
+        ButtonLore minesTpLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_teleport), messages.getString(MessagesConfig.StringID.spigot_gui_lore_tp_to_mine));
+        ButtonLore blocksOfTheMineLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open), messages.getString(MessagesConfig.StringID.spigot_gui_lore_blocks));
+        ButtonLore mineResetTimeLore = new ButtonLore(createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open)), createLore(
+                messages.getString(MessagesConfig.StringID.spigot_gui_lore_reset_time) + " &7" + mine.getResetTime()));
+        ButtonLore mineRenameLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_rename), messages.getString(MessagesConfig.StringID.spigot_gui_lore_minename) + " " + mineName);
+        ButtonLore closeGUILore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_close), null);
 
         // Create the button, set the material, amount, lore and name
         gui.addButton(new Button(dimension-1, XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, SpigotPrison.format("&cClose")));
@@ -76,11 +74,11 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         }
 
         // Lore
-        ButtonLore mineShowItemLore = new ButtonLore(createLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_edit)), createLore(
-                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_show_item) + " &7" + xMaterial.name(),
-                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_show_item_description_1),
-                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_show_item_description_2),
-                newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_show_item_description_3)
+        ButtonLore mineShowItemLore = new ButtonLore(createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_edit)), createLore(
+                messages.getString(MessagesConfig.StringID.spigot_gui_lore_show_item) + " &7" + xMaterial.name(),
+                messages.getString(MessagesConfig.StringID.spigot_gui_lore_show_item_description_1),
+                messages.getString(MessagesConfig.StringID.spigot_gui_lore_show_item_description_2),
+                messages.getString(MessagesConfig.StringID.spigot_gui_lore_show_item_description_3)
         ));
 
         // ItemStack

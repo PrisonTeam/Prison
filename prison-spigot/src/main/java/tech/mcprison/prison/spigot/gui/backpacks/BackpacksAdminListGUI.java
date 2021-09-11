@@ -4,7 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
-import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
@@ -20,10 +20,10 @@ public class BackpacksAdminListGUI extends SpigotGUIComponents {
     private final Player p;
     private final String playerBackpackName;
     private final Configuration backpacksData = BackpacksUtil.get().getBackpacksData();
-    private final String loreShiftAndRightClickToDelete = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete);
-    private final String loreInfo = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_info);
-    private final String lorePlayerOwner = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_owner);
-    private final String loreBackpackID = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_backpack_id);
+    private final String loreShiftAndRightClickToDelete = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete);
+    private final String loreInfo = messages.getString(MessagesConfig.StringID.spigot_gui_lore_info);
+    private final String lorePlayerOwner = messages.getString(MessagesConfig.StringID.spigot_gui_lore_owner);
+    private final String loreBackpackID = messages.getString(MessagesConfig.StringID.spigot_gui_lore_backpack_id);
 
     public BackpacksAdminListGUI(Player p, String playerBackpackName){
         this.p = p;

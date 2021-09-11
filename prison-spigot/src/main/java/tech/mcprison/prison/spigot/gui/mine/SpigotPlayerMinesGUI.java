@@ -13,7 +13,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.configs.GuiConfig;
-import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
@@ -29,9 +29,9 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
     private final Player p;
     private final SpigotPlayer spigotPlayer;
     private final String permissionWarpPlugin = guiConfig.getString("Options.Mines.PermissionWarpPlugin");
-    private final String statusUnlockedMine = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_unlocked);
-    private final String clickToTeleport = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_teleport);
-    private final String statusLockedMine = newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_locked);
+    private final String statusUnlockedMine = messages.getString(MessagesConfig.StringID.spigot_gui_lore_unlocked);
+    private final String clickToTeleport = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_teleport);
+    private final String statusLockedMine = messages.getString(MessagesConfig.StringID.spigot_gui_lore_locked);
 
     public SpigotPlayerMinesGUI(Player p) {
         this.p = p;
@@ -49,14 +49,14 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
         // If the inventory is empty
         if (dimension == 0){
-            Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.NoMines"));
+            Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_mines_empty));
             p.closeInventory();
             return;
         }
 
         // If the dimension's too big, don't open the GUI
         if (dimension > 54){
-            Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.TooManyMines"));
+            Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_mines_too_many));
             p.closeInventory();
             return;
         }
@@ -107,7 +107,7 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
                     p.hasPermission(permission.substring(0, permission.length() - 1))){
                 material = ( mineMaterial == null ? Material.COAL_ORE : mineMaterial);
                 minesLore.addLineLoreDescription(SpigotPrison.format(statusUnlockedMine));
-                minesLore.addLineLoreDescription(SpigotPrison.format(clickToTeleport));
+                minesLore.addLineLoreAction(SpigotPrison.format(clickToTeleport));
             } else {
                 material = XMaterial.REDSTONE_BLOCK.parseMaterial();
                 minesLore.addLineLoreDescription(SpigotPrison.format(statusLockedMine));

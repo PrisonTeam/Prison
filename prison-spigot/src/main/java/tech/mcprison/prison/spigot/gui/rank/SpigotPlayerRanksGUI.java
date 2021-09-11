@@ -25,7 +25,7 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.configs.NewMessagesConfig;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
@@ -110,14 +110,14 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
         // Ensure ladder is present and that it has a rank:
         if ( ladder == null || !ladder.getLowestRank().isPresent()){
-            Output.get().sendWarn(new SpigotPlayer(getPlayer()), messages.getString("Message.NoRanksFoundHelp1") + guiConfig.getString("Options.Ranks.Ladder") + messages.getString("Message.NoRanksFoundHelp2"));
+            Output.get().sendWarn(new SpigotPlayer(getPlayer()), messages.getString(MessagesConfig.StringID.spigot_message_gui_ladder_empty) + " [" + guiConfig.getString("Options.Ranks.Ladder") + "]");
             getPlayer().closeInventory();
             return;
         }
 
         // Get the dimensions and if needed increases them
         if (ladder.getRanks().size() == 0) {
-            Output.get().sendWarn(new SpigotPlayer(getPlayer()), messages.getString("Message.NoRanksFound"));
+            Output.get().sendWarn(new SpigotPlayer(getPlayer()), messages.getString(MessagesConfig.StringID.spigot_message_gui_ranks_empty));
             return;
         }
 
@@ -184,10 +184,10 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
             rank = rank.getRankNext();
         }
 
-        ButtonLore rankupLore = new ButtonLore(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_click_to_rankup), newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_rankup_if_enough_money));
+        ButtonLore rankupLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_rankup), messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup_if_enough_money));
 
         // Add button.
-        gui.addButton(new Button(dimension - 5, XMaterial.EMERALD_BLOCK, rankupLore, SpigotPrison.format(newMessages.getString(NewMessagesConfig.StringID.spigot_gui_lore_rankup))));
+        gui.addButton(new Button(dimension - 5, XMaterial.EMERALD_BLOCK, rankupLore, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup))));
 
         // Open GUI.
         gui.open();
