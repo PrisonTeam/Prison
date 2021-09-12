@@ -100,7 +100,7 @@ public class PrisonUtilsMineBombs
 				
 				radius = Integer.parseInt( radiusSize );
 
-				MineBombs mBombs = new MineBombs();
+				MineBombs mBombs = MineBombs.getInstance();
 
 				
 				SpigotWorld world = (SpigotWorld) location.getWorld();

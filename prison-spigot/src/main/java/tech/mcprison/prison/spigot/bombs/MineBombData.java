@@ -37,12 +37,56 @@ public class MineBombData {
 	 * a chance if it is to be included, or excluded.
 	 * </p>
 	 */
-	private double chance;
+	// private double chance;
 	
 	
 	private String explosionShape;
 	
-	
-	
+	public MineBombData() {
+		super();
+		
+	}
+
+	public String getName() {
+		return name;
+	}
+	public void setName( String name ) {
+		this.name = name;
+	}
+
+	public String getItemType() {
+		return itemType;
+	}
+	public void setItemType( String itemType ) {
+		this.itemType = itemType;
+	}
+
+	public XMaterial getItem() {
+		return item;
+	}
+	public void setItem( XMaterial item ) {
+		this.item = item;
+	}
+
+	public List<String> getLore() {
+		return lore;
+	}
+	public void setLore( List<String> lore ) {
+		this.lore = lore;
+	}
+
+	public int getRadius() {
+		return radius;
+	}
+	public void setRadius( int radius ) {
+		this.radius = radius;
+	}
+
+	public String getExplosionShape() {
+		return explosionShape;
+	}
+	public void setExplosionShape( String explosionShape ) {
+		this.explosionShape = explosionShape;
+	}
 	
 }
