@@ -3227,7 +3227,7 @@ public class MinesCommands
 
 	@Command(identifier = "mines blockEvent add", description = "Adds a BlockBreak command to a mine.  " +
 			"For each block that is broke there will be a chance to run one of these commands. \n" +
-			"To send messages use {msg} or {broadcast} followed by the formatted message. " +
+			"To send messages use {msg}, {broadcast}, {actionBar}, or {title} followed by the formatted message. " +
 			"Can use placeholders {player} and {player_uid}. Use ; between multiple commands. \n" +
 			"Example: &7\\Q'token give {player} 1;{msg} &7You got &31 &7token!;tpa a'\\E&3 \n" +
 			"This command defaults to no permission and 'sync' task mode; " +

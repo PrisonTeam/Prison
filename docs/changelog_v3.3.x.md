@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-09-12
 
 
+* **Add placeholders {actionBar} and {title} to the blockEvent listing of placeholders that can be used.**
+They are shortcuts for the new prison utils commands.
+
+
 * **For the actionBar and title, translate the color codes so they work properly.**
 
 
