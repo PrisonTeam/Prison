@@ -13,7 +13,14 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.1 2021-09-08
+# 3.2.11-alpha.1 2021-09-12
+
+
+* **For the actionBar and title, translate the color codes so they work properly.**
+
+
+* **Hook up the auto features notification to use the new actionBar interface.**
+This "should" prevent duplicate messages from being sent to the player while the same message is displayed in the actionbar.
 
 
 * **Fixed an error about backpacks and lore transition:** A single lore was being used for the backpacks utility, if a server

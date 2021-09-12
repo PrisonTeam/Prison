@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import com.cryptomorin.xseries.messages.ActionBar;
 import com.cryptomorin.xseries.messages.Titles;
 
+import tech.mcprison.prison.util.Text;
+
 public abstract class Spigot19Player
 		extends Spigot18Blocks
 {
@@ -38,8 +40,9 @@ public abstract class Spigot19Player
 	//@SuppressWarnings( "deprecation" )
 	public void sendTitle( Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut ) {
 		
-		//player.sendTitle( title, subtitle );
-		
+		title = title == null ? null : Text.translateAmpColorCodes( title );
+		subtitle = subtitle == null ? null : Text.translateAmpColorCodes( subtitle );
+
 		Titles.sendTitle( player, fadeIn, stay, fadeOut, title, subtitle );
 		
 	}
@@ -47,7 +50,8 @@ public abstract class Spigot19Player
 	@Override
 	public void sendActionBar( Player player, String actionBar ) {
 		
-		ActionBar.sendActionBar( player, actionBar );
+		String message = Text.translateAmpColorCodes( actionBar );
+		ActionBar.sendActionBar( player, message );
 		
 		// Was using the following until it was replaced with XSeries' ActionBar:
 //		player.spigot().sendMessage( ChatMessageType.ACTION_BAR, 
