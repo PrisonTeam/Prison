@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.bombs;
+package tech.mcprison.prison.bombs;
 
 import java.util.Map;
 import java.util.TreeMap;

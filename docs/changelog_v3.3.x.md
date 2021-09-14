@@ -13,7 +13,13 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.1 2021-09-12
+# 3.2.11-alpha.1 2021-09-14
+
+
+* **Significant progress on Prison's Mine Bombs:**
+Moved the mine bombs primary classes to the prison core so it's accessible from all packages.
+Setup 4 default mine bombs if the commands are used and there are none defined.
+Setup a new /prison utils bomb commands to list all bombs and to give players bombs.  These are not complete and fully tested yet.
 
 
 * **Some initial work to setup the mine bombs configs.**

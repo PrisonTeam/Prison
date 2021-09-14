@@ -1,8 +1,9 @@
-package tech.mcprison.prison.spigot.bombs;
+package tech.mcprison.prison.bombs;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.cryptomorin.xseries.XMaterial;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 
 public class MineBombData {
 
@@ -20,7 +21,7 @@ public class MineBombData {
 	 * for the bomb.  This is converted from the String itemType.
 	 * </p>
 	 */
-	private transient XMaterial item;
+	private transient PrisonBlock item;
 	
 	
 	private List<String> lore;
@@ -42,10 +43,37 @@ public class MineBombData {
 	
 	private String explosionShape;
 	
+	
+	private String description;
+	
+	
 	public MineBombData() {
 		super();
 		
 	}
+	
+	
+	public MineBombData( String name, String itemType, String explosionShape, 
+				int radius, String... lores ) {
+		this();
+		
+		this.name = name;
+		this.itemType = itemType;
+		
+		this.explosionShape = explosionShape;
+		this.radius = radius;
+		
+		this.lore = new ArrayList<>();
+		
+		if ( lores != null ) {
+			for ( String l : lores ) {
+				this.lore.add( l );
+			}
+		}
+		
+	}
+	
+	
 
 	public String getName() {
 		return name;
@@ -61,10 +89,10 @@ public class MineBombData {
 		this.itemType = itemType;
 	}
 
-	public XMaterial getItem() {
+	public PrisonBlock getItem() {
 		return item;
 	}
-	public void setItem( XMaterial item ) {
+	public void setItem( PrisonBlock item ) {
 		this.item = item;
 	}
 
@@ -87,6 +115,13 @@ public class MineBombData {
 	}
 	public void setExplosionShape( String explosionShape ) {
 		this.explosionShape = explosionShape;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription( String description ) {
+		this.description = description;
 	}
 	
 }

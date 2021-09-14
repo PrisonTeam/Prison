@@ -1,15 +1,16 @@
-package tech.mcprison.prison.spigot.bombs;
+package tech.mcprison.prison.bombs;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import tech.mcprison.prison.file.JsonFileIO;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.Location;
 
 public class MineBombs
 {
-	public static final String MINE_BOMBS_FILE_NAME = "mineBombsConifg.json";
+	public static final String MINE_BOMBS_FILE_NAME = "mineBombsConfig.json";
 	public static final String MINE_BOMBS_PATH_NAME = "module_conf/mines";
 	
 	private static MineBombs instance;
@@ -27,6 +28,8 @@ public class MineBombs
 	
 	private MineBombs() {
 		super();
+		
+		this.configData = new MineBombsConfigData();
 		
 		loadConfigJson();
 	}
@@ -67,10 +70,21 @@ public class MineBombs
 		
 		File configFile = getConfigFile( fio );
 		
-		MineBombsConfigData configs = 
-				(MineBombsConfigData) fio.readJsonFile( configFile, getConfigData() );
+		if ( !configFile.exists() ) {
+			setupDefaultMineBombData();
+		}
 		
-		setConfigData( configs );
+		else {
+			
+			MineBombsConfigData configs = 
+					(MineBombsConfigData) fio.readJsonFile( configFile, getConfigData() );
+			
+			if ( configs != null && configs.getBombs().size() > 0 ) {
+				
+				getConfigData().getBombs().putAll( configs.getBombs() );
+				
+			}
+		}
 	}
 	
 	public List<Location> calculateSphere( Location loc, int radius, boolean hollow ) {
@@ -105,6 +119,46 @@ public class MineBombs
 			}
 		}
 		return results;
+	}
+	
+	public void setupDefaultMineBombData()
+	{
+		if ( getConfigData().getBombs().size() == 0 ) {
+
+			MineBombData mbDataSmall = new MineBombData( 
+					"SmallBomb", "brewing_stand", "sphere", 2, "Small Mine Bomb" );
+			mbDataSmall.setDescription("A small mine bomb made with some chemicals and a brewing stand.");
+			
+			MineBombData mbDataMedium = new MineBombData( 
+					"MediumBomb", "fireworks", "sphere", 5, "Medium Mine Bomb" );
+			mbDataMedium.setDescription("A medium mine bomb made from leftover fireworks, " +
+					"but supercharged with a strange green glowing liquid.");
+			
+			MineBombData mbDataLarge = new MineBombData( 
+					"LargeBomb", "tnt", "sphereHollow", 12, "Large Mine Bomb" );
+			mbDataLarge.setDescription("A large mine bomb made from TNT with some strange parts " +
+					"that maybe be " +
+					"described as alien technology.");
+			
+			MineBombData mbDataOof = new MineBombData( 
+					"OofBomb", "tnt_minecard", "sphereHollow", 19, "Oof Mine Bomb" );
+			mbDataOof.setDescription("An oof-ably large mine bomb made with a minecart heaping with TNT.  " +
+					"Unlike the large mine bomb, this one obviously is built with alien technology.");
+			
+			
+			getConfigData().getBombs().put( mbDataSmall.getName(), mbDataSmall );
+			getConfigData().getBombs().put( mbDataMedium.getName(), mbDataMedium );
+			getConfigData().getBombs().put( mbDataLarge.getName(), mbDataLarge );
+			getConfigData().getBombs().put( mbDataOof.getName(), mbDataOof );
+			
+			saveConfigJson();
+			
+			Output.get().logInfo( "Mine bombs: setup default values." );
+		}
+		else {
+			Output.get().logInfo( "Could not generate a mine bombs save file since at least one already exists." );
+		}
+		
 	}
 
 	public MineBombsConfigData getConfigData() {

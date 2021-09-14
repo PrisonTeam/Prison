@@ -2,16 +2,18 @@ package tech.mcprison.prison.spigot.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 
+import tech.mcprison.prison.bombs.MineBombData;
+import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.api.ExplosiveBlockBreakEvent;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
-import tech.mcprison.prison.spigot.bombs.MineBombs;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.util.Location;
@@ -127,6 +129,118 @@ public class PrisonUtilsMineBombs
 			}
 		}
 	}
+
+	
+
+	@Command(identifier = "prison utils bomb list", 
+			description = "A list of all available bombs.",
+		onlyPlayers = false, 
+		permissions = "prison.utils.bombs" )
+	public void utilsMineBombsList( CommandSender sender
+			
+			) {
+		
+		if ( !isEnableMineBombs() ) {
+			
+			Output.get().logInfo( "Prison's utils command mine bombs is disabled in modules.yml." );
+		}
+		else {
+			
+			MineBombs mBombs = MineBombs.getInstance();
+			
+			Set<String> keys = mBombs.getConfigData().getBombs().keySet();
+			for ( String key : keys ) {
+				
+				MineBombData bomb = mBombs.getConfigData().getBombs().get( key );
+				
+				String message = String.format( 
+						"%-12s %-7s Radius= %s (%s)\n  %s", 
+						bomb.getName(), bomb.getExplosionShape(), Integer.toString(bomb.getRadius()),
+						bomb.getItemType(), bomb.getDescription() );
+				
+				sender.sendMessage( message );
+			}
+			
+		}
+	}
+
+	
+	@Command(identifier = "prison utils bomb give", 
+			description = "Gives the player a mine bomb. Can also provide a list of " +
+					"all available bombs.",
+					onlyPlayers = false, 
+					permissions = "prison.utils.bombs",
+					altPermissions = "prison.utils.bombs.others")
+	public void utilsMineBombsGive( CommandSender sender, 
+			@Arg(name = "playerName", description = "Player name") String playerName,
+			
+			@Arg(name = "bombName", description = "The bomb name, or 'list' to show all available " +
+					"bombs. [round]", 
+					def = "list") String bombName,
+			@Arg(name = "quantity", description = "Quantity of bombs to give. [1 > +]",
+			def = "1" )
+	String quantity
+	
+			) {
+		
+		if ( !isEnableMineBombs() ) {
+			
+			Output.get().logInfo( "Prison's utils command mine bombs is disabled in modules.yml." );
+		}
+		else {
+			
+			
+			if ( "list".equalsIgnoreCase( bombName ) ) {
+				
+				utilsMineBombsList( sender );
+				return;
+			}
+			
+			SpigotPlayer player = checkPlayerPerms( sender, playerName, 
+					"prison.utils.bomb", "prison.utils.bomb.others" );
+			
+			if ( player != null ) {
+				
+				if ( playerName != null && !playerName.equalsIgnoreCase( player.getName() ) ) {
+					// Need to shift the player's name over to the message:
+					
+				}
+				
+				
+				if ( bombName == null ) {
+					Output.get().logInfo( "Prison utils giveBomb: You need to specify a bomb name, or " +
+							"use 'list' to show all available bombs. " );
+					return;
+				}
+				
+				int count = 1;
+				
+				count = Integer.parseInt( quantity );
+				
+				MineBombs mBombs = MineBombs.getInstance();
+				
+				
+//				if ( "list".equalsIgnoreCase( bombName ) ) {
+//					
+//					Set<String> keys = mBombs.getConfigData().getBombs().keySet();
+//					for ( String key : keys ) {
+//						
+//						MineBombData bomb = mBombs.getConfigData().getBombs().get( key );
+//						
+//						String message = String.format( 
+//								"%-12s %-7s Radius= %s (%s)\n  %s", 
+//								bomb.getName(), bomb.getExplosionShape(), Integer.toString(bomb.getRadius()),
+//								bomb.getItemType(), bomb.getDescription() );
+//						
+//						sender.sendMessage( message );
+//					}
+//				}
+				
+				
+			}
+		}
+	}
+	
 
 	public boolean isEnableMineBombs() {
 		return enableMineBombs;
