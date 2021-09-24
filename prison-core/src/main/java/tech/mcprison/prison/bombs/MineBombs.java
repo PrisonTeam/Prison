@@ -130,7 +130,7 @@ public class MineBombs
 			mbDataSmall.setDescription("A small mine bomb made with some chemicals and a brewing stand.");
 			
 			MineBombData mbDataMedium = new MineBombData( 
-					"MediumBomb", "fireworks", "sphere", 5, "Medium Mine Bomb" );
+					"MediumBomb", "firework_rocket", "sphere", 5, "Medium Mine Bomb" );
 			mbDataMedium.setDescription("A medium mine bomb made from leftover fireworks, " +
 					"but supercharged with a strange green glowing liquid.");
 			
@@ -141,22 +141,23 @@ public class MineBombs
 					"described as alien technology.");
 			
 			MineBombData mbDataOof = new MineBombData( 
-					"OofBomb", "tnt_minecard", "sphereHollow", 19, "Oof Mine Bomb" );
+					"OofBomb", "tnt_minecart", "sphereHollow", 19, "Oof Mine Bomb" );
 			mbDataOof.setDescription("An oof-ably large mine bomb made with a minecart heaping with TNT.  " +
 					"Unlike the large mine bomb, this one obviously is built with alien technology.");
 			
 			
-			getConfigData().getBombs().put( mbDataSmall.getName(), mbDataSmall );
-			getConfigData().getBombs().put( mbDataMedium.getName(), mbDataMedium );
-			getConfigData().getBombs().put( mbDataLarge.getName(), mbDataLarge );
-			getConfigData().getBombs().put( mbDataOof.getName(), mbDataOof );
+			getConfigData().getBombs().put( mbDataSmall.getName().toLowerCase(), mbDataSmall );
+			getConfigData().getBombs().put( mbDataMedium.getName().toLowerCase(), mbDataMedium );
+			getConfigData().getBombs().put( mbDataLarge.getName().toLowerCase(), mbDataLarge );
+			getConfigData().getBombs().put( mbDataOof.getName().toLowerCase(), mbDataOof );
 			
 			saveConfigJson();
 			
 			Output.get().logInfo( "Mine bombs: setup default values." );
 		}
 		else {
-			Output.get().logInfo( "Could not generate a mine bombs save file since at least one already exists." );
+			Output.get().logInfo( "Could not generate a mine bombs save file since at least one " +
+						"mine bomb already exists." );
 		}
 		
 	}

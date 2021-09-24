@@ -6,14 +6,18 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.bombs.MineBombData;
 import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.api.ExplosiveBlockBreakEvent;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.util.Location;
@@ -154,11 +158,13 @@ public class PrisonUtilsMineBombs
 				MineBombData bomb = mBombs.getConfigData().getBombs().get( key );
 				
 				String message = String.format( 
-						"%-12s %-7s Radius= %s (%s)\n  %s", 
+						"%-12s %-7s Radius= %s (%s)\n   %s", 
 						bomb.getName(), bomb.getExplosionShape(), Integer.toString(bomb.getRadius()),
 						bomb.getItemType(), bomb.getDescription() );
 				
-				sender.sendMessage( message );
+//				sender.sendMessage( message );
+				
+				Output.get().log( message, LogLevel.PLAIN );
 			}
 			
 		}
@@ -175,7 +181,7 @@ public class PrisonUtilsMineBombs
 			@Arg(name = "playerName", description = "Player name") String playerName,
 			
 			@Arg(name = "bombName", description = "The bomb name, or 'list' to show all available " +
-					"bombs. [round]", 
+					"bombs. [list]", 
 					def = "list") String bombName,
 			@Arg(name = "quantity", description = "Quantity of bombs to give. [1 > +]",
 			def = "1" )
@@ -213,12 +219,91 @@ public class PrisonUtilsMineBombs
 					return;
 				}
 				
+				
 				int count = 1;
 				
 				count = Integer.parseInt( quantity );
 				
 				MineBombs mBombs = MineBombs.getInstance();
 				
+				MineBombData bomb = mBombs.getConfigData().getBombs().get( bombName );
+				
+				if ( bomb != null ) {
+					
+					XMaterial xBomb = XMaterial.matchXMaterial( bomb.getItemType() ).orElse( null );
+					
+					if ( xBomb != null ) {
+						
+						SpigotItemStack bombs = new SpigotItemStack( xBomb.parseItem() );
+						if ( bombs != null ) {
+
+							bombs.setDisplayName( bomb.getName() );
+							bombs.setAmount( count );
+							
+							
+							List<String> lore = bombs.getLore();
+							
+							lore.add( "&4Prison Mine Bomb:" );
+							lore.add( "  &7" + bomb.getName() );
+							lore.add( " " );
+							
+							lore.add( "Size, Diameter: " + ( 1 + 2 * bomb.getRadius()) );
+							lore.add( "Shape: " + bomb.getExplosionShape() );
+							
+							String[] desc = bomb.getDescription().split( " " );
+							StringBuilder sb = new StringBuilder();
+							
+							for ( String d : desc ) {
+								
+								sb.append( d ).append( " " );
+								
+								if ( sb.length() > 30 ) {
+									sb.insert( 0, "  " );
+									
+									lore.add( sb.toString() );
+									sb.setLength( 0 );
+								}
+							}
+							if ( sb.length() > 0 ) {
+								sb.insert( 0, "  " );
+								
+								lore.add( sb.toString() );
+							}
+//							lore.add( " " + bomb.getDescription() );
+							
+							lore.add( " " );
+							
+							bombs.setLore( lore );
+							
+							
+							player.getInventory().addItem( bombs );
+						}
+						
+//						else {
+//							
+//							String message = "A mine bomb with the name of %s, is unable to generate an ItemStack. ";
+//							
+//							sender.sendMessage( String.format( message, bombName) );
+//						}
+						
+					}
+					
+					else {
+						
+						String message = "A mine bomb with the name of %s, has an invalid itemType value. " +
+								"'%s' does not exist in the XMaterial types. Contact Prison support for help " +
+								"in finding the correct values to use. Google: 'XSeries XMaterial'";
+						
+						sender.sendMessage( String.format( message, bombName, bomb.getItemType() ) );
+					}
+					
+				}
+				
+				else {
+					String message = "A mine bomb with the name of %s does not exist.";
+					
+					sender.sendMessage( String.format( message, bombName ) );
+				}
 				
 //				if ( "list".equalsIgnoreCase( bombName ) ) {
 //					
