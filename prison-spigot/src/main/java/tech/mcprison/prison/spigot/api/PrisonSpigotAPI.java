@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -18,17 +19,21 @@ import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
+import tech.mcprison.prison.selection.Selection;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.MaterialType;
 
 /**
@@ -163,7 +168,7 @@ public class PrisonSpigotAPI {
 	}
 	
 	/**
-	 * <p>Provides a list of all mines that contains the specfied block.
+	 * <p>Provides a list of all mines that contains the specified block.
 	 * </p>
 	 * 
 	 * @param prisonBlockName - The prison block name
@@ -309,6 +314,71 @@ public class PrisonSpigotAPI {
     	return results;
 	}
 
+	/**
+	 * <p>This creates a prison Location. It must include a valid world, and
+	 * then the x, y, z coordinates.
+	 * </p>
+	 * 
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return
+	 */
+	public Location createLocation( World world, int x, int y, int z ) {
+		Location results = null;
+		
+		if ( world != null ) {
+			
+			results = new Location( new SpigotWorld(world), x, y, z );
+		}
+		return results;
+	}
+	
+	/**
+	 * <p>This creates a mine at the given two coordinates.  The provided tag
+	 * value is optional.  Minimal checks are performed.  This checks to ensure the
+	 * mines module is active, and a mine by the same name does not exist.
+	 * </p>
+	 * 
+	 * @param mineName
+	 * @param tag
+	 * @param location1
+	 * @param location2
+	 * @return
+	 */
+	public boolean createMine( String mineName, String tag, 
+					Location location1, Location location2 ) {
+		boolean results = false;
+		
+		if ( mineName != null && tag != null && location1 != null && location2 != null ) {
+			PrisonMines mm = getPrisonMineManager();
+			if ( mm !=  null ) {
+				
+				if ( mm.getMine(mineName) != null) {
+
+					String message = String.format( "Cannot create requested mine. " +
+							"Mine already exists by the name of '%s'.",
+							mineName);
+					Output.get().logError( message );
+					
+		    	}
+				else {
+					Selection selection = new Selection( location1, location2 );
+					
+					Mine mine = new Mine(mineName, selection);
+					
+					if ( tag != null ) {
+						mine.setTag( tag );
+					}
+					
+			        mm.getMineManager().add(mine);
+				}
+			}
+		}
+		
+		return results;
+	}
 
 	private TreeMap<Long, Mine> getPlayerCache() {
 		return getPrisonMineManager().getPlayerCache();
