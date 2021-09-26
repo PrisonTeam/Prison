@@ -47,6 +47,9 @@ public class MineBombData {
 	private String description;
 	
 	
+	private boolean activated = false;
+	
+	
 	public MineBombData() {
 		super();
 		
@@ -74,6 +77,14 @@ public class MineBombData {
 	}
 	
 	
+	public MineBombData clone() {
+		MineBombData cloned = new MineBombData( getName(), getItemType(), getExplosionShape(),
+				getRadius() );
+		for ( String l : lore ) {
+			cloned.getLore().add( l );
+		}
+		return cloned;
+	}
 
 	public String getName() {
 		return name;
@@ -122,6 +133,13 @@ public class MineBombData {
 	}
 	public void setDescription( String description ) {
 		this.description = description;
+	}
+
+	public boolean isActivated() {
+		return activated;
+	}
+	public void setActivated( boolean activated ) {
+		this.activated = activated;
 	}
 	
 }

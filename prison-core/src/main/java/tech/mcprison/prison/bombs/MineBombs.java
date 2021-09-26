@@ -15,7 +15,7 @@ public class MineBombs
 	
 	private static MineBombs instance;
 	
-	private MineBombsConfigData configData;
+	private final MineBombsConfigData configData;
 	
 	
 	
@@ -44,6 +44,27 @@ public class MineBombs
 			}
 		}
 		return instance;
+	}
+	
+	/**
+	 * <p>This finds a bomb with the given name, and returns a clone.  The clone is
+	 * important since individual instances will set the isActivated() variable to 
+	 * true if the bomb is active.  If it's activated, then that indicates the 
+	 * bomb will be used and the bomb was removed from the player's inventory.
+	 * </p>
+	 * 
+	 * @param bombName
+	 * @return
+	 */
+	public MineBombData findBomb( String bombName ) {
+		MineBombData bombOriginal = null;
+
+		if ( bombName != null ) {
+			
+			bombOriginal = getConfigData().getBombs().get( bombName.toLowerCase() );
+		}
+		
+		return bombOriginal.clone();
 	}
 	
 	public void saveConfigJson() {
@@ -164,9 +185,6 @@ public class MineBombs
 
 	public MineBombsConfigData getConfigData() {
 		return configData;
-	}
-	public void setConfigData( MineBombsConfigData configData ) {
-		this.configData = configData;
 	}
 
 }

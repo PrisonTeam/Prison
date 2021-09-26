@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import tech.mcprison.prison.bombs.MineBombData;
+
 /**
  * <p>This is an example of an explosive event that should be used for 
  * enchantments that will break more than one block at a time.
@@ -50,6 +52,7 @@ public class ExplosiveBlockBreakEvent
 	
 	private String triggeredBy;
 	
+	private MineBombData mineBomb;
 	
 	public ExplosiveBlockBreakEvent( Block theBlock, Player player,
 						List<Block> explodedBlocks, String triggeredBy ) {
@@ -102,6 +105,13 @@ public class ExplosiveBlockBreakEvent
 	}
 	public void setTriggeredBy( String triggeredBy ) {
 		this.triggeredBy = triggeredBy;
+	}
+	
+	public MineBombData getMineBomb() {
+		return mineBomb;
+	}
+	public void setMineBomb( MineBombData mineBomb ) {
+		this.mineBomb = mineBomb;
 	}
 	
 	@Override

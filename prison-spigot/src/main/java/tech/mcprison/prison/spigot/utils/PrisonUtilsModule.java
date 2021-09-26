@@ -1,9 +1,11 @@
 package tech.mcprison.prison.spigot.utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.spigot.SpigotPrison;
 
 public class PrisonUtilsModule
 	extends Module 
@@ -129,6 +131,10 @@ public class PrisonUtilsModule
 				utils.setEnableMineBombs( isEnabled( "utils.bombs.bombs", true ) );
 				
 				Prison.get().getCommandHandler().registerCommands( utils );
+				
+				// Only Register the Bomb Listener if bombs are active:
+				Bukkit.getPluginManager().registerEvents(
+								new PrisonBombListener(), SpigotPrison.getInstance());
 				
 			}
 			
