@@ -358,7 +358,7 @@ public class OnBlockBreakEventCore
                 	// doAction returns a boolean that indicates if the event should be canceled or not:
                 	if ( doAction( sBlock, pmEvent.getMine(), pmEvent.getPlayer(), debugInfo ) ) {
 
-                		if ( !isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
+                		if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
                 			e.setCancelled( true );
                 		}
                 		else {
@@ -694,7 +694,7 @@ public class OnBlockBreakEventCore
 	                	if ( doAction( pmEvent.getMine(), pmEvent.getPlayer(), 
 	                				pmEvent.getExplodedBlocks(), BlockEventType.TEXplosion, triggered, debugInfo ) ) {
 	                		
-	                		if ( !isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
+	                		if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
 	                			
 	                			e.setCancelled( true );
 	                		}
@@ -888,7 +888,7 @@ public class OnBlockBreakEventCore
 	                	if ( doAction( pmEvent.getMine(), e.getPlayer(), pmEvent.getExplodedBlocks(), 
 	                								BlockEventType.CEXplosion, triggered, debugInfo ) ) {
 	                		
-	                		if ( !isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
+	                		if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
 	                			
 	                			e.setCancelled( true );
 	                		}
@@ -1013,7 +1013,7 @@ public class OnBlockBreakEventCore
 	                	if ( doAction( pmEvent.getMine(), e.getPlayer(), pmEvent.getExplodedBlocks(), 
 	                				BlockEventType.PEExplosive, triggered, debugInfo ) ) {
 	                		
-	                		if ( !isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
+	                		if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
 	                			
 	                			e.setCancelled( true );
 	                		}
@@ -1111,7 +1111,7 @@ public class OnBlockBreakEventCore
 						if ( doAction( pmEvent.getMine(), e.getPlayer(), pmEvent.getExplodedBlocks(), 
 								BlockEventType.PrisonExplosion, triggered, debugInfo ) ) {
 							
-							if ( !isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
+							if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
 								
 								e.setCancelled( true );
 							}

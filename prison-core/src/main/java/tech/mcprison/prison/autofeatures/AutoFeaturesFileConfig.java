@@ -49,8 +49,12 @@ public class AutoFeaturesFileConfig {
     		
 	    	blockBreakEvents(options),
 	    	
+	    		// Setting this to true will cancel the block break events (normal prison behavior):
 	    		cancelAllBlockBreakEvents(blockBreakEvents, true),
-	    		cancelAllBlockEventBlockDrops(blockBreakEvents, true),
+	    		// Setting this to false will not zero out the block drops (normal prison behavior).
+	    		// When set to true, it will zero it out so if the block break event is not cancleed,
+	    		// then it will prevent double drops:
+	    		cancelAllBlockEventBlockDrops(blockBreakEvents, false),
 
 	    		
 	    		blockBreakEventPriority(blockBreakEvents, "LOW"),

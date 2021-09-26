@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-09-26
 
 
+* **Adjustments to the new auto features for cancel block break events and block drops.**
+
+
 * **Removal of some auto feature commented out old code.**
 
 
