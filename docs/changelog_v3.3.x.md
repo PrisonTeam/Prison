@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.1 2021-09-25
+# 3.2.11-alpha.1 2021-09-26
+
+
+* **Added a listener for PlayerInteractEvent.**
 
 
 * **Add a new feature to the PrisonSpigotAPI to allow for the creation of a new mine through the API.**

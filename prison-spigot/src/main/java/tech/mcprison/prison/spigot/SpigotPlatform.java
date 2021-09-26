@@ -42,6 +42,7 @@ import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
 
@@ -2133,6 +2134,20 @@ public class SpigotPlatform
 			if ( eventDisplay != null ) {
 				sb.append( eventDisplay.toStringBuilder() );
 			}
+		}
+		
+		return sb.toString();
+	}
+	
+	@Override
+	public String dumpEventListenersPlayerInteractEvents() {
+		StringBuilder sb = new StringBuilder();
+		
+		ChatDisplay eventDisplay = dumpEventListenersChatDisplay(
+								"PlayerInteractEvent", 
+								new SpigotHandlerList( PlayerInteractEvent.getHandlerList()) );
+		if ( eventDisplay != null ) {
+			sb.append( eventDisplay.toStringBuilder() );
 		}
 		
 		return sb.toString();

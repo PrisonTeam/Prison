@@ -362,6 +362,11 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
+	public String dumpEventListenersPlayerInteractEvents() {
+		return "";
+	}
+	
+	@Override
 	public void testPlayerUtil( UUID uuid ) {
 		
 	}

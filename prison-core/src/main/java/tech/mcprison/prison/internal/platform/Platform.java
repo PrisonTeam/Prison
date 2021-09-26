@@ -370,6 +370,8 @@ public interface Platform {
 
 	public void traceEventListenersBlockBreakEvents( CommandSender sender );
 
+	public String dumpEventListenersPlayerInteractEvents();
+
 	
 	public void testPlayerUtil( UUID uuid );
 	

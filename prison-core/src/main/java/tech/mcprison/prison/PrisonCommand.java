@@ -1473,7 +1473,7 @@ public class PrisonCommand
 			description = "Provides a detailed list of all registered event listeners for" +
 					"the various event types.  BlockBreak listeners will include all " +
 					"listeners that are being monitored within auto features. " +
-				"[blockBreak, traceBlockBreak, chat]"
+				"[blockBreak, traceBlockBreak, chat, playerInteract]"
 					) String listener
     		) {
 		
@@ -1500,6 +1500,11 @@ public class PrisonCommand
     		Prison.get().getPlatform().traceEventListenersBlockBreakEvents( sender );
     		
     		return;
+    	}
+    	
+    	if ( "playerInteract".equalsIgnoreCase( listener ) ) {
+    		
+    		results = Prison.get().getPlatform().dumpEventListenersPlayerInteractEvents();
     	}
     	
 		if ( results != null ) {
