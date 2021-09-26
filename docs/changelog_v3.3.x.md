@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-09-26
 
 
+* **New auto features settings: Able to prevent event canceling and also control if the drops are cleared.**
+This has not been tested too much, but it may help make prison more compatible with other plugins that are needing to handle the block break events.
+
+
 * **Fortune on a tool was appearing as a negative value: -1000.**
 Not sure how it became negative, but this will better deal with negative values.
 

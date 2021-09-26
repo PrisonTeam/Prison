@@ -296,7 +296,8 @@ public class SpigotBlock implements Block {
         return results;
     }
 
-    @Override public List<ItemStack> getDrops() {
+    @Override 
+    public List<ItemStack> getDrops() {
         List<ItemStack> ret = new ArrayList<>();
 
         if ( getWrapper() != null ) {
@@ -321,6 +322,17 @@ public class SpigotBlock implements Block {
 
         return ret;
     }
+    
+    /**
+     * <p>This clears the drops for the given block, so if the event is not canceled, it will
+ 	 * not result in duplicate drops.
+	 * </p>
+     */
+    public void clearDrops() {
+
+    	getWrapper().getDrops().clear();
+    }
+
     
 //    public List<SpigotItemStack> getDrops(SpigotItemStack tool) {
 //    	List<SpigotItemStack> ret = new ArrayList<>();

@@ -23,7 +23,6 @@ import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
-import tech.mcprison.prison.autofeatures.PlayerMessaging.MessageType;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
@@ -38,7 +37,6 @@ import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
-import tech.mcprison.prison.spigot.utils.tasks.PlayerMessagingTask;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Text;
 
@@ -426,6 +424,13 @@ public class AutoManagerFeatures
 		List<SpigotItemStack> drops = new ArrayList<>( SpigotUtil.getDrops(block, itemInHand) );
 		
 		
+		// This clears the drops for the given block, so if the event is not canceled, it will
+		// not result in duplicate drops.
+		if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
+			block.clearDrops();
+		}
+		
+		
 		if (drops != null && drops.size() > 0 ) {
 			
 			// Need better drop calculation that is not using the getDrops function.
@@ -499,7 +504,14 @@ public class AutoManagerFeatures
 		// plus there are some extra items, such as flint, that will never be dropped.
 		List<SpigotItemStack> drops = new ArrayList<>( SpigotUtil.getDrops(block, itemInHand) );
 
-
+		
+		// This clears the drops for the given block, so if the event is not canceled, it will
+		// not result in duplicate drops.
+		if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
+			block.clearDrops();
+		}
+		
+		
 		if (drops != null && drops.size() > 0 ) {
 
 			// Need better drop calculation that is not using the getDrops function.

@@ -1017,6 +1017,12 @@ public class SpigotUtil {
 	return ret;
 }
     
+  
+//  public static void clearDrops(SpigotBlock block) {
+//	  
+//	  block.getWrapper().getDrops().clear();;
+//  }
+  
   /*
    * InventoryType
    */

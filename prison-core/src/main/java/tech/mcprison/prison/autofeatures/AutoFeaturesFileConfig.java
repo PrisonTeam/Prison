@@ -49,7 +49,11 @@ public class AutoFeaturesFileConfig {
     		
 	    	blockBreakEvents(options),
 	    	
-		    	blockBreakEventPriority(blockBreakEvents, "LOW"),
+	    		cancelAllBlockBreakEvents(blockBreakEvents, true),
+	    		cancelAllBlockEventBlockDrops(blockBreakEvents, true),
+
+	    		
+	    		blockBreakEventPriority(blockBreakEvents, "LOW"),
 
 		    	isProcessTokensEnchantExplosiveEvents(blockBreakEvents, false),
 		    	TokenEnchantBlockExplodeEventPriority(blockBreakEvents, "DISABLED"),
@@ -232,12 +236,12 @@ public class AutoFeaturesFileConfig {
 		    	
 		    
 		    	
-	    	debug(options),
-	    		isDebugSupressOnBlockBreakEventCancels(debug, false),
-	    		isDebugSupressOnTEExplodeEventCancels(debug, false),
-	    		isDebugSupressOnCEBlastUseEventCancels(debug, false), 
-	    		isDebugSupressOnPEExplosiveEventCancels(debug, false),
-	    		isDebugSupressOnPrisonMinesBlockBreakEventCancels(debug, false)
+//	    	debug(options),
+//	    		isDebugSupressOnBlockBreakEventCancels(debug, false),
+//	    		isDebugSupressOnTEExplodeEventCancels(debug, false),
+//	    		isDebugSupressOnCEBlastUseEventCancels(debug, false), 
+//	    		isDebugSupressOnPEExplosiveEventCancels(debug, false),
+//	    		isDebugSupressOnPrisonMinesBlockBreakEventCancels(debug, false)
 
     	;
 
