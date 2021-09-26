@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-09-26
 
 
+* **Fortune on a tool was appearing as a negative value: -1000.**
+Not sure how it became negative, but this will better deal with negative values.
+
+
 * **Added a listener for PlayerInteractEvent.**
 
 

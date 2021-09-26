@@ -143,7 +143,7 @@ public class AutoManagerFeatures
 		}
 		
 		int maxFortuneLevel = getInteger( AutoFeatures.fortuneMultiplierMax );
-		if ( maxFortuneLevel != 0 && results > maxFortuneLevel ) {
+		if ( maxFortuneLevel > 0 && results > maxFortuneLevel ) {
 			results = (short) maxFortuneLevel;
 		}
 		
