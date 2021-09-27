@@ -2,12 +2,15 @@ package tech.mcprison.prison.cache;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.TreeMap;
 
 import tech.mcprison.prison.autofeatures.PlayerMessaging;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 
 /**
@@ -87,6 +90,7 @@ public class PlayerCachePlayerData {
 	private transient PlayerMessaging playerMessaging;
 	
 	
+	private List<Inventory> backpacks;
 	
 	private transient boolean dirty = false;
 	
@@ -118,6 +122,8 @@ public class PlayerCachePlayerData {
 //		this.sessionLastLocation = null;
 		
 		this.playerMessaging = new PlayerMessaging();
+		
+		this.backpacks = new ArrayList<>();
 		
 	}
 	
@@ -537,6 +543,13 @@ public class PlayerCachePlayerData {
 	}
 	public void setPlayerMessaging( PlayerMessaging playerMessaging ) {
 		this.playerMessaging = playerMessaging;
+	}
+
+	public List<Inventory> getBackpacks() {
+		return backpacks;
+	}
+	public void setBackpacks( List<Inventory> backpacks ) {
+		this.backpacks = backpacks;
 	}
 
 	public boolean isDirty() {
