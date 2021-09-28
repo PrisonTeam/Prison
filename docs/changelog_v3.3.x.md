@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.1 2021-09-26
+# 3.2.11-alpha.1 2021-09-28
+
+
+* **Bug fix: Logic was corrected to handle the double negative correctly.**
+The was an issue with the /mines set area command when the mine's area was larger than 25,000 blocks.  They have to enter either "confirm" or "yes".  The bug would require them to enter both to create the mine.
 
 
 * **Added an example of possible backpack object to the PlayerCachePlayerData object.**

@@ -2252,8 +2252,8 @@ public class MinesCommands
         Bounds selectedBounds = selection.asBounds();
         
         if ( selectedBounds.getTotalBlockCount() > 25000 && 
-        		(options == null || !options.toLowerCase().contains( "confirm" ) ||
-        		!options.toLowerCase().contains( "yes" ))) {
+        		(options == null || !options.toLowerCase().contains( "confirm" ) &&
+        		!options.toLowerCase().contains( "yes" )) ) {
         	String message = String.format( "&7Warning: This mine has a size of %s. If this is " +
         			"intentional, then please re-submit this command with adding the " +
         			"keyword of either 'confirm' or 'yes' to the end of the command. ",
