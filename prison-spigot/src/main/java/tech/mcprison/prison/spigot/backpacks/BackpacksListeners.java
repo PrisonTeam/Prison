@@ -32,7 +32,7 @@ public class BackpacksListeners implements Listener {
 
     @EventHandler
     public void onDeadBackpack(PlayerDeathEvent e){
-        onDeadBackpackAction(e);
+        onDeathBackpackAction(e);
     }
 
 
@@ -50,7 +50,7 @@ public class BackpacksListeners implements Listener {
         backpackItemClickAction(e);
     }
 
-    private void onDeadBackpackAction(PlayerDeathEvent e) {
+    private void onDeathBackpackAction(PlayerDeathEvent e) {
         if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Lose_Items_On_Death"))) {
             BackpacksUtil.get().resetBackpack(e.getEntity());
             if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))) {
