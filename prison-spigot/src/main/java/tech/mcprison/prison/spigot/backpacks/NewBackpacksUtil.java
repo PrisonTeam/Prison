@@ -120,21 +120,26 @@ public class NewBackpacksUtil {
 
     /**
      * Save a Player's Backpack.
+     * This method will return true if ran with success, false if Player is missing permission (if enabled)
+     * or some conditions aren't met, or even errors.
+     * Essentially, return true if success, false if fail.
      *
      * @param p - Player.
      * @param inv - Backpack.
+     *
+     * @return boolean.
      */
-    public void setBackpack(Player p, Inventory inv, int id) {
+    public boolean setBackpack(Player p, Inventory inv, int id) {
 
-        //TODO
-        // Add conditions here to check if Player can own backpacks.
-        // This may also be a method with a boolean return value.
+        if (!canOwnBackpacks(p)){
+            return false;
+        }
 
         PlayerCachePlayerData pData = PlayerCache.getInstance().getOnlinePlayer(new SpigotPlayer(p));
 
         if (pData == null) {
-            Output.get().sendInfo(new SpigotPlayer(p), "Sorry, unable to find cached data on you, this may be a bug! Please report it.");
-            return;
+            Output.get().sendInfo(new SpigotPlayer(p), "Sorry, unable to find cached data about you, this may be a bug! Please report it.");
+            return false;
         }
 
         List<Inventory> inventories = prisonInventoryToNormalConverter(pData.getBackpacks());
@@ -146,21 +151,99 @@ public class NewBackpacksUtil {
             pData.setBackpacks(normalInventoryToPrisonConverter(inventories));
         } else {
 
-            //TODO
-            // Add conditions to check if player can own a new backpack, maybe he reached the limit.
-            // This may be also a method with a boolean return value.
-
-            inventories.add(inv);
-
-            pData.setBackpacks(normalInventoryToPrisonConverter(inventories));
+            return addBackpack(p, inv);
         }
+        return true;
+    }
+
+    /**
+     * Add a Backpack to a Player.
+     *
+     * Return true if success, false if fail.
+     *
+     * @param p - Player.
+     * @param inv - Inventory.
+     *
+     * @return boolean.
+     * */
+    public boolean addBackpack(Player p, Inventory inv){
+
+        if (!canOwnBackpacks(p)){
+            return false;
+        }
+
+        if (inv.getSize() <= getBackpackPermSize(p)){
+            Output.get().sendWarn(new SpigotPlayer(p), "Sorry but you can't own a Backpack of this size.");
+            return false;
+        }
+
+        PlayerCachePlayerData pData = PlayerCache.getInstance().getOnlinePlayer(new SpigotPlayer(p));
+
+        if (pData == null) {
+            Output.get().sendInfo(new SpigotPlayer(p), "Sorry, unable to find cached data on you, this may be a bug! Please report it.");
+            return false;
+        }
+
+        List<Inventory> inventories = prisonInventoryToNormalConverter(pData.getBackpacks());
+
+        if (reachedBackpacksLimit(p)){
+            Output.get().sendWarn(new SpigotPlayer(p), "Sorry, you can't own more Backpacks!");
+            return false;
+        }
+
+        inventories.add(inv);
+        pData.setBackpacks(normalInventoryToPrisonConverter(inventories));
+        return true;
+    }
+
+    /**
+     * Check if player reached limit of own backpacks.
+     *
+     * @return boolean - True if reached, false if not.
+     * */
+    public boolean reachedBackpacksLimit(Player p){
+        return isMultipleBackpacksEnabled && (getBackpacksLimit(p) <= getNumberOwnedBackpacks(p));
+    }
+
+    /**
+     * Get number of Backpacks own by Player.
+     *
+     * @param p - Player.
+     * */
+    public int getNumberOwnedBackpacks(Player p){
+        PlayerCachePlayerData pData = PlayerCache.getInstance().getOnlinePlayer(new SpigotPlayer(p));
+
+        if (pData == null){
+            return 0;
+        }
+
+        return pData.getBackpacks().size();
+    }
+
+    // TODO
+    // Not sure if this data is cached yet.
+    private int getBackpacksLimit(Player p) {
+        return defaultBackpackLimitForPlayer;
+    }
+
+    /**
+     * Check if Player can own Backpacks.
+     * Return true if can, False otherwise.
+     *
+     * @param p - Player.
+     *
+     * @return boolean.
+     * */
+    public boolean canOwnBackpacks(Player p){
+        return !isBackpackUsePermissionEnabled || p.hasPermission(backpackUsePermission);
     }
 
     /**
      * Get a Player's Backpack, there may be multiple ones.
      *
-     * @param p  - Player.
+     * @param p - Player.
      * @param id - int.
+     *
      * @return Inventory - Backpack.
      */
     public Inventory getBackpack(Player p, int id) {
@@ -286,6 +369,45 @@ public class NewBackpacksUtil {
     }
 
     /**
+     * Get backpack size of a Player Backpack with the permission for a custom one.
+     */
+    private int getBackpackPermSize(Player p, int backPackSize) {
+        SpigotPlayer sPlayer = new SpigotPlayer(p);
+        List<String> perms = sPlayer.getPermissions("prison.backpack.size.");
+        int value = 0;
+        for (String permNumber : perms) {
+            int newValue = Integer.parseInt(permNumber.substring(21));
+            if (newValue > value) {
+                value = (int) Math.ceil((float) newValue / 9) * 9;
+            }
+        }
+
+        if (value != 0) {
+            return value;
+        }
+        return backPackSize;
+    }
+
+    /**
+     * Get backpack size from permissions of a Player and/or defaults.
+     *
+     * @param p - Player.
+     *
+     * @return int - size.
+     * */
+    public int getBackpackPermSize(Player p){
+        int backPackSize = defaultBackpackSize;
+
+        if (backPackSize % 9 != 0) {
+            backPackSize = (int) Math.ceil((float) backPackSize / 9) * 9;
+        }
+
+        if (backPackSize == 0) backPackSize = 9;
+
+        return getBackpackPermSize(p, backPackSize);
+    }
+
+    /**
      * This method exists only for the conversion of the old deprecated one.
      */
     @Deprecated
@@ -388,26 +510,6 @@ public class NewBackpacksUtil {
         if (backPackSize == 0) backPackSize = 9;
 
         return getBackpackPermSize(p, backPackSize);
-    }
-
-    /**
-     * Get backpack size of a Player Backpack with the permission for a custom one.
-     */
-    private int getBackpackPermSize(Player p, int backPackSize) {
-        SpigotPlayer sPlayer = new SpigotPlayer(p);
-        List<String> perms = sPlayer.getPermissions("prison.backpack.size.");
-        int value = 0;
-        for (String permNumber : perms) {
-            int newValue = Integer.parseInt(permNumber.substring(21));
-            if (newValue > value) {
-                value = (int) Math.ceil((float) newValue / 9) * 9;
-            }
-        }
-
-        if (value != 0) {
-            return value;
-        }
-        return backPackSize;
     }
 
     /**
