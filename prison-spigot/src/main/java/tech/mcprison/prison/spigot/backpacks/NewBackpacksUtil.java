@@ -17,6 +17,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.backpacks.BackpacksPlayerGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.inventory.SpigotInventory;
 
@@ -56,12 +57,12 @@ public class NewBackpacksUtil {
 
     /**
      * Get an instance of Backpacks to get full access to the API.
-     * <p>
+     *
      * If Backpacks are disabled, this will return null.
      *
      * @return BackpacksUtil
      */
-    public NewBackpacksUtil get() {
+    public static NewBackpacksUtil get() {
 
         if (!getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks"))) {
             return null;
@@ -269,6 +270,7 @@ public class NewBackpacksUtil {
             inventories.set(id, inv);
 
             pData.setBackpacks(normalInventoryToPrisonConverter(inventories));
+            pData.isDirty();
         } else {
 
             return addBackpack(p, inv);
@@ -312,6 +314,7 @@ public class NewBackpacksUtil {
 
         inventories.add(inv);
         pData.setBackpacks(normalInventoryToPrisonConverter(inventories));
+        pData.isDirty();
         return true;
     }
 
@@ -402,6 +405,30 @@ public class NewBackpacksUtil {
         }
 
         return prisonInventoryToNormalConverter(pData.getBackpacks());
+    }
+
+    /**
+     * Open Player's Backpack.
+     *
+     * Return true if open with success, false if fail or error.
+     *
+     * @param p - Player.
+     * @param id - Int.
+     *
+     * return boolean.
+     * */
+    public boolean openBackpack(Player p, int id){
+
+        // Check if Player owns a Backpack with this ID.
+        if (getBackpack(p, id) == null){
+
+            Output.get().sendWarn(new SpigotPlayer(p), "Backpack not found!");
+            return false;
+        }
+
+        BackpacksPlayerGUI gui = new BackpacksPlayerGUI(p, id);
+        gui.open();
+        return true;
     }
 
     /**
