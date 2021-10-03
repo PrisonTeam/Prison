@@ -3,18 +3,21 @@ package tech.mcprison.prison.spigot.backpacks;
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XSound;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.inventory.SpigotInventory;
 
 import java.io.File;
@@ -34,7 +37,7 @@ public class NewBackpacksUtil {
     private Configuration backpacksData;
     private boolean isFoundDeprecatedData;
     private boolean isBackpackUsePermissionEnabled;
-    private boolean isBackpackAutopickupEnabled;
+    private boolean isBackpackAutoPickupEnabled;
     private boolean isBackpackOpenItemEnabled;
     private boolean isBackpackOpenItemGivenOnJoin;
     private boolean isBackpackEnabledIfLimitZero;
@@ -73,6 +76,124 @@ public class NewBackpacksUtil {
     }
 
     /**
+     * Check if Backpack AutoPickup is enabled.
+     *
+     * @return boolean.
+     */
+    public boolean isBackpackAutoPickupEnabled() {
+        return this.isBackpackAutoPickupEnabled;
+    }
+
+    /**
+     * Check if the Backpack Open Item is enabled.
+     *
+     * @return boolean.
+     */
+    public boolean isBackpackOpenItemEnabled() {
+        return this.isBackpackOpenItemEnabled;
+    }
+
+    /**
+     * Check if the Backpack Open Item is given on join.
+     *
+     * @return boolean.
+     */
+    public boolean isBackpackOpenItemGivenOnJoin() {
+        return this.isBackpackOpenItemGivenOnJoin;
+    }
+
+    /**
+     * Check if Backpack can be used and Backpack item too
+     * if the Player's limit is set to 0.
+     *
+     * @return boolean.
+     */
+    public boolean isBackpackEnabledIfLimitZero() {
+        return this.isBackpackEnabledIfLimitZero;
+    }
+
+    /**
+     * Check if Backpack is deleted/reset on death.
+     *
+     * @return boolean.
+     */
+    public boolean isBackpackLostOnDeath() {
+        return this.isBackpackLostOnDeath;
+    }
+
+    /**
+     * Check if Backpack open sound is enabled.
+     *
+     * @return boolean.
+     * */
+    public boolean isBackpackOpenSoundEnabled(){
+        return this.isBackpackOpenSoundEnabled;
+    }
+
+    /**
+     * Check if Backpack close sound is enabled.
+     *
+     * @return boolean.
+     * */
+    public boolean isBackpackCloseSoundEnabled(){
+        return this.isBackpackCloseSoundEnabled;
+    }
+
+    /**
+     * Get Backpack Open Item Title.
+     *
+     * @return String.
+     * */
+    public String getBackpackOpenItemTitle(){
+        return this.backpackOpenItemTitle;
+    }
+
+    /**
+     * Get Backpack Open Permission.
+     *
+     * @return String.
+     * */
+    public String getBackpackUsePermission(){
+        return this.backpackUsePermission;
+    }
+
+    /**
+     * Get Backpack Open Sound.
+     *
+     * @return Sound.
+     * */
+    public Sound getBackpackOpenSound(){
+        return this.backpackOpenSound.parseSound();
+    }
+
+    /**
+     * Get Backpack Close Sound.
+     *
+     * @return Sound.
+     * */
+    public Sound getBackpackCloseSound(){
+        return this.backpackCloseSound.parseSound();
+    }
+
+    /**
+     * Get Backpack Open Item.
+     *
+     * @return ItemStack.
+     * */
+    public ItemStack getBackpackOpenItem(){
+
+        ItemStack backPackOpenItemStack = new ItemStack(backpackOpenItem.parseMaterial(), 1);
+        ItemMeta meta = backPackOpenItemStack.getItemMeta();
+        meta.setDisplayName(SpigotPrison.format(SpigotPrison.format(backpackOpenItemTitle)));
+        ButtonLore lore = new ButtonLore();
+        lore.setLoreAction("Click to open Backpack!");
+        meta.setLore(lore.getLore());
+        backPackOpenItemStack.setItemMeta(meta);
+
+        return backPackOpenItemStack;
+    }
+
+    /**
      * Return boolean value from String.
      *
      * @param string - Boolean string.
@@ -95,7 +216,7 @@ public class NewBackpacksUtil {
             isFoundDeprecatedData = false;
         }
         isBackpackUsePermissionEnabled = getBoolean(backpacksConfig.getString("Options.BackPack_Use_Permission_Enabled"));
-        isBackpackAutopickupEnabled = getBoolean(backpacksConfig.getString("Options.BackPack_AutoPickup_Usable"));
+        isBackpackAutoPickupEnabled = getBoolean(backpacksConfig.getString("Options.BackPack_AutoPickup_Usable"));
         isBackpackOpenItemEnabled = getBoolean(backpacksConfig.getString("Options.Back_Pack_GUI_Opener_Item"));
         isBackpackOpenItemGivenOnJoin = getBoolean(backpacksConfig.getString("Options.BackPack_Item_OnJoin"));
         isBackpackEnabledIfLimitZero = getBoolean(backpacksConfig.getString("Options.BackPack_Access_And_Item_If_Limit_Is_0"));
@@ -124,14 +245,13 @@ public class NewBackpacksUtil {
      * or some conditions aren't met, or even errors.
      * Essentially, return true if success, false if fail.
      *
-     * @param p - Player.
+     * @param p   - Player.
      * @param inv - Backpack.
-     *
      * @return boolean.
      */
     public boolean setBackpack(Player p, Inventory inv, int id) {
 
-        if (!canOwnBackpacks(p)){
+        if (!canOwnBackpacks(p)) {
             return false;
         }
 
@@ -144,7 +264,7 @@ public class NewBackpacksUtil {
 
         List<Inventory> inventories = prisonInventoryToNormalConverter(pData.getBackpacks());
 
-        if (inventories.get(id) != null){
+        if (inventories.get(id) != null) {
             // No need to check more conditions here, Player already owns a backpack here.
             inventories.set(id, inv);
 
@@ -158,21 +278,20 @@ public class NewBackpacksUtil {
 
     /**
      * Add a Backpack to a Player.
-     *
+     * <p>
      * Return true if success, false if fail.
      *
-     * @param p - Player.
+     * @param p   - Player.
      * @param inv - Inventory.
-     *
      * @return boolean.
-     * */
-    public boolean addBackpack(Player p, Inventory inv){
+     */
+    public boolean addBackpack(Player p, Inventory inv) {
 
-        if (!canOwnBackpacks(p)){
+        if (!canOwnBackpacks(p)) {
             return false;
         }
 
-        if (inv.getSize() <= getBackpackPermSize(p)){
+        if (inv.getSize() <= getBackpackPermSize(p)) {
             Output.get().sendWarn(new SpigotPlayer(p), "Sorry but you can't own a Backpack of this size.");
             return false;
         }
@@ -186,7 +305,7 @@ public class NewBackpacksUtil {
 
         List<Inventory> inventories = prisonInventoryToNormalConverter(pData.getBackpacks());
 
-        if (reachedBackpacksLimit(p)){
+        if (reachedBackpacksLimit(p)) {
             Output.get().sendWarn(new SpigotPlayer(p), "Sorry, you can't own more Backpacks!");
             return false;
         }
@@ -200,8 +319,8 @@ public class NewBackpacksUtil {
      * Check if player reached limit of own backpacks.
      *
      * @return boolean - True if reached, false if not.
-     * */
-    public boolean reachedBackpacksLimit(Player p){
+     */
+    public boolean reachedBackpacksLimit(Player p) {
         return isMultipleBackpacksEnabled && (getBackpacksLimit(p) <= getNumberOwnedBackpacks(p));
     }
 
@@ -209,11 +328,11 @@ public class NewBackpacksUtil {
      * Get number of Backpacks own by Player.
      *
      * @param p - Player.
-     * */
-    public int getNumberOwnedBackpacks(Player p){
+     */
+    public int getNumberOwnedBackpacks(Player p) {
         PlayerCachePlayerData pData = PlayerCache.getInstance().getOnlinePlayer(new SpigotPlayer(p));
 
-        if (pData == null){
+        if (pData == null) {
             return 0;
         }
 
@@ -231,19 +350,17 @@ public class NewBackpacksUtil {
      * Return true if can, False otherwise.
      *
      * @param p - Player.
-     *
      * @return boolean.
-     * */
-    public boolean canOwnBackpacks(Player p){
+     */
+    public boolean canOwnBackpacks(Player p) {
         return !isBackpackUsePermissionEnabled || p.hasPermission(backpackUsePermission);
     }
 
     /**
      * Get a Player's Backpack, there may be multiple ones.
      *
-     * @param p - Player.
+     * @param p  - Player.
      * @param id - int.
-     *
      * @return Inventory - Backpack.
      */
     public Inventory getBackpack(Player p, int id) {
@@ -268,7 +385,6 @@ public class NewBackpacksUtil {
      * Get Backpacks of a Player in a List of Inventories.
      *
      * @param p - Player.
-     *
      * @return Inventory - List.
      */
     public List<Inventory> getBackpacks(Player p) {
@@ -292,9 +408,8 @@ public class NewBackpacksUtil {
      * Converts a Prison's Inventory List to the spigot standard one.
      *
      * @param pInv - PrisonInventory List.
-     *
      * @return List - Inventory.
-     * */
+     */
     private List<Inventory> prisonInventoryToNormalConverter(List<tech.mcprison.prison.internal.inventory.Inventory> pInv) {
         List<Inventory> inventories = new ArrayList<>();
         for (tech.mcprison.prison.internal.inventory.Inventory pInvRead : pInv) {
@@ -309,12 +424,11 @@ public class NewBackpacksUtil {
      * Converts a Spigot's normal Inventory List to the Prison one.
      *
      * @param inventories - Inventories.
-     *
      * @return List - Prison Inventories.
-     * */
+     */
     private List<tech.mcprison.prison.internal.inventory.Inventory> normalInventoryToPrisonConverter(List<Inventory> inventories) {
         List<tech.mcprison.prison.internal.inventory.Inventory> pInv = new ArrayList<>();
-        for (Inventory readInv : inventories){
+        for (Inventory readInv : inventories) {
             pInv.add(SpigotInventory.fromWrapper(readInv));
         }
         return pInv;
@@ -392,10 +506,9 @@ public class NewBackpacksUtil {
      * Get backpack size from permissions of a Player and/or defaults.
      *
      * @param p - Player.
-     *
      * @return int - size.
-     * */
-    public int getBackpackPermSize(Player p){
+     */
+    public int getBackpackPermSize(Player p) {
         int backPackSize = defaultBackpackSize;
 
         if (backPackSize % 9 != 0) {
