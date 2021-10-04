@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.1 2021-09-28
+# 3.2.11-alpha.1 2021-10-03
+
+
+* **Changed the message about worn out tool to use the SpigotPlayer's setActionBar() function to prevent overloading console messages.**
 
 
 * **Bug fix: Logic was corrected to handle the double negative correctly.**

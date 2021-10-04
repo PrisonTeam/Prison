@@ -41,7 +41,6 @@ import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.integrations.IntegrationCrazyEnchantmentsPickaxes;
 import tech.mcprison.prison.spigot.utils.BlockUtils;
-import tech.mcprison.prison.spigot.utils.PrisonUtilsTitles;
 import tech.mcprison.prison.util.Text;
 
 public class OnBlockBreakEventCore
@@ -498,9 +497,12 @@ public class OnBlockBreakEventCore
 
 		if ( isToolDisabled( pmEvent.getPlayer() ) ) {
 			
-			PrisonUtilsTitles uTitles = new PrisonUtilsTitles();
-			uTitles.utilsTitlesActionBar( pmEvent.getSpigotPlayer(), "", 
-					"&cYour tool is worn-out and cannot be used." );
+			// This will prevent sending too many messages since it is using PlayerMessagingTask:
+			pmEvent.getSpigotPlayer().setActionBar( "&cYour tool is worn-out and cannot be used." );
+			
+//			PrisonUtilsTitles uTitles = new PrisonUtilsTitles();
+//			uTitles.utilsTitlesActionBarForce( pmEvent.getSpigotPlayer(), null, 
+//					"&cYour tool is worn-out and cannot be used." );
 			
 			pmEvent.setCancelOriginalEvent( true );
 			debugInfo.append( "UNUSABLE_TOOL__WORN_OUT (event canceled) " );
