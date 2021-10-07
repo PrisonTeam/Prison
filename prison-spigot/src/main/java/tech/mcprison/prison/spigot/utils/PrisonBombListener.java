@@ -31,7 +31,7 @@ public class PrisonBombListener
 {
 
     @EventHandler( priority = EventPriority.LOW )
-    public void onInteract(PlayerInteractEvent event) {
+    public void onInteract( PlayerInteractEvent event ) {
         if ( !event.getPlayer().hasPermission("prison.minebombs.use") ) {
         	return;
         }
@@ -66,6 +66,12 @@ public class PrisonBombListener
         				final Item dropped = player.getWorld().dropItem(player.getLocation(), bombs.getBukkitStack() );
         				dropped.setVelocity(player.getLocation().getDirection().multiply( throwSpeed ).normalize() );
         				dropped.setPickupDelay( 50000 );
+        				
+        				dropped.setGlowing( bomb.isGlowing() );
+        				dropped.setCustomName( bomb.getName() );
+        				
+        				dropped.setMetadata( "prisonMineBomb", new FixedMetadataValue( SpigotPrison.getInstance(), true ) );
+        				//dropped.setMetadata( "prisonMineName",  new FixedMetadataValue( SpigotPrison.getInstance(), "mineName" ) );
         				
         				
         				PrisonUtilsMineBombs.setoffBombDelayed( sPlayer, bomb, dropped, sBlock, throwSpeed );

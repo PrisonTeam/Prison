@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.1 2021-10-07
 
 
+* **Add the ability to glow the prison bombs when they are dropped/set.**
+
+
 * **For a couple of rankup messages, using the rank tag now instead of the rank name.**
 
 

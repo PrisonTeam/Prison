@@ -47,6 +47,8 @@ public class MineBombData {
 	private String description;
 	
 	
+	private boolean glowing = false;
+	
 	private boolean activated = false;
 	
 	
@@ -133,6 +135,13 @@ public class MineBombData {
 	}
 	public void setDescription( String description ) {
 		this.description = description;
+	}
+
+	public boolean isGlowing() {
+		return glowing;
+	}
+	public void setGlowing( boolean glowing ) {
+		this.glowing = glowing;
 	}
 
 	public boolean isActivated() {
