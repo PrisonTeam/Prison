@@ -3,7 +3,6 @@ package tech.mcprison.prison.spigot.game;
 import java.lang.reflect.Method;
 import java.util.UUID;
 
-import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 
 import tech.mcprison.prison.Prison;
