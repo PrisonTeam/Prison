@@ -368,7 +368,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     }
 
 
-    @Command(identifier = "sellall auto toggle", description = "Let the user enable or disable sellall auto", onlyPlayers = true)
+    @Command(identifier = "sellall auto toggle", description = "Let the user enable or disable sellall auto", altPermissions = "prison.sellall.toggle", onlyPlayers = true)
     private void sellAllAutoEnableUser(CommandSender sender){
 
         if (!isEnabled()) return;

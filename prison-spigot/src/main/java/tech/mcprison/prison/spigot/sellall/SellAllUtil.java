@@ -419,6 +419,11 @@ public class SellAllUtil {
      * @return boolean.
      * */
     public boolean isPlayerAutoSellEnabled(Player p){
+
+        if (isAutoSellPerUserToggleablePermEnabled && !p.hasPermission(permissionAutoSellPerUserToggleable)){
+            return false;
+        }
+
         if (sellAllConfig.getString("Users." + p.getUniqueId() + ".isEnabled") == null){
             return true;
         }
@@ -1271,6 +1276,8 @@ public class SellAllUtil {
             e.printStackTrace();
             return false;
         }
+
+        updateConfig();
         return true;
     }
 
