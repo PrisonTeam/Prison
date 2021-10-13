@@ -127,13 +127,6 @@ public abstract class SpigotGUIComponents {
     }
 
     /**
-     * Get new Messages config.
-     * */
-    protected static MessagesConfig getmessages(){
-        return SpigotPrison.getInstance().getMessagesConfig();
-    }
-
-    /**
      * Get Messages config.
      * */
     protected static MessagesConfig getMessages(){

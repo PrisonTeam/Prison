@@ -4,6 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.cache.PlayerCache;
+import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
@@ -23,7 +25,7 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
 
     private final MessagesConfig messages = SpigotPrison.getInstance().getMessagesConfig();
 
-    @Command(identifier = "backpack", description = "Backpacks", onlyPlayers = false)
+    @Command(identifier = "backpack", description = "Backpacks Commands.", onlyPlayers = false)
     private void backpackMainCommand(CommandSender sender,
     @Arg(name = "ID", def = "null", description = "Leave empty if you want to open your main backpack, add an ID if you've more than one.") String id){
 
@@ -33,16 +35,14 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        if (!getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))) {
-            sender.dispatchCommand("gui backpack");
-        } else if (id.equalsIgnoreCase("null")){
+        if (id.equalsIgnoreCase("null")){
             sender.dispatchCommand("gui backpackslist");
         } else {
             sender.dispatchCommand("gui backpack " + id);
         }
     }
 
-    @Command(identifier = "backpack item", description = "Item to open backpack on right click", onlyPlayers = true)
+    @Command(identifier = "backpack item", description = "Item to open backpack on right click.", onlyPlayers = true)
     private void backpackItemGive(CommandSender sender){
 
         Player p = getSpigotPlayer(sender);
@@ -54,7 +54,16 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
 
         if (isDisabledWorld(p)) return;
 
-        BackpacksUtil.get().giveBackpackToPlayer(p);
+        BackpacksUtil bUtil = BackpacksUtil.get();
+        if (bUtil == null){
+            return;
+        }
+
+        if (bUtil.giveBackpackOpenItem(p)){
+            Output.get().sendInfo(sender, "You got the Backpack open Item!");
+        } else {
+            Output.get().sendInfo(sender, "You already have the Backpack open Item, you can't own more than one!");
+        }
     }
 
     @Command(identifier = "backpack list", description = "Open backpacks list if multi-backpacks's enabled.", onlyPlayers = true)
@@ -63,17 +72,17 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
         Player p = getSpigotPlayer(sender);
 
         if (p == null) {
-            Output.get().sendInfo(sender, SpigotPrison.format( messages.getString(MessagesConfig.StringID.spigot_message_console_error)));
+            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_console_error)));
             return;
         }
 
         if (isDisabledWorld(p)) return;
 
-        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))) {
-            sender.dispatchCommand("gui backpackslist");
-        }
+        sender.dispatchCommand("gui backpackslist");
     }
 
+    //TODO
+    // Offline player can't be edited, should add compatibility in the future.
     @Command(identifier = "backpack delete", description = "Delete a player's backpack.", permissions = "prison.admin", onlyPlayers = false)
     private void deleteBackpackCommand(CommandSender sender,
     @Arg(name = "Owner", description = "The backpack owner name", def = "null") String name,
@@ -84,28 +93,48 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        boolean success;
+        boolean success = false;
         boolean isOnlinePlayer = Bukkit.getPlayerExact(name) != null;
+
+        BackpacksUtil bUtil = BackpacksUtil.get();
+
+        if (bUtil == null){
+            return;
+        }
+
         if (id.equalsIgnoreCase("null")) {
             if (isOnlinePlayer) {
-                success = BackpacksUtil.get().resetBackpack(Bukkit.getPlayerExact(name));
-            } else {
-                success = BackpacksUtil.get().resetBackpack(BackpacksUtil.get().getBackpackOwnerOffline(name));
-            }
+                success = bUtil.resetBackpack(Bukkit.getPlayerExact(name), 0);
+            }/* else {
+                success = bUtil.resetBackpack(BackpacksUtil.get().getBackpackOwnerOffline(name));
+            }*/
         } else {
-            if (isOnlinePlayer) {
-                success = BackpacksUtil.get().resetBackpack(Bukkit.getPlayerExact(name), id);
-            } else {
-                success = BackpacksUtil.get().resetBackpack(BackpacksUtil.get().getBackpackOwnerOffline(name, id), id);
+
+            int idNumber;
+            try{
+                idNumber = Integer.parseInt(id);
+            } catch (NumberFormatException ignored){
+                Output.get().sendWarn(sender, "ID is not a valid number.");
+                return;
             }
+
+            if (isOnlinePlayer) {
+                success = bUtil.resetBackpack(Bukkit.getPlayerExact(name), idNumber);
+            } /*else {
+                success = BackpacksUtil.get().resetBackpack(BackpacksUtil.get().getBackpackOwnerOffline(name, id), id);
+            }*/
         }
         if (success) {
-            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_backpack_delete_success)));
+            Output.get().sendInfo(sender, messages.getString(MessagesConfig.StringID.spigot_message_backpack_delete_success));
         } else {
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_backpack_delete_error)));
+            Output.get().sendWarn(sender, messages.getString(MessagesConfig.StringID.spigot_message_backpack_delete_error));
         }
     }
 
+
+    //TODO
+    // Method in BackpackUtil to set a Backpack size.
+    /*
     @Command(identifier = "backpack set size", description = "Resize a player's backpack.", permissions = "prison.admin", onlyPlayers = false)
     private void resizeBackpackCommand(CommandSender sender,
                                        @Arg(name = "Owner", description = "The backpack owner name", def = "null") String name,
@@ -131,37 +160,46 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
+        BackpacksUtil bUtil = BackpacksUtil.get();
+
+        if (bUtil == null){
+            return;
+        }
+
         boolean isOnlinePlayer = Bukkit.getPlayerExact(name) != null;
         if (id.equalsIgnoreCase("null")) {
             if (isOnlinePlayer) {
 
-                BackpacksUtil.get().setBackpackSize(Bukkit.getPlayerExact(name), sizeInt);
+                bUtil.setBackpackSize(Bukkit.getPlayerExact(name), sizeInt, null);
 
-            } else {
+            } /*else {
 
-                BackpacksUtil.get().setBackpackSize(BackpacksUtil.get().getBackpackOwnerOffline(name), sizeInt);
+                bUtil.setBackpackSize(BackpacksUtil.get().getBackpackOwnerOffline(name), sizeInt);
 
-            }
+            }*//*
         } else {
             if (isOnlinePlayer){
 
-                BackpacksUtil.get().setBackpackSize(Bukkit.getPlayerExact(name), sizeInt, id);
+                bUtil.setBackpackSize(Bukkit.getPlayerExact(name), sizeInt, id);
 
-            } else {
+            } /*else {
 
                 BackpacksUtil.get().setBackpackSize(BackpacksUtil.get().getBackpackOwnerOffline(name, id), sizeInt, id);
 
-            }
+            }*//*
         }
 
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_backpack_resize_success)));
-    }
+    }*/
 
     @Command(identifier = "backpack limit", permissions = "prison.admin", description = "Backpacks limit for player, to use this multiple backpacks must be enabled from the backpacks config or it won't have effect.", onlyPlayers = false)
     private void backpackLimitMainCommand(CommandSender sender){
         sender.dispatchCommand("backpack limit help");
     }
 
+    //TODO
+    // Set how many backpacks can a player own.
+    /*
     @Command(identifier = "backpack limit set", permissions = "prison.admin", description = "Set backpacks limit of a player, to use this multiple backpacks must be enabled or it won't have effect.", onlyPlayers = false)
     private void setBackpackLimitCommand(CommandSender sender,
                                          @Arg(name = "Owner", description = "The backpack owner name", def = "null") String name,
@@ -216,8 +254,11 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
         }
 
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_backpack_limit_edit_success)));
-    }
+    }*/
 
+    //TODO
+    // Same as the previous command.
+    /*
     @Command(identifier = "backpack limit decrement", permissions = "prison.admin", description = "Decrement backpacks limit of a player, to use this multiple backpacks must be enabled or it won't have effect.", onlyPlayers = false)
     private void decrementBackpackLimitCommand(CommandSender sender,
                                          @Arg(name = "Owner", description = "The backpack owner name", def = "null") String name,
@@ -255,7 +296,7 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
         }
 
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_backpack_limit_edit_success)));
-    }
+    }*/
 
     @Command(identifier = "backpack admin", description = "Open backpack admin GUI", permissions = "prison.admin", onlyPlayers = true)
     private void openBackpackAdminGUI(CommandSender sender){
@@ -282,28 +323,47 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
+        int idNumber;
+        try{
+            idNumber = Integer.parseInt(id);
+        } catch (NumberFormatException ignored){
+            Output.get().sendWarn(sender, "ID isn't a valid number.");
+            return;
+        }
+
         if (isDisabledWorld(p)) return;
 
-        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled")) && (BackpacksUtil.get().reachedBackpacksLimit(p) && !BackpacksUtil.get().getBackpacksIDs(p).contains(id))){
-            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_backpack_limit_reached) + " [" + BackpacksUtil.get().getNumberOwnedBackpacks(p) + "]"));
+        BackpacksUtil bUtil = BackpacksUtil.get();
+
+        if (bUtil == null){
             return;
         }
 
-        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission_Enabled")) && !p.hasPermission(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission"))){
-            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" + BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission") + "]"));
+
+        if (bUtil.reachedBackpacksLimit(p) && !bUtil.getBackpacksIDs(p).contains(idNumber)){
+            Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_backpack_limit_reached) + " [" + bUtil.getNumberOwnedBackpacks(p) + "]"));
             return;
         }
 
-        if (!BackpacksUtil.get().canOwnBackpack(p)){
+        if (bUtil.isBackpackUsePermissionEnabled() && !p.hasPermission(bUtil.getBackpackUsePermission())){
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" + bUtil.getBackpackUsePermission() + "]"));
+            return;
+        }
+
+        if (!bUtil.canOwnBackpacks(p)){
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_backpack_cant_own)));
             return;
         }
 
-        // New method.
-        if (!id.equalsIgnoreCase("null") && getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))){
-            BackpacksUtil.get().openBackpack(p, id);
+        if (!bUtil.getBackpacksIDs(p).contains(idNumber)){
+            if (bUtil.createBackpack(p)) {
+                Output.get().sendInfo(sender, "Backpack created with success!");
+                bUtil.openBackpack(p, bUtil.getLatestBackpackID(p));
+            } else {
+                Output.get().sendWarn(sender, "Couldn't create Backpack, maybe you can't own one or you've reached the limit?");
+            }
         } else {
-            BackpacksUtil.get().openBackpack(p);
+            bUtil.openBackpack(p, idNumber);
         }
     }
 
@@ -318,15 +378,19 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
 
         if (isDisabledWorld(p)) return;
 
-        // New method.
-        if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))){
-            if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission_Enabled")) && !p.hasPermission(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission"))){
-                Output.get().sendWarn(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" + BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Use_Permission") + "]"));
-                return;
-            }
-            BackpacksListPlayerGUI gui = new BackpacksListPlayerGUI(p);
-            gui.open();
+        BackpacksUtil bUtil = BackpacksUtil.get();
+
+        if (bUtil == null){
+            return;
         }
+
+        // New method.
+        if (bUtil.isBackpackUsePermissionEnabled() && !p.hasPermission(bUtil.getBackpackUsePermission())){
+            Output.get().sendWarn(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" + bUtil.getBackpackUsePermission() + "]"));
+            return;
+        }
+        BackpacksListPlayerGUI gui = new BackpacksListPlayerGUI(p);
+        gui.open();
     }
 
     @Command(identifier = "gui backpackadmin", description = "Open backpack admin GUI", permissions = "prison.admin", onlyPlayers = true)
@@ -344,10 +408,13 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
     }
 
     private boolean isDisabledWorld(Player p) {
-        String worldName = p.getWorld().getName();
-        List<String> disabledWorlds = BackpacksUtil.get().getBackpacksConfig().getStringList("Options.DisabledWorlds");
-        return disabledWorlds.contains(worldName);
+
+        BackpacksUtil bUtil = BackpacksUtil.get();
+
+        if (bUtil == null){
+            return false;
+        }
+
+        return bUtil.isInDisabledWorld(p);
     }
-
-
 }

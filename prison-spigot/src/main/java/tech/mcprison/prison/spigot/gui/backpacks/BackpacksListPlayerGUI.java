@@ -25,7 +25,13 @@ public class BackpacksListPlayerGUI extends SpigotGUIComponents {
 
     public void open(){
 
-        if (BackpacksUtil.get().getBackpacksLimit(p) == 0){
+        BackpacksUtil bUtil = BackpacksUtil.get();
+
+        if (bUtil == null){
+            return;
+        }
+
+        if (bUtil.getBackpacksLimit(p) == 0){
             Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_backpack_cant_own));
             return;
         }
@@ -41,26 +47,19 @@ public class BackpacksListPlayerGUI extends SpigotGUIComponents {
         // Global Strings.
         String loreClickToOpen = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open);
 
-        if (!BackpacksUtil.get().getBackpacksIDs(p).isEmpty()) {
+        if (!bUtil.getBackpacks(p).isEmpty()) {
             int slot = 0;
-            for (String id : BackpacksUtil.get().getBackpacksIDs(p)) {
+            for (int i = 0; i < bUtil.getBackpacks(p).size(); i++){
 
                 ButtonLore lore = new ButtonLore(loreClickToOpen, null);
 
                 if (slot < 45) {
-                    if (id != null) {
-                        lore.setLoreDescription(SpigotPrison.format("&3/backpack " + id));
-                        gui.addButton(new Button(slot, XMaterial.CHEST, lore, "&3Backpack-" + id));
-                    } else {
-                        lore.setLoreDescription(SpigotPrison.format("&3/backpack"));
-                        gui.addButton(new Button(slot, XMaterial.CHEST, lore, "&3Backpack"));
-                    }
+                    lore.setLoreDescription(SpigotPrison.format("&3/backpack " + i));
+                    gui.addButton(new Button(slot, XMaterial.CHEST, lore, "&3Backpack-" + i));
                     slot++;
                 }
             }
-        }
-
-        if (BackpacksUtil.get().getBackpacksIDs(p).isEmpty() || !BackpacksUtil.get().reachedBackpacksLimit(p)) {
+        } else if (!bUtil.reachedBackpacksLimit(p)) {
             gui.addButton(new Button(49, XMaterial.EMERALD_BLOCK, loreAddBackpackButton, "&aNew Backpack"));
         }
 

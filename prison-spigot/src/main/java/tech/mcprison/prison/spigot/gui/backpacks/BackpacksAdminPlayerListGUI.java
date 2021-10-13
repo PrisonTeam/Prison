@@ -20,15 +20,28 @@ import java.util.Set;
 public class BackpacksAdminPlayerListGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final Configuration backpacksData = BackpacksUtil.get().getBackpacksData();
     private final String clickToOpen = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open);
 
     public BackpacksAdminPlayerListGUI(Player p){
         this.p = p;
     }
 
+    /**
+     * This GUI will be disabled for now.
+     * */
+    //TODO
+    // Add a PlayerCache to get Backpacks even if the original player Owner is offline.
     public void open(){
 
+        BackpacksUtil bUtil = BackpacksUtil.get();
+
+        if (bUtil == null){
+            return;
+        }
+
+        Output.get().sendWarn(new SpigotPlayer(p), "Not implemented yet.");
+
+        /*
         int dimension = 54;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3Backpacks-Admin-Players");
 
@@ -70,5 +83,6 @@ public class BackpacksAdminPlayerListGUI extends SpigotGUIComponents {
             }
         }
         gui.open();
+        */
     }
 }

@@ -388,13 +388,11 @@ public class SellAllUtil {
     private HashMap<XMaterial, Integer> getHashMapOfPlayerInventories(Player p) {
         HashMap<XMaterial, Integer> xMaterialIntegerHashMap = new HashMap<>();
         if (isSellAllBackpackItemsEnabled && getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks"))){
-            BackpacksUtil backpacksUtil = BackpacksUtil.get();
-            if (backpacksUtil.isMultipleBackpacksEnabled()){
-                for (String id : backpacksUtil.getBackpacksIDs(p)){
-                    xMaterialIntegerHashMap = addInventoryToHashMap(xMaterialIntegerHashMap, backpacksUtil.getBackpack(p, id));
+            BackpacksUtil bUtil = BackpacksUtil.get();
+            if (bUtil != null) {
+                for (Inventory inv : bUtil.getBackpacks(p)){
+                    xMaterialIntegerHashMap = addInventoryToHashMap(xMaterialIntegerHashMap, inv);
                 }
-            } else {
-                xMaterialIntegerHashMap = addInventoryToHashMap(xMaterialIntegerHashMap, backpacksUtil.getBackpack(p));
             }
         }
 
@@ -1151,13 +1149,11 @@ public class SellAllUtil {
         }
 
         if (isSellAllBackpackItemsEnabled && getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks"))){
-            BackpacksUtil backpacksUtil = BackpacksUtil.get();
-            if (backpacksUtil.isMultipleBackpacksEnabled()){
-                for (String id : backpacksUtil.getBackpacksIDs(p)){
-                    backpacksUtil.setInventory(p, removeSellableItems(p, backpacksUtil.getBackpack(p, id)), id);
+            BackpacksUtil bUtil = BackpacksUtil.get();
+            if (bUtil != null) {
+                for (int id : bUtil.getBackpacksIDs(p)){
+                    bUtil.setBackpack(p, removeSellableItems(p, bUtil.getBackpack(p, id)), id);
                 }
-            } else {
-                backpacksUtil.setInventory(p, removeSellableItems(p, backpacksUtil.getBackpack(p)));
             }
         }
 

@@ -1,6 +1,5 @@
 package tech.mcprison.prison.spigot.game;
 
-import java.lang.reflect.Method;
 import java.util.UUID;
 
 import org.bukkit.enchantments.Enchantment;
@@ -334,35 +333,12 @@ public class SpigotPlayerUtil
 		
 		Enchantment enchantment = null;
 		
-		try
-		{
-			@SuppressWarnings( "unused" )
-			Method methodGetKey = Enchantment.LUCK.getClass().getMethod( "getKey" );
-			
-			for ( Enchantment e : Enchantment.values() ) {
-				if (e.getKey().getKey().equalsIgnoreCase( enchant ) ) {
-					enchantment = e;
-					break;
-				}
+		for ( Enchantment e : Enchantment.values() ) {
+			if ( e.getKey().getKey().equalsIgnoreCase( enchant ) ) {
+				enchantment = e;
+				break;
 			}
 		}
-		catch ( NoSuchMethodException | SecurityException e1 ) {
-			// Ignore the fact that the method does not exist, which just means this is
-			// spigot 1.8 or so.
-
-			for ( Enchantment e : Enchantment.values() ) {
-				if ( e.toString().toLowerCase().contains( enchant.toLowerCase() ) ) {
-					enchantment = e;
-				}
-			}
-		}
-		
-//		for ( Enchantment e : Enchantment.values() ) {
-//			if (e.getKey().getKey().equalsIgnoreCase( enchant ) ) {
-//				enchantment = e;
-//				break;
-//			}
-//		}
 		
 		if ( enchantment != null ) {
 			

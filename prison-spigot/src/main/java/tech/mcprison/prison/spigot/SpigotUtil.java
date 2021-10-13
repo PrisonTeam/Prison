@@ -228,34 +228,24 @@ public class SpigotUtil {
 		
 		if ( itemStack != null && itemStack.getBukkitStack() != null ) {
 			HashMap<Integer, ItemStack> overflow = player.getInventory().addItem( itemStack.getBukkitStack() );
-			
+
+			BackpacksUtil bpUtil = BackpacksUtil.get();
+
 			// Insert overflow in to Prison's backpack:
-			if ( BackpacksUtil.isEnabled() ) {
+			if ( bpUtil != null ) {
 				
-				BackpacksUtil bpUtil = BackpacksUtil.get();
-				if (overflow.size() > 0 && 
-						bpUtil.getBackpacksConfig().getString("Options.BackPack_AutoPickup_Usable").equalsIgnoreCase("true")) {
+				if (overflow.size() > 0 &&
+						bpUtil.isBackpackAutoPickupEnabled()) {
 					String worldName = player.getWorld().getName();
-					List<String> disabledWorlds = bpUtil.getBackpacksConfig().getStringList("Options.DisabledWorlds");
+					List<String> disabledWorlds = bpUtil.getDisabledWorlds();
 					if (!disabledWorlds.contains(worldName)){
-						if (bpUtil.isMultipleBackpacksEnabled()) {
-							for (String id : bpUtil.getBackpacksIDs(player)) {
-								if (overflow.size() > 0) {
-									if (id == null) {
-										Inventory inv = bpUtil.getBackpack(player);
-										overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
-										bpUtil.setInventory(player, inv);
-									} else {
-										Inventory inv = bpUtil.getBackpack(player, id);
-										overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
-										bpUtil.setInventory(player, inv, id);
-									}
-								}
+						int id = 0;
+						for (Inventory inv : bpUtil.getBackpacks(player)) {
+							if (overflow.size() > 0) {
+								overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
+								bpUtil.setBackpack(player, inv, id);
+								id++;
 							}
-						} else {
-							Inventory inv = bpUtil.getBackpack(player);
-							overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
-							bpUtil.setInventory(player, inv);
 						}
 					}
 				}
@@ -367,13 +357,17 @@ public class SpigotUtil {
 		// First remove from the player's inventory:
 		removed += itemStackRemoveAll( xMat, player.getInventory() );
 
-		
+		BackpacksUtil bUtil = BackpacksUtil.get();
+
+		// Edit this if needed as the getBackpack now always requires an ID.
+		int constantId = 0;
+
 		// Insert overflow in to Prison's backpack:
-		if ( SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true")) {
+		if (bUtil != null) {
 		
-			Inventory inv = BackpacksUtil.get().getBackpack(player);
+			Inventory inv = bUtil.getBackpack(player, constantId);
 			removed += itemStackRemoveAll( xMat, inv );
-			BackpacksUtil.get().setInventory( player, inv );
+			bUtil.setBackpack(player, inv, constantId);
 		}
 		
 		

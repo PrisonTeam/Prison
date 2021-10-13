@@ -24,7 +24,7 @@ public class BackpacksAdminGUI extends SpigotGUIComponents {
 
     public void open(){
 
-        if (!BackpacksUtil.isEnabled()){
+        if (BackpacksUtil.get() == null){
             Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_backpack_disabled));
             p.closeInventory();
             return;

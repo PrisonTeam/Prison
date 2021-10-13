@@ -86,7 +86,7 @@ import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 public class ListenersPrisonManager implements Listener {
 
     private static ListenersPrisonManager instance;
-    public static List<String> activeGui = new ArrayList<>();
+    public static List<Player> activeGui = new ArrayList<>();
     public static List<String> chatEventPlayer = new ArrayList<>();
     public boolean isChatEventActive = false;
     private int id;
@@ -292,7 +292,7 @@ public class ListenersPrisonManager implements Listener {
         // Get the player and remove him from the list
         Player p = (Player) e.getPlayer();
 
-        activeGui.remove(p.getName());
+        activeGui.remove(p);
     }
 
     /**
@@ -306,8 +306,8 @@ public class ListenersPrisonManager implements Listener {
         }
 
         // If the player isn't already added to the list, then add him
-        if(!activeGui.contains(p.getName())) {
-            activeGui.add(p.getName());
+        if(!activeGui.contains(p)) {
+            activeGui.add(p);
         }
     }
 
@@ -364,7 +364,7 @@ public class ListenersPrisonManager implements Listener {
 
     // Cancel the events of the active GUI opened from the player.
     private void activeGuiEventCanceller(Player p, InventoryClickEvent e){
-        if(activeGui.contains(p.getName())) {
+        if(activeGui.contains(p)) {
             e.setCancelled(true);
         }
     }
@@ -382,7 +382,12 @@ public class ListenersPrisonManager implements Listener {
         // Get the player.
         Player p = (Player) e.getWhoClicked();
 
-        if (activeGui.contains(p.getName())) {
+        if (activeGui.contains(p)) {
+
+            BackpacksUtil bUtil = BackpacksUtil.get();
+            if (bUtil != null && bUtil.getEditedBackpack().contains(p)){
+                return;
+            }
 
             // GUIs must have the good conditions to work.
             if (guiConditions(e, p)) return;
@@ -759,34 +764,25 @@ public class ListenersPrisonManager implements Listener {
     }
 
     private void backpacksList(Player p, String buttonNameMain, String[] parts) {
+
+        BackpacksUtil bUtil = BackpacksUtil.get();
+
+        if (bUtil == null){
+            Output.get().sendWarn(new SpigotPlayer(p), "Can't get Backpacks Util, maybe they're disabled?");
+            p.closeInventory();
+            return;
+        }
+
         if (parts[0].equalsIgnoreCase("New")){
 
-            int freeID = 0;
-            if (!BackpacksUtil.get().reachedBackpacksLimit(p)){
+            // Create Backpack method can avoid this.
+            boolean success = bUtil.createBackpack(p);
 
-                boolean foundFreeID = false;
-
-                while (!foundFreeID) {
-                    boolean freeIDHasChanged = false;
-                    for (String id : BackpacksUtil.get().getBackpacksIDs(p)) {
-                        if (String.valueOf(freeID).equalsIgnoreCase(id)) {
-                            freeIDHasChanged = true;
-                            freeID++;
-                        }
-                    }
-                    if (!freeIDHasChanged){
-                        foundFreeID = true;
-                    }
-                }
-
-                String finalID = String.valueOf(freeID);
-                Bukkit.dispatchCommand(p, "gui backpack " + finalID);
+            if (success) {
+                Bukkit.dispatchCommand(p, "gui backpack " + bUtil.getLatestBackpackID(p));
             }
-
-        } else if (buttonNameMain.equalsIgnoreCase("Backpack")){
-            BackpacksUtil.get().openBackpack(p);
         } else {
-            BackpacksUtil.get().openBackpack(p, buttonNameMain.substring(9));
+            bUtil.openBackpack(p, Integer.parseInt(buttonNameMain.substring(9)));
         }
     }
 
