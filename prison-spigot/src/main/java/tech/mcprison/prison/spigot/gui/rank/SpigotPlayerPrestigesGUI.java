@@ -169,10 +169,11 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
                 }
             }
 
-            Button itemrank = new Button(null, playerHasThisRank ? materialHas : materialHasNot, amount++, ranksLore, rank.getTag());
             if (playerRank != null && playerRank.equals( rank )){
                 playerHasThisRank = false;
             }
+
+            Button itemrank = new Button(null, playerHasThisRank ? materialHas : materialHasNot, amount++, ranksLore, rank.getTag());
             if (!(playerHasThisRank)){
                 if (hackyCounterEnchant <= 0) {
                     hackyCounterEnchant++;
