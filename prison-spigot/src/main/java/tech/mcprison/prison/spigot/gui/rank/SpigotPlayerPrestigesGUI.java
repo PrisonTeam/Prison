@@ -132,14 +132,22 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         }
 
         Rank rank = ladder.getLowestRank().get();
-        
         PlayerRank prestigePlayerRank = getRankPlayer().getRank("prestiges");
-
         Rank playerRank = prestigePlayerRank == null ? null : prestigePlayerRank.getRank();
+        XMaterial materialHas;
+        XMaterial materialHasNot;
 
         // Not sure how you want to represent this:
-        XMaterial materialHas = XMaterial.valueOf(guiConfig.getString("Options.Ranks.Item_gotten_rank"));
-        XMaterial materialHasNot = XMaterial.valueOf(guiConfig.getString("Options.Ranks.Item_not_gotten_rank"));
+        try {
+            materialHas = XMaterial.valueOf(guiConfig.getString("Options.Ranks.Item_gotten_rank"));
+        } catch (IllegalArgumentException ignored){
+            materialHas = XMaterial.TRIPWIRE_HOOK;
+        }
+        try {
+            materialHasNot = XMaterial.valueOf(guiConfig.getString("Options.Ranks.Item_not_gotten_rank"));
+        } catch (IllegalArgumentException ignored){
+            materialHasNot = XMaterial.REDSTONE_BLOCK;
+        }
 
         // Variables.
         boolean playerHasThisRank = true;
