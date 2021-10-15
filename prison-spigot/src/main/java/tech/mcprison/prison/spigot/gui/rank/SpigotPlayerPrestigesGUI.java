@@ -193,6 +193,9 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
             gui.addButton(itemrank);
 
             rank = rank.getRankNext();
+            if (amount > 45){
+                break;
+            }
         }
 
         ButtonLore rankupLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_rankup), messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup_if_enough_money));
