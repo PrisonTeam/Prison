@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.2 2021-10-14
+# 3.2.11-alpha.2 2021-10-18
+
+
+
+* **Add millisecond reporting for the time it takes to handle a block break event.**
 
 
 

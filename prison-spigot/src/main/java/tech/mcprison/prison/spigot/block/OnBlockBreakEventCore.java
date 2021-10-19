@@ -291,6 +291,8 @@ public class OnBlockBreakEventCore
 			return;
 		}
 		
+    	long start = System.currentTimeMillis();
+
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 		
@@ -382,6 +384,9 @@ public class OnBlockBreakEventCore
     		}
     		
     	}
+    	
+    	long stop = System.currentTimeMillis();
+    	debugInfo.append( " [" ).append( stop - start ).append( " ms]" );
     	
     	Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
 	}
@@ -602,6 +607,8 @@ public class OnBlockBreakEventCore
 	private void genericBlockExplodeEvent( TEBlockExplodeEvent e, boolean monitor, boolean blockEventsOnly, 
 			boolean autoManager ) {
 
+		long start = System.currentTimeMillis();
+
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 		
@@ -736,6 +743,9 @@ public class OnBlockBreakEventCore
     			
     	}
     	
+    	long stop = System.currentTimeMillis();
+    	debugInfo.append( " [" ).append( stop - start ).append( " ms]" );
+    	
     	Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
 	}
 
@@ -787,6 +797,8 @@ public class OnBlockBreakEventCore
 	 */
 	protected void genericBlastUseEvent( BlastUseEvent e, boolean monitor, boolean blockEventsOnly, 
 			boolean autoManager ) {
+
+		long start = System.currentTimeMillis();
 
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
@@ -929,6 +941,9 @@ public class OnBlockBreakEventCore
 
 		}
     	
+    	long stop = System.currentTimeMillis();
+    	debugInfo.append( " [" ).append( stop - start ).append( " ms]" );
+    	
     	Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
 
 	}
@@ -949,6 +964,8 @@ public class OnBlockBreakEventCore
 	 */
 	protected void genericExplosiveEvent( PEExplosionEvent e, boolean monitor, boolean blockEventsOnly, 
 			boolean autoManager ) {
+
+		long start = System.currentTimeMillis();
 
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
@@ -1043,12 +1060,17 @@ public class OnBlockBreakEventCore
 
 		}
     	
+    	long stop = System.currentTimeMillis();
+    	debugInfo.append( " [" ).append( stop - start ).append( " ms]" );
+		
     	Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
 
 	}
 	
 	protected void genericExplosiveEvent( ExplosiveBlockBreakEvent e, boolean monitor, boolean blockEventsOnly, 
 			boolean autoManager ) {
+		
+		long start = System.currentTimeMillis();
 		
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
@@ -1140,6 +1162,9 @@ public class OnBlockBreakEventCore
 			}
 			
 		}
+		
+    	long stop = System.currentTimeMillis();
+    	debugInfo.append( " [" ).append( stop - start ).append( " ms]" );
 		
 		Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
 		
