@@ -1872,6 +1872,11 @@ public class SpigotPlatform
     		
     		
     		
+    		boolean bbeAbbtst = afw.isBoolean( AutoFeatures.applyBlockBreaksThroughSyncTask );
+    		results.add( String.format(".   Apply Block Breaks through Sync Tasks:&b %s", 
+    				Boolean.toString( bbeAbbtst ) ) );
+    		
+    		
     		boolean bbeCabbe = afw.isBoolean( AutoFeatures.cancelAllBlockBreakEvents );
     		results.add( String.format(".   Cancel all Block Break Events:&b %s", 
     				Boolean.toString( bbeCabbe ) ) );

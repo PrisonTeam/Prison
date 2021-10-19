@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.2 2021-10-18
 
 
+* **Enable the ability to choose between setting the block to air inline, or through submitting a synch task to allow the blockBreak event handler to finish quicker, which may reduce lag.**
+
+
 * **Simplified the configuration of the handling of the block break events.**
 Instead of having a separate setting that is a boolean value that indicates it's either enabled or disabled, these are now using the priority value of DISABLED.
 

@@ -55,6 +55,9 @@ public class AutoFeaturesFileConfig {
 	    		// When set to true, it will zero it out so if the block break event is not canceled,
 	    		// then it will prevent double drops:
 	    		cancelAllBlockEventBlockDrops(blockBreakEvents, false),
+	    		
+	    		
+	    		applyBlockBreaksThroughSyncTask(blockBreakEvents, true),
 
 	    		
 	    		blockBreakEventPriority(blockBreakEvents, "LOW"),

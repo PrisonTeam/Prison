@@ -885,6 +885,16 @@ public class PrisonCommand
     	
     	
     	display.addText( "&b " );
+    	display.addText( "&b    options.blockBreakEvents.applyBlockBreaksThroughSyncTask:  %s", 
+    			afw.getMessage( AutoFeatures.applyBlockBreaksThroughSyncTask ) );
+    	
+    	display.addText( "&b    options.blockBreakEvents.cancelAllBlockBreakEvents:  %s", 
+    			afw.getMessage( AutoFeatures.cancelAllBlockBreakEvents ) );
+    	
+    	display.addText( "&b    options.blockBreakEvents.cancelAllBlockEventBlockDrops:  %s", 
+    			afw.getMessage( AutoFeatures.cancelAllBlockEventBlockDrops ) );
+
+    	
     	display.addText( "&b    options.blockBreakEvents.TokenEnchantBlockExplodeEventPriority:  %s", 
     			afw.getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority ) );
     	
@@ -899,6 +909,7 @@ public class PrisonCommand
     	
     	display.addText( "&b    options.blockBreakEvents.ProcessPrisons_ExplosiveBlockBreakEventsPriority:  %s", 
     			afw.getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority ) );
+    	
     	
     	
     	display.addText( "&b " );
