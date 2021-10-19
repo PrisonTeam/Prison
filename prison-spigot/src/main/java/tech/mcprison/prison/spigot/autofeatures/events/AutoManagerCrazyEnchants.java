@@ -66,7 +66,9 @@ public class AutoManagerCrazyEnchants
 
 	@Override
 	public void initialize() {
-		boolean isEventEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
+
+		String eP = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 		
 		if ( !isEventEnabled ) {
 			return;
@@ -81,7 +83,6 @@ public class AutoManagerCrazyEnchants
 			
 			Output.get().logInfo( "AutoManager: Trying to register CrazyEnchants" );
 			
-			String eP = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
 			BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
 			
 			if ( eventPriority != BlockBreakPriority.DISABLED ) {
@@ -188,8 +189,10 @@ public class AutoManagerCrazyEnchants
 	
 	@Override
 	public void dumpEventListeners( StringBuilder sb ) {
-		boolean isEventEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
 		
+		String eP = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
 		if ( !isEventEnabled ) {
 			return;
 		}

@@ -67,8 +67,10 @@ public class AutoManagerTokenEnchant
     
     @Override
     public void initialize() {
-    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
-    	
+
+    	String eP = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
     	if ( !isEventEnabled ) {
     		return;
     	}
@@ -83,7 +85,6 @@ public class AutoManagerTokenEnchant
     		Output.get().logInfo( "AutoManager: Trying to register TokenEnchant" );
     		
     		
-    		String eP = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
     		BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
     		
     		if ( eventPriority != BlockBreakPriority.DISABLED ) {
@@ -182,8 +183,10 @@ public class AutoManagerTokenEnchant
 	
     @Override
 	public void dumpEventListeners( StringBuilder sb ) {
-    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
     	
+    	String eP = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
     	if ( !isEventEnabled ) {
     		return;
     	}

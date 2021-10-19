@@ -67,8 +67,10 @@ public class AutoManagerZenchantments
     
     @Override
     public void initialize() {
-    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessZenchantsBlockExplodeEvents );
     	
+    	String eP = getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
     	if ( !isEventEnabled ) {
     		return;
     	}
@@ -83,7 +85,6 @@ public class AutoManagerZenchantments
     		Output.get().logInfo( "AutoManager: Trying to register Zenchantments" );
     		
     		
-    		String eP = getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
     		BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
     		
     		if ( eventPriority != BlockBreakPriority.DISABLED ) {
@@ -195,7 +196,9 @@ public class AutoManagerZenchantments
 	
     @Override
     public void dumpEventListeners( StringBuilder sb ) {
-    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessZenchantsBlockExplodeEvents );
+ 
+    	String eP = getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
     	
     	if ( !isEventEnabled ) {
     		return;

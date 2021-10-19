@@ -70,8 +70,10 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 
 	@Override
 	public void initialize() {
-		boolean isEventEnabled = isBoolean( AutoFeatures.isProcessPrisons_ExplosiveBlockBreakEvents );
 		
+		String eP = getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
 		if ( !isEventEnabled ) {
 			return;
 		}
@@ -81,7 +83,6 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 			Output.get().logInfo( "AutoManager: Trying to register ExplosiveBlockBreakEvent Listener" );
 			
 			
-			String eP = getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
 			BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
 			
 			if ( eventPriority != BlockBreakPriority.DISABLED ) {
@@ -179,8 +180,10 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 	
 	@Override
 	public void dumpEventListeners( StringBuilder sb ) {
-    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
-    	
+
+		String eP = getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
     	if ( !isEventEnabled ) {
     		return;
     	}

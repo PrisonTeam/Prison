@@ -624,7 +624,10 @@ public class OnBlockBreakEventCore
 		// NOTE that check for auto manager has happened prior to accessing this function.
     	if ( !monitor && !e.isCancelled() || monitor ) {
     		
-    		boolean isTEExplosiveEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
+    		
+	    	String eP = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
+			boolean isTEExplosiveEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
 
     		// Need to wrap in a Prison block so it can be used with the mines:
     		SpigotBlock sBlock = new SpigotBlock(e.getBlock());
@@ -816,8 +819,11 @@ public class OnBlockBreakEventCore
     	if ( (!monitor && !e.isCancelled() || monitor) && 
 				e.getBlockList().size() > 0 ) {
 
-    		boolean isCEBlockExplodeEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
-    		
+			
+	    	String eP = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
+			boolean isCEBlockExplodeEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
+			
     		Block bukkitBlock = e.getBlockList().get( 0 );
     		
     		// Need to wrap in a Prison block so it can be used with the mines:
@@ -983,8 +989,9 @@ public class OnBlockBreakEventCore
     	if ( !monitor && !e.isCancelled() || monitor ) {
 		
     		
-    		boolean isPEExplosiveEnabled = isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
-       		
+	    	String eP = getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
+			boolean isPEExplosiveEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
 
     		// Need to wrap in a Prison block so it can be used with the mines:
     		SpigotBlock sBlock = new SpigotBlock(e.getBlockBroken());
@@ -1088,8 +1095,9 @@ public class OnBlockBreakEventCore
 		if ( !monitor && !e.isCancelled() || monitor ) {
 			
 			
-			boolean isPPrisonExplosiveBlockBreakEnabled = isBoolean( AutoFeatures.isProcessPrisons_ExplosiveBlockBreakEvents );
-			
+	    	String eP = getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
+			boolean isPPrisonExplosiveBlockBreakEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
 			
 			// Need to wrap in a Prison block so it can be used with the mines:
 			SpigotBlock sBlock = new SpigotBlock(e.getBlock());

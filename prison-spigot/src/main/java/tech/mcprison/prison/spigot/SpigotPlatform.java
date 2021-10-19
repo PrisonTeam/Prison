@@ -1870,13 +1870,27 @@ public class SpigotPlatform
     	
     	if ( isAutoManagerEnabled ) {
     		
+    		
+    		
+    		boolean bbeCabbe = afw.isBoolean( AutoFeatures.cancelAllBlockBreakEvents );
+    		results.add( String.format(".   Cancel all Block Break Events:&b %s", 
+    				Boolean.toString( bbeCabbe ) ) );
+    		
+    		
+    		boolean bbeCabebd = afw.isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops );
+    		results.add( String.format(".   Cancel All Block Break Events Block Drops:&b %s", 
+    				Boolean.toString( bbeCabebd ) ) );
+    		
+    		
+        	
+        	
     		String bbePriority = afw.getMessage( AutoFeatures.blockBreakEventPriority );
     		BlockBreakPriority blockBreakPriority = BlockBreakPriority.fromString( bbePriority );
     		results.add( String.format(".   '&7org.bukkit.BlockBreakEvent&3' Priority:&b %s", 
     				blockBreakPriority.name() ) );
     		
     		String pebbePriority = afw.getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
-    		boolean isPebbeEnabled = afw.isBoolean( AutoFeatures.isProcessPrisons_ExplosiveBlockBreakEvents );
+    		boolean isPebbeEnabled = pebbePriority != null && !"DISABLED".equalsIgnoreCase( pebbePriority );
     		BlockBreakPriority pebbeEventPriority = BlockBreakPriority.fromString( pebbePriority );
     		results.add( String.format("%s.   Prison's own '&7ExplosiveBlockBreakEvent&3' Priority:&b %s %s", 
     				(isPebbeEnabled ? "" : "+" ), 
@@ -1885,7 +1899,7 @@ public class SpigotPlatform
     				) );
     		
     		String peeePriority = afw.getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
-    		boolean isPeeeEnabled = afw.isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
+    		boolean isPeeeEnabled = peeePriority != null && !"DISABLED".equalsIgnoreCase( peeePriority );
     		BlockBreakPriority peeeEventPriority = BlockBreakPriority.fromString( peeePriority );
     		results.add( String.format("%s.   Pulsi_'s PrisonEnchants '&7PEExplosiveEvent&3' Priority:&b %s %s", 
     				(isPeeeEnabled ? "" : "+" ), 
@@ -1894,7 +1908,7 @@ public class SpigotPlatform
     				) );
     		
     		String tebePriority = afw.getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
-    		boolean isTebeEnabled = afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
+    		boolean isTebeEnabled = tebePriority != null && !"DISABLED".equalsIgnoreCase( tebePriority );
     		BlockBreakPriority tebEventPriority = BlockBreakPriority.fromString( tebePriority );
     		results.add( String.format("%s.   TokenEnchant '&7BlockExplodeEvent&3' Priority:&b %s %s", 
     				(isTebeEnabled ? "" : "+" ), 
@@ -1903,7 +1917,7 @@ public class SpigotPlatform
     				) );
     		
     		String cebuePriority = afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
-    		boolean isCebueEnabled = afw.isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
+    		boolean isCebueEnabled = cebuePriority != null && !"DISABLED".equalsIgnoreCase( cebuePriority );
     		BlockBreakPriority cebuEventPriority = BlockBreakPriority.fromString( cebuePriority );
     		results.add( String.format("%s.   CrazyEnchant '&7BlastUseEvent&3' Priority:&b %s %s", 
     				(isCebueEnabled ? "" : "+" ), 
@@ -1912,7 +1926,7 @@ public class SpigotPlatform
     				 ) );
     		
     		String zbsePriority = afw.getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
-    		boolean isZbseEnabled = afw.isBoolean( AutoFeatures.isProcessZenchantsBlockExplodeEvents );
+    		boolean isZbseEnabled = zbsePriority != null && !"DISABLED".equalsIgnoreCase( zbsePriority );
     		BlockBreakPriority zbsEventPriority = BlockBreakPriority.fromString( zbsePriority );
     		results.add( String.format("%s.   Zenchantments '&7BlockShredEvent&3' Priority:&b %s %s", 
     				(isZbseEnabled ? "" : "+" ), 

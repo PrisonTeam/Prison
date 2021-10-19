@@ -885,25 +885,20 @@ public class PrisonCommand
     	
     	
     	display.addText( "&b " );
-    	display.addText( "&b    options.blockBreakEvents.isProcessTokensEnchantExplosiveEvents:  %s", 
-    			afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents ) );
     	display.addText( "&b    options.blockBreakEvents.TokenEnchantBlockExplodeEventPriority:  %s", 
-    			afw.getMessage( AutoFeatures.isProcessTokensEnchantExplosiveEvents ) );
+    			afw.getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority ) );
     	
-    	display.addText( "&b    options.blockBreakEvents.isProcessCrazyEnchantsBlockExplodeEvents:  %s", 
-    			afw.isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents ) );
     	display.addText( "&b    options.blockBreakEvents.CrazyEnchantsBlastUseEventPriority:  %s", 
     			afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority ) );
     	
-    	display.addText( "&b    options.blockBreakEvents.isProcessZenchantsBlockExplodeEvents:  %s", 
-    			afw.isBoolean( AutoFeatures.isProcessZenchantsBlockExplodeEvents ) );
     	display.addText( "&b    options.blockBreakEvents.ZenchantmentsBlockShredEventPriority:  %s", 
     			afw.getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority ) );
     	
-    	display.addText( "&b    options.blockBreakEvents.isProcessPrisonEnchantsExplosiveEvents:  %s", 
-    			afw.isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents ) );
     	display.addText( "&b    options.blockBreakEvents.PrisonEnchantsExplosiveEventPriority:  %s", 
     			afw.getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority ) );
+    	
+    	display.addText( "&b    options.blockBreakEvents.ProcessPrisons_ExplosiveBlockBreakEventsPriority:  %s", 
+    			afw.getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority ) );
     	
     	
     	display.addText( "&b " );
@@ -944,10 +939,6 @@ public class PrisonCommand
     									afw.getMessage( AutoFeatures.fortuneMultiplierMax ));
 
     	display.addText( "&b " );
-    	display.addText( "&b   options.isProcessTokensEnchantExplosiveEvents %s", 
-    									afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents ));
-    	display.addText( "&b   options.isProcessCrazyEnchantsBlockExplodeEvents %s", 
-    									afw.isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents ));
     	display.addText( "&b   options.isProcessMcMMOBlockBreakEvents %s", 
     									afw.isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents ));
     	display.addText( "&b " );

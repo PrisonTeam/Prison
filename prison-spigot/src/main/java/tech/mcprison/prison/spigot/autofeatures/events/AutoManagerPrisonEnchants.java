@@ -69,8 +69,10 @@ public class AutoManagerPrisonEnchants
 
 	@Override
 	public void initialize() {
-		boolean isEventEnabled = isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
-		
+
+		String eP = getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
 		if ( !isEventEnabled ) {
 			return;
 		}
@@ -85,7 +87,6 @@ public class AutoManagerPrisonEnchants
 			Output.get().logInfo( "AutoManager: Trying to register Pulsi_'s PrisonEnchants" );
 			
 			
-			String eP = getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
 			BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
 			
 			if ( eventPriority != BlockBreakPriority.DISABLED ) {
@@ -187,8 +188,10 @@ public class AutoManagerPrisonEnchants
 	
 	@Override
 	public void dumpEventListeners( StringBuilder sb ) {
-    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
-    	
+		
+		String eP = getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
     	if ( !isEventEnabled ) {
     		return;
     	}

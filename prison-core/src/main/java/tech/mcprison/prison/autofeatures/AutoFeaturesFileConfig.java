@@ -52,26 +52,21 @@ public class AutoFeaturesFileConfig {
 	    		// Setting this to true will cancel the block break events (normal prison behavior):
 	    		cancelAllBlockBreakEvents(blockBreakEvents, true),
 	    		// Setting this to false will not zero out the block drops (normal prison behavior).
-	    		// When set to true, it will zero it out so if the block break event is not cancleed,
+	    		// When set to true, it will zero it out so if the block break event is not canceled,
 	    		// then it will prevent double drops:
 	    		cancelAllBlockEventBlockDrops(blockBreakEvents, false),
 
 	    		
 	    		blockBreakEventPriority(blockBreakEvents, "LOW"),
 
-		    	isProcessTokensEnchantExplosiveEvents(blockBreakEvents, false),
 		    	TokenEnchantBlockExplodeEventPriority(blockBreakEvents, "DISABLED"),
 		    	
-		    	isProcessCrazyEnchantsBlockExplodeEvents(blockBreakEvents, false),
 		    	CrazyEnchantsBlastUseEventPriority(blockBreakEvents, "DISABLED"),
 
-		    	isProcessZenchantsBlockExplodeEvents(blockBreakEvents, false),
 		    	ZenchantmentsBlockShredEventPriority(blockBreakEvents, "DISABLED"),
 	    	
-		    	isProcessPrisonEnchantsExplosiveEvents(blockBreakEvents, false),
 		    	PrisonEnchantsExplosiveEventPriority(blockBreakEvents, "DISABLED"),
 		    	
-		    	isProcessPrisons_ExplosiveBlockBreakEvents(blockBreakEvents, false),
 		    	ProcessPrisons_ExplosiveBlockBreakEventsPriority(blockBreakEvents, "DISABLED"),
 		    	
 		    	
