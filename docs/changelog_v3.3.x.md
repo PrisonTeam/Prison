@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.3 2021-10-20
+# 3.2.11-alpha.3 2021-10-21
+
+
+* **Cloning a bomb was not complete.  Some details were omitted.**
 
 
 * **Fix for Potion IllegalArgumentException:** Fixed an error with potions in Player inventories when

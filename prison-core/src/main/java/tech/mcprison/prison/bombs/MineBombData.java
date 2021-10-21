@@ -82,9 +82,15 @@ public class MineBombData {
 	public MineBombData clone() {
 		MineBombData cloned = new MineBombData( getName(), getItemType(), getExplosionShape(),
 				getRadius() );
+		
+		cloned.setDescription( getDescription() );
+		cloned.setGlowing( isGlowing() );
+		cloned.setActivated( isActivated() );
+		
 		for ( String l : lore ) {
 			cloned.getLore().add( l );
 		}
+		
 		return cloned;
 	}
 
