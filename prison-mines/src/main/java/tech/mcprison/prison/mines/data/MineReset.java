@@ -1484,6 +1484,13 @@ public abstract class MineReset
 		
 		PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( "AIR" );
 		
+		
+		// this fallbackBlock field will provide a valid block that can be used when all other 
+		// blocks have failed to be matched due to constraints not aligning with the random chance.
+		// As a result of failing to find a block, would result in an AIR block being used instead.
+		PrisonBlock fallbackBlock = null;
+		
+		
 		// If a chosen block was skipped, try to find another block, but try no more than 10 times
 		// to prevent a possible endless loop.  Side effects of failing to find a block in 10 attempts
 		// would be an air block.
@@ -1495,22 +1502,29 @@ public abstract class MineReset
 			for (PrisonBlock block : getPrisonBlocks()) {
 				boolean isBlockEnabled = block.isBlockConstraintsEnbled( currentLevel, targetBlockPosition );
 				
-				if ( chance <= block.getChance()  ) {
+				if ( fallbackBlock == null && isBlockEnabled && !block.isAir() ) {
+					fallbackBlock = block;
+				}
+				
+				if ( chance <= block.getChance() && isBlockEnabled ) {
 					
 					// If this block is chosen and it was not skipped, then use this block and exit.
 					// Otherwise the chance will be recalculated and tried again to find a valid block,
 					// since the odds have been thrown off...
-					if ( isBlockEnabled ) {
-						prisonBlock = block;
-						
-						// stop trying to locate a block so success will terminate the search:
-						success = true;
-					}
+					prisonBlock = block;
+					
+					// stop trying to locate a block so success will terminate the search:
+					success = true;
 					
 					break;
 				} else {
 					chance -= block.getChance();
 				}
+			}
+			
+			if ( !success && fallbackBlock != null ) {
+				prisonBlock = fallbackBlock;
+				success = true;
 			}
 		}
 		return prisonBlock;
@@ -1521,6 +1535,14 @@ public abstract class MineReset
 		int targetBlockPosition = getMineTargetPrisonBlocks().size();
 
 		BlockOld results = BlockOld.AIR;
+		
+		
+		// this fallbackBlock field will provide a valid block that can be used when all other 
+		// blocks have failed to be matched due to constraints not aligning with the random chance.
+		// As a result of failing to find a block, would result in an AIR block being used instead.
+		BlockOld fallbackBlock = null;
+		
+		
 		
 		// If a chosen block was skipped, try to find another block, but try no more than 10 times
 		// to prevent a possible endless loop.  Side effects of failing to find a block in 10 attempts
@@ -1533,17 +1555,19 @@ public abstract class MineReset
 			for (BlockOld block : getBlocks()) {
 				boolean isBlockEnabled = block.isBlockConstraintsEnbled( currentLevel, targetBlockPosition );
 				
-				if ( chance <= block.getChance()  ) {
+				if ( fallbackBlock == null && isBlockEnabled && !block.isAir() ) {
+					fallbackBlock = block;
+				}
+				
+				if ( chance <= block.getChance() && isBlockEnabled ) {
 					
 					// If this block is chosen and it was not skipped, then use this block and exit.
 					// Otherwise the chance will be recalculated and tried again to find a valid block,
 					// since the odds have been thrown off...
-					if ( isBlockEnabled ) {
-						results = block;
-						
-						// stop trying to locate a block so success will terminate the search:
-						success = true;
-					}
+					results = block;
+					
+					// stop trying to locate a block so success will terminate the search:
+					success = true;
 					
 					break;
 				} else {
@@ -1552,6 +1576,10 @@ public abstract class MineReset
 			}
 		}
 
+		if ( !success && fallbackBlock != null ) {
+			results = fallbackBlock;
+			success = true;
+		}
 		
 //		for (BlockOld block : getBlocks()) {
 //			if (block.checkConstraints( currentLevel, targetBlockPosition ) &&

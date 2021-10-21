@@ -13,7 +13,14 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.2 2021-10-18
+# 3.2.11-alpha.3 2021-10-20
+
+
+
+* **Bug Fix: When using block constraints,** there was a common situation where an AIR block was being used in the top layers because all other blocks were being rejected due to chance.  Order of blocks had an impact on this error, when it shouldn't.  Now, if a block cannot be selected, the first block with no constraint issue will be used instead.  Also found a bug in the applying of the chance to each block.  Under some situations, the percent chance was not being reduced for a bypassed block, when it should have.  This now will better select the blocks, and better preserve their intended percentage odds of being spawned.
+
+
+**Prison v3.2.11-alpha.3 2021-10-18**
 
 
 * **Enable the ability to choose between setting the block to air inline, or through submitting a synch task to allow the blockBreak event handler to finish quicker, which may reduce lag.**
