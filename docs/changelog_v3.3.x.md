@@ -16,6 +16,8 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.3 2021-10-20
 
 
+* **Switched prison block debugging timing to use nanoTime instead of milliseconds since milliseconds is too large of a unit.**
+
 
 * **Bug Fix: When using block constraints,** there was a common situation where an AIR block was being used in the top layers because all other blocks were being rejected due to chance.  Order of blocks had an impact on this error, when it shouldn't.  Now, if a block cannot be selected, the first block with no constraint issue will be used instead.  Also found a bug in the applying of the chance to each block.  Under some situations, the percent chance was not being reduced for a bypassed block, when it should have.  This now will better select the blocks, and better preserve their intended percentage odds of being spawned.
 
