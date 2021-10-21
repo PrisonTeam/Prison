@@ -16,6 +16,12 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.3 2021-10-20
 
 
+* **Fix for Potion IllegalArgumentException:** Fixed an error with potions in Player inventories when
+using sellall sell, potions aren't supported by now and won't be sold, but at least it won't break
+sellall anymore.
+
+
+
 * **Switched prison block debugging timing to use nanoTime instead of milliseconds since milliseconds is too large of a unit.**
 
 

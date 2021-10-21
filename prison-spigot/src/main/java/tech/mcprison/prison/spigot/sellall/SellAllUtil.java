@@ -221,12 +221,14 @@ public class SellAllUtil {
         HashMap<XMaterial, Integer> xMaterialIntegerHashMap = new HashMap<>();
         for (ItemStack itemStack : itemStacks){
             if (itemStack != null){
-                XMaterial xMaterial = getXMaterialOrLapis(itemStack);
-                if (xMaterialIntegerHashMap.containsKey(xMaterial) && xMaterialIntegerHashMap.get(xMaterial) != 0){
-                    xMaterialIntegerHashMap.put(xMaterial, xMaterialIntegerHashMap.get(xMaterial) + itemStack.getAmount());
-                } else {
-                    xMaterialIntegerHashMap.put(xMaterial, itemStack.getAmount());
-                }
+                try {
+                    XMaterial xMaterial = getXMaterialOrLapis(itemStack);
+                    if (xMaterialIntegerHashMap.containsKey(xMaterial) && xMaterialIntegerHashMap.get(xMaterial) != 0) {
+                        xMaterialIntegerHashMap.put(xMaterial, xMaterialIntegerHashMap.get(xMaterial) + itemStack.getAmount());
+                    } else {
+                        xMaterialIntegerHashMap.put(xMaterial, itemStack.getAmount());
+                    }
+                } catch (IllegalArgumentException ignored){}
             }
         }
 
@@ -1125,14 +1127,16 @@ public class SellAllUtil {
         
         for (ItemStack itemStack : inv.getContents()){
             if (itemStack != null){
-                XMaterial xMaterial = getXMaterialOrLapis(itemStack);
-                if (sellAllBlocks.containsKey(xMaterial)){
-                    if (isPerBlockPermissionEnabled && !p.hasPermission(permissionPrefixBlocks + xMaterial.name())){
-                        // Nothing will change.
-                    } else {
-                        inv.remove(itemStack);
+                try {
+                    XMaterial xMaterial = getXMaterialOrLapis(itemStack);
+                    if (sellAllBlocks.containsKey(xMaterial)) {
+                        if (isPerBlockPermissionEnabled && !p.hasPermission(permissionPrefixBlocks + xMaterial.name())) {
+                            // Nothing will change.
+                        } else {
+                            inv.remove(itemStack);
+                        }
                     }
-                }
+                } catch (IllegalArgumentException ignored){}
             }
         }
         
