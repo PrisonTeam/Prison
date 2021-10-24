@@ -2,14 +2,15 @@ package tech.mcprison.prison.mines.tasks;
 
 import java.util.List;
 
-import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.PrisonStatsElapsedTimeNanos;
+import tech.mcprison.prison.internal.block.MineResetType;
+import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
-import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
-import tech.mcprison.prison.util.Location;
 
 public class MinePagedResetAsyncTask
 		implements PrisonRunnable
@@ -19,12 +20,9 @@ public class MinePagedResetAsyncTask
 	
 	private int position = 0;
 	
-	
-	private int pageSize = 2000;
 	private int page = 0;
 	
 	private int totalPages = 0;
-//	private int subPage = 0;
 	private int pagesPerReport = 20;
 	private int pagePosition = 0;
 	
@@ -32,14 +30,12 @@ public class MinePagedResetAsyncTask
 	private long timeStart = 0;
 	private long timePage = 0;
 	
+	private PrisonStatsElapsedTimeNanos nanos;
 	
 	
-	public enum MineResetType {
-		normal,
-		paged,
-		clear,
-		tracer;
-	}
+	// Config Settings:
+	private int configAsyncResetPageSize = -1;
+	private int configSyncSubPageSlice = -1;
 	
 	
 	public MinePagedResetAsyncTask( Mine mine, MineResetType resetType ) {
@@ -48,10 +44,14 @@ public class MinePagedResetAsyncTask
 		this.mine = mine;
 		this.resetType = resetType;
 		
+		
 		this.timeStart = System.currentTimeMillis();
 		this.timePage = timeStart;
 		
-		this.totalPages = (mine.getMineTargetPrisonBlocks().size() / pageSize) + 1;
+		this.nanos = new PrisonStatsElapsedTimeNanos();
+		
+		this.totalPages = (mine.getMineTargetPrisonBlocks().size() / 
+												getConfigAsyncResetPageSize()) + 1;
 	}
 	
 	
@@ -95,7 +95,9 @@ public class MinePagedResetAsyncTask
 		
 		mine.setResetPage( page );
 		
-//		long time = System.currentTimeMillis() - start;
+		mine.setStatsBlockUpdateTimeNanos( nanos.getElapsedTimeNanos() );
+
+		//		long time = System.currentTimeMillis() - start;
 		mine.setStatsBlockUpdateTimeMS( timeElapsedPage + mine.getStatsBlockUpdateTimeMS() );
 		mine.setStatsResetTimeMS( timeElapsedPage + mine.getStatsResetTimeMS() );
 		
@@ -113,7 +115,9 @@ public class MinePagedResetAsyncTask
 					resetType.name() + 
 					" : page " + page + " of " + totalPages + " : " +
 					"  blocks = " + blocksPlaced + "  elapsed = " + timeElapsedPage + 
-					" ms  TotalElapsed = " + timeElapsedTotal + " ms"// +
+					" ms  TotalElapsed = " + timeElapsedTotal + " ms   " +
+							"block update elapsed = " + 
+					( getNanos().getElapsedTimeNanos() / 1000000d ) + " ms(nanos)"
 //							"  TPS " +
 //					Prison.get().getPrisonTPS().getAverageTPSFormatted()
 					);
@@ -134,22 +138,24 @@ public class MinePagedResetAsyncTask
 		
 		List<MineTargetPrisonBlock> targetBlocks = mine.getMineTargetPrisonBlocks();
 
-		int pageEndPosition = position + pageSize;
+		int pageEndPosition = position + getConfigAsyncResetPageSize();
+				
 		
-		for ( int i = position; i < pageEndPosition && i < targetBlocks.size(); i++ ) {
-			MineTargetPrisonBlock tBlock = targetBlocks.get( i );
+		while ( position < pageEndPosition ) {
 			
-			final PrisonBlock pBlock = getPrisonBlock( tBlock );
-					
-			if ( pBlock != null ) {
-				
-				Location location = tBlock.getLocation();
-				
-				location.setBlockAsync( pBlock );
+			int endIndex = position + getConfigSyncSubPageSlice();
+			if ( endIndex > targetBlocks.size() ) {
+				endIndex = targetBlocks.size();
+				pageEndPosition = endIndex;
 			}
 			
-			position++;
+			List<MineTargetPrisonBlock> tBlocks = targetBlocks.subList( position, endIndex );
+			
+			mine.getWorld().get().setBlocksSynchronously( tBlocks, resetType, getNanos() );
+			
+			position += tBlocks.size();
 		}
+		
 		
 		// Keep resubmitting this task until it is completed:
 		if ( position < targetBlocks.size() ) {
@@ -189,31 +195,32 @@ public class MinePagedResetAsyncTask
 		mine.asynchronouslyResetFinalize();
 	}
 
-	private PrisonBlock getPrisonBlock( MineTargetPrisonBlock tBlock ) {
-		final PrisonBlock pBlock;
-
-		if ( resetType == MineResetType.tracer && tBlock.isEdge() )
-		{
-			pBlock = PrisonBlock.PINK_STAINED_GLASS;
-		}
-		else if ( resetType == MineResetType.clear || 
-			 resetType == MineResetType.tracer )
-		{
-			pBlock = PrisonBlock.AIR;
-		}
-		else if ( tBlock.getPrisonBlock() != null && 
-				  tBlock.getPrisonBlock() instanceof PrisonBlock )
-		{
-
-			// MineResetType.normal and MineResetType.paged
-			pBlock = (PrisonBlock) tBlock.getPrisonBlock();
-		}
-		else
-		{
-			pBlock = null;
-		}
-		
-		return pBlock;
+	
+	public PrisonStatsElapsedTimeNanos getNanos() {
+		return nanos;
+	}
+	public void setNanos( PrisonStatsElapsedTimeNanos nanos ) {
+		this.nanos = nanos;
 	}
 
+
+	public int getConfigAsyncResetPageSize() {
+		if ( configAsyncResetPageSize == -1 ) {
+			this.configAsyncResetPageSize = 
+					Long.valueOf( Prison.get().getPlatform()
+							.getConfigLong( "prison-mines.reset-async-paging.async-page-size", 
+									4000 )).intValue();
+		}
+		return configAsyncResetPageSize;
+	}
+	
+	public int getConfigSyncSubPageSlice() {
+		if ( configSyncSubPageSlice == -1 ) {
+			this.configSyncSubPageSlice = 
+					Long.valueOf( Prison.get().getPlatform()
+							.getConfigLong( "prison-mines.reset-async-paging.sync-sub-page-slice", 
+									200 )).intValue();
+		}
+		return configSyncSubPageSlice;
+	}
 }

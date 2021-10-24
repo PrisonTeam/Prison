@@ -21,6 +21,8 @@ package tech.mcprison.prison.internal;
 import java.util.List;
 
 import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.internal.block.MineResetType;
+import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.util.Location;
 
@@ -63,6 +65,10 @@ public interface World {
      * @param prisonBlock
      * @param location
      */
-	void setBlockAsync( PrisonBlock prisonBlock, Location location );
+	public void setBlockAsync( PrisonBlock prisonBlock, Location location );
+
+	public void setBlocksSynchronously( List<MineTargetPrisonBlock> tBlocks, 
+						MineResetType resetType, 
+								PrisonStatsElapsedTimeNanos nanos );
 
 }

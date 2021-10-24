@@ -11,19 +11,19 @@ import java.util.Stack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.MineResetType;
+import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask;
-import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask.MineResetType;
-import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonCommandTask;
+import tech.mcprison.prison.tasks.PrisonCommandTask.CustomPlaceholders;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
-import tech.mcprison.prison.tasks.PrisonCommandTask.CustomPlaceholders;
 
 public abstract class MineScheduler
 		extends MineTasks

@@ -1,8 +1,8 @@
 package tech.mcprison.prison.mines.features;
 
+import tech.mcprison.prison.internal.block.MineResetType;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask;
-import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask.MineResetType;
 import tech.mcprison.prison.output.Output;
 
 public class MineTracerBuilder

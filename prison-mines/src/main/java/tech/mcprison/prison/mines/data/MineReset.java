@@ -11,6 +11,9 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.internal.block.MineResetType;
+import tech.mcprison.prison.internal.block.MineTargetBlockKey;
+import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.PrisonMines;
@@ -20,11 +23,8 @@ import tech.mcprison.prison.mines.events.MineResetEvent;
 import tech.mcprison.prison.mines.features.MineLinerBuilder;
 import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.mines.features.MineMover;
-import tech.mcprison.prison.mines.features.MineTargetBlockKey;
-import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.mines.features.MineTracerBuilder;
 import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask;
-import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask.MineResetType;
 import tech.mcprison.prison.mines.tasks.MineTeleportTask;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonCommandTask;
@@ -113,6 +113,7 @@ public abstract class MineReset
 	private long statsResetTimeMS = 0;
 	private long statsBlockGenTimeMS = 0;
 	private long statsBlockUpdateTimeMS = 0;
+	private long statsBlockUpdateTimeNanos = 0;
 	
 	// Note: The time it takes to teleport players and broadcast is so trivial
 	//       that they are being disabled to reduce the clutter and memory load.
@@ -331,17 +332,11 @@ public abstract class MineReset
     	sb.append( "&3 BlockGenTime: &7" );
     	sb.append( dFmt.format(getStatsBlockGenTimeMS() / 1000.0d )).append( " s " );
     	
-//    	sb.append( "&3 TP1: &7" );
-//    	sb.append( dFmt.format(getStatsTeleport1TimeMS() / 1000.0d ));
 
     	sb.append( "&3 BlockUpdateTime: &7" );
     	sb.append( dFmt.format(getStatsBlockUpdateTimeMS() / 1000.0d )).append( " s " );
+    	sb.append( dFmt.format(getStatsBlockUpdateTimeNanos() / 1000000.0d )).append( " ms(nanos) " );
     	
-//    	sb.append( "&3 TP2: &7" );
-//    	sb.append( dFmt.format(getStatsTeleport2TimeMS() / 1000.0d ));
-    	
-//    	sb.append( "&3 Msg: &7" );
-//    	sb.append( dFmt.format(getStatsMessageBroadcastTimeMS() / 1000.0d ));
     	
     	sb.append( "&3 ResetPages: &7" );
     	sb.append( iFmt.format(getStatsResetPages() ));
@@ -400,6 +395,7 @@ public abstract class MineReset
     	setStatsResetTimeMS( 0 );
     	setStatsBlockGenTimeMS( 0 );
     	setStatsBlockUpdateTimeMS( 0 );
+    	setStatsBlockUpdateTimeNanos( 0 );
 //    	setStatsTeleport1TimeMS( 0 );
 //    	setStatsTeleport2TimeMS( 0 );
 //    	setStatsMessageBroadcastTimeMS( 0 );
@@ -702,7 +698,7 @@ public abstract class MineReset
      * </p>
      *  
      */
-    protected void xresetAsynchonously() {
+    protected void resetAsynchonously() {
     	boolean canceled = false;
     	
 //		Output.get().logInfo( "MineRest.resetAsynchonously() " + getName() );
@@ -1946,32 +1942,12 @@ public abstract class MineReset
 		this.statsBlockUpdateTimeMS = statsBlockUpdateTimeMS;
 	}
 
-//	public long getStatsTeleport1TimeMS()
-//	{
-//		return statsTeleport1TimeMS;
-//	}
-//	public void setStatsTeleport1TimeMS( long statsTeleport1TimeMS )
-//	{
-//		this.statsTeleport1TimeMS = statsTeleport1TimeMS;
-//	}
-//
-//	public long getStatsTeleport2TimeMS()
-//	{
-//		return statsTeleport2TimeMS;
-//	}
-//	public void setStatsTeleport2TimeMS( long statsTeleport2TimeMS )
-//	{
-//		this.statsTeleport2TimeMS = statsTeleport2TimeMS;
-//	}
-//
-//	public long getStatsMessageBroadcastTimeMS()
-//	{
-//		return statsMessageBroadcastTimeMS;
-//	}
-//	public void setStatsMessageBroadcastTimeMS( long statsMessageBroadcastTimeMS )
-//	{
-//		this.statsMessageBroadcastTimeMS = statsMessageBroadcastTimeMS;
-//	}
+	public long getStatsBlockUpdateTimeNanos() {
+		return statsBlockUpdateTimeNanos;
+	}
+	public void setStatsBlockUpdateTimeNanos( long statsBlockUpdateTimeNanos ) {
+		this.statsBlockUpdateTimeNanos = statsBlockUpdateTimeNanos;
+	}
 
 	public int getStatsResetPages() {
 		return statsResetPages;

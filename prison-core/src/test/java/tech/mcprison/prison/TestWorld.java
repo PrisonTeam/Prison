@@ -21,8 +21,11 @@ package tech.mcprison.prison;
 import java.util.List;
 
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.PrisonStatsElapsedTimeNanos;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.internal.block.MineResetType;
+import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.util.Location;
 
@@ -56,4 +59,12 @@ public class TestWorld implements World {
 	@Override
 	public void setBlockAsync( PrisonBlock prisonBlock, Location location ) {
 	}
+	
+	@Override
+	public void setBlocksSynchronously( List<MineTargetPrisonBlock> tBlocks, 
+							MineResetType resetType,
+							PrisonStatsElapsedTimeNanos nanos ) {
+		
+	}
+
 }

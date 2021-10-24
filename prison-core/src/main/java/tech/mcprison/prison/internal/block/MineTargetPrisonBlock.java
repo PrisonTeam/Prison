@@ -1,7 +1,6 @@
-package tech.mcprison.prison.mines.features;
+package tech.mcprison.prison.internal.block;
 
 import tech.mcprison.prison.internal.World;
-import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.util.Location;
 
 public class MineTargetPrisonBlock
@@ -37,6 +36,35 @@ public class MineTargetPrisonBlock
 	public String toString() {
 		return "MineTargetPrisonBlock: key= " + getBlockKey().toString() + 
 											" block= " + getPrisonBlock().toString();
+	}
+	
+	public  PrisonBlock getPrisonBlock( MineResetType resetType ) {
+		
+		final PrisonBlock pBlock;
+		
+		if ( resetType == MineResetType.tracer && isEdge() )
+		{
+			pBlock = PrisonBlock.PINK_STAINED_GLASS;
+		}
+		else if ( resetType == MineResetType.clear || 
+				resetType == MineResetType.tracer )
+		{
+			pBlock = PrisonBlock.AIR;
+		}
+		else if ( getPrisonBlock() != null && 
+				getPrisonBlock() instanceof PrisonBlock )
+		{
+			
+			// MineResetType.normal and MineResetType.paged
+			pBlock = (PrisonBlock) getPrisonBlock();
+		}
+		else
+		{
+			pBlock = null;
+		}
+		
+		return pBlock;
+		
 	}
 	
 	public PrisonBlockStatusData getPrisonBlock() {

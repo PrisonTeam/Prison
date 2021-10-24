@@ -8,9 +8,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
-import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 

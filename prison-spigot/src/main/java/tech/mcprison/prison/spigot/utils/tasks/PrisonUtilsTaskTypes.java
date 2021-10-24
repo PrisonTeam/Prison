@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.internal.block.MineTargetBlockKey;
 import tech.mcprison.prison.internal.block.PrisonBlock;
-import tech.mcprison.prison.mines.features.MineTargetBlockKey;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.tasks.PrisonCommandTask;
 import tech.mcprison.prison.util.Location;

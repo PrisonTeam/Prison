@@ -23,13 +23,18 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.CustomBlockIntegration;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.PrisonStatsElapsedTimeNanos;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.internal.block.MineResetType;
+import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
@@ -114,6 +119,53 @@ public class SpigotWorld implements World {
 			default:
 				break;
 		}
+	}
+	
+	
+	/**
+	 * <p>This list of blocks to be updated, should be ran from an asynchronous thread.
+	 * This function will take it's code block and run it in bukkit's synchronous 
+	 * thread so the block updates will be thread safe.
+	 * </p>
+	 * 
+	 * <p>The MineTargetPrisonBlock List should be a fairly short list of blocks that
+	 * will be updated in one synchronous slice.
+	 * </p>
+	 * 
+	 */
+	@Override
+	public void setBlocksSynchronously( List<MineTargetPrisonBlock> tBlocks, MineResetType resetType, 
+			PrisonStatsElapsedTimeNanos nanos ) {
+		
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				
+				long start = System.nanoTime();
+				
+				for ( MineTargetPrisonBlock tBlock : tBlocks )
+				{
+					final PrisonBlock pBlock = tBlock.getPrisonBlock( resetType );
+					
+					if ( pBlock != null ) {
+						
+						Location location = tBlock.getLocation();
+						
+						SpigotBlock sBlock = (SpigotBlock) location.getBlockAt();
+						sBlock.setPrisonBlock( pBlock );
+					}
+				}
+				
+				long elapsedNanos = System.nanoTime() - start;
+				
+					
+				if ( nanos != null ) {
+					nanos.addNanos( elapsedNanos );
+				}
+				
+			}
+		}.runTaskLater( SpigotPrison.getInstance(), 0 );
+		
 	}
 
     public org.bukkit.World getWrapper() {

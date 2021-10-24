@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.3 2021-10-21
+# 3.2.11-alpha.3 2021-10-23
+
+
+* **Async Mine Reset performance Improvements.** Adjustments were made to improve the performance of the asynch mine resets by providing the ability to fine tune the page sizes, and also provide the ability to reset more than one block in the synchronous thread at a time.  This is called a slice.  Measuring the actual block reset time with nanos for better resolution.
+MineTargetBlockKey class was relocated to allow for the use of sub listings on the synchronized block updates.
 
 
 * **Cloning a bomb was not complete.  Some details were omitted.**

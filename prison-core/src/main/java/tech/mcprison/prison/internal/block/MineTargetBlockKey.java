@@ -1,4 +1,4 @@
-package tech.mcprison.prison.mines.features;
+package tech.mcprison.prison.internal.block;
 
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.util.Location;

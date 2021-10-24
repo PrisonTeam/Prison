@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.output.Output;

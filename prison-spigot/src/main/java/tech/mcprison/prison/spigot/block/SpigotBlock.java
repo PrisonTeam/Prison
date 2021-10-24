@@ -77,7 +77,8 @@ public class SpigotBlock implements Block {
     }
     
     @Override public Location getLocation() {
-        return SpigotUtil.bukkitLocationToPrison(getWrapper().getLocation());
+        return getWrapper() == null ? null :
+        		SpigotUtil.bukkitLocationToPrison(getWrapper().getLocation());
     }
 
     @Override public Block getRelative(BlockFace face) {
