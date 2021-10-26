@@ -13,7 +13,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.3 2021-10-23
+# 3.2.11-alpha.3 2021-10-26
+
+
+* **Major rewrites to how auto features work.**
+Using the PrisonMinesBlockBreakEvent object to carry all of the various parameters that are used within the auto features code.  This allowed the elimination of many functions since they have been combined together.  It also allowed for more efficient handling of explosions by combining similar blocks together and processing them as a single unit, so massive explosions are handled far more efficiently.  If the admin chooses to break the blocks in another thread, then handling of many blocks is optimized to reduce the overhead.  The state of the blocks being broken are being tracked through the MineTargetPrisonBlock such that it's flagged as soon as it starts to process the impacted blocks so as to prevent the same block from being processed more than once, even when there are many explosions occurring at the same time. Changes to the block (block break) has been moved out of the depths of the code, to be closer to the event handlers so it's easier to monitor/track.
+Due to the many changes and major alterations to the logic, this is a work in progress and needs more testing.
 
 
 * **Async Mine Reset performance Improvements.** Adjustments were made to improve the performance of the asynch mine resets by providing the ability to fine tune the page sizes, and also provide the ability to reset more than one block in the synchronous thread at a time.  This is called a slice.  Measuring the actual block reset time with nanos for better resolution.

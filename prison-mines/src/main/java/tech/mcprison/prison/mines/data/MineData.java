@@ -673,14 +673,17 @@ public abstract class MineData
     	
     	// Only count the block as being broke if it was not originally air and
     	// and it has not been broke before:
-    	if ( targetPrisonBlock != null && !targetPrisonBlock.isAirBroke() ) {
+    	if ( targetPrisonBlock != null && !targetPrisonBlock.isAirBroke() && !targetPrisonBlock.isCounted() ) {
     		
+    		targetPrisonBlock.setAirBroke( true );
+    		targetPrisonBlock.setCounted( true );
+    		targetPrisonBlock.setMined( true );
+
     		incrementBlockBreakCount();
     		incrementTotalBlocksMined();
     		
     		targetPrisonBlock.getPrisonBlock().incrementMiningBlockCount();
     		
-    		targetPrisonBlock.setAirBroke( true );
     	}
     }
     

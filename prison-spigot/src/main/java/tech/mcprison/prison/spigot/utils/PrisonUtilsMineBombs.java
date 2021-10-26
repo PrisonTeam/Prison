@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.utils;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,11 +14,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.bombs.MineBombData;
 import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -28,6 +32,7 @@ import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.util.Text;
 
 public class PrisonUtilsMineBombs
 		extends PrisonUtils
@@ -380,7 +385,8 @@ public class PrisonUtilsMineBombs
 				lore.add( "Size, Diameter: " + ( 1 + 2 * bomb.getRadius()) );
 				lore.add( "Shape: " + bomb.getExplosionShape() );
 				
-				String[] desc = bomb.getDescription().split( " " );
+				String bombDesc = bomb.getDescription();
+				String[] desc = ( bombDesc == null ? "" : bombDesc ).split( " " );
 				StringBuilder sb = new StringBuilder();
 				
 				for ( String d : desc ) {
@@ -422,44 +428,121 @@ public class PrisonUtilsMineBombs
 	 * @param player
 	 * @return
 	 */
-	public static MineBombData getBombInHand( Player player ) {
-		MineBombData results = null;
+	public static boolean setBombInHand( Player player, SpigotBlock sBlock ) {
+		boolean isABomb = false;
+		
     	
     	SpigotItemStack itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
 
     	if ( itemInHand != null ) {
     		List<String> lore = itemInHand.getLore();
     		
-    		if ( lore.size() > 1 && 
-    				lore.get( 0 ).equalsIgnoreCase( MINE_BOMBS_LORE_1 ) &&
-    				lore.get( 1 ).startsWith( MINE_BOMBS_LORE_2_PREFIX )) {
+    		String prisonBombId = lore.size() > 0 ? Text.stripColor( lore.get( 0 ) ) : "";
+    		String bombName = lore.size() > 1 ? Text.stripColor( lore.get( 1 ) ).trim() : "";
+    		
+    		if ( prisonBombId.equalsIgnoreCase( Text.stripColor( MINE_BOMBS_LORE_1 )) ) {
     			
-    			String bombName = lore.get( 1 ).replace( MINE_BOMBS_LORE_2_PREFIX, "" );
+    			
+
+    			// String bombName = lore1.trim();
     			
     			MineBombs mBombs = MineBombs.getInstance();
     			
-    			results = mBombs.findBomb( bombName );
+    			MineBombData bomb = mBombs.findBomb( bombName );
     			
-    			String playerUUID = player.getUniqueId().toString();
+				String prisonExplosiveHandlerPriority = AutoFeaturesWrapper.getInstance().getMessage( 
+						AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
+				
+				if ( bomb != null && "DISABLED".equalsIgnoreCase( prisonExplosiveHandlerPriority ) ) {
+					Output.get().logWarn( "A Prison Mine Bomb was attempted to be used, but the " +
+							"handling of its explosion is DISABLED.  Edit the 'autoFeaturesConfig.yml' " +
+							"file and set 'ProcessPrisons_ExplosiveBlockBreakEventsPriority: NORMAL'." );
+				}
     			
-    			if ( results != null && 
-    					checkPlayerCooldown( playerUUID ) == 0 ) {
-
-    				// Setting activated to true indicates the bomb is live and it has
-    				// been removed from the player's inventory:
-    				results.setActivated( true );
-    				itemInHand.setAmount( itemInHand.getAmount() - 1 );
+				else if ( bomb != null ) {
     				
-    				// Remove from inventory:
-    				SpigotCompatibility.getInstance().setItemInMainHand( player, itemInHand.getBukkitStack() );
+    				SpigotPlayer sPlayer = new SpigotPlayer( player );
 
-    				// Set cooldown:
-    				PrisonUtilsMineBombs.addPlayerCooldown( playerUUID );
+    				String playerUUID = player.getUniqueId().toString();
+    				int cooldownTicks = checkPlayerCooldown( playerUUID );
+    			
+    				if ( cooldownTicks == 0 ) {
+    					
+    					isABomb = true;
+    					
+    					// Setting activated to true indicates the bomb is live and it has
+    					// been removed from the player's inventory:
+    					bomb.setActivated( true );
+    					itemInHand.setAmount( itemInHand.getAmount() - 1 );
+    					
+    					// Remove from inventory:
+    					SpigotCompatibility.getInstance().setItemInMainHand( player, itemInHand.getBukkitStack() );
+    					
+    					// Set cooldown:
+    					PrisonUtilsMineBombs.addPlayerCooldown( playerUUID );
+    					
+    					SpigotItemStack bombs = PrisonUtilsMineBombs.getItemStackBomb( bomb );
+    					
+    					if ( bombs != null ) {
+    						
+    						Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  05 " );
+    						
+    						// SpigotBlock sBlock = new SpigotBlock( event.getClickedBlock() );
+    						
+    						Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  dropping block " );
+    						
+    						int throwSpeed = 2;
+
+    						// This places the item so it will float:
+    						final Item dropped = player.getWorld().dropItem(player.getLocation(), bombs.getBukkitStack() );
+    						dropped.setPickupDelay( Integer.MAX_VALUE );
+    						dropped.setCustomName( bomb.getName() );
+    						dropped.setVelocity(player.getLocation().getDirection().multiply( throwSpeed ).normalize() );
+    						
+    						int delayInTicks = 5 * 20; // 5 secs
+    						
+    						
+    						// Get the block that is y - 1 lower than the original block:
+    						SpigotBlock bombBlock = (SpigotBlock) sBlock.getRelative( BlockFace.DOWN );
+    						
+    						// Submit the bomb's task to go off:
+    						PrisonUtilsMineBombs.setoffBombDelayed( sPlayer, bomb, dropped, bombBlock, delayInTicks );
+    						
+
+    						
+
+    						// setGlow is invalid for spigot 1.8.8:
+    						//dropped.setGlowing( bomb.isGlowing() );
+    						
+    						// setGravity is invalid for spigot 1.8.8:
+//    						dropped.setGravity( false );
+    						
+    						
+    						
+//    						dropped.setMetadata( "prisonMineBomb", new FixedMetadataValue( SpigotPrison.getInstance(), true ) );
+    						//dropped.setMetadata( "prisonMineName",  new FixedMetadataValue( SpigotPrison.getInstance(), "mineName" ) );
+    						
+    						
+    					}
+    				}
+    				
+    				else {
+    					
+            			float cooldownSeconds = cooldownTicks / 2.0f;
+            			DecimalFormat dFmt = new DecimalFormat( "0.0" );
+            			
+            			String message = 
+            					String.format( "You cannot use another Prison Mine Bomb for %s seconds.", 
+            							dFmt.format( cooldownSeconds ) );
+            			sPlayer.sendMessage( message );
+
+    				}
+    				
     			}
     		}
     	}
     	
-    	return results;
+    	return isABomb;
 	}
 	
 	public static boolean addPlayerCooldown( String playerUUID ) {
@@ -531,6 +614,11 @@ public class PrisonUtilsMineBombs
 				droppedBomb.remove();
 				
 				Location location = sBlock.getLocation();
+				
+				if ( location == null ) {
+					location = sPlayer.getLocation();
+				}
+				
 				SpigotWorld world = (SpigotWorld) location.getWorld();
 				
 				MineBombs mBombs = MineBombs.getInstance();
@@ -559,8 +647,16 @@ public class PrisonUtilsMineBombs
 				explodeEvent.setTriggeredBy( bomb.getName() );
 				explodeEvent.setMineBomb( bomb );
 				
+				
+				// Normally the explosion will ONLY work if the center target block was non-AIR.
+				// This setting allows the explosion to be processed even if it is air.
+				explodeEvent.setForceIfAirBlock( true );
+				
 				Bukkit.getServer().getPluginManager().callEvent( explodeEvent );
 
+				if ( !explodeEvent.isCancelled() ) {
+					// If it wasn't canceled, then it may not have been handled
+				}
 
 				
 			}

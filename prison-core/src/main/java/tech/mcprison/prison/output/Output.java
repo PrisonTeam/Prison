@@ -62,9 +62,9 @@ public class Output
     	off,
     	blockBreak,
 //    	blockBreakListeners,
-    	blockBreakDurability, 
+//    	blockBreakDurability, 
     	blockBreakFortune,
-    	blockBreakXpCalcs,
+//    	blockBreakXpCalcs, // Removed since it was inlined
     	
     	rankup,
     	support

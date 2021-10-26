@@ -54,6 +54,9 @@ public class ExplosiveBlockBreakEvent
 	
 	private MineBombData mineBomb;
 	
+	private boolean forceIfAirBlock = false;
+	
+	
 	public ExplosiveBlockBreakEvent( Block theBlock, Player player,
 						List<Block> explodedBlocks, String triggeredBy ) {
 		super( theBlock, player );
@@ -112,6 +115,13 @@ public class ExplosiveBlockBreakEvent
 	}
 	public void setMineBomb( MineBombData mineBomb ) {
 		this.mineBomb = mineBomb;
+	}
+	
+	public boolean isForceIfAirBlock() {
+		return forceIfAirBlock;
+	}
+	public void setForceIfAirBlock( boolean forceIfAirBlock ) {
+		this.forceIfAirBlock = forceIfAirBlock;
 	}
 	
 	@Override

@@ -12,6 +12,8 @@ import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
@@ -57,12 +59,20 @@ public class PrisonMinesBlockBreakEvent
 	
 	private Mine mine;
 	
-	private SpigotBlock spigotBlock;
 	private SpigotPlayer spigotPlayer;
+	private SpigotItemStack itemInHand;
+
+	private SpigotBlock spigotBlock;
+	private MineTargetPrisonBlock targetBlock;
+
 	
 	//private SpigotBlock overRideSpigotBlock;
 	
 	private List<SpigotBlock> explodedBlocks;
+	
+	// The targetBlocks are the blocks that were used to reset the mine with.
+	// They identify what the blocks were supposed to be.
+	private List<MineTargetPrisonBlock> targetExplodedBlocks;
 	
 	private BlockEventType blockEventType;
 	private String triggered;
@@ -70,6 +80,14 @@ public class PrisonMinesBlockBreakEvent
 	private boolean cancelOriginalEvent = false;
 	private boolean monitor = false;
 	private boolean blockEventsOnly = false;
+	
+	
+	// Normally the explosion will ONLY work if the center target block was non-AIR.
+	// This setting allows the explosion to be processed even if it is air.
+	private boolean forceIfAirBlock = false;
+	
+	
+	private List<SpigotItemStack> bukkitDrops;
 	
 	private List<Block> unprocessedRawBlocks;
 	
@@ -84,6 +102,8 @@ public class PrisonMinesBlockBreakEvent
 		this.spigotBlock = spigotBlock;
 		this.spigotPlayer = spigotPlayer;
 		
+		this.itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
+		
 		this.monitor = monitor;
 		this.blockEventsOnly = blockEventsOnly;
 		
@@ -91,7 +111,11 @@ public class PrisonMinesBlockBreakEvent
 		this.triggered = triggered;
 		
 		this.explodedBlocks = new ArrayList<>();
+		this.targetExplodedBlocks = new ArrayList<>();
+
 		this.unprocessedRawBlocks = new ArrayList<>();
+		
+		this.bukkitDrops = new ArrayList<>();
 		
 	}
 	
@@ -103,15 +127,21 @@ public class PrisonMinesBlockBreakEvent
 	{
 		super( theBlock, player );
 		
-		this.mine = mine;
 		this.spigotBlock = spigotBlock;
+		this.spigotPlayer = new SpigotPlayer( player );
+		
+		this.itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
+
+		this.mine = mine;
 		
 		this.explodedBlocks = explodedBlocks;
 		
 		this.blockEventType = blockEventType;
+		this.targetExplodedBlocks = new ArrayList<>();
+
 		this.triggered = triggered;
 		
-		//this.overRideSpigotBlock = null;
+		this.bukkitDrops = new ArrayList<>();
 		
 	}
 
@@ -177,6 +207,13 @@ public class PrisonMinesBlockBreakEvent
 		this.spigotBlock = spigotBlock;
 	}
 
+	public MineTargetPrisonBlock getTargetBlock() {
+		return targetBlock;
+	}
+	public void setTargetBlock( MineTargetPrisonBlock targetBlock ) {
+		this.targetBlock = targetBlock;
+	}
+
 	public SpigotPlayer getSpigotPlayer() {
 		return spigotPlayer;
 	}
@@ -184,11 +221,32 @@ public class PrisonMinesBlockBreakEvent
 		this.spigotPlayer = spigotPlayer;
 	}
 
+	public SpigotItemStack getItemInHand() {
+		return itemInHand;
+	}
+	public void setItemInHand( SpigotItemStack itemInHand ) {
+		this.itemInHand = itemInHand;
+	}
+
 	public List<SpigotBlock> getExplodedBlocks() {
 		return explodedBlocks;
 	}
 	public void setExplodedBlocks( List<SpigotBlock> explodedBlocks ) {
 		this.explodedBlocks = explodedBlocks;
+	}
+
+	public List<MineTargetPrisonBlock> getTargetExplodedBlocks() {
+		return targetExplodedBlocks;
+	}
+	public void setTargetExplodedBlocks( List<MineTargetPrisonBlock> targetBlocks ) {
+		this.targetExplodedBlocks = targetBlocks;
+	}
+
+	public List<SpigotItemStack> getBukkitDrops() {
+		return bukkitDrops;
+	}
+	public void setBukkitDrops( List<SpigotItemStack> drops ) {
+		this.bukkitDrops = drops;
 	}
 
 	public BlockEventType getBlockEventType() {
@@ -238,6 +296,13 @@ public class PrisonMinesBlockBreakEvent
 	}
 	public void setUnprocessedRawBlocks( List<Block> unprocessedRawBlocks ) {
 		this.unprocessedRawBlocks = unprocessedRawBlocks;
+	}
+
+	public boolean isForceIfAirBlock() {
+		return forceIfAirBlock;
+	}
+	public void setForceIfAirBlock( boolean forceIfAirBlock ) {
+		this.forceIfAirBlock = forceIfAirBlock;
 	}
 
 	@Override

@@ -14,6 +14,14 @@ public class MineTargetPrisonBlock
 	private boolean isEdge;
 	
 	
+	private boolean mined = false;
+	private Block minedBlock;
+	
+//	private boolean blockEvent = false;
+	private boolean counted = false;
+	
+	
+	
 	protected MineTargetPrisonBlock( World world, int x, int y, int z, boolean isEdge ) {
 		
 		this.blockKey = new MineTargetBlockKey( world, x, y, z );
@@ -102,6 +110,34 @@ public class MineTargetPrisonBlock
 	}
 	public void setEdge( boolean isEdge ) {
 		this.isEdge = isEdge;
+	}
+
+	public boolean isMined() {
+		return mined;
+	}
+	public void setMined( boolean mined ) {
+		this.mined = mined;
+	}
+
+//	public boolean isBlockEvent() {
+//		return blockEvent;
+//	}
+//	public void setBlockEvent( boolean blockEvent ) {
+//		this.blockEvent = blockEvent;
+//	}
+
+	public boolean isCounted() {
+		return counted;
+	}
+	public void setCounted( boolean counted ) {
+		this.counted = counted;
+	}
+
+	public Block getMinedBlock() {
+		return minedBlock;
+	}
+	public void setMinedBlock( Block minedBlock ) {
+		this.minedBlock = minedBlock;
 	}
 
 	@Override 

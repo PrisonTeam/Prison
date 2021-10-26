@@ -1,10 +1,5 @@
 package tech.mcprison.prison.spigot.utils;
 
-import java.text.DecimalFormat;
-
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,16 +10,9 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
 
-import com.google.common.collect.Multimap;
-
-import tech.mcprison.prison.bombs.MineBombData;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
-import tech.mcprison.prison.spigot.block.SpigotItemStack;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
  * <p>This listener class handles the player's interaction with using a bomb.
@@ -42,83 +30,32 @@ public class PrisonBombListener
 {
 	
 
-//    @EventHandler( priority = EventPriority.LOW )
+    @EventHandler( priority = EventPriority.LOW )
     public void onInteract( PlayerInteractEvent event ) {
 //        if ( !event.getPlayer().hasPermission("prison.minebombs.use") ) {
 //        	return;
 //        }
 
-        Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  01 " );
+        //Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  01 " );
         
         if ( event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR) ) {
         	
         	// If the player is holding a mine bomb, then get the bomb and decrease the
         	// ItemStack in the player's hand by 1:
-        	MineBombData bomb = PrisonUtilsMineBombs.getBombInHand( event.getPlayer() );
         	
-        	Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  02  is bomb null " + (bomb == null) );
-
-        	if ( bomb != null  ) {
-
-        		Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  03 " );
+        	Player player = event.getPlayer();
+        	SpigotBlock sBlock = new SpigotBlock( event.getClickedBlock() );
+        	
+//        	Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  02 " );
+        	if ( PrisonUtilsMineBombs.setBombInHand( player, sBlock ) ) {
         		
-        		Player player = event.getPlayer();
-
-        		SpigotPlayer sPlayer = new SpigotPlayer( player );
+        		// The item was a bomb and it was activated.
+        		// Cancel the event so the item will not be placed or processed farther.
         		
-        		// if the bomb is not activated, then that indicates that the players is 
-        		// under a cooldown and the bomb cannot be used, nor has it been removed from their
-        		// inventory.
-        		if ( bomb.isActivated() ) {
-        		
-//        			Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  04 " );
-        		
-        			SpigotItemStack bombs = PrisonUtilsMineBombs.getItemStackBomb( bomb );
-        			
-        			if ( bombs != null ) {
-
-        				Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  05 " );
-        				
-        				SpigotBlock sBlock = new SpigotBlock( event.getClickedBlock() );
-        				
-        				Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  dropping block " );
-        				
-        				int throwSpeed = 2;
-        				
-//        				final Item dropped = player.getWorld().dropItem(player.getLocation(), bombs.getBukkitStack() );
-//        				dropped.setVelocity(player.getLocation().getDirection().multiply( throwSpeed ).normalize() );
-//        				dropped.setPickupDelay( 50000 );
-//        				
-//        				dropped.setGlowing( bomb.isGlowing() );
-//        				dropped.setCustomName( bomb.getName() );
-//        				
-//        				dropped.setMetadata( "prisonMineBomb", new FixedMetadataValue( SpigotPrison.getInstance(), true ) );
-//        				//dropped.setMetadata( "prisonMineName",  new FixedMetadataValue( SpigotPrison.getInstance(), "mineName" ) );
-//        				
-//        				
-//        				PrisonUtilsMineBombs.setoffBombDelayed( sPlayer, bomb, dropped, sBlock, throwSpeed );
-        				
-        			}
-        		}
-        		else {
-        			
-        			String playerUUID = player.getUniqueId().toString();
-        			int cooldownTicks = PrisonUtilsMineBombs.checkPlayerCooldown( playerUUID );
-        			float cooldownSeconds = cooldownTicks / 2.0f;
-        			DecimalFormat dFmt = new DecimalFormat( "0.0" );
-        			
-        			String message = 
-        					String.format( "You cannot use another Prison Mine Bomb for %s seconds.", 
-        							dFmt.format( cooldownSeconds ) );
-        			sPlayer.sendMessage( message );
-        		}
-        		
+        		Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  03 Bomb activated " );
+        		event.setCancelled( true );
         	}
         	
-        	else {
-        		
-        		// Do nothing since this means the event is not Prison Mine Bomb related.
-        	}
         	
         	
  

@@ -1323,6 +1323,8 @@ public abstract class MineReset
 						
 						targetBlock.getPrisonBlock().incrementMiningBlockCount();
 						targetBlock.setAirBroke( true );
+						targetBlock.setCounted( true );
+						targetBlock.setMined( true );
 						
 						blocksChanged++;
 					}
@@ -1667,6 +1669,10 @@ public abstract class MineReset
     					
     					// Add the new block and increment it's count:
     					targetBlock.setPrisonBlock( block );
+    					if ( block.isAir() ) {
+    						targetBlock.setAirBroke( true );
+    						targetBlock.setMined( true );
+    					}
     					block.incrementResetBlockCount();
     				}
     			}
