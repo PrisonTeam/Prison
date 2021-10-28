@@ -71,6 +71,12 @@ public class MinesBlockCommands
         		return;
         	}
         	
+        	if ( !prisonBlock.isBlock() ) {
+        		pMines.getMinesMessages().getLocalizable("not_a_block").
+        		withReplacements(block).sendTo(sender);
+        		return;
+        	}
+        	
         	
 //        	if (m.isInMine(prisonBlock)) {
 //        		pMines.getMinesMessages().getLocalizable("block_already_added").
@@ -621,6 +627,12 @@ public class MinesBlockCommands
         	if ( preexistingPrisonBlock != null ) {
         		
         		deleteBlock( sender, pMines, m, preexistingPrisonBlock );
+        	}
+        	else {
+        		
+        		pMines.getMinesMessages().getLocalizable("block_not_removed")
+        		.sendTo(sender);
+        		return;
         	}
         	
         }

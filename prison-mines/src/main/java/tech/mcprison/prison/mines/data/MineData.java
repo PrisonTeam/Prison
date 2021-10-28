@@ -867,10 +867,13 @@ public abstract class MineData
     public PrisonBlock getPrisonBlock( PrisonBlock blockType ) {
     	PrisonBlock results = null;
     	
-    	for (PrisonBlock block : getPrisonBlocks()) {
-    		if (blockType.getBlockNameFormal().equalsIgnoreCase( block.getBlockNameFormal())) {
-    			results = block;
-    			break;
+    	if ( blockType != null && blockType.getBlockNameFormal() != null ) {
+    		
+    		for (PrisonBlock block : getPrisonBlocks()) {
+    			if ( block.getBlockNameFormal().equalsIgnoreCase( blockType.getBlockNameFormal() )) {
+    				results = block;
+    				break;
+    			}
     		}
     	}
     	
