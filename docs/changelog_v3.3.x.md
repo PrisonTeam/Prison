@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.3 2021-10-28
+# 3.2.11-alpha.3 2021-10-29
+
+
+* **Starting to add some video documents for prison.**
 
 
 * **Fixed an issue with adding a non-block item to a mine.**
