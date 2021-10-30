@@ -909,6 +909,11 @@ public class MinesBlockCommands
         PrisonMines pMines = PrisonMines.getInstance();
         Mine m = pMines.getMine(mineName);
         
+        if ( m == null ) {
+        	sender.sendMessage( "Invalid mine name." );
+        	return;
+        }
+        
         DecimalFormat dFmt = new DecimalFormat("#,##0");
         DecimalFormat fFmt = new DecimalFormat("#,##0.00");
         

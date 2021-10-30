@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.3 2021-10-29
+# 3.2.11-alpha.3 2021-10-30
+
+
+* **Fixed an issue with /mines block list when an incorrect mine name is used.**
+Now displays an error stating the name is invalid.
 
 
 * **Starting to add some video documents for prison.**
