@@ -77,7 +77,12 @@ public class PrisonMinesBlockBreakEvent
 	private BlockEventType blockEventType;
 	private String triggered;
 	
+	
+	// If this is set during the validation process, and the validation fails, then this it will 
+	// force the canceling of the original block event.
 	private boolean cancelOriginalEvent = false;
+
+	
 	private boolean monitor = false;
 	private boolean blockEventsOnly = false;
 	

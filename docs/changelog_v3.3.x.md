@@ -16,6 +16,11 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.3 2021-10-30
 
 
+* **Adjustments to get block events, such as decays, to work correctly with the new auto feature block event handlers.**
+  Block events were moved to be processed after the block is broke.  Also if a block has already been processed, it now will cancel the event to prevent normal block breakage when none should happen.
+At this point, the new auto manager appears to be working really well.
+
+
 * **Changed the location usage with block event placeholders, which now uses the location that is tied to the targetBlock instead of the mined block.**
 The mined block may be null so it's not stable.
 

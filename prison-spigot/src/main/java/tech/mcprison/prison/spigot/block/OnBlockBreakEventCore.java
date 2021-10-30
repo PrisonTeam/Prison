@@ -373,6 +373,8 @@ public class OnBlockBreakEventCore
                 		
                 		finalizeBreakTheBlocks( pmEvent );
                 		
+                		doBlockEvents( pmEvent );
+                		
                 	}
                 	else {
                 		
@@ -398,6 +400,34 @@ public class OnBlockBreakEventCore
 	}
 
 
+	/**
+	 * <p>This processes the block finalizations, which are counting the block breakage,
+	 * and also processes the blockEvents.  It's important to process the block events
+	 * after the blocks are broken (set to AIR) to ensure that when the blockEvents are 
+	 * ran, then the block would already be set to AIR if it is being broke inline.
+	 * </p>
+	 * 
+	 * @param pmEvent
+	 */
+	private void doBlockEvents( PrisonMinesBlockBreakEvent pmEvent )
+	{
+
+		if ( pmEvent.getMine() != null ) {
+			// Record the block break:
+			
+			// apply to ALL blocks including exploded:
+			applyBlockFinalizations( pmEvent, pmEvent.getTargetBlock() );
+
+			
+			for ( MineTargetPrisonBlock teBlock : pmEvent.getTargetExplodedBlocks() ) {
+				
+				applyBlockFinalizations( pmEvent, teBlock );
+			}
+			
+			checkZeroBlockReset( pmEvent.getMine() );
+		}
+	}
+
 	private void finalizeBreakTheBlocks( PrisonMinesBlockBreakEvent pmEvent )
 	{
 		List<SpigotBlock> blocks = finalizeBreakTheBlocksCollectEm( pmEvent );
@@ -419,17 +449,35 @@ public class OnBlockBreakEventCore
 		List<SpigotBlock> blocks = new ArrayList<>();
 		
 		if ( pmEvent.getTargetBlock() != null && pmEvent.getTargetBlock().getMinedBlock() != null ) {
-			blocks.add( ((SpigotBlock) pmEvent.getTargetBlock().getMinedBlock()) );
-			pmEvent.getTargetBlock().setAirBroke( true );
-			pmEvent.getTargetBlock().setMinedBlock( null );
+			
+			SpigotBlock minedBlock = ((SpigotBlock) pmEvent.getTargetBlock().getMinedBlock());
+			
+			// Only add the minedBlock to the blocks list if it matches the expected targetBlock name, which
+			// indicates it has not been replaced by something else, such as the result of a block event.
+			if ( pmEvent.getTargetBlock().getPrisonBlock().getBlockName().equalsIgnoreCase( minedBlock.getBlockName() )) {
+				
+				blocks.add( minedBlock );
+				pmEvent.getTargetBlock().setAirBroke( true );
+//				pmEvent.getTargetBlock().setMinedBlock( null );
+			}
+			
 		}
 		
 		for ( MineTargetPrisonBlock targetBlock : pmEvent.getTargetExplodedBlocks() ) {
 			
 			if ( targetBlock != null && targetBlock.getMinedBlock() != null ) {
-				blocks.add( ((SpigotBlock) targetBlock.getMinedBlock()) );
-				targetBlock.setAirBroke( true );
-				targetBlock.setMinedBlock( null );
+
+				SpigotBlock minedBlock = ((SpigotBlock) targetBlock.getMinedBlock());
+
+				// Only add the minedBlock to the blocks list if it matches the expected targetBlock name, which
+				// indicates it has not been replaced by something else, such as the result of a block event.
+				if ( targetBlock.getPrisonBlock().getBlockName().equalsIgnoreCase( minedBlock.getBlockName() )) {
+					
+					blocks.add( minedBlock );
+					targetBlock.setAirBroke( true );
+//					targetBlock.setMinedBlock( null );
+				}
+				
 			}
 		}
 		
@@ -522,11 +570,18 @@ public class OnBlockBreakEventCore
 						targetBlock.setMined( true );
 					}
 					
+					// A mine bomb will be "set" above a valid mine block, so it would generally be air and
+					// it probably was already mined if it's not on top of the top layer of the mine.
 					if ( !pmEvent.isForceIfAirBlock() ) {
 						
+						// This block has already been mined and is not a mine bomb, so fail the validation
+						// and cancel the event since if it's not an air block, it may be another effect that
+						// is placing a block within the mine, such as a prison util's decay function.
 						debugInfo.append( "VALIDATION_FAILED_BLOCK_ALREADY_MINED " );
 						
 						results = false;
+						
+						pmEvent.setCancelOriginalEvent( true );
 					}
 					
 				}
@@ -905,6 +960,9 @@ public class OnBlockBreakEventCore
 	                		}
 	                		
 	                		finalizeBreakTheBlocks( pmEvent );
+	                		
+	                		doBlockEvents( pmEvent );
+
 	                	}
 	                	
 	                	else {
@@ -1108,6 +1166,9 @@ public class OnBlockBreakEventCore
 	                		}
 	                		
 	                		finalizeBreakTheBlocks( pmEvent );
+	                		
+	                		doBlockEvents( pmEvent );
+
 	                	}
 	                	
 	                	else {
@@ -1240,6 +1301,9 @@ public class OnBlockBreakEventCore
 	                		}
 	                		
 	                		finalizeBreakTheBlocks( pmEvent );
+	                		
+	                		doBlockEvents( pmEvent );
+
 	                	}
 	                	
 	                	else {
@@ -1346,6 +1410,9 @@ public class OnBlockBreakEventCore
 							}
 							
 							finalizeBreakTheBlocks( pmEvent );
+	                		
+	                		doBlockEvents( pmEvent );
+
 						}
 						
 						else {
@@ -1657,20 +1724,20 @@ public class OnBlockBreakEventCore
 			}
 			
 			
-			if ( pmEvent.getMine() != null ) {
-				// Record the block break:
-				
-				// apply to ALL blocks including exploded:
-				applyBlockFinalizations( pmEvent, pmEvent.getTargetBlock() );
-
-				
-				for ( MineTargetPrisonBlock teBlock : pmEvent.getTargetExplodedBlocks() ) {
-					
-					applyBlockFinalizations( pmEvent, teBlock );
-				}
-				
-				checkZeroBlockReset( pmEvent.getMine() );
-			}
+//			if ( pmEvent.getMine() != null ) {
+//				// Record the block break:
+//				
+//				// apply to ALL blocks including exploded:
+//				applyBlockFinalizations( pmEvent, pmEvent.getTargetBlock() );
+//
+//				
+//				for ( MineTargetPrisonBlock teBlock : pmEvent.getTargetExplodedBlocks() ) {
+//					
+//					applyBlockFinalizations( pmEvent, teBlock );
+//				}
+//				
+//				checkZeroBlockReset( pmEvent.getMine() );
+//			}
 			
 		}
 	}
@@ -1731,8 +1798,9 @@ public class OnBlockBreakEventCore
 			
 			
 			SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
+			PrisonBlock pBlock = sBlock == null ? null : sBlock.getPrisonBlock();
 			
-			pmEvent.getMine().processBlockBreakEventCommands( sBlock.getPrisonBlock(),
+			pmEvent.getMine().processBlockBreakEventCommands( pBlock,
 					targetBlock, pmEvent.getSpigotPlayer(), pmEvent.getBlockEventType(), pmEvent.getTriggered() );
 			
 			
