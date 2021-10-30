@@ -24,6 +24,7 @@ import tech.mcprison.prison.tasks.PrisonCommandTask;
 import tech.mcprison.prison.tasks.PrisonCommandTask.CustomPlaceholders;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
+import tech.mcprison.prison.util.Location;
 
 public abstract class MineScheduler
 		extends MineTasks
@@ -573,6 +574,7 @@ public abstract class MineScheduler
 		boolean fireEvent = blockEvent.isFireEvent( chance, eventType, 
 							targetBlock, triggered );
 		
+		
 		if ( fireEvent ) {
 			
 			// If perms are set, check them, otherwise ignore perm check:
@@ -591,17 +593,21 @@ public abstract class MineScheduler
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockName, originalBlock.getBlockName() );
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineName, getName() );
 				
-				if ( prisonBlock.getLocation() != null ) {
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationWorld, prisonBlock.getLocation().getWorld().getName() );
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationX, Integer.toString( prisonBlock.getLocation().getBlockX() ));
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationY, Integer.toString( prisonBlock.getLocation().getBlockY() ));
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationZ, Integer.toString( prisonBlock.getLocation().getBlockZ() ));
+				if ( targetBlock.getLocation() != null ) {
+					Location location = targetBlock.getLocation();
 					
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.coordinates, prisonBlock.getLocation().toCoordinates() );
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.worldCoordinates, prisonBlock.getLocation().toWorldCoordinates() );
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationWorld, location.getWorld().getName() );
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationX, Integer.toString( location.getBlockX() ));
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationY, Integer.toString( location.getBlockY() ));
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationZ, Integer.toString( location.getBlockZ() ));
+					
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.coordinates, location.toCoordinates() );
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.worldCoordinates, location.toWorldCoordinates() );
+					
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.blockCoordinates, targetBlock.getBlockCoordinates() );
 					
 				}
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockCoordinates, prisonBlock.getBlockCoordinates() );
+//				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockCoordinates, prisonBlock.getBlockCoordinates() );
 
 
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockChance, dFmt.format( originalBlock.getChance() ) );
@@ -619,10 +625,12 @@ public abstract class MineScheduler
 				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockIsAir, Boolean.toString( targetBlock.getPrisonBlock().isAir() ));
 				
-				
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockMinedName, prisonBlock.getBlockName() );
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockMinedNameFormal, prisonBlock.getBlockNameFormal() );
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockMinedBlockType, prisonBlock.getBlockType().name() );
+				if ( prisonBlock != null ) {
+					
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.blockMinedName, prisonBlock.getBlockName() );
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.blockMinedNameFormal, prisonBlock.getBlockNameFormal() );
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.blockMinedBlockType, prisonBlock.getBlockType().name() );
+				}
 				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.eventType, eventType.name() );
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.eventTriggered, triggered );

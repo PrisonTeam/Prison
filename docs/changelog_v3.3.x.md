@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.3 2021-10-30
 
 
+* **Changed the location usage with block event placeholders, which now uses the location that is tied to the targetBlock instead of the mined block.**
+The mined block may be null so it's not stable.
+
+
 * **Fixed an issue with /mines block list when an incorrect mine name is used.**
 Now displays an error stating the name is invalid.
 
