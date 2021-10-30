@@ -87,6 +87,21 @@ public class MineTargetPrisonBlock
 		return blockKey;
 	}
 
+	public String getBlockCoordinates() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append( getPrisonBlock().getBlockName() );
+//		sb.append( getPrisonBlock().getBlockNameFormal() );
+		
+		if ( getLocation() != null ) {
+			sb.append( "::" );
+			
+			sb.append( getLocation().toWorldCoordinates() );
+		}
+		
+		return sb.toString();
+	}
+	
 	/**
 	 * <p>This is a quick way to check to see if the block was originally set to air, or if
 	 * the block was previously broke and "counted".  This field, airBroke, needs to be
