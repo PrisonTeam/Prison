@@ -16,6 +16,8 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.4 2021-11-01
 
 
+* **The use of a command placeholders for `{actionBar}` and `{title}` were added to the placeholder enumeration so they are included in the placeholders listings.**
+The support for these two commands were added a while ago, but because they were not added to the enum, they were not being listed in the help.
 
 
 **3.2.11-alpha.4 2021-11-01**
