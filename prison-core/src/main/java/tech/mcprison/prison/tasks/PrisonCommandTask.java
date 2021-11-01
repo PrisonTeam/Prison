@@ -66,6 +66,8 @@ public class PrisonCommandTask {
 
 		msg(CommandEnvironment.all_commands),
 		broadcast(CommandEnvironment.all_commands),
+		title(CommandEnvironment.all_commands),
+		actionBar(CommandEnvironment.all_commands),
 
 		inline(CommandEnvironment.all_commands),
 		inlinePlayer(CommandEnvironment.all_commands),

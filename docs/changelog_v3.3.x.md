@@ -13,7 +13,13 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.3 2021-11-01
+# 3.2.11-alpha.4 2021-11-01
+
+
+
+
+**3.2.11-alpha.4 2021-11-01**
+ Released alpha.4.
 
 
 * **Changes to improve the way the upcoming mine bombs.**
