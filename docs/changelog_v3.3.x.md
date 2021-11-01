@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.3 2021-10-30
+# 3.2.11-alpha.3 2021-11-01
+
+
+* **Changes to improve the way the upcoming mine bombs.**
+They are currently non-functional.
 
 
 * **Adjustments to get block events, such as decays, to work correctly with the new auto feature block event handlers.**

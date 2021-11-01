@@ -44,6 +44,9 @@ public class MineBombData {
 	private String explosionShape;
 	
 	
+	private String toolInHand;
+	
+	
 	private String description;
 	
 	
@@ -76,6 +79,8 @@ public class MineBombData {
 			}
 		}
 		
+		this.toolInHand = null;
+		
 	}
 	
 	
@@ -84,6 +89,9 @@ public class MineBombData {
 				getRadius() );
 		
 		cloned.setDescription( getDescription() );
+		
+		cloned.setToolInHand( getToolInHand() );
+		
 		cloned.setGlowing( isGlowing() );
 		cloned.setActivated( isActivated() );
 		
@@ -141,6 +149,13 @@ public class MineBombData {
 	}
 	public void setDescription( String description ) {
 		this.description = description;
+	}
+
+	public String getToolInHand() {
+		return toolInHand;
+	}
+	public void setToolInHand( String toolInHand ) {
+		this.toolInHand = toolInHand;
 	}
 
 	public boolean isGlowing() {

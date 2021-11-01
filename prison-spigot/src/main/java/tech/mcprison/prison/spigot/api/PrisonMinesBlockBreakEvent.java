@@ -83,6 +83,12 @@ public class PrisonMinesBlockBreakEvent
 	private boolean cancelOriginalEvent = false;
 
 	
+	// This will control if durability is calculated, but only if in the auto features configs
+	// has the AutoFeatures.isCalculateDurabilityEnabled set to true.  If it is set to false 
+	// then this setting will do nothing.
+	private boolean calculateDurability = true;
+
+	
 	private boolean monitor = false;
 	private boolean blockEventsOnly = false;
 	
@@ -280,6 +286,13 @@ public class PrisonMinesBlockBreakEvent
 	}
 	public void setCancelOriginalEvent( boolean cancelOriginalEvent ) {
 		this.cancelOriginalEvent = cancelOriginalEvent;
+	}
+
+	public boolean isCalculateDurability() {
+		return calculateDurability;
+	}
+	public void setCalculateDurability( boolean calculateDurability ) {
+		this.calculateDurability = calculateDurability;
 	}
 
 	public boolean isMonitor() {

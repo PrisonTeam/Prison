@@ -19,6 +19,7 @@
 package tech.mcprison.prison.spigot;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1011,8 +1012,15 @@ public class SpigotUtil {
   public static List<SpigotItemStack> getDrops(SpigotBlock block, SpigotItemStack tool) {
 	List<SpigotItemStack> ret = new ArrayList<>();
 	
-	block.getWrapper().getDrops( tool.getBukkitStack() )
-			.forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
+	Collection<ItemStack> drops = block.getWrapper().getDrops( tool.getBukkitStack() );
+	
+	for ( ItemStack drop : drops )
+	{
+		ret.add( SpigotUtil.bukkitItemStackToPrison(drop) );
+	}
+	
+//	block.getWrapper().getDrops( tool.getBukkitStack() )
+//			.forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
 	
 	return ret;
 }

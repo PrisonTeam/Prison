@@ -14,14 +14,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.cryptomorin.xseries.XMaterial;
 
-import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.bombs.MineBombData;
 import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
-import tech.mcprison.prison.internal.block.BlockFace;
+import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -39,7 +39,7 @@ public class PrisonUtilsMineBombs
 {
 	public static final String MINE_BOMBS_LORE_1 = "&4Prison Mine Bomb:";
 	public static final String MINE_BOMBS_LORE_2_PREFIX = "  &7";
-	public static final int MINE_BOMBS_COOLDOWN_TICKS = 15 * 20; // 15 seconds
+	public static final int MINE_BOMBS_COOLDOWN_TICKS = 5 * 20; // 5 seconds  // 15 seconds
 	
 	private boolean enableMineBombs = false;
 	
@@ -145,6 +145,8 @@ public class PrisonUtilsMineBombs
 				ExplosiveBlockBreakEvent explodeEvent = new ExplosiveBlockBreakEvent( 
 						targetBlock.getWrapper(), player.getWrapper(), blocks );
 				explodeEvent.setTriggeredBy( "minebombs" );
+				
+				explodeEvent.setForceIfAirBlock( true );
 				
 				Bukkit.getServer().getPluginManager().callEvent( explodeEvent );
 
@@ -454,13 +456,22 @@ public class PrisonUtilsMineBombs
 						AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
 				
 				if ( bomb != null && "DISABLED".equalsIgnoreCase( prisonExplosiveHandlerPriority ) ) {
+					isABomb = true;
+
 					Output.get().logWarn( "A Prison Mine Bomb was attempted to be used, but the " +
 							"handling of its explosion is DISABLED.  Edit the 'autoFeaturesConfig.yml' " +
 							"file and set 'ProcessPrisons_ExplosiveBlockBreakEventsPriority: NORMAL'." );
 				}
     			
 				else if ( bomb != null ) {
-    				
+					isABomb = true;
+
+					// if the toolInHand has not been set, use a diamond pickaxe:
+					if ( bomb.getToolInHand() == null ) {
+						XMaterial xMat = XMaterial.DIAMOND_PICKAXE;
+						bomb.setToolInHand( xMat.name() );
+					}
+					
     				SpigotPlayer sPlayer = new SpigotPlayer( player );
 
     				String playerUUID = player.getUniqueId().toString();
@@ -468,15 +479,6 @@ public class PrisonUtilsMineBombs
     			
     				if ( cooldownTicks == 0 ) {
     					
-    					isABomb = true;
-    					
-    					// Setting activated to true indicates the bomb is live and it has
-    					// been removed from the player's inventory:
-    					bomb.setActivated( true );
-    					itemInHand.setAmount( itemInHand.getAmount() - 1 );
-    					
-    					// Remove from inventory:
-    					SpigotCompatibility.getInstance().setItemInMainHand( player, itemInHand.getBukkitStack() );
     					
     					// Set cooldown:
     					PrisonUtilsMineBombs.addPlayerCooldown( playerUUID );
@@ -485,25 +487,61 @@ public class PrisonUtilsMineBombs
     					
     					if ( bombs != null ) {
     						
-    						Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  05 " );
+    						// Setting activated to true indicates the bomb is live and it has
+    						// been removed from the player's inventory:
+    						bomb.setActivated( true );
+    						
+    						// Remove from inventory:
+    						itemInHand.setAmount( itemInHand.getAmount() - 1 );
+    						
+    						// Not sure if the following is needed?
+    						SpigotCompatibility.getInstance().setItemInMainHand( player, itemInHand.getBukkitStack() );
+
+    						
+    						//Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  05 " );
     						
     						// SpigotBlock sBlock = new SpigotBlock( event.getClickedBlock() );
     						
-    						Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  dropping block " );
+    						//Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  dropping block " );
     						
-    						int throwSpeed = 2;
+    						SpigotBlock bombBlock = sBlock != null ? sBlock : (SpigotBlock) player.getLocation().getBlock();
+    						
+    						
+    						
+    						// For mine bombs, take the block below where the bomb's item was dropped.  The floating 
+    						// item is not the block that needs to be the target block for the explosion.  Also, the block
+    						// if it is on top of the mine, would be identified as being outside of the mine.
+    						int count = 0;
+    						while ( (count++ == 0 || bombBlock.isEmpty()) && bombBlock.getLocation().getBlockY() > 1 ) {
+    							Location bbLocation = bombBlock.getLocation();
+    							bbLocation.setY( bbLocation.getBlockY() - 1 );
+    							
+    							bombBlock = (SpigotBlock) bbLocation.getBlockAt();
+    							
+//    							Output.get().logInfo( 
+//    									"#### PrisonUtilsMineBombs:  bomb y loc: " + bombBlock.getWrapper().getLocation().getBlockY() + 
+//    										"  " + bombBlock.getLocation().getBlockY() + "  count= " + count );
+    						}
+    						
+//    						Output.get().logInfo( 
+//    								"#### PrisonUtilsMineBombs:  bomb loc: " + bombBlock.getLocation().toWorldCoordinates() );
+    						
+    						//int throwSpeed = 2;
 
     						// This places the item so it will float:
-    						final Item dropped = player.getWorld().dropItem(player.getLocation(), bombs.getBukkitStack() );
+    						final Item dropped = player.getWorld().dropItem( 
+    									bombBlock.getWrapper().getLocation(), bombs.getBukkitStack() );
+    						
     						dropped.setPickupDelay( Integer.MAX_VALUE );
     						dropped.setCustomName( bomb.getName() );
-    						dropped.setVelocity(player.getLocation().getDirection().multiply( throwSpeed ).normalize() );
+    						//dropped.setVelocity(player.getLocation().getDirection().multiply( throwSpeed ).normalize() );
     						
     						int delayInTicks = 5 * 20; // 5 secs
     						
     						
     						// Get the block that is y - 1 lower than the original block:
-    						SpigotBlock bombBlock = (SpigotBlock) sBlock.getRelative( BlockFace.DOWN );
+//    						SpigotBlock bombBlock = (SpigotBlock) sBlock.getRelative( BlockFace.DOWN );
+    						
     						
     						// Submit the bomb's task to go off:
     						PrisonUtilsMineBombs.setoffBombDelayed( sPlayer, bomb, dropped, bombBlock, delayInTicks );
@@ -528,7 +566,7 @@ public class PrisonUtilsMineBombs
     				
     				else {
     					
-            			float cooldownSeconds = cooldownTicks / 2.0f;
+            			float cooldownSeconds = cooldownTicks / 20.0f;
             			DecimalFormat dFmt = new DecimalFormat( "0.0" );
             			
             			String message = 
@@ -602,7 +640,7 @@ public class PrisonUtilsMineBombs
 	}
 
 	public static boolean setoffBombDelayed( SpigotPlayer sPlayer, MineBombData bomb, Item droppedBomb, 
-						SpigotBlock sBlock, int delayTicks ) {
+						SpigotBlock targetBlock, int delayTicks ) {
 		boolean results = false;
 		
 		new BukkitRunnable() {
@@ -613,20 +651,21 @@ public class PrisonUtilsMineBombs
 				// Remove the item that the player threw:
 				droppedBomb.remove();
 				
-				Location location = sBlock.getLocation();
+				Location location = targetBlock.getLocation();
 				
 				if ( location == null ) {
 					location = sPlayer.getLocation();
 				}
 				
-				SpigotWorld world = (SpigotWorld) location.getWorld();
 				
 				MineBombs mBombs = MineBombs.getInstance();
 				
 				// Calculate all the locations that are included in the explosion:
 				List<Location> blockLocations = mBombs.calculateSphere( location, 
 														bomb.getRadius(), false );
+
 				
+				SpigotWorld world = (SpigotWorld) location.getWorld();
 
 				// Convert to spigot blocks:
 				List<org.bukkit.block.Block> blocks = new ArrayList<>();
@@ -639,13 +678,33 @@ public class PrisonUtilsMineBombs
 				}
 				
 				
-				SpigotBlock targetBlock = (SpigotBlock) world.getBlockAt( location );
+//				SpigotBlock targetBlock = (SpigotBlock) world.getBlockAt( location );
 				
 				
 				ExplosiveBlockBreakEvent explodeEvent = new ExplosiveBlockBreakEvent( 
 						targetBlock.getWrapper(), sPlayer.getWrapper(), blocks );
 				explodeEvent.setTriggeredBy( bomb.getName() );
 				explodeEvent.setMineBomb( bomb );
+				
+				// Set the toolInHand that needs to be used for the bomb:
+				// Default to a diamond pickaxe if not specified.
+				// The bomb must define a tool, otherwise auto features will
+				// use the mine bombs that the player is holding, or if it was their
+				// last one, it would be just AIR:
+				String toolInHandName = bomb.getToolInHand();
+				if ( toolInHandName == null || toolInHandName.trim().isEmpty() ) {
+						XMaterial xMat = XMaterial.DIAMOND_PICKAXE;
+						toolInHandName = xMat.name();
+				}
+				XMaterial xMatTool = XMaterial.matchXMaterial( toolInHandName ).orElseGet( null );
+				ItemStack toolInHand = new SpigotItemStack( xMatTool == null ?
+						XMaterial.DIAMOND_PICKAXE.parseItem() : 
+							xMatTool.parseItem() );
+				explodeEvent.setToolInHand( toolInHand );
+				
+				
+				// Mine bombs should not calculate durability:
+				explodeEvent.setCalculateDurability( false );
 				
 				
 				// Normally the explosion will ONLY work if the center target block was non-AIR.
@@ -654,8 +713,19 @@ public class PrisonUtilsMineBombs
 				
 				Bukkit.getServer().getPluginManager().callEvent( explodeEvent );
 
-				if ( !explodeEvent.isCancelled() ) {
+				if ( explodeEvent.isCancelled() ) {
+					
+					if ( Output.get().isDebug() ) {
+						Output.get().logDebug( "Mine Bomb's ExplosiveBlockBreakEvent has been canceled. " +
+								"It may have been processed successfully." );
+					}
+				}
+				else {
 					// If it wasn't canceled, then it may not have been handled
+					
+					if ( Output.get().isDebug() ) {
+						Output.get().logDebug( "Mine Bomb's ExplosiveBlockBreakEvent has NOT been canceled." );
+					}
 				}
 
 				

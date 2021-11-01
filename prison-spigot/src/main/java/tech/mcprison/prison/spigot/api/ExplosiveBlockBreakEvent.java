@@ -10,6 +10,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import tech.mcprison.prison.bombs.MineBombData;
+import tech.mcprison.prison.internal.ItemStack;
 
 /**
  * <p>This is an example of an explosive event that should be used for 
@@ -54,7 +55,19 @@ public class ExplosiveBlockBreakEvent
 	
 	private MineBombData mineBomb;
 	
+	/**
+	 * ToolInHand is optional. It should only be used if the player did not directly initiate 
+	 * the explosion event with a tool.  For example, if they set off a mine bomb, and when the
+	 * explosion event is processed, they won't be holding a tool, but an item instead, or even
+	 * AIR.
+	 */
+	private ItemStack toolInHand;
+	
 	private boolean forceIfAirBlock = false;
+	
+	private boolean calculateDurability = true;
+	
+//	private boolean processedSuccessfully = false;
 	
 	
 	public ExplosiveBlockBreakEvent( Block theBlock, Player player,
@@ -117,11 +130,25 @@ public class ExplosiveBlockBreakEvent
 		this.mineBomb = mineBomb;
 	}
 	
+	public ItemStack getToolInHand() {
+		return toolInHand;
+	}
+	public void setToolInHand( ItemStack toolInHand ) {
+		this.toolInHand = toolInHand;
+	}
+	
 	public boolean isForceIfAirBlock() {
 		return forceIfAirBlock;
 	}
 	public void setForceIfAirBlock( boolean forceIfAirBlock ) {
 		this.forceIfAirBlock = forceIfAirBlock;
+	}
+	
+	public boolean isCalculateDurability() {
+		return calculateDurability;
+	}
+	public void setCalculateDurability( boolean calculateDurability ) {
+		this.calculateDurability = calculateDurability;
 	}
 	
 	@Override

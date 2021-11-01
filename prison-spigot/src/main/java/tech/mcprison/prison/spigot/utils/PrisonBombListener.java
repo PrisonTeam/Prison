@@ -52,7 +52,7 @@ public class PrisonBombListener
         		// The item was a bomb and it was activated.
         		// Cancel the event so the item will not be placed or processed farther.
         		
-        		Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  03 Bomb activated " );
+        		Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  03 Bomb detected - May not have been set. " );
         		event.setCancelled( true );
         	}
         	

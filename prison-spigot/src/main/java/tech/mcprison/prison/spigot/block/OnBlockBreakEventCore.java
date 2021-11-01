@@ -1369,6 +1369,15 @@ public class OnBlockBreakEventCore
 			pmEvent.setUnprocessedRawBlocks( e.getExplodedBlocks() );
 			pmEvent.setForceIfAirBlock( e.isForceIfAirBlock() );
 			
+			// Warning: toolInHand really needs to be defined in the event if the source is a
+			//          Mine Bomb, otherwise auto features will detect the player is holding 
+			//          a mine bomb which is not a pickaxe so the drops will be ZERO.  If they
+			//          used their last mine bomb, then auto features will detect only AIR 
+			//          in their hand.
+			if ( e.getToolInHand() != null ) {
+				pmEvent.setItemInHand( (SpigotItemStack) e.getToolInHand() );
+			}
+			
 			if ( !validateEvent( pmEvent, debugInfo ) ) {
 				
 				// The event has not passed validation. All logging and Errors have been recorded
@@ -1702,7 +1711,8 @@ public class OnBlockBreakEventCore
 			
 			
 			// calculate durability impact: Include item durability resistance.
-			if ( isBoolean( AutoFeatures.isCalculateDurabilityEnabled ) ) {
+			if ( isBoolean( AutoFeatures.isCalculateDurabilityEnabled ) && 
+					pmEvent.isCalculateDurability() ) {
 				
 				// value of 0 = normal durability. Value 100 = never calculate durability.
 				int durabilityResistance = 0;
@@ -2208,7 +2218,8 @@ public class OnBlockBreakEventCore
 			
 			String message = String.format( "(calcDurability: %s:  maxDurability= %d  " + 
 					"durability: %d  damage: %d  durResistance: %d  toolDurabilityLvl: %d  %s) ", 
-					itemInHand.getName(), maxDurability, durability, totalDamage, 
+					(itemInHand == null ? "(empty hand)" : itemInHand.getName() ), 
+					maxDurability, durability, totalDamage, 
 					durabilityResistance, durabilityLevel, 
 					(toolBreak ? "[Broke]" : "") );
 			debugInfo.append( message );
