@@ -13,7 +13,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.4 2021-11-01
+# 3.2.11-alpha.4 2021-11-06
+
+
+* **Fixes a concurrent modification exception when the PlayerCacheCheckTimersTask is running.**  
+This happens rarely when a player is logging off while "trying" to process their entries; they have been removed. 
+So when this happens, the process retries to start over a total of 2 more times and it skips processing players that have already been processed.  Any update that was skipped would be covered in the next pass with no real loss.
 
 
 * **The use of a command placeholders for `{actionBar}` and `{title}` were added to the placeholder enumeration so they are included in the placeholders listings.**
