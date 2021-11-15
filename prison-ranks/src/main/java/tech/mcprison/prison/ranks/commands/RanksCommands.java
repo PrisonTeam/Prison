@@ -1119,8 +1119,8 @@ public class RanksCommands
 	{
 		ChatDisplay display = new ChatDisplay( ranksInfoHeaderMsg( rank.getTag() ));
 		
-		boolean isOp = sender.isOp();
-		boolean isConsole = !sender.isPlayer();
+		boolean isOp = sender != null && sender.isOp();
+		boolean isConsole = sender == null || !sender.isPlayer();
 
         display.addText( ranksInfoNameMsg( rank.getName() ));
         display.addText( ranksInfoTagMsg( rank.getTag() ));
@@ -1191,7 +1191,7 @@ public class RanksCommands
         int numberOfPlayersOnRank = rank.getPlayers().size();
         display.addText( ranksInfoPlayersWithRankMsg( numberOfPlayersOnRank ));
 
-        if ( isOp || isConsole || sender == null || sender.hasPermission("ranks.admin")) {
+        if ( isOp || isConsole || sender.hasPermission("ranks.admin")) {
             // This is admin-exclusive content
 
 //            display.addText("&8[Admin Only]");
@@ -1203,7 +1203,7 @@ public class RanksCommands
 //            display.addComponent(new FancyMessageComponent(del));
         }
         
-        if ( isOp && options != null && "all".equalsIgnoreCase( options )) {
+        if ( (isOp || isConsole) && options != null && "all".equalsIgnoreCase( options )) {
         	
         	if ( rank.getLadder() != null ) {
         		
