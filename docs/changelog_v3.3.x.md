@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.4 2021-11-06
+# 3.2.11-alpha.4 2021-11-15
+
+
+* **Bug fix. If a null message is sent to this function, it would cause a NPE.**
+This now prevents a few failures from causing potential problems.
 
 
 * **Fixes a concurrent modification exception when the PlayerCacheCheckTimersTask is running.**  

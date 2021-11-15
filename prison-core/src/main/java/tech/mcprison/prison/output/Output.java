@@ -377,7 +377,13 @@ public class Output
      * Send a message to a {@link CommandSender}
      */
     public void sendMessage(CommandSender sender, String message, LogLevel level, Object... args) {
-        sender.sendMessage(getLogPrefix(level) + String.format(message, args));
+    		
+    	if ( sender != null && message != null && message.length() > 0 ) {
+    		if ( level == null ) {
+    			level = LogLevel.PLAIN;
+    		}
+    		sender.sendMessage(getLogPrefix(level) + String.format(message, args));
+    	}
     }
     
     public void send(CommandSender sender, String message, Object... args) {
