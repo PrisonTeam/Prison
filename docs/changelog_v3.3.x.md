@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.4 2021-11-15
 
 
+* **Fixed a bug with how the regex handles block quotes.**
+Not only was it not working correctly for multiple block quotes, but it was incorrectly handling the tail end of the processed text and was basically doubling the text.  It now works correctly, even with multiple block quotes.
+
+
 * **Fixed an unexpected "bug" with the JumboText font for the letter Q.**
 One section was setup to use "\Q" which is an escape character for a regex block quote.  This was causing problems since it was forcing large sections of text to be ignored when translating minecraft color codes.  By changing it to "\q", a lower case Q, this eliminated the translation from making the mistake.
 

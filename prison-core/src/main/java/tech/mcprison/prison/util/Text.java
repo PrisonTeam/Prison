@@ -349,7 +349,8 @@ public class Text {
     		}
     		else {
     			while ( idxStart >= 0 ) {
-    				sb.append( translateHexColorCodesCore( text.substring( idxEnd + 1, idxStart ), targetColorCode) );
+    				sb.append( translateHexColorCodesCore( 
+    						text.substring( idxEnd + (idxEnd == -1 ? 1 : 0), idxStart ), targetColorCode) );
     				
     				idxEnd = text.indexOf( "\\E", idxStart );
     				
@@ -358,13 +359,13 @@ public class Text {
     					idxStart = -1;
     				}
     				else {
-    					sb.append( text.substring( idxStart, idxEnd + 1 ) );
+    					sb.append( text.substring( idxStart, idxEnd ) );
     					
     					idxStart = text.indexOf( "\\Q", idxEnd );
     				}
     			}
-    			if ( idxEnd < text.length() ) {
-    				sb.append( text.substring( idxEnd + 1 ) );
+    			if ( idxStart == -1 && idxEnd >= 0 && (idxEnd) < text.length() ) {
+    				sb.append( text.substring( idxEnd  ) );
     			}
     		}
     	}

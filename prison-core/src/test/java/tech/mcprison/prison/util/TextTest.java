@@ -69,6 +69,11 @@ public class TextTest
 		assertEquals("This x7is xra &1t&2e&3s&4t", replaceColorCodeWithx( 
 												translateColorCodes("This &7is &Ra \\Q&1t&2e&3s&4t\\E", '&')));
 		
+		// Test with 2 quotes:
+		String results1 = replaceColorCodeWithx( 
+				translateColorCodes("This &7is &Ra \\Q&1t&2e&3s&4t\\E &7and \\Q&1m&2o&3r&4e\\E", '&') );
+		assertEquals("This x7is xra &1t&2e&3s&4t x7and &1m&2o&3r&4e", results1 );
+		
 	}
 	
 	/**
@@ -130,5 +135,25 @@ public class TextTest
 		assertEquals("This ^7is ^x^a^3^b^4^c^5 ^ra test #123456 test test2 #778899 test", replaceColorCodeWithx(
 				translateColorCodes("This &7is #a3b4c5 &Ra test \\Q#123456 test\\E test2 \\Q#778899 test\\E", '&'), '^' ));
 		
+	}
+	
+	
+	@Test
+	public void testBadRegexBlockQuote() {
+		
+		
+		// Test with quotes just to show it works:
+		String results1 = replaceColorCodeWithx( 
+				translateColorCodes("This &7is \\Q&1t&2e\\E", '&'));
+		assertEquals("This x7is &1t&2e", results1 );
+		assertEquals( 16, results1.length() );
+		
+		// Test with no ending quotes:
+		String results2= replaceColorCodeWithx( 
+				translateColorCodes("A&7b \\Q&1c&2d", '&'));
+		assertEquals("Ax7b &1c&2d", results2);
+		assertEquals( 11, results2.length() );
+		
+
 	}
 }
