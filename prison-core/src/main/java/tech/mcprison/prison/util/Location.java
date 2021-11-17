@@ -223,5 +223,43 @@ public class Location {
 
 		return results;
 	}
+	
+	/**
+	 * <p>This function will clone the current location object and then add/subtract the amount of
+	 * x, y, and/or z to that location.  To keep the same value for one or more of these coordinates
+	 * then use a value of zero.
+	 * </p>
+	 * 
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return
+	 */
+	public Location getLocationAtDelta( int x, int y, int z )
+	{
+		Location results = new Location( this );
+		
+		results.setX( results.getX() + x );
+		results.setY( results.getY() + y );
+		results.setZ( results.getZ() + z );
+		
+		return results;
+	}
+	
+	/**
+	 * <p>Returns the block that is at the location of this object, offset by x, y, and/or z deltas.
+	 * </p>
+	 * 
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return
+	 */
+	public Block getBlockAtDelta( int x, int y, int z )
+	{
+		Location results = getLocationAtDelta( x, y, z );
+		
+		return getWorld().getBlockAt( results );
+	}
 
 }

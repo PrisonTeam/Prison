@@ -13,7 +13,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.4 2021-11-15
+# 3.2.11-alpha.4 2021-11-17
+
+
+* **Prison Bombs: enabled the right clicking of AIR to set the bombs.**
+If clicking air blocks, then the block tied to the event will be null (at least for spigot 1.13.x) in that case, will use the block location of the player, and then adding the player's vector to it times three.
+
 
 
 * **Fixed a bug with how the regex handles block quotes.**

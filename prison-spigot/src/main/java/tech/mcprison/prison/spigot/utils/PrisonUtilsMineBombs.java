@@ -22,6 +22,7 @@ import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -487,6 +488,27 @@ public class PrisonUtilsMineBombs
     					
     					if ( bombs != null ) {
     						
+    						SpigotBlock bombBlock = sBlock != null ? sBlock : (SpigotBlock) player.getLocation().getBlock();
+
+//    						// If the clicked on block is empty, then the player probably clicked on air.  
+//    						// Check the next lower block (y - 1) until a valid block is found, or until y < 1
+//    						while ( sBlock.isEmpty() && sBlock.getLocation().getBlockY() > 0 ) {
+//    							
+//    							Block tempBlock = sBlock.getLocation().getBlockAtDelta( 0, -1, 0 );
+//    							if ( tempBlock != null && tempBlock instanceof SpigotBlock ) {
+//    								sBlock = (SpigotBlock) tempBlock;
+//    							}
+//    							
+//    							// if not empty, take one block deeper below the surface:
+////    							if ( !sBlock.isEmpty() && sBlock.getLocation().getBlockY() > 0 ) {
+////
+////        							tempBlock = sBlock.getLocation().getBlockAtDelta( 0, -1, 0 );
+////        							if ( tempBlock != null && tempBlock instanceof SpigotBlock ) {
+////        								sBlock = (SpigotBlock) tempBlock;
+////        							}
+////    							}
+//    						}
+    						
     						// Setting activated to true indicates the bomb is live and it has
     						// been removed from the player's inventory:
     						bomb.setActivated( true );
@@ -504,7 +526,6 @@ public class PrisonUtilsMineBombs
     						
     						//Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  dropping block " );
     						
-    						SpigotBlock bombBlock = sBlock != null ? sBlock : (SpigotBlock) player.getLocation().getBlock();
     						
     						
     						
@@ -512,11 +533,19 @@ public class PrisonUtilsMineBombs
     						// item is not the block that needs to be the target block for the explosion.  Also, the block
     						// if it is on top of the mine, would be identified as being outside of the mine.
     						int count = 0;
-    						while ( (count++ == 0 || bombBlock.isEmpty()) && bombBlock.getLocation().getBlockY() > 1 ) {
-    							Location bbLocation = bombBlock.getLocation();
-    							bbLocation.setY( bbLocation.getBlockY() - 1 );
+    						boolean isAir = bombBlock.isEmpty();
+    						while (  (count++ <= ( isAir ? 1 : 0 ) || bombBlock.isEmpty()) && bombBlock.getLocation().getBlockY() > 1 ) {
     							
-    							bombBlock = (SpigotBlock) bbLocation.getBlockAt();
+    							Block tempBlock = bombBlock.getLocation().getBlockAtDelta( 0, -1, 0 );
+    							if ( tempBlock != null && tempBlock instanceof SpigotBlock ) {
+    								bombBlock = (SpigotBlock) tempBlock;
+    							}
+    							
+    							
+//    							Location bbLocation = bombBlock.getLocation();
+//    							bbLocation.setY( bbLocation.getBlockY() - 1 );
+//    							
+//    							bombBlock = (SpigotBlock) bbLocation.getBlockAt();
     							
 //    							Output.get().logInfo( 
 //    									"#### PrisonUtilsMineBombs:  bomb y loc: " + bombBlock.getWrapper().getLocation().getBlockY() + 

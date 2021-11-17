@@ -13,6 +13,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.util.Location;
 
 /**
  * <p>This listener class handles the player's interaction with using a bomb.
@@ -44,7 +46,25 @@ public class PrisonBombListener
         	// ItemStack in the player's hand by 1:
         	
         	Player player = event.getPlayer();
-        	SpigotBlock sBlock = new SpigotBlock( event.getClickedBlock() );
+        	
+        	SpigotBlock sBlock = null;
+        	
+        	
+        	// If clicking AIR, then event.getClickedBlock() will be null...
+        	// so if null, then use the player's location for placing the bomb.
+        	if ( event.getClickedBlock() == null ) {
+        		SpigotPlayer sPlayer = new SpigotPlayer( event.getPlayer() );
+        		Location loc = sPlayer.getLocation();
+        		
+        		// Get the block 3 away from the player, in the direction (vector) in which
+        		// the player is looking.
+        		sBlock = (SpigotBlock) loc.add( loc.getDirection().multiply( 3 ) ) .getBlockAt();
+        	}
+        	else {
+        		sBlock = new SpigotBlock( event.getClickedBlock() );
+        	}
+        	
+        	
         	
 //        	Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  02 " );
         	if ( PrisonUtilsMineBombs.setBombInHand( player, sBlock ) ) {

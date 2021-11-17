@@ -66,7 +66,7 @@ public class SpigotBlock implements Block {
     	StringBuilder sb = new StringBuilder();
     	
     	sb.append( getPrisonBlock().getBlockName() ).append( " " )
-    			.append( getLocation().toCoordinates() );
+    			.append( getLocation().toWorldCoordinates() );
     	
     	
     	return sb.toString();
