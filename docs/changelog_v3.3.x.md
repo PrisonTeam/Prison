@@ -13,7 +13,13 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.4 2021-11-17
+# 3.2.11-alpha.4 2021-11-18
+
+
+* **Mine Bombs: More features and fixes.**
+Added support for radiusInner (for hollow sphere explosion shapes), removalChance (chance for block inclusion), glowing, autoSell, tool material type, tool fortune level. 
+ Added a new shape which is "cube" and hooked up sphereHollow.  Hooked up cube, sphereHollow, removalChance, glowing, the specified tool in hand with the custom fortune level.  Did not hook up the forced autosell yet.
+Fixed some issues to get things to work a little better too.
 
 
 * **Prison Bombs: enabled the right clicking of AIR to set the bombs.**

@@ -4,10 +4,12 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -18,12 +20,11 @@ import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.bombs.MineBombData;
 import tech.mcprison.prison.bombs.MineBombs;
+import tech.mcprison.prison.bombs.MineBombs.ExplosionShape;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
-import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.Block;
-import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.api.ExplosiveBlockBreakEvent;
@@ -32,6 +33,7 @@ import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
+import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
@@ -84,8 +86,8 @@ public class PrisonUtilsMineBombs
 					String worldCoordinates,
 
 					
-			@Arg(name = "shape", description = "Shape of Explosion. [round]", 
-						def = "round") String shape,
+			@Arg(name = "shape", description = "Shape of Explosion. [sphere]", 
+						def = "sphere") String shape,
 			@Arg(name = "radiusSize", description = "Size of Explosion in block radius. [1 though 20]",
 						def = "3" )
 							String radiusSize
@@ -173,21 +175,86 @@ public class PrisonUtilsMineBombs
 			
 			MineBombs mBombs = MineBombs.getInstance();
 			
+			List<String> messages = new ArrayList<>();
+			
 			Set<String> keys = mBombs.getConfigData().getBombs().keySet();
 			for ( String key : keys ) {
 				
 				MineBombData bomb = mBombs.getConfigData().getBombs().get( key );
 				
 				String message = String.format( 
-						"%-12s %-7s Radius= %s (%s)\n   %s", 
-						bomb.getName(), bomb.getExplosionShape(), Integer.toString(bomb.getRadius()),
-						bomb.getItemType(), bomb.getDescription() );
+						"%-12s    Autosell: %b", 
+						bomb.getName(), 
+						bomb.isAutosell()
+						);
 				
-//				sender.sendMessage( message );
+				messages.add( message );
 				
-				Output.get().log( message, LogLevel.PLAIN );
+				
+				
+				ExplosionShape shape = ExplosionShape.fromString( bomb.getExplosionShape() );
+				String messageShape = null;
+				switch ( shape )
+				{
+					case cube:
+						{
+							int lenght = 1 + (bomb.getRadius() * 2);
+							messageShape = String.format( 
+									"      Shape: %s   Size: %d x %d x %d   Based on Radius: %d.5", 
+									bomb.getExplosionShape(), 
+									lenght, lenght, lenght,
+									bomb.getRadius() );
+							break;
+						}
+					
+					case sphereHollow:
+					{
+						messageShape = String.format( 
+								"      Shape: %s   Radius: %d.5   RadiusInner: %d.5", 
+								bomb.getExplosionShape(), bomb.getRadius(), bomb.getRadiusInner() );
+						break;
+					}
+					
+					case sphere:
+					{
+						messageShape = String.format( 
+								"      Shape: %s   Radius: %d.5", 
+								bomb.getExplosionShape(), bomb.getRadius() );
+						break;
+					}
+					default:
+					{
+						messageShape = "      (no shape defined)";
+					}
+				}
+				if ( messageShape != null && !messageShape.isEmpty() ) {
+					
+					messages.add( messageShape );
+				}
+				
+				
+				String message2 = String.format( 
+						"      ToolInHand: %s  Fortune: %d  Percent Chance: %f",
+						bomb.getToolInHandName(), 
+						bomb.getToolInHandFortuneLevel(),
+						bomb.getRemovalChance() );
+				messages.add( message2 );
+				
+				
+				String message3 = String.format( 
+						"      ItemType: %s  Glowng: %b",
+						bomb.getItemType(), 
+						bomb.isGlowing() );
+				messages.add( message3 );
+				
+				
+				messages.add( "      " + bomb.getDescription() );
+				
+				
+//				Output.get().log( message, LogLevel.PLAIN );
 			}
 			
+			sender.sendMessage( messages.toArray( new String[0] ) );
 		}
 	}
 
@@ -467,10 +534,21 @@ public class PrisonUtilsMineBombs
 				else if ( bomb != null ) {
 					isABomb = true;
 
+//					XMaterial.GUNPOWDER;
+//					XMaterial.BLAZE_POWDER;
+//					XMaterial.WOODEN_PICKAXE;
+//					XMaterial.STONE_PICKAXE;
+//					XMaterial.IRON_PICKAXE;
+//					XMaterial.GOLDEN_PICKAXE;
+//					XMaterial.DIAMOND_PICKAXE;
+//					XMaterial.NETHERITE_PICKAXE;
+					
+//					XMaterial.SLIME_BLOCK
+					
 					// if the toolInHand has not been set, use a diamond pickaxe:
-					if ( bomb.getToolInHand() == null ) {
+					if ( bomb.getToolInHandName() == null ) {
 						XMaterial xMat = XMaterial.DIAMOND_PICKAXE;
-						bomb.setToolInHand( xMat.name() );
+						bomb.setToolInHandName( xMat.name() );
 					}
 					
     				SpigotPlayer sPlayer = new SpigotPlayer( player );
@@ -566,6 +644,14 @@ public class PrisonUtilsMineBombs
     						//dropped.setVelocity(player.getLocation().getDirection().multiply( throwSpeed ).normalize() );
     						
     						int delayInTicks = 5 * 20; // 5 secs
+    						
+    						
+    						// If running MC 1.9.0 or higher, then can use the glowing feature.  Ignore for 1.8.x.
+    						if ( new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) >= 0 ) {
+    							
+    							dropped.setGlowing( bomb.isGlowing() );
+    						}
+    						
     						
     						
     						// Get the block that is y - 1 lower than the original block:
@@ -689,22 +775,7 @@ public class PrisonUtilsMineBombs
 				
 				MineBombs mBombs = MineBombs.getInstance();
 				
-				// Calculate all the locations that are included in the explosion:
-				List<Location> blockLocations = mBombs.calculateSphere( location, 
-														bomb.getRadius(), false );
-
-				
-				SpigotWorld world = (SpigotWorld) location.getWorld();
-
-				// Convert to spigot blocks:
-				List<org.bukkit.block.Block> blocks = new ArrayList<>();
-				for ( Location bLocation : blockLocations ) {
-					SpigotBlock sBlock = (SpigotBlock) world.getBlockAt( bLocation );
-					if ( !sBlock.isEmpty() ) {
-						
-						blocks.add( sBlock.getWrapper() );
-					}
-				}
+				List<org.bukkit.block.Block> blocks = calculatBlocksForExplosion( bomb, location, mBombs );
 				
 				
 //				SpigotBlock targetBlock = (SpigotBlock) world.getBlockAt( location );
@@ -720,15 +791,19 @@ public class PrisonUtilsMineBombs
 				// The bomb must define a tool, otherwise auto features will
 				// use the mine bombs that the player is holding, or if it was their
 				// last one, it would be just AIR:
-				String toolInHandName = bomb.getToolInHand();
+				String toolInHandName = bomb.getToolInHandName();
 				if ( toolInHandName == null || toolInHandName.trim().isEmpty() ) {
 						XMaterial xMat = XMaterial.DIAMOND_PICKAXE;
 						toolInHandName = xMat.name();
 				}
-				XMaterial xMatTool = XMaterial.matchXMaterial( toolInHandName ).orElseGet( null );
-				ItemStack toolInHand = new SpigotItemStack( xMatTool == null ?
-						XMaterial.DIAMOND_PICKAXE.parseItem() : 
-							xMatTool.parseItem() );
+				
+				XMaterial xMatTool = XMaterial.matchXMaterial( toolInHandName )
+											.orElse( XMaterial.DIAMOND_PICKAXE );
+				SpigotItemStack toolInHand = new SpigotItemStack( xMatTool.parseItem() );
+				
+				setFortune( toolInHand, bomb.getToolInHandFortuneLevel() );
+				
+				
 				explodeEvent.setToolInHand( toolInHand );
 				
 				
@@ -759,11 +834,108 @@ public class PrisonUtilsMineBombs
 
 				
 			}
+
+			private List<org.bukkit.block.Block> calculatBlocksForExplosion( MineBombData bomb, Location location,
+					MineBombs mBombs )
+			{
+				List<org.bukkit.block.Block> blocks = new ArrayList<>();
+				
+				// Calculate all the locations that are included in the explosion:
+				List<Location> blockLocations = null;
+
+				
+				ExplosionShape shape = ExplosionShape.fromString( bomb.getExplosionShape() );
+				
+				switch ( shape )
+				{
+					case cube:
+						{
+							blockLocations = mBombs.calculateCube( location, 
+									bomb.getRadius() );
+							break;
+						}
+					
+					case sphereHollow:
+					{
+						blockLocations = mBombs.calculateSphere( location, 
+								bomb.getRadius(), true, bomb.getRadiusInner() );
+						break;
+					}
+					
+					case sphere:
+					default:
+					{
+						blockLocations = mBombs.calculateSphere( location, 
+								bomb.getRadius(), false );
+						break;
+					}
+				}
+
+				
+				SpigotWorld world = (SpigotWorld) location.getWorld();
+
+				
+				// Honor the percent chance for including the block:
+				double removalChance = bomb.getRemovalChance();
+				Random random = new Random();
+				
+				
+				// Convert to spigot blocks:
+				for ( Location bLocation : blockLocations ) {
+					double chance = random.nextDouble() * 100.0d;
+					
+					if ( chance <= removalChance ) {
+						
+						SpigotBlock sBlock = (SpigotBlock) world.getBlockAt( bLocation );
+						if ( !sBlock.isEmpty() ) {
+							
+							blocks.add( sBlock.getWrapper() );
+						}
+					}
+				}
+				return blocks;
+			}
 		}.runTaskLater( SpigotPrison.getInstance(), delayTicks );
 		
 		//.runTaskTimer( SpigotPrison.getInstance(), 10, 10);
 		
 		return results;
+	}
+	
+	
+//	protected short getFortune(SpigotItemStack itemInHand){
+//		short results = (short) 0;
+//		
+//		try {
+//			if ( itemInHand != null && 
+//					itemInHand.getBukkitStack() != null && 
+//					itemInHand.getBukkitStack().containsEnchantment( Enchantment.LOOT_BONUS_BLOCKS ) &&
+//					itemInHand.getBukkitStack().getEnchantments() != null ) {
+//				results = (short) itemInHand.getBukkitStack().getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
+//			}
+//		}
+//		catch ( NullPointerException e ) {
+//			// Ignore. This happens when a TokeEnchanted tool is used when TE is not installed anymore.
+//			// It throws this exception:  Caused by: java.lang.NullPointerException: null key in entry: null=5
+//		}
+//		
+//		return results;
+//	}
+
+	protected static void setFortune( SpigotItemStack itemInHand, int fortuneLevel ) {
+		
+		if ( itemInHand != null && 
+				itemInHand.getBukkitStack() != null && 
+				itemInHand.getBukkitStack().hasItemMeta() ) {
+			
+			itemInHand.getBukkitStack().addUnsafeEnchantment( Enchantment.LOOT_BONUS_BLOCKS, fortuneLevel );
+			
+//			ItemMeta meta = itemInHand.getBukkitStack().getItemMeta();
+//			meta.addEnchant( Enchantment.LOOT_BONUS_BLOCKS, fortuneLevel, true );
+//			itemInHand.getBukkitStack().setItemMeta( meta );
+			
+		}
+
 	}
 	
 	public static double getPlayerCoolDownRemaining()
