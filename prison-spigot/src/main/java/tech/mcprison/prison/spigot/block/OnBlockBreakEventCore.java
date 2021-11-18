@@ -413,7 +413,6 @@ public class OnBlockBreakEventCore
 	{
 
 		if ( pmEvent.getMine() != null ) {
-			// Record the block break:
 			
 			// apply to ALL blocks including exploded:
 			applyBlockFinalizations( pmEvent, pmEvent.getTargetBlock() );
@@ -556,6 +555,12 @@ public class OnBlockBreakEventCore
 				
 				if ( !targetBlock.isMined() || !targetBlock.isAirBroke() ) {
 				
+		    		// The field isMined() is used to "reserve" a block to indicate that it is in 
+		    		// the stages of being processed, since much later in the processing will the
+		    		// block be set to setAirBreak() or even setCounted().  This prevents 
+		    		// high-speed or concurrent operations from multiple players from trying to 
+		    		// process the same block. 
+
 					// If a chain reaction on explosions, this will prevent the same block from
 					// being processed more than once:
 					targetBlock.setMined( true );
@@ -1457,26 +1462,18 @@ public class OnBlockBreakEventCore
 			// Good chance the block was already counted, but just in case it wasn't:
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( block );
 			
-			if ( targetBlock != null && !targetBlock.isCounted() ) {
-				targetBlock.setCounted( true );
+			// Record the block break:
+			if ( mine.incrementBlockMiningCount( targetBlock ) ) {
 				
-				// Record the block break:
-				mine.incrementBlockMiningCount( targetBlock );
+				// submit a mine sweeper task.  It will only run if it is enabled and another 
+				// mine sweeper task has not been submitted.
+				mine.submitMineSweeperTask();
 				
-				if ( !targetBlock.isMined() ) {
-					targetBlock.setMined( true );
-				}
+				// Checks to see if the mine ran out of blocks, and if it did, then
+				// it will reset the mine:
+				mine.checkZeroBlockReset();
 			}
 
-			// Never process BlockEvents in a monitor.
-			
-			// submit a mine sweeper task.  It will only run if it is enabled and another 
-			// mine sweeper task has not been submitted.
-			mine.submitMineSweeperTask();
-
-			// Checks to see if the mine ran out of blocks, and if it did, then
-			// it will reset the mine:
-			mine.checkZeroBlockReset();
 		}
 	}
 	
@@ -1488,31 +1485,24 @@ public class OnBlockBreakEventCore
 			
 			if ( targetBlock != null && targetBlock.getPrisonBlock() != null && !targetBlock.isCounted() ) {
 				
-				targetBlock.setCounted( true );
-//				targetBlock.setBlockEvent( true );
 				
 //				String targetBlockName =  mine == null ? 
 //						spigotBlock.getPrisonBlock().getBlockName()
 //						: targetBlock.getPrisonBlock().getBlockName();
 						
 				// Process mine block break events:
-				SpigotPlayer sPlayer = new SpigotPlayer( player );
 				
-				mine.incrementBlockMiningCount( targetBlock );
-
-				PlayerCache.getInstance().addPlayerBlocks( sPlayer, mine.getName(), targetBlock.getPrisonBlock(), 1 );
-				
-				
-				PrisonBlock prisonBlock = spigotBlock.getPrisonBlock();
-				mine.processBlockBreakEventCommands( prisonBlock, targetBlock, sPlayer, blockEventType, triggered );
-				
-				if ( !targetBlock.isMined() ) {
-					targetBlock.setMined( true );
+				if ( mine.incrementBlockMiningCount( targetBlock ) ) {
+					
+					SpigotPlayer sPlayer = new SpigotPlayer( player );
+					PlayerCache.getInstance().addPlayerBlocks( sPlayer, mine.getName(), targetBlock.getPrisonBlock(), 1 );
+					
+					
+					PrisonBlock prisonBlock = spigotBlock.getPrisonBlock();
+					mine.processBlockBreakEventCommands( prisonBlock, targetBlock, sPlayer, blockEventType, triggered );
 				}
 
-//				if ( targetBlock.getMinedBlock() != null ) {
-//					targetBlock.setMinedBlock( null );
-//				}
+				
 			}
 		}
 	}
@@ -1798,11 +1788,15 @@ public class OnBlockBreakEventCore
 
 		if ( targetBlock != null ) {
 			
-			if ( !targetBlock.isCounted() ) {
-				targetBlock.setCounted( true );
+			Mine mine = pmEvent.getMine();
+
+			// Increment the block break counts if they have not been processed before.
+			// Since the function return true if it can count the block, then we can 
+			// then have the player counts be incremented.
+			if ( mine.incrementBlockMiningCount( targetBlock ) ) {
 				
-				pmEvent.getMine().incrementBlockMiningCount( targetBlock );
-				PlayerCache.getInstance().addPlayerBlocks( pmEvent.getSpigotPlayer(), pmEvent.getMine().getName(), targetBlock.getPrisonBlock(), 1 );
+				PlayerCache.getInstance().addPlayerBlocks( pmEvent.getSpigotPlayer(), 
+						mine.getName(), targetBlock.getPrisonBlock(), 1 );
 				
 			}
 			
@@ -1810,18 +1804,8 @@ public class OnBlockBreakEventCore
 			SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
 			PrisonBlock pBlock = sBlock == null ? null : sBlock.getPrisonBlock();
 			
-			pmEvent.getMine().processBlockBreakEventCommands( pBlock,
+			mine.processBlockBreakEventCommands( pBlock,
 					targetBlock, pmEvent.getSpigotPlayer(), pmEvent.getBlockEventType(), pmEvent.getTriggered() );
-			
-			
-			// if isMined has not been set, set it:
-			if ( !targetBlock.isMined() ) {
-				targetBlock.setMined( true );
-			}
-			
-//			if ( targetBlock.getMinedBlock() != null ) {
-//				targetBlock.setMinedBlock( null );
-//			}
 			
 		}
 	}

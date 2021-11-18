@@ -669,22 +669,39 @@ public abstract class MineData
      * 
      * @param targetPrisonBlock
      */
-    public void incrementBlockMiningCount( MineTargetPrisonBlock targetPrisonBlock ) {
+    public boolean incrementBlockMiningCount( MineTargetPrisonBlock targetPrisonBlock ) {
+    	boolean results = false;
     	
     	// Only count the block as being broke if it was not originally air and
-    	// and it has not been broke before:
-    	if ( targetPrisonBlock != null && !targetPrisonBlock.isAirBroke() && !targetPrisonBlock.isCounted() ) {
+    	// and it has not been broke before.
+    	
+    	// NOTE: setAirBroke() and setMined() will be set to true if the mine reset
+    	//       places an air block. That will prevent the air from being processed.
+    	if ( targetPrisonBlock != null && !targetPrisonBlock.isCounted() ) {
     		
     		targetPrisonBlock.setAirBroke( true );
     		targetPrisonBlock.setCounted( true );
-    		targetPrisonBlock.setMined( true );
+    		
+    		// The field isMined() is used to "reserve" a block to indicate that it is in 
+    		// the stages of being processed, since much later in the processing will the
+    		// block be set to setAirBreak() or even setCounted().  This prevents 
+    		// high-speed or concurrent operations from multiple players from trying to 
+    		// process the same block. So set it to true here, if it has not already 
+    		// been set.
+    		if ( !targetPrisonBlock.isMined() ) {
+    			
+    			targetPrisonBlock.setMined( true );
+    		}
 
     		incrementBlockBreakCount();
     		incrementTotalBlocksMined();
     		
     		targetPrisonBlock.getPrisonBlock().incrementMiningBlockCount();
     		
+    		results = true;
     	}
+    	
+    	return results;
     }
     
 //    public void incrementBlockMiningCount( Block block ) {

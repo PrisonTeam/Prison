@@ -1314,17 +1314,16 @@ public abstract class MineReset
 			
 			for ( MineTargetPrisonBlock targetBlock : getMineTargetPrisonBlocks() ) {
 				
-				if ( targetBlock != null && !targetBlock.isAirBroke() ) {
+				if ( targetBlock != null && !targetBlock.isAirBroke() &&
+						!targetBlock.isCounted()) {
+					
 					MineTargetBlockKey key = targetBlock.getBlockKey();
 					Location blockLocation = new Location( world, key.getX(), key.getY(), key.getZ() );
 					
 					Block block = world.getBlockAt( blockLocation );
 					if ( block.isEmpty() ) {
 						
-						targetBlock.getPrisonBlock().incrementMiningBlockCount();
-						targetBlock.setAirBroke( true );
-						targetBlock.setCounted( true );
-						targetBlock.setMined( true );
+						incrementBlockMiningCount( targetBlock );
 						
 						blocksChanged++;
 					}
@@ -1669,6 +1668,11 @@ public abstract class MineReset
     					
     					// Add the new block and increment it's count:
     					targetBlock.setPrisonBlock( block );
+    					
+    					// If the reset is placing an AiR block, then mark the block as
+    					// setAirBroke() and setMined() to ensure they are not counted or 
+    					// processed during normal mining operations, or through 
+    					// MineSweeper checks.
     					if ( block.isAir() ) {
     						targetBlock.setAirBroke( true );
     						targetBlock.setMined( true );
