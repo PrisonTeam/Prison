@@ -46,24 +46,24 @@ public class PrisonDispatchCommandTask
 				
 				try {
 					if ( playerTask && player != null ) {
-						double start = System.currentTimeMillis();
+//						double start = System.currentTimeMillis();
 						
 						PrisonAPI.dispatchCommand( player, task );
 						
-						double stop = System.currentTimeMillis();
-						Output.get().logDebug( "PrisonDispatchCommandTask.run: (player) " + 
-									(stop - start) + " ms  player= " + player.getName() + 
-									"  task: " + task );
+//						double stop = System.currentTimeMillis();
+//						Output.get().logDebug( "PrisonDispatchCommandTask.run: (player) " + 
+//									(stop - start) + " ms  player= " + player.getName() + 
+//									"  task: " + task );
 					}
 					else {
-						double start = System.currentTimeMillis();
+//						double start = System.currentTimeMillis();
 						
 						PrisonAPI.dispatchCommand( task );
 
-						double stop = System.currentTimeMillis();
-						Output.get().logDebug( "PrisonDispatchCommandTask.run: (console) " + 
-									(stop - start) + " ms" +
-									"  task: " + task );
+//						double stop = System.currentTimeMillis();
+//						Output.get().logDebug( "PrisonDispatchCommandTask.run: (console) " + 
+//									(stop - start) + " ms" +
+//									"  task: " + task );
 					}
 				}
 				catch ( Exception e ) {

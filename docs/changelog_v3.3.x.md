@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.4 2021-11-19
 
 
+* **PrisonDispatchCommandTask: Removed the debug logging since it can be very numerous when used with a large mine bomb and it's pointless since most of the block events being submitted runs in less that one millisecond.**
+So this is just cleaning up a messy logging item.
+
+
 * **SellAll: Setup a sellall function that will allow the selling of one ItemStack, which is not tied to any of the player's inventories.**
 This is used in prison's auto features when enabling the option to auto sell on a per block break event basis.  This is highly optimized and a lot faster than using the normal sellall since it does not deal with any of the player's inventories or backpacks.
 This forces a delayed sold amount message since an explosion could includ many ItemStacks.
