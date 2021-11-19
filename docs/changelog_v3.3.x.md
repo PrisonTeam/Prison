@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.4 2021-11-19
 
 
+* **Bug fix with SellAll: bug in original logic where the delayed notification when initialized is losing the first amount.**
+It now always adds the amount to the delayed queue.
+
+
 * **Autofeatures ignore certain events to improve performance and reduce logging entries when in debug mode.**
 Since there are multiple listeners on block break events, which monitor the same event, these changes are able to mark a specific block within the MineTargetPrisonBlock objects that will be able to pass along an "ignore" event status to the other listeners to short-circuit their processing.  This is highly beneficial when using large mine bombs and the mine has blockEvents setup to perform explosions... which will help reduce a ton of "dead" events. 
 

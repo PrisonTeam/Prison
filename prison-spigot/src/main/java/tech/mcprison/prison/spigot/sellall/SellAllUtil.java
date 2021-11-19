@@ -1483,9 +1483,9 @@ public class SellAllUtil {
                 if (notifyPlayerEarningDelay && isAutoSellEarningNotificationDelayEnabled){
                     if (!isPlayerWaitingAutoSellNotification(p)){
                         addToAutoSellNotificationDelay(p);
-                    } else {
-                        addDelayedEarningAutoSellNotification(p, money);
-                    }
+                    } 
+                    
+                    addDelayedEarningAutoSellNotification(p, money);
                 } else if (notifyPlayerEarned){
                    Output.get().sendInfo(sPlayer, messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + money);
                 }
@@ -1524,7 +1524,7 @@ public class SellAllUtil {
 
     	double money = getSellMoney(p, itemStack);
     	
-    	if (money != 0){
+    	if (money != 0) {
     		
     		SpigotPlayer sPlayer = new SpigotPlayer(p);
     		RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
@@ -1539,13 +1539,15 @@ public class SellAllUtil {
     					){
     				
     				if (!isPlayerWaitingAutoSellNotification(p)){
-    					// Force delayed notifications, even if delayed is disabled:
+    					// Initialize && Force delayed notifications, even if delayed is disabled:
     					autoSellEarningsNotificationWaiting.put(p, 0.00);
     					Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> removeFromAutoSellDelayAndNotify(p), 20L * defaultAutoSellEarningNotificationDelay);
-    				} else {
-    					addDelayedEarningAutoSellNotification(p, money);
-    				}
-    			} else if (notifyPlayerEarned){
+
+    				} 
+    				
+    				addDelayedEarningAutoSellNotification(p, money);
+    			} 
+    			else if (notifyPlayerEarned){
     				Output.get().sendInfo(sPlayer, messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + money);
     			}
     		}
