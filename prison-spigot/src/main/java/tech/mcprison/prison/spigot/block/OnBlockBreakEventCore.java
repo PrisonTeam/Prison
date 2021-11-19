@@ -889,6 +889,12 @@ public class OnBlockBreakEventCore
     		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
     					sBlock, sPlayer, monitor, blockEventsOnly, eventType, triggered );
     		
+    		// NOTE: Token Enchant will pass the event's block to prison, but that block may 
+    		//       have already been processed by prison.  Therefore the PrisonMinesBlockBreakEvent
+    		//       must enable the feature setForceIfAirBlock( true ).  That block will not be used a 
+    		//       second time, but it will allow the explosion event to be processed.
+    		pmEvent.setForceIfAirBlock( true );
+    		
     		pmEvent.setUnprocessedRawBlocks( e.blockList() );
     		
     		if ( !validateEvent( pmEvent, debugInfo ) ) {

@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.4 2021-11-18
 
 
+* **Bug fix: For TokenEnchant's explosive event processing,** need to set PrisonMinesBlockBreakEvent's setForceIfAirBlock( true ) so the explosion event can be processed, even if the initial block has already been processed.
+This allows TE explosion events to work correctly now.
+
+
 * **Bug fix: refined the use of a few internal registers that are being used to control block break behavior, and also block counts and block events.*
 A few of the settings were being changed in the wrong places, which was out of synch with when they should have been applied.
 A few of the side effects was failure of tracking block counts, block events, and handling some explosion events.
