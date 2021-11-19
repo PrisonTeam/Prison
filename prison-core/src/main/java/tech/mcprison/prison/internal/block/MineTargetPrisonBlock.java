@@ -20,6 +20,7 @@ public class MineTargetPrisonBlock
 //	private boolean blockEvent = false;
 	private boolean counted = false;
 	
+	private boolean ignoreAllBlockEvents = false;
 	
 	
 	protected MineTargetPrisonBlock( World world, int x, int y, int z, boolean isEdge ) {
@@ -153,6 +154,13 @@ public class MineTargetPrisonBlock
 	}
 	public void setMinedBlock( Block minedBlock ) {
 		this.minedBlock = minedBlock;
+	}
+
+	public boolean isIgnoreAllBlockEvents() {
+		return ignoreAllBlockEvents;
+	}
+	public void setIgnoreAllBlockEvents( boolean ignoreAllBlockEvents ) {
+		this.ignoreAllBlockEvents = ignoreAllBlockEvents;
 	}
 
 	@Override 

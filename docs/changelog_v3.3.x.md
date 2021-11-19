@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.4 2021-11-19
 
 
+* **Autofeatures ignore certain events to improve performance and reduce logging entries when in debug mode.**
+Since there are multiple listeners on block break events, which monitor the same event, these changes are able to mark a specific block within the MineTargetPrisonBlock objects that will be able to pass along an "ignore" event status to the other listeners to short-circuit their processing.  This is highly beneficial when using large mine bombs and the mine has blockEvents setup to perform explosions... which will help reduce a ton of "dead" events. 
+
+
 * **Auto Features Forced Auto Sell Optimization Improvement: AutoSell within auto features now only uses sellall by item stack and not the player interface that accesses all of the player's inventories.**
 Since the auto features items are not placed in the player's inventories at this time in the process of auto features, there is no reason to access the player's inventories.  Selling directly reduces a lot of sellall overhead and as a result sellall is just calculating the prices.
 The old autosell code within autofeatures has not be removed yet, but it cannot be called anymore.

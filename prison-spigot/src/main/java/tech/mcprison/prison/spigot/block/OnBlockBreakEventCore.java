@@ -296,6 +296,22 @@ public class OnBlockBreakEventCore
 		
     	long start = System.nanoTime();
 
+		if ( e.isCancelled() && !monitor ) {
+			// Check to see if the event should be ignored.
+			
+			SpigotBlock sBlock = new SpigotBlock( e.getBlock() );
+			
+			Mine mine = findMine( e.getPlayer(), sBlock,  null, null ); 
+			
+			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
+			
+			// If ignore all block events, then exit this function without logging anything:
+			if ( targetBlock.isIgnoreAllBlockEvents() ) {
+				return;
+			}
+			
+		}
+		
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 		
@@ -393,10 +409,13 @@ public class OnBlockBreakEventCore
     		
     	}
     	
-    	long stop = System.nanoTime();
-    	debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
-    	
-    	Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
+		if ( debugInfo.length() > 0 ) {
+			
+			long stop = System.nanoTime();
+			debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
+			
+			Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
+		}
 	}
 
 
@@ -483,7 +502,51 @@ public class OnBlockBreakEventCore
 		return blocks;
 	}
 
+	private Mine findMine( Player player, SpigotBlock sBlock, 
+					List<Block> altBlocksSource, PrisonMinesBlockBreakEvent pmEvent ) {
+		
+		Long playerUUIDLSB = Long.valueOf( player.getUniqueId().getLeastSignificantBits() );
+		
+		// Get the cached mine, if it exists:
+		Mine mine = getPlayerCache().get( playerUUIDLSB );
+		
+		if ( mine == null || 
+				sBlock != null && !mine.isInMineExact( sBlock.getLocation() ) ) {
+			// Look for the correct mine to use. 
+			// Set mine to null so if cannot find the right one it will return a null:
+			mine = findMineLocation( sBlock );
+			
+			// Thanks to CrazyEnchant, where they do not identify the block the player breaks, we
+			// have to go through all of the unprecessedRawBlocks to see if any are within a mine.
+			// If we find a block that's in a mine, then use that block as the primary block.
+			if ( mine == null && altBlocksSource != null ) {
+				
+				for ( Block bBlock : altBlocksSource )
+				{
+					SpigotBlock sBlockAltBlock = new SpigotBlock( bBlock );
+					mine = findMineLocation( sBlockAltBlock );
+					if ( mine != null ) {
+						
+						if ( pmEvent != null ) {
+							pmEvent.setSpigotBlock( sBlockAltBlock );
+						}
+						
+						break;
+					}
+				}
+			}
+			
+			// Store the mine in the player cache if not null:
+			if ( mine != null ) {
+				getPlayerCache().put( playerUUIDLSB, mine );
+			}
+		}
 
+		
+		return mine;
+	}
+	
+	
 	/**
 	 * <p>This function an attempt to provide a uniform procedure to validate if the event should 
 	 * be processed.  This will eliminate a lot of duplicate code, and will make supporting other
@@ -503,38 +566,41 @@ public class OnBlockBreakEventCore
 		boolean results = true;
 		
 
-		Long playerUUIDLSB = Long.valueOf( pmEvent.getPlayer().getUniqueId().getLeastSignificantBits() );
+		Mine mine = findMine( pmEvent.getPlayer(), pmEvent.getSpigotBlock(), 
+				pmEvent.getUnprocessedRawBlocks(), pmEvent );
 		
-		// Get the cached mine, if it exists:
-		Mine mine = getPlayerCache().get( playerUUIDLSB );
-		
-		if ( mine == null || 
-				pmEvent.getSpigotBlock() != null && !mine.isInMineExact( pmEvent.getSpigotBlock().getLocation() ) ) {
-			// Look for the correct mine to use. 
-			// Set mine to null so if cannot find the right one it will return a null:
-			mine = findMineLocation( pmEvent.getSpigotBlock() );
-			
-			// Thanks to CrazyEnchant, where they do not identify the block the player breaks, we
-			// have to go through all of the unprecessedRawBlocks to see if any are within a mine.
-			// If we find a block that's in a mine, then use that block as the primary block.
-			if ( mine == null ) {
-				
-				for ( Block bBlock : pmEvent.getUnprocessedRawBlocks() )
-				{
-					SpigotBlock sBlock = new SpigotBlock( bBlock );
-					mine = findMineLocation( sBlock );
-					if ( mine != null ) {
-						pmEvent.setSpigotBlock( sBlock );
-						break;
-					}
-				}
-			}
-			
-			// Store the mine in the player cache if not null:
-			if ( mine != null ) {
-				getPlayerCache().put( playerUUIDLSB, mine );
-			}
-		}
+//		Long playerUUIDLSB = Long.valueOf( pmEvent.getPlayer().getUniqueId().getLeastSignificantBits() );
+//		
+//		// Get the cached mine, if it exists:
+//		Mine mine = getPlayerCache().get( playerUUIDLSB );
+//		
+//		if ( mine == null || 
+//				pmEvent.getSpigotBlock() != null && !mine.isInMineExact( pmEvent.getSpigotBlock().getLocation() ) ) {
+//			// Look for the correct mine to use. 
+//			// Set mine to null so if cannot find the right one it will return a null:
+//			mine = findMineLocation( pmEvent.getSpigotBlock() );
+//			
+//			// Thanks to CrazyEnchant, where they do not identify the block the player breaks, we
+//			// have to go through all of the unprecessedRawBlocks to see if any are within a mine.
+//			// If we find a block that's in a mine, then use that block as the primary block.
+//			if ( mine == null ) {
+//				
+//				for ( Block bBlock : pmEvent.getUnprocessedRawBlocks() )
+//				{
+//					SpigotBlock sBlock = new SpigotBlock( bBlock );
+//					mine = findMineLocation( sBlock );
+//					if ( mine != null ) {
+//						pmEvent.setSpigotBlock( sBlock );
+//						break;
+//					}
+//				}
+//			}
+//			
+//			// Store the mine in the player cache if not null:
+//			if ( mine != null ) {
+//				getPlayerCache().put( playerUUIDLSB, mine );
+//			}
+//		}
 		pmEvent.setMine( mine );
 		
 		debugInfo.append( "mine=" + (mine == null ? "none" : mine.getName()) + " " );
@@ -547,8 +613,22 @@ public class OnBlockBreakEventCore
 			int alreadyMined = 0;
 			int noTargetBlock = 0;
 			
+			boolean targetBlockAlreadyMined = false;
+			
 			// Get the mine's targetBlock:
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( pmEvent.getSpigotBlock() );
+			pmEvent.setTargetBlock( targetBlock );
+			
+			// If ignore all block evnts has been set on this target block, then shutdown
+			if ( targetBlock.isIgnoreAllBlockEvents() ) {
+				debugInfo.setLength( 0 );
+				
+				pmEvent.setForceIfAirBlock( false );
+				
+				pmEvent.setCancelOriginalEvent( true );
+				
+				return false;
+			}
 			
 			// NOTE: for the primary block pmEvent.getSpigotBlock() the unbreakable will be checked later:
 			if ( targetBlock != null && targetBlock.getPrisonBlock() != null ) {
@@ -566,10 +646,10 @@ public class OnBlockBreakEventCore
 					targetBlock.setMined( true );
 					
 					targetBlock.setMinedBlock( pmEvent.getSpigotBlock() );
-					pmEvent.setTargetBlock( targetBlock );
 				}
 				else {
 					alreadyMined++;
+					targetBlockAlreadyMined = true;
 					
 					if ( !targetBlock.isMined() ) {
 						targetBlock.setMined( true );
@@ -677,6 +757,31 @@ public class OnBlockBreakEventCore
 				debugInfo.append( "NO_TARGET_BLOCKS (" + noTargetBlock + 
 						" ) " );
 			}
+			
+			
+			// If target block aready was mined and there are no exploded blocks, then this whole event 
+			// needs to be canceled since it sounds like a blockevent fired a prison util explosion that
+			// has zero blocks tied to it.
+			if ( targetBlockAlreadyMined && pmEvent.isForceIfAirBlock() && pmEvent.getExplodedBlocks().size() == 0 ) {
+				
+				// Since this was a dud event, we must set the flag to ignore all 
+				// future block events that include this block as the primary block.
+				// This code block cancels the current event, but we must ensure that
+				// the monitor event is also canceled.
+				pmEvent.getTargetBlock().setIgnoreAllBlockEvents( true );
+				
+				pmEvent.setForceIfAirBlock( false );
+				
+				results = false;
+				
+				pmEvent.setCancelOriginalEvent( true );
+
+				// Ignore event and clear debugInfo:
+				debugInfo.setLength( 0 );
+				
+				return results;
+			}
+			
 		}
 		
 		
@@ -858,6 +963,22 @@ public class OnBlockBreakEventCore
 			boolean autoManager ) {
 
 		long start = System.nanoTime();
+		
+		if ( e.isCancelled() && !monitor ) {
+			// Check to see if the event should be ignored.
+			
+			SpigotBlock sBlock = new SpigotBlock( e.getBlock() );
+			
+			Mine mine = findMine( e.getPlayer(), sBlock,  e.blockList(), null ); 
+			
+			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
+			
+			// If ignore all block events, then exit this function without logging anything:
+			if ( targetBlock.isIgnoreAllBlockEvents() ) {
+				return;
+			}
+			
+		}
 
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
@@ -1006,10 +1127,13 @@ public class OnBlockBreakEventCore
     			
     	}
     	
-    	long stop = System.nanoTime();
-    	debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
-    	
-    	Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
+		if ( debugInfo.length() > 0 ) {
+			
+			long stop = System.nanoTime();
+			debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
+			
+			Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
+		}
 	}
 
 
@@ -1062,7 +1186,23 @@ public class OnBlockBreakEventCore
 			boolean autoManager ) {
 
 		long start = System.nanoTime();
-
+		
+		if ( e.isCancelled() && !monitor ) {
+			// Check to see if the event should be ignored.
+			
+			SpigotBlock sBlock = new SpigotBlock( e.getBlockList().get( 0 ) );
+			
+			Mine mine = findMine( e.getPlayer(), sBlock,  e.getBlockList(), null ); 
+			
+			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
+			
+			// If ignore all block events, then exit this function without logging anything:
+			if ( targetBlock.isIgnoreAllBlockEvents() ) {
+				return;
+			}
+			
+		}
+		
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 				
@@ -1211,11 +1351,13 @@ public class OnBlockBreakEventCore
 
 		}
     	
-    	long stop = System.nanoTime();
-    	debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
-    	
-    	Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
-
+		if ( debugInfo.length() > 0 ) {
+			
+			long stop = System.nanoTime();
+			debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
+			
+			Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
+		}
 	}
 	
 
@@ -1236,6 +1378,22 @@ public class OnBlockBreakEventCore
 			boolean autoManager ) {
 
 		long start = System.nanoTime();
+		
+		if ( e.isCancelled() && !monitor ) {
+			// Check to see if the event should be ignored.
+			
+			SpigotBlock sBlock = new SpigotBlock( e.getBlockBroken() );
+			
+			Mine mine = findMine( e.getPlayer(), sBlock, e.getExplodedBlocks(), null ); 
+			
+			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
+			
+			// If ignore all block events, then exit this function without logging anything:
+			if ( targetBlock.isIgnoreAllBlockEvents() ) {
+				return;
+			}
+			
+		}
 
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
@@ -1335,10 +1493,13 @@ public class OnBlockBreakEventCore
 
 		}
     	
-    	long stop = System.nanoTime();
-    	debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
-		
-    	Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
+		if ( debugInfo.length() > 0 ) {
+			
+			long stop = System.nanoTime();
+			debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
+			
+			Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
+		}
 
 	}
 	
@@ -1346,6 +1507,22 @@ public class OnBlockBreakEventCore
 			boolean autoManager ) {
 		
 		long start = System.nanoTime();
+		
+		if ( e.isCancelled() && !monitor ) {
+			// Check to see if the event should be ignored.
+			
+			SpigotBlock sBlock = new SpigotBlock( e.getBlock() );
+			
+			Mine mine = findMine( e.getPlayer(), sBlock,  e.getExplodedBlocks(), null ); 
+			
+			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
+			
+			// If ignore all block events, then exit this function without logging anything:
+			if ( targetBlock.isIgnoreAllBlockEvents() ) {
+				return;
+			}
+			
+		}
 		
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
@@ -1356,8 +1533,6 @@ public class OnBlockBreakEventCore
 				(autoManager ? "autoManager " : ""),
 				(e.isCancelled() ? "CANCELED " : ""),
 				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" )) );
-		
-		
 		
 		// NOTE that check for auto manager has happened prior to accessing this function.
 		if ( !monitor && !e.isCancelled() || monitor ) {
@@ -1376,9 +1551,17 @@ public class OnBlockBreakEventCore
 			
 			PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
 					sBlock, sPlayer, monitor, blockEventsOnly, eventType, triggered );
+
 			
-			pmEvent.setUnprocessedRawBlocks( e.getExplodedBlocks() );
-			pmEvent.setForceIfAirBlock( e.isForceIfAirBlock() );
+			// If this event is fired, but yet there are no exploded blocks, then do not set 
+			// forceIfAirBlock to true so this event is skipped.
+			if ( e.getExplodedBlocks() != null && e.getExplodedBlocks().size() > 0 ) {
+				
+				pmEvent.setUnprocessedRawBlocks( e.getExplodedBlocks() );
+				pmEvent.setForceIfAirBlock( e.isForceIfAirBlock() );
+			}
+			
+			
 			
 			// Warning: toolInHand really needs to be defined in the event if the source is a
 			//          Mine Bomb, otherwise auto features will detect the player is holding 
@@ -1404,7 +1587,9 @@ public class OnBlockBreakEventCore
 			
 			// now process all blocks (non-monitor):
 			else if ( isPPrisonExplosiveBlockBreakEnabled && 
-					( pmEvent.getMine() != null || pmEvent.getMine() == null && !isBoolean( AutoFeatures.pickupLimitToMines )) ) {
+					( pmEvent.getMine() != null || pmEvent.getMine() == null && 
+					!isBoolean( AutoFeatures.pickupLimitToMines )) ) {
+				
 				if ( pmEvent.getExplodedBlocks().size() > 0 ) {
 					
 //					String triggered = null;
@@ -1453,10 +1638,13 @@ public class OnBlockBreakEventCore
 			
 		}
 		
-    	long stop = System.nanoTime();
-    	debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
-		
-		Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
+		if ( debugInfo.length() > 0 ) {
+			
+			long stop = System.nanoTime();
+			debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
+			
+			Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
+		}
 		
 	}
 	
@@ -1752,6 +1940,14 @@ public class OnBlockBreakEventCore
 	
 	public boolean autosellPerBlockBreak( Player player ) {
 		boolean enabled = false;
+		
+		
+//		if (isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || 
+//				pmEvent.isForceAutoSell() ) {
+//			
+//			SellAllUtil.get().sellAllSell( player, itemStack, true, false, false );
+//		}
+
 		
 		// This won't try to sell on every item stack, but assuming that sellall will hit on very block 
 		// break, then the odds of inventory being overflowed on one explosion would be more rare than anything
