@@ -16,6 +16,11 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.4 2021-11-19
 
 
+* **Remove the now obsolete auto features setting isAutoSellPerBlockBreaknliedEnabled.**
+It is no longer needed since the auto features autosell per block break is now optimized and has no impact anymore.
+Improve the autosell integration in to the auto features for both the auto pickup and also the normal drops.  Improved the debug logging to include a list of all blocks being sold, or dropped, and their quantity and value.  Also the total counts too.
+
+
 * **Bug fix with SellAll: bug in original logic where the delayed notification when initialized is losing the first amount.**
 It now always adds the amount to the delayed queue.
 

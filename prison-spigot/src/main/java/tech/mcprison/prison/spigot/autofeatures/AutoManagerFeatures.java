@@ -434,6 +434,8 @@ public class AutoManagerFeatures
 		
 		if (drops != null && drops.size() > 0 ) {
 			
+			debugInfo.append( "[autoPickupDrops]" );
+			
 			// Need better drop calculation that is not using the getDrops function.
 			
 			calculateSilkTouch( itemInHand, drops );
@@ -475,6 +477,8 @@ public class AutoManagerFeatures
 			}
 			
 			
+			double autosellTotal = 0;
+			
 			for ( SpigotItemStack itemStack : drops ) {
 				
 				count += itemStack.getAmount();
@@ -483,30 +487,45 @@ public class AutoManagerFeatures
 						pmEvent.isForceAutoSell() ) {
 					
 					double amount = SellAllUtil.get().sellAllSell( player, itemStack, false, false, true );
-
-					debugInfo.append( "(sold: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " amt: " + amount + ") ");
+					autosellTotal += amount;
+					
+					debugInfo.append( "(sold: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
 					
 					// Set to zero quantity since they have all been sold.
 					itemStack.setAmount( 0 );
 				}
 				else {
 					
-					HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( player, itemStack );
-					
-					if ( extras.size() > 0 && autosellPerBlockBreak( player ) ) {
+					if ( Output.get().isDebug() ) {
 						
-						// Try to add the extras back to the player's inventory if they had autosellPerBlockBrean enabled:
-						for ( SpigotItemStack extraItemStack : extras.values() ) {
-							
-							HashMap<Integer, SpigotItemStack> extras2 = SpigotUtil.addItemToPlayerInventory( player, extraItemStack );
-							
-							autosellPerBlockBreak( player );
-							
-							// If the remainder of the extras still as too much, then just drop them and move on:
-							dropExtra( extras2, player );
-						}
-						extras.clear();
+						// Just get the calculated value for the drops... do not sell:
+						double amount = SellAllUtil.get().sellAllSell( player, itemStack, true, false, false );
+						autosellTotal += amount;
+						
+						debugInfo.append( "(adding: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
 					}
+					
+					HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( player, itemStack );
+				
+					
+					// Warning: The following is now obsolete since there is now a sellall function that will sell on a 
+					//          per SpigotItemStack so it eliminates a ton of overhead.  It also supports thousands of 
+					//          items per stack.
+
+//					if ( extras.size() > 0 && autosellPerBlockBreak( player ) ) {
+//						
+//						// Try to add the extras back to the player's inventory if they had autosellPerBlockBrean enabled:
+//						for ( SpigotItemStack extraItemStack : extras.values() ) {
+//							
+//							HashMap<Integer, SpigotItemStack> extras2 = SpigotUtil.addItemToPlayerInventory( player, extraItemStack );
+//							
+//							autosellPerBlockBreak( player );
+//							
+//							// If the remainder of the extras still as too much, then just drop them and move on:
+//							dropExtra( extras2, player );
+//						}
+//						extras.clear();
+//					}
 					
 					dropExtra( extras, player );
 //					dropExtra( player.getInventory().addItem(itemStack), player, block );
@@ -515,11 +534,17 @@ public class AutoManagerFeatures
 				
 			} 
 			
-			if ( !isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) && 
-					!pmEvent.isForceAutoSell() ) {
+			if ( count > 0 || autosellTotal > 0 ) {
 				
-				autosellPerBlockBreak( player );
+				debugInfo.append( "[autoPickupDrops total: qty: " + count + " value: " + autosellTotal + ") ");
+				
 			}
+			
+//			if ( !isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) && 
+//					!pmEvent.isForceAutoSell() ) {
+//				
+//				autosellPerBlockBreak( player );
+//			}
 			
 //				autoPickupCleanup( player, itemInHand, count );
 		}
@@ -531,7 +556,7 @@ public class AutoManagerFeatures
 
 
 
-	public int calculateNormalDrop( PrisonMinesBlockBreakEvent pmEvent ) {
+	public int calculateNormalDrop( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo ) {
 		
 		// Count should be the total number of items that are to be "dropped".
 		// So effectively it will be the sum of all bukkitDrops counts.
@@ -552,6 +577,8 @@ public class AutoManagerFeatures
 		
 		
 		if (drops != null && drops.size() > 0 ) {
+			
+			debugInfo.append( "[normalDrops]" );
 
 			// Need better drop calculation that is not using the getDrops function.
 			short fortuneLevel = getFortune( pmEvent.getItemInHand() );
@@ -589,14 +616,52 @@ public class AutoManagerFeatures
 			}
 			
 			
+			double autosellTotal = 0;
+			
 			// Drop the items where the original block was located:
 			for ( SpigotItemStack itemStack : drops ) {
 
 				count += itemStack.getAmount();
 				
-				dropAtBlock( itemStack, pmEvent.getSpigotBlock() );
+				if (isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || 
+						pmEvent.isForceAutoSell() ) {
+					
+					Player player = pmEvent.getPlayer();
+
+					double amount = SellAllUtil.get().sellAllSell( player, itemStack, false, false, true );
+					autosellTotal += amount;
+					
+					debugInfo.append( "(sold: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
+					
+					// Set to zero quantity since they have all been sold.
+					itemStack.setAmount( 0 );
+				}
+				else {
+					
+					if ( Output.get().isDebug() ) {
+						
+						// Just get the calculated value for the drops... do not sell:
+						Player player = pmEvent.getPlayer();
+					
+						double amount = SellAllUtil.get().sellAllSell( player, itemStack, true, false, false );
+						autosellTotal += amount;
+						
+						debugInfo.append( "(adding: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
+					}
+					
+					dropAtBlock( itemStack, pmEvent.getSpigotBlock() );
+				}
+				
+				
 			}
 
+			
+			if ( count > 0 || autosellTotal > 0 ) {
+				
+				debugInfo.append( "[normalDrops total: qty: " + count + " value: " + autosellTotal + ") ");
+				
+			}
+			
 			
 //			// Break the block and change it to air:
 //			if ( !pmEvent.getSpigotBlock().isEmpty() ) {

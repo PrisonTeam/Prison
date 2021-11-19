@@ -38,7 +38,6 @@ import tech.mcprison.prison.spigot.api.ExplosiveBlockBreakEvent;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerBreakBlockTask;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
-import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -1756,7 +1755,7 @@ public class OnBlockBreakEventCore
 	public boolean doAction( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo ) {
 		
 		AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
-		int totalDrops = aMan.calculateNormalDrop( pmEvent );
+		int totalDrops = aMan.calculateNormalDrop( pmEvent, debugInfo );
 		
 		debugInfo.append( "(normalDrops totalDrops: " + totalDrops + ") ");
 		
@@ -1776,7 +1775,7 @@ public class OnBlockBreakEventCore
 		processBlockBreakage( pmEvent, debugInfo );
 
 
-		autosellPerBlockBreak( pmEvent.getPlayer() );
+//		autosellPerBlockBreak( pmEvent.getPlayer() );
 		
 //		if ( pmEvent.getMine() != null ) {
 //			checkZeroBlockReset( pmEvent.getMine() );
@@ -1938,39 +1937,42 @@ public class OnBlockBreakEventCore
 	
 	
 	
-	public boolean autosellPerBlockBreak( Player player ) {
-		boolean enabled = false;
-		
-		
-//		if (isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || 
-//				pmEvent.isForceAutoSell() ) {
+	// Warning: The following is now obsolete since there is now a sellall function that will sell on a 
+	//          per SpigotItemStack so it eliminates a ton of overhead.  It also supports thousands of 
+	//          items per stack.
+//	public boolean autosellPerBlockBreak( Player player ) {
+//		boolean enabled = false;
+//		
+//		
+////		if (isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || 
+////				pmEvent.isForceAutoSell() ) {
+////			
+////			SellAllUtil.get().sellAllSell( player, itemStack, true, false, false );
+////		}
+//
+//		
+//		// This won't try to sell on every item stack, but assuming that sellall will hit on very block 
+//		// break, then the odds of inventory being overflowed on one explosion would be more rare than anything
+//		if ( isBoolean( AutoFeatures.isAutoSellPerBlockBreakEnabled ) ) {
 //			
-//			SellAllUtil.get().sellAllSell( player, itemStack, true, false, false );
+//			enabled = true;
+//			
+//			// Run sell all
+//			if ( isBoolean( AutoFeatures.isAutoSellPerBlockBreakInlinedEnabled ) ) {
+//				// run sellall inline with the block break event:
+//				if (PrisonSpigotSellAllCommands.get() != null) {
+//					PrisonSpigotSellAllCommands.get().sellAllSellWithDelayCommand(new SpigotPlayer(player));
+//				}
+//			}
+//			else {
+//				// Submit sellall to run in the future (0 ticks in the future):
+//				String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell silent" );
+//				Bukkit.dispatchCommand(player, registeredCmd);
+//			}
 //		}
-
-		
-		// This won't try to sell on every item stack, but assuming that sellall will hit on very block 
-		// break, then the odds of inventory being overflowed on one explosion would be more rare than anything
-		if ( isBoolean( AutoFeatures.isAutoSellPerBlockBreakEnabled ) ) {
-			
-			enabled = true;
-			
-			// Run sell all
-			if ( isBoolean( AutoFeatures.isAutoSellPerBlockBreakInlinedEnabled ) ) {
-				// run sellall inline with the block break event:
-				if (PrisonSpigotSellAllCommands.get() != null) {
-					PrisonSpigotSellAllCommands.get().sellAllSellWithDelayCommand(new SpigotPlayer(player));
-				}
-			}
-			else {
-				// Submit sellall to run in the future (0 ticks in the future):
-				String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell silent" );
-				Bukkit.dispatchCommand(player, registeredCmd);
-			}
-		}
-		
-		return enabled;
-	}
+//		
+//		return enabled;
+//	}
 	
 	
 	public void checkZeroBlockReset( Mine mine ) {

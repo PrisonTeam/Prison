@@ -93,7 +93,7 @@ public class AutoFeaturesFileConfig {
 				hologramIfInventoryIsFull(general, false),
 
 				isAutoSellPerBlockBreakEnabled(general, false),
-				isAutoSellPerBlockBreakInlinedEnabled(general, false),
+//				isAutoSellPerBlockBreakInlinedEnabled(general, false),
 				
 				
 			permissions(options),
