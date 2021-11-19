@@ -24,6 +24,7 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -377,6 +378,31 @@ public class SellAllUtil {
 
         return getSellMoney(p, getHashMapOfPlayerInventories(p));
     }
+    
+    /**
+     * <p>This sells a specific item stack.  Actually it returns the value of an item stack,
+     * its up to the calling function to dispose of the contents if the result is non-zero.
+     * </p>
+     * @param p
+     * @param itemStack
+     * @return
+     */
+    private double getSellMoney( Player p, SpigotItemStack itemStack )
+	{
+    	double results = 0d;
+    	
+    	HashMap<XMaterial, Integer> xMaterialIntegerHashMap = new HashMap<>();
+    	
+    	XMaterial xMat = XMaterial.matchXMaterial( itemStack.getBukkitStack() );
+    	
+    	if ( xMat != null ) {
+    		xMaterialIntegerHashMap.put( xMat, itemStack.getAmount() );
+    		
+    		results = getSellMoney( p, xMaterialIntegerHashMap );
+    	}
+    	
+		return results;
+	}
 
     /**
      * Get HashMap with all the items of a Player.
@@ -1475,8 +1501,62 @@ public class SellAllUtil {
             return false;
         }
     }
-
+    
+    
     /**
+     * <p>This function enables the selling of just one ItemStack and can be used outside of 
+     * the player's inventory, such as processing the drops of tens of thousands of blocks
+     * worth of drops.  This would be much faster than processing the player's inventory.
+     * </p>
+     * 
+     * <p>This function is used by auto features.
+     * </p>
+     * 
+     * @param p
+     * @param itemStack
+     * @param completelySilent
+     * @param notifyPlayerEarned
+     * @param notifyPlayerEarningDelay
+     * @return Amount of money earned from the sale of the item stack
+     */
+    public double sellAllSell(Player p, SpigotItemStack itemStack, 
+    		boolean completelySilent, boolean notifyPlayerEarned, boolean notifyPlayerEarningDelay){
+
+    	double money = getSellMoney(p, itemStack);
+    	
+    	if (money != 0){
+    		
+    		SpigotPlayer sPlayer = new SpigotPlayer(p);
+    		RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
+
+    		if (sellAllCurrency != null && sellAllCurrency.equalsIgnoreCase("default")) sellAllCurrency = null;
+    		rankPlayer.addBalance(sellAllCurrency, money);
+    		
+    		
+    		if (!completelySilent) {
+    			
+    			if (notifyPlayerEarningDelay // && isAutoSellEarningNotificationDelayEnabled
+    					){
+    				
+    				if (!isPlayerWaitingAutoSellNotification(p)){
+    					// Force delayed notifications, even if delayed is disabled:
+    					autoSellEarningsNotificationWaiting.put(p, 0.00);
+    					Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> removeFromAutoSellDelayAndNotify(p), 20L * defaultAutoSellEarningNotificationDelay);
+    				} else {
+    					addDelayedEarningAutoSellNotification(p, money);
+    				}
+    			} else if (notifyPlayerEarned){
+    				Output.get().sendInfo(sPlayer, messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + money);
+    			}
+    		}
+    	} 
+    	
+    	return money;
+    }
+
+
+
+	/**
      * Sell removing items from Inventories and checking all the possible conditions that a Player must meet to sell
      * items, this includes method parameters like:
      * - Is using SellAll Sign.

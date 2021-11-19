@@ -13,7 +13,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.4 2021-11-18
+# 3.2.11-alpha.4 2021-11-19
+
+
+* **SellAll: Setup a sellall function that will allow the selling of one ItemStack, which is not tied to any of the player's inventories.**
+This is used in prison's auto features when enabling the option to auto sell on a per block break event basis.  This is highly optimized and a lot faster than using the normal sellall since it does not deal with any of the player's inventories or backpacks.
+This forces a delayed sold amount message since an explosion could includ many ItemStacks.
 
 
 * **Mine bombs: Add cooldown and fuse delay to the mine bomb settings so each bomb can be customized.  
