@@ -9,6 +9,11 @@ public class MineBombData {
 
 	private String name;
 	
+	private String description;
+	
+	private List<String> lore;
+	
+
 	
 	/**
 	 * <p>The String name of an XMaterial item to use as the "bomb".
@@ -22,9 +27,6 @@ public class MineBombData {
 	 * </p>
 	 */
 	private transient PrisonBlock item;
-	
-	
-	private List<String> lore;
 	
 	/**
 	 * <p>The radius identifies how large the blast should be as 
@@ -68,7 +70,7 @@ public class MineBombData {
 	 * a 50% chance to be included from the explosion block list.
 	 * </p>
 	 */
-	private double removalChance;
+	private double removalChance = 100.0d; // 100.0 % chance
 	
 	
 	private String explosionShape;
@@ -79,7 +81,9 @@ public class MineBombData {
 	private int toolInHandFortuneLevel = 0;
 	
 	
-	private String description;
+	private int fuseDelayTicks = 5 * 20; // 5 seconds
+	
+	private int cooldownTicks = 30 * 20; // 30 seconds
 	
 	
 	/**
@@ -89,6 +93,14 @@ public class MineBombData {
 	 * </p>
 	 */
 	private boolean glowing = false;
+	
+	
+	/**
+	 * <p>Identifies if the item is effected by gravity.
+	 * Gravity was introduced with Minecraft 1.9.
+	 * </p>
+	 */
+	private boolean gravity = true;
 	
 	
 	/**
@@ -131,7 +143,14 @@ public class MineBombData {
 		
 		this.removalChance = 100.0d;
 		
+		this.fuseDelayTicks = 5 * 20;
+		
+		this.cooldownTicks = 30 * 20;
+		
+		
 		this.glowing = false;
+		this.gravity = true;
+		
 	}
 	
 	
@@ -148,9 +167,13 @@ public class MineBombData {
 		cloned.setHeight( getHeight() );
 		
 		cloned.setRemovalChance( getRemovalChance() );
-		
+		cloned.setFuseDelayTicks( getFuseDelayTicks() );
+		cloned.setCooldownTicks( getCooldownTicks() );
 		
 		cloned.setGlowing( isGlowing() );
+		cloned.setGravity( isGravity() );
+		
+		
 		cloned.setAutosell( isAutosell() );
 		cloned.setActivated( isActivated() );
 		
@@ -168,6 +191,20 @@ public class MineBombData {
 		this.name = name;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription( String description ) {
+		this.description = description;
+	}
+
+	public List<String> getLore() {
+		return lore;
+	}
+	public void setLore( List<String> lore ) {
+		this.lore = lore;
+	}
+
 	public String getItemType() {
 		return itemType;
 	}
@@ -180,13 +217,6 @@ public class MineBombData {
 	}
 	public void setItem( PrisonBlock item ) {
 		this.item = item;
-	}
-
-	public List<String> getLore() {
-		return lore;
-	}
-	public void setLore( List<String> lore ) {
-		this.lore = lore;
 	}
 
 	public int getRadius() {
@@ -224,13 +254,6 @@ public class MineBombData {
 		this.explosionShape = explosionShape;
 	}
 
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription( String description ) {
-		this.description = description;
-	}
-
 	public String getToolInHandName() {
 		return toolInHandName;
 	}
@@ -245,12 +268,38 @@ public class MineBombData {
 		this.toolInHandFortuneLevel = toolInHandFortuneLevel;
 	}
 
+	public int getFuseDelayTicks() {
+		return fuseDelayTicks;
+	}
+	public void setFuseDelayTicks( int fuseDelayTicks ) {
+		this.fuseDelayTicks = fuseDelayTicks;
+	}
+
+	public int getCooldownTicks() {
+		return cooldownTicks;
+	}
+	public void setCooldownTicks( int cooldownTicks ) {
+		this.cooldownTicks = cooldownTicks;
+	}
+
 	public boolean isGlowing() {
 		return glowing;
 	}
 	public void setGlowing( boolean glowing ) {
 		this.glowing = glowing;
 	}
+
+	public boolean isGravity()
+	{
+		return gravity;
+	}
+
+
+	public void setGravity( boolean gravity )
+	{
+		this.gravity = gravity;
+	}
+
 
 	public boolean isAutosell() {
 		return autosell;

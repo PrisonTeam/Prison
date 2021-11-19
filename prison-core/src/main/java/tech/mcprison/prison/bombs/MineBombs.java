@@ -268,6 +268,12 @@ public class MineBombs
 				mbd.setToolInHandFortuneLevel( 0 );
 				mbd.setRemovalChance( 40.0d );
 				
+				mbd.setCooldownTicks( 3 * 20 ); // 3 seconds
+				mbd.setFuseDelayTicks( 2 * 20 ); // 2 seconds
+
+				mbd.setGlowing( true );
+				mbd.setGravity( false );
+				
 				getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 			}
 			

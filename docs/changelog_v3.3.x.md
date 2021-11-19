@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.4 2021-11-18
 
 
+* **Mine bombs: Add cooldown and fuse delay to the mine bomb settings so each bomb can be customized.  
+Added gravity to the mine bombs too.**  Gravity, like glow, was added in minecraft 1.9 so older versions won't work.
+
+
 * **Bug fix: For TokenEnchant's explosive event processing,** need to set PrisonMinesBlockBreakEvent's setForceIfAirBlock( true ) so the explosion event can be processed, even if the initial block has already been processed.
 This allows TE explosion events to work correctly now.
 

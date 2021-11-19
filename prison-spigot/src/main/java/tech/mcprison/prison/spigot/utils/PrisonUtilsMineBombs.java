@@ -183,9 +183,11 @@ public class PrisonUtilsMineBombs
 				MineBombData bomb = mBombs.getConfigData().getBombs().get( key );
 				
 				String message = String.format( 
-						"%-12s    Autosell: %b", 
+						"%-12s    Autosell: %b   FuseDelayTicks: %d   CooldownTicks: %d", 
 						bomb.getName(), 
-						bomb.isAutosell()
+						bomb.isAutosell(),
+						bomb.getFuseDelayTicks(),
+						bomb.getCooldownTicks()
 						);
 				
 				messages.add( message );
@@ -242,9 +244,10 @@ public class PrisonUtilsMineBombs
 				
 				
 				String message3 = String.format( 
-						"      ItemType: %s  Glowng: %b",
+						"      ItemType: %s   Glowng: %b   Gravity: %b",
 						bomb.getItemType(), 
-						bomb.isGlowing() );
+						bomb.isGlowing(),
+						bomb.isGravity() );
 				messages.add( message3 );
 				
 				
@@ -560,7 +563,7 @@ public class PrisonUtilsMineBombs
     					
     					
     					// Set cooldown:
-    					PrisonUtilsMineBombs.addPlayerCooldown( playerUUID );
+    					PrisonUtilsMineBombs.addPlayerCooldown( playerUUID, bomb.getCooldownTicks() );
     					
     					SpigotItemStack bombs = PrisonUtilsMineBombs.getItemStackBomb( bomb );
     					
@@ -598,14 +601,6 @@ public class PrisonUtilsMineBombs
     						SpigotCompatibility.getInstance().setItemInMainHand( player, itemInHand.getBukkitStack() );
 
     						
-    						//Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  05 " );
-    						
-    						// SpigotBlock sBlock = new SpigotBlock( event.getClickedBlock() );
-    						
-    						//Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  dropping block " );
-    						
-    						
-    						
     						
     						// For mine bombs, take the block below where the bomb's item was dropped.  The floating 
     						// item is not the block that needs to be the target block for the explosion.  Also, the block
@@ -618,12 +613,6 @@ public class PrisonUtilsMineBombs
     							if ( tempBlock != null && tempBlock instanceof SpigotBlock ) {
     								bombBlock = (SpigotBlock) tempBlock;
     							}
-    							
-    							
-//    							Location bbLocation = bombBlock.getLocation();
-//    							bbLocation.setY( bbLocation.getBlockY() - 1 );
-//    							
-//    							bombBlock = (SpigotBlock) bbLocation.getBlockAt();
     							
 //    							Output.get().logInfo( 
 //    									"#### PrisonUtilsMineBombs:  bomb y loc: " + bombBlock.getWrapper().getLocation().getBlockY() + 
@@ -643,38 +632,27 @@ public class PrisonUtilsMineBombs
     						dropped.setCustomName( bomb.getName() );
     						//dropped.setVelocity(player.getLocation().getDirection().multiply( throwSpeed ).normalize() );
     						
-    						int delayInTicks = 5 * 20; // 5 secs
+//    						int delayInTicks = 5 * 20; // 5 secs
     						
     						
     						// If running MC 1.9.0 or higher, then can use the glowing feature.  Ignore for 1.8.x.
     						if ( new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) >= 0 ) {
     							
     							dropped.setGlowing( bomb.isGlowing() );
+
+    							
+    							// setGravity is invalid for spigot 1.8.8:
+    							dropped.setGravity( bomb.isGravity() );
     						}
     						
     						
-    						
-    						// Get the block that is y - 1 lower than the original block:
-//    						SpigotBlock bombBlock = (SpigotBlock) sBlock.getRelative( BlockFace.DOWN );
-    						
-    						
     						// Submit the bomb's task to go off:
-    						PrisonUtilsMineBombs.setoffBombDelayed( sPlayer, bomb, dropped, bombBlock, delayInTicks );
+    						PrisonUtilsMineBombs.setoffBombDelayed( sPlayer, bomb, dropped, bombBlock );
     						
 
-    						
-
-    						// setGlow is invalid for spigot 1.8.8:
-    						//dropped.setGlowing( bomb.isGlowing() );
-    						
-    						// setGravity is invalid for spigot 1.8.8:
-//    						dropped.setGravity( false );
-    						
-    						
     						
 //    						dropped.setMetadata( "prisonMineBomb", new FixedMetadataValue( SpigotPrison.getInstance(), true ) );
     						//dropped.setMetadata( "prisonMineName",  new FixedMetadataValue( SpigotPrison.getInstance(), "mineName" ) );
-    						
     						
     					}
     				}
@@ -698,9 +676,9 @@ public class PrisonUtilsMineBombs
     	return isABomb;
 	}
 	
-	public static boolean addPlayerCooldown( String playerUUID ) {
-		return addPlayerCooldown( playerUUID, MINE_BOMBS_COOLDOWN_TICKS );
-	}
+//	public static boolean addPlayerCooldown( String playerUUID ) {
+//		return addPlayerCooldown( playerUUID, MINE_BOMBS_COOLDOWN_TICKS );
+//	}
 	
 	/**
 	 * <p>If a cooldown is not setup for the player, this will try to add one and 
@@ -755,7 +733,7 @@ public class PrisonUtilsMineBombs
 	}
 
 	public static boolean setoffBombDelayed( SpigotPlayer sPlayer, MineBombData bomb, Item droppedBomb, 
-						SpigotBlock targetBlock, int delayTicks ) {
+						SpigotBlock targetBlock ) {
 		boolean results = false;
 		
 		new BukkitRunnable() {
@@ -895,7 +873,7 @@ public class PrisonUtilsMineBombs
 				}
 				return blocks;
 			}
-		}.runTaskLater( SpigotPrison.getInstance(), delayTicks );
+		}.runTaskLater( SpigotPrison.getInstance(), bomb.getFuseDelayTicks() );
 		
 		//.runTaskTimer( SpigotPrison.getInstance(), 10, 10);
 		
