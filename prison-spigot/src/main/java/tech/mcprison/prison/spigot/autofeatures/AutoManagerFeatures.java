@@ -479,29 +479,47 @@ public class AutoManagerFeatures
 				
 				count += itemStack.getAmount();
 				
-				HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( player, itemStack );
-				
-				if ( extras.size() > 0 && autosellPerBlockBreak( player ) ) {
+				if (isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || 
+						pmEvent.isForceAutoSell() ) {
 					
-					// Try to add the extras back to the player's inventory if they had autosellPerBlockBrean enabled:
-					for ( SpigotItemStack extraItemStack : extras.values() ) {
+					double amount = SellAllUtil.get().sellAllSell( player, itemStack, false, false, true );
+
+					debugInfo.append( "(sold: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " amt: " + amount + ") ");
+					
+					// Set to zero quantity since they have all been sold.
+					itemStack.setAmount( 0 );
+				}
+				else {
+					
+					HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( player, itemStack );
+					
+					if ( extras.size() > 0 && autosellPerBlockBreak( player ) ) {
 						
-						HashMap<Integer, SpigotItemStack> extras2 = SpigotUtil.addItemToPlayerInventory( player, extraItemStack );
-
-						autosellPerBlockBreak( player );
-
-						// If the remainder of the extras still as too much, then just drop them and move on:
-						dropExtra( extras2, player );
+						// Try to add the extras back to the player's inventory if they had autosellPerBlockBrean enabled:
+						for ( SpigotItemStack extraItemStack : extras.values() ) {
+							
+							HashMap<Integer, SpigotItemStack> extras2 = SpigotUtil.addItemToPlayerInventory( player, extraItemStack );
+							
+							autosellPerBlockBreak( player );
+							
+							// If the remainder of the extras still as too much, then just drop them and move on:
+							dropExtra( extras2, player );
+						}
+						extras.clear();
 					}
-					extras.clear();
+					
+					dropExtra( extras, player );
+//					dropExtra( player.getInventory().addItem(itemStack), player, block );
 				}
 				
-				dropExtra( extras, player );
-//					dropExtra( player.getInventory().addItem(itemStack), player, block );
 				
-			}
+			} 
 			
-			autosellPerBlockBreak( player );
+			if ( !isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) && 
+					!pmEvent.isForceAutoSell() ) {
+				
+				autosellPerBlockBreak( player );
+			}
 			
 //				autoPickupCleanup( player, itemInHand, count );
 		}

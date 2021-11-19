@@ -89,6 +89,13 @@ public class PrisonMinesBlockBreakEvent
 	private boolean calculateDurability = true;
 
 	
+	// The use of forceAutoSell will sell the drops before they are added to the 
+	// player's inventory.  This would actually be much faster to process than
+	// going through the normal sellall functionality since that will have to process
+	// all of the player's inventory slots, including their backpacks.
+	private boolean forceAutoSell = false;
+	
+	
 	private boolean monitor = false;
 	private boolean blockEventsOnly = false;
 	
@@ -293,6 +300,13 @@ public class PrisonMinesBlockBreakEvent
 	}
 	public void setCalculateDurability( boolean calculateDurability ) {
 		this.calculateDurability = calculateDurability;
+	}
+
+	public boolean isForceAutoSell() {
+		return forceAutoSell;
+	}
+	public void setForceAutoSell( boolean forceAutoSell ) {
+		this.forceAutoSell = forceAutoSell;
 	}
 
 	public boolean isMonitor() {

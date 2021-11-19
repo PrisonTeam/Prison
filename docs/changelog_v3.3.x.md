@@ -16,6 +16,11 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.4 2021-11-19
 
 
+* **Auto Features Forced Auto Sell Optimization Improvement: AutoSell within auto features now only uses sellall by item stack and not the player interface that accesses all of the player's inventories.**
+Since the auto features items are not placed in the player's inventories at this time in the process of auto features, there is no reason to access the player's inventories.  Selling directly reduces a lot of sellall overhead and as a result sellall is just calculating the prices.
+The old autosell code within autofeatures has not be removed yet, but it cannot be called anymore.
+
+
 * **PrisonDispatchCommandTask: Removed the debug logging since it can be very numerous when used with a large mine bomb and it's pointless since most of the block events being submitted runs in less that one millisecond.**
 So this is just cleaning up a messy logging item.
 
