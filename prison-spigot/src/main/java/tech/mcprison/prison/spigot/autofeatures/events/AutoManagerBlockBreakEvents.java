@@ -130,22 +130,25 @@ public class AutoManagerBlockBreakEvents
     							prison);
     					prison.getRegisteredBlockListeners().add( autoManagerlListener );
     				}
-    				
-    				OnBlockBreakEventListenerNormal normalListener = 
-    						new OnBlockBreakEventListenerNormal();
-    				
-    				pm.registerEvent(BlockBreakEvent.class, normalListener, ePriority,
-    						new EventExecutor() {
-    					public void execute(Listener l, Event e) {
-    						if ( l instanceof OnBlockBreakEventListenerNormal && 
-    								e instanceof BlockBreakEvent ) {
-    							((OnBlockBreakEventListenerNormal)l)
-    							.onBlockBreak((BlockBreakEvent)e);
+    				else if ( isBoolean( AutoFeatures.normalDrop ) ) {
+    					
+    					OnBlockBreakEventListenerNormal normalListener = 
+    							new OnBlockBreakEventListenerNormal();
+    					
+    					pm.registerEvent(BlockBreakEvent.class, normalListener, ePriority,
+    							new EventExecutor() {
+    						public void execute(Listener l, Event e) {
+    							if ( l instanceof OnBlockBreakEventListenerNormal && 
+    									e instanceof BlockBreakEvent ) {
+    								((OnBlockBreakEventListenerNormal)l)
+    								.onBlockBreak((BlockBreakEvent)e);
+    							}
     						}
-    					}
-    				},
-    						prison);
-    				prison.getRegisteredBlockListeners().add( normalListener );
+    					},
+    							prison);
+    					prison.getRegisteredBlockListeners().add( normalListener );
+    				}
+    				
     				
     			}
     			

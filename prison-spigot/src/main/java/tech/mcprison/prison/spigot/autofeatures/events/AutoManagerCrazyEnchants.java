@@ -129,16 +129,18 @@ public class AutoManagerCrazyEnchants
 							prison);
 					prison.getRegisteredBlockListeners().add( normalListener );
 				}
-				
-				pm.registerEvent(BlastUseEvent.class, normalListenerMonitor, EventPriority.MONITOR,
-						new EventExecutor() {
+				else if ( isBoolean( AutoFeatures.normalDrop ) ) {
+					
+					pm.registerEvent(BlastUseEvent.class, normalListenerMonitor, EventPriority.MONITOR,
+							new EventExecutor() {
 						public void execute(Listener l, Event e) { 
 							((OnBlockBreakBlastUseEventListenerMonitor)l)
 							.onCrazyEnchantsBlockExplode((BlastUseEvent)e);
-					}
-				},
-				prison);
-				prison.getRegisteredBlockListeners().add( normalListenerMonitor );
+						}
+					},
+							prison);
+					prison.getRegisteredBlockListeners().add( normalListenerMonitor );
+				}
 				
 			}
 			

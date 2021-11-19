@@ -120,19 +120,22 @@ public class AutoManagerPrisonEnchants
 								prison);
 						prison.getRegisteredBlockListeners().add( autoManagerlListener );
 					}
+					else if ( isBoolean( AutoFeatures.normalDrop ) ) {
+						
+						OnBlockBreakPEExplosiveEventListener normalListener = 
+								new OnBlockBreakPEExplosiveEventListener();
+						
+						pm.registerEvent(PEExplosionEvent.class, normalListener, ePriority,
+								new EventExecutor() {
+							public void execute(Listener l, Event e) { 
+								((OnBlockBreakPEExplosiveEventListener)l)
+								.onPrisonEnchantsExplosiveEvent((PEExplosionEvent)e);
+							}
+						},
+								prison);
+						prison.getRegisteredBlockListeners().add( normalListener );
+					}
 					
-					OnBlockBreakPEExplosiveEventListener normalListener = 
-							new OnBlockBreakPEExplosiveEventListener();
-					
-					pm.registerEvent(PEExplosionEvent.class, normalListener, ePriority,
-							new EventExecutor() {
-						public void execute(Listener l, Event e) { 
-							((OnBlockBreakPEExplosiveEventListener)l)
-							.onPrisonEnchantsExplosiveEvent((PEExplosionEvent)e);
-						}
-					},
-							prison);
-					prison.getRegisteredBlockListeners().add( normalListener );
 				}
 				
 				pm.registerEvent(PEExplosionEvent.class, normalListenerMonitor, EventPriority.MONITOR,

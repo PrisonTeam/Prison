@@ -16,6 +16,12 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.5 2021-11-19
 
 
+
+* **Changes to how the event listeners are setup: reduced by 1/3rd.**
+Used to be that all three would be set if autopickup was enabled, but now only two will be set... monitor, and then either autopickup or manual drops.
+This should improve performance since prison will be processing 1/3 less events.
+
+
 * **3.2.11-alpha.5 2021-11-19**
 
 Post the alpha.5 release.

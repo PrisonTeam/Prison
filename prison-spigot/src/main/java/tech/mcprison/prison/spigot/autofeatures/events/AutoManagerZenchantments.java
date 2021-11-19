@@ -122,24 +122,27 @@ public class AutoManagerZenchantments
     							prison);
     					prison.getRegisteredBlockListeners().add( autoManagerlListener );
     				}
-    				
-    				OnBlockBreakBlockShredEventListener normalListener = 
-    						new OnBlockBreakBlockShredEventListener();
-
-    				pm.registerEvent(BlockShredEvent.class, normalListener, ePriority,
-    						new EventExecutor() {
-    					public void execute(Listener l, Event e) { 
-    						if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor && 
-    								e instanceof BlockShredEvent ) {
-    							OnBlockBreakBlockShredEventListenerMonitor lmon = 
-    									(OnBlockBreakBlockShredEventListenerMonitor) l;
-    							BlockShredEvent event = (BlockShredEvent) e;
-    							lmon.onBlockShredBreakMonitor( event );
+    				else if ( isBoolean( AutoFeatures.normalDrop ) ) {
+    					
+    					OnBlockBreakBlockShredEventListener normalListener = 
+    							new OnBlockBreakBlockShredEventListener();
+    					
+    					pm.registerEvent(BlockShredEvent.class, normalListener, ePriority,
+    							new EventExecutor() {
+    						public void execute(Listener l, Event e) { 
+    							if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor && 
+    									e instanceof BlockShredEvent ) {
+    								OnBlockBreakBlockShredEventListenerMonitor lmon = 
+    										(OnBlockBreakBlockShredEventListenerMonitor) l;
+    								BlockShredEvent event = (BlockShredEvent) e;
+    								lmon.onBlockShredBreakMonitor( event );
+    							}
     						}
-    					}
-    				},
-    						prison);
-    				prison.getRegisteredBlockListeners().add( normalListener );
+    					},
+    							prison);
+    					prison.getRegisteredBlockListeners().add( normalListener );
+    				}
+    				
     			}
     			
     			pm.registerEvent(BlockShredEvent.class, normalListenerMonitor, EventPriority.MONITOR,
