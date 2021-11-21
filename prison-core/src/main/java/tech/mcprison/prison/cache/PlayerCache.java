@@ -9,7 +9,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
@@ -353,20 +352,23 @@ public class PlayerCache {
 	
 	
 	public void addPlayerBlocks( Player player, String mine, PrisonBlockStatusData block, int quantity ) {
-		addPlayerBlocks( player, mine, (PrisonBlock) block, quantity );
+		addPlayerBlocks( player, mine, block.getBlockName(), quantity );
 	}
-	public void addPlayerBlocks( Player player, String mine, PrisonBlock block, int quantity ) {
+//	public void addPlayerBlocks( Player player, String mine, PrisonBlock block, int quantity ) {
+//		addPlayerBlocks( player, mine, block.getBlockName(), quantity );
+//	}
+	public void addPlayerBlocks( Player player, String mine, String blockName, int quantity ) {
 		PlayerCachePlayerData playerData = getPlayer( player );
 		
 //		Output.get().logInfo( "### addPlayerBlock: mine= " + (mine == null ? "null" : mine) +
 //				" block= " + (block == null ? "null" : block.getBlockName()) + " qty= " + quantity + "  playerData= " +
 //				(playerData == null ? "null" : playerData.toString() ));
-
+		
 //		if ( playerData != null && playerData.getBlocksTotal() % 20 == 0 ) {
 //			Output.get().logInfo( "#### PlayerCache: " + playerData.toString() );
 //		}
 		
-		playerData.addBlock( mine, block.getBlockName(), quantity );
+		playerData.addBlock( mine, blockName, quantity );
 	}
 	
 	/**
@@ -379,7 +381,13 @@ public class PlayerCache {
 	public void addPlayerEarnings( Player player, double earnings ) {
 		PlayerCachePlayerData playerData = getPlayer( player );
 		
-		playerData.addEarnings( earnings );
+		String mineName = null;
+		playerData.addEarnings( earnings, mineName );
+	}
+	public void addPlayerEarnings( Player player, double earnings, String mineName ) {
+		PlayerCachePlayerData playerData = getPlayer( player );
+		
+		playerData.addEarnings( earnings, mineName );
 	}
 	public double getPlayerEarningsPerMinute( Player player ) {
 		double earningsPerMinute = 0;

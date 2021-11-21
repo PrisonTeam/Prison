@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
@@ -22,6 +23,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
@@ -476,6 +478,18 @@ public class AutoManagerFeatures
 				normalDropBlock( drops );
 			}
 			
+			String mineName = pmEvent.getMine() == null ? null : pmEvent.getMine().getName();
+			
+			// PlayerCache log block breaks:
+			TreeMap<String, Integer> targetBlockCounts = pmEvent.getTargetBlockCounts();
+			for ( Entry<String, Integer> targetBlockCount : targetBlockCounts.entrySet() )
+			{
+				
+				PlayerCache.getInstance().addPlayerBlocks( pmEvent.getSpigotPlayer(), mineName, 
+						targetBlockCount.getKey(), targetBlockCount.getValue().intValue() );
+			}
+			
+			
 			
 			double autosellTotal = 0;
 			
@@ -483,12 +497,16 @@ public class AutoManagerFeatures
 				
 				count += itemStack.getAmount();
 				
+	
 				if (isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || 
 						pmEvent.isForceAutoSell() ) {
 					
 					double amount = SellAllUtil.get().sellAllSell( player, itemStack, false, false, true );
 					autosellTotal += amount;
 					
+					PlayerCache.getInstance().addPlayerEarnings( pmEvent.getSpigotPlayer(), 
+													amount, mineName );
+
 					debugInfo.append( "(sold: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
 					
 					// Set to zero quantity since they have all been sold.
@@ -614,6 +632,19 @@ public class AutoManagerFeatures
 				
 				normalDropBlock( drops );
 			}
+			
+			
+			String mineName = pmEvent.getMine() == null ? null : pmEvent.getMine().getName();
+			
+			// PlayerCache log block breaks:
+			TreeMap<String, Integer> targetBlockCounts = pmEvent.getTargetBlockCounts();
+			for ( Entry<String, Integer> targetBlockCount : targetBlockCounts.entrySet() )
+			{
+				
+				PlayerCache.getInstance().addPlayerBlocks( pmEvent.getSpigotPlayer(), mineName, 
+						targetBlockCount.getKey(), targetBlockCount.getValue().intValue() );
+			}
+			
 			
 			
 			double autosellTotal = 0;

@@ -13,8 +13,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.5 2021-11-19
+# 3.2.11-alpha.5 2021-11-21
 
+
+
+
+* **Update on how prison manages the tracking of block breaks and earnings when auto features has autosell enabled.**
 
 
 * **Changes to how the event listeners are setup: reduced by 1/3rd.**

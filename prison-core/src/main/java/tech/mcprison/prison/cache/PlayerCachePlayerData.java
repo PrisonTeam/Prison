@@ -348,7 +348,7 @@ public class PlayerCachePlayerData {
 	 * 
 	 * @param earnings
 	 */
-	public void addEarnings( double earnings ) {
+	public void addEarnings( double earnings, String mineName ) {
 		SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd_hh:mm");
 		String key = dateFmt.format( new Date() );
 		
@@ -363,13 +363,20 @@ public class PlayerCachePlayerData {
 					earningsPerMinute.firstEntry().getKey() );
 		}
 		
+		if ( mineName != null && sessionType != SessionType.mining ) {
+			sessionType = SessionType.mining;
+		}
+		if ( mineName == null && getLastMine() != null ) {
+			mineName = getLastMine();
+		}
 		
 		// If earnings are within the session timeout for mining, then add the 
 		// earnings to the moneyByMine:
-		if ( sessionType == SessionType.mining && getLastMine() != null ) {
+		if ( sessionType == SessionType.mining && mineName != null ) {
 			long duration = System.currentTimeMillis() - sessionTimingLastCheck;
 			if ( duration < SESSION_TIMEOUT_MINING_MS ) {
-				addEarningsByMine( getLastMine(), earnings );
+				
+				addEarningsByMine( mineName, earnings );
 			}
 		}
 		

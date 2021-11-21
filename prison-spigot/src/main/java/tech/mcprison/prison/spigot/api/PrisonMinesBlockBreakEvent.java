@@ -2,6 +2,7 @@ package tech.mcprison.prison.spigot.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -209,6 +210,24 @@ public class PrisonMinesBlockBreakEvent
 		SpigotBlock spigotBlock = new SpigotBlock(bukkitBlock);
 		
 		return getOriginalTargetBlock( spigotBlock );
+	}
+	
+	
+	public TreeMap<String, Integer> getTargetBlockCounts() {
+		TreeMap<String, Integer> results = new TreeMap<>();
+		
+		if ( getTargetBlock() != null ) {
+			results.put( getTargetBlock().getPrisonBlock().getBlockName(), 1 );
+		}
+		
+		for ( MineTargetPrisonBlock targetBlock : getTargetExplodedBlocks() )
+		{
+			String blockName = targetBlock.getPrisonBlock().getBlockName();
+			int count = 1 + ( results.containsKey( blockName ) ? results.get( blockName ) : 0) ;
+			results.put( blockName, count );
+		}
+		
+		return results;
 	}
 	
 	public Mine getMine() {

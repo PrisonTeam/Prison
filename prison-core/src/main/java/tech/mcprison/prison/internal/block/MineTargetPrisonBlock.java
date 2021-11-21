@@ -23,14 +23,11 @@ public class MineTargetPrisonBlock
 	private boolean ignoreAllBlockEvents = false;
 	
 	
-	protected MineTargetPrisonBlock( World world, int x, int y, int z, boolean isEdge ) {
-		
-		this.blockKey = new MineTargetBlockKey( world, x, y, z );
-	}
-	
-	public MineTargetPrisonBlock( PrisonBlockStatusData prisonBlock, World world, 
+	public MineTargetPrisonBlock( 
+				PrisonBlockStatusData prisonBlock, 
+				World world, 
 						int x, int y, int z, boolean isEdge ) {
-		this( world, x, y, z, isEdge );
+		this.blockKey = new MineTargetBlockKey( world, x, y, z );
 		
 		this.prisonBlock = prisonBlock;
 		

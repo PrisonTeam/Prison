@@ -85,7 +85,7 @@ public class PlayerCacheCheckTimersTask
 						
 						// By adding a zero earnings, this will force the earnings "cache" to 
 						// progress, even if the player stopped mining.
-						playerData.addEarnings( 0 );
+						playerData.addEarnings( 0, null );
 					}
 					
 				}

@@ -1999,8 +1999,9 @@ public class OnBlockBreakEventCore
 			// then have the player counts be incremented.
 			if ( mine.incrementBlockMiningCount( targetBlock ) ) {
 				
-				PlayerCache.getInstance().addPlayerBlocks( pmEvent.getSpigotPlayer(), 
-						mine.getName(), targetBlock.getPrisonBlock(), 1 );
+				// Now in AutoManagerFeatures.autoPickup and calculateNormalDrop:
+//				PlayerCache.getInstance().addPlayerBlocks( pmEvent.getSpigotPlayer(), 
+//						mine.getName(), targetBlock.getPrisonBlock(), 1 );
 				
 			}
 			

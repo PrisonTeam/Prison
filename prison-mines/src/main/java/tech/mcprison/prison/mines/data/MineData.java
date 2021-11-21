@@ -696,7 +696,10 @@ public abstract class MineData
     		incrementBlockBreakCount();
     		incrementTotalBlocksMined();
     		
-    		targetPrisonBlock.getPrisonBlock().incrementMiningBlockCount();
+    		if ( targetPrisonBlock.getPrisonBlock() != null ) {
+    			
+    			targetPrisonBlock.getPrisonBlock().incrementMiningBlockCount();
+    		}
     		
     		results = true;
     	}
