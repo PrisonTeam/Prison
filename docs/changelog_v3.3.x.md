@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.5 2021-11-21
 
 
+* **Bug fix: If player is mining outside of a mine, then don't process anything.**
+May want to allow prison to manage block breaks outside of mines in the future, but for now, prison is only managing mines.
+
+
 * **New feature which lists all of the Player Cache stats in the command `/ranks player`.  This includes stats for block breaks, time spent in mines, and earnings per mine.**
 
 

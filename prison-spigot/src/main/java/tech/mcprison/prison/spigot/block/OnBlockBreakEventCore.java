@@ -302,6 +302,10 @@ public class OnBlockBreakEventCore
 			
 			Mine mine = findMine( e.getPlayer(), sBlock,  null, null ); 
 			
+			if ( mine == null ) {
+				// Prison is unable to process blocks outside of mines right now, so exit:
+				return;
+			}
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
 			
 			// If ignore all block events, then exit this function without logging anything:
@@ -970,6 +974,10 @@ public class OnBlockBreakEventCore
 			
 			Mine mine = findMine( e.getPlayer(), sBlock,  e.blockList(), null ); 
 			
+			if ( mine == null ) {
+				// Prison is unable to process blocks outside of mines right now, so exit:
+				return;
+			}
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
 			
 			// If ignore all block events, then exit this function without logging anything:
@@ -1193,6 +1201,10 @@ public class OnBlockBreakEventCore
 			
 			Mine mine = findMine( e.getPlayer(), sBlock,  e.getBlockList(), null ); 
 			
+			if ( mine == null ) {
+				// Prison is unable to process blocks outside of mines right now, so exit:
+				return;
+			}
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
 			
 			// If ignore all block events, then exit this function without logging anything:
@@ -1385,6 +1397,10 @@ public class OnBlockBreakEventCore
 			
 			Mine mine = findMine( e.getPlayer(), sBlock, e.getExplodedBlocks(), null ); 
 			
+			if ( mine == null ) {
+				// Prison is unable to process blocks outside of mines right now, so exit:
+				return;
+			}
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
 			
 			// If ignore all block events, then exit this function without logging anything:
@@ -1514,6 +1530,10 @@ public class OnBlockBreakEventCore
 			
 			Mine mine = findMine( e.getPlayer(), sBlock,  e.getExplodedBlocks(), null ); 
 			
+			if ( mine == null ) {
+				// Prison is unable to process blocks outside of mines right now, so exit:
+				return;
+			}
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
 			
 			// If ignore all block events, then exit this function without logging anything:
