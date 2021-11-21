@@ -1,18 +1,23 @@
 package tech.mcprison.prison.ranks.commands;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.cache.PlayerCache;
+import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
@@ -29,8 +34,10 @@ import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.FancyMessageComponent;
+import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.PlayerRankRefreshTask;
@@ -1417,21 +1424,29 @@ public class RanksCommands
     		return;
     	}
 
+    	List<String> msgs = new ArrayList<>();
+    	
+    	
     	PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
 		RankPlayer rankPlayer = pm.getPlayer(player.getUUID(), player.getName());
 		
-		String msg1 = String.format( "&c%s:", rankPlayer.getName() );
-		sendToPlayerAndConsole( sender, msg1 );
+		String msg1 = String.format( "&7Player Stats for&8:    &c%s: ", rankPlayer.getName() );
+		msgs.add( msg1 );
+//		sendToPlayerAndConsole( sender, msg1 );
 		
 		DecimalFormat fFmt = new DecimalFormat("0.0000");
 		String msg2 = String.format( "  &7Rank Cost Multiplier: &f", 
 						fFmt.format( rankPlayer.getSellAllMultiplier() ));
-		sendToPlayerAndConsole( sender, msg2 );
+		msgs.add( msg2 );
+//		sendToPlayerAndConsole( sender, msg2 );
 
 		
 		
 		if ( rankPlayer != null ) {
 			DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+			DecimalFormat iFmt = new DecimalFormat("#,##0");
+			
+			SimpleDateFormat sdFmt = new SimpleDateFormat( "HH:mm:ss" );
 			
 			// Collect all currencies in the default ladder:
 			Set<String> currencies = new LinkedHashSet<>();
@@ -1475,7 +1490,8 @@ public class RanksCommands
 					}
 				}
 				
-				sendToPlayerAndConsole( sender, messageRank );
+				msgs.add( messageRank );
+//				sendToPlayerAndConsole( sender, messageRank );
 			}
 			
 			// Print out the player's balances: 
@@ -1483,13 +1499,16 @@ public class RanksCommands
 			// The default currency first:
 			double balance = rankPlayer.getBalance();
 			String message = ranksPlayerBalanceDefaultMsg( player.getName(), dFmt.format( balance ) );
-			sendToPlayerAndConsole( sender, message );
+			msgs.add( message );
+//			sendToPlayerAndConsole( sender, message );
+			
 			
 			for ( String currency : currencies ) {
 				double balanceCurrency = rankPlayer.getBalance( currency );
 				String messageCurrency = ranksPlayerBalanceOthersMsg( 
 						player.getName(), dFmt.format( balanceCurrency ), currency );
-				sendToPlayerAndConsole( sender, messageCurrency );
+				msgs.add( messageCurrency );
+//				sendToPlayerAndConsole( sender, messageCurrency );
 
 			}
 			
@@ -1502,7 +1521,8 @@ public class RanksCommands
 
 			if ( !isOnline ) {
 				String msgOffline = ranksPlayerPermsOfflineMsg();
-				sendToPlayerAndConsole( sender, msgOffline );
+				msgs.add( msgOffline );
+//				sendToPlayerAndConsole( sender, msgOffline );
 			}
 			
 			double sellallMultiplier = player.getSellAllMultiplier();
@@ -1511,8 +1531,90 @@ public class RanksCommands
 			String messageSellallMultiplier = ranksPlayerSellallMultiplierMsg( 
 					pFmt.format( sellallMultiplier ), 
 					(!isOnline ? "  " + messageNotAccurrate : "") );
-			sendToPlayerAndConsole( sender, messageSellallMultiplier );
+			msgs.add( messageSellallMultiplier );
+//			sendToPlayerAndConsole( sender, messageSellallMultiplier );
 
+			
+			
+			msgs.add( "" );
+			
+			// Get the cachedPlayer:
+			PlayerCachePlayerData cPlayer = PlayerCache.getInstance().getOnlinePlayer( rankPlayer );
+			
+			if ( cPlayer != null ) {
+				
+				msgs.add( "PlayerCache Information:" );
+				
+				// Print all earnings for all mines:
+				msgs.add( String.format( 
+						"  Earnings By Mine:    &2Avg Earnings per min: &3%s", 
+								dFmt.format( cPlayer.getAverageEarningsPerMinute() )) );
+				
+				formatTreeMapStats(cPlayer.getEarningsByMine(), msgs, dFmt, iFmt, 5 );	
+				
+				msgs.add( String.format( 
+						"  &7Timings By Mine&8:    &2Online&8: &3%s    &2Mining&8: &3%s", 
+						formatTimeMs( cPlayer.getOnlineTimeTotal() ),
+						formatTimeMs( cPlayer.getOnlineMiningTimeTotal()) )
+						);
+				
+				formatTreeMapStats(cPlayer.getTimeByMine(), msgs, dFmt, iFmt, 5 );
+				
+				
+				// Print all earnings for all mines:
+				String totalBlocks = PlaceholdersUtil.formattedKmbtSISize( 
+											cPlayer.getBlocksTotal(), dFmt, " &9" );
+				msgs.add( String.format( 
+						"  &7Blocks By Mine&8:    &2Blocks Total&8: &3%s", 
+						totalBlocks) );
+				formatTreeMapStats(cPlayer.getBlocksByMine(), msgs, dFmt, iFmt, 5 );
+				
+				
+				msgs.add( "  &7Blocks By Type&8:" );
+				formatTreeMapStats(cPlayer.getBlocksByType(), msgs, dFmt, iFmt, 3 );
+				
+				
+//				Set<String> keysEarnings = cPlayer.getEarningsByMine().keySet();
+//				
+//				int count = 0;
+//				StringBuilder sbErn = new StringBuilder();
+//				for ( String earningKey : keysEarnings )
+//				{
+//					Double mineEarnings = cPlayer.getEarningsByMine().get( earningKey );
+//					
+//					String earnings = PlaceholdersUtil.formattedKmbtSISize( mineEarnings, dFmt, " " );
+//					
+//					sbErn.append( String.format( "%s %s    ", earningKey, earnings ) );
+//					
+//					if ( count++ % 5 == 0 ) {
+//						msgs.add( String.format( 
+//								"    " + sbErn.toString() ) );
+//						sbErn.setLength( 0 );
+//						
+//					}
+//				}
+//				
+//				if ( sbErn.length() > 0 ) {
+//					
+//					msgs.add( String.format( 
+//							"    " + sbErn.toString() ) );
+//				}
+				
+				
+				
+//				msgs.add( String.format( 
+//						"    " ) );
+//				
+//				cPlayer.getEarningsByMine()
+				
+			}
+			
+			
+			
+			
+			
+			sendToPlayerAndConsole( sender, msgs );
+			
 			
 			
 			if ( sender.hasPermission("ranks.admin") ) {
@@ -1595,7 +1697,135 @@ public class RanksCommands
 //			ranksPlayerNoRanksFoundMsg( sender, player.getDisplayName() );
 //		}
     }
+    
+    private String formatTimeMs( long timeMs ) {
+    	
+    	DecimalFormat iFmt = new DecimalFormat("#,##0");
+    	DecimalFormat tFmt = new DecimalFormat("00");
+//    	SimpleDateFormat sdFmt = new SimpleDateFormat( "HH:mm:ss" );
+    	
+    	long _sec = 1000;
+    	long _min = _sec * 60;
+    	long _hour = _min * 60;
+    	long _day = _hour * 24;
 
+    	long ms = timeMs;
+		long days = _day < ms ? ms / _day : 0;
+		
+		ms -= (days * _day);
+		long hours = _hour < ms ? ms / _hour : 0;
+		
+		ms -= (hours * _hour);
+		long mins = _min < ms ? ms / _min : 0;
+		
+		ms -= (mins * _min);
+		long secs = _sec < ms ? ms / _sec : 0;
+		
+		
+		String results = 
+				(days == 0 ? "" : iFmt.format( days ) + "d ") +
+				tFmt.format( hours ) + ":" +
+				tFmt.format( mins ) + ":" +
+				tFmt.format( secs )
+				;
+
+		return results;
+    }
+    
+    private void formatTreeMapStats( TreeMap<String,?> statMap, List<String> msgs, 
+    		DecimalFormat dFmt, DecimalFormat iFmt, 
+    		int columns ) {
+    	
+		Set<String> keysEarnings = statMap.keySet();
+		
+		
+		List<String> values = new ArrayList<>();
+		List<Integer> valueMaxLen = new ArrayList<>();
+		
+		
+		int count = 0;
+		StringBuilder sb = new StringBuilder();
+		for ( String earningKey : keysEarnings )
+		{
+			String value = null;
+			Object valueObj = statMap.get( earningKey );
+			
+			if ( valueObj instanceof Double ) {
+				
+				value = PlaceholdersUtil.formattedKmbtSISize( (Double) valueObj, dFmt, " &9" );
+			}
+			else if ( valueObj instanceof Integer ) {
+				int intVal = (Integer) valueObj;
+				value = PlaceholdersUtil.formattedKmbtSISize( intVal, 
+						( intVal < 1000 ? iFmt : dFmt ), " &9" );
+			}
+			else if ( valueObj instanceof Long ) {
+				
+				value = formatTimeMs( (Long) valueObj );
+			}
+			
+			String msg = String.format( "&3%s&8: &b%s", earningKey, value ).trim();
+			
+			String msgNoColor = Text.stripColor( msg );
+			int lenMNC = msgNoColor.length();
+			
+		
+			int col = values.size() % columns;
+			values.add( msg );
+			
+			if ( col >= valueMaxLen.size() || lenMNC > valueMaxLen.get( col ) ) {
+				
+				if ( col > valueMaxLen.size() - 1 ) {
+					valueMaxLen.add( lenMNC );
+				}
+				else {
+					
+					valueMaxLen.set( col, lenMNC );
+				}
+			}
+		}
+		
+		
+		for ( int j = 0; j < values.size(); j++ )
+		{
+			String msg = values.get( j );
+			
+			int col = j % columns;
+			
+			int maxColumnWidth = col > valueMaxLen.size() - 1 ?
+							msg.length() :
+								valueMaxLen.get( col );
+		
+			sb.append( msg );
+			
+			// Pad the right of all content with spaces to align columns, up to a 
+			// given maxLength:
+			String msgNoColor = Text.stripColor( msg );
+			int lenMNC = msgNoColor.length();
+			for( int i = lenMNC; i < maxColumnWidth; i++ ) {
+				sb.append( " " );
+			}
+
+			// The spacer:
+			sb.append( "   " );
+			
+			if ( ++count % columns == 0 ) {
+				msgs.add( String.format( 
+						"      " + sb.toString() ) );
+				sb.setLength( 0 );
+				
+			}
+		}
+		
+		if ( sb.length() > 0 ) {
+			
+			msgs.add( String.format( 
+					"      " + sb.toString() ) );
+		}
+
+    	
+    }
+    
     
 ////    @Command(identifier = "ranks playerInventory", permissions = "mines.set", 
 ////    		description = "For listing what's in a player's inventory by dumping it to console.", 
@@ -1646,6 +1876,23 @@ public class RanksCommands
 		}
 	}
 
+	private void sendToPlayerAndConsole( CommandSender sender, List<String> messages )
+	{
+		
+		// If not a console user then send the message to the sender, other wise if a console
+		// user then they will see duplicate messages:
+		if ( sender.getName() != null && !sender.getName().equalsIgnoreCase( "console" ) ) {
+			sender.sendMessage( messages.toArray( new String[0] ) );
+		}
+		
+		for ( String message : messages )
+		{
+			// log the rank. There was one issue with the ranks suddenly being changed so this
+			// will help document what ranks were.
+			Output.get().log( message, LogLevel.PLAIN );
+		}
+	}
+	
 	private void sendToPlayerAndConsole( CommandSender sender, String messageRank )
 	{
 		// If not a console user then send the message to the sender, other wise if a console
@@ -1656,7 +1903,7 @@ public class RanksCommands
 		
 		// log the rank. There was one issue with the ranks suddenly being changed so this
 		// will help document what ranks were.
-		Output.get().logInfo( messageRank );
+		Output.get().log( messageRank, LogLevel.PLAIN );
 	}
  
     

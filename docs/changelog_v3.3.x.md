@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.5 2021-11-21
 
 
+* **New feature which lists all of the Player Cache stats in the command `/ranks player`.  This includes stats for block breaks, time spent in mines, and earnings per mine.**
+
+
 * **Capture an error within prison's Output class when trying to log content that has an UnknownFormatConversionException error.**
 This happens when there is a problem with text formatting characters that conflict with Java's formating class.  This tries to log the error with better details so it can be fixed and resolved where the error is happening.  This does not "fix" the problem, but just better reports it so it can be identified and fixed.
 
