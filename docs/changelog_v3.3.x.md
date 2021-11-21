@@ -16,6 +16,8 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.5 2021-11-21
 
 
+* **Capture an error within prison's Output class when trying to log content that has an UnknownFormatConversionException error.**
+This happens when there is a problem with text formatting characters that conflict with Java's formating class.  This tries to log the error with better details so it can be fixed and resolved where the error is happening.  This does not "fix" the problem, but just better reports it so it can be identified and fixed.
 
 
 * **Update on how prison manages the tracking of block breaks and earnings when auto features has autosell enabled.**

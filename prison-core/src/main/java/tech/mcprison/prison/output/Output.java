@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.MissingFormatArgumentException;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.UnknownFormatConversionException;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.CommandSender;
@@ -205,7 +206,14 @@ public class Output
     			// can be identified along with the reasons.
     			errorMessage = "Prison: (Sending to System.err due to Output.log Logger failure):";
     		}
-    		System.err.println( errorMessage + " " + message );
+			
+    		StringBuilder sb = new StringBuilder();
+			for ( Object arg : args ) {
+				sb.append( "[" ).append( arg ).append( "] " );
+			}
+			
+    		System.err.println( errorMessage + "   message: [" + message + 
+    				"] params: " + sb.toString() );
     	} else {
     		try {
 				Prison.get().getPlatform().log(
@@ -229,6 +237,26 @@ public class Output
 						getLogColorCode(LogLevel.ERROR) +
 						errorMessage );
 			}
+    		catch ( UnknownFormatConversionException e) 
+    		{
+				StringBuilder sb = new StringBuilder();
+				
+				for ( Object arg : args ) {
+					sb.append( "[" ).append( arg ).append( "] " );
+				}
+				
+				String errorMessage = "Error with Java conversion format (eg %s): " +
+						" LogLevel: " + level.name() + 
+						" message: [" + message + "] params: " + sb.toString() +
+						" error: " + e.getMessage();
+				
+				Prison.get().getPlatform().logCore(
+						prefixTemplatePrison + " " + 
+						getLogColorCode(LogLevel.ERROR) +
+						errorMessage );
+
+				e.printStackTrace();
+    		}
     	}
     }
 
