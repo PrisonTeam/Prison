@@ -20,6 +20,7 @@ package tech.mcprison.prison.mines.commands;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -794,7 +795,11 @@ public class MinesCommands
     	PrisonMines pMines = PrisonMines.getInstance();
     	MineManager mMan = pMines.getMineManager();
     	
-    	for ( Mine mine : mMan.getMines() ) {
+    	List<Mine> mines = new ArrayList<>();
+    	mines.addAll( mMan.getMines() );
+    	Collections.sort( mines );
+    	
+    	for ( Mine mine : mines ) {
 
     		PrisonCommand.printFooter( sb );
     		

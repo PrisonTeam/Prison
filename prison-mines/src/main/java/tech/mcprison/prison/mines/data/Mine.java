@@ -46,7 +46,7 @@ import tech.mcprison.prison.util.Location;
  */
 public class Mine 
 	extends MineScheduler 
-	implements PrisonSortable {
+	implements PrisonSortable, Comparable<Mine> {
 	
 	
 	public enum MineType {
@@ -757,6 +757,11 @@ public class Mine
 		sb.insert( 0, "Mine " );
 		
 		return sb.toString();
+	}
+
+	@Override
+	public int compareTo( Mine o ) {
+		return getName().toLowerCase().compareTo( o.getName().toLowerCase() );
 	}
 
 }

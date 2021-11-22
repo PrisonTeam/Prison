@@ -16,6 +16,11 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.5 2021-11-21
 
 
+
+* **Moved the multi-column formatting of data to the class Text so it can be used in other parts of the project.**
+It was originally created for use in /ranks player but is now extended to be usd to list the plugins within the /prison version command.
+
+
 * **Bug fix: If player is mining outside of a mine, then don't process anything.**
 May want to allow prison to manage block breaks outside of mines in the future, but for now, prison is only managing mines.
 

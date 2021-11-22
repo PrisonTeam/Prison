@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -55,6 +56,7 @@ import tech.mcprison.prison.troubleshoot.TroubleshootResult;
 import tech.mcprison.prison.troubleshoot.Troubleshooter;
 import tech.mcprison.prison.util.JumboTextFont;
 import tech.mcprison.prison.util.PrisonJarReporter;
+import tech.mcprison.prison.util.Text;
 
 /**
  * Root commands for managing the platform as a whole, in-game.
@@ -345,21 +347,31 @@ public class PrisonCommand
         if ( getRegisteredPlugins().size() > 0 ) {
         	display.addText("");
         	display.addText( "&7Registered Plugins: " );
-        	StringBuilder sb = new StringBuilder();
-        	for ( String plugin : getRegisteredPlugins() ) {
-        		if ( sb.length() == 0) {
-        			sb.append( ". " );
-        			sb.append( plugin );
-        		} else {
-        			sb.append( ",  " );
-        			sb.append( plugin );
-        			display.addText( sb.toString() );
-        			sb.setLength( 0 );
-        		}
-        	}
-        	if ( sb.length() > 0 ) {
-        		display.addText( sb.toString());
-        	}
+        	
+        	List<String> plugins = getRegisteredPlugins();
+        	Collections.sort( plugins );
+        	List<String> plugins2Cols = Text.formatColumnsFromList( plugins, 2 );
+        	
+        	for ( String rp : plugins2Cols ) {
+				
+        		display.addText( rp );
+			}
+        	
+//        	StringBuilder sb = new StringBuilder();
+//        	for ( String plugin : getRegisteredPlugins() ) {
+//        		if ( sb.length() == 0) {
+//        			sb.append( ". " );
+//        			sb.append( plugin );
+//        		} else {
+//        			sb.append( ",  " );
+//        			sb.append( plugin );
+//        			display.addText( sb.toString() );
+//        			sb.setLength( 0 );
+//        		}
+//        	}
+//        	if ( sb.length() > 0 ) {
+//        		display.addText( sb.toString());
+//        	}
         }
         
         // This version of plugins does not have all the registered commands:
@@ -1262,7 +1274,7 @@ public class PrisonCommand
     	
     	
     	List<File> files = listFiles( "data_storage/mines/mines/", ".json" );
-    	
+    	Collections.sort( files );
     	
     	StringBuilder text = new StringBuilder();
     	
