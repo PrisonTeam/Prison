@@ -13,8 +13,13 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.5 2021-11-21
+# 3.2.11-alpha.5 2021-11-22
 
+
+* **Bug Fix: There was originally a problem with applying block constraints that resulted in being unable to select a block when trying to randomly choose one.** 
+Initially as a first quick fix was to trying to reselect a block, but if the block chances were really low, then it could still fail to select a block.  Then it was attempted to select a default block, but that too failed to work, especially if there were a sizable chance for AIR, and it would fail 100% of the time if the was only one block with a very low chance.  The failure was the whole mine could be filled with that one block with the very small chance.
+This fix completely redesigns the block selection, by first selecting only the blocks that are valid for that level of the mine.  That way, when selecting blocks where blocks should be excluded from that level, those excluded blocks are never in the selected blocks to be considered.  Also if AIR is a valid option, then this new process adds an AIR block to the temporary level block list with the percent chance assigned to the air.  
+Overall, this is working really well now, and it actually simplifies a lot of code and reduces the amount of processing involved.  This new process always selects a block on the first pass too so it never haves to try to reselect a block.
 
 
 * **Moved the multi-column formatting of data to the class Text so it can be used in other parts of the project.**

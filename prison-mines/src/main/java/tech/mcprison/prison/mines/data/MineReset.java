@@ -532,8 +532,8 @@ public abstract class MineReset
 		resetResetBlockCounts();
 		
 		
-		// setup the monitoring of the blocks that have constraints:
-		List<PrisonBlockStatusData> constrainedBlocks = null;
+//		// setup the monitoring of the blocks that have constraints:
+//		List<PrisonBlockStatusData> constrainedBlocks = null;
 		
 		
 		
@@ -555,9 +555,17 @@ public abstract class MineReset
 		// the player enter from the top, and the reset will appear to be more "instant".
 		for (int y = yMax; y >= yMin; y--) {
 			currentLevel++; // One based: First layer is currentLevel == 1
+			
+			
+			// This is used to select the correct block list for the given mine level:
+			MineLevelBlockListData mineLevelBlockList = new MineLevelBlockListData( currentLevel, (Mine) this, random );
+			
+			
 			for (int x = xMin; x <= xMax; x++) {
 				for (int z = zMin; z <= zMax; z++) {
 					
+					// updates selected block's exclude from bottom layer max value settings:
+					mineLevelBlockList.checkSelectedBlockExcludeFromBottomLayers();
 					
 					boolean xEdge = x == xMin || x == xMax;
 					boolean yEdge = y == yMin || y == yMax;
@@ -571,10 +579,12 @@ public abstract class MineReset
 					
 					if ( isUseNewBlockModel() ) {
 						
-						// track the constraints:
-						trackConstraints( currentLevel, constrainedBlocks );
+						// track the constraints: (obsolete)
+						//trackConstraints( currentLevel, constrainedBlocks );
 						
-						PrisonBlock prisonBlock = randomlySelectPrisonBlock( random, currentLevel );
+						PrisonBlock prisonBlock = mineLevelBlockList.randomlySelectPrisonBlock();
+						
+//						PrisonBlock prisonBlock = randomlySelectPrisonBlock( random, currentLevel );
 						
 						// Increment the mine's block count. This block is one of the control blocks:
 						incrementResetBlockCount( prisonBlock );
@@ -628,58 +638,58 @@ public abstract class MineReset
 		
     }
     
-    private void trackConstraints( int currentLevel, List<PrisonBlockStatusData> constrainedBlocks )
-	{
-    	
-    	// If the constrainedBlocks list has not be configured, set it up with the 
-    	// blocks that have constraints:
-		if ( constrainedBlocks == null ) {
-			
-			constrainedBlocks = new ArrayList<>();
-			
-			for (PrisonBlock block : getPrisonBlocks()) {
-				if ( block.getConstraintExcludeTopLayers() > 0 || 
-						block.getConstraintExcludeBottomLayers() > 0 ) {
-					
-					constrainedBlocks.add( block );
-				}
-			}
-		}
-		
-
-		// If there are any constrained blocks, then need to record 
-		for ( PrisonBlockStatusData block : constrainedBlocks ) {
-			
-			// If exclude top layers is enabled, then only try to set the 
-			// rangeBlockCountLowLimit once since we need the lowest possible 
-			// value.  The inital value for getRangeBlockCountLowLimit is -1.
-			if ( block.getConstraintExcludeTopLayers() > 0 && 
-					block.getRangeBlockCountLowLimit() <= 0 &&
-					currentLevel > block.getConstraintExcludeTopLayers() ) {
-				
-				int targetBlockPosition = getMineTargetPrisonBlocks().size();
-				block.setRangeBlockCountLowLimit( targetBlockPosition );
-			}
-			
-			// If exclude bottom layer is enabled, then we need to track every number
-			// until the currentLevel exceeds the getConstraintExcludeBottomLayers value.
-			// If exclude top layers, then do not record for the bottom layers until 
-			// the top layers is cleared.
-			if ( (block.getConstraintExcludeTopLayers() > 0 && 
-					currentLevel > block.getConstraintExcludeTopLayers() ||
-					block.getConstraintExcludeTopLayers() == 0) &&
-					
-					block.getConstraintExcludeBottomLayers() > 0 && 
-					block.getConstraintExcludeBottomLayers() < currentLevel 
-					) { 
-				
-				int targetBlockPosition = getMineTargetPrisonBlocks().size();
-				block.setRangeBlockCountHighLimit( targetBlockPosition );
-				
-			}
-		}
-		
-	}
+//    private void trackConstraints( int currentLevel, List<PrisonBlockStatusData> constrainedBlocks )
+//	{
+//    	
+//    	// If the constrainedBlocks list has not be configured, set it up with the 
+//    	// blocks that have constraints:
+//		if ( constrainedBlocks == null ) {
+//			
+//			constrainedBlocks = new ArrayList<>();
+//			
+//			for (PrisonBlock block : getPrisonBlocks()) {
+//				if ( block.getConstraintExcludeTopLayers() > 0 || 
+//						block.getConstraintExcludeBottomLayers() > 0 ) {
+//					
+//					constrainedBlocks.add( block );
+//				}
+//			}
+//		}
+//		
+//
+//		// If there are any constrained blocks, then need to record 
+//		for ( PrisonBlockStatusData block : constrainedBlocks ) {
+//			
+//			// If exclude top layers is enabled, then only try to set the 
+//			// rangeBlockCountLowLimit once since we need the lowest possible 
+//			// value.  The inital value for getRangeBlockCountLowLimit is -1.
+//			if ( block.getConstraintExcludeTopLayers() > 0 && 
+//					block.getRangeBlockCountLowLimit() <= 0 &&
+//					currentLevel > block.getConstraintExcludeTopLayers() ) {
+//				
+//				int targetBlockPosition = getMineTargetPrisonBlocks().size();
+//				block.setRangeBlockCountLowLimit( targetBlockPosition );
+//			}
+//			
+//			// If exclude bottom layer is enabled, then we need to track every number
+//			// until the currentLevel exceeds the getConstraintExcludeBottomLayers value.
+//			// If exclude top layers, then do not record for the bottom layers until 
+//			// the top layers is cleared.
+//			if ( (block.getConstraintExcludeTopLayers() > 0 && 
+//					currentLevel > block.getConstraintExcludeTopLayers() ||
+//					block.getConstraintExcludeTopLayers() == 0) &&
+//					
+//					block.getConstraintExcludeBottomLayers() > 0 && 
+//					block.getConstraintExcludeBottomLayers() < currentLevel 
+//					) { 
+//				
+//				int targetBlockPosition = getMineTargetPrisonBlocks().size();
+//				block.setRangeBlockCountHighLimit( targetBlockPosition );
+//				
+//			}
+//		}
+//		
+//	}
 
 	/**
 	 * 
@@ -1475,57 +1485,57 @@ public abstract class MineReset
 	
 	
 
-	private PrisonBlock randomlySelectPrisonBlock( Random random, int currentLevel ) {
-		
-		int targetBlockPosition = getMineTargetPrisonBlocks().size();
-		
-		PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( "AIR" );
-		
-		
-		// this fallbackBlock field will provide a valid block that can be used when all other 
-		// blocks have failed to be matched due to constraints not aligning with the random chance.
-		// As a result of failing to find a block, would result in an AIR block being used instead.
-		PrisonBlock fallbackBlock = null;
-		
-		
-		// If a chosen block was skipped, try to find another block, but try no more than 10 times
-		// to prevent a possible endless loop.  Side effects of failing to find a block in 10 attempts
-		// would be an air block.
-		boolean success = false;
-		int attempts = 0;
-		while ( !success && attempts++ < 10 ) {
-			double chance = random.nextDouble() * 100.0d;
-			
-			for (PrisonBlock block : getPrisonBlocks()) {
-				boolean isBlockEnabled = block.isBlockConstraintsEnbled( currentLevel, targetBlockPosition );
-				
-				if ( fallbackBlock == null && isBlockEnabled && !block.isAir() ) {
-					fallbackBlock = block;
-				}
-				
-				if ( chance <= block.getChance() && isBlockEnabled ) {
-					
-					// If this block is chosen and it was not skipped, then use this block and exit.
-					// Otherwise the chance will be recalculated and tried again to find a valid block,
-					// since the odds have been thrown off...
-					prisonBlock = block;
-					
-					// stop trying to locate a block so success will terminate the search:
-					success = true;
-					
-					break;
-				} else {
-					chance -= block.getChance();
-				}
-			}
-			
-			if ( !success && fallbackBlock != null ) {
-				prisonBlock = fallbackBlock;
-				success = true;
-			}
-		}
-		return prisonBlock;
-	}
+//	private PrisonBlock randomlySelectPrisonBlock( Random random, int currentLevel ) {
+//		
+//		int targetBlockPosition = getMineTargetPrisonBlocks().size();
+//		
+//		PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( "AIR" );
+//		
+//		
+//		// this fallbackBlock field will provide a valid block that can be used when all other 
+//		// blocks have failed to be matched due to constraints not aligning with the random chance.
+//		// As a result of failing to find a block, would result in an AIR block being used instead.
+//		PrisonBlock fallbackBlock = null;
+//		
+//		
+//		// If a chosen block was skipped, try to find another block, but try no more than 10 times
+//		// to prevent a possible endless loop.  Side effects of failing to find a block in 10 attempts
+//		// would be an air block.
+//		boolean success = false;
+//		int attempts = 0;
+//		while ( !success && attempts++ < 10 ) {
+//			double chance = random.nextDouble() * 100.0d;
+//			
+//			for (PrisonBlock block : getPrisonBlocks()) {
+//				boolean isBlockEnabled = block.isBlockConstraintsEnbled( currentLevel, targetBlockPosition );
+//				
+//				if ( fallbackBlock == null && isBlockEnabled && !block.isAir() ) {
+//					fallbackBlock = block;
+//				}
+//				
+//				if ( chance <= block.getChance() && isBlockEnabled ) {
+//					
+//					// If this block is chosen and it was not skipped, then use this block and exit.
+//					// Otherwise the chance will be recalculated and tried again to find a valid block,
+//					// since the odds have been thrown off...
+//					prisonBlock = block;
+//					
+//					// stop trying to locate a block so success will terminate the search:
+//					success = true;
+//					
+//					break;
+//				} else {
+//					chance -= block.getChance();
+//				}
+//			}
+//			
+//			if ( !success && fallbackBlock != null ) {
+//				prisonBlock = fallbackBlock;
+//				success = true;
+//			}
+//		}
+//		return prisonBlock;
+//	}
 	
 	private BlockOld randomlySelectBlock( Random random, int currentLevel ) {
 		
