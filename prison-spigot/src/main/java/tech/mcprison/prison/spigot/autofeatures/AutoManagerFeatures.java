@@ -492,12 +492,14 @@ public class AutoManagerFeatures
 			
 			
 			double autosellTotal = 0;
+			double autosellUnsellableCount = 0;
 			
 			for ( SpigotItemStack itemStack : drops ) {
 				
 				count += itemStack.getAmount();
 				
 	
+				// Try to autosell if enabled:
 				if (isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || 
 						pmEvent.isForceAutoSell() ) {
 					
@@ -507,12 +509,26 @@ public class AutoManagerFeatures
 					PlayerCache.getInstance().addPlayerEarnings( pmEvent.getSpigotPlayer(), 
 													amount, mineName );
 
-					debugInfo.append( "(sold: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
+					if ( amount != 0 ) {
+						debugInfo.append( "(sold: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
+						
+						// Set to zero quantity since they have all been sold.
+						itemStack.setAmount( 0 );
+					}
+					else {
+						
+						// Unable to sell since amount was zero.  Not configured to be sold.
+						debugInfo.append( "(unsellable: " + itemStack.getName() + " qty: " + itemStack.getAmount() + ") ");
+						autosellUnsellableCount += itemStack.getAmount();
+					}
 					
-					// Set to zero quantity since they have all been sold.
-					itemStack.setAmount( 0 );
 				}
-				else {
+				
+				
+				// Add blocks to player's inventory IF autosell is disabled or the item had a value of ZERO
+				// which indicates it cannot be sold.  If it could not be sold, then amount would be non-zero since
+				// sold will zero out the number of drops for that item stack.
+				if ( !isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || itemStack.getAmount() != 0 ) {
 					
 					if ( Output.get().isDebug() ) {
 						
@@ -520,7 +536,7 @@ public class AutoManagerFeatures
 						double amount = SellAllUtil.get().sellAllSell( player, itemStack, true, false, false );
 						autosellTotal += amount;
 						
-						debugInfo.append( "(adding: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
+						debugInfo.append( "(keeping: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
 					}
 					
 					HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( player, itemStack );
@@ -554,7 +570,8 @@ public class AutoManagerFeatures
 			
 			if ( count > 0 || autosellTotal > 0 ) {
 				
-				debugInfo.append( "[autoPickupDrops total: qty: " + count + " value: " + autosellTotal + ") ");
+				debugInfo.append( "[autoPickupDrops total: qty: " + count + " value: " + autosellTotal + 
+						"  unsellableCount: " + autosellUnsellableCount + " ] ");
 				
 			}
 			
