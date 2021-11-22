@@ -20,6 +20,9 @@ These build logs represent the work that has been going on within prison.
 May want to allow prison to manage block breaks outside of mines in the future, but for now, prison is only managing mines.
 
 
+* **3.2.11-alpha.6 2021-11-21**
+
+
 * **New feature which lists all of the Player Cache stats in the command `/ranks player`.  This includes stats for block breaks, time spent in mines, and earnings per mine.**
 
 
