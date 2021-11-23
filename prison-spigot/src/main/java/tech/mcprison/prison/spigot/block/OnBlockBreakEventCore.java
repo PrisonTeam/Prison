@@ -638,6 +638,7 @@ public class OnBlockBreakEventCore
 			int outsideOfMine = 0;
 			int alreadyMined = 0;
 			int noTargetBlock = 0;
+			int blockTypeNotExpected = 0;
 			
 			boolean targetBlockAlreadyMined = false;
 			
@@ -645,7 +646,7 @@ public class OnBlockBreakEventCore
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( pmEvent.getSpigotBlock() );
 			pmEvent.setTargetBlock( targetBlock );
 			
-			// If ignore all block evnts has been set on this target block, then shutdown
+			// If ignore all block events has been set on this target block, then shutdown
 			if ( targetBlock.isIgnoreAllBlockEvents() ) {
 				debugInfo.setLength( 0 );
 				
@@ -671,7 +672,26 @@ public class OnBlockBreakEventCore
 					// being processed more than once:
 					targetBlock.setMined( true );
 					
-					targetBlock.setMinedBlock( pmEvent.getSpigotBlock() );
+					if ( targetBlock.getPrisonBlock().equals( pmEvent.getSpigotBlock().getPrisonBlock() ) ) {
+						
+						targetBlock.setMinedBlock( pmEvent.getSpigotBlock() );
+					}
+					else {
+						// The block is not the correct type. It has been changed since the mine was reset
+						// so it cannot be processed.
+						
+						// Prevent this block from being processed again, or attempted to be processed:
+						
+						targetBlockAlreadyMined = true;
+
+						targetBlock.setMined( true );
+						targetBlock.setAirBroke( true );
+						targetBlock.setIgnoreAllBlockEvents( true );
+						
+						blockTypeNotExpected++;
+					}
+
+					
 				}
 				else {
 					alreadyMined++;
@@ -705,6 +725,7 @@ public class OnBlockBreakEventCore
 				results = false;
 			}
 			
+			
 			for ( Block bukkitBlock : pmEvent.getUnprocessedRawBlocks() ) 
 			{
 				SpigotBlock sBlock = new SpigotBlock( bukkitBlock );
@@ -731,15 +752,35 @@ public class OnBlockBreakEventCore
 							}
 							else if ( results && !targetExplodedBlock.isMined() ) {
 								
-								// If a chain reaction on explosions, this will prevent the same block from
-								// being processed more than once:
-								targetExplodedBlock.setMined( true );
+								// Check to make sure the block is the same block that was placed there.
+								// If not, then do not process it.
+								SpigotBlock sBlockMined = new SpigotBlock( bukkitBlock );
 								
-								targetExplodedBlock.setMinedBlock( sBlock );
+								if ( targetExplodedBlock.getPrisonBlock().equals( sBlockMined.getPrisonBlock() ) ) {
+									
+									// If a chain reaction on explosions, this will prevent the same block from
+									// being processed more than once:
+									targetExplodedBlock.setMined( true );
+									
+									targetExplodedBlock.setMinedBlock( sBlock );
+									
+									pmEvent.getExplodedBlocks().add( sBlock );
+									pmEvent.getTargetExplodedBlocks().add( targetExplodedBlock );
+								}
+								else {
+									// The block is not the correct type. It has been changed since the mine was reset
+									// so it cannot be processed.
+									
+									// Prevent this block from being processed again, or attempted to be processed:
+									
+									targetExplodedBlock.setMined( true );
+									targetExplodedBlock.setAirBroke( true );
+									targetExplodedBlock.setIgnoreAllBlockEvents( true );
+									
+									blockTypeNotExpected++;
+								}
 								
-								pmEvent.getExplodedBlocks().add( sBlock );
-								pmEvent.getTargetExplodedBlocks().add( targetExplodedBlock );
-							
+								
 							}
 						}
 						else if ( results ) {
@@ -753,9 +794,8 @@ public class OnBlockBreakEventCore
 						outsideOfMine++;
 					}
 				}
-				
-				
 			}
+			
 			
 			if ( pmEvent.getExplodedBlocks().size() > 0 ) {
 				
@@ -781,6 +821,11 @@ public class OnBlockBreakEventCore
 			if ( noTargetBlock > 0 ) {
 				
 				debugInfo.append( "NO_TARGET_BLOCKS (" + noTargetBlock + 
+						" ) " );
+			}
+			if ( blockTypeNotExpected > 0 ) {
+				
+				debugInfo.append( "BLOCK_TYPE_NOT_EXPECTED__CANNOT_PROCESS (" + blockTypeNotExpected + 
 						" ) " );
 			}
 			

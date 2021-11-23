@@ -64,6 +64,23 @@ public abstract class PrisonBlockStatusData {
 		this.gravity = checkGravityAffects( blockName );
 	}
 
+	
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		boolean results = false;
+		
+		if ( obj instanceof PrisonBlockStatusData ) {
+			PrisonBlockStatusData pbsBlock = (PrisonBlockStatusData) obj;
+			
+			results = getBlockName().equalsIgnoreCase( pbsBlock.getBlockName() );
+		}
+		
+		return results;
+	}
+
+
 
 	public void resetAfterSave() {
 		blockCountUnsaved = 0;

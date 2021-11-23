@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.5 2021-11-23
 
 
+* **Added a check to detect that a block has been altered and is not the block that was placed there by the mine reset.**
+There have been drops of other materials making it in to an explosion event, and mostly due to block changes that happen due to other means.
+
 
 * **Refactored some of the checks to determin if the event should be processed or not, so this can be used with a new feature that may help to auto manage access when WorldGuard is being used.**
 
