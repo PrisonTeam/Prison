@@ -894,94 +894,96 @@ public class PrisonCommand
     			afw.isBoolean( AutoFeatures.isAutoManagerEnabled ));
     	
     	
-    	
-    	
-    	display.addText( "&b " );
-    	display.addText( "&b    options.blockBreakEvents.applyBlockBreaksThroughSyncTask:  %s", 
-    			afw.getMessage( AutoFeatures.applyBlockBreaksThroughSyncTask ) );
-    	
-    	display.addText( "&b    options.blockBreakEvents.cancelAllBlockBreakEvents:  %s", 
-    			afw.getMessage( AutoFeatures.cancelAllBlockBreakEvents ) );
-    	
-    	display.addText( "&b    options.blockBreakEvents.cancelAllBlockEventBlockDrops:  %s", 
-    			afw.getMessage( AutoFeatures.cancelAllBlockEventBlockDrops ) );
-
-    	
-    	display.addText( "&b    options.blockBreakEvents.TokenEnchantBlockExplodeEventPriority:  %s", 
-    			afw.getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority ) );
-    	
-    	display.addText( "&b    options.blockBreakEvents.CrazyEnchantsBlastUseEventPriority:  %s", 
-    			afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority ) );
-    	
-    	display.addText( "&b    options.blockBreakEvents.ZenchantmentsBlockShredEventPriority:  %s", 
-    			afw.getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority ) );
-    	
-    	display.addText( "&b    options.blockBreakEvents.PrisonEnchantsExplosiveEventPriority:  %s", 
-    			afw.getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority ) );
-    	
-    	display.addText( "&b    options.blockBreakEvents.ProcessPrisons_ExplosiveBlockBreakEventsPriority:  %s", 
-    			afw.getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority ) );
-    	
-    	
-    	
-    	display.addText( "&b " );
-    	display.addText( "&b  Normal Drops (if auto pickup is off):" );
-    	display.addText( "&b    options.normalDrop.isProcessNormalDropsEvents:  %s", 
-    			afw.isBoolean( AutoFeatures.handleNormalDropsEvents ) );
-    	
-    	display.addText( "&b " );
-    	display.addText( "&7  NOTE: If this is enabled, then lore and perms will override the settings for " );
-    	display.addText( "&7        pickup, smelt, and block when they are turned off." );
-    	
-    	
-    	display.addText( "&b " );
-	
-    	
-    	display.addText( "&b   options.autoPickup.autoPickupEnabled %s", 
-    									afw.isBoolean( AutoFeatures.autoPickupEnabled ));
-    	
-    	display.addText( "&b   options.autoSmelt.autoSmeltEnabled %s", 
-    									afw.isBoolean( AutoFeatures.autoSmeltEnabled ));
-    	display.addText( "&b   options.autoBlock.autoBlockEnabled %s", 
-    									afw.isBoolean( AutoFeatures.autoBlockEnabled ));
-    	
-    	
-
-    	display.addText( "&b " );
-    	display.addText( "&b   options.general.isCalculateDurabilityEnabled %s", 
-    									afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled ));
-    	display.addText( "&b   options.general.isCalculateFortuneEnabled %s", 
-    									afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled ));
-    	display.addText( "&b   options.general.isCalculateAltFortuneOnAllBlocksEnabled %s", 
-    									afw.isBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled ));
-    	display.addText( "&b   options.general.isCalculateXPEnabled %s", 
-    									afw.isBoolean( AutoFeatures.isCalculateXPEnabled ));
-    	display.addText( "&b   options.general.givePlayerXPAsOrbDrops %s", 
-    									afw.isBoolean( AutoFeatures.givePlayerXPAsOrbDrops ));
-    	display.addText( "&b   options.general.fortuneMultiplierMax %s", 
-    									afw.getMessage( AutoFeatures.fortuneMultiplierMax ));
-
-    	display.addText( "&b " );
-    	display.addText( "&b   options.isProcessMcMMOBlockBreakEvents %s", 
-    									afw.isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents ));
-    	display.addText( "&b " );
-    	
-    	
-    	display.addText( "&b " );
-    	display.addText( "&b   options.lore.isLoreEnabled %s", 
-										afw.isBoolean( AutoFeatures.isLoreEnabled ));
-    	display.addText( "&b   options.lore.loreTrackBlockBreakCount %s", 
-    									afw.isBoolean( AutoFeatures.loreTrackBlockBreakCount ));
-    	display.addText( "&b   options.lore.loreBlockBreakCountName %s", 
-    									afw.getMessage( AutoFeatures.loreBlockBreakCountName ));
-    	
-    	display.addText( "&b   options.lore.loreBlockExplosionCountName %s", 
-    									afw.getMessage( AutoFeatures.loreBlockExplosionCountName ));
-    	display.addText( "&b   options.lore.loreDurabiltyResistance %s", 
-    									afw.isBoolean( AutoFeatures.loreDurabiltyResistance ));
-    	display.addText( "&b   options.lore.loreDurabiltyResistanceName %s", 
-    									afw.getMessage( AutoFeatures.loreDurabiltyResistanceName ));
-    	display.addText( "&b " );
+    	if ( afw.isBoolean( AutoFeatures.isAutoManagerEnabled ) ) {
+    		
+    		
+    		display.addText( "&b " );
+    		display.addText( "&b    options.blockBreakEvents.applyBlockBreaksThroughSyncTask:  %s", 
+    				afw.getMessage( AutoFeatures.applyBlockBreaksThroughSyncTask ) );
+    		
+    		display.addText( "&b    options.blockBreakEvents.cancelAllBlockBreakEvents:  %s", 
+    				afw.getMessage( AutoFeatures.cancelAllBlockBreakEvents ) );
+    		
+    		display.addText( "&b    options.blockBreakEvents.cancelAllBlockEventBlockDrops:  %s", 
+    				afw.getMessage( AutoFeatures.cancelAllBlockEventBlockDrops ) );
+    		
+    		
+    		display.addText( "&b    options.blockBreakEvents.TokenEnchantBlockExplodeEventPriority:  %s", 
+    				afw.getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority ) );
+    		
+    		display.addText( "&b    options.blockBreakEvents.CrazyEnchantsBlastUseEventPriority:  %s", 
+    				afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority ) );
+    		
+    		display.addText( "&b    options.blockBreakEvents.ZenchantmentsBlockShredEventPriority:  %s", 
+    				afw.getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority ) );
+    		
+    		display.addText( "&b    options.blockBreakEvents.PrisonEnchantsExplosiveEventPriority:  %s", 
+    				afw.getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority ) );
+    		
+    		display.addText( "&b    options.blockBreakEvents.ProcessPrisons_ExplosiveBlockBreakEventsPriority:  %s", 
+    				afw.getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority ) );
+    		
+    		
+    		
+    		display.addText( "&b " );
+    		display.addText( "&b  Normal Drops (if auto pickup is off):" );
+    		display.addText( "&b    options.normalDrop.isProcessNormalDropsEvents:  %s", 
+    				afw.isBoolean( AutoFeatures.handleNormalDropsEvents ) );
+    		
+    		display.addText( "&b " );
+    		display.addText( "&7  NOTE: If this is enabled, then lore and perms will override the settings for " );
+    		display.addText( "&7        pickup, smelt, and block when they are turned off." );
+    		
+    		
+    		display.addText( "&b " );
+    		
+    		
+    		display.addText( "&b   options.autoPickup.autoPickupEnabled %s", 
+    				afw.isBoolean( AutoFeatures.autoPickupEnabled ));
+    		
+    		display.addText( "&b   options.autoSmelt.autoSmeltEnabled %s", 
+    				afw.isBoolean( AutoFeatures.autoSmeltEnabled ));
+    		display.addText( "&b   options.autoBlock.autoBlockEnabled %s", 
+    				afw.isBoolean( AutoFeatures.autoBlockEnabled ));
+    		
+    		
+    		
+    		display.addText( "&b " );
+    		display.addText( "&b   options.general.isCalculateDurabilityEnabled %s", 
+    				afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled ));
+    		display.addText( "&b   options.general.isCalculateFortuneEnabled %s", 
+    				afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled ));
+    		display.addText( "&b   options.general.isCalculateAltFortuneOnAllBlocksEnabled %s", 
+    				afw.isBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled ));
+    		display.addText( "&b   options.general.isCalculateXPEnabled %s", 
+    				afw.isBoolean( AutoFeatures.isCalculateXPEnabled ));
+    		display.addText( "&b   options.general.givePlayerXPAsOrbDrops %s", 
+    				afw.isBoolean( AutoFeatures.givePlayerXPAsOrbDrops ));
+    		display.addText( "&b   options.general.fortuneMultiplierMax %s", 
+    				afw.getMessage( AutoFeatures.fortuneMultiplierMax ));
+    		
+    		display.addText( "&b " );
+    		display.addText( "&b   options.isProcessMcMMOBlockBreakEvents %s", 
+    				afw.isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents ));
+    		display.addText( "&b " );
+    		
+    		
+    		display.addText( "&b " );
+    		display.addText( "&b   options.lore.isLoreEnabled %s", 
+    				afw.isBoolean( AutoFeatures.isLoreEnabled ));
+    		display.addText( "&b   options.lore.loreTrackBlockBreakCount %s", 
+    				afw.isBoolean( AutoFeatures.loreTrackBlockBreakCount ));
+    		display.addText( "&b   options.lore.loreBlockBreakCountName %s", 
+    				afw.getMessage( AutoFeatures.loreBlockBreakCountName ));
+    		
+    		display.addText( "&b   options.lore.loreBlockExplosionCountName %s", 
+    				afw.getMessage( AutoFeatures.loreBlockExplosionCountName ));
+    		display.addText( "&b   options.lore.loreDurabiltyResistance %s", 
+    				afw.isBoolean( AutoFeatures.loreDurabiltyResistance ));
+    		display.addText( "&b   options.lore.loreDurabiltyResistanceName %s", 
+    				afw.getMessage( AutoFeatures.loreDurabiltyResistanceName ));
+    		display.addText( "&b " );
+    	}
     	
     	
     	

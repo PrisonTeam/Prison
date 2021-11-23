@@ -98,6 +98,12 @@ public class PrisonMinesBlockBreakEvent
 	
 	
 	private boolean monitor = false;
+	
+	
+	// blockEventsOnly was intended to be able to run the block events when 
+	// the the AutoManager is disabled.  But now, as of 2021-11-23, if 
+	// AutoManager is disabled, then nothing related to auto features, 
+	// including block events will be active.
 	private boolean blockEventsOnly = false;
 	
 	

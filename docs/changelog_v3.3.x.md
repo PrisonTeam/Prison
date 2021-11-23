@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.5 2021-11-22
+# 3.2.11-alpha.5 2021-11-23
+
+
+* **Shut down auto manager and all auto features if the setting 'autoManager.isAutoManagerEnabled' is set to 'false' in autoFeaturesConfig.yml.**
+If anyone wants to use prison's block events, then they must use the auto manager.
 
 
 * **When using autosell through auto features, if a block cannot be sold, then the block is now placed in the player's inventory, or dropped if their inventory is full.**

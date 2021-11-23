@@ -826,6 +826,9 @@ public class OnBlockBreakEventCore
 		
 		if ( results && pmEvent.isBlockEventsOnly() ) {
 			
+			// NOTE: This "should" never be activated since blockEventsOnly used to be enabled
+			//       when AutoManager is disabled.  As of 2021-11-23 if AutoManager is disabled,
+			//       then everything related to auto manager is disabled.
 			String triggered = null;
 			
 			doActionBlockEventOnly( pmEvent.getSpigotBlock(), mine, pmEvent.getPlayer(), 
