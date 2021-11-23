@@ -46,10 +46,9 @@ import tech.mcprison.prison.spigot.utils.BlockUtils;
 import tech.mcprison.prison.util.Text;
 
 public class OnBlockBreakEventCore
+	extends OnBlockBreakMines
 {
 
-	private PrisonMines prisonMineManager;
-	private boolean mineModuleDisabled = false;
 	
 	private int uses = 0;
 	private long usesElapsedTimeNano = 0L;
@@ -69,7 +68,7 @@ public class OnBlockBreakEventCore
 		
 		this.autoFeatureWrapper = AutoFeaturesWrapper.getInstance();
 		
-		this.prisonMineManager = null;
+	
 		
 		this.teExplosionTriggerEnabled = true;
 		
@@ -275,6 +274,41 @@ public class OnBlockBreakEventCore
 		genericExplosiveEvent( e, false, blockEventsOnly, true );
 	}
 	
+//	protected boolean processMinesBlockBreakEvent( Cancellable event, Player player, Block block ) {
+//		boolean processEvent = true;
+//		
+//		SpigotBlock sBlock = new SpigotBlock( block );
+//		if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+//			event.setCancelled( true );
+//			processEvent = false;
+//		}
+//		
+//		Mine mine = findMine( player, sBlock,  null, null ); 
+//		
+//		if ( mine == null  ) {
+//			// Prison is unable to process blocks outside of mines right now, so exit:
+//			processEvent = false;
+//		}
+//		
+//		// If not minable, then display message and exit.
+//		if ( !mine.getMineStateMutex().isMinable() ) {
+//			
+//			SpigotPlayer sPlayer = new SpigotPlayer( player );
+//			sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
+//			event.setCancelled( true );
+//			processEvent = false;
+//		}
+//		MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
+//		
+//		// If ignore all block events, then exit this function without logging anything:
+//		if ( targetBlock.isIgnoreAllBlockEvents() ) {
+//			event.setCancelled( true );
+//			processEvent = false;
+//		}
+//
+//		
+//		return processEvent;
+//	}
 	
     /**
      * <p>This genericBlockEvent handles the basics of a BlockBreakEvent to see if it has happened
@@ -295,39 +329,48 @@ public class OnBlockBreakEventCore
 		
     	long start = System.nanoTime();
 
-		if ( e.isCancelled() && !monitor ) {
+    	if ( e.isCancelled() ||  ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlock()) ) {
+    		return;
+    	}
+
+    	
+//		if ( e.isCancelled() && !monitor ) {
 			// Check to see if the event should be ignored.
 			
-			SpigotBlock sBlock = new SpigotBlock( e.getBlock() );
-			if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
-				e.setCancelled( true );
-				return;
-			}
+//			if ( processMinesBlockBreakEvent( e, e.getPlayer(), e.getBlock()) ) {
+//				return;
+//			}
+//			
+//			SpigotBlock sBlock = new SpigotBlock( e.getBlock() );
+//			if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+//				e.setCancelled( true );
+//				return;
+//			}
+//			
+//			Mine mine = findMine( e.getPlayer(), sBlock,  null, null ); 
+//			
+//			if ( mine == null  ) {
+//				// Prison is unable to process blocks outside of mines right now, so exit:
+//				return;
+//			}
+//			
+//			// If not minable, then display message and exit.
+//			if ( !mine.getMineStateMutex().isMinable() ) {
+//				
+//				SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
+//				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
+//				e.setCancelled( true );
+//				return;
+//			}
+//			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
+//			
+//			// If ignore all block events, then exit this function without logging anything:
+//			if ( targetBlock.isIgnoreAllBlockEvents() ) {
+//				e.setCancelled( true );
+//				return;
+//			}
 			
-			Mine mine = findMine( e.getPlayer(), sBlock,  null, null ); 
-			
-			if ( mine == null  ) {
-				// Prison is unable to process blocks outside of mines right now, so exit:
-				return;
-			}
-			
-			// If not minable, then display message and exit.
-			if ( !mine.getMineStateMutex().isMinable() ) {
-				
-				SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
-				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
-				e.setCancelled( true );
-				return;
-			}
-			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
-			
-			// If ignore all block events, then exit this function without logging anything:
-			if ( targetBlock.isIgnoreAllBlockEvents() ) {
-				e.setCancelled( true );
-				return;
-			}
-			
-		}
+//		}
 		
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
@@ -528,50 +571,7 @@ public class OnBlockBreakEventCore
 		return blocks;
 	}
 
-	private Mine findMine( Player player, SpigotBlock sBlock, 
-					List<Block> altBlocksSource, PrisonMinesBlockBreakEvent pmEvent ) {
-		
-		Long playerUUIDLSB = Long.valueOf( player.getUniqueId().getLeastSignificantBits() );
-		
-		// Get the cached mine, if it exists:
-		Mine mine = getPlayerCache().get( playerUUIDLSB );
-		
-		if ( mine == null || 
-				sBlock != null && !mine.isInMineExact( sBlock.getLocation() ) ) {
-			// Look for the correct mine to use. 
-			// Set mine to null so if cannot find the right one it will return a null:
-			mine = findMineLocation( sBlock );
-			
-			// Thanks to CrazyEnchant, where they do not identify the block the player breaks, we
-			// have to go through all of the unprecessedRawBlocks to see if any are within a mine.
-			// If we find a block that's in a mine, then use that block as the primary block.
-			if ( mine == null && altBlocksSource != null ) {
-				
-				for ( Block bBlock : altBlocksSource )
-				{
-					SpigotBlock sBlockAltBlock = new SpigotBlock( bBlock );
-					mine = findMineLocation( sBlockAltBlock );
-					if ( mine != null ) {
-						
-						if ( pmEvent != null ) {
-							pmEvent.setSpigotBlock( sBlockAltBlock );
-						}
-						
-						break;
-					}
-				}
-			}
-			
-			// Store the mine in the player cache if not null:
-			if ( mine != null ) {
-				getPlayerCache().put( playerUUIDLSB, mine );
-			}
-		}
 
-		
-		return mine;
-	}
-	
 	
 	/**
 	 * <p>This function an attempt to provide a uniform procedure to validate if the event should 
@@ -993,39 +993,47 @@ public class OnBlockBreakEventCore
 
 		long start = System.nanoTime();
 		
-		if ( e.isCancelled() && !monitor ) {
+    	if ( e.isCancelled() ||  ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlock()) ) {
+    		return;
+    	}
+    	
+//		if ( e.isCancelled() && !monitor ) {
 			// Check to see if the event should be ignored.
 			
-			SpigotBlock sBlock = new SpigotBlock( e.getBlock() );
-			if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
-				e.setCancelled( true );
-				return;
-			}
+//			if ( processMinesBlockBreakEvent( e, e.getPlayer(), e.getBlock()) ) {
+//				return;
+//			}
 			
-			Mine mine = findMine( e.getPlayer(), sBlock,  e.blockList(), null ); 
+//			SpigotBlock sBlock = new SpigotBlock( e.getBlock() );
+//			if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+//				e.setCancelled( true );
+//				return;
+//			}
+//			
+//			Mine mine = findMine( e.getPlayer(), sBlock,  e.blockList(), null ); 
+//			
+//			if ( mine == null ) {
+//				// Prison is unable to process blocks outside of mines right now, so exit:
+//				return;
+//			}
+//			
+//			// If not minable, then display message and exit.
+//			if ( !mine.getMineStateMutex().isMinable() ) {
+//				
+//				SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
+//				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
+//				e.setCancelled( true );
+//				return;
+//			}
+//			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
+//			
+//			// If ignore all block events, then exit this function without logging anything:
+//			if ( targetBlock.isIgnoreAllBlockEvents() ) {
+//				e.setCancelled( true );
+//				return;
+//			}
 			
-			if ( mine == null ) {
-				// Prison is unable to process blocks outside of mines right now, so exit:
-				return;
-			}
-			
-			// If not minable, then display message and exit.
-			if ( !mine.getMineStateMutex().isMinable() ) {
-				
-				SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
-				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
-				e.setCancelled( true );
-				return;
-			}
-			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
-			
-			// If ignore all block events, then exit this function without logging anything:
-			if ( targetBlock.isIgnoreAllBlockEvents() ) {
-				e.setCancelled( true );
-				return;
-			}
-			
-		}
+//		}
 
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
@@ -1234,39 +1242,47 @@ public class OnBlockBreakEventCore
 
 		long start = System.nanoTime();
 		
-		if ( e.isCancelled() && !monitor ) {
+    	if ( e.isCancelled() ||  ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlockList().get( 0 )) ) {
+    		return;
+    	}
+    	
+//		if ( e.isCancelled() && !monitor ) {
 			// Check to see if the event should be ignored.
 			
-			SpigotBlock sBlock = new SpigotBlock( e.getBlockList().get( 0 ) );
-			if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
-				e.setCancelled( true );
-				return;
-			}
-
-			Mine mine = findMine( e.getPlayer(), sBlock,  e.getBlockList(), null ); 
+//			if ( processMinesBlockBreakEvent( e, e.getPlayer(), e.getBlockList().get( 0 ) ) ) {
+//				return;
+//			}
 			
-			if ( mine == null ) {
-				// Prison is unable to process blocks outside of mines right now, so exit:
-				return;
-			}
+//			SpigotBlock sBlock = new SpigotBlock( e.getBlockList().get( 0 ) );
+//			if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+//				e.setCancelled( true );
+//				return;
+//			}
+//
+//			Mine mine = findMine( e.getPlayer(), sBlock,  e.getBlockList(), null ); 
+//			
+//			if ( mine == null ) {
+//				// Prison is unable to process blocks outside of mines right now, so exit:
+//				return;
+//			}
+//			
+//			// If not minable, then display message and exit.
+//			if ( !mine.getMineStateMutex().isMinable() ) {
+//				
+//				SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
+//				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
+//				e.setCancelled( true );
+//				return;
+//			}
+//			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
+//			
+//			// If ignore all block events, then exit this function without logging anything:
+//			if ( targetBlock.isIgnoreAllBlockEvents() ) {
+//				e.setCancelled( true );
+//				return;
+//			}
 			
-			// If not minable, then display message and exit.
-			if ( !mine.getMineStateMutex().isMinable() ) {
-				
-				SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
-				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
-				e.setCancelled( true );
-				return;
-			}
-			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
-			
-			// If ignore all block events, then exit this function without logging anything:
-			if ( targetBlock.isIgnoreAllBlockEvents() ) {
-				e.setCancelled( true );
-				return;
-			}
-			
-		}
+//		}
 		
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
@@ -1444,39 +1460,47 @@ public class OnBlockBreakEventCore
 
 		long start = System.nanoTime();
 		
-		if ( e.isCancelled() && !monitor ) {
+    	if ( e.isCancelled() ||  processMinesBlockBreakEvent( e, e.getPlayer(), e.getBlockBroken()) ) {
+    		return;
+    	}
+    	
+//		if ( e.isCancelled() && !monitor ) {
 			// Check to see if the event should be ignored.
 			
-			SpigotBlock sBlock = new SpigotBlock( e.getBlockBroken() );
-			if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
-				e.setCancelled( true );
-				return;
-			}
-
-			Mine mine = findMine( e.getPlayer(), sBlock, e.getExplodedBlocks(), null ); 
+//			if ( processMinesBlockBreakEvent( e, e.getPlayer(), e.getBlockBroken()) ) {
+//				return;
+//			}
 			
-			if ( mine == null ) {
-				// Prison is unable to process blocks outside of mines right now, so exit:
-				return;
-			}
+//			SpigotBlock sBlock = new SpigotBlock( e.getBlockBroken() );
+//			if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+//				e.setCancelled( true );
+//				return;
+//			}
+//
+//			Mine mine = findMine( e.getPlayer(), sBlock, e.getExplodedBlocks(), null ); 
+//			
+//			if ( mine == null ) {
+//				// Prison is unable to process blocks outside of mines right now, so exit:
+//				return;
+//			}
+//			
+//			// If not minable, then display message and exit.
+//			if ( !mine.getMineStateMutex().isMinable() ) {
+//				
+//				SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
+//				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
+//				e.setCancelled( true );
+//				return;
+//			}
+//			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
+//			
+//			// If ignore all block events, then exit this function without logging anything:
+//			if ( targetBlock.isIgnoreAllBlockEvents() ) {
+//				e.setCancelled( true );
+//				return;
+//			}
 			
-			// If not minable, then display message and exit.
-			if ( !mine.getMineStateMutex().isMinable() ) {
-				
-				SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
-				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
-				e.setCancelled( true );
-				return;
-			}
-			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
-			
-			// If ignore all block events, then exit this function without logging anything:
-			if ( targetBlock.isIgnoreAllBlockEvents() ) {
-				e.setCancelled( true );
-				return;
-			}
-			
-		}
+//		}
 
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
@@ -1591,39 +1615,47 @@ public class OnBlockBreakEventCore
 		
 		long start = System.nanoTime();
 		
-		if ( e.isCancelled() && !monitor ) {
+    	if ( e.isCancelled() ||  ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlock()) ) {
+    		return;
+    	}
+    	
+//		if ( e.isCancelled() && !monitor ) {
 			// Check to see if the event should be ignored.
 			
-			SpigotBlock sBlock = new SpigotBlock( e.getBlock() );
-			if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
-				e.setCancelled( true );
-				return;
-			}
-
-			Mine mine = findMine( e.getPlayer(), sBlock,  e.getExplodedBlocks(), null ); 
+//			if ( processMinesBlockBreakEvent( e, e.getPlayer(), e.getBlock()) ) {
+//				return;
+//			}
 			
-			if ( mine == null ) {
-				// Prison is unable to process blocks outside of mines right now, so exit:
-				return;
-			}
+//			SpigotBlock sBlock = new SpigotBlock( e.getBlock() );
+//			if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+//				e.setCancelled( true );
+//				return;
+//			}
+//
+//			Mine mine = findMine( e.getPlayer(), sBlock,  e.getExplodedBlocks(), null ); 
+//			
+//			if ( mine == null ) {
+//				// Prison is unable to process blocks outside of mines right now, so exit:
+//				return;
+//			}
+//			
+//			// If not minable, then display message and exit.
+//			if ( !mine.getMineStateMutex().isMinable() ) {
+//				
+//				SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
+//				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
+//				e.setCancelled( true );
+//				return;
+//			}
+//			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
+//			
+//			// If ignore all block events, then exit this function without logging anything:
+//			if ( targetBlock.isIgnoreAllBlockEvents() ) {
+//				e.setCancelled( true );
+//				return;
+//			}
 			
-			// If not minable, then display message and exit.
-			if ( !mine.getMineStateMutex().isMinable() ) {
-				
-				SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
-				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
-				e.setCancelled( true );
-				return;
-			}
-			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
-			
-			// If ignore all block events, then exit this function without logging anything:
-			if ( targetBlock.isIgnoreAllBlockEvents() ) {
-				e.setCancelled( true );
-				return;
-			}
-			
-		}
+//		}
 		
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
@@ -2076,19 +2108,19 @@ public class OnBlockBreakEventCore
 //		return enabled;
 //	}
 	
-	
-	public void checkZeroBlockReset( Mine mine ) {
-		if ( mine != null ) {
-			
-			// submit a mine sweeper task.  It will only run if it is enabled and another 
-			// mine sweeper task has not been submitted.
-			mine.submitMineSweeperTask();
-			
-			// Checks to see if the mine ran out of blocks, and if it did, then
-			// it will reset the mine:
-			mine.checkZeroBlockReset();
-		}
-	}
+//	
+//	public void checkZeroBlockReset( Mine mine ) {
+//		if ( mine != null ) {
+//			
+//			// submit a mine sweeper task.  It will only run if it is enabled and another 
+//			// mine sweeper task has not been submitted.
+//			mine.submitMineSweeperTask();
+//			
+//			// Checks to see if the mine ran out of blocks, and if it did, then
+//			// it will reset the mine:
+//			mine.checkZeroBlockReset();
+//		}
+//	}
 	
 	private void applyBlockFinalizations( PrisonMinesBlockBreakEvent pmEvent, MineTargetPrisonBlock targetBlock ) {
 
@@ -2718,38 +2750,9 @@ public class OnBlockBreakEventCore
 		return bonusXp;
 	}
 	
-	
-	private Mine findMineLocation( SpigotBlock block ) {
-		return getPrisonMineManager() == null ? 
-				null : getPrisonMineManager().findMineLocationExact( block.getLocation() );
-	}
-	
 
-	private TreeMap<Long, Mine> getPlayerCache() {
-		return getPrisonMineManager() == null ? 
-				new TreeMap<Long, Mine>() :
-				getPrisonMineManager().getPlayerCache();
-	}
 
-	private PrisonMines getPrisonMineManager() {
-		if ( prisonMineManager == null && !isMineModuleDisabled() ) {
-			Optional<Module> mmOptional = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
-			if ( mmOptional.isPresent() && mmOptional.get().isEnabled() ) {
-				PrisonMines prisonMines = (PrisonMines) mmOptional.get();
-				this.prisonMineManager = prisonMines;
-			} else {
-				setMineModuleDisabled( true );
-			}
-		}
-		return prisonMineManager;
-	}
 
-	private boolean isMineModuleDisabled() {
-		return mineModuleDisabled;
-	}
-	private void setMineModuleDisabled( boolean mineModuleDisabled ) {
-		this.mineModuleDisabled = mineModuleDisabled;
-	}
 
 	
 	@SuppressWarnings( "unused" )

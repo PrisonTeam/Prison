@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.5 2021-11-23
 
 
+
+* **Refactored some of the checks to determin if the event should be processed or not, so this can be used with a new feature that may help to auto manage access when WorldGuard is being used.**
+
+
 * **Setup a mutex for locking the mine resets, which prevents active block break attempts, including explosions, from trying to break blocks while a mine is actively being reset.**
 This helps to reduce the chance of hitting a concurrent modification exception.
 
