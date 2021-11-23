@@ -175,6 +175,11 @@ public class MinePagedResetAsyncTask
 	 * This calls the functions to 
 	 */
 	private boolean runSetupCancelReset() {
+		
+    	// Set the MineStateMutex to a state of starting a mine reset:
+    	mine.getMineStateMutex().setMineStateResetStart();
+ 
+		
 		if ( resetType == MineResetType.normal || resetType == MineResetType.paged ) {
 			mine.generateBlockListAsync();
 			
@@ -192,7 +197,17 @@ public class MinePagedResetAsyncTask
 	private void runShutdown() {
 
 		logStats();
+		
+		
+		// Set the MineStateMutex to a state of Finishing a mine reset:
+		// It is now safe to allow mining in the mine.
+		mine.getMineStateMutex().setMineStateResetFinished();
+
+		
+		// Run items such as post-mine-reset commands:
 		mine.asynchronouslyResetFinalize();
+ 
+
 	}
 
 	

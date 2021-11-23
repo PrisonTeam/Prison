@@ -299,17 +299,31 @@ public class OnBlockBreakEventCore
 			// Check to see if the event should be ignored.
 			
 			SpigotBlock sBlock = new SpigotBlock( e.getBlock() );
+			if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+				e.setCancelled( true );
+				return;
+			}
 			
 			Mine mine = findMine( e.getPlayer(), sBlock,  null, null ); 
 			
-			if ( mine == null ) {
+			if ( mine == null  ) {
 				// Prison is unable to process blocks outside of mines right now, so exit:
+				return;
+			}
+			
+			// If not minable, then display message and exit.
+			if ( !mine.getMineStateMutex().isMinable() ) {
+				
+				SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
+				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
+				e.setCancelled( true );
 				return;
 			}
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
 			
 			// If ignore all block events, then exit this function without logging anything:
 			if ( targetBlock.isIgnoreAllBlockEvents() ) {
+				e.setCancelled( true );
 				return;
 			}
 			
@@ -455,11 +469,20 @@ public class OnBlockBreakEventCore
 		
 		if ( isBoolean( AutoFeatures.applyBlockBreaksThroughSyncTask ) ) {
 			
-			AutoManagerBreakBlockTask.submitTask( blocks );
+			AutoManagerBreakBlockTask.submitTask( blocks, pmEvent.getMine() );
 		}
 		else {
 			
+			int count = 0;
 			for ( SpigotBlock spigotBlock : blocks ) {
+				
+				if ( count++ % 10 == 0 && pmEvent.getMine() != null && 
+						!pmEvent.getMine().getMineStateMutex().isMinable() ) {
+					
+					SpigotPlayer sPlayer = pmEvent.getSpigotPlayer();
+					sPlayer.setActionBar( "Mine " + pmEvent.getMine().getTag() + " is being reset... please wait." );
+					break;
+				}
 				
 				spigotBlock.setPrisonBlock( PrisonBlock.AIR );
 			}
@@ -974,6 +997,10 @@ public class OnBlockBreakEventCore
 			// Check to see if the event should be ignored.
 			
 			SpigotBlock sBlock = new SpigotBlock( e.getBlock() );
+			if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+				e.setCancelled( true );
+				return;
+			}
 			
 			Mine mine = findMine( e.getPlayer(), sBlock,  e.blockList(), null ); 
 			
@@ -981,10 +1008,20 @@ public class OnBlockBreakEventCore
 				// Prison is unable to process blocks outside of mines right now, so exit:
 				return;
 			}
+			
+			// If not minable, then display message and exit.
+			if ( !mine.getMineStateMutex().isMinable() ) {
+				
+				SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
+				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
+				e.setCancelled( true );
+				return;
+			}
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
 			
 			// If ignore all block events, then exit this function without logging anything:
 			if ( targetBlock.isIgnoreAllBlockEvents() ) {
+				e.setCancelled( true );
 				return;
 			}
 			
@@ -1201,17 +1238,31 @@ public class OnBlockBreakEventCore
 			// Check to see if the event should be ignored.
 			
 			SpigotBlock sBlock = new SpigotBlock( e.getBlockList().get( 0 ) );
-			
+			if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+				e.setCancelled( true );
+				return;
+			}
+
 			Mine mine = findMine( e.getPlayer(), sBlock,  e.getBlockList(), null ); 
 			
 			if ( mine == null ) {
 				// Prison is unable to process blocks outside of mines right now, so exit:
 				return;
 			}
+			
+			// If not minable, then display message and exit.
+			if ( !mine.getMineStateMutex().isMinable() ) {
+				
+				SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
+				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
+				e.setCancelled( true );
+				return;
+			}
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
 			
 			// If ignore all block events, then exit this function without logging anything:
 			if ( targetBlock.isIgnoreAllBlockEvents() ) {
+				e.setCancelled( true );
 				return;
 			}
 			
@@ -1397,17 +1448,31 @@ public class OnBlockBreakEventCore
 			// Check to see if the event should be ignored.
 			
 			SpigotBlock sBlock = new SpigotBlock( e.getBlockBroken() );
-			
+			if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+				e.setCancelled( true );
+				return;
+			}
+
 			Mine mine = findMine( e.getPlayer(), sBlock, e.getExplodedBlocks(), null ); 
 			
 			if ( mine == null ) {
 				// Prison is unable to process blocks outside of mines right now, so exit:
 				return;
 			}
+			
+			// If not minable, then display message and exit.
+			if ( !mine.getMineStateMutex().isMinable() ) {
+				
+				SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
+				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
+				e.setCancelled( true );
+				return;
+			}
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
 			
 			// If ignore all block events, then exit this function without logging anything:
 			if ( targetBlock.isIgnoreAllBlockEvents() ) {
+				e.setCancelled( true );
 				return;
 			}
 			
@@ -1530,17 +1595,31 @@ public class OnBlockBreakEventCore
 			// Check to see if the event should be ignored.
 			
 			SpigotBlock sBlock = new SpigotBlock( e.getBlock() );
-			
+			if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+				e.setCancelled( true );
+				return;
+			}
+
 			Mine mine = findMine( e.getPlayer(), sBlock,  e.getExplodedBlocks(), null ); 
 			
 			if ( mine == null ) {
 				// Prison is unable to process blocks outside of mines right now, so exit:
 				return;
 			}
+			
+			// If not minable, then display message and exit.
+			if ( !mine.getMineStateMutex().isMinable() ) {
+				
+				SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
+				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
+				e.setCancelled( true );
+				return;
+			}
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
 			
 			// If ignore all block events, then exit this function without logging anything:
 			if ( targetBlock.isIgnoreAllBlockEvents() ) {
+				e.setCancelled( true );
 				return;
 			}
 			

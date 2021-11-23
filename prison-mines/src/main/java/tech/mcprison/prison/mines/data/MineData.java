@@ -44,6 +44,11 @@ public abstract class MineData
 	private boolean enabled = false;
 	private boolean virtual = false;
 	
+	
+	// Controls if a mine is able to be used during a mine reset:
+	private MineStateMutex mineStateMutex;
+	
+	
 	private MineType mineType;
 	private MineGroup mineGroup;
 	
@@ -185,6 +190,9 @@ public abstract class MineData
     }
     
     public MineData() {
+
+    	this.mineStateMutex = new MineStateMutex();
+    	
     	this.elementType = ModuleElementType.MINE;
     	
     	this.tag = null;
@@ -1343,4 +1351,7 @@ public abstract class MineData
 		this.isDeleted = isDeleted;
 	}
 
+	public MineStateMutex getMineStateMutex() {
+		return mineStateMutex;
+	}
 }

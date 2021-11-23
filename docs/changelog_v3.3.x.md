@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.5 2021-11-23
 
 
+* **Setup a mutex for locking the mine resets, which prevents active block break attempts, including explosions, from trying to break blocks while a mine is actively being reset.**
+This helps to reduce the chance of hitting a concurrent modification exception.
+
+
 * **Shut down auto manager and all auto features if the setting 'autoManager.isAutoManagerEnabled' is set to 'false' in autoFeaturesConfig.yml.**
 If anyone wants to use prison's block events, then they must use the auto manager.
 
