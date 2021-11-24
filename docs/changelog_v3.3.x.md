@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.5 2021-11-23
+# 3.2.11-alpha.6 2021-11-24
+
+
+* **Player cache timing improvements.**  This fixes issues with tracking the timing when mining.  
+Not 100% sure it is perfect, but it's actually working much better.  Will need to revisit later.
 
 
 * **Added a check to detect that a block has been altered and is not the block that was placed there by the mine reset.**

@@ -80,7 +80,7 @@ public class PlayerCachePlayerData {
 	private transient SessionType sessionType;
 	
 	
-	private transient long sessionTimingStart = 0;
+//	private transient long sessionTimingStart = 0;
 	private transient long sessionTimingLastCheck = 0;
 	
 	// sessionLastLocation is used for afk calculations:
@@ -116,8 +116,8 @@ public class PlayerCachePlayerData {
 		
 		this.sessionType = SessionType.active;
 		
-		this.sessionTimingStart = System.currentTimeMillis();
-		this.sessionTimingLastCheck = sessionTimingStart;
+//		this.sessionTimingStart = System.currentTimeMillis();
+		this.sessionTimingLastCheck = System.currentTimeMillis();
 		
 //		this.sessionLastLocation = null;
 		
@@ -149,8 +149,9 @@ public class PlayerCachePlayerData {
 
 		if ( isOnline() ) {
 			
-			// Do not change the session type, so pass it the current:
-			checkTimersMining( sessionType, getLastMine() );
+			// Do not change the session type, but pass null for the mine to indicate 
+			// that this is a checkTimers...
+			checkTimersMining( sessionType, null );
 			
 		}
 	}
@@ -173,12 +174,16 @@ public class PlayerCachePlayerData {
 	 * <p>If prior session type was mining, then do nothing if the last 
 	 * @param mine 
 	 */
-	private void checkTimersMining( SessionType targetType, String mine ) {
-		final long currentTime = System.currentTimeMillis();
+	private void checkTimersMining( SessionType currentSessionType, String mine ) {
 
 		if ( !isOnline() ) {
 			return;
 		}
+
+		final long currentTime = System.currentTimeMillis();
+		final long duration = currentTime - sessionTimingLastCheck;
+
+		
 		
 		// temp fix:
 		if ( onlineTimeTotal < 0 ) {
@@ -188,89 +193,116 @@ public class PlayerCachePlayerData {
 			onlineMiningTimeTotal = 0;
 		}
 		
-		if ( sessionType == targetType && sessionType != SessionType.mining) {
-			// No change in status
-			
-			sessionTimingLastCheck = currentTime;
 
-			final long duration = currentTime - sessionTimingLastCheck;
-			// if duration is greater than 15 minutes, then move the session start 
-			// point and save it.
-			if ( duration > 900000 ) {
-				
-				sessionTimingStart = currentTime;
-				dirty = true;
-			}
-			
-		}
-		else if ( sessionType != SessionType.mining ) {
-			
-			// Always Save as total time. Use sessionTimingStart. Ignore sessionTimingLastCheck.
-			final long duration = currentTime - sessionTimingStart;
-			onlineTimeTotal += duration;
+		if ( currentSessionType != SessionType.mining ) {
 			
 			//checkTimersAfk();
 			
-			sessionType = targetType;
-			sessionTimingStart = currentTime;
+			setLastMine( null );
+			sessionType = currentSessionType;
+			
 			sessionTimingLastCheck = currentTime;
+			
 			dirty = true;
 		}
-		else {
-			// The session type is still mining... 
+		
+		else if ( currentSessionType == SessionType.mining ) {
+			// The current session type is still mining... and was before. 
 			// Must check sessionTimingLastCheck to see if we went over the 
 			// max mining idle time:
 			
-			final long duration = currentTime - sessionTimingLastCheck;
 			
-			
-			// If the duration is less than the session mining timeout, then player
-			// is still mining.  Just set the sessionTimingLastCheck.
-			if ( duration < SESSION_TIMEOUT_MINING_MS ) {
-				 
-				sessionTimingLastCheck = currentTime;
-			}
-			
-			// Mining can only be active for no more than SESSION_TIMEOUT_MINING_MS 
-			// after the last  block was broken.  So check duration between now and 
-			// sessionOnlineTimeLastCheck and if more than permitted, then shutdown 
-			// mining session and log it for a duration since session start to 
-			// last check plus the mining timeout value.  Then set session start to 
-			// that position.
-			
-			else if ( duration > SESSION_TIMEOUT_MINING_MS || getLastMine() == null ||
-					mine.equalsIgnoreCase( getLastMine() )) {
+			if ( sessionType != SessionType.mining || 
+					getLastMine() == null ) {
 				
-				// Calculate the end point of the mining session, which will be 30 seconds after 
-				// the last time check:
-				final long tempTime = sessionTimingLastCheck + SESSION_TIMEOUT_MINING_MS;
-				final long miningDuration = tempTime - sessionTimingStart;
-//				final long miningDuration = sessionTimingStart - tempTime;
-				onlineTimeTotal += miningDuration;
-				onlineMiningTimeTotal += miningDuration;
-				
-				addTimeToMine( mine, miningDuration );
-				
-				// Set new session to this boundary:
-				sessionTimingStart = tempTime;
-				sessionTimingLastCheck = tempTime;
-				
-				// Since the last SessionType and current are mining, then the duration from
-				// the new sessionTimingStart to currentTime needs to go to active:
-				final long durationActive = currentTime - sessionTimingStart;
-				onlineTimeTotal += durationActive;
-				
-				//checkTimersAfk();
-				
-				
-				// Now reset the current session:
-				sessionType = targetType;
-				sessionTimingStart = currentTime;
-				sessionTimingLastCheck = currentTime;
 				dirty = true;
 				
 			}
+			
+			else if ( mine == null && getLastMine() != null && 
+					duration > SESSION_TIMEOUT_MINING_MS ) {
+				
+				addTimeToMine( getLastMine(), SESSION_TIMEOUT_MINING_MS );
+				
+				onlineMiningTimeTotal += SESSION_TIMEOUT_MINING_MS;
+				
+				// Since this is being called from checkTimer(), need to 
+				// set lastMine to null and sessionType to active:
+				
+				setLastMine( null );
+				sessionType = SessionType.active;
+				
+				// Save as total online time.
+				onlineTimeTotal += duration;
+				
+				dirty = true;
+				return;
+			}
+			
+			else if ( mine == null ) {
+				
+				// This is running in checkTimers() and not enough time has passed to
+				// exceed the SESSION_TIMEOUT_MINING_MS.  So need to wait longer.
+				// return without setting anything.
+				
+				return;
+			}
+			
+			// Mine has changed since last check, so apply duration to last mine:
+			else if ( getLastMine() != null && 
+					(mine == null ||
+					!mine.equalsIgnoreCase( getLastMine() ) )) {
+				
+				
+				if ( duration > SESSION_TIMEOUT_MINING_MS ) {
+					addTimeToMine( getLastMine(), SESSION_TIMEOUT_MINING_MS );
+					
+					onlineMiningTimeTotal += SESSION_TIMEOUT_MINING_MS;
+					
+				}
+				else {
+					
+					addTimeToMine( getLastMine(), duration );
+					
+					onlineMiningTimeTotal += duration;
+				}
+
+			}
+			
+			
+			else if ( duration > SESSION_TIMEOUT_MINING_MS ) {
+				
+				// Same mine, but exceeded the duration:
+				
+				addTimeToMine( mine, SESSION_TIMEOUT_MINING_MS );
+				
+				onlineMiningTimeTotal += SESSION_TIMEOUT_MINING_MS;
+
+			}
+			else {
+				// same mine and less than session length, so add duration:
+
+				addTimeToMine( mine, duration );
+				
+				onlineMiningTimeTotal += duration;
+
+			}
+			
+			
+			// Now change the active mine
+			setLastMine( mine );
+
+			// Should already be mining:
+//			sessionType = currentSessionType;
+			
+			// Set new session to this boundary and discard the extra time:
+			sessionTimingLastCheck = currentTime;
+			
+			dirty = true;
 		}
+		
+		// Always Save as total online time.
+		onlineTimeTotal += duration;
 
 	}
 
