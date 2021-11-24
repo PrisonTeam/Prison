@@ -465,7 +465,8 @@ public class MinesCommands
     @Command(identifier = "mines set spawn", description = "Set the mine's spawn to where you're standing.", 
     		onlyPlayers = true, permissions = "mines.set")
     public void spawnpointCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName) {
+        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
+        @Arg(name = "options", description = "Options: Option to remove a spawn. [*remove*]") String options ) {
 
     	Player player = getPlayer( sender );
     	
@@ -508,9 +509,17 @@ public class MinesCommands
 
         setLastMineReferenced(mineName);
         
-        mine.setSpawn(((Player) sender).getLocation());
+        if ( options != null && options.toLowerCase().contains( "*remove*" ) ) {
+        	mine.setSpawn( null );
+        	pMines.getMinesMessages().getLocalizable("spawn_removed").sendTo(sender);
+        }
+        else {
+        	
+        	mine.setSpawn(((Player) sender).getLocation());
+        	pMines.getMinesMessages().getLocalizable("spawn_set").sendTo(sender);
+        }
+        
         pMines.getMineManager().saveMine(mine);
-        pMines.getMinesMessages().getLocalizable("spawn_set").sendTo(sender);
     }
 
 

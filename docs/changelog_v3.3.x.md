@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.6 2021-11-24
 
 
+* **Add the ability to remove a mine's spawn point.**
+
+
 * **Reworked how the drops were processed to prevent dropping the wrong contents.**
 There was an issue where the drops were retrieved later in the process that allowed it to incorrectly pickup drops that were related to a decay function.  This resolves the incorrect drops.
 
