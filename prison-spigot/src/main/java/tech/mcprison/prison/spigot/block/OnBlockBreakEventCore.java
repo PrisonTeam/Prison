@@ -672,9 +672,11 @@ public class OnBlockBreakEventCore
 					// being processed more than once:
 					targetBlock.setMined( true );
 					
-					if ( targetBlock.getPrisonBlock().equals( pmEvent.getSpigotBlock().getPrisonBlock() ) ) {
+					if ( targetBlock.getPrisonBlock().equals( pmEvent.getSpigotBlock().getPrisonBlock() ) &&
+							collectBukkitDrops( pmEvent.getBukkitDrops(), targetBlock, pmEvent.getItemInHand() )) {
 						
 						targetBlock.setMinedBlock( pmEvent.getSpigotBlock() );
+						
 					}
 					else {
 						// The block is not the correct type. It has been changed since the mine was reset
@@ -756,7 +758,8 @@ public class OnBlockBreakEventCore
 								// If not, then do not process it.
 								SpigotBlock sBlockMined = new SpigotBlock( bukkitBlock );
 								
-								if ( targetExplodedBlock.getPrisonBlock().equals( sBlockMined.getPrisonBlock() ) ) {
+								if ( targetExplodedBlock.getPrisonBlock().equals( sBlockMined.getPrisonBlock() ) &&
+									collectBukkitDrops( pmEvent.getBukkitDrops(), targetExplodedBlock, pmEvent.getItemInHand() ) ) {
 									
 									// If a chain reaction on explosions, this will prevent the same block from
 									// being processed more than once:
@@ -766,6 +769,8 @@ public class OnBlockBreakEventCore
 									
 									pmEvent.getExplodedBlocks().add( sBlock );
 									pmEvent.getTargetExplodedBlocks().add( targetExplodedBlock );
+									
+									
 								}
 								else {
 									// The block is not the correct type. It has been changed since the mine was reset
@@ -830,6 +835,10 @@ public class OnBlockBreakEventCore
 			}
 			
 			
+			// Need to compress the drops to eliminate duplicates:
+			pmEvent.setBukkitDrops( mergeDrops( pmEvent.getBukkitDrops() ) );
+						
+			
 			// If target block aready was mined and there are no exploded blocks, then this whole event 
 			// needs to be canceled since it sounds like a blockevent fired a prison util explosion that
 			// has zero blocks tied to it.
@@ -892,6 +901,8 @@ public class OnBlockBreakEventCore
 			results = false;
 		}
 		
+		
+		
 		if ( results && pmEvent.isBlockEventsOnly() ) {
 			
 			// NOTE: This "should" never be activated since blockEventsOnly used to be enabled
@@ -948,22 +959,34 @@ public class OnBlockBreakEventCore
 		}
 		
 		
-		if ( results ) {
-			// Collect the bukkit drops && cancel the drops if needed
+		if ( results && isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
+
+			clearBukkitDrops( pmEvent.getBukkitDrops(), pmEvent.getTargetBlock() );
 			
-			collectBukkitDrops( pmEvent.getBukkitDrops(), pmEvent.getSpigotBlock(), 
-									pmEvent.getItemInHand() );
-			
-			for ( SpigotBlock explodedBlock : pmEvent.getExplodedBlocks() )
+			for ( MineTargetPrisonBlock targetBlock : pmEvent.getTargetExplodedBlocks() )
 			{
-				collectBukkitDrops( pmEvent.getBukkitDrops(), explodedBlock, 
-									pmEvent.getItemInHand() );
+				clearBukkitDrops( pmEvent.getBukkitDrops(), targetBlock );
 				
 			}
-			
-			// Need to compress the drops to eliminate duplicates:
-			pmEvent.setBukkitDrops( mergeDrops( pmEvent.getBukkitDrops() ) );
+		
 		}
+		
+//		if ( results ) {
+//			// Collect the bukkit drops && cancel the drops if needed
+//			
+//			collectBukkitDrops( pmEvent.getBukkitDrops(), pmEvent.getTargetBlock(), 
+//									pmEvent.getItemInHand() );
+//			
+//			for ( MineTargetPrisonBlock targetBlock : pmEvent.getTargetExplodedBlocks() )
+//			{
+//				collectBukkitDrops( pmEvent.getBukkitDrops(), targetBlock, 
+//									pmEvent.getItemInHand() );
+//				
+//			}
+//			
+//			// Need to compress the drops to eliminate duplicates:
+//			pmEvent.setBukkitDrops( mergeDrops( pmEvent.getBukkitDrops() ) );
+//		}
 		
 		
 		if ( results ) {
@@ -977,21 +1000,45 @@ public class OnBlockBreakEventCore
 		return results;
 	}
 
-	private void collectBukkitDrops( List<SpigotItemStack> bukkitDrops, SpigotBlock spigotBlock, 
+	private boolean collectBukkitDrops( List<SpigotItemStack> bukkitDrops, MineTargetPrisonBlock targetBlock, 
 										SpigotItemStack itemInHand )
 	{
-		List<SpigotItemStack> drops = SpigotUtil.getDrops(spigotBlock, itemInHand);
-
-		bukkitDrops.addAll( drops );
+		boolean results = false;
 		
-		// This clears the drops for the given block, so if the event is not canceled, it will
-		// not result in duplicate drops.
-		if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
-			spigotBlock.clearDrops();
+		SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
+		
+		if ( targetBlock.getPrisonBlock().equals( sBlock.getPrisonBlock() ) ) {
+			
+			List<SpigotItemStack> drops = SpigotUtil.getDrops(sBlock, itemInHand);
+			
+			bukkitDrops.addAll( drops );
+			
+//			// This clears the drops for the given block, so if the event is not canceled, it will
+//			// not result in duplicate drops.
+//			if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
+//				sBlock.clearDrops();
+//			}
+			
+			results = true;
+			
+		}
+		else {
+			Output.get().logWarn( "collectBukkitDrops: block was changed and not what was expected.  " +
+					"Block: " + sBlock.getBlockName() + "  expecting: " + targetBlock.getPrisonBlock().getBlockName() );
 		}
 		
+		return results;
 	}
 	
+	
+	private void clearBukkitDrops( List<SpigotItemStack> bukkitDrops, MineTargetPrisonBlock targetBlock )
+	{
+
+		SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
+		sBlock.clearDrops();
+
+	}
+
 	/**
 	 * <p>The List of drops must have only one ItemStack per block type (name).
 	 * This function combines multiple occurrences together and adds up their 
