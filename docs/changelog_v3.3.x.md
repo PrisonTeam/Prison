@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.6 2021-11-24
 
 
+* **Ran in to another Java format exception.**
+Not sure what caused this problem, but added it to the catch so it can be reported in details so it can be fixed.
+
+
 * **Add the ability to remove a mine's spawn point.**
 
 

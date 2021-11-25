@@ -19,6 +19,7 @@
 package tech.mcprison.prison.output;
 
 import java.util.Arrays;
+import java.util.FormatFlagsConversionMismatchException;
 import java.util.HashSet;
 import java.util.MissingFormatArgumentException;
 import java.util.Set;
@@ -237,7 +238,8 @@ public class Output
 						getLogColorCode(LogLevel.ERROR) +
 						errorMessage );
 			}
-    		catch ( UnknownFormatConversionException e) 
+    		catch ( UnknownFormatConversionException |
+    				FormatFlagsConversionMismatchException e) 
     		{
 				StringBuilder sb = new StringBuilder();
 				
@@ -245,10 +247,10 @@ public class Output
 					sb.append( "[" ).append( arg ).append( "] " );
 				}
 				
-				String errorMessage = "Error with Java conversion format (eg %s): " +
+				String errorMessage = "Error with Java format usage (eg %s): " +
 						" LogLevel: " + level.name() + 
 						" message: [" + message + "] params: " + sb.toString() +
-						" error: " + e.getMessage();
+						" error: [" + e.getMessage() + "]";
 				
 				Prison.get().getPlatform().logCore(
 						prefixTemplatePrison + " " + 
