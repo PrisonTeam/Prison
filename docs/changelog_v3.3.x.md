@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.6 2021-11-26
 
 
+* **Mine Bombs: Got the sounds and visual effects hooked up to the explosions.**
+Made many revisions on how all of this works, but pushed the tasks to a new class PrisonUtilsMinBombsTask.
+
+
 * **Mine Bombs: Updated the listings of the mine bombs, which now includes full detail including the visual and sound effects, the list of shapes, list of sounds, and list of visual effects that can be used.**
 
 

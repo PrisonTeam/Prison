@@ -249,7 +249,7 @@ public class Output
 				
 				String errorMessage = "Error with Java format usage (eg %s): " +
 						" LogLevel: " + level.name() + 
-						" message: [" + message + "] params: " + sb.toString() +
+						" message: [" + message + "] params: [" + sb.toString() + "]" +
 						" error: [" + e.getMessage() + "]";
 				
 				Prison.get().getPlatform().logCore(
