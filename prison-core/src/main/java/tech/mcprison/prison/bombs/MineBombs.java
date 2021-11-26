@@ -21,6 +21,14 @@ public class MineBombs
 	
 	public enum ExplosionShape {
 		
+		ring_x,
+		ring_y,
+		ring_z,
+
+		disk_x,
+		disk_y,
+		disk_z,
+		
 		cube,
 		
 		sphere,
@@ -42,6 +50,26 @@ public class MineBombs
 			
 			return results;
 		}
+
+		public static List<String> asList()
+		{
+			List<String> results = new ArrayList<>();
+			
+			for ( ExplosionShape shape : values() )
+			{
+				results.add( shape.name() );
+			}
+			
+			return results;
+		}
+	}
+	
+	public enum ExplosionOrientation {
+		x_axis,
+		y_axis,
+		z_axis,
+		
+		full
 	}
 	
 	private MineBombs() {
@@ -126,12 +154,29 @@ public class MineBombs
 		}
 	}
 	
-	public List<Location> calculateSphere( Location loc, int radius, boolean hollow ) {
+	
+	public List<Location> calculateCylinder( Location loc, int radius, boolean hollow ) {
+		List<Location> results = new ArrayList<>();
 		
-		return calculateSphere( loc, radius, hollow, 0 );
+		
+		
+		return results;
 	}
 	
-	public List<Location> calculateSphere( Location loc, int radius, boolean hollow, int radiusInner ) {
+	public List<Location> calculateSphere( Location loc, int radius, boolean hollow ) {
+		
+		return calculateSphere( loc, radius, hollow, 0, ExplosionOrientation.full );
+	}
+	
+	public List<Location> calculateSphere( Location loc, int radius, boolean hollow, 
+			int radiusInner ) {
+		return calculateSphere( loc, radius, hollow, radiusInner, ExplosionOrientation.full );
+	}
+	
+	
+	
+	public List<Location> calculateSphere( Location loc, int radius, boolean hollow, 
+				int radiusInner, ExplosionOrientation explosionOrientation ) {
 		List<Location> results = new ArrayList<>();
 		
 		if ( loc != null && radius > 0 ) {
@@ -139,6 +184,10 @@ public class MineBombs
 			int cenY = loc.getBlockY();
 			int cenZ = loc.getBlockZ();
 			
+			boolean xOri = explosionOrientation == ExplosionOrientation.x_axis;
+			boolean yOri = explosionOrientation == ExplosionOrientation.y_axis;
+			boolean zOri = explosionOrientation == ExplosionOrientation.z_axis;
+
 			double radiusSqr = radius * radius;
 			
 			// If the radiusInner is not specified (== 0), then subtract one from radius.
@@ -146,11 +195,13 @@ public class MineBombs
 									((radius - 1) * (radius - 1)) : 
 										(radiusInner * radiusInner);
 			
-			for ( int x = cenX - radius ; x <= cenX + radius ; x++ ) {
+			for ( int x = (xOri ? cenX : cenX - radius) ; x <= (xOri ? cenX : cenX + radius) ; x++ ) {
 				double xSqr = (cenX - x) * (cenX - x);
-				for ( int y = cenY - radius ; y <= cenY + radius ; y++ ) {
+				
+				for ( int y = (yOri ? cenY : cenY - radius) ; y <= (yOri ? cenY : cenY + radius) ; y++ ) {
 					double ySqr = (cenY - y) * (cenY - y);
-					for ( int z = cenZ - radius ; z <= cenZ + radius ; z++ ) {
+					
+					for ( int z = (zOri ? cenZ : cenZ - radius) ; z <= (zOri ? cenZ : cenZ + radius) ; z++ ) {
 						double zSqr = (cenZ - z) * (cenZ - z);
 						
 						double distSqr = xSqr + ySqr + zSqr;

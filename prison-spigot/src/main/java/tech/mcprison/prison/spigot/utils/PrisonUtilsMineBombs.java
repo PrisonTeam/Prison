@@ -210,6 +210,9 @@ public class PrisonUtilsMineBombs
 						}
 					
 					case sphereHollow:
+					case ring_x:
+					case ring_y:
+					case ring_z:
 					{
 						messageShape = String.format( 
 								"      Shape: %s   Radius: %d.5   RadiusInner: %d.5", 
@@ -218,6 +221,9 @@ public class PrisonUtilsMineBombs
 					}
 					
 					case sphere:
+					case disk_x:
+					case disk_y:
+					case disk_z:
 					{
 						messageShape = String.format( 
 								"      Shape: %s   Radius: %d.5", 

@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.6 2021-11-26
 
 
+* **Mine Bombs: Added a few new shapes.**
+Disk and Ring.  Available in each plane x, y, and z.
+
+
 * **Mine Bombs: Added the collections for sound effects and visual effects.**
 Both share the same object, MineBombEffectsData.
 An effect has a name, plus an EffectState, and an offset in ticks that will apply that effect based upon the EffectState.
