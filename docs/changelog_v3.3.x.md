@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.6 2021-11-26
 
 
+* **Bug fix: Auto features get drops not always working with explosions.**
+The get drops was moved around to help ensure it does not try to get the block drops if the block is not what it is expected.  This is now passing the needed object used for the check, instead of extracting it from the target blocks, which have not yet been set.
+
+
 * **Bug fix: Auto Features Auto Pickup is now ignored if sellall has not been setup on the server.**
 If getting an instance of SellAll when it is disabled, will result in a null value.
 

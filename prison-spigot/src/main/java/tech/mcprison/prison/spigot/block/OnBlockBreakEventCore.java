@@ -673,7 +673,7 @@ public class OnBlockBreakEventCore
 					targetBlock.setMined( true );
 					
 					if ( targetBlock.getPrisonBlock().equals( pmEvent.getSpigotBlock().getPrisonBlock() ) &&
-							collectBukkitDrops( pmEvent.getBukkitDrops(), targetBlock, pmEvent.getItemInHand() )) {
+							collectBukkitDrops( pmEvent.getBukkitDrops(), targetBlock, pmEvent.getItemInHand(), pmEvent.getSpigotBlock() )) {
 						
 						targetBlock.setMinedBlock( pmEvent.getSpigotBlock() );
 						
@@ -757,9 +757,10 @@ public class OnBlockBreakEventCore
 								// Check to make sure the block is the same block that was placed there.
 								// If not, then do not process it.
 								SpigotBlock sBlockMined = new SpigotBlock( bukkitBlock );
+								PrisonBlock pBlockMined = sBlockMined.getPrisonBlock();
 								
-								if ( targetExplodedBlock.getPrisonBlock().equals( sBlockMined.getPrisonBlock() ) &&
-									collectBukkitDrops( pmEvent.getBukkitDrops(), targetExplodedBlock, pmEvent.getItemInHand() ) ) {
+								if ( targetExplodedBlock.getPrisonBlock().equals( pBlockMined ) &&
+									collectBukkitDrops( pmEvent.getBukkitDrops(), targetExplodedBlock, pmEvent.getItemInHand(), sBlockMined ) ) {
 									
 									// If a chain reaction on explosions, this will prevent the same block from
 									// being processed more than once:
@@ -1001,15 +1002,18 @@ public class OnBlockBreakEventCore
 	}
 
 	private boolean collectBukkitDrops( List<SpigotItemStack> bukkitDrops, MineTargetPrisonBlock targetBlock, 
-										SpigotItemStack itemInHand )
+										SpigotItemStack itemInHand, SpigotBlock sBlockMined )
 	{
 		boolean results = false;
 		
-		SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
+//		if ( sBlockMined == null && targetBlock.getMinedBlock() != null ) {
+//			sBlockMined = (SpigotBlock) targetBlock.getMinedBlock();
+//		}
+		//SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
 		
-		if ( targetBlock.getPrisonBlock().equals( sBlock.getPrisonBlock() ) ) {
+		if ( sBlockMined != null && targetBlock.getPrisonBlock().equals( sBlockMined.getPrisonBlock() ) ) {
 			
-			List<SpigotItemStack> drops = SpigotUtil.getDrops(sBlock, itemInHand);
+			List<SpigotItemStack> drops = SpigotUtil.getDrops(sBlockMined, itemInHand);
 			
 			bukkitDrops.addAll( drops );
 			
@@ -1022,9 +1026,9 @@ public class OnBlockBreakEventCore
 			results = true;
 			
 		}
-		else {
+		else if ( sBlockMined != null) {
 			Output.get().logWarn( "collectBukkitDrops: block was changed and not what was expected.  " +
-					"Block: " + sBlock.getBlockName() + "  expecting: " + targetBlock.getPrisonBlock().getBlockName() );
+					"Block: " + sBlockMined.getBlockName() + "  expecting: " + targetBlock.getPrisonBlock().getBlockName() );
 		}
 		
 		return results;
