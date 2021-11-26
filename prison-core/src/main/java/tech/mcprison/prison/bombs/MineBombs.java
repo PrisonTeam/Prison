@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import tech.mcprison.prison.bombs.MineBombEffectsData.EffectState;
 import tech.mcprison.prison.file.JsonFileIO;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.Location;
@@ -243,6 +244,8 @@ public class MineBombs
 		return results;
 	}
 	
+	
+	@SuppressWarnings( "unused" )
 	public void setupDefaultMineBombData()
 	{
 		if ( getConfigData().getBombs().size() == 0 ) {
@@ -254,12 +257,42 @@ public class MineBombs
 //			XMaterial.DIAMOND_PICKAXE;
 //			XMaterial.NETHERITE_PICKAXE;
 
+			MineBombEffectsData mbeSound01 = new MineBombEffectsData( "ENTITY_CREEPER_PRIMED", EffectState.placed, 0 );
+			MineBombEffectsData mbeSound02 = new MineBombEffectsData( "CAT_HISS", EffectState.placed, 0 );
+			
+			MineBombEffectsData mbeSound03 = new MineBombEffectsData( "ENTITY_GENERIC_EXPLODE", EffectState.explode, 0 );
+			MineBombEffectsData mbeSound04 = new MineBombEffectsData( "ENTITY_DRAGON_FIREBALL_EXPLODE", EffectState.explode, 0 );
+			
+			
+			MineBombEffectsData mbeExplode01 = new MineBombEffectsData( "FIREWORKS_SPARK", EffectState.placed, 0 );
+			MineBombEffectsData mbeExplode02 = new MineBombEffectsData( "BUBBLE_COLUMN_UP", EffectState.placed, 0 );
+			MineBombEffectsData mbeExplode03 = new MineBombEffectsData( "ENCHANTMENT_TABLE", EffectState.placed, 0 );
+			
+//			MineBombEffectsData mbeExplode05 = new MineBombEffectsData( "END_ROD", EffectState.placed, 0 );
+			MineBombEffectsData mbeExplode04 = new MineBombEffectsData( "FLAME", EffectState.placed, 0 );
+			MineBombEffectsData mbeExplode08 = new MineBombEffectsData( "DRAGON_BREATH", EffectState.placed, 0 );
+
+			MineBombEffectsData mbeExplode06 = new MineBombEffectsData( "SMOKE_NORMAL", EffectState.placed, 0 );
+			MineBombEffectsData mbeExplode07 = new MineBombEffectsData( "SMOKE_LARGE", EffectState.placed, 0 );
+			
+			MineBombEffectsData mbeExplode10 = new MineBombEffectsData( "EXPLOSION_NORMAL", EffectState.explode, 0 );
+			MineBombEffectsData mbeExplode11 = new MineBombEffectsData( "EXPLOSION_LARGE", EffectState.explode, 0 );
+			MineBombEffectsData mbeExplode12 = new MineBombEffectsData( "EXPLOSION_HUGE", EffectState.explode, 0 );
+			
+			
 			{
 				MineBombData mbd = new MineBombData( 
 						"SmallBomb", "brewing_stand", ExplosionShape.sphere.name(), 2, "Small Mine Bomb" );
 				mbd.setToolInHandName( "DIAMOND_PICKAXE" );
 				mbd.setToolInHandFortuneLevel( 0 );
 				mbd.setDescription("A small mine bomb made with some chemicals and a brewing stand.");
+				
+				mbd.getSoundEffects().add( mbeSound01.clone() );
+				mbd.getSoundEffects().add( mbeSound02.clone().setOffsetTicks( 30 ) );
+				mbd.getSoundEffects().add( mbeSound03.clone() );
+				
+				mbd.getVisualEffects().add( mbeExplode01.clone() );
+				mbd.getVisualEffects().add( mbeExplode02.clone().setOffsetTicks( 30 ) );
 				
 				getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 				
@@ -272,7 +305,16 @@ public class MineBombs
 						"but supercharged with a strange green glowing liquid.");
 				mbd.setToolInHandName( "DIAMOND_PICKAXE" );
 				mbd.setToolInHandFortuneLevel( 3 );
+				
+				mbd.getSoundEffects().add( mbeSound01.clone() );
+				mbd.getSoundEffects().add( mbeSound02.clone().setOffsetTicks( 30 ) );
+				mbd.getSoundEffects().add( mbeSound03.clone() );
+				
+				mbd.getVisualEffects().add( mbeExplode01.clone() );
+				mbd.getVisualEffects().add( mbeExplode02.clone().setOffsetTicks( 30 ) );
 
+				mbd.setCooldownTicks( 60 );
+				
 				getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 				
 			}
@@ -285,6 +327,15 @@ public class MineBombs
 						"that maybe be described as alien technology.");
 				mbd.setToolInHandName( "DIAMOND_PICKAXE" );
 				mbd.setToolInHandFortuneLevel( 3 );
+				
+				mbd.getSoundEffects().add( mbeSound01.clone() );
+				mbd.getSoundEffects().add( mbeSound02.clone().setOffsetTicks( 30 ) );
+				mbd.getSoundEffects().add( mbeSound03.clone().setVolumne( 2.0f ) );
+				
+				mbd.getVisualEffects().add( mbeExplode01.clone() );
+				mbd.getVisualEffects().add( mbeExplode02.clone().setOffsetTicks( 30 ) );
+
+				mbd.setCooldownTicks( 60 );
 				
 				getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 			}
@@ -299,10 +350,25 @@ public class MineBombs
 				mbd.setToolInHandName( "GOLDEN_PICKAXE" );
 				mbd.setToolInHandFortuneLevel( 13 );
 				
+				mbd.getSoundEffects().add( mbeSound01.clone() );
+				mbd.getSoundEffects().add( mbeSound02.clone().setOffsetTicks( 30 ).setVolumne( 2.0f ) );
+				mbd.getSoundEffects().add( mbeSound03.clone().setVolumne( 3.0f ) );
+				mbd.getSoundEffects().add( mbeSound03.clone().setOffsetTicks( 30 ).setVolumne( 1.5f ) );
+				mbd.getSoundEffects().add( mbeSound04.clone().setOffsetTicks( 10 ).setVolumne( 2.0f ) );
+				
+				mbd.getVisualEffects().add( mbeExplode06.clone() );
+				mbd.getVisualEffects().add( mbeExplode12.clone() );
+				mbd.getVisualEffects().add( mbeExplode12.clone().setOffsetTicks( 30 ) );
+				mbd.getVisualEffects().add( mbeExplode12.clone().setOffsetTicks( 60 ) );
+				mbd.getVisualEffects().add( mbeExplode07.clone().setOffsetTicks( 60 ) );
+				mbd.getVisualEffects().add( mbeExplode08.clone().setOffsetTicks( 90 ) );
+				
 				mbd.setAutosell( true );
 				mbd.setGlowing( true );
 				mbd.setAutosell( true );
 				
+				mbd.setCooldownTicks( 60 );
+
 				getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 			}
 			
@@ -319,12 +385,21 @@ public class MineBombs
 				mbd.setToolInHandFortuneLevel( 0 );
 				mbd.setRemovalChance( 40.0d );
 				
+				mbd.getSoundEffects().add( mbeSound01.clone() );
+				mbd.getSoundEffects().add( mbeSound02.clone().setOffsetTicks( 30 ) );
+				mbd.getSoundEffects().add( mbeSound03.clone() );
+				
+				mbd.getVisualEffects().add( mbeExplode01.clone() );
+				mbd.getVisualEffects().add( mbeExplode02.clone().setOffsetTicks( 30 ) );
+				
 				mbd.setCooldownTicks( 3 * 20 ); // 3 seconds
 				mbd.setFuseDelayTicks( 2 * 20 ); // 2 seconds
 
 				mbd.setGlowing( true );
 				mbd.setGravity( false );
 				
+				mbd.setCooldownTicks( 60 );
+
 				getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 			}
 			
@@ -340,8 +415,17 @@ public class MineBombs
 				mbd.setToolInHandFortuneLevel( 7 );
 				mbd.setRemovalChance( 100.0d );
 				
+				mbd.getSoundEffects().add( mbeSound01.clone() );
+				mbd.getSoundEffects().add( mbeSound02.clone().setOffsetTicks( 30 ) );
+				mbd.getSoundEffects().add( mbeSound03.clone() );
+				
+				mbd.getVisualEffects().add( mbeExplode01.clone() );
+				mbd.getVisualEffects().add( mbeExplode02.clone().setOffsetTicks( 30 ) );
+				
 				mbd.setGlowing( true );
 				
+				mbd.setCooldownTicks( 60 );
+
 				getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 			}
 			
