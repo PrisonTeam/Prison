@@ -86,7 +86,7 @@ public class PrisonUtilsMineBombs
 					String worldCoordinates,
 
 					
-			@Arg(name = "shape", description = "Shape of Explosion. [sphere]", 
+			@Arg(name = "shape", description = "Shape of Explosion. Use the command '/prison utils bomb list' for a list of shapes. [sphere]", 
 						def = "sphere") String shape,
 			@Arg(name = "radiusSize", description = "Size of Explosion in block radius. [1 though 20]",
 						def = "3" )
@@ -160,10 +160,14 @@ public class PrisonUtilsMineBombs
 	
 
 	@Command(identifier = "prison utils bomb list", 
-			description = "A list of all available bombs.",
+			description = "A list of all available bombs, including their full details.  " +
+					"This command also shows a list of settings for shapes, sounds, and visual effects.",
 		onlyPlayers = false, 
 		permissions = "prison.utils.bombs" )
-	public void utilsMineBombsList( CommandSender sender
+	public void utilsMineBombsList( CommandSender sender,
+			@Arg(name = "option", description = "Options: Show 'all' bomb details. " +
+					"'shapes', 'sounds', and 'visuals' lists valid settings " +
+					"to be used with the bombs. [all shapes sounds visuals]", def = "" ) String options
 			
 			) {
 		
@@ -176,6 +180,102 @@ public class PrisonUtilsMineBombs
 			MineBombs mBombs = MineBombs.getInstance();
 			
 			List<String> messages = new ArrayList<>();
+			
+			boolean optAll = options != null && options.toLowerCase().contains( "all" );
+			
+			if ( options != null && options.toLowerCase().contains( "shapes" ) ) {
+				// exit after showing shapes:
+				
+				messages.add( "&7Shapes:" );
+				List<String> shapes = ExplosionShape.asList();
+				messages.addAll( Text.formatColumnsFromList( shapes, 4 ) );
+				
+				sender.sendMessage( messages.toArray( new String[0] ) );
+				return;
+			}
+			
+			if ( options != null && options.toLowerCase().contains( "sounds" ) ) {
+				List<String> sounds = new ArrayList<>();
+				
+//				// If running less than MC 1.9.0, ie 1.8.x, then use different code for effects:
+//				boolean is18 = new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) < 0 ;
+//
+//				if ( is18 ) {
+//					
+//				}
+
+//				for ( Sound p : Sound.values() ) {
+//					sounds.add( p.name() );
+//				}
+//				
+//				messages.add( "&7Sound Effects:" );
+//				for ( String line : Text.formatColumnsFromList( sounds, 3 ) ) {
+//					messages.add( "      " + line );
+//				}
+//				sounds.clear();
+				
+				
+				
+				for ( XSound p : XSound.values() ) {
+					sounds.add( p.name() );
+				}
+				Collections.sort( sounds );
+				
+				messages.add( "&7XSound Effects:" );
+				for ( String line : Text.formatColumnsFromList( sounds, 3 ) ) {
+					messages.add( "      " + line );
+				}
+				
+				sender.sendMessage( messages.toArray( new String[0] ) );
+				return;
+			}
+			
+			if ( options != null && options.toLowerCase().contains( "visuals" ) ) {
+				List<String> visuals = new ArrayList<>();
+				
+				// bukkit 1.8.8:
+//				Effect.values()
+				
+				// If running less than MC 1.9.0, ie 1.8.x, then use different code for effects:
+				boolean is18 = new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) < 0 ;
+
+				if ( is18 ) {
+					for ( Effect p : Effect.values() ) {
+						visuals.add( p.name() );
+					}
+					Collections.sort( visuals );
+//				for ( Particle p : Particle.values() ) {
+//					visuals.add( p.name() );
+//				}
+					
+					messages.add( "&7Visual Effects (bukkit 1.8.x: Effect):" );
+					for ( String line : Text.formatColumnsFromList( visuals, 4 ) ) {
+						messages.add( "      " + line );
+					}
+					
+				}
+				else {
+					
+					for ( Particle p : Particle.values() ) {
+						visuals.add( p.name() );
+					}
+					Collections.sort( visuals );
+//				for ( Particle p : Particle.values() ) {
+//					visuals.add( p.name() );
+//				}
+					
+					messages.add( "&7Visual Effects (Particle):" );
+					for ( String line : Text.formatColumnsFromList( visuals, 4 ) ) {
+						messages.add( "      " + line );
+					}
+					
+				}
+
+				
+				
+				sender.sendMessage( messages.toArray( new String[0] ) );
+				return;
+			}
 			
 			Set<String> keys = mBombs.getConfigData().getBombs().keySet();
 			for ( String key : keys ) {
@@ -260,6 +360,36 @@ public class PrisonUtilsMineBombs
 				messages.add( "      " + bomb.getDescription() );
 				
 				
+				if ( optAll ) {
+					
+					
+					List<String> sounds = new ArrayList<>();
+					for ( MineBombEffectsData sfx : bomb.getSoundEffects() )
+					{
+						sounds.add( "      " + sfx.toString() );
+						
+					}
+					if ( sounds.size() > 0 ) {
+						messages.add( "    Sound Effects:" );
+						messages.addAll( sounds );
+					}
+					
+					
+					List<String> visual = new ArrayList<>();
+					for ( MineBombEffectsData vfx : bomb.getVisualEffects() )
+					{
+						visual.add( "      " + vfx.toStringShort() );
+						
+					}
+					if ( visual.size() > 0 ) {
+						messages.add( "    Visual Effects:" );
+						messages.addAll( visual );
+					}
+					
+					
+					
+				}
+				
 //				Output.get().log( message, LogLevel.PLAIN );
 			}
 			
@@ -278,7 +408,7 @@ public class PrisonUtilsMineBombs
 			@Arg(name = "playerName", description = "Player name") String playerName,
 			
 			@Arg(name = "bombName", description = "The bomb name, or 'list' to show all available " +
-					"bombs. [list]", 
+					"bombs, with 'listall' including sound and visual effects. [list listall]", 
 					def = "list") String bombName,
 			@Arg(name = "quantity", description = "Quantity of bombs to give. [1 > +]",
 			def = "1" )
@@ -295,7 +425,13 @@ public class PrisonUtilsMineBombs
 			
 			if ( "list".equalsIgnoreCase( bombName ) ) {
 				
-				utilsMineBombsList( sender );
+				utilsMineBombsList( sender, null );
+				return;
+			}
+			
+			if ( "listall".equalsIgnoreCase( bombName ) ) {
+				
+				utilsMineBombsList( sender, "all" );
 				return;
 			}
 			

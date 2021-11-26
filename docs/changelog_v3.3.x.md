@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.6 2021-11-26
 
 
+* **Mine Bombs: Updated the listings of the mine bombs, which now includes full detail including the visual and sound effects, the list of shapes, list of sounds, and list of visual effects that can be used.**
+
+
 * **Mine Bombs: Updated the junit test for validating that the EffectState is sorted in the proper order when using the MineBombEffectsData as a comparator.**
 
 
