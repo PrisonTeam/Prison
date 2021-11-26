@@ -500,8 +500,8 @@ public class AutoManagerFeatures
 				
 	
 				// Try to autosell if enabled:
-				if (isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || 
-						pmEvent.isForceAutoSell() ) {
+				if ( SellAllUtil.get() != null && (isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || 
+						pmEvent.isForceAutoSell()) ) {
 					
 					double amount = SellAllUtil.get().sellAllSell( player, itemStack, false, false, true );
 					autosellTotal += amount;
@@ -530,7 +530,7 @@ public class AutoManagerFeatures
 				// sold will zero out the number of drops for that item stack.
 				if ( !isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || itemStack.getAmount() != 0 ) {
 					
-					if ( Output.get().isDebug() ) {
+					if ( Output.get().isDebug() && SellAllUtil.get() != null ) {
 						
 						// Just get the calculated value for the drops... do not sell:
 						double amount = SellAllUtil.get().sellAllSell( player, itemStack, true, false, false );

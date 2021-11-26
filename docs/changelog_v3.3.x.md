@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.6 2021-11-26
 
 
+* **Bug fix: Auto Features Auto Pickup is now ignored if sellall has not been setup on the server.**
+If getting an instance of SellAll when it is disabled, will result in a null value.
+
+
 * **Mine Bombs: Added a few new shapes.**
 Disk and Ring.  Available in each plane x, y, and z.
 
