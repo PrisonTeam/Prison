@@ -13,7 +13,13 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.6 2021-11-24
+# 3.2.11-alpha.6 2021-11-26
+
+
+* **Mine Bombs: Added the collections for sound effects and visual effects.**
+Both share the same object, MineBombEffectsData.
+An effect has a name, plus an EffectState, and an offset in ticks that will apply that effect based upon the EffectState.
+The EffectState can be placed, explode, or finished.
 
 
 * **Ran in to another Java format exception.**

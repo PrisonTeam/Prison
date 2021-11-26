@@ -2,6 +2,7 @@ package tech.mcprison.prison.bombs;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 import tech.mcprison.prison.internal.block.PrisonBlock;
 
@@ -113,10 +114,18 @@ public class MineBombData {
 	
 	private boolean activated = false;
 	
+
+	private TreeSet<MineBombEffectsData> soundEffects;
+	
+	private TreeSet<MineBombEffectsData> visualEffects;
+	
 	
 	public MineBombData() {
 		super();
 		
+		
+		this.soundEffects = new TreeSet<>( new MineBombEffectsData() );
+		this.visualEffects = new TreeSet<>( new MineBombEffectsData() );
 	}
 	
 	
@@ -177,9 +186,23 @@ public class MineBombData {
 		cloned.setAutosell( isAutosell() );
 		cloned.setActivated( isActivated() );
 		
-		for ( String l : lore ) {
+		
+		for ( String l : getLore() ) {
 			cloned.getLore().add( l );
 		}
+		
+		
+		for ( MineBombEffectsData soundEffect : getSoundEffects() ) 
+		{
+			cloned.getSoundEffects().add( soundEffect.clone() );
+		}
+		
+		
+		for ( MineBombEffectsData visualEffect : getVisualEffects() ) 
+		{
+			cloned.getVisualEffects().add( visualEffect.clone() );
+		}
+		
 		
 		return cloned;
 	}
@@ -313,6 +336,20 @@ public class MineBombData {
 	}
 	public void setActivated( boolean activated ) {
 		this.activated = activated;
+	}
+
+	public TreeSet<MineBombEffectsData> getSoundEffects() {
+		return soundEffects;
+	}
+	public void setSoundEffects( TreeSet<MineBombEffectsData> soundEffects ) {
+		this.soundEffects = soundEffects;
+	}
+
+	public TreeSet<MineBombEffectsData> getVisualEffects() {
+		return visualEffects;
+	}
+	public void setVisualEffects( TreeSet<MineBombEffectsData> visualEffects ) {
+		this.visualEffects = visualEffects;
 	}
 	
 }
