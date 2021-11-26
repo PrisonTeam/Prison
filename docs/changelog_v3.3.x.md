@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.6 2021-11-26
 
 
+* **Mine Bombs: Setup a test unit test to confirm that the sorting of the EffectStates is as expected.**
+Needs to be: placed, explode, finished.
+
+
 * **Mine Bombs: Add the sound effects and visual effects to the default test bombs.**
 NOTE: Some of these settings may not work on all versions of spigot, and some may not work on any version. 
 
