@@ -27,6 +27,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.CustomBlockIntegration;
+import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.PrisonStatsElapsedTimeNanos;
 import tech.mcprison.prison.internal.World;
@@ -37,6 +38,7 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.util.Location;
 
@@ -74,6 +76,21 @@ public class SpigotWorld implements World {
     public Block getBlockAt(Location location) {
         return new SpigotBlock(
         		bukkitWorld.getBlockAt(SpigotUtil.prisonLocationToBukkit(location)));
+    }
+    public SpigotBlock getSpigotBlockAt(Location location) {
+    	return new SpigotBlock(
+    			bukkitWorld.getBlockAt(SpigotUtil.prisonLocationToBukkit(location)));
+    }
+    
+    public org.bukkit.Location getBukkitLocation(Location location) {
+    	return SpigotUtil.prisonLocationToBukkit(location);
+    }
+    
+    public org.bukkit.inventory.ItemStack getBukkitItemStack( ItemStack itemStack ) {
+    	
+    	SpigotItemStack sItemStack = (SpigotItemStack) itemStack;
+    	
+    	return sItemStack.getBukkitStack();
     }
     
     @Override
@@ -171,4 +188,6 @@ public class SpigotWorld implements World {
     public org.bukkit.World getWrapper() {
         return bukkitWorld;
     }
+    
+
 }

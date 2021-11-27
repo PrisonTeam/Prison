@@ -31,6 +31,13 @@ public class PrisonBombListener
 	implements Listener
 {
 	
+	private PrisonUtilsMineBombs prisonUtilsMineBombs;
+	
+	public PrisonBombListener( PrisonUtilsMineBombs utilsMineBombs ) {
+		super();
+		
+		prisonUtilsMineBombs = utilsMineBombs;
+	}
 
     @EventHandler( priority = EventPriority.LOW )
     public void onInteract( PlayerInteractEvent event ) {
@@ -149,6 +156,13 @@ public class PrisonBombListener
     	
     }
 
+	public PrisonUtilsMineBombs getPrisonUtilsMineBombs() {
+		return prisonUtilsMineBombs;
+	}
+	public void setPrisonUtilsMineBombs( PrisonUtilsMineBombs prisonUtilsMineBombs ) {
+		this.prisonUtilsMineBombs = prisonUtilsMineBombs;
+	}
+
 //    @EventHandler( priority = EventPriority.HIGHEST, ignoreCancelled = false )
 //    public void onBlockPlace3( BlockDropItemEvent event ) {
 //    	
@@ -171,4 +185,6 @@ public class PrisonBombListener
 //    	}
 //    	
 //    }
+    
+    
 }

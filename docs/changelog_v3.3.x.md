@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.6 2021-11-26
 
 
+* **Mine Bombs: Setup some changes in how classes are related to each other so as to prepare for significant changes.**
+
+
 * **Mine Bombs: Got the sounds and visual effects hooked up to the explosions.**
 Made many revisions on how all of this works, but pushed the tasks to a new class PrisonUtilsMinBombsTask.
 

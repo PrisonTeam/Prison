@@ -134,7 +134,7 @@ public class PrisonUtilsModule
 				
 				// Only Register the Bomb Listener if bombs are active:
 				Bukkit.getPluginManager().registerEvents(
-								new PrisonBombListener(), SpigotPrison.getInstance());
+								new PrisonBombListener( utils ), SpigotPrison.getInstance());
 				
 			}
 			
