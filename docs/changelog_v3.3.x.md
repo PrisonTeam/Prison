@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.6 2021-11-26
 
 
+* **Mine Bombs: Added more effects to the examples.**
+Removed some that would not work.  These are not perfectly selected and may not work for most versions of spigot.  The visual effect do not appear to really do much.
+
+
 * **Mine Bombs: Setup some changes in how classes are related to each other so as to prepare for significant changes.**
 
 
