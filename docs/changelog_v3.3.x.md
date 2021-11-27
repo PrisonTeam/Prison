@@ -16,6 +16,11 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.6 2021-11-26
 
 
+* **Mine Bombs: Added the use of a armor stand for holding the item, with an animation of swirling it around.**
+The item's armor stand is managed in a task which removes itself when finished.  This process is independent from the visual and sound effects.
+Removed the static functions that were being used (which is much better).  
+
+
 * **Mine Bombs: Added more effects to the examples.**
 Removed some that would not work.  These are not perfectly selected and may not work for most versions of spigot.  The visual effect do not appear to really do much.
 

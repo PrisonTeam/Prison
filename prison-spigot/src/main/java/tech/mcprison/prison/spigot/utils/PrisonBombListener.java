@@ -74,7 +74,7 @@ public class PrisonBombListener
         	
         	
 //        	Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  02 " );
-        	if ( PrisonUtilsMineBombs.setBombInHand( player, sBlock ) ) {
+        	if ( getPrisonUtilsMineBombs().setBombInHand( player, sBlock ) ) {
         		
         		// The item was a bomb and it was activated.
         		// Cancel the event so the item will not be placed or processed farther.

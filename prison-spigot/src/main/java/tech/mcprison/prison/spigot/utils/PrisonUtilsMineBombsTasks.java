@@ -10,8 +10,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Particle;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Item;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.EulerAngle;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XSound;
@@ -19,8 +21,8 @@ import com.cryptomorin.xseries.particles.ParticleDisplay;
 
 import tech.mcprison.prison.bombs.MineBombData;
 import tech.mcprison.prison.bombs.MineBombEffectsData;
-import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.bombs.MineBombEffectsData.EffectState;
+import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.bombs.MineBombs.ExplosionOrientation;
 import tech.mcprison.prison.bombs.MineBombs.ExplosionShape;
 import tech.mcprison.prison.output.Output;
@@ -53,7 +55,7 @@ public class PrisonUtilsMineBombsTasks
 	}
 
 	
-	protected static void setFortune( SpigotItemStack itemInHand, int fortuneLevel )
+	protected void setFortune( SpigotItemStack itemInHand, int fortuneLevel )
 	{
 
 		if ( itemInHand != null && itemInHand.getBukkitStack() != null && itemInHand.getBukkitStack().hasItemMeta() )
@@ -85,7 +87,7 @@ public class PrisonUtilsMineBombsTasks
 	 * @param ticks
 	 * @return
 	 */
-	public static boolean addPlayerCooldown( String playerUUID, int ticks )
+	public boolean addPlayerCooldown( String playerUUID, int ticks )
 	{
 		boolean results = false;
 
@@ -135,10 +137,8 @@ public class PrisonUtilsMineBombsTasks
 	}
 
 	
-	public static void submitBombEffects( MineBombData bomb, EffectState effectState, 
-			Location location, Item droppedBomb ) {
+	public void submitBombEffects( MineBombData bomb, EffectState effectState, Location location ) {
 		
-		long lastTick = -1;
 		
 		// If running MC 1.9.0 or higher, then can use the glowing feature.  Ignore for 1.8.x.
 		boolean is18 = new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) < 0 ;
@@ -174,9 +174,6 @@ public class PrisonUtilsMineBombsTasks
 				}.runTaskLater( SpigotPrison.getInstance(), effect.getOffsetTicks() );
 			}
 			
-			if ( effect.getEffectState() == EffectState.finished && effect.getOffsetTicks() > lastTick ) {
-				lastTick = effect.getOffsetTicks();
-			}
 		}
 		
 		for ( MineBombEffectsData effect : bomb.getVisualEffects() )
@@ -221,25 +218,11 @@ public class PrisonUtilsMineBombsTasks
 
 			}
 			
-			if ( effect.getEffectState() == EffectState.finished && effect.getOffsetTicks() > lastTick ) {
-				lastTick = effect.getOffsetTicks();
-			}
-
 		}
 		
-		// After the last sound and visual is played, then remove the dropped bomb:
-		if ( effectState == EffectState.finished && lastTick >= 0 ) {
-			new BukkitRunnable() {
-				
-				@Override
-				public void run() {
-					droppedBomb.remove();
-				}
-			}.runTaskLater( SpigotPrison.getInstance(), lastTick + 1 );
-		}
 	}
 	
-	public static boolean setoffBombDelayed( SpigotPlayer sPlayer, MineBombData bomb, Item droppedBomb, 
+	public boolean setoffBombDelayed( SpigotPlayer sPlayer, MineBombData bomb, // Item droppedBomb, 
 						SpigotBlock targetBlock ) {
 		boolean results = false;
 		
@@ -247,7 +230,7 @@ public class PrisonUtilsMineBombsTasks
 										sPlayer.getLocation() : targetBlock.getLocation() );
 		
 		
-		submitBombEffects( bomb, EffectState.placed, location, droppedBomb );
+		submitBombEffects( bomb, EffectState.placed, location );
 		
 		new BukkitRunnable() {
 			
@@ -257,7 +240,7 @@ public class PrisonUtilsMineBombsTasks
 				// Remove the item that the player threw:
 //				droppedBomb.remove();
 				
-				submitBombEffects( bomb, EffectState.explode, location, droppedBomb );
+				submitBombEffects( bomb, EffectState.explode, location );
 				
 				MineBombs mBombs = MineBombs.getInstance();
 				
@@ -307,7 +290,7 @@ public class PrisonUtilsMineBombsTasks
 				if ( explodeEvent.isCancelled() ) {
 					
 					// Run all of the EffectState.finished effects:
-					submitBombEffects( bomb, EffectState.finished, location, droppedBomb );
+					submitBombEffects( bomb, EffectState.finished, location );
 					
 					if ( Output.get().isDebug() ) {
 						Output.get().logDebug( "Mine Bomb's ExplosiveBlockBreakEvent has been canceled. " +
@@ -317,7 +300,7 @@ public class PrisonUtilsMineBombsTasks
 				else {
 					// If it wasn't canceled, then it may not have been handled
 					
-					droppedBomb.remove();
+					//droppedBomb.remove();
 					
 					if ( Output.get().isDebug() ) {
 						Output.get().logDebug( "Mine Bomb's ExplosiveBlockBreakEvent has NOT been canceled." );
@@ -440,5 +423,179 @@ public class PrisonUtilsMineBombsTasks
 		
 		return results;
 	}
+	
+	public PlacedMineBombItemTask submitPlacedMineBombItemTask( MineBombData bomb, SpigotBlock sBlock, SpigotItemStack item ) {
+		
+		PlacedMineBombItemTask placedTask = new PlacedMineBombItemTask( bomb, sBlock, item );
+		
+		BukkitTask task = placedTask.runTaskTimer( 
+				SpigotPrison.getInstance(), 1, 1 );
+		
+		placedTask.setBukkitTask( task );
+		
+		return placedTask;
+	}
+	
+	public class PlacedMineBombItemTask 
+		extends BukkitRunnable
+	{
+		
+		private MineBombData bomb;
+		private SpigotBlock sBlock;
+		private SpigotItemStack item;
+		
+		private double eulerAngleX = 1.0;
+		private double eulerAngleY = 0;
+		private double eulerAngleZ = 0;
+		
+		private double twoPI;
+		
+		private ArmorStand as;
+
+		long ageTicks = 0L;
+		long terminateOnTicks = 0L;
+				
+		private BukkitTask bukkitTask;
+		
+		public PlacedMineBombItemTask( MineBombData bomb, 
+									SpigotBlock sBombBlock, SpigotItemStack item ) {
+			super();
+			
+			this.bomb = bomb;
+			this.sBlock = sBombBlock;
+			this.item = item;
+			
+			this.twoPI = Math.PI * 2;
+			
+			this.ageTicks = 0;
+			this.terminateOnTicks = setTaskLifeSpan();
+			
+			initialize();
+		}
+		
+		
+		/**
+		 * <p>This will calculate how long the placed item needs to 
+		 * exist before removal, and this task will remove itself.
+		 * While this item is placed, this task will run every 2 
+		 * ticks and will spin the item in 3d space.
+		 * </p>
+		 * 
+		 * <p>Removal is based upon the fuseDelayTicks which will take it to
+		 * the explosion, then scanning the final effects to find how long
+		 * the last one will be submitted for.  Then add 15 ticks.
+		 * </p>
+		 * 
+		 * <p>At this time, not 100% sure if this item or armor stand
+		 * will be used to "place" the effects.  Probably not.  If it's not
+		 * needed, then this can be removed when the explosions start.
+		 * </p>
+		 * 
+		 * @return
+		 */
+		private long setTaskLifeSpan()
+		{
+			long ticks = bomb.getFuseDelayTicks();
+			
+			long maxValue = 0;
+			for ( MineBombEffectsData effect : bomb.getSoundEffects()  )
+			{
+				if ( effect.getEffectState() == EffectState.finished && 
+						effect.getOffsetTicks() > maxValue ) {
+					maxValue = effect.getOffsetTicks();
+				}
+			}
+			for ( MineBombEffectsData effect : bomb.getVisualEffects()  )
+			{
+				if ( effect.getEffectState() == EffectState.finished && 
+						effect.getOffsetTicks() > maxValue ) {
+					maxValue = effect.getOffsetTicks();
+				}
+			}
+			
+			return ticks + maxValue + 15;
+		}
+
+
+		private void initialize() {
+			
+			Location location = sBlock.getLocation();
+			location.setY( location.getY() + 2.5 );
+			
+			SpigotWorld sWorld = (SpigotWorld) location.getWorld();
+
+			
+			EulerAngle arm = new EulerAngle( eulerAngleX, eulerAngleY, eulerAngleZ );
+			
+			as = sWorld.getWrapper().spawn( 
+					sWorld.getBukkitLocation( location ), 
+						ArmorStand.class);
+			
+			as.setCustomName( bomb.getName() );
+			as.setCustomNameVisible(true);
+			as.setVisible(false);
+			as.setRemoveWhenFarAway(false);
+			as.setItemInHand( sWorld.getBukkitItemStack( item ) );
+			as.setRightArmPose(arm);
+			as.setRemoveWhenFarAway(false);
+			
+			
+			if ( new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) >= 0 ) {
+				
+				as.setGlowing( bomb.isGlowing() );
+				
+				// setGravity is invalid for spigot 1.8.8:
+				as.setGravity( bomb.isGravity() );
+			}
+		}
+
+		@Override
+		public void run()
+		{
+			// Track the time that this has lived:
+			ageTicks += 1;
+			
+			double speed = 0.25;
+			
+			eulerAngleX += speed;
+			eulerAngleY += speed / 3;
+			eulerAngleZ += speed / 9;
+			
+			
+			EulerAngle arm = new EulerAngle( eulerAngleX, eulerAngleY, eulerAngleZ );
+			
+			as.setRightArmPose(arm);
+			
+			
+			if ( eulerAngleX > twoPI ) {
+				eulerAngleX -= twoPI;
+			}
+			if ( eulerAngleY > twoPI ) {
+				eulerAngleY -= twoPI;
+			}
+			if ( eulerAngleZ > twoPI ) {
+				eulerAngleZ -= twoPI;
+			}
+			
+			
+			if ( ageTicks >= terminateOnTicks ) {
+				
+				as.remove();
+				
+				this.cancel();
+			}
+			
+		}
+
+		public BukkitTask getBukkitTask() {
+			return bukkitTask;
+		}
+		public void setBukkitTask( BukkitTask bukkitTask ) {
+			this.bukkitTask = bukkitTask;
+		}
+		
+	}
+	
+	
 
 }

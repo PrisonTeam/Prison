@@ -9,7 +9,6 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Particle;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 
 import com.cryptomorin.xseries.XMaterial;
@@ -25,8 +24,10 @@ import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.api.ExplosiveBlockBreakEvent;
+import tech.mcprison.prison.spigot.block.OnBlockBreakMines;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
@@ -639,10 +640,14 @@ public class PrisonUtilsMineBombs
 	 * one. 
 	 * </p>
 	 * 
+	 * <p>It's important that this returns a "true" if this is a bomb, even though the 
+	 * bomb cannot be activated.
+	 * </p>
+	 * 
 	 * @param player
 	 * @return
 	 */
-	public static boolean setBombInHand( Player player, SpigotBlock sBlock ) {
+	public boolean setBombInHand( Player player, SpigotBlock sBlock ) {
 		boolean isABomb = false;
 		
     	
@@ -657,7 +662,6 @@ public class PrisonUtilsMineBombs
     		if ( prisonBombId.equalsIgnoreCase( Text.stripColor( MINE_BOMBS_LORE_1 )) ) {
     			
     			
-
     			// String bombName = lore1.trim();
     			
     			MineBombs mBombs = MineBombs.getInstance();
@@ -668,16 +672,24 @@ public class PrisonUtilsMineBombs
 						AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
 				
 				if ( bomb != null && "DISABLED".equalsIgnoreCase( prisonExplosiveHandlerPriority ) ) {
-					isABomb = true;
 
 					Output.get().logWarn( "A Prison Mine Bomb was attempted to be used, but the " +
 							"handling of its explosion is DISABLED.  Edit the 'autoFeaturesConfig.yml' " +
 							"file and set 'ProcessPrisons_ExplosiveBlockBreakEventsPriority: NORMAL'." );
+					
+					// Must return a true from here on out so the original event is canceled.
+					// Returning a true does not mean the bomb was activated.
+					isABomb = true;
+					
+					return isABomb;
 				}
     			
 				else if ( bomb != null ) {
-					isABomb = true;
 
+					// Must return a true from here on out so the original event is canceled.
+					// Returning a true does not mean the bomb was activated.
+					isABomb = true;
+					
 //					XMaterial.GUNPOWDER;
 //					XMaterial.BLAZE_POWDER;
 //					XMaterial.WOODEN_PICKAXE;
@@ -704,7 +716,7 @@ public class PrisonUtilsMineBombs
     					
     					
     					// Set cooldown:
-    					PrisonUtilsMineBombs.addPlayerCooldown( playerUUID, bomb.getCooldownTicks() );
+    					addPlayerCooldown( playerUUID, bomb.getCooldownTicks() );
     					
     					SpigotItemStack bombs = PrisonUtilsMineBombs.getItemStackBomb( bomb );
     					
@@ -712,6 +724,7 @@ public class PrisonUtilsMineBombs
     						
     						SpigotBlock bombBlock = sBlock != null ? sBlock : (SpigotBlock) player.getLocation().getBlock();
 
+    						
 //    						// If the clicked on block is empty, then the player probably clicked on air.  
 //    						// Check the next lower block (y - 1) until a valid block is found, or until y < 1
 //    						while ( sBlock.isEmpty() && sBlock.getLocation().getBlockY() > 0 ) {
@@ -730,16 +743,6 @@ public class PrisonUtilsMineBombs
 ////        							}
 ////    							}
 //    						}
-    						
-    						// Setting activated to true indicates the bomb is live and it has
-    						// been removed from the player's inventory:
-    						bomb.setActivated( true );
-    						
-    						// Remove from inventory:
-    						itemInHand.setAmount( itemInHand.getAmount() - 1 );
-    						
-    						// Not sure if the following is needed?
-    						SpigotCompatibility.getInstance().setItemInMainHand( player, itemInHand.getBukkitStack() );
 
     						
     						
@@ -760,35 +763,65 @@ public class PrisonUtilsMineBombs
 //    										"  " + bombBlock.getLocation().getBlockY() + "  count= " + count );
     						}
     						
+    						bomb.setPlacedBombBlock( bombBlock );
+    						
 //    						Output.get().logInfo( 
 //    								"#### PrisonUtilsMineBombs:  bomb loc: " + bombBlock.getLocation().toWorldCoordinates() );
     						
     						//int throwSpeed = 2;
-
-    						// This places the item so it will float:
-    						final Item dropped = player.getWorld().dropItem( 
-    									bombBlock.getWrapper().getLocation(), bombs.getBukkitStack() );
     						
-    						dropped.setPickupDelay( Integer.MAX_VALUE );
-    						dropped.setCustomName( bomb.getName() );
+    						
+    						
+    						// check if in a mine:
+    						OnBlockBreakMines obbm = new OnBlockBreakMines();
+    						Mine mine = obbm.findMine( player, bombBlock, null, null );
+    						
+    						if ( mine == null ) {
+    							// Cannot set the bomb outside of a mine, so cancel:
+    							return isABomb;
+    						}
+    						
+    						// Setting activated to true indicates the bomb is live and it has
+    						// been removed from the player's inventory:
+    						bomb.setActivated( true );
+    						
+    						// Remove from inventory:
+    						itemInHand.setAmount( itemInHand.getAmount() - 1 );
+    						
+    						// Not sure if the following is needed?
+    						SpigotCompatibility.getInstance().setItemInMainHand( player, itemInHand.getBukkitStack() );
+
+    						
+    						PlacedMineBombItemTask submitPlacedMineBombItem = 
+									submitPlacedMineBombItemTask( bomb, bombBlock, bombs );
+//    						placeMineBombItem( bomb, bombBlock, bombs );
+    						
+    						// This places the item so it will float:
+//    						final Item dropped = player.getWorld().dropItem( 
+//    									bombBlock.getWrapper().getLocation(), bombs.getBukkitStack() );
+    						
+//    						dropped.setPickupDelay( Integer.MAX_VALUE );
+//    						dropped.setCustomName( bomb.getName() );
     						//dropped.setVelocity(player.getLocation().getDirection().multiply( throwSpeed ).normalize() );
     						
 //    						int delayInTicks = 5 * 20; // 5 secs
     						
     						
     						// If running MC 1.9.0 or higher, then can use the glowing feature.  Ignore for 1.8.x.
-    						if ( new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) >= 0 ) {
-    							
-    							dropped.setGlowing( bomb.isGlowing() );
-
-    							
-    							// setGravity is invalid for spigot 1.8.8:
-    							dropped.setGravity( bomb.isGravity() );
-    						}
+//    						if ( new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) >= 0 ) {
+//    							
+//    							dropped.setGlowing( bomb.isGlowing() );
+//
+//    							
+//    							// setGravity is invalid for spigot 1.8.8:
+//    							dropped.setGravity( bomb.isGravity() );
+//    						}
+    						
     						
     						
     						// Submit the bomb's task to go off:
-    						PrisonUtilsMineBombs.setoffBombDelayed( sPlayer, bomb, dropped, bombBlock );
+    						
+    						setoffBombDelayed( sPlayer, bomb, bombBlock );
     						
 
     						
@@ -817,6 +850,35 @@ public class PrisonUtilsMineBombs
     	return isABomb;
 	}
 	
+	
+	
+//	public void placeMineBombItem( MineBombData bomb, SpigotBlock sBlock, SpigotItemStack item ) {
+//	
+//		
+//		Location location = sBlock.getLocation();
+//		
+//		SpigotWorld sWorld = (SpigotWorld) location.getWorld();
+//
+//		
+//		EulerAngle arm = new EulerAngle(1, 0, 0);
+//		
+//		ArmorStand as = sWorld.getWrapper().spawn( sWorld.getBukkitLocation( location ), ArmorStand.class);
+//		as.setCustomName( bomb.getName() );
+//		as.setCustomNameVisible(false);
+//		as.setVisible(false);
+//		as.setRemoveWhenFarAway(false);
+//		as.setItemInHand( sWorld.getBukkitItemStack( item ) );
+//		as.setRightArmPose(arm);
+//		as.setRemoveWhenFarAway(false);
+//		
+//		if ( new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) >= 0 ) {
+//			
+//			as.setGlowing( bomb.isGlowing() );
+//			
+//			// setGravity is invalid for spigot 1.8.8:
+//			as.setGravity( bomb.isGravity() );
+//		}
+//	}
 
 	
 	

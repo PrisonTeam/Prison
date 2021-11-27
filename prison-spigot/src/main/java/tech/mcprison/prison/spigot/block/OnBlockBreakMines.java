@@ -30,7 +30,7 @@ public class OnBlockBreakMines
 		
 	}
 	
-	protected Mine findMine( Player player, SpigotBlock sBlock, List<Block> altBlocksSource, PrisonMinesBlockBreakEvent pmEvent )
+	public Mine findMine( Player player, SpigotBlock sBlock, List<Block> altBlocksSource, PrisonMinesBlockBreakEvent pmEvent )
 	{
 
 		Long playerUUIDLSB = Long.valueOf( player.getUniqueId().getLeastSignificantBits() );

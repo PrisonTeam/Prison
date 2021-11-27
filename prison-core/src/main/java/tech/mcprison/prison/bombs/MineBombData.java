@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
+import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 
 public class MineBombData {
@@ -118,6 +119,8 @@ public class MineBombData {
 	private TreeSet<MineBombEffectsData> soundEffects;
 	
 	private TreeSet<MineBombEffectsData> visualEffects;
+	
+	private Block placedBombBlock;
 	
 	
 	public MineBombData() {
@@ -351,5 +354,13 @@ public class MineBombData {
 	public void setVisualEffects( TreeSet<MineBombEffectsData> visualEffects ) {
 		this.visualEffects = visualEffects;
 	}
+
+	public Block getPlacedBombBlock() {
+		return placedBombBlock;
+	}
+	public void setPlacedBombBlock( Block placedBombBlock ) {
+		this.placedBombBlock = placedBombBlock;
+	}
+
 	
 }
