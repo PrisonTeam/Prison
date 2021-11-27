@@ -13,7 +13,13 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.6 2021-11-26
+# 3.2.11-alpha.7 2021-11-26
+
+
+
+
+* **3.2.11-alpha.7 2021-11-26**
+Released alpha.7. Major advancements to mine bombs.
 
 
 * **Mine Bombs: Added the use of a armor stand for holding the item, with an animation of swirling it around.**
