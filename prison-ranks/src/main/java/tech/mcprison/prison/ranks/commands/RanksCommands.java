@@ -1439,19 +1439,34 @@ public class RanksCommands
 		PlayerCachePlayerData cPlayer = PlayerCache.getInstance().getOnlinePlayer( rankPlayer );
 		
 		
+		
+		String msg1 = String.format( "&7Player Stats for&8:    &c%s", 
+				rankPlayer.getName() );
+		msgs.add( msg1 );
+
+
+		
 		String lastSeen = cPlayer == null || cPlayer.getLastSeenDate() == 0 ? 
 				"-- never -- " :
-				sdFmt.format( new Date( cPlayer.getLastSeenDate() ) );
+					sdFmt.format( new Date( cPlayer.getLastSeenDate() ) );
+		long lastSeenElapsedMs = cPlayer == null || cPlayer.getLastSeenDate() == 0 ? 
+						0 : System.currentTimeMillis() - cPlayer.getLastSeenDate();
+		String lastSeenElapsed = lastSeenElapsedMs == 0 ? 
+				"" : 
+					// less than 5 mins just show recently since its not too accurate
+					lastSeenElapsedMs < (5 * 60 * 1000) ? "-- recently --" :
+					Text.formatTimeDaysHhMmSs( System.currentTimeMillis() - cPlayer.getLastSeenDate() ) + " ago";
 		
-		String msg1 = String.format( "&7Player Stats for&8:    &c%s:    &7Last Seen: &3%s", 
-				rankPlayer.getName(), lastSeen );
-		msgs.add( msg1 );
-//		sendToPlayerAndConsole( sender, msg1 );
+		String msgLs = String.format( "  &7Last Seen: &3%s   %s", 
+				lastSeen, lastSeenElapsed );
+		msgs.add( msgLs );
+		
+		
+		
 		
 		String msg2 = String.format( "  &7Rank Cost Multiplier: &f", 
 						fFmt.format( rankPlayer.getSellAllMultiplier() ));
 		msgs.add( msg2 );
-//		sendToPlayerAndConsole( sender, msg2 );
 
 		
 		

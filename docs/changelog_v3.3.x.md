@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.7 2021-11-28
 
 
+* **Expand the last seen information on the command /ranks player, which now includes how long ago instead of just a date and time.**
+
+
 * **Add a listSeenDate to the player's cache data.**
 This will be used to track when the player was last on, and more importantly, determine if the player's cache data should be updated for stats reporting for top-n functions.
 
