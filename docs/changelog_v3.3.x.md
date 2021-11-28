@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.7 2021-11-28
 
 
+* **Minor changes to clean up auto features a bit:** move functions that are no longer used in the normal block break code to OnBlockBreakPlayerManualCore so it's not confused with the main-core functions and accidentally used.
+Also clean up the messaging and sellall usage to eliminate duplication.
+
+
 * **Fixed an issue with the mine state mutex being null.** 
 Not sure what's causing it, but I suspect it mabe an issue with loading the mine from a saved state on server startup and that field never gets initialized.  So fixed it by doing a lazy initialization on the field.
 

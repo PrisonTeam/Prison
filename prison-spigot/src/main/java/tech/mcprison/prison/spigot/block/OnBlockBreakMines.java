@@ -93,7 +93,7 @@ public class OnBlockBreakMines
 		
 		Mine mine = findMine( player, sBlock,  null, null ); 
 		
-		if ( mine == null  ) {
+		if ( mine == null ) {
 			// Prison is unable to process blocks outside of mines right now, so exit:
 			ignoreEvent = true;
 		}

@@ -527,10 +527,9 @@ public class AutoManagerFeatures
 				
 				
 				
-				// Add blocks to player's inventory IF autosell is disabled or the item had a value of ZERO
-				// which indicates it cannot be sold.  If it could not be sold, then amount would be non-zero since
-				// sold will zero out the number of drops for that item stack.
-				if ( !isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || itemStack.getAmount() != 0 ) {
+				// Add blocks to player's inventory IF autosell was unable to sell the item stack, hence
+				// it will have an amount of more than 0.
+				if ( itemStack.getAmount() > 0 ) {
 					
 					if ( Output.get().isDebug() && SellAllUtil.get() != null ) {
 						
@@ -738,71 +737,71 @@ public class AutoManagerFeatures
 	
 
 	
-	public void playerSmelt( SpigotPlayer player ) {
-		
-		List<XMaterial> smelts = new ArrayList<>();
-		
-		smelts.add( XMaterial.COBBLESTONE );
-		smelts.add( XMaterial.GOLD_ORE );
-		smelts.add( XMaterial.NETHER_GOLD_ORE );
-		smelts.add( XMaterial.DEEPSLATE_GOLD_ORE );
-		smelts.add( XMaterial.RAW_GOLD );
-		
-		smelts.add( XMaterial.IRON_ORE );
-		smelts.add( XMaterial.DEEPSLATE_IRON_ORE );
-		smelts.add( XMaterial.RAW_IRON );
-		
-		smelts.add( XMaterial.COAL_ORE );
-		smelts.add( XMaterial.DEEPSLATE_COAL_ORE );
-		
-		smelts.add( XMaterial.DIAMOND_ORE );
-		smelts.add( XMaterial.DEEPSLATE_DIAMOND_ORE );
-		
-		smelts.add( XMaterial.EMERALD_ORE );
-		smelts.add( XMaterial.DEEPSLATE_EMERALD_ORE );
-		
-		smelts.add( XMaterial.LAPIS_ORE );
-		smelts.add( XMaterial.DEEPSLATE_LAPIS_ORE );
-		
-		smelts.add( XMaterial.REDSTONE_ORE );
-		smelts.add( XMaterial.DEEPSLATE_REDSTONE_ORE );
-		
-		smelts.add( XMaterial.NETHER_QUARTZ_ORE );
-		smelts.add( XMaterial.ANCIENT_DEBRIS );
-		
-		smelts.add( XMaterial.COPPER_ORE );
-		smelts.add( XMaterial.DEEPSLATE_COPPER_ORE );
-		smelts.add( XMaterial.RAW_COPPER );
-		
-		
-		for ( XMaterial xMat : smelts ) {
-			autoFeatureSmelt( player.getWrapper(), xMat );
-		}
-
-	}
+//	public void playerSmelt( SpigotPlayer player ) {
+//		
+//		List<XMaterial> smelts = new ArrayList<>();
+//		
+//		smelts.add( XMaterial.COBBLESTONE );
+//		smelts.add( XMaterial.GOLD_ORE );
+//		smelts.add( XMaterial.NETHER_GOLD_ORE );
+//		smelts.add( XMaterial.DEEPSLATE_GOLD_ORE );
+//		smelts.add( XMaterial.RAW_GOLD );
+//		
+//		smelts.add( XMaterial.IRON_ORE );
+//		smelts.add( XMaterial.DEEPSLATE_IRON_ORE );
+//		smelts.add( XMaterial.RAW_IRON );
+//		
+//		smelts.add( XMaterial.COAL_ORE );
+//		smelts.add( XMaterial.DEEPSLATE_COAL_ORE );
+//		
+//		smelts.add( XMaterial.DIAMOND_ORE );
+//		smelts.add( XMaterial.DEEPSLATE_DIAMOND_ORE );
+//		
+//		smelts.add( XMaterial.EMERALD_ORE );
+//		smelts.add( XMaterial.DEEPSLATE_EMERALD_ORE );
+//		
+//		smelts.add( XMaterial.LAPIS_ORE );
+//		smelts.add( XMaterial.DEEPSLATE_LAPIS_ORE );
+//		
+//		smelts.add( XMaterial.REDSTONE_ORE );
+//		smelts.add( XMaterial.DEEPSLATE_REDSTONE_ORE );
+//		
+//		smelts.add( XMaterial.NETHER_QUARTZ_ORE );
+//		smelts.add( XMaterial.ANCIENT_DEBRIS );
+//		
+//		smelts.add( XMaterial.COPPER_ORE );
+//		smelts.add( XMaterial.DEEPSLATE_COPPER_ORE );
+//		smelts.add( XMaterial.RAW_COPPER );
+//		
+//		
+//		for ( XMaterial xMat : smelts ) {
+//			autoFeatureSmelt( player.getWrapper(), xMat );
+//		}
+//
+//	}
 	
-	public void playerBlock( SpigotPlayer player ) {
-		
-		List<XMaterial> blocks = new ArrayList<>();
-		
-		blocks.add( XMaterial.GOLD_INGOT );
-		blocks.add( XMaterial.IRON_INGOT );
-		blocks.add( XMaterial.COAL );
-		blocks.add( XMaterial.DIAMOND );
-		blocks.add( XMaterial.REDSTONE );
-		blocks.add( XMaterial.EMERALD );
-		blocks.add( XMaterial.QUARTZ );
-		blocks.add( XMaterial.PRISMARINE_SHARD );
-		blocks.add( XMaterial.SNOW_BLOCK );
-		blocks.add( XMaterial.GLOWSTONE_DUST );
-		blocks.add( XMaterial.LAPIS_LAZULI );
-		
-		
-		for ( XMaterial xMat : blocks ) {
-			autoFeatureBlock( player.getWrapper(), xMat );
-		}
-		
-	}
+//	public void playerBlock( SpigotPlayer player ) {
+//		
+//		List<XMaterial> blocks = new ArrayList<>();
+//		
+//		blocks.add( XMaterial.GOLD_INGOT );
+//		blocks.add( XMaterial.IRON_INGOT );
+//		blocks.add( XMaterial.COAL );
+//		blocks.add( XMaterial.DIAMOND );
+//		blocks.add( XMaterial.REDSTONE );
+//		blocks.add( XMaterial.EMERALD );
+//		blocks.add( XMaterial.QUARTZ );
+//		blocks.add( XMaterial.PRISMARINE_SHARD );
+//		blocks.add( XMaterial.SNOW_BLOCK );
+//		blocks.add( XMaterial.GLOWSTONE_DUST );
+//		blocks.add( XMaterial.LAPIS_LAZULI );
+//		
+//		
+//		for ( XMaterial xMat : blocks ) {
+//			autoFeatureBlock( player.getWrapper(), xMat );
+//		}
+//		
+//	}
 	
 	/**
 	 * <p>The List of drops must have only one ItemStack per block type (name).
@@ -877,31 +876,31 @@ public class AutoManagerFeatures
 	}
 
 	
-
-	protected void autoSmelt( boolean autoSmelt, XMaterial source, XMaterial target, Player p ) {
-
-		if ( autoSmelt && source != null && target != null ) {
-			
-			HashMap<Integer, SpigotItemStack> overflow = SpigotUtil.itemStackReplaceItems( p, source, target, 1 );
-			dropExtra( overflow, p );
-
-		}
-	}
-	
-	
-	protected void autoBlock( boolean autoBlock, XMaterial source, XMaterial target, Player p  ) {
-		autoBlock(autoBlock, source, target, 9, p );
-	}
-
-	
-	protected void autoBlock( boolean autoBlock, XMaterial source, XMaterial target, int ratio, Player p  ) {
-
-		if ( autoBlock && source != null && target != null ) {
-			HashMap<Integer, SpigotItemStack> overflow = SpigotUtil.itemStackReplaceItems( p, source, target, ratio );
-			dropExtra( overflow, p );
-			
-		}
-	}
+//
+//	protected void autoSmelt( boolean autoSmelt, XMaterial source, XMaterial target, Player p ) {
+//
+//		if ( autoSmelt && source != null && target != null ) {
+//			
+//			HashMap<Integer, SpigotItemStack> overflow = SpigotUtil.itemStackReplaceItems( p, source, target, 1 );
+//			dropExtra( overflow, p );
+//
+//		}
+//	}
+//	
+//	
+//	protected void autoBlock( boolean autoBlock, XMaterial source, XMaterial target, Player p  ) {
+//		autoBlock(autoBlock, source, target, 9, p );
+//	}
+//
+//	
+//	protected void autoBlock( boolean autoBlock, XMaterial source, XMaterial target, int ratio, Player p  ) {
+//
+//		if ( autoBlock && source != null && target != null ) {
+//			HashMap<Integer, SpigotItemStack> overflow = SpigotUtil.itemStackReplaceItems( p, source, target, ratio );
+//			dropExtra( overflow, p );
+//			
+//		}
+//	}
 
 
 
@@ -913,51 +912,77 @@ public class AutoManagerFeatures
 	 * @param player
 	 * @param block
 	 */
-	private void dropExtra( HashMap<Integer, SpigotItemStack> extra, Player player ) {
+	protected void dropExtra( HashMap<Integer, SpigotItemStack> extra, Player player ) {
 
-		if ( extra != null && extra.size() > 0 ) {
-			if (SpigotPrison.getInstance().isSellAllEnabled()) {
-
-				SellAllUtil sellAllUtil = SellAllUtil.get();
-
-				if (sellAllUtil != null && sellAllUtil.isAutoSellEnabled) {
-					if (sellAllUtil.isAutoSellPerUserToggleable) {
-						if (sellAllUtil.isPlayerAutoSellEnabled(player)) {
-							if (sellAllUtil.isAutoSellNotificationEnabled) {
-								SellAllUtil.get().sellAllSell(player, false, false, true, true, false, true);
-							} else {
-								SellAllUtil.get().sellAllSell(player, false, true, false, false, false, true);
-							}
-						}
-					} else {
-						if (sellAllUtil.isAutoSellNotificationEnabled) {
-							SellAllUtil.get().sellAllSell(player, false, false, true, true, false, true);
-						} else {
-							SellAllUtil.get().sellAllSell(player, false, true, false, false, false, true);
-						}
-					}
-
-					// Now that something might have been sold, try to add all the extra inventory items back to the
-					// player's inventory so it is not lost then pass the moreExtras along to be handled as the
-					// configurations require.
-					HashMap<Integer, SpigotItemStack> moreExtras = new HashMap<>();
-					for (SpigotItemStack itemStack : extra.values()) {
-						moreExtras.putAll(SpigotUtil.addItemToPlayerInventory(player, itemStack));
-					}
-					extra = moreExtras;
+		if ( extra != null && extra.size() > 0 && SpigotPrison.getInstance().isSellAllEnabled()) {
+			
+			SellAllUtil sellAllUtil = SellAllUtil.get();
+			
+			if (sellAllUtil != null && sellAllUtil.isAutoSellEnabled) {
+				
+				
+				if ( !sellAllUtil.isAutoSellPerUserToggleable || 
+					  sellAllUtil.isAutoSellPerUserToggleable && sellAllUtil.isPlayerAutoSellEnabled(player) ) {
+					
+					boolean saNote = sellAllUtil.isAutoSellNotificationEnabled;
+					SellAllUtil.get().sellAllSell(player, false, !saNote, saNote, saNote, false, true);
 				}
-
+				
+				
+//				if (sellAllUtil.isAutoSellPerUserToggleable) {
+//					if (sellAllUtil.isPlayerAutoSellEnabled(player)) {
+//						if (sellAllUtil.isAutoSellNotificationEnabled) {
+//							SellAllUtil.get().sellAllSell(player, false, false, true, true, false, true);
+//						} else {
+//							SellAllUtil.get().sellAllSell(player, false, true, false, false, false, true);
+//						}
+//					}
+//				} else {
+//					if (sellAllUtil.isAutoSellNotificationEnabled) {
+//						SellAllUtil.get().sellAllSell(player, false, false, true, true, false, true);
+//					} else {
+//						SellAllUtil.get().sellAllSell(player, false, true, false, false, false, true);
+//					}
+//				}
+				
+				// Now that something might have been sold, try to add all the extra inventory items back to the
+				// player's inventory so it is not lost then pass the moreExtras along to be handled as the
+				// configurations require.
+				HashMap<Integer, SpigotItemStack> moreExtras = new HashMap<>();
 				for (SpigotItemStack itemStack : extra.values()) {
+					moreExtras.putAll(SpigotUtil.addItemToPlayerInventory(player, itemStack));
+				}
+				extra = moreExtras;
+			}
+			
+
+			// drop the player's items if they should be dropped. Also check to see if 
+			// the player should be notified.  Ignore zero count itemStacks.
+			boolean needToNotify = false;
+			for (SpigotItemStack itemStack : extra.values()) {
+				
+				if ( itemStack.getAmount() > 0 ) {
 
 					if (isBoolean(AutoFeatures.dropItemsIfInventoryIsFull)) {
-
+						
 						SpigotUtil.dropPlayerItems(player, itemStack);
-						notifyPlayerThatInventoryIsFull(player);
-					} else {
-						notifyPlayerThatInventoryIsFullLosingItems(player);
 					}
+					
+					needToNotify = true;
 				}
 			}
+			
+
+			// Only send one notification, not matter how many stacks need to be dropped or lost:
+			if ( needToNotify ) {
+				if (isBoolean(AutoFeatures.dropItemsIfInventoryIsFull)) {
+					
+					notifyPlayerThatInventoryIsFull(player);
+				} else {
+					notifyPlayerThatInventoryIsFullLosingItems(player);
+				}
+			}
+			
 		}
 	}
 	
@@ -1330,173 +1355,173 @@ public class AutoManagerFeatures
 		return count;
 	}
 
-	
-	protected XMaterial autoFeatureSmelt( Player p, XMaterial source )
-	{
-		XMaterial results = source;
-		
-		boolean isAll = isBoolean( AutoFeatures.smeltAllBlocks );
-		
-//		XMaterial source = SpigotUtil.getXMaterial( block.getPrisonBlock() );
-		if ( source != null ) {
-			
-			switch ( source )
-			{
-				case COBBLESTONE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltCobblestone ), source, XMaterial.STONE, p );
-					results = XMaterial.STONE;
-					break;
-					
-				case GOLD_ORE:
-				case NETHER_GOLD_ORE:
-				case DEEPSLATE_GOLD_ORE:
-				case RAW_GOLD:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltGoldOre ), source, XMaterial.GOLD_INGOT, p );
-					results = XMaterial.GOLD_INGOT;
-					break;
-					
-				case IRON_ORE:
-				case DEEPSLATE_IRON_ORE:
-				case RAW_IRON:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltIronOre ), source, XMaterial.IRON_INGOT, p );
-					results = XMaterial.IRON_INGOT;
-					break;
-					
-				case COAL_ORE:
-				case DEEPSLATE_COAL_ORE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltCoalOre ), source, XMaterial.COAL, p );
-					results = XMaterial.COAL;
-					break;
-					
-				case DIAMOND_ORE:
-				case DEEPSLATE_DIAMOND_ORE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltDiamondlOre ), source, XMaterial.DIAMOND, p );
-					results = XMaterial.DIAMOND;
-					break;
-					
-				case EMERALD_ORE:
-				case DEEPSLATE_EMERALD_ORE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltEmeraldOre ), source, XMaterial.EMERALD, p );
-					results = XMaterial.EMERALD;
-					break;
-					
-				case LAPIS_ORE:
-				case DEEPSLATE_LAPIS_ORE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltLapisOre ), source, XMaterial.LAPIS_LAZULI, p );
-					results = XMaterial.LAPIS_LAZULI;
-					break;
-					
-				case REDSTONE_ORE:
-				case DEEPSLATE_REDSTONE_ORE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltRedstoneOre ), source, XMaterial.REDSTONE, p );
-					results = XMaterial.REDSTONE;
-					break;
-					
-				case NETHER_QUARTZ_ORE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltNetherQuartzOre ), source, XMaterial.QUARTZ, p );
-					results = XMaterial.QUARTZ;
-					break;
-					
-				case ANCIENT_DEBRIS:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltAncientDebris ), source, XMaterial.NETHERITE_SCRAP, p );
-					results = XMaterial.NETHERITE_SCRAP;
-					break;
-
-				// v1.17 !!
-				case COPPER_ORE:
-				case DEEPSLATE_COPPER_ORE:
-				case RAW_COPPER:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltCopperOre ), source, XMaterial.COPPER_INGOT, p );
-					results = XMaterial.COPPER_INGOT;
-					break;
-					
-				default:
-					break;
-			}
-		}
-		
-		
-		return results;
-	}
-
-	protected void autoFeatureBlock( Player p, XMaterial source  ) {
-
-		boolean isAll = isBoolean( AutoFeatures.smeltAllBlocks );
-
-		if ( source != null ) {
-			
-			// Any autoBlock target could be enabled, and could have multiples of 9, so perform the
-			// checks within each block type's function call.  So in one pass, could hit on more
-			// than one of these for multiple times too.
-			switch ( source )
-			{
-				case GOLD_INGOT:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockGoldBlock ), source, XMaterial.GOLD_BLOCK, p );
-					
-					break;
-					
-				case IRON_INGOT:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockIronBlock ), source, XMaterial.IRON_BLOCK, p );
-					
-					break;
-
-				case COAL:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockCoalBlock ), source, XMaterial.COAL_BLOCK, p );
-					
-					break;
-					
-				case DIAMOND:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockDiamondBlock ), source, XMaterial.DIAMOND_BLOCK, p );
-					
-					break;
-					
-				case REDSTONE:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockRedstoneBlock ), source,XMaterial.REDSTONE_BLOCK, p );
-					
-					break;
-					
-				case EMERALD:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockEmeraldBlock ), source, XMaterial.EMERALD_BLOCK, p );
-					
-					break;
-					
-				case QUARTZ:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockQuartzBlock ), source, XMaterial.QUARTZ_BLOCK, 4, p );
-					
-					break;
-					
-				case PRISMARINE_SHARD:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockPrismarineBlock ), source, XMaterial.PRISMARINE, 4, p );
-					
-					break;
-					
-				case SNOWBALL:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockSnowBlock ), source, XMaterial.SNOW_BLOCK, 4, p );
-					
-					break;
-					
-				case GLOWSTONE_DUST:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockGlowstone ), source, XMaterial.GLOWSTONE, 4, p );
-					
-					break;
-					
-				case LAPIS_LAZULI:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockLapisBlock ), source, XMaterial.LAPIS_BLOCK, p );
-					
-					break;
-					
-				case COPPER_INGOT:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockCopperBlock ), source, XMaterial.COPPER_BLOCK, p );
-					
-					break;
-					
-				default:
-					break;
-			}
-		}
-
-	}
-
+//	
+//	protected XMaterial autoFeatureSmelt( Player p, XMaterial source )
+//	{
+//		XMaterial results = source;
+//		
+//		boolean isAll = isBoolean( AutoFeatures.smeltAllBlocks );
+//		
+////		XMaterial source = SpigotUtil.getXMaterial( block.getPrisonBlock() );
+//		if ( source != null ) {
+//			
+//			switch ( source )
+//			{
+//				case COBBLESTONE:
+//					autoSmelt( isAll || isBoolean( AutoFeatures.smeltCobblestone ), source, XMaterial.STONE, p );
+//					results = XMaterial.STONE;
+//					break;
+//					
+//				case GOLD_ORE:
+//				case NETHER_GOLD_ORE:
+//				case DEEPSLATE_GOLD_ORE:
+//				case RAW_GOLD:
+//					autoSmelt( isAll || isBoolean( AutoFeatures.smeltGoldOre ), source, XMaterial.GOLD_INGOT, p );
+//					results = XMaterial.GOLD_INGOT;
+//					break;
+//					
+//				case IRON_ORE:
+//				case DEEPSLATE_IRON_ORE:
+//				case RAW_IRON:
+//					autoSmelt( isAll || isBoolean( AutoFeatures.smeltIronOre ), source, XMaterial.IRON_INGOT, p );
+//					results = XMaterial.IRON_INGOT;
+//					break;
+//					
+//				case COAL_ORE:
+//				case DEEPSLATE_COAL_ORE:
+//					autoSmelt( isAll || isBoolean( AutoFeatures.smeltCoalOre ), source, XMaterial.COAL, p );
+//					results = XMaterial.COAL;
+//					break;
+//					
+//				case DIAMOND_ORE:
+//				case DEEPSLATE_DIAMOND_ORE:
+//					autoSmelt( isAll || isBoolean( AutoFeatures.smeltDiamondlOre ), source, XMaterial.DIAMOND, p );
+//					results = XMaterial.DIAMOND;
+//					break;
+//					
+//				case EMERALD_ORE:
+//				case DEEPSLATE_EMERALD_ORE:
+//					autoSmelt( isAll || isBoolean( AutoFeatures.smeltEmeraldOre ), source, XMaterial.EMERALD, p );
+//					results = XMaterial.EMERALD;
+//					break;
+//					
+//				case LAPIS_ORE:
+//				case DEEPSLATE_LAPIS_ORE:
+//					autoSmelt( isAll || isBoolean( AutoFeatures.smeltLapisOre ), source, XMaterial.LAPIS_LAZULI, p );
+//					results = XMaterial.LAPIS_LAZULI;
+//					break;
+//					
+//				case REDSTONE_ORE:
+//				case DEEPSLATE_REDSTONE_ORE:
+//					autoSmelt( isAll || isBoolean( AutoFeatures.smeltRedstoneOre ), source, XMaterial.REDSTONE, p );
+//					results = XMaterial.REDSTONE;
+//					break;
+//					
+//				case NETHER_QUARTZ_ORE:
+//					autoSmelt( isAll || isBoolean( AutoFeatures.smeltNetherQuartzOre ), source, XMaterial.QUARTZ, p );
+//					results = XMaterial.QUARTZ;
+//					break;
+//					
+//				case ANCIENT_DEBRIS:
+//					autoSmelt( isAll || isBoolean( AutoFeatures.smeltAncientDebris ), source, XMaterial.NETHERITE_SCRAP, p );
+//					results = XMaterial.NETHERITE_SCRAP;
+//					break;
+//
+//				// v1.17 !!
+//				case COPPER_ORE:
+//				case DEEPSLATE_COPPER_ORE:
+//				case RAW_COPPER:
+//					autoSmelt( isAll || isBoolean( AutoFeatures.smeltCopperOre ), source, XMaterial.COPPER_INGOT, p );
+//					results = XMaterial.COPPER_INGOT;
+//					break;
+//					
+//				default:
+//					break;
+//			}
+//		}
+//		
+//		
+//		return results;
+//	}
+//
+//	protected void autoFeatureBlock( Player p, XMaterial source  ) {
+//
+//		boolean isAll = isBoolean( AutoFeatures.smeltAllBlocks );
+//
+//		if ( source != null ) {
+//			
+//			// Any autoBlock target could be enabled, and could have multiples of 9, so perform the
+//			// checks within each block type's function call.  So in one pass, could hit on more
+//			// than one of these for multiple times too.
+//			switch ( source )
+//			{
+//				case GOLD_INGOT:
+//					autoBlock( isAll || isBoolean( AutoFeatures.blockGoldBlock ), source, XMaterial.GOLD_BLOCK, p );
+//					
+//					break;
+//					
+//				case IRON_INGOT:
+//					autoBlock( isAll || isBoolean( AutoFeatures.blockIronBlock ), source, XMaterial.IRON_BLOCK, p );
+//					
+//					break;
+//
+//				case COAL:
+//					autoBlock( isAll || isBoolean( AutoFeatures.blockCoalBlock ), source, XMaterial.COAL_BLOCK, p );
+//					
+//					break;
+//					
+//				case DIAMOND:
+//					autoBlock( isAll || isBoolean( AutoFeatures.blockDiamondBlock ), source, XMaterial.DIAMOND_BLOCK, p );
+//					
+//					break;
+//					
+//				case REDSTONE:
+//					autoBlock( isAll || isBoolean( AutoFeatures.blockRedstoneBlock ), source,XMaterial.REDSTONE_BLOCK, p );
+//					
+//					break;
+//					
+//				case EMERALD:
+//					autoBlock( isAll || isBoolean( AutoFeatures.blockEmeraldBlock ), source, XMaterial.EMERALD_BLOCK, p );
+//					
+//					break;
+//					
+//				case QUARTZ:
+//					autoBlock( isAll || isBoolean( AutoFeatures.blockQuartzBlock ), source, XMaterial.QUARTZ_BLOCK, 4, p );
+//					
+//					break;
+//					
+//				case PRISMARINE_SHARD:
+//					autoBlock( isAll || isBoolean( AutoFeatures.blockPrismarineBlock ), source, XMaterial.PRISMARINE, 4, p );
+//					
+//					break;
+//					
+//				case SNOWBALL:
+//					autoBlock( isAll || isBoolean( AutoFeatures.blockSnowBlock ), source, XMaterial.SNOW_BLOCK, 4, p );
+//					
+//					break;
+//					
+//				case GLOWSTONE_DUST:
+//					autoBlock( isAll || isBoolean( AutoFeatures.blockGlowstone ), source, XMaterial.GLOWSTONE, 4, p );
+//					
+//					break;
+//					
+//				case LAPIS_LAZULI:
+//					autoBlock( isAll || isBoolean( AutoFeatures.blockLapisBlock ), source, XMaterial.LAPIS_BLOCK, p );
+//					
+//					break;
+//					
+//				case COPPER_INGOT:
+//					autoBlock( isAll || isBoolean( AutoFeatures.blockCopperBlock ), source, XMaterial.COPPER_BLOCK, p );
+//					
+//					break;
+//					
+//				default:
+//					break;
+//			}
+//		}
+//
+//	}
+//
 	
 	/**
 	 * <p>This processes the normal drop smelting if it's enabled.  Only the 
