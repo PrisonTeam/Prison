@@ -2503,8 +2503,8 @@ public class ListenersPrisonManager implements Listener {
                 saveConfigAutoFeatures(e, p);
             }
 
-            if (buttonName.equalsIgnoreCase("Full-Inventory-Hologram")){
-                afConfig.setFeature(AutoFeatures.hologramIfInventoryIsFull, !enabled);
+            if (buttonName.equalsIgnoreCase("Full-Inventory-ActionBar")){
+                afConfig.setFeature(AutoFeatures.actionBarMessageIfInventoryIsFull, !enabled);
                 saveConfigAutoFeatures(e,p);
             }
 

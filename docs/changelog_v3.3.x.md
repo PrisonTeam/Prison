@@ -16,6 +16,8 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.7 2021-11-27
 
 
+* **Removed from the GUI the hologram on inventory full, and replaced it with actionBar.**
+
 
 * **Some adjustments to the overflow of the drops and other inventory controls.** 
 On normal drops, disconnected autosell except if it is forced through the pmEvent.  

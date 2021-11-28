@@ -47,10 +47,10 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
                 gui.addButton(new Button(0, XMaterial.RED_STAINED_GLASS_PANE, enable, SpigotPrison.format("&cFull-Inventory-Sound Disabled")));
             }
 
-            if (afConfig.isFeatureBoolean(AutoFeatures.hologramIfInventoryIsFull)) {
-                gui.addButton(new Button(8, XMaterial.LIME_STAINED_GLASS_PANE, disable, SpigotPrison.format("&aFull-Inventory-Hologram Enabled")));
+            if (afConfig.isFeatureBoolean(AutoFeatures.actionBarMessageIfInventoryIsFull)) {
+                gui.addButton(new Button(8, XMaterial.LIME_STAINED_GLASS_PANE, disable, SpigotPrison.format("&aFull-Inventory-ActionBar Enabled")));
             } else {
-                gui.addButton(new Button(8, XMaterial.RED_STAINED_GLASS_PANE, enable, SpigotPrison.format("&cFull-Inventory-Hologram Disabled")));
+                gui.addButton(new Button(8, XMaterial.RED_STAINED_GLASS_PANE, enable, SpigotPrison.format("&cFull-Inventory-ActionBar Disabled")));
             }
 
             if (afConfig.isFeatureBoolean(AutoFeatures.isAutoManagerEnabled)) {
