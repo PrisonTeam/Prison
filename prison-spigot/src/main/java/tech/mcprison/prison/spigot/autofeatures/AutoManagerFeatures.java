@@ -507,7 +507,7 @@ public class AutoManagerFeatures
 					autosellTotal += amount;
 					
 					PlayerCache.getInstance().addPlayerEarnings( pmEvent.getSpigotPlayer(), 
-													amount, mineName );
+							amount, mineName );
 
 					if ( amount != 0 ) {
 						debugInfo.append( "(sold: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
@@ -523,6 +523,7 @@ public class AutoManagerFeatures
 					}
 					
 				}
+				
 				
 				
 				// Add blocks to player's inventory IF autosell is disabled or the item had a value of ZERO

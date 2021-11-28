@@ -577,6 +577,11 @@ public class Text {
     
     public static List<String> formatTreeMapStats( TreeMap<String,?> statMap,  
     		int columns ) {
+    	return formatTreeMapStats( statMap, columns, false );
+    }
+    
+    public static List<String> formatTreeMapStats( TreeMap<String,?> statMap,  
+    		int columns, boolean timeFormat ) {
     	
     	List<String> msgs = new ArrayList<>();
     	
@@ -603,9 +608,15 @@ public class Text {
 				value = PlaceholdersUtil.formattedKmbtSISize( intVal, 
 						( intVal < 1000 ? iFmt : dFmt ), " &9" );
 			}
-			else if ( valueObj instanceof Long ) {
+			else if ( valueObj instanceof Long && timeFormat ) {
 				
 				value = Text.formatTimeDaysHhMmSs( (Long) valueObj );
+			}
+			else if ( valueObj instanceof Long ) {
+				
+				long longVal = (Long) valueObj;
+				value = PlaceholdersUtil.formattedKmbtSISize( longVal, 
+						( longVal < 1000 ? iFmt : dFmt ), " &9" );
 			}
 			
 			String msg = String.format( "&3%s&8: &b%s", earningKey, value ).trim();

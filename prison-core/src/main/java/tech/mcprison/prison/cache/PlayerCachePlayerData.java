@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TreeMap;
 
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.PlayerMessaging;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.PrisonBlock;
@@ -70,10 +72,21 @@ public class PlayerCachePlayerData {
 	private TreeMap<String, Long> timeByMine;
 	private String lastMine = null;
 
-	private TreeMap<String, Double> earningsByMine;
 
+	private TreeMap<String, Double> earningsByMine;
 	
 	private transient TreeMap<String, Double> earningsPerMinute;
+	
+	
+	private long tokens;
+	private long tokensTotal;
+	private long tokensLastBlocksTotals;
+	
+	private TreeMap<String, Long> tokensByMine;
+	private transient TreeMap<String, Long> tokensPerMinute;
+	
+	
+	 
 	
 	
 	// This is the time when the "session" was started:
@@ -113,6 +126,11 @@ public class PlayerCachePlayerData {
 		this.earningsByMine = new TreeMap<>();
 
 		this.earningsPerMinute = new TreeMap<>();
+		
+		
+		this.tokensByMine = new TreeMap<>();
+		this.tokensPerMinute = new TreeMap<>();
+
 		
 		this.sessionType = SessionType.active;
 		
@@ -308,6 +326,14 @@ public class PlayerCachePlayerData {
 
 
 
+	/**
+	 * <p>Also generates tokens based upon blocks mined.
+	 * </p>
+	 * 
+	 * @param mine
+	 * @param blockName
+	 * @param quantity
+	 */
 	public void addBlock( String mine, String blockName, int quantity )
 	{
 		if ( quantity > 0 && blockName != null && 
@@ -326,6 +352,8 @@ public class PlayerCachePlayerData {
 			checkTimersMining( SessionType.mining, mine );
 			dirty = true;
 		}
+			
+		addTokensByBlocks( mine, quantity );
 	}
 	
 	private void addBlockByType( String blockName, int quantity ) {
@@ -359,6 +387,16 @@ public class PlayerCachePlayerData {
 		getEarningsByMine().put( mine, amt );
 	}
 	
+	private void addTokensByMine( String mine, long tokens ) {
+		long toks = 0;
+		
+		if ( getTokensByMine().containsKey( mine ) ) {
+			toks = getTokensByMine().get( mine );
+		}
+		
+		getTokensByMine().put( mine, (toks + tokens) );
+	}
+	
 	private void addTimeToMine( String mine, long miningDuration )
 	{
 		if ( mine != null && !mine.trim().isEmpty() ) {
@@ -384,15 +422,17 @@ public class PlayerCachePlayerData {
 		SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd_hh:mm");
 		String key = dateFmt.format( new Date() );
 		
-		if ( earningsPerMinute.containsKey( key )  ) {
-			earnings += earningsPerMinute.get( key ) + earnings;
+		
+		double earningsPM = earnings;
+		if ( getEarningsPerMinute().containsKey( key )  ) {
+			earningsPM += getEarningsPerMinute().get( key );
 		}
+		getEarningsPerMinute().put( key, earningsPM );
 		
-		earningsPerMinute.put( key, earnings );
 		
-		if ( earningsPerMinute.size() > 5 ) {
-			earningsPerMinute.remove( 
-					earningsPerMinute.firstEntry().getKey() );
+		if ( getEarningsPerMinute().size() > 5 ) {
+			getEarningsPerMinute().remove( 
+					getEarningsPerMinute().firstEntry().getKey() );
 		}
 		
 		if ( mineName != null && sessionType != SessionType.mining ) {
@@ -432,6 +472,118 @@ public class PlayerCachePlayerData {
 		return ( size == 0 ? 0 : ( results / size ));
 	}
 	
+	private void addTokensByBlocks( String mineName, int blocks ) {
+		
+		if ( AutoFeaturesWrapper.getInstance().isBoolean( AutoFeatures.tokensEnabled ) ) {
+			int blocksPerToken = AutoFeaturesWrapper.getInstance().getInteger( AutoFeatures.tokensBlocksPerToken );
+		
+			if ( blocksPerToken > 0 ) {
+				
+				// If blocksTotal > 10k and tokensLastBlocksTotals == 0, then this means
+				// the player was mining before tokens was enabled, so set the 
+				// tokensLastBlocksTotals to the blocks total, minus current block count.
+				if ( tokensLastBlocksTotals == 0 && blocksTotal > 10000 ) {
+					tokensLastBlocksTotals = blocksTotal - blocks;
+				}
+				
+				// tokensLastBlocksTotals should never be greater than blocksTotal:
+				if ( tokensLastBlocksTotals > blocksTotal ) {
+					tokensLastBlocksTotals = blocksTotal;
+				}
+				
+				double delta = blocksTotal - tokensLastBlocksTotals;
+				
+				double tokens = delta / (double) blocksPerToken;
+				
+				if ( tokens >= 1.0 ) {
+					long tokensLong = (long) Math.floor( tokens );
+					
+					long blocksForTokens = tokensLong * blocksPerToken;
+					tokensLastBlocksTotals += blocksForTokens;
+					
+					addTokens( tokensLong, mineName );
+					
+				}
+			}
+		}
+	}
+	
+	/**
+	 * <p>This stores the tokens from the player so they can
+	 * be averaged to find their tokens per minute. Tokens are 
+	 * automatically generated based upon blocks mined so normally 
+	 * you wouldn't have to call this function.
+	 * </p>
+	 * 
+	 * <p>If you just want to add tokens, you can pass a null for the 
+	 * mine name.
+	 * </p>
+	 * 
+	 * <p>Note: Unlike adding blocks from mines, adding tokens with a mine name
+	 * does not need to be concerned about session types.  If a mine name is
+	 * provided, then that's the mine it should be attributed to.
+	 * </p>
+	 * 
+	 * @param newTokens
+	 */
+	public void addTokens( long newTokens, String mineName ) {
+		
+		this.tokens += newTokens;
+		this.tokensTotal += newTokens;
+		
+		SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd_hh:mm");
+		String key = dateFmt.format( new Date() );
+
+		
+		long tokensPM = newTokens;
+		if ( getTokensPerMinute().containsKey( key )  ) {
+			tokensPM += getTokensPerMinute().get( key );
+		}
+		getTokensPerMinute().put( key, tokensPM );
+		
+		
+		if ( getTokensPerMinute().size() > 5 ) {
+			getTokensPerMinute().remove( 
+					getTokensPerMinute().firstEntry().getKey() );
+		}
+		
+		// If we are getting tokens from mining, then we have the mine name. 
+		// No need to mess with sessions.
+//		if ( mineName != null && sessionType != SessionType.mining ) {
+//			sessionType = SessionType.mining;
+//		}
+//		if ( mineName == null && getLastMine() != null ) {
+//			mineName = getLastMine();
+//		}
+		
+		// If earnings are within the session timeout for mining, then add the 
+		// earnings to the tokensByMine:
+		if ( mineName != null ) {
+
+			addTokensByMine( mineName, newTokens );
+		}
+		
+		dirty = true;
+	}
+	
+	/**
+	 * This returns the average tokens earned per minute for the
+	 * last 5 minutes.
+	 * 
+	 * @return
+	 */
+	public double getAverageTokensPerMinute() {
+		double results = 0;
+		
+		int size = 0;
+		for ( double value : tokensPerMinute.values() ) {
+			results += value;
+			size++;
+		}
+		
+		return ( size == 0 ? 0 : ( results / size ));
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -457,6 +609,12 @@ public class PlayerCachePlayerData {
 			.append( "  blocks: " )
 			.append( blocksByType )
 
+			.append( "  avg tokens/min: " )
+			.append( getAverageTokensPerMinute() )
+			.append( "  totalTokens: " )
+			.append( getTokensTotal() )
+			.append( "  tokens: " )
+			.append( getTokens() )
 			;
 		
 		return sb.toString();
@@ -561,6 +719,41 @@ public class PlayerCachePlayerData {
 	}
 	public void setTimeByMine( TreeMap<String, Long> timeByMine ) {
 		this.timeByMine = timeByMine;
+	}
+
+	public long getTokens() {
+		return tokens;
+	}
+	public void setTokens( long tokens ) {
+		this.tokens = tokens;
+	}
+
+	public long getTokensTotal() {
+		return tokensTotal;
+	}
+	public void setTokensTotal( long tokensTotal ) {
+		this.tokensTotal = tokensTotal;
+	}
+
+	public long getTokensLastBlocksTotals() {
+		return tokensLastBlocksTotals;
+	}
+	public void setTokensLastBlocksTotals( long tokensLastBlocksTotals ) {
+		this.tokensLastBlocksTotals = tokensLastBlocksTotals;
+	}
+
+	public TreeMap<String, Long> getTokensByMine() {
+		return tokensByMine;
+	}
+	public void setTokensByMine( TreeMap<String, Long> tokensByMine ) {
+		this.tokensByMine = tokensByMine;
+	}
+
+	public TreeMap<String, Long> getTokensPerMinute() {
+		return tokensPerMinute;
+	}
+	public void setTokensPerMinute( TreeMap<String, Long> tokensPerMinute ) {
+		this.tokensPerMinute = tokensPerMinute;
 	}
 
 	public String getLastMine() {

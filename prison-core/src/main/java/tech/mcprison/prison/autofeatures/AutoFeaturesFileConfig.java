@@ -96,6 +96,12 @@ public class AutoFeaturesFileConfig {
 //				isAutoSellPerBlockBreakInlinedEnabled(general, false),
 				
 				
+			tokens(options),
+				
+				tokensEnabled( tokens, false ),
+				tokensBlocksPerToken( tokens, 100 ),
+				
+				
 			permissions(options),
 			
 				permissionAutoPickup(permissions, "prison.automanager.pickup"),

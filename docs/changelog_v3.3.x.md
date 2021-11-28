@@ -13,8 +13,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.7 2021-11-26
+# 3.2.11-alpha.7 2021-11-27
 
+
+* **Prison Tokens:  Prison now is able to auto generate player tokens based upon blocks mined.**
+It's enabled through AutoFeatures config file's setting 'tokensEnabled' and is able to set the blocks per token earnings rate with 'tokensBlocksPerToken'.
+More features will be added soon, such admin functions and top-n token holders.... etc... 
 
 
 

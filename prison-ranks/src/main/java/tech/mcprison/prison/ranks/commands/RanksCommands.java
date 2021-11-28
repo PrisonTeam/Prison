@@ -13,6 +13,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.chat.FancyMessage;
@@ -1550,6 +1551,27 @@ public class RanksCommands
 				msgs.addAll( 
 						Text.formatTreeMapStats(cPlayer.getEarningsByMine(), 5 ) );	
 				
+				
+				if ( cPlayer.getTokens() > 0 || cPlayer.getTokensTotal() > 0 ||
+						cPlayer.getTokensByMine().size() > 0 ) {
+					
+					msgs.add( String.format( 
+							"  Tokens By Mine:    &2Tokens: &3%s   &2Avg Tokens per min: &3%s  " +
+									"", 
+							dFmt.format( cPlayer.getTokens() ),
+							dFmt.format( cPlayer.getAverageTokensPerMinute() )) );
+					
+					msgs.add( String.format( 
+							"                    &2Tokens Total: &3%s   &2Tokens per Block: &3%d  " +
+									"", 
+									dFmt.format( cPlayer.getTokensTotal() ),
+									AutoFeaturesWrapper.getInstance().getInteger( AutoFeatures.tokensBlocksPerToken )) );
+					
+					msgs.addAll( 
+							Text.formatTreeMapStats(cPlayer.getTokensByMine(), 5 ) );	
+				}
+				
+				
 				msgs.add( String.format( 
 						"  &7Timings By Mine&8:    &2Online&8: &3%s    &2Mining&8: &3%s", 
 						Text.formatTimeDaysHhMmSs( cPlayer.getOnlineTimeTotal() ),
@@ -1557,7 +1579,7 @@ public class RanksCommands
 						);
 				
 				msgs.addAll( 
-						Text.formatTreeMapStats(cPlayer.getTimeByMine(), 5 ) );
+						Text.formatTreeMapStats(cPlayer.getTimeByMine(), 5, true ) );
 				
 				
 				// Print all earnings for all mines:
