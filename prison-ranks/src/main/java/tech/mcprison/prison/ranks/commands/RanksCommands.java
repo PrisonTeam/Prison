@@ -1,8 +1,10 @@
 package tech.mcprison.prison.ranks.commands;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +14,8 @@ import java.util.Set;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
-import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.chat.FancyMessage;
@@ -1423,16 +1425,29 @@ public class RanksCommands
     	}
 
     	List<String> msgs = new ArrayList<>();
+
+    	DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+    	DecimalFormat fFmt = new DecimalFormat("0.0000");
+    	DecimalFormat pFmt = new DecimalFormat("#,##0.0000");
+		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
     	
     	
     	PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
 		RankPlayer rankPlayer = pm.getPlayer(player.getUUID(), player.getName());
+
+		// Get the cachedPlayer:
+		PlayerCachePlayerData cPlayer = PlayerCache.getInstance().getOnlinePlayer( rankPlayer );
 		
-		String msg1 = String.format( "&7Player Stats for&8:    &c%s: ", rankPlayer.getName() );
+		
+		String lastSeen = cPlayer == null || cPlayer.getLastSeenDate() == 0 ? 
+				"-- never -- " :
+				sdFmt.format( new Date( cPlayer.getLastSeenDate() ) );
+		
+		String msg1 = String.format( "&7Player Stats for&8:    &c%s:    &7Last Seen: &3%s", 
+				rankPlayer.getName(), lastSeen );
 		msgs.add( msg1 );
 //		sendToPlayerAndConsole( sender, msg1 );
 		
-		DecimalFormat fFmt = new DecimalFormat("0.0000");
 		String msg2 = String.format( "  &7Rank Cost Multiplier: &f", 
 						fFmt.format( rankPlayer.getSellAllMultiplier() ));
 		msgs.add( msg2 );
@@ -1441,7 +1456,6 @@ public class RanksCommands
 		
 		
 		if ( rankPlayer != null ) {
-			DecimalFormat dFmt = new DecimalFormat("#,##0.00");
 //			DecimalFormat iFmt = new DecimalFormat("#,##0");
 //			
 //			SimpleDateFormat sdFmt = new SimpleDateFormat( "HH:mm:ss" );
@@ -1524,7 +1538,6 @@ public class RanksCommands
 			}
 			
 			double sellallMultiplier = player.getSellAllMultiplier();
-			DecimalFormat pFmt = new DecimalFormat("#,##0.0000");
 			String messageNotAccurrate = ranksPlayerNotAccurateMsg();
 			String messageSellallMultiplier = ranksPlayerSellallMultiplierMsg( 
 					pFmt.format( sellallMultiplier ), 
@@ -1536,9 +1549,7 @@ public class RanksCommands
 			
 			msgs.add( "" );
 			
-			// Get the cachedPlayer:
-			PlayerCachePlayerData cPlayer = PlayerCache.getInstance().getOnlinePlayer( rankPlayer );
-			
+
 			if ( cPlayer != null ) {
 				
 				msgs.add( "PlayerCache Information:" );

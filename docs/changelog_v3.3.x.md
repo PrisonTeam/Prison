@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.7 2021-11-28
 
 
+* **Add a listSeenDate to the player's cache data.**
+This will be used to track when the player was last on, and more importantly, determine if the player's cache data should be updated for stats reporting for top-n functions.
+
+
 * **Fix a rare condition where the wrapper of the PrisonBlock is null (the actual bukkit block).**
 This may not fix everything related to this issue, but it will prevent a NPE at this location.
 

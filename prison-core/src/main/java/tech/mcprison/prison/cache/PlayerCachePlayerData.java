@@ -33,6 +33,11 @@ public class PlayerCachePlayerData {
 
 	private transient Player player;
 	
+	// lastSeenDate tries to track when the player was last on the server.
+	// This is important to know for refreshing player stats.
+	private long lastSeenDate;
+	
+	
 	private String playerUuid;
 	private String playerName;
 	
@@ -149,6 +154,12 @@ public class PlayerCachePlayerData {
 		this();
 		
 		this.player = player;
+		
+		if ( isOnline() ) {
+			
+			this.lastSeenDate = System.currentTimeMillis();
+			this.dirty = true;
+		}
 		
 		this.playerUuid = player.getUUID().toString();
 		this.playerName = player.getName();
@@ -626,6 +637,13 @@ public class PlayerCachePlayerData {
 	}
 	protected void setPlayer( Player player ) {
 		this.player = player;
+	}
+
+	public long getLastSeenDate() {
+		return lastSeenDate;
+	}
+	public void setLastSeenDate( long lastSeenDate ) {
+		this.lastSeenDate = lastSeenDate;
 	}
 
 	public File getPlayerFile() {
