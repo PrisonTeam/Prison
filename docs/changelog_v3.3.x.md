@@ -16,6 +16,12 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.7 2021-11-27
 
 
+
+* **Some adjustments to the overflow of the drops and other inventory controls.** 
+On normal drops, disconnected autosell except if it is forced through the pmEvent.  
+Fix inventory full sounds.  For 1.13 and up it had the wrong sound file.  Using something less harsh than anvil and turned down the volume which was horribly excessive with the volume set to 10, when normal is 1.
+
+
 * **Prison Tokens:  Prison now is able to auto generate player tokens based upon blocks mined.**
 It's enabled through AutoFeatures config file's setting 'tokensEnabled' and is able to set the blocks per token earnings rate with 'tokensBlocksPerToken'.
 More features will be added soon, such admin functions and top-n token holders.... etc... 

@@ -37,6 +37,7 @@ import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
+import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Text;
 
@@ -672,20 +673,24 @@ public class AutoManagerFeatures
 
 				count += itemStack.getAmount();
 				
-				if (isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || 
-						pmEvent.isForceAutoSell() ) {
+				// Since this is not auto pickup, then only autosell if set in the pmEvent:
+				if ( pmEvent.isForceAutoSell() ) {
 					
 					Player player = pmEvent.getPlayer();
 
 					double amount = SellAllUtil.get().sellAllSell( player, itemStack, false, false, true );
 					autosellTotal += amount;
 					
-					debugInfo.append( "(sold: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
+					if ( amount != 0 ) {
+						debugInfo.append( "(sold: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
+						
+						// Set to zero quantity since they have all been sold.
+						itemStack.setAmount( 0 );
+					}
 					
-					// Set to zero quantity since they have all been sold.
-					itemStack.setAmount( 0 );
 				}
-				else {
+				
+				if ( itemStack.getAmount() != 0 ) {
 					
 					if ( Output.get().isDebug() ) {
 						
@@ -990,16 +995,43 @@ public class AutoManagerFeatures
 
 			// This hard coding the Sound enum causes failures in spigot 1.8.8 since it does not exist:
 			Sound sound;
-			try {
-				sound = Sound.valueOf("ANVIL_USE"); // pre 1.9 sound
-			} catch(IllegalArgumentException e) {
-				sound = Sound.valueOf("BLOCK_ANVIL_PLACE"); // post 1.9 sound
+			
+			
+			if ( new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) < 0 ) {
+				
+				// 1.8.x
+				sound = Sound.valueOf("NOTE_PLING");
+			}
+			else if ( new BluesSpigetSemVerComparator().compareMCVersionTo( "1.13.0" ) < 0 ) {
+				
+				// 1.9.x through 1.12.x
+				sound = Sound.valueOf("BLOCK_NOTE_PLING");
 			}
 
-			player.playSound(player.getLocation(), sound, 10F, 1F);
+			else {
+				// 1.13.x and up:
+				
+				sound = Sound.valueOf("BLOCK_NOTE_BLOCK_PLING");
+			}
+			
+//			try {
+//				sound = Sound.valueOf("ANVIL_USE"); // pre 1.9 sound
+//			} catch(IllegalArgumentException e) {
+//				sound = Sound.valueOf("BLOCK_NOTE_PLING "); // post 1.9 sound
+//			}
+
+			player.playSound(player.getLocation(), sound, 4F, 1F);
 		}
 
-		(new SpigotPlayer( player )).setActionBar( message );
+		
+		if ( isBoolean( AutoFeatures.actionBarMessageIfInventoryIsFull ) ) {
+			
+			(new SpigotPlayer( player )).setActionBar( message );
+		}
+		else {
+			
+			player.sendMessage( message );
+		}
 
 		// holographic display for showing full inventory does not work well.
 //		if ( isBoolean( AutoFeatures.hologramIfInventoryIsFull ) ) {

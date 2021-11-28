@@ -77,6 +77,8 @@ public class AutoFeaturesFileConfig {
 		    			"Use the following event priorities with the blockBreakEvents: " +
 		    			"DISABLED, LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR" ),
 		    	
+		    	
+		    	
 	    	general(options),
 	    	
 		    	
@@ -88,14 +90,24 @@ public class AutoFeaturesFileConfig {
 		    	isCalculateXPEnabled(general, true),
 		    	givePlayerXPAsOrbDrops(general, false),
 		    	
-		    	dropItemsIfInventoryIsFull(general, true),
-				playSoundIfInventoryIsFull(general, true),
-				hologramIfInventoryIsFull(general, false),
+		    	
+		    	
+		    inventory(options),
+		    	
 
-				isAutoSellPerBlockBreakEnabled(general, false),
+				isAutoSellPerBlockBreakEnabled(inventory, false),
 //				isAutoSellPerBlockBreakInlinedEnabled(general, false),
 				
+				isAutoSellIfInventoryIsFull(inventory, true),
 				
+				dropItemsIfInventoryIsFull(inventory, true),
+				playSoundIfInventoryIsFull(inventory, true),
+				
+				actionBarMessageIfInventoryIsFull(inventory, true),
+//				hologramIfInventoryIsFull(general, false),
+
+				
+			
 			tokens(options),
 				
 				tokensEnabled( tokens, false ),
