@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.7 2021-11-28
 
 
+* **Fix a rare condition where the wrapper of the PrisonBlock is null (the actual bukkit block).**
+This may not fix everything related to this issue, but it will prevent a NPE at this location.
+
+
 * **Minor changes to clean up auto features a bit:** move functions that are no longer used in the normal block break code to OnBlockBreakPlayerManualCore so it's not confused with the main-core functions and accidentally used.
 Also clean up the messaging and sellall usage to eliminate duplication.
 

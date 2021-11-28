@@ -110,7 +110,7 @@ public class SpigotBlock implements Block {
     		}
     	}
 
-    	if ( results == null ) {
+    	if ( results == null && getWrapper() != null ) {
     		results = SpigotCompatibility.getInstance().getPrisonBlock( getWrapper() );
     	}
 
