@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.7 2021-11-28
 
 
+* **Fixed an issue with the mine state mutex being null.** 
+Not sure what's causing it, but I suspect it mabe an issue with loading the mine from a saved state on server startup and that field never gets initialized.  So fixed it by doing a lazy initialization on the field.
+
+
 * **Fixes a minor issue with the command '/mines set spawn' where it was requiring an option be specified.**
 I fixed it by setting a default value of "set" which does nothing, but makes the optional options, optional now. 
 

@@ -1352,6 +1352,9 @@ public abstract class MineData
 	}
 
 	public MineStateMutex getMineStateMutex() {
+		if ( mineStateMutex == null ) {
+			this.mineStateMutex = new MineStateMutex();
+		}
 		return mineStateMutex;
 	}
 }
