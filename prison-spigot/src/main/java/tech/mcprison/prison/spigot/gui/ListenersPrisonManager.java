@@ -2008,10 +2008,22 @@ public class ListenersPrisonManager implements Listener {
         	// Confirm the player has access to the mine before trying to TP them there:
         	Mine mine = PrisonMines.getInstance().getMine( mineName );
         	SpigotPlayer spigotPlayer = new SpigotPlayer(p);
-        	if (mine.hasMiningAccess(spigotPlayer) || p.hasPermission(permission + mineName) || 
-        						p.hasPermission(permission.substring(0, permission.length() - 1))) {
-        		Bukkit.dispatchCommand(p, SpigotPrison.format(guiConfig.getString("Options.Mines.CommandWarpPlugin") + " " + mineName));
-        	}
+            boolean errorHasMiningPermission = false;
+            boolean hasMiningPermission = false;
+
+            try {
+                hasMiningPermission = mine.hasMiningAccess(spigotPlayer);
+            } catch (NullPointerException ex){
+                errorHasMiningPermission = true;
+            }
+
+            if (errorHasMiningPermission && (p.hasPermission(permission + mineName) ||
+                    p.hasPermission(permission.substring(0, permission.length() - 1)))){
+                Bukkit.dispatchCommand(p, SpigotPrison.format(guiConfig.getString("Options.Mines.CommandWarpPlugin") + " " + mineName));
+            } else if (hasMiningPermission || p.hasPermission(permission + mineName) ||
+                    p.hasPermission(permission.substring(0, permission.length() - 1))){
+                Bukkit.dispatchCommand(p, SpigotPrison.format(guiConfig.getString("Options.Mines.CommandWarpPlugin") + " " + mineName));
+            }
         }
     }
 
