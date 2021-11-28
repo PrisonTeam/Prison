@@ -466,7 +466,8 @@ public class MinesCommands
     		onlyPlayers = true, permissions = "mines.set")
     public void spawnpointCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
-        @Arg(name = "options", description = "Options: Option to remove a spawn. [*remove*]") String options ) {
+        @Arg(name = "options", def = "set",
+        		description = "Options: Option to set or remove a spawn. [set *remove*]") String options ) {
 
     	Player player = getPlayer( sender );
     	

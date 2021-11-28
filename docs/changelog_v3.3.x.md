@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.7 2021-11-27
+# 3.2.11-alpha.7 2021-11-28
+
+
+* **Fixes a minor issue with the command '/mines set spawn' where it was requiring an option be specified.**
+I fixed it by setting a default value of "set" which does nothing, but makes the optional options, optional now. 
 
 
 * **Removed from the GUI the hologram on inventory full, and replaced it with actionBar.**
