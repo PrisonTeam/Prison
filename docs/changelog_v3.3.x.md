@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.7 2021-11-28
 
 
+* **Update the last seen time.**
+But will not set dirty. If player is not active, then it will not be recorded.
+
+
 * **Expand the last seen information on the command /ranks player, which now includes how long ago instead of just a date and time.**
 
 

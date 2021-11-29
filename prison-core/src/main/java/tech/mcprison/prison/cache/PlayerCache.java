@@ -271,10 +271,16 @@ public class PlayerCache {
 			playerData = getPlayers().get( playerUuid );
 		}
 		
-		if ( playerData != null && 
-				(playerData.getPlayer() == null || !playerData.getPlayer().equals( player ) ) ) {
-			playerData.setPlayer( player );
+		if ( playerData != null  ) {
+
+			if ( playerData.getPlayer() == null || !playerData.getPlayer().equals( player )  ) {
+				
+				playerData.setPlayer( player );
+			}
+			
+			playerData.updateLastSeen();
 		}
+
 		
 		return playerData;
 	}

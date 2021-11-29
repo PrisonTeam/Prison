@@ -630,7 +630,13 @@ public class PlayerCachePlayerData {
 		
 		return sb.toString();
 	}
-	
+
+	public void updateLastSeen() {
+			
+		if ( getPlayer() != null && getPlayer().isOnline() ) {
+			lastSeenDate = System.currentTimeMillis();
+		}
+	}
 
 	protected Player getPlayer() {
 		return player;
