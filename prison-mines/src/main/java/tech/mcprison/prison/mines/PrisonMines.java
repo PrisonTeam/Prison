@@ -41,6 +41,7 @@ import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.store.Database;
 import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.util.Text;
 
 /**
  * The Prison 3 Mines Module
@@ -334,7 +335,7 @@ public class PrisonMines extends Module {
     }
 
     public Mine getMine(String mineName) {
-    	return getMineManager().getMine(mineName);
+    	return getMineManager().getMine( Text.stripColor( mineName ) );
     }
     
     public LocaleManager getMinesMessages() {

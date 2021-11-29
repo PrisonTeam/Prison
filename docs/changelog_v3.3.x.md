@@ -13,7 +13,17 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.7 2021-11-28
+# 3.2.11-alpha.8 2021-11-29
+
+
+* **Fixed issue with getMine not striping color codes, but in the function before this one is called, it strips them to check to see if the mine name is valid.**
+
+
+
+
+**3.2.11-alpha.8 2021-11-28**
+Release v3.2.11-alpha.8.
+
 
 
 * **Update the last seen time.**
