@@ -918,7 +918,12 @@ public class AutoManagerFeatures
 			
 			SellAllUtil sellAllUtil = SellAllUtil.get();
 			
-			if (sellAllUtil != null && sellAllUtil.isAutoSellEnabled) {
+
+			// On inventory is full, will auto sell if auto sell is enabled in either
+			// the sellall configs, or the auto feature configs.
+			if (sellAllUtil != null && (
+					sellAllUtil.isAutoSellEnabled ||
+					isBoolean(AutoFeatures.isAutoSellIfInventoryIsFull) )) {
 				
 				
 				if ( !sellAllUtil.isAutoSellPerUserToggleable || 

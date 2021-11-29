@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.8 2021-11-29
 
 
+* **Fixed the auto sell command within the auto features to include the ability to use autosell based upon the auto features settings.**
+
+
 * **Fixed issue with a block break event happening outside of a mine, which will result in mine being null.**
 
 
