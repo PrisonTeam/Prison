@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.8 2021-11-29
 
 
+* **Fixed issue with a block break event happening outside of a mine, which will result in mine being null.**
+
+
+
 * **Fixed issue with getMine not striping color codes, but in the function before this one is called, it strips them to check to see if the mine name is valid.**
 
 

@@ -97,23 +97,24 @@ public class OnBlockBreakMines
 			// Prison is unable to process blocks outside of mines right now, so exit:
 			ignoreEvent = true;
 		}
-		
-		// If not minable, then display message and exit.
-		if ( !mine.getMineStateMutex().isMinable() ) {
+		else {
 			
-			SpigotPlayer sPlayer = new SpigotPlayer( player );
-			sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
-			event.setCancelled( true );
-			ignoreEvent = true;
+			// If not minable, then display message and exit.
+			if ( !mine.getMineStateMutex().isMinable() ) {
+				
+				SpigotPlayer sPlayer = new SpigotPlayer( player );
+				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
+				event.setCancelled( true );
+				ignoreEvent = true;
+			}
+			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
+			
+			// If ignore all block events, then exit this function without logging anything:
+			if ( targetBlock.isIgnoreAllBlockEvents() ) {
+				event.setCancelled( true );
+				ignoreEvent = true;
+			}
 		}
-		MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
-		
-		// If ignore all block events, then exit this function without logging anything:
-		if ( targetBlock.isIgnoreAllBlockEvents() ) {
-			event.setCancelled( true );
-			ignoreEvent = true;
-		}
-
 		
 		return ignoreEvent;
 	}
