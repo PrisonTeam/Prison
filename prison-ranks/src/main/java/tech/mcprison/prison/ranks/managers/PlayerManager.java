@@ -79,6 +79,7 @@ public class PlayerManager
     	super("PlayerMangager");
     	
         this.collection = collection;
+        
         this.players = new ArrayList<>();
         this.playersByName = new TreeMap<>();
         
@@ -91,30 +92,30 @@ public class PlayerManager
      * Methods
      */
 
-    /**
-     * Loads a player from a file and stores it in the registry for use on the server.
-     *
-     * @param playerFile The key that the player data is stored as. Case-sensitive.
-     * @throws IOException If the file could not be read, or if the file does not exist.
-     */
-    public void loadPlayer(String playerFile) throws IOException {
-        Document document = collection.get(playerFile).orElseThrow(IOException::new);
-        
-        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
-
-        RankPlayer rankPlayer = rankPlayerFactory.createRankPlayer(document);
-        
-        players.add( rankPlayer );
-        
-        // add by uuid:
-        playersByName.put( rankPlayer.getUUID().toString(), rankPlayer );
-        
-        // add by name:
-        if ( rankPlayer.getNames().size() > 0 ) {
-        	playersByName.put( rankPlayer.getDisplayName(), rankPlayer );
-        	
-        }
-    }
+//    /**
+//     * Loads a player from a file and stores it in the registry for use on the server.
+//     *
+//     * @param playerFile The key that the player data is stored as. Case-sensitive.
+//     * @throws IOException If the file could not be read, or if the file does not exist.
+//     */
+//    public void loadPlayer(String playerFile) throws IOException {
+//        Document document = collection.get(playerFile).orElseThrow(IOException::new);
+//        
+//        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+//
+//        RankPlayer rankPlayer = rankPlayerFactory.createRankPlayer(document);
+//        
+//        players.add( rankPlayer );
+//        
+//        // add by uuid:
+//        playersByName.put( rankPlayer.getUUID().toString(), rankPlayer );
+//        
+//        // add by name:
+//        if ( rankPlayer.getNames().size() > 0 ) {
+//        	playersByName.put( rankPlayer.getDisplayName(), rankPlayer );
+//        	
+//        }
+//    }
 
     /**
      * Loads every player in the specified playerFolder.
@@ -122,14 +123,32 @@ public class PlayerManager
      * @throws IOException If one of the files could not be read, or if the playerFolder does not exist.
      */
     public void loadPlayers() throws IOException {
-        List<Document> players = collection.getAll();
+        List<Document> playerDocss = collection.getAll();
         
         final RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+        
+        for ( Document playerDocument : playerDocss )
+		{
+        	RankPlayer rankPlayer = rankPlayerFactory.createRankPlayer(playerDocument);
+            
+            players.add( rankPlayer );
+            
+            // add by uuid:
+            playersByName.put( rankPlayer.getUUID().toString(), rankPlayer );
+            
+            // add by name:
+            if ( rankPlayer.getNames().size() > 0 ) {
+            	playersByName.put( rankPlayer.getDisplayName(), rankPlayer );
+            	
+            }
+		}
+        
+        
 
-        players.forEach(
-        		document -> 
-        			this.players.add(
-        					rankPlayerFactory.createRankPlayer(document) ));
+//        players.forEach(
+//        		document -> 
+//        			this.players.add(
+//        					rankPlayerFactory.createRankPlayer(document) ));
     }
 
     /**

@@ -13,7 +13,18 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.8 2021-11-29
+# 3.2.11-alpha.8 2021-11-30
+
+
+* **Rank data refactoring.  A few changes to get this working. The ladderRanks collection was not being setup was the main issue.**
+
+
+* **Rank data refactoring.  A few changes to get this to work well.**
+
+
+* **Major refactoring of Rank Player data objects.**
+This is to transition to easier use of player objects in prison.  Some of the key classes have been moved from Ranks module to Core module, with the removal of rank functions being moved back to the ranks module.
+This is a work in progress and does not yet work.  The player's ladders and ranks have not been linked together yet.
 
 
 * **Fixed the auto sell command within the auto features to include the ability to use autosell based upon the auto features settings.**

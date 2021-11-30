@@ -40,8 +40,18 @@ public class RankPlayerFactory
 	        
 
 	        for (String key : ranksLocal.keySet()) {
-	        	rankPlayer.getRanksRefs().put(key, ConversionUtil.doubleToInt(ranksLocal.get(key)));
+	        	
+	        	int rankId = ConversionUtil.doubleToInt(ranksLocal.get(key));
+	        	rankPlayer.getRanksRefs().put(key, rankId );
+	        	
 	        }
+	        
+	        
+	        // Sets up the Ladder and Rank objects:
+	        setupLadderRanks( rankPlayer );
+	        
+	        
+	        
 	        
 //	        for (String key : prestigeLocal.keySet()) {
 //	            prestige.put(key, RankUtil.doubleToInt(prestigeLocal.get(key)));
@@ -179,39 +189,72 @@ public class RankPlayerFactory
     }
     
     
-	/**
-     * Returns all ladders this player is a part of, along with each rank the player has in that ladder.
-     *
-     * @return The map containing this data.
-     */
-    public Map<RankLadder, PlayerRank> getLadderRanks( RankPlayer rankPlayer ) {
+//	/**
+//     * Returns all ladders this player is a part of, along with each rank the player has in that ladder.
+//     *
+//     * @return The map containing this data.
+//     */
+//    public Map<RankLadder, PlayerRank> getLadderRanksx( RankPlayer rankPlayer ) {
+//    	
+//    	if ( rankPlayer.getLadderRanks().isEmpty() && !rankPlayer.getRanksRefs().isEmpty() ) {
+//    		
+//    		//Map<RankLadder, Rank> ret = new HashMap<>();
+//    		
+//    		for (Map.Entry<String, Integer> entry : rankPlayer.getRanksRefs().entrySet()) {
+//    			RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(entry.getKey());
+//    			
+//    			if ( ladder == null ) {
+//    				continue; // Skip it
+//    			}
+//    			
+//    			Rank rank = PrisonRanks.getInstance().getRankManager().getRank(entry.getValue());
+//    			if ( rank == null ) {
+//    				continue; // Skip it
+//    			}
+//    			
+//    			PlayerRank pRank = new PlayerRank( rank );
+//    			
+//    			rankPlayer.getLadderRanks().put(ladder, pRank);
+//    		}
+//    		
+//    		// Need to recalculate all rank multipliers:
+//    		rankPlayer.recalculateRankMultipliers();
+//    	}
+//
+//        return rankPlayer.getLadderRanks();
+//    }
+
+    
+    public void setupLadderRanks( RankPlayer rankPlayer ) {
     	
     	if ( rankPlayer.getLadderRanks().isEmpty() && !rankPlayer.getRanksRefs().isEmpty() ) {
     		
     		//Map<RankLadder, Rank> ret = new HashMap<>();
     		
     		for (Map.Entry<String, Integer> entry : rankPlayer.getRanksRefs().entrySet()) {
-    			RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(entry.getKey());
+    			String ladderName = entry.getKey();
+    			int rankId = entry.getValue();
     			
-    			if ( ladder == null ) {
-    				continue; // Skip it
+    			RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
+    			
+    			if ( ladder != null ) {
+    				
+    	        	for ( Rank rank : ladder.getRanks() ) {
+    	        		if ( rank.getId() == rankId ) {
+    	        			
+    	        			PlayerRank pRank = createPlayerRank( rank );
+    	        			rankPlayer.getLadderRanks().put( ladder, pRank );
+    	        			
+    	        			break;
+    	        		}
+    				}
     			}
-    			
-    			Rank rank = PrisonRanks.getInstance().getRankManager().getRank(entry.getValue());
-    			if ( rank == null ) {
-    				continue; // Skip it
-    			}
-    			
-    			PlayerRank pRank = new PlayerRank( rank );
-    			
-    			rankPlayer.getLadderRanks().put(ladder, pRank);
     		}
     		
     		// Need to recalculate all rank multipliers:
     		rankPlayer.recalculateRankMultipliers();
     	}
 
-        return rankPlayer.getLadderRanks();
     }
 
     

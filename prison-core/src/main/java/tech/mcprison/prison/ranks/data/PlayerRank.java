@@ -34,6 +34,12 @@ public class PlayerRank
 //		this.rankCost = rank.getCost() * (1.0 + rankMultiplier);
 	}
 	
+	@Override
+	public String toString() {
+		return "PlayerRank: " + rank.getName() + " (" + rank.getId() + 
+				" mult: " + rankMultiplier + " cost: " + rankCost + ")";
+	}
+	
 	public void applyMultiplier( double rankMultiplier ) {
 		
 		this.rankMultiplier = rankMultiplier;

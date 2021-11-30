@@ -153,15 +153,17 @@ public class PrisonRanks
 //        rankManager.connectRanks();
 
         
-        for ( Rank rank : rankManager.getRanks() ) {
-        	
-        	if ( rank.getLadder() == null ) {
-    			// Hook up the ladder if it has not been setup yet:
-    			RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( rank );
-    			
-    			rank.setLadder( ladder );
-        	}
-        }
+        
+        // NOTE: The following is not needed since the ladders are already hooked up to the ranks.
+//        for ( Rank rank : rankManager.getRanks() ) {
+//        	
+//        	if ( rank.getLadder() == null ) {
+//    			// Hook up the ladder if it has not been setup yet:
+//    			RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( rank );
+//    			
+//    			rank.setLadder( ladder );
+//        	}
+//        }
         
         
         // Verify that all ranks that use currencies have valid currencies:
