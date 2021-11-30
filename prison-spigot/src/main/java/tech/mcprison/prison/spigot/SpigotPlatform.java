@@ -86,6 +86,7 @@ import tech.mcprison.prison.ranks.commands.RanksCommands;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
@@ -1260,8 +1261,10 @@ public class SpigotPlatform
     		Player player = pm.getPlayer( sender );
     		RankPlayer rankPlayer = pm.getPlayer( player );
 
-    		if ( rankPlayer != null && rankPlayer.getRank( "default" ) != null ) {
-    			PlayerRank pRank = rankPlayer.getRank( "default" );
+    		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+    		
+    		if ( rankPlayer != null && rankPlayerFactory.getRank( rankPlayer, "default" ) != null ) {
+    			PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, "default" );
     			
     			Rank rank = pRank.getRank();
     			

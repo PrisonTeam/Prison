@@ -22,11 +22,7 @@ import java.util.List;
 
 import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
-import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.ranks.PrisonRanks;
-import tech.mcprison.prison.ranks.RankUtil;
 import tech.mcprison.prison.sorting.PrisonSortable;
-import tech.mcprison.prison.store.Document;
 
 /**
  * Represents a single rank.
@@ -34,7 +30,7 @@ import tech.mcprison.prison.store.Document;
  * @author Faizaan A. Datoo
  */
 public class Rank
-		extends RankMessages
+		//extends RankMessages
 		implements PrisonSortable,
 					ModuleElement {
 
@@ -131,112 +127,112 @@ public class Rank
     	this.name = name;
     }
 
-    @SuppressWarnings( "unchecked" )
-	public Rank(Document document) {
-    	this();
-    	
-        try
-		{
-//        	Object pos = document.get("position");
-//        	this.position = RankUtil.doubleToInt( pos == null ? 0.0d : pos );
-        	
-			this.id = RankUtil.doubleToInt(document.get("id"));
-			this.name = (String) document.get("name");
-			this.tag = (String) document.get("tag");
-			this.cost = (double) document.get("cost");
-			
-			String currency = (String) document.get("currency");
-			this.currency = (currency == null || 
-					"null".equalsIgnoreCase( currency ) ? null : currency);
-
-			getRankUpCommands().clear();
-			Object cmds = document.get("commands");
-			if ( cmds != null ) {
-
-				List<String> commands = (List<String>) cmds;
-				for ( String cmd : commands ) {
-					if ( cmd != null ) {
-						getRankUpCommands().add( cmd );
-					}
-				}
-				
-				// This was allowing nulls to be added to the live commands... 
-//				this.rankUpCommands = (List<String>) cmds;
-			}
-			
-			getMines().clear();
-			getMineStrings().clear();
-			Object minesObj = document.get("mines");
-			if ( minesObj != null ) {
-				List<String> mineStrings = (List<String>) minesObj;
-				setMineStrings( mineStrings );
-			}
-			
-			
-//			getPermissions().clear();
-//			Object perms = document.get( "permissions" );
-//			if ( perms != null ) {
-//				List<String> permissions = (List<String>) perms;
-//				for ( String permission : permissions ) {
-//					getPermissions().add( permission );
-//				}
-//			}
-//	        
+//    @SuppressWarnings( "unchecked" )
+//	public Rank(Document document) {
+//    	this();
+//    	
+//        try
+//		{
+////        	Object pos = document.get("position");
+////        	this.position = RankUtil.doubleToInt( pos == null ? 0.0d : pos );
+//        	
+//			this.id = RankUtil.doubleToInt(document.get("id"));
+//			this.name = (String) document.get("name");
+//			this.tag = (String) document.get("tag");
+//			this.cost = (double) document.get("cost");
 //			
-//			getPermissionGroups().clear();
-//			Object permsGroups = document.get( "permissionGroups" );
-//			if ( perms != null ) {
-//				List<String> permissionGroups = (List<String>) permsGroups;
-//				for ( String permissionGroup : permissionGroups ) {
-//					getPermissionGroups().add( permissionGroup );
+//			String currency = (String) document.get("currency");
+//			this.currency = (currency == null || 
+//					"null".equalsIgnoreCase( currency ) ? null : currency);
+//
+//			getRankUpCommands().clear();
+//			Object cmds = document.get("commands");
+//			if ( cmds != null ) {
+//
+//				List<String> commands = (List<String>) cmds;
+//				for ( String cmd : commands ) {
+//					if ( cmd != null ) {
+//						getRankUpCommands().add( cmd );
+//					}
 //				}
+//				
+//				// This was allowing nulls to be added to the live commands... 
+////				this.rankUpCommands = (List<String>) cmds;
 //			}
-			
-		}
-		catch ( Exception e )
-		{
-			String message = rankFailureLoadingRanksMsg( Integer.toString( this.id ),
-					(this.name == null ? "null" : this.name ),
-					e.getMessage() );
-			
-			Output.get().logError( message );
-		}
-    }
+//			
+//			getMines().clear();
+//			getMineStrings().clear();
+//			Object minesObj = document.get("mines");
+//			if ( minesObj != null ) {
+//				List<String> mineStrings = (List<String>) minesObj;
+//				setMineStrings( mineStrings );
+//			}
+//			
+//			
+////			getPermissions().clear();
+////			Object perms = document.get( "permissions" );
+////			if ( perms != null ) {
+////				List<String> permissions = (List<String>) perms;
+////				for ( String permission : permissions ) {
+////					getPermissions().add( permission );
+////				}
+////			}
+////	        
+////			
+////			getPermissionGroups().clear();
+////			Object permsGroups = document.get( "permissionGroups" );
+////			if ( perms != null ) {
+////				List<String> permissionGroups = (List<String>) permsGroups;
+////				for ( String permissionGroup : permissionGroups ) {
+////					getPermissionGroups().add( permissionGroup );
+////				}
+////			}
+//			
+//		}
+//		catch ( Exception e )
+//		{
+//			String message = rankFailureLoadingRanksMsg( Integer.toString( this.id ),
+//					(this.name == null ? "null" : this.name ),
+//					e.getMessage() );
+//			
+//			Output.get().logError( message );
+//		}
+//    }
 
-    public Document toDocument() {
-        Document ret = new Document();
-//        ret.put("position", this.position );
-        ret.put("id", this.id);
-        ret.put("name", this.name);
-        ret.put("tag", this.tag);
-        ret.put("cost", this.cost);
-        ret.put("currency", this.currency);
-        
-        List<String> cmds = new ArrayList<>();
-        for ( String cmd : getRankUpCommands() ) {
-        	// Filters out possible nulls:
-			if ( cmd != null ) {
-				cmds.add( cmd );
-			}
-		}
-        ret.put("commands", cmds);
-        
-        List<String> mineStrings = new ArrayList<>();
-        if ( getMines() != null ) {
-        	for ( ModuleElement mine : getMines() ) {
-        		 String mineString = mine.getModuleElementType() + "," + mine.getName() + "," + 
-        				 mine.getId() + "," + mine.getTag();
-        		 mineStrings.add( mineString );
-			}
-        }
-        ret.put("mines", mineStrings);
-        
-//        ret.put( "permissions", getPermissions() );
-//        ret.put( "permissionGroups", getPermissionGroups() );
-        
-        return ret;
-    }
-    
+//    public Document toDocument() {
+//        Document ret = new Document();
+////        ret.put("position", this.position );
+//        ret.put("id", this.id);
+//        ret.put("name", this.name);
+//        ret.put("tag", this.tag);
+//        ret.put("cost", this.cost);
+//        ret.put("currency", this.currency);
+//        
+//        List<String> cmds = new ArrayList<>();
+//        for ( String cmd : getRankUpCommands() ) {
+//        	// Filters out possible nulls:
+//			if ( cmd != null ) {
+//				cmds.add( cmd );
+//			}
+//		}
+//        ret.put("commands", cmds);
+//        
+//        List<String> mineStrings = new ArrayList<>();
+//        if ( getMines() != null ) {
+//        	for ( ModuleElement mine : getMines() ) {
+//        		 String mineString = mine.getModuleElementType() + "," + mine.getName() + "," + 
+//        				 mine.getId() + "," + mine.getTag();
+//        		 mineStrings.add( mineString );
+//			}
+//        }
+//        ret.put("mines", mineStrings);
+//        
+////        ret.put( "permissions", getPermissions() );
+////        ret.put( "permissionGroups", getPermissionGroups() );
+//        
+//        return ret;
+//    }
+//    
     
 
 //    /**
@@ -320,10 +316,10 @@ public class Rank
     
     
     public RankLadder getLadder() {
-    	if ( ladder == null ) {
-    		
-    		ladder = PrisonRanks.getInstance().getLadderManager().getLadder( this );
-    	}
+//    	if ( ladder == null ) {
+//    		
+//    		ladder = PrisonRanks.getInstance().getLadderManager().getLadder( this );
+//    	}
     	
     	return ladder;
     }
@@ -442,6 +438,21 @@ public class Rank
 		this.tag = tag;
 	}
 
+	/**
+	 * <p>This is publicly available as "raw" to underscore that it is not an
+	 * adjusted cost value.
+	 * </p>
+	 * 
+	 * @param rank
+	 * @return
+	 */
+	public double getRawRankCost() {
+		return cost;
+	}
+	public void setRawRankCost( double cost ) {
+		this.cost = cost;
+	}
+	
 	protected double getCost() {
 		return cost;
 	}

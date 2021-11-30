@@ -48,8 +48,10 @@ import tech.mcprison.prison.ranks.commands.RankUpCommand;
 import tech.mcprison.prison.ranks.commands.RanksCommands;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.data.RankFactory;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.data.StatsRankPlayerBalanceData;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
@@ -179,7 +181,9 @@ public class RankManager
     public void loadRank(String rankFile) throws IOException {
         Document document = collection.get(rankFile).orElseThrow(IOException::new);
         
-        addRank( new Rank(document) );
+        RankFactory rankFactory = new RankFactory();
+        
+        addRank( rankFactory.createRank( document ) );
 //        loadedRanks.add(new Rank(document));
     }
 
@@ -191,9 +195,12 @@ public class RankManager
      */
     public void loadRanks() throws IOException {
         List<Document> ranks = collection.getAll();
+
+        RankFactory rankFactory = new RankFactory();
         
         for ( Document rankDocument : ranks ) {
-        	Rank rank = new Rank( rankDocument );
+        	
+        	Rank rank = rankFactory.createRank( rankDocument );
         	addRank( rank );
 		}
         
@@ -208,7 +215,10 @@ public class RankManager
      * @param saveFile The key to write the rank as. Case sensitive.
      */
     public void saveRank(Rank rank, String saveFile) {
-        collection.save(saveFile, rank.toDocument());
+
+    	RankFactory rankFactory = new RankFactory();
+        
+    	collection.save(saveFile, rankFactory.toDocument( rank ) );
     }
 
     /**
@@ -348,9 +358,11 @@ public class RankManager
 //        for (RankLadder ladder : PrisonRanks.getInstance().getLadderManager() .getLadder( rank )) 
         {
         	
+        	RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+        	
             // Move each player in this ladder to the new rank
             PrisonRanks.getInstance().getPlayerManager().getPlayers().forEach(rankPlayer -> {
-            	PlayerRank pRank = rankPlayer.getRank(ladder);
+            	PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
             	if ( pRank != null && pRank.getRank() != null ) {
             		
             		Rank curRank = pRank.getRank();
@@ -640,7 +652,7 @@ public class RankManager
 
 	private String getRankCost( Rank rank, PlaceholderAttribute attribute, boolean formatted )
 	{
-		double cost = PlayerRank.getRawRankCost( rank );
+		double cost = rank.getRawRankCost();
 		
 		String resultsx = null;
 		DecimalFormat dFmt = new DecimalFormat("#,##0");
@@ -788,7 +800,11 @@ public class RankManager
 					
 				case prison_rank__cost_multiplier_rankname:
 				case prison_r_cm_rankname:
-					results = Double.toString( PlayerRank.getLadderBaseRankdMultiplier( rank ) );
+					
+					RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+					PlayerRank pRank = rankPlayerFactory.createPlayerRank( rank );
+					
+					results = Double.toString( pRank.getLadderBasedRankMultiplier() );
 					break;
 					
 					
@@ -1044,7 +1060,10 @@ public class RankManager
 	{
 		double cost = 0;
 		// Get player's rank:
-		PlayerRank playerRank = rankPlayer.getRank( rank.getLadder() );
+		
+		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+		
+		PlayerRank playerRank = rankPlayerFactory.getRank( rankPlayer, rank.getLadder() );
 		if ( playerRank != null ) {
 			
 			
@@ -1062,7 +1081,9 @@ public class RankManager
 						nextRank.getPosition() < rank.getPosition() ) {
 					
 					// Need to calculate the next PlayerRank value for the next rank:
-					playerRank = new PlayerRank(nextRank);
+					
+					playerRank = rankPlayerFactory.createPlayerRank( nextRank );
+//					playerRank = new PlayerRank(nextRank);
 					
 					cost += playerRank.getRankCost();
 					nextRank = nextRank.getRankNext();

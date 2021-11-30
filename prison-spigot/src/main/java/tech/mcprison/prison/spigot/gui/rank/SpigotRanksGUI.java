@@ -10,7 +10,6 @@ import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
-import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -79,7 +78,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
             Rank rank = ladder.get().getRanks().get(i);
 
             // Can only use the raw rank costs since this is not tied to a player:
-            double rawRankCost = PlayerRank.getRawRankCost( rank );
+            double rawRankCost = rank.getRawRankCost();
             // NOTE: The following ladderBaseRankMultiplier is just for the current ladder, but the player's 
             //       adjusted rank cost is the sum of all ladder's multipliers applied to each raw rank cost.
 //            double ladderBaseRankMultiplier = PlayerRank.getLadderBaseRankdMultiplier( rank );

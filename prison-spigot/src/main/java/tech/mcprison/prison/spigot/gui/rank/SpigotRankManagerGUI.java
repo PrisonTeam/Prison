@@ -11,6 +11,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -47,8 +48,10 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
         // Decimal Rank cost format.
         DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
 
+        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+        
         RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( new SpigotPlayer(p) );
-        PlayerRank pRank = rankPlayer.getRank( rank.getLadder() );
+        PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, rank.getLadder() );
 
 
         String rankCost;

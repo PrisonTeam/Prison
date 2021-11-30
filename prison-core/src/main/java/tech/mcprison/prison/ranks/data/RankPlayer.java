@@ -20,13 +20,10 @@ package tech.mcprison.prison.ranks.data;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
-
-import com.google.gson.internal.LinkedTreeMap;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
@@ -38,12 +35,6 @@ import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.ranks.FirstJoinHandlerMessages;
-import tech.mcprison.prison.ranks.PrisonRanks;
-import tech.mcprison.prison.ranks.RankUtil;
-import tech.mcprison.prison.ranks.events.FirstJoinEvent;
-import tech.mcprison.prison.ranks.top.RankPlayerBalance;
-import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
 
@@ -72,8 +63,8 @@ public class RankPlayer
     
     private List<RankPlayerName> names;
     
-    // Block name, count
-    private HashMap<String, Integer> blocksMined;
+//    // Block name, count
+//    private HashMap<String, Integer> blocksMined;
 
     
     // For tops processing.  Need current balance.
@@ -93,6 +84,8 @@ public class RankPlayer
         this.ranksRefs = new HashMap<>();
         //this.prestige = new HashMap<>();
         
+//        this.blocksMined = new HashMap<>();
+        
         this.playerBalances = new TreeMap<>();
     }
     
@@ -108,68 +101,68 @@ public class RankPlayer
     	checkName( playerName );
     }
 
-    @SuppressWarnings( "unchecked" )
-	public RankPlayer(Document document) {
-    	this();
-    	
-        this.uid = UUID.fromString((String) document.get("uid"));
-        LinkedTreeMap<String, Object> ranksLocal =
-            (LinkedTreeMap<String, Object>) document.get("ranks");
-//        LinkedTreeMap<String, Object> prestigeLocal =
-//            (LinkedTreeMap<String, Object>) document.get("prestige");
-        
-        LinkedTreeMap<String, Object> blocksMinedLocal =
-        		(LinkedTreeMap<String, Object>) document.get("blocksMined");
-        
-        Object namesListObject = document.get( "names" );
-        
-
-        for (String key : ranksLocal.keySet()) {
-            ranksRefs.put(key, RankUtil.doubleToInt(ranksLocal.get(key)));
-        }
-        
-//        for (String key : prestigeLocal.keySet()) {
-//            prestige.put(key, RankUtil.doubleToInt(prestigeLocal.get(key)));
+//    @SuppressWarnings( "unchecked" )
+//	public RankPlayer(Document document) {
+//    	this();
+//    	
+//        this.uid = UUID.fromString((String) document.get("uid"));
+//        LinkedTreeMap<String, Object> ranksLocal =
+//            (LinkedTreeMap<String, Object>) document.get("ranks");
+////        LinkedTreeMap<String, Object> prestigeLocal =
+////            (LinkedTreeMap<String, Object>) document.get("prestige");
+//        
+//        LinkedTreeMap<String, Object> blocksMinedLocal =
+//        		(LinkedTreeMap<String, Object>) document.get("blocksMined");
+//        
+//        Object namesListObject = document.get( "names" );
+//        
+//
+//        for (String key : ranksLocal.keySet()) {
+//            ranksRefs.put(key, ConversionUtil.doubleToInt(ranksLocal.get(key)));
 //        }
-        
-        this.blocksMined = new HashMap<>();
-        if ( blocksMinedLocal != null ) {
-        	for (String key : blocksMinedLocal.keySet()) {
-        		blocksMined.put(key, RankUtil.doubleToInt(blocksMinedLocal.get(key)));
-        	}
-        }
-        
-        if ( namesListObject != null ) {
-        	
-        	for ( Object rankPlayerNameMap : (ArrayList<Object>) namesListObject ) {
-        		LinkedTreeMap<String, Object> rpnMap = (LinkedTreeMap<String, Object>) rankPlayerNameMap;
-        		
-        		if ( rpnMap.size() > 0 ) {
-        			String name = (String) rpnMap.get( "name" );
-        			long date = RankUtil.doubleToLong( rpnMap.get( "date" ) );
-        			
-        			RankPlayerName rankPlayerName = new RankPlayerName( name, date );
-        			getNames().add( rankPlayerName );
-//        			Output.get().logInfo( "RankPlayer: uuid: " + uid + " RankPlayerName: " + rankPlayerName.toString() );
-        		}
-        		
-        	}
-        }
-        
-    }
-
-    public Document toDocument() {
-        Document ret = new Document();
-        ret.put("uid", this.uid);
-        ret.put("ranks", this.ranksRefs);
-//        ret.put("prestige", this.prestige);
-        
-        ret.put("names", this.names);
-
-        ret.put("blocksMined", this.blocksMined);
-        return ret;
-    }
-
+//        
+////        for (String key : prestigeLocal.keySet()) {
+////            prestige.put(key, RankUtil.doubleToInt(prestigeLocal.get(key)));
+////        }
+//        
+//        this.blocksMined = new HashMap<>();
+//        if ( blocksMinedLocal != null ) {
+//        	for (String key : blocksMinedLocal.keySet()) {
+//        		blocksMined.put(key, ConversionUtil.doubleToInt(blocksMinedLocal.get(key)));
+//        	}
+//        }
+//        
+//        if ( namesListObject != null ) {
+//        	
+//        	for ( Object rankPlayerNameMap : (ArrayList<Object>) namesListObject ) {
+//        		LinkedTreeMap<String, Object> rpnMap = (LinkedTreeMap<String, Object>) rankPlayerNameMap;
+//        		
+//        		if ( rpnMap.size() > 0 ) {
+//        			String name = (String) rpnMap.get( "name" );
+//        			long date = ConversionUtil.doubleToLong( rpnMap.get( "date" ) );
+//        			
+//        			RankPlayerName rankPlayerName = new RankPlayerName( name, date );
+//        			getNames().add( rankPlayerName );
+////        			Output.get().logInfo( "RankPlayer: uuid: " + uid + " RankPlayerName: " + rankPlayerName.toString() );
+//        		}
+//        		
+//        	}
+//        }
+//        
+//    }
+//
+//    public Document toDocument() {
+//        Document ret = new Document();
+//        ret.put("uid", this.uid);
+//        ret.put("ranks", this.ranksRefs);
+////        ret.put("prestige", this.prestige);
+//        
+//        ret.put("names", this.names);
+//
+//        ret.put("blocksMined", this.blocksMined);
+//        return ret;
+//    }
+//
 
     @Override
     public String toString() {
@@ -261,12 +254,12 @@ public class RankPlayer
 		this.names = names;
 	}
 
-	public HashMap<String, Integer> getBlocksMined() {
-		return blocksMined;
-	}
-	public void setBlocksMined( HashMap<String, Integer> blocksMined ) {
-		this.blocksMined = blocksMined;
-	}
+//	public HashMap<String, Integer> getBlocksMined() {
+//		return blocksMined;
+//	}
+//	public void setBlocksMined( HashMap<String, Integer> blocksMined ) {
+//		this.blocksMined = blocksMined;
+//	}
 
 	/**
      * <p>This is a helper function to ensure that the given file name is 
@@ -281,44 +274,44 @@ public class RankPlayer
     }
     
     
-    /**
-     * <p>This function will check to see if the player is on the default rank on 
-     * the default ladder.  If not, then it will add them.  
-     * </p>
-     * 
-     * <p>This is safe to run on anyone, even if they already are on the default ladder.
-     * </p>
-     * 
-     * <p>Note, this will not save the player's new rank.  The save function must be
-     * managed and called outside of this.
-     * </p>
-     */
-    public void firstJoin() {
-    	
-    	RankLadder defaultLadder = PrisonRanks.getInstance().getDefaultLadder();
-    	
-    	if ( !getLadderRanks().containsKey( defaultLadder ) ) {
-    		
-    		Optional<Rank> firstRank = defaultLadder.getLowestRank();
-    		
-    		if ( firstRank.isPresent() ) {
-    			Rank rank = firstRank.get();
-    			
-    			addRank( rank );
-    			
-    			Prison.get().getEventBus().post(new FirstJoinEvent( this ));
-    			
-    			FirstJoinHandlerMessages messages = new FirstJoinHandlerMessages();
-    			Output.get().logWarn( messages.firstJoinSuccess( getName() ) );
-    			
-    		} else {
-    			
-    			FirstJoinHandlerMessages messages = new FirstJoinHandlerMessages();
-    			Output.get().logWarn( messages.firstJoinWarningNoRanksOnServer() );
-    		}
-    	}
-    	
-    }
+//    /**
+//     * <p>This function will check to see if the player is on the default rank on 
+//     * the default ladder.  If not, then it will add them.  
+//     * </p>
+//     * 
+//     * <p>This is safe to run on anyone, even if they already are on the default ladder.
+//     * </p>
+//     * 
+//     * <p>Note, this will not save the player's new rank.  The save function must be
+//     * managed and called outside of this.
+//     * </p>
+//     */
+//    public void firstJoin() {
+//    	
+//    	RankLadder defaultLadder = PrisonRanks.getInstance().getDefaultLadder();
+//    	
+//    	if ( !getLadderRanks().containsKey( defaultLadder ) ) {
+//    		
+//    		Optional<Rank> firstRank = defaultLadder.getLowestRank();
+//    		
+//    		if ( firstRank.isPresent() ) {
+//    			Rank rank = firstRank.get();
+//    			
+//    			addRank( rank );
+//    			
+//    			Prison.get().getEventBus().post(new FirstJoinEvent( this ));
+//    			
+//    			FirstJoinHandlerMessages messages = new FirstJoinHandlerMessages();
+//    			Output.get().logWarn( messages.firstJoinSuccess( getName() ) );
+//    			
+//    		} else {
+//    			
+//    			FirstJoinHandlerMessages messages = new FirstJoinHandlerMessages();
+//    			Output.get().logWarn( messages.firstJoinWarningNoRanksOnServer() );
+//    		}
+//    	}
+//    	
+//    }
     
     /**
      * Add a rank to this player.
@@ -411,78 +404,74 @@ public class RankPlayer
     	return ranksRefs.containsKey( ladderName );
     }
 
-    /**
-     * Removes a ladder from this player, including whichever rank this player had in it.
-     * Cannot remove the default ladder.
-     *
-     * @param ladderName The ladder's name.
-     */
-    public boolean removeLadder(String ladderName) {
-    	boolean results = false;
-        if ( !ladderName.equalsIgnoreCase("default") ) {
-        	Integer id = ranksRefs.remove(ladderName);
-        	results = (id != null);
-        	
-        	RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
-        	if ( ladder != null && !ladder.getName().equalsIgnoreCase( "default" ) ) {
-        		ladderRanks.remove( ladder );
-        	}
-        }
-        
-        return results;
-    }
-
-    /*
-     * Getters & Setters
-     */
-
-    /**
-     * Retrieves the rank that this player has in a certain ladder, if any.
-     *
-     * @param ladder The ladder to check.
-     * @return An optional containing the {@link Rank} if found, or empty if there isn't a rank by that ladder for this player.
-     */
-    public PlayerRank getRank(RankLadder ladder) {
-    	PlayerRank results = null;
-    	
-    	if ( ladder != null ) {
-    		
-    		Set<RankLadder> keys = ladderRanks.keySet();
-    		for ( RankLadder key : keys )
-    		{
-    			if ( key != null && key.getName().equalsIgnoreCase( ladder.getName() ) ) {
-    				results = ladderRanks.get( key );
-    			}
-    		}
-    	}
-
-    	return results;
-    	
-//        if (!ranksRefs.containsKey(ladder.getName())) {
-//            return null;
+//    /**
+//     * Removes a ladder from this player, including whichever rank this player had in it.
+//     * Cannot remove the default ladder.
+//     *
+//     * @param ladderName The ladder's name.
+//     */
+//    public boolean removeLadder(String ladderName) {
+//    	boolean results = false;
+//        if ( !ladderName.equalsIgnoreCase("default") ) {
+//        	Integer id = ranksRefs.remove(ladderName);
+//        	results = (id != null);
+//        	
+//        	RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
+//        	if ( ladder != null && !ladder.getName().equalsIgnoreCase( "default" ) ) {
+//        		ladderRanks.remove( ladder );
+//        	}
 //        }
-//        int id = ranksRefs.get(ladder.getName());
-//        return PrisonRanks.getInstance().getRankManager().getRank(id);
-    }
-    
-    /**
-     * Retrieves the rank that this player has the specified ladder.
-     *
-     * @param ladder The ladder name to check.
-     * @return The {@link Rank} if found, otherwise null;
-     */
-    public PlayerRank getRank( String ladderName ) {
-    	
-    	RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
-    	return getRank( ladder );
-    	
-//    	Rank results = null;
-//    	if (ladder != null && ranksRefs.containsKey(ladder)) {
-//    		int id = ranksRefs.get(ladder);
-//    		results = PrisonRanks.getInstance().getRankManager().getRank(id);
+//        
+//        return results;
+//    }
+
+//    /**
+//     * Retrieves the rank that this player has in a certain ladder, if any.
+//     *
+//     * @param ladder The ladder to check.
+//     * @return An optional containing the {@link Rank} if found, or empty if there isn't a rank by that ladder for this player.
+//     */
+//    public PlayerRank getRank(RankLadder ladder) {
+//    	PlayerRank results = null;
+//    	
+//    	if ( ladder != null ) {
+//    		
+//    		Set<RankLadder> keys = ladderRanks.keySet();
+//    		for ( RankLadder key : keys )
+//    		{
+//    			if ( key != null && key.getName().equalsIgnoreCase( ladder.getName() ) ) {
+//    				results = ladderRanks.get( key );
+//    			}
+//    		}
 //    	}
+//
 //    	return results;
-    }
+//    	
+////        if (!ranksRefs.containsKey(ladder.getName())) {
+////            return null;
+////        }
+////        int id = ranksRefs.get(ladder.getName());
+////        return PrisonRanks.getInstance().getRankManager().getRank(id);
+//    }
+//    
+//    /**
+//     * Retrieves the rank that this player has the specified ladder.
+//     *
+//     * @param ladder The ladder name to check.
+//     * @return The {@link Rank} if found, otherwise null;
+//     */
+//    public PlayerRank getRank( String ladderName ) {
+//    	
+//    	RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
+//    	return getRank( ladder );
+//    	
+////    	Rank results = null;
+////    	if (ladder != null && ranksRefs.containsKey(ladder)) {
+////    		int id = ranksRefs.get(ladder);
+////    		results = PrisonRanks.getInstance().getRankManager().getRank(id);
+////    	}
+////    	return results;
+//    }
 
     
 
@@ -497,42 +486,56 @@ public class RankPlayer
 		this.ranksRefs = ranks;
 	}
 
-	/**
-     * Returns all ladders this player is a part of, along with each rank the player has in that ladder.
-     *
-     * @return The map containing this data.
-     */
-    public Map<RankLadder, PlayerRank> getLadderRanks() {
-    	
-    	if ( ladderRanks.isEmpty() && !ranksRefs.isEmpty() ) {
-    		
-    		//Map<RankLadder, Rank> ret = new HashMap<>();
-    		for (Map.Entry<String, Integer> entry : ranksRefs.entrySet()) {
-    			RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(entry.getKey());
-    			
-    			if ( ladder == null ) {
-    				continue; // Skip it
-    			}
-    			
-    			Rank rank = PrisonRanks.getInstance().getRankManager().getRank(entry.getValue());
-    			if ( rank == null ) {
-    				continue; // Skip it
-    			}
-    			
-    			PlayerRank pRank = new PlayerRank( rank );
-    			
-    			ladderRanks.put(ladder, pRank);
-    		}
-    		
-    		// Need to recalculate all rank multipliers:
-    		recalculateRankMultipliers();
-    	}
+//	/**
+//     * Returns all ladders this player is a part of, along with each rank the player has in that ladder.
+//     *
+//     * @return The map containing this data.
+//     */
+//    public Map<RankLadder, PlayerRank> getLadderRanks( RankPlayer rankPlay) {
+//    	
+//    	if ( ladderRanks.isEmpty() && !ranksRefs.isEmpty() ) {
+//    		
+//    		//Map<RankLadder, Rank> ret = new HashMap<>();
+//    		
+//    		for (Map.Entry<String, Integer> entry : rankPlay.getRanksRefs().entrySet()) {
+//    			RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder(entry.getKey());
+//    			
+//    			if ( ladder == null ) {
+//    				continue; // Skip it
+//    			}
+//    			
+//    			Rank rank = PrisonRanks.getInstance().getRankManager().getRank(entry.getValue());
+//    			if ( rank == null ) {
+//    				continue; // Skip it
+//    			}
+//    			
+//    			PlayerRank pRank = new PlayerRank( rank );
+//    			
+//    			ladderRanks.put(ladder, pRank);
+//    		}
+//    		
+//    		// Need to recalculate all rank multipliers:
+//    		recalculateRankMultipliers();
+//    	}
+//
+//        return ladderRanks;
+//    }
 
-        return ladderRanks;
-    }
-
+	public TreeMap<RankLadder, PlayerRank> getLadderRanks() {
+		return ladderRanks;
+	}
+//	public void setLadderRanks( TreeMap<RankLadder, PlayerRank> ladderRanks ) {
+//		this.ladderRanks = ladderRanks;
+//	}
     
-    /**
+    public HashMap<String, Integer> getRanksRefs(){
+		return ranksRefs ;
+	}
+	public void setRanksRefs( HashMap<String, Integer> ranksRefs ) {
+		this.ranksRefs = ranksRefs;
+	}
+
+	/**
      * <p>This function will check to see if the player has the same rank as the
      * targetRank, or if the target rank is lower on the ladder than where their
      * current rank is located.  This confirms that the two ranks are on the same
@@ -548,7 +551,9 @@ public class RankPlayer
     	
     	if ( targetRank != null && targetRank.getLadder() != null ) {
     		
-    		PlayerRank pRank = getRank( targetRank.getLadder() );
+    		PlayerRank pRank = getLadderRanks().get( targetRank.getLadder() );
+    		
+//    		PlayerRank pRank = getRank( targetRank.getLadder() );
     		if ( pRank != null ) {
     			
     			Rank rank = pRank.getRank();

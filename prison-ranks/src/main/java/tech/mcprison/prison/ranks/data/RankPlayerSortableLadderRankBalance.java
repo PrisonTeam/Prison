@@ -1,12 +1,8 @@
-package tech.mcprison.prison.ranks.top;
+package tech.mcprison.prison.ranks.data;
 
 import java.util.Comparator;
 
 import tech.mcprison.prison.ranks.PrisonRanks;
-import tech.mcprison.prison.ranks.data.PlayerRank;
-import tech.mcprison.prison.ranks.data.Rank;
-import tech.mcprison.prison.ranks.data.RankLadder;
-import tech.mcprison.prison.ranks.data.RankPlayer;
 
 public class RankPlayerSortableLadderRankBalance
 	implements Comparator<RankPlayer>
@@ -85,10 +81,16 @@ public class RankPlayerSortableLadderRankBalance
 			results = 1;
 		}
 		else {
-			Rank r1 = rp1.getRank( getLadder() ) == null ? 
-							null : rp1.getRank( getLadder() ).getRank();
-			Rank r2 = rp2.getRank( getLadder() ) == null ? 
-							null : rp2.getRank( getLadder() ).getRank();
+			
+			RankLadder targetLadder = getLadder();
+			
+			PlayerRank pr1 = rp1.getLadderRanks().get( targetLadder );
+			PlayerRank pr2 = rp2.getLadderRanks().get( targetLadder );
+			
+			Rank r1 = pr1 == null ? 
+							null : pr1.getRank();
+			Rank r2 = pr2 == null ? 
+							null : pr2.getRank();
 			
 			if ( r1 == null ) {
 				results = -1;
@@ -159,10 +161,11 @@ public class RankPlayerSortableLadderRankBalance
 		if ( balance != 0 ) {
 			Rank nextRank = rank.getRankNext();
 			
-			PlayerRank pRank = rp1.getRank( rank.getLadder() );
+			PlayerRank pRank = rp1.getLadderRanks().get( rank.getLadder() );
+//			PlayerRank pRank = rp1.getRank( rank.getLadder() );
 			
 	        // This calculates the target rank, and takes in to consideration the player's existing rank:
-	        PlayerRank pRankNext = PlayerRank.getTargetPlayerRankForPlayer( rp1, nextRank );
+	        PlayerRank pRankNext = pRank.getTargetPlayerRankForPlayer( rp1, nextRank );
 
 //			PlayerRank pRankNext =  nextRank == null ? null : 
 //								new PlayerRank( nextRank, pRank.getRankMultiplier() );

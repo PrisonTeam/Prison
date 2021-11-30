@@ -26,7 +26,9 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
+import tech.mcprison.prison.ranks.data.RankLadderFactory;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
 
@@ -74,8 +76,12 @@ public class LadderManager
      * @throws IOException If the file could not be read or does not exist.
      */
     public void loadLadder(String fileKey) throws IOException {
-        Document doc = collection.get(fileKey).orElseThrow(IOException::new);
-        RankLadder ladder = new RankLadder(doc, prisonRanks);
+        
+    	Document doc = collection.get(fileKey).orElseThrow(IOException::new);
+        
+        RankLadderFactory rlFactory = new RankLadderFactory();
+        
+        RankLadder ladder = rlFactory.createRankLadder(doc, prisonRanks);
         loadedLadders.add(ladder);
         
         // Will be dirty if load a ladder and the rank name does not exist and it adds them:
@@ -91,7 +97,11 @@ public class LadderManager
      */
     public void loadLadders() throws IOException {
         List<Document> documents = collection.getAll();
-        documents.forEach(document -> loadedLadders.add(new RankLadder(document, prisonRanks)));
+        
+        final RankLadderFactory rlFactory = new RankLadderFactory();
+        
+        documents.forEach(document -> loadedLadders.add(
+        						rlFactory.createRankLadder(document, prisonRanks)) );
         
         for ( RankLadder ladder : loadedLadders ) {
         	// Will be dirty if load a ladder and the rank name does not exist and it adds them:
@@ -220,8 +230,11 @@ public class LadderManager
             	.stream()
                 .filter(rankPlayer -> rankPlayer.hasLadder(ladder.getName()))
                 .collect(Collectors.toList());
+        
+        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+        
         for (RankPlayer player : playersWithLadder) {
-            player.removeLadder(ladder.getName());
+            rankPlayerFactory.removeLadder( player, ladder.getName() );
         }
 
         // Remove it from the list...

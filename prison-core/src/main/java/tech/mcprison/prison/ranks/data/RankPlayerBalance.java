@@ -1,4 +1,4 @@
-package tech.mcprison.prison.ranks.top;
+package tech.mcprison.prison.ranks.data;
 
 public class RankPlayerBalance {
 	

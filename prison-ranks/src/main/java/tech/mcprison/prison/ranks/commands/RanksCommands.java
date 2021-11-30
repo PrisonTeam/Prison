@@ -44,6 +44,7 @@ import tech.mcprison.prison.ranks.data.PlayerRankRefreshTask;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.data.RankPlayerName;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
@@ -866,6 +867,8 @@ public class RanksCommands
         	}
         }
         
+
+        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
         
         boolean first = true;
         for (Rank rank : ladder.getRanks()) {
@@ -890,6 +893,7 @@ public class RanksCommands
 //        	String tagNoColor = Text.stripColor( tag );
         	
         	
+        	
         	// If rank list is being generated for a console or op'd player, then show the ladder's rank multiplier,
         	// but if generating for a player, then show total multiplier accross all ladders.
         	PlayerRank pRank = null;
@@ -898,12 +902,17 @@ public class RanksCommands
         	
         	if ( hasPerm || rPlayer == null ) {
         		
-        		rankCost = PlayerRank.getRawRankCost( rank );
-        		rMulti = PlayerRank.getLadderBaseRankdMultiplier( rank );
+        		rankCost = rank.getRawRankCost();
+        		
+        		pRank = rankPlayerFactory.createPlayerRank( rank );
+        		
+        		rMulti = pRank.getLadderBasedRankMultiplier();
 
         	}
         	else {
-        		pRank = PlayerRank.getTargetPlayerRankForPlayer( rPlayer, rank );
+        		pRank = rankPlayerFactory.createPlayerRank( rank );
+
+        		pRank = pRank.getTargetPlayerRankForPlayer( pRank, rPlayer, rank );
         		rankCost = pRank.getRankCost();
         		
         		rMulti = pRank.getRankMultiplier();
@@ -1004,8 +1013,14 @@ public class RanksCommands
         }
 
         if ( rPlayer != null && !"No Ladder".equals( ladder.getName() ) ) {
+        	
+//        	RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+        	
         	double ladderMultiplier = ladder.getRankCostMultiplierPerRank();
-        	double playerMultiplier = rPlayer.getRank( ladder ) != null ? rPlayer.getRank( ladder ).getRankMultiplier() : 0;
+        	
+        	PlayerRank pRank = rankPlayerFactory.getRank( rPlayer, ladder );
+        	double playerMultiplier = pRank != null ? 
+        			pRank.getRankMultiplier() : 0;
         	
         	if ( playerMultiplier == 0 ) {
         		display.addText( "&3You have no Ladder Rank Multipliers enabled. The rank costs are not adjusted." );
@@ -1028,9 +1043,12 @@ public class RanksCommands
 					if ( rLadder.getRankCostMultiplierPerRank() != 0d ) {
 						
 						Rank r = rPlayer.getLadderRanks().get( rLadder ).getRank();
+						
+						PlayerRank rpRank = rankPlayerFactory.createPlayerRank( r );
+						
 						display.addText( "&3  BaseMult: &7%7s  &3CurrMult: &7%7s  &7%s  &7%s  ", 
 								fFmt.format( rLadder.getRankCostMultiplierPerRank() ),
-								fFmt.format( PlayerRank.getLadderBaseRankdMultiplier( r )),
+								fFmt.format( rpRank.getLadderBasedRankMultiplier() ),
 								rLadder.getName(), 
 								r.getTag()
 								);
@@ -1168,10 +1186,11 @@ public class RanksCommands
         
         
         
+        
         // NOTE: Since rank info is NOT tied to a PlayerRank we cannot figure out the
         //       the actual cost, but we can calculate the ladder's multiplier.  This 
         //       will not be the player's total multiplier.
-        display.addText( ranksInfoCostMsg( PlayerRank.getRawRankCost( rank ) ));
+        display.addText( ranksInfoCostMsg( rank.getRawRankCost() ));
         
         
         
@@ -1179,7 +1198,11 @@ public class RanksCommands
         DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
         
         // The following is the rank adjusted rank multiplier
-        double rankCostMultiplier = PlayerRank.getLadderBaseRankdMultiplier( rank );
+        
+        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+        PlayerRank pRank = rankPlayerFactory.createPlayerRank( rank );
+        
+        double rankCostMultiplier = pRank.getLadderBasedRankMultiplier();
         double ladderBaseMultiplier = rank.getLadder() == null ? 0 : rank.getLadder().getRankCostMultiplierPerRank();
         
         String cmdLadderRankCostMult = "/ranks ladder rankMultiplier " + rank.getName() + " " + ladderBaseMultiplier;
@@ -1243,7 +1266,8 @@ public class RanksCommands
         }
         
         
-        PlayerRank.setRawRankCost( rank, rawCost );
+        rank.setRawRankCost( rawCost );
+//        PlayerRank.setRawRankCost( rank, rawCost );
         
         PrisonRanks.getInstance().getRankManager().saveRank(rank);
         
@@ -1486,6 +1510,9 @@ public class RanksCommands
 			}
 			
 			
+			RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+			
+			
 			Map<RankLadder, PlayerRank> rankLadders = rankPlayer.getLadderRanks();
 			
 			for ( RankLadder rankLadder : rankLadders.keySet() )
@@ -1495,7 +1522,8 @@ public class RanksCommands
 				Rank nextRank = rank.getRankNext();
 				
 		        // This calculates the target rank, and takes in to consideration the player's existing rank:
-		        PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+				PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+//				PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //				PlayerRank nextPRank = nextRank == null ? null :
 //									new PlayerRank( nextRank, pRank.getRankMultiplier() );

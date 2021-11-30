@@ -18,6 +18,7 @@ import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -132,7 +133,8 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         }
 
         Rank rank = ladder.getLowestRank().get();
-        PlayerRank prestigePlayerRank = getRankPlayer().getRank("prestiges");
+        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+        PlayerRank prestigePlayerRank = rankPlayerFactory.getRank( getRankPlayer(), "prestiges");
         Rank playerRank = prestigePlayerRank == null ? null : prestigePlayerRank.getRank();
         XMaterial materialHas;
         XMaterial materialHasNot;
@@ -165,7 +167,8 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
 
         	// Need to create a new PlayerRank specifically for the player which takes in to consideration 
         	// all of their multipliers.
-        	PlayerRank targetPlayerRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, rank );
+        	PlayerRank pRank = rankPlayerFactory.createPlayerRank( rank );
+        	PlayerRank targetPlayerRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, rank );
         	double cost = targetPlayerRank == null ? -1 : targetPlayerRank.getRankCost(); 
         	
             ButtonLore ranksLore = new ButtonLore(loreInfo, lorePrice3 + cost );

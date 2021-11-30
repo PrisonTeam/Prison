@@ -23,9 +23,6 @@ import java.util.Optional;
 
 import com.google.gson.internal.LinkedTreeMap;
 
-import tech.mcprison.prison.ranks.PrisonRanks;
-import tech.mcprison.prison.ranks.RankUtil;
-import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.sorting.PrisonSortable;
 import tech.mcprison.prison.store.Document;
 
@@ -82,131 +79,131 @@ public class RankLadder
     	this.name = name;
     }
 
-    @SuppressWarnings( "unchecked" )
-	public RankLadder(Document document, PrisonRanks prisonRanks) {
-    	this();
-    	
-    	boolean isDirty = false;
-    	
-    	this.id = RankUtil.doubleToInt(document.get("id"));
-    	this.name = (String) document.get("name");
-    	
-    	RankManager rankManager = prisonRanks.getRankManager();
-    	
-    	if ( rankManager == null ) {
-
-    		RankMessages rMessages = new RankMessages();
-    		rMessages.rankFailureLoadingRankManagerMsg( getName(), getId() );
-    		
-    		return;
-    	}
-        
-        List<LinkedTreeMap<String, Object>> ranksLocal =
-                (List<LinkedTreeMap<String, Object>>) document.get("ranks");
-
-		getRankUpCommands().clear();
-		Object cmds = document.get("commands");
-		if ( cmds != null ) {
-
-			List<String> commands = (List<String>) cmds;
-			for ( String cmd : commands ) {
-				if ( cmd != null ) {
-					getRankUpCommands().add( cmd );
-				}
-			}
-			
-			// This was allowing nulls to be added to the live commands... 
-//			this.rankUpCommands = (List<String>) cmds;
-		}
-
-        
-        this.ranks = new ArrayList<>();
-        for (LinkedTreeMap<String, Object> rank : ranksLocal) {
-        	
-        	
-        	// The only real field that is important here is rankId to tie the 
-        	// rank back to this ladder.  Name helps clarify the contents of the 
-        	// Ladder file. 
-        	int rRankId = RankUtil.doubleToInt((rank.get("rankId")));
-        	String rRankName = (String) rank.get( "rankName" );
-        	
-        	Rank rankPrison = rankManager.getRank( rRankId );
-        	
-        	if ( rankPrison != null && rankPrison.getLadder() != null ) {
-        		
-        		RankMessages rMessages = new RankMessages();
-        		rMessages.rankFailureLoadingDuplicateRankMsg( 
-        				rankPrison.getName(), rankPrison.getLadder().getName(), 
-        						getName() );
-
-        		isDirty = true;
-        	}
-        	else if ( rankPrison != null) {
-
-        		addRank( rankPrison );
-
-//        		Output.get().logInfo( "RankLadder load : " + getName() + 
-//        				"  rank= " + rankPrison.getName() + " " + rankPrison.getId() + 
-//        				 );
-        		
-//        		// if null look it up from loaded ranks:
-//        		if ( rRankName == null  ) {
-//        			rRankName = rankPrison.getName();
-//        			dirty = true;
-//        		}
-        	}
-        	else {
-        		// Rank not found. Try to create it? The name maybe wrong.
-        		String rankName = rRankName != null && !rRankName.trim().isEmpty() ?
-        					rRankName : "Rank " + rRankId;
-        		
-        		// NOTE: The following is valid use of getCost():
-        		double cost = getRanks().size() == 0 ? 0 : 
-        					getRanks().get( getRanks().size() - 1 ).getCost() * 3;
-        		Rank newRank = new Rank( rRankId, rankName, null, cost );
-        		
-        		addRank( newRank );
-        		
-//        		String message = String.format( 
-//        				"Loading RankLadder Error: A rank for %s was not found so it was " +
-//        				"fabricated: %s  id=%d  tag=%s  cost=%d", getName(), newRank.getName(), newRank.getId(),
-//        				newRank.getTag(), newRank.getCost() );
-//        		Output.get().logError( message );
-        	}
-        	
-        }
-        
-//        this.maxPrestige = RankUtil.doubleToInt(document.get("maxPrestige"));
-        
-        
-        Double rankCostMultiplier = (Double) document.get( "rankCostMultiplierPerRank" );
-        setRankCostMultiplierPerRank( rankCostMultiplier == null ? 0 : rankCostMultiplier );
-        
-		
-//		getPermissions().clear();
-//		Object perms = document.get( "permissions" );
-//		if ( perms != null ) {
-//			List<String> permissions = (List<String>) perms;
-//			for ( String permission : permissions ) {
-//				getPermissions().add( permission );
+//    @SuppressWarnings( "unchecked" )
+//	public RankLadder(Document document, PrisonRanks prisonRanks) {
+//    	this();
+//    	
+//    	boolean isDirty = false;
+//    	
+//    	this.id = ConversionUtil.doubleToInt(document.get("id"));
+//    	this.name = (String) document.get("name");
+//    	
+//    	RankManager rankManager = prisonRanks.getRankManager();
+//    	
+//    	if ( rankManager == null ) {
+//
+//    		RankMessages rMessages = new RankMessages();
+//    		rMessages.rankFailureLoadingRankManagerMsg( getName(), getId() );
+//    		
+//    		return;
+//    	}
+//        
+//        List<LinkedTreeMap<String, Object>> ranksLocal =
+//                (List<LinkedTreeMap<String, Object>>) document.get("ranks");
+//
+//		getRankUpCommands().clear();
+//		Object cmds = document.get("commands");
+//		if ( cmds != null ) {
+//
+//			List<String> commands = (List<String>) cmds;
+//			for ( String cmd : commands ) {
+//				if ( cmd != null ) {
+//					getRankUpCommands().add( cmd );
+//				}
 //			}
+//			
+//			// This was allowing nulls to be added to the live commands... 
+////			this.rankUpCommands = (List<String>) cmds;
 //		}
+//
+//        
+//        this.ranks = new ArrayList<>();
+//        for (LinkedTreeMap<String, Object> rank : ranksLocal) {
+//        	
+//        	
+//        	// The only real field that is important here is rankId to tie the 
+//        	// rank back to this ladder.  Name helps clarify the contents of the 
+//        	// Ladder file. 
+//        	int rRankId = ConversionUtil.doubleToInt((rank.get("rankId")));
+//        	String rRankName = (String) rank.get( "rankName" );
+//        	
+//        	Rank rankPrison = rankManager.getRank( rRankId );
+//        	
+//        	if ( rankPrison != null && rankPrison.getLadder() != null ) {
+//        		
+//        		RankMessages rMessages = new RankMessages();
+//        		rMessages.rankFailureLoadingDuplicateRankMsg( 
+//        				rankPrison.getName(), rankPrison.getLadder().getName(), 
+//        						getName() );
+//
+//        		isDirty = true;
+//        	}
+//        	else if ( rankPrison != null) {
+//
+//        		addRank( rankPrison );
+//
+////        		Output.get().logInfo( "RankLadder load : " + getName() + 
+////        				"  rank= " + rankPrison.getName() + " " + rankPrison.getId() + 
+////        				 );
+//        		
+////        		// if null look it up from loaded ranks:
+////        		if ( rRankName == null  ) {
+////        			rRankName = rankPrison.getName();
+////        			dirty = true;
+////        		}
+//        	}
+//        	else {
+//        		// Rank not found. Try to create it? The name maybe wrong.
+//        		String rankName = rRankName != null && !rRankName.trim().isEmpty() ?
+//        					rRankName : "Rank " + rRankId;
+//        		
+//        		// NOTE: The following is valid use of getCost():
+//        		double cost = getRanks().size() == 0 ? 0 : 
+//        					getRanks().get( getRanks().size() - 1 ).getCost() * 3;
+//        		Rank newRank = new Rank( rRankId, rankName, null, cost );
+//        		
+//        		addRank( newRank );
+//        		
+////        		String message = String.format( 
+////        				"Loading RankLadder Error: A rank for %s was not found so it was " +
+////        				"fabricated: %s  id=%d  tag=%s  cost=%d", getName(), newRank.getName(), newRank.getId(),
+////        				newRank.getTag(), newRank.getCost() );
+////        		Output.get().logError( message );
+//        	}
+//        	
+//        }
+//        
+////        this.maxPrestige = RankUtil.doubleToInt(document.get("maxPrestige"));
+//        
+//        
+//        Double rankCostMultiplier = (Double) document.get( "rankCostMultiplierPerRank" );
+//        setRankCostMultiplierPerRank( rankCostMultiplier == null ? 0 : rankCostMultiplier );
 //        
 //		
-//		getPermissionGroups().clear();
-//		Object permsGroups = document.get( "permissionGroups" );
-//		if ( perms != null ) {
-//			List<String> permissionGroups = (List<String>) permsGroups;
-//			for ( String permissionGroup : permissionGroups ) {
-//				getPermissionGroups().add( permissionGroup );
-//			}
+////		getPermissions().clear();
+////		Object perms = document.get( "permissions" );
+////		if ( perms != null ) {
+////			List<String> permissions = (List<String>) perms;
+////			for ( String permission : permissions ) {
+////				getPermissions().add( permission );
+////			}
+////		}
+////        
+////		
+////		getPermissionGroups().clear();
+////		Object permsGroups = document.get( "permissionGroups" );
+////		if ( perms != null ) {
+////			List<String> permissionGroups = (List<String>) permsGroups;
+////			for ( String permissionGroup : permissionGroups ) {
+////				getPermissionGroups().add( permissionGroup );
+////			}
+////		}
+//		
+//		if ( isDirty ) {
+//			PrisonRanks.getInstance().getLadderManager().save( this );
 //		}
-		
-		if ( isDirty ) {
-			PrisonRanks.getInstance().getLadderManager().save( this );
-		}
-
-    }
+//
+//    }
 
     public Document toDocument() {
         Document ret = new Document();

@@ -22,6 +22,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
@@ -262,8 +263,11 @@ public class SellAllUtil {
             if (rankPlugin.getPlayerManager().getPlayer(sPlayer) != null) {
                 String playerRankName;
                 try {
+                	
+                	RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+                	
                     RankPlayer rankPlayer = rankPlugin.getPlayerManager().getPlayer(sPlayer);
-                    PlayerRank pRank = rankPlayer == null ? null : rankPlayer.getRank("prestiges");
+                    PlayerRank pRank = rankPlayer == null ? null : rankPlayerFactory.getRank( rankPlayer, "prestiges");
                     Rank rank = pRank == null ? null : pRank.getRank();
 
                     playerRankName = rank == null ? null : rank.getName();

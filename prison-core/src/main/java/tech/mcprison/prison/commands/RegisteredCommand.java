@@ -260,7 +260,10 @@ public class RegisteredCommand
                 	//          to prevent this failure, escape all % with a double % such as %%.
                 	message = message.replace( "%", "%%" );
                 	
-                	Output.get().sendError( sender, message );
+                	Output.get().logError( message );
+                	
+                	Output.get().sendError( sender, "An exception has occurred. Details have been " +
+                			"logged to the server's console." );
 
                 	// Generally these errors are major and require program fixes, so throw
                 	// the exception so the stacklist is logged.

@@ -50,6 +50,7 @@ import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
@@ -98,7 +99,10 @@ public class PlayerManager
      */
     public void loadPlayer(String playerFile) throws IOException {
         Document document = collection.get(playerFile).orElseThrow(IOException::new);
-        RankPlayer rankPlayer = new RankPlayer(document);
+        
+        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+
+        RankPlayer rankPlayer = rankPlayerFactory.createRankPlayer(document);
         
         players.add( rankPlayer );
         
@@ -119,10 +123,13 @@ public class PlayerManager
      */
     public void loadPlayers() throws IOException {
         List<Document> players = collection.getAll();
+        
+        final RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+
         players.forEach(
         		document -> 
         			this.players.add(
-        					new RankPlayer(document)));
+        					rankPlayerFactory.createRankPlayer(document) ));
     }
 
     /**
@@ -134,7 +141,10 @@ public class PlayerManager
      * @see #savePlayer(RankPlayer) To save with the default conventional filename.
      */
     public void savePlayer(RankPlayer player, String playerFile) throws IOException {
-        collection.save(playerFile, player.toDocument());
+    	
+    	RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+    	
+        collection.save(playerFile, rankPlayerFactory.toDocument( player ) );
 //        collection.insert(playerFile, player.toDocument());
     }
 
@@ -327,11 +337,13 @@ public class PlayerManager
         		
         		if ( !getPlayersByName().containsKey( playerName ) ) {
         			
+        			RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+        			
         			// We need to create a new player data file.
         			newPlayer = new RankPlayer( uid, playerName );
         			newPlayer.checkName( playerName );
         			
-        			newPlayer.firstJoin();
+        			rankPlayerFactory.firstJoin( newPlayer );
         			
         			players.add(newPlayer);
         			getPlayersByName().put( playerName, newPlayer );
@@ -479,9 +491,12 @@ public class PlayerManager
     	List<Rank> results = new ArrayList<>();
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
+    		
+    		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+    		
     		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
     			
-    			Rank rank = rankPlayer.getRank( ladder ).getRank();
+    			Rank rank = rankPlayerFactory.getRank( rankPlayer, ladder ).getRank();
 				if ( rank != null && rank.getRankNext() != null ) {
 					Rank nextRank = rank.getRankNext();
 					
@@ -500,17 +515,19 @@ public class PlayerManager
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		DecimalFormat dFmt = new DecimalFormat("#,##0");
     		
+    		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+    		
     		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
     			
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				PlayerRank pRank = rankPlayer.getRank( ladder );
+    				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				if ( pRank != null && pRank.getRank().getRankNext() != null ) {
     					Rank nextRank = pRank.getRank().getRankNext();
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
-    			        PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
     					//PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
@@ -560,17 +577,19 @@ public class PlayerManager
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		DecimalFormat dFmt = new DecimalFormat("#,##0");
     		
+    		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+    		
     		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
     			
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				PlayerRank pRank = rankPlayer.getRank( ladder );
+    				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				if ( pRank != null && pRank.getRank().getRankNext() != null ) {
     					Rank nextRank = pRank.getRank().getRankNext();
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
-    			        PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
@@ -618,19 +637,21 @@ public class PlayerManager
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		
 //    		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+    		
+    		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
 
     		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
     		
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				PlayerRank pRank = rankPlayer.getRank( ladder );
+    				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank rank = pRank.getRank();
     				if ( rank != null && rank.getRankNext() != null ) {
     					Rank nextRank = rank.getRankNext();
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
-    			        PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
@@ -687,19 +708,21 @@ public class PlayerManager
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		DecimalFormat dFmt = new DecimalFormat("#,##0");
+    		
+    		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
 
     		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
     			
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				PlayerRank pRank = rankPlayer.getRank( ladder );
+    				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank rank = pRank.getRank();
     				if ( rank != null && rank.getRankNext() != null ) {
     					Rank nextRank = rank.getRankNext();
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
-    			        PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
@@ -762,18 +785,20 @@ public class PlayerManager
   	if ( !rankPlayer.getLadderRanks().isEmpty()) {
   		DecimalFormat dFmt = new DecimalFormat("#,##0");
   		
+  		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+  		
 		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
 			
 			if ( ladderName == null ||
 					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
 				
-				PlayerRank pRank = rankPlayer.getRank( ladder );
+				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
 				Rank rank = pRank.getRank();
 				if ( rank != null && rank.getRankNext() != null ) {
 					Rank nextRank = rank.getRankNext();
 					
 			        // This calculates the target rank, and takes in to consideration the player's existing rank:
-			        PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
 					
@@ -828,19 +853,21 @@ public class PlayerManager
 	  if ( !rankPlayer.getLadderRanks().isEmpty()) {
 		  //		  DecimalFormat dFmt = new DecimalFormat("#,##0");
 
+		  RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+		  
 		  for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
 
 			  if ( ladderName == null ||
 					  ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
 
-				  PlayerRank pRank = rankPlayer.getRank( ladder );
+				  PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
 				  Rank rank = pRank.getRank();
 				  if ( rank != null && rank.getRankNext() != null ) {
 
 					  Rank nextRank = rank.getRankNext();
 					  
   			          // This calculates the target rank, and takes in to consideration the player's existing rank:
-  			          PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+  			          PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //					  PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
 					  
@@ -913,12 +940,14 @@ public class PlayerManager
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		DecimalFormat dFmt = new DecimalFormat("#,##0");
     		
+    		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+    		
     		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
     			
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				PlayerRank pRank = rankPlayer.getRank( ladder );
+    				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank rank = pRank.getRank();
     				if ( rank != null ) {
     					if ( sb.length() > 0 ) {
@@ -1036,12 +1065,15 @@ public class PlayerManager
     	StringBuilder sb = new StringBuilder();
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
+    		
+    		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+    		
     		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
     			
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				PlayerRank pRank = rankPlayer.getRank( ladder );
+    				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank rank = pRank.getRank();
     				
   				  	if ( rank != null && rank.getRankNext() != null ) {
@@ -1064,12 +1096,14 @@ public class PlayerManager
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		
+    		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+    		
     		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
     			
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				PlayerRank pRank = rankPlayer.getRank( ladder );
+    				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank rank = pRank.getRank();
   				  	if ( rank != null && rank.getRankNext() != null ) {
   				  		Rank nextRank = rank.getRankNext();
@@ -1233,7 +1267,8 @@ public class PlayerManager
 					case prison_rlp_laddername:
 						{
 							// rank may be null:
-							PlayerRank pRank = rankPlayer.getRank( ladderName );
+							RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+							PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladderName );
 							if ( pRank != null ) {
 								Rank rank = pRank.getRank();
 								

@@ -32,6 +32,7 @@ import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.events.RankUpEvent;
 import tech.mcprison.prison.tasks.PrisonCommandTask;
 import tech.mcprison.prison.tasks.PrisonCommandTask.CustomPlaceholders;
@@ -338,7 +339,9 @@ public class RankUtil
         // should never make it this far in to this code:
         // Um... not true when performing a prestige for the first time.... lol
         
-        PlayerRank originalRank = rankPlayer.getRank(ladder);
+        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+        
+        PlayerRank originalRank = rankPlayerFactory.getRank( rankPlayer, ladder );
         
 //        if ( originalRank == null && ladder.getName().equals( "default" ) ) {
 //        	
@@ -376,7 +379,7 @@ public class RankUtil
         		results.addTransaction(RankupTransactions.cannot_delete_default_ladder);
         	}
         	else {
-        		boolean success = rankPlayer.removeLadder( ladder.getName() );
+        		boolean success = rankPlayerFactory.removeLadder( rankPlayer, ladder.getName() );
         		
         		if ( success ) {
         	        if ( savePlayerRank( results, rankPlayer ) ) {
@@ -406,13 +409,13 @@ public class RankUtil
         
 
         // This calculates the target rank, and takes in to consideration the player's existing rank:
-        PlayerRank pRankNext = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
+        PlayerRank pRankNext = originalRank.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
 //        		new PlayerRank( targetRank, originalRank.getRankMultiplier() );
 		
         // If player does not have a rank on this ladder, then grab the first rank on the ladder since they need
         // to be added to the ladder.
         if ( pRankNext == null ) {
-        	pRankNext = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, ladder.getLowestRank().get() );
+        	pRankNext = originalRank.getTargetPlayerRankForPlayer( rankPlayer, ladder.getLowestRank().get() );
         }
         
         	
@@ -738,13 +741,13 @@ public class RankUtil
     }
     
 
-    public static int doubleToInt(Object d) {
-        return Math.toIntExact(Math.round((double) d));
-    }
-    
-    public static long doubleToLong(Object d) {
-    	return Math.round((double) d);
-    }
+//    public static int doubleToInt(Object d) {
+//        return Math.toIntExact(Math.round((double) d));
+//    }
+//    
+//    public static long doubleToLong(Object d) {
+//    	return Math.round((double) d);
+//    }
     
     
     
