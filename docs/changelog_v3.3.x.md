@@ -13,7 +13,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.8 2021-12-01
+# 3.2.11-alpha.8 2021-12-02
+
+* **
+
+
+* **added mine name to reset notifications**
 
 
 * **Bug fix: If a MONITOR event listener, then it should not process the block break event.**

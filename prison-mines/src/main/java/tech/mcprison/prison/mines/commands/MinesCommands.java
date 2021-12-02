@@ -1293,11 +1293,13 @@ public class MinesCommands
         	m.manualReset( resetType, resetActions );
         } catch (Exception e) {
         	pMines.getMinesMessages().getLocalizable("mine_reset_fail")
+        					.withReplacements( m.getName() )
                 .sendTo(sender);
             Output.get().logError("Couldn't reset mine " + mineName, e);
         }
 
-        pMines.getMinesMessages().getLocalizable("mine_reset").sendTo(sender);
+        pMines.getMinesMessages().getLocalizable("mine_reset")
+        					.withReplacements( m.getName() ).sendTo(sender);
     }
 
 
