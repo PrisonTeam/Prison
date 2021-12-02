@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.8 2021-12-02
+# 3.2.11-alpha.9 2021-12-02
+
+
+* **3.2.11-alpha.9 2021-12-02**
+Version v3.2.11-alpha.9
 
 
 * **Added a new feature to back up a mine and to provide a way to convert a mine to a virtual mine.**
