@@ -367,8 +367,10 @@ public abstract class MineScheduler
 			case RESET_ASYNC:
 				if ( !skip ) {
 					
+					List<MineResetActions> resetActions = getCurrentJob().getResetActions();
+
 					MinePagedResetAsyncTask resetTask = 
-								new MinePagedResetAsyncTask( (Mine) this, MineResetType.paged );
+								new MinePagedResetAsyncTask( (Mine) this, MineResetType.paged, resetActions );
 		    		resetTask.submitTaskAsync();
 		    		
 //					resetAsynchonously();
@@ -382,8 +384,11 @@ public abstract class MineScheduler
 				// synchronous reset.  Will be phased out in the future?
 				if ( !skip ) {
 
+					List<MineResetActions> resetActions = getCurrentJob().getResetActions();
+					
 					MinePagedResetAsyncTask resetTask = 
-							new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal );
+							new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal, resetActions );
+					
 					resetTask.submitTaskAsync();
 					
 //					resetSynchonously();

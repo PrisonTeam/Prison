@@ -761,7 +761,7 @@ public abstract class MineReset
     		MinePagedResetAsyncTask resetTask = new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal );
     		resetTask.submitTaskAsync();
     		
-    		asynchronouslyResetFinalize();
+    		asynchronouslyResetFinalize( null );
     		
     		
 //    		resetAsynchonouslyUpdate( true );
@@ -874,7 +874,7 @@ public abstract class MineReset
  		}
     }
 
-    public void asynchronouslyResetFinalize() {
+    public void asynchronouslyResetFinalize( List<MineResetActions> jobResetActions ) {
 		// If a player falls back in to the mine before it is fully done being reset, 
 		// such as could happen if there is lag or a lot going on within the server, 
 		// this will TP anyone out who would otherwise suffocate.  I hope! lol
@@ -930,7 +930,8 @@ public abstract class MineReset
         }
         
 		// If part of a chained_resets, then kick off the next reset:
-		if ( getCurrentJob().getResetActions().contains( MineResetActions.CHAINED_RESETS )) {
+		if ( jobResetActions != null && jobResetActions.contains( MineResetActions.CHAINED_RESETS ) ||
+			 getCurrentJob().getResetActions().contains( MineResetActions.CHAINED_RESETS )) {
 			
 			PrisonMines pMines = PrisonMines.getInstance();
 			pMines.resetAllMinesNext();

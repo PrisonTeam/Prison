@@ -8,6 +8,7 @@ import tech.mcprison.prison.internal.block.MineResetType;
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.data.MineScheduler.MineResetActions;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
@@ -38,7 +39,11 @@ public class MinePagedResetAsyncTask
 	private int configSyncSubPageSlice = -1;
 	
 	
-	public MinePagedResetAsyncTask( Mine mine, MineResetType resetType ) {
+	private List<MineResetActions> resetActions;
+	
+	
+	
+	public MinePagedResetAsyncTask( Mine mine, MineResetType resetType, List<MineResetActions> resetActions ) {
 		super();
 		
 		this.mine = mine;
@@ -52,6 +57,13 @@ public class MinePagedResetAsyncTask
 		
 		this.totalPages = (mine.getMineTargetPrisonBlocks().size() / 
 												getConfigAsyncResetPageSize()) + 1;
+		
+		this.resetActions = resetActions;
+	}
+	
+	
+	public MinePagedResetAsyncTask( Mine mine, MineResetType resetType ) {
+		this( mine, resetType, null );
 	}
 	
 	
@@ -205,7 +217,7 @@ public class MinePagedResetAsyncTask
 
 		
 		// Run items such as post-mine-reset commands:
-		mine.asynchronouslyResetFinalize();
+		mine.asynchronouslyResetFinalize( getResetActions() );
  
 
 	}
@@ -216,6 +228,13 @@ public class MinePagedResetAsyncTask
 	}
 	public void setNanos( PrisonStatsElapsedTimeNanos nanos ) {
 		this.nanos = nanos;
+	}
+
+	public List<MineResetActions> getResetActions() {
+		return resetActions;
+	}
+	public void setResetActions( List<MineResetActions> resetActions ) {
+		this.resetActions = resetActions;
 	}
 
 

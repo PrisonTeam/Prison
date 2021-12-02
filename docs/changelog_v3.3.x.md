@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.8 2021-11-30
+# 3.2.11-alpha.8 2021-12-01
+
+
+* **Bug fix: The command '/mines reset *all* details' was not working and was only running one mine reset instead of all mines.**
 
 
 * **Rank data refactoring.  A few changes to get this working. The ladderRanks collection was not being setup was the main issue.**
