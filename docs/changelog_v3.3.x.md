@@ -15,7 +15,10 @@ These build logs represent the work that has been going on within prison.
 
 # 3.2.11-alpha.8 2021-12-02
 
-* **
+
+* **Added a new feature to back up a mine and to provide a way to convert a mine to a virtual mine.**
+When converting to a virtual, with the command '/mines set area <mine> virtual', a back up is made first.
+The new backup command is '/mines back help'.
 
 
 * **added mine name to reset notifications**

@@ -1,5 +1,6 @@
 package tech.mcprison.prison.store;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,5 +37,7 @@ public interface Collection {
     
     
     public boolean delete(String name);
+
+    public File backup(String name);
     
 }

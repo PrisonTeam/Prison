@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison.mines.commands;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -2212,7 +2213,9 @@ public class MinesCommands
         @Arg(name = "source", description = "&3The source to use for setting the area. The &7wand&3 " +
         		"uses the area defined by the wand. &7Feet&3 defines a 1x1 mine under your feet" +
         		"which is useful in void worlds or when flying and can be enlarged with " +
-        		"&7/mines set size help&3 . &2[&7wand feet&2]", 
+        		"&7/mines set size help&3.  " +
+        		"The use of &7virtual&3 will remove the mine's location and spawn points, and " +
+        		"will revert the mine to a virtual mine. &2[&7wand feet virtual&2]", 
         				def = "wand") String source,
         @Wildcard(join=true)
         @Arg(name = "options", description = "<width> <bottom> <top> <confirm> " +
@@ -2247,8 +2250,60 @@ public class MinesCommands
         else if ( source == null || "wand".equalsIgnoreCase( source ) ) {
         	selection = Prison.get().getSelectionManager().getSelection( player );
         }
+        else if ( source == null || "virtual".equalsIgnoreCase( source ) ) {
+        	// do nothing... don't set selection:
+        }
         else {
-        	sender.sendMessage( "&3Valid values for &2source &3are &7wand&3 and &7feet&3." );
+        	sender.sendMessage( "&3Valid values for &2source &3are &7wand&3, " +
+        			"&7feet&3, and &7virtual&3." );
+        	return;
+        }
+        
+        if ( selection == null ) {
+        
+        	// Revert the mine to a virtual mine:
+        	
+        	setLastMineReferenced(mineName);
+        	
+        	if ( m.isVirtual() ) {
+        		// Already a virtual mine so exit:
+        		String message = "Mine &7" + m.getName() + " &3is already virtual.  No changes have been made.";
+        		sender.sendMessage( message );
+
+        		return;
+        	}
+        	
+        	// Make a backup of the mine save file before making virtual:
+        	File backupFile = pMines.getMineManager().backupMine( m );
+        	
+        	String messageBu = "Mine &7" + m.getName() + " &3has " + 
+        				( backupFile.exists() ? "been successfully" : "failed to be" ) +
+        				" backed up: " + backupFile.getAbsolutePath();
+        	sender.sendMessage( messageBu );
+        	Output.get().logInfo( messageBu );
+        	
+        	if ( !backupFile.exists() ) {
+        		Output.get().logInfo( "Since the backup Failed, mine " + m.getName() + " cannot be " +
+        				"virtualized." );
+        		
+        		return;
+        	}
+        	
+        	m.setBounds( null );
+        	m.setSpawn( null );
+        	
+        	m.setVirtual( true );
+        	
+        	m.getJobStack().clear();
+        	
+        	// TODO Possibly may need to kill existing jobs and/or set a mutex state of VIRTUAL?
+        	m.getMineStateMutex();
+        	
+        	pMines.getMineManager().saveMine( m );
+        	
+        	String message = "Mine &7" + m.getName() + " &3has been set to virtual.  ";
+        	sender.sendMessage( message );
+        	
         	return;
         }
         
@@ -2355,6 +2410,39 @@ public class MinesCommands
         }
     }
 
+    
+
+    @Command(identifier = "mines backup", permissions = "mines.set", 
+    				description = "Creates a backup of the specified mine. Backups are similar to virtually " +
+    						"deleted mines in that a copy is made, but cannot be accessed.  To recover from " +
+    						"a backup, it must be done manually outside of the game or console. " +
+    						"Once a backup is created, prison cannot do anything with it; it must be " +
+    						"manually managed.")
+    public void backupMineCommand(CommandSender sender,
+        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName
+        ) {
+    	
+    	if (!performCheckMineExists(sender, mineName)) {
+    		return;
+    	}
+
+        PrisonMines pMines = PrisonMines.getInstance();
+        Mine m = pMines.getMine(mineName);
+        
+
+    	// Make a backup of the mine save file before making virtual:
+    	File backupFile = pMines.getMineManager().backupMine( m );
+    	
+    	String messageBu = "Mine &7" + m.getName() + " &3has " + 
+    				( backupFile.exists() ? "been successfully" : "failed to be" ) +
+    				" backed up: " + backupFile.getAbsolutePath();
+    	
+    	if ( sender.isPlayer() ) {
+    		sender.sendMessage( messageBu );
+    	}
+    	Output.get().logInfo( messageBu );
+    	
+    }
     
 
     @Command(identifier = "mines set tracer", permissions = "mines.set", 

@@ -17,6 +17,7 @@
 
 package tech.mcprison.prison.mines.managers;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -377,6 +378,22 @@ public class MineManager
     	}
     }
     
+
+    /**
+     * <p>Creates a backup of a mine's save file. Similar to a virtual delete
+     * but is a copy.  If used, has to be manually renamed. 
+     * </p>
+     * 
+     * @param mine
+     */
+	public File backupMine( Mine mine )
+	{
+		File backupFile = coll.backup( mine.getName() );
+		
+		return backupFile;
+	}
+
+
 
 
 	public void rename( Mine mine, String newName ) {
@@ -1611,7 +1628,6 @@ public class MineManager
     	// Regenerate the translated placeholders:
     	getTranslatedPlaceHolderKeys();
     }
-
 
 
 }
