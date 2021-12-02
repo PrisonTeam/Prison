@@ -334,43 +334,6 @@ public class OnBlockBreakEventCore
     	}
 
     	
-//		if ( e.isCancelled() && !monitor ) {
-			// Check to see if the event should be ignored.
-			
-//			if ( processMinesBlockBreakEvent( e, e.getPlayer(), e.getBlock()) ) {
-//				return;
-//			}
-//			
-//			SpigotBlock sBlock = new SpigotBlock( e.getBlock() );
-//			if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
-//				e.setCancelled( true );
-//				return;
-//			}
-//			
-//			Mine mine = findMine( e.getPlayer(), sBlock,  null, null ); 
-//			
-//			if ( mine == null  ) {
-//				// Prison is unable to process blocks outside of mines right now, so exit:
-//				return;
-//			}
-//			
-//			// If not minable, then display message and exit.
-//			if ( !mine.getMineStateMutex().isMinable() ) {
-//				
-//				SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
-//				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
-//				e.setCancelled( true );
-//				return;
-//			}
-//			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
-//			
-//			// If ignore all block events, then exit this function without logging anything:
-//			if ( targetBlock.isIgnoreAllBlockEvents() ) {
-//				e.setCancelled( true );
-//				return;
-//			}
-			
-//		}
 		
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
@@ -408,6 +371,9 @@ public class OnBlockBreakEventCore
     			}
     		}
     		
+    		else if ( pmEvent.isMonitor() ) {
+    			// Stop here, and prevent additional processing. Monitors should never process the event beyond this.
+    		}
     		
     		// This is where the processing actually happens:
     		else if ( pmEvent.getMine() != null || pmEvent.getMine() == null && 
@@ -595,38 +561,6 @@ public class OnBlockBreakEventCore
 		Mine mine = findMine( pmEvent.getPlayer(), pmEvent.getSpigotBlock(), 
 				pmEvent.getUnprocessedRawBlocks(), pmEvent );
 		
-//		Long playerUUIDLSB = Long.valueOf( pmEvent.getPlayer().getUniqueId().getLeastSignificantBits() );
-//		
-//		// Get the cached mine, if it exists:
-//		Mine mine = getPlayerCache().get( playerUUIDLSB );
-//		
-//		if ( mine == null || 
-//				pmEvent.getSpigotBlock() != null && !mine.isInMineExact( pmEvent.getSpigotBlock().getLocation() ) ) {
-//			// Look for the correct mine to use. 
-//			// Set mine to null so if cannot find the right one it will return a null:
-//			mine = findMineLocation( pmEvent.getSpigotBlock() );
-//			
-//			// Thanks to CrazyEnchant, where they do not identify the block the player breaks, we
-//			// have to go through all of the unprecessedRawBlocks to see if any are within a mine.
-//			// If we find a block that's in a mine, then use that block as the primary block.
-//			if ( mine == null ) {
-//				
-//				for ( Block bBlock : pmEvent.getUnprocessedRawBlocks() )
-//				{
-//					SpigotBlock sBlock = new SpigotBlock( bBlock );
-//					mine = findMineLocation( sBlock );
-//					if ( mine != null ) {
-//						pmEvent.setSpigotBlock( sBlock );
-//						break;
-//					}
-//				}
-//			}
-//			
-//			// Store the mine in the player cache if not null:
-//			if ( mine != null ) {
-//				getPlayerCache().put( playerUUIDLSB, mine );
-//			}
-//		}
 		pmEvent.setMine( mine );
 		
 		debugInfo.append( "mine=" + (mine == null ? "none" : mine.getName()) + " " );
@@ -840,7 +774,7 @@ public class OnBlockBreakEventCore
 			pmEvent.setBukkitDrops( mergeDrops( pmEvent.getBukkitDrops() ) );
 						
 			
-			// If target block aready was mined and there are no exploded blocks, then this whole event 
+			// If target block already was mined and there are no exploded blocks, then this whole event 
 			// needs to be canceled since it sounds like a blockevent fired a prison util explosion that
 			// has zero blocks tied to it.
 			if ( targetBlockAlreadyMined && pmEvent.isForceIfAirBlock() && pmEvent.getExplodedBlocks().size() == 0 ) {
@@ -1093,43 +1027,6 @@ public class OnBlockBreakEventCore
     		return;
     	}
     	
-//		if ( e.isCancelled() && !monitor ) {
-			// Check to see if the event should be ignored.
-			
-//			if ( processMinesBlockBreakEvent( e, e.getPlayer(), e.getBlock()) ) {
-//				return;
-//			}
-			
-//			SpigotBlock sBlock = new SpigotBlock( e.getBlock() );
-//			if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
-//				e.setCancelled( true );
-//				return;
-//			}
-//			
-//			Mine mine = findMine( e.getPlayer(), sBlock,  e.blockList(), null ); 
-//			
-//			if ( mine == null ) {
-//				// Prison is unable to process blocks outside of mines right now, so exit:
-//				return;
-//			}
-//			
-//			// If not minable, then display message and exit.
-//			if ( !mine.getMineStateMutex().isMinable() ) {
-//				
-//				SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
-//				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
-//				e.setCancelled( true );
-//				return;
-//			}
-//			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
-//			
-//			// If ignore all block events, then exit this function without logging anything:
-//			if ( targetBlock.isIgnoreAllBlockEvents() ) {
-//				e.setCancelled( true );
-//				return;
-//			}
-			
-//		}
 
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
@@ -1180,42 +1077,17 @@ public class OnBlockBreakEventCore
     			}
     		}
     		
+    		else if ( pmEvent.isMonitor() ) {
+    			// Stop here, and prevent additional processing. Monitors should never process the event beyond this.
+    		}
+    		
 
     		
     		// now process all blocks (non-monitor):
     		else if ( isTEExplosiveEnabled && 
     				( pmEvent.getMine() != null || pmEvent.getMine() == null && 
     									!isBoolean( AutoFeatures.pickupLimitToMines )) ) {
-//    			int unbreakable = 0;
-//    			int outsideOfMine = 0;
-    			
-    			// have to go through all blocks since some blocks may be outside the mine.
-    			// but terminate search upon first find:
-   			
-//    			for ( Block blk : e.blockList() ) {
-//    				//boolean isAir = blk.getType() != null && blk.getType() == Material.AIR;
-//    				
-//    				// Need to wrap in a Prison block so it can be used with the mines:
-////    				SpigotBlock sBlock = new SpigotBlock(blk);
-//    				
-//    				
-//    				if ( BlockUtils.getInstance().isUnbreakable( pmEvent.getSpigotBlock() ) ) {
-//    					
-//    					unbreakable++;
-//    				}
-//    				else if ( pmEvent.getMine().isInMineExact( sBlock.getLocation() ) ) {
-//    					
-//    					pmEvent.getExplodedBlocks().add( sBlock );
-//    					
-//    					
-//    					// check all external events such as mcMMO and EZBlocks:
-//    					OnBlockBreakExternalEvents.getInstance().checkAllExternalEvents( e.getPlayer(), blk );
-//    				}
-//    				else {
-//    					outsideOfMine++;
-//    				}
-//    				
-//    			}
+
     			
     			if ( pmEvent.getExplodedBlocks().size() > 0 ) {
     				
@@ -1257,17 +1129,6 @@ public class OnBlockBreakEventCore
     				
     			}
     			
-//    			if ( unbreakable > 0 ) {
-//    				
-//    				// e.setCancelled( true );
-//    				debugInfo.append( "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
-//    						" blocks, event not canceled) " );
-//    			}
-//    			if ( outsideOfMine > 0 ) {
-//    				
-//    				debugInfo.append( "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
-//    						" blocks, event not canceled) " );
-//    			}
     			
     			debugInfo.append( "(normal processing) " );
    			}
@@ -1342,43 +1203,6 @@ public class OnBlockBreakEventCore
     		return;
     	}
     	
-//		if ( e.isCancelled() && !monitor ) {
-			// Check to see if the event should be ignored.
-			
-//			if ( processMinesBlockBreakEvent( e, e.getPlayer(), e.getBlockList().get( 0 ) ) ) {
-//				return;
-//			}
-			
-//			SpigotBlock sBlock = new SpigotBlock( e.getBlockList().get( 0 ) );
-//			if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
-//				e.setCancelled( true );
-//				return;
-//			}
-//
-//			Mine mine = findMine( e.getPlayer(), sBlock,  e.getBlockList(), null ); 
-//			
-//			if ( mine == null ) {
-//				// Prison is unable to process blocks outside of mines right now, so exit:
-//				return;
-//			}
-//			
-//			// If not minable, then display message and exit.
-//			if ( !mine.getMineStateMutex().isMinable() ) {
-//				
-//				SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
-//				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
-//				e.setCancelled( true );
-//				return;
-//			}
-//			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
-//			
-//			// If ignore all block events, then exit this function without logging anything:
-//			if ( targetBlock.isIgnoreAllBlockEvents() ) {
-//				e.setCancelled( true );
-//				return;
-//			}
-			
-//		}
 		
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
@@ -1432,38 +1256,17 @@ public class OnBlockBreakEventCore
     		}
 
     		
+    		else if ( pmEvent.isMonitor() ) {
+    			// Stop here, and prevent additional processing. Monitors should never process the event beyond this.
+    		}
+    		
 
 
     		// now process all blocks (non-monitor):
     		else if ( isCEBlockExplodeEnabled && 
     				( pmEvent.getMine() != null || pmEvent.getMine() == null && !isBoolean( AutoFeatures.pickupLimitToMines )) ) {
-//    			int unbreakable = 0;
-//    			int outsideOfMine = 0;
-    			
-    			// have to go through all blocks since some blocks may be outside the mine.
-    			// but terminate search upon first find:
-   			
-//    			for ( Block blk : e.getBlockList() ) {
-//    				
-//    				// Need to wrap in a Prison block so it can be used with the mines:
-//    				SpigotBlock sBlock = new SpigotBlock(blk);
-//    				
-//    				if ( BlockUtils.getInstance().isUnbreakable( new SpigotBlock( blk ) ) ) {
-//    					
-//    					unbreakable++;
-//    				}
-//    				else if ( mine.isInMineExact( sBlock.getLocation() ) ) {
-//    					
-//    					explodedBlocks.add( sBlock );
-//    						
-//    					// check all external events such as mcMMO and EZBlocks:
-//    					OnBlockBreakExternalEvents.getInstance().checkAllExternalEvents( e.getPlayer(), blk );
-//    				}
-//    				else {
-//    					outsideOfMine++;
-//    				}
-//    				
-//    			}
+
+
     			if ( pmEvent.getExplodedBlocks().size() > 0 ) {
     				
 //					String triggered = null;
@@ -1507,17 +1310,6 @@ public class OnBlockBreakEventCore
 	                }
     			}
     			
-//    			if ( unbreakable > 0 ) {
-//    				
-//    				// e.setCancelled( true );
-//    				debugInfo.append( "UNBREAKABLE_BLOCK_UTILS (" + unbreakable + 
-//    											" blocks, event not canceled) " );
-//    			}
-//    			if ( outsideOfMine > 0 ) {
-//    				
-//    				debugInfo.append( "BLOCKS_OUTSIDE_OF_MINE (" + outsideOfMine + 
-//    											" blocks, event not canceled) " );
-//    			}
 
     			debugInfo.append( "(normal processing) " );
     		}
@@ -1560,43 +1352,6 @@ public class OnBlockBreakEventCore
     		return;
     	}
     	
-//		if ( e.isCancelled() && !monitor ) {
-			// Check to see if the event should be ignored.
-			
-//			if ( processMinesBlockBreakEvent( e, e.getPlayer(), e.getBlockBroken()) ) {
-//				return;
-//			}
-			
-//			SpigotBlock sBlock = new SpigotBlock( e.getBlockBroken() );
-//			if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
-//				e.setCancelled( true );
-//				return;
-//			}
-//
-//			Mine mine = findMine( e.getPlayer(), sBlock, e.getExplodedBlocks(), null ); 
-//			
-//			if ( mine == null ) {
-//				// Prison is unable to process blocks outside of mines right now, so exit:
-//				return;
-//			}
-//			
-//			// If not minable, then display message and exit.
-//			if ( !mine.getMineStateMutex().isMinable() ) {
-//				
-//				SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
-//				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
-//				e.setCancelled( true );
-//				return;
-//			}
-//			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
-//			
-//			// If ignore all block events, then exit this function without logging anything:
-//			if ( targetBlock.isIgnoreAllBlockEvents() ) {
-//				e.setCancelled( true );
-//				return;
-//			}
-			
-//		}
 
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
@@ -1643,7 +1398,11 @@ public class OnBlockBreakEventCore
     		}
 
     		
+    		else if ( pmEvent.isMonitor() ) {
+    			// Stop here, and prevent additional processing. Monitors should never process the event beyond this.
+    		}
     		
+
 
     		// now process all blocks (non-monitor):
     		else if ( isPEExplosiveEnabled && 
@@ -1715,43 +1474,6 @@ public class OnBlockBreakEventCore
     		return;
     	}
     	
-//		if ( e.isCancelled() && !monitor ) {
-			// Check to see if the event should be ignored.
-			
-//			if ( processMinesBlockBreakEvent( e, e.getPlayer(), e.getBlock()) ) {
-//				return;
-//			}
-			
-//			SpigotBlock sBlock = new SpigotBlock( e.getBlock() );
-//			if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
-//				e.setCancelled( true );
-//				return;
-//			}
-//
-//			Mine mine = findMine( e.getPlayer(), sBlock,  e.getExplodedBlocks(), null ); 
-//			
-//			if ( mine == null ) {
-//				// Prison is unable to process blocks outside of mines right now, so exit:
-//				return;
-//			}
-//			
-//			// If not minable, then display message and exit.
-//			if ( !mine.getMineStateMutex().isMinable() ) {
-//				
-//				SpigotPlayer sPlayer = new SpigotPlayer( e.getPlayer() );
-//				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
-//				e.setCancelled( true );
-//				return;
-//			}
-//			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
-//			
-//			// If ignore all block events, then exit this function without logging anything:
-//			if ( targetBlock.isIgnoreAllBlockEvents() ) {
-//				e.setCancelled( true );
-//				return;
-//			}
-			
-//		}
 		
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
@@ -1813,6 +1535,11 @@ public class OnBlockBreakEventCore
 			}
 			
 			
+    		else if ( pmEvent.isMonitor() ) {
+    			// Stop here, and prevent additional processing. Monitors should never process the event beyond this.
+    		}
+    		
+
 			
 			// now process all blocks (non-monitor):
 			else if ( isPPrisonExplosiveBlockBreakEnabled && 

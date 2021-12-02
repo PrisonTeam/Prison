@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.8 2021-12-01
 
 
+* **Bug fix: If a MONITOR event listener, then it should not process the block break event.**
+Monitors were processing the block break events when they shouldn't so monitors are not terminated after validation since their "processing" is handled there.
+
+
 * **Bug fix: The command '/mines reset *all* details' was not working and was only running one mine reset instead of all mines.**
 
 
