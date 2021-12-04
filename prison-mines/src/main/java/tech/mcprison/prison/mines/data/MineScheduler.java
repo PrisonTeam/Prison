@@ -620,7 +620,7 @@ public abstract class MineScheduler
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.blocksPlaced, Integer.toString( originalBlock.getBlockPlacedCount() ));
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockRemaining, Long.toString( originalBlock.getBlockCountUnsaved() ));
 				
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blocksMinedTotal, originalBlock.getBlockName() );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.blocksMinedTotal, Long.toString( originalBlock.getBlockCountSession() ) );
 				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineBlocksRemaining, Integer.toString( getRemainingBlockCount() ));
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineBlocksRemainingPercent, Double.toString( getPercentRemainingBlockCount() ) );
