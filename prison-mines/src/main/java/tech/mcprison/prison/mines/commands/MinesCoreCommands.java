@@ -1,12 +1,11 @@
 package tech.mcprison.prison.mines.commands;
 
-import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.util.Text;
 
 public class MinesCoreCommands
-	extends BaseCommands
+	extends MinesCommandMessages
 {
 	private Long confirmTimestamp;
 	

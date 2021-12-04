@@ -2822,8 +2822,7 @@ public class MinesCommands
 
     		if ( m == null ) {
     			
-    			sender.sendMessage( "&cNo target mine found. " +
-    									"&3Resubmit teleport request with a mine name." );
+    			teleportNoTargetMineFoundMsg( sender );
     			return;
     		}
     	}
@@ -2841,7 +2840,7 @@ public class MinesCommands
     	
     	
     	if ( m.isVirtual() ) {
-    		sender.sendMessage( "&cInvalid option. This mine is a virtual mine&7. Use &a/mines set area &7to enable the mine." );
+    		teleportCannotUseVirtualMinesMsg( sender );
     		return;
     	}
     	
@@ -2852,13 +2851,14 @@ public class MinesCommands
     	
     	
     	if ( playerName != null && playerName.trim().length() > 0 && playerAlt == null) {
-    		sender.sendMessage( "&3Specified player is not in the game so they cannot be teleported." );
+    		teleportNamedPlayerMustBeIngameMsg( sender );
     		return;
     	}
     	
     	
     	if ( (player == null || !player.isOnline()) && playerAlt != null && !playerAlt.isOnline() ) {
-    		sender.sendMessage( "&3The player must be in the game." );
+    		
+    		teleportPlayerMustBeIngameMsg( sender );
 			return;
     	}
     	
@@ -2884,7 +2884,7 @@ public class MinesCommands
     	}
     	else if ( playerAlt != null && !player.getName().equalsIgnoreCase( playerAlt.getName()  ) ) {
     		
-    		sender.sendMessage( "&3You cannot teleport other players to a mine. Ignoring parameter." );
+    		teleportCannotTeleportOtherPlayersMsg( sender );
     		return;
     	}
     	
@@ -2897,8 +2897,7 @@ public class MinesCommands
 
     		if ( m == null ) {
     			
-    			sender.sendMessage( "&cNo target mine found. " +
-    									"&3Resubmit teleport request with a mine name." );
+    			teleportNoTargetMineFoundMsg( sender );
     			return;
     		}
     	}
@@ -2908,7 +2907,7 @@ public class MinesCommands
     	// NOTE: Mine.hasTPAccess() checks for rank access and also if they have perms set.
         if ( !isOp && !m.hasTPAccess( player ) ) {
         	
-        	Output.get().sendError(sender, "Sorry. You're unable to teleport there." );
+        	teleportUnableToTeleportMsg( sender );
         	return;
         	
         }
@@ -2934,8 +2933,7 @@ public class MinesCommands
     		teleportPlayer( (Player) sender, m, target );
 //    		m.teleportPlayerOut( (Player) sender, target );
     	} else {
-    		sender.sendMessage(
-    	            "&3Telport failed. Are you sure you're a Player?");
+    		teleportFailedMsg( sender );
     	}
     }
 

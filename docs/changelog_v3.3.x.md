@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.9 2021-12-02
+# 3.2.11-alpha.9 2021-12-04
+
+
+* **Move the messages for /mines tp to the language files.**
 
 
 * **3.2.11-alpha.9 2021-12-02**
