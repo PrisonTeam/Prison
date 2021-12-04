@@ -10,6 +10,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
+import tech.mcprison.prison.cache.PlayerCache;
+import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.OfflineMcPlayer;
 import tech.mcprison.prison.internal.inventory.Inventory;
@@ -299,6 +301,16 @@ public class SpigotOfflinePlayer
 	
 	@Override
 	public void setActionBar( String actionBar ) {
+	}
+
+	@Override
+	public PlayerCache getPlayerCache() {
+		return PlayerCache.getInstance();
+	}
+	
+	@Override
+	public PlayerCachePlayerData getPlayerCachePlayerData() {
+		return PlayerCache.getInstance().getOnlinePlayer( this );
 	}
     
 }

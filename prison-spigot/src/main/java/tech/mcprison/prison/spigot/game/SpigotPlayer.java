@@ -30,6 +30,8 @@ import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import tech.mcprison.prison.autofeatures.PlayerMessaging.MessageType;
+import tech.mcprison.prison.cache.PlayerCache;
+import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
@@ -621,4 +623,15 @@ public class SpigotPlayer
 //					.sendActionBar( getWrapper(), actionBar );
 		}
 	}
+	
+	@Override
+	public PlayerCache getPlayerCache() {
+		return PlayerCache.getInstance();
+	}
+	
+	@Override
+	public PlayerCachePlayerData getPlayerCachePlayerData() {
+		return PlayerCache.getInstance().getOnlinePlayer( this );
+	}
+	
 }

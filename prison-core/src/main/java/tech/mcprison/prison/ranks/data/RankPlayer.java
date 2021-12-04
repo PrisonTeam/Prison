@@ -27,6 +27,8 @@ import java.util.UUID;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.cache.PlayerCache;
+import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.ItemStack;
@@ -1005,4 +1007,15 @@ public class RankPlayer
 	@Override
 	public void setActionBar( String actionBar ) {
 	}
+	
+	@Override
+	public PlayerCache getPlayerCache() {
+		return PlayerCache.getInstance();
+	}
+	
+	@Override
+	public PlayerCachePlayerData getPlayerCachePlayerData() {
+		return PlayerCache.getInstance().getOnlinePlayer( this );
+	}
+	
 }

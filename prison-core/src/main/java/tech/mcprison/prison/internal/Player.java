@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import tech.mcprison.prison.cache.PlayerCache;
+import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.inventory.InventoryHolder;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
@@ -144,6 +146,9 @@ public interface Player
 	
     
 	public void setActionBar( String actionBar );
-	
+
+	PlayerCache getPlayerCache();
+
+	PlayerCachePlayerData getPlayerCachePlayerData();
 	
 }

@@ -16,6 +16,11 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.9 2021-12-04
 
 
+
+
+* **Added access to the player cache within the Player object so it's easier to use it.**
+
+
 * **Updates some documents.**
 
 
