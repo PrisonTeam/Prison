@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.9 2021-12-04
 
 
+* **Slight adjustment to the mine backups's file name.**
+
+
 * **Move the messages for /mines tp to the language files.**
 
 

@@ -18,7 +18,7 @@ import tech.mcprison.prison.output.Output;
 public abstract class FileVirtualDelete
 {
 	public static final String FILE_LOGICAL_DELETE_PREFIX = ".deleted_";
-	public static final String FILE_LOGICAL_BACKUP_PREFIX = ".backup";
+	public static final String FILE_LOGICAL_BACKUP_PREFIX = ".backup_";
 	
 	public FileVirtualDelete()
 	{
@@ -56,7 +56,7 @@ public abstract class FileVirtualDelete
     protected File virtualBackup( File source )
     {
     	SimpleDateFormat sdf = new SimpleDateFormat("_yyyy-MM-dd_HH-mm-ss");
-    	String name = FILE_LOGICAL_BACKUP_PREFIX + source.getName() + sdf.format( new Date() ) + ".del";
+    	String name = FILE_LOGICAL_BACKUP_PREFIX + source.getName() + sdf.format( new Date() ) + ".bu";
     	File backupFile = new File( source.getParentFile(), name);
     	
     	try {
