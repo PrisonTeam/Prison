@@ -86,6 +86,7 @@ public class PlayerCachePlayerData {
 	
 	private long tokens;
 	private long tokensTotal;
+	private long tokensTotalRemoved;
 	private long tokensLastBlocksTotals;
 	
 	private TreeMap<String, Long> tokensByMine;
@@ -542,8 +543,7 @@ public class PlayerCachePlayerData {
 	 */
 	public void addTokens( long newTokens, String mineName ) {
 		
-		this.tokens += newTokens;
-		this.tokensTotal += newTokens;
+		addTokensAdmin( newTokens );
 		
 		SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd_hh:mm");
 		String key = dateFmt.format( new Date() );
@@ -575,6 +575,62 @@ public class PlayerCachePlayerData {
 		if ( mineName != null ) {
 
 			addTokensByMine( mineName, newTokens );
+		}
+		
+		dirty = true;
+	}
+	
+	
+	/**
+	 * <p>This adds tokens to the player, but it is from an admin-related purpose, or task,
+	 * so it has no effects on the player's Tokens-Per-Minute calculations, or 
+	 * per mine stats.
+	 * </p>
+	 * 
+	 * @param newTokens
+	 */
+	public void addTokensAdmin( long newTokens ) {
+		
+		this.tokens += newTokens;
+		this.tokensTotal += newTokens;
+		
+		dirty = true;
+	}
+	
+	/**
+	 * <p>This removes tokens from the player, but it is from an admin-related purpose, or task, 
+	 * so it has no effects on the player's Tokens-Per-Minute calculations, or 
+	 * per mine stats.
+	 * <p>
+	 * 
+	 * <p>Note: The player can have a negative balance with this function! This may be useful for
+	 * small "token loans" when purchasing something.  Such allowances would have to be 
+	 * handled in the task that calls this function.
+	 * </p>
+	 * 
+	 * @param newTokens
+	 */
+	public void removeTokensAdmin( long removeTokens ) {
+		
+		this.tokens -= removeTokens;
+		this.tokensTotalRemoved += removeTokens;
+		
+		dirty = true;
+	}
+	
+	public void setTokensAdmin( long newBalance ) {
+		
+		long delta = newBalance - this.tokens;
+		
+		if ( delta > 0 ) {
+			
+			this.tokens += delta;
+			this.tokensTotal += delta;
+		}
+		else {
+			
+			this.tokens -= delta;
+			this.tokensTotalRemoved -= delta;
 		}
 		
 		dirty = true;
@@ -627,6 +683,8 @@ public class PlayerCachePlayerData {
 			.append( getAverageTokensPerMinute() )
 			.append( "  totalTokens: " )
 			.append( getTokensTotal() )
+			.append( "  totalTokensRemoved: " )
+			.append( getTokensTotalRemoved() )
 			.append( "  tokens: " )
 			.append( getTokens() )
 			;
@@ -760,6 +818,13 @@ public class PlayerCachePlayerData {
 	}
 	public void setTokensTotal( long tokensTotal ) {
 		this.tokensTotal = tokensTotal;
+	}
+
+	public long getTokensTotalRemoved() {
+		return tokensTotalRemoved;
+	}
+	public void setTokensTotalRemoved( long tokensTotalRemoved ) {
+		this.tokensTotalRemoved = tokensTotalRemoved;
 	}
 
 	public long getTokensLastBlocksTotals() {

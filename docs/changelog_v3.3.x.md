@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.9 2021-12-04
 
 
+* **Prison tokens: Added admin functions of balance, add, remove, and set.**
+
+
 * **Added the title and actionBar to the Player object so it will work in all forms of Player, such as RankPlayer.**
 Had to use the Platform to cross over to spigot from core.
 

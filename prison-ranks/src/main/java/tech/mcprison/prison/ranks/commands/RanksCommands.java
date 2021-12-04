@@ -1450,6 +1450,7 @@ public class RanksCommands
 
     	List<String> msgs = new ArrayList<>();
 
+    	DecimalFormat iFmt = new DecimalFormat("#,##0");
     	DecimalFormat dFmt = new DecimalFormat("#,##0.00");
     	DecimalFormat fFmt = new DecimalFormat("0.0000");
     	DecimalFormat pFmt = new DecimalFormat("#,##0.0000");
@@ -1610,15 +1611,14 @@ public class RanksCommands
 						cPlayer.getTokensByMine().size() > 0 ) {
 					
 					msgs.add( String.format( 
-							"  Tokens By Mine:    &2Tokens: &3%s   &2Avg Tokens per min: &3%s  " +
-									"", 
-							dFmt.format( cPlayer.getTokens() ),
-							dFmt.format( cPlayer.getAverageTokensPerMinute() )) );
+							"  Tokens By Mine:   &2Tokens: &3%s   &2Avg Tokens per min: &3%s",
+									iFmt.format( cPlayer.getTokens() ),
+									dFmt.format( cPlayer.getAverageTokensPerMinute() )) );
 					
 					msgs.add( String.format( 
-							"                    &2Tokens Total: &3%s   &2Tokens per Block: &3%d  " +
-									"", 
-									dFmt.format( cPlayer.getTokensTotal() ),
+							"                    &2Total: &3%s   &2Total Removed: &3%s   &2Tokens per Block: &3%d",
+									iFmt.format( cPlayer.getTokensTotal() ),
+									iFmt.format( cPlayer.getTokensTotalRemoved() ),
 									AutoFeaturesWrapper.getInstance().getInteger( AutoFeatures.tokensBlocksPerToken )) );
 					
 					msgs.addAll( 
