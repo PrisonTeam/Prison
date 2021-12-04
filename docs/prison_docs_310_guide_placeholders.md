@@ -6,6 +6,10 @@
 
 This document covers different aspects of placeholders within Prison.  It explains how they work, how to use them, and different ways to use them.
 
+
+*Documented updated: 2021-12-03*
+
+
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
@@ -13,34 +17,100 @@ This document covers different aspects of placeholders within Prison.  It explai
 
 Placeholders allow the sharing of data from one plugin with another plugin, and without either plugin knowing anything about each other.
 
-On the surface they appear to be simple, but there are a lot of moving parts below the surface, and with Prison Mines, there are even more things going on.
+On the surface they appear to be simple, but there are a lot of moving parts below the surface, and with Prison Mines, there are even more complicated things going on.
 
 Add in to the mix, that different plugins deal with placeholders in slightly different ways, and you can wind up with a challenge to get them to work under different circumstances.
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
+
+
+
+# Placeholder Commands
+
+
+*Since Prison v3.2.1-alpha.13*
+
+
+There are a few useful commands within prison that will allow you list placeholders, search for placeholders, and to test random text that includes placeholders.
+
+
+Sub-command listing of all placeholders commands:
+
+* **/prison placeholders**
+
+
+* **/prison placeholders list**
+* **/prison placeholders search**
+* **/prison placeholders test**
+
+* **/prison placeholders reload**
+
+NOTE: the `/prison placeholders reload` command only reloads and registers the placeholders with the placeholder integrations.  This would be required to enable placeholders when adding a new mine, a new rank, or a new ladder.  If you reload another plugin, such as papi, you may need to reload the placeholders which will re-register them.  Prison has been setup to survive a papi restart, but there could still be issues.
+
+
+NOTE: Information on these command are provided in detail below.
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
 # Placeholder Types and Counts
 
-* **Rank Related:** 4 including aliases
-* **Rankup Related:** 18 including aliases
+Prison has numerous placeholders, with number of different types.  Each of these types have different internal requirements and conditions of usage.  This is a high overview of the various types and their counts.
+
+* **Player Related:** 92 including aliases
+    * **Rank Related:** 8 including aliases
+    * **Rankup Related:** 20 including aliases
+    * **Player Balance Related:** 8 including aliases
+    * **Player Tool Related:** 34 including aliases
+    * **Player Health Related:** 14 including aliases
+    * **Player XP and Levels Related:** 6 including aliases
+    * **Player Walk Speed:** 2 including aliases
 
 
-* **Rank Ladder Related:** 4 including aliases **times** each ladder
-* **Rankup Ladder Related:** 18 including aliases **times** each ladder
+* **Ladders Related:** 30 including aliases **times** each ladder
+  A LADDERS placeholder must include the ladder's name in the placeholder and therefore is static.
+  
+
+* **Ranks Related:** 22 including aliases **times** each rank
+
+  A RANKS placeholder needs to specify the Rank name as part of the placeholder.  Each placeholder must specify a Rank and is static.
 
 
-* **Player Balance Related:** 2 including aliases
-* **Player Ladder Balance Related:** 2 including aliases **times** each ladder
+* **RankPlayers Related:** 12 including aliases **times** each rank
+
+  A RANKPLAYERS placeholder is one that will change based upon the player's own Rank.  Each player could have a different rank.  Because of this relationship, these can only be used with instances of players such as scoreboards and chat prefixes; they will not work in holographic displays or with signs.
 
 
-* **Mine Related:** 28 including aliases **times** each mine
-* **Mine Player Related:** 14 including aliases
+* **Mines Related:** 18 including aliases **times** each ladder
 
 
-**Total base Placeholders:** 90 including aliases
+* **Player Ladder Balance Related:** 32 including aliases **times** each Mine
+
+  A MINES placeholder must specify the Mine mine as part of the placeholder.  Each placeholder must specify a mine and is static.
+  
+
+* **MinePlayers Related:** 34 including aliases 
+
+  A MINEPLAYERS placholder is similar to a RankPlayers placeholder in that it is dynamic and you cannot specify a mine's name with it.  How it works, is that it provides the related stats for the mine in which the player is standing in.  When the player leaves the mine, then these placeholders returns an empty string value (a blank).
 
 
-**Total if 26 Mines and 3 Ladders:** 844 placeholder including aliases (22 + 26*3 ladder + 2 + 28*26 mines + 14) 
+* *STATSMINES Related:** 14 including aliases
+
+  These are a work in progress, but will provide access to some mine stats such as total blocks mined.
+
+
+* *STATSRANKS Related:** 6 including aliases
+
+  These are a work in progress, but will provide access to some rank stats such as top ranked player in that rank.
+
+
+
+**Total base Placeholders:** 240 including aliases
+
+
+
 	
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
@@ -57,7 +127,7 @@ There is always more than one way to do things, and the same goes for having mor
 
 # Placeholder Theory for Prison
 
-There are two major types of placeholders in prison: Player based and Mine based. With the most recent releases of prison, there have been hybrids added that are a combination of the two.  For example there are now ladder based placeholder that allow targeting ranks on a specific ladder, instead of all ladders.  Also there are player mine placeholders that report on the mine stats for the mine in which the player is physically located in.  The player mine placeholders have no value when the player is not in a mine, and they will change as the player goes from mine to mine.
+There are few major types of placeholders in prison: Player, Ranks, Ladders, Mines, and Stats based. With the most recent releases of prison, there have been hybrids added that are a combination of the player placeholders and with mines and ranks.  For example there are now ladder based placeholder that allow targeting ranks on a specific ladder, instead of all ladders.  Also there are player mine placeholders that report on the mine stats for the mine in which the player is physically located in.  The player mine placeholders have no value when the player is not in a mine, and they will change as the player goes from mine to mine.
 
 There are also different types of data that are returned in placeholders. Text, numbers, formatted numbers, and bar graphs.
 
@@ -346,31 +416,6 @@ This is mentioned here since these rank command placeholders are not part of all
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
-
-
-# Placeholder Commands
-
-
-*Since Prison v3.2.1-alpha.13*
-
-
-There are a few commands within prison that will allow you list placeholders, search for placeholders, and to test random text that includes placeholders.
-
-
-* **/prison placeholders**
-
-
-* **/prison placeholders list**
-* **/prison placeholders search**
-* **/prison placeholders test**
-
-* **/prison placeholders reload**
-
-NOTE: the `/prison placeholders reload` command only reloads and registers the placeholders with the placeholder integrations.  This would be required to enable placeholders on a new mine or new ranks or a new ladder that were added since the last server restart.  Also if you reload another plugin, such as papi, you will need to reload the plugins, which just re-registers them.
-
-
-
-* **/prison version** No longer provides a list of placeholders since it's become too large.
 
 
 

@@ -6,6 +6,9 @@
 
 This document provides some important information on how to find help in setting up your prison server, and ultimately, how and where to ask for help.
 
+
+*Documented updated: 2021-12-03*
+
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 # Overview
@@ -20,19 +23,50 @@ If you are having problem, please take a quick look at the following documents a
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
+
+# Asking for Help
+
+Before you actually ask for help, take a look at some of the documents presented here.  You may find your answer, or at least become a little more familiar with Prison.  There is a good chance that if your question is a common one, then you will just be referred to this documentation anyway.
+
+When you do ask for help, please realize if you can provide a clear description of the problems you are experiencing, plus the versions of Prison, Spigot, etc, then we can help you faster and more accurately.  To help provide you with answers to these questions, see the next section of this document for information on what you can copy and paste to provide all those much needed details.
+
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+# Prison Command 'help' keyword
+
+
+Prison has a very advanced command handler that provides a lot of advance features.  But one simple feature to know about and to use is the use of the 'help' keyword.  
+
+
+If you add '**help**' to any command within prison, prison's command handler will show you information on what the command is, how to use it, parameters, how to get more help and details, and also what permissions are needed to use the command.
+
+
+Prison automatically inserts the **help** keyword if you enter the base commands.  So the command **/mines** is really the command handler recognizing there are many commands tied to the path '/mines' that it automatically injects the **help** keyword for you so it will generate the list.  It's exactly the same as if you've entered **/mines help**.
+
+
 # General Information on Prison Commands
+
 
 All of the commands for Prison can be ran in-game, and most can be ran from the console. When running commands from the console, you do not have to prefix the commands with a **/**.  But within these documents, all commands will be referenced with a prefixed **/** so it is clear that it's a command.  Just don't include it when running within the console.
 
-Personal preference is to run the commands from the console since there are less restrictions on width or number of lines shown, and they are easier to see without the busy background of the game.
 
-Within most of these documents, the console will be used to screen print from for those reasons.
+My (Blue) personal preference is to run the commands from the console since there are less restrictions on width or number of lines shown, and they are easier to see without the busy background of the game.
+
+
+Within most of these documents, the console will be used for screen prints for those reasons.
+
 
 The only commands that cannot be ran from the console are the commands that expect you to be an in-game player.  Examples are **/mines whereami** and **/mines tp <mineName>**.  But note, you can now run the TP command from the console if you supply the name of an online player:  **/mines tp <mineName> <playerName>**.
 
+
 If you need to do some maintenance, or configurating of your Prison, the console could be an easier environment to use.
 
-But in-game, some commands have clickable actions.  Such as page next or page prior.  Or even command completion, such as with **/mines block search** and clicking on a search result provides you with a filled in copy of **/mines block add** where all you need to do is just fill in the percentage since it uses the last mine name that has been used.
+
+But in-game, some commands have clickable actions such as **page next** or **page prior**.  Or even command completion, such as with **/mines block search** and clicking on a search result provides you with a filled in copy of **/mines block add** where all you need to do is just fill in the percentage since it uses the last mine name that has been used.
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
@@ -43,14 +77,16 @@ But in-game, some commands have clickable actions.  Such as page next or page pr
 It may be helpful to know what commands are available, and what options exist for those commands.
 
 
-
-**Note: the details below still apply, but are slightly out of date.**  The best way to start exploring all commands within prison is to start with `/prison` which will list all subcommands related to `/prison`, but also will show all other root commands and aliases.
-
-
-Upon startup, prison lists many details about the environment, and one set of those details, are the base commands that are available within Prison.  See the area pertaining to the modules, since the commands generally are tied to modules.
+Prison's command handler not only understands what commands have been registered within Prison, but it has awareness of what parameters are needed, and what permissions some commands are required.  The command handler is able to provide a lot of information if you know a few basic things.
 
 
-<img src="images/prison_docs_013_Prison_Help_startup_5.png" alt="Prison Commands" title="Prison Commands" width="600" />
+Prison's commands are based upon a hierarchy of commands, which groups them by context.  If you enter a lower command in the hierarchy that includes sub commands, then Prison will list them.  This is a great way to explore what commands are available within Prison.
+
+
+The best starting point is with the root command `/prison`.  Not only is that the root command for everything that starts with `/prison`, but it has special behavior in that it also includes all other command roots.  So if a command exists in prison, you can find it through starting with `/prison` and exploring their children.
+
+
+Some of the root commands that are important to know: `/prison`, `/mines`, `/ranks`, `/rankup`, `/gui`, `/sellall`.
 
 
 Many commands within prison are compound commands, such that they start with a base command, followed by one or more other commands.  When Prison lists the available commands, if there are sub commands, that information is included in the command listing, including the sub command count.  For example:
@@ -73,8 +109,6 @@ Let's take a closer look at **/mines set notification** and how the **help** key
 But notice within the above screen print, the same command has been entered, but this time with the keyword **help** added as if it were the first parameter.  For example, **/mines set notification help**.  Prison recognizes that you are requesting help for that command, and then it displays all of the information it has for each parameter.
 
 
-Prison automatically inserts the **help** keyword if you enter the base commands.  So **/mines** is really injecting the **help** keyword for you so it will generate the list.  It's like you've entered **/mines help**.
-
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
@@ -95,40 +129,42 @@ You can also submit a help ticket on the Prison github Issues tab, but the respo
 
 
 
-# Asking for Help
-
-Before you actually ask for help, take a look at some of the documents presented here.  You may find your answer, or at least become a little more familiar with Prison.  There is a good chance that if your question is a common one, then you will just be referred to this documentation anyway.
-
-When you do ask for help, please realize if you can provide a clear description of the problems you are experiencing, plus the versions of Prison, Spigot, etc, then we can help you faster and more accurately.  To help provide you with answers to these questions, see the next section of this document for information on what you can copy and paste to provide all those much needed details.
-
-
-
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
-
-
 # Prison Debugger
 
 
 Prison has been evolving to provide many new features, but as a result, it's also becoming very complex in some areas.  To help address these greater complexities, Prison has some debugging details that can be dynamically enabled.  These can help identify what's happening and provide hints as to what may be the trouble.
 
 
-New targets will be added to Prison overtime.  So check with the command for the latests updates for the version that you are using.
+New targets will be added to Prison overtime.  So check with the command for the latest updates for the version that you are using.
 
 
 To enable the debugger, you can toggle them all on with `/prison debug` once to turn it on, and again to turn them all off.
 
+
 To review the options available, use the command `/prison debug help`.  There are also debug targets that only enable specific debug statements and the list of the available targets can be displayed with `/prison debug targets`.
+
 
 ```
 >prison debug help
-[21:07:00 INFO]: For internal use only. Do not use unless instructed.
-[21:07:00 INFO]: /prison debug [targets]
-[21:07:00 INFO]: [targets] Enable or disable a debugging target. Use 'targets' to list all available targets.  Use 'on' or 'off' to toggle on and off individual targets, or all targets if no target is specified.
-[21:07:00 INFO]: Permissions:
-[21:07:00 INFO]:    prison.debug
+[12:16:39 INFO]: ---------- < Cmd: /prison debug > ------------- (3.2.11-alpha.9)
+[12:16:39 INFO]: Enables debugging and trouble shooting information. For internal use only. Do not use unless instructed.
+[12:16:39 INFO]: /prison debug [targets]
+[12:16:39 INFO]: [targets] Optional. Enable or disable a debugging target. [on, off, targets, jarScan, testPlayerUtil, testLocale, rankup] Use 'targets' to list all available targets.  Use 'on' or 'off' to toggle on and off individual targets, or all targets if no target is specified.  jarScan will identify what Java version compiled the class files within the listed jars
+[12:16:39 INFO]: Permissions:
+[12:16:39 INFO]:    prison.debug
+
+
 >prison debug targets
-[21:08:21 INFO]: Global Debug Logging is enabled
-[21:08:21 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, durability
+[12:17:19 INFO]: Global Debug Logging is enabled
+[12:17:19 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, rankup, support
+
+>prison debug
+[12:18:18 INFO]: Global Debug Logging is enabled
+[12:18:18 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, rankup, support
+
+>prison debug
+[12:18:20 INFO]: Global Debug Logging is disabled
+[12:18:20 INFO]: . Valid Targets: all, on, off, blockBreak, blockBreakFortune, rankup, support
 ```
 
 It should be noted that every time you use the command, other than with the help keyword, it will always show the current status of the debugging information.  It will show if the global logging is enabled or not, and if any targets are enabled, it will list all of the active ones.  Plus it will show all of the available targets too.
@@ -359,4 +395,9 @@ Once you are running Prison v3.x.x then you can safely upgrade to Prison v3.2.0,
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
+**Obsolete Screen Prints:**
 
+<img src="images/prison_docs_013_Prison_Help_startup_5.png" alt="Prison Commands" title="Prison Commands" width="300" />
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">

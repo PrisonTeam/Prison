@@ -5,9 +5,14 @@
 # Backpacks
 
 
+*NOTE: At this time it is not advisable to use Prison's backpacks. It is scheduled to undergo a rewrite soon.  An alternative backbacks plugin that should work with Prison is MinePacks.*
+
+
 Prison provides backpacks.  
 
 
+
+*Documented updated: 2021-12-03*
 
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 

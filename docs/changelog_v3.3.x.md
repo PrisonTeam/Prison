@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.9 2021-12-04
 
 
+* **Updates some documents.**
+
+
 * **Bug fix: One of the blockEvent placeholders was inserting the wrong value.**
 {blocksMinedTotal} was inserted the blockName.
 
