@@ -423,5 +423,11 @@ public interface Platform {
 	public void reloadAutoFeaturesEventListeners();
 
 
+	void setTitle( Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut );
+
+
+	void setActionBar( Player player, String actionBar );
+
+
 	
 }

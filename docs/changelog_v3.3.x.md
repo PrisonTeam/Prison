@@ -16,6 +16,8 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.9 2021-12-04
 
 
+* **Added the title and actionBar to the Player object so it will work in all forms of Player, such as RankPlayer.**
+Had to use the Platform to cross over to spigot from core.
 
 
 * **Added access to the player cache within the Player object so it's easier to use it.**

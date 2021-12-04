@@ -1002,10 +1002,12 @@ public class RankPlayer
 	
 	@Override
 	public void setTitle( String title, String subtitle, int fadeIn, int stay, int fadeOut ) {
+		Prison.get().getPlatform().setTitle( this, title, subtitle, fadeIn, stay, fadeOut );
 	}
 	
 	@Override
 	public void setActionBar( String actionBar ) {
+		Prison.get().getPlatform().setActionBar( this, actionBar );
 	}
 	
 	@Override

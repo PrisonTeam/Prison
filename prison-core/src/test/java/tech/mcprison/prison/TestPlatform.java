@@ -427,7 +427,20 @@ public class TestPlatform implements Platform {
 	 * <code>tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.reloadConfig()</code>
 	 * 
 	 */
+	@Override
 	public void reloadAutoFeaturesEventListeners() {
+		
+	}
+
+	@Override
+	public void setTitle( Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut )
+	{
+		
+	}
+
+	@Override
+	public void setActionBar( Player player, String actionBar )
+	{
 		
 	}
 }

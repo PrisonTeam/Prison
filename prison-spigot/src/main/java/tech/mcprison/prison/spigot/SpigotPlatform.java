@@ -2368,4 +2368,59 @@ public class SpigotPlatform
 
 
 	
+	@Override
+	public void setTitle( Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut ) {
+	
+		if ( player != null ) {
+			
+			SpigotPlayer sPlayer = null;
+			
+			if ( player instanceof SpigotPlayer ) {
+				sPlayer = (SpigotPlayer) player;
+			}
+			else {
+				Player p = getPlayer( player.getName() ).orElse( null );
+				
+				if ( p != null ) {
+					
+					sPlayer = (SpigotPlayer) p;
+				}
+			}
+			
+			if ( sPlayer != null ) {
+				
+				sPlayer.setTitle( title, subtitle, fadeIn, stay, fadeOut );;
+			}
+			
+		}
+	}
+		
+	
+	@Override
+	public void setActionBar( Player player, String actionBar ) {
+		
+		if ( player != null ) {
+
+			SpigotPlayer sPlayer = null;
+			
+			if ( player instanceof SpigotPlayer ) {
+				sPlayer = (SpigotPlayer) player;
+			}
+			else {
+				Player p = getPlayer( player.getName() ).orElse( null );
+				
+				if ( p != null ) {
+					
+					sPlayer = (SpigotPlayer) p;
+				}
+			}
+			
+			if ( sPlayer != null ) {
+				
+				sPlayer.setActionBar( actionBar );
+			}
+			
+		}
+	}
+	
 }
