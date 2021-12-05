@@ -205,12 +205,12 @@ public class DiscordWebhook
             json.put("embeds", embedObjects.toArray());
         }
 
-        if ( Output.get().isDebug( DebugTarget.support ) ) {
-        	String jsonString = json.toString();
-        	Output.get().logDebug( DebugTarget.support, 
-        			"Prison Webhook debug: jsonSize: " + jsonString.length() + 
-        			"  " + jsonString );
-        }
+//        if ( Output.get().isDebug( DebugTarget.support ) ) {
+//        	String jsonString = json.toString();
+//        	Output.get().logDebug( DebugTarget.support, 
+//        			"Prison Webhook debug: jsonSize: " + jsonString.length() + 
+//        			"  " + jsonString );
+//        }
         
         URL url = new URL(this.url);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();

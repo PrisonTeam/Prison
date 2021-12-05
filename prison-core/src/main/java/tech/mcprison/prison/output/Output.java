@@ -68,8 +68,8 @@ public class Output
     	blockBreakFortune,
 //    	blockBreakXpCalcs, // Removed since it was inlined
     	
-    	rankup,
-    	support
+    	rankup
+//    	support
     	;
     	
     	public static DebugTarget fromString( String target ) {
