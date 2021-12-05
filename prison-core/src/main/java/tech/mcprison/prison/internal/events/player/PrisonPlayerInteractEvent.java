@@ -29,7 +29,7 @@ import tech.mcprison.prison.util.Location;
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-public class PlayerInteractEvent implements Cancelable {
+public class PrisonPlayerInteractEvent implements Cancelable {
 
     private Player player;
     private ItemStack itemInHand;
@@ -37,7 +37,7 @@ public class PlayerInteractEvent implements Cancelable {
     private Location clicked;
     private boolean canceled = false;
 
-    public PlayerInteractEvent(Player player, ItemStack itemInHand, Action action,
+    public PrisonPlayerInteractEvent(Player player, ItemStack itemInHand, Action action,
         Location clicked) {
         this.player = player;
         this.itemInHand = itemInHand;

@@ -46,6 +46,7 @@ import tech.mcprison.prison.internal.events.Cancelable;
 import tech.mcprison.prison.internal.events.player.PlayerChatEvent;
 import tech.mcprison.prison.internal.events.player.PlayerPickUpItemEvent;
 import tech.mcprison.prison.internal.events.player.PlayerSuffocationEvent;
+import tech.mcprison.prison.internal.events.player.PrisonPlayerInteractEvent;
 import tech.mcprison.prison.internal.events.world.PrisonWorldLoadEvent;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
@@ -213,9 +214,10 @@ public class SpigotListener implements Listener {
         // TODO Accept air events (block is null when air is clicked...)
 
         // Check to see if we support the Action
-        tech.mcprison.prison.internal.events.player.PlayerInteractEvent.Action[] values = tech.mcprison.prison.internal.events.player.PlayerInteractEvent.Action.values();
+        PrisonPlayerInteractEvent.Action[] values = PrisonPlayerInteractEvent.Action.values();
+        
         boolean has = false;
-        for (tech.mcprison.prison.internal.events.player.PlayerInteractEvent.Action value : values) {
+        for ( PrisonPlayerInteractEvent.Action value : values) {
             if(value.name().equals(e.getAction().name())) has = true;
         }
         if(!has) return; // we don't support this Action
@@ -228,12 +230,11 @@ public class SpigotListener implements Listener {
         }
 
         org.bukkit.Location block = e.getClickedBlock().getLocation();
-        tech.mcprison.prison.internal.events.player.PlayerInteractEvent event =
-            new tech.mcprison.prison.internal.events.player.PlayerInteractEvent(
+        PrisonPlayerInteractEvent event = new PrisonPlayerInteractEvent(
                 new SpigotPlayer(e.getPlayer()),
                 		SpigotUtil.bukkitItemStackToPrison(
                 				SpigotCompatibility.getInstance().getItemInMainHand(e)),
-                tech.mcprison.prison.internal.events.player.PlayerInteractEvent.Action
+                PrisonPlayerInteractEvent.Action
                     .valueOf(e.getAction().name()),
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
                     block.getZ()));
