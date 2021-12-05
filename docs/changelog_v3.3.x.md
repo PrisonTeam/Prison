@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.9 2021-12-04
 
 
+* **Added 12 new placeholders:  4 new ones for player blances and 8 new ones for tokens.**
+
+
 * **Prison tokens: Added admin functions of balance, add, remove, and set.**
 
 

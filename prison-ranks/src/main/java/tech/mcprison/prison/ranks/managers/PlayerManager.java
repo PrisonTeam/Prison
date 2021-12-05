@@ -1024,6 +1024,61 @@ public class PlayerManager
     }
  
     
+    private String getPlayerTokenBalance( RankPlayer rankPlayer, 
+    						boolean formatted, PlaceholderAttribute attribute ) {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+    	
+    	long tokens = rankPlayer.getPlayerCachePlayerData().getTokens();
+    	
+    	if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    		PlaceholderAttributeNumberFormat attributeNF = 
+    				(PlaceholderAttributeNumberFormat) attribute;
+    		sb.append( attributeNF.format( tokens ) );
+    	}
+    	
+    	else if ( formatted ) {
+    		sb.append( PlaceholdersUtil.formattedMetricSISize( tokens ));
+    	}
+    	else {
+    		sb.append( dFmt.format( tokens ));
+    	}
+    	
+    	return sb.toString();
+    }
+    
+    
+    private String getPlayerTokenAverageEarningsPerMinute( RankPlayer rankPlayer, 
+    						boolean formatted, PlaceholderAttribute attribute ) {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	
+    	if ( !rankPlayer.getLadderRanks().isEmpty()) {
+    		DecimalFormat dFmt = new DecimalFormat("#,##0");
+    		
+    		
+    		double tpm = rankPlayer.getPlayerCachePlayerData().getAverageTokensPerMinute();
+    		
+    		if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    			PlaceholderAttributeNumberFormat attributeNF = 
+    					(PlaceholderAttributeNumberFormat) attribute;
+    			sb.append( attributeNF.format( tpm ) );
+    		}
+    		
+    		else if ( formatted ) {
+    			sb.append( PlaceholdersUtil.formattedMetricSISize( tpm ));
+    		}
+    		else {
+    			sb.append( dFmt.format( tpm ));
+    		}
+    		
+    	}
+    	
+    	return sb.toString();
+    }
+    
+    
     
 //    /**
 //     * <p>This gets the player's balance, and if the rank is provided, it will check to 
@@ -1375,6 +1430,13 @@ public class PlayerManager
 						results = getPlayerBalance( rankPlayer, ladderName, false, attribute );
 						break;
 						
+					case prison_pbf:
+					case prison_player_balance_formatted:
+					case prison_pbf_laddername:
+					case prison_player_balance_formatted_laddername:
+						results = getPlayerBalance( rankPlayer, ladderName, true, attribute );
+						break;
+						
 					case prison_pb_epm:
 					case prison_player_balance_earnings_per_minute:
 						
@@ -1386,6 +1448,33 @@ public class PlayerManager
 						
 						results = getPlayerAverageEarningsPerMinute( rankPlayer, ladderName, true, attribute );
 						break;
+						
+						
+						
+					case prison_ptb:
+					case prison_player_token_balance:
+						results = getPlayerTokenBalance( rankPlayer, false, attribute );
+						break;
+						
+					case prison_ptbf:
+					case prison_player_token_balance_formatted:
+						results = getPlayerTokenBalance( rankPlayer, true, attribute );
+						break;
+
+					case prison_ptb_epm:
+					case prison_player_token_balance_earnings_per_minute:
+						
+						results = getPlayerTokenAverageEarningsPerMinute( rankPlayer, false, attribute );
+						break;
+						
+					case prison_ptb_epmf:
+					case prison_player_token_balance_earnings_per_minute_formatted:
+						
+						results = getPlayerTokenAverageEarningsPerMinute( rankPlayer, true, attribute );
+						break;
+						
+						
+						
 						
 					case prison_psm:
 					case prison_player_sellall_multiplier:
