@@ -53,6 +53,8 @@ public class AutoManagerBlockBreakEvents
 		new AutoManagerTokenEnchant().registerEvents();
 		new AutoManagerZenchantments().registerEvents();
 		
+		
+		new PrisonDebugBlockInspector().init();
 	}
 	
 	

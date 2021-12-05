@@ -3,6 +3,7 @@ package tech.mcprison.prison.spigot.block;
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -32,8 +33,12 @@ public class OnBlockBreakMines
 	
 	public Mine findMine( Player player, SpigotBlock sBlock, List<Block> altBlocksSource, PrisonMinesBlockBreakEvent pmEvent )
 	{
-
-		Long playerUUIDLSB = Long.valueOf( player.getUniqueId().getLeastSignificantBits() );
+		return findMine( player.getUniqueId(), sBlock, altBlocksSource, pmEvent );
+	}
+	
+	public Mine findMine( UUID playerUUID, SpigotBlock sBlock, List<Block> altBlocksSource, PrisonMinesBlockBreakEvent pmEvent )
+	{
+		Long playerUUIDLSB = Long.valueOf( playerUUID.getLeastSignificantBits() );
 
 		// Get the cached mine, if it exists:
 		Mine mine = getPlayerCache().get( playerUUIDLSB );

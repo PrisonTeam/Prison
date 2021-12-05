@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.9 2021-12-05
 
 
+* **Added a new debug mode to inspect blocks by click on them with the mine wand tool when prison is in debug mode.**
+
+
 * **Renamed Prison's PlayerListener to PrisonPlayerListener to reduce a conflict and to make it more obvious which object is which.**
 
 
