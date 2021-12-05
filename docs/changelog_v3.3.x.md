@@ -13,10 +13,14 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.9 2021-12-04
+# 3.2.11-alpha.9 2021-12-05
 
 
-* **Added 12 new placeholders:  4 new ones for player blances and 8 new ones for tokens.**
+* **Bug fix: If a block has been placed in the mine that should not be there, prison was canceling the event which was preventing other plugins, or normal breakage, from breaking the block.**
+The event is no longer being canceled.
+
+
+* **Added 12 new placeholders:  4 new ones for player balances and 8 new ones for tokens.**
 
 
 * **Prison tokens: Added admin functions of balance, add, remove, and set.**

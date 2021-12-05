@@ -581,12 +581,13 @@ public class OnBlockBreakEventCore
 			pmEvent.setTargetBlock( targetBlock );
 			
 			// If ignore all block events has been set on this target block, then shutdown
-			if ( targetBlock.isIgnoreAllBlockEvents() ) {
+			if ( targetBlock != null && targetBlock.isIgnoreAllBlockEvents() ) {
 				debugInfo.setLength( 0 );
 				
 				pmEvent.setForceIfAirBlock( false );
 				
-				pmEvent.setCancelOriginalEvent( true );
+				// do not cancel event so some other listener can process it
+				pmEvent.setCancelOriginalEvent( false );
 				
 				return false;
 			}
@@ -623,6 +624,9 @@ public class OnBlockBreakEventCore
 						targetBlock.setMined( true );
 						targetBlock.setAirBroke( true );
 						targetBlock.setIgnoreAllBlockEvents( true );
+						
+						// do not cancel event so some other listener can process it
+						pmEvent.setCancelOriginalEvent( false );
 						
 						blockTypeNotExpected++;
 					}

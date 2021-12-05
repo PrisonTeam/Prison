@@ -111,7 +111,9 @@ public class OnBlockBreakMines
 			
 			// If ignore all block events, then exit this function without logging anything:
 			if ( targetBlock.isIgnoreAllBlockEvents() ) {
-				event.setCancelled( true );
+				
+				// Do not cancel the event... let other plugins deal with it... prison does not care about this block.
+				//event.setCancelled( true );
 				ignoreEvent = true;
 			}
 		}
