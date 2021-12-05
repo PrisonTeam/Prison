@@ -57,6 +57,7 @@ public class Output
 
     private boolean debug = false;
     private Set<DebugTarget> activeDebugTargets;
+    private Set<DebugTarget> selectiveDebugTargets;
 
     public enum DebugTarget {
     	all,
@@ -67,6 +68,8 @@ public class Output
 //    	blockBreakDurability, 
     	blockBreakFortune,
 //    	blockBreakXpCalcs, // Removed since it was inlined
+    	
+    	targetBlockMismatch,
     	
     	rankup
 //    	support
@@ -107,6 +110,7 @@ public class Output
     	instance = this;
 
     	this.activeDebugTargets = new HashSet<>();
+    	this.selectiveDebugTargets = new HashSet<>();
         
     	this.prefixTemplate = coreOutputPrefixTemplateMsg();
 
@@ -336,10 +340,19 @@ public class Output
     
     public void applyDebugTargets( String targets ) {
     	
+    	boolean isSelective = targets.contains( "selective" );
+    	
     	TreeSet<DebugTarget> trgts = DebugTarget.fromMultiString( targets );
     	
     	if ( trgts.size() > 0 ) {
-    		applyDebugTargets( trgts );
+    		
+    		if ( isSelective ) {
+    			applySelectiveDebugTargets( trgts );
+    		}
+    		else {
+    			applyDebugTargets( trgts );
+    		}
+    		
     	}
     	else {
     		// No targets were set, so just toggle the debugger:
@@ -385,9 +398,41 @@ public class Output
     	// Output.get().setDebug( !Output.get().isDebug() );
     }
     
-    public boolean isDebug( DebugTarget debugTarget ) {
-    	return isDebug() || getActiveDebugTargets().contains( debugTarget );
+    public void applySelectiveDebugTargets( TreeSet<DebugTarget> targets ) {
+    	
+    	for ( DebugTarget target : targets ) {
+    	
+    		if ( getSelectiveDebugTargets().contains( target ) ) {
+    			
+    			getSelectiveDebugTargets().remove( target );
+    		}
+    		else {
+    			
+    			getSelectiveDebugTargets().add( target );
+    		}
+
+    	}
+    		
+    	
     }
+    
+    public boolean isDebug( DebugTarget debugTarget ) {
+    	return isDebug() || getActiveDebugTargets().contains( debugTarget ) || 
+    			getSelectiveDebugTargets().contains( debugTarget );
+    }
+    
+    /**
+     * <p>This only return true if the specified debug target is enabled.
+     * The global debug mode, and other debugTargets, are ignored.
+     * </p>
+     * 
+     * @param debugTarget
+     * @return
+     */
+    public boolean isSelectiveTarget( DebugTarget debugTarget ) {
+    	return getSelectiveDebugTargets().contains( debugTarget );
+    }
+    
     public boolean isDebug() {
 		return debug;
 	}
@@ -402,6 +447,14 @@ public class Output
 	public void setActiveDebugTargets( Set<DebugTarget> activeDebugTargets ) {
 		this.activeDebugTargets = activeDebugTargets;
 	}
+
+	public Set<DebugTarget> getSelectiveDebugTargets() {
+		return selectiveDebugTargets;
+	}
+	public void setSelectiveDebugTargets( Set<DebugTarget> selectiveDebugTargets ) {
+		this.selectiveDebugTargets = selectiveDebugTargets;
+	}
+
 
 	/**
      * Send a message to a {@link CommandSender}

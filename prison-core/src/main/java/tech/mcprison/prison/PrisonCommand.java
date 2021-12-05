@@ -1006,10 +1006,12 @@ public class PrisonCommand
     		@Wildcard(join=true)
     		@Arg(name = "targets", def = " ",
     				description = "Optional. Enable or disable a debugging target. " +
-    					"[on, off, targets, jarScan, " +
-    					"testPlayerUtil, testLocale, rankup] " +
+    					"[on, off, targets, selective, jarScan, " +
+    					"testPlayerUtil, testLocale, rankup ] " +
     				"Use 'targets' to list all available targets.  Use 'on' or 'off' to toggle " +
-    				"on and off individual targets, or all targets if no target is specified.  " +
+    				"on and off individual targets, or 'all' targets if no target is specified. " +
+    				"If any targets are enabled, then debug in general will be enabled. Selective will only " +
+    				"activate debug with the specified targets. " +
     				"jarScan will identify what Java version compiled the class files within the listed jars"
     						) String targets ) {
     	
@@ -1038,7 +1040,7 @@ public class PrisonCommand
     		return;
     	}
     	
-    	
+    	// Applies normal and selective targets:
     	Output.get().applyDebugTargets( targets );
     	
     	String message = "Global Debug Logging is " + (Output.get().isDebug() ? "enabled" : "disabled");
@@ -1055,6 +1057,19 @@ public class PrisonCommand
     			message = String.format( ". . Target: %s", target.name() );
     			sender.sendMessage( message );
 			}
+    	}
+    	
+    	Set<DebugTarget> selectiveDebugTargets = Output.get().getSelectiveDebugTargets();
+    	
+    	if ( selectiveDebugTargets.size() > 0 ) {
+    		message = ". Selective Debug Targets:";
+    		sender.sendMessage( message );
+    		
+    		for ( DebugTarget target : selectiveDebugTargets )
+    		{
+    			message = String.format( ". . Target: %s", target.name() );
+    			sender.sendMessage( message );
+    		}
     	}
     	
     	String validTargets = Output.get().getDebugTargetsString();
