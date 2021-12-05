@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.9 2021-12-05
 
 
+* **For the bukkit 1.8 through bukkit 1.12, if an object has a different data value than what it normally has**, 
+it would not be matched through XMaterials... Examples are leaves, chests, etc... if there is no match initially using the block then try to then match on just the name, which eliminates the problem of a failed match. 
+
+
 * **Add a selective debug option where only the selected element is loged through the debugger.**
 
 

@@ -87,11 +87,14 @@ public abstract class Spigot113Blocks
 			results = getCachedXMaterial( spigotBlock, NO_DATA_VALUE );
 			
 			if ( results == null ) {
-				results =  XMaterial.matchXMaterial( spigotBlock.getType() );
-				
-				putCachedXMaterial( spigotBlock, NO_DATA_VALUE, results );
+				results = XMaterial.matchXMaterial( spigotBlock.getType() );
 				
 				if ( results == null ) {
+					results = XMaterial.matchXMaterial( spigotBlock.getType().name() ).orElse( null );
+				}
+				
+				if ( results == null ) {
+					
 					Output.get().logWarn( "Spigot113Blocks.getXMaterial() : " +
 							"Spigot block cannot be mapped to a XMaterial : " +
 							spigotBlock.getType().name() + 
@@ -99,6 +102,11 @@ public abstract class Spigot113Blocks
 								spigotBlock.getType().name()));
 				}
 
+				
+				if ( results != null ) {
+					
+					putCachedXMaterial( spigotBlock, NO_DATA_VALUE, results );
+				}
 			}
 		}
 		
