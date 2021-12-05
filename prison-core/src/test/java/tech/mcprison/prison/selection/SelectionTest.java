@@ -28,7 +28,7 @@ import tech.mcprison.prison.TestPlayer;
 import tech.mcprison.prison.TestWorld;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.World;
-import tech.mcprison.prison.internal.events.player.PlayerInteractEvent;
+import tech.mcprison.prison.internal.events.player.PrisonPlayerInteractEvent;
 import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
@@ -59,13 +59,13 @@ public class SelectionTest {
         coloredToolItemStack
             .setDisplayName(Text.translateAmpColorCodes(coloredToolItemStack.getDisplayName()));
 
-        Prison.get().getEventBus().post(new PlayerInteractEvent(ourPlayer, coloredToolItemStack,
-            PlayerInteractEvent.Action.LEFT_CLICK_BLOCK, new Location(ourWorld, 10, 20, 30)));
+        Prison.get().getEventBus().post(new PrisonPlayerInteractEvent(ourPlayer, coloredToolItemStack,
+            PrisonPlayerInteractEvent.Action.LEFT_CLICK_BLOCK, new Location(ourWorld, 10, 20, 30)));
 
         assertTrue(ourPlayer.getInput().contains("&7First position set to &8(10, 20, 30)"));
 
-        Prison.get().getEventBus().post(new PlayerInteractEvent(ourPlayer, coloredToolItemStack,
-            PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, new Location(ourWorld, 30, 20, 40)));
+        Prison.get().getEventBus().post(new PrisonPlayerInteractEvent(ourPlayer, coloredToolItemStack,
+            PrisonPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, new Location(ourWorld, 30, 20, 40)));
 
         assertTrue(ourPlayer.getInput().contains("&7Second position set to &8(30, 20, 40)"));
     }
@@ -79,8 +79,8 @@ public class SelectionTest {
         int initialAmount = ourPlayer.getInput().size();
 
         Prison.get().getEventBus().post(
-            new PlayerInteractEvent(ourPlayer, new ItemStack("test", 1, BlockType.ACACIA_SAPLING),
-                PlayerInteractEvent.Action.LEFT_CLICK_BLOCK, new Location(ourWorld, 10, 20, 30)));
+            new PrisonPlayerInteractEvent(ourPlayer, new ItemStack("test", 1, BlockType.ACACIA_SAPLING),
+                PrisonPlayerInteractEvent.Action.LEFT_CLICK_BLOCK, new Location(ourWorld, 10, 20, 30)));
 
         assertEquals(initialAmount, ourPlayer.getInput()
             .size()); // nothing should have happened because we have the wrong item in our hand
