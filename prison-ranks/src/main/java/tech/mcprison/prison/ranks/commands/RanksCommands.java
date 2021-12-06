@@ -1611,15 +1611,18 @@ public class RanksCommands
 						cPlayer.getTokensByMine().size() > 0 ) {
 					
 					msgs.add( String.format( 
-							"  Tokens By Mine:   &2Tokens: &3%s   &2Avg Tokens per min: &3%s",
+							"  Tokens By Mine:   &2Tokens: &3%s   &2Avg/min: &3%s   &2Blocks/Token: &3%d",
 									iFmt.format( cPlayer.getTokens() ),
-									dFmt.format( cPlayer.getAverageTokensPerMinute() )) );
+									dFmt.format( cPlayer.getAverageTokensPerMinute() ),
+									AutoFeaturesWrapper.getInstance().getInteger( AutoFeatures.tokensBlocksPerToken )
+							));
 					
 					msgs.add( String.format( 
-							"                    &2Total: &3%s   &2Total Removed: &3%s   &2Tokens per Block: &3%d",
+							"                    &2TotalEarned: &3%s   &2AdminAdded: &3%s   &2AdminRemvd: &3%s",
 									iFmt.format( cPlayer.getTokensTotal() ),
-									iFmt.format( cPlayer.getTokensTotalRemoved() ),
-									AutoFeaturesWrapper.getInstance().getInteger( AutoFeatures.tokensBlocksPerToken )) );
+									iFmt.format( cPlayer.getTokensTotalAdminAdded() ),
+									iFmt.format( cPlayer.getTokensTotalAdminRemoved() )
+							));
 					
 					msgs.addAll( 
 							Text.formatTreeMapStats(cPlayer.getTokensByMine(), 5 ) );	

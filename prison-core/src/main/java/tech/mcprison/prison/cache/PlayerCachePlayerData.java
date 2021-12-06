@@ -86,7 +86,8 @@ public class PlayerCachePlayerData {
 	
 	private long tokens;
 	private long tokensTotal;
-	private long tokensTotalRemoved;
+	private long tokensTotalAdminAdded;
+	private long tokensTotalAdminRemoved;
 	private long tokensLastBlocksTotals;
 	
 	private TreeMap<String, Long> tokensByMine;
@@ -543,7 +544,7 @@ public class PlayerCachePlayerData {
 	 */
 	public void addTokens( long newTokens, String mineName ) {
 		
-		addTokensAdmin( newTokens );
+		addTokens( newTokens );
 		
 		SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd_hh:mm");
 		String key = dateFmt.format( new Date() );
@@ -592,6 +593,13 @@ public class PlayerCachePlayerData {
 	public void addTokensAdmin( long newTokens ) {
 		
 		this.tokens += newTokens;
+		this.tokensTotalAdminAdded += newTokens;
+		
+		dirty = true;
+	}
+	public void addTokens( long newTokens ) {
+		
+		this.tokens += newTokens;
 		this.tokensTotal += newTokens;
 		
 		dirty = true;
@@ -613,27 +621,35 @@ public class PlayerCachePlayerData {
 	public void removeTokensAdmin( long removeTokens ) {
 		
 		this.tokens -= removeTokens;
-		this.tokensTotalRemoved += removeTokens;
+		this.tokensTotalAdminRemoved += removeTokens;
+		
+		dirty = true;
+	}
+	public void removeTokens( long removeTokens ) {
+		
+		this.tokens -= removeTokens;
 		
 		dirty = true;
 	}
 	
 	public void setTokensAdmin( long newBalance ) {
 		
-		long delta = newBalance - this.tokens;
-		
-		if ( delta > 0 ) {
+		if ( this.tokens > newBalance ) {
+
+			long delta = this.tokens - newBalance;
 			
-			this.tokens += delta;
-			this.tokensTotal += delta;
+			removeTokensAdmin( delta );
 		}
-		else {
+		else if ( this.tokens < newBalance ) {
 			
-			this.tokens -= delta;
-			this.tokensTotalRemoved -= delta;
+			long delta = newBalance - this.tokens;
+
+			addTokensAdmin( delta );
 		}
-		
-		dirty = true;
+//		else {
+//			// do nothing if equals and no change is needed:
+//		}
+				
 	}
 	
 	/**
@@ -681,12 +697,14 @@ public class PlayerCachePlayerData {
 
 			.append( "  avg tokens/min: " )
 			.append( getAverageTokensPerMinute() )
-			.append( "  totalTokens: " )
-			.append( getTokensTotal() )
-			.append( "  totalTokensRemoved: " )
-			.append( getTokensTotalRemoved() )
 			.append( "  tokens: " )
 			.append( getTokens() )
+			.append( "  totalTokens earned: " )
+			.append( getTokensTotal() )
+			.append( "  totalTokensAdminAdded: " )
+			.append( getTokensTotalAdminAdded() )
+			.append( "  totalTokensAdminRemoved: " )
+			.append( getTokensTotalAdminRemoved() )
 			;
 		
 		return sb.toString();
@@ -820,11 +838,18 @@ public class PlayerCachePlayerData {
 		this.tokensTotal = tokensTotal;
 	}
 
-	public long getTokensTotalRemoved() {
-		return tokensTotalRemoved;
+	public long getTokensTotalAdminAdded() {
+		return tokensTotalAdminAdded;
 	}
-	public void setTokensTotalRemoved( long tokensTotalRemoved ) {
-		this.tokensTotalRemoved = tokensTotalRemoved;
+	public void setTokensTotalAdminAdded( long tokensTotalAdminAdded ) {
+		this.tokensTotalAdminAdded = tokensTotalAdminAdded;
+	}
+
+	public long getTokensTotalAdminRemoved() {
+		return tokensTotalAdminRemoved;
+	}
+	public void setTokensTotalAdminRemoved( long tokensTotalAdminRemoved ) {
+		this.tokensTotalAdminRemoved = tokensTotalAdminRemoved;
 	}
 
 	public long getTokensLastBlocksTotals() {
