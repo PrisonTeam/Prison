@@ -17,8 +17,15 @@ import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.util.Location;
 
 public class PrisonDebugBlockInspector
-	extends OnBlockBreakMines
+//	extends OnBlockBreakMines
 {
+	OnBlockBreakMines obbMines;
+	
+	public PrisonDebugBlockInspector() {
+		super();
+		
+		obbMines = new OnBlockBreakMines();
+	}
 
     public void init() {
         Prison.get().getEventBus().register(this);
@@ -40,7 +47,7 @@ public class PrisonDebugBlockInspector
         SpigotBlock sBlock = (SpigotBlock) location.getBlockAt();
         
         UUID playerUUID = e.getPlayer().getUUID();
-        Mine mine = findMine( playerUUID, sBlock,  null, null ); 
+        Mine mine = obbMines.findMine( playerUUID, sBlock,  null, null ); 
         
         if ( mine == null ) {
         	
