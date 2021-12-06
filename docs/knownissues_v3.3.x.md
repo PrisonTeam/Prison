@@ -15,13 +15,6 @@
  - Simple to implement some features, including flying in a mine.
 
 
-
-* DONE: Revert a mine to a virtual mine.  Maybe with the command: `/mines set area *virtual*`.  Backup the mine's data file before updating and saving.
-
-
-* DONE: the command /mines reset *all* is not working correctly.  Could be an issue with the chaining not submitting the next reset since this is all done through async processes right now.
-
-
 **List for v3.2.11 release:**
 
 
@@ -39,30 +32,14 @@
   - most online time, or most mining time (which will probably be better)
   
 
-
-* DONE: Add a few more options to auto features for auto sell, such on full inventory.  This was removed recently to stabilize some of the new code.
-  - Just refined what was already there.
-  
-
 * Issue with blocks.  Explosions are creating "untouchable" blocks that cannot be included in other explosions.
   - My observations were with multiple explosions leaving rings that are within the the radius of an explosion
   - I could break the blocks.
   - jamo said that the pillars that were created on his server could not be broke
 
 
-* DONE: Concurrent modification error on the MineTargetPrisonBlock when resetting the mine.  
-  tech.mcprison.prison.spigot.game.SpigotWorld.setBlocksSynchronously() (146). 
-  Serialize Id the mine resets and provide a locking mechanism that will prevent auto features from being processed when it goes in to a reset mode.  Also when in a reset mode, prevent another reset from being submitted so they cannot run concurrently or back to back.  Maybe attach a cooldown to the resets too, such as 10 seconds would be long enough to prevent a runaway chained reaction.
-     - DONE: Create an object such as a MineStateToken that will hold the state of the mine reset (in progress, mineable, stable, usable, locked, etc... not sure proper terminology right now... or how many states), with a serial number that will be incremented on each reset.
-     - (on hold) Do not perform a clear on the collection of MineTargetPrisonBlocks within the mine.  Just replace the collection with a new collection and let the garbage collection handle reclaiming all resources. Carefully review for possible memory leaks.  May be a good idea to hold on to that collection and submit a task that runs in about 30 seconds to perform a clear on the collection to release the resources.  This may be important since the target blocks contains references to the stats blocks and may not be GC'd automatically.  May want to null those refs first too.
-     MineReset.clearMineTargetPrisonBlocks() (1799)
-      
-
-* DONE: PlayerCache Time per Mine stats - not recording correctly.
 
 * Review placeholders - add and test placeholders that are tied to playerCache stats
-
-* DONE: new auto features autosell should place items in inventory that have no sell value. Items that cannot be auto sold.
 
 * Mine Bombs - Finish
     - Add sound and particle effects
@@ -110,17 +87,6 @@
 Not sure if it needs to?  Need to test and confirm if working correctly.  World coordinates would be wrong if missing.
 
 
-
-* DONE: New update to combine block processing results in many block.getDrops() being combined.  Since they are combined, the extended fortune calculations may not work properly since it does not know how many original blocks were included.
-- May need to have an intermediate object to better collect original blocks, drops, and targetBlocks.  It can include some of the more basics that are not tracked, such as original block count to better calculate the fortunes.
-
-
-
-* DONE: Rewrite the `/prison utils titles` to use XSeries' title commands.  XSeries only supports 1.9+ so I still need to support 1.8.8 directly within prison.
-
-
-
-* DONE: Common messaging framework so if hundreds of messages are sent, only one is displayed. Eliminate the duplicates.
 
 
 - Not sure why the following would be needed:
@@ -613,6 +579,58 @@ Offers for translation:
 
 
 <hr style="height:13px; border:none; color:#aaf; background-color:#aaf;">
+
+
+# Features recently added for v3.2.11
+
+
+
+
+
+
+
+
+
+
+* DONE: New update to combine block processing results in many block.getDrops() being combined.  Since they are combined, the extended fortune calculations may not work properly since it does not know how many original blocks were included.
+- May need to have an intermediate object to better collect original blocks, drops, and targetBlocks.  It can include some of the more basics that are not tracked, such as original block count to better calculate the fortunes.
+
+
+
+* DONE: Rewrite the `/prison utils titles` to use XSeries' title commands.  XSeries only supports 1.9+ so I still need to support 1.8.8 directly within prison.
+
+
+
+* DONE: Common messaging framework so if hundreds of messages are sent, only one is displayed. Eliminate the duplicates.
+
+
+
+
+* DONE: Revert a mine to a virtual mine.  Maybe with the command: `/mines set area *virtual*`.  Backup the mine's data file before updating and saving.
+
+
+* DONE: the command /mines reset *all* is not working correctly.  Could be an issue with the chaining not submitting the next reset since this is all done through async processes right now.
+
+
+* DONE: Add a few more options to auto features for auto sell, such on full inventory.  This was removed recently to stabilize some of the new code.
+  - Just refined what was already there.
+ 
+
+
+
+* DONE: Concurrent modification error on the MineTargetPrisonBlock when resetting the mine.  
+  tech.mcprison.prison.spigot.game.SpigotWorld.setBlocksSynchronously() (146). 
+  Serialize Id the mine resets and provide a locking mechanism that will prevent auto features from being processed when it goes in to a reset mode.  Also when in a reset mode, prevent another reset from being submitted so they cannot run concurrently or back to back.  Maybe attach a cooldown to the resets too, such as 10 seconds would be long enough to prevent a runaway chained reaction.
+     - DONE: Create an object such as a MineStateToken that will hold the state of the mine reset (in progress, mineable, stable, usable, locked, etc... not sure proper terminology right now... or how many states), with a serial number that will be incremented on each reset.
+     - (on hold) Do not perform a clear on the collection of MineTargetPrisonBlocks within the mine.  Just replace the collection with a new collection and let the garbage collection handle reclaiming all resources. Carefully review for possible memory leaks.  May be a good idea to hold on to that collection and submit a task that runs in about 30 seconds to perform a clear on the collection to release the resources.  This may be important since the target blocks contains references to the stats blocks and may not be GC'd automatically.  May want to null those refs first too.
+     MineReset.clearMineTargetPrisonBlocks() (1799)
+
+* DONE: PlayerCache Time per Mine stats - not recording correctly.
+
+* DONE: new auto features autosell should place items in inventory that have no sell value. Items that cannot be auto sold.
+      
+
+
 
 
 # Features recently added for v3.2.10

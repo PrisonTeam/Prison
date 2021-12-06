@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.9 2021-12-05
+# 3.2.11-alpha.10 2021-12-05
+
+
+
+* **3.2.11-alpha.10 2021-12-05**
 
 
 * **Bug fix: There was an issue that I found where blocks outside of the explosion events were being marked as mined without actually being broken.**
