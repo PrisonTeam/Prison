@@ -558,13 +558,21 @@ public class OnBlockBreakEventCore
 		boolean results = true;
 		
 
-		Mine mine = findMine( pmEvent.getPlayer(), pmEvent.getSpigotBlock(), 
+		SpigotBlock sBlockHit = pmEvent.getSpigotBlock();
+		
+		Mine mine = findMine( pmEvent.getPlayer(), sBlockHit, 
 				pmEvent.getUnprocessedRawBlocks(), pmEvent );
 		
 		pmEvent.setMine( mine );
 		
 		debugInfo.append( "mine=" + (mine == null ? "none" : mine.getName()) + " " );
 		
+		debugInfo.append( sBlockHit.getLocation().toWorldCoordinates() ).append( " " );
+		
+		// Since BlastUseEvent (crazy enchant) does not identify the block that is initially 
+		// broke, an explosion for them is greater than 1.
+		boolean isExplosionEvent = pmEvent.getUnprocessedRawBlocks().size() > 
+					(pmEvent.getBlockEventType() == BlockEventType.CEXplosion ? 0 : 1);
 		
 		// validate the blocks, if there are some.  Add them to the exploded blocks list
 		if ( mine != null ) {
@@ -577,11 +585,15 @@ public class OnBlockBreakEventCore
 			boolean targetBlockAlreadyMined = false;
 			
 			// Get the mine's targetBlock:
-			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( pmEvent.getSpigotBlock() );
+			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlockHit );
 			pmEvent.setTargetBlock( targetBlock );
 			
-			// If ignore all block events has been set on this target block, then shutdown
-			if ( targetBlock != null && targetBlock.isIgnoreAllBlockEvents() ) {
+			// If ignore all block events has been set on this target block, then shutdown.
+			// Same if this block was already included in an explosion... prevent it from spawning
+			// more explosions, which could result in a chain reaction.
+			if ( targetBlock != null && 
+					(targetBlock.isIgnoreAllBlockEvents() || 
+					 targetBlock.isExploded()) ) {
 				debugInfo.setLength( 0 );
 				
 				pmEvent.setForceIfAirBlock( false );
@@ -593,7 +605,7 @@ public class OnBlockBreakEventCore
 			}
 			
 			// NOTE: for the primary block pmEvent.getSpigotBlock() the unbreakable will be checked later:
-			if ( targetBlock != null && targetBlock.getPrisonBlock() != null ) {
+			if ( targetBlock != null && sBlockHit != null ) {
 				
 				if ( !targetBlock.isMined() || !targetBlock.isAirBroke() ) {
 				
@@ -603,19 +615,37 @@ public class OnBlockBreakEventCore
 		    		// high-speed or concurrent operations from multiple players from trying to 
 		    		// process the same block. 
 
-					// If a chain reaction on explosions, this will prevent the same block from
-					// being processed more than once:
-					targetBlock.setMined( true );
-					
-					if ( targetBlock.getPrisonBlock().equals( pmEvent.getSpigotBlock().getPrisonBlock() ) &&
-							collectBukkitDrops( pmEvent.getBukkitDrops(), targetBlock, pmEvent.getItemInHand(), pmEvent.getSpigotBlock() )) {
+					if ( targetBlock.getPrisonBlock().equals( sBlockHit.getPrisonBlock() ) &&
+							collectBukkitDrops( pmEvent.getBukkitDrops(), targetBlock, pmEvent.getItemInHand(), sBlockHit )) {
 						
-						targetBlock.setMinedBlock( pmEvent.getSpigotBlock() );
 						
+						// If a chain reaction on explosions, this will prevent the same block from
+						// being processed more than once:
+						targetBlock.setMined( true );
+						
+						targetBlock.setMinedBlock( sBlockHit );
+						
+						
+						// Mark the block as being part of an explosion, if it was:
+						targetBlock.setExploded( isExplosionEvent );
+
 					}
 					else {
 						// The block is not the correct type. It has been changed since the mine was reset
 						// so it cannot be processed.
+						
+						
+						if ( Output.get().isDebug( DebugTarget.targetBlockMismatch ) ) {
+							
+							String message = String.format( 
+									"TargetBlock mismatch error - primaryBlock:  targetBlock: %s  blockBroke: %s",
+									targetBlock.getPrisonBlock().getBlockName() , 
+									sBlockHit.getPrisonBlock().getBlockName()
+									);
+							
+							Output.get().logWarn( message );
+							
+						}
 						
 						// Prevent this block from being processed again, or attempted to be processed:
 						
@@ -629,6 +659,12 @@ public class OnBlockBreakEventCore
 						pmEvent.setCancelOriginalEvent( false );
 						
 						blockTypeNotExpected++;
+						
+						if ( !pmEvent.isForceIfAirBlock() ) {
+							
+							results = false;
+						}
+						
 					}
 
 					
@@ -666,76 +702,106 @@ public class OnBlockBreakEventCore
 			}
 			
 			
-			for ( Block bukkitBlock : pmEvent.getUnprocessedRawBlocks() ) 
-			{
-				SpigotBlock sBlock = new SpigotBlock( bukkitBlock );
+			// Don't start processing the unprocessedRawBlocks unless results is true, otherwise some 
+			// of the blocks could be marked as being mined but then never processed.
+			if ( results ) {
 				
-				// Thanks to CrazyEnchant, there is no telling which block was actually hit, so 
-				// if using CrazyEnchant one of the unprocessedRawBlocks may be the same as the
-				// pmEvent.getSpigotBlock(), so ignore if both are the same.
-				if ( !sBlock.equals( pmEvent.getSpigotBlock() ) ) {
+				for ( Block bukkitBlock : pmEvent.getUnprocessedRawBlocks() ) 
+				{
+					SpigotBlock sBlock = new SpigotBlock( bukkitBlock );
 					
-					if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+					// Thanks to CrazyEnchant, there is no telling which block was actually hit, so 
+					// if using CrazyEnchant one of the unprocessedRawBlocks may be the same as the
+					// pmEvent.getSpigotBlock(), so ignore if both are the same.
+					if ( !sBlock.equals( sBlockHit ) ) {
 						
-						unbreakable++;
-					}
-					else if ( mine.isInMineExact( sBlock.getLocation() ) ) {
-						
-						// Get the mine's targetBlock:
-						MineTargetPrisonBlock targetExplodedBlock = mine.getTargetPrisonBlock( sBlock );
-						
-						if ( targetExplodedBlock != null && targetExplodedBlock.getPrisonBlock() != null ) {
+						if ( !mine.isInMineExact( sBlock.getLocation() ) ) {
+							outsideOfMine++;
+						}
+						else if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
 							
-							if ( targetExplodedBlock.isMined() ) {
+							unbreakable++;
+						}
+						
+						else if ( sBlock.isEmpty() ) {
+							alreadyMined++;
+						}
+						else {
+							
+							// Get the mine's targetBlock:
+							MineTargetPrisonBlock targetExplodedBlock = mine.getTargetPrisonBlock( sBlock );
+							
+							if ( targetExplodedBlock == null || targetExplodedBlock.getPrisonBlock() == null ) {
+								
+								// No targetBlock so add it anyway:
+								pmEvent.getExplodedBlocks().add( sBlock );
+								
+								noTargetBlock++;
+							}
+							
+							else if ( targetExplodedBlock.isMined() ) {
 								
 								alreadyMined++;
 							}
-							else if ( results && !targetExplodedBlock.isMined() ) {
+							else {
 								
-								// Check to make sure the block is the same block that was placed there.
-								// If not, then do not process it.
-								SpigotBlock sBlockMined = new SpigotBlock( bukkitBlock );
-								PrisonBlock pBlockMined = sBlockMined.getPrisonBlock();
-								
-								if ( targetExplodedBlock.getPrisonBlock().equals( pBlockMined ) &&
-									collectBukkitDrops( pmEvent.getBukkitDrops(), targetExplodedBlock, pmEvent.getItemInHand(), sBlockMined ) ) {
+								if ( !targetExplodedBlock.isMined() ) {
 									
-									// If a chain reaction on explosions, this will prevent the same block from
-									// being processed more than once:
-									targetExplodedBlock.setMined( true );
+									// Check to make sure the block is the same block that was placed there.
+									// If not, then do not process it.
+									SpigotBlock sBlockMined = new SpigotBlock( bukkitBlock );
+									PrisonBlock pBlockMined = sBlockMined.getPrisonBlock();
 									
-									targetExplodedBlock.setMinedBlock( sBlock );
-									
-									pmEvent.getExplodedBlocks().add( sBlock );
-									pmEvent.getTargetExplodedBlocks().add( targetExplodedBlock );
+									if ( targetExplodedBlock.getPrisonBlock().equals( pBlockMined ) &&
+											collectBukkitDrops( pmEvent.getBukkitDrops(), targetExplodedBlock, pmEvent.getItemInHand(), sBlockMined ) ) {
+										
+										// If a chain reaction on explosions, this will prevent the same block from
+										// being processed more than once:
+										targetExplodedBlock.setMined( true );
+										
+										targetExplodedBlock.setMinedBlock( sBlock );
+										
+										
+										// Mark the block as being part of an explosion, if it was:
+										targetExplodedBlock.setExploded( isExplosionEvent );
+
+										
+										pmEvent.getExplodedBlocks().add( sBlock );
+										pmEvent.getTargetExplodedBlocks().add( targetExplodedBlock );
+										
+										
+									}
+									else {
+										// The block is not the correct type. It has been changed since the mine was reset
+										// so it cannot be processed.
+										
+										
+										if ( Output.get().isDebug( DebugTarget.targetBlockMismatch ) ) {
+											
+											String message = String.format( 
+													"TargetBlock mismatch error - multiBLock:  targetBlock: %s  blockBroke: %s",
+													targetBlock.getPrisonBlock().getBlockName() , 
+													sBlockHit.getPrisonBlock().getBlockName()
+													);
+											
+											Output.get().logWarn( message );
+											
+										}
+										
+										
+										// Prevent this block from being processed again, or attempted to be processed:
+										
+										targetExplodedBlock.setMined( true );
+										targetExplodedBlock.setAirBroke( true );
+										targetExplodedBlock.setIgnoreAllBlockEvents( true );
+										
+										blockTypeNotExpected++;
+									}
 									
 									
 								}
-								else {
-									// The block is not the correct type. It has been changed since the mine was reset
-									// so it cannot be processed.
-									
-									// Prevent this block from being processed again, or attempted to be processed:
-									
-									targetExplodedBlock.setMined( true );
-									targetExplodedBlock.setAirBroke( true );
-									targetExplodedBlock.setIgnoreAllBlockEvents( true );
-									
-									blockTypeNotExpected++;
-								}
-								
-								
 							}
 						}
-						else if ( results ) {
-							// No targetBlock so add it anyway:
-							pmEvent.getExplodedBlocks().add( sBlock );
-							
-							noTargetBlock++;
-						}
-					}
-					else {
-						outsideOfMine++;
 					}
 				}
 			}
@@ -823,7 +889,7 @@ public class OnBlockBreakEventCore
 			debugInfo.append( "UNUSABLE_TOOL__WORN_OUT (event canceled) " );
 			results = false;
 		}
-		if ( mine != null && BlockUtils.getInstance().isUnbreakable( pmEvent.getSpigotBlock() ) ) {
+		if ( mine != null && BlockUtils.getInstance().isUnbreakable( sBlockHit ) ) {
 			// The block is unbreakable because a utility has it locked:
 			
 			pmEvent.setCancelOriginalEvent( true );
@@ -849,7 +915,7 @@ public class OnBlockBreakEventCore
 			//       then everything related to auto manager is disabled.
 			String triggered = null;
 			
-			doActionBlockEventOnly( pmEvent.getSpigotBlock(), mine, pmEvent.getPlayer(), 
+			doActionBlockEventOnly( sBlockHit, mine, pmEvent.getPlayer(), 
 					BlockEventType.blockBreak, triggered );
 
 			debugInfo.append( "(actionBlockEventOnly singluar) " );
@@ -877,7 +943,7 @@ public class OnBlockBreakEventCore
 		}
 		else if ( results && pmEvent.isMonitor() && mine != null ) {
 			
-			doActionMonitor( pmEvent.getSpigotBlock(), mine );
+			doActionMonitor( sBlockHit, mine );
 			
 			debugInfo.append( "(monitor - singular) " );
 			

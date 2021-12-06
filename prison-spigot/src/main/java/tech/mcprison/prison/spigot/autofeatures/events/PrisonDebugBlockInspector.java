@@ -62,19 +62,23 @@ public class PrisonDebugBlockInspector
 			// Get the mine's targetBlock:
 			MineTargetPrisonBlock tBlock = mine.getTargetPrisonBlock( sBlock );
 
+			
 			String message = String.format( "&3TargetBlock: &7%s  " +
-					"&3isMined: &7%b  &3isBroke: &7%b", 
-					tBlock.getPrisonBlock().getBlockName(), 
+					"&3Mined: %s%b  &3Broke: &7%b", 
+					tBlock.getPrisonBlock().getBlockName(),
+					(tBlock.isMined() ? "&d" : "&2"),
 					tBlock.isMined(), 
 					tBlock.isAirBroke()
 					);
         	
 			player.sendMessage( message );
 			
-			String message2 = String.format( "    &3isCounted: &7%b  &3isEdge: &7%b  " +
-					"&3isIgnorAllBlockEvents: &7%b", 
+			String message2 = String.format( "    &3Counted: &7%b  &3Edge: &7%b  " +
+					"&3Exploded: %s%b &3IgnorAllEvents: &7%b", 
 					tBlock.isCounted(),
 					tBlock.isEdge(),
+					(tBlock.isExploded() ? "&d" : "&2"),
+					tBlock.isExploded(),
 					tBlock.isIgnoreAllBlockEvents()
 					);
 			

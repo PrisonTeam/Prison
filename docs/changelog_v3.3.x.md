@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.9 2021-12-05
 
 
+* **Bug fix: There was an issue that I found where blocks outside of the explosion events were being marked as mined without actually being broken.**
+Therefore prison would not be able to break those blocks. This was caused by the initial explosion setting off a chained reaction explosion through a blockEvent.  Now blocks that are part of an explosion cannot be part of a future explosion.
+
+
 * **Added a new debug mode to inspect blocks by click on them with the mine wand tool when prison is in debug mode.**
 
 

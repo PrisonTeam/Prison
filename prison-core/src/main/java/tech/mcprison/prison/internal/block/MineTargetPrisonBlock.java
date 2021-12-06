@@ -12,7 +12,7 @@ public class MineTargetPrisonBlock
 	
 	private boolean airBroke;
 	private boolean isEdge;
-	
+	private boolean exploded;
 	
 	private boolean mined = false;
 	private Block minedBlock;
@@ -123,6 +123,13 @@ public class MineTargetPrisonBlock
 	}
 	public void setEdge( boolean isEdge ) {
 		this.isEdge = isEdge;
+	}
+
+	public boolean isExploded() {
+		return exploded;
+	}
+	public void setExploded( boolean exploded ) {
+		this.exploded = exploded;
 	}
 
 	public boolean isMined() {
