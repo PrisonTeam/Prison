@@ -13,8 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.10 2021-12-05
+# 3.2.11-alpha.10 2021-12-06
 
+
+
+* **Upgrade XSeries to v8.5.0**
 
 
 * **3.2.11-alpha.10 2021-12-05**
