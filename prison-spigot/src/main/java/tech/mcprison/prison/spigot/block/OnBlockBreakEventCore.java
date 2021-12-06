@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -443,6 +444,26 @@ public class OnBlockBreakEventCore
 			Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
 		}
 	}
+
+	protected boolean ignoreMinesBlockBreakEvent( Cancellable event, Player player, Block block ) {
+	
+	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
+	
+	if ( eventResults.isCancelEvent() ) {
+		event.setCancelled( eventResults.isCancelEvent() );
+	}
+	return eventResults.isIgnoreEvent();
+}
+
+protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player player, Block block ) {
+	
+	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
+	
+	if ( eventResults.isCancelEvent() ) {
+		event.setCancelled( eventResults.isCancelEvent() );
+	}
+	return eventResults.isIgnoreEvent();
+}
 
 
 	/**

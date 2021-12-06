@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.10 2021-12-06
 
 
+* **Bug fix: Fixed a class not found except caused by google guava trying to load functions that it should not have been using for their event manager.**
+Moved the PEE event out of this class all together, so now it's safe to use in other areas of prison, such as with guava's event handler.  This was not an issue with spigot 1.8.8, but manifested itself with Spigot 1.16.5 since I believe that version of spigot is using a newer version of guava that has that behavior.
+
 
 * **Upgrade XSeries to v8.5.0**
 

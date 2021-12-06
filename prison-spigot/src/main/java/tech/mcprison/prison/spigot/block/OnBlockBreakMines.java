@@ -7,9 +7,7 @@ import java.util.UUID;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 
-import me.pulsi_.prisonenchants.events.PEExplosionEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
@@ -29,6 +27,29 @@ public class OnBlockBreakMines
 		
 		this.prisonMineManager = null;
 		
+	}
+	
+	public class MinesEventResults {
+		private boolean cancelEvent = false;
+		private boolean ignoreEvent = false;
+		
+		public MinesEventResults() {
+			super();
+		}
+
+		public boolean isCancelEvent() {
+			return cancelEvent;
+		}
+		public void setCancelEvent( boolean cancelEvent ) {
+			this.cancelEvent = cancelEvent;
+		}
+
+		public boolean isIgnoreEvent() {
+			return ignoreEvent;
+		}
+		public void setIgnoreEvent( boolean ignoreEvent ) {
+			this.ignoreEvent = ignoreEvent;
+		}
 	}
 	
 	public Mine findMine( Player player, SpigotBlock sBlock, List<Block> altBlocksSource, PrisonMinesBlockBreakEvent pmEvent )
@@ -87,20 +108,44 @@ public class OnBlockBreakMines
 	}
 	
 	
-	protected boolean ignoreMinesBlockBreakEvent( Cancellable event, Player player, Block block ) {
-		boolean ignoreEvent = false;
+	// NOTE: The following two commented out functions need to be copied and actived in 
+	//       in the class that is using these functions for these two events:
+	
+//	protected boolean ignoreMinesBlockBreakEvent( Cancellable event, Player player, Block block ) {
+//		
+//		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
+//		
+//		if ( eventResults.isCancelEvent() ) {
+//			event.setCancelled( eventResults.isCancelEvent() );
+//		}
+//		return eventResults.isIgnoreEvent();
+//	}
+//
+//	protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player player, Block block ) {
+//		
+//		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
+//		
+//		if ( eventResults.isCancelEvent() ) {
+//			event.setCancelled( eventResults.isCancelEvent() );
+//		}
+//		return eventResults.isIgnoreEvent();
+//	}
+
+		
+	protected MinesEventResults ignoreMinesBlockBreakEvent( Player player, Block block ) {
+		MinesEventResults results = new MinesEventResults();
 		
 		SpigotBlock sBlock = new SpigotBlock( block );
 		if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
-			event.setCancelled( true );
-			ignoreEvent = true;
+			results.setCancelEvent( true );
+			results.setIgnoreEvent( true );
 		}
 		
 		Mine mine = findMine( player, sBlock,  null, null ); 
 		
 		if ( mine == null ) {
 			// Prison is unable to process blocks outside of mines right now, so exit:
-			ignoreEvent = true;
+			results.setIgnoreEvent( true );
 		}
 		else {
 			
@@ -109,8 +154,8 @@ public class OnBlockBreakMines
 				
 				SpigotPlayer sPlayer = new SpigotPlayer( player );
 				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
-				event.setCancelled( true );
-				ignoreEvent = true;
+				results.setCancelEvent( true );
+				results.setIgnoreEvent( true );
 			}
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
 			
@@ -119,58 +164,58 @@ public class OnBlockBreakMines
 				
 				// Do not cancel the event... let other plugins deal with it... prison does not care about this block.
 				//event.setCancelled( true );
-				ignoreEvent = true;
+				results.setIgnoreEvent( true );
 			}
 		}
 		
-		return ignoreEvent;
+		return results;
 	}
 	
-	/**
-	 * <p>Warning... this is a temp copy of the real function and will be removed
-	 * if PEExplosionEvent adds the interface Cancellable.
-	 * </p>
-	 * 
-	 * @param event
-	 * @param player
-	 * @param block
-	 * @return
-	 */
-	protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player player, Block block ) {
-		boolean processEvent = true;
-		
-		SpigotBlock sBlock = new SpigotBlock( block );
-		if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
-			event.setCancelled( true );
-			processEvent = false;
-		}
-		
-		Mine mine = findMine( player, sBlock,  null, null ); 
-		
-		if ( mine == null  ) {
-			// Prison is unable to process blocks outside of mines right now, so exit:
-			processEvent = false;
-		}
-		
-		// If not minable, then display message and exit.
-		if ( !mine.getMineStateMutex().isMinable() ) {
-			
-			SpigotPlayer sPlayer = new SpigotPlayer( player );
-			sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
-			event.setCancelled( true );
-			processEvent = false;
-		}
-		MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
-		
-		// If ignore all block events, then exit this function without logging anything:
-		if ( targetBlock.isIgnoreAllBlockEvents() ) {
-			event.setCancelled( true );
-			processEvent = false;
-		}
-
-		
-		return processEvent;
-	}
+//	/**
+//	 * <p>Warning... this is a temp copy of the real function and will be removed
+//	 * if PEExplosionEvent adds the interface Cancellable.
+//	 * </p>
+//	 * 
+//	 * @param event
+//	 * @param player
+//	 * @param block
+//	 * @return
+//	 */
+//	protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player player, Block block ) {
+//		boolean processEvent = true;
+//		
+//		SpigotBlock sBlock = new SpigotBlock( block );
+//		if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+//			event.setCancelled( true );
+//			processEvent = false;
+//		}
+//		
+//		Mine mine = findMine( player, sBlock,  null, null ); 
+//		
+//		if ( mine == null  ) {
+//			// Prison is unable to process blocks outside of mines right now, so exit:
+//			processEvent = false;
+//		}
+//		
+//		// If not minable, then display message and exit.
+//		if ( !mine.getMineStateMutex().isMinable() ) {
+//			
+//			SpigotPlayer sPlayer = new SpigotPlayer( player );
+//			sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
+//			event.setCancelled( true );
+//			processEvent = false;
+//		}
+//		MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
+//		
+//		// If ignore all block events, then exit this function without logging anything:
+//		if ( targetBlock.isIgnoreAllBlockEvents() ) {
+//			event.setCancelled( true );
+//			processEvent = false;
+//		}
+//
+//		
+//		return processEvent;
+//	}
 	
 	public void checkZeroBlockReset( Mine mine ) {
 		if ( mine != null ) {
