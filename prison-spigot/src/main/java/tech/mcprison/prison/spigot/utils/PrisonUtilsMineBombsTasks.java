@@ -518,11 +518,11 @@ public class PrisonUtilsMineBombsTasks
 			
 			//armorStand.addAttachment( SpigotPrison.getInstance(), removeInTicks );
 			
-			if ( bomb.getNameTag() != null && !bomb.getNameTag().isEmpty() ) {
+			if ( bomb.getNameTag() != null && !bomb.getNameTag().trim().isEmpty() ) {
 
 				String tagName = bomb.getNameTag();
 				if ( tagName.contains( "{name}" ) ) {
-					tagName.replace( "{name}", bomb.getName() );
+					tagName = tagName.replace( "{name}", bomb.getName() );
 				}
 				armorStand.setCustomName( tagName );
 				armorStand.setCustomNameVisible(true);

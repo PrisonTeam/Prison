@@ -5,13 +5,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.util.Location;
@@ -99,7 +95,7 @@ public class PrisonBombListener
 //    @EventHandler( priority = EventPriority.HIGHEST, ignoreCancelled = false )
     public void onBlockPlace( PlayerDropItemEvent event ) {
 
-    	Output.get().logInfo( "### PrisonBombListener: PlayerDropItemEvent " );
+    	//Output.get().logInfo( "### PrisonBombListener: PlayerDropItemEvent " );
         
         if ( event.isCancelled() && event.getItemDrop().hasMetadata( "prisonMineBomb" ) ) {
         	
@@ -118,48 +114,46 @@ public class PrisonBombListener
 //    	Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent - oof" );
 //    }
     
-//    @EventHandler( priority = EventPriority.HIGHEST, ignoreCancelled = false )
-    public void onBlockPlace3( BlockPlaceEvent event ) {
-    	
-    	Output.get().logInfo( "### PrisonBombListener: BlockPlaceEvent  HIGHEST  isCanceled= " + event.isCancelled() );
-
-//    	event.getBlockPlaced();
-    	
-    	
-    	event.setBuild( true );
-    	event.setCancelled( false );
-    	
-    	ItemStack item = event.getItemInHand();
-    	
-    	
-    	if ( item.hasItemMeta() && item.getItemMeta().hasDisplayName() ) {
-    		ItemMeta meta = item.getItemMeta();
-    		
-    		Output.get().logInfo( "### PrisonBombListener: BlockPlaceEvent  " + meta.getDisplayName() );
-    		
-//    		meta.getCustomTagContainer().hasCustomTag( null, null )
-    		
-//    		meta.
+////    @EventHandler( priority = EventPriority.HIGHEST, ignoreCancelled = false )
+//    public void onBlockPlace3( BlockPlaceEvent event ) {
+//    	
+//    	Output.get().logInfo( "### PrisonBombListener: BlockPlaceEvent  HIGHEST  isCanceled= " + event.isCancelled() );
+//
+////    	event.getBlockPlaced();
+//    	
+//    	
+//    	event.setBuild( true );
+//    	event.setCancelled( false );
+//    	
+//    	ItemStack item = event.getItemInHand();
+//    	
+//    	
+//    	if ( item.hasItemMeta() && item.getItemMeta().hasDisplayName() ) {
+//    		ItemMeta meta = item.getItemMeta();
 //    		
-//    		Multimap<Attribute, AttributeModifier> attributes = meta.getAttributeModifiers();
+//    		Output.get().logInfo( "### PrisonBombListener: BlockPlaceEvent  " + meta.getDisplayName() );
 //    		
+////    		meta.getCustomTagContainer().hasCustomTag( null, null )
 //    		
-//    		for ( String attri : attributes. ) {
-//    			
-//    		}
-    		
-    	}
-    	
-    	
-    }
+////    		meta.
+////    		
+////    		Multimap<Attribute, AttributeModifier> attributes = meta.getAttributeModifiers();
+////    		
+////    		
+////    		for ( String attri : attributes. ) {
+////    			
+////    		}
+//    		
+//    	}
+//    }
     
-//    @EventHandler( priority = EventPriority.HIGHEST, ignoreCancelled = false )
-    public void onBlockPlace3( PlayerInteractEvent event ) {
-    	
-    	Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent " );
-    	
-    	
-    }
+////    @EventHandler( priority = EventPriority.HIGHEST, ignoreCancelled = false )
+//    public void onBlockPlace3( PlayerInteractEvent event ) {
+//    	
+//    	Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent " );
+//    	
+//    	
+//    }
 
 	public PrisonUtilsMineBombs getPrisonUtilsMineBombs() {
 		return prisonUtilsMineBombs;

@@ -419,7 +419,7 @@ public class MineBombs
 							"A Wimpy Mine Bomb" );
 				mbd.setBombItemId( "&7A &2Wimpy &cBomb &9...&02A3F" );
 				
-				mbd.setNameTag( "&7A &2Wimpy &cBomb\n&\n&eR U N !!!" );
+				mbd.setNameTag( "&7A &2Wimpy &cBomb" );
 				
 				mbd.setRadiusInner( 2 );
 				mbd.setDescription("A whimpy bomb made with gunpowder and packs the punch of a " +

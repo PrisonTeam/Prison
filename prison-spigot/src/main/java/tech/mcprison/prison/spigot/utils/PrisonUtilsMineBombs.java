@@ -10,7 +10,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XSound;
@@ -819,8 +818,11 @@ public class PrisonUtilsMineBombs
 						// Remove from inventory:
 						itemInHand.setAmount( itemInHand.getAmount() - 1 );
 						
-						// Not sure if the following is needed?
-						SpigotCompatibility.getInstance().setItemInMainHand( player, itemInHand.getBukkitStack() );
+						if ( itemInHand.getAmount() == 0 ) {
+							SpigotCompatibility.getInstance()
+													.setItemInMainHand( player, null );
+							
+						}
 						
 						
 						PlacedMineBombItemTask submitPlacedMineBombItem = 
