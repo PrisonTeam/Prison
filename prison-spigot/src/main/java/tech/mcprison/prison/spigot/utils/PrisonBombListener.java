@@ -54,13 +54,18 @@ public class PrisonBombListener
         	
         	Player player = event.getPlayer();
         	
+        	if ( !getPrisonUtilsMineBombs().isItemABomb( player ) ) {
+        		
+        		return;
+        	}
+        	
         	SpigotBlock sBlock = null;
         	
         	
         	// If clicking AIR, then event.getClickedBlock() will be null...
         	// so if null, then use the player's location for placing the bomb.
         	if ( event.getClickedBlock() == null ) {
-        		SpigotPlayer sPlayer = new SpigotPlayer( event.getPlayer() );
+        		SpigotPlayer sPlayer = new SpigotPlayer( player );
         		Location loc = sPlayer.getLocation();
         		
         		// Get the block 3 away from the player, in the direction (vector) in which

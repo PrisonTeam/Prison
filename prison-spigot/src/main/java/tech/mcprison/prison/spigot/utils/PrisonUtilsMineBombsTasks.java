@@ -450,10 +450,10 @@ public class PrisonUtilsMineBombsTasks
 		
 		private double twoPI;
 		
-		private ArmorStand as;
+		private ArmorStand armorStand;
 
-		long ageTicks = 0L;
-		long terminateOnTicks = 0L;
+//		long ageTicks = 0L;
+		long terminateOnZeroTicks = 0L;
 				
 		private BukkitTask bukkitTask;
 		
@@ -467,10 +467,10 @@ public class PrisonUtilsMineBombsTasks
 			
 			this.twoPI = Math.PI * 2;
 			
-			this.ageTicks = 0;
-			this.terminateOnTicks = setTaskLifeSpan();
+//			this.ageTicks = 0;
+			this.terminateOnZeroTicks = getTaskLifeSpan();
 			
-			initialize();
+			initializeArmorStand();
 		}
 		
 		
@@ -493,31 +493,14 @@ public class PrisonUtilsMineBombsTasks
 		 * 
 		 * @return
 		 */
-		private long setTaskLifeSpan()
+		private long getTaskLifeSpan()
 		{
-			long ticks = bomb.getFuseDelayTicks();
-			
-			long maxValue = 0;
-			for ( MineBombEffectsData effect : bomb.getSoundEffects()  )
-			{
-				if ( effect.getEffectState() == EffectState.finished && 
-						effect.getOffsetTicks() > maxValue ) {
-					maxValue = effect.getOffsetTicks();
-				}
-			}
-			for ( MineBombEffectsData effect : bomb.getVisualEffects()  )
-			{
-				if ( effect.getEffectState() == EffectState.finished && 
-						effect.getOffsetTicks() > maxValue ) {
-					maxValue = effect.getOffsetTicks();
-				}
-			}
-			
-			return ticks + maxValue + 15;
+			int removeInTicks = bomb.getFuseDelayTicks() + bomb.getItemRemovalDelayTicks();
+			return removeInTicks;
 		}
 
 
-		private void initialize() {
+		private void initializeArmorStand() {
 			
 			Location location = sBlock.getLocation();
 			location.setY( location.getY() + 2.5 );
@@ -527,44 +510,56 @@ public class PrisonUtilsMineBombsTasks
 			
 			EulerAngle arm = new EulerAngle( eulerAngleX, eulerAngleY, eulerAngleZ );
 			
-			as = sWorld.getWrapper().spawn( 
+			armorStand = sWorld.getWrapper().spawn( 
 					sWorld.getBukkitLocation( location ), 
 						ArmorStand.class);
 			
-			as.setCustomName( bomb.getName() );
-			as.setCustomNameVisible(true);
-			as.setVisible(false);
-			as.setRemoveWhenFarAway(false);
-			as.setItemInHand( sWorld.getBukkitItemStack( item ) );
-			as.setRightArmPose(arm);
-			as.setRemoveWhenFarAway(false);
+//			int removeInTicks = (int) getTaskLifeSpan();
+			
+			//armorStand.addAttachment( SpigotPrison.getInstance(), removeInTicks );
+			
+			if ( bomb.getNameTag() != null && !bomb.getNameTag().isEmpty() ) {
+
+				String tagName = bomb.getNameTag();
+				if ( tagName.contains( "{name}" ) ) {
+					tagName.replace( "{name}", bomb.getName() );
+				}
+				armorStand.setCustomName( tagName );
+				armorStand.setCustomNameVisible(true);
+			}
+			else {
+				
+				armorStand.setCustomNameVisible(false);
+			}
+			armorStand.setVisible(false);
+			armorStand.setRemoveWhenFarAway(false);
+			armorStand.setItemInHand( sWorld.getBukkitItemStack( item ) );
+			armorStand.setRightArmPose(arm);
 			
 			
 			if ( new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) >= 0 ) {
 				
-				as.setGlowing( bomb.isGlowing() );
+				armorStand.setGlowing( bomb.isGlowing() );
 				
 				// setGravity is invalid for spigot 1.8.8:
-				as.setGravity( bomb.isGravity() );
+				armorStand.setGravity( bomb.isGravity() );
 			}
 		}
 
 		@Override
 		public void run()
 		{
-			// Track the time that this has lived:
-			ageTicks += 1;
 			
-			double speed = 0.25;
+			double speed = 0.35;
 			
 			eulerAngleX += speed;
 			eulerAngleY += speed / 3;
-			eulerAngleZ += speed / 9;
+			eulerAngleZ += speed / 5;
 			
 			
 			EulerAngle arm = new EulerAngle( eulerAngleX, eulerAngleY, eulerAngleZ );
 			
-			as.setRightArmPose(arm);
+			armorStand.setRightArmPose(arm);
 			
 			
 			if ( eulerAngleX > twoPI ) {
@@ -577,10 +572,11 @@ public class PrisonUtilsMineBombsTasks
 				eulerAngleZ -= twoPI;
 			}
 			
-			
-			if ( ageTicks >= terminateOnTicks ) {
+
+			// Track the time that this has lived:
+			if ( --terminateOnZeroTicks == 0 || !armorStand.isValid() ) {
 				
-				as.remove();
+				armorStand.remove();
 				
 				this.cancel();
 			}

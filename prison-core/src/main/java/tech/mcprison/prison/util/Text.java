@@ -414,6 +414,17 @@ public class Text {
     	return results;
     }
     	      
+    
+    public static String convertToAmpColorCodes( String textEncoded ) {
+    	
+    	String results = textEncoded;
+    	
+    	if ( textEncoded != null && textEncoded.contains( COLOR_ ) ) {
+    		results = textEncoded.replaceAll( COLOR_, "&" );
+    	}
+    	
+    	return results;
+    }
 
     /**
      * Converts a double (3.45) into a US-localized currency string ($3.45).

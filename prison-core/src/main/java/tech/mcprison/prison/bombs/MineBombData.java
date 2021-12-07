@@ -13,9 +13,23 @@ public class MineBombData {
 	
 	private String description;
 	
+	
+	/**
+	 * <p>The 'bombItemId' is first line of the bomb's item lore, and
+	 * it really needs to be unique and not match any other bomb's id.
+	 * </p>
+	 */
+	private String bombItemId;
 	private List<String> lore;
 	
 
+	/**
+	 * <p>The String value that is shown over the placed item when the bomb is 
+	 * placed.  Null or empty will show none.  The placeholder '{name}' will show
+	 * the bomb's name.
+	 * </p>
+	 */
+	private String nameTag;
 	
 	/**
 	 * <p>The String name of an XMaterial item to use as the "bomb".
@@ -85,7 +99,21 @@ public class MineBombData {
 	
 	private int fuseDelayTicks = 5 * 20; // 5 seconds
 	
-	private int cooldownTicks = 30 * 20; // 30 seconds
+	private int cooldownTicks = 5 * 20; // 5 seconds
+
+	
+	/**
+	 * <p>This is the number of ticks after the explosion occurs to when
+	 * the armor stand is removed.  This is preferred since bukkit is 
+	 * managing the removal of the armor stand, which will help prevent it
+	 * from not being removed, which will create a zombie.
+	 * </p>
+	 * 
+	 * <p>This value will be added to fuseDelayTicks to setup the removal
+	 * time that will be used when placing the armor stand.
+	 * </p>
+	 */
+	private int itemRemovalDelayTicks = 5; // 0.25 seconds
 	
 	
 	/**
@@ -113,7 +141,14 @@ public class MineBombData {
 	 */
 	private boolean autosell = false;
 	
-	private boolean activated = false;
+	
+	/**
+	 * <p>Internal just to indicated if a mine bomb is activated or not.
+	 * This has not purpose if used in a save file.
+	 * </p>
+	 */
+	private transient boolean activated = false;
+	
 	
 
 	private TreeSet<MineBombEffectsData> soundEffects;
@@ -139,8 +174,12 @@ public class MineBombData {
 		this.name = name;
 		this.itemType = itemType;
 		
+		this.nameTag = "{name}";
+		
 		this.explosionShape = explosionShape;
 		this.radius = radius;
+		
+		this.bombItemId = "PrisonMineBomb: " + name;
 		
 		this.lore = new ArrayList<>();
 		
@@ -159,6 +198,7 @@ public class MineBombData {
 		
 		this.cooldownTicks = 30 * 20;
 		
+		this.itemRemovalDelayTicks = 5;
 		
 		this.glowing = false;
 		this.gravity = true;
@@ -170,7 +210,11 @@ public class MineBombData {
 		MineBombData cloned = new MineBombData( getName(), getItemType(), getExplosionShape(),
 				getRadius() );
 		
+		cloned.setBombItemId( getBombItemId() );
+		
 		cloned.setDescription( getDescription() );
+		
+		cloned.setNameTag( getNameTag() );
 		
 		cloned.setToolInHandName( getToolInHandName() );
 		cloned.setToolInHandFortuneLevel( getToolInHandFortuneLevel() );
@@ -185,6 +229,7 @@ public class MineBombData {
 		cloned.setGlowing( isGlowing() );
 		cloned.setGravity( isGravity() );
 		
+		cloned.setItemRemovalDelayTicks( getItemRemovalDelayTicks() );
 		
 		cloned.setAutosell( isAutosell() );
 		cloned.setActivated( isActivated() );
@@ -217,11 +262,25 @@ public class MineBombData {
 		this.name = name;
 	}
 
+	public String getNameTag() {
+		return nameTag;
+	}
+	public void setNameTag( String nameTag ) {
+		this.nameTag = nameTag;
+	}
+
 	public String getDescription() {
 		return description;
 	}
 	public void setDescription( String description ) {
 		this.description = description;
+	}
+
+	public String getBombItemId() {
+		return bombItemId;
+	}
+	public void setBombItemId( String bombItemId ) {
+		this.bombItemId = bombItemId;
 	}
 
 	public List<String> getLore() {
@@ -315,17 +374,19 @@ public class MineBombData {
 		this.glowing = glowing;
 	}
 
-	public boolean isGravity()
-	{
+	public boolean isGravity() {
 		return gravity;
 	}
-
-
-	public void setGravity( boolean gravity )
-	{
+	public void setGravity( boolean gravity ) {
 		this.gravity = gravity;
 	}
 
+	public int getItemRemovalDelayTicks() {
+		return itemRemovalDelayTicks;
+	}
+	public void setItemRemovalDelayTicks( int itemRemovalDelayTicks ) {
+		this.itemRemovalDelayTicks = itemRemovalDelayTicks;
+	}
 
 	public boolean isAutosell() {
 		return autosell;

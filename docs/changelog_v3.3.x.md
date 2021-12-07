@@ -13,7 +13,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.10 2021-12-06
+# 3.2.11-alpha.10 2021-12-07
+
+
+* **Mine Bombs: Some changes in how they are setup. Added a bombItemId which becomes line one of the lore and is used to identify that it's a mine bomb.**
+Added a nameTag that is used to put a nameTag on the armor stand. Added a itemRemovalDelayTicks field to better control when the armor stand is removed (exact time).
+Update a lot of Mine Bomb code for creating the time, placing the item (armor stand) etc... It's working better overall.
 
 
 * **Update Tokens to fix an issue with the admin set.**

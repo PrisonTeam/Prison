@@ -8,6 +8,7 @@ import tech.mcprison.prison.bombs.MineBombEffectsData.EffectState;
 import tech.mcprison.prison.file.JsonFileIO;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.util.Text;
 
 public class MineBombs
 {
@@ -304,6 +305,8 @@ public class MineBombs
 				mbd.getVisualEffects().add( mbeExplode10.clone() );
 				mbd.getVisualEffects().add( mbeExplode06.clone() );
 				
+				mbd.setCooldownTicks( 60 );
+
 				getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 				
 			}
@@ -414,10 +417,21 @@ public class MineBombs
 				MineBombData mbd = new MineBombData( 
 						"WimpyBomb", "GUNPOWDER", ExplosionShape.sphere.name(), 5, 
 							"A Wimpy Mine Bomb" );
+				mbd.setBombItemId( "&7A &2Wimpy &cBomb &9...&02A3F" );
+				
+				mbd.setNameTag( "&7A &2Wimpy &cBomb\n&\n&eR U N !!!" );
+				
 				mbd.setRadiusInner( 2 );
 				mbd.setDescription("A whimpy bomb made with gunpowder and packs the punch of a " +
 						"dull wooden pickaxe. For some reason, it only has a 40% chance of removing " +
 						"a block.");
+				
+				mbd.getLore().add( "" );
+				mbd.getLore().add( "A whimpy bomb made with gunpowder and packs the punch " );
+				mbd.getLore().add( "of a dull wooden pickaxe. For some reason, it only " );
+				mbd.getLore().add( "has a 40% chance of removing a block." );
+				mbd.getLore().add( "" );
+				mbd.getLore().add( "Not labeled for retail sale." );
 				
 				mbd.setToolInHandName( "WOODEN_PICKAXE" );
 				mbd.setToolInHandFortuneLevel( 0 );
@@ -443,7 +457,7 @@ public class MineBombs
 				mbd.setGlowing( true );
 				mbd.setGravity( false );
 				
-				mbd.setCooldownTicks( 60 );
+				mbd.setCooldownTicks( 5 );
 
 				getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 			}
@@ -488,6 +502,29 @@ public class MineBombs
 
 	public MineBombsConfigData getConfigData() {
 		return configData;
+	}
+
+	public MineBombData findBombByItemId( String bombItemId )
+	{
+		MineBombData results = null;
+		
+		String bombItemIdConvered = Text.convertToAmpColorCodes( bombItemId );
+		
+		if ( bombItemIdConvered != null && !bombItemIdConvered.isEmpty() ) {
+			for ( String bombKey : getConfigData().getBombs().keySet() )
+			{
+				MineBombData bomb = getConfigData().getBombs().get( bombKey );
+				
+				if ( bomb != null && bomb.getBombItemId() != null && 
+								bomb.getBombItemId().equalsIgnoreCase( bombItemIdConvered ) ) {
+					
+					results = bomb;
+					
+				}
+			}
+		}
+		
+		return results;
 	}
 
 }
