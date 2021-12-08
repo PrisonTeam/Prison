@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.11 2021-12-07
 
 
+* **Bug fix: Was causing a null pointer exception when trying to add a player to a new ladder.**
+This now correctly gives the player the requested rank, or if not specified, then the lowest rank on that ladder.
+
 
 * **3.2.11-alpha.11 2021-12-07**
 

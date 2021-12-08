@@ -106,6 +106,7 @@ public class RankUtil
 		failed_player,
 		failed_ladder,
 
+		player_has_no_rank_on_ladder,
 		orginal_rank,
 		
 		failed_rank_not_found,
@@ -338,10 +339,19 @@ public class RankUtil
         // This should never be null, since if a player is not on this ladder, then they 
         // should never make it this far in to this code:
         // Um... not true when performing a prestige for the first time.... lol
+        // Also not true when being added to a ladder, since they will not have an existing rank.
         
         RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
         
+        
+        
+        // originalRank can be null...
         PlayerRank originalRank = rankPlayerFactory.getRank( rankPlayer, ladder );
+        
+        if ( originalRank == null ) {
+        	
+        	results.addTransaction( RankupTransactions.player_has_no_rank_on_ladder );
+        }
         
 //        if ( originalRank == null && ladder.getName().equals( "default" ) ) {
 //        	
@@ -357,6 +367,8 @@ public class RankUtil
         results.addTransaction( RankupTransactions.orginal_rank );
         results.setPlayerRankOriginal( originalRank );
         results.setOriginalRank( originalRank == null ? null : originalRank.getRank() );
+        
+
         
         /**
          * calculate the target rank.  In this function the original rank is updated within the
@@ -409,13 +421,18 @@ public class RankUtil
         
 
         // This calculates the target rank, and takes in to consideration the player's existing rank:
-        PlayerRank pRankNext = originalRank.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
+        PlayerRank pRankNext =
+        			originalRank == null ? null :
+        				originalRank.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
 //        		new PlayerRank( targetRank, originalRank.getRankMultiplier() );
 		
         // If player does not have a rank on this ladder, then grab the first rank on the ladder since they need
         // to be added to the ladder.
         if ( pRankNext == null ) {
-        	pRankNext = originalRank.getTargetPlayerRankForPlayer( rankPlayer, ladder.getLowestRank().get() );
+        	
+        	pRankNext = rankPlayerFactory.createPlayerRank( targetRank );
+        	
+//        	pRankNext = originalRank.getTargetPlayerRankForPlayer( rankPlayer, ladder.getLowestRank().get() );
         }
         
         	
