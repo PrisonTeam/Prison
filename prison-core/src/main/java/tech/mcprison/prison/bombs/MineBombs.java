@@ -17,7 +17,7 @@ public class MineBombs
 	
 	private static MineBombs instance;
 	
-	private final MineBombsConfigData configData;
+	private MineBombsConfigData configData;
 	
 	
 	
@@ -147,12 +147,42 @@ public class MineBombs
 			
 			MineBombsConfigData configs = 
 					(MineBombsConfigData) fio.readJsonFile( configFile, getConfigData() );
-			
-			if ( configs != null && configs.getBombs().size() > 0 ) {
+
+			if ( configs != null ) {
+				setConfigData( configs );
 				
-				getConfigData().getBombs().putAll( configs.getBombs() );
-				
+				if ( configs.getDataFormatVersion() < 
+								MineBombsConfigData.MINE_BOMB_DATA_FORMAT_VERSION ) {
+					
+					// Need to update the format version then save a new copy of the configs.
+					
+					// first backup the old file by renaming it:
+					
+					int oldVersion = configs.getDataFormatVersion();
+					
+					String backupTag = "ver_" + oldVersion;
+					File backupFile = fio.getBackupFile( configFile, backupTag, "json" );
+
+					boolean renamed = configFile.renameTo( backupFile );
+					
+					if ( renamed ) {
+						configs.setDataFormatVersion( MineBombsConfigData.MINE_BOMB_DATA_FORMAT_VERSION );
+						
+						fio.saveJsonFile( configFile, configs );
+						
+						Output.get().logInfo( String.format( 
+									"MineBomb Data Format was updated and saved: Loaded v%d and updated to v%d. " +
+									"The old data is archived as: [%s]",
+									oldVersion, configs.getDataFormatVersion(),
+									backupFile.getName()
+//									backupFile.getAbsolutePath()
+								) );
+					}
+					
+					
+				}
 			}
+			
 		}
 	}
 	
@@ -500,10 +530,15 @@ public class MineBombs
 		
 	}
 
+	
 	public MineBombsConfigData getConfigData() {
 		return configData;
 	}
+	public void setConfigData( MineBombsConfigData configData ) {
+		this.configData = configData;
+	}
 
+	
 	public MineBombData findBombByItemId( String bombItemId )
 	{
 		MineBombData results = null;

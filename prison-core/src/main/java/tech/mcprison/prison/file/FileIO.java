@@ -56,6 +56,27 @@ public abstract class FileIO
 		return tempFile;
 	}
 	
+	/**
+	 * <p>This generates a new File with the filename of the backup file.
+	 * This function only generates the File object and does not modify
+	 * or save anything on the file system.
+	 * </p>
+	 * 
+	 * @param file The original file name
+	 * @param backupTag A no-spaced tag name to identify the type of backup. 
+	 * 				This is inserted after the original file name.
+	 * @param suffix File suffix to use for the backup, not including the dot.
+	 * @return File objct of the target backup file.
+	 */
+	public File getBackupFile( File file, String backupTag, String suffix ) {
+		
+		String tempFileName = file.getName() + "." + backupTag + "_" + 
+							getTimestampFormat() + "." + suffix;
+		File tempFile = new File(file.getParentFile(), tempFileName);
+		
+		return tempFile;
+	}
+	
 	protected void saveFile( File file, String data ) 
 	{
 		if ( file != null && data != null )
