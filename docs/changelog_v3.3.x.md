@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.11 2021-12-10
 
 
+* **Mine Bombs: Noticed the player inventory was not be "updated" through bukkit.**
+This could help prevent wrong item amounts.
+
+
 * **Mine Bombs: Set them up to auto refresh the data structure that is being saved, if it is detected that there has been a change.**
 Added a version number to the mine bomb save data structure so as to use that to detect when the structure changes.  That number will be updated in code when it has been modified.  So when running the mine bomb loader, it will detect that the saved data is in an older format, and so it will rename the old file to preserve it as a backup, then write the new data to the file system.  This will allow new fields to be added,and then they will appear in the save file upon the next restart.  This will make it easier for admins to update and use the new features.
 

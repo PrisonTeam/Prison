@@ -821,8 +821,11 @@ public class PrisonUtilsMineBombs
 						if ( itemInHand.getAmount() == 0 ) {
 							SpigotCompatibility.getInstance()
 													.setItemInMainHand( player, null );
-							
 						}
+						
+						// Apply updates to the player's inventory:
+						player.updateInventory();
+
 						
 						
 						PlacedMineBombItemTask submitPlacedMineBombItem = 
