@@ -7,6 +7,11 @@
 This document provides information on how to get started quickly using Prison's `/ranks autoConfigure`.
 
 
+[Prison Log File Examples - Starting Prison & auto configure](prison_docs_101_auto_configure_log_examples.md)
+
+
+*Documented updated: 2021-12-11*
+
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
 # Overview
@@ -77,31 +82,28 @@ Some of the steps involved and which are covered by this document:
 * **Turning Virtual Mines in to Actual Mines** - How to set the mine's locations so they become real.
 
 
-* **Setting a Mine's Spawn Location**
 
+
+Other topics that may be helpful but not fully covered in this document:
+
+* **Setting a Mine's Spawn Location**
 
 * **Resizing A Mine**
 
-
 * **Moving A Mine**
-
 
 * **Changing A Mine's Liner**
 
-
 * **Submitting a New Liner Request**
-
 
 * **Working with Mines within a Void World** - Special considerations for resizing, moving, and liners when in a Void World.
 
-
 * **Working with Mine's Permissions**
-
 
 * **Using Mine Reset Commands**
 
-
 * **Working with Rank Commands**
+
 
 
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
@@ -119,9 +121,9 @@ These listings are to help guide you in planning on what you need.  A minecraft 
 
 
 * **Minecraft Server Version**
-    - Prison support a native minecraft server version of v1.8 through v1.16.5.
-    - Prison is developed and compiled with the Spigot v1.13.2 build.  This ensures that Prison is able to natively support all functional behaviors from v1.8 through v1.16.5 since v.1.13 is the only version of Spigot that has both the old internal functions and new internal functions coexisting at the same time.  
-    - Prison will try to support v1.17 when it is released, but not sure what special requirements it will place upon the development environment.
+    - Prison support a native minecraft server version of v1.8 through v1.18.x.
+    - Prison is developed and compiled with the Spigot v1.13.2 build.  This ensures that Prison is able to natively support all functional behaviors from v1.8 through v1.18.x since v.1.13 is the only version of Spigot that has both the old internal functions and new internal functions coexisting at the same time.  
+    - Prison supports the early releases of v1.18. There has been no issues found. Prison will try to support all of the new blocks within 1.18, we use a library called XSeries to provide the new blocks.  So as they release their updates, prison will pickup support for more blocks.
     
 
 * **Memory Requirements**
@@ -206,7 +208,7 @@ The current version of Prison's `/ranks autoConfigure` uses Access by Ranks to a
 The use of Access by Ranks prevents the need for `/ranks autoConfigure` to generate any rank commands dealing with permissions.  You may need to add them for your own needs.
 
 
-**Critical:** It should be noted that the ideal conditions to running this command is without having any mines or ranks previously defined.  If any are detected, this command will terminate and will not attempt to perform any actions.  You can use the Option **force** to force the auto configure to run if there are ranks and mines already defined.  If you do force it, keep in mind that it will skip over any rank or mine that it would otherwise try to generate.  It will not add rank commands to existing ranks.  It will not add blocks to existing mines.  It will not hook up ranks to mines.  Nor will it configure such features as Mine Access Permissions.  If you decide to use **force** you do so at your own risks.  That said, it's easy to delete the `plugins/Prison/` directory and start over (or just rename it).
+**Critical:** It should be noted that the ideal conditions to running this command is without having any mines or ranks previously defined.  If any are detected, this command will terminate and will not attempt to perform any actions.  You can use the Option **force** to force the auto configure to run if there are ranks and mines already defined.  If you do force it, keep in mind that it will skip over any rank or mine that it would otherwise try to generate.  It will not add blocks to existing mines.  It will not hook up ranks to mines.  Nor will it configure such features as Mine Access Permissions.  If you decide to use **force** you do so at your own risks.  That said, it's easy to delete the `plugins/Prison/` directory and start over (or just rename it).
 
 
 Almost every command within prison has detailed help, and it can be activated by adding the `help` keyword to the end of the command.  For example:
@@ -239,339 +241,37 @@ The server that was created to run this example was using 9 core plugins:
 <img src="images/prison_docs_100_setting_up_auto_configure_02.png" alt="9 core plugins" title="9 core plugins" width="600" /> 
 
 
-<h1>Note: The following is from an older release of prison that generated rank commands that controlled the way prison worked.</h1>
 
+The generated log files can now be found in this document:
 
-Sample of prison starting up for the first time and it's console messages:
-
-
-```
-[03:02:59 INFO]: [Prison] Enabling Prison v3.2.5-alpha.14
-[03:02:59 INFO]: [Prison] Using version adapter tech.mcprison.prison.spigot.compat.Spigot18
-[03:02:59 INFO]: | Prison |
-[03:02:59 INFO]: | Prison |   _____      _
-[03:02:59 INFO]: | Prison |  |  __ \    (_)
-[03:02:59 INFO]: | Prison |  | |__) | __ _ ___  ___  _ __
-[03:02:59 INFO]: | Prison |  |  ___/ '__| / __|/ _ \| '_ \
-[03:02:59 INFO]: | Prison |  | |   | |  | \__ \ (_) | | | |
-[03:02:59 INFO]: | Prison |  |_|   |_|  |_|___/\___/|_| |_|
-[03:02:59 INFO]: | Prison |
-[03:02:59 INFO]: | Prison |  Loading Prison version: 3.2.5-alpha.14
-[03:02:59 INFO]: | Prison |  Running on platform: SpigotPlatform
-[03:02:59 INFO]: | Prison |  Minecraft version: git-Spigot-21fe707-e1ebe52 (MC: 1.8.8)
-[03:02:59 INFO]: | Prison |
-[03:02:59 INFO]: | Prison |  Enabling and starting...
-[03:02:59 INFO]: | Prison |  Enabled Prison v3.2.5-alpha.14 in 223 milliseconds.
-[03:02:59 INFO]: | Prison |  There were 19 new values added to the GuiConfig.yml file located at C:\mc_servers\spigot-1.8.8-autoConfig_server\plugins\Prison\GuiConfig.yml
-[03:02:59 INFO]: | Prison |  There were 37 new values added for the language files used by the SellAllConfig.yml file located at C:\mc_servers\spigot-1.8.8-autoConfig_server\plugins\Prison\SellAllConfig.yml
-[03:02:59 INFO]: | Prison |  There were 37 new values added for the language files used by the SellAllConfig.yml file located at C:\mc_servers\spigot-1.8.8-autoConfig_server\plugins\Prison\SellAllConfig.yml
-[03:02:59 INFO]: | Prison |  There were 272 new values added for the language files used by the GuiConfig.yml file located at C:\mc_servers\spigot-1.8.8-autoConfig_server\plugins\Prison\module_conf\lang\en_US.yml
-[03:02:59 INFO]: | Prison |  Notice: AutoManager config file was just updated with 89 new entries. May need to be configured. File: autoFeaturesConfig.yml
-[03:02:59 INFO]: | Prison |  Notice: AutoManager config file was just created. You must configure it to use it. File: autoFeaturesConfig.yml
-[03:02:59 INFO]: | Prison |  ###--### AutoFeaturesFileConfig: test autoPickupBlockNameList: length = 2  value = [coal_block, iron_ore]
-[03:02:59 INFO]: | Prison |  ### VaultEconomyWrapper : vaultVersion = 1.5.6-b49  is pre1_4= false
-[03:02:59 INFO]: | Prison |  EssentialsEconomy is not directly enabled - Available as backup.
-[03:02:59 INFO]: [PlaceholderAPI] Successfully registered expansion: prison
-[03:02:59 INFO]: | Prison |  Mines Module enablement starting...
-[03:02:59 INFO]: | Prison |  Mines Module enabled successfully in 152 milliseconds.
-[03:02:59 INFO]: | Prison |  Ranks Module enablement starting...
-[03:03:00 INFO]: | Prison |  Loaded 0 ranks.
-[03:03:00 INFO]: | Prison |  Loaded 2 ladders.
-[03:03:00 INFO]: | Prison |  Loaded 0 players.
-[03:03:00 INFO]: | Prison |  Ranks by ladders:
-[03:03:00 INFO]: | Prison |    default:
-[03:03:00 INFO]: | Prison |    prestiges:
-[03:03:00 INFO]: | Prison |    none:
-[03:03:00 INFO]: | Prison |  Ranks Module enabled successfully in 580 milliseconds.
-[03:03:00 INFO]: | Prison |  Utils Module enablement starting...
-[03:03:00 INFO]: | Prison |  Utils Module enabled successfully in 7 milliseconds.
-[03:03:00 INFO]: | Prison |  Loaded 0 mines and submitted with a 5000 millisecond offset timing for auto resets.
-[03:03:00 INFO]: [PlaceholderAPI] Successfully registered expansion: prison
-[03:03:00 INFO]: | Prison |  Total placeholders generated: 122
-[03:03:00 INFO]: | Prison |    PLAYER: 26
-[03:03:00 INFO]: | Prison |    LADDERS: 48
-[03:03:00 INFO]: | Prison |    PLAYERMINES: 48
-[03:03:00 INFO]: | Prison |    ALIAS: 61
-[03:03:00 INFO]: | Prison |  Total placeholders available to be Registered: 122
-[03:03:00 INFO]: | Prison |  A total of 0 Mines and Ranks have been linked together.
-[03:03:00 INFO]: | Prison |  ------------- < /prison version > ---------------
-[03:03:00 INFO]: | Prison |  Prison Version: 3.2.5-alpha.14
-[03:03:00 INFO]: | Prison |  Running on Platform: tech.mcprison.prison.spigot.SpigotPlatform
-[03:03:00 INFO]: | Prison |  Minecraft Version: git-Spigot-21fe707-e1ebe52 (MC: 1.8.8)
-[03:03:00 INFO]: | Prison |
-[03:03:00 INFO]: | Prison |  Commands: /prison
-[03:03:00 INFO]: | Prison |  Module: Mines : Enabled
-[03:03:00 INFO]: | Prison |  .   Base Commands: /mines
-[03:03:00 INFO]: | Prison |  Module: Ranks : Enabled
-[03:03:00 INFO]: | Prison |  .   Base Commands: /ranks /rankup /rankupMax /prestige /prestiges
-[03:03:00 INFO]: | Prison |  Module: Utils : Enabled
-[03:03:00 INFO]: | Prison |  .   Base Commands: /prison utils
-[03:03:00 INFO]: | Prison |
-[03:03:00 INFO]: | Prison |  Integrations:
-[03:03:00 INFO]: | Prison |      Permissions:  LuckPerms (Vault)
-[03:03:00 INFO]: | Prison |      Economy:  Essentials Economy (Vault)
-[03:03:00 INFO]: | Prison |  Integration Type: ECONOMY
-[03:03:00 INFO]: | Prison |      Essentials Economy (Vault) <Active> [URL]
-[03:03:00 INFO]: | Prison |      Essentials (EssentialsX) (disabled) <Inactive> [URL]
-[03:03:00 INFO]: | Prison |      SaneEconomy (API v0.15.0) <Inactive> [URL]
-[03:03:00 INFO]: | Prison |      GemsEconomy <Inactive> [URL]
-[03:03:00 INFO]: | Prison |  Integration Type: PERMISSION
-[03:03:00 INFO]: | Prison |      LuckPerms (Vault) <Active>
-[03:03:00 INFO]: | Prison |      LuckPerms (LuckPermsV5) <Active> [URL]
-[03:03:00 INFO]: | Prison |      LuckPerms (LuckPerms-Legacy) <Inactive> [URL]
-[03:03:00 INFO]: | Prison |  Integration Type: PLACEHOLDER
-[03:03:00 INFO]: | Prison |      To list all or search for placeholders see: /prison placeholders
-[03:03:00 INFO]: | Prison |      MVdWPlaceholderAPI <Inactive> [URL]
-[03:03:00 INFO]: | Prison |      PlaceholderAPI <Active> [URL]
-[03:03:00 INFO]: | Prison |      MVdWPlaceholderAPI <Inactive> [URL]
-[03:03:00 INFO]: | Prison |      PlaceholderAPI <Active> [URL]
-[03:03:00 INFO]: | Prison |  Registered Plugins:
-[03:03:00 INFO]: | Prison |     LuckPerms (5.1.26),   WorldEdit (6.1;no_git_id)
-[03:03:00 INFO]: | Prison |     Vault (1.5.6-b49),   PlaceholderAPI (2.10.9)
-[03:03:00 INFO]: | Prison |     ProtocolLib (4.5.0),   WorldGuard (6.1)
-[03:03:00 INFO]: | Prison |     Essentials (2.18.1.0),   EssentialsChat (2.18.1.0)
-[03:03:00 INFO]: | Prison |     Prison (3.2.5-alpha.14)
-[03:03:00 INFO]: | Prison |  Prison - Finished loading.
-```
-
-Running the command:
-
-```
->ranks autoConfigure help
-[04:19:55 INFO]: Auto configures Ranks and Mines using single letters A through Z for both the rank and mine names. If both ranks and mines are generated, they will also be linked together automatically. To set the starting price use price=x. To set multiplier mult=x. Cannot autoConfigure if any ranks or mines are defined, but 'force' will attempt it but at your risk. Default values [full price=50000 mult=1.5]
-[04:19:55 INFO]: /ranks autoConfigure [options]
-[04:19:55 INFO]: [options | full] Options: [full ranks mines price=x mult=x force]
-[04:19:55 INFO]: Permissions:
-[04:19:55 INFO]:    ranks.set
->ranks autoConfigure
-[04:20:03 INFO]: | Info | Your new rank, 'A', was created in the ladder 'default', using the tag value of '[A]'
-[04:20:03 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:04 INFO]: | Info | Your new rank, 'B', was created in the ladder 'default', using the tag value of '[B]'
-[04:20:04 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:04 INFO]: | Info | Your new rank, 'C', was created in the ladder 'default', using the tag value of '[C]'
-[04:20:04 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:04 INFO]: | Info | Your new rank, 'D', was created in the ladder 'default', using the tag value of '[D]'
-[04:20:04 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:04 INFO]: | Info | Your new rank, 'E', was created in the ladder 'default', using the tag value of '[E]'
-[04:20:04 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:04 INFO]: | Info | Your new rank, 'F', was created in the ladder 'default', using the tag value of '[F]'
-[04:20:04 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:04 INFO]: | Info | Your new rank, 'G', was created in the ladder 'default', using the tag value of '[G]'
-[04:20:04 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:04 INFO]: | Info | Your new rank, 'H', was created in the ladder 'default', using the tag value of '[H]'
-[04:20:04 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:04 INFO]: | Info | Your new rank, 'I', was created in the ladder 'default', using the tag value of '[I]'
-[04:20:04 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:04 INFO]: | Info | Your new rank, 'J', was created in the ladder 'default', using the tag value of '[J]'
-[04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:05 INFO]: | Info | Your new rank, 'K', was created in the ladder 'default', using the tag value of '[K]'
-[04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:05 INFO]: | Info | Your new rank, 'L', was created in the ladder 'default', using the tag value of '[L]'
-[04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:05 INFO]: | Info | Your new rank, 'M', was created in the ladder 'default', using the tag value of '[M]'
-[04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:05 INFO]: | Info | Your new rank, 'N', was created in the ladder 'default', using the tag value of '[N]'
-[04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:05 INFO]: | Info | Your new rank, 'O', was created in the ladder 'default', using the tag value of '[O]'
-[04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:05 INFO]: | Info | Your new rank, 'P', was created in the ladder 'default', using the tag value of '[P]'
-[04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:05 INFO]: | Info | Your new rank, 'Q', was created in the ladder 'default', using the tag value of '[Q]'
-[04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:05 INFO]: | Info | Your new rank, 'R', was created in the ladder 'default', using the tag value of '[R]'
-[04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:05 INFO]: | Info | Your new rank, 'S', was created in the ladder 'default', using the tag value of '[S]'
-[04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:05 INFO]: | Info | Your new rank, 'T', was created in the ladder 'default', using the tag value of '[T]'
-[04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:05 INFO]: | Info | Your new rank, 'U', was created in the ladder 'default', using the tag value of '[U]'
-[04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:05 INFO]: | Info | Your new rank, 'V', was created in the ladder 'default', using the tag value of '[V]'
-[04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:05 INFO]: | Info | Your new rank, 'W', was created in the ladder 'default', using the tag value of '[W]'
-[04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:05 INFO]: | Info | Your new rank, 'X', was created in the ladder 'default', using the tag value of '[X]'
-[04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:05 INFO]: | Info | Your new rank, 'Y', was created in the ladder 'default', using the tag value of '[Y]'
-[04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:05 INFO]: | Info | Your new rank, 'Z', was created in the ladder 'default', using the tag value of '[Z]'
-[04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-```
-
-
-Note: The following are the messages generated while building the **sellall** shop with the default items:
-
-
-```
-[04:20:05 INFO]: Virtual mine created: use command /mines set area  to enable as a normal mine.
-[04:20:05 INFO]: | Prison |   ITEM [COBBLESTONE, 4.0] added with success!
-[04:20:05 INFO]: | Prison |   ITEM [ANDESITE, 5.0] added with success!
-[04:20:05 INFO]: | Prison |   ITEM [DIORITE, 6.0] added with success!
-[04:20:05 INFO]: | Prison |   ITEM [COAL_ORE, 13.0] added with success!
-[04:20:05 INFO]: | Prison |   ITEM [GRANITE, 8.0] added with success!
-[04:20:05 INFO]: | Prison |   ITEM [STONE, 9.0] added with success!
-[04:20:05 INFO]: | Prison |   ITEM [IRON_ORE, 18.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [POLISHED_ANDESITE, 7.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [GOLD_ORE, 45.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [MOSSY_COBBLESTONE, 29.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [COAL_BLOCK, 135.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [IRON_BLOCK, 190.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [LAPIS_ORE, 100.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [REDSTONE_ORE, 45.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [DIAMOND_ORE, 200.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [EMERALD_ORE, 250.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [GOLD_BLOCK, 450.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [LAPIS_BLOCK, 950.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [REDSTONE_BLOCK, 405.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [DIAMOND_BLOCK, 2000.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [EMERALD_BLOCK, 2250.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [OBSIDIAN, 450.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [CLAY, 12.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [GRAVEL, 3.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [SAND, 6.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [DIRT, 4.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [COARSE_DIRT, 7.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [PODZOL, 6.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [RED_SAND, 9.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [BEDROCK, 500.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [SANDSTONE, 3.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [POLISHED_DIORITE, 8.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [POLISHED_GRANITE, 9.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [CHISELED_NETHER_BRICKS, 39.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [CHISELED_RED_SANDSTONE, 11.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [CHISELED_STONE_BRICKS, 11.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [CUT_RED_SANDSTONE, 13.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [CUT_SANDSTONE, 10.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [NETHER_QUARTZ_ORE, 34.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [QUARTZ, 34.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [QUARTZ_BLOCK, 136.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [QUARTZ_SLAB, 68.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [CHISELED_QUARTZ_BLOCK, 136.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [QUARTZ_BRICKS, 136.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [QUARTZ_PILLAR, 136.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [SMOOTH_QUARTZ, 136.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [SMOOTH_RED_SANDSTONE, 14.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [SMOOTH_SANDSTONE, 14.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [SMOOTH_STONE, 14.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [CHARCOAL, 16.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [CRACKED_NETHER_BRICKS, 16.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [CRACKED_STONE_BRICKS, 14.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [EMERALD, 14.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [END_STONE, 14.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [END_STONE_BRICKS, 14.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [FLINT, 9.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [LAPIS_LAZULI, 14.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [MOSSY_STONE_BRICKS, 14.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [PRISMARINE_SHARD, 13.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [PRISMARINE, 52.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [PRISMARINE_BRICKS, 52.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [PRISMARINE_BRICK_SLAB, 52.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [PRISMARINE_CRYSTALS, 37.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [DARK_PRISMARINE, 52.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [DARK_PRISMARINE_SLAB, 52.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [PURPUR_BLOCK, 14.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [PURPUR_PILLAR, 14.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [TERRACOTTA, 10.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [ACACIA_LOG, 7.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [BIRCH_LOG, 7.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [DARK_OAK_LOG, 7.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [JUNGLE_LOG, 7.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [OAK_LOG, 7.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [SPRUCE_LOG, 7.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [ACACIA_PLANKS, 28.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [BIRCH_PLANKS, 28.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [DARK_OAK_PLANKS, 28.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [JUNGLE_PLANKS, 28.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [OAK_PLANKS, 28.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [SPRUCE_PLANKS, 28.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [ACACIA_WOOD, 7.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [BIRCH_WOOD, 7.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [DARK_OAK_WOOD, 7.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [JUNGLE_WOOD, 7.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [OAK_WOOD, 7.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [SPRUCE_WOOD, 7.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [IRON_NUGGET, 3.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [IRON_INGOT, 27.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [GOLD_NUGGET, 12.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [GOLD_INGOT, 108.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [REDSTONE, 45.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [GLOWSTONE, 52.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [GLOWSTONE_DUST, 14.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [COAL, 15.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [DIAMOND, 200.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [SUGAR_CANE, 13.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [SUGAR, 13.0] added with success!
-[04:20:06 INFO]: | Prison |   ITEM [PAPER, 13.0] added with success!
-```
-
-The following are log entries from the generation and assignment of the blocks to all of the generated mines.
-
-```
-[04:20:06 INFO]: | Prison |  Mine A: [ANDESITE 5.0, COBBLESTONE 95.0]
-[04:20:06 INFO]: | Prison |  Mine B: [DIORITE 5.0, ANDESITE 10.0, COBBLESTONE 85.0]
-[04:20:06 INFO]: | Prison |  Mine C: [COAL_ORE 5.0, DIORITE 10.0, ANDESITE 20.0, COBBLESTONE 65.0]
-[04:20:06 INFO]: | Prison |  Mine D: [GRANITE 5.0, COAL_ORE 10.0, DIORITE 20.0, ANDESITE 20.0, COBBLESTONE 45.0]
-[04:20:06 INFO]: | Prison |  Mine E: [STONE 5.0, GRANITE 10.0, COAL_ORE 20.0, DIORITE 20.0, ANDESITE 20.0, COBBLESTONE 25.0]
-[04:20:06 INFO]: | Prison |  Mine F: [IRON_ORE 5.0, STONE 10.0, GRANITE 20.0, COAL_ORE 20.0, DIORITE 20.0, ANDESITE 25.0]
-[04:20:06 INFO]: | Prison |  Mine G: [POLISHED_ANDESITE 5.0, IRON_ORE 10.0, STONE 20.0, GRANITE 20.0, COAL_ORE 20.0, DIORITE 25.0]
-[04:20:06 INFO]: | Prison |  Mine H: [GOLD_ORE 5.0, POLISHED_ANDESITE 10.0, IRON_ORE 20.0, STONE 20.0, GRANITE 20.0, COAL_ORE 25.0]
-[04:20:06 INFO]: | Prison |  Mine I: [MOSSY_COBBLESTONE 5.0, GOLD_ORE 10.0, POLISHED_ANDESITE 20.0, IRON_ORE 20.0, STONE 20.0, GRANITE 25.0]
-[04:20:06 INFO]: | Prison |  Mine J: [COAL_BLOCK 5.0, MOSSY_COBBLESTONE 10.0, GOLD_ORE 20.0, POLISHED_ANDESITE 20.0, IRON_ORE 20.0, STONE 25.0]
-[04:20:06 INFO]: | Prison |  Mine K: [NETHER_QUARTZ_ORE 5.0, COAL_BLOCK 10.0, MOSSY_COBBLESTONE 20.0, GOLD_ORE 20.0, POLISHED_ANDESITE 20.0, IRON_ORE 25.0]
-[04:20:06 INFO]: | Prison |  Mine L: [IRON_BLOCK 5.0, NETHER_QUARTZ_ORE 10.0, COAL_BLOCK 20.0, MOSSY_COBBLESTONE 20.0, GOLD_ORE 20.0, POLISHED_ANDESITE 25.0]
-[04:20:06 INFO]: | Prison |  Mine M: [LAPIS_ORE 5.0, IRON_BLOCK 10.0, NETHER_QUARTZ_ORE 20.0, COAL_BLOCK 20.0, MOSSY_COBBLESTONE 20.0, GOLD_ORE 25.0]
-[04:20:06 INFO]: | Prison |  Mine N: [REDSTONE_ORE 5.0, LAPIS_ORE 10.0, IRON_BLOCK 20.0, NETHER_QUARTZ_ORE 20.0, COAL_BLOCK 20.0, MOSSY_COBBLESTONE 25.0]
-[04:20:06 INFO]: | Prison |  Mine O: [DIAMOND_ORE 5.0, REDSTONE_ORE 10.0, LAPIS_ORE 20.0, IRON_BLOCK 20.0, NETHER_QUARTZ_ORE 20.0, COAL_BLOCK 25.0]
-[04:20:06 INFO]: | Prison |  Mine P: [QUARTZ_BLOCK 5.0, DIAMOND_ORE 10.0, REDSTONE_ORE 20.0, LAPIS_ORE 20.0, IRON_BLOCK 20.0, NETHER_QUARTZ_ORE 25.0]
-[04:20:06 INFO]: | Prison |  Mine Q: [EMERALD_ORE 5.0, QUARTZ_BLOCK 10.0, DIAMOND_ORE 20.0, REDSTONE_ORE 20.0, LAPIS_ORE 20.0, IRON_BLOCK 25.0]
-[04:20:06 INFO]: | Prison |  Mine R: [GOLD_BLOCK 5.0, EMERALD_ORE 10.0, QUARTZ_BLOCK 20.0, DIAMOND_ORE 20.0, REDSTONE_ORE 20.0, LAPIS_ORE 25.0]
-[04:20:06 INFO]: | Prison |  Mine S: [LAPIS_BLOCK 5.0, GOLD_BLOCK 10.0, EMERALD_ORE 20.0, QUARTZ_BLOCK 20.0, DIAMOND_ORE 20.0, REDSTONE_ORE 25.0]
-[04:20:06 INFO]: | Prison |  Mine T: [REDSTONE_BLOCK 5.0, LAPIS_BLOCK 10.0, GOLD_BLOCK 20.0, EMERALD_ORE 20.0, QUARTZ_BLOCK 20.0, DIAMOND_ORE 25.0]
-[04:20:06 INFO]: | Prison |  Mine U: [DIAMOND_BLOCK 5.0, REDSTONE_BLOCK 10.0, LAPIS_BLOCK 20.0, GOLD_BLOCK 20.0, EMERALD_ORE 20.0, QUARTZ_BLOCK 25.0]
-[04:20:06 INFO]: | Prison |  Mine V: [EMERALD_BLOCK 5.0, DIAMOND_BLOCK 10.0, REDSTONE_BLOCK 20.0, LAPIS_BLOCK 20.0, GOLD_BLOCK 20.0, EMERALD_ORE 25.0]
-[04:20:07 INFO]: | Prison |  Mine W: [EMERALD_BLOCK 10.0, DIAMOND_BLOCK 20.0, REDSTONE_BLOCK 20.0, LAPIS_BLOCK 20.0, GOLD_BLOCK 30.0]
-[04:20:07 INFO]: | Prison |  Mine X: [EMERALD_BLOCK 20.0, DIAMOND_BLOCK 20.0, REDSTONE_BLOCK 20.0, LAPIS_BLOCK 40.0]
-[04:20:07 INFO]: | Prison |  Mine Y: [EMERALD_BLOCK 20.0, DIAMOND_BLOCK 20.0, REDSTONE_BLOCK 60.0]
-[04:20:07 INFO]: | Prison |  Mine Z: [EMERALD_BLOCK 20.0, DIAMOND_BLOCK 80.0]
-[04:20:07 INFO]: | Prison |  Ranks autoConfigure: 26 ranks were created.
-[04:20:07 INFO]: | Prison |  Ranks autoConfigure: 26 rank commands were created.
-[04:20:07 INFO]: | Prison |  Ranks autoConfigure: The permission mines.<rankName> and mines.tp.<rankName> was created for each rank. Make sure you add every permission to your permission plugin or they may not work.
-[04:20:07 INFO]: | Prison |  Ranks autoConfigure: 26 mines were created.
-[04:20:07 INFO]: | Prison |  Ranks autoConfigure: 26 ranks and mines were linked.
-[04:20:07 INFO]: | Prison |
-```
+[Prison Log File Examples - Starting Prison & auto configure](prison_docs_101_auto_configure_log_examples.md)
 
 
 
-Listing the generated ranks:
 
-`/ranks list`
+
+
+Listing the generated ranks on all ladders using the `all` keyword:
+
+`/ranks list all`
+
 
 <img src="images/prison_docs_100_setting_up_auto_configure_03.png" alt="Listing all ranks" title="Listing all Ranks" width="600" />  
 
 
 
-Listing the information on Rank A:
+Listing the information on Rank A, including the ladder and rank commands.:
 
-`/ranks info a`
+`/ranks info a all`
 
-`/ranks command list a`
 
 
 <img src="images/prison_docs_100_setting_up_auto_configure_05.png" alt="ranks info and command list for Rank A" title="ranks info and command list for Rank A" width="600" />  
 
 
-Note: This list of commands for Rank A is how all the other ranks will look, but Rank A actually contains all the removals of all ranks now.  This will allow Prestige to use the command `/ranks set rank` on a player, and then let these commands remove the permissions they should not have while at rank A.
+Using the keyword `all` is the same as also running the command: `/ranks command list a`
 
-```
->ranks command list a
-[04:21:51 INFO]: ------- < RankUpCommand for [A] > ---------
-[04:21:51 INFO]: Click a command to remove it.
-[04:21:51 INFO]: * /lp user {player} permission set mines.a
-[04:21:51 INFO]: * /lp user {player} permission set mines.tp.a
-[04:21:51 INFO]: [+] Add
->
-```
+
 
 
 
@@ -677,6 +377,23 @@ The other method is a little more controlled, and that's using prison wand to se
 - `/mines set area <mineName>`
 - You can also resize the mine as in the prior example, and even set or change the liner too.
 
+
+
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
+
+# A Quick Overview of the 'help' Keyword
+
+Prison has an advanced command handler that is able to do a lot of things.  One of it's features is to provide more information on each command that it has registered.  To activate this feature, just add the keyword `help` to the end of any command.  Here are a few examples.
+
+```
+/mines info <mine> help
+/ranks promote help
+/ranks command add help
+/prison support submit
+/prison utils potionEffect help
+```
+
+The `help` keyword can be used on sub-command listings, which will display the list of commands at that level.  The `help` keyword is applied automatically for sub-commands and is what actually triggers the command listings.
 
 
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
