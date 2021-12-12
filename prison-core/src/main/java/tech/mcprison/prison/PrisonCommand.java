@@ -1551,7 +1551,7 @@ public class PrisonCommand
 	
     @Command(identifier = "prison tokens balance", 
     		description = "Prison tokens: a player's current balance.", 
-    		aliases = "bal",
+    		aliases = "tokens bal",
     		permissions = "tokens.bal",
     		altPermissions = "tokens.bal.others" )
     public void tokensBalance(CommandSender sender,
@@ -1572,9 +1572,10 @@ public class PrisonCommand
     		Output.get().logWarn( message );
     		return;
     	}
-    	else {
+    	else 
+    	if ( playerName != null && !playerName.isEmpty() ){
     		
-    		if ( playerName != null && !sender.isOp() &&  
+    		if ( !sender.isOp() &&  
     				!sender.hasPermission( "tokens.bal.others" ) ) {
     			String message = "Prison Tokens: You do not have permission to view other " +
     					"player's balances.";
@@ -1582,7 +1583,11 @@ public class PrisonCommand
     			return;
     		}
     		
-    		player = getPlayer( playerName );
+    		Player tempPlayer = getPlayer( playerName );
+    		
+    		if ( tempPlayer != null ) {
+    			player = tempPlayer;
+    		}
     	}
     	
     	
@@ -1590,9 +1595,11 @@ public class PrisonCommand
     	
     	DecimalFormat dFmt = new DecimalFormat("#,##0");
 
-    	String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
+    	long tokens = player.getPlayerCachePlayerData().getTokens();
     	
-    	String message = String.format( "&3%s has %s tokens.", player.getName(), tokens );
+    	String tokensMsg = dFmt.format( tokens );
+    	
+    	String message = String.format( "&3%s has %s tokens.", player.getName(), tokensMsg );
     	
     	sender.sendMessage( message );
     }
@@ -1642,7 +1649,7 @@ public class PrisonCommand
     	sender.sendMessage( message );
     	
     	// The player getting the tokens, if they are online:
-    	if ( player.isOnline() ) {
+    	if ( player.isOnline() && !player.getName().equalsIgnoreCase( sender.getName() ) ) {
     		
     		player.sendMessage( message );
     	}
@@ -1696,7 +1703,7 @@ public class PrisonCommand
     	sender.sendMessage( message );
     	
     	// The player getting the tokens, if they are online:
-    	if ( player.isOnline() ) {
+    	if ( player.isOnline() && !player.getName().equalsIgnoreCase( sender.getName() ) ) {
     		
     		player.sendMessage( message );
     	}
@@ -1745,7 +1752,7 @@ public class PrisonCommand
     	sender.sendMessage( message );
     	
     	// The player getting the tokens, if they are online:
-    	if ( player.isOnline() ) {
+    	if ( player.isOnline() && !player.getName().equalsIgnoreCase( sender.getName() ) ) {
     		
     		player.sendMessage( message );
     	}

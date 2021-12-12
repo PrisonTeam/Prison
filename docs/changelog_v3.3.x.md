@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.11 2021-12-12
 
 
+* **Some adjustments to admin token functions.**
+
+
 * **Bug fix: Rankup on a ladder in which there is not already a rank was producing an error.**
 Similar to prior problem... just did not fix it correctly for all situations.
 
