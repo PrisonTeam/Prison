@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.11 2021-12-11
+# 3.2.11-alpha.11 2021-12-12
+
+
+* **Bug fix: Rankup on a ladder in which there is not already a rank was producing an error.**
+Similar to prior problem... just did not fix it correctly for all situations.
 
 
 * **Start building the structure for the Top N rankings.**

@@ -164,11 +164,20 @@ public class RankUpCommand
         RankPlayer rankPlayer = getRankPlayer( sender, player.getUUID(), player.getName() );
         PlayerRank playerRankCurrent = rankPlayerFactory.getRank( rankPlayer, ladder );
         
-        Rank targetRank = playerRankCurrent == null ? targetLadder.getLowestRank().get() :
-			playerRankCurrent.getRank();
+        PlayerRank playerRankTarget = null;
         
-        PlayerRank playerRankTarget = 
-        		playerRankCurrent.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
+        // If the player does not have a rank on the current ladder, then assign the
+        // default rank for the ladder to be their next rank.
+        if ( playerRankCurrent == null ) {
+        	
+        	playerRankTarget = rankPlayerFactory.createPlayerRank( 
+        			targetLadder.getLowestRank().get() );
+        }
+        else {
+        	playerRankTarget = playerRankCurrent.getTargetPlayerRankForPlayer( rankPlayer, 
+        					playerRankCurrent.getRank() );
+        }
+        
         		
         
         Output.get().logDebug( DebugTarget.rankup, 
