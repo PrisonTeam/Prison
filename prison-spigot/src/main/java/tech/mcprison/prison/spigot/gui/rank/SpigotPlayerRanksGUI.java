@@ -125,6 +125,11 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         // Create the inventory and set up the owner, dimensions or number of slots, and title
         int dimension = (int) (Math.ceil(ladder.getRanks().size() / 9D) * 9) + 9;
 
+        if (dimension > 54){
+            Output.get().sendWarn(new SpigotPlayer(getPlayer()), messages.getString(MessagesConfig.StringID.spigot_message_gui_ranks_too_many));
+            return;
+        }
+
         // Get many parameters
         RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
         Rank rank = ladder.getLowestRank().get();

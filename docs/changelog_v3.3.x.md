@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.11 2021-12-12
 
 
+* **Ranks GUI Error.** Fixed an error with Ranks GUI.
+
+
 * **Some adjustments to admin token functions.**
 
 
