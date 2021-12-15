@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.11 2021-12-15
 
 
+* **Update XSeries to v8.5.0.1 to better support spigot 1.18.**
+
+
 **Prison tokens: Add a few more prison tokens placeholders.**
 Fixed the admin token commands to use longs and not integers. 
 
