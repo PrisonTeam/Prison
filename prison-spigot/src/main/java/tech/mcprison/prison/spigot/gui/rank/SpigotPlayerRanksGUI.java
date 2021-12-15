@@ -32,6 +32,7 @@ import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
+import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMenuTools.GUIMenuPageData;
 
 /**
  * @author GABRYCA
@@ -45,9 +46,13 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
     private RankPlayer rankPlayer;
     private final boolean placeholderAPINotNull = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null || Bukkit.getPluginManager().getPlugin("PlaceholdersAPI") != null;
     private final List<String> configCustomLore = guiConfig.getStringList("EditableLore.Ranks");
+    
+    private int page = 0;
 
-    public SpigotPlayerRanksGUI(Player player) {
+    public SpigotPlayerRanksGUI(Player player, int page ) {
         this.player = player;
+        
+        this.page = page;
 
         Server server = SpigotPrison.getInstance().getServer();
         PrisonRanks rankPlugin;
@@ -121,23 +126,22 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
             Output.get().sendWarn(new SpigotPlayer(getPlayer()), messages.getString(MessagesConfig.StringID.spigot_message_gui_ranks_empty));
             return;
         }
+        
+        int totalArraySize = ladder.getRanks().size();
+        GUIMenuPageData guiPageData = SpigotGUIMenuTools.getInstance().createGUIPageObject( totalArraySize, page, "gui ranks" );
 
-        // Create the inventory and set up the owner, dimensions or number of slots, and title
-        int dimension = (int) (Math.ceil(ladder.getRanks().size() / 9D) * 9) + 9;
 
-        if (dimension > 54){
-            Output.get().sendWarn(new SpigotPlayer(getPlayer()), messages.getString(MessagesConfig.StringID.spigot_message_gui_ranks_too_many));
-            return;
-        }
-
+        List<Rank> ranksDisplay = ladder.getRanks().subList( guiPageData.getPosStart(), guiPageData.getPosEnd() );
+        
+        
         // Get many parameters
         RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
-        Rank rank = ladder.getLowestRank().get();
+//        Rank rank = ladder.getLowestRank().get();
         PlayerRank playerRankRank = rankPlayerFactory.getRank( getRankPlayer(), guiConfig.getString("Options.Ranks.Ladder"));
         
         Rank playerRank = playerRankRank == null ? null : playerRankRank.getRank();
 
-        PrisonGUI gui = new PrisonGUI(getPlayer(), dimension, guiConfig.getString("Options.Titles.PlayerRanksGUI"));
+        PrisonGUI gui = new PrisonGUI(getPlayer(), guiPageData.getDimension(), guiConfig.getString("Options.Titles.PlayerRanksGUI"));
 
         // Not sure how you want to represent this:
         XMaterial materialHas = XMaterial.valueOf(guiConfig.getString("Options.Ranks.Item_gotten_rank"));
@@ -146,15 +150,20 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         // Variables
         boolean playerHasThisRank = true;
         int hackyCounterEnchant = 0;
-        int amount = 1;
+        
+        
+        int amount = guiPageData.getPosStart();
+//        int amount = 1;
 
         // Global booleans.
         boolean enchantmentEffectEnabled = getBoolean(guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank"));
 
         // Decimal Rank cost format.
         DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
+        boolean showNumber = getBoolean(guiConfig.getString("Options.Ranks.Number_of_Rank_Player_GUI"));
 
-        while (rank != null) {
+        for ( Rank rank : ranksDisplay )
+		{
 
             ButtonLore ranksLore = new ButtonLore();
 
@@ -169,7 +178,6 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
                 ranksLore.setLoreAction(PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(player.getUniqueId()), ranksLore.getLoreAction()));
             }
 
-            boolean showNumber = getBoolean(guiConfig.getString("Options.Ranks.Number_of_Rank_Player_GUI"));
             Button itemRank = new Button(null, playerHasThisRank ? materialHas : materialHasNot, showNumber ? amount : 1, ranksLore, SpigotPrison.format(rank.getTag()));
 
             amount++;
@@ -188,14 +196,20 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
             }
 
             gui.addButton(itemRank);
-            rank = rank.getRankNext();
+            
+//            rank = rank.getRankNext();
         }
 
         ButtonLore rankupLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_rankup), messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup_if_enough_money));
 
         // Add button.
-        gui.addButton(new Button(dimension - 5, XMaterial.EMERALD_BLOCK, rankupLore, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup))));
+        gui.addButton(new Button( guiPageData.getDimension() - 5, XMaterial.EMERALD_BLOCK, rankupLore, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup))));
 
+
+        // Add the page controls: 
+        SpigotGUIMenuTools.getInstance().addMenuPageButtons( gui, guiPageData );
+        
+        
         // Open GUI.
         gui.open();
     }

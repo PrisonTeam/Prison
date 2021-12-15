@@ -16,6 +16,11 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.11 2021-12-15
 
 
+* **GUI Bug fix:  If there are more than 45 ranks on a ladder, the GUI will NOW be able to provide paging capabilities to view all ranks.**
+By default it will start off with page one, but this can handle an unlimited number of pages.
+This paging system can be expanded and easily used on other GUI lists with minimal changes to hook it up.
+
+
 * **Found a bug in XMaterial where it was converting "melon" to melon_slice instead of the melon block.**
 
 

@@ -22,6 +22,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
 
@@ -65,6 +67,7 @@ import tech.mcprison.prison.spigot.gui.mine.SpigotMineResetTimeGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotMinesBlocksGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotMinesConfirmGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotMinesGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMenuTools;
 import tech.mcprison.prison.spigot.gui.rank.SpigotLaddersGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankManagerGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankPriceGUI;
@@ -79,6 +82,7 @@ import tech.mcprison.prison.spigot.gui.sellall.SellAllPrestigesMultiplierGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPrestigesSetMultiplierGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPriceGUI;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
+import tech.mcprison.prison.util.Text;
 
 /**
  * @author GABRYCA
@@ -413,14 +417,20 @@ public class ListenersPrisonManager implements Listener {
                 p.closeInventory();
                 return;
             }
-
+            else if ( buttonNameMain.equalsIgnoreCase( SpigotGUIMenuTools.GUI_MENU_TOOLS_PAGE ) ) {
+            	
+            	processGUIPage( p, title, e.getCurrentItem() );
+            	return;
+            }
+            
+            
             String playerRanksTitle = guiConfig.getString("Options.Titles.PlayerRanksGUI").substring(2);
             String playerPrestigeTitle = guiConfig.getString("Options.Titles.PlayerPrestigesGUI").substring(2);
             String minesPlayerTitle = guiConfig.getString("Options.Titles.PlayerMinesGUI").substring(2);
 
             // Check if the GUI have the right title and do the actions.
             switch (title) {
-
+            	
                 // Check the title and do the actions.
                 case "PrisonManager":
 
@@ -724,7 +734,36 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    private void sellAllPlayerGUI(InventoryClickEvent e, Player p, String[] parts) {
+    private void processGUIPage( Player p, String title, ItemStack currentItem ) {
+    	
+    	if ( currentItem != null && currentItem.hasItemMeta() ) {
+    		
+    		ItemMeta meta = currentItem.getItemMeta();
+
+    		if ( meta.hasLore() ) {
+    			
+    			String command = null;
+    			
+    			List<String> lores = meta.getLore();
+    			
+    			for ( String lore : lores ) {
+					
+    				if (  lore.contains( SpigotGUIMenuTools.GUI_MENU_TOOLS_COMMAND ) ) {
+    					command = Text.stripColor( lore ).replace( SpigotGUIMenuTools.GUI_MENU_TOOLS_COMMAND, "" ).trim();
+    					break;
+    				}
+				}
+    			
+    			if ( command != null ) {
+    				Bukkit.dispatchCommand(p, command);
+    			}
+    		}
+    		
+    	}
+    	
+	}
+
+	private void sellAllPlayerGUI(InventoryClickEvent e, Player p, String[] parts) {
         if (parts[0].equalsIgnoreCase("Prior")){
 
             SellAllPlayerGUI gui = new SellAllPlayerGUI(p, Integer.parseInt(parts[1]));

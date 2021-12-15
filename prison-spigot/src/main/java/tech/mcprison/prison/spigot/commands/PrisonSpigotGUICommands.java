@@ -1,16 +1,16 @@
 package tech.mcprison.prison.spigot.commands;
 
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
-import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
+import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerPrestigesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
@@ -120,7 +120,11 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
 
     @Command( identifier = "gui ranks", description = "GUI Ranks",
             onlyPlayers = true )
-    private void prisonManagerRanks(CommandSender sender) {
+    private void prisonManagerRanks(CommandSender sender,
+    		@Arg(name = "page", description = "If there are more than 45 ranks, then the " +
+    				"ranks are shown on multiple pages.  The page parameter starts with " +
+    				"page 1.", def = "1" ) int page
+    		) {
 
         Player player = getSpigotPlayer(sender);
 
@@ -146,7 +150,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             }
         }
 
-        SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI( player );
+        SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI( player, page );
         gui.open();
     }
 
