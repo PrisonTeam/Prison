@@ -71,7 +71,7 @@ public class Button extends SpigotGUIComponents{
     public Button(Integer position, XMaterial buttonItem, int amount, List<String> lore, String title){
         if (position == null || position < 54) {
             this.position = position;
-            this.buttonItem = createButton(buttonItem.parseMaterial(), amount, lore, SpigotPrison.format(title));
+            this.buttonItem = createButton(buttonItem.parseItem(), amount, lore, SpigotPrison.format(title));
         }
     }
 
@@ -97,9 +97,12 @@ public class Button extends SpigotGUIComponents{
      * @param title - String.
      * */
     public Button(Integer position, XMaterial buttonMaterial, int amount, String title){
+    	if ( amount > 64 ) {
+    		amount = 1;
+    	}
         if ((position == null || position < 54) && amount <= 64) {
             this.position = position;
-            this.buttonItem = createButton(buttonMaterial.parseMaterial(), amount, null, SpigotPrison.format(title));
+            this.buttonItem = createButton(buttonMaterial.parseItem(), amount, null, SpigotPrison.format(title));
         }
     }
 
@@ -112,6 +115,9 @@ public class Button extends SpigotGUIComponents{
      * @param title - String.
      * */
     public Button(Integer position, Material buttonMaterial, int amount, String title){
+    	if ( amount > 64 ) {
+    		amount = 1;
+    	}
         if ((position == null || position < 54) && amount <= 64) {
             this.position = position;
             this.buttonItem = createButton(buttonMaterial, amount, null, SpigotPrison.format(title));
@@ -128,9 +134,12 @@ public class Button extends SpigotGUIComponents{
      * @param title - String.
      * */
     public Button(Integer position, XMaterial buttonMaterial, int amount, ButtonLore lore, String title){
+    	if ( amount > 64 ) {
+    		amount = 1;
+    	}
         if (position == null || position < 54) {
             this.position = position;
-            this.buttonItem = createButton(buttonMaterial.parseMaterial(), amount, lore.getLore(), SpigotPrison.format(title));
+            this.buttonItem = createButton(buttonMaterial.parseItem(), amount, lore.getLore(), SpigotPrison.format(title));
         }
     }
 

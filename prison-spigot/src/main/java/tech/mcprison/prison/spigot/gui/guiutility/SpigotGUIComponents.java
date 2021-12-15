@@ -54,6 +54,9 @@ public abstract class SpigotGUIComponents {
         return getItemStack(item, lore, SpigotPrison.format(display), meta);
     }
 
+    protected ItemStack createButton(ItemStack item, List<String> lore, String display) {
+    	return createButton( item, 1, lore, display );
+    }
     /**
      * Create a button for the GUI using ItemStack.
      *
@@ -61,12 +64,14 @@ public abstract class SpigotGUIComponents {
      * @param lore
      * @param display
      * */
-    protected ItemStack createButton(ItemStack item, List<String> lore, String display) {
+    protected ItemStack createButton(ItemStack item, int amount, List<String> lore, String display) {
 
         if (item == null){
             item = XMaterial.BARRIER.parseItem();
         }
     	
+        item.setAmount( amount );
+        
     	ItemMeta meta = item.getItemMeta();
 
         if (meta == null){

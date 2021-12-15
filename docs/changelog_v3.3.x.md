@@ -16,6 +16,11 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.11 2021-12-15
 
 
+* **Bug fix:  Fixed an incorrect use of XMaterial which prevented it from working properly with spigot 1.8 through 1.12.**
+It was using XMaterial to get the Material value, which is wrong, since it's the item stack that contains the variants of the materials.  So the change is to extract the item stack directly from XMaterial which solves the problem.
+Also there was another error where if amounts are greater than 64, setting them to 1 so the GUI will still work, but it will suppress the incorrect counts for the itemstack.
+
+
 * **Update XSeries to v8.5.0.1 to better support spigot 1.18.**
 
 
