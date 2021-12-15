@@ -260,8 +260,12 @@ public class PlaceholderManager {
 		
 		prison_ptb(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
 		prison_ptbf(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_ptbfm(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_ptbfk(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
 		prison_player_token_balance(prison_ptb, PlaceholderFlags.PLAYER),
 		prison_player_token_balance_formatted(prison_ptbf, PlaceholderFlags.PLAYER),
+		prison_player_token_balance_formatted_metric(prison_ptbfm, PlaceholderFlags.PLAYER),
+		prison_player_token_balance_formatted_kmbt(prison_ptbfk, PlaceholderFlags.PLAYER),
 		
 		prison_ptb_epm(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
 		prison_ptb_epmf(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),

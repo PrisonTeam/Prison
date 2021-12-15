@@ -1025,7 +1025,7 @@ public class PlayerManager
  
     
     private String getPlayerTokenBalance( RankPlayer rankPlayer, 
-    						boolean formatted, PlaceholderAttribute attribute ) {
+    						int formatMode, PlaceholderAttribute attribute ) {
     	StringBuilder sb = new StringBuilder();
     	
     	DecimalFormat dFmt = new DecimalFormat("#,##0");
@@ -1038,12 +1038,35 @@ public class PlayerManager
     		sb.append( attributeNF.format( tokens ) );
     	}
     	
-    	else if ( formatted ) {
-    		sb.append( PlaceholdersUtil.formattedMetricSISize( tokens ));
-    	}
     	else {
-    		sb.append( dFmt.format( tokens ));
+    		switch ( formatMode )
+			{
+				case 1: {
+					sb.append( dFmt.format( tokens ));
+					
+					break;
+				}
+				case 2: {
+					sb.append( PlaceholdersUtil.formattedMetricSISize( tokens ));
+					
+					break;
+				}
+				case 3: {
+					sb.append( PlaceholdersUtil.formattedKmbtSISize( tokens, dFmt, " " ));
+					
+					break;
+				}
+				default:
+					sb.append( Long.toString( tokens ));
+			}
     	}
+    		
+//    	if ( formatted ) {
+//    		sb.append( PlaceholdersUtil.formattedMetricSISize( tokens ));
+//    	}
+//    	else {
+//    		sb.append( dFmt.format( tokens ));
+//    	}
     	
     	return sb.toString();
     }
@@ -1453,14 +1476,24 @@ public class PlayerManager
 						
 					case prison_ptb:
 					case prison_player_token_balance:
-						results = getPlayerTokenBalance( rankPlayer, false, attribute );
+						results = getPlayerTokenBalance( rankPlayer, 0, attribute );
 						break;
 						
 					case prison_ptbf:
 					case prison_player_token_balance_formatted:
-						results = getPlayerTokenBalance( rankPlayer, true, attribute );
+						results = getPlayerTokenBalance( rankPlayer, 1, attribute );
 						break;
 
+					case prison_ptbfm:
+					case prison_player_token_balance_formatted_metric:
+						results = getPlayerTokenBalance( rankPlayer, 2, attribute );
+						break;
+						
+					case prison_ptbfk:
+					case prison_player_token_balance_formatted_kmbt:
+						results = getPlayerTokenBalance( rankPlayer, 3, attribute );
+						break;
+						
 					case prison_ptb_epm:
 					case prison_player_token_balance_earnings_per_minute:
 						

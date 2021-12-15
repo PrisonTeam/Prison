@@ -1612,7 +1612,7 @@ public class PrisonCommand
     		description = "Player to add the tokens to.") String playerName,
     		
     		@Arg(name = "amount", verifiers = "min[1]",
-    		description = "The number of tokens to add to the player's account.") int amount
+    		description = "The number of tokens to add to the player's account.") long amount
     		) {
     	
     	if ( playerName == null || playerName.isEmpty() ) {
@@ -1666,7 +1666,7 @@ public class PrisonCommand
     		
     		@Arg(name = "amount", verifiers = "min[1]",
     		description = "The number of tokens to remove from the player's account. " +
-    				"This amount must be positive. ") int amount
+    				"This amount must be positive. ") long amount
     		) {
     	
     	if ( playerName == null || playerName.isEmpty() ) {
@@ -1721,7 +1721,7 @@ public class PrisonCommand
     		
     		@Arg(name = "amount", 
     		description = "The number of tokens to set the player's account to. " +
-    				"This amount must amount can be negative. ") int amount
+    				"This amount must amount can be negative. ") long amount
     		) {
     	
     	if ( playerName == null || playerName.isEmpty() ) {
