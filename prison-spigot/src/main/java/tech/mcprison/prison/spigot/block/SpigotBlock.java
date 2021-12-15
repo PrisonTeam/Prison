@@ -168,6 +168,10 @@ public class SpigotBlock implements Block {
 
     public void setPrisonBlock( PrisonBlock prisonBlock ) {
     	
+    	if ( prisonBlock == null ) {
+    		prisonBlock = PrisonBlock.AIR;
+    	}
+    	
     	switch ( prisonBlock.getBlockType() )
 		{
 			case minecraft:

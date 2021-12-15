@@ -265,6 +265,11 @@ public abstract class Spigot18Blocks
 				
 				results = XMaterial.matchXMaterial( blockName ).orElse( null );
 				
+				if ( results == XMaterial.MELON_SLICE && 
+						prisonBlock.getBlockName().equalsIgnoreCase( "melon" ) ) {
+					results = XMaterial.MELON;
+				}
+				
 				putCachedXMaterial( prisonBlock, results );
 			}
 		}
