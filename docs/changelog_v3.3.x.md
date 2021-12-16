@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.11 2021-12-16
 
 
+* **GUI Menu: a few minor changes before more radical changes to go with the final "idea".**
+
+
 * **GUI Menu Tools - Added a first page and last page button.**
 
 

@@ -200,14 +200,16 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 //            rank = rank.getRankNext();
         }
 
-        ButtonLore rankupLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_rankup), messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup_if_enough_money));
-
-        // Add button.
-        gui.addButton(new Button( guiPageData.getDimension() - 5, XMaterial.EMERALD_BLOCK, rankupLore, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup))));
-
-
+        
         // Add the page controls: 
-        SpigotGUIMenuTools.getInstance().addMenuPageButtons( gui, guiPageData );
+        SpigotGUIMenuTools.getInstance().addMenuPageButtonsStandard( gui, guiPageData );
+
+        
+
+        // Add Rankup button:
+        ButtonLore rankupLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_rankup), messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup_if_enough_money));
+        gui.addButton(new Button( guiPageData.getMenuPosition( 3 ), XMaterial.EMERALD_BLOCK, rankupLore, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup))));
+
         
         
         // Open GUI.
