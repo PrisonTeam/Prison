@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.11 2021-12-15
+# 3.2.11-alpha.11 2021-12-16
+
+
+* **GUI Menu Tools - Added a first page and last page button.**
 
 
 * **GUI Bug fix:  If there are more than 45 ranks on a ladder, the GUI will NOW be able to provide paging capabilities to view all ranks.**
