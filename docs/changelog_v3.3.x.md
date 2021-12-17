@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.11 2021-12-16
+# 3.2.11-alpha.11 2021-12-17
+
+
+* **Prison Tokens:  Remove the alias so they will not cause conflict with other token plugins.**
 
 
 * **Potential bug fix: There was a situation where with multiverse-core a delayed world loading resulted in the world not being found**, and therefore it was preventing the loading of all locations tied to the mine. This now allows the locations to be loaded without a valid world.  Then when the world is finally loaded, it will refresh the references to the world objects.

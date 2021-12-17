@@ -1551,7 +1551,7 @@ public class PrisonCommand
 	
     @Command(identifier = "prison tokens balance", 
     		description = "Prison tokens: a player's current balance.", 
-    		aliases = "tokens bal",
+    		// aliases = "tokens bal",
     		permissions = "tokens.bal",
     		altPermissions = "tokens.bal.others" )
     public void tokensBalance(CommandSender sender,
