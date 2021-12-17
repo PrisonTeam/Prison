@@ -1,5 +1,8 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
@@ -87,6 +90,8 @@ public class SpigotGUIMenuTools
 		
 		private String commandGoBack;
 		
+		private List<Button> buttons;
+		
 		/**
 		 * 
 		 * @param totalArraySize
@@ -107,20 +112,24 @@ public class SpigotGUIMenuTools
 			}
 		}
 		
-		public GUIMenuPageData( int totalArraySize, int page, String commandToRun ) {
+		public GUIMenuPageData( int totalArraySize, int currentPage, String commandToRun ) {
 			super();
 			
 			this.pageSize = 45;
 			this.totalArraySize = totalArraySize;
-			this.page = page;
 			
+			this.buttons = new ArrayList<>(9);
+			for ( int i = 0; i < 9; i++ ) {
+				buttons.add( null );
+			}
 	        
 	        // Create the list of ranks for the selected page and setup the page details:
-	        if ( (page - 1) * pageSize > totalArraySize || page < 1 ) {
+	        if ( (currentPage - 1) * pageSize > totalArraySize || currentPage < 1 ) {
 	        	// too high of a page number was selected, so use page 0:
-	        	page = 1;
+	        	currentPage = 1;
 	        }
 	        
+	        this.page = currentPage;
 	        
 	        pageLast = (totalArraySize / pageSize) +
 	        				(totalArraySize % pageSize == 0 ? 0 : 1);
@@ -235,6 +244,39 @@ public class SpigotGUIMenuTools
 		public void setCommandGoBack( String commandGoBack ) {
 			this.commandGoBack = commandGoBack;
 		}
+
+		public Button setButtonNextAvailable( Button button ) {
+			
+			for ( int i = 0; i < 9 && i <= buttons.size(); i++ ) {
+				if ( buttons.get( i ) ==  null ) {
+					
+					int position = getMenuPosition( i + 1 );
+					
+					button.setPosition( position );
+					buttons.set( i, button );
+					break;
+				}
+			}
+			
+			return button;
+		}
+		public Button setButton( int position, Button button ) {
+			if ( position < 1 ) {
+				position = 1;
+			}
+			else if ( position > 9 ) {
+				position = 9;
+			}
+			this.buttons.set( position - 1, button );
+			
+			return button;
+		}
+		public List<Button> getButtons() {
+			return buttons;
+		}
+		public void setButtons( List<Button> buttons ) {
+			this.buttons = buttons;
+		}
 	}
 	
 	/**
@@ -274,6 +316,11 @@ public class SpigotGUIMenuTools
 	
 	public GUIMenuPageData createGUIPageObject( int totalArraySize, int page, String commandToRun ) {
 		return new GUIMenuPageData( totalArraySize, page, commandToRun );
+	}
+	
+	public GUIMenuPageData createGUIPageObject( int totalArraySize, int page, 
+					String commandToRun, String commandGoBack ) {
+		return new GUIMenuPageData( totalArraySize, page, commandToRun, commandGoBack );
 	}
 	
 	
@@ -329,115 +376,115 @@ public class SpigotGUIMenuTools
 		Button guiButton = new Button( pos, xMat, pageNumber, buttonLore, 
 				(active ? GUI_MENU_TOOLS_PAGE : message) );
 		
-		return guiButton;
+		return pageData.setButton( position, guiButton );
 	}
 	
 	public Button createButtonPageOne( GUIMenuPageData pageData, int position ) {
 		
 		boolean active = !useDisabledButtons || pageData.getPage() > 1;
 		
+		int pageNumber = 1;
+
 		String message = !active ?
 				"Already on page 1" : "Page 1 of " + pageData.getPageLast();
 		
-		ButtonLore buttonLore = createButtonLore( active, message, pageData, 1 );
+		ButtonLore buttonLore = createButtonLore( active, message, pageData, pageNumber );
 		
 		int pos = pageData.getMenuPosition( position );
 		
 		XMaterial xMat = !active ?
 				menuStateOff2 : menuStateOn2;
 		
-		int pageNumber = 1;
-		
 		Button guiButton = new Button( pos, xMat, pageNumber, buttonLore, 
 				(active ? GUI_MENU_TOOLS_PAGE : message) );
 		
-		return guiButton;
+		return pageData.setButton( position, guiButton );
 	}
 	
 	public Button createButtonPagePrior( GUIMenuPageData pageData, int position ) {
 		
 		boolean active = !useDisabledButtons ||pageData.getPagePrior() > 0;
+		
+		int pageNumber = !active || pageData.getPagePrior() < 1 ?
+				1 : pageData.getPagePrior();
 
 		String message = !active ?
-				"No prior page" : "Page " + pageData.getPagePrior() + " of " + pageData.getPageLast();
+				"No prior page" : "Page " + pageNumber + " of " + pageData.getPageLast();
 	
-		ButtonLore buttonLore = createButtonLore( active, message, pageData, pageData.getPagePrior() );
+		ButtonLore buttonLore = createButtonLore( active, message, pageData, pageNumber );
 
 		int pos = pageData.getMenuPosition( position );
 		
 		XMaterial xMat = !active ?
 				menuStateOff1 : menuStateOn1;
-		
-		int pageNumber = !active || pageData.getPagePrior() < 1 ?
-				1 : pageData.getPagePrior();
 
 		Button guiButton = new Button( pos, xMat, pageNumber, buttonLore, 
 				(active ? GUI_MENU_TOOLS_PAGE : message) );
 		
-		return guiButton;
+		return pageData.setButton( position, guiButton );
 	}
 	
 	public Button createButtonPageCurrent( GUIMenuPageData pageData, int position ) {
 		
-		String message = "Page " + pageData.getPage() + " of " + pageData.getPageLast();
+		int pageNumber = pageData.getPage();
+
+		String message = "Page " + pageNumber + " of " + pageData.getPageLast();
 		
-		ButtonLore buttonLore = createButtonLore( false, message, pageData, pageData.getPage() );
+		ButtonLore buttonLore = createButtonLore( false, message, pageData, pageNumber );
 		
 		int pos = pageData.getMenuPosition( position );
 		
 		XMaterial xMat = XMaterial.COMPASS;
 		
-		int pageNumber = pageData.getPage();
-		
 		Button guiButton = new Button( pos, xMat, pageNumber, buttonLore, message );
 		
-		return guiButton;
+		return pageData.setButton( position, guiButton );
 	}
 	
 	public Button createButtonPageNext( GUIMenuPageData pageData, int position ) {
 		
 		boolean active = !useDisabledButtons ||pageData.getPageNext() > 0;
 		
+		int pageNumber = !active || pageData.getPageNext() < 1 ?
+				pageData.getPageLast() : pageData.getPageNext();
+		
 		String message = !active ?
-				"No next page" : "Page " + pageData.getPageNext() + " of " + pageData.getPageLast();
+				"No next page" : "Page " + pageNumber + " of " + pageData.getPageLast();
 	
-		ButtonLore buttonLore = createButtonLore( active, message, pageData, pageData.getPageNext() );
+		ButtonLore buttonLore = createButtonLore( active, message, pageData, pageNumber );
 
 		int pos = pageData.getMenuPosition( position );
 		
 		XMaterial xMat = !active ?
 				menuStateOff1 : menuStateOn1;
 		
-		int pageNumber = !active || pageData.getPageNext() < 1 ?
-				1 : pageData.getPageNext();
-
 		Button guiButton = new Button( pos, xMat, pageNumber, buttonLore, 
 				(active ? GUI_MENU_TOOLS_PAGE : message) );
 		
-		return guiButton;
+		return pageData.setButton( position, guiButton );
 	}
 	
 	public Button createButtonPageLast( GUIMenuPageData pageData, int position ) {
 		
 		boolean active = !useDisabledButtons ||pageData.getPage() < pageData.getPageLast();
 		
-		String message = !active ?
-				"Already on last page" : "Page " + pageData.getPageLast() + " of " + pageData.getPageLast();
+		int pageNumber = !active || pageData.getPageLast() < 1 ?
+				pageData.getPageLast() : pageData.getPageLast();
 		
-		ButtonLore buttonLore = createButtonLore( active, message, pageData, pageData.getPageLast() );
+		String message = !active ?
+				"Already on last page" : "Page " + pageNumber + " of " + pageData.getPageLast();
+		
+		ButtonLore buttonLore = createButtonLore( active, message, pageData, pageNumber );
 		
 		int pos = pageData.getMenuPosition( position );
 		
 		XMaterial xMat = !active ?
 				menuStateOff2 : menuStateOn2;
 		
-		int pageNumber = !active || pageData.getPageLast() < 1 ?
-				1 : pageData.getPageLast();
-		
 		Button guiButton = new Button( pos, xMat, pageNumber, buttonLore, 
 				(active ? GUI_MENU_TOOLS_PAGE : message) );
 		
-		return guiButton;
+		return pageData.setButton( position, guiButton );
 	}
 	
 	public Button createButtonMenuBackground( GUIMenuPageData pageData, int position ) {
@@ -453,6 +500,10 @@ public class SpigotGUIMenuTools
 		Button guiButton = new Button( pos, xMat, pageNumber, buttonLore, "" );
 		
 		return guiButton;
+
+		// DO NOT save the backgrounds so that way other buttons can automatically be added to 
+		// the tool bar:
+		//return pageData.setButton( position, guiButton );;
 	}
 	
 	
@@ -468,7 +519,7 @@ public class SpigotGUIMenuTools
 		
 		gui.addButton( createButtonMenuBackground( pageData, 7 ) );
 		gui.addButton( createButtonMenuBackground( pageData, 8 ) );
-		gui.addButton( createButtonMenuBackground( pageData, 9 ) );
+		gui.addButton( createButtonBack( pageData, 9 ) );
 
 	}
 	
@@ -478,8 +529,9 @@ public class SpigotGUIMenuTools
 		gui.addButton( createButtonPagePrior( pageData, 2 ) );
 		
 		gui.addButton( createButtonMenuBackground( pageData, 3 ) );
-		gui.addButton( createButtonMenuBackground( pageData, 4 ) );
+//		gui.addButton( createButtonMenuBackground( pageData, 4 ) );
 		
+		gui.addButton( createButtonBack( pageData, 4 ) );
 		gui.addButton( createButtonPageCurrent( pageData, 5 ) );
 		
 		gui.addButton( createButtonMenuBackground( pageData, 6 ) );
