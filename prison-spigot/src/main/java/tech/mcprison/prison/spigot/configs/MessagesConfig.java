@@ -42,7 +42,14 @@ public class MessagesConfig {
      * Get String.
      * */
     public String getString(StringID message){
-        return properties.getProperty(message.toString());
+        		
+    	String msg = properties.getProperty(message.toString());
+    	
+    	if ( msg == null || msg.trim().isEmpty() ) {
+    		msg = message.name();
+    	}
+    	
+    	return msg;
     }
 
     public void reload(){
@@ -203,6 +210,9 @@ public class MessagesConfig {
         spigot_message_ranks_tag_chat_rename_1,
         spigot_message_ranks_tag_chat_rename_2,
         spigot_message_ranks_tag_chat_cancelled,
+        
+        spigot_message_ladders_disabled,
+        spigot_message_ladders_or_gui_disabled,
 
         spigot_message_sellall_auto_already_enabled,
         spigot_message_sellall_auto_already_disabled,

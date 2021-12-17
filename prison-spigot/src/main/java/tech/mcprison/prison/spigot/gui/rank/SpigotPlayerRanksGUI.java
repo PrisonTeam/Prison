@@ -128,7 +128,8 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         }
         
         int totalArraySize = ladder.getRanks().size();
-        GUIMenuPageData guiPageData = SpigotGUIMenuTools.getInstance().createGUIPageObject( totalArraySize, page, "gui ranks" );
+        GUIMenuPageData guiPageData = SpigotGUIMenuTools.getInstance()
+        		.createGUIPageObject( totalArraySize, page, "gui ranks", "gui" );
 
 
         List<Rank> ranksDisplay = ladder.getRanks().subList( guiPageData.getPosStart(), guiPageData.getPosEnd() );
@@ -209,7 +210,9 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
         // Add Rankup button:
         ButtonLore rankupLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_rankup), messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup_if_enough_money));
-        gui.addButton(new Button( guiPageData.getMenuPosition( 1 ), XMaterial.EMERALD_BLOCK, rankupLore, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup))));
+        Button rankUpButton = new Button( 0, XMaterial.EMERALD_BLOCK, rankupLore, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup)));
+        // NOTE: Button position will be properly assigned in the setButtonNextAvilable:
+        gui.addButton( guiPageData.setButtonNextAvailable( rankUpButton ) );
 
         
         

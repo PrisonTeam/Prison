@@ -1634,7 +1634,7 @@ public class ListenersPrisonManager implements Listener {
         // Check the Item display name and do open the right GUI.
         switch (buttonNameMain) {
             case "Ranks - Ladders": {
-                SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 0);
+                SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 0, 1);
                 gui.open();
                 break;
             }
@@ -1689,14 +1689,20 @@ public class ListenersPrisonManager implements Listener {
         if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
 
             // Open a new SpigotLadders GUI page.
-            SpigotLaddersGUI gui = new SpigotLaddersGUI(p, Integer.parseInt(parts[1]));
+            SpigotLaddersGUI gui = new SpigotLaddersGUI(p, Integer.parseInt(parts[1]), 1);
             p.closeInventory();
             gui.open();
             return;
         }
 
         // Get the ladder by the name of the button got before.
-        ladder = Optional.of(PrisonRanks.getInstance().getLadderManager().getLadder(buttonNameMain));
+        RankLadder rLadder = PrisonRanks.getInstance().getLadderManager().getLadder(buttonNameMain);
+        
+        if ( rLadder == null ) {
+        	// Do nothing since it's not a valid ladder name:
+        	return;
+        }
+        ladder = Optional.of( rLadder );
 
         // When the player click an item with shift and right click, e.isShiftClick should be enough but i want
         // to be sure's a right click.
@@ -1706,7 +1712,7 @@ public class ListenersPrisonManager implements Listener {
             Bukkit.dispatchCommand(p, "ranks ladder delete " + buttonNameMain);
             e.setCancelled(true);
             p.closeInventory();
-            SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 0);
+            SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 0, 1);
             gui.open();
             return;
 

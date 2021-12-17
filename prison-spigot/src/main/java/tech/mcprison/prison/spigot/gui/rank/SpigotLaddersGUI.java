@@ -1,7 +1,11 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
-import com.cryptomorin.xseries.XMaterial;
+import java.util.List;
+
 import org.bukkit.entity.Player;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankLadder;
@@ -13,6 +17,7 @@ import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
+import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMenuTools.GUIMenuPageData;
 
 /**
  * @author GABRYCA
@@ -20,11 +25,15 @@ import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 public class SpigotLaddersGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private int counter;
+    
+    private int page;
+//    private int counter;
 
-    public SpigotLaddersGUI(Player p, int counter){
+    public SpigotLaddersGUI(Player p, int counter, int page ){
         this.p = p;
-        this.counter = counter;
+        
+        this.page = page;
+//        this.counter = counter;
     }
 
     public void open(){
@@ -44,31 +53,58 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
             return;
         }
 
-        // Get the dimensions and if needed increases them
-        int dimension = 54;
-        int pageSize = 45;
+        
+        
+        int totalArraySize = lm.getLadders().size();
+        GUIMenuPageData guiPageData = SpigotGUIMenuTools.getInstance()
+        		.createGUIPageObject( totalArraySize, page, "gui ladders", "gui" );
 
-        PrisonGUI gui = new PrisonGUI(p, dimension, "&3RanksManager -> Ladders");
+
+        List<RankLadder> laddersDisplay = lm.getLadders().subList( guiPageData.getPosStart(), guiPageData.getPosEnd() );
+        
+        
+ 
+        
+//        // Get the dimensions and if needed increases them
+//        int dimension = 54;
+//        int pageSize = 45;
+
+        PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), "&3RanksManager -> Ladders");
 
         ButtonLore laddersLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open), messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete));
 
-        // Only loop over the blocks that we need to show:
-        int i = counter;
-        for ( ; i < lm.getLadders().size() && i < counter + pageSize; i++ ) {
+        for ( RankLadder ladder : laddersDisplay ) {
+			
+        	gui.addButton(new Button(null, XMaterial.LADDER, laddersLore, SpigotPrison.format("&3" + ladder.getName())));
+		}
+        
+        
+        // Add the page controls: 
+        // The controls for the standard menu are in positions: 4, 5, and 6:
+        SpigotGUIMenuTools.getInstance().addMenuPageButtonsStandard( gui, guiPageData );
 
-            RankLadder ladder = lm.getLadder(i);
 
-            // Add the button to the inventory
-            gui.addButton(new Button(null, XMaterial.LADDER, laddersLore, SpigotPrison.format("&3" + ladder.getName())));
-        }
+        
+//        // Only loop over the blocks that we need to show:
+//        int i = counter;
+//        for ( ; i < lm.getLadders().size() && i < counter + pageSize; i++ ) {
+//
+//        	// WARNING: This is wrong... a ladder's ID is NOT the same as it's position in a collection.
+//        	// The ladder ID is a damn magic number and cannot be predictable!
+//        	
+////            RankLadder ladder = lm.getLadder(i);
+//
+//            // Add the button to the inventory
+//            gui.addButton(new Button(null, XMaterial.LADDER, laddersLore, SpigotPrison.format("&3" + ladder.getName())));
+//        }
 
-        if (i < lm.getLadders().size()) {
-            gui.addButton(new Button(53, XMaterial.BOOK, 1, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_next_page), null), "&7Next " + (i + 1)));
-        }
-        if (i >= (pageSize * 2)) {
-            gui.addButton(new Button(51, XMaterial.BOOK, 1, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_prior_page), null),
-                    "&7Prior " + (i - (pageSize * 2) - 1)));
-        }
+//        if (i < lm.getLadders().size()) {
+//            gui.addButton(new Button(53, XMaterial.BOOK, 1, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_next_page), null), "&7Next " + (i + 1)));
+//        }
+//        if (i >= (pageSize * 2)) {
+//            gui.addButton(new Button(51, XMaterial.BOOK, 1, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_prior_page), null),
+//                    "&7Prior " + (i - (pageSize * 2) - 1)));
+//        }
 
         // Open the inventory
         gui.open();

@@ -12,6 +12,7 @@ import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.SpigotPrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotLaddersGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerPrestigesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
 
@@ -152,6 +153,43 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
 
         SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI( player, page );
         gui.open();
+    }
+    
+    @Command( identifier = "gui ladders", 
+    		description = "GUI Ladders. The permissions are based upon the ranks perms.",
+    		onlyPlayers = true )
+    private void prisonManagerLadderss(CommandSender sender,
+    		@Arg(name = "page", description = "If there are more than 45 ladders, then the " +
+    				"ladders are shown on multiple pages.  The page parameter starts with " +
+    				"page 1.", def = "1" ) int page
+    		) {
+    	
+    	Player player = getSpigotPlayer(sender);
+    	
+    	if (player == null) {
+    		Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString(MessagesConfig.StringID.spigot_message_console_error)));
+    		return;
+    	}
+    	
+    	if (!isPrisonConfig("prison-gui-enabled") || !isConfig("Options.Ranks.GUI_Enabled")) {
+    		Output.get().sendInfo(sender, SpigotPrison.format(String.format(String.format(
+    				getMessages().getString(MessagesConfig.StringID.spigot_message_ranks_or_gui_disabled),
+    				getPrisonConfig("prison-gui-enabled"), getConfig("Options.Ranks.GUI_Enabled") ))));
+    		return;
+    	}
+    	
+    	if (isConfig("Options.Ranks.Permission_GUI_Enabled")) {
+    		String perm = getConfig( "Options.Ranks.Permission_GUI");
+    		if (!sender.hasPermission(perm)) {
+    			
+    			Output.get().sendInfo(sender, SpigotPrison.format( getMessages().getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [" +
+    					perm + "]"));
+    			return;
+    		}
+    	}
+    	
+    	SpigotLaddersGUI gui = new SpigotLaddersGUI( player, 0, page );
+    	gui.open();
     }
 
     @Command(identifier = "gui sellall", description = "SellAll GUI command", onlyPlayers = true)
