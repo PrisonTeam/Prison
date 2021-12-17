@@ -11,6 +11,7 @@ public class SpigotGUIMenuTools
 	
 	public static final String GUI_MENU_TOOLS_PAGE = "GUIPage";
 	public static final String GUI_MENU_TOOLS_COMMAND = "Command: ";
+	public static final String GUI_MENU_TOOLS_COMMANDS_BACK = "CommandsBack: ";
 	
 	private static SpigotGUIMenuTools instance;
 	
@@ -22,11 +23,17 @@ public class SpigotGUIMenuTools
 
 	private XMaterial menuBackground;
 	
+	private XMaterial menuGoBack;
+
+	private boolean useDisabledButtons;
+	
+	
 //	private String loreCommand;
 	
 	private SpigotGUIMenuTools() {
 		super();
 		
+		this.useDisabledButtons = false;
 		
 		this.menuStateOn1 = XMaterial.LIME_STAINED_GLASS_PANE;
 		this.menuStateOn2 = XMaterial.GREEN_STAINED_GLASS_PANE;
@@ -35,6 +42,8 @@ public class SpigotGUIMenuTools
 		this.menuStateOff2 = XMaterial.RED_STAINED_GLASS_PANE;
 		
 		this.menuBackground = XMaterial.BLACK_STAINED_GLASS_PANE;
+		
+		this.menuGoBack = XMaterial.BARRIER;
 		
 //		this.menuStateOff1 = XMaterial.BLACK_STAINED_GLASS_PANE;
 //		this.menuStateOff2 = XMaterial.GRAY_STAINED_GLASS_PANE;
@@ -76,6 +85,28 @@ public class SpigotGUIMenuTools
 		
 		private String commandToRun;
 		
+		private String commandGoBack;
+		
+		/**
+		 * 
+		 * @param totalArraySize
+		 * @param page
+		 * @param commandToRun Command to run for paging.  The page number will be appended 
+		 * 						to this command.  This command is ran as-is.
+		 * @param commandGoBack Command to run to return to a prior menu, or another app. 
+		 * 						No page number is added, so if page number is important to return
+		 * 						to the same "view" then it must be included with this command.
+		 * 						This command is ran as-is.
+		 */
+		public GUIMenuPageData( int totalArraySize, int page, 
+						String commandToRun, String commandGoBack ) {
+			this( totalArraySize, page, commandToRun );
+			
+			if ( commandGoBack != null ) {
+				this.commandGoBack = commandGoBack;
+			}
+		}
+		
 		public GUIMenuPageData( int totalArraySize, int page, String commandToRun ) {
 			super();
 			
@@ -115,6 +146,13 @@ public class SpigotGUIMenuTools
 	        
 	        this.commandToRun = commandToRun;
 			
+		}
+		
+		public GUIMenuPageData clone() {
+			GUIMenuPageData results = new GUIMenuPageData( totalArraySize, page, 
+					getCommandToRun(), getCommandGoBack() );
+			
+			return results;
 		}
 		
 		public int getMenuPosition( int position ) {
@@ -190,6 +228,13 @@ public class SpigotGUIMenuTools
 		public void setCommandToRun( String commandToRun ) {
 			this.commandToRun = commandToRun;
 		}
+
+		public String getCommandGoBack() {
+			return commandGoBack;
+		}
+		public void setCommandGoBack( String commandGoBack ) {
+			this.commandGoBack = commandGoBack;
+		}
 	}
 	
 	/**
@@ -232,7 +277,8 @@ public class SpigotGUIMenuTools
 	}
 	
 	
-	private ButtonLore createButtonLore( boolean enableCmd, String message, GUIMenuPageData pageData, int page ) {
+	private ButtonLore createButtonLore( boolean enableCmd, String message, 
+					GUIMenuPageData pageData, int page ) {
 		
 		ButtonLore buttonLore = new ButtonLore();
 		if ( message != null ) {
@@ -241,54 +287,92 @@ public class SpigotGUIMenuTools
 		
 		
 		if ( enableCmd && pageData != null ) {
-			buttonLore.addLineLoreDescription( 
-					GUI_MENU_TOOLS_COMMAND + pageData.getCommandToRun() + " " + page );
+			
+			if ( pageData.getCommandToRun() != null ) {
+				buttonLore.addLineLoreDescription( "&0" +
+						GUI_MENU_TOOLS_COMMAND + pageData.getCommandToRun() + " " + page );
+			}
+			
+//			if ( pageData.getCommandsBack() != null ) {
+//				buttonLore.addLineLoreDescription( "&0" +
+//						GUI_MENU_TOOLS_COMMANDS_BACK + pageData.getCommandsBack() );
+//			}
+			
 		}
 		return buttonLore;
 	}
 	
 	
+	public Button createButtonBack( GUIMenuPageData pageData, int position ) {
+		
+		if ( pageData.getCommandGoBack() == null ) {
+			
+			return createButtonMenuBackground( pageData, position );
+		}
+		
+		boolean active = true;
+		
+		GUIMenuPageData newPageData = pageData.clone();
+		newPageData.setCommandToRun( pageData.getCommandGoBack() );
+		newPageData.setCommandGoBack( null );
+		
+		String message = "Go Back";
+		
+		ButtonLore buttonLore = createButtonLore( active, message, newPageData, 1 );
+		
+		int pos = pageData.getMenuPosition( position );
+
+		XMaterial xMat = menuGoBack;
+		
+		int pageNumber = 1;
+		
+		Button guiButton = new Button( pos, xMat, pageNumber, buttonLore, 
+				(active ? GUI_MENU_TOOLS_PAGE : message) );
+		
+		return guiButton;
+	}
+	
 	public Button createButtonPageOne( GUIMenuPageData pageData, int position ) {
 		
-		boolean hasPage = pageData.getPage() > 1;
+		boolean active = !useDisabledButtons || pageData.getPage() > 1;
 		
-		String message = !hasPage ?
+		String message = !active ?
 				"Already on page 1" : "Page 1 of " + pageData.getPageLast();
 		
-		ButtonLore buttonLore = createButtonLore( hasPage, message, pageData, 1 );
+		ButtonLore buttonLore = createButtonLore( active, message, pageData, 1 );
 		
 		int pos = pageData.getMenuPosition( position );
 		
-		XMaterial xMat = !hasPage ?
+		XMaterial xMat = !active ?
 				menuStateOff2 : menuStateOn2;
 		
 		int pageNumber = 1;
 		
 		Button guiButton = new Button( pos, xMat, pageNumber, buttonLore, 
-				(hasPage ? GUI_MENU_TOOLS_PAGE : message) );
+				(active ? GUI_MENU_TOOLS_PAGE : message) );
 		
 		return guiButton;
 	}
 	
 	public Button createButtonPagePrior( GUIMenuPageData pageData, int position ) {
 		
-		boolean hasPage = pageData.getPagePrior() > 0;
+		boolean active = !useDisabledButtons ||pageData.getPagePrior() > 0;
 
-		String message = !hasPage ?
+		String message = !active ?
 				"No prior page" : "Page " + pageData.getPagePrior() + " of " + pageData.getPageLast();
 	
-		ButtonLore buttonLore = createButtonLore( hasPage, message, pageData, pageData.getPagePrior() );
+		ButtonLore buttonLore = createButtonLore( active, message, pageData, pageData.getPagePrior() );
 
 		int pos = pageData.getMenuPosition( position );
 		
-		XMaterial xMat = !hasPage ?
+		XMaterial xMat = !active ?
 				menuStateOff1 : menuStateOn1;
 		
-		int pageNumber = !hasPage ?
+		int pageNumber = !active || pageData.getPagePrior() < 1 ?
 				1 : pageData.getPagePrior();
 
 		Button guiButton = new Button( pos, xMat, pageNumber, buttonLore, 
-				(hasPage ? GUI_MENU_TOOLS_PAGE : message) );
+				(active ? GUI_MENU_TOOLS_PAGE : message) );
 		
 		return guiButton;
 	}
@@ -312,46 +396,46 @@ public class SpigotGUIMenuTools
 	
 	public Button createButtonPageNext( GUIMenuPageData pageData, int position ) {
 		
-		boolean hasPage = pageData.getPageNext() > 0;
+		boolean active = !useDisabledButtons ||pageData.getPageNext() > 0;
 		
-		String message = !hasPage ?
+		String message = !active ?
 				"No next page" : "Page " + pageData.getPageNext() + " of " + pageData.getPageLast();
 	
-		ButtonLore buttonLore = createButtonLore( hasPage, message, pageData, pageData.getPageNext() );
+		ButtonLore buttonLore = createButtonLore( active, message, pageData, pageData.getPageNext() );
 
 		int pos = pageData.getMenuPosition( position );
 		
-		XMaterial xMat = !hasPage ?
+		XMaterial xMat = !active ?
 				menuStateOff1 : menuStateOn1;
 		
-		int pageNumber = !hasPage ?
+		int pageNumber = !active || pageData.getPageNext() < 1 ?
 				1 : pageData.getPageNext();
 
 		Button guiButton = new Button( pos, xMat, pageNumber, buttonLore, 
-				(hasPage ? GUI_MENU_TOOLS_PAGE : message) );
+				(active ? GUI_MENU_TOOLS_PAGE : message) );
 		
 		return guiButton;
 	}
 	
 	public Button createButtonPageLast( GUIMenuPageData pageData, int position ) {
 		
-		boolean hasPage = pageData.getPage() < pageData.getPageLast();
+		boolean active = !useDisabledButtons ||pageData.getPage() < pageData.getPageLast();
 		
-		String message = !hasPage ?
+		String message = !active ?
 				"Already on last page" : "Page " + pageData.getPageLast() + " of " + pageData.getPageLast();
 		
-		ButtonLore buttonLore = createButtonLore( hasPage, message, pageData, pageData.getPageLast() );
+		ButtonLore buttonLore = createButtonLore( active, message, pageData, pageData.getPageLast() );
 		
 		int pos = pageData.getMenuPosition( position );
 		
-		XMaterial xMat = !hasPage ?
+		XMaterial xMat = !active ?
 				menuStateOff2 : menuStateOn2;
 		
-		int pageNumber = !hasPage ?
+		int pageNumber = !active || pageData.getPageLast() < 1 ?
 				1 : pageData.getPageLast();
 		
 		Button guiButton = new Button( pos, xMat, pageNumber, buttonLore, 
-				(hasPage ? GUI_MENU_TOOLS_PAGE : message) );
+				(active ? GUI_MENU_TOOLS_PAGE : message) );
 		
 		return guiButton;
 	}
@@ -374,17 +458,33 @@ public class SpigotGUIMenuTools
 	
 	public void addMenuPageButtonsStandard( PrisonGUI gui, GUIMenuPageData pageData ) {
 		
+		gui.addButton( createButtonMenuBackground( pageData, 1 ) );
+		gui.addButton( createButtonMenuBackground( pageData, 2 ) );
+		gui.addButton( createButtonMenuBackground( pageData, 3 ) );
+
+		gui.addButton( createButtonPagePrior( pageData, 4 ) );
+		gui.addButton( createButtonPageCurrent( pageData, 5 ) );
+		gui.addButton( createButtonPageNext( pageData, 6 ) );
+		
+		gui.addButton( createButtonMenuBackground( pageData, 7 ) );
+		gui.addButton( createButtonMenuBackground( pageData, 8 ) );
+		gui.addButton( createButtonMenuBackground( pageData, 9 ) );
+
+	}
+	
+	public void addMenuPageButtonsWideLayout( PrisonGUI gui, GUIMenuPageData pageData ) {
+		
 		gui.addButton( createButtonPageOne( pageData, 1 ) );
 		gui.addButton( createButtonPagePrior( pageData, 2 ) );
 		
 		gui.addButton( createButtonMenuBackground( pageData, 3 ) );
 		gui.addButton( createButtonMenuBackground( pageData, 4 ) );
-
+		
 		gui.addButton( createButtonPageCurrent( pageData, 5 ) );
 		
 		gui.addButton( createButtonMenuBackground( pageData, 6 ) );
 		gui.addButton( createButtonMenuBackground( pageData, 7 ) );
-
+		
 		gui.addButton( createButtonPageNext( pageData, 8 ) );
 		gui.addButton( createButtonPageLast( pageData, 9 ) );
 	}
