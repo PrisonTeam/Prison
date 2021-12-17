@@ -682,21 +682,35 @@ public class Mine
     	return getName() + "  " + getTotalBlocksMined();
     }
     
+    /**
+     * <p>Even if world is null, it will allow you to create a location, but
+     * the location will be invalid.  In order to use this location, 
+     * the world will have to be set to a valid world.
+     * </p>
+     * 
+     * @param doc
+     * @param world
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
     private Location getLocation(Document doc, World world, String x, String y, String z) {
     	Location results = null;
     	
-    	if ( world != null ) {
+//    	if ( world != null ) {
+//    		
+//    		
+//    	}
+    	Object xD = doc.get(x);
+    	Object yD = doc.get(y);
+    	Object zD = doc.get(z);
+    	
+    	if ( xD != null && yD != null && zD != null ) {
     		
-    		Object xD = doc.get(x);
-    		Object yD = doc.get(y);
-    		Object zD = doc.get(z);
-    		
-    		if ( xD != null && yD != null && zD != null ) {
-    			
-    			results = new Location(world, (double) xD, (double) yD, (double) zD );
-    		}
-    		
+    		results = new Location(world, (double) xD, (double) yD, (double) zD );
     	}
+    	
     	return results;
     }
     

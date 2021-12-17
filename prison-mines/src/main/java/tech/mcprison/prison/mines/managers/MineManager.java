@@ -643,6 +643,7 @@ public class MineManager
     		Optional<World> worldOptional = Prison.get().getPlatform().getWorld(worldName);
     		
     		if ( worldOptional.isPresent() && getUnavailableWorlds().containsKey( worldName )) {
+    		
     			World world = worldOptional.get();
     			
     			// Store this mine and the world in MineManager's unavailableWorld for later
@@ -654,6 +655,20 @@ public class MineManager
     			for ( Mine mine : unenabledMines ) {
     				if ( !mine.isEnabled() ) {
     					mine.setWorld( world );
+    					
+    					// Make sure world is hooked up properly to all locations.
+    					// Since world is an object, it may already be auto hooked:
+    					
+    					
+    					if ( mine.getBounds() != null ) {
+    						mine.getBounds().setWorld( world );
+    					}
+    					
+    					
+    					if ( mine.getSpawn() != null ) {
+    						mine.getSpawn().setWorld( world );
+    					}
+    					
     				}
 //    				remove.add( mine );
     			}

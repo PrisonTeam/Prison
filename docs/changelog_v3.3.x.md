@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.11 2021-12-16
 
 
+* **Potential bug fix: There was a situation where with multiverse-core a delayed world loading resulted in the world not being found**, and therefore it was preventing the loading of all locations tied to the mine. This now allows the locations to be loaded without a valid world.  Then when the world is finally loaded, it will refresh the references to the world objects.
+
+
 * **GUI Menu: a few minor changes before more radical changes to go with the final "idea".**
 
 
