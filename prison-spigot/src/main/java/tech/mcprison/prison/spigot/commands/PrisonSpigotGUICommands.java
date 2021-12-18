@@ -54,7 +54,11 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
 
     @Command( identifier = "gui prestiges", description = "GUI Prestiges",
             onlyPlayers = true )
-    private void prisonManagerPrestiges( CommandSender sender ) {
+    private void prisonManagerPrestiges( CommandSender sender,
+    		@Arg(name = "page", description = "If there are more than 45 prestiges, then the " +
+    				"prestiges are shown on multiple pages.  The page parameter starts with " +
+    				"page 1.", def = "1" ) int page
+    		) {
 
         if ( !isPrisonConfig("prestiges") && !isPrisonConfig( "prestige.enabled" ) ) {
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_prestiges_disabled)));
@@ -84,13 +88,17 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        SpigotPlayerPrestigesGUI gui = new SpigotPlayerPrestigesGUI( player );
+        SpigotPlayerPrestigesGUI gui = new SpigotPlayerPrestigesGUI( player, page );
         gui.open();
     }
 
     @Command( identifier = "gui mines", description = "GUI Mines",
             onlyPlayers = true )
-    private void prisonManagerMines(CommandSender sender) {
+    private void prisonManagerMines(CommandSender sender,
+    		@Arg(name = "page", description = "If there are more than 45 mines, then the " +
+    				"mines are shown on multiple pages.  The page parameter starts with " +
+    				"page 1.", def = "1" ) int page
+    		) {
 
         Player player = getSpigotPlayer(sender);
 
@@ -115,7 +123,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             }
         }
 
-        SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI( player );
+        SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI( player, page );
         gui.open();
     }
 

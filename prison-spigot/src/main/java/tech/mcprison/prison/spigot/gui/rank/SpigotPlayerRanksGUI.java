@@ -204,6 +204,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         }
 
         
+        
         // Add the page controls: 
         // The controls for the standard menu are in positions: 4, 5, and 6:
         SpigotGUIMenuTools.getInstance().addMenuPageButtonsStandard( gui, guiPageData );
@@ -212,11 +213,10 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
         // Add Rankup button:
         ButtonLore rankupLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_rankup), messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup_if_enough_money));
-        Button rankUpButton = new Button( 0, XMaterial.EMERALD_BLOCK, rankupLore, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup)));
+        Button rankupButton = new Button( 0, XMaterial.EMERALD_BLOCK, rankupLore, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup)));
         // NOTE: Button position will be properly assigned in the setButtonNextAvilable:
-        gui.addButton( guiPageData.setButtonNextAvailable( rankUpButton ) );
+        gui.addButton( guiPageData.setButtonNextAvailable( rankupButton ) );
 
-        
         
         
         // Open GUI.

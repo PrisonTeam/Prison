@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.11 2021-12-17
 
 
+* **Move gui tools menu changes to improve them and hook them up to menus that did not have any paging.**
+
+
 * **Adjustments to improve the way the new gui tools work to reduce the amount of use of lore, or at least the visible lore.**
 This visually cleans it up a lot.
 

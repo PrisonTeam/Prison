@@ -1,5 +1,7 @@
 package tech.mcprison.prison.spigot.gui.mine;
 
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -19,6 +21,8 @@ import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
+import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMenuTools;
+import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMenuTools.GUIMenuPageData;
 
 /**
  * @author GABRYCA
@@ -33,10 +37,14 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
     private final String clickToTeleport = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_teleport);
     private final String statusLockedMine = messages.getString(MessagesConfig.StringID.spigot_gui_lore_locked);
 
-    public SpigotPlayerMinesGUI(Player p) {
+    private int page;
+    
+    public SpigotPlayerMinesGUI(Player p, int page ) {
         this.p = p;
         
         this.spigotPlayer = new SpigotPlayer(p);
+        
+        this.page = page;
     }
 
     public void open(){
@@ -44,28 +52,39 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         // Get the mines - In sort order, minus any marked as suppressed
     	PrisonSortableResults mines = PrisonMines.getInstance().getMines( MineSortOrder.sortOrder );
 
-        // Get the dimensions and if needed increases them
-        int dimension = (int) Math.ceil(mines.getSortedList().size() / 9D) * 9;
+        
+        int totalArraySize = mines.getSortedList().size();
+        GUIMenuPageData guiPageData = SpigotGUIMenuTools.getInstance()
+        		.createGUIPageObject( totalArraySize, page, "gui mines", "gui" );
 
-        // If the inventory is empty
-        if (dimension == 0){
-            Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_mines_empty));
-            p.closeInventory();
-            return;
-        }
 
-        // If the dimension's too big, don't open the GUI
-        if (dimension > 54){
-            Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_mines_too_many));
-            p.closeInventory();
-            return;
-        }
+        List<Mine> minesDisplay = mines.getSortedList().subList( guiPageData.getPosStart(), guiPageData.getPosEnd() );
+        
+        
+    	
+//        // Get the dimensions and if needed increases them
+//        int dimension = (int) Math.ceil(mines.getSortedList().size() / 9D) * 9;
+//
+//        // If the inventory is empty
+//        if (dimension == 0){
+//            Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_mines_empty));
+//            p.closeInventory();
+//            return;
+//        }
+//
+//        // If the dimension's too big, don't open the GUI
+//        if (dimension > 54){
+//            Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_mines_too_many));
+//            p.closeInventory();
+//            return;
+//        }
 
         // Create GUI.
-        PrisonGUI gui = new PrisonGUI(p, dimension, guiConfig.getString("Options.Titles.PlayerMinesGUI"));
+        PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), guiConfig.getString("Options.Titles.PlayerMinesGUI"));
 
         // Make the buttons for every Mine with info
-        for (Mine m : mines.getSortedList()) {
+        for (Mine m : minesDisplay) {
+//        	for (Mine m : mines.getSortedList()) {
 
             // Init the lore array with default values for ladders
             ButtonLore minesLore = new ButtonLore();
@@ -132,6 +151,12 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             }
 
         }
+
+        
+        // Add the page controls: 
+        // The controls for the standard menu are in positions: 4, 5, and 6:
+        SpigotGUIMenuTools.getInstance().addMenuPageButtonsStandard( gui, guiPageData );
+
 
         // Open the GUI.
         gui.open();
