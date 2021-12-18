@@ -138,9 +138,10 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         // Get many parameters
         RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
 //        Rank rank = ladder.getLowestRank().get();
-        PlayerRank playerRankRank = rankPlayerFactory.getRank( getRankPlayer(), guiConfig.getString("Options.Ranks.Ladder"));
+//        PlayerRank playerRankRank = rankPlayerFactory.getRank( getRankPlayer(), guiConfig.getString("Options.Ranks.Ladder"));
         
-        Rank playerRank = playerRankRank == null ? null : playerRankRank.getRank();
+        
+//        Rank playerRank = playerRankRank == null ? null : playerRankRank.getRank();
 
         PrisonGUI gui = new PrisonGUI(getPlayer(), guiPageData.getDimension(), guiConfig.getString("Options.Titles.PlayerRanksGUI"));
 
@@ -149,7 +150,6 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         XMaterial materialHasNot = XMaterial.valueOf(guiConfig.getString("Options.Ranks.Item_not_gotten_rank"));
 
         // Variables
-        boolean playerHasThisRank = true;
         int hackyCounterEnchant = 0;
         
         
@@ -165,6 +165,8 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
         for ( Rank rank : ranksDisplay )
 		{
+        	// hasAccess uses access by rank, and access by perm:
+        	boolean playerHasThisRank = getRankPlayer() != null && getRankPlayer().hasAccessToRank( rank );
 
             ButtonLore ranksLore = new ButtonLore();
 
@@ -183,9 +185,9 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
             amount++;
 
-            if (playerRank != null && playerRank.equals(rank)){
-                playerHasThisRank = false;
-            }
+//            if (playerRank != null && playerRank.equals(rank)){
+//                playerHasThisRank = false;
+//            }
 
             if (!(playerHasThisRank)){
                 if (hackyCounterEnchant <= 0) {

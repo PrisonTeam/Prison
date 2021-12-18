@@ -22,8 +22,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
 
@@ -82,7 +80,6 @@ import tech.mcprison.prison.spigot.gui.sellall.SellAllPrestigesMultiplierGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPrestigesSetMultiplierGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPriceGUI;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
-import tech.mcprison.prison.util.Text;
 
 /**
  * @author GABRYCA
@@ -417,9 +414,10 @@ public class ListenersPrisonManager implements Listener {
                 p.closeInventory();
                 return;
             }
-            else if ( buttonNameMain.equalsIgnoreCase( SpigotGUIMenuTools.GUI_MENU_TOOLS_PAGE ) ) {
+            
+            // If a GUI Tools Page action, then process the request and just exit:
+            else if ( SpigotGUIMenuTools.getInstance().processGUIPage( p, title, e ) ) {
             	
-            	processGUIPage( p, title, e.getCurrentItem() );
             	return;
             }
             
@@ -443,7 +441,8 @@ public class ListenersPrisonManager implements Listener {
                 case "RanksManager -> Ladders": {
 
                     // Call the method.
-                    laddersGUI(e, p, buttonNameMain, module, parts);
+                    laddersGUI(e, p, buttonNameMain, module);
+//                    laddersGUI(e, p, buttonNameMain, module, parts);
 
                     break;
                 }
@@ -734,34 +733,43 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    private void processGUIPage( Player p, String title, ItemStack currentItem ) {
-    	
-    	if ( currentItem != null && currentItem.hasItemMeta() ) {
-    		
-    		ItemMeta meta = currentItem.getItemMeta();
-
-    		if ( meta.hasLore() ) {
-    			
-    			String command = null;
-    			
-    			List<String> lores = meta.getLore();
-    			
-    			for ( String lore : lores ) {
-					
-    				if (  lore.contains( SpigotGUIMenuTools.GUI_MENU_TOOLS_COMMAND ) ) {
-    					command = Text.stripColor( lore ).replace( SpigotGUIMenuTools.GUI_MENU_TOOLS_COMMAND, "" ).trim();
-    					break;
-    				}
-				}
-    			
-    			if ( command != null ) {
-    				Bukkit.dispatchCommand(p, command);
-    			}
-    		}
-    		
-    	}
-    	
-	}
+    
+    
+    
+//    private boolean processGUIPage( Player p, String title, InventoryClickEvent e ) {
+//    	boolean isPageAction = false;
+//    	
+//    	ItemStack currentItem = e.getCurrentItem();
+//    	if ( currentItem != null && currentItem.hasItemMeta() ) {
+//    		
+//    		ItemMeta meta = currentItem.getItemMeta();
+//
+//    		if ( meta.hasLore() ) {
+//    			
+//    			String command = null;
+//    			
+//    			List<String> lores = meta.getLore();
+//    			
+//    			for ( String lore : lores ) {
+//					
+//    				if ( lore.contains( SpigotGUIMenuTools.GUI_MENU_TOOLS_PAGE ) ) {
+//    					isPageAction = true;
+//    				}
+//    				if ( lore.contains( SpigotGUIMenuTools.GUI_MENU_TOOLS_COMMAND ) ) {
+//    					command = Text.stripColor( lore ).replace( SpigotGUIMenuTools.GUI_MENU_TOOLS_COMMAND, "" ).trim();
+//    				}
+//				}
+//    			
+//    			if ( isPageAction && command != null ) {
+//    				Bukkit.dispatchCommand(p, command);
+//    				
+//    			}
+//    		}
+//    		
+//    	}
+//    	
+//    	return isPageAction;
+//	}
 
 	private void sellAllPlayerGUI(InventoryClickEvent e, Player p, String[] parts) {
         if (parts[0].equalsIgnoreCase("Prior")){
@@ -1634,7 +1642,7 @@ public class ListenersPrisonManager implements Listener {
         // Check the Item display name and do open the right GUI.
         switch (buttonNameMain) {
             case "Ranks - Ladders": {
-                SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 0, 1);
+                SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 1);
                 gui.open();
                 break;
             }
@@ -1676,7 +1684,7 @@ public class ListenersPrisonManager implements Listener {
         e.setCancelled(true);
     }
 
-    private void laddersGUI(InventoryClickEvent e, Player p, String buttonNameMain, Module module, String[] parts) {
+    private void laddersGUI(InventoryClickEvent e, Player p, String buttonNameMain, Module module ) {
 
         // Check if the Ranks module's loaded.
         if(!(module instanceof PrisonRanks)){
@@ -1686,14 +1694,14 @@ public class ListenersPrisonManager implements Listener {
             return;
         }
 
-        if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
-
-            // Open a new SpigotLadders GUI page.
-            SpigotLaddersGUI gui = new SpigotLaddersGUI(p, Integer.parseInt(parts[1]), 1);
-            p.closeInventory();
-            gui.open();
-            return;
-        }
+//        if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
+//
+//            // Open a new SpigotLadders GUI page.
+//            SpigotLaddersGUI gui = new SpigotLaddersGUI(p, Integer.parseInt(parts[1]), 1);
+//            p.closeInventory();
+//            gui.open();
+//            return;
+//        }
 
         // Get the ladder by the name of the button got before.
         RankLadder rLadder = PrisonRanks.getInstance().getLadderManager().getLadder(buttonNameMain);
@@ -1712,7 +1720,7 @@ public class ListenersPrisonManager implements Listener {
             Bukkit.dispatchCommand(p, "ranks ladder delete " + buttonNameMain);
             e.setCancelled(true);
             p.closeInventory();
-            SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 0, 1);
+            SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 1);
             gui.open();
             return;
 

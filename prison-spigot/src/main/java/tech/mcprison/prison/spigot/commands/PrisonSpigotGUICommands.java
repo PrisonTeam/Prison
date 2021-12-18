@@ -188,7 +188,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     		}
     	}
     	
-    	SpigotLaddersGUI gui = new SpigotLaddersGUI( player, 0, page );
+    	SpigotLaddersGUI gui = new SpigotLaddersGUI( player, page );
     	gui.open();
     }
 

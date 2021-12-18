@@ -29,7 +29,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
     private int page;
 //    private int counter;
 
-    public SpigotLaddersGUI(Player p, int counter, int page ){
+    public SpigotLaddersGUI(Player p, int page ){
         this.p = p;
         
         this.page = page;

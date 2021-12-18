@@ -16,7 +16,11 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.11 2021-12-17
 
 
-* **Hooked up some of the new features to the /gui ranks menu, plus added a /gui ladders and hooked that up. Simplified how the laders page was setup.**
+* **Adjustments to improve the way the new gui tools work to reduce the amount of use of lore, or at least the visible lore.**
+This visually cleans it up a lot.
+
+
+* **Hooked up some of the new features to the /gui ranks menu, plus added a /gui ladders and hooked that up. Simplified how the ladders page was setup.**
 
 
 * **More work on the GUI menu tools to not only get them to work better (correctly) but also add new capabilities... now supports adding a menu option and the tool auto assigns it to the next available slot.**
