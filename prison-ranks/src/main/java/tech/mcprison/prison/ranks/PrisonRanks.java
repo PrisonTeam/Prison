@@ -192,7 +192,7 @@ public class PrisonRanks
 
         
         // Hook up all players to the ranks:
-        playerManager.connectPlayersToRanks();
+        playerManager.connectPlayersToRanks( false );
         
         
         

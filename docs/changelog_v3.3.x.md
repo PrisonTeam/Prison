@@ -16,6 +16,11 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.11 2021-12-19
 
 
+* **Bug fix: Ran in to a rare situation where the use of essentialsX economy failed to allow prison to load the players during startup.** 
+Prison was trying to "rank" the players within each rank that they were in, and that required prison to get their balance.... but bukkit was not able to return an OfflinePlayer instance for any of the plyers.  Therefore prison could not access the player through vault.  No idea why bukkit is not able to provide the players.  The server in question had about 2500 players.
+So to prevent this from happening, the initial ranking bypasses the loading of any monetary amounts; they will be updated later.
+
+
 * **Update and create some new LuckPerms docs.**
 
 

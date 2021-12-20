@@ -288,11 +288,14 @@ public class Rank
 	 * @param player
 	 */
 	public void addPlayer( RankPlayer player ) {
+		addPlayer( player, true );
+	}
+	public void addPlayer( RankPlayer player, boolean checkPlayerBalances ) {
 		
 		if ( !getPlayers().contains( player ) ) {
 			getPlayers().add( player );
 			
-			getStatsPlayerBlance().addPlayer( player );
+			getStatsPlayerBlance().addPlayer( player, checkPlayerBalances );
 		}
 	}
 

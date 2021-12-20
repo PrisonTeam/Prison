@@ -213,12 +213,12 @@ public class PlayerManager
      * </p>
      * 
      */
-    public void connectPlayersToRanks() {
+    public void connectPlayersToRanks( boolean checkPlayerBalances ) {
     	for ( RankPlayer player : players ) {
 			
     		for ( PlayerRank pRank : player.getLadderRanks().values() ) {
     			
-    			pRank.getRank().addPlayer( player );
+    			pRank.getRank().addPlayer( player, checkPlayerBalances );
     		}
 		}
     }

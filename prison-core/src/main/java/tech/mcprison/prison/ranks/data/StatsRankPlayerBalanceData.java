@@ -9,13 +9,17 @@ public class StatsRankPlayerBalanceData
 	private double score = 0;
 	private double penalty = 0;
 
-	public StatsRankPlayerBalanceData( Rank rank, RankPlayer player, boolean isPleanltyEnabled ) {
+	public StatsRankPlayerBalanceData( Rank rank, RankPlayer player, 
+			boolean isPleanltyEnabled, boolean checkPlayerBalances ) {
 		super();
 		
 		this.rank = rank;
 		this.player = player;
 		
-		recalc( isPleanltyEnabled );
+		if ( checkPlayerBalances ) {
+			
+			recalc( isPleanltyEnabled );
+		}
 	}
 	
 	public StatsRankPlayerBalanceData() {

@@ -100,7 +100,8 @@ public class VaultEconomyWrapper
         		OfflinePlayer oPlayer = getOfflinePlayer( player );
         		if ( oPlayer == null ) {
         			Output.get().logInfo( "VaultEconomyWrapper.getBalance(): Error: " +
-        					"Cannot get economy for player %s so returning a value of 0.", 
+        					"Cannot get economy for player %s so returning a value of 0. " +
+        					"Failed to get an bukkit offline player.", 
         					player.getName());
         			results = 0;
         		}

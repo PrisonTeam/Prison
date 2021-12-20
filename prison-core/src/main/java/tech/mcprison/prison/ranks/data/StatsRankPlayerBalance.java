@@ -36,10 +36,12 @@ public class StatsRankPlayerBalance
 		}
 	}
 	
-	public void addPlayer( RankPlayer player ) {
+	public void addPlayer( RankPlayer player, boolean checkPlayerBalances ) {
 		
-		StatsRankPlayerBalanceData pStats = new StatsRankPlayerBalanceData( rank, 
-													player, isHesitancyDelayPenaltyEnabled() );
+		StatsRankPlayerBalanceData pStats = 
+						new StatsRankPlayerBalanceData( rank, 
+									player, isHesitancyDelayPenaltyEnabled(), 
+											checkPlayerBalances );
 		if ( !playerStats.contains( pStats ) ) {
 			playerStats.add( pStats );
 		}
@@ -48,7 +50,7 @@ public class StatsRankPlayerBalance
 	public void removePlayer( RankPlayer player ) {
 		
 		StatsRankPlayerBalanceData pStats = new StatsRankPlayerBalanceData( rank, 
-				player, isHesitancyDelayPenaltyEnabled() );
+				player, isHesitancyDelayPenaltyEnabled(), true );
 		if ( playerStats.contains( pStats ) ) {
 			playerStats.remove( pStats );
 		}
