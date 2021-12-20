@@ -105,3 +105,114 @@ For example, where `P1` is the Prestige 1 rank:
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+# The Suggested Way to Setup LuckPerms Groups and Tracks
+
+Although there are many ways to configure any plugin, these suggestions tries to keep things simple through using the same names as the counter parts between Prison and LuckPerms.  It may be slightly confusion which is which, as far as Prison or LuckPerms, but it makes it easier by being consistent with the same names for the similar parts.
+
+
+The best way to setup LuckPerms Groups is to make 1 group for every Prison Rank.  Then use the Rank Commands to assign users to that group automatically when they rankup.  Then to tie things together within LuckPerms, place these created LuckPerms Groups on a LuckPerms Track.
+
+
+If you have not done so already, the best option to get started with Prison, is to run `/ranks autoConfigure`.  That provides so much of the basic configurations and can save you hours just trying to get the basics setup.  You can always change the default settings later to fine tune your setup.
+
+
+The command `/ranks autoConfigure` will create Ranks and Mines with names from A through Z.  It will also create the first 10 Prestige ranks with the names P01 through P10.
+
+
+So to get started with how you would setup a Prison Rank command for Rank B:
+`/ranks command add B lp user {player} parent settrack [track] b`
+
+
+When they become rank B, the command `/lp user {player} parent settrack [track] b` will be ran as console/admin.  The Prison placeholder `{player}` is the player's name, and `[track]` is the name you're calling your track.
+
+
+To setup all the LuckPerms groups, you can use `/lp editor` to make it easier.  And setup the ranks from A through Z.
+
+
+
+Next you should setup the LuckPerms Tracks, which will take a little more effort up front.  You don't have to use Tracks, but it will simplify some things later on by simplifying the synchronization between Prison Ranks and the LuckPerms Groups.  
+
+
+For our examples, we will name our track **PrisonRank**.
+
+```
+/luckperms createtrack [track]
+
+/luckperms createtrack PrisonRanks
+
+```
+
+
+Now we need to add all of our created groups to this track.  It's important to add them **IN ORDER**.  Yes, the order is critical.  Remember our Prison Ranks are named A through Z, and so are our LuckPerms Groups, so we have to add them all.
+
+
+```
+/luckperms track [track] append <group>
+
+/luckperms track PrisonRank append A
+/luckperms track PrisonRank append B
+/luckperms track PrisonRank append C
+/luckperms track PrisonRank append D
+
+...
+
+/luckperms track PrisonRank append Z
+
+```
+
+
+The next step that you need to do, is to setup all the perms for each of your groups.  The perms that you need, are based upon the plugins that you have setup on your server, and the perms that they will require.
+
+
+For brevity, we will only show you the commands to use manually.  You can use the command `/lp editor` too.  Remember that the **group** listed in this command are the LuckPerms groups that you created earlier, that are named A trough Z.  The **permission**s that you use in these commands should be entered exactly as they are needed.
+
+```
+/lp group <group> permission set <permission>
+
+```
+
+It may take a while to setup all the permissions, and you will have to revisit these as you're adding more plugins.
+
+
+Next, we need to setup Prison's Rank Commands to allow the rankup process to keep the LuckPerms Track's Groups in synchronization.  Luckily, this is pretty simple and is accomplished with just one Rank Command per rank.  Please not that for Prison's Rank names they are not case sensitive, but the LuckPerms track names may be, so they are listed here in upper case.
+
+
+These are based upon the two individual commands; the Prison Ranks Command and the LP command.  The **command** reference in the Prison Rank Command is the whole LP command, as you will see following the templates.
+
+```
+/ranks command add <rank> <command>
+/lp user {player} parent settrack [track] <group>
+
+/ranks command add a lp user {player} parent settrack PrisonRank A
+/ranks command add b lp user {player} parent settrack PrisonRank B
+/ranks command add c lp user {player} parent settrack PrisonRank C
+/ranks command add d lp user {player} parent settrack PrisonRank D
+
+...
+
+/ranks command add z lp user {player} parent settrack PrisonRank Z
+```
+
+
+The following is optional, but what it does is to apply all rank commands to all players at their current ranks.  So this will apply everything we just entered above to anyone who is already setup in Prison.
+
+`/ranks set rank *all* *same* default`
+
+
+And that should be it.  
+
+
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+
+# Setting up LuckPerms Chat Prefixes
+
+*coming soon...*
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">

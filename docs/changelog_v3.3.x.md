@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.11 2021-12-19
+# 3.2.11-alpha.11 2021-12-20
+
+
+* **Docs: Updated the LuckPerms Tracks and Groups document to provide more details on how to set them up.**
 
 
 * **Bug fix: Ran in to a rare situation where the use of essentialsX economy failed to allow prison to load the players during startup.** 
