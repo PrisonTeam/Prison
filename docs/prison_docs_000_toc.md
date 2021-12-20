@@ -205,7 +205,9 @@ Auto configure can get you up and running with as little as two commands.  The f
 
 
 * [Setting up LuckPerms](prison_docs_020_setting_up_luckperms.md)
-    Setting up LuckPerms. Warning about LuckPerms Versions.
+    Setting up LuckPerms. 
+* [Setting up LuckPerms Groups & Tracks](prison_docs_030_LuckPerms_Groups_Tracks.md)
+    Using LuckPerms's groups and tracks with Prison.
 
 
 * [Setting up PermissionsEX](prison_docs_022_setting_up_PermissionsEX.md)
