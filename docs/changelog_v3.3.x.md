@@ -13,7 +13,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.11 2021-12-20
+# 3.2.11-alpha.11 2021-12-21
+
+
+
+
+* **Make sure the targetBlock is not null before trying to process it.**
 
 
 * **Docs: Updated the LuckPerms Tracks and Groups document to provide more details on how to set them up.**
