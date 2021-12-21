@@ -16,6 +16,8 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.11 2021-12-21
 
 
+* **Fixed issue with XMaterial when trying to parse a custom blcok that is not compatible with prison.**
+The function will now return a null value and everything that uses it, must ensure it's not null before trying to  use it.
 
 
 * **Make sure the targetBlock is not null before trying to process it.**

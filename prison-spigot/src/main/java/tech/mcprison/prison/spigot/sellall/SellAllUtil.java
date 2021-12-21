@@ -157,11 +157,21 @@ public class SellAllUtil {
      *
      * @return XMaterial.
      * */
-    public XMaterial getXMaterialOrLapis(ItemStack itemStack) {
+    private XMaterial getXMaterialOrLapis(ItemStack itemStack) {
         if (itemStack.isSimilar(lapisLazuli)) {
             return XMaterial.LAPIS_LAZULI;
         }
-        return XMaterial.matchXMaterial(itemStack);
+        XMaterial results = null;
+        try
+		{
+			results = XMaterial.matchXMaterial(itemStack);
+		}
+		catch ( Exception e )
+		{
+			// ignore... it is not normal matertial so it cannot be sold
+		}
+        
+        return results;
     }
 
     /**
@@ -199,10 +209,14 @@ public class SellAllUtil {
         for (ItemStack itemStack : inv.getContents()){
             if (itemStack != null){
                 XMaterial xMaterial = getXMaterialOrLapis(itemStack);
-                if (xMaterialIntegerHashMap.containsKey(xMaterial) && xMaterialIntegerHashMap.get(xMaterial) != 0){
-                    xMaterialIntegerHashMap.put(xMaterial, xMaterialIntegerHashMap.get(xMaterial) + itemStack.getAmount());
-                } else {
-                    xMaterialIntegerHashMap.put(xMaterial, itemStack.getAmount());
+                if ( xMaterial != null ) {
+                	
+                	if (xMaterialIntegerHashMap.containsKey(xMaterial) && xMaterialIntegerHashMap.get(xMaterial) != 0){
+                		xMaterialIntegerHashMap.put(xMaterial, xMaterialIntegerHashMap.get(xMaterial) + itemStack.getAmount());
+                	} 
+                	else {
+                		xMaterialIntegerHashMap.put(xMaterial, itemStack.getAmount());
+                	}
                 }
             }
         }
@@ -225,10 +239,14 @@ public class SellAllUtil {
             if (itemStack != null){
                 try {
                     XMaterial xMaterial = getXMaterialOrLapis(itemStack);
-                    if (xMaterialIntegerHashMap.containsKey(xMaterial) && xMaterialIntegerHashMap.get(xMaterial) != 0) {
-                        xMaterialIntegerHashMap.put(xMaterial, xMaterialIntegerHashMap.get(xMaterial) + itemStack.getAmount());
-                    } else {
-                        xMaterialIntegerHashMap.put(xMaterial, itemStack.getAmount());
+                    if ( xMaterial != null ) {
+                    	
+                    	if (xMaterialIntegerHashMap.containsKey(xMaterial) && xMaterialIntegerHashMap.get(xMaterial) != 0) {
+                    		xMaterialIntegerHashMap.put(xMaterial, xMaterialIntegerHashMap.get(xMaterial) + itemStack.getAmount());
+                    	} 
+                    	else {
+                    		xMaterialIntegerHashMap.put(xMaterial, itemStack.getAmount());
+                    	}
                     }
                 } catch (IllegalArgumentException ignored){}
             }
@@ -843,10 +861,14 @@ public class SellAllUtil {
         for (ItemStack itemStack : inv.getContents()){
             if (itemStack != null){
                 XMaterial xMaterial = getXMaterialOrLapis(itemStack);
-                if (xMaterialIntegerHashMap.containsKey(xMaterial)){
-                    xMaterialIntegerHashMap.put(xMaterial, xMaterialIntegerHashMap.get(xMaterial) + itemStack.getAmount());
-                } else {
-                    xMaterialIntegerHashMap.put(xMaterial, itemStack.getAmount());
+                if ( xMaterial != null ) {
+                	
+                	if (xMaterialIntegerHashMap.containsKey(xMaterial)){
+                		xMaterialIntegerHashMap.put(xMaterial, xMaterialIntegerHashMap.get(xMaterial) + itemStack.getAmount());
+                	} 
+                	else {
+                		xMaterialIntegerHashMap.put(xMaterial, itemStack.getAmount());
+                	}
                 }
             }
         }
@@ -1159,7 +1181,7 @@ public class SellAllUtil {
             if (itemStack != null){
                 try {
                     XMaterial xMaterial = getXMaterialOrLapis(itemStack);
-                    if (sellAllBlocks.containsKey(xMaterial)) {
+                    if ( xMaterial != null && sellAllBlocks.containsKey(xMaterial)) {
                         if (isPerBlockPermissionEnabled && !p.hasPermission(permissionPrefixBlocks + xMaterial.name())) {
                             // Nothing will change.
                         } else {
