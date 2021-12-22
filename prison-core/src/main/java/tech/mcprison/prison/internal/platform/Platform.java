@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import tech.mcprison.prison.commands.PluginCommand;
@@ -311,6 +312,9 @@ public interface Platform {
 
 	public double getConfigDouble( String key, double defaultValue );
 	
+	
+	public boolean isWorldExcluded( String worldName );
+
 
     /**
      * Setup hooks in to the valid prison block types.  This will be only the 
@@ -427,6 +431,11 @@ public interface Platform {
 
 
 	void setActionBar( Player player, String actionBar );
+
+
+	TreeSet<String> getExcludedWorlds();
+
+
 
 
 	

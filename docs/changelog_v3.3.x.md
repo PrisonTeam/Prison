@@ -13,8 +13,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.12 2021-12-21
+# 3.2.11-alpha.12 2021-12-22
 
+
+* **Added the ability to disable prison command hander is specific worlds.**
+The settings are within config.yml.  The disabling of prison is only done on the command handler, and will soon be hooked up to the block break events too.
+The command /prison now lists worlds in which prison has been disabled
 
 
 

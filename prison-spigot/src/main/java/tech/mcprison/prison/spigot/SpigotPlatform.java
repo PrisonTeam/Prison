@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -137,7 +138,7 @@ public class SpigotPlatform
     
     private SpigotPlaceholders placeholders;
     
-    
+    private TreeSet<String> excludedWorlds = null;
 
     /**
      * This is only for junit testing.
@@ -146,6 +147,7 @@ public class SpigotPlatform
     	super();
     	
     	this.plugin = null;
+    	
     	//this.scoreboardManager = new SpigotScoreboardManager();
     	//this.storage = initStorage();
     	
@@ -162,7 +164,7 @@ public class SpigotPlatform
         this.storage = initStorage();
         
         this.placeholders = new SpigotPlaceholders();
-        
+
         ActionBarUtil.init(plugin);
     }
 
@@ -398,6 +400,12 @@ public class SpigotPlatform
                 @Override 
                 public boolean execute(CommandSender sender, String commandLabel, String[] args) {
                     if (sender instanceof org.bukkit.entity.Player) {
+                    	
+                    	org.bukkit.World bWorld = ((org.bukkit.entity.Player) sender).getLocation().getWorld();
+                    	if ( isWorldExcluded( bWorld.getName() ) ) {
+                    		return false;
+                    	}
+                    	
                         return Prison.get().getCommandHandler()
                             .onCommand(new SpigotPlayer((org.bukkit.entity.Player) sender),
                                 command, commandLabel, args);
@@ -799,6 +807,10 @@ public class SpigotPlatform
 	public void reloadConfig() {
 		
 		SpigotPrison.getInstance().reloadConfig();
+		
+		
+		// Reload excluded worlds list:
+		excludedWorlds = null;
 	}
 	
 	@Override
@@ -810,6 +822,12 @@ public class SpigotPlatform
 	public String getConfigString( String key, String defaultValue ) {
 		return SpigotPrison.getInstance().getConfig().getString( key, defaultValue );
 	}
+	
+	
+	public List<?> getConfigStringArray( String key ) {
+		return SpigotPrison.getInstance().getConfig().getList( key, new ArrayList<String>() );
+	}
+	
 	
 	/**
 	 * <p>This returns the boolean value that is associated with the key.
@@ -941,13 +959,52 @@ public class SpigotPlatform
 	}
 
 	
-    /**
+	@Override
+	public boolean isWorldExcluded( String worldName ) {
+		boolean exclude = false;
+		
+		if ( worldName != null && getExcludedWorlds().size() > 0 ) {
+			
+			exclude = getExcludedWorlds().contains( worldName.toLowerCase() );
+		}
+		
+		return exclude;
+	}
+	
+	
+	@Override
+    public TreeSet<String> getExcludedWorlds()
+	{
+		
+		if ( excludedWorlds == null ) {
+			
+			excludedWorlds = new TreeSet<>();
+			
+			List<?> exWorlds = getConfigStringArray( "prisonCommandHandler.exclude-worlds" );
+			
+			for ( Object worldObj : exWorlds )
+			{
+				if ( worldObj instanceof String ) {
+					
+					String world = (String) worldObj;
+					
+					excludedWorlds.add( world.toLowerCase() );
+				}
+			}
+
+		}
+
+		return excludedWorlds;
+	}
+
+	/**
      * Setup hooks in to the valid prison block types.  This will be only the 
      * block types that have tested to be valid on the server that is running 
      * prison.  This provides full compatibility to the admins that if a block 
      * is listed, then it's usable.  No more guessing or finding out after the 
      * fact that a block that was used was invalid for their version of minecraft.
      */
+	@Override
 	public PrisonBlockTypes getPrisonBlockTypes() {
 		return SpigotPrison.getInstance().getPrisonBlockTypes();
 	}

@@ -289,6 +289,17 @@ public class CommandHandler {
 					}
             		
             	}
+            	
+            	ArrayList<String> excludedWorlds = buildExcludedWorlds();
+            	if ( excludedWorlds.size() > 1 ) {
+            		for ( String excludedWorld : excludedWorlds )
+            		{
+            			chatDisplay.addText( excludedWorld );
+            		}
+            		
+            	}
+            	
+            	
             }
             
 
@@ -296,6 +307,41 @@ public class CommandHandler {
 //            return message.toArray(new String[0]);
         }
 
+        private ArrayList<String> buildExcludedWorlds() {
+        	
+			ArrayList<String> message = new ArrayList<>();
+			
+			message.add(ChatColor.DARK_AQUA + "Prison is disabled in the following Worlds:");
+			
+			TreeSet<String> excludedWorlds = Prison.get().getPlatform().getExcludedWorlds();
+			
+			StringBuilder sb = new StringBuilder();
+			int count = 0;
+			for ( String world : excludedWorlds )
+			{
+				if ( sb.length() > 0 ) {
+					sb.append( ", " );
+				}
+				
+				if ( count++ > 5 ) {
+				
+					message.add( "  " + sb.toString() );
+					sb.setLength( 0 );
+					count = 0;
+				}
+
+				sb.append( world );
+				
+			}
+			
+			if ( sb.length() > 0 ) {
+				message.add( "  " + sb.toString() );
+				
+			}
+
+            return message;
+        }
+        
 		private ArrayList<String> buildHelpRootCommands() {
 			ArrayList<String> message = new ArrayList<>();
 			

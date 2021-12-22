@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
@@ -275,6 +276,17 @@ public class TestPlatform implements Platform {
 	@Override
 	public double getConfigDouble( String key, double defaultValue ) {
 		return defaultValue;
+	}
+	
+	@Override
+	public boolean isWorldExcluded( String worldName ) {
+		return false;
+	}
+	
+	@Override
+    public TreeSet<String> getExcludedWorlds()
+	{
+		return new TreeSet<>();
 	}
 	
 	@Override

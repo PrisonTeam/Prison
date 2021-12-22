@@ -226,3 +226,9 @@ prison-events:
   AsyncPlayerChatEvent:
     priority: LOW
 
+
+prisonCommandHandler:
+  exclude-worlds:
+  - lobby
+  - plotWorld
+
