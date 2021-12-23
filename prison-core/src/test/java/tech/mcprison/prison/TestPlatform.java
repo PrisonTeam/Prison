@@ -277,7 +277,12 @@ public class TestPlatform implements Platform {
 	public double getConfigDouble( String key, double defaultValue ) {
 		return defaultValue;
 	}
-	
+
+	@Override
+	public List<?> getConfigStringArray( String key ) {
+		return new ArrayList<String>();
+	}
+
 	@Override
 	public boolean isWorldExcluded( String worldName ) {
 		return false;

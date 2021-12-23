@@ -231,4 +231,8 @@ prisonCommandHandler:
   exclude-worlds:
   - lobby
   - plotWorld
+  aliases:
+    mines:
+      tp: 
+      - mines teleport
 

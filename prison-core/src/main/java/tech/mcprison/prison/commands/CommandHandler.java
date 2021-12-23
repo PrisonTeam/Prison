@@ -586,10 +586,16 @@ public class CommandHandler {
             }
 
             RegisteredCommand mainCommand = commandRegisterConfig( method, commandAnno, methodInstance );
+            
+            
+            String[] aliases = addConfigAliases( commandAnno.identifier(), commandAnno.aliases() );
 
-            if ( commandAnno.aliases() != null && commandAnno.aliases().length > 0 ) {
+            if ( aliases.length > 0 ) {
+//            	if ( commandAnno.aliases() != null && commandAnno.aliases().length > 0 ) {
             	
-            	for ( String alias : commandAnno.aliases() )
+            	
+            	for ( String alias : aliases )
+//            		for ( String alias : commandAnno.aliases() )
 				{
 					RegisteredCommand aliasCommand = commandRegisterConfig( method, commandAnno, methodInstance, alias );
             		
@@ -607,7 +613,8 @@ public class CommandHandler {
     	return commandRegisterConfig( method, commandAnno, methodInstance, null );
     }
     
-	private RegisteredCommand commandRegisterConfig( Method method, Command commandAnno, Object methodInstance, String alias ) {
+	private RegisteredCommand commandRegisterConfig( Method method, Command commandAnno, 
+						Object methodInstance, String alias ) {
         String[] identifiers = ( alias == null ? commandAnno.identifier() : alias).split(" ");
         
             if (identifiers.length == 0) {
@@ -619,10 +626,16 @@ public class CommandHandler {
         PluginCommand rootPluginCommand = plugin.getPlatform().getCommand(label).orElse( null );
 
         if ( rootPluginCommand == null ) {
+        	
+        	String[] aliases = addConfigAliases( commandAnno.identifier(), commandAnno.aliases() );
         	rootPluginCommand = new PluginCommand(label, 
         						commandAnno.description(),
         						"/" + label,
-        						commandAnno.aliases() );
+        						aliases );
+//        	rootPluginCommand = new PluginCommand(label, 
+//			        			commandAnno.description(),
+//			        			"/" + label,
+//			        			commandAnno.aliases() );
         	plugin.getPlatform().registerCommand(rootPluginCommand);
         }
 
@@ -693,7 +706,34 @@ public class CommandHandler {
 	}
 
 
-    public boolean onCommand(CommandSender sender, PluginCommand command, String label,
+    public static String[] addConfigAliases( String label, String[] aliases )
+	{
+    	String[] results = aliases;
+    	
+    	String configKey = "prisonCommandHandler.aliases." + label.replace( " ", "." );
+    	
+    	List<?> ca = Prison.get().getPlatform().getConfigStringArray( configKey );
+    	if ( ca != null && ca.size() > 0 && ca.get( 0 ) instanceof String ) {
+    		
+			List<String> configAliases = new ArrayList<>();
+			
+			for ( String alias : aliases ) {
+				configAliases.add( alias );
+			}
+					
+			for ( Object aliasObj : ca ) {
+				if ( aliasObj instanceof String ) {
+					configAliases.add( aliasObj.toString() );
+				}
+			}
+			
+    		results = configAliases.toArray( new String[0] );
+    		
+    	}
+		return results;
+	}
+
+	public boolean onCommand(CommandSender sender, PluginCommand command, String label,
     								String[] args) {
     	
         RootCommand rootCommand = rootCommands.get(command);

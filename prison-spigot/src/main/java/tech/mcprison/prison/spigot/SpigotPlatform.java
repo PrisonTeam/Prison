@@ -824,6 +824,7 @@ public class SpigotPlatform
 	}
 	
 	
+	@Override
 	public List<?> getConfigStringArray( String key ) {
 		return SpigotPrison.getInstance().getConfig().getList( key, new ArrayList<String>() );
 	}

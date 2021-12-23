@@ -433,9 +433,10 @@ public interface Platform {
 	void setActionBar( Player player, String actionBar );
 
 
-	TreeSet<String> getExcludedWorlds();
+	public TreeSet<String> getExcludedWorlds();
 
 
+	public List<?> getConfigStringArray( String key );
 
 
 	
