@@ -41,6 +41,9 @@ public class AutoManagerTokenEnchant
     	
         @EventHandler(priority=EventPriority.LOW) 
         public void onTEBlockExplode(TEBlockExplodeEvent e) {
+			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+				return;
+			}
         	genericBlockExplodeEventAutoManager( e );
         }
     }
@@ -51,6 +54,9 @@ public class AutoManagerTokenEnchant
     	
     	@EventHandler(priority=EventPriority.NORMAL) 
     	public void onTEBlockExplode(TEBlockExplodeEvent e) {
+    		if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+    			return;
+    		}
     		genericBlockExplodeEvent( e );
     	}
     }
@@ -61,6 +67,9 @@ public class AutoManagerTokenEnchant
     	
     	@EventHandler(priority=EventPriority.MONITOR) 
     	public void onTEBlockExplode(TEBlockExplodeEvent e) {
+    		if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+    			return;
+    		}
     		genericBlockExplodeEventMonitor( e );
     	}
     }

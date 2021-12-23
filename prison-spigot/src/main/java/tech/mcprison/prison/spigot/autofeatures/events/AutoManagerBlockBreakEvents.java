@@ -64,6 +64,9 @@ public class AutoManagerBlockBreakEvents
 		
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onBlockBreak(BlockBreakEvent e) {
+			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+				return;
+			}
 			genericBlockEventAutoManager( e );
 		}
 	}
@@ -74,6 +77,9 @@ public class AutoManagerBlockBreakEvents
     	
     	@EventHandler(priority=EventPriority.NORMAL) 
     	public void onBlockBreak(BlockBreakEvent e) {
+    		if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+    			return;
+    		}
     		genericBlockEvent( e );
     	}
     }
@@ -84,6 +90,9 @@ public class AutoManagerBlockBreakEvents
 			
 		@EventHandler(priority=EventPriority.MONITOR) 
 		public void onBlockBreak(BlockBreakEvent e) {
+			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+				return;
+			}
 			genericBlockEventMonitor( e );
 		}
 	}

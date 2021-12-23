@@ -39,6 +39,9 @@ public class AutoManagerCrazyEnchants
 		
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onCrazyEnchantsBlockExplode(BlastUseEvent e) {
+			if ( isDisabled( e.getPlayer().getLocation().getWorld().getName() ) ) {
+				return;
+			}
 			genericBlockExplodeEventAutoManager( e );
 		}
 	}
@@ -49,6 +52,9 @@ public class AutoManagerCrazyEnchants
     	
         @EventHandler(priority=EventPriority.NORMAL) 
         public void onCrazyEnchantsBlockExplode(BlastUseEvent e) {
+        	if ( isDisabled( e.getPlayer().getLocation().getWorld().getName() ) ) {
+        		return;
+        	}
         	genericBlockExplodeEvent( e );
         }
     }
@@ -59,6 +65,9 @@ public class AutoManagerCrazyEnchants
     	
     	@EventHandler(priority=EventPriority.MONITOR) 
     	public void onCrazyEnchantsBlockExplode(BlastUseEvent e) {
+    		if ( isDisabled( e.getPlayer().getLocation().getWorld().getName() ) ) {
+    			return;
+    		}
     		genericBlockExplodeEventMonitor( e );
     	}
     }

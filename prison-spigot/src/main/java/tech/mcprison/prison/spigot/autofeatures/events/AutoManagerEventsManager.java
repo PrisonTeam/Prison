@@ -3,6 +3,7 @@ package tech.mcprison.prison.spigot.autofeatures.events;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
@@ -15,6 +16,10 @@ public abstract class AutoManagerEventsManager
 	public AutoManagerEventsManager() {
 		super();
 		
+	}
+	
+	public boolean isDisabled( String worldName ) {
+		return Prison.get().getPlatform().isWorldExcluded( worldName );
 	}
 	
     /**

@@ -40,6 +40,9 @@ public class AutoManagerZenchantments
     	
     	@EventHandler(priority=EventPriority.NORMAL) 
     	public void onBlockShredBreak(BlockShredEvent e) {
+			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+				return;
+			}
     		genericBlockEventAutoManager( e );
     	}
     }
@@ -50,6 +53,9 @@ public class AutoManagerZenchantments
 		
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onBlockShredBreak(BlockShredEvent e) {
+			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+				return;
+			}
 			genericBlockEvent( e );
 		}
 	}
@@ -60,6 +66,9 @@ public class AutoManagerZenchantments
     	
     	@EventHandler(priority=EventPriority.MONITOR) 
     	public void onBlockShredBreakMonitor(BlockShredEvent e) {
+    		if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+    			return;
+    		}
     		genericBlockEventMonitor( e );
     	}
     }

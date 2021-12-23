@@ -41,7 +41,10 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 		
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onPrisonsExplosiveBlockBreakEvent(ExplosiveBlockBreakEvent e) {
-			
+			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+				return;
+			}
+
 //			me.pulsi_.prisonenchants.events.PEExplosionEvent
 			
 			genericBlockExplodeEventAutoManager( e );
@@ -54,6 +57,9 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 		
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onPrisonExplosiveBlockBreakEvent(ExplosiveBlockBreakEvent e) {
+			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+				return;
+			}
 			genericBlockExplodeEvent( e );
 		}
 	}
@@ -64,6 +70,9 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 		
 		@EventHandler(priority=EventPriority.MONITOR) 
 		public void onPrisonExplosiveBlockBreakEventMonitor(ExplosiveBlockBreakEvent e) {
+			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+				return;
+			}
 			genericBlockExplodeEventMonitor( e );
 		}
 	}
