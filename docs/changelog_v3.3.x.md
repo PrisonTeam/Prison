@@ -13,7 +13,13 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.12 2021-12-23
+# 3.2.11-alpha.12 2021-12-24
+
+
+* **For ranks that are null, made some changes so either empty strings are used instad, or most of the time the rank name is used.**
+
+
+* **Fixed a potential issue with nulls in the language file parameters.  All nulls are replaced with empty strings.**
 
 
 * **Added the ability for admins to add aliases to commands so they can better customize their environment.**

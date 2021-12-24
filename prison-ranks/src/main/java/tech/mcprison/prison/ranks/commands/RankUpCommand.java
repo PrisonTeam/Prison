@@ -344,13 +344,15 @@ public class RankUpCommand
 			prestigePlayerBalanceSetToZeroMsg( sender );
 		}
 		
+		String title = pRankAfter.getTag() == null ? pRankAfter.getName() : pRankAfter.getTag();
 		if ( success ) {
 			// Send a message to the player because he did prestige!
-			prestigePlayerSucessfulMsg( sender, pRankAfter.getTag() );
+
+			prestigePlayerSucessfulMsg( sender, title );
 		}
 		else {
 			
-			prestigePlayerFailureMsg( sender, pRankAfter.getTag() );
+			prestigePlayerFailureMsg( sender, title );
 		}
 
 	}

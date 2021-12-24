@@ -1050,7 +1050,7 @@ public class RanksCommands
 								fFmt.format( rLadder.getRankCostMultiplierPerRank() ),
 								fFmt.format( rpRank.getLadderBasedRankMultiplier() ),
 								rLadder.getName(), 
-								r.getTag()
+								(r.getTag() == null ? r.getName() : r.getTag())
 								);
 						
 //						display.addText( "&3  Ladder: &7%-9s  &3Rank: &7%-8s  &3Base Mult: %7s", 
@@ -1142,13 +1142,15 @@ public class RanksCommands
     
 	private ChatDisplay rankInfoDetails( CommandSender sender, Rank rank, String options )
 	{
-		ChatDisplay display = new ChatDisplay( ranksInfoHeaderMsg( rank.getTag() ));
+		String title = rank.getTag() == null ? rank.getName() : rank.getTag();
+		
+		ChatDisplay display = new ChatDisplay( ranksInfoHeaderMsg( title ));
 		
 		boolean isOp = sender != null && sender.isOp();
 		boolean isConsole = sender == null || !sender.isPlayer();
 
         display.addText( ranksInfoNameMsg( rank.getName() ));
-        display.addText( ranksInfoTagMsg( rank.getTag() ));
+        display.addText( ranksInfoTagMsg( rank.getTag() == null ? "none" : rank.getTag() ));
         
         
         RowComponent row = new RowComponent();

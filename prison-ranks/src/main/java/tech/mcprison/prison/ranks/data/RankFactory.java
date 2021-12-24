@@ -105,7 +105,7 @@ public class RankFactory
 //        ret.put("position", this.position );
         ret.put("id", rank.getId());
         ret.put("name", rank.getName() );
-        ret.put("tag", rank.getTag() );
+        ret.put("tag", (rank.getTag() == null ? "none" : rank.getTag()) );
         ret.put("cost", rank.getCost() );
         ret.put("currency", rank.getCurrency() );
         
@@ -122,7 +122,7 @@ public class RankFactory
         if ( rank.getMines() != null ) {
         	for ( ModuleElement mine : rank.getMines() ) {
         		 String mineString = mine.getModuleElementType() + "," + mine.getName() + "," + 
-        				 mine.getId() + "," + mine.getTag();
+        				 mine.getId() + "," + (mine.getTag() == null ? "none" : mine.getTag());
         		 mineStrings.add( mineString );
 			}
         }

@@ -171,7 +171,9 @@ public class CommandCommands
     
 	protected ChatDisplay commandListDetails( Rank rank, boolean noRemoves )
 	{
-		ChatDisplay display = new ChatDisplay( ranksCommandListCmdHeaderMsg( rank.getTag() ));
+		String title = rank.getTag() == null ? rank.getName() : rank.getTag();
+
+		ChatDisplay display = new ChatDisplay( ranksCommandListCmdHeaderMsg( title ));
         if ( !noRemoves ) {
         	
         	display.addText( ranksCommandListClickCmdToRemoveMsg() );

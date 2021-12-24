@@ -775,7 +775,7 @@ public class RankManager
 					
 				case prison_rank__tag_rankname:
 				case prison_r_t_rankname:
-					results = rank.getTag();
+					results = (rank.getTag() == null ? "" : rank.getTag());
 					break;
 					
 				case prison_rank__ladder_rankname:
