@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.12 2021-12-24
+# 3.2.11-alpha.13 2021-12-24
+
+
+* **3.2.11-alpha.13** 2021-12-24
 
 
 * **Prison command handler: adds the ability to add new aliases from the config file.**
