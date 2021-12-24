@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.12 2021-12-24
 
 
+* **Prison command handler: adds the ability to add new aliases from the config file.**
+
+
 * **For ranks that are null, made some changes so either empty strings are used instad, or most of the time the rank name is used.**
 
 
