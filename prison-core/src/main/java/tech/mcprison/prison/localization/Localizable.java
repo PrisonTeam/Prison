@@ -153,6 +153,17 @@ public class Localizable {
      * @since 1.0
      */
     public Localizable withReplacements(String... replacements) {
+    	if ( replacements == null ) {
+    		replacements = new String[1];
+    		replacements[0] = "";
+    	}
+    	else {
+    		for ( int i = 0; i < replacements.length; i++ ) {
+    			if ( replacements[i] == null ) {
+    				replacements[i] = "";
+    			}
+    		}
+    	}
         this.replacements = Arrays.copyOf(replacements, replacements.length);
         this.locReplacements = null;
         return this;
