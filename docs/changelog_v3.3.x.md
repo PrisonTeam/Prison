@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.13 2021-12-24
 
 
+* **Bug fix for mohist, or other platforms that are trying to use SuperPerms, or other perm plugins that do not support groups.**
+
+
 * **Add *all* to the command /mines set tpAccessByRank.**
 
 
