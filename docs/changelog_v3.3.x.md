@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.13 2021-12-24
 
 
+* **Add *all* to the command /mines set tpAccessByRank.**
+
+
 * **Add '*all*' as an option for applying Access by Rank for mines command: /mines set mineAccessByRank.**
 
 

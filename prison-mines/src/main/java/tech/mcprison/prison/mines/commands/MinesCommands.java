@@ -401,7 +401,7 @@ public class MinesCommands
     			}
     		}
     		
-    		String message = String.format( "&c%s Mine Access by Rank changes were applied to all Mines. " +
+    		String message = String.format( "&7%s Mine Access by Rank changes were applied to all Mines. " +
     				"%d were updated. %d had no changes. %d had no ranks so could not be set.",
     				
     				(accessEnabled ? "Enabling" : "Disabling"),
@@ -451,14 +451,57 @@ public class MinesCommands
     				"a Rank: See /mines set rank help.", 
     		onlyPlayers = true, permissions = "mines.set")
     public void tpAccessByRankCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine") String mineName, 
+        @Arg(name = "mineName", description = "The name of the mine, or *all* for all mines. [*all*]") String mineName, 
         @Arg(name = "enable", description = "Enable the tpAccessByRank: [enable, disable]") String enable ) {
 
+    	if ( enable == null || !"enable".equalsIgnoreCase( enable ) && !"disable".equalsIgnoreCase( enable ) ) {
+    		
+    		sender.sendMessage( "&cInvalid option. &7The parameter &3enable &7can only have the values of " +
+    				"'enable' or 'disable'.  Please try again." );
+    		return;
+    	}
+    	
+    	boolean accessEnabled = "enable".equalsIgnoreCase( enable );
+
+    	PrisonMines pMines = PrisonMines.getInstance();
+
+    	
+    	if ( mineName != null && "*all*".equalsIgnoreCase( mineName ) ) {
+    		int minesUpdated = 0;
+    		int minesNoChange = 0;
+    		int minesWithNoRanks = 0;
+    		
+    		for ( Mine m :pMines.getMines() ) {
+    			if ( m.getRank() == null ) {
+    				minesWithNoRanks++;
+    			}
+    			else if ( m.isTpAccessByRank() == accessEnabled ) {
+    				minesNoChange++;
+    			}
+    			else {
+    				minesUpdated++;
+    				
+    				m.setTpAccessByRank( accessEnabled );
+    				pMines.getMineManager().saveMine(m);
+    			}
+    		}
+    		
+    		String message = String.format( "&7%s Mine TP Access by Rank changes were applied to all Mines. " +
+    				"%d were updated. %d had no changes. %d had no ranks so could not be set.",
+    				
+    				(accessEnabled ? "Enabling" : "Disabling"),
+    				minesUpdated, minesNoChange, minesWithNoRanks
+    				);
+    		
+    		sender.sendMessage( message );
+    		
+    		return;
+    	}
+    	
         if (!performCheckMineExists(sender, mineName)) {
             return;
         }
 
-        PrisonMines pMines = PrisonMines.getInstance();
         Mine mine = pMines.getMine(mineName);
 
         if ( mine.getRank() == null ) {
@@ -466,15 +509,6 @@ public class MinesCommands
         	sender.sendMessage( "&cThis mine must be linked to a Rank before you can enable this feature." );
         	return;
         }
-        
-        if ( enable == null || !"enable".equalsIgnoreCase( enable ) && !"disable".equalsIgnoreCase( enable ) ) {
-        	
-        	sender.sendMessage( "&cInvalid option. &7The parameter &3enable &7can only have the values of " +
-        			"'enable' or 'disable'.  Please try again." );
-        	return;
-        }
-        
-        boolean accessEnabled = "enable".equalsIgnoreCase( enable );
         
         if ( mine.isTpAccessByRank() == accessEnabled ) {
         	sender.sendMessage( 
