@@ -531,8 +531,13 @@ public class RankManager
     public String listAllRanks( String ladderName, List<Rank> ranks, RanksByLadderOptions option ) {
     	StringBuilder sb = new StringBuilder();
     	
+    	sb.append( "&7  " );
+    	sb.append( ladderName );
+    	sb.append( ": " );
+ 
 //    	PlayerManager playerManager = PrisonRanks.getInstance().getPlayerManager();
     	
+    	int count = 0;
     	for (Rank rank : ranks ) {
     		
     		int players = rank.getPlayers().size();
@@ -546,8 +551,12 @@ public class RankManager
     		
     		if ( option == RanksByLadderOptions.allRanks || 
     					option == RanksByLadderOptions.full || players > 0 ) {
-    			if ( sb.length() > 0 ) {
+    			if ( count++ > 0 ) {
     				sb.append( ", " );
+    				
+        			if ( count >= 10 && (count - 1) % 15 == 0 ) {
+        				sb.append( "\n      " );
+        			}
     			}
     			
     			
@@ -576,12 +585,10 @@ public class RankManager
     				}
     				
     			}
+    			
+
     		}
 		}
-    	
-    	sb.insert( 0, ": " );
-    	sb.insert( 0, ladderName );
-    	sb.insert( 0, "&7  " );
     	
     	return sb.toString();
     }

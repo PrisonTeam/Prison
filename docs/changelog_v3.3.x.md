@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.13 2021-12-25
 
 
+* **For the list of displaying the ranks on a ladder, split them up to show 15 per line which will help when there are a lot of ranks on a given ladder.**
+
+
 * **Increased the confirmation on mine size from 25,000 to 50,000 blocks so as to minimize the number of times this will occur.**
 
 
