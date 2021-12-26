@@ -124,6 +124,10 @@ public class OnBlockBreakEventCore
 		return autoFeatureWrapper.getInteger( feature );
 	}
 	
+	public double getDouble( AutoFeatures feature ) {
+		return autoFeatureWrapper.getDouble( feature );
+	}
+	
 	protected List<String> getListString( AutoFeatures feature ) {
 		return autoFeatureWrapper.getListString( feature );
 	}

@@ -16,6 +16,11 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.13 2021-12-25
 
 
+
+* **Added support for doubles in the AutoFeatures settings.**
+The basics were there, but the actual AutoFeatures enum did not have them hooked up.
+
+
 * **Remove an unused function on the PlayerCache.**
 
 

@@ -373,6 +373,24 @@ public class AutoFeaturesFileConfig {
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
     	}
+    	private AutoFeatures(AutoFeatures section, double value) {
+    		this.parent = section;
+    		this.isSection = false;
+    		this.isBoolean = false;
+    		this.isMessage = false;
+    		this.isInteger = false;
+    		this.isLong = false;
+    		this.isDouble = true;
+    		this.isStringList = false;
+    		
+    		this.path = section.getKey();
+    		this.message = null;
+    		this.value = null;
+    		this.intValue = null;
+    		this.longValue = null;
+    		this.doubleValue = value;
+    		this.listValue = new ArrayList<>();
+    	}
     	private AutoFeatures(AutoFeatures section, NodeType nodeType, String... values ) {
     		this.parent = section;
     		this.isSection = false;
@@ -530,8 +548,22 @@ public class AutoFeaturesFileConfig {
     			IntegerNode intValue = (IntegerNode) conf.get( getKey() );
     			results = intValue.getValue();
     		}
-    		else if ( getValue() != null ) {
+    		else if ( getIntValue() != null ) {
     			results = getIntValue();
+    		}
+    		
+    		return results;
+    	}    	
+    	
+    	public double getDouble( Map<String, ValueNode> conf ) {
+    		double results = 0d;
+    		
+    		if ( conf.containsKey(getKey()) && conf.get( getKey() ).isDoubleNode() ) {
+    			DoubleNode doubleValue = (DoubleNode) conf.get( getKey() );
+    			results = doubleValue.getValue();
+    		}
+    		else if ( getDoubleValue() != null ) {
+    			results = getDoubleValue();
     		}
     		
     		return results;
@@ -544,10 +576,14 @@ public class AutoFeaturesFileConfig {
     			StringListNode list = (StringListNode) conf.get( getKey() );
     			results = list.getValue();
     		}
-    		else if ( getValue() != null ) {
-    			results = new ArrayList<>();
+    		else if ( getListValue() != null && getListValue().size() > 0 ) {
+    			results = getListValue();
     		}
     		
+    		if ( results == null ) {
+    			results = new ArrayList<>();
+    		}
+    			
     		return results;
     	}
     	
@@ -729,6 +765,10 @@ public class AutoFeaturesFileConfig {
 	
 	public int getInteger( AutoFeatures feature ) {
 		return feature.getInteger( getConfig() );
+	}
+	
+	public double getDouble( AutoFeatures feature ) {
+		return feature.getDouble( getConfig() );
 	}
 	
 	public List<String> getFeatureStringList( AutoFeatures feature ) {

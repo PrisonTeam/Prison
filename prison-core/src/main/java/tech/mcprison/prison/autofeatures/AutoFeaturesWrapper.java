@@ -48,6 +48,10 @@ public class AutoFeaturesWrapper
 		return autoFeaturesConfig.getInteger( feature );
 	}
 	
+	public double getDouble( AutoFeatures feature ) {
+		return autoFeaturesConfig.getDouble( feature );
+	}
+	
 	public List<String> getListString( AutoFeatures feature ) {
 		List<String> results = null;
 		if ( feature.isStringList() ) {
