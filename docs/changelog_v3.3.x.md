@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.13 2021-12-25
 
 
+* **Increased the confirmation on mine size from 25,000 to 50,000 blocks so as to minimize the number of times this will occur.**
+
+
 * **Add support for specifying the sound to use for inventory full event.**
 Valid sounds can be listed with the command /prison utils sounds list.
 

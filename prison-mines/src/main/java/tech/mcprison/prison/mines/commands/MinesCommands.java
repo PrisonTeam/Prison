@@ -2390,7 +2390,7 @@ public class MinesCommands
         DecimalFormat dFmt = new DecimalFormat("#,##0");
         Bounds selectedBounds = selection.asBounds();
         
-        if ( selectedBounds.getTotalBlockCount() > 25000 && 
+        if ( selectedBounds.getTotalBlockCount() > 50000 && 
         		(options == null || !options.toLowerCase().contains( "confirm" ) &&
         		!options.toLowerCase().contains( "yes" )) ) {
         	String message = String.format( "&7Warning: This mine has a size of %s. If this is " +
