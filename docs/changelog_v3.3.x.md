@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.13 2021-12-25
 
 
+* **Add support for specifying the sound to use for inventory full event.**
+Valid sounds can be listed with the command /prison utils sounds list.
+
 
 * **Added support for doubles in the AutoFeatures settings.**
 The basics were there, but the actual AutoFeatures enum did not have them hooked up.

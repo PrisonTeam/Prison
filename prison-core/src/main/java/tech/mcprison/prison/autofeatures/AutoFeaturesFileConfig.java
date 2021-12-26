@@ -101,7 +101,19 @@ public class AutoFeaturesFileConfig {
 				isAutoSellIfInventoryIsFull(inventory, true),
 				
 				dropItemsIfInventoryIsFull(inventory, true),
+				
 				playSoundIfInventoryIsFull(inventory, true),
+				playSoundIfInventoryIsFullSound(inventory, "block_note_block_pling" ),
+				playSoundIfInventoryIsFullSoundVolume(inventory, 4.0d ),
+				playSoundIfInventoryIsFullSoundPitch(inventory, 1.0d ),
+				playSoundIfInventoryIsFullSound__readme(inventory, 
+						"The name of the sound must be valid for the server platform and " +
+						"its version, and is case insensitive. To get a list of valid " +
+						"sounds use the command: " +
+						"'/prison utils sounds list <page>'. Page is optional. Use page " +
+						"numbers to see all available sounds.  An invalid sound will " +
+						"default to NOTE_PLING, BLOCK_NOTE_PLING, or BLOCK_NOTE_BLOCK_PLING, " +
+						"as valid for your server."),
 				
 				actionBarMessageIfInventoryIsFull(inventory, true),
 //				hologramIfInventoryIsFull(general, false),

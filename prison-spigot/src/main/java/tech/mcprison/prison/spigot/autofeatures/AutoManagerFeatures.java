@@ -1024,24 +1024,33 @@ public class AutoManagerFeatures
 //	not used:		Prison.get().getMinecraftVersion() ;
 
 			// This hard coding the Sound enum causes failures in spigot 1.8.8 since it does not exist:
-			Sound sound;
+			Sound sound = null;
+			
+			String soundName = getMessage(AutoFeatures.playSoundIfInventoryIsFullSound);
+			if ( soundName != null && soundName.trim().length() > 0 ) {
+				
+				sound = Sound.valueOf( soundName.toUpperCase() );
+			}
 			
 			
-			if ( new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) < 0 ) {
+			if ( sound == null ) {
 				
-				// 1.8.x
-				sound = Sound.valueOf("NOTE_PLING");
-			}
-			else if ( new BluesSpigetSemVerComparator().compareMCVersionTo( "1.13.0" ) < 0 ) {
+				if ( new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) < 0 ) {
+					
+					// 1.8.x
+					sound = Sound.valueOf("NOTE_PLING");
+				}
+				else if ( new BluesSpigetSemVerComparator().compareMCVersionTo( "1.13.0" ) < 0 ) {
+					
+					// 1.9.x through 1.12.x
+					sound = Sound.valueOf("BLOCK_NOTE_PLING");
+				}
 				
-				// 1.9.x through 1.12.x
-				sound = Sound.valueOf("BLOCK_NOTE_PLING");
-			}
-
-			else {
-				// 1.13.x and up:
-				
-				sound = Sound.valueOf("BLOCK_NOTE_BLOCK_PLING");
+				else {
+					// 1.13.x and up:
+					
+					sound = Sound.valueOf("BLOCK_NOTE_BLOCK_PLING");
+				}
 			}
 			
 //			try {
@@ -1050,7 +1059,10 @@ public class AutoManagerFeatures
 //				sound = Sound.valueOf("BLOCK_NOTE_PLING "); // post 1.9 sound
 //			}
 
-			player.playSound(player.getLocation(), sound, 4F, 1F);
+			float volume = (float) getDouble(AutoFeatures.playSoundIfInventoryIsFullSoundVolume);
+			float pitch = (float) getDouble(AutoFeatures.playSoundIfInventoryIsFullSoundPitch);
+			player.playSound(player.getLocation(), sound, volume, pitch);
+//			player.playSound(player.getLocation(), sound, 4F, 1F);
 		}
 
 		
