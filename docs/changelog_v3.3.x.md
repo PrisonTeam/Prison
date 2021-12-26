@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.13 2021-12-24
+# 3.2.11-alpha.13 2021-12-25
+
+
+* **Remove an unused function on the PlayerCache.**
 
 
 * **Bug fix for mohist, or other platforms that are trying to use SuperPerms, or other perm plugins that do not support groups.**

@@ -235,8 +235,10 @@ public class PlayerCache {
 	
 	/**
 	 * <p>This returns the cached player object.  If they have not been loaded
-	 * yet, then this will submit the loadPlayer task, which will then result 
-	 * in this function returning a null.
+	 * yet, then this will load the player object while waiting for it.
+	 * </p>
+	 * 
+	 * <p>This used to return a null while submitting a loadPlayer task.
 	 * </p>
 	 * 
 	 * @param player
@@ -298,18 +300,29 @@ public class PlayerCache {
 		}
 	}
 	
-	protected void runLoadPlayerNow( Player player ) {
-		
-		if ( player != null ) {
-			
-			PlayerCacheLoadPlayerTask task = new PlayerCacheLoadPlayerTask( player );
-			
-			task.run();
-//			// Submit task to run right away:
-//			int taskId = PrisonTaskSubmitter.runTaskLaterAsync( task, 0 );
-//			task.setTaskId( taskId );
-		}
-	}
+	
+//	/**
+//	 * <p>This loads the player cache object inline.  It does not run it as a 
+//	 * task in another thread.
+//	 * </p>
+//	 * 
+//	 * <p>This is not used anywhere.
+//	 * </p>
+//	 * 
+//	 * @param player
+//	 */
+//	protected void runLoadPlayerNow( Player player ) {
+//		
+//		if ( player != null ) {
+//			
+//			PlayerCacheLoadPlayerTask task = new PlayerCacheLoadPlayerTask( player );
+//			
+//			task.run();
+////			// Submit task to run right away:
+////			int taskId = PrisonTaskSubmitter.runTaskLaterAsync( task, 0 );
+////			task.setTaskId( taskId );
+//		}
+//	}
 	
 	
 	protected void submitAsyncUnloadPlayer( Player player ) {
