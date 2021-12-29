@@ -13,7 +13,14 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.13 2021-12-26
+# 3.2.11-alpha.13 2021-12-29
+
+
+* **Added a safty backup of the player's cache file... if it is detected that the new size is smaller than the prior size, then make a backup copy saving the original version instead of deleting it.**
+This implies that stats will always be added to the player's cache and that the file should alwaysbe getting larger.  This only makes sense when recording stats.  The file could become smaller when balances are reset, such as spending a lot of tokens.
+This also implies that some times, such as player inventories, should not be stored in this object... player's backpacks will be removed in the near future.
+It should be mentioned that on a test server I saw my player stats for my test player being wipped out.  I have no idea if it was because of file system commands that I ran, or if it was a bug in prison that reset it.  But because there was a potential loss, I'm making sure certain things cannot happen anymore, or trying to reduce the risk of losses.
+
 
 
 * **Fix the sellall block list gui for when there is an invalid XMaterial name**, that it will print out the error to the console, and continue with using COBBLESTONE instead of producing a NPE.
