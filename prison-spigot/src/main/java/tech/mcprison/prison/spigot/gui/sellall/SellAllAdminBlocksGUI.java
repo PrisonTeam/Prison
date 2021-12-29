@@ -74,18 +74,35 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
                     gui.addButton(new Button(45, XMaterial.BOOK, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_prior_page), null), "&7Prior " + (startingItem - 45)));
                 }
 
-                if (itemsAdded >= 45){
+                else if (itemsAdded >= 45){
                     gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_next_page), null), "&7Next " + (startingItem + itemsAdded)));
                 }
 
-                if (itemsAdded < 45) {
+                else if (itemsAdded < 45) {
                     ButtonLore itemsLore = new ButtonLore(createLore(loreLine1, loreLine2), createLore(loreValue + sellAllConfig.getString("Items." + key + ".ITEM_VALUE")));
 
                     if (sellAllPerBlockPermissionEnabled) {
                         itemsLore.addLineLoreDescription(SpigotPrison.format(lorePermission + "&7" + permissionSellAllBlock + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
                     }
 
-                    gui.addButton(new Button(null, SpigotUtil.getXMaterial(sellAllConfig.getString("Items." + key + ".ITEM_ID")), itemsLore, "&3" + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
+                    String xMatIdName = "Items." + key + ".ITEM_ID";
+                    String xMatId = sellAllConfig.getString( xMatIdName );
+                    XMaterial xMat = SpigotUtil.getXMaterial( xMatId );
+                    if ( xMat == null ) {
+                    	// Unable to add match XMaterials:
+                    	String message = String.format(  
+                    			"SellAll Admin Blocks: Unable to match '%s' to a valid XMaterial. ItmCnt=%d. Use the command " +
+                    			"'/mines block search' to find the correct name and update the config entry: %s " +
+                    			"Using `COBBLESTONE` as a default.",
+                    			(xMatId == null ? "<null>" : xMatId), itemsRead,
+                    			xMatIdName
+                    	);
+                    	Output.get().logWarn( message );
+                    	
+                    	// Default to cobble
+                    	xMat = XMaterial.COBBLESTONE;
+                    }
+                    gui.addButton(new Button( null, xMat, itemsLore, "&3" + xMatId ));
                     itemsAdded++;
                 }
             }

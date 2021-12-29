@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.13 2021-12-25
+# 3.2.11-alpha.13 2021-12-26
+
+
+* **Fix the sellall block list gui for when there is an invalid XMaterial name**, that it will print out the error to the console, and continue with using COBBLESTONE instead of producing a NPE.
+
 
 
 * **For the list of displaying the ranks on a ladder, split them up to show 15 per line which will help when there are a lot of ranks on a given ladder.**
