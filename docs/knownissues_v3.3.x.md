@@ -3,7 +3,36 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
-# TODO Items for v3.2.11-alpha.7
+# TODO Items for v3.2.11-alpha.12
+
+
+
+* Add Mine Regions - Similar to mines in a way, where they will allow players to have access to the region, have mine effects (outside of a mine)... and mine effects would also be tied to these too.
+
+
+* DONE: command handler - Ignore commands in certain worlds
+
+
+* Placing mines could triggers many resets... also placing mines may not clear all blocks.
+
+
+* DONE: Player Cache - Make sure the cache is loadable otherwise a new instance may be created that could wipe out the existing data.  
+  - All player loads block... they do not submit a task anymore.
+  - ~block for all loads - currently it may return a null and load via async~
+  - (no) Track file last saved date and if they don't match, then create a backup of the file version and don't delete it.
+
+
+* GUI Menu Tools
+  - Page prior and page next
+  - Current page
+  - Go Back button
+  - Background colored panes when no options
+  - Current version is not tied to configs... future options...
+  -- Hook up to more gui menus
+  
+
+* DONE: Add a base class for the mine bomb configs... 
+ - DONE: Add a version so as to be able to auto refresh the formats 
 
 
 * New documentation - Madog's knowledge
@@ -18,10 +47,10 @@
 **List for v3.2.11 release:**
 
 
-* Players need to be restructured.  Move rank player object, or at least most of the core, to the core project so as to reduce the number of player types.  
+* DONE: Players need to be restructured.  Move rank player object, or at least most of the core, to the core project so as to reduce the number of player types.  
 
 * Cache player 
-  - cache player's balance
+  - cache player's balance - Hmm... may need to put it in RankPlayer
   - cache player's ranks... only prestiges, default
   
 * Top-n ranks
@@ -32,7 +61,7 @@
   - most online time, or most mining time (which will probably be better)
   
 
-* Issue with blocks.  Explosions are creating "untouchable" blocks that cannot be included in other explosions.
+* DONE: FIXED: Issue with blocks.  Explosions are creating "untouchable" blocks that cannot be included in other explosions.
   - My observations were with multiple explosions leaving rings that are within the the radius of an explosion
   - I could break the blocks.
   - jamo said that the pillars that were created on his server could not be broke
@@ -108,7 +137,7 @@ Not sure if it needs to?  Need to test and confirm if working correctly.  World 
 
 
 
-* https://github.com/PrisonTeam/Prison/issues/222
+* DONE: https://github.com/PrisonTeam/Prison/issues/222
  DecimalFormat not being used correctly in saving mine data so if different Locale is used, other than EN US, then parsing the saved file can result in a failure.
  - MineBlockEvent is an example of where this was a problem
  - The offending sections were corrected and should now work
