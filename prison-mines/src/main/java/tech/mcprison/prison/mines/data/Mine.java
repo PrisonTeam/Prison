@@ -492,7 +492,18 @@ public class Mine
         	
         	for ( BlockOld blockOld : getBlocks() ) {
         		PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockOld.getType().name() );
-            	if ( prisonBlock != null ) {
+
+        		if ( prisonBlock == null ) {
+        			for ( String altName : blockOld.getType().getXMaterialAltNames() ) {
+        				
+        				prisonBlock = Prison.get().getPlatform().getPrisonBlock( altName );
+        				if ( prisonBlock != null ) {
+        					break;
+        				}
+        			}
+        		}
+        		
+        		if ( prisonBlock != null ) {
             		
             		// This transfers all the stats over so none are lost.
             		prisonBlock.transferStats( blockOld );

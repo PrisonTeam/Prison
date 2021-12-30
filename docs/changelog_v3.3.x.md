@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.13 2021-12-29
+# 3.2.11-alpha.13 2021-12-30
+
+
+* **Bug Fix: When loading the mines, and if using the old block model, some blocks were not mapping to the new PrisonBlocks.**
+When this now happens, the loader now tries to use the old block model's getXMaterialName() function, which returns one or more names that can map to XMaterial objects.  It tries all of them until it is able to get a non-null PrisonBlock result.
 
 
 * **Added a safty backup of the player's cache file... if it is detected that the new size is smaller than the prior size, then make a backup copy saving the original version instead of deleting it.**
