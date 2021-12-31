@@ -15,6 +15,11 @@ These build logs represent the work that has been going on within prison.
 
 # 3.2.11-alpha.13 2021-12-31
 
+
+* **Issues with SellAll when dealing with varient block types when bukkit version is less than 1.13.**
+Eliminate usage of org.bukkit.Material where possible.  XMaterial must generate the ItemStack directly, instead of creating a Material object.
+
+
 * **Fix some issues with canceling drops:**
 Will not work on 1.8.x and maybe a few other versions of spigot with no work arounds. Works on newer versions.
 

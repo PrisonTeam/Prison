@@ -1,12 +1,13 @@
 package tech.mcprison.prison.spigot.gui.guiutility;
 
-import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Material;
+import java.util.List;
+
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-import tech.mcprison.prison.spigot.SpigotPrison;
 
-import java.util.List;
+import com.cryptomorin.xseries.XMaterial;
+
+import tech.mcprison.prison.spigot.SpigotPrison;
 
 /**
  * @author GABRYCA
@@ -106,23 +107,25 @@ public class Button extends SpigotGUIComponents{
         }
     }
 
-    /**
-     * Create button.
-     *
-     * @param position - int.
-     * @param buttonMaterial - Material.
-     * @param amount - int.
-     * @param title - String.
-     * */
-    public Button(Integer position, Material buttonMaterial, int amount, String title){
-    	if ( amount > 64 ) {
-    		amount = 1;
-    	}
-        if ((position == null || position < 54) && amount <= 64) {
-            this.position = position;
-            this.buttonItem = createButton(buttonMaterial, amount, null, SpigotPrison.format(title));
-        }
-    }
+//    /**
+//     * Bug: Cannot correctly create a button with Material variants with spigot versions less than 1.13:
+//     * 
+//     * Create button.
+//     *
+//     * @param position - int.
+//     * @param buttonMaterial - Material.
+//     * @param amount - int.
+//     * @param title - String.
+//     * */
+//    public Button(Integer position, Material buttonMaterial, int amount, String title){
+//    	if ( amount > 64 ) {
+//    		amount = 1;
+//    	}
+//        if ((position == null || position < 54) && amount <= 64) {
+//            this.position = position;
+//            this.buttonItem = createButton(buttonMaterial, amount, null, SpigotPrison.format(title));
+//        }
+//    }
 
     /**
      * Create button.

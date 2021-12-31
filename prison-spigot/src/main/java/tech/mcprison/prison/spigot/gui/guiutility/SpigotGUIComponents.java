@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -13,6 +11,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
@@ -35,24 +36,26 @@ public abstract class SpigotGUIComponents {
     public static Configuration guiConfig = getGuiConfig();
     public static Configuration sellAllConfig = getSellAll();
 
-    /**
-     * Create a button for the GUI using Material.
-     *
-     * @param id
-     * @param amount
-     * @param lore
-     * @param display
-     * */
-    protected ItemStack createButton(Material id, int amount, List<String> lore, String display) {
-
-        if (id == null){
-            id = XMaterial.BARRIER.parseMaterial();
-        }
-
-        ItemStack item = new ItemStack(id, amount);
-        ItemMeta meta = item.getItemMeta();
-        return getItemStack(item, lore, SpigotPrison.format(display), meta);
-    }
+//    /**
+//     * Bug: Cannot correctly create a button with Material variants with spigot versions less than 1.13:
+//     * 
+//     * Create a button for the GUI using Material.
+//     *
+//     * @param id
+//     * @param amount
+//     * @param lore
+//     * @param display
+//     * */
+//    protected ItemStack createButton(Material id, int amount, List<String> lore, String display) {
+//
+//        if (id == null){
+//            id = XMaterial.BARRIER.parseMaterial();
+//        }
+//
+//        ItemStack item = new ItemStack(id, amount);
+//        ItemMeta meta = item.getItemMeta();
+//        return getItemStack(item, lore, SpigotPrison.format(display), meta);
+//    }
 
     protected ItemStack createButton(ItemStack item, List<String> lore, String display) {
     	return createButton( item, 1, lore, display );

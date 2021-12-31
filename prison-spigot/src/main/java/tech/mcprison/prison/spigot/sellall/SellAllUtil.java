@@ -1,10 +1,13 @@
 package tech.mcprison.prison.spigot.sellall;
 
-import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
-import com.cryptomorin.xseries.XMaterial;
-import com.cryptomorin.xseries.XSound;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -12,6 +15,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import com.cryptomorin.xseries.XMaterial;
+import com.cryptomorin.xseries.XSound;
+
+import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
@@ -32,10 +40,6 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
 
 /**
  * @author AnonymousGCA (GABRYCA)
@@ -130,25 +134,28 @@ public class SellAllUtil {
         return sellAllItemTriggers;
     }
 
-    /**
-     * Get an ArrayList of SellAllItemTriggers as Materials.
-     * This will essentially do a conversion of the cached internal XMaterial ArrayList of SellAllItemTriggers.
-     *
-     * @return ArrayList of Materials.
-     * */
-    public ArrayList<Material> getItemTriggerMaterials(){
-        if (sellAllItemTriggers == null || sellAllItemTriggers.isEmpty()){
-            return new ArrayList<>();
-        }
-
-        ArrayList<Material> materials = new ArrayList<>();
-
-        for (XMaterial xMaterial : sellAllItemTriggers){
-            materials.add(xMaterial.parseMaterial());
-        }
-
-        return materials;
-    }
+//    /**
+//     * BUG: With Spigot versions less than 1.13 bukkit's Material will not work on all Materials since 
+//     * varient data is stored in the ItemStack.  SO must use the XMaterial version of this function.
+//     * 
+//     * Get an ArrayList of SellAllItemTriggers as Materials.
+//     * This will essentially do a conversion of the cached internal XMaterial ArrayList of SellAllItemTriggers.
+//     *
+//     * @return ArrayList of Materials.
+//     * */
+//    public ArrayList<Material> getItemTriggerMaterials(){
+//        if (sellAllItemTriggers == null || sellAllItemTriggers.isEmpty()){
+//            return new ArrayList<>();
+//        }
+//
+//        ArrayList<Material> materials = new ArrayList<>();
+//
+//        for (XMaterial xMaterial : sellAllItemTriggers){
+//            materials.add(xMaterial.parseMaterial());
+//        }
+//
+//        return materials;
+//    }
 
     /**
      * Get SellAll XMaterial or Lapis (As Lapis is weird) from an ItemStack.
@@ -705,19 +712,23 @@ public class SellAllUtil {
         return true;
     }
 
-    /**
-     * Add a block to SellAll config.
-     *
-     * Return True if no error occurred, false if error.
-     *
-     * @param material - Material of block to add.
-     * @param value - Value of the block to add.
-     *
-     * @return boolean.
-     * */
-    public boolean addSellAllBlock(Material material, double value){
-        return addSellAllBlock(XMaterial.matchXMaterial(material), value);
-    }
+//    /**
+//     * 
+//     * BUG: With Spigot versions less than 1.13 bukkit's Material will not work on all Materials since 
+//     *      varient data is stored in the ItemStack.  SO must use the XMaterial version of this function.
+//     * 
+//     * Add a block to SellAll config.
+//     *
+//     * Return True if no error occurred, false if error.
+//     *
+//     * @param material - Material of block to add.
+//     * @param value - Value of the block to add.
+//     *
+//     * @return boolean.
+//     * */
+//    public boolean addSellAllBlock(Material material, double value){
+//        return addSellAllBlock(XMaterial.matchXMaterial(material), value);
+//    }
 
     /**
      * Add Multiplier to SellAll depending on the Prestige Rank (Rank from the prestiges ladder).
@@ -794,18 +805,21 @@ public class SellAllUtil {
         return true;
     }
 
-    /**
-     * Add SellAll Item Trigger.
-     *
-     * Return true if success, false if error or already added item.
-     *
-     * @param material - Material to add.
-     *
-     * @return boolean.
-     * */
-    public boolean addItemTrigger(Material material){
-        return addItemTrigger(XMaterial.matchXMaterial(material));
-    }
+//    /**
+//     * BUG: With Spigot versions less than 1.13 bukkit's Material will not work on all Materials since 
+//     * varient data is stored in the ItemStack.  SO must use the XMaterial version of this function.
+//     * 
+//     * Add SellAll Item Trigger.
+//     *
+//     * Return true if success, false if error or already added item.
+//     *
+//     * @param material - Material to add.
+//     *
+//     * @return boolean.
+//     * */
+//    public boolean addItemTrigger(Material material){
+//        return addItemTrigger(XMaterial.matchXMaterial(material));
+//    }
 
     /**
      * Add Player to active delay.
@@ -948,19 +962,22 @@ public class SellAllUtil {
         return true;
     }
 
-    /**
-     * Edit price of a block using Material.
-     *
-     * Return true if edited with success, false if error or not found.
-     *
-     * @param material - Material.
-     * @param value - New price as a double.
-     *
-     * @return boolean,
-     * */
-    public boolean editPrice(Material material, double value){
-        return editPrice(XMaterial.matchXMaterial(material), value);
-    }
+//    /**
+//     * BUG: With Spigot versions less than 1.13 bukkit's Material will not work on all Materials since 
+//     * varient data is stored in the ItemStack.  SO must use the XMaterial version of this function.
+//     * 
+//     * Edit price of a block using Material.
+//     *
+//     * Return true if edited with success, false if error or not found.
+//     *
+//     * @param material - Material.
+//     * @param value - New price as a double.
+//     *
+//     * @return boolean,
+//     * */
+//    public boolean editPrice(Material material, double value){
+//        return editPrice(XMaterial.matchXMaterial(material), value);
+//    }
 
     /**
      * Edit Prestige Multiplier value.
@@ -1008,18 +1025,21 @@ public class SellAllUtil {
         return true;
     }
 
-    /**
-     * Remove block by XMaterial name.
-     *
-     * Return true if removed with success, false if not found or error.
-     *
-     * @param material - XMaterial to remove.
-     *
-     * @return boolean.
-     * */
-    public boolean removeSellAllBlock(Material material){
-        return removeSellAllBlock(XMaterial.matchXMaterial(material));
-    }
+//    /**
+//     * BUG: With Spigot versions less than 1.13 bukkit's Material will not work on all Materials since 
+//     * varient data is stored in the ItemStack.  SO must use the XMaterial version of this function.
+//     * 
+//     * Remove block by XMaterial name.
+//     *
+//     * Return true if removed with success, false if not found or error.
+//     *
+//     * @param material - XMaterial to remove.
+//     *
+//     * @return boolean.
+//     * */
+//    public boolean removeSellAllBlock(Material material){
+//        return removeSellAllBlock(XMaterial.matchXMaterial(material));
+//    }
 
     /**
      * Remove a Prestige Multiplier by name.
@@ -1079,18 +1099,21 @@ public class SellAllUtil {
         return true;
     }
 
-    /**
-     * Delete SellAll Item Trigger.
-     *
-     * Return true if success, false if error or item not found.
-     *
-     * @param material - Material to remove.
-     *
-     * @return boolean.
-     * */
-    public boolean removeItemTrigger(Material material){
-        return removeItemTrigger(XMaterial.matchXMaterial(material));
-    }
+//    /**
+//     * BUG: With Spigot versions less than 1.13 bukkit's Material will not work on all Materials since 
+//     * varient data is stored in the ItemStack.  SO must use the XMaterial version of this function.
+//     * 
+//     * Delete SellAll Item Trigger.
+//     *
+//     * Return true if success, false if error or item not found.
+//     *
+//     * @param material - Material to remove.
+//     *
+//     * @return boolean.
+//     * */
+//    public boolean removeItemTrigger(Material material){
+//        return removeItemTrigger(XMaterial.matchXMaterial(material));
+//    }
 
     /**
      * Remove Sellable Blocks from HashMap of XMaterial-Integer given as a parameter.
@@ -1153,10 +1176,20 @@ public class SellAllUtil {
 
         ArrayList<ItemStack> newItemStacks = new ArrayList<>();
         for (HashMap.Entry<XMaterial, Integer> xMaterialIntegerEntry : xMaterialIntegerHashMap.entrySet()){
-            Material material = xMaterialIntegerEntry.getKey().parseMaterial();
-            if (material != null) {
-                newItemStacks.add(new ItemStack(material, xMaterialIntegerEntry.getValue()));
-            }
+        	
+        	// WARNING: Cannot convert XMaterial to a Material then ItemStack or it will fail on variants 
+        	//          for spigot versions less than 1.13:
+        	
+        	ItemStack iStack = xMaterialIntegerEntry.getKey().parseItem();
+        	if ( iStack != null ) {
+        		iStack.setAmount( xMaterialIntegerEntry.getValue() );
+        		newItemStacks.add( iStack );
+        	}
+        	
+//            Material material = xMaterialIntegerEntry.getKey().parseMaterial();
+//            if (material != null) {
+//                newItemStacks.add(new ItemStack(material, xMaterialIntegerEntry.getValue()));
+//            }
         }
 
         return newItemStacks;
