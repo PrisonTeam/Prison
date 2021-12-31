@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.block;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -13,6 +14,8 @@ import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.utils.BlockUtils;
@@ -230,6 +233,87 @@ public class OnBlockBreakMines
 		}
 	}
 	
+
+	public boolean collectBukkitDrops( List<SpigotItemStack> bukkitDrops, MineTargetPrisonBlock targetBlock,
+			SpigotItemStack itemInHand, SpigotBlock sBlockMined )
+	{
+		boolean results = false;
+
+		// if ( sBlockMined == null && targetBlock.getMinedBlock() != null ) {
+		// sBlockMined = (SpigotBlock) targetBlock.getMinedBlock();
+		// }
+		// SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
+
+		// If in the mine, then need a targetBlock, otherwise if it's null then get drops anyway:
+		if ( sBlockMined != null && 
+				( targetBlock == null ||
+					targetBlock.getPrisonBlock().equals( sBlockMined.getPrisonBlock() )
+				   ) )
+		{
+
+			List<SpigotItemStack> drops = SpigotUtil.getDrops( sBlockMined, itemInHand );
+
+			bukkitDrops.addAll( drops );
+
+			//// This clears the drops for the given block, so if the event is
+			//// not canceled, it will
+			//// not result in duplicate drops.
+			// if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
+			// sBlock.clearDrops();
+			// }
+
+			results = true;
+
+		}
+		else if ( sBlockMined != null )
+		{
+			Output.get().logWarn( "collectBukkitDrops: block was changed and not what was expected.  " + "Block: " +
+					sBlockMined.getBlockName() + "  expecting: " + 
+					(targetBlock == null ? "(nothing)" : targetBlock.getPrisonBlock().getBlockName()) );
+		}
+
+		return results;
+	}
+	
+	
+	public void clearBukkitDrops( List<SpigotItemStack> bukkitDrops, MineTargetPrisonBlock targetBlock )
+	{
+
+		SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
+		sBlock.clearDrops();
+
+	}
+
+	
+	/**
+	 * <p>The List of drops must have only one ItemStack per block type (name).
+	 * This function combines multiple occurrences together and adds up their 
+	 * counts to properly represent the total quantity in the original drops collection
+	 * that had duplicate entries.
+	 * </p>
+	 * 
+	 * @param List of SpigotItemStack drops with duplicate entries
+	 * @return List of SpigotItemStack drops without duplicates
+	 */
+	public List<SpigotItemStack> mergeDrops( List<SpigotItemStack> drops )
+	{
+		TreeMap<String,SpigotItemStack> results = new TreeMap<>();
+
+		for ( SpigotItemStack drop : drops ) {
+			String key = drop.getName();
+			if ( !results.containsKey( key ) ) {
+				results.put( key, drop );
+			}
+			else {
+				SpigotItemStack sItemStack = results.get( key );
+				
+				sItemStack.setAmount( sItemStack.getAmount() + drop.getAmount() );
+			}
+		}
+		
+		return new ArrayList<>( results.values() );
+	}
+
 	
 	private Mine findMineLocation( SpigotBlock block ) {
 		return getPrisonMineManager() == null ? 

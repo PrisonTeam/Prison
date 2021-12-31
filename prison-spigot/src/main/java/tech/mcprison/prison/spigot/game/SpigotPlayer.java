@@ -634,4 +634,16 @@ public class SpigotPlayer
 		return PlayerCache.getInstance().getOnlinePlayer( this );
 	}
 	
+	@Override
+	public boolean isSneaking() {
+		boolean sneaking = false;
+		
+		if ( getWrapper() != null ) {
+			org.bukkit.entity.Player bukkitPlayer = getWrapper();
+			
+			sneaking = bukkitPlayer.isSneaking();
+		}
+		return sneaking;
+	}
+	
 }

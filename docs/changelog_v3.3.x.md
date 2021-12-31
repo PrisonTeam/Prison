@@ -13,7 +13,16 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.13 2021-12-30
+# 3.2.11-alpha.13 2021-12-31
+
+* **Fix some issues with canceling drops:**
+Will not work on 1.8.x and maybe a few other versions of spigot with no work arounds. Works on newer versions.
+
+
+**New Feature: Dump the BlockBreakEvent and monitor changes per listener.**
+This provides a great deal of information on what is modifying the blocks.
+To use, enter prison debug mode with `/prison debug` and then shift-click on a block using the prison wand (`/mines wand`).
+
 
 
 * **Bug Fix: When loading the mines, and if using the old block model, some blocks were not mapping to the new PrisonBlocks.**

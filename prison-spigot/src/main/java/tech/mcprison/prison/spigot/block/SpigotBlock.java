@@ -321,8 +321,20 @@ public class SpigotBlock implements Block {
 
         if ( getWrapper() != null ) {
         	
-        	getWrapper().getDrops(SpigotUtil.prisonItemStackToBukkit(tool))
+        	if ( tool == null ) {
+        		ret.addAll( getDrops() );
+        	}
+        	else {
+        		
+        		org.bukkit.inventory.ItemStack bukkitItemStack = SpigotUtil.prisonItemStackToBukkit(tool);
+        		
+        		if ( bukkitItemStack != null ) {
+        			
+        			getWrapper().getDrops( bukkitItemStack )
         			.forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
+        		}
+        	}
+        	
         }
 
         return ret;
@@ -335,7 +347,13 @@ public class SpigotBlock implements Block {
      */
     public void clearDrops() {
 
-    	getWrapper().getDrops().clear();
+    	if ( getWrapper() != null && getWrapper().getDrops() != null ) {
+    		for ( org.bukkit.inventory.ItemStack iStack : getWrapper().getDrops() )
+			{
+				iStack.setAmount( 0 );
+			}
+//    		getWrapper().getDrops().clear();
+    	}
     }
 
     

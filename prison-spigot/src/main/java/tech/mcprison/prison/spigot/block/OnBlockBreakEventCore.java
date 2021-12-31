@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -34,7 +33,6 @@ import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.api.ExplosiveBlockBreakEvent;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerBreakBlockTask;
@@ -405,6 +403,24 @@ public class OnBlockBreakEventCore
                 	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled) " );
                 }
                 else {
+                	
+                	// Cancel drops if so configured:
+                	if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
+                		
+                		try
+                		{
+                			e.setDropItems( false );
+                		}
+                		catch ( NoSuchMethodError e1 )
+                		{
+                			String message = String.format( 
+                					"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
+                					"is not valid for this version of Spigot. Modify the config settings and set " +
+                					"this value to `false`. [%s]",
+                					e1.getMessage() );
+                			Output.get().logWarn( message );
+                		}
+                	}
                 	
                 	// doAction returns a boolean that indicates if the event should be canceled or not:
                 	if ( doAction( pmEvent, debugInfo ) ) {
@@ -1030,76 +1046,76 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 		return results;
 	}
 
-	private boolean collectBukkitDrops( List<SpigotItemStack> bukkitDrops, MineTargetPrisonBlock targetBlock, 
-										SpigotItemStack itemInHand, SpigotBlock sBlockMined )
-	{
-		boolean results = false;
-		
-//		if ( sBlockMined == null && targetBlock.getMinedBlock() != null ) {
-//			sBlockMined = (SpigotBlock) targetBlock.getMinedBlock();
+//	private boolean collectBukkitDrops( List<SpigotItemStack> bukkitDrops, MineTargetPrisonBlock targetBlock, 
+//										SpigotItemStack itemInHand, SpigotBlock sBlockMined )
+//	{
+//		boolean results = false;
+//		
+////		if ( sBlockMined == null && targetBlock.getMinedBlock() != null ) {
+////			sBlockMined = (SpigotBlock) targetBlock.getMinedBlock();
+////		}
+//		//SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
+//		
+//		if ( sBlockMined != null && targetBlock.getPrisonBlock().equals( sBlockMined.getPrisonBlock() ) ) {
+//			
+//			List<SpigotItemStack> drops = SpigotUtil.getDrops(sBlockMined, itemInHand);
+//			
+//			bukkitDrops.addAll( drops );
+//			
+////			// This clears the drops for the given block, so if the event is not canceled, it will
+////			// not result in duplicate drops.
+////			if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
+////				sBlock.clearDrops();
+////			}
+//			
+//			results = true;
+//			
 //		}
-		//SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
-		
-		if ( sBlockMined != null && targetBlock.getPrisonBlock().equals( sBlockMined.getPrisonBlock() ) ) {
-			
-			List<SpigotItemStack> drops = SpigotUtil.getDrops(sBlockMined, itemInHand);
-			
-			bukkitDrops.addAll( drops );
-			
-//			// This clears the drops for the given block, so if the event is not canceled, it will
-//			// not result in duplicate drops.
-//			if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
-//				sBlock.clearDrops();
+//		else if ( sBlockMined != null) {
+//			Output.get().logWarn( "collectBukkitDrops: block was changed and not what was expected.  " +
+//					"Block: " + sBlockMined.getBlockName() + "  expecting: " + targetBlock.getPrisonBlock().getBlockName() );
+//		}
+//		
+//		return results;
+//	}
+	
+	
+//	private void clearBukkitDrops( List<SpigotItemStack> bukkitDrops, MineTargetPrisonBlock targetBlock )
+//	{
+//
+//		SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
+//		sBlock.clearDrops();
+//
+//	}
+
+//	/**
+//	 * <p>The List of drops must have only one ItemStack per block type (name).
+//	 * This function combines multiple occurrences together and adds up their 
+//	 * counts to properly represent the total quantity in the original drops collection
+//	 * that had duplicate entries.
+//	 * </p>
+//	 * 
+//	 * @param List of SpigotItemStack drops with duplicate entries
+//	 * @return List of SpigotItemStack drops without duplicates
+//	 */
+//	private List<SpigotItemStack> mergeDrops( List<SpigotItemStack> drops )
+//	{
+//		TreeMap<String,SpigotItemStack> results = new TreeMap<>();
+//
+//		for ( SpigotItemStack drop : drops ) {
+//			String key = drop.getName();
+//			if ( !results.containsKey( key ) ) {
+//				results.put( key, drop );
 //			}
-			
-			results = true;
-			
-		}
-		else if ( sBlockMined != null) {
-			Output.get().logWarn( "collectBukkitDrops: block was changed and not what was expected.  " +
-					"Block: " + sBlockMined.getBlockName() + "  expecting: " + targetBlock.getPrisonBlock().getBlockName() );
-		}
-		
-		return results;
-	}
-	
-	
-	private void clearBukkitDrops( List<SpigotItemStack> bukkitDrops, MineTargetPrisonBlock targetBlock )
-	{
-
-		SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
-		sBlock.clearDrops();
-
-	}
-
-	/**
-	 * <p>The List of drops must have only one ItemStack per block type (name).
-	 * This function combines multiple occurrences together and adds up their 
-	 * counts to properly represent the total quantity in the original drops collection
-	 * that had duplicate entries.
-	 * </p>
-	 * 
-	 * @param List of SpigotItemStack drops with duplicate entries
-	 * @return List of SpigotItemStack drops without duplicates
-	 */
-	private List<SpigotItemStack> mergeDrops( List<SpigotItemStack> drops )
-	{
-		TreeMap<String,SpigotItemStack> results = new TreeMap<>();
-
-		for ( SpigotItemStack drop : drops ) {
-			String key = drop.getName();
-			if ( !results.containsKey( key ) ) {
-				results.put( key, drop );
-			}
-			else {
-				SpigotItemStack sItemStack = results.get( key );
-				
-				sItemStack.setAmount( sItemStack.getAmount() + drop.getAmount() );
-			}
-		}
-		
-		return new ArrayList<>( results.values() );
-	}
+//			else {
+//				SpigotItemStack sItemStack = results.get( key );
+//				
+//				sItemStack.setAmount( sItemStack.getAmount() + drop.getAmount() );
+//			}
+//		}
+//		
+//		return new ArrayList<>( results.values() );
+//	}
 
 	/**
 	 * <p>Since there are multiple blocks associated with this event, pull out the player first and
@@ -1196,6 +1212,25 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 	                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled) " );
 	                }
 	                else {
+	                	
+	                	// Cancel drops if so configured:
+	                	if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
+	                		
+	                		try
+	                		{
+	                			e.setYield( 0 );
+//	                			e.setDropItems( false );
+	                		}
+	                		catch ( NoSuchMethodError e1 )
+	                		{
+	                			String message = String.format( 
+	                					"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
+	                					"is not valid for this version of Spigot. Modify the config settings and set " +
+	                					"this value to `false`. [%s]",
+	                					e1.getMessage() );
+	                			Output.get().logWarn( message );
+	                		}
+	                	}
 	                	
 	                	// This is where the processing actually happens:
 	                	if ( doAction( pmEvent, debugInfo ) ) {
@@ -1380,6 +1415,24 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 	                }
 	                else {
 	                	
+//	                	// Cancel drops if so configured:
+//	                	if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
+//	                		
+//	                		try
+//	                		{
+//	                			e.setDropItems( false );
+//	                		}
+//	                		catch ( NoSuchMethodError e1 )
+//	                		{
+//	                			String message = String.format( 
+//	                					"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
+//	                					"is not valid for this version of Spigot. Modify the config settings and set " +
+//	                					"this value to `false`. [%s]",
+//	                					e1.getMessage() );
+//	                			Output.get().logWarn( message );
+//	                		}
+//	                	}
+	                	
 	                	if ( doAction( pmEvent, debugInfo ) ) {
 	                		
 	                		if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
@@ -1514,6 +1567,24 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 	                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled) " );
 	                }
 	                else {
+	                	
+//	                	// Cancel drops if so configured:
+//	                	if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
+//	                		
+//	                		try
+//	                		{
+//	                			e.setDropItems( false );
+//	                		}
+//	                		catch ( NoSuchMethodError e1 )
+//	                		{
+//	                			String message = String.format( 
+//	                					"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
+//	                					"is not valid for this version of Spigot. Modify the config settings and set " +
+//	                					"this value to `false`. [%s]",
+//	                					e1.getMessage() );
+//	                			Output.get().logWarn( message );
+//	                		}
+//	                	}
 	                	
 	                	if ( doAction( pmEvent, debugInfo ) ) {
 	                		
@@ -1654,6 +1725,24 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 					}
 					else {
 						
+	                	// Cancel drops if so configured:
+	                	if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
+	                		
+	                		try
+	                		{
+	                			e.setDropItems( false );
+	                		}
+	                		catch ( NoSuchMethodError e1 )
+	                		{
+	                			String message = String.format( 
+	                					"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
+	                					"is not valid for this version of Spigot. Modify the config settings and set " +
+	                					"this value to `false`. [%s]",
+	                					e1.getMessage() );
+	                			Output.get().logWarn( message );
+	                		}
+	                	}
+	                	
 						if ( doAction( pmEvent, debugInfo ) ) {
 							
 							if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {

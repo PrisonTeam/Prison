@@ -803,34 +803,34 @@ public class AutoManagerFeatures
 //		
 //	}
 	
-	/**
-	 * <p>The List of drops must have only one ItemStack per block type (name).
-	 * This function combines multiple occurrences together and adds up their 
-	 * counts to properly represent the total quantity in the original drops collection
-	 * that had duplicate entries.
-	 * </p>
-	 * 
-	 * @param List of SpigotItemStack drops with duplicate entries
-	 * @return List of SpigotItemStack drops without duplicates
-	 */
-	private List<SpigotItemStack> mergeDrops( List<SpigotItemStack> drops )
-	{
-		TreeMap<String,SpigotItemStack> results = new TreeMap<>();
-
-		for ( SpigotItemStack drop : drops ) {
-			String key = drop.getName();
-			if ( !results.containsKey( key ) ) {
-				results.put( key, drop );
-			}
-			else {
-				SpigotItemStack sItemStack = results.get( key );
-				
-				sItemStack.setAmount( sItemStack.getAmount() + drop.getAmount() );
-			}
-		}
-		
-		return new ArrayList<>( results.values() );
-	}
+//	/**
+//	 * <p>The List of drops must have only one ItemStack per block type (name).
+//	 * This function combines multiple occurrences together and adds up their 
+//	 * counts to properly represent the total quantity in the original drops collection
+//	 * that had duplicate entries.
+//	 * </p>
+//	 * 
+//	 * @param List of SpigotItemStack drops with duplicate entries
+//	 * @return List of SpigotItemStack drops without duplicates
+//	 */
+//	private List<SpigotItemStack> mergeDrops( List<SpigotItemStack> drops )
+//	{
+//		TreeMap<String,SpigotItemStack> results = new TreeMap<>();
+//
+//		for ( SpigotItemStack drop : drops ) {
+//			String key = drop.getName();
+//			if ( !results.containsKey( key ) ) {
+//				results.put( key, drop );
+//			}
+//			else {
+//				SpigotItemStack sItemStack = results.get( key );
+//				
+//				sItemStack.setAmount( sItemStack.getAmount() + drop.getAmount() );
+//			}
+//		}
+//		
+//		return new ArrayList<>( results.values() );
+//	}
 
 
 //	protected void autoPickupCleanupX( SpigotBlock block, int count )

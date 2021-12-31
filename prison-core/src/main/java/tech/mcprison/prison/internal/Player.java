@@ -147,8 +147,10 @@ public interface Player
     
 	public void setActionBar( String actionBar );
 
-	PlayerCache getPlayerCache();
+	public PlayerCache getPlayerCache();
 
-	PlayerCachePlayerData getPlayerCachePlayerData();
+	public PlayerCachePlayerData getPlayerCachePlayerData();
+	
+	public boolean isSneaking();
 	
 }

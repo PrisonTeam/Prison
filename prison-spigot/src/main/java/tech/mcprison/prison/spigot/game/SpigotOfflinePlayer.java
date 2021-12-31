@@ -312,5 +312,10 @@ public class SpigotOfflinePlayer
 	public PlayerCachePlayerData getPlayerCachePlayerData() {
 		return PlayerCache.getInstance().getOnlinePlayer( this );
 	}
+	
+	@Override
+	public boolean isSneaking() {
+		return false;
+	}
     
 }

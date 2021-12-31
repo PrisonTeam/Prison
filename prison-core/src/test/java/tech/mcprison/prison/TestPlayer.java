@@ -208,4 +208,10 @@ public class TestPlayer
 	{
 		return null;
 	}
+	
+	@Override
+	public boolean isSneaking() {
+		return false;
+	}
+	
 }
