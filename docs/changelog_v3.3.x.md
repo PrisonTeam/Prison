@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.13 2021-12-31
+# 3.2.11-alpha.13 2022-01-03
+
+
+* **The use of the `/ranks command remove` within the `/ranks info`, or `/ranks command list` was not correctly including the correct row number**; it was using one higher than what it should have due to prior incrementing.
 
 
 * **Issues with SellAll when dealing with varient block types when bukkit version is less than 1.13.**
