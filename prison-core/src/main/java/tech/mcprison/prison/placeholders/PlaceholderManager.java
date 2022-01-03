@@ -280,10 +280,13 @@ public class PlaceholderManager {
 		
 		
 		
-		prison_pbt(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
-		prison_pbtm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_pbt(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_pbtf(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_player_blocks_total(prison_pbt, PlaceholderFlags.PLAYER),
+		prison_player_blocks_total_formatted(prison_pbtf, PlaceholderFlags.PLAYER),
+
 		
-		prison_player_blocks_total(prison_pbt, PlaceholderFlags.MINEPLAYERS),
+		prison_pbtm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
 		prison_player_blocks_total_minename(prison_pbtm, PlaceholderFlags.MINEPLAYERS),
 		
 		

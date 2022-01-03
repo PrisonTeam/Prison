@@ -1235,24 +1235,24 @@ public class MineManager
 						break;
 						
 						
-    				case prison_pbt:
-    				case prison_player_blocks_total:
-    					if ( !mine.isVirtual() && player != null )
-    					{
-    						long blocksTotal = PlayerCache.getInstance().getPlayerBlocksTotal( player );
-    						
-    						if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
-    							PlaceholderAttributeNumberFormat attributeNF = 
-    									(PlaceholderAttributeNumberFormat) attribute;
-    							results = attributeNF.format( blocksTotal );
-    						}
-    						else {
-    							
-    							results = iFmt.format( blocksTotal );
-    						}
-    					}
-    					break;
-    					
+//    				case prison_pbt:
+//    				case prison_player_blocks_total:
+//    					if ( !mine.isVirtual() && player != null )
+//    					{
+//    						long blocksTotal = PlayerCache.getInstance().getPlayerBlocksTotal( player );
+//    						
+//    						if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+//    							PlaceholderAttributeNumberFormat attributeNF = 
+//    									(PlaceholderAttributeNumberFormat) attribute;
+//    							results = attributeNF.format( blocksTotal );
+//    						}
+//    						else {
+//    							
+//    							results = iFmt.format( blocksTotal );
+//    						}
+//    					}
+//    					break;
+//    					
 						
 					case prison_pbtm:
 					case prison_player_blocks_total_minename:

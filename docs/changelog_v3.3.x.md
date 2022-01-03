@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.13 2022-01-03
 
 
+* **Move the placeholder `prison_player_blocks_total` from being a player mine placeholder, to a player placeholder since it is not tied to a specific mine.**
+Added a formatted version (with commas) and this one became unformatted so it can be used within scripts if needed.
+
+
 * **The use of the `/ranks command remove` within the `/ranks info`, or `/ranks command list` was not correctly including the correct row number**; it was using one higher than what it should have due to prior incrementing.
 
 

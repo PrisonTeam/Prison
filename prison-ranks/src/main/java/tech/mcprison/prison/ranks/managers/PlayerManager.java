@@ -1515,7 +1515,33 @@ public class PlayerManager
 						break;
 						
 						
-						
+    				case prison_pbt:
+    				case prison_pbtf:
+    				case prison_player_blocks_total:
+    				case prison_player_blocks_total_formatted:
+    					long blocksTotal = PlayerCache.getInstance().getPlayerBlocksTotal( rankPlayer );
+    					
+    					if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    						PlaceholderAttributeNumberFormat attributeNF = 
+    								(PlaceholderAttributeNumberFormat) attribute;
+    						results = attributeNF.format( blocksTotal );
+    					}
+    					else {
+    						if ( placeHolder == PrisonPlaceHolders.prison_pbtf || 
+    								placeHolder == PrisonPlaceHolders.prison_player_blocks_total_formatted ) {
+    							
+    							DecimalFormat iFmt = new DecimalFormat("#,##0");
+    							results = iFmt.format( blocksTotal );
+    						}
+    						else {
+    							
+    							results = Long.toString( blocksTotal );
+    						}
+    					}
+    					break;
+    						
+    					
+    					
 						
 					case prison_player_tool_id:
 					case prison_ptid:
