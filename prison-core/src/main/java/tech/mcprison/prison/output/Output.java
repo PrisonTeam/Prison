@@ -203,7 +203,10 @@ public class Output
      * Log a message with a specified {@link LogLevel}
      */
     public void log(String message, LogLevel level, Object... args) {
-    	if ( Prison.get() == null || Prison.get().getPlatform() == null ) {
+    	if ( message == null || message.trim().isEmpty() ) {
+    		// do not send an empty message... do nothing...
+    	}
+    	else if ( Prison.get() == null || Prison.get().getPlatform() == null ) {
     		String errorMessage = coreOutputErrorStartupFailureMsg();
     		if ( errorMessage == null || errorMessage.trim().isEmpty() ) {
     			// NOTE: The following must remain as is.  This is a fallback for if there

@@ -355,7 +355,11 @@ public class Localizable {
      * @since 1.0
      */
     public void sendTo(CommandSender sender, LogLevel level) {
-    	Output.get().sendMessage(sender, localizeFor(sender), level);
+    	String message = localizeFor(sender);
+    	if ( message != null && !message.isEmpty() ) {
+    		
+    		Output.get().sendMessage(sender, message, level);
+    	}
     }
 
     /**
@@ -381,10 +385,15 @@ public class Localizable {
      * @since 1.0
      */
     public void broadcast() {
-        for (Player player : Prison.get().getPlatform().getOnlinePlayers()) {
-            sendTo(player);
-        }
-        Output.get().logInfo(localize());
+    	
+    	String message = localize();
+    	if ( message != null && !message.isEmpty() ) {
+    		
+    		for (Player player : Prison.get().getPlatform().getOnlinePlayers()) {
+    			sendTo(player);
+    		}
+    		Output.get().logInfo( message );
+    	}
     }
 
     /**
@@ -395,12 +404,16 @@ public class Localizable {
      * @since 1.0
      */
     public void broadcast(World... worlds) {
-        for (World w : worlds) {
-            for (Player player : w.getPlayers()) {
-                sendTo(player);
-            }
-        }
-        Output.get().logInfo(localize());
+    	String message = localize();
+    	if ( message != null && !message.isEmpty() ) {
+    		
+    		for (World w : worlds) {
+    			for (Player player : w.getPlayers()) {
+    				sendTo(player);
+    			}
+    		}
+    		Output.get().logInfo( message );
+    	}
     }
 
     /**

@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.13 2022-01-03
+# 3.2.11-alpha.13 2022-01-04
+
+
+* **If a language file has a message that is set to an empty string or a space, it will now no longer generate an empty message.**
+Instead it will supress the sending of any message that is blank.
 
 
 * **Move the placeholder `prison_player_blocks_total` from being a player mine placeholder, to a player placeholder since it is not tied to a specific mine.**
