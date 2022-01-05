@@ -153,21 +153,24 @@ public class AutoManagerZenchantments
     				}
     				
     			}
-    			
-    			pm.registerEvent(BlockShredEvent.class, normalListenerMonitor, EventPriority.MONITOR,
-    					new EventExecutor() {
-    				public void execute(Listener l, Event e) { 
-    					if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor && 
-    						 e instanceof BlockShredEvent ) {
-    						OnBlockBreakBlockShredEventListenerMonitor lmon = 
-    											(OnBlockBreakBlockShredEventListenerMonitor) l;
-    						BlockShredEvent event = (BlockShredEvent) e;
-    						lmon.onBlockShredBreakMonitor( event );
+    			else {
+    				
+    				pm.registerEvent(BlockShredEvent.class, normalListenerMonitor, EventPriority.MONITOR,
+    						new EventExecutor() {
+    					public void execute(Listener l, Event e) { 
+    						if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor && 
+    								e instanceof BlockShredEvent ) {
+    							OnBlockBreakBlockShredEventListenerMonitor lmon = 
+    									(OnBlockBreakBlockShredEventListenerMonitor) l;
+    							BlockShredEvent event = (BlockShredEvent) e;
+    							lmon.onBlockShredBreakMonitor( event );
+    						}
     					}
-    				}
-    			},
-    			prison);
-    			prison.getRegisteredBlockListeners().add( normalListenerMonitor );
+    				},
+    						prison);
+    				prison.getRegisteredBlockListeners().add( normalListenerMonitor );
+    			}
+    			
     		}
     		
     	}

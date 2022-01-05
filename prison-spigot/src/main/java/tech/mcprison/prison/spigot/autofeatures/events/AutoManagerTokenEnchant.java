@@ -143,16 +143,19 @@ public class AutoManagerTokenEnchant
     				}
 
     			}
-    			
-    			pm.registerEvent(TEBlockExplodeEvent.class, normalListenerMonitor, EventPriority.MONITOR,
-    					new EventExecutor() {
-    				public void execute(Listener l, Event e) { 
-	    					((OnBlockBreakEventTokenEnchantEventListenerMonitor)l)
-	    						.onTEBlockExplode((TEBlockExplodeEvent)e);
+    			else {
+    				
+    				pm.registerEvent(TEBlockExplodeEvent.class, normalListenerMonitor, EventPriority.MONITOR,
+    						new EventExecutor() {
+    					public void execute(Listener l, Event e) { 
+    						((OnBlockBreakEventTokenEnchantEventListenerMonitor)l)
+    						.onTEBlockExplode((TEBlockExplodeEvent)e);
     					}
-	    			},
-	    			prison);
-    			prison.getRegisteredBlockListeners().add( normalListenerMonitor );
+    				},
+    						prison);
+    				prison.getRegisteredBlockListeners().add( normalListenerMonitor );
+    			}
+    			
     		}
     		
     	}

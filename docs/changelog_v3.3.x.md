@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.13 2022-01-04
 
 
+* **Change to auto features for the event listeners: now MONITOR is not enabled unless set to priority of MONITOR.**
+
+
 * **If a language file has a message that is set to an empty string or a space, it will now no longer generate an empty message.**
 Instead it will supress the sending of any message that is blank.
 

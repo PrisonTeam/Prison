@@ -147,16 +147,19 @@ public class AutoManagerPrisonEnchants
 					}
 					
 				}
+				else {
+					
+					pm.registerEvent(PEExplosionEvent.class, normalListenerMonitor, EventPriority.MONITOR,
+							new EventExecutor() {
+						public void execute(Listener l, Event e) { 
+							((OnBlockBreakPEExplosiveEventListenerMonitor)l)
+							.onPrisonEnchantsExplosiveEvent((PEExplosionEvent)e);
+						}
+					},
+							prison);
+					prison.getRegisteredBlockListeners().add( normalListenerMonitor );
+				}
 				
-				pm.registerEvent(PEExplosionEvent.class, normalListenerMonitor, EventPriority.MONITOR,
-						new EventExecutor() {
-					public void execute(Listener l, Event e) { 
-						((OnBlockBreakPEExplosiveEventListenerMonitor)l)
-										.onPrisonEnchantsExplosiveEvent((PEExplosionEvent)e);
-					}
-				},
-				prison);
-				prison.getRegisteredBlockListeners().add( normalListenerMonitor );
 
 				
 			}

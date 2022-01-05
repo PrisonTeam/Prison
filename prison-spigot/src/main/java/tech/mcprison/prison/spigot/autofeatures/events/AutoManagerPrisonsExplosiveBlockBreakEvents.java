@@ -142,17 +142,20 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 					}
 					
 				}
+				else {
+					
+					pm.registerEvent(ExplosiveBlockBreakEvent.class, normalListenerMonitor, EventPriority.MONITOR,
+							new EventExecutor() {
+						public void execute(Listener l, Event e) { 
+							((OnBlockBreakExplosiveBlockBreakEventListenerMonitor)l)
+							.onPrisonExplosiveBlockBreakEventMonitor((ExplosiveBlockBreakEvent)e);
+						}
+					},
+							prison);
+					prison.getRegisteredBlockListeners().add( normalListenerMonitor );
+					
+				}
 				
-				pm.registerEvent(ExplosiveBlockBreakEvent.class, normalListenerMonitor, EventPriority.MONITOR,
-						new EventExecutor() {
-					public void execute(Listener l, Event e) { 
-						((OnBlockBreakExplosiveBlockBreakEventListenerMonitor)l)
-										.onPrisonExplosiveBlockBreakEventMonitor((ExplosiveBlockBreakEvent)e);
-					}
-				},
-				prison);
-				prison.getRegisteredBlockListeners().add( normalListenerMonitor );
-
 				
 			}
 			
