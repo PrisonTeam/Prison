@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.13 2022-01-11
 
 
+* **For EssentialsX v2.19.x, the class being used to identify if the economy has been loaded has changed.**
+This commit has the references to the proper class to use depeending upon the version of EssentialsX.  It should be noted that this only applies if delayed startup is enabled for the EssentialsX economy, which generally does not require it.
+
+
 * **Change in how prison deals with ranks when there isn't an economy plugin loaded.**
 Now, instead of printing a simple little message in the console, which everyone appear to miss, it also enables a generic `/ranks` command that only displays a message indicating that no economy was found, with links to documentation.  This should make it more obvious.
 

@@ -216,7 +216,9 @@ delayedPrisonStartup:
   triggers:
     vault: true
     vault-economy-name: Economy_CMI
-#    vault-economy-name: Economy_Essentials
+
+# EssentialsX: <= v2.18.x    vault-economy-name: Economy_Essentials
+# EssentialsX: >= v2.19.x    vault-economy-name: VaultEconomyProvider
 
 
 # The following changes the event priority for prison's listener for the 
