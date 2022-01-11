@@ -32,6 +32,7 @@ import tech.mcprison.prison.modules.ModuleStatus;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.commands.CommandCommands;
+import tech.mcprison.prison.ranks.commands.FailedRankCommands;
 import tech.mcprison.prison.ranks.commands.LadderCommands;
 import tech.mcprison.prison.ranks.commands.RankUpCommand;
 import tech.mcprison.prison.ranks.commands.RanksCommands;
@@ -108,6 +109,13 @@ public class PrisonRanks
             			.getIntegrationDetails(IntegrationType.ECONOMY);
             
             logStartupMessageError( prisonRanksFailureNoEconomyMsg( integrationDebug ) );
+            
+            
+            // Register the failure /ranks command handler:
+            
+            FailedRankCommands failedRanksCommands = new FailedRankCommands();
+            Prison.get().getCommandHandler().registerCommands( failedRanksCommands );
+            
             return;
         }
 
@@ -194,6 +202,7 @@ public class PrisonRanks
         // Hook up all players to the ranks:
         playerManager.connectPlayersToRanks( false );
         
+        Output.get().logInfo( "Ranks: Finished Connecting Players to Ranks." );
         
         
         // Load up the commands
@@ -213,11 +222,13 @@ public class PrisonRanks
         Prison.get().getCommandHandler().registerCommands( rankupCommands );
         Prison.get().getCommandHandler().registerCommands( ladderCommands );
 
+        Output.get().logInfo( "Ranks: Finished registering Rank Commands." );
         
         
         // Check all players to see if any need to join:
         checkAllPlayersForJoin();
         
+        Output.get().logInfo( "Ranks: Finished First Join Checks." );
         
         
         // Load up all else

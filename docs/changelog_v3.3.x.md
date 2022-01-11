@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.13 2022-01-04
+# 3.2.11-alpha.13 2022-01-11
+
+
+* **Change in how prison deals with ranks when there isn't an economy plugin loaded.**
+Now, instead of printing a simple little message in the console, which everyone appear to miss, it also enables a generic `/ranks` command that only displays a message indicating that no economy was found, with links to documentation.  This should make it more obvious.
 
 
 * **Change to auto features for the event listeners: now MONITOR is not enabled unless set to priority of MONITOR.**

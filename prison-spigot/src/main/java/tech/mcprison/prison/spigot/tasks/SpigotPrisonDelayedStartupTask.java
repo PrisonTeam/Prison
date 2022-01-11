@@ -169,6 +169,8 @@ public class SpigotPrisonDelayedStartupTask
 						String.format( "&7Prison Delayed Enablement: &cFailed &cto find an " +
 							"active Vault Economy Named '%s' after %d attempts. Cannot start Prison.", 
 							targetVaultEconomyName, attempts ));
+				
+				prison.onEnableFail();
 			}
 		}
 	}

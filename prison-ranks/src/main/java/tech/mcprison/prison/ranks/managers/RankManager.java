@@ -1193,5 +1193,5 @@ public class RankManager
 	public void setLadderCommands( LadderCommands ladderCommands ) {
 		this.ladderCommands = ladderCommands;
 	}
-    
+
 }

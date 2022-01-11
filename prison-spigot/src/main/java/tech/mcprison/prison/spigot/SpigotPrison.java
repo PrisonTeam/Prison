@@ -59,6 +59,7 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.commands.FailedRankCommands;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
@@ -230,6 +231,16 @@ public class SpigotPrison
     	delayedStartupTask.submit();
     }
     
+    
+    public void onEnableFail() {
+        // Register the failure /ranks command handler:
+        
+        FailedRankCommands failedRanksCommands = new FailedRankCommands();
+//        rankManager.setFailedRanksCommands( failedRanksCommands );
+        Prison.get().getCommandHandler().registerCommands( failedRanksCommands );
+        
+
+    }
     	
    public void onEnableStartup() {
 	   
