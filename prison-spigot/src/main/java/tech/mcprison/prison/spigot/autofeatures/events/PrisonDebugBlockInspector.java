@@ -156,7 +156,35 @@ public class PrisonDebugBlockInspector
     	org.bukkit.inventory.ItemStack heldItem = SpigotCompatibility.getInstance().getItemInMainHand( player.getWrapper() );
     	
     	BlockBreakEvent bbe = new BlockBreakEvent( sBlock.getWrapper(), player.getWrapper() );
-    	SpigotItemStack tool = new SpigotItemStack( XMaterial.DIAMOND_PICKAXE.parseItem() );
+    	
+    	String blockName = sBlock.getBlockName().toLowerCase();
+    	
+    	boolean useShovel = blockName.matches( 
+    					"^clay$|farmland|grass_block|dirt|gravel|mycelium|" +
+    					"podzol|^sand$|^red_sand$|soul_sand|soul_soil|" +
+    					"concrete_powder|^snow$|snow_block|powder_snow" );
+    	
+//    	XMaterial.
+    	
+    	boolean useAxe = blockName.matches( 
+    					"wood$|acacia|birch|jungle|spruce|leaves|crimson|" +
+    					"sapling|bamboo|ladder|vine|bed$|fence|chest$|" +
+    					"table|bookshelf|jack_o_lantern|^melon$|^pumpkn$|" +
+    					"sign|^cocoa$|mushroom_block|note_block|campfire|" +
+    					"banner|beehive|loom|barrel|jukebox|composter|" +
+    					"daylight_detector"
+    					);
+    	
+//    	boolean isLeaves = blockName.contains( "leaves" );
+//    	boolean isWood = blockName.matches( "wood|log|planks|sapling" );
+    	
+    	
+    	SpigotItemStack tool = useShovel ?
+    			new SpigotItemStack( XMaterial.DIAMOND_SHOVEL.parseItem() ) :
+    			( useAxe ? 
+    					new SpigotItemStack( XMaterial.DIAMOND_AXE.parseItem() ) :
+    						new SpigotItemStack( XMaterial.DIAMOND_PICKAXE.parseItem()
+    					) );
     	
     	
     	// Temporaily put the tool in the player's hand:

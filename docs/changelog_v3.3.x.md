@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.13 2022-01-11
 
 
+* **Setup the block inspector to auto select a diamond shovel, a diamond axe, or a diamond pickaxe.**
+
+
 * **On the blockbreak debug information, show the information on either the block that was hit, or if that is null, just dashes to show such a block was not provided.**
 
 
