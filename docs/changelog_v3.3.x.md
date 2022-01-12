@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.13 2022-01-11
 
 
+* **On delayed startup, allow a combination of selectors to target essentials, since the class name has changed in v2.19.x**
+
+
 * **Setup the block inspector to auto select a diamond shovel, a diamond axe, or a diamond pickaxe.**
 
 
