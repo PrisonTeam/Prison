@@ -541,32 +541,44 @@ public class PlayerManager
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
+    				boolean isDefault = ladder.getName().equals( "default" ) ;
+    				
     				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
-    				if ( pRank != null && pRank.getRank().getRankNext() != null ) {
+    				if ( pRank != null &&
+    						( pRank.getRank().getRankNext() != null && !isDefault || pRank.getRank().getRankNext() == null && isDefault )) {
     					Rank nextRank = pRank.getRank().getRankNext();
+    					
+    					// if nextRank is null and if prestiges are enabled, then get the next prestige rank:
+    					if ( isDefault && nextRank == null && Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
+    						RankLadder pLadder = PrisonRanks.getInstance().getLadderManager().getLadder( "prestiges" );
+    						nextRank = rankPlayer.getLadderRanks().get( pLadder ).getRank().getRankNext();
+    					}
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
     			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
     					//PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
-    					if ( sb.length() > 0 ) {
-    						sb.append(", ");
-    					}
-    					
-    					double cost = nextPRank.getRankCost();
-    					
-    					if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
-    						PlaceholderAttributeNumberFormat attributeNF = 
-    								(PlaceholderAttributeNumberFormat) attribute;
-    						sb.append( attributeNF.format( cost ) );
-    					}
-    					else  if ( formatted ) {
-    						sb.append( PlaceholdersUtil.formattedMetricSISize( cost ));
-    					}
-    					else {
-    						sb.append( dFmt.format( cost ));
-    					}
+    			        if ( nextPRank != null ) {
+    			        	
+    			        	if ( sb.length() > 0 ) {
+    			        		sb.append(", ");
+    			        	}
+    			        	
+    			        	double cost = nextPRank.getRankCost();
+    			        	
+    			        	if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    			        		PlaceholderAttributeNumberFormat attributeNF = 
+    			        				(PlaceholderAttributeNumberFormat) attribute;
+    			        		sb.append( attributeNF.format( cost ) );
+    			        	}
+    			        	else  if ( formatted ) {
+    			        		sb.append( PlaceholdersUtil.formattedMetricSISize( cost ));
+    			        	}
+    			        	else {
+    			        		sb.append( dFmt.format( cost ));
+    			        	}
+    			        }
     				}
     			}
     		}
@@ -603,29 +615,41 @@ public class PlayerManager
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
+    				boolean isDefault = ladder.getName().equals( "default" ) ;
+    				
     				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
-    				if ( pRank != null && pRank.getRank().getRankNext() != null ) {
+    				if ( pRank != null && 
+    						( pRank.getRank().getRankNext() != null && !isDefault || pRank.getRank().getRankNext() == null && isDefault ) ) {
     					Rank nextRank = pRank.getRank().getRankNext();
+    					
+    					// if nextRank is null and if prestiges are enabled, then get the next prestige rank:
+    					if ( isDefault && nextRank == null && Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
+    						RankLadder pLadder = PrisonRanks.getInstance().getLadderManager().getLadder( "prestiges" );
+    						nextRank = rankPlayer.getLadderRanks().get( pLadder ).getRank().getRankNext();
+    					}
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
     			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
-//    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
-    					
-    					if ( sb.length() > 0 ) {
-    						sb.append(",  ");
-    					}
-    					
-//    					Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
-    					double cost = nextPRank.getRankCost();
-    					double balance = rankPlayer.getBalance( pRank.getRank().getCurrency() );
-//    					double balance = getPlayerBalance(prisonPlayer,nextRank);
-    					
-    					double percent = (balance < 0 ? 0 : 
-    						(cost == 0.0d || balance > cost ? 100.0 : 
-    							balance / cost * 100.0 )
-    							);
-    					sb.append( dFmt.format( percent ));
+// 						PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
+    			        
+    			        if ( nextPRank != null ) {
+    			        	
+    			        	if ( sb.length() > 0 ) {
+    			        		sb.append(",  ");
+    			        	}
+    			        	
+//    						Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
+    			        	double cost = nextPRank.getRankCost();
+    			        	double balance = rankPlayer.getBalance( pRank.getRank().getCurrency() );
+//    						double balance = getPlayerBalance(prisonPlayer,nextRank);
+    			        	
+    			        	double percent = (balance < 0 ? 0 : 
+    			        		(cost == 0.0d || balance > cost ? 100.0 : 
+    			        			balance / cost * 100.0 )
+    			        			);
+    			        	sb.append( dFmt.format( percent ));
+    			        }
     				}
     			}
     		}
@@ -664,27 +688,38 @@ public class PlayerManager
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
+    				boolean isDefault = ladder.getName().equals( "default" ) ;
+    				
     				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank rank = pRank.getRank();
-    				if ( rank != null && rank.getRankNext() != null ) {
+    				if ( rank != null && ( rank.getRankNext() != null && !isDefault || rank.getRankNext() == null && isDefault )) {
     					Rank nextRank = rank.getRankNext();
+    					
+    					// if nextRank is null and if prestiges are enabled, then get the next prestige rank:
+    					if ( isDefault && nextRank == null && Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
+    						RankLadder pLadder = PrisonRanks.getInstance().getLadderManager().getLadder( "prestiges" );
+    						nextRank = rankPlayer.getLadderRanks().get( pLadder ).getRank().getRankNext();
+    					}
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
     			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
-    					if ( sb.length() > 0 ) {
-    						sb.append(",  ");
-    					}
-    					
-    					double cost = nextPRank.getRankCost();
-    					double balance = rankPlayer.getBalance( rank.getCurrency() );
-//    					double balance = getPlayerBalance(prisonPlayer,nextRank);
-    					
-    					
-    					sb.append( Prison.get().getPlaceholderManager().
-    							getProgressBar( balance, cost, false, attribute ));
+    			        if ( nextPRank != null ) {
+    			        	
+    			        	if ( sb.length() > 0 ) {
+    			        		sb.append(",  ");
+    			        	}
+    			        	
+    			        	double cost = nextPRank.getRankCost();
+    			        	double balance = rankPlayer.getBalance( rank.getCurrency() );
+//    						double balance = getPlayerBalance(prisonPlayer,nextRank);
+    			        	
+    			        	
+    			        	sb.append( Prison.get().getPlaceholderManager().
+    			        			getProgressBar( balance, cost, false, attribute ));
+    			        }
     					
     				}
     			}
@@ -735,46 +770,57 @@ public class PlayerManager
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
+    				boolean isDefault = ladder.getName().equals( "default" ) ;
+    				
     				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank rank = pRank.getRank();
-    				if ( rank != null && rank.getRankNext() != null ) {
+    				if ( rank != null && ( rank.getRankNext() != null && !isDefault || rank.getRankNext() == null && isDefault ) ) {
     					Rank nextRank = rank.getRankNext();
+    					
+    					// if nextRank is null and if prestiges are enabled, then get the next prestige rank:
+    					if ( isDefault && nextRank == null && Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
+    						RankLadder pLadder = PrisonRanks.getInstance().getLadderManager().getLadder( "prestiges" );
+    						nextRank = rankPlayer.getLadderRanks().get( pLadder ).getRank().getRankNext();
+    					}
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
     			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
-    					if ( sb.length() > 0 ) {
-    						sb.append(",  ");
-    					}
-    					
-    					double cost = nextPRank.getRankCost();
-    					double balance = rankPlayer.getBalance( rank.getCurrency() );
+    			        if ( nextPRank != null ) {
+    			        	
+    			        	if ( sb.length() > 0 ) {
+    			        		sb.append(",  ");
+    			        	}
+    			        	
+    			        	double cost = nextPRank.getRankCost();
+    			        	double balance = rankPlayer.getBalance( rank.getCurrency() );
 //    					double balance = getPlayerBalance(prisonPlayer,nextRank);
-    					
-    					double remaining = cost - balance;
-    					
-    					// Without the following, if the player has more money than what the rank will cost,
-    					// then it would result in a negative amount, which is wrong.  
-    					// This is cost remaining... once they are able to afford a rankup, then remaining 
-    					// cost will be zero.
-    					if ( remaining < 0 ) {
-    						remaining = 0;
-    					}
-    					
-    					if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
-    						PlaceholderAttributeNumberFormat attributeNF = 
-    								(PlaceholderAttributeNumberFormat) attribute;
-    						sb.append( attributeNF.format( remaining ) );
-    					}
-    					
-    					else if ( formatted ) {
-    						sb.append( PlaceholdersUtil.formattedMetricSISize( remaining ));
-    					}
-    					else {
-    						sb.append( dFmt.format( remaining ));
-    					}
+    			        	
+    			        	double remaining = cost - balance;
+    			        	
+    			        	// Without the following, if the player has more money than what the rank will cost,
+    			        	// then it would result in a negative amount, which is wrong.  
+    			        	// This is cost remaining... once they are able to afford a rankup, then remaining 
+    			        	// cost will be zero.
+    			        	if ( remaining < 0 ) {
+    			        		remaining = 0;
+    			        	}
+    			        	
+    			        	if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    			        		PlaceholderAttributeNumberFormat attributeNF = 
+    			        				(PlaceholderAttributeNumberFormat) attribute;
+    			        		sb.append( attributeNF.format( remaining ) );
+    			        	}
+    			        	
+    			        	else if ( formatted ) {
+    			        		sb.append( PlaceholdersUtil.formattedMetricSISize( remaining ));
+    			        	}
+    			        	else {
+    			        		sb.append( dFmt.format( remaining ));
+    			        	}
+    			        }
     				}
     			}
     		}
@@ -811,38 +857,49 @@ public class PlayerManager
 			if ( ladderName == null ||
 					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
 				
+				boolean isDefault = ladder.getName().equals( "default" ) ;
+				
 				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
 				Rank rank = pRank.getRank();
-				if ( rank != null && rank.getRankNext() != null ) {
+				if ( rank != null && ( rank.getRankNext() != null && !isDefault || rank.getRankNext() == null && isDefault ) ) {
 					Rank nextRank = rank.getRankNext();
+					
+					// if nextRank is null and if prestiges are enabled, then get the next prestige rank:
+					if ( isDefault && nextRank == null && Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
+						RankLadder pLadder = PrisonRanks.getInstance().getLadderManager().getLadder( "prestiges" );
+						nextRank = rankPlayer.getLadderRanks().get( pLadder ).getRank().getRankNext();
+					}
 					
 			        // This calculates the target rank, and takes in to consideration the player's existing rank:
 			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
 					
-					if ( sb.length() > 0 ) {
-						sb.append(",  ");
-					}
-					
-					double cost = nextPRank.getRankCost();
-					double balance = rankPlayer.getBalance( rank.getCurrency() );
+			        if ( nextPRank != null ) {
+			        	
+			        	if ( sb.length() > 0 ) {
+			        		sb.append(",  ");
+			        	}
+			        	
+			        	double cost = nextPRank.getRankCost();
+			        	double balance = rankPlayer.getBalance( rank.getCurrency() );
 //					double balance = getPlayerBalance(prisonPlayer,nextRank);
-					
-					double remaining = cost - balance;
-					
-					// Without the following, if the player has more money than what the rank will cost,
-					// then it would result in a negative amount, which is wrong.  
-					// This is cost remaining... once they are able to afford a rankup, then remaining 
-					// cost will be zero.
-					if ( remaining < 0 ) {
-						remaining = 0;
-					}
-					double percent = (remaining < 0 ? 0.0 : 
-						(cost == 0.0d || remaining > cost ? 100.0 : 
-							remaining / cost * 100.0 )
-							);
-					sb.append( dFmt.format( percent ));
+			        	
+			        	double remaining = cost - balance;
+			        	
+			        	// Without the following, if the player has more money than what the rank will cost,
+			        	// then it would result in a negative amount, which is wrong.  
+			        	// This is cost remaining... once they are able to afford a rankup, then remaining 
+			        	// cost will be zero.
+			        	if ( remaining < 0 ) {
+			        		remaining = 0;
+			        	}
+			        	double percent = (remaining < 0 ? 0.0 : 
+			        		(cost == 0.0d || remaining > cost ? 100.0 : 
+			        			remaining / cost * 100.0 )
+			        			);
+			        	sb.append( dFmt.format( percent ));
+			        }
 				}
 			}
 		}
@@ -879,42 +936,53 @@ public class PlayerManager
 			  if ( ladderName == null ||
 					  ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
 
+				  boolean isDefault = ladder.getName().equals( "default" ) ;
+				  
 				  PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
 				  Rank rank = pRank.getRank();
-				  if ( rank != null && rank.getRankNext() != null ) {
+				  if ( rank != null && ( rank.getRankNext() != null && !isDefault || rank.getRankNext() == null && isDefault ) ) {
 
 					  Rank nextRank = rank.getRankNext();
+					  
+	  					// if nextRank is null and if prestiges are enabled, then get the next prestige rank:
+	  					if ( isDefault && nextRank == null && Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
+	  						RankLadder pLadder = PrisonRanks.getInstance().getLadderManager().getLadder( "prestiges" );
+	  						nextRank = rankPlayer.getLadderRanks().get( pLadder ).getRank().getRankNext();
+	  					}
 					  
   			          // This calculates the target rank, and takes in to consideration the player's existing rank:
   			          PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //					  PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
 					  
-					  if ( sb.length() > 0 ) {
-						  sb.append(",  ");
-					  }
-
-					  double cost = nextPRank.getRankCost();
-					  double balance = rankPlayer.getBalance( rank.getCurrency() );
+  			          if ( nextPRank != null ) {
+  			        	
+  			        	  if ( sb.length() > 0 ) {
+  			        		  sb.append(",  ");
+  			        	  }
+  			        	  
+  			        	  double cost = nextPRank.getRankCost();
+  			        	  double balance = rankPlayer.getBalance( rank.getCurrency() );
 //					  double balance = getPlayerBalance(prisonPlayer,nextRank);
-
-					  double remaining = cost - balance;
-
-					  // Without the following, if the player has more money than what the rank will cost,
-					  // then it would result in a negative amount, which is wrong.  
-					  // This is cost remaining... once they are able to afford a rankup, then remaining 
-					  // cost will be zero.
-					  if ( remaining < 0 ) {
-						  remaining = 0;
-					  }
-  //					  double percent = (remaining < 0 ? 0.0 : 
-  //						  (cost == 0.0d || remaining > cost ? 100.0 : 
-  //							  remaining / cost * 100.0 )
-  //							  );
-  //					  sb.append( dFmt.format( percent ));
-
-					  sb.append( Prison.get().getPlaceholderManager().
-							  getProgressBar( remaining, cost, false, attribute ));
+  			        	  
+  			        	  double remaining = cost - balance;
+  			        	  
+  			        	  // Without the following, if the player has more money than what the rank will cost,
+  			        	  // then it would result in a negative amount, which is wrong.  
+  			        	  // This is cost remaining... once they are able to afford a rankup, then remaining 
+  			        	  // cost will be zero.
+  			        	  if ( remaining < 0 ) {
+  			        		  remaining = 0;
+  			        	  }
+  			        	  //					  double percent = (remaining < 0 ? 0.0 : 
+  			        	  //						  (cost == 0.0d || remaining > cost ? 100.0 : 
+  			        	  //							  remaining / cost * 100.0 )
+  			        	  //							  );
+  			        	  //					  sb.append( dFmt.format( percent ));
+  			        	  
+  			        	  sb.append( Prison.get().getPlaceholderManager().
+  			        			  getProgressBar( remaining, cost, false, attribute ));
+  			          }
 				  }
 
 			  }

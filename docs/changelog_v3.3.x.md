@@ -16,6 +16,21 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.13 2022-01-11
 
 
+* **When a player is on the default ladder at the last possible rank, instead of showing nothing for rankup costs, percent, bar, etc, it will now use the next prestige rank if prestiges are enabled.**
+
+  These changes apply to the following placeholders:
+
+    prison_rc prison_rankup_cost prison_rc_laddername prison_rankup_cost_laddername 
+    prison_rcf prison_rankup_cost_formatted prison_rcf_laddername prison_rankup_cost_formatted_laddername
+    prison_rcp prison_rankup_cost_percent prison_rcp_laddername prison_rankup_cost_percent_laddername
+    prison_rcb prison_rankup_cost_bar prison_rcb_laddername prison_rankup_cost_bar_laddername
+    prison_rcr prison_rankup_cost_remaining prison_rcr_laddername prison_rankup_cost_remaining_laddername
+    prison_rcrf prison_rankup_cost_remaining_formatted prison_rcrf_laddername prison_rankup_cost_remaining_formatted_laddername
+    prison_rcrp prison_rankup_cost_remaining_percent prison_rcrp_laddername prison_rankup_cost_remaining_percent_laddername 
+    prison_rcrb prison_rankup_cost_remaining_bar prison_rcrb_laddername prison_rankup_cost_remaining_bar_laddername 
+
+
+
 * **On delayed startup, allow a combination of selectors to target essentials, since the class name has changed in v2.19.x**
 
 
