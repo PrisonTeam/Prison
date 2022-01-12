@@ -678,10 +678,13 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 						
 						if ( Output.get().isDebug( DebugTarget.targetBlockMismatch ) ) {
 							
+							String blockHitName = sBlockHit.getPrisonBlock() == null ?
+									"----" : sBlockHit.getPrisonBlock().getBlockName();
+							
 							String message = String.format( 
 									"TargetBlock mismatch error - primaryBlock:  targetBlock: %s  blockBroke: %s",
 									targetBlock.getPrisonBlock().getBlockName() , 
-									sBlockHit.getPrisonBlock().getBlockName()
+									blockHitName
 									);
 							
 							Output.get().logWarn( message );

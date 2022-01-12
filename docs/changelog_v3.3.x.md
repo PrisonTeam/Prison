@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.13 2022-01-11
 
 
+* **On the blockbreak debug information, show the information on either the block that was hit, or if that is null, just dashes to show such a block was not provided.**
+
+
 * **For EssentialsX v2.19.x, the class being used to identify if the economy has been loaded has changed.**
 This commit has the references to the proper class to use depeending upon the version of EssentialsX.  It should be noted that this only applies if delayed startup is enabled for the EssentialsX economy, which generally does not require it.
 
