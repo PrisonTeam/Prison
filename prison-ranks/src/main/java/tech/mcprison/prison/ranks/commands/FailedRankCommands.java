@@ -15,17 +15,17 @@ public class FailedRankCommands
 		super( "FailedRanksNoEconomy" );
 	}
 
-	@Command(identifier = "ranks", description = "Ranks failed to load due to no Economy plugin being present.", 
+	@Command(identifier = "ranks", description = "Ranks are Disabled - No Economy plugin detected", 
     								onlyPlayers = false )
     public void failedRanks( CommandSender sender ) {
         
 
-        ChatDisplay display = new ChatDisplay("Prison Ranks Failed To Load");
+        ChatDisplay display = new ChatDisplay("Prison Ranks are Disbled");
         
         display.addText("&aPrison Requires an Economy Plugin.");
         
         display.addText("");
-        display.addText("Prison Ranks failed to load due to the lack of an Economy Plugin.");
+        display.addText("Prison Ranks are disabled - No Economy plugin detected");
         display.addText("");
         display.addText("Add an Economy Plugin, such as EssentialsX, and then restart the server.");
         display.addText("");

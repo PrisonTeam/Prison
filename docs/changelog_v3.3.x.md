@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.13 2022-01-11
 
 
+* **Update the failed rank message so it is clearer.**
+
+
+
 * **When a player is on the default ladder at the last possible rank, instead of showing nothing for rankup costs, percent, bar, etc, it will now use the next prestige rank if prestiges are enabled.**
 
   These changes apply to the following placeholders:
