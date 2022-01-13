@@ -561,6 +561,9 @@ public class Mine
         	// every time the mine is loaded which may lead to other issues.
         	
         	// This is enabled since the original is not modified.
+        	
+        	// If dirty, then make a backup since these are automatic changes:
+        	PrisonMines.getInstance().getMineManager().backupMine( this );
 
         	PrisonMines.getInstance().getMineManager().saveMine( this );
         	

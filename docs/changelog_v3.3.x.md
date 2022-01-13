@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.14 2022-01-13
 
 
+* **If upon loading a mine, there is a reson or need to resave the data, since this is an auto update, then this will make a backup copy of the mine's save file before saving it.**
+
+
 * **Bug fix: If spigot version is less than 1.13.0, and trying to use a _WOOD block, XMaterials cannot map that correctly to a Material and then back to the same XMaterial.**
 This is causing a problem when using in a mine since it cannot be tied back to the block that was placed.  So for these versions, all _WOOD blocks are removed from the server.  If a _WOOD block is saved in a mine, it will be remapped to the same _PLANKS block, which will work just fine.
 
