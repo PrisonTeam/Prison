@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.14 2022-01-13
 
 
+* **Bug Fix: If the wrong sound file was being used it used to throw a NPE.**
+Now this is a safer way to find the correct file, and it will fall back upon a plink sound for any version of spigot.
+
+
 * **If upon loading a mine, there is a reson or need to resave the data, since this is an auto update, then this will make a backup copy of the mine's save file before saving it.**
 
 

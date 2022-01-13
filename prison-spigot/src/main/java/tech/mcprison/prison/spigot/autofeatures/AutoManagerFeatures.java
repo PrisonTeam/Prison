@@ -1029,7 +1029,7 @@ public class AutoManagerFeatures
 			String soundName = getMessage(AutoFeatures.playSoundIfInventoryIsFullSound);
 			if ( soundName != null && soundName.trim().length() > 0 ) {
 				
-				sound = Sound.valueOf( soundName.toUpperCase() );
+				sound = getSound( soundName );
 			}
 			
 			
@@ -1038,18 +1038,18 @@ public class AutoManagerFeatures
 				if ( new BluesSpigetSemVerComparator().compareMCVersionTo( "1.9.0" ) < 0 ) {
 					
 					// 1.8.x
-					sound = Sound.valueOf("NOTE_PLING");
+					sound = getSound("NOTE_PLING");
 				}
 				else if ( new BluesSpigetSemVerComparator().compareMCVersionTo( "1.13.0" ) < 0 ) {
 					
 					// 1.9.x through 1.12.x
-					sound = Sound.valueOf("BLOCK_NOTE_PLING");
+					sound = getSound("BLOCK_NOTE_PLING");
 				}
 				
 				else {
 					// 1.13.x and up:
 					
-					sound = Sound.valueOf("BLOCK_NOTE_BLOCK_PLING");
+					sound = getSound("BLOCK_NOTE_BLOCK_PLING");
 				}
 			}
 			
@@ -1084,6 +1084,27 @@ public class AutoManagerFeatures
 //		}
 	}
 
+	private Sound getSound( String soundName ) {
+		Sound results = null;
+		Sound altSound = null;
+		
+		for ( Sound s : Sound.values() ) {
+			if ( altSound == null && s.name().toLowerCase().contains( "plink" ) ) {
+				altSound = s;
+			}
+			if ( s.name().equalsIgnoreCase( soundName ) ) {
+				results = s;
+				break;
+			}
+		}
+		
+		if ( results == null && altSound != null ) {
+			results = altSound;
+		}
+		
+		return results;
+	}
+	
 //	private void actionBarVersion(Player player, String message) {
 //		
 //		PlayerMessagingTask.submitTask( player, MessageType.actionBar, message );
