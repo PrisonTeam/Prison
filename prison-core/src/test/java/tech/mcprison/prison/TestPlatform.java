@@ -460,4 +460,9 @@ public class TestPlatform implements Platform {
 	{
 		
 	}
+	
+	@Override
+	public int compareServerVerisonTo( String comparisonVersion ) {
+		return 0;
+	}
 }

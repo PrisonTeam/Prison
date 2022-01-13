@@ -2481,4 +2481,8 @@ public class SpigotPlatform
 		}
 	}
 	
+	@Override
+	public int compareServerVerisonTo( String comparisonVersion ) {
+		return new BluesSpigetSemVerComparator().compareMCVersionTo( comparisonVersion );
+	}
 }

@@ -439,5 +439,6 @@ public interface Platform {
 	public List<?> getConfigStringArray( String key );
 
 
+	public int compareServerVerisonTo( String comparisonVersion );
 	
 }

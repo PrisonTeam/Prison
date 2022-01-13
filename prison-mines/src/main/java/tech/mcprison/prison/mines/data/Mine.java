@@ -417,6 +417,18 @@ public class Mine
 					
 					PrisonBlock prisonBlock = PrisonBlockStatusData.parseFromSaveFileFormat( docBlock );
 					
+					// If the server version is less than 1.13.0, and if the block is a "_wood" block, 
+					// then it needs to be remapped to "_planks" so the resulting block will work properly.
+					// Versions prior to 1.13.0, _WOOD is identical to _PLANKS.
+					if ( prisonBlock != null && 
+							prisonBlock.getBlockName().toLowerCase().contains( "_wood" ) &&
+							Prison.get().getPlatform().compareServerVerisonTo( "1.13.0" ) < 0 ) {
+						String fixedName = docBlock.toLowerCase().replace( "_wood", "_planks" );
+						
+						prisonBlock = PrisonBlockStatusData.parseFromSaveFileFormat( fixedName );
+						dirty = true;
+					}
+					
 					if ( prisonBlock != null ) {
 						
 						if ( !validateBlockNames.contains( prisonBlock.getBlockName() )) {

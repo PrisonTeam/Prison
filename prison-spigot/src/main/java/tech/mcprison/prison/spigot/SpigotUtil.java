@@ -612,6 +612,20 @@ public class SpigotUtil {
 			if ( xMat.isSupported() ) {
 				
 				ItemStack itemStack = xMat.parseItem();
+				
+				if ( xMat.name().toLowerCase().contains( "_wood" ) ) {
+					
+					// This validates that XMaterials can map to a Material and back to the correct XMaterial
+					// Bukkit versions < 1.13.0 fails on _WOOD blocks since XMaterial maps them to logs.
+					Material bMat = xMat.parseMaterial();
+					XMaterial xMatCheck = XMaterial.matchXMaterial( bMat );
+
+					if ( bMat != null  && xMat != xMatCheck ) {
+						// Incorrect mapping:
+						continue;
+					}
+				}
+				
 				if ( itemStack != null ) {
 					
 					//if ( itemStack.getType().isBlock() ) 
