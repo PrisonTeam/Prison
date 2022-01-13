@@ -26,6 +26,7 @@ import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
@@ -656,7 +657,11 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 		    		// high-speed or concurrent operations from multiple players from trying to 
 		    		// process the same block. 
 
-					if ( targetBlock.getPrisonBlock().equals( sBlockHit.getPrisonBlock() ) &&
+					PrisonBlockStatusData pbTargetBlock = targetBlock.getPrisonBlock();
+					PrisonBlock pbBlockHit = sBlockHit == null ? null : sBlockHit.getPrisonBlock();
+					
+					if ( pbBlockHit != null && pbTargetBlock != null && 
+							pbTargetBlock.equals( pbBlockHit ) &&
 							collectBukkitDrops( pmEvent.getBukkitDrops(), targetBlock, pmEvent.getItemInHand(), sBlockHit )) {
 						
 						
@@ -678,12 +683,14 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 						
 						if ( Output.get().isDebug( DebugTarget.targetBlockMismatch ) ) {
 							
-							String blockHitName = sBlockHit.getPrisonBlock() == null ?
-									"----" : sBlockHit.getPrisonBlock().getBlockName();
-							
+							String blockHitName = sBlockHit == null ? "--=--" : 
+										pbBlockHit == null ?
+												"----" : pbBlockHit.getBlockName();
+							String targetBlockName = pbTargetBlock == null ? "--:--" :
+														pbTargetBlock.getBlockName();
 							String message = String.format( 
 									"TargetBlock mismatch error - primaryBlock:  targetBlock: %s  blockBroke: %s",
-									targetBlock.getPrisonBlock().getBlockName() , 
+									targetBlockName, 
 									blockHitName
 									);
 							
@@ -796,7 +803,10 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 									SpigotBlock sBlockMined = new SpigotBlock( bukkitBlock );
 									PrisonBlock pBlockMined = sBlockMined.getPrisonBlock();
 									
-									if ( targetExplodedBlock.getPrisonBlock().equals( pBlockMined ) &&
+									PrisonBlockStatusData pbTargetExploded = targetExplodedBlock.getPrisonBlock();
+									
+									if ( pBlockMined!= null && pbTargetExploded != null &&
+											pbTargetExploded.equals( pBlockMined ) &&
 											collectBukkitDrops( pmEvent.getBukkitDrops(), targetExplodedBlock, pmEvent.getItemInHand(), sBlockMined ) ) {
 										
 										// If a chain reaction on explosions, this will prevent the same block from
@@ -824,8 +834,8 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 											
 											String message = String.format( 
 													"TargetBlock mismatch error - multiBLock:  targetBlock: %s  blockBroke: %s",
-													targetBlock.getPrisonBlock().getBlockName() , 
-													sBlockHit.getPrisonBlock().getBlockName()
+													pbTargetExploded == null ? "--:--" : pbTargetExploded.getBlockName() , 
+													pBlockMined == null ? "--=--" : pBlockMined.getBlockName()
 													);
 											
 											Output.get().logWarn( message );

@@ -13,8 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.14 2022-01-11
+# 3.2.11-alpha.14 2022-01-13
 
+
+* **Bug fix: Prevent stack traces when a broken block cannot be mapped to a PrisonBlockStatusData object.**
+This is happening with spigot versions 1.8 through 1.12.2 when using "WOOD" blocks since XSeries translates these blocks to LOGs, so they will never map back to the XMaterial WOOD entries.  This was producing a stacktrace and would prevent the proper handling of the auto features.
 
 
 * **3.2.11-alpha.14 2022-01-11**
