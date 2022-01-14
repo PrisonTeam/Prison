@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.15 2022-01-13
 
 
+
+* **Bug fix: Hooking up the rollover to the next prestige rank cost, when at th end of the ladder, had a typo where it would not evaluate any rank.**
+
+
 **3.2.11-alpha.15 2022-01-13**
 
 

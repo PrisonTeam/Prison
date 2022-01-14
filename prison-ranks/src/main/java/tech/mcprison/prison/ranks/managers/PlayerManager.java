@@ -544,9 +544,10 @@ public class PlayerManager
     				boolean isDefault = ladder.getName().equals( "default" ) ;
     				
     				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
+    				Rank nextRank = pRank.getRank().getRankNext();
+
     				if ( pRank != null &&
-    						( pRank.getRank().getRankNext() != null && !isDefault || pRank.getRank().getRankNext() == null && isDefault )) {
-    					Rank nextRank = pRank.getRank().getRankNext();
+    						( nextRank != null || nextRank == null && isDefault )) {
     					
     					// if nextRank is null and if prestiges are enabled, then get the next prestige rank:
     					if ( isDefault && nextRank == null && Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
@@ -618,9 +619,10 @@ public class PlayerManager
     				boolean isDefault = ladder.getName().equals( "default" ) ;
     				
     				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
+    				Rank nextRank = pRank.getRank().getRankNext();
+
     				if ( pRank != null && 
-    						( pRank.getRank().getRankNext() != null && !isDefault || pRank.getRank().getRankNext() == null && isDefault ) ) {
-    					Rank nextRank = pRank.getRank().getRankNext();
+    						( nextRank != null || nextRank == null && isDefault ) ) {
     					
     					// if nextRank is null and if prestiges are enabled, then get the next prestige rank:
     					if ( isDefault && nextRank == null && Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
@@ -692,8 +694,10 @@ public class PlayerManager
     				
     				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank rank = pRank.getRank();
-    				if ( rank != null && ( rank.getRankNext() != null && !isDefault || rank.getRankNext() == null && isDefault )) {
-    					Rank nextRank = rank.getRankNext();
+    				Rank nextRank = rank.getRankNext();
+
+    				if ( rank != null && 
+    						( nextRank != null || nextRank == null && isDefault )) {
     					
     					// if nextRank is null and if prestiges are enabled, then get the next prestige rank:
     					if ( isDefault && nextRank == null && Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
@@ -774,8 +778,10 @@ public class PlayerManager
     				
     				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank rank = pRank.getRank();
-    				if ( rank != null && ( rank.getRankNext() != null && !isDefault || rank.getRankNext() == null && isDefault ) ) {
-    					Rank nextRank = rank.getRankNext();
+    				Rank nextRank = rank.getRankNext();
+    				
+    				if ( rank != null && 
+    						( nextRank != null || nextRank == null && isDefault ) ) {
     					
     					// if nextRank is null and if prestiges are enabled, then get the next prestige rank:
     					if ( isDefault && nextRank == null && Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
@@ -861,8 +867,10 @@ public class PlayerManager
 				
 				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
 				Rank rank = pRank.getRank();
-				if ( rank != null && ( rank.getRankNext() != null && !isDefault || rank.getRankNext() == null && isDefault ) ) {
-					Rank nextRank = rank.getRankNext();
+				Rank nextRank = rank.getRankNext();
+				
+				if ( rank != null && 
+						( nextRank != null || nextRank == null && isDefault ) ) {
 					
 					// if nextRank is null and if prestiges are enabled, then get the next prestige rank:
 					if ( isDefault && nextRank == null && Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
@@ -940,9 +948,11 @@ public class PlayerManager
 				  
 				  PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
 				  Rank rank = pRank.getRank();
-				  if ( rank != null && ( rank.getRankNext() != null && !isDefault || rank.getRankNext() == null && isDefault ) ) {
+				  Rank nextRank = rank.getRankNext();
+				  
+				  if ( rank != null && 
+						  ( nextRank != null || nextRank == null && isDefault ) ) {
 
-					  Rank nextRank = rank.getRankNext();
 					  
 	  					// if nextRank is null and if prestiges are enabled, then get the next prestige rank:
 	  					if ( isDefault && nextRank == null && Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
