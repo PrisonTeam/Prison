@@ -1061,8 +1061,12 @@ public class AutoManagerFeatures
 
 			float volume = (float) getDouble(AutoFeatures.playSoundIfInventoryIsFullSoundVolume);
 			float pitch = (float) getDouble(AutoFeatures.playSoundIfInventoryIsFullSoundPitch);
-			player.playSound(player.getLocation(), sound, volume, pitch);
+//			player.playSound(player.getLocation(), sound, volume, pitch);
 //			player.playSound(player.getLocation(), sound, 4F, 1F);
+			
+			
+			player.getWorld().playSound( player.getLocation(), sound, volume, pitch );
+			
 		}
 
 		

@@ -3,8 +3,33 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
-# TODO Items for v3.2.11-alpha.12
+# TODO Items for v3.2.11-alpha.13
 
+
+
+**Tasks needed for the v3.2.11 release:**
+* Review some documentation and udpate... especially with the luckperms.
+* Finalize the event listeners to use only one event (was three, now two, but reduce down to one).
+* Review placeholders
+* Try to hook up a top-n command - may be too complex and may need to be pushed over to the next release
+* Review Mine Bombs and see if there are some simple updates
+* Backpacks - may need to push over to next version
+* GUI menus - Add the new GUI Tools to more of the GUI menus to simplify some of the commands?
+
+
+
+* test Mine placements and resizing.  Something does not look correct with tracer and liners.
+
+
+
+* create a command placeholder that will be able to add a delay between submitting commands.  Have it based upon ms.. and have it setup to be used when more than one command is combined with others.
+
+
+* Command cooldowns - ranks - use config file to customize on a per command basis.  Modify the prison command handler to manage cooldows as a new attribte to the commands.
+
+
+* Mine Bombs: identify bombs... new way.
+See SelectionManager... Prison wand uses the whole items stack to identify a wand, instead of just one small part, such as name or lore. Well, actually, its only the display name and material... no lore.
 
 
 * Add Mine Regions - Similar to mines in a way, where they will allow players to have access to the region, have mine effects (outside of a mine)... and mine effects would also be tied to these too.
