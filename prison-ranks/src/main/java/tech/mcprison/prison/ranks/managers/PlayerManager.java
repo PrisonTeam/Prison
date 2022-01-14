@@ -549,11 +549,7 @@ public class PlayerManager
     				if ( pRank != null &&
     						( nextRank != null || nextRank == null && isDefault )) {
     					
-    					// if nextRank is null and if prestiges are enabled, then get the next prestige rank:
-    					if ( isDefault && nextRank == null && Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
-    						RankLadder pLadder = PrisonRanks.getInstance().getLadderManager().getLadder( "prestiges" );
-    						nextRank = rankPlayer.getLadderRanks().get( pLadder ).getRank().getRankNext();
-    					}
+    					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
     			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
@@ -588,6 +584,36 @@ public class PlayerManager
     	
     	return sb.toString();
     }
+
+	private Rank getNextPrestigeRank( RankPlayer rankPlayer, boolean isDefault, Rank nextRank )
+	{
+		Rank results = nextRank;
+		
+		// if nextRank is null and if prestiges are enabled, then get the next prestige rank:
+		if ( nextRank == null && 
+				rankPlayer != null &&
+				isDefault && 
+					Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
+			
+			RankLadder rLadder = PrisonRanks.getInstance().getLadderManager().getLadder( "prestiges" );
+			
+			if ( rLadder != null ) {
+				
+				PlayerRank pLadder = rankPlayer.getLadderRanks().get( rLadder );
+				
+				if ( pLadder == null ) {
+					
+					results = rLadder.getLowestRank().orElse( null );
+				}
+				else {
+					
+					results = pLadder.getRank().getRankNext();
+				}
+			}
+		}
+		
+		return results;
+	}
         
     public String getPlayerNextRankCostPercent( RankPlayer rankPlayer, String ladderName ) {
     	StringBuilder sb = new StringBuilder();
@@ -624,11 +650,7 @@ public class PlayerManager
     				if ( pRank != null && 
     						( nextRank != null || nextRank == null && isDefault ) ) {
     					
-    					// if nextRank is null and if prestiges are enabled, then get the next prestige rank:
-    					if ( isDefault && nextRank == null && Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
-    						RankLadder pLadder = PrisonRanks.getInstance().getLadderManager().getLadder( "prestiges" );
-    						nextRank = rankPlayer.getLadderRanks().get( pLadder ).getRank().getRankNext();
-    					}
+    					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
     			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
@@ -699,11 +721,7 @@ public class PlayerManager
     				if ( rank != null && 
     						( nextRank != null || nextRank == null && isDefault )) {
     					
-    					// if nextRank is null and if prestiges are enabled, then get the next prestige rank:
-    					if ( isDefault && nextRank == null && Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
-    						RankLadder pLadder = PrisonRanks.getInstance().getLadderManager().getLadder( "prestiges" );
-    						nextRank = rankPlayer.getLadderRanks().get( pLadder ).getRank().getRankNext();
-    					}
+    					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
     			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
@@ -783,11 +801,7 @@ public class PlayerManager
     				if ( rank != null && 
     						( nextRank != null || nextRank == null && isDefault ) ) {
     					
-    					// if nextRank is null and if prestiges are enabled, then get the next prestige rank:
-    					if ( isDefault && nextRank == null && Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
-    						RankLadder pLadder = PrisonRanks.getInstance().getLadderManager().getLadder( "prestiges" );
-    						nextRank = rankPlayer.getLadderRanks().get( pLadder ).getRank().getRankNext();
-    					}
+    					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
     			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
@@ -872,11 +886,7 @@ public class PlayerManager
 				if ( rank != null && 
 						( nextRank != null || nextRank == null && isDefault ) ) {
 					
-					// if nextRank is null and if prestiges are enabled, then get the next prestige rank:
-					if ( isDefault && nextRank == null && Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
-						RankLadder pLadder = PrisonRanks.getInstance().getLadderManager().getLadder( "prestiges" );
-						nextRank = rankPlayer.getLadderRanks().get( pLadder ).getRank().getRankNext();
-					}
+					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
 					
 			        // This calculates the target rank, and takes in to consideration the player's existing rank:
 			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
@@ -954,11 +964,7 @@ public class PlayerManager
 						  ( nextRank != null || nextRank == null && isDefault ) ) {
 
 					  
-	  					// if nextRank is null and if prestiges are enabled, then get the next prestige rank:
-	  					if ( isDefault && nextRank == null && Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
-	  						RankLadder pLadder = PrisonRanks.getInstance().getLadderManager().getLadder( "prestiges" );
-	  						nextRank = rankPlayer.getLadderRanks().get( pLadder ).getRank().getRankNext();
-	  					}
+	  					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
 					  
   			          // This calculates the target rank, and takes in to consideration the player's existing rank:
   			          PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );

@@ -13,8 +13,18 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.15 2022-01-13
+# 3.2.11-alpha.15 2022-01-14
 
+
+* **Fix issue with the placeholders related to prison_rankup_cost.**
+This now works correctly to include the next prestig rank's cost when at the last rank in the default ladder.
+
+
+* **Bug fix: Get the 32 placeholders related to prison_rankup_cost working correctly when dealing with various prestige conditions.**
+
+
+
+* **Bug fix: The player based playSound was not working, but the world's playSound works perfectly.  Not sue why bukkit player would be messed up that **
 
 
 * **Bug fix: Hooking up the rollover to the next prestige rank cost, when at th end of the ladder, had a typo where it would not evaluate any rank.**
