@@ -1735,7 +1735,7 @@ public class SellAllUtil {
      *
      * @return boolean.
      * */
-    public boolean openSellAllGUI(Player p){
+    public boolean openSellAllGUI( Player p, int page, String cmdPage, String cmdReturn ){
         if (!isSellAllGUIEnabled){
             return false;
         }
@@ -1750,12 +1750,12 @@ public class SellAllUtil {
                 return false;
             }
 
-            SellAllPlayerGUI gui = new SellAllPlayerGUI(p, 0);
+            SellAllPlayerGUI gui = new SellAllPlayerGUI( p, page, cmdPage, cmdReturn );
             gui.open();
             return true;
         }
 
-        SellAllAdminGUI gui = new SellAllAdminGUI(p);
+        SellAllAdminGUI gui = new SellAllAdminGUI( p, page, cmdPage, cmdReturn );
         gui.open();
         return true;
     }

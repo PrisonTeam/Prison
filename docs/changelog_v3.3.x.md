@@ -13,7 +13,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.15 2022-01-15
+# 3.2.11-alpha.15 2022-01-16
+
+
+* **Lot of updates to the GUI menus.**
+Major improvements to the player's /gui ranks to work better with placeholders. Added comments to the GuiConfig.yml file on how to use it and the placeholders.
+Delete the GuiConfig.yml file to regenerate with the updated information on lore settings.
 
 
 * **Update a few of the player's GUIs to support the SpigotGUIMenutools.**

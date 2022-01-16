@@ -586,6 +586,22 @@ public class SpigotGUIMenuTools
 	}
 
 	
+	
+	public void addMenuPageButtonsNoPaging( PrisonGUI gui, GUIMenuPageData pageData ) {
+		
+		gui.addButton( createButtonMenuBackground( pageData, 1 ) );
+		gui.addButton( createButtonMenuBackground( pageData, 2 ) );
+		gui.addButton( createButtonMenuBackground( pageData, 3 ) );
+		gui.addButton( createButtonMenuBackground( pageData, 4 ) );
+
+		gui.addButton( createButtonPageCurrent( pageData, 5 ) );
+		
+		gui.addButton( createButtonMenuBackground( pageData, 6 ) );
+		gui.addButton( createButtonMenuBackground( pageData, 7 ) );
+		gui.addButton( createButtonMenuBackground( pageData, 8 ) );
+		gui.addButton( createButtonBack( pageData, 9 ) );
+
+	}
 }
 
 

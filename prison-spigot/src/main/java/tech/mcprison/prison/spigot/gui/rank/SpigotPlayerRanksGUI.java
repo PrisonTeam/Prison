@@ -14,15 +14,14 @@ import com.cryptomorin.xseries.XMaterial;
 import me.clip.placeholderapi.PlaceholderAPI;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
-import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
-import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -141,7 +140,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         
         
         // Get many parameters
-        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+//        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
 //        Rank rank = ladder.getLowestRank().get();
 //        PlayerRank playerRankRank = rankPlayerFactory.getRank( getRankPlayer(), guiConfig.getString("Options.Ranks.Ladder"));
         
@@ -176,14 +175,38 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
             ButtonLore ranksLore = new ButtonLore();
 
             for (String stringValue : configCustomLore) {
-            	PlayerRank pRank = rankPlayerFactory.getRank( getRankPlayer(), rank.getLadder() );
-                stringValue = stringValue.replace("{rankPrice}", PlaceholdersUtil.formattedKmbtSISize(pRank.getRankCost(), formatDecimal, ""));
+//            	PlayerRank pRank = rankPlayerFactory.getRank( getRankPlayer(), rank.getLadder() );
+            	
+                stringValue = stringValue.replace("{rankPrice}", 
+                		PlaceholdersUtil.formattedKmbtSISize(
+                				rank.getRawRankCost(), formatDecimal, "") + 
+                			(rank.getCurrency() == null || 
+                				"default".equalsIgnoreCase( rank.getCurrency()) ||
+                						rank.getCurrency().trim().length() == 0  ?
+                					"" : " " + rank.getCurrency() )
+                		);
                 stringValue = stringValue.replace("{rankName}", rank.getName());
                 stringValue = stringValue.replace("{rankTag}", SpigotPrison.format(rank.getTag()));
+                stringValue = stringValue.replace("{ladderName}", rank.getLadder().getName());
+                
+                StringBuilder sbMines = new StringBuilder();
+                for ( ModuleElement mine : rank.getMines() )
+				{
+                	if ( sbMines.length() > 0 ) {
+                		sbMines.append( ", " );
+                	}
+					sbMines.append( mine.getName() );
+				}
+                stringValue = stringValue.replace("{linkedMines}", sbMines.toString() );
+                
                 ranksLore.addLineLoreAction(stringValue);
             }
-            if (placeholderAPINotNull){
-                ranksLore.setLoreAction(PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(player.getUniqueId()), ranksLore.getLoreAction()));
+            
+            if ( placeholderAPINotNull ) {
+            	
+                ranksLore.setLoreAction(PlaceholderAPI.setPlaceholders(
+                			Bukkit.getOfflinePlayer(player.getUniqueId()), 
+                				ranksLore.getLoreAction()));
             }
 
             Button itemRank = new Button(null, playerHasThisRank ? materialHas : materialHasNot, showNumber ? amount : 1, ranksLore, SpigotPrison.format(rank.getTag()));

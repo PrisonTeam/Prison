@@ -40,17 +40,58 @@ public class GuiConfig extends SpigotConfigComponents{
             List<String> lore = new ArrayList<>();
             lore.add(" ");
             lore.add("&8-----------------------");
+            lore.add("&3Ladder: &a{ladderName}");
+            lore.add("&3Mines:  &a{linkedMines}");
             lore.add(" ");
-            lore.add("&8&l|&3Info&8|");
             lore.add("&3Rank Price: &a${rankPrice}");
             lore.add(" ");
             lore.add("&8-----------------------");
-            lore.add("%prison_rcb_default%");
+            lore.add("&7Players:    &3%prison_rank__player_count_{rankName}%");
+            lore.add("&7Cost:       &3%prison_rank__player_cost_formatted_{rankName}%");
+            lore.add("&7Multiplier: &3%prison_rank__cost_multiplier_{rankName}%");
+            lore.add("&7Remaining:  &3%prison_rank__player_cost_remaining_formatted_{rankName}%");
+            lore.add("%prison_rank__player_cost_bar_{rankName}%");
+            lore.add("&8-----------------------");
 
             conf.set("EditableLore.Ranks", lore);
             changeCount++;
         }
 
+        if ( conf.getList( "EditableLore.README" ) == null ) {
+        	 List<String> lore = new ArrayList<>();
+             lore.add(" ");
+             lore.add("&8-----------------------");
+             lore.add("&7 WARNING!! DO NOT EDIT THESE!!");
+             lore.add("&7 THESE ARE JUST INFORMATIONAL NOTES AND WILL BE IGNORED BY PRISON.");
+             lore.add("&8-----------------------");
+             lore.add("&7 There are three types of placeholders that will work with EditableLore:");
+             lore.add("&7 1. GUI placeholders");
+             lore.add("&7 2. '/prison placeholders list'");
+             lore.add("&7 3. Any other placeholder through PlaceholderAPI");
+             lore.add("&8-----------------------");
+             lore.add("&7GUI Placeholders are only the following and they are evaluated first ");
+             lore.add("&7so they can be nested in the prison placeholders: ");
+             lore.add("&7 {rankName} {rankTag} {rankPrice} {ladderName} {linkedMines}");
+             lore.add("&7 {mineName} {mineTag} ");
+             lore.add("&8-----------------------");
+             lore.add("&7Prison placeholders can include any that are within these placeholder ");
+             lore.add("&7Groups: PLAYER, RANKS, RANKPLAYERS, MINES, STATSMINES, and STATSRANKS");
+             lore.add("&8-----------------------");
+             lore.add("&7To use dyanamic placeholders, you need to use a combination of these two");
+             lore.add("&7types of placeholders. You use the GUI placeholders to inject the rank");
+             lore.add("&7name, or mine name, in to the prison placeholders. When injecting the ");
+             lore.add("&7names, do not use the tags since those will also inject formatting codes");
+             lore.add("&7which will corrupt the placeholders.");
+             lore.add("&7Cost:      &3%prison_rank__player_cost_formatted_{rankName}%");
+             lore.add("&7Remaining: &3%prison_rank__player_cost_remaining_formatted_{rankName}%");
+             lore.add("%prison_rank__player_cost_bar_{rankName}%");
+             lore.add("&8-----------------------");
+        	
+
+             conf.set("EditableLore.README", lore);
+             changeCount++;
+        }
+        
         // Count and save
         if (changeCount > 0) {
         	try {

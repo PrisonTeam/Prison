@@ -1,11 +1,12 @@
 package tech.mcprison.prison.spigot.commands;
 
-import org.bukkit.configuration.Configuration;
+import java.util.ArrayList;
+
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
 
-import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.commands.Arg;
@@ -19,10 +20,9 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminBlocksGUI;
 import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
-
-import java.util.ArrayList;
 
 /**
  * @author GABRYCA
@@ -407,8 +407,14 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall gui", description = "SellAll GUI command", altPermissions = "prison.admin", onlyPlayers = true)
-    private void sellAllGuiCommand(CommandSender sender){
+    @Command(identifier = "sellall gui", 
+    		description = "SellAll GUI command", 
+    		aliases = "gui sellall",
+    		altPermissions = "prison.admin", onlyPlayers = true)
+    private void sellAllGuiCommand(CommandSender sender,
+    		@Arg(name = "page", description = "If there are more than 45 items, then they " +
+    				"will be shown on multiple pages.  The page parameter starts with " +
+    				"page 1.", def = "1" ) int page){
 
         if (!isEnabled()) return;
 
@@ -425,12 +431,36 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        if (!sellAllUtil.openSellAllGUI(p)){
+        if (!sellAllUtil.openSellAllGUI( p, page, "sellall gui", "close" )){
             // If the sender's an admin (OP or have the prison.admin permission) it'll send an error message.
             if (p.hasPermission("prison.admin")) {
                 Output.get().sendError(sender, messages.getString(MessagesConfig.StringID.spigot_message_gui_sellall_disabled));
             }
         }
+    }
+    
+    @Command(identifier = "sellall gui blocks", 
+    		description = "SellAll GUI Blocks command", 
+    		aliases = "gui sellall",
+    		altPermissions = "prison.admin", onlyPlayers = true)
+    private void sellAllGuiBlocksCommand(CommandSender sender,
+    		@Arg(name = "page", description = "If there are more than 45 items, then they " +
+    				"will be shown on multiple pages.  The page parameter starts with " +
+    				"page 1.", def = "1" ) int page){
+    	
+    	if (!isEnabled()) return;
+    	
+    	Player p = getSpigotPlayer(sender);
+    	
+    	// Sender must be a Player, not something else like the Console.
+    	if (p == null) {
+    		Output.get().sendError(sender, getMessages().getString(MessagesConfig.StringID.spigot_message_console_error));
+    		return;
+    	}
+    	
+    	SellAllAdminBlocksGUI saBlockGui = new SellAllAdminBlocksGUI( p, page, "sellall gui blocks", "sellall gui" );
+    	saBlockGui.open();
+    	
     }
 
     @Command(identifier = "sellall add", description = "SellAll add an item to the sellAll shop.", permissions = "prison.admin", onlyPlayers = false)

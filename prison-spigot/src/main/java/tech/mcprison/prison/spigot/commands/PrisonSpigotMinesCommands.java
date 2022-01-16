@@ -26,7 +26,9 @@ public class PrisonSpigotMinesCommands
             				.getRegisteredCommandClass( PrisonSpigotGUICommands.class );
             	if ( regCommand != null ) {
             		PrisonSpigotGUICommands psGUICmd = (PrisonSpigotGUICommands) regCommand;
-            		psGUICmd.cmdPrisonManagerMines( sender, page, "mines", "close" );
+            		psGUICmd.cmdPrisonManagerMines( sender, page, "gui mines", "close" );
+            		
+            		return;
             	}
 //                sender.dispatchCommand("gui mines");
             }
