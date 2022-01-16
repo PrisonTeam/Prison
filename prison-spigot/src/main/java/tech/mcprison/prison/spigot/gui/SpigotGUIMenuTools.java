@@ -1,4 +1,4 @@
-package tech.mcprison.prison.spigot.gui.rank;
+package tech.mcprison.prison.spigot.gui;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -356,6 +356,10 @@ public class SpigotGUIMenuTools
     				if ( lore.contains( SpigotGUIMenuTools.GUI_MENU_TOOLS_COMMAND ) ) {
     					command = Text.stripColor( lore ).replace( SpigotGUIMenuTools.GUI_MENU_TOOLS_COMMAND, "" ).trim();
     				}
+    				
+    				if ( command != null && command.equalsIgnoreCase( "close" ) ) {
+    					p.closeInventory();
+    				}
 				}
     			
     			if ( isMenuToolsPage && command != null ) {
@@ -411,7 +415,8 @@ public class SpigotGUIMenuTools
 		newPageData.setCommandToRun( pageData.getCommandGoBack() );
 		newPageData.setCommandGoBack( null );
 		
-		String message = "Go Back";
+		String message = pageData.getCommandGoBack().equalsIgnoreCase( "close" ) ?
+				"Close" : "Go Back";
 		
 		ButtonLore buttonLore = createButtonLore( true, newPageData, 0 );
 		

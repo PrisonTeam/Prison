@@ -65,7 +65,6 @@ import tech.mcprison.prison.spigot.gui.mine.SpigotMineResetTimeGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotMinesBlocksGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotMinesConfirmGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotMinesGUI;
-import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMenuTools;
 import tech.mcprison.prison.spigot.gui.rank.SpigotLaddersGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankManagerGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankPriceGUI;
@@ -1642,7 +1641,7 @@ public class ListenersPrisonManager implements Listener {
         // Check the Item display name and do open the right GUI.
         switch (buttonNameMain) {
             case "Ranks - Ladders": {
-                SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 1);
+                SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 1, "gui ladders", "gui" );
                 gui.open();
                 break;
             }
@@ -1720,7 +1719,7 @@ public class ListenersPrisonManager implements Listener {
             Bukkit.dispatchCommand(p, "ranks ladder delete " + buttonNameMain);
             e.setCancelled(true);
             p.closeInventory();
-            SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 1);
+            SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 1, "gui ladders", "gui" );
             gui.open();
             return;
 

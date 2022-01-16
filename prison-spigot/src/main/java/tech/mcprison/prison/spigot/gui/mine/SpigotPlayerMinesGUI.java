@@ -16,12 +16,12 @@ import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.configs.GuiConfig;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools;
+import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools.GUIMenuPageData;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMenuTools;
-import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMenuTools.GUIMenuPageData;
 
 /**
  * @author GABRYCA
@@ -37,16 +37,20 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
     private final String statusLockedMine = messages.getString(MessagesConfig.StringID.spigot_gui_lore_locked);
 
     private int page;
+    private String cmdPage;
+    private String cmdReturn;
     
-    public SpigotPlayerMinesGUI(Player p, int page ) {
+    public SpigotPlayerMinesGUI(Player p, int page, String cmdPage, String cmdReturn ) {
         this.p = p;
         
         this.spigotPlayer = new SpigotPlayer(p);
         
         this.page = page;
+        this.cmdPage = cmdPage;
+        this.cmdReturn = cmdReturn;
     }
 
-    public void open(){
+    public void open() {
 
         // Get the mines - In sort order, minus any marked as suppressed
     	PrisonSortableResults mines = PrisonMines.getInstance().getMines( MineSortOrder.sortOrder );
@@ -54,7 +58,7 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         
         int totalArraySize = mines.getSortedList().size();
         GUIMenuPageData guiPageData = SpigotGUIMenuTools.getInstance()
-        		.createGUIPageObject( totalArraySize, page, "gui mines", "gui" );
+        		.createGUIPageObject( totalArraySize, page, cmdPage, cmdReturn );
 
 
         List<Mine> minesDisplay = mines.getSortedList().subList( guiPageData.getPosStart(), guiPageData.getPosEnd() );

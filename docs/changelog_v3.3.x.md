@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.15 2022-01-14
+# 3.2.11-alpha.15 2022-01-15
+
+
+* **Update a few of the player's GUIs to support the SpigotGUIMenutools.**
+Added capability to control the return command and the paging command so it now works more intuitivily.
 
 
 * **Fix issue with the placeholders related to prison_rankup_cost.**

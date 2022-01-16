@@ -48,6 +48,9 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             gui.open();
             return;
         }
+        
+        // If the player will be shown the /gui help, then force close any open inventory:
+        player.closeInventory();
 
         sender.dispatchCommand("gui help");
     }
@@ -59,6 +62,9 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     				"prestiges are shown on multiple pages.  The page parameter starts with " +
     				"page 1.", def = "1" ) int page
     		) {
+    	cmdPrisonManagerPrestiges( sender, page, "gui prestiges", "gui" );
+    }
+    protected void cmdPrisonManagerPrestiges( CommandSender sender, int page, String cmdPage, String cmdReturn ) {
 
         if ( !isPrisonConfig("prestiges") && !isPrisonConfig( "prestige.enabled" ) ) {
             Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_prestiges_disabled)));
@@ -88,7 +94,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        SpigotPlayerPrestigesGUI gui = new SpigotPlayerPrestigesGUI( player, page );
+        SpigotPlayerPrestigesGUI gui = new SpigotPlayerPrestigesGUI( player, page, cmdPage, cmdReturn );
         gui.open();
     }
 
@@ -100,6 +106,10 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     				"page 1.", def = "1" ) int page
     		) {
 
+    	cmdPrisonManagerMines( sender, page, "gui mines", "gui" );
+    }
+    
+    protected void cmdPrisonManagerMines( CommandSender sender, int page, String cmdPage, String cmdReturn ) {
         Player player = getSpigotPlayer(sender);
 
         if (player == null) {
@@ -123,7 +133,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             }
         }
 
-        SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI( player, page );
+        SpigotPlayerMinesGUI gui = new SpigotPlayerMinesGUI( player, page, cmdPage, cmdReturn );
         gui.open();
     }
 
@@ -134,7 +144,10 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     				"ranks are shown on multiple pages.  The page parameter starts with " +
     				"page 1.", def = "1" ) int page
     		) {
-
+    	
+    	cmdPrisonManagerRanks( sender, page, "gui ranks", "gui" );
+    }
+    protected void cmdPrisonManagerRanks(CommandSender sender, int page, String cmdPage, String cmdReturn ) {
         Player player = getSpigotPlayer(sender);
 
         if (player == null) {
@@ -159,7 +172,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             }
         }
 
-        SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI( player, page );
+        SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI( player, page, cmdPage, cmdReturn );
         gui.open();
     }
     
@@ -171,6 +184,10 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     				"ladders are shown on multiple pages.  The page parameter starts with " +
     				"page 1.", def = "1" ) int page
     		) {
+    	
+    	cmdPrisonManagerLadderss( sender, page, "gui ladders", "gui" );
+    }
+    protected void cmdPrisonManagerLadderss(CommandSender sender, int page, String cmdPage, String cmdReturn ) {
     	
     	Player player = getSpigotPlayer(sender);
     	
@@ -196,7 +213,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     		}
     	}
     	
-    	SpigotLaddersGUI gui = new SpigotLaddersGUI( player, page );
+    	SpigotLaddersGUI gui = new SpigotLaddersGUI( player, page, cmdPage, cmdReturn );
     	gui.open();
     }
 

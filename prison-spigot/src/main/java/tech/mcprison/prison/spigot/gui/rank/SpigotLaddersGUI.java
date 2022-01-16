@@ -13,11 +13,12 @@ import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools;
+import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools.GUIMenuPageData;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMenuTools.GUIMenuPageData;
 
 /**
  * @author GABRYCA
@@ -27,12 +28,16 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
     private final Player p;
     
     private int page;
+    private String cmdPage;
+    private String cmdReturn;
 //    private int counter;
 
-    public SpigotLaddersGUI(Player p, int page ){
+    public SpigotLaddersGUI(Player p, int page, String cmdPage, String cmdReturn ) {
         this.p = p;
         
         this.page = page;
+        this.cmdPage = cmdPage;
+        this.cmdReturn = cmdReturn;
 //        this.counter = counter;
     }
 
@@ -57,7 +62,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         
         int totalArraySize = lm.getLadders().size();
         GUIMenuPageData guiPageData = SpigotGUIMenuTools.getInstance()
-        		.createGUIPageObject( totalArraySize, page, "gui ladders", "gui" );
+        		.createGUIPageObject( totalArraySize, page, cmdPage, cmdReturn );
 
 
         List<RankLadder> laddersDisplay = lm.getLadders().subList( guiPageData.getPosStart(), guiPageData.getPosEnd() );

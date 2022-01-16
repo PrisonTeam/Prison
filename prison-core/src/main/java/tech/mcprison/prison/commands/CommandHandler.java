@@ -572,6 +572,17 @@ public class CommandHandler {
         argHandler.handler = this;
         argumentHandlers.put(clazz, argHandler);
     }
+    
+    public Object getRegisteredCommandClass( @SuppressWarnings( "rawtypes" ) Class commandClass ) {
+    	Object results = null;
+    	
+    	String key = commandClass.getSimpleName();
+    	if ( key != null && getRegisteredCommands().containsKey( key ) ) {
+    		results = getRegisteredCommands().get( key );
+    	}
+    	
+    	return results;
+    }
 
     public void registerCommands(Object methodInstance) {
 

@@ -720,17 +720,17 @@ public class SpigotPrison
 
         // Load sellAll if enabled
         if (isSellAllEnabled){
-            Prison.get().getCommandHandler().registerCommands(new PrisonSpigotSellAllCommands());
+        	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotSellAllCommands() );
         }
 
         // Load backpacks commands if enabled
         if (isBackPacksEnabled){
-            Prison.get().getCommandHandler().registerCommands(new PrisonSpigotBackpackCommands());
+        	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotBackpackCommands() );
         }
 
         // This registers the admin's /gui commands
         if (getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true")) {
-            Prison.get().getCommandHandler().registerCommands(new PrisonSpigotGUICommands());
+        	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotGUICommands() );
         }
 
         
@@ -739,7 +739,7 @@ public class SpigotPrison
             Prison.get().getModuleManager()
                     .registerModule(new PrisonUtilsModule(getDescription().getVersion(), modulesConf));
 
-            Prison.get().getCommandHandler().registerCommands( new PrisonSpigotMinesCommands() );
+//            Prison.get().getCommandHandler().registerCommands( new PrisonSpigotMinesCommands() );
             
         } else {
             Output.get().logInfo("&7Modules: &cPrison Utils are disabled and were not Loaded. ");
