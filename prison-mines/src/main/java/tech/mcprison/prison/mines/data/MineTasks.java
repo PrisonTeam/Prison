@@ -246,7 +246,7 @@ public abstract class MineTasks
     protected void broadcastResetMessageToAllPlayersWithRadius() {
 //    	long start = System.currentTimeMillis();
     	
-    	if ( isVirtual() ) {
+    	if ( isVirtual() || getResetTime() <= 0 ) {
     		// ignore:
     	}
     	else 
@@ -290,7 +290,7 @@ public abstract class MineTasks
     @Override
     protected void broadcastPendingResetMessageToAllPlayersWithRadius(MineJob mineJob) {
     	
-    	if ( isVirtual() ) {
+    	if ( isVirtual() || getResetTime() <= 0) {
     		// ignore:
     	}
     	else

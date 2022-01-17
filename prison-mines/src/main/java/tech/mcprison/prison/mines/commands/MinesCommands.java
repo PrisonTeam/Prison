@@ -1054,10 +1054,19 @@ public class MinesCommands
           	}
           	
           	
+          	 
+          	 
+          	int resetTime = m.getResetTime();
           	
-        	{
+          	if ( resetTime <= 0 ) {
+          		RowComponent row = new RowComponent();
+          		
+          		row.addTextComponent( "&3Automatic Resets are &7Disabled" );
+          		chatDisplay.addComponent( row );
+          	}
+          	else {
         		RowComponent row = new RowComponent();
-        		double rtMinutes = m.getResetTime() / 60.0D;
+        		double rtMinutes = resetTime / 60.0D;
         		row.addTextComponent( "&3Reset time: &7%s &3Secs (&7%.2f &3Mins)", 
         				Integer.toString(m.getResetTime()), rtMinutes );
         		chatDisplay.addComponent( row );
@@ -1086,7 +1095,7 @@ public class MinesCommands
         		}
         	}
         	
-        	if ( !m.isVirtual() ) {
+        	if ( !m.isVirtual() && resetTime > 0 ) {
         		RowComponent row = new RowComponent();
         		
         		long targetResetTime = m.getTargetResetTime();
@@ -1099,6 +1108,7 @@ public class MinesCommands
         		chatDisplay.addComponent( row );
         	}
         	
+        	if ( resetTime > 0 )
         	{
         		RowComponent row = new RowComponent();
         		row.addTextComponent( "&3Notification Mode: &7%s &7%s", 
@@ -1108,8 +1118,8 @@ public class MinesCommands
         		chatDisplay.addComponent( row );
         	}
         	
-        	if ( m.isUseNotificationPermission() || 
-        			!m.isUseNotificationPermission() && cmdPageData.isShowAll() ) {
+        	if ( resetTime > 0 && m.isUseNotificationPermission() || 
+        		 resetTime > 0 && !m.isUseNotificationPermission() && cmdPageData.isShowAll() ) {
         		RowComponent row = new RowComponent();
         		row.addTextComponent( "&3Notifications Filtered by Permissions: %s", 
         				( m.isUseNotificationPermission() ?
@@ -1164,7 +1174,7 @@ public class MinesCommands
         	}
         	
         	
-        	if ( m.isSkipResetEnabled() ) {
+        	if ( resetTime > 0 && m.isSkipResetEnabled() ) {
         		RowComponent row = new RowComponent();
         		row.addTextComponent( "&3Skip Reset: &2Enabled&3: &3Threshold: &7%s  &3Skip Limit: &7%s",
         				fFmt.format( m.getSkipResetPercent() ), dFmt.format( m.getSkipResetBypassLimit() ));
@@ -1177,7 +1187,7 @@ public class MinesCommands
         			chatDisplay.addComponent( row2 );
         		}
         	} 
-        	else if ( cmdPageData.isShowAll() ) {
+        	else if ( resetTime > 0 && cmdPageData.isShowAll() ) {
         		RowComponent row = new RowComponent();
         		row.addTextComponent( "&3Skip Mine Reset if no Activity: &cnot set");
         		chatDisplay.addComponent( row );
@@ -1529,7 +1539,7 @@ public class MinesCommands
             	
             	row.addTextComponent( "  &3(&2R: " );
             	
-            	if ( !m.isVirtual() ) {
+            	if ( !m.isVirtual() && m.getResetTime() > 0 ) {
             		row.addFancy( 
             				new FancyMessage( 
             						String.format( "&7%s &3sec &3/ ", dFmt.format(m.getRemainingTimeSec())))
@@ -1538,10 +1548,21 @@ public class MinesCommands
 //            		row.addTextComponent( " sec &3(&b" );
             	}
             	
-            	row.addFancy( 
-            			new FancyMessage(
-            					String.format( "&7%s &3sec )&b", dFmt.format(m.getResetTime()) ))
-            			.tooltip( "Reset time in seconds" ) );
+            	
+            	if ( m.getResetTime() <= 0 ) {
+            		
+            		row.addFancy( 
+            				new FancyMessage(
+            						String.format( "&7disabled )&b" ))
+            				.tooltip( "Auto resets have been disabled." ) );
+            	}
+            	else {
+            		
+            		row.addFancy( 
+            				new FancyMessage(
+            						String.format( "&7%s &3sec )&b", dFmt.format(m.getResetTime()) ))
+            				.tooltip( "Reset time in seconds" ) );
+            	}
 //            	row.addTextComponent( " sec&3)&b" );
             	
             	if ( !m.isVirtual() && player != null && 
@@ -1781,15 +1802,31 @@ public class MinesCommands
      * @param time
      */
     @Command(identifier = "mines set resetTime", permissions = "mines.resettime", 
-    		description = "Set a mine's time  to reset.")
+    		description = "Set a mine's auto reset time as expressed in seconds.")
     public void resetTimeCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
-        @Arg(name = "time", description = "Time in seconds for the mine to auto reset." ) String time
+        @Arg(name = "time", description = "Time in seconds for the mine to auto reset. " +
+        		"With a minimum value of "+ MineData.MINE_RESET__TIME_SEC__MINIMUM + " seconds. " +
+        				"Using 'disable' will turn off the auto reset." ) String time
         
     		) {
         
         if (performCheckMineExists(sender, mineName)) {
         	setLastMineReferenced(mineName);
+        	
+        	PrisonMines pMines = PrisonMines.getInstance();
+        	Mine m = pMines.getMine(mineName);
+        	
+        	if ( "disable".equalsIgnoreCase( time ) ) {
+        		
+        		m.setResetTime( -1 );
+        		
+        		pMines.getMineManager().saveMine( m );
+        		
+        		Output.get().logInfo( "&7Automatic resets have been disabled for mine %s.", m.getTag() );
+        		
+        		return;
+        	}
 
         	try {
         		int resetTime = MineData.MINE_RESET__TIME_SEC__DEFAULT;
@@ -1803,9 +1840,6 @@ public class MinesCommands
 							"&7Invalid resetTime value for &b%s&7. Must be an integer value of &b%d&7 or greater. [&b%d&7]",
 							mineName, MineData.MINE_RESET__TIME_SEC__MINIMUM, resetTime );
 				} else {
-					PrisonMines pMines = PrisonMines.getInstance();
-					Mine m = pMines.getMine(mineName);
-			        
 //			        if ( !m.isEnabled() ) {
 //			        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
 //			        	return;

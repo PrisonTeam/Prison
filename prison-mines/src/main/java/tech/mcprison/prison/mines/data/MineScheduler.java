@@ -240,6 +240,9 @@ public abstract class MineScheduler
 	 */
 	protected List<MineJob> initializeJobWorkflow( double resetTime, boolean includeMessages, ArrayList<Integer> rwTimes )
 	{
+		double targetResetTime = resetTime;
+		
+		
 		List<MineJob> workflow = new ArrayList<>();
 		ArrayList<Integer> resetWarningTimes = new ArrayList<>();
 		
@@ -261,8 +264,8 @@ public abstract class MineScheduler
 		
 		// if the mine is virtual, set the resetTime to four hours.  It won't reset, but it will stay active
 		// in the workflow:
-		if ( isVirtual() ) {
-			resetTime = 60 * 60 * 4; // one hour * 4
+		if ( isVirtual() || resetTime <= 0 ) {
+			targetResetTime = 60 * 60 * 4; // one hour * 4
 		}
 		
 		// Determine if the sync or async reset action should be used for this workflow.
@@ -275,7 +278,7 @@ public abstract class MineScheduler
 			
 			double total = 0;
 			for ( Integer time : resetWarningTimes ) {
-				if ( time < resetTime ) {
+				if ( time < targetResetTime ) {
 					// if reset time is less than warning time, then skip warning:
 					double elapsed = time - total;
 					workflow.add( 
@@ -286,11 +289,11 @@ public abstract class MineScheduler
 			}
 			workflow.add( 
 					new MineJob( workflow.size() == 0 ? resetAction : MineJobAction.MESSAGE, 
-							(resetTime - total), total) );
+							(targetResetTime - total), total) );
 			
 		} else {
 			// Exclude all messages. Only reset mine:
-			workflow.add( new MineJob( resetAction, resetTime, 0) );
+			workflow.add( new MineJob( resetAction, targetResetTime, 0) );
 		}
 		
 		return workflow;
@@ -326,6 +329,12 @@ public abstract class MineScheduler
 		// TODO track how many times the world fails to load? Then terminate the mine job if it
 		// appears like it will never load?
 		//checkWorld();
+		
+		if ( getResetTime() <= 0 ) {
+			
+			submitNextAction();
+			return;
+		}
 		
 		boolean forced = getCurrentJob() != null && 
 							getCurrentJob().getResetType() == MineResetScheduleType.FORCED;

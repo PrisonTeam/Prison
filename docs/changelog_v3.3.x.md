@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.16 2022-01-16
+# 3.2.11-alpha.16 2022-01-17
+
+
+* **Mine auto resets can now be disabled.**
+When disabled, they will never reset based upon time. The resets can still be triggered by blocks remaining thresholds.
 
 
 * **3.2.11-alpha.16 2022-01-16**
