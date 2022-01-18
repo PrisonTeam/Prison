@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.16 2022-01-17
 
 
+* **Fixed an issue with CI's function that was not returning any ids.**
+
+
 * **Mine auto resets can now be disabled.**
 When disabled, they will never reset based upon time. The resets can still be triggered by blocks remaining thresholds.
 

@@ -24,8 +24,7 @@ public class CustomItemsWrapper {
 	public String getCustomBlockId( Block block ) {
 		
 		org.bukkit.block.Block spigotBlock = ((SpigotBlock) block).getWrapper();
-		CustomItemsAPI.getCustomItemIDAtBlock( spigotBlock );
-		return null;
+		return CustomItemsAPI.getCustomItemIDAtBlock( spigotBlock );
 	}
 
 	/**
