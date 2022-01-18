@@ -1081,15 +1081,19 @@ public class RankManager
 				cost = 0;
 			}
 			else {
-				cost = playerRank.getRankCost();
+				//cost = playerRank.getRankCost();
 				Rank nextRank = playerRank.getRank();
 				
 				while ( nextRank != null &&
-						nextRank.getPosition() < rank.getPosition() ) {
+						nextRank.getPosition() <= rank.getPosition() ) {
 					
 					// Need to calculate the next PlayerRank value for the next rank:
 					
-					playerRank = rankPlayerFactory.createPlayerRank( nextRank );
+					// This calculates the target rank, and takes in to consideration the player's existing rank:
+					playerRank = playerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+					
+					
+//					playerRank = rankPlayerFactory.createPlayerRank( nextRank );
 //					playerRank = new PlayerRank(nextRank);
 					
 					cost += playerRank.getRankCost();

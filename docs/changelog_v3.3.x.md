@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.16 2022-01-17
 
 
+* **Bug fix with the rank cost calculations since they were not pulling in the last rank in the rang of ranks.**
+
+
 * **Fixed an issue with CI's function that was not returning any ids.**
 
 
