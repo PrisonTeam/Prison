@@ -1,6 +1,7 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -19,9 +20,11 @@ import tech.mcprison.prison.modules.ModuleManager;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -45,15 +48,17 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
     private PrisonRanks rankPlugin;
     private RankPlayer rankPlayer;
     private final boolean placeholderAPINotNull = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null || Bukkit.getPluginManager().getPlugin("PlaceholdersAPI") != null;
-    private final List<String> configCustomLore = guiConfig.getStringList("EditableLore.Ranks");
+//    private final List<String> configCustomLore = guiConfig.getStringList("EditableLore.Ranks");
     
+    private String ladderName;
     private int page = 0;
     private String cmdPage;
     private String cmdReturn;
 
-    public SpigotPlayerRanksGUI(Player player, int page, String cmdPage, String cmdReturn ) {
+    public SpigotPlayerRanksGUI(Player player, String ladderName, int page, String cmdPage, String cmdReturn ) {
         this.player = player;
         
+        this.ladderName = ladderName;
         this.page = page;
         this.cmdPage = cmdPage;
         this.cmdReturn = cmdReturn;
@@ -116,7 +121,8 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         }
 
         LadderManager lm = getRankPlugin().getLadderManager();
-        RankLadder ladder = lm.getLadder(guiConfig.getString("Options.Ranks.Ladder"));
+        RankLadder ladder = lm.getLadder( ladderName );
+//        RankLadder ladder = lm.getLadder(guiConfig.getString("Options.Ranks.Ladder"));
 
         // Ensure ladder is present and that it has a rank:
         if ( ladder == null || !ladder.getLowestRank().isPresent()){
@@ -140,7 +146,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         
         
         // Get many parameters
-//        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
 //        Rank rank = ladder.getLowestRank().get();
 //        PlayerRank playerRankRank = rankPlayerFactory.getRank( getRankPlayer(), guiConfig.getString("Options.Ranks.Ladder"));
         
@@ -153,6 +159,10 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         XMaterial materialHas = XMaterial.valueOf(guiConfig.getString("Options.Ranks.Item_gotten_rank"));
         XMaterial materialHasNot = XMaterial.valueOf(guiConfig.getString("Options.Ranks.Item_not_gotten_rank"));
 
+        
+        List<String> configCustomLore = guiConfig.getStringList("EditableLore.Ranks");
+
+        
         // Variables
         int hackyCounterEnchant = 0;
         
@@ -167,19 +177,30 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
         boolean showNumber = getBoolean(guiConfig.getString("Options.Ranks.Number_of_Rank_Player_GUI"));
 
+        PlayerRank pRank = rankPlayerFactory.getRank( getRankPlayer(), ladder );
+        
         for ( Rank rank : ranksDisplay )
 		{
         	// hasAccess uses access by rank, and access by perm:
         	boolean playerHasThisRank = getRankPlayer() != null && getRankPlayer().hasAccessToRank( rank );
 
+        	String rankLoreKey = "EditableLore.Rank." + ladderName + "." + rank.getName();
+        	List<String> rankLore = new ArrayList<>( configCustomLore );
+        	List<String> rankLore2 = guiConfig.getStringList( rankLoreKey );
+        	rankLore.addAll( rankLore2 );
+        	
             ButtonLore ranksLore = new ButtonLore();
 
-            for (String stringValue : configCustomLore) {
-//            	PlayerRank pRank = rankPlayerFactory.getRank( getRankPlayer(), rank.getLadder() );
+            PlayerRank calPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, rank );
+            double rankPrice = calPRank.getRankCost();
+            double rankMultiplier = calPRank.getRankMultiplier();
+
+            for ( String stringValue : rankLore ) {
+            	
             	
                 stringValue = stringValue.replace("{rankPrice}", 
                 		PlaceholdersUtil.formattedKmbtSISize(
-                				rank.getRawRankCost(), formatDecimal, "") + 
+                				rankPrice, formatDecimal, "") + 
                 			(rank.getCurrency() == null || 
                 				"default".equalsIgnoreCase( rank.getCurrency()) ||
                 						rank.getCurrency().trim().length() == 0  ?
@@ -187,6 +208,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
                 		);
                 stringValue = stringValue.replace("{rankName}", rank.getName());
                 stringValue = stringValue.replace("{rankTag}", SpigotPrison.format(rank.getTag()));
+                stringValue = stringValue.replace("{rankMultiplier}", Double.toString( rankMultiplier ));
                 stringValue = stringValue.replace("{ladderName}", rank.getLadder().getName());
                 
                 StringBuilder sbMines = new StringBuilder();

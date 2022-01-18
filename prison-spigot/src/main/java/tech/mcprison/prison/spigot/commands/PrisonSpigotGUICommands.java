@@ -16,7 +16,6 @@ import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 import tech.mcprison.prison.spigot.gui.mine.SpigotMinesGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotPlayerMinesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotLaddersGUI;
-import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerPrestigesGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotPlayerRanksGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
 
@@ -98,7 +97,9 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        SpigotPlayerPrestigesGUI gui = new SpigotPlayerPrestigesGUI( player, page, cmdPage, cmdReturn );
+
+        SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI( player, "prestiges", page, cmdPage, cmdReturn );
+//        SpigotPlayerPrestigesGUI gui = new SpigotPlayerPrestigesGUI( player, page, cmdPage, cmdReturn );
         gui.open();
     }
 
@@ -219,7 +220,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             }
         }
 
-        SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI( player, page, cmdPage, cmdReturn );
+        SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI( player, "default", page, cmdPage, cmdReturn );
         gui.open();
     }
     

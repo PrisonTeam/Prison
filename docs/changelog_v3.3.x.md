@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.16 2022-01-17
 
 
+* **More updates to the player's rank menu with the ability to add rank specific lore to the configs.**
+When referring to ranks, the names much match exactly since they are case sensitive.
+
+
 * **Bug fix with the rank cost calculations since they were not pulling in the last rank in the rang of ranks.**
 
 
