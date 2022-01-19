@@ -36,6 +36,7 @@ import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
+import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
@@ -632,6 +633,53 @@ public class SpigotPlayer
 	@Override
 	public PlayerCachePlayerData getPlayerCachePlayerData() {
 		return PlayerCache.getInstance().getOnlinePlayer( this );
+	}
+	
+	public boolean enableFlying( Mine mine, float flightSpeed ) {
+		boolean enabled = false;
+		
+		if ( mine.isInMineExact( getLocation() ) ) {
+			// Within mine:
+			
+			// save the current mine reference in the player's object:
+//			this.lastEffectsMine = mine;
+			
+			if ( getWrapper() != null ) {
+				org.bukkit.entity.Player bukkitPlayer = getWrapper();
+				
+				bukkitPlayer.setAllowFlight( true );
+				bukkitPlayer.setFlySpeed( flightSpeed );
+				enabled = true;
+			}
+		}
+		
+		return enabled;
+	}
+	
+//	public Mine getEffectsMine() {
+//		Mine effectsMine = null;
+//		
+//		if ( lastEffectsMine != null ) {
+//			
+//			if ( !lastEffectsMine.isInMineExact( getLocation() ) ) {
+//				lastEffectsMine = null;
+//				
+//				// cancel all effects for player
+//			}
+//			effectsMine = lastEffectsMine;
+//		}
+//		return effectsMine;
+//	}
+	
+	public boolean isFlying() {
+		boolean flying = false;
+		
+		if ( getWrapper() != null ) {
+			org.bukkit.entity.Player bukkitPlayer = getWrapper();
+			
+			flying = bukkitPlayer.isFlying();
+		}
+		return flying;
 	}
 	
 	@Override

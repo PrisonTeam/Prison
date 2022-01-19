@@ -16,7 +16,7 @@ These build logs represent the work that has been going on within prison.
 # 3.2.11-alpha.17 2022-01-18
 
 
-
+* **Added to SpigotPlayer the ability to enable flying and to check to see if the player is flying.  This is to prepare for mine effects.**
 
 
 * **Considering adding heads support to prison.  Added a few parts, but they are not functional.**
