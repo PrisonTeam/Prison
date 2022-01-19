@@ -13,7 +13,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11-alpha.16 2022-01-17
+# 3.2.11-alpha.17 2022-01-18
+
+
+
+
+* **3.2.11-alpha.17 2022-01-18**
 
 
 * **More updates to the player's rank menu with the ability to add rank specific lore to the configs.**
