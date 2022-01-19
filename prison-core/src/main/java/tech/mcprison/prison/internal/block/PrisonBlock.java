@@ -46,7 +46,8 @@ public class PrisonBlock
 	
 	public enum PrisonBlockType {
 		minecraft,
-		CustomItems
+		CustomItems,
+		heads
 	}
 	
 	/**
