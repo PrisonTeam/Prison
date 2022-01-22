@@ -44,7 +44,7 @@ public class BlockUtils
 	
 	public boolean isUnbreakable( PrisonBlock block ) {
 		
-		return block.getLocation() == null ? false : 
+		return block == null || block.getLocation() == null ? false : 
 						getUnbreakableBlocks().containsKey( block.getLocation() );
 	}
 	

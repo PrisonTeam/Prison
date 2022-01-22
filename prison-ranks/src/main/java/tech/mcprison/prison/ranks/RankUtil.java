@@ -32,6 +32,7 @@ import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.events.RankUpEvent;
 import tech.mcprison.prison.tasks.PrisonCommandTask;
 import tech.mcprison.prison.tasks.PrisonCommandTask.CustomPlaceholders;
@@ -105,6 +106,7 @@ public class RankUtil
 		failed_player,
 		failed_ladder,
 
+		player_has_no_rank_on_ladder,
 		orginal_rank,
 		
 		failed_rank_not_found,
@@ -337,8 +339,19 @@ public class RankUtil
         // This should never be null, since if a player is not on this ladder, then they 
         // should never make it this far in to this code:
         // Um... not true when performing a prestige for the first time.... lol
+        // Also not true when being added to a ladder, since they will not have an existing rank.
         
-        PlayerRank originalRank = rankPlayer.getRank(ladder);
+        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+        
+        
+        
+        // originalRank can be null...
+        PlayerRank originalRank = rankPlayerFactory.getRank( rankPlayer, ladder );
+        
+        if ( originalRank == null ) {
+        	
+        	results.addTransaction( RankupTransactions.player_has_no_rank_on_ladder );
+        }
         
 //        if ( originalRank == null && ladder.getName().equals( "default" ) ) {
 //        	
@@ -354,6 +367,8 @@ public class RankUtil
         results.addTransaction( RankupTransactions.orginal_rank );
         results.setPlayerRankOriginal( originalRank );
         results.setOriginalRank( originalRank == null ? null : originalRank.getRank() );
+        
+
         
         /**
          * calculate the target rank.  In this function the original rank is updated within the
@@ -376,7 +391,7 @@ public class RankUtil
         		results.addTransaction(RankupTransactions.cannot_delete_default_ladder);
         	}
         	else {
-        		boolean success = rankPlayer.removeLadder( ladder.getName() );
+        		boolean success = rankPlayerFactory.removeLadder( rankPlayer, ladder.getName() );
         		
         		if ( success ) {
         	        if ( savePlayerRank( results, rankPlayer ) ) {
@@ -406,13 +421,18 @@ public class RankUtil
         
 
         // This calculates the target rank, and takes in to consideration the player's existing rank:
-        PlayerRank pRankNext = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
+        PlayerRank pRankNext =
+        			originalRank == null ? null :
+        				originalRank.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
 //        		new PlayerRank( targetRank, originalRank.getRankMultiplier() );
 		
         // If player does not have a rank on this ladder, then grab the first rank on the ladder since they need
         // to be added to the ladder.
         if ( pRankNext == null ) {
-        	pRankNext = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, ladder.getLowestRank().get() );
+        	
+        	pRankNext = rankPlayerFactory.createPlayerRank( targetRank );
+        	
+//        	pRankNext = originalRank.getTargetPlayerRankForPlayer( rankPlayer, ladder.getLowestRank().get() );
         }
         
         	
@@ -738,13 +758,13 @@ public class RankUtil
     }
     
 
-    public static int doubleToInt(Object d) {
-        return Math.toIntExact(Math.round((double) d));
-    }
-    
-    public static long doubleToLong(Object d) {
-    	return Math.round((double) d);
-    }
+//    public static int doubleToInt(Object d) {
+//        return Math.toIntExact(Math.round((double) d));
+//    }
+//    
+//    public static long doubleToLong(Object d) {
+//    	return Math.round((double) d);
+//    }
     
     
     

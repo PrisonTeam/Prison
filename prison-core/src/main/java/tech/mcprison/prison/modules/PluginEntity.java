@@ -30,6 +30,6 @@ public interface PluginEntity {
 
     String getName();
 
-    File getDataFolder();
+    File getModuleDataFolder();
 
 }

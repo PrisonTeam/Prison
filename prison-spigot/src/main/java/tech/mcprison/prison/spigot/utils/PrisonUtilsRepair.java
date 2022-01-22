@@ -11,9 +11,9 @@ import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.Compatibility;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 
@@ -257,7 +257,7 @@ public class PrisonUtilsRepair
     		{
     	boolean results = false;
     	
-    	Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+    	Compatibility compat = SpigotCompatibility.getInstance();
     	
     	if ( item != null && !item.isBlock() && !item.isAir() ) {
     		

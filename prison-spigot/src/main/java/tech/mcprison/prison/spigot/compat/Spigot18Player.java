@@ -2,6 +2,11 @@ package tech.mcprison.prison.spigot.compat;
 
 import org.bukkit.entity.Player;
 
+import com.cryptomorin.xseries.messages.ActionBar;
+import com.cryptomorin.xseries.messages.Titles;
+
+import tech.mcprison.prison.util.Text;
+
 public abstract class Spigot18Player
 		extends CompatibilityCache
 		implements CompatibilityPlayer
@@ -37,9 +42,14 @@ public abstract class Spigot18Player
 	 * @param fadeOut - parameter ignored
 	 */
 	@Override
-	@SuppressWarnings( "deprecation" )
 	public void sendTitle( Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut ) {
-		player.sendTitle( title, subtitle );
+		//player.sendTitle( title, subtitle );
+		
+		title = title == null ? null : Text.translateAmpColorCodes( title );
+		subtitle = subtitle == null ? null : Text.translateAmpColorCodes( subtitle );
+
+		Titles.sendTitle( player, fadeIn, stay, fadeOut, title, subtitle );
+		
 	}
 
 	/**
@@ -50,11 +60,14 @@ public abstract class Spigot18Player
 	 * @param player
 	 * @param actionBar
 	 */
-	@SuppressWarnings( "deprecation" )
 	@Override
 	public void sendActionBar( Player player, String actionBar ) {
 		
-		player.sendTitle( "", actionBar );
+		String message = Text.translateAmpColorCodes( actionBar );
+		ActionBar.sendActionBar( player, message );
+		
+		// Was using the following until it was replaced with XSeries' ActionBar:
+//		player.sendTitle( "", actionBar );
 
 		// The following class does not exist under spigot 1.8.8
 //		player.spigot().sendMessage( ChatMessageType.ACTION_BAR, 

@@ -47,10 +47,10 @@ public class MinesConfig implements FileIOData {
 //     */
 //    public boolean multiworld = false;
 
-    /**
-     * True if only blocks that are air should be replaced. False otherwise
-     */
-    public boolean fillMode = false;
+//    /**
+//     * True if only blocks that are air should be replaced. False otherwise
+//     */
+//    public boolean fillMode = false;
 
     /**
      * The duration between mine resets in seconds.

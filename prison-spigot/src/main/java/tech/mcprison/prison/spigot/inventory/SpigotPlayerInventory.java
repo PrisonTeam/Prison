@@ -24,9 +24,9 @@ import java.util.List;
 
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.inventory.PlayerInventory;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 
 /**
  * Created by DMP9 on 04/02/2017.
@@ -102,7 +102,7 @@ public class SpigotPlayerInventory extends SpigotInventory implements PlayerInve
     @Override public ItemStack getItemInLeftHand() {
 
     	return SpigotUtil.bukkitItemStackToPrison(
-    			SpigotPrison.getInstance().getCompatibility().getItemInOffHand( 
+    			SpigotCompatibility.getInstance().getItemInOffHand( 
 						((org.bukkit.inventory.PlayerInventory) getWrapper()) )
     				);
     	
@@ -114,7 +114,7 @@ public class SpigotPlayerInventory extends SpigotInventory implements PlayerInve
     	
     	if ( stack instanceof SpigotItemStack ) {
     		
-    		SpigotPrison.getInstance().getCompatibility()
+    		SpigotCompatibility.getInstance()
     						.setItemStackInOffHand( this, ((SpigotItemStack) stack) );
     	}
     }
@@ -123,7 +123,7 @@ public class SpigotPlayerInventory extends SpigotInventory implements PlayerInve
     	
     	
     	return SpigotUtil.bukkitItemStackToPrison(
-    				SpigotPrison.getInstance().getCompatibility().getItemInMainHand( 
+    			SpigotCompatibility.getInstance().getItemInMainHand( 
     						((org.bukkit.inventory.PlayerInventory) getWrapper()) ));
     }
 
@@ -131,7 +131,7 @@ public class SpigotPlayerInventory extends SpigotInventory implements PlayerInve
     	
     	if ( stack instanceof SpigotItemStack ) {
     		
-    		SpigotPrison.getInstance().getCompatibility()
+    		SpigotCompatibility.getInstance()
     						.setItemStackInMainHand( this, ((SpigotItemStack) stack) );
     	}
     }

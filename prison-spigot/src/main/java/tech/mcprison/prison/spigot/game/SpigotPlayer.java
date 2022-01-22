@@ -29,17 +29,22 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import tech.mcprison.prison.autofeatures.PlayerMessaging.MessageType;
+import tech.mcprison.prison.cache.PlayerCache;
+import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
+import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.compat.SpigotNMSPlayer;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboard;
+import tech.mcprison.prison.spigot.utils.tasks.PlayerMessagingTask;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
 
@@ -494,14 +499,14 @@ public class SpigotPlayer
 		double maxHealth = 0;
 		if ( getWrapper() != null ) {
 			
-			maxHealth = SpigotPrison.getInstance().getCompatibility()
+			maxHealth = SpigotCompatibility.getInstance()
 								.getMaxHealth( getWrapper() );
 		}
 		return maxHealth;
 	}
 	public void setMaxHealth( double maxHealth ) {
 		if ( getWrapper() != null ) {
-			SpigotPrison.getInstance().getCompatibility()
+			SpigotCompatibility.getInstance()
 								.setMaxHealth( getWrapper(), maxHealth );
 		}
 	}
@@ -605,7 +610,7 @@ public class SpigotPlayer
 	@Override
 	public void setTitle( String title, String subtitle, int fadeIn, int stay, int fadeOut ) {
 		if ( getWrapper() != null) {
-			SpigotPrison.getInstance().getCompatibility()
+			SpigotCompatibility.getInstance()
 					.sendTitle( getWrapper(), title, subtitle, fadeIn, stay, fadeOut );
 		}
 	}
@@ -613,8 +618,80 @@ public class SpigotPlayer
 	@Override
 	public void setActionBar( String actionBar ) {
 		if ( getWrapper() != null) {
-			SpigotPrison.getInstance().getCompatibility()
-					.sendActionBar( getWrapper(), actionBar );
+			PlayerMessagingTask.submitTask( getWrapper(), MessageType.actionBar, actionBar );
+
+//			SpigotCompatibility.getInstance()
+//					.sendActionBar( getWrapper(), actionBar );
 		}
 	}
+	
+	@Override
+	public PlayerCache getPlayerCache() {
+		return PlayerCache.getInstance();
+	}
+	
+	@Override
+	public PlayerCachePlayerData getPlayerCachePlayerData() {
+		return PlayerCache.getInstance().getOnlinePlayer( this );
+	}
+	
+	public boolean enableFlying( Mine mine, float flightSpeed ) {
+		boolean enabled = false;
+		
+		if ( mine.isInMineExact( getLocation() ) ) {
+			// Within mine:
+			
+			// save the current mine reference in the player's object:
+//			this.lastEffectsMine = mine;
+			
+			if ( getWrapper() != null ) {
+				org.bukkit.entity.Player bukkitPlayer = getWrapper();
+				
+				bukkitPlayer.setAllowFlight( true );
+				bukkitPlayer.setFlySpeed( flightSpeed );
+				enabled = true;
+			}
+		}
+		
+		return enabled;
+	}
+	
+//	public Mine getEffectsMine() {
+//		Mine effectsMine = null;
+//		
+//		if ( lastEffectsMine != null ) {
+//			
+//			if ( !lastEffectsMine.isInMineExact( getLocation() ) ) {
+//				lastEffectsMine = null;
+//				
+//				// cancel all effects for player
+//			}
+//			effectsMine = lastEffectsMine;
+//		}
+//		return effectsMine;
+//	}
+	
+	public boolean isFlying() {
+		boolean flying = false;
+		
+		if ( getWrapper() != null ) {
+			org.bukkit.entity.Player bukkitPlayer = getWrapper();
+			
+			flying = bukkitPlayer.isFlying();
+		}
+		return flying;
+	}
+	
+	@Override
+	public boolean isSneaking() {
+		boolean sneaking = false;
+		
+		if ( getWrapper() != null ) {
+			org.bukkit.entity.Player bukkitPlayer = getWrapper();
+			
+			sneaking = bukkitPlayer.isSneaking();
+		}
+		return sneaking;
+	}
+	
 }

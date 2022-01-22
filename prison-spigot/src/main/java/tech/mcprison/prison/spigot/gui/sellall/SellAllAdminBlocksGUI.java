@@ -1,17 +1,23 @@
 package tech.mcprison.prison.spigot.gui.sellall;
 
-import com.cryptomorin.xseries.XMaterial;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.entity.Player;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools;
+import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools.GUIMenuPageData;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-
-import java.util.Set;
 
 /**
  * @author GABRYCA
@@ -19,18 +25,26 @@ import java.util.Set;
 public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
 
     private final Player p;
-    private final int startingItem;
-
-    public SellAllAdminBlocksGUI(Player p, int startingItem){
+//    private final int startingItem;
+    
+    private int page = 0;
+    private String cmdPage;
+    private String cmdReturn;
+    
+    public SellAllAdminBlocksGUI( Player p, int page, String cmdPage, String cmdReturn ){
         this.p = p;
-        this.startingItem = startingItem;
+        
+        this.page = page;
+        this.cmdPage = cmdPage;
+        this.cmdReturn = cmdReturn;
+        
+//        this.startingItem = startingItem;
     }
 
     public void open() {
 
         updateSellAllConfig();
 
-        PrisonGUI gui = new PrisonGUI(p, 54, "&3SellAll -> Blocks");
 
         boolean emptyInv = false;
 
@@ -47,49 +61,94 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
 
         if (emptyInv){
             SpigotPlayer spigotPlayer = new SpigotPlayer(p);
-            Output.get().sendWarn(spigotPlayer, messages.getString("Message.SellAllGUIEmpty"));
-            Output.get().sendWarn(spigotPlayer, messages.getString("Message.SellAllGUIEmpty2"));
+            Output.get().sendWarn(spigotPlayer, messages.getString(MessagesConfig.StringID.spigot_message_gui_sellall_empty));
             return;
         }
 
         // Get the Items config section
-        Set<String> items = sellAllConfig.getConfigurationSection("Items").getKeys(false);
+        List<String> items = new ArrayList<>(
+        						sellAllConfig.getConfigurationSection("Items").getKeys(false) );
+
+        
+        int totalArraySize = items.size();
+        GUIMenuPageData guiPageData = SpigotGUIMenuTools.getInstance()
+        		.createGUIPageObject( totalArraySize, page, cmdPage, cmdReturn );
+
+
+        List<String> itemsDisplay = items.subList( guiPageData.getPosStart(), guiPageData.getPosEnd() );
+        
+        
+        PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), "&3SellAll -> Blocks");
 
         // Global strings.
-        String loreLine1 = messages.getString("Lore.RightClickToDelete");
-        String loreLine2 = messages.getString("Lore.LeftClickToEdit");
-        String lorePermission = messages.getString("Lore.Permission");
+        String loreLine1 = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_delete);
+        String loreLine2 = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_left_to_edit);
+        String lorePermission = messages.getString(MessagesConfig.StringID.spigot_gui_lore_permission);
         String permissionSellAllBlock = sellAllConfig.getString("Options.Sell_Per_Block_Permission");
-        String loreValue = messages.getString("Lore.Value");
+        String loreValue = messages.getString(MessagesConfig.StringID.spigot_gui_lore_value);
 
         boolean sellAllPerBlockPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"));
 
-        int itemsAdded = 0, itemsRead = 0;
-        for (String key : items) {
-            itemsRead++;
-
-            if (itemsRead >= startingItem) {
-
-                if (startingItem != 0){
-                    gui.addButton(new Button(45, XMaterial.BOOK, new ButtonLore(messages.getString("Lore.ClickToPriorPage"), null), "&7Prior " + (startingItem - 45)));
+//        int itemsAdded = 0, itemsRead = 0;
+        for (String key : itemsDisplay) {
+        	
+        	
+                ButtonLore itemsLore = new ButtonLore(createLore(loreLine1, loreLine2), createLore(loreValue + sellAllConfig.getString("Items." + key + ".ITEM_VALUE")));
+                
+                if (sellAllPerBlockPermissionEnabled) {
+                	itemsLore.addLineLoreDescription(SpigotPrison.format(lorePermission + "&7" + permissionSellAllBlock + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
                 }
-
-                if (itemsAdded >= 45){
-                    gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(messages.getString("Lore.ClickToNextPage"), null), "&7Next " + (startingItem + itemsAdded)));
+                
+                String xMatIdName = "Items." + key + ".ITEM_ID";
+                String xMatId = sellAllConfig.getString( xMatIdName );
+                
+                XMaterial xMat = SpigotUtil.getXMaterial( xMatId );
+                
+                if ( xMat == null ) {
+                	// Unable to add match XMaterials:
+                	String message = String.format(  
+                			"SellAll Admin Blocks: Unable to match '%s' to a valid XMaterial. Use the command " +
+                					"'/mines block search' to find the correct name and update the config entry: [%s] " +
+                					"Using `COBBLESTONE` as a default. ",
+                					(xMatId == null ? "<null>" : xMatId), 
+                					xMatIdName
+                			);
+                	Output.get().logWarn( message );
+                	
+                	// Default to cobble
+                	xMat = XMaterial.COBBLESTONE;
                 }
-
-                if (itemsAdded < 45) {
-                    ButtonLore itemsLore = new ButtonLore(createLore(loreLine1, loreLine2), createLore(loreValue + sellAllConfig.getString("Items." + key + ".ITEM_VALUE")));
-
-                    if (sellAllPerBlockPermissionEnabled) {
-                        itemsLore.addLineLoreDescription(SpigotPrison.format(lorePermission + "&7" + permissionSellAllBlock + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
-                    }
-
-                    gui.addButton(new Button(null, SpigotUtil.getXMaterial(sellAllConfig.getString("Items." + key + ".ITEM_ID")), itemsLore, "&3" + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
-                    itemsAdded++;
-                }
-            }
+                
+                gui.addButton(new Button( null, xMat, itemsLore, "&3" + xMatId ));
+                
+                
+//            itemsRead++;
+//
+//            if (itemsRead >= startingItem) {
+//
+//                if (startingItem != 0){
+//                    gui.addButton(new Button(45, XMaterial.BOOK, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_prior_page), null), "&7Prior " + (startingItem - 45)));
+//                }
+//
+//                else if (itemsAdded >= 45){
+//                    gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_next_page), null), "&7Next " + (startingItem + itemsAdded)));
+//                }
+//
+//                else if (itemsAdded < 45) {
+//                    itemsAdded++;
+//                }
+//            }
+                
         }
+        
+        
+        
+        // Add the page controls: 
+        // The controls for the standard menu are in positions: 4, 5, and 6:
+        SpigotGUIMenuTools.getInstance().addMenuPageButtonsStandard( gui, guiPageData );
+
+        
+        
         gui.open();
     }
 }

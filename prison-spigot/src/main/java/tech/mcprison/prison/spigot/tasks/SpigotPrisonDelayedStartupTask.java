@@ -50,7 +50,9 @@ public class SpigotPrisonDelayedStartupTask
 		if ( isVaultEconomyIntegrated() && 
 				econ != null && econ.isEnabled() &&
 				vaultEconomyName != null &&
-				vaultEconomyName.equalsIgnoreCase( targetVaultEconomyName )
+						( vaultEconomyName.equalsIgnoreCase( targetVaultEconomyName ) || 
+								isEssentialsEconomy( vaultEconomyName ) && isEssentialsEconomy( targetVaultEconomyName )
+								)
 				 ) {
 			
 			// It's enabled now, so don't submit, just go ahead and startup prison:
@@ -60,6 +62,7 @@ public class SpigotPrisonDelayedStartupTask
 							"Skipping delayed start. Starting Prison now." ));
 			
 			prison.onEnableStartup();
+			
 		}
 		else {
 			
@@ -68,6 +71,10 @@ public class SpigotPrisonDelayedStartupTask
 		
 	}
 
+	private boolean isEssentialsEconomy( String econ ) {
+		return "Economy_Essentials".equalsIgnoreCase( econ ) ||
+				"VaultEconomyProvider".equalsIgnoreCase( econ );
+	}
 
 	private void submitTask()
 	{
@@ -169,6 +176,8 @@ public class SpigotPrisonDelayedStartupTask
 						String.format( "&7Prison Delayed Enablement: &cFailed &cto find an " +
 							"active Vault Economy Named '%s' after %d attempts. Cannot start Prison.", 
 							targetVaultEconomyName, attempts ));
+				
+				prison.onEnableFail();
 			}
 		}
 	}

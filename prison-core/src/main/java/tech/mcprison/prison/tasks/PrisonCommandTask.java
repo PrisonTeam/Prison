@@ -66,6 +66,8 @@ public class PrisonCommandTask {
 
 		msg(CommandEnvironment.all_commands),
 		broadcast(CommandEnvironment.all_commands),
+		title(CommandEnvironment.all_commands ),
+		actionBar(CommandEnvironment.all_commands ),
 
 		inline(CommandEnvironment.all_commands),
 		inlinePlayer(CommandEnvironment.all_commands),
@@ -258,6 +260,8 @@ public class PrisonCommandTask {
 		if ( player != null ) {
 			formatted = formatted
 					.replace( "{msg}", "prison utils msg {player} " )
+					.replace( "{actionBar}", "prison utils titles actionBar {player} " )
+					.replace( "{title}", "prison utils titles title {player} " )
 					.replace( "{player}", player.getName())
 					.replace( "{player_uid}", player.getUUID().toString())
 					.replace( "{utilsDecay}", "prison utils decay" );

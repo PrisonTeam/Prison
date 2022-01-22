@@ -14,6 +14,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.gui.rank.SpigotConfirmPrestigeGUI;
 
@@ -23,13 +24,13 @@ import tech.mcprison.prison.spigot.gui.rank.SpigotConfirmPrestigeGUI;
 public class PrisonSpigotPrestigeCommands
 				extends PrisonSpigotBaseCommands {
 
-	private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
+	private final MessagesConfig messages = SpigotPrison.getInstance().getMessagesConfig();
 	
 	@Command(identifier = "prestiges", onlyPlayers = true)
 	public void prestigesGUICommand(CommandSender sender) {
 
 		if ( !isPrisonConfig( "prestiges") && !isPrisonConfig( "prestige.enabled" ) ) {
-			Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.PrestigesDisabledDefault")));
+			Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_prestiges_disabled)));
 			return;
 		}
 
@@ -75,7 +76,7 @@ public class PrisonSpigotPrestigeCommands
             		if ( ( ladderDefault == null  ||
             				!(ladderDefault.getLowestRank().isPresent()) ||
             				ladderDefault.getLowestRank().get().getName() == null)) {
-            			Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.DefaultLadderEmpty")));
+            			Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_ladder_default_empty)));
             			return;
             		}
             		
@@ -83,7 +84,7 @@ public class PrisonSpigotPrestigeCommands
             		if ( ( ladderPrestiges == null ||
             				!(ladderPrestiges.getLowestRank().isPresent()) ||
             				ladderPrestiges.getLowestRank().get().getName() == null)) {
-            			Output.get().sendInfo(sender, SpigotPrison.format(messages.getString("Message.CantFindPrestiges")));
+            			Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_prestiges_empty)));
             			return;
             		}
             	}
@@ -119,15 +120,13 @@ public class PrisonSpigotPrestigeCommands
 		ListenersPrisonManager listenersPrisonManager = ListenersPrisonManager.get();
 		listenersPrisonManager.chatEventActivator();
 
-        sender.sendMessage( SpigotPrison.format(getPrisonConfig("Lore.PrestigeWarning") +
-        		getPrisonConfig("Lore.PrestigeWarning2") +
-        		getPrisonConfig("Lore.PrestigeWarning3")));
-        
-        sender.sendMessage( SpigotPrison.format(messages.getString("Message.ConfirmPrestige")));
-        sender.sendMessage( SpigotPrison.format(messages.getString("Message.CancelPrestige")));
+		Output.get().sendInfo(sender, messages.getString(MessagesConfig.StringID.spigot_gui_lore_prestige_warning_1) + " "
+				+ messages.getString(MessagesConfig.StringID.spigot_gui_lore_prestige_warning_2) + " " + messages.getString(MessagesConfig.StringID.spigot_gui_lore_prestige_warning_3));
+
+		Output.get().sendInfo(sender, "&a" + messages.getString(MessagesConfig.StringID.spigot_message_prestiges_confirm));
+		Output.get().sendInfo(sender, "&c" + messages.getString(MessagesConfig.StringID.spigot_message_prestiges_cancel));
 
         final Player player = getSpigotPlayer( sender );
-
         listenersPrisonManager.chatInteractData(player, ListenersPrisonManager.ChatMode.Prestige);
     }
 }

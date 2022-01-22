@@ -180,7 +180,7 @@ public class RankUpCommandMessages
     			.withReplacements(
     					
     					(playerName == null ? messagNoPlayerName : playerName),
-    					(tRank == null ? "" : tRank.getName()), 
+    					(tRank == null ? "" : tRank.getTag() ), 
     					(results.getMessage() != null ? results.getMessage() : "")
     				);
     	
@@ -202,7 +202,7 @@ public class RankUpCommandMessages
         		.withReplacements(
     				
     				(playerName == null ? messagNoPlayerNameBroadcast : playerName),
-    				(tRank == null ? "" : tRank.getName()), 
+    				(tRank == null ? "" : tRank.getTag() ), 
     				(results.getMessage() != null ? results.getMessage() : "")
     			)
         		.broadcast();

@@ -44,6 +44,7 @@ import tech.mcprison.prison.output.Output;
 public class PlayerCacheSaveAllPlayersTask
 		extends PlayerCacheRunnable
 {
+	public static long LAST_SEEN_INTERVAL_30_MINUTES = 30 * 60 * 1000;
 
 	@Override
 	public void run()
@@ -59,22 +60,39 @@ public class PlayerCacheSaveAllPlayersTask
 		{
 			PlayerCachePlayerData playerData = pCache.getPlayers().get( key );
 			
-			if ( playerData != null && playerData.isDirty() ) {
+			if ( playerData != null ) {
 				
-				try
-				{
-					playerData.setDirty( false );
-					pCache.getCacheFiles().toJsonFile( playerData );
+				// If the player is online plus.. if dirty, or never last seen, or
+				// it's been more than 30 minutes since update of last seen field:
+				if ( playerData.isOnline() && 
+						(playerData.isDirty() ||
+						playerData.getLastSeenDate() == 0 ||
+						(System.currentTimeMillis() -  playerData.getLastSeenDate()) 
+									> LAST_SEEN_INTERVAL_30_MINUTES ) ) {
+					// Update the player's last seen date only when dirty and they
+					// are online:
+					playerData.setLastSeenDate( System.currentTimeMillis() );
+					playerData.setDirty( true );
 				}
-				catch ( Exception e )
-				{
-					String message = String.format( 
-							"PlayerCache: Error trying to save a player's " +
-							"cache data. Will try again later. " +
-							"%s", e.getMessage() );
-					Output.get().logError( message, e );
+				
+				if ( playerData.isDirty() ) {
+					
+					try
+					{
+						playerData.setDirty( false );
+						pCache.getCacheFiles().toJsonFile( playerData );
+					}
+					catch ( Exception e )
+					{
+						String message = String.format( 
+								"PlayerCache: Error trying to save a player's " +
+										"cache data. Will try again later. " +
+										"%s", e.getMessage() );
+						Output.get().logError( message, e );
+					}
 				}
 			}
+			
 			
 			// If a cached item is found with the player being offline, then 
 			// purge them from the cache.  They were usually added only because

@@ -14,6 +14,11 @@ public class JsonFileIO
 {
 	private final Gson gson;
 	
+	/**
+	 * 
+	 * @param errorManager Optional; set to null if used outside of a module.
+	 * @param status Optional; set to null if used outside of a module.
+	 */
 	public JsonFileIO(ErrorManager errorManager, ModuleStatus status)
 	{
 		super(errorManager, status);

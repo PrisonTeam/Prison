@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -13,6 +11,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
@@ -20,6 +21,7 @@ import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
@@ -30,29 +32,34 @@ import tech.mcprison.prison.spigot.sellall.SellAllUtil;
  */
 public abstract class SpigotGUIComponents {
 
-    public static Configuration messages = getMessages();
+    public static MessagesConfig messages = getMessages();
     public static Configuration guiConfig = getGuiConfig();
     public static Configuration sellAllConfig = getSellAll();
 
-    /**
-     * Create a button for the GUI using Material.
-     *
-     * @param id
-     * @param amount
-     * @param lore
-     * @param display
-     * */
-    protected ItemStack createButton(Material id, int amount, List<String> lore, String display) {
+//    /**
+//     * Bug: Cannot correctly create a button with Material variants with spigot versions less than 1.13:
+//     * 
+//     * Create a button for the GUI using Material.
+//     *
+//     * @param id
+//     * @param amount
+//     * @param lore
+//     * @param display
+//     * */
+//    protected ItemStack createButton(Material id, int amount, List<String> lore, String display) {
+//
+//        if (id == null){
+//            id = XMaterial.BARRIER.parseMaterial();
+//        }
+//
+//        ItemStack item = new ItemStack(id, amount);
+//        ItemMeta meta = item.getItemMeta();
+//        return getItemStack(item, lore, SpigotPrison.format(display), meta);
+//    }
 
-        if (id == null){
-            id = XMaterial.BARRIER.parseMaterial();
-        }
-
-        ItemStack item = new ItemStack(id, amount);
-        ItemMeta meta = item.getItemMeta();
-        return getItemStack(item, lore, SpigotPrison.format(display), meta);
+    protected ItemStack createButton(ItemStack item, List<String> lore, String display) {
+    	return createButton( item, 1, lore, display );
     }
-
     /**
      * Create a button for the GUI using ItemStack.
      *
@@ -60,12 +67,14 @@ public abstract class SpigotGUIComponents {
      * @param lore
      * @param display
      * */
-    protected ItemStack createButton(ItemStack item, List<String> lore, String display) {
+    protected ItemStack createButton(ItemStack item, int amount, List<String> lore, String display) {
 
         if (item == null){
             item = XMaterial.BARRIER.parseItem();
         }
     	
+        item.setAmount( amount );
+        
     	ItemMeta meta = item.getItemMeta();
 
         if (meta == null){
@@ -126,9 +135,16 @@ public abstract class SpigotGUIComponents {
     }
 
     /**
+     * Get new Messages config.
+     * */
+    protected static MessagesConfig getmessages(){
+        return SpigotPrison.getInstance().getMessagesConfig();
+    }
+
+    /**
      * Get Messages config.
      * */
-    protected static Configuration getMessages(){
+    protected static MessagesConfig getMessages(){
         return SpigotPrison.getInstance().getMessagesConfig();
     }
 
@@ -166,17 +182,17 @@ public abstract class SpigotGUIComponents {
      * Reload messages config for GUIs.
      * */
     public static void updateMessages(){
-        File file = new File(SpigotPrison.getInstance().getDataFolder() + "/module_conf/lang/" + SpigotPrison.getInstance().getConfig().getString("default-language") + ".yml");
-        messages = YamlConfiguration.loadConfiguration(file);
+        MessagesConfig.get().reload();
+        messages = MessagesConfig.get();
     }
 
     /**
      * Reload sellall config for GUIs.
      * */
     public static void updateSellAllConfig(){
-        SellAllUtil util = SellAllUtil.get();
-        util.updateSellAllConfig();
-        sellAllConfig = util.getSellAllConfig();
+        SellAllUtil util = SpigotPrison.getInstance().getSellAllUtil();
+        util.updateConfig();
+        sellAllConfig = util.sellAllConfig;
     }
 
     public static void updateGUIConfig(){

@@ -11,17 +11,20 @@ import java.util.Stack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.MineResetType;
+import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
-import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
+import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonCommandTask;
+import tech.mcprison.prison.tasks.PrisonCommandTask.CustomPlaceholders;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
-import tech.mcprison.prison.tasks.PrisonCommandTask.CustomPlaceholders;
+import tech.mcprison.prison.util.Location;
 
 public abstract class MineScheduler
 		extends MineTasks
@@ -93,7 +96,7 @@ public abstract class MineScheduler
 		}
 	}
 	
-	public enum MineResetType {
+	public enum MineResetScheduleType {
 		NORMAL,
 		FORCED;
 	}
@@ -123,7 +126,7 @@ public abstract class MineScheduler
 		private MineJobAction action;
 		private double delayActionSec;
 		private double resetInSec;
-		private MineResetType resetType;
+		private MineResetScheduleType resetType;
 		private List<MineResetActions> resetActions;
 		
 		public MineJob( MineJobAction action, double delayActionSec, double resetInSec )
@@ -134,12 +137,12 @@ public abstract class MineScheduler
 			this.delayActionSec = delayActionSec;
 			this.resetInSec = resetInSec;
 			
-			this.resetType = MineResetType.NORMAL;
+			this.resetType = MineResetScheduleType.NORMAL;
 			
 			this.resetActions = new ArrayList<>();
 		}
 		
-		public MineJob( MineJobAction action, double delayActionSec, double resetInSec, MineResetType resetType )
+		public MineJob( MineJobAction action, double delayActionSec, double resetInSec, MineResetScheduleType resetType )
 		{
 			this( action, delayActionSec, resetInSec );
 			
@@ -186,10 +189,10 @@ public abstract class MineScheduler
 			this.resetInSec = resetInSec;
 		}
 
-		public MineResetType getResetType() {
+		public MineResetScheduleType getResetType() {
 			return resetType;
 		}
-		public void setResetType( MineResetType resetType ) {
+		public void setResetType( MineResetScheduleType resetType ) {
 			this.resetType = resetType;
 		}
 
@@ -237,6 +240,9 @@ public abstract class MineScheduler
 	 */
 	protected List<MineJob> initializeJobWorkflow( double resetTime, boolean includeMessages, ArrayList<Integer> rwTimes )
 	{
+		double targetResetTime = resetTime;
+		
+		
 		List<MineJob> workflow = new ArrayList<>();
 		ArrayList<Integer> resetWarningTimes = new ArrayList<>();
 		
@@ -258,8 +264,8 @@ public abstract class MineScheduler
 		
 		// if the mine is virtual, set the resetTime to four hours.  It won't reset, but it will stay active
 		// in the workflow:
-		if ( isVirtual() ) {
-			resetTime = 60 * 60 * 4; // one hour * 4
+		if ( isVirtual() || resetTime <= 0 ) {
+			targetResetTime = 60 * 60 * 4; // one hour * 4
 		}
 		
 		// Determine if the sync or async reset action should be used for this workflow.
@@ -272,7 +278,7 @@ public abstract class MineScheduler
 			
 			double total = 0;
 			for ( Integer time : resetWarningTimes ) {
-				if ( time < resetTime ) {
+				if ( time < targetResetTime ) {
 					// if reset time is less than warning time, then skip warning:
 					double elapsed = time - total;
 					workflow.add( 
@@ -283,11 +289,11 @@ public abstract class MineScheduler
 			}
 			workflow.add( 
 					new MineJob( workflow.size() == 0 ? resetAction : MineJobAction.MESSAGE, 
-							(resetTime - total), total) );
+							(targetResetTime - total), total) );
 			
 		} else {
 			// Exclude all messages. Only reset mine:
-			workflow.add( new MineJob( resetAction, resetTime, 0) );
+			workflow.add( new MineJob( resetAction, targetResetTime, 0) );
 		}
 		
 		return workflow;
@@ -324,8 +330,14 @@ public abstract class MineScheduler
 		// appears like it will never load?
 		//checkWorld();
 		
+		if ( getResetTime() <= 0 ) {
+			
+			submitNextAction();
+			return;
+		}
+		
 		boolean forced = getCurrentJob() != null && 
-							getCurrentJob().getResetType() == MineResetType.FORCED;
+							getCurrentJob().getResetType() == MineResetScheduleType.FORCED;
 		
     	boolean skip = !forced && 
     			isSkipResetEnabled() && 
@@ -363,7 +375,14 @@ public abstract class MineScheduler
 
 			case RESET_ASYNC:
 				if ( !skip ) {
-					resetAsynchonously();
+					
+					List<MineResetActions> resetActions = getCurrentJob().getResetActions();
+
+					MinePagedResetAsyncTask resetTask = 
+								new MinePagedResetAsyncTask( (Mine) this, MineResetType.paged, resetActions );
+		    		resetTask.submitTaskAsync();
+		    		
+//					resetAsynchonously();
 				} else {
 					incrementSkipResetBypassCount();
 				}
@@ -373,7 +392,15 @@ public abstract class MineScheduler
 			case RESET_SYNC:
 				// synchronous reset.  Will be phased out in the future?
 				if ( !skip ) {
-					resetSynchonously();
+
+					List<MineResetActions> resetActions = getCurrentJob().getResetActions();
+					
+					MinePagedResetAsyncTask resetTask = 
+							new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal, resetActions );
+					
+					resetTask.submitTaskAsync();
+					
+//					resetSynchonously();
 				} else {
 					incrementSkipResetBypassCount();
 				}
@@ -561,6 +588,7 @@ public abstract class MineScheduler
 		boolean fireEvent = blockEvent.isFireEvent( chance, eventType, 
 							targetBlock, triggered );
 		
+		
 		if ( fireEvent ) {
 			
 			// If perms are set, check them, otherwise ignore perm check:
@@ -579,17 +607,21 @@ public abstract class MineScheduler
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockName, originalBlock.getBlockName() );
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineName, getName() );
 				
-				if ( prisonBlock.getLocation() != null ) {
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationWorld, prisonBlock.getLocation().getWorld().getName() );
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationX, Integer.toString( prisonBlock.getLocation().getBlockX() ));
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationY, Integer.toString( prisonBlock.getLocation().getBlockY() ));
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationZ, Integer.toString( prisonBlock.getLocation().getBlockZ() ));
+				if ( targetBlock.getLocation() != null ) {
+					Location location = targetBlock.getLocation();
 					
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.coordinates, prisonBlock.getLocation().toCoordinates() );
-					cmdTask.addCustomPlaceholder( CustomPlaceholders.worldCoordinates, prisonBlock.getLocation().toWorldCoordinates() );
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationWorld, location.getWorld().getName() );
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationX, Integer.toString( location.getBlockX() ));
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationY, Integer.toString( location.getBlockY() ));
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.locationZ, Integer.toString( location.getBlockZ() ));
+					
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.coordinates, location.toCoordinates() );
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.worldCoordinates, location.toWorldCoordinates() );
+					
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.blockCoordinates, targetBlock.getBlockCoordinates() );
 					
 				}
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockCoordinates, prisonBlock.getBlockCoordinates() );
+//				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockCoordinates, prisonBlock.getBlockCoordinates() );
 
 
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockChance, dFmt.format( originalBlock.getChance() ) );
@@ -597,7 +629,7 @@ public abstract class MineScheduler
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.blocksPlaced, Integer.toString( originalBlock.getBlockPlacedCount() ));
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockRemaining, Long.toString( originalBlock.getBlockCountUnsaved() ));
 				
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blocksMinedTotal, originalBlock.getBlockName() );
+				cmdTask.addCustomPlaceholder( CustomPlaceholders.blocksMinedTotal, Long.toString( originalBlock.getBlockCountSession() ) );
 				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineBlocksRemaining, Integer.toString( getRemainingBlockCount() ));
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineBlocksRemainingPercent, Double.toString( getPercentRemainingBlockCount() ) );
@@ -607,10 +639,12 @@ public abstract class MineScheduler
 				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockIsAir, Boolean.toString( targetBlock.getPrisonBlock().isAir() ));
 				
-				
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockMinedName, prisonBlock.getBlockName() );
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockMinedNameFormal, prisonBlock.getBlockNameFormal() );
-				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockMinedBlockType, prisonBlock.getBlockType().name() );
+				if ( prisonBlock != null ) {
+					
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.blockMinedName, prisonBlock.getBlockName() );
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.blockMinedNameFormal, prisonBlock.getBlockNameFormal() );
+					cmdTask.addCustomPlaceholder( CustomPlaceholders.blockMinedBlockType, prisonBlock.getBlockType().name() );
+				}
 				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.eventType, eventType.name() );
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.eventTriggered, triggered );
@@ -689,7 +723,7 @@ public abstract class MineScheduler
 				)) {
 			
 			// submit a manual reset since the mine is empty:
-			manualReset( MineResetType.NORMAL, getZeroBlockResetDelaySec() );
+			manualReset( MineResetScheduleType.NORMAL, getZeroBlockResetDelaySec() );
 			reset = true;
 		}
 		return reset;
@@ -701,21 +735,21 @@ public abstract class MineScheduler
 	 * 
 	 */
 	public void manualReset() {
-		manualReset( MineResetType.FORCED );
+		manualReset( MineResetScheduleType.FORCED );
 	}
-	public void manualReset( MineResetType resetType ) {
+	public void manualReset( MineResetScheduleType resetType ) {
 		
 		if ( !isVirtual() ) {
 			manualReset( resetType, 0 );
 		}
 	}
 	
-	private void manualReset( MineResetType resetType, double delayActionSec ) {
+	private void manualReset( MineResetScheduleType resetType, double delayActionSec ) {
 		List<MineResetActions> resetActions = new ArrayList<>();
 		
 		manualReset( resetType, delayActionSec, resetActions );
 	}
-	public void manualReset( MineResetType resetType, List<MineResetActions> resetActions ) {
+	public void manualReset( MineResetScheduleType resetType, List<MineResetActions> resetActions ) {
 		
 		manualReset( resetType, 0, resetActions );
 	}
@@ -732,7 +766,7 @@ public abstract class MineScheduler
 	 * @param delayActionSec Delay in seconds before resetting mine. 
 	 * 
 	 */
-	private void manualReset( MineResetType resetType, double delayActionSec, 
+	private void manualReset( MineResetScheduleType resetType, double delayActionSec, 
 			List<MineResetActions> resetActions ) {
 		
 		if ( isVirtual() ) {

@@ -117,10 +117,18 @@ public class VaultPermissions
 			results.add( String.format( "[vault: Group support is %senabled.]", 
 					(hasGroupSupport ? "" : "NOT ")) );
 			
-			SpigotPlayer player = (SpigotPlayer) holder;
-			String[] groups = permissions.getPlayerGroups( player.getWrapper() );
-			for ( String group : groups ) {
-				results.add( group );
+			try
+			{
+				SpigotPlayer player = (SpigotPlayer) holder;
+				String[] groups = permissions.getPlayerGroups( player.getWrapper() );
+				for ( String group : groups ) {
+					results.add( group );
+				}
+			}
+			catch ( Exception e ) {
+				String message = "[Vault: Error trying to get player groups: " +
+									e.getMessage() + "]";
+				results.add( message );
 			}
 			
 		}

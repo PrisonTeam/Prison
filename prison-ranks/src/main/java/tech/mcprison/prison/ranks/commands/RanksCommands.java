@@ -1,8 +1,10 @@
 package tech.mcprison.prison.ranks.commands;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +14,10 @@ import java.util.Set;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.cache.PlayerCache;
+import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
@@ -29,14 +34,17 @@ import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.FancyMessageComponent;
+import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.PlayerRankRefreshTask;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.data.RankPlayerName;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
@@ -859,6 +867,8 @@ public class RanksCommands
         	}
         }
         
+
+        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
         
         boolean first = true;
         for (Rank rank : ladder.getRanks()) {
@@ -883,6 +893,7 @@ public class RanksCommands
 //        	String tagNoColor = Text.stripColor( tag );
         	
         	
+        	
         	// If rank list is being generated for a console or op'd player, then show the ladder's rank multiplier,
         	// but if generating for a player, then show total multiplier accross all ladders.
         	PlayerRank pRank = null;
@@ -891,12 +902,17 @@ public class RanksCommands
         	
         	if ( hasPerm || rPlayer == null ) {
         		
-        		rankCost = PlayerRank.getRawRankCost( rank );
-        		rMulti = PlayerRank.getLadderBaseRankdMultiplier( rank );
+        		rankCost = rank.getRawRankCost();
+        		
+        		pRank = rankPlayerFactory.createPlayerRank( rank );
+        		
+        		rMulti = pRank.getLadderBasedRankMultiplier();
 
         	}
         	else {
-        		pRank = PlayerRank.getTargetPlayerRankForPlayer( rPlayer, rank );
+        		pRank = rankPlayerFactory.createPlayerRank( rank );
+
+        		pRank = pRank.getTargetPlayerRankForPlayer( pRank, rPlayer, rank );
         		rankCost = pRank.getRankCost();
         		
         		rMulti = pRank.getRankMultiplier();
@@ -997,8 +1013,14 @@ public class RanksCommands
         }
 
         if ( rPlayer != null && !"No Ladder".equals( ladder.getName() ) ) {
+        	
+//        	RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+        	
         	double ladderMultiplier = ladder.getRankCostMultiplierPerRank();
-        	double playerMultiplier = rPlayer.getRank( ladder ) != null ? rPlayer.getRank( ladder ).getRankMultiplier() : 0;
+        	
+        	PlayerRank pRank = rankPlayerFactory.getRank( rPlayer, ladder );
+        	double playerMultiplier = pRank != null ? 
+        			pRank.getRankMultiplier() : 0;
         	
         	if ( playerMultiplier == 0 ) {
         		display.addText( "&3You have no Ladder Rank Multipliers enabled. The rank costs are not adjusted." );
@@ -1021,11 +1043,14 @@ public class RanksCommands
 					if ( rLadder.getRankCostMultiplierPerRank() != 0d ) {
 						
 						Rank r = rPlayer.getLadderRanks().get( rLadder ).getRank();
+						
+						PlayerRank rpRank = rankPlayerFactory.createPlayerRank( r );
+						
 						display.addText( "&3  BaseMult: &7%7s  &3CurrMult: &7%7s  &7%s  &7%s  ", 
 								fFmt.format( rLadder.getRankCostMultiplierPerRank() ),
-								fFmt.format( PlayerRank.getLadderBaseRankdMultiplier( r )),
+								fFmt.format( rpRank.getLadderBasedRankMultiplier() ),
 								rLadder.getName(), 
-								r.getTag()
+								(r.getTag() == null ? r.getName() : r.getTag())
 								);
 						
 //						display.addText( "&3  Ladder: &7%-9s  &3Rank: &7%-8s  &3Base Mult: %7s", 
@@ -1117,13 +1142,15 @@ public class RanksCommands
     
 	private ChatDisplay rankInfoDetails( CommandSender sender, Rank rank, String options )
 	{
-		ChatDisplay display = new ChatDisplay( ranksInfoHeaderMsg( rank.getTag() ));
+		String title = rank.getTag() == null ? rank.getName() : rank.getTag();
 		
-		boolean isOp = sender.isOp();
-		boolean isConsole = !sender.isPlayer();
+		ChatDisplay display = new ChatDisplay( ranksInfoHeaderMsg( title ));
+		
+		boolean isOp = sender != null && sender.isOp();
+		boolean isConsole = sender == null || !sender.isPlayer();
 
         display.addText( ranksInfoNameMsg( rank.getName() ));
-        display.addText( ranksInfoTagMsg( rank.getTag() ));
+        display.addText( ranksInfoTagMsg( rank.getTag() == null ? "none" : rank.getTag() ));
         
         
         RowComponent row = new RowComponent();
@@ -1161,10 +1188,11 @@ public class RanksCommands
         
         
         
+        
         // NOTE: Since rank info is NOT tied to a PlayerRank we cannot figure out the
         //       the actual cost, but we can calculate the ladder's multiplier.  This 
         //       will not be the player's total multiplier.
-        display.addText( ranksInfoCostMsg( PlayerRank.getRawRankCost( rank ) ));
+        display.addText( ranksInfoCostMsg( rank.getRawRankCost() ));
         
         
         
@@ -1172,7 +1200,11 @@ public class RanksCommands
         DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
         
         // The following is the rank adjusted rank multiplier
-        double rankCostMultiplier = PlayerRank.getLadderBaseRankdMultiplier( rank );
+        
+        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+        PlayerRank pRank = rankPlayerFactory.createPlayerRank( rank );
+        
+        double rankCostMultiplier = pRank.getLadderBasedRankMultiplier();
         double ladderBaseMultiplier = rank.getLadder() == null ? 0 : rank.getLadder().getRankCostMultiplierPerRank();
         
         String cmdLadderRankCostMult = "/ranks ladder rankMultiplier " + rank.getName() + " " + ladderBaseMultiplier;
@@ -1191,7 +1223,7 @@ public class RanksCommands
         int numberOfPlayersOnRank = rank.getPlayers().size();
         display.addText( ranksInfoPlayersWithRankMsg( numberOfPlayersOnRank ));
 
-        if ( isOp || isConsole || sender == null || sender.hasPermission("ranks.admin")) {
+        if ( isOp || isConsole || sender.hasPermission("ranks.admin")) {
             // This is admin-exclusive content
 
 //            display.addText("&8[Admin Only]");
@@ -1203,7 +1235,7 @@ public class RanksCommands
 //            display.addComponent(new FancyMessageComponent(del));
         }
         
-        if ( isOp && options != null && "all".equalsIgnoreCase( options )) {
+        if ( (isOp || isConsole) && options != null && "all".equalsIgnoreCase( options )) {
         	
         	if ( rank.getLadder() != null ) {
         		
@@ -1236,7 +1268,8 @@ public class RanksCommands
         }
         
         
-        PlayerRank.setRawRankCost( rank, rawCost );
+        rank.setRawRankCost( rawCost );
+//        PlayerRank.setRawRankCost( rank, rawCost );
         
         PrisonRanks.getInstance().getRankManager().saveRank(rank);
         
@@ -1417,21 +1450,57 @@ public class RanksCommands
     		return;
     	}
 
+    	List<String> msgs = new ArrayList<>();
+
+    	DecimalFormat iFmt = new DecimalFormat("#,##0");
+    	DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+    	DecimalFormat fFmt = new DecimalFormat("0.0000");
+    	DecimalFormat pFmt = new DecimalFormat("#,##0.0000");
+		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+    	
+    	
     	PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
 		RankPlayer rankPlayer = pm.getPlayer(player.getUUID(), player.getName());
+
+		// Get the cachedPlayer:
+		PlayerCachePlayerData cPlayer = PlayerCache.getInstance().getOnlinePlayer( rankPlayer );
 		
-		String msg1 = String.format( "&c%s:", rankPlayer.getName() );
-		sendToPlayerAndConsole( sender, msg1 );
 		
-		DecimalFormat fFmt = new DecimalFormat("0.0000");
+		
+		String msg1 = String.format( "&7Player Stats for&8:    &c%s", 
+				rankPlayer.getName() );
+		msgs.add( msg1 );
+
+
+		
+		String lastSeen = cPlayer == null || cPlayer.getLastSeenDate() == 0 ? 
+				"-- never -- " :
+					sdFmt.format( new Date( cPlayer.getLastSeenDate() ) );
+		long lastSeenElapsedMs = cPlayer == null || cPlayer.getLastSeenDate() == 0 ? 
+						0 : System.currentTimeMillis() - cPlayer.getLastSeenDate();
+		String lastSeenElapsed = lastSeenElapsedMs == 0 ? 
+				"" : 
+					// less than 5 mins just show recently since its not too accurate
+					lastSeenElapsedMs < (5 * 60 * 1000) ? "-- recently --" :
+					Text.formatTimeDaysHhMmSs( System.currentTimeMillis() - cPlayer.getLastSeenDate() ) + " ago";
+		
+		String msgLs = String.format( "  &7Last Seen: &3%s   %s", 
+				lastSeen, lastSeenElapsed );
+		msgs.add( msgLs );
+		
+		
+		
+		
 		String msg2 = String.format( "  &7Rank Cost Multiplier: &f", 
 						fFmt.format( rankPlayer.getSellAllMultiplier() ));
-		sendToPlayerAndConsole( sender, msg2 );
+		msgs.add( msg2 );
 
 		
 		
 		if ( rankPlayer != null ) {
-			DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+//			DecimalFormat iFmt = new DecimalFormat("#,##0");
+//			
+//			SimpleDateFormat sdFmt = new SimpleDateFormat( "HH:mm:ss" );
 			
 			// Collect all currencies in the default ladder:
 			Set<String> currencies = new LinkedHashSet<>();
@@ -1444,6 +1513,9 @@ public class RanksCommands
 			}
 			
 			
+			RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+			
+			
 			Map<RankLadder, PlayerRank> rankLadders = rankPlayer.getLadderRanks();
 			
 			for ( RankLadder rankLadder : rankLadders.keySet() )
@@ -1453,7 +1525,8 @@ public class RanksCommands
 				Rank nextRank = rank.getRankNext();
 				
 		        // This calculates the target rank, and takes in to consideration the player's existing rank:
-		        PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+				PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+//				PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //				PlayerRank nextPRank = nextRank == null ? null :
 //									new PlayerRank( nextRank, pRank.getRankMultiplier() );
@@ -1475,7 +1548,8 @@ public class RanksCommands
 					}
 				}
 				
-				sendToPlayerAndConsole( sender, messageRank );
+				msgs.add( messageRank );
+//				sendToPlayerAndConsole( sender, messageRank );
 			}
 			
 			// Print out the player's balances: 
@@ -1483,13 +1557,16 @@ public class RanksCommands
 			// The default currency first:
 			double balance = rankPlayer.getBalance();
 			String message = ranksPlayerBalanceDefaultMsg( player.getName(), dFmt.format( balance ) );
-			sendToPlayerAndConsole( sender, message );
+			msgs.add( message );
+//			sendToPlayerAndConsole( sender, message );
+			
 			
 			for ( String currency : currencies ) {
 				double balanceCurrency = rankPlayer.getBalance( currency );
 				String messageCurrency = ranksPlayerBalanceOthersMsg( 
 						player.getName(), dFmt.format( balanceCurrency ), currency );
-				sendToPlayerAndConsole( sender, messageCurrency );
+				msgs.add( messageCurrency );
+//				sendToPlayerAndConsole( sender, messageCurrency );
 
 			}
 			
@@ -1502,17 +1579,124 @@ public class RanksCommands
 
 			if ( !isOnline ) {
 				String msgOffline = ranksPlayerPermsOfflineMsg();
-				sendToPlayerAndConsole( sender, msgOffline );
+				msgs.add( msgOffline );
+//				sendToPlayerAndConsole( sender, msgOffline );
 			}
 			
 			double sellallMultiplier = player.getSellAllMultiplier();
-			DecimalFormat pFmt = new DecimalFormat("#,##0.0000");
 			String messageNotAccurrate = ranksPlayerNotAccurateMsg();
 			String messageSellallMultiplier = ranksPlayerSellallMultiplierMsg( 
 					pFmt.format( sellallMultiplier ), 
 					(!isOnline ? "  " + messageNotAccurrate : "") );
-			sendToPlayerAndConsole( sender, messageSellallMultiplier );
+			msgs.add( messageSellallMultiplier );
+//			sendToPlayerAndConsole( sender, messageSellallMultiplier );
 
+			
+			
+			msgs.add( "" );
+			
+
+			if ( cPlayer != null ) {
+				
+				msgs.add( "PlayerCache Information:" );
+				
+				// Print all earnings for all mines:
+				msgs.add( String.format( 
+						"  Earnings By Mine:    &2Avg Earnings per min: &3%s", 
+								dFmt.format( cPlayer.getAverageEarningsPerMinute() )) );
+				
+				msgs.addAll( 
+						Text.formatTreeMapStats(cPlayer.getEarningsByMine(), 5 ) );	
+				
+				
+				if ( cPlayer.getTokens() > 0 || cPlayer.getTokensTotal() > 0 ||
+						cPlayer.getTokensByMine().size() > 0 ) {
+					
+					msgs.add( String.format( 
+							"  Tokens By Mine:   &2Tokens: &3%s   &2Avg/min: &3%s   &2Blocks/Token: &3%d",
+									iFmt.format( cPlayer.getTokens() ),
+									dFmt.format( cPlayer.getAverageTokensPerMinute() ),
+									AutoFeaturesWrapper.getInstance().getInteger( AutoFeatures.tokensBlocksPerToken )
+							));
+					
+					msgs.add( String.format( 
+							"                    &2TotalEarned: &3%s   &2AdminAdded: &3%s   &2AdminRemvd: &3%s",
+									iFmt.format( cPlayer.getTokensTotal() ),
+									iFmt.format( cPlayer.getTokensTotalAdminAdded() ),
+									iFmt.format( cPlayer.getTokensTotalAdminRemoved() )
+							));
+					
+					msgs.addAll( 
+							Text.formatTreeMapStats(cPlayer.getTokensByMine(), 5 ) );	
+				}
+				
+				
+				msgs.add( String.format( 
+						"  &7Timings By Mine&8:    &2Online&8: &3%s    &2Mining&8: &3%s", 
+						Text.formatTimeDaysHhMmSs( cPlayer.getOnlineTimeTotal() ),
+						Text.formatTimeDaysHhMmSs( cPlayer.getOnlineMiningTimeTotal()) )
+						);
+				
+				msgs.addAll( 
+						Text.formatTreeMapStats(cPlayer.getTimeByMine(), 5, true ) );
+				
+				
+				// Print all earnings for all mines:
+				String totalBlocks = PlaceholdersUtil.formattedKmbtSISize( 
+											cPlayer.getBlocksTotal(), dFmt, " &9" );
+				msgs.add( String.format( 
+						"  &7Blocks By Mine&8:    &2Blocks Total&8: &3%s", 
+						totalBlocks) );
+				msgs.addAll( 
+						Text.formatTreeMapStats(cPlayer.getBlocksByMine(), 5 ) );
+				
+				
+				msgs.add( "  &7Blocks By Type&8:" );
+				msgs.addAll( 
+						Text.formatTreeMapStats(cPlayer.getBlocksByType(), 3 ) );
+				
+				
+//				Set<String> keysEarnings = cPlayer.getEarningsByMine().keySet();
+//				
+//				int count = 0;
+//				StringBuilder sbErn = new StringBuilder();
+//				for ( String earningKey : keysEarnings )
+//				{
+//					Double mineEarnings = cPlayer.getEarningsByMine().get( earningKey );
+//					
+//					String earnings = PlaceholdersUtil.formattedKmbtSISize( mineEarnings, dFmt, " " );
+//					
+//					sbErn.append( String.format( "%s %s    ", earningKey, earnings ) );
+//					
+//					if ( count++ % 5 == 0 ) {
+//						msgs.add( String.format( 
+//								"    " + sbErn.toString() ) );
+//						sbErn.setLength( 0 );
+//						
+//					}
+//				}
+//				
+//				if ( sbErn.length() > 0 ) {
+//					
+//					msgs.add( String.format( 
+//							"    " + sbErn.toString() ) );
+//				}
+				
+				
+				
+//				msgs.add( String.format( 
+//						"    " ) );
+//				
+//				cPlayer.getEarningsByMine()
+				
+			}
+			
+			
+			
+			
+			
+			sendToPlayerAndConsole( sender, msgs );
+			
 			
 			
 			if ( sender.hasPermission("ranks.admin") ) {
@@ -1595,7 +1779,135 @@ public class RanksCommands
 //			ranksPlayerNoRanksFoundMsg( sender, player.getDisplayName() );
 //		}
     }
-
+    
+//    private String formatTimeMs( long timeMs ) {
+//    	
+//    	DecimalFormat iFmt = new DecimalFormat("#,##0");
+//    	DecimalFormat tFmt = new DecimalFormat("00");
+////    	SimpleDateFormat sdFmt = new SimpleDateFormat( "HH:mm:ss" );
+//    	
+//    	long _sec = 1000;
+//    	long _min = _sec * 60;
+//    	long _hour = _min * 60;
+//    	long _day = _hour * 24;
+//
+//    	long ms = timeMs;
+//		long days = _day < ms ? ms / _day : 0;
+//		
+//		ms -= (days * _day);
+//		long hours = _hour < ms ? ms / _hour : 0;
+//		
+//		ms -= (hours * _hour);
+//		long mins = _min < ms ? ms / _min : 0;
+//		
+//		ms -= (mins * _min);
+//		long secs = _sec < ms ? ms / _sec : 0;
+//		
+//		
+//		String results = 
+//				(days == 0 ? "" : iFmt.format( days ) + "d ") +
+//				tFmt.format( hours ) + ":" +
+//				tFmt.format( mins ) + ":" +
+//				tFmt.format( secs )
+//				;
+//
+//		return results;
+//    }
+    
+//    private void formatTreeMapStats( TreeMap<String,?> statMap, List<String> msgs, 
+//    		DecimalFormat dFmt, DecimalFormat iFmt, 
+//    		int columns ) {
+//    	
+//		Set<String> keysEarnings = statMap.keySet();
+//		
+//		
+//		List<String> values = new ArrayList<>();
+//		List<Integer> valueMaxLen = new ArrayList<>();
+//		
+//		
+//		int count = 0;
+//		StringBuilder sb = new StringBuilder();
+//		for ( String earningKey : keysEarnings )
+//		{
+//			String value = null;
+//			Object valueObj = statMap.get( earningKey );
+//			
+//			if ( valueObj instanceof Double ) {
+//				
+//				value = PlaceholdersUtil.formattedKmbtSISize( (Double) valueObj, dFmt, " &9" );
+//			}
+//			else if ( valueObj instanceof Integer ) {
+//				int intVal = (Integer) valueObj;
+//				value = PlaceholdersUtil.formattedKmbtSISize( intVal, 
+//						( intVal < 1000 ? iFmt : dFmt ), " &9" );
+//			}
+//			else if ( valueObj instanceof Long ) {
+//				
+//				value = Text.formatTimeDaysHhMmSs( (Long) valueObj );
+//			}
+//			
+//			String msg = String.format( "&3%s&8: &b%s", earningKey, value ).trim();
+//			
+//			String msgNoColor = Text.stripColor( msg );
+//			int lenMNC = msgNoColor.length();
+//			
+//		
+//			int col = values.size() % columns;
+//			values.add( msg );
+//			
+//			if ( col >= valueMaxLen.size() || lenMNC > valueMaxLen.get( col ) ) {
+//				
+//				if ( col > valueMaxLen.size() - 1 ) {
+//					valueMaxLen.add( lenMNC );
+//				}
+//				else {
+//					
+//					valueMaxLen.set( col, lenMNC );
+//				}
+//			}
+//		}
+//		
+//		
+//		for ( int j = 0; j < values.size(); j++ )
+//		{
+//			String msg = values.get( j );
+//			
+//			int col = j % columns;
+//			
+//			int maxColumnWidth = col > valueMaxLen.size() - 1 ?
+//							msg.length() :
+//								valueMaxLen.get( col );
+//		
+//			sb.append( msg );
+//			
+//			// Pad the right of all content with spaces to align columns, up to a 
+//			// given maxLength:
+//			String msgNoColor = Text.stripColor( msg );
+//			int lenMNC = msgNoColor.length();
+//			for( int i = lenMNC; i < maxColumnWidth; i++ ) {
+//				sb.append( " " );
+//			}
+//
+//			// The spacer:
+//			sb.append( "   " );
+//			
+//			if ( ++count % columns == 0 ) {
+//				msgs.add( String.format( 
+//						"      " + sb.toString() ) );
+//				sb.setLength( 0 );
+//				
+//			}
+//		}
+//		
+//		if ( sb.length() > 0 ) {
+//			
+//			msgs.add( String.format( 
+//					"      " + sb.toString() ) );
+//		}
+//
+//    	
+//    }
+    
     
 ////    @Command(identifier = "ranks playerInventory", permissions = "mines.set", 
 ////    		description = "For listing what's in a player's inventory by dumping it to console.", 
@@ -1646,6 +1958,23 @@ public class RanksCommands
 		}
 	}
 
+	private void sendToPlayerAndConsole( CommandSender sender, List<String> messages )
+	{
+		
+		// If not a console user then send the message to the sender, other wise if a console
+		// user then they will see duplicate messages:
+		if ( sender.getName() != null && !sender.getName().equalsIgnoreCase( "console" ) ) {
+			sender.sendMessage( messages.toArray( new String[0] ) );
+		}
+		
+		for ( String message : messages )
+		{
+			// log the rank. There was one issue with the ranks suddenly being changed so this
+			// will help document what ranks were.
+			Output.get().log( message, LogLevel.PLAIN );
+		}
+	}
+	
 	private void sendToPlayerAndConsole( CommandSender sender, String messageRank )
 	{
 		// If not a console user then send the message to the sender, other wise if a console
@@ -1656,7 +1985,7 @@ public class RanksCommands
 		
 		// log the rank. There was one issue with the ranks suddenly being changed so this
 		// will help document what ranks were.
-		Output.get().logInfo( messageRank );
+		Output.get().log( messageRank, LogLevel.PLAIN );
 	}
  
     

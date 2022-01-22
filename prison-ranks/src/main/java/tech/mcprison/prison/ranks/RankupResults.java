@@ -10,6 +10,7 @@ import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 
 public class RankupResults {
 	
@@ -144,7 +145,10 @@ public class RankupResults {
 
 	public PlayerRank getPlayerRankOriginal() {
 		if ( playerRankOriginal == null && originalRank != null && rankPlayer != null ) {
-			PlayerRank pRank = rankPlayer.getRank( originalRank.getLadder() );
+			
+			RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+			
+			PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, originalRank.getLadder() );
 			playerRankOriginal = pRank;
 		}
 		return playerRankOriginal;
@@ -158,8 +162,13 @@ public class RankupResults {
 				getOriginalRank() != null && getOriginalRank().getRankNext() != null &&
 				targetRank != null ) {
 
+			RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+			
+			PlayerRank pRank = rankPlayerFactory.createPlayerRank( getOriginalRank() );
+
 	        // This calculates the target rank, and takes in to consideration the player's existing rank:
-	        playerRankTarget = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
+			playerRankTarget = pRank.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
+//	        playerRankTarget = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
 			
 //			PlayerRank pRank = rankPlayer.getRank( originalRank.getLadder() );
 //			PlayerRank pRankNext = new PlayerRank( targetRank, pRank.getRankMultiplier() );

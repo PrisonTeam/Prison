@@ -37,6 +37,7 @@ import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 
@@ -158,13 +159,25 @@ public class RankUpCommand
     	}
 		
 
+    	RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+    	
         RankPlayer rankPlayer = getRankPlayer( sender, player.getUUID(), player.getName() );
-        PlayerRank playerRankCurrent = rankPlayer.getRank( ladder );
-        PlayerRank playerRankTarget = 
-        		PlayerRank.getTargetPlayerRankForPlayer( rankPlayer,
-        				playerRankCurrent == null ? targetLadder.getLowestRank().get() :
-        					playerRankCurrent.getRank()
-        				);
+        PlayerRank playerRankCurrent = rankPlayerFactory.getRank( rankPlayer, ladder );
+        
+        PlayerRank playerRankTarget = null;
+        
+        // If the player does not have a rank on the current ladder, then assign the
+        // default rank for the ladder to be their next rank.
+        if ( playerRankCurrent == null ) {
+        	
+        	playerRankTarget = rankPlayerFactory.createPlayerRank( 
+        			targetLadder.getLowestRank().get() );
+        }
+        else {
+        	playerRankTarget = playerRankCurrent.getTargetPlayerRankForPlayer( rankPlayer, 
+        					playerRankCurrent.getRank() );
+        }
+        
         		
         
         Output.get().logDebug( DebugTarget.rankup, 
@@ -194,7 +207,7 @@ public class RankUpCommand
         	}
         	
         	// gets the rank on the default ladder. Used if ladder is not default.
-        	PlayerRank pRankDefaultLadder = rankPlayer.getRank("default");
+        	PlayerRank pRankDefaultLadder = rankPlayerFactory.getRank( rankPlayer, "default");
         	if ( pRankDefaultLadder == null ) {
         		rankupErrorPlayerNotOnDefaultLadder( sender, rankPlayer );
         	}
@@ -236,7 +249,7 @@ public class RankUpCommand
         	
         	
         	// Get the player rank after
-        	PlayerRank playerRankAfter = rankPlayer.getRank( ladder );
+        	PlayerRank playerRankAfter = rankPlayerFactory.getRank( rankPlayer, ladder );
         	
         	if ( playerRankAfter != null ) {
         		
@@ -302,7 +315,9 @@ public class RankUpCommand
 //						lm.getLadder("default").getLowestRank().get().getName() + " default");
 				// Get that rank
 				
-				PlayerRank playerRankSecond = rankPlayer.getRank("default");
+				RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+				
+				PlayerRank playerRankSecond = rankPlayerFactory.getRank( rankPlayer, "default");
 				if ( playerRankSecond != null ) {
 					
 					Rank pRankSecond = playerRankSecond.getRank();
@@ -329,13 +344,15 @@ public class RankUpCommand
 			prestigePlayerBalanceSetToZeroMsg( sender );
 		}
 		
+		String title = pRankAfter.getTag() == null ? pRankAfter.getName() : pRankAfter.getTag();
 		if ( success ) {
 			// Send a message to the player because he did prestige!
-			prestigePlayerSucessfulMsg( sender, pRankAfter.getTag() );
+
+			prestigePlayerSucessfulMsg( sender, title );
 		}
 		else {
 			
-			prestigePlayerFailureMsg( sender, pRankAfter.getTag() );
+			prestigePlayerFailureMsg( sender, title );
 		}
 
 	}
@@ -368,8 +385,10 @@ public class RankUpCommand
         
 		ladder = confirmLadder( sender, ladder );
 
+		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+		
         RankPlayer rankPlayer = getRankPlayer( sender, playerUuid, player.getName() );
-        PlayerRank playerRank = rankPlayer.getRank( ladder );
+        PlayerRank playerRank = rankPlayerFactory.getRank( rankPlayer, ladder );
         
         if ( playerRank != null ) {
         	
@@ -423,8 +442,10 @@ public class RankUpCommand
 			return;
 		}
 
+		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+		
         RankPlayer rankPlayer = getRankPlayer( sender, playerUuid, player.getName() );
-        PlayerRank playerRank = rankPlayer.getRank( ladder );
+        PlayerRank playerRank = rankPlayerFactory.getRank( rankPlayer, ladder );
         
         if ( playerRank != null ) {
         	
@@ -470,7 +491,9 @@ public class RankUpCommand
     				
     				boolean isSameRank = rank.equalsIgnoreCase("*same*");
 
-    				PlayerRank pRank = player.getRank( ladder );
+    				RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+    				
+    				PlayerRank pRank = rankPlayerFactory.getRank( player, ladder );
     				String rankNameCurrent = isSameRank && 
     						pRank != null && 
     						pRank.getRank() != null ? 

@@ -5,11 +5,11 @@ import java.util.List;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
-import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.MineScheduler.MineJob;
 import tech.mcprison.prison.mines.tasks.MineChangeBlockTask;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 import tech.mcprison.prison.util.Location;
@@ -81,7 +81,7 @@ public abstract class MineTasks
      * @param targetY
      */
 	@Override
-    protected long teleportAllPlayersOut() {
+	public long teleportAllPlayersOut() {
     	long start = System.currentTimeMillis();
     	
     	if ( isVirtual() ) {
@@ -90,17 +90,23 @@ public abstract class MineTasks
     	
     	World world = getBounds().getCenter().getWorld();
 
-    	if ( isEnabled() && world != null ) {
-    		List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
-    			Prison.get().getPlatform().getOnlinePlayers());
-    		for (Player player : players) {
-    			if ( getBounds().withinIncludeTopBottomOfMine(player.getLocation()) ) {
-    				
-    				teleportPlayerOut(player);
+    	try {
+    		if ( isEnabled() && world != null ) {
+    			List<Player> players = (world.getPlayers() != null ? world.getPlayers() : 
+    				Prison.get().getPlatform().getOnlinePlayers());
+    			for (Player player : players) {
+    				if ( getBounds().withinIncludeTopBottomOfMine(player.getLocation()) ) {
+    					
+    					teleportPlayerOut(player);
+    				}
     			}
     		}
+    		
     	}
-    	
+    	catch (Exception e) {
+			Output.get().logError("&cMineReset: Failed to TP players out of mine. mine= " + 
+							getName(), e);
+		}
     	return System.currentTimeMillis() - start;
     }
     
@@ -177,27 +183,36 @@ public abstract class MineTasks
     @Override
     public void submitTeleportGlassBlockRemoval() {
     	
-    	Location altTp = alternativeTpLocation();
-    	Location tpTargetLocation = isHasSpawn() ? getSpawn() : altTp;
+//    	Location altTp = alternativeTpLocation();
+    	Location tpTargetLocation = isHasSpawn() ? getSpawn() : alternativeTpLocation();
 									
     	Location glassBlockLocation = new Location( tpTargetLocation );
     	int newY = tpTargetLocation.getBlockY() - 1;
     	glassBlockLocation.setY( newY );
     	
-    	Block block = glassBlockLocation.getBlockAt();
-    	if ( block != null ) {
-    		PrisonBlock prisonBlock = block.getPrisonBlock();
-    		
-    		if ( prisonBlock != null && prisonBlock.equals( PrisonBlock.GLASS ) ) {
-    			// The glass block is under the player's feet so submit to remove it:
-    			
-    			MineChangeBlockTask changeBlockTask = 
-    					new MineChangeBlockTask( glassBlockLocation, PrisonBlock.AIR );
-    			
-    			int delayInTicks = 10;
-    			PrisonTaskSubmitter.runTaskLater( changeBlockTask, delayInTicks );
-    		}
-    	}
+    	
+    	MineChangeBlockTask changeBlockTask = 
+    			new MineChangeBlockTask( glassBlockLocation, 
+    								PrisonBlock.AIR, PrisonBlock.GLASS );
+    	
+    	int delayInTicks = 10;
+    	PrisonTaskSubmitter.runTaskLater( changeBlockTask, delayInTicks );
+
+    	
+//    	Block block = glassBlockLocation.getBlockAt();
+//    	if ( block != null ) {
+//    		PrisonBlock prisonBlock = block.getPrisonBlock();
+//    		
+//    		if ( prisonBlock != null && prisonBlock.equals( PrisonBlock.GLASS ) ) {
+//    			// The glass block is under the player's feet so submit to remove it:
+//    			
+//    			MineChangeBlockTask changeBlockTask = 
+//    					new MineChangeBlockTask( glassBlockLocation, PrisonBlock.AIR );
+//    			
+//    			int delayInTicks = 10;
+//    			PrisonTaskSubmitter.runTaskLater( changeBlockTask, delayInTicks );
+//    		}
+//    	}
     			
     }
 
@@ -231,7 +246,7 @@ public abstract class MineTasks
     protected void broadcastResetMessageToAllPlayersWithRadius() {
 //    	long start = System.currentTimeMillis();
     	
-    	if ( isVirtual() ) {
+    	if ( isVirtual() || getResetTime() <= 0 ) {
     		// ignore:
     	}
     	else 
@@ -275,7 +290,7 @@ public abstract class MineTasks
     @Override
     protected void broadcastPendingResetMessageToAllPlayersWithRadius(MineJob mineJob) {
     	
-    	if ( isVirtual() ) {
+    	if ( isVirtual() || getResetTime() <= 0) {
     		// ignore:
     	}
     	else

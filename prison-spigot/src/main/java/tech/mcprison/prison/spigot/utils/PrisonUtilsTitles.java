@@ -22,11 +22,11 @@ public class PrisonUtilsTitles
 		extends PrisonUtils
 {
 	private boolean enableTitlesTitle = false;
-	private boolean enableTitlesSubtitle = false;
+//	private boolean enableTitlesSubtitle = false;
 	private boolean enableTitlesActionBar = false;
-	private boolean enableTitlesClear = false;
-	private boolean enableTitlesReset = false;
-	private boolean enableTitlesTimes = false;
+//	private boolean enableTitlesClear = false;
+//	private boolean enableTitlesReset = false;
+//	private boolean enableTitlesTimes = false;
 
 
 	public PrisonUtilsTitles() {
@@ -119,7 +119,7 @@ public class PrisonUtilsTitles
 				description = "The message to display in the action bar.") String message 
 			) {
 		
-		if ( !isEnableTitlesTitle() ) {
+		if ( !isEnableTitlesActionBar() ) {
 			
 			Output.get().logInfo( "Prison's utils command titles action bar is disabled in modules.yml." );
 		}
@@ -271,12 +271,12 @@ public class PrisonUtilsTitles
 		this.enableTitlesTitle = enableTitlesTitle;
 	}
 
-	public boolean isEnableTitlesSubtitle() {
-		return enableTitlesSubtitle;
-	}
-	public void setEnableTitlesSubtitle( boolean enableTitlesSubtitle ) {
-		this.enableTitlesSubtitle = enableTitlesSubtitle;
-	}
+//	public boolean isEnableTitlesSubtitle() {
+//		return enableTitlesSubtitle;
+//	}
+//	public void setEnableTitlesSubtitle( boolean enableTitlesSubtitle ) {
+//		this.enableTitlesSubtitle = enableTitlesSubtitle;
+//	}
 
 	public boolean isEnableTitlesActionBar() {
 		return enableTitlesActionBar;
@@ -285,25 +285,25 @@ public class PrisonUtilsTitles
 		this.enableTitlesActionBar = enableTitlesActionBar;
 	}
 
-	public boolean isEnableTitlesClear() {
-		return enableTitlesClear;
-	}
-	public void setEnableTitlesClear( boolean enableTitlesClear ) {
-		this.enableTitlesClear = enableTitlesClear;
-	}
-
-	public boolean isEnableTitlesReset() {
-		return enableTitlesReset;
-	}
-	public void setEnableTitlesReset( boolean enableTitlesReset ) {
-		this.enableTitlesReset = enableTitlesReset;
-	}
-
-	public boolean isEnableTitlesTimes() {
-		return enableTitlesTimes;
-	}
-	public void setEnableTitlesTimes( boolean enableTitlesTimes ) {
-		this.enableTitlesTimes = enableTitlesTimes;
-	}
+//	public boolean isEnableTitlesClear() {
+//		return enableTitlesClear;
+//	}
+//	public void setEnableTitlesClear( boolean enableTitlesClear ) {
+//		this.enableTitlesClear = enableTitlesClear;
+//	}
+//
+//	public boolean isEnableTitlesReset() {
+//		return enableTitlesReset;
+//	}
+//	public void setEnableTitlesReset( boolean enableTitlesReset ) {
+//		this.enableTitlesReset = enableTitlesReset;
+//	}
+//
+//	public boolean isEnableTitlesTimes() {
+//		return enableTitlesTimes;
+//	}
+//	public void setEnableTitlesTimes( boolean enableTitlesTimes ) {
+//		this.enableTitlesTimes = enableTitlesTimes;
+//	}
 	
 }

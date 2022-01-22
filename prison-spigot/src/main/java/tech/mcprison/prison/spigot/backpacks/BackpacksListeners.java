@@ -14,10 +14,11 @@ import org.bukkit.inventory.ItemStack;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.compat.Compatibility;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 
 public class BackpacksListeners implements Listener {
 
-    Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+    Compatibility compat = SpigotCompatibility.getInstance();
 
     @EventHandler
     public void onPlayerJoinBackpack(PlayerJoinEvent e){
@@ -31,7 +32,7 @@ public class BackpacksListeners implements Listener {
 
     @EventHandler
     public void onDeadBackpack(PlayerDeathEvent e){
-        onDeadBackpackAction(e);
+        onDeathBackpackAction(e);
     }
 
 
@@ -49,7 +50,7 @@ public class BackpacksListeners implements Listener {
         backpackItemClickAction(e);
     }
 
-    private void onDeadBackpackAction(PlayerDeathEvent e) {
+    private void onDeathBackpackAction(PlayerDeathEvent e) {
         if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.BackPack_Lose_Items_On_Death"))) {
             BackpacksUtil.get().resetBackpack(e.getEntity());
             if (getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))) {

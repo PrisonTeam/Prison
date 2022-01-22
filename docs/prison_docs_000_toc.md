@@ -17,7 +17,8 @@
 
 ## Build logs
  - **[v3.3.0-alpha - Current](changelog_v3.3.x.md)**
- - [v3.2.0 through v3.2.10](prison_changelogs.md)
+ 
+ - [v3.2.0 through v3.2.11](prison_changelogs.md)
  
 
 
@@ -25,25 +26,70 @@
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
 
-# Prison Now Fully Supports Spigot 1.17.1 and Java 16 !!
+# Prison Supports Spigot 1.8 through Spigot 1.18.x
+# Prison Supports Java 1.8 though Java 17
+# Prison is created for the Spigot Platform, and works on other platforms based upon Spigot
 
 
-## Prison now has Access By Rank to Reduce the number of Permissions needed!
+With the release of Spigot 1.17.x, there were a few minor changes that were needed to be made to prison to support Java 16.  These were mostly related to a couple of NMS routines that were trying to figure out the player's default language they have selected. Due to new restrictions moving forward with Spigot, the ability to correctly identify the player's default language may not be possible, but prison will still use the selected language setting in the config files.
+
+
+Prison supports both Spigot 1.17.1 and Spigot 1.18.x, along with Java 17.  At this time there hasn't been any reports of incompatibilities.  Since prison is using a library to support the correct blocks for the version of the server that you are running, we are limited to when updates are released for that library.  Luckily they have had a couple of releases and we have applied them to the latest alpha releases.  So if you are wanting to maximize the new Spigot 1.18.x experience, please upgrade to the latest alpha release as found on our discord server in the #alpha channel. 
+
+
+### Newer features and updates in Prison:
+
+
+* Auto Configure: Even if you really don't want to use auto configure when setting up your server, it may be worth trying it out just to see what it does.  If you're not happy with it, then deleting the `plugins/Prison/` directory will remove "everything" and on the next restart of your server, prison will load for the first time.  So if you are just getting started with prison, it's worth a try.
+
+
+* Prison now has Access By Rank to reduce the number of Permissions needed! This simplifies a lot of settings and on a simple Prison server, can get you up and running much faster.
+
+* Backpacks: It is advised not to use Prison's backpacks at this time.  They will be going through a rewrite and may result in content losses when upgrading when the newer version is available.  It is suggested you give MinePacks at try.
+
+* Prison Mine Bombs!  Prison is starting to add mine bombs to the list of available features.  This is a work in progress and more enhancements and features will be added in the future.  The idea with these, is that you can configure almost every aspect of the mine bombs, and you can have as many different varieties as you want.
+
+* Prison Tokens!  Prison is starting to implement the earning of tokens within the mines as the players mine.  This is a work in progress.  Currently the hooks are added to earn tokens, and for admins to manage them.  But more features need to be added to help enable using them.
+
+* Prison Stats!  More stats are being tracked for each player.  This is a work in progress.  Prison is tracking blocks mined and even per mine.  Prison is tracking time spent mining in each mine, along with how much a player is earning per mine with both regular currency, and with tokens.  Top-n reports will be available shortly.  Rankup requirements will soon include the ability to specify blocks mined, time spent mining, and even tokens.  This will help you customize how you want your players to ranup.
+
+
+### Features planned for the near future
+
+These new features are in the planning stages...
+
+* New backpacks:  A rewrite of the backpacks that will give a little more flexibility.  You will be ble to use them as backpacks, or as vaults.  Could even sell, or trade backpacks/vaults with their contents.  ETA is unknown since a new storage management system needs to be created.
+
+* Mine Effects:  The ability to set mine effects for a given mine, or to allow players to buy effects using their earned tokens.  Effects could be simple potion effects (haste, night vision), or even effects such as no fall damage, and even flight.  Other options could be no-pvp, enable pvp, no block break, no fire, etc... The options are numerous, but will be added a little at a time, and upon request.
  
- 
-<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
+ * Mine Regions:  Mine regions may be added to prison soon.  They would be "area" that will control the Mine Effects and a region would/should enclose a given mine.  But mine regions could be used on their own, were no mine is involved, such as at spawn to enble flight and no fall damage for your higher ranking players, or even allow players to "buy" regions to put around their bases so they can enable nigh vision and flight.
+
+* Custom Menus: Simple custom menus could be added so admins can setup simple commands and features.  For example, custom token shop for enchantments or other in game items, or run any commands in general.  This will start off simple, but will expand upon requests.
+
+* Unlimited Prestiges: This has been a long standing requested feature.  It's close to being added.  Although the levels may be unlimited, special configurations could be added for different levels, such as adding ladder commands at specific levels (ladder commands allows you to peform any action upon rankup, even from other plugins).
+
+* Custom Shops: Custom shops will allow for an unlimited number of new shops to be created.  These shops can be tied to perms or player Ranks, or even specific mines.  Each shop could be either stand alone, or it could be based upon another shop with price modifies and new items to prevent the need to redefine all entries for each shop.  A mine shop would only be able to sell items that are retrived from mining in that mine.
+
+* Cells: They have been requested many times in the past.  At this time, we cannot add them yet, but we would like to sometime in the distant future.
+
+* Enchantments: In the past we have stated that Prison will never support enchantments for pickaxes, or other tools, or weapons and amour.  But as Prison is evolving and more features such as mine bombs and mine effects are added, along with natively supporting tokens within prison, the idea of adding enchantments is almost a no-brainer since most of the complicated details will already be supported through other features.  So in the distant future, some time after mine bombs and mine effects have matured, we may add our own Enchantments.
+
+
+
+<hr style="height:7px; border:none; color:#aaf; background-color:#aaf;">
 
 # New! Prison Fast Start
 
+See the Auto Configure documentation for more information:
 [Prison Auto Configure / Prison Quick Start!](prison_docs_100_setting_up_auto_configure.md)
 
 Prison now has a new set of features that can help you get up and running faster than ever! With the latest version of Prison, you can even have a functional Prison server running with just two Prison commands.  See below for more information.
 
 
-**It is strongly recommended that the '/ranks autoConfigure' should always be ran first.**  Prison's Auto Configure sets up so many features, that it can help resolve many initial issues.
+**It is strongly recommended that the '/ranks autoConfigure' should always be ran first.**  Prison's Auto Configure sets up so many features, that it can help resolve many initial issues.  It's worth trying the first time you run prison since it's easy to undo: just delete the `plugins/Prison' directory and the next time you restart your server Prison will startup as if it was just installed with no settings.
 
 
-Before you try to setup Prison, you really need to install an Economy or the Ranks module will not be enabled.  It is strongly suggested you install the following plugins:  Vault, EssentialsX, EssentialsX-Chat, PlaceholderAPI, LuckPerms, WorldEdit, WorldGuard (or Fast Async World Edit, FAWE, on newer versions of Spigot).
+Before you try to setup Prison, you really need to install an Economy or the Ranks module will not be enabled.  It is strongly suggested you install the following plugins:  Vault, EssentialsX, EssentialsX-Chat, PlaceholderAPI, LuckPerms, WorldEdit (or Fast Async World Edit, FAWE, on newer versions of Spigot), WorldGuard.
 
 
 `/ranks autoConfigure`. It can auto create your ranks and virtual mines, A through Z, it will link the mines to the ranks, setup the Mine Access By Rank and TP Access By Rank.  It will also setup the Mine as a Virtual Mine will and assign blocks of increasing values to all mines.  Each mine will also be assigned a random liner.  The Ranks autoConfigure will also enable sellall and load over 90 default blocks for your shop.  Auto features will be enabled (auto pickup, auto smelt, and auto blocking).  
@@ -205,7 +251,9 @@ Auto configure can get you up and running with as little as two commands.  The f
 
 
 * [Setting up LuckPerms](prison_docs_020_setting_up_luckperms.md)
-    Setting up LuckPerms. Warning about LuckPerms Versions.
+    Setting up LuckPerms. 
+* [Setting up LuckPerms Groups & Tracks](prison_docs_030_LuckPerms_Groups_Tracks.md)
+    Using LuckPerms's groups and tracks with Prison.
 
 
 * [Setting up PermissionsEX](prison_docs_022_setting_up_PermissionsEX.md)

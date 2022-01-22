@@ -23,7 +23,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.internal.events.player.PlayerInteractEvent;
+import tech.mcprison.prison.internal.events.player.PrisonPlayerInteractEvent;
 
 /**
  * @author Faizaan A. Datoo
@@ -34,7 +34,8 @@ public class SelectionListener {
         Prison.get().getEventBus().register(this);
     }
 
-    @Subscribe public void onPlayerInteract(PlayerInteractEvent e) {
+    @Subscribe 
+    public void onPlayerInteract(PrisonPlayerInteractEvent e) {
         ItemStack ourItem = e.getItemInHand();
         ItemStack toolItem = SelectionManager.SELECTION_TOOL;
 
@@ -43,7 +44,7 @@ public class SelectionListener {
         }
         e.setCanceled(true);
 
-        if (e.getAction() == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
+        if (e.getAction() == PrisonPlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
             // Set first position
             Selection sel = Prison.get().getSelectionManager().getSelection(e.getPlayer());
             sel.setMin(e.getClicked());
@@ -52,7 +53,7 @@ public class SelectionListener {
                 .sendMessage("&7First position set to &8" + e.getClicked().toBlockCoordinates());
 
             checkForEvent(e.getPlayer(), sel);
-        } else if (e.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+        } else if (e.getAction() == PrisonPlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             // Set second position
             Selection sel = Prison.get().getSelectionManager().getSelection(e.getPlayer());
             sel.setMax(e.getClicked());

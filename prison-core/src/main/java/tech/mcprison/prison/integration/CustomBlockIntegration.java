@@ -5,6 +5,7 @@ import java.util.List;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
+import tech.mcprison.prison.util.Location;
 
 public abstract class CustomBlockIntegration
 		extends IntegrationCore {
@@ -44,7 +45,9 @@ public abstract class CustomBlockIntegration
 	public abstract PrisonBlock getCustomBlock( Block block );
 	
 	public abstract Block setCustomBlockId( Block block, String customId, boolean doBlockUpdate );
-	
+
+	public abstract void setCustomBlockIdAsync( PrisonBlock prisonBlock, Location location );
+
 	
 	public abstract List<PrisonBlock> getCustomBlockList();
 

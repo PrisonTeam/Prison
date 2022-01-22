@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 
 public class SlimeBlockFunEventListener 
 	implements Listener {
@@ -81,7 +82,7 @@ public class SlimeBlockFunEventListener
 //				 || onBlock2.getType() == Material.SLIME_BLOCK
 						) {
 					
-					ItemStack itemInHand = SpigotPrison.getInstance().getCompatibility().getItemInMainHand( player );
+					ItemStack itemInHand = SpigotCompatibility.getInstance().getItemInMainHand( player );
 					
 					double boost = getBoost( itemInHand );
 					

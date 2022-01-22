@@ -13,13 +13,13 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.data.Mine.MineType;
 import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineLinerData;
-import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.Output;
@@ -43,6 +43,11 @@ public abstract class MineData
 	
 	private boolean enabled = false;
 	private boolean virtual = false;
+	
+	
+	// Controls if a mine is able to be used during a mine reset:
+	private MineStateMutex mineStateMutex;
+	
 	
 	private MineType mineType;
 	private MineGroup mineGroup;
@@ -104,6 +109,20 @@ public abstract class MineData
     
     
     private TreeMap<String, PrisonBlockStatusData> blockStats;
+    
+    /**
+     * <p>If any of the mine's blocks are effected by gravity, then this field
+     * will indicate that this mine has at least one.  This field prevents the 
+     * need to always check all the blocks. Special processing needs to be performed
+     * when resetting a mine with these blocks, since a non-gravity affected 
+     * block must be placed first, prior to placing a gravity block.  Or just leave
+     * it as is, even if it's air.  Then on a second pass, place the gravity 
+     * affected block.  Technique may vary and could be controlled by settings.
+     * </p>
+     */
+    private transient boolean hasGravityAffectedBlocks = false;
+    
+    private transient PrisonBlock tempGravityBlock = null;
     
     
 	private int blockBreakCount = 0;
@@ -171,6 +190,9 @@ public abstract class MineData
     }
     
     public MineData() {
+
+    	this.mineStateMutex = new MineStateMutex();
+    	
     	this.elementType = ModuleElementType.MINE;
     	
     	this.tag = null;
@@ -655,19 +677,42 @@ public abstract class MineData
      * 
      * @param targetPrisonBlock
      */
-    public void incrementBlockMiningCount( MineTargetPrisonBlock targetPrisonBlock ) {
+    public boolean incrementBlockMiningCount( MineTargetPrisonBlock targetPrisonBlock ) {
+    	boolean results = false;
     	
     	// Only count the block as being broke if it was not originally air and
-    	// and it has not been broke before:
-    	if ( targetPrisonBlock != null && !targetPrisonBlock.isAirBroke() ) {
+    	// and it has not been broke before.
+    	
+    	// NOTE: setAirBroke() and setMined() will be set to true if the mine reset
+    	//       places an air block. That will prevent the air from being processed.
+    	if ( targetPrisonBlock != null && !targetPrisonBlock.isCounted() ) {
     		
+    		targetPrisonBlock.setAirBroke( true );
+    		targetPrisonBlock.setCounted( true );
+    		
+    		// The field isMined() is used to "reserve" a block to indicate that it is in 
+    		// the stages of being processed, since much later in the processing will the
+    		// block be set to setAirBreak() or even setCounted().  This prevents 
+    		// high-speed or concurrent operations from multiple players from trying to 
+    		// process the same block. So set it to true here, if it has not already 
+    		// been set.
+    		if ( !targetPrisonBlock.isMined() ) {
+    			
+    			targetPrisonBlock.setMined( true );
+    		}
+
     		incrementBlockBreakCount();
     		incrementTotalBlocksMined();
     		
-    		targetPrisonBlock.getPrisonBlock().incrementMiningBlockCount();
+    		if ( targetPrisonBlock.getPrisonBlock() != null ) {
+    			
+    			targetPrisonBlock.getPrisonBlock().incrementMiningBlockCount();
+    		}
     		
-    		targetPrisonBlock.setAirBroke( true );
+    		results = true;
     	}
+    	
+    	return results;
     }
     
 //    public void incrementBlockMiningCount( Block block ) {
@@ -850,10 +895,13 @@ public abstract class MineData
     public PrisonBlock getPrisonBlock( PrisonBlock blockType ) {
     	PrisonBlock results = null;
     	
-    	for (PrisonBlock block : getPrisonBlocks()) {
-    		if (blockType.getBlockNameFormal().equalsIgnoreCase( block.getBlockNameFormal())) {
-    			results = block;
-    			break;
+    	if ( blockType != null && blockType.getBlockNameFormal() != null ) {
+    		
+    		for (PrisonBlock block : getPrisonBlocks()) {
+    			if ( block.getBlockNameFormal().equalsIgnoreCase( blockType.getBlockNameFormal() )) {
+    				results = block;
+    				break;
+    			}
     		}
     	}
     	
@@ -1270,6 +1318,32 @@ public abstract class MineData
 		this.mineSweeperBlocksChanged = mineSweeperBlocksChanged;
 	}
 
+	public void checkGravityAffectedBlocks() {
+		setHasGravityAffectedBlocks( false );
+		
+		for ( PrisonBlock pBlock : getPrisonBlocks() ) {
+			
+			if ( pBlock.isGravity() ) {
+				setHasGravityAffectedBlocks( true );
+				break;
+			}
+		}
+	}
+	
+	public boolean isHasGravityAffectedBlocks() {
+		return hasGravityAffectedBlocks;
+	}
+	public void setHasGravityAffectedBlocks( boolean hasGravityAffectedBlocks ) {
+		this.hasGravityAffectedBlocks = hasGravityAffectedBlocks;
+	}
+
+	public PrisonBlock getTempGravityBlock() {
+		return tempGravityBlock;
+	}
+	public void setTempGravityBlock( PrisonBlock tempGravityBlock ) {
+		this.tempGravityBlock = tempGravityBlock;
+	}
+
 	public boolean isDeleted() {
 		return isDeleted;
 	}
@@ -1277,4 +1351,10 @@ public abstract class MineData
 		this.isDeleted = isDeleted;
 	}
 
+	public MineStateMutex getMineStateMutex() {
+		if ( mineStateMutex == null ) {
+			this.mineStateMutex = new MineStateMutex();
+		}
+		return mineStateMutex;
+	}
 }

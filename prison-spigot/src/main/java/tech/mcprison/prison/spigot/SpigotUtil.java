@@ -19,6 +19,7 @@
 package tech.mcprison.prison.spigot;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,7 @@ import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.BlockTestStats;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
 import tech.mcprison.prison.util.BlockType;
@@ -90,7 +92,7 @@ public class SpigotUtil {
      */
     public static XMaterial getXMaterial( BlockType prisonBlockType ) {
     	
-    	XMaterial xMat = SpigotPrison.getInstance().getCompatibility()
+    	XMaterial xMat = SpigotCompatibility.getInstance()
     						.getXMaterial( prisonBlockType );
     	
     	return xMat;
@@ -112,7 +114,7 @@ public class SpigotUtil {
 
     
 	public static BlockType blockToBlockType( Block spigotBlock ) {
-		BlockType results = SpigotPrison.getInstance().getCompatibility()
+		BlockType results = SpigotCompatibility.getInstance()
 				.getBlockType( spigotBlock );
 		
 //		
@@ -610,6 +612,20 @@ public class SpigotUtil {
 			if ( xMat.isSupported() ) {
 				
 				ItemStack itemStack = xMat.parseItem();
+				
+				if ( xMat.name().toLowerCase().contains( "_wood" ) ) {
+					
+					// This validates that XMaterials can map to a Material and back to the correct XMaterial
+					// Bukkit versions < 1.13.0 fails on _WOOD blocks since XMaterial maps them to logs.
+					Material bMat = xMat.parseMaterial();
+					XMaterial xMatCheck = XMaterial.matchXMaterial( bMat );
+
+					if ( bMat != null  && xMat != xMatCheck ) {
+						// Incorrect mapping:
+						continue;
+					}
+				}
+				
 				if ( itemStack != null ) {
 					
 					//if ( itemStack.getType().isBlock() ) 
@@ -809,7 +825,7 @@ public class SpigotUtil {
 		}
 		
 		// Next test all of the spigot/bukkit Materials:
-		BlockTestStats stats = SpigotPrison.getInstance().getCompatibility()
+		BlockTestStats stats = SpigotCompatibility.getInstance()
 										.testCountAllBlockTypes();
 		
 		
@@ -1010,12 +1026,25 @@ public class SpigotUtil {
   public static List<SpigotItemStack> getDrops(SpigotBlock block, SpigotItemStack tool) {
 	List<SpigotItemStack> ret = new ArrayList<>();
 	
-	block.getWrapper().getDrops( tool.getBukkitStack() )
-			.forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
+	Collection<ItemStack> drops = block.getWrapper().getDrops( tool.getBukkitStack() );
+	
+	for ( ItemStack drop : drops )
+	{
+		ret.add( SpigotUtil.bukkitItemStackToPrison(drop) );
+	}
+	
+//	block.getWrapper().getDrops( tool.getBukkitStack() )
+//			.forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
 	
 	return ret;
 }
     
+  
+//  public static void clearDrops(SpigotBlock block) {
+//	  
+//	  block.getWrapper().getDrops().clear();;
+//  }
+  
   /*
    * InventoryType
    */

@@ -80,19 +80,19 @@ public class PrisonDiscordWebhook
 	    }
 
 	    
-	    if ( Output.get().isDebug( DebugTarget.support ) ) {
-	    	Output.get().logDebug( DebugTarget.support, 
-	    			"Prison Webhook debug: total fields: %d  total chars: %d  ", 
-	    			getFields().size(), totalSize );
-	    	
-	    	if ( getFields().size() > 25 || totalSize > 6000 ) {
-	    		Output.get().logDebug( DebugTarget.support, 
-	    				"Prison Webhook debug: total fields: Failure. Max number of " +
-	    				"fields is 25. Max number of characters is 6000.  Please reduce " +
-	    				"these to bring in to complience and resubmit. " );
-	    	}
-	    	
-	    }
+//	    if ( Output.get().isDebug( DebugTarget.support ) ) {
+//	    	Output.get().logDebug( DebugTarget.support, 
+//	    			"Prison Webhook debug: total fields: %d  total chars: %d  ", 
+//	    			getFields().size(), totalSize );
+//	    	
+//	    	if ( getFields().size() > 25 || totalSize > 6000 ) {
+//	    		Output.get().logDebug( DebugTarget.support, 
+//	    				"Prison Webhook debug: total fields: Failure. Max number of " +
+//	    				"fields is 25. Max number of characters is 6000.  Please reduce " +
+//	    				"these to bring in to complience and resubmit. " );
+//	    	}
+//	    	
+//	    }
 	    
 	    String results = submitWebhook( webhook );
 	    

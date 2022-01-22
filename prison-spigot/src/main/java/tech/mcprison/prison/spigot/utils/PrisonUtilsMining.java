@@ -4,7 +4,7 @@ import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.block.OnBlockBreakPlayerManualCore;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 public class PrisonUtilsMining
@@ -57,7 +57,10 @@ public class PrisonUtilsMining
 			// Player cannot be null.  If it is null, then there was a failure.
 			if ( player != null && player.isOnline() ) {
 				
-				SpigotPrison.getInstance().getAutoFeatures().playerSmelt( player );
+				OnBlockBreakPlayerManualCore manualHandler = new OnBlockBreakPlayerManualCore();
+				manualHandler.playerSmelt( player );
+				
+//				SpigotPrison.getInstance().getAutoFeatures().playerSmelt( player );
 			}
 		}
 	}
@@ -83,7 +86,12 @@ public class PrisonUtilsMining
 			// Player cannot be null.  If it is null, then there was a failure.
 			if ( player != null && player.isOnline() ) {
 				
-				SpigotPrison.getInstance().getAutoFeatures().playerBlock( player );
+				
+				OnBlockBreakPlayerManualCore manualHandler = new OnBlockBreakPlayerManualCore();
+				manualHandler.playerBlock( player );
+				
+
+//				SpigotPrison.getInstance().getAutoFeatures().playerBlock( player );
 			}
 		}
 	}

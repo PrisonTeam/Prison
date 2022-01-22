@@ -71,6 +71,12 @@ public class MinesBlockCommands
         		return;
         	}
         	
+        	if ( !prisonBlock.isBlock() ) {
+        		pMines.getMinesMessages().getLocalizable("not_a_block").
+        		withReplacements(block).sendTo(sender);
+        		return;
+        	}
+        	
         	
 //        	if (m.isInMine(prisonBlock)) {
 //        		pMines.getMinesMessages().getLocalizable("block_already_added").
@@ -129,6 +135,9 @@ public class MinesBlockCommands
         		percentTotal.getOldBlock().setChance( chance );
         	}
 
+        	// Check if one of the blocks is effected by gravity, and if so, set that indicator.
+    		m.checkGravityAffectedBlocks();
+    		
         	pMines.getMineManager().saveMine( m );
         	
         	pMines.getMinesMessages().getLocalizable("block_added")
@@ -150,6 +159,11 @@ public class MinesBlockCommands
 				sender.sendMessage( "The percent chance must have a value greater than zero." );
 			}
 			else {
+				
+	        	// Check if one of the blocks is effected by gravity, and if so, set that indicator.
+	    		m.checkGravityAffectedBlocks();
+
+	    		
 				// Delete the block since it exists and the chance was set to zero:
 				deleteBlock( sender, pMines, m, existingPrisonBlock );
 			}
@@ -178,6 +192,9 @@ public class MinesBlockCommands
 				existingPrisonBlock.setChance( chance );
 			}
 			
+        	// Check if one of the blocks is effected by gravity, and if so, set that indicator.
+    		m.checkGravityAffectedBlocks();
+
 			pMines.getMineManager().saveMine( m );
 
 			pMines.getMinesMessages().getLocalizable("block_set")
@@ -186,6 +203,9 @@ public class MinesBlockCommands
 		else {
 			prisonBlock.setChance( chance );
 			m.addPrisonBlock( prisonBlock );
+			
+        	// Check if one of the blocks is effected by gravity, and if so, set that indicator.
+    		m.checkGravityAffectedBlocks();
 
 			pMines.getMineManager().saveMine( m );
 
@@ -478,6 +498,10 @@ public class MinesBlockCommands
         	percentTotal.getOldBlock().setChance( chance );
         	
         	
+        	// Check if one of the blocks is effected by gravity, and if so, set that indicator.
+    		m.checkGravityAffectedBlocks();
+
+        	
         	pMines.getMineManager().saveMine( m );
         	
         	pMines.getMinesMessages().getLocalizable("block_set")
@@ -604,6 +628,12 @@ public class MinesBlockCommands
         		
         		deleteBlock( sender, pMines, m, preexistingPrisonBlock );
         	}
+        	else {
+        		
+        		pMines.getMinesMessages().getLocalizable("block_not_removed")
+        		.sendTo(sender);
+        		return;
+        	}
         	
         }
         else {
@@ -637,6 +667,10 @@ public class MinesBlockCommands
      */
 	private void deleteBlock( CommandSender sender, PrisonMines pMines, Mine m, PrisonBlock prisonBlock ) {
 		if ( m.removePrisonBlock( prisonBlock ) ) {
+			
+        	// Check if one of the blocks is effected by gravity, and if so, set that indicator.
+    		m.checkGravityAffectedBlocks();
+
 			pMines.getMineManager().saveMine( m );
 			
 			pMines.getMinesMessages().getLocalizable("block_deleted").
@@ -661,6 +695,10 @@ public class MinesBlockCommands
 			}
 		}
 		if ( m.getBlocks().remove( rBlock )) {
+			
+        	// Check if one of the blocks is effected by gravity, and if so, set that indicator.
+    		m.checkGravityAffectedBlocks();
+
 			pMines.getMineManager().saveMine( m );
 			
 			pMines.getMinesMessages().getLocalizable("block_deleted")
@@ -870,6 +908,11 @@ public class MinesBlockCommands
         
         PrisonMines pMines = PrisonMines.getInstance();
         Mine m = pMines.getMine(mineName);
+        
+        if ( m == null ) {
+        	sender.sendMessage( "Invalid mine name." );
+        	return;
+        }
         
         DecimalFormat dFmt = new DecimalFormat("#,##0");
         DecimalFormat fFmt = new DecimalFormat("#,##0.00");

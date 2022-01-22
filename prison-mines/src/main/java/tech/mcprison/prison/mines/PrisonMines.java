@@ -32,7 +32,7 @@ import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.mines.commands.MinesCommands;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MineScheduler.MineResetActions;
-import tech.mcprison.prison.mines.data.MineScheduler.MineResetType;
+import tech.mcprison.prison.mines.data.MineScheduler.MineResetScheduleType;
 import tech.mcprison.prison.mines.data.MinesConfig;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager;
@@ -41,6 +41,7 @@ import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.store.Database;
 import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.util.Text;
 
 /**
  * The Prison 3 Mines Module
@@ -178,7 +179,7 @@ public class PrisonMines extends Module {
     private void initConfig() {
         config = new MinesConfig();
 
-        File configFile = new File(getDataFolder(), "config.json");
+        File configFile = new File(getModuleDataFolder(), "config.json");
         
         if (!configFile.exists()) {
         	getJsonFileIO().saveJsonFile( configFile, config );
@@ -280,7 +281,7 @@ public class PrisonMines extends Module {
 	 * @param resetType
 	 * @param resetActions 
 	 */
-	public void resetAllMines( MineResetType resetType, List<MineResetActions> resetActions ) {
+	public void resetAllMines( MineResetScheduleType resetType, List<MineResetActions> resetActions ) {
 		getMineManager().resetAllMines( resetType, resetActions );
 	}
 	
@@ -334,7 +335,7 @@ public class PrisonMines extends Module {
     }
 
     public Mine getMine(String mineName) {
-    	return getMineManager().getMine(mineName);
+    	return getMineManager().getMine( Text.stripColor( mineName ) );
     }
     
     public LocaleManager getMinesMessages() {

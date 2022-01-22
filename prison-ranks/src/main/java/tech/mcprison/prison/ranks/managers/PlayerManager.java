@@ -50,6 +50,7 @@ import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
@@ -78,6 +79,7 @@ public class PlayerManager
     	super("PlayerMangager");
     	
         this.collection = collection;
+        
         this.players = new ArrayList<>();
         this.playersByName = new TreeMap<>();
         
@@ -90,27 +92,30 @@ public class PlayerManager
      * Methods
      */
 
-    /**
-     * Loads a player from a file and stores it in the registry for use on the server.
-     *
-     * @param playerFile The key that the player data is stored as. Case-sensitive.
-     * @throws IOException If the file could not be read, or if the file does not exist.
-     */
-    public void loadPlayer(String playerFile) throws IOException {
-        Document document = collection.get(playerFile).orElseThrow(IOException::new);
-        RankPlayer rankPlayer = new RankPlayer(document);
-        
-        players.add( rankPlayer );
-        
-        // add by uuid:
-        playersByName.put( rankPlayer.getUUID().toString(), rankPlayer );
-        
-        // add by name:
-        if ( rankPlayer.getNames().size() > 0 ) {
-        	playersByName.put( rankPlayer.getDisplayName(), rankPlayer );
-        	
-        }
-    }
+//    /**
+//     * Loads a player from a file and stores it in the registry for use on the server.
+//     *
+//     * @param playerFile The key that the player data is stored as. Case-sensitive.
+//     * @throws IOException If the file could not be read, or if the file does not exist.
+//     */
+//    public void loadPlayer(String playerFile) throws IOException {
+//        Document document = collection.get(playerFile).orElseThrow(IOException::new);
+//        
+//        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+//
+//        RankPlayer rankPlayer = rankPlayerFactory.createRankPlayer(document);
+//        
+//        players.add( rankPlayer );
+//        
+//        // add by uuid:
+//        playersByName.put( rankPlayer.getUUID().toString(), rankPlayer );
+//        
+//        // add by name:
+//        if ( rankPlayer.getNames().size() > 0 ) {
+//        	playersByName.put( rankPlayer.getDisplayName(), rankPlayer );
+//        	
+//        }
+//    }
 
     /**
      * Loads every player in the specified playerFolder.
@@ -118,11 +123,32 @@ public class PlayerManager
      * @throws IOException If one of the files could not be read, or if the playerFolder does not exist.
      */
     public void loadPlayers() throws IOException {
-        List<Document> players = collection.getAll();
-        players.forEach(
-        		document -> 
-        			this.players.add(
-        					new RankPlayer(document)));
+        List<Document> playerDocss = collection.getAll();
+        
+        final RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+        
+        for ( Document playerDocument : playerDocss )
+		{
+        	RankPlayer rankPlayer = rankPlayerFactory.createRankPlayer(playerDocument);
+            
+            players.add( rankPlayer );
+            
+            // add by uuid:
+            playersByName.put( rankPlayer.getUUID().toString(), rankPlayer );
+            
+            // add by name:
+            if ( rankPlayer.getNames().size() > 0 ) {
+            	playersByName.put( rankPlayer.getDisplayName(), rankPlayer );
+            	
+            }
+		}
+        
+        
+
+//        players.forEach(
+//        		document -> 
+//        			this.players.add(
+//        					rankPlayerFactory.createRankPlayer(document) ));
     }
 
     /**
@@ -134,7 +160,10 @@ public class PlayerManager
      * @see #savePlayer(RankPlayer) To save with the default conventional filename.
      */
     public void savePlayer(RankPlayer player, String playerFile) throws IOException {
-        collection.save(playerFile, player.toDocument());
+    	
+    	RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+    	
+        collection.save(playerFile, rankPlayerFactory.toDocument( player ) );
 //        collection.insert(playerFile, player.toDocument());
     }
 
@@ -184,12 +213,12 @@ public class PlayerManager
      * </p>
      * 
      */
-    public void connectPlayersToRanks() {
+    public void connectPlayersToRanks( boolean checkPlayerBalances ) {
     	for ( RankPlayer player : players ) {
 			
     		for ( PlayerRank pRank : player.getLadderRanks().values() ) {
     			
-    			pRank.getRank().addPlayer( player );
+    			pRank.getRank().addPlayer( player, checkPlayerBalances );
     		}
 		}
     }
@@ -327,11 +356,13 @@ public class PlayerManager
         		
         		if ( !getPlayersByName().containsKey( playerName ) ) {
         			
+        			RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+        			
         			// We need to create a new player data file.
         			newPlayer = new RankPlayer( uid, playerName );
         			newPlayer.checkName( playerName );
         			
-        			newPlayer.firstJoin();
+        			rankPlayerFactory.firstJoin( newPlayer );
         			
         			players.add(newPlayer);
         			getPlayersByName().put( playerName, newPlayer );
@@ -479,9 +510,12 @@ public class PlayerManager
     	List<Rank> results = new ArrayList<>();
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
+    		
+    		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+    		
     		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
     			
-    			Rank rank = rankPlayer.getRank( ladder ).getRank();
+    			Rank rank = rankPlayerFactory.getRank( rankPlayer, ladder ).getRank();
 				if ( rank != null && rank.getRankNext() != null ) {
 					Rank nextRank = rank.getRankNext();
 					
@@ -500,37 +534,48 @@ public class PlayerManager
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		DecimalFormat dFmt = new DecimalFormat("#,##0");
     		
+    		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+    		
     		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
     			
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				PlayerRank pRank = rankPlayer.getRank( ladder );
-    				if ( pRank != null && pRank.getRank().getRankNext() != null ) {
-    					Rank nextRank = pRank.getRank().getRankNext();
+    				boolean isDefault = ladder.getName().equals( "default" ) ;
+    				
+    				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
+    				Rank nextRank = pRank.getRank().getRankNext();
+
+    				if ( pRank != null &&
+    						( nextRank != null || nextRank == null && isDefault )) {
+    					
+    					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
-    			        PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
     					//PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
-    					if ( sb.length() > 0 ) {
-    						sb.append(", ");
-    					}
-    					
-    					double cost = nextPRank.getRankCost();
-    					
-    					if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
-    						PlaceholderAttributeNumberFormat attributeNF = 
-    								(PlaceholderAttributeNumberFormat) attribute;
-    						sb.append( attributeNF.format( cost ) );
-    					}
-    					else  if ( formatted ) {
-    						sb.append( PlaceholdersUtil.formattedMetricSISize( cost ));
-    					}
-    					else {
-    						sb.append( dFmt.format( cost ));
-    					}
+    			        if ( nextPRank != null ) {
+    			        	
+    			        	if ( sb.length() > 0 ) {
+    			        		sb.append(", ");
+    			        	}
+    			        	
+    			        	double cost = nextPRank.getRankCost();
+    			        	
+    			        	if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    			        		PlaceholderAttributeNumberFormat attributeNF = 
+    			        				(PlaceholderAttributeNumberFormat) attribute;
+    			        		sb.append( attributeNF.format( cost ) );
+    			        	}
+    			        	else  if ( formatted ) {
+    			        		sb.append( PlaceholdersUtil.formattedMetricSISize( cost ));
+    			        	}
+    			        	else {
+    			        		sb.append( dFmt.format( cost ));
+    			        	}
+    			        }
     				}
     			}
     		}
@@ -539,6 +584,36 @@ public class PlayerManager
     	
     	return sb.toString();
     }
+
+	private Rank getNextPrestigeRank( RankPlayer rankPlayer, boolean isDefault, Rank nextRank )
+	{
+		Rank results = nextRank;
+		
+		// if nextRank is null and if prestiges are enabled, then get the next prestige rank:
+		if ( nextRank == null && 
+				rankPlayer != null &&
+				isDefault && 
+					Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
+			
+			RankLadder rLadder = PrisonRanks.getInstance().getLadderManager().getLadder( "prestiges" );
+			
+			if ( rLadder != null ) {
+				
+				PlayerRank pLadder = rankPlayer.getLadderRanks().get( rLadder );
+				
+				if ( pLadder == null ) {
+					
+					results = rLadder.getLowestRank().orElse( null );
+				}
+				else {
+					
+					results = pLadder.getRank().getRankNext();
+				}
+			}
+		}
+		
+		return results;
+	}
         
     public String getPlayerNextRankCostPercent( RankPlayer rankPlayer, String ladderName ) {
     	StringBuilder sb = new StringBuilder();
@@ -560,34 +635,45 @@ public class PlayerManager
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		DecimalFormat dFmt = new DecimalFormat("#,##0");
     		
+    		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+    		
     		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
     			
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				PlayerRank pRank = rankPlayer.getRank( ladder );
-    				if ( pRank != null && pRank.getRank().getRankNext() != null ) {
-    					Rank nextRank = pRank.getRank().getRankNext();
+    				boolean isDefault = ladder.getName().equals( "default" ) ;
+    				
+    				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
+    				Rank nextRank = pRank.getRank().getRankNext();
+
+    				if ( pRank != null && 
+    						( nextRank != null || nextRank == null && isDefault ) ) {
+    					
+    					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
-    			        PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
-//    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
-    					
-    					if ( sb.length() > 0 ) {
-    						sb.append(",  ");
-    					}
-    					
-//    					Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
-    					double cost = nextPRank.getRankCost();
-    					double balance = rankPlayer.getBalance( pRank.getRank().getCurrency() );
-//    					double balance = getPlayerBalance(prisonPlayer,nextRank);
-    					
-    					double percent = (balance < 0 ? 0 : 
-    						(cost == 0.0d || balance > cost ? 100.0 : 
-    							balance / cost * 100.0 )
-    							);
-    					sb.append( dFmt.format( percent ));
+// 						PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
+    			        
+    			        if ( nextPRank != null ) {
+    			        	
+    			        	if ( sb.length() > 0 ) {
+    			        		sb.append(",  ");
+    			        	}
+    			        	
+//    						Rank rank = key.getNext(key.getPositionOfRank(entry.getValue())).get();
+    			        	double cost = nextPRank.getRankCost();
+    			        	double balance = rankPlayer.getBalance( pRank.getRank().getCurrency() );
+//    						double balance = getPlayerBalance(prisonPlayer,nextRank);
+    			        	
+    			        	double percent = (balance < 0 ? 0 : 
+    			        		(cost == 0.0d || balance > cost ? 100.0 : 
+    			        			balance / cost * 100.0 )
+    			        			);
+    			        	sb.append( dFmt.format( percent ));
+    			        }
     				}
     			}
     		}
@@ -618,33 +704,44 @@ public class PlayerManager
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		
 //    		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+    		
+    		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
 
     		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
     		
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				PlayerRank pRank = rankPlayer.getRank( ladder );
+    				boolean isDefault = ladder.getName().equals( "default" ) ;
+    				
+    				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank rank = pRank.getRank();
-    				if ( rank != null && rank.getRankNext() != null ) {
-    					Rank nextRank = rank.getRankNext();
+    				Rank nextRank = rank.getRankNext();
+
+    				if ( rank != null && 
+    						( nextRank != null || nextRank == null && isDefault )) {
+    					
+    					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
-    			        PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
-    					if ( sb.length() > 0 ) {
-    						sb.append(",  ");
-    					}
-    					
-    					double cost = nextPRank.getRankCost();
-    					double balance = rankPlayer.getBalance( rank.getCurrency() );
-//    					double balance = getPlayerBalance(prisonPlayer,nextRank);
-    					
-    					
-    					sb.append( Prison.get().getPlaceholderManager().
-    							getProgressBar( balance, cost, false, attribute ));
+    			        if ( nextPRank != null ) {
+    			        	
+    			        	if ( sb.length() > 0 ) {
+    			        		sb.append(",  ");
+    			        	}
+    			        	
+    			        	double cost = nextPRank.getRankCost();
+    			        	double balance = rankPlayer.getBalance( rank.getCurrency() );
+//    						double balance = getPlayerBalance(prisonPlayer,nextRank);
+    			        	
+    			        	
+    			        	sb.append( Prison.get().getPlaceholderManager().
+    			        			getProgressBar( balance, cost, false, attribute ));
+    			        }
     					
     				}
     			}
@@ -687,52 +784,63 @@ public class PlayerManager
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		DecimalFormat dFmt = new DecimalFormat("#,##0");
+    		
+    		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
 
     		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
     			
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				PlayerRank pRank = rankPlayer.getRank( ladder );
+    				boolean isDefault = ladder.getName().equals( "default" ) ;
+    				
+    				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank rank = pRank.getRank();
-    				if ( rank != null && rank.getRankNext() != null ) {
-    					Rank nextRank = rank.getRankNext();
+    				Rank nextRank = rank.getRankNext();
+    				
+    				if ( rank != null && 
+    						( nextRank != null || nextRank == null && isDefault ) ) {
+    					
+    					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
-    			        PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
-    					if ( sb.length() > 0 ) {
-    						sb.append(",  ");
-    					}
-    					
-    					double cost = nextPRank.getRankCost();
-    					double balance = rankPlayer.getBalance( rank.getCurrency() );
+    			        if ( nextPRank != null ) {
+    			        	
+    			        	if ( sb.length() > 0 ) {
+    			        		sb.append(",  ");
+    			        	}
+    			        	
+    			        	double cost = nextPRank.getRankCost();
+    			        	double balance = rankPlayer.getBalance( rank.getCurrency() );
 //    					double balance = getPlayerBalance(prisonPlayer,nextRank);
-    					
-    					double remaining = cost - balance;
-    					
-    					// Without the following, if the player has more money than what the rank will cost,
-    					// then it would result in a negative amount, which is wrong.  
-    					// This is cost remaining... once they are able to afford a rankup, then remaining 
-    					// cost will be zero.
-    					if ( remaining < 0 ) {
-    						remaining = 0;
-    					}
-    					
-    					if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
-    						PlaceholderAttributeNumberFormat attributeNF = 
-    								(PlaceholderAttributeNumberFormat) attribute;
-    						sb.append( attributeNF.format( remaining ) );
-    					}
-    					
-    					else if ( formatted ) {
-    						sb.append( PlaceholdersUtil.formattedMetricSISize( remaining ));
-    					}
-    					else {
-    						sb.append( dFmt.format( remaining ));
-    					}
+    			        	
+    			        	double remaining = cost - balance;
+    			        	
+    			        	// Without the following, if the player has more money than what the rank will cost,
+    			        	// then it would result in a negative amount, which is wrong.  
+    			        	// This is cost remaining... once they are able to afford a rankup, then remaining 
+    			        	// cost will be zero.
+    			        	if ( remaining < 0 ) {
+    			        		remaining = 0;
+    			        	}
+    			        	
+    			        	if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    			        		PlaceholderAttributeNumberFormat attributeNF = 
+    			        				(PlaceholderAttributeNumberFormat) attribute;
+    			        		sb.append( attributeNF.format( remaining ) );
+    			        	}
+    			        	
+    			        	else if ( formatted ) {
+    			        		sb.append( PlaceholdersUtil.formattedMetricSISize( remaining ));
+    			        	}
+    			        	else {
+    			        		sb.append( dFmt.format( remaining ));
+    			        	}
+    			        }
     				}
     			}
     		}
@@ -762,43 +870,54 @@ public class PlayerManager
   	if ( !rankPlayer.getLadderRanks().isEmpty()) {
   		DecimalFormat dFmt = new DecimalFormat("#,##0");
   		
+  		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+  		
 		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
 			
 			if ( ladderName == null ||
 					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
 				
-				PlayerRank pRank = rankPlayer.getRank( ladder );
+				boolean isDefault = ladder.getName().equals( "default" ) ;
+				
+				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
 				Rank rank = pRank.getRank();
-				if ( rank != null && rank.getRankNext() != null ) {
-					Rank nextRank = rank.getRankNext();
+				Rank nextRank = rank.getRankNext();
+				
+				if ( rank != null && 
+						( nextRank != null || nextRank == null && isDefault ) ) {
+					
+					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
 					
 			        // This calculates the target rank, and takes in to consideration the player's existing rank:
-			        PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
 					
-					if ( sb.length() > 0 ) {
-						sb.append(",  ");
-					}
-					
-					double cost = nextPRank.getRankCost();
-					double balance = rankPlayer.getBalance( rank.getCurrency() );
+			        if ( nextPRank != null ) {
+			        	
+			        	if ( sb.length() > 0 ) {
+			        		sb.append(",  ");
+			        	}
+			        	
+			        	double cost = nextPRank.getRankCost();
+			        	double balance = rankPlayer.getBalance( rank.getCurrency() );
 //					double balance = getPlayerBalance(prisonPlayer,nextRank);
-					
-					double remaining = cost - balance;
-					
-					// Without the following, if the player has more money than what the rank will cost,
-					// then it would result in a negative amount, which is wrong.  
-					// This is cost remaining... once they are able to afford a rankup, then remaining 
-					// cost will be zero.
-					if ( remaining < 0 ) {
-						remaining = 0;
-					}
-					double percent = (remaining < 0 ? 0.0 : 
-						(cost == 0.0d || remaining > cost ? 100.0 : 
-							remaining / cost * 100.0 )
-							);
-					sb.append( dFmt.format( percent ));
+			        	
+			        	double remaining = cost - balance;
+			        	
+			        	// Without the following, if the player has more money than what the rank will cost,
+			        	// then it would result in a negative amount, which is wrong.  
+			        	// This is cost remaining... once they are able to afford a rankup, then remaining 
+			        	// cost will be zero.
+			        	if ( remaining < 0 ) {
+			        		remaining = 0;
+			        	}
+			        	double percent = (remaining < 0 ? 0.0 : 
+			        		(cost == 0.0d || remaining > cost ? 100.0 : 
+			        			remaining / cost * 100.0 )
+			        			);
+			        	sb.append( dFmt.format( percent ));
+			        }
 				}
 			}
 		}
@@ -828,47 +947,58 @@ public class PlayerManager
 	  if ( !rankPlayer.getLadderRanks().isEmpty()) {
 		  //		  DecimalFormat dFmt = new DecimalFormat("#,##0");
 
+		  RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+		  
 		  for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
 
 			  if ( ladderName == null ||
 					  ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
 
-				  PlayerRank pRank = rankPlayer.getRank( ladder );
+				  boolean isDefault = ladder.getName().equals( "default" ) ;
+				  
+				  PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
 				  Rank rank = pRank.getRank();
-				  if ( rank != null && rank.getRankNext() != null ) {
+				  Rank nextRank = rank.getRankNext();
+				  
+				  if ( rank != null && 
+						  ( nextRank != null || nextRank == null && isDefault ) ) {
 
-					  Rank nextRank = rank.getRankNext();
+					  
+	  					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
 					  
   			          // This calculates the target rank, and takes in to consideration the player's existing rank:
-  			          PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+  			          PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //					  PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
 					  
-					  if ( sb.length() > 0 ) {
-						  sb.append(",  ");
-					  }
-
-					  double cost = nextPRank.getRankCost();
-					  double balance = rankPlayer.getBalance( rank.getCurrency() );
+  			          if ( nextPRank != null ) {
+  			        	
+  			        	  if ( sb.length() > 0 ) {
+  			        		  sb.append(",  ");
+  			        	  }
+  			        	  
+  			        	  double cost = nextPRank.getRankCost();
+  			        	  double balance = rankPlayer.getBalance( rank.getCurrency() );
 //					  double balance = getPlayerBalance(prisonPlayer,nextRank);
-
-					  double remaining = cost - balance;
-
-					  // Without the following, if the player has more money than what the rank will cost,
-					  // then it would result in a negative amount, which is wrong.  
-					  // This is cost remaining... once they are able to afford a rankup, then remaining 
-					  // cost will be zero.
-					  if ( remaining < 0 ) {
-						  remaining = 0;
-					  }
-  //					  double percent = (remaining < 0 ? 0.0 : 
-  //						  (cost == 0.0d || remaining > cost ? 100.0 : 
-  //							  remaining / cost * 100.0 )
-  //							  );
-  //					  sb.append( dFmt.format( percent ));
-
-					  sb.append( Prison.get().getPlaceholderManager().
-							  getProgressBar( remaining, cost, false, attribute ));
+  			        	  
+  			        	  double remaining = cost - balance;
+  			        	  
+  			        	  // Without the following, if the player has more money than what the rank will cost,
+  			        	  // then it would result in a negative amount, which is wrong.  
+  			        	  // This is cost remaining... once they are able to afford a rankup, then remaining 
+  			        	  // cost will be zero.
+  			        	  if ( remaining < 0 ) {
+  			        		  remaining = 0;
+  			        	  }
+  			        	  //					  double percent = (remaining < 0 ? 0.0 : 
+  			        	  //						  (cost == 0.0d || remaining > cost ? 100.0 : 
+  			        	  //							  remaining / cost * 100.0 )
+  			        	  //							  );
+  			        	  //					  sb.append( dFmt.format( percent ));
+  			        	  
+  			        	  sb.append( Prison.get().getPlaceholderManager().
+  			        			  getProgressBar( remaining, cost, false, attribute ));
+  			          }
 				  }
 
 			  }
@@ -913,12 +1043,14 @@ public class PlayerManager
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		DecimalFormat dFmt = new DecimalFormat("#,##0");
     		
+    		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+    		
     		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
     			
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				PlayerRank pRank = rankPlayer.getRank( ladder );
+    				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank rank = pRank.getRank();
     				if ( rank != null ) {
     					if ( sb.length() > 0 ) {
@@ -975,6 +1107,84 @@ public class PlayerManager
     	return sb.toString();
     }
  
+    
+    private String getPlayerTokenBalance( RankPlayer rankPlayer, 
+    						int formatMode, PlaceholderAttribute attribute ) {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+    	
+    	long tokens = rankPlayer.getPlayerCachePlayerData().getTokens();
+    	
+    	if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    		PlaceholderAttributeNumberFormat attributeNF = 
+    				(PlaceholderAttributeNumberFormat) attribute;
+    		sb.append( attributeNF.format( tokens ) );
+    	}
+    	
+    	else {
+    		switch ( formatMode )
+			{
+				case 1: {
+					sb.append( dFmt.format( tokens ));
+					
+					break;
+				}
+				case 2: {
+					sb.append( PlaceholdersUtil.formattedMetricSISize( tokens ));
+					
+					break;
+				}
+				case 3: {
+					sb.append( PlaceholdersUtil.formattedKmbtSISize( tokens, dFmt, " " ));
+					
+					break;
+				}
+				default:
+					sb.append( Long.toString( tokens ));
+			}
+    	}
+    		
+//    	if ( formatted ) {
+//    		sb.append( PlaceholdersUtil.formattedMetricSISize( tokens ));
+//    	}
+//    	else {
+//    		sb.append( dFmt.format( tokens ));
+//    	}
+    	
+    	return sb.toString();
+    }
+    
+    
+    private String getPlayerTokenAverageEarningsPerMinute( RankPlayer rankPlayer, 
+    						boolean formatted, PlaceholderAttribute attribute ) {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	
+    	if ( !rankPlayer.getLadderRanks().isEmpty()) {
+    		DecimalFormat dFmt = new DecimalFormat("#,##0");
+    		
+    		
+    		double tpm = rankPlayer.getPlayerCachePlayerData().getAverageTokensPerMinute();
+    		
+    		if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    			PlaceholderAttributeNumberFormat attributeNF = 
+    					(PlaceholderAttributeNumberFormat) attribute;
+    			sb.append( attributeNF.format( tpm ) );
+    		}
+    		
+    		else if ( formatted ) {
+    			sb.append( PlaceholdersUtil.formattedMetricSISize( tpm ));
+    		}
+    		else {
+    			sb.append( dFmt.format( tpm ));
+    		}
+    		
+    	}
+    	
+    	return sb.toString();
+    }
+    
     
     
 //    /**
@@ -1036,12 +1246,15 @@ public class PlayerManager
     	StringBuilder sb = new StringBuilder();
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
+    		
+    		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+    		
     		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
     			
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				PlayerRank pRank = rankPlayer.getRank( ladder );
+    				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank rank = pRank.getRank();
     				
   				  	if ( rank != null && rank.getRankNext() != null ) {
@@ -1064,12 +1277,14 @@ public class PlayerManager
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		
+    		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+    		
     		for ( RankLadder ladder : rankPlayer.getLadderRanks().keySet() ) {
     			
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				PlayerRank pRank = rankPlayer.getRank( ladder );
+    				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank rank = pRank.getRank();
   				  	if ( rank != null && rank.getRankNext() != null ) {
   				  		Rank nextRank = rank.getRankNext();
@@ -1233,7 +1448,8 @@ public class PlayerManager
 					case prison_rlp_laddername:
 						{
 							// rank may be null:
-							PlayerRank pRank = rankPlayer.getRank( ladderName );
+							RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+							PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladderName );
 							if ( pRank != null ) {
 								Rank rank = pRank.getRank();
 								
@@ -1321,6 +1537,13 @@ public class PlayerManager
 						results = getPlayerBalance( rankPlayer, ladderName, false, attribute );
 						break;
 						
+					case prison_pbf:
+					case prison_player_balance_formatted:
+					case prison_pbf_laddername:
+					case prison_player_balance_formatted_laddername:
+						results = getPlayerBalance( rankPlayer, ladderName, true, attribute );
+						break;
+						
 					case prison_pb_epm:
 					case prison_player_balance_earnings_per_minute:
 						
@@ -1333,13 +1556,76 @@ public class PlayerManager
 						results = getPlayerAverageEarningsPerMinute( rankPlayer, ladderName, true, attribute );
 						break;
 						
+						
+						
+					case prison_ptb:
+					case prison_player_token_balance:
+						results = getPlayerTokenBalance( rankPlayer, 0, attribute );
+						break;
+						
+					case prison_ptbf:
+					case prison_player_token_balance_formatted:
+						results = getPlayerTokenBalance( rankPlayer, 1, attribute );
+						break;
+
+					case prison_ptbfm:
+					case prison_player_token_balance_formatted_metric:
+						results = getPlayerTokenBalance( rankPlayer, 2, attribute );
+						break;
+						
+					case prison_ptbfk:
+					case prison_player_token_balance_formatted_kmbt:
+						results = getPlayerTokenBalance( rankPlayer, 3, attribute );
+						break;
+						
+					case prison_ptb_epm:
+					case prison_player_token_balance_earnings_per_minute:
+						
+						results = getPlayerTokenAverageEarningsPerMinute( rankPlayer, false, attribute );
+						break;
+						
+					case prison_ptb_epmf:
+					case prison_player_token_balance_earnings_per_minute_formatted:
+						
+						results = getPlayerTokenAverageEarningsPerMinute( rankPlayer, true, attribute );
+						break;
+						
+						
+						
+						
 					case prison_psm:
 					case prison_player_sellall_multiplier:
 						results = getPlayerSellallMultiplier( rankPlayer, attribute );
 						break;
 						
 						
-						
+    				case prison_pbt:
+    				case prison_pbtf:
+    				case prison_player_blocks_total:
+    				case prison_player_blocks_total_formatted:
+    					long blocksTotal = PlayerCache.getInstance().getPlayerBlocksTotal( rankPlayer );
+    					
+    					if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    						PlaceholderAttributeNumberFormat attributeNF = 
+    								(PlaceholderAttributeNumberFormat) attribute;
+    						results = attributeNF.format( blocksTotal );
+    					}
+    					else {
+    						if ( placeHolder == PrisonPlaceHolders.prison_pbtf || 
+    								placeHolder == PrisonPlaceHolders.prison_player_blocks_total_formatted ) {
+    							
+    							DecimalFormat iFmt = new DecimalFormat("#,##0");
+    							results = iFmt.format( blocksTotal );
+    						}
+    						else {
+    							
+    							results = Long.toString( blocksTotal );
+    						}
+    					}
+    					break;
+    						
+    					
+    					
 						
 					case prison_player_tool_id:
 					case prison_ptid:

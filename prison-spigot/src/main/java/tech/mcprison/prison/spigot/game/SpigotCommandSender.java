@@ -32,6 +32,7 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.PermissionIntegration;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.util.Text;
 
@@ -136,10 +137,10 @@ public class SpigotCommandSender implements CommandSender {
     	
     	if ( isPlayer() ) {
     		
-    		SellAllUtil sellall = SellAllUtil.get();
+    		SellAllUtil sellall = SpigotPrison.getInstance().getSellAllUtil();
     		
     		if ( sellall != null && getWrapper() != null ) {
-    			results = sellall.getMultiplier( new SpigotPlayer( (org.bukkit.entity.Player) getWrapper() ) );
+    			results = sellall.getPlayerMultiplier((org.bukkit.entity.Player) getWrapper());
     		}
     	}
     	

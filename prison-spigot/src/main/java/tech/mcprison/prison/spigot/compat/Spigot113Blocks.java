@@ -7,6 +7,7 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.cryptomorin.xseries.XMaterial;
 
@@ -14,11 +15,13 @@ import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.util.Location;
 
 public abstract class Spigot113Blocks 
-	extends Spigot110Player 
+	extends Spigot19Player 
 	implements CompatibilityBlocks {
 
 	@Override
@@ -84,11 +87,14 @@ public abstract class Spigot113Blocks
 			results = getCachedXMaterial( spigotBlock, NO_DATA_VALUE );
 			
 			if ( results == null ) {
-				results =  XMaterial.matchXMaterial( spigotBlock.getType() );
-				
-				putCachedXMaterial( spigotBlock, NO_DATA_VALUE, results );
+				results = XMaterial.matchXMaterial( spigotBlock.getType() );
 				
 				if ( results == null ) {
+					results = XMaterial.matchXMaterial( spigotBlock.getType().name() ).orElse( null );
+				}
+				
+				if ( results == null ) {
+					
 					Output.get().logWarn( "Spigot113Blocks.getXMaterial() : " +
 							"Spigot block cannot be mapped to a XMaterial : " +
 							spigotBlock.getType().name() + 
@@ -96,6 +102,11 @@ public abstract class Spigot113Blocks
 								spigotBlock.getType().name()));
 				}
 
+				
+				if ( results != null ) {
+					
+					putCachedXMaterial( spigotBlock, NO_DATA_VALUE, results );
+				}
 			}
 		}
 		
@@ -210,6 +221,94 @@ public abstract class Spigot113Blocks
 		}
 	}
 
+	
+//	@Override
+//	public void updateSpigotBlockAsync( BlockType blockType, Block spigotBlock ) {
+//		
+//		if ( blockType != null && blockType != BlockType.IGNORE && spigotBlock != null ) {
+//			
+//			XMaterial xMat = getXMaterial( blockType );
+//			
+//			updateSpigotBlockAsync( xMat, spigotBlock );
+//		}
+//	}
+//	
+//	
+//	@Override
+//	public void updateSpigotBlockAsync( PrisonBlock prisonBlock, Block spigotBlock ) {
+//		
+//		if ( prisonBlock != null && 
+//				!prisonBlock.getBlockName().equalsIgnoreCase( InternalBlockTypes.IGNORE.name() ) && 
+//				spigotBlock != null ) {
+//			
+//			XMaterial xMat = getXMaterial( prisonBlock );
+//			
+//			if ( xMat != null ) {
+//				
+//				updateSpigotBlockAsync( xMat, spigotBlock );
+//			}
+//		}
+//	}
+//	
+//	
+//	@Override
+//	public void updateSpigotBlockAsync( XMaterial xMat, Block spigotBlock ) {
+//		
+//		if ( xMat != null ) {
+//			Material newType = xMat.parseMaterial();
+//			if ( newType != null ) {
+//				
+//				new BukkitRunnable() {
+//					@Override
+//					public void run() {
+//
+//						// No physics update:
+//						spigotBlock.setType( newType, false );
+//					}
+//				}.runTaskLater( getPlugin(), 0 );
+//				
+//			}
+//		}
+//	}
+	
+	/**
+	 * <p>This function both get's the block and then updates it within
+	 * the same runnable transaction.  This should eliminate the need to 
+	 * risk reading the block in an async thread, and improve performance.
+	 * </p>
+	 * 
+	 * @param prisonBlock
+	 * @param location
+	 */
+	@Override
+	public void updateSpigotBlockAsync( PrisonBlock prisonBlock, Location location ) {
+		
+		XMaterial xMat = getXMaterial( prisonBlock );
+		
+		if ( xMat != null && location != null ) { 
+			Material newType = xMat.parseMaterial();
+			if ( newType != null ) {
+				
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						
+						// No physics update:
+						Block spigotBlock = ((SpigotBlock) location.getBlockAt()).getWrapper();
+						
+						// For 1.13.x and higher:
+						spigotBlock.setType( newType, false );
+						
+					}
+				}.runTaskLater( getPlugin(), 0 );
+				
+			}
+			
+		}
+	}
+	
+	
+	
 	/**
 	 * <p>This function is supposed to find all possible blocks available
 	 * on the server.  The number of available items, and blocks, will vary based

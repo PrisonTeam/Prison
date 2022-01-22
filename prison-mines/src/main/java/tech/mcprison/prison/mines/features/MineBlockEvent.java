@@ -1,12 +1,17 @@
 package tech.mcprison.prison.mines.features;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonCommandTask.TaskMode;
 
 public class MineBlockEvent {
@@ -29,6 +34,7 @@ public class MineBlockEvent {
 		TEXplosion,
 		CEXplosion,
 		PEExplosive, // PrisonEnchant: Pulsi_'s plugin
+		PrisonExplosion,
 		
 		eventTypeAll( all ),
 		eventBlockBreak( blockBreak ),
@@ -137,8 +143,17 @@ public class MineBlockEvent {
 
 	
 	public String toSaveString() {
-		DecimalFormat dFmt = new DecimalFormat("0.00000");
-		return dFmt.format( getChance() ) + "|" + 
+		
+		NumberFormat nFmt = DecimalFormat.getInstance( Locale.US );
+		if ( nFmt instanceof DecimalFormat ) {
+			DecimalFormat df = (DecimalFormat) nFmt;
+			df.applyLocalizedPattern( "0.00000" );
+		}
+		nFmt.format( getChance() );
+		
+//		DecimalFormat dFmt = new DecimalFormat("0.00000");
+		
+		return nFmt.format( getChance() ) + "|" + 
 				(getPermission() == null || getPermission().trim().length() == 0 ? 
 						"none" : getPermission())  + "|" + 
 				getCommand() + "|" + getTaskMode().name() + "|" + getEventType().name() + "|" + 
@@ -147,12 +162,12 @@ public class MineBlockEvent {
 	}
 	
 	
-	public static MineBlockEvent fromSaveString( String blockEventString ) {
+	public static MineBlockEvent fromSaveString( String blockEventString, String mineName ) {
 		MineBlockEvent results = null;
 
 		if ( blockEventString != null && !blockEventString.startsWith( "ver" ) ) {
 			
-			results = fromStringV1( blockEventString );
+			results = fromStringV1( blockEventString, mineName );
 		}
 		
 //		if ( chancePermCommand != null && chancePermCommand.trim().length() > 0 ) {
@@ -191,13 +206,37 @@ public class MineBlockEvent {
 	}
 	
 	
-	private static MineBlockEvent fromStringV1( String chancePermCommand ) {
+	private static MineBlockEvent fromStringV1( String chancePermCommand, String mineName ) {
 		MineBlockEvent results = null;
 		
 		if ( chancePermCommand != null && chancePermCommand.trim().length() > 0 ) {
 			String[] cpc = chancePermCommand.split( "\\|" );
 			
-			double  chance = cpc.length >= 1 ? Double.parseDouble( cpc[0] ) : 0d;
+			
+			double  chance = 0.00001;
+			try {
+				String dbl = cpc.length >= 1 ? cpc[0] : "0";
+				
+				NumberFormat nFmt = DecimalFormat.getInstance( Locale.US );
+				if ( nFmt instanceof DecimalFormat ) {
+					DecimalFormat df = (DecimalFormat) nFmt;
+					df.applyLocalizedPattern( "0.00000" );
+				}
+				Number nDbl = nFmt.parse( dbl );
+				if ( nDbl != null ) {
+					chance = nDbl.doubleValue();
+				}
+				
+//				chance = cpc.length >= 1 ? Double.parseDouble( cpc[0] ) : 0d;
+			}
+			catch ( ParseException | NumberFormatException e ) {
+				Output.get().logError( "Failure parsing a mine " + mineName + 
+						"'s blockEven percent chance. " +
+						"It is not a double number. Please use the command " +
+						"'/mines blockEvent add help' when creating blockEvents instead of " +
+						"manually editing the files. The incorrect value was [" + cpc[0] + 
+						"].  Using a value of [0.00001] instead.");
+			}
 			
 			String permission = cpc.length >= 2 ? cpc[1] : "";
 			if ( permission == null || "none".equalsIgnoreCase( permission) ) {
@@ -298,28 +337,63 @@ public class MineBlockEvent {
 	 * @return
 	 */
 	public boolean isFireEvent( double chance, BlockEventType eventType, 
-			MineTargetPrisonBlock targetBlock, String triggered ) {
+							MineTargetPrisonBlock targetBlock, String triggered ) {
 		boolean results = false;
 		
-		// First check chance, since that's perhaps the quickest check:
+		
+		// First check the chance and ensure the block is valid:
 		if ( chance <= getChance() &&
+				isValidBlock( targetBlock ) ) {
+			
+			// If the eventType is valid:
+			if ( getEventType() == BlockEventType.all ||
+					getEventType() == eventType ) {
 				
-				isValidBlock( targetBlock ) &&
-				
-				// Make sure we have the correct eventTypes:
-			(eventType == BlockEventType.TEXplosion && 
-				eventType == getEventType() && 
-					( getTriggered() == null || 
-						getTriggered().equalsIgnoreCase( triggered )) ||
+				// check if triggered and if valid eventTypes to support it:
+				if ( getTriggered() == null )  {
+					results = true;
+				}
+				else if ( getTriggered() != null && 
+						(eventType == BlockEventType.PrisonExplosion ||
+						 eventType == BlockEventType.TEXplosion ||
+						 eventType == BlockEventType.PEExplosive)
+						 ) {
 					
-				getEventType() == BlockEventType.all || 
-				getEventType() == eventType) ) {
-			
-			// The check for the player's perms will have to be done outside of this 
-			// function.
-			
-			results = true;
+					// triggered can be negated to be used to exclude a triggered event
+					boolean notTriggered = getTriggered().startsWith( "!" );
+					String trig = getTriggered().replace( "!", "" );
+					
+					if ( !notTriggered && trig.equalsIgnoreCase( triggered ) ||
+						 notTriggered && !trig.equalsIgnoreCase( triggered ) ) {
+						
+						results = true;
+					}
+					
+				}
+				
+			}
 		}
+				
+		
+//		// First check chance, since that's perhaps the quickest check:
+//		if ( chance <= getChance() &&
+//				
+//				isValidBlock( targetBlock ) &&
+//				
+//				// Make sure we have the correct eventTypes:
+//			(eventType == BlockEventType.TEXplosion && 
+//				eventType == getEventType() && 
+//					( getTriggered() == null || 
+//						getTriggered().equalsIgnoreCase( triggered )) ||
+//					
+//				getEventType() == BlockEventType.all || 
+//				getEventType() == eventType) ) {
+//			
+//			// The check for the player's perms will have to be done outside of this 
+//			// function.
+//			
+//			results = true;
+//		}
 		
 		
 		return results;

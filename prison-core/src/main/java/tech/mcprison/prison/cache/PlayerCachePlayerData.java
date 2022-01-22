@@ -2,11 +2,17 @@ package tech.mcprison.prison.cache;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.TreeMap;
 
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.autofeatures.PlayerMessaging;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 
 /**
@@ -26,6 +32,7 @@ public class PlayerCachePlayerData {
 	public static final long SESSION_TIMEOUT_MINING_MS = 1000 * 15; // 15 seconds
 
 	private transient Player player;
+	
 	
 	private String playerUuid;
 	private String playerName;
@@ -47,6 +54,11 @@ public class PlayerCachePlayerData {
 	private transient PlayerCacheRunnable task = null;
 	
 	
+	// lastSeenDate tries to track when the player was last on the server.
+	// This is important to know for refreshing player stats.
+	private long lastSeenDate;
+	private double lastSeenBalance;
+	
 	private long onlineTimeTotal = 0L;
 
 	// "active" time is not needed. It's the total onlineTimeTotal minus
@@ -66,21 +78,40 @@ public class PlayerCachePlayerData {
 	private TreeMap<String, Long> timeByMine;
 	private String lastMine = null;
 
-	private TreeMap<String, Double> earningsByMine;
 
+	private TreeMap<String, Double> earningsByMine;
 	
 	private transient TreeMap<String, Double> earningsPerMinute;
+	
+	
+	private long tokens;
+	private long tokensTotal;
+	private long tokensTotalAdminAdded;
+	private long tokensTotalAdminRemoved;
+	private long tokensLastBlocksTotals;
+	
+	private TreeMap<String, Long> tokensByMine;
+	private transient TreeMap<String, Long> tokensPerMinute;
+	
+	
+	 
 	
 	
 	// This is the time when the "session" was started:
 	private transient SessionType sessionType;
 	
 	
-	private transient long sessionTimingStart = 0;
+//	private transient long sessionTimingStart = 0;
 	private transient long sessionTimingLastCheck = 0;
 	
 	// sessionLastLocation is used for afk calculations:
 //	private transient Location sessionLastLocation = null;
+	
+	
+	private transient PlayerMessaging playerMessaging;
+	
+	
+	private List<Inventory> backpacks;
 	
 	private transient boolean dirty = false;
 	
@@ -104,12 +135,21 @@ public class PlayerCachePlayerData {
 
 		this.earningsPerMinute = new TreeMap<>();
 		
+		
+		this.tokensByMine = new TreeMap<>();
+		this.tokensPerMinute = new TreeMap<>();
+
+		
 		this.sessionType = SessionType.active;
 		
-		this.sessionTimingStart = System.currentTimeMillis();
-		this.sessionTimingLastCheck = sessionTimingStart;
+//		this.sessionTimingStart = System.currentTimeMillis();
+		this.sessionTimingLastCheck = System.currentTimeMillis();
 		
 //		this.sessionLastLocation = null;
+		
+		this.playerMessaging = new PlayerMessaging();
+		
+		this.backpacks = new ArrayList<>();
 		
 	}
 	
@@ -117,6 +157,14 @@ public class PlayerCachePlayerData {
 		this();
 		
 		this.player = player;
+		
+		if ( isOnline() ) {
+			
+			this.lastSeenDate = System.currentTimeMillis();
+//			this.lastSeenBalance = player.get
+			
+			this.dirty = true;
+		}
 		
 		this.playerUuid = player.getUUID().toString();
 		this.playerName = player.getName();
@@ -135,8 +183,9 @@ public class PlayerCachePlayerData {
 
 		if ( isOnline() ) {
 			
-			// Do not change the session type, so pass it the current:
-			checkTimersMining( sessionType, getLastMine() );
+			// Do not change the session type, but pass null for the mine to indicate 
+			// that this is a checkTimers...
+			checkTimersMining( sessionType, null );
 			
 		}
 	}
@@ -159,12 +208,16 @@ public class PlayerCachePlayerData {
 	 * <p>If prior session type was mining, then do nothing if the last 
 	 * @param mine 
 	 */
-	private void checkTimersMining( SessionType targetType, String mine ) {
-		final long currentTime = System.currentTimeMillis();
+	private void checkTimersMining( SessionType currentSessionType, String mine ) {
 
 		if ( !isOnline() ) {
 			return;
 		}
+
+		final long currentTime = System.currentTimeMillis();
+		final long duration = currentTime - sessionTimingLastCheck;
+
+		
 		
 		// temp fix:
 		if ( onlineTimeTotal < 0 ) {
@@ -174,94 +227,129 @@ public class PlayerCachePlayerData {
 			onlineMiningTimeTotal = 0;
 		}
 		
-		if ( sessionType == targetType && sessionType != SessionType.mining) {
-			// No change in status
-			
-			sessionTimingLastCheck = currentTime;
 
-			final long duration = currentTime - sessionTimingLastCheck;
-			// if duration is greater than 15 minutes, then move the session start 
-			// point and save it.
-			if ( duration > 900000 ) {
-				
-				sessionTimingStart = currentTime;
-				dirty = true;
-			}
-			
-		}
-		else if ( sessionType != SessionType.mining ) {
-			
-			// Always Save as total time. Use sessionTimingStart. Ignore sessionTimingLastCheck.
-			final long duration = currentTime - sessionTimingStart;
-			onlineTimeTotal += duration;
+		if ( currentSessionType != SessionType.mining ) {
 			
 			//checkTimersAfk();
 			
-			sessionType = targetType;
-			sessionTimingStart = currentTime;
+			setLastMine( null );
+			sessionType = currentSessionType;
+			
 			sessionTimingLastCheck = currentTime;
+			
 			dirty = true;
 		}
-		else {
-			// The session type is still mining... 
+		
+		else if ( currentSessionType == SessionType.mining ) {
+			// The current session type is still mining... and was before. 
 			// Must check sessionTimingLastCheck to see if we went over the 
 			// max mining idle time:
 			
-			final long duration = currentTime - sessionTimingLastCheck;
 			
-			
-			// If the duration is less than the session mining timeout, then player
-			// is still mining.  Just set the sessionTimingLastCheck.
-			if ( duration < SESSION_TIMEOUT_MINING_MS ) {
-				 
-				sessionTimingLastCheck = currentTime;
-			}
-			
-			// Mining can only be active for no more than SESSION_TIMEOUT_MINING_MS 
-			// after the last  block was broken.  So check duration between now and 
-			// sessionOnlineTimeLastCheck and if more than permitted, then shutdown 
-			// mining session and log it for a duration since session start to 
-			// last check plus the mining timeout value.  Then set session start to 
-			// that position.
-			
-			else if ( duration > SESSION_TIMEOUT_MINING_MS || getLastMine() == null ||
-					mine.equalsIgnoreCase( getLastMine() )) {
+			if ( sessionType != SessionType.mining || 
+					getLastMine() == null ) {
 				
-				// Calculate the end point of the mining session, which will be 30 seconds after 
-				// the last time check:
-				final long tempTime = sessionTimingLastCheck + SESSION_TIMEOUT_MINING_MS;
-				final long miningDuration = tempTime - sessionTimingStart;
-//				final long miningDuration = sessionTimingStart - tempTime;
-				onlineTimeTotal += miningDuration;
-				onlineMiningTimeTotal += miningDuration;
-				
-				addTimeToMine( mine, miningDuration );
-				
-				// Set new session to this boundary:
-				sessionTimingStart = tempTime;
-				sessionTimingLastCheck = tempTime;
-				
-				// Since the last SessionType and current are mining, then the duration from
-				// the new sessionTimingStart to currentTime needs to go to active:
-				final long durationActive = currentTime - sessionTimingStart;
-				onlineTimeTotal += durationActive;
-				
-				//checkTimersAfk();
-				
-				
-				// Now reset the current session:
-				sessionType = targetType;
-				sessionTimingStart = currentTime;
-				sessionTimingLastCheck = currentTime;
 				dirty = true;
 				
 			}
+			
+			else if ( mine == null && getLastMine() != null && 
+					duration > SESSION_TIMEOUT_MINING_MS ) {
+				
+				addTimeToMine( getLastMine(), SESSION_TIMEOUT_MINING_MS );
+				
+				onlineMiningTimeTotal += SESSION_TIMEOUT_MINING_MS;
+				
+				// Since this is being called from checkTimer(), need to 
+				// set lastMine to null and sessionType to active:
+				
+				setLastMine( null );
+				sessionType = SessionType.active;
+				
+				// Save as total online time.
+				onlineTimeTotal += duration;
+				
+				dirty = true;
+				return;
+			}
+			
+			else if ( mine == null ) {
+				
+				// This is running in checkTimers() and not enough time has passed to
+				// exceed the SESSION_TIMEOUT_MINING_MS.  So need to wait longer.
+				// return without setting anything.
+				
+				return;
+			}
+			
+			// Mine has changed since last check, so apply duration to last mine:
+			else if ( getLastMine() != null && 
+					(mine == null ||
+					!mine.equalsIgnoreCase( getLastMine() ) )) {
+				
+				
+				if ( duration > SESSION_TIMEOUT_MINING_MS ) {
+					addTimeToMine( getLastMine(), SESSION_TIMEOUT_MINING_MS );
+					
+					onlineMiningTimeTotal += SESSION_TIMEOUT_MINING_MS;
+					
+				}
+				else {
+					
+					addTimeToMine( getLastMine(), duration );
+					
+					onlineMiningTimeTotal += duration;
+				}
+
+			}
+			
+			
+			else if ( duration > SESSION_TIMEOUT_MINING_MS ) {
+				
+				// Same mine, but exceeded the duration:
+				
+				addTimeToMine( mine, SESSION_TIMEOUT_MINING_MS );
+				
+				onlineMiningTimeTotal += SESSION_TIMEOUT_MINING_MS;
+
+			}
+			else {
+				// same mine and less than session length, so add duration:
+
+				addTimeToMine( mine, duration );
+				
+				onlineMiningTimeTotal += duration;
+
+			}
+			
+			
+			// Now change the active mine
+			setLastMine( mine );
+
+			// Should already be mining:
+//			sessionType = currentSessionType;
+			
+			// Set new session to this boundary and discard the extra time:
+			sessionTimingLastCheck = currentTime;
+			
+			dirty = true;
 		}
+		
+		// Always Save as total online time.
+		onlineTimeTotal += duration;
 
 	}
 
 
 
+	/**
+	 * <p>Also generates tokens based upon blocks mined.
+	 * </p>
+	 * 
+	 * @param mine
+	 * @param blockName
+	 * @param quantity
+	 */
 	public void addBlock( String mine, String blockName, int quantity )
 	{
 		if ( quantity > 0 && blockName != null && 
@@ -280,6 +368,8 @@ public class PlayerCachePlayerData {
 			checkTimersMining( SessionType.mining, mine );
 			dirty = true;
 		}
+			
+		addTokensByBlocks( mine, quantity );
 	}
 	
 	private void addBlockByType( String blockName, int quantity ) {
@@ -313,6 +403,16 @@ public class PlayerCachePlayerData {
 		getEarningsByMine().put( mine, amt );
 	}
 	
+	private void addTokensByMine( String mine, long tokens ) {
+		long toks = 0;
+		
+		if ( getTokensByMine().containsKey( mine ) ) {
+			toks = getTokensByMine().get( mine );
+		}
+		
+		getTokensByMine().put( mine, (toks + tokens) );
+	}
+	
 	private void addTimeToMine( String mine, long miningDuration )
 	{
 		if ( mine != null && !mine.trim().isEmpty() ) {
@@ -334,28 +434,37 @@ public class PlayerCachePlayerData {
 	 * 
 	 * @param earnings
 	 */
-	public void addEarnings( double earnings ) {
+	public void addEarnings( double earnings, String mineName ) {
 		SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd_hh:mm");
 		String key = dateFmt.format( new Date() );
 		
-		if ( earningsPerMinute.containsKey( key )  ) {
-			earnings += earningsPerMinute.get( key ) + earnings;
+		
+		double earningsPM = earnings;
+		if ( getEarningsPerMinute().containsKey( key )  ) {
+			earningsPM += getEarningsPerMinute().get( key );
+		}
+		getEarningsPerMinute().put( key, earningsPM );
+		
+		
+		if ( getEarningsPerMinute().size() > 5 ) {
+			getEarningsPerMinute().remove( 
+					getEarningsPerMinute().firstEntry().getKey() );
 		}
 		
-		earningsPerMinute.put( key, earnings );
-		
-		if ( earningsPerMinute.size() > 5 ) {
-			earningsPerMinute.remove( 
-					earningsPerMinute.firstEntry().getKey() );
+		if ( mineName != null && sessionType != SessionType.mining ) {
+			sessionType = SessionType.mining;
 		}
-		
+		if ( mineName == null && getLastMine() != null ) {
+			mineName = getLastMine();
+		}
 		
 		// If earnings are within the session timeout for mining, then add the 
 		// earnings to the moneyByMine:
-		if ( sessionType == SessionType.mining && getLastMine() != null ) {
+		if ( sessionType == SessionType.mining && mineName != null ) {
 			long duration = System.currentTimeMillis() - sessionTimingLastCheck;
 			if ( duration < SESSION_TIMEOUT_MINING_MS ) {
-				addEarningsByMine( getLastMine(), earnings );
+				
+				addEarningsByMine( mineName, earnings );
 			}
 		}
 		
@@ -372,6 +481,188 @@ public class PlayerCachePlayerData {
 		
 		int size = 0;
 		for ( double value : earningsPerMinute.values() ) {
+			results += value;
+			size++;
+		}
+		
+		return ( size == 0 ? 0 : ( results / size ));
+	}
+	
+	private void addTokensByBlocks( String mineName, int blocks ) {
+		
+		if ( AutoFeaturesWrapper.getInstance().isBoolean( AutoFeatures.tokensEnabled ) ) {
+			int blocksPerToken = AutoFeaturesWrapper.getInstance().getInteger( AutoFeatures.tokensBlocksPerToken );
+		
+			if ( blocksPerToken > 0 ) {
+				
+				// If blocksTotal > 10k and tokensLastBlocksTotals == 0, then this means
+				// the player was mining before tokens was enabled, so set the 
+				// tokensLastBlocksTotals to the blocks total, minus current block count.
+				if ( tokensLastBlocksTotals == 0 && blocksTotal > 10000 ) {
+					tokensLastBlocksTotals = blocksTotal - blocks;
+				}
+				
+				// tokensLastBlocksTotals should never be greater than blocksTotal:
+				if ( tokensLastBlocksTotals > blocksTotal ) {
+					tokensLastBlocksTotals = blocksTotal;
+				}
+				
+				double delta = blocksTotal - tokensLastBlocksTotals;
+				
+				double tokens = delta / (double) blocksPerToken;
+				
+				if ( tokens >= 1.0 ) {
+					long tokensLong = (long) Math.floor( tokens );
+					
+					long blocksForTokens = tokensLong * blocksPerToken;
+					tokensLastBlocksTotals += blocksForTokens;
+					
+					addTokens( tokensLong, mineName );
+					
+				}
+			}
+		}
+	}
+	
+	/**
+	 * <p>This stores the tokens from the player so they can
+	 * be averaged to find their tokens per minute. Tokens are 
+	 * automatically generated based upon blocks mined so normally 
+	 * you wouldn't have to call this function.
+	 * </p>
+	 * 
+	 * <p>If you just want to add tokens, you can pass a null for the 
+	 * mine name.
+	 * </p>
+	 * 
+	 * <p>Note: Unlike adding blocks from mines, adding tokens with a mine name
+	 * does not need to be concerned about session types.  If a mine name is
+	 * provided, then that's the mine it should be attributed to.
+	 * </p>
+	 * 
+	 * @param newTokens
+	 */
+	public void addTokens( long newTokens, String mineName ) {
+		
+		addTokens( newTokens );
+		
+		SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd_hh:mm");
+		String key = dateFmt.format( new Date() );
+
+		
+		long tokensPM = newTokens;
+		if ( getTokensPerMinute().containsKey( key )  ) {
+			tokensPM += getTokensPerMinute().get( key );
+		}
+		getTokensPerMinute().put( key, tokensPM );
+		
+		
+		if ( getTokensPerMinute().size() > 5 ) {
+			getTokensPerMinute().remove( 
+					getTokensPerMinute().firstEntry().getKey() );
+		}
+		
+		// If we are getting tokens from mining, then we have the mine name. 
+		// No need to mess with sessions.
+//		if ( mineName != null && sessionType != SessionType.mining ) {
+//			sessionType = SessionType.mining;
+//		}
+//		if ( mineName == null && getLastMine() != null ) {
+//			mineName = getLastMine();
+//		}
+		
+		// If earnings are within the session timeout for mining, then add the 
+		// earnings to the tokensByMine:
+		if ( mineName != null ) {
+
+			addTokensByMine( mineName, newTokens );
+		}
+		
+		dirty = true;
+	}
+	
+	
+	/**
+	 * <p>This adds tokens to the player, but it is from an admin-related purpose, or task,
+	 * so it has no effects on the player's Tokens-Per-Minute calculations, or 
+	 * per mine stats.
+	 * </p>
+	 * 
+	 * @param newTokens
+	 */
+	public void addTokensAdmin( long newTokens ) {
+		
+		this.tokens += newTokens;
+		this.tokensTotalAdminAdded += newTokens;
+		
+		dirty = true;
+	}
+	public void addTokens( long newTokens ) {
+		
+		this.tokens += newTokens;
+		this.tokensTotal += newTokens;
+		
+		dirty = true;
+	}
+	
+	/**
+	 * <p>This removes tokens from the player, but it is from an admin-related purpose, or task, 
+	 * so it has no effects on the player's Tokens-Per-Minute calculations, or 
+	 * per mine stats.
+	 * <p>
+	 * 
+	 * <p>Note: The player can have a negative balance with this function! This may be useful for
+	 * small "token loans" when purchasing something.  Such allowances would have to be 
+	 * handled in the task that calls this function.
+	 * </p>
+	 * 
+	 * @param newTokens
+	 */
+	public void removeTokensAdmin( long removeTokens ) {
+		
+		this.tokens -= removeTokens;
+		this.tokensTotalAdminRemoved += removeTokens;
+		
+		dirty = true;
+	}
+	public void removeTokens( long removeTokens ) {
+		
+		this.tokens -= removeTokens;
+		
+		dirty = true;
+	}
+	
+	public void setTokensAdmin( long newBalance ) {
+		
+		if ( this.tokens > newBalance ) {
+
+			long delta = this.tokens - newBalance;
+			
+			removeTokensAdmin( delta );
+		}
+		else if ( this.tokens < newBalance ) {
+			
+			long delta = newBalance - this.tokens;
+
+			addTokensAdmin( delta );
+		}
+//		else {
+//			// do nothing if equals and no change is needed:
+//		}
+				
+	}
+	
+	/**
+	 * This returns the average tokens earned per minute for the
+	 * last 5 minutes.
+	 * 
+	 * @return
+	 */
+	public double getAverageTokensPerMinute() {
+		double results = 0;
+		
+		int size = 0;
+		for ( double value : tokensPerMinute.values() ) {
 			results += value;
 			size++;
 		}
@@ -404,17 +695,40 @@ public class PlayerCachePlayerData {
 			.append( "  blocks: " )
 			.append( blocksByType )
 
+			.append( "  avg tokens/min: " )
+			.append( getAverageTokensPerMinute() )
+			.append( "  tokens: " )
+			.append( getTokens() )
+			.append( "  totalTokens earned: " )
+			.append( getTokensTotal() )
+			.append( "  totalTokensAdminAdded: " )
+			.append( getTokensTotalAdminAdded() )
+			.append( "  totalTokensAdminRemoved: " )
+			.append( getTokensTotalAdminRemoved() )
 			;
 		
 		return sb.toString();
 	}
-	
+
+	public void updateLastSeen() {
+			
+		if ( getPlayer() != null && getPlayer().isOnline() ) {
+			lastSeenDate = System.currentTimeMillis();
+		}
+	}
 
 	protected Player getPlayer() {
 		return player;
 	}
 	protected void setPlayer( Player player ) {
 		this.player = player;
+	}
+
+	public long getLastSeenDate() {
+		return lastSeenDate;
+	}
+	public void setLastSeenDate( long lastSeenDate ) {
+		this.lastSeenDate = lastSeenDate;
 	}
 
 	public File getPlayerFile() {
@@ -510,6 +824,55 @@ public class PlayerCachePlayerData {
 		this.timeByMine = timeByMine;
 	}
 
+	public long getTokens() {
+		return tokens;
+	}
+	public void setTokens( long tokens ) {
+		this.tokens = tokens;
+	}
+
+	public long getTokensTotal() {
+		return tokensTotal;
+	}
+	public void setTokensTotal( long tokensTotal ) {
+		this.tokensTotal = tokensTotal;
+	}
+
+	public long getTokensTotalAdminAdded() {
+		return tokensTotalAdminAdded;
+	}
+	public void setTokensTotalAdminAdded( long tokensTotalAdminAdded ) {
+		this.tokensTotalAdminAdded = tokensTotalAdminAdded;
+	}
+
+	public long getTokensTotalAdminRemoved() {
+		return tokensTotalAdminRemoved;
+	}
+	public void setTokensTotalAdminRemoved( long tokensTotalAdminRemoved ) {
+		this.tokensTotalAdminRemoved = tokensTotalAdminRemoved;
+	}
+
+	public long getTokensLastBlocksTotals() {
+		return tokensLastBlocksTotals;
+	}
+	public void setTokensLastBlocksTotals( long tokensLastBlocksTotals ) {
+		this.tokensLastBlocksTotals = tokensLastBlocksTotals;
+	}
+
+	public TreeMap<String, Long> getTokensByMine() {
+		return tokensByMine;
+	}
+	public void setTokensByMine( TreeMap<String, Long> tokensByMine ) {
+		this.tokensByMine = tokensByMine;
+	}
+
+	public TreeMap<String, Long> getTokensPerMinute() {
+		return tokensPerMinute;
+	}
+	public void setTokensPerMinute( TreeMap<String, Long> tokensPerMinute ) {
+		this.tokensPerMinute = tokensPerMinute;
+	}
+
 	public String getLastMine() {
 		return lastMine;
 	}
@@ -522,6 +885,20 @@ public class PlayerCachePlayerData {
 	}
 	public void setEarningsByMine( TreeMap<String, Double> earningsByMine ) {
 		this.earningsByMine = earningsByMine;
+	}
+
+	public PlayerMessaging getPlayerMessaging() {
+		return playerMessaging;
+	}
+	public void setPlayerMessaging( PlayerMessaging playerMessaging ) {
+		this.playerMessaging = playerMessaging;
+	}
+
+	public List<Inventory> getBackpacks() {
+		return backpacks;
+	}
+	public void setBackpacks( List<Inventory> backpacks ) {
+		this.backpacks = backpacks;
 	}
 
 	public boolean isDirty() {

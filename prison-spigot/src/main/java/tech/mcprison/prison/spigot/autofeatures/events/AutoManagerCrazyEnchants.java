@@ -39,6 +39,9 @@ public class AutoManagerCrazyEnchants
 		
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onCrazyEnchantsBlockExplode(BlastUseEvent e) {
+			if ( isDisabled( e.getPlayer().getLocation().getWorld().getName() ) ) {
+				return;
+			}
 			genericBlockExplodeEventAutoManager( e );
 		}
 	}
@@ -49,6 +52,9 @@ public class AutoManagerCrazyEnchants
     	
         @EventHandler(priority=EventPriority.NORMAL) 
         public void onCrazyEnchantsBlockExplode(BlastUseEvent e) {
+        	if ( isDisabled( e.getPlayer().getLocation().getWorld().getName() ) ) {
+        		return;
+        	}
         	genericBlockExplodeEvent( e );
         }
     }
@@ -59,6 +65,9 @@ public class AutoManagerCrazyEnchants
     	
     	@EventHandler(priority=EventPriority.MONITOR) 
     	public void onCrazyEnchantsBlockExplode(BlastUseEvent e) {
+    		if ( isDisabled( e.getPlayer().getLocation().getWorld().getName() ) ) {
+    			return;
+    		}
     		genericBlockExplodeEventMonitor( e );
     	}
     }
@@ -66,7 +75,9 @@ public class AutoManagerCrazyEnchants
 
 	@Override
 	public void initialize() {
-		boolean isEventEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
+
+		String eP = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 		
 		if ( !isEventEnabled ) {
 			return;
@@ -81,7 +92,6 @@ public class AutoManagerCrazyEnchants
 			
 			Output.get().logInfo( "AutoManager: Trying to register CrazyEnchants" );
 			
-			String eP = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
 			BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
 			
 			if ( eventPriority != BlockBreakPriority.DISABLED ) {
@@ -114,30 +124,35 @@ public class AutoManagerCrazyEnchants
 								prison);
 						prison.getRegisteredBlockListeners().add( autoManagerlListener );
 					}
+					else if ( isBoolean( AutoFeatures.normalDrop ) ) {
+						
+						OnBlockBreakBlastUseEventListener normalListener = 
+								new OnBlockBreakBlastUseEventListener();
+						
+						pm.registerEvent(BlastUseEvent.class, normalListener, ePriority,
+								new EventExecutor() {
+							public void execute(Listener l, Event e) { 
+								((OnBlockBreakBlastUseEventListener)l)
+								.onCrazyEnchantsBlockExplode((BlastUseEvent)e);
+							}
+						},
+								prison);
+						prison.getRegisteredBlockListeners().add( normalListener );
+					}
 					
-					OnBlockBreakBlastUseEventListener normalListener = 
-							new OnBlockBreakBlastUseEventListener();
-
-					pm.registerEvent(BlastUseEvent.class, normalListener, ePriority,
+				}
+				else {
+					
+					pm.registerEvent(BlastUseEvent.class, normalListenerMonitor, EventPriority.MONITOR,
 							new EventExecutor() {
 						public void execute(Listener l, Event e) { 
-							((OnBlockBreakBlastUseEventListener)l)
+							((OnBlockBreakBlastUseEventListenerMonitor)l)
 							.onCrazyEnchantsBlockExplode((BlastUseEvent)e);
 						}
 					},
 							prison);
-					prison.getRegisteredBlockListeners().add( normalListener );
+					prison.getRegisteredBlockListeners().add( normalListenerMonitor );
 				}
-				
-				pm.registerEvent(BlastUseEvent.class, normalListenerMonitor, EventPriority.MONITOR,
-						new EventExecutor() {
-						public void execute(Listener l, Event e) { 
-							((OnBlockBreakBlastUseEventListenerMonitor)l)
-							.onCrazyEnchantsBlockExplode((BlastUseEvent)e);
-					}
-				},
-				prison);
-				prison.getRegisteredBlockListeners().add( normalListenerMonitor );
 				
 			}
 			
@@ -188,8 +203,10 @@ public class AutoManagerCrazyEnchants
 	
 	@Override
 	public void dumpEventListeners( StringBuilder sb ) {
-		boolean isEventEnabled = isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents );
 		
+		String eP = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
 		if ( !isEventEnabled ) {
 			return;
 		}
@@ -207,6 +224,7 @@ public class AutoManagerCrazyEnchants
 			
 			if ( eventDisplay != null ) {
 				sb.append( eventDisplay.toStringBuilder() );
+				sb.append( "\n" );
 			}
 		}
 		catch ( ClassNotFoundException e ) {

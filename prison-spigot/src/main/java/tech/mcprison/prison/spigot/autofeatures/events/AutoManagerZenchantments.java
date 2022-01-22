@@ -40,6 +40,9 @@ public class AutoManagerZenchantments
     	
     	@EventHandler(priority=EventPriority.NORMAL) 
     	public void onBlockShredBreak(BlockShredEvent e) {
+			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+				return;
+			}
     		genericBlockEventAutoManager( e );
     	}
     }
@@ -50,6 +53,9 @@ public class AutoManagerZenchantments
 		
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onBlockShredBreak(BlockShredEvent e) {
+			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+				return;
+			}
 			genericBlockEvent( e );
 		}
 	}
@@ -60,6 +66,9 @@ public class AutoManagerZenchantments
     	
     	@EventHandler(priority=EventPriority.MONITOR) 
     	public void onBlockShredBreakMonitor(BlockShredEvent e) {
+    		if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+    			return;
+    		}
     		genericBlockEventMonitor( e );
     	}
     }
@@ -67,8 +76,10 @@ public class AutoManagerZenchantments
     
     @Override
     public void initialize() {
-    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessZenchantsBlockExplodeEvents );
     	
+    	String eP = getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
     	if ( !isEventEnabled ) {
     		return;
     	}
@@ -83,7 +94,6 @@ public class AutoManagerZenchantments
     		Output.get().logInfo( "AutoManager: Trying to register Zenchantments" );
     		
     		
-    		String eP = getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
     		BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
     		
     		if ( eventPriority != BlockBreakPriority.DISABLED ) {
@@ -121,11 +131,31 @@ public class AutoManagerZenchantments
     							prison);
     					prison.getRegisteredBlockListeners().add( autoManagerlListener );
     				}
+    				else if ( isBoolean( AutoFeatures.normalDrop ) ) {
+    					
+    					OnBlockBreakBlockShredEventListener normalListener = 
+    							new OnBlockBreakBlockShredEventListener();
+    					
+    					pm.registerEvent(BlockShredEvent.class, normalListener, ePriority,
+    							new EventExecutor() {
+    						public void execute(Listener l, Event e) { 
+    							if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor && 
+    									e instanceof BlockShredEvent ) {
+    								OnBlockBreakBlockShredEventListenerMonitor lmon = 
+    										(OnBlockBreakBlockShredEventListenerMonitor) l;
+    								BlockShredEvent event = (BlockShredEvent) e;
+    								lmon.onBlockShredBreakMonitor( event );
+    							}
+    						}
+    					},
+    							prison);
+    					prison.getRegisteredBlockListeners().add( normalListener );
+    				}
     				
-    				OnBlockBreakBlockShredEventListener normalListener = 
-    						new OnBlockBreakBlockShredEventListener();
-
-    				pm.registerEvent(BlockShredEvent.class, normalListener, ePriority,
+    			}
+    			else {
+    				
+    				pm.registerEvent(BlockShredEvent.class, normalListenerMonitor, EventPriority.MONITOR,
     						new EventExecutor() {
     					public void execute(Listener l, Event e) { 
     						if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor && 
@@ -138,23 +168,9 @@ public class AutoManagerZenchantments
     					}
     				},
     						prison);
-    				prison.getRegisteredBlockListeners().add( normalListener );
+    				prison.getRegisteredBlockListeners().add( normalListenerMonitor );
     			}
     			
-    			pm.registerEvent(BlockShredEvent.class, normalListenerMonitor, EventPriority.MONITOR,
-    					new EventExecutor() {
-    				public void execute(Listener l, Event e) { 
-    					if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor && 
-    						 e instanceof BlockShredEvent ) {
-    						OnBlockBreakBlockShredEventListenerMonitor lmon = 
-    											(OnBlockBreakBlockShredEventListenerMonitor) l;
-    						BlockShredEvent event = (BlockShredEvent) e;
-    						lmon.onBlockShredBreakMonitor( event );
-    					}
-    				}
-    			},
-    			prison);
-    			prison.getRegisteredBlockListeners().add( normalListenerMonitor );
     		}
     		
     	}
@@ -195,7 +211,9 @@ public class AutoManagerZenchantments
 	
     @Override
     public void dumpEventListeners( StringBuilder sb ) {
-    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessZenchantsBlockExplodeEvents );
+ 
+    	String eP = getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
     	
     	if ( !isEventEnabled ) {
     		return;
@@ -214,6 +232,9 @@ public class AutoManagerZenchantments
     		
     		if ( eventDisplay != null ) {
     			sb.append( eventDisplay.toStringBuilder() );
+    			sb.append( "NOTE: Zenchantments uses the same HandlerList as BlockBreakEvent so " +
+    					"listeners are combined due to this bug.\n" );
+    			sb.append( "\n" );
     		}
     	}
     	catch ( ClassNotFoundException e ) {

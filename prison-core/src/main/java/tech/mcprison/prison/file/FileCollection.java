@@ -101,5 +101,14 @@ public class FileCollection
     	File dbFile = new File(collDir, name + ".json");
     	return virtualDelete( dbFile );
     }
+    
+    @Override 
+    public File backup( String name )
+    {
+    	File dbFile = new File(collDir, name + ".json");
+    	File backupFile = virtualBackup( dbFile );
+    	
+    	return backupFile;
+    }
 
 }

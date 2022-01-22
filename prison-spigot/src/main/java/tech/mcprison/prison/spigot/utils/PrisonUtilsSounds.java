@@ -44,7 +44,7 @@ public class PrisonUtilsSounds
 		onlyPlayers = false, 
 		permissions = "prison.utils.sounds",
 		altPermissions = "prison.utils.sounds.others")
-	public void utilPotionEffects( CommandSender sender, 
+	public void utilSoundsPlay( CommandSender sender, 
 			@Arg(name = "playerName", description = "Player name") String playerName,
 			@Arg(name = "soundName", description = "A sound name. Use 'list <pageNumber>' to " +
 					"get a list of availble sounds (50 per page).", def = "list") String soundName,

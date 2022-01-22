@@ -189,7 +189,7 @@ public class LocaleManager {
     
     public File getLocalDataFolder() {
     	// Setup the local folders:
-    	File dataFolder = fixPrisonCoreLanguagePath( getOwningPlugin().getDataFolder() );
+    	File dataFolder = fixPrisonCoreLanguagePath( getOwningPlugin().getModuleDataFolder() );
     	File localeDirectory = new File(dataFolder, LOCALE_FOLDER);
     	
     	// if the folder does not exist, try to create it:
@@ -497,7 +497,7 @@ public class LocaleManager {
 	private File fixPrisonCoreLanguagePath( File targetPath ) {
 		if ( !targetPath.getAbsolutePath().startsWith( 
 				ModuleManager.getModuleRootDefault().getAbsolutePath() ) ) {
-			targetPath = Module.setupDataFolder( Prison.PSEDUO_MODLE_NAME );
+			targetPath = Module.setupModuleDataFolder( Prison.PSEDUO_MODLE_NAME );
     	}
 		return targetPath;
 	}

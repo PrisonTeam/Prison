@@ -93,7 +93,13 @@ public class Spigot18
     	((org.bukkit.inventory.PlayerInventory) inventory.getWrapper())
     			.setItemInHand( itemStack.getBukkitStack() );
     }
-    
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void setItemInMainHand(Player p, ItemStack itemStack) {
+        p.getInventory().setItemInHand(itemStack);
+    }
+
     /**
      * Spigot v1.8 does not have an off hand, so set it to main hand.
      */

@@ -18,16 +18,20 @@
 
 package tech.mcprison.prison.util;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 
 /**
  * Provides utilities for manipulating text.
@@ -65,6 +69,11 @@ public class Text {
     
     
     //#([A-Fa-f0-9]){6}
+    
+    
+	private static DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+	private static DecimalFormat iFmt = new DecimalFormat("#,##0");
+
     
     
     protected Text() {
@@ -349,7 +358,8 @@ public class Text {
     		}
     		else {
     			while ( idxStart >= 0 ) {
-    				sb.append( translateHexColorCodesCore( text.substring( idxEnd + 1, idxStart ), targetColorCode) );
+    				sb.append( translateHexColorCodesCore( 
+    						text.substring( idxEnd + (idxEnd == -1 ? 1 : 0), idxStart ), targetColorCode) );
     				
     				idxEnd = text.indexOf( "\\E", idxStart );
     				
@@ -358,13 +368,13 @@ public class Text {
     					idxStart = -1;
     				}
     				else {
-    					sb.append( text.substring( idxStart, idxEnd + 1 ) );
+    					sb.append( text.substring( idxStart, idxEnd ) );
     					
     					idxStart = text.indexOf( "\\Q", idxEnd );
     				}
     			}
-    			if ( idxEnd < text.length() ) {
-    				sb.append( text.substring( idxEnd + 1 ) );
+    			if ( idxStart == -1 && idxEnd >= 0 && (idxEnd) < text.length() ) {
+    				sb.append( text.substring( idxEnd  ) );
     			}
     		}
     	}
@@ -404,6 +414,17 @@ public class Text {
     	return results;
     }
     	      
+    
+    public static String convertToAmpColorCodes( String textEncoded ) {
+    	
+    	String results = textEncoded;
+    	
+    	if ( textEncoded != null && textEncoded.contains( COLOR_ ) ) {
+    		results = textEncoded.replaceAll( COLOR_, "&" );
+    	}
+    	
+    	return results;
+    }
 
     /**
      * Converts a double (3.45) into a US-localized currency string ($3.45).
@@ -529,5 +550,222 @@ public class Text {
         }
     }
 
+    
+    public static String formatTimeDaysHhMmSs( long timeMs ) {
+    	
+    	DecimalFormat iFmt = new DecimalFormat("#,##0");
+    	DecimalFormat tFmt = new DecimalFormat("00");
+//    	SimpleDateFormat sdFmt = new SimpleDateFormat( "HH:mm:ss" );
+    	
+//    	long _sec = 1000;
+//    	long _min = _sec * 60;
+//    	long _hour = _min * 60;
+//    	long _day = _hour * 24;
+
+    	long ms = timeMs;
+		long days = millisPerDay < ms ? ms / millisPerDay : 0;
+		
+		ms -= (days * millisPerDay);
+		long hours = millisPerHour < ms ? ms / millisPerHour : 0;
+		
+		ms -= (hours * millisPerHour);
+		long mins = millisPerMinute < ms ? ms / millisPerMinute : 0;
+		
+		ms -= (mins * millisPerMinute);
+		long secs = millisPerSecond < ms ? ms / millisPerSecond : 0;
+		
+		
+		String results = 
+				(days == 0 ? "" : iFmt.format( days ) + "d ") +
+				tFmt.format( hours ) + ":" +
+				tFmt.format( mins ) + ":" +
+				tFmt.format( secs )
+				;
+
+		return results;
+    }
+    
+    
+    public static List<String> formatTreeMapStats( TreeMap<String,?> statMap,  
+    		int columns ) {
+    	return formatTreeMapStats( statMap, columns, false );
+    }
+    
+    public static List<String> formatTreeMapStats( TreeMap<String,?> statMap,  
+    		int columns, boolean timeFormat ) {
+    	
+    	List<String> msgs = new ArrayList<>();
+    	
+		Set<String> keys = statMap.keySet();
+		
+		
+		List<String> values = new ArrayList<>();
+//		List<Integer> valueMaxLen = new ArrayList<>();
+		
+//		StringBuilder sb = new StringBuilder();
+//		int count = 0;
+		
+		for ( String earningKey : keys )
+		{
+			String value = null;
+			Object valueObj = statMap.get( earningKey );
+			
+			if ( valueObj instanceof Double ) {
+				
+				value = PlaceholdersUtil.formattedKmbtSISize( (Double) valueObj, dFmt, " &9" );
+			}
+			else if ( valueObj instanceof Integer ) {
+				int intVal = (Integer) valueObj;
+				value = PlaceholdersUtil.formattedKmbtSISize( intVal, 
+						( intVal < 1000 ? iFmt : dFmt ), " &9" );
+			}
+			else if ( valueObj instanceof Long && timeFormat ) {
+				
+				value = Text.formatTimeDaysHhMmSs( (Long) valueObj );
+			}
+			else if ( valueObj instanceof Long ) {
+				
+				long longVal = (Long) valueObj;
+				value = PlaceholdersUtil.formattedKmbtSISize( longVal, 
+						( longVal < 1000 ? iFmt : dFmt ), " &9" );
+			}
+			
+			String msg = String.format( "&3%s&8: &b%s", earningKey, value ).trim();
+			
+//			String msgNoColor = Text.stripColor( msg );
+//			int lenMNC = msgNoColor.length();
+//			
+//		
+//			int col = values.size() % columns;
+			values.add( msg );
+			
+//			if ( col >= valueMaxLen.size() || lenMNC > valueMaxLen.get( col ) ) {
+//				
+//				if ( col > valueMaxLen.size() - 1 ) {
+//					valueMaxLen.add( lenMNC );
+//				}
+//				else {
+//					
+//					valueMaxLen.set( col, lenMNC );
+//				}
+//			}
+		}
+		
+		msgs = formatColumnsFromList( values, columns );
+		
+//		for ( int j = 0; j < values.size(); j++ )
+//		{
+//			String msg = values.get( j );
+//			
+//			int col = j % columns;
+//			
+//			int maxColumnWidth = col > valueMaxLen.size() - 1 ?
+//							msg.length() :
+//								valueMaxLen.get( col );
+//		
+//			sb.append( msg );
+//			
+//			// Pad the right of all content with spaces to align columns, up to a 
+//			// given maxLength:
+//			String msgNoColor = Text.stripColor( msg );
+//			int lenMNC = msgNoColor.length();
+//			for( int i = lenMNC; i < maxColumnWidth; i++ ) {
+//				sb.append( " " );
+//			}
+//
+//			// The spacer:
+//			sb.append( "   " );
+//			
+//			if ( ++count % columns == 0 ) {
+//				msgs.add( String.format( 
+//						"      " + sb.toString() ) );
+//				sb.setLength( 0 );
+//				
+//			}
+//		}
+//		
+//		if ( sb.length() > 0 ) {
+//			
+//			msgs.add( String.format( 
+//					"      " + sb.toString() ) );
+//		}
+
+    	return msgs;
+    }
+
+    
+    public static List<String> formatColumnsFromList( List<String> textItems,  
+    		int columns ) {
+    	
+    	List<String> msgs = new ArrayList<>();
+    	
+    	List<Integer> valueMaxLen = new ArrayList<>();
+    	
+    	StringBuilder sb = new StringBuilder();
+		int count = 0;
+    	
+    	// Find the maxLenght value for each column that will be generated:
+    	for ( int i = 0; i < textItems.size(); i++ )
+		{
+    		String msg = textItems.get( i );
+    		
+    		String msgNoColor = Text.stripColor( msg );
+			int lenMNC = msgNoColor.length();
+			
+			
+			int col = i % columns;
+			
+			if ( col >= valueMaxLen.size() || lenMNC > valueMaxLen.get( col ) ) {
+				
+				if ( col > valueMaxLen.size() - 1 ) {
+					valueMaxLen.add( lenMNC );
+				}
+				else {
+					
+					valueMaxLen.set( col, lenMNC );
+				}
+			}
+		}
+    	
+		
+		for ( int j = 0; j < textItems.size(); j++ )
+		{
+			String msg = textItems.get( j );
+			
+			int col = j % columns;
+			
+			int maxColumnWidth = col > valueMaxLen.size() - 1 ?
+							msg.length() :
+								valueMaxLen.get( col );
+		
+			sb.append( msg );
+			
+			// Pad the right of all content with spaces to align columns, up to a 
+			// given maxLength:
+			String msgNoColor = Text.stripColor( msg );
+			int lenMNC = msgNoColor.length();
+			for( int i = lenMNC; i < maxColumnWidth; i++ ) {
+				sb.append( " " );
+			}
+
+			// The spacer:
+			sb.append( "   " );
+			
+			if ( ++count % columns == 0 ) {
+				msgs.add( String.format( 
+						"      " + sb.toString() ) );
+				sb.setLength( 0 );
+				
+			}
+		}
+		
+		if ( sb.length() > 0 ) {
+			
+			msgs.add( String.format( 
+					"      " + sb.toString() ) );
+		}
+
+    	return msgs;
+    }
 
 }

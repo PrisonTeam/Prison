@@ -6,8 +6,8 @@ import java.util.List;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.internal.block.MineTargetBlockKey;
 import tech.mcprison.prison.internal.block.PrisonBlock;
-import tech.mcprison.prison.mines.features.MineTargetBlockKey;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockEventEvent;
 import tech.mcprison.prison.spigot.block.SpigotBlock;

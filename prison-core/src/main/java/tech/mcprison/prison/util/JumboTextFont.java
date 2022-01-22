@@ -22,7 +22,10 @@ public enum JumboTextFont {
 	N("N", 5, "N   N", "NN  N", "N N N", "N  NN", "N   N" ),
 	O("O", 5, " OOO ", "O   O", "O   O", "O   O", " OOO " ),
 	P("P", 5, "PPPP ", "P   P", "PPPP ", "P    ", "P    "),
-	Q("Q", 5, " QQQ ", "Q   Q", "Q \\ Q", "Q  \\Q", " QQ \\" ),
+	
+	// Warning: Note that \Q is an escape code for regex block quote. 
+	// So use lowercase q so it does not match.
+	Q("Q", 5, " QQQ ", "Q   Q", "Q \\ Q", "Q  \\q", " QQ \\" ),
 	R("R", 5, "RRRR ", "R   R", "RRRR ", "R  R ", "R   R" ),
 	S("S", 5, " SSS ", "S    ", " SSS ", "    S", " SSS " ),
 	T("T", 5, "TTTTT", "  T  ", "  T  ", "  T  ", "  T  " ),

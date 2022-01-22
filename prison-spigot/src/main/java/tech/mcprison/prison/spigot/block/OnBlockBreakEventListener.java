@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.block;
 
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
@@ -124,7 +125,21 @@ public class OnBlockBreakEventListener
 		// Only register these event listeners if these are enabled.
 		// In order to be enabled, the prison mines module must be enabled.
 		
+		if ( !isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+			
+			Output.get().logWarn( "AutoMager: AutoFeatures is dsabled. " +
+					"No block break listeners are registered. " +
+					"The setting 'autoManager.isAutoManagerEnabled' is set to 'false' " +
+					"in autoFeaturesConfig.yml." );
+			
+			return;
+		}
+		
 		if ( isEnabled() ) {
+			
+			
+			Output.get().logInfo( "AutoManager: AutoFeatures and the Mine module are enabled. Prison " +
+					"will register the selected block break listeners." );
 			
 			
 			// This will register all events that should be enabled, for both
@@ -135,8 +150,8 @@ public class OnBlockBreakEventListener
 		}
 		
 		else {
-			Output.get().logWarn( "BlockBreak event listeners cannot be registered " +
-											"since the mine module is disabled." );
+			Output.get().logWarn( "AutoManager: AutoFeaturs are enabled, but the Mines module is disabled." +
+					"Prison will not register any block break listeners." );
 		}
 		
 	}

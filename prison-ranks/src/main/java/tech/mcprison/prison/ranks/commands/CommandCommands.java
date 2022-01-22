@@ -171,7 +171,9 @@ public class CommandCommands
     
 	protected ChatDisplay commandListDetails( Rank rank, boolean noRemoves )
 	{
-		ChatDisplay display = new ChatDisplay( ranksCommandListCmdHeaderMsg( rank.getTag() ));
+		String title = rank.getTag() == null ? rank.getName() : rank.getTag();
+
+		ChatDisplay display = new ChatDisplay( ranksCommandListCmdHeaderMsg( title ));
         if ( !noRemoves ) {
         	
         	display.addText( ranksCommandListClickCmdToRemoveMsg() );
@@ -191,7 +193,7 @@ public class CommandCommands
             
             if ( !noRemoves ) {
             	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
-            			.suggest("/ranks command remove " + rank.getName() + " " + rowNumber )
+            			.suggest("/ranks command remove " + rank.getName() + " " + (rowNumber - 1) )
             			.tooltip( ranksCommandListClickToRemoveMsg() );
             	row.addFancy( msgRemove );
             }

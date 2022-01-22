@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.error.Error;
 import tech.mcprison.prison.error.ErrorManager;
 import tech.mcprison.prison.modules.ModuleStatus;
@@ -28,6 +29,11 @@ public abstract class FileIO
 		this(null, null);
 	}
 	
+	/**
+	 * 
+	 * @param errorManager Optional; set to null if used outside of a module.
+	 * @param status Optional; set to null if used outside of a module.
+	 */
 	public FileIO(ErrorManager errorManager, ModuleStatus status)
 	{
 		super();
@@ -39,12 +45,45 @@ public abstract class FileIO
 	}
 
 	
+	public File getProjectRootDiretory() {
+		return Prison.get().getDataFolder();
+	}
+	
+	public File getTempFile( File file ) {
+		String tempFileName = file.getName() + "." + getTimestampFormat() + ".tmp";
+		File tempFile = new File(file.getParentFile(), tempFileName);
+
+		return tempFile;
+	}
+	
+	/**
+	 * <p>This generates a new File with the filename of the backup file.
+	 * This function only generates the File object and does not modify
+	 * or save anything on the file system.
+	 * </p>
+	 * 
+	 * @param file The original file name
+	 * @param backupTag A no-spaced tag name to identify the type of backup. 
+	 * 				This is inserted after the original file name.
+	 * @param suffix File suffix to use for the backup, not including the dot.
+	 * @return File objct of the target backup file.
+	 */
+	public File getBackupFile( File file, String backupTag, String suffix ) {
+		
+		String tempFileName = file.getName() + "." + backupTag + "_" + 
+							getTimestampFormat() + "." + suffix;
+		File tempFile = new File(file.getParentFile(), tempFileName);
+		
+		return tempFile;
+	}
+	
 	protected void saveFile( File file, String data ) 
 	{
 		if ( file != null && data != null )
 		{
-			String tempFileName = file.getName() + "." + getTimestampFormat() + ".tmp";
-			File tempFile = new File(file.getParentFile(), tempFileName);
+			File tempFile = getTempFile( file );
+//			String tempFileName = file.getName() + "." + getTimestampFormat() + ".tmp";
+//			File tempFile = new File(file.getParentFile(), tempFileName);
 			
 			try
 			{

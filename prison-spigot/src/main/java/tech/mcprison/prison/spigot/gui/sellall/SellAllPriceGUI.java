@@ -3,12 +3,11 @@ package tech.mcprison.prison.spigot.gui.sellall;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-
-import java.util.List;
 
 /**
  * @author GABRYCA
@@ -32,10 +31,10 @@ public class SellAllPriceGUI extends SpigotGUIComponents {
         int dimension = 45;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3SellAll -> ItemValue");
 
-        ButtonLore changeDecreaseValueLore = new ButtonLore(messages.getString("Lore.ClickToDecrease"), null);
+        ButtonLore changeDecreaseValueLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_decrease), null);
         ButtonLore confirmButtonLore = new ButtonLore(createLore(
-                messages.getString("Lore.LeftClickToConfirm"), messages.getString("Lore.RightClickToCancel")), createLore(messages.getString("Lore.Price2") + val));
-        ButtonLore changeIncreaseValueLore = new ButtonLore(messages.getString("Lore.ClickToIncrease"), null);
+                messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_left_to_confirm), messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_cancel)), createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_price) + " " + val));
+        ButtonLore changeIncreaseValueLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_increase), null);
 
         XMaterial decreaseMat = XMaterial.REDSTONE_BLOCK;
         XMaterial increaseMat = XMaterial.EMERALD_BLOCK;
@@ -48,7 +47,7 @@ public class SellAllPriceGUI extends SpigotGUIComponents {
         gui.addButton(new Button(37, decreaseMat, changeDecreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " - 10000")));
 
         // Create a button and set the position
-        gui.addButton(new Button(22, XMaterial.TRIPWIRE_HOOK, confirmButtonLore, SpigotPrison.format("&3" + "Confirm: " + itemID + " " + val)));
+        gui.addButton(new Button(22, XMaterial.TRIPWIRE_HOOK, confirmButtonLore, SpigotPrison.format("&3Confirm: " + itemID + " " + val)));
 
         // Increase button
         gui.addButton(new Button(7, increaseMat, changeIncreaseValueLore, SpigotPrison.format("&3" + itemID + " " + val + " + 1" )));

@@ -17,6 +17,7 @@
 
 package tech.mcprison.prison.mines.managers;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MineScheduler.MineResetActions;
-import tech.mcprison.prison.mines.data.MineScheduler.MineResetType;
+import tech.mcprison.prison.mines.data.MineScheduler.MineResetScheduleType;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.ManagerPlaceholders;
@@ -378,6 +379,22 @@ public class MineManager
     }
     
 
+    /**
+     * <p>Creates a backup of a mine's save file. Similar to a virtual delete
+     * but is a copy.  If used, has to be manually renamed. 
+     * </p>
+     * 
+     * @param mine
+     */
+	public File backupMine( Mine mine )
+	{
+		File backupFile = coll.backup( mine.getName() );
+		
+		return backupFile;
+	}
+
+
+
 
 	public void rename( Mine mine, String newName ) {
 		
@@ -482,7 +499,7 @@ public class MineManager
 	 * @param resetType
 	 * @param resetActions 
 	 */
-	public void resetAllMines( MineResetType resetType, List<MineResetActions> resetActions ) {
+	public void resetAllMines( MineResetScheduleType resetType, List<MineResetActions> resetActions ) {
 
 		cancelResetAllMines();
 		
@@ -626,6 +643,7 @@ public class MineManager
     		Optional<World> worldOptional = Prison.get().getPlatform().getWorld(worldName);
     		
     		if ( worldOptional.isPresent() && getUnavailableWorlds().containsKey( worldName )) {
+    		
     			World world = worldOptional.get();
     			
     			// Store this mine and the world in MineManager's unavailableWorld for later
@@ -637,6 +655,20 @@ public class MineManager
     			for ( Mine mine : unenabledMines ) {
     				if ( !mine.isEnabled() ) {
     					mine.setWorld( world );
+    					
+    					// Make sure world is hooked up properly to all locations.
+    					// Since world is an object, it may already be auto hooked:
+    					
+    					
+    					if ( mine.getBounds() != null ) {
+    						mine.getBounds().setWorld( world );
+    					}
+    					
+    					
+    					if ( mine.getSpawn() != null ) {
+    						mine.getSpawn().setWorld( world );
+    					}
+    					
     				}
 //    				remove.add( mine );
     			}
@@ -1203,28 +1235,28 @@ public class MineManager
 						break;
 						
 						
-    				case prison_pbt:
-    				case prison_player_blocks_total:
-    					if ( !mine.isVirtual() )
-    					{
-    						long blocksTotal = PlayerCache.getInstance().getPlayerBlocksTotal( player );
-    						
-    						if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
-    							PlaceholderAttributeNumberFormat attributeNF = 
-    									(PlaceholderAttributeNumberFormat) attribute;
-    							results = attributeNF.format( blocksTotal );
-    						}
-    						else {
-    							
-    							results = iFmt.format( blocksTotal );
-    						}
-    					}
-    					break;
-    					
+//    				case prison_pbt:
+//    				case prison_player_blocks_total:
+//    					if ( !mine.isVirtual() && player != null )
+//    					{
+//    						long blocksTotal = PlayerCache.getInstance().getPlayerBlocksTotal( player );
+//    						
+//    						if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+//    							PlaceholderAttributeNumberFormat attributeNF = 
+//    									(PlaceholderAttributeNumberFormat) attribute;
+//    							results = attributeNF.format( blocksTotal );
+//    						}
+//    						else {
+//    							
+//    							results = iFmt.format( blocksTotal );
+//    						}
+//    					}
+//    					break;
+//    					
 						
 					case prison_pbtm:
 					case prison_player_blocks_total_minename:
-						if ( !mine.isVirtual() )
+						if ( !mine.isVirtual() && player != null )
 						{
     						long blocksTotalByMine = PlayerCache.getInstance()
     												.getPlayerBlocksTotalByMine( player, mine.getName() );
@@ -1463,7 +1495,8 @@ public class MineManager
 		
 		if ( player == null ) {
 			for ( Player p : Prison.get().getPlatform().getOfflinePlayers() ) {
-				if ( p.getUUID().compareTo( playerUuid ) == 0 ) {
+				if ( playerUuid != null && p.getUUID() != null &&
+						p.getUUID().compareTo( playerUuid ) == 0 ) {
 					player = p;
 					break;
 				} 
@@ -1610,7 +1643,6 @@ public class MineManager
     	// Regenerate the translated placeholders:
     	getTranslatedPlaceHolderKeys();
     }
-
 
 
 }

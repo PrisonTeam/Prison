@@ -2,16 +2,19 @@ package tech.mcprison.prison.spigot.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
-import tech.mcprison.prison.mines.features.MineTargetPrisonBlock;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
@@ -57,19 +60,59 @@ public class PrisonMinesBlockBreakEvent
 	
 	private Mine mine;
 	
-	private SpigotBlock spigotBlock;
 	private SpigotPlayer spigotPlayer;
+	private SpigotItemStack itemInHand;
+
+	private SpigotBlock spigotBlock;
+	private MineTargetPrisonBlock targetBlock;
+
 	
 	//private SpigotBlock overRideSpigotBlock;
 	
 	private List<SpigotBlock> explodedBlocks;
 	
+	// The targetBlocks are the blocks that were used to reset the mine with.
+	// They identify what the blocks were supposed to be.
+	private List<MineTargetPrisonBlock> targetExplodedBlocks;
+	
 	private BlockEventType blockEventType;
 	private String triggered;
 	
+	
+	// If this is set during the validation process, and the validation fails, then this it will 
+	// force the canceling of the original block event.
 	private boolean cancelOriginalEvent = false;
+
+	
+	// This will control if durability is calculated, but only if in the auto features configs
+	// has the AutoFeatures.isCalculateDurabilityEnabled set to true.  If it is set to false 
+	// then this setting will do nothing.
+	private boolean calculateDurability = true;
+
+	
+	// The use of forceAutoSell will sell the drops before they are added to the 
+	// player's inventory.  This would actually be much faster to process than
+	// going through the normal sellall functionality since that will have to process
+	// all of the player's inventory slots, including their backpacks.
+	private boolean forceAutoSell = false;
+	
+	
 	private boolean monitor = false;
+	
+	
+	// blockEventsOnly was intended to be able to run the block events when 
+	// the the AutoManager is disabled.  But now, as of 2021-11-23, if 
+	// AutoManager is disabled, then nothing related to auto features, 
+	// including block events will be active.
 	private boolean blockEventsOnly = false;
+	
+	
+	// Normally the explosion will ONLY work if the center target block was non-AIR.
+	// This setting allows the explosion to be processed even if it is air.
+	private boolean forceIfAirBlock = false;
+	
+	
+	private List<SpigotItemStack> bukkitDrops;
 	
 	private List<Block> unprocessedRawBlocks;
 	
@@ -84,6 +127,8 @@ public class PrisonMinesBlockBreakEvent
 		this.spigotBlock = spigotBlock;
 		this.spigotPlayer = spigotPlayer;
 		
+		this.itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
+		
 		this.monitor = monitor;
 		this.blockEventsOnly = blockEventsOnly;
 		
@@ -91,7 +136,11 @@ public class PrisonMinesBlockBreakEvent
 		this.triggered = triggered;
 		
 		this.explodedBlocks = new ArrayList<>();
+		this.targetExplodedBlocks = new ArrayList<>();
+
 		this.unprocessedRawBlocks = new ArrayList<>();
+		
+		this.bukkitDrops = new ArrayList<>();
 		
 	}
 	
@@ -103,15 +152,21 @@ public class PrisonMinesBlockBreakEvent
 	{
 		super( theBlock, player );
 		
-		this.mine = mine;
 		this.spigotBlock = spigotBlock;
+		this.spigotPlayer = new SpigotPlayer( player );
+		
+		this.itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
+
+		this.mine = mine;
 		
 		this.explodedBlocks = explodedBlocks;
 		
 		this.blockEventType = blockEventType;
+		this.targetExplodedBlocks = new ArrayList<>();
+
 		this.triggered = triggered;
 		
-		//this.overRideSpigotBlock = null;
+		this.bukkitDrops = new ArrayList<>();
 		
 	}
 
@@ -163,6 +218,24 @@ public class PrisonMinesBlockBreakEvent
 		return getOriginalTargetBlock( spigotBlock );
 	}
 	
+	
+	public TreeMap<String, Integer> getTargetBlockCounts() {
+		TreeMap<String, Integer> results = new TreeMap<>();
+		
+		if ( getTargetBlock() != null ) {
+			results.put( getTargetBlock().getPrisonBlock().getBlockName(), 1 );
+		}
+		
+		for ( MineTargetPrisonBlock targetBlock : getTargetExplodedBlocks() )
+		{
+			String blockName = targetBlock.getPrisonBlock().getBlockName();
+			int count = 1 + ( results.containsKey( blockName ) ? results.get( blockName ) : 0) ;
+			results.put( blockName, count );
+		}
+		
+		return results;
+	}
+	
 	public Mine getMine() {
 		return mine;
 	}
@@ -177,6 +250,13 @@ public class PrisonMinesBlockBreakEvent
 		this.spigotBlock = spigotBlock;
 	}
 
+	public MineTargetPrisonBlock getTargetBlock() {
+		return targetBlock;
+	}
+	public void setTargetBlock( MineTargetPrisonBlock targetBlock ) {
+		this.targetBlock = targetBlock;
+	}
+
 	public SpigotPlayer getSpigotPlayer() {
 		return spigotPlayer;
 	}
@@ -184,11 +264,32 @@ public class PrisonMinesBlockBreakEvent
 		this.spigotPlayer = spigotPlayer;
 	}
 
+	public SpigotItemStack getItemInHand() {
+		return itemInHand;
+	}
+	public void setItemInHand( SpigotItemStack itemInHand ) {
+		this.itemInHand = itemInHand;
+	}
+
 	public List<SpigotBlock> getExplodedBlocks() {
 		return explodedBlocks;
 	}
 	public void setExplodedBlocks( List<SpigotBlock> explodedBlocks ) {
 		this.explodedBlocks = explodedBlocks;
+	}
+
+	public List<MineTargetPrisonBlock> getTargetExplodedBlocks() {
+		return targetExplodedBlocks;
+	}
+	public void setTargetExplodedBlocks( List<MineTargetPrisonBlock> targetBlocks ) {
+		this.targetExplodedBlocks = targetBlocks;
+	}
+
+	public List<SpigotItemStack> getBukkitDrops() {
+		return bukkitDrops;
+	}
+	public void setBukkitDrops( List<SpigotItemStack> drops ) {
+		this.bukkitDrops = drops;
 	}
 
 	public BlockEventType getBlockEventType() {
@@ -219,6 +320,20 @@ public class PrisonMinesBlockBreakEvent
 		this.cancelOriginalEvent = cancelOriginalEvent;
 	}
 
+	public boolean isCalculateDurability() {
+		return calculateDurability;
+	}
+	public void setCalculateDurability( boolean calculateDurability ) {
+		this.calculateDurability = calculateDurability;
+	}
+
+	public boolean isForceAutoSell() {
+		return forceAutoSell;
+	}
+	public void setForceAutoSell( boolean forceAutoSell ) {
+		this.forceAutoSell = forceAutoSell;
+	}
+
 	public boolean isMonitor() {
 		return monitor;
 	}
@@ -238,6 +353,13 @@ public class PrisonMinesBlockBreakEvent
 	}
 	public void setUnprocessedRawBlocks( List<Block> unprocessedRawBlocks ) {
 		this.unprocessedRawBlocks = unprocessedRawBlocks;
+	}
+
+	public boolean isForceIfAirBlock() {
+		return forceIfAirBlock;
+	}
+	public void setForceIfAirBlock( boolean forceIfAirBlock ) {
+		this.forceIfAirBlock = forceIfAirBlock;
 	}
 
 	@Override

@@ -90,39 +90,66 @@ public class PlayerCacheFiles
 	 */
 	public void toJsonFile( PlayerCachePlayerData player) {
 		
-		File playerFile = player.getPlayerFile();
-		File outTemp = createTempFile( playerFile );
-		boolean success = false;
-		
-		try (
-				FileWriter fw = new FileWriter( outTemp );
-				){
-			getGson().toJson( player, fw );
+		if ( player != null ) {
 			
-			success = true;
-		}
-		catch ( JsonIOException | IOException e ) {
-			e.printStackTrace();
-		}
-		
-		if ( success && ( !playerFile.exists() || playerFile.delete()) ) {
-			outTemp.renameTo( playerFile );
-		}
-		else {
-		
-			boolean removed = false;
-			if ( outTemp.exists() ) {
-				removed = outTemp.delete();
+			File playerFile = player.getPlayerFile();
+			File outTemp = createTempFile( playerFile );
+			boolean success = false;
+			
+			try (
+					FileWriter fw = new FileWriter( outTemp );
+					){
+				getGson().toJson( player, fw );
+				
+				success = true;
 			}
-
-			String message = String.format( 
-					"Unable to rename PlayerCache temp file. It was %sremoved: %s", 
-					(removed ? "" : "not "), outTemp.getAbsolutePath() );
+			catch ( JsonIOException | IOException e ) {
+				e.printStackTrace();
+			}
 			
-			Output.get().logWarn( message );
+			// If there is a significant change in file size, or the new file is smaller than the
+			// old, then rename it to a backup and keep it.  If it is smaller, then something went wrong
+			// because player cache data should always increase, with the only exception being 
+			// the player cache.
+			if ( playerFile.exists() ) {
+				long pfSize = playerFile.length();
+				long tmpSize = outTemp.length();
+				
+				if ( tmpSize < pfSize ) {
+					 
+					renamePlayerFileToBU( playerFile );
+				}
+			}
+			
+			if ( success && ( !playerFile.exists() || playerFile.delete()) ) {
+				outTemp.renameTo( playerFile );
+			}
+			else {
+				
+				boolean removed = false;
+				if ( outTemp.exists() ) {
+					removed = outTemp.delete();
+				}
+				
+				String message = String.format( 
+						"Unable to rename PlayerCache temp file. It was %sremoved: %s", 
+						(removed ? "" : "not "), outTemp.getAbsolutePath() );
+				
+				Output.get().logWarn( message );
+			}
 		}
 	}
 	
+	private void renamePlayerFileToBU( File playerFile )
+	{
+		String buFileName = ".backup_" + playerFile.getName().replace( ".temp", ".bu" );
+		
+		File backupFile = new File( playerFile.getParent(), buFileName );
+		
+		playerFile.renameTo( backupFile );
+		
+	}
+
 	private File createTempFile( File file ) {
 	    SimpleDateFormat sdf = new SimpleDateFormat("_yyyy-MM-dd_HH-mm-ss");
 	    String name = file.getName() + sdf.format( new Date() ) + ".temp";

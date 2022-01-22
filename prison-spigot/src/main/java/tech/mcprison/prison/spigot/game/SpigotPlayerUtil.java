@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.game;
 
+import java.lang.reflect.Method;
 import java.util.UUID;
 
 import org.bukkit.enchantments.Enchantment;
@@ -7,9 +8,9 @@ import org.bukkit.enchantments.Enchantment;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.PlayerUtil;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.Compatibility;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 
 public class SpigotPlayerUtil
 		extends PlayerUtil
@@ -167,7 +168,7 @@ public class SpigotPlayerUtil
 		SpigotItemStack itemInHand = null;
 		
 		if ( isActive() && spigotPlayer.getWrapper() != null ) {
-			itemInHand = SpigotPrison.getInstance().getCompatibility()
+			itemInHand = SpigotCompatibility.getInstance()
 								.getPrisonItemInMainHand( spigotPlayer.getWrapper() );
 		}
 		return itemInHand;
@@ -273,7 +274,7 @@ public class SpigotPlayerUtil
 		SpigotItemStack itemStack = getItemInHand();
 		
 		if ( itemStack != null ) {
-			Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+			Compatibility compat = SpigotCompatibility.getInstance();
 			results = compat.getDurability( itemStack );
 		}
 		
@@ -287,7 +288,7 @@ public class SpigotPlayerUtil
 		SpigotItemStack itemStack = getItemInHand();
 		
 		if ( itemStack != null ) {
-			Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+			Compatibility compat = SpigotCompatibility.getInstance();
 			results = compat.getDurabilityMax( itemStack );
 		}
 		
@@ -301,7 +302,7 @@ public class SpigotPlayerUtil
 		SpigotItemStack itemStack = getItemInHand();
 		
 		if ( itemStack != null ) {
-			Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+			Compatibility compat = SpigotCompatibility.getInstance();
 			int durabilityUsed = compat.getDurability( itemStack );
 			int durabilityMax = compat.getDurabilityMax( itemStack );
 			results = durabilityMax - durabilityUsed;
@@ -317,7 +318,7 @@ public class SpigotPlayerUtil
 		SpigotItemStack itemStack = getItemInHand();
 		
 		if ( itemStack != null ) {
-			Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+			Compatibility compat = SpigotCompatibility.getInstance();
 			int durabilityUsed = compat.getDurability( itemStack );
 			int durabilityMax = compat.getDurabilityMax( itemStack );
 			
@@ -333,12 +334,35 @@ public class SpigotPlayerUtil
 		
 		Enchantment enchantment = null;
 		
-		for ( Enchantment e : Enchantment.values() ) {
-			if ( e.getKey().getKey().equalsIgnoreCase( enchant ) ) {
-				enchantment = e;
-				break;
+		try
+		{
+			@SuppressWarnings( "unused" )
+			Method methodGetKey = Enchantment.LUCK.getClass().getMethod( "getKey" );
+			
+			for ( Enchantment e : Enchantment.values() ) {
+				if (e.getKey().getKey().equalsIgnoreCase( enchant ) ) {
+					enchantment = e;
+					break;
+				}
 			}
 		}
+		catch ( NoSuchMethodException | SecurityException e1 ) {
+			// Ignore the fact that the method does not exist, which just means this is
+			// spigot 1.8 or so.
+
+			for ( Enchantment e : Enchantment.values() ) {
+				if ( e.toString().toLowerCase().contains( enchant.toLowerCase() ) ) {
+					enchantment = e;
+				}
+			}
+		}
+		
+//		for ( Enchantment e : Enchantment.values() ) {
+//			if (e.getKey().getKey().equalsIgnoreCase( enchant ) ) {
+//				enchantment = e;
+//				break;
+//			}
+//		}
 		
 		if ( enchantment != null ) {
 			

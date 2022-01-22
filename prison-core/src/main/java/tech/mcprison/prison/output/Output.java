@@ -19,10 +19,12 @@
 package tech.mcprison.prison.output;
 
 import java.util.Arrays;
+import java.util.FormatFlagsConversionMismatchException;
 import java.util.HashSet;
 import java.util.MissingFormatArgumentException;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.UnknownFormatConversionException;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.CommandSender;
@@ -55,6 +57,7 @@ public class Output
 
     private boolean debug = false;
     private Set<DebugTarget> activeDebugTargets;
+    private Set<DebugTarget> selectiveDebugTargets;
 
     public enum DebugTarget {
     	all,
@@ -62,12 +65,14 @@ public class Output
     	off,
     	blockBreak,
 //    	blockBreakListeners,
-    	blockBreakDurability, 
+//    	blockBreakDurability, 
     	blockBreakFortune,
-    	blockBreakXpCalcs,
+//    	blockBreakXpCalcs, // Removed since it was inlined
     	
-    	rankup,
-    	support
+    	targetBlockMismatch,
+    	
+    	rankup
+//    	support
     	;
     	
     	public static DebugTarget fromString( String target ) {
@@ -105,6 +110,7 @@ public class Output
     	instance = this;
 
     	this.activeDebugTargets = new HashSet<>();
+    	this.selectiveDebugTargets = new HashSet<>();
         
     	this.prefixTemplate = coreOutputPrefixTemplateMsg();
 
@@ -197,7 +203,10 @@ public class Output
      * Log a message with a specified {@link LogLevel}
      */
     public void log(String message, LogLevel level, Object... args) {
-    	if ( Prison.get() == null || Prison.get().getPlatform() == null ) {
+    	if ( message == null || message.trim().isEmpty() ) {
+    		// do not send an empty message... do nothing...
+    	}
+    	else if ( Prison.get() == null || Prison.get().getPlatform() == null ) {
     		String errorMessage = coreOutputErrorStartupFailureMsg();
     		if ( errorMessage == null || errorMessage.trim().isEmpty() ) {
     			// NOTE: The following must remain as is.  This is a fallback for if there
@@ -205,7 +214,14 @@ public class Output
     			// can be identified along with the reasons.
     			errorMessage = "Prison: (Sending to System.err due to Output.log Logger failure):";
     		}
-    		System.err.println( errorMessage + " " + message );
+			
+    		StringBuilder sb = new StringBuilder();
+			for ( Object arg : args ) {
+				sb.append( "[" ).append( arg ).append( "] " );
+			}
+			
+    		System.err.println( errorMessage + "   message: [" + message + 
+    				"] params: " + sb.toString() );
     	} else {
     		try {
 				Prison.get().getPlatform().log(
@@ -229,6 +245,27 @@ public class Output
 						getLogColorCode(LogLevel.ERROR) +
 						errorMessage );
 			}
+    		catch ( UnknownFormatConversionException |
+    				FormatFlagsConversionMismatchException e) 
+    		{
+				StringBuilder sb = new StringBuilder();
+				
+				for ( Object arg : args ) {
+					sb.append( "[" ).append( arg ).append( "] " );
+				}
+				
+				String errorMessage = "Error with Java format usage (eg %s): " +
+						" LogLevel: " + level.name() + 
+						" message: [" + message + "] params: [" + sb.toString() + "]" +
+						" error: [" + e.getMessage() + "]";
+				
+				Prison.get().getPlatform().logCore(
+						prefixTemplatePrison + " " + 
+						getLogColorCode(LogLevel.ERROR) +
+						errorMessage );
+
+				e.printStackTrace();
+    		}
     	}
     }
 
@@ -306,10 +343,19 @@ public class Output
     
     public void applyDebugTargets( String targets ) {
     	
+    	boolean isSelective = targets.contains( "selective" );
+    	
     	TreeSet<DebugTarget> trgts = DebugTarget.fromMultiString( targets );
     	
     	if ( trgts.size() > 0 ) {
-    		applyDebugTargets( trgts );
+    		
+    		if ( isSelective ) {
+    			applySelectiveDebugTargets( trgts );
+    		}
+    		else {
+    			applyDebugTargets( trgts );
+    		}
+    		
     	}
     	else {
     		// No targets were set, so just toggle the debugger:
@@ -355,9 +401,41 @@ public class Output
     	// Output.get().setDebug( !Output.get().isDebug() );
     }
     
-    public boolean isDebug( DebugTarget debugTarget ) {
-    	return isDebug() || getActiveDebugTargets().contains( debugTarget );
+    public void applySelectiveDebugTargets( TreeSet<DebugTarget> targets ) {
+    	
+    	for ( DebugTarget target : targets ) {
+    	
+    		if ( getSelectiveDebugTargets().contains( target ) ) {
+    			
+    			getSelectiveDebugTargets().remove( target );
+    		}
+    		else {
+    			
+    			getSelectiveDebugTargets().add( target );
+    		}
+
+    	}
+    		
+    	
     }
+    
+    public boolean isDebug( DebugTarget debugTarget ) {
+    	return isDebug() || getActiveDebugTargets().contains( debugTarget ) || 
+    			getSelectiveDebugTargets().contains( debugTarget );
+    }
+    
+    /**
+     * <p>This only return true if the specified debug target is enabled.
+     * The global debug mode, and other debugTargets, are ignored.
+     * </p>
+     * 
+     * @param debugTarget
+     * @return
+     */
+    public boolean isSelectiveTarget( DebugTarget debugTarget ) {
+    	return getSelectiveDebugTargets().contains( debugTarget );
+    }
+    
     public boolean isDebug() {
 		return debug;
 	}
@@ -373,11 +451,25 @@ public class Output
 		this.activeDebugTargets = activeDebugTargets;
 	}
 
+	public Set<DebugTarget> getSelectiveDebugTargets() {
+		return selectiveDebugTargets;
+	}
+	public void setSelectiveDebugTargets( Set<DebugTarget> selectiveDebugTargets ) {
+		this.selectiveDebugTargets = selectiveDebugTargets;
+	}
+
+
 	/**
      * Send a message to a {@link CommandSender}
      */
     public void sendMessage(CommandSender sender, String message, LogLevel level, Object... args) {
-        sender.sendMessage(getLogPrefix(level) + String.format(message, args));
+    		
+    	if ( sender != null && message != null && message.length() > 0 ) {
+    		if ( level == null ) {
+    			level = LogLevel.PLAIN;
+    		}
+    		sender.sendMessage(getLogPrefix(level) + String.format(message, args));
+    	}
     }
     
     public void send(CommandSender sender, String message, Object... args) {

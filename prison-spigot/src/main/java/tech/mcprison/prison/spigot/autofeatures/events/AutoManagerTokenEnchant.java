@@ -41,6 +41,9 @@ public class AutoManagerTokenEnchant
     	
         @EventHandler(priority=EventPriority.LOW) 
         public void onTEBlockExplode(TEBlockExplodeEvent e) {
+			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+				return;
+			}
         	genericBlockExplodeEventAutoManager( e );
         }
     }
@@ -51,6 +54,9 @@ public class AutoManagerTokenEnchant
     	
     	@EventHandler(priority=EventPriority.NORMAL) 
     	public void onTEBlockExplode(TEBlockExplodeEvent e) {
+    		if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+    			return;
+    		}
     		genericBlockExplodeEvent( e );
     	}
     }
@@ -61,14 +67,19 @@ public class AutoManagerTokenEnchant
     	
     	@EventHandler(priority=EventPriority.MONITOR) 
     	public void onTEBlockExplode(TEBlockExplodeEvent e) {
+    		if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+    			return;
+    		}
     		genericBlockExplodeEventMonitor( e );
     	}
     }
     
     @Override
     public void initialize() {
-    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
-    	
+
+    	String eP = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
     	if ( !isEventEnabled ) {
     		return;
     	}
@@ -83,7 +94,6 @@ public class AutoManagerTokenEnchant
     		Output.get().logInfo( "AutoManager: Trying to register TokenEnchant" );
     		
     		
-    		String eP = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
     		BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
     		
     		if ( eventPriority != BlockBreakPriority.DISABLED ) {
@@ -116,30 +126,36 @@ public class AutoManagerTokenEnchant
     							prison);
     					prison.getRegisteredBlockListeners().add( autoManagerlListener );
     				}
+    				else if ( isBoolean( AutoFeatures.normalDrop ) ) {
+    					
+    					OnBlockBreakEventTokenEnchantEventListener normalListener = 
+    							new OnBlockBreakEventTokenEnchantEventListener();
+    					
+    					pm.registerEvent(TEBlockExplodeEvent.class, normalListener, ePriority,
+    							new EventExecutor() {
+    						public void execute(Listener l, Event e) { 
+    							((OnBlockBreakEventTokenEnchantEventListener)l)
+    							.onTEBlockExplode((TEBlockExplodeEvent)e);
+    						}
+    					},
+    							prison);
+    					prison.getRegisteredBlockListeners().add( normalListener );
+    				}
 
-    				OnBlockBreakEventTokenEnchantEventListener normalListener = 
-    						new OnBlockBreakEventTokenEnchantEventListener();
+    			}
+    			else {
     				
-    				pm.registerEvent(TEBlockExplodeEvent.class, normalListener, ePriority,
+    				pm.registerEvent(TEBlockExplodeEvent.class, normalListenerMonitor, EventPriority.MONITOR,
     						new EventExecutor() {
     					public void execute(Listener l, Event e) { 
-    						((OnBlockBreakEventTokenEnchantEventListener)l)
+    						((OnBlockBreakEventTokenEnchantEventListenerMonitor)l)
     						.onTEBlockExplode((TEBlockExplodeEvent)e);
     					}
     				},
     						prison);
-    				prison.getRegisteredBlockListeners().add( normalListener );
+    				prison.getRegisteredBlockListeners().add( normalListenerMonitor );
     			}
     			
-    			pm.registerEvent(TEBlockExplodeEvent.class, normalListenerMonitor, EventPriority.MONITOR,
-    					new EventExecutor() {
-    				public void execute(Listener l, Event e) { 
-	    					((OnBlockBreakEventTokenEnchantEventListenerMonitor)l)
-	    						.onTEBlockExplode((TEBlockExplodeEvent)e);
-    					}
-	    			},
-	    			prison);
-    			prison.getRegisteredBlockListeners().add( normalListenerMonitor );
     		}
     		
     	}
@@ -182,8 +198,10 @@ public class AutoManagerTokenEnchant
 	
     @Override
 	public void dumpEventListeners( StringBuilder sb ) {
-    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents );
     	
+    	String eP = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
     	if ( !isEventEnabled ) {
     		return;
     	}
@@ -201,6 +219,7 @@ public class AutoManagerTokenEnchant
 
 			if ( eventDisplay != null ) {
 				sb.append( eventDisplay.toStringBuilder() );
+				sb.append( "\n" );
 			}
 		}
 		catch ( ClassNotFoundException e ) {

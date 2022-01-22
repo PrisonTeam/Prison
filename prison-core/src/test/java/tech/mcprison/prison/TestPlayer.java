@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import tech.mcprison.prison.cache.PlayerCache;
+import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.Block;
@@ -194,4 +196,22 @@ public class TestPlayer
 	@Override
 	public void setActionBar( String actionBar ) {
 	}
+
+	@Override
+	public PlayerCache getPlayerCache()
+	{
+		return null;
+	}
+
+	@Override
+	public PlayerCachePlayerData getPlayerCachePlayerData()
+	{
+		return null;
+	}
+	
+	@Override
+	public boolean isSneaking() {
+		return false;
+	}
+	
 }

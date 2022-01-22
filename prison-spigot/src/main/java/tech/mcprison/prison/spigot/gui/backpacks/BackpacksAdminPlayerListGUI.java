@@ -5,6 +5,7 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
@@ -20,7 +21,7 @@ public class BackpacksAdminPlayerListGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final Configuration backpacksData = BackpacksUtil.get().getBackpacksData();
-    private final String clickToOpen = messages.getString("Lore.ClickToOpen");
+    private final String clickToOpen = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open);
 
     public BackpacksAdminPlayerListGUI(Player p){
         this.p = p;
@@ -29,10 +30,10 @@ public class BackpacksAdminPlayerListGUI extends SpigotGUIComponents {
     public void open(){
 
         int dimension = 54;
-        PrisonGUI gui = new PrisonGUI(p, dimension, "&3" + "Backpacks-Admin-Players");
+        PrisonGUI gui = new PrisonGUI(p, dimension, "&3Backpacks-Admin-Players");
 
         if (backpacksData.getConfigurationSection("Inventories") == null){
-            Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.BackPackListEmpty"));
+            Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_backpack_empty));
             return;
         }
 
@@ -40,7 +41,7 @@ public class BackpacksAdminPlayerListGUI extends SpigotGUIComponents {
         try {
             playerUUID = backpacksData.getConfigurationSection("Inventories").getKeys(false);
         } catch (NullPointerException ex){
-            Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.BackPackListEmpty"));
+            Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_backpack_empty));
             return;
         }
 

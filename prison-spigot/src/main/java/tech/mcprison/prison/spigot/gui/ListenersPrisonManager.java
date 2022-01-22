@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -40,10 +38,13 @@ import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.compat.Compatibility;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
 import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
@@ -72,10 +73,10 @@ import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminAutoSellGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminBlocksGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllDelayGUI;
-import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPrestigesMultiplierGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPrestigesSetMultiplierGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPriceGUI;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 
 /**
  * @author GABRYCA
@@ -91,13 +92,11 @@ public class ListenersPrisonManager implements Listener {
     private String tempChatVariable;
     private final Configuration config = SpigotPrison.getInstance().getConfig();
     private final Configuration guiConfig = SpigotPrison.getInstance().getGuiConfig();
+    private final MessagesConfig messages = SpigotPrison.getInstance().getMessagesConfig();
+    boolean guiNotEnabled = !getBoolean(config.getString("prison-gui-enabled"));
 
-    // NOTE: sellAllConfig will be null if sellall is not enbled.
-	private Configuration sellAllConfig = SpigotPrison.getInstance().updateSellAllConfig();
+//    private Optional<RankLadder> ladder; // makes no sense... not thread safe.
     
-    private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
-    boolean guiNotEnabled = !(config.getString("prison-gui-enabled").equalsIgnoreCase("true"));
-    private Optional<RankLadder> ladder;
     public ChatMode mode;
 
     public enum ChatMode{
@@ -144,19 +143,19 @@ public class ListenersPrisonManager implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onSignEditing(SignChangeEvent e){
 
-        sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
-
-        if (sellAllConfig == null){
+        if (!SpigotPrison.getInstance().isSellAllEnabled()){
             return;
         }
 
+        SellAllUtil sellAllUtil = SpigotPrison.getInstance().getSellAllUtil();
+
         // Check if the feature's enabled
-        if (!getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Enabled"))){
+        if (!sellAllUtil.isSellAllSignEnabled){
             return;
         }
 
         Player p = e.getPlayer();
-        String signTag = sellAllConfig.getString("Options.SellAll_Sign_Visible_Tag");
+        String signTag = sellAllUtil.sellAllSignTag;;
         if (signTag == null){
             signTag = "&7[&3SellAll&7]";
         }
@@ -179,45 +178,44 @@ public class ListenersPrisonManager implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerInteractEvent(PlayerInteractEvent e){
 
-        sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
-        if (sellAllConfig != null) {
+        if (!SpigotPrison.getInstance().isSellAllEnabled()){
+            return;
+        }
 
+        SellAllUtil sellAllUtil = SpigotPrison.getInstance().getSellAllUtil();
+
+        if (sellAllUtil != null) {
             // Check if SellAll Shift + Right Click is enabled.
-            boolean sellAllTriggerEnabled = getBoolean(sellAllConfig.getString("Options.ShiftAndRightClickSellAll.Enabled"));
-            if (sellAllTriggerEnabled) {
+            if (sellAllUtil.isSellAllItemTriggerEnabled) {
                 // Check if the action if Shift + Right Click.
                 Player p = e.getPlayer();
                 if (e.getAction().equals(Action.RIGHT_CLICK_AIR) && p.isSneaking()) {
 
                     // Check if a permission's required.
-                    boolean permissionSellAllTriggerEnabled = getBoolean(sellAllConfig.getString("Options.ShiftAndRightClickSellAll.PermissionEnabled"));
-                    if (permissionSellAllTriggerEnabled) {
-                        String permission = sellAllConfig.getString("Options.ShiftAndRightClickSellAll.Permission");
+                    if (sellAllUtil.isSellAllItemTriggerPermissionEnabled) {
+                        String permission = sellAllUtil.permissionItemTrigger;
                         if (permission != null && !p.hasPermission(permission)) {
                             return;
                         }
                     }
 
                     // Get the Items config section
-                    Set<String> items = null;
-                    try {
-                        items = sellAllConfig.getConfigurationSection("ShiftAndRightClickSellAll.Items").getKeys(false);
-                    } catch (NullPointerException ignored) {}
+                    ArrayList<XMaterial> items = sellAllUtil.getItemTriggerXMaterials();
+
                     if (items != null && items.size() != 0) {
-                        for (String itemID : items) {
-                            XMaterial xMaterialConf = SpigotUtil.getXMaterial(sellAllConfig.getString("ShiftAndRightClickSellAll.Items." + itemID + ".ITEM_ID"));
-                            XMaterial inHandXMaterial = null;
-                            if (e.getItem() != null){
-                                inHandXMaterial = SpigotUtil.getXMaterial(e.getItem().getType());
-                            }
-                            if (inHandXMaterial != null && xMaterialConf == inHandXMaterial) {
-                            	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
-                                Bukkit.dispatchCommand(p, registeredCmd);
-                                return;
-                            } else if (xMaterialConf == SpigotUtil.getXMaterial(p.getInventory().getItemInMainHand().getType())){
-                                String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
-                                Bukkit.dispatchCommand(p, registeredCmd);
-                                return;
+                        XMaterial inHandXMaterial = null;
+                        if (e.getItem() != null) {
+                            inHandXMaterial = SpigotUtil.getXMaterial(e.getItem().getType());
+                        }
+                        if (inHandXMaterial != null) {
+                            for (XMaterial xMaterialConf : items) {
+                                if (xMaterialConf == inHandXMaterial) {
+                                    sellAllUtil.sellAllSell(p, false, false, true, false, false, true);
+                                    return;
+                                } else if (xMaterialConf == SpigotUtil.getXMaterial(p.getInventory().getItemInMainHand().getType())) {
+                                    sellAllUtil.sellAllSell(p, false, false, true, false, false, true);
+                                    return;
+                                }
                             }
                         }
                     }
@@ -225,12 +223,11 @@ public class ListenersPrisonManager implements Listener {
             }
 
             // Check if the feature's enabled.
-            boolean sellAllSignEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Enabled"));
-            if (sellAllSignEnabled) {
+            if (sellAllUtil.isSellAllSignEnabled) {
 
                 // Get clicked block.
                 Material clickedBlock = null;
-                if (e.getClickedBlock() != null){
+                if (e.getClickedBlock() != null) {
                     clickedBlock = e.getClickedBlock().getType();
                 }
 
@@ -239,7 +236,7 @@ public class ListenersPrisonManager implements Listener {
 
                     // Get the player
                     Player p = e.getPlayer();
-                    String signTag = sellAllConfig.getString("Options.SellAll_Sign_Visible_Tag");
+                    String signTag = sellAllUtil.sellAllSignTag;
                     if (signTag == null) {
                         signTag = "&7[&3SellAll&7]";
                     }
@@ -258,27 +255,20 @@ public class ListenersPrisonManager implements Listener {
 
                             // Check if the first like of the sign have the right tag
                             if (sign.getLine(0).equalsIgnoreCase(SpigotPrison.format(signTag))) {
-
-                                if (sellAllConfig.getString("Options.SellAll_Sign_Use_Permission_Enabled").equalsIgnoreCase("true") && !p.hasPermission(sellAllConfig.getString("Options.SellAll_Sign_Use_Permission"))) {
-                                    Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.SellAllSignMissingPermission") + " [&3" + sellAllConfig.getString("Options.SellAll_Sign_Use_Permission") + "&7]");
+                                String permissionUseSign = sellAllUtil.permissionUseSign;
+                                if (sellAllUtil.isSellAllSignPermissionToUseEnabled && !p.hasPermission(permissionUseSign)) {
+                                    Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_missing_permission) + " [&3" + permissionUseSign + "&7]");
                                     return;
                                 }
 
-                                boolean bySignOnly = sellAllConfig.getString("Options.SellAll_By_Sign_Only").equalsIgnoreCase("true");
-                                //                                    SellAllUtil sellAll = SellAllUtil.get();
-                                //                                    if (sellAll != null) {
-                                //                                        sellAll.toggleSellAllSign();
-                                //                                    }
-
-                                if (sellAllConfig.getString("Options.SellAll_Sign_Notify").equalsIgnoreCase("true")) {
-                                    Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.SellAllSignNotify"));
+                                if (sellAllUtil.isSellAllSignNotifyEnabled) {
+                                    Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_sign_notify));
                                 }
 
-                                // Execute the sellall command
-                                String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall sell" );
-                                Bukkit.dispatchCommand(p, registeredCmd + ( bySignOnly ? " bySignOnly" : ""));
+                                sellAllUtil.sellAllSell(p, true, false, true, false, false, true);
                             }
-                        } catch (IndexOutOfBoundsException ignored) {}
+                        } catch (IndexOutOfBoundsException ignored) {
+                        }
                     }
                 }
             }
@@ -329,8 +319,6 @@ public class ListenersPrisonManager implements Listener {
         // Check if the boolean is true, this's set manually
         if (isChatEventActive) {
 
-            sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
-
             // Get the player
             Player p = e.getPlayer();
             // Check if the player's in the list to not use another one for mistake/conflicting
@@ -361,7 +349,7 @@ public class ListenersPrisonManager implements Listener {
         id = Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPrison.getInstance(), () -> {
             if (isChatEventActive) {
                 removeChatEventPlayer(p);
-                Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.OutOfTimeNoChanges"));
+                Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_chat_event_time_end));
                 isChatEventActive = false;
             }
             mode = null;
@@ -400,13 +388,12 @@ public class ListenersPrisonManager implements Listener {
             // GUIs must have the good conditions to work.
             if (guiConditions(e, p)) return;
 
-            Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+            Compatibility compat = SpigotCompatibility.getInstance();
 
             String buttonNameMain;
             String[] parts;
             Module module;
             String title;
-            sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
 
             try {
                 // Get parameters.
@@ -422,18 +409,25 @@ public class ListenersPrisonManager implements Listener {
 
             // Close GUI button globally.
             if (buttonNameMain.equalsIgnoreCase("Close")) {
-                Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.GuiClosedWithSuccess"));
+                Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_close_success));
                 p.closeInventory();
                 return;
             }
-
+            
+            // If a GUI Tools Page action, then process the request and just exit:
+            else if ( SpigotGUIMenuTools.getInstance().processGUIPage( p, title, e ) ) {
+            	
+            	return;
+            }
+            
+            
             String playerRanksTitle = guiConfig.getString("Options.Titles.PlayerRanksGUI").substring(2);
             String playerPrestigeTitle = guiConfig.getString("Options.Titles.PlayerPrestigesGUI").substring(2);
             String minesPlayerTitle = guiConfig.getString("Options.Titles.PlayerMinesGUI").substring(2);
 
             // Check if the GUI have the right title and do the actions.
             switch (title) {
-
+            	
                 // Check the title and do the actions.
                 case "PrisonManager":
 
@@ -446,7 +440,8 @@ public class ListenersPrisonManager implements Listener {
                 case "RanksManager -> Ladders": {
 
                     // Call the method.
-                    laddersGUI(e, p, buttonNameMain, module, parts);
+                    laddersGUI(e, p, buttonNameMain, module);
+//                    laddersGUI(e, p, buttonNameMain, module, parts);
 
                     break;
                 }
@@ -737,22 +732,60 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    private void sellAllPlayerGUI(InventoryClickEvent e, Player p, String[] parts) {
-        if (parts[0].equalsIgnoreCase("Prior")){
+    
+    
+    
+//    private boolean processGUIPage( Player p, String title, InventoryClickEvent e ) {
+//    	boolean isPageAction = false;
+//    	
+//    	ItemStack currentItem = e.getCurrentItem();
+//    	if ( currentItem != null && currentItem.hasItemMeta() ) {
+//    		
+//    		ItemMeta meta = currentItem.getItemMeta();
+//
+//    		if ( meta.hasLore() ) {
+//    			
+//    			String command = null;
+//    			
+//    			List<String> lores = meta.getLore();
+//    			
+//    			for ( String lore : lores ) {
+//					
+//    				if ( lore.contains( SpigotGUIMenuTools.GUI_MENU_TOOLS_PAGE ) ) {
+//    					isPageAction = true;
+//    				}
+//    				if ( lore.contains( SpigotGUIMenuTools.GUI_MENU_TOOLS_COMMAND ) ) {
+//    					command = Text.stripColor( lore ).replace( SpigotGUIMenuTools.GUI_MENU_TOOLS_COMMAND, "" ).trim();
+//    				}
+//				}
+//    			
+//    			if ( isPageAction && command != null ) {
+//    				Bukkit.dispatchCommand(p, command);
+//    				
+//    			}
+//    		}
+//    		
+//    	}
+//    	
+//    	return isPageAction;
+//	}
 
-            SellAllPlayerGUI gui = new SellAllPlayerGUI(p, Integer.parseInt(parts[1]));
-            gui.open();
-
-            e.setCancelled(true);
-            return;
-        } else if (parts[0].equalsIgnoreCase("Next")){
-
-            SellAllPlayerGUI gui = new SellAllPlayerGUI(p, Integer.parseInt(parts[1]));
-            gui.open();
-
-            e.setCancelled(true);
-            return;
-        }
+	private void sellAllPlayerGUI(InventoryClickEvent e, Player p, String[] parts) {
+//        if (parts[0].equalsIgnoreCase("Prior")){
+//
+//            SellAllPlayerGUI gui = new SellAllPlayerGUI(p, Integer.parseInt(parts[1]));
+//            gui.open();
+//
+//            e.setCancelled(true);
+//            return;
+//        } else if (parts[0].equalsIgnoreCase("Next")){
+//
+//            SellAllPlayerGUI gui = new SellAllPlayerGUI(p, Integer.parseInt(parts[1]));
+//            gui.open();
+//
+//            e.setCancelled(true);
+//            return;
+//        }
 
         p.closeInventory();
         e.setCancelled(true);
@@ -826,12 +859,11 @@ public class ListenersPrisonManager implements Listener {
                 conf.set("Options.Mines.MaterialType." + parts[1], parts[0]);
                 conf.save(sellAllFile);
             } catch (IOException ex){
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.SellAllConfigSaveFail"));
                 ex.printStackTrace();
                 return;
             }
 
-            Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.MineShowItemEditSuccess") + " [" + parts[0] + "]");
+            Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_mines_item_show_edit_success) + " [" + parts[0] + "]");
             p.closeInventory();
         }
 
@@ -904,7 +936,7 @@ public class ListenersPrisonManager implements Listener {
             } else {
 
                 // Tell to the player that the value's too low
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.TooLowValue"));
+                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_too_low_value));
 
                 e.setCancelled(true);
 
@@ -930,7 +962,7 @@ public class ListenersPrisonManager implements Listener {
             } else {
 
                 // Close the GUI and tell it to the player
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.TooHighValue"));
+                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_too_high));
                 e.setCancelled(true);
                 p.closeInventory();
                 return;
@@ -967,6 +999,8 @@ public class ListenersPrisonManager implements Listener {
             gui.open();
             return;
         } else {
+
+            Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
 
             // Open setMultiplierGUI
             String doubleString = sellAllConfig.getString("Multiplier." + parts[0] + ".MULTIPLIER");
@@ -1014,7 +1048,7 @@ public class ListenersPrisonManager implements Listener {
             } else if (e.isRightClick()){
 
                 // Send a message to the player
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.EventCancelled"));
+                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_event_cancelled));
 
                 e.setCancelled(true);
 
@@ -1046,7 +1080,7 @@ public class ListenersPrisonManager implements Listener {
             } else {
 
                 // Tell to the player that the value's too low
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.TooLowValue"));
+                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_too_low_value));
 
                 e.setCancelled(true);
 
@@ -1056,7 +1090,7 @@ public class ListenersPrisonManager implements Listener {
             }
 
             // Open an updated GUI after the value changed
-            SellAllDelayGUI gui = new SellAllDelayGUI(p, val);
+            SellAllDelayGUI gui = new SellAllDelayGUI(p, val, 1, "sellall gui", "sellall gui");
             gui.open();
 
             // Check the calculator symbol
@@ -1072,14 +1106,14 @@ public class ListenersPrisonManager implements Listener {
             } else {
 
                 // Close the GUI and tell it to the player
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.TooHighValue"));
+                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_too_high));
                 e.setCancelled(true);
                 p.closeInventory();
                 return;
             }
 
             // Open a new updated GUI with new values
-            SellAllDelayGUI gui = new SellAllDelayGUI(p, val);
+            SellAllDelayGUI gui = new SellAllDelayGUI(p, val, 1, "sellall gui", "sellall gui");
             gui.open();
         }
     }
@@ -1111,7 +1145,7 @@ public class ListenersPrisonManager implements Listener {
 
             	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall autosell" );
                 Bukkit.dispatchCommand(p, registeredCmd + " false");
-                SellAllAdminGUI gui = new SellAllAdminGUI(p);
+                SellAllAdminGUI gui = new SellAllAdminGUI( p, 1, "sellall gui", "gui" );
                 gui.open();
 
                 break;
@@ -1121,7 +1155,7 @@ public class ListenersPrisonManager implements Listener {
 
             	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall autosell" );
                 Bukkit.dispatchCommand(p, registeredCmd + " true");
-                SellAllAdminGUI gui = new SellAllAdminGUI(p);
+                SellAllAdminGUI gui = new SellAllAdminGUI( p, 1, "sellall gui", "gui" );
                 gui.open();
 
                 break;
@@ -1132,11 +1166,13 @@ public class ListenersPrisonManager implements Listener {
     }
 
     private void sellAllAdminGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
+
+        Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
         switch (buttonNameMain){
 
             case "Blocks-Shop":{
 
-                SellAllAdminBlocksGUI gui = new SellAllAdminBlocksGUI(p, 0);
+                SellAllAdminBlocksGUI gui = new SellAllAdminBlocksGUI( p, 1, "sellall gui blocks", "sellall gui" );
                 gui.open();
                 break;
             }
@@ -1146,7 +1182,7 @@ public class ListenersPrisonManager implements Listener {
                 if (e.getClick().isRightClick()){
                 	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall autosell" );
                     Bukkit.dispatchCommand(p, registeredCmd + " false");
-                    SellAllAdminGUI gui = new SellAllAdminGUI(p);
+                    SellAllAdminGUI gui = new SellAllAdminGUI( p, 1, "sellall gui", "gui" );
                     gui.open();
                 } else {
                     SellAllAdminAutoSellGUI gui = new SellAllAdminAutoSellGUI(p);
@@ -1161,10 +1197,10 @@ public class ListenersPrisonManager implements Listener {
                 	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall autosell" );
                     Bukkit.dispatchCommand(p, registeredCmd + " true");
                     p.closeInventory();
-                    SellAllAdminGUI gui = new SellAllAdminGUI(p);
+                    SellAllAdminGUI gui = new SellAllAdminGUI( p, 1, "sellall gui", "gui" );
                     gui.open();
                 } else {
-                    Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.EnableAutoSellToUse"));
+                    Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_auto_disabled_cant_use));
                 }
                 break;
             }
@@ -1175,9 +1211,10 @@ public class ListenersPrisonManager implements Listener {
                 	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall delay" );
                     Bukkit.dispatchCommand(p, registeredCmd + " false");
                     p.closeInventory();
-                    SellAllAdminGUI gui = new SellAllAdminGUI(p);
+                    SellAllAdminGUI gui = new SellAllAdminGUI( p, 1, "sellall gui", "gui" );
                     gui.open();
-                } else {
+                } 
+                else {
                     p.closeInventory();
 
                     int val = 0;
@@ -1190,7 +1227,7 @@ public class ListenersPrisonManager implements Listener {
                     } catch (NumberFormatException ignored){}
 
                     p.closeInventory();
-                    SellAllDelayGUI gui = new SellAllDelayGUI(p, val);
+                    SellAllDelayGUI gui = new SellAllDelayGUI(p, val, 1, "sellall gui", "sellall gui" );
                     gui.open();
                 }
 
@@ -1203,10 +1240,10 @@ public class ListenersPrisonManager implements Listener {
                 	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall delay" );
                     Bukkit.dispatchCommand(p, registeredCmd + " true");
                     p.closeInventory();
-                    SellAllAdminGUI gui = new SellAllAdminGUI(p);
+                    SellAllAdminGUI gui = new SellAllAdminGUI(p, 1, "sellall gui", "gui");
                     gui.open();
                 } else {
-                    Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.EnableSellDelayToUse"));
+                    Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_delay_disabled_cant_use));
                 }
                 break;
             }
@@ -1214,10 +1251,10 @@ public class ListenersPrisonManager implements Listener {
             case "SellAll-Currency":{
 
                 // Send messages to the player
-                Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.SellAllCurrencyChat1"));
-                Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.SellAllCurrencyChat2"));
-                Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.SellAllCurrencyChat3"));
-                Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.SellAllCurrencyChat4"));
+                Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_currency_chat_1));
+                Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_currency_chat_2));
+                Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_currency_chat_3));
+                Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_currency_chat_4));
 
                 chatInteractData(p, ChatMode.SellAll_Currency);
                 p.closeInventory();
@@ -1230,13 +1267,13 @@ public class ListenersPrisonManager implements Listener {
                 boolean multiplierEnabled = getBoolean(sellAllConfig.getString("Options.Multiplier_Enabled"));
                 if (!multiplierEnabled){
 
-                    Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.SellAllMultipliersAreDisabled"));
+                    Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_multiplier_are_disabled));
 
                     return;
                 } else {
 
                     if (sellAllConfig.getConfigurationSection("Multiplier").getKeys(false).size() == 0) {
-                        Output.get().sendWarn(new SpigotPlayer(p), messages.getString("Message.EmptyGui"));
+                        Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_error_empty));
                         e.setCancelled(true);
                         return;
                     } else {
@@ -1279,7 +1316,7 @@ public class ListenersPrisonManager implements Listener {
         if (parts[0].equalsIgnoreCase("Confirm:")){
             Bukkit.dispatchCommand(p, "ranks autoConfigure");
         } else if (parts[0].equalsIgnoreCase("Cancel:")){
-            Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Setup.Message.Aborted"));
+            Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_event_cancelled));
         }
         p.closeInventory();
         e.setCancelled(true);
@@ -1332,25 +1369,6 @@ public class ListenersPrisonManager implements Listener {
         } catch (ArrayIndexOutOfBoundsException ex){
             return;
         }
-        
-        // If Close, part 4 won't be defined so handle the close first.
-
-        // What?
-        /*if (part1.equalsIgnoreCase( "Close" )) {
-
-            int pos = 0;
-        	try {
-        		pos = Integer.parseInt( part3 );
-        	}
-        	catch(NumberFormatException ignored) {}
-        	
-            SpigotBlocksListGUI gui = new SpigotBlocksListGUI(p, part2, pos);
-
-            p.closeInventory();
-
-            gui.open();
-            return;
-        }*/
         
         String part4 = null;
         try{
@@ -1583,21 +1601,21 @@ public class ListenersPrisonManager implements Listener {
 
     private void sellAllAdminBlocksGUI(InventoryClickEvent e, Player p, String[] parts) {
 
-        if (parts[0].equalsIgnoreCase("Prior")){
-
-            SellAllAdminBlocksGUI gui = new SellAllAdminBlocksGUI(p, Integer.parseInt(parts[1]));
-            gui.open();
-
-            e.setCancelled(true);
-            return;
-        } else if (parts[0].equalsIgnoreCase("Next")){
-
-            SellAllAdminBlocksGUI gui = new SellAllAdminBlocksGUI(p, Integer.parseInt(parts[1]));
-            gui.open();
-
-            e.setCancelled(true);
-            return;
-        }
+//        if (parts[0].equalsIgnoreCase("Prior")){
+//
+//            SellAllAdminBlocksGUI gui = new SellAllAdminBlocksGUI(p, Integer.parseInt(parts[1]));
+//            gui.open();
+//
+//            e.setCancelled(true);
+//            return;
+//        } else if (parts[0].equalsIgnoreCase("Next")){
+//
+//            SellAllAdminBlocksGUI gui = new SellAllAdminBlocksGUI(p, Integer.parseInt(parts[1]));
+//            gui.open();
+//
+//            e.setCancelled(true);
+//            return;
+//        }
 
         if (e.isRightClick()){
 
@@ -1606,6 +1624,8 @@ public class ListenersPrisonManager implements Listener {
             p.closeInventory();
 
         } else if (e.isLeftClick()){
+
+            Configuration sellAllConfig = SpigotPrison.getInstance().getSellAllConfig();
 
             String valueString = sellAllConfig.getString("Items." + parts[0] + ".ITEM_VALUE");
             if (valueString != null) {
@@ -1622,7 +1642,7 @@ public class ListenersPrisonManager implements Listener {
         // Check the Item display name and do open the right GUI.
         switch (buttonNameMain) {
             case "Ranks - Ladders": {
-                SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 0);
+                SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 1, "gui ladders", "gui" );
                 gui.open();
                 break;
             }
@@ -1642,14 +1662,14 @@ public class ListenersPrisonManager implements Listener {
 
             // Check the Item display name and do open the right GUI.
             case "Mines": {
-                SpigotMinesGUI gui = new SpigotMinesGUI(p, 0);
+                SpigotMinesGUI gui = new SpigotMinesGUI(p, 1, "gui admin mines", "gui");
                 gui.open();
                 break;
             }
 
             // Check the Item display name and do open the right GUI.
             case "SellAll": {
-                SellAllAdminGUI gui = new SellAllAdminGUI(p);
+                SellAllAdminGUI gui = new SellAllAdminGUI(p, 1, "sellall gui", "gui");
                 gui.open();
                 break;
             }
@@ -1664,7 +1684,7 @@ public class ListenersPrisonManager implements Listener {
         e.setCancelled(true);
     }
 
-    private void laddersGUI(InventoryClickEvent e, Player p, String buttonNameMain, Module module, String[] parts) {
+    private void laddersGUI(InventoryClickEvent e, Player p, String buttonNameMain, Module module ) {
 
         // Check if the Ranks module's loaded.
         if(!(module instanceof PrisonRanks)){
@@ -1674,34 +1694,49 @@ public class ListenersPrisonManager implements Listener {
             return;
         }
 
-        if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
-
-            // Open a new SpigotLadders GUI page.
-            SpigotLaddersGUI gui = new SpigotLaddersGUI(p, Integer.parseInt(parts[1]));
-            p.closeInventory();
-            gui.open();
-            return;
-        }
+//        if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
+//
+//            // Open a new SpigotLadders GUI page.
+//            SpigotLaddersGUI gui = new SpigotLaddersGUI(p, Integer.parseInt(parts[1]), 1);
+//            p.closeInventory();
+//            gui.open();
+//            return;
+//        }
 
         // Get the ladder by the name of the button got before.
-        ladder = Optional.of(PrisonRanks.getInstance().getLadderManager().getLadder(buttonNameMain));
+        RankLadder rLadder = PrisonRanks.getInstance().getLadderManager().getLadder(buttonNameMain);
+        
+        if ( rLadder == null ) {
+        	// Do nothing since it's not a valid ladder name:
+        	return;
+        }
+//        ladder = rLadder;
 
         // When the player click an item with shift and right click, e.isShiftClick should be enough but i want
         // to be sure's a right click.
         if (e.isShiftClick() && e.isRightClick()) {
-
-            // Execute the command
-            Bukkit.dispatchCommand(p, "ranks ladder delete " + buttonNameMain);
-            e.setCancelled(true);
-            p.closeInventory();
-            SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 0);
-            gui.open();
-            return;
+        	
+        	if ( rLadder.getRanks().size() > 0 ) {
+        		
+        		SpigotPlayer sPlayer = new SpigotPlayer( p );
+        		sPlayer.setActionBar( "Cannot delete a non-empty ladder" );
+        	}
+        	else {
+        		
+        		// Execute the command
+        		Bukkit.dispatchCommand(p, "ranks ladder delete " + buttonNameMain);
+        		e.setCancelled(true);
+        		p.closeInventory();
+        		SpigotLaddersGUI gui = new SpigotLaddersGUI(p, 1, "gui ladders", "gui" );
+        		gui.open();
+        		return;
+        	}
 
         }
 
         // Open the GUI of ranks.
-        SpigotRanksGUI gui = new SpigotRanksGUI(p, ladder, 0);
+        String cmdPage = "gui admin ranks " + rLadder.getName();
+        SpigotRanksGUI gui = new SpigotRanksGUI( p, rLadder, 1, cmdPage, "gui" );
         gui.open();
 
         // Cancel the event.
@@ -1710,14 +1745,14 @@ public class ListenersPrisonManager implements Listener {
 
     private void ranksGUI(InventoryClickEvent e, Player p, String buttonNameMain, String[] parts) {
 
-        if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
-
-            // Open a new SpigotLadders GUI page.
-            SpigotRanksGUI gui = new SpigotRanksGUI(p, ladder, Integer.parseInt(parts[1]));
-            p.closeInventory();
-            gui.open();
-            return;
-        }
+//        if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
+//
+//            // Open a new SpigotLadders GUI page.
+//            SpigotRanksGUI gui = new SpigotRanksGUI(p, ladder, Integer.parseInt(parts[1]));
+//            p.closeInventory();
+//            gui.open();
+//            return;
+//        }
 
         // Get the rank.
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(buttonNameMain);
@@ -1731,11 +1766,13 @@ public class ListenersPrisonManager implements Listener {
         // Check clicks.
         if (e.isShiftClick() && e.isRightClick()) {
 
+        	RankLadder rLadder = rank.getLadder();
+        	
             // Execute the command.
             Bukkit.dispatchCommand(p, "ranks delete " + buttonNameMain);
             e.setCancelled(true);
             p.closeInventory();
-            SpigotRanksGUI gui = new SpigotRanksGUI(p, ladder, 0);
+            SpigotRanksGUI gui = new SpigotRanksGUI( p, rLadder, 1, "gui admin ranks", "gui" );
             gui.open();
             return;
 
@@ -1827,7 +1864,10 @@ public class ListenersPrisonManager implements Listener {
             // Check and open a GUI.
             if(rank != null) {
                 RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( new SpigotPlayer(p) );
-                PlayerRank pRank = rankPlayer.getRank( rank.getLadder() );
+                
+                RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+                
+                PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, rank.getLadder() );
                 
                 SpigotRankPriceGUI gui = new SpigotRankPriceGUI(p, pRank.getRankCost().intValue(), rank.getName());
                 gui.open();
@@ -1837,8 +1877,8 @@ public class ListenersPrisonManager implements Listener {
         } else if (buttonName.equalsIgnoreCase("RankTag")){
 
             // Send messages to the player.
-            Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.rankTagRename"));
-            Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.rankTagRenameClose"));
+            Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_ranks_tag_chat_rename_1));
+            Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_ranks_tag_chat_rename_2));
             // Start the async task.
             tempChatVariable = rankName;
             chatInteractData(p, ChatMode.RankName);
@@ -1852,7 +1892,7 @@ public class ListenersPrisonManager implements Listener {
     private void playerRanksGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         // Check the buttonName and do the actions.
-        if (buttonNameMain.equals(SpigotPrison.format(messages.getString("Lore.Rankup").substring(2)))){
+        if (buttonNameMain.equals(SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup).substring(2)))){
             Bukkit.dispatchCommand(p, "rankup " + guiConfig.getString("Options.Ranks.Ladder"));
             p.closeInventory();
         }
@@ -1986,14 +2026,14 @@ public class ListenersPrisonManager implements Listener {
 
     private void minesGUI(InventoryClickEvent e, Player p, String buttonNameMain, String[] parts) {
 
-        if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
-
-            // Open a new SpigotLadders GUI page.
-            SpigotMinesGUI gui = new SpigotMinesGUI(p, Integer.parseInt(parts[1]));
-            p.closeInventory();
-            gui.open();
-            return;
-        }
+//        if (parts[0].equalsIgnoreCase("Next") || parts[0].equalsIgnoreCase("Prior")){
+//
+//            // Open a new SpigotLadders GUI page.
+//            SpigotMinesGUI gui = new SpigotMinesGUI(p, Integer.parseInt(parts[1]));
+//            p.closeInventory();
+//            gui.open();
+//            return;
+//        }
 
         // Variables.
         PrisonMines pMines = PrisonMines.getInstance();
@@ -2036,10 +2076,22 @@ public class ListenersPrisonManager implements Listener {
         	// Confirm the player has access to the mine before trying to TP them there:
         	Mine mine = PrisonMines.getInstance().getMine( mineName );
         	SpigotPlayer spigotPlayer = new SpigotPlayer(p);
-        	if (mine.hasMiningAccess(spigotPlayer) || p.hasPermission(permission + mineName) || 
-        						p.hasPermission(permission.substring(0, permission.length() - 1))) {
-        		Bukkit.dispatchCommand(p, SpigotPrison.format(guiConfig.getString("Options.Mines.CommandWarpPlugin") + " " + mineName));
-        	}
+            boolean errorHasMiningPermission = false;
+            boolean hasMiningPermission = false;
+
+            try {
+                hasMiningPermission = mine.hasMiningAccess(spigotPlayer);
+            } catch (NullPointerException ex){
+                errorHasMiningPermission = true;
+            }
+
+            if (errorHasMiningPermission && (p.hasPermission(permission + mineName) ||
+                    p.hasPermission(permission.substring(0, permission.length() - 1)))){
+                Bukkit.dispatchCommand(p, SpigotPrison.format(guiConfig.getString("Options.Mines.CommandWarpPlugin") + " " + mineName));
+            } else if (hasMiningPermission || p.hasPermission(permission + mineName) ||
+                    p.hasPermission(permission.substring(0, permission.length() - 1))){
+                Bukkit.dispatchCommand(p, SpigotPrison.format(guiConfig.getString("Options.Mines.CommandWarpPlugin") + " " + mineName));
+            }
         }
     }
 
@@ -2125,8 +2177,8 @@ public class ListenersPrisonManager implements Listener {
             case "Mine_Name:": {
 
                 // Send messages to the player
-                Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.mineNameRename"));
-                Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.mineNameRenameClose"));
+                Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_mines_name_chat_1));
+                Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_mines_name_chat_2));
 
                 // Start the async task
                 tempChatVariable = mineName;
@@ -2355,7 +2407,7 @@ public class ListenersPrisonManager implements Listener {
             typeNotification = "within";
 
             // Execute command
-            Bukkit.dispatchCommand(p, "mines set notification " + mineName + " " + typeNotification + " " + "0");
+            Bukkit.dispatchCommand(p, "mines set notification " + mineName + " " + typeNotification + " 0");
 
             // Cancel the event and close the inventory
             e.setCancelled(true);
@@ -2381,7 +2433,7 @@ public class ListenersPrisonManager implements Listener {
             typeNotification = "disabled";
 
             // Execute the command
-            Bukkit.dispatchCommand(p, "mines set notification " + mineName + " " + typeNotification + " " + "0");
+            Bukkit.dispatchCommand(p, "mines set notification " + mineName + " " + typeNotification + " 0");
 
             // Cancel the event and close the inventory
             e.setCancelled(true);
@@ -2531,8 +2583,8 @@ public class ListenersPrisonManager implements Listener {
                 saveConfigAutoFeatures(e, p);
             }
 
-            if (buttonName.equalsIgnoreCase("Full-Inventory-Hologram")){
-                afConfig.setFeature(AutoFeatures.hologramIfInventoryIsFull, !enabled);
+            if (buttonName.equalsIgnoreCase("Full-Inventory-ActionBar")){
+                afConfig.setFeature(AutoFeatures.actionBarMessageIfInventoryIsFull, !enabled);
                 saveConfigAutoFeatures(e,p);
             }
 
@@ -2813,7 +2865,7 @@ public class ListenersPrisonManager implements Listener {
         // Check message and do the action
     	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall set currency" );
         if (message.equalsIgnoreCase("cancel")){
-            Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.SellAllCurrencyEditCancelled"));
+            Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_event_cancelled));
         } else if (message.equalsIgnoreCase("default")){
             Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, registeredCmd + " default"));
         } else {
@@ -2830,11 +2882,11 @@ public class ListenersPrisonManager implements Listener {
 
         // Check the chat message and do the actions
         if (message.equalsIgnoreCase("cancel")) {
-            Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.PrestigeCancelled"));
+            Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_prestiges_cancelled));
         } else if (message.equalsIgnoreCase("confirm")) {
             Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "rankup prestiges"));
         } else {
-            Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.PrestigeCancelledWrongKeyword"));
+            Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_prestiges_cancelled_wrong_keyword));
         }
         // Cancel the event
         e.setCancelled(true);
@@ -2846,7 +2898,7 @@ public class ListenersPrisonManager implements Listener {
 
         // Check the chat message and do the action
         if (message.equalsIgnoreCase("close")) {
-            Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.mineNameRenameClosed"));
+            Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_mines_name_chat_cancelled));
         } else {
             Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "mines rename " + tempChatVariable + " " + message));
         }
@@ -2858,7 +2910,7 @@ public class ListenersPrisonManager implements Listener {
     private void rankAction(AsyncPlayerChatEvent e, Player p, String message) {
         // Check the chat message and do the action
         if (message.equalsIgnoreCase("close")) {
-            Output.get().sendInfo(new SpigotPlayer(p), messages.getString("Message.rankTagRenameClosed"));
+            Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_ranks_tag_chat_cancelled));
         } else {
             Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "ranks set tag " + tempChatVariable + " " + message));
         }

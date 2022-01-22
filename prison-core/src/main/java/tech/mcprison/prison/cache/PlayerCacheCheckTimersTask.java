@@ -1,6 +1,8 @@
 package tech.mcprison.prison.cache;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -37,27 +39,68 @@ public class PlayerCacheCheckTimersTask
 	extends PlayerCacheRunnable
 {
 
+	private HashSet<String> processedKeys;
+	private int attempts = 0;
+	
+	public PlayerCacheCheckTimersTask() {
+		super();
+		
+		this.processedKeys = new HashSet<>(); 
+	}
+	
 	@Override
 	public void run()
 	{
 	
+		// Everytime this runs, clear the processed keys set:
+		processedKeys.clear();
+		attempts = 0;
+		
+		processCache();
+		
+	}
+	private void processCache() {
 		PlayerCache pCache = PlayerCache.getInstance();
 		
-		List<String> keys = new ArrayList<>( pCache.getPlayers().keySet() );
-		
-		for ( String key : keys )
-		{
-			PlayerCachePlayerData playerData = pCache.getPlayers().get( key );
+		if ( pCache.getPlayers() != null && pCache.getPlayers().keySet().size() > 0 ) {
 			
-			if ( playerData != null ) {
+			try
+			{
+				List<String> keys = new ArrayList<>( pCache.getPlayers().keySet() );
 				
-				playerData.checkTimers();
-				
-				// By adding a zero earnings, this will force the earnings "cache" to 
-				// progress, even if the player stopped mining.
-				playerData.addEarnings( 0 );
+				for ( String key : keys )
+				{
+					if ( processedKeys.contains( key ) ) {
+						// Already processed this key so skip it:
+						break;
+					}
+					processedKeys.add( key );
+					
+					
+					PlayerCachePlayerData playerData = pCache.getPlayers().get( key );
+					
+					if ( playerData != null ) {
+						
+						playerData.checkTimers();
+						
+						// By adding a zero earnings, this will force the earnings "cache" to 
+						// progress, even if the player stopped mining.
+						playerData.addEarnings( 0, null );
+					}
+					
+				}
 			}
-			
+			catch ( ConcurrentModificationException e )
+			{
+				// We can ignore this overall.  It is a very rare occurrence which happens when
+				// a player is added or removed from an external process.  Since this is a maintenance 
+				// thread, it takes on a secondary priority.
+				
+				// Try to process the list three times then give up:
+				if ( attempts++ < 3 ) {
+					processCache();
+				}
+			}
 		}
 	
 	}

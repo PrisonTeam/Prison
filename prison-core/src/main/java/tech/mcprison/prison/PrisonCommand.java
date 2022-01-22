@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -55,6 +56,7 @@ import tech.mcprison.prison.troubleshoot.TroubleshootResult;
 import tech.mcprison.prison.troubleshoot.Troubleshooter;
 import tech.mcprison.prison.util.JumboTextFont;
 import tech.mcprison.prison.util.PrisonJarReporter;
+import tech.mcprison.prison.util.Text;
 
 /**
  * Root commands for managing the platform as a whole, in-game.
@@ -345,21 +347,31 @@ public class PrisonCommand
         if ( getRegisteredPlugins().size() > 0 ) {
         	display.addText("");
         	display.addText( "&7Registered Plugins: " );
-        	StringBuilder sb = new StringBuilder();
-        	for ( String plugin : getRegisteredPlugins() ) {
-        		if ( sb.length() == 0) {
-        			sb.append( ". " );
-        			sb.append( plugin );
-        		} else {
-        			sb.append( ",  " );
-        			sb.append( plugin );
-        			display.addText( sb.toString() );
-        			sb.setLength( 0 );
-        		}
-        	}
-        	if ( sb.length() > 0 ) {
-        		display.addText( sb.toString());
-        	}
+        	
+        	List<String> plugins = getRegisteredPlugins();
+        	Collections.sort( plugins );
+        	List<String> plugins2Cols = Text.formatColumnsFromList( plugins, 2 );
+        	
+        	for ( String rp : plugins2Cols ) {
+				
+        		display.addText( rp );
+			}
+        	
+//        	StringBuilder sb = new StringBuilder();
+//        	for ( String plugin : getRegisteredPlugins() ) {
+//        		if ( sb.length() == 0) {
+//        			sb.append( ". " );
+//        			sb.append( plugin );
+//        		} else {
+//        			sb.append( ",  " );
+//        			sb.append( plugin );
+//        			display.addText( sb.toString() );
+//        			sb.setLength( 0 );
+//        		}
+//        	}
+//        	if ( sb.length() > 0 ) {
+//        		display.addText( sb.toString());
+//        	}
         }
         
         // This version of plugins does not have all the registered commands:
@@ -882,92 +894,96 @@ public class PrisonCommand
     			afw.isBoolean( AutoFeatures.isAutoManagerEnabled ));
     	
     	
-    	
-    	
-    	display.addText( "&b " );
-    	display.addText( "&b    options.blockBreakEvents.isProcessTokensEnchantExplosiveEvents:  %s", 
-    			afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents ) );
-    	display.addText( "&b    options.blockBreakEvents.TokenEnchantBlockExplodeEventPriority:  %s", 
-    			afw.getMessage( AutoFeatures.isProcessTokensEnchantExplosiveEvents ) );
-    	
-    	display.addText( "&b    options.blockBreakEvents.isProcessCrazyEnchantsBlockExplodeEvents:  %s", 
-    			afw.isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents ) );
-    	display.addText( "&b    options.blockBreakEvents.CrazyEnchantsBlastUseEventPriority:  %s", 
-    			afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority ) );
-    	
-    	display.addText( "&b    options.blockBreakEvents.isProcessZenchantsBlockExplodeEvents:  %s", 
-    			afw.isBoolean( AutoFeatures.isProcessZenchantsBlockExplodeEvents ) );
-    	display.addText( "&b    options.blockBreakEvents.ZenchantmentsBlockShredEventPriority:  %s", 
-    			afw.getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority ) );
-    	
-    	display.addText( "&b    options.blockBreakEvents.isProcessPrisonEnchantsExplosiveEvents:  %s", 
-    			afw.isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents ) );
-    	display.addText( "&b    options.blockBreakEvents.PrisonEnchantsExplosiveEventPriority:  %s", 
-    			afw.getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority ) );
-    	
-    	
-    	display.addText( "&b " );
-    	display.addText( "&b  Normal Drops (if auto pickup is off):" );
-    	display.addText( "&b    options.normalDrop.isProcessNormalDropsEvents:  %s", 
-    			afw.isBoolean( AutoFeatures.handleNormalDropsEvents ) );
-    	
-    	display.addText( "&b " );
-    	display.addText( "&7  NOTE: If this is enabled, then lore and perms will override the settings for " );
-    	display.addText( "&7        pickup, smelt, and block when they are turned off." );
-    	
-    	
-    	display.addText( "&b " );
-	
-    	
-    	display.addText( "&b   options.autoPickup.autoPickupEnabled %s", 
-    									afw.isBoolean( AutoFeatures.autoPickupEnabled ));
-    	
-    	display.addText( "&b   options.autoSmelt.autoSmeltEnabled %s", 
-    									afw.isBoolean( AutoFeatures.autoSmeltEnabled ));
-    	display.addText( "&b   options.autoBlock.autoBlockEnabled %s", 
-    									afw.isBoolean( AutoFeatures.autoBlockEnabled ));
-    	
-    	
-
-    	display.addText( "&b " );
-    	display.addText( "&b   options.general.isCalculateDurabilityEnabled %s", 
-    									afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled ));
-    	display.addText( "&b   options.general.isCalculateFortuneEnabled %s", 
-    									afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled ));
-    	display.addText( "&b   options.general.isCalculateAltFortuneOnAllBlocksEnabled %s", 
-    									afw.isBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled ));
-    	display.addText( "&b   options.general.isCalculateXPEnabled %s", 
-    									afw.isBoolean( AutoFeatures.isCalculateXPEnabled ));
-    	display.addText( "&b   options.general.givePlayerXPAsOrbDrops %s", 
-    									afw.isBoolean( AutoFeatures.givePlayerXPAsOrbDrops ));
-    	display.addText( "&b   options.general.fortuneMultiplierMax %s", 
-    									afw.getMessage( AutoFeatures.fortuneMultiplierMax ));
-
-    	display.addText( "&b " );
-    	display.addText( "&b   options.isProcessTokensEnchantExplosiveEvents %s", 
-    									afw.isBoolean( AutoFeatures.isProcessTokensEnchantExplosiveEvents ));
-    	display.addText( "&b   options.isProcessCrazyEnchantsBlockExplodeEvents %s", 
-    									afw.isBoolean( AutoFeatures.isProcessCrazyEnchantsBlockExplodeEvents ));
-    	display.addText( "&b   options.isProcessMcMMOBlockBreakEvents %s", 
-    									afw.isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents ));
-    	display.addText( "&b " );
-    	
-    	
-    	display.addText( "&b " );
-    	display.addText( "&b   options.lore.isLoreEnabled %s", 
-										afw.isBoolean( AutoFeatures.isLoreEnabled ));
-    	display.addText( "&b   options.lore.loreTrackBlockBreakCount %s", 
-    									afw.isBoolean( AutoFeatures.loreTrackBlockBreakCount ));
-    	display.addText( "&b   options.lore.loreBlockBreakCountName %s", 
-    									afw.getMessage( AutoFeatures.loreBlockBreakCountName ));
-    	
-    	display.addText( "&b   options.lore.loreBlockExplosionCountName %s", 
-    									afw.getMessage( AutoFeatures.loreBlockExplosionCountName ));
-    	display.addText( "&b   options.lore.loreDurabiltyResistance %s", 
-    									afw.isBoolean( AutoFeatures.loreDurabiltyResistance ));
-    	display.addText( "&b   options.lore.loreDurabiltyResistanceName %s", 
-    									afw.getMessage( AutoFeatures.loreDurabiltyResistanceName ));
-    	display.addText( "&b " );
+    	if ( afw.isBoolean( AutoFeatures.isAutoManagerEnabled ) ) {
+    		
+    		
+    		display.addText( "&b " );
+    		display.addText( "&b    options.blockBreakEvents.applyBlockBreaksThroughSyncTask:  %s", 
+    				afw.getMessage( AutoFeatures.applyBlockBreaksThroughSyncTask ) );
+    		
+    		display.addText( "&b    options.blockBreakEvents.cancelAllBlockBreakEvents:  %s", 
+    				afw.getMessage( AutoFeatures.cancelAllBlockBreakEvents ) );
+    		
+    		display.addText( "&b    options.blockBreakEvents.cancelAllBlockEventBlockDrops:  %s", 
+    				afw.getMessage( AutoFeatures.cancelAllBlockEventBlockDrops ) );
+    		
+    		
+    		display.addText( "&b    options.blockBreakEvents.TokenEnchantBlockExplodeEventPriority:  %s", 
+    				afw.getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority ) );
+    		
+    		display.addText( "&b    options.blockBreakEvents.CrazyEnchantsBlastUseEventPriority:  %s", 
+    				afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority ) );
+    		
+    		display.addText( "&b    options.blockBreakEvents.ZenchantmentsBlockShredEventPriority:  %s", 
+    				afw.getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority ) );
+    		
+    		display.addText( "&b    options.blockBreakEvents.PrisonEnchantsExplosiveEventPriority:  %s", 
+    				afw.getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority ) );
+    		
+    		display.addText( "&b    options.blockBreakEvents.ProcessPrisons_ExplosiveBlockBreakEventsPriority:  %s", 
+    				afw.getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority ) );
+    		
+    		
+    		
+    		display.addText( "&b " );
+    		display.addText( "&b  Normal Drops (if auto pickup is off):" );
+    		display.addText( "&b    options.normalDrop.isProcessNormalDropsEvents:  %s", 
+    				afw.isBoolean( AutoFeatures.handleNormalDropsEvents ) );
+    		
+    		display.addText( "&b " );
+    		display.addText( "&7  NOTE: If this is enabled, then lore and perms will override the settings for " );
+    		display.addText( "&7        pickup, smelt, and block when they are turned off." );
+    		
+    		
+    		display.addText( "&b " );
+    		
+    		
+    		display.addText( "&b   options.autoPickup.autoPickupEnabled %s", 
+    				afw.isBoolean( AutoFeatures.autoPickupEnabled ));
+    		
+    		display.addText( "&b   options.autoSmelt.autoSmeltEnabled %s", 
+    				afw.isBoolean( AutoFeatures.autoSmeltEnabled ));
+    		display.addText( "&b   options.autoBlock.autoBlockEnabled %s", 
+    				afw.isBoolean( AutoFeatures.autoBlockEnabled ));
+    		
+    		
+    		
+    		display.addText( "&b " );
+    		display.addText( "&b   options.general.isCalculateDurabilityEnabled %s", 
+    				afw.isBoolean( AutoFeatures.isCalculateDurabilityEnabled ));
+    		display.addText( "&b   options.general.isCalculateFortuneEnabled %s", 
+    				afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled ));
+    		display.addText( "&b   options.general.isCalculateAltFortuneOnAllBlocksEnabled %s", 
+    				afw.isBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled ));
+    		display.addText( "&b   options.general.isCalculateXPEnabled %s", 
+    				afw.isBoolean( AutoFeatures.isCalculateXPEnabled ));
+    		display.addText( "&b   options.general.givePlayerXPAsOrbDrops %s", 
+    				afw.isBoolean( AutoFeatures.givePlayerXPAsOrbDrops ));
+    		display.addText( "&b   options.general.fortuneMultiplierMax %s", 
+    				afw.getMessage( AutoFeatures.fortuneMultiplierMax ));
+    		
+    		display.addText( "&b " );
+    		display.addText( "&b   options.isProcessMcMMOBlockBreakEvents %s", 
+    				afw.isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents ));
+    		display.addText( "&b " );
+    		
+    		
+    		display.addText( "&b " );
+    		display.addText( "&b   options.lore.isLoreEnabled %s", 
+    				afw.isBoolean( AutoFeatures.isLoreEnabled ));
+    		display.addText( "&b   options.lore.loreTrackBlockBreakCount %s", 
+    				afw.isBoolean( AutoFeatures.loreTrackBlockBreakCount ));
+    		display.addText( "&b   options.lore.loreBlockBreakCountName %s", 
+    				afw.getMessage( AutoFeatures.loreBlockBreakCountName ));
+    		
+    		display.addText( "&b   options.lore.loreBlockExplosionCountName %s", 
+    				afw.getMessage( AutoFeatures.loreBlockExplosionCountName ));
+    		display.addText( "&b   options.lore.loreDurabiltyResistance %s", 
+    				afw.isBoolean( AutoFeatures.loreDurabiltyResistance ));
+    		display.addText( "&b   options.lore.loreDurabiltyResistanceName %s", 
+    				afw.getMessage( AutoFeatures.loreDurabiltyResistanceName ));
+    		display.addText( "&b " );
+    	}
     	
     	
     	
@@ -990,10 +1006,12 @@ public class PrisonCommand
     		@Wildcard(join=true)
     		@Arg(name = "targets", def = " ",
     				description = "Optional. Enable or disable a debugging target. " +
-    					"[on, off, targets, jarScan, " +
-    					"testPlayerUtil, testLocale, rankup] " +
+    					"[on, off, targets, selective, jarScan, " +
+    					"testPlayerUtil, testLocale, rankup ] " +
     				"Use 'targets' to list all available targets.  Use 'on' or 'off' to toggle " +
-    				"on and off individual targets, or all targets if no target is specified.  " +
+    				"on and off individual targets, or 'all' targets if no target is specified. " +
+    				"If any targets are enabled, then debug in general will be enabled. Selective will only " +
+    				"activate debug with the specified targets. " +
     				"jarScan will identify what Java version compiled the class files within the listed jars"
     						) String targets ) {
     	
@@ -1022,7 +1040,7 @@ public class PrisonCommand
     		return;
     	}
     	
-    	
+    	// Applies normal and selective targets:
     	Output.get().applyDebugTargets( targets );
     	
     	String message = "Global Debug Logging is " + (Output.get().isDebug() ? "enabled" : "disabled");
@@ -1039,6 +1057,19 @@ public class PrisonCommand
     			message = String.format( ". . Target: %s", target.name() );
     			sender.sendMessage( message );
 			}
+    	}
+    	
+    	Set<DebugTarget> selectiveDebugTargets = Output.get().getSelectiveDebugTargets();
+    	
+    	if ( selectiveDebugTargets.size() > 0 ) {
+    		message = ". Selective Debug Targets:";
+    		sender.sendMessage( message );
+    		
+    		for ( DebugTarget target : selectiveDebugTargets )
+    		{
+    			message = String.format( ". . Target: %s", target.name() );
+    			sender.sendMessage( message );
+    		}
     	}
     	
     	String validTargets = Output.get().getDebugTargetsString();
@@ -1260,7 +1291,7 @@ public class PrisonCommand
     	
     	
     	List<File> files = listFiles( "data_storage/mines/mines/", ".json" );
-    	
+    	Collections.sort( files );
     	
     	StringBuilder text = new StringBuilder();
     	
@@ -1473,7 +1504,7 @@ public class PrisonCommand
 			description = "Provides a detailed list of all registered event listeners for" +
 					"the various event types.  BlockBreak listeners will include all " +
 					"listeners that are being monitored within auto features. " +
-				"[blockBreak, traceBlockBreak, chat]"
+				"[blockBreak, traceBlockBreak, chat, playerInteract]"
 					) String listener
     		) {
 		
@@ -1502,6 +1533,11 @@ public class PrisonCommand
     		return;
     	}
     	
+    	if ( "playerInteract".equalsIgnoreCase( listener ) ) {
+    		
+    		results = Prison.get().getPlatform().dumpEventListenersPlayerInteractEvents();
+    	}
+    	
 		if ( results != null ) {
 
 			for ( String line : results.split( "\n" ) ) {
@@ -1512,6 +1548,240 @@ public class PrisonCommand
 
 	} 
     
+	
+    @Command(identifier = "prison tokens balance", 
+    		description = "Prison tokens: a player's current balance.", 
+    		// aliases = "tokens bal",
+    		permissions = "tokens.bal",
+    		altPermissions = "tokens.bal.others" )
+    public void tokensBalance(CommandSender sender,
+ 		@Arg(name = "player", def = "", description = "Player to get token balance for. " +
+				"If player is online this is not required for their own balance. " +
+				"This is needed if used from console or to get the balance of " +
+				"another player.") String playerName
+    		) {
+    	
+    	Player player = getPlayer( sender );
+    	
+    	// If player is null, then need to use the playerName, so if it's empty, we have a problem:
+    	if ( ( player == null || !player.isOnline() ) && 
+    			( playerName == null || playerName.isEmpty() ) ) {
+    		
+    		String message = "Prison Tokens: A player's name is required when used from console.";
+    		
+    		Output.get().logWarn( message );
+    		return;
+    	}
+    	else 
+    	if ( playerName != null && !playerName.isEmpty() ){
+    		
+    		if ( !sender.isOp() &&  
+    				!sender.hasPermission( "tokens.bal.others" ) ) {
+    			String message = "Prison Tokens: You do not have permission to view other " +
+    					"player's balances.";
+    			Output.get().logWarn( message );
+    			return;
+    		}
+    		
+    		Player tempPlayer = getPlayer( playerName );
+    		
+    		if ( tempPlayer != null ) {
+    			player = tempPlayer;
+    		}
+    	}
+    	
+    	
+//    	player.getPlayerCache()
+    	
+    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+
+    	long tokens = player.getPlayerCachePlayerData().getTokens();
+    	
+    	String tokensMsg = dFmt.format( tokens );
+    	
+    	String message = String.format( "&3%s has %s tokens.", player.getName(), tokensMsg );
+    	
+    	sender.sendMessage( message );
+    }
+    
+    @Command(identifier = "prison tokens add", 
+    		description = "Prison tokens Admin: an admins tool to give more tokens to a player", 
+    		permissions = "tokens.admin.add" )
+    public void tokensAdd( CommandSender sender,
+    		@Arg(name = "player", 
+    		description = "Player to add the tokens to.") String playerName,
+    		
+    		@Arg(name = "amount", verifiers = "min[1]",
+    		description = "The number of tokens to add to the player's account.") long amount
+    		) {
+    	
+    	if ( playerName == null || playerName.isEmpty() ) {
+    		
+    		String message = "Prison Tokens: A player's name is required.";
+    		Output.get().logWarn( message );
+    		return;
+    	}
+
+    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+    	
+    	if ( amount <= 0 ) {
+    		
+    		String message = 
+    				String.format( 
+	    				"Prison Tokens: Invalid amount: '%s'. Must be greater than zero.",
+	    				dFmt.format( amount ) );
+    		Output.get().logWarn( message );
+    		return;
+    	}
+    	
+    	Player player = getPlayer( playerName );
+    	
+    	player.getPlayerCachePlayerData().addTokensAdmin( amount );
+    	
+    	
+    	
+    	String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
+    	
+    	String message = String.format( "&3%s now has &7%s &3tokens after adding &7%s&3.", 
+    				player.getName(),  tokens, dFmt.format( amount ) );
+    	
+    	// The person adding the tokens, or console:
+    	sender.sendMessage( message );
+    	
+    	// The player getting the tokens, if they are online:
+    	if ( player.isOnline() && !player.getName().equalsIgnoreCase( sender.getName() ) ) {
+    		
+    		player.sendMessage( message );
+    	}
+    }
+    
+    @Command(identifier = "prison tokens remove", 
+    		description = "Prison tokens Admin: an admins tool to remove tokens from a player. " +
+    				"It is possible to remove more tokens than what the player has, which can " +
+    				"be treated like a debt.", 
+    		permissions = "tokens.admin.add" )
+    public void tokensRemove( CommandSender sender,
+    		@Arg(name = "player", 
+    		description = "Player to remove the tokens from.") String playerName,
+    		
+    		@Arg(name = "amount", verifiers = "min[1]",
+    		description = "The number of tokens to remove from the player's account. " +
+    				"This amount must be positive. ") long amount
+    		) {
+    	
+    	if ( playerName == null || playerName.isEmpty() ) {
+    		
+    		String message = "Prison Tokens: A player's name is required.";
+    		Output.get().logWarn( message );
+    		return;
+    	}
+    	
+    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+    	
+    	if ( amount <= 0 ) {
+    		
+    		String message = 
+    				String.format( 
+    						"Prison Tokens: Invalid amount: '%s'. Must be greater than zero.",
+    						dFmt.format( amount ) );
+    		Output.get().logWarn( message );
+    		return;
+    	}
+    	
+    	Player player = getPlayer( playerName );
+    	
+    	player.getPlayerCachePlayerData().removeTokensAdmin( amount );
+    	
+    	
+    	
+    	String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
+    	
+    	String message = String.format( "&3%s now has &7%s &3tokens after removing &7%s&3.", 
+    			player.getName(),  tokens, dFmt.format( amount ) );
+    	
+    	// The person adding the tokens, or console:
+    	sender.sendMessage( message );
+    	
+    	// The player getting the tokens, if they are online:
+    	if ( player.isOnline() && !player.getName().equalsIgnoreCase( sender.getName() ) ) {
+    		
+    		player.sendMessage( message );
+    	}
+    }
+    
+    @Command(identifier = "prison tokens set", 
+    		description = "Prison tokens Admin: an admins tool to set number of tokens " +
+    				"for a player to a specific amount. " +
+    				"It is possible to set the tokens to a negavtie amount, which can " +
+    				"be treated like a debt.", 
+    				permissions = "tokens.admin.add" )
+    public void tokensSet( CommandSender sender,
+    		@Arg(name = "player", 
+    		description = "Player to remove the tokens from.") String playerName,
+    		
+    		@Arg(name = "amount", 
+    		description = "The number of tokens to set the player's account to. " +
+    				"This amount must amount can be negative. ") long amount
+    		) {
+    	
+    	if ( playerName == null || playerName.isEmpty() ) {
+    		
+    		String message = "Prison Tokens: A player's name is required.";
+    		Output.get().logWarn( message );
+    		return;
+    	}
+    	
+    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+    	
+    	Player player = getPlayer( playerName );
+
+//    	// Set to zero:
+//    	long totalTokens = player.getPlayerCachePlayerData().getTokens();
+//    	player.getPlayerCachePlayerData().removeTokensAdmin( totalTokens );
+    	
+    	
+    	player.getPlayerCachePlayerData().setTokensAdmin( amount );
+    	
+    	
+    	String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
+    	
+    	String message = String.format( "&3%s now has &7%s &3tokens.", 
+    			player.getName(), tokens );
+    	
+    	// The person adding the tokens, or console:
+    	sender.sendMessage( message );
+    	
+    	// The player getting the tokens, if they are online:
+    	if ( player.isOnline() && !player.getName().equalsIgnoreCase( sender.getName() ) ) {
+    		
+    		player.sendMessage( message );
+    	}
+    }
+    
+    
+
+    /**
+     * <p>This function tries to first get the online player, otherwise it 
+     * gets an offline player.  Hopefully it always returns a player if the
+     * have been on the server before.
+     * </p>
+     * 
+     * @param playerName
+     * @return
+     */
+	private Player getPlayer( String playerName ) {
+		Player player = null;
+		if ( playerName != null && !playerName.trim().isEmpty() ) {
+			
+			player = Prison.get().getPlatform().getPlayer( playerName ).orElse( null );
+		}
+		if ( player == null ) {
+			
+			player = Prison.get().getPlatform().getOfflinePlayer( playerName ).orElse( null );
+		}
+		return player;
+	}
+	
     
 // This functionality should not be available in v3.2.1!  If someone is still running Prison 2.x.x 
 //							    then they must first upgrade to

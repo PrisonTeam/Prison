@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
@@ -19,10 +20,10 @@ public class BackpacksAdminListGUI extends SpigotGUIComponents {
     private final Player p;
     private final String playerBackpackName;
     private final Configuration backpacksData = BackpacksUtil.get().getBackpacksData();
-    private final String loreShiftAndRightClickToDelete = messages.getString("Lore.ShiftAndRightClickToDelete");
-    private final String loreInfo = messages.getString("Lore.Info");
-    private final String lorePlayerOwner = messages.getString("Lore.PlayerOwner");
-    private final String loreBackpackID = messages.getString("Lore.BackpackID");
+    private final String loreShiftAndRightClickToDelete = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete);
+    private final String loreInfo = messages.getString(MessagesConfig.StringID.spigot_gui_lore_info);
+    private final String lorePlayerOwner = messages.getString(MessagesConfig.StringID.spigot_gui_lore_owner);
+    private final String loreBackpackID = messages.getString(MessagesConfig.StringID.spigot_gui_lore_backpack_id);
 
     public BackpacksAdminListGUI(Player p, String playerBackpackName){
         this.p = p;
@@ -32,7 +33,7 @@ public class BackpacksAdminListGUI extends SpigotGUIComponents {
     public void open(){
 
         int dimension = 54;
-        PrisonGUI gui = new PrisonGUI(p, dimension, "&3" + "Backpacks-Admin-List");
+        PrisonGUI gui = new PrisonGUI(p, dimension, "&3Backpacks-Admin-List");
 
         Set<String> playerUUID = backpacksData.getConfigurationSection("Inventories").getKeys(false);
 
@@ -59,10 +60,10 @@ public class BackpacksAdminListGUI extends SpigotGUIComponents {
 
                             ButtonLore backpacksLore = new ButtonLore(createLore(loreShiftAndRightClickToDelete), createLore(
                                     loreInfo,
-                                    lorePlayerOwner + name,
-                                    loreBackpackID + id));
+                                    lorePlayerOwner + " " + name,
+                                    loreBackpackID + " " + id));
 
-                            gui.addButton(new Button(backpacksFound, XMaterial.CHEST, backpacksLore, "&3" + "Backpack " + name + " " + id));
+                            gui.addButton(new Button(backpacksFound, XMaterial.CHEST, backpacksLore, "&3Backpack " + name + " " + id));
                             backpacksFound++;
                         }
                     } else {

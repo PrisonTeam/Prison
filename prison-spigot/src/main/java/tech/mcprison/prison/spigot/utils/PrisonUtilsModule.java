@@ -1,9 +1,11 @@
 package tech.mcprison.prison.spigot.utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.spigot.SpigotPrison;
 
 public class PrisonUtilsModule
 	extends Module 
@@ -112,13 +114,27 @@ public class PrisonUtilsModule
 				PrisonUtilsTitles utils = new PrisonUtilsTitles();
 				
 				utils.setEnableTitlesTitle( isEnabled( "utils.titles.title", true ) );
-				utils.setEnableTitlesSubtitle( isEnabled( "utils.titles.subtitle", true ) );
+//				utils.setEnableTitlesSubtitle( isEnabled( "utils.titles.subtitle", true ) );
 				utils.setEnableTitlesActionBar( isEnabled( "utils.titles.actionBar", true ) );
-				utils.setEnableTitlesClear( isEnabled( "utils.titles.clear", true ) );
-				utils.setEnableTitlesReset( isEnabled( "utils.titles.reset", true ) );
-				utils.setEnableTitlesTimes( isEnabled( "utils.titles.times", true ) );
+//				utils.setEnableTitlesClear( isEnabled( "utils.titles.clear", true ) );
+//				utils.setEnableTitlesReset( isEnabled( "utils.titles.reset", true ) );
+//				utils.setEnableTitlesTimes( isEnabled( "utils.titles.times", true ) );
 				
 				Prison.get().getCommandHandler().registerCommands( utils );
+				
+			}
+			
+			if ( isEnabled( "utils.bombs.enabled", true ) ) {
+				
+				PrisonUtilsMineBombs utils = new PrisonUtilsMineBombs();
+				
+				utils.setEnableMineBombs( isEnabled( "utils.bombs.bombs", true ) );
+				
+				Prison.get().getCommandHandler().registerCommands( utils );
+				
+				// Only Register the Bomb Listener if bombs are active:
+				Bukkit.getPluginManager().registerEvents(
+								new PrisonBombListener( utils ), SpigotPrison.getInstance());
 				
 			}
 			

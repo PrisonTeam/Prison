@@ -9,7 +9,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
@@ -206,11 +205,40 @@ public class PlayerCache {
 	}
 	
 	
+	/**
+	 * <p>This function will return a null if the player is not loaded in the cache.
+	 * Null is a valid value even if the player is online.
+	 * This function should NEVER be used
+	 * for any critical data such as tracking blocks, time, earnings, or inventory. 
+	 * Examples of acceptable loss would be with messaging.  Loss of a few messages is
+	 * not that critical, and actually would be a very rare situation. Example, if a 
+	 * player is mining then their cache should already be loaded so calling this function
+	 * should never find the situation where the player's cache entry does not exist.
+	 * </p>
+	 * 
+	 * <p>Since this function will fail with the return a null if the player is not loaded,
+	 * this function will not cause blocking on the runnable thread.
+	 * </p>
+	 * 
+	 * <p>If the player is not loaded, and a null is returned, then an async task
+	 * will be submitted to load it.
+	 * </p>
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public PlayerCachePlayerData getOnlinePlayer( Player player ) {
+		PlayerCachePlayerData playerData = getPlayer( player );
+				
+		return playerData;
+	}
 	
 	/**
 	 * <p>This returns the cached player object.  If they have not been loaded
-	 * yet, then this will submit the loadPlayer task, which will then result 
-	 * in this function returning a null.
+	 * yet, then this will load the player object while waiting for it.
+	 * </p>
+	 * 
+	 * <p>This used to return a null while submitting a loadPlayer task.
 	 * </p>
 	 * 
 	 * @param player
@@ -222,7 +250,8 @@ public class PlayerCache {
 		
 		getStats().incrementGetPlayers();
 		
-		String playerUuid = player.getUUID().toString();
+		String playerUuid = player == null || player.getUUID() == null ? null : 
+					player.getUUID().toString();
 		if ( !getPlayers().containsKey( playerUuid ) ) {
 			
 			// Load the player's existing balance:
@@ -244,10 +273,16 @@ public class PlayerCache {
 			playerData = getPlayers().get( playerUuid );
 		}
 		
-		if ( playerData != null && 
-				(playerData.getPlayer() == null || !playerData.getPlayer().equals( player ) ) ) {
-			playerData.setPlayer( player );
+		if ( playerData != null  ) {
+
+			if ( playerData.getPlayer() == null || !playerData.getPlayer().equals( player )  ) {
+				
+				playerData.setPlayer( player );
+			}
+			
+			playerData.updateLastSeen();
 		}
+
 		
 		return playerData;
 	}
@@ -265,18 +300,29 @@ public class PlayerCache {
 		}
 	}
 	
-	protected void runLoadPlayerNow( Player player ) {
-		
-		if ( player != null ) {
-			
-			PlayerCacheLoadPlayerTask task = new PlayerCacheLoadPlayerTask( player );
-			
-			task.run();
-//			// Submit task to run right away:
-//			int taskId = PrisonTaskSubmitter.runTaskLaterAsync( task, 0 );
-//			task.setTaskId( taskId );
-		}
-	}
+	
+//	/**
+//	 * <p>This loads the player cache object inline.  It does not run it as a 
+//	 * task in another thread.
+//	 * </p>
+//	 * 
+//	 * <p>This is not used anywhere.
+//	 * </p>
+//	 * 
+//	 * @param player
+//	 */
+//	protected void runLoadPlayerNow( Player player ) {
+//		
+//		if ( player != null ) {
+//			
+//			PlayerCacheLoadPlayerTask task = new PlayerCacheLoadPlayerTask( player );
+//			
+//			task.run();
+////			// Submit task to run right away:
+////			int taskId = PrisonTaskSubmitter.runTaskLaterAsync( task, 0 );
+////			task.setTaskId( taskId );
+//		}
+//	}
 	
 	
 	protected void submitAsyncUnloadPlayer( Player player ) {
@@ -325,20 +371,23 @@ public class PlayerCache {
 	
 	
 	public void addPlayerBlocks( Player player, String mine, PrisonBlockStatusData block, int quantity ) {
-		addPlayerBlocks( player, mine, (PrisonBlock) block, quantity );
+		addPlayerBlocks( player, mine, block.getBlockName(), quantity );
 	}
-	public void addPlayerBlocks( Player player, String mine, PrisonBlock block, int quantity ) {
+//	public void addPlayerBlocks( Player player, String mine, PrisonBlock block, int quantity ) {
+//		addPlayerBlocks( player, mine, block.getBlockName(), quantity );
+//	}
+	public void addPlayerBlocks( Player player, String mine, String blockName, int quantity ) {
 		PlayerCachePlayerData playerData = getPlayer( player );
 		
 //		Output.get().logInfo( "### addPlayerBlock: mine= " + (mine == null ? "null" : mine) +
 //				" block= " + (block == null ? "null" : block.getBlockName()) + " qty= " + quantity + "  playerData= " +
 //				(playerData == null ? "null" : playerData.toString() ));
-
+		
 //		if ( playerData != null && playerData.getBlocksTotal() % 20 == 0 ) {
 //			Output.get().logInfo( "#### PlayerCache: " + playerData.toString() );
 //		}
 		
-		playerData.addBlock( mine, block.getBlockName(), quantity );
+		playerData.addBlock( mine, blockName, quantity );
 	}
 	
 	/**
@@ -351,7 +400,13 @@ public class PlayerCache {
 	public void addPlayerEarnings( Player player, double earnings ) {
 		PlayerCachePlayerData playerData = getPlayer( player );
 		
-		playerData.addEarnings( earnings );
+		String mineName = null;
+		playerData.addEarnings( earnings, mineName );
+	}
+	public void addPlayerEarnings( Player player, double earnings, String mineName ) {
+		PlayerCachePlayerData playerData = getPlayer( player );
+		
+		playerData.addEarnings( earnings, mineName );
 	}
 	public double getPlayerEarningsPerMinute( Player player ) {
 		double earningsPerMinute = 0;

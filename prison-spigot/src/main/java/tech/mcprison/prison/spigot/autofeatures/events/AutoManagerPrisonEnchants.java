@@ -34,12 +34,16 @@ public class AutoManagerPrisonEnchants
 	}
 
 	
-	public class AutoManagerExplosiveEventListener 
+	public class AutoManagerPEExplosiveEventListener 
 		extends AutoManagerBlockBreakEvents
 		implements Listener {
 		
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onPrisonEnchantsExplosiveEvent(PEExplosionEvent e) {
+			if ( isDisabled( e.getBlockBroken().getLocation().getWorld().getName() ) ) {
+				return;
+			}
+
 			
 //			me.pulsi_.prisonenchants.events.PEExplosionEvent
 			
@@ -47,45 +51,52 @@ public class AutoManagerPrisonEnchants
 		}
 	}
 	
-	public class OnBlockBreakExplosiveEventListener 
+	public class OnBlockBreakPEExplosiveEventListener 
 	    extends OnBlockBreakEventListener
 	    implements Listener {
 		
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onPrisonEnchantsExplosiveEvent(PEExplosionEvent e) {
+			if ( isDisabled( e.getBlockBroken().getLocation().getWorld().getName() ) ) {
+				return;
+			}
 			genericBlockExplodeEvent( e );
 		}
 	}
 	
-	public class OnBlockBreakExplosiveEventListenerMonitor
+	public class OnBlockBreakPEExplosiveEventListenerMonitor
 		extends OnBlockBreakEventListener
 		implements Listener {
 		
 		@EventHandler(priority=EventPriority.MONITOR) 
 		public void onPrisonEnchantsExplosiveEvent(PEExplosionEvent e) {
+			if ( isDisabled( e.getBlockBroken().getLocation().getWorld().getName() ) ) {
+				return;
+			}
 			genericBlockExplodeEventMonitor( e );
 		}
 	}
 
 	@Override
 	public void initialize() {
-		boolean isEventEnabled = isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
-		
+
+		String eP = getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
 		if ( !isEventEnabled ) {
 			return;
 		}
 		
 		// Check to see if the class ExplosiveEvent even exists:
 		try {
-			Output.get().logInfo( "AutoManager: checking if loaded: PrisonEnchants" );
+			Output.get().logInfo( "AutoManager: checking if loaded: Pulsi_'s PrisonEnchants" );
 			
-			Class.forName( "me.pulsi_.prisonenchants.enchantments.custom.explosive.PEExplosionEvent", false, 
+			Class.forName( "me.pulsi_.prisonenchants.events.PEExplosionEvent", false, 
 					this.getClass().getClassLoader() );
 			
-			Output.get().logInfo( "AutoManager: Trying to register PrisonEnchants" );
+			Output.get().logInfo( "AutoManager: Trying to register Pulsi_'s PrisonEnchants" );
 			
 			
-			String eP = getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
 			BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
 			
 			if ( eventPriority != BlockBreakPriority.DISABLED ) {
@@ -93,8 +104,8 @@ public class AutoManagerPrisonEnchants
 				EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
 				
 				
-				OnBlockBreakExplosiveEventListenerMonitor normalListenerMonitor = 
-												new OnBlockBreakExplosiveEventListenerMonitor();
+				OnBlockBreakPEExplosiveEventListenerMonitor normalListenerMonitor = 
+												new OnBlockBreakPEExplosiveEventListenerMonitor();
 				
 				
 				SpigotPrison prison = SpigotPrison.getInstance();
@@ -106,43 +117,49 @@ public class AutoManagerPrisonEnchants
 					
 					if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
 						
-						AutoManagerExplosiveEventListener autoManagerlListener = 
-								new AutoManagerExplosiveEventListener();
+						AutoManagerPEExplosiveEventListener autoManagerlListener = 
+								new AutoManagerPEExplosiveEventListener();
 						
 						pm.registerEvent(PEExplosionEvent.class, autoManagerlListener, ePriority,
 								new EventExecutor() {
 							public void execute(Listener l, Event e) { 
-								((AutoManagerExplosiveEventListener)l)
+								((AutoManagerPEExplosiveEventListener)l)
 								.onPrisonEnchantsExplosiveEvent((PEExplosionEvent)e);
 							}
 						},
 								prison);
 						prison.getRegisteredBlockListeners().add( autoManagerlListener );
 					}
+					else if ( isBoolean( AutoFeatures.normalDrop ) ) {
+						
+						OnBlockBreakPEExplosiveEventListener normalListener = 
+								new OnBlockBreakPEExplosiveEventListener();
+						
+						pm.registerEvent(PEExplosionEvent.class, normalListener, ePriority,
+								new EventExecutor() {
+							public void execute(Listener l, Event e) { 
+								((OnBlockBreakPEExplosiveEventListener)l)
+								.onPrisonEnchantsExplosiveEvent((PEExplosionEvent)e);
+							}
+						},
+								prison);
+						prison.getRegisteredBlockListeners().add( normalListener );
+					}
 					
-					OnBlockBreakExplosiveEventListener normalListener = 
-							new OnBlockBreakExplosiveEventListener();
+				}
+				else {
 					
-					pm.registerEvent(PEExplosionEvent.class, normalListener, ePriority,
+					pm.registerEvent(PEExplosionEvent.class, normalListenerMonitor, EventPriority.MONITOR,
 							new EventExecutor() {
 						public void execute(Listener l, Event e) { 
-							((OnBlockBreakExplosiveEventListener)l)
+							((OnBlockBreakPEExplosiveEventListenerMonitor)l)
 							.onPrisonEnchantsExplosiveEvent((PEExplosionEvent)e);
 						}
 					},
 							prison);
-					prison.getRegisteredBlockListeners().add( normalListener );
+					prison.getRegisteredBlockListeners().add( normalListenerMonitor );
 				}
 				
-				pm.registerEvent(PEExplosionEvent.class, normalListenerMonitor, EventPriority.MONITOR,
-						new EventExecutor() {
-					public void execute(Listener l, Event e) { 
-						((OnBlockBreakExplosiveEventListenerMonitor)l)
-										.onPrisonEnchantsExplosiveEvent((PEExplosionEvent)e);
-					}
-				},
-				prison);
-				prison.getRegisteredBlockListeners().add( normalListenerMonitor );
 
 				
 			}
@@ -150,10 +167,10 @@ public class AutoManagerPrisonEnchants
 		}
 		catch ( ClassNotFoundException e ) {
 			// PrisonEnchants is not loaded... so ignore.
-			Output.get().logInfo( "AutoManager: PrisonEnchants is not loaded" );
+			Output.get().logInfo( "AutoManager: Pulsi_'s PrisonEnchants is not loaded" );
 		}
 		catch ( Exception e ) {
-			Output.get().logInfo( "AutoManager: PrisonEnchants failed to load. [%s]", e.getMessage() );
+			Output.get().logInfo( "AutoManager: Pulsi_'s PrisonEnchants failed to load. [%s]", e.getMessage() );
 		}
 	}
 
@@ -187,8 +204,10 @@ public class AutoManagerPrisonEnchants
 	
 	@Override
 	public void dumpEventListeners( StringBuilder sb ) {
-    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
-    	
+		
+		String eP = getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
     	if ( !isEventEnabled ) {
     		return;
     	}
@@ -196,16 +215,17 @@ public class AutoManagerPrisonEnchants
 		// Check to see if the class ExplosiveEvent even exists:
 		try {
 			
-			Class.forName( "me.pulsi_.prisonenchants.enchantments.custom.explosive.PEExplosionEvent", false, 
+			Class.forName( "me.pulsi_.prisonenchants.events.PEExplosionEvent", false, 
 							this.getClass().getClassLoader() );
 			
 
 			ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
-					"PEExplosionEvent", 
+					"Pulsi_'s PEExplosionEvent", 
 					new SpigotHandlerList( PEExplosionEvent.getHandlerList()) );
 
 			if ( eventDisplay != null ) {
 				sb.append( eventDisplay.toStringBuilder() );
+				sb.append( "\n" );
 			}
 		}
 		catch ( ClassNotFoundException e ) {

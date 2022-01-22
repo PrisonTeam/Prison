@@ -2,6 +2,7 @@ package tech.mcprison.prison.spigot.gui.mine;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
@@ -29,9 +30,9 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents {
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3MineInfo -> ResetTime");
 
 
-        ButtonLore changeDecreaseValueLore = new ButtonLore(messages.getString("Lore.ClickToDecrease"), null);
-        ButtonLore confirmButtonLore = new ButtonLore(createLore(messages.getString("Lore.LeftClickToConfirm"), messages.getString("Lore.RightClickToCancel")), createLore(messages.getString("Lore.Time") + val));
-        ButtonLore changeIncreaseValueLore = new ButtonLore(messages.getString("Lore.ClickToIncrease"), null);
+        ButtonLore changeDecreaseValueLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_decrease), null);
+        ButtonLore confirmButtonLore = new ButtonLore(createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_left_to_confirm), messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_cancel)), createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_reset_time) + " " + val));
+        ButtonLore changeIncreaseValueLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_increase), null);
 
         // XMaterials.
         XMaterial decreaseMat = XMaterial.REDSTONE_BLOCK;
@@ -46,7 +47,7 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents {
         gui.addButton(new Button(37, decreaseMat, changeDecreaseValueLore, "&3" + mineName + " " + val + " - 100"));
 
         // Create a button and set the position
-        gui.addButton(new Button(22, watch, confirmButtonLore, "&3" + "Confirm: " + mineName + " " + val));
+        gui.addButton(new Button(22, watch, confirmButtonLore, "&3Confirm: " + mineName + " " + val));
 
         // Increase button
         gui.addButton(new Button(7, increaseMat, changeIncreaseValueLore, "&3" + mineName + " " + val + " + 1"));

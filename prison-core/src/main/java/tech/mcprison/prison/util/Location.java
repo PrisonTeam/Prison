@@ -21,6 +21,7 @@ package tech.mcprison.prison.util;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 
 /**
  * Represents a location in a Minecraft world.
@@ -136,6 +137,10 @@ public class Location {
     public Block getBlockAt() {
         return world.getBlockAt(this);
     }
+    
+    public void setBlockAsync( PrisonBlock prisonBlock ) {
+    	world.setBlockAsync( prisonBlock, this );
+    }
 
     @Override public boolean equals(Object o) {
         if (this == o) {
@@ -217,6 +222,44 @@ public class Location {
 		results.setZ( results.getZ() + direction.getZ() );
 
 		return results;
+	}
+	
+	/**
+	 * <p>This function will clone the current location object and then add/subtract the amount of
+	 * x, y, and/or z to that location.  To keep the same value for one or more of these coordinates
+	 * then use a value of zero.
+	 * </p>
+	 * 
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return
+	 */
+	public Location getLocationAtDelta( int x, int y, int z )
+	{
+		Location results = new Location( this );
+		
+		results.setX( results.getX() + x );
+		results.setY( results.getY() + y );
+		results.setZ( results.getZ() + z );
+		
+		return results;
+	}
+	
+	/**
+	 * <p>Returns the block that is at the location of this object, offset by x, y, and/or z deltas.
+	 * </p>
+	 * 
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return
+	 */
+	public Block getBlockAtDelta( int x, int y, int z )
+	{
+		Location results = getLocationAtDelta( x, y, z );
+		
+		return getWorld().getBlockAt( results );
 	}
 
 }

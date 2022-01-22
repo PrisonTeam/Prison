@@ -18,6 +18,7 @@ public class PrisonBlock
 	
 	public static PrisonBlock AIR;
 	public static PrisonBlock GLASS;
+	public static PrisonBlock PINK_STAINED_GLASS;
 	public static PrisonBlock IGNORE;
 	public static PrisonBlock NULL_BLOCK;
 	
@@ -38,13 +39,15 @@ public class PrisonBlock
 	static {
 		AIR = new PrisonBlock( InternalBlockTypes.AIR.name(), false );
 		GLASS = new PrisonBlock( InternalBlockTypes.GLASS.name(), true );
+		PINK_STAINED_GLASS = new PrisonBlock( InternalBlockTypes.PINK_STAINED_GLASS.name(), true );
 		IGNORE = new PrisonBlock( InternalBlockTypes.IGNORE.name(), false );
 		NULL_BLOCK = new PrisonBlock( InternalBlockTypes.NULL_BLOCK.name(), false );
 	}
 	
 	public enum PrisonBlockType {
 		minecraft,
-		CustomItems
+		CustomItems,
+		heads
 	}
 	
 	/**

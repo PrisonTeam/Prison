@@ -46,7 +46,7 @@ import tech.mcprison.prison.util.Location;
  */
 public class Mine 
 	extends MineScheduler 
-	implements PrisonSortable {
+	implements PrisonSortable, Comparable<Mine> {
 	
 	
 	public enum MineType {
@@ -417,21 +417,37 @@ public class Mine
 					
 					PrisonBlock prisonBlock = PrisonBlockStatusData.parseFromSaveFileFormat( docBlock );
 					
-					
-					if ( prisonBlock != null && !validateBlockNames.contains( prisonBlock.getBlockName() )) {
+					// If the server version is less than 1.13.0, and if the block is a "_wood" block, 
+					// then it needs to be remapped to "_planks" so the resulting block will work properly.
+					// Versions prior to 1.13.0, _WOOD is identical to _PLANKS.
+					if ( prisonBlock != null && 
+							prisonBlock.getBlockName().toLowerCase().contains( "_wood" ) &&
+							Prison.get().getPlatform().compareServerVerisonTo( "1.13.0" ) < 0 ) {
+						String fixedName = docBlock.toLowerCase().replace( "_wood", "_planks" );
 						
-						if ( prisonBlock.isLegacyBlock() ) {
-							dirty = true;
-						}
-						addPrisonBlock( prisonBlock );
-						
-						validateBlockNames.add( prisonBlock.getBlockName() );
-					}
-					else if ( prisonBlock != null && validateBlockNames.contains( prisonBlock.getBlockName() ) ) {
-						// Detected and fixed a duplication so mark as dirty so fixed block list is saved:
+						prisonBlock = PrisonBlockStatusData.parseFromSaveFileFormat( fixedName );
 						dirty = true;
-						inconsistancy = true;
 					}
+					
+					if ( prisonBlock != null ) {
+						
+						if ( !validateBlockNames.contains( prisonBlock.getBlockName() )) {
+							
+							if ( prisonBlock.isLegacyBlock() ) {
+								dirty = true;
+							}
+							addPrisonBlock( prisonBlock );
+							
+							validateBlockNames.add( prisonBlock.getBlockName() );
+						}
+						else if ( validateBlockNames.contains( prisonBlock.getBlockName() ) ) {
+							// Detected and fixed a duplication so mark as dirty so fixed block list is saved:
+							dirty = true;
+							inconsistancy = true;
+						}
+						
+					}
+					
 					
 					
 //					String[] split = docBlock.split("-");
@@ -476,6 +492,10 @@ public class Mine
 				}
 			}
 		}
+		
+		
+		// Check if one of the blocks is effected by gravity, and if so, set that indicator.
+		checkGravityAffectedBlocks();
 
         
         if ( isUseNewBlockModel() && 
@@ -484,7 +504,18 @@ public class Mine
         	
         	for ( BlockOld blockOld : getBlocks() ) {
         		PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockOld.getType().name() );
-            	if ( prisonBlock != null ) {
+
+        		if ( prisonBlock == null ) {
+        			for ( String altName : blockOld.getType().getXMaterialAltNames() ) {
+        				
+        				prisonBlock = Prison.get().getPlatform().getPrisonBlock( altName );
+        				if ( prisonBlock != null ) {
+        					break;
+        				}
+        			}
+        		}
+        		
+        		if ( prisonBlock != null ) {
             		
             		// This transfers all the stats over so none are lost.
             		prisonBlock.transferStats( blockOld );
@@ -511,7 +542,7 @@ public class Mine
         List<String> mineBlockEvents = (List<String>) document.get("mineBlockEvents");
         if ( mineBlockEvents != null ) {
         	for ( String blockEvent : mineBlockEvents ) {
-        		getBlockEvents().add( MineBlockEvent.fromSaveString( blockEvent ) );
+        		getBlockEvents().add( MineBlockEvent.fromSaveString( blockEvent, this.getName() ) );
         	}
         }
         
@@ -530,6 +561,9 @@ public class Mine
         	// every time the mine is loaded which may lead to other issues.
         	
         	// This is enabled since the original is not modified.
+        	
+        	// If dirty, then make a backup since these are automatic changes:
+        	PrisonMines.getInstance().getMineManager().backupMine( this );
 
         	PrisonMines.getInstance().getMineManager().saveMine( this );
         	
@@ -674,14 +708,53 @@ public class Mine
     	return getName() + "  " + getTotalBlocksMined();
     }
     
+    /**
+     * <p>Even if world is null, it will allow you to create a location, but
+     * the location will be invalid.  In order to use this location, 
+     * the world will have to be set to a valid world.
+     * </p>
+     * 
+     * @param doc
+     * @param world
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
     private Location getLocation(Document doc, World world, String x, String y, String z) {
-    	return new Location(world, (double) doc.get(x), (double) doc.get(y), (double) doc.get(z));
+    	Location results = null;
+    	
+//    	if ( world != null ) {
+//    		
+//    		
+//    	}
+    	Object xD = doc.get(x);
+    	Object yD = doc.get(y);
+    	Object zD = doc.get(z);
+    	
+    	if ( xD != null && yD != null && zD != null ) {
+    		
+    		results = new Location(world, (double) xD, (double) yD, (double) zD );
+    	}
+    	
+    	return results;
     }
     
     private Location getLocation(Document doc, World world, String x, String y, String z, String pitch, String yaw) {
     	Location loc = getLocation(doc, world, x, y, z);
-    	loc.setPitch( ((Double) doc.get(pitch)).floatValue() );
-    	loc.setYaw( ((Double) doc.get(yaw)).floatValue() );
+    	
+    	Object pitchD = doc.get(pitch);
+    	Object yawD = doc.get(yaw);
+    	
+    	if ( pitchD != null ) {
+    		
+    		loc.setPitch( ((Double) pitchD ).floatValue() );
+    	}
+    	
+    	if ( yawD != null ) {
+    		
+    		loc.setYaw( ((Double) yawD ).floatValue() );
+    	}
     	return loc;
     }
     
@@ -724,6 +797,11 @@ public class Mine
 		sb.insert( 0, "Mine " );
 		
 		return sb.toString();
+	}
+
+	@Override
+	public int compareTo( Mine o ) {
+		return getName().toLowerCase().compareTo( o.getName().toLowerCase() );
 	}
 
 }

@@ -32,12 +32,14 @@ import tech.mcprison.prison.modules.ModuleStatus;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.commands.CommandCommands;
+import tech.mcprison.prison.ranks.commands.FailedRankCommands;
 import tech.mcprison.prison.ranks.commands.LadderCommands;
 import tech.mcprison.prison.ranks.commands.RankUpCommand;
 import tech.mcprison.prison.ranks.commands.RanksCommands;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
@@ -107,6 +109,13 @@ public class PrisonRanks
             			.getIntegrationDetails(IntegrationType.ECONOMY);
             
             logStartupMessageError( prisonRanksFailureNoEconomyMsg( integrationDebug ) );
+            
+            
+            // Register the failure /ranks command handler:
+            
+            FailedRankCommands failedRanksCommands = new FailedRankCommands();
+            Prison.get().getCommandHandler().registerCommands( failedRanksCommands );
+            
             return;
         }
 
@@ -152,6 +161,19 @@ public class PrisonRanks
 //        rankManager.connectRanks();
 
         
+        
+        // NOTE: The following is not needed since the ladders are already hooked up to the ranks.
+//        for ( Rank rank : rankManager.getRanks() ) {
+//        	
+//        	if ( rank.getLadder() == null ) {
+//    			// Hook up the ladder if it has not been setup yet:
+//    			RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( rank );
+//    			
+//    			rank.setLadder( ladder );
+//        	}
+//        }
+        
+        
         // Verify that all ranks that use currencies have valid currencies:
         rankManager.identifyAllRankCurrencies( getPrisonStartupDetails() );
         
@@ -178,8 +200,9 @@ public class PrisonRanks
 
         
         // Hook up all players to the ranks:
-        playerManager.connectPlayersToRanks();
+        playerManager.connectPlayersToRanks( false );
         
+        Output.get().logInfo( "Ranks: Finished Connecting Players to Ranks." );
         
         
         // Load up the commands
@@ -199,11 +222,13 @@ public class PrisonRanks
         Prison.get().getCommandHandler().registerCommands( rankupCommands );
         Prison.get().getCommandHandler().registerCommands( ladderCommands );
 
+        Output.get().logInfo( "Ranks: Finished registering Rank Commands." );
         
         
         // Check all players to see if any need to join:
         checkAllPlayersForJoin();
         
+        Output.get().logInfo( "Ranks: Finished First Join Checks." );
         
         
         // Load up all else
@@ -253,6 +278,8 @@ public class PrisonRanks
         	}
         	
         	
+        	RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+        	
         	// If any player does not have a rank on the default ladder, then add the default 
         	// ladder and rank:
         	Rank defaultRank = defaultLadder.getLowestRank().get();
@@ -263,9 +290,9 @@ public class PrisonRanks
 				
         		Rank rankOnDefault = null;
         		
-        		if ( rPlayer.getRank( defaultLadder ) != null ) {
+        		if ( rankPlayerFactory.getRank( rPlayer, defaultLadder ) != null ) {
         			
-        			rankOnDefault = rPlayer.getRank( defaultLadder ).getRank();
+        			rankOnDefault = rankPlayerFactory.getRank( rPlayer, defaultLadder ).getRank();
         			
 //        			Output.get().logInfo( "#### %s  ladder = %s  isRankNull= %s  rank= %s %s [%s]" ,
 //        					rPlayer.getName(),
@@ -279,7 +306,7 @@ public class PrisonRanks
         			
         			rankupCommands.setPlayerRank( rPlayer, defaultRank );
         			
-        			if ( rPlayer.getRank( defaultLadder ) != null ) {
+        			if ( rankPlayerFactory.getRank( rPlayer, defaultLadder ) != null ) {
         				
         				String message = prisonRankAddedNewPlayer( rPlayer.getName() );
         				

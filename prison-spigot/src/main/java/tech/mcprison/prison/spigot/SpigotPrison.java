@@ -48,15 +48,18 @@ import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.integration.Integration;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
+import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleElementType;
+import tech.mcprison.prison.modules.PluginEntity;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.commands.FailedRankCommands;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
@@ -71,10 +74,7 @@ import tech.mcprison.prison.spigot.commands.PrisonSpigotRanksCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
-import tech.mcprison.prison.spigot.configs.BackpacksConfig;
-import tech.mcprison.prison.spigot.configs.GuiConfig;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
-import tech.mcprison.prison.spigot.configs.SellAllConfig;
+import tech.mcprison.prison.spigot.configs.*;
 import tech.mcprison.prison.spigot.customblock.CustomItems;
 import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
 import tech.mcprison.prison.spigot.economies.GemsEconomy;
@@ -86,6 +86,7 @@ import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
 import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.slime.SlimeBlockFunEventListener;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.tasks.PrisonInitialStartupTask;
@@ -98,7 +99,9 @@ import tech.mcprison.prison.spigot.utils.PrisonUtilsModule;
  * @author Faizaan A. Datoo
  * @author GABRYCA
  */
-public class SpigotPrison extends JavaPlugin {
+public class SpigotPrison 
+	extends JavaPlugin 
+	implements PluginEntity {
 
 	private static SpigotPrison config;
 
@@ -113,7 +116,7 @@ public class SpigotPrison extends JavaPlugin {
     
     private AutoManagerFeatures autoFeatures = null;
 //    private FileConfiguration autoFeaturesConfig = null;
-    
+
     private MessagesConfig messagesConfig;
     private GuiConfig guiConfig;
     private SellAllConfig sellAllConfig;
@@ -122,7 +125,11 @@ public class SpigotPrison extends JavaPlugin {
     private PrisonBlockTypes prisonBlockTypes;
 
     private static boolean isBackPacksEnabled = false;
+    private static boolean isSellAllEnabled = false;
     
+    
+    private LocaleManager localeManager;
+    private File moduleDataFolder;
     
     private List<Listener> registeredBlockListeners;
 
@@ -136,6 +143,7 @@ public class SpigotPrison extends JavaPlugin {
     	config = this;
     	
     	this.registeredBlockListeners = new ArrayList<>();
+    	
     }
 
     @Override
@@ -195,6 +203,9 @@ public class SpigotPrison extends JavaPlugin {
         		.init(new SpigotPlatform(this), Bukkit.getVersion());
         
         
+        // Enable the spigot locale manager:
+        getLocaleManager();
+        
         this.compatibility = SpigotCompatibility.getInstance();
 //        initCompatibility();  Obsolete...
         
@@ -220,6 +231,16 @@ public class SpigotPrison extends JavaPlugin {
     	delayedStartupTask.submit();
     }
     
+    
+    public void onEnableFail() {
+        // Register the failure /ranks command handler:
+        
+        FailedRankCommands failedRanksCommands = new FailedRankCommands();
+//        rankManager.setFailedRanksCommands( failedRanksCommands );
+        Prison.get().getCommandHandler().registerCommands( failedRanksCommands );
+        
+
+    }
     	
    public void onEnableStartup() {
 	   
@@ -241,6 +262,14 @@ public class SpigotPrison extends JavaPlugin {
 
         if (isBackPacksEnabled){
             Bukkit.getPluginManager().registerEvents(new BackpacksListeners(), this);
+        }
+
+        try {
+            isSellAllEnabled = getConfig().getBoolean("sellall");
+        } catch (NullPointerException ignored){}
+
+        if (isSellAllEnabled){
+            SellAllUtil.get();
         }
 
         initIntegrations();
@@ -318,6 +347,44 @@ public class SpigotPrison extends JavaPlugin {
     	Prison.get().deinit();
     }
 
+    
+    
+
+    /**
+     * Lazy load LocalManager which ensures Prison is already loaded so 
+     * can get the default language to use from the plugin configs.
+     * 
+     * Returns the {@link LocaleManager} for the plugin. This contains the global messages that Prison
+     * uses to run its command library, and the like. {@link Module}s have their own {@link
+     * LocaleManager}s, so that each module can have independent localization.
+     *
+     * @return The global locale manager instance.
+     */
+    public LocaleManager getLocaleManager() {
+    		
+    	if ( this.localeManager == null ) {
+    		
+    		this.localeManager = new LocaleManager(this, "lang/spigot");
+    	}
+        return localeManager;
+    }
+
+    /**
+     * Returns this module's data folder, where all data can be stored.
+     * It is located in the Prison data folder, and has the name of the module.
+     * It is automatically generated.
+     *
+     * @return The {@link File} representing the data folder.
+     */
+    public File getModuleDataFolder() {
+    	
+    	if ( moduleDataFolder == null ) {
+    		this.moduleDataFolder = Module.setupModuleDataFolder( "spigot" );
+    	}
+        return moduleDataFolder;
+    }
+    
+    
     public FileConfiguration getGuiConfig() {
     	if (guiConfig == null) {
     		guiConfig = new GuiConfig();
@@ -330,18 +397,18 @@ public class SpigotPrison extends JavaPlugin {
     }
 
     public FileConfiguration updateSellAllConfig() {
-        // Let this like this or it wont update when you do /Sellall etc and will need a server restart.
+        // Let this like this or it won't update when you do /Sellall etc and will need a server restart.
         sellAllConfig = new SellAllConfig();
         sellAllConfig.initialize();
         return sellAllConfig.getFileSellAllConfig();
     }
 
-    public FileConfiguration getMessagesConfig() {
+    public MessagesConfig getMessagesConfig() {
     	if (messagesConfig == null) {
-    		messagesConfig = new MessagesConfig();
+    		messagesConfig = MessagesConfig.get();
     	}
     	
-        return messagesConfig.getFileGuiMessagesConfig();
+        return messagesConfig;
     }
 
     public FileConfiguration getBackpacksConfig() {
@@ -363,6 +430,14 @@ public class SpigotPrison extends JavaPlugin {
     	
 		return autoFeatures;
 	}
+
+	public SellAllUtil getSellAllUtil(){
+        return SellAllUtil.get();
+    }
+
+    public boolean isSellAllEnabled(){
+        return isSellAllEnabled;
+    }
 
 	public void setAutoFeatures( AutoManagerFeatures autoFeatures ) {
 		this.autoFeatures = autoFeatures;
@@ -644,18 +719,18 @@ public class SpigotPrison extends JavaPlugin {
 //        }
 
         // Load sellAll if enabled
-        if (PrisonSpigotSellAllCommands.isEnabled()){
-            Prison.get().getCommandHandler().registerCommands(new PrisonSpigotSellAllCommands());
+        if (isSellAllEnabled){
+        	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotSellAllCommands() );
         }
 
         // Load backpacks commands if enabled
         if (isBackPacksEnabled){
-            Prison.get().getCommandHandler().registerCommands(new PrisonSpigotBackpackCommands());
+        	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotBackpackCommands() );
         }
 
         // This registers the admin's /gui commands
         if (getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true")) {
-            Prison.get().getCommandHandler().registerCommands(new PrisonSpigotGUICommands());
+        	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotGUICommands() );
         }
 
         
@@ -664,7 +739,7 @@ public class SpigotPrison extends JavaPlugin {
             Prison.get().getModuleManager()
                     .registerModule(new PrisonUtilsModule(getDescription().getVersion(), modulesConf));
 
-            Prison.get().getCommandHandler().registerCommands( new PrisonSpigotMinesCommands() );
+//            Prison.get().getCommandHandler().registerCommands( new PrisonSpigotMinesCommands() );
             
         } else {
             Output.get().logInfo("&7Modules: &cPrison Utils are disabled and were not Loaded. ");

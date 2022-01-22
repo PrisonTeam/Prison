@@ -42,19 +42,16 @@ import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.internal.events.Cancelable;
 import tech.mcprison.prison.internal.events.player.PlayerChatEvent;
 import tech.mcprison.prison.internal.events.player.PlayerPickUpItemEvent;
 import tech.mcprison.prison.internal.events.player.PlayerSuffocationEvent;
+import tech.mcprison.prison.internal.events.player.PrisonPlayerInteractEvent;
 import tech.mcprison.prison.internal.events.world.PrisonWorldLoadEvent;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents.AutoManagerBlockBreakEventListener;
-import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents.OnBlockBreakEventListenerNormal;
-import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents.OnBlockBreakEventListenerNormalMonitor;
-import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
 import tech.mcprison.prison.spigot.compat.Compatibility;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.util.BlockType;
@@ -217,27 +214,27 @@ public class SpigotListener implements Listener {
         // TODO Accept air events (block is null when air is clicked...)
 
         // Check to see if we support the Action
-        tech.mcprison.prison.internal.events.player.PlayerInteractEvent.Action[] values = tech.mcprison.prison.internal.events.player.PlayerInteractEvent.Action.values();
+        PrisonPlayerInteractEvent.Action[] values = PrisonPlayerInteractEvent.Action.values();
+        
         boolean has = false;
-        for (tech.mcprison.prison.internal.events.player.PlayerInteractEvent.Action value : values) {
+        for ( PrisonPlayerInteractEvent.Action value : values) {
             if(value.name().equals(e.getAction().name())) has = true;
         }
         if(!has) return; // we don't support this Action
 
         // This one's a workaround for the double-interact event glitch.
         // The wand can only be used in the main hand
-        if ( SpigotPrison.getInstance().getCompatibility().getHand(e) != 
+        if ( SpigotCompatibility.getInstance().getHand(e) != 
         								Compatibility.EquipmentSlot.HAND) {
             return;
         }
 
         org.bukkit.Location block = e.getClickedBlock().getLocation();
-        tech.mcprison.prison.internal.events.player.PlayerInteractEvent event =
-            new tech.mcprison.prison.internal.events.player.PlayerInteractEvent(
+        PrisonPlayerInteractEvent event = new PrisonPlayerInteractEvent(
                 new SpigotPlayer(e.getPlayer()),
                 		SpigotUtil.bukkitItemStackToPrison(
-                				SpigotPrison.getInstance().getCompatibility().getItemInMainHand(e)),
-                tech.mcprison.prison.internal.events.player.PlayerInteractEvent.Action
+                				SpigotCompatibility.getInstance().getItemInMainHand(e)),
+                PrisonPlayerInteractEvent.Action
                     .valueOf(e.getAction().name()),
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
                     block.getZ()));

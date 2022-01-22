@@ -41,7 +41,10 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 		
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onPrisonsExplosiveBlockBreakEvent(ExplosiveBlockBreakEvent e) {
-			
+			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+				return;
+			}
+
 //			me.pulsi_.prisonenchants.events.PEExplosionEvent
 			
 			genericBlockExplodeEventAutoManager( e );
@@ -54,6 +57,9 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 		
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onPrisonExplosiveBlockBreakEvent(ExplosiveBlockBreakEvent e) {
+			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+				return;
+			}
 			genericBlockExplodeEvent( e );
 		}
 	}
@@ -64,14 +70,19 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 		
 		@EventHandler(priority=EventPriority.MONITOR) 
 		public void onPrisonExplosiveBlockBreakEventMonitor(ExplosiveBlockBreakEvent e) {
+			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+				return;
+			}
 			genericBlockExplodeEventMonitor( e );
 		}
 	}
 
 	@Override
 	public void initialize() {
-		boolean isEventEnabled = isBoolean( AutoFeatures.isProcessPrisons_ExplosiveBlockBreakEvents );
 		
+		String eP = getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
 		if ( !isEventEnabled ) {
 			return;
 		}
@@ -81,7 +92,6 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 			Output.get().logInfo( "AutoManager: Trying to register ExplosiveBlockBreakEvent Listener" );
 			
 			
-			String eP = getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEvents );
 			BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
 			
 			if ( eventPriority != BlockBreakPriority.DISABLED ) {
@@ -115,31 +125,37 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 								prison);
 						prison.getRegisteredBlockListeners().add( autoManagerlListener );
 					}
+					else if ( isBoolean( AutoFeatures.normalDrop ) ) {
+						
+						OnBlockBreakExplosiveBlockBreakEventListener normalListener = 
+								new OnBlockBreakExplosiveBlockBreakEventListener();
+						
+						pm.registerEvent(ExplosiveBlockBreakEvent.class, normalListener, ePriority,
+								new EventExecutor() {
+							public void execute(Listener l, Event e) { 
+								((OnBlockBreakExplosiveBlockBreakEventListener)l)
+								.onPrisonExplosiveBlockBreakEvent((ExplosiveBlockBreakEvent)e);
+							}
+						},
+								prison);
+						prison.getRegisteredBlockListeners().add( normalListener );
+					}
 					
-					OnBlockBreakExplosiveBlockBreakEventListener normalListener = 
-							new OnBlockBreakExplosiveBlockBreakEventListener();
+				}
+				else {
 					
-					pm.registerEvent(ExplosiveBlockBreakEvent.class, normalListener, ePriority,
+					pm.registerEvent(ExplosiveBlockBreakEvent.class, normalListenerMonitor, EventPriority.MONITOR,
 							new EventExecutor() {
 						public void execute(Listener l, Event e) { 
-							((OnBlockBreakExplosiveBlockBreakEventListener)l)
-							.onPrisonExplosiveBlockBreakEvent((ExplosiveBlockBreakEvent)e);
+							((OnBlockBreakExplosiveBlockBreakEventListenerMonitor)l)
+							.onPrisonExplosiveBlockBreakEventMonitor((ExplosiveBlockBreakEvent)e);
 						}
 					},
 							prison);
-					prison.getRegisteredBlockListeners().add( normalListener );
+					prison.getRegisteredBlockListeners().add( normalListenerMonitor );
+					
 				}
 				
-				pm.registerEvent(ExplosiveBlockBreakEvent.class, normalListenerMonitor, EventPriority.MONITOR,
-						new EventExecutor() {
-					public void execute(Listener l, Event e) { 
-						((OnBlockBreakExplosiveBlockBreakEventListenerMonitor)l)
-										.onPrisonExplosiveBlockBreakEventMonitor((ExplosiveBlockBreakEvent)e);
-					}
-				},
-				prison);
-				prison.getRegisteredBlockListeners().add( normalListenerMonitor );
-
 				
 			}
 			
@@ -179,8 +195,10 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 	
 	@Override
 	public void dumpEventListeners( StringBuilder sb ) {
-    	boolean isEventEnabled = isBoolean( AutoFeatures.isProcessPrisonEnchantsExplosiveEvents );
-    	
+
+		String eP = getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
+		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
     	if ( !isEventEnabled ) {
     		return;
     	}
@@ -194,6 +212,7 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 
 			if ( eventDisplay != null ) {
 				sb.append( eventDisplay.toStringBuilder() );
+				sb.append( "\n" );
 			}
 		}
 		catch ( Exception e ) {

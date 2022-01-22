@@ -4,8 +4,10 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import com.cryptomorin.xseries.messages.ActionBar;
+import com.cryptomorin.xseries.messages.Titles;
+
+import tech.mcprison.prison.util.Text;
 
 public abstract class Spigot19Player
 		extends Spigot18Blocks
@@ -35,15 +37,25 @@ public abstract class Spigot19Player
 	}
 	
 	@Override
-	@SuppressWarnings( "deprecation" )
+	//@SuppressWarnings( "deprecation" )
 	public void sendTitle( Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut ) {
-		player.sendTitle( title, subtitle );
+		
+		title = title == null ? null : Text.translateAmpColorCodes( title );
+		subtitle = subtitle == null ? null : Text.translateAmpColorCodes( subtitle );
+
+		Titles.sendTitle( player, fadeIn, stay, fadeOut, title, subtitle );
+		
 	}
 
 	@Override
 	public void sendActionBar( Player player, String actionBar ) {
-		player.spigot().sendMessage( ChatMessageType.ACTION_BAR, 
-					new TextComponent( actionBar ) );
+		
+		String message = Text.translateAmpColorCodes( actionBar );
+		ActionBar.sendActionBar( player, message );
+		
+		// Was using the following until it was replaced with XSeries' ActionBar:
+//		player.spigot().sendMessage( ChatMessageType.ACTION_BAR, 
+//					new TextComponent( actionBar ) );
 
 //		player.sendTitle( "", actionBar );
 	}

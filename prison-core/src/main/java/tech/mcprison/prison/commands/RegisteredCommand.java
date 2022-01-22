@@ -260,7 +260,10 @@ public class RegisteredCommand
                 	//          to prevent this failure, escape all % with a double % such as %%.
                 	message = message.replace( "%", "%%" );
                 	
-                	Output.get().sendError( sender, message );
+                	Output.get().logError( message );
+                	
+                	Output.get().sendError( sender, "An exception has occurred. Details have been " +
+                			"logged to the server's console." );
 
                 	// Generally these errors are major and require program fixes, so throw
                 	// the exception so the stacklist is logged.
@@ -396,7 +399,12 @@ public class RegisteredCommand
         this.description = command.description();
         this.permissions = command.permissions();
         this.altPermissions = command.altPermissions();
-        this.aliases = command.aliases();
+        
+    	String[] aliases = CommandHandler.addConfigAliases( command.identifier(), command.aliases() );
+    			//addConfigAliases( command.identifier(), command.aliases() );
+        this.aliases = aliases;
+        
+//        this.aliases = command.aliases();
         this.docURLs = command.docURLs();
         
         this.onlyPlayers = command.onlyPlayers();
@@ -517,6 +525,34 @@ public class RegisteredCommand
         this.set = true;
     }
 
+
+//    private String[] addConfigAliases( String label, String[] aliases )
+//	{
+//    	String[] results = aliases;
+//    	
+//    	String configKey = "prisonCommandHandler.aliases." + label.replace( " ", "." );
+//    	
+//    	List<?> ca = Prison.get().getPlatform().getConfigStringArray( configKey );
+//    	if ( ca != null && ca.size() > 0 && ca.get( 0 ) instanceof String ) {
+//    		
+//			List<String> configAliases = new ArrayList<>();
+//			
+//			for ( String alias : aliases ) {
+//				configAliases.add( alias );
+//			}
+//					
+//			for ( Object aliasObj : ca ) {
+//				if ( aliasObj instanceof String ) {
+//					configAliases.add( aliasObj.toString() );
+//				}
+//			}
+//			
+//    		results = configAliases.toArray( new String[0] );
+//    		
+//    	}
+//		return results;
+//	}
+    
     public boolean testPermission(CommandSender sender) {
         if (!set) {
             return true;

@@ -289,6 +289,17 @@ public class CommandHandler {
 					}
             		
             	}
+            	
+            	ArrayList<String> excludedWorlds = buildExcludedWorlds();
+            	if ( excludedWorlds.size() > 1 ) {
+            		for ( String excludedWorld : excludedWorlds )
+            		{
+            			chatDisplay.addText( excludedWorld );
+            		}
+            		
+            	}
+            	
+            	
             }
             
 
@@ -296,6 +307,41 @@ public class CommandHandler {
 //            return message.toArray(new String[0]);
         }
 
+        private ArrayList<String> buildExcludedWorlds() {
+        	
+			ArrayList<String> message = new ArrayList<>();
+			
+			message.add(ChatColor.DARK_AQUA + "Prison is disabled in the following Worlds:");
+			
+			TreeSet<String> excludedWorlds = Prison.get().getPlatform().getExcludedWorlds();
+			
+			StringBuilder sb = new StringBuilder();
+			int count = 0;
+			for ( String world : excludedWorlds )
+			{
+				if ( sb.length() > 0 ) {
+					sb.append( ", " );
+				}
+				
+				if ( count++ > 5 ) {
+				
+					message.add( "  " + sb.toString() );
+					sb.setLength( 0 );
+					count = 0;
+				}
+
+				sb.append( world );
+				
+			}
+			
+			if ( sb.length() > 0 ) {
+				message.add( "  " + sb.toString() );
+				
+			}
+
+            return message;
+        }
+        
 		private ArrayList<String> buildHelpRootCommands() {
 			ArrayList<String> message = new ArrayList<>();
 			
@@ -526,6 +572,17 @@ public class CommandHandler {
         argHandler.handler = this;
         argumentHandlers.put(clazz, argHandler);
     }
+    
+    public Object getRegisteredCommandClass( @SuppressWarnings( "rawtypes" ) Class commandClass ) {
+    	Object results = null;
+    	
+    	String key = commandClass.getSimpleName();
+    	if ( key != null && getRegisteredCommands().containsKey( key ) ) {
+    		results = getRegisteredCommands().get( key );
+    	}
+    	
+    	return results;
+    }
 
     public void registerCommands(Object methodInstance) {
 
@@ -540,10 +597,16 @@ public class CommandHandler {
             }
 
             RegisteredCommand mainCommand = commandRegisterConfig( method, commandAnno, methodInstance );
+            
+            
+            String[] aliases = addConfigAliases( commandAnno.identifier(), commandAnno.aliases() );
 
-            if ( commandAnno.aliases() != null && commandAnno.aliases().length > 0 ) {
+            if ( aliases.length > 0 ) {
+//            	if ( commandAnno.aliases() != null && commandAnno.aliases().length > 0 ) {
             	
-            	for ( String alias : commandAnno.aliases() )
+            	
+            	for ( String alias : aliases )
+//            		for ( String alias : commandAnno.aliases() )
 				{
 					RegisteredCommand aliasCommand = commandRegisterConfig( method, commandAnno, methodInstance, alias );
             		
@@ -561,7 +624,8 @@ public class CommandHandler {
     	return commandRegisterConfig( method, commandAnno, methodInstance, null );
     }
     
-	private RegisteredCommand commandRegisterConfig( Method method, Command commandAnno, Object methodInstance, String alias ) {
+	private RegisteredCommand commandRegisterConfig( Method method, Command commandAnno, 
+						Object methodInstance, String alias ) {
         String[] identifiers = ( alias == null ? commandAnno.identifier() : alias).split(" ");
         
             if (identifiers.length == 0) {
@@ -573,10 +637,16 @@ public class CommandHandler {
         PluginCommand rootPluginCommand = plugin.getPlatform().getCommand(label).orElse( null );
 
         if ( rootPluginCommand == null ) {
+        	
+        	String[] aliases = addConfigAliases( commandAnno.identifier(), commandAnno.aliases() );
         	rootPluginCommand = new PluginCommand(label, 
         						commandAnno.description(),
         						"/" + label,
-        						commandAnno.aliases() );
+        						aliases );
+//        	rootPluginCommand = new PluginCommand(label, 
+//			        			commandAnno.description(),
+//			        			"/" + label,
+//			        			commandAnno.aliases() );
         	plugin.getPlatform().registerCommand(rootPluginCommand);
         }
 
@@ -647,7 +717,34 @@ public class CommandHandler {
 	}
 
 
-    public boolean onCommand(CommandSender sender, PluginCommand command, String label,
+    public static String[] addConfigAliases( String label, String[] aliases )
+	{
+    	String[] results = aliases;
+    	
+    	String configKey = "prisonCommandHandler.aliases." + label.replace( " ", "." );
+    	
+    	List<?> ca = Prison.get().getPlatform().getConfigStringArray( configKey );
+    	if ( ca != null && ca.size() > 0 && ca.get( 0 ) instanceof String ) {
+    		
+			List<String> configAliases = new ArrayList<>();
+			
+			for ( String alias : aliases ) {
+				configAliases.add( alias );
+			}
+					
+			for ( Object aliasObj : ca ) {
+				if ( aliasObj instanceof String ) {
+					configAliases.add( aliasObj.toString() );
+				}
+			}
+			
+    		results = configAliases.toArray( new String[0] );
+    		
+    	}
+		return results;
+	}
+
+	public boolean onCommand(CommandSender sender, PluginCommand command, String label,
     								String[] args) {
     	
         RootCommand rootCommand = rootCommands.get(command);

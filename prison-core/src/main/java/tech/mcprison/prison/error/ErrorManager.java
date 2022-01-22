@@ -31,7 +31,7 @@ public class ErrorManager {
 
     public ErrorManager(PluginEntity owner) {
         this.owner = owner;
-        this.errorDir = new File(owner.getDataFolder(), "errors");
+        this.errorDir = new File(owner.getModuleDataFolder(), "errors");
         if (!this.errorDir.exists()) {
             this.errorDir.mkdir();
         }

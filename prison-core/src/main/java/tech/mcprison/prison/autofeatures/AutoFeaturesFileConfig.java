@@ -49,27 +49,35 @@ public class AutoFeaturesFileConfig {
     		
 	    	blockBreakEvents(options),
 	    	
-		    	blockBreakEventPriority(blockBreakEvents, "LOW"),
+	    		// Setting this to true will cancel the block break events (normal prison behavior):
+	    		cancelAllBlockBreakEvents(blockBreakEvents, true),
+	    		// Setting this to false will not zero out the block drops (normal prison behavior).
+	    		// When set to true, it will zero it out so if the block break event is not canceled,
+	    		// then it will prevent double drops:
+	    		cancelAllBlockEventBlockDrops(blockBreakEvents, false),
+	    		
+	    		
+	    		applyBlockBreaksThroughSyncTask(blockBreakEvents, true),
 
-		    	isProcessTokensEnchantExplosiveEvents(blockBreakEvents, false),
+	    		
+	    		blockBreakEventPriority(blockBreakEvents, "LOW"),
+
 		    	TokenEnchantBlockExplodeEventPriority(blockBreakEvents, "DISABLED"),
 		    	
-		    	isProcessCrazyEnchantsBlockExplodeEvents(blockBreakEvents, false),
 		    	CrazyEnchantsBlastUseEventPriority(blockBreakEvents, "DISABLED"),
 
-		    	isProcessZenchantsBlockExplodeEvents(blockBreakEvents, false),
 		    	ZenchantmentsBlockShredEventPriority(blockBreakEvents, "DISABLED"),
 	    	
-		    	isProcessPrisonEnchantsExplosiveEvents(blockBreakEvents, false),
 		    	PrisonEnchantsExplosiveEventPriority(blockBreakEvents, "DISABLED"),
 		    	
-		    	isProcessPrisons_ExplosiveBlockBreakEvents(blockBreakEvents, false),
-		    	ProcessPrisons_ExplosiveBlockBreakEvents(blockBreakEvents, "DISABLED"),
+		    	ProcessPrisons_ExplosiveBlockBreakEventsPriority(blockBreakEvents, "DISABLED"),
 		    	
 		    	
 		    	blockBreakEvents__ReadMe(blockBreakEvents, 
 		    			"Use the following event priorities with the blockBreakEvents: " +
 		    			"DISABLED, LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR" ),
+		    	
+		    	
 		    	
 	    	general(options),
 	    	
@@ -82,12 +90,40 @@ public class AutoFeaturesFileConfig {
 		    	isCalculateXPEnabled(general, true),
 		    	givePlayerXPAsOrbDrops(general, false),
 		    	
-		    	dropItemsIfInventoryIsFull(general, true),
-				playSoundIfInventoryIsFull(general, true),
-				hologramIfInventoryIsFull(general, false),
+		    	
+		    	
+		    inventory(options),
+		    	
 
-				isAutoSellPerBlockBreakEnabled(general, false),
-				isAutoSellPerBlockBreakInlinedEnabled(general, false),
+				isAutoSellPerBlockBreakEnabled(inventory, false),
+//				isAutoSellPerBlockBreakInlinedEnabled(general, false),
+				
+				isAutoSellIfInventoryIsFull(inventory, true),
+				
+				dropItemsIfInventoryIsFull(inventory, true),
+				
+				playSoundIfInventoryIsFull(inventory, true),
+				playSoundIfInventoryIsFullSound(inventory, "block_note_block_pling" ),
+				playSoundIfInventoryIsFullSoundVolume(inventory, 4.0d ),
+				playSoundIfInventoryIsFullSoundPitch(inventory, 1.0d ),
+				playSoundIfInventoryIsFullSound__readme(inventory, 
+						"The name of the sound must be valid for the server platform and " +
+						"its version, and is case insensitive. To get a list of valid " +
+						"sounds use the command: " +
+						"'/prison utils sounds list <page>'. Page is optional. Use page " +
+						"numbers to see all available sounds.  An invalid sound will " +
+						"default to NOTE_PLING, BLOCK_NOTE_PLING, or BLOCK_NOTE_BLOCK_PLING, " +
+						"as valid for your server."),
+				
+				actionBarMessageIfInventoryIsFull(inventory, true),
+//				hologramIfInventoryIsFull(general, false),
+
+				
+			
+			tokens(options),
+				
+				tokensEnabled( tokens, false ),
+				tokensBlocksPerToken( tokens, 100 ),
 				
 				
 			permissions(options),
@@ -232,11 +268,12 @@ public class AutoFeaturesFileConfig {
 		    	
 		    
 		    	
-	    	debug(options),
-	    		isDebugSupressOnBlockBreakEventCancels(debug, false),
-	    		isDebugSupressOnTEExplodeEventCancels(debug, false),
-	    		isDebugSupressOnCEBlastUseEventCancels(debug, false), 
-	    		isDebugSupressOnPEExplosiveEventCancels(debug, false)
+//	    	debug(options),
+//	    		isDebugSupressOnBlockBreakEventCancels(debug, false),
+//	    		isDebugSupressOnTEExplodeEventCancels(debug, false),
+//	    		isDebugSupressOnCEBlastUseEventCancels(debug, false), 
+//	    		isDebugSupressOnPEExplosiveEventCancels(debug, false),
+//	    		isDebugSupressOnPrisonMinesBlockBreakEventCancels(debug, false)
 
     	;
 
@@ -346,6 +383,24 @@ public class AutoFeaturesFileConfig {
     		this.intValue = value;
     		this.longValue = null;
     		this.doubleValue = null;
+    		this.listValue = new ArrayList<>();
+    	}
+    	private AutoFeatures(AutoFeatures section, double value) {
+    		this.parent = section;
+    		this.isSection = false;
+    		this.isBoolean = false;
+    		this.isMessage = false;
+    		this.isInteger = false;
+    		this.isLong = false;
+    		this.isDouble = true;
+    		this.isStringList = false;
+    		
+    		this.path = section.getKey();
+    		this.message = null;
+    		this.value = null;
+    		this.intValue = null;
+    		this.longValue = null;
+    		this.doubleValue = value;
     		this.listValue = new ArrayList<>();
     	}
     	private AutoFeatures(AutoFeatures section, NodeType nodeType, String... values ) {
@@ -505,8 +560,22 @@ public class AutoFeaturesFileConfig {
     			IntegerNode intValue = (IntegerNode) conf.get( getKey() );
     			results = intValue.getValue();
     		}
-    		else if ( getValue() != null ) {
+    		else if ( getIntValue() != null ) {
     			results = getIntValue();
+    		}
+    		
+    		return results;
+    	}    	
+    	
+    	public double getDouble( Map<String, ValueNode> conf ) {
+    		double results = 0d;
+    		
+    		if ( conf.containsKey(getKey()) && conf.get( getKey() ).isDoubleNode() ) {
+    			DoubleNode doubleValue = (DoubleNode) conf.get( getKey() );
+    			results = doubleValue.getValue();
+    		}
+    		else if ( getDoubleValue() != null ) {
+    			results = getDoubleValue();
     		}
     		
     		return results;
@@ -519,10 +588,14 @@ public class AutoFeaturesFileConfig {
     			StringListNode list = (StringListNode) conf.get( getKey() );
     			results = list.getValue();
     		}
-    		else if ( getValue() != null ) {
-    			results = new ArrayList<>();
+    		else if ( getListValue() != null && getListValue().size() > 0 ) {
+    			results = getListValue();
     		}
     		
+    		if ( results == null ) {
+    			results = new ArrayList<>();
+    		}
+    			
     		return results;
     	}
     	
@@ -706,6 +779,10 @@ public class AutoFeaturesFileConfig {
 		return feature.getInteger( getConfig() );
 	}
 	
+	public double getDouble( AutoFeatures feature ) {
+		return feature.getDouble( getConfig() );
+	}
+	
 	public List<String> getFeatureStringList( AutoFeatures feature ) {
 		
 		return feature.getStringList( getConfig() );
@@ -724,7 +801,7 @@ public class AutoFeaturesFileConfig {
 	 * initial saving of the data since the original file will not be deleted first.
 	 * </p>
 	 * 
-	 * @param afConfig
+	 * @param config
 	 * @return
 	 */
 	private boolean saveConf( Map<String, ValueNode> config ) {

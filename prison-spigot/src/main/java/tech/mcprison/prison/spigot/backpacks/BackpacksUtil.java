@@ -25,7 +25,9 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.compat.Compatibility;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.configs.BackpacksConfig;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
@@ -34,13 +36,12 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 public class BackpacksUtil {
 
     private static BackpacksUtil instance;
-    private final Configuration messages = SpigotPrison.getInstance().getMessagesConfig();
     private Configuration backpacksConfig = SpigotPrison.getInstance().getBackpacksConfig();
     private File backpacksFile = new File(SpigotPrison.getInstance().getDataFolder() + "/backpacks/backpacksData.yml");
     private FileConfiguration backpacksDataConfig = YamlConfiguration.loadConfiguration(backpacksFile);
     public static List<String> openBackpacks = new ArrayList<>();
     public static List<String> backpackEdited = new ArrayList<>();
-    private final Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+    private final Compatibility compat = SpigotCompatibility.getInstance();
     private final int backpackDefaultSize = Integer.parseInt(backpacksConfig.getString("Options.BackPack_Default_Size"));
 
     /**
@@ -1280,7 +1281,7 @@ public class BackpacksUtil {
             ItemStack item;
 
             List<String> itemLore = createLore(
-                    messages.getString("Lore.ClickToOpenBackpack")
+                    SpigotPrison.getInstance().getMessagesConfig().getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open)
             );
 
             item = createButton(SpigotUtil.getXMaterial(backpacksConfig.getString("Options.BackPack_Item")).parseItem(), itemLore, backpacksConfig.getString("Options.BackPack_Item_Title"));

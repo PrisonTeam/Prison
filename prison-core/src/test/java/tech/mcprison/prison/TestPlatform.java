@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
@@ -276,6 +277,22 @@ public class TestPlatform implements Platform {
 	public double getConfigDouble( String key, double defaultValue ) {
 		return defaultValue;
 	}
+
+	@Override
+	public List<?> getConfigStringArray( String key ) {
+		return new ArrayList<String>();
+	}
+
+	@Override
+	public boolean isWorldExcluded( String worldName ) {
+		return false;
+	}
+	
+	@Override
+    public TreeSet<String> getExcludedWorlds()
+	{
+		return new TreeSet<>();
+	}
 	
 	@Override
 	public PrisonBlockTypes getPrisonBlockTypes() {
@@ -362,6 +379,11 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
+	public String dumpEventListenersPlayerInteractEvents() {
+		return "";
+	}
+	
+	@Override
 	public void testPlayerUtil( UUID uuid ) {
 		
 	}
@@ -422,7 +444,25 @@ public class TestPlatform implements Platform {
 	 * <code>tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.reloadConfig()</code>
 	 * 
 	 */
+	@Override
 	public void reloadAutoFeaturesEventListeners() {
 		
+	}
+
+	@Override
+	public void setTitle( Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut )
+	{
+		
+	}
+
+	@Override
+	public void setActionBar( Player player, String actionBar )
+	{
+		
+	}
+	
+	@Override
+	public int compareServerVerisonTo( String comparisonVersion ) {
+		return 0;
 	}
 }

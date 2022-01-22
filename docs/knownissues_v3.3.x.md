@@ -3,49 +3,190 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
-
-# TODOs for v3.2.10 release:
-
-1. DONE: Final testing of ladder rank multipliers
-2. DONE: /ranks ladder moveRank not working
-3. DONE: Forced global refresh of rank multipliers when a ladder multiplier is changed.
-  - Should be simple
-  - Run as async task
-  - DONE: Force update when updating a ladder's multiplier - all players
-  - DONE: Force update when changing ranks - only targeted player
-4. DONE: Add ladder base cost multiplier to /ranks autoConfigure.  Start with a simple 10%.
-  - Include message that it's enabled and how to change it or disable it:
-  - /ranks ladder rankCostMultiplier prestiges 0
-5. Add to /ranks player the detail information on rank cost multipliers
-6. DONE: For '/ranks autoConfigure' add an alias to '/prison autoConfigure'
-
-7. DONE: Change /ranks list so if non-op it does not show all the extra details.  A simplified list for plain players.
-
-8. Liners: Some are only for later releases and do not work with 1.8.8.  So need to setup something to restrict the liners that are not functional for the older releases of spigot.
-
-9. Hook up Prison's Explosion event. 
+# TODO Items for v3.2.11-alpha.13
 
 
-### Others
 
-* DONE: Add a rank cost multiplier to ladders.  Sum all active ranks a player has to get the total multiplier to use for rank costs.
-* DONE: Fix the "next rank" value with PlayerRanks.... needs to recalc with the new rank.
-* DONE: When a ladder's rate cost multiplier is changed, need to recalculate all player's multipliers.  Setup a task?
+**Tasks needed for the v3.2.11 release:**
+* Review some documentation and udpate... especially with the luckperms.
+* Finalize the event listeners to use only one event (was three, now two, but reduce down to one).
+* Review placeholders
+* Try to hook up a top-n command - may be too complex and may need to be pushed over to the next release
+* Review Mine Bombs and see if there are some simple updates
+* Backpacks - may need to push over to next version
+* GUI menus - Add the new GUI Tools to more of the GUI menus to simplify some of the commands?
+
+
+
+* test Mine placements and resizing.  Something does not look correct with tracer and liners.
+
+
+
+* create a command placeholder that will be able to add a delay between submitting commands.  Have it based upon ms.. and have it setup to be used when more than one command is combined with others.
+
+
+* Command cooldowns - ranks - use config file to customize on a per command basis.  Modify the prison command handler to manage cooldows as a new attribte to the commands.
+
+
+* Mine Bombs: identify bombs... new way.
+See SelectionManager... Prison wand uses the whole items stack to identify a wand, instead of just one small part, such as name or lore. Well, actually, its only the display name and material... no lore.
+
+
+* Add Mine Regions - Similar to mines in a way, where they will allow players to have access to the region, have mine effects (outside of a mine)... and mine effects would also be tied to these too.
+
+
+* DONE: command handler - Ignore commands in certain worlds
+
+
+* Placing mines could triggers many resets... also placing mines may not clear all blocks.
+
+
+* DONE: Player Cache - Make sure the cache is loadable otherwise a new instance may be created that could wipe out the existing data.  
+  - All player loads block... they do not submit a task anymore.
+  - ~block for all loads - currently it may return a null and load via async~
+  - (no) Track file last saved date and if they don't match, then create a backup of the file version and don't delete it.
+
+
+* GUI Menu Tools
+  - Page prior and page next
+  - Current page
+  - Go Back button
+  - Background colored panes when no options
+  - Current version is not tied to configs... future options...
+  -- Hook up to more gui menus
+  
+
+* DONE: Add a base class for the mine bomb configs... 
+ - DONE: Add a version so as to be able to auto refresh the formats 
+
+
+* New documentation - Madog's knowledge
+ - look for pins
+
+
+* Add mine effects.  See conversation with Madog.
+ - Use PlayerCache and existing utils.
+ - Simple to implement some features, including flying in a mine.
+
+
+**List for v3.2.11 release:**
+
+
+* DONE: Players need to be restructured.  Move rank player object, or at least most of the core, to the core project so as to reduce the number of player types.  
+
+* Cache player 
+  - cache player's balance - Hmm... may need to put it in RankPlayer
+  - cache player's ranks... only prestiges, default
+  
+* Top-n ranks
+  - total blocks mined
+  - total tokens earned (or currently has)
+  - balance
+  - highest rank: prestiges, default, balance
+  - most online time, or most mining time (which will probably be better)
+  
+
+* DONE: FIXED: Issue with blocks.  Explosions are creating "untouchable" blocks that cannot be included in other explosions.
+  - My observations were with multiple explosions leaving rings that are within the the radius of an explosion
+  - I could break the blocks.
+  - jamo said that the pillars that were created on his server could not be broke
+
+
+
+* Review placeholders - add and test placeholders that are tied to playerCache stats
+
+* Mine Bombs - Finish
+    - Add sound and particle effects
+    - Other features?
+    - Make sure the bomb is set within a mine.  Do not allow it to be placed outside of a mine.
+    - DONE: When exploding large bombs with block decay, there is a chance that you can get the first block in the decay as part of the drops.
+        - DONE: Check to make sure the block broke is the one in the target block.  If not, then ignore.
+        - make sure the block is not "locked" 
+
+
+* Add a top 10 listing commands
+    - Top player on server (rank / ladder)
+    - Top player per mine?
+    - Top Player per Blocks
+    - Top Player per time
+  
+* Add Block & Time requirements for rankups
+     - Upon rankup, player will get a new "object" that would track rankup progress
+     - Would record current blocks and time for that rank, which is needed for when they 
+       prestige.  The rankup Progress won't change until they rankup and it will be reset.
+       It's used to subtract from current stats to get "progress".
+
+* BackPacks & Vaults & Warehouses - rewrite
+    - Add PlayerCache support with integrated backpack data object to track details
+    - Create new gradle module for backpacks and other items.  Call it something like Accessories.
+    - Remove hooks in the spigot module except for the code to read existing old backpacks to migrate contents.
+    - Backpacks are able to have pickup and sell used against them.
+    - Vaults are protected from pickup and sell - Have to manually move items in and out to main inventory in order to sell them.  Max size limit is a double chest.
+    - Backpacks can be protected from pickup and sell via command, which can be used to charge players.
+    - Warehouses are not normal player inventory/chests.  They are virtual containers for items and blocks.  
+    - Warehouses have slots, where each slot is one item.  A slot can have a dynamic amount of items it can store.  The player can buy more slots in their warehouse and increase the capacity of each slot.
+    - Warehouses - have formula to calculate costs of slots and capacity, where prices increase on both depending upon number of slots, and total capacity size of warehouse.
+    - Warehouses - Initial capacity of 5 slots, each at 100 to 200 capacity.
+    - Should vaults be tied to a physical location, such a server-wide "bank"?  If so, then players has to physically go there to access their vaults.  Same with warehouses.  A defined bank or warehouse would be similar to a mine in such it would be 3d and access would work anywhere in there.  Or a given mine could be designated as a bank or mine.  So like for example, mine c could be the bank so a player would have to rank up to C to access it.  Then a vault could be tied to a third tier prestige or something (but those don't have physical locations, but could make it mine a) or create a new mine that is empty, then link that new mine to that prestige rank so players have access to it.
+    
+    
+
+
+
+
+* Mine reset messages: Have setting to control by percent remaining in the mine.
+
+
+* Save files do not include the block type prefix. Such as used with CustomItems.
+Not sure if it needs to?  Need to test and confirm if working correctly.  World coordinates would be wrong if missing.
+
+
+
+
+- Not sure why the following would be needed:
+* Auto Features Settings : Create an API object that has the auto features settings listed. Basically this would serve as a simple cache with a life span of about 10 seconds. So if a player is mining hundreds of blocks within 10 seconds, odds are these settings will not be changing... both server config settings, and the player's permissions. Can provide helper classes that will a simple check of all these details, such as passing tool in hand to check perms for auto pickup settings for the server, the player's perms and lore on the tool. ... as an example.
+- Store in the player cache object, but make transient. Refresh every 10 to 15 seconds.. maybe even 30?
+- Add to the auto features event so its available there
+- Change function parameters to use the event and this new object as parameters... reduces number of parms...
+
+
+
+
+
+* Multi-language - Unable to create a custom language file that is not within the prison jar.  It's been reported by Ingrosso that cannot create a new language file that does not match a file within the jar?
+
+
+* BlockEvent processing queue - submit blockEvents to a job queue to run in another async thread... the individual commands would have to run in a sync thread.
+  - This will release the block break thread faster and won't contribute to lag.
+  
+
+
+
+* DONE: https://github.com/PrisonTeam/Prison/issues/222
+ DecimalFormat not being used correctly in saving mine data so if different Locale is used, other than EN US, then parsing the saved file can result in a failure.
+ - MineBlockEvent is an example of where this was a problem
+ - The offending sections were corrected and should now work
+ 
+ 
+* Add option to /ranks to rename a rank.  Tag too?
+
 
 
 
 # Start on mine bombs
 
  1. Select size of bomb. Configuration. 
-   1a. Identify items to use as bombs
-   1b. Bomb size
-   1c. Bomb explosion pattern. Currently only sphere, but could include other shapes.
+   1a. DONE: Identify items to use as bombs
+   1b. DONE: Bomb size
+   1c. DONE: Bomb explosion pattern. Currently only sphere, but could include other shapes.
  2. DONE: Select list of blocks that will be effected by bomb explosion
  3. Throw bomb, or place bomb... start processing count down.
  4. Pre-fire effects: sound & particles (low priority)
  5. fire event
  6. Post-fire effects: sound & particles (low priority)
  7. Hook up prison's event handler for prison's explosion event
+
+
 
 
 * DONE: Modified /ranks list to provide this feature
@@ -85,10 +226,6 @@
 
 
 # **Possible bugs/issues:**
-
-* DONE: /ranks ladder moveRank did not work to move from one ladder to another
-
-* DONE: When adding a new rank or mine, auto reload all placeholders so they pick up the new entry.
 
 * Test BlockEvent perms... they appear like they don't work.
 
@@ -496,6 +633,97 @@ Offers for translation:
 
 
 <hr style="height:13px; border:none; color:#aaf; background-color:#aaf;">
+
+
+# Features recently added for v3.2.11
+
+
+
+
+
+
+
+
+
+
+* DONE: New update to combine block processing results in many block.getDrops() being combined.  Since they are combined, the extended fortune calculations may not work properly since it does not know how many original blocks were included.
+- May need to have an intermediate object to better collect original blocks, drops, and targetBlocks.  It can include some of the more basics that are not tracked, such as original block count to better calculate the fortunes.
+
+
+
+* DONE: Rewrite the `/prison utils titles` to use XSeries' title commands.  XSeries only supports 1.9+ so I still need to support 1.8.8 directly within prison.
+
+
+
+* DONE: Common messaging framework so if hundreds of messages are sent, only one is displayed. Eliminate the duplicates.
+
+
+
+
+* DONE: Revert a mine to a virtual mine.  Maybe with the command: `/mines set area *virtual*`.  Backup the mine's data file before updating and saving.
+
+
+* DONE: the command /mines reset *all* is not working correctly.  Could be an issue with the chaining not submitting the next reset since this is all done through async processes right now.
+
+
+* DONE: Add a few more options to auto features for auto sell, such on full inventory.  This was removed recently to stabilize some of the new code.
+  - Just refined what was already there.
+ 
+
+
+
+* DONE: Concurrent modification error on the MineTargetPrisonBlock when resetting the mine.  
+  tech.mcprison.prison.spigot.game.SpigotWorld.setBlocksSynchronously() (146). 
+  Serialize Id the mine resets and provide a locking mechanism that will prevent auto features from being processed when it goes in to a reset mode.  Also when in a reset mode, prevent another reset from being submitted so they cannot run concurrently or back to back.  Maybe attach a cooldown to the resets too, such as 10 seconds would be long enough to prevent a runaway chained reaction.
+     - DONE: Create an object such as a MineStateToken that will hold the state of the mine reset (in progress, mineable, stable, usable, locked, etc... not sure proper terminology right now... or how many states), with a serial number that will be incremented on each reset.
+     - (on hold) Do not perform a clear on the collection of MineTargetPrisonBlocks within the mine.  Just replace the collection with a new collection and let the garbage collection handle reclaiming all resources. Carefully review for possible memory leaks.  May be a good idea to hold on to that collection and submit a task that runs in about 30 seconds to perform a clear on the collection to release the resources.  This may be important since the target blocks contains references to the stats blocks and may not be GC'd automatically.  May want to null those refs first too.
+     MineReset.clearMineTargetPrisonBlocks() (1799)
+
+* DONE: PlayerCache Time per Mine stats - not recording correctly.
+
+* DONE: new auto features autosell should place items in inventory that have no sell value. Items that cannot be auto sold.
+      
+
+
+
+
+# Features recently added for v3.2.10
+
+
+# TODOs for v3.2.10 release:
+
+1. DONE: Final testing of ladder rank multipliers
+2. DONE: /ranks ladder moveRank not working
+3. DONE: Forced global refresh of rank multipliers when a ladder multiplier is changed.
+  - Should be simple
+  - Run as async task
+  - DONE: Force update when updating a ladder's multiplier - all players
+  - DONE: Force update when changing ranks - only targeted player
+4. DONE: Add ladder base cost multiplier to /ranks autoConfigure.  Start with a simple 10%.
+  - Include message that it's enabled and how to change it or disable it:
+  - /ranks ladder rankCostMultiplier prestiges 0
+5. Add to /ranks player the detail information on rank cost multipliers
+6. DONE: For '/ranks autoConfigure' add an alias to '/prison autoConfigure'
+
+7. DONE: Change /ranks list so if non-op it does not show all the extra details.  A simplified list for plain players.
+
+8. DONE: Liners: Some are only for later releases and do not work with 1.8.8.  So need to setup something to restrict the liners that are not functional for the older releases of spigot.
+
+9. DONE: Hook up Prison's Explosion event. 
+
+
+### Others
+
+* DONE: Add a rank cost multiplier to ladders.  Sum all active ranks a player has to get the total multiplier to use for rank costs.
+* DONE: Fix the "next rank" value with PlayerRanks.... needs to recalc with the new rank.
+* DONE: When a ladder's rate cost multiplier is changed, need to recalculate all player's multipliers.  Setup a task?
+
+
+
+* DONE: /ranks ladder moveRank did not work to move from one ladder to another
+
+* DONE: When adding a new rank or mine, auto reload all placeholders so they pick up the new entry.
+
 
 
 

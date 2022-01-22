@@ -240,7 +240,9 @@ public class PlaceholderManager {
 		
 		// player balances.  Both with and without ladders.
 		prison_pb(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_pbf(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
 		prison_player_balance(prison_pb, PlaceholderFlags.PLAYER),
+		prison_player_balance_formatted(prison_pbf, PlaceholderFlags.PLAYER),
 		
 		
 		prison_pb_epm(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
@@ -250,8 +252,26 @@ public class PlaceholderManager {
 		
 		
 		prison_pb_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
+		prison_pbf_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
 		prison_player_balance_laddername(prison_pb_laddername, PlaceholderFlags.LADDERS),
+		prison_player_balance_formatted_laddername(prison_pbf_laddername, PlaceholderFlags.LADDERS),
 
+		
+		
+		prison_ptb(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_ptbf(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_ptbfm(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_ptbfk(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_player_token_balance(prison_ptb, PlaceholderFlags.PLAYER),
+		prison_player_token_balance_formatted(prison_ptbf, PlaceholderFlags.PLAYER),
+		prison_player_token_balance_formatted_metric(prison_ptbfm, PlaceholderFlags.PLAYER),
+		prison_player_token_balance_formatted_kmbt(prison_ptbfk, PlaceholderFlags.PLAYER),
+		
+		prison_ptb_epm(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_ptb_epmf(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_player_token_balance_earnings_per_minute(prison_ptb_epm, PlaceholderFlags.PLAYER),
+		prison_player_token_balance_earnings_per_minute_formatted(prison_ptb_epmf, PlaceholderFlags.PLAYER),
+		
 		
 		
 		prison_psm(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
@@ -260,10 +280,13 @@ public class PlaceholderManager {
 		
 		
 		
-		prison_pbt(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
-		prison_pbtm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_pbt(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_pbtf(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
+		prison_player_blocks_total(prison_pbt, PlaceholderFlags.PLAYER),
+		prison_player_blocks_total_formatted(prison_pbtf, PlaceholderFlags.PLAYER),
+
 		
-		prison_player_blocks_total(prison_pbt, PlaceholderFlags.MINEPLAYERS),
+		prison_pbtm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
 		prison_player_blocks_total_minename(prison_pbtm, PlaceholderFlags.MINEPLAYERS),
 		
 		

@@ -88,7 +88,10 @@ public class Prison
     private CommandHandler commandHandler;
     private SelectionManager selectionManager;
     private EventBus eventBus;
+    
     private LocaleManager localeManager;
+    private File moduleDataFolder;
+    
 //    private ItemManager itemManager;
     private ErrorManager errorManager;
     private TroubleshootManager troubleshootManager;
@@ -135,9 +138,25 @@ public class Prison
     public LocaleManager getLocaleManager() {
     		
     	if ( this.localeManager == null ) {
+    		
     		this.localeManager = new LocaleManager(this, "lang/core");
     	}
         return localeManager;
+    }
+    
+    /**
+     * Returns this module's data folder, where all data can be stored.
+     * It is located in the Prison data folder, and has the name of the module.
+     * It is automatically generated.
+     *
+     * @return The {@link File} representing the data folder.
+     */
+    public File getModuleDataFolder() {
+    	
+    	if ( moduleDataFolder == null ) {
+    		this.moduleDataFolder = Module.setupModuleDataFolder( "core" );
+    	}
+        return moduleDataFolder;
     }
     
     /**
@@ -503,7 +522,7 @@ public class Prison
     private boolean initDataFolder() {
         // Creates the /Prison directory, for core configuration.
         this.dataFolder = getPlatform().getPluginDirectory();
-        return this.dataFolder.exists() || this.dataFolder.mkdir();
+        return this.dataFolder.exists() || this.dataFolder.mkdirs();
     }
 
     private boolean initMetaDatabase() {
@@ -634,6 +653,8 @@ public class Prison
         return dataFolder;
     }
 
+    
+    
 
 
     /**
