@@ -17,7 +17,8 @@
 
 ## Build logs
  - **[v3.3.0-alpha - Current](changelog_v3.3.x.md)**
- - [v3.2.0 through v3.2.10](prison_changelogs.md)
+ 
+ - [v3.2.0 through v3.2.11](prison_changelogs.md)
  
 
 
@@ -25,8 +26,9 @@
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
 
-# Prison Supports both Spigot 1.17.1 and Spigot 1.18.x
-# Prison also support Java 16 and Java 17
+# Prison Supports Spigot 1.8 through Spigot 1.18.x
+# Prison Supports Java 1.8 though Java 17
+# Prison is created for the Spigot Platform, and works on other platforms based upon Spigot
 
 
 With the release of Spigot 1.17.x, there were a few minor changes that were needed to be made to prison to support Java 16.  These were mostly related to a couple of NMS routines that were trying to figure out the player's default language they have selected. Due to new restrictions moving forward with Spigot, the ability to correctly identify the player's default language may not be possible, but prison will still use the selected language setting in the config files.
@@ -41,7 +43,7 @@ Prison supports both Spigot 1.17.1 and Spigot 1.18.x, along with Java 17.  At th
 * Auto Configure: Even if you really don't want to use auto configure when setting up your server, it may be worth trying it out just to see what it does.  If you're not happy with it, then deleting the `plugins/Prison/` directory will remove "everything" and on the next restart of your server, prison will load for the first time.  So if you are just getting started with prison, it's worth a try.
 
 
-* Prison now has Access By Rank to Reduce the number of Permissions needed! This simplifies a lot of settings and on a simple Prison server, can get you up and running much faster.
+* Prison now has Access By Rank to reduce the number of Permissions needed! This simplifies a lot of settings and on a simple Prison server, can get you up and running much faster.
 
 * Backpacks: It is advised not to use Prison's backpacks at this time.  They will be going through a rewrite and may result in content losses when upgrading when the newer version is available.  It is suggested you give MinePacks at try.
 
