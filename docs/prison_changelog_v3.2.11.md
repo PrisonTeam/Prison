@@ -13,15 +13,13 @@ These build logs represent the work that has been going on within prison.
 
 # 3.2.11 2022-01-22
 
-* Prison now supports 258 Placeholders, including aliases.
-
 - - - - 
 
 Prison supports:
  - Java 1.8 through Java 17.
  - Spigot 1.8 through 1.18, and other platforms based upon Spigot.
 
-* Many updates and bug fixes. Please see the change log for all of them. Below is just a limited sumary of some of the more important updates.
+* Many updates and bug fixes. Please see the change log for all of them. Below is just a limited summary of some of the more important updates.
 
 
 * Asynchronous mine reset enablement
@@ -30,16 +28,16 @@ Prison supports:
 * Prison can now be disabled completely on a per world basis.  See setting in config.yml.
 
 
-* If the server is missing an economy plugin, prison now does a better job at communicting what the problem is so it can be fixed quickly. An economy plugin is required for the ranks module to function.
+* If the server is missing an economy plugin, prison now does a better job at communicating what the problem is so it can be fixed quickly. An economy plugin is required for the ranks module to function.
 
 
-* Added a debug mode for inspecting a block.  To enable, enabl prison debug with `/prison debug` then while holding a prison wand `/mines wand` click a block and it will show a couple of lines tied to the information that prison has recorded for that block.  If you shift-right click a block, then prison will check each event listener to see what it does with the block.  It will report when a block event is canceled and other details, on a per listener basis.
+* Added a debug mode for inspecting a block.  To enable, enable prison debug with `/prison debug` then while holding a prison wand `/mines wand` click a block and it will show a couple of lines tied to the information that prison has recorded for that block.  If you shift-right click a block, then prison will check each event listener to see what it does with the block.  It will report when a block event is canceled and other details, on a per listener basis.
 
 
 * Start to add tokens to prison.  Players can now earn tokens while mining. Its a work in progress, but they cannot spend them yet.
 
 
-* Updated block constraints so blocks can be spawned in spedific layers within a mine, and with a minimum or maximum amouts.
+* Updated block constraints so blocks can be spawned in specific layers within a mine, and with a minimum or maximum amounts.
 
 
 * Placeholders - Prison now has 258 placeholders, including aliases.  Added many placeholders and improve a few that were having some issues.  There are still more that are planned to be added.
@@ -48,13 +46,13 @@ Prison supports:
 * Added new Prison Mine Bombs - Work in progress - Basics exist and have a lot of functionality, but more work will be done to add new features and address issues when found and reported.  If you have ideas, or need something specific, please visit our discord server and talk to Blue.
 
 
-* Coming Soon: Mine Region. Mine effects that are applied to Mine Regions. Mine Effects will include potion effects like night vision, and other effects such as no hunger, no fall damage, and fly.  Also may be adding enhantments soon too.  
+* Coming Soon: Mine Region. Mine effects that are applied to Mine Regions. Mine Effects will include potion effects like night vision, and other effects such as no hunger, no fall damage, and fly.  Also may be adding enchantments soon too.  
 
 
 * Significant improvements for handling multi-block explosions with a major rewrite to improve the overall performance within the handling of block break events within the auto features. Many changes to improve performance on a per-block basis, and to prevent a block from being counted more than once when many different players are trying to break, or explode the same blocks.
 
 
-* Signficant updates to most Prison GUIs and sellall
+* Significant updates to most Prison GUIs and sellall
 
 **NOTE:** It is currently recommended that the old Prison Backpacks should not be used at this time.  They will be rewritten shortly to address the current issues. 
 

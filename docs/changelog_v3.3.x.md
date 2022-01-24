@@ -13,7 +13,32 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.2.11 2022-01-22
+# 3.3.0-alpha.7 2022-01-22
+
+
+
+
+
+
+
+* **3.3.0-alpha.7 2022-01-22**
+
+A return to the v3.3.0 release track.  The alpha.7 release represents a continuation of where we left off before.  Once we got to alpha.6, it became apparent that it was critical to release before v3.3.0 was ready, so we returned to the v3.2.x track, including everything up to and including the v3.3.0-alpha.6.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 **3.2.11 2022-01-22**
 
