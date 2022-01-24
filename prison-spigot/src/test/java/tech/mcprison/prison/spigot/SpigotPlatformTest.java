@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
+
 public class SpigotPlatformTest
 		//extends SpigotPlatform
 {
@@ -13,7 +15,9 @@ public class SpigotPlatformTest
 	public void testMineBlockList()
 	{
 
-		List<String> blockList = sp.buildBlockListBlockType();
+		List<SellAllBlockData> blockList = sp.buildBlockListXMaterial();
+		
+		// List<String> blockList = sp.buildBlockListBlockType();
 		
 		
 		int i = -1;
@@ -52,8 +56,9 @@ public class SpigotPlatformTest
 		
 	}
 	
-	protected List<String> mineBlockList( List<String> blockList, int startPos, int length ) {
-		List<String> results =  sp.mineBlockList( blockList, startPos, length);
+	protected List<String> mineBlockList( List<SellAllBlockData> blockList, int startPos, int length ) {
+		
+		List<String> results =  sp.mineBlockList( startPos, length, blockList );
 		
 		System.out.println( results );
 		

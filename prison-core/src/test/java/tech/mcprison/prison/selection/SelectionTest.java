@@ -18,23 +18,24 @@
 
 package tech.mcprison.prison.selection;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.TestPlatform;
 import tech.mcprison.prison.TestPlayer;
 import tech.mcprison.prison.TestWorld;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.events.player.PrisonPlayerInteractEvent;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Faizaan A. Datoo
@@ -70,17 +71,23 @@ public class SelectionTest {
         assertTrue(ourPlayer.getInput().contains("&7Second position set to &8(30, 20, 40)"));
     }
 
-    @Test public void testSelectionToolCheck() throws Exception {
+    @Test 
+    public void testSelectionToolCheck() throws Exception {
         Prison.get().getSelectionManager(); // init
 
         World ourWorld = new TestWorld("TestWorld");
         TestPlayer ourPlayer = new TestPlayer();
 
         int initialAmount = ourPlayer.getInput().size();
+        
+        PrisonBlock acaciaSapling = new PrisonBlock( "ACACIA_SAPLING");
 
         Prison.get().getEventBus().post(
-            new PrisonPlayerInteractEvent(ourPlayer, new ItemStack("test", 1, BlockType.ACACIA_SAPLING),
+            new PrisonPlayerInteractEvent(ourPlayer, new ItemStack("test", 1, acaciaSapling ),
                 PrisonPlayerInteractEvent.Action.LEFT_CLICK_BLOCK, new Location(ourWorld, 10, 20, 30)));
+//        Prison.get().getEventBus().post(
+//        		new PrisonPlayerInteractEvent(ourPlayer, new ItemStack("test", 1, BlockType.ACACIA_SAPLING),
+//        				PrisonPlayerInteractEvent.Action.LEFT_CLICK_BLOCK, new Location(ourWorld, 10, 20, 30)));
 
         assertEquals(initialAmount, ourPlayer.getInput()
             .size()); // nothing should have happened because we have the wrong item in our hand

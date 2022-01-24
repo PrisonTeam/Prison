@@ -32,17 +32,18 @@ import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.BlockState;
 import tech.mcprison.prison.internal.block.PrisonBlock;
-import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 
 /**
  * @author Faizaan A. Datoo
  */
-public class SpigotBlock implements Block {
+public class SpigotBlock
+	extends PrisonBlock
+//	implements Block 
+{
 
     private org.bukkit.block.Block bBlock;
 
@@ -56,6 +57,7 @@ public class SpigotBlock implements Block {
 
 
     public SpigotBlock(org.bukkit.block.Block bBlock) {
+    	super( SpigotCompatibility.getInstance().getPrisonBlock( bBlock ) );
         this.bBlock = bBlock;
         
         this.prisonBlockTypes = new HashSet<>();
@@ -72,57 +74,60 @@ public class SpigotBlock implements Block {
     	return sb.toString();
     }
 
-    public String getBlockName() {
-    	return getPrisonBlock().getBlockName();
-    }
+//    public String getBlockName() {
+//    	return super.getBlockName();
+//    }
     
     @Override public Location getLocation() {
         return getWrapper() == null ? null :
         		SpigotUtil.bukkitLocationToPrison(getWrapper().getLocation());
     }
 
-    @Override public Block getRelative(BlockFace face) {
+    @Override public PrisonBlock getRelative(BlockFace face) {
         return new SpigotBlock(
         		getWrapper().getRelative(
         				org.bukkit.block.BlockFace.valueOf(
         						face.name())));
     }
 
-    @Override public BlockType getType() {
-    	return SpigotCompatibility.getInstance().getBlockType( getWrapper() );
-//        return SpigotUtil.materialToBlockType(bBlock.getType());
-    }
+//    @Override public BlockType getType() {
+//    	return SpigotCompatibility.getInstance().getBlockType( getWrapper() );
+////        return SpigotUtil.materialToBlockType(bBlock.getType());
+//    }
 
-    @Override
+//    @Override
     public PrisonBlock getPrisonBlock() {
-    	PrisonBlock results = null;
     	
-    	if ( getPrisonBlockTypes() != null ) {
-    		
-    		// Need to see if any PrisonBlockTypes exist in the mine where this block is located.
-    		for ( PrisonBlockType blockType : getPrisonBlockTypes() ) {
-    			
-    			results = getPrisonBlockFromCustomBlockIntegration( blockType );
-    			if ( results != null ) {
-    				
-    				break;
-    			}
-    		}
-    	}
-
-    	if ( results == null && getWrapper() != null ) {
-    		results = SpigotCompatibility.getInstance().getPrisonBlock( getWrapper() );
-    	}
-
-    	if ( results != null && results.getLocation() == null && getLocation() != null ) {
-    		// Clone the block that was found in the mine.  This will allow us to 
-    		// set the location:
-    		results = new PrisonBlock( results );
-    		
-    		results.setLocation( getLocation() );
-    	}
+    	return this;
     	
-    	return results;
+//    	PrisonBlock results = null;
+//    	
+//    	if ( getPrisonBlockTypes() != null ) {
+//    		
+//    		// Need to see if any PrisonBlockTypes exist in the mine where this block is located.
+//    		for ( PrisonBlockType blockType : getPrisonBlockTypes() ) {
+//    			
+//    			results = getPrisonBlockFromCustomBlockIntegration( blockType );
+//    			if ( results != null ) {
+//    				
+//    				break;
+//    			}
+//    		}
+//    	}
+//
+//    	if ( results == null && getWrapper() != null ) {
+//    		results = SpigotCompatibility.getInstance().getPrisonBlock( getWrapper() );
+//    	}
+//
+//    	if ( results != null && results.getLocation() == null && getLocation() != null ) {
+//    		// Clone the block that was found in the mine.  This will allow us to 
+//    		// set the location:
+//    		results = new PrisonBlock( results );
+//    		
+//    		results.setLocation( getLocation() );
+//    	}
+//    	
+//    	return results;
     }
     
 	private PrisonBlock getPrisonBlockFromCustomBlockIntegration( PrisonBlockType blockType ) {
@@ -209,88 +214,120 @@ public class SpigotBlock implements Block {
     	SpigotCompatibility.getInstance()
 					.setBlockFace( getWrapper(), blockFace );
     }
-    /**
-     * <p>When setting the Data and Type, turn off apply physics which will reduce the over head on block updates
-     * by about 1/3.  Really do not need to apply physics in the mines especially if no air blocks and nothing
-     * that could fall (sand) or flow is placed.
-     * </p>
-     */
-	@Override 
-	public void setType(BlockType blockType) {
-    	
-		SpigotCompatibility.getInstance()
-						.updateSpigotBlock( blockType, getWrapper() );
-		
-//    	if ( type != null && type != BlockType.IGNORE ) {
-//    		
-//    		Material mat = SpigotUtil.getMaterial( type );
-//    		if ( mat != null ) {
-//    			bBlock.setType( mat, false );
-//    		}
-//    		
-////    		Optional<XMaterial> xMatO = XMaterial.matchXMaterial( type.name() );
+    
+//    /**
+//     * <p>When setting the Data and Type, turn off apply physics which will reduce the over head on block updates
+//     * by about 1/3.  Really do not need to apply physics in the mines especially if no air blocks and nothing
+//     * that could fall (sand) or flow is placed.
+//     * </p>
+//     */
+//	@Override 
+//	public void setType( PrisonBlock blockType) {
+//    	
+//		SpigotCompatibility.getInstance()
+//						.updateSpigotBlock( blockType, getWrapper() );
+//		
+////    	if ( type != null && type != BlockType.IGNORE ) {
 ////    		
-////    		if ( xMatO.isPresent() ) {
-////    			XMaterial xMat = xMatO.get();
-////    			Optional<Material> matO = xMat.parseMaterial();
-////    			
-////    			if ( matO.isPresent() ) {
-////    				Material mat = matO.get();
-////    				
-////    				bBlock.setType( mat, false );
-////
-////    			}
+////    		Material mat = SpigotUtil.getMaterial( type );
+////    		if ( mat != null ) {
+////    			bBlock.setType( mat, false );
 ////    		}
-//    		else {
-//    			// spigot 1.8.8 support for XMaterial: 
-//    			//   MOSS_STONE  LAPIS_LAZULI_ORE  LAPIS_LAZULI_BLOCK  PILLAR_QUARTZ_BLOCK
-//    			// 
-//    			
-//    			Output.get().logWarn( "SpigotBlock.setType: could not match BlockType " + 
-//    						type.name() + " defaulting to AIR instead.");
-//    			
-//    			mat = SpigotUtil.getMaterial( BlockType.AIR );
-//        		if ( mat != null ) {
-//        			bBlock.setType( mat, false );
-//        		}
-//    		}
-//    		
-////    		try {
-////				MaterialData materialData = SpigotUtil.blockTypeToMaterial(type);
-////				bBlock.setType(materialData.getItemType(), false);
-////				if ( type.getMaterialVersion() == MaterialVersion.v1_8) {
-////					
-////					bBlock.setData(materialData.getData(), false);
-////				}
-////			}
-////			catch ( Exception e ) {
-////				Output.get().logError( 
-////						String.format( "BlockType could not be set: %s %s ", 
-////						(type == null ? "(null)" : type.name()), e.getMessage()) );
-////			}
-//    	}
-    }
+////    		
+//////    		Optional<XMaterial> xMatO = XMaterial.matchXMaterial( type.name() );
+//////    		
+//////    		if ( xMatO.isPresent() ) {
+//////    			XMaterial xMat = xMatO.get();
+//////    			Optional<Material> matO = xMat.parseMaterial();
+//////    			
+//////    			if ( matO.isPresent() ) {
+//////    				Material mat = matO.get();
+//////    				
+//////    				bBlock.setType( mat, false );
+//////
+//////    			}
+//////    		}
+////    		else {
+////    			// spigot 1.8.8 support for XMaterial: 
+////    			//   MOSS_STONE  LAPIS_LAZULI_ORE  LAPIS_LAZULI_BLOCK  PILLAR_QUARTZ_BLOCK
+////    			// 
+////    			
+////    			Output.get().logWarn( "SpigotBlock.setType: could not match BlockType " + 
+////    						type.name() + " defaulting to AIR instead.");
+////    			
+////    			mat = SpigotUtil.getMaterial( BlockType.AIR );
+////        		if ( mat != null ) {
+////        			bBlock.setType( mat, false );
+////        		}
+////    		}
+////    		
+//////    		try {
+//////				MaterialData materialData = SpigotUtil.blockTypeToMaterial(type);
+//////				bBlock.setType(materialData.getItemType(), false);
+//////				if ( type.getMaterialVersion() == MaterialVersion.v1_8) {
+//////					
+//////					bBlock.setData(materialData.getData(), false);
+//////				}
+//////			}
+//////			catch ( Exception e ) {
+//////				Output.get().logError( 
+//////						String.format( "BlockType could not be set: %s %s ", 
+//////						(type == null ? "(null)" : type.name()), e.getMessage()) );
+//////			}
+////    	}
+//    }
 
-    @Override public BlockState getState() {
-        switch (getType()) {
-            case LEVER:
-                return new SpigotLever(this);
-            case SIGN:
-                return new SpigotSign(this);
-            case ACACIA_DOOR_BLOCK:
-            case OAK_DOOR_BLOCK:
-            case BIRCH_DOOR_BLOCK:
-            case SPRUCE_DOOR_BLOCK:
-            case DARK_OAK_DOOR_BLOCK:
-            case IRON_DOOR_BLOCK:
-            case JUNGLE_DOOR_BLOCK:
-                return new SpigotDoor(this);
+    @Override 
+    public BlockState getState() {
+    	
+    	BlockState results = null;
+    	
+    	XMaterial xMat = SpigotUtil.getXMaterial( getPrisonBlock() );
+    	
+        switch ( xMat ) {
+        	case LEVER:
+                results = new SpigotLever(this);
+                break;
+            case ACACIA_SIGN:
+            case ACACIA_WALL_SIGN:
+            case BIRCH_SIGN:
+            case BIRCH_WALL_SIGN:
+            case CRIMSON_SIGN:
+            case CRIMSON_WALL_SIGN:
+            case DARK_OAK_SIGN:
+            case DARK_OAK_WALL_SIGN:
+            case JUNGLE_SIGN:
+            case JUNGLE_WALL_SIGN:
+            case OAK_SIGN:
+            case OAK_WALL_SIGN:
+            case SPRUCE_SIGN:
+            case SPRUCE_WALL_SIGN:
+            case WARPED_SIGN:
+            case WARPED_WALL_SIGN:
+                results = new SpigotSign(this);
+                break;
+                
+            case ACACIA_DOOR:
+            case BIRCH_DOOR:
+            case CRIMSON_DOOR:
+            case DARK_OAK_DOOR:
+            case IRON_DOOR:
+            case JUNGLE_DOOR:
+            case OAK_DOOR:
+            case SPRUCE_DOOR:
+            case WARPED_DOOR:
+            	results = new SpigotDoor(this);
+            	break;
+
             default:
-                return new SpigotBlockState(this);
+                results = new SpigotBlockState(this);
         }
+        
+        return results;
     }
 
-    @Override public boolean breakNaturally() {
+    @Override 
+    public boolean breakNaturally() {
     	boolean results = false;
     	
     	if ( getWrapper() != null ) {

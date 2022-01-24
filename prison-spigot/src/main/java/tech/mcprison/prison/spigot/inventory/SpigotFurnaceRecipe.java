@@ -18,31 +18,43 @@
 
 package tech.mcprison.prison.spigot.inventory;
 
-import org.bukkit.Material;
+import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.inventory.FurnaceRecipe;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.util.BlockType;
 
 /**
  * Created by DMP9 on 04/02/2017.
  */
-public class SpigotFurnaceRecipe extends SpigotRecipe implements FurnaceRecipe {
+public class SpigotFurnaceRecipe 
+	extends SpigotRecipe 
+	implements FurnaceRecipe {
 
     public SpigotFurnaceRecipe(org.bukkit.inventory.FurnaceRecipe wrapper) {
         super(wrapper);
     }
 
-    @Override public ItemStack getInput() {
+    @Override 
+    public ItemStack getInput() {
         return SpigotUtil.bukkitItemStackToPrison(
             ((org.bukkit.inventory.FurnaceRecipe) getWrapper()).getInput());
     }
 
-    @Override public FurnaceRecipe setInput(BlockType input) {
-    	Material material = SpigotUtil.getMaterial( input );
-        ((org.bukkit.inventory.FurnaceRecipe) getWrapper())
-            .setInput(material);
+    @Override 
+    public FurnaceRecipe setInput( PrisonBlock input) {
+    	
+    	XMaterial xMat = SpigotUtil.getXMaterial( input );
+    	
+    	if ( xMat != null ) {
+    		((org.bukkit.inventory.FurnaceRecipe) getWrapper())
+    				.setInput( xMat.parseMaterial() );
+    	}
+    	
+//    	Material material = SpigotUtil.getMaterial( input );
+//        ((org.bukkit.inventory.FurnaceRecipe) getWrapper())
+//            .setInput(material);
         return this;
     }
 

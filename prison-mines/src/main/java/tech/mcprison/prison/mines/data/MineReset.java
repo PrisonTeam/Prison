@@ -30,7 +30,6 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonCommandTask;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.Location;
@@ -597,22 +596,24 @@ public abstract class MineReset
 							airCount++;
 						}
 					}
-					else {
-						
-						
-						BlockOld tBlock = randomlySelectBlock( random, currentLevel );
-						
-						// Increment the mine's block count. This block is one of the control blocks:
-						incrementResetBlockCount( tBlock );
-						
-						addMineTargetPrisonBlock( tBlock, x, y, z, isEdge );
-//						mtb = new MineTargetBlock( tBlock.getType(), x, y, z);
-
-						if ( tBlock.equals( BlockOld.AIR ) ) {
-//							mAirBlocks[i++] = true;
-							airCount++;
-						}
-					}
+					
+//					// Obsolete... the old block model:
+//					else {
+//						
+//						
+//						BlockOld tBlock = randomlySelectBlock( random, currentLevel );
+//						
+//						// Increment the mine's block count. This block is one of the control blocks:
+//						incrementResetBlockCount( tBlock );
+//						
+//						addMineTargetPrisonBlock( tBlock, x, y, z, isEdge );
+////						mtb = new MineTargetBlock( tBlock.getType(), x, y, z);
+//
+//						if ( tBlock.equals( BlockOld.AIR ) ) {
+////							mAirBlocks[i++] = true;
+//							airCount++;
+//						}
+//					}
 					
 				}
 			}
@@ -1157,16 +1158,16 @@ public abstract class MineReset
 			// not registered and tracked within prison, and hence will report incorrect errors.
 			setAirCount( 0 );
 		}
-		else if ( !isUseNewBlockModel() &&
-				getBlocks().size() == 1 && 
-				getBlocks().get( 0 ).getType() == BlockType.IGNORE ) {
-			
-			// This mine is set to ignore all blocks when trying to do a reset, 
-			// so for now ignore the types and just set air count to zero.
-			// Basically, this mine, if using natural spawned landscape, may contain blocks that are
-			// not registered and tracked within prison, and hence will report incorrect errors.
-			setAirCount( 0 );
-		}
+//		else if ( !isUseNewBlockModel() &&
+//				getBlocks().size() == 1 && 
+//				getBlocks().get( 0 ).getType() == BlockType.IGNORE ) {
+//			
+//			// This mine is set to ignore all blocks when trying to do a reset, 
+//			// so for now ignore the types and just set air count to zero.
+//			// Basically, this mine, if using natural spawned landscape, may contain blocks that are
+//			// not registered and tracked within prison, and hence will report incorrect errors.
+//			setAirCount( 0 );
+//		}
 		else {
 			long start = System.currentTimeMillis();
 			Optional<World> worldOptional = getWorld();
@@ -1238,21 +1239,23 @@ public abstract class MineReset
 									airCount++;
 								}
 							}
-							else {
-								
-								BlockOld oBlock = new BlockOld( tBlock.getType() );
-
-								if ( oBlock != null ) {
-									
-									// Increment the mine's block count. This block is one of the control blocks:
-									addMineTargetPrisonBlock( incrementResetBlockCount( oBlock ), x, y, z, isEdge );
-									
-								}
-								
-								if ( tBlock.getType() == BlockType.AIR ) {
-									airCount++;
-								}
-							}
+							
+							// Obsolete... the old block model:
+//							else {
+//								
+//								BlockOld oBlock = new BlockOld( tBlock.getType() );
+//
+//								if ( oBlock != null ) {
+//									
+//									// Increment the mine's block count. This block is one of the control blocks:
+//									addMineTargetPrisonBlock( incrementResetBlockCount( oBlock ), x, y, z, isEdge );
+//									
+//								}
+//								
+//								if ( tBlock.getType() == BlockType.AIR ) {
+//									airCount++;
+//								}
+//							}
 						}
 						catch ( Exception e ) {
 							// Updates to the "world" should never be ran async.  Upon review of the above 
@@ -1538,69 +1541,70 @@ public abstract class MineReset
 //		return prisonBlock;
 //	}
 	
-	private BlockOld randomlySelectBlock( Random random, int currentLevel ) {
-		
-		int targetBlockPosition = getMineTargetPrisonBlocks().size();
-
-		BlockOld results = BlockOld.AIR;
-		
-		
-		// this fallbackBlock field will provide a valid block that can be used when all other 
-		// blocks have failed to be matched due to constraints not aligning with the random chance.
-		// As a result of failing to find a block, would result in an AIR block being used instead.
-		BlockOld fallbackBlock = null;
-		
-		
-		
-		// If a chosen block was skipped, try to find another block, but try no more than 10 times
-		// to prevent a possible endless loop.  Side effects of failing to find a block in 10 attempts
-		// would be an air block.
-		boolean success = false;
-		int attempts = 0;
-		while ( !success && attempts++ < 10 ) {
-			double chance = random.nextDouble() * 100.0d;
-			
-			for (BlockOld block : getBlocks()) {
-				boolean isBlockEnabled = block.isBlockConstraintsEnbled( currentLevel, targetBlockPosition );
-				
-				if ( fallbackBlock == null && isBlockEnabled && !block.isAir() ) {
-					fallbackBlock = block;
-				}
-				
-				if ( chance <= block.getChance() && isBlockEnabled ) {
-					
-					// If this block is chosen and it was not skipped, then use this block and exit.
-					// Otherwise the chance will be recalculated and tried again to find a valid block,
-					// since the odds have been thrown off...
-					results = block;
-					
-					// stop trying to locate a block so success will terminate the search:
-					success = true;
-					
-					break;
-				} else {
-					chance -= block.getChance();
-				}
-			}
-		}
-
-		if ( !success && fallbackBlock != null ) {
-			results = fallbackBlock;
-			success = true;
-		}
-		
-//		for (BlockOld block : getBlocks()) {
-//			if (block.checkConstraints( currentLevel, targetBlockPosition ) &&
-//					chance <= block.getChance() && 
-//		    		(block.getConstraintMax() == 0 || block.getResetBlockCount() < block.getConstraintMax())) {
-//				results = block;
-//				break;
-//			} else {
-//				chance -= block.getChance();
+	// Obsolete... the old block model:
+//	private BlockOld randomlySelectBlock( Random random, int currentLevel ) {
+//		
+//		int targetBlockPosition = getMineTargetPrisonBlocks().size();
+//
+//		BlockOld results = BlockOld.AIR;
+//		
+//		
+//		// this fallbackBlock field will provide a valid block that can be used when all other 
+//		// blocks have failed to be matched due to constraints not aligning with the random chance.
+//		// As a result of failing to find a block, would result in an AIR block being used instead.
+//		BlockOld fallbackBlock = null;
+//		
+//		
+//		
+//		// If a chosen block was skipped, try to find another block, but try no more than 10 times
+//		// to prevent a possible endless loop.  Side effects of failing to find a block in 10 attempts
+//		// would be an air block.
+//		boolean success = false;
+//		int attempts = 0;
+//		while ( !success && attempts++ < 10 ) {
+//			double chance = random.nextDouble() * 100.0d;
+//			
+//			for (BlockOld block : getBlocks()) {
+//				boolean isBlockEnabled = block.isBlockConstraintsEnbled( currentLevel, targetBlockPosition );
+//				
+//				if ( fallbackBlock == null && isBlockEnabled && !block.isAir() ) {
+//					fallbackBlock = block;
+//				}
+//				
+//				if ( chance <= block.getChance() && isBlockEnabled ) {
+//					
+//					// If this block is chosen and it was not skipped, then use this block and exit.
+//					// Otherwise the chance will be recalculated and tried again to find a valid block,
+//					// since the odds have been thrown off...
+//					results = block;
+//					
+//					// stop trying to locate a block so success will terminate the search:
+//					success = true;
+//					
+//					break;
+//				} else {
+//					chance -= block.getChance();
+//				}
 //			}
 //		}
-		return results;
-	}
+//
+//		if ( !success && fallbackBlock != null ) {
+//			results = fallbackBlock;
+//			success = true;
+//		}
+//		
+////		for (BlockOld block : getBlocks()) {
+////			if (block.checkConstraints( currentLevel, targetBlockPosition ) &&
+////					chance <= block.getChance() && 
+////		    		(block.getConstraintMax() == 0 || block.getResetBlockCount() < block.getConstraintMax())) {
+////				results = block;
+////				break;
+////			} else {
+////				chance -= block.getChance();
+////			}
+////		}
+//		return results;
+//	}
     
 	
 	private void constraintsApplyMin() {
@@ -1611,12 +1615,14 @@ public abstract class MineReset
     			constraintsApplyMin( block, isUseNewBlockModel() );
     		}
     	}
-    	else {
-    		
-    		for ( PrisonBlockStatusData block : getBlocks() ) {
-    			constraintsApplyMin( block, isUseNewBlockModel() );
-    		}
-    	}
+    	
+    	// Obsolete... the old block model:
+//    	else {
+//    		
+//    		for ( PrisonBlockStatusData block : getBlocks() ) {
+//    			constraintsApplyMin( block, isUseNewBlockModel() );
+//    		}
+//    	}
 	}
     
   
@@ -1812,12 +1818,18 @@ public abstract class MineReset
 		return mineTargetPrisonBlocksMap;
 	}
 	
-	public MineTargetPrisonBlock getTargetPrisonBlock( Block block ) {
+	public MineTargetPrisonBlock getTargetPrisonBlock( PrisonBlock block ) {
+		MineTargetPrisonBlock results = null;
 		
-		Location loc = block.getLocation();
-		MineTargetBlockKey key = new MineTargetBlockKey( loc );
+		if ( block != null && block.getLocation() != null ) {
+			
+			Location loc = block.getLocation();
+			MineTargetBlockKey key = new MineTargetBlockKey( loc );
+			
+			results = getMineTargetPrisonBlocksMap().get( key );
+		}
 		
-		return getMineTargetPrisonBlocksMap().get( key );
+		return results;
 	}
 	
 	

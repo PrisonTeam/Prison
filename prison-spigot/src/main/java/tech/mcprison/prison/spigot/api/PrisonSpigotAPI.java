@@ -32,9 +32,7 @@ import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
-import tech.mcprison.prison.util.MaterialType;
 
 /**
  * <p>These are some api end points to help access some core components within prison.
@@ -156,13 +154,15 @@ public class PrisonSpigotAPI {
         		results = prisonBlock.getBlockName();
         	}
         }
-        else {
-        	
-        	BlockType blockType = BlockType.getBlock(blockName);
-        	if (blockType != null && blockType.getMaterialType() == MaterialType.BLOCK ) {
-        		results = blockType.getMaterialType().name();
-        	}
-        }
+        
+        // Obsolete... prison old block model:
+//        else {
+//        	
+//        	BlockType blockType = BlockType.getBlock(blockName);
+//        	if (blockType != null && blockType.getMaterialType() == MaterialType.BLOCK ) {
+//        		results = blockType.getMaterialType().name();
+//        	}
+//        }
 		
 		return results;
 	}
@@ -180,7 +180,7 @@ public class PrisonSpigotAPI {
 		if ( prisonBlockName != null && prisonBlockName.trim().length() > 0 ) {
 			
 			PrisonBlock prisonBlock = null;
-			BlockType blockType = null;
+//			BlockType blockType = null;
 			
 			if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
 				
@@ -189,28 +189,44 @@ public class PrisonSpigotAPI {
 					prisonBlock = null;
 				}
 			}
-			else {
-				
-				blockType = BlockType.getBlock( prisonBlockName );
-				if (blockType != null && blockType.getMaterialType() != MaterialType.BLOCK ) {
-					blockType = null;
-				}
-			}
 			
-			if ( prisonBlock != null || blockType != null ) {
+			// Obsolete... prison old block model:
+//			else {
+//				
+//				blockType = BlockType.getBlock( prisonBlockName );
+//				if (blockType != null && blockType.getMaterialType() != MaterialType.BLOCK ) {
+//					blockType = null;
+//				}
+//			}
+			
+			if ( prisonBlock != null ) {
 				if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
 					MineManager mm = PrisonMines.getInstance().getMineManager();
 					
 					List<Mine> mines = mm.getMines();
 					for ( Mine mine : mines ) {
-						if ( prisonBlock != null && mine.isInMine( blockType ) ||
-								blockType != null && mine.isInMine( blockType ) ) {
+						if ( prisonBlock != null && mine.isInMine( prisonBlock ) ) {
 							results.add( mine );
 							break;
 						}
 					}
 				}
 			}
+			
+//			if ( prisonBlock != null || blockType != null ) {
+//				if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+//					MineManager mm = PrisonMines.getInstance().getMineManager();
+//					
+//					List<Mine> mines = mm.getMines();
+//					for ( Mine mine : mines ) {
+//						if ( prisonBlock != null && mine.isInMine( prisonBlock ) ||
+//								blockType != null && mine.isInMine( blockType ) ) {
+//							results.add( mine );
+//							break;
+//						}
+//					}
+//				}
+//			}
 		}
 		
 		return results;

@@ -17,36 +17,35 @@ import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 
 public abstract class Spigot113Blocks 
 	extends Spigot19Player 
 	implements CompatibilityBlocks {
 
-	@Override
-	public BlockType getBlockType(Block spigotBlock) {
-		BlockType results = getCachedBlockType( spigotBlock, NO_DATA_VALUE );
-		
-		if ( results == null ) {
-			if ( spigotBlock != null ) {
-			
-				results = BlockType.getBlock( spigotBlock.getType().name() );
-
-//				if ( results == null ) {
-//					Output.get().logInfo( "#### 1.13 getBlockType() Cannot map block from spigot to prison:" +
-//							"  spigotBlock.getType().name() = %s " +
-//							"  BlockType.getBlock() = %s ",
-//							spigotBlock.getType().name(),
-//							(results == null ? "" : results.name() ));
-//				}
-				
-				putCachedBlockType( spigotBlock, NO_DATA_VALUE, results );
-			}
-		}
-		
-        return results == BlockType.NULL_BLOCK ? null : results;
-    }
+//	@Override
+//	public BlockType getBlockType(Block spigotBlock) {
+//		BlockType results = getCachedBlockType( spigotBlock, NO_DATA_VALUE );
+//		
+//		if ( results == null ) {
+//			if ( spigotBlock != null ) {
+//			
+//				results = BlockType.getBlock( spigotBlock.getType().name() );
+//
+////				if ( results == null ) {
+////					Output.get().logInfo( "#### 1.13 getBlockType() Cannot map block from spigot to prison:" +
+////							"  spigotBlock.getType().name() = %s " +
+////							"  BlockType.getBlock() = %s ",
+////							spigotBlock.getType().name(),
+////							(results == null ? "" : results.name() ));
+////				}
+//				
+//				putCachedBlockType( spigotBlock, NO_DATA_VALUE, results );
+//			}
+//		}
+//		
+//        return results == BlockType.NULL_BLOCK ? null : results;
+//    }
 	
 	@Override
 	public PrisonBlock getPrisonBlock(Block spigotBlock) {
@@ -63,21 +62,21 @@ public abstract class Spigot113Blocks
 		return pBlock;
 	}
 	
-	@Override
-	public BlockType getBlockType(ItemStack spigotStack) {
-		BlockType results = getCachedBlockType( spigotStack, NO_DATA_VALUE );
-		
-		if ( results == null ) {
-			if ( spigotStack != null ) {
-				
-				results = BlockType.getBlock( spigotStack.getType().name() );
-				
-				putCachedBlockType( spigotStack, NO_DATA_VALUE, results );
-			}
-		}
-		
-		return results == BlockType.NULL_BLOCK ? null : results;
-	}
+//	@Override
+//	public BlockType getBlockType(ItemStack spigotStack) {
+//		BlockType results = getCachedBlockType( spigotStack, NO_DATA_VALUE );
+//		
+//		if ( results == null ) {
+//			if ( spigotStack != null ) {
+//				
+//				results = BlockType.getBlock( spigotStack.getType().name() );
+//				
+//				putCachedBlockType( spigotStack, NO_DATA_VALUE, results );
+//			}
+//		}
+//		
+//		return results == BlockType.NULL_BLOCK ? null : results;
+//	}
 	
 	@Override
 	public XMaterial getXMaterial( Block spigotBlock ) {
@@ -136,59 +135,59 @@ public abstract class Spigot113Blocks
 	}
 	
 	
-	/**
-	 * <p>This function tries to use up to three different sources to get a match
-	 * on the XMaterial.  Just because the XMateral may be a match, does not 
-	 * mean it actually is a valid Block for that version of spigot.  
-	 * </p>
-	 * 
-	 * @param blockType
-	 * @return
-	 */
-	@Override
-	public XMaterial getXMaterial( BlockType blockType ) {
-		XMaterial results = getCachedXMaterial( blockType, NO_DATA_VALUE );
-		
-		if ( results == null ) {
-			if ( blockType != null && blockType != BlockType.IGNORE ) {
-				
-				results =  XMaterial.matchXMaterial( blockType.getXMaterialName() ).orElse( null );
-				
-				if ( results == null ) {
-					results =  XMaterial.matchXMaterial( blockType.getXMaterialNameLegacy() ).orElse( null );
-					
-				}
-				
-				if ( results == null ) {
-					
-					for ( String altName : blockType.getXMaterialAltNames() ) {
-						results =  XMaterial.matchXMaterial( altName ).orElse( null );
-						
-						if ( results != null ) {
-							break;
-						}
-					}
-				}
-				
-				putCachedXMaterial( blockType, NO_DATA_VALUE, results );
-			}
-
-		}
-		
-		return results == NULL_TOKEN ? null : results;
-	}
+//	/**
+//	 * <p>This function tries to use up to three different sources to get a match
+//	 * on the XMaterial.  Just because the XMateral may be a match, does not 
+//	 * mean it actually is a valid Block for that version of spigot.  
+//	 * </p>
+//	 * 
+//	 * @param blockType
+//	 * @return
+//	 */
+//	@Override
+//	public XMaterial getXMaterial( BlockType blockType ) {
+//		XMaterial results = getCachedXMaterial( blockType, NO_DATA_VALUE );
+//		
+//		if ( results == null ) {
+//			if ( blockType != null && blockType != BlockType.IGNORE ) {
+//				
+//				results =  XMaterial.matchXMaterial( blockType.getXMaterialName() ).orElse( null );
+//				
+//				if ( results == null ) {
+//					results =  XMaterial.matchXMaterial( blockType.getXMaterialNameLegacy() ).orElse( null );
+//					
+//				}
+//				
+//				if ( results == null ) {
+//					
+//					for ( String altName : blockType.getXMaterialAltNames() ) {
+//						results =  XMaterial.matchXMaterial( altName ).orElse( null );
+//						
+//						if ( results != null ) {
+//							break;
+//						}
+//					}
+//				}
+//				
+//				putCachedXMaterial( blockType, NO_DATA_VALUE, results );
+//			}
+//
+//		}
+//		
+//		return results == NULL_TOKEN ? null : results;
+//	}
 
 	
-	@Override
-	public void updateSpigotBlock( BlockType blockType, Block spigotBlock ) {
-    	
-    	if ( blockType != null && blockType != BlockType.IGNORE && spigotBlock != null ) {
-    		
-    		XMaterial xMat = getXMaterial( blockType );
-    		
-    		updateSpigotBlock( xMat, spigotBlock );
-    	}
-    }
+//	@Override
+//	public void updateSpigotBlock( BlockType blockType, Block spigotBlock ) {
+//    	
+//    	if ( blockType != null && blockType != BlockType.IGNORE && spigotBlock != null ) {
+//    		
+//    		XMaterial xMat = getXMaterial( blockType );
+//    		
+//    		updateSpigotBlock( xMat, spigotBlock );
+//    	}
+//    }
 	
 	
 	@Override

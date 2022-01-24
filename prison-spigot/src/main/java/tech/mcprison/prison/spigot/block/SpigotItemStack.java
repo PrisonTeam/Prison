@@ -9,10 +9,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.ItemStack;
-import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
-import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.spigot.SpigotUtil;
 
 public class SpigotItemStack
 		extends ItemStack {
@@ -26,7 +28,7 @@ public class SpigotItemStack
 		
         if (bukkitStack == null || bukkitStack.getType().equals(Material.AIR)) {
         	  setAmount( 0 );
-              setMaterial( BlockType.AIR );
+              setMaterial( PrisonBlock.AIR );
               setDisplayName( "air" );
         }
         else {
@@ -44,8 +46,12 @@ public class SpigotItemStack
         	// in the bukkitStack:
         	int amount = bukkitStack.getAmount();
         	
-        	BlockType type = SpigotCompatibility.getInstance()
-        			.getBlockType( bukkitStack );
+        	XMaterial xMat = XMaterial.matchXMaterial( bukkitStack );
+        	
+        	PrisonBlock type = SpigotUtil.getPrisonBlock( xMat );
+        	
+//        	BlockType type = SpigotCompatibility.getInstance()
+//        			.getBlockType( bukkitStack );
 //        BlockType type = materialToBlockType(bukkitStack.getType());
         	
         	
@@ -55,7 +61,7 @@ public class SpigotItemStack
         		displayName = meta.getDisplayName();
         	}
         	else if ( type != null ) {
-        		displayName = type.name().toLowerCase();
+        		displayName = type.getBlockName().toLowerCase();
         	}
         	
         	List<String> lores = new ArrayList<>();
@@ -74,6 +80,17 @@ public class SpigotItemStack
 
 		
     }
+	
+
+	
+    public SpigotItemStack(String displayName, int amount, PrisonBlock material, String... lore) {
+        super(displayName, amount, material, lore );
+    }
+
+    public SpigotItemStack(int amount, PrisonBlock material, String... lore) {
+    	super( amount, material, lore );
+    }
+    
 	
 	/**
 	 * <p>This function overrides the Prison's ItemStack class's setAmount() to perform the 
@@ -96,7 +113,7 @@ public class SpigotItemStack
 	public boolean isAir() {
 		boolean results = false;
 		
-		if ( getMaterial() != null && getMaterial() == BlockType.AIR ||
+		if ( getMaterial() != null && getMaterial().isAir() ||
 				getName() != null && "air".equalsIgnoreCase( getName() ) ) {
 			results = true;
 		}
@@ -122,15 +139,6 @@ public class SpigotItemStack
 	}
 	
 
-	
-    public SpigotItemStack(String displayName, int amount, BlockType material, String... lore) {
-        super(displayName, amount, material, lore );
-    }
-
-    public SpigotItemStack(int amount, BlockType material, String... lore) {
-    	super( amount, material, lore );
-    }
-    
     
 	public org.bukkit.inventory.ItemStack getBukkitStack() {
 		return bukkitStack;

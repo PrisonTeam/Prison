@@ -124,7 +124,7 @@ public class SpigotPlayer
     }
     
     @Override
-    public tech.mcprison.prison.internal.block.Block getLineOfSightBlock() {
+    public SpigotBlock getLineOfSightBlock() {
     	
     	SpigotBlock results = null;
     	

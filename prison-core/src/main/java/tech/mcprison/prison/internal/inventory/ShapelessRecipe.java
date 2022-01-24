@@ -18,10 +18,10 @@
 
 package tech.mcprison.prison.internal.inventory;
 
-import tech.mcprison.prison.internal.ItemStack;
-import tech.mcprison.prison.util.BlockType;
-
 import java.util.List;
+
+import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 
 /**
  * Represents a shapeless recipe (a crafting recipe that has no requirement on a specific shape)
@@ -38,7 +38,7 @@ public interface ShapelessRecipe extends Recipe {
      * @param ingredient the ingredient to add to the recipe
      * @return this instance to allow chain calls
      */
-    ShapelessRecipe addIngredient(int count, BlockType ingredient);
+    ShapelessRecipe addIngredient(int count, PrisonBlock ingredient);
 
     /**
      * Adds an ingredient to this recipe
@@ -46,7 +46,7 @@ public interface ShapelessRecipe extends Recipe {
      * @param ingredient the ingredient to add to the recipe
      * @return this instance to allow chain calls
      */
-    ShapelessRecipe addIngredient(BlockType ingredient);
+    ShapelessRecipe addIngredient( PrisonBlock ingredient);
 
     /**
      * Gets all the ingredients in this recipe
@@ -62,7 +62,7 @@ public interface ShapelessRecipe extends Recipe {
      * @param ingredient the ingredient to remove from this recipe
      * @return this instance to allow chain calls
      */
-    ShapelessRecipe removeIngredient(int count, BlockType ingredient);
+    ShapelessRecipe removeIngredient(int count, PrisonBlock ingredient);
 
     /**
      * Removes an ingredient from this recipe
@@ -70,6 +70,6 @@ public interface ShapelessRecipe extends Recipe {
      * @param ingredient the ingredient to remove from this recipe
      * @return this instance to allow chain calls
      */
-    ShapelessRecipe removeIngredient(BlockType ingredient);
+    ShapelessRecipe removeIngredient( PrisonBlock ingredient);
 
 }

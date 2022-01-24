@@ -817,12 +817,13 @@ public class MinesCommands
         			"/mines info " + m.getName(), m.getPrisonBlocks().size(),
         			1, page );
         }
-        else {
-        	
-        	cmdPageData = new CommandPagedData(
-        			"/mines info " + m.getName(), m.getBlocks().size(),
-        			1, page );
-        }
+        
+//        else {
+//        	
+//        	cmdPageData = new CommandPagedData(
+//        			"/mines info " + m.getName(), m.getBlocks().size(),
+//        			1, page );
+//        }
         
 //        // Same page logic as in mines block search:
 //    	int curPage = 1;
@@ -849,9 +850,9 @@ public class MinesCommands
         if ( m.isUseNewBlockModel() ) {
         	blockSize =  m.getPrisonBlocks().size();
         }
-        else {
-        	blockSize = m.getBlocks().size();
-        }
+//        else {
+//        	blockSize = m.getBlocks().size();
+//        }
         
         String message = blockSize != 0 ? null : " &cNo Blocks Defined";
         cmdPageData.generatePagedCommandFooter( chatDisplay, message );

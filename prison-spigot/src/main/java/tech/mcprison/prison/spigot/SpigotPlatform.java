@@ -112,7 +112,6 @@ import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.util.ActionBarUtil;
 import tech.mcprison.prison.spigot.util.SpigotYamlFileIO;
 import tech.mcprison.prison.store.Storage;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.PrisonJarReporter;
@@ -1500,9 +1499,9 @@ public class SpigotPlatform
         	
 //        	blockList = buildBlockListXMaterial();
         }
-        else {
-        	blockList = buildBlockListBlockType();
-        }
+//        else {
+//        	blockList = buildBlockListBlockType();
+//        }
 		
 		MineManager mm = PrisonMines.getInstance().getMineManager();
 		//List<Mine> mines = mm.getMines();
@@ -1689,6 +1688,16 @@ public class SpigotPlatform
 		return results;
 	}
 	
+	protected List<String> mineBlockList( int startPos, int length, List<SellAllBlockData> blockList ) {
+		
+		List<String> results = new ArrayList<>();
+		for (int i = (startPos >= blockList.size() ? blockList.size() - 1 : startPos); i >= 0 && i >= startPos - length + 1; i--) {
+			results.add( blockList.get( i ).getBlock().name() );
+		}
+		
+		return results;
+	}
+	
 	
 	/**
 	 * This listing of blocks is based strictly upon XMaterial. 
@@ -1862,61 +1871,61 @@ public class SpigotPlatform
 		return blockList;
 	}
 	
-	/**
-	 * This listing of blocks is based strictly upon the old prison's block
-	 * model.
-	 * 
-	 * Please note, that right now these names match exactly with XMaterial only
-	 * because I renamed a few of them to make them match.  But if more are added
-	 * in the future, then there may be mismatches.
-	 * 
-	 * @return
-	 */
-	protected List<String> buildBlockListBlockType() {
-		List<String> blockList = new ArrayList<>();
-		
-		blockList.add( BlockType.COBBLESTONE.name() );
-		blockList.add( BlockType.ANDESITE.name() );
-		blockList.add( BlockType.DIORITE.name() );
-		blockList.add( BlockType.COAL_ORE.name() );
-		
-		blockList.add( BlockType.GRANITE.name() );
-		blockList.add( BlockType.STONE.name() );
-		blockList.add( BlockType.IRON_ORE.name() );
-		blockList.add( BlockType.POLISHED_ANDESITE.name() );
-		
-//		blockList.add( BlockType.POLISHED_DIORITE.name() );
-//		blockList.add( BlockType.POLISHED_GRANITE.name() );
-		blockList.add( BlockType.GOLD_ORE.name() );
-		
-		
-		blockList.add( BlockType.MOSSY_COBBLESTONE.name() );
-		blockList.add( BlockType.COAL_BLOCK.name() );
-		blockList.add( BlockType.NETHER_QUARTZ_ORE.name() );
-		blockList.add( BlockType.LAPIS_ORE.name() );
-
-		
-		blockList.add( BlockType.END_STONE.name() );
-		blockList.add( BlockType.IRON_BLOCK.name() );
-		
-		blockList.add( BlockType.REDSTONE_ORE.name() );
-		blockList.add( BlockType.DIAMOND_ORE.name() );
-		
-		blockList.add( BlockType.QUARTZ_BLOCK.name() );
-		blockList.add( BlockType.EMERALD_ORE.name() );
-		
-		blockList.add( BlockType.GOLD_BLOCK.name() );
-		blockList.add( BlockType.PRISMARINE.name() );
-		blockList.add( BlockType.LAPIS_BLOCK.name() );
-		blockList.add( BlockType.REDSTONE_BLOCK.name() );
-		
-		blockList.add( BlockType.OBSIDIAN.name() );
-		blockList.add( BlockType.DIAMOND_BLOCK.name() );
-		blockList.add( BlockType.DARK_PRISMARINE.name() );
-		blockList.add( BlockType.EMERALD_BLOCK.name() );
-		
-		return blockList;
-	}
+//	/**
+//	 * This listing of blocks is based strictly upon the old prison's block
+//	 * model.
+//	 * 
+//	 * Please note, that right now these names match exactly with XMaterial only
+//	 * because I renamed a few of them to make them match.  But if more are added
+//	 * in the future, then there may be mismatches.
+//	 * 
+//	 * @return
+//	 */
+//	protected List<String> buildBlockListBlockType() {
+//		List<String> blockList = new ArrayList<>();
+//		
+//		blockList.add( BlockType.COBBLESTONE.name() );
+//		blockList.add( BlockType.ANDESITE.name() );
+//		blockList.add( BlockType.DIORITE.name() );
+//		blockList.add( BlockType.COAL_ORE.name() );
+//		
+//		blockList.add( BlockType.GRANITE.name() );
+//		blockList.add( BlockType.STONE.name() );
+//		blockList.add( BlockType.IRON_ORE.name() );
+//		blockList.add( BlockType.POLISHED_ANDESITE.name() );
+//		
+////		blockList.add( BlockType.POLISHED_DIORITE.name() );
+////		blockList.add( BlockType.POLISHED_GRANITE.name() );
+//		blockList.add( BlockType.GOLD_ORE.name() );
+//		
+//		
+//		blockList.add( BlockType.MOSSY_COBBLESTONE.name() );
+//		blockList.add( BlockType.COAL_BLOCK.name() );
+//		blockList.add( BlockType.NETHER_QUARTZ_ORE.name() );
+//		blockList.add( BlockType.LAPIS_ORE.name() );
+//
+//		
+//		blockList.add( BlockType.END_STONE.name() );
+//		blockList.add( BlockType.IRON_BLOCK.name() );
+//		
+//		blockList.add( BlockType.REDSTONE_ORE.name() );
+//		blockList.add( BlockType.DIAMOND_ORE.name() );
+//		
+//		blockList.add( BlockType.QUARTZ_BLOCK.name() );
+//		blockList.add( BlockType.EMERALD_ORE.name() );
+//		
+//		blockList.add( BlockType.GOLD_BLOCK.name() );
+//		blockList.add( BlockType.PRISMARINE.name() );
+//		blockList.add( BlockType.LAPIS_BLOCK.name() );
+//		blockList.add( BlockType.REDSTONE_BLOCK.name() );
+//		
+//		blockList.add( BlockType.OBSIDIAN.name() );
+//		blockList.add( BlockType.DIAMOND_BLOCK.name() );
+//		blockList.add( BlockType.DARK_PRISMARINE.name() );
+//		blockList.add( BlockType.EMERALD_BLOCK.name() );
+//		
+//		return blockList;
+//	}
 	
 	@Override
 	public List<String> getActiveFeatures() {

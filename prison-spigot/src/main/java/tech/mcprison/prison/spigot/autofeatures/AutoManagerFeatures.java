@@ -38,7 +38,6 @@ import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -2405,7 +2404,9 @@ public class AutoManagerFeatures
 												   List<SpigotItemStack> drops ) {
 		List<SpigotItemStack> adds = new ArrayList<SpigotItemStack>();
 		
-		if (itemStack.getMaterial() == BlockType.GRAVEL && !hasSilkTouch(itemInHand)) {
+		PrisonBlock gravel = SpigotUtil.getPrisonBlock( XMaterial.GRAVEL );
+		
+		if (itemStack.getMaterial().compareTo( gravel ) == 0 && !hasSilkTouch(itemInHand)) {
 
 			int quantity = 1;
 			int threshold = 10;
@@ -2443,7 +2444,8 @@ public class AutoManagerFeatures
 				}
 
 //				ItemStack flintStack = new ItemStack(Material.FLINT, quantity);
-				SpigotItemStack flintStack = new SpigotItemStack( quantity, BlockType.FLINT);
+				PrisonBlock flint = SpigotUtil.getPrisonBlock( XMaterial.FLINT );
+				SpigotItemStack flintStack = new SpigotItemStack( quantity, flint );
 				adds.add(flintStack);
 			}
 		}

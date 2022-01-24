@@ -1,10 +1,8 @@
 package tech.mcprison.prison.mines.data;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
@@ -12,7 +10,6 @@ import java.util.TreeMap;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
-import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
@@ -23,7 +20,6 @@ import tech.mcprison.prison.mines.features.MineLinerData;
 import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Location;
 
@@ -84,11 +80,15 @@ public abstract class MineData
 	private int resetCount = 0;
 	
 	/**
+	 * These blocks are obsolete, and are no longer used in prison, but they
+	 * are preserved for now.  Will be removed in the future.
+	 * 
 	 * This list of blocks represents the old Prison block model. It is being
 	 * phased out since it has limited flexibility and complex issues with 
 	 * supporting magic values with the older bukkit versions.
 	 */
-    private List<BlockOld> blocks;
+    @SuppressWarnings( "deprecation" )
+	private List<BlockOld> blocks;
     
     /**
      * This list of PrisonBlocks represents the new Prison block model. Its 
@@ -462,7 +462,17 @@ public abstract class MineData
 
     
     
-    public List<BlockOld> getBlocks() {
+    /**
+     * <p>This is the old block model's blocks and is depreacated for now.
+     * We don't want to purge the old blocks yet, but they won't be used in
+     * any source code in Prison.
+     * </p>
+     * 
+     * @deprecated
+     * @return
+     */
+    @SuppressWarnings( "deprecation" )
+	public List<BlockOld> getBlocks() {
         return blocks;
     }
     
@@ -506,30 +516,31 @@ public abstract class MineData
 		return results;
 	}
 	
-	/**
-	 * This is only used in an obsolete conversion utility.
-	 * 
-	 * Adding the newer PrisonBlocks for compatibility.
-	 * 
-     * Sets the blocks for this mine
-     *
-     * @param blockMap the new blockmap with the {@link BlockType} as the key, and the chance of the
-     * block appearing as the value.
-     */
-    public void setBlocks(HashMap<BlockType, Integer> blockMap) {
-        this.blocks.clear();
-        this.prisonBlocks.clear();
-        
-        for (Map.Entry<BlockType, Integer> entry : blockMap.entrySet()) {
-            blocks.add(new BlockOld(entry.getKey(), entry.getValue(), 0));
-            
-            PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( entry.getKey().name() );
-            if ( prisonBlock != null ) {
-            	prisonBlock.setChance( entry.getValue() );
-            	prisonBlocks.add( prisonBlock );
-            }
-        }
-    }
+   // Obsolete... the old block model:
+//	/**
+//	 * This is only used in an obsolete conversion utility.
+//	 * 
+//	 * Adding the newer PrisonBlocks for compatibility.
+//	 * 
+//     * Sets the blocks for this mine
+//     *
+//     * @param blockMap the new blockmap with the {@link BlockType} as the key, and the chance of the
+//     * block appearing as the value.
+//     */
+//    public void setBlocks(HashMap<BlockType, Integer> blockMap) {
+//        this.blocks.clear();
+//        this.prisonBlocks.clear();
+//        
+//        for (Map.Entry<BlockType, Integer> entry : blockMap.entrySet()) {
+//            blocks.add(new BlockOld(entry.getKey(), entry.getValue(), 0));
+//            
+//            PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( entry.getKey().name() );
+//            if ( prisonBlock != null ) {
+//            	prisonBlock.setChance( entry.getValue() );
+//            	prisonBlocks.add( prisonBlock );
+//            }
+//        }
+//    }
     
     public PrisonBlock getPrisonBlock(String blockName ) {
     	PrisonBlock results = null;
@@ -546,20 +557,20 @@ public abstract class MineData
     	return results;
     }
     
-    public BlockOld getBlockOld(String blockName ) {
-    	BlockOld results = null;
-    	
-    	if ( blockName != null && !blockName.trim().isEmpty() ) {
-    		for ( BlockOld b : getBlocks() ) {
-    			if ( b.getBlockName().equalsIgnoreCase( blockName ) ) {
-    				results = b;
-    				break;
-    			}
-    		}
-    	}
-    	
-    	return results;
-    }
+//    public BlockOld getBlockOld(String blockName ) {
+//    	BlockOld results = null;
+//    	
+//    	if ( blockName != null && !blockName.trim().isEmpty() ) {
+//    		for ( BlockOld b : getBlocks() ) {
+//    			if ( b.getBlockName().equalsIgnoreCase( blockName ) ) {
+//    				results = b;
+//    				break;
+//    			}
+//    		}
+//    	}
+//    	
+//    	return results;
+//    }
     
     public boolean hasBlock( String blockName ) {
     	boolean results = false;
@@ -569,9 +580,11 @@ public abstract class MineData
     		if ( isUseNewBlockModel() ) {
     			results = getPrisonBlock( blockName ) != null;
     		}
-    		else {
-    			results = getBlockOld( blockName ) != null;
-    		}
+    		
+   		   // Obsolete... the old block model:
+//    		else {
+//    			results = getBlockOld( blockName ) != null;
+//    		}
     	}
         
         return results;
@@ -723,7 +736,7 @@ public abstract class MineData
 //    }
     
     
-    abstract public MineTargetPrisonBlock getTargetPrisonBlock( Block block );
+    abstract public MineTargetPrisonBlock getTargetPrisonBlock( PrisonBlock block );
     
 //    abstract public String getTargetPrisonBlockName( Block block );
     
@@ -824,17 +837,19 @@ public abstract class MineData
     					}
     				}
     			}
-    			else {
-    				
-    				for ( BlockOld block : getBlocks() ) {
-    					if ( block.getBlockName().equalsIgnoreCase( blockName ) ) {
-    						getBlockStats().put( block.getBlockName(), block );
-    						
-    						results = block;
-    						break;
-    					}
-    				}
-    			}
+    			
+   			   // Obsolete... the old block model:
+//    			else {
+//    				
+//    				for ( BlockOld block : getBlocks() ) {
+//    					if ( block.getBlockName().equalsIgnoreCase( blockName ) ) {
+//    						getBlockStats().put( block.getBlockName(), block );
+//    						
+//    						results = block;
+//    						break;
+//    					}
+//    				}
+//    			}
     			
     		}
     		else {
@@ -866,18 +881,19 @@ public abstract class MineData
     	return getBounds().withinIncludeTopBottomOfMine( location );
     }
     
-    public boolean isInMine(BlockType blockType) {
-    	//TODO Not sure if virtual should return false... they do have blocks.
-//    	if ( isVirtual() ) {
-//    		return false;
-//    	}
-        for (BlockOld block : getBlocks()) {
-            if (blockType == block.getType()) {
-                return true;
-            }
-        }
-        return false;
-    }
+    // Obsolete... the old block model:
+//    public boolean isInMine(BlockType blockType) {
+//    	//TODO Not sure if virtual should return false... they do have blocks.
+////    	if ( isVirtual() ) {
+////    		return false;
+////    	}
+//        for (BlockOld block : getBlocks()) {
+//            if (blockType == block.getType()) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     public boolean isInMine(PrisonBlock blockType) {
     	//TODO Not sure if virtual should return false... they do have blocks.
