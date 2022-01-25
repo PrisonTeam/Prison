@@ -1520,7 +1520,8 @@ public class SpigotPlatform
 			
 			Mine mine = mm.getMine( mineName );
 			
-			boolean hasBlocks = mine.getPrisonBlocks().size() > 0 || mine.getBlocks().size() > 0;
+			boolean hasBlocks = mine.getPrisonBlocks().size() > 0;
+//			boolean hasBlocks = mine.getPrisonBlocks().size() > 0 || mine.getBlocks().size() > 0;
 			
 			// If the mines already has blocks, log them, then clear them since this will replace them:
 			if ( hasBlocks && !forceKeepBlocks ) {
@@ -1532,7 +1533,7 @@ public class SpigotPlatform
 				Output.get().logInfo( message );
 				
 				mine.getPrisonBlocks().clear();
-				mine.getBlocks().clear();
+//				mine.getBlocks().clear();
 			}
 			
 			else if ( hasBlocks && forceKeepBlocks ) {
@@ -1546,7 +1547,7 @@ public class SpigotPlatform
 				continue;
 			}
 			
-			 List<String> mBlocks = mineBlockList( blockList, startPos++, mineBlockSize );
+			 List<String> mBlocks = mineBlockList( blockList, startPos++, percents.size() );
 			
 			 // If startPos > percents.size(), which means we are past the initial 
 			 // ramp up to the full variety of blocks per mine.  At that point, if 
@@ -1556,9 +1557,12 @@ public class SpigotPlatform
 			 // This should only happen at the tail end of processing and will only
 			 // have a decrease by one per mine so there should never be a need to
 			 // to check more than once, or remove more than one.
-			 if ( startPos > percents.size() && percents.size() > mBlocks.size() ) {
+			 if ( startPos > percents.size() && startPos > ( blockList.size() - mineBlockSize + 1 ) ) {
 				 percents.remove( 0 );
 			 }
+//			 if ( startPos > percents.size() && percents.size() > mBlocks.size() ) {
+//				 percents.remove( 0 );
+//			 }
 			 
 			double total = 0;
 			for ( int i = 0; i < mBlocks.size(); i++ )
@@ -1569,7 +1573,8 @@ public class SpigotPlatform
 					PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( mBlocks.get( i ) );
 	            	if ( prisonBlock != null ) {
 	            	
-	            		prisonBlock.setChance( percents.get( i ) );
+	            		double chance = percents.size() > i ? percents.get( i ) : 0;
+	            		prisonBlock.setChance( chance );
 	            		prisonBlock.setBlockCountTotal( 0 );
 	            		
 	            		mine.getPrisonBlocks().add( prisonBlock );
@@ -1580,6 +1585,7 @@ public class SpigotPlatform
 	            		// add the balance to the last block.
 	            		if ( i == (mBlocks.size() - 1) && total < 100.0d ) {
 	            			double remaining = 100.0d - total;
+	            			total += remaining;
 	            			prisonBlock.setChance( remaining + prisonBlock.getChance() );
 	            		}
 	            	}
@@ -1590,23 +1596,23 @@ public class SpigotPlatform
 	            						mBlocks.get( i ) ) );
 	            	}
 				}
-				else {
-					
-					tech.mcprison.prison.mines.data.BlockOld block = 
-							new tech.mcprison.prison.mines.data.BlockOld( 
-									mBlocks.get( i ), percents.get( i ), 0 );
-					
-					mine.getBlocks().add( block );
-					
-					total += block.getChance();
-					
-					// If this is the last block and the totals are not 100%, then
-					// add the balance to the last block.
-					if ( i == (mBlocks.size() - 1) && total < 100.0d ) {
-						double remaining = 100.0d - total;
-						block.setChance( remaining + block.getChance() );
-					}
-				}
+//				else {
+//					
+//					tech.mcprison.prison.mines.data.BlockOld block = 
+//							new tech.mcprison.prison.mines.data.BlockOld( 
+//									mBlocks.get( i ), percents.get( i ), 0 );
+//					
+//					mine.getBlocks().add( block );
+//					
+//					total += block.getChance();
+//					
+//					// If this is the last block and the totals are not 100%, then
+//					// add the balance to the last block.
+//					if ( i == (mBlocks.size() - 1) && total < 100.0d ) {
+//						double remaining = 100.0d - total;
+//						block.setChance( remaining + block.getChance() );
+//					}
+//				}
 				
 			}
 			
@@ -1681,22 +1687,37 @@ public class SpigotPlatform
 	protected List<String> mineBlockList( List<String> blockList, int startPos, int length ) {
 
 		List<String> results = new ArrayList<>();
-		for (int i = (startPos >= blockList.size() ? blockList.size() - 1 : startPos); i >= 0 && i >= startPos - length + 1; i--) {
+		int iStart = (startPos >= blockList.size() ? blockList.size() - 1 : startPos);
+		int iEnd = startPos - length + 1;
+		
+		for (int i = iStart; i >= 0 && i >= iEnd; i--) {
 			results.add( blockList.get( i ) );
 		}
 		
 		return results;
 	}
 	
-	protected List<String> mineBlockList( int startPos, int length, List<SellAllBlockData> blockList ) {
-		
-		List<String> results = new ArrayList<>();
-		for (int i = (startPos >= blockList.size() ? blockList.size() - 1 : startPos); i >= 0 && i >= startPos - length + 1; i--) {
-			results.add( blockList.get( i ).getBlock().name() );
-		}
-		
-		return results;
-	}
+//	/**
+//	 * This function grabs a rolling sub set of blocks from the startPos and working backwards 
+//	 * up to the specified length. The result set will be less than the specified length if at
+//	 * the beginning of the list, or at the end.
+//	 * 
+//	 * @param startPos
+//	 * @param length
+//	 * @param blockList
+//	 * @return
+//	 */
+//	protected List<String> mineBlockList( int startPos, int length, List<SellAllBlockData> blockList ) {
+//		
+//		List<String> results = new ArrayList<>();
+//		int iStart = (startPos >= blockList.size() ? blockList.size() - 1 : startPos);
+//		
+//		for (int i = iStart; i >= 0 && i >= startPos - length + 1; i--) {
+//			results.add( blockList.get( i ).getBlock().name() );
+//		}
+//		
+//		return results;
+//	}
 	
 	
 	/**
@@ -1780,7 +1801,7 @@ public class SpigotPlatform
 		
 		
 		blockList.add( new SellAllBlockData( XMaterial.QUARTZ, 34 ) );
-		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_SLAB, 68, true) );
+		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_SLAB, 68) );
 
 		blockList.add( new SellAllBlockData( XMaterial.CHISELED_QUARTZ_BLOCK, 136 ) );
 		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_BRICKS, 136 ) );

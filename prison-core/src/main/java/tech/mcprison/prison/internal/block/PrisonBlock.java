@@ -92,7 +92,10 @@ public class PrisonBlock
 	}
 	
 	public PrisonBlock( PrisonBlock clonable ) {
-		this( clonable.getBlockType(), clonable.getBlockName(), clonable.getChance(), clonable.getBlockCountTotal() );
+		this( clonable.getBlockType(), 
+				clonable.getBlockName(), 
+				clonable.getChance(), 
+				clonable.getBlockCountTotal() );
 		
 		this.useBlockTypeAsPrefix = clonable.isUseBlockTypeAsPrefix();
 		this.valid = clonable.isValid();
@@ -322,41 +325,40 @@ public class PrisonBlock
 			{
 				case NORTH: {
 					// North is z axis in the negative direction:
-					loc.setZ( loc.getZ() - 1 );
+					results = loc.getBlockAtDelta( 0, 0, -1 );
 					break;
 				}
 				case SOUTH: {
 					// South is z axis in the positive direction:
-					loc.setZ( loc.getZ() + 1 );
+					results = loc.getBlockAtDelta( 0, 0, 1 );
 					break;
 				}
 				case EAST: {
 					// East is x axis in the positive direction:
-					loc.setX( loc.getX() + 1 );
+					results = loc.getBlockAtDelta( 1, 0, 0 );
 					break;
 				}
 				case WEST: {
 					// West is x axis in the negative direction:
-					loc.setX( loc.getX() - 1 );
+					results = loc.getBlockAtDelta( -1, 0, 0 );
 					break;
 				}
 				case TOP: 
 				case UP: {
 					// TOP and UP is y axis in the positive direction:
-					loc.setY( loc.getY() + 1 );
+					results = loc.getBlockAtDelta( 0, 1, 0 );
 					break;
 				}
 				case BOTTOM: 
 				case DOWN: {
 					// BOTTOM and DOWN is y axis in the negative direction:
-					loc.setY( loc.getY() - 1 );
+					results = loc.getBlockAtDelta( 0, -1, 0 );
 					break;
 				}
 
 				default:
+					break;
 			}
-			
-			results = loc.getBlockAt();
 		}
 		
 		return results;

@@ -11,7 +11,6 @@ import com.cryptomorin.xseries.XMaterial;
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.util.Location;
@@ -81,19 +80,23 @@ public abstract class Spigot18Blocks
 //    }
 	
 	@Override
-	public PrisonBlock getPrisonBlock(Block spigotBlock) {
-		PrisonBlock pBlock = null;
-		
-		XMaterial xMat = getXMaterial( spigotBlock );
-		
-		if ( xMat != null ) {
-			pBlock = SpigotPrison.getInstance().getPrisonBlockTypes().getBlockTypesByName( xMat.name() );
-//			pBlock = new PrisonBlock( xMat.name() );
-		}
-		// ignore nulls because errors were logged in getXMaterial() so they only
-		// are logged once
-		
-		return pBlock;
+	public SpigotBlock getSpigotBlock( Block bukkitBlock ) {
+		return SpigotBlock.getSpigotBlock( bukkitBlock );
+//		SpigotBlock sBlock = null;
+//		
+//		XMaterial xMat = getXMaterial( bukkitBlock );
+//		
+//		if ( xMat != null ) {
+//			
+//			sBlock = new SpigotBlock( xMat.name(), bukkitBlock );
+//			
+////			pBlock = SpigotPrison.getInstance().getPrisonBlockTypes().getBlockTypesByName( xMat.name() );
+////			pBlock = new PrisonBlock( xMat.name() );
+//		}
+//		// ignore nulls because errors were logged in getXMaterial() so they only
+//		// are logged once
+//		
+//		return sBlock;
 	}
 	
 	
@@ -503,15 +506,19 @@ public abstract class Spigot18Blocks
 					@Override
 					public void run() {
 						
-						// No physics update:
-						Block spigotBlock = ((SpigotBlock) location.getBlockAt()).getWrapper();
+						// Using the World's location to get the block, will ensure that 
+						// the wrapper contains the bukkit's block:
+						SpigotBlock sBlock = (SpigotBlock) location.getBlockAt();
+						
+						
+						Block bBlock = sBlock.getWrapper();
 						
 						// For 1.13.x and higher:
 						// spigotblock.setType( newType, false );
 
 						
 						// No physics update:
-						BlockState bState = spigotBlock.getState();
+						BlockState bState = bBlock.getState();
 						 
 						// Set the block state with the new type and rawData:
 						bState.setType( newType );

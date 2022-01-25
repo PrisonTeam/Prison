@@ -47,19 +47,28 @@ public abstract class Spigot113Blocks
 //        return results == BlockType.NULL_BLOCK ? null : results;
 //    }
 	
+	/**
+	 * <p>This function should never be accessed directly.  Use the function
+	 * getBlockAt() functions within the Prison Location or SpigotWorld 
+	 * classes.  The function SpigotWorld.getBlockAt( location ) should be the 
+	 * "only" class that calls this function.  Access needs to be limited to
+	 * ensure the wrong code, under the wrong conditions, do not mess it up.
+	 * </p>
+	 */
 	@Override
-	public PrisonBlock getPrisonBlock(Block spigotBlock) {
-		PrisonBlock pBlock = null;
-		
-		XMaterial xMat = getXMaterial( spigotBlock );
-		
-		if ( xMat != null ) {
-			pBlock = new PrisonBlock( xMat.name() );
-		}
-		// ignore nulls because errors were logged in getXMaterial() so they only
-		// are logged once
-		
-		return pBlock;
+	public SpigotBlock getSpigotBlock( Block bukkitBlock ) {
+		return SpigotBlock.getSpigotBlock( bukkitBlock );
+//		SpigotBlock sBlock = null;
+//		
+//		XMaterial xMat = getXMaterial( bukkitBlock );
+//		
+//		if ( xMat != null ) {
+//			sBlock = new SpigotBlock( xMat.name(), bukkitBlock );
+//		}
+//		// ignore nulls because errors were logged in getXMaterial() so they only
+//		// are logged once
+//		
+//		return sBlock;
 	}
 	
 //	@Override
@@ -293,10 +302,13 @@ public abstract class Spigot113Blocks
 					public void run() {
 						
 						// No physics update:
-						Block spigotBlock = ((SpigotBlock) location.getBlockAt()).getWrapper();
+						
+						SpigotBlock sBlock = (SpigotBlock) location.getBlockAt();
+						
+						Block bBlock = sBlock.getWrapper();
 						
 						// For 1.13.x and higher:
-						spigotBlock.setType( newType, false );
+						bBlock.setType( newType, false );
 						
 					}
 				}.runTaskLater( getPlugin(), 0 );

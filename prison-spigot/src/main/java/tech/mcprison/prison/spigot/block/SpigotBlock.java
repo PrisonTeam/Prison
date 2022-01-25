@@ -55,13 +55,38 @@ public class SpigotBlock
      */
     private transient Set<PrisonBlockType> prisonBlockTypes;
 
-
-    public SpigotBlock(org.bukkit.block.Block bBlock) {
-    	super( SpigotCompatibility.getInstance().getPrisonBlock( bBlock ) );
-        this.bBlock = bBlock;
-        
-        this.prisonBlockTypes = new HashSet<>();
+    private SpigotBlock( String blockName, org.bukkit.block.Block bBlock ) {
+    	super( blockName );
+    	
+    	this.bBlock = bBlock;
+    	
+    	this.prisonBlockTypes = new HashSet<>();
+    	
     }
+
+    public SpigotBlock( org.bukkit.block.Block bBlock, PrisonBlock targetBlockType ) {
+    	this( targetBlockType.getBlockName(), bBlock );
+	}
+
+	public static SpigotBlock getSpigotBlock( org.bukkit.block.Block bukkitBlock) {
+    	SpigotBlock sBlock = null;
+    	
+		XMaterial xMat = SpigotCompatibility.getInstance().getXMaterial( bukkitBlock );
+		
+		if ( xMat != null ) {
+			sBlock = new SpigotBlock( xMat.name(), bukkitBlock );
+		}
+
+    	
+//    	SpigotBlock sBlock = SpigotCompatibility.getInstance().getPrisonBlock( bBlock );
+    	
+//    	super( SpigotCompatibility.getInstance().getPrisonBlock( bBlock ) );
+//    	super( XMaterial.matchXMaterial( bBlock.getType() ).name() );
+//    	super( XBlock. .getType( bBlock ).name() );
+    	
+    	return sBlock;
+    }
+    
     
     @Override
     public String toString() {
@@ -84,7 +109,7 @@ public class SpigotBlock
     }
 
     @Override public PrisonBlock getRelative(BlockFace face) {
-        return new SpigotBlock(
+        return getSpigotBlock(
         		getWrapper().getRelative(
         				org.bukkit.block.BlockFace.valueOf(
         						face.name())));

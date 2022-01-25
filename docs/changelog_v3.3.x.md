@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.7 2022-01-24
+# 3.3.0-alpha.7 2022-01-25
+
+
+* **Fix some block issues, mostly getting the correct block bukkit block and limit it to only one location and function that ultimately provides these hooks.**
+This release appears to be more functional, but it still should not be used since it's not fully tested.
 
 
 * **First pass at removing the old block model.  Do not use this release!!** 

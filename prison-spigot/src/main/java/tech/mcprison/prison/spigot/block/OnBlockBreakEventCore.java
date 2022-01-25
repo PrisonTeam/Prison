@@ -355,7 +355,7 @@ public class OnBlockBreakEventCore
     	{
 
     		// Need to wrap in a Prison block so it can be used with the mines:
-    		SpigotBlock sBlock = new SpigotBlock(e.getBlock());
+    		SpigotBlock sBlock = SpigotBlock.getSpigotBlock(e.getBlock());
     		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
     		
     		BlockEventType eventType = BlockEventType.blockBreak;
@@ -759,7 +759,7 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 				
 				for ( Block bukkitBlock : pmEvent.getUnprocessedRawBlocks() ) 
 				{
-					SpigotBlock sBlock = new SpigotBlock( bukkitBlock );
+					SpigotBlock sBlock = SpigotBlock.getSpigotBlock( bukkitBlock );
 					
 					// Thanks to CrazyEnchant, there is no telling which block was actually hit, so 
 					// if using CrazyEnchant one of the unprocessedRawBlocks may be the same as the
@@ -800,7 +800,7 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 									
 									// Check to make sure the block is the same block that was placed there.
 									// If not, then do not process it.
-									SpigotBlock sBlockMined = new SpigotBlock( bukkitBlock );
+									SpigotBlock sBlockMined = SpigotBlock.getSpigotBlock( bukkitBlock );
 									PrisonBlock pBlockMined = sBlockMined.getPrisonBlock();
 									
 									PrisonBlockStatusData pbTargetExploded = targetExplodedBlock.getPrisonBlock();
@@ -1173,7 +1173,7 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 
 
     		// Need to wrap in a Prison block so it can be used with the mines:
-    		SpigotBlock sBlock = new SpigotBlock(e.getBlock());
+    		SpigotBlock sBlock = SpigotBlock.getSpigotBlock(e.getBlock());
     		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
     		
     		BlockEventType eventType = BlockEventType.TEXplosion;
@@ -1371,7 +1371,7 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
     		Block bukkitBlock = e.getBlockList().get( 0 );
     		
     		// Need to wrap in a Prison block so it can be used with the mines:
-    		SpigotBlock sBlock = new SpigotBlock( bukkitBlock );
+    		SpigotBlock sBlock = SpigotBlock.getSpigotBlock( bukkitBlock );
     		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
     		
     		BlockEventType eventType = BlockEventType.CEXplosion;
@@ -1535,7 +1535,7 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 
 
     		// Need to wrap in a Prison block so it can be used with the mines:
-    		SpigotBlock sBlock = new SpigotBlock(e.getBlockBroken());
+    		SpigotBlock sBlock = SpigotBlock.getSpigotBlock(e.getBlockBroken());
     		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
     		
     		BlockEventType eventType = BlockEventType.PEExplosive;
@@ -1673,7 +1673,7 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 
 			
 			// Need to wrap in a Prison block so it can be used with the mines:
-			SpigotBlock sBlock = new SpigotBlock(e.getBlock());
+			SpigotBlock sBlock = SpigotBlock.getSpigotBlock(e.getBlock());
 			SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
 			
 			BlockEventType eventType = BlockEventType.PrisonExplosion;

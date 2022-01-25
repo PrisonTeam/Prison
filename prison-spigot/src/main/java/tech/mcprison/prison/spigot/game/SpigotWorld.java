@@ -35,6 +35,7 @@ import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.MineResetType;
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
@@ -67,20 +68,38 @@ public class SpigotWorld implements World {
     }
 
     /**
-     * <p>This does get the actual from the world, but it only reads, and does not 
+     * <p>This should be the ONLY usage in the whole Prison plugin that gets the 
+     * bukkit block from the world and converts it to a SpigotBlock..
+     * </p>
+     * 
+     * <p>This gets the actual block from the world, but it only reads, and does not 
      * update.  I cannot say this is safe to run asynchronously, but so far I have
      * not see any related problems when it is.
      * 
      */
     @Override 
-    public Block getBlockAt(Location location) {
-        return new SpigotBlock(
-        		bukkitWorld.getBlockAt(SpigotUtil.prisonLocationToBukkit(location)));
+    public Block getBlockAt( Location location ) {
+    	SpigotBlock sBlock = null;
+    	
+    	if ( location != null ) {
+    		
+    		org.bukkit.Location bLocation = getBukkitLocation( location );
+    		org.bukkit.block.Block bBlock = bukkitWorld.getBlockAt( bLocation );
+    		
+    		sBlock = SpigotCompatibility.getInstance().getSpigotBlock( bBlock );
+    		
+    		if ( sBlock == null ) {
+    			
+    			sBlock = new SpigotBlock( bBlock, PrisonBlock.AIR.clone() );
+    		}
+    	}
+        
+        return sBlock;
     }
-    public SpigotBlock getSpigotBlockAt(Location location) {
-    	return new SpigotBlock(
-    			bukkitWorld.getBlockAt(SpigotUtil.prisonLocationToBukkit(location)));
-    }
+//    public SpigotBlock getSpigotBlockAt(Location location) {
+//    	return new SpigotBlock(
+//    			bukkitWorld.getBlockAt(SpigotUtil.prisonLocationToBukkit(location)));
+//    }
     
     public org.bukkit.Location getBukkitLocation(Location location) {
     	return SpigotUtil.prisonLocationToBukkit(location);
@@ -160,17 +179,35 @@ public class SpigotWorld implements World {
 				
 				long start = System.nanoTime();
 				
-				for ( MineTargetPrisonBlock tBlock : tBlocks )
+				MineTargetPrisonBlock current = null;
+				try
 				{
-					final PrisonBlock pBlock = tBlock.getPrisonBlock( resetType );
-					
-					if ( pBlock != null ) {
+					for ( MineTargetPrisonBlock tBlock : tBlocks )
+					{
+						current = tBlock;
 						
-						Location location = tBlock.getLocation();
+						final PrisonBlock pBlock = tBlock.getPrisonBlock( resetType );
 						
-						SpigotBlock sBlock = (SpigotBlock) location.getBlockAt();
-						sBlock.setPrisonBlock( pBlock );
+						if ( pBlock != null ) {
+							
+							Location location = tBlock.getLocation();
+							
+							SpigotBlock sBlock = (SpigotBlock) getBlockAt( location );
+//							SpigotBlock sBlock = (SpigotBlock) location.getBlockAt();
+							
+							sBlock.setPrisonBlock( pBlock );
+						}
 					}
+				}
+				catch ( Exception e ) {
+					String blkName = current.getPrisonBlock().getBlockName();
+					PrisonBlock pBlock = current.getPrisonBlock( resetType );
+					String resetTypeBlockName = pBlock == null ? "null" : pBlock.getBlockName();
+					
+					Output.get().logError( 
+							String.format( "SpigotWorld.setBlocksSynchronously: %s  resetType: %s  %s",
+							blkName, resetType.name(), resetTypeBlockName ), e );
+//					e.printStackTrace();
 				}
 				
 				long elapsedNanos = System.nanoTime() - start;

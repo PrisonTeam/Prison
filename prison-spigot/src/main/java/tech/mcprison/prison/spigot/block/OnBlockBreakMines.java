@@ -85,7 +85,7 @@ public class OnBlockBreakMines
 
 				for ( Block bBlock : altBlocksSource )
 				{
-					SpigotBlock sBlockAltBlock = new SpigotBlock( bBlock );
+					SpigotBlock sBlockAltBlock = SpigotBlock.getSpigotBlock( bBlock );
 					mine = findMineLocation( sBlockAltBlock );
 					if ( mine != null )
 					{
@@ -138,7 +138,7 @@ public class OnBlockBreakMines
 	protected MinesEventResults ignoreMinesBlockBreakEvent( Player player, Block block ) {
 		MinesEventResults results = new MinesEventResults();
 		
-		SpigotBlock sBlock = new SpigotBlock( block );
+		SpigotBlock sBlock = SpigotBlock.getSpigotBlock( block );
 		if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
 			results.setCancelEvent( true );
 			results.setIgnoreEvent( true );

@@ -170,7 +170,7 @@ public class SpigotListener implements Listener {
 	@EventHandler 
 	public void onBlockPlace(BlockPlaceEvent e) {
         org.bukkit.Location block = e.getBlockPlaced().getLocation();
-        SpigotBlock sBlock = new SpigotBlock( e.getBlock() );
+        SpigotBlock sBlock = SpigotBlock.getSpigotBlock( e.getBlock() );
         
         tech.mcprison.prison.internal.events.block.BlockPlaceEvent event =
             new tech.mcprison.prison.internal.events.block.BlockPlaceEvent(
@@ -183,7 +183,7 @@ public class SpigotListener implements Listener {
 	@EventHandler 
 	public void onBlockBreak(BlockBreakEvent e) {
         org.bukkit.Location block = e.getBlock().getLocation();
-        SpigotBlock sBlock = new SpigotBlock( e.getBlock() );
+        SpigotBlock sBlock = SpigotBlock.getSpigotBlock( e.getBlock() );
         
         tech.mcprison.prison.internal.events.block.BlockBreakEvent event =
             new tech.mcprison.prison.internal.events.block.BlockBreakEvent(

@@ -7,6 +7,7 @@ import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.util.Location;
 
@@ -15,7 +16,7 @@ public interface CompatibilityBlocks
 
 //	public BlockType getBlockType(Block spigotBlock);
 
-	public PrisonBlock getPrisonBlock(Block spigotBlock);
+	public SpigotBlock getSpigotBlock(Block spigotBlock);
 	
 	public XMaterial getXMaterial( Block spigotBlock );
 	

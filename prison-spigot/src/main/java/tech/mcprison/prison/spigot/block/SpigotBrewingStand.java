@@ -47,6 +47,6 @@ public class SpigotBrewingStand implements BrewingStand {
     }
 
     @Override public Block getBlock() {
-        return new SpigotBlock(wrapper.getBlock());
+        return SpigotBlock.getSpigotBlock(wrapper.getBlock());
     }
 }

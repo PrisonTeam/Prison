@@ -45,7 +45,7 @@ public class CustomItemsWrapper {
 		org.bukkit.block.Block resultBlock = 
 				CustomItemsAPI.setCustomItemIDAtBlock( spigotBlock, customId, doBlockUpdate );
 		
-		return new SpigotBlock( resultBlock );
+		return SpigotBlock.getSpigotBlock( resultBlock );
 	}
 	
 	
@@ -68,7 +68,10 @@ public class CustomItemsWrapper {
 			public void run() {
 				
 				// No physics update:
-				org.bukkit.block.Block spigotBlock = ((SpigotBlock) location.getBlockAt()).getWrapper();
+				
+				SpigotBlock sBlock = (SpigotBlock) location.getBlockAt();
+				
+				org.bukkit.block.Block spigotBlock = sBlock.getWrapper();
 				//org.bukkit.block.Block spigotBlock = ((SpigotBlock) prisonBlock).getWrapper();
 				
 				// Request the block change, but we don't need the results so ignore it

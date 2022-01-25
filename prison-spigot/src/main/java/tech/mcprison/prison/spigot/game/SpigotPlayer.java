@@ -157,7 +157,7 @@ public class SpigotPlayer
 
     			// return the first non-null and non-AIR block, which will 
     			// be the one the player is looking at:
-    			results = new SpigotBlock( block );
+    			results = SpigotBlock.getSpigotBlock( block );
     		}
 		}
     	
@@ -185,7 +185,7 @@ public class SpigotPlayer
 
     			// return the first non-null and non-AIR block, which will 
     			// be the one the player is looking at:
-    			results.add( new SpigotBlock( block ) );
+    			results.add( SpigotBlock.getSpigotBlock( block ) );
     		}
 		}
     	

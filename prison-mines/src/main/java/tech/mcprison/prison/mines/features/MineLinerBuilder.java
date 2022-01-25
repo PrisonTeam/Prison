@@ -610,32 +610,34 @@ public class MineLinerBuilder {
 	 */
 	private Block getRelativeBlock( Location location, Edges edge, int offset )
 	{
-		Location relLoc = new Location( location );
+		Location relLoc = null;
+		
 		switch ( edge )
 		{
 			case north:
-				relLoc.setZ( relLoc.getBlockZ() - offset );
+				relLoc = location.getLocationAtDelta( 0, 0, offset * -1 );
 				break;
 			case south:
-				relLoc.setZ( relLoc.getBlockZ() + offset );
+				relLoc = location.getLocationAtDelta( 0, 0, offset );
 				break;
 			case east:
-				relLoc.setX( relLoc.getBlockX() + offset );
+				relLoc = location.getLocationAtDelta( offset, 0, 0 );
 				break;
 			case west:
-				relLoc.setX( relLoc.getBlockX() - offset );
+				relLoc = location.getLocationAtDelta( offset * -1, 0, 0 );
 				break;
 			case top:
-				relLoc.setY( relLoc.getBlockY() + offset );
+				relLoc = location.getLocationAtDelta( 0, offset, 0 );
 				break;
 			case bottom:
-				relLoc.setY( relLoc.getBlockY() - offset );
+				relLoc = location.getLocationAtDelta( 0, offset * -1, 0 );
 				break;
-
+				
 			default:
+				relLoc = new Location( location );
 				break;
 		}
-
+		
 		Block block = relLoc.getBlockAt();
 				
 		return block;

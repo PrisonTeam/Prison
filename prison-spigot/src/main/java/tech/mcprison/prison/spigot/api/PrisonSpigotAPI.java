@@ -305,7 +305,7 @@ public class PrisonSpigotAPI {
     		if ( isCanceledEvent && isAir || !isCanceledEvent ) {
 
     			// Need to wrap in a Prison block so it can be used with the mines:
-    			SpigotBlock spigotBlock = new SpigotBlock(block);
+    			SpigotBlock spigotBlock = SpigotBlock.getSpigotBlock(block);
     			
     			Long playerUUIDLSB = Long.valueOf( player.getUniqueId().getLeastSignificantBits() );
 
