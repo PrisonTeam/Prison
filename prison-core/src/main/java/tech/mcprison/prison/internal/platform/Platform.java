@@ -281,19 +281,6 @@ public interface Platform {
 	public boolean getConfigBooleanFalse( String key );
 	
 
-//	/**
-//	 * <p>This is the only way to find out if the new block model is enabled.
-//	 * </p>
-//	 * 
-//	 * <p>This should be the only place within prison to use the actual String value of the
-//	 * permission.  This will allow for a simple change in the future.
-//	 * </p>
-//	 * 
-//	 * @return
-//	 */
-//	public boolean isUseNewPrisonBlockModel();
-	
-	
 	/**
 	 * <p>This returns the boolean value that is associated with the key.
 	 * It has to match on true to return a true value, but if the key does

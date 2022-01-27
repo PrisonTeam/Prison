@@ -43,7 +43,6 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
 
         // Get Mine
         Mine m = PrisonMines.getInstance().getMine(mineName);
-//		boolean useNewBlockModel = Prison.get().getPlatform().isUseNewPrisonBlockModel();
 
         ButtonLore addBlockLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_add), null);
 
@@ -82,51 +81,6 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         	// Add the button to the GUI.
         	gui.addButton(new Button(null, xMat, blocksLore, "&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
         }
-        /*
-        if (useNewBlockModel) {
-        }
-        else {
-
-        	// For every block makes a button
-        	for (BlockOld block : m.getBlocks()) {
-
-        		// Get the block material as a string and displayname
-        		String blockmaterial = block.getType().name();
-        		String blockmaterialdisplay = blockmaterial;
-
-        		// Check if a block's air and changed the item of it to BARRIER
-        		if (blockmaterial.equalsIgnoreCase("air")){
-        			blockmaterial = "BARRIER";
-        			blockmaterialdisplay = blockmaterial;
-        		}
-
-                // Create the lore
-                List<String> blockslore = createLore(
-                        loreShiftRightClickToDelete,
-                        loreClickToEditBlock,
-                        "",
-                        loreInfo
-                );
-
-                boolean isEnum = true;
-                try {
-                    Material.valueOf(blockmaterial);
-                } catch (Exception e) {
-                    isEnum = false;
-                }
-
-                if (!(isEnum)) {
-                    blockmaterial = "BARRIER";
-                }
-
-                // Add a lore
-                blockslore.add(SpigotPrison.format(loreChance + block.getChance() + "%"));
-                blockslore.add(SpigotPrison.format(loreBlockType + blockmaterial));
-
-                // Add the button to the GUI.
-                gui.addButton(new Button(null, XMaterial.valueOf(blockmaterial), blockslore, "&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));
-        	}
-        }*/
 
         // Open the inventory
         gui.open();

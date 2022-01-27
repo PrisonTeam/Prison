@@ -523,16 +523,6 @@ public class MinesBlockCommands
     	
     	display = prisonBlockSearchBuilder(search, page, true, 
     			blockSeachCommand, commandBlockAdd, targetText );
-//        if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
-//            
-//        }
-        
-        // Obsolete... the old block model:
-//        else {
-//        	
-//        	display = blockSearchBuilder(search, page, true, 
-//        						blockSeachCommand, commandBlockAdd, targetText );
-//        }
         
         display.send(sender);
 
@@ -556,16 +546,6 @@ public class MinesBlockCommands
     	
     	display = prisonBlockSearchBuilder(search, page, false, 
     			blockSeachCommand, commandBlockAdd, targetText );
-//    	if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
-//    		
-//    	}
-    	
-    	   // Obsolete... the old block model:
-//    	else {
-//    		
-//    		display = blockSearchBuilder(search, page, false, 
-//    						blockSeachCommand, commandBlockAdd, targetText );
-//    	}
     	
     	display.send(sender);
     	
@@ -632,77 +612,6 @@ public class MinesBlockCommands
     	
     	return display;
     }
-
-    // Obsolete... the old block model:
-//	private ChatDisplay blockSearchBuilder(String search, String page, 
-//					boolean restrictToBlocks, 
-//					String commandBlockSearch,
-//					String commandBlockAdd,
-//			        String targetText )
-//	{
-//		List<BlockType> blocks = new ArrayList<>();
-//    	for (BlockType block : BlockType.values())
-//		{
-//			if ( (!restrictToBlocks || restrictToBlocks && block.getMaterialType() == MaterialType.BLOCK) && 
-//					(block.getId().contains(search.toLowerCase()) || 
-//					block.name().toLowerCase().contains(search.toLowerCase())) )
-//			{
-//				blocks.add(block);
-//			}
-//		}
-//    	
-//        
-//        CommandPagedData cmdPageData = new CommandPagedData(
-//        		"/" + commandBlockSearch + " " + search, blocks.size(),
-//        		0, page );
-//    	
-//    	// Same page logic as in mines info
-////    	int curPage = 1;
-////    	int pageSize = 10;
-////    	int pages = (blocks.size() / pageSize) + 1;
-////    	try
-////		{
-////			curPage = Integer.parseInt(page);
-////		}
-////		catch ( NumberFormatException e )
-////		{
-////			// Ignore: Not an integer, will use the default value.
-////		}
-////    	curPage = ( curPage < 1 ? 1 : (curPage > pages ? pages : curPage ));
-////    	int pageStart = (curPage - 1) * pageSize;
-////    	int pageEnd = ((pageStart + pageSize) > blocks.size() ? blocks.size() : pageStart + pageSize);
-//
-//    	
-//        ChatDisplay display = new ChatDisplay("Block Search (" + blocks.size() + ")");
-//        display.addText("&8Click a block to add it to a " + targetText + ".");
-//        
-//        BulletedListComponent.BulletedListBuilder builder =
-//        						new BulletedListComponent.BulletedListBuilder();
-//        for ( int i = cmdPageData.getPageStart(); i < cmdPageData.getPageEnd(); i++ )
-//        {
-//        	BlockType block = blocks.get(i);
-//            FancyMessage msg =
-//                    new FancyMessage(
-//                    		String.format("&7%s %s  (%s)%s (%s)", 
-//                    				Integer.toString(i), block.name(), 
-//                    				block.getId().replace("minecraft:", ""),
-//                    				(block.getMaterialVersion() == null ? "" : 
-//                    					"(" + block.getMaterialVersion() + ")"),
-//                    				(block.isBlock() ? "block": "item"))
-//                    		)
-//                    .suggest("/" + commandBlockAdd + " " + getLastMineReferenced() + " " + block.name() + " %")
-//                        .tooltip("&7Click to add block to a " + targetText + ".");
-//                builder.add(msg);
-//        }
-//        display.addComponent(builder.build());
-//        
-//        // This command plus parameters used:
-////        String pageCmd = "/mines block search " + search;
-//        
-//        cmdPageData.generatePagedCommandFooter( display );
-//        
-//		return display;
-//	}
 
 	
 

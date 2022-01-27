@@ -265,11 +265,6 @@ public class TestPlatform implements Platform {
 		return defaultValue;
 	}
 	
-//	@Override
-//	public boolean isUseNewPrisonBlockModel() {
-//		return false;
-//	}
-	
 	@Override
 	public boolean getConfigBooleanFalse( String key ) {
 		return false;

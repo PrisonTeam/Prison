@@ -152,17 +152,6 @@ public class PrisonSpigotAPI {
 			results = prisonBlock.getBlockName();
 		}
 		
-//        if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
-//        }
-//        
-        // Obsolete... prison old block model:
-//        else {
-//        	
-//        	BlockType blockType = BlockType.getBlock(blockName);
-//        	if (blockType != null && blockType.getMaterialType() == MaterialType.BLOCK ) {
-//        		results = blockType.getMaterialType().name();
-//        	}
-//        }
 		
 		return results;
 	}
@@ -187,17 +176,6 @@ public class PrisonSpigotAPI {
 			if ( prisonBlock != null && !prisonBlock.isBlock() ) {
 				prisonBlock = null;
 			}
-//			if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
-//			}
-//			
-			// Obsolete... prison old block model:
-//			else {
-//				
-//				blockType = BlockType.getBlock( prisonBlockName );
-//				if (blockType != null && blockType.getMaterialType() != MaterialType.BLOCK ) {
-//					blockType = null;
-//				}
-//			}
 			
 			if ( prisonBlock != null ) {
 				if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {

@@ -1494,14 +1494,6 @@ public class SpigotPlatform
 				blockList.add( xMatCost.getBlock().name() );
 			}
 		}
-//        if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
-//        	
-//        	
-////        	blockList = buildBlockListXMaterial();
-//        }
-//        else {
-//        	blockList = buildBlockListBlockType();
-//        }
 		
 		MineManager mm = PrisonMines.getInstance().getMineManager();
 		//List<Mine> mines = mm.getMines();
@@ -1594,25 +1586,6 @@ public class SpigotPlatform
 									mBlocks.get( i ) ) );
 				}
 				
-//				if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
-//				}
-//				else {
-//					
-//					tech.mcprison.prison.mines.data.BlockOld block = 
-//							new tech.mcprison.prison.mines.data.BlockOld( 
-//									mBlocks.get( i ), percents.get( i ), 0 );
-//					
-//					mine.getBlocks().add( block );
-//					
-//					total += block.getChance();
-//					
-//					// If this is the last block and the totals are not 100%, then
-//					// add the balance to the last block.
-//					if ( i == (mBlocks.size() - 1) && total < 100.0d ) {
-//						double remaining = 100.0d - total;
-//						block.setChance( remaining + block.getChance() );
-//					}
-//				}
 				
 			}
 			
