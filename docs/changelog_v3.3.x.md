@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.7 2022-01-26
 
 
+* **Format the earnings amount properly, so it will have a consistant format.**
+Once in a while, instead of showing a value like 165.00 it shows 165.000000000000001.  This is caused by the fact that doubles are binary, not base-10 so it canot always show the correct values.
+
+
 * **Deprecated the MessagesConfig class since it is not implemented correctly.**
 The messages should have been handled through Prison's multi-language tool, of which this does not use.
 
