@@ -846,33 +846,33 @@ public class SpigotPlatform
 		return ( val != null && val.trim().equalsIgnoreCase( "true" ) );
 	}
 	
-	/**
-	 * <p>Prison is now automatically enabling the new prison block model.
-	 * The old block model still exists, but it has to be explicitly 
-	 * enabled in config.yml.
-	 * </p>
-	 * 
-	 * <p>No one should ever use the old block model. If there is an issue with
-	 * the new model then it should be fixed and not avoided.  But if they 
-	 * must, then the following must be added to the `plugins/Prison/config.yml`.
-	 * </p>
-	 * 
-	 * <pre>
-	 * # Warning: The use of the OLD prison block model will be removed
-	 * #          from future releases in the near future.  This old
-	 * #          model is to be used only on an emergency basis 
-	 * #          until any issues with the new model have been resolved.
-	 * use-old-prison-block-model: true
-	 * </pre>
-	 * 
-	 * @return
-	 */
-	@Override
-	public boolean isUseNewPrisonBlockModel() {
-		
-//		return getConfigBooleanFalse( "use-new-prison-block-model" );
-		return !getConfigBooleanFalse( "use-old-prison-block-model" );
-	}
+//	/**
+//	 * <p>Prison is now automatically enabling the new prison block model.
+//	 * The old block model still exists, but it has to be explicitly 
+//	 * enabled in config.yml.
+//	 * </p>
+//	 * 
+//	 * <p>No one should ever use the old block model. If there is an issue with
+//	 * the new model then it should be fixed and not avoided.  But if they 
+//	 * must, then the following must be added to the `plugins/Prison/config.yml`.
+//	 * </p>
+//	 * 
+//	 * <pre>
+//	 * # Warning: The use of the OLD prison block model will be removed
+//	 * #          from future releases in the near future.  This old
+//	 * #          model is to be used only on an emergency basis 
+//	 * #          until any issues with the new model have been resolved.
+//	 * use-old-prison-block-model: true
+//	 * </pre>
+//	 * 
+//	 * @return
+//	 */
+//	@Override
+//	public boolean isUseNewPrisonBlockModel() {
+//		
+////		return getConfigBooleanFalse( "use-new-prison-block-model" );
+//		return !getConfigBooleanFalse( "use-old-prison-block-model" );
+//	}
 	
 	/**
 	 * <p>This returns the boolean value that is associated with the key.
@@ -1486,19 +1486,19 @@ public class SpigotPlatform
 		
 		
 		
-        if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
-        	
-        	for ( SellAllBlockData xMatCost : buildBlockListXMaterial() ) {
-        		
-        		// Add only the primary blocks to this blockList which will be used to generate the
-        		// mine's block contents:
-				if ( xMatCost.isPrimary() ) {
-					blockList.add( xMatCost.getBlock().name() );
-				}
+		for ( SellAllBlockData xMatCost : buildBlockListXMaterial() ) {
+			
+			// Add only the primary blocks to this blockList which will be used to generate the
+			// mine's block contents:
+			if ( xMatCost.isPrimary() ) {
+				blockList.add( xMatCost.getBlock().name() );
 			}
-        	
-//        	blockList = buildBlockListXMaterial();
-        }
+		}
+//        if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
+//        	
+//        	
+////        	blockList = buildBlockListXMaterial();
+//        }
 //        else {
 //        	blockList = buildBlockListBlockType();
 //        }
@@ -1568,34 +1568,34 @@ public class SpigotPlatform
 			for ( int i = 0; i < mBlocks.size(); i++ )
 			{
 				
-				if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
+				PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( mBlocks.get( i ) );
+				if ( prisonBlock != null ) {
 					
-					PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( mBlocks.get( i ) );
-	            	if ( prisonBlock != null ) {
-	            	
-	            		double chance = percents.size() > i ? percents.get( i ) : 0;
-	            		prisonBlock.setChance( chance );
-	            		prisonBlock.setBlockCountTotal( 0 );
-	            		
-	            		mine.getPrisonBlocks().add( prisonBlock );
-	            		
-	            		total += prisonBlock.getChance();
-	            		
-	            		// If this is the last block and the totals are not 100%, then
-	            		// add the balance to the last block.
-	            		if ( i == (mBlocks.size() - 1) && total < 100.0d ) {
-	            			double remaining = 100.0d - total;
-	            			total += remaining;
-	            			prisonBlock.setChance( remaining + prisonBlock.getChance() );
-	            		}
-	            	}
-	            	else {
-	            		Output.get().logInfo(
-	            				String.format( "AutoConfigure block assignment failure: New Block Model: " +
-	            						"Unable to map to a valid PrisonBlock for this version of mc. [%s]", 
-	            						mBlocks.get( i ) ) );
-	            	}
+					double chance = percents.size() > i ? percents.get( i ) : 0;
+					prisonBlock.setChance( chance );
+					prisonBlock.setBlockCountTotal( 0 );
+					
+					mine.getPrisonBlocks().add( prisonBlock );
+					
+					total += prisonBlock.getChance();
+					
+					// If this is the last block and the totals are not 100%, then
+					// add the balance to the last block.
+					if ( i == (mBlocks.size() - 1) && total < 100.0d ) {
+						double remaining = 100.0d - total;
+						total += remaining;
+						prisonBlock.setChance( remaining + prisonBlock.getChance() );
+					}
 				}
+				else {
+					Output.get().logInfo(
+							String.format( "AutoConfigure block assignment failure: New Block Model: " +
+									"Unable to map to a valid PrisonBlock for this version of mc. [%s]", 
+									mBlocks.get( i ) ) );
+				}
+				
+//				if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
+//				}
 //				else {
 //					
 //					tech.mcprison.prison.mines.data.BlockOld block = 

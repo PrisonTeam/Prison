@@ -147,14 +147,14 @@ public class PrisonSpigotAPI {
 	public String getPrisonBlockName( String blockName ) {
 		String results = null;
 		
-        if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
-        	
-        	PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockName );
-        	if ( prisonBlock != null && prisonBlock.isBlock() ) {
-        		results = prisonBlock.getBlockName();
-        	}
-        }
-        
+		PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockName );
+		if ( prisonBlock != null && prisonBlock.isBlock() ) {
+			results = prisonBlock.getBlockName();
+		}
+		
+//        if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
+//        }
+//        
         // Obsolete... prison old block model:
 //        else {
 //        	
@@ -182,14 +182,14 @@ public class PrisonSpigotAPI {
 			PrisonBlock prisonBlock = null;
 //			BlockType blockType = null;
 			
-			if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
-				
-				prisonBlock = Prison.get().getPlatform().getPrisonBlock( prisonBlockName );
-				if ( prisonBlock != null && !prisonBlock.isBlock() ) {
-					prisonBlock = null;
-				}
-			}
 			
+			prisonBlock = Prison.get().getPlatform().getPrisonBlock( prisonBlockName );
+			if ( prisonBlock != null && !prisonBlock.isBlock() ) {
+				prisonBlock = null;
+			}
+//			if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
+//			}
+//			
 			// Obsolete... prison old block model:
 //			else {
 //				
