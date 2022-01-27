@@ -576,26 +576,26 @@ public abstract class MineReset
 
 //					MineTargetBlock mtb = null;
 					
-					if ( isUseNewBlockModel() ) {
-						
-						// track the constraints: (obsolete)
-						//trackConstraints( currentLevel, constrainedBlocks );
-						
-						PrisonBlock prisonBlock = mineLevelBlockList.randomlySelectPrisonBlock();
-						
+					// track the constraints: (obsolete)
+					//trackConstraints( currentLevel, constrainedBlocks );
+					
+					PrisonBlock prisonBlock = mineLevelBlockList.randomlySelectPrisonBlock();
+					
 //						PrisonBlock prisonBlock = randomlySelectPrisonBlock( random, currentLevel );
-						
-						// Increment the mine's block count. This block is one of the control blocks:
-						incrementResetBlockCount( prisonBlock );
-						
-						addMineTargetPrisonBlock( prisonBlock, x, y, z, isEdge );
+					
+					// Increment the mine's block count. This block is one of the control blocks:
+					incrementResetBlockCount( prisonBlock );
+					
+					addMineTargetPrisonBlock( prisonBlock, x, y, z, isEdge );
 //						mtb = new MineTargetPrisonBlock( prisonBlock, x, y, z);
-						
-						if ( prisonBlock.equals( PrisonBlock.AIR ) ) {
+					
+					if ( prisonBlock.equals( PrisonBlock.AIR ) ) {
 //						mAirBlocks[i++] = true;
-							airCount++;
-						}
+						airCount++;
 					}
+//					if ( isUseNewBlockModel() ) {
+//						
+//					}
 					
 //					// Obsolete... the old block model:
 //					else {
@@ -1148,7 +1148,7 @@ public abstract class MineReset
 							"Ensure world exists. mine= %s ", 
 							getName()  ));
 		}
-		else if ( isUseNewBlockModel() &&
+		else if ( // isUseNewBlockModel() &&
 				getPrisonBlocks().size() == 1 && 
 				getPrisonBlocks().get( 0 ).equals( PrisonBlock.IGNORE ) ) {
 		
@@ -1224,22 +1224,22 @@ public abstract class MineReset
 											 yEdge && zEdge;
 							
 							
-							if ( isUseNewBlockModel() ) {
+							
+							PrisonBlock pBlock = tBlock.getPrisonBlock();
+							
+							if ( pBlock != null ) {
 								
-								PrisonBlock pBlock = tBlock.getPrisonBlock();
-
-								if ( pBlock != null ) {
-									
-									// Increment the mine's block count. This block is one of the control blocks:
-									addMineTargetPrisonBlock( incrementResetBlockCount( pBlock ), x, y, z, isEdge );
-									
-								}
+								// Increment the mine's block count. This block is one of the control blocks:
+								addMineTargetPrisonBlock( incrementResetBlockCount( pBlock ), x, y, z, isEdge );
 								
-								if ( pBlock == null || pBlock.isAir() ) {
-									airCount++;
-								}
 							}
 							
+							if ( pBlock == null || pBlock.isAir() ) {
+								airCount++;
+							}
+//							if ( isUseNewBlockModel() ) {
+//							}
+//							
 							// Obsolete... the old block model:
 //							else {
 //								
@@ -1609,12 +1609,13 @@ public abstract class MineReset
 	
 	private void constraintsApplyMin() {
 		
-    	if ( isUseNewBlockModel() ) {
-    		
-    		for ( PrisonBlockStatusData block : getPrisonBlocks() ) {
-    			constraintsApplyMin( block, isUseNewBlockModel() );
-    		}
-    	}
+		for ( PrisonBlockStatusData block : getPrisonBlocks() ) {
+			constraintsApplyMin( block );
+//			constraintsApplyMin( block, isUseNewBlockModel() );
+		}
+//    	if ( isUseNewBlockModel() ) {
+//    		
+//    	}
     	
     	// Obsolete... the old block model:
 //    	else {
@@ -1641,7 +1642,7 @@ public abstract class MineReset
      * @param block
      * @param useNewBlockModel
      */
-    private void constraintsApplyMin( PrisonBlockStatusData block, boolean useNewBlockModel )
+    private void constraintsApplyMin( PrisonBlockStatusData block )
 	{
     	if ( block.getConstraintMin() > 0 ) {
     		

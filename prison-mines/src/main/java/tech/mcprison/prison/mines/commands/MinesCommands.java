@@ -811,12 +811,12 @@ public class MinesCommands
         CommandPagedData cmdPageData = null;
         
         
-        if ( m.isUseNewBlockModel() ) {
+        cmdPageData = new CommandPagedData(
+        		"/mines info " + m.getName(), m.getPrisonBlocks().size(),
+        		1, page );
         
-        	cmdPageData = new CommandPagedData(
-        			"/mines info " + m.getName(), m.getPrisonBlocks().size(),
-        			1, page );
-        }
+//        if ( m.isUseNewBlockModel() ) {
+//        }
         
 //        else {
 //        	
@@ -846,10 +846,10 @@ public class MinesCommands
         ChatDisplay chatDisplay = mineInfoDetails( sender, mMan.isMineStats(), m, cmdPageData );
 
         
-        int blockSize = 0;
-        if ( m.isUseNewBlockModel() ) {
-        	blockSize =  m.getPrisonBlocks().size();
-        }
+        int blockSize = m.getPrisonBlocks().size();
+        
+//        if ( m.isUseNewBlockModel() ) {
+//        }
 //        else {
 //        	blockSize = m.getBlocks().size();
 //        }
@@ -1248,10 +1248,10 @@ public class MinesCommands
         	
         }
 
-        if ( cmdPageData.isShowAll() ) {
-        	chatDisplay.addText( "&3Block model: &7%s", 
-        			( m.isUseNewBlockModel() ? "New" : "Old") );
-        }
+//        if ( cmdPageData.isShowAll() ) {
+//        	chatDisplay.addText( "&3Block model: &7%s", 
+//        			( m.isUseNewBlockModel() ? "New" : "Old") );
+//        }
         
         if ( cmdPageData.isShowAll() || cmdPageData.getCurPage() > 1 ) {
 //        	if ( cmdPageData.isDebug() ) {
@@ -1259,8 +1259,7 @@ public class MinesCommands
 //        				( m.isUseNewBlockModel() ? "New" : "Old") );
 //        	}
         	chatDisplay.addText("&3Blocks:");
-        	chatDisplay.addText("&8Click on a block's name to edit its chances of appearing.%s",
-        			(m.isUseNewBlockModel() ? ".." : ""));
+        	chatDisplay.addText("&8Click on a block's name to edit its chances of appearing..." );
         	
         	BulletedListComponent list = getBlocksList(m, cmdPageData, true );
         	chatDisplay.addComponent(list);
@@ -4090,30 +4089,30 @@ public class MinesCommands
         		// Display a list of blocks for the mine:
         		int blockRow = 0;
         		
-        		// Old block model is not supported with blockEvent block filers:
-        		if ( m.isUseNewBlockModel() ) {
+        		for ( PrisonBlock block : m.getPrisonBlocks() )
+        		{
         			
-        			for ( PrisonBlock block : m.getPrisonBlocks() )
-        			{
-        	        	
-        	        	RowComponent rowB = new RowComponent();
-        	        	
-        	        	rowB.addTextComponent( " &3Row: &d%d  ", ++blockRow );
-        	        	
-        	        	String message = String.format( "&7%s %s", 
-        	        			block.getBlockName(), dFmt.format( block.getChance() ) );
-        	        	
-        	        	String command = String.format( "%s %d", commandBlockEvent, blockRow );
-        	        	
-        	        	FancyMessage msgAddBlock = new FancyMessage( message )
-								.suggest( command )
-								.tooltip("Add selected block to blockEvent - Click to Add");
-        	        	
-        	        	rowB.addFancy( msgAddBlock );
-        	        	
-        	        	display.addComponent( rowB );
-        			}
+        			RowComponent rowB = new RowComponent();
+        			
+        			rowB.addTextComponent( " &3Row: &d%d  ", ++blockRow );
+        			
+        			String message = String.format( "&7%s %s", 
+        					block.getBlockName(), dFmt.format( block.getChance() ) );
+        			
+        			String command = String.format( "%s %d", commandBlockEvent, blockRow );
+        			
+        			FancyMessage msgAddBlock = new FancyMessage( message )
+        					.suggest( command )
+        					.tooltip("Add selected block to blockEvent - Click to Add");
+        			
+        			rowB.addFancy( msgAddBlock );
+        			
+        			display.addComponent( rowB );
         		}
+        		
+//        		// Old block model is not supported with blockEvent block filers:
+//        		if ( m.isUseNewBlockModel() ) {
+//        		}
 
         		display.send( sender );
         		return;
@@ -4121,20 +4120,20 @@ public class MinesCommands
         	
         	
         	// Old block model is not supported with blockEvent block filers:
-        	if ( m.isUseNewBlockModel() ) {
-        		PrisonBlock block = m.getPrisonBlocks().get( rowBlockName - 1 );
+        	PrisonBlock block = m.getPrisonBlocks().get( rowBlockName - 1 );
+        	
+        	if ( block != null ) {
         		
-        		if ( block != null ) {
-
-        			blockEvent.addPrisonBlock( block );
-        			
-        			pMines.getMineManager().saveMine( m );
-        			
-        			sender.sendMessage( "Block has been added to BlockEvent" );
-        			
-        			return;
-        		}
+        		blockEvent.addPrisonBlock( block );
+        		
+        		pMines.getMineManager().saveMine( m );
+        		
+        		sender.sendMessage( "Block has been added to BlockEvent" );
+        		
+        		return;
         	}
+//        	if ( m.isUseNewBlockModel() ) {
+//        	}
         	
 //        	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
 //        	PrisonBlock block = prisonBlockTypes.getBlockTypesByName( blockName );
@@ -4258,31 +4257,31 @@ public class MinesCommands
         		int blockRow = 0;
         		
         		// Old block model is not supported with blockEvent block filers:
-        		if ( m.isUseNewBlockModel() ) {
+        		
+        		for ( PrisonBlock block : blockEvent.getPrisonBlocks() )
+        		{
         			
-        			for ( PrisonBlock block : blockEvent.getPrisonBlocks() )
-        			{
-        	        	
-        	        	RowComponent rowB = new RowComponent();
-        	        	
-        	        	rowB.addTextComponent( " &3Row: &d%d  ", ++blockRow );
-        	        	
-        	        	String message = String.format( "&7%s", 
-        	        			block.getBlockName() );
+        			RowComponent rowB = new RowComponent();
+        			
+        			rowB.addTextComponent( " &3Row: &d%d  ", ++blockRow );
+        			
+        			String message = String.format( "&7%s", 
+        					block.getBlockName() );
 //        	        	String message = String.format( "&7%s %s", 
 //        	        			block.getBlockName(), dFmt.format( block.getChance() ) );
-        	        	
-        	        	String command = String.format( "%s %d", commandBlockEvent, blockRow );
-        	        	
-        	        	FancyMessage msgAddBlock = new FancyMessage( message )
-								.suggest( command )
-								.tooltip("Remove a selected block from a blockEvent - Click to Remove");
-        	        	
-        	        	rowB.addFancy( msgAddBlock );
-        	        	
-        	        	display.addComponent( rowB );
-        			}
+        			
+        			String command = String.format( "%s %d", commandBlockEvent, blockRow );
+        			
+        			FancyMessage msgAddBlock = new FancyMessage( message )
+        					.suggest( command )
+        					.tooltip("Remove a selected block from a blockEvent - Click to Remove");
+        			
+        			rowB.addFancy( msgAddBlock );
+        			
+        			display.addComponent( rowB );
         		}
+//        		if ( m.isUseNewBlockModel() ) {
+//        		}
 
         		display.send( sender );
         		return;
@@ -4290,17 +4289,18 @@ public class MinesCommands
         	
         	
         	// Old block model is not supported with blockEvent block filers:
-        	if ( m.isUseNewBlockModel() ) {
+        	if ( blockEvent.removePrisonBlock( rowBlockName ) ) {
         		
-        		if ( blockEvent.removePrisonBlock( rowBlockName ) ) {
-
-        			pMines.getMineManager().saveMine( m );
-        			
-        			sender.sendMessage( "Block has been removed from the BlockEvent" );
-        			
-        			return;
-        		}
+        		pMines.getMineManager().saveMine( m );
+        		
+        		sender.sendMessage( "Block has been removed from the BlockEvent" );
+        		
+        		return;
         	}
+
+//        	if ( m.isUseNewBlockModel() ) {
+//        		
+//        	}
         	
 //        	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
 //        	PrisonBlock block = prisonBlockTypes.getBlockTypesByName( blockName );

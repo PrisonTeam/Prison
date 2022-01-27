@@ -51,7 +51,7 @@ public abstract class MineData
 	private String accessPermission = null;
 	
 	
-	private boolean useNewBlockModel = false;
+//	private boolean useNewBlockModel = false;
 	
 	
 	private boolean tpAccessByRank = false;
@@ -250,13 +250,13 @@ public abstract class MineData
         this.mineSweeperBlocksChanged = 0;
         
         
-		if ( Prison.get().getPlatform() == null ) {
-			// For unit testing purposes:
-			this.useNewBlockModel = false;
-		}
-		else {
-			this.useNewBlockModel = Prison.get().getPlatform().isUseNewPrisonBlockModel();
-		}
+//		if ( Prison.get().getPlatform() == null ) {
+//			// For unit testing purposes:
+//			this.useNewBlockModel = false;
+//		}
+//		else {
+//			this.useNewBlockModel = Prison.get().getPlatform().isUseNewPrisonBlockModel();
+//		}
     }
 
     /**
@@ -326,9 +326,9 @@ public abstract class MineData
     }
     
     
-    public boolean isUseNewBlockModel() {
-		return useNewBlockModel;
-	}
+//    public boolean isUseNewBlockModel() {
+//		return useNewBlockModel;
+//	}
 
 	/**
      * Mines do not use an id.  So these will always
@@ -577,9 +577,9 @@ public abstract class MineData
     	
     	if ( blockName != null && !blockName.trim().isEmpty() ) {
     		
-    		if ( isUseNewBlockModel() ) {
-    			results = getPrisonBlock( blockName ) != null;
-    		}
+    		results = getPrisonBlock( blockName ) != null;
+//    		if ( isUseNewBlockModel() ) {
+//    		}
     		
    		   // Obsolete... the old block model:
 //    		else {
@@ -826,17 +826,17 @@ public abstract class MineData
     		
     		if ( !getBlockStats().containsKey( blockName ) ) {
 
-    			if ( isUseNewBlockModel() ) {
-    				
-    				for ( PrisonBlock block : getPrisonBlocks() ) {
-    					if ( block.getBlockName().equalsIgnoreCase( blockName ) ) {
-    						getBlockStats().put( block.getBlockName(), block );
-    						
-    						results = block;
-    						break;
-    					}
+    			for ( PrisonBlock block : getPrisonBlocks() ) {
+    				if ( block.getBlockName().equalsIgnoreCase( blockName ) ) {
+    					getBlockStats().put( block.getBlockName(), block );
+    					
+    					results = block;
+    					break;
     				}
     			}
+//    			if ( isUseNewBlockModel() ) {
+//    				
+//    			}
     			
    			   // Obsolete... the old block model:
 //    			else {

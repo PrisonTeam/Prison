@@ -501,7 +501,7 @@ public class Mine
         
 		// Using the Obsolete old block model for conversion to the new block model
 		// NOTE: This is the ONLY place were we are allowed to use the old block model! ;)
-        if ( isUseNewBlockModel() && 
+        if ( // isUseNewBlockModel() && 
         		getPrisonBlocks().size() == 0 && getBlocks().size() > 0 ) {
         	// Need to perform the initial conversion: 
         	
@@ -781,15 +781,15 @@ public class Mine
 	{
 		StringBuilder sb = new StringBuilder();
 
-       if ( isUseNewBlockModel() ) {
-        	for ( PrisonBlock block : getPrisonBlocks()) {
-        		if ( sb.length() > 0 ) {
-        			sb.append( ", " );
-        		}
-        		sb.append( block.toString() );
-        	}
-        }
-       
+		for ( PrisonBlock block : getPrisonBlocks()) {
+			if ( sb.length() > 0 ) {
+				sb.append( ", " );
+			}
+			sb.append( block.toString() );
+		}
+//       if ( isUseNewBlockModel() ) {
+//        }
+//       
     // Obsolete... the old block model:
 //        else {
 //        	for ( BlockOld block : getBlocks() ) {

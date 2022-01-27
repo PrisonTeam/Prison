@@ -369,43 +369,43 @@ public class MineLinerBuilder {
 //								tBlockPlus2.getLocation().toBlockCoordinates(), 
 //									x, y, z,  nextBlockName);
 						
-						if ( getMine().isUseNewBlockModel() ) {
+						if ( REPAIR_LINER.equalsIgnoreCase( nextBlockName ) ) {
 							
-							if ( REPAIR_LINER.equalsIgnoreCase( nextBlockName ) ) {
+							if ( isLadderBlock ) {
 								
-								if ( isLadderBlock ) {
-
-									tBlock.setPrisonBlock( tBlockPlus2.getPrisonBlock() );
-									tBlockPlus1.setPrisonBlock( tBlockPlus2.getPrisonBlock() );
-								}
-								else {
-									
-									tBlock.setPrisonBlock( tBlockPlus1.getPrisonBlock() );
-								}
+								tBlock.setPrisonBlock( tBlockPlus2.getPrisonBlock() );
+								tBlockPlus1.setPrisonBlock( tBlockPlus2.getPrisonBlock() );
 							}
-							
-							else if ( isForced ||
-									!tBlock.isEmpty() ||
-									isLadderBlock && !tBlockPlus1.isEmpty() ) {
-										
-								PrisonBlock nextBlockType = new PrisonBlock(nextBlockName);
+							else {
 								
-								if ( isLadderBlock ) {
-									
-									tBlockPlus1.setPrisonBlock( nextBlockType );
-
-									PrisonBlock ladderBlockType = new PrisonBlock("ladder");
-									tBlock.setPrisonBlock( ladderBlockType );
-									tBlock.setBlockFace( blockFace );
-								}
-								else {
-									
-									tBlock.setPrisonBlock( nextBlockType );
-								}
+								tBlock.setPrisonBlock( tBlockPlus1.getPrisonBlock() );
 							}
-							
 						}
 						
+						else if ( isForced ||
+								!tBlock.isEmpty() ||
+								isLadderBlock && !tBlockPlus1.isEmpty() ) {
+							
+							PrisonBlock nextBlockType = new PrisonBlock(nextBlockName);
+							
+							if ( isLadderBlock ) {
+								
+								tBlockPlus1.setPrisonBlock( nextBlockType );
+								
+								PrisonBlock ladderBlockType = new PrisonBlock("ladder");
+								tBlock.setPrisonBlock( ladderBlockType );
+								tBlock.setBlockFace( blockFace );
+							}
+							else {
+								
+								tBlock.setPrisonBlock( nextBlockType );
+							}
+						}
+						
+//						if ( getMine().isUseNewBlockModel() ) {
+//							
+//						}
+//						
 						
 						// Obsolte old block model:
 //						else {

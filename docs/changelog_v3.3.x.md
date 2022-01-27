@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.7 2022-01-26
 
 
+* **Clean up some of the refrences to the new/old block models.**
+
+
 * **Added the new command: '/sellall list' that will list all blocks and their prices.**
 
 
