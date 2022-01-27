@@ -47,6 +47,7 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.integration.Integration;
+import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.mines.PrisonMines;
@@ -690,19 +691,29 @@ public class SpigotPrison
             Prison.get().getModuleManager().getDisabledModules().add( PrisonMines.MODULE_NAME );
         }
 
-        if (modulesConf.getBoolean("ranks")) {
-            Prison.get().getModuleManager()
-                    .registerModule(new PrisonRanks(getDescription().getVersion()));
+        if (modulesConf.getBoolean("ranks") ) {
+        	PrisonRanks rankModule = new PrisonRanks(getDescription().getVersion() );
+        	
+        	// Register and enable Ranks:
+            Prison.get().getModuleManager().registerModule( rankModule );
 
-            Prison.get().getCommandHandler().registerCommands( new PrisonSpigotRanksCommands() );
             
-            // NOTE: If ranks module is enabled, then try to register prestiges commands if enabled:
-            if ( isPrisonConfig( "prestiges") || isPrisonConfig( "prestige.enabled" ) ) {
-            	// Enable the setup of the prestige related commands only if prestiges is enabled:
-            	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
+            // Only allow the GUI ranks command to be registered if there is an economy and ranks is enabled.
+            if ( rankModule.isEnabled() && PrisonAPI.getIntegrationManager().hasForType(IntegrationType.ECONOMY) ) {
+            	
+            	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotRanksCommands() );
+            	
+            	// NOTE: If ranks module is enabled, then try to register prestiges commands if enabled:
+            	if ( isPrisonConfig( "prestiges") || isPrisonConfig( "prestige.enabled" ) ) {
+            		// Enable the setup of the prestige related commands only if prestiges is enabled:
+            		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
+            	}
             }
             
-        } else {
+
+            
+        } 
+        else {
         	Output.get().logInfo("&3Modules: &cPrison Ranks, Ladders, and Players are disabled and were not Loaded. ");
         	Output.get().logInfo("&7  Prestiges cannot be enabled without ranks being enabled. ");
         	Output.get().logInfo("&7  Prison Ranks have been disabled in &2plugins/Prison/modules.yml&7.");

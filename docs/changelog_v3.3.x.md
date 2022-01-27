@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.7 2022-01-27
+# 3.3.0-beta.1 (alpha.7) 2022-01-27
+
+
+* **Bug Fix: The new Ranks error message handler which intercepts all ranks messags was failing to load properly when prison startup was not set for a delayed startup,**
+ which was because the ranks gui command (/ranks) was always being set even when ranks module failed to load.  Now /ranks gui loads only if ranks was successful in being started.
 
 
 * **Initially setup to use the actionBar for the messages, but that is not working correctly with such high volume of messages.**
