@@ -593,27 +593,6 @@ public abstract class MineReset
 //						mAirBlocks[i++] = true;
 						airCount++;
 					}
-//					if ( isUseNewBlockModel() ) {
-//						
-//					}
-					
-//					// Obsolete... the old block model:
-//					else {
-//						
-//						
-//						BlockOld tBlock = randomlySelectBlock( random, currentLevel );
-//						
-//						// Increment the mine's block count. This block is one of the control blocks:
-//						incrementResetBlockCount( tBlock );
-//						
-//						addMineTargetPrisonBlock( tBlock, x, y, z, isEdge );
-////						mtb = new MineTargetBlock( tBlock.getType(), x, y, z);
-//
-//						if ( tBlock.equals( BlockOld.AIR ) ) {
-////							mAirBlocks[i++] = true;
-//							airCount++;
-//						}
-//					}
 					
 				}
 			}
@@ -1148,8 +1127,7 @@ public abstract class MineReset
 							"Ensure world exists. mine= %s ", 
 							getName()  ));
 		}
-		else if ( // isUseNewBlockModel() &&
-				getPrisonBlocks().size() == 1 && 
+		else if ( getPrisonBlocks().size() == 1 && 
 				getPrisonBlocks().get( 0 ).equals( PrisonBlock.IGNORE ) ) {
 		
 			// This mine is set to ignore all blocks when trying to do a reset, 
@@ -1158,16 +1136,6 @@ public abstract class MineReset
 			// not registered and tracked within prison, and hence will report incorrect errors.
 			setAirCount( 0 );
 		}
-//		else if ( !isUseNewBlockModel() &&
-//				getBlocks().size() == 1 && 
-//				getBlocks().get( 0 ).getType() == BlockType.IGNORE ) {
-//			
-//			// This mine is set to ignore all blocks when trying to do a reset, 
-//			// so for now ignore the types and just set air count to zero.
-//			// Basically, this mine, if using natural spawned landscape, may contain blocks that are
-//			// not registered and tracked within prison, and hence will report incorrect errors.
-//			setAirCount( 0 );
-//		}
 		else {
 			long start = System.currentTimeMillis();
 			Optional<World> worldOptional = getWorld();
@@ -1237,25 +1205,6 @@ public abstract class MineReset
 							if ( pBlock == null || pBlock.isAir() ) {
 								airCount++;
 							}
-//							if ( isUseNewBlockModel() ) {
-//							}
-//							
-							// Obsolete... the old block model:
-//							else {
-//								
-//								BlockOld oBlock = new BlockOld( tBlock.getType() );
-//
-//								if ( oBlock != null ) {
-//									
-//									// Increment the mine's block count. This block is one of the control blocks:
-//									addMineTargetPrisonBlock( incrementResetBlockCount( oBlock ), x, y, z, isEdge );
-//									
-//								}
-//								
-//								if ( tBlock.getType() == BlockType.AIR ) {
-//									airCount++;
-//								}
-//							}
 						}
 						catch ( Exception e ) {
 							// Updates to the "world" should never be ran async.  Upon review of the above 
@@ -1611,19 +1560,7 @@ public abstract class MineReset
 		
 		for ( PrisonBlockStatusData block : getPrisonBlocks() ) {
 			constraintsApplyMin( block );
-//			constraintsApplyMin( block, isUseNewBlockModel() );
 		}
-//    	if ( isUseNewBlockModel() ) {
-//    		
-//    	}
-    	
-    	// Obsolete... the old block model:
-//    	else {
-//    		
-//    		for ( PrisonBlockStatusData block : getBlocks() ) {
-//    			constraintsApplyMin( block, isUseNewBlockModel() );
-//    		}
-//    	}
 	}
     
   

@@ -787,18 +787,7 @@ public class Mine
 			}
 			sb.append( block.toString() );
 		}
-//       if ( isUseNewBlockModel() ) {
-//        }
-//       
-    // Obsolete... the old block model:
-//        else {
-//        	for ( BlockOld block : getBlocks() ) {
-//        		if ( sb.length() > 0 ) {
-//        			sb.append( ", " );
-//        		}
-//        		sb.append( block.toString() );
-//        	}
-//        }
+
 
 		sb.insert( 0, ": [" );
 		sb.append( "]" );

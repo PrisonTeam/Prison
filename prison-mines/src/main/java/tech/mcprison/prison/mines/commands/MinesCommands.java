@@ -815,15 +815,6 @@ public class MinesCommands
         		"/mines info " + m.getName(), m.getPrisonBlocks().size(),
         		1, page );
         
-//        if ( m.isUseNewBlockModel() ) {
-//        }
-        
-//        else {
-//        	
-//        	cmdPageData = new CommandPagedData(
-//        			"/mines info " + m.getName(), m.getBlocks().size(),
-//        			1, page );
-//        }
         
 //        // Same page logic as in mines block search:
 //    	int curPage = 1;
@@ -848,11 +839,6 @@ public class MinesCommands
         
         int blockSize = m.getPrisonBlocks().size();
         
-//        if ( m.isUseNewBlockModel() ) {
-//        }
-//        else {
-//        	blockSize = m.getBlocks().size();
-//        }
         
         String message = blockSize != 0 ? null : " &cNo Blocks Defined";
         cmdPageData.generatePagedCommandFooter( chatDisplay, message );
@@ -1248,16 +1234,9 @@ public class MinesCommands
         	
         }
 
-//        if ( cmdPageData.isShowAll() ) {
-//        	chatDisplay.addText( "&3Block model: &7%s", 
-//        			( m.isUseNewBlockModel() ? "New" : "Old") );
-//        }
         
         if ( cmdPageData.isShowAll() || cmdPageData.getCurPage() > 1 ) {
-//        	if ( cmdPageData.isDebug() ) {
-//        		chatDisplay.addText( "&3Block model: &7%s", 
-//        				( m.isUseNewBlockModel() ? "New" : "Old") );
-//        	}
+
         	chatDisplay.addText("&3Blocks:");
         	chatDisplay.addText("&8Click on a block's name to edit its chances of appearing..." );
         	
@@ -4110,9 +4089,6 @@ public class MinesCommands
         			display.addComponent( rowB );
         		}
         		
-//        		// Old block model is not supported with blockEvent block filers:
-//        		if ( m.isUseNewBlockModel() ) {
-//        		}
 
         		display.send( sender );
         		return;
@@ -4132,8 +4108,6 @@ public class MinesCommands
         		
         		return;
         	}
-//        	if ( m.isUseNewBlockModel() ) {
-//        	}
         	
 //        	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
 //        	PrisonBlock block = prisonBlockTypes.getBlockTypesByName( blockName );
@@ -4256,7 +4230,6 @@ public class MinesCommands
         		// Display a list of blocks for the mine:
         		int blockRow = 0;
         		
-        		// Old block model is not supported with blockEvent block filers:
         		
         		for ( PrisonBlock block : blockEvent.getPrisonBlocks() )
         		{
@@ -4280,15 +4253,12 @@ public class MinesCommands
         			
         			display.addComponent( rowB );
         		}
-//        		if ( m.isUseNewBlockModel() ) {
-//        		}
 
         		display.send( sender );
         		return;
         	}
         	
         	
-        	// Old block model is not supported with blockEvent block filers:
         	if ( blockEvent.removePrisonBlock( rowBlockName ) ) {
         		
         		pMines.getMineManager().saveMine( m );
@@ -4298,9 +4268,6 @@ public class MinesCommands
         		return;
         	}
 
-//        	if ( m.isUseNewBlockModel() ) {
-//        		
-//        	}
         	
 //        	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
 //        	PrisonBlock block = prisonBlockTypes.getBlockTypesByName( blockName );

@@ -402,56 +402,6 @@ public class MineLinerBuilder {
 							}
 						}
 						
-//						if ( getMine().isUseNewBlockModel() ) {
-//							
-//						}
-//						
-						
-						// Obsolte old block model:
-//						else {
-//							
-//							if ( REPAIR_LINER.equalsIgnoreCase( nextBlockName ) ) {
-//								
-//								
-////								Output.get().logInfo( "#### repair : isLadderBlock: %s block types:  tb: %s  tb1: %s tb2: %s",
-////										(isLadderBlock ? "Y" : "-" ),
-////										tBlock.getType(), tBlockPlus1.getType(), tBlockPlus2.getType() );
-////								
-//								if ( isLadderBlock ) {
-//									
-//									tBlock.setType( tBlockPlus2.getType() );
-//									tBlockPlus1.setType( tBlockPlus2.getType() );
-//								}
-//								else {
-//									
-//									tBlock.setType( tBlockPlus1.getType() );
-//								}
-//							}
-//							
-//							else if ( isForced ||
-//									!tBlock.isEmpty() ||
-//									isLadderBlock && !tBlockPlus1.isEmpty() ) {
-//								
-//								BlockType nextBlockType = BlockType.fromString( nextBlockName );
-////								if ( nextBlockType == null ) {
-////									nextBlockType = BlockType.fromString( nextBlockName );
-////								}
-//								
-//								if ( isLadderBlock ) {
-//									
-//									tBlockPlus1.setType( nextBlockType );
-//
-//									BlockType ladderBlockType = BlockType.LADDER;
-//									tBlock.setType( ladderBlockType );
-//									tBlock.setBlockFace( blockFace );
-//								}
-//								else {
-//									
-//									tBlock.setType( nextBlockType );
-//								}
-//								
-//							}
-//						}
 					}
 				}
 				

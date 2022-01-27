@@ -51,9 +51,6 @@ public abstract class MineData
 	private String accessPermission = null;
 	
 	
-//	private boolean useNewBlockModel = false;
-	
-	
 	private boolean tpAccessByRank = false;
 	private boolean mineAccessByRank = false;
 	
@@ -249,14 +246,6 @@ public abstract class MineData
         this.mineSweeperTotalMs = 0;
         this.mineSweeperBlocksChanged = 0;
         
-        
-//		if ( Prison.get().getPlatform() == null ) {
-//			// For unit testing purposes:
-//			this.useNewBlockModel = false;
-//		}
-//		else {
-//			this.useNewBlockModel = Prison.get().getPlatform().isUseNewPrisonBlockModel();
-//		}
     }
 
     /**
@@ -325,10 +314,6 @@ public abstract class MineData
     	this.sortOrder = sortOrder;
     }
     
-    
-//    public boolean isUseNewBlockModel() {
-//		return useNewBlockModel;
-//	}
 
 	/**
      * Mines do not use an id.  So these will always
@@ -578,13 +563,6 @@ public abstract class MineData
     	if ( blockName != null && !blockName.trim().isEmpty() ) {
     		
     		results = getPrisonBlock( blockName ) != null;
-//    		if ( isUseNewBlockModel() ) {
-//    		}
-    		
-   		   // Obsolete... the old block model:
-//    		else {
-//    			results = getBlockOld( blockName ) != null;
-//    		}
     	}
         
         return results;
@@ -834,22 +812,6 @@ public abstract class MineData
     					break;
     				}
     			}
-//    			if ( isUseNewBlockModel() ) {
-//    				
-//    			}
-    			
-   			   // Obsolete... the old block model:
-//    			else {
-//    				
-//    				for ( BlockOld block : getBlocks() ) {
-//    					if ( block.getBlockName().equalsIgnoreCase( blockName ) ) {
-//    						getBlockStats().put( block.getBlockName(), block );
-//    						
-//    						results = block;
-//    						break;
-//    					}
-//    				}
-//    			}
     			
     		}
     		else {
