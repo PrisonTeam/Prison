@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.7 2022-01-26
 
 
+* **Deprecated the MessagesConfig class since it is not implemented correctly.**
+The messages should have been handled through Prison's multi-language tool, of which this does not use.
+
+
 * **Try to use a different way to identify the item stack, especially if the bukkit item stack does not exist.**
 This was a random error when using gravel, sand, and dirt on spigot/paper 1.12.2.
 

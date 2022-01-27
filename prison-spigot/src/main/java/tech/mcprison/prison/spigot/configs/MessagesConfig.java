@@ -5,6 +5,16 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import java.io.*;
 import java.util.Properties;
 
+/**
+ * <p>This class was supposed to use the multi-language support tools within prison, of which it does not.
+ * Therefore, it needs to be trashed and replaced with the proper tools.
+ * </p>
+ * 
+ * <p>Do not use!
+ * </p>
+ *
+ */
+@Deprecated
 public class MessagesConfig {
 
     private static MessagesConfig instance;
@@ -15,6 +25,7 @@ public class MessagesConfig {
     /**
      * Get MessagesConfig class and initialize it if necessary.
      * */
+    @Deprecated
     public static MessagesConfig get(){
         if (instance == null){
          instance = new MessagesConfig();
@@ -26,6 +37,7 @@ public class MessagesConfig {
     /**
      * Initialize the config, reading and caching data.
      * */
+    @Deprecated
     private void initConfig(){
         try(FileInputStream data = new FileInputStream(SpigotPrison.getInstance().getDataFolder() + path + defaultLanguage + ".properties")){
 
@@ -52,6 +64,7 @@ public class MessagesConfig {
     	return msg;
     }
 
+    @Deprecated
     public void reload(){
         initConfig();
     }
