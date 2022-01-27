@@ -16,6 +16,8 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.7 2022-01-26
 
 
+* **Added the new command: '/sellall list' that will list all blocks and their prices.**
+
 
 * **Added comments that usage of auto features cancel drops will not work from spigot v1.8 through 1.12.x.**
 Should work with v1.13.x and newer.

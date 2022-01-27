@@ -1,6 +1,9 @@
 package tech.mcprison.prison.spigot.commands;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.TreeMap;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -14,6 +17,7 @@ import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPlatform;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -610,7 +614,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall multiplier", description = "SellAll multiplier command list", permissions = "prison.admin", onlyPlayers = false)
+    @Command(identifier = "sellall multiplier list", description = "SellAll multiplier command list", permissions = "prison.admin", onlyPlayers = false)
     private void sellAllMultiplierCommand(CommandSender sender){
 
         if (!isEnabled()) return;
@@ -818,4 +822,74 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
 
         Output.get().sendInfo(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_default_values_success));
     }
+    
+    
+    @Command(identifier = "sellall list", description = "SellAll list all items", permissions = "prison.admin", onlyPlayers = false)
+    private void sellAllListItems( CommandSender sender ) {
+
+        if (!isEnabled()) return;
+
+        SellAllUtil sellAllUtil = SellAllUtil.get();
+        if (sellAllUtil == null){
+            return;
+        }
+        
+        TreeMap<XMaterial, Double> items = new TreeMap<>( sellAllUtil.getSellAllBlocks() );
+        DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+        
+        Set<XMaterial> keys = items.keySet();
+        
+        int maxLenKey = 0;
+        int maxLenVal = 0;
+        int maxLenCode = 0;
+        for ( XMaterial key : keys ) {
+			if ( key.toString().length() > maxLenKey ) {
+				maxLenKey = key.toString().length();
+			}
+			if ( key.name().length() > maxLenCode ) {
+				maxLenCode = key.name().length();
+			}
+			String val = fFmt.format( items.get( key ) );
+			if ( val.length() > maxLenVal ) {
+				maxLenVal = val.length();
+			}
+		}
+        
+        
+        ChatDisplay chatDisplay = new ChatDisplay("&bSellall Item list: &3(&b" + keys.size() + "&3)" );
+
+        int lines = 0;
+        StringBuilder sb = new StringBuilder();
+        for ( XMaterial key : keys ) {
+        	boolean first = sb.length() == 0;
+
+        	Double cost = items.get( key );
+        	
+        	if ( !first ) {
+        		sb.append( "    " );
+        	}
+        	
+        	sb.append( String.format( "%-" + maxLenCode + "s %" + maxLenVal + "s", 
+        			key.name(), fFmt.format( cost ) ) );
+//        	sb.append( String.format( "%-" + maxLenKey + "s  %" + maxLenVal + "s  %-" + maxLenCode + "s", 
+//        			key.toString(), fFmt.format( cost ), key.name() ) );
+        	
+        	if ( !first ) {
+        		chatDisplay.addText( sb.toString() );
+        		
+        		if ( ++lines % 10 == 0 && lines > 1 ) {
+        			chatDisplay.addText( " " );
+        		}
+        		
+        		sb.setLength( 0 );
+        	}
+        }
+        if ( sb.length() > 0 ) {
+        	chatDisplay.addText( sb.toString() );
+        }
+        
+        chatDisplay.send( sender );
+        
+    }
+    
 }
