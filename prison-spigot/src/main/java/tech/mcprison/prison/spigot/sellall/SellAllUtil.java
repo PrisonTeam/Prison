@@ -1281,8 +1281,9 @@ public class SellAllUtil {
         	
         	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
         	String amt = fFmt.format( autoSellEarningsNotificationWaiting.get(p) );
-            Output.get().send( new SpigotPlayer(p),
-            		messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt );
+        	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
+//        	new SpigotPlayer(p).setActionBar( message );
+            Output.get().send( new SpigotPlayer(p), message );
         }
         autoSellEarningsNotificationWaiting.remove(p);
     }
@@ -1554,8 +1555,10 @@ public class SellAllUtil {
                 } else if (notifyPlayerEarned){
                 	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
                 	String amt = fFmt.format( money );
-                	
-                   Output.get().sendInfo(sPlayer, messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt );
+                	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
+//                	new SpigotPlayer(p).setActionBar( message );
+                    Output.get().send( new SpigotPlayer(p), message );
+
                 }
             }
             return true;
@@ -1618,8 +1621,10 @@ public class SellAllUtil {
     			else if (notifyPlayerEarned){
     				DecimalFormat fFmt = new DecimalFormat("#,##0.00");
     	        	String amt = fFmt.format( money );
-    	        	
-    				Output.get().sendInfo(sPlayer, messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt );
+    	        	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
+//    	        	new SpigotPlayer(p).setActionBar( message );
+    	            Output.get().send( new SpigotPlayer(p), message );
+
     			}
     		}
     	} 
@@ -1723,8 +1728,10 @@ public class SellAllUtil {
                 } else if (notifyPlayerEarned){
                 	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
                 	String amt = fFmt.format( money );
-                	
-                    Output.get().sendInfo(sPlayer, messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt );
+                	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
+//                	new SpigotPlayer(p).setActionBar( message );
+                    Output.get().send( new SpigotPlayer(p), message );
+
                 }
             }
         } else {

@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.7 2022-01-26
+# 3.3.0-alpha.7 2022-01-27
+
+
+* **Initially setup to use the actionBar for the messages, but that is not working correctly with such high volume of messages.**
+So disabled them for now, but will switch them over shortly...
 
 
 * **Format the earnings amount properly, so it will have a consistant format.**
