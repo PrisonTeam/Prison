@@ -20,6 +20,29 @@ public class AutoFeaturesFileConfig {
     
     private Map<String, ValueNode> config;
     
+    /**
+     * 
+     * <p>Pertaining to canceling a block break even, or just canceling the drops, the ability to 
+     * cancel the drops was added in v1.12.x.  Therefore v1.8 through v1.11 cannot use that technique
+     * and instead must use the even canceling.
+     * </p>
+     * 
+     * <pre>BlockBreakEvent.setDropItems(false)</p>
+     * 
+     * <p>To cancel a BlockBreakEvent use:
+     * </p>
+     * 
+     * <pre>cancelAllBlockBreakEvents: true</pre>
+     * <pre>cancelAllBlockEventBlockDrops: false</pre>
+     * 
+     * <p>To cancel the drops, just reverse those two settings' values:
+     * </p>
+     * 
+     * <pre>cancelAllBlockBreakEvents: false</pre>
+     * <pre>cancelAllBlockEventBlockDrops: true</pre>
+     * 
+     *
+     */
     public enum AutoFeatures {
 
     	
@@ -50,10 +73,12 @@ public class AutoFeaturesFileConfig {
 	    	blockBreakEvents(options),
 	    	
 	    		// Setting this to true will cancel the block break events (normal prison behavior):
+	    		// Canceling events is mandatory for Spigot v1.8 through v1.11.x.
 	    		cancelAllBlockBreakEvents(blockBreakEvents, true),
 	    		// Setting this to false will not zero out the block drops (normal prison behavior).
 	    		// When set to true, it will zero it out so if the block break event is not canceled,
 	    		// then it will prevent double drops:
+	    		// Canceling the drops was added in Spigot v1.12.x.
 	    		cancelAllBlockEventBlockDrops(blockBreakEvents, false),
 	    		
 	    		
