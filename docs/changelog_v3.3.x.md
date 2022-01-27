@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.7 2022-01-26
 
 
+* **Try to use a different way to identify the item stack, especially if the bukkit item stack does not exist.**
+This was a random error when using gravel, sand, and dirt on spigot/paper 1.12.2.
+
+
 * **Clean up some of the refrences to the new/old block models.**
 
 

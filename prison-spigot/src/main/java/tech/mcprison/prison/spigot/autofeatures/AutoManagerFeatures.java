@@ -467,14 +467,14 @@ public class AutoManagerFeatures
 			
 			// Smelt
 			if ( isAutoSmelt ) {
-				debugInfo.append( "(smelting: itemStacks)" );
+				debugInfo.append( "(autoSmelting: itemStacks)" );
 				normalDropSmelt( drops );
 			}
 			
 			
 			// Block
 			if ( isAutoBlock ) {
-				debugInfo.append( "(blocking: itemStacks)" );
+				debugInfo.append( "(autoBlocking: itemStacks)" );
 				normalDropBlock( drops );
 			}
 			
@@ -640,13 +640,13 @@ public class AutoManagerFeatures
 			
 			
 			if ( isBoolean( AutoFeatures.normalDropSmelt ) ) {
-				
+				debugInfo.append( "(normSmelting: itemStacks)" );
 				normalDropSmelt( drops );
 			}
 			
 			
 			if ( isBoolean( AutoFeatures.normalDropBlock ) ) {
-				
+				debugInfo.append( "(normBlocking: itemStacks)" );
 				normalDropBlock( drops );
 			}
 			
@@ -1577,11 +1577,22 @@ public class AutoManagerFeatures
 		
 		Set<XMaterial> xMats = new HashSet<>();
 		for ( SpigotItemStack sItemStack : drops ) {
-			XMaterial source = XMaterial.matchXMaterial( sItemStack.getBukkitStack() );
 			
-			if ( !xMats.contains( source  ) ) {
-				xMats.add( source );
+			XMaterial xMat = null;
+			
+			if ( sItemStack.getBukkitStack() != null ) {
+				
+				xMat = XMaterial.matchXMaterial( sItemStack.getBukkitStack() );
 			}
+			else if ( sItemStack.getMaterial() != null ) {
+				
+				xMat = SpigotCompatibility.getInstance().getXMaterial( sItemStack.getMaterial() );
+			}
+			
+			if ( xMat != null && !xMats.contains( xMat ) ) {
+				xMats.add( xMat );
+			}
+			
 		}
 		
 		
