@@ -2500,7 +2500,7 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 			int maxDurability = compat.getDurabilityMax( itemInHand );
 			int durability = compat.getDurability( itemInHand );
 			
-			short totalDamage = 1;  // Generally 1 unless instant break block then zero.
+			short totalDamage = 0;  // Generally 1 unless instant break block then zero.
 			
 			int durabilityLevel = 0;
 			boolean toolBreak = false;

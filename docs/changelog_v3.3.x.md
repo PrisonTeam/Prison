@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.1 (alpha.7) 2022-01-27
 
 
+* **Bug Fix: Damage was being applied all the time.**
+Found a field being initialized with a value of 1 when it should have been 0.
+
+
 * **Prevent sellall from loading if ranks does not load.  Sellall uses too many rank functions to stand alone.**
 
 
