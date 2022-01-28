@@ -1798,7 +1798,10 @@ public class SpigotPlatform
 		blockList.add( new SellAllBlockData( XMaterial.FLINT, 9 ) );
 		
 		
+		// BLUE_DYE is used as LAPIS_LAZULI for bukkit v1.8.x etc...
 		blockList.add( new SellAllBlockData( XMaterial.LAPIS_LAZULI, 14 ) );
+		blockList.add( new SellAllBlockData( XMaterial.BLUE_DYE, 14 ) );
+		
 		blockList.add( new SellAllBlockData( XMaterial.MOSSY_STONE_BRICKS, 14 ) );
 		
 		

@@ -1027,21 +1027,33 @@ public class SpigotUtil {
         return bukkitStack;
     }
     
-  public static List<SpigotItemStack> getDrops(SpigotBlock block, SpigotItemStack tool) {
-	List<SpigotItemStack> ret = new ArrayList<>();
-	
-	Collection<ItemStack> drops = block.getWrapper().getDrops( tool.getBukkitStack() );
-	
-	for ( ItemStack drop : drops )
-	{
-		ret.add( SpigotUtil.bukkitItemStackToPrison(drop) );
+    
+    /**
+     * <p>Drops for lapis_ore is odd before the flattening (bukkit 1.8.x through 1.12.2) since it
+     * drops as blue_dye, but when it makes it to the player's inventory, it is then converted to
+     * lapis_lazuli.  So in order for auto sell to work, it has to sell on blue_dye and not 
+     * lapis_lazuli, or it will be placed in the player's inventory.  So it's important that
+     * blue_dye is added to the shop for the same price as lapis_lazuli.
+     * </p>
+     * 
+     * @param block
+     * @param tool
+     * @return
+     */
+	public static List<SpigotItemStack> getDrops(SpigotBlock block, SpigotItemStack tool) {
+		List<SpigotItemStack> ret = new ArrayList<>();
+		
+		Collection<ItemStack> drops = block.getWrapper().getDrops( tool.getBukkitStack() );
+		
+		for ( ItemStack drop : drops ) {
+			ret.add( SpigotUtil.bukkitItemStackToPrison(drop) );
+		}
+		
+	//	block.getWrapper().getDrops( tool.getBukkitStack() )
+	//			.forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
+		
+		return ret;
 	}
-	
-//	block.getWrapper().getDrops( tool.getBukkitStack() )
-//			.forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
-	
-	return ret;
-}
     
   
 //  public static void clearDrops(SpigotBlock block) {
