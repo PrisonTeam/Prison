@@ -15,6 +15,10 @@ These build logs represent the work that has been going on within prison.
 
 # 3.3.0-beta.1 (alpha.7) 2022-01-28
 
+
+* **New Feature:  Added support for Quests so that block breakage within mines can now be tracked and be applied towards quests.**
+
+
 * **Bug fix: Lapis_ore appently does not drop lapis_laluzi when using the bukkit's getDrops() function, it instead drops blue_dye, then when it gets to the player's inventory, it is then converted to lapis_lazuli.**
 Therefore, auto sell cannot sell lapis_ore drops unles blue_dye is within the shop.  I added blue_dye with the same value of lapis_lazuli to the sellall shop.  This allows it to be sold now through auto pickup and auto sell.
 

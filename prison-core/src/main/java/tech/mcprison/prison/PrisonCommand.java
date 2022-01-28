@@ -965,6 +965,10 @@ public class PrisonCommand
     		display.addText( "&b " );
     		display.addText( "&b   options.isProcessMcMMOBlockBreakEvents %s", 
     				afw.isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents ));
+    		display.addText( "&b   options.isProcessEZBlocksBlockBreakEvents %s", 
+    				afw.isBoolean( AutoFeatures.isProcessEZBlocksBlockBreakEvents ));
+    		display.addText( "&b   options.isProcessQuestsBlockBreakEvents %s", 
+    				afw.isBoolean( AutoFeatures.isProcessQuestsBlockBreakEvents ));
     		display.addText( "&b " );
     		
     		

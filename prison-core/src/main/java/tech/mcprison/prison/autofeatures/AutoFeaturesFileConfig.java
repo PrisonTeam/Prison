@@ -68,6 +68,8 @@ public class AutoFeaturesFileConfig {
 	    		
 	    		isProcessMcMMOBlockBreakEvents(otherPlugins, true),
 	    		isProcessEZBlocksBlockBreakEvents(otherPlugins, false),
+
+	    		isProcessQuestsBlockBreakEvents(otherPlugins, true),
 	    		
     		
 	    	blockBreakEvents(options),
