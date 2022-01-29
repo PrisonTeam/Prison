@@ -12,7 +12,6 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineLinerData.LadderType;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.Location;
@@ -370,86 +369,39 @@ public class MineLinerBuilder {
 //								tBlockPlus2.getLocation().toBlockCoordinates(), 
 //									x, y, z,  nextBlockName);
 						
-						if ( getMine().isUseNewBlockModel() ) {
+						if ( REPAIR_LINER.equalsIgnoreCase( nextBlockName ) ) {
 							
-							if ( REPAIR_LINER.equalsIgnoreCase( nextBlockName ) ) {
+							if ( isLadderBlock ) {
 								
-								if ( isLadderBlock ) {
-
-									tBlock.setPrisonBlock( tBlockPlus2.getPrisonBlock() );
-									tBlockPlus1.setPrisonBlock( tBlockPlus2.getPrisonBlock() );
-								}
-								else {
-									
-									tBlock.setPrisonBlock( tBlockPlus1.getPrisonBlock() );
-								}
+								tBlock.setPrisonBlock( tBlockPlus2.getPrisonBlock() );
+								tBlockPlus1.setPrisonBlock( tBlockPlus2.getPrisonBlock() );
 							}
-							
-							else if ( isForced ||
-									!tBlock.isEmpty() ||
-									isLadderBlock && !tBlockPlus1.isEmpty() ) {
-										
-								PrisonBlock nextBlockType = new PrisonBlock(nextBlockName);
+							else {
 								
-								if ( isLadderBlock ) {
-									
-									tBlockPlus1.setPrisonBlock( nextBlockType );
-
-									PrisonBlock ladderBlockType = new PrisonBlock("ladder");
-									tBlock.setPrisonBlock( ladderBlockType );
-									tBlock.setBlockFace( blockFace );
-								}
-								else {
-									
-									tBlock.setPrisonBlock( nextBlockType );
-								}
-							}
-							
-						}
-						else {
-							
-							if ( REPAIR_LINER.equalsIgnoreCase( nextBlockName ) ) {
-								
-								
-//								Output.get().logInfo( "#### repair : isLadderBlock: %s block types:  tb: %s  tb1: %s tb2: %s",
-//										(isLadderBlock ? "Y" : "-" ),
-//										tBlock.getType(), tBlockPlus1.getType(), tBlockPlus2.getType() );
-//								
-								if ( isLadderBlock ) {
-									
-									tBlock.setType( tBlockPlus2.getType() );
-									tBlockPlus1.setType( tBlockPlus2.getType() );
-								}
-								else {
-									
-									tBlock.setType( tBlockPlus1.getType() );
-								}
-							}
-							
-							else if ( isForced ||
-									!tBlock.isEmpty() ||
-									isLadderBlock && !tBlockPlus1.isEmpty() ) {
-								
-								BlockType nextBlockType = BlockType.fromString( nextBlockName );
-//								if ( nextBlockType == null ) {
-//									nextBlockType = BlockType.fromString( nextBlockName );
-//								}
-								
-								if ( isLadderBlock ) {
-									
-									tBlockPlus1.setType( nextBlockType );
-
-									BlockType ladderBlockType = BlockType.LADDER;
-									tBlock.setType( ladderBlockType );
-									tBlock.setBlockFace( blockFace );
-								}
-								else {
-									
-									tBlock.setType( nextBlockType );
-								}
-								
+								tBlock.setPrisonBlock( tBlockPlus1.getPrisonBlock() );
 							}
 						}
+						
+						else if ( isForced ||
+								!tBlock.isEmpty() ||
+								isLadderBlock && !tBlockPlus1.isEmpty() ) {
+							
+							PrisonBlock nextBlockType = new PrisonBlock(nextBlockName);
+							
+							if ( isLadderBlock ) {
+								
+								tBlockPlus1.setPrisonBlock( nextBlockType );
+								
+								PrisonBlock ladderBlockType = new PrisonBlock("ladder");
+								tBlock.setPrisonBlock( ladderBlockType );
+								tBlock.setBlockFace( blockFace );
+							}
+							else {
+								
+								tBlock.setPrisonBlock( nextBlockType );
+							}
+						}
+						
 					}
 				}
 				
@@ -608,32 +560,34 @@ public class MineLinerBuilder {
 	 */
 	private Block getRelativeBlock( Location location, Edges edge, int offset )
 	{
-		Location relLoc = new Location( location );
+		Location relLoc = null;
+		
 		switch ( edge )
 		{
 			case north:
-				relLoc.setZ( relLoc.getBlockZ() - offset );
+				relLoc = location.getLocationAtDelta( 0, 0, offset * -1 );
 				break;
 			case south:
-				relLoc.setZ( relLoc.getBlockZ() + offset );
+				relLoc = location.getLocationAtDelta( 0, 0, offset );
 				break;
 			case east:
-				relLoc.setX( relLoc.getBlockX() + offset );
+				relLoc = location.getLocationAtDelta( offset, 0, 0 );
 				break;
 			case west:
-				relLoc.setX( relLoc.getBlockX() - offset );
+				relLoc = location.getLocationAtDelta( offset * -1, 0, 0 );
 				break;
 			case top:
-				relLoc.setY( relLoc.getBlockY() + offset );
+				relLoc = location.getLocationAtDelta( 0, offset, 0 );
 				break;
 			case bottom:
-				relLoc.setY( relLoc.getBlockY() - offset );
+				relLoc = location.getLocationAtDelta( 0, offset * -1, 0 );
 				break;
-
+				
 			default:
+				relLoc = new Location( location );
 				break;
 		}
-
+		
 		Block block = relLoc.getBlockAt();
 				
 		return block;

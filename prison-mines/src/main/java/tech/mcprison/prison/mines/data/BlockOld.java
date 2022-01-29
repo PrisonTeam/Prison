@@ -19,37 +19,39 @@
 package tech.mcprison.prison.mines.data;
 
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
-import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.util.ObsoleteBlockType;
 
 /**
  * Represents a block in a mine
+ * 
+ * @deprecated
  */
 public class BlockOld
 			extends PrisonBlockStatusData
 			implements Comparable<BlockOld> {
 	
-	public static final BlockOld AIR = new BlockOld( BlockType.AIR );
-	public static final BlockOld IGNORE = new BlockOld( BlockType.IGNORE );
-	public static final BlockOld NULL_BLOCK = new BlockOld( BlockType.NULL_BLOCK );
+	public static final BlockOld AIR = new BlockOld( ObsoleteBlockType.AIR );
+	public static final BlockOld IGNORE = new BlockOld( ObsoleteBlockType.IGNORE );
+	public static final BlockOld NULL_BLOCK = new BlockOld( ObsoleteBlockType.NULL_BLOCK );
 
     /**
      * The {@link BlockType} represented by this {@link BlockOld}
      */
-    private BlockType type; // = BlockType.AIR;
+    private ObsoleteBlockType type; // = BlockType.AIR;
     /**
      * The chance of this block appearing in it's associated mine
      */
 //    private double chance; // = 100.0d;
 
     
-    protected BlockOld( BlockType block ) {
+    protected BlockOld( ObsoleteBlockType block ) {
     	this( block, 0.0d, 0L );
     }
     
     /**
      * Assigns the type and chance
      */
-    public BlockOld(BlockType block, double chance, long blockCountTotal) {
+    public BlockOld(ObsoleteBlockType block, double chance, long blockCountTotal) {
     	super((block == null ? BlockOld.AIR.getBlockName() : block.name()), chance, blockCountTotal);
     			
         this.type = block;
@@ -61,7 +63,7 @@ public class BlockOld
     	
 //    	this.chance = chance;
     	
-    	BlockType block = BlockType.fromString( blockType );
+    	ObsoleteBlockType block = ObsoleteBlockType.fromString( blockType );
     	this.type = block;
     	// Update blockName since mapping to BlockType may result in a different name:
     	setBlockName( block.name() );
@@ -100,11 +102,11 @@ public class BlockOld
 		return results;
 	}
 	
-	public BlockType getType()
+	public ObsoleteBlockType getType()
 	{
 		return type;
 	}
-	public void setType( BlockType type )
+	public void setType( ObsoleteBlockType type )
 	{
 		this.type = type;
 	}

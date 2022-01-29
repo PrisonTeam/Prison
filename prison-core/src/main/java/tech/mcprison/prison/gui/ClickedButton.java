@@ -18,10 +18,10 @@
 
 package tech.mcprison.prison.gui;
 
-import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.util.BlockType;
-
 import java.util.List;
+
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 
 public class ClickedButton {
 
@@ -35,7 +35,7 @@ public class ClickedButton {
         clickingPlayer = player;
     }
 
-    public BlockType getItem() {
+    public PrisonBlock getItem() {
         return originalButton.getItem();
     }
 

@@ -2,6 +2,7 @@ package tech.mcprison.prison.spigot.sellall;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +26,7 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleManager;
+import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRank;
@@ -1276,7 +1278,12 @@ public class SellAllUtil {
      * */
     public void removeFromAutoSellDelayAndNotify(Player p){
         if (autoSellEarningsNotificationWaiting.containsKey(p) && autoSellEarningsNotificationWaiting.get(p) > 0.00){
-            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + autoSellEarningsNotificationWaiting.get(p)));
+        	
+        	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+        	String amt = fFmt.format( autoSellEarningsNotificationWaiting.get(p) );
+        	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
+//        	new SpigotPlayer(p).setActionBar( message );
+            Output.get().send( new SpigotPlayer(p), message );
         }
         autoSellEarningsNotificationWaiting.remove(p);
     }
@@ -1546,7 +1553,12 @@ public class SellAllUtil {
                     
                     addDelayedEarningAutoSellNotification(p, money);
                 } else if (notifyPlayerEarned){
-                   Output.get().sendInfo(sPlayer, messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + money);
+                	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+                	String amt = fFmt.format( money );
+                	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
+//                	new SpigotPlayer(p).setActionBar( message );
+                    Output.get().send( new SpigotPlayer(p), message );
+
                 }
             }
             return true;
@@ -1607,7 +1619,12 @@ public class SellAllUtil {
     				addDelayedEarningAutoSellNotification(p, money);
     			} 
     			else if (notifyPlayerEarned){
-    				Output.get().sendInfo(sPlayer, messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + money);
+    				DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+    	        	String amt = fFmt.format( money );
+    	        	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
+//    	        	new SpigotPlayer(p).setActionBar( message );
+    	            Output.get().send( new SpigotPlayer(p), message );
+
     			}
     		}
     	} 
@@ -1709,7 +1726,12 @@ public class SellAllUtil {
                         addDelayedEarningAutoSellNotification(p, money);
                     }
                 } else if (notifyPlayerEarned){
-                    Output.get().sendInfo(sPlayer, messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + money);
+                	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+                	String amt = fFmt.format( money );
+                	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
+//                	new SpigotPlayer(p).setActionBar( message );
+                    Output.get().send( new SpigotPlayer(p), message );
+
                 }
             }
         } else {

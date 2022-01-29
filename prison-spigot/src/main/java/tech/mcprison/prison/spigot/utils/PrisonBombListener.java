@@ -69,7 +69,7 @@ public class PrisonBombListener
         		sBlock = (SpigotBlock) loc.add( loc.getDirection().multiply( 3 ) ) .getBlockAt();
         	}
         	else {
-        		sBlock = new SpigotBlock( event.getClickedBlock() );
+        		sBlock = SpigotBlock.getSpigotBlock( event.getClickedBlock() );
         	}
         	
         	

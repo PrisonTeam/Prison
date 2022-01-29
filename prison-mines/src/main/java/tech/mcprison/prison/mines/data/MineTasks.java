@@ -5,6 +5,7 @@ import java.util.List;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.MineScheduler.MineJob;
@@ -165,8 +166,10 @@ public abstract class MineTasks
 			// glass block:
 			Location targetGround = new Location( tpTargetLocation );
 			targetGround.setY( tpTargetLocation.getBlockY() - 1 );
-			if ( targetGround.getBlockAt().isEmpty() ) {
-				targetGround.getBlockAt().setPrisonBlock( PrisonBlock.GLASS );;
+			
+			Block pBlock = targetGround.getBlockAt();
+			if ( pBlock.isEmpty() ) {
+				pBlock.setPrisonBlock( PrisonBlock.GLASS );;
 			}
 			
 			player.teleport( tpTargetLocation );

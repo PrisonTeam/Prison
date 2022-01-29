@@ -21,37 +21,58 @@ package tech.mcprison.prison.spigot.inventory;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Material;
+import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.inventory.ShapelessRecipe;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.util.BlockType;
 
 /**
  * Created by DMP9 on 04/02/2017.
  */
-public class SpigotShapelessRecipe extends SpigotRecipe implements ShapelessRecipe {
+public class SpigotShapelessRecipe 
+	extends SpigotRecipe 
+	implements ShapelessRecipe {
 
     public SpigotShapelessRecipe(org.bukkit.inventory.ShapelessRecipe wrapper) {
         super(wrapper);
     }
 
-    @Override public ShapelessRecipe addIngredient(int count, BlockType ingredient) {
-    	Material mat = SpigotUtil.getMaterial( ingredient );
-        ((org.bukkit.inventory.ShapelessRecipe) getWrapper())
-            .addIngredient(count, mat);
+    @Override 
+    public ShapelessRecipe addIngredient( int count, PrisonBlock ingredient ) {
+
+    	XMaterial xMat = SpigotUtil.getXMaterial( ingredient );
+    	
+    	if ( xMat != null ) {
+            ((org.bukkit.inventory.ShapelessRecipe) getWrapper())
+                .addIngredient(count, xMat.parseMaterial() );
+    	} 	
+    	
+//    	Material mat = SpigotUtil.getMaterial( ingredient );
+//        ((org.bukkit.inventory.ShapelessRecipe) getWrapper())
+//            .addIngredient(count, mat);
         return this;
     }
 
-    @Override public ShapelessRecipe addIngredient(BlockType ingredient) {
-    	Material mat = SpigotUtil.getMaterial( ingredient );
-        ((org.bukkit.inventory.ShapelessRecipe) getWrapper())
-            .addIngredient(mat);
+    @Override 
+    public ShapelessRecipe addIngredient( PrisonBlock ingredient ) {
+    	
+    	XMaterial xMat = SpigotUtil.getXMaterial( ingredient );
+    	
+    	if ( xMat != null ) {
+    		((org.bukkit.inventory.ShapelessRecipe) getWrapper())
+            	.addIngredient( xMat.parseMaterial() );
+    	} 	
+    	
+//    	Material mat = SpigotUtil.getMaterial( ingredient );
+//        ((org.bukkit.inventory.ShapelessRecipe) getWrapper())
+//            .addIngredient(mat);
         return this;
     }
 
-    @Override public List<ItemStack> getIngredientList() {
+    @Override 
+    public List<ItemStack> getIngredientList() {
         List<org.bukkit.inventory.ItemStack> bukkit =
             ((org.bukkit.inventory.ShapelessRecipe) getWrapper()).getIngredientList();
         List<ItemStack> result = new ArrayList<>();
@@ -59,17 +80,35 @@ public class SpigotShapelessRecipe extends SpigotRecipe implements ShapelessReci
         return result;
     }
 
-    @Override public ShapelessRecipe removeIngredient(int count, BlockType ingredient) {
-    	Material mat = SpigotUtil.getMaterial( ingredient );
-        ((org.bukkit.inventory.ShapelessRecipe) getWrapper())
-            .removeIngredient(count, mat);
+    @Override 
+    public ShapelessRecipe removeIngredient(int count, PrisonBlock ingredient ) {
+    	
+    	XMaterial xMat = SpigotUtil.getXMaterial( ingredient );
+    	
+    	if ( xMat != null ) {
+    		((org.bukkit.inventory.ShapelessRecipe) getWrapper())
+            	.removeIngredient(count, xMat.parseMaterial() );
+    	} 	
+    	
+//    	Material mat = SpigotUtil.getMaterial( ingredient );
+//        ((org.bukkit.inventory.ShapelessRecipe) getWrapper())
+//            .removeIngredient(count, mat);
         return this;
     }
 
-    @Override public ShapelessRecipe removeIngredient(BlockType ingredient) {
-    	Material mat = SpigotUtil.getMaterial( ingredient );
-        ((org.bukkit.inventory.ShapelessRecipe) getWrapper())
-            .removeIngredient(mat);
+    @Override 
+    public ShapelessRecipe removeIngredient( PrisonBlock ingredient ) {
+    	
+    	XMaterial xMat = SpigotUtil.getXMaterial( ingredient );
+    	
+    	if ( xMat != null ) {
+    		((org.bukkit.inventory.ShapelessRecipe) getWrapper())
+            	.removeIngredient( xMat.parseMaterial() );
+    	}
+    	
+//    	Material mat = SpigotUtil.getMaterial( ingredient );
+//        ((org.bukkit.inventory.ShapelessRecipe) getWrapper())
+//            .removeIngredient(mat);
         return this;
     }
 

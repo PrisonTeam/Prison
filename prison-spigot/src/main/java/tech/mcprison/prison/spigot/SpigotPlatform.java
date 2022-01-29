@@ -112,7 +112,6 @@ import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.util.ActionBarUtil;
 import tech.mcprison.prison.spigot.util.SpigotYamlFileIO;
 import tech.mcprison.prison.store.Storage;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.PrisonJarReporter;
@@ -847,33 +846,33 @@ public class SpigotPlatform
 		return ( val != null && val.trim().equalsIgnoreCase( "true" ) );
 	}
 	
-	/**
-	 * <p>Prison is now automatically enabling the new prison block model.
-	 * The old block model still exists, but it has to be explicitly 
-	 * enabled in config.yml.
-	 * </p>
-	 * 
-	 * <p>No one should ever use the old block model. If there is an issue with
-	 * the new model then it should be fixed and not avoided.  But if they 
-	 * must, then the following must be added to the `plugins/Prison/config.yml`.
-	 * </p>
-	 * 
-	 * <pre>
-	 * # Warning: The use of the OLD prison block model will be removed
-	 * #          from future releases in the near future.  This old
-	 * #          model is to be used only on an emergency basis 
-	 * #          until any issues with the new model have been resolved.
-	 * use-old-prison-block-model: true
-	 * </pre>
-	 * 
-	 * @return
-	 */
-	@Override
-	public boolean isUseNewPrisonBlockModel() {
-		
-//		return getConfigBooleanFalse( "use-new-prison-block-model" );
-		return !getConfigBooleanFalse( "use-old-prison-block-model" );
-	}
+//	/**
+//	 * <p>Prison is now automatically enabling the new prison block model.
+//	 * The old block model still exists, but it has to be explicitly 
+//	 * enabled in config.yml.
+//	 * </p>
+//	 * 
+//	 * <p>No one should ever use the old block model. If there is an issue with
+//	 * the new model then it should be fixed and not avoided.  But if they 
+//	 * must, then the following must be added to the `plugins/Prison/config.yml`.
+//	 * </p>
+//	 * 
+//	 * <pre>
+//	 * # Warning: The use of the OLD prison block model will be removed
+//	 * #          from future releases in the near future.  This old
+//	 * #          model is to be used only on an emergency basis 
+//	 * #          until any issues with the new model have been resolved.
+//	 * use-old-prison-block-model: true
+//	 * </pre>
+//	 * 
+//	 * @return
+//	 */
+//	@Override
+//	public boolean isUseNewPrisonBlockModel() {
+//		
+////		return getConfigBooleanFalse( "use-new-prison-block-model" );
+//		return !getConfigBooleanFalse( "use-old-prison-block-model" );
+//	}
 	
 	/**
 	 * <p>This returns the boolean value that is associated with the key.
@@ -1487,22 +1486,14 @@ public class SpigotPlatform
 		
 		
 		
-        if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
-        	
-        	for ( SellAllBlockData xMatCost : buildBlockListXMaterial() ) {
-        		
-        		// Add only the primary blocks to this blockList which will be used to generate the
-        		// mine's block contents:
-				if ( xMatCost.isPrimary() ) {
-					blockList.add( xMatCost.getBlock().name() );
-				}
+		for ( SellAllBlockData xMatCost : buildBlockListXMaterial() ) {
+			
+			// Add only the primary blocks to this blockList which will be used to generate the
+			// mine's block contents:
+			if ( xMatCost.isPrimary() ) {
+				blockList.add( xMatCost.getBlock().name() );
 			}
-        	
-//        	blockList = buildBlockListXMaterial();
-        }
-        else {
-        	blockList = buildBlockListBlockType();
-        }
+		}
 		
 		MineManager mm = PrisonMines.getInstance().getMineManager();
 		//List<Mine> mines = mm.getMines();
@@ -1521,7 +1512,8 @@ public class SpigotPlatform
 			
 			Mine mine = mm.getMine( mineName );
 			
-			boolean hasBlocks = mine.getPrisonBlocks().size() > 0 || mine.getBlocks().size() > 0;
+			boolean hasBlocks = mine.getPrisonBlocks().size() > 0;
+//			boolean hasBlocks = mine.getPrisonBlocks().size() > 0 || mine.getBlocks().size() > 0;
 			
 			// If the mines already has blocks, log them, then clear them since this will replace them:
 			if ( hasBlocks && !forceKeepBlocks ) {
@@ -1533,7 +1525,7 @@ public class SpigotPlatform
 				Output.get().logInfo( message );
 				
 				mine.getPrisonBlocks().clear();
-				mine.getBlocks().clear();
+//				mine.getBlocks().clear();
 			}
 			
 			else if ( hasBlocks && forceKeepBlocks ) {
@@ -1547,7 +1539,7 @@ public class SpigotPlatform
 				continue;
 			}
 			
-			 List<String> mBlocks = mineBlockList( blockList, startPos++, mineBlockSize );
+			 List<String> mBlocks = mineBlockList( blockList, startPos++, percents.size() );
 			
 			 // If startPos > percents.size(), which means we are past the initial 
 			 // ramp up to the full variety of blocks per mine.  At that point, if 
@@ -1557,57 +1549,43 @@ public class SpigotPlatform
 			 // This should only happen at the tail end of processing and will only
 			 // have a decrease by one per mine so there should never be a need to
 			 // to check more than once, or remove more than one.
-			 if ( startPos > percents.size() && percents.size() > mBlocks.size() ) {
+			 if ( startPos > percents.size() && startPos > ( blockList.size() - mineBlockSize + 1 ) ) {
 				 percents.remove( 0 );
 			 }
+//			 if ( startPos > percents.size() && percents.size() > mBlocks.size() ) {
+//				 percents.remove( 0 );
+//			 }
 			 
 			double total = 0;
 			for ( int i = 0; i < mBlocks.size(); i++ )
 			{
 				
-				if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
+				PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( mBlocks.get( i ) );
+				if ( prisonBlock != null ) {
 					
-					PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( mBlocks.get( i ) );
-	            	if ( prisonBlock != null ) {
-	            	
-	            		prisonBlock.setChance( percents.get( i ) );
-	            		prisonBlock.setBlockCountTotal( 0 );
-	            		
-	            		mine.getPrisonBlocks().add( prisonBlock );
-	            		
-	            		total += prisonBlock.getChance();
-	            		
-	            		// If this is the last block and the totals are not 100%, then
-	            		// add the balance to the last block.
-	            		if ( i == (mBlocks.size() - 1) && total < 100.0d ) {
-	            			double remaining = 100.0d - total;
-	            			prisonBlock.setChance( remaining + prisonBlock.getChance() );
-	            		}
-	            	}
-	            	else {
-	            		Output.get().logInfo(
-	            				String.format( "AutoConfigure block assignment failure: New Block Model: " +
-	            						"Unable to map to a valid PrisonBlock for this version of mc. [%s]", 
-	            						mBlocks.get( i ) ) );
-	            	}
-				}
-				else {
+					double chance = percents.size() > i ? percents.get( i ) : 0;
+					prisonBlock.setChance( chance );
+					prisonBlock.setBlockCountTotal( 0 );
 					
-					tech.mcprison.prison.mines.data.BlockOld block = 
-							new tech.mcprison.prison.mines.data.BlockOld( 
-									mBlocks.get( i ), percents.get( i ), 0 );
+					mine.getPrisonBlocks().add( prisonBlock );
 					
-					mine.getBlocks().add( block );
-					
-					total += block.getChance();
+					total += prisonBlock.getChance();
 					
 					// If this is the last block and the totals are not 100%, then
 					// add the balance to the last block.
 					if ( i == (mBlocks.size() - 1) && total < 100.0d ) {
 						double remaining = 100.0d - total;
-						block.setChance( remaining + block.getChance() );
+						total += remaining;
+						prisonBlock.setChance( remaining + prisonBlock.getChance() );
 					}
 				}
+				else {
+					Output.get().logInfo(
+							String.format( "AutoConfigure block assignment failure: New Block Model: " +
+									"Unable to map to a valid PrisonBlock for this version of mc. [%s]", 
+									mBlocks.get( i ) ) );
+				}
+				
 				
 			}
 			
@@ -1682,12 +1660,37 @@ public class SpigotPlatform
 	protected List<String> mineBlockList( List<String> blockList, int startPos, int length ) {
 
 		List<String> results = new ArrayList<>();
-		for (int i = (startPos >= blockList.size() ? blockList.size() - 1 : startPos); i >= 0 && i >= startPos - length + 1; i--) {
+		int iStart = (startPos >= blockList.size() ? blockList.size() - 1 : startPos);
+		int iEnd = startPos - length + 1;
+		
+		for (int i = iStart; i >= 0 && i >= iEnd; i--) {
 			results.add( blockList.get( i ) );
 		}
 		
 		return results;
 	}
+	
+//	/**
+//	 * This function grabs a rolling sub set of blocks from the startPos and working backwards 
+//	 * up to the specified length. The result set will be less than the specified length if at
+//	 * the beginning of the list, or at the end.
+//	 * 
+//	 * @param startPos
+//	 * @param length
+//	 * @param blockList
+//	 * @return
+//	 */
+//	protected List<String> mineBlockList( int startPos, int length, List<SellAllBlockData> blockList ) {
+//		
+//		List<String> results = new ArrayList<>();
+//		int iStart = (startPos >= blockList.size() ? blockList.size() - 1 : startPos);
+//		
+//		for (int i = iStart; i >= 0 && i >= startPos - length + 1; i--) {
+//			results.add( blockList.get( i ).getBlock().name() );
+//		}
+//		
+//		return results;
+//	}
 	
 	
 	/**
@@ -1771,7 +1774,7 @@ public class SpigotPlatform
 		
 		
 		blockList.add( new SellAllBlockData( XMaterial.QUARTZ, 34 ) );
-		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_SLAB, 68, true) );
+		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_SLAB, 68) );
 
 		blockList.add( new SellAllBlockData( XMaterial.CHISELED_QUARTZ_BLOCK, 136 ) );
 		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_BRICKS, 136 ) );
@@ -1795,7 +1798,10 @@ public class SpigotPlatform
 		blockList.add( new SellAllBlockData( XMaterial.FLINT, 9 ) );
 		
 		
+		// BLUE_DYE is used as LAPIS_LAZULI for bukkit v1.8.x etc...
 		blockList.add( new SellAllBlockData( XMaterial.LAPIS_LAZULI, 14 ) );
+		blockList.add( new SellAllBlockData( XMaterial.BLUE_DYE, 14 ) );
+		
 		blockList.add( new SellAllBlockData( XMaterial.MOSSY_STONE_BRICKS, 14 ) );
 		
 		
@@ -1862,61 +1868,61 @@ public class SpigotPlatform
 		return blockList;
 	}
 	
-	/**
-	 * This listing of blocks is based strictly upon the old prison's block
-	 * model.
-	 * 
-	 * Please note, that right now these names match exactly with XMaterial only
-	 * because I renamed a few of them to make them match.  But if more are added
-	 * in the future, then there may be mismatches.
-	 * 
-	 * @return
-	 */
-	protected List<String> buildBlockListBlockType() {
-		List<String> blockList = new ArrayList<>();
-		
-		blockList.add( BlockType.COBBLESTONE.name() );
-		blockList.add( BlockType.ANDESITE.name() );
-		blockList.add( BlockType.DIORITE.name() );
-		blockList.add( BlockType.COAL_ORE.name() );
-		
-		blockList.add( BlockType.GRANITE.name() );
-		blockList.add( BlockType.STONE.name() );
-		blockList.add( BlockType.IRON_ORE.name() );
-		blockList.add( BlockType.POLISHED_ANDESITE.name() );
-		
-//		blockList.add( BlockType.POLISHED_DIORITE.name() );
-//		blockList.add( BlockType.POLISHED_GRANITE.name() );
-		blockList.add( BlockType.GOLD_ORE.name() );
-		
-		
-		blockList.add( BlockType.MOSSY_COBBLESTONE.name() );
-		blockList.add( BlockType.COAL_BLOCK.name() );
-		blockList.add( BlockType.NETHER_QUARTZ_ORE.name() );
-		blockList.add( BlockType.LAPIS_ORE.name() );
-
-		
-		blockList.add( BlockType.END_STONE.name() );
-		blockList.add( BlockType.IRON_BLOCK.name() );
-		
-		blockList.add( BlockType.REDSTONE_ORE.name() );
-		blockList.add( BlockType.DIAMOND_ORE.name() );
-		
-		blockList.add( BlockType.QUARTZ_BLOCK.name() );
-		blockList.add( BlockType.EMERALD_ORE.name() );
-		
-		blockList.add( BlockType.GOLD_BLOCK.name() );
-		blockList.add( BlockType.PRISMARINE.name() );
-		blockList.add( BlockType.LAPIS_BLOCK.name() );
-		blockList.add( BlockType.REDSTONE_BLOCK.name() );
-		
-		blockList.add( BlockType.OBSIDIAN.name() );
-		blockList.add( BlockType.DIAMOND_BLOCK.name() );
-		blockList.add( BlockType.DARK_PRISMARINE.name() );
-		blockList.add( BlockType.EMERALD_BLOCK.name() );
-		
-		return blockList;
-	}
+//	/**
+//	 * This listing of blocks is based strictly upon the old prison's block
+//	 * model.
+//	 * 
+//	 * Please note, that right now these names match exactly with XMaterial only
+//	 * because I renamed a few of them to make them match.  But if more are added
+//	 * in the future, then there may be mismatches.
+//	 * 
+//	 * @return
+//	 */
+//	protected List<String> buildBlockListBlockType() {
+//		List<String> blockList = new ArrayList<>();
+//		
+//		blockList.add( BlockType.COBBLESTONE.name() );
+//		blockList.add( BlockType.ANDESITE.name() );
+//		blockList.add( BlockType.DIORITE.name() );
+//		blockList.add( BlockType.COAL_ORE.name() );
+//		
+//		blockList.add( BlockType.GRANITE.name() );
+//		blockList.add( BlockType.STONE.name() );
+//		blockList.add( BlockType.IRON_ORE.name() );
+//		blockList.add( BlockType.POLISHED_ANDESITE.name() );
+//		
+////		blockList.add( BlockType.POLISHED_DIORITE.name() );
+////		blockList.add( BlockType.POLISHED_GRANITE.name() );
+//		blockList.add( BlockType.GOLD_ORE.name() );
+//		
+//		
+//		blockList.add( BlockType.MOSSY_COBBLESTONE.name() );
+//		blockList.add( BlockType.COAL_BLOCK.name() );
+//		blockList.add( BlockType.NETHER_QUARTZ_ORE.name() );
+//		blockList.add( BlockType.LAPIS_ORE.name() );
+//
+//		
+//		blockList.add( BlockType.END_STONE.name() );
+//		blockList.add( BlockType.IRON_BLOCK.name() );
+//		
+//		blockList.add( BlockType.REDSTONE_ORE.name() );
+//		blockList.add( BlockType.DIAMOND_ORE.name() );
+//		
+//		blockList.add( BlockType.QUARTZ_BLOCK.name() );
+//		blockList.add( BlockType.EMERALD_ORE.name() );
+//		
+//		blockList.add( BlockType.GOLD_BLOCK.name() );
+//		blockList.add( BlockType.PRISMARINE.name() );
+//		blockList.add( BlockType.LAPIS_BLOCK.name() );
+//		blockList.add( BlockType.REDSTONE_BLOCK.name() );
+//		
+//		blockList.add( BlockType.OBSIDIAN.name() );
+//		blockList.add( BlockType.DIAMOND_BLOCK.name() );
+//		blockList.add( BlockType.DARK_PRISMARINE.name() );
+//		blockList.add( BlockType.EMERALD_BLOCK.name() );
+//		
+//		return blockList;
+//	}
 	
 	@Override
 	public List<String> getActiveFeatures() {

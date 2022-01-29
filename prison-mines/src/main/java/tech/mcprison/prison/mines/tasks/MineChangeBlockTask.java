@@ -1,5 +1,6 @@
 package tech.mcprison.prison.mines.tasks;
 
+import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.util.Location;
@@ -32,11 +33,14 @@ public class MineChangeBlockTask
 		
 		// Replace the targetBlock if there is no checkBlock.  If there is a checkBlock,
 		// then make sure the block that will be replaced is that type of a block.
+		
+		Block block = getLocation().getBlockAt();
+		
 		if ( checkBlock == null || 
 				!topOfMineLocation.getBlockAt().isEmpty() &&
-				getLocation().getBlockAt().getPrisonBlock().equals( getCheckBlock() ) ) {
+				block.getPrisonBlock().equals( getCheckBlock() ) ) {
 			
-			getLocation().getBlockAt().setPrisonBlock( getTargetBlock() );
+			block.setPrisonBlock( getTargetBlock() );
 		}
 		
 	}

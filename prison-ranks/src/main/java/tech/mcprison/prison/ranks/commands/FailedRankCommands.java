@@ -1,8 +1,12 @@
 package tech.mcprison.prison.ranks.commands;
 
+import java.util.List;
+
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.ChatDisplay;
 
 public class FailedRankCommands
@@ -45,12 +49,18 @@ public class FailedRankCommands
 		
         display.sendtoOutputLogInfo();
         
+        // Broadcast to all online players:
         
-        if ( sender.isPlayer() ) {
-        	display.send( sender );
-        }
-
-    	
+        List<Player> onlinePlayers = Prison.get().getPlatform().getOnlinePlayers();
+        
+        for ( Player player : onlinePlayers ) {
+			
+        	display.send( player );
+		}
+        
+//        if ( sender.isPlayer() ) {
+//        	display.send( sender );
+//        }
     	
     }
 

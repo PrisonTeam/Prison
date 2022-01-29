@@ -1,5 +1,9 @@
 package tech.mcprison.prison.spigot.tasks;
 
+import java.util.List;
+
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.api.PrisonSpigotAPI;
@@ -8,9 +12,10 @@ import tech.mcprison.prison.tasks.PrisonRunnable;
 public class PrisonInitialStartupTask
 	implements PrisonRunnable {
 	
-	public static final long INITIAL_SUBMISSION_DELALY = 20 * 5; // 5 seconds
+	public static final long INITIAL_SUBMISSION_DELALY = 20 * 8; // 8 seconds
 	
 	private SpigotPrison prison;
+	private boolean firstPass = true;
 	
 	public PrisonInitialStartupTask( SpigotPrison prison ) {
 		super();
@@ -30,6 +35,11 @@ public class PrisonInitialStartupTask
 	public void submit() {
 		
 		prison.getScheduler().runTaskLater( this, INITIAL_SUBMISSION_DELALY );
+	}
+	
+	private void resubmit() {
+		
+		prison.getScheduler().runTaskLater( this, INITIAL_SUBMISSION_DELALY * 2 );
 	}
 	
 	@Override
@@ -65,8 +75,26 @@ public class PrisonInitialStartupTask
         display.addText("");
         display.addText("");
         
-		
-        display.sendtoOutputLogInfo();
+        if ( firstPass ) {
+        	
+        	display.sendtoOutputLogInfo();
+        	
+        	firstPass = false;
+        	
+        	resubmit();
+        }
+        else {
+        	
+        	display.addText("Please see the prison startup messages within the console.");
+        	
+        	List<Player> onlinePlayers = Prison.get().getPlatform().getOnlinePlayers();
+        	
+        	for ( Player player : onlinePlayers ) {
+        		
+        		display.send( player );
+        	}
+        }
+        
 	}
 	
 	

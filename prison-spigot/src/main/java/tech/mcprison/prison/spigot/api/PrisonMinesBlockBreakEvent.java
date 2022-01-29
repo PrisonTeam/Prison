@@ -213,7 +213,7 @@ public class PrisonMinesBlockBreakEvent
 	
 	public MineTargetPrisonBlock getOriginalTargetBlock( Block bukkitBlock ) {
 		
-		SpigotBlock spigotBlock = new SpigotBlock(bukkitBlock);
+		SpigotBlock spigotBlock = SpigotBlock.getSpigotBlock(bukkitBlock);
 		
 		return getOriginalTargetBlock( spigotBlock );
 	}

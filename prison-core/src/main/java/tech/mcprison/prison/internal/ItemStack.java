@@ -26,7 +26,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -39,7 +39,7 @@ public class ItemStack {
 
     private String displayName = null;
     private int amount;
-    private BlockType material;
+    private PrisonBlock material;
     private List<String> lore;
     private Map<Integer, Integer> enchantments;
 
@@ -51,7 +51,7 @@ public class ItemStack {
     	this.enchantments = new HashMap<>();
     }
     
-    public ItemStack(String displayName, int amount, BlockType material, String... lore) {
+    public ItemStack(String displayName, int amount, PrisonBlock material, String... lore) {
         this.displayName = displayName;
         this.amount = amount;
         this.material = material;
@@ -59,7 +59,7 @@ public class ItemStack {
         this.enchantments = new HashMap<>();
     }
 
-    public ItemStack(int amount, BlockType material, String... lore) {
+    public ItemStack(int amount, PrisonBlock material, String... lore) {
         this.amount = amount;
         this.material = material;
         this.lore = new ArrayList<>(Arrays.asList(lore));
@@ -69,8 +69,11 @@ public class ItemStack {
      * Returns the name of the item stack, derived from its BlockType name.
      */
     public String getName() {
-    	String name = (material != null ? material.name() : 
-    					( getDisplayName() != null ? getDisplayName() : "none"));
+    	String name = (material != null ? 
+    						material.getBlockName() : 
+    						( getDisplayName() != null ? 
+    								getDisplayName() : 
+    								"none"));
         return StringUtils.capitalize(name.replaceAll("_", " ").toLowerCase());
     }
 
@@ -97,10 +100,10 @@ public class ItemStack {
 	/**
      * Returns the type of items in this stack.
      */
-    public BlockType getMaterial() {
+    public PrisonBlock getMaterial() {
         return material;
     }
-    public void setMaterial( BlockType material ) {
+    public void setMaterial( PrisonBlock material ) {
 		this.material = material;
 	}
 

@@ -55,7 +55,7 @@ public interface Platform {
     /**
      * Returns the world with the specified name.
      */
-    Optional<World> getWorld(String name);
+    public Optional<World> getWorld(String name);
 
     
     /**
@@ -72,17 +72,17 @@ public interface Platform {
     /**
      * Returns the player with the specified name.
      */
-    Optional<Player> getPlayer(String name);
+    public Optional<Player> getPlayer(String name);
 
     /**
      * Returns the player with the specified UUID.
      */
-    Optional<Player> getPlayer(UUID uuid);
+    public Optional<Player> getPlayer(UUID uuid);
 
     /**
      * Returns a list of all online players.
      */
-    List<Player> getOnlinePlayers();
+    public List<Player> getOnlinePlayers();
     
 	public List<Player> getOfflinePlayers();
 	
@@ -96,20 +96,20 @@ public interface Platform {
     /**
      * Returns the plugin's version.
      */
-    String getPluginVersion();
+    public String getPluginVersion();
 
     /**
      * Returns the {@link File} representing the plugin's designated storage folder.
      * This directory must have already been created by the implementation.
      */
-    File getPluginDirectory();
+    public File getPluginDirectory();
 
     /**
      * Registers a command with the server implementation.
      *
      * @param command The {@link PluginCommand} to register.
      */
-    void registerCommand(PluginCommand command);
+    public void registerCommand(PluginCommand command);
 
     /**
      * Unregisters a registered command.
@@ -126,14 +126,14 @@ public interface Platform {
     /**
      * Returns a list of all registered commands.
      */
-    List<PluginCommand> getCommands();
+    public List<PluginCommand> getCommands();
 
     /**
      * Runs a command as the console (i.e. with all privileges).
      *
      * @param cmd The command to run, without the '/'.
      */
-    void dispatchCommand(String cmd);
+    public void dispatchCommand(String cmd);
 
     /**
      * Runs a command as the sender and with only the sender's privileges.
@@ -146,7 +146,7 @@ public interface Platform {
     /**
      * Returns the {@link Scheduler}, which can be used to schedule tasks.
      */
-    Scheduler getScheduler();
+    public Scheduler getScheduler();
 
     /**
      * Creates a new {@link GUI} to show to players.
@@ -161,7 +161,7 @@ public interface Platform {
      *
      * @param doorLocation The {@link Location} of the door.
      */
-    void toggleDoor(Location doorLocation);
+    public void toggleDoor(Location doorLocation);
 
     /**
      * Log a colored message to the console (if supported).
@@ -181,21 +181,21 @@ public interface Platform {
      * @param message The message. May include color codes, amp-prefixed.
      * @param format  The The objects inserted via {@link String#format(String, Object...)}.
      */
-    void debug(String message, Object... format);
+    public void debug(String message, Object... format);
 
     /**
      * Runs the converter for this platform.
      *
      * @return The output of the converter. It will be sent to whoever ran the converter system (e.g. usually a command sender).
      */
-    default String runConverter() {
+    public default String runConverter() {
         return "This operation is unsupported on this platform.";
     }
 
     /**
      * Returns a map of capabilities and whether or not this internal has them.
      */
-    Map<Capability, Boolean> getCapabilities();
+    public Map<Capability, Boolean> getCapabilities();
 
     /**
      * Send a title to a player
@@ -205,7 +205,7 @@ public interface Platform {
      * @param subtitle The text of the subtitle
      * @param fade     The length of the fade
      */
-    void showTitle(Player player, String title, String subtitle, int fade);
+    public void showTitle(Player player, String title, String subtitle, int fade);
 
     /**
      * Send an actionbar to a player
@@ -214,17 +214,17 @@ public interface Platform {
      * @param text     The text of the actionbar
      * @param duration The amount of time to show the action bar, in seconds. Set to -1 for no duration (i.e. vanilla standard duration of ~3 seconds).
      */
-    void showActionBar(Player player, String text, int duration);
+    public void showActionBar(Player player, String text, int duration);
 
     /**
      * Returns the scoreboard manager.
      */
-    ScoreboardManager getScoreboardManager();
+    public ScoreboardManager getScoreboardManager();
 
     /**
      * Returns the storage manager.
      */
-    Storage getStorage();
+    public Storage getStorage();
 
     /**
      * Retrieves the {@link PluginCommand} object for a command with a certain label.
@@ -232,7 +232,7 @@ public interface Platform {
      * @param label The command's label.
      * @return The {@link PluginCommand}, or null if no command exists by that label.
      */
-    default Optional<PluginCommand> getCommand(String label) {
+    public default Optional<PluginCommand> getCommand(String label) {
         for (PluginCommand command : getCommands()) {
             if (command.getLabel().equalsIgnoreCase(label)) {
                 return Optional.of(command);
@@ -246,7 +246,7 @@ public interface Platform {
      * Returns true if the server should show alerts to in-game players, false otherwise.
      * This is a configuration option.kkjksdf;erljnkx.jcsmka.f.fdlwe;s.x. frrer5
      */
-    boolean shouldShowAlerts();
+    public boolean shouldShowAlerts();
 
 
     
@@ -281,19 +281,6 @@ public interface Platform {
 	public boolean getConfigBooleanFalse( String key );
 	
 
-	/**
-	 * <p>This is the only way to find out if the new block model is enabled.
-	 * </p>
-	 * 
-	 * <p>This should be the only place within prison to use the actual String value of the
-	 * permission.  This will allow for a simple change in the future.
-	 * </p>
-	 * 
-	 * @return
-	 */
-	public boolean isUseNewPrisonBlockModel();
-	
-	
 	/**
 	 * <p>This returns the boolean value that is associated with the key.
 	 * It has to match on true to return a true value, but if the key does

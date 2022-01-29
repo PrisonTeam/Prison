@@ -50,11 +50,11 @@ import tech.mcprison.prison.internal.events.player.PrisonPlayerInteractEvent;
 import tech.mcprison.prison.internal.events.world.PrisonWorldLoadEvent;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
+import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.Location;
 
@@ -170,11 +170,11 @@ public class SpigotListener implements Listener {
 	@EventHandler 
 	public void onBlockPlace(BlockPlaceEvent e) {
         org.bukkit.Location block = e.getBlockPlaced().getLocation();
-        BlockType blockType = SpigotUtil.blockToBlockType( e.getBlock() );
+        SpigotBlock sBlock = SpigotBlock.getSpigotBlock( e.getBlock() );
         
         tech.mcprison.prison.internal.events.block.BlockPlaceEvent event =
             new tech.mcprison.prison.internal.events.block.BlockPlaceEvent(
-            		blockType,
+            		sBlock,
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
                     block.getZ()), (new SpigotPlayer(e.getPlayer())));
         Prison.get().getEventBus().post(event);
@@ -183,11 +183,11 @@ public class SpigotListener implements Listener {
 	@EventHandler 
 	public void onBlockBreak(BlockBreakEvent e) {
         org.bukkit.Location block = e.getBlock().getLocation();
-        BlockType blockType = SpigotUtil.blockToBlockType( e.getBlock() );
+        SpigotBlock sBlock = SpigotBlock.getSpigotBlock( e.getBlock() );
         
         tech.mcprison.prison.internal.events.block.BlockBreakEvent event =
             new tech.mcprison.prison.internal.events.block.BlockBreakEvent(
-            		blockType,
+            		sBlock,
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
                     block.getZ()), (new SpigotPlayer(e.getPlayer())),e.getExpToDrop());
         Prison.get().getEventBus().post(event);

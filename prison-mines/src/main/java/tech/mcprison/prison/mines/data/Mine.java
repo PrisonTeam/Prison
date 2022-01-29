@@ -37,13 +37,14 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.selection.Selection;
 import tech.mcprison.prison.sorting.PrisonSortable;
 import tech.mcprison.prison.store.Document;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.util.ObsoleteBlockType;
 
 /**
  * @author Dylan M. Perks
  */
+@SuppressWarnings( "deprecation" )
 public class Mine 
 	extends MineScheduler 
 	implements PrisonSortable, Comparable<Mine> {
@@ -198,7 +199,7 @@ public class Mine
 	 * @param document
 	 * @throws MineException
 	 */
-	@SuppressWarnings( "unchecked" )
+	@SuppressWarnings( { "unchecked" } )
 	private void loadFromDocument( Document document )
 			throws MineException {
 		
@@ -335,7 +336,7 @@ public class Mine
 				
 				if ( blockTypeName != null && !validateBlockNames.contains( blockTypeName )) {
 					// Use the BlockType.name() load the block type:
-					BlockType blockType = BlockType.getBlock(blockTypeName);
+					ObsoleteBlockType blockType = ObsoleteBlockType.getBlock(blockTypeName);
 					if ( blockType != null ) {
 						
 						
@@ -354,9 +355,9 @@ public class Mine
 								"mine %s. %s is not a valid block type. Using " +
 								"%s instead. If this is incorrect please fix manually.";
 						
-						if ( blockType == BlockType.REDSTONE ) {
-							BlockType itemType = blockType;
-							blockType = BlockType.REDSTONE_ORE;
+						if ( blockType == ObsoleteBlockType.REDSTONE ) {
+							ObsoleteBlockType itemType = blockType;
+							blockType = ObsoleteBlockType.REDSTONE_ORE;
 							
 							Output.get().logError( 
 									String.format( errorMessage, itemType.name(), getName(), 
@@ -364,9 +365,9 @@ public class Mine
 							
 							dirty = true;
 						}
-						else if ( blockType == BlockType.NETHER_BRICK ) {
-							BlockType itemType = blockType;
-							blockType = BlockType.DOUBLE_NETHER_BRICK_SLAB;
+						else if ( blockType == ObsoleteBlockType.NETHER_BRICK ) {
+							ObsoleteBlockType itemType = blockType;
+							blockType = ObsoleteBlockType.DOUBLE_NETHER_BRICK_SLAB;
 							
 							Output.get().logError( 
 									String.format( errorMessage, itemType.name(), getName(), 
@@ -498,7 +499,9 @@ public class Mine
 		checkGravityAffectedBlocks();
 
         
-        if ( isUseNewBlockModel() && 
+		// Using the Obsolete old block model for conversion to the new block model
+		// NOTE: This is the ONLY place were we are allowed to use the old block model! ;)
+        if ( // isUseNewBlockModel() && 
         		getPrisonBlocks().size() == 0 && getBlocks().size() > 0 ) {
         	// Need to perform the initial conversion: 
         	
@@ -580,7 +583,7 @@ public class Mine
 	}
 
     
-    public Document toDocument() {
+	public Document toDocument() {
         Document ret = new Document();
         
         // If world name is not set, try to get it from the bounds:
@@ -644,6 +647,10 @@ public class Mine
         // This is a validation set to ensure only one block is written to file system:
         Set<String> validateBlockNames = new HashSet<>();
 
+        // NOTE: This is using the obsolete old block model!!
+        // This is the ONLY SECOND place where we can use the old block model!
+        // We want to "preserve" the old blocks that may have been setup up in the mines
+        // originally.  In a future release, these may be purged.
         List<String> blockStrings = new ArrayList<>();
         for (BlockOld block : getBlocks()) {
         	if ( !validateBlockNames.contains( block.getType().name() )) {
@@ -774,22 +781,13 @@ public class Mine
 	{
 		StringBuilder sb = new StringBuilder();
 
-       if ( isUseNewBlockModel() ) {
-        	for ( PrisonBlock block : getPrisonBlocks()) {
-        		if ( sb.length() > 0 ) {
-        			sb.append( ", " );
-        		}
-        		sb.append( block.toString() );
-        	}
-        }
-        else {
-        	for ( BlockOld block : getBlocks() ) {
-        		if ( sb.length() > 0 ) {
-        			sb.append( ", " );
-        		}
-        		sb.append( block.toString() );
-        	}
-        }
+		for ( PrisonBlock block : getPrisonBlocks()) {
+			if ( sb.length() > 0 ) {
+				sb.append( ", " );
+			}
+			sb.append( block.toString() );
+		}
+
 
 		sb.insert( 0, ": [" );
 		sb.append( "]" );

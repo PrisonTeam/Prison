@@ -47,6 +47,7 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.integration.Integration;
+import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.mines.PrisonMines;
@@ -74,7 +75,10 @@ import tech.mcprison.prison.spigot.commands.PrisonSpigotRanksCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
-import tech.mcprison.prison.spigot.configs.*;
+import tech.mcprison.prison.spigot.configs.BackpacksConfig;
+import tech.mcprison.prison.spigot.configs.GuiConfig;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
+import tech.mcprison.prison.spigot.configs.SellAllConfig;
 import tech.mcprison.prison.spigot.customblock.CustomItems;
 import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
 import tech.mcprison.prison.spigot.economies.GemsEconomy;
@@ -676,6 +680,8 @@ public class SpigotPrison
     private void initModulesAndCommands() {
 
         YamlConfiguration modulesConf = loadConfig("modules.yml");
+        
+        boolean isRanksEnabled = false;
 
         // TODO: This business logic needs to be moved to the Module Manager:
         if (modulesConf.getBoolean("mines")) {
@@ -690,19 +696,18 @@ public class SpigotPrison
             Prison.get().getModuleManager().getDisabledModules().add( PrisonMines.MODULE_NAME );
         }
 
-        if (modulesConf.getBoolean("ranks")) {
-            Prison.get().getModuleManager()
-                    .registerModule(new PrisonRanks(getDescription().getVersion()));
+        if (modulesConf.getBoolean("ranks") ) {
+        	PrisonRanks rankModule = new PrisonRanks(getDescription().getVersion() );
+        	
+        	// Register and enable Ranks:
+            Prison.get().getModuleManager().registerModule( rankModule );
 
-            Prison.get().getCommandHandler().registerCommands( new PrisonSpigotRanksCommands() );
-            
-            // NOTE: If ranks module is enabled, then try to register prestiges commands if enabled:
-            if ( isPrisonConfig( "prestiges") || isPrisonConfig( "prestige.enabled" ) ) {
-            	// Enable the setup of the prestige related commands only if prestiges is enabled:
-            	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
+            if ( rankModule.isEnabled() && PrisonAPI.getIntegrationManager().hasForType(IntegrationType.ECONOMY) ) {
+            	
+            	isRanksEnabled = true;
             }
-            
-        } else {
+        } 
+        else {
         	Output.get().logInfo("&3Modules: &cPrison Ranks, Ladders, and Players are disabled and were not Loaded. ");
         	Output.get().logInfo("&7  Prestiges cannot be enabled without ranks being enabled. ");
         	Output.get().logInfo("&7  Prison Ranks have been disabled in &2plugins/Prison/modules.yml&7.");
@@ -718,9 +723,23 @@ public class SpigotPrison
 //        	linkMinesAndRanks();
 //        }
 
-        // Load sellAll if enabled
-        if (isSellAllEnabled){
-        	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotSellAllCommands() );
+        
+        // Do not enable sellall if ranks is not loaded since it uses player ranks:
+        if ( isRanksEnabled ) {
+        	
+        	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotRanksCommands() );
+        	
+        	// NOTE: If ranks module is enabled, then try to register prestiges commands if enabled:
+        	if ( isPrisonConfig( "prestiges") || isPrisonConfig( "prestige.enabled" ) ) {
+        		// Enable the setup of the prestige related commands only if prestiges is enabled:
+        		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
+        	}
+        	
+        	// Load sellAll if enabled
+        	if (isSellAllEnabled){
+        		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotSellAllCommands() );
+        	}
+            
         }
 
         // Load backpacks commands if enabled
@@ -728,7 +747,9 @@ public class SpigotPrison
         	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotBackpackCommands() );
         }
 
+        
         // This registers the admin's /gui commands
+        // GUI commands were updated to prevent use of ranks commands when ranks module is not loaded.
         if (getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true")) {
         	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotGUICommands() );
         }

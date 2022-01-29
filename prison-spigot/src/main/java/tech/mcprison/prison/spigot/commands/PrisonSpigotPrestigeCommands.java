@@ -1,7 +1,8 @@
 package tech.mcprison.prison.spigot.commands;
 
+import java.util.Optional;
+
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 
 import tech.mcprison.prison.Prison;
@@ -33,6 +34,13 @@ public class PrisonSpigotPrestigeCommands
 			Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_prestiges_disabled)));
 			return;
 		}
+		
+        Optional<Module> ranksModule = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
+        if ( !ranksModule.isPresent() || ranksModule.isPresent() && !ranksModule.get().isEnabled() ) {
+        	
+        	Output.get().sendWarn( sender, "The command '/prestiges' is disabled because the Ranks module is not active." );
+        	return;
+        }
 
 		if ( isConfig( "Options.Prestiges.GUI_Enabled") ) {
 			sender.dispatchCommand( "gui prestiges");
@@ -45,6 +53,16 @@ public class PrisonSpigotPrestigeCommands
 	public void prestigesPrestigeCommand(CommandSender sender) {
 
 		if ( isPrisonConfig( "prestiges" ) || isPrisonConfig( "prestige.enabled" ) ) {
+			
+	    	
+	        Optional<Module> ranksModule = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
+	        if ( !ranksModule.isPresent() || ranksModule.isPresent() && !ranksModule.get().isEnabled() ) {
+	        	
+	        	Output.get().sendWarn( sender, "The command '/prestige' is disabled because the Ranks module is not active." );
+	        	return;
+	        }
+	        
+	        
 			prisonManagerPrestige(sender);
 		}
 	}
@@ -55,6 +73,14 @@ public class PrisonSpigotPrestigeCommands
 
         if ( isPrisonConfig( "prestige.enabled" ) ) {
 
+        	
+            Optional<Module> ranksModule = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
+            if ( !ranksModule.isPresent() || ranksModule.isPresent() && !ranksModule.get().isEnabled() ) {
+            	
+            	Output.get().sendWarn( sender, "The command '/gui prestiges' is disabled because the Ranks module is not active." );
+            	return;
+            }
+            
             if ( PrisonRanks.getInstance().getLadderManager().getLadder("prestiges") == null ) {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ranks ladder create prestiges");
             }

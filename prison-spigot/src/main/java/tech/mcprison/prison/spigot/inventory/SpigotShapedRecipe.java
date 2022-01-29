@@ -21,12 +21,12 @@ package tech.mcprison.prison.spigot.inventory;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.Material;
+import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.inventory.ShapedRecipe;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.util.BlockType;
 
 /**
  * Created by DMP9 on 04/02/2017.
@@ -37,27 +37,39 @@ public class SpigotShapedRecipe extends SpigotRecipe implements ShapedRecipe {
         super(wrapper);
     }
 
-    @Override public Map<Character, ItemStack> getIngredientMap() {
+    @Override 
+    public Map<Character, ItemStack> getIngredientMap() {
         Map<Character, org.bukkit.inventory.ItemStack> stackMap =
             ((org.bukkit.inventory.ShapedRecipe) getWrapper()).getIngredientMap();
+        
         Map<Character, ItemStack> result = new HashMap<>();
         stackMap.forEach((x, y) -> result.put(x, SpigotUtil.bukkitItemStackToPrison(y)));
         return result;
     }
 
-    @Override public String[] getShape() {
+    @Override 
+    public String[] getShape() {
         return ((org.bukkit.inventory.ShapedRecipe) getWrapper()).getShape();
     }
 
-    @Override public ShapedRecipe setIngredient(char key, BlockType ingredient) {
-    	Material mat = SpigotUtil.getMaterial( ingredient );
+    @Override 
+    public ShapedRecipe setIngredient(char key, PrisonBlock ingredient) {
     	
-        ((org.bukkit.inventory.ShapedRecipe) getWrapper())
-            .setIngredient(key, mat);
+    	XMaterial xMat = SpigotUtil.getXMaterial( ingredient );
+    	
+    	if ( xMat != null ) {
+    		((org.bukkit.inventory.ShapedRecipe) getWrapper())
+    				.setIngredient( key, xMat.parseMaterial() );
+    	}
+//    	Material mat = SpigotUtil.getMaterial( ingredient );
+    	
+//        ((org.bukkit.inventory.ShapedRecipe) getWrapper())
+//            .setIngredient(key, mat);
         return this;
     }
 
-    @Override public ShapedRecipe shape(String... shape) {
+    @Override 
+    public ShapedRecipe shape(String... shape) {
         ((org.bukkit.inventory.ShapedRecipe) getWrapper()).shape(shape);
         return this;
     }

@@ -21,8 +21,10 @@ public class PrisonBlockTypes {
 		AIR,
 		GLASS,
 		PINK_STAINED_GLASS,
+		BLAZE_ROD,
+		LAPIS_ORE,
 		IGNORE,
-		NULL_BLOCK
+		NULL_BLOCK 
 	}
 
 	public PrisonBlockTypes() {

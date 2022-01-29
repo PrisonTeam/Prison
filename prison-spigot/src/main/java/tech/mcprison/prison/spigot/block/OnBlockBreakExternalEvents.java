@@ -26,6 +26,9 @@ public class OnBlockBreakExternalEvents {
 	private boolean isEZBlockChecked = false;
 	private RegisteredListener registeredListenerEZBlock = null; 
 	
+	private boolean isQuestsChecked = false;
+	private RegisteredListener registeredListenerQuests = null; 
+	
 	
 	private AutoFeaturesWrapper autoFeatureWrapper = null;
 	
@@ -85,6 +88,10 @@ public class OnBlockBreakExternalEvents {
 		
 		registerEZBlock();
 		
+		
+		registerQuests();
+		
+		
 		// Removed because there is a directly callable target with /prison debug now:
 //		if ( Output.get().isDebug( DebugTarget.blockBreakListeners ) ) {
 //			
@@ -120,6 +127,9 @@ public class OnBlockBreakExternalEvents {
 		
 		checkEZBlock( e );
 		
+		
+		checkQuests( e );
+		
 	}
 	
 	protected void checkAllExternalEvents( Player player, Block block ) {
@@ -129,6 +139,9 @@ public class OnBlockBreakExternalEvents {
 		
 		
 		checkEZBlock( player, block );
+
+		
+		checkQuests( player, block );
 		
 	}
 
@@ -335,6 +348,60 @@ public class OnBlockBreakExternalEvents {
 			
 			try {
 				registeredListenerEZBlock.callEvent( e );
+			}
+			catch ( EventException e1 ) {
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+
+	
+	/**
+	 * <p>Checks to see if Quests is able to be enabled, and if it is, then call it's registered
+	 * function that will do it's processing before prison will process the blocks.
+	 * </p>
+	 * 
+	 * <p>This adds Quests support within mines for block break related quests.
+	 * </p>
+	 * 
+	 * @param e
+	 */
+	private void registerQuests() {
+		
+		if ( !isQuestsChecked ) {
+			
+	    	boolean isProcessQuestsBreakEvents = isBoolean( AutoFeatures.isProcessQuestsBlockBreakEvents );
+
+			if ( isProcessQuestsBreakEvents ) {
+				
+				for ( RegisteredListener rListener : BlockBreakEvent.getHandlerList().getRegisteredListeners() ) {
+					
+					if ( rListener.getPlugin().isEnabled() && 
+							rListener.getPlugin().getName().equalsIgnoreCase( "Quests" ) ) {
+						
+						registeredListenerQuests = rListener;
+					}
+				}
+				
+			}
+			
+			isQuestsChecked = true;
+		}
+	}
+	
+	private void checkQuests( Player player, Block block ) {
+		if ( registeredListenerQuests != null ) {
+			BlockBreakEvent bEvent = new BlockBreakEvent( block, player );
+			checkEZBlock( bEvent );
+		}
+	}
+	
+	private void checkQuests( BlockBreakEvent e ) {
+		if ( registeredListenerQuests != null ) {
+			
+			try {
+				registeredListenerQuests.callEvent( e );
 			}
 			catch ( EventException e1 ) {
 				e1.printStackTrace();

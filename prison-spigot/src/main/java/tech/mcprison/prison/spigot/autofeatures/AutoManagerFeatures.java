@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.autofeatures;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,7 +39,6 @@ import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -468,14 +468,14 @@ public class AutoManagerFeatures
 			
 			// Smelt
 			if ( isAutoSmelt ) {
-				debugInfo.append( "(smelting: itemStacks)" );
+				debugInfo.append( "(autoSmelting: itemStacks)" );
 				normalDropSmelt( drops );
 			}
 			
 			
 			// Block
 			if ( isAutoBlock ) {
-				debugInfo.append( "(blocking: itemStacks)" );
+				debugInfo.append( "(autoBlocking: itemStacks)" );
 				normalDropBlock( drops );
 			}
 			
@@ -495,6 +495,8 @@ public class AutoManagerFeatures
 			double autosellTotal = 0;
 			double autosellUnsellableCount = 0;
 			
+			long nanoTime = 0L;
+			
 			for ( SpigotItemStack itemStack : drops ) {
 				
 				count += itemStack.getAmount();
@@ -504,7 +506,11 @@ public class AutoManagerFeatures
 				if ( SellAllUtil.get() != null && (isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || 
 						pmEvent.isForceAutoSell()) ) {
 					
+					final long nanoStart = System.nanoTime();
 					double amount = SellAllUtil.get().sellAllSell( player, itemStack, false, false, true );
+					final long nanoStop = System.nanoTime();
+					nanoTime += nanoStop - nanoStart;
+					
 					autosellTotal += amount;
 					
 					PlayerCache.getInstance().addPlayerEarnings( pmEvent.getSpigotPlayer(), 
@@ -572,9 +578,19 @@ public class AutoManagerFeatures
 			if ( count > 0 || autosellTotal > 0 ) {
 				
 				debugInfo.append( "[autoPickupDrops total: qty: " + count + " value: " + autosellTotal + 
-						"  unsellableCount: " + autosellUnsellableCount + " ] ");
+						"  unsellableCount: " + autosellUnsellableCount );
 				
+				if ( nanoTime > 0 ) {
+					DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
+					final double autoSellTimeMs = ( nanoTime / 1000000.0d );
+					debugInfo.append( " autosellTiming: " )
+						.append( fFmt.format( autoSellTimeMs ) )
+						.append( " ms" );
+				}
+				
+				debugInfo.append( " ] " );
 			}
+			
 			
 //			if ( !isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) && 
 //					!pmEvent.isForceAutoSell() ) {
@@ -641,13 +657,13 @@ public class AutoManagerFeatures
 			
 			
 			if ( isBoolean( AutoFeatures.normalDropSmelt ) ) {
-				
+				debugInfo.append( "(normSmelting: itemStacks)" );
 				normalDropSmelt( drops );
 			}
 			
 			
 			if ( isBoolean( AutoFeatures.normalDropBlock ) ) {
-				
+				debugInfo.append( "(normBlocking: itemStacks)" );
 				normalDropBlock( drops );
 			}
 			
@@ -1578,11 +1594,22 @@ public class AutoManagerFeatures
 		
 		Set<XMaterial> xMats = new HashSet<>();
 		for ( SpigotItemStack sItemStack : drops ) {
-			XMaterial source = XMaterial.matchXMaterial( sItemStack.getBukkitStack() );
 			
-			if ( !xMats.contains( source  ) ) {
-				xMats.add( source );
+			XMaterial xMat = null;
+			
+			if ( sItemStack.getBukkitStack() != null ) {
+				
+				xMat = XMaterial.matchXMaterial( sItemStack.getBukkitStack() );
 			}
+			else if ( sItemStack.getMaterial() != null ) {
+				
+				xMat = SpigotCompatibility.getInstance().getXMaterial( sItemStack.getMaterial() );
+			}
+			
+			if ( xMat != null && !xMats.contains( xMat ) ) {
+				xMats.add( xMat );
+			}
+			
 		}
 		
 		
@@ -2405,7 +2432,9 @@ public class AutoManagerFeatures
 												   List<SpigotItemStack> drops ) {
 		List<SpigotItemStack> adds = new ArrayList<SpigotItemStack>();
 		
-		if (itemStack.getMaterial() == BlockType.GRAVEL && !hasSilkTouch(itemInHand)) {
+		PrisonBlock gravel = SpigotUtil.getPrisonBlock( XMaterial.GRAVEL );
+		
+		if (itemStack.getMaterial().compareTo( gravel ) == 0 && !hasSilkTouch(itemInHand)) {
 
 			int quantity = 1;
 			int threshold = 10;
@@ -2443,7 +2472,8 @@ public class AutoManagerFeatures
 				}
 
 //				ItemStack flintStack = new ItemStack(Material.FLINT, quantity);
-				SpigotItemStack flintStack = new SpigotItemStack( quantity, BlockType.FLINT);
+				PrisonBlock flint = SpigotUtil.getPrisonBlock( XMaterial.FLINT );
+				SpigotItemStack flintStack = new SpigotItemStack( quantity, flint );
 				adds.add(flintStack);
 			}
 		}

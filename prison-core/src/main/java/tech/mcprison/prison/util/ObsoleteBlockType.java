@@ -23,7 +23,16 @@ import java.util.List;
 
 
 /**
- * <p>All of the blocks in the game.
+ * <p>All of the old blocks in the game. This list is obsolete, and was used in
+ * v3.2.0 and earlier.  It because obsolete with the new block model which was 
+ * introduced when incorporating XSeries' XMaterial.  
+ * </p>
+ * 
+ * <p>The only reasonto keep this enumeration is for conversion processes 
+ * to convert to the new block model.  This enum "should" be deleted, but 
+ * for the sake of conversioin use only makes ths valuable.  Where it excels, 
+ * is that if an old block name cannot be auto mapped to the XMaterial, then
+ * this contains the mapping hints to ensure it works correctly.
  * </p>
  * 
  * <p>The new field altNames contains a list of String values that will help
@@ -40,8 +49,9 @@ import java.util.List;
  * @author Faizaan A. Datoo
  * @author Camouflage100
  * @since API 1.0
+ * @deprecated since v3.2.6
  */
-public enum BlockType {
+public enum ObsoleteBlockType {
 
 	/**
 	 * Identifying a block as a MaterialType.BLOCK will allow the 
@@ -1066,7 +1076,7 @@ public enum BlockType {
     
     private final List<String> altNames;
 
-    BlockType(int legacyId, String id, int data, MaterialType materialType) {
+    ObsoleteBlockType(int legacyId, String id, int data, MaterialType materialType) {
     	this.legacyId = legacyId;
     	this.id = (id != null ? id : "minecraft:" + this.name().toLowerCase());
     	this.data = (short) data;
@@ -1077,7 +1087,7 @@ public enum BlockType {
     }
     
     
-    BlockType(int legacyId, String id, int data, MaterialType materialType, String... altNames) {
+    ObsoleteBlockType(int legacyId, String id, int data, MaterialType materialType, String... altNames) {
     	this( legacyId, id, data, materialType );
     	
     	for ( String altName : altNames ) {
@@ -1087,7 +1097,7 @@ public enum BlockType {
     
     
     
-    BlockType(String id, MaterialType materialType, MaterialVersion materialVersion, String... altNames ) {
+    ObsoleteBlockType(String id, MaterialType materialType, MaterialVersion materialVersion, String... altNames ) {
     	this( id, materialType, materialVersion );
     	
      	for ( String altName : altNames ) {
@@ -1095,7 +1105,7 @@ public enum BlockType {
 		}
     }
     
-    BlockType(String id, MaterialType materialType, MaterialVersion materialVersion ) {
+    ObsoleteBlockType(String id, MaterialType materialType, MaterialVersion materialVersion ) {
     	this.legacyId = -1;
     	this.id = (id != null ? id : "minecraft:" + this.name().toLowerCase());
     	this.data = 0;
@@ -1105,15 +1115,15 @@ public enum BlockType {
     	this.altNames = new ArrayList<>();
     }
     
-    BlockType(MaterialType materialType) {
+    ObsoleteBlockType(MaterialType materialType) {
     	this(0, null, 0, materialType);
     }
 
-    BlockType(int legacyId, String id) {
+    ObsoleteBlockType(int legacyId, String id) {
     	this(legacyId, id, 0, MaterialType.NOT_SET);
     }
 
-    BlockType(int legacyId, String id, int data) {
+    ObsoleteBlockType(int legacyId, String id, int data) {
     	this(legacyId, id, data, MaterialType.NOT_SET);
     }
 
@@ -1152,12 +1162,12 @@ public enum BlockType {
     	return getAltNames();
     }
     
-    public static BlockType getBlock(int legacyId) {
+    public static ObsoleteBlockType getBlock(int legacyId) {
         return getBlock(legacyId, (short) 0);
     }
 
-    public static BlockType getBlock(int legacyId, short data) {
-        for (BlockType block : values()) {
+    public static ObsoleteBlockType getBlock(int legacyId, short data) {
+        for (ObsoleteBlockType block : values()) {
             if (block.getLegacyId() == legacyId) {
                 if (block.getData() == data) {
                     return block;
@@ -1173,7 +1183,7 @@ public enum BlockType {
      * @param key
      * @return
      */
-    public static BlockType fromString( String key ) {
+    public static ObsoleteBlockType fromString( String key ) {
     	return getBlock( key );
     }
     /**
@@ -1184,8 +1194,8 @@ public enum BlockType {
      * @param key Block name, id, or number.
      * @return
      */
-    public static BlockType getBlock(String key) {
-    	BlockType blockType = getBlockByName( key );
+    public static ObsoleteBlockType getBlock(String key) {
+    	ObsoleteBlockType blockType = getBlockByName( key );
     	if ( blockType == null ) {
     		blockType = getBlockById( key );
     	}
@@ -1196,8 +1206,8 @@ public enum BlockType {
         return blockType;
     }
 
-    private static BlockType getBlockById(String id) {
-        for (BlockType block : values()) {
+    private static ObsoleteBlockType getBlockById(String id) {
+        for (ObsoleteBlockType block : values()) {
             if (block.getId().equalsIgnoreCase(id) || block.name().equalsIgnoreCase(id) ||
             		block.getId().equalsIgnoreCase( "minecraft:" + id )) {
                 return block;
@@ -1219,8 +1229,8 @@ public enum BlockType {
         }
 //        Prison prison = Prison.get();
 //        if ( prison != null && prison.getItemManager() != null ) {
-//        	Set<Entry<BlockType, Collection<String>>> entrySet = prison.getItemManager().getItems().entrySet();
-//        	for (Map.Entry<BlockType, Collection<String>> entry : entrySet) {
+//        	Set<Entry<ObsoleteBlockType, Collection<String>>> entrySet = prison.getItemManager().getItems().entrySet();
+//        	for (Map.Entry<ObsoleteBlockType, Collection<String>> entry : entrySet) {
 //        		if (entry.getValue().contains(id.toLowerCase())) {
 //        			return entry.getKey();
 //        		}
@@ -1231,8 +1241,8 @@ public enum BlockType {
         return null;
     }
 
-    private static BlockType getBlockByName(String name) {
-        for (BlockType block : values()) {
+    private static ObsoleteBlockType getBlockByName(String name) {
+        for (ObsoleteBlockType block : values()) {
             if (block.name().equalsIgnoreCase(name)) {
                 return block;
             }
@@ -1240,8 +1250,8 @@ public enum BlockType {
         return null;
     }
     
-    private static BlockType getBlockByXMaterialName(String name) {
-    	for (BlockType block : values()) {
+    private static ObsoleteBlockType getBlockByXMaterialName(String name) {
+    	for (ObsoleteBlockType block : values()) {
     		if (block.getXMaterialAltNames().size() > 0 ) {
     			for ( String altName : block.getXMaterialAltNames() ) {
 					
@@ -1255,8 +1265,8 @@ public enum BlockType {
     	return null;
     }
 
-    public static BlockType getBlockWithData(int id, short data) {
-        for (BlockType block : values()) {
+    public static ObsoleteBlockType getBlockWithData(int id, short data) {
+        for (ObsoleteBlockType block : values()) {
             if (block.getLegacyId() == id && block.getData() == data) {
                 return block;
             }
@@ -1264,7 +1274,7 @@ public enum BlockType {
         return null;
     }
 
-    public static boolean isDoor(BlockType block) {
+    public static boolean isDoor(ObsoleteBlockType block) {
         return block == ACACIA_DOOR_BLOCK || block == BIRCH_DOOR_BLOCK
             || block == DARK_OAK_DOOR_BLOCK || block == IRON_DOOR_BLOCK
             || block == JUNGLE_DOOR_BLOCK || block == OAK_DOOR_BLOCK || block == SPRUCE_DOOR_BLOCK;

@@ -120,16 +120,9 @@ public class MineTracerBuilder
 //						boolean isEdge = xEdge && yEdge || xEdge && zEdge ||
 //										 yEdge && zEdge;
 //						
-//						if ( mine.isUseNewBlockModel() ) {
 //							
 //							targetBlock.getBlockAt().setPrisonBlock( 
 //									tracer && isEdge ? blockRedPB : blockAirPB );
-//						}
-////						else {
-////							
-////							targetBlock.getBlockAt().setType( 
-////									tracer && isEdge ? blockRedBT : blockAirBT );
-////						}
 //					}
 //				}
 //			}

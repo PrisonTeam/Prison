@@ -28,12 +28,14 @@ public class SpigotBlockState implements BlockState {
 
     public SpigotBlock block;
 
-    public SpigotBlockState(SpigotBlock block) {
+    public SpigotBlockState( SpigotBlock block ) {
         this.block = block;
     }
 
-    @Override public Block getBlock() {
-        return block;
-    }
+	@Override
+	public Block getBlock()
+	{
+		return block.getPrisonBlock();
+	}
 
 }
