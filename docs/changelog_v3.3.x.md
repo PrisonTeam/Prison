@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.1 (alpha.7) 2022-01-29
 
 
+* **Broadcast the prison welcome message to all online players when prison is loaded with no mines or ranks defined.**
+The messag is loggd to console 8 sconds after prison loads.  The broadcast messags are sent 16 seconds after logging the welcome message.
+The intention is to help bring awareness to new mods/admins that there is an easy way to get started with prison.
 
 
 * **Broadcast the failed ranks loading to all online players.**
