@@ -747,7 +747,9 @@ public class SpigotPrison
         	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotBackpackCommands() );
         }
 
+        
         // This registers the admin's /gui commands
+        // GUI commands were updated to prevent use of ranks commands when ranks module is not loaded.
         if (getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true")) {
         	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotGUICommands() );
         }

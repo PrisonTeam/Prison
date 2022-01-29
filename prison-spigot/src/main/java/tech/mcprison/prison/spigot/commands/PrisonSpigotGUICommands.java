@@ -1,10 +1,14 @@
 package tech.mcprison.prison.spigot.commands;
 
+import java.util.Optional;
+
 import org.bukkit.entity.Player;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankLadder;
@@ -88,6 +92,13 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
                         perm + "]"));
                 return;
             }
+        }
+        
+        Optional<Module> ranksModule = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
+        if ( !ranksModule.isPresent() || ranksModule.isPresent() && !ranksModule.get().isEnabled() ) {
+        	
+        	Output.get().sendWarn( sender, "The command '/gui prestiges' is disabled because the Ranks module is not active." );
+        	return;
         }
 
         Player player = getSpigotPlayer( sender );
@@ -220,6 +231,13 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             }
         }
 
+        Optional<Module> ranksModule = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
+        if ( !ranksModule.isPresent() || ranksModule.isPresent() && !ranksModule.get().isEnabled() ) {
+        	
+        	Output.get().sendWarn( sender, "The command '/gui ranks' is disabled because the Ranks module is not active." );
+        	return;
+        }
+        
         SpigotPlayerRanksGUI gui = new SpigotPlayerRanksGUI( player, "default", page, cmdPage, cmdReturn );
         gui.open();
     }
@@ -252,6 +270,14 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             return;
         }
     	
+    	
+        Optional<Module> ranksModule = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
+        if ( !ranksModule.isPresent() || ranksModule.isPresent() && !ranksModule.get().isEnabled() ) {
+        	
+        	Output.get().sendWarn( sender, "The command '/gui admin ranks' is disabled because the Ranks module is not active." );
+        	return;
+        }
+        
     	
     	// ladder
     	RankLadder rLadder = PrisonRanks.getInstance().getLadderManager().getLadder( ladder );
@@ -322,6 +348,14 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     		}
     	}
     	
+        Optional<Module> ranksModule = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
+        if ( !ranksModule.isPresent() || ranksModule.isPresent() && !ranksModule.get().isEnabled() ) {
+        	
+        	Output.get().sendWarn( sender, "The command '/gui ladders' is disabled because the Ranks module is not active." );
+        	return;
+        }
+        
+    	
     	SpigotLaddersGUI gui = new SpigotLaddersGUI( player, page, cmdPage, cmdReturn );
     	gui.open();
     }
@@ -335,11 +369,14 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
 
     // Backpack GUI commands got moved to the Backpacks class so they won't be loaded if backpacks are disabled.
 
-    @Command(identifier = "gui reload", description = "Reload GUIs", permissions = "prison.admin",onlyPlayers = false)
+    @Command(identifier = "gui reload", description = "Reload GUIs and sellall", 
+    		permissions = "prison.admin",onlyPlayers = false, 
+    		aliases = {"prison reload gui", "prison reload sellall"})
     public void reloadGUICommand(CommandSender sender){
         SpigotGUIComponents.updateMessages();
         SpigotGUIComponents.updateSellAllConfig();
         SpigotGUIComponents.updateGUIConfig();
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_gui_reload_success)));
     }
+    
 }
