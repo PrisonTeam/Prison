@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.1 (alpha.7) 2022-01-29
 
 
+* **Update the placeholderAPI docs to correct the formatting of the docs to match what they should be.**
+Had to indent by two spaces.
+
+
 * **Created updated documents for the placeholderAPI wiki.**
 These are local copies of the content since the prior content was removed/vandelized.
 
