@@ -13,7 +13,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-beta.1 (alpha.7) 2022-01-28
+# 3.3.0-beta.1 (alpha.7) 2022-01-29
+
+
+* **Created updated documents for the placeholderAPI wiki.**
+These are local copies of the content since the prior content was removed/vandelized.
+
 
 
 * **New Feature:  Added support for Quests so that block breakage within mines can now be tracked and be applied towards quests.**

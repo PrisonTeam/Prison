@@ -268,6 +268,10 @@ Auto configure can get you up and running with as little as two commands.  The f
     Installing the plugins
 
 
+* [Prison's PlaceholderAPI wiki page content](prison_placeholderapi_wiki_docs.md)
+    This document contains the Prison's content that is published on PlaceholderAPI's wiki.
+    
+
 * [Setting up PlaceholderAPI](prison_docs_0xx_setting_up_PlaceholderAPI.md) - Strongly Suggested if using placeholders. Troubleshooting.
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
