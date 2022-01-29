@@ -388,7 +388,7 @@ This section of guides will focus on FAQs; short helps for common problems.
 
 
 * [FAQ - Other Plugins](prison_docs_810_faq_other_plugins.md) 
-	CMI Plugin. Prison fails to load. No modules.
+	*No FAQs are available at this time*
 
 
 * [FAQ - Miscellaneous Questions](prison_docs_880_faq_misc_01.md)

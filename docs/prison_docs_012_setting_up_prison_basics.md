@@ -76,28 +76,14 @@ Prison requires an active economy in order to active the Ranks plugin.  When Pri
 * **EssentialsX Economy** - SUGGESTED - Optional - This is a simple economy plugin that just works well.  If you don't have a specific need to use another economy plugin, then it may be best to use this one since it works so well.  The reason why we recommend this economy is because it always works.  That said, we acknowledge the reason it works well, is because it is so simple, so if there are features in other economy plugins that you want to use on your sever, then please explore using them.  But overall, if you just want an economy that is rock solid, then EssentialsX's Economy is a great choice.
   
 
-* **CMI Economy** - Optional - Formerly we could not recommend its use, but Prison now has a couple of advanced tools that is able to allow CMI to fully load before Prison needs to use CMI's functions.  Therefore if you want to use many of CMI's features, you now can!
+* **CMI Economy** - Optional - If using CMIE then you must enable Prison's delayed startup
 
-  CMI "tries" to load last, thus it can ensure all of it's dependencies and hooks are in place before it starts up.  That's understandable, and Prison also has similar requirements and expectations. Unfortunately, this also causes a conflict with Prison, since Prison must perform validation on startup, and if there is no economy, then Prison could fail to start.
-  
-  To get CMIE to work correctly with prison, there are a couple of things that you must do.
-  
-  1) You must use the normal version of Vault and then use the CMI Vault Injector.  We've never seen the CMI provided version of Vault work with prison, so therefore recommend not using it.  Symptom is that prison reports a 0.00 amount for the online player when using `/ranks player <playerName>`.  The Vault inject has always worked well.  
-  2) The CMI Economy **has** to be fully loaded and active *before* prison loads the Ranks.  Otherwise prison will refuse to load the ranks and prison will not work.  You must make a configuration change within Prison's `plugins/Prison/config.yml` file.  Near the bottom of that config, are a few settings that need to be enabled.  The following is an example of what is needed, along with a configuration that will work in most situations.
-  
-```
-delayedPrisonStartup:
-  enabled: true
-  cooldown-secs: 5
-  max-attempts: 6
-  inspect-vault: true
-  triggers:
-    vault: true
-    vault-economy-name: Economy_Essentials
-```
-  
-  If enabled, and you are still having problems, please contact Blue on Prison's discord server.  To get CMIE to work may be as simple as increasing the `cooldown-secs` or the `max-attempts` settings, but there could be another conflict going on.  Blue can review your server's startup log to identify the problem and help you fix it.
+  See: [Setting up CMI Economy](prison_docs_028_setting_up_CMI_economy.md) for full information on how to get CMIE working with Prison.
 
+  Background: CMI "tries" to load last, so it can ensure all of it's dependencies and hooks are in place before it starts up.  That's understandable, but Prison also has similar requirements and expectations. Unfortunately, this also causes a conflict with Prison, since Prison must perform validation on startup, and if there is no economy, then Prison could fail to start the Ranks module.
+  
+  The document, [Setting up CMI Economy](prison_docs_028_setting_up_CMI_economy.md), explains in detail how to get everything working perfectly.  
+  
 
 ### Chat Prefix Plugins - Optional
 
