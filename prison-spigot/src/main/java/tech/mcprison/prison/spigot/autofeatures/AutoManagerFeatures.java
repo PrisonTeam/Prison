@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.autofeatures;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -494,6 +495,8 @@ public class AutoManagerFeatures
 			double autosellTotal = 0;
 			double autosellUnsellableCount = 0;
 			
+			long nanoTime = 0L;
+			
 			for ( SpigotItemStack itemStack : drops ) {
 				
 				count += itemStack.getAmount();
@@ -503,7 +506,11 @@ public class AutoManagerFeatures
 				if ( SellAllUtil.get() != null && (isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || 
 						pmEvent.isForceAutoSell()) ) {
 					
+					final long nanoStart = System.nanoTime();
 					double amount = SellAllUtil.get().sellAllSell( player, itemStack, false, false, true );
+					final long nanoStop = System.nanoTime();
+					nanoTime += nanoStop - nanoStart;
+					
 					autosellTotal += amount;
 					
 					PlayerCache.getInstance().addPlayerEarnings( pmEvent.getSpigotPlayer(), 
@@ -571,9 +578,19 @@ public class AutoManagerFeatures
 			if ( count > 0 || autosellTotal > 0 ) {
 				
 				debugInfo.append( "[autoPickupDrops total: qty: " + count + " value: " + autosellTotal + 
-						"  unsellableCount: " + autosellUnsellableCount + " ] ");
+						"  unsellableCount: " + autosellUnsellableCount );
 				
+				if ( nanoTime > 0 ) {
+					DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
+					final double autoSellTimeMs = ( nanoTime / 1000000.0d );
+					debugInfo.append( " autosellTiming: " )
+						.append( fFmt.format( autoSellTimeMs ) )
+						.append( " ms" );
+				}
+				
+				debugInfo.append( " ] " );
 			}
+			
 			
 //			if ( !isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) && 
 //					!pmEvent.isForceAutoSell() ) {
