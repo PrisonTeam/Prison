@@ -16,6 +16,12 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.1 (alpha.7) 2022-01-29
 
 
+
+
+* **Broadcast the failed ranks loading to all online players.**
+Its important that they know ranks failed to load.
+
+
 * **Release v3.3.0-beta.1 !! Hooray!!** 2022-01-29 2:11 PM EST
 
 
