@@ -3,6 +3,69 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
+
+
+# TODO Items for v3.3.0-alpha.7
+
+
+- update CMI delayed loading docs... they are "backwards"
+
+
+- Upon startup the first time, broadcast to everyone that they should use /ranks autoConfigure.
+
+
+- SELLALL has huge performance issues!  It takes 2.3 ms to autosell, and full auto features block handling is 4.2 ms!!  Serious performance issue with sellall, and autosell is bypassing the command handler too!
+  - added 'autosellTiming:' stats to auto features autosell to track actual sell time using nano-seconds... initial tests show there maybe significant performance issues.
+  - autosell in auto features causing lag?  Flaco21
+    - Issue with autosell causing lag?
+
+
+- DONE: admin gui - allows them to bypass No Economy safeguards.
+
+
+
+* DONE: Add commands to list shop prices in console. Currently sellall is 100% gui so cannot be used offline.
+
+
+* Problems with blocks:
+ - Sand or any other block that falls is no longer in original location so cannot break it. 
+   - Might have to tag the blocks with NMS?
+   - Just fixed an issue with a block that was in a mine with gravel, sand, and dirt.  MIght have been sand causing the error.  NOTE: prevent error, not fixed the actual problem.
+ - DONE: lapis lazuli is not auto selling
+ 
+ 
+- Problem with actionBar - messages are not goign through.
+ - sellall updates every second - different messages - but never show first one - PlayerMessages
+
+
+ 
+ - DONE: No economy error mssage not showing
+   - works on delayed startup
+   - Fails when not delayed - gui ranks was registering on top of ranks warning
+   
+ 
+ - block stats based upon drops instead of breakage??
+ 
+
+-> DONE: Hook in to quests
+
+
+-> Suport for eco enchants:
+  - Need to add an event listener and then have a new function in EnchantmentUtils handle the event, with passing continuing to call the normal rehandleBreaking.  Maybe name it rehandleBreakingEvent?
+https://github.com/Auxilor/EcoEnchants/blob/master/eco-core/core-plugin/src/main/java/com/willfp/ecoenchants/enchantments/ecoenchants/normal/BlastMining.java
+https://github.com/Auxilor/EcoEnchants/blob/master/eco-core/core-plugin/src/main/java/com/willfp/ecoenchants/enchantments/util/EnchantmentUtils.java
+
+
+- DONE: You cannot afford the rankup is using a NBSP for the thousand separator. Using Prison v3.2.11, Java 16, and spigot 1.16.5. Cannot reproduce. Was a server hosting config issue, but not sure why it only impacted that one message.
+
+
+* calculate mine worth?
+
+
+* ShiftAndRightClickSellAll is not working
+
+
+
 # TODO Items for v3.2.11-alpha.13
 
 

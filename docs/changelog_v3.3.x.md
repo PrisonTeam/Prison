@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.1 (alpha.7) 2022-01-29
 
 
+* **Release v3.3.0-beta.1 !! Hooray!!** 2022-01-29 2:11 PM EST
+
+
 * **Added nano-second timing autosell to confirm if there is a performance issue.**
 My initial testings are showing that sellall has significant chance of performance problems in that selling items takes way too long.  Will address in the future.
 
