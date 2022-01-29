@@ -268,6 +268,10 @@ Auto configure can get you up and running with as little as two commands.  The f
     Installing the plugins
 
 
+* [Setting up CMI Economy](prison_docs_028_setting_up_CMI_economy.md)
+    Enabling Prison's Delayed Startup so CMI Economy will work.  If CMI Economy fails to start before Prison starts, then the Prison Ranks will fail to load.
+
+
 * [Prison's PlaceholderAPI wiki page content](prison_placeholderapi_wiki_docs.md)
     This document contains the Prison's content that is published on PlaceholderAPI's wiki.
     
