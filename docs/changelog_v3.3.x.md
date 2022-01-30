@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-beta.1 (alpha.7) 2022-01-29
+# 3.3.0-beta.1 (alpha.7) 2022-01-30
+
+
+* **Ladder rank cost multiplier has 100 percent limits removed.**
+Value can be any positive or negative number now.
 
 
 * **Update some documentation related to CMI Economy.**

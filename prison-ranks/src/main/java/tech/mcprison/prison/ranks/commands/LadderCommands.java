@@ -296,8 +296,9 @@ public class LadderCommands
 			@Arg( name = "rankCostMultiplier", def = "0", 
 			description = "Sets the Rank Cost Multiplier for the ladder, which will be " +
 					"applied to each rank, multiplied by the position of the rank.  " +
-					"A value of zero is disabled.  The value is expressed in " +
-					"percentages.") Double rankCostMultiplier )
+					"A value of zero is disabled. The value is expressed in " +
+					"percentages and can be positive or negative, with any " +
+					"valid double value such as -3.141592653589793 or 475.19.") Double rankCostMultiplier )
 	{
 		RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
 
@@ -319,11 +320,11 @@ public class LadderCommands
 			return;
 		}
 
-		if ( rankCostMultiplier < -100d || rankCostMultiplier > 100d ) {
-			
-			ladderSetRankCostMultiplierOutOfRangeMsg( sender, rankCostMultiplier );
-			return;
-		}
+//		if ( rankCostMultiplier < -100d || rankCostMultiplier > 100d ) {
+//			
+//			ladderSetRankCostMultiplierOutOfRangeMsg( sender, rankCostMultiplier );
+//			return;
+//		}
 		
 		double oldRankCostMultiplier = ladder.getRankCostMultiplierPerRank() * 100;
 		
