@@ -79,6 +79,16 @@ public class RankLadder
     	this.name = name;
     }
 
+
+	public boolean isDefault() {
+		return getName().equalsIgnoreCase( "default" );
+	}
+
+	public boolean isPrestiges() {
+		return getName().equalsIgnoreCase( "prestiges" );
+	}
+	
+	
 //    @SuppressWarnings( "unchecked" )
 //	public RankLadder(Document document, PrisonRanks prisonRanks) {
 //    	this();
@@ -549,5 +559,5 @@ public class RankLadder
 	public void setDirty( boolean dirty ) {
 		this.dirty = dirty;
 	}
-
+	
 }

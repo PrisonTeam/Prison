@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.1 (alpha.7) 2022-01-30
 
 
+* **RankLadders - Added a boolean function to check if the ladder is the default ladder or prestiges ladder.**
+
+
 * **sellall multiplier - Now able to list all multipliers.**
 It lists them in a 5 column listing.
 
