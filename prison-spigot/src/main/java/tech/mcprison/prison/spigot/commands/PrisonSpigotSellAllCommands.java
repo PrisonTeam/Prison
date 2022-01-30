@@ -2,6 +2,7 @@ package tech.mcprison.prison.spigot.commands;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -614,7 +615,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall multiplier list", description = "SellAll multiplier command list", permissions = "prison.admin", onlyPlayers = false)
+    @Command(identifier = "sellall multiplier list", description = "SellAll multiplier command list", 
+    		permissions = "prison.admin", onlyPlayers = false)
     private void sellAllMultiplierCommand(CommandSender sender){
 
         if (!isEnabled()) return;
@@ -629,10 +631,72 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall multiplier help" );
-        sender.dispatchCommand(registeredCmd);
+        
+//        String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall multiplier help" );
+//        sender.dispatchCommand(registeredCmd);
+        
+        TreeMap<String, Double> mults = new TreeMap<>( sellAllUtil.getPrestigeMultipliers() );
+
+//        TreeMap<XMaterial, Double> items = new TreeMap<>( sellAllUtil.getSellAllBlocks() );
+        DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+        
+        Set<String> keys = mults.keySet();
+        
+        int maxLenKey = 0;
+        int maxLenVal = 0;
+        for ( String key : keys ) {
+			if ( key.length() > maxLenKey ) {
+				maxLenKey = key.length();
+			}
+			String val = fFmt.format( mults.get( key ) );
+			if ( val.length() > maxLenVal ) {
+				maxLenVal = val.length();
+			}
+		}
+        
+        
+        ChatDisplay chatDisplay = new ChatDisplay("&bSellall Prestige Multipliers list: &3(&b" + keys.size() + "&3)" );
+
+        int lines = 0;
+        int columns = 0;
+        StringBuilder sb = new StringBuilder();
+        for ( String key : keys ) {
+//        	boolean first = sb.length() == 0;
+
+        	Double cost = mults.get( key );
+        	
+        	if ( columns++ > 0 ) {
+        		sb.append( "    " );
+        	}
+        	
+        	sb.append( String.format( "%-" + maxLenKey + "s %" + maxLenVal + "s", 
+        			key, fFmt.format( cost ) ) );
+//        	sb.append( String.format( "%-" + maxLenKey + "s  %" + maxLenVal + "s  %-" + maxLenCode + "s", 
+//        			key.toString(), fFmt.format( cost ), key.name() ) );
+        	
+        	if ( columns > 4 ) {
+        		chatDisplay.addText( sb.toString() );
+        		
+        		if ( ++lines % 10 == 0 && lines > 1 ) {
+        			chatDisplay.addText( " " );
+        		}
+        		
+        		sb.setLength( 0 );
+        		columns = 0;
+        	}
+        }
+        if ( sb.length() > 0 ) {
+        	chatDisplay.addText( sb.toString() );
+        }
+        
+        chatDisplay.send( sender );
+
+        
+        
+        
     }
 
+    
     @Command(identifier = "sellall multiplier add", description = "SellAll add a multiplier. Permission multipliers for player's prison.sellall.multiplier.<valueHere>, example prison.sellall.multiplier.2 will add a 2x multiplier," +
             "There's also another kind of Multiplier called permission multipliers, they're permissions that you can give to players to give them a multiplier, remember that their format is prison.sellall.multiplier.2 (for example), and this example will give you a " +
             "total of 3x multiplier (1x default + 2x permission = 3x).",

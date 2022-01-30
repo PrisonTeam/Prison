@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.1 (alpha.7) 2022-01-30
 
 
+* **sellall multiplier - Now able to list all multipliers.**
+It lists them in a 5 column listing.
+
+
 * **Add debug logging when calling the external events.**
 Will have to revisit this when hooked up to multi-block events, otherwise it could overwhelm the logging.
 
