@@ -211,12 +211,13 @@ prison-mines:
 delayedPrisonStartup:
   enabled: false
   cooldown-secs: 5
-  max-attempts: 6
+  max-attempts: 12
   inspect-vault: true
   triggers:
     vault: true
     vault-economy-name: Economy_CMI
 
+# CMI Economy:   vault-economy-name: Economy_CMI
 # EssentialsX: <= v2.18.x    vault-economy-name: Economy_Essentials
 # EssentialsX: >= v2.19.x    vault-economy-name: VaultEconomyProvider
 

@@ -24,19 +24,17 @@ To get CMIE to work correctly with prison, there are a couple of things that you
 
 # Using the 'Correct' version of Vault
 
-You cannot just use the vanilla version of Vault, since CMI must hook in to Vault.  Most plugins are added to the public release of Vault, but CMI has chosen not to add a public interface directly to Vault. 
+
+You need to use and install the normal version of Vault on your server, which is available here: [Vault from SpigotMC.org](https://www.spigotmc.org/resources/34315/).
 
 
-Therefore, you must use a customized version of Vault that will work with CMI Economy.
+CMIE needs to customize Vault to add hooks so the two can communicate with eachother.  This is accomplished by using CMIE's Vault Injector.  Upon starting the server, the CMIE injector will dynamically add it's hooks to Vault.
 
 
-CMI offers a prebuilt version of Vault that includes their hooks, but in all the past attempts to use it, it has never worked, so we do not recommend using that version. 
+Beware though, CMI offers a prebuilt version of Vault that contains the CMIE's hooks. The prebuild version of Vault should never be used due to past attempts to it has always resulted in failure.  
 
 
-It is recommended to use their Vault Injector with the normal version of Vault, since that has always worked well.
-
-
-Download the normal version of [Vault from SpigotMC.org](https://www.spigotmc.org/resources/34315/).
+Therefore, it is recommended to only use the CMIE Vault injector with the normal version of Vault, which has worked every time.
 
 
 To download the CMI Economy Vault Injector, visit [CMI's page on SpigotMC.org](https://www.spigotmc.org/resources/3742/), then look under Economy's second option for the injector.
@@ -65,12 +63,20 @@ To enable this, you need to make a configuration change within Prison's `plugins
 delayedPrisonStartup:
   enabled: true
   cooldown-secs: 5
-  max-attempts: 6
+  max-attempts: 12
   inspect-vault: true
   triggers:
     vault: true
-    vault-economy-name: Economy_Essentials
+    vault-economy-name: Economy_CMI
 ```
+
+Please note that different values for the **vault-economy-name** may be required for different versions of the plugins.  Some possible valus may include: 
+
+ * **Economy_CMI**
+ * **Economy_Essentials** (EssentialsX: <= v2.18.x)
+ * **VaultEconomyProvider** (EssentialsX: >= v2.19.x)
+ 
+
 
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -79,14 +85,39 @@ delayedPrisonStartup:
 
 If Prison is not able to startup with the settings above then there are a few things that need to be checked, and maybe changed.
 
+**Setting the value for: vault-economy-name**
 
-Confirm that it's able to successfully inspect the vault economy.  If it is not able to find what is set for the `delayedPrisonStartup.triggers.vault-economy-name`, then it needs to be updated.
-
-
-This value may change, if it does, Prison will display what this value is within it's first startup message that notifies that it's going in to a delayed startup mode.  If the name shown does not match "Economy_Essentials", then use that new name in these config settings.
+Confirm that Prison is able to successfully inspect the current Vault economy.  If it is not able to find what is set for the `delayedPrisonStartup.triggers.vault-economy-name`, then it needs to be updated.
 
 
-If it's able to properly lock on the Vault economy, but CMIE is loading after Prison stops waiting, then you can increase either the `delayedPrisonStartup.cooldown-secs` or the `delayedPrisonStartup.max-attempts`.  Increasing either, or both, could help.  It's probably better to increase the max-attempts.
+This value may change with other economy plugins, and with future economy plugin updates.  
+
+
+If this setting needs to be changed, then Prison will try to display what value to use.  Ensure the config setting `delayedPrisonStartup.inspect-vault: true` is set to true. This setting will allow the following message to be shown in the console. A value of **Failed** generally indicats that no economy plugin was found.
+
+```
+Inspect Vault Economy: enabled  
+Use 'VaultEconomyProvider' with 'delayedPrisonStartup.triggers-vault-economy-name'
+NOTICE: Prison Delayed Enablement: Prison startup has been delayed.  Waiting for a Vault Economy to be enabled.  Attempts: 0 of 12.  Submitting task...
+```
+
+```
+ Prison Delayed Enablement: Failed to find an active Vault Economy Named 
+ 'Economy_CMI' after 13 attempts. Cannot start Prison.
+```
+
+The above value `VaultEconomyProvider` indictes that Vault is trying to use EssentialsX economy instead of CMIE. This is an example of EssentialsX hooking in to Vault before CMIE.  If this is the situation you're seeing, thn disable EssentialX's economy within their config file to allow CMIE to load.  
+
+
+NOT the correct value to use for CMIE is: **Economy_CMI**
+
+
+If Vault is loading the correct economy, but Prison's config setting is incorrect, then you can find the correct value in the first message whre it says "Use.." then that value provided.  Update the config.yml file with the displayed value.
+
+
+**Setting the cooldown seconds and max attempts:**
+
+If Prison is able to properly lock on the Vault economy, but CMIE is loading after Prison stops waiting, then you can increase either the `delayedPrisonStartup.cooldown-secs` or the `delayedPrisonStartup.max-attempts`.  Increasing either, or both, could help.  It's probably better to increase the max-attempts.
 
 
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
