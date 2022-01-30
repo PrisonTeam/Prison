@@ -11,11 +11,13 @@ import org.bukkit.plugin.RegisteredListener;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 
 public class OnBlockBreakExternalEvents {
 	
 	private static final OnBlockBreakExternalEvents instance = new OnBlockBreakExternalEvents();
-
+	private boolean isDropItemsSupported = false;
+	
 //	private boolean isWorldGuardChecked = false;
 //	private RegisteredListener registeredListenerWorldGuard = null; 
 //	private Method worldGuardOnBlockBreakMethod;
@@ -30,11 +32,18 @@ public class OnBlockBreakExternalEvents {
 	private RegisteredListener registeredListenerQuests = null; 
 	
 	
+	private boolean setup = false;
+	
 	private AutoFeaturesWrapper autoFeatureWrapper = null;
 	
 	
 	private OnBlockBreakExternalEvents() {
 		super();
+		
+		// if mc version is greater than or equal to 1.13.0.
+		if ( new BluesSpigetSemVerComparator().compareMCVersionTo("1.13.0") >= 0 ) {
+			this.isDropItemsSupported = true;
+		}
 		
 		this.autoFeatureWrapper = AutoFeaturesWrapper.getInstance();
 	}
@@ -53,6 +62,13 @@ public class OnBlockBreakExternalEvents {
 	}
 	
 
+
+	public boolean isDropItemsSupported() {
+		return isDropItemsSupported;
+	}
+	public void setDropItemsSupported( boolean isDropItemsSupported ) {
+		this.isDropItemsSupported = isDropItemsSupported;
+	}
 
 	public AutoFeaturesFileConfig getAutoFeaturesConfig() {
 		return autoFeatureWrapper.getAutoFeaturesConfig();
@@ -77,19 +93,25 @@ public class OnBlockBreakExternalEvents {
 	
 	protected void registerAllExternalEvents() {
 		
+		if ( !setup ) {
+			setup = true;
+			
+			
+			// If mcMMO was not registered, then it will get registered. If mcMMO is not available 
+			// then it will just bypass the registration. It will only be processed only once.
+			registerMCMMO();
+			
+			
+			registerEZBlock();
+			
+			
+			registerQuests();
 		
-//		registerWorldGuard();
-
+			
+//			registerWorldGuard();
+			
+		}
 		
-		// If mcMMO was not registered, then it will get registered. If mcMMO is not available 
-		// then it will just bypass the registration. It will only be processed only once.
-		registerMCMMO();
-		
-		
-		registerEZBlock();
-		
-		
-		registerQuests();
 		
 		
 		// Removed because there is a directly callable target with /prison debug now:
@@ -119,30 +141,52 @@ public class OnBlockBreakExternalEvents {
 	}
 
 	
-	protected void checkAllExternalEvents( BlockBreakEvent e ) {
+//	private void registerPriorityEvents() {
+//		
+//		// First priority plugins:
+//		List<String> fpPlugins = getListString( AutoFeatures.firstPriorityBlockBreakEventPlugins );
+//		
+//		
+//		// gather all plugins within the event:
+//		TreeMap<String, Plugin> registeredPlugins = new TreeMap<>();
+//		
+//		
+//		HandlerList handlers = BlockBreakEvent.getHandlerList();
+//		
+//		for ( RegisteredListener handler : handlers.getRegisteredListeners() ) {
+//			
+//			Plugin plugin = handler.getPlugin();
+//			String pluginName = plugin.getName();
+//			
+//			if ( !registeredPlugins.containsKey( pluginName ) ) {
+//				
+//				registeredPlugins.put( pluginName, plugin );
+//			}
+//		}
+//		
+//		//handlers.get
+//	}
+	
+	protected StringBuilder checkAllExternalEvents( BlockBreakEvent e ) {
 		
 		// check mcmmo
-		checkMCMMO( e );
+		StringBuilder sb = checkMCMMO( e );
 		
 		
-		checkEZBlock( e );
+		sb.append( checkEZBlock( e ) );
 		
 		
-		checkQuests( e );
+		sb.append( checkQuests( e ) );
 		
+		
+		return sb;
 	}
 	
-	protected void checkAllExternalEvents( Player player, Block block ) {
+	protected StringBuilder checkAllExternalEvents( Player player, Block block ) {
 		
-		// check mcmmo
-		checkMCMMO( player, block );
+		BlockBreakEvent bEvent = new BlockBreakEvent( block, player );
 		
-		
-		checkEZBlock( player, block );
-
-		
-		checkQuests( player, block );
-		
+		return checkAllExternalEvents( bEvent );
 	}
 
 	
@@ -282,23 +326,44 @@ public class OnBlockBreakExternalEvents {
 		}
 	}
 	
-	private void checkMCMMO( Player player, Block block ) {
-		if ( registeredListenerMCMMO != null ) {
-			BlockBreakEvent bEvent = new BlockBreakEvent( block, player );
-			checkMCMMO( bEvent );
-		}
-	}
+//	private void checkMCMMO( Player player, Block block ) {
+//		if ( registeredListenerMCMMO != null ) {
+//			BlockBreakEvent bEvent = new BlockBreakEvent( block, player );
+//			checkMCMMO( bEvent );
+//		}
+//	}
 	
-	private void checkMCMMO( BlockBreakEvent e ) {
+	private StringBuilder checkMCMMO( BlockBreakEvent e ) {
+		StringBuilder sb = new StringBuilder();
+		
 		if ( registeredListenerMCMMO != null ) {
 			
 			try {
+				
+				boolean isCanceled = e.isCancelled();
+				boolean isDropItems = false;
+				
+				if ( isDropItemsSupported() ) {
+					isDropItems = e.isDropItems();
+				}
+				
 				registeredListenerMCMMO.callEvent( e );
+				
+				sb.append( "[Quests" );
+				if ( isCanceled != e.isCancelled() ) {
+					sb.append( ":isCanceled=" ).append( e.isCancelled() );
+				}
+				if ( isDropItemsSupported() && isDropItems != e.isDropItems() ) {
+					sb.append( ":isDropItems=" ).append( e.isDropItems() );
+				}
+				sb.append( "]" );
 			}
 			catch ( EventException e1 ) {
 				e1.printStackTrace();
 			}
 		}
+		
+		return sb;
 	}
 	
 	
@@ -336,23 +401,43 @@ public class OnBlockBreakExternalEvents {
 		}
 	}
 	
-	private void checkEZBlock( Player player, Block block ) {
-		if ( registeredListenerEZBlock != null ) {
-			BlockBreakEvent bEvent = new BlockBreakEvent( block, player );
-			checkEZBlock( bEvent );
-		}
-	}
+//	private void checkEZBlock( Player player, Block block ) {
+//		if ( registeredListenerEZBlock != null ) {
+//			BlockBreakEvent bEvent = new BlockBreakEvent( block, player );
+//			checkEZBlock( bEvent );
+//		}
+//	}
 	
-	private void checkEZBlock( BlockBreakEvent e ) {
+	private StringBuilder checkEZBlock( BlockBreakEvent e ) {
+		StringBuilder sb = new StringBuilder();
+		
 		if ( registeredListenerEZBlock != null ) {
 			
 			try {
+				boolean isCanceled = e.isCancelled();
+				boolean isDropItems = false;
+				
+				if ( isDropItemsSupported() ) {
+					isDropItems = e.isDropItems();
+				}
+				
 				registeredListenerEZBlock.callEvent( e );
+				
+				sb.append( "[EZBlock" );
+				if ( isCanceled != e.isCancelled() ) {
+					sb.append( ":isCanceled=" ).append( e.isCancelled() );
+				}
+				if ( isDropItemsSupported() && isDropItems != e.isDropItems() ) {
+					sb.append( ":isDropItems=" ).append( e.isDropItems() );
+				}
+				sb.append( "]" );
 			}
 			catch ( EventException e1 ) {
 				e1.printStackTrace();
 			}
 		}
+		
+		return sb;
 	}
 	
 
@@ -390,23 +475,44 @@ public class OnBlockBreakExternalEvents {
 		}
 	}
 	
-	private void checkQuests( Player player, Block block ) {
-		if ( registeredListenerQuests != null ) {
-			BlockBreakEvent bEvent = new BlockBreakEvent( block, player );
-			checkEZBlock( bEvent );
-		}
-	}
+//	private void checkQuests( Player player, Block block ) {
+//		if ( registeredListenerQuests != null ) {
+//			BlockBreakEvent bEvent = new BlockBreakEvent( block, player );
+//			checkEZBlock( bEvent );
+//		}
+//	}
 	
-	private void checkQuests( BlockBreakEvent e ) {
+	private StringBuilder checkQuests( BlockBreakEvent e ) {
+		StringBuilder sb = new StringBuilder();
+		
 		if ( registeredListenerQuests != null ) {
 			
 			try {
+				
+				boolean isCanceled = e.isCancelled();
+				boolean isDropItems = false;
+				
+				if ( isDropItemsSupported() ) {
+					isDropItems = e.isDropItems();
+				}
+				
 				registeredListenerQuests.callEvent( e );
+				
+				sb.append( "[Quests" );
+				if ( isCanceled != e.isCancelled() ) {
+					sb.append( ":isCanceled=" ).append( e.isCancelled() );
+				}
+				if ( isDropItemsSupported() && isDropItems != e.isDropItems() ) {
+					sb.append( ":isDropItems=" ).append( e.isDropItems() );
+				}
+				sb.append( "]" );
 			}
 			catch ( EventException e1 ) {
 				e1.printStackTrace();
 			}
 		}
+		
+		return sb;
 	}
 	
 

@@ -391,7 +391,8 @@ public class OnBlockBreakEventCore
     			}
     			
     			// check all external events such as mcMMO and EZBlocks:
-    			OnBlockBreakExternalEvents.getInstance().checkAllExternalEvents( e );
+    			debugInfo.append( 
+    					OnBlockBreakExternalEvents.getInstance().checkAllExternalEvents( e ) );
     			
     			List<SpigotBlock> explodedBlocks = new ArrayList<>();
     			pmEvent.setExplodedBlocks( explodedBlocks );

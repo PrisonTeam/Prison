@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.1 (alpha.7) 2022-01-30
 
 
+* **Add debug logging when calling the external events.**
+Will have to revisit this when hooked up to multi-block events, otherwise it could overwhelm the logging.
+
+
 * **Ladder rank cost multiplier has 100 percent limits removed.**
 Value can be any positive or negative number now.
 
