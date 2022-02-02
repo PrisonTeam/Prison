@@ -15,6 +15,9 @@ These build logs represent the work that has been going on within prison.
 
 # 3.3.0-beta.1 (alpha.7) 2022-02-02
 
+* **Change notification alerts from runnign every 5 minutes to every hour.**
+Got a few complaints within the last fewa days that the notifications are too frequent.
+
 
 * **Modified SpigotPlayer to add getRankPlayer() and modified RankPlayer to add getRankLadder, with short cuts for default and prestige so you don't have to always refer to their names (reduce errors).**
 This is to remove the "mess" from other functions that need to get these player objects, of which sometimes they are not going about it the correct way.

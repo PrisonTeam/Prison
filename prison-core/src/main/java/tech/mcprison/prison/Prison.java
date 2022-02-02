@@ -573,11 +573,16 @@ public class Prison
     }
 
     private void scheduleAlertNagger() {
-        // Nag the user with alerts every 5 minutes
-        PrisonAPI.getScheduler().runTaskTimerAsync(() -> PrisonAPI.getOnlinePlayers().stream()
-                .filter(player -> player.hasPermission("prison.admin")
-                        && Alerts.getInstance().getAlertsFor(player.getUUID()).size() > 0)
-                .forEach(Alerts.getInstance()::showAlerts), 60 * 20 * 5, 60 * 20 * 5);
+    	
+    	// Nag the users with the correct perms 5 mins after server starts, and every 
+    	// hour thereafter.
+    	Alerts.getInstance().submitShowAlertsTask();
+    	
+//        // Nag the user with alerts every 5 minutes
+//        PrisonAPI.getScheduler().runTaskTimerAsync(() -> PrisonAPI.getOnlinePlayers().stream()
+//                .filter(player -> player.hasPermission("prison.admin")
+//                        && Alerts.getInstance().getAlertsFor(player.getUUID()).size() > 0)
+//                .forEach(Alerts.getInstance()::showAlerts), 60 * 20 * 5, 60 * 20 * 5);
     }
 
     // End initialization steps

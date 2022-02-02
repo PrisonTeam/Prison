@@ -18,6 +18,11 @@ import java.util.UUID;
  * @since API 1.0
  */
 public class Alerts {
+	
+	public static final long DURATION_ONE_MINUTE = 20 * 60;
+	public static final long DURATION_FIVE_MINUTES = DURATION_ONE_MINUTE * 5;
+	public static final long DURATION_ONE_HOUR = DURATION_ONE_MINUTE * 60;
+	
 
     /*
      * Variables & Constants
