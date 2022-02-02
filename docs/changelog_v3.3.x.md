@@ -20,6 +20,10 @@ These build logs represent the work that has been going on within prison.
 This is to remove the "mess" from other functions that need to get these player objects, of which sometimes they are not going about it the correct way.
 
 
+* **sellall multiplier add - Now reports if a multiplier cannot be added.  Also now adds the multiplier based upon the actual rank name**, 
+of which it was what the user entered with the command, which may not match the actual rank name.
+
+
 * **RankLadders - Added a boolean function to check if the ladder is the default ladder or prestiges ladder.**
 
 

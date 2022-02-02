@@ -277,38 +277,53 @@ public class SellAllUtil {
             return 1;
         }
 
-        // Get Ranks module.
-        ModuleManager modMan = Prison.get().getModuleManager();
-        Module module = modMan == null ? null : modMan.getModule(PrisonRanks.MODULE_NAME).orElse(null);
+        
+//        // Get Ranks module.
+//        ModuleManager modMan = Prison.get().getModuleManager();
+//        Module module = modMan == null ? null : modMan.getModule(PrisonRanks.MODULE_NAME).orElse(null);
         SpigotPlayer sPlayer = new SpigotPlayer(p);
         double multiplier = defaultMultiplier;
 
+        RankPlayer rPlayer = sPlayer.getRankPlayer();
+//        rPlayer.getSellAllMultiplier(); // NOTE: This actually calls this function
+        PlayerRank pRank = rPlayer.getPlayerRankPrestiges();
+        Rank rank = pRank == null ? null : pRank.getRank();
+
+        if ( pRank != null ) {
+        	String rankName = rank.getName();
+        	String multiplierRankString = sellAllConfig.getString("Multiplier." + rankName + ".MULTIPLIER");
+        	if (multiplierRankString != null && sellAllPrestigeMultipliers.containsKey( rankName )){
+        		multiplier = sellAllPrestigeMultipliers.get( rankName );
+        	}
+        }
+
+        
         // Get multiplier depending on Player + Prestige. NOTE that prestige multiplier will replace
         // the actual default multiplier.
-        if (module != null) {
-            PrisonRanks rankPlugin = (PrisonRanks) module;
-            if (rankPlugin.getPlayerManager().getPlayer(sPlayer) != null) {
-                String playerRankName;
-                try {
-                	
-                	RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
-                	
-                    RankPlayer rankPlayer = rankPlugin.getPlayerManager().getPlayer(sPlayer);
-                    PlayerRank pRank = rankPlayer == null ? null : rankPlayerFactory.getRank( rankPlayer, "prestiges");
-                    Rank rank = pRank == null ? null : pRank.getRank();
-
-                    playerRankName = rank == null ? null : rank.getName();
-                } catch (NullPointerException ex) {
-                    playerRankName = null;
-                }
-                if (playerRankName != null) {
-                    String multiplierRankString = sellAllConfig.getString("Multiplier." + playerRankName + ".MULTIPLIER");
-                    if (multiplierRankString != null && sellAllPrestigeMultipliers.containsKey(playerRankName)){
-                        multiplier = sellAllPrestigeMultipliers.get(playerRankName);
-                    }
-                }
-            }
-        }
+//        if (module != null) {
+//            PrisonRanks rankPlugin = (PrisonRanks) module;
+//            if (rankPlugin.getPlayerManager().getPlayer(sPlayer) != null) {
+//                String playerRankName;
+//                try {
+//                	
+//                	RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+//                	
+//                    RankPlayer rankPlayer = rankPlugin.getPlayerManager().getPlayer(sPlayer);
+//                    PlayerRank pRank = rankPlayer == null ? null : rankPlayerFactory.getRank( rankPlayer, "prestiges");
+//                    Rank rank = pRank == null ? null : pRank.getRank();
+//
+//                    playerRankName = rank == null ? null : rank.getName();
+//                } catch (NullPointerException ex) {
+//                    playerRankName = null;
+//                }
+//                if (playerRankName != null) {
+//                    String multiplierRankString = sellAllConfig.getString("Multiplier." + playerRankName + ".MULTIPLIER");
+//                    if (multiplierRankString != null && sellAllPrestigeMultipliers.containsKey(playerRankName)){
+//                        multiplier = sellAllPrestigeMultipliers.get(playerRankName);
+//                    }
+//                }
+//            }
+//        }
 
         // Get Multiplier from multipliers permission's if there's any.
         List<String> perms = sPlayer.getPermissions("prison.sellall.multiplier.");
@@ -321,6 +336,7 @@ public class SellAllUtil {
                 multiplierExtraByPerms = multByPermDouble;
             }
         }
+        
         multiplier += multiplierExtraByPerms;
 
         return multiplier;
@@ -350,6 +366,8 @@ public class SellAllUtil {
         }
 
         double multiplier = getPlayerMultiplier(p);
+        
+        
         double earned = 0;
         for (HashMap.Entry<XMaterial, Integer> xMaterialIntegerEntry : xMaterialIntegerHashMap.entrySet()){
             if (sellAllBlocks.containsKey(xMaterialIntegerEntry.getKey())){
@@ -754,28 +772,40 @@ public class SellAllUtil {
             return false;
         }
 
-        boolean isARank = rankPlugin.getRankManager().getRank(prestigeName) != null;
-        if (!isARank) {
+        Rank pRank = rankPlugin.getRankManager().getRank(prestigeName);
+        
+        if ( pRank == null ) {
+        	// Invalid rank!
             return false;
         }
 
-        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").containsRank(rankPlugin.getRankManager().getRank(prestigeName));
-        if (!isInPrestigeLadder) {
-            return false;
+        if ( !pRank.getLadder().isPrestiges() ) {
+        	// Rank is not in the prestiges ladder:
+        	return false;
         }
+        
+//        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").containsRank(rankPlugin.getRankManager().getRank(prestigeName));
+//        if (!isInPrestigeLadder) {
+//            return false;
+//        }
 
         try {
             File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Multiplier." + prestigeName + ".PRESTIGE_NAME", prestigeName);
-            conf.set("Multiplier." + prestigeName + ".MULTIPLIER", multiplier);
+            
+            conf.set("Multiplier." + pRank.getName() + ".PRESTIGE_NAME", pRank.getName());
+            conf.set("Multiplier." + pRank.getName() + ".MULTIPLIER", multiplier);
+            
             conf.save(sellAllFile);
-        } catch (IOException e) {
+        } 
+        catch (IOException e) {
             e.printStackTrace();
             return false;
         }
-        sellAllPrestigeMultipliers.put(prestigeName, multiplier);
+        
+        sellAllPrestigeMultipliers.put( pRank.getName(), multiplier);
         updateConfig();
+        
         return true;
     }
 
