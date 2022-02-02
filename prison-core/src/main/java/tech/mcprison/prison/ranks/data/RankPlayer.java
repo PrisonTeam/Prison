@@ -529,6 +529,35 @@ public class RankPlayer
 //	public void setLadderRanks( TreeMap<RankLadder, PlayerRank> ladderRanks ) {
 //		this.ladderRanks = ladderRanks;
 //	}
+	
+	private RankLadder getRankLadder( String ladderName ) {
+		RankLadder results = null;
+		
+		for ( RankLadder rLadder : getLadderRanks().keySet() ) {
+			if ( rLadder.getName().equalsIgnoreCase( ladderName ) ) {
+				results = rLadder;
+			}
+		}
+		
+		return results;
+	}
+	public PlayerRank getPlayerRank( String ladderName ) {
+		PlayerRank results = null;
+		
+		RankLadder rLadder = getRankLadder( ladderName );
+		
+		if ( rLadder != null ) {
+			results = getLadderRanks().get( rLadder );
+		}
+		
+		return results;
+	}
+	public PlayerRank getPlayerRankDefault() {
+		return getPlayerRank( "default" );
+	}
+	public PlayerRank getPlayerRankPrestiges() {
+		return getPlayerRank( "prestiges" );
+	}
     
     public HashMap<String, Integer> getRanksRefs(){
 		return ranksRefs ;
@@ -708,17 +737,31 @@ public class RankPlayer
 	 */
     @Override 
     public boolean isPlayer() {
-    	return false;
+    	Player player = getPlayer();
+    	return (player != null ? player.isPlayer() : false );
     }
 	
 
 	@Override
 	public void updateInventory() {
+		Player player = getPlayer();
+		if ( player != null ) {
+			
+			player.updateInventory();
+		}
 	}
 
 	@Override
 	public Inventory getInventory() {
-		return null;
+		Inventory results = null;
+		
+		Player player = getPlayer();
+		if ( player != null ) {
+			
+			results = player.getInventory();
+		}
+		
+		return results;
 	}
 
 //	@Override

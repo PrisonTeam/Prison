@@ -38,6 +38,8 @@ import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
@@ -55,6 +57,8 @@ public class SpigotPlayer
 				extends SpigotCommandSender 
 				implements Player {
 
+	private RankPlayer rankPlayer;
+	
     private org.bukkit.entity.Player bukkitPlayer;
 
     public SpigotPlayer(org.bukkit.entity.Player bukkitPlayer) {
@@ -623,6 +627,13 @@ public class SpigotPlayer
 //			SpigotCompatibility.getInstance()
 //					.sendActionBar( getWrapper(), actionBar );
 		}
+	}
+	
+	public RankPlayer getRankPlayer() {
+		if ( rankPlayer == null ) {
+			rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( this );
+		}
+		return rankPlayer;
 	}
 	
 	@Override
