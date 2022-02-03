@@ -68,7 +68,7 @@ public class SelectionManager {
 			if ( is != null && 
 					// is.getName().toLowerCase().contains( "selection wand" ) && 
 					// is.getDisplayName().toLowerCase().contains( "selection wand" ) && 
-					is.getMaterial().equals( PrisonBlock.BLAZE_ROD ) ) {
+					is.getMaterial().compareTo( PrisonBlock.BLAZE_ROD ) == 0 ) {
 				count += is.getAmount();
 			}
 		}

@@ -139,9 +139,14 @@ public class ItemStack {
         }
 
         ItemStack stack = (ItemStack) o;
+        
+        String stackName = Text.stripColor(stack.displayName);
+        boolean isDisplayNamesEqual = (displayName != null ? 
+        		Text.stripColor(displayName).equals(stackName) :
+        			(stack.displayName == null));
 
-        return (displayName != null ? Text.stripColor(displayName).equals(Text.stripColor(Text.stripColor(stack.displayName))) :
-            stack.displayName == null) && material == stack.material;
+        return isDisplayNamesEqual && 
+        		material.compareTo( stack.material ) == 0;
     }
 
     @Override public int hashCode() {

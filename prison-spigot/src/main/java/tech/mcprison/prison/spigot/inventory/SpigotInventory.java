@@ -178,7 +178,7 @@ public class SpigotInventory implements Inventory {
     public HashMap<Integer, ItemStack> getItems( PrisonBlock type ) {
         HashMap<Integer, ItemStack> result = new HashMap<>();
         List<ItemStack> items = Arrays.asList(getItems());
-        items.removeIf(x -> !x.getMaterial().equals( type ) );
+        items.removeIf(x -> x.getMaterial().compareTo( type ) != 0 );
         items.forEach(y -> result.put(items.indexOf(y), y));
         return result;
     }

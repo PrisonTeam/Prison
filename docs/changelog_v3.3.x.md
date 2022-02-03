@@ -16,6 +16,11 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.1 (alpha.7) 2022-02-03
 
 
+* **Bug fix: Correct the comparison of a prison ItemStack by using compareTo.**
+The old code was using enums, so the check for equality of enums resulted in comparing pointers, which will never work.
+Updated a few other parts of the code to use the compareTo function instead of the equals function since that may not work correctly all the time.
+
+
 * **For command /mines set notification added *all* for mine name so all mines can be changed at the same time.**
 
 

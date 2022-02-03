@@ -47,6 +47,7 @@ import tech.mcprison.prison.internal.events.player.PlayerChatEvent;
 import tech.mcprison.prison.internal.events.player.PlayerPickUpItemEvent;
 import tech.mcprison.prison.internal.events.player.PlayerSuffocationEvent;
 import tech.mcprison.prison.internal.events.player.PrisonPlayerInteractEvent;
+import tech.mcprison.prison.internal.events.player.PrisonPlayerInteractEvent.Action;
 import tech.mcprison.prison.internal.events.world.PrisonWorldLoadEvent;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
@@ -214,13 +215,20 @@ public class SpigotListener implements Listener {
         // TODO Accept air events (block is null when air is clicked...)
 
         // Check to see if we support the Action
-        PrisonPlayerInteractEvent.Action[] values = PrisonPlayerInteractEvent.Action.values();
+//        PrisonPlayerInteractEvent.Action[] values = PrisonPlayerInteractEvent.Action.values();
         
-        boolean has = false;
-        for ( PrisonPlayerInteractEvent.Action value : values) {
-            if(value.name().equals(e.getAction().name())) has = true;
+//        boolean has = false;
+        
+        Action action = Action.fromString( e.getAction().name() );
+        if ( action == null ) {
+        	// We don't support this action:
+        	return;
         }
-        if(!has) return; // we don't support this Action
+        
+//        for ( PrisonPlayerInteractEvent.Action value : PrisonPlayerInteractEvent.Action.values() ) {
+//            if(value.name().equals(e.getAction().name())) has = true;
+//        }
+//        if(!has) return; // we don't support this Action
 
         // This one's a workaround for the double-interact event glitch.
         // The wand can only be used in the main hand
@@ -234,8 +242,7 @@ public class SpigotListener implements Listener {
                 new SpigotPlayer(e.getPlayer()),
                 		SpigotUtil.bukkitItemStackToPrison(
                 				SpigotCompatibility.getInstance().getItemInMainHand(e)),
-                PrisonPlayerInteractEvent.Action
-                    .valueOf(e.getAction().name()),
+                action,
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
                     block.getZ()));
         Prison.get().getEventBus().post(event);
