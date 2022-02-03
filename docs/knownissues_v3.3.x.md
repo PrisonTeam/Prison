@@ -8,16 +8,47 @@
 # TODO Items for v3.3.0-alpha.7
 
 
-- update CMI delayed loading docs... they are "backwards"
+- when rank tag = none - show "null" for placeholder
+
+- work on getting CustomItems working in mines again
+- sellall get player multiplier needs to be rewritten
+
+- automatic prestiges
+
+- Docs:
+  - finish luckperms doc
+  - Placeholders details - Explain each placeholder
+
+- Rankup commands: placeholders for {promote}{demote}
+
+- Mine reset notifications logging to console - options? 
 
 
-- Upon startup the first time, broadcast to everyone that they should use /ranks autoConfigure.
+- DONE: /ranks autoConfigure - review setup and maybe enable skip resets and tweak some notification settings.
 
 
-- SELLALL has huge performance issues!  It takes 2.3 ms to autosell, and full auto features block handling is 4.2 ms!!  Serious performance issue with sellall, and autosell is bypassing the command handler too!
+- remove this warning message:  no longer used.
+[18:58:51 INFO]: | Prison |  Cannot initialize NMS components - ClassNotFoundException - NMS is not functional - net.minecraft.server.v1_18_R1.EntityPlayer
+
+
+- DONE: update CMI delayed loading docs... they are "backwards"
+
+
+
+
+- DONE: Upon startup the first time, broadcast to everyone that they should use /ranks autoConfigure.
+  - Broadcast failed ranks too.
+  
+
+- DONE: RankPlayer addBalance cache for default currency
+- RankPlayer addBalance cache for custom currency - still needed!
+
+
+- DONE: SELLALL has huge performance issues!  It takes 2.3 ms to autosell, and full auto features block handling is 4.2 ms!!  Serious performance issue with sellall, and autosell is bypassing the command handler too!
   - added 'autosellTiming:' stats to auto features autosell to track actual sell time using nano-seconds... initial tests show there maybe significant performance issues.
   - autosell in auto features causing lag?  Flaco21
     - Issue with autosell causing lag?
+  - DONE: see RankPlayer addBalance cache - 1250 times improvement! 
 
 
 - DONE: admin gui - allows them to bypass No Economy safeguards.
@@ -34,20 +65,20 @@
  - DONE: lapis lazuli is not auto selling
  
  
-- Problem with actionBar - messages are not goign through.
+- Problem with actionBar - messages are not going through.
  - sellall updates every second - different messages - but never show first one - PlayerMessages
 
 
  
- - DONE: No economy error mssage not showing
+ - DONE: No economy error message not showing
    - works on delayed startup
    - Fails when not delayed - gui ranks was registering on top of ranks warning
    
  
- - block stats based upon drops instead of breakage??
+ - block stats based upon drops instead of breakage?? (not sure if this has merit?)
  
 
--> DONE: Hook in to quests
+-> DONE: Hook in to quests - Only on block break events
 
 
 -> Suport for eco enchants:
@@ -64,6 +95,14 @@ https://github.com/Auxilor/EcoEnchants/blob/master/eco-core/core-plugin/src/main
 
 * ShiftAndRightClickSellAll is not working
 
+
+* Found a problem with mcMMO, Quest, and EZBlock support... only works on BlockBreakEvents.  I added logging to identify when they are called, but if an explosion has 20,000 blocks, then it will log 20,000 times!  😂  So I need to figure out something before hooking it up to multi-block breaks.
+
+
+* sellall - ladder based sellall rank multipliers 
+  - so a ladder value of 0.05 would apply p1 = 1.05, p2 = 1.10, p3 = 1.15, etc...
+  
+  
 
 
 # TODO Items for v3.2.11-alpha.13
