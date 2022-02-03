@@ -2023,11 +2023,63 @@ public class MinesCommands
     					String radius
         
     		) {
-        
-        if (performCheckMineExists(sender, mineName)) {
+    	
+    	
+    	MineNotificationMode noteMode = MineNotificationMode.fromString( mode, MineNotificationMode.displayOptions );
+    	
+    	if ( noteMode == MineNotificationMode.displayOptions ) {
+    		sender.sendMessage( "&7Select a Mode: &bdisabled&7, &bwithin &7the mine, &bradius " +
+    				"&7from center of mine." );
+    		return;
+    	}
+    	
+    	long noteRadius = 0L;
+    	if ( noteMode == MineNotificationMode.radius ) {
+    		if ( radius == null || radius.trim().length() == 0 ) {
+    			noteRadius = MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS;
+    		} else {
+    			try {
+    				noteRadius = Long.parseLong( radius );
+    				
+    				if ( noteRadius < 1 ) {
+    					noteRadius = MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS;
+    					DecimalFormat dFmt = new DecimalFormat("#,##0");
+    					Output.get().sendWarn( sender, "&7Invalid radius value. " +
+    							"Must be an positive non-zero integer. Using the default value: &b%s &7[&b%s&7]",
+    							dFmt.format(MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS), radius );
+    					return;
+    				}
+    			}
+    			catch ( NumberFormatException e ) {
+    				e.printStackTrace();
+    				Output.get().sendWarn( sender, "&7Invalid notification radius. " +
+    						"Must be an positive non-zero integer. [&b%s&7]",
+    						radius );
+    				return;
+    			}
+    		}
+    	}
+    	
+    	PrisonMines pMines = PrisonMines.getInstance();
+
+    	if ( "*all*".equalsIgnoreCase( mineName ) ) {
+    		
+    		int count = 0;
+    		for ( Mine m : pMines.getMines() )
+			{
+				
+    			if ( changeMineNotification( sender, mineName, noteMode, noteRadius, pMines, m, true ) ) {
+    				count++;
+    			}
+			}
+    		
+    		Output.get().sendInfo( sender, "&7Notification mode was changed for &b%d&7 mines.",
+					count );
+    	}
+    	
+    	else if (performCheckMineExists(sender, mineName)) {
         	setLastMineReferenced(mineName);
 
-        	PrisonMines pMines = PrisonMines.getInstance();
         	Mine m = pMines.getMine(mineName);
             
 //            if ( !m.isEnabled() ) {
@@ -2035,57 +2087,38 @@ public class MinesCommands
 //            	return;
 //            }
         	
-        	MineNotificationMode noteMode = MineNotificationMode.fromString( mode, MineNotificationMode.displayOptions );
         	
-        	if ( noteMode == MineNotificationMode.displayOptions ) {
-        		sender.sendMessage( "&7Select a Mode: &bdisabled&7, &bwithin &7the mine, &bradius " +
-        				"&7from center of mine." );
-        	} else {
-        		long noteRadius = 0L;
-        		if ( noteMode == MineNotificationMode.radius ) {
-        			if ( radius == null || radius.trim().length() == 0 ) {
-        				noteRadius = MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS;
-        			} else {
-        				try {
-        					noteRadius = Long.parseLong( radius );
-        					
-        					if ( noteRadius < 1 ) {
-        						noteRadius = MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS;
-        						DecimalFormat dFmt = new DecimalFormat("#,##0");
-        						Output.get().sendWarn( sender, "&7Invalid radius value for &b%s&7. " +
-            							"Must be an positive non-zero integer. Using the default value: &b%s &7[&b%s&7]",
-            							mineName, dFmt.format(MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS), radius );
-        					}
-        				}
-        				catch ( NumberFormatException e ) {
-        					e.printStackTrace();
-        					Output.get().sendWarn( sender, "&7Invalid notification radius for &b%s&7. " +
-        							"Must be an positive non-zero integer. [&b%s&7]",
-        							mineName, radius );
-        				}
-        			}
-        		}
-        		
-        		if ( m.getNotificationMode() != noteMode || m.getNotificationRadius() != noteRadius ) {
-        			m.setNotificationMode( noteMode );
-        			m.setNotificationRadius( noteRadius );
-        			
-        			pMines.getMineManager().saveMine( m );
-        			
-        			DecimalFormat dFmt = new DecimalFormat("#,##0");
-        			// message: notification mode changed
-        			Output.get().sendInfo( sender, "&7Notification mode was changed for &b%s&7: &b%s %s",
-        					mineName, m.getNotificationMode().name(), 
-        					(m.getNotificationMode() == MineNotificationMode.radius ? 
-        							dFmt.format( m.getNotificationRadius() ) : "" ));
-        			
-        		} else {
-        			// message: notification mode did not change
-        			Output.get().sendInfo( sender, "&7Notification mode was not changed for mine &b%s&7.", mineName );
-        		}
-        	}
+        	changeMineNotification( sender, mineName, noteMode, noteRadius, pMines, m, false );
         } 
     }
+
+	private boolean changeMineNotification( CommandSender sender, String mineName, 
+				MineNotificationMode noteMode, long noteRadius,
+				PrisonMines pMines, Mine m, boolean suppressMessages )
+	{
+		boolean success = false;
+		
+		if ( m.getNotificationMode() != noteMode || m.getNotificationRadius() != noteRadius ) {
+			m.setNotificationMode( noteMode );
+			m.setNotificationRadius( noteRadius );
+			
+			pMines.getMineManager().saveMine( m );
+			success = true;
+			
+			DecimalFormat dFmt = new DecimalFormat("#,##0");
+			// message: notification mode changed
+			Output.get().sendInfo( sender, "&7Notification mode was changed for &b%s&7: &b%s %s",
+					mineName, m.getNotificationMode().name(), 
+					(m.getNotificationMode() == MineNotificationMode.radius ? 
+							dFmt.format( m.getNotificationRadius() ) : "" ));
+			
+		} else if ( !suppressMessages ) {
+			// message: notification mode did not change
+			Output.get().sendInfo( sender, "&7Notification mode was not changed for mine &b%s&7.", mineName );
+		}
+		
+		return success;
+	}
 
 
     @Command(identifier = "mines set notificationPerm", permissions = "mines.notification", 

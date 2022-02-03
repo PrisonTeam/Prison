@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-beta.1 (alpha.7) 2022-02-02
+# 3.3.0-beta.1 (alpha.7) 2022-02-03
+
+
+* **For command /mines set notification added *all* for mine name so all mines can be changed at the same time.**
+
 
 * **Change notification alerts from runnign every 5 minutes to every hour.**
 Got a few complaints within the last fewa days that the notifications are too frequent.
