@@ -73,6 +73,7 @@ import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.commands.MinesCommands;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.data.MineData.MineNotificationMode;
 import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.modules.Module;
@@ -1430,6 +1431,15 @@ public class SpigotPlatform
 		
 		for ( Mine mine : mines ) {
 			
+			mine.setNotificationMode( MineNotificationMode.radius );
+			mine.setNotificationRadius( 25 );
+			
+			mine.setSkipResetEnabled( true );
+			mine.setSkipResetPercent( 90 );
+			mine.setSkipResetBypassLimit( 24 );
+			
+			mine.setZeroBlockResetDelaySec( 0 );
+			
 			// Setup access by rank:
 			
 			if ( mine.getRank() != null ) {
@@ -1735,6 +1745,8 @@ public class SpigotPlatform
 		blockList.add( new SellAllBlockData( XMaterial.PRISMARINE, 52, true ) );
 		
 		
+		blockList.add( new SellAllBlockData( XMaterial.DARK_PRISMARINE, 54, true ) );
+
 		blockList.add( new SellAllBlockData( XMaterial.LAPIS_BLOCK, 950, true) );
 		blockList.add( new SellAllBlockData( XMaterial.REDSTONE_BLOCK, 405, true) );
 		
@@ -1742,7 +1754,6 @@ public class SpigotPlatform
 		
 		blockList.add( new SellAllBlockData( XMaterial.DIAMOND_BLOCK, 2000, true) );
 		
-		blockList.add( new SellAllBlockData( XMaterial.DARK_PRISMARINE, 54, true ) );
 		blockList.add( new SellAllBlockData( XMaterial.EMERALD_BLOCK, 2250, true) );
 		
 		
