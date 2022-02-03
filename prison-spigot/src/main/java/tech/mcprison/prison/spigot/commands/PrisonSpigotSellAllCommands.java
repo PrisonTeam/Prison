@@ -720,6 +720,9 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         if (sellAllUtil.addPrestigeMultiplier(prestige, multiplier)){
             Output.get().sendInfo(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_multiplier_add_success));
         }
+        else {
+        	Output.get().sendInfo( sender, "Failed to add sellall prestige multiplier." );
+        }
     }
 
     @Command(identifier = "sellall multiplier delete", description = "SellAll delete a multiplier.", permissions = "prison.admin", onlyPlayers = false)

@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.1 (alpha.7) 2022-02-03
 
 
+* **Added an error message when failed to add a prestige multiplier.**
+
+
 * **New feature: cached adding of earnings for the default currency.**
 This was causing a significant amount of lag/slow down when performing autosell, or spamming of sellall.  The lag was in the economy plugin not being able to accept additions of money fast enough.  
 Now this simple cache, will wait 3 seconds before adding the player's earnings to the economy plugin.  When it does, it will do so in an async thread so as to not impact any performance in bukkit's main thread.  Also prison's getBalance() functions, which includes the use of all prison placeholders, will include the cached amount, which means the player's balances appear as if they are not being cached.
