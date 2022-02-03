@@ -48,6 +48,8 @@ import tech.mcprison.prison.util.Location;
 public class RankPlayer 
 			implements Player {
 
+	public static final long DELAY_THREE_SECONDS = 20 * 3; // 3 seconds in ticks
+		
     /*
      * Fields & Constants
      */
@@ -71,12 +73,18 @@ public class RankPlayer
     
     // For tops processing.  Need current balance.
     private TreeMap<String, RankPlayerBalance> playerBalances;
-    //x
+
+
+    
+    private EconomyIntegration economy = null;
+    private double unsavedBalance = 0;
+    private Object unsavedBalanceLock = new Object();
+    private int ubTaskId = 0;
+    
+    private HashMap<String, EconomyIntegration> economyCustom = new HashMap<>();;
     
     
-    /*
-     * Document-related
-     */
+    
 
     public RankPlayer() {
     	super();
@@ -919,20 +927,49 @@ public class RankPlayer
 	public double getBalance() {
 		double results = 0;
 		
-		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+		EconomyIntegration economy = getEconomy();
 		
 		if ( economy != null ) {
 			
-			results = economy.getBalance( this );
+			results = economy.getBalance( this ) + getBalanceUnsaved();
 			setCachedRankPlayerBalance( null, results );
 		}
 		
 		return results;
 	}
 	
+	public double getBalanceUnsaved() {
+		return unsavedBalance;
+	}
+	
 	public void addBalance( double amount ) {
-		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
-
+		
+		synchronized ( unsavedBalanceLock )
+		{
+			unsavedBalance += amount;
+			
+			if ( ubTaskId == 0 ) {
+				
+				ubTaskId = PrisonAPI.getScheduler().runTaskLaterAsync( 
+						() -> {
+							double tempBalance = 0;
+							synchronized ( unsavedBalanceLock )
+							{
+								tempBalance = unsavedBalance;
+								unsavedBalance = 0;
+								ubTaskId = 0;
+							}
+							addBalanceEconomy( tempBalance );
+						}, DELAY_THREE_SECONDS );
+			}
+		}
+		
+	
+	}
+	
+	private void addBalanceEconomy( double amount ) {
+		EconomyIntegration economy = getEconomy();
+		
 		if ( economy != null ) {
 			economy.addBalance( this, amount );
 			addCachedRankPlayerBalance( null, amount );
@@ -940,7 +977,7 @@ public class RankPlayer
 	}
 	
 	public void removeBalance( double amount ) {
-		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+		EconomyIntegration economy = getEconomy();
 		
 		if ( economy != null ) {
 			economy.removeBalance( this, amount );
@@ -949,7 +986,7 @@ public class RankPlayer
 	}
 	
 	public void setBalance( double amount ) {
-		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+		EconomyIntegration economy = getEconomy();
 		
 		if ( economy != null ) {
 			economy.setBalance( this, amount );
@@ -1034,6 +1071,19 @@ public class RankPlayer
 				setCachedRankPlayerBalance( currency, amount );
 			}
 		}
+	}
+	
+	/**
+	 * addBalance: original t3: 2.19 1.34 1.37 1.37 1.24 0.81 1.49 2.05 1.17 0.98 1.0 0.62
+	 * addBalance: opt Econ-localVar t3: 3.46 1.21 0.88 0.84 1.48 1.3 0.6 1.09 1.62 0.72 0.64 0.67 1.02 0.63 0.97 1.8
+	 * addBalance: cached t3: 0.0322 0.0011 0.0016 0.0012 0.0111 0.0012 0.0012 0.0018 0.0011 0.0102 0.0010 0.0013 0.0015 0.0011 
+	 * @return
+	 */
+	private EconomyIntegration getEconomy() {
+		if ( economy == null ) {
+			economy = PrisonAPI.getIntegrationManager().getEconomy();
+		}
+		return economy;
 	}
 
 	@Override
