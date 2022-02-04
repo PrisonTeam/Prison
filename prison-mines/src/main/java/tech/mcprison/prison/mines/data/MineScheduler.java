@@ -330,14 +330,14 @@ public abstract class MineScheduler
 		// appears like it will never load?
 		//checkWorld();
 		
-		if ( getResetTime() <= 0 ) {
+		boolean forced = getCurrentJob() != null && 
+				getCurrentJob().getResetType() == MineResetScheduleType.FORCED;
+		
+		if ( getResetTime() <= 0 && !forced ) {
 			
 			submitNextAction();
 			return;
 		}
-		
-		boolean forced = getCurrentJob() != null && 
-							getCurrentJob().getResetType() == MineResetScheduleType.FORCED;
 		
     	boolean skip = !forced && 
     			isSkipResetEnabled() && 
@@ -419,7 +419,10 @@ public abstract class MineScheduler
 //		}
 //		
 		
-		submitNextAction();
+		if ( getResetTime() > 0 ) {
+			
+			submitNextAction();
+		}
 	}
 
 	/**

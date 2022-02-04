@@ -13,8 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-beta.2 (alpha.7) 2022-02-03
+# 3.3.0-beta.2 (alpha.7) 2022-02-04
 
+
+* **Bug Fix: When mine reset time is disabled, set to -1, and then all mines are reset with '/mines reset `*all*` details' it would terminate the reset chain on that mine.**
+This change allows the next mine to be reset by not trying to set this mine's next action... which is none because reset time is -1.
 
 
 * **v3.3.0-beta.2 2022-02-03**
