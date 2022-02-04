@@ -1353,6 +1353,7 @@ public class MinesCommands
         					.withReplacements( m.getName() )
                 .sendTo(sender);
             Output.get().logError("Couldn't reset mine " + mineName, e);
+            return;
         }
 
         pMines.getMinesMessages().getLocalizable("mine_reset")

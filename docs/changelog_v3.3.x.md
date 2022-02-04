@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.2 (alpha.7) 2022-02-04
 
 
+* **If fail on /mines reset, then needed a missing return so the mine reset success message won't follow the error message.**
+
+
 * **Bug Fix: When mine reset time is disabled, set to -1, and then all mines are reset with '/mines reset `*all*` details' it would terminate the reset chain on that mine.**
 This change allows the next mine to be reset by not trying to set this mine's next action... which is none because reset time is -1.
 
