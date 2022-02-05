@@ -78,7 +78,7 @@ public class SpigotWorld implements World {
      * 
      */
     @Override 
-    public Block getBlockAt( Location location ) {
+    public Block getBlockAt( Location location, boolean containsCustomBlocks ) {
     	SpigotBlock sBlock = null;
     	
     	if ( location != null ) {
@@ -86,16 +86,56 @@ public class SpigotWorld implements World {
     		org.bukkit.Location bLocation = getBukkitLocation( location );
     		org.bukkit.block.Block bBlock = bukkitWorld.getBlockAt( bLocation );
     		
+    		
     		sBlock = SpigotCompatibility.getInstance().getSpigotBlock( bBlock );
     		
     		if ( sBlock == null ) {
     			
     			sBlock = new SpigotBlock( bBlock, PrisonBlock.AIR.clone() );
     		}
+    		
+    		
+    		if ( containsCustomBlocks ) {
+    			
+    			List<CustomBlockIntegration> cbIntegrations = 
+    					PrisonAPI.getIntegrationManager().getCustomBlockIntegrations();
+    			
+    			for ( CustomBlockIntegration customBlock : cbIntegrations )
+    			{
+    				PrisonBlock pBlock = customBlock.getCustomBlock( sBlock );
+    				
+    				if ( pBlock != null ) {
+    					
+    					//if ( Output.get().isDebug() ) 
+//    					{
+//    						
+//    						String message = String.format( 
+//    								"SpigotWorld.getBlockAt: customBlock: %s  " +
+//    								"spigot: %s  bukkit: %s",
+//    								pBlock.getBlockName(), sBlock.getBlockName(), 
+//    								bBlock.getType().name() );
+//    						
+//    						Output.get().logInfo( message );
+//    					}
+    					
+    					sBlock.setBlockName( pBlock.getBlockName() );
+    					sBlock.setBlockType( customBlock.getBlockType() );
+    					break;
+    				}
+    			}
+    		}
+    		
+    		
     	}
         
         return sBlock;
     }
+    
+    public Block getBlockAt( Location location ) {
+    	return getBlockAt( location, false );
+    }
+ 
+    
 //    public SpigotBlock getSpigotBlockAt(Location location) {
 //    	return new SpigotBlock(
 //    			bukkitWorld.getBlockAt(SpigotUtil.prisonLocationToBukkit(location)));

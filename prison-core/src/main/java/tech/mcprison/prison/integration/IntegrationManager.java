@@ -131,27 +131,58 @@ public class IntegrationManager {
 	{
     	CustomBlockIntegration results = null;
     	
-        if(integrations.containsKey(IntegrationType.CUSTOMBLOCK)) {
-        	
-        	List<Integration> cbIntegrations = getAllForType(IntegrationType.CUSTOMBLOCK);
-
-        	for ( Integration cbIntegration : cbIntegrations ) {
-				if ( cbIntegration.hasIntegrated() && cbIntegration instanceof CustomBlockIntegration ) {
-					
-					CustomBlockIntegration customBlock = (CustomBlockIntegration) cbIntegration;
-					
-					if ( customBlock.getBlockType() == blockType ) {
-						results = customBlock;
-						break;
-					}
-				}
-			}
+    	for ( CustomBlockIntegration customBlock : getCustomBlockIntegrations() )
+		{
+    		
+    		if ( customBlock.getBlockType() == blockType ) {
+    			results = customBlock;
+    			break;
+    		}
+		}
+    	
+//        if(integrations.containsKey(IntegrationType.CUSTOMBLOCK)) {
+//        	
+//        	List<Integration> cbIntegrations = getAllForType(IntegrationType.CUSTOMBLOCK);
+//
+//        	for ( Integration cbIntegration : cbIntegrations ) {
+//				if ( cbIntegration.hasIntegrated() && cbIntegration instanceof CustomBlockIntegration ) {
+//					
+//					CustomBlockIntegration customBlock = (CustomBlockIntegration) cbIntegration;
+//					
+//					if ( customBlock.getBlockType() == blockType ) {
+//						results = customBlock;
+//						break;
+//					}
+//				}
+//			}
+//		}
         
-        }
         return results;
 		
 	}
 
+	public List<CustomBlockIntegration> getCustomBlockIntegrations()
+	{
+		List<CustomBlockIntegration> results = new ArrayList<>();
+		
+		if(integrations.containsKey(IntegrationType.CUSTOMBLOCK)) {
+			
+			List<Integration> cbIntegrations = getAllForType(IntegrationType.CUSTOMBLOCK);
+			
+			for ( Integration cbIntegration : cbIntegrations ) {
+				if ( cbIntegration.hasIntegrated() && cbIntegration instanceof CustomBlockIntegration ) {
+					
+					CustomBlockIntegration customBlock = (CustomBlockIntegration) cbIntegration;
+					
+					results.add( customBlock );
+				}
+			}
+			
+		}
+		
+		return results;
+	}
+	
 	
     
     public String getIntegrationDetails( IntegrationType integrationType ) {

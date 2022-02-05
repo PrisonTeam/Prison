@@ -138,6 +138,10 @@ public class Location {
         return world.getBlockAt(this);
     }
     
+    public Block getBlockAt( boolean containsCustomBlocks ) {
+    	return world.getBlockAt( this, containsCustomBlocks );
+    }
+    
     public void setBlockAsync( PrisonBlock prisonBlock ) {
     	world.setBlockAsync( prisonBlock, this );
     }

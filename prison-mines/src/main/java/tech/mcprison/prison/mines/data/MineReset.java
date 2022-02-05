@@ -16,6 +16,7 @@ import tech.mcprison.prison.internal.block.MineTargetBlockKey;
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
+import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.MineScheduler.MineJob;
 import tech.mcprison.prison.mines.data.MineScheduler.MineResetActions;
@@ -1142,6 +1143,8 @@ public abstract class MineReset
 			World world = worldOptional.get();
 			
 			
+			boolean containsCustomBlocks = getPrisonBlockTypes().contains( PrisonBlockType.CustomItems );
+			
 			if ( world == null ) {
 				Output.get().logError(
 						String.format( "MineReset: refreshAirCountAsyncTask failure: The world is invalid and " +
@@ -1181,7 +1184,7 @@ public abstract class MineReset
 						
 						try {
 							Location targetBlock = new Location(world, x, y, z);
-							Block tBlock = targetBlock.getBlockAt();
+							Block tBlock = targetBlock.getBlockAt( containsCustomBlocks );
 							
 							
 							boolean xEdge = x == xMin || x == xMax;

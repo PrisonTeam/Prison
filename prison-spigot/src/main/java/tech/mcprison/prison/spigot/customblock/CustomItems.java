@@ -105,6 +105,12 @@ public class CustomItems
 		if ( customBlockId != null ) {
 			results = SpigotPrison.getInstance().getPrisonBlockTypes()
 									.getBlockTypesByName( customBlockId );
+			
+			if ( results != null ) {
+				
+				Location loc = new Location( block.getLocation() );
+				results.setLocation( loc );
+			}
 		}
 		
 		return results;
