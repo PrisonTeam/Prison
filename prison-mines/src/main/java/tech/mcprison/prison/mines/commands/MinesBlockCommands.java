@@ -164,6 +164,17 @@ public class MinesBlockCommands
 
 		PrisonBlock totals = new PrisonBlock( "Totals" );
 
+		int maxBlockNameLength = 8;
+		
+		// Find the max block length:
+		for ( PrisonBlock block : m.getPrisonBlocks() ) {
+			if ( block.getBlockName().length() > maxBlockNameLength ) {
+				maxBlockNameLength = block.getBlockName().length();
+			}
+		}
+		
+		addBlockStatsHeader( maxBlockNameLength, builder);
+		
 		for ( PrisonBlock block : m.getPrisonBlocks() )
 		{
 			double chance = Math.round( block.getChance() * 100.0d ) / 100.0d;
@@ -174,7 +185,7 @@ public class MinesBlockCommands
 			if ( cmdPageData == null || count++ >= cmdPageData.getPageStart() && count <= cmdPageData.getPageEnd() )
 			{
 				
-				addBlockStats( m, block, iFmt, dFmt, builder );
+				addBlockStats( m, block, maxBlockNameLength, iFmt, dFmt, builder );
 				
 			}
 		}
@@ -182,18 +193,31 @@ public class MinesBlockCommands
 
 		if ( totalChance < 100.0d )
 		{
-			builder.add( "&e%s - Air", dFmt.format( 100.0d - totalChance ) + "%" );
+			builder.add( "&e%6s - Air", dFmt.format( 100.0d - totalChance ) + "%" );
 		}
 
 		if ( includeTotals )
 		{
-			addBlockStats( m, totals, iFmt, dFmt, builder );
+			addBlockStats( m, totals, maxBlockNameLength, iFmt, dFmt, builder );
 		}
 
 		return builder.build();
 	}
 	
-	private void addBlockStats( Mine mine, PrisonBlockStatusData block, DecimalFormat iFmt, DecimalFormat dFmt,
+	private void addBlockStatsHeader( int maxBlockNameLength, BulletedListComponent.BulletedListBuilder builder ) {
+		RowComponent row = new RowComponent();
+		
+		String rawMessage = "&3Percent  %-" + maxBlockNameLength + "s       Placed   Remaining    TotalMined";
+		String message = String.format(  rawMessage, "Blocks" );
+		
+		row.addTextComponent( message );
+		
+		builder.add( row );
+	}
+	
+	private void addBlockStats( Mine mine, PrisonBlockStatusData block, 
+			int maxBlockNameLength,
+			DecimalFormat iFmt, DecimalFormat dFmt,
 			BulletedListComponent.BulletedListBuilder builder )
 	{
 		RowComponent row = new RowComponent();
@@ -202,7 +226,7 @@ public class MinesBlockCommands
 
 		if ( totals )
 		{
-			String text = "                   &dTotals:  ";
+			String text = String.format( "&d%" + maxBlockNameLength + "s   Totals: ", " " );
 			row.addTextComponent( text );
 		}
 		else
@@ -210,34 +234,34 @@ public class MinesBlockCommands
 
 			String percent = dFmt.format( block.getChance() ) + "%";
 
-			String text = String.format( "&7%6s - %-20s  ", percent, block.getBlockName() );
+			String text = String.format( "&7%6s - %-" + maxBlockNameLength + "s  ", percent, block.getBlockName() );
 			FancyMessage msg = new FancyMessage( text )
 					.suggest( "/mines block set " + mine.getName() + " " + block.getBlockName() + " %" )
 					.tooltip( "&7Click to edit the block's chance." );
 			row.addFancy( msg );
 		}
 
-		String text1 = String.format( (totals ? "&b%-7s " : "&3Pl: &7%-7s "),
+		String text1 = String.format( (totals ? "  &b%9s " : " &7%9s  "),
 				iFmt.format( block.getBlockPlacedCount() ) );
-		FancyMessage msg1 = new FancyMessage( text1 ).tooltip( "&7Number of blocks of this type &3Pl&7aced in this mine." );
+		FancyMessage msg1 = new FancyMessage( text1 ).tooltip( "&7Number of blocks of this type &3Placed &7in this mine." );
 		row.addFancy( msg1 );
 
 		
-		String text2 = String.format( (totals ? "&b%-7s " : "&3Rm: &7%-7s "), 
+		String text2 = String.format( (totals ? "  &b%9s " : " &7%9s  "), 
 				iFmt.format( block.getBlockPlacedCount() - block.getBlockCountUnsaved() ) );
-		FancyMessage msg2 = new FancyMessage( text2 ).tooltip( "&7Number of blocks of this type &3R&7e&3m&7aining." );
+		FancyMessage msg2 = new FancyMessage( text2 ).tooltip( "&7Number of blocks of this type &3Remaining&7." );
 		row.addFancy( msg2 );
 
 		
-		FancyMessage msg3 = new FancyMessage( String.format( (totals ? "&b%-11s " : "&3T: &7%-11s"),
+		FancyMessage msg3 = new FancyMessage( String.format( (totals ? "  &b%11s " : " &7%11s  "),
 				PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountTotal(), dFmt, "" ) ) )
 						.tooltip( "&3T&7otal blocks of this type that have been mined." );
 		row.addFancy( msg3 );
 
-		FancyMessage msg4 = new FancyMessage( String.format( (totals ? "&b%-9s" : "  &3S: &7%-9s"),
-				PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountTotal(), dFmt, "" ) ) )
-						.tooltip( "&7Blocks of this type that have been mined since the server was &3S&7tarted." );
-		row.addFancy( msg4 );
+//		FancyMessage msg4 = new FancyMessage( String.format( (totals ? "&b%-9s" : "  &3S: &7%-9s"),
+//				PlaceholdersUtil.formattedKmbtSISize( 1.0d * block.getBlockCountTotal(), dFmt, "" ) ) )
+//						.tooltip( "&7Blocks of this type that have been mined since the server was &3S&7tarted." );
+//		row.addFancy( msg4 );
 
 		builder.add( row );
 
@@ -637,9 +661,10 @@ public class MinesBlockCommands
       	
       	if ( !m.isVirtual() ) {
       		RowComponent row = new RowComponent();
-      		row.addTextComponent( "&3Blocks Remaining: &7%s  %s%% ",
+      		row.addTextComponent( "&3Blocks Remaining: &7%s  %s%%   &3out of  &7%s",
       				dFmt.format( m.getRemainingBlockCount() ), 
-      				fFmt.format( m.getPercentRemainingBlockCount() ) );
+      				fFmt.format( m.getPercentRemainingBlockCount() ),
+      				dFmt.format( Math.round(m.getBounds().getTotalBlockCount())) );
       		
       		chatDisplay.addComponent( row );
       	}

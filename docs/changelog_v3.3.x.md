@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-beta.2 (alpha.7) 2022-02-04
+# 3.3.0-beta.2 (alpha.7) 2022-02-05
+
+
+* **Clean up the formatting on `/mines block list` so it's easier to read and looks better.**
 
 
 * **If fail on /mines reset, then needed a missing return so the mine reset success message won't follow the error message.**
