@@ -417,10 +417,14 @@ public class OnBlockBreakEventCore
                 		{
                 			String message = String.format( 
                 					"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
-                					"is not valid for this version of Spigot. Modify the config settings and set " +
-                					"this value to `false`. [%s]",
+                					"is not valid for this version of Spigot. It's only vaid for spigot v1.12.x and higher. " +
+                					"Modify the config settings and set this value to `false`.  For now, it is temporarily " +
+                					"disabled. [%s]",
                 					e1.getMessage() );
                 			Output.get().logWarn( message );
+                			
+                			AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig()
+                				.setFeature( AutoFeatures.cancelAllBlockEventBlockDrops, false );
                 		}
                 	}
                 	

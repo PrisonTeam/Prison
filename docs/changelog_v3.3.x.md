@@ -16,6 +16,12 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.2 (alpha.7) 2022-02-05
 
 
+* **If cancelAllBlockEventBlockDrops is enabled when it's not valid on the server version, then it will print the error to console, then turn off this features**
+
+
+* **CustomItems: Hook up on server startup the ability to check for custom blocks when scanning the mines to set the air counts and block counts.**
+
+
 * **Clean up the formatting on `/mines block list` so it's easier to read and looks better.**
 
 
