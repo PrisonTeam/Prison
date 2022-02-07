@@ -16,10 +16,15 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.2 (alpha.7) 2022-02-07
 
 
+* **Upgrade gradle from v7.2 to v7.3**
+ - Changes to provide better security when runnign gradle to prevent injection attacks.
+
+
 * **Upgrade gradle from v7.1 to v7.1.1 to v7.2.**
 
 
 * **Upgrade gradle from v7.0.2 to v7.1.**
+NOTE: There are a number of updates to apply for gradle.  Will commit on the minor versions and final version.
 
 
 * **Added a few new placeholders and a new placeholder type of PLAYERBLOCKS.**
