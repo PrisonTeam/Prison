@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.2 (alpha.7) 2022-02-07
 
 
+* **Upgrade gradle from v7.3 to v7.3.1 to v7.3.2 to v7.3.3**
+This is at the latest release.
+
+
 * **Upgrade gradle from v7.2 to v7.3**
  - Changes to provide better security when runnign gradle to prevent injection attacks.
 
