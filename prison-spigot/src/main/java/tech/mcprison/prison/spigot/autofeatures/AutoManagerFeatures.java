@@ -492,6 +492,8 @@ public class AutoManagerFeatures
 			}
 			
 			
+			DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
+			DecimalFormat dFmt = new DecimalFormat("#,##0.00");
 			
 			double autosellTotal = 0;
 			double autosellUnsellableCount = 0;
@@ -504,7 +506,9 @@ public class AutoManagerFeatures
 				
 	
 				// Try to autosell if enabled:
-				if ( (isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || pmEvent.isForceAutoSell()) && 
+				if ( (isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || 
+						pmEvent.isForceAutoSell() || 
+						player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) )) && 
 						SellAllUtil.get() != null  ) {
 					
 					final long nanoStart = System.nanoTime();
@@ -518,7 +522,8 @@ public class AutoManagerFeatures
 							amount, mineName );
 
 					if ( amount != 0 ) {
-						debugInfo.append( "(sold: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
+						debugInfo.append( "(sold: " + itemStack.getName() + " qty: " + itemStack.getAmount() + 
+								" value: " + dFmt.format( amount ) + ") ");
 						
 						// Set to zero quantity since they have all been sold.
 						itemStack.setAmount( 0 );
@@ -544,7 +549,8 @@ public class AutoManagerFeatures
 						double amount = SellAllUtil.get().sellAllSell( player, itemStack, true, false, false );
 						autosellTotal += amount;
 						
-						debugInfo.append( "(Debug-unsold: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
+						debugInfo.append( "(Debug-unsold-value-check: " + itemStack.getName() + 
+								" qty: " + itemStack.getAmount() + " value: " + dFmt.format( amount ) + ") ");
 					}
 					
 					HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( player, itemStack );
@@ -578,11 +584,10 @@ public class AutoManagerFeatures
 			
 			if ( count > 0 || autosellTotal > 0 ) {
 				
-				debugInfo.append( "[autoPickupDrops total: qty: " + count + " value: " + autosellTotal + 
+				debugInfo.append( "[autoPickupDrops total: qty: " + count + " value: " + dFmt.format( autosellTotal ) + 
 						"  unsellableCount: " + autosellUnsellableCount );
 				
 				if ( nanoTime > 0 ) {
-					DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
 					final double autoSellTimeMs = ( nanoTime / 1000000.0d );
 					debugInfo.append( " autosellTiming: " )
 						.append( fFmt.format( autoSellTimeMs ) )

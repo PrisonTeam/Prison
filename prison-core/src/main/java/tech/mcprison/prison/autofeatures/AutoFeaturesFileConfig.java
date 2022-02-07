@@ -123,7 +123,9 @@ public class AutoFeaturesFileConfig {
 		    	
 
 				isAutoSellPerBlockBreakEnabled(inventory, false),
-//				isAutoSellPerBlockBreakInlinedEnabled(general, false),
+				permissionAutoSellPerBlockBreakEnabled(inventory, "prison.automanager.autosell"),
+//				
+				isAutoSellPerBlockBreakInlinedEnabled(general, false),
 				
 				isAutoSellIfInventoryIsFull(inventory, true),
 				

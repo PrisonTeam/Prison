@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.2 (alpha.7) 2022-02-07
 
 
+* **Changed around the logging of messages related to the use of autofeatures autosell.**
+Added permissions to enable autosell on a per block.
+
+
 * **Update CustomItems api from v3.7.17 to v4.1.3.**
 This newer version of the API still does not have a getDrops() function.
 
