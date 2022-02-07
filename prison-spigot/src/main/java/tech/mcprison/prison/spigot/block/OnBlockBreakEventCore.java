@@ -635,6 +635,8 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlockHit );
 			pmEvent.setTargetBlock( targetBlock );
 			
+			boolean matchedBlocks = isBlockAMatch( targetBlock.getPrisonBlock(), sBlockHit );
+			
 			// If ignore all block events has been set on this target block, then shutdown.
 			// Same if this block was already included in an explosion... prevent it from spawning
 			// more explosions, which could result in a chain reaction.
@@ -665,10 +667,10 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 					PrisonBlockStatusData pbTargetBlock = targetBlock.getPrisonBlock();
 					PrisonBlock pbBlockHit = sBlockHit == null ? null : sBlockHit.getPrisonBlock();
 					
-					if ( pbBlockHit != null && pbTargetBlock != null && 
-							pbTargetBlock.equals( pbBlockHit ) &&
-							collectBukkitDrops( pmEvent.getBukkitDrops(), targetBlock, pmEvent.getItemInHand(), sBlockHit )) {
+					if ( pbBlockHit != null && matchedBlocks ) {
 						
+						// Confirmed the block is correct... so get the drops...
+						collectBukkitDrops( pmEvent.getBukkitDrops(), targetBlock, pmEvent.getItemInHand(), sBlockHit );
 						
 						// If a chain reaction on explosions, this will prevent the same block from
 						// being processed more than once:
@@ -764,33 +766,35 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 				
 				for ( Block bukkitBlock : pmEvent.getUnprocessedRawBlocks() ) 
 				{
-					SpigotBlock sBlock = SpigotBlock.getSpigotBlock( bukkitBlock );
+					SpigotBlock sBlockMined = SpigotBlock.getSpigotBlock( bukkitBlock );
 					
 					// Thanks to CrazyEnchant, there is no telling which block was actually hit, so 
 					// if using CrazyEnchant one of the unprocessedRawBlocks may be the same as the
 					// pmEvent.getSpigotBlock(), so ignore if both are the same.
-					if ( !sBlock.equals( sBlockHit ) ) {
+					if ( !sBlockMined.equals( sBlockHit ) ) {
 						
-						if ( !mine.isInMineExact( sBlock.getLocation() ) ) {
+						if ( !mine.isInMineExact( sBlockMined.getLocation() ) ) {
 							outsideOfMine++;
 						}
-						else if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+						else if ( BlockUtils.getInstance().isUnbreakable( sBlockMined ) ) {
 							
 							unbreakable++;
 						}
 						
-						else if ( sBlock.isEmpty() ) {
+						else if ( sBlockMined.isEmpty() ) {
 							alreadyMined++;
 						}
 						else {
 							
 							// Get the mine's targetBlock:
-							MineTargetPrisonBlock targetExplodedBlock = mine.getTargetPrisonBlock( sBlock );
+							MineTargetPrisonBlock targetExplodedBlock = mine.getTargetPrisonBlock( sBlockMined );
+							
+							boolean matchedExplodedBlocks = isBlockAMatch( targetExplodedBlock.getPrisonBlock(), sBlockMined );
 							
 							if ( targetExplodedBlock == null || targetExplodedBlock.getPrisonBlock() == null ) {
 								
 								// No targetBlock so add it anyway:
-								pmEvent.getExplodedBlocks().add( sBlock );
+								pmEvent.getExplodedBlocks().add( sBlockMined );
 								
 								noTargetBlock++;
 							}
@@ -805,27 +809,28 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 									
 									// Check to make sure the block is the same block that was placed there.
 									// If not, then do not process it.
-									SpigotBlock sBlockMined = SpigotBlock.getSpigotBlock( bukkitBlock );
+//									SpigotBlock sBlockMined = SpigotBlock.getSpigotBlock( bukkitBlock );
 									PrisonBlock pBlockMined = sBlockMined.getPrisonBlock();
 									
 									PrisonBlockStatusData pbTargetExploded = targetExplodedBlock.getPrisonBlock();
 									
-									if ( pBlockMined!= null && pbTargetExploded != null &&
-											pbTargetExploded.equals( pBlockMined ) &&
-											collectBukkitDrops( pmEvent.getBukkitDrops(), targetExplodedBlock, pmEvent.getItemInHand(), sBlockMined ) ) {
+									if ( pBlockMined!= null && matchedExplodedBlocks ) {
+
+										// Confirmed the block is correct... so get the drops...
+										collectBukkitDrops( pmEvent.getBukkitDrops(), targetExplodedBlock, pmEvent.getItemInHand(), sBlockMined );
 										
 										// If a chain reaction on explosions, this will prevent the same block from
 										// being processed more than once:
 										targetExplodedBlock.setMined( true );
 										
-										targetExplodedBlock.setMinedBlock( sBlock );
+										targetExplodedBlock.setMinedBlock( sBlockMined );
 										
 										
 										// Mark the block as being part of an explosion, if it was:
 										targetExplodedBlock.setExploded( isExplosionEvent );
 
 										
-										pmEvent.getExplodedBlocks().add( sBlock );
+										pmEvent.getExplodedBlocks().add( sBlockMined );
 										pmEvent.getTargetExplodedBlocks().add( targetExplodedBlock );
 										
 										
@@ -1063,6 +1068,8 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 		
 		return results;
 	}
+
+
 
 //	private boolean collectBukkitDrops( List<SpigotItemStack> bukkitDrops, MineTargetPrisonBlock targetBlock, 
 //										SpigotItemStack itemInHand, SpigotBlock sBlockMined )

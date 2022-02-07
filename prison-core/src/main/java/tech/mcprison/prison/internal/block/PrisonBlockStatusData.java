@@ -3,11 +3,13 @@ package tech.mcprison.prison.internal.block;
 import java.text.DecimalFormat;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 
 public abstract class PrisonBlockStatusData {
 
 	// blockName is more of an internal reference:
+	private PrisonBlockType blockType;
 	private String blockName;
 	
 	private double chance;
@@ -36,9 +38,10 @@ public abstract class PrisonBlockStatusData {
 	private boolean gravity = false;
 	
 	
-	public PrisonBlockStatusData( String blockName, double chance, long blockCountTotal ) {
+	public PrisonBlockStatusData( PrisonBlockType blockType, String blockName, double chance, long blockCountTotal ) {
 		super();
 		
+		this.blockType = blockType;
 		this.blockName = blockName;
 		
 		this.chance = chance;
@@ -394,6 +397,13 @@ public abstract class PrisonBlockStatusData {
 	}
 	public void setBlockName( String blockName ) {
 		this.blockName = blockName;
+	}
+
+	public PrisonBlockType getBlockType() {
+		return blockType;
+	}
+	public void setBlockType( PrisonBlockType blockType ) {
+		this.blockType = blockType;
 	}
 
 	public double getChance() {

@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison.mines.data;
 
+import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.util.ObsoleteBlockType;
 
@@ -52,14 +53,14 @@ public class BlockOld
      * Assigns the type and chance
      */
     public BlockOld(ObsoleteBlockType block, double chance, long blockCountTotal) {
-    	super((block == null ? BlockOld.AIR.getBlockName() : block.name()), chance, blockCountTotal);
+    	super( PrisonBlockType.minecraft, (block == null ? BlockOld.AIR.getBlockName() : block.name()), chance, blockCountTotal);
     			
         this.type = block;
 //        this.chance = chance;
     }
 
     public BlockOld(String blockType, double chance, long blockCountTotal) {
-    	super(blockType, chance, blockCountTotal);
+    	super( PrisonBlockType.minecraft, blockType, chance, blockCountTotal);
     	
 //    	this.chance = chance;
     	

@@ -26,6 +26,7 @@ import com.cryptomorin.xseries.XMaterial;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.Output.DebugTarget;
@@ -503,8 +504,8 @@ public class AutoManagerFeatures
 				
 	
 				// Try to autosell if enabled:
-				if ( SellAllUtil.get() != null && (isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || 
-						pmEvent.isForceAutoSell()) ) {
+				if ( (isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || pmEvent.isForceAutoSell()) && 
+						SellAllUtil.get() != null  ) {
 					
 					final long nanoStart = System.nanoTime();
 					double amount = SellAllUtil.get().sellAllSell( player, itemStack, false, false, true );
@@ -543,7 +544,7 @@ public class AutoManagerFeatures
 						double amount = SellAllUtil.get().sellAllSell( player, itemStack, true, false, false );
 						autosellTotal += amount;
 						
-						debugInfo.append( "(keeping: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
+						debugInfo.append( "(Debug-unsold: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
 					}
 					
 					HashMap<Integer, SpigotItemStack> extras = SpigotUtil.addItemToPlayerInventory( player, itemStack );
@@ -1595,6 +1596,11 @@ public class AutoManagerFeatures
 		Set<XMaterial> xMats = new HashSet<>();
 		for ( SpigotItemStack sItemStack : drops ) {
 			
+			if ( sItemStack.getMaterial().getBlockType() == PrisonBlockType.CustomItems ) {
+				// cannot smelt custom blocks so skip XMaterial:
+				continue;
+			}
+			
 			XMaterial xMat = null;
 			
 			if ( sItemStack.getBukkitStack() != null ) {
@@ -1730,10 +1736,19 @@ public class AutoManagerFeatures
 		
 		Set<XMaterial> xMats = new HashSet<>();
 		for ( SpigotItemStack sItemStack : drops ) {
-			XMaterial source = XMaterial.matchXMaterial( sItemStack.getBukkitStack() );
 			
-			if ( !xMats.contains( source  ) ) {
-				xMats.add( source );
+			if ( sItemStack.getMaterial().getBlockType() == PrisonBlockType.CustomItems ) {
+				// cannot block custom blocks so skip XMaterial:
+				continue;
+			}
+			
+			if ( sItemStack.getBukkitStack() != null ) {
+				
+				XMaterial source = XMaterial.matchXMaterial( sItemStack.getBukkitStack() );
+				
+				if ( !xMats.contains( source  ) ) {
+					xMats.add( source );
+				}
 			}
 		}
 		
@@ -1930,10 +1945,10 @@ public class AutoManagerFeatures
 				
 				if ( bukkitExtendedFortuneBlockCount > 0 ) {
 					count = bukkitExtendedFortuneBlockCount;
+					
+					// The count has the final value so set it as the amount:
+					blocks.setAmount( count );
 				}
-				
-				// The count has the final value so set it as the amount:
-				blocks.setAmount( count );
 				return;
 			}
 			
@@ -2407,7 +2422,9 @@ public class AutoManagerFeatures
 						calculateDropAdditionsGravelFlint( itemInHand, itemStack, drops ) );
 			}
 			
-			drops.addAll( adds );
+			if ( adds.size() > 0 ) {
+				drops.addAll( adds );
+			}
 		}
 	}
 

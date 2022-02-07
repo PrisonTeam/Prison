@@ -91,6 +91,15 @@ public class SpigotItemStack
     	super( amount, material, lore );
     }
     
+    
+    public void setPrisonBlock( PrisonBlock pBlock ) {
+    	
+    	String displayName = pBlock.getBlockName();
+    	
+    	setDisplayName( displayName );
+    	
+    	setMaterial( pBlock );
+    }
 	
 	/**
 	 * <p>This function overrides the Prison's ItemStack class's setAmount() to perform the 

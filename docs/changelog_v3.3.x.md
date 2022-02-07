@@ -13,7 +13,17 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-beta.2 (alpha.7) 2022-02-05
+# 3.3.0-beta.2 (alpha.7) 2022-02-06
+
+
+* **Add more support for CustomItems plugin.**
+It appears like this is working really well with auto pickup.  It should be noted that the CustomItems' API does not have a getDrops() so it's impossible to get the correctly configured drops for the block, so for now, it will only return the block itself and not any configured drops.
+Sellall may need to be fixed and there could be some other areas that needs some fine tuning, but so far all is working well.
+
+
+* **For CustomBlockIntegrations added getDrops().**
+This has to be used instead of bukkit's getDrops() since that will return only the base item drops, which are the wrong items.
+For CustomItems plugin, there currently isn't a getDrops() function in the CustomItems API so instead, the integration's getDrops() returns the block.
 
 
 * **If cancelAllBlockEventBlockDrops is enabled when it's not valid on the server version, then it will print the error to console, then turn off this features**

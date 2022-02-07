@@ -240,14 +240,24 @@ public class SpigotWorld implements World {
 					}
 				}
 				catch ( Exception e ) {
-					String blkName = current.getPrisonBlock().getBlockName();
-					PrisonBlock pBlock = current.getPrisonBlock( resetType );
-					String resetTypeBlockName = pBlock == null ? "null" : pBlock.getBlockName();
 					
-					Output.get().logError( 
-							String.format( "SpigotWorld.setBlocksSynchronously: %s  resetType: %s  %s",
-							blkName, resetType.name(), resetTypeBlockName ), e );
-//					e.printStackTrace();
+					if ( current != null ) {
+						
+						String blkName = current.getPrisonBlock().getBlockName();
+						PrisonBlock pBlock = current.getPrisonBlock( resetType );
+						String resetTypeBlockName = pBlock == null ? "null" : pBlock.getBlockName();
+						
+						Output.get().logError( 
+								String.format( "SpigotWorld.setBlocksSynchronously: %s  resetType: %s  %s",
+										blkName, resetType.name(), resetTypeBlockName ), e );
+					}
+					else {
+						
+						Output.get().logError( 
+								String.format( "SpigotWorld.setBlocksSynchronously: --noBlock--  resetType: %s  " +
+										"[unable to set 'current']",
+										resetType.name()  ), e );
+					}
 				}
 				
 				long elapsedNanos = System.nanoTime() - start;

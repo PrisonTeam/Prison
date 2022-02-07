@@ -84,7 +84,7 @@ public class PrisonBlock
 	 * @param chance
 	 */
 	public PrisonBlock( PrisonBlockType blockType, String blockName, double chance, long blockCountTotal ) {
-		super( blockName, chance, blockCountTotal );
+		super( blockType, blockName, chance, blockCountTotal );
 
 		this.blockType = blockType;
 		
