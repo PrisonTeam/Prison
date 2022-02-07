@@ -6,11 +6,13 @@ import java.util.List;
 import com.jojodmo.customitems.api.CustomItemsAPI;
 
 import tech.mcprison.prison.integration.CustomBlockIntegration;
+import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.Location;
 
@@ -125,6 +127,22 @@ public class CustomItems
 	@Override
 	public void setCustomBlockIdAsync( PrisonBlock prisonBlock, Location location ) {
 		customItemsWrapper.setCustomBlockIdAsync( prisonBlock, location );
+	}
+	
+	@Override
+	public List<? extends ItemStack> getDrops( PrisonBlock prisonBlock ) {
+		List<? extends ItemStack> results = customItemsWrapper.getDrops( prisonBlock );
+		
+		
+//		PrisonBlock ciPBlock = getCustomBlock( prisonBlock );
+//		
+//		if ( ciPBlock != null ) {
+//			
+//			results.add( new ItemStack( 1, ciPBlock ) );
+//			
+//		}
+		
+		return results;
 	}
 	
 	@Override

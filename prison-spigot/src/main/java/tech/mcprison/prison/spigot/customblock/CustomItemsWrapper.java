@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.customblock;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.scheduler.BukkitRunnable;
@@ -10,6 +11,7 @@ import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.util.Location;
 
 public class CustomItemsWrapper {
@@ -83,6 +85,34 @@ public class CustomItemsWrapper {
 		
 	}
 
+	/**
+	 * <p>WARNING: CustomItems does not have a getDrops() function, so there is no way to 
+	 * actually get custom drops for CustomItems blocks.  All we can do is return the custom 
+	 * block.
+	 * </p>
+	 * 
+	 * <p>If a getDrops() function is added in the future, then we will be able to hook that up
+	 * with that future version.
+	 * </p>
+	 * 
+	 * @param prisonBlock
+	 * @return
+	 */
+	public List<SpigotItemStack> getDrops( PrisonBlock prisonBlock ) {
+		List<SpigotItemStack> results = new ArrayList<>();
+		
+		org.bukkit.inventory.ItemStack bItemStack = CustomItemsAPI.getCustomItem( prisonBlock.getBlockName() );
+		
+		SpigotItemStack sItemStack = new SpigotItemStack( bItemStack );
+
+		// Fix itemStack's displayName and set to the correct BlockType:
+		sItemStack.setPrisonBlock( prisonBlock );
+		
+		results.add( sItemStack );
+		
+		return results;
+	}
+	
 	public List<String> getCustomBlockList() {
 		return CustomItemsAPI.listBlockCustomItemIDs();
 	}

@@ -2,6 +2,7 @@ package tech.mcprison.prison.integration;
 
 import java.util.List;
 
+import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
@@ -48,6 +49,7 @@ public abstract class CustomBlockIntegration
 
 	public abstract void setCustomBlockIdAsync( PrisonBlock prisonBlock, Location location );
 
+	public abstract List<? extends ItemStack> getDrops( PrisonBlock prisonBlock );
 	
 	public abstract List<PrisonBlock> getCustomBlockList();
 
