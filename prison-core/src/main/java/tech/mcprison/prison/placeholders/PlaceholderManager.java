@@ -15,6 +15,7 @@ public class PlaceholderManager {
     public static final String PRISON_PLACEHOLDER_MINENAME_SUFFIX = "_minename";
     public static final String PRISON_PLACEHOLDER_LADDERNAME_SUFFIX = "_laddername";
     public static final String PRISON_PLACEHOLDER_RANKNAME_SUFFIX = "_rankname";
+    public static final String PRISON_PLACEHOLDER_PLAYERBLOCK_SUFFIX = "__blockname";
     
     public static final String PRISON_PLACEHOLDER_ATTRIBUTE_FIELD_SEPARATOR = ":";
     public static final String PRISON_PLACEHOLDER_ATTRIBUTE_SEPARATOR = 
@@ -38,6 +39,7 @@ public class PlaceholderManager {
 
     	MINES,
     	MINEPLAYERS,
+    	PLAYERBLOCKS,
     	
     	STATSMINES( true ),
     	STATSRANKS( true ),
@@ -286,8 +288,16 @@ public class PlaceholderManager {
 		prison_player_blocks_total_formatted(prison_pbtf, PlaceholderFlags.PLAYER),
 
 		
-		prison_pbtm(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
-		prison_player_blocks_total_minename(prison_pbtm, PlaceholderFlags.MINEPLAYERS),
+		prison_pbt_minename(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_pbtr_minename(PlaceholderFlags.MINEPLAYERS, PlaceholderFlags.ALIAS),
+		prison_player_blocks_total_minename(prison_pbt_minename, PlaceholderFlags.MINEPLAYERS),
+		prison_player_blocks_total_raw_minename(prison_pbtr_minename, PlaceholderFlags.MINEPLAYERS),
+		
+		
+		prison_ptb__blockname(PlaceholderFlags.PLAYERBLOCKS, PlaceholderFlags.ALIAS),
+		prison_player_total_blocks__blockname(prison_ptb__blockname, PlaceholderFlags.PLAYERBLOCKS),
+		prison_ptbr__blockname(PlaceholderFlags.PLAYERBLOCKS, PlaceholderFlags.ALIAS),
+		prison_player_total_blocks_raw__blockname(prison_ptbr__blockname, PlaceholderFlags.PLAYERBLOCKS),
 		
 		
 		

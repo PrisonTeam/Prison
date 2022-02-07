@@ -10,6 +10,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
@@ -223,12 +224,22 @@ public class PrisonMinesBlockBreakEvent
 		TreeMap<String, Integer> results = new TreeMap<>();
 		
 		if ( getTargetBlock() != null ) {
-			results.put( getTargetBlock().getPrisonBlock().getBlockName(), 1 );
+			results.put( 
+					getTargetBlock().getPrisonBlock().getBlockType() == PrisonBlockType.minecraft ?
+							getTargetBlock().getPrisonBlock().getBlockName() : 
+							getTargetBlock().getPrisonBlock().getBlockType() + ":" + getTargetBlock().getPrisonBlock().getBlockName()
+					, 1 );
 		}
 		
 		for ( MineTargetPrisonBlock targetBlock : getTargetExplodedBlocks() )
 		{
-			String blockName = targetBlock.getPrisonBlock().getBlockName();
+			String blockName =
+					targetBlock.getPrisonBlock().getBlockType() == PrisonBlockType.minecraft ?
+							targetBlock.getPrisonBlock().getBlockName() : 
+								targetBlock.getPrisonBlock().getBlockType() + ":" + targetBlock.getPrisonBlock().getBlockName();
+							
+							// targetBlock.getPrisonBlock().getBlockName();
+			
 			int count = 1 + ( results.containsKey( blockName ) ? results.get( blockName ) : 0) ;
 			results.put( blockName, count );
 		}

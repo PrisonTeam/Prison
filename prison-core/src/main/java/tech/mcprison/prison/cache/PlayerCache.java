@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
@@ -371,7 +372,14 @@ public class PlayerCache {
 	
 	
 	public void addPlayerBlocks( Player player, String mine, PrisonBlockStatusData block, int quantity ) {
-		addPlayerBlocks( player, mine, block.getBlockName(), quantity );
+		if ( block.getBlockType() == PrisonBlockType.minecraft ) {
+			addPlayerBlocks( player, mine, block.getBlockName(), quantity );
+		}
+		else {
+			String blockName = block.getBlockType() + ":" + block.getBlockName();
+			addPlayerBlocks( player, mine, blockName, quantity );
+		}
+		
 	}
 //	public void addPlayerBlocks( Player player, String mine, PrisonBlock block, int quantity ) {
 //		addPlayerBlocks( player, mine, block.getBlockName(), quantity );

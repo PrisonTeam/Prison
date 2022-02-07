@@ -432,7 +432,9 @@ public class SpigotPlaceholders
 					PlaceholderAttribute attribute = null;
 					value = mm.getTranslateMinesPlaceHolder( placeHolderKey, attribute, -1 );
 				}
-				if ( mm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINEPLAYERS ))) {
+				if ( mm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINEPLAYERS ) ||
+							placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.PLAYERBLOCKS ) 
+						)) {
 					PlaceholderAttribute attribute = null;
 					value = mm.getTranslatePlayerMinesPlaceHolder( playerUuid, playerName, placeHolderKey, 
 									attribute, -1 );
