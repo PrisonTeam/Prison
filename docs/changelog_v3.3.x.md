@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-beta.2 (alpha.7) 2022-02-06
+# 3.3.0-beta.2 (alpha.7) 2022-02-07
+
+
+* **Update CustomItems api from v3.7.17 to v4.1.3.**
+This newer version of the API still does not have a getDrops() function.
 
 
 * **Add more support for CustomItems plugin.**
