@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.2 (alpha.7) 2022-02-07
 
 
+* **Upgrade gradle from v7.0.2 to v7.1.**
+
+
 * **Added a few new placeholders and a new placeholder type of PLAYERBLOCKS.**
 Added raws to the player_block_total per mine.  Added player_blocks_total and its raw counts, which is a PLAYERBLOCKS.
 
