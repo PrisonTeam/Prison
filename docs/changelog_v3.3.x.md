@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.2 (alpha.7) 2022-02-07
 
 
+* **Upgrade gradle from v7.1 to v7.1.1 to v7.2.**
+
+
 * **Upgrade gradle from v7.0.2 to v7.1.**
 
 
