@@ -486,7 +486,9 @@ public class PlayerManager
 //					if ( sb.length() > 0 ) {
 //  	  				sb.append(" ");
 //    				}
-    				sb.append(entry.getValue().getRank().getTag());
+    				Rank rank = entry.getValue().getRank();
+    				String tag = rank.getTag();
+    				sb.append( tag == null ? rank.getName() : tag );
     			}
     		}
     	}

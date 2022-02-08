@@ -1334,7 +1334,8 @@ public class RanksCommands
     	
     }
 
-    @Command(identifier = "ranks set tag", description = "Modifies a ranks tag", 
+    @Command(identifier = "ranks set tag", description = "Modifies a ranks tag. If a rank does not have a " +
+    		"tag set, then the rank name will be used. You can use color codes to stylize your rank tag.", 
     							onlyPlayers = false, permissions = "ranks.set")
     public void setTag(CommandSender sender, 
     				@Arg(name = "rankName") String rankName, 
@@ -1513,7 +1514,7 @@ public class RanksCommands
 			}
 			
 			
-			RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+//			RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
 			
 			
 			Map<RankLadder, PlayerRank> rankLadders = rankPlayer.getLadderRanks();

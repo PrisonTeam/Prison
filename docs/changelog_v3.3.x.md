@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.2 (alpha.7) 2022-02-08
 
 
+* **On the command /ranks set tag, added the note that if a tag is removed from a rank, then the rank name will be used instead.**
+Fixed the placeholder for rank tags so if it is null, it no longer show a null, but now it show the rank's name.
+
+
 * **Fixed the generation of the player mined block count placeholders.**
 Was missing one _ after generating the specific block related placeholder.
 
