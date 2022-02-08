@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.2 (alpha.7) 2022-02-08
 
 
+* **For the /prison support commands, the output is now sent to the player instead of just the console.**
+
+
 * **Some minor changes to /prison debug to give it an alias of /prison support debug.**
 Format a few of the messages to make it easier to understand.
 

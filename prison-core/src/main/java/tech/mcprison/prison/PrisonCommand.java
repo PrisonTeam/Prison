@@ -1116,14 +1116,14 @@ public class PrisonCommand
     		) {
     	
     	if ( supportName == null || supportName.trim().isEmpty() ) {
-    		Output.get().logInfo( "A value for supportName is required." );
+    		sender.sendMessage( "A value for supportName is required." );
     		return;
     	}
 
     	setSupportName( supportName );
     	
-    	Output.get().logInfo( "The support name has been set to: %s", getSupportName() );
-    	Output.get().logInfo( "You can now use the support submit options." );
+    	sender.sendMessage( String.format( "The support name has been set to: %s", getSupportName() ) );
+    	sender.sendMessage( "You can now use the support submit options." );
 
     }
     
@@ -1138,8 +1138,8 @@ public class PrisonCommand
     	
     	
     	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
-    		Output.get().logInfo( "The support name needs to be set prior to using this command." );
-    		Output.get().logInfo( "Use &7/prison support setSupportName help" );
+    		sender.sendMessage( "The support name needs to be set prior to using this command." );
+    		sender.sendMessage( "Use &7/prison support setSupportName help" );
     		
     		return;
     	}
@@ -1156,12 +1156,12 @@ public class PrisonCommand
 		
 		if ( helpURL != null ) {
 			
-			Output.get().logInfo( "Prison's support information has been pasted. Copy and " +
+			sender.sendMessage( "Prison's support information has been pasted. Copy and " +
 					"paste this URL in to Prison's Discord server." );
-			Output.get().logInfo( "Paste this URL: %s", helpURL );
+			sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
 		}
 		else {
-    		Output.get().logInfo( "There was an error trying to generate the paste.helpch.at URL." );
+			sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
 		}
 		
     	
@@ -1179,8 +1179,8 @@ public class PrisonCommand
     	
     	
     	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
-    		Output.get().logInfo( "The support name needs to be set prior to using this command." );
-    		Output.get().logInfo( "Use &7/prison support setSupportName help" );
+    		sender.sendMessage( "The support name needs to be set prior to using this command." );
+    		sender.sendMessage( "Use &7/prison support setSupportName help" );
     		
     		return;
     	}
@@ -1212,12 +1212,12 @@ public class PrisonCommand
     	
     	if ( helpURL != null ) {
     		
-    		Output.get().logInfo( "Prison's support information has been pasted. Copy and " +
+    		sender.sendMessage( "Prison's support information has been pasted. Copy and " +
     				"paste this URL in to Prison's Discord server." );
-    		Output.get().logInfo( "Paste this URL: %s", helpURL );
+    		sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
     	}
     	else {
-    		Output.get().logInfo( "There was an error trying to generate the paste.helpch.at URL." );
+    		sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
     	}
     	
     	
@@ -1233,8 +1233,8 @@ public class PrisonCommand
     	
     	
     	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
-    		Output.get().logInfo( "The support name needs to be set prior to using this command." );
-    		Output.get().logInfo( "Use &7/prison support setSupportName help" );
+    		sender.sendMessage( "The support name needs to be set prior to using this command." );
+    		sender.sendMessage( "Use &7/prison support setSupportName help" );
     		
     		return;
     	}
@@ -1266,12 +1266,12 @@ public class PrisonCommand
     	
     	if ( helpURL != null ) {
     		
-    		Output.get().logInfo( "Prison's support information has been pasted. Copy and " +
+    		sender.sendMessage( "Prison's support information has been pasted. Copy and " +
     				"paste this URL in to Prison's Discord server." );
-    		Output.get().logInfo( "Paste this URL: %s", helpURL );
+    		sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
     	}
     	else {
-    		Output.get().logInfo( "There was an error trying to generate the paste.helpch.at URL." );
+    		sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
     	}
     	
     	
@@ -1288,8 +1288,8 @@ public class PrisonCommand
     	
     	
     	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
-    		Output.get().logInfo( "The support name needs to be set prior to using this command." );
-    		Output.get().logInfo( "Use &7/prison support setSupportName help" );
+    		sender.sendMessage( "The support name needs to be set prior to using this command." );
+    		sender.sendMessage( "Use &7/prison support setSupportName help" );
     		
     		return;
     	}
@@ -1328,12 +1328,12 @@ public class PrisonCommand
     	
     	if ( helpURL != null ) {
     		
-    		Output.get().logInfo( "Prison's support information has been pasted. Copy and " +
+    		sender.sendMessage( "Prison's support information has been pasted. Copy and " +
     				"paste this URL in to Prison's Discord server." );
-    		Output.get().logInfo( "Paste this URL: %s", helpURL );
+    		sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
     	}
     	else {
-    		Output.get().logInfo( "There was an error trying to generate the paste.helpch.at URL." );
+    		sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
     	}
     	
     	
@@ -1425,8 +1425,8 @@ public class PrisonCommand
     	
     	
     	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
-    		Output.get().logInfo( "The support name needs to be set prior to using this command." );
-    		Output.get().logInfo( "Use &7/prison support setSupportName help" );
+    		sender.sendMessage( "The support name needs to be set prior to using this command." );
+    		sender.sendMessage( "Use &7/prison support setSupportName help" );
     		
     		return;
     	}
@@ -1435,7 +1435,7 @@ public class PrisonCommand
     	File latestLogFile = new File( Prison.get().getDataFolder().getParentFile().getParentFile(), 
     									"logs/latest.log");
     	
-    	Output.get().logInfo( "### log path: " + latestLogFile.getAbsolutePath() );
+    	sender.sendMessage( "### log path: " + latestLogFile.getAbsolutePath() );
     	
     	
     	StringBuilder logText = new StringBuilder();
@@ -1454,9 +1454,9 @@ public class PrisonCommand
     			
     			if ( helpURL != null ) {
     				
-    				Output.get().logInfo( "Prison's support information has been pasted. Copy and " +
+    				sender.sendMessage( "Prison's support information has been pasted. Copy and " +
     						"paste this URL in to Prison's Discord server." );
-    				Output.get().logInfo( "Paste this URL: %s", helpURL );
+    				sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
     			}
     			else {
     				// Do nothing since if helpURL is null, then it has probably
@@ -1466,7 +1466,7 @@ public class PrisonCommand
     		}
     	}
     	
-    	Output.get().logInfo( "Unable to send log file.  Unknown reason why." );
+    	sender.sendMessage( "Unable to send log file.  Unknown reason why." );
     }
 
 	private void readFileToStringBulider( File textFile, StringBuilder text )
