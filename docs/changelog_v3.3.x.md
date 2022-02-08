@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.2 (alpha.7) 2022-02-08
 
 
+* **Removed the backpack's object from the player's cache.**
+ Backpacks are too massive for the player's cache and needs thier own cache system.
+
+
 * **On the command /ranks set tag, added the note that if a tag is removed from a rank, then the rank name will be used instead.**
 Fixed the placeholder for rank tags so if it is null, it no longer show a null, but now it show the rank's name.
 
