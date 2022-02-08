@@ -112,18 +112,18 @@ public class SpigotPlayer
     public Optional<String> getLocale() {
     	Optional<String> results = Optional.empty();
     	
-    	if ( SpigotNMSPlayer.getInstance().hasSupport() ) {
-            try {
-                results = Optional.ofNullable(
-                		SpigotNMSPlayer.getInstance().getLocale( getWrapper() )
-                		);
-            } 
-            catch ( Exception ex ) {
-            	Output.get().logInfo(
-            			"Failed to initialize NMS components -- " +
-            					"NMS is not functional - " +  ex.getMessage() );
-            }
-    	}
+//    	if ( SpigotNMSPlayer.getInstance().hasSupport() ) {
+//            try {
+//                results = Optional.ofNullable(
+//                		SpigotNMSPlayer.getInstance().getLocale( getWrapper() )
+//                		);
+//            } 
+//            catch ( Exception ex ) {
+//            	Output.get().logInfo(
+//            			"Failed to initialize NMS components -- " +
+//            					"NMS is not functional - " +  ex.getMessage() );
+//            }
+//    	}
         return results;
     }
     

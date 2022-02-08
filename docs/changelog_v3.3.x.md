@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.2 (alpha.7) 2022-02-08
 
 
+* **Disable the player's nms attempts to get their locale... spigot 1.17 and higher no longer can get that value.**
+Just use the server's default value.
+
+
 * **For the /prison support commands, the output is now sent to the player instead of just the console.**
 
 
