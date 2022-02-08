@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-beta.2 (alpha.7) 2022-02-07
+# 3.3.0-beta.2 (alpha.7) 2022-02-08
+
+
+* **Fixed the generation of the player mined block count placeholders.**
+Was missing one _ after generating the specific block related placeholder.
 
 
 * **Upgrade gradle from v7.3 to v7.3.1 to v7.3.2 to v7.3.3**

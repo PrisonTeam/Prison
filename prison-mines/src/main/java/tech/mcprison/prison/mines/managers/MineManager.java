@@ -1682,13 +1682,13 @@ public class MineManager
 					
 					for ( String blockName : blockNames ) {
 						String mineKey = bn.name().replace( 
-								PlaceholderManager.PRISON_PLACEHOLDER_PLAYERBLOCK_SUFFIX, "_" + blockName ).
+								PlaceholderManager.PRISON_PLACEHOLDER_PLAYERBLOCK_SUFFIX, "__" + blockName ).
 								toLowerCase();
 						
 						PlaceHolderKey placeholder = new PlaceHolderKey(mineKey, bn, blockName );
 						if ( bn.getAlias() != null ) {
 							String aliasName = bn.getAlias().name().replace( 
-									PlaceholderManager.PRISON_PLACEHOLDER_PLAYERBLOCK_SUFFIX, "_" + blockName ).
+									PlaceholderManager.PRISON_PLACEHOLDER_PLAYERBLOCK_SUFFIX, "__" + blockName ).
 									toLowerCase();
 							placeholder.setAliasName( aliasName );
 						}
