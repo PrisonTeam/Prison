@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-beta.2 (alpha.7) 2022-02-08
 
 
+* **Some minor changes to /prison debug to give it an alias of /prison support debug.**
+Format a few of the messages to make it easier to understand.
+
+
 * **Removed the backpack's object from the player's cache.**
  Backpacks are too massive for the player's cache and needs thier own cache system.
 

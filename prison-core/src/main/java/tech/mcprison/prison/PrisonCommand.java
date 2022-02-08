@@ -1005,7 +1005,8 @@ public class PrisonCommand
     @Command(identifier = "prison debug", 
     		description = "Enables debugging and trouble shooting information. " +
     				"For internal use only. Do not use unless instructed.", 
-    		onlyPlayers = false, permissions = "prison.debug" )
+    		onlyPlayers = false, permissions = "prison.debug",
+    		aliases = {"prison support debug"} )
     public void toggleDebug(CommandSender sender,
     		@Wildcard(join=true)
     		@Arg(name = "targets", def = " ",
@@ -1047,13 +1048,13 @@ public class PrisonCommand
     	// Applies normal and selective targets:
     	Output.get().applyDebugTargets( targets );
     	
-    	String message = "Global Debug Logging is " + (Output.get().isDebug() ? "enabled" : "disabled");
+    	String message = "&7Global Debug Logging is " + (Output.get().isDebug() ? "&3enabled" : "&cdisabled");
     	sender.sendMessage( message );
     	
     	Set<DebugTarget> activeDebugTargets = Output.get().getActiveDebugTargets();
     	
     	if ( activeDebugTargets.size() > 0 ) {
-    		message = ". Active Debug Targets:";
+    		message = ". Note: Active Debug Targets:";
     		sender.sendMessage( message );
     		
     		for ( DebugTarget target : activeDebugTargets )
