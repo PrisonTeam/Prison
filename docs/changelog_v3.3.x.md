@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-beta.2 (alpha.7) 2022-02-08
+# 3.3.0-alpha.7 2022-02-09
+
+
+* **v3.3.0-alpha.7 2022-02-09**
+Set this back on an alpha release schedule.  The betas appear to have been pretty stable.
 
 
 * **Disable the player's nms attempts to get their locale... spigot 1.17 and higher no longer can get that value.**

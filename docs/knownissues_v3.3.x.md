@@ -8,10 +8,31 @@
 # TODO Items for v3.3.0-alpha.7
 
 
-- when rank tag = none - show "null" for placeholder
+- custom blocks not working with sellall.   Sellall is not honoring the custom block's names.
 
-- work on getting CustomItems working in mines again
-- sellall get player multiplier needs to be rewritten
+
+- DONE: placeholder for player blocks mined.  artic1409 
+  - maybe use **prison_player_total_blocks__blockname**
+  
+- DONE: update placeholderAPI with prison's updated placeholders
+
+- Auto smelt is missing some blocks?  Symadude23
+
+- placeholder attributes: Add overrides for "units".  kstance requested it for time, such as h,m,s...
+
+
+- DONE: prison support submit are only sending to console, not the user if they are in game
+
+- DONE: When a mine reset time is disabled... it cancels/stops a /mines reset *all*
+
+
+- DONE: when rank tag = none - was showing "null" for placeholder
+
+- DONE: work on getting CustomItems working in mines again
+
+- Need to get CustomItems working with sellall
+
+- sellall get player multiplier needs to be rewritten - cached?  Currently goes through all perms
 
 - automatic prestiges
 
@@ -24,70 +45,38 @@
 - Mine reset notifications logging to console - options? 
 
 
-- DONE: /ranks autoConfigure - review setup and maybe enable skip resets and tweak some notification settings.
 
-
-- remove this warning message:  no longer used.
+- DONE: remove this warning message:  no longer used.
 [18:58:51 INFO]: | Prison |  Cannot initialize NMS components - ClassNotFoundException - NMS is not functional - net.minecraft.server.v1_18_R1.EntityPlayer
 
 
-- DONE: update CMI delayed loading docs... they are "backwards"
-
-
-
-
-- DONE: Upon startup the first time, broadcast to everyone that they should use /ranks autoConfigure.
-  - Broadcast failed ranks too.
-  
 
 - DONE: RankPlayer addBalance cache for default currency
 - RankPlayer addBalance cache for custom currency - still needed!
 
-
-- DONE: SELLALL has huge performance issues!  It takes 2.3 ms to autosell, and full auto features block handling is 4.2 ms!!  Serious performance issue with sellall, and autosell is bypassing the command handler too!
-  - added 'autosellTiming:' stats to auto features autosell to track actual sell time using nano-seconds... initial tests show there maybe significant performance issues.
-  - autosell in auto features causing lag?  Flaco21
-    - Issue with autosell causing lag?
-  - DONE: see RankPlayer addBalance cache - 1250 times improvement! 
-
-
-- DONE: admin gui - allows them to bypass No Economy safeguards.
-
-
-
-* DONE: Add commands to list shop prices in console. Currently sellall is 100% gui so cannot be used offline.
 
 
 * Problems with blocks:
  - Sand or any other block that falls is no longer in original location so cannot break it. 
    - Might have to tag the blocks with NMS?
    - Just fixed an issue with a block that was in a mine with gravel, sand, and dirt.  MIght have been sand causing the error.  NOTE: prevent error, not fixed the actual problem.
- - DONE: lapis lazuli is not auto selling
- 
+
  
 - Problem with actionBar - messages are not going through.
  - sellall updates every second - different messages - but never show first one - PlayerMessages
 
 
- 
- - DONE: No economy error message not showing
-   - works on delayed startup
-   - Fails when not delayed - gui ranks was registering on top of ranks warning
-   
+
  
  - block stats based upon drops instead of breakage?? (not sure if this has merit?)
  
 
--> DONE: Hook in to quests - Only on block break events
 
-
--> Suport for eco enchants:
+-> Support for eco enchants:
   - Need to add an event listener and then have a new function in EnchantmentUtils handle the event, with passing continuing to call the normal rehandleBreaking.  Maybe name it rehandleBreakingEvent?
 https://github.com/Auxilor/EcoEnchants/blob/master/eco-core/core-plugin/src/main/java/com/willfp/ecoenchants/enchantments/ecoenchants/normal/BlastMining.java
 https://github.com/Auxilor/EcoEnchants/blob/master/eco-core/core-plugin/src/main/java/com/willfp/ecoenchants/enchantments/util/EnchantmentUtils.java
 
-
-- DONE: You cannot afford the rankup is using a NBSP for the thousand separator. Using Prison v3.2.11, Java 16, and spigot 1.16.5. Cannot reproduce. Was a server hosting config issue, but not sure why it only impacted that one message.
 
 
 * calculate mine worth?
@@ -102,7 +91,44 @@ https://github.com/Auxilor/EcoEnchants/blob/master/eco-core/core-plugin/src/main
 * sellall - ladder based sellall rank multipliers 
   - so a ladder value of 0.05 would apply p1 = 1.05, p2 = 1.10, p3 = 1.15, etc...
   
+
   
+
+-> DONE: Hook in to quests - Only on block break events so may not work as expected?
+
+  
+  - DONE: You cannot afford the rankup is using a NBSP for the thousand separator. Using Prison v3.2.11, Java 16, and spigot 1.16.5. Cannot reproduce. Was a server hosting config issue, but not sure why it only impacted that one message.
+
+
+ - DONE: SELLALL has huge performance issues!  It takes 2.3 ms to autosell, and full auto features block handling is 4.2 ms!!  Serious performance issue with sellall, and autosell is bypassing the command handler too!
+  - added 'autosellTiming:' stats to auto features autosell to track actual sell time using nano-seconds... initial tests show there maybe significant performance issues.
+  - autosell in auto features causing lag?  Flaco21
+    - Issue with autosell causing lag?
+  - DONE: see RankPlayer addBalance cache - 1250 times improvement! 
+
+
+- DONE: admin gui - allows them to bypass No Economy safeguards.
+
+
+* DONE: Add commands to list shop prices in console. Currently sellall is 100% gui so cannot be used offline. 
+  
+
+- DONE: lapis lazuli is not auto selling
+ 
+
+- DONE: Upon startup the first time, broadcast to everyone that they should use /ranks autoConfigure.
+  - Broadcast failed ranks too.
+
+- DONE: update CMI delayed loading docs... they are "backwards"
+
+ 
+ - DONE: No economy error message not showing
+   - works on delayed startup
+   - Fails when not delayed - gui ranks was registering on top of ranks warning
+   
+- DONE: /ranks autoConfigure - review setup and maybe enable skip resets and tweak some notification settings.
+
+
 
 
 # TODO Items for v3.2.11-alpha.13
