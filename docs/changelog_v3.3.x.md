@@ -13,7 +13,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.7 2022-02-09
+# 3.3.0-alpha.7 2022-02-10
+
+
+* **Provide information on locale settings within the `/prison version` command.**
+Falls back to the en_US properties file if the selected language file does not exist.
+If the non en_US properties files are found to be missing a property, then the english property is used as a fallback.  These fallbacks are not written back to the save files.
 
 
 * **v3.3.0-alpha.7 2022-02-09**
