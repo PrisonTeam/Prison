@@ -340,6 +340,15 @@ public class PrisonCommand
         	display.addComponent( component );
 		}
         
+        
+        display.addText("");
+        display.addText("&7Locale Settings:");
+        
+        for ( String localeInfo : Prison.get().getLocaleLoadInfo() ) {
+			display.addText( ". . " + localeInfo );
+		}
+        
+        
         Prison.get().getPlatform().identifyRegisteredPlugins();
         
         // NOTE: This list of plugins is good enough and the detailed does not have all the info.

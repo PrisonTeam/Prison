@@ -381,9 +381,9 @@ public class RegisteredCommand
         return set;
     }
 
-    public boolean onlyPlayers() {
-        return onlyPlayers;
-    }
+//    public boolean onlyPlayers() {
+//        return onlyPlayers;
+//    }
 
     public void sendHelpMessage(CommandSender sender) {
     	

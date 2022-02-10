@@ -105,10 +105,14 @@ public class Prison
     private PrisonTPS prisonTPS;
     
     
+    private List<String> localeLoadInfo;
+    
     private Prison() {
     	super();
     	
     	this.serverStartupTime = System.currentTimeMillis();
+    	
+    	this.localeLoadInfo = new ArrayList<>();
     }
 
     /**
@@ -767,6 +771,10 @@ public class Prison
 
 	public PrisonTPS getPrisonTPS() {
 		return prisonTPS;
+	}
+
+	public List<String> getLocaleLoadInfo() {
+		return localeLoadInfo;
 	}
     
 }

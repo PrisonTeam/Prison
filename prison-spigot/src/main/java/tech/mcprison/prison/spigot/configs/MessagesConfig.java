@@ -1,8 +1,10 @@
 package tech.mcprison.prison.spigot.configs;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.spigot.SpigotPrison;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
 /**
@@ -39,10 +41,58 @@ public class MessagesConfig {
      * */
     @Deprecated
     private void initConfig(){
-        try(FileInputStream data = new FileInputStream(SpigotPrison.getInstance().getDataFolder() + path + defaultLanguage + ".properties")){
+    	
+    	String pathStr = SpigotPrison.getInstance().getDataFolder() + path;
+    	File path = new File( pathStr );
+    	
+    	String enUSFileName = "en_US" + ".properties";
+    	File enUSFile = new File( path, enUSFileName );
+    	
+    	String targetFileName = defaultLanguage + ".properties";
+    	File targetFile = new File( path, targetFileName );
+    	
+    	if ( enUSFile.exists() && !targetFile.exists() ) {
+    		targetFile = enUSFile;
+    		
+			Prison.get().getLocaleLoadInfo().add( String.format( 
+					"&3pseudo-Module: &7GUI-sellall  &3Locale: &7%s  &3Warning: Locale file does not exist; using " +
+					" &7%s.properties&3.  path: %s", 
+					targetFileName, enUSFileName, pathStr ) );
+    	}
+    	else {
+    		Prison.get().getLocaleLoadInfo().add( String.format( 
+    				"&3pseudo-Module: &7GUI-sellall  &3Locale: &7%s  Using this language file with no validation.  path: %s", 
+    						targetFileName, enUSFileName, pathStr ) );
+    		
+    	}
+    	
+    	
+        try (
+        		FileInputStream is = new FileInputStream( targetFile )
+        	) {
 
             Properties temp = new Properties();
-            temp.load(new InputStreamReader(data));
+
+            // NOTE: This code is from tech.mcprison.prison.localization.LocaleManager.loadLocale(String, InputStream, boolean)
+        	
+
+            // The InputStream is part of a zipEntry so it cannot be closed, or it will close the zip stream
+            BufferedReader br = new BufferedReader( new InputStreamReader( is, Charset.forName("UTF-8") ));
+            String line = br.readLine();
+          
+            while ( line != null ) {
+            	if ( !line.startsWith( "#" ) && line.contains( "=" ) ) {
+          		
+            		String[] keyValue = line.split( "\\=" );
+            		String value = (keyValue.length > 1 ? keyValue[1] : ""); // StringEscapeUtils.escapeJava( keyValue[1] );
+            		temp.put( keyValue[0], value );
+            	}
+          	
+            	line = br.readLine();
+            }
+            
+            // WARNING: cannot use the properties.load() function since it is NOT utf-8 capable.
+//            temp.load(new InputStreamReader(data));
             properties = temp;
 
         } catch (IOException ex){

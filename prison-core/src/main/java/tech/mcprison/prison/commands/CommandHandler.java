@@ -754,7 +754,7 @@ public class CommandHandler {
             return false;
         }
 
-        if (rootCommand.onlyPlayers() && !(sender instanceof Player)) {
+        if (rootCommand.isOnlyPlayers() && !(sender instanceof Player)) {
             Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
                 .sendTo(sender, LogLevel.ERROR);
             return true;
