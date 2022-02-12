@@ -248,42 +248,43 @@ public class PlayerCache {
 	 */
 	private PlayerCachePlayerData getPlayer( Player player ) {
 		PlayerCachePlayerData playerData = null;
-		
 		getStats().incrementGetPlayers();
 		
-		String playerUuid = player == null || player.getUUID() == null ? null : 
-					player.getUUID().toString();
-		if ( !getPlayers().containsKey( playerUuid ) ) {
+		if ( player != null && player.getUUID() != null ) {
 			
-			// Load the player's existing balance:
-			playerData = getCacheFiles().fromJson( player );
-
-			// NOTE: playerData.isOnline() is dynamic and tied back to the Player object.
-			//       So if they are offline, an OfflinePlayer, then it will automatically
-			//       track that.  Also if the PlayerData object does not have a reference
-			///      to Player, then it's automatically considered offline.
+			String playerUuid = player.getUUID().toString();
 			
-			// Save it to the cache:
-			addPlayerData( playerData );
+			if ( !getPlayers().containsKey( playerUuid ) ) {
+				
+				// Load the player's existing balance:
+				playerData = getCacheFiles().fromJson( player );
+				
+				// NOTE: playerData.isOnline() is dynamic and tied back to the Player object.
+				//       So if they are offline, an OfflinePlayer, then it will automatically
+				//       track that.  Also if the PlayerData object does not have a reference
+				///      to Player, then it's automatically considered offline.
+				
+				// Save it to the cache:
+				addPlayerData( playerData );
 //			runLoadPlayerNow( player );
 //			submitAsyncLoadPlayer( player );
-		}
-		else {
-			
-			// Note: if the player has not been loaded yet, this will return a null:
-			playerData = getPlayers().get( playerUuid );
-		}
-		
-		if ( playerData != null  ) {
-
-			if ( playerData.getPlayer() == null || !playerData.getPlayer().equals( player )  ) {
+			}
+			else {
 				
-				playerData.setPlayer( player );
+				// Note: if the player has not been loaded yet, this will return a null:
+				playerData = getPlayers().get( playerUuid );
 			}
 			
-			playerData.updateLastSeen();
+			if ( playerData != null  ) {
+				
+				if ( playerData.getPlayer() == null || !playerData.getPlayer().equals( player )  ) {
+					
+					playerData.setPlayer( player );
+				}
+				
+				playerData.updateLastSeen();
+			}
 		}
-
 		
 		return playerData;
 	}
@@ -363,7 +364,8 @@ public class PlayerCache {
 		PlayerCacheCheckTimersTask task = new PlayerCacheCheckTimersTask();
 		
 		// Submit Timer Task to start running in 30 seconds (600 ticks) and then
-		// refresh stats every 10 seconds (200 ticks):
+		// refresh stats every 10 seconds (200 ticks). 
+		// This does not update any files or interacts with bukkit/spigot.
 		int taskId = PrisonTaskSubmitter.runTaskTimerAsync( task, 600, 200 );
 		task.setTaskId( taskId );
 		

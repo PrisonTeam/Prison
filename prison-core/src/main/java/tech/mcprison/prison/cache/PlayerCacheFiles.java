@@ -6,7 +6,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.NavigableMap;
+import java.util.Set;
+import java.util.TreeMap;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -35,9 +40,21 @@ import tech.mcprison.prison.output.Output;
  */
 public class PlayerCacheFiles
 {
+	public static final String FILE_SUFFIX_JSON = ".json";
+	public static final String FILE_PREFIX_BACKUP = ".backup_";
+	public static final String FILE_SUFFIX_BACKUP = ".bu";
+	public static final String FILE_SUFFIX_TEMP = ".temp";
+	public static final String FILE_TIMESTAMP_FORMAT = "_yyyy-MM-dd_HH-mm-ss";
+	public static final String FILE_PLAYERCACHE_PATH = "data_storage/playerCache";
+	
+	
 	private Gson gson = null;
 	
 	private File playerCacheDirectory = null;
+	
+	
+	private TreeMap<String, File> playerFiles;
+	
 	
 	public PlayerCacheFiles() {
 		super();
@@ -94,6 +111,11 @@ public class PlayerCacheFiles
 			
 			File playerFile = player.getPlayerFile();
 			File outTemp = createTempFile( playerFile );
+			
+			if ( !getPlayerFiles().containsKey( playerFile.getName() )) {
+				getPlayerFiles().put( playerFile.getName(), playerFile );
+			}
+			
 			boolean success = false;
 			
 			try (
@@ -142,7 +164,8 @@ public class PlayerCacheFiles
 	
 	private void renamePlayerFileToBU( File playerFile )
 	{
-		String buFileName = ".backup_" + playerFile.getName().replace( ".temp", ".bu" );
+		String buFileName = FILE_PREFIX_BACKUP + 
+					playerFile.getName().replace( FILE_SUFFIX_TEMP, FILE_SUFFIX_BACKUP );
 		
 		File backupFile = new File( playerFile.getParent(), buFileName );
 		
@@ -151,8 +174,8 @@ public class PlayerCacheFiles
 	}
 
 	private File createTempFile( File file ) {
-	    SimpleDateFormat sdf = new SimpleDateFormat("_yyyy-MM-dd_HH-mm-ss");
-	    String name = file.getName() + sdf.format( new Date() ) + ".temp";
+	    SimpleDateFormat sdf = new SimpleDateFormat( FILE_TIMESTAMP_FORMAT );
+	    String name = file.getName() + sdf.format( new Date() ) + FILE_SUFFIX_TEMP;
 	    
 	    return new File( file.getParentFile(), name);
 	}
@@ -161,8 +184,13 @@ public class PlayerCacheFiles
 	 * <p>This loads the PlayerCachePlayerData object from a saved json file.
 	 * </p>
 	 * 
+	 * <p>Since this deals with the actual file name, the "knowledge" on how to 
+	 * properly generate that file name is contained within this class and should
+	 * never be exposed since it may not be correct and can lead to errors.
+	 * </p>
+	 * 
 	 */
-	public PlayerCachePlayerData fromJsonFile( File inputFile ) {
+	private PlayerCachePlayerData fromJsonFile( File inputFile ) {
 		PlayerCachePlayerData results = null;
 		try (
 			FileReader fr = new FileReader( inputFile );
@@ -170,6 +198,8 @@ public class PlayerCacheFiles
 			
 			results = getGson().fromJson( 
 					fr, PlayerCachePlayerData.class );
+			
+			results.setPlayerFile( inputFile );
 		}
 		catch ( IOException e )
 		{
@@ -206,23 +236,23 @@ public class PlayerCacheFiles
 	 * @return
 	 */
 	private String getPlayerFileName( Player player ) {
-		String uuidHex = player.getUUID().toString();
-		String uuidFragment = getFileNamePrefix( uuidHex );
+		String UUIDString = player.getUUID().toString();
+		String uuidFragment = getFileNamePrefix( UUIDString );
 		
-		return uuidFragment + "_" + player.getName() + ".json";
+		return uuidFragment + "_" + player.getName() + FILE_SUFFIX_JSON;
 	}
 	
 	/**
 	 * <p>This function returns the first 13 characters of the supplied
-	 * file name, or UUID String. 13 characters only because the 14th character
-	 * is a hyphen. 
+	 * file name, or UUID String. The hyphen is around the 12 or 13th position, 
+	 * so it may or may not include it.
 	 * </p>
 	 * 
 	 * @param playerFileName
 	 * @return
 	 */
-	private String getFileNamePrefix( String fileName ) {
-		return fileName.substring( 0, 14 );
+	private String getFileNamePrefix( String UUIDString ) {
+		return UUIDString.substring( 0, 14 );
 	}
 	
 	
@@ -236,7 +266,7 @@ public class PlayerCacheFiles
 	public File getPlayerFilePath() {
 		if ( playerCacheDirectory == null ) {
 			
-			playerCacheDirectory = new File( Prison.get().getDataFolder(), "data_storage/playerCache" ); 
+			playerCacheDirectory = new File( Prison.get().getDataFolder(), FILE_PLAYERCACHE_PATH ); 
 			playerCacheDirectory.mkdirs();
 			
 		}
@@ -291,37 +321,16 @@ public class PlayerCacheFiles
 	public PlayerCachePlayerData fromJson( Player player ) {
 		PlayerCachePlayerData results = null;
 		
+//		// This is the "target" file name for the player, based upon their
+//		// current name. The saved cache file may not be named exactly the same,
+//		// and if it's not, then their existing cache file will be renamed 
+//		// within the function getCachedFileMatch()
 		String playerFileName = getPlayerFileName( player );
-		String fileNamePrefix = getFileNamePrefix( playerFileName );
 		
-		// This is the "target" file name for the player, based upon their
-		// current name. The saved cache file may not be named exactly the same,
-		// and if it's not, then their existing cache file needs to be 
-		// renamed.
-		File playerFile = getPlayerFile( playerFileName );
+		File playerFile = getCachedFileMatch( playerFileName );
 		
-		
-		FileFilter fileFilter = file -> !file.isDirectory() && 
-				file.getName().startsWith(fileNamePrefix) &&
-				file.getName().endsWith(".json");
-		
-		File[] files = playerFile.getParentFile().listFiles( fileFilter );
-		
-		if ( files != null && files.length > 0 ) {
-			
-			for ( File file : files )
-			{
-				PlayerCachePlayerData temp = fromJsonFile( file );
-				if ( temp != null && temp.getPlayerUuid().equalsIgnoreCase( 
-								player.getUUID().toString() ) ) {
-					
-					results = temp;
-					results.setPlayerFile( file );
-					break;
-				}
-			}
-		}
-		
+		results = fromJsonFile( playerFile );
+
 		// New player and file does not exist so create it.
 		if ( results == null ) {
 			results = new PlayerCachePlayerData( player, playerFile );
@@ -330,16 +339,101 @@ public class PlayerCacheFiles
 			toJsonFile( results );
 		}
 		
-		// Check to see if the player's name has changed, which means the generated 
-		// file name does not match.  If that is the situation, then need to rename
-		// the file to match the current player's name.
-		if ( results != null ) {
-			if ( results.getPlayerFile().equals( playerFile ) ) {
+		return results;
+	}
+
+
+
+	private TreeMap<String, File> getPlayerFiles() {
+		// load the player's files:
+		if ( playerFiles == null ) {
+			
+			playerFiles = new TreeMap<>();
+
+			FileFilter fileFilter = (file) -> {
+			
+				String fname = file.getName();
+				boolean isTemp = fname.startsWith( FILE_PREFIX_BACKUP ) ||
+								 fname.endsWith( FILE_SUFFIX_BACKUP ) ||
+								 fname.endsWith( FILE_SUFFIX_TEMP );
 				
-				results.getPlayerFile().renameTo( playerFile );
-				results.setPlayerFile( playerFile );
+				return !file.isDirectory() && !isTemp &&
+							fname.endsWith( FILE_SUFFIX_JSON );
+			};
+			
+			
+			File[] files = getPlayerFilePath().listFiles( fileFilter );
+			for ( File f : files )
+			{
+				String fileNamePrefix = getFileNamePrefix( f.getName() );
+				getPlayerFiles().put( fileNamePrefix, f );
 			}
+			
 		}
+		
+		return playerFiles;
+	}
+
+	/**
+	 * <p>Potentially there could be more than one result, but considering if a player
+	 * changes their name, then it should only return only one entry.  The reason for
+	 * this, is that the file name should be based upon the player's UUID, which is the
+	 * first 13 characters of the file, and the name itself, which follows, should
+	 * never be part of the "key".
+	 * </p>
+	 * 
+	 * @param playerFile
+	 * @param playerFileName
+	 * @return
+	 */
+	private File getCachedFileMatch( String playerFileName )
+	{
+		File results = null;
+		
+		String fileNamePrefix = getFileNamePrefix( playerFileName );
+		
+		results = getPlayerFiles().get( fileNamePrefix );
+		
+		if ( results == null ) {
+			
+			// This is the "target" file name for the player, based upon their
+			// current name. The saved cache file may not be named exactly the same,
+			// and if it's not, then their existing cache file needs to be 
+			// renamed.
+			File playerFile = getPlayerFile( playerFileName );
+			
+			// NOTE: because the file was NOT found in the directory, then we can assume
+			//       this is a new player therefore we won't have an issue with the player's
+			//       name changing.
+			getPlayerFiles().put( fileNamePrefix, playerFile );
+		}
+		else if ( !playerFileName.equalsIgnoreCase( results.getName() )) {
+			
+			// File name changed!!! Need to rename the file in the file system, and 
+			// update what is in the playerFiles map!!
+			
+			File newFile = getPlayerFile( playerFileName );
+
+			if ( results.exists() )  {
+				// rename what's on the file system:
+				results.renameTo( newFile );
+			}
+
+			// Replace what's in the map:
+			getPlayerFiles().put( fileNamePrefix, newFile );
+			
+			results = newFile;
+		}
+		
+//		NavigableMap<String, File> files = getPlayerFiles().tailMap( fileNamePrefix, true );
+//		Set<String> keys = files.keySet();
+//		for ( String key : keys ) {
+//			if ( !key.startsWith( fileNamePrefix ) ) {
+//				break;
+//			}
+//			
+//			results.add( files.get( key ) );
+//		}
 		
 		return results;
 	}
