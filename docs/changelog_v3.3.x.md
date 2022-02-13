@@ -13,7 +13,12 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.7 2022-02-12
+# 3.3.0-alpha.8s 2022-02-12
+
+
+
+
+***3.3.0-alpha.8 2022-02-12**
 
 
 * **Enable debug mode from within the config.yml file.**
