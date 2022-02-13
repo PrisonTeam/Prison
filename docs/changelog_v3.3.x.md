@@ -15,6 +15,10 @@ These build logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.8 2022-02-13
 
+
+* **Mine bombs: Enable the use of color codes on the armor stands when setting off the bombs...**
+
+
 * **Mine bombs: Added durability and digspeed enchantments to the mine bomb data.**
 This will allow for greater flexibility in how the tool in hand behaves.
 

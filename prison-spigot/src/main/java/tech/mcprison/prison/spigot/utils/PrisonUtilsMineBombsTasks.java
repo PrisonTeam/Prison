@@ -34,6 +34,7 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.util.Text;
 
 public class PrisonUtilsMineBombsTasks
 	extends PrisonUtils
@@ -538,6 +539,7 @@ public class PrisonUtilsMineBombsTasks
 				if ( tagName.contains( "{name}" ) ) {
 					tagName = tagName.replace( "{name}", bomb.getName() );
 				}
+				tagName = Text.convertToAmpColorCodes( tagName );
 				armorStand.setCustomName( tagName );
 				armorStand.setCustomNameVisible(true);
 			}
