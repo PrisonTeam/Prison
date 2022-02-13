@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8 2022-02-13
 
 
+* **If using a mine bomb, then do not allow durability calculations to be used**, 
+since if the pseudo tool breaks, then what ever the player is holding will be removed, which is usually an item stack of mine bombs.
+
+
 * **Mine Bombs: The mine bomb give command now is case insensitive.**
 
 

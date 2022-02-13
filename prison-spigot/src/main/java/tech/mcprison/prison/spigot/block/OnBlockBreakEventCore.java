@@ -1713,6 +1713,16 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 			//          in their hand.
 			if ( e.getToolInHand() != null ) {
 				pmEvent.setItemInHand( (SpigotItemStack) e.getToolInHand() );
+				
+			}
+			
+			// Note: If the mineBomb is set, then the bomb itself uses a pseudo 
+			//       tool in hand, so need to disable durability calculations since
+			//       if the pseudo tool breaks, it will clear the player's in-hand
+			//       inventory stack, which will be more mine bombs if they had more 
+			//       than one.
+			if ( e.getMineBomb() != null ) {
+				pmEvent.setCalculateDurability( false );
 			}
 			
 			if ( !validateEvent( pmEvent, debugInfo ) ) {
