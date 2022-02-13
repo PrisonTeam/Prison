@@ -190,6 +190,7 @@ public class SpigotPrison
         this.saveDefaultConfig();
         this.debug = getConfig().getBoolean("debug", false);
 
+
         // Create the core directory structure if it is missing:
         initDataDir();
 
@@ -201,14 +202,21 @@ public class SpigotPrison
         // prior to starting up:
         initCommandMap();
         this.scheduler = new SpigotScheduler(this);
+        
+        SpigotPlatform platform = new SpigotPlatform(this);
+        
 
         // Show Prison's splash screen and setup the core components:
         Prison.get()
-        		.init(new SpigotPlatform(this), Bukkit.getVersion());
-        
+        		.init(platform, Bukkit.getVersion());
         
         // Enable the spigot locale manager:
         getLocaleManager();
+        
+        if ( debug ) {
+        	Output.get().setDebug( debug );
+        }
+        
         
         this.compatibility = SpigotCompatibility.getInstance();
 //        initCompatibility();  Obsolete...

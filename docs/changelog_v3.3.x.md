@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.7 2022-02-12
 
 
+* **Enable debug mode from within the config.yml file.**
+It was not hooked up before.  This is useful for initial logging of the mine air-counts.
+
+
 * **Redesigned the initial mine air-counts which not only identifies which blocks are within a mine upon startup, but it also establishes the number of air blocks in a mine to help ensure it's able to properly reset when the mine is empty.**
 
 

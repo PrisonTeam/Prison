@@ -13,9 +13,15 @@
 #
 #
 
-# Note: This actually doesn't do anything. 
-#       May have done something with v3.1.1 or earlier.
-#debug: false
+
+
+# Enables Prison's debug mode as soon as prison starts.
+# Do not enable unless instructed to do so, since it will increase the amount of
+# information sent to the console.  To turn on/off debug mode, the following
+# command will toggle it on and off:
+#  /prison debug  
+debug: false
+
 
 # Upon server startup prison will check to see if a newer version has been released.
 check-updates: true
