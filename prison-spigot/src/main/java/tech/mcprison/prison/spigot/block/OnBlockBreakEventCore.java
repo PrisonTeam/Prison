@@ -771,7 +771,8 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 					// Thanks to CrazyEnchant, there is no telling which block was actually hit, so 
 					// if using CrazyEnchant one of the unprocessedRawBlocks may be the same as the
 					// pmEvent.getSpigotBlock(), so ignore if both are the same.
-					if ( !sBlockMined.equals( sBlockHit ) ) {
+					// Compare the locations...
+					if ( !sBlockHit.getLocation().equals( sBlockMined.getLocation() ) ) {
 						
 						if ( !mine.isInMineExact( sBlockMined.getLocation() ) ) {
 							outsideOfMine++;

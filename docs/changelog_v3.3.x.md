@@ -13,10 +13,14 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.8s 2022-02-12
+# 3.3.0-alpha.8 2022-02-13
 
 
-* **Added various token funtions to the prison spigot API class.**
+* **Fix issue with mine bombs not dropping blocks.**
+The underlying block changed and therefore so did the behavior of the equals() function.
+
+
+* **Added various token functions to the prison spigot API class.**
 
 
 ***3.3.0-alpha.8 2022-02-12**
