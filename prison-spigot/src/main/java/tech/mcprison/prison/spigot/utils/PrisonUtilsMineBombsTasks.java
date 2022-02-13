@@ -55,11 +55,9 @@ public class PrisonUtilsMineBombsTasks
 	}
 
 	
-	protected void setFortune( SpigotItemStack itemInHand, int fortuneLevel )
-	{
+	protected void setFortune( SpigotItemStack itemInHand, int fortuneLevel ) {
 
-		if ( itemInHand != null && itemInHand.getBukkitStack() != null && itemInHand.getBukkitStack().hasItemMeta() )
-		{
+		if ( itemInHand != null && itemInHand.getBukkitStack() != null && itemInHand.getBukkitStack().hasItemMeta() ) {
 
 			itemInHand.getBukkitStack().addUnsafeEnchantment( Enchantment.LOOT_BONUS_BLOCKS, fortuneLevel );
 
@@ -67,9 +65,23 @@ public class PrisonUtilsMineBombsTasks
 			// meta.addEnchant( Enchantment.LOOT_BONUS_BLOCKS, fortuneLevel,
 			// true );
 			// itemInHand.getBukkitStack().setItemMeta( meta );
-
 		}
-
+	}
+	
+	protected void setUnbreaking( SpigotItemStack itemInHand, int durabilityLevel ) {
+		
+		if ( itemInHand != null && itemInHand.getBukkitStack() != null && itemInHand.getBukkitStack().hasItemMeta() ) {
+			
+			itemInHand.getBukkitStack().addUnsafeEnchantment( Enchantment.DURABILITY, durabilityLevel );
+		}
+	}
+	
+	protected void setDigSpeed( SpigotItemStack itemInHand, int digSpeedLevel ) {
+		
+		if ( itemInHand != null && itemInHand.getBukkitStack() != null && itemInHand.getBukkitStack().hasItemMeta() ) {
+			
+			itemInHand.getBukkitStack().addUnsafeEnchantment( Enchantment.DIG_SPEED, digSpeedLevel );
+		}
 	}
 
 	// public static boolean addPlayerCooldown( String playerUUID ) {
@@ -271,6 +283,8 @@ public class PrisonUtilsMineBombsTasks
 				SpigotItemStack toolInHand = new SpigotItemStack( xMatTool.parseItem() );
 				
 				setFortune( toolInHand, bomb.getToolInHandFortuneLevel() );
+				setUnbreaking( toolInHand, bomb.getToolInHandDurabilityLevel() );
+				setDigSpeed( toolInHand, bomb.getToolInHandDigSpeedLevel() );
 				
 				
 				explodeEvent.setToolInHand( toolInHand );

@@ -479,6 +479,7 @@ public class PrisonUtilsMineBombs
 						bombs.setAmount( count );
 						player.getInventory().addItem( bombs );
 						
+						player.updateInventory();
 					}
 					else {
 						
@@ -824,21 +825,29 @@ public class PrisonUtilsMineBombs
 						bomb.setActivated( true );
 						
 						
+						
 						SpigotItemStack itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
 
 						// Remove from inventory:
-						itemInHand.setAmount( itemInHand.getAmount() - 1 );
-						
-						if ( itemInHand.getAmount() == 0 ) {
+						int inHandBombCount = itemInHand.getAmount() - 1;
+						if ( inHandBombCount == 0 ) {
 							SpigotCompatibility.getInstance()
-													.setItemInMainHand( player, null );
+										.setItemInMainHand( player, null );
+						}
+						else {
+							
+							itemInHand.setAmount( inHandBombCount );
 						}
 						
 						// Apply updates to the player's inventory:
 						player.updateInventory();
+					
+						
+						
 
 						
 						
+						@SuppressWarnings( "unused" )
 						PlacedMineBombItemTask submitPlacedMineBombItem = 
 								submitPlacedMineBombItemTask( bomb, bombBlock, bombs );
 //    						placeMineBombItem( bomb, bombBlock, bombs );

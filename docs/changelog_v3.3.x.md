@@ -15,6 +15,9 @@ These build logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.8 2022-02-13
 
+* **Mine bombs: Added durability and digspeed enchantments to the mine bomb data.**
+This will allow for greater flexibility in how the tool in hand behaves.
+
 
 * **If using a mine bomb, then do not allow durability calculations to be used**, 
 since if the pseudo tool breaks, then what ever the player is holding will be removed, which is usually an item stack of mine bombs.

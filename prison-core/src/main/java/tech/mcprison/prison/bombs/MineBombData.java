@@ -113,6 +113,10 @@ public class MineBombData {
 	
 	private int toolInHandFortuneLevel = 0;
 	
+	private int toolInHandDurabilityLevel = 0;
+
+	private int toolInHandDigSpeedLevel = 0;
+	
 	
 	private int fuseDelayTicks = 5 * 20; // 5 seconds
 	
@@ -208,6 +212,8 @@ public class MineBombData {
 		
 		this.toolInHandName = null;
 		this.toolInHandFortuneLevel = 0;
+		this.toolInHandDurabilityLevel = 0;
+		this.toolInHandDigSpeedLevel = 0;
 		
 		this.removalChance = 100.0d;
 		
@@ -235,6 +241,8 @@ public class MineBombData {
 		
 		cloned.setToolInHandName( getToolInHandName() );
 		cloned.setToolInHandFortuneLevel( getToolInHandFortuneLevel() );
+		cloned.setToolInHandDurabilityLevel( getToolInHandDurabilityLevel() );
+		cloned.setToolInHandDigSpeedLevel( getToolInHandDigSpeedLevel() );
 		
 		cloned.setRadiusInner( getRadiusInner() );
 		cloned.setHeight( getHeight() );
@@ -377,6 +385,20 @@ public class MineBombData {
 	}
 	public void setToolInHandFortuneLevel( int toolInHandFortuneLevel ) {
 		this.toolInHandFortuneLevel = toolInHandFortuneLevel;
+	}
+
+	public int getToolInHandDurabilityLevel() {
+		return toolInHandDurabilityLevel;
+	}
+	public void setToolInHandDurabilityLevel( int toolInHandDurabilityLevel ) {
+		this.toolInHandDurabilityLevel = toolInHandDurabilityLevel;
+	}
+
+	public int getToolInHandDigSpeedLevel() {
+		return toolInHandDigSpeedLevel;
+	}
+	public void setToolInHandDigSpeedLevel( int toolInHandDigSpeedLevel ) {
+		this.toolInHandDigSpeedLevel = toolInHandDigSpeedLevel;
 	}
 
 	public int getFuseDelayTicks() {
