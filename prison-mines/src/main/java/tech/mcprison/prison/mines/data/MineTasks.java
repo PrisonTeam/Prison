@@ -52,14 +52,14 @@ public abstract class MineTasks
      * @param callbackAsync
      */
 	@Override
-    public void submitAsyncTask( PrisonRunnable callbackAsync ) {
-    	Prison.get().getPlatform().getScheduler().runTaskLaterAsync( callbackAsync, 
+    public int submitAsyncTask( PrisonRunnable callbackAsync ) {
+    	return Prison.get().getPlatform().getScheduler().runTaskLaterAsync( callbackAsync, 
     			getResetPagePageSubmitDelayTicks() );
     }
     
 	@Override
-    public void submitSyncTask( PrisonRunnable callbackSync ) {
-    	Prison.get().getPlatform().getScheduler().runTaskLater( callbackSync, 
+    public int submitSyncTask( PrisonRunnable callbackSync ) {
+    	return Prison.get().getPlatform().getScheduler().runTaskLater( callbackSync, 
     			getResetPagePageSubmitDelayTicks() );
     }
 	

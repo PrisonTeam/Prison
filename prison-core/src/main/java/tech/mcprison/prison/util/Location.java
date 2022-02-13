@@ -36,6 +36,8 @@ public class Location {
     private float pitch, yaw;
     
     private Vector direction;
+    
+    private boolean isEdge;
 
     public Location(World world, double x, double y, double z, float pitch, float yaw, Vector direction) {
     	this.world = world;
@@ -146,7 +148,14 @@ public class Location {
     	world.setBlockAsync( prisonBlock, this );
     }
 
-    @Override public boolean equals(Object o) {
+    public boolean isEdge() {
+		return isEdge;
+	}
+	public void setEdge( boolean isEdge ) {
+		this.isEdge = isEdge;
+	}
+	
+	@Override public boolean equals(Object o) {
         if (this == o) {
             return true;
         }

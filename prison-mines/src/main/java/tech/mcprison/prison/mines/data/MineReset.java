@@ -15,8 +15,8 @@ import tech.mcprison.prison.internal.block.MineResetType;
 import tech.mcprison.prison.internal.block.MineTargetBlockKey;
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
-import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.MineScheduler.MineJob;
 import tech.mcprison.prison.mines.data.MineScheduler.MineResetActions;
@@ -443,9 +443,9 @@ public abstract class MineReset
      * 
      * @param callbackAsync
      */
-    public abstract void submitAsyncTask( PrisonRunnable callbackAsync );
+    public abstract int submitAsyncTask( PrisonRunnable callbackAsync );
     
-    public abstract void submitSyncTask( PrisonRunnable callbackSync );
+    public abstract int submitSyncTask( PrisonRunnable callbackSync );
 
 
 	
@@ -535,7 +535,8 @@ public abstract class MineReset
 //		// setup the monitoring of the blocks that have constraints:
 //		List<PrisonBlockStatusData> constrainedBlocks = null;
 		
-		
+		Optional<World> worldOptional = getWorld();
+		World world = worldOptional.get();
 		
 		int airCount = 0;
 		int currentLevel = 0;
@@ -574,7 +575,9 @@ public abstract class MineReset
 					boolean isEdge = xEdge && yEdge || xEdge && zEdge ||
 									 yEdge && zEdge;
 					
-
+					Location targetBlock = new Location(world, x, y, z);
+					targetBlock.setEdge( isEdge );
+					
 //					MineTargetBlock mtb = null;
 					
 					// track the constraints: (obsolete)
@@ -587,7 +590,7 @@ public abstract class MineReset
 					// Increment the mine's block count. This block is one of the control blocks:
 					incrementResetBlockCount( prisonBlock );
 					
-					addMineTargetPrisonBlock( prisonBlock, x, y, z, isEdge );
+					addMineTargetPrisonBlock( prisonBlock, targetBlock );
 //						mtb = new MineTargetPrisonBlock( prisonBlock, x, y, z);
 					
 					if ( prisonBlock.equals( PrisonBlock.AIR ) ) {
@@ -1090,11 +1093,13 @@ public abstract class MineReset
     	// bounds and therefore do not run the task.
     	if ( getBounds() != null ) {
     		
-    		OnStartupRefreshBlockBreakCountAsyncTask cabAsyncTask = new OnStartupRefreshBlockBreakCountAsyncTask(this);
+    		OnStartupRefreshBlockBreakCountSyncTask.submit( this );
     		
-    		// Must run synchronously!!
-    		submitSyncTask( cabAsyncTask );
-    		//submitAsyncTask( cabAsyncTask );
+//    		OnStartupRefreshBlockBreakCountAsyncTask cabAsyncTask = new OnStartupRefreshBlockBreakCountAsyncTask(this);
+//    		
+//    		// Must run synchronously!!
+//    		submitSyncTask( cabAsyncTask );
+//    		//submitAsyncTask( cabAsyncTask );
     	}
     }
     
@@ -1115,8 +1120,9 @@ public abstract class MineReset
      * </p>
      * 
      */
-	protected void refreshAirCountAsyncTask()
+	protected boolean refreshAirCountSyncTaskCheckBeforeSubmit()
 	{
+		boolean results = false;
     	
     	if ( isVirtual() ) {
     		// ignore:
@@ -1138,12 +1144,8 @@ public abstract class MineReset
 			setAirCount( 0 );
 		}
 		else {
-			long start = System.currentTimeMillis();
 			Optional<World> worldOptional = getWorld();
 			World world = worldOptional.get();
-			
-			
-			boolean containsCustomBlocks = getPrisonBlockTypes().contains( PrisonBlockType.CustomItems );
 			
 			if ( world == null ) {
 				Output.get().logError(
@@ -1152,16 +1154,47 @@ public abstract class MineReset
 								getName(), getWorldName() ));
 
 				
-				return;
 			}
+			else {
+				
+				// This means we can actually go ahead and perform the air-counts and so the 
+				// actual job can be submitted:
+				return true;
+			}
+		
+		}
+		
+    	return results;
+	}
+	
+	
+	/**
+	 * <p>This can be ran Asynchronously because it's just creating the Locations that will be used
+	 * to generate the target blocks.  This does not update anything in the world so can be
+	 * async.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public List<Location> refreshAirCountSyncTaskBuildLocations() {
+		List<Location> locations = new ArrayList<>();
+		
+//		long start = System.currentTimeMillis();
+		Optional<World> worldOptional = getWorld();
+		World world = worldOptional.get();
+		
+
+    	{
+//			boolean containsCustomBlocks = getPrisonBlockTypes().contains( PrisonBlockType.CustomItems );
+
 			
 			// Reset the target block lists:
 			clearMineTargetPrisonBlocks();
 			
 			
 			
-			int airCount = 0;
-			int errorCount = 0;
+//			int airCount = 0;
+//			int errorCount = 0;
 			
 			
 			
@@ -1176,86 +1209,150 @@ public abstract class MineReset
 			
 			
 			
-			StringBuilder sb = new StringBuilder();
+//			StringBuilder sb = new StringBuilder();
 			
 			for (int y = yMax; y >= yMin; y--) {
 				for (int x = xMin; x <= xMax; x++) {
 					for (int z = zMin; z <= zMax; z++) {
 						
-						try {
-							Location targetBlock = new Location(world, x, y, z);
-							Block tBlock = targetBlock.getBlockAt( containsCustomBlocks );
-							
-							
-							boolean xEdge = x == xMin || x == xMax;
-							boolean yEdge = y == yMin || y == yMax;
-							boolean zEdge = z == zMin || z == zMax;
-							
-							boolean isEdge = xEdge && yEdge || xEdge && zEdge ||
-											 yEdge && zEdge;
-							
-							
-							
-							PrisonBlock pBlock = tBlock.getPrisonBlock();
-							
-							if ( pBlock != null ) {
-								
-								// Increment the mine's block count. This block is one of the control blocks:
-								addMineTargetPrisonBlock( incrementResetBlockCount( pBlock ), x, y, z, isEdge );
-								
-							}
-							
-							if ( pBlock == null || pBlock.isAir() ) {
-								airCount++;
-							}
-						}
-						catch ( Exception e ) {
-							// Updates to the "world" should never be ran async.  Upon review of the above 
-							// that gets the location and block, causes the chunk to load, if it is not loaded,
-							// and if there is an entity in that loaded chunk it will throw an exception:
-							//     java.lang.IllegalStateException: Asynchronous entity world add!
-							// If there are no entities, it will be fine, but they could cause issues with async 
-							// access of unloaded chunks.
-							String coords = String.format( "%d.%d.%d ", x, y, z );
-							if ( errorCount ++ == 0 ) {
-								String message = String.format( 
-										"MineReset.refreshAirCountAsyncTask: Error counting air blocks: " +
-												"Mine=%s coords=%s  Error: %s ", getName(), coords, e.getMessage() );
-								if ( e.getMessage() != null && e.getMessage().contains( "Asynchronous entity world add" )) {
-									Output.get().logWarn( message, e );
-								} else {
-									Output.get().logWarn( message, e );
-								}
-								
-							} 
-							else if ( errorCount <= 20 ) {
-								sb.append( coords );
-							}
-						}
+						boolean xEdge = x == xMin || x == xMax;
+						boolean yEdge = y == yMin || y == yMax;
+						boolean zEdge = z == zMin || z == zMax;
+						
+						boolean isEdge = xEdge && yEdge || xEdge && zEdge ||
+								yEdge && zEdge;
+						
+						Location targetBlock = new Location(world, x, y, z);
+						targetBlock.setEdge( isEdge );
+						
+						locations.add( targetBlock );
+						
+						
+
+//						try {
+//							
+//							Block tBlock = targetBlock.getBlockAt( containsCustomBlocks );
+//							
+//							
+//							
+//							
+//							PrisonBlock pBlock = tBlock.getPrisonBlock();
+//							
+//							if ( pBlock != null ) {
+//								
+//								// Increment the mine's block count. This block is one of the control blocks:
+//								addMineTargetPrisonBlock( incrementResetBlockCount( pBlock ), targetBlock );
+//								
+//							}
+//							
+//							if ( pBlock == null || pBlock.isAir() ) {
+//								airCount++;
+//							}
+//						}
+//						catch ( Exception e ) {
+//							// Updates to the "world" should never be ran async.  Upon review of the above 
+//							// that gets the location and block, causes the chunk to load, if it is not loaded,
+//							// and if there is an entity in that loaded chunk it will throw an exception:
+//							//     java.lang.IllegalStateException: Asynchronous entity world add!
+//							// If there are no entities, it will be fine, but they could cause issues with async 
+//							// access of unloaded chunks.
+//							String coords = String.format( "%d.%d.%d ", x, y, z );
+//							if ( errorCount ++ == 0 ) {
+//								String message = String.format( 
+//										"MineReset.refreshAirCountAsyncTask: Error counting air blocks: " +
+//												"Mine=%s coords=%s  Error: %s ", getName(), coords, e.getMessage() );
+//								if ( e.getMessage() != null && e.getMessage().contains( "Asynchronous entity world add" )) {
+//									Output.get().logWarn( message, e );
+//								} else {
+//									Output.get().logWarn( message, e );
+//								}
+//								
+//							} 
+//							else if ( errorCount <= 20 ) {
+//								sb.append( coords );
+//							}
+//						}
 					}
 				}
 			}
 			
-			if ( errorCount > 0 ) {
-				String message = String.format( 
-						"MineReset.refreshAirCountAsyncTask: Error counting air blocks: Mine=%s: " +
-								"errorCount=%d  blocks%s : %s", getName(), errorCount,
-								(errorCount > 20 ? "(first 20)" : ""),
-								sb.toString() );
-				Output.get().logWarn( message );
+//			if ( errorCount > 0 ) {
+//				String message = String.format( 
+//						"MineReset.refreshAirCountAsyncTask: Error counting air blocks: Mine=%s: " +
+//								"errorCount=%d  blocks%s : %s", getName(), errorCount,
+//								(errorCount > 20 ? "(first 20)" : ""),
+//								sb.toString() );
+//				Output.get().logWarn( message );
+//			}
+//			
+//			
+//			setAirCount( airCount );
+			
+//			long stop = System.currentTimeMillis();
+//			long elapsed = stop - start;
+//			setAirCountElapsedTimeMs( elapsed );
+//			setAirCountTimestamp( stop );
+		}
+		
+    	return locations;
+	}
+	
+	
+	public void refreshAirCountSyncTaskSetLocation( Location targetBlock, 
+					OnStartupRefreshBlockBreakCountSyncTask stats ) {
+		
+		try {
+//			Location targetBlock = new Location(world, x, y, z);
+			
+			boolean containsCustomBlocks = getPrisonBlockTypes().contains( PrisonBlockType.CustomItems );
+
+			Block tBlock = targetBlock.getBlockAt( containsCustomBlocks );
+			
+			
+			
+			PrisonBlock pBlock = tBlock.getPrisonBlock();
+			
+			if ( pBlock != null ) {
+				
+				// Increment the mine's block count. This block is one of the control blocks:
+				addMineTargetPrisonBlock( incrementResetBlockCount( pBlock ), targetBlock );
+				
 			}
 			
+			if ( pBlock == null || pBlock.isAir() ) {
+				stats.incrementAirCount();
+			}
+		}
+		catch ( Exception e ) {
+			stats.incrementErrorCount();
 			
-			setAirCount( airCount );
+			// Updates to the "world" should never be ran async.  Upon review of the above 
+			// that gets the location and block, causes the chunk to load, if it is not loaded,
+			// and if there is an entity in that loaded chunk it will throw an exception:
+			//     java.lang.IllegalStateException: Asynchronous entity world add!
+			// If there are no entities, it will be fine, but they could cause issues with async 
+			// access of unloaded chunks.
+			String coords = String.format( "%d.%d.%d ", 
+						targetBlock.getBlockX(), targetBlock.getBlockY(), targetBlock.getBlockZ() );
 			
-			long stop = System.currentTimeMillis();
-			long elapsed = stop - start;
-			setAirCountElapsedTimeMs( elapsed );
-			setAirCountTimestamp( stop );
+			if ( stats.getErrorCount() == 0 ) {
+				String message = String.format( 
+						"MineReset.refreshAirCountAsyncTask: Error counting air blocks: " +
+								"Mine=%s coords=%s  Error: %s ", getName(), coords, e.getMessage() );
+				
+				if ( e.getMessage() != null && e.getMessage().contains( "Asynchronous entity world add" )) {
+					Output.get().logWarn( message, e );
+				} else {
+					Output.get().logWarn( message, e );
+				}
+				
+			} 
+			else if ( stats.getErrorCount() <= 10 ) {
+				stats.getSbErrors().append( coords );
+			}
 		}
 		
 	}
-	
 	
 	/**
 	 * <p>This function should ONLY be used if an enchantment plugin is being used that cannot
@@ -1734,14 +1831,24 @@ public abstract class MineReset
 	}
 	
 	
-    
-    private void addMineTargetPrisonBlock( PrisonBlockStatusData block, int x, int y, int z, boolean isEdge ) {
-    	
-    	MineTargetPrisonBlock mtpb = new MineTargetPrisonBlock( block, getWorld().get(), x, y, z, isEdge );
-    	
+	
+	private void addMineTargetPrisonBlock( PrisonBlockStatusData block, Location targetBlock ) {
+		
+		MineTargetPrisonBlock mtpb = new MineTargetPrisonBlock( block, getWorld().get(), 
+				targetBlock.getBlockX(), targetBlock.getBlockY(), targetBlock.getBlockZ(), 
+				targetBlock.isEdge() );
+		
 		getMineTargetPrisonBlocks().add( mtpb );
 		getMineTargetPrisonBlocksMap().put( mtpb.getBlockKey(), mtpb );
-    }
+	}
+    
+//    private void addMineTargetPrisonBlock( PrisonBlockStatusData block, int x, int y, int z, boolean isEdge ) {
+//    	
+//    	MineTargetPrisonBlock mtpb = new MineTargetPrisonBlock( block, getWorld().get(), x, y, z, isEdge );
+//    	
+//		getMineTargetPrisonBlocks().add( mtpb );
+//		getMineTargetPrisonBlocksMap().put( mtpb.getBlockKey(), mtpb );
+//    }
     
     private void clearMineTargetPrisonBlocks() {
     	getMineTargetPrisonBlocks().clear();
