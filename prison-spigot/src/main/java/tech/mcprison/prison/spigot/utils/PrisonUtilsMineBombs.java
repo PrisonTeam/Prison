@@ -459,7 +459,16 @@ public class PrisonUtilsMineBombs
 				
 				MineBombs mBombs = MineBombs.getInstance();
 				
-				MineBombData bomb = mBombs.getConfigData().getBombs().get( bombName );
+				MineBombData bomb = null;
+				
+				Set<String> keys = mBombs.getConfigData().getBombs().keySet();
+				for ( String key : keys ) {
+					MineBombData mbd = mBombs.getConfigData().getBombs().get( key );
+					if ( mbd.getName().equalsIgnoreCase( bombName ) ) {
+						bomb = mbd;
+						break;
+					}
+				}
 				
 				if ( bomb != null ) {
 					

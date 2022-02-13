@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8 2022-02-13
 
 
+* **Mine Bombs: The mine bomb give command now is case insensitive.**
+
+
 * **Mine Bombs: Add ability to set the Y offset.**
 It defaults to a value of -1.  This allows fine tuning of bombs to better position them to sink deeper in the mine to increase the number of blocks that are included.
 
