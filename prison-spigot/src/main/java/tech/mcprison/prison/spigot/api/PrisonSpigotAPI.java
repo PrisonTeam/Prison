@@ -469,4 +469,159 @@ public class PrisonSpigotAPI {
 
 		return null;
 	}
+	
+	/**
+	 * <p>Gets a player's current token balance.
+	 * </p>
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public long getTokens( Player player ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		return sPlayer.getPlayerCachePlayerData().getTokens();
+	}
+	
+	/**
+	 * <p>Gets a player's total amount of tokens that they have earned.
+	 * </p>
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public long getTokensTotal( Player player ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		return sPlayer.getPlayerCachePlayerData().getTokensTotal();
+	}
+	
+	/**
+	 * <p>Gets a player's total amount of tokens given to them by admins.
+	 * </p>
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public long getTokensTotalAdminAdded( Player player ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		return sPlayer.getPlayerCachePlayerData().getTokensTotalAdminAdded();
+	}
+	
+	/**
+	 * <p>Gets a player's total amount of tokens removed from them by admins.
+	 * </p>
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public long getTokensTotalAdminRemoved( Player player ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		return sPlayer.getPlayerCachePlayerData().getTokensTotalAdminRemoved();
+	}
+
+	/**
+	 * <p>Returns a Map of a player's total tokens earned by mine.
+	 * </p>
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public TreeMap<String, Long> getTokensTotalByMine( Player player ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		return sPlayer.getPlayerCachePlayerData().getTokensByMine();
+	}
+	
+	/**
+	 * <p>Adds tokens to a player's current balance.  The tokens
+	 * will be counted as being earned under normal conditions.
+	 * </p>
+	 * 
+	 * @param player
+	 * @param amount
+	 */
+	public void addTokens( Player player, long amount ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		sPlayer.getPlayerCachePlayerData().addTokens( amount );
+	}
+	
+	/**
+	 * <p>Adds tokens to a player's balance, but will be recorded as
+	 * an adjustment made by an admin, which means the player did not
+	 * "earn" the tokens under normal conditions.
+	 * </p>
+	 * 
+	 * @param player
+	 * @param amount
+	 */
+	public void addTokensAdmin( Player player, long amount ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		sPlayer.getPlayerCachePlayerData().addTokensAdmin( amount );
+	}
+	
+	/**
+	 * <p>Removes tokens from a player's current balance.  The tokens
+	 * will be counted as being spent under normal conditions.
+	 * </p>
+	 * 
+	 * @param player
+	 * @param amount
+	 */
+	public void removeTokens( Player player, long amount ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		sPlayer.getPlayerCachePlayerData().removeTokens( amount );
+	}
+	
+	/**
+	 * <p>Removes tokens from a player's balance, but will be recorded as
+	 * an adjustment made by an admin, which means the player did not
+	 * "spend" the tokens under normal conditions.
+	 * </p>
+	 * 
+	 * @param player
+	 * @param amount
+	 */
+	public void removeTokensAdmin( Player player, long amount ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		sPlayer.getPlayerCachePlayerData().removeTokensAdmin( amount );
+	}
+	
+	/**
+	 * <p>Sets a player's current token balance.  The tokens
+	 * will be counted as being earned, or spent, under normal conditions, 
+	 * based upon the change in the original amounts.
+	 * </p>
+	 * 
+	 * @param player
+	 * @param amount
+	 */
+	public void setTokens( Player player, long amount ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		sPlayer.getPlayerCachePlayerData().setTokens( amount );
+	}
+	
+	/**
+	 * <p>Sets a player's current balance, but will be recorded as
+	 * an adjustment made by an admin, which means the player did not
+	 * "earn" or "spend" the tokens under normal conditions.
+	 * </p>
+	 * 
+	 * @param player
+	 * @param amount
+	 */
+	public void setTokensAdmin( Player player, long amount ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		sPlayer.getPlayerCachePlayerData().setTokensAdmin( amount );
+	}
+	
+	
 }

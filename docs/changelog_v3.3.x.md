@@ -16,6 +16,7 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8s 2022-02-12
 
 
+* **Added various token funtions to the prison spigot API class.**
 
 
 ***3.3.0-alpha.8 2022-02-12**
