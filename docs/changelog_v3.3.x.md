@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8 2022-02-13
 
 
+* **Mine Bombs: Add ability to set the Y offset.**
+It defaults to a value of -1.  This allows fine tuning of bombs to better position them to sink deeper in the mine to increase the number of blocks that are included.
+
+
 * **Fix issue with mine bombs not dropping blocks.**
 The underlying block changed and therefore so did the behavior of the equals() function.
 

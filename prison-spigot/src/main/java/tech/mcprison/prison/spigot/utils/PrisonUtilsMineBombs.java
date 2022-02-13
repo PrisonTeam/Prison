@@ -780,7 +780,9 @@ public class PrisonUtilsMineBombs
 						boolean isAir = bombBlock.isEmpty();
 						while (  (count++ <= ( isAir ? 1 : 0 ) || bombBlock.isEmpty()) && bombBlock.getLocation().getBlockY() > 1 ) {
 							
-							Block tempBlock = bombBlock.getLocation().getBlockAtDelta( 0, -1, 0 );
+							int adjustY = bomb.getPlacementAdjustmentY();
+							
+							Block tempBlock = bombBlock.getLocation().getBlockAtDelta( 0, adjustY, 0 );
 							if ( tempBlock != null && tempBlock instanceof SpigotBlock ) {
 								bombBlock = (SpigotBlock) tempBlock;
 							}

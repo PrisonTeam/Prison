@@ -80,6 +80,23 @@ public class MineBombData {
 	 */
 	private int height = 0;
 	
+	
+	/**
+	 * <p>This adjusts the placement of the bomb along the y axis. By 
+	 * default, the y adjustment is -1 to drop the bomb deeper in to the 
+	 * mine to pickup more blocks.  The larger a bomb is in radius, then 
+	 * the deeper you may want to make this value to maximize the number 
+	 * of blocks that are included for the player.
+	 * </p>
+	 * 
+	 * <p>You can easily move the bomb to be sub-surface where it does not break
+	 * any top layered blocks.  That may not be so clear to the player that
+	 * the bomb went off.  It's also a risk that the bomb could be moved outside
+	 * of the mine too.
+	 * </p>
+	 */
+	private int placementAdjustmentY = -1;
+	
 	/**
 	 * <p>The chance of complete removal.  So if the explosion includes
 	 * 100 blocks, but the chance is only 50%, each block will be given
@@ -222,6 +239,8 @@ public class MineBombData {
 		cloned.setRadiusInner( getRadiusInner() );
 		cloned.setHeight( getHeight() );
 		
+		cloned.setPlacementAdjustmentY( getPlacementAdjustmentY() );
+		
 		cloned.setRemovalChance( getRemovalChance() );
 		cloned.setFuseDelayTicks( getFuseDelayTicks() );
 		cloned.setCooldownTicks( getCooldownTicks() );
@@ -323,6 +342,13 @@ public class MineBombData {
 	}
 	public void setHeight( int height ) {
 		this.height = height;
+	}
+
+	public int getPlacementAdjustmentY() {
+		return placementAdjustmentY;
+	}
+	public void setPlacementAdjustmentY( int placementAdjustmentY ){
+		this.placementAdjustmentY = placementAdjustmentY;
 	}
 
 	public double getRemovalChance() {
