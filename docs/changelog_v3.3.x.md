@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.8 2022-02-13
+# 3.3.0-alpha.8 2022-02-14
+
+
+* **Bug fix: If a player cache file does not exist, it now prevents it from loading.**
 
 
 * **Fixed an issue with the GUI, such that if the player does not have a rank on the ladder**, 
