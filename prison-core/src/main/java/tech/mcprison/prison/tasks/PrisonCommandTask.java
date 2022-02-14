@@ -179,27 +179,22 @@ public class PrisonCommandTask {
 	}
 	
 	
-	public PrisonCommandTask( String errorMessagePrefix ) {
+	public PrisonCommandTask( String errorMessagePrefix, 
+			String command ) {
+		this( errorMessagePrefix, command, 0 );
+	}
+	public PrisonCommandTask( String errorMessagePrefix, 
+					String command, int commandRow ) {
 		super();
+		
+		this.commandRow = commandRow;
 		
 		this.errorMessagePrefix = errorMessagePrefix;
 		this.taskId = 0;
 		
 		this.customPlaceholders = new ArrayList<>();
-	}
-	
-	
-	
-	public void submitCommandTask( String command ) {
-		submitCommandTask( null, command, TaskMode.sync );
-	}
-	
-	public void submitCommandTask( Player player, String command ) {
-		submitCommandTask( player, command, TaskMode.sync );
-	}
-	
-	public void submitCommandTask( Player player, String command, 
-			TaskMode taskMode ) {
+		
+		TaskMode taskMode = TaskMode.sync;
 		
 		if ( command.contains( "{inline}" ) ) {
 			taskMode = TaskMode.inline;
