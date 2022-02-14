@@ -175,9 +175,10 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
         // Decimal Rank cost format.
         DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
+        DecimalFormat mFmt = new DecimalFormat("###,##0.0000");
         boolean showNumber = getBoolean(guiConfig.getString("Options.Ranks.Number_of_Rank_Player_GUI"));
 
-        PlayerRank pRank = rankPlayerFactory.getRank( getRankPlayer(), ladder );
+        PlayerRank pRank = rankPlayerFactory.getRank( getRankPlayer(), ladder, true );
         
         for ( Rank rank : ranksDisplay )
 		{
@@ -208,7 +209,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
                 		);
                 stringValue = stringValue.replace("{rankName}", rank.getName());
                 stringValue = stringValue.replace("{rankTag}", SpigotPrison.format(rank.getTag()));
-                stringValue = stringValue.replace("{rankMultiplier}", Double.toString( rankMultiplier ));
+                stringValue = stringValue.replace("{rankMultiplier}", mFmt.format( rankMultiplier ));
                 stringValue = stringValue.replace("{ladderName}", rank.getLadder().getName());
                 
                 StringBuilder sbMines = new StringBuilder();

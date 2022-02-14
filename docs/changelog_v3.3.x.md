@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8 2022-02-13
 
 
+* **Fixed an issue with the GUI, such that if the player does not have a rank on the ladder**, 
+that it will now force the creation of a PlayerRank object so it does not cause a NPE.
+
+
 * **Mine bombs: Enable the use of color codes on the armor stands when setting off the bombs...**
 
 

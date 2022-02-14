@@ -158,6 +158,34 @@ public class RankPlayerFactory
         
         return results;
     }
+
+    
+    /**
+     * <p>If the player does not have a rank on the ladder, and force is enabled,
+     * then return the first rank on the ladder.
+     * </p>
+     * 
+     * @param rankPlayer
+     * @param ladder
+     * @param force
+     * @return
+     */
+    public PlayerRank getRank( RankPlayer rankPlayer, RankLadder ladder, boolean force ) {
+    	PlayerRank results = getRank( rankPlayer, ladder );
+    	
+    	if ( force && results == null ) {
+    		Rank tempRank = ladder.getLowestRank().get();
+
+    		if ( tempRank != null ) {
+    			results = new PlayerRank( tempRank );
+    			
+    			// force cost calculations with a zero multiplier:
+    			results.applyMultiplier( 0 );
+    		}
+    	}
+    	
+    	return results;
+    }
     
     /**
      * Retrieves the rank that this player has in a certain ladder, if any.
