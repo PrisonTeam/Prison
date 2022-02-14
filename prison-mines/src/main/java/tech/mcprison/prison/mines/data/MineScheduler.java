@@ -605,7 +605,9 @@ public abstract class MineScheduler
 				
 				PrisonBlockStatusData originalBlock = targetBlock.getPrisonBlock();
 				
-				PrisonCommandTask cmdTask = new PrisonCommandTask( "BlockEvent" );
+				PrisonCommandTask cmdTask = new PrisonCommandTask( "BlockEvent", blockEvent.getCommand() );
+				cmdTask.setTaskMode( blockEvent.getTaskMode() );
+				
 				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockName, originalBlock.getBlockName() );
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineName, getName() );
@@ -654,7 +656,7 @@ public abstract class MineScheduler
 				
 				
 				
-				cmdTask.submitCommandTask( player, blockEvent.getCommand(), blockEvent.getTaskMode() );
+//				cmdTask.submitCommandTask( player, blockEvent.getCommand(), blockEvent.getTaskMode() );
 					
 //				{
 //					

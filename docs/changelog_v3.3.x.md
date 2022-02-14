@@ -16,6 +16,13 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8 2022-02-14
 
 
+* **Rework how rankup commands are ran: in progress.**
+This new way of dealing with rankup commands is to collect all commands that need to be ran, from all rankups, then run them in one group when the player is done being ranked up.
+For most changes in rank, this will have zero effect on anything (mostly), but it has a huge impact with the **rankupmax** command.  
+When hooked up (which is is not), this will take all commands and run them in a sync task.  So "every" command will run in a sync task. But each command will be monitored for run time, and if the runtime for one command exceeds a threshold, then the sync task will resubmit itself to run again after on tick.  This will slow down the process of running all of the commands, but it will help prevent them from causing lag.
+With tracking run times on each command, if prison is in debug-mode, then it will generate console logs identify how long it take to run each command.  So if any given command is causing lag, then it would be possible to identify what the offending command is.
+
+
 * **Fixed a problem before releasing... was not using the correct variable so the generated File object was not getting used.**
 
 

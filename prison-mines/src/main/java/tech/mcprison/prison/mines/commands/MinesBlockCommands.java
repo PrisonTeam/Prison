@@ -379,6 +379,8 @@ public class MinesBlockCommands
     	results.addChance( chance );
     	
     	for ( PrisonBlock block : m.getPrisonBlocks() ) {
+    		
+    		// Only check the block's name:
     		if ( block.equals( prisonBlock ) ) {
     			// do not replace the block's chance since this may fail
     			results.setPrisonBlock( block );

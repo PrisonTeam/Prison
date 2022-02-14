@@ -252,8 +252,8 @@ public abstract class MineReset
 						if ( command.startsWith( "before: " )) {
 							String cmd = command.replace( "before: ", "" );
 							
-     						PrisonCommandTask cmdTask = new PrisonCommandTask( "MineReset: Before:" );
-     						cmdTask.submitCommandTask( cmd );
+     						PrisonCommandTask cmdTask = new PrisonCommandTask( "MineReset: Before:", cmd );
+     						cmdTask.submitCommandTask();
 
 							//PrisonAPI.dispatchCommand(cmd);
 						}
@@ -289,8 +289,8 @@ public abstract class MineReset
 						if ( command.startsWith( "after: " )) {
 							String cmd = command.replace( "after: ", "" );
 							
-     						PrisonCommandTask cmdTask = new PrisonCommandTask( "MineReset: After:" );
-     						cmdTask.submitCommandTask( cmd );
+     						PrisonCommandTask cmdTask = new PrisonCommandTask( "MineReset: After:", cmd );
+     						cmdTask.submitCommandTask();
 
 							//PrisonAPI.dispatchCommand(cmd);
 						}
@@ -848,8 +848,8 @@ public abstract class MineReset
  					if ( command.startsWith( "before: " )) {
  						String cmd = command.replace( "before: ", "" );
  						
- 						PrisonCommandTask cmdTask = new PrisonCommandTask( "MineReset: Before:" );
- 						cmdTask.submitCommandTask( cmd );
+ 						PrisonCommandTask cmdTask = new PrisonCommandTask( "MineReset: Before:", cmd );
+ 						cmdTask.submitCommandTask();
  							
  						// PrisonAPI.dispatchCommand(cmd);
  					}
@@ -886,8 +886,8 @@ public abstract class MineReset
 					if ( command.startsWith( "after: " )) {
 						String cmd = command.replace( "after: ", "" );
 						
- 						PrisonCommandTask cmdTask = new PrisonCommandTask( "MineReset: After:" );
- 						cmdTask.submitCommandTask( cmd );
+ 						PrisonCommandTask cmdTask = new PrisonCommandTask( "MineReset: After:", cmd );
+ 						cmdTask.submitCommandTask();
 
 						// PrisonAPI.dispatchCommand(cmd);
 					}

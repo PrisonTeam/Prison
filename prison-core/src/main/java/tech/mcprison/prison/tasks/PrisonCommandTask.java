@@ -5,8 +5,19 @@ import java.util.Arrays;
 import java.util.List;
 
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.ranks.data.PlayerRank;
+import tech.mcprison.prison.ranks.data.RankLadder;
 
 public class PrisonCommandTask {
+	
+	private RankLadder ladder;
+	private PlayerRank rankTarget;
+	private PlayerRank rankOriginal;
+	
+	private int commandRow = 0;
+	private String cmd;
+	
+	private TaskMode taskMode;
 	
 	private String errorMessagePrefix;
 	
@@ -210,7 +221,48 @@ public class PrisonCommandTask {
 			command = command.replace( "{syncPlayer}", "" );
 		}
 		
-		String commandTranslated = translateCommand( player, command );
+		this.cmd = command;
+		this.taskMode = taskMode;
+		
+	}
+	
+	public void submitCommandTask() {
+		submitCommandTask( null );
+	}
+	
+//	public void submitCommandTask( String command ) {
+//		submitCommandTask( null, command, TaskMode.sync );
+//	}
+	
+//	public void submitCommandTask( Player player ) {
+//		submitCommandTask( player, getCmd(), TaskMode.sync );
+//	}
+	
+	public void submitCommandTask( Player player
+//			, String command, TaskMode taskMode 
+			) {
+		
+//		if ( command.contains( "{inline}" ) ) {
+//			taskMode = TaskMode.inline;
+//			command = command.replace( "{inline}", "" );
+//		}
+//		
+//		if ( command.contains( "{inlinePlayer}" ) ) {
+//			taskMode = TaskMode.inlinePlayer;
+//			command = command.replace( "{inlinePlayer}", "" );
+//		}
+//		
+//		if ( command.contains( "{sync}" ) ) {
+//			taskMode = TaskMode.sync;
+//			command = command.replace( "{sync}", "" );
+//		}
+//		
+//		if ( command.contains( "{syncPlayer}" ) ) {
+//			taskMode = TaskMode.syncPlayer;
+//			command = command.replace( "{syncPlayer}", "" );
+//		}
+//		
+		String commandTranslated = translateCommand( player, getCmd() );
 		
 		// Split multiple commands in to a List of individual tasks:
 		List<String> tasks = new ArrayList<>( 
@@ -292,6 +344,48 @@ public class PrisonCommandTask {
 		getCustomPlaceholders().add( cph );
 	}
 	
+	public RankLadder getLadder() {
+		return ladder;
+	}
+	public void setLadder( RankLadder ladder ) {
+		this.ladder = ladder;
+	}
+
+	public PlayerRank getRankTarget() {
+		return rankTarget;
+	}
+	public void setRankTarget( PlayerRank rankTarget ) {
+		this.rankTarget = rankTarget;
+	}
+
+	public PlayerRank getRankOriginal() {
+		return rankOriginal;
+	}
+	public void setRankOriginal( PlayerRank rankOriginal ) {
+		this.rankOriginal = rankOriginal;
+	}
+
+	public String getCmd() {
+		return cmd;
+	}
+	public void setCmd( String cmd ) {
+		this.cmd = cmd;
+	}
+	
+	public int getCommandRow() {
+		return commandRow;
+	}
+	public void setCommandRow( int commandRow ) {
+		this.commandRow = commandRow;
+	}
+
+	public TaskMode getTaskMode() {
+		return taskMode;
+	}
+	public void setTaskMode( TaskMode taskMode ) {
+		this.taskMode = taskMode;
+	}
+
 	public String getErrorMessagePrefix() {
 		return errorMessagePrefix;
 	}

@@ -190,31 +190,38 @@ public class RankUtil
 
     
     
-    public RankupResults rankupPlayer(Player player, RankPlayer rankPlayer, String ladderName, String playerName) {
+    public RankupResults rankupPlayer(Player player, RankPlayer rankPlayer, String ladderName, String playerName, 
+    		List<PrisonCommandTask> cmdTasks ) {
+    	
     	return rankupPlayer(RankupCommands.rankup, player, rankPlayer, ladderName, null, 
-    					playerName, null, PromoteForceCharge.charge_player );
+    					playerName, null, PromoteForceCharge.charge_player, cmdTasks );
     }
     
     public RankupResults promotePlayer(Player player, RankPlayer rankPlayer, String ladderName, 
-    										String playerName, String executorName, PromoteForceCharge pForceCharge) {
+    										String playerName, String executorName, PromoteForceCharge pForceCharge, 
+    										List<PrisonCommandTask> cmdTasks ) {
+    	
     	return rankupPlayer(RankupCommands.promote, player, rankPlayer, ladderName, null, 
-    					playerName, executorName, pForceCharge);
+    					playerName, executorName, pForceCharge, cmdTasks );
     }
     
     public RankupResults demotePlayer(Player player, RankPlayer rankPlayer, String ladderName, 
-    										String playerName, String executorName, PromoteForceCharge pForceCharge) {
+    										String playerName, String executorName, PromoteForceCharge pForceCharge, 
+    										List<PrisonCommandTask> cmdTasks ) {
+    	
     	return rankupPlayer(RankupCommands.demote, player, rankPlayer, ladderName, null, 
-    					playerName, executorName, pForceCharge);
+    					playerName, executorName, pForceCharge, cmdTasks );
     }
     
     public RankupResults setRank(Player player, RankPlayer rankPlayer, String ladderName, String rankName, 
-    										String playerName, String executorName) {
+    										String playerName, String executorName, 
+    										List<PrisonCommandTask> cmdTasks ) {
     	
     	RankupCommands rankupCmd = "FirstJoinEvent".equalsIgnoreCase( executorName ) ?
     						RankupCommands.firstJoin : RankupCommands.setrank;
     	
     	return rankupPlayer( rankupCmd, player, rankPlayer, ladderName, rankName, 
-    					playerName, executorName, PromoteForceCharge.no_charge );
+    					playerName, executorName, PromoteForceCharge.no_charge, cmdTasks );
     }
     
     /**
@@ -234,7 +241,7 @@ public class RankUtil
      */
     private RankupResults rankupPlayer(RankupCommands command, Player player, RankPlayer rankPlayer, String ladderName, 
     				String rankName, String playerName, String executorName, 
-    				PromoteForceCharge pForceCharge ) {
+    				PromoteForceCharge pForceCharge, List<PrisonCommandTask> cmdTasks ) {
     	
     	RankupResults results = new RankupResults(command, rankPlayer, executorName, ladderName, rankName);
     	
@@ -295,12 +302,12 @@ public class RankUtil
         if ( ladderName == null ) {
         	ladderName = "default";
         	results.addTransaction(RankupTransactions.assigned_default_ladder);
-        }  	
+        } 
     	
 
     	try {
     		rankupPlayerInternal(results, command, player, rankPlayer, ladderName, 
-    				rankName, pForceCharge );
+    				rankName, pForceCharge, cmdTasks );
     	} catch (Exception e ) {
     		results.addTransaction( RankupTransactions.failure_exception_caught_check_server_logs );
     		
@@ -324,7 +331,7 @@ public class RankUtil
     private void rankupPlayerInternal(RankupResults results, 
     		RankupCommands command, Player prisonPlayer, RankPlayer rankPlayer, String ladderName, 
     		String rankName, 
-    		PromoteForceCharge pForceCharge) {
+    		PromoteForceCharge pForceCharge, List<PrisonCommandTask> cmdTasks ) {
 
     	Output.get().logDebug( DebugTarget.rankup, "Rankup: rankupPlayerInternal: ");
     	
@@ -534,7 +541,9 @@ public class RankUtil
         rankupCommands.addAll( ladder.getRankUpCommands() );
         rankupCommands.addAll( targetRank.getRankUpCommands() );
         
-        for (String cmd : rankupCommands ) {
+        for ( int row = 0; row < rankupCommands.size(); row++ ) {
+        	
+        	String cmd = rankupCommands.get( row );
         	if ( cmd != null && 
         			( !cmd.contains( "{firstJoin}" ) || 
         			   cmd.contains( "{firstJoin}" ) && command == RankupCommands.firstJoin )  ) {
@@ -545,7 +554,16 @@ public class RankUtil
         		Rank oRank = results.getOriginalRank();
         		Rank tRank = results.getTargetRank();
         		
-				PrisonCommandTask cmdTask = new PrisonCommandTask( command.name() );
+        		if ( command == RankupCommands.firstJoin && cmd.contains( "{firstJoin}" ) ) {
+        			cmd = cmd.replace( "{firstJoin}", "" );
+        		}
+        		
+				PrisonCommandTask cmdTask = new PrisonCommandTask( command.name(), cmd, row );
+				
+				cmdTask.setLadder( ladder );
+				cmdTask.setRankTarget( tpRank );
+				cmdTask.setRankOriginal( opRank );
+				
 				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.balanceInitial, Double.toString( results.getBalanceInitial()) );
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.balanceFinal, Double.toString( results.getBalanceFinal()) );
@@ -568,12 +586,11 @@ public class RankUtil
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.targetRankTag, 
 									(tRank == null ? "none" : tRank.getTag()) );
 				
-				if ( command == RankupCommands.firstJoin && cmd.contains( "{firstJoin}" ) ) {
-					cmd = cmd.replace( "{firstJoin}", "" );
-				}
 				
+				cmdTasks.add( cmdTask );
 				
-				cmdTask.submitCommandTask( prisonPlayer, cmd );
+				// Comment this out to stack the rank commands:
+				cmdTask.submitCommandTask( prisonPlayer );
 
         		
 //        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
