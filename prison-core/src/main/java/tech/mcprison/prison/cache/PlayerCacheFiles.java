@@ -401,12 +401,12 @@ public class PlayerCacheFiles
 			// current name. The saved cache file may not be named exactly the same,
 			// and if it's not, then their existing cache file needs to be 
 			// renamed.
-			File playerFile = getPlayerFile( playerFileName );
+			results = getPlayerFile( playerFileName );
 			
 			// NOTE: because the file was NOT found in the directory, then we can assume
 			//       this is a new player therefore we won't have an issue with the player's
 			//       name changing.
-			getPlayerFiles().put( fileNamePrefix, playerFile );
+			getPlayerFiles().put( fileNamePrefix, results );
 		}
 		else if ( !playerFileName.equalsIgnoreCase( results.getName() )) {
 			

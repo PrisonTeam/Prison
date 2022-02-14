@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8 2022-02-14
 
 
+* **Fixed a problem before releasing... was not using the correct variable so the generated File object was not getting used.**
+
+
 * **Bug fix: If a player cache file does not exist, it now prevents it from loading.**
 
 
