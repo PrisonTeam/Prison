@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8 2022-02-15
 
 
+* **Prevent the autosell happening just because someone is op.**
+To make this work, and to prevent odd behaviors where OPs suddenly are not able to mine correctly, OP can no longer use the autosell based upon perms.
+
+
 * **Setup the time durations on reporting of mine resets to use external settings.**
 Enables the use of singular and plural unit names. 
 

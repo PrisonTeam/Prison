@@ -508,7 +508,7 @@ public class AutoManagerFeatures
 				// Try to autosell if enabled:
 				if ( (isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || 
 						pmEvent.isForceAutoSell() || 
-						player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) )) && 
+						!player.isOp() && player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) )) && 
 						SellAllUtil.get() != null  ) {
 					
 					final long nanoStart = System.nanoTime();
