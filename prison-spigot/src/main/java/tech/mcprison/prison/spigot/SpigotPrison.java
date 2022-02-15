@@ -96,6 +96,7 @@ import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.tasks.PrisonInitialStartupTask;
 import tech.mcprison.prison.spigot.tasks.SpigotPrisonDelayedStartupTask;
 import tech.mcprison.prison.spigot.utils.PrisonUtilsModule;
+import tech.mcprison.prison.util.Text;
 
 /**
  * The plugin class for the Spigot implementation.
@@ -216,6 +217,9 @@ public class SpigotPrison
         if ( debug ) {
         	Output.get().setDebug( debug );
         }
+        
+        // Load the Text's language configs:
+        Text.initialize();
         
         
         this.compatibility = SpigotCompatibility.getInstance();

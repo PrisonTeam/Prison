@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.8 2022-02-14
+# 3.3.0-alpha.8 2022-02-15
+
+
+* **Setup the time durations on reporting of mine resets to use external settings.**
+Enables the use of singular and plural unit names. 
 
 
 * **Rework how rankup commands are ran: in progress.**
