@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8 2022-02-16
 
 
+* **Fixed a reversal of some calculations when converting nano seconds to milliseconds.**
+
+
 * **New feature: debug count down timer.**
 Able to now set a debug count down timer where debugging is turned off after logging that number of entries.
 

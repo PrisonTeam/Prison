@@ -309,14 +309,14 @@ public class PrisonCommandTaskData {
 			}
 			nanoTotal += elapsedNano;
 			
-			double elapsedMs = 1000000.0d / elapsedNano;
+			double elapsedMs = elapsedNano / 1000000.0d;
 			sb.append( dFmt.format( elapsedMs ) );
 		}
 		
 		sb.insert( 0, "[" );
 		sb.append( "]" );
 		
-		double totalNano = 1000000.0 / nanoTotal;
+		double totalNano = nanoTotal / 1000000.0;
 		
 		String message = null;
 		
