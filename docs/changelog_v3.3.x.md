@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.8 2022-02-16
+# 3.3.0-alpha.8b 2022-02-16
+
+
+* **v3.3.0-alpha.8b**
 
 
 * **Clean up the way the command tasks were being called.**
