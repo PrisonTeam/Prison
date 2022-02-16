@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8 2022-02-15
 
 
+* **Potential bug fix in better managing if sellall should be enabled by directly checking the configuration parameter that enables it.**
+Better logging of sellall when inventory is full.
+
+
 * **Commit some SellAllUtil comments that are useful for debugging timing issues.**
 These are now disabled, but can be manually reenabled when needed.
 

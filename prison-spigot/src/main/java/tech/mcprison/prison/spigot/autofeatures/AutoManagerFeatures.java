@@ -23,6 +23,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.internal.block.PrisonBlock;
@@ -506,7 +507,8 @@ public class AutoManagerFeatures
 				
 	
 				// Try to autosell if enabled:
-				if ( (isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || 
+				if ( Prison.get().getPlatform().getConfigBooleanFalse( "sellall" ) &&
+						(isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || 
 						pmEvent.isForceAutoSell() || 
 						!player.isOp() && player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) )) && 
 						SellAllUtil.get() != null  ) {
@@ -543,7 +545,7 @@ public class AutoManagerFeatures
 				// it will have an amount of more than 0.
 				if ( itemStack.getAmount() > 0 ) {
 					
-					if ( Output.get().isDebug() && SellAllUtil.get() != null ) {
+					if ( Output.get().isDebug() && Prison.get().getPlatform().getConfigBooleanFalse( "sellall" ) ) {
 						
 						// Just get the calculated value for the drops... do not sell:
 						double amount = SellAllUtil.get().sellAllSell( player, itemStack, true, false, false );
@@ -575,7 +577,7 @@ public class AutoManagerFeatures
 //						extras.clear();
 //					}
 					
-					dropExtra( extras, player );
+					dropExtra( extras, player, debugInfo );
 //					dropExtra( player.getInventory().addItem(itemStack), player, block );
 				}
 				
@@ -934,28 +936,59 @@ public class AutoManagerFeatures
 	 * @param player
 	 * @param block
 	 */
-	protected void dropExtra( HashMap<Integer, SpigotItemStack> extra, Player player ) {
+	protected void dropExtra( HashMap<Integer, SpigotItemStack> extra, Player player, StringBuilder debugInfo ) {
 
 		if ( extra != null && extra.size() > 0 && SpigotPrison.getInstance().isSellAllEnabled()) {
 			
-			SellAllUtil sellAllUtil = SellAllUtil.get();
-			
-
-			// On inventory is full, will auto sell if auto sell is enabled in either
-			// the sellall configs, or the auto feature configs.
-			if (sellAllUtil != null && (
-					sellAllUtil.isAutoSellEnabled ||
-					isBoolean(AutoFeatures.isAutoSellIfInventoryIsFull) )) {
+			if ( Prison.get().getPlatform().getConfigBooleanFalse( "sellall" ) ) {
 				
 				
-				if ( !sellAllUtil.isAutoSellPerUserToggleable || 
-					  sellAllUtil.isAutoSellPerUserToggleable && sellAllUtil.isPlayerAutoSellEnabled(player) ) {
+				SellAllUtil sellAllUtil = SellAllUtil.get();
+				
+				// On inventory is full, will auto sell if auto sell is enabled in either
+				// the sellall configs, or the auto feature configs.
+				if (sellAllUtil != null && (
+						sellAllUtil.isAutoSellEnabled ||
+						isBoolean(AutoFeatures.isAutoSellIfInventoryIsFull) )) {
 					
-					boolean saNote = sellAllUtil.isAutoSellNotificationEnabled;
-					SellAllUtil.get().sellAllSell(player, false, !saNote, saNote, saNote, false, true);
-				}
-				
-				
+					
+					if ( !sellAllUtil.isAutoSellPerUserToggleable || 
+							sellAllUtil.isAutoSellPerUserToggleable && sellAllUtil.isPlayerAutoSellEnabled(player) ) {
+						
+						boolean saNote = sellAllUtil.isAutoSellNotificationEnabled;
+
+						List<Double> amounts = new ArrayList<>();
+						
+						final long nanoStart = System.nanoTime();
+						SellAllUtil.get().sellAllSell(player, false, !saNote, saNote, saNote, false, true, amounts );
+						final long nanoStop = System.nanoTime();
+						long nanoTime = nanoStop - nanoStart;
+						
+						double amount = 0;
+						for ( Double amt : amounts ) {
+							amount += amt;
+						}
+						
+						if ( amount > 0d ) {
+							
+							DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
+							DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+							
+							debugInfo.append( "[dropExtra sellall: value: " + dFmt.format( amount )  );
+							
+							if ( nanoTime > 0 ) {
+								final double autoSellTimeMs = ( nanoTime / 1000000.0d );
+								debugInfo.append( " sellallTiming: " )
+									.append( fFmt.format( autoSellTimeMs ) )
+									.append( " ms" );
+							}
+							
+							debugInfo.append( " ] " );
+						}
+						
+					}
+					
+					
 //				if (sellAllUtil.isAutoSellPerUserToggleable) {
 //					if (sellAllUtil.isPlayerAutoSellEnabled(player)) {
 //						if (sellAllUtil.isAutoSellNotificationEnabled) {
@@ -971,16 +1004,18 @@ public class AutoManagerFeatures
 //						SellAllUtil.get().sellAllSell(player, false, true, false, false, false, true);
 //					}
 //				}
-				
-				// Now that something might have been sold, try to add all the extra inventory items back to the
-				// player's inventory so it is not lost then pass the moreExtras along to be handled as the
-				// configurations require.
-				HashMap<Integer, SpigotItemStack> moreExtras = new HashMap<>();
-				for (SpigotItemStack itemStack : extra.values()) {
-					moreExtras.putAll(SpigotUtil.addItemToPlayerInventory(player, itemStack));
+					
+					// Now that something might have been sold, try to add all the extra inventory items back to the
+					// player's inventory so it is not lost then pass the moreExtras along to be handled as the
+					// configurations require.
+					HashMap<Integer, SpigotItemStack> moreExtras = new HashMap<>();
+					for (SpigotItemStack itemStack : extra.values()) {
+						moreExtras.putAll(SpigotUtil.addItemToPlayerInventory(player, itemStack));
+					}
+					extra = moreExtras;
 				}
-				extra = moreExtras;
 			}
+			
 			
 
 			// drop the player's items if they should be dropped. Also check to see if 
@@ -1011,6 +1046,7 @@ public class AutoManagerFeatures
 			}
 			
 		}
+		
 	}
 	
 //	private boolean isBoolean( Configuration sellAllConfig, String config ) {
