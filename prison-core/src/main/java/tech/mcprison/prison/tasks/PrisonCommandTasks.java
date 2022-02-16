@@ -70,7 +70,7 @@ public class PrisonCommandTasks
 			// Done running all tasks.  If debug is enabled, print:
 			
 			String message = String.format( "Prison Command Debug Details: %d", cmTasksPosition );
-			Output.get().logInfo( message );
+			Output.get().logDebug( message );
 			
 			for ( PrisonCommandTaskData cmdTask : cmdTasks ) {
 				

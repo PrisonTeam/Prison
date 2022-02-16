@@ -1019,14 +1019,16 @@ public class PrisonCommand
     public void toggleDebug(CommandSender sender,
     		@Wildcard(join=true)
     		@Arg(name = "targets", def = " ",
-    				description = "Optional. Enable or disable a debugging target. " +
-    					"[on, off, targets, selective, jarScan, " +
+    				description = "Optional. Enable or disable a debugging target, or set a count down timer. " +
+    					"[on, off, targets, (count-down-timer), selective, jarScan, " +
     					"testPlayerUtil, testLocale, rankup ] " +
     				"Use 'targets' to list all available targets.  Use 'on' or 'off' to toggle " +
     				"on and off individual targets, or 'all' targets if no target is specified. " +
     				"If any targets are enabled, then debug in general will be enabled. Selective will only " +
     				"activate debug with the specified targets. " +
-    				"jarScan will identify what Java version compiled the class files within the listed jars"
+    				"A positive integer value will enable the count down timer mode to enable " +
+    				"debug mode for a number of loggings, then debug mode will be turned off. " +
+    				"jarScan will identify what Java version compiled the class files within the listed jars."
     						) String targets ) {
     	
     	if ( targets != null && "jarScan".equalsIgnoreCase( targets ) ) {

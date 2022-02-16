@@ -58,6 +58,8 @@ public class Output
     private boolean debug = false;
     private Set<DebugTarget> activeDebugTargets;
     private Set<DebugTarget> selectiveDebugTargets;
+    
+    private int debugCountDown = -1;
 
     public enum DebugTarget {
     	all,
@@ -310,6 +312,10 @@ public class Output
     
     public void logDebug(String message, Object... args) {
     	if ( isDebug() ) {
+    		if ( debugCountDown != -1 && debugCountDown-- == 1 ) {
+    			setDebugCountDown( -1 );
+    			setDebug( false );
+    		}
     		log(message, LogLevel.DEBUG, args);
     	}
     }
@@ -317,7 +323,10 @@ public class Output
     public void logDebug( DebugTarget debugTarget, String message, Object... args) {
     	
     	if ( isDebug( debugTarget ) ) {
-    		
+    		if ( debugCountDown != -1 && debugCountDown-- == 1 ) {
+    			setDebugCountDown( -1 );
+    			setDebug( false );
+    		}
     		log(message, LogLevel.DEBUG, args);
 //    		logDebug(message, args );
     	}
@@ -343,6 +352,42 @@ public class Output
     
     public void applyDebugTargets( String targets ) {
     	
+    	// targets really cannot be null since it defaults to " "...
+    	if ( targets != null ) {
+    		
+    		// Check to see if its and integer:
+    		
+    		try
+			{
+				int countDownNumber = Integer.parseInt( targets.trim() );
+				
+				// Is a number, so use it as a countdown timer:
+				if ( countDownNumber > 1 ) {
+					
+					setDebugCountDown( countDownNumber );
+					setDebug( true );
+					
+					log( "Prison Debugger Enabled: Count down usage set to %d", LogLevel.DEBUG, countDownNumber );
+					return;
+				}
+				else {
+					// Number was zero or negative, so turn off debug mode and disable 
+					// countdown timer by setting to -1
+					setDebugCountDown( -1 );
+					setDebug( false );
+					
+					log( "Prison Debugger Disabled: Count down timer is disabled: %d", LogLevel.DEBUG, countDownNumber );
+					return;
+				}
+			}
+			catch ( Exception e )
+			{
+				// Not a number... so ignore:
+			}
+    		
+    	}
+    	
+    	
     	boolean isSelective = targets.contains( "selective" );
     	
     	TreeSet<DebugTarget> trgts = DebugTarget.fromMultiString( targets );
@@ -363,6 +408,11 @@ public class Output
 
     		// Clear all existing targets:
     		getActiveDebugTargets().clear();
+    		
+    		// Turn off the countdown timer if it was set (not -1):
+    		if ( !isDebug() && getDebugCountDown() != -1 ) {
+    			setDebugCountDown( -1 );
+    		}
     	}
     }
     
@@ -443,6 +493,12 @@ public class Output
 		this.debug = debug;
 	}
 
+	public int getDebugCountDown() {
+		return debugCountDown;
+	}
+	public void setDebugCountDown( int debugCountDown ) {
+		this.debugCountDown = debugCountDown;
+	}
 
 	public Set<DebugTarget> getActiveDebugTargets() {
 		return activeDebugTargets;

@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.8 2022-02-15
+# 3.3.0-alpha.8 2022-02-16
+
+
+* **New feature: debug count down timer.**
+Able to now set a debug count down timer where debugging is turned off after logging that number of entries.
 
 
 * **Potential bug fix in better managing if sellall should be enabled by directly checking the configuration parameter that enables it.**
