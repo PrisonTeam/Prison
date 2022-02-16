@@ -83,63 +83,114 @@ public class PrisonCommandTaskData {
 	
 	public enum CustomPlaceholders {
 		
-		player(CommandEnvironment.all_commands),
-		player_uid(CommandEnvironment.all_commands),
+		player(CommandEnvironment.all_commands, 
+				"{player} provides a player's name."),
+		player_uid(CommandEnvironment.all_commands, 
+				"{player_uid} provides a player's uuid."),
 
-		msg(CommandEnvironment.all_commands),
-		broadcast(CommandEnvironment.all_commands),
-		title(CommandEnvironment.all_commands ),
-		actionBar(CommandEnvironment.all_commands ),
+		msg(CommandEnvironment.all_commands, 
+				"{msg} sends a message to a player's chat."),
+		broadcast(CommandEnvironment.all_commands, 
+				"{broadcast} sends a message to all players on the server."),
+		title(CommandEnvironment.all_commands, 
+				"{title} sends a message to the player's title."),
+		actionBar(CommandEnvironment.all_commands, 
+				"{actionBar} sends a message to the player's actionBar." ),
 
-		inline(CommandEnvironment.all_commands),
-		inlinePlayer(CommandEnvironment.all_commands),
-		sync(CommandEnvironment.all_commands),
-		syncPlayer(CommandEnvironment.all_commands),
+		inline(CommandEnvironment.all_commands, 
+				"{inline} runs the command as console in the same task as this action." ),
+		inlinePlayer(CommandEnvironment.all_commands, 
+				"{inlinePlayer} runs the command as the player in the same task as this action."),
+		sync(CommandEnvironment.all_commands, 
+				"{sync} runs the command as console in a new sync task." ),
+		syncPlayer(CommandEnvironment.all_commands, 
+				"{syncPlayer} runs the command as the payer in a new sync task."),
 
 		
-		firstJoin(CommandEnvironment.rank_commands),
+		firstJoin(CommandEnvironment.rank_commands, 
+				"{firstJoin} runs the command on first join events for new players"),
+		promote(CommandEnvironment.rank_commands, 
+				"{promote} runs the command only on promotions such as rankup, promote, and setRank."),
+		demote(CommandEnvironment.rank_commands, 
+				"{demote} runs the command only on demotions such as demote."),
+		
 
-		balanceInitial(CommandEnvironment.rank_commands),
-		balanceFinal(CommandEnvironment.rank_commands),
-		currency(CommandEnvironment.rank_commands),
+		balanceInitial(CommandEnvironment.rank_commands, 
+				"{balanceInitial} a player's initial balance before the promotion/demotion."),
+		balanceFinal(CommandEnvironment.rank_commands, 
+				"{balanceFinal} a player's final balance after the promotion/demotion."),
+		currency(CommandEnvironment.rank_commands, 
+				"{currency} if a rank has a custom currency, then this will contain it's name."),
 		originalRankCost(CommandEnvironment.rank_commands),
 		rankupCost(CommandEnvironment.rank_commands),
 
-		ladder(CommandEnvironment.rank_commands),
-		rank(CommandEnvironment.rank_commands),
-		rankTag(CommandEnvironment.rank_commands),
-		targetRank(CommandEnvironment.rank_commands),
-		targetRankTag(CommandEnvironment.rank_commands),
+		ladder(CommandEnvironment.rank_commands, 
+				"{ladder} the ladder which has the ranks."),
+		rank(CommandEnvironment.rank_commands,
+				"{rank} the original rank the player started off with."),
+		rankTag(CommandEnvironment.rank_commands, 
+				"{rankTag} the original rank's tag."),
+		targetRank(CommandEnvironment.rank_commands, 
+				"{targetRank} the new rank."),
+		targetRankTag(CommandEnvironment.rank_commands,
+				"{targetRankTag} the new rank's tag."),
 
 		
 		
-		blockName(CommandEnvironment.blockevent_commands),
-		mineName(CommandEnvironment.blockevent_commands),
+		blockName(CommandEnvironment.blockevent_commands,
+				"{blockName} returns the name of the block. Custom blocks will be " +
+				"prefixed with their namespace."),
+		mineName(CommandEnvironment.blockevent_commands, 
+				"{mineName} returns the name of a mine where the block was broke. " +
+				"Returns an empty String if outside of a mine."),
 		
-		locationWorld(CommandEnvironment.blockevent_commands),
-		locationX(CommandEnvironment.blockevent_commands),
-		locationY(CommandEnvironment.blockevent_commands),
-		locationZ(CommandEnvironment.blockevent_commands),
+		locationWorld(CommandEnvironment.blockevent_commands, 
+				"{locationWorld} returns the world name for the coordinates of the block."),
+		locationX(CommandEnvironment.blockevent_commands, 
+				"{locationX} returns the integer x value for the coordinates of the block."),
+		locationY(CommandEnvironment.blockevent_commands, 
+				"{locationY} returns the integer y value for the coordinates of the block."),
+		locationZ(CommandEnvironment.blockevent_commands, 
+				"{locationZ} returns the integer z value for the coordinates of the block."),
 		
-		coordinates(CommandEnvironment.blockevent_commands),
-		worldCoordinates(CommandEnvironment.blockevent_commands),
-		blockCoordinates(CommandEnvironment.blockevent_commands),
+		coordinates(CommandEnvironment.blockevent_commands,
+				"{coordinates} returns the block coordinates in the format of '(x, y, x)' " +
+				"where x, y, and z are doubles."),
+		worldCoordinates(CommandEnvironment.blockevent_commands,
+				"{worldCoordinates} returns the block coordinates in the format of '(world,x,y,x)' " +
+				"where x, y, and z are integers."),
+		blockCoordinates(CommandEnvironment.blockevent_commands,
+				"{blockCoordinates} is similar to worldCoordinates, but prefixed with the " +
+				"block name 'blockName::(world,x,y,z)'."),
 
 		
-		blockChance(CommandEnvironment.blockevent_commands),
-		blockIsAir(CommandEnvironment.blockevent_commands),
+		blockChance(CommandEnvironment.blockevent_commands, 
+				"{blockChance} if the block is in a mine and is one of the placement blocks, then " +
+				"this will be the block's spawn percent chance."), 
+		blockIsAir(CommandEnvironment.blockevent_commands, 
+				"{blockIsAir} boolean value if the original block is AIR. Technically this can " +
+				"never happen since you cannot 'break' AIR blocks with tools."),
 		
-		blocksPlaced(CommandEnvironment.blockevent_commands),
-		blockRemaining(CommandEnvironment.blockevent_commands),
-		blocksMinedTotal(CommandEnvironment.blockevent_commands),
-		mineBlocksRemaining(CommandEnvironment.blockevent_commands),
+		blocksPlaced(CommandEnvironment.blockevent_commands, 
+				"{blocksPlaced} the number of blocks that were placed within a mine at the " +
+				"last mine reset. This may not be the mine size (see {mineBlockSize}) if " +
+				"some blocks were placed as AIR."),
+		blockRemaining(CommandEnvironment.blockevent_commands, 
+				"{blocksRemaining} don't use. Unknown value."),
+		blocksMinedTotal(CommandEnvironment.blockevent_commands,
+				"{blocksMinedTotal} total blocks mined in the mine."),
+		mineBlocksRemaining(CommandEnvironment.blockevent_commands,
+				"{mineBlocksRemaining} the number of blocks remaining in a mine."),
 
 		mineBlocksRemainingPercent(CommandEnvironment.blockevent_commands),
 		mineBlocksTotalMined(CommandEnvironment.blockevent_commands),
 		mineBlocksSize(CommandEnvironment.blockevent_commands),
 
-		blockMinedName(CommandEnvironment.blockevent_commands),
-		blockMinedNameFormal(CommandEnvironment.blockevent_commands),
+		blockMinedName(CommandEnvironment.blockevent_commands, 
+				"{blockMinedName} the name of the mined block."),
+		blockMinedNameFormal(CommandEnvironment.blockevent_commands, 
+				"{blockMinedNameFormal} the formal name of the mined block, which includes " +
+				"the namespace such as 'namespace:blockName'."),
 		blockMinedBlockType(CommandEnvironment.blockevent_commands),
 		
 		eventType(CommandEnvironment.blockevent_commands),
@@ -150,8 +201,15 @@ public class PrisonCommandTaskData {
 		;
 		
 		private final CommandEnvironment environment;
+		private final String description;
+		
 		private CustomPlaceholders( CommandEnvironment environment ) {
 			this.environment = environment;
+			this.description = null;
+		}
+		private CustomPlaceholders( CommandEnvironment environment, String description ) {
+			this.environment = environment;
+			this.description = description;
 		}
 
 		public static String listPlaceholders( CommandEnvironment environment ) {
@@ -186,6 +244,10 @@ public class PrisonCommandTaskData {
 		
 		public CommandEnvironment getEnvironment() {
 			return environment;
+		}
+
+		public String getDescription() {
+			return description;
 		}
 	}
 	

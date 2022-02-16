@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8 2022-02-15
 
 
+* **Add prison command descriptions that goes along with the placeholders.**
+They are not yet hooked up, but they will provide more information to the admins on what the placeholders will provide, and also how they can use them since some of these will include examples of the formats.
+
+
 * **Bug fix: The cancellation of the event was not being returned in the correct locations**, 
 so it was bypassing all of the before mine reset commands. The before mine commands will now run correctly.
 
