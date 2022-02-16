@@ -648,6 +648,11 @@ public class MineManager
     		
     			World world = worldOptional.get();
     			
+    			
+    			StringBuilder sb = new StringBuilder();
+    			sb.append( "Enabling world: " ).append( worldName ).append( "  Mines: " );
+    			
+    			
     			// Store this mine and the world in MineManager's unavailableWorld for later
     			// processing and hooking up to the world object.
     			List<Mine> unenabledMines = getUnavailableWorlds().get( worldName );
@@ -656,6 +661,9 @@ public class MineManager
     			
     			for ( Mine mine : unenabledMines ) {
     				if ( !mine.isEnabled() ) {
+    					
+    					sb.append( mine.getName() ).append( " " );
+    					
     					mine.setWorld( world );
     					
     					// Make sure world is hooked up properly to all locations.
@@ -684,6 +692,8 @@ public class MineManager
 //    			if ( unenabledMines.size() == 0 ) {
 //    				getUnavailableWorlds().remove( worldName );
 //    			}
+    			
+    			Output.get().logInfo( sb.toString() );
     			
     			// Since the world is loaded and all available mines have been hooked up
     			// with the world, so remove these entries.

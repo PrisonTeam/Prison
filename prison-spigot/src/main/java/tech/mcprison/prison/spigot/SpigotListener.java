@@ -205,6 +205,12 @@ public class SpigotListener implements Listener {
      */
     @EventHandler
     public void onWorldLoadEvent( WorldLoadEvent e ) {
+    	
+    	if ( Output.get().isDebug() ) {
+    		String message = String.format( 
+    				"Prison WorldLoadEvent: world: %s", e.getWorld().getName() );
+    		Output.get().logDebug( message );
+    	}
     	PrisonWorldLoadEvent pwlEvent = new PrisonWorldLoadEvent(e.getWorld().getName());
     	
     	Prison.get().getEventBus().post(pwlEvent);

@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8b 2022-02-16
 
 
+* **Added logging for when a delayed world comes online and list all mines that are activated.**
+
+
 * **v3.3.0-alpha.8b**
 
 
