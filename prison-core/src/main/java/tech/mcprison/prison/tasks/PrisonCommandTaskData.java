@@ -1,14 +1,17 @@
 package tech.mcprison.prison.tasks;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 
-public class PrisonCommandTask {
+public class PrisonCommandTaskData {
 	
 	private RankLadder ladder;
 	private PlayerRank rankTarget;
@@ -24,6 +27,14 @@ public class PrisonCommandTask {
 	private int taskId;
 
 	private List<PrisonCommandTaskPlaceholderData> customPlaceholders;
+	
+	
+	private List<String> tasks;
+	private List<Long> elapsedTimes; 
+	
+	private String errorMessage;
+	
+
 	
 	public enum TaskMode {
 		inline, 
@@ -179,11 +190,11 @@ public class PrisonCommandTask {
 	}
 	
 	
-	public PrisonCommandTask( String errorMessagePrefix, 
+	public PrisonCommandTaskData( String errorMessagePrefix, 
 			String command ) {
 		this( errorMessagePrefix, command, 0 );
 	}
-	public PrisonCommandTask( String errorMessagePrefix, 
+	public PrisonCommandTaskData( String errorMessagePrefix, 
 					String command, int commandRow ) {
 		super();
 		
@@ -193,6 +204,7 @@ public class PrisonCommandTask {
 		this.taskId = 0;
 		
 		this.customPlaceholders = new ArrayList<>();
+		this.elapsedTimes = new ArrayList<>();
 		
 		TaskMode taskMode = TaskMode.sync;
 		
@@ -221,21 +233,59 @@ public class PrisonCommandTask {
 		
 	}
 	
-	public void submitCommandTask() {
-		submitCommandTask( null );
+	public String getDebugDetails() {
+		StringBuilder sb = new StringBuilder();
+		
+		long nanoTotal = 0;
+		
+		DecimalFormat dFmt = new DecimalFormat( "#,000.0000" );
+		
+		for ( Long elapsedNano : elapsedTimes )
+		{
+			if ( sb.length() > 0 ) {
+				sb.append( ", " );
+			}
+			nanoTotal += elapsedNano;
+			
+			double elapsedMs = 1000000.0d / elapsedNano;
+			sb.append( dFmt.format( elapsedMs ) );
+		}
+		
+		sb.insert( 0, "[" );
+		sb.append( "]" );
+		
+		double totalNano = 1000000.0 / nanoTotal;
+		
+		String message = null;
+		
+		if ( ladder != null && rankTarget != null ) {
+			
+			message = String.format( 
+					"  Cmd Debug: %s Ladder: %s %s row: %d  tasks: %d  elapsedTime: %s  %s", 
+					errorMessagePrefix, ladder.getName(), rankTarget.getRank().getName(),
+					commandRow, tasks.size(), 
+					dFmt.format( totalNano ),
+					sb.toString()
+					);
+		}
+		else {
+			message = String.format( 
+					"  Cmd Debug: %s  row: %d  tasks: %d  elapsedTime: %s  %s", 
+					errorMessagePrefix, 
+					commandRow, tasks.size(), 
+					dFmt.format( totalNano ),
+					sb.toString()
+					);
+		}
+		
+		return message;
 	}
 	
-//	public void submitCommandTask( String command ) {
-//		submitCommandTask( null, command, TaskMode.sync );
-//	}
+	public void runCommandTask() {
+		runCommandTask( null );
+	}
 	
-//	public void submitCommandTask( Player player ) {
-//		submitCommandTask( player, getCmd(), TaskMode.sync );
-//	}
-	
-	public void submitCommandTask( Player player
-//			, String command, TaskMode taskMode 
-			) {
+	public void runCommandTask( Player player ) {
 		
 //		if ( command.contains( "{inline}" ) ) {
 //			taskMode = TaskMode.inline;
@@ -265,39 +315,101 @@ public class PrisonCommandTask {
 		
 		if ( tasks.size() > 0 ) {
 			
-			String errorMessage = errorMessagePrefix + ": " +
+			this.errorMessage = errorMessagePrefix + ": " +
 						(player == null ? "" : "Player: " + player.getName() + " ");
 			
 			
-			PrisonDispatchCommandTask task = 
-					new PrisonDispatchCommandTask( tasks, errorMessage, 
-									player, taskMode.isPlayerTask() );
+			this.tasks = tasks;
+			
+			runTask( player );
+			
+//			PrisonDispatchCommandTask task = 
+//					new PrisonDispatchCommandTask( tasks, errorMessage, 
+//									player, taskMode.isPlayerTask() );
 			
 			
-			switch ( taskMode )
-			{
-				case inline:
-				case inlinePlayer:
-					// Don't submit, but run it here within this thread:
-					task.run();
-					break;
-					
-				case sync:
-				case syncPlayer:
-				//case "async": // async will cause failures so run as sync:
-					
-					// submit task: 
-					setTaskId( PrisonTaskSubmitter.runTaskLater(task, 0) );
-					break;
-					
-				default:
-					break;
-			}
+			// Ignore taskMode since it's already running in a new sync task:
+//			task.run();
+			
+			
+			// NOTE: taskMode is no longer used, since all tasks are being ran 
+			//       within a sync task that has already been submitted.
+//			switch ( taskMode )
+//			{
+//				case inline:
+//				case inlinePlayer:
+//					// Don't submit, but run it here within this thread:
+//					task.run();
+//					break;
+//					
+//				case sync:
+//				case syncPlayer:
+//				//case "async": // async will cause failures so run as sync:
+//					
+//					// submit task: 
+//					setTaskId( PrisonTaskSubmitter.runTaskLater(task, 0) );
+//					break;
+//					
+//				default:
+//					break;
+//			}
 			
 		}
 
 	}
 	
+	
+	public void runTask( Player player ) {
+		if ( tasks != null && tasks.size() > 0 ) {
+			
+			for ( String task : tasks ) {
+				
+				long start = System.nanoTime();
+				
+				// Apply the custom placeholders:
+				for ( PrisonCommandTaskPlaceholderData cPlaceholder : getCustomPlaceholders() ) {
+					if ( cPlaceholder.contains( task ) ) {
+						task = cPlaceholder.replace( task );
+					}
+				}
+				
+				try {
+					if ( taskMode.isPlayerTask() && player != null ) {
+//						double start = System.currentTimeMillis();
+						
+						PrisonAPI.dispatchCommand( player, task );
+						
+//						double stop = System.currentTimeMillis();
+//						Output.get().logDebug( "PrisonDispatchCommandTask.run: (player) " + 
+//									(stop - start) + " ms  player= " + player.getName() + 
+//									"  task: " + task );
+					}
+					else {
+//						double start = System.currentTimeMillis();
+						
+						PrisonAPI.dispatchCommand( task );
+
+//						double stop = System.currentTimeMillis();
+//						Output.get().logDebug( "PrisonDispatchCommandTask.run: (console) " + 
+//									(stop - start) + " ms" +
+//									"  task: " + task );
+					}
+				}
+				catch ( Exception e ) {
+
+					Output.get().logError( "PrisonDispatchCommand: Error trying to run task: " + errorMessage + 
+							"  Task: [" + task + "] " + e.getMessage() );
+				}
+				
+				long stop = System.nanoTime();
+				long elapsed = stop - start;
+				
+				elapsedTimes.add( Long.valueOf( elapsed ) );
+
+			}
+			
+		}
+	}
 	
 	private String translateCommand( Player player, String command ) {
 		

@@ -63,8 +63,8 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.selection.Selection;
-import tech.mcprison.prison.tasks.PrisonCommandTask;
-import tech.mcprison.prison.tasks.PrisonCommandTask.TaskMode;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData.TaskMode;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Bounds.Edges;
@@ -3480,11 +3480,11 @@ public class MinesCommands
         	
         	String placeholders = 
         			
-        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
-        					PrisonCommandTask.CommandEnvironment.all_commands ) + " " +
+        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+        					PrisonCommandTaskData.CommandEnvironment.all_commands ) + " " +
         			
-        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
-									PrisonCommandTask.CommandEnvironment.blockevent_commands );
+        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+									PrisonCommandTaskData.CommandEnvironment.blockevent_commands );
         	
         	String message = String.format( "Valid Placeholders that can be used with blockEvents: [%s]", 
         							placeholders );
@@ -4507,11 +4507,11 @@ private ChatDisplay minesCommandList( Mine m )
         	
         	String placeholders = 
         			
-        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
-        					PrisonCommandTask.CommandEnvironment.all_commands ) + " " +
+        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+        					PrisonCommandTaskData.CommandEnvironment.all_commands ) + " " +
         			
-        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
-									PrisonCommandTask.CommandEnvironment.mine_commands );
+        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+									PrisonCommandTaskData.CommandEnvironment.mine_commands );
         	
         	String message = String.format( "Valid Placeholders that can be used with mine commands: [%s]", 
         							placeholders );

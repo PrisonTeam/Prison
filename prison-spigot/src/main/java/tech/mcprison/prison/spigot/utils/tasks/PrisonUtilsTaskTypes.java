@@ -7,7 +7,8 @@ import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.MineTargetBlockKey;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
-import tech.mcprison.prison.tasks.PrisonCommandTask;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData;
+import tech.mcprison.prison.tasks.PrisonCommandTasks;
 import tech.mcprison.prison.util.Location;
 
 public interface PrisonUtilsTaskTypes
@@ -131,9 +132,10 @@ public interface PrisonUtilsTaskTypes
 		@Override
 		public void run() {
 			
-			PrisonCommandTask pCmd = new PrisonCommandTask( "PrisonUtilsTaskTypRunCommand", getCommand() );
+			PrisonCommandTaskData pCmd = new PrisonCommandTaskData( "PrisonUtilsTaskTypRunCommand", getCommand(), 1 );
 				
-			pCmd.submitCommandTask( getPlayer() );
+			PrisonCommandTasks.submitTasks( pCmd );
+//			pCmd.submitCommandTask( getPlayer() );
 		}
 
 		@Override

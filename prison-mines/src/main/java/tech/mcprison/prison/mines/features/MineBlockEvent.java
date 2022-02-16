@@ -12,7 +12,7 @@ import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.tasks.PrisonCommandTask.TaskMode;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData.TaskMode;
 
 public class MineBlockEvent {
 

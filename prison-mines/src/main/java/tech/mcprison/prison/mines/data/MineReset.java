@@ -28,9 +28,10 @@ import tech.mcprison.prison.mines.features.MineTracerBuilder;
 import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask;
 import tech.mcprison.prison.mines.tasks.MineTeleportTask;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.tasks.PrisonCommandTask;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
+import tech.mcprison.prison.tasks.PrisonCommandTasks;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.Location;
@@ -246,18 +247,27 @@ public abstract class MineReset
 				// Before reset commands:
 				if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
 					
+					List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
+					
+					int row = 0;
 					for (String command : getResetCommands() ) {
+						row++;
 // 	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
 // 	        				.replace("{player_uid}", player.uid.toString());
 						if ( command.startsWith( "before: " )) {
 							String cmd = command.replace( "before: ", "" );
 							
-     						PrisonCommandTask cmdTask = new PrisonCommandTask( "MineReset: Before:", cmd );
-     						cmdTask.submitCommandTask();
-
+     						PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( 
+     									"MineReset sync: " + getName() + " Before:", cmd );
+     						cmdTask.setCommandRow( row );
+     						
+     						cmdTasks.add( cmdTask );
+//     						PrisonCommandTasks.submitTasks( cmdTask );
 							//PrisonAPI.dispatchCommand(cmd);
 						}
 					}
+					
+					PrisonCommandTasks.submitTasks( cmdTasks );
 				}
 			}
 
@@ -283,18 +293,26 @@ public abstract class MineReset
 				// After reset commands:
 				if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
 					
+					List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
+					
+					int row = 0;
 					for (String command : getResetCommands() ) {
+						row++;
 // 	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
 // 	        				.replace("{player_uid}", player.uid.toString());
 						if ( command.startsWith( "after: " )) {
 							String cmd = command.replace( "after: ", "" );
 							
-     						PrisonCommandTask cmdTask = new PrisonCommandTask( "MineReset: After:", cmd );
-     						cmdTask.submitCommandTask();
-
-							//PrisonAPI.dispatchCommand(cmd);
+							
+     						PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( 
+     								"MineReset sync: " + getName() + " After:", cmd );
+     						cmdTask.setCommandRow( row );
+     						
+     						cmdTasks.add( cmdTask );
 						}
 					}
+					
+					PrisonCommandTasks.submitTasks( cmdTasks );
 				}
 			}
 
@@ -842,18 +860,27 @@ public abstract class MineReset
  			// Before reset commands:
  			if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
  				
+ 				List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
+ 				
+ 				int row = 0;
  				for (String command : getResetCommands() ) {
+ 					row++;
 //     		String formatted = cmd.replace("{player}", prisonPlayer.getName())
 //     				.replace("{player_uid}", player.uid.toString());
  					if ( command.startsWith( "before: " )) {
  						String cmd = command.replace( "before: ", "" );
  						
- 						PrisonCommandTask cmdTask = new PrisonCommandTask( "MineReset: Before:", cmd );
- 						cmdTask.submitCommandTask();
- 							
+ 						PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( 
+ 								"MineReset: " + getName() + " Before:", cmd );
+ 						cmdTask.setCommandRow( row );
+ 						
+ 						cmdTasks.add( cmdTask );
+// 						PrisonCommandTasks.submitTasks( cmdTask );
  						// PrisonAPI.dispatchCommand(cmd);
  					}
  				}
+ 				
+ 				PrisonCommandTasks.submitTasks( cmdTasks );
  			}
  		}
     }
@@ -880,18 +907,27 @@ public abstract class MineReset
 			// After reset commands:
 			if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
 				
+ 				
+ 				List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
+ 				
+ 				
+ 				int row = 0;
 				for (String command : getResetCommands() ) {
+					row++;
 //        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
 //        				.replace("{player_uid}", player.uid.toString());
 					if ( command.startsWith( "after: " )) {
 						String cmd = command.replace( "after: ", "" );
 						
- 						PrisonCommandTask cmdTask = new PrisonCommandTask( "MineReset: After:", cmd );
- 						cmdTask.submitCommandTask();
+ 						PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( 
+ 								"MineReset: " + getName() + " After:", cmd );
+ 						cmdTask.setCommandRow( row );
 
-						// PrisonAPI.dispatchCommand(cmd);
+ 						cmdTasks.add( cmdTask );
 					}
 				}
+				
+				PrisonCommandTasks.submitTasks( cmdTasks );
 			}
 		}
         

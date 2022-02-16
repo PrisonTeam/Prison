@@ -30,7 +30,7 @@ public class OnBlockBreakPlayerManualCore
 {
 
 	
-	public void playerSmelt( SpigotPlayer player ) {
+	public void playerSmelt( SpigotPlayer player, StringBuilder debugInfo ) {
 		
 		List<XMaterial> smelts = new ArrayList<>();
 		
@@ -68,12 +68,12 @@ public class OnBlockBreakPlayerManualCore
 		
 		
 		for ( XMaterial xMat : smelts ) {
-			autoFeatureSmelt( player.getWrapper(), xMat );
+			autoFeatureSmelt( player.getWrapper(), xMat, debugInfo );
 		}
 
 	}
 	
-	public void playerBlock( SpigotPlayer player ) {
+	public void playerBlock( SpigotPlayer player, StringBuilder debugInfo ) {
 		
 		List<XMaterial> blocks = new ArrayList<>();
 		
@@ -91,13 +91,13 @@ public class OnBlockBreakPlayerManualCore
 		
 		
 		for ( XMaterial xMat : blocks ) {
-			autoFeatureBlock( player.getWrapper(), xMat );
+			autoFeatureBlock( player.getWrapper(), xMat, debugInfo );
 		}
 		
 	}
 
 	
-	protected XMaterial autoFeatureSmelt( Player p, XMaterial source )
+	protected XMaterial autoFeatureSmelt( Player p, XMaterial source, StringBuilder debugInfo )
 	{
 		XMaterial results = source;
 		
@@ -109,7 +109,7 @@ public class OnBlockBreakPlayerManualCore
 			switch ( source )
 			{
 				case COBBLESTONE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltCobblestone ), source, XMaterial.STONE, p );
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltCobblestone ), source, XMaterial.STONE, p, debugInfo );
 					results = XMaterial.STONE;
 					break;
 					
@@ -117,54 +117,54 @@ public class OnBlockBreakPlayerManualCore
 				case NETHER_GOLD_ORE:
 				case DEEPSLATE_GOLD_ORE:
 				case RAW_GOLD:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltGoldOre ), source, XMaterial.GOLD_INGOT, p );
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltGoldOre ), source, XMaterial.GOLD_INGOT, p, debugInfo );
 					results = XMaterial.GOLD_INGOT;
 					break;
 					
 				case IRON_ORE:
 				case DEEPSLATE_IRON_ORE:
 				case RAW_IRON:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltIronOre ), source, XMaterial.IRON_INGOT, p );
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltIronOre ), source, XMaterial.IRON_INGOT, p, debugInfo );
 					results = XMaterial.IRON_INGOT;
 					break;
 					
 				case COAL_ORE:
 				case DEEPSLATE_COAL_ORE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltCoalOre ), source, XMaterial.COAL, p );
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltCoalOre ), source, XMaterial.COAL, p, debugInfo );
 					results = XMaterial.COAL;
 					break;
 					
 				case DIAMOND_ORE:
 				case DEEPSLATE_DIAMOND_ORE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltDiamondlOre ), source, XMaterial.DIAMOND, p );
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltDiamondlOre ), source, XMaterial.DIAMOND, p, debugInfo );
 					results = XMaterial.DIAMOND;
 					break;
 					
 				case EMERALD_ORE:
 				case DEEPSLATE_EMERALD_ORE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltEmeraldOre ), source, XMaterial.EMERALD, p );
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltEmeraldOre ), source, XMaterial.EMERALD, p, debugInfo );
 					results = XMaterial.EMERALD;
 					break;
 					
 				case LAPIS_ORE:
 				case DEEPSLATE_LAPIS_ORE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltLapisOre ), source, XMaterial.LAPIS_LAZULI, p );
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltLapisOre ), source, XMaterial.LAPIS_LAZULI, p, debugInfo );
 					results = XMaterial.LAPIS_LAZULI;
 					break;
 					
 				case REDSTONE_ORE:
 				case DEEPSLATE_REDSTONE_ORE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltRedstoneOre ), source, XMaterial.REDSTONE, p );
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltRedstoneOre ), source, XMaterial.REDSTONE, p, debugInfo );
 					results = XMaterial.REDSTONE;
 					break;
 					
 				case NETHER_QUARTZ_ORE:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltNetherQuartzOre ), source, XMaterial.QUARTZ, p );
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltNetherQuartzOre ), source, XMaterial.QUARTZ, p, debugInfo );
 					results = XMaterial.QUARTZ;
 					break;
 					
 				case ANCIENT_DEBRIS:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltAncientDebris ), source, XMaterial.NETHERITE_SCRAP, p );
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltAncientDebris ), source, XMaterial.NETHERITE_SCRAP, p, debugInfo );
 					results = XMaterial.NETHERITE_SCRAP;
 					break;
 
@@ -172,7 +172,7 @@ public class OnBlockBreakPlayerManualCore
 				case COPPER_ORE:
 				case DEEPSLATE_COPPER_ORE:
 				case RAW_COPPER:
-					autoSmelt( isAll || isBoolean( AutoFeatures.smeltCopperOre ), source, XMaterial.COPPER_INGOT, p );
+					autoSmelt( isAll || isBoolean( AutoFeatures.smeltCopperOre ), source, XMaterial.COPPER_INGOT, p, debugInfo );
 					results = XMaterial.COPPER_INGOT;
 					break;
 					
@@ -185,7 +185,7 @@ public class OnBlockBreakPlayerManualCore
 		return results;
 	}
 
-	protected void autoFeatureBlock( Player p, XMaterial source  ) {
+	protected void autoFeatureBlock( Player p, XMaterial source, StringBuilder debugInfo ) {
 
 		boolean isAll = isBoolean( AutoFeatures.smeltAllBlocks );
 
@@ -197,62 +197,62 @@ public class OnBlockBreakPlayerManualCore
 			switch ( source )
 			{
 				case GOLD_INGOT:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockGoldBlock ), source, XMaterial.GOLD_BLOCK, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockGoldBlock ), source, XMaterial.GOLD_BLOCK, p, debugInfo );
 					
 					break;
 					
 				case IRON_INGOT:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockIronBlock ), source, XMaterial.IRON_BLOCK, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockIronBlock ), source, XMaterial.IRON_BLOCK, p, debugInfo );
 					
 					break;
 
 				case COAL:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockCoalBlock ), source, XMaterial.COAL_BLOCK, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockCoalBlock ), source, XMaterial.COAL_BLOCK, p, debugInfo );
 					
 					break;
 					
 				case DIAMOND:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockDiamondBlock ), source, XMaterial.DIAMOND_BLOCK, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockDiamondBlock ), source, XMaterial.DIAMOND_BLOCK, p, debugInfo );
 					
 					break;
 					
 				case REDSTONE:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockRedstoneBlock ), source,XMaterial.REDSTONE_BLOCK, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockRedstoneBlock ), source,XMaterial.REDSTONE_BLOCK, p, debugInfo );
 					
 					break;
 					
 				case EMERALD:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockEmeraldBlock ), source, XMaterial.EMERALD_BLOCK, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockEmeraldBlock ), source, XMaterial.EMERALD_BLOCK, p, debugInfo );
 					
 					break;
 					
 				case QUARTZ:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockQuartzBlock ), source, XMaterial.QUARTZ_BLOCK, 4, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockQuartzBlock ), source, XMaterial.QUARTZ_BLOCK, 4, p, debugInfo );
 					
 					break;
 					
 				case PRISMARINE_SHARD:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockPrismarineBlock ), source, XMaterial.PRISMARINE, 4, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockPrismarineBlock ), source, XMaterial.PRISMARINE, 4, p, debugInfo );
 					
 					break;
 					
 				case SNOWBALL:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockSnowBlock ), source, XMaterial.SNOW_BLOCK, 4, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockSnowBlock ), source, XMaterial.SNOW_BLOCK, 4, p, debugInfo );
 					
 					break;
 					
 				case GLOWSTONE_DUST:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockGlowstone ), source, XMaterial.GLOWSTONE, 4, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockGlowstone ), source, XMaterial.GLOWSTONE, 4, p, debugInfo );
 					
 					break;
 					
 				case LAPIS_LAZULI:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockLapisBlock ), source, XMaterial.LAPIS_BLOCK, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockLapisBlock ), source, XMaterial.LAPIS_BLOCK, p, debugInfo );
 					
 					break;
 					
 				case COPPER_INGOT:
-					autoBlock( isAll || isBoolean( AutoFeatures.blockCopperBlock ), source, XMaterial.COPPER_BLOCK, p );
+					autoBlock( isAll || isBoolean( AutoFeatures.blockCopperBlock ), source, XMaterial.COPPER_BLOCK, p, debugInfo );
 					
 					break;
 					
@@ -265,27 +265,27 @@ public class OnBlockBreakPlayerManualCore
 
 
 
-	protected void autoSmelt( boolean autoSmelt, XMaterial source, XMaterial target, Player p ) {
+	protected void autoSmelt( boolean autoSmelt, XMaterial source, XMaterial target, Player p, StringBuilder debugInfo ) {
 
 		if ( autoSmelt && source != null && target != null ) {
 			
 			HashMap<Integer, SpigotItemStack> overflow = SpigotUtil.itemStackReplaceItems( p, source, target, 1 );
-			dropExtra( overflow, p );
+			dropExtra( overflow, p, debugInfo );
 
 		}
 	}
 	
 	
-	protected void autoBlock( boolean autoBlock, XMaterial source, XMaterial target, Player p  ) {
-		autoBlock(autoBlock, source, target, 9, p );
+	protected void autoBlock( boolean autoBlock, XMaterial source, XMaterial target, Player p, StringBuilder debugInfo  ) {
+		autoBlock(autoBlock, source, target, 9, p, debugInfo );
 	}
 
 	
-	protected void autoBlock( boolean autoBlock, XMaterial source, XMaterial target, int ratio, Player p  ) {
+	protected void autoBlock( boolean autoBlock, XMaterial source, XMaterial target, int ratio, Player p, StringBuilder debugInfo  ) {
 
 		if ( autoBlock && source != null && target != null ) {
 			HashMap<Integer, SpigotItemStack> overflow = SpigotUtil.itemStackReplaceItems( p, source, target, ratio );
-			dropExtra( overflow, p );
+			dropExtra( overflow, p, debugInfo );
 			
 		}
 	}

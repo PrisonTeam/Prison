@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8 2022-02-15
 
 
+* **Prison commands: reorganize some of the structures used for the prison commands.**
+Hook up some of the logging to track run times for each command.
+
+
 * **Prevent the autosell happening just because someone is op.**
 To make this work, and to prevent odd behaviors where OPs suddenly are not able to mine correctly, OP can no longer use the autosell based upon perms.
 

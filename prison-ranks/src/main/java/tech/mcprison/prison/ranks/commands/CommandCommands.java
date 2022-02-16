@@ -15,7 +15,7 @@ import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
-import tech.mcprison.prison.tasks.PrisonCommandTask;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData;
 
 /**
  * @author Faizaan A. Datoo
@@ -58,11 +58,11 @@ public class CommandCommands
         	
         	String placeholders = 
         			
-        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
-        					PrisonCommandTask.CommandEnvironment.all_commands ) + " " +
+        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+        					PrisonCommandTaskData.CommandEnvironment.all_commands ) + " " +
         			
-        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
-									PrisonCommandTask.CommandEnvironment.rank_commands );
+        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+									PrisonCommandTaskData.CommandEnvironment.rank_commands );
         	
         	String message = ranksCommandAddPlaceholdersMsg( placeholders );
         	
@@ -235,11 +235,11 @@ public class CommandCommands
 
         if ( ladderName != null && "placeholders".equalsIgnoreCase( ladderName ) ) {
         	
-        	String placeholders = PrisonCommandTask.CustomPlaceholders.listPlaceholders(
-											PrisonCommandTask.CommandEnvironment.all_commands ) + " " +
+        	String placeholders = PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+											PrisonCommandTaskData.CommandEnvironment.all_commands ) + " " +
         			
-									PrisonCommandTask.CustomPlaceholders.listPlaceholders(
-											PrisonCommandTask.CommandEnvironment.rank_commands );
+									PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+											PrisonCommandTaskData.CommandEnvironment.rank_commands );
         	
         	String message = ladderCommandAddPlaceholdersMsg( placeholders );
         	

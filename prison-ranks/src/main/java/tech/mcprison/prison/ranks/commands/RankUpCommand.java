@@ -42,7 +42,8 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
-import tech.mcprison.prison.tasks.PrisonCommandTask;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData;
+import tech.mcprison.prison.tasks.PrisonCommandTasks;
 
 /**
  * The commands for this module.
@@ -80,12 +81,13 @@ public class RankUpCommand
     				"Rankup: cmd '/rankupmax %s'  Passed perm check: ranks.rankupmax.%s", 
     				ladder, ladder );
     		
-    		List<PrisonCommandTask> cmdTasks = new ArrayList<>();
+    		List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
     		
 			rankUpPrivate(sender, ladder, RankupModes.MAX_RANKS, "ranks.rankupmax.", cmdTasks );
 			
 			// submit cmdTasks
-			submitCmdTasks( cmdTasks );
+			Player player = getPlayer( sender, null );
+			submitCmdTasks( player, cmdTasks );
 			
 		}
     	else {
@@ -111,17 +113,18 @@ public class RankUpCommand
 				"Rankup: cmd '/rankup %s'  Processing ranks.rankup.%s", 
 				ladder, ladder );
         
-		List<PrisonCommandTask> cmdTasks = new ArrayList<>();
+		List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
 		
     	rankUpPrivate(sender, ladder, RankupModes.ONE_RANK, "ranks.rankup.", cmdTasks );
     	
     	// submit cmdTasks
-		submitCmdTasks( cmdTasks );
+    	Player player = getPlayer( sender, null );
+		submitCmdTasks( player, cmdTasks );
     	
     }
 
     private void rankUpPrivate(CommandSender sender, String ladder, RankupModes mode, 
-    		String permission, List<PrisonCommandTask> cmdTasks ) {
+    		String permission, List<PrisonCommandTaskData> cmdTasks ) {
 
         // RETRIEVE THE LADDER
 
@@ -418,13 +421,13 @@ public class RankUpCommand
         	
         	if ( ladder != null && rankPlayer != null ) {
         		
-        		List<PrisonCommandTask> cmdTasks = new ArrayList<>();
+        		List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
         		
         		RankupResults results = new RankUtil().promotePlayer(player, rankPlayer, ladder, 
         				player.getName(), sender.getName(), pForceCharge, cmdTasks );
 
         		// submit cmdTasks...
-    			submitCmdTasks( cmdTasks );
+    			submitCmdTasks( player, cmdTasks );
         		
         		processResults( sender, player.getName(), results, null, ladder, currency );
         	}
@@ -479,13 +482,13 @@ public class RankUpCommand
         	
         	if ( ladder != null && rankPlayer != null ) {
         		
-        		List<PrisonCommandTask> cmdTasks = new ArrayList<>();
+        		List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
         		
         		RankupResults results = new RankUtil().demotePlayer(player, rankPlayer, ladder, 
         				player.getName(), sender.getName(), pForceCharge, cmdTasks );
         		
         		// submit cmdTasks
-    			submitCmdTasks( cmdTasks );
+    			submitCmdTasks( player, cmdTasks );
         		
         		processResults( sender, player.getName(), results, null, ladder, currency );
         	}
@@ -564,7 +567,7 @@ public class RankUpCommand
         
         if ( rankPlayer != null ) {
         	
-        	List<PrisonCommandTask> cmdTasks = new ArrayList<>();
+        	List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
         	
         	RankupResults results = 
         			new RankUtil().setRank(rankPlayer, rankPlayer, 
@@ -573,7 +576,8 @@ public class RankUpCommand
         												cmdTasks );
         	
         	// submit cmdTasks
-			submitCmdTasks( cmdTasks );
+        	Player player = getPlayer( null, rankPlayer.getName() );
+			submitCmdTasks( player, cmdTasks );
         	
         	processResults( rankPlayer, rankPlayer.getName(), results, 
         			pRank.getName(), pRank.getLadder().getName(), 
@@ -600,13 +604,13 @@ public class RankUpCommand
         	// Get currency if it exists, otherwise it will be null if the Rank has no currency:
         	String currency = rankPlayer == null || pRank == null ? null : pRank.getCurrency();
         	
-        	List<PrisonCommandTask> cmdTasks = new ArrayList<>();
+        	List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
         	
         	RankupResults results = new RankUtil().setRank(player, rankPlayer, ladderName, rank, 
         			player.getName(), sender.getName(), cmdTasks );
         	
         	// submit cmdTasks
-			submitCmdTasks( cmdTasks );
+			submitCmdTasks( player, cmdTasks );
         	
         	processResults( sender, player.getName(), results, rank, ladderName, currency );
         }
@@ -727,8 +731,10 @@ public class RankUpCommand
 	}
 
 	
-    private void submitCmdTasks( List<PrisonCommandTask> cmdTasks )
+    private void submitCmdTasks( Player player, List<PrisonCommandTaskData> cmdTasks )
 	{
+    	
+    	PrisonCommandTasks.submitTasks( player, cmdTasks );
 		
 	}
     

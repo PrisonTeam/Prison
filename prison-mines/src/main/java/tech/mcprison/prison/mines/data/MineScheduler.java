@@ -20,10 +20,11 @@ import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.tasks.PrisonCommandTask;
-import tech.mcprison.prison.tasks.PrisonCommandTask.CustomPlaceholders;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData.CustomPlaceholders;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
+import tech.mcprison.prison.tasks.PrisonCommandTasks;
 import tech.mcprison.prison.util.Location;
 
 public abstract class MineScheduler
@@ -542,14 +543,22 @@ public abstract class MineScheduler
 		
 		// Only one block is processed here:
 		if ( getBlockEvents().size() > 0 ) {
+			
+			List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
+			
 			Random random = new Random();
 			
+			int row = 0;
 			for ( MineBlockEvent blockEvent : getBlockEvents() ) {
 				double chance = random.nextDouble() * 100;
 				
 				processBlockEventDetails( player, prisonBlock,
-						targetBlock, eventType, chance, blockEvent, triggered );
+						targetBlock, eventType, chance, blockEvent, triggered,
+						cmdTasks, ++row );
 			}
+			
+			
+			PrisonCommandTasks.submitTasks( player, cmdTasks );
 		}
 	}
 
@@ -585,7 +594,8 @@ public abstract class MineScheduler
 	private void processBlockEventDetails( Player player, PrisonBlock prisonBlock,
 							MineTargetPrisonBlock targetBlock, BlockEventType eventType, 
 				double chance, 
-					MineBlockEvent blockEvent, String triggered )
+					MineBlockEvent blockEvent, String triggered, 
+					List<PrisonCommandTaskData> cmdTasks, int row )
 	{
 
 		boolean fireEvent = blockEvent.isFireEvent( chance, eventType, 
@@ -605,8 +615,9 @@ public abstract class MineScheduler
 				
 				PrisonBlockStatusData originalBlock = targetBlock.getPrisonBlock();
 				
-				PrisonCommandTask cmdTask = new PrisonCommandTask( "BlockEvent", blockEvent.getCommand() );
+				PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( "BlockEvent", blockEvent.getCommand() );
 				cmdTask.setTaskMode( blockEvent.getTaskMode() );
+				cmdTask.setCommandRow( row );
 				
 				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockName, originalBlock.getBlockName() );
@@ -654,6 +665,8 @@ public abstract class MineScheduler
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.eventType, eventType.name() );
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.eventTriggered, triggered );
 				
+				
+				cmdTasks.add( cmdTask );
 				
 				
 //				cmdTask.submitCommandTask( player, blockEvent.getCommand(), blockEvent.getTaskMode() );

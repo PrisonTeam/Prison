@@ -34,8 +34,8 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.events.RankUpEvent;
-import tech.mcprison.prison.tasks.PrisonCommandTask;
-import tech.mcprison.prison.tasks.PrisonCommandTask.CustomPlaceholders;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData.CustomPlaceholders;
 
 /**
  * Utilities for changing the ranks of players.
@@ -191,7 +191,7 @@ public class RankUtil
     
     
     public RankupResults rankupPlayer(Player player, RankPlayer rankPlayer, String ladderName, String playerName, 
-    		List<PrisonCommandTask> cmdTasks ) {
+    		List<PrisonCommandTaskData> cmdTasks ) {
     	
     	return rankupPlayer(RankupCommands.rankup, player, rankPlayer, ladderName, null, 
     					playerName, null, PromoteForceCharge.charge_player, cmdTasks );
@@ -199,7 +199,7 @@ public class RankUtil
     
     public RankupResults promotePlayer(Player player, RankPlayer rankPlayer, String ladderName, 
     										String playerName, String executorName, PromoteForceCharge pForceCharge, 
-    										List<PrisonCommandTask> cmdTasks ) {
+    										List<PrisonCommandTaskData> cmdTasks ) {
     	
     	return rankupPlayer(RankupCommands.promote, player, rankPlayer, ladderName, null, 
     					playerName, executorName, pForceCharge, cmdTasks );
@@ -207,7 +207,7 @@ public class RankUtil
     
     public RankupResults demotePlayer(Player player, RankPlayer rankPlayer, String ladderName, 
     										String playerName, String executorName, PromoteForceCharge pForceCharge, 
-    										List<PrisonCommandTask> cmdTasks ) {
+    										List<PrisonCommandTaskData> cmdTasks ) {
     	
     	return rankupPlayer(RankupCommands.demote, player, rankPlayer, ladderName, null, 
     					playerName, executorName, pForceCharge, cmdTasks );
@@ -215,7 +215,7 @@ public class RankUtil
     
     public RankupResults setRank(Player player, RankPlayer rankPlayer, String ladderName, String rankName, 
     										String playerName, String executorName, 
-    										List<PrisonCommandTask> cmdTasks ) {
+    										List<PrisonCommandTaskData> cmdTasks ) {
     	
     	RankupCommands rankupCmd = "FirstJoinEvent".equalsIgnoreCase( executorName ) ?
     						RankupCommands.firstJoin : RankupCommands.setrank;
@@ -241,7 +241,7 @@ public class RankUtil
      */
     private RankupResults rankupPlayer(RankupCommands command, Player player, RankPlayer rankPlayer, String ladderName, 
     				String rankName, String playerName, String executorName, 
-    				PromoteForceCharge pForceCharge, List<PrisonCommandTask> cmdTasks ) {
+    				PromoteForceCharge pForceCharge, List<PrisonCommandTaskData> cmdTasks ) {
     	
     	RankupResults results = new RankupResults(command, rankPlayer, executorName, ladderName, rankName);
     	
@@ -331,7 +331,7 @@ public class RankUtil
     private void rankupPlayerInternal(RankupResults results, 
     		RankupCommands command, Player prisonPlayer, RankPlayer rankPlayer, String ladderName, 
     		String rankName, 
-    		PromoteForceCharge pForceCharge, List<PrisonCommandTask> cmdTasks ) {
+    		PromoteForceCharge pForceCharge, List<PrisonCommandTaskData> cmdTasks ) {
 
     	Output.get().logDebug( DebugTarget.rankup, "Rankup: rankupPlayerInternal: ");
     	
@@ -558,7 +558,7 @@ public class RankUtil
         			cmd = cmd.replace( "{firstJoin}", "" );
         		}
         		
-				PrisonCommandTask cmdTask = new PrisonCommandTask( command.name(), cmd, row );
+				PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( command.name(), cmd, row );
 				
 				cmdTask.setLadder( ladder );
 				cmdTask.setRankTarget( tpRank );
@@ -590,7 +590,7 @@ public class RankUtil
 				cmdTasks.add( cmdTask );
 				
 				// Comment this out to stack the rank commands:
-				cmdTask.submitCommandTask( prisonPlayer );
+				// cmdTask.submitCommandTask( prisonPlayer );
 
         		
 //        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
