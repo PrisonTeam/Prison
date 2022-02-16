@@ -198,15 +198,16 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
             for ( String stringValue : rankLore ) {
             	
+            	String currency = (rank.getCurrency() == null || 
+        				"default".equalsIgnoreCase( rank.getCurrency()) ||
+							rank.getCurrency().trim().length() == 0  ?
+									"" : " " + rank.getCurrency() );
             	
                 stringValue = stringValue.replace("{rankPrice}", 
                 		PlaceholdersUtil.formattedKmbtSISize(
-                				rankPrice, formatDecimal, "") + 
-                			(rank.getCurrency() == null || 
-                				"default".equalsIgnoreCase( rank.getCurrency()) ||
-                						rank.getCurrency().trim().length() == 0  ?
-                					"" : " " + rank.getCurrency() )
+                				rankPrice, formatDecimal, "") + currency
                 		);
+            	
                 stringValue = stringValue.replace("{rankName}", rank.getName());
                 stringValue = stringValue.replace("{rankTag}", SpigotPrison.format(rank.getTag()));
                 stringValue = stringValue.replace("{rankMultiplier}", mFmt.format( rankMultiplier ));

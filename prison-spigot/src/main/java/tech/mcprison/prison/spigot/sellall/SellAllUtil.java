@@ -24,15 +24,11 @@ import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
-import tech.mcprison.prison.modules.Module;
-import tech.mcprison.prison.modules.ModuleManager;
-import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
-import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
@@ -49,7 +45,8 @@ import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
 public class SellAllUtil {
 
     private static SellAllUtil instance;
-    private static final boolean isEnabled = getBoolean(SpigotPrison.getInstance().getConfig().getString("sellall"));
+    private static final boolean isEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "sellall" );
+//    private static final boolean isEnabled = getBoolean(SpigotPrison.getInstance().getConfig().getString("sellall"));
     private final Compatibility compat = SpigotPrison.getInstance().getCompatibility();
     private final ItemStack lapisLazuli = compat.getLapisItemStack();
     public Configuration sellAllConfig;
@@ -1513,18 +1510,23 @@ public class SellAllUtil {
     }
 
     /**
-     * Sell removing items from Inventories and checking all the possible conditions that a Player must meet to sell
-     * items, this includes method parameters like:
-     * - Is using SellAll Sign.
-     * - If tell the Player how much did he earn (if this's disabled by config, the parameter will be ignored).
-     * - If do this action without making the player notice it, disabling sounds and all messages.
-     * - If tell the Player to wait the end of SellAll Delay if not ended (if this's disabled by config, the parameter will be ignored).
-     * - If tell the Player how much did he earn only after a delay (AutoSell Delay Earnings will use this option for example).
-     * - If play sound on SellAll Sell (If sounds are disabled from the config, this parameter will be ignored.
+     * <p>This function will remove all sellable items from the player's Inventories. It will first ensure that a 
+     * Player can sell the items. Some of the conditions that are checked are, along with some of the behaviors:
+     * </p>
+     * 
+     * <ul>
+     *   <li>If player has access to use SellAll signs.</li>
+     *   <li>Provide the amount the player earned if this is not disabled.</li>
+     *   <li>If this actions is silenced, then text and audio notifications are suppressed.<li>
+     *   <li>If configured, the reported earnings amount may be delayed and added to other earnings, 
+     *   		which will reduce flooding the player with notifications.</li>
+     *   <li>If sound notifications are enabled, then they will be played.</li>
      *
-     * Return True if success, False if error or nothing changed or Player not meeting requirements.
+     *</ul>
      *
-     * Default usage of this method: sellAllSell(p, false, false, true, true, false, true);
+     * <p>Default usage of this method: 
+     * </p>
+     * <pre>sellAllSell(p, false, false, true, true, false, true);</pre>
      *
      * @param p - Player.
      * @param isUsingSign - boolean.
@@ -1534,9 +1536,15 @@ public class SellAllUtil {
      * @param notifyPlayerEarningDelay - boolean.
      * @param playSoundOnSellAll - boolean.
      *
-     * @return boolean.
+     * @return boolean If successful
      * */
-    public boolean sellAllSell(Player p, boolean isUsingSign, boolean completelySilent, boolean notifyPlayerEarned, boolean notifyPlayerDelay, boolean notifyPlayerEarningDelay, boolean playSoundOnSellAll){
+    public boolean sellAllSell(Player p, boolean isUsingSign, boolean completelySilent, boolean notifyPlayerEarned, 
+			boolean notifyPlayerDelay, boolean notifyPlayerEarningDelay, boolean playSoundOnSellAll){
+    	return sellAllSell( p, isUsingSign, completelySilent, notifyPlayerEarned, notifyPlayerDelay, 
+    			notifyPlayerEarningDelay, playSoundOnSellAll, null );
+    }
+    public boolean sellAllSell(Player p, boolean isUsingSign, boolean completelySilent, boolean notifyPlayerEarned, 
+    				boolean notifyPlayerDelay, boolean notifyPlayerEarningDelay, boolean playSoundOnSellAll, List<Double> amounts ){
         if (!isUsingSign && isSellAllSignEnabled && isSellAllBySignOnlyEnabled && !p.hasPermission(permissionBypassSign)){
             if (!completelySilent) {
                 Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_sign_only));
@@ -1560,6 +1568,11 @@ public class SellAllUtil {
 
         double money = getSellMoney(p);
         if (money != 0){
+        	
+        	if ( amounts != null ) {
+        		
+        		amounts.add( money );
+        	}
 
             SpigotPlayer sPlayer = new SpigotPlayer(p);
             RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
@@ -1630,7 +1643,9 @@ public class SellAllUtil {
     		SpigotPlayer sPlayer = new SpigotPlayer(p);
     		RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
 
-    		if (sellAllCurrency != null && sellAllCurrency.equalsIgnoreCase("default")) sellAllCurrency = null;
+    		if (sellAllCurrency != null && sellAllCurrency.equalsIgnoreCase("default")) { 
+    			sellAllCurrency = null;
+    		}
     		rankPlayer.addBalance(sellAllCurrency, money);
     		
     		
