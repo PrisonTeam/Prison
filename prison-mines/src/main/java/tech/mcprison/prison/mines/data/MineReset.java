@@ -257,9 +257,9 @@ public abstract class MineReset
 						if ( command.startsWith( "before: " )) {
 							String cmd = command.replace( "before: ", "" );
 							
+							String debugInfo = "MineReset sync: " + getName() + " Before:";
      						PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( 
-     									"MineReset sync: " + getName() + " Before:", cmd );
-     						cmdTask.setCommandRow( row );
+     									debugInfo, cmd, row );
      						
      						cmdTasks.add( cmdTask );
 //     						PrisonCommandTasks.submitTasks( cmdTask );
@@ -303,10 +303,9 @@ public abstract class MineReset
 						if ( command.startsWith( "after: " )) {
 							String cmd = command.replace( "after: ", "" );
 							
-							
+							String debugInfo = "MineReset sync: " + getName() + " After:";
      						PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( 
-     								"MineReset sync: " + getName() + " After:", cmd );
-     						cmdTask.setCommandRow( row );
+     								debugInfo, cmd, row );
      						
      						cmdTasks.add( cmdTask );
 						}
@@ -870,9 +869,9 @@ public abstract class MineReset
  					if ( command.startsWith( "before: " )) {
  						String cmd = command.replace( "before: ", "" );
  						
+ 						String debugInfo = "MineReset: " + getName() + " Before:";
  						PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( 
- 								"MineReset: " + getName() + " Before:", cmd );
- 						cmdTask.setCommandRow( row );
+ 								debugInfo, cmd, row );
  						
  						cmdTasks.add( cmdTask );
 // 						PrisonCommandTasks.submitTasks( cmdTask );
@@ -919,9 +918,9 @@ public abstract class MineReset
 					if ( command.startsWith( "after: " )) {
 						String cmd = command.replace( "after: ", "" );
 						
+						String debugInfo = "MineReset: " + getName() + " After:";
  						PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( 
- 								"MineReset: " + getName() + " After:", cmd );
- 						cmdTask.setCommandRow( row );
+ 								debugInfo, cmd, row );
 
  						cmdTasks.add( cmdTask );
 					}

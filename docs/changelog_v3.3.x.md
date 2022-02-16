@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8 2022-02-16
 
 
+* **Clean up the way the command tasks were being called.**
+Added mine name to the blockEvent logging.
+
+
 * **Fixed a reversal of some calculations when converting nano seconds to milliseconds.**
 
 

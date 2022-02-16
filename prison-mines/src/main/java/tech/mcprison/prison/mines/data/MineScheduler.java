@@ -615,9 +615,9 @@ public abstract class MineScheduler
 				
 				PrisonBlockStatusData originalBlock = targetBlock.getPrisonBlock();
 				
-				PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( "BlockEvent", blockEvent.getCommand() );
+				String debugInfo = "BlockEvent: " + getName();
+				PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( debugInfo, blockEvent.getCommand(), row );
 				cmdTask.setTaskMode( blockEvent.getTaskMode() );
-				cmdTask.setCommandRow( row );
 				
 				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockName, originalBlock.getBlockName() );

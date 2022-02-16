@@ -132,7 +132,8 @@ public interface PrisonUtilsTaskTypes
 		@Override
 		public void run() {
 			
-			PrisonCommandTaskData pCmd = new PrisonCommandTaskData( "PrisonUtilsTaskTypRunCommand", getCommand(), 1 );
+			PrisonCommandTaskData pCmd = new PrisonCommandTaskData( 
+					"PrisonUtilsTaskTypRunCommand", getCommand(), 1 );
 				
 			PrisonCommandTasks.submitTasks( pCmd );
 //			pCmd.submitCommandTask( getPlayer() );
