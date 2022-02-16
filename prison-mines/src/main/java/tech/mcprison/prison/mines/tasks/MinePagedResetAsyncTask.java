@@ -187,6 +187,7 @@ public class MinePagedResetAsyncTask
 	 * This calls the functions to 
 	 */
 	private boolean runSetupCancelReset() {
+		boolean cancel = false;
 		
     	// Set the MineStateMutex to a state of starting a mine reset:
     	mine.getMineStateMutex().setMineStateResetStart();
@@ -198,12 +199,13 @@ public class MinePagedResetAsyncTask
 			// resetAsynchonouslyInitiate() will confirm if the reset should happened 
 			// and will raise Prison's mine reset event. 
 			// A return value of true means cancel the reset:
-			return mine.resetAsynchonouslyInitiate();
+			cancel = mine.resetAsynchonouslyInitiate();
 			
 		}
 		
 		mine.asynchronouslyResetSetup();
-		return false;
+		
+		return cancel;
 	}
 	
 	private void runShutdown() {

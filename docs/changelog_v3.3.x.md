@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8 2022-02-15
 
 
+* **Bug fix: The cancellation of the event was not being returned in the correct locations**, 
+so it was bypassing all of the before mine reset commands. The before mine commands will now run correctly.
+
+
 * **Prison commands: reorganize some of the structures used for the prison commands.**
 Hook up some of the logging to track run times for each command.
 
