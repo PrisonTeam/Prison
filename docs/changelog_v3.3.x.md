@@ -16,6 +16,14 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8 2022-02-15
 
 
+* **Commit some SellAllUtil comments that are useful for debugging timing issues.**
+These are now disabled, but can be manually reenabled when needed.
+
+
+* **Some changes to Sellall to provide more flexibility and to fix some potential bugs**
+The isEnabled now uses the proper boolean settings to indicate if the sellall utility is enabled or not.  Before it was trying to treat strings as boolean.
+
+
 * **Add prison command descriptions that goes along with the placeholders.**
 They are not yet hooked up, but they will provide more information to the admins on what the placeholders will provide, and also how they can use them since some of these will include examples of the formats.
 

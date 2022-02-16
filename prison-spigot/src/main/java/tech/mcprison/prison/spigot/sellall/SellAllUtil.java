@@ -274,6 +274,7 @@ public class SellAllUtil {
             return 1;
         }
 
+//        long tPoint1 = System.nanoTime();
         
 //        // Get Ranks module.
 //        ModuleManager modMan = Prison.get().getModuleManager();
@@ -294,6 +295,7 @@ public class SellAllUtil {
         	}
         }
 
+//        long tPoint2 = System.nanoTime();
         
         // Get multiplier depending on Player + Prestige. NOTE that prestige multiplier will replace
         // the actual default multiplier.
@@ -336,6 +338,13 @@ public class SellAllUtil {
         
         multiplier += multiplierExtraByPerms;
 
+//        long tPoint3 = System.nanoTime();
+//        DecimalFormat dFmt = new DecimalFormat( "0.0000" );
+//        String debugMsg = "{sellallMult::" + dFmt.format( multiplier ) + ":t1=" + 
+//        				dFmt.format( (tPoint2 - tPoint1)/1000000d ) +
+//        				":t2=" + dFmt.format( (tPoint3 - tPoint2)/1000000 ) + "}";
+//        Output.get().logDebug( debugMsg );
+        
         return multiplier;
     }
 
@@ -1636,18 +1645,29 @@ public class SellAllUtil {
     public double sellAllSell(Player p, SpigotItemStack itemStack, 
     		boolean completelySilent, boolean notifyPlayerEarned, boolean notifyPlayerEarningDelay){
 
+//    	long tPoint1 = System.nanoTime();
+//    	long tPoint2 = tPoint1;
+//    	long tPoint3 = tPoint1;
+//    	long tPoint4 = tPoint1;
+//    	long tPoint5 = tPoint1;
+    	
     	double money = getSellMoney(p, itemStack);
+
+//    	tPoint2 = System.nanoTime();
     	
     	if (money != 0) {
     		
     		SpigotPlayer sPlayer = new SpigotPlayer(p);
     		RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
 
+//    		tPoint3 = System.nanoTime();
+
     		if (sellAllCurrency != null && sellAllCurrency.equalsIgnoreCase("default")) { 
     			sellAllCurrency = null;
     		}
     		rankPlayer.addBalance(sellAllCurrency, money);
     		
+//    		tPoint4 = System.nanoTime();
     		
     		if (!completelySilent) {
     			
@@ -1672,7 +1692,20 @@ public class SellAllUtil {
 
     			}
     		}
-    	} 
+    		
+//    		tPoint5 = System.nanoTime();
+    	}
+    	
+
+//        DecimalFormat dFmt = new DecimalFormat( "0.0000" );
+//        String debugMsg = "{sellAllSell::" + dFmt.format( money ) + 
+//        				":t1=" + dFmt.format( (tPoint2 - tPoint1)/1000000d ) +
+//        				":t2=" + dFmt.format( (tPoint3 - tPoint2)/1000000d ) + 
+//        				":t3=" + dFmt.format( (tPoint4 - tPoint3)/1000000d ) + 
+//        				":t4=" + dFmt.format( (tPoint5 - tPoint4)/1000000d ) + 
+//        				"}";
+//        Output.get().logDebug( debugMsg );
+        
     	
     	return money;
     }
