@@ -240,11 +240,19 @@ public class OnBlockBreakMines
 	}
 	
 	
+	/**
+	 * <p>Checks only if the names match.  Does not check locations within any worlds.
+	 * </p>
+	 * @param pbTargetBlock
+	 * @param pbBlockHit
+	 * @return
+	 */
 	public boolean isBlockAMatch( PrisonBlockStatusData pbTargetBlock, PrisonBlock pbBlockHit )
 	{
 		boolean results = false;
 		
 		if ( pbTargetBlock != null && pbBlockHit != null ) {
+			
 			if ( pbTargetBlock.getBlockType() == PrisonBlockType.CustomItems ) {
 				// The pbBlockHit will never match the pbTargetBlock.. must check the actual block:
 				
@@ -269,7 +277,7 @@ public class OnBlockBreakMines
 				}
 				
 			}
-			else if ( pbTargetBlock != null && pbBlockHit != null ) {
+			else {
 				
 				results = pbTargetBlock.equals( pbBlockHit );
 			}

@@ -81,7 +81,7 @@ public class PrisonDebugBlockInspector
 
         	targetBlock = mine.getTargetPrisonBlock( sBlock );
         	
-        	if ( obbMines.isBlockAMatch( targetBlock.getPrisonBlock(), sBlock ) ) {
+        	if ( targetBlock != null && obbMines.isBlockAMatch( targetBlock.getPrisonBlock(), sBlock ) ) {
         		// Match ... PrisonBlockType and blockName was updated in isBlockAMatch():
         	}
         	
@@ -101,27 +101,36 @@ public class PrisonDebugBlockInspector
 			// Get the mine's targetBlock:
 //			MineTargetPrisonBlock tBlock = mine.getTargetPrisonBlock( sBlock );
 
-			
-			String message = String.format( "&3TargetBlock: &7%s  " +
-					"&3Mined: %s%b  &3Broke: &7%b", 
-					targetBlock.getPrisonBlock().getBlockName(),
-					(targetBlock.isMined() ? "&d" : "&2"),
-					targetBlock.isMined(), 
-					targetBlock.isAirBroke()
-					);
-        	
-			player.sendMessage( message );
-			
-			String message2 = String.format( "    &3Counted: &7%b  &3Edge: &7%b  " +
-					"&3Exploded: %s%b &3IgnorAllEvents: &7%b", 
-					targetBlock.isCounted(),
-					targetBlock.isEdge(),
-					(targetBlock.isExploded() ? "&d" : "&2"),
-					targetBlock.isExploded(),
-					targetBlock.isIgnoreAllBlockEvents()
-					);
-			
-			player.sendMessage( message2 );
+        	if ( targetBlock == null ) {
+        		player.sendMessage( "Notice: Unable to get a mine's targetBlock. This could imply " +
+        				"that the mine was not reset since the server started up, or that the air-block " +
+        				"check was not ran yet.  Use `/mine reset " + mine.getName() + "' to reset the " +
+        						"target blocks." );
+        	}
+        	else {
+        		
+        		String message = String.format( "&3TargetBlock: &7%s  " +
+        				"&3Mined: %s%b  &3Broke: &7%b", 
+        				targetBlock.getPrisonBlock().getBlockName(),
+        				(targetBlock.isMined() ? "&d" : "&2"),
+        				targetBlock.isMined(), 
+        				targetBlock.isAirBroke()
+        				);
+        		
+        		player.sendMessage( message );
+        		
+        		String message2 = String.format( "    &3Counted: &7%b  &3Edge: &7%b  " +
+        				"&3Exploded: %s%b &3IgnorAllEvents: &7%b", 
+        				targetBlock.isCounted(),
+        				targetBlock.isEdge(),
+        				(targetBlock.isExploded() ? "&d" : "&2"),
+        				targetBlock.isExploded(),
+        				targetBlock.isIgnoreAllBlockEvents()
+        				);
+        		
+        		player.sendMessage( message2 );
+        		
+        	}
         }
         
         

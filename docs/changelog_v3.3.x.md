@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8b 2022-02-16
 
 
+* **Fixed a potential error if targetBlocks are not loaded yet, or loaded at all for a given mine.**
+Was causing NPEs.... 
+
+
 * **Added logging for when a delayed world comes online and list all mines that are activated.**
 
 
