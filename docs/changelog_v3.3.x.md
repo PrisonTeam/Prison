@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.8b 2022-02-16
+# 3.3.0-alpha.8c 2022-02-16
+
+
+* **v3.3.0-alpha.8c 2022-02-16**
 
 
 * **Fixed a start up issue with multiverse-core in that it now runs the air-count processes so the mines can have their targetBlocks defined.**
