@@ -660,23 +660,31 @@ public class MineManager
 //    			List<Mine> remove = new ArrayList<>();
     			
     			for ( Mine mine : unenabledMines ) {
+    				
     				if ( !mine.isEnabled() ) {
     					
-    					sb.append( mine.getName() ).append( " " );
-    					
-    					mine.setWorld( world );
-    					
-    					// Make sure world is hooked up properly to all locations.
-    					// Since world is an object, it may already be auto hooked:
-    					
-    					
-    					if ( mine.getBounds() != null ) {
-    						mine.getBounds().setWorld( world );
-    					}
-    					
-    					
-    					if ( mine.getSpawn() != null ) {
-    						mine.getSpawn().setWorld( world );
+    					if ( !mine.isVirtual() ) {
+    						
+    						sb.append( mine.getName() ).append( " " );
+    						
+    						mine.setWorld( world );
+    						
+    						// Make sure world is hooked up properly to all locations.
+    						// Since world is an object, it may already be auto hooked:
+    						
+    						
+    						if ( mine.getBounds() != null ) {
+    							mine.getBounds().setWorld( world );
+    						}
+    						
+    						
+    						if ( mine.getSpawn() != null ) {
+    							mine.getSpawn().setWorld( world );
+    						}
+    						
+    						// Run the air-counts now that mine can be activated:
+    						mine.refreshBlockBreakCountUponStartup();
+    						
     					}
     					
     				}
@@ -701,6 +709,8 @@ public class MineManager
     			getUnavailableWorlds().remove( worldName );
     		}
     	}
+    	
+    	getUnavailableWorldsListings();
 	}
 	
     public List<String> getUnavailableWorldsListings() {
@@ -721,7 +731,7 @@ public class MineManager
 					}
 				}
 				results.add( 
-						String.format( "&7    world: &3%s &7(&c%s &7of &c%s &7mines enabled) ", 
+						String.format( "&7    world: &3%s &7(&c%s mines enabled out &7of &c%s &7mines in the world) ", 
 								worldName, Integer.toString( enabledCount ),
 								Integer.toString( mines.size() )));
 			}

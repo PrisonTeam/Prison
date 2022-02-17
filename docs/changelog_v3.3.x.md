@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8b 2022-02-16
 
 
+* **Fixed a start up issue with multiverse-core in that it now runs the air-count processes so the mines can have their targetBlocks defined.**
+Many issues were resulting from failure to get the target blocks.  Not sure how it was working before, other than targetBlocks were not being used as much as they are now.
+
+
 * **Fixed a potential error if targetBlocks are not loaded yet, or loaded at all for a given mine.**
 Was causing NPEs.... 
 
