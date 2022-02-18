@@ -75,6 +75,8 @@ public class RankUtil
 		RANKUP_FAILURE_CURRENCY_IS_NOT_SUPPORTED,
 		RANKUP_FAILURE_NO_PLAYERRANK,
 		
+		RANKUP_FAILURE_ECONOMY_FAILED,
+		
 		RANKUP_EVENT_CANCELED,
 		
 		RANKUP_LOWEST,
@@ -137,6 +139,8 @@ public class RankUtil
 		player_balance_increased,
 		player_balance_final,
 		zero_cost_to_player,
+		
+		economy_failed_to_update_player_balance,
 		
 		attempting_to_delete_ladder_from_player,
 		cannot_delete_default_ladder,
@@ -489,22 +493,29 @@ public class RankUtil
         	}
         	
         	results.addTransaction( RankupTransactions.player_balance_initial );
-        	results.setBalanceInitial( rankPlayer.getBalance( targetRank.getCurrency() ) );
+        	double balanceInitial = rankPlayer.getBalance( targetRank.getCurrency() );
+        	double balanceTargetFinal = balanceInitial;
+        	
+        	results.setBalanceInitial( balanceInitial );
         	results.setCurrency( targetRank.getCurrency() );
         	
         	if ( pForceCharge == PromoteForceCharge.charge_player) {
-        		if ( rankPlayer.getBalance(targetRank.getCurrency()) < nextRankCost ) {
+        		if ( balanceInitial < nextRankCost ) {
         			results.addTransaction( RankupStatus.RANKUP_CANT_AFFORD, 
         					RankupTransactions.player_cannot_afford );
         			return;
         		}
         		
+        		balanceTargetFinal -= nextRankCost;
+        		
         		results.addTransaction( RankupTransactions.player_balance_decreased );
         		rankPlayer.removeBalance( targetRank.getCurrency(), nextRankCost );
-        	} else 
-        		if ( pForceCharge == PromoteForceCharge.refund_player) {
+        	} 
+        	else if ( pForceCharge == PromoteForceCharge.refund_player) {
         			
-    			results.addTransaction( RankupTransactions.player_balance_increased);
+        		balanceTargetFinal += nextRankCost;
+
+        		results.addTransaction( RankupTransactions.player_balance_increased);
     			if ( results.getOriginalRank() != null ) {
     				rankPlayer.addBalance( results.getOriginalRank().getCurrency(), currentRankCost );
     			}
@@ -512,8 +523,18 @@ public class RankUtil
     			// Should never hit this code!!
     		}
         	
+        	double balanceFinal = rankPlayer.getBalance( targetRank.getCurrency() );
+        	
+        	// Check to ensure the player's balance is correct..
+        	if ( balanceFinal != balanceTargetFinal ) {
+        		
+        		results.addTransaction( RankupStatus.RANKUP_FAILURE_ECONOMY_FAILED, 
+    					RankupTransactions.economy_failed_to_update_player_balance );
+        		return;
+        	}
+        	
         	results.addTransaction( RankupTransactions.player_balance_final );
-        	results.setBalanceFinal( rankPlayer.getBalance( targetRank.getCurrency() ) );
+        	results.setBalanceFinal( balanceFinal );
         	
         	
         } else {

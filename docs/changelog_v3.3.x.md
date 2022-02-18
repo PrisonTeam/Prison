@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8c 2022-02-18
 
 
+* **Added validation check to make sure the player's balance was decreased, or increased, successfully before actually applying the rank change.**
+If the balance does not reflect the change, then the rank change will be prevented.
+
+
 * **Slight adjustment to addBalance so as to help reduce out of synch possibilities.**
 The access to economy hooks, has been moved in to the sychronized block.
 
