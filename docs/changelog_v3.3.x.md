@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.8c 2022-02-16
+# 3.3.0-alpha.8c 2022-02-18
+
+
+* **Slight adjustment to addBalance so as to help reduce out of synch possibilities.**
+The access to economy hooks, has been moved in to the sychronized block.
 
 
 * **v3.3.0-alpha.8c 2022-02-16**

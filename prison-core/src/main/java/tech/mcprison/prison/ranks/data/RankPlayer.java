@@ -956,10 +956,12 @@ public class RankPlayer
 							synchronized ( unsavedBalanceLock )
 							{
 								tempBalance = unsavedBalance;
+
+								addBalanceEconomy( tempBalance );
+								
 								unsavedBalance = 0;
 								ubTaskId = 0;
 							}
-							addBalanceEconomy( tempBalance );
 						}, DELAY_THREE_SECONDS );
 			}
 		}
