@@ -320,6 +320,9 @@ public class MineBombs
 			{
 				MineBombData mbd = new MineBombData( 
 						"SmallBomb", "brewing_stand", ExplosionShape.sphere.name(), 2, "Small Mine Bomb" );
+				
+				mbd.setNameTag( "&6&kABC&r&c-= &7{name}&c =-&6&kCBA" );
+				
 				mbd.setToolInHandName( "DIAMOND_PICKAXE" );
 				mbd.setToolInHandFortuneLevel( 0 );
 				mbd.setDescription("A small mine bomb made with some chemicals and a brewing stand.");
@@ -335,7 +338,7 @@ public class MineBombs
 				mbd.getVisualEffects().add( mbeExplode10.clone() );
 				mbd.getVisualEffects().add( mbeExplode06.clone() );
 				
-				mbd.setCooldownTicks( 60 );
+				mbd.setCooldownTicks( 10 );
 
 				getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 				
@@ -346,6 +349,9 @@ public class MineBombs
 						"MediumBomb", "firework_rocket", ExplosionShape.sphere.name(), 5, "Medium Mine Bomb" );
 				mbd.setDescription("A medium mine bomb made from leftover fireworks, " +
 						"but supercharged with a strange green glowing liquid.");
+				
+				mbd.setNameTag( "&6&k1 23 456&r&a-=- &7{name}&a -=-&6&k654 32 1" );
+
 				mbd.setToolInHandName( "DIAMOND_PICKAXE" );
 				mbd.setToolInHandFortuneLevel( 3 );
 				
@@ -392,8 +398,11 @@ public class MineBombs
 			
 			{
 				MineBombData mbd = new MineBombData( 
-						"OofBomb", "tnt_minecart", ExplosionShape.sphereHollow.name(), 19, "Oof Mine Bomb" );
+						"OofBomb", "tnt_minecart", ExplosionShape.sphereHollow.name(), 21, "Oof Mine Bomb" );
 				mbd.setRadiusInner( 3 );
+				
+				mbd.setNameTag( "&c&k1&6&k23&e&k456&r&a-=- &4{countdown} &5-=- &7{name} &5-=- &4{countdown} &a-=-&e&k654&6&k32&c&k1" );
+				
 				mbd.setDescription("An oof-ably large mine bomb made with a minecart heaping with TNT.  " +
 						"Unlike the large mine bomb, this one obviously is built with alien technology.");
 				
@@ -438,7 +447,7 @@ public class MineBombs
 				mbd.setAutosell( true );
 				
 				mbd.setCooldownTicks( 60 );
-				mbd.setFuseDelayTicks( 3 * 20 ); // 3 seconds
+				mbd.setFuseDelayTicks( 13 * 20 ); // 13 seconds
 
 				getConfigData().getBombs().put( mbd.getName().toLowerCase(), mbd );
 			}

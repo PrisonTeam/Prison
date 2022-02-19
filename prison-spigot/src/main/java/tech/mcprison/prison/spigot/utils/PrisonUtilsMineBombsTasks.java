@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.utils;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -466,11 +467,15 @@ public class PrisonUtilsMineBombsTasks
 		private double twoPI;
 		
 		private ArmorStand armorStand;
+		private boolean isDyanmicTag = false;
+		private String tagName;
 
 //		long ageTicks = 0L;
 		long terminateOnZeroTicks = 0L;
 				
 		private BukkitTask bukkitTask;
+		
+		private DecimalFormat dFmt;
 		
 		public PlacedMineBombItemTask( MineBombData bomb, 
 									SpigotBlock sBombBlock, SpigotItemStack item ) {
@@ -480,10 +485,16 @@ public class PrisonUtilsMineBombsTasks
 			this.sBlock = sBombBlock;
 			this.item = item;
 			
+			
 			this.twoPI = Math.PI * 2;
 			
 //			this.ageTicks = 0;
 			this.terminateOnZeroTicks = getTaskLifeSpan();
+
+			this.isDyanmicTag = bomb.getNameTag().contains( "{countdown}" );
+			this.tagName = "";
+			
+			this.dFmt = new DecimalFormat( "0.0" );
 			
 			initializeArmorStand();
 		}
@@ -539,8 +550,10 @@ public class PrisonUtilsMineBombsTasks
 				if ( tagName.contains( "{name}" ) ) {
 					tagName = tagName.replace( "{name}", bomb.getName() );
 				}
-				tagName = Text.convertToAmpColorCodes( tagName );
-				armorStand.setCustomName( tagName );
+				this.tagName = Text.convertToAmpColorCodes( tagName );
+				
+				//updateArmorStandCustomName();
+				armorStand.setCustomName( this.tagName );
 				armorStand.setCustomNameVisible(true);
 			}
 			else {
@@ -561,6 +574,18 @@ public class PrisonUtilsMineBombsTasks
 				armorStand.setGravity( bomb.isGravity() );
 			}
 		}
+
+		private void updateArmorStandCustomName()
+		{
+			if ( isDyanmicTag ) {
+			
+				double countdown = (terminateOnZeroTicks / 20.0d);
+				String tagName = this.tagName.replace( "{countdown}", dFmt.format( countdown) );
+				
+				armorStand.setCustomName( tagName );
+			}
+		}
+
 
 		@Override
 		public void run()
@@ -596,6 +621,8 @@ public class PrisonUtilsMineBombsTasks
 				
 				this.cancel();
 			}
+			
+			updateArmorStandCustomName();
 			
 		}
 

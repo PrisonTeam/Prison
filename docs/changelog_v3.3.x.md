@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.8c 2022-02-18
+# 3.3.0-alpha.8c 2022-02-19
+
+
+* **Mine bombs: Added a {countdown} placeholder for use with the MineBomb's tagName field.** 
+A few other adjustments such as adding more "color" to the default bomb tagNames.
 
 
 * **Added validation check to make sure the player's balance was decreased, or increased, successfully before actually applying the rank change.**
