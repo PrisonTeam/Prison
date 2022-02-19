@@ -635,7 +635,7 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlockHit );
 			pmEvent.setTargetBlock( targetBlock );
 			
-			boolean matchedBlocks = isBlockAMatch( targetBlock.getPrisonBlock(), sBlockHit );
+			boolean matchedBlocks = isBlockAMatch( targetBlock, sBlockHit );
 			
 			// If ignore all block events has been set on this target block, then shutdown.
 			// Same if this block was already included in an explosion... prevent it from spawning
@@ -790,7 +790,7 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 							// Get the mine's targetBlock:
 							MineTargetPrisonBlock targetExplodedBlock = mine.getTargetPrisonBlock( sBlockMined );
 							
-							boolean matchedExplodedBlocks = isBlockAMatch( targetExplodedBlock.getPrisonBlock(), sBlockMined );
+							boolean matchedExplodedBlocks = isBlockAMatch( targetExplodedBlock, sBlockMined );
 							
 							if ( targetExplodedBlock == null || targetExplodedBlock.getPrisonBlock() == null ) {
 								

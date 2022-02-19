@@ -2,7 +2,6 @@ package tech.mcprison.prison.spigot.autofeatures.events;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.bukkit.event.EventException;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -12,12 +11,8 @@ import com.cryptomorin.xseries.XMaterial;
 import com.google.common.eventbus.Subscribe;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.integration.CustomBlockIntegration;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
-import tech.mcprison.prison.internal.block.PrisonBlock;
-import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.internal.events.player.PrisonPlayerInteractEvent;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
@@ -81,7 +76,7 @@ public class PrisonDebugBlockInspector
 
         	targetBlock = mine.getTargetPrisonBlock( sBlock );
         	
-        	if ( targetBlock != null && obbMines.isBlockAMatch( targetBlock.getPrisonBlock(), sBlock ) ) {
+        	if ( targetBlock != null && obbMines.isBlockAMatch( targetBlock, sBlock ) ) {
         		// Match ... PrisonBlockType and blockName was updated in isBlockAMatch():
         	}
         	

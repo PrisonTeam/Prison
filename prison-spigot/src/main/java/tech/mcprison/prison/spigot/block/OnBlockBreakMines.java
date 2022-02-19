@@ -247,39 +247,42 @@ public class OnBlockBreakMines
 	 * @param pbBlockHit
 	 * @return
 	 */
-	public boolean isBlockAMatch( PrisonBlockStatusData pbTargetBlock, PrisonBlock pbBlockHit )
+	public boolean isBlockAMatch( MineTargetPrisonBlock targetBlock, PrisonBlock pbBlockHit )
 	{
 		boolean results = false;
-		
-		if ( pbTargetBlock != null && pbBlockHit != null ) {
+		if ( targetBlock != null ) {
+			PrisonBlockStatusData pbTargetBlock = targetBlock.getPrisonBlock();
 			
-			if ( pbTargetBlock.getBlockType() == PrisonBlockType.CustomItems ) {
-				// The pbBlockHit will never match the pbTargetBlock.. must check the actual block:
+			if ( pbTargetBlock != null && pbBlockHit != null ) {
 				
-				List<CustomBlockIntegration> cbIntegrations = 
-						PrisonAPI.getIntegrationManager().getCustomBlockIntegrations();
-				
-				for ( CustomBlockIntegration customBlock : cbIntegrations )
-				{
-					String cbId = customBlock.getCustomBlockId( pbBlockHit );
+				if ( pbTargetBlock.getBlockType() == PrisonBlockType.CustomItems ) {
+					// The pbBlockHit will never match the pbTargetBlock.. must check the actual block:
 					
-					if ( cbId != null ) {
+					List<CustomBlockIntegration> cbIntegrations = 
+							PrisonAPI.getIntegrationManager().getCustomBlockIntegrations();
+					
+					for ( CustomBlockIntegration customBlock : cbIntegrations )
+					{
+						String cbId = customBlock.getCustomBlockId( pbBlockHit );
 						
-						if ( pbTargetBlock.getBlockName().equalsIgnoreCase( cbId ) ) {
+						if ( cbId != null ) {
 							
-							pbBlockHit.setBlockType( customBlock.getBlockType() );
-							pbBlockHit.setBlockName( cbId );
-
-							results = true;
-							break;
+							if ( pbTargetBlock.getBlockName().equalsIgnoreCase( cbId ) ) {
+								
+								pbBlockHit.setBlockType( customBlock.getBlockType() );
+								pbBlockHit.setBlockName( cbId );
+								
+								results = true;
+								break;
+							}
 						}
 					}
+					
 				}
-				
-			}
-			else {
-				
-				results = pbTargetBlock.equals( pbBlockHit );
+				else {
+					
+					results = pbTargetBlock.equals( pbBlockHit );
+				}
 			}
 		}
 		

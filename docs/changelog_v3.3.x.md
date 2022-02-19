@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8c 2022-02-19
 
 
+* **To prevent NPEs, isBlockAMatch has been changed to use the MineTargetPrisonBlock as a parameter and then internally, checking for nulls, it will extract the status data block.**
+This was causing errors when processes were trying to access target blocks before they had a chance to initialize.
+
+
 * **Address a rare condition where the mineTargetPrisonBlocks is being "accessed" before the system is done initializing the mine.**
 This creates an empty collection, but it will prevent errors in the long run.
 
