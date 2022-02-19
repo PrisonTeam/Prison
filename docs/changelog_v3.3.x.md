@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8c 2022-02-19
 
 
+* **Add equals and hashCode to the MineTargetBlockKey so it can be better used in structures like HashMaps.**
+
+
 * **Mine bombs: Added a {countdown} placeholder for use with the MineBomb's tagName field.** 
 A few other adjustments such as adding more "color" to the default bomb tagNames.
 
