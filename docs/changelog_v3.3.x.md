@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8c 2022-02-19
 
 
+* **Address a rare condition where the mineTargetPrisonBlocks is being "accessed" before the system is done initializing the mine.**
+This creates an empty collection, but it will prevent errors in the long run.
+
+
 * **Add equals and hashCode to the MineTargetBlockKey so it can be better used in structures like HashMaps.**
 
 

@@ -2,6 +2,7 @@ package tech.mcprison.prison.mines.data;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -29,9 +30,9 @@ import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask;
 import tech.mcprison.prison.mines.tasks.MineTeleportTask;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonCommandTaskData;
+import tech.mcprison.prison.tasks.PrisonCommandTasks;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
-import tech.mcprison.prison.tasks.PrisonCommandTasks;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.Location;
@@ -133,7 +134,10 @@ public abstract class MineReset
 	public MineReset() {
 		super();
 		
-		this.mineTargetPrisonBlocks = new ArrayList<>();
+		int mineSize = getBounds() != null ? 
+						getBounds().getTotalBlockCount() : 2000;
+		
+		this.mineTargetPrisonBlocks = new ArrayList<>( mineSize );
 		this.mineTargetPrisonBlocksMap = new TreeMap<>();
 		
 		this.statsMineSweeperTaskMs = new ArrayList<>();
