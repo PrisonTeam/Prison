@@ -162,10 +162,11 @@ public class MinePagedResetAsyncTask
 			}
 			
 			List<MineTargetPrisonBlock> tBlocks = targetBlocks.subList( position, endIndex );
+			int size = tBlocks.size();
 			
 			mine.getWorld().get().setBlocksSynchronously( tBlocks, resetType, getNanos() );
 			
-			position += tBlocks.size();
+			position += size;
 		}
 		
 		
