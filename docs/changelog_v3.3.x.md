@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.8c 2022-02-19
+# 3.3.0-alpha.8d 2022-02-20
+
+
+* **Release v3.3.0-alpha.8d 2022-02-20**
 
 
 - **Fixed issues with vault economy and withdrawing from a player's balance.**
