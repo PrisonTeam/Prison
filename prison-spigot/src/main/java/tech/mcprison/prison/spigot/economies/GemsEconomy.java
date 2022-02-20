@@ -68,7 +68,7 @@ public class GemsEconomy
     }
 
     @Override 
-    public void setBalance(Player player, double amount) {
+    public boolean setBalance(Player player, double amount) {
     	if ( wrapper != null ) {
     		double remainder = amount - getBalance(player);
     		if ( remainder > 0 ) {
@@ -77,6 +77,7 @@ public class GemsEconomy
     			wrapper.withdraw( player, amount );
     		}
     	}
+    	return true;
     }
     
     @Override 
@@ -92,10 +93,11 @@ public class GemsEconomy
     }
 
     @Override 
-    public void addBalance(Player player, double amount) {
+    public boolean addBalance(Player player, double amount) {
     	if ( wrapper != null ) {
     		wrapper.addBalance(player, amount);
     	}
+    	return true;
     }
     
     @Override 
@@ -106,10 +108,11 @@ public class GemsEconomy
     }
 
     @Override 
-    public void removeBalance(Player player, double amount) {
+    public boolean removeBalance(Player player, double amount) {
     	if ( wrapper != null ) {
     		wrapper.withdraw(player, amount);
     	}
+    	return true;
     }
     
     @Override 

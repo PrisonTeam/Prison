@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8c 2022-02-19
 
 
+- **Fixed issues with vault economy and withdrawing from a player's balance.**
+It now also reports any errors that may be returned.
+
+
 * **To prevent NPEs, isBlockAMatch has been changed to use the MineTargetPrisonBlock as a parameter and then internally, checking for nulls, it will extract the status data block.**
 This was causing errors when processes were trying to access target blocks before they had a chance to initialize.
 

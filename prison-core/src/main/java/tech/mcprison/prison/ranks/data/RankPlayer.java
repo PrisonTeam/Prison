@@ -931,7 +931,13 @@ public class RankPlayer
 		
 		if ( economy != null ) {
 			
-			results = economy.getBalance( this ) + getBalanceUnsaved();
+			results = economy.getBalance( this );
+			
+			synchronized ( unsavedBalanceLock )
+			{
+				results += getBalanceUnsaved();
+			}
+			
 			setCachedRankPlayerBalance( null, results );
 		}
 		
@@ -969,31 +975,49 @@ public class RankPlayer
 	
 	}
 	
-	private void addBalanceEconomy( double amount ) {
+	private boolean addBalanceEconomy( double amount ) {
+		boolean results = false;
+		
 		EconomyIntegration economy = getEconomy();
 		
 		if ( economy != null ) {
-			economy.addBalance( this, amount );
+			results = economy.addBalance( this, amount );
 			addCachedRankPlayerBalance( null, amount );
 		}
+		return results;
 	}
 	
 	public void removeBalance( double amount ) {
-		EconomyIntegration economy = getEconomy();
 		
-		if ( economy != null ) {
-			economy.removeBalance( this, amount );
-			addCachedRankPlayerBalance( null, -1 * amount );
-		}
+		double targetAmount = -1 * amount;
+		addBalance( targetAmount );
+		addCachedRankPlayerBalance( null, targetAmount );
+		
+//		EconomyIntegration economy = getEconomy();
+//		
+//		if ( economy != null ) {
+//			economy.removeBalance( this, amount );
+//			addCachedRankPlayerBalance( null, -1 * amount );
+//		}
 	}
 	
 	public void setBalance( double amount ) {
-		EconomyIntegration economy = getEconomy();
 		
-		if ( economy != null ) {
-			economy.setBalance( this, amount );
-			setCachedRankPlayerBalance( null, amount );
-		}
+		// First subtract current balance:
+		double targetAmount = -1 * getBalance();
+		
+		// add current amount which will result in the correct "ajustment":
+		targetAmount += amount;
+		
+		addBalance( targetAmount );
+		addCachedRankPlayerBalance( null, targetAmount );
+		
+//		EconomyIntegration economy = getEconomy();
+//		
+//		if ( economy != null ) {
+//			economy.setBalance( this, amount );
+//			setCachedRankPlayerBalance( null, amount );
+//		}
 	}
 	
 	

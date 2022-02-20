@@ -1,9 +1,12 @@
 package tech.mcprison.prison.spigot.economies;
 
+import java.text.DecimalFormat;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import net.milkbowl.vault.economy.EconomyResponse;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
@@ -164,7 +167,11 @@ public class VaultEconomyWrapper
     @SuppressWarnings( "deprecation" )
 	public boolean addBalance(Player player, double amount) {
     	boolean results = false;
-        if (economy != null) {
+    	
+    	if ( amount < 0 ) {
+    		results = removeBalance( player, amount );
+    	}
+    	else if (economy != null) {
         	if ( isPreV1_4() ) {
         		economy.depositPlayer( player.getName(), amount );
            		results = true;
@@ -177,8 +184,21 @@ public class VaultEconomyWrapper
         					player.getName(), Double.toString( amount ));
         		}
         		else {
-        			economy.depositPlayer( oPlayer, amount );
-        			results = true;
+        			EconomyResponse response = economy.depositPlayer( oPlayer, amount );
+
+        			results = response.transactionSuccess();
+        			
+        			if ( !results ) {
+        				DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+        				String message = String.format( 
+        						"VaultEconomy.addBalance failed: %s  amount: %s  " +
+        									"balance: %s  error: %s", 
+        						oPlayer.getName(),
+        						dFmt.format(amount), dFmt.format(response.balance),
+        						response.errorMessage );
+        				Output.get().logError( message );
+        			}
+//        			results = true;
         		}
         	}
 //        	if ( economy.hasBankSupport() ) {
@@ -193,6 +213,12 @@ public class VaultEconomyWrapper
     @SuppressWarnings( "deprecation" )
 	public boolean removeBalance(Player player, double amount) {
     	boolean results = false;
+    	
+    	// Needs to be a positive amount:
+    	if ( amount < 0 ) {
+    		amount *= -1;
+    	}
+    	
     	if (economy != null) {
     		if ( isPreV1_4() ) {
     			economy.withdrawPlayer( player.getName(), amount );
@@ -206,8 +232,21 @@ public class VaultEconomyWrapper
     						player.getName(), Double.toString( amount ));
     			}
     			else {
-    				economy.withdrawPlayer( oPlayer, amount );
-    				results = true;
+    				EconomyResponse response = economy.withdrawPlayer( oPlayer, amount );
+
+    				results = response.transactionSuccess();
+        			
+        			if ( !results ) {
+        				DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+        				String message = String.format( 
+        						"VaultEconomy.removeBalance failed: %s  amount: %s  " +
+        									"balance: %s  error: %s", 
+        						oPlayer.getName(),
+        						dFmt.format(amount), dFmt.format(response.balance),
+        						response.errorMessage );
+        				Output.get().logError( message );
+        			}
+//    				results = true;
     			}
     		}
 

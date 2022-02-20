@@ -31,7 +31,7 @@ public abstract class EconomyIntegration
      * @param player The {@link Player}.
      * @param amount The amount.
      */
-    public abstract void setBalance(Player player, double amount);
+    public abstract boolean setBalance(Player player, double amount);
 
     /**
      * Adds to the player's current balance.
@@ -39,7 +39,7 @@ public abstract class EconomyIntegration
      * @param player The {@link Player}.
      * @param amount The amount.
      */
-    public abstract void addBalance(Player player, double amount);
+    public abstract boolean addBalance(Player player, double amount);
 
     /**
      * Removes from the player's current balance.
@@ -47,7 +47,7 @@ public abstract class EconomyIntegration
      * @param player The {@link Player}.
      * @param amount The amount.
      */
-    public abstract void removeBalance(Player player, double amount);
+    public abstract boolean removeBalance(Player player, double amount);
 
     /**
      * Returns whether or not the player can afford a transaction.
