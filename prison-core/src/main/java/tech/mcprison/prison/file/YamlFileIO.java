@@ -21,10 +21,14 @@ public abstract class YamlFileIO {
 
 	private File yamlFile;
 	
-	public YamlFileIO( File yamlFile ) {
+	private boolean supportsDropsCanceling = false;
+	
+	public YamlFileIO( File yamlFile, boolean supportsDropsCanceling ) {
 		super();
 		
 		this.yamlFile = yamlFile;
+		
+		this.supportsDropsCanceling = supportsDropsCanceling;
 	}
 	
 	public boolean saveYamlAutoFeatures( Map<String, ValueNode> config ) {
@@ -101,6 +105,8 @@ public abstract class YamlFileIO {
 		// Load from the actual yaml file:
 		loadYaml();
 		
+		boolean isNewConfig = getKeys().size() == 0;
+		
 		Map<String,Object> yaml = new TreeMap<>();
 		Set<String> keys = getKeys();
 		for ( String key : keys ) {
@@ -163,6 +169,25 @@ public abstract class YamlFileIO {
 			}
 		}
 		
+		// If the Spigot version is 1.12.0 or greater, then it will support the
+		// canceling of the bukkit drops, so flip the canceling of the 
+		// block breaks and drops.
+		// 1.8.0 through 1.11.x : 
+		//     cancelAllBlockBreakEvents: true
+		//     cancelAllBlockEventBlockDrops: false
+		// 1.12.0 and higher : 
+		//     cancelAllBlockBreakEvents: false
+		//     cancelAllBlockEventBlockDrops: true
+		if ( isNewConfig && isSupportsDropsCanceling() ) {
+
+			ValueNode valueFalse = BooleanNode.valueOf( false );
+			config.put( AutoFeatures.cancelAllBlockBreakEvents.getKey(), valueFalse );
+
+			ValueNode valueTrue = BooleanNode.valueOf( true );
+			config.put( AutoFeatures.cancelAllBlockEventBlockDrops.getKey(), valueTrue );
+			
+		}
+		
 		if ( dne.size() > 0 ) {
 			// New configs were found. Saving the configs.
 			saveYamlAutoFeatures( config );
@@ -213,5 +238,12 @@ public abstract class YamlFileIO {
 
 	abstract protected long getLong( String key );
 	abstract protected long getLong( String key, long defaultValue );
+
+	public boolean isSupportsDropsCanceling() {
+		return supportsDropsCanceling;
+	}
+	public void setSupportsDropsCanceling( boolean supportsDropsCanceling ) {
+		this.supportsDropsCanceling = supportsDropsCanceling;
+	}
 	
 }

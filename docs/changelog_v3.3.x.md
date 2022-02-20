@@ -16,6 +16,11 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8d 2022-02-20
 
 
+* **Made many changes to the default configurations of the autoFeatures.**
+This is to try to make it easier to use prison by using more of the settings that are most useful.
+Added more comments to make it easier to understand these settings too.
+
+
 * **Release v3.3.0-alpha.8d 2022-02-20**
 
 

@@ -16,8 +16,9 @@ public class SpigotYamlFileIO
 	
 	private YamlConfiguration yamlConfig;
 	
-	public SpigotYamlFileIO( File yamlFile ) {
-		super( yamlFile );
+	
+	public SpigotYamlFileIO( File yamlFile, boolean supportsDropsCanceling ) {
+		super( yamlFile, supportsDropsCanceling );
 		
 		this.yamlConfig = new YamlConfiguration();
 		

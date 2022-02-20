@@ -794,7 +794,12 @@ public class SpigotPlatform
 	
 	@Override
 	public YamlFileIO getYamlFileIO( File yamlFile ) {
-		return new SpigotYamlFileIO( yamlFile );
+		
+		boolean supportsDropsCanceling = 
+				( new BluesSpigetSemVerComparator().compareMCVersionTo("1.12.0") >= 0 );
+		
+		
+		return new SpigotYamlFileIO( yamlFile, supportsDropsCanceling );
 	}
 	
 	

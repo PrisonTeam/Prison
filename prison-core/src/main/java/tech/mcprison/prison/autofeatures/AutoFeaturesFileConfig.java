@@ -66,28 +66,49 @@ public class AutoFeaturesFileConfig {
     	
     		otherPlugins(options),
 	    		
-	    		isProcessMcMMOBlockBreakEvents(otherPlugins, true),
+	    		isProcessMcMMOBlockBreakEvents(otherPlugins, false),
 	    		isProcessEZBlocksBlockBreakEvents(otherPlugins, false),
 
-	    		isProcessQuestsBlockBreakEvents(otherPlugins, true),
+	    		isProcessQuestsBlockBreakEvents(otherPlugins, false),
 	    		
+	    		otherPluginSupport__ReadMe(otherPlugins, 
+	    				"NOTE: If you are using spigot v1.12.0 or higher, then do not use these " +
+	    				"'forced' settings, instead adjust both 'cancelAllBlockBreakEvents' and " +
+	    				"'cancelAllBlockEventBlockDrops' since that will help ensure it works better."),
     		
 	    	blockBreakEvents(options),
 	    	
 	    		// Setting this to true will cancel the block break events (normal prison behavior):
 	    		// Canceling events is mandatory for Spigot v1.8 through v1.11.x.
 	    		cancelAllBlockBreakEvents(blockBreakEvents, true),
+	    		
+	    		cancelAllBlockBreakEvents__ReadMe(blockBreakEvents, 
+	    				"NOTE: If spigot v1.8.0 through 1.11.x you must use 'true' for this setting, " +
+	    				"otherwise if using Spigot v1.13.0, or higher, can use 'false'."),
+	    		
+	    		
 	    		// Setting this to false will not zero out the block drops (normal prison behavior).
 	    		// When set to true, it will zero it out so if the block break event is not canceled,
 	    		// then it will prevent double drops:
 	    		// Canceling the drops was added in Spigot v1.12.x.
 	    		cancelAllBlockEventBlockDrops(blockBreakEvents, false),
 	    		
+	    		cancelAllBlockEventBlockDrops__ReadMe(blockBreakEvents, 
+	    				"NOTE: If spigot v1.8.0 through 1.11.x you must use 'false' for this setting, " +
+	    				"otherwise if using Spigot v1.13.0, or higher, can use 'true'. " +
+	    				"This setting MUST be the opposit of 'cancelAllBlockBreakEvents'."),
+	    		
+	    		
 	    		
 	    		applyBlockBreaksThroughSyncTask(blockBreakEvents, true),
 
 	    		
 	    		blockBreakEventPriority(blockBreakEvents, "LOW"),
+	    		
+	    		ProcessPrisons_ExplosiveBlockBreakEventsPriority(blockBreakEvents, "LOW"),
+
+	    		
+	    		
 
 		    	TokenEnchantBlockExplodeEventPriority(blockBreakEvents, "DISABLED"),
 		    	
@@ -97,7 +118,6 @@ public class AutoFeaturesFileConfig {
 	    	
 		    	PrisonEnchantsExplosiveEventPriority(blockBreakEvents, "DISABLED"),
 		    	
-		    	ProcessPrisons_ExplosiveBlockBreakEventsPriority(blockBreakEvents, "DISABLED"),
 		    	
 		    	
 		    	blockBreakEvents__ReadMe(blockBreakEvents, 
@@ -124,8 +144,12 @@ public class AutoFeaturesFileConfig {
 
 				isAutoSellPerBlockBreakEnabled(inventory, false),
 				permissionAutoSellPerBlockBreakEnabled(inventory, "prison.automanager.autosell"),
+				
+				permissionAutoSellPerBlockBreakEnabled__ReadMe(inventory, 
+						"If OP then you cannot use this permission node since it would always " +
+						"be enabled. Using a value of 'disable' will turn it off for everyone."),
 //				
-				isAutoSellPerBlockBreakInlinedEnabled(general, false),
+//				isAutoSellPerBlockBreakInlinedEnabled(general, false),
 				
 				isAutoSellIfInventoryIsFull(inventory, true),
 				
@@ -684,6 +708,7 @@ public class AutoFeaturesFileConfig {
         // is handled within the loadYamlAutoFeatures code.
         
 		YamlFileIO yamlFileIO = Prison.get().getPlatform().getYamlFileIO( getConfigFile() );
+		
 		List<AutoFeatures> dne = yamlFileIO.loadYamlAutoFeatures( getConfig() );
 
 		dne.size();

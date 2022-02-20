@@ -510,7 +510,8 @@ public class AutoManagerFeatures
 				if ( Prison.get().getPlatform().getConfigBooleanFalse( "sellall" ) &&
 						(isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || 
 						pmEvent.isForceAutoSell() || 
-						!player.isOp() && player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) )) && 
+						!player.isOp() && !"disable".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
+						player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) )) && 
 						SellAllUtil.get() != null  ) {
 					
 					final long nanoStart = System.nanoTime();
