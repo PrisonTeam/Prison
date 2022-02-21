@@ -1064,22 +1064,22 @@ public class MinesCommands
         		row.addTextComponent( "&3Mine Reset Count: &7%s ", 
         				dFmt.format(m.getResetCount()) );
         		
-        		if ( m.isUsePagingOnReset() ) {
-        			row.addTextComponent( "    &7-= &5Reset Paging Enabled &7=-" );
-        		}
-        		else if ( cmdPageData.isShowAll() ) {
-        			row.addTextComponent( "    &7-= &3Reset Paging Disabled &7=-" );
-        		}
+//        		if ( m.isUsePagingOnReset() ) {
+//        			row.addTextComponent( "    &7-= &5Reset Paging Enabled &7=-" );
+//        		}
+//        		else if ( cmdPageData.isShowAll() ) {
+//        			row.addTextComponent( "    &7-= &3Reset Paging Disabled &7=-" );
+//        		}
         		
         		chatDisplay.addComponent( row );
         		
-        		double resetTimeSeconds = m.getStatsResetTimeMS() / 1000.0;
-        		if ( !m.isUsePagingOnReset() && resetTimeSeconds > 0.5 ) {
-        			String resetTimeSec = PlaceholdersUtil.formattedTime( resetTimeSeconds );
-        			chatDisplay.addText("&5  Warning: &3Reset time is &7%s&3, which is high. " +
-        					"It is recommened that you try to enable &7/mines set resetPaging help",
-        					resetTimeSec );
-        		}
+//        		double resetTimeSeconds = m.getStatsResetTimeMS() / 1000.0;
+//        		if ( !m.isUsePagingOnReset() && resetTimeSeconds > 0.5 ) {
+//        			String resetTimeSec = PlaceholdersUtil.formattedTime( resetTimeSeconds );
+//        			chatDisplay.addText("&5  Warning: &3Reset time is &7%s&3, which is high. " +
+//        					"It is recommened that you try to enable &7/mines set resetPaging help",
+//        					resetTimeSec );
+//        		}
         	}
         	
         	if ( !m.isVirtual() && resetTime > 0 ) {
@@ -1639,11 +1639,11 @@ public class MinesCommands
                 	}
                 	
                 	
-                	if ( m.isUsePagingOnReset() ) {
-                		row.addFancy( 
-                				new FancyMessage("&5Paged ")
-                				.tooltip("&7Paging Used during Mine Reset"));
-                	}
+//                	if ( m.isUsePagingOnReset() ) {
+//                		row.addFancy( 
+//                				new FancyMessage("&5Paged ")
+//                				.tooltip("&7Paging Used during Mine Reset"));
+//                	}
 
       
             		
@@ -2788,48 +2788,48 @@ public class MinesCommands
     
     
 
-    @Command(identifier = "mines set resetpaging", permissions = "mines.resetpaging", 
-    		description = "Enable paging during a mine reset.")
-    public void setMineResetPagingCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
-        @Arg(name = "paging", def="disabled", 
-        		description = "Enable or disable paging [disable, enable]") 
-    					String paging
-    		) {
-        
-        if (performCheckMineExists(sender, mineName)) {
-        	setLastMineReferenced(mineName);
-
-        	PrisonMines pMines = PrisonMines.getInstance();
-        	Mine m = pMines.getMine(mineName);
-            
-//            if ( !m.isEnabled() ) {
-//            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+//    @Command(identifier = "mines set resetpaging", permissions = "mines.resetpaging", 
+//    		description = "Enable paging during a mine reset.")
+//    public void setMineResetPagingCommand(CommandSender sender,
+//        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
+//        @Arg(name = "paging", def="disabled", 
+//        		description = "Enable or disable paging [disable, enable]") 
+//    					String paging
+//    		) {
+//        
+//        if (performCheckMineExists(sender, mineName)) {
+//        	setLastMineReferenced(mineName);
+//
+//        	PrisonMines pMines = PrisonMines.getInstance();
+//        	Mine m = pMines.getMine(mineName);
+//            
+////            if ( !m.isEnabled() ) {
+////            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+////            	return;
+////            }
+//        	
+//            if  ( paging == null || !"disable".equalsIgnoreCase( paging ) && !"enable".equalsIgnoreCase( paging ) ) {
+//            	sender.sendMessage( "&cInvalid paging option&7. Use &adisable&7 or &aenable&7" );
 //            	return;
 //            }
-        	
-            if  ( paging == null || !"disable".equalsIgnoreCase( paging ) && !"enable".equalsIgnoreCase( paging ) ) {
-            	sender.sendMessage( "&cInvalid paging option&7. Use &adisable&7 or &aenable&7" );
-            	return;
-            }
-            
-            if ( "disable".equalsIgnoreCase( paging ) && m.isUsePagingOnReset() ) {
-            	m.setUsePagingOnReset( false );
-            	pMines.getMineManager().saveMine( m );
-            	sender.sendMessage( String.format( "&7Mine Reset Paging has been disabled for mine %s.", m.getTag()) );
-            }
-            else if ( "enable".equalsIgnoreCase( paging ) && !m.isUsePagingOnReset() ) {
-            	m.setUsePagingOnReset( true );
-            	pMines.getMineManager().saveMine( m );
-            	sender.sendMessage( String.format( "&7Mine Reset Paging has been enabled for mine %s.", m.getTag()) );
-            }
-            else {
-            	sender.sendMessage( String.format( "&7Mine Reset Paging status has not changed for mine %s.", m.getTag()) );
-            	
-            }
-        	
-        } 
-    }
+//            
+//            if ( "disable".equalsIgnoreCase( paging ) && m.isUsePagingOnReset() ) {
+//            	m.setUsePagingOnReset( false );
+//            	pMines.getMineManager().saveMine( m );
+//            	sender.sendMessage( String.format( "&7Mine Reset Paging has been disabled for mine %s.", m.getTag()) );
+//            }
+//            else if ( "enable".equalsIgnoreCase( paging ) && !m.isUsePagingOnReset() ) {
+//            	m.setUsePagingOnReset( true );
+//            	pMines.getMineManager().saveMine( m );
+//            	sender.sendMessage( String.format( "&7Mine Reset Paging has been enabled for mine %s.", m.getTag()) );
+//            }
+//            else {
+//            	sender.sendMessage( String.format( "&7Mine Reset Paging status has not changed for mine %s.", m.getTag()) );
+//            	
+//            }
+//        	
+//        } 
+//    }
 
 
     @Command(identifier = "mines set mineSweeper", permissions = "mines.set", 

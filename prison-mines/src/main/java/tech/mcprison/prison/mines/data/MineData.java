@@ -136,7 +136,7 @@ public abstract class MineData
     
     private List<String> resetCommands;
     
-    private boolean usePagingOnReset = false;
+//    private boolean usePagingOnReset = false;
     
     private ModuleElement rank;
     /**
@@ -232,7 +232,7 @@ public abstract class MineData
         
         this.resetCommands = new ArrayList<>();
         
-        this.usePagingOnReset = false;
+//        this.usePagingOnReset = false;
         
         this.rank = null;
         this.rankString = null;
@@ -1212,12 +1212,12 @@ public abstract class MineData
 		this.resetCommands = resetCommands;
 	}
 
-	public boolean isUsePagingOnReset() {
-		return usePagingOnReset;
-	}
-	public void setUsePagingOnReset( boolean usePagingOnReset ) {
-		this.usePagingOnReset = usePagingOnReset;
-	}
+//	public boolean isUsePagingOnReset() {
+//		return usePagingOnReset;
+//	}
+//	public void setUsePagingOnReset( boolean usePagingOnReset ) {
+//		this.usePagingOnReset = usePagingOnReset;
+//	}
 
 	public ModuleElement getRank() {
 		return rank;

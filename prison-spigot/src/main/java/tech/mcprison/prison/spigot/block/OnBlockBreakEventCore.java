@@ -473,24 +473,24 @@ public class OnBlockBreakEventCore
 
 	protected boolean ignoreMinesBlockBreakEvent( Cancellable event, Player player, Block block ) {
 	
-	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
-	
-	if ( eventResults.isCancelEvent() ) {
-		event.setCancelled( eventResults.isCancelEvent() );
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
+		
+		if ( eventResults.isCancelEvent() ) {
+			event.setCancelled( eventResults.isCancelEvent() );
+		}
+		return eventResults.isIgnoreEvent();
 	}
-	return eventResults.isIgnoreEvent();
-}
-
-protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player player, Block block ) {
 	
-	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
-	
-	if ( eventResults.isCancelEvent() ) {
-		event.setCancelled( eventResults.isCancelEvent() );
+	protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player player, Block block ) {
+		
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
+		
+		if ( eventResults.isCancelEvent() ) {
+			event.setCancelled( eventResults.isCancelEvent() );
+		}
+		return eventResults.isIgnoreEvent();
 	}
-	return eventResults.isIgnoreEvent();
-}
-
+	
 
 	/**
 	 * <p>This processes the block finalizations, which are counting the block breakage,

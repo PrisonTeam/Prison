@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison.spigot.game;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -213,6 +214,9 @@ public class SpigotWorld implements World {
 	public void setBlocksSynchronously( List<MineTargetPrisonBlock> tBlocks, MineResetType resetType, 
 			PrisonStatsElapsedTimeNanos nanos ) {
 		
+		List<MineTargetPrisonBlock> tBlocksCloned = new ArrayList<>();
+		tBlocksCloned.addAll( tBlocks );
+		
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -222,7 +226,7 @@ public class SpigotWorld implements World {
 				MineTargetPrisonBlock current = null;
 				try
 				{
-					for ( MineTargetPrisonBlock tBlock : tBlocks )
+					for ( MineTargetPrisonBlock tBlock : tBlocksCloned )
 					{
 						current = tBlock;
 						

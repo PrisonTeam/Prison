@@ -269,8 +269,9 @@ public abstract class MineScheduler
 			targetResetTime = 60 * 60 * 4; // one hour * 4
 		}
 		
+		// Should always NOW use async reset action for this workflow.
 		// Determine if the sync or async reset action should be used for this workflow.
-		MineJobAction resetAction = isUsePagingOnReset() ? MineJobAction.RESET_ASYNC : MineJobAction.RESET_SYNC;
+		MineJobAction resetAction = MineJobAction.RESET_ASYNC; // : MineJobAction.RESET_SYNC;
 		
 		if ( includeMessages ) {
 			// Need to ensure that the reset warning times are sorted in ascending order:
@@ -374,13 +375,14 @@ public abstract class MineScheduler
 
 				break;
 
+			case RESET_SYNC:
 			case RESET_ASYNC:
 				if ( !skip ) {
 					
 					List<MineResetActions> resetActions = getCurrentJob().getResetActions();
 
 					MinePagedResetAsyncTask resetTask = 
-								new MinePagedResetAsyncTask( (Mine) this, MineResetType.paged, resetActions );
+								new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal, resetActions );
 		    		resetTask.submitTaskAsync();
 		    		
 //					resetAsynchonously();
@@ -390,23 +392,23 @@ public abstract class MineScheduler
 				
 				break;
 				
-			case RESET_SYNC:
-				// synchronous reset.  Will be phased out in the future?
-				if ( !skip ) {
-
-					List<MineResetActions> resetActions = getCurrentJob().getResetActions();
-					
-					MinePagedResetAsyncTask resetTask = 
-							new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal, resetActions );
-					
-					resetTask.submitTaskAsync();
-					
-//					resetSynchonously();
-				} else {
-					incrementSkipResetBypassCount();
-				}
-				
-				break;
+//			case RESET_SYNC:
+//				// synchronous reset.  Will be phased out in the future?
+//				if ( !skip ) {
+//
+//					List<MineResetActions> resetActions = getCurrentJob().getResetActions();
+//					
+//					MinePagedResetAsyncTask resetTask = 
+//							new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal, resetActions );
+//					
+//					resetTask.submitTaskAsync();
+//					
+////					resetSynchonously();
+//				} else {
+//					incrementSkipResetBypassCount();
+//				}
+//				
+//				break;
 				
 			default:
 				break;
@@ -732,18 +734,22 @@ public abstract class MineScheduler
 		
 		// Reset if the mine runs out of blocks:
 		
-		
-		if ( !isVirtual() && (
-				getRemainingBlockCount() <= 0 && !isZeroBlockResetDisabled() || 
-				getResetThresholdPercent() > 0 && 
-				getRemainingBlockCount() < (getBounds().getTotalBlockCount() * 
-												getResetThresholdPercent() / 100.0d)
-				)) {
+		if ( !isVirtual() && getMineStateMutex().isMinable() ) {
 			
-			// submit a manual reset since the mine is empty:
-			manualReset( MineResetScheduleType.NORMAL, getZeroBlockResetDelaySec() );
-			reset = true;
+			if ( !isVirtual() && (
+					getRemainingBlockCount() <= 0 && !isZeroBlockResetDisabled() || 
+					getResetThresholdPercent() > 0 && 
+					getRemainingBlockCount() < (getBounds().getTotalBlockCount() * 
+							getResetThresholdPercent() / 100.0d)
+					)) {
+				
+				// submit a manual reset since the mine is empty:
+				manualReset( MineResetScheduleType.NORMAL, getZeroBlockResetDelaySec() );
+				reset = true;
+			}
+			
 		}
+		
 		return reset;
 	}
 	
@@ -787,10 +793,14 @@ public abstract class MineScheduler
 	private void manualReset( MineResetScheduleType resetType, double delayActionSec, 
 			List<MineResetActions> resetActions ) {
 		
-		if ( isVirtual() ) {
-			// Nope... nothing to reset... 
+		if ( isVirtual() || !getMineStateMutex().isMinable() ) {
+			// Nope... nothing to reset...  or it's locked out alredy with a reset
 			return;
 		}
+		
+		// Lock the mine's mutex:
+		getMineStateMutex().setMineStateResetStart();
+		
 		
 		// cancel existing job:
 		if ( getTaskId() != null ) {
@@ -800,8 +810,7 @@ public abstract class MineScheduler
 		// Clear jobStack and set currentJob to run the RESET with zero delay:
 		getJobStack().clear();
 		
-		MineJobAction action = isUsePagingOnReset() ? 
-				MineJobAction.RESET_ASYNC : MineJobAction.RESET_SYNC;
+		MineJobAction action = MineJobAction.RESET_ASYNC; // : MineJobAction.RESET_SYNC;
 		
 		MineJob mineJob = new MineJob( action, delayActionSec, 0, resetType );
 		mineJob.setResetType( resetType );

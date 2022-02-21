@@ -538,8 +538,8 @@ public class Mine
         setResetCommands( commands == null ? new ArrayList<>() : commands );
         
         
-        Boolean usePagingOnReset = (Boolean) document.get( "usePagingOnReset" );
-        setUsePagingOnReset( usePagingOnReset == null ? false : usePagingOnReset.booleanValue() );
+//        Boolean usePagingOnReset = (Boolean) document.get( "usePagingOnReset" );
+//        setUsePagingOnReset( usePagingOnReset == null ? false : usePagingOnReset.booleanValue() );
 
         
         List<String> mineBlockEvents = (List<String>) document.get("mineBlockEvents");
@@ -685,7 +685,7 @@ public class Mine
         ret.put("commands", getResetCommands());
         
         
-        ret.put( "usePagingOnReset", isUsePagingOnReset() );
+//        ret.put( "usePagingOnReset", isUsePagingOnReset() );
         
         
         if ( getRank() != null ) {

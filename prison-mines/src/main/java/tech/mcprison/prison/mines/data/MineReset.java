@@ -2,7 +2,6 @@ package tech.mcprison.prison.mines.data;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -134,10 +133,7 @@ public abstract class MineReset
 	public MineReset() {
 		super();
 		
-		int mineSize = getBounds() != null ? 
-						getBounds().getTotalBlockCount() : 2000;
-		
-		this.mineTargetPrisonBlocks = new ArrayList<>( mineSize );
+		this.mineTargetPrisonBlocks = new ArrayList<>();
 		this.mineTargetPrisonBlocksMap = new TreeMap<>();
 		
 		this.statsMineSweeperTaskMs = new ArrayList<>();
@@ -168,178 +164,178 @@ public abstract class MineReset
     	}
     }
     
-    /**
-     * <p>Optimized the mine reset to focus on itself.  Also set the Y plane to refresh at the top and work its
-     * way down.  That way if the play is teleported to the top, it will appear like the whole mine has reset
-     * instantly and they will not see the delay from the bottom of the mine working up to the top.  This will
-     * also reduce the likelihood of the player falling back in to the mine if there is no spawn set.
-     * </p>
-     * 
-     * <p>The ONLY code that could be asynchronous ran is the random generation of the blocks.  The other  
-     * lines of code is using bukkit and/or spigot api calls which MUST be ran synchronously.
-     * </p>
-     */
-    protected void resetSynchonously() {
-    	
-    	if ( isDeleted() ) {
-    		// if the mine is deleted, just return without doing anything. This will
-    		// cancel the job.
-    		return;
-    	}
+//    /**
+//     * <p>Optimized the mine reset to focus on itself.  Also set the Y plane to refresh at the top and work its
+//     * way down.  That way if the play is teleported to the top, it will appear like the whole mine has reset
+//     * instantly and they will not see the delay from the bottom of the mine working up to the top.  This will
+//     * also reduce the likelihood of the player falling back in to the mine if there is no spawn set.
+//     * </p>
+//     * 
+//     * <p>The ONLY code that could be asynchronous ran is the random generation of the blocks.  The other  
+//     * lines of code is using bukkit and/or spigot api calls which MUST be ran synchronously.
+//     * </p>
+//     */
+//    protected void resetSynchonously() {
+//    	
+//    	if ( isDeleted() ) {
+//    		// if the mine is deleted, just return without doing anything. This will
+//    		// cancel the job.
+//    		return;
+//    	}
+//
+//		long start = System.currentTimeMillis();
+//		
+//		// The all-important event
+//		MineResetEvent event = new MineResetEvent(this, resetType);
+//		Prison.get().getEventBus().post(event);
+//		if (!event.isCanceled()) {
+//			resetSynchonouslyInternal();
+//		}
+//		
+//		long stop = System.currentTimeMillis();
+//		setStatsResetTimeMS( stop - start );
+//		
+//		// Tie to the command stats mode so it logs it if stats are enabled:
+//		if ( PrisonMines.getInstance().getMineManager().isMineStats() ) {
+//			DecimalFormat dFmt = new DecimalFormat("#,##0");
+//			Output.get().logInfo("&cMine reset: &7" + getTag() + 
+//					"&c  Blocks: &7" + dFmt.format( getBounds().getTotalBlockCount() ) + 
+//					statsMessage() );
+//		}
+//    	
+//    }
 
-		long start = System.currentTimeMillis();
-		
-		// The all-important event
-		MineResetEvent event = new MineResetEvent(this);
-		Prison.get().getEventBus().post(event);
-		if (!event.isCanceled()) {
-			resetSynchonouslyInternal();
-		}
-		
-		long stop = System.currentTimeMillis();
-		setStatsResetTimeMS( stop - start );
-		
-		// Tie to the command stats mode so it logs it if stats are enabled:
-		if ( PrisonMines.getInstance().getMineManager().isMineStats() ) {
-			DecimalFormat dFmt = new DecimalFormat("#,##0");
-			Output.get().logInfo("&cMine reset: &7" + getTag() + 
-					"&c  Blocks: &7" + dFmt.format( getBounds().getTotalBlockCount() ) + 
-					statsMessage() );
-		}
-    	
-    }
-
-    /**
-     * <p>This function now follows the general behavior as the async reset in that it now
-     * uses a target block listing to help ensure the constraints are honored when 
-     * generating the blocks.
-     * </p>
-     * 
-     */
-	private void resetSynchonouslyInternal() {
-		try {
-			
-			if ( isVirtual() || isDeleted() ) {
-				// Mine is virtual and cannot be reset.  Just skip this with no error messages.
-				// If the mine is deleted, just return without doing anything.
-				return;
-			}
-			
-			if ( !isEnabled() ) {
-				Output.get().logError(
-						String.format( "MineReset: Reset failure: Mine is not enabled. " +
-								"Ensure world exists. mine= %s ", 
-								getName()  ));
-				return;
-			}
-			
-			
-			teleportAllPlayersOut();
-//			setStatsTeleport1TimeMS(
-//					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
-			
-			
-			// Reset stats:
-			resetStats();
-
-			
-			generateBlockListAsync();
-			
-			
-			if ( !getCurrentJob().getResetActions().contains( MineResetActions.NO_COMMANDS )) {
-				
-				// Before reset commands:
-				if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
-					
-					List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
-					
-					int row = 0;
-					for (String command : getResetCommands() ) {
-						row++;
-// 	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
-// 	        				.replace("{player_uid}", player.uid.toString());
-						if ( command.startsWith( "before: " )) {
-							String cmd = command.replace( "before: ", "" );
-							
-							String debugInfo = "MineReset sync: " + getName() + " Before:";
-     						PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( 
-     									debugInfo, cmd, row );
-     						
-     						cmdTasks.add( cmdTask );
-//     						PrisonCommandTasks.submitTasks( cmdTask );
-							//PrisonAPI.dispatchCommand(cmd);
-						}
-					}
-					
-					PrisonCommandTasks.submitTasks( cmdTasks );
-				}
-			}
-
-			
-    		MinePagedResetAsyncTask resetTask = new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal );
-    		resetTask.submitTaskAsync();
-//			resetAsynchonouslyUpdate( false );
-			
-		
-			
-			// If a player falls back in to the mine before it is fully done being reset, 
-			// such as could happen if there is lag or a lot going on within the server, 
-			// this will TP anyone out who would otherwise suffocate.  I hope! lol
-			teleportAllPlayersOut();
-//			setStatsTeleport2TimeMS(
-//					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
-			
-			
-			incrementResetCount();
-			
-			if ( !getCurrentJob().getResetActions().contains( MineResetActions.NO_COMMANDS )) {
-				
-				// After reset commands:
-				if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
-					
-					List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
-					
-					int row = 0;
-					for (String command : getResetCommands() ) {
-						row++;
-// 	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
-// 	        				.replace("{player_uid}", player.uid.toString());
-						if ( command.startsWith( "after: " )) {
-							String cmd = command.replace( "after: ", "" );
-							
-							String debugInfo = "MineReset sync: " + getName() + " After:";
-     						PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( 
-     								debugInfo, cmd, row );
-     						
-     						cmdTasks.add( cmdTask );
-						}
-					}
-					
-					PrisonCommandTasks.submitTasks( cmdTasks );
-				}
-			}
-
-			
-			// Broadcast message to all players within a certain radius of this mine:
-			broadcastResetMessageToAllPlayersWithRadius();
-//			broadcastResetMessageToAllPlayersWithRadius( MINE_RESET__BROADCAST_RADIUS_BLOCKS );
-			
-			
-			submitTeleportGlassBlockRemoval();
-			
-			
-			// If part of a chained_resets, then kick off the next reset:
-			if ( getCurrentJob().getResetActions().contains( MineResetActions.CHAINED_RESETS )) {
-				
-				PrisonMines pMines = PrisonMines.getInstance();
-				pMines.resetAllMinesNext();
-			}
-
-			
-		} catch (Exception e) {
-			Output.get().logError("&cFailed to reset mine " + getName(), e);
-		}
-	}
+//    /**
+//     * <p>This function now follows the general behavior as the async reset in that it now
+//     * uses a target block listing to help ensure the constraints are honored when 
+//     * generating the blocks.
+//     * </p>
+//     * 
+//     */
+//	private void resetSynchonouslyInternal() {
+//		try {
+//			
+//			if ( isVirtual() || isDeleted() ) {
+//				// Mine is virtual and cannot be reset.  Just skip this with no error messages.
+//				// If the mine is deleted, just return without doing anything.
+//				return;
+//			}
+//			
+//			if ( !isEnabled() ) {
+//				Output.get().logError(
+//						String.format( "MineReset: Reset failure: Mine is not enabled. " +
+//								"Ensure world exists. mine= %s ", 
+//								getName()  ));
+//				return;
+//			}
+//			
+//			
+//			teleportAllPlayersOut();
+////			setStatsTeleport1TimeMS(
+////					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
+//			
+//			
+//			// Reset stats:
+//			resetStats();
+//
+//			
+//			generateBlockListAsync();
+//			
+//			
+//			if ( !getCurrentJob().getResetActions().contains( MineResetActions.NO_COMMANDS )) {
+//				
+//				// Before reset commands:
+//				if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
+//					
+//					List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
+//					
+//					int row = 0;
+//					for (String command : getResetCommands() ) {
+//						row++;
+//// 	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
+//// 	        				.replace("{player_uid}", player.uid.toString());
+//						if ( command.startsWith( "before: " )) {
+//							String cmd = command.replace( "before: ", "" );
+//							
+//							String debugInfo = "MineReset sync: " + getName() + " Before:";
+//     						PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( 
+//     									debugInfo, cmd, row );
+//     						
+//     						cmdTasks.add( cmdTask );
+////     						PrisonCommandTasks.submitTasks( cmdTask );
+//							//PrisonAPI.dispatchCommand(cmd);
+//						}
+//					}
+//					
+//					PrisonCommandTasks.submitTasks( cmdTasks );
+//				}
+//			}
+//
+//			
+//    		MinePagedResetAsyncTask resetTask = new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal );
+//    		resetTask.submitTaskAsync();
+////			resetAsynchonouslyUpdate( false );
+//			
+//		
+//			
+//			// If a player falls back in to the mine before it is fully done being reset, 
+//			// such as could happen if there is lag or a lot going on within the server, 
+//			// this will TP anyone out who would otherwise suffocate.  I hope! lol
+//			teleportAllPlayersOut();
+////			setStatsTeleport2TimeMS(
+////					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
+//			
+//			
+//			incrementResetCount();
+//			
+//			if ( !getCurrentJob().getResetActions().contains( MineResetActions.NO_COMMANDS )) {
+//				
+//				// After reset commands:
+//				if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
+//					
+//					List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
+//					
+//					int row = 0;
+//					for (String command : getResetCommands() ) {
+//						row++;
+//// 	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
+//// 	        				.replace("{player_uid}", player.uid.toString());
+//						if ( command.startsWith( "after: " )) {
+//							String cmd = command.replace( "after: ", "" );
+//							
+//							String debugInfo = "MineReset sync: " + getName() + " After:";
+//     						PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( 
+//     								debugInfo, cmd, row );
+//     						
+//     						cmdTasks.add( cmdTask );
+//						}
+//					}
+//					
+//					PrisonCommandTasks.submitTasks( cmdTasks );
+//				}
+//			}
+//
+//			
+//			// Broadcast message to all players within a certain radius of this mine:
+//			broadcastResetMessageToAllPlayersWithRadius();
+////			broadcastResetMessageToAllPlayersWithRadius( MINE_RESET__BROADCAST_RADIUS_BLOCKS );
+//			
+//			
+//			submitTeleportGlassBlockRemoval();
+//			
+//			
+//			// If part of a chained_resets, then kick off the next reset:
+//			if ( getCurrentJob().getResetActions().contains( MineResetActions.CHAINED_RESETS )) {
+//				
+//				PrisonMines pMines = PrisonMines.getInstance();
+//				pMines.resetAllMinesNext();
+//			}
+//
+//			
+//		} catch (Exception e) {
+//			Output.get().logError("&cFailed to reset mine " + getName(), e);
+//		}
+//	}
 
     
     public String statsMessage() {
@@ -696,159 +692,159 @@ public abstract class MineReset
 //		
 //	}
 
-	/**
-	 * 
-	 * <p>Update 2021-08-25 : This function should only be called once now.  The main 
-	 * work on performing the actual resets is now performed within the task
-	 * MinePagedResetAsyncTask.  This is now to be ran asynchronously.
-	 * </p>
-	 * 
-     * <p>Yeah I know, it has async in the name of the function, but it still can only
-     * be ran synchronously.  The async part implies this is the reset "part" for the
-     * async workflow.
-     * </p>
-     * 
-     * <p>Before this part is ran, the generateBlockListAsync() function must be ran
-     * to regenerate the new block list.
-     * </p>
-     *  
-     */
-    protected void resetAsynchonously() {
-    	boolean canceled = false;
-    	
-//		Output.get().logInfo( "MineRest.resetAsynchonously() " + getName() );
-
-    	if ( isVirtual() ) {
-    		canceled = true;
-    	}
-    	
-    	if ( !canceled && getResetPage() == 0 ) {
-    		generateBlockListAsync();   		
-    		
-    		canceled = resetAsynchonouslyInitiate();
-    	}
-    	
-    	if ( !canceled ) {
-    		
-//    		// First time through... reset the block break count and run the before reset commands:
-//    		if ( getResetPosition() == 0 ) {
-//    			
-//    			// Reset the block break count before resetting the blocks:
-//    			// Set it to the original air count, if subtracted from total block count
-//    			// in the mine, then the result will be blocks remaining.
-//         		setBlockBreakCount( getAirCountOriginal() );
-//         		
-//         		
-//         		if ( !getCurrentJob().getResetActions().contains( MineResetActions.NO_COMMANDS )) {
-//         			
-//         			// Before reset commands:
-//         			if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
-//         				
-//         				for (String command : getResetCommands() ) {
-//// 	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
-//// 	        				.replace("{player_uid}", player.uid.toString());
-//         					if ( command.startsWith( "before: " )) {
-//         						String cmd = command.replace( "before: ", "" );
-//         						
-//         						PrisonCommandTask cmdTask = new PrisonCommandTask( "MineReset: Before:" );
-//         						cmdTask.submitCommandTask( cmd );
-//         							
-//         						// PrisonAPI.dispatchCommand(cmd);
-//         					}
-//         				}
-//         			}
-//         		}
-//         		
-//    		}
-
-    		asynchronouslyResetSetup();
-			
-    		MinePagedResetAsyncTask resetTask = new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal );
-    		resetTask.submitTaskAsync();
-    		
-    		asynchronouslyResetFinalize( null );
-    		
-    		
-//    		resetAsynchonouslyUpdate( true );
-    		
-//    		if ( getResetPosition() == getMineTargetPrisonBlocks().size() ) {
-//    			// Done resetting the mine... wrap up:
-//    			
-//    			
-//        		// If a player falls back in to the mine before it is fully done being reset, 
-//        		// such as could happen if there is lag or a lot going on within the server, 
-//        		// this will TP anyone out who would otherwise suffocate.  I hope! lol
-//    			teleportAllPlayersOut();
-////    			setStatsTeleport2TimeMS(
-////    					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
-//        		
-//        		// Reset the paging for the next reset:
-//        		setResetPage( 0 );
-//        		
-//        		incrementResetCount();
-//        		
-//        		if ( !getCurrentJob().getResetActions().contains( MineResetActions.NO_COMMANDS )) {
-//        			
-//        			// After reset commands:
-//        			if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
-//        				
-//        				for (String command : getResetCommands() ) {
-////    	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
-////    	        				.replace("{player_uid}", player.uid.toString());
-//        					if ( command.startsWith( "after: " )) {
-//        						String cmd = command.replace( "after: ", "" );
-//        						
-//         						PrisonCommandTask cmdTask = new PrisonCommandTask( "MineReset: After:" );
-//         						cmdTask.submitCommandTask( cmd );
+//	/**
+//	 * 
+//	 * <p>Update 2021-08-25 : This function should only be called once now.  The main 
+//	 * work on performing the actual resets is now performed within the task
+//	 * MinePagedResetAsyncTask.  This is now to be ran asynchronously.
+//	 * </p>
+//	 * 
+//     * <p>Yeah I know, it has async in the name of the function, but it still can only
+//     * be ran synchronously.  The async part implies this is the reset "part" for the
+//     * async workflow.
+//     * </p>
+//     * 
+//     * <p>Before this part is ran, the generateBlockListAsync() function must be ran
+//     * to regenerate the new block list.
+//     * </p>
+//     *  
+//     */
+//    protected void resetAsynchonously() {
+//    	boolean canceled = false;
+//    	
+////		Output.get().logInfo( "MineRest.resetAsynchonously() " + getName() );
 //
-//        						// PrisonAPI.dispatchCommand(cmd);
-//        					}
-//        				}
-//        			}
-//        		}
-//    	        
-//        		
-//        		// Broadcast message to all players within a certain radius of this mine:
-//        		broadcastResetMessageToAllPlayersWithRadius();
-////        		broadcastResetMessageToAllPlayersWithRadius( MINE_RESET__BROADCAST_RADIUS_BLOCKS );
-//        		
-//        		
-//        		submitTeleportGlassBlockRemoval();
-//        		
-//                
-//                // Tie to the command stats mode so it logs it if stats are enabled:
-//                if ( PrisonMines.getInstance().getMineManager().isMineStats() || 
-//                		getCurrentJob().getResetActions().contains( MineResetActions.DETAILS ) ) {
-//                	DecimalFormat dFmt = new DecimalFormat("#,##0");
-//                	Output.get().logInfo("&cMine reset: &7" + getTag() + 
-//                			"&c  Blocks: &7" + dFmt.format( getBounds().getTotalBlockCount() ) + 
-//                			statsMessage() );
-//                }
-//                
-//    			// If part of a chained_resets, then kick off the next reset:
-//    			if ( getCurrentJob().getResetActions().contains( MineResetActions.CHAINED_RESETS )) {
-//    				
-//    				PrisonMines pMines = PrisonMines.getInstance();
-//    				pMines.resetAllMinesNext();
-//    			}
-//    			
-//    			
-//    		}
-
-// NOTE: Only run this ONCE now...  MinePagedResetAsyncTask handles the paging now   		
-//    		else {
-//    			
-//    			// Need to continue to reset the mine. Resubmit it to run again.
-//    			MineResetAsyncResubmitTask mrAsyncRT = new MineResetAsyncResubmitTask( this, null, 
-//    					getCurrentJob().getResetActions() );
-//    			
-//    	    	// Must run synchronously!!
-//    	    	submitSyncTask( mrAsyncRT );
-//    		}
-    	}
-    	
-    	
-    }
+//    	if ( isVirtual() ) {
+//    		canceled = true;
+//    	}
+//    	
+//    	if ( !canceled && getResetPage() == 0 ) {
+//    		generateBlockListAsync();   		
+//    		
+//    		canceled = resetAsynchonouslyInitiate( MineResetType.normal );
+//    	}
+//    	
+//    	if ( !canceled ) {
+//    		
+////    		// First time through... reset the block break count and run the before reset commands:
+////    		if ( getResetPosition() == 0 ) {
+////    			
+////    			// Reset the block break count before resetting the blocks:
+////    			// Set it to the original air count, if subtracted from total block count
+////    			// in the mine, then the result will be blocks remaining.
+////         		setBlockBreakCount( getAirCountOriginal() );
+////         		
+////         		
+////         		if ( !getCurrentJob().getResetActions().contains( MineResetActions.NO_COMMANDS )) {
+////         			
+////         			// Before reset commands:
+////         			if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
+////         				
+////         				for (String command : getResetCommands() ) {
+////// 	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
+////// 	        				.replace("{player_uid}", player.uid.toString());
+////         					if ( command.startsWith( "before: " )) {
+////         						String cmd = command.replace( "before: ", "" );
+////         						
+////         						PrisonCommandTask cmdTask = new PrisonCommandTask( "MineReset: Before:" );
+////         						cmdTask.submitCommandTask( cmd );
+////         							
+////         						// PrisonAPI.dispatchCommand(cmd);
+////         					}
+////         				}
+////         			}
+////         		}
+////         		
+////    		}
+//
+//    		asynchronouslyResetSetup();
+//			
+//    		MinePagedResetAsyncTask resetTask = new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal );
+//    		resetTask.submitTaskAsync();
+//    		
+//    		asynchronouslyResetFinalize( null );
+//    		
+//    		
+////    		resetAsynchonouslyUpdate( true );
+//    		
+////    		if ( getResetPosition() == getMineTargetPrisonBlocks().size() ) {
+////    			// Done resetting the mine... wrap up:
+////    			
+////    			
+////        		// If a player falls back in to the mine before it is fully done being reset, 
+////        		// such as could happen if there is lag or a lot going on within the server, 
+////        		// this will TP anyone out who would otherwise suffocate.  I hope! lol
+////    			teleportAllPlayersOut();
+//////    			setStatsTeleport2TimeMS(
+//////    					teleportAllPlayersOut( getBounds().getyBlockMax() ) );
+////        		
+////        		// Reset the paging for the next reset:
+////        		setResetPage( 0 );
+////        		
+////        		incrementResetCount();
+////        		
+////        		if ( !getCurrentJob().getResetActions().contains( MineResetActions.NO_COMMANDS )) {
+////        			
+////        			// After reset commands:
+////        			if ( getResetCommands() != null && getResetCommands().size() > 0 ) {
+////        				
+////        				for (String command : getResetCommands() ) {
+//////    	        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
+//////    	        				.replace("{player_uid}", player.uid.toString());
+////        					if ( command.startsWith( "after: " )) {
+////        						String cmd = command.replace( "after: ", "" );
+////        						
+////         						PrisonCommandTask cmdTask = new PrisonCommandTask( "MineReset: After:" );
+////         						cmdTask.submitCommandTask( cmd );
+////
+////        						// PrisonAPI.dispatchCommand(cmd);
+////        					}
+////        				}
+////        			}
+////        		}
+////    	        
+////        		
+////        		// Broadcast message to all players within a certain radius of this mine:
+////        		broadcastResetMessageToAllPlayersWithRadius();
+//////        		broadcastResetMessageToAllPlayersWithRadius( MINE_RESET__BROADCAST_RADIUS_BLOCKS );
+////        		
+////        		
+////        		submitTeleportGlassBlockRemoval();
+////        		
+////                
+////                // Tie to the command stats mode so it logs it if stats are enabled:
+////                if ( PrisonMines.getInstance().getMineManager().isMineStats() || 
+////                		getCurrentJob().getResetActions().contains( MineResetActions.DETAILS ) ) {
+////                	DecimalFormat dFmt = new DecimalFormat("#,##0");
+////                	Output.get().logInfo("&cMine reset: &7" + getTag() + 
+////                			"&c  Blocks: &7" + dFmt.format( getBounds().getTotalBlockCount() ) + 
+////                			statsMessage() );
+////                }
+////                
+////    			// If part of a chained_resets, then kick off the next reset:
+////    			if ( getCurrentJob().getResetActions().contains( MineResetActions.CHAINED_RESETS )) {
+////    				
+////    				PrisonMines pMines = PrisonMines.getInstance();
+////    				pMines.resetAllMinesNext();
+////    			}
+////    			
+////    			
+////    		}
+//
+//// NOTE: Only run this ONCE now...  MinePagedResetAsyncTask handles the paging now   		
+////    		else {
+////    			
+////    			// Need to continue to reset the mine. Resubmit it to run again.
+////    			MineResetAsyncResubmitTask mrAsyncRT = new MineResetAsyncResubmitTask( this, null, 
+////    					getCurrentJob().getResetActions() );
+////    			
+////    	    	// Must run synchronously!!
+////    	    	submitSyncTask( mrAsyncRT );
+////    		}
+//    	}
+//    	
+//    	
+//    }
     
     public void asynchronouslyResetSetup() {
     	
@@ -962,7 +958,7 @@ public abstract class MineReset
 
     }
     
-    public boolean resetAsynchonouslyInitiate() {
+    public boolean resetAsynchonouslyInitiate( MineResetType resetType ) {
     	boolean canceled = false;
 		
     	if ( isVirtual()) {
@@ -980,7 +976,7 @@ public abstract class MineReset
 //			long start = System.currentTimeMillis();
 			
 			// The all-important event
-			MineResetEvent event = new MineResetEvent(this);
+			MineResetEvent event = new MineResetEvent(this, resetType);
 			Prison.get().getEventBus().post(event);
 			
 			canceled = event.isCanceled();
@@ -1890,18 +1886,32 @@ public abstract class MineReset
 //    }
     
     private void clearMineTargetPrisonBlocks() {
-    	getMineTargetPrisonBlocks().clear();
-    	getMineTargetPrisonBlocksMap().clear();
+    	
+    	// Instead of clearing the collections, set them to null so that way if 
+    	// other reference exist, they will be able to continue to use them
+    	// until the release the references.
+    	
+    	mineTargetPrisonBlocks = null;
+    	mineTargetPrisonBlocksMap = null;
+    	
+//    	getMineTargetPrisonBlocks().clear();
+//    	getMineTargetPrisonBlocksMap().clear();
     }
     
     
 	public List<MineTargetPrisonBlock> getMineTargetPrisonBlocks()
 	{
+		if ( mineTargetPrisonBlocks == null ) {
+			mineTargetPrisonBlocks = new ArrayList<>();
+		}
 		return mineTargetPrisonBlocks;
 	}
 
 	public TreeMap<MineTargetBlockKey, MineTargetPrisonBlock> getMineTargetPrisonBlocksMap()
 	{
+		if ( mineTargetPrisonBlocksMap == null ) {
+			mineTargetPrisonBlocksMap = new TreeMap<>();
+		}
 		return mineTargetPrisonBlocksMap;
 	}
 	

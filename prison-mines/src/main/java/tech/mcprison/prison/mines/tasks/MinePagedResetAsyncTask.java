@@ -193,16 +193,16 @@ public class MinePagedResetAsyncTask
     	// Set the MineStateMutex to a state of starting a mine reset:
     	mine.getMineStateMutex().setMineStateResetStart();
  
+    	mine.generateBlockListAsync();
 		
-		if ( resetType == MineResetType.normal || resetType == MineResetType.paged ) {
-			mine.generateBlockListAsync();
+		if ( resetType == MineResetType.normal ) {
 			
-			// resetAsynchonouslyInitiate() will confirm if the reset should happened 
-			// and will raise Prison's mine reset event. 
-			// A return value of true means cancel the reset:
-			cancel = mine.resetAsynchonouslyInitiate();
 			
 		}
+		// resetAsynchonouslyInitiate() will confirm if the reset should happened 
+		// and will raise Prison's mine reset event. 
+		// A return value of true means cancel the reset:
+		cancel = mine.resetAsynchonouslyInitiate( resetType );
 		
 		mine.asynchronouslyResetSetup();
 		
