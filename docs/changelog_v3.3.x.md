@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8d 2022-02-20
 
 
+* **Mine reset mutex is conditionally enabled to ensure the locks remain balanced.**
+To ensure the mutex is enabled ASAP, its engaged outside of the normal location... it may only be a few nano-seconds savings, but with OP pickaxes mining with many players within one mine, the mutex must be enabled rapidly.
+
+
 * **Bug Fix: Mine reset changes: Eliminate paged resets, some code that is not being use anymore, disabled the RESET_ASYNC type to be similar to RESET_SYNC since they are now the same, locked out checkZeroBlockResets so mines cannot reset multiple times at the same time using the MineStateMutex.**
 The major issue here was that mines were being reset in the middle of a reset action.  Used a preexisting MineStateMutex to secure the checkZeroBlockResets() function to prevent it from kicking off many resets.  These multiple resets were happening because many players were triggering the resets... as a side effect, there were many situations of collections failing due to concurrent modification exceptions.  
 

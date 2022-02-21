@@ -44,7 +44,16 @@ public class MineStateMutex
 		
 		synchronized ( this ) {
 			
-			this.mineState = MineState.UNLOCKED;
+			this.mineStateSn--;
+
+			// If the state serial number is zero, then that means 
+			// this can now be unlocked.  Otherwise if non-zero it
+			// must remain locked.
+			if ( mineStateSn == 0 ) {
+				
+				this.mineState = MineState.UNLOCKED;
+			}
+			
 		}
 		
 	}
