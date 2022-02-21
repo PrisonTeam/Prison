@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.8d 2022-02-20
+# 3.3.0-alpha.8e 2022-02-20
+
+
+* **v3.3.0-alpha.8e 2022-02-20**
 
 
 * **Mine reset mutex is conditionally enabled to ensure the locks remain balanced.**
