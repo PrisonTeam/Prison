@@ -141,7 +141,7 @@ public class MinePagedResetAsyncTask
 		
 		// The first time running this, need to setup the block list if a reset:
 		if ( position == 0 ) {
-			if ( runSetupCancelReset() ) {
+			if ( runSetupCancelAutoResets() ) {
 				// If the reset should be canceled then just return, and that will 
 				// terminate the reset.  There is nothing else that needs to be done.
 				return;
@@ -184,27 +184,41 @@ public class MinePagedResetAsyncTask
 
 	
 	/**
+	 * <p>The primary purpose of this function is to cancel the auto resets
+	 * and to prepare for a manual reset.
+	 * </p>
+	 * 
 	 * <p>This is ran before the initial actual processing is performed.  
-	 * This calls the functions to 
+	 * This calls the resetAsynchonouslyInitiate function which raises the
+	 * MineResetEvent.  If that event is not canceled then it will run the
+	 * pre-reset commands within the function asynchronouslyResetSetup.
+	 * </p>
 	 */
-	private boolean runSetupCancelReset() {
+	private boolean runSetupCancelAutoResets() {
 		boolean cancel = false;
 		
-    	// Set the MineStateMutex to a state of starting a mine reset:
-    	mine.getMineStateMutex().setMineStateResetStart();
+		// If it makes it this far and the mutex is not locked, then lock it:
+		if ( mine.getMineStateMutex().isMinable() ) {
+			
+			// Set the MineStateMutex to a state of starting a mine reset:
+			mine.getMineStateMutex().setMineStateResetStart();
+		}
  
     	mine.generateBlockListAsync();
 		
-		if ( resetType == MineResetType.normal ) {
-			
-			
-		}
+//		if ( resetType == MineResetType.normal ) {
+//			
+//			
+//		}
 		// resetAsynchonouslyInitiate() will confirm if the reset should happened 
 		// and will raise Prison's mine reset event. 
 		// A return value of true means cancel the reset:
 		cancel = mine.resetAsynchonouslyInitiate( resetType );
 		
-		mine.asynchronouslyResetSetup();
+		if ( !cancel ) {
+			
+			mine.asynchronouslyResetSetup();
+		}
 		
 		return cancel;
 	}
@@ -216,7 +230,7 @@ public class MinePagedResetAsyncTask
 		
 		// Set the MineStateMutex to a state of Finishing a mine reset:
 		// It is now safe to allow mining in the mine.
-		mine.getMineStateMutex().setMineStateResetFinished();
+		mine.getMineStateMutex().setMineStateResetFinishedForced();
 
 		
 		// Run items such as post-mine-reset commands:

@@ -794,36 +794,51 @@ public abstract class MineScheduler
 			List<MineResetActions> resetActions ) {
 		
 		if ( isVirtual() || !getMineStateMutex().isMinable() ) {
-			// Nope... nothing to reset...  or it's locked out alredy with a reset
+			// Nope... nothing to reset...  or it's locked out already with a reset
 			return;
 		}
 		
-		// Lock the mine's mutex if it's still minable.  Otherwise skip it since the
-		// state has been incremented by one already.
-		if ( getMineStateMutex().isMinable() ) {
+		synchronized ( getMineStateMutex() ) {
+
+			// The synchronized block will halt threads and will wait.  
+			// So there is a chance that more than one reset will make it in to this
+			// block, so need to check the mutex state again and exist if the mine
+			// is not minable, since that indicates an earlier thread won the 
+			// reset:
+			
+			if ( !getMineStateMutex().isMinable() ) {
+				// exit since another reset has been started. 
+				return;
+			}
+
 			
 			getMineStateMutex().setMineStateResetStart();
-		}
-		else if ( getMineStateMutex().getMineStateSn() > 1 ) {
-			
-			synchronized ( getMineStateMutex() ) {
 
-				// synchronizing on the mutex this will allow only one thread to be
-				// processed at a time, which will weed out extra threads from being 
-				// wrongfully shutdown. Based upon this "technique" the last thread to
-				// be paused by this synchronized block will be the one that will actually
-				// initiate the reset.
-				if ( getMineStateMutex().getMineStateSn() > 1 ) {
-					
-					// This may be a double submission sinc the mineStateSn should only be 1 at this 
-					// point.  So release this lock and shutdown this duplicate submission.
-					getMineStateMutex().setMineStateResetFinished();
-	
-					// duplicate reset request, so exit...
-					return;
-				}
-			}
 			
+//			// Lock the mine's mutex if it's still minable.  Otherwise skip it since the
+//			// state has been incremented by one already.
+//			if ( getMineStateMutex().isMinable() ) {
+//				
+//				getMineStateMutex().setMineStateResetStart();
+//			}
+//			else if ( getMineStateMutex().getMineStateSn() > 1 ) {
+//				
+//				// synchronizing on the mutex this will allow only one thread to be
+//				// processed at a time, which will weed out extra threads from being 
+//				// wrongfully shutdown. Based upon this "technique" the last thread to
+//				// be paused by this synchronized block will be the one that will actually
+//				// initiate the reset.
+//				if ( getMineStateMutex().getMineStateSn() > 1 ) {
+//					
+//					// This may be a double submission sinc the mineStateSn should only be 1 at this 
+//					// point.  So release this lock and shutdown this duplicate submission.
+//					getMineStateMutex().setMineStateResetFinished();
+//					
+//					// duplicate reset request, so exit...
+//					return;
+//				}
+//				
+//			}
 		}
 		
 		

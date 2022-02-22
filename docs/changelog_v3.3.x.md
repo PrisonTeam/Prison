@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.8e 2022-02-20
+# 3.3.0-alpha.8e 2022-02-22
+
+
+* **Adjustments to the configuration of the mutex to better ensure that only one job is submitted for the reset, and to ensure other tasks are not locked up, or locked out.**
+There was a report that the prior way was causing the mines to lockup.
 
 
 * **v3.3.0-alpha.8e 2022-02-20**
