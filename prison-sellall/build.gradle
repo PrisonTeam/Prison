@@ -1,0 +1,79 @@
+/*
+ *  Prison is a Minecraft plugin for the prison game mode.
+ *  Copyright (C) 2017 The Prison Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+group 'tech.mcprison'
+
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'java'
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = "UTF-8"
+
+repositories {
+    mavenCentral()
+
+	// net.luckperm.api:
+    maven { url = "https://hub.spigotmc.org/nexus/content/groups/public" }
+
+     maven { url = "https://nexus.hc.to/content/repositories/pub_releases" }
+    
+    maven { url = "https://repo.codemc.org/repository/maven-public/" }
+ 
+//    maven { 
+//    	url = 'https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries' 
+//    	content {
+//    		includeGroup 'com.github.cryptomorin'
+//    	}
+//    }
+  
+}
+
+
+
+dependencies {
+    implementation project(':prison-core')
+    implementation project(':prison-mines')
+    implementation project(':prison-ranks')
+
+  
+
+    // https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
+//	implementation 'com.github.cryptomorin:XSeries:8.5.0.1'
+    
+
+
+    compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
+
+
+
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+
+}
+
+shadowJar {
+    dependencies {
+//        include(dependency('org.apache.commons:commons-lang3:3.12.0'))
+//        include(dependency('com.google.code.gson:gson:2.8.6'))
+    }
+    classifier 'API'
+    archiveVersion = null
+}
+
+build.dependsOn(shadowJar)
+

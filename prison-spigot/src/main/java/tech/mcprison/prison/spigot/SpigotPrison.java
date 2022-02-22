@@ -63,6 +63,8 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.commands.FailedRankCommands;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.managers.RankManager;
+import tech.mcprison.prison.sellall.PrisonSellall;
+import tech.mcprison.prison.sellall.commands.SellallCommands;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
 import tech.mcprison.prison.spigot.backpacks.BackpacksListeners;
@@ -726,6 +728,22 @@ public class SpigotPrison
         	Prison.get().getModuleManager().getDisabledModules().add( PrisonRanks.MODULE_NAME );
         }
         
+       
+        if (modulesConf.getBoolean( PrisonSellall.MODULE_NAME.toLowerCase() ) ) {
+        	PrisonSellall sellallModule = new PrisonSellall(getDescription().getVersion() );
+        	
+        	// Register and enable Ranks:
+            Prison.get().getModuleManager().registerModule( sellallModule );
+            
+            Prison.get().getCommandHandler().registerCommands( new SellallCommands() );
+
+        } 
+        else {
+        	Output.get().logInfo("&3Modules: &cPrison sellall module is disabled and was not Loaded. ");
+        	Prison.get().getModuleManager().getDisabledModules().add( PrisonSellall.MODULE_NAME );
+        }
+        
+
         
         // The following linkMinesAndRanks() function must be called only after the 
         // Module deferred tasks are ran.

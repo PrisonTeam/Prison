@@ -79,6 +79,7 @@ dependencies {
     implementation project(':prison-core')
     implementation project(':prison-mines')
     implementation project(':prison-ranks')
+    implementation project(':prison-sellall')
 
 
     implementation 'org.bstats:bstats-base:2.2.1'
@@ -195,6 +196,7 @@ shadowJar {
         include(project(':prison-core'))
         include(project(':prison-mines'))
         include(project(':prison-ranks'))
+        include(project(':prison-sellall'))
     }
 
     relocate 'org.bstats', 'tech.mcprison.prison.bstats'
