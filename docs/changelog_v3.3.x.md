@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.8e 2022-02-22
+# 3.3.0-alpha.8e 2022-02-23
+
+
+* **For the admin commands for tokens, added an option to be able to suppress the messages.**
 
 
 * **The creation of a new sellall module which will eventually contain the code to manage multiple shops that will be based upon ranks.**

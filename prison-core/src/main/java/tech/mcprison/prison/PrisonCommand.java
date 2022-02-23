@@ -1628,13 +1628,23 @@ public class PrisonCommand
     		description = "Player to add the tokens to.") String playerName,
     		
     		@Arg(name = "amount", verifiers = "min[1]",
-    		description = "The number of tokens to add to the player's account.") long amount
+    		description = "The number of tokens to add to the player's account.") long amount,
+    		
+    		@Wildcard(join=true)
+    		@Arg(name = "options", description = "Optional settings: [silent]  Silent suppresses " +
+    				"all messages related to the transaction, including failures.",
+    				def = "") String options
     		) {
+    	
+    	boolean silent = options != null && options.toLowerCase().contains( "silent" );
     	
     	if ( playerName == null || playerName.isEmpty() ) {
     		
-    		String message = "Prison Tokens: A player's name is required.";
-    		Output.get().logWarn( message );
+    		if ( !silent ) {
+    			String message = "Prison Tokens: A player's name is required.";
+    			Output.get().logWarn( message );
+    		}
+    		
     		return;
     	}
 
@@ -1642,11 +1652,14 @@ public class PrisonCommand
     	
     	if ( amount <= 0 ) {
     		
-    		String message = 
-    				String.format( 
-	    				"Prison Tokens: Invalid amount: '%s'. Must be greater than zero.",
-	    				dFmt.format( amount ) );
-    		Output.get().logWarn( message );
+    		if ( !silent ) {
+    			String message = 
+    					String.format( 
+    							"Prison Tokens: Invalid amount: '%s'. Must be greater than zero.",
+    							dFmt.format( amount ) );
+    			Output.get().logWarn( message );
+    		}
+    		
     		return;
     	}
     	
@@ -1655,20 +1668,23 @@ public class PrisonCommand
     	player.getPlayerCachePlayerData().addTokensAdmin( amount );
     	
     	
-    	
-    	String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
-    	
-    	String message = String.format( "&3%s now has &7%s &3tokens after adding &7%s&3.", 
-    				player.getName(),  tokens, dFmt.format( amount ) );
-    	
-    	// The person adding the tokens, or console:
-    	sender.sendMessage( message );
-    	
-    	// The player getting the tokens, if they are online:
-    	if ( player.isOnline() && !player.getName().equalsIgnoreCase( sender.getName() ) ) {
+    	if ( !silent ) {
     		
-    		player.sendMessage( message );
+    		String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
+    		
+    		String message = String.format( "&3%s now has &7%s &3tokens after adding &7%s&3.", 
+    				player.getName(),  tokens, dFmt.format( amount ) );
+    		
+    		// The person adding the tokens, or console:
+    		sender.sendMessage( message );
+    		
+    		// The player getting the tokens, if they are online:
+    		if ( player.isOnline() && !player.getName().equalsIgnoreCase( sender.getName() ) ) {
+    			
+    			player.sendMessage( message );
+    		}
     	}
+    	
     }
     
     @Command(identifier = "prison tokens remove", 
@@ -1682,13 +1698,23 @@ public class PrisonCommand
     		
     		@Arg(name = "amount", verifiers = "min[1]",
     		description = "The number of tokens to remove from the player's account. " +
-    				"This amount must be positive. ") long amount
+    				"This amount must be positive. ") long amount,
+    		
+    		@Wildcard(join=true)
+    		@Arg(name = "options", description = "Optional settings: [silent]  Silent suppresses " +
+			"all messages related to the transaction, including failures.",
+			def = "") String options
     		) {
+    	
+    	boolean silent = options != null && options.toLowerCase().contains( "silent" );
     	
     	if ( playerName == null || playerName.isEmpty() ) {
     		
-    		String message = "Prison Tokens: A player's name is required.";
-    		Output.get().logWarn( message );
+    		if ( !silent ) {
+    			String message = "Prison Tokens: A player's name is required.";
+    			Output.get().logWarn( message );
+    		}
+    		
     		return;
     	}
     	
@@ -1696,11 +1722,14 @@ public class PrisonCommand
     	
     	if ( amount <= 0 ) {
     		
-    		String message = 
-    				String.format( 
-    						"Prison Tokens: Invalid amount: '%s'. Must be greater than zero.",
-    						dFmt.format( amount ) );
-    		Output.get().logWarn( message );
+    		if ( !silent ) {
+    			String message = 
+    					String.format( 
+    							"Prison Tokens: Invalid amount: '%s'. Must be greater than zero.",
+    							dFmt.format( amount ) );
+    			Output.get().logWarn( message );
+    		}
+    		
     		return;
     	}
     	
@@ -1709,19 +1738,21 @@ public class PrisonCommand
     	player.getPlayerCachePlayerData().removeTokensAdmin( amount );
     	
     	
-    	
-    	String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
-    	
-    	String message = String.format( "&3%s now has &7%s &3tokens after removing &7%s&3.", 
-    			player.getName(),  tokens, dFmt.format( amount ) );
-    	
-    	// The person adding the tokens, or console:
-    	sender.sendMessage( message );
-    	
-    	// The player getting the tokens, if they are online:
-    	if ( player.isOnline() && !player.getName().equalsIgnoreCase( sender.getName() ) ) {
+    	if ( !silent ) {
     		
-    		player.sendMessage( message );
+    		String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
+    		
+    		String message = String.format( "&3%s now has &7%s &3tokens after removing &7%s&3.", 
+    				player.getName(),  tokens, dFmt.format( amount ) );
+    		
+    		// The person adding the tokens, or console:
+    		sender.sendMessage( message );
+    		
+    		// The player getting the tokens, if they are online:
+    		if ( player.isOnline() && !player.getName().equalsIgnoreCase( sender.getName() ) ) {
+    			
+    			player.sendMessage( message );
+    		}
     	}
     }
     
@@ -1737,13 +1768,23 @@ public class PrisonCommand
     		
     		@Arg(name = "amount", 
     		description = "The number of tokens to set the player's account to. " +
-    				"This amount must amount can be negative. ") long amount
+    				"This amount must amount can be negative. ") long amount,
+
+    		@Wildcard(join=true)
+			@Arg(name = "options", description = "Optional settings: [silent]  Silent suppresses " +
+			"all messages related to the transaction, including failures.",
+			def = "") String options
     		) {
+    	
+    	boolean silent = options != null && options.toLowerCase().contains( "silent" );
     	
     	if ( playerName == null || playerName.isEmpty() ) {
     		
-    		String message = "Prison Tokens: A player's name is required.";
-    		Output.get().logWarn( message );
+    		if ( !silent ) {
+    			String message = "Prison Tokens: A player's name is required.";
+    			Output.get().logWarn( message );
+    		}
+    		
     		return;
     	}
     	
@@ -1758,19 +1799,21 @@ public class PrisonCommand
     	
     	player.getPlayerCachePlayerData().setTokensAdmin( amount );
     	
-    	
-    	String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
-    	
-    	String message = String.format( "&3%s now has &7%s &3tokens.", 
-    			player.getName(), tokens );
-    	
-    	// The person adding the tokens, or console:
-    	sender.sendMessage( message );
-    	
-    	// The player getting the tokens, if they are online:
-    	if ( player.isOnline() && !player.getName().equalsIgnoreCase( sender.getName() ) ) {
+    	if ( !silent ) {
     		
-    		player.sendMessage( message );
+    		String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
+    		
+    		String message = String.format( "&3%s now has &7%s &3tokens.", 
+    				player.getName(), tokens );
+    		
+    		// The person adding the tokens, or console:
+    		sender.sendMessage( message );
+    		
+    		// The player getting the tokens, if they are online:
+    		if ( player.isOnline() && !player.getName().equalsIgnoreCase( sender.getName() ) ) {
+    			
+    			player.sendMessage( message );
+    		}
     	}
     }
     
