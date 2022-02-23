@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8e 2022-02-23
 
 
+
+* **Prison tokens: externalize the messages related to the admin tokens commands.**
+
+
 * **For the admin commands for tokens, added an option to be able to suppress the messages.**
 
 

@@ -1583,9 +1583,10 @@ public class PrisonCommand
     	if ( ( player == null || !player.isOnline() ) && 
     			( playerName == null || playerName.isEmpty() ) ) {
     		
-    		String message = "Prison Tokens: A player's name is required when used from console.";
-    		
-    		Output.get().logWarn( message );
+    		coreTokensNameRequiredMsg(sender);
+//    		String message = "Prison Tokens: A player's name is required when used from console.";
+//    		
+//    		Output.get().logWarn( message );
     		return;
     	}
     	else 
@@ -1593,9 +1594,10 @@ public class PrisonCommand
     		
     		if ( !sender.isOp() &&  
     				!sender.hasPermission( "tokens.bal.others" ) ) {
-    			String message = "Prison Tokens: You do not have permission to view other " +
-    					"player's balances.";
-    			Output.get().logWarn( message );
+    			coreTokensBalanceCannotViewOthersMsg(sender);
+//    			String message = "Prison Tokens: You do not have permission to view other " +
+//    					"player's balances.";
+//    			Output.get().logWarn( message );
     			return;
     		}
     		
@@ -1609,19 +1611,23 @@ public class PrisonCommand
     	
 //    	player.getPlayerCache()
     	
-    	DecimalFormat dFmt = new DecimalFormat("#,##0");
-
     	long tokens = player.getPlayerCachePlayerData().getTokens();
     	
-    	String tokensMsg = dFmt.format( tokens );
+    	coreTokensBalanceViewMsg( sender, player.getName(), tokens );
     	
-    	String message = String.format( "&3%s has %s tokens.", player.getName(), tokensMsg );
-    	
-    	sender.sendMessage( message );
+//    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+//    	String tokensMsg = dFmt.format( tokens );
+//    	
+//    	String message = String.format( "&3%s has %s tokens.", player.getName(), tokensMsg );
+//    	
+//    	sender.sendMessage( message );
     }
     
     @Command(identifier = "prison tokens add", 
-    		description = "Prison tokens Admin: an admins tool to give more tokens to a player", 
+    		description = "Prison tokens Admin: an admins tool to give more tokens to a player. The " +
+    				"tokens added by admin will not count as earned tokens, so they cannot be used in " +
+    				"situations where the player must earn them. This restriction can be forced to " +
+    				"be attributed to being earned by the player.", 
     		permissions = "tokens.admin.add" )
     public void tokensAdd( CommandSender sender,
     		@Arg(name = "player", 
@@ -1631,33 +1637,39 @@ public class PrisonCommand
     		description = "The number of tokens to add to the player's account.") long amount,
     		
     		@Wildcard(join=true)
-    		@Arg(name = "options", description = "Optional settings: [silent]  Silent suppresses " +
-    				"all messages related to the transaction, including failures.",
+    		@Arg(name = "options", description = "Optional settings: [silent forcePlayer]  Silent suppresses " +
+    				"all messages related to the transaction, including failures. The option 'forcePlayer' " +
+    				"will not use the admin logging of this transaction, but instead will assign it to the " +
+    				"player as if they actually earned the tokens through normal ways. It is not advised to " +
+    				"use 'forcePlayer' since it could be used to cheat the system in some ways.",
     				def = "") String options
     		) {
     	
     	boolean silent = options != null && options.toLowerCase().contains( "silent" );
+    	boolean forcePlayer = options != null && options.toLowerCase().contains( "forceplayer" );
     	
     	if ( playerName == null || playerName.isEmpty() ) {
     		
     		if ( !silent ) {
-    			String message = "Prison Tokens: A player's name is required.";
-    			Output.get().logWarn( message );
+    			coreTokensNameRequiredMsg(sender);
+//    			String message = "Prison Tokens: A player's name is required.";
+//    			Output.get().logWarn( message );
     		}
     		
     		return;
     	}
 
-    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+//    	DecimalFormat dFmt = new DecimalFormat("#,##0");
     	
     	if ( amount <= 0 ) {
     		
     		if ( !silent ) {
-    			String message = 
-    					String.format( 
-    							"Prison Tokens: Invalid amount: '%s'. Must be greater than zero.",
-    							dFmt.format( amount ) );
-    			Output.get().logWarn( message );
+    			coreTokensAddInvalidAmountMsg( sender, amount );
+//    			String message = 
+//    					String.format( 
+//    							"Prison Tokens: Invalid amount: '%s'. Must be greater than zero.",
+//    							dFmt.format( amount ) );
+//    			Output.get().logWarn( message );
     		}
     		
     		return;
@@ -1665,15 +1677,25 @@ public class PrisonCommand
     	
     	Player player = getPlayer( playerName );
     	
-    	player.getPlayerCachePlayerData().addTokensAdmin( amount );
+    	if ( forcePlayer ) {
+    		
+    		player.getPlayerCachePlayerData().addTokens( amount );
+    	}
+    	else {
+    		
+    		player.getPlayerCachePlayerData().addTokensAdmin( amount );
+    	}
     	
     	
     	if ( !silent ) {
     		
-    		String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
+    		String message = coreTokensAddedAmountMsg( player.getName(), 
+    					player.getPlayerCachePlayerData().getTokens(), amount );
     		
-    		String message = String.format( "&3%s now has &7%s &3tokens after adding &7%s&3.", 
-    				player.getName(),  tokens, dFmt.format( amount ) );
+//    		String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
+//    		
+//    		String message = String.format( "&3%s now has &7%s &3tokens after adding &7%s&3.", 
+//    				player.getName(),  tokens, dFmt.format( amount ) );
     		
     		// The person adding the tokens, or console:
     		sender.sendMessage( message );
@@ -1690,7 +1712,10 @@ public class PrisonCommand
     @Command(identifier = "prison tokens remove", 
     		description = "Prison tokens Admin: an admins tool to remove tokens from a player. " +
     				"It is possible to remove more tokens than what the player has, which can " +
-    				"be treated like a debt.", 
+    				"be treated like a debt.  The " + 
+    				"tokens added by admin will not count as earned tokens, so they cannot be used in " + 
+    				"situations where the player must earn them. This restriction can be forced to " + 
+    				"be attributed to being earned by the player.", 
     		permissions = "tokens.admin.add" )
     public void tokensRemove( CommandSender sender,
     		@Arg(name = "player", 
@@ -1701,33 +1726,39 @@ public class PrisonCommand
     				"This amount must be positive. ") long amount,
     		
     		@Wildcard(join=true)
-    		@Arg(name = "options", description = "Optional settings: [silent]  Silent suppresses " +
-			"all messages related to the transaction, including failures.",
-			def = "") String options
+			@Arg(name = "options", description = "Optional settings: [silent forcePlayer]  Silent suppresses " +
+					"all messages related to the transaction, including failures. The option 'forcePlayer' " +
+					"will not use the admin logging of this transaction, but instead will assign it to the " +
+					"player as if they actually earned the tokens through normal ways. It is not advised to " +
+					"use 'forcePlayer' since it could be used to cheat the system in some ways.",
+					def = "") String options
     		) {
     	
     	boolean silent = options != null && options.toLowerCase().contains( "silent" );
+    	boolean forcePlayer = options != null && options.toLowerCase().contains( "forceplayer" );
     	
     	if ( playerName == null || playerName.isEmpty() ) {
     		
     		if ( !silent ) {
-    			String message = "Prison Tokens: A player's name is required.";
-    			Output.get().logWarn( message );
+    			coreTokensNameRequiredMsg(sender);
+//    			String message = "Prison Tokens: A player's name is required.";
+//    			Output.get().logWarn( message );
     		}
     		
     		return;
     	}
     	
-    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+//    	DecimalFormat dFmt = new DecimalFormat("#,##0");
     	
     	if ( amount <= 0 ) {
     		
     		if ( !silent ) {
-    			String message = 
-    					String.format( 
-    							"Prison Tokens: Invalid amount: '%s'. Must be greater than zero.",
-    							dFmt.format( amount ) );
-    			Output.get().logWarn( message );
+    			coreTokensAddInvalidAmountMsg( sender, amount );
+//    			String message = 
+//    					String.format( 
+//    							"Prison Tokens: Invalid amount: '%s'. Must be greater than zero.",
+//    							dFmt.format( amount ) );
+//    			Output.get().logWarn( message );
     		}
     		
     		return;
@@ -1735,15 +1766,24 @@ public class PrisonCommand
     	
     	Player player = getPlayer( playerName );
     	
-    	player.getPlayerCachePlayerData().removeTokensAdmin( amount );
+    	if ( forcePlayer ) {
+    		
+    		player.getPlayerCachePlayerData().removeTokens( amount );
+    	}
+    	else {
+    		
+    		player.getPlayerCachePlayerData().removeTokensAdmin( amount );
+    	}
     	
     	
     	if ( !silent ) {
     		
-    		String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
-    		
-    		String message = String.format( "&3%s now has &7%s &3tokens after removing &7%s&3.", 
-    				player.getName(),  tokens, dFmt.format( amount ) );
+    		String message = coreTokensRemovedAmountMsg( player.getName(),
+    								player.getPlayerCachePlayerData().getTokens(), amount );
+//    		String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
+//    		
+//    		String message = String.format( "&3%s now has &7%s &3tokens after removing &7%s&3.", 
+//    				player.getName(),  tokens, dFmt.format( amount ) );
     		
     		// The person adding the tokens, or console:
     		sender.sendMessage( message );
@@ -1757,38 +1797,46 @@ public class PrisonCommand
     }
     
     @Command(identifier = "prison tokens set", 
-    		description = "Prison tokens Admin: an admins tool to set number of tokens " +
+    		description = "Prison tokens Admin: an admins tool to set the number of tokens " +
     				"for a player to a specific amount. " +
-    				"It is possible to set the tokens to a negavtie amount, which can " +
-    				"be treated like a debt.", 
+    				"It is possible to set the tokens to a negative amount, which can " +
+    				"be treated like a debt.  The " + 
+    				"tokens added by admin will not count as earned tokens, so they cannot be used in " + 
+    				"situations where the player must earn them. This restriction can be forced to " + 
+    				"be attributed to being earned by the player.", 
     				permissions = "tokens.admin.add" )
     public void tokensSet( CommandSender sender,
     		@Arg(name = "player", 
-    		description = "Player to remove the tokens from.") String playerName,
+    		description = "Player to adjust their tokens balance.") String playerName,
     		
     		@Arg(name = "amount", 
     		description = "The number of tokens to set the player's account to. " +
-    				"This amount must amount can be negative. ") long amount,
+    				"This amount can be negative. ") long amount,
 
     		@Wildcard(join=true)
-			@Arg(name = "options", description = "Optional settings: [silent]  Silent suppresses " +
-			"all messages related to the transaction, including failures.",
-			def = "") String options
-    		) {
+			@Arg(name = "options", description = "Optional settings: [silent forcePlayer]  Silent suppresses " +
+					"all messages related to the transaction, including failures. The option 'forcePlayer' " +
+					"will not use the admin logging of this transaction, but instead will assign it to the " +
+					"player as if they actually earned the tokens through normal ways. It is not advised to " +
+					"use 'forcePlayer' since it could be used to cheat the system in some ways.",
+					def = "") String options 
+			) {
     	
     	boolean silent = options != null && options.toLowerCase().contains( "silent" );
+    	boolean forcePlayer = options != null && options.toLowerCase().contains( "forceplayer" );
     	
     	if ( playerName == null || playerName.isEmpty() ) {
     		
     		if ( !silent ) {
-    			String message = "Prison Tokens: A player's name is required.";
-    			Output.get().logWarn( message );
+    			coreTokensNameRequiredMsg(sender);
+//    			String message = "Prison Tokens: A player's name is required.";
+//    			Output.get().logWarn( message );
     		}
     		
     		return;
     	}
     	
-    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+//    	DecimalFormat dFmt = new DecimalFormat("#,##0");
     	
     	Player player = getPlayer( playerName );
 
@@ -1796,15 +1844,24 @@ public class PrisonCommand
 //    	long totalTokens = player.getPlayerCachePlayerData().getTokens();
 //    	player.getPlayerCachePlayerData().removeTokensAdmin( totalTokens );
     	
-    	
-    	player.getPlayerCachePlayerData().setTokensAdmin( amount );
+    	if ( forcePlayer ) {
+    		
+    		player.getPlayerCachePlayerData().setTokens( amount );
+    	}
+    	else {
+    		
+    		player.getPlayerCachePlayerData().setTokensAdmin( amount );
+    	}
     	
     	if ( !silent ) {
     		
-    		String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
+    		String message = coreTokensSetAmountMsg( player.getName(), 
+    						player.getPlayerCachePlayerData().getTokens() );
     		
-    		String message = String.format( "&3%s now has &7%s &3tokens.", 
-    				player.getName(), tokens );
+//    		String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
+//    		
+//    		String message = String.format( "&3%s now has &7%s &3tokens.", 
+//    				player.getName(), tokens );
     		
     		// The person adding the tokens, or console:
     		sender.sendMessage( message );
