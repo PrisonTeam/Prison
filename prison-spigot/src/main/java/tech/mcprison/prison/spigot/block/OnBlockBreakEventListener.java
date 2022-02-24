@@ -90,36 +90,6 @@ public class OnBlockBreakEventListener
 		
 	}
 	
-	
-	public enum BlockBreakPriority {
-		
-		DISABLED,
-		
-		LOWEST,
-		LOW,
-		NORMAL,
-		HIGH,
-		HIGHEST,
-		MONITOR
-		;
-		
-		public static BlockBreakPriority fromString( String value ) {
-			BlockBreakPriority results = BlockBreakPriority.LOW;
-			
-			if ( value != null ) {
-				
-				for ( BlockBreakPriority bbPriority : values() ) {
-					if ( bbPriority.name().equalsIgnoreCase( value )) {
-						results = bbPriority;
-						break;
-					}
-				}
-			}
-			
-			return results;
-		}
-	}
-	
 	public void registerAllBlockBreakEvents(SpigotPrison spigotPrison ) {
 		
 		// Only register these event listeners if these are enabled.

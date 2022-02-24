@@ -50,7 +50,7 @@ import tech.mcprison.prison.internal.events.player.PrisonPlayerInteractEvent;
 import tech.mcprison.prison.internal.events.player.PrisonPlayerInteractEvent.Action;
 import tech.mcprison.prison.internal.events.world.PrisonWorldLoadEvent;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
+import tech.mcprison.prison.spigot.block.BlockBreakPriority;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;

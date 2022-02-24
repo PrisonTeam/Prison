@@ -13,14 +13,20 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.8e 2022-02-23
+# 3.3.0-alpha.8e 2022-02-24
 
+
+* **Extracted the BlockBreakPriority enum to be an object on its own.**
+Added BLOCKEVENT and added information on what the various priorities should do.  This is in preparation to refactoring how events are processed.
 
 
 * **Prison tokens: externalize the messages related to the admin tokens commands.**
 
 
 * **For the admin commands for tokens, added an option to be able to suppress the messages.**
+
+
+* **v3.3.0-alpha.8f 2022-02-23**
 
 
 * **The creation of a new sellall module which will eventually contain the code to manage multiple shops that will be based upon ranks.**
