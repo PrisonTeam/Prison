@@ -40,47 +40,51 @@ public class AutoManagerTokenEnchant
 		implements Listener {
     	
         @EventHandler(priority=EventPriority.LOW) 
-        public void onTEBlockExplode(TEBlockExplodeEvent e) {
+        public void onTEBlockExplode( TEBlockExplodeEvent e, BlockBreakPriority bbPriority) {
 			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
 				return;
 			}
-        	genericBlockExplodeEventAutoManager( e );
+			
+			genericBlockExplodeEvent( e, bbPriority );
+//        	genericBlockExplodeEventAutoManager( e );
         }
     }
     
-    public class OnBlockBreakEventTokenEnchantEventListener
-	    extends AutoManagerTokenEnchant
-	    implements Listener {
-    	
-    	@EventHandler(priority=EventPriority.NORMAL) 
-    	public void onTEBlockExplode(TEBlockExplodeEvent e) {
-    		if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
-    			return;
-    		}
-    		genericBlockExplodeEvent( e );
-    	}
-    }
-    
-    public class OnBlockBreakEventTokenEnchantEventListenerMonitor
-	    extends AutoManagerTokenEnchant
-	    implements Listener {
-    	
-    	@EventHandler(priority=EventPriority.MONITOR) 
-    	public void onTEBlockExplode(TEBlockExplodeEvent e) {
-    		if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
-    			return;
-    		}
-    		genericBlockExplodeEventMonitor( e );
-    	}
-    }
+//    public class OnBlockBreakEventTokenEnchantEventListener
+//	    extends AutoManagerTokenEnchant
+//	    implements Listener {
+//    	
+//    	@EventHandler(priority=EventPriority.NORMAL) 
+//    	public void onTEBlockExplode(TEBlockExplodeEvent e) {
+//    		if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+//    			return;
+//    		}
+//    		genericBlockExplodeEvent( e );
+//    	}
+//    }
+//    
+//    public class OnBlockBreakEventTokenEnchantEventListenerMonitor
+//	    extends AutoManagerTokenEnchant
+//	    implements Listener {
+//    	
+//    	@EventHandler(priority=EventPriority.MONITOR) 
+//    	public void onTEBlockExplode(TEBlockExplodeEvent e) {
+//    		if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+//    			return;
+//    		}
+//    		genericBlockExplodeEventMonitor( e );
+//    	}
+//    }
     
     @Override
     public void initialize() {
 
     	String eP = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
-		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+    	BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+    	
+//		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 
-    	if ( !isEventEnabled ) {
+    	if ( bbPriority == BlockBreakPriority.DISABLED ) {
     		return;
     	}
     	
@@ -93,70 +97,90 @@ public class AutoManagerTokenEnchant
     		
     		Output.get().logInfo( "AutoManager: Trying to register TokenEnchant" );
     		
+    		SpigotPrison prison = SpigotPrison.getInstance();
+    		PluginManager pm = Bukkit.getServer().getPluginManager();
+    		EventPriority ePriority = bbPriority.getBukkitEventPriority(); 
     		
-    		BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
     		
-    		if ( eventPriority != BlockBreakPriority.DISABLED ) {
-    			
-    			EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
-    			
-    			
-    			OnBlockBreakEventTokenEnchantEventListenerMonitor normalListenerMonitor = 
-    										new OnBlockBreakEventTokenEnchantEventListenerMonitor();
-
-    			
-    			SpigotPrison prison = SpigotPrison.getInstance();
-
-    			PluginManager pm = Bukkit.getServer().getPluginManager();
-    			
-    			if ( eventPriority != BlockBreakPriority.MONITOR ) {
-    				
-    				if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
-    					
-    					AutoManagerTokenEnchantEventListener autoManagerlListener = 
-    							new AutoManagerTokenEnchantEventListener();
-    					
-    					pm.registerEvent(TEBlockExplodeEvent.class, autoManagerlListener, ePriority,
-    							new EventExecutor() {
-    						public void execute(Listener l, Event e) { 
-    							((AutoManagerTokenEnchantEventListener)l)
-    							.onTEBlockExplode((TEBlockExplodeEvent)e);
-    						}
-    					},
-    							prison);
-    					prison.getRegisteredBlockListeners().add( autoManagerlListener );
-    				}
-    				else if ( isBoolean( AutoFeatures.normalDrop ) ) {
-    					
-    					OnBlockBreakEventTokenEnchantEventListener normalListener = 
-    							new OnBlockBreakEventTokenEnchantEventListener();
-    					
-    					pm.registerEvent(TEBlockExplodeEvent.class, normalListener, ePriority,
-    							new EventExecutor() {
-    						public void execute(Listener l, Event e) { 
-    							((OnBlockBreakEventTokenEnchantEventListener)l)
-    							.onTEBlockExplode((TEBlockExplodeEvent)e);
-    						}
-    					},
-    							prison);
-    					prison.getRegisteredBlockListeners().add( normalListener );
-    				}
-
+    		AutoManagerTokenEnchantEventListener autoManagerlListener = 
+    				new AutoManagerTokenEnchantEventListener();
+    		
+    		pm.registerEvent(TEBlockExplodeEvent.class, autoManagerlListener, ePriority,
+    				new EventExecutor() {
+    			public void execute(Listener l, Event e) { 
+    				((AutoManagerTokenEnchantEventListener)l)
+    				.onTEBlockExplode( (TEBlockExplodeEvent)e, bbPriority );
     			}
-    			else {
-    				
-    				pm.registerEvent(TEBlockExplodeEvent.class, normalListenerMonitor, EventPriority.MONITOR,
-    						new EventExecutor() {
-    					public void execute(Listener l, Event e) { 
-    						((OnBlockBreakEventTokenEnchantEventListenerMonitor)l)
-    						.onTEBlockExplode((TEBlockExplodeEvent)e);
-    					}
-    				},
-    						prison);
-    				prison.getRegisteredBlockListeners().add( normalListenerMonitor );
-    			}
+    		},
+    				prison);
+    		prison.getRegisteredBlockListeners().add( autoManagerlListener );
+    		
+    		
+    		
+    		
+    		
+    		
+    		
+//    		BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
+//    		
+//    		if ( eventPriority != BlockBreakPriority.DISABLED ) {
+//    			
+//    			EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
+//    			
+//    			
+//    			OnBlockBreakEventTokenEnchantEventListenerMonitor normalListenerMonitor = 
+//    										new OnBlockBreakEventTokenEnchantEventListenerMonitor();
+//
+//    			
+//    			
+//    			if ( eventPriority != BlockBreakPriority.MONITOR ) {
+//    				
+//    				if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
+//    					
+//    					AutoManagerTokenEnchantEventListener autoManagerlListener = 
+//    							new AutoManagerTokenEnchantEventListener();
+//    					
+//    					pm.registerEvent(TEBlockExplodeEvent.class, autoManagerlListener, ePriority,
+//    							new EventExecutor() {
+//    						public void execute(Listener l, Event e) { 
+//    							((AutoManagerTokenEnchantEventListener)l)
+//    							.onTEBlockExplode((TEBlockExplodeEvent)e);
+//    						}
+//    					},
+//    							prison);
+//    					prison.getRegisteredBlockListeners().add( autoManagerlListener );
+//    				}
+//    				else if ( isBoolean( AutoFeatures.normalDrop ) ) {
+//    					
+//    					OnBlockBreakEventTokenEnchantEventListener normalListener = 
+//    							new OnBlockBreakEventTokenEnchantEventListener();
+//    					
+//    					pm.registerEvent(TEBlockExplodeEvent.class, normalListener, ePriority,
+//    							new EventExecutor() {
+//    						public void execute(Listener l, Event e) { 
+//    							((OnBlockBreakEventTokenEnchantEventListener)l)
+//    							.onTEBlockExplode((TEBlockExplodeEvent)e);
+//    						}
+//    					},
+//    							prison);
+//    					prison.getRegisteredBlockListeners().add( normalListener );
+//    				}
+
+//    			}
+//    			else {
+//    				
+//    				pm.registerEvent(TEBlockExplodeEvent.class, normalListenerMonitor, EventPriority.MONITOR,
+//    						new EventExecutor() {
+//    					public void execute(Listener l, Event e) { 
+//    						((OnBlockBreakEventTokenEnchantEventListenerMonitor)l)
+//    						.onTEBlockExplode((TEBlockExplodeEvent)e);
+//    					}
+//    				},
+//    						prison);
+//    				prison.getRegisteredBlockListeners().add( normalListenerMonitor );
+//    			}
     			
-    		}
+//    		}
     		
     	}
     	catch ( ClassNotFoundException e ) {

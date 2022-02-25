@@ -15,7 +15,6 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.api.ExplosiveBlockBreakEvent;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
-import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 
 public class AutoManagerPrisonsExplosiveBlockBreakEvents
@@ -40,124 +39,151 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 		implements Listener {
 		
 		@EventHandler(priority=EventPriority.NORMAL) 
-		public void onPrisonsExplosiveBlockBreakEvent(ExplosiveBlockBreakEvent e) {
+		public void onPrisonsExplosiveBlockBreakEvent( ExplosiveBlockBreakEvent e, BlockBreakPriority bbPriority ) {
+			
 			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
 				return;
 			}
 
-//			me.pulsi_.prisonenchants.events.PEExplosionEvent
+			genericExplosiveEvent( e, bbPriority );
 			
-			genericBlockExplodeEventAutoManager( e );
+//			genericBlockExplodeEventAutoManager( e );
 		}
 	}
 	
-	public class OnBlockBreakExplosiveBlockBreakEventListener 
-	    extends OnBlockBreakEventListener
-	    implements Listener {
-		
-		@EventHandler(priority=EventPriority.NORMAL) 
-		public void onPrisonExplosiveBlockBreakEvent(ExplosiveBlockBreakEvent e) {
-			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
-				return;
-			}
-			genericBlockExplodeEvent( e );
-		}
-	}
-	
-	public class OnBlockBreakExplosiveBlockBreakEventListenerMonitor
-		extends OnBlockBreakEventListener
-		implements Listener {
-		
-		@EventHandler(priority=EventPriority.MONITOR) 
-		public void onPrisonExplosiveBlockBreakEventMonitor(ExplosiveBlockBreakEvent e) {
-			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
-				return;
-			}
-			genericBlockExplodeEventMonitor( e );
-		}
-	}
+//	public class OnBlockBreakExplosiveBlockBreakEventListener 
+//	    extends OnBlockBreakEventListener
+//	    implements Listener {
+//		
+//		@EventHandler(priority=EventPriority.NORMAL) 
+//		public void onPrisonExplosiveBlockBreakEvent(ExplosiveBlockBreakEvent e) {
+//			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+//				return;
+//			}
+//			genericBlockExplodeEvent( e );
+//		}
+//	}
+//	
+//	public class OnBlockBreakExplosiveBlockBreakEventListenerMonitor
+//		extends OnBlockBreakEventListener
+//		implements Listener {
+//		
+//		@EventHandler(priority=EventPriority.MONITOR) 
+//		public void onPrisonExplosiveBlockBreakEventMonitor(ExplosiveBlockBreakEvent e) {
+//			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+//				return;
+//			}
+//			genericBlockExplodeEventMonitor( e );
+//		}
+//	}
 
 	@Override
 	public void initialize() {
 		
 		String eP = getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
-		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+  		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+		
+//		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 
-		if ( !isEventEnabled ) {
+		if ( bbPriority == BlockBreakPriority.DISABLED ) {
 			return;
 		}
 		
 		try {
 			
 			Output.get().logInfo( "AutoManager: Trying to register ExplosiveBlockBreakEvent Listener" );
+
+			
+			SpigotPrison prison = SpigotPrison.getInstance();
+			PluginManager pm = Bukkit.getServer().getPluginManager();
+			EventPriority ePriority = bbPriority.getBukkitEventPriority();           
 			
 			
-			BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
+			AutoManagerExplosiveBlockBreakEventListener autoManagerlListener = 
+					new AutoManagerExplosiveBlockBreakEventListener();
 			
-			if ( eventPriority != BlockBreakPriority.DISABLED ) {
-				
-				EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
-				
-				
-				OnBlockBreakExplosiveBlockBreakEventListenerMonitor normalListenerMonitor = 
-												new OnBlockBreakExplosiveBlockBreakEventListenerMonitor();
-				
-				
-				SpigotPrison prison = SpigotPrison.getInstance();
-				
-				
-				PluginManager pm = Bukkit.getServer().getPluginManager();
-				
-				if ( eventPriority != BlockBreakPriority.MONITOR ) {
+			pm.registerEvent(ExplosiveBlockBreakEvent.class, autoManagerlListener, ePriority,
+					new EventExecutor() {
+				public void execute(Listener l, Event e) { 
 					
-					if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
-						
-						AutoManagerExplosiveBlockBreakEventListener autoManagerlListener = 
-								new AutoManagerExplosiveBlockBreakEventListener();
-						
-						pm.registerEvent(ExplosiveBlockBreakEvent.class, autoManagerlListener, ePriority,
-								new EventExecutor() {
-							public void execute(Listener l, Event e) { 
-								((AutoManagerExplosiveBlockBreakEventListener)l)
-								.onPrisonsExplosiveBlockBreakEvent((ExplosiveBlockBreakEvent)e);
-							}
-						},
-								prison);
-						prison.getRegisteredBlockListeners().add( autoManagerlListener );
-					}
-					else if ( isBoolean( AutoFeatures.normalDrop ) ) {
-						
-						OnBlockBreakExplosiveBlockBreakEventListener normalListener = 
-								new OnBlockBreakExplosiveBlockBreakEventListener();
-						
-						pm.registerEvent(ExplosiveBlockBreakEvent.class, normalListener, ePriority,
-								new EventExecutor() {
-							public void execute(Listener l, Event e) { 
-								((OnBlockBreakExplosiveBlockBreakEventListener)l)
-								.onPrisonExplosiveBlockBreakEvent((ExplosiveBlockBreakEvent)e);
-							}
-						},
-								prison);
-						prison.getRegisteredBlockListeners().add( normalListener );
-					}
+					ExplosiveBlockBreakEvent ebbEvent = (ExplosiveBlockBreakEvent) e;
 					
+					((AutoManagerExplosiveBlockBreakEventListener)l)
+							.onPrisonsExplosiveBlockBreakEvent( ebbEvent, bbPriority );
 				}
-				else {
+			},
+					prison);
+			prison.getRegisteredBlockListeners().add( autoManagerlListener );
+			
+			
+			
+			
+			
+			
+//			BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
+//			
+//			if ( eventPriority != BlockBreakPriority.DISABLED ) {
+//				
+//				EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
+//				
+//				
+//				OnBlockBreakExplosiveBlockBreakEventListenerMonitor normalListenerMonitor = 
+//												new OnBlockBreakExplosiveBlockBreakEventListenerMonitor();
+//				
+//				
+//				
+//				
+//				
+//				if ( eventPriority != BlockBreakPriority.MONITOR ) {
+//					
+//					if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
+//						
+//						AutoManagerExplosiveBlockBreakEventListener autoManagerlListener = 
+//								new AutoManagerExplosiveBlockBreakEventListener();
+//						
+//						pm.registerEvent(ExplosiveBlockBreakEvent.class, autoManagerlListener, ePriority,
+//								new EventExecutor() {
+//							public void execute(Listener l, Event e) { 
+//								((AutoManagerExplosiveBlockBreakEventListener)l)
+//								.onPrisonsExplosiveBlockBreakEvent((ExplosiveBlockBreakEvent)e);
+//							}
+//						},
+//								prison);
+//						prison.getRegisteredBlockListeners().add( autoManagerlListener );
+//					}
+//					else if ( isBoolean( AutoFeatures.normalDrop ) ) {
+//						
+//						OnBlockBreakExplosiveBlockBreakEventListener normalListener = 
+//								new OnBlockBreakExplosiveBlockBreakEventListener();
+//						
+//						pm.registerEvent(ExplosiveBlockBreakEvent.class, normalListener, ePriority,
+//								new EventExecutor() {
+//							public void execute(Listener l, Event e) { 
+//								((OnBlockBreakExplosiveBlockBreakEventListener)l)
+//								.onPrisonExplosiveBlockBreakEvent((ExplosiveBlockBreakEvent)e);
+//							}
+//						},
+//								prison);
+//						prison.getRegisteredBlockListeners().add( normalListener );
+//					}
 					
-					pm.registerEvent(ExplosiveBlockBreakEvent.class, normalListenerMonitor, EventPriority.MONITOR,
-							new EventExecutor() {
-						public void execute(Listener l, Event e) { 
-							((OnBlockBreakExplosiveBlockBreakEventListenerMonitor)l)
-							.onPrisonExplosiveBlockBreakEventMonitor((ExplosiveBlockBreakEvent)e);
-						}
-					},
-							prison);
-					prison.getRegisteredBlockListeners().add( normalListenerMonitor );
-					
-				}
+//				}
+//				else {
+//					
+//					pm.registerEvent(ExplosiveBlockBreakEvent.class, normalListenerMonitor, EventPriority.MONITOR,
+//							new EventExecutor() {
+//						public void execute(Listener l, Event e) { 
+//							((OnBlockBreakExplosiveBlockBreakEventListenerMonitor)l)
+//							.onPrisonExplosiveBlockBreakEventMonitor((ExplosiveBlockBreakEvent)e);
+//						}
+//					},
+//							prison);
+//					prison.getRegisteredBlockListeners().add( normalListenerMonitor );
+//					
+//				}
 				
 				
-			}
+//			}
 			
 		}
 		catch ( Exception e ) {

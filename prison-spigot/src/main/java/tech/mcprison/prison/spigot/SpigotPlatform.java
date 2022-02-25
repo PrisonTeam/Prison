@@ -2186,14 +2186,18 @@ public class SpigotPlatform
 		
 		sb.append( "&2. . Prison Internal BlockBreakEvents: " +
 									"tech.mcprison.prison.spigot.SpigotListener\n" );
-		sb.append( "&2. . Auto Feature Core: Non-AutoManager: " +
-									"AutoManagerBlockBreakEvents$OnBlockBreakEventListenerNormal\n" );
-		sb.append( "&2. . Auto Feature Core: AutoManager: " +
+		sb.append( "&2. . Auto Features: " +
 									"AutoManagerBlockBreakEvents$AutoManagerBlockBreakEventListener\n" );
-		sb.append( "&2. . Prison MONITOR Events manages block counts, " +
-									"Mine Sweeper, and zero block conditions.\n" );
-		sb.append( "&2. . AutoManager and enchantment event listeners are " +
-									"identified by their class names.\n" );
+		sb.append( "&2. . Prison's multi-block explosions (bombs): " +
+				"AutoManagerPrisonsExplosiveBlockBreakEvents$AutoManagerExplosiveBlockBreakEventListener\n" );
+
+		
+//		sb.append( "&2. . Auto Feature Core: Non-AutoManager: " +
+//									"AutoManagerBlockBreakEvents$OnBlockBreakEventListenerNormal\n" );
+//		sb.append( "&2. . Prison MONITOR Events manages block counts, " +
+//									"Mine Sweeper, and zero block conditions.\n" );
+//		sb.append( "&2. . AutoManager and enchantment event listeners are " +
+//									"identified by their class names.\n" );
 		sb.append( "\n" );
 		
 		

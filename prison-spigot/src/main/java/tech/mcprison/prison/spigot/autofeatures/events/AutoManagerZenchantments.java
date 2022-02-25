@@ -14,7 +14,6 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
-import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 import zedly.zenchantments.BlockShredEvent;
 
@@ -39,48 +38,54 @@ public class AutoManagerZenchantments
 	    implements Listener {
     	
     	@EventHandler(priority=EventPriority.NORMAL) 
-    	public void onBlockShredBreak(BlockShredEvent e) {
-			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+    	public void onBlockShredBreak( BlockShredEvent e, BlockBreakPriority bbPriority ) {
+    		
+    		if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
 				return;
 			}
-    		genericBlockEventAutoManager( e );
+			
+			genericBlockEvent( e, bbPriority );
+			
+//    		genericBlockEventAutoManager( e );
     	}
     }
  
-    public class OnBlockBreakBlockShredEventListener 
-	    extends OnBlockBreakEventListener
-	    implements Listener {
-		
-		@EventHandler(priority=EventPriority.NORMAL) 
-		public void onBlockShredBreak(BlockShredEvent e) {
-			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
-				return;
-			}
-			genericBlockEvent( e );
-		}
-	}
-    
-    public class OnBlockBreakBlockShredEventListenerMonitor 
-    extends OnBlockBreakEventListener
-    implements Listener {
-    	
-    	@EventHandler(priority=EventPriority.MONITOR) 
-    	public void onBlockShredBreakMonitor(BlockShredEvent e) {
-    		if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
-    			return;
-    		}
-    		genericBlockEventMonitor( e );
-    	}
-    }
+//    public class OnBlockBreakBlockShredEventListener 
+//	    extends OnBlockBreakEventListener
+//	    implements Listener {
+//		
+//		@EventHandler(priority=EventPriority.NORMAL) 
+//		public void onBlockShredBreak(BlockShredEvent e) {
+//			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+//				return;
+//			}
+//			genericBlockEvent( e );
+//		}
+//	}
+//    
+//    public class OnBlockBreakBlockShredEventListenerMonitor 
+//    extends OnBlockBreakEventListener
+//    implements Listener {
+//    	
+//    	@EventHandler(priority=EventPriority.MONITOR) 
+//    	public void onBlockShredBreakMonitor(BlockShredEvent e) {
+//    		if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+//    			return;
+//    		}
+//    		genericBlockEventMonitor( e );
+//    	}
+//    }
     
     
     @Override
     public void initialize() {
     	
     	String eP = getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
-		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+		
+//		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 
-    	if ( !isEventEnabled ) {
+    	if ( bbPriority == BlockBreakPriority.DISABLED ) {
     		return;
     	}
     	
@@ -93,85 +98,109 @@ public class AutoManagerZenchantments
     		
     		Output.get().logInfo( "AutoManager: Trying to register Zenchantments" );
     		
+    		SpigotPrison prison = SpigotPrison.getInstance();
+    		PluginManager pm = Bukkit.getServer().getPluginManager();
+    		EventPriority ePriority = bbPriority.getBukkitEventPriority();    
     		
-    		BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
-    		
-    		if ( eventPriority != BlockBreakPriority.DISABLED ) {
-    			
-    			EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
-    			
-    			
-    			OnBlockBreakBlockShredEventListenerMonitor normalListenerMonitor = 
-												new OnBlockBreakBlockShredEventListenerMonitor();
-    			
-    			
-    			SpigotPrison prison = SpigotPrison.getInstance();
-    			
-    			PluginManager pm = Bukkit.getServer().getPluginManager();
-    			
-    			if ( eventPriority != BlockBreakPriority.MONITOR ) {
-    				
-    				if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
-    					
-    					AutoManagerBlockShredEventListener autoManagerlListener = 
+    		AutoManagerBlockShredEventListener autoManagerlListener = 
     							new AutoManagerBlockShredEventListener();
+    		
+    		pm.registerEvent(BlockShredEvent.class, autoManagerlListener, ePriority,
+    				new EventExecutor() {
+    			public void execute(Listener l, Event e) { 
+    				if ( l instanceof AutoManagerBlockShredEventListener && 
+    						e instanceof BlockShredEvent ) {
     					
-    					pm.registerEvent(BlockShredEvent.class, autoManagerlListener, ePriority,
-    							new EventExecutor() {
-    						public void execute(Listener l, Event e) { 
-    							if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor && 
-    									e instanceof BlockShredEvent ) {
-    								OnBlockBreakBlockShredEventListenerMonitor lmon = 
-    										(OnBlockBreakBlockShredEventListenerMonitor) l;
-    								BlockShredEvent event = (BlockShredEvent) e;
-    								lmon.onBlockShredBreakMonitor( event );
-    							}
-    						}
-    					},
-    							prison);
-    					prison.getRegisteredBlockListeners().add( autoManagerlListener );
+    					AutoManagerBlockShredEventListener lmon = 
+    												(AutoManagerBlockShredEventListener) l;
+    					
+    					BlockShredEvent event = (BlockShredEvent) e;
+    					lmon.onBlockShredBreak( event, bbPriority );
     				}
-    				else if ( isBoolean( AutoFeatures.normalDrop ) ) {
-    					
-    					OnBlockBreakBlockShredEventListener normalListener = 
-    							new OnBlockBreakBlockShredEventListener();
-    					
-    					pm.registerEvent(BlockShredEvent.class, normalListener, ePriority,
-    							new EventExecutor() {
-    						public void execute(Listener l, Event e) { 
-    							if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor && 
-    									e instanceof BlockShredEvent ) {
-    								OnBlockBreakBlockShredEventListenerMonitor lmon = 
-    										(OnBlockBreakBlockShredEventListenerMonitor) l;
-    								BlockShredEvent event = (BlockShredEvent) e;
-    								lmon.onBlockShredBreakMonitor( event );
-    							}
-    						}
-    					},
-    							prison);
-    					prison.getRegisteredBlockListeners().add( normalListener );
-    				}
-    				
     			}
-    			else {
-    				
-    				pm.registerEvent(BlockShredEvent.class, normalListenerMonitor, EventPriority.MONITOR,
-    						new EventExecutor() {
-    					public void execute(Listener l, Event e) { 
-    						if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor && 
-    								e instanceof BlockShredEvent ) {
-    							OnBlockBreakBlockShredEventListenerMonitor lmon = 
-    									(OnBlockBreakBlockShredEventListenerMonitor) l;
-    							BlockShredEvent event = (BlockShredEvent) e;
-    							lmon.onBlockShredBreakMonitor( event );
-    						}
-    					}
-    				},
-    						prison);
-    				prison.getRegisteredBlockListeners().add( normalListenerMonitor );
-    			}
+    		},
+    				prison);
+    		prison.getRegisteredBlockListeners().add( autoManagerlListener );
+    		
+    		
+    		
+    		
+    		
+//    		BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
+    		
+//    		if ( eventPriority != BlockBreakPriority.DISABLED ) {
     			
-    		}
+//    			EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
+    			
+    			
+//    			OnBlockBreakBlockShredEventListenerMonitor normalListenerMonitor = 
+//												new OnBlockBreakBlockShredEventListenerMonitor();
+    			
+    			
+    			
+//    			if ( eventPriority != BlockBreakPriority.MONITOR ) {
+    				
+//    				if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
+//    					
+//    					AutoManagerBlockShredEventListener autoManagerlListener = 
+//    							new AutoManagerBlockShredEventListener();
+//    					
+//    					pm.registerEvent(BlockShredEvent.class, autoManagerlListener, ePriority,
+//    							new EventExecutor() {
+//    						public void execute(Listener l, Event e) { 
+//    							if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor && 
+//    									e instanceof BlockShredEvent ) {
+//    								OnBlockBreakBlockShredEventListenerMonitor lmon = 
+//    										(OnBlockBreakBlockShredEventListenerMonitor) l;
+//    								BlockShredEvent event = (BlockShredEvent) e;
+//    								lmon.onBlockShredBreakMonitor( event );
+//    							}
+//    						}
+//    					},
+//    							prison);
+//    					prison.getRegisteredBlockListeners().add( autoManagerlListener );
+//    				}
+//    				else if ( isBoolean( AutoFeatures.normalDrop ) ) {
+//    					
+//    					OnBlockBreakBlockShredEventListener normalListener = 
+//    							new OnBlockBreakBlockShredEventListener();
+//    					
+//    					pm.registerEvent(BlockShredEvent.class, normalListener, ePriority,
+//    							new EventExecutor() {
+//    						public void execute(Listener l, Event e) { 
+//    							if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor && 
+//    									e instanceof BlockShredEvent ) {
+//    								OnBlockBreakBlockShredEventListenerMonitor lmon = 
+//    										(OnBlockBreakBlockShredEventListenerMonitor) l;
+//    								BlockShredEvent event = (BlockShredEvent) e;
+//    								lmon.onBlockShredBreakMonitor( event );
+//    							}
+//    						}
+//    					},
+//    							prison);
+//    					prison.getRegisteredBlockListeners().add( normalListener );
+//    				}
+    				
+//    			}
+//    			else {
+//    				
+//    				pm.registerEvent(BlockShredEvent.class, normalListenerMonitor, EventPriority.MONITOR,
+//    						new EventExecutor() {
+//    					public void execute(Listener l, Event e) { 
+//    						if ( l instanceof OnBlockBreakBlockShredEventListenerMonitor && 
+//    								e instanceof BlockShredEvent ) {
+//    							OnBlockBreakBlockShredEventListenerMonitor lmon = 
+//    									(OnBlockBreakBlockShredEventListenerMonitor) l;
+//    							BlockShredEvent event = (BlockShredEvent) e;
+//    							lmon.onBlockShredBreakMonitor( event );
+//    						}
+//    					}
+//    				},
+//    						prison);
+//    				prison.getRegisteredBlockListeners().add( normalListenerMonitor );
+//    			}
+    			
+//    		}
     		
     	}
     	catch ( ClassNotFoundException e ) {

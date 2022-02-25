@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.8e 2022-02-24
+# 3.3.0-alpha.8e 2022-02-25
+
+
+* **Setting up support for the BLOCKEVENTS on all block break event listeners.**
+Changed around how the listeners are created to simplify and be more accurate in the event states.
 
 
 * **Extracted the BlockBreakPriority enum to be an object on its own.**

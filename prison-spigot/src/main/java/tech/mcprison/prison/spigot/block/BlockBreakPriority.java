@@ -1,5 +1,7 @@
 package tech.mcprison.prison.spigot.block;
 
+import org.bukkit.event.EventPriority;
+
 /**
  * <p>This BlockBreakPriority sets both the actual priorities of the event, but it also
  * is able disable it, or only handle Prison's blockEvents.  For priorities 
@@ -22,16 +24,22 @@ package tech.mcprison.prison.spigot.block;
  */
 public enum BlockBreakPriority {
 	
-	DISABLED,
-	BLOCKEVENT,
+	DISABLED( null ),
+	BLOCKEVENTS( EventPriority.HIGHEST ),
 	
-	LOWEST,
-	LOW,
-	NORMAL,
-	HIGH,
-	HIGHEST,
-	MONITOR
+	LOWEST( EventPriority.LOWEST ),
+	LOW( EventPriority.LOW ),
+	NORMAL( EventPriority.NORMAL ),
+	HIGH( EventPriority.HIGH ),
+	HIGHEST( EventPriority.HIGHEST ),
+	MONITOR( EventPriority.MONITOR )
 	;
+	
+	private final EventPriority bukkitEventPriority;
+	private BlockBreakPriority( EventPriority bukkitEventPriority ) {
+		
+		this.bukkitEventPriority = bukkitEventPriority;
+	}
 	
 	public static BlockBreakPriority fromString( String value ) {
 		BlockBreakPriority results = BlockBreakPriority.DISABLED;
@@ -47,5 +55,9 @@ public enum BlockBreakPriority {
 		}
 		
 		return results;
+	}
+
+	public EventPriority getBukkitEventPriority() {
+		return bukkitEventPriority;
 	}
 }

@@ -164,119 +164,119 @@ public class OnBlockBreakEventCore
 	
     
     
-    protected void genericBlockEventMonitor( BlockBreakEvent e ) {
-    	genericBlockEvent( e, true, false, false );
-    }
-    
-    protected void genericBlockEvent( BlockBreakEvent e ) {
-    	genericBlockEvent( e, false, false, false );
-    }
+//    protected void genericBlockEventMonitor( BlockBreakEvent e ) {
+//    	genericBlockEvent( e, true, false, false );
+//    }
+//    
+//    protected void genericBlockEvent( BlockBreakEvent e ) {
+//    	genericBlockEvent( e, false, false, false );
+//    }
 
-    protected void genericBlockEventAutoManager( BlockBreakEvent e ) {
-    	// NOTE: If autoManager is turned off, then process only the blockEvents:
-    	boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-    	genericBlockEvent( e, false, blockEventsOnly, true );
-    }
+//    protected void genericBlockEventAutoManager( BlockBreakEvent e ) {
+//    	// NOTE: If autoManager is turned off, then process only the blockEvents:
+//    	boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
+//    	genericBlockEvent( e, false, blockEventsOnly, true );
+//    }
     
     
-	protected void genericBlockExplodeEventMonitor( TEBlockExplodeEvent e ) {
-		genericBlockExplodeEvent( e, true, false, false );
-	}
+//	protected void genericBlockExplodeEventMonitor( TEBlockExplodeEvent e ) {
+//		genericBlockExplodeEvent( e, true, false, false );
+//	}
+//	
+//	protected void genericBlockExplodeEvent( TEBlockExplodeEvent e ) {
+//		// NOTE: If autoManager is turned off, then process only the blockEvents:
+//		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
+//		genericBlockExplodeEvent( e, false, blockEventsOnly, false );
+//	}
 	
-	protected void genericBlockExplodeEvent( TEBlockExplodeEvent e ) {
-		// NOTE: If autoManager is turned off, then process only the blockEvents:
-		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-		genericBlockExplodeEvent( e, false, blockEventsOnly, false );
-	}
-	
-	protected void genericBlockExplodeEventAutoManager( TEBlockExplodeEvent e ) {
-		// NOTE: If autoManager is turned off, then process only the blockEvents:
-		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-		genericBlockExplodeEvent( e, false, blockEventsOnly, true );
-	}
+//	protected void genericBlockExplodeEventAutoManager( TEBlockExplodeEvent e ) {
+//		// NOTE: If autoManager is turned off, then process only the blockEvents:
+//		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
+//		genericBlockExplodeEvent( e, false, blockEventsOnly, true );
+//	}
 	
 
-	protected void genericBlockExplodeEventMonitor( BlastUseEvent e ) {
-		genericBlastUseEvent( e, true, false, false );
-	}
-	
-	protected void genericBlockExplodeEvent( BlastUseEvent e ) {
-		// NOTE: If autoManager is turned off, then process only the blockEvents:
-		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-		genericBlastUseEvent( e, false, blockEventsOnly, false );
-	}
+//	protected void genericBlockExplodeEventMonitor( BlastUseEvent e ) {
+//		genericBlastUseEvent( e, true, false, false );
+//	}
+//	
+//	protected void genericBlockExplodeEvent( BlastUseEvent e ) {
+//		// NOTE: If autoManager is turned off, then process only the blockEvents:
+//		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
+//		genericBlastUseEvent( e, false, blockEventsOnly, false );
+//	}
 
-	protected void genericBlockExplodeEventAutoManager( BlastUseEvent e ) {
-		// NOTE: If autoManager is turned off, then process only the blockEvents:
-		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-		genericBlastUseEvent( e, false, blockEventsOnly, true );
-	}
+//	protected void genericBlockExplodeEventAutoManager( BlastUseEvent e ) {
+//		// NOTE: If autoManager is turned off, then process only the blockEvents:
+//		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
+//		genericBlastUseEvent( e, false, blockEventsOnly, true );
+//	}
 	
 	
-	/**
-	 * For Pulsi_'s PrisonEnchants plugin:
-	 * 
-	 * @param e
-	 */
-	protected void genericBlockExplodeEventMonitor( PEExplosionEvent e ) {
-		genericExplosiveEvent( e, true, false, false );
-	}
+//	/**
+//	 * For Pulsi_'s PrisonEnchants plugin:
+//	 * 
+//	 * @param e
+//	 */
+//	protected void genericBlockExplodeEventMonitor( PEExplosionEvent e ) {
+//		genericExplosiveEvent( e, true, false, false );
+//	}
+//	
+//	/**
+//	 * For Pulsi_'s PrisonEnchants plugin:
+//	 * 
+//	 * @param e
+//	 */
+//	protected void genericBlockExplodeEvent( PEExplosionEvent e ) {
+//		// NOTE: If autoManager is turned off, then process only the blockEvents:
+//		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
+//		genericExplosiveEvent( e, false, blockEventsOnly, false );
+//	}
 	
-	/**
-	 * For Pulsi_'s PrisonEnchants plugin:
-	 * 
-	 * @param e
-	 */
-	protected void genericBlockExplodeEvent( PEExplosionEvent e ) {
-		// NOTE: If autoManager is turned off, then process only the blockEvents:
-		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-		genericExplosiveEvent( e, false, blockEventsOnly, false );
-	}
-	
-	/**
-	 * For Pulsi_'s PrisonEnchants plugin:
-	 * 
-	 * @param e
-	 */
-	protected void genericBlockExplodeEventAutoManager( PEExplosionEvent e ) {
-		// NOTE: If autoManager is turned off, then process only the blockEvents:
-		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-		genericExplosiveEvent( e, false, blockEventsOnly, true );
-	}
-	
-	
+//	/**
+//	 * For Pulsi_'s PrisonEnchants plugin:
+//	 * 
+//	 * @param e
+//	 */
+//	protected void genericBlockExplodeEventAutoManager( PEExplosionEvent e ) {
+//		// NOTE: If autoManager is turned off, then process only the blockEvents:
+//		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
+//		genericExplosiveEvent( e, false, blockEventsOnly, true );
+//	}
 	
 	
-	/**
-	 * For Prison's very own ExplosiveBlockBreakEvent:
-	 * 
-	 * @param e
-	 */
-	protected void genericBlockExplodeEventMonitor( ExplosiveBlockBreakEvent e ) {
-		genericExplosiveEvent( e, true, false, false );
-	}
 	
-	/**
-	 * For Prison's very own ExplosiveBlockBreakEvent:
-	 * 
-	 * @param e
-	 */
-	protected void genericBlockExplodeEvent( ExplosiveBlockBreakEvent e ) {
-		// NOTE: If autoManager is turned off, then process only the blockEvents:
-		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-		genericExplosiveEvent( e, false, blockEventsOnly, false );
-	}
 	
-	/**
-	 * For Prison's very own ExplosiveBlockBreakEvent:
-	 * 
-	 * @param e
-	 */
-	protected void genericBlockExplodeEventAutoManager( ExplosiveBlockBreakEvent e ) {
-		// NOTE: If autoManager is turned off, then process only the blockEvents:
-		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-		genericExplosiveEvent( e, false, blockEventsOnly, true );
-	}
+//	/**
+//	 * For Prison's very own ExplosiveBlockBreakEvent:
+//	 * 
+//	 * @param e
+//	 */
+//	protected void genericBlockExplodeEventMonitor( ExplosiveBlockBreakEvent e ) {
+//		genericExplosiveEvent( e, true, false, false );
+//	}
+//	
+//	/**
+//	 * For Prison's very own ExplosiveBlockBreakEvent:
+//	 * 
+//	 * @param e
+//	 */
+//	protected void genericBlockExplodeEvent( ExplosiveBlockBreakEvent e ) {
+//		// NOTE: If autoManager is turned off, then process only the blockEvents:
+//		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
+//		genericExplosiveEvent( e, false, blockEventsOnly, false );
+//	}
+	
+//	/**
+//	 * For Prison's very own ExplosiveBlockBreakEvent:
+//	 * 
+//	 * @param e
+//	 */
+//	protected void genericBlockExplodeEventAutoManager( ExplosiveBlockBreakEvent e ) {
+//		// NOTE: If autoManager is turned off, then process only the blockEvents:
+//		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
+//		genericExplosiveEvent( e, false, blockEventsOnly, true );
+//	}
 	
 //	protected boolean processMinesBlockBreakEvent( Cancellable event, Player player, Block block ) {
 //		boolean processEvent = true;
@@ -324,8 +324,10 @@ public class OnBlockBreakEventCore
      * @param montior Identifies that a monitor event called this function.  A monitor should only record
      * 					block break counts.
      */
-	protected void genericBlockEvent( BlockBreakEvent e, boolean monitor, boolean blockEventsOnly, 
-			boolean autoManager ) {
+	public void genericBlockEvent( BlockBreakEvent e, BlockBreakPriority bbPriority ) {
+			
+//			boolean monitor, boolean blockEventsOnly, 
+//			boolean autoManager ) {
 		
 		if ( e instanceof PrisonMinesBlockBreakEvent ) {
 			return;
@@ -337,22 +339,21 @@ public class OnBlockBreakEventCore
     		return;
     	}
 
-    	
 		
 		// Register all external events such as mcMMO and EZBlocks:
 		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 		
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "### ** genericBlockEvent ** ### %s%s%s%s ",
-				(autoManager ? "autoManager " : ""),
-				(e.isCancelled() ? "CANCELED " : ""),
-				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" )) );
+		debugInfo.append( String.format( "### ** genericBlockEvent ** ### " +
+				"(event: BlockBreakEvent, config: %s, priority: %s, canceled: %s) ",
+				bbPriority.name(),
+				bbPriority.getBukkitEventPriority().name(),
+				(e.isCancelled() ? "TRUE " : "FALSE")
+				) );
 		
 		
-		// NOTE that check for auto manager has happened prior to accessing this function.
-    	if ( !monitor && !e.isCancelled() || monitor ) 
-    	{
+    	if ( bbPriority != BlockBreakPriority.MONITOR && !e.isCancelled() || bbPriority == BlockBreakPriority.MONITOR ) {
 
     		// Need to wrap in a Prison block so it can be used with the mines:
     		SpigotBlock sBlock = SpigotBlock.getSpigotBlock(e.getBlock());
@@ -362,7 +363,7 @@ public class OnBlockBreakEventCore
     		String triggered = null;
     		
     		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
-    					sBlock, sPlayer, monitor, blockEventsOnly, eventType, triggered );
+    					sBlock, sPlayer, bbPriority, eventType, triggered );
     		
     		if ( !validateEvent( pmEvent, debugInfo ) ) {
     			
@@ -375,7 +376,7 @@ public class OnBlockBreakEventCore
     			}
     		}
     		
-    		else if ( pmEvent.isMonitor() ) {
+    		else if ( pmEvent.getBbPriority() == BlockBreakPriority.MONITOR ) {
     			// Stop here, and prevent additional processing. Monitors should never process the event beyond this.
     		}
     		
@@ -973,11 +974,8 @@ public class OnBlockBreakEventCore
 		
 		
 		
-		if ( results && pmEvent.isBlockEventsOnly() ) {
+		if ( results && pmEvent.getBbPriority() == BlockBreakPriority.BLOCKEVENTS ) {
 			
-			// NOTE: This "should" never be activated since blockEventsOnly used to be enabled
-			//       when AutoManager is disabled.  As of 2021-11-23 if AutoManager is disabled,
-			//       then everything related to auto manager is disabled.
 			String triggered = null;
 			
 			doActionBlockEventOnly( sBlockHit, mine, pmEvent.getPlayer(), 
@@ -1000,13 +998,13 @@ public class OnBlockBreakEventCore
 			
 			results = false;
 		}
-		else if ( results && pmEvent.isMonitor() && mine == null ) {
+		else if ( results && pmEvent.getBbPriority() == BlockBreakPriority.MONITOR && mine == null ) {
 			// bypass all processing since the block break is outside any mine:
 			
 			debugInfo.append( "(bypassed monitor no mine) " );
 			results = false;
 		}
-		else if ( results && pmEvent.isMonitor() && mine != null ) {
+		else if ( results && pmEvent.getBbPriority() == BlockBreakPriority.MONITOR && mine != null ) {
 			
 			doActionMonitor( sBlockHit, mine );
 			
@@ -1155,8 +1153,10 @@ public class OnBlockBreakEventCore
 	 * 
 	 * @param e
 	 */
-	private void genericBlockExplodeEvent( TEBlockExplodeEvent e, boolean monitor, boolean blockEventsOnly, 
-			boolean autoManager ) {
+	public void genericBlockExplodeEvent( TEBlockExplodeEvent e, BlockBreakPriority bbPriority ) {
+	
+//	, boolean monitor, boolean blockEventsOnly, 
+//			boolean autoManager ) {
 
 		long start = System.nanoTime();
 		
@@ -1170,16 +1170,20 @@ public class OnBlockBreakEventCore
 		
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "### ** genericBlockExplodeEvent(TEBlockExplodeEvent) ** ### %s%s%s%s ",
-				(autoManager ? "autoManager " : ""),
-				(e.isCancelled() ? "CANCELED " : ""),
-				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" )) );
 		
+		debugInfo.append( String.format( "### ** genericBlockExplodeEvent ** ### " +
+				"(event: TEBlockExplodeEvent, config: %s, priority: %s, canceled: %s) ",
+				bbPriority.name(),
+				bbPriority.getBukkitEventPriority().name(),
+				(e.isCancelled() ? "TRUE " : "FALSE")
+				) );
+		
+		
+		
+    	if ( bbPriority != BlockBreakPriority.MONITOR && !e.isCancelled() || bbPriority == BlockBreakPriority.MONITOR ) {
 
 
-		// NOTE that check for auto manager has happened prior to accessing this function.
-    	if ( !monitor && !e.isCancelled() || monitor ) {
-    		
+
     		
 	    	String eP = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
 			boolean isTEExplosiveEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
@@ -1193,7 +1197,7 @@ public class OnBlockBreakEventCore
     		String triggered = checkCEExplosionTriggered( e );
     		
     		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
-    					sBlock, sPlayer, monitor, blockEventsOnly, eventType, triggered );
+    					sBlock, sPlayer, bbPriority, eventType, triggered );
     		
     		// NOTE: Token Enchant will pass the event's block to prison, but that block may 
     		//       have already been processed by prison.  Therefore the PrisonMinesBlockBreakEvent
@@ -1214,7 +1218,7 @@ public class OnBlockBreakEventCore
     			}
     		}
     		
-    		else if ( pmEvent.isMonitor() ) {
+    		else if ( pmEvent.getBbPriority() == BlockBreakPriority.MONITOR ) {
     			// Stop here, and prevent additional processing. Monitors should never process the event beyond this.
     		}
     		
@@ -1350,8 +1354,10 @@ public class OnBlockBreakEventCore
 	 * 
 	 * @param e
 	 */
-	protected void genericBlastUseEvent( BlastUseEvent e, boolean monitor, boolean blockEventsOnly, 
-			boolean autoManager ) {
+	public void genericBlastUseEvent( BlastUseEvent e, BlockBreakPriority bbPriority ) {
+			
+//			boolean monitor, boolean blockEventsOnly, 
+//			boolean autoManager ) {
 
 		long start = System.nanoTime();
 		
@@ -1365,16 +1371,17 @@ public class OnBlockBreakEventCore
 				
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "### ** genericBlastUseEvent(BlastUseEvent) ** ### %s%s%s%s ",
-				(autoManager ? "autoManager " : ""),
-				(e.isCancelled() ? "CANCELED " : ""),
-				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" )) );
+		debugInfo.append( String.format( "### ** genericBlastUseEvent ** ### " +
+				"(event: BlastUseEvent, config: %s, priority: %s, canceled: %s) ",
+				bbPriority.name(),
+				bbPriority.getBukkitEventPriority().name(),
+				(e.isCancelled() ? "TRUE " : "FALSE")
+				) );
 		
-
-
+		
 		// NOTE that check for auto manager has happened prior to accessing this function.
-    	if ( (!monitor && !e.isCancelled() || monitor) && 
-				e.getBlockList().size() > 0 ) {
+    	if ( bbPriority != BlockBreakPriority.MONITOR && !e.isCancelled() || bbPriority == BlockBreakPriority.MONITOR &&
+    			e.getBlockList().size() > 0 ) {
 
 			
 	    	String eP = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
@@ -1392,7 +1399,7 @@ public class OnBlockBreakEventCore
     		
 
     		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( bukkitBlock, e.getPlayer(),
-					sBlock, sPlayer, monitor, blockEventsOnly, eventType, triggered );
+					sBlock, sPlayer, bbPriority, eventType, triggered );
 		
     		
     		for ( int i = 1; i < e.getBlockList().size(); i++ ) {
@@ -1412,7 +1419,7 @@ public class OnBlockBreakEventCore
     		}
 
     		
-    		else if ( pmEvent.isMonitor() ) {
+    		else if ( pmEvent.getBbPriority() == BlockBreakPriority.MONITOR ) {
     			// Stop here, and prevent additional processing. Monitors should never process the event beyond this.
     		}
     		
@@ -1517,8 +1524,11 @@ public class OnBlockBreakEventCore
 	 * 
 	 * @param e
 	 */
-	protected void genericExplosiveEvent( PEExplosionEvent e, boolean monitor, boolean blockEventsOnly, 
-			boolean autoManager ) {
+	public void genericExplosiveEvent( PEExplosionEvent e, BlockBreakPriority bbPriority) {
+		
+		
+//	, boolean monitor, boolean blockEventsOnly, 
+//			boolean autoManager ) {
 
 		long start = System.nanoTime();
 		
@@ -1532,16 +1542,18 @@ public class OnBlockBreakEventCore
 				
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "### ** genericExplosiveEvent(PrisonEnchants - ExplosiveEvent) ** ### %s%s%s%s ",
-				(autoManager ? "autoManager " : ""),
-				(e.isCancelled() ? "CANCELED " : ""),
-				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" )) );
 		
+		debugInfo.append( String.format( "### ** genericExplosiveEvent (Pulsi) ** ### " +
+				"(event: PEExplosionEvent, config: %s, priority: %s, canceled: %s) ",
+				bbPriority.name(),
+				bbPriority.getBukkitEventPriority().name(),
+				(e.isCancelled() ? "TRUE " : "FALSE")
+				) );
+		
+		
+    	if ( bbPriority != BlockBreakPriority.MONITOR && !e.isCancelled() || bbPriority == BlockBreakPriority.MONITOR ) {
 
 
-		// NOTE that check for auto manager has happened prior to accessing this function.
-    	if ( !monitor && !e.isCancelled() || monitor ) {
-		
     		
 	    	String eP = getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
 			boolean isPEExplosiveEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
@@ -1555,7 +1567,7 @@ public class OnBlockBreakEventCore
     		String triggered = null; // e.getTriggeredBy();
     		
     		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( e.getBlockBroken(), e.getPlayer(),
-    					sBlock, sPlayer, monitor, blockEventsOnly, eventType, triggered );
+    					sBlock, sPlayer, bbPriority, eventType, triggered );
     		
     		pmEvent.setUnprocessedRawBlocks( e.getExplodedBlocks() );
     		
@@ -1572,7 +1584,7 @@ public class OnBlockBreakEventCore
     		}
 
     		
-    		else if ( pmEvent.isMonitor() ) {
+    		else if ( pmEvent.getBbPriority() == BlockBreakPriority.MONITOR ) {
     			// Stop here, and prevent additional processing. Monitors should never process the event beyond this.
     		}
     		
@@ -1657,8 +1669,10 @@ public class OnBlockBreakEventCore
 
 	}
 	
-	protected void genericExplosiveEvent( ExplosiveBlockBreakEvent e, boolean monitor, boolean blockEventsOnly, 
-			boolean autoManager ) {
+	protected void genericExplosiveEvent( ExplosiveBlockBreakEvent e, BlockBreakPriority bbPriority ) {
+			
+//			boolean monitor, boolean blockEventsOnly, 
+//			boolean autoManager ) {
 		
 		long start = System.nanoTime();
 		
@@ -1672,14 +1686,17 @@ public class OnBlockBreakEventCore
 		
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "### ** genericExplosiveEvent(Prison's - ExplosiveBlockBreakEvent) ** ### %s%s%s%s ",
-				(autoManager ? "autoManager " : ""),
-				(e.isCancelled() ? "CANCELED " : ""),
-				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" )) );
 		
-		// NOTE that check for auto manager has happened prior to accessing this function.
-		if ( !monitor && !e.isCancelled() || monitor ) {
-			
+		debugInfo.append( String.format( "### ** genericExplosiveEvent (Prisons's bombs) ** ### " +
+				"(event: ExplosiveBlockBreakEvent, config: %s, priority: %s, canceled: %s) ",
+				bbPriority.name(),
+				bbPriority.getBukkitEventPriority().name(),
+				(e.isCancelled() ? "TRUE " : "FALSE")
+				) );
+		
+		
+    	if ( bbPriority != BlockBreakPriority.MONITOR && !e.isCancelled() || bbPriority == BlockBreakPriority.MONITOR ) {
+		
 			
 	    	String eP = getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
 			boolean isPPrisonExplosiveBlockBreakEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
@@ -1693,7 +1710,7 @@ public class OnBlockBreakEventCore
 			String triggered = e.getTriggeredBy();
 			
 			PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
-					sBlock, sPlayer, monitor, blockEventsOnly, eventType, triggered );
+					sBlock, sPlayer, bbPriority, eventType, triggered );
 
 			
 			// If this event is fired, but yet there are no exploded blocks, then do not set 
@@ -1737,7 +1754,7 @@ public class OnBlockBreakEventCore
 			}
 			
 			
-    		else if ( pmEvent.isMonitor() ) {
+    		else if ( pmEvent.getBbPriority() == BlockBreakPriority.MONITOR ) {
     			// Stop here, and prevent additional processing. Monitors should never process the event beyond this.
     		}
     		

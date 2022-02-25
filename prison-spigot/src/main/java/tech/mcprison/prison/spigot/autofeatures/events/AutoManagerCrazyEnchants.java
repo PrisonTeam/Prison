@@ -38,48 +38,52 @@ public class AutoManagerCrazyEnchants
 		implements Listener {
 		
 		@EventHandler(priority=EventPriority.NORMAL) 
-		public void onCrazyEnchantsBlockExplode(BlastUseEvent e) {
+		public void onCrazyEnchantsBlockExplode( BlastUseEvent e, BlockBreakPriority bbPriority) {
+	
 			if ( isDisabled( e.getPlayer().getLocation().getWorld().getName() ) ) {
 				return;
 			}
-			genericBlockExplodeEventAutoManager( e );
+			
+			genericBlastUseEvent( e, bbPriority );
 		}
 	}
 	
-    public class OnBlockBreakBlastUseEventListener 
-		extends AutoManagerCrazyEnchants
-		implements Listener {
-    	
-        @EventHandler(priority=EventPriority.NORMAL) 
-        public void onCrazyEnchantsBlockExplode(BlastUseEvent e) {
-        	if ( isDisabled( e.getPlayer().getLocation().getWorld().getName() ) ) {
-        		return;
-        	}
-        	genericBlockExplodeEvent( e );
-        }
-    }
-    
-    public class OnBlockBreakBlastUseEventListenerMonitor
-	    extends AutoManagerCrazyEnchants
-	    implements Listener {
-    	
-    	@EventHandler(priority=EventPriority.MONITOR) 
-    	public void onCrazyEnchantsBlockExplode(BlastUseEvent e) {
-    		if ( isDisabled( e.getPlayer().getLocation().getWorld().getName() ) ) {
-    			return;
-    		}
-    		genericBlockExplodeEventMonitor( e );
-    	}
-    }
+//    public class OnBlockBreakBlastUseEventListener 
+//		extends AutoManagerCrazyEnchants
+//		implements Listener {
+//    	
+//        @EventHandler(priority=EventPriority.NORMAL) 
+//        public void onCrazyEnchantsBlockExplode(BlastUseEvent e) {
+//        	if ( isDisabled( e.getPlayer().getLocation().getWorld().getName() ) ) {
+//        		return;
+//        	}
+//        	genericBlockExplodeEvent( e );
+//        }
+//    }
+//    
+//    public class OnBlockBreakBlastUseEventListenerMonitor
+//	    extends AutoManagerCrazyEnchants
+//	    implements Listener {
+//    	
+//    	@EventHandler(priority=EventPriority.MONITOR) 
+//    	public void onCrazyEnchantsBlockExplode(BlastUseEvent e) {
+//    		if ( isDisabled( e.getPlayer().getLocation().getWorld().getName() ) ) {
+//    			return;
+//    		}
+//    		genericBlockExplodeEventMonitor( e );
+//    	}
+//    }
     
 
 	@Override
 	public void initialize() {
 
 		String eP = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
-		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
 		
-		if ( !isEventEnabled ) {
+//		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+		
+		if ( bbPriority == BlockBreakPriority.DISABLED ) {
 			return;
 		}
 		
@@ -92,69 +96,91 @@ public class AutoManagerCrazyEnchants
 			
 			Output.get().logInfo( "AutoManager: Trying to register CrazyEnchants" );
 			
-			BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
 			
-			if ( eventPriority != BlockBreakPriority.DISABLED ) {
-				
-				EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
-				
-				
-				OnBlockBreakBlastUseEventListenerMonitor normalListenerMonitor = 
-											new OnBlockBreakBlastUseEventListenerMonitor();
-				
-				
-				SpigotPrison prison = SpigotPrison.getInstance();
-				
-				PluginManager pm = Bukkit.getServer().getPluginManager();
-				
-				if ( eventPriority != BlockBreakPriority.MONITOR ) {
+			SpigotPrison prison = SpigotPrison.getInstance();
+			PluginManager pm = Bukkit.getServer().getPluginManager();
+			EventPriority ePriority = bbPriority.getBukkitEventPriority(); 
+			
+			
+			AutoManagerBlastUseEventListener autoManagerlListener = 
+					new AutoManagerBlastUseEventListener();
+			
+			pm.registerEvent(BlastUseEvent.class, autoManagerlListener, ePriority,
+					new EventExecutor() {
+				public void execute(Listener l, Event e) { 
 					
-					if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
-						
-						AutoManagerBlastUseEventListener autoManagerlListener = 
-								new AutoManagerBlastUseEventListener();
-						
-						pm.registerEvent(BlastUseEvent.class, autoManagerlListener, ePriority,
-								new EventExecutor() {
-							public void execute(Listener l, Event e) { 
-								((AutoManagerBlastUseEventListener)l)
-								.onCrazyEnchantsBlockExplode((BlastUseEvent)e);
-							}
-						},
-								prison);
-						prison.getRegisteredBlockListeners().add( autoManagerlListener );
-					}
-					else if ( isBoolean( AutoFeatures.normalDrop ) ) {
-						
-						OnBlockBreakBlastUseEventListener normalListener = 
-								new OnBlockBreakBlastUseEventListener();
-						
-						pm.registerEvent(BlastUseEvent.class, normalListener, ePriority,
-								new EventExecutor() {
-							public void execute(Listener l, Event e) { 
-								((OnBlockBreakBlastUseEventListener)l)
-								.onCrazyEnchantsBlockExplode((BlastUseEvent)e);
-							}
-						},
-								prison);
-						prison.getRegisteredBlockListeners().add( normalListener );
-					}
+					BlastUseEvent buEvent = (BlastUseEvent) e;
 					
+					((AutoManagerBlastUseEventListener)l)
+									.onCrazyEnchantsBlockExplode( buEvent, bbPriority );
 				}
-				else {
-					
-					pm.registerEvent(BlastUseEvent.class, normalListenerMonitor, EventPriority.MONITOR,
-							new EventExecutor() {
-						public void execute(Listener l, Event e) { 
-							((OnBlockBreakBlastUseEventListenerMonitor)l)
-							.onCrazyEnchantsBlockExplode((BlastUseEvent)e);
-						}
-					},
-							prison);
-					prison.getRegisteredBlockListeners().add( normalListenerMonitor );
-				}
+			},
+					prison);
+			prison.getRegisteredBlockListeners().add( autoManagerlListener );
+			
+			
+			
+			
+			
+			
+//			BlockBreakPriority eventPriority = BlockBreakPriority.fromString( eP );
+			
+//			if ( eventPriority != BlockBreakPriority.DISABLED ) {
+//				
+//				EventPriority ePriority = EventPriority.valueOf( eventPriority.name().toUpperCase() );           
+//				
+//				
+//				OnBlockBreakBlastUseEventListenerMonitor normalListenerMonitor = 
+//											new OnBlockBreakBlastUseEventListenerMonitor();
 				
-			}
+//				if ( eventPriority != BlockBreakPriority.MONITOR ) {
+					
+//					if ( isBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
+//						
+//						AutoManagerBlastUseEventListener autoManagerlListener = 
+//								new AutoManagerBlastUseEventListener();
+//						
+//						pm.registerEvent(BlastUseEvent.class, autoManagerlListener, ePriority,
+//								new EventExecutor() {
+//							public void execute(Listener l, Event e) { 
+//								((AutoManagerBlastUseEventListener)l)
+//								.onCrazyEnchantsBlockExplode((BlastUseEvent)e);
+//							}
+//						},
+//								prison);
+//						prison.getRegisteredBlockListeners().add( autoManagerlListener );
+//					}
+//					else if ( isBoolean( AutoFeatures.normalDrop ) ) {
+//						
+//						OnBlockBreakBlastUseEventListener normalListener = 
+//								new OnBlockBreakBlastUseEventListener();
+//						
+//						pm.registerEvent(BlastUseEvent.class, normalListener, ePriority,
+//								new EventExecutor() {
+//							public void execute(Listener l, Event e) { 
+//								((OnBlockBreakBlastUseEventListener)l)
+//								.onCrazyEnchantsBlockExplode((BlastUseEvent)e);
+//							}
+//						},
+//								prison);
+//						prison.getRegisteredBlockListeners().add( normalListener );
+//					}
+					
+//				}
+//				else {
+//					
+//					pm.registerEvent(BlastUseEvent.class, normalListenerMonitor, EventPriority.MONITOR,
+//							new EventExecutor() {
+//						public void execute(Listener l, Event e) { 
+//							((OnBlockBreakBlastUseEventListenerMonitor)l)
+//							.onCrazyEnchantsBlockExplode((BlastUseEvent)e);
+//						}
+//					},
+//							prison);
+//					prison.getRegisteredBlockListeners().add( normalListenerMonitor );
+//				}
+				
+//			}
 			
 			// The following is paper code:
 //				var executor = EventExecutor
