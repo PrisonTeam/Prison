@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.8e 2022-02-25
+# 3.3.0-alpha.8g 2022-02-25
+
+
+* **3.3.0-alpha.8g 2022-02-25**
 
 
 * **More adjustments to the block events so the config setting can be shown in the header of the /prison support listeners blockevent command.**

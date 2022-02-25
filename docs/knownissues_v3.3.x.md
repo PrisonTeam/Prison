@@ -5,30 +5,81 @@
 
 
 
-# TODO Items for v3.3.0-alpha.7
+# TODO Items for v3.3.0-alpha.8
+
+* HiPriority: Inventory full not producing any messages. 	alexaille
+
+
+* HiPriority: NPCs are generating a lot of errors. Real_Ganster
+ - Citizens running command `mines` as player
+` Prison |  VaultEconomyWrapper.getBalance(): Error: Cannot get economy for player vote so returning a value of 0. Failed to get an bukkit offline player.`
+ - https://pastebin.com/JusySWDs
+ 
+
+* DONE: HiPriority: Add a event priority of BLOCKEVENTS which only does the block events and counts.
+
+* HiPriority: calculated infinite prestiges - Fluffy_ak47
+
+* HiPriority: sellall for custom items
+
+
+
+- DONE: **Fixed issues with vault economy and withdrawing from a player's balance.**
+It now also reports any errors that may be returned.
+
+
+- In mines block list, new feature to prevent drops for that item... which then can use blockEvents, but that would bypass auto pickup and autosell. 
+
+
+- update LP docs with more info...
+ -  https://discord.com/channels/332602419483770890/943874819101982790/943905937641574420
+
+
+
+- %prison_rrt% (prison_rankup_rank_tag) Does not show the next prestige rank if you are not on the prestige ladder yet
+
+
+- Prison GUI modifications to allow customizations
+  - Notify Nick1 when changes are made
+  
+  
+
+- Mine Bomb Issues
+  - DONE: Not dropping blocks
+  - DONE: give bombs only works with lower case... camel case not working
+  - DONE: with a stack of 2 oof bombs, setting off one removes both.
+     - The is happening when the bomb is so large that it breaks the durability on the pseudo tool, which then removes whatever is in the player's hand when it breaks the item.
+  - DONE: color names for bombs do not work - xGeorge26
+  - DONE: Control Y adjustment when setting the bomb.  Defaults to -1.
+  - DONE: armorstand appears in animation when using color coded bomb name? - xGeorge26
+  - Update to include more colorful names..
+  - Provide a "count down" placeholder function within the armor stand bomb name??
+
+- DONE: Need to externalize the time defaults... like Mine x will reset in x seconds from now.  1 seconds.  - ShockCharge
+
+- DONE: Six - air count needs to be asynch'd since it is causing server not to respond for more than 10 seconds upon startup.  
+  - Most mines are greater than 120,000 blocks.
+
+
+- custom block support: Items Adder - No one is using it currently.
+
+- add `/mines set rank *all*`
+- add `/mines set mineAccessByRank *all*`
+- add `/mines set tpAccessByRank *all*`
+- add `/mines set resetTime *all*`
 
 
 - custom blocks not working with sellall.   Sellall is not honoring the custom block's names.
 
+- Add ItemAddr for another custom block integration
 
-- DONE: placeholder for player blocks mined.  artic1409 
-  - maybe use **prison_player_total_blocks__blockname**
-  
-- DONE: update placeholderAPI with prison's updated placeholders
+- Smelt and blocking: rewrite to provide a list of conversions to eliminate current hard coding.
 
 - Auto smelt is missing some blocks?  Symadude23
 
 - placeholder attributes: Add overrides for "units".  kstance requested it for time, such as h,m,s...
 
 
-- DONE: prison support submit are only sending to console, not the user if they are in game
-
-- DONE: When a mine reset time is disabled... it cancels/stops a /mines reset *all*
-
-
-- DONE: when rank tag = none - was showing "null" for placeholder
-
-- DONE: work on getting CustomItems working in mines again
 
 - Need to get CustomItems working with sellall
 
@@ -43,16 +94,6 @@
 - Rankup commands: placeholders for {promote}{demote}
 
 - Mine reset notifications logging to console - options? 
-
-
-
-- DONE: remove this warning message:  no longer used.
-[18:58:51 INFO]: | Prison |  Cannot initialize NMS components - ClassNotFoundException - NMS is not functional - net.minecraft.server.v1_18_R1.EntityPlayer
-
-
-
-- DONE: RankPlayer addBalance cache for default currency
-- RankPlayer addBalance cache for custom currency - still needed!
 
 
 
@@ -84,6 +125,7 @@ https://github.com/Auxilor/EcoEnchants/blob/master/eco-core/core-plugin/src/main
 
 * ShiftAndRightClickSellAll is not working
 
+-> DONE: Hook in to quests - Only on block break events so may not work as expected?
 
 * Found a problem with mcMMO, Quest, and EZBlock support... only works on BlockBreakEvents.  I added logging to identify when they are called, but if an explosion has 20,000 blocks, then it will log 20,000 times!  😂  So I need to figure out something before hooking it up to multi-block breaks.
 
@@ -92,11 +134,33 @@ https://github.com/Auxilor/EcoEnchants/blob/master/eco-core/core-plugin/src/main
   - so a ladder value of 0.05 would apply p1 = 1.05, p2 = 1.10, p3 = 1.15, etc...
   
 
+* auto run autoConfigure upon startup.  Use autoStart as the base configuration for prison instead of nothing.
   
 
--> DONE: Hook in to quests - Only on block break events so may not work as expected?
 
   
+
+- DONE: placeholder for player blocks mined.  artic1409 
+  - maybe use **prison_player_total_blocks__blockname**
+  
+- DONE: update placeholderAPI with prison's updated placeholders
+
+- DONE: prison support submit are only sending to console, not the user if they are in game
+
+- DONE: When a mine reset time is disabled... it cancels/stops a /mines reset *all*
+
+
+- DONE: when rank tag = none - was showing "null" for placeholder
+
+- DONE: work on getting CustomItems working in mines again
+
+- DONE: remove this warning message:  no longer used.
+[18:58:51 INFO]: | Prison |  Cannot initialize NMS components - ClassNotFoundException - NMS is not functional - net.minecraft.server.v1_18_R1.EntityPlayer
+
+- DONE: RankPlayer addBalance cache for default currency
+- RankPlayer addBalance cache for custom currency - still needed!
+
+
   - DONE: You cannot afford the rankup is using a NBSP for the thousand separator. Using Prison v3.2.11, Java 16, and spigot 1.16.5. Cannot reproduce. Was a server hosting config issue, but not sure why it only impacted that one message.
 
 
@@ -163,10 +227,10 @@ See SelectionManager... Prison wand uses the whole items stack to identify a wan
 * Add Mine Regions - Similar to mines in a way, where they will allow players to have access to the region, have mine effects (outside of a mine)... and mine effects would also be tied to these too.
 
 
-* DONE: command handler - Ignore commands in certain worlds
-
-
 * Placing mines could triggers many resets... also placing mines may not clear all blocks.
+
+
+* DONE: command handler - Ignore commands in certain worlds
 
 
 * DONE: Player Cache - Make sure the cache is loadable otherwise a new instance may be created that could wipe out the existing data.  
