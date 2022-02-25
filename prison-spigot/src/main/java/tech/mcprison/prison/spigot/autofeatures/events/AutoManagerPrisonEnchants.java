@@ -86,11 +86,11 @@ public class AutoManagerPrisonEnchants
 	public void initialize() {
 
 		String eP = getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
-		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+		setBbPriority( BlockBreakPriority.fromString( eP ) );
 		
 //		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 
-		if ( bbPriority == BlockBreakPriority.DISABLED ) {
+		if ( getBbPriority() == BlockBreakPriority.DISABLED ) {
 			return;
 		}
 		
@@ -108,7 +108,7 @@ public class AutoManagerPrisonEnchants
 			
 			SpigotPrison prison = SpigotPrison.getInstance();
 			PluginManager pm = Bukkit.getServer().getPluginManager();
-			EventPriority ePriority = bbPriority.getBukkitEventPriority(); 
+			EventPriority ePriority = getBbPriority().getBukkitEventPriority(); 
 			
 			AutoManagerPEExplosiveEventListener autoManagerlListener = 
 					new AutoManagerPEExplosiveEventListener();
@@ -120,7 +120,7 @@ public class AutoManagerPrisonEnchants
 					PEExplosionEvent peeEvent = (PEExplosionEvent) e;
 					
 					((AutoManagerPEExplosiveEventListener)l)
-					.onPrisonEnchantsExplosiveEvent( peeEvent, bbPriority );
+					.onPrisonEnchantsExplosiveEvent( peeEvent, getBbPriority() );
 				}
 			},
 					prison);
@@ -249,9 +249,14 @@ public class AutoManagerPrisonEnchants
 			Class.forName( "me.pulsi_.prisonenchants.events.PEExplosionEvent", false, 
 							this.getClass().getClassLoader() );
 			
-
+    		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+			
+			String title = String.format( 
+					"Pulsi_'s PEExplosionEvent (%s)", 
+					( bbPriority == null ? "--none--" : bbPriority.name()));
+			
 			ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
-					"Pulsi_'s PEExplosionEvent", 
+					title, 
 					new SpigotHandlerList( PEExplosionEvent.getHandlerList()) );
 
 			if ( eventDisplay != null ) {

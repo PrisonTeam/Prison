@@ -80,11 +80,11 @@ public class AutoManagerTokenEnchant
     public void initialize() {
 
     	String eP = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
-    	BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+    	setBbPriority( BlockBreakPriority.fromString( eP ) );
     	
 //		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 
-    	if ( bbPriority == BlockBreakPriority.DISABLED ) {
+    	if ( getBbPriority() == BlockBreakPriority.DISABLED ) {
     		return;
     	}
     	
@@ -99,7 +99,7 @@ public class AutoManagerTokenEnchant
     		
     		SpigotPrison prison = SpigotPrison.getInstance();
     		PluginManager pm = Bukkit.getServer().getPluginManager();
-    		EventPriority ePriority = bbPriority.getBukkitEventPriority(); 
+    		EventPriority ePriority = getBbPriority().getBukkitEventPriority(); 
     		
     		
     		AutoManagerTokenEnchantEventListener autoManagerlListener = 
@@ -109,7 +109,7 @@ public class AutoManagerTokenEnchant
     				new EventExecutor() {
     			public void execute(Listener l, Event e) { 
     				((AutoManagerTokenEnchantEventListener)l)
-    				.onTEBlockExplode( (TEBlockExplodeEvent)e, bbPriority );
+    				.onTEBlockExplode( (TEBlockExplodeEvent)e, getBbPriority() );
     			}
     		},
     				prison);
@@ -236,9 +236,14 @@ public class AutoManagerTokenEnchant
 			Class.forName( "com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent", false, 
 							this.getClass().getClassLoader() );
 			
+    		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
 
+			String title = String.format( 
+					"TEBlockExplodeEvent (%s)", 
+					( bbPriority == null ? "--none--" : bbPriority.name()) );
+			
 			ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
-					"TEBlockExplodeEvent", 
+					title, 
 					new SpigotHandlerList( TEBlockExplodeEvent.getHandlerList()) );
 
 			if ( eventDisplay != null ) {

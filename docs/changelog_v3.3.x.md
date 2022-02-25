@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8e 2022-02-25
 
 
+* **More adjustments to the block events so the config setting can be shown in the header of the /prison support listeners blockevent command.**
+
+
 * **Setting up support for the BLOCKEVENTS on all block break event listeners.**
 Changed around how the listeners are created to simplify and be more accurate in the event states.
 

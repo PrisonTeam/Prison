@@ -7,12 +7,14 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
+import tech.mcprison.prison.spigot.block.BlockBreakPriority;
 
 public abstract class AutoManagerEventsManager
 	extends AutoManagerFeatures
 	implements PrisonEventManager
 {
-
+	private BlockBreakPriority bbPriority;
+	
 	public AutoManagerEventsManager() {
 		super();
 		
@@ -50,6 +52,13 @@ public abstract class AutoManagerEventsManager
     	
     	Output.get().logInfo( "AutoManagerEventsManager: unregistered a total of %d event listeners.",
     			count );
+	}
+
+	public BlockBreakPriority getBbPriority() {
+		return bbPriority;
+	}
+	public void setBbPriority( BlockBreakPriority bbPriority ) {
+		this.bbPriority = bbPriority;
 	}
     
 }

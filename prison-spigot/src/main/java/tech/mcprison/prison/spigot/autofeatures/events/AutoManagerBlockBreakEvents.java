@@ -20,7 +20,7 @@ import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 
 public class AutoManagerBlockBreakEvents 
 	extends AutoManagerEventsManager
-	{
+{
 	
 	public AutoManagerBlockBreakEvents() {
         super();
@@ -107,13 +107,13 @@ public class AutoManagerBlockBreakEvents
     		Output.get().logInfo( "AutoManager: Trying to register BlockBreakEvent" );
     		
     		String eP = getMessage( AutoFeatures.blockBreakEventPriority );
-    		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+    		setBbPriority( BlockBreakPriority.fromString( eP ) );
     		
-    		if ( bbPriority != BlockBreakPriority.DISABLED ) {
+    		if ( getBbPriority() != BlockBreakPriority.DISABLED ) {
     			
     			SpigotPrison prison = SpigotPrison.getInstance();
     			PluginManager pm = Bukkit.getServer().getPluginManager();
-    			EventPriority ePriority = bbPriority.getBukkitEventPriority();           
+    			EventPriority ePriority = getBbPriority().getBukkitEventPriority();           
     			
     			AutoManagerBlockBreakEventListener autoManagerlListener = 
     								new AutoManagerBlockBreakEventListener();
@@ -126,7 +126,7 @@ public class AutoManagerBlockBreakEvents
     							e instanceof BlockBreakEvent ) {
     						
     						((AutoManagerBlockBreakEventListener)l)
-    						.onBlockBreak( (BlockBreakEvent)e, bbPriority );
+    						.onBlockBreak( (BlockBreakEvent)e, getBbPriority() );
     					}
     				}
     			},
@@ -249,9 +249,16 @@ public class AutoManagerBlockBreakEvents
 		
 		// Check to see if the class BlockBreakEvent even exists:
 		try {
+			
+    		String eP = getMessage( AutoFeatures.blockBreakEventPriority );
+    		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
 
+			String title = String.format( 
+					"BlockBreakEvent (%s)", 
+					( bbPriority == null ? "--none--" : bbPriority.name()) );
+			
 			ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
-					"BlockBreakEvent", 
+					title, 
 					new SpigotHandlerList( BlockBreakEvent.getHandlerList()) );
 
 			if ( eventDisplay != null ) {

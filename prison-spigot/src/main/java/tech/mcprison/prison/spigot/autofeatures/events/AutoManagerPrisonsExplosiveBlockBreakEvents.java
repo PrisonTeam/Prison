@@ -81,11 +81,11 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 	public void initialize() {
 		
 		String eP = getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
-  		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+  		setBbPriority( BlockBreakPriority.fromString( eP ) );
 		
 //		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 
-		if ( bbPriority == BlockBreakPriority.DISABLED ) {
+		if ( getBbPriority() == BlockBreakPriority.DISABLED ) {
 			return;
 		}
 		
@@ -96,7 +96,7 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 			
 			SpigotPrison prison = SpigotPrison.getInstance();
 			PluginManager pm = Bukkit.getServer().getPluginManager();
-			EventPriority ePriority = bbPriority.getBukkitEventPriority();           
+			EventPriority ePriority = getBbPriority().getBukkitEventPriority();           
 			
 			
 			AutoManagerExplosiveBlockBreakEventListener autoManagerlListener = 
@@ -109,7 +109,7 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 					ExplosiveBlockBreakEvent ebbEvent = (ExplosiveBlockBreakEvent) e;
 					
 					((AutoManagerExplosiveBlockBreakEventListener)l)
-							.onPrisonsExplosiveBlockBreakEvent( ebbEvent, bbPriority );
+							.onPrisonsExplosiveBlockBreakEvent( ebbEvent, getBbPriority() );
 				}
 			},
 					prison);
@@ -232,8 +232,15 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 		// Check to see if the class ExplosiveEvent even exists:
 		try {
 			
+    		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+			
+			String title = String.format( 
+					"ExplosiveBlockBreakEvent (%s)", 
+					( bbPriority == null ? "--none--" : bbPriority.name()) );
+			
+
 			ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
-					"ExplosiveBlockBreakEvent", 
+					title, 
 					new SpigotHandlerList( ExplosiveBlockBreakEvent.getHandlerList()) );
 
 			if ( eventDisplay != null ) {

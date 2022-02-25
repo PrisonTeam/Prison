@@ -79,11 +79,11 @@ public class AutoManagerCrazyEnchants
 	public void initialize() {
 
 		String eP = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
-		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+		setBbPriority( BlockBreakPriority.fromString( eP ) );
 		
 //		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 		
-		if ( bbPriority == BlockBreakPriority.DISABLED ) {
+		if ( getBbPriority() == BlockBreakPriority.DISABLED ) {
 			return;
 		}
 		
@@ -99,7 +99,7 @@ public class AutoManagerCrazyEnchants
 			
 			SpigotPrison prison = SpigotPrison.getInstance();
 			PluginManager pm = Bukkit.getServer().getPluginManager();
-			EventPriority ePriority = bbPriority.getBukkitEventPriority(); 
+			EventPriority ePriority = getBbPriority().getBukkitEventPriority(); 
 			
 			
 			AutoManagerBlastUseEventListener autoManagerlListener = 
@@ -112,7 +112,7 @@ public class AutoManagerCrazyEnchants
 					BlastUseEvent buEvent = (BlastUseEvent) e;
 					
 					((AutoManagerBlastUseEventListener)l)
-									.onCrazyEnchantsBlockExplode( buEvent, bbPriority );
+									.onCrazyEnchantsBlockExplode( buEvent, getBbPriority() );
 				}
 			},
 					prison);
@@ -243,9 +243,15 @@ public class AutoManagerCrazyEnchants
 			Class.forName( "me.badbones69.crazyenchantments.api.events.BlastUseEvent", false, 
 					this.getClass().getClassLoader() );
 			
+    		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+
+			
+			String title = String.format( 
+					"BlastUseEvent (%s)", 
+					( bbPriority == null ? "--none--" : bbPriority.name()) );
 			
 			ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
-					"BlastUseEvent", 
+					title, 
 					new SpigotHandlerList( BlastUseEvent.getHandlerList()) );
 			
 			if ( eventDisplay != null ) {

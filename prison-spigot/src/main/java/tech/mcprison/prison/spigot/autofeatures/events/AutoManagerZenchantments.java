@@ -81,11 +81,11 @@ public class AutoManagerZenchantments
     public void initialize() {
     	
     	String eP = getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
-		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+		setBbPriority( BlockBreakPriority.fromString( eP ) );
 		
 //		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 
-    	if ( bbPriority == BlockBreakPriority.DISABLED ) {
+    	if ( getBbPriority() == BlockBreakPriority.DISABLED ) {
     		return;
     	}
     	
@@ -100,7 +100,7 @@ public class AutoManagerZenchantments
     		
     		SpigotPrison prison = SpigotPrison.getInstance();
     		PluginManager pm = Bukkit.getServer().getPluginManager();
-    		EventPriority ePriority = bbPriority.getBukkitEventPriority();    
+    		EventPriority ePriority = getBbPriority().getBukkitEventPriority();    
     		
     		AutoManagerBlockShredEventListener autoManagerlListener = 
     							new AutoManagerBlockShredEventListener();
@@ -115,7 +115,7 @@ public class AutoManagerZenchantments
     												(AutoManagerBlockShredEventListener) l;
     					
     					BlockShredEvent event = (BlockShredEvent) e;
-    					lmon.onBlockShredBreak( event, bbPriority );
+    					lmon.onBlockShredBreak( event, getBbPriority() );
     				}
     			}
     		},
@@ -254,9 +254,15 @@ public class AutoManagerZenchantments
     		Class.forName( "zedly.zenchantments.BlockShredEvent", false, 
     				this.getClass().getClassLoader() );
     		
+    		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+			
+			String title = String.format( 
+					"BlockShredEvent (%s)", 
+					( bbPriority == null ? "--none--" : bbPriority.name()) );
+
     		
     		ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
-    				"BlockShredEvent", 
+    				title, 
     				new SpigotHandlerList( BlockShredEvent.getHandlerList()) );
     		
     		if ( eventDisplay != null ) {
