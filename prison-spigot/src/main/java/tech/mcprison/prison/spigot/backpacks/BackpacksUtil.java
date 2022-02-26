@@ -1288,6 +1288,7 @@ public class BackpacksUtil {
 
             if (item != null) {
                 inv.addItem(item);
+                p.updateInventory();
             }
         }
     }

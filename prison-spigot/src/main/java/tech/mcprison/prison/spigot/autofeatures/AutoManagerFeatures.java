@@ -578,6 +578,7 @@ public class AutoManagerFeatures
 //						extras.clear();
 //					}
 					
+					
 					dropExtra( extras, player, debugInfo );
 //					dropExtra( player.getInventory().addItem(itemStack), player, block );
 				}
@@ -939,7 +940,10 @@ public class AutoManagerFeatures
 	 */
 	protected void dropExtra( HashMap<Integer, SpigotItemStack> extra, Player player, StringBuilder debugInfo ) {
 
-		if ( extra != null && extra.size() > 0 && SpigotPrison.getInstance().isSellAllEnabled()) {
+		if ( SpigotPrison.getInstance().isSellAllEnabled() && (
+				 extra != null && extra.size() > 0 ||
+				 player.getInventory().firstEmpty() == -1
+				)) {
 			
 			if ( Prison.get().getPlatform().getConfigBooleanFalse( "sellall" ) ) {
 				
@@ -961,13 +965,32 @@ public class AutoManagerFeatures
 						List<Double> amounts = new ArrayList<>();
 						
 						final long nanoStart = System.nanoTime();
-						SellAllUtil.get().sellAllSell(player, false, !saNote, saNote, saNote, false, true, amounts );
+						
+						// bypass delay (cooldown), no sound
+						SellAllUtil.get().sellAllSell(player, false, !saNote, saNote, false, false, false, amounts );
 						final long nanoStop = System.nanoTime();
 						long nanoTime = nanoStop - nanoStart;
 						
 						double amount = 0;
 						for ( Double amt : amounts ) {
 							amount += amt;
+						}
+						
+						// Since sellall on inventory full, sell the extras too...
+						if ( extra.size() > 0 ) {
+							for ( Entry<Integer, SpigotItemStack> drop : extra.entrySet() )
+							{
+								SpigotItemStack itemStack = drop.getValue();
+								final long nanoStart2 = System.nanoTime();
+								double amount2 = SellAllUtil.get().sellAllSell( player, itemStack, false, false, true );
+								final long nanoStop2 = System.nanoTime();
+								
+								nanoTime += nanoStop2 - nanoStart2;
+								
+								amount += amount2;
+								
+							}
+							
 						}
 						
 						if ( amount > 0d ) {

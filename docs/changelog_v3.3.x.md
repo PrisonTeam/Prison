@@ -16,6 +16,11 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8g 2022-02-25
 
 
+* **Bug fix: Fixed an inventory glitch that was preventing items from being added to the inventory.**
+Basically the inventory had items, but it was not updating the contents of the inventory on the client side.  This was fixed by updating inventory when finished processing the adds.
+If autosell on full inventory is enabled, and there are extra drops, then sell them all before they make it to the inventory.  This works most of the time, but sometimes the inventory still fills up.  This is now more of a characteristic than a bug.
+
+
 * **3.3.0-alpha.8g 2022-02-25**
 
 

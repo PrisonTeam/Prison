@@ -227,6 +227,7 @@ public class SpigotUtil {
 		
 		if ( itemStack != null && itemStack.getBukkitStack() != null ) {
 			HashMap<Integer, ItemStack> overflow = player.getInventory().addItem( itemStack.getBukkitStack() );
+			player.updateInventory();
 			
 			// Insert overflow in to Prison's backpack:
 			if ( BackpacksUtil.isEnabled() ) {
