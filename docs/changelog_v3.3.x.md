@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8g 2022-02-26
 
 
+* **v3.3.0-alpha.8h 2022-02-26**
+
+
 * **Bug fix: Synchronized some of the collections that are needing it within the PlayerCache.**
 
 
