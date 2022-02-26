@@ -22,7 +22,10 @@ public class PlayerCacheLoadPlayerTask
 		
 		if ( playerData != null ) {
 			
-			pCache.addPlayerData( playerData );
+			synchronized ( pCache.getPlayers() ) {
+				
+				pCache.addPlayerData( playerData );
+			}
 		}
 		
 	}

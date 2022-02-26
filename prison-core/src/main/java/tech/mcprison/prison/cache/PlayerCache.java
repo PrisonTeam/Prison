@@ -1,12 +1,11 @@
 package tech.mcprison.prison.cache;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
@@ -34,7 +33,7 @@ public class PlayerCache {
 	private PlayerCacheStats stats;
 
 	
-	private TreeMap<String, PlayerCachePlayerData> players;
+	private SortedMap<String, PlayerCachePlayerData> players;
 	
 	private Map<PlayerCacheRunnable, PlayerCachePlayerData> tasks;
 	
@@ -46,9 +45,9 @@ public class PlayerCache {
 	private PlayerCache() {
 		super();
 		
-		this.players = new TreeMap<>();
+		this.players = Collections.synchronizedSortedMap( new TreeMap<>() );
 		
-		this.tasks = new HashMap<>();
+		this.tasks = Collections.synchronizedMap( new HashMap<>() );
 		
 		this.cacheFiles = new PlayerCacheFiles();
 		
@@ -124,31 +123,37 @@ public class PlayerCache {
 		// save all dirty cache items and purge cache:
 		if ( getPlayers().size() > 0 ) {
 
-			// Create a new set so as to prevent keys from being removed when purging
-			// the getPlayers() collection:
-			Set<String> keys = new TreeSet<>(getPlayers().keySet());
 
-			for ( String key : keys ) {
-				// Remove the player from the cache and get the playerData:
-				PlayerCachePlayerData playerData = getPlayers().remove( key );
+			Set<String> keys = getPlayers().keySet();
+
+			synchronized ( getPlayers() ) {
 				
-				if ( playerData != null ) {
+				for ( String key : keys ) {
+					// Remove the player from the cache and get the playerData:
+					PlayerCachePlayerData playerData = getPlayers().remove( key );
 					
-					// Note: Since we are logging online time, then all players that are
-					//       in the cache are considered constantly dirty and needs to be
-					//       saved.
-					
-					// Since the disable function has been called, we can only assume the
-					// server is shutting down.  We need to save dirty player caches, but
-					// they must be done in-line so the shutdown process will wait for all
-					// players to be saved.
-					
-					getCacheFiles().toJsonFile( playerData );
-					
-					if ( playerData.getTask() != null ) {
-						getTasks().remove( playerData.getTask() );
-
-						PrisonTaskSubmitter.cancelTask( playerData.getTask().getTaskId() );
+					if ( playerData != null ) {
+						
+						// Note: Since we are logging online time, then all players that are
+						//       in the cache are considered constantly dirty and needs to be
+						//       saved.
+						
+						// Since the disable function has been called, we can only assume the
+						// server is shutting down.  We need to save dirty player caches, but
+						// they must be done in-line so the shutdown process will wait for all
+						// players to be saved.
+						
+						getCacheFiles().toJsonFile( playerData );
+						
+						if ( playerData.getTask() != null ) {
+							
+							synchronized( getTasks() ) {
+								
+								getTasks().remove( playerData.getTask() );
+							}
+							
+							PrisonTaskSubmitter.cancelTask( playerData.getTask().getTaskId() );
+						}
 					}
 				}
 			}
@@ -157,7 +162,9 @@ public class PlayerCache {
 		
 		// Cancel and flush any uncompleted tasks that are scheduled to run:
 		if ( getTasks().size() > 0  ) {
-			List<PlayerCacheRunnable> keys = new ArrayList<>( getTasks().keySet() );
+			
+			
+			Set<PlayerCacheRunnable> keys = getTasks().keySet();
 			
 			for ( PlayerCacheRunnable key : keys ) {
 				
@@ -166,7 +173,12 @@ public class PlayerCache {
 					key.cancel();
 					
 					// Remove the task and get the player data:
-					PlayerCachePlayerData playerData = getTasks().remove( key );
+					PlayerCachePlayerData playerData = null;
+
+					synchronized( getTasks() ) {
+						
+						playerData = getTasks().remove( key );
+					}
 					
 					if ( playerData != null && 
 							playerData.getTask() != null &&
@@ -190,7 +202,10 @@ public class PlayerCache {
 		if ( playerData != null ) {
 			getStats().incrementLoadPlayers();
 			
-			getPlayers().put( playerData.getPlayerUuid(), playerData );
+			synchronized ( getPlayers() ) {
+				
+				getPlayers().put( playerData.getPlayerUuid(), playerData );
+			}
 			
 		}
 	}
@@ -200,7 +215,10 @@ public class PlayerCache {
 		if ( playerData != null ) {
 			getStats().incrementRemovePlayers();
 			
-			removed = getPlayers().remove( playerData.getPlayerUuid() );
+			synchronized ( getPlayers() ) {
+				
+				removed = getPlayers().remove( playerData.getPlayerUuid() );
+			}
 		}
 		return removed;
 	}
@@ -272,7 +290,10 @@ public class PlayerCache {
 			else {
 				
 				// Note: if the player has not been loaded yet, this will return a null:
-				playerData = getPlayers().get( playerUuid );
+				synchronized ( getPlayers() ) {
+					
+					playerData = getPlayers().get( playerUuid );
+				}
 			}
 			
 			if ( playerData != null  ) {
@@ -474,13 +495,17 @@ public class PlayerCache {
 	public String getPlayerDumpStats() {
 		StringBuilder sb = new StringBuilder();
 
-		List<String> keys = new ArrayList<>( getPlayers().keySet() );
+		Set<String> keys = getPlayers().keySet();
 		
-		for ( String key : keys ) {
-			PlayerCachePlayerData playerData = getPlayers().get( key );
+		synchronized ( getPlayers() ) {
 			
-			sb.append( playerData.toString() );
+			for ( String key : keys ) {
+				PlayerCachePlayerData playerData = getPlayers().get( key );
+				
+				sb.append( playerData.toString() );
+			}
 		}
+
 		return sb.toString();
 	}
 	

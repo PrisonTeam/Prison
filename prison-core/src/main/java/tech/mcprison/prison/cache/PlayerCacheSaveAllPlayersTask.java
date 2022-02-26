@@ -2,6 +2,7 @@ package tech.mcprison.prison.cache;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import tech.mcprison.prison.output.Output;
 
@@ -54,11 +55,16 @@ public class PlayerCacheSaveAllPlayersTask
 		
 		List<PlayerCachePlayerData> purge = new ArrayList<>();
 		
-		List<String> keys = new ArrayList<>( pCache.getPlayers().keySet() );
+		Set<String> keys = pCache.getPlayers().keySet();
 		
 		for ( String key : keys )
 		{
-			PlayerCachePlayerData playerData = pCache.getPlayers().get( key );
+			PlayerCachePlayerData playerData = null;
+
+			synchronized ( pCache.getPlayers() ) {
+				
+				playerData = pCache.getPlayers().get( key );
+			}
 			
 			if ( playerData != null ) {
 				
@@ -67,7 +73,7 @@ public class PlayerCacheSaveAllPlayersTask
 				if ( playerData.isOnline() && 
 						(playerData.isDirty() ||
 						playerData.getLastSeenDate() == 0 ||
-						(System.currentTimeMillis() -  playerData.getLastSeenDate()) 
+						(System.currentTimeMillis() - playerData.getLastSeenDate()) 
 									> LAST_SEEN_INTERVAL_30_MINUTES ) ) {
 					// Update the player's last seen date only when dirty and they
 					// are online:
@@ -102,17 +108,19 @@ public class PlayerCacheSaveAllPlayersTask
 			}
 		}
 		
-		
-		for ( PlayerCachePlayerData playerData : purge ) {
-			try {
-				if ( !playerData.isDirty() ) {
-					
-					pCache.getPlayers().remove( playerData.getPlayerUuid() );
+		synchronized ( pCache.getPlayers() ) {
+			
+			for ( PlayerCachePlayerData playerData : purge ) {
+				try {
+					if ( !playerData.isDirty() ) {
+						
+						pCache.getPlayers().remove( playerData.getPlayerUuid() );
+					}
 				}
-			}
-			catch ( Exception e ) {
-				// Ignore any possible errors. They will be addressed on the next
-				// run of this task.
+				catch ( Exception e ) {
+					// Ignore any possible errors. They will be addressed on the next
+					// run of this task.
+				}
 			}
 		}
 		

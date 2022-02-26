@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.8g 2022-02-25
+# 3.3.0-alpha.8g 2022-02-26
+
+
+* **Bug fix: Synchronized some of the collections that are needing it within the PlayerCache.**
 
 
 * **Bug fix: Fixed an inventory glitch that was preventing items from being added to the inventory.**

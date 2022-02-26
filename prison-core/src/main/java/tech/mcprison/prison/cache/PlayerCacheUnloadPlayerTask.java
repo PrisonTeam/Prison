@@ -14,9 +14,17 @@ public class PlayerCacheUnloadPlayerTask
 		PlayerCache pCache = PlayerCache.getInstance();
 		
 		// Remove from the player cache:
-		PlayerCachePlayerData removed = pCache.removePlayerData( getPlayerData() );
+		PlayerCachePlayerData removed = null;
+
+		synchronized ( pCache.getPlayers() ) {
+			
+			removed = pCache.removePlayerData( getPlayerData() );
+		}
 		
-		pCache.getCacheFiles().toJsonFile( removed );
+		if ( removed != null ) {
+			
+			pCache.getCacheFiles().toJsonFile( removed );
+		}
 		
 	}
 
