@@ -610,17 +610,17 @@ public class PrisonUtilsMineBombs
 	}
 	
 	
-	public static SpigotItemStack getItemStackBomb( MineBombData bomb ) {
+	public static SpigotItemStack getItemStackBomb( MineBombData bombData ) {
 		SpigotItemStack bombs = null;
 		
-		XMaterial xBomb = XMaterial.matchXMaterial( bomb.getItemType() ).orElse( null );
+		XMaterial xBomb = XMaterial.matchXMaterial( bombData.getItemType() ).orElse( null );
 		
 		if ( xBomb != null ) {
 			
 			bombs = new SpigotItemStack( xBomb.parseItem() );
 			if ( bombs != null ) {
 
-				bombs.setDisplayName( bomb.getName() );
+				bombs.setDisplayName( bombData.getName() );
 				//bombs.setAmount( count );
 				
 //				if ( bomb.isGlowing() ) {
@@ -629,38 +629,7 @@ public class PrisonUtilsMineBombs
 				
 				List<String> lore = new ArrayList<>( bombs.getLore() );
 				
-				lore.add( 0, bomb.getBombItemId() );
-				
-//				lore.add( MINE_BOMBS_LORE_1 );
-//				lore.add( MINE_BOMBS_LORE_2_PREFIX + bomb.getName() );
-//				lore.add( " " );
-//				
-//				lore.add( "Size, Diameter: " + ( 1 + 2 * bomb.getRadius()) );
-//				lore.add( "Shape: " + bomb.getExplosionShape() );
-				
-//				String bombDesc = bomb.getDescription();
-//				String[] desc = ( bombDesc == null ? "" : bombDesc ).split( " " );
-//				StringBuilder sb = new StringBuilder();
-//				
-//				for ( String d : desc ) {
-//					
-//					sb.append( d ).append( " " );
-//					
-//					if ( sb.length() > 30 ) {
-//						sb.insert( 0, "  " );
-//						
-//						lore.add( sb.toString() );
-//						sb.setLength( 0 );
-//					}
-//				}
-//				if ( sb.length() > 0 ) {
-//					sb.insert( 0, "  " );
-//					
-//					lore.add( sb.toString() );
-//				}
-////				lore.add( " " + bomb.getDescription() );
-//				
-//				lore.add( " " );
+				lore.add( 0, bombData.getLoreBombItemId() );
 				
 				bombs.setLore( lore );
 				
@@ -672,7 +641,7 @@ public class PrisonUtilsMineBombs
 					"Invalid MineBomb Item: Bomb: %s  Cannot map '%s' to an XMaterial.  " +
 					"See this URL for valid XMaterial types: " +
 					"https://github.com/CryptoMorin/XSeries/blob/master/src/main/java" +
-					"/com/cryptomorin/xseries/XMaterial.java", bomb.getName(), bomb.getItemType() );
+					"/com/cryptomorin/xseries/XMaterial.java", bombData.getName(), bombData.getItemType() );
 			
 			Output.get().logError( message );
 		}

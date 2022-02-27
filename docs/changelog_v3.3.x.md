@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8g 2022-02-27
 
 
+* **Mine bombs: fixed issue with lore not being added.**
+Was adding the wrong source; was adding the destination to the destination.
+
+
 * **Mine Bombs:  Add some basic validations when loading the mine bombs from the config files**
 
 
