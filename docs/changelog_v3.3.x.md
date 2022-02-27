@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8g 2022-02-27
 
 
+* **Bug fix:  Sellall error:  Resolve an issue with the off-hand not being removed when selling.**
+Turned out that you can read all inventory slots, which includes the off-and slot, but when removing ItemStacks, the remove(ItemStack) function then ignores the off-hand slot.  Has to directly remove from the off-hand slot.
+
+
 * **Mine bombs: fixed issue with lore not being added.**
 Was adding the wrong source; was adding the destination to the destination.
 
