@@ -6,6 +6,7 @@ import java.util.List;
 
 import tech.mcprison.prison.bombs.MineBombEffectsData.EffectState;
 import tech.mcprison.prison.file.JsonFileIO;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
@@ -80,6 +81,8 @@ public class MineBombs
 		this.configData = new MineBombsConfigData();
 		
 		loadConfigJson();
+		
+		validateMineBombs();
 	}
 
 	public static MineBombs getInstance() {
@@ -184,9 +187,156 @@ public class MineBombs
 			}
 			
 		}
+		
+		
 	}
 	
 	
+	/**
+	 * <p>This will apply simple validation to the mine bombs that were just loaded.
+	 */
+	public void validateMineBombs()
+	{
+		boolean isDirty = false;
+		List<String> errors = new ArrayList<>();
+		
+		
+		MineBombsConfigData config = getConfigData();
+		
+		if ( config.getDataFormatVersion() > MineBombsConfigData.MINE_BOMB_DATA_FORMAT_VERSION || 
+				config.getDataFormatVersion() < 0 ) {
+			config.setDataFormatVersion( MineBombsConfigData.MINE_BOMB_DATA_FORMAT_VERSION );
+
+			errors.add( String.format( 
+					"Invalid dataFormatVersion was found and it was set to %d.",
+					config.getDataFormatVersion()) );
+			isDirty = true;
+		}
+		
+		for ( String key : config.getBombs().keySet() )
+		{
+			MineBombData bomb = config.getBombs().get( key );
+			
+			// bombItemId is the first line of the lore and should id the bomb:
+//			String cleanBombItemId = Text.stripColor( bomb.getBombItemId().replace( " ", "" ));
+//			if ( !cleanBombItemId.equalsIgnoreCase( bomb.getBombItemId() ) ) {
+//				
+//				errors.add( String.format( 
+//						"Invalid bombItemId: was: [%s]  fixed: [%s].",
+//						bomb.getBombItemId(), 
+//						cleanBombItemId ) );
+//				bomb.setBombItemId( cleanBombItemId );
+//				isDirty = true;
+//			}
+			
+			String cleanName = Text.stripColor( bomb.getName().replace( " ", "_" ));
+			if ( !cleanName.equalsIgnoreCase( bomb.getName() ) ) {
+				
+				errors.add( String.format( 
+						"Invalid bomb name: Cannot contain spaces or colors. " +
+						"was: [%s]  fixed: [%s].",
+						bomb.getName(), 
+						cleanName ) );
+				bomb.setName( cleanName );
+				isDirty = true;
+			}
+			
+			if ( bomb.getItemType() == null || bomb.getItemType().trim().length() == 0 ) {
+				
+				errors.add( String.format( 
+						"Invalid bomb itemType: Cannot be empty." ) );
+				
+			}
+			
+			PrisonBlock item = PrisonBlock.parseFromSaveFileFormat( bomb.getItemType() );
+			if ( item == null ) {
+				
+				errors.add( String.format( 
+						"Invalid itemType for bomb: %s Cannot be mapped. " +
+						"currently: [%s] ",
+						bomb.getName(),
+						bomb.getItemType()  ) );
+//				isDirty = true;
+			}
+			
+			if ( bomb.getItemType().trim().length() == 0 ) {
+				errors.add( String.format( 
+						"Invalid itemType for bomb: %s  Cannot be empty. Using 'cobblestone'. " +
+								"was: [%s] ",
+								bomb.getName(),
+								bomb.getItemType() ) );
+				
+				bomb.setItemType( PrisonBlock.fromBlockName( "cobblestone" ).getBlockName() );
+				isDirty = true;
+			}
+			
+			if ( bomb.getRadius() < 0 ) {
+				errors.add( String.format( 
+						"Invalid radius for bomb: %s  Cannot be less than 1. Setting to 1. " +
+								"was: [%d] ",
+								bomb.getName(),
+								bomb.getRadius() ) );
+				
+				bomb.setRadius( 1 );
+				isDirty = true;
+			}
+			
+			if ( bomb.getRadiusInner() < 0 ) {
+				errors.add( String.format( 
+						"Invalid radiusInner for bomb: %s  Cannot be negative. Setting to 0. " +
+								"was: [%d] ",
+								bomb.getName(),
+								bomb.getRadiusInner() ) );
+				
+				bomb.setRadiusInner( 0 );
+				isDirty = true;
+			}
+			
+			if ( bomb.getHeight() < 0 ) {
+				errors.add( String.format( 
+						"Invalid height for bomb: %s  Cannot be negative. Setting to 0. " +
+								"was: [%d] ",
+								bomb.getName(),
+								bomb.getHeight() ) );
+				
+				bomb.setHeight( 0 );
+				isDirty = true;
+			}
+			
+			if ( bomb.getRemovalChance() <= 0d || bomb.getRemovalChance() > 100d ) {
+				errors.add( String.format( 
+						"Invalid removalChance for bomb: %s  Cannot be <= 0 or > 100. " +
+								"Setting to 100. " +
+								"was: [%d] ",
+								bomb.getName(),
+								bomb.getRemovalChance() ) );
+				
+				bomb.setRemovalChance( 100d );
+				isDirty = true;
+			}
+			
+		}
+		
+		
+		if ( isDirty ) {
+			// save configs
+			
+			String message = String.format(
+					"&4Prison Mine Bombs Validation Errors Detected: &3Changes were " +
+					"made to the structure of the mine bomb configurations and are being " +
+					"saved.");
+			
+			Output.get().logWarn( message );
+			
+			for ( String error : errors )
+			{
+				Output.get().logWarn( "  " + error );
+			}
+			
+			saveConfigJson();
+		}
+	}
+
 	public List<Location> calculateCylinder( Location loc, int radius, boolean hollow ) {
 		List<Location> results = new ArrayList<>();
 		
@@ -456,7 +606,7 @@ public class MineBombs
 				MineBombData mbd = new MineBombData( 
 						"WimpyBomb", "GUNPOWDER", ExplosionShape.sphere.name(), 5, 
 							"A Wimpy Mine Bomb" );
-				mbd.setBombItemId( "&7A &2Wimpy &cBomb &9...&02A3F" );
+				mbd.setLoreBombItemId( "&7A &2Wimpy &cBomb &9...&02A3F" );
 				
 				mbd.setNameTag( "&7A &2Wimpy &cBomb" );
 				
@@ -559,8 +709,8 @@ public class MineBombs
 			{
 				MineBombData bomb = getConfigData().getBombs().get( bombKey );
 				
-				if ( bomb != null && bomb.getBombItemId() != null && 
-								bomb.getBombItemId().equalsIgnoreCase( bombItemIdConvered ) ) {
+				if ( bomb != null && bomb.getLoreBombItemId() != null && 
+								bomb.getLoreBombItemId().equalsIgnoreCase( bombItemIdConvered ) ) {
 					
 					results = bomb;
 					

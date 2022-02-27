@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8g 2022-02-27
 
 
+* **Mine Bombs:  Add some basic validations when loading the mine bombs from the config files**
+
+
 * **Mine Bombs: add a reload function for mine bombs.**
 /prison reload bombs  or  /prison utils bomb reload
 

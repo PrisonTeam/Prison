@@ -19,7 +19,7 @@ public class MineBombData {
 	 * it really needs to be unique and not match any other bomb's id.
 	 * </p>
 	 */
-	private String bombItemId;
+	private String loreBombItemId;
 	private List<String> lore;
 	
 
@@ -200,7 +200,7 @@ public class MineBombData {
 		this.explosionShape = explosionShape;
 		this.radius = radius;
 		
-		this.bombItemId = "PrisonMineBomb: " + name;
+		this.loreBombItemId = "PrisonMineBomb: " + name;
 		
 		this.lore = new ArrayList<>();
 		
@@ -233,7 +233,7 @@ public class MineBombData {
 		MineBombData cloned = new MineBombData( getName(), getItemType(), getExplosionShape(),
 				getRadius() );
 		
-		cloned.setBombItemId( getBombItemId() );
+		cloned.setLoreBombItemId( getLoreBombItemId() );
 		
 		cloned.setDescription( getDescription() );
 		
@@ -303,11 +303,11 @@ public class MineBombData {
 		this.description = description;
 	}
 
-	public String getBombItemId() {
-		return bombItemId;
+	public String getLoreBombItemId() {
+		return loreBombItemId;
 	}
-	public void setBombItemId( String bombItemId ) {
-		this.bombItemId = bombItemId;
+	public void setLoreBombItemId( String loreBombItemId ) {
+		this.loreBombItemId = loreBombItemId;
 	}
 
 	public List<String> getLore() {

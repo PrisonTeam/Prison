@@ -177,6 +177,7 @@ public class PrisonUtilsMineBombs
 			
 			mBombs.loadConfigJson();
 			
+			mBombs.validateMineBombs();
 		}		
 	}
 	
