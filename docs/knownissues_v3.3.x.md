@@ -7,7 +7,22 @@
 
 # TODO Items for v3.3.0-alpha.8
 
-* HiPriority: Inventory full not producing any messages. 	alexaille
+
+* Mine bombs:
+  - prison reload bombs
+  - validate mine bombs when initially loading... 
+    - bomb name cannot have spaces or color formatting
+    - mineBombId should not have spaces in the name
+  - glowing effect (enchantment)
+    - give madog24 stone{Enchantments:[{}]}
+    - ItemMeta.addFlags(ItemFlag.HIDE_ENCHANTMENTS)
+  - throwing... as in egg or ender pearl
+  throwableEnable: true,
+  throwVectorVelocity: 1,
+  thrownInstantExplode: true,
+  
+ 
+* DONE: Works for me. HiPriority: Inventory full not producing any messages. 	alexaille
 
 
 * HiPriority: NPCs are generating a lot of errors. Real_Ganster

@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.8g 2022-02-27
+# 3.3.0-alpha.9 2022-02-27
+
+
+* **v3.3.0-alpha.9 2022-02-27**
 
 
 * **Bug fix:  Sellall error:  Resolve an issue with the off-hand not being removed when selling.**
