@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.8g 2022-02-26
+# 3.3.0-alpha.8g 2022-02-27
+
+
+* **Mine Bombs: add a reload function for mine bombs.**
+/prison reload bombs  or  /prison utils bomb reload
 
 
 * **Removed warnings from the Vault economy wrapper since NPCs can actually initiate commands and NPC will always return nulls for OfflinePlayers....** therefore just return a value of zero.

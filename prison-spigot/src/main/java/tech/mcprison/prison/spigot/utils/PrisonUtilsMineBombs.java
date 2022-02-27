@@ -159,6 +159,28 @@ public class PrisonUtilsMineBombs
 
 	
 
+	@Command(identifier = "prison utils bomb reload", 
+			description = "Reloads and validates the mine bombs.",
+		onlyPlayers = false, 
+		permissions = "prison.utils.bombs",
+		aliases = "prison reload bombs")
+	public void utilsMineBombsReload( CommandSender sender
+			
+			) {
+		if ( !isEnableMineBombs() ) {
+			
+			Output.get().logInfo( "Prison's utils command mine bombs is disabled in modules.yml." );
+		}
+		else {
+			
+			MineBombs mBombs = MineBombs.getInstance();
+			
+			mBombs.loadConfigJson();
+			
+		}		
+	}
+	
+
 	@Command(identifier = "prison utils bomb list", 
 			description = "A list of all available bombs, including their full details.  " +
 					"This command also shows a list of settings for shapes, sounds, and visual effects.",
