@@ -1114,6 +1114,42 @@ public class PrisonCommand
     }
     
     
+	
+	@Command(identifier = "prison support runCmd", 
+			description = "For use in other plugins to force a player to run a prison command. " +
+					"Its been seen that when enabling NPCs to run commands as players, that the " +
+					"NPC is still the active entity associated with the command when it enters " +
+					"the Prison command handler.  This command will ensure the actual player is " +
+					"used.  The commands that are specified to run, do not have to prison's commands.", 
+					onlyPlayers = false, permissions = "prison.runcmd",
+					aliases = "prison utils runCmd")
+	public void runCommand(CommandSender sender,
+			@Arg(name = "player", 
+    		description = "Player to run the command as.") String playerName,
+    		
+    		@Wildcard(join=true)
+			@Arg(name = "command", description = "The command to run for the player." ) String command
+			) {
+		
+		
+    	if ( playerName == null || playerName.isEmpty() ) {
+    		
+    		coreRunCommandNameRequiredMsg(sender);
+
+    		return;
+    	}
+    	
+    	if ( command == null || command.trim().length() == 0 ) {
+    		coreRunCommandCommandRequiredMsg(sender);
+    	}
+
+    	Player player = getPlayer( playerName );
+    	
+    	PrisonAPI.dispatchCommand( player, command );
+
+	}
+	
+	
     @Command(identifier = "prison support setSupportName", 
     		description = "This sets the support name that is used with the submissions so its " +
     				"easier to track who the submissions belong to.  It is recommended that you " +

@@ -519,7 +519,20 @@ public class SpigotPlatform
     }
     
     @Override public void dispatchCommand(tech.mcprison.prison.internal.CommandSender sender, String cmd) {
-    	Bukkit.getServer().dispatchCommand( ((SpigotCommandSender) sender).getWrapper(), cmd);
+    	
+    	if ( sender instanceof SpigotCommandSender ) {
+    		SpigotCommandSender cmdSender = (SpigotCommandSender) sender;
+
+    		Bukkit.getServer().dispatchCommand( cmdSender.getWrapper(), cmd);
+    	}
+    	else {
+
+    		Player player = getPlayer( sender.getName() ).orElse( null );
+    		if ( player != null ) {
+    			player.dispatchCommand( cmd );
+    		}
+    	}
+    	
     }
 
     @Override public Scheduler getScheduler() {

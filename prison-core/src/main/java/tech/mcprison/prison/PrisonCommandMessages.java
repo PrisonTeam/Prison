@@ -107,5 +107,21 @@ core_tokens__set_amount=&3%1 now has &7%2 &3tokens.
 	}
 	
 	
+	protected void coreRunCommandNameRequiredMsg( CommandSender sender ) {
+		
+		Prison.get().getLocaleManager()
+					.getLocalizable( "core_runCmd__name_required" )
+					.setFailSilently()
+					.sendTo( sender );
+	}
+	
+	protected void coreRunCommandCommandRequiredMsg( CommandSender sender ) {
+		
+		Prison.get().getLocaleManager()
+		.getLocalizable( "core_runCmd__command_required" )
+		.setFailSilently()
+		.sendTo( sender );
+	}
+	
 	
 }

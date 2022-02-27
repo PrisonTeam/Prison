@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8g 2022-02-26
 
 
+* **New command added to '/prison support runCmd' to allow an OP process, such as a NPC in Citizens, to run a command as a player.**
+For example this is handy for having an NPC open the player's GUIs such as mines or ranks.
+
+
 * **v3.3.0-alpha.8h 2022-02-26**
 
 
