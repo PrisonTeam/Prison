@@ -27,7 +27,7 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 		this.mine = mine;
 	}
 	
-	public static void submit( MineReset mine ) {
+	public static void submit( MineReset mine, long delay ) {
 		
 		OnStartupRefreshBlockBreakCountSyncTask syncTask = 
 						new OnStartupRefreshBlockBreakCountSyncTask( mine );
@@ -37,7 +37,7 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 			
 			// The first phase generates a List of Locations which
 			// can be ran async...
-			syncTask.setJobId( mine.submitAsyncTask( syncTask ) );
+			syncTask.setJobId( mine.submitAsyncTask( syncTask, delay ) );
 		}
 		
 	}
@@ -45,7 +45,7 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 	private void resubmit() {
 
 		// Must run synchronously!!
-		setJobId( mine.submitSyncTask( this ) );
+		setJobId( mine.submitSyncTask( this, 0 ) );
 	}
 	
 	@Override

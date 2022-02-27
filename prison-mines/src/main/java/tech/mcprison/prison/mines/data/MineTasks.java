@@ -51,17 +51,26 @@ public abstract class MineTasks
      * 
      * @param callbackAsync
      */
+//	@Override
+//    public int submitAsyncTask( PrisonRunnable callbackAsync ) {
+//    	return submitAsyncTask( callbackAsync, 0L );
+//    }
 	@Override
-    public int submitAsyncTask( PrisonRunnable callbackAsync ) {
-    	return Prison.get().getPlatform().getScheduler().runTaskLaterAsync( callbackAsync, 
-    			getResetPagePageSubmitDelayTicks() );
-    }
+	public int submitAsyncTask( PrisonRunnable callbackAsync, long delay ) {
+		return Prison.get().getPlatform().getScheduler().runTaskLaterAsync( callbackAsync, 
+				getResetPagePageSubmitDelayTicks() + delay );
+	}
     
+//	@Override
+//    public int submitSyncTask( PrisonRunnable callbackSync ) {
+//    	return submitSyncTask( callbackSync, 0L );
+//    }
+	
 	@Override
-    public int submitSyncTask( PrisonRunnable callbackSync ) {
-    	return Prison.get().getPlatform().getScheduler().runTaskLater( callbackSync, 
-    			getResetPagePageSubmitDelayTicks() );
-    }
+	public int submitSyncTask( PrisonRunnable callbackSync, long delay ) {
+		return Prison.get().getPlatform().getScheduler().runTaskLater( callbackSync, 
+				getResetPagePageSubmitDelayTicks() + delay );
+	}
 	
 
 

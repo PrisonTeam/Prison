@@ -18,7 +18,7 @@ public class MineResetAsyncTask
 		this.mine.refreshMineAsyncTask();
 		
 		if ( this.callbackAsync != null ) {
-			this.mine.submitAsyncTask( callbackAsync );
+			this.mine.submitAsyncTask( callbackAsync, 0 );
 		}
 	}
 

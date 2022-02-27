@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9 2022-02-27
 
 
+* **Mine manager when enabling mines after the delayed loading from multiverse-core delayed loading...**
+put a slight delay on each submission of the startup air counts for each mine... spacing them out by one tick so they are not all trying to run at the same time.
+
+
 * **v3.3.0-alpha.9 2022-02-27**
 
 

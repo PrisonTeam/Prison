@@ -160,7 +160,7 @@ public abstract class MineReset
     	if ( !isVirtual() ) {
     		
     		// Once the mine has been loaded, MUST get a count of all air blocks.
-    		refreshBlockBreakCountUponStartup();
+    		refreshBlockBreakCountUponStartup( 0 );
     	}
     }
     
@@ -460,9 +460,13 @@ public abstract class MineReset
      * 
      * @param callbackAsync
      */
-    public abstract int submitAsyncTask( PrisonRunnable callbackAsync );
+//    public abstract int submitAsyncTask( PrisonRunnable callbackAsync );
     
-    public abstract int submitSyncTask( PrisonRunnable callbackSync );
+    public abstract int submitAsyncTask( PrisonRunnable callbackAsync, long delay );
+    
+//    public abstract int submitSyncTask( PrisonRunnable callbackSync );
+    
+    public abstract int submitSyncTask( PrisonRunnable callbackSync, long delay );
 
 
 	
@@ -1122,13 +1126,13 @@ public abstract class MineReset
      * But as a warning, this may trigger stack traces if there are active
      * entities in the unloaded chunks.  May have run this synchronously. :(
      */
-    public void refreshBlockBreakCountUponStartup() {
+    public void refreshBlockBreakCountUponStartup( long delay) {
     	
     	// if the mine is being used in a unit test, then it will not have a value for 
     	// bounds and therefore do not run the task.
     	if ( getBounds() != null ) {
     		
-    		OnStartupRefreshBlockBreakCountSyncTask.submit( this );
+    		OnStartupRefreshBlockBreakCountSyncTask.submit( this, delay );
     		
 //    		OnStartupRefreshBlockBreakCountAsyncTask cabAsyncTask = new OnStartupRefreshBlockBreakCountAsyncTask(this);
 //    		

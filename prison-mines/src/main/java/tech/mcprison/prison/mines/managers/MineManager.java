@@ -659,6 +659,7 @@ public class MineManager
 
 //    			List<Mine> remove = new ArrayList<>();
     			
+    			long delay = 0;
     			for ( Mine mine : unenabledMines ) {
     				
     				if ( !mine.isEnabled() ) {
@@ -683,7 +684,7 @@ public class MineManager
     						}
     						
     						// Run the air-counts now that mine can be activated:
-    						mine.refreshBlockBreakCountUponStartup();
+    						mine.refreshBlockBreakCountUponStartup( delay++ );
     						
     					}
     					
