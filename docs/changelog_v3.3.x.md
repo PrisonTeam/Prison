@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.8g 2022-02-26
 
 
+* **Removed warnings from the Vault economy wrapper since NPCs can actually initiate commands and NPC will always return nulls for OfflinePlayers....** therefore just return a value of zero.
+
+
 * **New command added to '/prison support runCmd' to allow an OP process, such as a NPC in Citizens, to run a command as a player.**
 For example this is handy for having an NPC open the player's GUIs such as mines or ranks.
 
