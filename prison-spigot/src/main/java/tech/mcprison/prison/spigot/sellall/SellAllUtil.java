@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -33,11 +34,13 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.Compatibility;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
+import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 
 /**
  * @author AnonymousGCA (GABRYCA)
@@ -469,8 +472,11 @@ public class SellAllUtil {
      * @return HashMap - XMaterial-Integer.
      * */
     private HashMap<XMaterial, Integer> getHashMapOfPlayerInventories(Player p) {
+    	
         HashMap<XMaterial, Integer> xMaterialIntegerHashMap = new HashMap<>();
+        
         if (isSellAllBackpackItemsEnabled && getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks"))){
+        	
             BackpacksUtil backpacksUtil = BackpacksUtil.get();
             if (backpacksUtil.isMultipleBackpacksEnabled()){
                 for (String id : backpacksUtil.getBackpacksIDs(p)){
@@ -913,6 +919,7 @@ public class SellAllUtil {
         for (ItemStack itemStack : inv.getContents()){
             if (itemStack != null){
                 XMaterial xMaterial = getXMaterialOrLapis(itemStack);
+                
                 if ( xMaterial != null ) {
                 	
                 	if (xMaterialIntegerHashMap.containsKey(xMaterial)){
@@ -1248,22 +1255,64 @@ public class SellAllUtil {
             return inv;
         }
         
+        SpigotCompatibility.getInstance().getItemInOffHand( p );
+        
+        List<ItemStack> removeable = new ArrayList<>();
+        
         for (ItemStack itemStack : inv.getContents()){
             if (itemStack != null){
                 try {
                     XMaterial xMaterial = getXMaterialOrLapis(itemStack);
+                    
                     if ( xMaterial != null && sellAllBlocks.containsKey(xMaterial)) {
                         if (isPerBlockPermissionEnabled && !p.hasPermission(permissionPrefixBlocks + xMaterial.name())) {
                             // Nothing will change.
                         } else {
-                            inv.remove(itemStack);
+                        	removeable.add( itemStack );
+//                            inv.remove(itemStack);
                         }
                     }
                 } catch (IllegalArgumentException ignored){}
             }
         }
         
+        for ( ItemStack remove : removeable )
+		{
+        	inv.remove(remove);
+		}
+        
         return inv;
+    }
+    
+    public void removeSellableItemsInOffHand(Player p){
+    	
+    	
+    	ItemStack itemStack = SpigotCompatibility.getInstance().getItemInOffHand( p );
+    	
+    	if ( itemStack != null ) {
+    		
+    		if (itemStack != null){
+    			try {
+    				XMaterial xMaterial = getXMaterialOrLapis(itemStack);
+    				
+    				if ( xMaterial != null && sellAllBlocks.containsKey(xMaterial)) {
+    					if (isPerBlockPermissionEnabled && !p.hasPermission(permissionPrefixBlocks + xMaterial.name())) {
+    						// Nothing will change.
+    					}
+    					else {
+    						
+    						SpigotPlayerInventory spInventory = new SpigotPlayerInventory( p.getInventory() ) ;
+    						SpigotItemStack sItemStack = new SpigotItemStack( new ItemStack( Material.AIR ) );
+    						
+    						SpigotCompatibility.getInstance().setItemStackInOffHand( spInventory, sItemStack );
+    						
+    					}
+    				}
+    			} catch (IllegalArgumentException ignored){}
+    		}
+    	}
+    		
+    
     }
     
     /**
@@ -1296,6 +1345,8 @@ public class SellAllUtil {
         }
 
         removeSellableItems(p, p.getInventory());
+        
+        removeSellableItemsInOffHand( p );
     }
 
     /**
@@ -1554,6 +1605,7 @@ public class SellAllUtil {
     }
     public boolean sellAllSell(Player p, boolean isUsingSign, boolean completelySilent, boolean notifyPlayerEarned, 
     				boolean notifyPlayerDelay, boolean notifyPlayerEarningDelay, boolean playSoundOnSellAll, List<Double> amounts ){
+    	
         if (!isUsingSign && isSellAllSignEnabled && isSellAllBySignOnlyEnabled && !p.hasPermission(permissionBypassSign)){
             if (!completelySilent) {
                 Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_sign_only));
@@ -1585,8 +1637,14 @@ public class SellAllUtil {
 
             SpigotPlayer sPlayer = new SpigotPlayer(p);
             RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
-            if (sellAllCurrency != null && sellAllCurrency.equalsIgnoreCase("default")) sellAllCurrency = null;
+            
+            if (sellAllCurrency != null && sellAllCurrency.equalsIgnoreCase("default")) {
+            	sellAllCurrency = null;
+            }
+            
+            
             removeSellableItems(p);
+            
             rankPlayer.addBalance(sellAllCurrency, money);
 
             if (isSellAllDelayEnabled){
