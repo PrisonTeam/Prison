@@ -25,6 +25,7 @@ import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRank;
@@ -48,15 +49,20 @@ import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 public class SellAllUtil {
 
     private static SellAllUtil instance;
+    
     private static final boolean isEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "sellall" );
+    
 //    private static final boolean isEnabled = getBoolean(SpigotPrison.getInstance().getConfig().getString("sellall"));
     private final Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+
     private final ItemStack lapisLazuli = compat.getLapisItemStack();
     public Configuration sellAllConfig;
+    
     private HashMap<XMaterial, Double> sellAllBlocks;
     private HashMap<String, Double> sellAllPrestigeMultipliers;
     private HashMap<Player, Double> autoSellEarningsNotificationWaiting = new HashMap<>();
     private ArrayList<XMaterial> sellAllItemTriggers;
+    
     private ArrayList<Player> activePlayerDelay = new ArrayList<>();
     private List<String> sellAllDisabledWorlds;
     private MessagesConfig messages;
@@ -451,7 +457,9 @@ public class SellAllUtil {
     	
     	HashMap<XMaterial, Integer> xMaterialIntegerHashMap = new HashMap<>();
     	
-    	XMaterial xMat = XMaterial.matchXMaterial( itemStack.getBukkitStack() );
+    	PrisonBlock pBlock = itemStack.getMaterial();
+    	
+    	XMaterial xMat = SpigotCompatibility.getInstance().getXMaterial( pBlock );
     	
     	if ( xMat != null ) {
     		xMaterialIntegerHashMap.put( xMat, itemStack.getAmount() );
