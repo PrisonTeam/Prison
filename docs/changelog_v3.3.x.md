@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.9 2022-02-27
+# 3.3.0-alpha.9 2022-02-28
+
+
+* **Fix placeholder for prison_player_tool_lore to provide the actual tool's lore.**
+The placeholder was not hooked up.
 
 
 * **Mine manager when enabling mines after the delayed loading from multiverse-core delayed loading...**

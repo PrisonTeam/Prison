@@ -1,6 +1,7 @@
 package tech.mcprison.prison.spigot.game;
 
 import java.lang.reflect.Method;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.enchantments.Enchantment;
@@ -417,7 +418,55 @@ public class SpigotPlayerUtil
 	}
 	
 
+//	public String getEnchantments() {
+//		StringBuilder sb = new StringBuilder();
+//		
+//		SpigotItemStack itemStack = getItemInHand();
+//		
+//		if ( itemStack != null && itemStack.getBukkitStack() != null) {
+//			try {
+//				
+//				Set<Enchantment> keys = itemStack.getBukkitStack().getEnchantments().keySet();
+//				
+//				for ( Enchantment key : keys ) {
+//					Integer value = itemStack.getBukkitStack().getEnchantments().get( key );
+//					
+//					if ( value != null ) {
+//						if ( sb.length() > 0 ) {
+//							sb.append( ", " );
+//						}
+//						sb.append( key.getName() ).append( ": " ).append( value );
+//						key.getItemTarget().toString()
+//					}
+//				}
+//				
+//			}
+//			catch ( NullPointerException e ) {
+//				// Ignore. This happens when a TokeEnchanted tool is used when TE is not installed anymore.
+//				// It throws this exception:  Caused by: java.lang.NullPointerException: null key in entry: null=5
+//			}
+//		}
+//	}
 	
+	public String getItemInHandLore() {
+		StringBuilder sb = new StringBuilder();
+		
+		SpigotItemStack itemStack = getItemInHand();
+		
+		if ( itemStack.getLore() != null && itemStack.getLore().size() > 0 ) {
+			for ( String lore : itemStack.getLore() )
+			{
+				if ( lore.trim().length() > 0 ) {
+					if ( sb.length() > 0 ) {
+						sb.append( "\\" );
+					}
+					sb.append( lore );
+				}
+			}
+		}
+		
+		return sb.toString();
+	}
 	
 	public SpigotPlayer getSpigotPlayer() {
 		return spigotPlayer;

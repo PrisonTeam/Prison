@@ -1277,6 +1277,9 @@ public class PlayerManager
     public String getPlayerNextRankTag( RankPlayer rankPlayer, String ladderName ) {
     	StringBuilder sb = new StringBuilder();
     	
+    	boolean hasDefault = false;
+    	boolean hasPrestige = false;
+    	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		
     		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
@@ -1665,12 +1668,18 @@ public class PlayerManager
 						
 					case prison_player_tool_data:
 					case prison_ptdata:
-						
+						{
+							
+							results = "";
+						}
 						break;
 						
 					case prison_player_tool_lore:
 					case prison_ptlore:
-						
+						{
+							PlayerUtil pUtil = Prison.get().getPlatform().getPlayerUtil( playerUuid );
+							results = pUtil.getItemInHandLore();
+						}
 						break;
 						
 						
