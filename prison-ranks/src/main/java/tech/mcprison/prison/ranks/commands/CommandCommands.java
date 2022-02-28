@@ -123,7 +123,7 @@ public class CommandCommands
         }
 
         if ( row > rank.getRankUpCommands().size() ) {
-        	rankRowNumberTooHigh( sender, row );
+        	rankRowNumberTooHigh( sender, rank.getRankUpCommands().size(), row );
         	return;        	
         }
         
@@ -301,7 +301,7 @@ public class CommandCommands
         }
 
         if ( row > ladder.getRankUpCommands().size() ) {
-        	rankRowNumberTooHigh( sender, row );
+        	rankRowNumberTooHigh( sender, ladder.getRankUpCommands().size(), row );
         	return;        	
         }
         

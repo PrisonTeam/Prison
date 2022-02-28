@@ -119,10 +119,11 @@ public class CommandCommandsMessages
 		.sendTo( sender );
 	}
     
-    protected void rankRowNumberTooHigh( CommandSender sender, Integer row ) {
+    protected void rankRowNumberTooHigh( CommandSender sender, Integer maxValue, Integer row ) {
     	PrisonRanks.getInstance().getRanksMessages()
     	.getLocalizable( "ranks_commandCommands__command_row_number_too_high" )
     	.withReplacements( 
+    			Integer.toString( maxValue ),
     			Integer.toString( row ) )
     	.sendTo( sender );
     }

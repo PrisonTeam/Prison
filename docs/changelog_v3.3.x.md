@@ -19,6 +19,10 @@ These build logs represent the work that has been going on within prison.
 * **v3.3.0-alpha.9b 2022-02-28**
 
 
+* **Fixed the command '/ranks ladder command remove' when specifying a row value that was too large.**
+The message was only providing one value when it should have had two, and the first parameter was '%d' instead of '%1'.
+
+
 * **PlayerCache: Unloading Players... when a player is being unloaded, and they are not in the cache, the unloading process is now able to indicate that the player should not be loaded.**
 Also when trying to load a player, it will not attempt the load if the file does not exist.
 
