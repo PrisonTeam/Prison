@@ -28,11 +28,6 @@ compileTestJava.options.encoding = "UTF-8"
 repositories {
     mavenCentral()
 
-	// net.luckperm.api:
-    maven { url = "https://hub.spigotmc.org/nexus/content/groups/public" }
-
-     maven { url = "https://nexus.hc.to/content/repositories/pub_releases" }
-    
     maven { url = "https://repo.codemc.org/repository/maven-public/" }
  
 //    maven { 
@@ -56,10 +51,6 @@ dependencies {
     // https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
 //	implementation 'com.github.cryptomorin:XSeries:8.5.0.1'
     
-
-
-    compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
-
 
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
