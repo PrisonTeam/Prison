@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9 2022-02-28
 
 
+* **Fixed a bug with the blockEvent block filter for adding blocks, it was using the blockEvents collection instead of the prison blocks collection.**
+
+
 * **Fix placeholder for prison_player_tool_lore to provide the actual tool's lore.**
 The placeholder was not hooked up.
 

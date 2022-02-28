@@ -4088,7 +4088,7 @@ public class MinesCommands
         if ( blockEvent != null ) {
         	
         	if ( rowBlockName == null || rowBlockName == 0 || 
-        						rowBlockName > m.getBlockEvents().size() ) {
+        						rowBlockName > m.getPrisonBlocks().size() ) {
         		
         		String commandBlockEvent = String.format( "" +
         				"%s %d ", commandRoot, rowBlockEvent );
