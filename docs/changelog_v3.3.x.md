@@ -19,6 +19,10 @@ These build logs represent the work that has been going on within prison.
 * **v3.3.0-alpha.9b 2022-02-28**
 
 
+* **PlayerCache: Unloading Players... when a player is being unloaded, and they are not in the cache, the unloading process is now able to indicate that the player should not be loaded.**
+Also when trying to load a player, it will not attempt the load if the file does not exist.
+
+
 * **Sellall bug fix... was using the wrapper to map it to an XMaterial which was causing NPEs.**
 Using the prison's compatibility functions to perform the mapping, which will now provide a safer mapping that will not cause NPEs.
 

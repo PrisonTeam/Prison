@@ -252,6 +252,10 @@ public class PlayerCache {
 		return playerData;
 	}
 	
+	private PlayerCachePlayerData getPlayer( Player player ) {
+		return getPlayer( player, true );
+	}
+	
 	/**
 	 * <p>This returns the cached player object.  If they have not been loaded
 	 * yet, then this will load the player object while waiting for it.
@@ -264,7 +268,7 @@ public class PlayerCache {
 	 * @return The cached player object. If null, then may indicate the player is 
 	 * 				actively being loaded, so try again later.
 	 */
-	private PlayerCachePlayerData getPlayer( Player player ) {
+	private PlayerCachePlayerData getPlayer( Player player, boolean loadIfNotInCache ) {
 		PlayerCachePlayerData playerData = null;
 		getStats().incrementGetPlayers();
 		
@@ -272,7 +276,16 @@ public class PlayerCache {
 			
 			String playerUuid = player.getUUID().toString();
 			
-			if ( !getPlayers().containsKey( playerUuid ) ) {
+			
+			if ( getPlayers().containsKey( playerUuid ) ) {
+				
+				// Note: if the player has not been loaded yet, this will return a null:
+				synchronized ( getPlayers() ) {
+					
+					playerData = getPlayers().get( playerUuid );
+				}
+			}
+			else if ( loadIfNotInCache ) {
 				
 				// Load the player's existing balance:
 				playerData = getCacheFiles().fromJson( player );
@@ -286,14 +299,6 @@ public class PlayerCache {
 				addPlayerData( playerData );
 //			runLoadPlayerNow( player );
 //			submitAsyncLoadPlayer( player );
-			}
-			else {
-				
-				// Note: if the player has not been loaded yet, this will return a null:
-				synchronized ( getPlayers() ) {
-					
-					playerData = getPlayers().get( playerUuid );
-				}
 			}
 			
 			if ( playerData != null  ) {
@@ -350,7 +355,7 @@ public class PlayerCache {
 	
 	protected void submitAsyncUnloadPlayer( Player player ) {
 		
-		PlayerCachePlayerData playerData = getPlayer( player );
+		PlayerCachePlayerData playerData = getPlayer( player, false );
 		
 		if ( playerData != null ) {
 			

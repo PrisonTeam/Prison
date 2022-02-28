@@ -188,22 +188,29 @@ public class PlayerCacheFiles
 	 */
 	private PlayerCachePlayerData fromJsonFile( File inputFile ) {
 		PlayerCachePlayerData results = null;
-		try (
-			FileReader fr = new FileReader( inputFile );
-				) {
+		
+		if ( inputFile.exists() ) {
 			
-			results = getGson().fromJson( 
-					fr, PlayerCachePlayerData.class );
-			
-			results.setPlayerFile( inputFile );
-		}
-		catch ( IOException e )
-		{
-			e.printStackTrace();
-		}
-		catch ( JsonSyntaxException | JsonIOException e )
-		{
-			e.printStackTrace();
+			try (
+					FileReader fr = new FileReader( inputFile );
+					) {
+				
+				results = getGson().fromJson( 
+						fr, PlayerCachePlayerData.class );
+				
+				if ( results != null ) {
+					
+					results.setPlayerFile( inputFile );
+				}
+			}
+			catch ( IOException e )
+			{
+				e.printStackTrace();
+			}
+			catch ( JsonSyntaxException | JsonIOException e )
+			{
+				e.printStackTrace();
+			}
 		}
 		
 		return results;
