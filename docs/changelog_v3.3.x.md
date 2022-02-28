@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9 2022-02-28
 
 
+* **v3.3.0-alpha.9b 2022-02-28**
+
+
 * **Sellall bug fix... was using the wrapper to map it to an XMaterial which was causing NPEs.**
 Using the prison's compatibility functions to perform the mapping, which will now provide a safer mapping that will not cause NPEs.
 
