@@ -773,7 +773,8 @@ public class OnBlockBreakEventCore
 					// if using CrazyEnchant one of the unprocessedRawBlocks may be the same as the
 					// pmEvent.getSpigotBlock(), so ignore if both are the same.
 					// Compare the locations...
-					if ( !sBlockHit.getLocation().equals( sBlockMined.getLocation() ) ) {
+					if ( sBlockHit != null && sBlockMined != null &&
+							!sBlockHit.getLocation().equals( sBlockMined.getLocation() ) ) {
 						
 						if ( !mine.isInMineExact( sBlockMined.getLocation() ) ) {
 							outsideOfMine++;

@@ -13,7 +13,14 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.9 2022-02-28
+# 3.3.0-alpha.9b 2022-03-01
+
+
+* **Bug fix: Risk of a null on the blockHit, so add checks to ensure it's not before trying to process.**
+
+
+* **Bug fix: The clickable delete code is that is generated is off by 1 on the inserted row.**
+The row number needed to be reduced by one since the row number was incremented right before this final injection.
 
 
 * **v3.3.0-alpha.9b 2022-02-28**
