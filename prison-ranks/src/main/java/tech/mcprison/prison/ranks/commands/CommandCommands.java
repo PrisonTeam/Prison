@@ -369,7 +369,7 @@ public class CommandCommands
             if ( !noRemoves ) {
             	
             	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
-            			.suggest("/ranks ladder command remove " + ladder.getName() + " " + rowNumber )
+            			.suggest("/ranks ladder command remove " + ladder.getName() + " " + (rowNumber - 1) )
             			.tooltip( ranksCommandListClickToRemoveMsg() );
             	row.addFancy( msgRemove );
             }
