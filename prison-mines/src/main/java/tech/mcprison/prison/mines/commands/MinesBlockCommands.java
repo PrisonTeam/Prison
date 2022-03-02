@@ -55,9 +55,13 @@ public class MinesBlockCommands
         
         PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
         
-        if ( block != null && prisonBlockTypes.getBlockTypesByName().containsKey( block ) ) {
-        	prisonBlock = prisonBlockTypes.getBlockTypesByName().get( block );
+        if ( block != null ) {
+        	prisonBlock = prisonBlockTypes.getBlockTypesByName( block );
         }
+//        if ( block != null && prisonBlockTypes.getBlockTypesByName().containsKey( block ) ) {
+//        	prisonBlock = prisonBlockTypes.getBlockTypesByName( block );
+//        	prisonBlock = prisonBlockTypes.getBlockTypesByName().get( block );
+//        }
         
         if ( prisonBlock == null ) {
         	pMines.getMinesMessages().getLocalizable("not_a_block").
@@ -332,8 +336,8 @@ public class MinesBlockCommands
         
         PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
         
-        if ( block != null && prisonBlockTypes.getBlockTypesByName().containsKey( block ) ) {
-        	prisonBlock = prisonBlockTypes.getBlockTypesByName().get( block );
+        if ( block != null ) {
+        	prisonBlock = prisonBlockTypes.getBlockTypesByName( block );
         }
         
         
@@ -454,8 +458,8 @@ public class MinesBlockCommands
         
         PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
         
-        if ( block != null && prisonBlockTypes.getBlockTypesByName().containsKey( block ) ) {
-        	prisonBlock = prisonBlockTypes.getBlockTypesByName().get( block );
+        if ( block != null ) {
+        	prisonBlock = prisonBlockTypes.getBlockTypesByName( block );
         }
         
         // Cannot delete a block if it does not exist:

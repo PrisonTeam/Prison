@@ -264,7 +264,7 @@ public class MineBlockEvent {
 				PrisonBlockTypes pBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
 				
 				for ( String block : blocks.toLowerCase().split( "," ) ) {
-					PrisonBlock blockType = pBlockTypes.getBlockTypesByName().get( block );
+					PrisonBlock blockType = pBlockTypes.getBlockTypesByName( block );
 					if ( blockType != null ) {
 						results.getPrisonBlocks().add( blockType );
 					}

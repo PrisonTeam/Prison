@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9b 2022-03-01
 
 
+* **Bug fix:  Fixed an issue were a block would be added, or changed, and it would change all similar blocks in all mines to have the same percentage.**
+This issue was intermittent and was caused by directly getting the block from the master list, without cloning it.  The correction to this issue was to use a search function that would clone the block, but it also would compensate for custom blocks if the block's namespace was not initially provided.
+
+
 * **Bug fix: Risk of a null on the blockHit, so add checks to ensure it's not before trying to process.**
 
 
