@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.9b 2022-03-01
+# 3.3.0-alpha.9b 2022-03-03
+
+
+* **Some initial setup for a rankScore.**
+This is not hooked up yet, but the the core basics are there and should work soon.
 
 
 * **Bug fix:  Fixed an issue were a block would be added, or changed, and it would change all similar blocks in all mines to have the same percentage.**

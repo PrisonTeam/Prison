@@ -49,6 +49,10 @@ public class RankPlayer
 			implements Player {
 
 	public static final long DELAY_THREE_SECONDS = 20 * 3; // 3 seconds in ticks
+	
+	public static final long RANK_SCORE_COOLDOWN_MS = 1000 * 30; // 30 seconds
+	public static final double RANK_SCORE_BALANCE_THRESHOLD_PERCENT = 0.05d; // 5%
+	
 		
     /*
      * Fields & Constants
@@ -84,6 +88,20 @@ public class RankPlayer
     private HashMap<String, EconomyIntegration> economyCustom = new HashMap<>();;
     
     
+    
+    /**
+     * <p>The 'rankScore' fields are used to calculate the rankScore, of which
+     * the 'rankScoreBalance' is used to track the player's balance when these
+     * values were last calculated.  It is used to determine if there should 
+     * be a recalculation of the score.
+     * </p>
+     */
+    private double rankScoreBalance = 0;
+    private String rankScoreCurrency = null;
+    private double rankScoreBalanceThreshold = 0;
+	private double rankScore = 0;
+	private double rankScorePenalty = 0;
+	private long rankScoreCooldown = 0L;
     
 
     public RankPlayer() {
@@ -1142,5 +1160,122 @@ public class RankPlayer
 	@Override
 	public boolean isSneaking() {
 		return false;
+	}
+	
+	/**
+	 * <p>Calculates the rankScore for the player's rank on the default ladder.
+	 * The calculation is based upon how much the next rank costs.
+	 * </p>
+	 * 
+	 */
+	private void calculateRankScore() {
+		PlayerRank rankCurrent = getPlayerRankDefault();
+
+		Rank nRank = rankCurrent.getRank().getRankNext();
+		String rankNextCurrency = nRank.getCurrency();
+		
+		PlayerRank pRankNext = rankCurrent.getTargetPlayerRankForPlayer( this, nRank );
+		
+		double cost = pRankNext.getRankCost();
+		double balance = getBalance( rankNextCurrency );
+		
+		double score = balance;
+		double penalty = 0d;
+		
+		// Do not apply the penalty if cost is zero:
+		if ( isHesitancyDelayPenaltyEnabled() && cost > 0 ) {
+			score = balance > cost ? cost : score;
+			
+			double excess = balance > cost ? balance - cost : 0d;
+			penalty = excess * 0.2d;
+		}
+		
+		score = (score - penalty);
+		
+		if ( cost > 0 ) {
+			score /= cost * 100.0d;
+		}
+		
+		double balanceThreshold = cost * RANK_SCORE_BALANCE_THRESHOLD_PERCENT;
+		
+		setRankScoreBalance( balance );
+		setRankScoreCurrency( rankNextCurrency );
+		setRankScoreBalanceThreshold( balanceThreshold );
+		setRankScore( score );
+		setRankScorePenalty( penalty );
+		
+		setRankScoreCooldown( System.currentTimeMillis() + RANK_SCORE_COOLDOWN_MS );
+	}
+
+	private void checkRecalculateRankScore() {
+		
+		if ( getRankScoreCooldown() == 0L || 
+			System.currentTimeMillis() > getRankScoreCooldown() 
+				) {
+			
+			double currentBalance = getBalance( getRankScoreCurrency() );
+			
+			if ( currentBalance == getRankScoreBalance() ||
+					currentBalance >= (getRankScoreBalance() - getRankScoreBalanceThreshold()) ||
+					currentBalance <= (getRankScoreBalance() + getRankScoreBalanceThreshold() ) ) {
+				
+				// increment the cooldown since the balance is either the same, or still
+				// within the threshold range:
+				setRankScoreCooldown( System.currentTimeMillis() + RANK_SCORE_COOLDOWN_MS );
+			}
+			else {
+				calculateRankScore();
+			}
+		}
+	}
+	
+	public boolean isHesitancyDelayPenaltyEnabled() {
+		return Prison.get().getPlatform()
+				.getConfigBooleanTrue( "top-stats.rank-players.hesitancy-delay-penalty" );
+	}
+	
+	public double getRankScoreBalance() {
+		return rankScoreBalance;
+	}
+	public void setRankScoreBalance( double rankScoreBalance ) {
+		this.rankScoreBalance = rankScoreBalance;
+	}
+
+	public String getRankScoreCurrency() {
+		return rankScoreCurrency;
+	}
+	public void setRankScoreCurrency( String rankScoreCurrency ) {
+		this.rankScoreCurrency = rankScoreCurrency;
+	}
+
+	public double getRankScoreBalanceThreshold() {
+		return rankScoreBalanceThreshold;
+	}
+	public void setRankScoreBalanceThreshold( double rankScoreBalanceThreshold ) {
+		this.rankScoreBalanceThreshold = rankScoreBalanceThreshold;
+	}
+	public double getRankScore() {
+		
+		// check if the rankScore needs to be reset:
+		checkRecalculateRankScore();
+		
+		return rankScore;
+	}
+	public void setRankScore( double rankScore ) {
+		this.rankScore = rankScore;
+	}
+
+	public double getRankScorePenalty() {
+		return rankScorePenalty;
+	}
+	public void setRankScorePenalty( double rankScorePenalty ) {
+		this.rankScorePenalty = rankScorePenalty;
+	}
+
+	public long getRankScoreCooldown() {
+		return rankScoreCooldown;
+	}
+	public void setRankScoreCooldown( long rankScoreCooldown ) {
+		this.rankScoreCooldown = rankScoreCooldown;
 	}
 }

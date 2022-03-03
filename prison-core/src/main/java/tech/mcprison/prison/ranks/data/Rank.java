@@ -32,7 +32,8 @@ import tech.mcprison.prison.sorting.PrisonSortable;
 public class Rank
 		//extends RankMessages
 		implements PrisonSortable,
-					ModuleElement {
+					ModuleElement,
+					Comparable<Rank> {
 
 //	// This is to help eliminate RankLadder.PositionRank object:
 	private transient int position = -1; 
@@ -384,6 +385,22 @@ public class Rank
         result = 31 * result + currency.hashCode();
         return result;
     }
+    
+
+	@Override
+	public int compareTo( Rank r )
+	{
+		int results = 0;
+		
+		if ( r == null ) {
+			results = -1;
+		}
+		else {
+			results = Integer.compare( getPosition(), r.getPosition() );
+		}
+		
+		return results;
+	}
 
     /**
      * This new implementation of position is lazy loaded and should never be saved.

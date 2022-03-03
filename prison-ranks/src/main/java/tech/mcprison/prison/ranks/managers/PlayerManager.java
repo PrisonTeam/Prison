@@ -20,6 +20,7 @@ package tech.mcprison.prison.ranks.managers;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -69,8 +70,10 @@ public class PlayerManager
     private List<RankPlayer> players;
     private TreeMap<String, RankPlayer> playersByName;
     
-//    private List<RankPlayer> playersByTop;
+    private RankPlayerSortOrderTopRanked sorterTopN;
+    private List<RankPlayer> playersByTop;
 
+    
     private List<PlaceHolderKey> translatedPlaceHolderKeys;
     
     private transient Set<String> playerErrors;
@@ -82,6 +85,9 @@ public class PlayerManager
         
         this.players = new ArrayList<>();
         this.playersByName = new TreeMap<>();
+        
+        this.sorterTopN = new RankPlayerSortOrderTopRanked();
+        this.playersByTop= new ArrayList<>();
         
         this.playerErrors = new HashSet<>();
 
@@ -141,8 +147,13 @@ public class PlayerManager
             	playersByName.put( rankPlayer.getDisplayName(), rankPlayer );
             	
             }
+            
+            playersByTop.add( rankPlayer );
+            
 		}
         
+        
+        Collections.sort( playersByTop, sorterTopN );
         
 
 //        players.forEach(
