@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9b 2022-03-03
 
 
+* **RankLadder: removed obsolete code that was never used.**
+
+
 * **Some initial setup for a rankScore.**
 This is not hooked up yet, but the the core basics are there and should work soon.
 

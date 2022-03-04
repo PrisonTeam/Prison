@@ -35,20 +35,14 @@ import tech.mcprison.prison.store.Document;
 public class RankLadder 
 		implements PrisonSortable, Comparable<RankLadder> {
 
-    /*
-     * Fields & Constants
-     */
-
     private int id;
     private String name;
     private List<Rank> ranks;
     
+    
+    
 //    private int maxPrestige;
    
-    
-//    private List<String> permissions;
-//    private List<String> permissionGroups;
- 
     
     // The commands that are run when this rank is attained.
     private List<String> rankUpCommands;
@@ -67,9 +61,6 @@ public class RankLadder
     	
     	this.ranks = new ArrayList<>();
     	
-//    	this.permissions = new ArrayList<>();
-//    	this.permissionGroups =  new ArrayList<>();
-
     }
     
     public RankLadder( int id, String name ) {
@@ -530,21 +521,6 @@ public class RankLadder
 	public void setRankUpCommands( List<String> rankUpCommands ) {
 		this.rankUpCommands = rankUpCommands;
 	}
-
-//	public List<String> getPermissions() {
-//		return permissions;
-//	}
-//
-//	public void setPermissions( List<String> permissions ) {
-//		this.permissions = permissions;
-//	}
-//
-//	public List<String> getPermissionGroups() {
-//		return permissionGroups;
-//	}
-//	public void setPermissionGroups( List<String> permissionGroups ) {
-//		this.permissionGroups = permissionGroups;
-//	}
 
 	public double getRankCostMultiplierPerRank() {
 		return rankCostMultiplierPerRank;
