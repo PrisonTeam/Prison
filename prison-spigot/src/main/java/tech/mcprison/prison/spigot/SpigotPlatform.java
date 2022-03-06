@@ -577,12 +577,20 @@ public class SpigotPlatform
     @Override 
 	public void logCore( String message )
 	{
-		ConsoleCommandSender sender = Bukkit.getConsoleSender();
-        if (sender == null) {
-            Bukkit.getLogger().info(ChatColor.stripColor(message));
-        } else {
-            sender.sendMessage(message);
-        }
+    	ConsoleCommandSender sender = Bukkit.getConsoleSender();
+
+    	String[] msgs = message.split( "\\{br\\}" );
+
+    	for ( String msg : msgs ) {
+			
+    		if (sender == null) {
+    			Bukkit.getLogger().info(ChatColor.stripColor(msg));
+    		} 
+    		else {
+    			sender.sendMessage(msg);
+    		}
+		}
+    	
 	}
     
     /**
@@ -592,10 +600,17 @@ public class SpigotPlatform
     public void logPlain( String message )
     {
     	ConsoleCommandSender sender = Bukkit.getConsoleSender();
-    	if (sender == null) {
-    		Bukkit.getLogger().info(message);
-    	} else {
-    		sender.sendMessage(message);
+    	
+    	String[] msgs = message.split( "\\{br\\}" );
+
+    	for ( String msg : msgs ) {
+    		
+    		if (sender == null) {
+    			Bukkit.getLogger().info(msg);
+    		} 
+    		else {
+    			sender.sendMessage(msg);
+    		}
     	}
     }
 

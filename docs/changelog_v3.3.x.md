@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9b 2022-03-05
 
 
+* **Enable the ability to split messages in to multiple lines by using the placeholder `{br}`.**
+
+
 * **Small adjustments to the MineReset handing of the targetBlock collections.**
 Prevent their instantiation in the constructor since they are being lazy loaded.  Also synchronizing on the adding of target block, since there was one report on an issue with that not being synchronized.
 

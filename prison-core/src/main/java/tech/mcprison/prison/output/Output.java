@@ -224,7 +224,8 @@ public class Output
 			
     		System.err.println( errorMessage + "   message: [" + message + 
     				"] params: " + sb.toString() );
-    	} else {
+    	} 
+    	else {
     		try {
 				Prison.get().getPlatform().log(
 						prefixTemplatePrison + " " + 
