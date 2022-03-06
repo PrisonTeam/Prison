@@ -286,6 +286,13 @@ public class RankUpCommandMessages
 				.sendTo( sender );
 	}
 	
+	protected void ranksRankupFailureUnableToAssignRankWithRefundMsg( CommandSender sender ) {
+		
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_rankup__rankup_failed_to_assign_rank_with_refund" )
+		.sendTo( sender );
+	}
+	
 	protected void ranksRankupFailureCouldNotSavePlayerFileMsg( CommandSender sender ) {
 		
 		PrisonRanks.getInstance().getRanksMessages()

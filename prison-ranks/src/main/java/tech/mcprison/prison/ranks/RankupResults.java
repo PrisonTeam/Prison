@@ -29,6 +29,7 @@ public class RankupResults {
 	private PlayerRank playerRankTarget;
     private Rank originalRank;
     private Rank targetRank;
+    private Rank unexpectedRank;
     private String message;
     
     private List<RankupTransactions> transactions;
@@ -192,6 +193,14 @@ public class RankupResults {
 	public Rank getTargetRank() {
 		return targetRank;
 	}
+	
+	public Rank getUnexpectedRank() {
+		return unexpectedRank;
+	}
+	public void setUnexpectedRank( Rank unexpectedRank ) {
+		this.unexpectedRank = unexpectedRank;
+	}
+	
 	public void setTargetRank( Rank targetRank ) {
 		this.targetRank = targetRank;
 	}

@@ -16,6 +16,11 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9b 2022-03-05
 
 
+* **Added more validation checks and reporting on rankups and demotes.**
+So if something goes wrong, it can hopefully identified and tracked.  
+If rank change failed, or if a refund failed, it will now better report these conditions.
+
+
 * **Setup a return of success, or failure, on custom currency functions.**
 GemsEconomy does not indicate if it was successful, but added code to check to see if it was successfully manually/indirectly.
 

@@ -140,7 +140,14 @@ public class RankUtil
 		player_balance_final,
 		zero_cost_to_player,
 		
+		player_balance_refund_increased,
+		player_balance_refund_decreased,
+		
+		
 		economy_failed_to_update_player_balance,
+		economy_failed_to_reverse_player_rankup_cost,
+		economy_failed_to_apply_player_rankup_cost,
+		
 		
 		attempting_to_delete_ladder_from_player,
 		cannot_delete_default_ladder,
@@ -163,7 +170,9 @@ public class RankUtil
 		failure_exception_caught_check_server_logs, 
 		successfully_saved_player_rank_data,
 		
-		failure_orginal_playerRank_does_not_exist
+		failure_orginal_playerRank_does_not_exist,
+		
+		failed_rankup_validation__target_rank_is_not_expected
 		
 		;
 	}
@@ -499,6 +508,8 @@ public class RankUtil
         	results.setBalanceInitial( balanceInitial );
         	results.setCurrency( targetRank.getCurrency() );
         	
+        	boolean success = false;
+        	
         	if ( pForceCharge == PromoteForceCharge.charge_player) {
         		if ( balanceInitial < nextRankCost ) {
         			results.addTransaction( RankupStatus.RANKUP_CANT_AFFORD, 
@@ -509,7 +520,7 @@ public class RankUtil
         		balanceTargetFinal -= nextRankCost;
         		
         		results.addTransaction( RankupTransactions.player_balance_decreased );
-        		rankPlayer.removeBalance( targetRank.getCurrency(), nextRankCost );
+        		success = rankPlayer.removeBalanceBypassCache( targetRank.getCurrency(), nextRankCost );
         	} 
         	else if ( pForceCharge == PromoteForceCharge.refund_player) {
         			
@@ -517,35 +528,79 @@ public class RankUtil
 
         		results.addTransaction( RankupTransactions.player_balance_increased);
     			if ( results.getOriginalRank() != null ) {
-    				rankPlayer.addBalance( results.getOriginalRank().getCurrency(), currentRankCost );
+    				success = rankPlayer.addBalanceBypassCache( results.getOriginalRank().getCurrency(), currentRankCost );
     			}
     		} else {
     			// Should never hit this code!!
     		}
         	
+        	if ( !success ) {
+        		
+        		results.addTransaction( RankupTransactions.economy_failed_to_apply_player_rankup_cost );
+        	}
+        	
         	double balanceFinal = rankPlayer.getBalance( targetRank.getCurrency() );
         	
+        	results.addTransaction( RankupTransactions.player_balance_final );
+        	results.setBalanceFinal( balanceFinal );
+        	
         	// Check to ensure the player's balance is correct..
-        	if ( balanceFinal != balanceTargetFinal ) {
+        	if ( !success || balanceFinal != balanceTargetFinal ) {
         		
         		results.addTransaction( RankupStatus.RANKUP_FAILURE_ECONOMY_FAILED, 
     					RankupTransactions.economy_failed_to_update_player_balance );
         		return;
         	}
         	
-        	results.addTransaction( RankupTransactions.player_balance_final );
-        	results.setBalanceFinal( balanceFinal );
         	
-        	
-        } else {
+        } 
+        else {
         	results.addTransaction( RankupTransactions.zero_cost_to_player );
         }
 
         // Actually apply the new rank here:
         rankPlayer.addRank(targetRank);
         
+        
+        // Validate that the player's rank was actually changed:
+        PlayerRank newRank = rankPlayer.getPlayerRank( ladderName );
 
+        if ( newRank.equals( originalRank ) || 
+        		!targetRank.equals( newRank.getRank() ) ) {
+        	
+        	results.setUnexpectedRank( newRank.getRank() );
+        	
+        	results.addTransaction( RankupStatus.RANKUP_FAILURE_UNABLE_TO_ASSIGN_RANK, 
+        			RankupTransactions.failed_rankup_validation__target_rank_is_not_expected );
+        	
+        	boolean success = false;
+        	
+        	// Refund charges and payments:
+        	if ( pForceCharge == PromoteForceCharge.charge_player) {
+        	
+        		results.addTransaction( RankupTransactions.player_balance_refund_increased);
+        		success = rankPlayer.addBalanceBypassCache( results.getOriginalRank().getCurrency(), currentRankCost );
+        	} 
+        	else if ( pForceCharge == PromoteForceCharge.refund_player) {
+        			
 
+    			results.addTransaction( RankupTransactions.player_balance_refund_decreased );
+    			success = rankPlayer.removeBalanceBypassCache( targetRank.getCurrency(), nextRankCost );
+    		} else {
+    			// Should never hit this code!!
+    		}
+        	
+        	if ( !success ) {
+        		// unable to reverse rankup costs or refunds
+        		results.addTransaction( RankupTransactions.economy_failed_to_reverse_player_rankup_cost );
+        	}
+        	
+        	return;
+        }
+        	
+        
+        
+        
         if ( !savePlayerRank( results, rankPlayer ) ) {
         	return;
         }
@@ -884,6 +939,8 @@ public class RankUtil
     					sb.append( iFmt.format( results.getRankupCommandsExecuted() ) );
     					
     					break;
+    					
+    				case failed_rankup_validation__target_rank_is_not_expected:
     					
     				default:
     					break;
