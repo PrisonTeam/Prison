@@ -92,8 +92,8 @@ public abstract class MineReset
 	public static final long MINE_RESET__AIR_COUNT_BASE_DELAY = 30000L; // 30 seconds
 	
 
-	private List<MineTargetPrisonBlock> mineTargetPrisonBlocks;
-	private TreeMap<MineTargetBlockKey, MineTargetPrisonBlock> mineTargetPrisonBlocksMap;
+	private List<MineTargetPrisonBlock> mineTargetPrisonBlocks = null;
+	private TreeMap<MineTargetBlockKey, MineTargetPrisonBlock> mineTargetPrisonBlocksMap = null;
 	
 	private MineJob currentJob;
 	
@@ -133,8 +133,8 @@ public abstract class MineReset
 	public MineReset() {
 		super();
 		
-		this.mineTargetPrisonBlocks = new ArrayList<>();
-		this.mineTargetPrisonBlocksMap = new TreeMap<>();
+//		this.mineTargetPrisonBlocks = new ArrayList<>();
+//		this.mineTargetPrisonBlocksMap = new TreeMap<>();
 		
 		this.statsMineSweeperTaskMs = new ArrayList<>();
 
@@ -1877,8 +1877,11 @@ public abstract class MineReset
 				targetBlock.getBlockX(), targetBlock.getBlockY(), targetBlock.getBlockZ(), 
 				targetBlock.isEdge() );
 		
-		getMineTargetPrisonBlocks().add( mtpb );
-		getMineTargetPrisonBlocksMap().put( mtpb.getBlockKey(), mtpb );
+		synchronized ( getMineStateMutex() ) {
+			
+			getMineTargetPrisonBlocks().add( mtpb );
+			getMineTargetPrisonBlocksMap().put( mtpb.getBlockKey(), mtpb );
+		}
 	}
     
 //    private void addMineTargetPrisonBlock( PrisonBlockStatusData block, int x, int y, int z, boolean isEdge ) {
@@ -1895,8 +1898,11 @@ public abstract class MineReset
     	// other reference exist, they will be able to continue to use them
     	// until the release the references.
     	
-    	mineTargetPrisonBlocks = null;
-    	mineTargetPrisonBlocksMap = null;
+    	synchronized ( getMineStateMutex() ) {
+    		
+    		mineTargetPrisonBlocks = null;
+    		mineTargetPrisonBlocksMap = null;
+    	}
     	
 //    	getMineTargetPrisonBlocks().clear();
 //    	getMineTargetPrisonBlocksMap().clear();
