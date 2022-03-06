@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.9b 2022-03-05
+# 3.3.0-alpha.9c 2022-03-06
+
+
+* **v3.3.0-alpha.9c 2022-03-06**
 
 
 * **Enable the ability to split messages in to multiple lines by using the placeholder `{br}`.**
