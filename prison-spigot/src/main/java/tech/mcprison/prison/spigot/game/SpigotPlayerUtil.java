@@ -1,7 +1,6 @@
 package tech.mcprison.prison.spigot.game;
 
 import java.lang.reflect.Method;
-import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.enchantments.Enchantment;

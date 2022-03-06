@@ -215,7 +215,10 @@ public class SpigotWorld implements World {
 			PrisonStatsElapsedTimeNanos nanos ) {
 		
 		List<MineTargetPrisonBlock> tBlocksCloned = new ArrayList<>();
-		tBlocksCloned.addAll( tBlocks );
+		for ( MineTargetPrisonBlock mtpb : tBlocks ) {
+			
+			tBlocksCloned.add( mtpb );
+		}
 		
 		new BukkitRunnable() {
 			@Override
@@ -230,17 +233,21 @@ public class SpigotWorld implements World {
 					{
 						current = tBlock;
 						
-						final PrisonBlock pBlock = tBlock.getPrisonBlock( resetType );
-						
-						if ( pBlock != null ) {
+						if ( tBlock != null ) {
 							
-							Location location = tBlock.getLocation();
+							final PrisonBlock pBlock = tBlock.getPrisonBlock( resetType );
 							
-							SpigotBlock sBlock = (SpigotBlock) getBlockAt( location );
+							if ( pBlock != null ) {
+								
+								Location location = tBlock.getLocation();
+								
+								SpigotBlock sBlock = (SpigotBlock) getBlockAt( location );
 //							SpigotBlock sBlock = (SpigotBlock) location.getBlockAt();
-							
-							sBlock.setPrisonBlock( pBlock );
+								
+								sBlock.setPrisonBlock( pBlock );
+							}
 						}
+						
 					}
 				}
 				catch ( Exception e ) {

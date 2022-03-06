@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.9b 2022-03-03
+# 3.3.0-alpha.9b 2022-03-05
+
+
+* **Sync set blocks fixes. Isolate the targetBlocks and add a null check to ensure thre are no problems.**
 
 
 * **RankLadder: removed obsolete code that was never used.**
