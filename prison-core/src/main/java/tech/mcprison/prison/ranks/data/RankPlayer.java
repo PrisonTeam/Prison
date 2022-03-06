@@ -1082,6 +1082,73 @@ public class RankPlayer
 		}
 	}
 	
+	
+	public boolean addBalanceBypassCache( double amount ) {
+		boolean results = false;
+		
+		synchronized ( unsavedBalanceLock ) {
+			
+			results = addBalanceEconomy( amount );
+		}
+		
+		return results;
+	}
+	
+	public boolean addBalanceBypassCache( String currency, double amount ) {
+		boolean results = false;
+		
+		if ( currency == null || currency.trim().isEmpty() || "default".equalsIgnoreCase( currency ) ) {
+			
+			results = addBalanceBypassCache( amount );
+		}
+		else {
+			EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+					.getEconomyForCurrency(currency );
+			
+			if ( currencyEcon != null ) {
+				
+				synchronized ( unsavedBalanceLock ) {
+					results = currencyEcon.addBalance( this, amount, currency );
+				}
+				addCachedRankPlayerBalance( currency, amount );
+			}
+		}
+		
+		return results;
+	}
+	
+	public boolean removeBalanceBypassCache( double amount ) {
+		boolean results = false;
+		
+		double targetAmount = -1 * amount;
+		results = addBalanceBypassCache( targetAmount );
+		addCachedRankPlayerBalance( null, targetAmount );
+		
+		return results;
+	}
+
+	public boolean removeBalanceBypassCache( String currency, double amount ) {
+		boolean results = false;
+		
+		if ( currency == null || currency.trim().isEmpty() ) {
+			// No currency specified, so use the default currency:
+			results = removeBalanceBypassCache( amount );
+		}
+		else {
+			EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+					.getEconomyForCurrency(currency );
+			
+			if ( currencyEcon != null ) {
+				
+				synchronized ( unsavedBalanceLock ) {
+					results = currencyEcon.removeBalance( this, amount, currency );
+				}
+				addCachedRankPlayerBalance( currency, -1 * amount );
+			}
+		}
+		return results;
+	}
+	
 	public void removeBalance( String currency, double amount ) {
 		
 		if ( currency == null || currency.trim().isEmpty() ) {
@@ -1093,7 +1160,10 @@ public class RankPlayer
 					.getEconomyForCurrency(currency );
 			
 			if ( currencyEcon != null ) {
-				currencyEcon.removeBalance( this, amount, currency );
+				
+				synchronized ( unsavedBalanceLock ) {
+					currencyEcon.removeBalance( this, amount, currency );
+				}
 				addCachedRankPlayerBalance( currency, -1 * amount );
 			}
 		}

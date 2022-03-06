@@ -29,11 +29,11 @@ public abstract class EconomyCurrencyIntegration
 	
 	public abstract double getBalance( Player player, String currency );
 
-	public abstract void setBalance( Player player, double amount, String currency );
+	public abstract boolean setBalance( Player player, double amount, String currency );
 
-	public abstract void addBalance( Player player, double amount, String currency );
+	public abstract boolean addBalance( Player player, double amount, String currency );
 
-	public abstract void removeBalance( Player player, double amount, String currency );
+	public abstract boolean removeBalance( Player player, double amount, String currency );
 
 	public abstract boolean canAfford( Player player, double amount, String currency );
 	
