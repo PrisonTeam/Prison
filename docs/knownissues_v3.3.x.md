@@ -8,11 +8,23 @@
 # TODO Items for v3.3.0-alpha.8
 
 
+* Add a preformatted sellall multiplier
+* {prison_player_sellall_mutiplier::nFormat:#,##0.0000}
+
+
+- GUI forces admins to run auto configure.  Review and remove?
+
+
+* messages - split on \n character to multiple lines
+  - player messages
+  - console messages
+  
+
 * Mine bombs:
-  - prison reload bombs
-  - validate mine bombs when initially loading... 
+  - DONE: prison reload bombs
+  - DONE: validate mine bombs when initially loading... 
     - bomb name cannot have spaces or color formatting
-    - mineBombId should not have spaces in the name
+    - initial validation added
   - glowing effect (enchantment)
     - give madog24 stone{Enchantments:[{}]}
     - ItemMeta.addFlags(ItemFlag.HIDE_ENCHANTMENTS)
@@ -25,7 +37,7 @@
 * DONE: Works for me. HiPriority: Inventory full not producing any messages. 	alexaille
 
 
-* HiPriority: NPCs are generating a lot of errors. Real_Ganster
+* DONE: HiPriority: NPCs are generating a lot of errors. Real_Ganster
  - Citizens running command `mines` as player
 ` Prison |  VaultEconomyWrapper.getBalance(): Error: Cannot get economy for player vote so returning a value of 0. Failed to get an bukkit offline player.`
  - https://pastebin.com/JusySWDs
