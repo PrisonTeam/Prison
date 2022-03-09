@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.9c 2022-03-06
+# 3.3.0-alpha.9c 2022-03-08
+
+
+* **Changed the development environment and updated the java 1.8 to the latest release.**
 
 
 * **v3.3.0-alpha.9c 2022-03-06**
