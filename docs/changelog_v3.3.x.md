@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9c 2022-03-08
 
 
+* **Update CustomItems API from v4.1.3 to v4.1.15.**
+This update adds support for prison to get the drops from the CustomItem blocks.
+
+
 * **Changed the development environment and updated the java 1.8 to the latest release.**
 
 
