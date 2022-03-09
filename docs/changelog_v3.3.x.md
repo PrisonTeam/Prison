@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9c 2022-03-08
 
 
+* **Upgrade XSeries from v8.5.0.1 to v8.6.2.**
+
+
 * **Update CustomItems API from v4.1.3 to v4.1.15.**
 This update adds support for prison to get the drops from the CustomItem blocks.
 

@@ -106,7 +106,7 @@ dependencies {
 //    implementation 'com.github.cryptomorin:xseries:b95d195482'
     
     // https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
-	implementation 'com.github.cryptomorin:XSeries:8.5.0.1'
+	implementation 'com.github.cryptomorin:XSeries:8.6.2'
     
 
 
