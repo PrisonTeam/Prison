@@ -33,6 +33,11 @@ public class CustomItemsWrapper {
 		org.bukkit.block.Block spigotBlock = ((SpigotBlock) block).getWrapper();
 		return CustomItemsAPI.getCustomItemIDAtBlock( spigotBlock );
 	}
+	
+	public String getCustomBlockId( org.bukkit.block.Block spigotBlock ) {
+		
+		return CustomItemsAPI.getCustomItemIDAtBlock( spigotBlock );
+	}
 
 	/**
 	 * <p>This should only be called when running in the bukkit synchronous thread.

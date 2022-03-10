@@ -25,6 +25,7 @@ import java.util.Set;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.CustomBlockIntegration;
 import tech.mcprison.prison.internal.ItemStack;
@@ -35,6 +36,7 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
+import tech.mcprison.prison.spigot.customblock.CustomItems;
 import tech.mcprison.prison.util.Location;
 
 /**
@@ -72,8 +74,25 @@ public class SpigotBlock
     	SpigotBlock sBlock = null;
     	
 		XMaterial xMat = SpigotCompatibility.getInstance().getXMaterial( bukkitBlock );
+
+		if ( xMat == null ) {
+			for ( CustomBlockIntegration custIntegration : Prison.get().getIntegrationManager().getCustomBlockIntegrations() ) {
+				
+				if ( custIntegration.isRegistered() ) {
+					
+					if ( custIntegration instanceof CustomItems ) {
+						CustomItems cItems = (CustomItems) custIntegration;
+						
+						String blockId = cItems.getCustomBlockId(bukkitBlock);
+						
+						sBlock = new SpigotBlock( blockId, bukkitBlock );
+					}
+				}
+			}
+			
+		}
 		
-		if ( xMat != null ) {
+		else if ( xMat != null ) {
 			sBlock = new SpigotBlock( xMat.name(), bukkitBlock );
 		}
 

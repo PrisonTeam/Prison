@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9c 2022-03-10
 
 
+* **Within the SpigotBlock, now has hooks to load CustomItems blocks when trying to convert an org.bukkit.Block to a SpigotBlock.**
+
+
 * **For unbreakable blocks, reinforce that the location, which is the key, will not be null.**
 The block sometimes can be null, so by having the seperate location will not cause a failure if the block is null.
 
