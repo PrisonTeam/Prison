@@ -13,7 +13,10 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.9c 2022-03-08
+# 3.3.0-alpha.9c 2022-03-09
+
+
+* **Update some of the gradle settings and fix the new custom items api.**
 
 
 * **Upgrade XSeries from v8.5.0.1 to v8.6.2.**

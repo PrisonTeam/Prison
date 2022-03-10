@@ -130,3 +130,4 @@ gradle-app.setting
 # gradle/wrapper/gradle-wrapper.properties
 
 build.gradle.deploy
+prison-spigot/lib/old/

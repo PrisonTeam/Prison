@@ -188,7 +188,7 @@ shadowJar {
 
         include(dependency('me.clip:placeholderapi:2.10.9'))
 
-        include(dependency('com.github.cryptomorin:XSeries:8.5.0.1'))
+        include(dependency('com.github.cryptomorin:XSeries:8.6.2'))
         
         //include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
         //include(dependency('me.badbones69:crazyenchantments-plugin:1.8-Dev-Build-v8'))
