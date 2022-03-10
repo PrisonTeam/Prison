@@ -38,8 +38,12 @@ public class BlockUtils
 	
 
 	public boolean isUnbreakable( SpigotBlock block ) {
-		PrisonBlock pBlock = block.getPrisonBlock();
-		return isUnbreakable( pBlock );
+		boolean results = false;
+		if ( block != null ) {
+			PrisonBlock pBlock = block.getPrisonBlock();
+			results = isUnbreakable( pBlock );
+		}
+		return results;
 	}
 	
 	public boolean isUnbreakable( PrisonBlock block ) {

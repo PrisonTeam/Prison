@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9c 2022-03-09
 
 
+* **Fixed an issue when checking if a block is unbreakable... it should not have been null, so this is a temp fix to prevent an error.**
+
+
 * **CustomItems custom blocks: Hook up the new drops for CustomItems plugin.**
 
 
