@@ -7,12 +7,14 @@ import com.jojodmo.customitems.api.CustomItemsAPI;
 
 import tech.mcprison.prison.integration.CustomBlockIntegration;
 import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.Location;
 
@@ -49,6 +51,19 @@ public class CustomItems
 						{
 							Output.get().logInfo( "####  Custom Block: " + block.toString() );
 						}
+					}
+
+					String message = String.format(
+							"Enabling CustomItems v%s: Drops are ",
+							getVersion() );
+					
+					if ( semVer.compareTo( getVersion(), "4.1.15" ) >= 0 ) {
+						this.customItemsWrapper.setSupportsDrops( true );
+
+						Output.get().logInfo( message + " enabled." );
+					}
+					else {
+						Output.get().logInfo( message + "not enabled." );
 					}
 				}
 				else {
@@ -130,17 +145,14 @@ public class CustomItems
 	}
 	
 	@Override
-	public List<? extends ItemStack> getDrops( PrisonBlock prisonBlock ) {
-		List<? extends ItemStack> results = customItemsWrapper.getDrops( prisonBlock );
+	public List<? extends ItemStack> getDrops( Player player, PrisonBlock prisonBlock, ItemStack tool ) {
 		
+		SpigotPlayer sPlayer = player != null && player instanceof SpigotPlayer ? 
+											(SpigotPlayer) player : null;
+		SpigotItemStack sTool = tool != null && tool instanceof SpigotItemStack ?
+											(SpigotItemStack) tool : null;
 		
-//		PrisonBlock ciPBlock = getCustomBlock( prisonBlock );
-//		
-//		if ( ciPBlock != null ) {
-//			
-//			results.add( new ItemStack( 1, ciPBlock ) );
-//			
-//		}
+		List<? extends ItemStack> results = customItemsWrapper.getDrops( prisonBlock, sPlayer, sTool );
 		
 		return results;
 	}

@@ -249,7 +249,7 @@ public class PrisonDebugBlockInspector
     					) );
     	
     	
-    	printEventStatus( bbe, "-initial-", "", checkBlock, targetBlock, tool, output );
+    	printEventStatus( bbe, "-initial-", "", checkBlock, targetBlock, tool, output, player );
     	
     	for ( RegisteredListener listener : bbe.getHandlers().getRegisteredListeners() ) {
     		
@@ -266,7 +266,8 @@ public class PrisonDebugBlockInspector
 			}
     		
     		printEventStatus( bbe, 
-    				listener.getPlugin().getName(), listener.getPriority().name(), checkBlock, targetBlock, tool, output );
+    				listener.getPlugin().getName(), listener.getPriority().name(), checkBlock, targetBlock, 
+    				tool, output, player );
     		
     	}
     	
@@ -309,7 +310,7 @@ public class PrisonDebugBlockInspector
     		String plugin, String priority, 
     		SpigotBlock sBlock, MineTargetPrisonBlock targetBlock,
     		SpigotItemStack tool,
-    		List<String> output ) {
+    		List<String> output, SpigotPlayer player ) {
     	StringBuilder sb = new StringBuilder();
     	sb.append( "  " );
     	
@@ -320,7 +321,7 @@ public class PrisonDebugBlockInspector
     	SpigotBlock sBlk = (SpigotBlock) sBlock.getLocation().getBlockAt();
 
     	List<SpigotItemStack> bukkitDrops = new ArrayList<>();
-    	obbMines.collectBukkitDrops( bukkitDrops, targetBlock, tool, sBlk );
+    	obbMines.collectBukkitDrops( bukkitDrops, targetBlock, tool, sBlk, player );
     	bukkitDrops = obbMines.mergeDrops( bukkitDrops );
     	
     	sb.append( " &3Plugin: &7" ).append( plugin ).append( " " )

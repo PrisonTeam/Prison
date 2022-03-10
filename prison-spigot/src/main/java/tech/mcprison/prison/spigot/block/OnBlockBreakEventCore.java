@@ -671,7 +671,7 @@ public class OnBlockBreakEventCore
 					if ( pbBlockHit != null && matchedBlocks ) {
 						
 						// Confirmed the block is correct... so get the drops...
-						collectBukkitDrops( pmEvent.getBukkitDrops(), targetBlock, pmEvent.getItemInHand(), sBlockHit );
+						collectBukkitDrops( pmEvent.getBukkitDrops(), targetBlock, pmEvent.getItemInHand(), sBlockHit, pmEvent.getSpigotPlayer() );
 						
 						// If a chain reaction on explosions, this will prevent the same block from
 						// being processed more than once:
@@ -820,7 +820,7 @@ public class OnBlockBreakEventCore
 									if ( pBlockMined!= null && matchedExplodedBlocks ) {
 
 										// Confirmed the block is correct... so get the drops...
-										collectBukkitDrops( pmEvent.getBukkitDrops(), targetExplodedBlock, pmEvent.getItemInHand(), sBlockMined );
+										collectBukkitDrops( pmEvent.getBukkitDrops(), targetExplodedBlock, pmEvent.getItemInHand(), sBlockMined, pmEvent.getSpigotPlayer() );
 										
 										// If a chain reaction on explosions, this will prevent the same block from
 										// being processed more than once:

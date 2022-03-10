@@ -1,8 +1,10 @@
 package tech.mcprison.prison.spigot.customblock;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.jojodmo.customitems.api.CustomItemsAPI;
@@ -12,10 +14,13 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.util.Location;
 
 public class CustomItemsWrapper {
+
 	
+	private boolean supportsDrops = false;
 
 	private final SpigotPrison plugin;
 
@@ -95,20 +100,62 @@ public class CustomItemsWrapper {
 	 * with that future version.
 	 * </p>
 	 * 
+	 * 
+	 * CustomItemsAPI.breakCustomItemBlockWithoutDrops():
+	 * Break the given block, and return the drops instead of dropping them normally
+     * @param block - the block that should be broken
+     * @param player - the player that broke the block
+     * @param overrideItemUsed - what item should CustomItems pretend the user broke this block with? This should probably be the item in their main hand, but there are other special use cases where you might want to use a different ItemStack
+     * @param doBlockUpdate - whether or not this should trigger a block update
+     * @param override - false by default. Set this to true if you want to override CustomItem's decision to cancel the block break
+     * @return
+     *      {@code null} if the block is not a custom block, and a two-element entry otherwise:
+     *          The first entry is false if CustomItems cancelled the block break, and true if the block was broken. This will always be true if you set override to true.
+     *          The second entry is also a two-element entry:
+     *              The first entry is overrideItemUsed after being modified by any actions. You should most likely replace whatever overrideItemUsed is in the player's inventory with this item stack.
+     *              The second entry is a list of the items that the block would have normally dropped. This will be empty if the first entry is false
+	 * 
+	 * 
 	 * @param prisonBlock
 	 * @return
 	 */
-	public List<SpigotItemStack> getDrops( PrisonBlock prisonBlock ) {
+	public List<SpigotItemStack> getDrops( PrisonBlock prisonBlock, SpigotPlayer player, SpigotItemStack tool ) {
 		List<SpigotItemStack> results = new ArrayList<>();
 		
-		org.bukkit.inventory.ItemStack bItemStack = CustomItemsAPI.getCustomItem( prisonBlock.getBlockName() );
-		
-		SpigotItemStack sItemStack = new SpigotItemStack( bItemStack );
-
-		// Fix itemStack's displayName and set to the correct BlockType:
-		sItemStack.setPrisonBlock( prisonBlock );
-		
-		results.add( sItemStack );
+		if ( isSupportsDrops() && prisonBlock instanceof SpigotBlock ) {
+			
+			SpigotBlock sBlock = (SpigotBlock) prisonBlock;
+			
+			SimpleEntry<Boolean, SimpleEntry<ItemStack, List<ItemStack>>> cuiDropResults = 
+					CustomItemsAPI.breakCustomItemBlockWithoutDrops( 
+						sBlock.getWrapper(), player.getWrapper(), tool.getBukkitStack(), false, true );
+			
+			if ( cuiDropResults != null ) {
+				
+				Boolean cuiCanceled = cuiDropResults.getKey();
+				ItemStack toolOverridden = cuiDropResults.getValue().getKey();
+				List<ItemStack> cuiDrops = cuiDropResults.getValue().getValue();
+				
+				if ( cuiCanceled && cuiDrops != null && cuiDrops.size() > 0 ) {
+					
+					for (ItemStack itemStack : cuiDrops) {
+						results.add( new SpigotItemStack( itemStack ) );
+					}
+				}
+			}
+			
+		}
+		else {
+			
+			org.bukkit.inventory.ItemStack bItemStack = CustomItemsAPI.getCustomItem( prisonBlock.getBlockName() );
+			
+			SpigotItemStack sItemStack = new SpigotItemStack( bItemStack );
+			
+			// Fix itemStack's displayName and set to the correct BlockType:
+			sItemStack.setPrisonBlock( prisonBlock );
+			
+			results.add( sItemStack );
+		}
 		
 		return results;
 	}
@@ -119,5 +166,12 @@ public class CustomItemsWrapper {
 	
 	public SpigotPrison getPlugin() {
 		return plugin;
+	}
+
+	public boolean isSupportsDrops() {
+		return supportsDrops;
+	}
+	public void setSupportsDrops(boolean supportsDrops) {
+		this.supportsDrops = supportsDrops;
 	}
 }

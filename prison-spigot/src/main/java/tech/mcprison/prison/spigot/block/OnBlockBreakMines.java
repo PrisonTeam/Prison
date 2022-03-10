@@ -15,12 +15,11 @@ import tech.mcprison.prison.integration.CustomBlockIntegration;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
-import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.modules.Module;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -306,7 +305,7 @@ public class OnBlockBreakMines
 	 * @return
 	 */
 	public boolean collectBukkitDrops( List<SpigotItemStack> bukkitDrops, MineTargetPrisonBlock targetBlock,
-			SpigotItemStack itemInHand, SpigotBlock sBlockMined )
+			SpigotItemStack itemInHand, SpigotBlock sBlockMined, SpigotPlayer player )
 	{
 		boolean results = false;
 
@@ -317,7 +316,7 @@ public class OnBlockBreakMines
 			
 			for ( CustomBlockIntegration customBlock : cbIntegrations )
 			{
-				List<? extends ItemStack> drops = customBlock.getDrops( sBlockMined );
+				List<? extends ItemStack> drops = customBlock.getDrops( player, sBlockMined, itemInHand );
 				
 				for ( ItemStack drop : drops )
 				{
