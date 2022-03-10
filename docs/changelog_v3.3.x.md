@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.9c 2022-03-09
+# 3.3.0-alpha.9c 2022-03-10
+
+
+* **For unbreakable blocks, reinforce that the location, which is the key, will not be null.**
+The block sometimes can be null, so by having the seperate location will not cause a failure if the block is null.
 
 
 * **Fixed an issue when checking if a block is unbreakable... it should not have been null, so this is a temp fix to prevent an error.**

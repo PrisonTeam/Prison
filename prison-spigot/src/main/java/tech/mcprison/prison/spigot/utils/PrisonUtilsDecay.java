@@ -117,7 +117,7 @@ public class PrisonUtilsDecay
 			
 			Mine mine = spigotApi.findMineLocation( sourceBlock );
 			
-			UnbreakableBlockData data = BlockUtils.getInstance().addUnbreakable( sourceBlock, mine );
+			UnbreakableBlockData data = BlockUtils.getInstance().addUnbreakable( sourceBlock.getLocation(), sourceBlock, mine );
 			data.setTargetBlock( targetBlock );
 			data.setDecayTimeTicks( decayTimeTicks );
 			
@@ -215,7 +215,7 @@ public class PrisonUtilsDecay
 			
 			Mine mine = spigotApi.findMineLocation( sourceBlock );
 			
-			UnbreakableBlockData data = BlockUtils.getInstance().addUnbreakable( sourceBlock, mine );
+			UnbreakableBlockData data = BlockUtils.getInstance().addUnbreakable( sourceBlock.getLocation(), sourceBlock, mine );
 			data.setTargetBlock( targetBlock );
 			data.setDecayTimeTicks( decayTimeTicks );
 			
@@ -319,7 +319,7 @@ public class PrisonUtilsDecay
 			
 			Mine mine = spigotApi.findMineLocation( sourceBlock );
 			
-			UnbreakableBlockData data = BlockUtils.getInstance().addUnbreakable( sourceBlock, mine );
+			UnbreakableBlockData data = BlockUtils.getInstance().addUnbreakable( sourceBlock.getLocation(), sourceBlock, mine );
 			data.setTargetBlock( targetBlock );
 			data.setDecayTimeTicks( decayTimeTicks );
 			
