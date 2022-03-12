@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9c 2022-03-12
 
 
+* **BugFix: Prevent a possible NPE when blocks are null when calculating gravity effected blocks, and ensuring there is a location when trying to place blocks.**
+Both of these should never be an issue, but based upon different conditions, they can become an issue.
+
+
 * **Added an autoFeatures to enable/disable the use of CustomItems' getDrops().**
 
 

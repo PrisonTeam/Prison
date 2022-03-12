@@ -233,7 +233,7 @@ public class SpigotWorld implements World {
 					{
 						current = tBlock;
 						
-						if ( tBlock != null ) {
+						if ( tBlock != null && tBlock.getLocation() != null ) {
 							
 							final PrisonBlock pBlock = tBlock.getPrisonBlock( resetType );
 							
@@ -259,15 +259,15 @@ public class SpigotWorld implements World {
 						String resetTypeBlockName = pBlock == null ? "null" : pBlock.getBlockName();
 						
 						Output.get().logError( 
-								String.format( "SpigotWorld.setBlocksSynchronously: %s  resetType: %s  %s",
-										blkName, resetType.name(), resetTypeBlockName ), e );
+								String.format( "SpigotWorld.setBlocksSynchronously Exception: %s  resetType: %s  %s :: %s",
+										blkName, resetType.name(), resetTypeBlockName, e.getMessage() ), e );
 					}
 					else {
 						
 						Output.get().logError( 
-								String.format( "SpigotWorld.setBlocksSynchronously: --noBlock--  resetType: %s  " +
-										"[unable to set 'current']",
-										resetType.name()  ), e );
+								String.format( "SpigotWorld.setBlocksSynchronously Exception: --noBlock--  resetType: %s  " +
+										"[unable to set 'current'] :: %s",
+										resetType.name(), e.getMessage() ), e );
 					}
 				}
 				

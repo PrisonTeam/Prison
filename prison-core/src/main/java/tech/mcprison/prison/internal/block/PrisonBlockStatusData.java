@@ -341,8 +341,10 @@ public abstract class PrisonBlockStatusData {
 	{
 		boolean results = false;
 		
-		switch ( blockName )
-		{
+		if ( blockName != null ) {
+			
+			switch ( blockName )
+			{
 			case "sand":
 			case "red_sand":
 			case "gravel":
@@ -373,6 +375,7 @@ public abstract class PrisonBlockStatusData {
 			case "dragon_egg":
 			{
 				results = true;
+			}
 			}
 		}
 		return results;
