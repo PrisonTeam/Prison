@@ -60,10 +60,10 @@ public class CustomItems
 					if ( semVer.compareTo( getVersion(), "4.1.15" ) >= 0 ) {
 						this.customItemsWrapper.setSupportsDrops( true );
 
-						Output.get().logInfo( message + " enabled." );
+						Output.get().logInfo( "&7" + message + "enabled." );
 					}
 					else {
-						Output.get().logInfo( message + "not enabled." );
+						Output.get().logInfo( "&c" + message + "not enabled. &3Upgrade to v4.1.15 or newer." );
 					}
 				}
 				else {

@@ -56,9 +56,18 @@ public class SpigotBlock
      * is a custom block type.
      */
     private transient Set<PrisonBlockType> prisonBlockTypes;
-
+    
     private SpigotBlock( String blockName, org.bukkit.block.Block bBlock ) {
     	super( blockName );
+    	
+    	this.bBlock = bBlock;
+    	
+    	this.prisonBlockTypes = new HashSet<>();
+    	
+    }
+
+    private SpigotBlock( PrisonBlockType blockType, String blockName, org.bukkit.block.Block bBlock ) {
+    	super( blockType, blockName );
     	
     	this.bBlock = bBlock;
     	
@@ -73,28 +82,34 @@ public class SpigotBlock
 	public static SpigotBlock getSpigotBlock( org.bukkit.block.Block bukkitBlock) {
     	SpigotBlock sBlock = null;
     	
-		XMaterial xMat = SpigotCompatibility.getInstance().getXMaterial( bukkitBlock );
-
-		if ( xMat == null ) {
-			for ( CustomBlockIntegration custIntegration : Prison.get().getIntegrationManager().getCustomBlockIntegrations() ) {
-				
-				if ( custIntegration.isRegistered() ) {
-					
-					if ( custIntegration instanceof CustomItems ) {
-						CustomItems cItems = (CustomItems) custIntegration;
-						
-						String blockId = cItems.getCustomBlockId(bukkitBlock);
-						
-						sBlock = new SpigotBlock( blockId, bukkitBlock );
-					}
-				}
-			}
-			
-		}
-		
-		else if ( xMat != null ) {
-			sBlock = new SpigotBlock( xMat.name(), bukkitBlock );
-		}
+    	if (bukkitBlock != null ) {
+    		
+    		XMaterial xMat = SpigotCompatibility.getInstance().getXMaterial( bukkitBlock );
+    		
+    		if ( xMat == null ) {
+    			for ( CustomBlockIntegration custIntegration : Prison.get().getIntegrationManager().getCustomBlockIntegrations() ) {
+    				
+    				if ( custIntegration.isRegistered() ) {
+    					
+    					if ( custIntegration instanceof CustomItems ) {
+    						CustomItems cItems = (CustomItems) custIntegration;
+    						
+    						String blockId = cItems.getCustomBlockId(bukkitBlock);
+    						
+    						if ( blockId != null ) {
+    							
+    							sBlock = new SpigotBlock( cItems.getBlockType(), blockId, bukkitBlock );
+    						}
+    					}
+    				}
+    			}
+    			
+    		}
+    		
+    		else if ( xMat != null ) {
+    			sBlock = new SpigotBlock( xMat.name(), bukkitBlock );
+    		}
+    	}
 
     	
 //    	SpigotBlock sBlock = SpigotCompatibility.getInstance().getPrisonBlock( bBlock );

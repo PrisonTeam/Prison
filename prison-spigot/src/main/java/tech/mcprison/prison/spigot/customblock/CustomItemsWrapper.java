@@ -4,13 +4,17 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.jojodmo.customitems.api.CustomItemsAPI;
 
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
@@ -127,25 +131,56 @@ public class CustomItemsWrapper {
 	public List<SpigotItemStack> getDrops( PrisonBlock prisonBlock, SpigotPlayer player, SpigotItemStack tool ) {
 		List<SpigotItemStack> results = new ArrayList<>();
 		
-		if ( isSupportsDrops() && prisonBlock instanceof SpigotBlock ) {
+		if ( isSupportsDrops() && 
+				prisonBlock instanceof SpigotBlock ) {
 			
 			SpigotBlock sBlock = (SpigotBlock) prisonBlock;
 			
-			SimpleEntry<Boolean, SimpleEntry<ItemStack, List<ItemStack>>> cuiDropResults = 
-					CustomItemsAPI.breakCustomItemBlockWithoutDrops( 
-						sBlock.getWrapper(), player.getWrapper(), tool.getBukkitStack(), false, true );
+			org.bukkit.block.Block bBlock = sBlock.getWrapper();
+			Player bPlayer = player.getWrapper();
+			ItemStack bTool = tool.getBukkitStack();
 			
-			if ( cuiDropResults != null ) {
+			if ( bBlock != null && bPlayer != null && bTool != null ) {
 				
-				Boolean cuiCanceled = cuiDropResults.getKey();
-				ItemStack toolOverridden = cuiDropResults.getValue().getKey();
-				List<ItemStack> cuiDrops = cuiDropResults.getValue().getValue();
 				
-				if ( cuiCanceled && cuiDrops != null && cuiDrops.size() > 0 ) {
+				SimpleEntry<Boolean, SimpleEntry<ItemStack, List<ItemStack>>> cuiDropResults = null;
+				
+				try {
+					cuiDropResults =
+							CustomItemsAPI.breakCustomItemBlockWithoutDrops( 
+									bBlock, bPlayer, bTool, false, true );
+				} 
+				catch (Exception e) {
+					Output.get().logError( "Failed: CustomItemsWrapper.getDrops: breakCustomItemBlockWithoutDrops: ", 
+							e );
+//					e.printStackTrace();
+				}
+				
+				if ( cuiDropResults != null ) {
 					
-					for (ItemStack itemStack : cuiDrops) {
-						results.add( new SpigotItemStack( itemStack ) );
+					Boolean cuiCanceled = cuiDropResults.getKey();
+					ItemStack toolOverridden = cuiDropResults.getValue().getKey();
+					List<ItemStack> cuiDrops = cuiDropResults.getValue().getValue();
+					
+					if ( cuiDrops != null && cuiDrops.size() > 0 ) {
+						
+						for (ItemStack itemStack : cuiDrops) {
+							results.add( new SpigotItemStack( itemStack ) );
+						}
 					}
+				}
+			}
+			else {
+				if ( Output.get().isDebug() ) {
+					String message = String.format(
+							"CustomItems.getDrops(): failed to provide non-null inputs.  "
+							+ "block: %s  player: %s  tool: %s", 
+							bBlock == null ? "null" : prisonBlock.getBlockName(), 
+							bPlayer == null ? "null" : player.getName(),
+							bTool == null ? "null" : tool.getName()
+							);
+					
+					Output.get().logDebug( message );
 				}
 			}
 			
