@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.9c 2022-03-10
+# 3.3.0-alpha.9c 2022-03-12
+
+
+* **Report that bedrock users are not getting their tokens.**
+When in debug mode, if their balance is not correctly updated it will report it in the console.
 
 
 * **v3.3.0-alpha.9d 2022-03-10**

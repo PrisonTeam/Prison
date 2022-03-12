@@ -35,6 +35,7 @@ import java.util.UUID;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.CommandPagedData;
@@ -1712,21 +1713,30 @@ public class PrisonCommand
     	}
     	
     	Player player = getPlayer( playerName );
+    	PlayerCachePlayerData pCache = player.getPlayerCachePlayerData();
+    	
+    	long tokenBal = pCache.getTokens();
     	
     	if ( forcePlayer ) {
     		
-    		player.getPlayerCachePlayerData().addTokens( amount );
+    		pCache.addTokens( amount );
     	}
     	else {
     		
-    		player.getPlayerCachePlayerData().addTokensAdmin( amount );
+    		pCache.addTokensAdmin( amount );
     	}
     	
+    	if ( pCache.getTokens() != tokenBal + amount && Output.get().isDebug() ) {
+    		Output.get().logError( 
+    				String.format( 
+    						"AddTokens failure: player: %s  Tokens: %d  Should have been: %d",
+    							player.getName(), pCache.getTokens(), tokenBal + amount ));
+    	}
     	
     	if ( !silent ) {
     		
     		String message = coreTokensAddedAmountMsg( player.getName(), 
-    					player.getPlayerCachePlayerData().getTokens(), amount );
+    				pCache.getTokens(), amount );
     		
 //    		String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
 //    		
