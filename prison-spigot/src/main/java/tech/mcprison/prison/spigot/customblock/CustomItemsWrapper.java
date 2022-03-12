@@ -132,6 +132,7 @@ public class CustomItemsWrapper {
 		List<SpigotItemStack> results = new ArrayList<>();
 		
 		if ( isSupportsDrops() && 
+				AutoFeaturesWrapper.getInstance().isBoolean( AutoFeatures.isUseCustomBlocksCustomItemsGetDrops ) &&
 				prisonBlock instanceof SpigotBlock ) {
 			
 			SpigotBlock sBlock = (SpigotBlock) prisonBlock;

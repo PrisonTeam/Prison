@@ -16,6 +16,14 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9c 2022-03-12
 
 
+* **Added an autoFeatures to enable/disable the use of CustomItems' getDrops().**
+
+
+* **CustomItems integration: Adding support for getDrops() from CUI.**
+This integrates custom blocks in to getting the SpigotBlock (an internal prison block).
+It's not yet functional due to issues within CUI, but this is the initial setup.
+
+
 * **Report that bedrock users are not getting their tokens.**
 When in debug mode, if their balance is not correctly updated it will report it in the console.
 

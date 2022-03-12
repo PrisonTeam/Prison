@@ -75,6 +75,10 @@ public class AutoFeaturesFileConfig {
 	    				"NOTE: If you are using spigot v1.12.0 or higher, then do not use these " +
 	    				"'forced' settings, instead adjust both 'cancelAllBlockBreakEvents' and " +
 	    				"'cancelAllBlockEventBlockDrops' since that will help ensure it works better."),
+	    		
+	    		
+	    		isUseCustomBlocksCustomItemsGetDrops( otherPlugins, true ),
+	    		
     		
 	    	blockBreakEvents(options),
 	    	
