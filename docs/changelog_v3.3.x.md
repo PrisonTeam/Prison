@@ -16,6 +16,12 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9c 2022-03-12
 
 
+* **Upgrade bstats to v3.0.0, was at v2.2.1.**
+Hoping this will better report the proper usage.
+Added more custom details on the graphs: player count, defaultRankCount, prestigesRankCount, otherRankCounts.
+Set api version to v3.3.
+
+
 * **BugFix: Prevent a possible NPE when blocks are null when calculating gravity effected blocks, and ensuring there is a location when trying to place blocks.**
 Both of these should never be an issue, but based upon different conditions, they can become an issue.
 

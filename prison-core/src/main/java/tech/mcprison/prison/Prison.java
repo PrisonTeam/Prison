@@ -74,6 +74,7 @@ public class Prison
 	private static Prison instance = null;
 
     public static final int API_LEVEL = 3;
+    public static final int API_LEVEL_MINOR = 3;
     
     private String minecraftVersion;
     private List<Integer> versionMajMin;

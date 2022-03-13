@@ -451,8 +451,28 @@ public class PrisonRanks
 
     public int getRankCount() {
     	int rankCount = getRankManager() == null ||getRankManager().getRanks() == null ? 0 : 
-    			getRankManager().getRanks().size();
+    		getRankManager().getRanks().size();
     	return rankCount;
+    }
+    
+    private int getLadderRankCount( String ladderName ) {
+    	int rankCount = 0;
+    	
+    	if ( getLadderManager() != null && getLadderManager().getLadders() != null ) {
+    		RankLadder ladder = getLadderManager().getLadder( ladderName );
+    		if ( ladder != null ) {
+    			rankCount = ladder.getRanks().size();
+    		}
+    	}
+    	return rankCount;
+    }
+    
+    public int getDefaultLadderRankCount() {
+    	return getLadderRankCount( "default" );
+    }
+    
+    public int getPrestigesLadderRankCount() {
+    	return getLadderRankCount( "prestiges" );
     }
     
     public int getladderCount() {

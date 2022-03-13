@@ -497,7 +497,9 @@ public class SpigotPrison
         if (!getConfig().getBoolean("send-metrics", true)) {
             return; // Don't check if they don't want it
         }
-        Metrics metrics = new Metrics( this, 657 );
+        
+        int pluginId = 657;
+        Metrics metrics = new Metrics( this, pluginId );
 
         // Report the modules being used
         metrics.addCustomChart(new SimpleBarChart("modules_used", () -> {
@@ -510,14 +512,21 @@ public class SpigotPrison
 
         // Report the API level
         metrics.addCustomChart(
-                new SimplePie("api_level", () -> "API Level " + Prison.API_LEVEL));
+                new SimplePie("api_level", () -> 
+                	"API Level " + Prison.API_LEVEL + "." + Prison.API_LEVEL_MINOR ));
         
         Optional<Module> prisonMinesOpt = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
         Optional<Module> prisonRanksOpt = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
         
         int mineCount = prisonMinesOpt.map(module -> ((PrisonMines) module).getMineManager().getMines().size()).orElse(0);
         int rankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getRankCount()).orElse(0);
+        
+        int defaultRankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getDefaultLadderRankCount()).orElse(0);
+        int prestigesRankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getPrestigesLadderRankCount()).orElse(0);
+        int otherRankCount = rankCount - defaultRankCount - prestigesRankCount;
+        
         int ladderCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getladderCount()).orElse(0);
+        int playerCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getPlayersCount()).orElse(0);
         
         metrics.addCustomChart(new MultiLineChart("mines_ranks_and_ladders", new Callable<Map<String, Integer>>() {
             @Override
@@ -526,8 +535,21 @@ public class SpigotPrison
                 valueMap.put("mines", mineCount);
                 valueMap.put("ranks", rankCount);
                 valueMap.put("ladders", ladderCount);
+                valueMap.put("players", playerCount);
                 return valueMap;
             }
+        }));
+        
+        metrics.addCustomChart(new MultiLineChart("prison_ranks", new Callable<Map<String, Integer>>() {
+        	@Override
+        	public Map<String, Integer> call() throws Exception {
+        		Map<String, Integer> valueMap = new HashMap<>();
+        		valueMap.put("ranks", rankCount);
+        		valueMap.put("defaultRanks", defaultRankCount);
+        		valueMap.put("prestigesRanks", prestigesRankCount);
+        		valueMap.put("otherRanks", otherRankCount);
+        		return valueMap;
+        	}
         }));
     }
 
