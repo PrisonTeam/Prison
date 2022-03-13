@@ -235,10 +235,11 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 			//          a mine bomb which is not a pickaxe so the drops will be ZERO.  If they
 			//          used their last mine bomb, then auto features will detect only AIR 
 			//          in their hand.
-			if ( e.getToolInHand() != null ) {
+			if ( e.getToolInHand() != null && e.getToolInHand() instanceof SpigotItemStack ) {
 				pmEvent.setItemInHand( (SpigotItemStack) e.getToolInHand() );
-				
 			}
+			
+			
 			
 			// Note: If the mineBomb is set, then the bomb itself uses a pseudo 
 			//       tool in hand, so need to disable durability calculations since

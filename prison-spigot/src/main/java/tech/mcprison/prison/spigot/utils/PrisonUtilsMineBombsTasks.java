@@ -59,7 +59,7 @@ public class PrisonUtilsMineBombsTasks
 	
 	protected void setFortune( SpigotItemStack itemInHand, int fortuneLevel ) {
 
-		if ( itemInHand != null && itemInHand.getBukkitStack() != null && itemInHand.getBukkitStack().hasItemMeta() ) {
+		if ( itemInHand != null && itemInHand.getBukkitStack() != null ) {
 
 			itemInHand.getBukkitStack().addUnsafeEnchantment( Enchantment.LOOT_BONUS_BLOCKS, fortuneLevel );
 
@@ -72,7 +72,7 @@ public class PrisonUtilsMineBombsTasks
 	
 	protected void setUnbreaking( SpigotItemStack itemInHand, int durabilityLevel ) {
 		
-		if ( itemInHand != null && itemInHand.getBukkitStack() != null && itemInHand.getBukkitStack().hasItemMeta() ) {
+		if ( itemInHand != null && itemInHand.getBukkitStack() != null ) {
 			
 			itemInHand.getBukkitStack().addUnsafeEnchantment( Enchantment.DURABILITY, durabilityLevel );
 		}
@@ -80,7 +80,7 @@ public class PrisonUtilsMineBombsTasks
 	
 	protected void setDigSpeed( SpigotItemStack itemInHand, int digSpeedLevel ) {
 		
-		if ( itemInHand != null && itemInHand.getBukkitStack() != null && itemInHand.getBukkitStack().hasItemMeta() ) {
+		if ( itemInHand != null && itemInHand.getBukkitStack() != null ) {
 			
 			itemInHand.getBukkitStack().addUnsafeEnchantment( Enchantment.DIG_SPEED, digSpeedLevel );
 		}
