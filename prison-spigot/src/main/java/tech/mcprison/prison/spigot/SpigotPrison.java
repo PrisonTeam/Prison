@@ -502,18 +502,21 @@ public class SpigotPrison
         Metrics metrics = new Metrics( this, pluginId );
 
         // Report the modules being used
-        metrics.addCustomChart(new SimpleBarChart("modules_used", () -> {
+        SimpleBarChart sbcModulesUsed = new SimpleBarChart("modules_used", () -> {
             Map<String, Integer> valueMap = new HashMap<>();
             for (Module m : PrisonAPI.getModuleManager().getModules()) {
                 valueMap.put(m.getName(), 1);
             }
             return valueMap;
-        }));
+        });
+        metrics.addCustomChart( sbcModulesUsed );
 
         // Report the API level
-        metrics.addCustomChart(
+        SimplePie spApiLevel = 
                 new SimplePie("api_level", () -> 
-                	"API Level " + Prison.API_LEVEL + "." + Prison.API_LEVEL_MINOR ));
+                	"API Level " + Prison.API_LEVEL + "." + Prison.API_LEVEL_MINOR );
+    	metrics.addCustomChart( spApiLevel );
+        
         
         Optional<Module> prisonMinesOpt = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
         Optional<Module> prisonRanksOpt = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
@@ -528,7 +531,8 @@ public class SpigotPrison
         int ladderCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getladderCount()).orElse(0);
         int playerCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getPlayersCount()).orElse(0);
         
-        metrics.addCustomChart(new MultiLineChart("mines_ranks_and_ladders", new Callable<Map<String, Integer>>() {
+        MultiLineChart mlcMinesRanksAndLadders = 
+        		new MultiLineChart("mines_ranks_and_ladders", new Callable<Map<String, Integer>>() {
             @Override
             public Map<String, Integer> call() throws Exception {
                 Map<String, Integer> valueMap = new HashMap<>();
@@ -538,9 +542,10 @@ public class SpigotPrison
                 valueMap.put("players", playerCount);
                 return valueMap;
             }
-        }));
+        });
+        metrics.addCustomChart( mlcMinesRanksAndLadders );
         
-        metrics.addCustomChart(new MultiLineChart("prison_ranks", new Callable<Map<String, Integer>>() {
+        MultiLineChart mlcPrisonRanks = new MultiLineChart("prison_ranks", new Callable<Map<String, Integer>>() {
         	@Override
         	public Map<String, Integer> call() throws Exception {
         		Map<String, Integer> valueMap = new HashMap<>();
@@ -550,7 +555,8 @@ public class SpigotPrison
         		valueMap.put("otherRanks", otherRankCount);
         		return valueMap;
         	}
-        }));
+        });
+        metrics.addCustomChart( mlcPrisonRanks );
     }
 
     /**

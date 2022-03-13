@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.9c 2022-03-12
+# 3.3.0-alpha.9c 2022-03-13
+
+
+* **Update the bstats configs for v3.0.0.**
+Although it compiled without the bstats-base, it failed to run.  I suspect my local cache for gradle was incorrectly providing objects when it shouldn't have.
 
 
 * **Upgrade bstats to v3.0.0, was at v2.2.1.**

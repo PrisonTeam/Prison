@@ -82,6 +82,7 @@ dependencies {
     implementation project(':prison-sellall')
 
 
+    implementation 'org.bstats:bstats-base:3.0.0'
     implementation 'org.bstats:bstats-bukkit:3.0.0'
 //    implementation 'org.bstats:bstats-base:2.2.1'
 //    implementation 'org.bstats:bstats-bukkit:2.2.1'
@@ -184,6 +185,7 @@ shadowJar {
         include(dependency('org.apache.commons:commons-lang3:3.12.0'))
         include(dependency('com.google.code.gson:gson:2.8.6'))
         
+        include(dependency('org.bstats:bstats-base:3.0.0'))
         include(dependency('org.bstats:bstats-bukkit:3.0.0'))
 //        include(dependency('org.bstats:bstats-base:2.2.1'))
 //        include(dependency('org.bstats:bstats-bukkit:2.2.1'))
