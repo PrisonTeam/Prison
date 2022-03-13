@@ -91,7 +91,7 @@ public class OnBlockBreakExternalEvents {
 	}
 	
 	
-	protected void registerAllExternalEvents() {
+	public void registerAllExternalEvents() {
 		
 		if ( !setup ) {
 			setup = true;
@@ -167,7 +167,7 @@ public class OnBlockBreakExternalEvents {
 //		//handlers.get
 //	}
 	
-	protected StringBuilder checkAllExternalEvents( BlockBreakEvent e ) {
+	public StringBuilder checkAllExternalEvents( BlockBreakEvent e ) {
 		
 		// check mcmmo
 		StringBuilder sb = checkMCMMO( e );

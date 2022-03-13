@@ -123,6 +123,8 @@ public class SpigotPrison
     
     private AutoManagerFeatures autoFeatures = null;
 //    private FileConfiguration autoFeaturesConfig = null;
+    
+    private OnBlockBreakEventListener blockBreakEventListeners;
 
     private MessagesConfig messagesConfig;
     private GuiConfig guiConfig;
@@ -309,7 +311,7 @@ public class SpigotPrison
         
         
         // The BlockBreakEvents must be registered after the mines and ranks modules have been enabled:
-        new OnBlockBreakEventListener().registerAllBlockBreakEvents( this );
+        getBlockBreakEventListeners().registerAllBlockBreakEvents( this );
         
         
         initMetrics();
@@ -403,7 +405,14 @@ public class SpigotPrison
     }
     
     
-    public FileConfiguration getGuiConfig() {
+    public OnBlockBreakEventListener getBlockBreakEventListeners() {
+    	if ( blockBreakEventListeners == null ) {
+            this.blockBreakEventListeners = new OnBlockBreakEventListener();
+    	}
+		return blockBreakEventListeners;
+	}
+
+	public FileConfiguration getGuiConfig() {
     	if (guiConfig == null) {
     		guiConfig = new GuiConfig();
     	}

@@ -54,13 +54,12 @@ import tech.mcprison.prison.util.Text;
  *
  *
  */
-public class AutoManagerFeatures
+public abstract class AutoManagerFeatures
 		extends OnBlockBreakEventCore {
-
 
 	private Random random = new Random();
 
-
+	
 	public AutoManagerFeatures() {
 		super();
 

@@ -1,10 +1,13 @@
 package tech.mcprison.prison.spigot.autofeatures.events;
 
 import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
 
@@ -12,26 +15,45 @@ import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
+import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
+import tech.mcprison.prison.spigot.block.OnBlockBreakExternalEvents;
+import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 public class AutoManagerTokenEnchant 
-	extends AutoManagerEventsManager {
+	extends AutoManagerFeatures 
+	implements PrisonEventManager {
+	
+	private BlockBreakPriority bbPriority;
+	
+	private boolean teExplosionTriggerEnabled;
 
 	public AutoManagerTokenEnchant() {
         super();
         
+        this.teExplosionTriggerEnabled = true;
     }
 	
+	
+	public BlockBreakPriority getBbPriority() {
+		return bbPriority;
+	}
+	public void setBbPriority( BlockBreakPriority bbPriority ) {
+		this.bbPriority = bbPriority;
+	}
 	
 	@Override
 	public void registerEvents() {
 	
 		initialize();
-		
 	}
 
 	
@@ -45,36 +67,11 @@ public class AutoManagerTokenEnchant
 				return;
 			}
 			
-			genericBlockExplodeEvent( e, bbPriority );
+			handleTEBlockExplodeEvent( e, bbPriority );
 //        	genericBlockExplodeEventAutoManager( e );
         }
     }
     
-//    public class OnBlockBreakEventTokenEnchantEventListener
-//	    extends AutoManagerTokenEnchant
-//	    implements Listener {
-//    	
-//    	@EventHandler(priority=EventPriority.NORMAL) 
-//    	public void onTEBlockExplode(TEBlockExplodeEvent e) {
-//    		if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
-//    			return;
-//    		}
-//    		genericBlockExplodeEvent( e );
-//    	}
-//    }
-//    
-//    public class OnBlockBreakEventTokenEnchantEventListenerMonitor
-//	    extends AutoManagerTokenEnchant
-//	    implements Listener {
-//    	
-//    	@EventHandler(priority=EventPriority.MONITOR) 
-//    	public void onTEBlockExplode(TEBlockExplodeEvent e) {
-//    		if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
-//    			return;
-//    		}
-//    		genericBlockExplodeEventMonitor( e );
-//    	}
-//    }
     
     @Override
     public void initialize() {
@@ -196,8 +193,7 @@ public class AutoManagerTokenEnchant
     @Override
     public void unregisterListeners() {
 
-    	super.unregisterListeners();
-    	
+//    	super.unregisterListeners();
     }
     
     
@@ -259,5 +255,214 @@ public class AutoManagerTokenEnchant
 		}
 	}
     
+	/**
+	 * <p>Since there are multiple blocks associated with this event, pull out the player first and
+	 * get the mine, then loop through those blocks to make sure they are within the mine.
+	 * </p>
+	 * 
+	 * <p>The logic in this function is slightly different compared to genericBlockEvent() because this
+	 * event contains multiple blocks so it's far more efficient to process the player data once. 
+	 * So that basically needed a slight refactoring.
+	 * </p>
+	 * 
+	 * @param e
+	 */
+	public void handleTEBlockExplodeEvent( TEBlockExplodeEvent e, BlockBreakPriority bbPriority ) {
 	
+//	, boolean monitor, boolean blockEventsOnly, 
+//			boolean autoManager ) {
+
+		long start = System.nanoTime();
+		
+    	if ( e.isCancelled() ||  ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlock()) ) {
+    		return;
+    	}
+    	
+
+		// Register all external events such as mcMMO and EZBlocks:
+		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
+		
+		StringBuilder debugInfo = new StringBuilder();
+		
+		
+		debugInfo.append( String.format( "### ** genericBlockExplodeEvent ** ### " +
+				"(event: TEBlockExplodeEvent, config: %s, priority: %s, canceled: %s) ",
+				bbPriority.name(),
+				bbPriority.getBukkitEventPriority().name(),
+				(e.isCancelled() ? "TRUE " : "FALSE")
+				) );
+		
+		
+		
+    	if ( bbPriority != BlockBreakPriority.MONITOR && !e.isCancelled() || bbPriority == BlockBreakPriority.MONITOR ) {
+
+
+
+    		
+	    	String eP = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
+			boolean isTEExplosiveEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+
+
+    		// Need to wrap in a Prison block so it can be used with the mines:
+    		SpigotBlock sBlock = SpigotBlock.getSpigotBlock(e.getBlock());
+    		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
+    		
+    		BlockEventType eventType = BlockEventType.TEXplosion;
+    		String triggered = checkCEExplosionTriggered( e );
+    		
+    		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
+    					sBlock, sPlayer, bbPriority, eventType, triggered );
+    		
+    		// NOTE: Token Enchant will pass the event's block to prison, but that block may 
+    		//       have already been processed by prison.  Therefore the PrisonMinesBlockBreakEvent
+    		//       must enable the feature setForceIfAirBlock( true ).  That block will not be used a 
+    		//       second time, but it will allow the explosion event to be processed.
+    		pmEvent.setForceIfAirBlock( true );
+    		
+    		pmEvent.setUnprocessedRawBlocks( e.blockList() );
+    		
+    		if ( !validateEvent( pmEvent, debugInfo ) ) {
+    			
+    			// The event has not passed validation. All logging and Errors have been recorded
+    			// so do nothing more. This is to just prevent normal processing from occurring.
+    			
+    			if ( pmEvent.isCancelOriginalEvent() ) {
+    				
+    				e.setCancelled( true );
+    			}
+    		}
+    		
+    		else if ( pmEvent.getBbPriority() == BlockBreakPriority.MONITOR ) {
+    			// Stop here, and prevent additional processing. Monitors should never process the event beyond this.
+    		}
+    		
+
+    		
+    		// now process all blocks (non-monitor):
+    		else if ( isTEExplosiveEnabled && 
+    				( pmEvent.getMine() != null || pmEvent.getMine() == null && 
+    									!isBoolean( AutoFeatures.pickupLimitToMines )) ) {
+
+    			
+    			if ( pmEvent.getExplodedBlocks().size() > 0 ) {
+    				
+//					String triggered = checkCEExplosionTriggered( e );
+//					
+//
+//					PrisonMinesBlockBreakEvent pmbbEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
+//	    												mine, block, explodedBlocks, BlockEventType.TEXplosion, triggered );
+	                Bukkit.getServer().getPluginManager().callEvent( pmEvent );
+	                if ( pmEvent.isCancelled() ) {
+	                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled) " );
+	                }
+	                else {
+	                	
+	                	// Cancel drops if so configured:
+	                	if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
+	                		
+	                		try
+	                		{
+	                			e.setYield( 0 );
+//	                			e.setDropItems( false );
+	                		}
+	                		catch ( NoSuchMethodError e1 )
+	                		{
+	                			String message = String.format( 
+	                					"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
+	                					"is not valid for this version of Spigot. Modify the config settings and set " +
+	                					"this value to `false`. [%s]",
+	                					e1.getMessage() );
+	                			Output.get().logWarn( message );
+	                		}
+	                	}
+	                	
+	                	// This is where the processing actually happens:
+	                	if ( doAction( pmEvent, debugInfo ) ) {
+	                		
+	                		if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
+	                			
+	                			e.setCancelled( true );
+	                		}
+	                		else {
+	                			
+	                			debugInfo.append( "(event was not canceled) " );
+	                		}
+	                		
+	                		finalizeBreakTheBlocks( pmEvent );
+	                		
+	                		doBlockEvents( pmEvent );
+
+	                	}
+	                	
+	                	else {
+	                		
+	                		debugInfo.append( "(doAction failed without details) " );
+	                	}
+	                	
+	                }
+    				
+    			}
+    			
+    			
+    			debugInfo.append( "(normal processing) " );
+   			}
+    		else {
+    			
+    			debugInfo.append( "(logic bypass) " );
+    		}
+    			
+    	}
+    	
+		if ( debugInfo.length() > 0 ) {
+			
+			long stop = System.nanoTime();
+			debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
+			
+			Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
+		}
+	}
+
+	private String checkCEExplosionTriggered( TEBlockExplodeEvent e )
+	{
+		String triggered = null;
+		
+		// Please be aware:  This function is named the same as the auto features setting, but this is 
+		// not related.  This is only trying to get the name of the enchantment that triggered the event.
+		if ( isTeExplosionTriggerEnabled() ) {
+			
+			try {
+				triggered = e.getTrigger();
+			}
+			catch ( Exception | NoSuchMethodError ex ) {
+				// Only print the error the first time, then suppress the error:
+				String error = ex.getMessage();
+				
+				Output.get().logError( "Error: Trying to access the TEBlockExplodeEvent.getTrigger() " +
+						"function.  Make sure you are using TokenEnchant v18.11.0 or newer. The new " +
+						"getTrigger() function returns the TE Plugin that is firing the TEBlockExplodeEvent. " +
+						"The Prison BlockEvents can be filtered by this triggered value. " +
+						error );
+				
+				// Disable collecting the trigger.
+				setTeExplosionTriggerEnabled( false );
+				
+			}
+		}
+		
+		return triggered;
+	}
+
+	protected int checkBonusXp( Player player, Block block, ItemStack item ) {
+		int bonusXp = 0;
+		
+		return bonusXp;
+	}
+
+	private boolean isTeExplosionTriggerEnabled() {
+		return teExplosionTriggerEnabled;
+	}
+
+	private void setTeExplosionTriggerEnabled( boolean teExplosionTriggerEnabled ) {
+		this.teExplosionTriggerEnabled = teExplosionTriggerEnabled;
+	}
 }

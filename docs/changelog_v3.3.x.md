@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9c 2022-03-13
 
 
+* **Reworked how some of the registered event listeners are setup, which is needed for expanding to supporting other plugin's enchanments.**
+
+
 * **Update the bstats configs for v3.0.0.**
 Although it compiled without the bstats-base, it failed to run.  I suspect my local cache for gradle was incorrectly providing objects when it shouldn't have.
 

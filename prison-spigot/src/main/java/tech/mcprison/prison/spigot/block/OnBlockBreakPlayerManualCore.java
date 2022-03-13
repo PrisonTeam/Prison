@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
 
@@ -288,5 +290,13 @@ public class OnBlockBreakPlayerManualCore
 			dropExtra( overflow, p, debugInfo );
 			
 		}
+	}
+	
+	
+	@Override
+	protected int checkBonusXp( Player player, Block block, ItemStack item ) {
+		int bonusXp = 0;
+		
+		return bonusXp;
 	}
 }

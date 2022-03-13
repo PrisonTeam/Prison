@@ -2361,16 +2361,18 @@ public class SpigotPlatform
 	 */
 	public void reloadAutoFeaturesEventListeners() {
 		
-		AutoManagerBlockBreakEvents autoFeaturesEvents = new AutoManagerBlockBreakEvents();
+		SpigotPrison.getInstance().getBlockBreakEventListeners().reloadEventListeners();
 		
-		// NOTE: The unregisterListeners() will remove ALL auto features events that were
-		//       registered, no matter which listeners were enabled.
-		autoFeaturesEvents.unregisterListeners();
-
-		// NOTE: The registerEvents() will register all event listeners based upon what's 
-		//       in the auto features configuration file.
-		autoFeaturesEvents.registerEvents();
-		
+//		AutoManagerBlockBreakEvents autoFeaturesEvents = new AutoManagerBlockBreakEvents();
+//		
+//		// NOTE: The unregisterListeners() will remove ALL auto features events that were
+//		//       registered, no matter which listeners were enabled.
+//		autoFeaturesEvents.unregisterListeners();
+//
+//		// NOTE: The registerEvents() will register all event listeners based upon what's 
+//		//       in the auto features configuration file.
+//		autoFeaturesEvents.registerEvents();
+//		
 	}
 
 	/**
