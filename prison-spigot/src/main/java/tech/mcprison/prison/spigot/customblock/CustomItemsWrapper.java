@@ -186,7 +186,8 @@ public class CustomItemsWrapper {
 			}
 			
 		}
-		else {
+
+		if ( results.size() == 0 ) {
 			
 			org.bukkit.inventory.ItemStack bItemStack = CustomItemsAPI.getCustomItem( prisonBlock.getBlockName() );
 			
