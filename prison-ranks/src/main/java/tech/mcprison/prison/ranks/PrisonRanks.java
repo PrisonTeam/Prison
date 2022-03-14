@@ -225,10 +225,6 @@ public class PrisonRanks
         Output.get().logInfo( "Ranks: Finished registering Rank Commands." );
         
         
-        // Check all players to see if any need to join:
-        checkAllPlayersForJoin();
-        
-        Output.get().logInfo( "Ranks: Finished First Join Checks." );
         
         
         // Load up all else
@@ -259,6 +255,12 @@ public class PrisonRanks
 //    	boolean includeAll = true;
 //    	PrisonRanks.getInstance().getRankManager().ranksByLadders( includeAll );
         
+        
+        
+        // Check all players to see if any need to join:
+        RanksStartupPlayerValidationsAsyncTask.submitTaskSync( this );
+//        checkAllPlayersForJoin();
+    
         
     }
 

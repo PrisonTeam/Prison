@@ -152,14 +152,20 @@ public class PlayerManager
             
 		}
         
-        
-        Collections.sort( playersByTop, sorterTopN );
+        // NOTE: The following is very expensive operation if the players balance
+        //       needs to be retrieved:
+        // sortPlayerByTopRanked();
         
 
 //        players.forEach(
 //        		document -> 
 //        			this.players.add(
 //        					rankPlayerFactory.createRankPlayer(document) ));
+    }
+    
+    public void sortPlayerByTopRanked() {
+    	
+    	Collections.sort( playersByTop, sorterTopN );
     }
 
     /**

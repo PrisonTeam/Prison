@@ -16,6 +16,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9c 2022-03-13
 
 
+* **Prison startup performance fix: On large servers with many players, the process of getting the player's balance from the economy plugin can cause significant delays if that plugin is not able to handle the load...**
+so the validation of the players and the sorting of the top-n list is now ran in an async thread so it will not cause lag or delays on startup.
+
+
 * **Prison version: including more information on ranks and add the ladder rank listing to the prison version command.**
 
 
