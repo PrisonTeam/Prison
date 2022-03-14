@@ -438,15 +438,18 @@ public class PlayerCachePlayerData {
 		
 		
 		double earningsPM = earnings;
-		if ( getEarningsPerMinute().containsKey( key )  ) {
-			earningsPM += getEarningsPerMinute().get( key );
-		}
-		getEarningsPerMinute().put( key, earningsPM );
 		
-		
-		if ( getEarningsPerMinute().size() > 5 ) {
-			getEarningsPerMinute().remove( 
-					getEarningsPerMinute().firstEntry().getKey() );
+		synchronized (earningsPerMinute) {
+			if ( getEarningsPerMinute().containsKey( key )  ) {
+				earningsPM += getEarningsPerMinute().get( key );
+			}
+			getEarningsPerMinute().put( key, earningsPM );
+			
+			
+			if ( getEarningsPerMinute().size() > 5 ) {
+				getEarningsPerMinute().remove( 
+						getEarningsPerMinute().firstEntry().getKey() );
+			}
 		}
 		
 		if ( mineName != null && sessionType != SessionType.mining ) {
@@ -478,9 +481,12 @@ public class PlayerCachePlayerData {
 		double results = 0;
 		
 		int size = 0;
-		for ( double value : earningsPerMinute.values() ) {
-			results += value;
-			size++;
+			
+		synchronized (earningsPerMinute) {
+			for ( double value : earningsPerMinute.values() ) {
+				results += value;
+				size++;
+			}
 		}
 		
 		return ( size == 0 ? 0 : ( results / size ));
@@ -678,9 +684,15 @@ public class PlayerCachePlayerData {
 		sb.append( getPlayerName() )
 			.append( " " )
 			.append( isOnline() ? "online" : "OFFLINE" )
-			.append( "  avg earnings/min: " )
-			.append( getAverageEarningsPerMinute() )
+			.append( "  avg earnings/min: " );
 		
+		synchronized (earningsPerMinute) {
+			
+			sb
+				.append( getAverageEarningsPerMinute() );
+		}
+		
+		sb
 			.append( "  TotalOnlineTime: " )
 			.append( totalTime )
 			.append( "  MiningTime: " )
@@ -764,7 +776,10 @@ public class PlayerCachePlayerData {
 		return earningsPerMinute;
 	}
 	public void setEarningsPerMinute( TreeMap<String, Double> earningsPerMinute ) {
-		this.earningsPerMinute = earningsPerMinute;
+			
+		synchronized (earningsPerMinute) {
+			this.earningsPerMinute = earningsPerMinute;
+		}
 	}
 
 	public long getOnlineTimeTotal() {

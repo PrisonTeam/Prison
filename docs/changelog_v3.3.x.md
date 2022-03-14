@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9c 2022-03-13
 
 
+* **PlayerCache earningsPerMinute: Sychronize to prevent an issue with concurrent mods.**
+
+
 * **Mine bombs: Fix an issue with the generated mine bomb tool not being enchanted with the specified fortune, which also was effecting the durability and dig_speed too.**
 
 
