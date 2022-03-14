@@ -751,7 +751,11 @@ public class PrisonUtilsMineBombs
 					
 					if ( bombs != null ) {
 						
-						SpigotBlock bombBlock = sBlock != null ? sBlock : (SpigotBlock) player.getLocation().getBlock();
+						if ( sBlock == null ) {
+							sBlock = (SpigotBlock) sPlayer.getLocation().getBlockAt();
+						}
+						
+						SpigotBlock bombBlock = sBlock;
 						
 						
 //    						// If the clicked on block is empty, then the player probably clicked on air.  

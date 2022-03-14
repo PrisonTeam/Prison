@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9c 2022-03-13
 
 
+* **Mine bombs getting a replacement blocks from the player's location.**
+
+
 * **CustomItems drops: If custom items do not produce a drop, then default to dropping the block itself.**
 
 
