@@ -16,6 +16,8 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9c 2022-03-13
 
 
+* **Removed some old code from block event processing...**
+
 * **Mine bombs getting a replacement blocks from the player's location.**
 
 
