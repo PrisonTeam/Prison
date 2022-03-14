@@ -99,16 +99,21 @@ public abstract class PrisonRanksMessages
 				.localize();
 	}
 	
-	protected String prisonRanksStatusLoadedRanksMsg( int rankCount ) {
+	public String prisonRanksStatusLoadedRanksMsg( int totalRanksCount, 
+				int defaultRanks, int prestigesRanks, int otherRanks ) {
 		
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_prisonRanks__status_loaded_ranks" )
 				.withReplacements( 
-						Integer.toString( rankCount ) )
+						Integer.toString( totalRanksCount ),
+						Integer.toString( defaultRanks ),
+						Integer.toString( prestigesRanks ),
+						Integer.toString( otherRanks )
+						)
 				.localize();
 	}
 	
-	protected String prisonRanksStatusLoadedLaddersMsg( int ladderCount ) {
+	public String prisonRanksStatusLoadedLaddersMsg( int ladderCount ) {
 		
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_prisonRanks__status_loaded_ladders" )
@@ -117,7 +122,7 @@ public abstract class PrisonRanksMessages
 				.localize();
 	}
 	
-	protected String prisonRanksStatusLoadedPlayersMsg( int playerCount ) {
+	public String prisonRanksStatusLoadedPlayersMsg( int playerCount ) {
 		
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_prisonRanks__status_loaded_players" )

@@ -555,7 +555,7 @@ public class RankManager
     				sb.append( ", " );
     				
         			if ( count >= 10 && (count - 1) % 15 == 0 ) {
-        				sb.append( "\n      " );
+        				sb.append( "{br}      " );
         			}
     			}
     			
@@ -600,20 +600,33 @@ public class RankManager
      * 
      * @param includeAll If true then includes all ranks, otherwise just ranks within one more players
      */
-    public void ranksByLadders(  RanksByLadderOptions option ) {
-    	ranksByLadders( null, "all", option );
+    public List<String> ranksByLadders() {
+    	return ranksByLadders( "all", RanksByLadderOptions.allRanks );
     }
     
     public void ranksByLadders( CommandSender sender, RanksByLadderOptions option ) {
-    	ranksByLadders( sender, "all", option );
+    	List<String> results = ranksByLadders( "all", option );
+    	for (String msg : results) {
+    		rankByLadderOutput( sender, msg );
+		}
     }
     
     public void ranksByLadders( CommandSender sender, String ladderName, RanksByLadderOptions option ) {
     	
+		List<String> results = ranksByLadders( ladderName, option );
+		for (String msg : results) {
+			rankByLadderOutput( sender, msg );
+		}
+    }
+    
+    private List<String> ranksByLadders( String ladderName, RanksByLadderOptions option ) {
+    	List<String> results = new ArrayList<>();
+    	
+    	
     	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
     			.getLocalizable( "ranks_rankManager__ranks_by_ladders" );
     	
-    	rankByLadderOutput( sender, localManagerLog.localize() );
+    	results.add( localManagerLog.localize() );
     	
     	// Track which ranks were included in the ladders listed:
     	List<Rank> ranksIncluded = new ArrayList<>();
@@ -626,7 +639,7 @@ public class RankManager
     			
     			String ranksByLadder = listAllRanks( ladder.getName(), ladderRanks, option );
     			
-    			rankByLadderOutput( sender, ranksByLadder );
+    			results.add( ranksByLadder );
     		}
     	}
     	
@@ -641,10 +654,12 @@ public class RankManager
     		//       so enable "true" for includeAll to list all ranks that are not tied to ladders
     		//       since player count will always be zero.
     		// Update: Set the RanksByLadderOptions to full
-    		String ranksByLadder = listAllRanks( "none", ranksExcluded, RanksByLadderOptions.full );
+    		String ranksByLadder = listAllRanks( "(*no-ladder*)", ranksExcluded, RanksByLadderOptions.full );
     		
-    		rankByLadderOutput( sender, ranksByLadder );
+    		results.add( ranksByLadder );
     	}
+    	
+    	return results;
     }
 
 	private void rankByLadderOutput( CommandSender sender, String ranksByLadder ) {

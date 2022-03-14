@@ -91,6 +91,7 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
+import tech.mcprison.prison.ranks.managers.RankManager.RanksByLadderOptions;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerCrazyEnchants;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonEnchants;
@@ -1972,6 +1973,36 @@ public class SpigotPlatform
 	public List<String> getActiveFeatures() {
 		List<String> results = new ArrayList<>();
 		
+		
+		// Log rank related items first:
+		if ( Prison.get().getModuleManager().isModuleActive( PrisonRanks.MODULE_NAME ) ) {
+			
+			PrisonRanks pRanks = PrisonRanks.getInstance();
+			
+			results.add( 
+					pRanks.prisonRanksStatusLoadedLaddersMsg( 
+							pRanks.getladderCount() ) );
+			
+			int totalRanks = pRanks.getRankCount();
+			int defaultRanks = pRanks.getDefaultLadderRankCount();
+			int prestigesRanks = pRanks.getPrestigesLadderRankCount();
+			int otherRanks = totalRanks - defaultRanks - prestigesRanks;
+
+			results.add( 
+					pRanks.prisonRanksStatusLoadedRanksMsg( 
+							totalRanks, defaultRanks, prestigesRanks, otherRanks ) );
+		        
+			results.add( 
+					pRanks.prisonRanksStatusLoadedPlayersMsg( 
+							pRanks.getPlayersCount() ) );
+		        
+
+			// Display all Ranks in each ladder:
+			results.addAll(
+					PrisonRanks.getInstance().getRankManager().ranksByLadders() );
+
+			results.add( " " );
+		}
 		
     	
     	AutoFeaturesWrapper afw = AutoFeaturesWrapper.getInstance();

@@ -16,7 +16,11 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9c 2022-03-13
 
 
+* **Prison version: including more information on ranks and add the ladder rank listing to the prison version command.**
+
+
 * **Removed some old code from block event processing...**
+
 
 * **Mine bombs getting a replacement blocks from the player's location.**
 
