@@ -252,6 +252,10 @@ public class PlayerManager
 		return playersByName;
 	}
 
+	public List<RankPlayer> getPlayersByTop() {
+		return playersByTop;
+	}
+
 	public Set<String> getPlayerErrors() {
 		return playerErrors;
 	}

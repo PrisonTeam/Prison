@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 *Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
 
 
-# 3.3.0-alpha.9c 2022-03-13
+# 3.3.0-alpha.9c 2022-03-14
+
+
+* **Top-n: More work to enable.  Now supports /ranks topn, with alias /topn.**
+The rank-score and penalty is not yet enabled.  Placeholders will be enabled after the command is fully functional.
 
 
 * **Prison startup performance fix: On large servers with many players, the process of getting the player's balance from the economy plugin can cause significant delays if that plugin is not able to handle the load...**

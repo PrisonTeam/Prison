@@ -51,15 +51,15 @@ public class RankPlayerSortOrderTopRanked
 		if ( rp1.getPlayerRankPrestiges() == null && rp2.getPlayerRankPrestiges() == null ) {
 			results = 0;
 		}
-//		else if ( rp2.getPlayerRankPrestiges() == null ) {
-//  Handled when comparing PlayerRanks... 
-//			results = -1;
-//		}
+		else if ( rp2.getPlayerRankPrestiges() == null ) {
+//  Handled when comparing PlayerRanks... ??
+			results = -1;
+		}
 		else if ( rp1.getPlayerRankPrestiges() == null ) {
 			results = 1;
 		}
 		else {
-			results = rp1.getPlayerRankPrestiges().compareTo( rp2.getPlayerRankPrestiges() );
+			results = rp2.getPlayerRankPrestiges().compareTo( rp1.getPlayerRankPrestiges() );
 		}
 		
 		return results;
@@ -71,15 +71,15 @@ public class RankPlayerSortOrderTopRanked
 		if ( rp1.getPlayerRankDefault() == null && rp2.getPlayerRankDefault() == null ) {
 			results = 0;
 		}
-//		else if ( rp2.getPlayerRankDefault() == null ) {
+		else if ( rp2.getPlayerRankDefault() == null ) {
 //  Handled when comparing PlayerRanks... 
-//			results = -1;
-//		}
+			results = -1;
+		}
 		else if ( rp1.getPlayerRankDefault() == null ) {
 			results = 1;
 		}
 		else {
-			results = rp1.getPlayerRankDefault().compareTo( rp2.getPlayerRankDefault() );
+			results = rp2.getPlayerRankDefault().compareTo( rp1.getPlayerRankDefault() );
 		}
 		
 		return results;

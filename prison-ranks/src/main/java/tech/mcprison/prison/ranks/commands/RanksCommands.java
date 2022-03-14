@@ -2033,6 +2033,100 @@ public class RanksCommands
     
 
     
+    @Command(identifier = "ranks topn", description = "Shows the top-n ranked players on the server. "
+    		+ "The rankings are calculated by prestiges ladder, default ladder, and then by the "
+    		+ "player's balance which is used to generate a rank-score.  If enabled, players who "
+    		+ "do not rankup when they can, will be penalized with their excessive balance. ", 
+    		onlyPlayers = false, aliases="topn")
+    public void rankTopN(CommandSender sender,
+    			@Arg(name = "page", def = "1", 
+    				description = "Page number [1]") String pageNumber,
+    			@Arg(name = "pageSize", def = "10", 
+    				description = "Page size [10]") String pageSizeNumber){
+
+    	int page = 1;
+    	int pageSize = 10;
+    	
+    	
+    	try {
+    		page = Integer.parseInt(pageNumber);
+    	}
+    	catch (NumberFormatException e ) {
+    		// Ignore: will use defaults
+    	}
+    	try {
+    		pageSize = Integer.parseInt(pageSizeNumber);
+    	}
+    	catch (NumberFormatException e ) {
+    		// Ignore: will use defaults
+    	}
+    	
+    	if ( page <= 0 ) {
+    		page = 1;
+    	}
+    	if ( pageSize <= 0 ) {
+    		pageSize = 10;
+    	}
+    	
+    	int totalPlayers = PrisonRanks.getInstance().getPlayerManager().getPlayers().size();
+    	int totalPages = (totalPlayers / pageSize) + (totalPlayers % pageSize == 0 ? 0 : 1);
+    	
+    	if ( page > totalPages ) {
+    		page = totalPages;
+    	}
+
+    	int posStart = (page - 1) * pageSize;
+    	int posEnd = posStart + pageSize;
+    	
+    	DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+    	
+    	List<RankPlayer> topN = PrisonRanks.getInstance().getPlayerManager().getPlayersByTop();
+
+    	String header = String.format(
+				"Ranking  %-14s %-9s %-6s %-7s %-7s",
+					"Player",
+					"Prestiges",
+					"Rank",
+					"Rank-Score",
+					"Penalty"
+						
+				);
+    	sender.sendMessage(header);
+    	
+    	for ( int i = posStart; i < posEnd && i < topN.size(); i++ ) {
+    		RankPlayer rPlayer = topN.get(i);
+    		
+    		PlayerRank prestRank = rPlayer.getPlayerRankPrestiges();
+    		PlayerRank defRank = rPlayer.getPlayerRankDefault();
+    		
+    		String prestRankTag = prestRank == null ? "---" : prestRank.getRank().getTag();
+    		String defRankTag = defRank == null ? "---" : defRank.getRank().getTag();
+    		
+    		String prestRankTagNc = Text.stripColor(prestRankTag);
+    		String defRankTagNc = Text.stripColor(defRankTag);
+    		
+    		String message = String.format(
+    				" %-3d  %-18s %-7s %-7s %7s %7s",
+    					i + 1,
+    					rPlayer.getName(),
+    					prestRankTagNc,
+    					defRankTagNc,
+    					dFmt.format( rPlayer.getRankScore() ),
+    					dFmt.format( rPlayer.getRankScorePenalty() )
+    				);
+    		
+    		message = message
+    					.replace(prestRankTagNc, prestRankTag + "&r")
+    					.replace(defRankTagNc, defRankTag + "&r");
+    		sender.sendMessage(message);
+    	}
+    	
+
+    	
+    }
+    
+    
+    
 //    /**
 //     * This function is just an arbitrary test to access the various components.
 //     * 
