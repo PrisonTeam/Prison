@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9c 2022-03-13
 
 
+* **Sellall: prevent selling with custom name items.**
+
+
 * **PlayerCache earningsPerMinute: Sychronize to prevent an issue with concurrent mods.**
 
 

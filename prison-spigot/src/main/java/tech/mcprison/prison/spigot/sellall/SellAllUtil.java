@@ -26,6 +26,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRank;
@@ -173,18 +174,38 @@ public class SellAllUtil {
      * @return XMaterial.
      * */
     private XMaterial getXMaterialOrLapis(ItemStack itemStack) {
-        if (itemStack.isSimilar(lapisLazuli)) {
-            return XMaterial.LAPIS_LAZULI;
-        }
-        XMaterial results = null;
-        try
-		{
-			results = XMaterial.matchXMaterial(itemStack);
-		}
-		catch ( Exception e )
-		{
-			// ignore... it is not normal matertial so it cannot be sold
-		}
+    	XMaterial results = null;
+    	
+    	String altName = null;
+    	
+    	if ( itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName() ) {
+    		altName = itemStack.getItemMeta().getDisplayName();
+    	}
+    	
+    	if ( altName == null ) {
+    		XMaterial xMat = null;
+    		
+    		if (itemStack.isSimilar(lapisLazuli)) {
+    			xMat = XMaterial.LAPIS_LAZULI;
+    		}
+    		else {
+    			
+    			try
+    			{
+    				xMat = XMaterial.matchXMaterial(itemStack);
+    			}
+    			catch ( Exception e )
+    			{
+    				// ignore... it is not normal matertial so it cannot be sold
+    			}
+    		}
+    		if ( xMat != null ) {
+    			
+    			// When converted over to be based upon a String name, instead of XMaterial, 
+    			// the altName will take priority over the XMaterial name.
+    			results = xMat;
+    		}
+    	}
         
         return results;
     }
@@ -455,17 +476,25 @@ public class SellAllUtil {
 	{
     	double results = 0d;
     	
-    	HashMap<XMaterial, Integer> xMaterialIntegerHashMap = new HashMap<>();
-    	
-    	PrisonBlock pBlock = itemStack.getMaterial();
-    	
-    	XMaterial xMat = SpigotCompatibility.getInstance().getXMaterial( pBlock );
-    	
-    	if ( xMat != null ) {
-    		xMaterialIntegerHashMap.put( xMat, itemStack.getAmount() );
+    	// For now, do not sell custom blocks since this sellall is based upon
+    	// XMaterial and custom blocks cannot be represented by XMaterial so
+    	// it will sell it as the wrong material
+    	if ( itemStack.getMaterial().getBlockType() == null ||
+    			itemStack.getMaterial().getBlockType() == PrisonBlockType.minecraft ) {
     		
-    		results = getSellMoney( p, xMaterialIntegerHashMap );
+    		HashMap<XMaterial, Integer> xMaterialIntegerHashMap = new HashMap<>();
+    		
+    		PrisonBlock pBlock = itemStack.getMaterial();
+    		
+    		XMaterial xMat = SpigotCompatibility.getInstance().getXMaterial( pBlock );
+    		
+    		if ( xMat != null ) {
+    			xMaterialIntegerHashMap.put( xMat, itemStack.getAmount() );
+    			
+    			results = getSellMoney( p, xMaterialIntegerHashMap );
+    		}
     	}
+    	
     	
 		return results;
 	}
@@ -993,7 +1022,7 @@ public class SellAllUtil {
      * */
     public boolean editPrice(XMaterial xMaterial, double value){
 
-        if (!sellAllBlocks.containsKey(xMaterial)){
+        if (!sellAllBlocks.containsKey(xMaterial) && sellAllBlocks.get(xMaterial) != value ){
             return false;
         }
 
