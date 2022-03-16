@@ -361,6 +361,11 @@ public class RankPlayer
         }
         
         if ( ladderRanks.containsKey( rank.getLadder() ) ) {
+        	
+        	// Remove the player from the old rank:
+        	PlayerRank oldRank = ladderRanks.get( rank.getLadder() );
+        	oldRank.getRank().getPlayers().remove( this );
+        	
         	ladderRanks.remove( rank.getLadder() );
         }
 
@@ -369,6 +374,10 @@ public class RankPlayer
         PlayerRank pRank = new PlayerRank( rank );
         
         ladderRanks.put( rank.getLadder(), pRank );
+        
+        // Add the player to the new rank:
+        rank.getPlayers().add( this );
+        
         
         // Calculate and apply the rank multipliers:
         recalculateRankMultipliers();
@@ -1285,9 +1294,10 @@ public class RankPlayer
 			
 			double currentBalance = getBalance( getRankScoreCurrency() );
 			
-			if ( currentBalance == getRankScoreBalance() ||
+			if ( getRankScoreBalance() != 0 && (
+					currentBalance == getRankScoreBalance() ||
 					currentBalance >= (getRankScoreBalance() - getRankScoreBalanceThreshold()) ||
-					currentBalance <= (getRankScoreBalance() + getRankScoreBalanceThreshold() ) ) {
+					currentBalance <= (getRankScoreBalance() + getRankScoreBalanceThreshold() ) )) {
 				
 				// increment the cooldown since the balance is either the same, or still
 				// within the threshold range:

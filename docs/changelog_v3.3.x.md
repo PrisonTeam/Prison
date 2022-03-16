@@ -10,10 +10,12 @@
 These build logs represent the work that has been going on within prison. 
 
 
-*Will continue as v3.3.0-alpha.7 2021-06-?? in the near future.*
+
+# 3.3.0-alpha.9e 2022-03-16
 
 
-# 3.3.0-alpha.9e 2022-03-14
+* **Fixed issue where ranking does not which rank is associated with each rank.**
+Now the ranks will properly track the players at their ranks.
 
 
 * **3.3.0-alpha.9e 2022-03-14**
