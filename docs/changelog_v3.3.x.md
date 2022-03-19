@@ -14,6 +14,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9e 2022-03-19
 
 
+* **Updated the rankup accuracy to be greater than or equal to 1.0.**
+And conditionally only report the accuracy_out_of_range if >= 1.0.
+
+
 * **When validating the success of a rankup transaction's abiliity for the rankup cost to be applied, the validation is now checking to see if it's within a plus/minus of 1.0 from the target final balance of the player.**
 This covers the inability of floats and doubles not being able to accurately repesent base 10 numbers all of the time, which the accuracy may be off by a small value such as 0.000001, but that will prevent an equality check from passing.  
 By checking that it's within a range of plus/minus one will help prevent false failures.

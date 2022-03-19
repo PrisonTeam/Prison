@@ -548,10 +548,13 @@ public class RankUtil
         	
         	// Check to ensure the player's balance is correct..
         	double finalAccuracy = Math.abs( balanceTargetFinal - balanceFinal );
-        	if ( !success || finalAccuracy > 1.0 ) {
+        	if ( !success || finalAccuracy >= 1.0 ) {
         		
-        		results.addTransaction( RankupTransactions.accuracy_out_of_range );
-        		results.setRankupCostFinalAccuracy( finalAccuracy );
+        		if ( finalAccuracy >= 1.0 ) {
+        			
+        			results.addTransaction( RankupTransactions.accuracy_out_of_range );
+        			results.setRankupCostFinalAccuracy( finalAccuracy );
+        		}
         		
         		results.addTransaction( RankupStatus.RANKUP_FAILURE_ECONOMY_FAILED, 
     					RankupTransactions.economy_failed_to_update_player_balance );
