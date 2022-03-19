@@ -147,6 +147,8 @@ public class RankUtil
 		economy_failed_to_update_player_balance,
 		economy_failed_to_reverse_player_rankup_cost,
 		economy_failed_to_apply_player_rankup_cost,
+		accuracy_out_of_range,
+		
 		
 		
 		attempting_to_delete_ladder_from_player,
@@ -545,7 +547,11 @@ public class RankUtil
         	results.setBalanceFinal( balanceFinal );
         	
         	// Check to ensure the player's balance is correct..
-        	if ( !success || balanceFinal != balanceTargetFinal ) {
+        	double finalAccuracy = Math.abs( balanceTargetFinal - balanceFinal );
+        	if ( !success || finalAccuracy > 1.0 ) {
+        		
+        		results.addTransaction( RankupTransactions.accuracy_out_of_range );
+        		results.setRankupCostFinalAccuracy( finalAccuracy );
         		
         		results.addTransaction( RankupStatus.RANKUP_FAILURE_ECONOMY_FAILED, 
     					RankupTransactions.economy_failed_to_update_player_balance );
@@ -925,6 +931,13 @@ public class RankUtil
     				case player_balance_final:
     					sb.append( "=" );
     					sb.append( dFmt.format( results.getBalanceFinal() ) );
+    					
+    					break;
+    					
+    				case accuracy_out_of_range:
+    					sb.append( "=" );
+    					DecimalFormat sFmt = new DecimalFormat("#,##0.00000000");
+    					sb.append( sFmt.format( results.getRankupCostFinalAccuracy() ) );
     					
     					break;
     					

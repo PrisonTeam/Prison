@@ -37,6 +37,7 @@ public class RankupResults {
     private double balanceInitial;
     private double balanceFinal;
     private String currency;
+    private double rankupCostFinalAccuracy;
     
     private int rankupCommandsAvailable = 0;
     private int rankupCommandsExecuted = 0;
@@ -266,6 +267,13 @@ public class RankupResults {
 	}
 	public void setTimestampStop( long timestampStop ) {
 		this.timestampStop = timestampStop;
+	}
+
+	public double getRankupCostFinalAccuracy() {
+		return rankupCostFinalAccuracy;
+	}
+	public void setRankupCostFinalAccuracy(double rankupCostFinalAccuracy) {
+		this.rankupCostFinalAccuracy = rankupCostFinalAccuracy;
 	}
 	
 }

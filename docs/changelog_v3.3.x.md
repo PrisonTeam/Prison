@@ -11,7 +11,12 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.9e 2022-03-16
+# 3.3.0-alpha.9e 2022-03-19
+
+
+* **When validating the success of a rankup transaction's abiliity for the rankup cost to be applied, the validation is now checking to see if it's within a plus/minus of 1.0 from the target final balance of the player.**
+This covers the inability of floats and doubles not being able to accurately repesent base 10 numbers all of the time, which the accuracy may be off by a small value such as 0.000001, but that will prevent an equality check from passing.  
+By checking that it's within a range of plus/minus one will help prevent false failures.
 
 
 * **Fixed issue where ranking does not which rank is associated with each rank.**
