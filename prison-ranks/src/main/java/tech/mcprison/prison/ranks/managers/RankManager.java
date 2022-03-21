@@ -736,11 +736,14 @@ public class RankManager
 		//PlaceholderAttribute attribute = pman.extractPlaceholderExtractAttribute( identifier );
 		
     	for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
+    		
+//    		PlaceholderResults identifier = placeHolderKey.getIdentifier( results );
+    		
 			if ( placeHolderKey.getKey().equalsIgnoreCase( placeholder )) {
 				
 				//Mine mine = getMine( placeHolderKey.getData() );
 				
-				results = getTranslateRanksPlaceHolder( placeHolderKey, identifier );
+				results = getTranslateRanksPlaceHolder( placeHolderKey, identifier, 0 );
 				break;
 			}
 		}
@@ -748,7 +751,8 @@ public class RankManager
     	return results;
     }
 	
-	public String getTranslateRanksPlaceHolder( PlaceHolderKey placeHolderKey, String identifier ) {
+	public String getTranslateRanksPlaceHolder( PlaceHolderKey placeHolderKey, 
+			String identifier, int numericSequence ) {
     	String results = null;
     	
     	if ( identifier == null ) {
@@ -767,11 +771,20 @@ public class RankManager
     		PlaceholderAttribute attribute = pman.extractPlaceholderExtractAttribute( identifier );
     		
     		
-    		String rankName = placeHolderKey.getData();
-    		Rank rank = PrisonRanks.getInstance().getRankManager().getRank( rankName );
-
+    		if ( placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSPLAYERS ) ) {
+    			
+    			results = getTranslateRanksPlaceHolderTopPlayer( placeHolderKey, attribute, numericSequence );
+    		}
+    		else {
+    			
+    			String rankName = placeHolderKey.getData();
+    			Rank rank = PrisonRanks.getInstance().getRankManager().getRank( rankName );
+    			
+    			
+    			results = getTranslateRanksPlaceHolder( placeHolderKey, rank, attribute );
+    		}
     		
-    		results = getTranslateRanksPlaceHolder( placeHolderKey, rank, attribute );
+    		
     	}
     	
     	return results;
@@ -927,6 +940,31 @@ public class RankManager
 		return results;
     }
 
+    
+    public String getTranslateRanksPlaceHolderTopPlayer( PlaceHolderKey placeHolderKey, 
+    				PlaceholderAttribute attribute, int numericSequence ) {
+		String results = null;
+
+		PrisonPlaceHolders placeHolder = placeHolderKey.getPlaceholder();
+		
+//		DecimalFormat dFmt = new DecimalFormat("#,##0");
+		
+		switch ( placeHolder ) {
+		
+//			case prison_tpl1_nnn_tp:
+//			case prison_top_player_line1_headers_nnn_tp:
+//			{
+////				placeHolderKey.get
+//				
+//			}
+	
+			default:
+				break;
+	
+		}
+			
+		return results;
+	}
     
     public String getTranslateRankPlayersPlaceHolder(UUID playerUuid, String playerName, 
     		PlaceHolderKey placeHolderKey, PlaceholderAttribute attribute) {
@@ -1156,6 +1194,22 @@ public class RankManager
     			}
     			
     		}
+    		
+    		
+    		// This generates all the placeholders for all ranks:
+    		List<PrisonPlaceHolders> placeHolders2 = PrisonPlaceHolders.getTypes( PlaceholderFlags.STATSPLAYERS );
+
+    		for ( PrisonPlaceHolders ph : placeHolders2 ) {
+    			String key = ph.name();
+    			
+    			PlaceHolderKey placeholder = new PlaceHolderKey(key, ph );
+				if ( ph.getAlias() != null ) {
+					String aliasName = ph.getAlias().name();
+					placeholder.setAliasName( aliasName );
+				}
+				translatedPlaceHolderKeys.add( placeholder );
+    		}
+    		
     	}
     	
     	return translatedPlaceHolderKeys;

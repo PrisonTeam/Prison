@@ -264,7 +264,8 @@ public class SpigotPlaceholders
 	    			if ( results != null && identifier != null && identifier.hasResults() ) {
 	    				
 	    				results = placeholderReplace( results, identifier.getEscapedIdentifier(), 
-	    						rm.getTranslateRanksPlaceHolder( placeHolderKey, identifier.getIdentifier()  ) );
+	    						rm.getTranslateRanksPlaceHolder( placeHolderKey, identifier.getIdentifier(),
+	    								identifier.getNumericSequence()) );
 	    			}
 	    			
 	    		}
@@ -444,10 +445,11 @@ public class SpigotPlaceholders
 					value = pm.getTranslatePlayerPlaceHolder( playerUuid, playerName, placeHolderKey, null );
 				}
 				else if ( rm != null && placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.RANKS ) ) {
-					value = rm.getTranslateRanksPlaceHolder( placeHolderKey, null );
+					value = rm.getTranslateRanksPlaceHolder( placeHolderKey, null, 0 );
 				}
 				else if ( rm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.RANKPLAYERS ) ||
-						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSRANKS )) ) {
+						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSRANKS ) ||
+						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSPLAYERS ) ) ) {
 					value = rm.getTranslateRankPlayersPlaceHolder( playerUuid, playerName, placeHolderKey, null );
 				}
 				

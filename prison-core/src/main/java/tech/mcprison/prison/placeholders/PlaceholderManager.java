@@ -43,6 +43,7 @@ public class PlaceholderManager {
     	
     	STATSMINES( true ),
     	STATSRANKS( true ),
+    	STATSPLAYERS( true ),
     	
     	
     	SUPRESS,
