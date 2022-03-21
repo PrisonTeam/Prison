@@ -226,7 +226,7 @@ public class AutoManagerBlockBreakEvents
 		
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "### ** genericBlockEvent ** ### " +
+		debugInfo.append( String.format( "&9### ** genericBlockEvent ** ### " +
 				"(event: BlockBreakEvent, config: %s, priority: %s, canceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),
@@ -284,7 +284,7 @@ public class AutoManagerBlockBreakEvents
 //    							pmEvent.getMine(), sBlock, explodedBlocks, BlockEventType.blockBreak, triggered );
                 Bukkit.getServer().getPluginManager().callEvent( pmEvent );
                 if ( pmEvent.isCancelled() ) {
-                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled) " );
+                	debugInfo.append( "(normal processing: &6PrisonMinesBlockBreakEvent was canceled&9) " );
                 }
                 else {
                 	
@@ -322,14 +322,16 @@ public class AutoManagerBlockBreakEvents
                 			debugInfo.append( "(event was not canceled) " );
                 		}
                 		
+                		// Break the blocks
                 		finalizeBreakTheBlocks( pmEvent );
                 		
+                		// Block counts and blockEvents
                 		doBlockEvents( pmEvent );
                 		
                 	}
                 	else {
                 		
-                		debugInfo.append( "(doAction failed without details) " );
+                		debugInfo.append( "&c(doAction failed without details)&9 " );
                 	}
 
                 }

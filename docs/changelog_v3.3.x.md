@@ -14,6 +14,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9e 2022-03-21
 
 
+* **AutoFeatures debugging: Some color change in the logging details for failures so they are easier to see.**
+
+
 * **Prepare for the handling of STATSPLAYERS placeholders, which will be the ones that provides the placeholders for the top-n players.**
 This handles the workflow on handling the placeholders.
 
