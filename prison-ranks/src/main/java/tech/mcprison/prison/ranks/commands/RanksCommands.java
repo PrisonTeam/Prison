@@ -2078,46 +2078,17 @@ public class RanksCommands
     	int posStart = (page - 1) * pageSize;
     	int posEnd = posStart + pageSize;
     	
-    	DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+//    	DecimalFormat dFmt = new DecimalFormat("#,##0.00");
     	
     	List<RankPlayer> topN = PrisonRanks.getInstance().getPlayerManager().getPlayersByTop();
 
-    	String header = String.format(
-				"Ranking  %-14s %-9s %-6s %-7s %-7s",
-					"Player",
-					"Prestiges",
-					"Rank",
-					"Rank-Score",
-					"Penalty"
-						
-				);
-    	sender.sendMessage(header);
+    	sender.sendMessage( RankPlayer.printRankScoreLineHeader() );
     	
     	for ( int i = posStart; i < posEnd && i < topN.size(); i++ ) {
     		RankPlayer rPlayer = topN.get(i);
     		
-    		PlayerRank prestRank = rPlayer.getPlayerRankPrestiges();
-    		PlayerRank defRank = rPlayer.getPlayerRankDefault();
+    		String message = rPlayer.printRankScoreLine( i + 1 );
     		
-    		String prestRankTag = prestRank == null ? "---" : prestRank.getRank().getTag();
-    		String defRankTag = defRank == null ? "---" : defRank.getRank().getTag();
-    		
-    		String prestRankTagNc = Text.stripColor(prestRankTag);
-    		String defRankTagNc = Text.stripColor(defRankTag);
-    		
-    		String message = String.format(
-    				" %-3d  %-18s %-7s %-7s %7s %7s",
-    					i + 1,
-    					rPlayer.getName(),
-    					prestRankTagNc,
-    					defRankTagNc,
-    					dFmt.format( rPlayer.getRankScore() ),
-    					dFmt.format( rPlayer.getRankScorePenalty() )
-    				);
-    		
-    		message = message
-    					.replace(prestRankTagNc, prestRankTag + "&r")
-    					.replace(defRankTagNc, defRankTag + "&r");
     		sender.sendMessage(message);
     	}
     	

@@ -11,7 +11,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.9e 2022-03-19
+# 3.3.0-alpha.9e 2022-03-21
+
+
+* **Slight update on how the top-n players are printed... simplifies and also cleans it up the formatting.**
 
 
 * **Updated the rankup accuracy to be greater than or equal to 1.0.**

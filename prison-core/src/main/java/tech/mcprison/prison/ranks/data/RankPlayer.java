@@ -17,6 +17,7 @@
 
 package tech.mcprison.prison.ranks.data;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,8 +38,10 @@ import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.util.Text;
 
 /**
  * Represents a player with ranks.
@@ -1307,6 +1310,54 @@ public class RankPlayer
 				calculateRankScore();
 			}
 		}
+	}
+	
+	public static String printRankScoreLineHeader() {
+		String header = String.format(
+				"Ranking  %-14s %-9s %-6s %-9s %-9s %-9s",
+					"Player",
+					"Prestiges",
+					"Rank",
+					"Balance",
+					"Rank-Score",
+					"Penalty"
+						
+				);
+		return header;
+	}
+	
+	public String printRankScoreLine( int rankPostion ) {
+		
+		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+		
+		PlayerRank prestRank = getPlayerRankPrestiges();
+		PlayerRank defRank = getPlayerRankDefault();
+		
+		String prestRankTag = prestRank == null ? "---" : prestRank.getRank().getTag();
+		String defRankTag = defRank == null ? "---" : defRank.getRank().getTag();
+		
+		String prestRankTagNc = Text.stripColor(prestRankTag);
+		String defRankTagNc = Text.stripColor(defRankTag);
+		
+		String balanceStr = PlaceholdersUtil.formattedKmbtSISize( getBalance(), dFmt, " " );
+		String sPenaltyStr = PlaceholdersUtil.formattedKmbtSISize( getRankScorePenalty(), dFmt, " " );
+		
+		String message = String.format(
+				" %-3d  %-18s %-7s %-7s %9s %9s %9s",
+					(rankPostion > 0 ? rankPostion : ""),
+					getName(),
+					prestRankTagNc,
+					defRankTagNc,
+					balanceStr,
+					dFmt.format( getRankScore() ),
+					sPenaltyStr
+				);
+		
+		message = message
+					.replace(prestRankTagNc, prestRankTag + "&r")
+					.replace(defRankTagNc, defRankTag + "&r");
+
+		return message;
 	}
 	
 	public boolean isHesitancyDelayPenaltyEnabled() {
