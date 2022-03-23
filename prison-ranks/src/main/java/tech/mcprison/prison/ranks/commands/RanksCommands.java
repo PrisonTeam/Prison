@@ -2042,10 +2042,19 @@ public class RanksCommands
     			@Arg(name = "page", def = "1", 
     				description = "Page number [1]") String pageNumber,
     			@Arg(name = "pageSize", def = "10", 
-    				description = "Page size [10]") String pageSizeNumber){
+    				description = "Page size [10]") String pageSizeNumber,
+    			@Arg(name = "options", def = ".",
+    				description = "Options: 'alt' displays a shorter format. [alt]") String options ){
 
     	int page = 1;
     	int pageSize = 10;
+    	
+    	boolean alt = false;
+    	if ( pageNumber.toLowerCase().contains("alt") ||
+    			pageSizeNumber.toLowerCase().contains("alt") ||
+    			options.toLowerCase().contains("alt") ) {
+    		alt = true;
+    	}
     	
     	
     	try {
@@ -2082,12 +2091,17 @@ public class RanksCommands
     	
     	List<RankPlayer> topN = PrisonRanks.getInstance().getPlayerManager().getPlayersByTop();
 
-    	sender.sendMessage( RankPlayer.printRankScoreLineHeader() );
+    	String header = alt ? 
+    			RankPlayer.printRankScoreLine2Header() : 
+    				RankPlayer.printRankScoreLine1Header();
+    	sender.sendMessage( header );
     	
     	for ( int i = posStart; i < posEnd && i < topN.size(); i++ ) {
     		RankPlayer rPlayer = topN.get(i);
     		
-    		String message = rPlayer.printRankScoreLine( i + 1 );
+    		String message = alt ?
+    				rPlayer.printRankScoreLine2( i + 1 ) :
+    					rPlayer.printRankScoreLine1( i + 1 );
     		
     		sender.sendMessage(message);
     	}
