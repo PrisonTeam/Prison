@@ -1312,9 +1312,9 @@ public class RankPlayer
 		}
 	}
 	
-	public static String printRankScoreLineHeader() {
+	public static String printRankScoreLine1Header() {
 		String header = String.format(
-				"Ranking  %-14s %-9s %-6s %-9s %-9s %-9s",
+				"Rank  %-16s %-9s  %-6s %-9s %-9s %-9s",
 					"Player",
 					"Prestiges",
 					"Rank",
@@ -1326,7 +1326,7 @@ public class RankPlayer
 		return header;
 	}
 	
-	public String printRankScoreLine( int rankPostion ) {
+	public String printRankScoreLine1( int rankPostion ) {
 		
 		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
 		
@@ -1357,6 +1357,51 @@ public class RankPlayer
 					.replace(prestRankTagNc, prestRankTag + "&r")
 					.replace(defRankTagNc, defRankTag + "&r");
 
+		return message;
+	}
+	
+	public static String printRankScoreLine2Header() {
+		String header = String.format(
+				"Rank %s %s %-15s %9s",
+				"Ranks",
+				"Rank-Score",
+				"Player",
+				"Balance"
+				
+				);
+		return header;
+	}
+	
+	public String printRankScoreLine2( int rankPostion ) {
+		
+		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+		
+		PlayerRank prestRank = getPlayerRankPrestiges();
+		PlayerRank defRank = getPlayerRankDefault();
+		
+		String prestRankTag = prestRank == null ? "---" : prestRank.getRank().getTag();
+		String defRankTag = defRank == null ? "---" : defRank.getRank().getTag();
+		
+		String prestRankTagNc = Text.stripColor(prestRankTag);
+		String defRankTagNc = Text.stripColor(defRankTag);
+		
+		String balanceStr = PlaceholdersUtil.formattedKmbtSISize( getBalance(), dFmt, " " );
+//		String sPenaltyStr = PlaceholdersUtil.formattedKmbtSISize( getRankScorePenalty(), dFmt, " " );
+		
+		String ranks = prestRankTagNc + defRankTagNc;
+		String message = String.format(
+				" %-3d %-9s %6s %-17s %9s",
+				(rankPostion > 0 ? rankPostion : ""),
+				ranks,
+				dFmt.format( getRankScore() ),
+				getName(),
+				balanceStr
+				);
+		
+		message = message
+				.replace(prestRankTagNc, prestRankTag + "&r")
+				.replace(defRankTagNc, defRankTag + "&r");
+		
 		return message;
 	}
 	

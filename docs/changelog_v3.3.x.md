@@ -14,6 +14,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9e 2022-03-23
 
 
+* **Top-n players listing: added an alternative line.**
+
+
 * **Placeholder Bar Attributes: Now supports a non-positional keyword "reverse" which will take any bar graph and reverse it.**
 
 
