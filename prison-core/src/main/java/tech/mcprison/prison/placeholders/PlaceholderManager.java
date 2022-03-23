@@ -570,6 +570,42 @@ public class PlaceholderManager {
 		prison_top_rank_balance_balance_nnn_rankname( prison_trbb_nnn_rankname, PlaceholderFlags.STATSRANKS ),
 		
 		
+		
+		
+		prison_tpl1_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
+		prison_tpl2_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
+		prison_tpl1h_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
+		prison_tpl2h_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
+
+		prison_tpn_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
+		prison_tprp_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
+		prison_tprd_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
+		prison_tpb_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
+		prison_tpbf_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
+		prison_tpbr_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
+		prison_tprs_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
+		prison_tprsb_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
+		prison_tpp_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
+		prison_tppf_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
+		prison_tppr_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
+		
+		prison_top_player_line1_nnn_tp( prison_tpl1_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
+		prison_top_player_line2_nnn_tp( prison_tpl2_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
+		prison_top_player_line1_headers_nnn_tp( prison_tpl1h_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
+		prison_top_player_line2_headers_nnn_tp( prison_tpl2h_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
+
+		prison_top_player_name_nnn_tp( prison_tpn_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
+		prison_top_player_rank_prestiges_nnn_tp( prison_tprp_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
+		prison_top_player_rank_default_nnn_tp( prison_tprd_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
+		prison_top_player_balance_nnn_tp( prison_tpb_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
+		prison_top_player_balance_formatted_nnn_tp( prison_tpbf_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
+		prison_top_player_balance_raw_nnn_tp( prison_tpbr_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
+		prison_top_player_rank_score_nnn_tp( prison_tprs_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
+		prison_top_player_rank_score_bar_nnn_tp( prison_tprsb_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
+		prison_top_player_penalty_nnn_tp( prison_tpp_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
+		prison_top_player_penalty_formatted_nnn_tp( prison_tppf_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
+		prison_top_player_penalty_raw_nnn_tp( prison_tppr_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
+		
 		;
 		
 		

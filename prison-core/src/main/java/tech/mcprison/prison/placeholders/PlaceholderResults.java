@@ -11,12 +11,19 @@ public class PlaceholderResults
 	
 	private String identifier;
 	
-
+	private String text;
 	
-	public PlaceholderResults( PlaceHolderKey placeholder ) {
+//	public PlaceholderResults( PlaceHolderKey placeholder ) {
+//		super();
+//		
+//		this.placeholder = placeholder;
+//		this.text = null;
+//	}
+	public PlaceholderResults( PlaceHolderKey placeholder, String text ) {
 		super();
 		
 		this.placeholder = placeholder;
+		this.text = text;
 	}
 	
 	@Override
@@ -60,6 +67,13 @@ public class PlaceholderResults
 		this.placeholder = placeholder;
 	}
 
+	public String getText() {
+		return text;
+	}
+	public void setText(String text) {
+		this.text = text;
+	}
+	
 	public String getIdentifier() {
 		return identifier;
 	}

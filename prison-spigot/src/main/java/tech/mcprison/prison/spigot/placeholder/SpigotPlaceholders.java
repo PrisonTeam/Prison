@@ -187,6 +187,7 @@ public class SpigotPlaceholders
 				results = rm.getTranslateRanksPlaceHolder( identifier );
 				
 				if ( results == null ) {
+					
 					results = rm.getTranslateRankPlayersPlaceHolder( playerUuid, playerName, identifier );
 				}
 			}
@@ -335,13 +336,13 @@ public class SpigotPlaceholders
     		
     		for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
     			
-    			PlaceholderResults identifier = placeHolderKey.getIdentifier( results );
+    			PlaceholderResults pResults = placeHolderKey.getIdentifier( results );
     			
-    			if ( results != null && identifier != null && identifier.hasResults() ) {
+    			if ( results != null && pResults != null && pResults.hasResults() ) {
     				
     				
-    				results = placeholderReplace( results, identifier.getEscapedIdentifier(), 
-    						rm.getTranslateRankPlayersPlaceHolder( playerUuid, playerName, identifier.getIdentifier() ) );
+    				results = placeholderReplace( results, pResults.getEscapedIdentifier(), 
+    						rm.getTranslateRankPlayersPlaceHolder( playerUuid, playerName, pResults ) );
     			}
     		}
     	}
@@ -450,7 +451,12 @@ public class SpigotPlaceholders
 				else if ( rm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.RANKPLAYERS ) ||
 						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSRANKS ) ||
 						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSPLAYERS ) ) ) {
-					value = rm.getTranslateRankPlayersPlaceHolder( playerUuid, playerName, placeHolderKey, null );
+					
+					String searchPatterns = String.join("_", patterns);
+					
+					PlaceholderResults pResults = placeHolderKey.getIdentifier( searchPatterns );
+					
+					value = rm.getTranslateRankPlayersPlaceHolder( playerUuid, playerName, placeHolderKey, null, pResults );
 				}
 				
 				String placeholderAlias = ( placeHolderKey.getAliasName() == null ? null : 

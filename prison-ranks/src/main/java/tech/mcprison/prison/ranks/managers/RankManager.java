@@ -38,6 +38,7 @@ import tech.mcprison.prison.placeholders.PlaceholderAttribute;
 import tech.mcprison.prison.placeholders.PlaceholderAttributeNumberFormat;
 import tech.mcprison.prison.placeholders.PlaceholderAttributeText;
 import tech.mcprison.prison.placeholders.PlaceholderManager;
+import tech.mcprison.prison.placeholders.PlaceholderResults;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceholderFlags;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
@@ -315,7 +316,7 @@ public class RankManager
      * @return
      */
     public Rank getRank(String name) {
-    	return getRanksByName().get( name.toLowerCase() );
+    	return name == null ? null : getRanksByName().get( name.toLowerCase() );
     }
     
     
@@ -692,15 +693,44 @@ public class RankManager
 		return resultsx;
 	}
 	
+	public String getTranslateRankPlayersPlaceHolder( UUID playerUuid, String playerName, String identifier ) {
+		String results = null;
+		
+		// placeholder Attributes: 
+		PlaceholderManager pman = Prison.get().getPlaceholderManager();
+		String placeholder = pman.extractPlaceholderString( identifier );
+
+		List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
+		
+		PlaceHolderKey placeholderKey = null;
+		for ( PlaceHolderKey phk : placeHolderKeys ) {
+			
+			if ( phk.getKey().equalsIgnoreCase( placeholder )) {
+				placeholderKey = phk;
+				break;
+			}
+		}
+		
+		if ( placeholderKey != null ) {
+			
+			PlaceholderResults placeholderResults = placeholderKey.getIdentifier(identifier);
+			
+			results = getTranslateRankPlayersPlaceHolder( playerUuid, playerName, placeholderResults );
+		}
+		
+		return results;
+	}
 	
-    public String getTranslateRankPlayersPlaceHolder( UUID playerUuid, String playerName, String identifier ) {
+    public String getTranslateRankPlayersPlaceHolder( UUID playerUuid, String playerName, 
+    							PlaceholderResults placeholderResults ) {
     	String results = null;
 
-    	if ( playerUuid != null && identifier != null ) {
+    	if ( playerUuid != null && placeholderResults != null ) {
     		
-    		List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
+//    		List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
     		
-    		identifier = identifier.toLowerCase();
+    		String identifier = placeholderResults.getIdentifier().toLowerCase();
+    		
     		
     		if ( !identifier.startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
     			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
@@ -708,15 +738,22 @@ public class RankManager
     		
     		// placeholder Attributes: 
     		PlaceholderManager pman = Prison.get().getPlaceholderManager();
-    		String placeholder = pman.extractPlaceholderString( identifier );
+//    		String placeholder = pman.extractPlaceholderString( identifier );
     		PlaceholderAttribute attribute = pman.extractPlaceholderExtractAttribute( identifier );
     		
-    		for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
-    			if ( placeHolderKey.getKey().equalsIgnoreCase( placeholder )) {
-    				results = getTranslateRankPlayersPlaceHolder( playerUuid, playerName, placeHolderKey, attribute );
-    				break;
-    			}
-    		}
+    		PlaceHolderKey placeHolderKey = placeholderResults.getPlaceholder();
+
+    		results = getTranslateRankPlayersPlaceHolder( playerUuid, playerName, 
+    				placeHolderKey, attribute, placeholderResults );
+
+//    		for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
+//    			
+//    			if ( placeHolderKey.getKey().equalsIgnoreCase( placeholder )) {
+//    				results = getTranslateRankPlayersPlaceHolder( playerUuid, playerName, 
+//    									placeHolderKey, attribute, placeholderResults );
+//    				break;
+//    			}
+//    		}
     	}
     	
     	return results;
@@ -773,9 +810,17 @@ public class RankManager
     		
     		if ( placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSPLAYERS ) ) {
     			
-    			results = getTranslateRanksPlaceHolderTopPlayer( placeHolderKey, attribute, numericSequence );
+    			UUID playerUuid = null;
+    			String playerName = null;
+    			
+    			PlaceholderResults placeholderResults = placeHolderKey.getIdentifier(identifier);
+    					
+    			results = getTranslateRankPlayersPlaceHolder( playerUuid, playerName, 
+    		    								placeHolderKey, attribute, placeholderResults );
+    			
     		}
-    		else {
+    		else 
+    		{
     			
     			String rankName = placeHolderKey.getData();
     			Rank rank = PrisonRanks.getInstance().getRankManager().getRank( rankName );
@@ -941,33 +986,34 @@ public class RankManager
     }
 
     
-    public String getTranslateRanksPlaceHolderTopPlayer( PlaceHolderKey placeHolderKey, 
-    				PlaceholderAttribute attribute, int numericSequence ) {
-		String results = null;
-
-		PrisonPlaceHolders placeHolder = placeHolderKey.getPlaceholder();
-		
-//		DecimalFormat dFmt = new DecimalFormat("#,##0");
-		
-		switch ( placeHolder ) {
-		
+//    public String getTranslateRanksPlaceHolderTopPlayer( PlaceHolderKey placeHolderKey, 
+//    				PlaceholderAttribute attribute, int numericSequence ) {
+//		String results = null;
+//
+//		PrisonPlaceHolders placeHolder = placeHolderKey.getPlaceholder();
+//		
+////		DecimalFormat dFmt = new DecimalFormat("#,##0");
+//		
+//		switch ( placeHolder ) {
+//		
 //			case prison_tpl1_nnn_tp:
-//			case prison_top_player_line1_headers_nnn_tp:
+//			case prison_top_player_line1_nnn_tp:
 //			{
 ////				placeHolderKey.get
+//				lll
 //				
 //			}
-	
-			default:
-				break;
-	
-		}
-			
-		return results;
-	}
+//	
+//			default:
+//				break;
+//	
+//		}
+//			
+//		return results;
+//	}
     
     public String getTranslateRankPlayersPlaceHolder(UUID playerUuid, String playerName, 
-    		PlaceHolderKey placeHolderKey, PlaceholderAttribute attribute) {
+    		PlaceHolderKey placeHolderKey, PlaceholderAttribute attribute, PlaceholderResults placeholderResults ) {
     	String results = null;
 
 		PrisonPlaceHolders placeHolder = placeHolderKey.getPlaceholder();
@@ -981,7 +1027,8 @@ public class RankManager
 		
 		DecimalFormat dFmt = new DecimalFormat("#,##0");
 		
-		if ( rank != null && rankPlayer != null ) {
+		if ( !placeHolder.hasFlag( PlaceholderFlags.STATSPLAYERS ) &&
+				rank != null && rankPlayer != null ) {
 			
 			switch ( placeHolder ) {
 				
@@ -1102,6 +1149,239 @@ public class RankManager
 					break;
 					
 					
+					
+				default:
+					break;
+			}
+		}
+		
+		else if ( placeHolder.hasFlag( PlaceholderFlags.STATSPLAYERS ) ) {
+				
+			switch ( placeHolder ) {
+					
+				case prison_top_player_line1_headers_nnn_tp:
+				case prison_tpl1h_nnn_tp:
+					{
+						results = RankPlayer.printRankScoreLine1Header();
+					}
+					break;
+					
+				case prison_tpl1_nnn_tp:
+				case prison_top_player_line1_nnn_tp:
+				{
+					RankPlayer topRankPlayer = getTopNRankPlayer( placeholderResults );
+
+					if ( topRankPlayer != null ) {
+						
+						results = topRankPlayer.printRankScoreLine1( placeholderResults.getNumericSequence() );
+					}
+					else {
+						results = "";
+					}
+				}
+				break;
+				
+				case prison_top_player_line2_headers_nnn_tp:
+				case prison_tpl2h_nnn_tp:
+				{
+					results = RankPlayer.printRankScoreLine2Header();
+				}
+				break;
+				
+				case prison_top_player_line2_nnn_tp:
+				case prison_tpl2_nnn_tp:
+				{
+					RankPlayer topRankPlayer = getTopNRankPlayer( placeholderResults );
+
+					if ( topRankPlayer != null ) {
+						
+						results = topRankPlayer.printRankScoreLine2( placeholderResults.getNumericSequence() );
+					}
+					else {
+						results = "";
+					}
+				}
+				break;
+				
+				case prison_top_player_name_nnn_tp:
+				case prison_tpn_nnn_tp:
+				{
+					RankPlayer topRankPlayer = getTopNRankPlayer( placeholderResults );
+
+					if ( topRankPlayer != null ) {
+						
+						results = topRankPlayer.getName();
+					}
+					else {
+						results = "";
+					}
+				}
+				break;
+
+				case prison_top_player_rank_prestiges_nnn_tp:
+				case prison_tprp_nnn_tp:
+				{
+					RankPlayer topRankPlayer = getTopNRankPlayer( placeholderResults );
+					
+					if ( topRankPlayer != null ) {
+						
+						results = topRankPlayer.getPlayerRankPrestiges().getRank().getTag();
+					}
+					else {
+						results = "";
+					}
+				}
+				break;
+				
+				case prison_top_player_rank_default_nnn_tp:
+				case prison_tprd_nnn_tp:
+				{
+					RankPlayer topRankPlayer = getTopNRankPlayer( placeholderResults );
+					
+					if ( topRankPlayer != null ) {
+						
+						results = topRankPlayer.getPlayerRankDefault().getRank().getTag();
+					}
+					else {
+						results = "";
+					}
+				}
+				break;
+				
+				case prison_top_player_balance_nnn_tp:
+				case prison_tpb_nnn_tp:
+				case prison_top_player_balance_formatted_nnn_tp:
+				case prison_tpbf_nnn_tp:
+				case prison_top_player_balance_raw_nnn_tp:
+				case prison_tpbr_nnn_tp:
+				{
+					RankPlayer topRankPlayer = getTopNRankPlayer( placeholderResults );
+					
+					if ( topRankPlayer != null ) {
+						
+						double bal = topRankPlayer.getBalance();
+						
+						if ( bal < 0 ) {
+							bal = 0;
+						}
+						
+						if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    						PlaceholderAttributeNumberFormat attributeNF = 
+    								(PlaceholderAttributeNumberFormat) attribute;
+    						results = attributeNF.format( bal );
+    					}
+						else if ( placeHolder == PrisonPlaceHolders.prison_top_player_balance_formatted_nnn_tp ||
+								  placeHolder == PrisonPlaceHolders.prison_tpbf_nnn_tp ) {
+
+							results = PlaceholdersUtil.formattedMetricSISize( bal );
+						}
+						else if ( placeHolder == PrisonPlaceHolders.prison_top_player_balance_raw_nnn_tp ||
+								  placeHolder == PrisonPlaceHolders.prison_tpbr_nnn_tp ) {
+							
+							results = Double.toString(bal);
+						}
+						else {
+							results = dFmt.format(bal);
+						}
+						
+					}
+					else {
+						results = "";
+					}
+				}
+				break;
+				
+				
+				
+				case prison_top_player_rank_score_nnn_tp:
+				case prison_tprs_nnn_tp:
+				{
+					RankPlayer topRankPlayer = getTopNRankPlayer( placeholderResults );
+					
+					if ( topRankPlayer != null ) {
+						
+						double rankScore = topRankPlayer.getRankScore();
+						
+						if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    						PlaceholderAttributeNumberFormat attributeNF = 
+    								(PlaceholderAttributeNumberFormat) attribute;
+    						results = attributeNF.format( rankScore );
+    					}
+						else {
+							results = dFmt.format(rankScore);
+						}
+					}
+					else {
+						results = "";
+					}
+				}
+				break;
+				
+				
+				case prison_top_player_rank_score_bar_nnn_tp:
+				case prison_tprsb_nnn_tp:
+				{
+					RankPlayer topRankPlayer = getTopNRankPlayer( placeholderResults );
+					
+					if ( topRankPlayer != null ) {
+						
+						double rankScore = topRankPlayer.getRankScore();
+						
+						results = Prison.get().getPlaceholderManager().
+									getProgressBar( rankScore, 100.0d, false, attribute );
+					}
+					else {
+						results = "";
+					}
+				}
+				break;
+				
+				case prison_top_player_penalty_nnn_tp:
+				case prison_tpp_nnn_tp:
+				case prison_top_player_penalty_formatted_nnn_tp:
+				case prison_tppf_nnn_tp:
+				case prison_top_player_penalty_raw_nnn_tp:
+				case prison_tppr_nnn_tp:
+				{
+					RankPlayer topRankPlayer = getTopNRankPlayer( placeholderResults );
+					
+					if ( topRankPlayer != null ) {
+						
+						double rsPenalty = topRankPlayer.getRankScorePenalty();
+						
+						if ( rsPenalty < 0 ) {
+							rsPenalty = 0;
+						}
+						
+						if ( attribute != null && attribute instanceof PlaceholderAttributeNumberFormat ) {
+    						PlaceholderAttributeNumberFormat attributeNF = 
+    								(PlaceholderAttributeNumberFormat) attribute;
+    						results = attributeNF.format( rsPenalty );
+    					}
+						else if ( placeHolder == PrisonPlaceHolders.prison_top_player_penalty_formatted_nnn_tp ||
+								  placeHolder == PrisonPlaceHolders.prison_tppf_nnn_tp ) {
+
+							results = PlaceholdersUtil.formattedMetricSISize( rsPenalty );
+						}
+						else if ( placeHolder == PrisonPlaceHolders.prison_top_player_penalty_raw_nnn_tp ||
+								  placeHolder == PrisonPlaceHolders.prison_tppr_nnn_tp ) {
+							
+							results = Double.toString(rsPenalty);
+						}
+						else {
+							results = dFmt.format(rsPenalty);
+						}
+
+					}
+					else {
+						results = "";
+					}
+				}
+				break;
+				
+
+
+					
 				default:
 					break;
 			}
@@ -1114,6 +1394,23 @@ public class RankManager
 		}
 		
 		return results;
+    }
+    
+    private RankPlayer getTopNRankPlayer( PlaceholderResults placeholderResults ) {
+    	RankPlayer topRankPlayer = null;
+    	
+    	if ( placeholderResults != null ) {
+    		
+    		int rankPosition = placeholderResults.getNumericSequence();
+    		
+    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+    		if ( rankPosition >= 0 && rankPosition < pm.getPlayersByTop().size() ) {
+    			
+    			topRankPlayer = pm.getPlayersByTop().get(rankPosition);
+    		}
+    	}
+		
+		return topRankPlayer;
     }
 
 	private double calculateRankCost( RankPlayer rankPlayer, Rank rank )

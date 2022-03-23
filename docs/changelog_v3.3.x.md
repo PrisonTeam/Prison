@@ -14,6 +14,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9e 2022-03-23
 
 
+* **Placeholders top player: added new placeholders based upon the _nnn_ pattern to identify the player.**
+
+
 * **Top-n players listing: added an alternative line.**
 
 

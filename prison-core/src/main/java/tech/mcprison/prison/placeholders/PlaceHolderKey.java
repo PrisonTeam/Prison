@@ -46,7 +46,7 @@ public class PlaceHolderKey {
 	 * @return
 	 */
 	public PlaceholderResults getIdentifier( String text ) {
-		PlaceholderResults results = new PlaceholderResults(this);
+		PlaceholderResults results = new PlaceholderResults(this, text);
 
 		
 		String textLowercase = text.toLowerCase();
