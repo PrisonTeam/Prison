@@ -74,6 +74,8 @@ public class PlaceholderAttributeBar
 		this.hex = parts.remove( "hex" );
 		this.hex2 = parts.remove( "hex2" );
 		this.debug = parts.remove( "debug" );
+		
+		boolean isReversed = parts.remove( "reverse" );
 
 		int len = 1;
 		
@@ -121,6 +123,7 @@ public class PlaceholderAttributeBar
 		
 		
 		this.barConfig = new PlaceholderProgressBarConfig( seg, pCol, pSeg, nCol, nSeg );
+		this.barConfig.setReverse(isReversed);
 		
 //		// Debug:
 //		String debugStr = parts.length > len ? parts[len++] : null;

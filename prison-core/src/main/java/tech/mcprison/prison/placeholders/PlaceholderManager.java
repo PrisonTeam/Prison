@@ -1012,6 +1012,11 @@ public class PlaceholderManager {
 			}
 		}
 
+		
+		if ( barConfig.isReverse() ) {
+			sb.reverse();
+		}
+		
     	
     	return sb.toString();
 	}

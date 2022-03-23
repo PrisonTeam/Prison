@@ -11,7 +11,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.9e 2022-03-21
+# 3.3.0-alpha.9e 2022-03-23
+
+
+* **Placeholder Bar Attributes: Now supports a non-positional keyword "reverse" which will take any bar graph and reverse it.**
 
 
 * **AutoFeatures debugging: Some color change in the logging details for failures so they are easier to see.**
