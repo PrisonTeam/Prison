@@ -1254,7 +1254,24 @@ public class RankPlayer
 		PlayerRank rankCurrent = getPlayerRankDefault();
 
 		Rank nRank = rankCurrent.getRank().getRankNext();
-		String rankNextCurrency = nRank.getCurrency();
+		
+		// If player does not have a next rank, then try to use the next prestige rank:
+		if ( nRank == null ) {
+			PlayerRank prestigeRankCurrent = getPlayerRankPrestiges();
+			
+			// if they don't have a current prestige rank, then use the lowest rank:
+			if ( prestigeRankCurrent == null ) {
+				RankLadder rLadder = getRankLadder( "prestiges" );
+				nRank = rLadder.getLowestRank().orElse(null);
+			}
+			
+			if ( prestigeRankCurrent != null ) {
+				nRank = prestigeRankCurrent.getRank().getRankNext();
+			}
+			
+		}
+		
+		String rankNextCurrency = nRank == null ? "" : nRank.getCurrency();
 		
 		PlayerRank pRankNext = rankCurrent.getTargetPlayerRankForPlayer( this, nRank );
 		

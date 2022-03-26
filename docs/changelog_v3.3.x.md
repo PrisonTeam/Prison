@@ -11,7 +11,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.9e 2022-03-25
+# 3.3.0-alpha.9e 2022-03-26
+
+
+* **topn fix: If next rank is null, then try to use the next prestige rank for the cost.**
 
 
 * **v3.3.0-alpha.9f 2022-03-25**
