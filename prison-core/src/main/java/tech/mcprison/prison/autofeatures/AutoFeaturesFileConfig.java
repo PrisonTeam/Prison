@@ -157,6 +157,9 @@ public class AutoFeaturesFileConfig {
 				
 				isAutoSellIfInventoryIsFull(inventory, true),
 				
+				isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority(inventory, false),
+				
+				
 				dropItemsIfInventoryIsFull(inventory, true),
 				
 				playSoundIfInventoryIsFull(inventory, true),

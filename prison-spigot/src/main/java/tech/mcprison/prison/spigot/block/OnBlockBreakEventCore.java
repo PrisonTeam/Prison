@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.block;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -32,6 +33,7 @@ import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.utils.BlockUtils;
 import tech.mcprison.prison.util.Text;
 
@@ -654,6 +656,26 @@ public abstract class OnBlockBreakEventCore
 		
 		
 		if ( results && pmEvent.getBbPriority() == BlockBreakPriority.BLOCKEVENTS ) {
+			
+			
+			// AutoSell on full inventory when using BLOCKEVENTS:
+			if ( isBoolean( AutoFeatures.isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority ) &&
+					Prison.get().getPlatform().getConfigBooleanFalse( "sellall" ) &&
+					SellAllUtil.get() != null &&
+					pmEvent.getSpigotPlayer().isInventoryFull() ) {
+				
+				
+				final long nanoStart = System.nanoTime();
+				boolean success = SellAllUtil.get().sellAllSell( pmEvent.getPlayer(), 
+										false, false, false, true, true, false);
+				final long nanoStop = System.nanoTime();
+				double milliTime = (nanoStop - nanoStart) / 1000000d;
+				
+				DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+				debugInfo.append( "(autosell: " + (success ? "success" : "failed") + 
+						" ms: " + dFmt.format( milliTime ) + ") ");
+				
+			}
 			
 			String triggered = null;
 			

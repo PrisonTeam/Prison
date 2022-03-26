@@ -702,5 +702,19 @@ public class SpigotPlayer
 		}
 		return sneaking;
 	}
+
+	public boolean isInventoryFull() {
+		boolean results = false;
+		
+		if ( getWrapper() != null ) {
+			org.bukkit.entity.Player bukkitPlayer = getWrapper();
+			
+			int firstEmpty = bukkitPlayer.getInventory().firstEmpty();
+			
+			results = (firstEmpty == -1);
+		}
+		
+		return results;
+	}
 	
 }

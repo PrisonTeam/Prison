@@ -14,6 +14,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9e 2022-03-26
 
 
+* **auto features autosell when inventory is full when using the priority BLOCKEVENTS.**
+
+
 * **topn fix: If next rank is null, then try to use the next prestige rank for the cost.**
 
 
