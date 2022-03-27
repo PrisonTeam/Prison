@@ -13,6 +13,8 @@ These build logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.9e 2022-03-27
 
+* **Update debug info in auto features to properly show it's within the BLOCKEVENTS priority processing.**
+
 
 * **Topn calculations: handle a null being returned for the prestige ladder.**
 

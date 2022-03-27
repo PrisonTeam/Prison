@@ -672,7 +672,7 @@ public abstract class OnBlockBreakEventCore
 				double milliTime = (nanoStop - nanoStart) / 1000000d;
 				
 				DecimalFormat dFmt = new DecimalFormat("#,##0.00");
-				debugInfo.append( "(autosell: " + (success ? "success" : "failed") + 
+				debugInfo.append( "(autosellBLOCKEVENTS: " + (success ? "success" : "failed") + 
 						" ms: " + dFmt.format( milliTime ) + ") ");
 				
 			}
