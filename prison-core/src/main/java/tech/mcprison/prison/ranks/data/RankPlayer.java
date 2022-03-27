@@ -574,6 +574,7 @@ public class RankPlayer
 		for ( RankLadder rLadder : getLadderRanks().keySet() ) {
 			if ( rLadder.getName().equalsIgnoreCase( ladderName ) ) {
 				results = rLadder;
+				break;
 			}
 		}
 		
@@ -1261,12 +1262,13 @@ public class RankPlayer
 			
 			// if they don't have a current prestige rank, then use the lowest rank:
 			if ( prestigeRankCurrent == null ) {
-				RankLadder rLadder = getRankLadder( "prestiges" );
-				nRank = rLadder.getLowestRank().orElse(null);
+				RankLadder rLadder = getRankLadder( RankLadder.PRESTIGES );
+				nRank = rLadder == null ? null : rLadder.getLowestRank().orElse(null);
 			}
 			
 			if ( prestigeRankCurrent != null ) {
-				nRank = prestigeRankCurrent.getRank().getRankNext();
+				nRank = prestigeRankCurrent.getRank() == null ? 
+						null : prestigeRankCurrent.getRank().getRankNext();
 			}
 			
 		}
@@ -1282,7 +1284,7 @@ public class RankPlayer
 		double penalty = 0d;
 		
 		// Do not apply the penalty if cost is zero:
-		if ( isHesitancyDelayPenaltyEnabled() && cost > 0 ) {
+		if ( cost > 0 && isHesitancyDelayPenaltyEnabled() ) {
 			score = balance > cost ? cost : score;
 			
 			double excess = balance > cost ? balance - cost : 0d;

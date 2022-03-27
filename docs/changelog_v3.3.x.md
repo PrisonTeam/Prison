@@ -14,6 +14,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9e 2022-03-27
 
 
+* **Topn calculations: handle a null being returned for the prestige ladder.**
+
+
 * **Enabled a sellall feature to enable the old functionality where sellall ignores the Display Name or is not a valid prison block type.**
 
 

@@ -35,6 +35,10 @@ import tech.mcprison.prison.store.Document;
 public class RankLadder 
 		implements PrisonSortable, Comparable<RankLadder> {
 
+	public static final String DEFAULT = "default";
+	public static final String PRESTIGES = "prestiges";
+	
+	
     private int id;
     private String name;
     private List<Rank> ranks;
@@ -72,11 +76,11 @@ public class RankLadder
 
 
 	public boolean isDefault() {
-		return getName().equalsIgnoreCase( "default" );
+		return getName().equalsIgnoreCase( DEFAULT );
 	}
 
 	public boolean isPrestiges() {
-		return getName().equalsIgnoreCase( "prestiges" );
+		return getName().equalsIgnoreCase( PRESTIGES );
 	}
 	
 	
