@@ -107,6 +107,8 @@ public class SellAllUtil {
     public boolean isSellAllBackpackItemsEnabled;
     public boolean isSellAllMinesBackpacksPluginEnabled;
     public boolean isSellAllHandEnabled;
+    
+    public boolean isSellAllIgnoreCustomNames = false;
 
     /**
      * Get cached instance of SellAllUtil, if present, if not then Initialize it, if SellAll is disabled return null.
@@ -129,7 +131,7 @@ public class SellAllUtil {
      *
      * @return boolean.
      * */
-    public static boolean getBoolean(String string) {
+    private static boolean getBoolean(String string) {
         return string != null && string.equalsIgnoreCase("true");
     }
 
@@ -182,7 +184,7 @@ public class SellAllUtil {
     		altName = itemStack.getItemMeta().getDisplayName();
     	}
     	
-    	if ( altName == null ) {
+    	if ( altName == null || isSellAllIgnoreCustomNames ) {
     		XMaterial xMat = null;
     		
     		if (itemStack.isSimilar(lapisLazuli)) {
@@ -476,10 +478,14 @@ public class SellAllUtil {
 	{
     	double results = 0d;
     	
+    	// Either ignore custom names, or if isSellAllIgnoreCustomNames is set, then allow them
+    	// to be processed as they used to be processed.
+    	
     	// For now, do not sell custom blocks since this sellall is based upon
     	// XMaterial and custom blocks cannot be represented by XMaterial so
     	// it will sell it as the wrong material
-    	if ( itemStack.getMaterial().getBlockType() == null ||
+    	if ( isSellAllIgnoreCustomNames ||
+    			itemStack.getMaterial().getBlockType() == null ||
     			itemStack.getMaterial().getBlockType() == PrisonBlockType.minecraft ) {
     		
     		HashMap<XMaterial, Integer> xMaterialIntegerHashMap = new HashMap<>();
@@ -554,7 +560,7 @@ public class SellAllUtil {
             return true;
         }
 
-        return getBoolean(sellAllConfig.getString("Users." + p.getUniqueId() + ".isEnabled"));
+        return getBooleanValue("Users." + p.getUniqueId() + ".isEnabled");
     }
 
     /**
@@ -637,31 +643,65 @@ public class SellAllUtil {
         defaultMultiplier = Double.parseDouble(sellAllConfig.getString("Options.Multiplier_Default"));
         defaultSellAllDelay = Integer.parseInt(sellAllConfig.getString("Options.Sell_Delay_Seconds"));
         defaultAutoSellEarningNotificationDelay = Integer.parseInt(sellAllConfig.getString("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Delay_Seconds"));
-        isPerBlockPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"));
-        isAutoSellEnabled = getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell"));
-        isAutoSellNotificationEnabled = getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_Notification"));
-        isAutoSellEarningNotificationDelayEnabled = getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Enabled"));
-        isAutoSellPerUserToggleable = getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable"));
-        isAutoSellPerUserToggleablePermEnabled = getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable_Need_Perm"));
-        isSellAllNotificationEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Notify_Enabled"));
-        isSellAllSoundEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Sound_Enabled"));
-        isSellAllBackpackItemsEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Prison_BackPack_Items"));
-        isSellAllMinesBackpacksPluginEnabled = getBoolean(sellAllConfig.getString("Options.Sell_MinesBackPacks_Plugin_Backpack"));
-        isSellAllDelayEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Delay_Enabled"));
-        isSellAllSellPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Permission_Enabled"));
-        isSellAllItemTriggerEnabled = getBoolean(sellAllConfig.getString("Options.ShiftAndRightClickSellAll.Enabled"));
-        isSellAllItemTriggerPermissionEnabled = getBoolean(sellAllConfig.getString("Options.ShiftAndRightClickSellAll.PermissionEnabled"));
-        isSellAllGUIEnabled = getBoolean(sellAllConfig.getString("Options.GUI_Enabled"));
-        isSellAllPlayerGUIEnabled = getBoolean(sellAllConfig.getString("Options.Player_GUI_Enabled"));
-        isSellAllGUIPermissionEnabled = getBoolean(sellAllConfig.getString("Options.GUI_Permission_Enabled"));
-        isSellAllPlayerGUIPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Player_GUI_Permission_Enabled"));
-        isSellAllMultiplierEnabled = getBoolean(sellAllConfig.getString("Options.Multiplier_Enabled"));
-        isSellAllPermissionMultiplierOnlyHigherEnabled = getBoolean(sellAllConfig.getString("Options.Multiplier_Permission_Only_Higher"));
-        isSellAllSignEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Enabled"));
-        isSellAllSignNotifyEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Notify"));
-        isSellAllSignPermissionToUseEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Use_Permission_Enabled"));
-        isSellAllBySignOnlyEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_By_Sign_Only"));
-        isSellAllHandEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Hand_Enabled"));
+        isPerBlockPermissionEnabled = getBooleanValue("Options.Sell_Per_Block_Permission_Enabled");
+        isAutoSellEnabled = getBooleanValue("Options.Full_Inv_AutoSell");
+        isAutoSellNotificationEnabled = getBooleanValue("Options.Full_Inv_AutoSell_Notification");
+        isAutoSellEarningNotificationDelayEnabled = getBooleanValue("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Enabled");
+        isAutoSellPerUserToggleable = getBooleanValue("Options.Full_Inv_AutoSell_perUserToggleable");
+        isAutoSellPerUserToggleablePermEnabled = getBooleanValue("Options.Full_Inv_AutoSell_perUserToggleable_Need_Perm");
+        isSellAllNotificationEnabled = getBooleanValue("Options.Sell_Notify_Enabled");
+        isSellAllSoundEnabled = getBooleanValue("Options.Sell_Sound_Enabled");
+        isSellAllBackpackItemsEnabled = getBooleanValue("Options.Sell_Prison_BackPack_Items");
+        isSellAllMinesBackpacksPluginEnabled = getBooleanValue("Options.Sell_MinesBackPacks_Plugin_Backpack");
+        isSellAllDelayEnabled = getBooleanValue("Options.Sell_Delay_Enabled");
+        isSellAllSellPermissionEnabled = getBooleanValue("Options.Sell_Permission_Enabled");
+        isSellAllItemTriggerEnabled = getBooleanValue("Options.ShiftAndRightClickSellAll.Enabled");
+        isSellAllItemTriggerPermissionEnabled = getBooleanValue("Options.ShiftAndRightClickSellAll.PermissionEnabled");
+        isSellAllGUIEnabled = getBooleanValue("Options.GUI_Enabled");
+        isSellAllPlayerGUIEnabled = getBooleanValue("Options.Player_GUI_Enabled");
+        isSellAllGUIPermissionEnabled = getBooleanValue("Options.GUI_Permission_Enabled");
+        isSellAllPlayerGUIPermissionEnabled = getBooleanValue("Options.Player_GUI_Permission_Enabled");
+        isSellAllMultiplierEnabled = getBooleanValue("Options.Multiplier_Enabled");
+        isSellAllPermissionMultiplierOnlyHigherEnabled = getBooleanValue("Options.Multiplier_Permission_Only_Higher");
+        isSellAllSignEnabled = getBooleanValue("Options.SellAll_Sign_Enabled");
+        isSellAllSignNotifyEnabled = getBooleanValue("Options.SellAll_Sign_Notify");
+        isSellAllSignPermissionToUseEnabled = getBooleanValue("Options.SellAll_Sign_Use_Permission_Enabled");
+        isSellAllBySignOnlyEnabled = getBooleanValue("Options.SellAll_By_Sign_Only");
+        isSellAllHandEnabled = getBooleanValue("Options.SellAll_Hand_Enabled");
+        
+        isSellAllIgnoreCustomNames = getBooleanValue("Options.SellAll_ignoreCustomNames", false);
+    }
+    
+    private boolean getBooleanValue( String configName ) {
+    	return getBooleanValue(configName, false);
+    }
+    private boolean getBooleanValue( String configName, Boolean defaultValue ) {
+    	boolean results = (defaultValue == null ? false : defaultValue.booleanValue() );
+    	
+    	if ( configName != null ) {
+    		if ( sellAllConfig.isString(configName) ) {
+    			String boolVal = sellAllConfig.getString(configName);
+    			if ( boolVal != null ) {
+    				// Boolean.parseBoolean() also supports yes and no so don't pretest for true/false.
+    				try {
+						results = Boolean.parseBoolean(boolVal);
+					} catch (Exception e) {
+						// Not a boolean value, so ignore and let the "defaut" value stand
+					}
+    			}
+    			else {
+    				// ignore since it's not a boolean value and let the "default" value stand
+    			}
+    		}
+    		else if ( sellAllConfig.isBoolean(configName) ) {
+    			results = sellAllConfig.getBoolean(configName, results);
+    		}
+    		else {
+    			// Ignore since the config is not boolean or a String that "could" be a boolean
+    		}
+    	}
+    	
+    	return false;
     }
 
     /**
@@ -768,7 +808,7 @@ public class SellAllUtil {
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
             conf.set("Items." + xMaterial.name() + ".ITEM_ID", xMaterial.name());
             conf.set("Items." + xMaterial.name() + ".ITEM_VALUE", value);
-            if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
+            if (getBooleanValue("Options.Sell_Per_Block_Permission_Enabled")) {
                 conf.set("Items." + xMaterial.name() + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + xMaterial.name());
             }
             conf.save(sellAllFile);
@@ -1022,6 +1062,7 @@ public class SellAllUtil {
      * */
     public boolean editPrice(XMaterial xMaterial, double value){
 
+    	// Do not allow an edit price if the material does not exist, or if the value has not changed:
         if (!sellAllBlocks.containsKey(xMaterial) && sellAllBlocks.get(xMaterial) != value ){
             return false;
         }
@@ -1031,7 +1072,7 @@ public class SellAllUtil {
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
             conf.set("Items." + xMaterial.name() + ".ITEM_ID", xMaterial.name());
             conf.set("Items." + xMaterial.name() + ".ITEM_VALUE", value);
-            if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
+            if (getBooleanValue("Options.Sell_Per_Block_Permission_Enabled")) {
                 conf.set("Items." + xMaterial + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + xMaterial.name());
             }
             conf.save(sellAllFile);

@@ -14,6 +14,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9e 2022-03-27
 
 
+* **Enabled a sellall feature to enable the old functionality where sellall ignores the Display Name or is not a valid prison block type.**
+
+
 * **Fixed an NPE issue with checking to see if a block exists within a mine.**
 This issue was impacting spigot versions less than 1.13.  The problem is with data values being abnormal and out of the standard range.
 
