@@ -11,7 +11,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.9e 2022-03-26
+# 3.3.0-alpha.9e 2022-03-27
+
+
+* **Fixed a NPE on the topn calculations.**
 
 
 * **auto features autosell when inventory is full when using the priority BLOCKEVENTS.**

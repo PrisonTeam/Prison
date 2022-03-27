@@ -1275,7 +1275,7 @@ public class RankPlayer
 		
 		PlayerRank pRankNext = rankCurrent.getTargetPlayerRankForPlayer( this, nRank );
 		
-		double cost = pRankNext.getRankCost();
+		double cost = pRankNext == null ? 0d : pRankNext.getRankCost();
 		double balance = getBalance( rankNextCurrency );
 		
 		double score = balance;
