@@ -426,7 +426,7 @@ public class OnBlockBreakMines
 
 	
 	private Mine findMineLocation( SpigotBlock block ) {
-		return getPrisonMineManager() == null ? 
+		return getPrisonMineManager() == null || block == null || block.getLocation() == null ? 
 				null : getPrisonMineManager().findMineLocationExact( block.getLocation() );
 	}
 	

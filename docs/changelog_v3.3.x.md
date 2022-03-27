@@ -14,6 +14,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9e 2022-03-27
 
 
+* **Fixed an NPE issue with checking to see if a block exists within a mine.**
+This issue was impacting spigot versions less than 1.13.  The problem is with data values being abnormal and out of the standard range.
+
+
 * **Fixed a NPE on the topn calculations.**
 
 
