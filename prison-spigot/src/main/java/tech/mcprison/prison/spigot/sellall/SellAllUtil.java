@@ -398,6 +398,8 @@ public class SellAllUtil {
      * @return double.
      * */
     public double getSellMoney(Player p, HashMap<XMaterial, Integer> xMaterialIntegerHashMap){
+    	StringBuilder sb = new StringBuilder();
+    	boolean debug = Output.get().isDebug();
 
         if (sellAllBlocks.isEmpty()){
             return 0;
@@ -407,18 +409,45 @@ public class SellAllUtil {
         
         
         double earned = 0;
-        for (HashMap.Entry<XMaterial, Integer> xMaterialIntegerEntry : xMaterialIntegerHashMap.entrySet()){
-            if (sellAllBlocks.containsKey(xMaterialIntegerEntry.getKey())){
+        for (HashMap.Entry<XMaterial, Integer> xMatEntry : xMaterialIntegerHashMap.entrySet()){
+            if (sellAllBlocks.containsKey(xMatEntry.getKey())){
                 // This is stupid but right now I'm too confused, sorry.
-                if (isPerBlockPermissionEnabled && !p.hasPermission(permissionPrefixBlocks + xMaterialIntegerEntry.getKey().name())){
+                if (isPerBlockPermissionEnabled && !p.hasPermission(permissionPrefixBlocks + xMatEntry.getKey().name())){
                     // Nothing will change.
-                } else {
-                    earned += xMaterialIntegerEntry.getValue() * sellAllBlocks.get(xMaterialIntegerEntry.getKey());
+                } 
+                else {
+                	XMaterial xMat = xMatEntry.getKey();
+                	int qty = xMatEntry.getValue();
+                	double value = sellAllBlocks.get(xMat);
+                	
+                	if ( debug ) {
+                		
+                		if ( sb.length() > 0 ) {
+                			sb.append(", ");
+                		}
+                		sb.append( xMat.name().toLowerCase() ).append(":")
+                			.append( qty ).append("@").append(value);
+                	}
+                	
+                    earned += qty * value;
                 }
             }
         }
 
-        return earned * multiplier;
+        double total = earned * multiplier;
+        
+        if ( debug ) {
+        	DecimalFormat dFmt = new DecimalFormat( "#,##0.00" );
+        	sb.append( " earned: " ).append( dFmt.format(earned) )
+        	  .append( " mult: " ).append( dFmt.format(multiplier) )
+        	  .append( " total: " ).append( dFmt.format(total) );
+        	String message = String.format( 
+        			"Sellall.getSellMoney: %s %s", 
+        			p.getName(), sb.toString() );
+        	Output.get().logInfo(message);
+        }
+        
+        return total;
     }
 
     /**

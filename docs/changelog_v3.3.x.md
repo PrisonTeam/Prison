@@ -14,6 +14,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9e 2022-03-29
 
 
+* **Sellall - added debug logging on the calculation of sell prices.**
+
+
 * **Sellall bug fix on calculation boolean config values; it was not returning the correct value.**
 This was found by a report that `/sellall hand` was not working.
 
