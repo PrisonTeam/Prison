@@ -656,12 +656,19 @@ public abstract class OnBlockBreakEventCore
 		
 		
 		if ( results && pmEvent.getBbPriority() == BlockBreakPriority.BLOCKEVENTS ) {
+
 			
+			// This is true if the player cannot toggle the autosell, and it's
+			// true if they can, and the have it enabled:
+			boolean isPlayerAutosellEnabled = SellAllUtil.get() != null && 
+					SellAllUtil.get().checkIfPlayerAutosellIsActive( 
+							pmEvent.getSpigotPlayer().getWrapper() ) 
+					;
 			
 			// AutoSell on full inventory when using BLOCKEVENTS:
 			if ( isBoolean( AutoFeatures.isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority ) &&
 					Prison.get().getPlatform().getConfigBooleanFalse( "sellall" ) &&
-					SellAllUtil.get() != null &&
+					isPlayerAutosellEnabled &&
 					pmEvent.getSpigotPlayer().isInventoryFull() ) {
 				
 				

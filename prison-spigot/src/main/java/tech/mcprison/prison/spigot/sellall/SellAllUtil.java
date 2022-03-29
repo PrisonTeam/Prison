@@ -24,6 +24,8 @@ import com.cryptomorin.xseries.XSound;
 import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
@@ -581,7 +583,8 @@ public class SellAllUtil {
      * */
     public boolean isPlayerAutoSellEnabled(Player p){
 
-        if (isAutoSellPerUserToggleablePermEnabled && !p.hasPermission(permissionAutoSellPerUserToggleable)){
+        if (isAutoSellPerUserToggleablePermEnabled && 
+        		!p.hasPermission(permissionAutoSellPerUserToggleable)){
             return false;
         }
 
@@ -590,6 +593,16 @@ public class SellAllUtil {
         }
 
         return getBooleanValue("Users." + p.getUniqueId() + ".isEnabled");
+    }
+    
+    public boolean checkIfPlayerAutosellIsActive(Player p) {
+    	boolean results = true;
+    	
+    	if ( isAutoSellPerUserToggleable ) { 
+    		results = isPlayerAutoSellEnabled(p);
+    	}
+    	
+    	return results;
     }
 
     /**
@@ -1552,7 +1565,9 @@ public class SellAllUtil {
      * @return boolean.
      * */
     public boolean setAutoSellPlayer(Player p, boolean enable){
-        if (!isAutoSellEnabled || !isAutoSellPerUserToggleable){
+        if (!(isAutoSellEnabled || 
+        		AutoFeaturesWrapper.getInstance().isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled)) || 
+        		!isAutoSellPerUserToggleable){
             return false;
         }
 

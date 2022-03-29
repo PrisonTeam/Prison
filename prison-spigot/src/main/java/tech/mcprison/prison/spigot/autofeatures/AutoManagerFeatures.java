@@ -505,13 +505,21 @@ public abstract class AutoManagerFeatures
 				count += itemStack.getAmount();
 				
 	
+				// This is true if the player cannot toggle the autosell, and it's
+				// true if they can, and the have it enabled:
+				boolean isPlayerAutosellEnabled = SellAllUtil.get() != null && 
+						SellAllUtil.get().checkIfPlayerAutosellIsActive( 
+								pmEvent.getSpigotPlayer().getWrapper() ) 
+						;
+						
 				// Try to autosell if enabled:
 				if ( Prison.get().getPlatform().getConfigBooleanFalse( "sellall" ) &&
-						(isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) || 
+						(isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) &&
+								isPlayerAutosellEnabled || 
 						pmEvent.isForceAutoSell() || 
 						!player.isOp() && !"disable".equalsIgnoreCase( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) ) &&
 						player.hasPermission( getMessage( AutoFeatures.permissionAutoSellPerBlockBreakEnabled ) )) && 
-						SellAllUtil.get() != null  ) {
+						isPlayerAutosellEnabled ) {
 					
 					final long nanoStart = System.nanoTime();
 					double amount = SellAllUtil.get().sellAllSell( player, itemStack, false, false, true );
@@ -956,8 +964,7 @@ public abstract class AutoManagerFeatures
 						isBoolean(AutoFeatures.isAutoSellIfInventoryIsFull) )) {
 					
 					
-					if ( !sellAllUtil.isAutoSellPerUserToggleable || 
-							sellAllUtil.isAutoSellPerUserToggleable && sellAllUtil.isPlayerAutoSellEnabled(player) ) {
+					if ( sellAllUtil.checkIfPlayerAutosellIsActive(player) ) {
 						
 						boolean saNote = sellAllUtil.isAutoSellNotificationEnabled;
 
