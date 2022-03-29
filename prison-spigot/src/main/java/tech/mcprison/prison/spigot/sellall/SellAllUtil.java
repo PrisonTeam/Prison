@@ -701,7 +701,7 @@ public class SellAllUtil {
     		}
     	}
     	
-    	return false;
+    	return results;
     }
 
     /**

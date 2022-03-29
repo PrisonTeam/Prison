@@ -11,7 +11,18 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.9e 2022-03-27
+# 3.3.0-alpha.9e 2022-03-29
+
+
+* **Sellall bug fix on calculation boolean config values; it was not returning the correct value.**
+This was found by a report that `/sellall hand` was not working.
+
+
+* **Auto features bug fix: was paying the player, instead of just reporting the value when in debug mode.**
+
+
+* **Auto features bug fix: was paying the player, instead of just reporting the value when in debug mode.**
+
 
 * **Update debug info in auto features to properly show it's within the BLOCKEVENTS priority processing.**
 
