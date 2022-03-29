@@ -116,8 +116,10 @@ public class PrisonUtilsMineBombsTasks
 				@Override
 				public void run()
 				{
+					
+					Integer cooldownTicks = playerCooldowns.get( playerUUID );
 
-					int ticksRemaining = playerCooldowns.get( playerUUID ) - 10;
+					int ticksRemaining = cooldownTicks == null ? 0 : cooldownTicks - 10;
 
 					if ( ticksRemaining <= 0 )
 					{

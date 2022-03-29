@@ -14,6 +14,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9e 2022-03-29
 
 
+* **Mine bombs cooldown - ran in to a null value in the cooldown timers. Handles this situation now. **
+
+
 * **Sellall - added debug logging on the calculation of sell prices.**
 
 
