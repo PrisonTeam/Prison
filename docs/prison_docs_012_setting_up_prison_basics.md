@@ -275,6 +275,25 @@ Note: The use of `--log-strip-color` may or may not work within your environment
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
+# Setting up an Eclipse Debugging Session
+
+To go along with the above settings for debugging on port 5005, you need to setup in Eclipse the correct remote debug configuration using a Remote Java Application.
+
+Detailed settings can be found here:
+
+
+[https://www.spigotmc.org/wiki/eclipse-debug-your-plugin/](https://www.spigotmc.org/wiki/eclipse-debug-your-plugin/)
+
+
+Basically, under "Debug Configurations...", add a new "Remote Java Application".  Select a name, such as "Spigot Debugger - Local", with port `5005`, and `localhost` for the host.
+
+With the spigot server already running, then set a break point in the code, then start the debugger. 
+
+If the Eclipse debugger breaks on the selected breakpoint, but yet does not show any source, click on the button in the empty source window to select the correct source.  From the popup window, then choose to select an existing Java Project, then select all listed projects associated with your plugin(s), including all sub-projects.  The debugger should then select the correct source.
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
 
 
 # Getting Help
