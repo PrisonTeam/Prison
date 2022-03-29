@@ -548,7 +548,7 @@ public abstract class AutoManagerFeatures
 					if ( Output.get().isDebug() && Prison.get().getPlatform().getConfigBooleanFalse( "sellall" ) ) {
 						
 						// Just get the calculated value for the drops... do not sell:
-						double amount = SellAllUtil.get().sellAllSell( player, itemStack, true, false, false );
+						double amount = SellAllUtil.get().getSellMoney( player, itemStack );
 						autosellTotal += amount;
 						
 						debugInfo.append( "(Debug-unsold-value-check: " + itemStack.getName() + 

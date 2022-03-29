@@ -474,7 +474,7 @@ public class SellAllUtil {
      * @param itemStack
      * @return
      */
-    private double getSellMoney( Player p, SpigotItemStack itemStack )
+    public double getSellMoney( Player p, SpigotItemStack itemStack )
 	{
     	double results = 0d;
     	
