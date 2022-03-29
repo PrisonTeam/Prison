@@ -644,7 +644,10 @@ public class SellAllUtil {
      * Update SellAll Cached config.
      * */
     public void updateConfig(){
-        sellAllConfig = SpigotPrison.getInstance().updateSellAllConfig();
+    	
+    	initCachedData();
+    	
+//        sellAllConfig = SpigotPrison.getInstance().updateSellAllConfig();
     }
 
     /**
