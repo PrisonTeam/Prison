@@ -11,10 +11,14 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.9e 2022-03-29
+# 3.3.0-alpha.9g 2022-03-29
+
+
+* **v3.3.0-alpha.9g 2022-03-29**
 
 
 * **auto features: Enable player toggle on sellall for auto feature's autosell.**
+
 
 * **sellall reload - fixed issue where the reload was not chaning any online valus or settings.**
 
@@ -27,9 +31,6 @@ These build logs represent the work that has been going on within prison.
 
 * **Sellall bug fix on calculation boolean config values; it was not returning the correct value.**
 This was found by a report that `/sellall hand` was not working.
-
-
-* **Auto features bug fix: was paying the player, instead of just reporting the value when in debug mode.**
 
 
 * **Auto features bug fix: was paying the player, instead of just reporting the value when in debug mode.**
