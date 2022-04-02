@@ -351,8 +351,11 @@ public interface Platform {
 	 * 
 	 * @return
 	 */
-	public List<String> getActiveFeatures();
+	public List<String> getActiveFeatures( boolean showLaddersAndRanks );
 
+	
+	public void prisonVersionFeatures( ChatDisplay display, boolean isBasic, boolean showLaddersAndRanks );
+	
 
 	public String dumpEventListenersBlockBreakEvents();
 	

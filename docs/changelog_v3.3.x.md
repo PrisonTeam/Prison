@@ -14,6 +14,11 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9g 2022-04-02
 
 
+* **Change to prison startup details reporting to elminate duplication.**
+Near the end of the prison startup process, prison would run the `/prison version` command to provide additional information in the logs.  This was duplicating some of the information that was already printed during the actual startup process. 
+Changes were made to only add the information that was missing so the whole command does not need to re reran.  Overall this is a small impact, but a useful one.  It does shift where these functions live and ran from.
+
+
 * **ChatDisplay: An internal change that controls if a chat display object (multi-lined content, such as command output) displays the title.**
 This will be useful when integrating in to other commands and workflows, such as redesigning how the startup reporting is handled.
 

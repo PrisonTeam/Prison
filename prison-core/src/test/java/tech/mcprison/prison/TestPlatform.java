@@ -370,10 +370,17 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
-	public List<String> getActiveFeatures() {
+	public List<String> getActiveFeatures( boolean showLaddersAndRanks ) {
 		List<String> results = new ArrayList<>();
 		return results;
 	}
+	
+	
+	@Override
+	public void prisonVersionFeatures( ChatDisplay display, boolean isBasic, boolean showLaddersAndRanks ) {
+		
+	}
+	
 	
 	@Override
 	public String dumpEventListenersBlockBreakEvents() {

@@ -338,7 +338,20 @@ public class SpigotPrison
 //        	cmdVersion.getRegisteredPlugins().add( value );
 //		}
 
-		ChatDisplay cdVersion = cmdVersion.displayVersion("basic");
+        
+        ChatDisplay cdVersion = new ChatDisplay("A suppressed title");
+        cdVersion.setShowTitle( false );
+//		ChatDisplay cdVersion = cmdVersion.displayVersion("basic");
+		
+
+        // This generates the module listing, the autoFeatures overview, 
+        // the integrations listings, and the plugins listings.
+        // Used in the command: /prison version
+		boolean isBasic = true;
+		boolean showLaddersAndRanks = false;
+        Prison.get().getPlatform().prisonVersionFeatures( cdVersion, isBasic, showLaddersAndRanks );
+
+
 		cdVersion.toLog( LogLevel.INFO );
 		
 		// Provides a startup test of blocks available for the version of spigot that being used:

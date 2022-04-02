@@ -41,13 +41,10 @@ import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.CommandPagedData;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.discord.PrisonPasteChat;
-import tech.mcprison.prison.integration.IntegrationManager;
-import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.modules.Module;
-import tech.mcprison.prison.modules.ModuleStatus;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.DisplayComponent;
@@ -57,7 +54,6 @@ import tech.mcprison.prison.troubleshoot.TroubleshootResult;
 import tech.mcprison.prison.troubleshoot.Troubleshooter;
 import tech.mcprison.prison.util.JumboTextFont;
 import tech.mcprison.prison.util.PrisonJarReporter;
-import tech.mcprison.prison.util.Text;
 
 /**
  * Root commands for managing the platform as a whole, in-game.
@@ -275,161 +271,171 @@ public class PrisonCommand
 
         
         display.addText("");
-        
-        display.addText("&7Prison's root Command: /prison");
-        
-        for ( Module module : Prison.get().getModuleManager().getModules() ) {
-        	
-        	display.addText( "&7Module: %s : %s %s", module.getName(), 
-        			module.getStatus().getStatusText(),
-        			(module.getStatus().getStatus() == ModuleStatus.Status.FAILED ? 
-        						"[" + module.getStatus().getMessage() + "]" : "")
-        			);
-        	// display.addText( ".   &7Base Commands: %s", module.getBaseCommands() );
-        }
-        
-        List<String> disabledModules = Prison.get().getModuleManager().getDisabledModules();
-        if ( disabledModules.size() > 0 ) {
-        	display.addText( "&7Disabled Module%s:", (disabledModules.size() > 1 ? "s" : ""));
-        	for ( String disabledModule : Prison.get().getModuleManager().getDisabledModules() ) {
-        		display.addText( ".   &cDisabled Module:&7 %s. Related commands and placeholders are non-functional. ",
-        				disabledModule );
-        	}
-        }
+
+
+        // This generates the module listing, the autoFeatures overview, 
+        // the integrations listings, and the plugins listings.
+        boolean showLaddersAndRanks = true;
+        Prison.get().getPlatform().prisonVersionFeatures( display, isBasic, showLaddersAndRanks );
 
         
-        List<String> features = Prison.get().getPlatform().getActiveFeatures();
-        if ( features.size() > 0 ) {
-        	
-        	display.addText("");
-        	for ( String feature : features ) {
-        		
-        		if ( !feature.startsWith( "+" ) ) {
-        			
-        			display.addText( feature );
-        		}
-        		else if ( !isBasic ) {
-        			
-        			display.addText( feature.substring( 1 ) );
-        		}
-        	}
-        }
         
-        
-        display.addText("");
-        display.addText("&7Integrations:");
-
-        IntegrationManager im = Prison.get().getIntegrationManager();
-        String permissions =
-        		(im.hasForType(IntegrationType.PERMISSION) ?
-                " " + im.getForType(IntegrationType.PERMISSION).get().getDisplayName() :
-                "None");
-
-        display.addText(". . &7Permissions: " + permissions);
-
-        String economy =
-        		(im.hasForType(IntegrationType.ECONOMY) ?
-                " " + im.getForType(IntegrationType.ECONOMY).get().getDisplayName() : 
-                "None");
-
-        display.addText(". . &7Economy: " + economy);
-        
-        
-        List<DisplayComponent> integrationRows = im.getIntegrationComponents( isBasic );
-        for ( DisplayComponent component : integrationRows )
-		{
-        	display.addComponent( component );
-		}
-        
-        
-        display.addText("");
-        display.addText("&7Locale Settings:");
-        
-        for ( String localeInfo : Prison.get().getLocaleLoadInfo() ) {
-			display.addText( ". . " + localeInfo );
-		}
-        
-        
-        Prison.get().getPlatform().identifyRegisteredPlugins();
-        
-        // NOTE: This list of plugins is good enough and the detailed does not have all the info.
-        // Display all loaded plugins:
-        if ( getRegisteredPlugins().size() > 0 ) {
-        	display.addText("");
-        	display.addText( "&7Registered Plugins: " );
-        	
-        	List<String> plugins = getRegisteredPlugins();
-        	Collections.sort( plugins );
-        	List<String> plugins2Cols = Text.formatColumnsFromList( plugins, 2 );
-        	
-        	for ( String rp : plugins2Cols ) {
-				
-        		display.addText( rp );
-			}
-        	
-//        	StringBuilder sb = new StringBuilder();
-//        	for ( String plugin : getRegisteredPlugins() ) {
-//        		if ( sb.length() == 0) {
-//        			sb.append( ". " );
-//        			sb.append( plugin );
-//        		} else {
-//        			sb.append( ",  " );
-//        			sb.append( plugin );
-//        			display.addText( sb.toString() );
-//        			sb.setLength( 0 );
-//        		}
-//        	}
-//        	if ( sb.length() > 0 ) {
-//        		display.addText( sb.toString());
-//        	}
-        }
-        
-        // This version of plugins does not have all the registered commands:
-//        // The new plugin listings:
-//        if ( getRegisteredPluginData().size() > 0 ) {
-//        	display.text( "&7Registered Plugins Detailed: " );
-//        	StringBuilder sb = new StringBuilder();
-//        	Set<String> keys = getRegisteredPluginData().keySet();
+//        List<String> features = Prison.get().getPlatform().getActiveFeatures();
+//        if ( features.size() > 0 ) {
 //        	
-//        	for ( String key : keys ) {
-//        		RegisteredPluginsData plugin = getRegisteredPluginData().get(key);
+//        	display.addText("");
+//        	for ( String feature : features ) {
 //        		
-//        		if ( sb.length() == 0) {
-//        			sb.append( "  " );
-//        			sb.append( plugin.formatted() );
-//        		} else {
-//        			sb.append( ",  " );
-//        			sb.append( plugin.formatted() );
-//        			display.text( sb.toString() );
-//        			sb.setLength( 0 );
+//        		if ( !feature.startsWith( "+" ) ) {
+//        			
+//        			display.addText( feature );
+//        		}
+//        		else if ( !isBasic ) {
+//        			
+//        			display.addText( feature.substring( 1 ) );
 //        		}
 //        	}
-//        	if ( sb.length() > 0 ) {
-//        		display.text( sb.toString());
+//        }
+//        
+//        
+//        display.addText("");
+//        
+//        // Active Modules:
+//        display.addText("&7Prison's root Command: &3/prison");
+//        
+//        for ( Module module : Prison.get().getModuleManager().getModules() ) {
+//        	
+//        	display.addText( "&7Module: %s : %s %s", module.getName(), 
+//        			module.getStatus().getStatusText(),
+//        			(module.getStatus().getStatus() == ModuleStatus.Status.FAILED ? 
+//        					"[" + module.getStatus().getMessage() + "]" : "")
+//        			);
+//        	// display.addText( ".   &7Base Commands: %s", module.getBaseCommands() );
+//        }
+//        
+//        List<String> disabledModules = Prison.get().getModuleManager().getDisabledModules();
+//        if ( disabledModules.size() > 0 ) {
+//        	display.addText( "&7Disabled Module%s:", (disabledModules.size() > 1 ? "s" : ""));
+//        	for ( String disabledModule : Prison.get().getModuleManager().getDisabledModules() ) {
+//        		display.addText( ".   &cDisabled Module:&7 %s. Related commands and placeholders are non-functional. ",
+//        				disabledModule );
 //        	}
 //        }
-        
-        
-//        RegisteredPluginsData plugin = getRegisteredPluginData().get( "Prison" );
-//        String pluginDetails = plugin.getdetails();
 //        
-//        display.text( pluginDetails );
+//        display.addText("");
+//        display.addText("&7Integrations:");
+//
+//        IntegrationManager im = Prison.get().getIntegrationManager();
+//        String permissions =
+//        		(im.hasForType(IntegrationType.PERMISSION) ?
+//                " " + im.getForType(IntegrationType.PERMISSION).get().getDisplayName() :
+//                "None");
+//
+//        display.addText(". . &7Permissions: " + permissions);
+//
+//        String economy =
+//        		(im.hasForType(IntegrationType.ECONOMY) ?
+//                " " + im.getForType(IntegrationType.ECONOMY).get().getDisplayName() : 
+//                "None");
+//
+//        display.addText(". . &7Economy: " + economy);
+//        
+//        
+//        List<DisplayComponent> integrationRows = im.getIntegrationComponents( isBasic );
+//        for ( DisplayComponent component : integrationRows )
+//		{
+//        	display.addComponent( component );
+//		}
+//        
+//        
+//        display.addText("");
+//        display.addText("&7Locale Settings:");
+//        
+//        for ( String localeInfo : Prison.get().getLocaleLoadInfo() ) {
+//			display.addText( ". . " + localeInfo );
+//		}
         
-
-//        if ( !isBasic ) {
-//        	Prison.get().getPlatform().dumpEventListenersBlockBreakEvents();
+//        
+//        Prison.get().getPlatform().identifyRegisteredPlugins();
+//        
+//        // NOTE: This list of plugins is good enough and the detailed does not have all the info.
+//        // Display all loaded plugins:
+//        if ( getRegisteredPlugins().size() > 0 ) {
+//        	display.addText("");
+//        	display.addText( "&7Registered Plugins: " );
+//        	
+//        	List<String> plugins = getRegisteredPlugins();
+//        	Collections.sort( plugins );
+//        	List<String> plugins2Cols = Text.formatColumnsFromList( plugins, 2 );
+//        	
+//        	for ( String rp : plugins2Cols ) {
+//				
+//        		display.addText( rp );
+//			}
+//        	
+////        	StringBuilder sb = new StringBuilder();
+////        	for ( String plugin : getRegisteredPlugins() ) {
+////        		if ( sb.length() == 0) {
+////        			sb.append( ". " );
+////        			sb.append( plugin );
+////        		} else {
+////        			sb.append( ",  " );
+////        			sb.append( plugin );
+////        			display.addText( sb.toString() );
+////        			sb.setLength( 0 );
+////        		}
+////        	}
+////        	if ( sb.length() > 0 ) {
+////        		display.addText( sb.toString());
+////        	}
 //        }
-        
-        
-        Prison.get().getPlatform().getWorldLoadErrors( display );
-
-        if ( !isBasic && getPrisonStartupDetails().size() > 0 ) {
-        	display.addText("");
-        	
-        	for ( String msg : getPrisonStartupDetails() ) {
-				display.addText( msg );
-			}
-        }
+//        
+//        // This version of plugins does not have all the registered commands:
+////        // The new plugin listings:
+////        if ( getRegisteredPluginData().size() > 0 ) {
+////        	display.text( "&7Registered Plugins Detailed: " );
+////        	StringBuilder sb = new StringBuilder();
+////        	Set<String> keys = getRegisteredPluginData().keySet();
+////        	
+////        	for ( String key : keys ) {
+////        		RegisteredPluginsData plugin = getRegisteredPluginData().get(key);
+////        		
+////        		if ( sb.length() == 0) {
+////        			sb.append( "  " );
+////        			sb.append( plugin.formatted() );
+////        		} else {
+////        			sb.append( ",  " );
+////        			sb.append( plugin.formatted() );
+////        			display.text( sb.toString() );
+////        			sb.setLength( 0 );
+////        		}
+////        	}
+////        	if ( sb.length() > 0 ) {
+////        		display.text( sb.toString());
+////        	}
+////        }
+//        
+//        
+////        RegisteredPluginsData plugin = getRegisteredPluginData().get( "Prison" );
+////        String pluginDetails = plugin.getdetails();
+////        
+////        display.text( pluginDetails );
+//        
+//
+////        if ( !isBasic ) {
+////        	Prison.get().getPlatform().dumpEventListenersBlockBreakEvents();
+////        }
+//        
+//        
+//        Prison.get().getPlatform().getWorldLoadErrors( display );
+//
+//        if ( !isBasic && getPrisonStartupDetails().size() > 0 ) {
+//        	display.addText("");
+//        	
+//        	for ( String msg : getPrisonStartupDetails() ) {
+//				display.addText( msg );
+//			}
+//        }
         
         return display;
     }
