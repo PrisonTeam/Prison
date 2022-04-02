@@ -38,6 +38,8 @@ public class ChatDisplay {
 
     private String title;
     private LinkedList<DisplayComponent> displayComponents;
+    
+    private boolean showTitle = true;
 
   /*
    * Constructor
@@ -69,21 +71,30 @@ public class ChatDisplay {
     }
 
     public void send(CommandSender sender) {
-        sender.sendMessage(title);
+    	if ( isShowTitle() ) {
+    		sender.sendMessage(title);
+    	}
+    	
         for (DisplayComponent component : displayComponents) {
             component.send(sender);
         }
     }
     
     public void toLog(LogLevel logLevel) {
-    	Output.get().log( title, logLevel );
+    	if ( isShowTitle() ) {
+    		Output.get().log( title, logLevel );
+    	}
+    	
         for (DisplayComponent component : displayComponents) {
         	Output.get().log( component.text(), logLevel );
         }
     }
     
     public void sendtoOutputLogInfo() {
-    	Output.get().logInfo( title );
+    	if ( isShowTitle() ) {
+    		Output.get().logInfo( title );
+    	}
+    	
         for (DisplayComponent component : displayComponents) {
         	Output.get().logInfo( component.text() );
         }
@@ -92,7 +103,10 @@ public class ChatDisplay {
     public StringBuilder toStringBuilder() {
     	StringBuilder sb = new StringBuilder();
     	
-    	sb.append( title ).append( "\n" );
+    	if ( isShowTitle() ) {
+    		sb.append( title ).append( "\n" );
+    	}
+    	
         for (DisplayComponent component : displayComponents) {
         	sb.append( component.text() ).append( "\n" );
         }
@@ -103,7 +117,10 @@ public class ChatDisplay {
     public StringBuilder toStringBuilderEscaped() {
     	StringBuilder sb = new StringBuilder();
     	
-    	sb.append( title ).append( "\\n" );
+    	if ( isShowTitle() ) {
+    		sb.append( title ).append( "\\n" );
+    	}
+    	
     	for (DisplayComponent component : displayComponents) {
     		sb.append( component.text() ).append( "\\n" );
     	}
@@ -127,6 +144,13 @@ public class ChatDisplay {
 
 	protected LinkedList<DisplayComponent> getDisplayComponents() {
 		return displayComponents;
+	}
+
+	public boolean isShowTitle() {
+		return showTitle;
+	}
+	public void setShowTitle(boolean showTitle) {
+		this.showTitle = showTitle;
 	}
     
 }

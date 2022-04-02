@@ -11,7 +11,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.9g 2022-03-29
+# 3.3.0-alpha.9g 2022-04-02
+
+
+* **ChatDisplay: An internal change that controls if a chat display object (multi-lined content, such as command output) displays the title.**
+This will be useful when integrating in to other commands and workflows, such as redesigning how the startup reporting is handled.
 
 
 * **v3.3.0-alpha.9g 2022-03-29**
