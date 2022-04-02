@@ -14,6 +14,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.9g 2022-04-02
 
 
+* **Ran in to an issue with spigot versions < 1.13 where a data value outside of the normal range prevents XMaterial from mapping to a bukkit block.**
+This change provides a better fallback which ignores the data value, which is the varient.  The drawback of ignoring the varient type, which is outside the valid ranges anyway, is that it may not accurately reflect the intended block types.  But at least this will prevent errors and being unable to map to any blocks.
+
+
 * **Change to prison startup details reporting to elminate duplication.**
 Near the end of the prison startup process, prison would run the `/prison version` command to provide additional information in the logs.  This was duplicating some of the information that was already printed during the actual startup process. 
 Changes were made to only add the information that was missing so the whole command does not need to re reran.  Overall this is a small impact, but a useful one.  It does shift where these functions live and ran from.

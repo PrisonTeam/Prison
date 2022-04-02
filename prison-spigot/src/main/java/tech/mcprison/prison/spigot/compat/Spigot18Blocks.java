@@ -232,6 +232,14 @@ public abstract class Spigot18Blocks
 				}
 				
 				if ( results == null ) {
+					results = XMaterial.matchXMaterial(spigotBlock.getType());
+				}
+				
+				if ( results == null ) {
+					results = XMaterial.matchXMaterial( spigotBlock.getType().name() ).orElse( null );
+				}
+				
+				if ( results == null ) {
 					// Last chance, try to match without data. If it matches, then
 					// the cache will be setup with a data appended so as to bypass all this
 					// extra checks:
