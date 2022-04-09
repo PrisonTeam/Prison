@@ -11,7 +11,30 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.9g 2022-04-02
+# 3.3.0-alpha.10 2022-04-02
+
+
+** v3.3.0-alpha.10 2022-04-02**
+
+** Release notes for the v3.3.0-alpha.10 release as posted to spigotmc.org and polymart.org:
+
+v3.3.0-alpha.10
+
+This alpha.10 release includes many significant performance improvements and bug fixes.  Although this is an alpha release, it is proving to be stable enough to use on a production server.  Please make backups and test prior to using.  This v3.3.0-alpha.10 release is "still" backwards compatible with v3.2.11 so you should be able to down-grade back to v3.2.11 without major issues. The breaking changes that will be in the final v3.3.0 release have not been applied yet to these alpha releases.
+
+Please see our discord server for the full listing of all bug fixes and improvements, there have been more than 70 updates since the alpha.9 release.  The following is just a simple short list.
+
+- Many bug fixes.  Some that even predates the v3.2.11 release.  
+
+- Performance improvements: startup validations moved to an async thread. Slight delay between mine validations to allow other tasks to run (needed for less powerful servers). Improvements with sellall performance.
+
+- Added more support for Custom Items (custom blocks)
+
+- Added support for top-n players and added over 30 new placeholders.  Top-n support for blocks mined and tokens earned will be added shortly too.
+
+- Upgraded internal libraries: bstats, XSeries, gradle, custom items, and a couple others.
+
+- Many fixes: Mine bombs, sellall, autosell, auto features, block even listening and handling.
 
 
 * **Ran in to an issue with spigot versions < 1.13 where a data value outside of the normal range prevents XMaterial from mapping to a bukkit block.**
