@@ -246,6 +246,14 @@ public class LadderManager
         return true;
     }
 
+    public RankLadder getLadderDefault() {
+    	return getLadder( RankLadder.DEFAULT );
+    }
+    
+    public RankLadder getLadderPrestiges() {
+    	return getLadder( RankLadder.PRESTIGES );
+    }
+    
     /**
      * Returns the ladder with the specified name.
      *

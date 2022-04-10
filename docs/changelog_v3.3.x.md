@@ -14,6 +14,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.10 2022-04-10
 
 
+* **Placeholders: prison_rankup_rank_tag (and the ladder variants) now shows the prestiges next rank when at the top rank in the default ladder.**
+This only applies to the default ladder and only if the prestiges ladder is activated.
+
+
 * **Pull out the setBlock and blockAt functions from the SpigotWorld class so that way it would properly track within Timings.**
 
 

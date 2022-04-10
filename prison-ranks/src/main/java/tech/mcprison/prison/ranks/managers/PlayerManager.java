@@ -508,6 +508,24 @@ public class PlayerManager
 //  	  				sb.append(" ");
 //    				}
     				Rank rank = entry.getValue().getRank();
+    				
+//    				if ( rank.getLadder() != null && rank.getLadder().isDefault() && 
+//    						rank.getRankNext() == null ) {
+//    					PlayerRank prestigeRank = rankPlayer.getPlayerRankPrestiges();
+//    					
+//    					if ( prestigeRank == null ) {
+//    						RankLadder prestigeLadder = PrisonRanks.getInstance()
+//    														.getLadderManager().getLadderPrestiges();
+//    						if ( prestigeLadder != null ) {
+//    							rank = prestigeLadder.getLowestRank().orElseGet( null );
+//    						}
+//    					}
+//    					else {
+//    						rank = prestigeRank.getRank().getRankNext();
+//    					}
+//    					
+//    				}
+    				
     				String tag = rank.getTag();
     				sb.append( tag == null ? rank.getName() : tag );
     			}
@@ -1312,6 +1330,24 @@ public class PlayerManager
     				
     				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank rank = pRank.getRank();
+    				
+    				if ( rank.getLadder() != null && rank.getLadder().isDefault() && 
+    						rank.getRankNext() == null ) {
+    					PlayerRank prestigeRank = rankPlayer.getPlayerRankPrestiges();
+    					
+    					if ( prestigeRank == null ) {
+    						RankLadder prestigeLadder = PrisonRanks.getInstance()
+    														.getLadderManager().getLadderPrestiges();
+    						if ( prestigeLadder != null ) {
+    							rank = prestigeLadder.getLowestRank().orElseGet( null );
+    						}
+    					}
+    					else {
+    						rank = prestigeRank.getRank().getRankNext();
+    					}
+    					
+    				}
+    				
   				  	if ( rank != null && rank.getRankNext() != null ) {
   				  		Rank nextRank = rank.getRankNext();
   				  		
