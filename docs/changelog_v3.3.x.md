@@ -11,7 +11,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.10 2022-04-02
+# 3.3.0-alpha.10 2022-04-10
+
+
+* **Pull out the setBlock and blockAt functions from the SpigotWorld class so that way it would properly track within Timings.**
+
 
 
 ** v3.3.0-alpha.10 2022-04-02**
