@@ -5,7 +5,58 @@
 
 
 
-# TODO Items for v3.3.0-alpha.8
+# TODO Items for v3.3.0-alpha.10
+
+
+- Many errors when prison hits a standard potion. - jamo
+
+- autofeatures BLOCKEVENTS priority - include backpacks on auto sell - Ryankayz
+
+- Top block and top tokens - Phoung Nguyen
+
+- auto features autosell - tie to sellall's player toggle - Ryankayz
+
+- SQL support - Six
+
+
+- DONE: autofeatures BLOCKEVENT priority - check for full inventory and perform sellall - Ryankayz
+
+
+- Mine Resets - Glass block not being removed - harold
+
+- Placeholder bar is reversed.  As the player earns more money, it shrinks instead of grows. - harold
+ - prison_rankup_cost_bar_default
+ 
+- Archive old players - budderman18
+  - archive all player files to a zip. Remove the originals. If player logs back on, then restore the archives. Prevent startup from adding these players back.
+  
+
+- DONE: Rankup - Still not working correctly. 
+ - DONE: takes money but does not rank them up?
+ - DONE: rank changes does not alter the list of players at the ranks
+ 
+- Placeholders - dynamic content - 
+  - custom placeholders based upon other primary placeholders?
+
+
+- DONE: Top-n: hookup rank-score and penalty.
+   - Placeholders - hookup placeholders to support top=n players.
+- DONE: Top-n balance calculations using essentials - 2 mins 31 secs - Budderman18
+  - DONE: move to async thread on startup - high priority
+- Top-n - phuong Nguyen
+- CustomItems drops - harold
+- DONE: Sellall - custom blocks/items and items that have been renamed - harold & RomainD
+- DONE: sellall - no sell renamed items - RomainD
+- DONE: mine bombs - fortune not using the mine bomb's pick with fortune.. always zero - RomainD
+  - debug is showing fortune 0
+- DONE: CustomItems - not doing drops, even when drops are set - harold
+- DONE: CustomItems - Not block counting custom blocks
+- DONE: Upgrade bStats to v3.0.0
+- auto features - normal drops may not be happening. May be using auto pickup code.
+
+
+
+* DONE: The function isUnbreakable could return a null for the SpigotBlock/PrisonBlock. Change it so the primary check for that function is location, then block is optional.  This is failing because the bukkit block cannot be mapped to a XMaterial which should not be a factor.  XMaterial will be null for custom blocks.
 
 
 * Add a preformatted sellall multiplier
