@@ -169,6 +169,30 @@ public class CustomItemsWrapper {
 							results.add( new SpigotItemStack( itemStack ) );
 						}
 					}
+					
+					if ( Output.get().isDebug() ) {
+						StringBuilder sbDrops = new StringBuilder();
+						
+						for (SpigotItemStack sItemStack : results) {
+							if ( sbDrops.length() > 0 ) {
+								sbDrops.append(", ");
+							}
+							sbDrops.append(sItemStack.getName()).append(":").append(sItemStack.getAmount());
+						}
+						sbDrops.insert(0, "[").append("]");
+						
+						String message = String.format(
+								"CustomItems.getDrops() results for block: %s  "
+										+ "canceled: %b  drops: %s  player: %s  tool: %s",
+										bBlock == null ? "null" : prisonBlock.getBlockName(),
+										cuiCanceled,
+										sbDrops.toString(), 
+										bPlayer == null ? "null" : player.getName(),
+										toolOverridden == null ? "null" : toolOverridden.getType().toString()
+								);
+						
+						Output.get().logDebug( message );
+					}
 				}
 			}
 			else {
