@@ -11,7 +11,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.10 2022-04-10
+# 3.3.0-alpha.10 2022-04-15
+
+
+* **Setup placeholder formatted time values to use the language config file.**
+This set of values will "NOT" reload when the command `/prison reload locales` is ran.  The server must be restarted to reload these values.
 
 
 * **CustomItems getDrops() debug mode will list the results of the get drops.**
