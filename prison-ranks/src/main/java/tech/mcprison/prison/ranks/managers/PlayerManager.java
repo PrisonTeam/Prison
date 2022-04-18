@@ -1316,8 +1316,8 @@ public class PlayerManager
     public String getPlayerNextRankTag( RankPlayer rankPlayer, String ladderName ) {
     	StringBuilder sb = new StringBuilder();
     	
-    	boolean hasDefault = false;
-    	boolean hasPrestige = false;
+//    	boolean hasDefault = false;
+//    	boolean hasPrestige = false;
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		
@@ -1339,11 +1339,16 @@ public class PlayerManager
     						RankLadder prestigeLadder = PrisonRanks.getInstance()
     														.getLadderManager().getLadderPrestiges();
     						if ( prestigeLadder != null ) {
-    							rank = prestigeLadder.getLowestRank().orElseGet( null );
+    							
+    							// Player does not have any prestige rank, so use the lowest prestige rank:
+    							Rank nextRank = prestigeLadder.getLowestRank().orElseGet( null );
+    							sb.append( nextRank.getTag() );
+    							continue;
     						}
     					}
     					else {
-    						rank = prestigeRank.getRank().getRankNext();
+    						// Get current prestige rank
+    						rank = prestigeRank.getRank();
     					}
     					
     				}
