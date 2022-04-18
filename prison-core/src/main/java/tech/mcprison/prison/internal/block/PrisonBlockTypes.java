@@ -58,6 +58,7 @@ public class PrisonBlockTypes {
 		
 		// Add in prison's internal block types here:
 		getBlockTypes().add( PrisonBlock.IGNORE );
+//		getBlockTypes().add( PrisonBlock.NULL_BLOCK );
 
 		
 		// Map all available blocks to the blockTypesByName map:

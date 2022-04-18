@@ -1,5 +1,6 @@
 package tech.mcprison.prison.mines.tasks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import tech.mcprison.prison.Prison;
@@ -160,13 +161,18 @@ public class MinePagedResetAsyncTask
 				endIndex = targetBlocks.size();
 				pageEndPosition = endIndex;
 			}
+
+			// Isolate the sub-list from the main targetBlocks list:
+			List<MineTargetPrisonBlock> tBlocks = new ArrayList<>();
+			for (MineTargetPrisonBlock mtpb : targetBlocks.subList( position, endIndex )) {
+				tBlocks.add(mtpb);
+			}		
 			
-			List<MineTargetPrisonBlock> tBlocks = targetBlocks.subList( position, endIndex );
 			int size = tBlocks.size();
+			position += size;
 			
 			mine.getWorld().get().setBlocksSynchronously( tBlocks, resetType, getNanos() );
 			
-			position += size;
 		}
 		
 		

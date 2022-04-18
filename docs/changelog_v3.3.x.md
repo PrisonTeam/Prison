@@ -14,6 +14,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.10 2022-04-18
 
 
+* **Mine reset potential bug fix: Some rare conditions was causing problems, so using another collection to pass the blocks, and getting the size prior to calling the function to prevent the problems from happening.**
+This appeared to be happening when a mine was being reset multiple times, at the same time.  The mine should never be resetting multiple times, at the same time.  May need to add more controls to prevent it from happening.
+
+
 * **Bug Fix: The IGNORE block type was not marked as a block, therefore could not be used within a mine.**
 
 

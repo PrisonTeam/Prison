@@ -155,8 +155,10 @@ public class MinesCommands
     @Command(identifier = "mines block search", permissions = "mines.block", 
 					description = "Searches for a block to add to a mine.")
 	public void searchBlockCommand(CommandSender sender,
-			@Arg(name = "search", def = " ", description = "Any part of the block's name or ID.") String search,
-			@Arg(name = "page", def = "1", description = "Page of search results (optional)") String page ) {
+			@Arg(name = "search", def = " ", 
+				description = "Any part of the block's name or ID.") String search,
+			@Arg(name = "page", def = "1", 
+				description = "Page of search results (optional)") String page ) {
 		
     	super.searchBlockCommand( sender, search, page, 
     			"mines block search", 
