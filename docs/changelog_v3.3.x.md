@@ -11,7 +11,12 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.10 2022-04-15
+# 3.3.0-alpha.10 2022-04-18
+
+
+* **New feature: Block Converters. Setup the initial core settings for block converters within the auto features.**
+The core internal structure is in place and so is the ability to write the data to the file system. 
+This has not been hooked up to anything yet.  
 
 
 * **Setup placeholder formatted time values to use the language config file.**

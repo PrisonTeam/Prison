@@ -18,9 +18,12 @@ public abstract class ValueNode
 		LONG,
 		INTEGER,
 		DOUBLE,
-		STRING_LIST
+		STRING_LIST,
+		BLOCK_CONVERTER
 		;
 	}
+	
+	public abstract String toString();
 	
 	public boolean isNullNode() { return false; }
 
@@ -36,6 +39,7 @@ public abstract class ValueNode
 	
 	public boolean isStringListNode() { return false; }
 	
+	public boolean isBlockConvertersNode() { return false; }
 	
     public abstract NodeType getNodeType();
 

@@ -17,9 +17,13 @@ public class NullNode
     	return true;
     }
 	
+    public Object getValue() {
+    	return null;
+    }
+    
 	@Override
 	public String toString() {
-		return Boolean.toString( true );
+		return "null";
 	}
 	
     @Override

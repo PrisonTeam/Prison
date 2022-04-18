@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.ValueNode.NodeType;
@@ -319,6 +320,13 @@ public class AutoFeaturesFileConfig {
 		    	blockSnowBlock(blockFeature, true),
 		    	blockGlowstone(blockFeature, true),
 		    	blockCopperBlock(blockFeature, true),
+		   
+		    	
+//		examplesOnlyNotUsed,    	
+//		    exampleOfBlockConversions(examplesOnlyNotUsed),
+//		    
+//		    	sampleBlockTransformer(exampleOfBlockConversions, NodeType.BLOCK_CONVERTER, "sample01" )
+		    
 		    	
 		    	
 //		    eventInjector(options),
@@ -346,6 +354,7 @@ public class AutoFeaturesFileConfig {
     	private final boolean isLong;
     	private final boolean isDouble;
     	private final boolean isStringList;
+    	private final boolean isBlockConverter;
     	
     	private final String path;
     	private final String message;
@@ -354,6 +363,7 @@ public class AutoFeaturesFileConfig {
     	private final Long longValue;
     	private final Double doubleValue;
     	private final List<String> listValue;
+    	private final TreeMap<String, BlockConverter> blockConverters;
     	
     	private AutoFeatures() {
     		this.parent = null;
@@ -364,6 +374,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = false;
     		this.isStringList = false;
+    		this.isBlockConverter = false;
     		
     		this.path = null;
     		this.message = null;
@@ -372,6 +383,7 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
+    		this.blockConverters = new TreeMap<>();
     	}
     	private AutoFeatures(AutoFeatures section) {
     		this.parent = section;
@@ -382,6 +394,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = false;
     		this.isStringList = false;
+    		this.isBlockConverter = false;
 
     		this.path = section.getKey();
     		this.message = null;
@@ -390,6 +403,7 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
+    		this.blockConverters = new TreeMap<>();
     	}
     	private AutoFeatures(AutoFeatures section, String message) {
     		this.parent = section;
@@ -400,6 +414,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = false;
     		this.isStringList = false;
+    		this.isBlockConverter = false;
 
     		this.path = section.getKey();
     		this.message = message;
@@ -408,6 +423,7 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
+    		this.blockConverters = new TreeMap<>();
     	}
     	private AutoFeatures(AutoFeatures section, Boolean value) {
     		this.parent = section;
@@ -418,6 +434,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = false;
     		this.isStringList = false;
+    		this.isBlockConverter = false;
 
     		this.path = section.getKey();
     		this.message = null;
@@ -426,6 +443,7 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
+    		this.blockConverters = new TreeMap<>();
     	}
     	private AutoFeatures(AutoFeatures section, int value) {
     		this.parent = section;
@@ -436,6 +454,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = false;
     		this.isStringList = false;
+    		this.isBlockConverter = false;
     		
     		this.path = section.getKey();
     		this.message = null;
@@ -444,6 +463,27 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
+    		this.blockConverters = new TreeMap<>();
+    	}
+    	private AutoFeatures(AutoFeatures section, long value) {
+    		this.parent = section;
+    		this.isSection = false;
+    		this.isBoolean = false;
+    		this.isMessage = false;
+    		this.isInteger = false;
+    		this.isLong = true;
+    		this.isDouble = false;
+    		this.isStringList = false;
+    		this.isBlockConverter = false;
+    		
+    		this.path = section.getKey();
+    		this.message = null;
+    		this.value = null;
+    		this.intValue = null;
+    		this.longValue = value;
+    		this.doubleValue = null;
+    		this.listValue = new ArrayList<>();
+    		this.blockConverters = new TreeMap<>();
     	}
     	private AutoFeatures(AutoFeatures section, double value) {
     		this.parent = section;
@@ -454,6 +494,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = true;
     		this.isStringList = false;
+    		this.isBlockConverter = false;
     		
     		this.path = section.getKey();
     		this.message = null;
@@ -462,6 +503,7 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = value;
     		this.listValue = new ArrayList<>();
+    		this.blockConverters = new TreeMap<>();
     	}
     	private AutoFeatures(AutoFeatures section, NodeType nodeType, String... values ) {
     		this.parent = section;
@@ -472,6 +514,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = false;
     		this.isStringList = (nodeType == NodeType.STRING_LIST);
+    		this.isBlockConverter = (nodeType == NodeType.BLOCK_CONVERTER);
     		
     		this.path = section.getKey();
     		this.message = null;
@@ -480,10 +523,17 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
+    		this.blockConverters = new TreeMap<>();
     		
-    		if ( values != null && values.length > 0 ) {
+    		if ( nodeType == NodeType.STRING_LIST ) {
     			
-    			this.listValue.addAll( Arrays.asList( values ));
+    			if ( values != null && values.length > 0 ) {
+    				
+    				this.listValue.addAll( Arrays.asList( values ));
+    			}
+    		}
+    		else if ( nodeType == NodeType.BLOCK_CONVERTER ) {
+    			loadSampleBlockConverters( blockConverters, Arrays.asList( values ) );
     		}
     	}
     	
@@ -511,6 +561,9 @@ public class AutoFeaturesFileConfig {
 		public boolean isStringList() {
 			return isStringList;
 		}
+		public boolean isBlockConverter() {
+			return isBlockConverter;
+		}
 		
 		public String getPath() {
 			return path;
@@ -533,6 +586,9 @@ public class AutoFeaturesFileConfig {
 		}
 		public List<String> getListValue() {
 			return listValue;
+		}
+		public TreeMap<String, BlockConverter> getBlockConverters() {
+			return blockConverters;
 		}
 		
 		public String getKey() {
@@ -660,6 +716,25 @@ public class AutoFeaturesFileConfig {
     	}
     	
     	
+    	public TreeMap<String, BlockConverter> getBlockConverters( Map<String, ValueNode> conf ) {
+    		TreeMap<String, BlockConverter> results = null;
+    		
+    		
+    		if ( conf.containsKey(getKey()) && conf.get( getKey() ).isBlockConvertersNode() ) {
+    			BlockConvertersNode blockConverters = (BlockConvertersNode) conf.get( getKey() );
+    			results = blockConverters.getValue();
+    		}
+//    		else if ( getListValue() != null && getListValue().size() > 0 ) {
+//    			results = getListValue();
+//    		}
+    		
+    		if ( results == null ) {
+    			results = new BlockConvertersNode().getValue();
+    		}
+    		
+    		return results;
+    	}
+    	
 
     	/**
     	 * <p>Get the children nodes to the given item.
@@ -695,6 +770,17 @@ public class AutoFeaturesFileConfig {
     protected AutoFeaturesFileConfig() {
         
     	this.config = new LinkedHashMap<>();
+    	
+    	
+    	// If an AutoFeatures defines a block converter, then the actual block 
+    	// converter object, with all dependencies, needs to be stored in this
+    	// TreeMap so it can be accessed later without having to regenerate 
+    	// everything.  The enums of AutoFeatures, when they identify that the
+    	// are of type BlockConverter, needs to store the complex data outside 
+    	// of the enum.  This is it... with it being a TreeMap it will be 
+    	// fast access to it, and as many nodes as desired, can be added.
+    	// NOTE: ONE entry in this TreeMap is related to ONE entry in the enum.
+//    	this.blockConverters = new TreeMap<>();
     	
 		
 		// The following is strictly not needed to ensure that the configs are
@@ -735,7 +821,34 @@ public class AutoFeaturesFileConfig {
     }
 
     
-    public void reloadConfig() {
+    public static void loadSampleBlockConverters( 
+    		TreeMap<String, BlockConverter> blockConverters, List<String> sampleSets ) {
+
+    	if ( sampleSets.contains( "sample01" ) ) {
+    		BlockConverter bc1 = new BlockConverter( "coal_ore" );
+    		bc1.getTargets().add( new BlockConverterTarget( "diamond", 1 ));
+    		
+
+    		BlockConverter bc2 = new BlockConverter( "ice_block" );
+    		BlockConverterTarget bc2t1 = new BlockConverterTarget( "water_bucket", 2);
+    		BlockConverterTarget bc2t2 = new BlockConverterTarget( "gravel", 1);
+    		BlockConverterTarget bc2t3 = new BlockConverterTarget( "pufferfish", 1, 0.15 );
+    		bc2t3.getPermissions().add("prison.not.used.sample.pufferfish");
+    		bc2t3.getPermissions().add("prison.not.used.sample.admin");
+    		bc2.getTargets().add( bc2t1 );
+    		bc2.getTargets().add( bc2t2 );
+    		bc2.getTargets().add( bc2t3 );
+    		
+    		
+    		
+    		blockConverters.put( bc1.getKey(), bc1 );
+    		blockConverters.put( bc2.getKey(), bc2 );
+    		
+    	}
+	}
+
+
+	public void reloadConfig() {
     	// First clear the configs:
     	getConfig().clear();
     	
