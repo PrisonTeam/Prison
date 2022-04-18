@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import me.xanium.gemseconomy.nbt.NBTItem;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.PrisonBlock;
@@ -19,12 +20,16 @@ import tech.mcprison.prison.spigot.SpigotUtil;
 public class SpigotItemStack
 		extends ItemStack {
 
-	private org.bukkit.inventory.ItemStack bukkitStack;
+	private NBTItem bukkitStack;
+//	private org.bukkit.inventory.ItemStack bukkitStack;
 	
 	public SpigotItemStack( org.bukkit.inventory.ItemStack bukkitStack ) {
 		super();
 		
-		this.bukkitStack = bukkitStack;
+		NBTItem nbtItemStack = new NBTItem( bukkitStack );
+
+		this.bukkitStack = nbtItemStack;
+//		this.bukkitStack = bukkitStack;
 		
         if (bukkitStack == null || bukkitStack.getType().equals(Material.AIR)) {
         	  setAmount( 0 );
@@ -100,6 +105,68 @@ public class SpigotItemStack
     	
     	setMaterial( pBlock );
     }
+    
+    public boolean hasNBTKey( String key ) {
+    	boolean results = false;
+    	
+    	if ( bukkitStack != null ) {
+    		results = bukkitStack.hasKey( key );
+    	}
+    	
+    	return results;
+    }
+    
+    public void setNBTString( String key, String value ) {
+    	if ( bukkitStack != null ) {
+    		bukkitStack.setString( key, value );
+    	}
+    }
+    public String getNBTString( String key ) {
+    	String results = null;
+    	if ( bukkitStack != null ) {
+    		results = bukkitStack.getString( key );
+    	}
+    	return results;
+    }
+    
+    public void setNBTInt( String key, int value ) {
+    	if ( bukkitStack != null ) {
+    		bukkitStack.setInteger( key, value );
+    	}
+    }
+    public int getNBTInt( String key ) {
+    	int results = -1;
+    	if ( bukkitStack != null ) {
+    		results = bukkitStack.getInteger( key );
+    	}
+    	return results;
+    }
+    
+    public void setNBTDouble( String key, double value ) {
+    	if ( bukkitStack != null ) {
+    		bukkitStack.setDouble( key, value );
+    	}
+    }
+    public double getNBTDouble( String key ) {
+    	double results = -1d;
+    	if ( bukkitStack != null ) {
+    		results = bukkitStack.getDouble( key );
+    	}
+    	return results;
+    }
+    
+    public void setNBTBoolean( String key, boolean value ) {
+    	if ( bukkitStack != null ) {
+    		bukkitStack.setBoolean( key, value );
+    	}
+    }
+    public boolean getNBTBoolean( String key ) {
+    	boolean results = false;
+    	if ( bukkitStack != null ) {
+    		results = bukkitStack.getBoolean( key );
+    	}
+    	return results;
+    }
 	
 	/**
 	 * <p>This function overrides the Prison's ItemStack class's setAmount() to perform the 
@@ -113,7 +180,7 @@ public class SpigotItemStack
 		super.setAmount( amount );
 		
 		if ( bukkitStack != null ) {
-			bukkitStack.setAmount( amount );
+			bukkitStack.getItem().setAmount( amount );
 		}
 	}
 	
@@ -150,11 +217,14 @@ public class SpigotItemStack
 
     
 	public org.bukkit.inventory.ItemStack getBukkitStack() {
-		return bukkitStack;
+		return bukkitStack.getItem();
 	}
 
 	public void setBukkitStack( org.bukkit.inventory.ItemStack bukkitStack ) {
-		this.bukkitStack = bukkitStack;
+		
+		NBTItem nbtItemStack = new NBTItem( bukkitStack );
+		this.bukkitStack = nbtItemStack;
+//		this.bukkitStack = bukkitStack;
 	}
 
 	public Map<String, Object> serialize()
