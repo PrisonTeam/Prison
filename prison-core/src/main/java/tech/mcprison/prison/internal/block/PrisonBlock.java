@@ -48,8 +48,8 @@ public class PrisonBlock
 		GLASS = new PrisonBlock( InternalBlockTypes.GLASS.name(), true );
 		PINK_STAINED_GLASS = new PrisonBlock( InternalBlockTypes.PINK_STAINED_GLASS.name(), true );
 		BLAZE_ROD = new PrisonBlock( InternalBlockTypes.BLAZE_ROD.name(), false );
-		LAPIS_ORE = new PrisonBlock( InternalBlockTypes.LAPIS_ORE.name(), false );
-		IGNORE = new PrisonBlock( InternalBlockTypes.IGNORE.name(), false );
+		LAPIS_ORE = new PrisonBlock( InternalBlockTypes.LAPIS_ORE.name(), true );
+		IGNORE = new PrisonBlock( InternalBlockTypes.IGNORE.name(), true );
 		NULL_BLOCK = new PrisonBlock( InternalBlockTypes.NULL_BLOCK.name(), false );
 	}
 	
