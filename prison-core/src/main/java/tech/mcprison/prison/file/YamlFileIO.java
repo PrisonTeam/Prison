@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.BlockConvertersNode;
 import tech.mcprison.prison.autofeatures.BooleanNode;
 import tech.mcprison.prison.autofeatures.DoubleNode;
 import tech.mcprison.prison.autofeatures.IntegerNode;
@@ -50,32 +51,83 @@ public abstract class YamlFileIO {
 		for ( String key : keys ) {
 			ValueNode value = config.get( key );
 			
-			if ( value.isNullNode() ) {
+			switch ( value.getNodeType() ) {
+				
+			case NULL:
 				// skip nulls
 				set( key, null );
-			}
-			else if ( value.isBooleanNode() ) {
+				break;
+				
+			case BOOLEAN:
 				set( key, ((BooleanNode) value).getValue() );
-			}
-			else if ( value.isTextNode() ) {
+				break;
+
+			case STRING:
 				set( key, ((TextNode) value).getValue() );
-			}
-			else if ( value.isDoubleNode() ) {
+				break;
+				
+			case DOUBLE:
 				set( key, ((DoubleNode) value).getValue() );
-			}
-			else if ( value.isLongNode() ) {
+				break;
+				
+			case LONG:
 				set( key, ((LongNode) value).getValue() );
-			}
-			else if ( value.isIntegerNode() ) {
+				break;
+				
+			case INTEGER:
 				set( key, ((IntegerNode) value).getValue() );
-			}
-			else if ( value.isStringListNode() ) {
+				break;
+				
+			case STRING_LIST:
 				set( key, ((StringListNode) value).getValue() );
-			}
-			else {
+				break;
+				
+			case BLOCK_CONVERTER:
+				try {
+					set( key, ((BlockConvertersNode) value).toYamlMap() );
+				} 
+				catch (Exception e) {
+					Output.get().logError("YamlFileIO.saveYamlAutoFeatures "
+							+ "Error with BLOCK_CONVERTER toYamlMap. key: " + key, e);
+//					e.printStackTrace();
+				}
+				break;
+			
+			default:
 				// invalid type... not supported.
 //				set( key, value );
+				break;
 			}
+			
+//			if ( value.isNullNode() ) {
+//				// skip nulls
+//				set( key, null );
+//			}
+//			else if ( value.isBooleanNode() ) {
+//				set( key, ((BooleanNode) value).getValue() );
+//			}
+//			else if ( value.isTextNode() ) {
+//				set( key, ((TextNode) value).getValue() );
+//			}
+//			else if ( value.isDoubleNode() ) {
+//				set( key, ((DoubleNode) value).getValue() );
+//			}
+//			else if ( value.isLongNode() ) {
+//				set( key, ((LongNode) value).getValue() );
+//			}
+//			else if ( value.isIntegerNode() ) {
+//				set( key, ((IntegerNode) value).getValue() );
+//			}
+//			else if ( value.isStringListNode() ) {
+//				set( key, ((StringListNode) value).getValue() );
+//			}
+//			else if ( value.isBlockConverterNode() ) {
+//				set( key, ((BlockConvertersNode) value).t );
+//			}
+//			else {
+//				// invalid type... not supported.
+////				set( key, value );
+//			}
 		}
 		
 		return saveYaml();
@@ -156,6 +208,35 @@ public abstract class YamlFileIO {
 					
 					value = StringListNode.valueOf( stringListVal );
 				}
+				else if ( autoFeat.isBlockConverter() ) {
+					// Setup default value for block converters:
+					BlockConvertersNode blockConverters = new BlockConvertersNode(
+											autoFeat.getBlockConverters() );
+					
+					if ( yaml.containsKey(key) ) {
+						
+						try {
+							
+							Object rawBlockConverterNode =  yaml.get( key );
+							
+							if ( rawBlockConverterNode != null && rawBlockConverterNode instanceof TreeMap ) {
+								
+								@SuppressWarnings("unchecked")
+								TreeMap<String, Object> rawBlockConverters = (TreeMap<String, Object>) rawBlockConverterNode;
+								
+								blockConverters.loadFromYamlFile( rawBlockConverters );
+							}
+						} 
+						catch (Exception e) {
+							Output.get().logError("YamlFileIO.loadYamlAutoFeatures "
+									+ "Error with BLOCK_CONVERTER loadFromYamlFile. key: " + key, e);
+//							e.printStackTrace();
+						}
+						
+					}
+					
+					value = blockConverters;
+				}
 				
 				
 				if ( !keys.contains( autoFeat.getKey() )) {
@@ -224,21 +305,28 @@ public abstract class YamlFileIO {
 	abstract protected void set( String key, Object value );
 	abstract protected void createSection( String key );
 	
-	abstract protected boolean getBoolean( String key );
-	abstract protected boolean getBoolean( String key, boolean defaultValue );
+//	abstract protected boolean getBoolean( String key );
+//	abstract protected boolean getBoolean( String key, boolean defaultValue );
+//	
+//	abstract protected String getString( String key );
+//	abstract protected String getString( String key, String defaultValue );
+//
+//	abstract protected double getDouble( String key );
+//	abstract protected double getDouble( String key, double defaultValue );
+//	
+//	abstract protected int getInteger( String key );
+//	abstract protected int getInteger( String key, int intValue );
+//
+//	abstract protected long getLong( String key );
+//	abstract protected long getLong( String key, long defaultValue );
+//
+//	abstract protected List<String> getStringList( String key );
+//	abstract protected List<String> getStringList( String key, List<String> defaultValue );
+//
+//	abstract protected TreeMap<String, Object> getBlockConverters( String key );
+//	abstract protected TreeMap<String, Object> getBlockConverters( String key, TreeMap<String, Object> defaultValue );
 	
-	abstract protected String getString( String key );
-	abstract protected String getString( String key, String defaultValue );
-
-	abstract protected double getDouble( String key );
-	abstract protected double getDouble( String key, double defaultValue );
 	
-	abstract protected int getInteger( String key );
-	abstract protected int getInteger( String key, int intValue );
-
-	abstract protected long getLong( String key );
-	abstract protected long getLong( String key, long defaultValue );
-
 	public boolean isSupportsDropsCanceling() {
 		return supportsDropsCanceling;
 	}
