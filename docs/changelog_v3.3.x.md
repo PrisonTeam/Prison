@@ -14,6 +14,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.10 2022-04-18
 
 
+* **Added NBT support to prison.  This loads a NBT library to be used only with the spigot sub-project.**
+This has not been hooked up to anything yet.
+
+
 * **Placeholder fix: Problem with the placeholder getting a prestige rank that was one too high.**
 The following placeholders were fixed: prison_rrt, prison_rankup_rank_tag, prison_rrt_laddername, prison_rankup_rank_tag_laddername
 

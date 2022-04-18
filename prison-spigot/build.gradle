@@ -154,6 +154,9 @@ dependencies {
 //    compile fileTree(dir: 'lib', include: ['TokenEnchantAPI-18.5.0.jar'])
 
 
+	// https://www.spigotmc.org/resources/nbt-api.7939/
+	implementation 'de.tr7zw:item-nbt-api-plugin:2.9.2'
+
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 
 }
@@ -194,6 +197,8 @@ shadowJar {
 
         include(dependency('com.github.cryptomorin:XSeries:8.6.2'))
         
+        include(dependency('de.tr7zw:item-nbt-api-plugin:2.9.2'))
+        
         //include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
         //include(dependency('me.badbones69:crazyenchantments-plugin:1.8-Dev-Build-v8'))
         
@@ -208,6 +213,7 @@ shadowJar {
     relocate 'org.inventivetalent.update.spiget', 'tech.mcprison.prison.spiget'
     relocate 'com.cryptomorin', 'tech.mcprison.prison.cryptomorin'
 
+	relocate 'de.tr7zw', 'tech.mcprison.prison.nbtapi'
     //relocate 'me.badbones69.crazyenchantments.api.events.BlastUseEvent', 'tech.mcprison.prison.crazyenchantments.api'
 
 
