@@ -11,7 +11,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.10 2022-04-18
+# 3.3.0-alpha.10 2022-04-20
+
+
+* **Fixed the usage of setting up the NBT library within the gradle config file.**
+Fixed issue with unknown, or incompatible items were unable to be parsed by XMaterial which was resulting in failures. This fixes the problem by preventing the use of a partial created SpigotItemStack.
 
 
 * **Hook up the NBT library to the SpigotItemStack class.**

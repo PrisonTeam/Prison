@@ -136,7 +136,11 @@ dependencies {
     }
 
  //   compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.1'
+
  
+	// https://www.spigotmc.org/resources/nbt-api.7939/
+	implementation 'de.tr7zw:item-nbt-api-plugin:2.9.2'
+
 
     compileOnly fileTree(dir: 'lib', include: ['*.jar'], 
     			exclude: ['Spiget_v1.4.2.prison-build.jar',
@@ -154,8 +158,6 @@ dependencies {
 //    compile fileTree(dir: 'lib', include: ['TokenEnchantAPI-18.5.0.jar'])
 
 
-	// https://www.spigotmc.org/resources/nbt-api.7939/
-	implementation 'de.tr7zw:item-nbt-api-plugin:2.9.2'
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 
@@ -213,7 +215,8 @@ shadowJar {
     relocate 'org.inventivetalent.update.spiget', 'tech.mcprison.prison.spiget'
     relocate 'com.cryptomorin', 'tech.mcprison.prison.cryptomorin'
 
-	relocate 'de.tr7zw', 'tech.mcprison.prison.nbtapi'
+	relocate 'de.tr7zw.nbtapi', 'tech.mcprison.prison.nbtapi'
+
     //relocate 'me.badbones69.crazyenchantments.api.events.BlastUseEvent', 'tech.mcprison.prison.crazyenchantments.api'
 
 

@@ -28,6 +28,7 @@ import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.api.ExplosiveBlockBreakEvent;
 import tech.mcprison.prison.spigot.block.OnBlockBreakMines;
+import tech.mcprison.prison.spigot.block.PrisonItemStackNotSupportedRuntimeException;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
@@ -617,7 +618,14 @@ public class PrisonUtilsMineBombs
 		
 		if ( xBomb != null ) {
 			
-			bombs = new SpigotItemStack( xBomb.parseItem() );
+			
+			try {
+				bombs = new SpigotItemStack( xBomb.parseItem() );
+			} 
+			catch (PrisonItemStackNotSupportedRuntimeException e) {
+				// Ignore
+			}
+			
 			if ( bombs != null ) {
 
 				bombs.setDisplayName( bombData.getName() );

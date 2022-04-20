@@ -46,6 +46,7 @@ import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.internal.inventory.Viewable;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
+import tech.mcprison.prison.spigot.block.PrisonItemStackNotSupportedRuntimeException;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.BlockTestStats;
@@ -173,7 +174,14 @@ public class SpigotUtil {
 	}
 	
 	public static SpigotItemStack getSpigotItemStack( XMaterial xMaterial, int amount ) {
-		SpigotItemStack itemStack = new SpigotItemStack( getItemStack( xMaterial, amount ) );
+		SpigotItemStack itemStack = null;
+		
+		try {
+			itemStack = new SpigotItemStack( getItemStack( xMaterial, amount ) );
+		} 
+		catch (PrisonItemStackNotSupportedRuntimeException e) {
+			// ignore
+		}
 		
 		return itemStack;
 	}
@@ -984,10 +992,15 @@ public class SpigotUtil {
    */
 
     public static SpigotItemStack bukkitItemStackToPrison( ItemStack bukkitStack) {
-    	SpigotItemStack results = null;
+;    	SpigotItemStack results = null;
     	
     	if ( bukkitStack != null ) {
-    		results = new SpigotItemStack( bukkitStack );
+    		try {
+				results = new SpigotItemStack( bukkitStack );
+			} 
+    		catch (PrisonItemStackNotSupportedRuntimeException e) {
+				// ignore...
+			}
     	}
     	
     	return results;

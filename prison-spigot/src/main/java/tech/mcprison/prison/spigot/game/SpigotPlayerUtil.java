@@ -452,7 +452,7 @@ public class SpigotPlayerUtil
 		
 		SpigotItemStack itemStack = getItemInHand();
 		
-		if ( itemStack.getLore() != null && itemStack.getLore().size() > 0 ) {
+		if ( itemStack != null && itemStack.getLore() != null && itemStack.getLore().size() > 0 ) {
 			for ( String lore : itemStack.getLore() )
 			{
 				if ( lore.trim().length() > 0 ) {

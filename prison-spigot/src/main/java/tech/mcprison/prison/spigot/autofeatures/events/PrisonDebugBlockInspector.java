@@ -44,7 +44,7 @@ public class PrisonDebugBlockInspector
         ItemStack ourItem = e.getItemInHand();
         ItemStack toolItem = SelectionManager.SELECTION_TOOL;
 
-        if ( !ourItem.equals(toolItem) || !Output.get().isDebug() ) {
+        if ( ourItem == null || !ourItem.equals(toolItem) || !Output.get().isDebug() ) {
             return;
         }
         //e.setCanceled(true);

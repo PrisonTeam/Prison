@@ -39,7 +39,7 @@ public class SelectionListener {
         ItemStack ourItem = e.getItemInHand();
         ItemStack toolItem = SelectionManager.SELECTION_TOOL;
 
-        if (!ourItem.equals(toolItem)) {
+        if ( ourItem == null || !ourItem.equals(toolItem)) {
             return;
         }
         e.setCanceled(true);
