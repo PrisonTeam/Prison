@@ -14,12 +14,12 @@ public class MineBombData {
 	private String description;
 	
 	
-	/**
-	 * <p>The 'bombItemId' is first line of the bomb's item lore, and
-	 * it really needs to be unique and not match any other bomb's id.
-	 * </p>
-	 */
-	private String loreBombItemId;
+//	/**
+//	 * <p>The 'bombItemId' is first line of the bomb's item lore, and
+//	 * it really needs to be unique and not match any other bomb's id.
+//	 * </p>
+//	 */
+//	private String loreBombItemId;
 	private List<String> lore;
 	
 
@@ -200,7 +200,7 @@ public class MineBombData {
 		this.explosionShape = explosionShape;
 		this.radius = radius;
 		
-		this.loreBombItemId = "PrisonMineBomb: " + name;
+//		this.loreBombItemId = "PrisonMineBomb: " + name;
 		
 		this.lore = new ArrayList<>();
 		
@@ -233,7 +233,7 @@ public class MineBombData {
 		MineBombData cloned = new MineBombData( getName(), getItemType(), getExplosionShape(),
 				getRadius() );
 		
-		cloned.setLoreBombItemId( getLoreBombItemId() );
+//		cloned.setLoreBombItemId( getLoreBombItemId() );
 		
 		cloned.setDescription( getDescription() );
 		
@@ -303,12 +303,12 @@ public class MineBombData {
 		this.description = description;
 	}
 
-	public String getLoreBombItemId() {
-		return loreBombItemId;
-	}
-	public void setLoreBombItemId( String loreBombItemId ) {
-		this.loreBombItemId = loreBombItemId;
-	}
+//	public String getLoreBombItemId() {
+//		return loreBombItemId;
+//	}
+//	public void setLoreBombItemId( String loreBombItemId ) {
+//		this.loreBombItemId = loreBombItemId;
+//	}
 
 	public List<String> getLore() {
 		return lore;

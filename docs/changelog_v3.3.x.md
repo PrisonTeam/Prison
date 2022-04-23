@@ -11,7 +11,12 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.10 2022-04-20
+# 3.3.0-alpha.10 2022-04-23
+
+
+* **Fixes the mine bomb usage of lore where the lore that is defined in the settings is no longer altered so it's now used verbatim.**
+Also the check for mine bomb is removed from using the name, or first line of lore, and now tries to use NBT data.
+But note, that the NBT data is not working correctly yet.
 
 
 * **Fixed the usage of setting up the NBT library within the gradle config file.**

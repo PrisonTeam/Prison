@@ -15,14 +15,15 @@ import de.tr7zw.nbtapi.NBTItem;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
 
 public class SpigotItemStack
 		extends ItemStack {
 
 	private org.bukkit.inventory.ItemStack bukkitStack;
-	private NBTItem nbtBukkitStack;
-	private boolean nbtChecked = false;
+//	private NBTItem nbtBukkitStack;
+//	private boolean nbtChecked = false;
 //	private org.bukkit.inventory.ItemStack bukkitStack;
 	
 	public SpigotItemStack( org.bukkit.inventory.ItemStack bukkitStack )
@@ -30,7 +31,7 @@ public class SpigotItemStack
 		super();
 
 		this.bukkitStack = bukkitStack;
-		this.nbtBukkitStack = null;
+//		this.nbtBukkitStack = null;
 		
 		setupBukkitStack( bukkitStack );
 	}
@@ -48,13 +49,13 @@ public class SpigotItemStack
 			throw new PrisonItemStackNotSupportedRuntimeException( message );
 		}
 		
-		if ( xMat != XMaterial.AIR ) {
-			
-			NBTItem nbtItemStack = new NBTItem( bukkitStack );
-			
-			this.nbtBukkitStack = nbtItemStack;
-//		this.bukkitStack = bukkitStack;
-		}
+//		if ( xMat != XMaterial.AIR ) {
+//			
+//			NBTItem nbtItemStack = new NBTItem( bukkitStack, true );
+//			
+//			this.nbtBukkitStack = nbtItemStack;
+////		this.bukkitStack = bukkitStack;
+//		}
 		
 		
         if (bukkitStack == null || bukkitStack.getType().equals(Material.AIR)) {
@@ -135,94 +136,172 @@ public class SpigotItemStack
     }
     
     
-    /**
-     * <p>This will check to see if the nbt library is active on this itemStack,
-     * of which there are some items and blocks that it cannot be used with.
-     * If it has not been checked before, it will attempt a check.
-     * </p>
-     * 
-     * @return
-     */
-    public boolean isNBTEnabled() {
+//    /**
+//     * <p>This will check to see if the nbt library is active on this itemStack,
+//     * of which there are some items and blocks that it cannot be used with.
+//     * If it has not been checked before, it will attempt a check.
+//     * </p>
+//     * 
+//     * @return
+//     */
+//    public boolean isNBTEnabled() {
+//    	
+//    	if ( !nbtChecked && bukkitStack != null && bukkitStack.getType() != Material.AIR ) {
+//    		
+//    		try {
+//				NBTItem nbtItemStack = new NBTItem( bukkitStack, true );
+//				
+//				this.nbtBukkitStack = nbtItemStack;
+//			} catch (Exception e) {
+//				// ignore - the bukkit item stack is not compatible with the NBT library
+//			}
+//
+//    		this.nbtChecked = true;
+//    	}
+//    	
+//    	return nbtBukkitStack != null;
+//    }
+    
+    public NBTItem getNBT() {
+    	NBTItem nbtItemStack = null;
     	
-    	if ( !nbtChecked && bukkitStack != null && bukkitStack.getType() != Material.AIR ) {
-    		
+    	if ( getBukkitStack() != null && getBukkitStack().getType() != Material.AIR  ) {
     		try {
-				NBTItem nbtItemStack = new NBTItem( bukkitStack );
+				nbtItemStack = new NBTItem( getBukkitStack(), true );
 				
-				this.nbtBukkitStack = nbtItemStack;
+				nbtDebugLog( nbtItemStack, "getNbt" );
 			} catch (Exception e) {
 				// ignore - the bukkit item stack is not compatible with the NBT library
 			}
-
-    		this.nbtChecked = true;
     	}
     	
-    	return nbtBukkitStack != null;
+    	return nbtItemStack;
+    }
+    
+    private void applyNbt( NBTItem nbtItem ) {
+		if ( nbtItem != null && getBukkitStack() != null ) {
+			
+			nbtItem.applyNBT( getBukkitStack() );
+			
+			nbtDebugLog( nbtItem, "applyNbt" );
+		}
+    }
+    
+    private void nbtDebugLog( NBTItem nbtItem, String desc ) {
+		if ( Output.get().isDebug() ) {
+			org.bukkit.inventory.ItemStack iStack = nbtItem.getItem();
+			
+			String message = String.format( 
+					"NBT %s ItemStack for %s: %s", 
+					desc,
+					iStack.hasItemMeta() && iStack.getItemMeta().hasDisplayName() ? 
+							iStack.getItemMeta().getDisplayName() :
+							iStack.getType().name(),
+					nbtItem.toString() );
+			
+			Output.get().logInfo( message );
+			
+			Output.get().logInfo( "NBT: " + new NBTItem( getBukkitStack() ) );
+			
+		}
     }
     
     public boolean hasNBTKey( String key ) {
     	boolean results = false;
     	
-    	if ( isNBTEnabled() ) {
-    		results = nbtBukkitStack.hasKey( key );
+    	NBTItem nbtItem = getNBT();
+    	if ( nbtItem != null ) {
+    		results = nbtItem.hasKey( key );
     	}
     	
     	return results;
     }
     
-    public void setNBTString( String key, String value ) {
-    	if ( isNBTEnabled() ) {
-    		nbtBukkitStack.setString( key, value );
-    	}
-    }
     public String getNBTString( String key ) {
     	String results = null;
-    	if ( isNBTEnabled() ) {
-    		results = nbtBukkitStack.getString( key );
+    	
+    	NBTItem nbtItem = getNBT();
+    	if ( nbtItem != null ) {
+    		results = nbtItem.getString( key );
     	}
     	return results;
     }
-    
-    public void setNBTInt( String key, int value ) {
-    	if ( isNBTEnabled() ) {
-    		nbtBukkitStack.setInteger( key, value );
+    public void setNBTString( String key, String value ) {
+    	NBTItem nbtItem = getNBT();
+    	if ( nbtItem != null ) {
+    		nbtItem.setString( key, value );
+    		applyNbt( nbtItem );
     	}
     }
+    
     public int getNBTInt( String key ) {
     	int results = -1;
-    	if ( isNBTEnabled() ) {
-    		results = nbtBukkitStack.getInteger( key );
+    	
+    	NBTItem nbtItem = getNBT();
+    	if ( nbtItem != null ) {
+     		results = nbtItem.getInteger( key );
     	}
     	return results;
     }
-    
-    public void setNBTDouble( String key, double value ) {
-    	if ( isNBTEnabled() ) {
-    		nbtBukkitStack.setDouble( key, value );
+    public void setNBTInt( String key, int value ) {
+    	
+    	NBTItem nbtItem = getNBT();
+    	if ( nbtItem != null ) {
+     		nbtItem.setInteger( key, value );
+    		applyNbt( nbtItem );
     	}
     }
+    
     public double getNBTDouble( String key ) {
     	double results = -1d;
-    	if ( isNBTEnabled() ) {
-    		results = nbtBukkitStack.getDouble( key );
+    	
+    	NBTItem nbtItem = getNBT();
+    	if ( nbtItem != null ) {
+    		results = nbtItem.getDouble( key );
     	}
     	return results;
+    }
+    public void setNBTDouble( String key, double value ) {
+    	
+    	NBTItem nbtItem = getNBT();
+    	if ( nbtItem != null ) {
+    		nbtItem.setDouble( key, value );
+    		applyNbt( nbtItem );
+    	}
     }
     
-    public void setNBTBoolean( String key, boolean value ) {
-    	if ( isNBTEnabled() ) {
-    		nbtBukkitStack.setBoolean( key, value );
-    	}
-    }
     public boolean getNBTBoolean( String key ) {
     	boolean results = false;
-    	if ( isNBTEnabled() ) {
-    		results = nbtBukkitStack.getBoolean( key );
+    	
+    	NBTItem nbtItem = getNBT();
+    	if ( nbtItem != null ) {
+    		results = nbtItem.getBoolean( key );
     	}
     	return results;
     }
-	
+    public void setNBTBoolean( String key, boolean value ) {
+    	
+    	NBTItem nbtItem = getNBT();
+    	if ( nbtItem != null ) {
+    		nbtItem.setBoolean( key, value );
+    		applyNbt( nbtItem );
+    	}
+    }
+    
+    
+//    	
+//    public void setNbtString( org.bukkit.inventory.ItemStack bItemStack, String key, String value ) {
+//    	NBTItem nbt = new NBTItem( bItemStack );
+//    	nbt.setString( key, value );
+//    	nbt.applyNBT( bItemStack );
+//    }
+//    	
+//    public String getNbtValue( org.bukkit.inventory.ItemStack bItemStack, String key ) {
+//    	NBTItem nbt = new NBTItem( bItemStack );
+//    	return nbt.getString( key );
+//    }
+//    
+    
 	/**
 	 * <p>This function overrides the Prison's ItemStack class's setAmount() to perform the 
 	 * same behavior of setting the amount to the requested value, but it also updates
@@ -277,15 +356,15 @@ public class SpigotItemStack
 	public void setBukkitStack( org.bukkit.inventory.ItemStack bukkitStack ) {
 		
 		this.bukkitStack = bukkitStack;
-		this.nbtBukkitStack = null;
+//		this.nbtBukkitStack = null;
 		
 		setupBukkitStack( bukkitStack );
 	}
 
 	
-	public NBTItem getNbtBukkitStack() {
-		return nbtBukkitStack;
-	}
+//	public NBTItem getNbtBukkitStack() {
+//		return nbtBukkitStack;
+//	}
 
 
 

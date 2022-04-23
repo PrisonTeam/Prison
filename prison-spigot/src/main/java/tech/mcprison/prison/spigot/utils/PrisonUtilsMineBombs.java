@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XSound;
@@ -44,6 +45,8 @@ public class PrisonUtilsMineBombs
 	public static final String MINE_BOMBS_LORE_1 = "&4Prison Mine Bomb:";
 	public static final String MINE_BOMBS_LORE_2_PREFIX = "  &7";
 	public static final int MINE_BOMBS_COOLDOWN_TICKS = 5 * 20; // 5 seconds  // 15 seconds
+	
+	public static final String MINE_BOMBS_NBT_BOMB_KEY = "PrisonMineBombNbtKey";
 	
 	private boolean enableMineBombs = false;
 	
@@ -628,16 +631,40 @@ public class PrisonUtilsMineBombs
 			
 			if ( bombs != null ) {
 
+				
+				// Set the NBT key for the bombs:
+				bombs.setNBTString( MINE_BOMBS_NBT_BOMB_KEY, bombData.getName() );
+				
+				if ( !bombs.hasNBTKey(MINE_BOMBS_NBT_BOMB_KEY) ) {
+					String.format(
+							"Unable to set the NBT id on mine bomb: %s  type: %s", 
+								bombData.getName(), 
+								bombData.getItemType() );
+				}
+
+//				// Get the modified bukkit item stack, and add it back to the PrisonItemStack:
+//				ItemStack bukkitItemStack = bombs.getNbtBukkitStack().getItem();
+//				bombs = new SpigotItemStack( bukkitItemStack );
+////				bombs.setBukkitStack(bukkitItemStack);
+				
 				bombs.setDisplayName( bombData.getName() );
+				
+				if ( !bombs.hasNBTKey(MINE_BOMBS_NBT_BOMB_KEY) ) {
+					String.format(
+							"Unable to set the NBT id on mine bomb (2): %s  type: %s", 
+							bombData.getName(), 
+							bombData.getItemType() );
+				}
+				
 				//bombs.setAmount( count );
 				
 //				if ( bomb.isGlowing() ) {
 //					bombs.addEnchantment(  );
 //				}
 				
-				List<String> lore = new ArrayList<>( bombs.getLore() );
+				List<String> lore = new ArrayList<>( bombData.getLore() );
 				
-				lore.add( 0, bombData.getLoreBombItemId() );
+				// lore.add( 0, bombData.getLoreBombItemId() );
 				
 				bombs.setLore( lore );
 				
@@ -665,20 +692,27 @@ public class PrisonUtilsMineBombs
 		return ( bomb != null );
 	}
 	
+	/**
+	 * <p>This takes a player, and checks to see if it is a prison mine bomb by checking the 
+	 * NBT tag in the constant: MINE_BOMBS_NBT_BOMB_KEY.  If it is, then it uses that key
+	 * value to search for the proper bomb, and if found, then it returns it.
+	 * </p>
+	 * 
+	 * 
+	 * @param player
+	 * @return MineBombData if item in hand is one, otherwise null
+	 */
 	public MineBombData getBombItem( Player player ) {
 		MineBombData bomb = null;
 		
 		SpigotItemStack itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
 		
-		if ( itemInHand != null ) {
-			List<String> lore = itemInHand.getLore();
+		if ( itemInHand != null && itemInHand.hasNBTKey( MINE_BOMBS_NBT_BOMB_KEY ) ) {
 			
-			if ( lore.size() > 0 ) {
-				
-				String bombItemId = lore.get( 0 );
-				
-				bomb = MineBombs.getInstance().findBombByItemId( bombItemId );
-			}
+			String bombName = itemInHand.getNBTString( MINE_BOMBS_NBT_BOMB_KEY );
+			
+			bomb = MineBombs.getInstance().findBombByName( bombName );
+			
 		}
 		
 		return bomb;
@@ -695,12 +729,13 @@ public class PrisonUtilsMineBombs
 	 * </p>
 	 * 
 	 * @param player
+	 * @param bomb 
 	 * @return
 	 */
-	public boolean setBombInHand( Player player, SpigotBlock sBlock ) {
+	public boolean setBombInHand( Player player, MineBombData bomb, SpigotBlock sBlock ) {
 		boolean isABomb = false;
 		
-		MineBombData bomb = getBombItem( player );
+//		MineBombData bomb = getBombItem( player );
 		
 		if ( bomb != null ) {
 			
