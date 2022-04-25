@@ -17,6 +17,7 @@ import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.util.Text;
 
 public class SpigotItemStack
 		extends ItemStack {
@@ -65,12 +66,7 @@ public class SpigotItemStack
         }
         else {
         	
-        	ItemMeta meta;
-        	if (!bukkitStack.hasItemMeta()) {
-        		meta = Bukkit.getItemFactory().getItemMeta(bukkitStack.getType());
-        	} else {
-        		meta = bukkitStack.getItemMeta();
-        	}
+        	ItemMeta meta = getMeta();
 
         	
         	
@@ -92,9 +88,9 @@ public class SpigotItemStack
         	if (meta.hasDisplayName()) {
         		displayName = meta.getDisplayName();
         	}
-        	else if ( type != null ) {
-        		displayName = type.getBlockName().toLowerCase();
-        	}
+//        	else if ( type != null ) {
+//        		displayName = type.getBlockName().toLowerCase();
+//        	}
         	
         	List<String> lores = new ArrayList<>();
         	
@@ -104,12 +100,12 @@ public class SpigotItemStack
 				}
         	}
         	
-        	setDisplayName( displayName );
         	setAmount( amount );
         	setMaterial( type );
         	
-        	
-        	setLore( lores );
+        	// Update only the prison internals for the displayName and lore:
+        	super.setDisplayName( displayName );
+        	super.setLore( lores );
         }
 
 		
@@ -178,26 +174,29 @@ public class SpigotItemStack
     	return nbtItemStack;
     }
     
-    private void applyNbt( NBTItem nbtItem ) {
-		if ( nbtItem != null && getBukkitStack() != null ) {
-			
-			nbtItem.applyNBT( getBukkitStack() );
-			
-			nbtDebugLog( nbtItem, "applyNbt" );
-		}
-    }
+//    private void applyNbt( NBTItem nbtItem ) {
+//		if ( nbtItem != null && getBukkitStack() != null ) {
+//			
+////			nbtItem.applyNBT( getBukkitStack() );
+//			
+//			nbtDebugLog( nbtItem, "applyNbt" );
+//		}
+//    }
     
     private void nbtDebugLog( NBTItem nbtItem, String desc ) {
 		if ( Output.get().isDebug() ) {
 			org.bukkit.inventory.ItemStack iStack = nbtItem.getItem();
 			
+			int sysId = System.identityHashCode(iStack);
+			
 			String message = String.format( 
-					"NBT %s ItemStack for %s: %s", 
+					"NBT %s ItemStack for %s: %s  sysId: %d", 
 					desc,
 					iStack.hasItemMeta() && iStack.getItemMeta().hasDisplayName() ? 
 							iStack.getItemMeta().getDisplayName() :
 							iStack.getType().name(),
-					nbtItem.toString() );
+					nbtItem.toString(),
+					sysId );
 			
 			Output.get().logInfo( message );
 			
@@ -230,63 +229,63 @@ public class SpigotItemStack
     	NBTItem nbtItem = getNBT();
     	if ( nbtItem != null ) {
     		nbtItem.setString( key, value );
-    		applyNbt( nbtItem );
+    		nbtDebugLog( nbtItem, "setNBTString" );
     	}
     }
     
-    public int getNBTInt( String key ) {
-    	int results = -1;
-    	
-    	NBTItem nbtItem = getNBT();
-    	if ( nbtItem != null ) {
-     		results = nbtItem.getInteger( key );
-    	}
-    	return results;
-    }
-    public void setNBTInt( String key, int value ) {
-    	
-    	NBTItem nbtItem = getNBT();
-    	if ( nbtItem != null ) {
-     		nbtItem.setInteger( key, value );
-    		applyNbt( nbtItem );
-    	}
-    }
+//    public int getNBTInt( String key ) {
+//    	int results = -1;
+//    	
+//    	NBTItem nbtItem = getNBT();
+//    	if ( nbtItem != null ) {
+//     		results = nbtItem.getInteger( key );
+//    	}
+//    	return results;
+//    }
+//    public void setNBTInt( String key, int value ) {
+//    	
+//    	NBTItem nbtItem = getNBT();
+//    	if ( nbtItem != null ) {
+//     		nbtItem.setInteger( key, value );
+//     		nbtDebugLog( nbtItem, "setNBTInt" );
+//    	}
+//    }
     
-    public double getNBTDouble( String key ) {
-    	double results = -1d;
-    	
-    	NBTItem nbtItem = getNBT();
-    	if ( nbtItem != null ) {
-    		results = nbtItem.getDouble( key );
-    	}
-    	return results;
-    }
-    public void setNBTDouble( String key, double value ) {
-    	
-    	NBTItem nbtItem = getNBT();
-    	if ( nbtItem != null ) {
-    		nbtItem.setDouble( key, value );
-    		applyNbt( nbtItem );
-    	}
-    }
+//    public double getNBTDouble( String key ) {
+//    	double results = -1d;
+//    	
+//    	NBTItem nbtItem = getNBT();
+//    	if ( nbtItem != null ) {
+//    		results = nbtItem.getDouble( key );
+//    	}
+//    	return results;
+//    }
+//    public void setNBTDouble( String key, double value ) {
+//    	
+//    	NBTItem nbtItem = getNBT();
+//    	if ( nbtItem != null ) {
+//    		nbtItem.setDouble( key, value );
+//    		nbtDebugLog( nbtItem, "setNBTDouble" );
+//    	}
+//    }
     
-    public boolean getNBTBoolean( String key ) {
-    	boolean results = false;
-    	
-    	NBTItem nbtItem = getNBT();
-    	if ( nbtItem != null ) {
-    		results = nbtItem.getBoolean( key );
-    	}
-    	return results;
-    }
-    public void setNBTBoolean( String key, boolean value ) {
-    	
-    	NBTItem nbtItem = getNBT();
-    	if ( nbtItem != null ) {
-    		nbtItem.setBoolean( key, value );
-    		applyNbt( nbtItem );
-    	}
-    }
+//    public boolean getNBTBoolean( String key ) {
+//    	boolean results = false;
+//    	
+//    	NBTItem nbtItem = getNBT();
+//    	if ( nbtItem != null ) {
+//    		results = nbtItem.getBoolean( key );
+//    	}
+//    	return results;
+//    }
+//    public void setNBTBoolean( String key, boolean value ) {
+//    	
+//    	NBTItem nbtItem = getNBT();
+//    	if ( nbtItem != null ) {
+//    		nbtItem.setBoolean( key, value );
+//    		nbtDebugLog( nbtItem, "setNBTBoolean" );
+//    	}
+//    }
     
     
 //    	
@@ -313,11 +312,54 @@ public class SpigotItemStack
 	public void setAmount( int amount ) {
 		super.setAmount( amount );
 		
-		if ( bukkitStack != null ) {
+		if ( bukkitStack != null && bukkitStack.getAmount() != amount ) {
 			bukkitStack.setAmount( amount );
 		}
 	}
 	
+	private ItemMeta getMeta() {
+		ItemMeta meta;
+		if (!bukkitStack.hasItemMeta()) {
+			meta = Bukkit.getItemFactory().getItemMeta(bukkitStack.getType());
+		} else {
+			meta = bukkitStack.getItemMeta();
+		}
+		
+		return meta;
+	}
+	
+	@Override
+	public void setDisplayName( String displayName ) {
+		
+		ItemMeta meta = getMeta();
+		if ( meta != null && displayName != null && displayName.trim().length() > 0 ) {
+			
+			meta.setDisplayName( Text.convertToAmpColorCodes(displayName) );
+		}
+
+		getBukkitStack().setItemMeta( meta );
+		
+		super.setDisplayName( displayName );
+	}
+	
+	@Override
+	public void setLore( List<String> lores ) {
+		List<String> updatedLores = new ArrayList<>();
+		
+		ItemMeta meta = getMeta();
+		if ( meta != null && lores != null && lores.size() > 0 ) {
+			
+			for ( String lore : lores ) {
+				updatedLores.add( Text.translateAmpColorCodes(lore) );
+			}
+			
+			meta.setLore( updatedLores );
+		}
+		
+		getBukkitStack().setItemMeta( meta );
+		
+		//super.setLore( updatedLores );
+	}
 	
 	
 	public boolean isAir() {

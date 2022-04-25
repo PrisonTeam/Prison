@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XSound;
 
+import de.tr7zw.nbtapi.NBTItem;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.bombs.MineBombData;
@@ -46,7 +47,6 @@ public class PrisonUtilsMineBombs
 	public static final String MINE_BOMBS_LORE_2_PREFIX = "  &7";
 	public static final int MINE_BOMBS_COOLDOWN_TICKS = 5 * 20; // 5 seconds  // 15 seconds
 	
-	public static final String MINE_BOMBS_NBT_BOMB_KEY = "PrisonMineBombNbtKey";
 	
 	private boolean enableMineBombs = false;
 	
@@ -499,14 +499,15 @@ public class PrisonUtilsMineBombs
 				
 				if ( bomb != null ) {
 					
-					SpigotItemStack bombs = getItemStackBomb( bomb );
+					ItemStack bombs = getItemStackBomb( bomb );
 					
 					if ( bombs != null ) {
 						
 						bombs.setAmount( count );
-						player.getInventory().addItem( bombs );
+						player.getWrapper().getInventory().addItem( bombs );
 						
-						player.updateInventory();
+						player.getWrapper().updateInventory();
+//						player.updateInventory();
 					}
 					else {
 						
@@ -614,8 +615,10 @@ public class PrisonUtilsMineBombs
 	}
 	
 	
-	public static SpigotItemStack getItemStackBomb( MineBombData bombData ) {
+	public static ItemStack getItemStackBomb( MineBombData bombData ) {
+		ItemStack sItemStack = null;
 		SpigotItemStack bombs = null;
+		NBTItem nbtItem = null;
 		
 		XMaterial xBomb = XMaterial.matchXMaterial( bombData.getItemType() ).orElse( null );
 		
@@ -623,38 +626,22 @@ public class PrisonUtilsMineBombs
 			
 			
 			try {
-				bombs = new SpigotItemStack( xBomb.parseItem() );
+				
+				// Create the spigot/bukkit ItemStack:
+				sItemStack = xBomb.parseItem();
+				
+				if ( sItemStack != null ) {
+					
+					bombs = new SpigotItemStack( sItemStack );
+				}
 			} 
 			catch (PrisonItemStackNotSupportedRuntimeException e) {
 				// Ignore
 			}
 			
 			if ( bombs != null ) {
-
-				
-				// Set the NBT key for the bombs:
-				bombs.setNBTString( MINE_BOMBS_NBT_BOMB_KEY, bombData.getName() );
-				
-				if ( !bombs.hasNBTKey(MINE_BOMBS_NBT_BOMB_KEY) ) {
-					String.format(
-							"Unable to set the NBT id on mine bomb: %s  type: %s", 
-								bombData.getName(), 
-								bombData.getItemType() );
-				}
-
-//				// Get the modified bukkit item stack, and add it back to the PrisonItemStack:
-//				ItemStack bukkitItemStack = bombs.getNbtBukkitStack().getItem();
-//				bombs = new SpigotItemStack( bukkitItemStack );
-////				bombs.setBukkitStack(bukkitItemStack);
 				
 				bombs.setDisplayName( bombData.getName() );
-				
-				if ( !bombs.hasNBTKey(MINE_BOMBS_NBT_BOMB_KEY) ) {
-					String.format(
-							"Unable to set the NBT id on mine bomb (2): %s  type: %s", 
-							bombData.getName(), 
-							bombData.getItemType() );
-				}
 				
 				//bombs.setAmount( count );
 				
@@ -667,7 +654,20 @@ public class PrisonUtilsMineBombs
 				// lore.add( 0, bombData.getLoreBombItemId() );
 				
 				bombs.setLore( lore );
+
 				
+				sItemStack = bombs.getBukkitStack();
+			}
+			
+			if ( sItemStack != null ) {
+				
+				// Set the NBT String key-value pair:
+				nbtItem = new NBTItem( sItemStack, true );
+				nbtItem.setString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY, bombData.getName() );
+
+				if ( Output.get().isDebug() && nbtItem != null ) {
+					Output.get().logInfo( "getItemStackBombs ntb: %s", nbtItem.toString() );
+				}
 			}
 			
 		}
@@ -681,7 +681,7 @@ public class PrisonUtilsMineBombs
 			Output.get().logError( message );
 		}
 		
-		return bombs;
+		return sItemStack;
 	}
 	
 	
@@ -707,13 +707,19 @@ public class PrisonUtilsMineBombs
 		
 		SpigotItemStack itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
 		
-		if ( itemInHand != null && itemInHand.hasNBTKey( MINE_BOMBS_NBT_BOMB_KEY ) ) {
+		if ( itemInHand != null && itemInHand.hasNBTKey( MineBombs.MINE_BOMBS_NBT_BOMB_KEY ) ) {
 			
-			String bombName = itemInHand.getNBTString( MINE_BOMBS_NBT_BOMB_KEY );
+			String bombName = itemInHand.getNBTString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY );
 			
-			bomb = MineBombs.getInstance().findBombByName( bombName );
-			
+			bomb = getBombItem( bombName );
 		}
+		
+		return bomb;
+	}
+	
+	public MineBombData getBombItem( String bombName ) {
+		
+		MineBombData bomb = MineBombs.getInstance().findBombByName( bombName );
 		
 		return bomb;
 	}
@@ -790,7 +796,7 @@ public class PrisonUtilsMineBombs
 					// Set cooldown:
 					addPlayerCooldown( playerUUID, bomb.getCooldownTicks() );
 					
-					SpigotItemStack bombs = PrisonUtilsMineBombs.getItemStackBomb( bomb );
+					SpigotItemStack bombs = new SpigotItemStack( PrisonUtilsMineBombs.getItemStackBomb( bomb ));
 					
 					if ( bombs != null ) {
 						

@@ -8,13 +8,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 
 import de.tr7zw.nbtapi.NBTItem;
 import tech.mcprison.prison.bombs.MineBombData;
+import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
-import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.util.Location;
 
@@ -49,21 +48,50 @@ public class PrisonBombListener
 
         //Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  01 " );
         
-        if ( event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR) ) {
+        if ( (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || 
+        		event.getAction().equals(Action.RIGHT_CLICK_AIR)) && 
+        		event.getItem() != null && event.getItem().getType() != Material.AIR ) {
         	
         	// If the player is holding a mine bomb, then get the bomb and decrease the
         	// ItemStack in the player's hand by 1:
         	
+        	
+        	// Check to see if this is an mine bomb by checking the NBT key-value pair,
+        	// which will also identify which mine bomb it is too.
+        	// NOTE: Because we're just checking, do not auto update the itemstack.
+        	NBTItem nbtItem = new NBTItem( event.getItem() );
+        	
+			if ( Output.get().isDebug() && nbtItem != null ) {
+				Output.get().logInfo( "PrisonBombListener.onInteract ntb: %s", nbtItem.toString() );
+			}
+        	
+        	if ( !nbtItem.hasKey( MineBombs.MINE_BOMBS_NBT_BOMB_KEY ) ) {
+        		return;
+        	}
+        	
+        	String bombName = nbtItem.getString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY );
+        	
         	Player player = event.getPlayer();
         	
-//        	ItemStack item = new ItemStack(Material.APPLE);
-//        	new NBTItem(item, true).setString("yummy", "apple");
-//        	player.getInventory().addItem(item);
+//        	// Temp test stuff... remove when NBTs are working:
+//        	{
+//        		
+//        		ItemStack item = new ItemStack(Material.APPLE);
+//        		SpigotItemStack spItemStack = new SpigotItemStack( item );
+//        		spItemStack.setNBTString("tasty", "fruit");
+//        		SpigotPlayer spPlayer = new SpigotPlayer( player );
+//        		spPlayer.getInventory().addItem(spItemStack);
+//        		spPlayer.updateInventory();
+//        		
+////	        	ItemStack item = new ItemStack(Material.APPLE);
+////	        	new NBTItem(item, true).setString("yummy", "apple");
+////	        	player.getInventory().addItem(item);
+//        		
+//        		SpigotItemStack sItemStack = new SpigotItemStack( event.getItem() );
+//        		Output.get().logInfo( sItemStack.getNBT().toString() );
+//        	}
         	
-        	SpigotItemStack sItemStack = new SpigotItemStack( event.getItem() );
-        	Output.get().logInfo( sItemStack.getNBT().toString() );
-        	
-        	MineBombData bomb = getPrisonUtilsMineBombs().getBombItem( player );
+        	MineBombData bomb = getPrisonUtilsMineBombs().getBombItem( bombName );
         	
         	
         	if ( bomb == null ) {

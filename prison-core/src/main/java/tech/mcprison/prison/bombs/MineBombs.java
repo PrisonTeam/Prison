@@ -16,6 +16,9 @@ public class MineBombs
 	public static final String MINE_BOMBS_FILE_NAME = "mineBombsConfig.json";
 	public static final String MINE_BOMBS_PATH_NAME = "module_conf/mines";
 	
+	public static final String MINE_BOMBS_NBT_BOMB_KEY = "PrisonMineBombNbtKey";
+	
+	
 	private static MineBombs instance;
 	
 	private MineBombsConfigData configData;
@@ -469,7 +472,7 @@ public class MineBombs
 			
 			{
 				MineBombData mbd = new MineBombData( 
-						"SmallBomb", "brewing_stand", ExplosionShape.sphere.name(), 2, "Small Mine Bomb" );
+						"SmallBomb", "brewing_stand", ExplosionShape.sphere.name(), 2, "&dSmall &6Mine &eBomb &3(lore line 1)" );
 				
 				mbd.setNameTag( "&6&kABC&r&c-= &7{name}&c =-&6&kCBA" );
 				
@@ -477,6 +480,9 @@ public class MineBombs
 				mbd.setToolInHandFortuneLevel( 0 );
 				mbd.setDescription("A small mine bomb made with some chemicals and a brewing stand.");
 				
+				mbd.getLore().add( "&4Lore line 2" );
+				mbd.getLore().add( "&aLore line &73" );
+
 				mbd.getSoundEffects().add( mbeSound01.clone() );
 				mbd.getSoundEffects().add( mbeSound02.clone().setOffsetTicks( 30 ) );
 				mbd.getSoundEffects().add( mbeSound03.clone() );
@@ -606,7 +612,7 @@ public class MineBombs
 				MineBombData mbd = new MineBombData( 
 						"WimpyBomb", "GUNPOWDER", ExplosionShape.sphere.name(), 5, 
 							"A Wimpy Mine Bomb" );
-				mbd.setLoreBombItemId( "&7A &2Wimpy &cBomb &9...&02A3F" );
+//				mbd.setLoreBombItemId( "&7A &2Wimpy &cBomb &9...&02A3F" );
 				
 				mbd.setNameTag( "&7A &2Wimpy &cBomb" );
 				
@@ -698,23 +704,28 @@ public class MineBombs
 	}
 
 	
-	public MineBombData findBombByItemId( String bombItemId )
+	public MineBombData findBombByName( String bombName )
 	{
 		MineBombData results = null;
 		
-		String bombItemIdConvered = Text.convertToAmpColorCodes( bombItemId );
+		String cleanedBombName = Text.stripColor( bombName );
 		
-		if ( bombItemIdConvered != null && !bombItemIdConvered.isEmpty() ) {
+		if ( cleanedBombName != null && !cleanedBombName.isEmpty() ) {
 			for ( String bombKey : getConfigData().getBombs().keySet() )
 			{
 				MineBombData bomb = getConfigData().getBombs().get( bombKey );
 				
-				if ( bomb != null && bomb.getLoreBombItemId() != null && 
-								bomb.getLoreBombItemId().equalsIgnoreCase( bombItemIdConvered ) ) {
-					
-					results = bomb;
-					
+				if ( bomb != null ) {
+					String cBombName = Text.stripColor( bomb.getName() );
+
+					if ( cBombName != null && 
+							cBombName.equalsIgnoreCase( cleanedBombName ) ) {
+						
+						results = bomb;
+					}
 				}
+				
+				
 			}
 		}
 		

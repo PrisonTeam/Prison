@@ -11,7 +11,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.10 2022-04-23
+# 3.3.0-alpha.10 2022-04-24
+
+
+* **Mine Bombs and NBT settings: this fixes mine bombs to work with NBT tags, which are being used to identify which items are actually mine bombs.**
 
 
 * **Fixes the mine bomb usage of lore where the lore that is defined in the settings is no longer altered so it's now used verbatim.**
