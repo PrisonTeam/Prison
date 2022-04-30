@@ -11,8 +11,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.11a 2022-04-25
+# 3.3.0-alpha.11a 2022-04-30
 
+
+* **Bug fix... with placeholder prison_rank__player_cost_remaining_rankname, and its variants,**
+ eliminate the calculation of including the current rank since that has already been paid for.  Prior to this fix, it was only excluding prior ranks.
 
 
 * **3.3.0-alpha.11a 2022-04-25**

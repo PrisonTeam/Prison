@@ -1424,10 +1424,10 @@ public class RankManager
 		if ( playerRank != null ) {
 			
 			
-			// If the player is at a higher rank, then the cost will be 
+			// If the player is at a higher rank, or the same rank, then the cost will be 
 			// zero for the rank that is being passed in, since the player has
 			// already paid for that rank.
-			if ( rank.getPosition() < playerRank.getRank().getPosition() ) {
+			if ( rank.getPosition() <= playerRank.getRank().getPosition() ) {
 				cost = 0;
 			}
 			else {
