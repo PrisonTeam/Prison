@@ -334,7 +334,7 @@ public class SpigotItemStack
 		ItemMeta meta = getMeta();
 		if ( meta != null && displayName != null && displayName.trim().length() > 0 ) {
 			
-			meta.setDisplayName( Text.convertToAmpColorCodes(displayName) );
+			meta.setDisplayName( Text.translateAmpColorCodes(displayName) );
 		}
 
 		getBukkitStack().setItemMeta( meta );

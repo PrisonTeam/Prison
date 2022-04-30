@@ -14,6 +14,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11a 2022-04-30
 
 
+* **Mine Bombs fix to allow color codes within the bomb's name.**
+The color codes are removed for the sake of matching and selecting when giving to players so you don't have to use them in the commands.
+
+
 * **Placeholder issues when not prefixed with "prison_" is being addressed by prefixing the identifier with "prison_" right away.**
 This "is" addressed, but it's deep in the code and for some reason certain parts of the code is not making the connection to the correct placeholder without that prefix.  So this really is not the desired way to address this, but it eliminates the problem.  The reason why it's not the desired way, is because it's exposing buisness rules of how to handle the placeholders, outside of the placeholder core code.
 

@@ -310,7 +310,7 @@ public class PrisonUtilsMineBombs
 				MineBombData bomb = mBombs.getConfigData().getBombs().get( key );
 				
 				String message = String.format( 
-						"%-12s    Autosell: %b   FuseDelayTicks: %d   CooldownTicks: %d", 
+						"&7%-12s    &3Autosell: &7%b   &3FuseDelayTicks: &7%d   &3CooldownTicks: &7%d", 
 						bomb.getName(), 
 						bomb.isAutosell(),
 						bomb.getFuseDelayTicks(),
@@ -329,7 +329,7 @@ public class PrisonUtilsMineBombs
 						{
 							int lenght = 1 + (bomb.getRadius() * 2);
 							messageShape = String.format( 
-									"      Shape: %s   Size: %d x %d x %d   Based on Radius: %d.5", 
+									"      &3Shape: &7%s   &3Size: &7%d &3x &7%d &3x &7%d   &3Based on Radius: &7%d.5", 
 									bomb.getExplosionShape(), 
 									lenght, lenght, lenght,
 									bomb.getRadius() );
@@ -342,7 +342,7 @@ public class PrisonUtilsMineBombs
 					case ring_z:
 					{
 						messageShape = String.format( 
-								"      Shape: %s   Radius: %d.5   RadiusInner: %d.5", 
+								"      &3Shape: &7%s   &3Radius: &7%d.5   &3RadiusInner: &7%d.5", 
 								bomb.getExplosionShape(), bomb.getRadius(), bomb.getRadiusInner() );
 						break;
 					}
@@ -353,13 +353,13 @@ public class PrisonUtilsMineBombs
 					case disk_z:
 					{
 						messageShape = String.format( 
-								"      Shape: %s   Radius: %d.5", 
+								"      &3Shape: &7%s   &3Radius: &7%d.5", 
 								bomb.getExplosionShape(), bomb.getRadius() );
 						break;
 					}
 					default:
 					{
-						messageShape = "      (no shape defined)";
+						messageShape = "      &4(no shape defined)";
 					}
 				}
 				if ( messageShape != null && !messageShape.isEmpty() ) {
@@ -369,7 +369,7 @@ public class PrisonUtilsMineBombs
 				
 				
 				String message2 = String.format( 
-						"      ToolInHand: %s  Fortune: %d  Percent Chance: %f",
+						"      &3ToolInHand: &7%s  &3Fortune: &7%d  &3Percent Chance: &7%f",
 						bomb.getToolInHandName(), 
 						bomb.getToolInHandFortuneLevel(),
 						bomb.getRemovalChance() );
@@ -377,7 +377,7 @@ public class PrisonUtilsMineBombs
 				
 				
 				String message3 = String.format( 
-						"      ItemType: %s   Glowng: %b   Gravity: %b",
+						"      &3ItemType: &7%s   &3Glowng: &7%b   &3Gravity: &7%b",
 						bomb.getItemType(), 
 						bomb.isGlowing(),
 						bomb.isGravity() );
@@ -397,7 +397,7 @@ public class PrisonUtilsMineBombs
 						
 					}
 					if ( sounds.size() > 0 ) {
-						messages.add( "    Sound Effects:" );
+						messages.add( "    &3Sound Effects:" );
 						messages.addAll( sounds );
 					}
 					
@@ -409,7 +409,7 @@ public class PrisonUtilsMineBombs
 						
 					}
 					if ( visual.size() > 0 ) {
-						messages.add( "    Visual Effects:" );
+						messages.add( "    &3Visual Effects:" );
 						messages.addAll( visual );
 					}
 					
@@ -488,10 +488,14 @@ public class PrisonUtilsMineBombs
 				
 				MineBombData bomb = null;
 				
+				// Remove color codes from bomb's name for matching:
+				bombName = Text.stripColor( bombName );
+				
 				Set<String> keys = mBombs.getConfigData().getBombs().keySet();
 				for ( String key : keys ) {
 					MineBombData mbd = mBombs.getConfigData().getBombs().get( key );
-					if ( mbd.getName().equalsIgnoreCase( bombName ) ) {
+					String cleanedBombName = Text.stripColor( mbd.getName() );
+					if ( cleanedBombName.equalsIgnoreCase( bombName ) ) {
 						bomb = mbd;
 						break;
 					}

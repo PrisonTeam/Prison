@@ -228,9 +228,11 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
             
             if ( placeholderAPINotNull ) {
             	
-                ranksLore.setLoreAction(PlaceholderAPI.setPlaceholders(
-                			Bukkit.getOfflinePlayer(player.getUniqueId()), 
-                				ranksLore.getLoreAction()));
+            	List<String> lores = PlaceholderAPI.setPlaceholders(
+            			Bukkit.getOfflinePlayer(player.getUniqueId()), 
+        				ranksLore.getLoreAction());
+            	
+                ranksLore.setLoreAction( lores );
             }
 
             Button itemRank = new Button(null, playerHasThisRank ? materialHas : materialHasNot, showNumber ? amount : 1, ranksLore, SpigotPrison.format(rank.getTag()));
