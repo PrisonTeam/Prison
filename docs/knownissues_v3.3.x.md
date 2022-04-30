@@ -8,13 +8,23 @@
 # TODO Items for v3.3.0-alpha.10
 
 
-- Many errors when prison hits a standard potion. - jamo
+- placeholders are not using the time units as the mine notifications are using.  Therefore, they are continuing to use english units.  Need to fix the placeholders.  One is `prison_mines_timeleft_formatted_Mine`. kstance
+
+
+- add support for NBTs - mine bombs - ClumbsyIsNotReal
+  - having problems formatting mine bomb lore with current restrictions since it prevents bombs from working.
+ 
+
+- DONE: placeholders - show next rank is skipping p1 when no p is assigned to player. xGeorge26
+
+
+- DONE: Many errors when prison hits a standard potion. - jamo
 
 - autofeatures BLOCKEVENTS priority - include backpacks on auto sell - Ryankayz
 
 - Top block and top tokens - Phoung Nguyen
 
-- auto features autosell - tie to sellall's player toggle - Ryankayz
+- (done ??) auto features autosell - tie to sellall's player toggle - Ryankayz
 
 - SQL support - Six
 
@@ -24,7 +34,7 @@
 
 - Mine Resets - Glass block not being removed - harold
 
-- Placeholder bar is reversed.  As the player earns more money, it shrinks instead of grows. - harold
+- (done ??) Placeholder bar is reversed.  As the player earns more money, it shrinks instead of grows. - harold
  - prison_rankup_cost_bar_default
  
 - Archive old players - budderman18
