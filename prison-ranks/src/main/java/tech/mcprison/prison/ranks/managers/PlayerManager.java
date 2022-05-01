@@ -674,7 +674,7 @@ public class PlayerManager
 //        }
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
-    		DecimalFormat dFmt = new DecimalFormat("#,##0");
+    		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
     		
     		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
     		
@@ -824,7 +824,7 @@ public class PlayerManager
 //    	}
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
-    		DecimalFormat dFmt = new DecimalFormat("#,##0");
+    		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
     		
     		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
 

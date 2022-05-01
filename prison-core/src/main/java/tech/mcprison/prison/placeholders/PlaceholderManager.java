@@ -1012,7 +1012,7 @@ public class PlaceholderManager {
 			value = valueTotal - value;
 		}
 		
-    	double percent = value / valueTotal * 100.0;
+    	double percent = valueTotal == 0 ? 100d : value / valueTotal * 100.0;
     	
     	PlaceholderAttributeBar barAttribute = attribute == null || 
     							!(attribute instanceof PlaceholderAttributeBar) ? null : 
@@ -1026,10 +1026,14 @@ public class PlaceholderManager {
     									getProgressBarConfig();
 
 		String lastColorCode = null;
-		for ( int i = 0; i < barConfig.getSegments(); i++ ) {
+		int segments = barConfig.getSegments();
+		for ( int i = 0; i < segments; i++ ) {
 			double pct = i / ((double)barConfig.getSegments()) * 100.0;
 			
-			if ( pct < percent ) {
+			// If the calculated percent is less than the threshold and as long as it's not the last 
+			// segment, then show a positive.  If it's the last segment an it's still less than 
+			// the percent, then show a negative no matter what to indicate it's not yet there.
+			if ( pct < percent && (percent == 100d || percent < 100d && i < segments - 1)) {
 				if ( lastColorCode == null || 
 						!barConfig.getPositiveColor().equalsIgnoreCase( lastColorCode )) { 
 					sb.append( barConfig.getPositiveColor() );

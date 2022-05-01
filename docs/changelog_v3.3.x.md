@@ -14,6 +14,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11a 2022-04-30
 
 
+* **Placeholder fix for rankup_cost and rankup_cost_remaining on both the formating of the percents and the bar.**
+The percents were being displayed as an integer, so with rounding, they were very misleading since they would show 100% when they were really hitting 99.5% and higher.  Also the bar is not working better, and if the percentage is less than 100%, then it will always show a RED segment at the end of the bar; it will ONLY show GREEN when it's 100% or higher.
+
+
 * **Mine Bombs fix to allow color codes within the bomb's name.**
 The color codes are removed for the sake of matching and selecting when giving to players so you don't have to use them in the commands.
 
