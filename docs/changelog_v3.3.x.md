@@ -11,7 +11,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.11a 2022-04-30
+# 3.3.0-alpha.11a 2022-05-02
+
+
+* **Placeholder fix for formatted time segments to use the values setup in the language files within core.**
+This allows the placeholders to use the proper notations for singular and plural units of times as configured for each language.
 
 
 * **Placeholder fix for rankup_cost and rankup_cost_remaining on both the formating of the percents and the bar.**
