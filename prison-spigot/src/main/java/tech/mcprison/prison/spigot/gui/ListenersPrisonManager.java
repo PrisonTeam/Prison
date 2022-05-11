@@ -231,8 +231,11 @@ public class ListenersPrisonManager implements Listener {
                     clickedBlock = e.getClickedBlock().getType();
                 }
 
-                // Check if the clicked block's a sign
-                if (clickedBlock == Material.SIGN || clickedBlock == Material.WALL_SIGN) {
+                // Check if the clicked block's a sign. Newer spigot versions have many kinds of 
+                // signs, so check if the material name contains "sign":
+                String matName = clickedBlock.name().toLowerCase();
+                if ( matName.contains("sign")) {
+//                	if (clickedBlock == Material.SIGN || clickedBlock == Material.WALL_SIGN) {
 
                     // Get the player
                     Player p = e.getPlayer();
