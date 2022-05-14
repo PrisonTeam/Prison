@@ -142,7 +142,9 @@ public class Button extends SpigotGUIComponents{
     	}
         if (position == null || position < 54) {
             this.position = position;
-            this.buttonItem = createButton(buttonMaterial.parseItem(), amount, lore.getLore(), SpigotPrison.format(title));
+            this.buttonItem = createButton(buttonMaterial.parseItem(), amount, 
+            		(lore == null ? null : lore.getLore() ),
+            		SpigotPrison.format(title));
         }
     }
 
@@ -157,7 +159,9 @@ public class Button extends SpigotGUIComponents{
     public Button(Integer position, XMaterial buttonMaterial, ButtonLore lore, String title){
         if (position == null || position < 54) {
             this.position = position;
-            this.buttonItem = createButton(buttonMaterial.parseItem(), lore.getLore(), SpigotPrison.format(title));
+            this.buttonItem = createButton(buttonMaterial.parseItem(), 
+            		(lore == null ? null : lore.getLore() ),
+            		SpigotPrison.format(title));
         }
     }
 

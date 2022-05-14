@@ -77,6 +77,7 @@ import tech.mcprison.prison.spigot.gui.sellall.SellAllPrestigesMultiplierGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPrestigesSetMultiplierGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPriceGUI;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
+import tech.mcprison.prison.util.Text;
 
 /**
  * @author GABRYCA
@@ -223,13 +224,11 @@ public class ListenersPrisonManager implements Listener {
             }
 
             // Check if the feature's enabled.
-            if (sellAllUtil.isSellAllSignEnabled) {
+            if (sellAllUtil.isSellAllSignEnabled && e.getClickedBlock() != null ) {
 
                 // Get clicked block.
-                Material clickedBlock = null;
-                if (e.getClickedBlock() != null) {
-                    clickedBlock = e.getClickedBlock().getType();
-                }
+                Material clickedBlock = e.getClickedBlock().getType();
+               
 
                 // Check if the clicked block's a sign. Newer spigot versions have many kinds of 
                 // signs, so check if the material name contains "sign":
@@ -403,7 +402,7 @@ public class ListenersPrisonManager implements Listener {
                 buttonNameMain = SpigotPrison.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
                 parts = buttonNameMain.split(" ");
                 module = Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME).orElse(null);
-                title = compat.getGUITitle(e).substring(2);
+                title = Text.stripColor( compat.getGUITitle(e) );
             } catch (ArrayIndexOutOfBoundsException ex){
                 Output.get().sendWarn(new SpigotPlayer(p), "An error occurred while using the GUI, please check logs.");
                 ex.printStackTrace();
@@ -1895,7 +1894,8 @@ public class ListenersPrisonManager implements Listener {
     private void playerRanksGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         // Check the buttonName and do the actions.
-        if (buttonNameMain.equals(SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup).substring(2)))){
+    	String message = Text.stripColor( messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup) );
+        if (buttonNameMain.equals(SpigotPrison.format( message ))){
             Bukkit.dispatchCommand(p, "rankup " + guiConfig.getString("Options.Ranks.Ladder"));
             p.closeInventory();
         }

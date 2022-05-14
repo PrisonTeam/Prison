@@ -98,7 +98,15 @@ public abstract class SpigotGUIComponents {
             try {
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             } catch (NoClassDefFoundError ignored){}
-            meta.setLore(lore);
+            
+            if ( lore != null ) {
+            	meta.setLore(lore);
+            }
+            
+            meta.addItemFlags( ItemFlag.HIDE_ENCHANTS );
+            meta.addItemFlags( ItemFlag.HIDE_ATTRIBUTES );
+            meta.addItemFlags( ItemFlag.HIDE_POTION_EFFECTS );
+            
             item.setItemMeta(meta);
         }
 

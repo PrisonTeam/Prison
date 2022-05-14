@@ -12,6 +12,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import de.tr7zw.nbtapi.NBTItem;
 import me.clip.placeholderapi.PlaceholderAPI;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.modules.Module;
@@ -36,6 +37,7 @@ import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
+import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
 
 /**
  * @author GABRYCA
@@ -265,9 +267,18 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
         
 
-        // Add Rankup button:
+        // Add Rankup button: Using NBTs:
+        String rankupTitle = ladderName.equalsIgnoreCase("prestiges") ? "Prestige" : "Rankup";
         ButtonLore rankupLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_rankup), messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup_if_enough_money));
-        Button rankupButton = new Button( 0, XMaterial.EMERALD_BLOCK, rankupLore, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup)));
+        Button rankupButton = new Button( 0, XMaterial.EMERALD_BLOCK, rankupLore, rankupTitle );
+        String rankupCommand = "rankup " + (ladderName.equalsIgnoreCase("default") ? "" : ladderName);
+        
+		PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
+		NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT(rankupButton.getButtonItem());
+		nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_ENABLED, "true");
+		nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_COMMAND, rankupCommand);
+		
+//        		SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup)));
         // NOTE: Button position will be properly assigned in the setButtonNextAvilable:
         gui.addButton( guiPageData.setButtonNextAvailable( rankupButton ) );
 

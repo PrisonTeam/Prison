@@ -11,9 +11,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import de.tr7zw.nbtapi.NBTItem;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
+import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
 import tech.mcprison.prison.util.Text;
 
 public class SpigotGUIMenuTools
@@ -22,6 +24,10 @@ public class SpigotGUIMenuTools
 	public static final String GUI_MENU_TOOLS_PAGE = "GUIPage";
 	public static final String GUI_MENU_TOOLS_COMMAND = "Command: ";
 	public static final String GUI_MENU_TOOLS_COMMANDS_BACK = "CommandsBack: ";
+
+	public static final String GUI_MENU_TOOLS_NBT_ENABLED = "guiNBT";
+	public static final String GUI_MENU_TOOLS_NBT_COMMAND = "guiNBTCommand";
+	
 	
 	private static SpigotGUIMenuTools instance;
 	
@@ -336,72 +342,118 @@ public class SpigotGUIMenuTools
     	boolean isPageAction = false;
     	
     	ItemStack currentItem = e.getCurrentItem();
-    	if ( currentItem != null && currentItem.hasItemMeta() ) {
+    	
+    	if ( currentItem != null ) {
     		
-    		ItemMeta meta = currentItem.getItemMeta();
-
-    		if ( meta.hasLore() ) {
+    		PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
+    		NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT(currentItem);
+    		
+    		// process if NBTs are enabled:
+    		if ( nbtItem != null && nbtUtil.hasNBTKey(nbtItem, GUI_MENU_TOOLS_NBT_ENABLED) ) {
+    			String command = nbtUtil.getNBTString(nbtItem, GUI_MENU_TOOLS_NBT_COMMAND);
     			
-    			String command = null;
-    			
-    			List<String> lores = meta.getLore();
-    			
-    			boolean isMenuToolsPage = false;
-    			
-    			for ( String lore : lores ) {
-					
-    				if ( lore.contains( SpigotGUIMenuTools.GUI_MENU_TOOLS_PAGE ) ) {
-    					isMenuToolsPage = true;
-    				}
-    				if ( lore.contains( SpigotGUIMenuTools.GUI_MENU_TOOLS_COMMAND ) ) {
-    					command = Text.stripColor( lore ).replace( SpigotGUIMenuTools.GUI_MENU_TOOLS_COMMAND, "" ).trim();
-    				}
-    				
-    				if ( command != null && command.equalsIgnoreCase( "close" ) ) {
-    					p.closeInventory();
-    				}
-				}
-    			
-    			if ( isMenuToolsPage && command != null ) {
+    			if ( command != null ) {
     				isPageAction = true;
     				Bukkit.dispatchCommand(p, command);
     			}
+    			
     		}
     		
+    		// Otherwise process the old way where the command is in the lore:
+    		else if ( currentItem != null && currentItem.hasItemMeta() ) {
+    			
+    			ItemMeta meta = currentItem.getItemMeta();
+    			
+    			if ( meta.hasLore() ) {
+    				
+    				String command = null;
+    				
+    				List<String> lores = meta.getLore();
+    				
+    				boolean isMenuToolsPage = false;
+    				
+    				for ( String lore : lores ) {
+    					
+    					if ( lore.contains( SpigotGUIMenuTools.GUI_MENU_TOOLS_PAGE ) ) {
+    						isMenuToolsPage = true;
+    					}
+    					if ( lore.contains( SpigotGUIMenuTools.GUI_MENU_TOOLS_COMMAND ) ) {
+    						command = Text.stripColor( lore ).replace( SpigotGUIMenuTools.GUI_MENU_TOOLS_COMMAND, "" ).trim();
+    					}
+    					
+    					if ( command != null && command.equalsIgnoreCase( "close" ) ) {
+    						p.closeInventory();
+    					}
+    				}
+    				
+    				if ( isMenuToolsPage && command != null ) {
+    					isPageAction = true;
+    					Bukkit.dispatchCommand(p, command);
+    				}
+    			}
+    			
+    		}
+    		
+    		
+
+    		
     	}
+    	
     	
     	return isPageAction;
 	}
 	
-	private ButtonLore createButtonLore( boolean enableCmd, // String message, 
-					GUIMenuPageData pageData, int page ) {
-		
-		ButtonLore buttonLore = new ButtonLore();
-		
-//		if ( message != null ) {
-//			buttonLore.addLineLoreDescription( message );
-//		}
-		
-		
-		if ( enableCmd && pageData != null ) {
-			
-			buttonLore.addLineLoreAction( "&0" +
-					GUI_MENU_TOOLS_PAGE );
-			
-			if ( pageData.getCommandToRun() != null ) {
-				buttonLore.addLineLoreAction( "&0" +
-						GUI_MENU_TOOLS_COMMAND + pageData.getCommandToRun() + 
-						( page <= 0 ? "" : " " + page) );
-			}
-			
-//			if ( pageData.getCommandsBack() != null ) {
-//				buttonLore.addLineLoreDescription( "&0" +
-//						GUI_MENU_TOOLS_COMMANDS_BACK + pageData.getCommandsBack() );
+    private void addButtonNBT( Button guiButton, GUIMenuPageData pageData, int page ) {
+    	
+    	if ( pageData != null ) {
+    		
+       		PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
+    		NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT( guiButton.getButtonItem() );
+    		
+    		// process if NBTs are enabled:
+    		if ( nbtItem != null ) {
+    			String command = pageData.getCommandToRun() + 
+    								( page <= 0 ? "" : " " + page);
+//    			String command = GUI_MENU_TOOLS_COMMAND + pageData.getCommandToRun() + 
+//    					( page <= 0 ? "" : " " + page);
+    			
+    			nbtUtil.setNBTString(nbtItem, GUI_MENU_TOOLS_NBT_ENABLED, "true");
+    			nbtUtil.setNBTString(nbtItem, GUI_MENU_TOOLS_NBT_COMMAND, command );
+    			    			
+    		}
+    	}
+    	
+    }
+    
+//	private ButtonLore createButtonLore( boolean enableCmd, // String message, 
+//					GUIMenuPageData pageData, int page ) {
+//		
+//		ButtonLore buttonLore = new ButtonLore();
+//		
+////		if ( message != null ) {
+////			buttonLore.addLineLoreDescription( message );
+////		}
+//		
+//		
+//		if ( enableCmd && pageData != null ) {
+//		
+//			buttonLore.addLineLoreAction( "&0" +
+//					GUI_MENU_TOOLS_PAGE );
+//			
+//			if ( pageData.getCommandToRun() != null ) {
+//				buttonLore.addLineLoreAction( "&0" +
+//						GUI_MENU_TOOLS_COMMAND + pageData.getCommandToRun() + 
+//						( page <= 0 ? "" : " " + page) );
 //			}
-			
-		}
-		return buttonLore;
-	}
+//			
+////			if ( pageData.getCommandsBack() != null ) {
+////				buttonLore.addLineLoreDescription( "&0" +
+////						GUI_MENU_TOOLS_COMMANDS_BACK + pageData.getCommandsBack() );
+////			}
+//			
+//		}
+//		return buttonLore;
+//	}
 	
 	
 	public Button createButtonBack( GUIMenuPageData pageData, int position ) {
@@ -418,7 +470,8 @@ public class SpigotGUIMenuTools
 		String message = pageData.getCommandGoBack().equalsIgnoreCase( "close" ) ?
 				"Close" : "Go Back";
 		
-		ButtonLore buttonLore = createButtonLore( true, newPageData, 0 );
+//		ButtonLore buttonLore = createButtonLore( true, newPageData, 0 );
+		ButtonLore buttonLore = null;
 		
 		int pos = pageData.getMenuPosition( position );
 
@@ -427,6 +480,8 @@ public class SpigotGUIMenuTools
 		int pageNumber = 1;
 		
 		Button guiButton = new Button( pos, xMat, pageNumber, buttonLore, message );
+		
+		addButtonNBT( guiButton, newPageData, 0 );
 		
 		return pageData.setButton( position, guiButton );
 	}
@@ -439,7 +494,8 @@ public class SpigotGUIMenuTools
 
 		String message = "Page 1 of " + pageData.getPageLast();
 		
-		ButtonLore buttonLore = createButtonLore( active, pageData, pageNumber );
+//		ButtonLore buttonLore = createButtonLore( active, pageData, pageNumber );
+		ButtonLore buttonLore = null;
 		
 		int pos = pageData.getMenuPosition( position );
 		
@@ -448,6 +504,8 @@ public class SpigotGUIMenuTools
 		
 		Button guiButton = new Button( pos, xMat, pageNumber, buttonLore, message );
 		
+		addButtonNBT( guiButton, pageData, pageNumber );
+
 		return pageData.setButton( position, guiButton );
 	}
 	
@@ -460,7 +518,8 @@ public class SpigotGUIMenuTools
 
 		String message = "Page " + pageNumber + " of " + pageData.getPageLast();
 	
-		ButtonLore buttonLore = createButtonLore( active, pageData, pageNumber );
+//		ButtonLore buttonLore = createButtonLore( active, pageData, pageNumber );
+		ButtonLore buttonLore = null;
 
 		int pos = pageData.getMenuPosition( position );
 		
@@ -469,6 +528,8 @@ public class SpigotGUIMenuTools
 
 		Button guiButton = new Button( pos, xMat, pageNumber, buttonLore,  message );
 		
+		addButtonNBT( guiButton, pageData, pageNumber );
+
 		return pageData.setButton( position, guiButton );
 	}
 	
@@ -478,13 +539,16 @@ public class SpigotGUIMenuTools
 
 		String message = "Page " + pageNumber + " of " + pageData.getPageLast();
 		
-		ButtonLore buttonLore = createButtonLore( false, pageData, pageNumber );
+//		ButtonLore buttonLore = createButtonLore( false, pageData, pageNumber );
+		ButtonLore buttonLore = null;
 		
 		int pos = pageData.getMenuPosition( position );
 		
 		XMaterial xMat = XMaterial.COMPASS;
 		
 		Button guiButton = new Button( pos, xMat, pageNumber, buttonLore, message );
+
+		addButtonNBT( guiButton, pageData, pageNumber );
 		
 		return pageData.setButton( position, guiButton );
 	}
@@ -498,7 +562,8 @@ public class SpigotGUIMenuTools
 		
 		String message = "Page " + pageNumber + " of " + pageData.getPageLast();
 	
-		ButtonLore buttonLore = createButtonLore( active, pageData, pageNumber );
+//		ButtonLore buttonLore = createButtonLore( active, pageData, pageNumber );
+		ButtonLore buttonLore = null;
 
 		int pos = pageData.getMenuPosition( position );
 		
@@ -506,6 +571,8 @@ public class SpigotGUIMenuTools
 				menuStateOff1 : menuStateOn1;
 		
 		Button guiButton = new Button( pos, xMat, pageNumber, buttonLore, message );
+
+		addButtonNBT( guiButton, pageData, pageNumber );
 		
 		return pageData.setButton( position, guiButton );
 	}
@@ -519,7 +586,8 @@ public class SpigotGUIMenuTools
 		
 		String message = "Page " + pageNumber + " of " + pageData.getPageLast();
 		
-		ButtonLore buttonLore = createButtonLore( active, pageData, pageNumber );
+		ButtonLore buttonLore = null;
+//		ButtonLore buttonLore = createButtonLore( active, pageData, pageNumber );
 		
 		int pos = pageData.getMenuPosition( position );
 		
@@ -527,13 +595,16 @@ public class SpigotGUIMenuTools
 				menuStateOff2 : menuStateOn2;
 		
 		Button guiButton = new Button( pos, xMat, pageNumber, buttonLore, message );
+
+		addButtonNBT( guiButton, pageData, pageNumber );
 		
 		return pageData.setButton( position, guiButton );
 	}
 	
 	public Button createButtonMenuBackground( GUIMenuPageData pageData, int position ) {
 		
-		ButtonLore buttonLore = createButtonLore( false, null, 1 );
+		ButtonLore buttonLore = null;
+//		ButtonLore buttonLore = createButtonLore( false, null, 1 );
 
 		int pos = pageData.getMenuPosition( position );
 		

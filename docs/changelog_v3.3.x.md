@@ -14,6 +14,11 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11b 2022-05-14
 
 
+* **GUI Menus enable NBT support.**
+This is a major change.  The details for the menus options and commands are now stored in NBT data so they do not have to rely on the item name, lore, or other tricks.
+This is a first phase, and more work needs to be done to remove hooks with the item names for other menu options.  Main set of changes has been done to the menu tools. 
+
+
 * **Changed placeholder attributes to print the raw value and placeholder.**
 Changes to the logging to allow & to be encoded to the unicode string of 
 `U+0026` so it can bypass the color code conversions, then it is converted back
