@@ -583,6 +583,10 @@ public class SpigotPlatform
 	{
     	ConsoleCommandSender sender = Bukkit.getConsoleSender();
 
+		if ( message.contains( "U+0026" ) ) {
+			message = message.replace("U+0026", "&");
+		}
+    	
     	String[] msgs = message.split( "\\{br\\}" );
 
     	for ( String msg : msgs ) {

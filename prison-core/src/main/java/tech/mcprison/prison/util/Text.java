@@ -471,6 +471,21 @@ public class Text
     	
     	return results;
     }
+    
+    /**
+     * <p>This function will convert all amps to a unicode so they will
+     * not be translated to the color codes.  Then before the message is
+     * processed by bukkit, they are then converted back so as to 
+     * show where they are used.  This will convert the color codes
+     * that have already been converted.
+     * </p>
+     * 
+     * @param textEncoded
+     * @return
+     */
+    public static String escapeAmpCodes( String textEncoded ) {
+    	return convertToAmpColorCodes(textEncoded).replaceAll("&", "U+0026");
+    }
 
     /**
      * Converts a double (3.45) into a US-localized currency string ($3.45).

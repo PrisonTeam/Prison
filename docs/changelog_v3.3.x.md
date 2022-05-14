@@ -11,7 +11,17 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.11a 2022-05-02
+# 3.3.0-alpha.11b 2022-05-14
+
+
+* **Changed placeholder attributes to print the raw value and placeholder.**
+Changes to the logging to allow & to be encoded to the unicode string of 
+`U+0026` so it can bypass the color code conversions, then it is converted back
+to an & before sending to bukkit.  This works far better than trying to 
+use Java regEx quotes.
+
+
+* **Fixed signs for sellall to enable them to work with any wood variant.**
 
 
 * **3.3.0-alpha.11b 2022-05-02** 
