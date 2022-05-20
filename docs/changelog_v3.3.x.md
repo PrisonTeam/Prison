@@ -11,8 +11,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.11c 2022-05-14
+# 3.3.0-alpha.11c 2022-05-20
 
+
+* **The normalDrops processing was not hooked up to the newest way auto pickup is disabled, which was skipping normalDrops if auto pickup was disabled.**
+The number of blocks in the normalDrops is now being passed back through the code so it can identify that it was successful and finalize the processing.
 
 
 * **3.3.0-alpha.11c 2022-05-14**

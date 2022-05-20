@@ -206,7 +206,7 @@ public abstract class AutoManagerFeatures
 	
 	
 	private int applyAutoEventsDetails( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo ) {
-		int count = 0;
+		int totalDrops = 0;
 		
 		Player player = pmEvent.getPlayer();
 		Mine mine = pmEvent.getMine();
@@ -224,9 +224,17 @@ public abstract class AutoManagerFeatures
 		boolean permSmelt = player.isPermissionSet( getMessage( AutoFeatures.permissionAutoSmelt ));
 		boolean permBlock = player.isPermissionSet( getMessage( AutoFeatures.permissionAutoBlock ));
 		
-		boolean configPickup = isBoolean( AutoFeatures.autoPickupEnabled );
-		boolean configSmelt = isBoolean( AutoFeatures.autoSmeltEnabled );
-		boolean configBlock = isBoolean( AutoFeatures.autoBlockEnabled );
+		boolean isAutoFeaturesEnabled = isBoolean( AutoFeatures.isAutoFeaturesEnabled );
+		
+		boolean configPickup = isAutoFeaturesEnabled && isBoolean( AutoFeatures.autoPickupEnabled );
+		boolean configSmelt = isAutoFeaturesEnabled && isBoolean( AutoFeatures.autoSmeltEnabled );
+		boolean configBlock = isAutoFeaturesEnabled && isBoolean( AutoFeatures.autoBlockEnabled );
+		
+		
+		boolean configNormalDrop = isBoolean( AutoFeatures.handleNormalDropsEvents );
+		boolean configNormalDropSmelt = isBoolean( AutoFeatures.normalDropSmelt );
+		boolean configNormalDropBlock = isBoolean( AutoFeatures.normalDropBlock );
+		
 		
 		boolean limit2minesPickup = isBoolean( AutoFeatures.pickupLimitToMines );
 		boolean limit2minesSmelt = isBoolean( AutoFeatures.smeltLimitToMines );
@@ -247,34 +255,42 @@ public abstract class AutoManagerFeatures
 		if ( Output.get().isDebug( DebugTarget.blockBreak ) ) {
 			
 			debugInfo.append( "(applyAutoEvents: " )
-			.append( pmEvent.getSpigotBlock().getBlockName() )
+				.append( pmEvent.getSpigotBlock().getBlockName() );
 			
-			.append( " Pickup [")
-			.append( isAutoPickup ? "enabled: " : "disabled:" )
-			.append( lorePickup ? "lore " : "" )
-			.append( permPickup ? "perm " : "" )
-			.append( configPickup ? "config " : "" )
-			.append( limit2minesPickup ? "limit2mines" : "noLimit" )
-			.append( "] ")
+			if ( !isAutoFeaturesEnabled ) {
+				debugInfo.append("isAutoFeaturesEnabled=false (disabled)");
+			}
+			else {
+				
+				debugInfo
+				.append( " Pickup [")
+				.append( isAutoPickup ? "enabled: " : "disabled:" )
+				.append( lorePickup ? "lore " : "" )
+				.append( permPickup ? "perm " : "" )
+				.append( configPickup ? "config " : "" )
+				.append( limit2minesPickup ? "limit2mines" : "noLimit" )
+				.append( "] ")
+				
+				.append( " Smelt [")
+				.append( isAutoSmelt ? "enabled: " : "disabled:" )
+				.append( loreSmelt ? "lore " : "" )
+				.append( permSmelt ? "perm " : "" )
+				.append( configSmelt ? "config " : "" )
+				.append( limit2minesSmelt ? "limit2mines" : "noLimit" )
+				.append( "] ")
+				
+				.append( " Block [")
+				.append( isAutoBlock ? "enabled: " : "disabled:" )
+				.append( loreBlock ? "lore " : "" )
+				.append( permBlock ? "perm " : "" )
+				.append( configBlock ? "config " : "" )
+				.append( limit2minesBlock ? "limit2mines" : "noLimit" )
+				.append( "] ");
+				
+			}
 			
-			.append( " Smelt [")
-			.append( isAutoSmelt ? "enabled: " : "disabled:" )
-			.append( loreSmelt ? "lore " : "" )
-			.append( permSmelt ? "perm " : "" )
-			.append( configSmelt ? "config " : "" )
-			.append( limit2minesSmelt ? "limit2mines" : "noLimit" )
-			.append( "] ")
-			
-			.append( " Block [")
-			.append( isAutoBlock ? "enabled: " : "disabled:" )
-			.append( loreBlock ? "lore " : "" )
-			.append( permBlock ? "perm " : "" )
-			.append( configBlock ? "config " : "" )
-			.append( limit2minesBlock ? "limit2mines" : "noLimit" )
-			.append( "] ")
-			
-			
-			.append( ")" );
+			debugInfo
+				.append( ")" );
 		}
 		
 		// NOTE: Using isPermissionSet so players that are op'd to not auto enable everything.
@@ -284,11 +300,40 @@ public abstract class AutoManagerFeatures
 		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.pickupLimitToMines )) &&
 				isAutoPickup ) {
 			
-			count = autoFeaturePickup( pmEvent, isAutoSmelt, isAutoBlock, debugInfo );
+			if ( isAutoPickup ) {
+				
+				// processing auto pickup
+				totalDrops = autoFeaturePickup( pmEvent, isAutoSmelt, isAutoBlock, debugInfo );
 //			count = autoFeaturePickup( pmEvent.getSpigotBlock(), player, itemInHand, isAutoSmelt, isAutoBlock, debugInfo );
-
-			// Cannot set to air yet, or auto smelt and auto block will only get AIR:
+				
+				// Cannot set to air yet, or auto smelt and auto block will only get AIR:
 //			autoPickupCleanup( block, count );
+			}
+			else {
+				// Need to check to see if normal drops should be processed:
+				
+				if ( configNormalDrop ) {
+					debugInfo
+						.append( "(NormalDrop handling enabled: " )
+						.append( "normalDropSmelt[" )
+						.append( configNormalDropSmelt ? "enabled" : "disabled" )
+						.append( "] " )
+						.append( "normalDropBlock[" )
+						.append( configNormalDropBlock ? "enabled" : "disabled" )
+						.append( "] " )
+						.append( ")" );
+					
+					// process normal drops here:
+					
+					totalDrops = calculateNormalDrop( pmEvent, debugInfo );
+
+				}
+				else {
+					debugInfo.append(" [Warning: normalDrop handling is disabled] " );
+				}
+				
+			}
+			
 		}
 		
 //		else {
@@ -335,7 +380,7 @@ public abstract class AutoManagerFeatures
 //		}
 
 		
-		return count;
+		return totalDrops;
 	}
 
 
@@ -367,7 +412,7 @@ public abstract class AutoManagerFeatures
 		
 		int totalDrops = applyAutoEventsDetails( pmEvent, debugInfo );
 
-		debugInfo.append( "(autoEvents totalDropa: " + totalDrops + ") ");
+		debugInfo.append( "(autoEvents totalDrops: " + totalDrops + ") ");
 
 		return applyDropsBlockBreakage( pmEvent, totalDrops, debugInfo );
 		
