@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -96,7 +95,7 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
                 ButtonLore itemsLore = new ButtonLore(createLore(loreLine1, loreLine2), createLore(loreValue + sellAllConfig.getString("Items." + key + ".ITEM_VALUE")));
                 
                 if (sellAllPerBlockPermissionEnabled) {
-                	itemsLore.addLineLoreDescription(SpigotPrison.format(lorePermission + "&7" + permissionSellAllBlock + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
+                	itemsLore.addLineLoreDescription( lorePermission + "&7" + permissionSellAllBlock + sellAllConfig.getString("Items." + key + ".ITEM_ID") );
                 }
                 
                 String xMatIdName = "Items." + key + ".ITEM_ID";

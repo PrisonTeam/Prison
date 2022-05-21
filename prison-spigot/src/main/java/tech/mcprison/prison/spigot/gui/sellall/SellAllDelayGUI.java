@@ -65,8 +65,8 @@ public class SellAllDelayGUI extends SpigotGUIComponents {
         XMaterial increaseMat = XMaterial.EMERALD_BLOCK;
 
         // Decrease button
-        gui.addButton(new Button(1, decreaseMat, changeDecreaseValueLore, SpigotPrison.format("&3Delay " + + val + " - 1" )));
-        gui.addButton(new Button(10, decreaseMat, 10, changeDecreaseValueLore, SpigotPrison.format("&3Delay " + val + " - 10")));
+        gui.addButton(new Button(1, decreaseMat, changeDecreaseValueLore, "&3Delay " + + val + " - 1" ));
+        gui.addButton(new Button(10, decreaseMat, 10, changeDecreaseValueLore, "&3Delay " + val + " - 10" ));
         gui.addButton(new Button(19, decreaseMat, changeDecreaseValueLore, "&3Delay " + val + " - 100"));
         gui.addButton(new Button(28, decreaseMat, changeDecreaseValueLore, "&3Delay " + val + " - 1000"));
         gui.addButton(new Button(37, decreaseMat, changeDecreaseValueLore, "&3Delay " + val + " - 10000"));

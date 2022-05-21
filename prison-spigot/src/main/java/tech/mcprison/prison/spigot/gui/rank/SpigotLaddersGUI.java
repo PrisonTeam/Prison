@@ -82,7 +82,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 
         for ( RankLadder ladder : laddersDisplay ) {
 			
-        	gui.addButton(new Button(null, XMaterial.LADDER, laddersLore, SpigotPrison.format("&3" + ladder.getName())));
+        	gui.addButton(new Button(null, XMaterial.LADDER, laddersLore, "&3" + ladder.getName() ));
 		}
         
         
@@ -102,7 +102,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 ////            RankLadder ladder = lm.getLadder(i);
 //
 //            // Add the button to the inventory
-//            gui.addButton(new Button(null, XMaterial.LADDER, laddersLore, SpigotPrison.format("&3" + ladder.getName())));
+//            gui.addButton(new Button(null, XMaterial.LADDER, laddersLore, "&3" + ladder.getName())));
 //        }
 
 //        if (i < lm.getLadders().size()) {

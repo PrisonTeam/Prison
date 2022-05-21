@@ -47,6 +47,7 @@ import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
 import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
+import tech.mcprison.prison.util.Text;
 
 /**
  * @author AnonymousGCA (GABRYCA)
@@ -683,7 +684,7 @@ public class SellAllUtil
         sellAllCurrency = sellAllConfig.getString("Options.SellAll_Currency");
         sellAllSoundSuccess = XSound.matchXSound("Options.Sell_Sound_Success_Name").orElse(XSound.ENTITY_PLAYER_LEVELUP).parseSound();
         sellAllSoundFail = XSound.matchXSound("Options.Sell_Sound_Fail_Name").orElse(XSound.BLOCK_ANVIL_PLACE).parseSound();
-        sellAllSignTag = SpigotPrison.format(sellAllConfig.getString("Options.SellAll_Sign_Visible_Tag"));
+        sellAllSignTag = Text.translateAmpColorCodes(sellAllConfig.getString("Options.SellAll_Sign_Visible_Tag") );
         sellAllBlocks = initSellAllBlocks();
         sellAllPrestigeMultipliers = initPrestigeMultipliers();
         sellAllItemTriggers = initSellAllItemTrigger();

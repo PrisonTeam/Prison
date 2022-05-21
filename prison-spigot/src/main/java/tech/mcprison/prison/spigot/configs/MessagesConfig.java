@@ -173,7 +173,7 @@ public class MessagesConfig {
         spigot_gui_lore_permission,
         spigot_gui_lore_players_at_rank,
         spigot_gui_lore_prestige_name,
-        spigot_gui_lore_price,
+//        spigot_gui_lore_price,
         spigot_gui_lore_radius,
         spigot_gui_lore_rank_tag,
         spigot_gui_lore_reset_time,

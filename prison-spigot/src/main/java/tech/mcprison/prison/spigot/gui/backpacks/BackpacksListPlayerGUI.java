@@ -1,9 +1,10 @@
 package tech.mcprison.prison.spigot.gui.backpacks;
 
-import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -49,10 +50,10 @@ public class BackpacksListPlayerGUI extends SpigotGUIComponents {
 
                 if (slot < 45) {
                     if (id != null) {
-                        lore.setLoreDescription(SpigotPrison.format("&3/backpack " + id));
+                        lore.setLoreDescription( "&3/backpack " + id );
                         gui.addButton(new Button(slot, XMaterial.CHEST, lore, "&3Backpack-" + id));
                     } else {
-                        lore.setLoreDescription(SpigotPrison.format("&3/backpack"));
+                        lore.setLoreDescription( "&3/backpack" );
                         gui.addButton(new Button(slot, XMaterial.CHEST, lore, "&3Backpack"));
                     }
                     slot++;

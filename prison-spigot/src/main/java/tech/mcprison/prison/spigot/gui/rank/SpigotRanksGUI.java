@@ -11,7 +11,6 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools;
@@ -81,7 +80,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         String loreId = messages.getString(MessagesConfig.StringID.spigot_gui_lore_id);
         String loreName = messages.getString(MessagesConfig.StringID.spigot_gui_lore_name);
         String loreTag2 = messages.getString(MessagesConfig.StringID.spigot_gui_lore_rank_tag);
-        String lorePrice3 = messages.getString(MessagesConfig.StringID.spigot_gui_lore_price);
+//        String lorePrice3 = messages.getString(MessagesConfig.StringID.spigot_gui_lore_price);
         String lorePlayersWithRank = messages.getString(MessagesConfig.StringID.spigot_gui_lore_players_at_rank);
 
         // Decimal Rank cost format.
@@ -107,14 +106,17 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 //            double ladderBaseRankMultiplier = PlayerRank.getLadderBaseRankdMultiplier( rank );
             
             // Add the RankID Lore
-            ranksLore.addLineLoreDescription(SpigotPrison.format(loreId + " " + rank.getId()));
-            ranksLore.addLineLoreDescription(SpigotPrison.format(loreName + " " + rank.getName()));
+            ranksLore.addLineLoreDescription( loreId + " " + rank.getId() );
+            ranksLore.addLineLoreDescription( loreName + " " + rank.getName() );
             
             if ( rank.getTag() != null ) {
             	
-            	ranksLore.addLineLoreDescription(SpigotPrison.format(loreTag2 + " " + rank.getTag()) );
+            	ranksLore.addLineLoreDescription( loreTag2 + " " + rank.getTag() );
             }
-            ranksLore.addLineLoreDescription(SpigotPrison.format(lorePrice3 + " " + PlaceholdersUtil.formattedKmbtSISize(rawRankCost, formatDecimal, "")));
+            
+            String price = PlaceholdersUtil.formattedKmbtSISize(rawRankCost, formatDecimal, "");
+            String lorePrice = guiPriceMsg( price );
+            ranksLore.addLineLoreDescription( lorePrice );
 
             // Init a variable
             int playerCount = rank.getPlayers().size();
@@ -124,11 +126,11 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 //                            .collect(Collectors.toList());
 
             // Add the number of players with this rank
-            ranksLore.addLineLoreDescription(SpigotPrison.format(lorePlayersWithRank + " " + playerCount));
+            ranksLore.addLineLoreDescription( lorePlayersWithRank + " " + playerCount );
 
             // Add the button to the inventory
-            gui.addButton(new Button( null, XMaterial.TRIPWIRE_HOOK, ranksLore, SpigotPrison.format("&3" + rank.getName())));
-//            gui.addButton(new Button(i - counter, XMaterial.TRIPWIRE_HOOK, ranksLore, SpigotPrison.format("&3" + rank.getName())));
+            gui.addButton(new Button( null, XMaterial.TRIPWIRE_HOOK, ranksLore, "&3" + rank.getName() ));
+//            gui.addButton(new Button(i - counter, XMaterial.TRIPWIRE_HOOK, ranksLore, "&3" + rank.getName() ));
         }
 
 //        if (i < ladder.get().getRanks().size()) {

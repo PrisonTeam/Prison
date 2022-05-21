@@ -1,8 +1,9 @@
 package tech.mcprison.prison.spigot.gui.sellall;
 
-import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
-import tech.mcprison.prison.spigot.SpigotPrison;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
@@ -49,22 +50,22 @@ public class SellAllPrestigesSetMultiplierGUI extends SpigotGUIComponents {
         XMaterial increaseMat = XMaterial.EMERALD_BLOCK;
 
         // Decrease button
-        gui.addButton(new Button(1, decreaseMat, changeDecreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " - 0.1" )));
-        gui.addButton(new Button(10, decreaseMat, 10, changeDecreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " - 0.5")));
-        gui.addButton(new Button(19, decreaseMat, changeDecreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " - 1")));
-        gui.addButton(new Button(28, decreaseMat, changeDecreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " - 2")));
-        gui.addButton(new Button(37, decreaseMat, changeDecreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " - 5")));
+        gui.addButton(new Button(1, decreaseMat, changeDecreaseValueLore, "&3" + prestigeName + " " + val + " - 0.1" ));
+        gui.addButton(new Button(10, decreaseMat, 10, changeDecreaseValueLore, "&3" + prestigeName + " " + val + " - 0.5" ));
+        gui.addButton(new Button(19, decreaseMat, changeDecreaseValueLore, "&3" + prestigeName + " " + val + " - 1" ));
+        gui.addButton(new Button(28, decreaseMat, changeDecreaseValueLore, "&3" + prestigeName + " " + val + " - 2" ));
+        gui.addButton(new Button(37, decreaseMat, changeDecreaseValueLore, "&3" + prestigeName + " " + val + " - 5" ));
 
 
         // Create a button and set the position
-        gui.addButton(new Button(22, XMaterial.CLOCK, confirmButtonLore, SpigotPrison.format("&3Confirm: "  + prestigeName + " " + val)));
+        gui.addButton(new Button(22, XMaterial.CLOCK, confirmButtonLore, "&3Confirm: "  + prestigeName + " " + val ));
 
         // Increase button
-        gui.addButton(new Button(7, increaseMat, changeIncreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " + 0.1" )));
-        gui.addButton(new Button(16, increaseMat, 10, changeIncreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " + 0.5")));
-        gui.addButton(new Button(25, increaseMat, changeIncreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " + 1")));
-        gui.addButton(new Button(43, increaseMat, changeIncreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " + 2")));
-        gui.addButton(new Button(54, increaseMat, changeIncreaseValueLore, SpigotPrison.format("&3" + prestigeName + " " + val + " + 5")));
+        gui.addButton(new Button(7, increaseMat, changeIncreaseValueLore, "&3" + prestigeName + " " + val + " + 0.1" ));
+        gui.addButton(new Button(16, increaseMat, 10, changeIncreaseValueLore, "&3" + prestigeName + " " + val + " + 0.5" ));
+        gui.addButton(new Button(25, increaseMat, changeIncreaseValueLore, "&3" + prestigeName + " " + val + " + 1" ));
+        gui.addButton(new Button(43, increaseMat, changeIncreaseValueLore, "&3" + prestigeName + " " + val + " + 2" ));
+        gui.addButton(new Button(54, increaseMat, changeIncreaseValueLore, "&3" + prestigeName + " " + val + " + 5" ));
 
         gui.open();
     }

@@ -1,13 +1,12 @@
 package tech.mcprison.prison.spigot.gui.mine;
 
-import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
 
-import tech.mcprison.prison.Prison;
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
@@ -75,8 +74,8 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         	ButtonLore blocksLore = new ButtonLore(createLore(loreClickToEditBlock, loreShiftRightClickToDelete), createLore(loreInfo));
         	
         	// Add a lore
-        	blocksLore.addLineLoreDescription(SpigotPrison.format(loreChance + block.getChance() + "%"));
-        	blocksLore.addLineLoreDescription(SpigotPrison.format(loreBlockType + blockmaterial));
+        	blocksLore.addLineLoreDescription( loreChance + block.getChance() + "%" );
+        	blocksLore.addLineLoreDescription( loreBlockType + blockmaterial );
         	
         	// Add the button to the GUI.
         	gui.addButton(new Button(null, xMat, blocksLore, "&3" + blockmaterialdisplay + " " + mineName + " " + block.getChance()));

@@ -182,7 +182,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
 
         // Global strings.
         String loreInfo = messages.getString(MessagesConfig.StringID.spigot_gui_lore_info);
-        String lorePrice3 = messages.getString(MessagesConfig.StringID.spigot_gui_lore_price);
+//        String lorePrice3 = messages.getString(MessagesConfig.StringID.spigot_gui_lore_price);
 
         // Global boolean.
         boolean enchantmentEffectEnabled = getBoolean(guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank"));
@@ -204,7 +204,8 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         	
         	double cost = pRank == null ? -1 : pRank.getRankCost(); 
         	
-            ButtonLore ranksLore = new ButtonLore(loreInfo, lorePrice3 + cost );
+        	String lorePrice = guiPriceMsg( cost );
+            ButtonLore ranksLore = new ButtonLore(loreInfo, lorePrice );
 
             if (placeholderAPINotNull) {
                 if (hackyCounterEnchant == 1) {
@@ -243,7 +244,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         
 
         ButtonLore rankupLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_rankup), messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup_if_enough_money));
-        Button rankupButton = new Button(0, XMaterial.EMERALD_BLOCK, rankupLore, SpigotPrison.format("&aPrestige"));
+        Button rankupButton = new Button(0, XMaterial.EMERALD_BLOCK, rankupLore, "&aPrestige" );
         // NOTE: Button position will be properly assigned in the setButtonNextAvilable:
         gui.addButton( guiPageData.setButtonNextAvailable( rankupButton ) );
         

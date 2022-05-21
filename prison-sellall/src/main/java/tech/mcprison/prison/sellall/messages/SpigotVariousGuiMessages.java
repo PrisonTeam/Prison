@@ -1,5 +1,7 @@
 package tech.mcprison.prison.sellall.messages;
 
+import java.text.DecimalFormat;
+
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.sellall.PrisonSellall;
@@ -160,5 +162,27 @@ public class SpigotVariousGuiMessages {
 	}
 	
 	
+	
+	protected String guiPriceMsg( Double price ) {
+		
+		DecimalFormat dFmt = new DecimalFormat( "#,##0.00" );
+		String value = price == null ? dFmt.format(0) : dFmt.format(price);
+		
+		return guiPriceMsg( value );
+	}
+	protected String guiPriceMsg( Integer price ) {
+		
+		DecimalFormat dFmt = new DecimalFormat( "#,##0" );
+		String value = price == null ? dFmt.format(0) : dFmt.format(price);
+		
+		return guiPriceMsg( value );
+	}
+	protected String guiPriceMsg( String price ) {
+		
+		return PrisonSellall.getInstance().getSellallMessages()
+				.getLocalizable( "sellall_spigot_utils__money_earned" )
+				.withReplacements( price )
+				.localize();
+	}
 	
 }

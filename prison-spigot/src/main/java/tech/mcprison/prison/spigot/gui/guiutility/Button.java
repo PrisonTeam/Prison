@@ -7,8 +7,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
 
-import tech.mcprison.prison.spigot.SpigotPrison;
-
 /**
  * @author GABRYCA
  * */
@@ -28,7 +26,7 @@ public class Button extends SpigotGUIComponents{
     public Button(Integer position, XMaterial buttonItem, List<String> lore, String title){
         if (position == null || position < 54) {
             this.position = position;
-            this.buttonItem = createButton(buttonItem.parseItem(), lore, SpigotPrison.format(title));
+            this.buttonItem = createButton(buttonItem.parseItem(), lore, title );
         }
     }
 
@@ -42,7 +40,7 @@ public class Button extends SpigotGUIComponents{
     public Button(Integer position, ItemStack buttonItem, String title){
         if (position == null || position < 54) {
             this.position = position;
-            this.buttonItem = createButton(buttonItem, null, SpigotPrison.format(title));
+            this.buttonItem = createButton(buttonItem, null, title );
         }
     }
 
@@ -56,7 +54,7 @@ public class Button extends SpigotGUIComponents{
     public Button(Integer position, XMaterial buttonItem, String title){
         if (position == null || position < 54) {
             this.position = position;
-            this.buttonItem = createButton(buttonItem.parseItem(), null, SpigotPrison.format(title));
+            this.buttonItem = createButton(buttonItem.parseItem(), null, title );
         }
     }
 
@@ -72,7 +70,7 @@ public class Button extends SpigotGUIComponents{
     public Button(Integer position, XMaterial buttonItem, int amount, List<String> lore, String title){
         if (position == null || position < 54) {
             this.position = position;
-            this.buttonItem = createButton(buttonItem.parseItem(), amount, lore, SpigotPrison.format(title));
+            this.buttonItem = createButton(buttonItem.parseItem(), amount, lore, title );
         }
     }
 
@@ -103,7 +101,7 @@ public class Button extends SpigotGUIComponents{
     	}
         if ((position == null || position < 54) && amount <= 64) {
             this.position = position;
-            this.buttonItem = createButton(buttonMaterial.parseItem(), amount, null, SpigotPrison.format(title));
+            this.buttonItem = createButton(buttonMaterial.parseItem(), amount, null, title );
         }
     }
 
@@ -144,7 +142,7 @@ public class Button extends SpigotGUIComponents{
             this.position = position;
             this.buttonItem = createButton(buttonMaterial.parseItem(), amount, 
             		(lore == null ? null : lore.getLore() ),
-            		SpigotPrison.format(title));
+            		title );
         }
     }
 
@@ -161,7 +159,7 @@ public class Button extends SpigotGUIComponents{
             this.position = position;
             this.buttonItem = createButton(buttonMaterial.parseItem(), 
             		(lore == null ? null : lore.getLore() ),
-            		SpigotPrison.format(title));
+            		title );
         }
     }
 
@@ -238,10 +236,10 @@ public class Button extends SpigotGUIComponents{
     public void addButtonLoreLine(String line){
         if (getButtonLore() != null){
             List<String> lore = getButtonLore();
-            lore.add(SpigotPrison.format(line));
+            lore.add( line );
             setButtonLore(lore);
         } else {
-            setButtonLore(createLore(SpigotPrison.format(line)));
+            setButtonLore(createLore( line ));
         }
     }
 

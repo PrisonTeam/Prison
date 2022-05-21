@@ -1,11 +1,11 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
-import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
+
+import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.data.Rank;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
@@ -67,10 +67,10 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
 
             ButtonLore commandsLore = new ButtonLore(shiftRightClickToDelete, loreInfo);
 
-            commandsLore.addLineLoreDescription(SpigotPrison.format(loreCommand + " " + command));
+            commandsLore.addLineLoreDescription( loreCommand + " " + command );
 
             // Add the button to the inventory
-            gui.addButton(new Button(null, XMaterial.TRIPWIRE_HOOK, commandsLore, SpigotPrison.format("&3" + rank.getName() + " " + command)));
+            gui.addButton(new Button(null, XMaterial.TRIPWIRE_HOOK, commandsLore, "&3" + rank.getName() + " " + command ));
 
         }
 

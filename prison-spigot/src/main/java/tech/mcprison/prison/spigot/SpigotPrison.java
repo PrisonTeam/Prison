@@ -504,9 +504,10 @@ public class SpigotPrison
     }
 
     public static String stripColor(String format){
-    	format = format(format);
+    	return Text.stripColor(format);
+//    	format = format(format);
     	
-    	return format == null ? null : ChatColor.stripColor(format);
+//    	return format == null ? null : ChatColor.stripColor(format);
     }
     
     /**

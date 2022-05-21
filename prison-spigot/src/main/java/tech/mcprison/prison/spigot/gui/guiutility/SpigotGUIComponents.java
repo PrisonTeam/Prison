@@ -26,6 +26,7 @@ import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
+import tech.mcprison.prison.util.Text;
 
 /**
  * @author rbluer RoyalBlueRanger
@@ -83,11 +84,14 @@ public abstract class SpigotGUIComponents
             meta = XMaterial.BARRIER.parseItem().getItemMeta();
         }
 
-        return getItemStack(item, lore, SpigotPrison.format(display), meta);
+        return getItemStack(item, lore, display, meta);
     }
 
     /**
      * Get ItemStack of an Item.
+     * 
+     * Lore should not be converted from the Amp color codes, since they will all be
+     * converted within this function.
      *
      * @param item
      * @param lore
@@ -96,12 +100,22 @@ public abstract class SpigotGUIComponents
      * */
     private ItemStack getItemStack(ItemStack item, List<String> lore, String display, ItemMeta meta) {
         if (meta != null) {
-            meta.setDisplayName(SpigotPrison.format(display));
+            meta.setDisplayName( Text.translateAmpColorCodes(display) );
             try {
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             } catch (NoClassDefFoundError ignored){}
             
             if ( lore != null ) {
+            	
+            	// Go through all of the lore and convert the & color codes to the native color codes:
+            	for ( int i = 0; i < lore.size(); i++ ) {
+            		String loreLine = lore.get(i);
+            		String loreColor = Text.translateAmpColorCodes(loreLine);
+            		if ( !loreLine.equals(loreColor) ) {
+            			lore.set(i, loreColor);
+            		}
+            	}
+            	
             	meta.setLore(lore);
             }
             
@@ -125,7 +139,7 @@ public abstract class SpigotGUIComponents
     protected List<String> createLore( String... lores ) {
         List<String> results = new ArrayList<>();
         for ( String lore : lores ) {
-            results.add( SpigotPrison.format(lore) );
+            results.add( Text.translateAmpColorCodes(lore) );
         }
         return results;
     }

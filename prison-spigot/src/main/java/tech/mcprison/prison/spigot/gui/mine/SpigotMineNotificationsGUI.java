@@ -1,11 +1,12 @@
 package tech.mcprison.prison.spigot.gui.mine;
 
-import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
@@ -48,17 +49,17 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
         if (enabledOrDisabled.equalsIgnoreCase("disabled")){
 
             // Add the selected lore
-            disabledModeLore.addLineLoreDescription(SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_selected)));
+            disabledModeLore.addLineLoreDescription( messages.getString(MessagesConfig.StringID.spigot_gui_lore_selected) );
 
         } else if (enabledOrDisabled.equalsIgnoreCase("within")){
 
             // Add the selected lore
-            modeWithinLore.addLineLoreDescription(SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_selected)));
+            modeWithinLore.addLineLoreDescription( messages.getString(MessagesConfig.StringID.spigot_gui_lore_selected) );
 
         } else if (enabledOrDisabled.equalsIgnoreCase("radius")){
 
             // Add the selected lore
-            modeRadiusLore.addLineLoreDescription(SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_selected)));
+            modeRadiusLore.addLineLoreDescription( messages.getString(MessagesConfig.StringID.spigot_gui_lore_selected) );
 
         }
 

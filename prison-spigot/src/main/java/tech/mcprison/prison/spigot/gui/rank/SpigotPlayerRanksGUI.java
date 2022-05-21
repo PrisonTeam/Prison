@@ -38,6 +38,7 @@ import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
+import tech.mcprison.prison.util.Text;
 
 /**
  * @author GABRYCA
@@ -211,7 +212,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
                 		);
             	
                 stringValue = stringValue.replace("{rankName}", rank.getName());
-                stringValue = stringValue.replace("{rankTag}", SpigotPrison.format(rank.getTag()));
+                stringValue = stringValue.replace("{rankTag}", Text.translateAmpColorCodes(rank.getTag()));
                 stringValue = stringValue.replace("{rankMultiplier}", mFmt.format( rankMultiplier ));
                 stringValue = stringValue.replace("{ladderName}", rank.getLadder().getName());
                 
@@ -237,7 +238,10 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
                 ranksLore.setLoreAction( lores );
             }
 
-            Button itemRank = new Button(null, playerHasThisRank ? materialHas : materialHasNot, showNumber ? amount : 1, ranksLore, SpigotPrison.format(rank.getTag()));
+            Button itemRank = new Button(null, 
+            		playerHasThisRank ? materialHas : materialHasNot, 
+            				showNumber ? amount : 1, ranksLore, 
+            						rank.getTag() );
 
             amount++;
 

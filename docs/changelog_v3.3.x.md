@@ -14,6 +14,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11c 2022-05-21
 
 
+* **GUI cleaned up by eliminating so many excessive uses of translating amp color codes to the native color codes.**
+Found some locations where there were at least 7 layers of function calls, with each layer trying to translate the color codes, which of course was excessive.
+
+
 * **Change the name of the SpigotSellallUtilMessages class to SpigotVariousGuiMessages due to the fact these messages are used in more than just sellall.**
 It should be noted that eventually the non-sellall messages may have to be removed from the sellall module.
 

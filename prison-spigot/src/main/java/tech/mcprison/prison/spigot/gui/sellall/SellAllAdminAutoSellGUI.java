@@ -1,8 +1,9 @@
 package tech.mcprison.prison.spigot.gui.sellall;
 
-import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
-import tech.mcprison.prison.spigot.SpigotPrison;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
@@ -50,7 +51,7 @@ public class SellAllAdminAutoSellGUI extends SpigotGUIComponents {
             enableDisableButton = new Button(15, XMaterial.RED_STAINED_GLASS_PANE, enableDisableLore, "&cAutoSell-Disabled");
         }
 
-        gui.addButton(new Button(dimension-1, XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, SpigotPrison.format("&cClose")));
+        gui.addButton(new Button(dimension-1, XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, "&cClose" ));
         gui.addButton(perUserToggleableButton);
         gui.addButton(enableDisableButton);
 
