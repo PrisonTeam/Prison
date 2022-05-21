@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -41,9 +40,11 @@ public abstract class OnBlockBreakEventCore
 	extends OnBlockBreakMines
 {
 
-	
-	private int uses = 0;
-	private long usesElapsedTimeNano = 0L;
+	// The two variables, uses and usesElapsedTimeNano, are designed to better understand
+	// how frequently this class is used and it's impact on the server.  It's is disabled
+	// but not deleted since it is useful for future useage.
+//	private int uses = 0;
+//	private long usesElapsedTimeNano = 0L;
 	
 	private AutoFeaturesWrapper autoFeatureWrapper = null;
 	
@@ -119,26 +120,26 @@ public abstract class OnBlockBreakEventCore
 	
 	
 	
-	public enum ItemLoreCounters {
-
-		// NOTE: the String value must include a trailing space!
-
-		itemLoreBlockBreakCount( ChatColor.LIGHT_PURPLE + "Prison Blocks Mined:" +
-				ChatColor.GRAY + " "),
-
-		itemLoreBlockExplodeCount( ChatColor.LIGHT_PURPLE + "Prison Blocks Exploded:" +
-				ChatColor.GRAY + " ");
-
-
-		private final String lore;
-		ItemLoreCounters( String lore ) {
-			this.lore = lore;
-		}
-		public String getLore() {
-			return lore;
-		}
-
-	}
+//	public enum ItemLoreCounters {
+//
+//		// NOTE: the String value must include a trailing space!
+//
+//		itemLoreBlockBreakCount( ChatColor.LIGHT_PURPLE + "Prison Blocks Mined:" +
+//				ChatColor.GRAY + " "),
+//
+//		itemLoreBlockExplodeCount( ChatColor.LIGHT_PURPLE + "Prison Blocks Exploded:" +
+//				ChatColor.GRAY + " ");
+//
+//
+//		private final String lore;
+//		ItemLoreCounters( String lore ) {
+//			this.lore = lore;
+//		}
+//		public String getLore() {
+//			return lore;
+//		}
+//
+//	}
 
 	public enum ItemLoreEnablers {
 		Pickup,
@@ -217,7 +218,7 @@ public abstract class OnBlockBreakEventCore
 						!pmEvent.getMine().getMineStateMutex().isMinable() ) {
 					
 					SpigotPlayer sPlayer = pmEvent.getSpigotPlayer();
-					sPlayer.setActionBar( "Mine " + pmEvent.getMine().getTag() + " is being reset... please wait." );
+					sPlayer.setActionBar( mineIsBeingResetMsg( pmEvent.getMine().getTag() ) );
 					break;
 				}
 				
@@ -626,7 +627,7 @@ public abstract class OnBlockBreakEventCore
 		if ( isToolDisabled( pmEvent.getPlayer() ) ) {
 			
 			// This will prevent sending too many messages since it is using PlayerMessagingTask:
-			pmEvent.getSpigotPlayer().setActionBar( "&cYour tool is worn-out and cannot be used." );
+			pmEvent.getSpigotPlayer().setActionBar( toolIsWornOutMsg() );
 			
 //			PrisonUtilsTitles uTitles = new PrisonUtilsTitles();
 //			uTitles.utilsTitlesActionBarForce( pmEvent.getSpigotPlayer(), null, 
@@ -950,6 +951,7 @@ public abstract class OnBlockBreakEventCore
 	 * is enabled.  This function is overridden in AutoManager when auto manager is enabled.
 	 * </p>
 	 * 
+	 * Dead code?
 	 * 
 	 * @param mine
 	 * @param e
@@ -1825,22 +1827,22 @@ public abstract class OnBlockBreakEventCore
 
 
 	
-	@SuppressWarnings( "unused" )
-	private synchronized String incrementUses(Long elapsedNano) {
-		String message = null;
-		usesElapsedTimeNano += elapsedNano;
-		
-		if ( ++uses >= 100 ) {
-			double avgNano = usesElapsedTimeNano / uses;
-			double avgMs = avgNano / 1000000;
-			message = String.format( "OnBlockBreak: count= %s avgNano= %s avgMs= %s ", 
-					Integer.toString(uses), Double.toString(avgNano), Double.toString(avgMs) );
-			
-			uses = 0;
-			usesElapsedTimeNano = 0L;
-		}
-		return message;
-	}
+//	@SuppressWarnings( "unused" )
+//	private synchronized String incrementUses(Long elapsedNano) {
+//		String message = null;
+//		usesElapsedTimeNano += elapsedNano;
+//		
+//		if ( ++uses >= 100 ) {
+//			double avgNano = usesElapsedTimeNano / uses;
+//			double avgMs = avgNano / 1000000;
+//			message = String.format( "OnBlockBreak: count= %s avgNano= %s avgMs= %s ", 
+//					Integer.toString(uses), Double.toString(avgNano), Double.toString(avgMs) );
+//			
+//			uses = 0;
+//			usesElapsedTimeNano = 0L;
+//		}
+//		return message;
+//	}
 //
 //	private boolean isTeExplosionTriggerEnabled() {
 //		return teExplosionTriggerEnabled;

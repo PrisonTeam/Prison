@@ -11,7 +11,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.11c 2022-05-20
+# 3.3.0-alpha.11c 2022-05-21
+
+
+* **Move auto feature messages to the spigot message file so they can be customized.**
+Removed the inventory full messages from the AutoFeaturesConifg.yml file.
 
 
 * **The normalDrops processing was not hooked up to the newest way auto pickup is disabled, which was skipping normalDrops if auto pickup was disabled.**

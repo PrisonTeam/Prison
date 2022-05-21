@@ -1135,7 +1135,10 @@ public abstract class AutoManagerFeatures
 	}
 
 	private void notifyPlayerThatInventoryIsFull( Player player ) {
-		notifyPlayerWithSound( player, AutoFeatures.inventoryIsFull );
+		String message = inventoryIsFullMsg();
+
+		// AutoFeatures.inventoryIsFull
+		notifyPlayerWithSound( player, message );
 	}
 
 //	@SuppressWarnings( "unused" )
@@ -1144,13 +1147,16 @@ public abstract class AutoManagerFeatures
 //	}
 
 	private void notifyPlayerThatInventoryIsFullLosingItems( Player player ) {
-		notifyPlayerWithSound( player, AutoFeatures.inventoryIsFullLosingItems );
-
+		
+		String message = inventoryIsFullLosingItemsMsg();
+		
+		// AutoFeatures.inventoryIsFullLosingItems
+		notifyPlayerWithSound( player, message );
 	}
 
-	private void notifyPlayerWithSound( Player player, AutoFeatures messageId ) {
-
-		String message = getMessage( messageId );
+	private void notifyPlayerWithSound( Player player, String message ) {
+		
+//		String message = getMessage( AutoFeatures messageId );
 
 		// Play sound when full
 		if (isBoolean(AutoFeatures.playSoundIfInventoryIsFull)) {

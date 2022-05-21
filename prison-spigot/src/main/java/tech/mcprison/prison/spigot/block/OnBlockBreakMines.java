@@ -26,6 +26,7 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.utils.BlockUtils;
 
 public class OnBlockBreakMines
+	extends OnBlockBreakEventCoreMessages
 {
 	private PrisonMines prisonMineManager;
 	private boolean mineModuleDisabled = false;
@@ -161,7 +162,7 @@ public class OnBlockBreakMines
 			if ( !mine.getMineStateMutex().isMinable() ) {
 				
 				SpigotPlayer sPlayer = new SpigotPlayer( player );
-				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
+				sPlayer.setActionBar( mineIsBeingResetMsg( mine.getTag() ) );
 				results.setCancelEvent( true );
 				results.setIgnoreEvent( true );
 			}

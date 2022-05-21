@@ -55,12 +55,12 @@ public class AutoFeaturesFileConfig {
 	    					"Otherwise this must be set to 'true' to allow any of the " +
 	    			"options to work."),
 	    	
-	    	
-    	messages,
-    	
-	    	inventoryIsFull(messages, "&cWARNING! Your inventory's full!"),
-	    	inventoryIsFullDroppingItems(messages, "&cWARNING! Your inventory's full and you're dropping items!"),
-	    	inventoryIsFullLosingItems(messages, "&cWARNING! Your inventory's full and you're losing items!"),
+// NOTE: Moved to the spigot language files:	    	
+//    	messages,
+//    	
+//	    	inventoryIsFull(messages, "&cWARNING! Your inventory's full!"),
+//	    	inventoryIsFullDroppingItems(messages, "&cWARNING! Your inventory's full and you're dropping items!"),
+//	    	inventoryIsFullLosingItems(messages, "&cWARNING! Your inventory's full and you're losing items!"),
     	
     	
     	options,
