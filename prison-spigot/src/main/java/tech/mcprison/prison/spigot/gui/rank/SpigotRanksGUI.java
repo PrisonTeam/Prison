@@ -75,7 +75,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
         PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), "&3Ladders -> Ranks");
 
         // Global Strings.
-        String loreShiftRightClickDelete = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete);
+        String loreShiftRightClickDelete = guiRightClickShiftToDeleteMsg();
         String loreClickToManageRank = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_manage_rank);
         String loreInfo = messages.getString(MessagesConfig.StringID.spigot_gui_lore_info);
         String loreId = messages.getString(MessagesConfig.StringID.spigot_gui_lore_id);

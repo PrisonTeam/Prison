@@ -35,7 +35,7 @@ public class SellAllPrestigesMultiplierGUI extends SpigotGUIComponents {
         String lorePrestigeName = messages.getString(MessagesConfig.StringID.spigot_gui_lore_prestige_name);
         String lorePrestigeMultiplier = messages.getString(MessagesConfig.StringID.spigot_gui_lore_multiplier);
         String loreClickToEdit = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_edit);
-        String loreClickToDelete =  messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_delete);
+        String loreClickToDelete =  guiRightClickToDeleteMsg();
 
         // Only loop over the blocks that we need to show:
         int i = counter;

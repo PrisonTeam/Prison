@@ -69,12 +69,13 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
         if (sellAllConfig.getString("Options.Full_Inv_AutoSell").equalsIgnoreCase("true")){
             autoSellLore.setLoreAction(createLore(
                     messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open),
-                    messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_disable)
+                    guiRightClickToDisableMsg()
                     ));
 
             autoSellButton = new Button(13, XMaterial.CHEST, autoSellLore, "&3AutoSell");
         } else {
-            autoSellLore.setLoreAction(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_enable));
+            autoSellLore.setLoreAction(
+            		guiRightClickToEnableMsg() );
             autoSellButton = new Button(13, XMaterial.CHEST, autoSellLore, "&cAutoSell-Disabled");
         }
 
@@ -82,7 +83,7 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
 
             sellAllDelayLore.setLoreAction(createLore(
                     messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open),
-                    messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_disable)));
+                    guiRightClickToCancelMsg()));
             sellAllDelayLore.setLoreDescription(createLore(
                     messages.getString(MessagesConfig.StringID.spigot_gui_lore_delay) + " " + sellAllConfig.getString("Options.Sell_Delay_Seconds") + "s",
                     messages.getString(MessagesConfig.StringID.spigot_gui_lore_sellall_delay_use_1),

@@ -20,6 +20,7 @@ import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.sellall.messages.SpigotSellallUtilMessages;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -30,7 +31,8 @@ import tech.mcprison.prison.spigot.sellall.SellAllUtil;
  * @author rbluer RoyalBlueRanger
  * @author GABRYCA
  */
-public abstract class SpigotGUIComponents {
+public abstract class SpigotGUIComponents
+	extends SpigotSellallUtilMessages {
 
     public static MessagesConfig messages = getMessages();
     public static Configuration guiConfig = getGuiConfig();

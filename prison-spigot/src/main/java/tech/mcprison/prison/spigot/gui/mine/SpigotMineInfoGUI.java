@@ -40,9 +40,9 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), SpigotPrison.format("&3Mines -> MineInfo"));
 
         ButtonLore resetMineLore = new ButtonLore(createLore(
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_left_to_reset),
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_toggle),
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_toggle)),
+        		guiLeftClickToResetMsg(),
+        		guiRightClickToToggleMsg(),
+        		guiRightClickShiftToToggleMsg() ),
                 createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_skip_reset_instruction_1),
                         messages.getString(MessagesConfig.StringID.spigot_gui_lore_skip_reset_instruction_2),
                         messages.getString(MessagesConfig.StringID.spigot_gui_lore_skip_reset_instruction_3),

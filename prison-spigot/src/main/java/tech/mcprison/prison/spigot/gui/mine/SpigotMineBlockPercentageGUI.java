@@ -35,9 +35,14 @@ public class SpigotMineBlockPercentageGUI extends SpigotGUIComponents {
         int dimension = 45;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3MineInfo -> BlockPercentage");
 
-        ButtonLore changeDecreaseValueLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_decrease), null);
-        ButtonLore confirmButtonLore = new ButtonLore(createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_confirm), messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_cancel)), createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_percentage) + " " + val));
-        ButtonLore changeIncreaseValueLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_decrease), null);
+        ButtonLore changeDecreaseValueLore = new ButtonLore( guiClickToDecreaseMsg(), null);
+        
+        ButtonLore confirmButtonLore = new ButtonLore(createLore(
+        		messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_confirm), 
+        		guiRightClickToCancelMsg() ), 
+        		createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_percentage) + " " + val));
+        
+        ButtonLore changeIncreaseValueLore = new ButtonLore( guiClickToIncreaseMsg(), null);
 
         XMaterial decreaseMaterial = XMaterial.REDSTONE_BLOCK;
 

@@ -22,7 +22,7 @@ public class SpigotRankUPCommandsGUI extends SpigotGUIComponents {
     private final Rank rank;
 
     // Global Strings.
-    private final String shiftRightClickToDelete = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete);
+    private final String shiftRightClickToDelete = guiRightClickShiftToDeleteMsg();
     private final String loreInfo = messages.getString(MessagesConfig.StringID.spigot_gui_lore_info);
     private final String loreCommand = messages.getString(MessagesConfig.StringID.spigot_gui_lore_command);
 

@@ -76,7 +76,9 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 
         PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), "&3RanksManager -> Ladders");
 
-        ButtonLore laddersLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open), messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete));
+        ButtonLore laddersLore = new ButtonLore(
+        		messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open), 
+        		guiRightClickShiftToDeleteMsg() );
 
         for ( RankLadder ladder : laddersDisplay ) {
 			

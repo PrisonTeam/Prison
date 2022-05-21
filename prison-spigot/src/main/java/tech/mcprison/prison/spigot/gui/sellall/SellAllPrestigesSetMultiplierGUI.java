@@ -31,11 +31,19 @@ public class SellAllPrestigesSetMultiplierGUI extends SpigotGUIComponents {
         int dimension = 45;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3Edit -> Multiplier");
 
-        ButtonLore changeDecreaseValueLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_decrease), null);
+        ButtonLore changeDecreaseValueLore = new ButtonLore( guiClickToDecreaseMsg(), null);
+//        ButtonLore changeDecreaseValueLore = new ButtonLore(
+//        		messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_decrease), null);
+
         ButtonLore confirmButtonLore = new ButtonLore(createLore(
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_left_to_confirm),
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_cancel)), createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_multiplier) + " " + "x" + val));
-        ButtonLore changeIncreaseValueLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_increase), null);
+        		guiLeftClickToConfirmMsg(),
+        		guiRightClickToCancelMsg() ), 
+        		createLore(
+        				messages.getString(MessagesConfig.StringID.spigot_gui_lore_multiplier) + " " + "x" + val));
+
+        ButtonLore changeIncreaseValueLore = new ButtonLore( guiClickToIncreaseMsg(), null);
+//        ButtonLore changeIncreaseValueLore = new ButtonLore(
+//        		messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_increase), null);
 
         XMaterial decreaseMat = XMaterial.REDSTONE_BLOCK;
         XMaterial increaseMat = XMaterial.EMERALD_BLOCK;

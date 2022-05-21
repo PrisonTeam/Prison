@@ -82,4 +82,83 @@ public class SpigotSellallUtilMessages {
 		.sendTo( sender );
 	}
 	
+	
+	protected String guiClickToDecreaseMsg() {
+		return PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "sellall_spigot_gui__click_to_decrease" )
+		.localize();
+	}
+	
+	protected String guiClickToIncreaseMsg() {
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "sellall_spigot_gui__click_to_increase" )
+				.localize();
+	}
+	
+	protected String guiLeftClickToConfirmMsg() {
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "sellall_spigot_gui__left_click_to_confirm" )
+				.localize();
+	}
+	protected String guiLeftClickToResetMsg() {
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "sellall_spigot_gui__left_click_to_reset" )
+				.localize();
+	}
+	protected String guiLeftClickToOpenMsg() {
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "sellall_spigot_gui__left_click_to_open" )
+				.localize();
+	}
+	protected String guiLeftClickToEditMsg() {
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "sellall_spigot_gui__left_click_to_edit" )
+				.localize();
+	}
+	
+	protected String guiRightClickToCancelMsg() {
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "sellall_spigot_gui__right_click_to_cancel" )
+				.localize();
+	}
+	protected String guiRightClickToDeleteMsg() {
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "sellall_spigot_gui__right_click_to_delete" )
+				.localize();
+	}
+	protected String guiRightClickToDisableMsg() {
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "sellall_spigot_gui__right_click_to_disable" )
+				.localize();
+	}
+	protected String guiRightClickToEnableMsg() {
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "sellall_spigot_gui__right_click_to_enable" )
+				.localize();
+	}
+	protected String guiRightClickToToggleMsg() {
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "sellall_spigot_gui__right_click_to_toggle" )
+				.localize();
+	}
+
+	
+	protected String guiRightClickShiftToDeleteMsg() {
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "sellall_spigot_gui__right_click_and_shift_to_delete" )
+				.localize();
+	}
+	protected String guiRightClickShiftToDisableMsg() {
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "sellall_spigot_gui__right_click_and_shift_to_disable" )
+				.localize();
+	}
+	protected String guiRightClickShiftToToggleMsg() {
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "sellall_spigot_gui__right_click_and_shift_to_toggle" )
+				.localize();
+	}
+	
+	
+	
 }

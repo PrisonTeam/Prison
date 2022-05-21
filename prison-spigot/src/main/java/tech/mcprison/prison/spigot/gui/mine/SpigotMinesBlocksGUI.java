@@ -25,7 +25,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
     private final String mineName;
 
     // Global Strings.
-    private final String loreShiftRightClickToDelete = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete);
+    private final String loreShiftRightClickToDelete = guiRightClickShiftToDeleteMsg();
     private final String loreClickToEditBlock = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_edit);
     private final String loreInfo = messages.getString(MessagesConfig.StringID.spigot_gui_lore_info);
     private final String loreChance = messages.getString(MessagesConfig.StringID.spigot_gui_lore_chance);

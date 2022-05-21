@@ -77,8 +77,8 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), "&3MinesManager -> Mines");
 
         // Global Strings.
-        String loreLeftClickOpen = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_left_to_open);
-        String loreShiftRightClickToDelete = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete);
+        String loreLeftClickOpen = guiLeftClickToOpenMsg();
+        String loreShiftRightClickToDelete = guiRightClickShiftToDeleteMsg();
         String loreInfo = messages.getString(MessagesConfig.StringID.spigot_gui_lore_info);
         String loreWorld = messages.getString(MessagesConfig.StringID.spigot_gui_lore_world);
         String loreSpawnPoint = messages.getString(MessagesConfig.StringID.spigot_gui_lore_spawnpoint);

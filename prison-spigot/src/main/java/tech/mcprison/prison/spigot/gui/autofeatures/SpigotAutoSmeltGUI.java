@@ -31,8 +31,8 @@ public class SpigotAutoSmeltGUI extends SpigotGUIComponents {
         int dimension = 36;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3AutoFeatures -> AutoSmelt");
 
-        ButtonLore enabledLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_disable), null);
-        ButtonLore disabledLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_enable), null);
+        ButtonLore enabledLore = new ButtonLore( guiRightClickShiftToDisableMsg(), null);
+        ButtonLore disabledLore = new ButtonLore( guiRightClickToEnableMsg(), null);
         ButtonLore closeGUILore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_close), null);
 
         gui.addButton(new Button(35, XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, SpigotPrison.format("&cClose")));

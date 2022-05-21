@@ -30,9 +30,14 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents {
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3MineInfo -> ResetTime");
 
 
-        ButtonLore changeDecreaseValueLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_decrease), null);
-        ButtonLore confirmButtonLore = new ButtonLore(createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_left_to_confirm), messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_cancel)), createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_reset_time) + " " + val));
-        ButtonLore changeIncreaseValueLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_increase), null);
+        ButtonLore changeDecreaseValueLore = new ButtonLore( guiClickToDecreaseMsg(), null);
+        
+        ButtonLore confirmButtonLore = new ButtonLore(createLore(
+        		guiLeftClickToConfirmMsg(), 
+        		guiRightClickToCancelMsg() ), 
+        		createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_reset_time) + " " + val));
+        
+        ButtonLore changeIncreaseValueLore = new ButtonLore( guiClickToIncreaseMsg(), null);
 
         // XMaterials.
         XMaterial decreaseMat = XMaterial.REDSTONE_BLOCK;

@@ -35,8 +35,11 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
 
         if (afConfig != null && afConfig.isFeatureBoolean(AutoFeatures.isAutoManagerEnabled)) {
             
-            ButtonLore disable = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_disable), messages.getString(MessagesConfig.StringID.spigot_gui_lore_enabled));
-            ButtonLore enable = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_enable), messages.getString(MessagesConfig.StringID.spigot_gui_lore_disabled));
+            ButtonLore disable = new ButtonLore(
+            		guiRightClickShiftToDisableMsg(), 
+            		messages.getString(MessagesConfig.StringID.spigot_gui_lore_enabled));
+            ButtonLore enable = new ButtonLore(
+            		guiRightClickToEnableMsg(), messages.getString(MessagesConfig.StringID.spigot_gui_lore_disabled));
 
             gui = new PrisonGUI(p, dimension, "&3PrisonManager -> AutoFeatures");
             gui.addButton(new Button(dimension -1,XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, SpigotPrison.format("&cClose")));
@@ -60,13 +63,13 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
             }
 
             disable.setLoreAction(createLore(
-                    messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_left_to_open),
-                    messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_disable)
+            		guiLeftClickToOpenMsg(),
+            		guiRightClickToDisableMsg()
             ));
 
             enable.setLoreAction(createLore(
-                    messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_left_to_open),
-                    messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_enable)
+            		guiLeftClickToOpenMsg(),
+            		guiRightClickToEnableMsg()
             ));
 
             if (afConfig.isFeatureBoolean(AutoFeatures.autoPickupEnabled)) {
@@ -93,7 +96,9 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
 
             gui = new PrisonGUI(p, 9, "&3PrisonManager -> AutoFeatures");
 
-            ButtonLore lore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_enable), messages.getString(MessagesConfig.StringID.spigot_gui_lore_disabled));
+            ButtonLore lore = new ButtonLore(
+            		guiRightClickToEnableMsg(), 
+            		messages.getString(MessagesConfig.StringID.spigot_gui_lore_disabled));
             Button enabledOrDisabled = new Button(2, XMaterial.LIME_STAINED_GLASS_PANE, lore, SpigotPrison.format("&cAll Disabled"));
             gui.addButton(enabledOrDisabled);
             gui.addButton(new Button(6,XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, SpigotPrison.format("&cClose")));

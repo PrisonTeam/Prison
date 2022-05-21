@@ -1,7 +1,9 @@
 package tech.mcprison.prison.spigot.gui.sellall;
 
-import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
@@ -12,7 +14,8 @@ import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 /**
  * @author GABRYCA
  */
-public class SellAllPriceGUI extends SpigotGUIComponents {
+public class SellAllPriceGUI 
+	extends SpigotGUIComponents {
 
     private final Player p;
     private final String itemID;
@@ -31,10 +34,18 @@ public class SellAllPriceGUI extends SpigotGUIComponents {
         int dimension = 45;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3SellAll -> ItemValue");
 
-        ButtonLore changeDecreaseValueLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_decrease), null);
+        ButtonLore changeDecreaseValueLore = new ButtonLore( guiClickToDecreaseMsg(), null);
+//        ButtonLore changeDecreaseValueLore = new ButtonLore(
+//        		messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_decrease), null);
+        
         ButtonLore confirmButtonLore = new ButtonLore(createLore(
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_left_to_confirm), messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_cancel)), createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_price) + " " + val));
-        ButtonLore changeIncreaseValueLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_increase), null);
+        		guiLeftClickToConfirmMsg(), 
+        		guiRightClickToCancelMsg() ), 
+        		createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_price) + " " + val));
+        
+        ButtonLore changeIncreaseValueLore = new ButtonLore( guiClickToIncreaseMsg(), null);
+//        ButtonLore changeIncreaseValueLore = new ButtonLore(
+//        		messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_increase), null);
 
         XMaterial decreaseMat = XMaterial.REDSTONE_BLOCK;
         XMaterial increaseMat = XMaterial.EMERALD_BLOCK;

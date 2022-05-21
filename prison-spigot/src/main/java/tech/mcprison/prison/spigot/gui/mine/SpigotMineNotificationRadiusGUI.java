@@ -31,11 +31,15 @@ public class SpigotMineNotificationRadiusGUI extends SpigotGUIComponents {
         int dimension = 45;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3MineNotifications -> Radius");
 
-        ButtonLore changeDecreaseValueLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_decrease), null);
-        ButtonLore confirmButtonLore = new ButtonLore(createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_left_to_confirm)), createLore(
+        ButtonLore changeDecreaseValueLore = new ButtonLore( guiClickToDecreaseMsg(), null);
+        
+        ButtonLore confirmButtonLore = new ButtonLore(createLore(
+        		guiLeftClickToConfirmMsg() ), 
+        		createLore(
                 messages.getString(MessagesConfig.StringID.spigot_gui_lore_radius) + " " + val,
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_cancel)));
-        ButtonLore changeIncreaseValueLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_increase), null);
+                guiRightClickToCancelMsg() ));
+        
+        ButtonLore changeIncreaseValueLore = new ButtonLore( guiClickToIncreaseMsg(), null);
 
         // XMaterials.
         XMaterial decreaseMat = XMaterial.REDSTONE_BLOCK;

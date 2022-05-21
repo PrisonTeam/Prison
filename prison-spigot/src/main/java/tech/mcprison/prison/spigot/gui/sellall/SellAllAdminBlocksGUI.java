@@ -81,8 +81,8 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
         PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), "&3SellAll -> Blocks");
 
         // Global strings.
-        String loreLine1 = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_delete);
-        String loreLine2 = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_left_to_edit);
+        String loreLine1 = guiRightClickToDeleteMsg();
+        String loreLine2 = guiLeftClickToEditMsg();
         String lorePermission = messages.getString(MessagesConfig.StringID.spigot_gui_lore_permission);
         String permissionSellAllBlock = sellAllConfig.getString("Options.Sell_Per_Block_Permission");
         String loreValue = messages.getString(MessagesConfig.StringID.spigot_gui_lore_value);
