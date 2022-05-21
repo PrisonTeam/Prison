@@ -14,6 +14,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11c 2022-05-21
 
 
+* **Sellall messages: Start to setup the correct usage of the multi-language message handling through the new prison-sellall module.**
+This fixes the messaging within the SellAllUtil class.
+
+
 * **Move auto feature messages to the spigot message file so they can be customized.**
 Removed the inventory full messages from the AutoFeaturesConifg.yml file.
 

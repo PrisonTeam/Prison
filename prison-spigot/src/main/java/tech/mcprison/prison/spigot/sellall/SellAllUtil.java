@@ -24,8 +24,8 @@ import com.cryptomorin.xseries.XSound;
 import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
@@ -34,12 +34,14 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
+import tech.mcprison.prison.sellall.messages.SpigotSellallUtilMessages;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
+//import tech.mcprison.prison.spigot.configs.MessagesConfig;
+import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
@@ -49,7 +51,8 @@ import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 /**
  * @author AnonymousGCA (GABRYCA)
  * */
-public class SellAllUtil {
+public class SellAllUtil 
+	extends SpigotSellallUtilMessages {
 
     private static SellAllUtil instance;
     
@@ -68,7 +71,7 @@ public class SellAllUtil {
     
     private ArrayList<Player> activePlayerDelay = new ArrayList<>();
     private List<String> sellAllDisabledWorlds;
-    private MessagesConfig messages;
+//    private MessagesConfig messages;
     private double defaultMultiplier;
     private int defaultSellAllDelay;
     private int defaultAutoSellEarningNotificationDelay;
@@ -668,7 +671,7 @@ public class SellAllUtil {
      * */
     private void initCachedData() {
         sellAllConfig = SpigotPrison.getInstance().updateSellAllConfig();
-        messages = SpigotPrison.getInstance().getMessagesConfig();
+//        messages = SpigotPrison.getInstance().getMessagesConfig();
         permissionSellAllSell = sellAllConfig.getString("Options.Sell_Permission");
         permissionBypassSign = sellAllConfig.getString("Options.SellAll_By_Sign_Bypass_Permission");
         permissionUseSign = sellAllConfig.getString("Options.SellAll_Sign_Use_Permission");
@@ -1491,7 +1494,10 @@ public class SellAllUtil {
         	
         	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
         	String amt = fFmt.format( autoSellEarningsNotificationWaiting.get(p) );
-        	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
+        	
+        	String message = sellallAmountEarnedMsg( amt );
+        	
+//        	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
 //        	new SpigotPlayer(p).setActionBar( message );
             Output.get().send( new SpigotPlayer(p), message );
         }
@@ -1733,21 +1739,27 @@ public class SellAllUtil {
     	
         if (!isUsingSign && isSellAllSignEnabled && isSellAllBySignOnlyEnabled && !p.hasPermission(permissionBypassSign)){
             if (!completelySilent) {
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_sign_only));
+            	
+            	sellallCanOnlyUseSignsMsg( new SpigotCommandSender(p) );
+//                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_sign_only));
             }
             return false;
         }
 
         if (isSellAllDelayEnabled && isPlayerWaitingSellAllDelay(p)){
             if (notifyPlayerDelay && !completelySilent) {
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_delay_wait));
+
+            	sellallRateLimitExceededMsg( new SpigotCommandSender(p) );
+//                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_delay_wait));
             }
             return false;
         }
 
         if (sellAllBlocks.isEmpty()){
             if (!completelySilent){
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_empty));
+            	
+            	sellallShopIsEmptyMsg( new SpigotCommandSender(p) );
+//                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_empty));
             }
             return false;
         }
@@ -1790,7 +1802,10 @@ public class SellAllUtil {
                 } else if (notifyPlayerEarned){
                 	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
                 	String amt = fFmt.format( money );
-                	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
+                	
+                	String message = sellallAmountEarnedMsg( amt );
+                	
+//                	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
 //                	new SpigotPlayer(p).setActionBar( message );
                     Output.get().send( new SpigotPlayer(p), message );
 
@@ -1802,7 +1817,9 @@ public class SellAllUtil {
                 if (isSellAllSoundEnabled && playSoundOnSellAll) {
                     p.playSound(p.getLocation(), sellAllSoundFail, 3, 1);
                 }
-                Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_nothing_sellable));
+                
+                sellallYouHaveNothingToSellMsg( new SpigotCommandSender(p) );
+//                Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_nothing_sellable));
             }
             return false;
         }
@@ -1869,7 +1886,10 @@ public class SellAllUtil {
     			else if (notifyPlayerEarned){
     				DecimalFormat fFmt = new DecimalFormat("#,##0.00");
     	        	String amt = fFmt.format( money );
-    	        	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
+    	        	
+    	        	String message = sellallAmountEarnedMsg( amt ) ;
+    	        	
+//    	        	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
 //    	        	new SpigotPlayer(p).setActionBar( message );
     	            Output.get().send( new SpigotPlayer(p), message );
 
@@ -1929,21 +1949,27 @@ public class SellAllUtil {
     public ArrayList<ItemStack> sellAllSell(Player p, ArrayList<ItemStack> itemStacks, boolean isUsingSign, boolean completelySilent, boolean notifyPlayerEarned, boolean notifyPlayerDelay, boolean notifyPlayerEarningDelay, boolean playSoundOnSellAll, boolean sellInputArrayListOnly){
         if (!isUsingSign && isSellAllSignEnabled && isSellAllBySignOnlyEnabled && !p.hasPermission(permissionBypassSign)){
             if (!completelySilent) {
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_sign_only));
+            	
+            	sellallCanOnlyUseSignsMsg( new SpigotCommandSender(p) );
+//                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_sign_only));
             }
             return itemStacks;
         }
 
         if (isSellAllDelayEnabled && isPlayerWaitingSellAllDelay(p)){
             if (notifyPlayerDelay && !completelySilent) {
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_delay_wait));
+            	
+            	sellallRateLimitExceededMsg( new SpigotCommandSender(p) );
+//                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_delay_wait));
             }
             return itemStacks;
         }
 
         if (sellAllBlocks.isEmpty()){
             if (!completelySilent){
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_empty));
+            	
+            	sellallShopIsEmptyMsg( new SpigotCommandSender(p) );
+//                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_empty));
             }
             return itemStacks;
         }
@@ -1989,7 +2015,10 @@ public class SellAllUtil {
                 } else if (notifyPlayerEarned){
                 	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
                 	String amt = fFmt.format( money );
-                	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
+                	
+                	String message = sellallAmountEarnedMsg( amt );
+                	
+//                	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
 //                	new SpigotPlayer(p).setActionBar( message );
                     Output.get().send( new SpigotPlayer(p), message );
 
@@ -2000,7 +2029,9 @@ public class SellAllUtil {
                 if (isSellAllSoundEnabled && playSoundOnSellAll) {
                     p.playSound(p.getLocation(), sellAllSoundFail, 3, 1);
                 }
-                Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_nothing_sellable));
+                
+                sellallYouHaveNothingToSellMsg( new SpigotCommandSender(p) );
+//                Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_nothing_sellable));
             }
         }
         return itemStacks;
