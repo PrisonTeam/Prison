@@ -34,7 +34,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
-import tech.mcprison.prison.sellall.messages.SpigotSellallUtilMessages;
+import tech.mcprison.prison.sellall.messages.SpigotVariousGuiMessages;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
@@ -52,7 +52,7 @@ import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
  * @author AnonymousGCA (GABRYCA)
  * */
 public class SellAllUtil 
-	extends SpigotSellallUtilMessages {
+	extends SpigotVariousGuiMessages {
 
     private static SellAllUtil instance;
     

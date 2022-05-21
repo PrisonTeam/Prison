@@ -16,7 +16,7 @@ import tech.mcprison.prison.sellall.PrisonSellall;
  * core project's resources: 'lang/sellall/'.
  *
  */
-public class SpigotSellallUtilMessages {
+public class SpigotVariousGuiMessages {
 	// This does nothing. Used as an example until real messages can be added.
 	protected String prisonSellallTest01Msg() {
 		
