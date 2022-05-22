@@ -42,7 +42,7 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
         int dimension = 27;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3Ranks -> RankManager");
 
-        ButtonLore rankupCommandsLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open), null);
+        ButtonLore rankupCommandsLore = new ButtonLore( guiLeftClickToOpenMsg(), null);
 
         // Decimal Rank cost format.
         DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
@@ -60,13 +60,16 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
             rankCost = "Unavailable";
         }
 
-        ButtonLore editPriceLore = new ButtonLore(createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open)), createLore(
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_info),
+        ButtonLore editPriceLore = new ButtonLore(
+        		createLore( guiLeftClickToOpenMsg()), 
+        		createLore(
+        				messages.getString(MessagesConfig.StringID.spigot_gui_lore_info),
                 guiPriceMsg( rankCost) ));
 
-        ButtonLore editTagLore = new ButtonLore(createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open)), createLore(
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_info),
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_rank_tag) + " " + rank.getTag()));
+        ButtonLore editTagLore = new ButtonLore(createLore( guiLeftClickToOpenMsg() ), 
+        		createLore(
+        				messages.getString(MessagesConfig.StringID.spigot_gui_lore_info),
+        				messages.getString(MessagesConfig.StringID.spigot_gui_lore_rank_tag) + " " + rank.getTag()));
 
 
         ButtonLore closeGUILore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_close), null);

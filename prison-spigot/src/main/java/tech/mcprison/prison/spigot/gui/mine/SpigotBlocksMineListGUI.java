@@ -62,10 +62,12 @@ public class SpigotBlocksMineListGUI extends SpigotGUIComponents {
                     prisonBlock.getBlockName().toUpperCase() + " " + mineName + " " + counter));
         }
         if ( i < blockTypes.size() ) {
-            gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_next_page), null), "&7Next " + mineName + " " + (i + 1)));
+            gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(
+            		guiPageNextMsg(), null), "&7Next " + mineName + " " + (i + 1)));
         }
         if ( i >= (pageSize * 2) ) {
-            gui.addButton(new Button(51, XMaterial.BOOK, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_prior_page), null), "&7Prior " + mineName + " " + (i - (pageSize * 2) - 1)));
+            gui.addButton(new Button(51, XMaterial.BOOK, new ButtonLore(
+            		guiPagePriorMsg(), null), "&7Prior " + mineName + " " + (i - (pageSize * 2) - 1)));
         }
 
         // Open the inventory

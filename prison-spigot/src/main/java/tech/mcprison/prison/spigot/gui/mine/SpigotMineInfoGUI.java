@@ -52,11 +52,19 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
                         messages.getString(MessagesConfig.StringID.spigot_gui_lore_set_mine_delay_instruction_3)));
 
         ButtonLore mineSpawnLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_use), messages.getString(MessagesConfig.StringID.spigot_gui_lore_spawnpoint));
-        ButtonLore minesNotificationsLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open), messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_edit));
+
+        ButtonLore minesNotificationsLore = new ButtonLore( guiClickToOpenMsg(), guiClickToEditMsg() );
+        
         ButtonLore minesTpLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_teleport), messages.getString(MessagesConfig.StringID.spigot_gui_lore_tp_to_mine));
-        ButtonLore blocksOfTheMineLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open), messages.getString(MessagesConfig.StringID.spigot_gui_lore_blocks));
-        ButtonLore mineResetTimeLore = new ButtonLore(createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open)), createLore(
+        
+        ButtonLore blocksOfTheMineLore = new ButtonLore(
+        		guiClickToOpenMsg(), 
+        		messages.getString(MessagesConfig.StringID.spigot_gui_lore_blocks));
+        
+        ButtonLore mineResetTimeLore = new ButtonLore(createLore( guiClickToOpenMsg() ), 
+        		createLore(
                 messages.getString(MessagesConfig.StringID.spigot_gui_lore_reset_time) + " &7" + mine.getResetTime()));
+        
         ButtonLore mineRenameLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_rename), messages.getString(MessagesConfig.StringID.spigot_gui_lore_minename) + " " + mineName);
 //        ButtonLore closeGUILore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_close), null);
 
@@ -81,7 +89,8 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         }
 
         // Lore
-        ButtonLore mineShowItemLore = new ButtonLore(createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_edit)), createLore(
+        ButtonLore mineShowItemLore = new ButtonLore(createLore( guiClickToEditMsg() ), 
+        		createLore(
                 messages.getString(MessagesConfig.StringID.spigot_gui_lore_show_item) + " &7" + xMaterial.name(),
                 messages.getString(MessagesConfig.StringID.spigot_gui_lore_show_item_description_1),
                 messages.getString(MessagesConfig.StringID.spigot_gui_lore_show_item_description_2),

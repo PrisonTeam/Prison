@@ -32,9 +32,9 @@ public class SellAllPrestigesMultiplierGUI extends SpigotGUIComponents {
         int pageSize = 45;
 
         // Global strings.
-        String lorePrestigeName = messages.getString(MessagesConfig.StringID.spigot_gui_lore_prestige_name);
-        String lorePrestigeMultiplier = messages.getString(MessagesConfig.StringID.spigot_gui_lore_multiplier);
-        String loreClickToEdit = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_edit);
+//        String lorePrestigeName = messages.getString(MessagesConfig.StringID.spigot_gui_lore_prestige_name);
+//        String lorePrestigeMultiplier = messages.getString(MessagesConfig.StringID.spigot_gui_lore_multiplier);
+        String loreClickToEdit = guiClickToEditMsg();
         String loreClickToDelete =  guiRightClickToDeleteMsg();
 
         // Only loop over the blocks that we need to show:
@@ -46,11 +46,16 @@ public class SellAllPrestigesMultiplierGUI extends SpigotGUIComponents {
 
                 if (flagValue == i) {
 
-                    ButtonLore loreMult = new ButtonLore(createLore(
-                            loreClickToEdit,
-                            loreClickToDelete), createLore(
-                                    lorePrestigeName + " " + sellAllConfig.getString("Multiplier." + prestige + ".PRESTIGE_NAME"),
-                            lorePrestigeMultiplier + " " + sellAllConfig.getString("Multiplier." + prestige + ".MULTIPLIER")));
+                	String multPrestigeName = sellAllConfig.getString("Multiplier." + prestige + ".PRESTIGE_NAME");
+                	String multPrestigeMultiplier = sellAllConfig.getString("Multiplier." + prestige + ".MULTIPLIER");
+                	
+                    ButtonLore loreMult = new ButtonLore(
+                    		createLore(
+                    				loreClickToEdit,
+                    				loreClickToDelete), 
+                    		createLore(
+                            		guiPrestigeNameMsg( multPrestigeName ),
+                                    guiMultiplierMsg( multPrestigeMultiplier ) ));
 
                     gui.addButton(new Button(null, XMaterial.PAPER, loreMult, sellAllConfig.getString("Multiplier." + prestige + ".PRESTIGE_NAME")));
                 }
@@ -59,10 +64,12 @@ public class SellAllPrestigesMultiplierGUI extends SpigotGUIComponents {
         }
 
         if (i < sellAllConfig.getConfigurationSection("Multiplier").getKeys(false).size()) {
-            gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_next_page), null), "&7Next " + (i + 1)));
+            gui.addButton(new Button(53, XMaterial.BOOK, new ButtonLore(
+            		guiPageNextMsg(), null), "&7Next " + (i + 1)));
         }
         if (i >= (pageSize * 2)) {
-            gui.addButton(new Button(51, XMaterial.BOOK, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_prior_page), null), "&7Prior " + (i - (pageSize * 2) - 1)));
+            gui.addButton(new Button(51, XMaterial.BOOK, new ButtonLore(
+            		guiPagePriorMsg(), null), "&7Prior " + (i - (pageSize * 2) - 1)));
         }
 
         gui.open();

@@ -21,7 +21,7 @@ public class BackpacksAdminPlayerListGUI extends SpigotGUIComponents {
 
     private final Player p;
     private final Configuration backpacksData = BackpacksUtil.get().getBackpacksData();
-    private final String clickToOpen = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open);
+    private final String clickToOpen = guiLeftClickToOpenMsg();
 
     public BackpacksAdminPlayerListGUI(Player p){
         this.p = p;

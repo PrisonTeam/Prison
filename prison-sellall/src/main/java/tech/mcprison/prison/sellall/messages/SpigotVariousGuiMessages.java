@@ -1,9 +1,7 @@
 package tech.mcprison.prison.sellall.messages;
 
-import java.text.DecimalFormat;
-
+import tech.mcprison.prison.gui.PrisonCoreGuiMessages;
 import tech.mcprison.prison.internal.CommandSender;
-import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.sellall.PrisonSellall;
 
 /**
@@ -18,7 +16,11 @@ import tech.mcprison.prison.sellall.PrisonSellall;
  * core project's resources: 'lang/sellall/'.
  *
  */
-public class SpigotVariousGuiMessages {
+public class SpigotVariousGuiMessages
+	extends PrisonCoreGuiMessages {
+	
+	
+	
 	// This does nothing. Used as an example until real messages can be added.
 	protected String prisonSellallTest01Msg() {
 		
@@ -60,129 +62,29 @@ public class SpigotVariousGuiMessages {
 	}
 	
 	protected void sellallCanOnlyUseSignsMsg( CommandSender sender ) {
-		PrisonRanks.getInstance().getRanksMessages()
+		PrisonSellall.getInstance().getSellallMessages()
 				.getLocalizable( "sellall_spigot_utils__only_sellall_signs_are_enabled" )
 				.sendTo( sender );
 	}
 	
 	protected void sellallRateLimitExceededMsg( CommandSender sender ) {
-		PrisonRanks.getInstance().getRanksMessages()
+		PrisonSellall.getInstance().getSellallMessages()
 		.getLocalizable( "sellall_spigot_utils__rate_limit_exceeded" )
 		.sendTo( sender );
 	}
 	
 	
 	protected void sellallShopIsEmptyMsg( CommandSender sender ) {
-		PrisonRanks.getInstance().getRanksMessages()
+		PrisonSellall.getInstance().getSellallMessages()
 		.getLocalizable( "sellall_spigot_utils__shop_is_empty" )
 		.sendTo( sender );
 	}
 	
 	protected void sellallYouHaveNothingToSellMsg( CommandSender sender ) {
-		PrisonRanks.getInstance().getRanksMessages()
+		PrisonSellall.getInstance().getSellallMessages()
 		.getLocalizable( "sellall_spigot_utils__you_have_nothing_to_sell" )
 		.sendTo( sender );
 	}
 	
-	
-	protected String guiClickToDecreaseMsg() {
-		return PrisonRanks.getInstance().getRanksMessages()
-		.getLocalizable( "sellall_spigot_gui__click_to_decrease" )
-		.localize();
-	}
-	
-	protected String guiClickToIncreaseMsg() {
-		return PrisonRanks.getInstance().getRanksMessages()
-				.getLocalizable( "sellall_spigot_gui__click_to_increase" )
-				.localize();
-	}
-	
-	protected String guiLeftClickToConfirmMsg() {
-		return PrisonRanks.getInstance().getRanksMessages()
-				.getLocalizable( "sellall_spigot_gui__left_click_to_confirm" )
-				.localize();
-	}
-	protected String guiLeftClickToResetMsg() {
-		return PrisonRanks.getInstance().getRanksMessages()
-				.getLocalizable( "sellall_spigot_gui__left_click_to_reset" )
-				.localize();
-	}
-	protected String guiLeftClickToOpenMsg() {
-		return PrisonRanks.getInstance().getRanksMessages()
-				.getLocalizable( "sellall_spigot_gui__left_click_to_open" )
-				.localize();
-	}
-	protected String guiLeftClickToEditMsg() {
-		return PrisonRanks.getInstance().getRanksMessages()
-				.getLocalizable( "sellall_spigot_gui__left_click_to_edit" )
-				.localize();
-	}
-	
-	protected String guiRightClickToCancelMsg() {
-		return PrisonRanks.getInstance().getRanksMessages()
-				.getLocalizable( "sellall_spigot_gui__right_click_to_cancel" )
-				.localize();
-	}
-	protected String guiRightClickToDeleteMsg() {
-		return PrisonRanks.getInstance().getRanksMessages()
-				.getLocalizable( "sellall_spigot_gui__right_click_to_delete" )
-				.localize();
-	}
-	protected String guiRightClickToDisableMsg() {
-		return PrisonRanks.getInstance().getRanksMessages()
-				.getLocalizable( "sellall_spigot_gui__right_click_to_disable" )
-				.localize();
-	}
-	protected String guiRightClickToEnableMsg() {
-		return PrisonRanks.getInstance().getRanksMessages()
-				.getLocalizable( "sellall_spigot_gui__right_click_to_enable" )
-				.localize();
-	}
-	protected String guiRightClickToToggleMsg() {
-		return PrisonRanks.getInstance().getRanksMessages()
-				.getLocalizable( "sellall_spigot_gui__right_click_to_toggle" )
-				.localize();
-	}
-
-	
-	protected String guiRightClickShiftToDeleteMsg() {
-		return PrisonRanks.getInstance().getRanksMessages()
-				.getLocalizable( "sellall_spigot_gui__right_click_and_shift_to_delete" )
-				.localize();
-	}
-	protected String guiRightClickShiftToDisableMsg() {
-		return PrisonRanks.getInstance().getRanksMessages()
-				.getLocalizable( "sellall_spigot_gui__right_click_and_shift_to_disable" )
-				.localize();
-	}
-	protected String guiRightClickShiftToToggleMsg() {
-		return PrisonRanks.getInstance().getRanksMessages()
-				.getLocalizable( "sellall_spigot_gui__right_click_and_shift_to_toggle" )
-				.localize();
-	}
-	
-	
-	
-	protected String guiPriceMsg( Double price ) {
-		
-		DecimalFormat dFmt = new DecimalFormat( "#,##0.00" );
-		String value = price == null ? dFmt.format(0) : dFmt.format(price);
-		
-		return guiPriceMsg( value );
-	}
-	protected String guiPriceMsg( Integer price ) {
-		
-		DecimalFormat dFmt = new DecimalFormat( "#,##0" );
-		String value = price == null ? dFmt.format(0) : dFmt.format(price);
-		
-		return guiPriceMsg( value );
-	}
-	protected String guiPriceMsg( String price ) {
-		
-		return PrisonSellall.getInstance().getSellallMessages()
-				.getLocalizable( "sellall_spigot_utils__money_earned" )
-				.withReplacements( price )
-				.localize();
-	}
 	
 }

@@ -4,7 +4,6 @@ import org.bukkit.entity.Player;
 
 import com.cryptomorin.xseries.XMaterial;
 
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
@@ -39,8 +38,7 @@ public class SellAllPrestigesSetMultiplierGUI extends SpigotGUIComponents {
         ButtonLore confirmButtonLore = new ButtonLore(createLore(
         		guiLeftClickToConfirmMsg(),
         		guiRightClickToCancelMsg() ), 
-        		createLore(
-        				messages.getString(MessagesConfig.StringID.spigot_gui_lore_multiplier) + " " + "x" + val));
+        		createLore( guiMultiplierMsg( val ) ));
 
         ButtonLore changeIncreaseValueLore = new ButtonLore( guiClickToIncreaseMsg(), null);
 //        ButtonLore changeIncreaseValueLore = new ButtonLore(
@@ -58,7 +56,7 @@ public class SellAllPrestigesSetMultiplierGUI extends SpigotGUIComponents {
 
 
         // Create a button and set the position
-        gui.addButton(new Button(22, XMaterial.CLOCK, confirmButtonLore, "&3Confirm: "  + prestigeName + " " + val ));
+        gui.addButton(new Button(22, XMaterial.CLOCK, confirmButtonLore, guiConfirmMsg( prestigeName, val ) ));
 
         // Increase button
         gui.addButton(new Button(7, increaseMat, changeIncreaseValueLore, "&3" + prestigeName + " " + val + " + 0.1" ));

@@ -40,7 +40,7 @@ public class BackpacksListPlayerGUI extends SpigotGUIComponents {
                 messages.getString(MessagesConfig.StringID.spigot_gui_lore_add_backpack_instruction_3)));
 
         // Global Strings.
-        String loreClickToOpen = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open);
+        String loreClickToOpen = guiLeftClickToOpenMsg();
 
         if (!BackpacksUtil.get().getBackpacksIDs(p).isEmpty()) {
             int slot = 0;

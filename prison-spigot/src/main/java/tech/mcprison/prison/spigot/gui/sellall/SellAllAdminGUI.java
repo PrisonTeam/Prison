@@ -56,12 +56,13 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
 
         PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), "&3Prison -> SellAll-Admin");
 
-        ButtonLore blocksLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open), null);
+        ButtonLore blocksLore = new ButtonLore( guiClickToOpenMsg(), null);
 //        ButtonLore closeGUILore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_close), null);
-        ButtonLore setCurrencyLore = new ButtonLore(createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_edit)), createLore(
+        ButtonLore setCurrencyLore = new ButtonLore(createLore( guiClickToEditMsg() ), 
+        		createLore(
                 messages.getString(MessagesConfig.StringID.spigot_gui_lore_currency) + " " + sellAllConfig.getString("Options.SellAll_Currency"),
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_edit)));
-        ButtonLore multipliersLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open), messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_edit));
+                guiClickToEditMsg() ));
+        ButtonLore multipliersLore = new ButtonLore( guiClickToOpenMsg(), guiClickToEditMsg() );
         ButtonLore autoSellLore = new ButtonLore();
         ButtonLore sellAllDelayLore = new ButtonLore();
 
@@ -69,8 +70,7 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
         Button sellAllDelayButton;
 
         if (sellAllConfig.getString("Options.Full_Inv_AutoSell").equalsIgnoreCase("true")){
-            autoSellLore.setLoreAction(createLore(
-                    messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open),
+            autoSellLore.setLoreAction(createLore( guiClickToOpenMsg(),
                     guiRightClickToDisableMsg()
                     ));
 
@@ -84,7 +84,7 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
         if (sellAllConfig.getString("Options.Sell_Delay_Enabled").equalsIgnoreCase("true")){
 
             sellAllDelayLore.setLoreAction(createLore(
-                    messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open),
+            		guiClickToOpenMsg(),
                     guiRightClickToCancelMsg()));
             sellAllDelayLore.setLoreDescription(createLore(
                     messages.getString(MessagesConfig.StringID.spigot_gui_lore_delay) + " " + sellAllConfig.getString("Options.Sell_Delay_Seconds") + "s",
