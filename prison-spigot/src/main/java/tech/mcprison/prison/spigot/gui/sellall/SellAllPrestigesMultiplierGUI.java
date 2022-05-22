@@ -1,8 +1,9 @@
 package tech.mcprison.prison.spigot.gui.sellall;
 
-import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;

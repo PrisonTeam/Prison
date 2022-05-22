@@ -5,10 +5,9 @@ import java.util.List;
 
 import org.bukkit.entity.Player;
 
-import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.sellall.messages.SpigotVariousGuiMessages;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools.GUIMenuPageData;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
@@ -54,7 +53,10 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
         }
 
         if (emptyInv){
-            Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_sellall_empty));
+        	
+        	new SpigotVariousGuiMessages().sellallYouHaveNothingToSellMsg( new SpigotCommandSender(p) );
+//            Output.get().sendWarn(new SpigotPlayer(p), 
+//            		messages.getString(MessagesConfig.StringID.spigot_message_gui_sellall_empty));
             return;
         }
 
@@ -78,12 +80,20 @@ public class SellAllPlayerGUI extends SpigotGUIComponents {
         
         
         // Global strings.
-        String loreValue = messages.getString(MessagesConfig.StringID.spigot_gui_lore_value);
+//        String loreValue = messages.getString(MessagesConfig.StringID.spigot_gui_lore_value);
 
 //        int itemsAdded = 0, itemsRead = 0;
         for ( String key : itemsDisplay ) {
         	
-        	  gui.addButton(new Button(null, SpigotUtil.getXMaterial(sellAllConfig.getString("Items." + key + ".ITEM_ID")), new ButtonLore(null, loreValue + " " + sellAllConfig.getString("Items." + key + ".ITEM_VALUE")), "&3" + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
+        	String itemId = sellAllConfig.getString("Items." + key + ".ITEM_ID");
+        	String itemValue = sellAllConfig.getString("Items." + key + ".ITEM_VALUE");
+
+        	String loreValue = guiValueMsg( itemValue );
+        	
+        	gui.addButton(
+        			new Button(null, SpigotUtil.getXMaterial(itemId), 
+        			new ButtonLore(null, loreValue), 
+        			  "&3" + itemId));
         	
         	
 //            itemsRead++;

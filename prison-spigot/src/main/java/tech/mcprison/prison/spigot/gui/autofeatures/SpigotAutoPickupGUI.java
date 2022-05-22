@@ -7,7 +7,6 @@ import com.cryptomorin.xseries.XMaterial;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
@@ -33,7 +32,7 @@ public class SpigotAutoPickupGUI extends SpigotGUIComponents {
 
         ButtonLore enabledLore = new ButtonLore( guiRightClickShiftToDisableMsg(), null);
         ButtonLore disabledLore = new ButtonLore( guiRightClickToEnableMsg(), null);
-        ButtonLore closeGUILore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_close), null);
+        ButtonLore closeGUILore = new ButtonLore( guiClickToCloseMsg(), null);
 
         gui.addButton(new Button(35, XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, "&cClose" ));
 

@@ -5,8 +5,10 @@ import org.bukkit.entity.Player;
 import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.sellall.messages.SpigotVariousGuiMessages;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
+import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools.GUIMenuPageData;
@@ -40,7 +42,11 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
     public void open() {
 
         if (!SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true")){
-            Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_sellall_disabled));
+        	
+        	new SpigotVariousGuiMessages().sellallIsDisabledMsg( new SpigotCommandSender(p) );
+        	
+//            Output.get().sendWarn(new SpigotPlayer(p), 
+//            		messages.getString(MessagesConfig.StringID.spigot_message_gui_sellall_disabled));
             return;
         }
 
@@ -86,15 +92,18 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
             sellAllDelayLore.setLoreAction(createLore(
             		guiClickToOpenMsg(),
                     guiRightClickToCancelMsg()));
+            
+            String loreDelay = guiDelayMsg( sellAllConfig.getString("Options.Sell_Delay_Seconds") );
+            
             sellAllDelayLore.setLoreDescription(createLore(
-                    messages.getString(MessagesConfig.StringID.spigot_gui_lore_delay) + " " + sellAllConfig.getString("Options.Sell_Delay_Seconds") + "s",
+                    loreDelay,
                     messages.getString(MessagesConfig.StringID.spigot_gui_lore_sellall_delay_use_1),
                     messages.getString(MessagesConfig.StringID.spigot_gui_lore_sellall_delay_use_2)));
 
             sellAllDelayButton = new Button(11, XMaterial.CLOCK, sellAllDelayLore, "&3Delay-Enabled");
         } else {
 
-            sellAllDelayLore.setLoreAction(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_enable));
+            sellAllDelayLore.setLoreAction( guiClickToEnableMsg() );
             sellAllDelayLore.setLoreDescription(createLore(
                     messages.getString(MessagesConfig.StringID.spigot_gui_lore_sellall_delay_use_1),
                     messages.getString(MessagesConfig.StringID.spigot_gui_lore_sellall_delay_use_2)));

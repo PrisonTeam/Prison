@@ -40,7 +40,7 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
         ButtonLore modeWithinLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_select), messages.getString(MessagesConfig.StringID.spigot_gui_lore_enable_within_mode));
         ButtonLore modeRadiusLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_select), messages.getString(MessagesConfig.StringID.spigot_gui_lore_enable_radius_mode));
         ButtonLore disabledModeLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_select), messages.getString(MessagesConfig.StringID.spigot_gui_lore_disable_notifications));
-        ButtonLore closeGUILore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_close), null);
+        ButtonLore closeGUILore = new ButtonLore( guiClickToCloseMsg(), null);
 
         // Add button.
         gui.addButton(new Button(26, XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, "&cClose"));

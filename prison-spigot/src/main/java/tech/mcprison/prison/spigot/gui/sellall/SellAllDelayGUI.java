@@ -4,8 +4,6 @@ import org.bukkit.entity.Player;
 
 import com.cryptomorin.xseries.XMaterial;
 
-import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools.GUIMenuPageData;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
@@ -55,7 +53,8 @@ public class SellAllDelayGUI extends SpigotGUIComponents {
         ButtonLore confirmButtonLore = new ButtonLore(createLore(
         		guiLeftClickToConfirmMsg(), 
         		guiRightClickToCancelMsg() ), 
-        		createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_delay) + " " + val + "s"));
+        		
+        		createLore( guiDelayMsg( val ) ));
         
         ButtonLore changeIncreaseValueLore = new ButtonLore( guiClickToIncreaseMsg(), null);
 //        ButtonLore changeIncreaseValueLore = new ButtonLore(

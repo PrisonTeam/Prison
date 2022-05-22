@@ -6,7 +6,6 @@ import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
@@ -34,7 +33,8 @@ public class SpigotAutoBlockGUI extends SpigotGUIComponents {
         		guiRightClickShiftToDisableMsg(), null);
         ButtonLore disabledLore = new ButtonLore(
         		guiRightClickToEnableMsg(), null);
-        gui.addButton(new Button(35, XMaterial.RED_STAINED_GLASS_PANE, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_close), null), "&cClose"));
+        gui.addButton(new Button(35, XMaterial.RED_STAINED_GLASS_PANE, 
+        		new ButtonLore( guiClickToCloseMsg(), null), "&cClose"));
 
         if (afConfig != null) {
 

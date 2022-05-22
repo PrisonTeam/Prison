@@ -14,6 +14,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11c 2022-05-22
 
 
+* **GUI messages: a few more updates and corrections**
+
+
 * **GUI: More fixes to the gui messages... including moving all of the new gui specific messages out of prison-sellall module to the prison-core module so they will still be accessible if the prison-sellall module is disabled.**
 
 

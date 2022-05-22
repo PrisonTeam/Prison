@@ -30,7 +30,7 @@ public class SpigotAutoFeaturesGUI extends SpigotGUIComponents {
 
         PrisonGUI gui;
 
-        ButtonLore closeGUILore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_close), null);
+        ButtonLore closeGUILore = new ButtonLore( guiClickToCloseMsg(), null);
 
         if (afConfig != null && afConfig.isFeatureBoolean(AutoFeatures.isAutoManagerEnabled)) {
             

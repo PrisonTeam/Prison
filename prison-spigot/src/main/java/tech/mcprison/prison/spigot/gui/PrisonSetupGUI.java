@@ -25,7 +25,9 @@ public class PrisonSetupGUI extends SpigotGUIComponents {
         PrisonGUI gui = new PrisonGUI(p, 9, "&3Prison Setup -> Confirmation");
 
         // Create lore.
-        ButtonLore lore = new ButtonLore(createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_confirm)), createLore(
+        ButtonLore lore = new ButtonLore(createLore(
+        		guiClickToConfirmMsg() ), 
+        	createLore(
                 messages.getString(MessagesConfig.StringID.spigot_gui_lore_ranks_setup_1),
                 messages.getString(MessagesConfig.StringID.spigot_gui_lore_ranks_setup_2),
                 messages.getString(MessagesConfig.StringID.spigot_gui_lore_ranks_setup_3),
@@ -40,7 +42,7 @@ public class PrisonSetupGUI extends SpigotGUIComponents {
 
         // Add button.
         gui.addButton(new Button(6, XMaterial.REDSTONE_BLOCK, createLore(
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_cancel)), "&3Cancel: Setup"));
+                guiClickToCancelMsg()), "&3Cancel: Setup"));
 
         // Open Prison GUI.
         gui.open();

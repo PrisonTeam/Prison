@@ -20,6 +20,7 @@ import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.sellall.messages.SpigotVariousGuiMessages;
 import tech.mcprison.prison.spigot.SpigotPlatform;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.compat.Compatibility;
@@ -439,7 +440,10 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         if (!sellAllUtil.openSellAllGUI( p, page, "sellall gui", "close" )){
             // If the sender's an admin (OP or have the prison.admin permission) it'll send an error message.
             if (p.hasPermission("prison.admin")) {
-                Output.get().sendError(sender, messages.getString(MessagesConfig.StringID.spigot_message_gui_sellall_disabled));
+            	
+            	new SpigotVariousGuiMessages().sellallIsDisabledMsg( sender );
+//                Output.get().sendError(sender, 
+//                		messages.getString(MessagesConfig.StringID.spigot_message_gui_sellall_disabled));
             }
         }
     }

@@ -72,7 +72,7 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
         				messages.getString(MessagesConfig.StringID.spigot_gui_lore_rank_tag) + " " + rank.getTag()));
 
 
-        ButtonLore closeGUILore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_close), null);
+        ButtonLore closeGUILore = new ButtonLore( guiClickToCloseMsg(), null);
 
         // Create the button
         gui.addButton(new Button(26, XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, "&cClose" ));

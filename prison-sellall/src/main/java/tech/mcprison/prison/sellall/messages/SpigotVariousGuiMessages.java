@@ -80,9 +80,15 @@ public class SpigotVariousGuiMessages
 		.sendTo( sender );
 	}
 	
-	protected void sellallYouHaveNothingToSellMsg( CommandSender sender ) {
+	public void sellallYouHaveNothingToSellMsg( CommandSender sender ) {
 		PrisonSellall.getInstance().getSellallMessages()
 		.getLocalizable( "sellall_spigot_utils__you_have_nothing_to_sell" )
+		.sendTo( sender );
+	}
+	
+	public void sellallIsDisabledMsg( CommandSender sender ) {
+		PrisonSellall.getInstance().getSellallMessages()
+		.getLocalizable( "sellall_spigot_utils__sellall_is_disabled" )
 		.sendTo( sender );
 	}
 	

@@ -65,7 +65,8 @@ public class BackpacksListPlayerGUI extends SpigotGUIComponents {
             gui.addButton(new Button(49, XMaterial.EMERALD_BLOCK, loreAddBackpackButton, "&aNew Backpack"));
         }
 
-        gui.addButton(new Button(dimension-1, XMaterial.RED_STAINED_GLASS_PANE, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_close), null), "&cClose"));
+        gui.addButton(new Button(dimension-1, XMaterial.RED_STAINED_GLASS_PANE, 
+        		new ButtonLore( guiClickToCloseMsg(), null), "&cClose"));
 
         gui.open();
     }
