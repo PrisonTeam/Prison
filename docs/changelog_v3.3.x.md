@@ -11,7 +11,15 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.11c 2022-05-22
+# 3.3.0-alpha.11d 2022-05-22
+
+
+* **Bug fix: Minepacks has a new function in their API to force backpack changes to be saved.**
+Before it could only be marked as changed, which was not enough to get it to save in all situations. Prison is now calling "save()" to ensure its behaving better now.
+NOTE: releasing this fix with alpha.11d even though it has been added after being set to 11d.
+
+
+* **Prison v3.3.0-alpha.11d 2022-05-22**
 
 
 * **GUI messages: a few more updates and corrections**

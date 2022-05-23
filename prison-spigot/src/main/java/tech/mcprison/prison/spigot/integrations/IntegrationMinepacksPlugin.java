@@ -77,7 +77,8 @@ public class IntegrationMinepacksPlugin
     					ItemStack extra = bp.addItem( iStack );
     					extras.put( Integer.valueOf( extras.size() ), new SpigotItemStack(extra) );
     					
-    					bp.setChanged();
+//    					bp.setChanged();
+    					bp.save();
     				}
     			}
     		}
@@ -107,7 +108,8 @@ public class IntegrationMinepacksPlugin
     					ItemStack extra = bp.addItem( itemStack );
     					extras.put( Integer.valueOf( extras.size() ), extra );
     					
-    					bp.setChanged();
+//    					bp.setChanged();
+    					bp.save();
     				}
     			}
     		}
@@ -149,7 +151,8 @@ public class IntegrationMinepacksPlugin
     					
     					extras.putAll( addItems( player, temp ) );
 
-    					bp.setChanged();
+//    					bp.setChanged();
+    					bp.save();
     				}
 					
 				}
@@ -181,7 +184,8 @@ public class IntegrationMinepacksPlugin
 				removed += SpigotUtil.itemStackRemoveAll( xMat, bp.getInventory() );
 				
 				if ( removed > 0 ) {
-					bp.setChanged();
+//					bp.setChanged();
+					bp.save();
 				}
 			}
 		}
