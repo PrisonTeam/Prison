@@ -11,7 +11,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.11d 2022-05-22
+# 3.3.0-alpha.11d 2022-05-23
+
+
+* **Bug fix: Fixed an issue with sellall when the module sellall is not defined but sellall is enabled in the config.yml file.**
 
 
 * **Bug fix: Minepacks has a new function in their API to force backpack changes to be saved.**

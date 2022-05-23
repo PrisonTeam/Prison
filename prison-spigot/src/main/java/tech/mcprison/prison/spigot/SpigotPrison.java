@@ -780,7 +780,16 @@ public class SpigotPrison
         }
         
        
-        if (modulesConf.getBoolean( PrisonSellall.MODULE_NAME.toLowerCase() ) ) {
+        // If the sellall module is defined in modules.yml, then use that setting, otherwise
+        // use the sellall config setting within the config.yml file.
+        String moduleName = PrisonSellall.MODULE_NAME.toLowerCase();
+        boolean isDefined = modulesConf.contains(moduleName);
+        
+        if ( isDefined && modulesConf.getBoolean(moduleName) ||
+        		!isDefined && getConfig().contains("sellall") && getConfig().isBoolean("sellall") ) {
+        		
+//        		modulesConf.getBoolean( PrisonSellall.MODULE_NAME.toLowerCase(), true ) ||
+//        		getConfig().contains("sellall") && getConfig().isBoolean("sellall")) {
         	PrisonSellall sellallModule = new PrisonSellall(getDescription().getVersion() );
         	
         	// Register and enable Ranks:
