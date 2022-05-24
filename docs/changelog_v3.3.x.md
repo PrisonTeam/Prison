@@ -14,6 +14,14 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11e 2022-05-23
 
 
+* **Major exploit fix: sellall was not indicating that the inventory was changed within the Minepacks backpacks,**
+and therefore players were able to sellall of their inventory, logoff, and then when they log back on, it will be restored.
+Now, all inventory changes are forcing a save for the backpacks.
+
+
+* **Fixed an incorrect mapping to a message: auto features tool is worn out.**
+
+
 * **v3.3.0-alpha.11e 2022-05-23**
 
 

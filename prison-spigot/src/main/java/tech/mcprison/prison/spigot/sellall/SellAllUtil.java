@@ -569,6 +569,8 @@ public class SellAllUtil
             Backpack backpack = IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p);
             if (backpack != null) {
                 xMaterialIntegerHashMap = addInventoryToHashMap(xMaterialIntegerHashMap, backpack.getInventory());
+//                backpack.setChanged();
+                backpack.save();
             }
         }
 
@@ -1468,6 +1470,8 @@ public class SellAllUtil
             Backpack backpack = IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p);
             if (backpack != null) {
                 removeSellableItems(p, backpack.getInventory());
+//                backpack.setChanged();
+                backpack.save();
             }
         }
 
