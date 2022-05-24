@@ -25,7 +25,7 @@ public class OnBlockBreakEventCoreMessages {
 	
 	protected String toolIsWornOutMsg() {
 		return SpigotPrison.getInstance().getLocaleManager()
-				.getLocalizable( "spigot_blockbreak_mines__mine_is_being_reset__please_wait" )
+				.getLocalizable( "spigot_blockbreak_core__validate_event__your_tool_is_worn_out" )
 				.localize();
 	}
 	
