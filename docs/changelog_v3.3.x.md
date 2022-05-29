@@ -14,6 +14,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11e 2022-05-29
 
 
+* **BlockConverters: More work on these settings.**
+Setting up to work with AutoFeaturesConfig.yml, but having second thoughts about adding these configs to that file since it will complicate the config details.
+
+
 * **Fixed a bug on the smelting of coal_ore which was yielding 10 times too much, but this was never seen since a silk touch pickaxe would have to been used.**
 
 

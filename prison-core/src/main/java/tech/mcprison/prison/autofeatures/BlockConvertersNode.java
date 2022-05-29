@@ -97,23 +97,24 @@ public class BlockConvertersNode
 			
 			BlockConverter blockConverter = new BlockConverter( key, rawBlockConverterData );
 			
-			value.put( blockConverter.getKey(), blockConverter );
+			value.put( blockConverter.getKeyBlockName(), blockConverter );
 		}
 	}
 
-	public TreeMap<String, List<TreeMap<String, Object>>> toYamlMap() {
-		TreeMap<String, List<TreeMap<String, Object>>> results = new TreeMap<>();
+	public TreeMap<String, TreeMap<String, Object>> toYamlMap() {
+		TreeMap<String, TreeMap<String, Object>> results = new TreeMap<>();
 		
 		Set<String> keys = getValue().keySet();
 		for (String key : keys) {
 			BlockConverter blockConverter = getValue().get(key);
 			
 			// NOTE: The TreeMap will always have exactly ONE entry:
-			TreeMap<String, List<TreeMap<String, Object>>> rawBlockConverter = blockConverter.toYamlMap();
-			String yamlKey = rawBlockConverter.firstKey();
-			List<TreeMap<String, Object>> yamlBlockConverter = rawBlockConverter.firstEntry().getValue();
+			TreeMap<String, Object> rawBlockConverter = blockConverter.toYamlMap();
+			String yamlKey = rawBlockConverter.get( "keyBlockName" ).toString();
 			
-			results.put( yamlKey, yamlBlockConverter );
+//			List<TreeMap<String, Object>> yamlBlockConverter = rawBlockConverter.firstEntry().getValue();
+			
+			results.put( yamlKey, rawBlockConverter );
 		}
 		
 		return results;
