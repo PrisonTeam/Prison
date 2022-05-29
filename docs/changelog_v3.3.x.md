@@ -11,7 +11,14 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.11e 2022-05-23
+# 3.3.0-alpha.11e 2022-05-29
+
+
+* **Fixed a bug on the smelting of coal_ore which was yielding 10 times too much, but this was never seen since a silk touch pickaxe would have to been used.**
+
+
+* **Placeholder fix for `prison_mines_blocks_mined_minename` since it was not being incremented after the fixing of the autopickup=false and handle normal drops = true.**
+Also found that the calculated field for the mine's total blocks mined was not being recalculated after load the mines from their save files.  This now is working properly.
 
 
 * **Major exploit fix: sellall was not indicating that the inventory was changed within the Minepacks backpacks,**

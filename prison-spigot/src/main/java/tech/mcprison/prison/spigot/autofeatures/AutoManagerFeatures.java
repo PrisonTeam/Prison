@@ -1776,7 +1776,7 @@ public abstract class AutoManagerFeatures
 				case DEEPSLATE_COAL_ORE:
 					if ( isAll || isBoolean( AutoFeatures.smeltCoalOre ) ) {
 						
-						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COAL,11 );
+						SpigotUtil.itemStackReplaceItems( drops, source, XMaterial.COAL, 1 );
 					}
 					break;
 					
