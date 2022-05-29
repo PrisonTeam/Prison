@@ -297,8 +297,7 @@ public abstract class AutoManagerFeatures
 		//       Ops will have to have the perms set to actually use them.
 				
 		// AutoPickup
-		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.pickupLimitToMines )) &&
-				isAutoPickup ) {
+		if ( (mine != null || mine == null && !isBoolean( AutoFeatures.pickupLimitToMines )) ) {
 			
 			if ( isAutoPickup ) {
 				

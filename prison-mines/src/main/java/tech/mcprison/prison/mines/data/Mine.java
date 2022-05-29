@@ -315,6 +315,9 @@ public class Mine
         setRankString( rankString );
         
         
+        long totalBlockCount = 0L;
+        
+        
         // This is a validation set to ensure only one block type is loaded file system.
         // Must keep the first one loaded.
         Set<String> validateBlockNames = new HashSet<>();
@@ -338,7 +341,6 @@ public class Mine
 					// Use the BlockType.name() load the block type:
 					ObsoleteBlockType blockType = ObsoleteBlockType.getBlock(blockTypeName);
 					if ( blockType != null ) {
-						
 						
 						/**
 						 * <p>The following is code to correct the use of items being used as a
@@ -380,6 +382,8 @@ public class Mine
 
 						block.parseFromSaveFileFormatStats( docBlock );
 						
+						totalBlockCount += block.getBlockCountTotal();
+								
 //						BlockOld block = new BlockOld(blockType, chance, blockCount);
 //						block.setConstraintMin( constraintMin );
 //						block.setConstraintMax( constraintMax );
@@ -412,6 +416,10 @@ public class Mine
 		List<String> docPrisonBlocks = (List<String>) document.get("prisonBlocks");
 		if ( docPrisonBlocks != null ) {
 			
+			
+			// If prisonBlocks are defined, then use these for the block counts:
+			totalBlockCount = 0L;
+			
 			for (String docBlock : docPrisonBlocks) {
 				
 				if ( docBlock != null ) {
@@ -431,6 +439,8 @@ public class Mine
 					}
 					
 					if ( prisonBlock != null ) {
+						
+						totalBlockCount += prisonBlock.getBlockCountTotal();
 						
 						if ( !validateBlockNames.contains( prisonBlock.getBlockName() )) {
 							
@@ -492,8 +502,13 @@ public class Mine
 					
 				}
 			}
+			
 		}
 		
+		
+		// Set the total blocks mined count:
+		setTotalBlocksMined( totalBlockCount );
+
 		
 		// Check if one of the blocks is effected by gravity, and if so, set that indicator.
 		checkGravityAffectedBlocks();
