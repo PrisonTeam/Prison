@@ -6,9 +6,9 @@ import java.util.Set;
 import java.util.TreeMap;
 
 public class BlockConvertersNode
-	extends ValueNode 
+//	e-xtends ValueNode 
 {
-    private static final long serialVersionUID = -1L;
+//    private static final long serialVersionUID = -1L;
 
     TreeMap<String, BlockConverter> value;
     
@@ -18,11 +18,11 @@ public class BlockConvertersNode
     	this.value = new TreeMap<>();
     }
     
-    public BlockConvertersNode( TreeMap<String, BlockConverter> value ) {
-    	this();
-    	
-    	this.value = value;
-    }
+//    public BlockConvertersNode( TreeMap<String, BlockConverter> value ) {
+//    	this();
+//    	
+//    	this.value = value;
+//    }
     
 	@Override
 	public String toString() {
@@ -49,13 +49,13 @@ public class BlockConvertersNode
 		return value;
 	}
 	
-	@Override
-	public boolean isBlockConvertersNode() { return true; }
-	
-	@Override
-	public NodeType getNodeType() {
-		return NodeType.BLOCK_CONVERTER;
-	}
+//	@Override
+//	public boolean isBlockConvertersNode() { return true; }
+//	
+//	@Override
+//	public NodeType getNodeType() {
+//		return NodeType.BLOCK_CONVERTER;
+//	}
    
     
 	@Override
@@ -79,45 +79,45 @@ public class BlockConvertersNode
         return getValue().hashCode();
 	}
 
-	/**
-	 * <p>This function takes a map of maps to construct and load the block converters.
-	 * This process takes the keys of this map, and the related object, and then constructs
-	 * the BlockConverter object.  The BlockConverter object deals with processing it's own
-	 * content as passed to it with the Object form this rawBlockConverters map.
-	 * </p>
-	 * 
-	 * @param rawBlockConverters
-	 */
-	public void loadFromYamlFile(TreeMap<String, Object> rawBlockConverters) {
-
-		Set<String> keys = rawBlockConverters.keySet();
-		
-		for (String key : keys) {
-			Object rawBlockConverterData = rawBlockConverters.get(key);
-			
-			BlockConverter blockConverter = new BlockConverter( key, rawBlockConverterData );
-			
-			value.put( blockConverter.getKeyBlockName(), blockConverter );
-		}
-	}
-
-	public TreeMap<String, TreeMap<String, Object>> toYamlMap() {
-		TreeMap<String, TreeMap<String, Object>> results = new TreeMap<>();
-		
-		Set<String> keys = getValue().keySet();
-		for (String key : keys) {
-			BlockConverter blockConverter = getValue().get(key);
-			
-			// NOTE: The TreeMap will always have exactly ONE entry:
-			TreeMap<String, Object> rawBlockConverter = blockConverter.toYamlMap();
-			String yamlKey = rawBlockConverter.get( "keyBlockName" ).toString();
-			
-//			List<TreeMap<String, Object>> yamlBlockConverter = rawBlockConverter.firstEntry().getValue();
-			
-			results.put( yamlKey, rawBlockConverter );
-		}
-		
-		return results;
-	}
+//	/**
+//	 * <p>This function takes a map of maps to construct and load the block converters.
+//	 * This process takes the keys of this map, and the related object, and then constructs
+//	 * the BlockConverter object.  The BlockConverter object deals with processing it's own
+//	 * content as passed to it with the Object form this rawBlockConverters map.
+//	 * </p>
+//	 * 
+//	 * @param rawBlockConverters
+//	 */
+//	public void loadFromYamlFile(TreeMap<String, Object> rawBlockConverters) {
+//
+//		Set<String> keys = rawBlockConverters.keySet();
+//		
+//		for (String key : keys) {
+//			Object rawBlockConverterData = rawBlockConverters.get(key);
+//			
+//			BlockConverter blockConverter = new BlockConverter( key, rawBlockConverterData );
+//			
+//			value.put( blockConverter.getKeyBlockName(), blockConverter );
+//		}
+//	}
+//
+//	public TreeMap<String, TreeMap<String, Object>> toYamlMap() {
+//		TreeMap<String, TreeMap<String, Object>> results = new TreeMap<>();
+//		
+//		Set<String> keys = getValue().keySet();
+//		for (String key : keys) {
+//			BlockConverter blockConverter = getValue().get(key);
+//			
+//			// NOTE: The TreeMap will always have exactly ONE entry:
+//			TreeMap<String, Object> rawBlockConverter = blockConverter.toYamlMap();
+//			String yamlKey = rawBlockConverter.get( "keyBlockName" ).toString();
+//			
+////			List<TreeMap<String, Object>> yamlBlockConverter = rawBlockConverter.firstEntry().getValue();
+//			
+//			results.put( yamlKey, rawBlockConverter );
+//		}
+//		
+//		return results;
+//	}
 
 }

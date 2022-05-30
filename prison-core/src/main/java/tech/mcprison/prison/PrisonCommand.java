@@ -827,7 +827,7 @@ public class PrisonCommand
     		onlyPlayers = false, permissions = "prison.autofeatures")
     public void reloadAutoFeatures(CommandSender sender ) {
     	    	
-    	AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig().reloadConfig();
+    	AutoFeaturesWrapper.getInstance().reloadConfigs();
     	
     	String message = "&7AutoFeatures were reloaded. The new settings are now in effect. ";
     	sender.sendMessage( message );
@@ -835,6 +835,14 @@ public class PrisonCommand
     	try {
     		String filePath = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig()
     								.getConfigFile().getCanonicalPath();
+    		sender.sendMessage( filePath );
+    	}
+    	catch ( IOException e ) {
+    		// Ingore
+    	}
+    	try {
+    		String filePath = AutoFeaturesWrapper.getInstance().getBlockConvertersConfig()
+    				.getConfigFile().getCanonicalPath();
     		sender.sendMessage( filePath );
     	}
     	catch ( IOException e ) {

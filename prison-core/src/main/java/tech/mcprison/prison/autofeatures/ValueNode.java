@@ -18,8 +18,8 @@ public abstract class ValueNode
 		LONG,
 		INTEGER,
 		DOUBLE,
-		STRING_LIST,
-		BLOCK_CONVERTER
+		STRING_LIST
+//		BLOCK_CONVERTER
 		;
 	}
 	

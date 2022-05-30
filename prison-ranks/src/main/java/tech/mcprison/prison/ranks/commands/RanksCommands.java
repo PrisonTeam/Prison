@@ -537,10 +537,11 @@ public class RanksCommands
 		}
 
 		
-		// Reload the placeholders and autoFeatures:
+		// Reload the placeholders:
 		Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
 		
-		AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig().reloadConfig();
+		// Reloads autoFeatures and blockConverters:
+		AutoFeaturesWrapper.getInstance().reloadConfigs();
 		
 		
 		// Reset all player to the first rank on the default ladder:

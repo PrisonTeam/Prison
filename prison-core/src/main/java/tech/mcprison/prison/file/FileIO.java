@@ -118,20 +118,23 @@ public abstract class FileIO
 		StringBuilder results = new StringBuilder();
 //		String results = null;
 		
-		try
-		{
-			List<String> lines = Files.readAllLines( file.toPath(), StandardCharsets.UTF_8 );
-
-			for ( String line : lines ) {
-				results.append( line ).append( "\n" );
-			}
+		if ( file.exists() ) {
 			
+			try
+			{
+				List<String> lines = Files.readAllLines( file.toPath(), StandardCharsets.UTF_8 );
+				
+				for ( String line : lines ) {
+					results.append( line ).append( "\n" );
+				}
+				
 //			byte[] bytes = Files.readAllBytes( file.toPath() );
 //			results = new String(bytes);
-		}
-		catch ( IOException e )
-		{
-			logException( "Failed to load file", file, e );
+			}
+			catch ( IOException e )
+			{
+				logException( "Failed to load file", file, e );
+			}
 		}
 		
 		return results.toString();

@@ -11,7 +11,12 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.11e 2022-05-29
+# 3.3.0-alpha.11e 2022-05-30
+
+
+* **BlockConverters: Adjusting around how they are setup, and how they are generated.**
+BlockConverters are now in their own config file: blockConvertersConfig.json.
+They are no longer being stacked/placed in the autoFeaturesConfig.yml file, so all the conversion code is no longer required. With it being json, it now can reflect the java classes without any special considerations on the conversion process.
 
 
 * **BlockConverters: More work on these settings.**

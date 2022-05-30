@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.ValueNode.NodeType;
@@ -287,6 +286,8 @@ public class AutoFeaturesFileConfig {
 		    	
 		    	smeltLimitToMines(smeltFeature, true),
 		    	smeltAllBlocks(smeltFeature, true),
+		    	
+		    	smeltConfigurations(smeltFeature, "see smeltFeatures in BlockConversionsConfig.json"),
 
 //		    	smeltTransformer(smeltFeature, NodeType.BLOCK_CONVERTER, "smelt" ),
 		    	
@@ -355,7 +356,7 @@ public class AutoFeaturesFileConfig {
     	private final boolean isLong;
     	private final boolean isDouble;
     	private final boolean isStringList;
-    	private final boolean isBlockConverter;
+//    	private final boolean isBlockConverter;
     	
     	private final String path;
     	private final String message;
@@ -364,7 +365,7 @@ public class AutoFeaturesFileConfig {
     	private final Long longValue;
     	private final Double doubleValue;
     	private final List<String> listValue;
-    	private final TreeMap<String, BlockConverter> blockConverters;
+//    	private final TreeMap<String, BlockConverter> blockConverters;
     	
     	private AutoFeatures() {
     		this.parent = null;
@@ -375,7 +376,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = false;
     		this.isStringList = false;
-    		this.isBlockConverter = false;
+//    		this.isBlockConverter = false;
     		
     		this.path = null;
     		this.message = null;
@@ -384,7 +385,7 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
-    		this.blockConverters = new TreeMap<>();
+//    		this.blockConverters = new TreeMap<>();
     	}
     	private AutoFeatures(AutoFeatures section) {
     		this.parent = section;
@@ -395,7 +396,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = false;
     		this.isStringList = false;
-    		this.isBlockConverter = false;
+//    		this.isBlockConverter = false;
 
     		this.path = section.getKey();
     		this.message = null;
@@ -404,7 +405,7 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
-    		this.blockConverters = new TreeMap<>();
+//    		this.blockConverters = new TreeMap<>();
     	}
     	private AutoFeatures(AutoFeatures section, String message) {
     		this.parent = section;
@@ -415,7 +416,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = false;
     		this.isStringList = false;
-    		this.isBlockConverter = false;
+//    		this.isBlockConverter = false;
 
     		this.path = section.getKey();
     		this.message = message;
@@ -424,7 +425,7 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
-    		this.blockConverters = new TreeMap<>();
+//    		this.blockConverters = new TreeMap<>();
     	}
     	private AutoFeatures(AutoFeatures section, Boolean value) {
     		this.parent = section;
@@ -435,7 +436,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = false;
     		this.isStringList = false;
-    		this.isBlockConverter = false;
+//    		this.isBlockConverter = false;
 
     		this.path = section.getKey();
     		this.message = null;
@@ -444,7 +445,7 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
-    		this.blockConverters = new TreeMap<>();
+//    		this.blockConverters = new TreeMap<>();
     	}
     	private AutoFeatures(AutoFeatures section, int value) {
     		this.parent = section;
@@ -455,7 +456,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = false;
     		this.isStringList = false;
-    		this.isBlockConverter = false;
+//    		this.isBlockConverter = false;
     		
     		this.path = section.getKey();
     		this.message = null;
@@ -464,7 +465,7 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
-    		this.blockConverters = new TreeMap<>();
+//    		this.blockConverters = new TreeMap<>();
     	}
     	private AutoFeatures(AutoFeatures section, long value) {
     		this.parent = section;
@@ -475,7 +476,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = true;
     		this.isDouble = false;
     		this.isStringList = false;
-    		this.isBlockConverter = false;
+//    		this.isBlockConverter = false;
     		
     		this.path = section.getKey();
     		this.message = null;
@@ -484,7 +485,7 @@ public class AutoFeaturesFileConfig {
     		this.longValue = value;
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
-    		this.blockConverters = new TreeMap<>();
+//    		this.blockConverters = new TreeMap<>();
     	}
     	private AutoFeatures(AutoFeatures section, double value) {
     		this.parent = section;
@@ -495,7 +496,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = true;
     		this.isStringList = false;
-    		this.isBlockConverter = false;
+//    		this.isBlockConverter = false;
     		
     		this.path = section.getKey();
     		this.message = null;
@@ -504,7 +505,7 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = value;
     		this.listValue = new ArrayList<>();
-    		this.blockConverters = new TreeMap<>();
+//    		this.blockConverters = new TreeMap<>();
     	}
     	private AutoFeatures(AutoFeatures section, NodeType nodeType, String... values ) {
     		this.parent = section;
@@ -515,7 +516,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = false;
     		this.isStringList = (nodeType == NodeType.STRING_LIST);
-    		this.isBlockConverter = (nodeType == NodeType.BLOCK_CONVERTER);
+//    		this.isBlockConverter = (nodeType == NodeType.BLOCK_CONVERTER);
     		
     		this.path = section.getKey();
     		this.message = null;
@@ -524,7 +525,7 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
-    		this.blockConverters = new TreeMap<>();
+//    		this.blockConverters = new TreeMap<>();
     		
     		if ( nodeType == NodeType.STRING_LIST ) {
     			
@@ -533,9 +534,9 @@ public class AutoFeaturesFileConfig {
     				this.listValue.addAll( Arrays.asList( values ));
     			}
     		}
-    		else if ( nodeType == NodeType.BLOCK_CONVERTER ) {
-    			loadDefaultBlockConverters( blockConverters, Arrays.asList( values ) );
-    		}
+//    		else if ( nodeType == NodeType.BLOCK_CONVERTER ) {
+//    			loadDefaultBlockConverters( blockConverters, Arrays.asList( values ) );
+//    		}
     	}
     	
 		public AutoFeatures getParent() {
@@ -562,9 +563,9 @@ public class AutoFeaturesFileConfig {
 		public boolean isStringList() {
 			return isStringList;
 		}
-		public boolean isBlockConverter() {
-			return isBlockConverter;
-		}
+//		public boolean isBlockConverter() {
+//			return isBlockConverter;
+//		}
 		
 		public String getPath() {
 			return path;
@@ -588,9 +589,9 @@ public class AutoFeaturesFileConfig {
 		public List<String> getListValue() {
 			return listValue;
 		}
-		public TreeMap<String, BlockConverter> getBlockConverters() {
-			return blockConverters;
-		}
+//		public TreeMap<String, BlockConverter> getBlockConverters() {
+//			return blockConverters;
+//		}
 		
 		public String getKey() {
     		return (path != null ? path + "." : "") + this.name();
@@ -717,24 +718,24 @@ public class AutoFeaturesFileConfig {
     	}
     	
     	
-    	public TreeMap<String, BlockConverter> getBlockConverters( Map<String, ValueNode> conf ) {
-    		TreeMap<String, BlockConverter> results = null;
-    		
-    		
-    		if ( conf.containsKey(getKey()) && conf.get( getKey() ).isBlockConvertersNode() ) {
-    			BlockConvertersNode blockConverters = (BlockConvertersNode) conf.get( getKey() );
-    			results = blockConverters.getValue();
-    		}
-//    		else if ( getListValue() != null && getListValue().size() > 0 ) {
-//    			results = getListValue();
+//    	public TreeMap<String, BlockConverter> getBlockConverters( Map<String, ValueNode> conf ) {
+//    		TreeMap<String, BlockConverter> results = null;
+//    		
+//    		
+//    		if ( conf.containsKey(getKey()) && conf.get( getKey() ).isBlockConvertersNode() ) {
+//    			BlockConvertersNode blockConverters = (BlockConvertersNode) conf.get( getKey() );
+//    			results = blockConverters.getValue();
 //    		}
-    		
-    		if ( results == null ) {
-    			results = new BlockConvertersNode().getValue();
-    		}
-    		
-    		return results;
-    	}
+////    		else if ( getListValue() != null && getListValue().size() > 0 ) {
+////    			results = getListValue();
+////    		}
+//    		
+//    		if ( results == null ) {
+//    			results = new BlockConvertersNode().getValue();
+//    		}
+//    		
+//    		return results;
+//    	}
     	
 
     	/**
@@ -821,140 +822,7 @@ public class AutoFeaturesFileConfig {
 
     }
 
-    
-    public static void loadDefaultBlockConverters( 
-    		TreeMap<String, BlockConverter> blockConverters, List<String> sampleSets ) {
 
-    	if ( sampleSets.contains( "sample01" ) ) {
-    		BlockConverter bc1 = new BlockConverter( "coal_ore", 9 );
-    		bc1.getTargets().add( new BlockConverterTarget( "diamond", 1 ));
-    		
-
-    		BlockConverter bc2 = new BlockConverter( "ice_block" );
-    		BlockConverterTarget bc2t1 = new BlockConverterTarget( "water_bucket", 2);
-    		BlockConverterTarget bc2t2 = new BlockConverterTarget( "gravel", 1);
-    		BlockConverterTarget bc2t3 = new BlockConverterTarget( "pufferfish", 1, 0.15 );
-    		bc2t3.getPermissions().add("prison.not.used.sample.pufferfish");
-    		bc2t3.getPermissions().add("prison.not.used.sample.admin");
-    		bc2.getTargets().add( bc2t1 );
-    		bc2.getTargets().add( bc2t2 );
-    		bc2.getTargets().add( bc2t3 );
-    		
-    		
-    		
-    		blockConverters.put( bc1.getKeyBlockName(), bc1 );
-    		blockConverters.put( bc2.getKeyBlockName(), bc2 );
-    		
-    	}
-    	
-    	if ( sampleSets.contains( "smelt" ) ) {
-    		
-    		addSmeltBlockConverter( "cobblestone", "stone", blockConverters );
-    		addSmeltBlockConverter( "cobbled_deepslate", "deepslate", "1.17", blockConverters );
-    		
-    		addSmeltBlockConverter( "gold_ore", "gold_ingot", blockConverters );
-    		addSmeltBlockConverter( "nether_gold_ore", "gold_ingot", "1.16", blockConverters );
-    		addSmeltBlockConverter( "deepslate_gold_ore", "gold_ingot", "1.17", blockConverters );
-    		addSmeltBlockConverter( "raw_gold", "gold_ingot", "1.17", blockConverters );
-
-    		addSmeltBlockConverter( "iron_ore", "iron_ingot", blockConverters );
-    		addSmeltBlockConverter( "deepslate_iron_ore", "iron_ingot", "1.17", blockConverters );
-    		addSmeltBlockConverter( "raw_iron", "iron_ingot", "1.17", blockConverters );
-    		
-    		addSmeltBlockConverter( "coal_ore", "coal", blockConverters );
-    		addSmeltBlockConverter( "deepslate_coal_ore", "coal", "1.17", blockConverters );
-
-    		addSmeltBlockConverter( "diamond_ore", "diamond", blockConverters );
-    		addSmeltBlockConverter( "deepslate_diamond_ore", "diamond", "1.17", blockConverters );
-    	
-    		addSmeltBlockConverter( "emerald_ore", "emerald", blockConverters );
-    		addSmeltBlockConverter( "deepslate_emerald_ore", "emerald", "1.17", blockConverters );
-
-    		addSmeltBlockConverter( "lapis_ore", "lapis_lazuli", blockConverters );
-    		addSmeltBlockConverter( "deepslate_lapis_ore", "lapis_lazuli", "1.17", blockConverters );
-
-    		// NOTE: redstone dust is called redstone within XMaterials:
-    		addSmeltBlockConverter( "redstone_ore", "redstone", blockConverters );
-    		addSmeltBlockConverter( "deepslate_redstone_ore", "redstone", "1.17", blockConverters );
-
-    		addSmeltBlockConverter( "nether_quartz_ore", "quartz", blockConverters );
-    		
-    		addSmeltBlockConverterDisabled( "ancient_debris", "netherite_scrap", "1.16", blockConverters );
-
-    		addSmeltBlockConverter( "copper_ore", "copper_ingot", "1.17", blockConverters );
-    		addSmeltBlockConverter( "deepslate_copper_ore", "copper_ingot", "1.17", blockConverters );
-    		addSmeltBlockConverter( "raw_copper", "copper_ingot", "1.17", blockConverters );
-    		
-    		
-    		addSmeltBlockConverter( "sand", "glass", blockConverters );
-    		addSmeltBlockConverter( "red_sand", "glass", blockConverters );
-    		
-    		addSmeltBlockConverter( "clay_ball", "brick", blockConverters );
-    		
-    		addSmeltBlockConverter( "netherrack", "nether_brick", blockConverters );
-    		addSmeltBlockConverter( "nether_brick", "cracked_nether_brick", blockConverters );
-
-    		
-    		addSmeltBlockConverterDisabled( "cactus", "green_dye", blockConverters );
-    		addSmeltBlockConverterDisabled( "sea_pickle", "lime_dye", "1.13", blockConverters );
-    		addSmeltBlockConverterDisabled( "chorus_fruit", "popped_chorus_fruit", "1.9", blockConverters );
-    		addSmeltBlockConverterDisabled( "wet_sponge", "sponge", blockConverters );
-    		
-    		
-    		addSmeltBlockConverterDisabled( "potato", "baked_potato", blockConverters );
-    		addSmeltBlockConverterDisabled( "kep", "dried_kelp", "1.13", blockConverters );
-    		
-    	}
-	}
-
-    private static void addSmeltBlockConverter( 
-    				String keyBlockName, String targetName, 
-    				TreeMap<String, BlockConverter> blockConverters ) {
-    	
-    	addSmeltBlockConverter( keyBlockName, targetName, null, true, blockConverters );
-    }
-    private static void addSmeltBlockConverterDisabled( 
-    		String keyBlockName, String targetName, 
-    		TreeMap<String, BlockConverter> blockConverters ) {
-    	
-    	addSmeltBlockConverter( keyBlockName, targetName, null, false, blockConverters );
-    }
-    
-    private static void addSmeltBlockConverter( 
-    		String keyBlockName, String targetName, 
-    		String semanticVersion,
-    		TreeMap<String, BlockConverter> blockConverters ) {
-    	
-    	addSmeltBlockConverter( keyBlockName, targetName, null, true, blockConverters );
-    }
-    private static void addSmeltBlockConverterDisabled( 
-    		String keyBlockName, String targetName, 
-    		String semanticVersion,
-    		TreeMap<String, BlockConverter> blockConverters ) {
-    	
-    	addSmeltBlockConverter( keyBlockName, targetName, null, false, blockConverters );
-    }
-    	
-   private static void addSmeltBlockConverter( 
-    			String keyBlockName, String targetName, 
-    			String semanticVersion,
-    			boolean enabled,
-    			TreeMap<String, BlockConverter> blockConverters ) {
-    	
-    	BlockConverter bc = new BlockConverter( keyBlockName, 1 );
-    	bc.getTargets().add( new BlockConverterTarget( targetName, 1 ) );
-    	
-    	// All converters are auto-enabled, so only need to disable:
-    	if ( !enabled ) {
-    		bc.setEnabled( enabled );
-    	}
-    	
-    	if ( semanticVersion != null && semanticVersion.trim().length() > 0 ) {
-    		bc.setMininumSpigotSemanticVersion( semanticVersion );
-    	}
-    	
-    	blockConverters.put( bc.getKeyBlockName(), bc );
-    }
 
 	public void reloadConfig() {
     	// First clear the configs:

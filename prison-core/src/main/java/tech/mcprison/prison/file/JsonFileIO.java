@@ -26,6 +26,10 @@ public class JsonFileIO
 		this.gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
 	}
 
+	public JsonFileIO() {
+		this( null, null );
+	}
+	
 	public Gson getGson()
 	{
 		return gson;

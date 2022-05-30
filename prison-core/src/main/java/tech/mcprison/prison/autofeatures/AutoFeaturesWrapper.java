@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.output.Output;
 
 public class AutoFeaturesWrapper
 {
@@ -11,11 +12,18 @@ public class AutoFeaturesWrapper
 	private static AutoFeaturesWrapper instance = null;
 
 	private AutoFeaturesFileConfig autoFeaturesConfig = null;
+	
+	private BlockConvertersFileConfig blockConvertersConfig = null;
 
 	private AutoFeaturesWrapper() {
 		super();
 		
 		this.autoFeaturesConfig = new AutoFeaturesFileConfig();
+		
+		if ( Output.get().isDebug() ) {
+			
+			this.blockConvertersConfig = new BlockConvertersFileConfig();
+		}
 	}
 	
 	public static AutoFeaturesWrapper getInstance() {
@@ -31,9 +39,26 @@ public class AutoFeaturesWrapper
 		return instance;
 	}
 	
+	
+	public void reloadConfigs() {
+		getAutoFeaturesConfig().reloadConfig();
+		
+		if ( Output.get().isDebug() ) {
+			
+			getBlockConvertersConfig().reloadConfig();
+		}
+	}
 
 	public AutoFeaturesFileConfig getAutoFeaturesConfig() {
 		return autoFeaturesConfig;
+	}
+
+	public BlockConvertersFileConfig getBlockConvertersConfig() {
+		return blockConvertersConfig;
+	}
+
+	public void setBlockConvertersConfig(BlockConvertersFileConfig blockConvertersConfig) {
+		this.blockConvertersConfig = blockConvertersConfig;
 	}
 
 	public boolean isBoolean( AutoFeatures feature ) {

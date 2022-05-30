@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
-import tech.mcprison.prison.autofeatures.BlockConvertersNode;
 import tech.mcprison.prison.autofeatures.BooleanNode;
 import tech.mcprison.prison.autofeatures.DoubleNode;
 import tech.mcprison.prison.autofeatures.IntegerNode;
@@ -82,16 +81,16 @@ public abstract class YamlFileIO {
 				set( key, ((StringListNode) value).getValue() );
 				break;
 				
-			case BLOCK_CONVERTER:
-				try {
-					set( key, ((BlockConvertersNode) value).toYamlMap() );
-				} 
-				catch (Exception e) {
-					Output.get().logError("YamlFileIO.saveYamlAutoFeatures "
-							+ "Error with BLOCK_CONVERTER toYamlMap. key: " + key, e);
-//					e.printStackTrace();
-				}
-				break;
+//			case BLOCK_CONVERTER:
+//				try {
+//					set( key, ((BlockConvertersNode) value).toYamlMap() );
+//				} 
+//				catch (Exception e) {
+//					Output.get().logError("YamlFileIO.saveYamlAutoFeatures "
+//							+ "Error with BLOCK_CONVERTER toYamlMap. key: " + key, e);
+////					e.printStackTrace();
+//				}
+//				break;
 			
 			default:
 				// invalid type... not supported.
@@ -208,35 +207,35 @@ public abstract class YamlFileIO {
 					
 					value = StringListNode.valueOf( stringListVal );
 				}
-				else if ( autoFeat.isBlockConverter() ) {
-					// Setup default value for block converters:
-					BlockConvertersNode blockConverters = new BlockConvertersNode(
-											autoFeat.getBlockConverters() );
-					
-					if ( yaml.containsKey(key) ) {
-						
-						try {
-							
-							Object rawBlockConverterNode =  yaml.get( key );
-							
-							if ( rawBlockConverterNode != null && rawBlockConverterNode instanceof TreeMap ) {
-								
-								@SuppressWarnings("unchecked")
-								TreeMap<String, Object> rawBlockConverters = (TreeMap<String, Object>) rawBlockConverterNode;
-								
-								blockConverters.loadFromYamlFile( rawBlockConverters );
-							}
-						} 
-						catch (Exception e) {
-							Output.get().logError("YamlFileIO.loadYamlAutoFeatures "
-									+ "Error with BLOCK_CONVERTER loadFromYamlFile. key: " + key, e);
-//							e.printStackTrace();
-						}
-						
-					}
-					
-					value = blockConverters;
-				}
+//				else if ( autoFeat.isBlockConverter() ) {
+//					// Setup default value for block converters:
+//					BlockConvertersNode blockConverters = new BlockConvertersNode(
+//											autoFeat.getBlockConverters() );
+//					
+//					if ( yaml.containsKey(key) ) {
+//						
+//						try {
+//							
+//							Object rawBlockConverterNode =  yaml.get( key );
+//							
+//							if ( rawBlockConverterNode != null && rawBlockConverterNode instanceof TreeMap ) {
+//								
+//								@SuppressWarnings("unchecked")
+//								TreeMap<String, Object> rawBlockConverters = (TreeMap<String, Object>) rawBlockConverterNode;
+//								
+//								blockConverters.loadFromYamlFile( rawBlockConverters );
+//							}
+//						} 
+//						catch (Exception e) {
+//							Output.get().logError("YamlFileIO.loadYamlAutoFeatures "
+//									+ "Error with BLOCK_CONVERTER loadFromYamlFile. key: " + key, e);
+////							e.printStackTrace();
+//						}
+//						
+//					}
+//					
+//					value = blockConverters;
+//				}
 				
 				
 				if ( !keys.contains( autoFeat.getKey() )) {
