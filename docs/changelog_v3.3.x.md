@@ -14,6 +14,15 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11e 2022-05-30
 
 
+* **Romanian Locale language files were placed in the wrong location.**
+Oreoezi provide two new language files for the Romanian Locale, but they were placed in the wrong location.
+They were added to "prison-core/out/production/resources/lang/core/" and ".../mines/".  For them to actually
+work correctly, without being deleted, need to be placed within the following path:
+"prison-core/src/main/resources/lang/core/" and "prison-core/src/main/resources/lang/mines".
+These should now be usable.  Also the LocaleManager now has alternatives setup to default to en_US; future
+alternative languages can be added in the future.
+
+
 * **BlockConverters: add some validators to the BlockConverters.**
 Reports various issues, fixes non-lowercase source block names, and also disables invalid settings.
 

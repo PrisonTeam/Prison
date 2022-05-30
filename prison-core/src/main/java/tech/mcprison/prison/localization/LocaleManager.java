@@ -113,6 +113,8 @@ public class LocaleManager {
         // Portugese dialects
         ALTERNATIVES.put("pt_BR", Arrays.asList("pt_PT", "en_US"));
         ALTERNATIVES.put("pt_PT", Arrays.asList("pt_BR", "en_US"));
+
+        ALTERNATIVES.put("ro_RO", Arrays.asList("en_US"));
     }
 
     private final PluginEntity module;
