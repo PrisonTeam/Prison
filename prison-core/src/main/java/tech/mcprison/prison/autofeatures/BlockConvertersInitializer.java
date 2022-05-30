@@ -2,8 +2,11 @@ package tech.mcprison.prison.autofeatures;
 
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import tech.mcprison.prison.autofeatures.BlockConvertersFileConfig.BlockConverterTypes;
+import tech.mcprison.prison.output.Output;
 
 public class BlockConvertersInitializer {
 
@@ -198,6 +201,7 @@ public class BlockConvertersInitializer {
 	
 	public boolean validateBlockConverters( 
 			TreeMap<BlockConverterTypes, TreeMap<String, BlockConverter>> blockConverters ) {
+		boolean dirty = false;
 		
 		// The root nodes do not need to be validated since they have to be enums
 		Set<BlockConverterTypes> typeKeys = blockConverters.keySet();
@@ -205,11 +209,137 @@ public class BlockConvertersInitializer {
 			
 			TreeMap<String, BlockConverter> converters = blockConverters.get(type);
 			
+			TreeMap<String, String> convertersRemovable = new TreeMap<>();
+			
+			
 			Set<String> converterKeys = converters.keySet();
+			
+			for (String converterKey : converterKeys) {
+				
+				BlockConverter converter = converters.get( converterKey );
+				
+				if ( !converterKey.equals( converterKey.toLowerCase() ) ) {
+					Output.get().logInfo( 
+							"BlockConverters: block converter key value must be all lowercase or they will never be "
+							+ "accessible. Converting to lowercase and updating config. "
+							+ "BlockConverterType: %s  converterKey: %s ",
+							type.name(), converterKey );
+					
+					convertersRemovable.put( converterKey, converterKey.toLowerCase() );
+					dirty = true;
+				}
+				
+				if ( converter.getKeyQuantity() < 1 ) {
+					
+					Output.get().logInfo( 
+							"BlockConverters: block converter keyQuantity must have a value of 1 or greater. "
+							+ "This BlockConverter is being disabled. "
+									+ "BlockConverterType: %s  converterKey: %s  keyQuantity: %d ",
+									type.name(), converterKey, converter.getKeyQuantity() );
+					converter.setEnabled( false );
+					dirty = true;
+				}
+				
+				if ( isSpigotVersionInvalid( converter.getMininumSpigotSemanticVersion() ) ) {
+					
+					
+					Output.get().logInfo( 
+							"BlockConverters: block converter MininumSpigotSemanticVersion is invalid. "
+									+ "This BlockConverter may not work as expected. No changes applied. "
+									+ "BlockConverterType: %s  converterKey: %s  mininumSpigotSemanticVersion: %s ",
+									type.name(), converterKey, converter.getMininumSpigotSemanticVersion() );
+//					converter.setEnabled( false );
+//					dirty = true;
+				}
+				
+				
+				for ( BlockConverterTarget bcTarget : converter.getTargets() ) {
+					
+					if ( bcTarget.getChance() <= 0 ) {
+						
+						Output.get().logInfo( 
+								"BlockConverters: block converter target has invalid chance: Cannot be zero or negative. "
+										+ "This BlockConverter target has been disabled. "
+										+ "BlockConverterType: %s  converterKey: %s  "
+										+ "targetBlockName: %s  chance: %d",
+										type.name(), converterKey,
+										bcTarget.getBlockName(), bcTarget.getChance());
+						
+						bcTarget.setEnabled( false );
+						dirty = true;
+					}
+					
+					if ( bcTarget.getChance() > 100 ) {
+						
+						Output.get().logInfo( 
+								"BlockConverters: block converter target has invalid chance: Cannot be greater than 100. "
+										+ "This BlockConverter target has been disabled. "
+										+ "BlockConverterType: %s  converterKey: %s  "
+										+ "targetBlockName: %s  chance: %d",
+										type.name(), converterKey,
+										bcTarget.getBlockName(), bcTarget.getChance());
+						
+						bcTarget.setEnabled( false );
+						dirty = true;
+					}
+
+					if ( bcTarget.getQuantity() <= 0 ) {
+						
+						Output.get().logInfo( 
+								"BlockConverters: block converter target has invalid quatity: Cannot be zero or negative. "
+										+ "This BlockConverter target has been disabled. "
+										+ "BlockConverterType: %s  converterKey: %s  "
+										+ "targetBlockName: %s  quantity: %d",
+										type.name(), converterKey,
+										bcTarget.getBlockName(), bcTarget.getQuantity() );
+						
+						bcTarget.setEnabled( false );
+						dirty = true;
+					}
+					
+					
+				}
+				
+				
+			}
+
+			if ( convertersRemovable.size() > 0 ) {
+				Set<String> keys = convertersRemovable.keySet();
+				for ( String removeableKey : keys ) {
+					
+					String newKey = convertersRemovable.get( removeableKey );
+					
+					// Remove the old key, and add the BlockConverter back with the new key:
+					BlockConverter converter = converters.remove( removeableKey );
+					if ( converter != null ) {
+						converter.setKeyBlockName( newKey );
+						converters.put( newKey, converter );
+					}
+					
+				}
+			}
 			
 		}
 		
-		return false;
+		return dirty;
+	}
+
+
+	private boolean isSpigotVersionInvalid(String mininumSpigotSemanticVersion) {
+		boolean invalid = false;
+		
+		if ( mininumSpigotSemanticVersion != null ) {
+			
+			// validate that the semantic value is valid
+			String semVerRegEx = "^((([0-9]+)\\.([0-9]+)\\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?)"
+					+ "(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?)$";
+			Pattern versionPattern = Pattern.compile( semVerRegEx );
+		    Matcher matcher = versionPattern.matcher( mininumSpigotSemanticVersion );
+		    invalid = matcher.matches();
+		    
+		}
+		
+		return invalid;
 	}
 
 }

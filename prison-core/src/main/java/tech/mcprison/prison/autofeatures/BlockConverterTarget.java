@@ -7,6 +7,7 @@ public class BlockConverterTarget {
 	private String blockName;
 	private Integer quantity;
 	private Double chance;
+	private boolean enabled;
 	private ArrayList<String> permissions;
 	
 	public BlockConverterTarget( String blockName, Integer quantity ) {
@@ -15,6 +16,7 @@ public class BlockConverterTarget {
 		this.blockName = blockName;
 		this.quantity = quantity;
 		this.chance = null;
+		this.enabled = true;
 		
 		this.permissions = new ArrayList<>();
 	}
@@ -137,6 +139,11 @@ public class BlockConverterTarget {
 		sb.append( getBlockName() ).append( " ");
 		sb.append( getQuantity() );
 		
+		if ( !isEnabled() ) {
+			
+			sb.append( "DISABLED " );
+		}
+		
 		if ( getChance() != null && getChance() != 0d ) {
 			sb.append( " " ).append( getChance() );
 		}
@@ -184,6 +191,13 @@ public class BlockConverterTarget {
 	}
 	public void setChance(Double chance) {
 		this.chance = chance;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	public ArrayList<String> getPermissions() {
