@@ -18,7 +18,7 @@ public class BlockConverter {
 	
 	private ArrayList<String> permissions;
 	
-	private ArrayList<BlockConverterTarget> targets;
+	private ArrayList<BlockConverterOutput> outputs;
 	
 	public BlockConverter( String blockName, int keyQuantity ) {
 		super();
@@ -31,7 +31,7 @@ public class BlockConverter {
 		
 		this.permissions = new ArrayList<>();
 		
-		this.targets = new ArrayList<>();
+		this.outputs = new ArrayList<>();
 	}
 
 	public BlockConverter( String blockName, int keyQuantity, String mininumSpigotSemanticVersion ) {
@@ -183,9 +183,9 @@ public class BlockConverter {
 		sb.append( ": [");
 		
 		List<String> strList = new ArrayList<>();
-		for (BlockConverterTarget bcTarget : targets) {
+		for (BlockConverterOutput bcOutput : outputs) {
 			
-			strList.add( bcTarget.toString() );
+			strList.add( bcOutput.toString() );
 		}
 		sb.append( String.join( ", ", strList ) );
 		
@@ -193,13 +193,6 @@ public class BlockConverter {
 		
 		return sb.toString();
 	}
-
-//	public String getKey() {
-//		return key;
-//	}
-//	public void setKey(String key) {
-//		this.key = key;
-//	}
 
 	public String getKeyBlockName() {
 		return keyBlockName;
@@ -236,11 +229,11 @@ public class BlockConverter {
 		this.permissions = permissions;
 	}
 
-	public ArrayList<BlockConverterTarget> getTargets() {
-		return targets;
+	public ArrayList<BlockConverterOutput> getOutputs() {
+		return outputs;
 	}
-	public void setTargets(ArrayList<BlockConverterTarget> targets) {
-		this.targets = targets;
+	public void setOutputs(ArrayList<BlockConverterOutput> outputs) {
+		this.outputs = outputs;
 	}
 
 }

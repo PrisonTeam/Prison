@@ -2,7 +2,7 @@ package tech.mcprison.prison.autofeatures;
 
 import java.util.ArrayList;
 
-public class BlockConverterTarget {
+public class BlockConverterOutput {
 
 	private String blockName;
 	private Integer quantity;
@@ -10,7 +10,7 @@ public class BlockConverterTarget {
 	private boolean enabled;
 	private ArrayList<String> permissions;
 	
-	public BlockConverterTarget( String blockName, Integer quantity ) {
+	public BlockConverterOutput( String blockName, Integer quantity ) {
 		super();
 		
 		this.blockName = blockName;
@@ -21,7 +21,7 @@ public class BlockConverterTarget {
 		this.permissions = new ArrayList<>();
 	}
 
-	public BlockConverterTarget( String blockName, Integer quantity, Double chance ) {
+	public BlockConverterOutput( String blockName, Integer quantity, Double chance ) {
 		this( blockName, quantity );
 		
 		this.chance = chance;

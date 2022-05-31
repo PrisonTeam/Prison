@@ -66,18 +66,18 @@ public class BlockConvertersInitializer {
     private void loadDefaultBlockConverterSample01(TreeMap<String, BlockConverter> blockConverters) {
 
     	BlockConverter bc1 = new BlockConverter( "coal_ore", 9 );
-    	bc1.getTargets().add( new BlockConverterTarget( "diamond", 1 ));
+    	bc1.getOutputs().add( new BlockConverterOutput( "diamond", 1 ));
     	
     	
     	BlockConverter bc2 = new BlockConverter( "ice_block" );
-    	BlockConverterTarget bc2t1 = new BlockConverterTarget( "water_bucket", 2);
-    	BlockConverterTarget bc2t2 = new BlockConverterTarget( "gravel", 1);
-    	BlockConverterTarget bc2t3 = new BlockConverterTarget( "pufferfish", 1, 0.15 );
+    	BlockConverterOutput bc2t1 = new BlockConverterOutput( "water_bucket", 2);
+    	BlockConverterOutput bc2t2 = new BlockConverterOutput( "gravel", 1);
+    	BlockConverterOutput bc2t3 = new BlockConverterOutput( "pufferfish", 1, 0.15 );
     	bc2t3.getPermissions().add("prison.not.used.sample.pufferfish");
     	bc2t3.getPermissions().add("prison.not.used.sample.admin");
-    	bc2.getTargets().add( bc2t1 );
-    	bc2.getTargets().add( bc2t2 );
-    	bc2.getTargets().add( bc2t3 );
+    	bc2.getOutputs().add( bc2t1 );
+    	bc2.getOutputs().add( bc2t2 );
+    	bc2.getOutputs().add( bc2t3 );
     	
     	
     	
@@ -150,41 +150,41 @@ public class BlockConvertersInitializer {
 	}
 
     private static void addSmeltBlockConverter( 
-    				String keyBlockName, String targetName, 
+    				String keyBlockName, String outputName, 
     				TreeMap<String, BlockConverter> blockConverters ) {
     	
-    	addSmeltBlockConverter( keyBlockName, targetName, null, true, blockConverters );
+    	addSmeltBlockConverter( keyBlockName, outputName, null, true, blockConverters );
     }
     private static void addSmeltBlockConverterDisabled( 
-    		String keyBlockName, String targetName, 
+    		String keyBlockName, String outputName, 
     		TreeMap<String, BlockConverter> blockConverters ) {
     	
-    	addSmeltBlockConverter( keyBlockName, targetName, null, false, blockConverters );
+    	addSmeltBlockConverter( keyBlockName, outputName, null, false, blockConverters );
     }
     
     private static void addSmeltBlockConverter( 
-    		String keyBlockName, String targetName, 
+    		String keyBlockName, String outputName, 
     		String semanticVersion,
     		TreeMap<String, BlockConverter> blockConverters ) {
     	
-    	addSmeltBlockConverter( keyBlockName, targetName, null, true, blockConverters );
+    	addSmeltBlockConverter( keyBlockName, outputName, null, true, blockConverters );
     }
     private static void addSmeltBlockConverterDisabled( 
-    		String keyBlockName, String targetName, 
+    		String keyBlockName, String outputName, 
     		String semanticVersion,
     		TreeMap<String, BlockConverter> blockConverters ) {
     	
-    	addSmeltBlockConverter( keyBlockName, targetName, null, false, blockConverters );
+    	addSmeltBlockConverter( keyBlockName, outputName, null, false, blockConverters );
     }
     	
    private static void addSmeltBlockConverter( 
-    			String keyBlockName, String targetName, 
+    			String keyBlockName, String outputName, 
     			String semanticVersion,
     			boolean enabled,
     			TreeMap<String, BlockConverter> blockConverters ) {
     	
     	BlockConverter bc = new BlockConverter( keyBlockName, 1 );
-    	bc.getTargets().add( new BlockConverterTarget( targetName, 1 ) );
+    	bc.getOutputs().add( new BlockConverterOutput( outputName, 1 ) );
     	
     	// All converters are auto-enabled, so only need to disable:
     	if ( !enabled ) {
@@ -253,55 +253,55 @@ public class BlockConvertersInitializer {
 				}
 				
 				
-				for ( BlockConverterTarget bcTarget : converter.getTargets() ) {
+				for ( BlockConverterOutput bcOutput : converter.getOutputs() ) {
 					
-					if ( bcTarget.getChance() != null && bcTarget.getChance() <= 0 ) {
+					if ( bcOutput.getChance() != null && bcOutput.getChance() <= 0 ) {
 						
 						Output.get().logInfo( 
-								"BlockConverters: block converter target has invalid chance: "
+								"BlockConverters: block converter output has an invalid chance: "
 										+ "Cannot be zero or negative. "
-										+ "This BlockConverter target has been disabled. "
+										+ "This BlockConverter output has been disabled. "
 										+ "BlockConverterType: %s  converterKey: %s  "
-										+ "targetBlockName: %s  chance: %s",
+										+ "outputBlockName: %s  chance: %s",
 										type.name(), converterKey,
-										bcTarget.getBlockName(), 
+										bcOutput.getBlockName(), 
 										
-										bcTarget.getChance() == null ? "null" : Double.toString( bcTarget.getQuantity() )
+										bcOutput.getChance() == null ? "null" : Double.toString( bcOutput.getQuantity() )
 										
 								);
 						
-						bcTarget.setEnabled( false );
+						bcOutput.setEnabled( false );
 						dirty = true;
 					}
 					
-					if ( bcTarget.getChance() != null && bcTarget.getChance() > 100 ) {
+					if ( bcOutput.getChance() != null && bcOutput.getChance() > 100 ) {
 						
 						Output.get().logInfo( 
-								"BlockConverters: block converter target has invalid chance: Cannot be greater than 100. "
-										+ "This BlockConverter target has been disabled. "
+								"BlockConverters: block converter output has an invalid chance: Cannot be greater than 100. "
+										+ "This BlockConverter output has been disabled. "
 										+ "BlockConverterType: %s  converterKey: %s  "
-										+ "targetBlockName: %s  chance: %d",
+										+ "outputBlockName: %s  chance: %d",
 										type.name(), converterKey,
-										bcTarget.getBlockName(), bcTarget.getChance());
+										bcOutput.getBlockName(), bcOutput.getChance());
 						
-						bcTarget.setEnabled( false );
+						bcOutput.setEnabled( false );
 						dirty = true;
 					}
 
-					if ( bcTarget.getQuantity() == null || bcTarget.getQuantity() <= 0 ) {
+					if ( bcOutput.getQuantity() == null || bcOutput.getQuantity() <= 0 ) {
 						
 						Output.get().logInfo( 
-								"BlockConverters: block converter target has invalid quatity: "
+								"BlockConverters: block converter output has an invalid quatity: "
 										+ "Cannot be null, zero, or negative. "
-										+ "This BlockConverter target has been disabled. "
+										+ "This BlockConverter output has been disabled. "
 										+ "BlockConverterType: %s  converterKey: %s  "
-										+ "targetBlockName: %s  quantity: %s",
+										+ "outputBlockName: %s  quantity: %s",
 										type.name(), converterKey,
-										bcTarget.getBlockName(), 
-										bcTarget.getQuantity() == null ? "null" : Integer.toString( bcTarget.getQuantity() )
+										bcOutput.getBlockName(), 
+										bcOutput.getQuantity() == null ? "null" : Integer.toString( bcOutput.getQuantity() )
 									);
 						
-						bcTarget.setEnabled( false );
+						bcOutput.setEnabled( false );
 						dirty = true;
 					}
 					

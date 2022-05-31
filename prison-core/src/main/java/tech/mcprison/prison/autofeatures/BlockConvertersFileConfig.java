@@ -47,17 +47,17 @@ public class BlockConvertersFileConfig
 			
 			if ( bc != null && blockQuantity >= bc.getKeyQuantity() ) {
 				
-				// getBlockConverterTargets applies chance, perms, etc...
-				List<BlockConverterTarget> targets = getBlockConverterTargets( player, bc );
+				// getBlockConverterOutputs applies chance, perms, etc...
+				List<BlockConverterOutput> outputs = getBlockConverterOutputs( player, bc );
 				
 				int multiplier = blockQuantity / bc.getKeyQuantity();
 				
 				results.setResultsQuantityConsumed( bc.getKeyQuantity() * multiplier );
 				
-				for (BlockConverterTarget target : targets) {
+				for (BlockConverterOutput output : outputs) {
 					
-					String blkName = target.getBlockName();
-					int blkQuanity = target.getQuantity();
+					String blkName = output.getBlockName();
+					int blkQuanity = output.getQuantity();
 					
 					PrisonBlock pBlock = Prison.get().getPlatform().getPrisonBlock( blkName );
 					if ( pBlock != null ) {
@@ -139,56 +139,56 @@ public class BlockConvertersFileConfig
 	
 	
 	/**
-	 * <p>Based upon the block converter, extract all valid targets for this player.
+	 * <p>Based upon the block converter, extract all valid outputs for this player.
 	 * </p>
 	 * 
 	 * @param player
 	 * @param bc
 	 * @return
 	 */
-	private List<BlockConverterTarget> getBlockConverterTargets(RankPlayer player, BlockConverter bc) {
+	private List<BlockConverterOutput> getBlockConverterOutputs(RankPlayer player, BlockConverter bc) {
 		
-		List<BlockConverterTarget> targets = new ArrayList<>();
+		List<BlockConverterOutput> outputs = new ArrayList<>();
 		
-		if ( bc.getTargets() != null ) {
+		if ( bc.getOutputs() != null ) {
 			
-			for ( BlockConverterTarget bcTarget : bc.getTargets() ) {
+			for ( BlockConverterOutput bcOutput : bc.getOutputs() ) {
 				
-				if ( bcTarget.isEnabled() ) {
+				if ( bcOutput.isEnabled() ) {
 					
-					// If chance, and the random number is greater than the chance, then skip this target:
-					if ( bcTarget.getChance() != null && 
-							bcTarget.getChance().doubleValue() > (Math.random() * 100d ) ) {
+					// If chance, and the random number is greater than the chance, then skip this output:
+					if ( bcOutput.getChance() != null && 
+							bcOutput.getChance().doubleValue() > (Math.random() * 100d ) ) {
 						continue;
 					}
 					
 					// Confirm the player has perms:
-					if ( bcTarget.getPermissions() != null ) {
+					if ( bcOutput.getPermissions() != null ) {
 						
 						boolean hasPerm = false;
-						for (String perm : bcTarget.getPermissions() ) {
+						for (String perm : bcOutput.getPermissions() ) {
 							if ( player.hasPermission( perm ) ) {
 								hasPerm = true;
 								break;
 							}
 						}
 						
-						// If player does not have perms to use this target, then skip this target:
+						// If player does not have perms to use this output, then skip this output:
 						if ( !hasPerm ) {
 							continue;
 						}
 						
 					}
 					
-					// Return the selected target:
-					targets.add( bcTarget );
+					// Return the selected output:
+					outputs.add( bcOutput );
 				}
 				
 			}
 		}
 		
 		
-		return targets;
+		return outputs;
 	}
 	
 	

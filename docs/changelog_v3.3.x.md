@@ -14,6 +14,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11e 2022-05-30
 
 
+* **BlockConverters: rename targets to outputs.**
+
+
 * **BlockConversions: hooked up the code to not only filter and return the blockConversions for the player and the block, but to also return the item stacks from the results.**
 This is just about ready to be used in the code.
 
