@@ -28,6 +28,7 @@ import java.util.UUID;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.PlayerUtil;
 import tech.mcprison.prison.internal.Scheduler;
@@ -314,6 +315,9 @@ public interface Platform {
 	
 	public PrisonBlock getPrisonBlock( String blockName );
 	
+	public ItemStack getItemStack( PrisonBlock prisonBlock, int blockQuantity );
+	
+	
 	
 	public boolean linkModuleElements( ModuleElement sourceElement, ModuleElementType targetElementType, String name );
 	
@@ -430,5 +434,5 @@ public interface Platform {
 
 
 	public int compareServerVerisonTo( String comparisonVersion );
-	
+
 }

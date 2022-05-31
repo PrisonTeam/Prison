@@ -255,21 +255,26 @@ public class BlockConvertersInitializer {
 				
 				for ( BlockConverterTarget bcTarget : converter.getTargets() ) {
 					
-					if ( bcTarget.getChance() <= 0 ) {
+					if ( bcTarget.getChance() != null && bcTarget.getChance() <= 0 ) {
 						
 						Output.get().logInfo( 
-								"BlockConverters: block converter target has invalid chance: Cannot be zero or negative. "
+								"BlockConverters: block converter target has invalid chance: "
+										+ "Cannot be zero or negative. "
 										+ "This BlockConverter target has been disabled. "
 										+ "BlockConverterType: %s  converterKey: %s  "
-										+ "targetBlockName: %s  chance: %d",
+										+ "targetBlockName: %s  chance: %s",
 										type.name(), converterKey,
-										bcTarget.getBlockName(), bcTarget.getChance());
+										bcTarget.getBlockName(), 
+										
+										bcTarget.getChance() == null ? "null" : Double.toString( bcTarget.getQuantity() )
+										
+								);
 						
 						bcTarget.setEnabled( false );
 						dirty = true;
 					}
 					
-					if ( bcTarget.getChance() > 100 ) {
+					if ( bcTarget.getChance() != null && bcTarget.getChance() > 100 ) {
 						
 						Output.get().logInfo( 
 								"BlockConverters: block converter target has invalid chance: Cannot be greater than 100. "
@@ -283,15 +288,18 @@ public class BlockConvertersInitializer {
 						dirty = true;
 					}
 
-					if ( bcTarget.getQuantity() <= 0 ) {
+					if ( bcTarget.getQuantity() == null || bcTarget.getQuantity() <= 0 ) {
 						
 						Output.get().logInfo( 
-								"BlockConverters: block converter target has invalid quatity: Cannot be zero or negative. "
+								"BlockConverters: block converter target has invalid quatity: "
+										+ "Cannot be null, zero, or negative. "
 										+ "This BlockConverter target has been disabled. "
 										+ "BlockConverterType: %s  converterKey: %s  "
-										+ "targetBlockName: %s  quantity: %d",
+										+ "targetBlockName: %s  quantity: %s",
 										type.name(), converterKey,
-										bcTarget.getBlockName(), bcTarget.getQuantity() );
+										bcTarget.getBlockName(), 
+										bcTarget.getQuantity() == null ? "null" : Integer.toString( bcTarget.getQuantity() )
+									);
 						
 						bcTarget.setEnabled( false );
 						dirty = true;

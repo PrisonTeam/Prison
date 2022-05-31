@@ -62,6 +62,7 @@ import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.integration.IntegrationManager;
 import tech.mcprison.prison.integration.IntegrationType;
+import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.PlayerUtil;
 import tech.mcprison.prison.internal.Scheduler;
@@ -102,6 +103,7 @@ import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonsExplosi
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerTokenEnchant;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerZenchantments;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
@@ -1071,6 +1073,14 @@ public class SpigotPlatform
 //		return SpigotUtil.getPrisonBlock( blockName );
 	}
 	
+	
+	@Override
+	public ItemStack getItemStack( PrisonBlock prisonBlock, int blockQuantity ) {
+		
+		ItemStack results = new SpigotItemStack( blockQuantity, prisonBlock );
+		
+		return results;
+	}
 	
 	/**
 	 * ModuleElements are Mines or Ranks, and sometimes maybe even ladders.

@@ -440,4 +440,12 @@ public class PrisonBlock
 		return null;
 	}
 	
+	
+	public ItemStack getItemStack( int blockQuantity ) {
+		
+		ItemStack results = Prison.get().getPlatform().getItemStack( this, blockQuantity );
+		
+		return results;
+	}
+	
 }

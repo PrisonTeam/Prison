@@ -14,6 +14,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11e 2022-05-30
 
 
+* **BlockConversions: hooked up the code to not only filter and return the blockConversions for the player and the block, but to also return the item stacks from the results.**
+This is just about ready to be used in the code.
+
+
 * **Romanian Locale language files were placed in the wrong location.**
 Oreoezi provide two new language files for the Romanian Locale, but they were placed in the wrong location.
 They were added to "prison-core/out/production/resources/lang/core/" and ".../mines/".  For them to actually

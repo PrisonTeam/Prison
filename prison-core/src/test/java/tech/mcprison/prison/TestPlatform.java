@@ -33,6 +33,7 @@ import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.PlayerUtil;
 import tech.mcprison.prison.internal.Scheduler;
@@ -313,6 +314,11 @@ public class TestPlatform implements Platform {
 	
 	@Override
 	public PrisonBlock getPrisonBlock( String blockName ) {
+		return null;
+	}
+	
+	@Override
+	public ItemStack getItemStack( PrisonBlock prisonBlock, int blockQuantity ) {
 		return null;
 	}
 	
