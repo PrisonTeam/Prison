@@ -11,7 +11,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.11e 2022-05-30
+# 3.3.0-alpha.11e 2022-06-05
+
+
+* **Bug fix: Backpacks were not working properly with just ".save()" but had to add ".setChanged()" too, otherwise minepacks will not actually save the status of the backpacks.**
 
 
 * **BlockConverters: rename targets to outputs.**

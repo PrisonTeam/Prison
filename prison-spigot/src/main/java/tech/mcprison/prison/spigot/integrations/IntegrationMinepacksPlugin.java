@@ -85,7 +85,7 @@ public class IntegrationMinepacksPlugin
     			
     			if ( changedBackpack ) {
     				
-//    				bp.setChanged();
+    				bp.setChanged();
     				bp.save();
     			}
     		}
@@ -123,7 +123,7 @@ public class IntegrationMinepacksPlugin
     			
     			if ( changedBackpack ) {
     				
-//    				bp.setChanged();
+    				bp.setChanged();
     				bp.save();
     			}
     		}
@@ -165,7 +165,7 @@ public class IntegrationMinepacksPlugin
     					
     					extras.putAll( addItems( player, temp ) );
 
-//    					bp.setChanged();
+    					bp.setChanged();
     					bp.save();
     				}
 					
@@ -199,7 +199,7 @@ public class IntegrationMinepacksPlugin
 				
 				if ( removed > 0 ) {
 					
-//					bp.setChanged();
+					bp.setChanged();
 					bp.save();
 				}
 			}
