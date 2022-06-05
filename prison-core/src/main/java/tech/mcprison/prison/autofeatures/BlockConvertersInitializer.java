@@ -253,59 +253,55 @@ public class BlockConvertersInitializer {
 				}
 				
 				
-				for ( BlockConverterOutput bcOutput : converter.getOutputs() ) {
+				
+				if ( converter.getOutputs() != null ) {
 					
-					if ( bcOutput.getChance() != null && bcOutput.getChance() <= 0 ) {
-						
-						Output.get().logInfo( 
-								"BlockConverters: block converter output has an invalid chance: "
-										+ "Cannot be zero or negative. "
-										+ "This BlockConverter output has been disabled. "
-										+ "BlockConverterType: %s  converterKey: %s  "
-										+ "outputBlockName: %s  chance: %s",
-										type.name(), converterKey,
-										bcOutput.getBlockName(), 
-										
-										bcOutput.getChance() == null ? "null" : Double.toString( bcOutput.getQuantity() )
-										
-								);
-						
-						bcOutput.setEnabled( false );
-						dirty = true;
-					}
-					
-					if ( bcOutput.getChance() != null && bcOutput.getChance() > 100 ) {
-						
-						Output.get().logInfo( 
-								"BlockConverters: block converter output has an invalid chance: Cannot be greater than 100. "
-										+ "This BlockConverter output has been disabled. "
-										+ "BlockConverterType: %s  converterKey: %s  "
-										+ "outputBlockName: %s  chance: %d",
-										type.name(), converterKey,
-										bcOutput.getBlockName(), bcOutput.getChance());
-						
-						bcOutput.setEnabled( false );
-						dirty = true;
-					}
+					for (BlockConverterOutput bcOutput : converter.getOutputs()) {
 
-					if ( bcOutput.getQuantity() == null || bcOutput.getQuantity() <= 0 ) {
-						
-						Output.get().logInfo( 
-								"BlockConverters: block converter output has an invalid quatity: "
-										+ "Cannot be null, zero, or negative. "
-										+ "This BlockConverter output has been disabled. "
-										+ "BlockConverterType: %s  converterKey: %s  "
-										+ "outputBlockName: %s  quantity: %s",
-										type.name(), converterKey,
-										bcOutput.getBlockName(), 
-										bcOutput.getQuantity() == null ? "null" : Integer.toString( bcOutput.getQuantity() )
-									);
-						
-						bcOutput.setEnabled( false );
-						dirty = true;
-					}
-					
-					
+						if (bcOutput.getChance() != null && bcOutput.getChance() <= 0) {
+
+							Output.get().logInfo("BlockConverters: block converter output has an invalid chance: "
+									+ "Cannot be zero or negative. " + "This BlockConverter output has been disabled. "
+									+ "BlockConverterType: %s  converterKey: %s  " + "outputBlockName: %s  chance: %s",
+									type.name(), converterKey, bcOutput.getBlockName(),
+
+									bcOutput.getChance() == null ? "null" : Double.toString(bcOutput.getQuantity())
+
+							);
+
+							bcOutput.setEnabled(false);
+							dirty = true;
+						}
+
+						if (bcOutput.getChance() != null && bcOutput.getChance() > 100) {
+
+							Output.get().logInfo(
+									"BlockConverters: block converter output has an invalid chance: Cannot be greater than 100. "
+											+ "This BlockConverter output has been disabled. "
+											+ "BlockConverterType: %s  converterKey: %s  "
+											+ "outputBlockName: %s  chance: %d",
+									type.name(), converterKey, bcOutput.getBlockName(), bcOutput.getChance());
+
+							bcOutput.setEnabled(false);
+							dirty = true;
+						}
+
+						if (bcOutput.getQuantity() == null || bcOutput.getQuantity() <= 0) {
+
+							Output.get().logInfo(
+									"BlockConverters: block converter output has an invalid quatity: "
+											+ "Cannot be null, zero, or negative. "
+											+ "This BlockConverter output has been disabled. "
+											+ "BlockConverterType: %s  converterKey: %s  "
+											+ "outputBlockName: %s  quantity: %s",
+									type.name(), converterKey, bcOutput.getBlockName(),
+									bcOutput.getQuantity() == null ? "null" : Integer.toString(bcOutput.getQuantity()));
+
+							bcOutput.setEnabled(false);
+							dirty = true;
+						}
+
+					} 
 				}
 				
 				

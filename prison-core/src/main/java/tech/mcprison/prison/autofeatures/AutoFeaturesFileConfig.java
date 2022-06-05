@@ -287,7 +287,7 @@ public class AutoFeaturesFileConfig {
 		    	smeltLimitToMines(smeltFeature, true),
 		    	smeltAllBlocks(smeltFeature, true),
 		    	
-		    	smeltConfigurations(smeltFeature, "see smeltFeatures in BlockConversionsConfig.json"),
+//		    	smeltConfigurations(smeltFeature, "see smeltFeatures in BlockConversionsConfig.json"),
 
 //		    	smeltTransformer(smeltFeature, NodeType.BLOCK_CONVERTER, "smelt" ),
 		    	
