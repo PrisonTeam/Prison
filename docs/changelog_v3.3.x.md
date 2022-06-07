@@ -14,6 +14,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11f 2022-06-07
 
 
+* **Update XSeries to v8.7.1 from v8.6.2.**
+Note that this does not add any of the newer 1.19 blocks or items.
+
+
 * **GUI: Fixed some issues with the gui and admin perms.  Added some admin perms to a few gui commands to lock them down.**
 Found a serious issue with non-admins being able to edit rank costs and sellall item costs.  The GUIs were not locked down and if the players knew the commands, they could edit the costs.
 
