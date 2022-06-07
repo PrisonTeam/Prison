@@ -38,7 +38,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
      */
     @Command( identifier = "gui", description = "The Prison's GUI",
             aliases = {"gui admin"},
-            altPermissions = {"prison.admin", "prison.prisonmanagergui"},
+            altPermissions = "prison.admin",
             onlyPlayers = false
     )
     private void prisonManagerGUI(CommandSender sender) {
@@ -50,7 +50,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        if (player.hasPermission("prison.admin") || player.hasPermission("prison.prisonmanagergui")) {
+        if (player.hasPermission("prison.admin")) {
             SpigotPrisonGUI gui = new SpigotPrisonGUI(player);
             gui.open();
             return;
@@ -154,6 +154,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     }
     
     @Command( identifier = "gui admin mines", description = "GUI Mines",
+    		permissions = "prison.admin",
     		onlyPlayers = true )
     private void prisonManagerAdminMines(CommandSender sender,
     		@Arg(name = "page", description = "If there are more than 45 mines, then the " +
@@ -172,7 +173,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     		return;
     	}
     	
-    	if ( !player.hasPermission("prison.admin") && !player.hasPermission("prison.prisonmanagergui")) {
+    	if ( !player.hasPermission("prison.admin") ) {
             return;
         }
     	
@@ -243,6 +244,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     }
     
     @Command( identifier = "gui admin ranks", description = "GUI Ranks",
+    		permissions = "prison.admin",
     		onlyPlayers = true )
     private void prisonManagerAdminRanks(CommandSender sender,
     		
@@ -266,7 +268,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     		return;
     	}
     	
-    	if ( !player.hasPermission("prison.admin") && !player.hasPermission("prison.prisonmanagergui")) {
+    	if ( !player.hasPermission("prison.admin") ) {
             return;
         }
     	
@@ -312,6 +314,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     }
     
     @Command( identifier = "gui ladders", 
+    		permissions = "prison.admin",
     		description = "GUI Ladders. The permissions are based upon the ranks perms.",
     		onlyPlayers = true )
     private void prisonManagerLadders(CommandSender sender,
@@ -370,7 +373,8 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     // Backpack GUI commands got moved to the Backpacks class so they won't be loaded if backpacks are disabled.
 
     @Command(identifier = "gui reload", description = "Reload GUIs and sellall", 
-    		permissions = "prison.admin",onlyPlayers = false, 
+    		permissions = "prison.admin",
+    		onlyPlayers = false, 
     		aliases = {"prison reload gui", "prison reload sellall"})
     public void reloadGUICommand(CommandSender sender){
         SpigotGUIComponents.updateMessages();

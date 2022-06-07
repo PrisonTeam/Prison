@@ -11,7 +11,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.11f 2022-06-05
+# 3.3.0-alpha.11f 2022-06-07
+
+
+* **GUI: Fixed some issues with the gui and admin perms.  Added some admin perms to a few gui commands to lock them down.**
+Found a serious issue with non-admins being able to edit rank costs and sellall item costs.  The GUIs were not locked down and if the players knew the commands, they could edit the costs.
 
 
 * **v3.3.0-alpha.11f 2022-06-06**
