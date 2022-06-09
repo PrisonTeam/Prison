@@ -318,6 +318,12 @@ public class LocaleManager {
                 				
                 				File newFile = new File( localeFolder, jarResourceName );
                 				
+                				if ( newFile.exists() ) {
+                					// Not really sure why the pfd would fail find a resource, but the File exists, 
+                					// so archive it since there must be an issue with it.
+                					archiveOldPropertiesFile( newFile );
+                				}
+                				
                 				Files.copy( inStream, newFile.toPath() );
                 				
                 				Output.get().logInfo( "### LocalManager refreshLocalLocales(): Local did not exist. " +

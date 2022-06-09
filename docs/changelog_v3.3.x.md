@@ -14,6 +14,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11f 2022-06-09
 
 
+* **There is a situation when checking for new updates to the language files, that it needs to write the new file, but the old one has not been archived.**
+This now checks to make sure the old one has been renamed, and if it hasn't, then it will rename it.
+
+
 * **Added an entry for the sellall module in the modules.yml file.** 
 Code has been setup to check, with a default fall-back on to the sellall settings within config.yml file.  The entry in config.yml has been commented out. 
 Either will work, but the setting within modules.yml will take priority.
