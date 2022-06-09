@@ -14,6 +14,11 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11f 2022-06-09
 
 
+* **The build was failing intermittently on the continual integration (CI)**
+pertaining to the item-nbt-api-plugin, so an entry to added to "lock it in" to the correct path within the mavenrepository.com repo.
+This should prevent the resource from being paired with the wrong repo.
+
+
 * **There is a situation when checking for new updates to the language files, that it needs to write the new file, but the old one has not been archived.**
 This now checks to make sure the old one has been renamed, and if it hasn't, then it will rename it.
 

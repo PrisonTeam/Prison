@@ -64,6 +64,14 @@ repositories {
     }
   
 
+    maven { 
+    	url = 'https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin' 
+    	content {
+    		includeGroup 'de.tr7zw'
+    	}
+    }
+  
+
   // 	maven { url 'https://jitpack.io' }
 
 
@@ -138,7 +146,9 @@ dependencies {
  //   compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.1'
 
  
+ // NOTE: This maven repo was failing to be accessable during online builds. So added to the /lib.
 	// https://www.spigotmc.org/resources/nbt-api.7939/
+	// https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin
 	implementation 'de.tr7zw:item-nbt-api-plugin:2.9.2'
 
 
