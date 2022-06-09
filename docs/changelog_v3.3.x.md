@@ -11,7 +11,12 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.11f 2022-06-07
+# 3.3.0-alpha.11f 2022-06-09
+
+
+* **Added an entry for the sellall module in the modules.yml file.** 
+Code has been setup to check, with a default fall-back on to the sellall settings within config.yml file.  The entry in config.yml has been commented out. 
+Either will work, but the setting within modules.yml will take priority.
 
 
 * **Update XSeries to v8.7.1 from v8.6.2.**
