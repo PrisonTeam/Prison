@@ -14,6 +14,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11f 2022-06-11
 
 
+* **Disable the gui for autofeatures configs.  They are so out of date, they were causing problems.**
+Autofeatures should be manually edited.
+
+
 * **Fix a problem when BlockConverters are disabled, and doing a reload on auto features, it's not able to find that config file so its throwing an exception.**
 
 

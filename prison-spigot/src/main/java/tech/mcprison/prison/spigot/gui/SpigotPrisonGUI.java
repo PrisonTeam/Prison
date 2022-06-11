@@ -37,7 +37,7 @@ public class SpigotPrisonGUI extends SpigotGUIComponents {
 
         // Create and add buttons.
         gui.addButton(new Button(10, XMaterial.TRIPWIRE_HOOK, new ButtonLore( guiLeftClickToOpenMsg(), messages.getString(MessagesConfig.StringID.spigot_gui_lore_ranks_button_description)), "&3Ranks - Ladders" ));
-        gui.addButton(new Button(13, XMaterial.IRON_PICKAXE, new ButtonLore( guiLeftClickToOpenMsg(), messages.getString(MessagesConfig.StringID.spigot_gui_lore_autofeatures_button_description)), "&3AutoManager" ));
+//        gui.addButton(new Button(13, XMaterial.IRON_PICKAXE, new ButtonLore( guiLeftClickToOpenMsg(), messages.getString(MessagesConfig.StringID.spigot_gui_lore_autofeatures_button_description)), "&3AutoManager" ));
         gui.addButton(new Button(16, XMaterial.DIAMOND_ORE, new ButtonLore( guiLeftClickToOpenMsg(), messages.getString(MessagesConfig.StringID.spigot_gui_lore_mines_button_description)), "&3Mines" ));
         gui.addButton(new Button(29, XMaterial.CHEST, new ButtonLore( guiLeftClickToOpenMsg(), messages.getString(MessagesConfig.StringID.spigot_gui_lore_sellall_button_description)), "&3SellAll" ));
 
