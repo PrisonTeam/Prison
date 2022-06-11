@@ -842,13 +842,16 @@ public class PrisonCommand
     	}
     	try {
     		
-    		
-    		File bcFile = AutoFeaturesWrapper.getInstance().getBlockConvertersConfig().getConfigFile();
-    		if ( bcFile != null && bcFile.exists() ) {
+    		if ( AutoFeaturesWrapper.getInstance().getBlockConvertersConfig() != null ) {
     			
-    			String filePath = bcFile.getCanonicalPath();
-    			sender.sendMessage( filePath );
+    			File bcFile = AutoFeaturesWrapper.getInstance().getBlockConvertersConfig().getConfigFile();
+    			if ( bcFile != null && bcFile.exists() ) {
+    				
+    				String filePath = bcFile.getCanonicalPath();
+    				sender.sendMessage( filePath );
+    			}
     		}
+    		
     	}
     	catch ( IOException e ) {
     		// Ingore
