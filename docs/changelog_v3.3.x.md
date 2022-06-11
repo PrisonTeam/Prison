@@ -11,7 +11,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.11f 2022-06-09
+# 3.3.0-alpha.11f 2022-06-11
+
+
+* **Fix a problem when BlockConverters are disabled, and doing a reload on auto features, it's not able to find that config file so its throwing an exception.**
 
 
 * **The build was failing intermittently on the continual integration (CI)**
