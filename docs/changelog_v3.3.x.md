@@ -14,6 +14,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11g 2022-06-11
 
 
+* **BlockConverters: fix issue when block converters are not active.**
+
+
 **v3.3.0-alpha.11g - 2022-06-11**
 
 

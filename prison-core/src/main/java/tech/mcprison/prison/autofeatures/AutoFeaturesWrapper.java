@@ -43,7 +43,7 @@ public class AutoFeaturesWrapper
 	public void reloadConfigs() {
 		getAutoFeaturesConfig().reloadConfig();
 		
-		if ( Output.get().isDebug() ) {
+		if ( Output.get().isDebug() && getBlockConvertersConfig() != null ) {
 			
 			getBlockConvertersConfig().reloadConfig();
 		}
