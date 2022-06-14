@@ -1,11 +1,8 @@
 package tech.mcprison.prison.placeholders;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.output.Output;
+import java.util.regex.Pattern;
 
 public class PlaceholderManager {
 
@@ -22,7 +19,14 @@ public class PlaceholderManager {
 								    		PRISON_PLACEHOLDER_ATTRIBUTE_FIELD_SEPARATOR + 
 								    		PRISON_PLACEHOLDER_ATTRIBUTE_FIELD_SEPARATOR;
     
-    private PlaceholderProgressBarConfig progressBarConfig;
+	// NOTE: Pattern is thread safe so make it static.  Matcher is not thead safe.
+	public static Pattern PLACEHOLDER_SEQUENCE_PATTERN = Pattern.compile( "(\\_([0-9]+)\\_)" );
+	
+	public static Pattern PLACEHOLDER_ESCAPE_CHARACTER_LEFT_PATTERN = Pattern.compile( "(^\\p{Punct})" );
+	public static Pattern PLACEHOLDER_ESCAPE_CHARACTER_RIGHT_PATTERN = Pattern.compile( "(\\p{Punct}$)" );
+
+	
+//    private PlaceholderProgressBarConfig progressBarConfig;
     
     public enum placeholderFlagType {
     	supress,
@@ -807,78 +811,78 @@ public class PlaceholderManager {
 	}
 	
 	
-	/**
-	 * <p>This will extract attributes from dynamic placeholders and will return. 
-	 * </p>
-	 * 
-	 * <p>Planning on using : as separators.  :: for identifying each attribute, and then
-	 * within each attribute : will separate the individual fields and values.  
-	 * For example it a number format attribute could look like this: 
-	 * </p>
-	 * 
-	 * <pre>::nFormat:0.00{unit}</pre> for no spaces.  
-	 * <pre>::nFormat:#,##0.0+{unit}</pre> for spaces since + will be converted to spaces.
-	 * 
-	 * @param placeholder
-	 * @return
-	 */
-	public PlaceholderAttribute extractPlaceholderExtractAttribute( String placeholder ) {
-		PlaceholderAttribute attribute = null;
-		
-		if ( placeholder != null ) {
-			String[] attributes = placeholder.split( PRISON_PLACEHOLDER_ATTRIBUTE_SEPARATOR );
-			
-			// attributes[0] will be the placeholder, so ignore:
-			if ( attributes != null && attributes.length > 1 ) {
-				for ( int i = 1; i < attributes.length ; i++ ) {
-					String rawAttribute = attributes[i];
-					
-					if ( rawAttribute != null ) {
-						attribute = attributeFactory( rawAttribute );
-						break;
-					}
-				}
-			}
-		}
-		
-		return attribute;
-	}
+//	/**
+//	 * <p>This will extract attributes from dynamic placeholders and will return. 
+//	 * </p>
+//	 * 
+//	 * <p>Planning on using : as separators.  :: for identifying each attribute, and then
+//	 * within each attribute : will separate the individual fields and values.  
+//	 * For example it a number format attribute could look like this: 
+//	 * </p>
+//	 * 
+//	 * <pre>::nFormat:0.00{unit}</pre> for no spaces.  
+//	 * <pre>::nFormat:#,##0.0+{unit}</pre> for spaces since + will be converted to spaces.
+//	 * 
+//	 * @param placeholder
+//	 * @return
+//	 */
+//	public PlaceholderAttribute extractPlaceholderExtractAttribute( String placeholder ) {
+//		PlaceholderAttribute attribute = null;
+//		
+//		if ( placeholder != null ) {
+//			String[] attributes = placeholder.split( PRISON_PLACEHOLDER_ATTRIBUTE_SEPARATOR );
+//			
+//			// attributes[0] will be the placeholder, so ignore:
+//			if ( attributes != null && attributes.length > 1 ) {
+//				for ( int i = 1; i < attributes.length ; i++ ) {
+//					String rawAttribute = attributes[i];
+//					
+//					if ( rawAttribute != null ) {
+//						attribute = attributeFactory( rawAttribute );
+//						break;
+//					}
+//				}
+//			}
+//		}
+//		
+//		return attribute;
+//	}
 	
 
-	private PlaceholderAttribute attributeFactory( String rawAttribute ) {
-		PlaceholderAttribute attribute = null;
-		
-		if ( rawAttribute != null && !rawAttribute.isEmpty() ) {
-			ArrayList<String> parts = new ArrayList<>();
-			parts.addAll( Arrays.asList( rawAttribute.split( PRISON_PLACEHOLDER_ATTRIBUTE_FIELD_SEPARATOR )) );
-			
-			if ( parts.size() > 1 ) {
-				PlaceholderAttributePrefixes pap = PlaceholderAttributePrefixes.fromString( parts.get( 0 ) );
-				
-				switch ( pap )
-				{
-					case nFormat:
-						attribute = new PlaceholderAttributeNumberFormat( parts, rawAttribute );
-						break;
-
-					case bar:
-						attribute = new PlaceholderAttributeBar( parts, getProgressBarConfig(), rawAttribute );
-						break;
-						
-					case text:
-						attribute = new PlaceholderAttributeText( parts, rawAttribute );
-						break;
-						
-					default:
-						break;
-				}
-				
-			}
-			
-		}
-		
-		return attribute;
-	}
+//	private PlaceholderAttribute attributeFactory( String rawAttribute ) {
+//		PlaceholderAttribute attribute = null;
+//		
+//		if ( rawAttribute != null && !rawAttribute.isEmpty() ) {
+//			ArrayList<String> parts = new ArrayList<>();
+//			parts.addAll( Arrays.asList( rawAttribute.split( PRISON_PLACEHOLDER_ATTRIBUTE_FIELD_SEPARATOR )) );
+//			
+//			if ( parts.size() > 1 ) {
+//				PlaceholderAttributePrefixes pap = PlaceholderAttributePrefixes.fromString( parts.get( 0 ) );
+//				
+//				switch ( pap )
+//				{
+//					case nFormat:
+//						attribute = new PlaceholderAttributeNumberFormat( parts, rawAttribute );
+//						break;
+//
+//					case bar:
+//						attribute = new PlaceholderAttributeBar( parts, getProgressBarConfig(), rawAttribute );
+//						break;
+//						
+//					case text:
+//						attribute = new PlaceholderAttributeText( parts, rawAttribute );
+//						break;
+//						
+//					default:
+//						break;
+//				}
+//				
+//			}
+//			
+//		}
+//		
+//		return attribute;
+//	}
 
 
 	public String extractPlaceholderString( String identifier ) {
@@ -897,169 +901,169 @@ public class PlaceholderManager {
 		return results;
 	}
 	
-	public void reloadPlaceholderBarConfig() {
-		setProgressBarConfig( loadPlaceholderBarConfig() );
-	}
-	
-	public PlaceholderProgressBarConfig loadPlaceholderBarConfig() {
-		PlaceholderProgressBarConfig config = null;
-		
-		String barSegmentsStr = Prison.get().getPlatform().getConfigString( 
-							"placeholder.bar-segments" );
-		String barPositiveColor = Prison.get().getPlatform().getConfigString( 
-							"placeholder.bar-positive-color" );
-		String barPositiveSegment = Prison.get().getPlatform().getConfigString( 
-							"placeholder.bar-positive-segment" );
-		String barNegativeColor = Prison.get().getPlatform().getConfigString( 
-							"placeholder.bar-negative-color" );
-		String barNegativeSegment = Prison.get().getPlatform().getConfigString( 
-							"placeholder.bar-negative-segment" );
-				
-		
-		// All 5 must not be null:
-		if ( barSegmentsStr != null && barPositiveColor != null && barPositiveSegment != null &&
-				barNegativeColor != null && barNegativeSegment != null ) {
-			
-			int barSegments = 20;
-			
-			try {
-				barSegments = Integer.parseInt( barSegmentsStr );
-			}
-			catch ( NumberFormatException e ) {
-				Output.get().logWarn( 
-						"IntegrationManager.loadPlaceholderBarConfigs(): Failure to convert the" +
-						"/plugins/Prison/config.yml  prison-placeholder-configs.progress-bar.bar-segments " +
-						"to a valid integer. Defaulting to a value of 20 " +
-						"[" + barSegmentsStr + "] " + e.getMessage() );
-			
-			}
-			
-			config = new PlaceholderProgressBarConfig( barSegments, 
-							barPositiveColor, barPositiveSegment,
-							barNegativeColor, barNegativeSegment );
-		}
-		
-		if ( config == null ) {
-			// go with default values because the config.yml is not up to date with
-			// the default values
-			
-			config = new PlaceholderProgressBarConfig( 
-					20, "&2", "#", "&4", "=" 
-//					20, "&2", "▊", "&4", "▒" 
-					);
-			
-			Output.get().logInfo( "The /plugins/Prison/config.yml does not contain the " +
-					"default values for the Placeholder Progress Bar." );
-			Output.get().logInfo( "Default values are " +
-					"being used. To customize the bar, rename the config.yml and it will be " +
-					"regenerated and then edit to restore prior values.");
-			
-		}
-
-		return config;
-	}
-	
-    public PlaceholderProgressBarConfig getProgressBarConfig() {
-    	if ( progressBarConfig == null ) {
-    		progressBarConfig = loadPlaceholderBarConfig();
-    	}
-		return progressBarConfig;
-	}
-	public void setProgressBarConfig( PlaceholderProgressBarConfig progressBarConfig ) {
-		this.progressBarConfig = progressBarConfig;
-	}
-
-	/**
-	 * <p>This function uses the settings within the config.yml to construct a progress
-	 * bar.  It takes two numeric values and constructs it upon those parameters.
-	 * The parameter <pre>value</pre> is the value that changes, and is the value that 
-	 * sets where the bar changes.  The parameter <pre>valueTotal</pre> is the max value
-	 * of where the <pre>value</pre> is increasing to.
-	 * </p>
-	 * 
-	 * <p>The lowest range is always zero and <pre>value</pre> will be set to zero if 
-	 * it is negative.   If <pre>value</pre> is greater than <pre>valueTotal</pre>
-	 * then it will be set to that value.  The valid range for this function is only 0 percent 
-	 * to 100 percent.
-	 * </p>
-	 * 
-	 * <p>If the progress bar is moving in the wrong direction, then set the parameter
-	 * <pre>reverse</pre> to true and then the <pre>value</pre> will be inverted by subtracting
-	 * its value from <pre>valueTotal</pre>.
-	 * </p>
-	 * 
-	 * @param value A value that is changing. Will be set to zero if negative. Will be 
-	 * 				set to valueTotal if greater than that amount. 
-	 * @param valueTotal The target value that is non-changing.
-	 * @param reverse Changes the growth direction of the progress bar.
-	 * @param attribute 
-	 * @return
-	 */
-	public String getProgressBar( double value, double valueTotal, boolean reverse, 
-															PlaceholderAttribute attribute ) {
-		StringBuilder sb = new StringBuilder();
-		
-		// value cannot be greater than valueTotal:
-		if ( value > valueTotal ) {
-			value = valueTotal;
-		}
-		else if ( value < 0 ) {
-			value = 0;
-		}
-		
-		// If reverse, then the new value is subtracted from valueTotal:
-		if ( reverse ) {
-			value = valueTotal - value;
-		}
-		
-    	double percent = valueTotal == 0 ? 100d : value / valueTotal * 100.0;
-    	
-    	PlaceholderAttributeBar barAttribute = attribute == null || 
-    							!(attribute instanceof PlaceholderAttributeBar) ? null : 
-    								(PlaceholderAttributeBar) attribute;
-    	
-//    	Output.get().logInfo( "### @@@ ### getProgressBar: barAttribute: " + 
-//    				( barAttribute != null ? "true" : "false"));
-    	
-    	PlaceholderProgressBarConfig barConfig = 
-    								barAttribute != null ? barAttribute.getBarConfig() :
-    									getProgressBarConfig();
-
-		String lastColorCode = null;
-		int segments = barConfig.getSegments();
-		for ( int i = 0; i < segments; i++ ) {
-			double pct = i / ((double)barConfig.getSegments()) * 100.0;
-			
-			// If the calculated percent is less than the threshold and as long as it's not the last 
-			// segment, then show a positive.  If it's the last segment an it's still less than 
-			// the percent, then show a negative no matter what to indicate it's not yet there.
-			if ( pct < percent && (percent == 100d || percent < 100d && i < segments - 1)) {
-				if ( lastColorCode == null || 
-						!barConfig.getPositiveColor().equalsIgnoreCase( lastColorCode )) { 
-					sb.append( barConfig.getPositiveColor() );
-					lastColorCode = barConfig.getPositiveColor();
-				}
-				sb.append( barConfig.getPositiveSegment() );
-			}
-			else {
-				if ( lastColorCode == null || 
-						!barConfig.getNegativeColor().equalsIgnoreCase( lastColorCode )) { 
-					sb.append( barConfig.getNegativeColor() );
-					lastColorCode = barConfig.getNegativeColor();
-				}
-				sb.append( barConfig.getNegativeSegment() );
-				
-			}
-		}
-
-		
-		if ( barConfig.isReverse() ) {
-			sb.reverse();
-		}
-		
-    	
-    	return sb.toString();
-	}
+//	public void reloadPlaceholderBarConfig() {
+//		setProgressBarConfig( loadPlaceholderBarConfig() );
+//	}
+//	
+//	public PlaceholderProgressBarConfig loadPlaceholderBarConfig() {
+//		PlaceholderProgressBarConfig config = null;
+//		
+//		String barSegmentsStr = Prison.get().getPlatform().getConfigString( 
+//							"placeholder.bar-segments" );
+//		String barPositiveColor = Prison.get().getPlatform().getConfigString( 
+//							"placeholder.bar-positive-color" );
+//		String barPositiveSegment = Prison.get().getPlatform().getConfigString( 
+//							"placeholder.bar-positive-segment" );
+//		String barNegativeColor = Prison.get().getPlatform().getConfigString( 
+//							"placeholder.bar-negative-color" );
+//		String barNegativeSegment = Prison.get().getPlatform().getConfigString( 
+//							"placeholder.bar-negative-segment" );
+//				
+//		
+//		// All 5 must not be null:
+//		if ( barSegmentsStr != null && barPositiveColor != null && barPositiveSegment != null &&
+//				barNegativeColor != null && barNegativeSegment != null ) {
+//			
+//			int barSegments = 20;
+//			
+//			try {
+//				barSegments = Integer.parseInt( barSegmentsStr );
+//			}
+//			catch ( NumberFormatException e ) {
+//				Output.get().logWarn( 
+//						"IntegrationManager.loadPlaceholderBarConfigs(): Failure to convert the" +
+//						"/plugins/Prison/config.yml  prison-placeholder-configs.progress-bar.bar-segments " +
+//						"to a valid integer. Defaulting to a value of 20 " +
+//						"[" + barSegmentsStr + "] " + e.getMessage() );
+//			
+//			}
+//			
+//			config = new PlaceholderProgressBarConfig( barSegments, 
+//							barPositiveColor, barPositiveSegment,
+//							barNegativeColor, barNegativeSegment );
+//		}
+//		
+//		if ( config == null ) {
+//			// go with default values because the config.yml is not up to date with
+//			// the default values
+//			
+//			config = new PlaceholderProgressBarConfig( 
+//					20, "&2", "#", "&4", "=" 
+////					20, "&2", "▊", "&4", "▒" 
+//					);
+//			
+//			Output.get().logInfo( "The /plugins/Prison/config.yml does not contain the " +
+//					"default values for the Placeholder Progress Bar." );
+//			Output.get().logInfo( "Default values are " +
+//					"being used. To customize the bar, rename the config.yml and it will be " +
+//					"regenerated and then edit to restore prior values.");
+//			
+//		}
+//
+//		return config;
+//	}
+//	
+//    public PlaceholderProgressBarConfig getProgressBarConfig() {
+//    	if ( progressBarConfig == null ) {
+//    		progressBarConfig = loadPlaceholderBarConfig();
+//    	}
+//		return progressBarConfig;
+//	}
+//	public void setProgressBarConfig( PlaceholderProgressBarConfig progressBarConfig ) {
+//		this.progressBarConfig = progressBarConfig;
+//	}
+//
+//	/**
+//	 * <p>This function uses the settings within the config.yml to construct a progress
+//	 * bar.  It takes two numeric values and constructs it upon those parameters.
+//	 * The parameter <pre>value</pre> is the value that changes, and is the value that 
+//	 * sets where the bar changes.  The parameter <pre>valueTotal</pre> is the max value
+//	 * of where the <pre>value</pre> is increasing to.
+//	 * </p>
+//	 * 
+//	 * <p>The lowest range is always zero and <pre>value</pre> will be set to zero if 
+//	 * it is negative.   If <pre>value</pre> is greater than <pre>valueTotal</pre>
+//	 * then it will be set to that value.  The valid range for this function is only 0 percent 
+//	 * to 100 percent.
+//	 * </p>
+//	 * 
+//	 * <p>If the progress bar is moving in the wrong direction, then set the parameter
+//	 * <pre>reverse</pre> to true and then the <pre>value</pre> will be inverted by subtracting
+//	 * its value from <pre>valueTotal</pre>.
+//	 * </p>
+//	 * 
+//	 * @param value A value that is changing. Will be set to zero if negative. Will be 
+//	 * 				set to valueTotal if greater than that amount. 
+//	 * @param valueTotal The target value that is non-changing.
+//	 * @param reverse Changes the growth direction of the progress bar.
+//	 * @param attribute 
+//	 * @return
+//	 */
+//	public String getProgressBar( double value, double valueTotal, boolean reverse, 
+//															PlaceholderAttribute attribute ) {
+//		StringBuilder sb = new StringBuilder();
+//		
+//		// value cannot be greater than valueTotal:
+//		if ( value > valueTotal ) {
+//			value = valueTotal;
+//		}
+//		else if ( value < 0 ) {
+//			value = 0;
+//		}
+//		
+//		// If reverse, then the new value is subtracted from valueTotal:
+//		if ( reverse ) {
+//			value = valueTotal - value;
+//		}
+//		
+//    	double percent = valueTotal == 0 ? 100d : value / valueTotal * 100.0;
+//    	
+//    	PlaceholderAttributeBar barAttribute = attribute == null || 
+//    							!(attribute instanceof PlaceholderAttributeBar) ? null : 
+//    								(PlaceholderAttributeBar) attribute;
+//    	
+////    	Output.get().logInfo( "### @@@ ### getProgressBar: barAttribute: " + 
+////    				( barAttribute != null ? "true" : "false"));
+//    	
+//    	PlaceholderProgressBarConfig barConfig = 
+//    								barAttribute != null ? barAttribute.getBarConfig() :
+//    									getProgressBarConfig();
+//
+//		String lastColorCode = null;
+//		int segments = barConfig.getSegments();
+//		for ( int i = 0; i < segments; i++ ) {
+//			double pct = i / ((double)barConfig.getSegments()) * 100.0;
+//			
+//			// If the calculated percent is less than the threshold and as long as it's not the last 
+//			// segment, then show a positive.  If it's the last segment an it's still less than 
+//			// the percent, then show a negative no matter what to indicate it's not yet there.
+//			if ( pct < percent && (percent == 100d || percent < 100d && i < segments - 1)) {
+//				if ( lastColorCode == null || 
+//						!barConfig.getPositiveColor().equalsIgnoreCase( lastColorCode )) { 
+//					sb.append( barConfig.getPositiveColor() );
+//					lastColorCode = barConfig.getPositiveColor();
+//				}
+//				sb.append( barConfig.getPositiveSegment() );
+//			}
+//			else {
+//				if ( lastColorCode == null || 
+//						!barConfig.getNegativeColor().equalsIgnoreCase( lastColorCode )) { 
+//					sb.append( barConfig.getNegativeColor() );
+//					lastColorCode = barConfig.getNegativeColor();
+//				}
+//				sb.append( barConfig.getNegativeSegment() );
+//				
+//			}
+//		}
+//
+//		
+//		if ( barConfig.isReverse() ) {
+//			sb.reverse();
+//		}
+//		
+//    	
+//    	return sb.toString();
+//	}
 
 
 	

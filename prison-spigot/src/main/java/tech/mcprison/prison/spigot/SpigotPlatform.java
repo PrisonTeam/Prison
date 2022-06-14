@@ -2423,6 +2423,11 @@ public class SpigotPlatform
 		return new SpigotPlayerUtil( playerUuid );
 	}
 	
+	@Override
+	public PlayerUtil getPlayerUtil( Player player ) {
+		return new SpigotPlayerUtil( player );
+	}
+	
 	
 	@Override
 	public String dumpEventListenersBlockBreakEvents() {

@@ -11,10 +11,11 @@ import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceHolderKey;
-import tech.mcprison.prison.placeholders.PlaceholderAttribute;
+import tech.mcprison.prison.placeholders.PlaceholderIdentifier;
 import tech.mcprison.prison.placeholders.PlaceholderIntegration;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
+import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -88,18 +89,58 @@ public class MVdWPlaceholderIntegration
 	{
     	boolean registered = false;
     	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+    		
     		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
     		if ( pm != null ) {
     			List<PlaceHolderKey> placeholderPlayerKeys = pm.getTranslatedPlaceHolderKeys();
     			
     			for ( PlaceHolderKey placeHolderKey : placeholderPlayerKeys ) {
     				if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
-    					registerPlaceholder(placeHolderKey.getKey(),
-    							player -> Text.translateAmpColorCodes(
-    									pm.getTranslatePlayerPlaceHolder( 
-    											player.getUUID(), player.getName(),
-    											placeHolderKey, null )
-    									));
+    					
+    					
+    					registerPlaceholder(placeHolderKey.getKey(), 
+    							player -> {
+    								
+    								PlaceholderIdentifier identifier = new PlaceholderIdentifier( placeHolderKey.getPlaceholder().name() );
+    								identifier.setPlayer( player.getUUID(), player.getName() );
+    								
+    								if ( identifier.checkPlaceholderKey(placeHolderKey) ) {
+    									
+    									pm.getTranslatePlayerPlaceHolder( identifier );
+    								}
+    								
+
+    								return Text.translateAmpColorCodes( identifier.getText() );
+    							});
+    					if ( !registered ) {
+    						registered = true;
+    					}
+    				}
+    			}
+    		}
+    		
+    		RankManager rm = PrisonRanks.getInstance().getRankManager();
+    		if ( rm != null ) {
+    			List<PlaceHolderKey> placeholderPlayerKeys = rm.getTranslatedPlaceHolderKeys();
+    			
+    			for ( PlaceHolderKey placeHolderKey : placeholderPlayerKeys ) {
+    				if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
+    					
+    					
+    					registerPlaceholder(placeHolderKey.getKey(), 
+    							player -> {
+    								
+    								PlaceholderIdentifier identifier = new PlaceholderIdentifier( placeHolderKey.getPlaceholder().name() );
+    								identifier.setPlayer( player.getUUID(), player.getName() );
+    								
+    								if ( identifier.checkPlaceholderKey(placeHolderKey) ) {
+    									
+    									rm.getTranslateRanksPlaceHolder( identifier );
+    								}
+    								
+
+    								return Text.translateAmpColorCodes( identifier.getText() );
+    							});
     					if ( !registered ) {
     						registered = true;
     					}
@@ -116,11 +157,20 @@ public class MVdWPlaceholderIntegration
     			
     			for ( PlaceHolderKey placeHolderKey : placeholderMinesKeys ) {
     				if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
+    					
     					registerPlaceholder(placeHolderKey.getKey(),
-    							player -> Text.translateAmpColorCodes(
-    									mm.getTranslateMinesPlaceHolder( placeHolderKey, 
-    											(PlaceholderAttribute) null, -1  )
-    									));
+    							player -> {
+    								
+    								PlaceholderIdentifier identifier = new PlaceholderIdentifier( placeHolderKey.getPlaceholder().name() );
+    								identifier.setPlayer( player.getUUID(), player.getName() );
+    								
+    								if ( identifier.checkPlaceholderKey(placeHolderKey) ) {
+    									
+    									mm.getTranslateMinesPlaceholder( identifier );
+    								}
+    								
+    								return Text.translateAmpColorCodes( identifier.getText() );
+    							} );
     					if ( !registered ) {
     						registered = true;
     					}

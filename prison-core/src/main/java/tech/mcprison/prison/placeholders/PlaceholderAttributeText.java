@@ -67,6 +67,13 @@ public class PlaceholderAttributeText
 		
 	}
 	
+
+	@Override
+	public String toString() {
+		return getRaw();
+	}
+	
+	
 	@Override
 	public String format( String value )
 	{

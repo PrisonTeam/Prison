@@ -164,6 +164,10 @@ public class Prison
         return moduleDataFolder;
     }
     
+    public void setupJUnitInstance( Platform platform ) {
+    	this.platform = platform;
+    }
+    
     /**
      * Initializes prison-core. In the implementations, this should be called when the plugin is
      * enabled. After this is called, every getter in this class will return a value.

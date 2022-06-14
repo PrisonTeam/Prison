@@ -449,6 +449,11 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
+	public PlayerUtil getPlayerUtil( Player player ) {
+		return null;
+	}
+	
+	@Override
 	public List<String> dumpEventListenersList( String eventType, HandlerList handlerList )
 	{
 		return new ArrayList<>();

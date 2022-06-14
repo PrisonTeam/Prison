@@ -385,6 +385,8 @@ public interface Platform {
 	
 	public PlayerUtil getPlayerUtil( UUID playerUuid );
 
+	public PlayerUtil getPlayerUtil( Player player );
+	
 	
 	/**
 	 * <p>Some information on events...

@@ -23,8 +23,9 @@ public class BlockConvertersFileConfig
 
 	public enum BlockConverterTypes {
 		aSample01,
-		smeltFeatures,
-		blockFeatures
+		autoPickupFeatures,
+		blockFeatures, 
+		smeltFeatures
 		;
 	}
 	

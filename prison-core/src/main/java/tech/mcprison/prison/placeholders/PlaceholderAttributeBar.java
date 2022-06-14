@@ -147,6 +147,10 @@ public class PlaceholderAttributeBar
 
 	}
 
+	@Override
+	public String toString() {
+		return getRaw();
+	}
 
 	public ArrayList<String> getParts() {
 		return parts;

@@ -1,7 +1,16 @@
 package tech.mcprison.prison.placeholders;
 
+
+/**
+ * <p>This class is used to store the data of mapping an identifier to the correct
+ * PlaceHolderKey.
+ * </p>
+ *
+ */
 public class PlaceholderResults
 {
+	private String identifier;
+
 	private PlaceHolderKey placeholder;
 	private String escapeLeft;
 	private String esccapeRight;
@@ -9,7 +18,7 @@ public class PlaceholderResults
 	private String numericSequencePattern;
 	private int numericSequence = -1;
 	
-	private String identifier;
+	
 	
 	private String text;
 	
@@ -23,6 +32,8 @@ public class PlaceholderResults
 		super();
 		
 		this.placeholder = placeholder;
+		
+		
 		this.text = text;
 	}
 	
@@ -32,8 +43,11 @@ public class PlaceholderResults
 		
 		if ( getPlaceholder() != null ) {
 			sb.append( getPlaceholder().getPlaceholder().name() )
-				.append( " " ).append( getEscapeLeft() ).append( getEsccapeRight() )
-				.append( " " ).append( getIdentifier() == null ? "" : getIdentifier() );
+				.append( " " )
+				.append( getEscapeLeft() == null ? "" : getEscapeLeft() )
+				.append( getEsccapeRight() == null ? "" : getEsccapeRight() )
+				.append( " " )
+				.append( getIdentifier() == null ? "" : getIdentifier() );
 			
 		}
 		else {

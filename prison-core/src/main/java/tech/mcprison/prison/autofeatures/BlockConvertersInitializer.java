@@ -47,6 +47,11 @@ public class BlockConvertersInitializer {
 			
 			break;
 			
+		case autoPickupFeatures:
+		
+			loadDefaultBlockConverterAutoPickupBlocks( blockConverters );
+			break;
+			
 		case blockFeatures:
 			
 			break;
@@ -148,6 +153,56 @@ public class BlockConvertersInitializer {
 		
     	
 	}
+	
+	
+	
+
+	public void loadDefaultBlockConverterAutoPickupBlocks(TreeMap<String, BlockConverter> blockConverters) {
+
+		addSAutoPickupBlockConverter("cobblestone", blockConverters);
+		addSAutoPickupBlockConverter("stone", blockConverters);
+
+		addSAutoPickupBlockConverter("gold_ore", blockConverters);
+		addSAutoPickupBlockConverter("iron_ore", blockConverters);
+		addSAutoPickupBlockConverter("coal_ore", blockConverters);
+		addSAutoPickupBlockConverter("diamond_ore", blockConverters);
+		
+		addSAutoPickupBlockConverter("redstone_ore", blockConverters);
+		addSAutoPickupBlockConverter("emerald_ore", blockConverters);
+		addSAutoPickupBlockConverter("quartz_ore", blockConverters);
+		addSAutoPickupBlockConverter("lapis_ore", blockConverters);
+		
+		addSAutoPickupBlockConverter("snowball", blockConverters);
+		addSAutoPickupBlockConverter("glowstone_dust", blockConverters);
+
+	}
+	
+
+	private static void addSAutoPickupBlockConverter(String keyBlockName,
+			TreeMap<String, BlockConverter> blockConverters) {
+
+		addSAutoPickupBlockConverter(keyBlockName, null, true, blockConverters);
+	}
+
+	private static void addSAutoPickupBlockConverter(String keyBlockName, 
+			String semanticVersion, 
+			boolean enabled,
+			TreeMap<String, BlockConverter> blockConverters) {
+
+		BlockConverter bc = new BlockConverter(keyBlockName, 1);
+
+		// All converters are auto-enabled, so only need to disable:
+		if (!enabled) {
+			bc.setEnabled(enabled);
+		}
+
+		if (semanticVersion != null && semanticVersion.trim().length() > 0) {
+			bc.setMininumSpigotSemanticVersion(semanticVersion);
+		}
+
+		blockConverters.put(bc.getKeyBlockName(), bc);
+	}
+	
 
     private static void addSmeltBlockConverter( 
     				String keyBlockName, String outputName, 

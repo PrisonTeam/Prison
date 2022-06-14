@@ -7,6 +7,7 @@ import org.bukkit.enchantments.Enchantment;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.PlayerUtil;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.Compatibility;
@@ -23,6 +24,13 @@ public class SpigotPlayerUtil
 		Object p = Prison.get().getPlatform().getPlayer( playerUuid ).orElse( null );
 		if ( p != null && p instanceof SpigotPlayer ) {
 			this.spigotPlayer = (SpigotPlayer) p;
+		}
+	}
+	public SpigotPlayerUtil( Player player ) {
+		super( player.getUUID() );
+		
+		if ( player != null && player instanceof SpigotPlayer ) {
+			this.spigotPlayer = (SpigotPlayer) player;
 		}
 	}
 

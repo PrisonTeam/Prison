@@ -11,9 +11,13 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.11g 2022-06-11
+# 3.3.0-alpha.11g 2022-06-13
 
 
+* **Prison Placeholders: Major rewrite the handling of placeholders.**
+Prison's placeholder handling was completely rewritten to better handle the matching of a placeholder text with the actual placeholder objects.  Over the last few years, many new features were added to prison's placeholders, but the way they were implemented were through patching existing code. This rewrite starts from scratch on how placeholder are decoded. Placeholders are now only decoded once instead of being decoded when attempting to match each internal placeholder.  The results are significant performance improvements and eliminates a lot of redundant code. Some new features were add, such as supporting more than one placeholder attribute at a time.  Also it streamlines how parameters and data is passed from the outer most layers of prison to where the placeholders are calculated. 
+
+Another major benefit of this rewrite, beside reduction of code complexity and performance improvements, is that it opens the door to being able to implement an internal placeholder cache.  Some plugins request placeholder data once per tick, or 20 times per second.  Multiply that by 50 online players, and you got prison performing the same calculation 1000 times per second. Caching could help reduce that to only one calculation per second (assuming a cache time to live value of 1 second. Caching will not always be so simple, or possible, or every placeholder.  Player-based placeholders can't be cached like static mine placeholders (mine names and mine tags as an example).
 
 
 * **Add support for Portuguese.**

@@ -239,7 +239,7 @@ public class PlaceHolderKey {
 		
 		sb.append( "PlaceHolderKey: key=" ).append( getKey() )
 				.append( "  placeholder=" ).append( getPlaceholder().name() )
-				.append( "  isPriamary=" ).append( isPrimary() )
+				.append( "  isPrimary=" ).append( isPrimary() )
 				.append( "  data=" ).append( getData() == null ? "" : getData() );
 		
 		return sb.toString();
