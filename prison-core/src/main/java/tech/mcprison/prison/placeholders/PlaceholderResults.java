@@ -2,11 +2,16 @@ package tech.mcprison.prison.placeholders;
 
 
 /**
+ * <p>This class is obsolete and no longer used. Please see PlaceholderIdentifier for its 
+ * replacement.  This class will be deleted shortly.
+ * </p>
+ * 
  * <p>This class is used to store the data of mapping an identifier to the correct
  * PlaceHolderKey.
  * </p>
  *
  */
+@Deprecated
 public class PlaceholderResults
 {
 	private String identifier;

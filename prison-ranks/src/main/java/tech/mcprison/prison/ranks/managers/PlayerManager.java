@@ -658,20 +658,6 @@ public class PlayerManager
     public String getPlayerNextRankCostPercent( RankPlayer rankPlayer, String ladderName ) {
     	StringBuilder sb = new StringBuilder();
     	
-//        Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
-//        if( prisonPlayer == null ) {
-//        	
-//        	String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
-//
-//        	String message = "getPlayerNextRankCostPercent: " + errorMessage;
-//			
-//        	if ( !getPlayerErrors().contains( message ) ) {
-//				getPlayerErrors().add( message );
-//				Output.get().logError( message );
-//			}
-////        	return "0";
-//        }
-    	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
     		
@@ -725,21 +711,6 @@ public class PlayerManager
     public String getPlayerNextRankCostBar( RankPlayer rankPlayer, String ladderName, 
     														PlaceholderAttributeBar attributeBar ) {
     	StringBuilder sb = new StringBuilder();
-    	
-//    	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
-//    	if( prisonPlayer == null ) {
-//    		
-//    		String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
-//
-//    		String message = "getPlayerNextRankCostBar: " + errorMessage;
-//
-//    		if ( !getPlayerErrors().contains( message ) ) {
-//				getPlayerErrors().add( message );
-//				Output.get().logError( message );
-//			}
-//			
-//    		//  return "0";
-//    	}
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		
@@ -806,21 +777,6 @@ public class PlayerManager
     public String getPlayerNextRankCostRemaining( RankPlayer rankPlayer, String ladderName, 
     						boolean formatted, PlaceholderAttributeNumberFormat attributeNFormat ) {
     	StringBuilder sb = new StringBuilder();
-    	
-//    	Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
-//    	if( prisonPlayer == null ) {
-//    		
-//    		String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
-//    		
-//    		String message = "getPlayerNextRankCostRemaining: " + errorMessage;
-//    		
-//			if ( !getPlayerErrors().contains( message ) ) {
-//				getPlayerErrors().add( message );
-//				Output.get().logError( message );
-//			}
-//			
-////    		return "0";
-//    	}
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
@@ -891,20 +847,6 @@ public class PlayerManager
   public String getPlayerNextRankCostRemainingPercent( RankPlayer rankPlayer, String ladderName ) {
   	StringBuilder sb = new StringBuilder();
   	
-//      Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
-//      if( prisonPlayer == null ) {
-//      	
-//      	String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
-//
-//      	String message = "getPlayerNextRankCostPercent: " + errorMessage;
-//			
-//      	if ( !getPlayerErrors().contains( message ) ) {
-//				getPlayerErrors().add( message );
-//				Output.get().logError( message );
-//			}
-////      	return "0";
-//      }
-  	
   	if ( !rankPlayer.getLadderRanks().isEmpty()) {
   		DecimalFormat dFmt = new DecimalFormat("#,##0");
   		
@@ -967,20 +909,6 @@ public class PlayerManager
   public String getPlayerNextRankCostRemainingBar( RankPlayer rankPlayer, String ladderName, 
 		  PlaceholderAttributeBar attributeBar ) {
 	  StringBuilder sb = new StringBuilder();
-
-//	  Player prisonPlayer = PrisonAPI.getPlayer(rankPlayer.getUUID()).orElse(null);
-//	  if( prisonPlayer == null ) {
-//
-//		  String errorMessage = cannotLoadPlayerFile( rankPlayer.getUUID().toString() );
-//
-//		  String message = "getPlayerNextRankCostPercent: " + errorMessage;
-//
-//		  if ( !getPlayerErrors().contains( message ) ) {
-//			  getPlayerErrors().add( message );
-//			  Output.get().logError( message );
-//		  }
-////		  return "0";
-//	  }
 
 	  if ( !rankPlayer.getLadderRanks().isEmpty()) {
 		  //		  DecimalFormat dFmt = new DecimalFormat("#,##0");
@@ -1389,89 +1317,9 @@ public class PlayerManager
 		return results;
 	}
 	
-	
-//    /**
-//     * <p>Entry point for translating placeholders.
-//     * </p>
-//     * @param playerUuid
-//     * @param playerName
-//     * @param identifier
-//     * @return
-//     */
-//    public String getTranslatePlayerPlaceHolder( UUID playerUuid, String playerName, String identifier ) {
-//    	String results = null;
-//
-//    	if ( playerUuid != null && identifier != null ) {
-//    		
-//    		List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
-//    		
-//    		identifier = identifier.toLowerCase();
-//    		
-//    		if ( !identifier.startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
-//    			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
-//    		}
-//    		
-//    		// placeholder Attributes: 
-//    		PlaceholderManager pman = Prison.get().getPlaceholderManager();
-//    		String placeholder = pman.extractPlaceholderString( identifier );
-//    		PlaceholderAttribute attribute = pman.extractPlaceholderExtractAttribute( identifier );
-//    		
-//    		for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
-//    			if ( placeHolderKey.getKey().equalsIgnoreCase( placeholder )) {
-//    				results = getTranslatePlayerPlaceHolder( playerUuid, playerName, placeHolderKey, attribute );
-//    				break;
-//    			}
-//    		}
-//    	}
-//    	
-//    	return results;
-//    }
     
-//    public String getTranslatePlayerPlaceHolder( UUID playerUuid, String playerName, PlaceholderResults placeholderResults ) {
-//    	String results = null;
-//    	
-//    	if ( playerUuid != null && placeholderResults.hasResults() ) {
-//    		
-//    		List<PlaceHolderKey> placeHolderKeys = getTranslatedPlaceHolderKeys();
-//    		
-//    		String identifier = placeholderResults.getIdentifier();
-//    		
-//    		if ( !identifier.startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED )) {
-//    			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
-//    		}
-//    		
-//    		// placeholder Attributes: 
-//    		PlaceholderManager pman = Prison.get().getPlaceholderManager();
-//    		String placeholder = pman.extractPlaceholderString( identifier );
-//    		PlaceholderAttribute attribute = pman.extractPlaceholderExtractAttribute( identifier );
-//    		
-//    		if ( placeholderResults.getPlaceholder() != null ) {
-//    			results = getTranslatePlayerPlaceHolder( playerUuid, playerName, placeholderResults.getPlaceholder(), attribute );
-//    		}
-//    		else {
-//    			// Need to hunt for the placeholder:
-//    			
-//    			for ( PlaceHolderKey placeHolderKey : placeHolderKeys ) {
-//    				if ( placeHolderKey.getKey().equalsIgnoreCase( placeholder )) {
-//    					results = getTranslatePlayerPlaceHolder( playerUuid, playerName, placeHolderKey, attribute );
-//    					break;
-//    				}
-//    			}
-//    		}
-//    		
-//    	}
-//    	
-//    	return results;
-//    }
-    
-    
-    
-//    public String getTranslatePlayerPlaceHolder( UUID playerUuid, String playerName, 
-//    		PlaceHolderKey placeHolderKey, PlaceholderAttribute attribute ) {
-//    String results = null;
     
     public String getTranslatePlayerPlaceHolder( PlaceholderIdentifier identifier ) {
-    	
     	
     	Player player = identifier.getPlayer();
     	
@@ -1480,33 +1328,21 @@ public class PlayerManager
     	
     	PlaceHolderKey placeHolderKey = identifier.getPlaceholderKey();
     	
-
-    	// From RankManager which does not apply here:
-//		String rankName = placeHolderKey.getData();
-//		Rank rank = PrisonRanks.getInstance().getRankManager().getRank( rankName );
-
-    	
     	
     	PlaceholderAttributeBar attributeBar = identifier.getAttributeBar();
     	PlaceholderAttributeNumberFormat attributeNFormat = identifier.getAttributeNFormat();
     	PlaceholderAttributeText attributeText = identifier.getAttributeText();
 		
-		int sequence = identifier.getSequence();
+//		int sequence = identifier.getSequence();
     	
 
 		String results = null;
 		PrisonPlaceHolders placeHolder = placeHolderKey.getPlaceholder();
 		
-    	
 
 		if ( rankPlayer != null ) {
-//		if ( playerUuid != null ) {
-			
-//			PrisonPlaceHolders placeHolder = placeHolderKey.getPlaceholder();
 			
 			String ladderName = placeHolderKey.getData();
-			
-//			RankPlayer rankPlayer = getPlayer(playerUuid, playerName);
 			
 			if ( rankPlayer != null ) {
 				

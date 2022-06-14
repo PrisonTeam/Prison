@@ -11,7 +11,13 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.11g 2022-06-13
+# 3.3.0-alpha.11g 2022-06-14
+
+
+* **Prison Placeholders: General clean up of obsolete code.**
+Since the new placeholder system is working well with the new class PlaceholderIdentifier, obsolete code that was commented out has been removed.
+The obsolete class that used to be the key component to identifying placeholders was PlaceholderResults and is no longer used anywhere.  It's core components were moved to PlaceholderIdentifier and therefore all references to this obsolete class has been eliminated.
+At this time, PlaceholderResults has not been deleted, but will be at some future time.
 
 
 * **Prison Placeholders: Major rewrite the handling of placeholders.**
