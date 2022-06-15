@@ -149,7 +149,8 @@ dependencies {
  // NOTE: This maven repo was failing to be accessable during online builds. So added to the /lib.
 	// https://www.spigotmc.org/resources/nbt-api.7939/
 	// https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin
-	implementation 'de.tr7zw:item-nbt-api-plugin:2.9.2'
+	implementation 'de.tr7zw:item-nbt-api-plugin:2.10.0'
+//	implementation 'de.tr7zw:item-nbt-api-plugin:2.9.2'
 
 
     compileOnly fileTree(dir: 'lib', include: ['*.jar'], 
@@ -209,7 +210,7 @@ shadowJar {
 
         include(dependency('com.github.cryptomorin:XSeries:8.7.1'))
         
-        include(dependency('de.tr7zw:item-nbt-api-plugin:2.9.2'))
+        include(dependency('de.tr7zw:item-nbt-api-plugin:2.10.0'))
         
         //include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
         //include(dependency('me.badbones69:crazyenchantments-plugin:1.8-Dev-Build-v8'))
