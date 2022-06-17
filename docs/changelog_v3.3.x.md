@@ -14,6 +14,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11h 2022-06-16
 
 
+* **GUI MInes: Update support for custom lore support within the gui configs.**
+
+
 * **Update XSeries from v8.7.1 to v8.8.0 to better support the newest blocks.**
 
 

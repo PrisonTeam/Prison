@@ -72,8 +72,13 @@ public class GuiConfig extends SpigotConfigComponents{
              lore.add("&8-----------------------");
              lore.add("&7GUI Placeholders are only the following and they are evaluated first ");
              lore.add("&7so they can be nested in the prison placeholders: ");
-             lore.add("&7 {rankName} {rankTag} {rankPrice} {rankMultiplier} {ladderName} {linkedMines}");
-             lore.add("&7 Not yet available: {mineName} {mineTag} ");
+             lore.add("&7  ");
+             lore.add("&7 For Ranks ONLY: ");
+             lore.add("&7   {rankName} {rankTag} {rankPrice} {rankMultiplier} {ladderName} {linkedMines}");
+             lore.add("&7   Not yet available in Ranks: {mineName} {mineTag} ");
+             lore.add("&7  ");
+             lore.add("&7 For Mines ONLY: ");
+             lore.add("&7   {mineName} {mineTag} {mineSize} {mineVolume} {mineRemaining} {mineRemaingPercent} ");
              lore.add("&8-----------------------");
              lore.add("&7Prison placeholders can include any that are within these placeholder ");
              lore.add("&7Groups: PLAYER, RANKS, RANKPLAYERS, MINES, STATSMINES, and STATSRANKS");
@@ -130,6 +135,44 @@ public class GuiConfig extends SpigotConfigComponents{
             changeCount++;
         }
 
+        if (conf.getList("EditableLore.Mines") == null){
+            List<String> lore = new ArrayList<>();
+            lore.add(" ");
+            lore.add("&8-----------------------");
+            lore.add("&3Mine:   &a{mineName} &r{mineTag}");
+            lore.add(" ");
+            lore.add("&3Size:   &a{mineSize}");
+            lore.add("&3Volume: &a{mineVolume}");
+            lore.add("&3Blocks Remaining: &a{mineRemaining} &a{mineRemainingPercent}%");
+            lore.add(" ");
+            lore.add("&8-----------------------");
+            
+            conf.set("EditableLore.Mines", lore);
+            changeCount++;
+        }
+
+
+        if (conf.getList("EditableLore.Mine.A") == null){
+            List<String> lore = new ArrayList<>();
+            lore.add(" ");
+            lore.add("&8-----------------------");
+            lore.add("&3Where new players start their awesome adventure!");
+            lore.add("&8-----------------------");
+            
+            conf.set("EditableLore.Mine.A", lore);
+            changeCount++;
+        }
+        
+        if (conf.getList("EditableLore.Mine.Z") == null){
+        	List<String> lore = new ArrayList<>();
+        	lore.add(" ");
+        	lore.add("&8-----------------------");
+        	lore.add("&3Time to get ready to prestige, and restart the fun adventure!");
+        	lore.add("&8-----------------------");
+        	
+        	conf.set("EditableLore.Mine.Z", lore);
+        	changeCount++;
+        }
         
         
         // Count and save
