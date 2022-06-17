@@ -50,6 +50,7 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.DisplayComponent;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.Output.DebugTarget;
+import tech.mcprison.prison.placeholders.PlaceholdersStats;
 import tech.mcprison.prison.troubleshoot.TroubleshootResult;
 import tech.mcprison.prison.troubleshoot.Troubleshooter;
 import tech.mcprison.prison.util.JumboTextFont;
@@ -782,6 +783,24 @@ public class PrisonCommand
     	display.send(sender);
     }
     
+    
+    @Command(identifier = "prison placeholders stats", 
+    		description = "List all placeholders that have been requested since server startup.", 
+    		onlyPlayers = false, permissions = "prison.placeholder")
+    public void placeholdersStatsCommand(CommandSender sender
+    		) {
+    	
+    	ChatDisplay display = new ChatDisplay("Placeholders List");
+    	
+    	ArrayList<String> stats = PlaceholdersStats.getInstance().generatePlaceholderReport();
+    	
+    	for (String stat : stats) {
+			display.addText( stat );
+		}
+    	
+    	
+    	display.send(sender);
+    }
     
     @Command(identifier = "prison reload placeholders", 
     		description = "Placeholder reload: Regenerates all placeholders and reregisters them.", 

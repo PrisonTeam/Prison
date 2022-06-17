@@ -20,6 +20,10 @@ public class PlaceholderIdentifier {
 	
 	/**
 	 * <p>This identifier contains the raw identifier text, minus any placeholder attributes.
+	 * This also can serve as a unique key for the placeholder.  In most conditions, it should
+	 * be able to match the placeholder enum.
+	 * </p>
+	 * 
 	 */
 	private String identifier;
 	

@@ -11,8 +11,12 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.11h 2022-06-16
+# 3.3.0-alpha.11h 2022-06-17
 
+
+* **Placeholder stats: A new feature that is tracking usage counts with placeholders.**
+This is not a placeholder cache that caches the results, but it caches the placeholder that is associated with text placeholder.  The stats currently only tracks the total number of hits, and the average run time to calculate the placeholder. 
+The pre-cache will reduce some overhead costs.  This also provides the framework to hooking up a formal placeholder cache.
 
 
 * **Placeholders: changed the two top_player line placeholders that are the headings**

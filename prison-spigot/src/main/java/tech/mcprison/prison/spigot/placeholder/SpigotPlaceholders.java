@@ -16,7 +16,9 @@ import tech.mcprison.prison.placeholders.PlaceholderIdentifier;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceholderFlags;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PrisonPlaceHolders;
 import tech.mcprison.prison.placeholders.PlaceholderManagerUtils;
+import tech.mcprison.prison.placeholders.PlaceholderStatsData;
 import tech.mcprison.prison.placeholders.Placeholders;
+import tech.mcprison.prison.placeholders.PlaceholdersStats;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
@@ -25,6 +27,35 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 public class SpigotPlaceholders
 	implements Placeholders {
 
+	private MineManager mm = null;
+	private PlayerManager pm = null;
+	private RankManager rm = null;
+	
+	public SpigotPlaceholders() {
+		super();
+		
+	}
+	
+	
+	/**
+	 * <p>After the modules have been loaded, then need to initialize the references to the managers that
+	 * handles the placeholders.
+	 * </p>
+	 */
+	private void initializePlaceholderManagers() {
+		
+		if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+			this.mm = PrisonMines.getInstance().getMineManager();
+		}
+		
+		if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+			
+			this.pm = PrisonRanks.getInstance().getPlayerManager();
+			
+			this.rm = PrisonRanks.getInstance().getRankManager();
+		}
+	}
+	
     
 	@Override
     public Map<PlaceholderFlags, Integer> getPlaceholderDetailCounts() {
@@ -32,25 +63,18 @@ public class SpigotPlaceholders
     	
     	List<PlaceHolderKey> placeholders = new ArrayList<>();
     	
-    	
-    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
-    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-    		if ( pm != null ) {
-    			placeholders.addAll( pm.getTranslatedPlaceHolderKeys() );
-    		}
-    		RankManager rm = PrisonRanks.getInstance().getRankManager();
-    		if ( rm != null ) {
-    			placeholders.addAll( rm.getTranslatedPlaceHolderKeys() );
-    		}
-    	}
-
-    	if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
-    		MineManager mm = PrisonMines.getInstance().getMineManager();
-    		if ( mm != null ) {
-    			placeholders.addAll( mm.getTranslatedPlaceHolderKeys() );
-    		}
+    	if ( pm != null ) {
+    		placeholders.addAll( pm.getTranslatedPlaceHolderKeys() );
     	}
     	
+    	if ( rm != null ) {
+    		placeholders.addAll( rm.getTranslatedPlaceHolderKeys() );
+    	}
+    	
+    	if ( mm != null ) {
+    		placeholders.addAll( mm.getTranslatedPlaceHolderKeys() );
+    	}
+    	    	
     	for ( PlaceHolderKey phKey : placeholders ) {
 			for ( PlaceholderFlags flag : phKey.getPlaceholder().getFlags() ) {
 
@@ -71,29 +95,21 @@ public class SpigotPlaceholders
     public int getPlaceholderCount() {
     	int placeholdersRawCount = 0;
     	
-    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
-    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-    		if ( pm != null ) {
-    			List<PlaceHolderKey> placeholderPlayerKeys = pm.getTranslatedPlaceHolderKeys();
-    			placeholdersRawCount += placeholderPlayerKeys.size();
-    			
-    		}
-    		RankManager rm = PrisonRanks.getInstance().getRankManager();
-    		if ( rm != null ) {
-    			List<PlaceHolderKey> placeholderPlayerKeys = rm.getTranslatedPlaceHolderKeys();
-    			placeholdersRawCount += placeholderPlayerKeys.size();
-    			
-    		}
+    	if ( pm != null ) {
+    		List<PlaceHolderKey> placeholderPlayerKeys = pm.getTranslatedPlaceHolderKeys();
+    		placeholdersRawCount += placeholderPlayerKeys.size();
+    		
     	}
-    	
 
-    	if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
-    		MineManager mm = PrisonMines.getInstance().getMineManager();
-    		if ( mm != null ) {
-    			List<PlaceHolderKey> placeholderMinesKeys = mm.getTranslatedPlaceHolderKeys();
-    			placeholdersRawCount += placeholderMinesKeys.size();
-    			
-    		}
+    	if ( rm != null ) {
+    		List<PlaceHolderKey> placeholderPlayerKeys = rm.getTranslatedPlaceHolderKeys();
+    		placeholdersRawCount += placeholderPlayerKeys.size();
+    		
+    	}
+
+    	if ( mm != null ) {
+    		List<PlaceHolderKey> placeholderMinesKeys = mm.getTranslatedPlaceHolderKeys();
+    		placeholdersRawCount += placeholderMinesKeys.size();
     		
     	}
 
@@ -104,43 +120,34 @@ public class SpigotPlaceholders
     public int getPlaceholderRegistrationCount() {
     	int placeholdersRegistered = 0;
     	
-    	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
-    		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-    		if ( pm != null ) {
-    			List<PlaceHolderKey> placeholderPlayerKeys = pm.getTranslatedPlaceHolderKeys();
-    			
-    			for ( PlaceHolderKey placeHolderKey : placeholderPlayerKeys ) {
-    				if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
-    					placeholdersRegistered++;
-    				}
-    			}
-    		}
-    		RankManager rm = PrisonRanks.getInstance().getRankManager();
-    		if ( rm != null ) {
-    			List<PlaceHolderKey> placeholderPlayerKeys = rm.getTranslatedPlaceHolderKeys();
-    			
-    			for ( PlaceHolderKey placeHolderKey : placeholderPlayerKeys ) {
-    				if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
-    					placeholdersRegistered++;
-    				}
-    			}
-    		}
-
-    	}
-    	
-
-    	if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
-    		MineManager mm = PrisonMines.getInstance().getMineManager();
-    		if ( mm != null ) {
-    			List<PlaceHolderKey> placeholderMinesKeys = mm.getTranslatedPlaceHolderKeys();
-    			
-    			for ( PlaceHolderKey placeHolderKey : placeholderMinesKeys ) {
-    				if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
-    					placeholdersRegistered++;
-    				}
-    			}
-    		}
+    	if ( pm != null ) {
+    		List<PlaceHolderKey> placeholderPlayerKeys = pm.getTranslatedPlaceHolderKeys();
     		
+    		for ( PlaceHolderKey placeHolderKey : placeholderPlayerKeys ) {
+    			if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
+    				placeholdersRegistered++;
+    			}
+    		}
+    	}
+
+    	if ( rm != null ) {
+    		List<PlaceHolderKey> placeholderPlayerKeys = rm.getTranslatedPlaceHolderKeys();
+    		
+    		for ( PlaceHolderKey placeHolderKey : placeholderPlayerKeys ) {
+    			if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
+    				placeholdersRegistered++;
+    			}
+    		}
+    	}
+
+    	if ( mm != null ) {
+    		List<PlaceHolderKey> placeholderMinesKeys = mm.getTranslatedPlaceHolderKeys();
+    		
+    		for ( PlaceHolderKey placeHolderKey : placeholderMinesKeys ) {
+    			if ( !placeHolderKey.getPlaceholder().isSuppressed() ) {
+    				placeholdersRegistered++;
+    			}
+    		}
     	}
 
     	return placeholdersRegistered;
@@ -193,31 +200,50 @@ public class SpigotPlaceholders
     }
     	
     public String placeholderTranslateText( PlaceholderIdentifier identifier ) {
+    	
+    	long nanoStart = System.nanoTime();
+    	
+    	PlaceholderStatsData stats = PlaceholdersStats.getInstance().getStats( identifier );
+    	
+    	String results = null;
+    	
+    	if ( identifier.getPlaceholderKey() == null ) {
+    		
+    		results = placeholderTranslateTextSearchForPlaceholder( identifier );
+    	}
+    	else {
+    		
+    		results = placeholderTranslateTextHavePlaceholder( identifier );
+    	}
+    	
+    	long nanoEnd = System.nanoTime();
+    	
+    	PlaceholdersStats.getInstance().setStats( identifier, stats, nanoStart, nanoEnd );
+    	
+    	return results;
+    }
+    
+    public String placeholderTranslateTextSearchForPlaceholder( PlaceholderIdentifier identifier ) {
 //		String results = text;
 
 		
-		if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
-			MineManager mm = PrisonMines.getInstance().getMineManager();
-			
-			if ( mm != null ) {
-				
-				List<PlaceHolderKey> placeholderKeys = mm.getTranslatedPlaceHolderKeys();
-				
-				for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
-					
-					if ( identifier.checkPlaceholderKey( placeHolderKey ) ) {
-						mm.getTranslateMinesPlaceholder( identifier );
-						break;
-					}
-					
-				}
-			}
-		}
+    	if ( mm != null ) {
+    		
+    		List<PlaceHolderKey> placeholderKeys = mm.getTranslatedPlaceHolderKeys();
+    		
+    		for ( PlaceHolderKey placeHolderKey : placeholderKeys ) {
+    			
+    			if ( identifier.checkPlaceholderKey( placeHolderKey ) ) {
+    				mm.getTranslateMinesPlaceholder( identifier );
+    				break;
+    			}
+    			
+    		}
+    	}
+    	
 		
-		if ( !identifier.isFoundAMatch() && !identifier.isFoundAMatch() && 
-				PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
+		if ( !identifier.isFoundAMatch() ) {
 			
-			PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
 			if ( pm != null ) {
 				
 				List<PlaceHolderKey> placeholderKeys = pm.getTranslatedPlaceHolderKeys();
@@ -232,8 +258,6 @@ public class SpigotPlaceholders
 	    		}
 			}
 			
-
-			RankManager rm = PrisonRanks.getInstance().getRankManager();
 			
 			if ( !identifier.isFoundAMatch() && rm != null ) {
 
@@ -253,6 +277,51 @@ public class SpigotPlaceholders
 
 		return identifier.getText();
 	}
+    
+    public String placeholderTranslateTextHavePlaceholder( PlaceholderIdentifier identifier ) {
+    	
+    	PlaceHolderKey placeHolderKey = identifier.getPlaceholderKey(); 
+    	
+		if ( mm != null && 
+				(placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINES ) ||
+				placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSMINES ) ||
+				placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINEPLAYERS ) ||
+				placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.PLAYERBLOCKS ) 
+			)) {
+		if ( identifier.checkPlaceholderKey(placeHolderKey) ) {
+			
+			mm.getTranslateMinesPlaceholder(identifier);
+		}
+
+	}
+	else if ( pm != null && 
+				(placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.PLAYER ) || 
+				placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.LADDERS )
+			)) {
+		
+		if ( identifier.checkPlaceholderKey(placeHolderKey) ) {
+			
+			pm.getTranslatePlayerPlaceHolder( identifier );
+		}
+		
+	}
+	else if ( rm != null && 
+				(placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.RANKS ) || 
+				placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.RANKPLAYERS ) ||
+				placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSRANKS ) ||
+				placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSPLAYERS ) 
+			)) {
+		
+		if ( identifier.checkPlaceholderKey(placeHolderKey) ) {
+			
+			rm.getTranslateRanksPlaceHolder( identifier );
+		}
+		
+	}
+
+		
+    	return identifier.getText();
+    }
     
 //    /**
 //     * This provides for a case insensitive replacement of placeholders.
@@ -342,42 +411,42 @@ public class SpigotPlaceholders
 				identifier.setPlayer(playerUuid, playerName);
 				
 				
-				String value = null;
+				String value = placeholderTranslateTextHavePlaceholder( identifier );
 				
 				// Note: STATSMINES will not work here since the sequence is not being addressed.
 				
-				if ( mm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINES ) ||
-							placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSMINES ) ||
-							placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINEPLAYERS ) ||
-							placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.PLAYERBLOCKS ) 
-						)) {
-					if ( identifier.checkPlaceholderKey(placeHolderKey) ) {
-						
-						value = mm.getTranslateMinesPlaceholder(identifier);
-					}
-
-				}
-				else if ( pm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.PLAYER ) || 
-							placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.LADDERS ))) {
-					
-					if ( identifier.checkPlaceholderKey(placeHolderKey) ) {
-						
-						value = pm.getTranslatePlayerPlaceHolder( identifier );
-					}
-					
-				}
-				else if ( rm != null && 
-						(placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.RANKS ) || 
-						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.RANKPLAYERS ) ||
-						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSRANKS ) ||
-						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSPLAYERS ) ) ) {
-					
-					if ( identifier.checkPlaceholderKey(placeHolderKey) ) {
-						
-						value = rm.getTranslateRanksPlaceHolder( identifier );
-					}
-					
-				}
+//				if ( mm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINES ) ||
+//							placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSMINES ) ||
+//							placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINEPLAYERS ) ||
+//							placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.PLAYERBLOCKS ) 
+//						)) {
+//					if ( identifier.checkPlaceholderKey(placeHolderKey) ) {
+//						
+//						value = mm.getTranslateMinesPlaceholder(identifier);
+//					}
+//
+//				}
+//				else if ( pm != null && (placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.PLAYER ) || 
+//							placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.LADDERS ))) {
+//					
+//					if ( identifier.checkPlaceholderKey(placeHolderKey) ) {
+//						
+//						value = pm.getTranslatePlayerPlaceHolder( identifier );
+//					}
+//					
+//				}
+//				else if ( rm != null && 
+//						(placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.RANKS ) || 
+//						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.RANKPLAYERS ) ||
+//						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSRANKS ) ||
+//						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSPLAYERS ) ) ) {
+//					
+//					if ( identifier.checkPlaceholderKey(placeHolderKey) ) {
+//						
+//						value = rm.getTranslateRanksPlaceHolder( identifier );
+//					}
+//					
+//				}
 				
 				String placeholderAlias = ( placeHolderKey.getAliasName() == null ? null : 
 					"{" + placeHolderKey.getAliasName() + "}");
@@ -444,11 +513,17 @@ public class SpigotPlaceholders
 		
 		
 		PlaceholderManagerUtils.getInstance().reloadPlaceholderBarConfig();
+		
+		initializePlaceholderManagers();
     	
     	if ( PrisonRanks.getInstance() != null && PrisonRanks.getInstance().isEnabled() ) {
     		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
     		if ( pm != null ) {
     			 pm.reloadPlaceholders();
+    		}
+    		
+    		if ( rm != null ) {
+    			rm.reloadPlaceholders();
     		}
     	}
 
