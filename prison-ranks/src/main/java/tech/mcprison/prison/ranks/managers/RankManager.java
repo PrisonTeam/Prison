@@ -864,8 +864,8 @@ public class RankManager
 			
 			switch ( placeHolder ) {
 					
-				case prison_top_player_line1_headers_nnn_tp:
-				case prison_tpl1h_nnn_tp:
+				case prison_top_player_line1_headers__tp:
+				case prison_tpl1h__tp:
 					{
 						results = RankPlayer.printRankScoreLine1Header();
 					}
@@ -886,8 +886,8 @@ public class RankManager
 				}
 				break;
 				
-				case prison_top_player_line2_headers_nnn_tp:
-				case prison_tpl2h_nnn_tp:
+				case prison_top_player_line2_headers__tp:
+				case prison_tpl2h__tp:
 				{
 					results = RankPlayer.printRankScoreLine2Header();
 				}

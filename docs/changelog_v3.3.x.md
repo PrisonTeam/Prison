@@ -14,6 +14,11 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11h 2022-06-16
 
 
+
+* **Placeholders: changed the two top_player line placeholders that are the headings**
+ since they originally had _nnn_ pattern that is getting messed up in some settings.  So removal of the nnn helped to getting it working.
+
+
 * **GUI MInes: Update support for custom lore support within the gui configs.**
 
 

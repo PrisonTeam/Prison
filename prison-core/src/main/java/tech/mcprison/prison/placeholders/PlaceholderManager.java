@@ -36,18 +36,24 @@ public class PlaceholderManager {
     
     public enum PlaceholderFlags {
     	
+    	// PlayerManager
     	PLAYER,
     	LADDERS,
+    	
+    	
+    	// RankManager
     	RANKS,
     	RANKPLAYERS,
+    	STATSRANKS( true ),
+    	STATSPLAYERS( true ),
 
+    	
+    	// MineManager
     	MINES,
     	MINEPLAYERS,
     	PLAYERBLOCKS,
-    	
     	STATSMINES( true ),
-    	STATSRANKS( true ),
-    	STATSPLAYERS( true ),
+    	
     	
     	
     	SUPRESS,
@@ -578,8 +584,8 @@ public class PlaceholderManager {
 		
 		prison_tpl1_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
 		prison_tpl2_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
-		prison_tpl1h_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
-		prison_tpl2h_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
+		prison_tpl1h__tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
+		prison_tpl2h__tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
 
 		prison_tpn_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
 		prison_tprp_nnn_tp( PlaceholderFlags.STATSPLAYERS, PlaceholderFlags.ALIAS ),
@@ -595,8 +601,8 @@ public class PlaceholderManager {
 		
 		prison_top_player_line1_nnn_tp( prison_tpl1_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
 		prison_top_player_line2_nnn_tp( prison_tpl2_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
-		prison_top_player_line1_headers_nnn_tp( prison_tpl1h_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
-		prison_top_player_line2_headers_nnn_tp( prison_tpl2h_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
+		prison_top_player_line1_headers__tp( prison_tpl1h__tp, PlaceholderFlags.STATSPLAYERS ),
+		prison_top_player_line2_headers__tp( prison_tpl2h__tp, PlaceholderFlags.STATSPLAYERS ),
 
 		prison_top_player_name_nnn_tp( prison_tpn_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
 		prison_top_player_rank_prestiges_nnn_tp( prison_tprp_nnn_tp, PlaceholderFlags.STATSPLAYERS ),
