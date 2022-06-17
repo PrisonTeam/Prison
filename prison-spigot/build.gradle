@@ -116,7 +116,7 @@ dependencies {
 //    implementation 'com.github.cryptomorin:xseries:b95d195482'
     
     // https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
-	implementation 'com.github.cryptomorin:XSeries:8.7.1'
+	implementation 'com.github.cryptomorin:XSeries:8.8.0'
     
 
 
@@ -208,7 +208,7 @@ shadowJar {
 
         include(dependency('me.clip:placeholderapi:2.10.9'))
 
-        include(dependency('com.github.cryptomorin:XSeries:8.7.1'))
+        include(dependency('com.github.cryptomorin:XSeries:8.8.0'))
         
         include(dependency('de.tr7zw:item-nbt-api-plugin:2.10.0'))
         
