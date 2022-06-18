@@ -15,6 +15,9 @@ These build logs represent the work that has been going on within prison.
 
 
 
+* **Update some of the docs on setting up luckperms and tracks.**
+
+
 * **v3.3.0-alpha.11j**
 
 
