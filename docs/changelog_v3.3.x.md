@@ -11,7 +11,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.11h 2022-06-17
+# 3.3.0-alpha.11j 2022-06-17
+
+
+
+* **v3.3.0-alpha.11j**
 
 
 * **Since the chat event is handled within the spigot module, and since ranks and mines would just duplicate the processing since they both will hit the SpigotPlaceholder class, it made sense to handle the chat event directly within the spigot module.**
