@@ -13,6 +13,11 @@ These build logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.11h 2022-06-17
 
+
+* **Updates to the prison placeholder handler.  This fixes a bug with chat messages return a null value.**
+These changes also allows the pre-cache to track invalid placeholders now, so it can fast-fail them so it does not have to waste CPU time trying to look up which placeholder key they are tied to.
+
+
 * **v3.3.0-alpha.11i**
 Getting ready to release alpha.12.
 

@@ -11,6 +11,8 @@ public class PlaceholderStatsData {
 	
 	private long totalDurationNanos = 0L;
 	
+	private boolean failedMatch;
+	
 	private transient final Object lock;
 	
 	public PlaceholderStatsData( String placeholderId ) {
@@ -20,6 +22,7 @@ public class PlaceholderStatsData {
 		
 		this.placeholderId = placeholderId;
 		
+		this.failedMatch = false;
 	}
 
 	public void logHit( long nanoStart, long nanoEnd ) {
@@ -64,5 +67,13 @@ public class PlaceholderStatsData {
 	public void setTotalDurationNanos(long totalDurationNanos) {
 		this.totalDurationNanos = totalDurationNanos;
 	}
+
+	public boolean isFailedMatch() {
+		return failedMatch;
+	}
+	public void setFailedMatch(boolean failedMatch) {
+		this.failedMatch = failedMatch;
+	}
+
 
 }

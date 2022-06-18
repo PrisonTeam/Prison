@@ -795,7 +795,7 @@ public class PrisonCommand
     	ArrayList<String> stats = PlaceholdersStats.getInstance().generatePlaceholderReport();
     	
     	for (String stat : stats) {
-			display.addText( stat );
+			display.addText( stat.replace( "%", "%%") );
 		}
     	
     	

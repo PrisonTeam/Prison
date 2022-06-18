@@ -50,6 +50,11 @@ public class PlaceholdersStats {
 			else {
 				results = new PlaceholderStatsData( key );
 				getPlaceholders().put( key, results );
+				
+				// Store this new stats object in the cache.  If there is a placeholder fail, then
+				// this will help prevent going through all of the calculations for future
+				// hits.
+				getPlaceholders().put( key, results );
 			}
 			
 		}
@@ -57,13 +62,29 @@ public class PlaceholdersStats {
 		return results;
 	}
 	
+	
+	/**
+	 * <p>This function will record the stats, which is the nano runtime, and also store the 
+	 * PlaceholderKey in the Stats if it's not null.  
+	 * </p>
+	 * 
+	 * <p>The stats object has already been stored in the cache so there is no reason to 
+	 * add it again.
+	 * </p>
+	 * 
+	 * @param pId
+	 * @param stats
+	 * @param nanoStart
+	 * @param nanoEnd
+	 * @return
+	 */
 	public PlaceholderStatsData setStats( PlaceholderIdentifier pId, PlaceholderStatsData stats, 
 				long nanoStart, long nanoEnd ) {
 		PlaceholderStatsData results = null;
 		
 		
 		if ( pId != null && stats != null ) {
-			String key = pId.getIdentifier();
+			//String key = pId.getIdentifier();
 			
 			if ( stats.getPlaceholderKey() == null && pId.getPlaceholderKey() != null ) {
 				stats.setPlaceholderKey( pId.getPlaceholderKey() );
@@ -71,11 +92,17 @@ public class PlaceholdersStats {
 			
 			stats.logHit( nanoStart, nanoEnd );
 			
-			// If it contains
-			if ( !getPlaceholders().containsKey(key) ) {
 			
-				
+			if ( !pId.isFoundAMatch() ) {
+				stats.setFailedMatch( true );
 			}
+			
+			
+//			// If it contains
+//			if ( !getPlaceholders().containsKey(key) ) {
+//			
+//				
+//			}
 			
 		}
 		
@@ -108,7 +135,10 @@ public class PlaceholdersStats {
 					iFmt.format( hits ),
 					dFmt.format( avgMs ),
 					key,
-					( valid ? "" : "&cInvalid: No match.")
+					( valid ? "" :
+						stats.isFailedMatch() ? 
+								"&cInvalid: bypassing lookups." :
+							"&cInvalid: No match.")
 					);
 			results.add( message );
 			

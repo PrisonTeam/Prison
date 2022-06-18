@@ -47,7 +47,7 @@ public class PlaceholderIdentifierTest {
 		PlaceholderIdentifier t4 = new PlaceholderIdentifier( "simple" );
 		
 		assertNotNull( t4.getIdentifier() );
-		assertEquals( "prison_simple", t4.getIdentifier() );
+		assertEquals( "simple", t4.getIdentifier() );
 		assertEquals( "simple", t4.getOriginalIdentifier() );
 		
 		PlaceholderIdentifier t5 = new PlaceholderIdentifier( "{prison_simple}" );
@@ -61,7 +61,7 @@ public class PlaceholderIdentifierTest {
 		PlaceholderIdentifier t6 = new PlaceholderIdentifier( "{simple}" );
 		
 		assertNotNull( t6.getIdentifier() );
-		assertEquals( "prison_simple", t6.getIdentifier() );
+		assertEquals( "simple", t6.getIdentifier() );
 		assertEquals( "{", t6.getEscapeLeft() );
 		assertEquals( "}", t6.getEscapeRight() );
 		assertEquals( "{simple}", t6.getOriginalIdentifier() );

@@ -41,6 +41,8 @@ public class PlaceholderIdentifier {
 	private Player player;
 	
 	private boolean foundAMatch;
+	private boolean missingPrisonPrefix;
+	
 	private PlaceHolderKey placeholderKey;
 	private String text;
 	
@@ -64,6 +66,8 @@ public class PlaceholderIdentifier {
 		this.player = null;
 		
 		this.foundAMatch = false;
+		this.missingPrisonPrefix = false;
+		
 		this.placeholderKey = null;
 		this.text = null;
 		
@@ -96,7 +100,12 @@ public class PlaceholderIdentifier {
 			// Some plugins that handle the placeholders omit the prefix.  If that's the case, then
 			// add it back.
 			if ( !identifier.startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED ) ) {
-				identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
+				
+				this.missingPrisonPrefix = true;
+				
+				// Do not modify the identifier... will adjust the identifier when comparing to the
+				// PlaceholderKey object:
+//				identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
 			}
 			
 			
@@ -143,11 +152,16 @@ public class PlaceholderIdentifier {
 		
 		String key = placeHolderKey.getKey().toLowerCase();
 		
-		if ( getIdentifier().equalsIgnoreCase( key ) ) {
+		// If the placeholder was missing the Prison prefix ( prison_ ) then add it before
+		// checking to see if there is a match:
+		String adjustedIdentifier = (isMissingPrisonPrefix() ?  
+					PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED : "") +
+						getIdentifier();
+		
+		if ( adjustedIdentifier.equalsIgnoreCase( key ) ) {
 			
 			setPlaceholderKey( placeHolderKey );
 			results = true;
-			
 		}
 		
 		return results;
@@ -289,6 +303,13 @@ public class PlaceholderIdentifier {
 	}
 	public void setFoundAMatch(boolean foundAMatch) {
 		this.foundAMatch = foundAMatch;
+	}
+
+	public boolean isMissingPrisonPrefix() {
+		return missingPrisonPrefix;
+	}
+	public void setMissingPrisonPrefix(boolean missingPrisonPrefix) {
+		this.missingPrisonPrefix = missingPrisonPrefix;
 	}
 
 	public PlaceHolderKey getPlaceholderKey() {
