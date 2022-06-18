@@ -58,6 +58,7 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.util.Text;
 
 /**
  * Posts Prison's internal events.
@@ -302,15 +303,27 @@ public class SpigotListener implements Listener {
 			
 		@EventHandler(priority=EventPriority.NORMAL) 
 	    public void onPlayerChat(AsyncPlayerChatEvent e) {
-	        PlayerChatEvent event =
-	            new PlayerChatEvent(new SpigotPlayer(e.getPlayer()), e.getMessage(), e.getFormat());
+			String message = e.getMessage();
+			String format = e.getFormat();
+			
+			SpigotPlayer p = new SpigotPlayer( e.getPlayer() );
+			
+			String results = Prison.get().getPlatform().getPlaceholders()
+					.placeholderTranslateText( p.getUUID(), p.getName(), format );
+			
+			
+			String translated = Text.translateAmpColorCodes( results + "&r" );
+			e.setFormat( translated );
+			
+//	        PlayerChatEvent event =
+//	            new PlayerChatEvent(new SpigotPlayer(e.getPlayer()), message, format);
+//	        
+//	        Prison.get().getEventBus().post(event);
 	        
-	        Prison.get().getEventBus().post(event);
-	        
-	        e.setFormat(ChatColor.translateAlternateColorCodes('&', event.getFormat() + "&r"));
-	        e.setMessage(event.getMessage());
-	        
-	        doCancelIfShould(event, e);
+//	        e.setFormat(ChatColor.translateAlternateColorCodes('&', event.getFormat() + "&r"));
+//	        e.setMessage(event.getMessage());
+//	        
+//	        doCancelIfShould(event, e);
 	    }
 	}
 
