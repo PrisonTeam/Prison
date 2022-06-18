@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.11h 2022-06-17
 
+* **v3.3.0-alpha.11i**
+Getting ready to release alpha.12.
+
 
 * **Placeholder stats: A new feature that is tracking usage counts with placeholders.**
 This is not a placeholder cache that caches the results, but it caches the placeholder that is associated with text placeholder.  The stats currently only tracks the total number of hits, and the average run time to calculate the placeholder. 
