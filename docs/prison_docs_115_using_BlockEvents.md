@@ -85,6 +85,9 @@ Prison's BlockEvents also supports more advanced placeholders that can help simp
 
 **How the command runs:**
 
+**Note:** Due to overall performance issues when commands are used that cannot support a rapid turn around time, which will contribute to lag, the option to run commands **{inline}** no longer exists.  The placeholders are still there, but all blockEvents are preprocessed, then ran together in one blocked-unit in another thread.  If the running on any single command takes a while (too long), then the remaining commands will be resubmitted to prevent lag, or at least greatly reduce it.  But also submitting the task of running the commands, it will also help Timings better identify it as being related to a command that is being ran.  If prison is in debug mode, then high level stats on all of the commands that are ran with the blockEvents will be logged within the console.
+
+
 There are four **taskModes** on how BlockEvent commands run. The taskModes can be setup through the command `/mines blockEvent taskMode help`, or they can be specified as placeholders.  There are 4 taskModes, and the placeholder versions are listed here:
 
 - **{inline}** This is the default taskMode if not specified.  **{inline}** runs the commands in the same thread that in which Prison is handling the Block Break Events within Auto Features, and runs them as console (OP). If the command you use with BlockEvents is "slow" to run, then it could cause significant lag on the server.
