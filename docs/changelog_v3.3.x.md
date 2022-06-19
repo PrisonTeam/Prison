@@ -11,8 +11,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.11j 2022-06-17
+# 3.3.0-alpha.11j 2022-06-19
 
+
+* **Update Docs: LuckPerms groups and tracks... added images and fixes a few minor things too.**
 
 
 * **Update some of the docs on setting up luckperms and tracks.**

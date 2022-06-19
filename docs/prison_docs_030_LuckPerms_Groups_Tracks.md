@@ -128,7 +128,12 @@ For example, where `P1` is the Prestige 1 rank:
 Although there are many ways to configure any plugin, these suggestions tries to keep things simple by using the same names as the counter parts between Prison and LuckPerms.  It may be slightly confusion which is which, as far as Prison or LuckPerms, but it makes it easier by being consistent with the same names for the similar parts.
 
 
-The best way to setup LuckPerms Groups is to make 1 group for every Prison Rank.  Then use the Rank Commands to assign users to that group automatically when they rankup.  Then to tie things together within LuckPerms, place these created LuckPerms Groups on a LuckPerms Track.
+The best way to setup LuckPerms Groups is to make 1 group for every Prison Rank.  Then use the Rank Commands to assign users to that group automatically when they rankup.  Then to tie things together within LuckPerms, place these created LuckPerms Groups on a LuckPerms Track.  Then when a player ranks up, a Prison Ladder Command will be ran to change the LP track to keep Prison's Ranks in synch with the LuckPerms tracks.
+
+
+
+To give you the choice on how to setup the LP groups and tracks, **Step 1** through **Step 3** shows you how to use *either* the LP Web Permissions Editor or how to use the commands through the server's console.  Choose one or the other; you should not try to do both.
+
 
 
 **Step 1 : Configure Prison's Ranks and Mines**
@@ -164,7 +169,11 @@ If you did not run `/ranks autoconfigure`, you can auto link the mines and ranks
 
 **Step 2 : Create the LuckPerms Groups using the LP Editor**
 
+
 Create a new group in LuckPerms for each Rank within Prison. 
+
+
+Please note that the name of the LuckPerms group must match the names you use with the Prison Rank names.  This is very important because in **Step 4** below you will need to create a Ladder Command that will run every time a player ranks up, and it will use the next rank's name in the command, which must match the LuckPerms' group name or it won't work.
 
 
 We suggest that you should use the LP editor, which makes it easier to perform admin tasks.  To open a new editor session, use the command `/lp editor` then click on the hyperlink, or copy and paste it to your browser.
@@ -173,13 +182,21 @@ We suggest that you should use the LP editor, which makes it easier to perform a
 Within the LP Web Permissions Editor, to the left of the page is a left-navigation section with expandable topics of: Tracks, Groups, and Users.  To the right of the Groups section is a plus sign "+", click on that to add a new group.
 
 
+<img src="images/prison_docs_030_1_LP_add_a_group.png" alt="Adding a LuckPerms group A" title="Adding a LuckPerms group A" width="600" />  
+
+
+
 To create your first group, give it a name of "a" and a display name of "A". The display name is not intended for using color codes, or anything fancy.  Click on "Add Group" to create the group.
 
-(screen print: )
+
+<img src="images/prison_docs_030_2_LP_create_group_a.png" alt="Create LuckPerms group A" title="Create LuckPerms group A" width="600" />  
+
+
 
 Then create group b.  But this time, have it list Group A as the parent.
 
-(screen print: )
+
+<img src="images/prison_docs_030_3_LP_create_group_b.png" alt="Laying out the new mine" title="Layout out the new mine" width="600" />  
 
 
 Repeat creating all the groups, where group z will be the last one.
@@ -228,11 +245,16 @@ Click the plus (+) button to the right of the heading **Tracks** to create a new
 
 Name the new track "mine-ranks".  It will be shown in all upper case: MINE-RANKS.
 
-(screen print)
+
+<img src="images/prison_docs_030_4_LP_create_track_mine-ranks.png" alt="Create LP track mine-ranks" title="Create LP track mine-ranks" width="600" />  
+
 
 You "must" click on each rank in alphabetical order to add it to the track's list.  You can also drag-n-drop.  Review the list of ranks and ensure they are in alphabetical order.  Notice it shows the groups in order, with arrows identifying the flow of the track.
 
-(screen print)
+
+
+<img src="images/prison_docs_030_5_LP_edit_track-mine-ranks.png" alt="Edit LP track mine-ranks" title="Edit LP track mine-ranks" width="600" />  
+
 
 
 When finished, click on "Add Track" to keep it.
@@ -252,11 +274,13 @@ Create the track, then add the groups in the correct order:
 
 ```
 /lp createtrack mine-ranks
-/op track mine-ranks append a
-/op track mine-ranks append b
-/op track mine-ranks append c
+/lp track mine-ranks append a
+/lp track mine-ranks append b
+/lp track mine-ranks append c
+
 ... etc ...
-/op track mine-ranks append z
+
+/lp track mine-ranks append z
 
 ```
 
@@ -350,9 +374,11 @@ You would also need to turn off Mine Access by Rank and TP Access by Rank, then 
 /mines set accessPermission a mines.a
 /mines set accessPermission b mines.b
 /mines set accessPermission c mines.c
+
 ... etc ...
+
 /mines set accessPermission z mines.z
-~~~
+```
 
 
 
@@ -360,7 +386,7 @@ You would also need to turn off Mine Access by Rank and TP Access by Rank, then 
 
 
 
-## Older notes - Ignore - Maybe deleted
+## Older notes - Ignore - May Be deleted
 
 
 So to get started with how you would setup a Prison Rank command for Rank B:
@@ -446,6 +472,7 @@ The following is optional, but what it does is to apply all rank commands to all
 And that should be it.  
 
 
+### end of "may be deleted" section....
 
 
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
@@ -454,14 +481,30 @@ And that should be it.
 
 # Setting up LuckPerms Chat Prefixes
 
+
 To setup a LuckPerms chat prefix, using prison's rank tag, use the following command.  This assumes you've followed the directions above with setting up a LP track.
+
 
 ```
 /lp group default meta setprefix "%prison_rank_tag_prestiges%%prison_rank_tag_default% &r"
+
 ```
 
+You could use just `%prison_rank_tag%`, or it's alias `%prison_rt%`, but that will include the rank tags for all ranks the player has on the server.  Normally they will always have a rank on the `default` rank, and optionally on the `prestiges` ladder too.  If other ladders are setup, then they will also be included.  Generally this is fine, but the drawback is that you cannot control the order in which they are generated.  So as listed in the example above, we are controlling the order of the rank tags for both the prestiges and default ladder.  The aliases for those two placeholders are `%prison_rt_prestiges%` and `%prison_rt_default%`.
 
-*coming soon...*
+
+Next, you need to install a plugin to enable the LuckPerms Chat Prefixes, which allows LuckPerms to resolve the placeholder through PlaceholderAPI.
+
+
+Download the **LPC** plugin and place it in the server's `/plugins` directory.  This plugin also requires the **PlaceholderAPI** plugin.  Then restart the server.
+
+
+[https://www.spigotmc.org/resources/lpc-chat-formatter-1-7-10-1-18-2.68965/](https://www.spigotmc.org/resources/lpc-chat-formatter-1-7-10-1-18-2.68965/)
+
+
+There should be no configuration changes needed for the plugin, and it should just work.
+
+
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
