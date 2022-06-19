@@ -14,6 +14,11 @@ public class LongArgumentHandler
     @Override 
     public Long transform(CommandSender sender, CommandArgument argument, String value)
         throws TransformError {
+    	
+    	if ( value != null ) {
+    		value = value.replaceAll( "$|%", "" );
+    	}
+
         try {
             return Long.parseLong(value);
         } catch (NumberFormatException e) {
