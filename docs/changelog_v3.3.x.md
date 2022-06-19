@@ -14,6 +14,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11j 2022-06-19
 
 
+* **Placeholder fix: The PAPI placeholder integrations should not be prefixing raw text with "prison_"; that is the task for PlaceholderIdentifier.**
+
+
 * **minor items changed with the GUIs... no functional changes.**
 
 
