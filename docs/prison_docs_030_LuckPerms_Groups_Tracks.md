@@ -7,7 +7,7 @@
 This document provides an overview to help setup LuckPerms groups and tracks.
 
 
-*Documented updated: 2022-06-17*
+*Documented updated: 2022-06-19*
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -21,15 +21,25 @@ Setup LuckPerms as needed.  Information on where to download it can be found her
 [Setting Up LuckPerms](prison_docs_020_setting_up_luckperms.md)
 
 
+To use the LuckPerms Chat Prefix, you will also need the **PlaceholderAPI** and **LPC** plugins.  Information on the LPC plugin is presented near the end of this document.
+
+
 Below are detailed steps on how to configure both Prison and LuckPerms.
 
 
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+The commands and configurations presented below are for a normal (A-Z) setup, if your ranks and/or mines have different names, use those instead of the A-Z names as shown in this guide
+
+
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
+
 
 
 # LuckPerms Groups
 
 To help simplify the management of permissions for players, LuckPerms uses permission Groups to form a collection of permissions.  This helps to simplify assigning permission to players since one group can contain many permissions.  For example, if there are 20 permissions in a group, then you would only have to issue one group command instead of 20 permission commands.
+
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
+
 
 
 # LuckPerms Tracks
@@ -42,7 +52,8 @@ To advance a player within LuckPerms Tracks, you just promote the player to the 
 
 Since Prison needs to use their own ranks, and is not directly tied to LuckPerms Tracks, Prison Ranks can help manage a player's LuckPerms Track.
 
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
+
 
 
 # Using Prison Rank Commands with Groups and Tracks - An Overview
@@ -123,7 +134,7 @@ For example, where `P1` is the Prestige 1 rank:
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
-# The Suggested Way to Setup LuckPerms Groups and Tracks - An Overview
+# Setting Up LuckPerms Groups and Tracks - An Overview
 
 Although there are many ways to configure any plugin, these suggestions tries to keep things simple by using the same names as the counter parts between Prison and LuckPerms.  It may be slightly confusion which is which, as far as Prison or LuckPerms, but it makes it easier by being consistent with the same names for the similar parts.
 
@@ -176,6 +187,7 @@ Create a new group in LuckPerms for each Rank within Prison.
 Please note that the name of the LuckPerms group must match the names you use with the Prison Rank names.  This is very important because in **Step 4** below you will need to create a Ladder Command that will run every time a player ranks up, and it will use the next rank's name in the command, which must match the LuckPerms' group name or it won't work.
 
 
+
 We suggest that you should use the LP editor, which makes it easier to perform admin tasks.  To open a new editor session, use the command `/lp editor` then click on the hyperlink, or copy and paste it to your browser.
 
 
@@ -202,7 +214,7 @@ Then create group b.  But this time, have it list Group A as the parent.
 Repeat creating all the groups, where group z will be the last one.
 .
 
-Save it.  Click the save icon in the upper right hand corner.  It will give you a code to apply the changes.  Click the code to copy it to your clipboard, then paste it in game, or in the server's console.  Close the browser window for that editor (once you apply the changes, never use the same editor session again... create a new one).
+Save it.  Click the save icon in the upper right hand corner.  It will give you a code to apply the changes.  Click the code to copy it to your clipboard, then paste it in game, or in the server's console.  
 
 
 
@@ -243,7 +255,7 @@ Open a new LP Web Permission editor: `/lp editor`.
 
 Click the plus (+) button to the right of the heading **Tracks** to create a new LP track.
 
-Name the new track "mine-ranks".  It will be shown in all upper case: MINE-RANKS.
+Name the new track "mine-ranks".
 
 
 <img src="images/prison_docs_030_4_LP_create_track_mine-ranks.png" alt="Create LP track mine-ranks" title="Create LP track mine-ranks" width="600" />  
@@ -316,33 +328,6 @@ Let's review the parts of that command:
 * `{targetRank}`- This is a Ladder Command placeholder that will inject the new rank for the player.
 
 
-**Step 5 - Testing**
-
-Time to test.  
-
-
-Make sure the player you're testing with is not OP'd.
-
-
-You can use `/rankup` to change ranks, but it will cost you.  
-
-Or you can use `/ranks promote help` and `/ranks demote help` to rankup and to rank-down.  Check out these commands, since you can force a player to pay for the promote, or even give a refund on a demote.
-
-
-
-You can also use `/ranks set rank help` to jump over a number of ranks in either direction.  But this could be dangerous if there is a rank command that needs to be set, or removed, at each rank.
-
-
-
-To test the teleportation to the mines, you can use `/mines tp`, or the alias `/mtp`.  If you did not setup each mine's spawn points yet, then it will teleport you to the top-center of the mine.
-
-
-
-To review a player's rank within LP use `/lp user <player> info` and .  
-
-
-To review a player's rank within prison use `/ranks player <playerName>`.
-
 
 
 
@@ -382,100 +367,51 @@ You would also need to turn off Mine Access by Rank and TP Access by Rank, then 
 
 
 
-<hr style="height:10px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:6px; border:none; color:#aaf; background-color:#aaf;">
 
 
 
-## Older notes - Ignore - May Be deleted
+# Testing LuckPerms along with Prison Ranks
 
 
-So to get started with how you would setup a Prison Rank command for Rank B:
-`/ranks command add B lp user {player} parent settrack [track] b`
+Here are a few topics to consider when you're testing your setup.  Some of these are some general tips that may help with testing and managing your player.
 
 
-When they become rank B, the command `/lp user {player} parent settrack [track] b` will be ran as console/admin.  The Prison placeholder `{player}` is the player's name, and `[track]` is the name you're calling your track.
-
-
-To setup all the LuckPerms groups, you can use `/lp editor` to make it easier.  And setup the ranks from A through Z.
+Make sure the player you're testing with is not OP'd.  If you're permissions to manage access to mines, mine TP spawn locations, or other commands, then OP will bypass all perms and give that player full access.
 
 
 
-Next you should setup the LuckPerms Tracks, which will take a little more effort up front.  You don't have to use Tracks, but it will simplify some things later on by simplifying the synchronization between Prison Ranks and the LuckPerms Groups.  
+You can use `/rankup` to change ranks, but it will cost you the stand rankup fees.
 
 
-For our examples, we will name our track **PrisonRank**.
-
-```
-/luckperms createtrack [track]
-
-/luckperms createtrack PrisonRanks
-
-```
+Or you can use `/ranks promote help` and `/ranks demote help` to rankup and to rank-down.  Check out these commands, since you can force a player to pay for the promote, or even give a refund on a demote.
 
 
-Now we need to add all of our created groups to this track.  It's important to add them **IN ORDER**.  Yes, the order is critical.  Remember our Prison Ranks are named A through Z, and so are our LuckPerms Groups, so we have to add them all.
+If you're using EssentialsX's economy, also applies to many other economy plugins, the following commands can be helpful to know.  `/eco` will show available commands.  To give yourself money: `/eco give <player> <amount>`.  Remove some with `/eco take <player> <amount>`.  Or to set it to a specific value `/eco set <player> <amount>`.
 
 
-```
-/luckperms track [track] append <group>
-
-/luckperms track PrisonRank append A
-/luckperms track PrisonRank append B
-/luckperms track PrisonRank append C
-/luckperms track PrisonRank append D
-
-...
-
-/luckperms track PrisonRank append Z
-
-```
+You can also use `/ranks set rank help` to jump over a number of ranks in either direction.  But this could be dangerous if there is a rank command that needs to be set, or removed, at any specific rank that you may skip over.
 
 
-The next step that you need to do, is to setup all the perms for each of your groups.  The perms that you need, are based upon the plugins that you have setup on your server, and the perms that they will require.
+
+To test the teleportation to the mines, especially if you use perms, you can use `/mines tp`, or the alias `/mtp`.  If you did not setup each mine's spawn points yet, then it will teleport you to the top-center of the mine.  See `/mines set spawn help`.
 
 
-For brevity, we will only show you the commands to use manually.  You can use the command `/lp editor` too.  Remember that the **group** listed in this command are the LuckPerms groups that you created earlier, that are named A trough Z.  The **permission**s that you use in these commands should be entered exactly as they are needed.
-
-```
-/lp group <group> permission set <permission>
-
-```
-
-It may take a while to setup all the permissions, and you will have to revisit these as you're adding more plugins.
+Generally your players will be using the GUI for ranks and mines.  For mines, the commands for players are just `/mines` but if you're OP'd then you can use `/gui mines` to get to their GUI.  Same with player ranks, their command is just `/ranks`, but to access that guil while OP'd use `/gui ranks.  Within the Mines GUI, the players can TP to the mines (why its important to test TP'ing).  Also they can rankup through the ranks GUI.
 
 
-Next, we need to setup Prison's Rank Commands to allow the rankup process to keep the LuckPerms Track's Groups in synchronization.  Luckily, this is pretty simple and is accomplished with just one Rank Command per rank.  Please not that for Prison's Rank names they are not case sensitive, but the LuckPerms track names may be, so they are listed here in upper case.
+To review a player's rank within LP use `/lp user <player> info` and `/lp user <player> permission info`.
 
 
-These are based upon the two individual commands; the Prison Ranks Command and the LP command.  The **command** reference in the Prison Rank Command is the whole LP command, as you will see following the templates.
 
-```
-/ranks command add <rank> <command>
-/lp user {player} parent settrack [track] <group>
-
-/ranks command add a lp user {player} parent settrack PrisonRank A
-/ranks command add b lp user {player} parent settrack PrisonRank B
-/ranks command add c lp user {player} parent settrack PrisonRank C
-/ranks command add d lp user {player} parent settrack PrisonRank D
-
-...
-
-/ranks command add z lp user {player} parent settrack PrisonRank Z
-```
+To review a player's rank within prison use `/ranks player <playerName>`.
 
 
-The following is optional, but what it does is to apply all rank commands to all players at their current ranks.  So this will apply everything we just entered above to anyone who is already setup in Prison.
-
-`/ranks set rank *all* *same* default`
 
 
-And that should be it.  
 
+<hr style="height:6px; border:none; color:#aaf; background-color:#aaf;">
 
-### end of "may be deleted" section....
-
-
-<hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
 
 
