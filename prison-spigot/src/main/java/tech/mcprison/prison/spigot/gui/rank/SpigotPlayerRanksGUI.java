@@ -50,7 +50,9 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
     private PrisonRanks rankPlugin;
     private RankPlayer rankPlayer;
-    private final boolean placeholderAPINotNull = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null || Bukkit.getPluginManager().getPlugin("PlaceholdersAPI") != null;
+    private final boolean placeholderAPINotNull = 
+    		Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null || 
+    		Bukkit.getPluginManager().getPlugin("PlaceholdersAPI") != null;
 //    private final List<String> configCustomLore = guiConfig.getStringList("EditableLore.Ranks");
     
     private String ladderName;

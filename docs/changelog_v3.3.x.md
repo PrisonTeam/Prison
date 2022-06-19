@@ -14,6 +14,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11j 2022-06-19
 
 
+* **minor items changed with the GUIs... no functional changes.**
+
+
 * **Update a number of docs...**
 
 

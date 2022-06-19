@@ -173,7 +173,8 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 
             // Get mine Tag, but make sure it is valid and the mine's name is not null:
             String mineTag = mineName == null ? "-no mine name-" : mineName;
-            if ( m.getTag() == null && !m.getTag().equalsIgnoreCase("null") && 
+            if ( m.getTag() != null && 
+            		!m.getTag().equalsIgnoreCase("null") && 
             		!m.getTag().equalsIgnoreCase("none") ) {
             	mineTag = m.getTag();
             }
@@ -185,7 +186,7 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             	double volume = m.getBounds().getArea();
             	double remaining = volume * m.getPercentRemainingBlockCount() / 100.0;
             	
-            	stringValue = stringValue.replace( "{mineName}", m.getName() );
+            	stringValue = stringValue.replace( "{mineName}", mineName );
             	stringValue = stringValue.replace( "{mineTag}", mineTag );
             	stringValue = stringValue.replace( "{mineSize}", m.getBounds().getDimensions() );
             	stringValue = stringValue.replace( "{mineVolume}", iFmt.format( volume ));
