@@ -334,12 +334,65 @@ Let's review the parts of that command:
 <hr style="height:10px; border:none; color:#aaf; background-color:#aaf;">
 
 
-# Special Variation: Players can only Access the Mine tied to their Rank by using Permissions
+
+
+# Setting up LuckPerms Chat Prefixes
+
+
+To setup a LuckPerms chat prefix, using prison's rank tag, use the following command.  This assumes you've followed the directions above with setting up a LP track.
+
+
+
+The following commands are examples of setting up a default prefix for your groups.  You only need to use one command when setting up a default.
+
+
+The first examples are pretty much identical. The second one is exactly the same as the first, except for it's using the placeholder's aliases.  The third one is using the non-ladder variant which includes all rank tags for all ladders on which a player has a rank, which could be more than two.  The drawback to the third one is that you don't have control over which one is displayed first.
+
+```
+/lp group default meta setprefix "%prison_rank_tag_prestiges%%prison_rank_tag_default% &r"
+/lp group default meta setprefix "%prison_rt_prestiges% %prison_rt_default% &r"
+/lp group default meta setprefix "%prison_rt% &r"
+
+```
+
+This one is rather interesting since it provides the player's current Earnings per Minute.  When auto pickup is enabled, and autosell is enable for each block break, then this will show the dynamic earnings as players chat. Providing such information may encourage players to see who can get the highest value.  The full placeholder is shown for understandability, but the alias is probably ideal to use due to the shorter length: `%prison_pb_epmf%`.
+
+```
+/lp group default meta setprefix "%prison_rank_tag_prestiges%%prison_rank_tag_default% &4[&7%prison_player_balance_earnings_per_minute_formatted%&4] &r"
+```
+
+
+Some other variations may include the player's health levels, the total number of blocks mined, or even which mine they are currently in.  There are a lot of possibilities.
+
+
+
+You could use just `%prison_rank_tag%`, or it's alias `%prison_rt%`, but that will include the rank tags for all ranks the player has on the server.  Normally they will always have a rank on the `default` rank, and optionally on the `prestiges` ladder too.  If other ladders are setup, then they will also be included.  Generally this is fine, but the drawback is that you cannot control the order in which they are generated.  So as listed in the example above, we are controlling the order of the rank tags for both the prestiges and default ladder.  The aliases for those two placeholders are `%prison_rt_prestiges%` and `%prison_rt_default%`.
+
+
+Next, you need to install a plugin to enable the LuckPerms Chat Prefixes, which allows LuckPerms to resolve the placeholder through PlaceholderAPI.
+
+
+Download the **LPC** plugin and place it in the server's `/plugins` directory.  This plugin also requires the **PlaceholderAPI** plugin.  Then restart the server.
+
+
+[https://www.spigotmc.org/resources/lpc-chat-formatter-1-7-10-1-18-2.68965/](https://www.spigotmc.org/resources/lpc-chat-formatter-1-7-10-1-18-2.68965/)
+
+
+There should be no configuration changes needed for the plugin, and it should just work.
+
+
+
+
+<hr style="height:10px; border:none; color:#aaf; background-color:#aaf;">
+
+
+# Special Variation: Accessing Only One Mine at a Time by using Permissions
 
 One special variation in configuring your server, would be if players can "only" access mines that are tied to their current rank.  For example, if a player is at Rank C, then they cannot access the prior mines A nor B.  This is a very restrictive configuration, which requires managing the permissions.
 
 
 If you are using permissions for access, then the two you need to know about are: `mines.<mineName>` and `mine.<mineName>.tp`.  Such that mine A would require: `mines.a` and `mines.a.tp`.
+
 
 Add these two perms to all LuckPerm groups.  You can use the LP editor, or manually with the following commands.  Repeat for all groups.
 
@@ -414,33 +467,3 @@ To review a player's rank within prison use `/ranks player <playerName>`.
 
 
 
-
-# Setting up LuckPerms Chat Prefixes
-
-
-To setup a LuckPerms chat prefix, using prison's rank tag, use the following command.  This assumes you've followed the directions above with setting up a LP track.
-
-
-```
-/lp group default meta setprefix "%prison_rank_tag_prestiges%%prison_rank_tag_default% &r"
-
-```
-
-You could use just `%prison_rank_tag%`, or it's alias `%prison_rt%`, but that will include the rank tags for all ranks the player has on the server.  Normally they will always have a rank on the `default` rank, and optionally on the `prestiges` ladder too.  If other ladders are setup, then they will also be included.  Generally this is fine, but the drawback is that you cannot control the order in which they are generated.  So as listed in the example above, we are controlling the order of the rank tags for both the prestiges and default ladder.  The aliases for those two placeholders are `%prison_rt_prestiges%` and `%prison_rt_default%`.
-
-
-Next, you need to install a plugin to enable the LuckPerms Chat Prefixes, which allows LuckPerms to resolve the placeholder through PlaceholderAPI.
-
-
-Download the **LPC** plugin and place it in the server's `/plugins` directory.  This plugin also requires the **PlaceholderAPI** plugin.  Then restart the server.
-
-
-[https://www.spigotmc.org/resources/lpc-chat-formatter-1-7-10-1-18-2.68965/](https://www.spigotmc.org/resources/lpc-chat-formatter-1-7-10-1-18-2.68965/)
-
-
-There should be no configuration changes needed for the plugin, and it should just work.
-
-
-
-
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">

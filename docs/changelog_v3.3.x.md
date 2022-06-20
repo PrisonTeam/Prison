@@ -14,6 +14,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11j 2022-06-20
 
 
+* **v3.3.0-alpha.11k 2022-06-20**
+Plus luckperms doc update.
+
+
 * **Mine resets: Fixed an issue when dealing with zero-block resets on a very small mine, such as a one block mine in that the 5 second delay was preventing from rapid resets.**
 Bypass both 5 second cooldown on resets and blockmatching when 25 blocks or less for the mine size.
 With running resets in async mode, with rapid resets for a one-block mine, the handling of the block breaks can occur out of order, which will trigger the block mismatch.
