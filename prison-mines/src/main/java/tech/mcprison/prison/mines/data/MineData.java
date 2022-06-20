@@ -76,6 +76,8 @@ public abstract class MineData
 	private long targetResetTime;
 	private int resetCount = 0;
 	
+	private long lastResetTimeLong = 0;
+	
 	/**
 	 * These blocks are obsolete, and are no longer used in prison, but they
 	 * are preserved for now.  Will be removed in the future.
@@ -221,6 +223,7 @@ public abstract class MineData
     	
     	this.targetResetTime = 0;
     	this.resetCount = 0;
+    	this.lastResetTimeLong = 0;
     	this.totalBlocksMined = 0;
     	this.zeroBlockResetDelaySec = 0;
     	this.resetThresholdPercent = 0;
@@ -1055,6 +1058,13 @@ public abstract class MineData
 	}
 	public void setResetTime( int resetTime ) {
 		this.resetTime = resetTime;
+	}
+
+	public long getLastResetTimeLong() {
+		return lastResetTimeLong;
+	}
+	public void setLastResetTimeLong(long lastResetTimeLong) {
+		this.lastResetTimeLong = lastResetTimeLong;
 	}
 
 	public MineNotificationMode getNotificationMode() {

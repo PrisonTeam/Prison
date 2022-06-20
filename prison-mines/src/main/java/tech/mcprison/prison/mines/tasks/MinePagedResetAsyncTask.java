@@ -78,6 +78,16 @@ public class MinePagedResetAsyncTask
 			return;
 		}
 		
+		// Prevent the task from being submitted if it was already reset less than 5 seconds ago.
+		if ( mine.getLastResetTimeLong() > 0 && 
+				(System.currentTimeMillis() - mine.getLastResetTimeLong()) <= 5000 ) {
+			
+			// cannot reset quicker than every 5 seconds:
+			return;
+		}
+
+		mine.setLastResetTimeLong( System.currentTimeMillis() );
+		
 		
 		if ( position > 0 && page++ % pagesPerReport == 0 ) {
 			

@@ -38,9 +38,6 @@
 - Transaction logs - Rankup and player joins would be good to take these messages out of the console.
 
 
-- When placing a mine, it spams resets while it's setting up the liner and the primary mine.  May be an issue with zero block resets and having zero block counts remaining.  May want to initially set the block counts to something like 1, then after the mine is done being laid out, then reset it.  When it's in "tracer" mode, no blocks exist that can be broken, so a value of 1 cannot be decreased.i
-
-
 
 - TEST: Add nbt support to gui menus.  Issue with rankup not getting the correct ladder name.
   - Partially added and is working.  Expand to other menu options, which will be time consuming.
@@ -198,6 +195,11 @@ https://github.com/Auxilor/EcoEnchants/blob/master/eco-core/core-plugin/src/main
 
 
 # Completed tasks
+
+
+
+- DONE: When placing a mine, it spams resets while it's setting up the liner and the primary mine.  May be an issue with zero block resets and having zero block counts remaining.  May want to initially set the block counts to something like 1, then after the mine is done being laid out, then reset it.  When it's in "tracer" mode, no blocks exist that can be broken, so a value of 1 cannot be decreased.i
+
 
 
 - DONE: percent is not being filtered from `/mines blockevent percent` and is causing errors in the formatting of the number. Percent is also not showing the list of events to get the rows...

@@ -14,6 +14,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.11j 2022-06-19
 
 
+* **Fix issue: On the creation of a new mine, it would reset the mine a number of times.  This fixes the problem by only allowing one reset every 5 seconds at the soonest.**
+
+
+
 * **Placeholder fix: The PAPI placeholder integrations should not be prefixing raw text with "prison_"; that is the task for PlaceholderIdentifier.**
 
 
