@@ -10,6 +10,7 @@ import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MineScheduler.MineResetActions;
+import tech.mcprison.prison.mines.data.MineScheduler.MineResetScheduleType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
@@ -19,6 +20,7 @@ public class MinePagedResetAsyncTask
 {
 	private Mine mine;
 	private final MineResetType resetType;
+	private final MineResetScheduleType resetScheduleType;
 	
 	private int position = 0;
 	
@@ -44,11 +46,14 @@ public class MinePagedResetAsyncTask
 	
 	
 	
-	public MinePagedResetAsyncTask( Mine mine, MineResetType resetType, List<MineResetActions> resetActions ) {
+	public MinePagedResetAsyncTask( Mine mine, MineResetType resetType, 
+					List<MineResetActions> resetActions,
+					MineResetScheduleType resetScheduleType ) {
 		super();
 		
 		this.mine = mine;
 		this.resetType = resetType;
+		this.resetScheduleType = resetScheduleType;
 		
 		
 		this.timeStart = System.currentTimeMillis();
@@ -64,13 +69,13 @@ public class MinePagedResetAsyncTask
 	
 	
 	public MinePagedResetAsyncTask( Mine mine, MineResetType resetType ) {
-		this( mine, resetType, null );
+		this( mine, resetType, null, MineResetScheduleType.NORMAL );
 	}
 	
 	
-	public void submitTaskSync() {
-		submitTaskAsync();
-	}
+//	public void submitTaskSync() {
+//		submitTaskAsync();
+//	}
 	public void submitTaskAsync() {
 		
 		// Prevent the task from being submitted if it is a virtual mine:
@@ -80,7 +85,18 @@ public class MinePagedResetAsyncTask
 		
 		// Prevent the task from being submitted if it was already reset less than 5 seconds ago.
 		if ( mine.getLastResetTimeLong() > 0 && 
-				(System.currentTimeMillis() - mine.getLastResetTimeLong()) <= 5000 ) {
+				(System.currentTimeMillis() - mine.getLastResetTimeLong()) <= 5000 && 
+				(  resetScheduleType != MineResetScheduleType.ZERO_BLOCK_RESET ||
+						resetScheduleType == MineResetScheduleType.ZERO_BLOCK_RESET && 
+				mine.getBounds().getTotalBlockCount() > 25
+						) ) {
+			
+			if ( !mine.getMineStateMutex().isMinable() ) {
+				
+				// Canceling reset, so cancel mutex if it was blocking mining.
+				mine.getMineStateMutex().setMineStateResetFinishedForced();
+			}
+			
 			
 			// cannot reset quicker than every 5 seconds:
 			return;
@@ -88,6 +104,11 @@ public class MinePagedResetAsyncTask
 
 		mine.setLastResetTimeLong( System.currentTimeMillis() );
 		
+		
+		submitTaskAsyncInternalNextPage();
+	}
+
+	private void submitTaskAsyncInternalNextPage() {
 		
 		if ( position > 0 && page++ % pagesPerReport == 0 ) {
 			
@@ -188,7 +209,7 @@ public class MinePagedResetAsyncTask
 		
 		// Keep resubmitting this task until it is completed:
 		if ( position < targetBlocks.size() ) {
-			submitTaskSync();
+			submitTaskAsyncInternalNextPage();
 		}
 		else {
 			
@@ -234,6 +255,11 @@ public class MinePagedResetAsyncTask
 		if ( !cancel ) {
 			
 			mine.asynchronouslyResetSetup();
+		}
+		else if ( !mine.getMineStateMutex().isMinable() ) {
+			
+			// Canceling reset, so cancel mutex if it was blocking mining.
+			mine.getMineStateMutex().setMineStateResetFinishedForced();
 		}
 		
 		return cancel;

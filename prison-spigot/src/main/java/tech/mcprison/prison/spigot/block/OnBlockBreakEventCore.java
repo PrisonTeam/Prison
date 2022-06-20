@@ -317,6 +317,11 @@ public abstract class OnBlockBreakEventCore
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlockHit );
 			pmEvent.setTargetBlock( targetBlock );
 			
+			boolean bypassMatchedBlocks = pmEvent.getMine().getBounds().getTotalBlockCount() <= 25;
+			if ( bypassMatchedBlocks ) {
+				debugInfo.append( "(TargetBlock match requirement is disabled [blocks<=25]) " );
+			}
+			
 			boolean matchedBlocks = isBlockAMatch( targetBlock, sBlockHit );
 			
 			// If ignore all block events has been set on this target block, then shutdown.
@@ -349,7 +354,9 @@ public abstract class OnBlockBreakEventCore
 					PrisonBlockStatusData pbTargetBlock = targetBlock.getPrisonBlock();
 					PrisonBlock pbBlockHit = sBlockHit == null ? null : sBlockHit.getPrisonBlock();
 					
-					if ( pbBlockHit != null && matchedBlocks ) {
+					if ( pbBlockHit != null && 
+							(matchedBlocks ||
+							 !matchedBlocks && bypassMatchedBlocks )) {
 						
 						// Confirmed the block is correct... so get the drops...
 						collectBukkitDrops( pmEvent.getBukkitDrops(), targetBlock, pmEvent.getItemInHand(), sBlockHit, pmEvent.getSpigotPlayer() );
@@ -498,7 +505,9 @@ public abstract class OnBlockBreakEventCore
 									
 									PrisonBlockStatusData pbTargetExploded = targetExplodedBlock.getPrisonBlock();
 									
-									if ( pBlockMined!= null && matchedExplodedBlocks ) {
+									if ( pBlockMined!= null && 
+											( matchedExplodedBlocks  ||
+											 !matchedExplodedBlocks && bypassMatchedBlocks ) ) {
 
 										// Confirmed the block is correct... so get the drops...
 										collectBukkitDrops( pmEvent.getBukkitDrops(), targetExplodedBlock, pmEvent.getItemInHand(), sBlockMined, pmEvent.getSpigotPlayer() );

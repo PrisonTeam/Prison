@@ -99,6 +99,7 @@ public abstract class MineScheduler
 	
 	public enum MineResetScheduleType {
 		NORMAL,
+		ZERO_BLOCK_RESET,
 		FORCED;
 	}
 	
@@ -332,8 +333,11 @@ public abstract class MineScheduler
 		// appears like it will never load?
 		//checkWorld();
 		
-		boolean forced = getCurrentJob() != null && 
-				getCurrentJob().getResetType() == MineResetScheduleType.FORCED;
+		MineResetScheduleType resetScheduleType = getCurrentJob() == null ? 
+						MineResetScheduleType.NORMAL : 
+						getCurrentJob().getResetType();
+		
+		boolean forced = resetScheduleType == MineResetScheduleType.FORCED;
 		
 		if ( getResetTime() <= 0 && !forced ) {
 			
@@ -382,7 +386,8 @@ public abstract class MineScheduler
 					List<MineResetActions> resetActions = getCurrentJob().getResetActions();
 
 					MinePagedResetAsyncTask resetTask = 
-								new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal, resetActions );
+								new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal, resetActions, resetScheduleType );
+					
 		    		resetTask.submitTaskAsync();
 		    		
 //					resetAsynchonously();
@@ -744,7 +749,7 @@ public abstract class MineScheduler
 					) {
 				
 				// submit a manual reset since the mine is empty:
-				manualReset( MineResetScheduleType.NORMAL, getZeroBlockResetDelaySec() );
+				manualReset( MineResetScheduleType.ZERO_BLOCK_RESET, getZeroBlockResetDelaySec() );
 				reset = true;
 			}
 			
@@ -758,9 +763,9 @@ public abstract class MineScheduler
 	 * triggered by a player.
 	 * 
 	 */
-	public void manualReset() {
-		manualReset( MineResetScheduleType.FORCED );
-	}
+//	public void manualReset() {
+//		manualReset( MineResetScheduleType.FORCED );
+//	}
 	public void manualReset( MineResetScheduleType resetType ) {
 		
 		if ( !isVirtual() ) {
