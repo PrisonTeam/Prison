@@ -11,7 +11,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.11j 2022-06-20
+# 3.3.0-alpha.12 2022-06-25
+
+
+* **v3.3.0-alpha.12 2022-06-25**
+
 
 
 * **v3.3.0-alpha.11k 2022-06-20**
