@@ -302,43 +302,46 @@ public class SpigotPlaceholders
     	
     	PlaceHolderKey placeHolderKey = identifier.getPlaceholderKey(); 
     	
-		if ( mm != null && 
-				(placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINES ) ||
-				placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSMINES ) ||
-				placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINEPLAYERS ) ||
-				placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.PLAYERBLOCKS ) 
-			)) {
-			
-			if ( identifier.checkPlaceholderKey(placeHolderKey) ) {
-				
-				mm.getTranslateMinesPlaceholder(identifier);
-			}
-
-		}
-		else if ( pm != null && 
-					(placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.PLAYER ) || 
-					placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.LADDERS )
-				)) {
-			
-			if ( identifier.checkPlaceholderKey(placeHolderKey) ) {
-				
-				pm.getTranslatePlayerPlaceHolder( identifier );
-			}
-			
-		}
-		else if ( rm != null && 
-					(placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.RANKS ) || 
-					placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.RANKPLAYERS ) ||
-					placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSRANKS ) ||
-					placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSPLAYERS ) 
-				)) {
-			
-			if ( identifier.checkPlaceholderKey(placeHolderKey) ) {
-				
-				rm.getTranslateRanksPlaceHolder( identifier );
-			}
-			
-		}
+    	if ( placeHolderKey != null && placeHolderKey.getPlaceholder() != null ) {
+    		
+    		if ( mm != null && 
+    				(placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINES ) ||
+    						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSMINES ) ||
+    						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINEPLAYERS ) ||
+    						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.PLAYERBLOCKS ) 
+    						)) {
+    			
+    			if ( identifier.checkPlaceholderKey(placeHolderKey) ) {
+    				
+    				mm.getTranslateMinesPlaceholder(identifier);
+    			}
+    			
+    		}
+    		else if ( pm != null && 
+    				(placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.PLAYER ) || 
+    						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.LADDERS )
+    						)) {
+    			
+    			if ( identifier.checkPlaceholderKey(placeHolderKey) ) {
+    				
+    				pm.getTranslatePlayerPlaceHolder( identifier );
+    			}
+    			
+    		}
+    		else if ( rm != null && 
+    				(placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.RANKS ) || 
+    						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.RANKPLAYERS ) ||
+    						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSRANKS ) ||
+    						placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.STATSPLAYERS ) 
+    						)) {
+    			
+    			if ( identifier.checkPlaceholderKey(placeHolderKey) ) {
+    				
+    				rm.getTranslateRanksPlaceHolder( identifier );
+    			}
+    			
+    		}
+    	}
 	
 		
     	return identifier.getText();
