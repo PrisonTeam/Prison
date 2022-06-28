@@ -13,6 +13,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12 2022-06-28
 
 
+* **Found that bStats was erroring out with the servers hitting the rate limit so this makes a few adjustments to try to get prison to work with bstats.**
+Basically plugins that load last will be unable to report their stats since every single plugin that is using bstats submits on it's own, and therefore it quickly reaches the limits.
+
+
 * **BlockConverters: More changes to block converters.**
 Added defaults for auto blocking, and for auto features with support for *all* blocks.
 

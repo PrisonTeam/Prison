@@ -141,7 +141,11 @@ public class SpigotPrison
     private File moduleDataFolder;
     
     private List<Listener> registeredBlockListeners;
+    
+    
+    private Metrics bStatsMetrics = null;
 
+    
     public static SpigotPrison getInstance(){
         return config;
     }
@@ -157,6 +161,10 @@ public class SpigotPrison
 
     @Override
     public void onLoad() {
+    	
+        // Startup bStats:
+        initMetricsOnLoad();
+
     	
     	/**
     	 * Old versions of prison MUST be upgraded with v3.0.x or even v3.1.1.
@@ -314,7 +322,8 @@ public class SpigotPrison
         getBlockBreakEventListeners().registerAllBlockBreakEvents( this );
         
         
-        initMetrics();
+        // Startup bStats:
+        initMetricsOnEnable();
         
         
         // These stats are displayed within the initDeferredModules():
@@ -516,13 +525,28 @@ public class SpigotPrison
      * https://github.com/Bastian/bStats-Metrics/tree/master/base/src/main/java/org/bstats/charts
      * 
      */
-    private void initMetrics() {
+    private void initMetricsOnLoad() {
+    	if (!getConfig().getBoolean("send-metrics", true)) {
+    		return; // Don't check if they don't want it
+    	}
+    	
+    	int pluginId = 657;
+    	bStatsMetrics = new Metrics( this, pluginId );
+    	
+//    	Metrics metrics = new Metrics( this, pluginId );
+    }
+    
+    private void initMetricsOnEnable() {
         if (!getConfig().getBoolean("send-metrics", true)) {
             return; // Don't check if they don't want it
         }
         
-        int pluginId = 657;
-        Metrics metrics = new Metrics( this, pluginId );
+        
+        if ( bStatsMetrics == null ) {
+        	int pluginId = 657;
+        	
+        	bStatsMetrics = new Metrics( this, pluginId );
+        }
 
         // Report the modules being used
         SimpleBarChart sbcModulesUsed = new SimpleBarChart("modules_used", () -> {
@@ -532,13 +556,13 @@ public class SpigotPrison
             }
             return valueMap;
         });
-        metrics.addCustomChart( sbcModulesUsed );
+        bStatsMetrics.addCustomChart( sbcModulesUsed );
 
         // Report the API level
         SimplePie spApiLevel = 
                 new SimplePie("api_level", () -> 
                 	"API Level " + Prison.API_LEVEL + "." + Prison.API_LEVEL_MINOR );
-    	metrics.addCustomChart( spApiLevel );
+        bStatsMetrics.addCustomChart( spApiLevel );
         
         
         Optional<Module> prisonMinesOpt = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
@@ -566,7 +590,7 @@ public class SpigotPrison
                 return valueMap;
             }
         });
-        metrics.addCustomChart( mlcMinesRanksAndLadders );
+        bStatsMetrics.addCustomChart( mlcMinesRanksAndLadders );
         
         MultiLineChart mlcPrisonRanks = new MultiLineChart("prison_ranks", new Callable<Map<String, Integer>>() {
         	@Override
@@ -579,7 +603,8 @@ public class SpigotPrison
         		return valueMap;
         	}
         });
-        metrics.addCustomChart( mlcPrisonRanks );
+        bStatsMetrics.addCustomChart( mlcPrisonRanks );
+        
     }
 
     /**
