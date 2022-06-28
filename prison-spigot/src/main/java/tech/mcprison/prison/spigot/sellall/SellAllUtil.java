@@ -2,12 +2,14 @@ package tech.mcprison.prison.spigot.sellall;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -22,42 +24,55 @@ import com.cryptomorin.xseries.XSound;
 import at.pcgamingfreaks.Minepacks.Bukkit.API.Backpack;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
-import tech.mcprison.prison.modules.Module;
-import tech.mcprison.prison.modules.ModuleManager;
+import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
-import tech.mcprison.prison.ranks.data.RankPlayerFactory;
+import tech.mcprison.prison.sellall.messages.SpigotVariousGuiMessages;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.Compatibility;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
+//import tech.mcprison.prison.spigot.configs.MessagesConfig;
+import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPlayerGUI;
 import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
+import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
+import tech.mcprison.prison.util.Text;
 
 /**
  * @author AnonymousGCA (GABRYCA)
  * */
-public class SellAllUtil {
+public class SellAllUtil 
+	extends SpigotVariousGuiMessages {
 
     private static SellAllUtil instance;
-    private static final boolean isEnabled = getBoolean(SpigotPrison.getInstance().getConfig().getString("sellall"));
+    
+    private static final boolean isEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "sellall" );
+    
+//    private static final boolean isEnabled = getBoolean(SpigotPrison.getInstance().getConfig().getString("sellall"));
     private final Compatibility compat = SpigotPrison.getInstance().getCompatibility();
+
     private final ItemStack lapisLazuli = compat.getLapisItemStack();
     public Configuration sellAllConfig;
+    
     private HashMap<XMaterial, Double> sellAllBlocks;
     private HashMap<String, Double> sellAllPrestigeMultipliers;
     private HashMap<Player, Double> autoSellEarningsNotificationWaiting = new HashMap<>();
     private ArrayList<XMaterial> sellAllItemTriggers;
+    
     private ArrayList<Player> activePlayerDelay = new ArrayList<>();
     private List<String> sellAllDisabledWorlds;
-    private MessagesConfig messages;
+//    private MessagesConfig messages;
     private double defaultMultiplier;
     private int defaultSellAllDelay;
     private int defaultAutoSellEarningNotificationDelay;
@@ -98,6 +113,8 @@ public class SellAllUtil {
     public boolean isSellAllBackpackItemsEnabled;
     public boolean isSellAllMinesBackpacksPluginEnabled;
     public boolean isSellAllHandEnabled;
+    
+    public boolean isSellAllIgnoreCustomNames = false;
 
     /**
      * Get cached instance of SellAllUtil, if present, if not then Initialize it, if SellAll is disabled return null.
@@ -120,7 +137,7 @@ public class SellAllUtil {
      *
      * @return boolean.
      * */
-    public static boolean getBoolean(String string) {
+    private static boolean getBoolean(String string) {
         return string != null && string.equalsIgnoreCase("true");
     }
 
@@ -165,18 +182,38 @@ public class SellAllUtil {
      * @return XMaterial.
      * */
     private XMaterial getXMaterialOrLapis(ItemStack itemStack) {
-        if (itemStack.isSimilar(lapisLazuli)) {
-            return XMaterial.LAPIS_LAZULI;
-        }
-        XMaterial results = null;
-        try
-		{
-			results = XMaterial.matchXMaterial(itemStack);
-		}
-		catch ( Exception e )
-		{
-			// ignore... it is not normal matertial so it cannot be sold
-		}
+    	XMaterial results = null;
+    	
+    	String altName = null;
+    	
+    	if ( itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName() ) {
+    		altName = itemStack.getItemMeta().getDisplayName();
+    	}
+    	
+    	if ( altName == null || isSellAllIgnoreCustomNames ) {
+    		XMaterial xMat = null;
+    		
+    		if (itemStack.isSimilar(lapisLazuli)) {
+    			xMat = XMaterial.LAPIS_LAZULI;
+    		}
+    		else {
+    			
+    			try
+    			{
+    				xMat = XMaterial.matchXMaterial(itemStack);
+    			}
+    			catch ( Exception e )
+    			{
+    				// ignore... it is not normal matertial so it cannot be sold
+    			}
+    		}
+    		if ( xMat != null ) {
+    			
+    			// When converted over to be based upon a String name, instead of XMaterial, 
+    			// the altName will take priority over the XMaterial name.
+    			results = xMat;
+    		}
+    	}
         
         return results;
     }
@@ -275,38 +312,55 @@ public class SellAllUtil {
             return 1;
         }
 
-        // Get Ranks module.
-        ModuleManager modMan = Prison.get().getModuleManager();
-        Module module = modMan == null ? null : modMan.getModule(PrisonRanks.MODULE_NAME).orElse(null);
+//        long tPoint1 = System.nanoTime();
+        
+//        // Get Ranks module.
+//        ModuleManager modMan = Prison.get().getModuleManager();
+//        Module module = modMan == null ? null : modMan.getModule(PrisonRanks.MODULE_NAME).orElse(null);
         SpigotPlayer sPlayer = new SpigotPlayer(p);
         double multiplier = defaultMultiplier;
 
+        RankPlayer rPlayer = sPlayer.getRankPlayer();
+//        rPlayer.getSellAllMultiplier(); // NOTE: This actually calls this function
+        PlayerRank pRank = rPlayer.getPlayerRankPrestiges();
+        Rank rank = pRank == null ? null : pRank.getRank();
+
+        if ( pRank != null ) {
+        	String rankName = rank.getName();
+        	String multiplierRankString = sellAllConfig.getString("Multiplier." + rankName + ".MULTIPLIER");
+        	if (multiplierRankString != null && sellAllPrestigeMultipliers.containsKey( rankName )){
+        		multiplier = sellAllPrestigeMultipliers.get( rankName );
+        	}
+        }
+
+//        long tPoint2 = System.nanoTime();
+        
         // Get multiplier depending on Player + Prestige. NOTE that prestige multiplier will replace
         // the actual default multiplier.
-        if (module != null) {
-            PrisonRanks rankPlugin = (PrisonRanks) module;
-            if (rankPlugin.getPlayerManager().getPlayer(sPlayer) != null) {
-                String playerRankName;
-                try {
-                	
-                	RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
-                	
-                    RankPlayer rankPlayer = rankPlugin.getPlayerManager().getPlayer(sPlayer);
-                    PlayerRank pRank = rankPlayer == null ? null : rankPlayerFactory.getRank( rankPlayer, "prestiges");
-                    Rank rank = pRank == null ? null : pRank.getRank();
-
-                    playerRankName = rank == null ? null : rank.getName();
-                } catch (NullPointerException ex) {
-                    playerRankName = null;
-                }
-                if (playerRankName != null) {
-                    String multiplierRankString = sellAllConfig.getString("Multiplier." + playerRankName + ".MULTIPLIER");
-                    if (multiplierRankString != null && sellAllPrestigeMultipliers.containsKey(playerRankName)){
-                        multiplier = sellAllPrestigeMultipliers.get(playerRankName);
-                    }
-                }
-            }
-        }
+//        if (module != null) {
+//            PrisonRanks rankPlugin = (PrisonRanks) module;
+//            if (rankPlugin.getPlayerManager().getPlayer(sPlayer) != null) {
+//                String playerRankName;
+//                try {
+//                	
+//                	RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+//                	
+//                    RankPlayer rankPlayer = rankPlugin.getPlayerManager().getPlayer(sPlayer);
+//                    PlayerRank pRank = rankPlayer == null ? null : rankPlayerFactory.getRank( rankPlayer, "prestiges");
+//                    Rank rank = pRank == null ? null : pRank.getRank();
+//
+//                    playerRankName = rank == null ? null : rank.getName();
+//                } catch (NullPointerException ex) {
+//                    playerRankName = null;
+//                }
+//                if (playerRankName != null) {
+//                    String multiplierRankString = sellAllConfig.getString("Multiplier." + playerRankName + ".MULTIPLIER");
+//                    if (multiplierRankString != null && sellAllPrestigeMultipliers.containsKey(playerRankName)){
+//                        multiplier = sellAllPrestigeMultipliers.get(playerRankName);
+//                    }
+//                }
+//            }
+//        }
 
         // Get Multiplier from multipliers permission's if there's any.
         List<String> perms = sPlayer.getPermissions("prison.sellall.multiplier.");
@@ -319,8 +373,16 @@ public class SellAllUtil {
                 multiplierExtraByPerms = multByPermDouble;
             }
         }
+        
         multiplier += multiplierExtraByPerms;
 
+//        long tPoint3 = System.nanoTime();
+//        DecimalFormat dFmt = new DecimalFormat( "0.0000" );
+//        String debugMsg = "{sellallMult::" + dFmt.format( multiplier ) + ":t1=" + 
+//        				dFmt.format( (tPoint2 - tPoint1)/1000000d ) +
+//        				":t2=" + dFmt.format( (tPoint3 - tPoint2)/1000000 ) + "}";
+//        Output.get().logDebug( debugMsg );
+        
         return multiplier;
     }
 
@@ -342,25 +404,56 @@ public class SellAllUtil {
      * @return double.
      * */
     public double getSellMoney(Player p, HashMap<XMaterial, Integer> xMaterialIntegerHashMap){
+    	StringBuilder sb = new StringBuilder();
+    	boolean debug = Output.get().isDebug();
 
         if (sellAllBlocks.isEmpty()){
             return 0;
         }
 
         double multiplier = getPlayerMultiplier(p);
+        
+        
         double earned = 0;
-        for (HashMap.Entry<XMaterial, Integer> xMaterialIntegerEntry : xMaterialIntegerHashMap.entrySet()){
-            if (sellAllBlocks.containsKey(xMaterialIntegerEntry.getKey())){
+        for (HashMap.Entry<XMaterial, Integer> xMatEntry : xMaterialIntegerHashMap.entrySet()){
+            if (sellAllBlocks.containsKey(xMatEntry.getKey())){
                 // This is stupid but right now I'm too confused, sorry.
-                if (isPerBlockPermissionEnabled && !p.hasPermission(permissionPrefixBlocks + xMaterialIntegerEntry.getKey().name())){
+                if (isPerBlockPermissionEnabled && !p.hasPermission(permissionPrefixBlocks + xMatEntry.getKey().name())){
                     // Nothing will change.
-                } else {
-                    earned += xMaterialIntegerEntry.getValue() * sellAllBlocks.get(xMaterialIntegerEntry.getKey());
+                } 
+                else {
+                	XMaterial xMat = xMatEntry.getKey();
+                	int qty = xMatEntry.getValue();
+                	double value = sellAllBlocks.get(xMat);
+                	
+                	if ( debug ) {
+                		
+                		if ( sb.length() > 0 ) {
+                			sb.append(", ");
+                		}
+                		sb.append( xMat.name().toLowerCase() ).append(":")
+                			.append( qty ).append("@").append(value);
+                	}
+                	
+                    earned += qty * value;
                 }
             }
         }
 
-        return earned * multiplier;
+        double total = earned * multiplier;
+        
+        if ( debug ) {
+        	DecimalFormat dFmt = new DecimalFormat( "#,##0.00" );
+        	sb.append( " earned: " ).append( dFmt.format(earned) )
+        	  .append( " mult: " ).append( dFmt.format(multiplier) )
+        	  .append( " total: " ).append( dFmt.format(total) );
+        	String message = String.format( 
+        			"Sellall.getSellMoney: %s %s", 
+        			p.getName(), sb.toString() );
+        	Output.get().logInfo(message);
+        }
+        
+        return total;
     }
 
     /**
@@ -416,19 +509,33 @@ public class SellAllUtil {
      * @param itemStack
      * @return
      */
-    private double getSellMoney( Player p, SpigotItemStack itemStack )
+    public double getSellMoney( Player p, SpigotItemStack itemStack )
 	{
     	double results = 0d;
     	
-    	HashMap<XMaterial, Integer> xMaterialIntegerHashMap = new HashMap<>();
+    	// Either ignore custom names, or if isSellAllIgnoreCustomNames is set, then allow them
+    	// to be processed as they used to be processed.
     	
-    	XMaterial xMat = XMaterial.matchXMaterial( itemStack.getBukkitStack() );
-    	
-    	if ( xMat != null ) {
-    		xMaterialIntegerHashMap.put( xMat, itemStack.getAmount() );
+    	// For now, do not sell custom blocks since this sellall is based upon
+    	// XMaterial and custom blocks cannot be represented by XMaterial so
+    	// it will sell it as the wrong material
+    	if ( isSellAllIgnoreCustomNames ||
+    			itemStack.getMaterial().getBlockType() == null ||
+    			itemStack.getMaterial().getBlockType() == PrisonBlockType.minecraft ) {
     		
-    		results = getSellMoney( p, xMaterialIntegerHashMap );
+    		HashMap<XMaterial, Integer> xMaterialIntegerHashMap = new HashMap<>();
+    		
+    		PrisonBlock pBlock = itemStack.getMaterial();
+    		
+    		XMaterial xMat = SpigotCompatibility.getInstance().getXMaterial( pBlock );
+    		
+    		if ( xMat != null ) {
+    			xMaterialIntegerHashMap.put( xMat, itemStack.getAmount() );
+    			
+    			results = getSellMoney( p, xMaterialIntegerHashMap );
+    		}
     	}
+    	
     	
 		return results;
 	}
@@ -443,8 +550,11 @@ public class SellAllUtil {
      * @return HashMap - XMaterial-Integer.
      * */
     private HashMap<XMaterial, Integer> getHashMapOfPlayerInventories(Player p) {
+    	
         HashMap<XMaterial, Integer> xMaterialIntegerHashMap = new HashMap<>();
+        
         if (isSellAllBackpackItemsEnabled && getBoolean(SpigotPrison.getInstance().getConfig().getString("backpacks"))){
+        	
             BackpacksUtil backpacksUtil = BackpacksUtil.get();
             if (backpacksUtil.isMultipleBackpacksEnabled()){
                 for (String id : backpacksUtil.getBackpacksIDs(p)){
@@ -459,6 +569,8 @@ public class SellAllUtil {
             Backpack backpack = IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p);
             if (backpack != null) {
                 xMaterialIntegerHashMap = addInventoryToHashMap(xMaterialIntegerHashMap, backpack.getInventory());
+                backpack.setChanged();
+                backpack.save();
             }
         }
 
@@ -477,7 +589,8 @@ public class SellAllUtil {
      * */
     public boolean isPlayerAutoSellEnabled(Player p){
 
-        if (isAutoSellPerUserToggleablePermEnabled && !p.hasPermission(permissionAutoSellPerUserToggleable)){
+        if (isAutoSellPerUserToggleablePermEnabled && 
+        		!p.hasPermission(permissionAutoSellPerUserToggleable)){
             return false;
         }
 
@@ -485,7 +598,17 @@ public class SellAllUtil {
             return true;
         }
 
-        return getBoolean(sellAllConfig.getString("Users." + p.getUniqueId() + ".isEnabled"));
+        return getBooleanValue("Users." + p.getUniqueId() + ".isEnabled");
+    }
+    
+    public boolean checkIfPlayerAutosellIsActive(Player p) {
+    	boolean results = true;
+    	
+    	if ( isAutoSellPerUserToggleable ) { 
+    		results = isPlayerAutoSellEnabled(p);
+    	}
+    	
+    	return results;
     }
 
     /**
@@ -540,7 +663,10 @@ public class SellAllUtil {
      * Update SellAll Cached config.
      * */
     public void updateConfig(){
-        sellAllConfig = SpigotPrison.getInstance().updateSellAllConfig();
+    	
+    	initCachedData();
+    	
+//        sellAllConfig = SpigotPrison.getInstance().updateSellAllConfig();
     }
 
     /**
@@ -548,7 +674,7 @@ public class SellAllUtil {
      * */
     private void initCachedData() {
         sellAllConfig = SpigotPrison.getInstance().updateSellAllConfig();
-        messages = SpigotPrison.getInstance().getMessagesConfig();
+//        messages = SpigotPrison.getInstance().getMessagesConfig();
         permissionSellAllSell = sellAllConfig.getString("Options.Sell_Permission");
         permissionBypassSign = sellAllConfig.getString("Options.SellAll_By_Sign_Bypass_Permission");
         permissionUseSign = sellAllConfig.getString("Options.SellAll_Sign_Use_Permission");
@@ -560,7 +686,7 @@ public class SellAllUtil {
         sellAllCurrency = sellAllConfig.getString("Options.SellAll_Currency");
         sellAllSoundSuccess = XSound.matchXSound("Options.Sell_Sound_Success_Name").orElse(XSound.ENTITY_PLAYER_LEVELUP).parseSound();
         sellAllSoundFail = XSound.matchXSound("Options.Sell_Sound_Fail_Name").orElse(XSound.BLOCK_ANVIL_PLACE).parseSound();
-        sellAllSignTag = SpigotPrison.format(sellAllConfig.getString("Options.SellAll_Sign_Visible_Tag"));
+        sellAllSignTag = Text.translateAmpColorCodes(sellAllConfig.getString("Options.SellAll_Sign_Visible_Tag") );
         sellAllBlocks = initSellAllBlocks();
         sellAllPrestigeMultipliers = initPrestigeMultipliers();
         sellAllItemTriggers = initSellAllItemTrigger();
@@ -568,31 +694,65 @@ public class SellAllUtil {
         defaultMultiplier = Double.parseDouble(sellAllConfig.getString("Options.Multiplier_Default"));
         defaultSellAllDelay = Integer.parseInt(sellAllConfig.getString("Options.Sell_Delay_Seconds"));
         defaultAutoSellEarningNotificationDelay = Integer.parseInt(sellAllConfig.getString("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Delay_Seconds"));
-        isPerBlockPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"));
-        isAutoSellEnabled = getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell"));
-        isAutoSellNotificationEnabled = getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_Notification"));
-        isAutoSellEarningNotificationDelayEnabled = getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Enabled"));
-        isAutoSellPerUserToggleable = getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable"));
-        isAutoSellPerUserToggleablePermEnabled = getBoolean(sellAllConfig.getString("Options.Full_Inv_AutoSell_perUserToggleable_Need_Perm"));
-        isSellAllNotificationEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Notify_Enabled"));
-        isSellAllSoundEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Sound_Enabled"));
-        isSellAllBackpackItemsEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Prison_BackPack_Items"));
-        isSellAllMinesBackpacksPluginEnabled = getBoolean(sellAllConfig.getString("Options.Sell_MinesBackPacks_Plugin_Backpack"));
-        isSellAllDelayEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Delay_Enabled"));
-        isSellAllSellPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Permission_Enabled"));
-        isSellAllItemTriggerEnabled = getBoolean(sellAllConfig.getString("Options.ShiftAndRightClickSellAll.Enabled"));
-        isSellAllItemTriggerPermissionEnabled = getBoolean(sellAllConfig.getString("Options.ShiftAndRightClickSellAll.PermissionEnabled"));
-        isSellAllGUIEnabled = getBoolean(sellAllConfig.getString("Options.GUI_Enabled"));
-        isSellAllPlayerGUIEnabled = getBoolean(sellAllConfig.getString("Options.Player_GUI_Enabled"));
-        isSellAllGUIPermissionEnabled = getBoolean(sellAllConfig.getString("Options.GUI_Permission_Enabled"));
-        isSellAllPlayerGUIPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Player_GUI_Permission_Enabled"));
-        isSellAllMultiplierEnabled = getBoolean(sellAllConfig.getString("Options.Multiplier_Enabled"));
-        isSellAllPermissionMultiplierOnlyHigherEnabled = getBoolean(sellAllConfig.getString("Options.Multiplier_Permission_Only_Higher"));
-        isSellAllSignEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Enabled"));
-        isSellAllSignNotifyEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Notify"));
-        isSellAllSignPermissionToUseEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Sign_Use_Permission_Enabled"));
-        isSellAllBySignOnlyEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_By_Sign_Only"));
-        isSellAllHandEnabled = getBoolean(sellAllConfig.getString("Options.SellAll_Hand_Enabled"));
+        isPerBlockPermissionEnabled = getBooleanValue("Options.Sell_Per_Block_Permission_Enabled");
+        isAutoSellEnabled = getBooleanValue("Options.Full_Inv_AutoSell");
+        isAutoSellNotificationEnabled = getBooleanValue("Options.Full_Inv_AutoSell_Notification");
+        isAutoSellEarningNotificationDelayEnabled = getBooleanValue("Options.Full_Inv_AutoSell_EarnedMoneyNotificationDelay_Enabled");
+        isAutoSellPerUserToggleable = getBooleanValue("Options.Full_Inv_AutoSell_perUserToggleable");
+        isAutoSellPerUserToggleablePermEnabled = getBooleanValue("Options.Full_Inv_AutoSell_perUserToggleable_Need_Perm");
+        isSellAllNotificationEnabled = getBooleanValue("Options.Sell_Notify_Enabled");
+        isSellAllSoundEnabled = getBooleanValue("Options.Sell_Sound_Enabled");
+        isSellAllBackpackItemsEnabled = getBooleanValue("Options.Sell_Prison_BackPack_Items");
+        isSellAllMinesBackpacksPluginEnabled = getBooleanValue("Options.Sell_MinesBackPacks_Plugin_Backpack");
+        isSellAllDelayEnabled = getBooleanValue("Options.Sell_Delay_Enabled");
+        isSellAllSellPermissionEnabled = getBooleanValue("Options.Sell_Permission_Enabled");
+        isSellAllItemTriggerEnabled = getBooleanValue("Options.ShiftAndRightClickSellAll.Enabled");
+        isSellAllItemTriggerPermissionEnabled = getBooleanValue("Options.ShiftAndRightClickSellAll.PermissionEnabled");
+        isSellAllGUIEnabled = getBooleanValue("Options.GUI_Enabled");
+        isSellAllPlayerGUIEnabled = getBooleanValue("Options.Player_GUI_Enabled");
+        isSellAllGUIPermissionEnabled = getBooleanValue("Options.GUI_Permission_Enabled");
+        isSellAllPlayerGUIPermissionEnabled = getBooleanValue("Options.Player_GUI_Permission_Enabled");
+        isSellAllMultiplierEnabled = getBooleanValue("Options.Multiplier_Enabled");
+        isSellAllPermissionMultiplierOnlyHigherEnabled = getBooleanValue("Options.Multiplier_Permission_Only_Higher");
+        isSellAllSignEnabled = getBooleanValue("Options.SellAll_Sign_Enabled");
+        isSellAllSignNotifyEnabled = getBooleanValue("Options.SellAll_Sign_Notify");
+        isSellAllSignPermissionToUseEnabled = getBooleanValue("Options.SellAll_Sign_Use_Permission_Enabled");
+        isSellAllBySignOnlyEnabled = getBooleanValue("Options.SellAll_By_Sign_Only");
+        isSellAllHandEnabled = getBooleanValue("Options.SellAll_Hand_Enabled");
+        
+        isSellAllIgnoreCustomNames = getBooleanValue("Options.SellAll_ignoreCustomNames", false);
+    }
+    
+    private boolean getBooleanValue( String configName ) {
+    	return getBooleanValue(configName, false);
+    }
+    private boolean getBooleanValue( String configName, Boolean defaultValue ) {
+    	boolean results = (defaultValue == null ? false : defaultValue.booleanValue() );
+    	
+    	if ( configName != null ) {
+    		if ( sellAllConfig.isString(configName) ) {
+    			String boolVal = sellAllConfig.getString(configName);
+    			if ( boolVal != null ) {
+    				// Boolean.parseBoolean() also supports yes and no so don't pretest for true/false.
+    				try {
+						results = Boolean.parseBoolean(boolVal);
+					} catch (Exception e) {
+						// Not a boolean value, so ignore and let the "defaut" value stand
+					}
+    			}
+    			else {
+    				// ignore since it's not a boolean value and let the "default" value stand
+    			}
+    		}
+    		else if ( sellAllConfig.isBoolean(configName) ) {
+    			results = sellAllConfig.getBoolean(configName, results);
+    		}
+    		else {
+    			// Ignore since the config is not boolean or a String that "could" be a boolean
+    		}
+    	}
+    	
+    	return results;
     }
 
     /**
@@ -699,7 +859,7 @@ public class SellAllUtil {
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
             conf.set("Items." + xMaterial.name() + ".ITEM_ID", xMaterial.name());
             conf.set("Items." + xMaterial.name() + ".ITEM_VALUE", value);
-            if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
+            if (getBooleanValue("Options.Sell_Per_Block_Permission_Enabled")) {
                 conf.set("Items." + xMaterial.name() + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + xMaterial.name());
             }
             conf.save(sellAllFile);
@@ -752,28 +912,40 @@ public class SellAllUtil {
             return false;
         }
 
-        boolean isARank = rankPlugin.getRankManager().getRank(prestigeName) != null;
-        if (!isARank) {
+        Rank pRank = rankPlugin.getRankManager().getRank(prestigeName);
+        
+        if ( pRank == null ) {
+        	// Invalid rank!
             return false;
         }
 
-        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").containsRank(rankPlugin.getRankManager().getRank(prestigeName));
-        if (!isInPrestigeLadder) {
-            return false;
+        if ( !pRank.getLadder().isPrestiges() ) {
+        	// Rank is not in the prestiges ladder:
+        	return false;
         }
+        
+//        boolean isInPrestigeLadder = rankPlugin.getLadderManager().getLadder("prestiges").containsRank(rankPlugin.getRankManager().getRank(prestigeName));
+//        if (!isInPrestigeLadder) {
+//            return false;
+//        }
 
         try {
             File sellAllFile = new File(SpigotPrison.getInstance().getDataFolder() + "/SellAllConfig.yml");
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
-            conf.set("Multiplier." + prestigeName + ".PRESTIGE_NAME", prestigeName);
-            conf.set("Multiplier." + prestigeName + ".MULTIPLIER", multiplier);
+            
+            conf.set("Multiplier." + pRank.getName() + ".PRESTIGE_NAME", pRank.getName());
+            conf.set("Multiplier." + pRank.getName() + ".MULTIPLIER", multiplier);
+            
             conf.save(sellAllFile);
-        } catch (IOException e) {
+        } 
+        catch (IOException e) {
             e.printStackTrace();
             return false;
         }
-        sellAllPrestigeMultipliers.put(prestigeName, multiplier);
+        
+        sellAllPrestigeMultipliers.put( pRank.getName(), multiplier);
         updateConfig();
+        
         return true;
     }
 
@@ -875,6 +1047,7 @@ public class SellAllUtil {
         for (ItemStack itemStack : inv.getContents()){
             if (itemStack != null){
                 XMaterial xMaterial = getXMaterialOrLapis(itemStack);
+                
                 if ( xMaterial != null ) {
                 	
                 	if (xMaterialIntegerHashMap.containsKey(xMaterial)){
@@ -940,7 +1113,8 @@ public class SellAllUtil {
      * */
     public boolean editPrice(XMaterial xMaterial, double value){
 
-        if (!sellAllBlocks.containsKey(xMaterial)){
+    	// Do not allow an edit price if the material does not exist, or if the value has not changed:
+        if (!sellAllBlocks.containsKey(xMaterial) && sellAllBlocks.get(xMaterial) != value ){
             return false;
         }
 
@@ -949,7 +1123,7 @@ public class SellAllUtil {
             FileConfiguration conf = YamlConfiguration.loadConfiguration(sellAllFile);
             conf.set("Items." + xMaterial.name() + ".ITEM_ID", xMaterial.name());
             conf.set("Items." + xMaterial.name() + ".ITEM_VALUE", value);
-            if (getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"))) {
+            if (getBooleanValue("Options.Sell_Per_Block_Permission_Enabled")) {
                 conf.set("Items." + xMaterial + ".ITEM_PERMISSION", sellAllConfig.getString("Options.Sell_Per_Block_Permission") + xMaterial.name());
             }
             conf.save(sellAllFile);
@@ -1210,22 +1384,64 @@ public class SellAllUtil {
             return inv;
         }
         
+        SpigotCompatibility.getInstance().getItemInOffHand( p );
+        
+        List<ItemStack> removeable = new ArrayList<>();
+        
         for (ItemStack itemStack : inv.getContents()){
             if (itemStack != null){
                 try {
                     XMaterial xMaterial = getXMaterialOrLapis(itemStack);
+                    
                     if ( xMaterial != null && sellAllBlocks.containsKey(xMaterial)) {
                         if (isPerBlockPermissionEnabled && !p.hasPermission(permissionPrefixBlocks + xMaterial.name())) {
                             // Nothing will change.
                         } else {
-                            inv.remove(itemStack);
+                        	removeable.add( itemStack );
+//                            inv.remove(itemStack);
                         }
                     }
                 } catch (IllegalArgumentException ignored){}
             }
         }
         
+        for ( ItemStack remove : removeable )
+		{
+        	inv.remove(remove);
+		}
+        
         return inv;
+    }
+    
+    public void removeSellableItemsInOffHand(Player p){
+    	
+    	
+    	ItemStack itemStack = SpigotCompatibility.getInstance().getItemInOffHand( p );
+    	
+    	if ( itemStack != null ) {
+    		
+    		if (itemStack != null){
+    			try {
+    				XMaterial xMaterial = getXMaterialOrLapis(itemStack);
+    				
+    				if ( xMaterial != null && sellAllBlocks.containsKey(xMaterial)) {
+    					if (isPerBlockPermissionEnabled && !p.hasPermission(permissionPrefixBlocks + xMaterial.name())) {
+    						// Nothing will change.
+    					}
+    					else {
+    						
+    						SpigotPlayerInventory spInventory = new SpigotPlayerInventory( p.getInventory() ) ;
+    						SpigotItemStack sItemStack = new SpigotItemStack( new ItemStack( Material.AIR ) );
+    						
+    						SpigotCompatibility.getInstance().setItemStackInOffHand( spInventory, sItemStack );
+    						
+    					}
+    				}
+    			} catch (IllegalArgumentException ignored){}
+    		}
+    	}
+    		
+    
     }
     
     /**
@@ -1254,10 +1470,14 @@ public class SellAllUtil {
             Backpack backpack = IntegrationMinepacksPlugin.getInstance().getMinepacks().getBackpackCachedOnly(p);
             if (backpack != null) {
                 removeSellableItems(p, backpack.getInventory());
+                backpack.setChanged();
+                backpack.save();
             }
         }
 
         removeSellableItems(p, p.getInventory());
+        
+        removeSellableItemsInOffHand( p );
     }
 
     /**
@@ -1276,7 +1496,15 @@ public class SellAllUtil {
      * */
     public void removeFromAutoSellDelayAndNotify(Player p){
         if (autoSellEarningsNotificationWaiting.containsKey(p) && autoSellEarningsNotificationWaiting.get(p) > 0.00){
-            Output.get().sendInfo(new SpigotPlayer(p), SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + autoSellEarningsNotificationWaiting.get(p)));
+        	
+        	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+        	String amt = fFmt.format( autoSellEarningsNotificationWaiting.get(p) );
+        	
+        	String message = sellallAmountEarnedMsg( amt );
+        	
+//        	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
+//        	new SpigotPlayer(p).setActionBar( message );
+            Output.get().send( new SpigotPlayer(p), message );
         }
         autoSellEarningsNotificationWaiting.remove(p);
     }
@@ -1348,7 +1576,9 @@ public class SellAllUtil {
      * @return boolean.
      * */
     public boolean setAutoSellPlayer(Player p, boolean enable){
-        if (!isAutoSellEnabled || !isAutoSellPerUserToggleable){
+        if (!(isAutoSellEnabled || 
+        		AutoFeaturesWrapper.getInstance().isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled)) || 
+        		!isAutoSellPerUserToggleable){
             return false;
         }
 
@@ -1476,18 +1706,23 @@ public class SellAllUtil {
     }
 
     /**
-     * Sell removing items from Inventories and checking all the possible conditions that a Player must meet to sell
-     * items, this includes method parameters like:
-     * - Is using SellAll Sign.
-     * - If tell the Player how much did he earn (if this's disabled by config, the parameter will be ignored).
-     * - If do this action without making the player notice it, disabling sounds and all messages.
-     * - If tell the Player to wait the end of SellAll Delay if not ended (if this's disabled by config, the parameter will be ignored).
-     * - If tell the Player how much did he earn only after a delay (AutoSell Delay Earnings will use this option for example).
-     * - If play sound on SellAll Sell (If sounds are disabled from the config, this parameter will be ignored.
+     * <p>This function will remove all sellable items from the player's Inventories. It will first ensure that a 
+     * Player can sell the items. Some of the conditions that are checked are, along with some of the behaviors:
+     * </p>
+     * 
+     * <ul>
+     *   <li>If player has access to use SellAll signs.</li>
+     *   <li>Provide the amount the player earned if this is not disabled.</li>
+     *   <li>If this actions is silenced, then text and audio notifications are suppressed.<li>
+     *   <li>If configured, the reported earnings amount may be delayed and added to other earnings, 
+     *   		which will reduce flooding the player with notifications.</li>
+     *   <li>If sound notifications are enabled, then they will be played.</li>
      *
-     * Return True if success, False if error or nothing changed or Player not meeting requirements.
+     *</ul>
      *
-     * Default usage of this method: sellAllSell(p, false, false, true, true, false, true);
+     * <p>Default usage of this method: 
+     * </p>
+     * <pre>sellAllSell(p, false, false, true, true, false, true);</pre>
      *
      * @param p - Player.
      * @param isUsingSign - boolean.
@@ -1497,37 +1732,61 @@ public class SellAllUtil {
      * @param notifyPlayerEarningDelay - boolean.
      * @param playSoundOnSellAll - boolean.
      *
-     * @return boolean.
+     * @return boolean If successful
      * */
-    public boolean sellAllSell(Player p, boolean isUsingSign, boolean completelySilent, boolean notifyPlayerEarned, boolean notifyPlayerDelay, boolean notifyPlayerEarningDelay, boolean playSoundOnSellAll){
+    public boolean sellAllSell(Player p, boolean isUsingSign, boolean completelySilent, boolean notifyPlayerEarned, 
+			boolean notifyPlayerDelay, boolean notifyPlayerEarningDelay, boolean playSoundOnSellAll){
+    	return sellAllSell( p, isUsingSign, completelySilent, notifyPlayerEarned, notifyPlayerDelay, 
+    			notifyPlayerEarningDelay, playSoundOnSellAll, null );
+    }
+    public boolean sellAllSell(Player p, boolean isUsingSign, boolean completelySilent, boolean notifyPlayerEarned, 
+    				boolean notifyPlayerDelay, boolean notifyPlayerEarningDelay, boolean playSoundOnSellAll, List<Double> amounts ){
+    	
         if (!isUsingSign && isSellAllSignEnabled && isSellAllBySignOnlyEnabled && !p.hasPermission(permissionBypassSign)){
             if (!completelySilent) {
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_sign_only));
+            	
+            	sellallCanOnlyUseSignsMsg( new SpigotCommandSender(p) );
+//                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_sign_only));
             }
             return false;
         }
 
         if (isSellAllDelayEnabled && isPlayerWaitingSellAllDelay(p)){
             if (notifyPlayerDelay && !completelySilent) {
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_delay_wait));
+
+            	sellallRateLimitExceededMsg( new SpigotCommandSender(p) );
+//                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_delay_wait));
             }
             return false;
         }
 
         if (sellAllBlocks.isEmpty()){
             if (!completelySilent){
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_empty));
+            	
+            	sellallShopIsEmptyMsg( new SpigotCommandSender(p) );
+//                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_empty));
             }
             return false;
         }
 
         double money = getSellMoney(p);
         if (money != 0){
+        	
+        	if ( amounts != null ) {
+        		
+        		amounts.add( money );
+        	}
 
             SpigotPlayer sPlayer = new SpigotPlayer(p);
             RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
-            if (sellAllCurrency != null && sellAllCurrency.equalsIgnoreCase("default")) sellAllCurrency = null;
+            
+            if (sellAllCurrency != null && sellAllCurrency.equalsIgnoreCase("default")) {
+            	sellAllCurrency = null;
+            }
+            
+            
             removeSellableItems(p);
+            
             rankPlayer.addBalance(sellAllCurrency, money);
 
             if (isSellAllDelayEnabled){
@@ -1546,7 +1805,15 @@ public class SellAllUtil {
                     
                     addDelayedEarningAutoSellNotification(p, money);
                 } else if (notifyPlayerEarned){
-                   Output.get().sendInfo(sPlayer, messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + money);
+                	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+                	String amt = fFmt.format( money );
+                	
+                	String message = sellallAmountEarnedMsg( amt );
+                	
+//                	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
+//                	new SpigotPlayer(p).setActionBar( message );
+                    Output.get().send( new SpigotPlayer(p), message );
+
                 }
             }
             return true;
@@ -1555,7 +1822,9 @@ public class SellAllUtil {
                 if (isSellAllSoundEnabled && playSoundOnSellAll) {
                     p.playSound(p.getLocation(), sellAllSoundFail, 3, 1);
                 }
-                Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_nothing_sellable));
+                
+                sellallYouHaveNothingToSellMsg( new SpigotCommandSender(p) );
+//                Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_nothing_sellable));
             }
             return false;
         }
@@ -1581,16 +1850,29 @@ public class SellAllUtil {
     public double sellAllSell(Player p, SpigotItemStack itemStack, 
     		boolean completelySilent, boolean notifyPlayerEarned, boolean notifyPlayerEarningDelay){
 
+//    	long tPoint1 = System.nanoTime();
+//    	long tPoint2 = tPoint1;
+//    	long tPoint3 = tPoint1;
+//    	long tPoint4 = tPoint1;
+//    	long tPoint5 = tPoint1;
+    	
     	double money = getSellMoney(p, itemStack);
+
+//    	tPoint2 = System.nanoTime();
     	
     	if (money != 0) {
     		
     		SpigotPlayer sPlayer = new SpigotPlayer(p);
     		RankPlayer rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(sPlayer.getUUID(), sPlayer.getName());
 
-    		if (sellAllCurrency != null && sellAllCurrency.equalsIgnoreCase("default")) sellAllCurrency = null;
+//    		tPoint3 = System.nanoTime();
+
+    		if (sellAllCurrency != null && sellAllCurrency.equalsIgnoreCase("default")) { 
+    			sellAllCurrency = null;
+    		}
     		rankPlayer.addBalance(sellAllCurrency, money);
     		
+//    		tPoint4 = System.nanoTime();
     		
     		if (!completelySilent) {
     			
@@ -1607,10 +1889,31 @@ public class SellAllUtil {
     				addDelayedEarningAutoSellNotification(p, money);
     			} 
     			else if (notifyPlayerEarned){
-    				Output.get().sendInfo(sPlayer, messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + money);
+    				DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+    	        	String amt = fFmt.format( money );
+    	        	
+    	        	String message = sellallAmountEarnedMsg( amt ) ;
+    	        	
+//    	        	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
+//    	        	new SpigotPlayer(p).setActionBar( message );
+    	            Output.get().send( new SpigotPlayer(p), message );
+
     			}
     		}
-    	} 
+    		
+//    		tPoint5 = System.nanoTime();
+    	}
+    	
+
+//        DecimalFormat dFmt = new DecimalFormat( "0.0000" );
+//        String debugMsg = "{sellAllSell::" + dFmt.format( money ) + 
+//        				":t1=" + dFmt.format( (tPoint2 - tPoint1)/1000000d ) +
+//        				":t2=" + dFmt.format( (tPoint3 - tPoint2)/1000000d ) + 
+//        				":t3=" + dFmt.format( (tPoint4 - tPoint3)/1000000d ) + 
+//        				":t4=" + dFmt.format( (tPoint5 - tPoint4)/1000000d ) + 
+//        				"}";
+//        Output.get().logDebug( debugMsg );
+        
     	
     	return money;
     }
@@ -1651,21 +1954,27 @@ public class SellAllUtil {
     public ArrayList<ItemStack> sellAllSell(Player p, ArrayList<ItemStack> itemStacks, boolean isUsingSign, boolean completelySilent, boolean notifyPlayerEarned, boolean notifyPlayerDelay, boolean notifyPlayerEarningDelay, boolean playSoundOnSellAll, boolean sellInputArrayListOnly){
         if (!isUsingSign && isSellAllSignEnabled && isSellAllBySignOnlyEnabled && !p.hasPermission(permissionBypassSign)){
             if (!completelySilent) {
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_sign_only));
+            	
+            	sellallCanOnlyUseSignsMsg( new SpigotCommandSender(p) );
+//                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_sign_only));
             }
             return itemStacks;
         }
 
         if (isSellAllDelayEnabled && isPlayerWaitingSellAllDelay(p)){
             if (notifyPlayerDelay && !completelySilent) {
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_delay_wait));
+            	
+            	sellallRateLimitExceededMsg( new SpigotCommandSender(p) );
+//                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_delay_wait));
             }
             return itemStacks;
         }
 
         if (sellAllBlocks.isEmpty()){
             if (!completelySilent){
-                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_empty));
+            	
+            	sellallShopIsEmptyMsg( new SpigotCommandSender(p) );
+//                Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_empty));
             }
             return itemStacks;
         }
@@ -1709,7 +2018,15 @@ public class SellAllUtil {
                         addDelayedEarningAutoSellNotification(p, money);
                     }
                 } else if (notifyPlayerEarned){
-                    Output.get().sendInfo(sPlayer, messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + money);
+                	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+                	String amt = fFmt.format( money );
+                	
+                	String message = sellallAmountEarnedMsg( amt );
+                	
+//                	String message = messages.getString(MessagesConfig.StringID.spigot_message_sellall_money_earned) + amt;
+//                	new SpigotPlayer(p).setActionBar( message );
+                    Output.get().send( new SpigotPlayer(p), message );
+
                 }
             }
         } else {
@@ -1717,7 +2034,9 @@ public class SellAllUtil {
                 if (isSellAllSoundEnabled && playSoundOnSellAll) {
                     p.playSound(p.getLocation(), sellAllSoundFail, 3, 1);
                 }
-                Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_nothing_sellable));
+                
+                sellallYouHaveNothingToSellMsg( new SpigotCommandSender(p) );
+//                Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_sellall_sell_nothing_sellable));
             }
         }
         return itemStacks;

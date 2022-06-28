@@ -8,10 +8,9 @@ import org.bukkit.entity.Player;
 import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.sellall.messages.SpigotVariousGuiMessages;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools.GUIMenuPageData;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
@@ -60,8 +59,10 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
         }
 
         if (emptyInv){
-            SpigotPlayer spigotPlayer = new SpigotPlayer(p);
-            Output.get().sendWarn(spigotPlayer, messages.getString(MessagesConfig.StringID.spigot_message_gui_sellall_empty));
+        	new SpigotVariousGuiMessages().sellallYouHaveNothingToSellMsg( new SpigotCommandSender(p) );
+        	
+//        	SpigotPlayer spigotPlayer = new SpigotPlayer(p);
+//            Output.get().sendWarn(spigotPlayer, messages.getString(MessagesConfig.StringID.spigot_message_gui_sellall_empty));
             return;
         }
 
@@ -81,11 +82,11 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
         PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), "&3SellAll -> Blocks");
 
         // Global strings.
-        String loreLine1 = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_delete);
-        String loreLine2 = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_left_to_edit);
-        String lorePermission = messages.getString(MessagesConfig.StringID.spigot_gui_lore_permission);
+        String loreLine1 = guiRightClickToDeleteMsg();
+        String loreLine2 = guiLeftClickToEditMsg();
+//        String lorePermission = messages.getString(MessagesConfig.StringID.spigot_gui_lore_permission);
         String permissionSellAllBlock = sellAllConfig.getString("Options.Sell_Per_Block_Permission");
-        String loreValue = messages.getString(MessagesConfig.StringID.spigot_gui_lore_value);
+//        String loreValue = messages.getString(MessagesConfig.StringID.spigot_gui_lore_value);
 
         boolean sellAllPerBlockPermissionEnabled = getBoolean(sellAllConfig.getString("Options.Sell_Per_Block_Permission_Enabled"));
 
@@ -93,10 +94,17 @@ public class SellAllAdminBlocksGUI extends SpigotGUIComponents {
         for (String key : itemsDisplay) {
         	
         	
-                ButtonLore itemsLore = new ButtonLore(createLore(loreLine1, loreLine2), createLore(loreValue + sellAllConfig.getString("Items." + key + ".ITEM_VALUE")));
+        	String itemValue = sellAllConfig.getString("Items." + key + ".ITEM_VALUE");
+        	String loreValue = guiValueMsg( itemValue );
+        	
+                ButtonLore itemsLore = new ButtonLore(createLore(loreLine1, loreLine2), 
+                		createLore( loreValue ));
+                
+                String sellallPerm = permissionSellAllBlock + sellAllConfig.getString("Items." + key + ".ITEM_ID");
+                String lorePermission = guiPermissionMsg( sellallPerm );
                 
                 if (sellAllPerBlockPermissionEnabled) {
-                	itemsLore.addLineLoreDescription(SpigotPrison.format(lorePermission + "&7" + permissionSellAllBlock + sellAllConfig.getString("Items." + key + ".ITEM_ID")));
+                	itemsLore.addLineLoreDescription( lorePermission );
                 }
                 
                 String xMatIdName = "Items." + key + ".ITEM_ID";

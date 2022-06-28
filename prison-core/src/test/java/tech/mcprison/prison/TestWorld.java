@@ -40,16 +40,25 @@ public class TestWorld implements World {
         this.name = name;
     }
 
-    @Override public String getName() {
+    @Override 
+    public String getName() {
         return name;
     }
 
-    @Override public List<Player> getPlayers() {
+    @Override 
+    public List<Player> getPlayers() {
         return null;
     }
 
-    @Override public Block getBlockAt(Location location) {
+    @Override 
+    public Block getBlockAt(Location location) {
         return null;
+    }
+    
+    @Override
+    public Block getBlockAt( Location location, boolean containsCustomBlocks )
+    {
+    	return null;
     }
 
     @Override
@@ -66,5 +75,6 @@ public class TestWorld implements World {
 							PrisonStatsElapsedTimeNanos nanos ) {
 		
 	}
+
 
 }

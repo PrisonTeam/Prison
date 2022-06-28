@@ -33,11 +33,12 @@ public class BackpacksAdminGUI extends SpigotGUIComponents {
         int dimension = 27;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3Backpacks-Admin");
 
-        ButtonLore lore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open), null);
+        ButtonLore lore = new ButtonLore( guiLeftClickToOpenMsg(), null);
 
         gui.addButton(new Button(11, XMaterial.CHEST, lore, "&3Backpacks-List"));
         gui.addButton(new Button(15, XMaterial.PAPER, lore, "&3Backpack-Settings"));
-        gui.addButton(new Button(dimension -1, XMaterial.RED_STAINED_GLASS_PANE, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_close), null), "&cClose"));
+        gui.addButton(new Button(dimension -1, XMaterial.RED_STAINED_GLASS_PANE, 
+        		new ButtonLore( guiClickToCloseMsg(), null), "&cClose"));
 
         gui.open();
     }

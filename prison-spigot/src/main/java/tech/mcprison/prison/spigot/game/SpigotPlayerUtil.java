@@ -7,6 +7,7 @@ import org.bukkit.enchantments.Enchantment;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.PlayerUtil;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.Compatibility;
@@ -23,6 +24,13 @@ public class SpigotPlayerUtil
 		Object p = Prison.get().getPlatform().getPlayer( playerUuid ).orElse( null );
 		if ( p != null && p instanceof SpigotPlayer ) {
 			this.spigotPlayer = (SpigotPlayer) p;
+		}
+	}
+	public SpigotPlayerUtil( Player player ) {
+		super( player.getUUID() );
+		
+		if ( player != null && player instanceof SpigotPlayer ) {
+			this.spigotPlayer = (SpigotPlayer) player;
 		}
 	}
 
@@ -417,7 +425,55 @@ public class SpigotPlayerUtil
 	}
 	
 
+//	public String getEnchantments() {
+//		StringBuilder sb = new StringBuilder();
+//		
+//		SpigotItemStack itemStack = getItemInHand();
+//		
+//		if ( itemStack != null && itemStack.getBukkitStack() != null) {
+//			try {
+//				
+//				Set<Enchantment> keys = itemStack.getBukkitStack().getEnchantments().keySet();
+//				
+//				for ( Enchantment key : keys ) {
+//					Integer value = itemStack.getBukkitStack().getEnchantments().get( key );
+//					
+//					if ( value != null ) {
+//						if ( sb.length() > 0 ) {
+//							sb.append( ", " );
+//						}
+//						sb.append( key.getName() ).append( ": " ).append( value );
+//						key.getItemTarget().toString()
+//					}
+//				}
+//				
+//			}
+//			catch ( NullPointerException e ) {
+//				// Ignore. This happens when a TokeEnchanted tool is used when TE is not installed anymore.
+//				// It throws this exception:  Caused by: java.lang.NullPointerException: null key in entry: null=5
+//			}
+//		}
+//	}
 	
+	public String getItemInHandLore() {
+		StringBuilder sb = new StringBuilder();
+		
+		SpigotItemStack itemStack = getItemInHand();
+		
+		if ( itemStack != null && itemStack.getLore() != null && itemStack.getLore().size() > 0 ) {
+			for ( String lore : itemStack.getLore() )
+			{
+				if ( lore.trim().length() > 0 ) {
+					if ( sb.length() > 0 ) {
+						sb.append( "\\" );
+					}
+					sb.append( lore );
+				}
+			}
+		}
+		
+		return sb.toString();
+	}
 	
 	public SpigotPlayer getSpigotPlayer() {
 		return spigotPlayer;

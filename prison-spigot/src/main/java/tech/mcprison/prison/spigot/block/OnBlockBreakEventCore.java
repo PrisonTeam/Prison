@@ -1,23 +1,17 @@
 package tech.mcprison.prison.spigot.block;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
-
-import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
 import me.pulsi_.prisonenchants.events.PEExplosionEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
@@ -27,38 +21,33 @@ import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
-import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
-import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.api.ExplosiveBlockBreakEvent;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerBreakBlockTask;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-import tech.mcprison.prison.spigot.integrations.IntegrationCrazyEnchantmentsPickaxes;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.utils.BlockUtils;
 import tech.mcprison.prison.util.Text;
 
-public class OnBlockBreakEventCore
+public abstract class OnBlockBreakEventCore
 	extends OnBlockBreakMines
 {
 
-	
-	private int uses = 0;
-	private long usesElapsedTimeNano = 0L;
-	
-	private boolean teExplosionTriggerEnabled;
+	// The two variables, uses and usesElapsedTimeNano, are designed to better understand
+	// how frequently this class is used and it's impact on the server.  It's is disabled
+	// but not deleted since it is useful for future useage.
+//	private int uses = 0;
+//	private long usesElapsedTimeNano = 0L;
 	
 	private AutoFeaturesWrapper autoFeatureWrapper = null;
 	
-	
-	private Boolean crazyEnchantEnabled;
 	
 	private Random random = new Random();
 	
@@ -68,11 +57,6 @@ public class OnBlockBreakEventCore
 		
 		this.autoFeatureWrapper = AutoFeaturesWrapper.getInstance();
 		
-	
-		
-		this.teExplosionTriggerEnabled = true;
-		
-		this.crazyEnchantEnabled = null;
 	}
 	
 
@@ -83,29 +67,32 @@ public class OnBlockBreakEventCore
 		;
 	}
 	
-	
-	/**
-	 * <p>The Prison Mines module must be enabled, or these BlockBreakEvents should 
-	 * not be enabled since they are geared to work with the prison mines.
-	 * </p>
-	 * 
-	 * <p>At this time, prison's block handling is not supported outside of the mines.
-	 * </p>
-	 * 
-	 * @return
-	 */
-	public boolean isEnabled() {
-		boolean results = false;
-
-		Optional<Module> mmOptional = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
-		if ( mmOptional.isPresent() && mmOptional.get().isEnabled() ) {
-			PrisonMines prisonMines = (PrisonMines) mmOptional.get();
-			
-			results = prisonMines != null;
-		}
-		
-		return results;
+	public boolean isDisabled( String worldName ) {
+		return Prison.get().getPlatform().isWorldExcluded( worldName );
 	}
+	
+//	/**
+//	 * <p>The Prison Mines module must be enabled, or these BlockBreakEvents should 
+//	 * not be enabled since they are geared to work with the prison mines.
+//	 * </p>
+//	 * 
+//	 * <p>At this time, prison's block handling is not supported outside of the mines.
+//	 * </p>
+//	 * 
+//	 * @return
+//	 */
+//	public boolean isEnabled() {
+//		boolean results = false;
+//
+//		Optional<Module> mmOptional = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
+//		if ( mmOptional.isPresent() && mmOptional.get().isEnabled() ) {
+//			PrisonMines prisonMines = (PrisonMines) mmOptional.get();
+//			
+//			results = prisonMines != null;
+//		}
+//		
+//		return results;
+//	}
 
 	public AutoFeaturesFileConfig getAutoFeaturesConfig() {
 		return autoFeatureWrapper.getAutoFeaturesConfig();
@@ -133,26 +120,26 @@ public class OnBlockBreakEventCore
 	
 	
 	
-	public enum ItemLoreCounters {
-
-		// NOTE: the String value must include a trailing space!
-
-		itemLoreBlockBreakCount( ChatColor.LIGHT_PURPLE + "Prison Blocks Mined:" +
-				ChatColor.GRAY + " "),
-
-		itemLoreBlockExplodeCount( ChatColor.LIGHT_PURPLE + "Prison Blocks Exploded:" +
-				ChatColor.GRAY + " ");
-
-
-		private final String lore;
-		ItemLoreCounters( String lore ) {
-			this.lore = lore;
-		}
-		public String getLore() {
-			return lore;
-		}
-
-	}
+//	public enum ItemLoreCounters {
+//
+//		// NOTE: the String value must include a trailing space!
+//
+//		itemLoreBlockBreakCount( ChatColor.LIGHT_PURPLE + "Prison Blocks Mined:" +
+//				ChatColor.GRAY + " "),
+//
+//		itemLoreBlockExplodeCount( ChatColor.LIGHT_PURPLE + "Prison Blocks Exploded:" +
+//				ChatColor.GRAY + " ");
+//
+//
+//		private final String lore;
+//		ItemLoreCounters( String lore ) {
+//			this.lore = lore;
+//		}
+//		public String getLore() {
+//			return lore;
+//		}
+//
+//	}
 
 	public enum ItemLoreEnablers {
 		Pickup,
@@ -162,330 +149,30 @@ public class OnBlockBreakEventCore
 	}
 	
 	
-    
-    
-    protected void genericBlockEventMonitor( BlockBreakEvent e ) {
-    	genericBlockEvent( e, true, false, false );
-    }
-    
-    protected void genericBlockEvent( BlockBreakEvent e ) {
-    	genericBlockEvent( e, false, false, false );
-    }
-
-    protected void genericBlockEventAutoManager( BlockBreakEvent e ) {
-    	// NOTE: If autoManager is turned off, then process only the blockEvents:
-    	boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-    	genericBlockEvent( e, false, blockEventsOnly, true );
-    }
-    
-    
-	protected void genericBlockExplodeEventMonitor( TEBlockExplodeEvent e ) {
-		genericBlockExplodeEvent( e, true, false, false );
-	}
-	
-	protected void genericBlockExplodeEvent( TEBlockExplodeEvent e ) {
-		// NOTE: If autoManager is turned off, then process only the blockEvents:
-		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-		genericBlockExplodeEvent( e, false, blockEventsOnly, false );
-	}
-	
-	protected void genericBlockExplodeEventAutoManager( TEBlockExplodeEvent e ) {
-		// NOTE: If autoManager is turned off, then process only the blockEvents:
-		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-		genericBlockExplodeEvent( e, false, blockEventsOnly, true );
-	}
-	
-
-	protected void genericBlockExplodeEventMonitor( BlastUseEvent e ) {
-		genericBlastUseEvent( e, true, false, false );
-	}
-	
-	protected void genericBlockExplodeEvent( BlastUseEvent e ) {
-		// NOTE: If autoManager is turned off, then process only the blockEvents:
-		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-		genericBlastUseEvent( e, false, blockEventsOnly, false );
-	}
-
-	protected void genericBlockExplodeEventAutoManager( BlastUseEvent e ) {
-		// NOTE: If autoManager is turned off, then process only the blockEvents:
-		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-		genericBlastUseEvent( e, false, blockEventsOnly, true );
-	}
+  
 	
 	
-	/**
-	 * For Pulsi_'s PrisonEnchants plugin:
-	 * 
-	 * @param e
-	 */
-	protected void genericBlockExplodeEventMonitor( PEExplosionEvent e ) {
-		genericExplosiveEvent( e, true, false, false );
-	}
-	
-	/**
-	 * For Pulsi_'s PrisonEnchants plugin:
-	 * 
-	 * @param e
-	 */
-	protected void genericBlockExplodeEvent( PEExplosionEvent e ) {
-		// NOTE: If autoManager is turned off, then process only the blockEvents:
-		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-		genericExplosiveEvent( e, false, blockEventsOnly, false );
-	}
-	
-	/**
-	 * For Pulsi_'s PrisonEnchants plugin:
-	 * 
-	 * @param e
-	 */
-	protected void genericBlockExplodeEventAutoManager( PEExplosionEvent e ) {
-		// NOTE: If autoManager is turned off, then process only the blockEvents:
-		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-		genericExplosiveEvent( e, false, blockEventsOnly, true );
-	}
-	
-	
-	
-	
-	/**
-	 * For Prison's very own ExplosiveBlockBreakEvent:
-	 * 
-	 * @param e
-	 */
-	protected void genericBlockExplodeEventMonitor( ExplosiveBlockBreakEvent e ) {
-		genericExplosiveEvent( e, true, false, false );
-	}
-	
-	/**
-	 * For Prison's very own ExplosiveBlockBreakEvent:
-	 * 
-	 * @param e
-	 */
-	protected void genericBlockExplodeEvent( ExplosiveBlockBreakEvent e ) {
-		// NOTE: If autoManager is turned off, then process only the blockEvents:
-		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-		genericExplosiveEvent( e, false, blockEventsOnly, false );
-	}
-	
-	/**
-	 * For Prison's very own ExplosiveBlockBreakEvent:
-	 * 
-	 * @param e
-	 */
-	protected void genericBlockExplodeEventAutoManager( ExplosiveBlockBreakEvent e ) {
-		// NOTE: If autoManager is turned off, then process only the blockEvents:
-		boolean blockEventsOnly = !isBoolean(AutoFeatures.isAutoManagerEnabled);
-		genericExplosiveEvent( e, false, blockEventsOnly, true );
-	}
-	
-//	protected boolean processMinesBlockBreakEvent( Cancellable event, Player player, Block block ) {
-//		boolean processEvent = true;
-//		
-//		SpigotBlock sBlock = new SpigotBlock( block );
-//		if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
-//			event.setCancelled( true );
-//			processEvent = false;
-//		}
-//		
-//		Mine mine = findMine( player, sBlock,  null, null ); 
-//		
-//		if ( mine == null  ) {
-//			// Prison is unable to process blocks outside of mines right now, so exit:
-//			processEvent = false;
-//		}
-//		
-//		// If not minable, then display message and exit.
-//		if ( !mine.getMineStateMutex().isMinable() ) {
-//			
-//			SpigotPlayer sPlayer = new SpigotPlayer( player );
-//			sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
-//			event.setCancelled( true );
-//			processEvent = false;
-//		}
-//		MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
-//		
-//		// If ignore all block events, then exit this function without logging anything:
-//		if ( targetBlock.isIgnoreAllBlockEvents() ) {
-//			event.setCancelled( true );
-//			processEvent = false;
-//		}
-//
-//		
-//		return processEvent;
-//	}
-	
-    /**
-     * <p>This genericBlockEvent handles the basics of a BlockBreakEvent to see if it has happened
-     * within a mine or not.  If it is happening within a mine, then we process it with the doAction()
-     * function.
-     * </p>
-     * 
-     * @param e
-     * @param montior Identifies that a monitor event called this function.  A monitor should only record
-     * 					block break counts.
-     */
-	protected void genericBlockEvent( BlockBreakEvent e, boolean monitor, boolean blockEventsOnly, 
-			boolean autoManager ) {
-		
-		if ( e instanceof PrisonMinesBlockBreakEvent ) {
-			return;
-		}
-		
-    	long start = System.nanoTime();
-
-    	if ( e.isCancelled() ||  ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlock()) ) {
-    		return;
-    	}
-
-    	
-		
-		// Register all external events such as mcMMO and EZBlocks:
-		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
-		
-		StringBuilder debugInfo = new StringBuilder();
-		
-		debugInfo.append( String.format( "### ** genericBlockEvent ** ### %s%s%s%s ",
-				(autoManager ? "autoManager " : ""),
-				(e.isCancelled() ? "CANCELED " : ""),
-				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" )) );
-		
-		
-		// NOTE that check for auto manager has happened prior to accessing this function.
-    	if ( !monitor && !e.isCancelled() || monitor ) 
-    	{
-
-    		// Need to wrap in a Prison block so it can be used with the mines:
-    		SpigotBlock sBlock = new SpigotBlock(e.getBlock());
-    		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
-    		
-    		BlockEventType eventType = BlockEventType.blockBreak;
-    		String triggered = null;
-    		
-    		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
-    					sBlock, sPlayer, monitor, blockEventsOnly, eventType, triggered );
-    		
-    		if ( !validateEvent( pmEvent, debugInfo ) ) {
-    			
-    			// The event has not passed validation. All logging and Errors have been recorded
-    			// so do nothing more. This is to just prevent normal processing from occurring.
-    			
-    			if ( pmEvent.isCancelOriginalEvent() ) {
-    				
-    				e.setCancelled( true );
-    			}
-    		}
-    		
-    		else if ( pmEvent.isMonitor() ) {
-    			// Stop here, and prevent additional processing. Monitors should never process the event beyond this.
-    		}
-    		
-    		// This is where the processing actually happens:
-    		else if ( pmEvent.getMine() != null || pmEvent.getMine() == null && 
-    									!isBoolean( AutoFeatures.pickupLimitToMines ) ) {
-    			debugInfo.append( "(normal processing initiating) " );
-    			
-    			// Set the mine's PrisonBlockTypes for the block. Used to identify custom blocks.
-    			// Needed since processing of the block will lose track of which mine it came from.
-    			if ( pmEvent.getMine() != null ) {
-    				sBlock.setPrisonBlockTypes( pmEvent.getMine().getPrisonBlockTypes() );
-    			}
-    			
-    			// check all external events such as mcMMO and EZBlocks:
-    			OnBlockBreakExternalEvents.getInstance().checkAllExternalEvents( e );
-    			
-    			List<SpigotBlock> explodedBlocks = new ArrayList<>();
-    			pmEvent.setExplodedBlocks( explodedBlocks );
-//    			String triggered = null;
-    			
-//    			PrisonMinesBlockBreakEvent pmbbEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
-//    							pmEvent.getMine(), sBlock, explodedBlocks, BlockEventType.blockBreak, triggered );
-                Bukkit.getServer().getPluginManager().callEvent( pmEvent );
-                if ( pmEvent.isCancelled() ) {
-                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled) " );
-                }
-                else {
-                	
-                	// Cancel drops if so configured:
-                	if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
-                		
-                		try
-                		{
-                			e.setDropItems( false );
-                		}
-                		catch ( NoSuchMethodError e1 )
-                		{
-                			String message = String.format( 
-                					"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
-                					"is not valid for this version of Spigot. Modify the config settings and set " +
-                					"this value to `false`. [%s]",
-                					e1.getMessage() );
-                			Output.get().logWarn( message );
-                		}
-                	}
-                	
-                	// doAction returns a boolean that indicates if the event should be canceled or not:
-                	if ( doAction( pmEvent, debugInfo ) ) {
-//                	if ( doAction( sBlock, pmEvent.getMine(), pmEvent.getPlayer(), debugInfo ) ) {
-
-                		if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
-                			e.setCancelled( true );
-                		}
-                		else {
-                			
-                			debugInfo.append( "(event was not canceled) " );
-                		}
-                		
-                		finalizeBreakTheBlocks( pmEvent );
-                		
-                		doBlockEvents( pmEvent );
-                		
-                	}
-                	else {
-                		
-                		debugInfo.append( "(doAction failed without details) " );
-                	}
-
-                }
-    			
-    			
-                debugInfo.append( "(normal processing completed) " );
-    		}
-    		else {
-    			
-    			debugInfo.append( "(logic bypass) " );
-    		}
-    		
-    	}
-    	
-		if ( debugInfo.length() > 0 ) {
-			
-			long stop = System.nanoTime();
-			debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
-			
-			Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
-		}
-	}
 
 	protected boolean ignoreMinesBlockBreakEvent( Cancellable event, Player player, Block block ) {
 	
-	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
-	
-	if ( eventResults.isCancelEvent() ) {
-		event.setCancelled( eventResults.isCancelEvent() );
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
+		
+		if ( eventResults.isCancelEvent() ) {
+			event.setCancelled( eventResults.isCancelEvent() );
+		}
+		return eventResults.isIgnoreEvent();
 	}
-	return eventResults.isIgnoreEvent();
-}
-
-protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player player, Block block ) {
 	
-	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
-	
-	if ( eventResults.isCancelEvent() ) {
-		event.setCancelled( eventResults.isCancelEvent() );
+	protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player player, Block block ) {
+		
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
+		
+		if ( eventResults.isCancelEvent() ) {
+			event.setCancelled( eventResults.isCancelEvent() );
+		}
+		return eventResults.isIgnoreEvent();
 	}
-	return eventResults.isIgnoreEvent();
-}
-
+	
 
 	/**
 	 * <p>This processes the block finalizations, which are counting the block breakage,
@@ -496,7 +183,7 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 	 * 
 	 * @param pmEvent
 	 */
-	private void doBlockEvents( PrisonMinesBlockBreakEvent pmEvent )
+	protected void doBlockEvents( PrisonMinesBlockBreakEvent pmEvent )
 	{
 
 		if ( pmEvent.getMine() != null ) {
@@ -514,7 +201,7 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 		}
 	}
 
-	private void finalizeBreakTheBlocks( PrisonMinesBlockBreakEvent pmEvent )
+	protected void finalizeBreakTheBlocks( PrisonMinesBlockBreakEvent pmEvent )
 	{
 		List<SpigotBlock> blocks = finalizeBreakTheBlocksCollectEm( pmEvent );
 		
@@ -531,7 +218,7 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 						!pmEvent.getMine().getMineStateMutex().isMinable() ) {
 					
 					SpigotPlayer sPlayer = pmEvent.getSpigotPlayer();
-					sPlayer.setActionBar( "Mine " + pmEvent.getMine().getTag() + " is being reset... please wait." );
+					sPlayer.setActionBar( mineIsBeingResetMsg( pmEvent.getMine().getTag() ) );
 					break;
 				}
 				
@@ -595,7 +282,7 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 	 * @param debugInfo
 	 * @return
 	 */
-	private boolean validateEvent( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo )
+	protected boolean validateEvent( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo )
 	{
 		boolean results = true;
 		
@@ -630,6 +317,13 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlockHit );
 			pmEvent.setTargetBlock( targetBlock );
 			
+			boolean bypassMatchedBlocks = pmEvent.getMine().getBounds().getTotalBlockCount() <= 25;
+			if ( bypassMatchedBlocks ) {
+				debugInfo.append( "(TargetBlock match requirement is disabled [blocks<=25]) " );
+			}
+			
+			boolean matchedBlocks = isBlockAMatch( targetBlock, sBlockHit );
+			
 			// If ignore all block events has been set on this target block, then shutdown.
 			// Same if this block was already included in an explosion... prevent it from spawning
 			// more explosions, which could result in a chain reaction.
@@ -660,10 +354,12 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 					PrisonBlockStatusData pbTargetBlock = targetBlock.getPrisonBlock();
 					PrisonBlock pbBlockHit = sBlockHit == null ? null : sBlockHit.getPrisonBlock();
 					
-					if ( pbBlockHit != null && pbTargetBlock != null && 
-							pbTargetBlock.equals( pbBlockHit ) &&
-							collectBukkitDrops( pmEvent.getBukkitDrops(), targetBlock, pmEvent.getItemInHand(), sBlockHit )) {
+					if ( pbBlockHit != null && 
+							(matchedBlocks ||
+							 !matchedBlocks && bypassMatchedBlocks )) {
 						
+						// Confirmed the block is correct... so get the drops...
+						collectBukkitDrops( pmEvent.getBukkitDrops(), targetBlock, pmEvent.getItemInHand(), sBlockHit, pmEvent.getSpigotPlayer() );
 						
 						// If a chain reaction on explosions, this will prevent the same block from
 						// being processed more than once:
@@ -759,33 +455,37 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 				
 				for ( Block bukkitBlock : pmEvent.getUnprocessedRawBlocks() ) 
 				{
-					SpigotBlock sBlock = new SpigotBlock( bukkitBlock );
+					SpigotBlock sBlockMined = SpigotBlock.getSpigotBlock( bukkitBlock );
 					
 					// Thanks to CrazyEnchant, there is no telling which block was actually hit, so 
 					// if using CrazyEnchant one of the unprocessedRawBlocks may be the same as the
 					// pmEvent.getSpigotBlock(), so ignore if both are the same.
-					if ( !sBlock.equals( sBlockHit ) ) {
+					// Compare the locations...
+					if ( sBlockHit != null && sBlockMined != null &&
+							!sBlockHit.getLocation().equals( sBlockMined.getLocation() ) ) {
 						
-						if ( !mine.isInMineExact( sBlock.getLocation() ) ) {
+						if ( !mine.isInMineExact( sBlockMined.getLocation() ) ) {
 							outsideOfMine++;
 						}
-						else if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+						else if ( BlockUtils.getInstance().isUnbreakable( sBlockMined ) ) {
 							
 							unbreakable++;
 						}
 						
-						else if ( sBlock.isEmpty() ) {
+						else if ( sBlockMined.isEmpty() ) {
 							alreadyMined++;
 						}
 						else {
 							
 							// Get the mine's targetBlock:
-							MineTargetPrisonBlock targetExplodedBlock = mine.getTargetPrisonBlock( sBlock );
+							MineTargetPrisonBlock targetExplodedBlock = mine.getTargetPrisonBlock( sBlockMined );
+							
+							boolean matchedExplodedBlocks = isBlockAMatch( targetExplodedBlock, sBlockMined );
 							
 							if ( targetExplodedBlock == null || targetExplodedBlock.getPrisonBlock() == null ) {
 								
 								// No targetBlock so add it anyway:
-								pmEvent.getExplodedBlocks().add( sBlock );
+								pmEvent.getExplodedBlocks().add( sBlockMined );
 								
 								noTargetBlock++;
 							}
@@ -800,27 +500,30 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 									
 									// Check to make sure the block is the same block that was placed there.
 									// If not, then do not process it.
-									SpigotBlock sBlockMined = new SpigotBlock( bukkitBlock );
+//									SpigotBlock sBlockMined = SpigotBlock.getSpigotBlock( bukkitBlock );
 									PrisonBlock pBlockMined = sBlockMined.getPrisonBlock();
 									
 									PrisonBlockStatusData pbTargetExploded = targetExplodedBlock.getPrisonBlock();
 									
-									if ( pBlockMined!= null && pbTargetExploded != null &&
-											pbTargetExploded.equals( pBlockMined ) &&
-											collectBukkitDrops( pmEvent.getBukkitDrops(), targetExplodedBlock, pmEvent.getItemInHand(), sBlockMined ) ) {
+									if ( pBlockMined!= null && 
+											( matchedExplodedBlocks  ||
+											 !matchedExplodedBlocks && bypassMatchedBlocks ) ) {
+
+										// Confirmed the block is correct... so get the drops...
+										collectBukkitDrops( pmEvent.getBukkitDrops(), targetExplodedBlock, pmEvent.getItemInHand(), sBlockMined, pmEvent.getSpigotPlayer() );
 										
 										// If a chain reaction on explosions, this will prevent the same block from
 										// being processed more than once:
 										targetExplodedBlock.setMined( true );
 										
-										targetExplodedBlock.setMinedBlock( sBlock );
+										targetExplodedBlock.setMinedBlock( sBlockMined );
 										
 										
 										// Mark the block as being part of an explosion, if it was:
 										targetExplodedBlock.setExploded( isExplosionEvent );
 
 										
-										pmEvent.getExplodedBlocks().add( sBlock );
+										pmEvent.getExplodedBlocks().add( sBlockMined );
 										pmEvent.getTargetExplodedBlocks().add( targetExplodedBlock );
 										
 										
@@ -933,7 +636,7 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 		if ( isToolDisabled( pmEvent.getPlayer() ) ) {
 			
 			// This will prevent sending too many messages since it is using PlayerMessagingTask:
-			pmEvent.getSpigotPlayer().setActionBar( "&cYour tool is worn-out and cannot be used." );
+			pmEvent.getSpigotPlayer().setActionBar( toolIsWornOutMsg() );
 			
 //			PrisonUtilsTitles uTitles = new PrisonUtilsTitles();
 //			uTitles.utilsTitlesActionBarForce( pmEvent.getSpigotPlayer(), null, 
@@ -962,11 +665,35 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 		
 		
 		
-		if ( results && pmEvent.isBlockEventsOnly() ) {
+		if ( results && pmEvent.getBbPriority() == BlockBreakPriority.BLOCKEVENTS ) {
+
 			
-			// NOTE: This "should" never be activated since blockEventsOnly used to be enabled
-			//       when AutoManager is disabled.  As of 2021-11-23 if AutoManager is disabled,
-			//       then everything related to auto manager is disabled.
+			// This is true if the player cannot toggle the autosell, and it's
+			// true if they can, and the have it enabled:
+			boolean isPlayerAutosellEnabled = SellAllUtil.get() != null && 
+					SellAllUtil.get().checkIfPlayerAutosellIsActive( 
+							pmEvent.getSpigotPlayer().getWrapper() ) 
+					;
+			
+			// AutoSell on full inventory when using BLOCKEVENTS:
+			if ( isBoolean( AutoFeatures.isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority ) &&
+					Prison.get().getPlatform().getConfigBooleanFalse( "sellall" ) &&
+					isPlayerAutosellEnabled &&
+					pmEvent.getSpigotPlayer().isInventoryFull() ) {
+				
+				
+				final long nanoStart = System.nanoTime();
+				boolean success = SellAllUtil.get().sellAllSell( pmEvent.getPlayer(), 
+										false, false, false, true, true, false);
+				final long nanoStop = System.nanoTime();
+				double milliTime = (nanoStop - nanoStart) / 1000000d;
+				
+				DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+				debugInfo.append( "(autosellBLOCKEVENTS: " + (success ? "success" : "failed") + 
+						" ms: " + dFmt.format( milliTime ) + ") ");
+				
+			}
+			
 			String triggered = null;
 			
 			doActionBlockEventOnly( sBlockHit, mine, pmEvent.getPlayer(), 
@@ -989,13 +716,13 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 			
 			results = false;
 		}
-		else if ( results && pmEvent.isMonitor() && mine == null ) {
+		else if ( results && pmEvent.getBbPriority() == BlockBreakPriority.MONITOR && mine == null ) {
 			// bypass all processing since the block break is outside any mine:
 			
 			debugInfo.append( "(bypassed monitor no mine) " );
 			results = false;
 		}
-		else if ( results && pmEvent.isMonitor() && mine != null ) {
+		else if ( results && pmEvent.getBbPriority() == BlockBreakPriority.MONITOR && mine != null ) {
 			
 			doActionMonitor( sBlockHit, mine );
 			
@@ -1058,6 +785,8 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 		
 		return results;
 	}
+
+
 
 //	private boolean collectBukkitDrops( List<SpigotItemStack> bukkitDrops, MineTargetPrisonBlock targetBlock, 
 //										SpigotItemStack itemInHand, SpigotBlock sBlockMined )
@@ -1130,677 +859,7 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 //		return new ArrayList<>( results.values() );
 //	}
 
-	/**
-	 * <p>Since there are multiple blocks associated with this event, pull out the player first and
-	 * get the mine, then loop through those blocks to make sure they are within the mine.
-	 * </p>
-	 * 
-	 * <p>The logic in this function is slightly different compared to genericBlockEvent() because this
-	 * event contains multiple blocks so it's far more efficient to process the player data once. 
-	 * So that basically needed a slight refactoring.
-	 * </p>
-	 * 
-	 * @param e
-	 */
-	private void genericBlockExplodeEvent( TEBlockExplodeEvent e, boolean monitor, boolean blockEventsOnly, 
-			boolean autoManager ) {
 
-		long start = System.nanoTime();
-		
-    	if ( e.isCancelled() ||  ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlock()) ) {
-    		return;
-    	}
-    	
-
-		// Register all external events such as mcMMO and EZBlocks:
-		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
-		
-		StringBuilder debugInfo = new StringBuilder();
-		
-		debugInfo.append( String.format( "### ** genericBlockExplodeEvent(TEBlockExplodeEvent) ** ### %s%s%s%s ",
-				(autoManager ? "autoManager " : ""),
-				(e.isCancelled() ? "CANCELED " : ""),
-				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" )) );
-		
-
-
-		// NOTE that check for auto manager has happened prior to accessing this function.
-    	if ( !monitor && !e.isCancelled() || monitor ) {
-    		
-    		
-	    	String eP = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
-			boolean isTEExplosiveEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
-
-
-    		// Need to wrap in a Prison block so it can be used with the mines:
-    		SpigotBlock sBlock = new SpigotBlock(e.getBlock());
-    		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
-    		
-    		BlockEventType eventType = BlockEventType.TEXplosion;
-    		String triggered = checkCEExplosionTriggered( e );
-    		
-    		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
-    					sBlock, sPlayer, monitor, blockEventsOnly, eventType, triggered );
-    		
-    		// NOTE: Token Enchant will pass the event's block to prison, but that block may 
-    		//       have already been processed by prison.  Therefore the PrisonMinesBlockBreakEvent
-    		//       must enable the feature setForceIfAirBlock( true ).  That block will not be used a 
-    		//       second time, but it will allow the explosion event to be processed.
-    		pmEvent.setForceIfAirBlock( true );
-    		
-    		pmEvent.setUnprocessedRawBlocks( e.blockList() );
-    		
-    		if ( !validateEvent( pmEvent, debugInfo ) ) {
-    			
-    			// The event has not passed validation. All logging and Errors have been recorded
-    			// so do nothing more. This is to just prevent normal processing from occurring.
-    			
-    			if ( pmEvent.isCancelOriginalEvent() ) {
-    				
-    				e.setCancelled( true );
-    			}
-    		}
-    		
-    		else if ( pmEvent.isMonitor() ) {
-    			// Stop here, and prevent additional processing. Monitors should never process the event beyond this.
-    		}
-    		
-
-    		
-    		// now process all blocks (non-monitor):
-    		else if ( isTEExplosiveEnabled && 
-    				( pmEvent.getMine() != null || pmEvent.getMine() == null && 
-    									!isBoolean( AutoFeatures.pickupLimitToMines )) ) {
-
-    			
-    			if ( pmEvent.getExplodedBlocks().size() > 0 ) {
-    				
-//					String triggered = checkCEExplosionTriggered( e );
-//					
-//
-//					PrisonMinesBlockBreakEvent pmbbEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
-//	    												mine, block, explodedBlocks, BlockEventType.TEXplosion, triggered );
-	                Bukkit.getServer().getPluginManager().callEvent( pmEvent );
-	                if ( pmEvent.isCancelled() ) {
-	                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled) " );
-	                }
-	                else {
-	                	
-	                	// Cancel drops if so configured:
-	                	if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
-	                		
-	                		try
-	                		{
-	                			e.setYield( 0 );
-//	                			e.setDropItems( false );
-	                		}
-	                		catch ( NoSuchMethodError e1 )
-	                		{
-	                			String message = String.format( 
-	                					"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
-	                					"is not valid for this version of Spigot. Modify the config settings and set " +
-	                					"this value to `false`. [%s]",
-	                					e1.getMessage() );
-	                			Output.get().logWarn( message );
-	                		}
-	                	}
-	                	
-	                	// This is where the processing actually happens:
-	                	if ( doAction( pmEvent, debugInfo ) ) {
-	                		
-	                		if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
-	                			
-	                			e.setCancelled( true );
-	                		}
-	                		else {
-	                			
-	                			debugInfo.append( "(event was not canceled) " );
-	                		}
-	                		
-	                		finalizeBreakTheBlocks( pmEvent );
-	                		
-	                		doBlockEvents( pmEvent );
-
-	                	}
-	                	
-	                	else {
-	                		
-	                		debugInfo.append( "(doAction failed without details) " );
-	                	}
-	                	
-	                }
-    				
-    			}
-    			
-    			
-    			debugInfo.append( "(normal processing) " );
-   			}
-    		else {
-    			
-    			debugInfo.append( "(logic bypass) " );
-    		}
-    			
-    	}
-    	
-		if ( debugInfo.length() > 0 ) {
-			
-			long stop = System.nanoTime();
-			debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
-			
-			Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
-		}
-	}
-
-
-
-	private String checkCEExplosionTriggered( TEBlockExplodeEvent e )
-	{
-		String triggered = null;
-		
-		// Please be aware:  This function is named the same as the auto features setting, but this is 
-		// not related.  This is only trying to get the name of the enchantment that triggered the event.
-		if ( isTeExplosionTriggerEnabled() ) {
-			
-			try {
-				triggered = e.getTrigger();
-			}
-			catch ( Exception | NoSuchMethodError ex ) {
-				// Only print the error the first time, then suppress the error:
-				String error = ex.getMessage();
-				
-				Output.get().logError( "Error: Trying to access the TEBlockExplodeEvent.getTrigger() " +
-						"function.  Make sure you are using TokenEnchant v18.11.0 or newer. The new " +
-						"getTrigger() function returns the TE Plugin that is firing the TEBlockExplodeEvent. " +
-						"The Prison BlockEvents can be filtered by this triggered value. " +
-						error );
-				
-				// Disable collecting the trigger.
-				setTeExplosionTriggerEnabled( false );
-				
-			}
-		}
-		
-		return triggered;
-	}
-
-	
-	
-	/**
-	 * <p>Since there are multiple blocks associated with this event, pull out the player first and
-	 * get the mine, then loop through those blocks to make sure they are within the mine.
-	 * </p>
-	 * 
-	 * <p>The logic in this function is slightly different compared to genericBlockEvent() because this
-	 * event contains multiple blocks so it's far more efficient to process the player data once. 
-	 * So that basically needed a slight refactoring.
-	 * </p>
-	 * 
-	 * @param e
-	 */
-	protected void genericBlastUseEvent( BlastUseEvent e, boolean monitor, boolean blockEventsOnly, 
-			boolean autoManager ) {
-
-		long start = System.nanoTime();
-		
-    	if ( e.isCancelled() ||  ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlockList().get( 0 )) ) {
-    		return;
-    	}
-    	
-		
-		// Register all external events such as mcMMO and EZBlocks:
-		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
-				
-		StringBuilder debugInfo = new StringBuilder();
-		
-		debugInfo.append( String.format( "### ** genericBlastUseEvent(BlastUseEvent) ** ### %s%s%s%s ",
-				(autoManager ? "autoManager " : ""),
-				(e.isCancelled() ? "CANCELED " : ""),
-				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" )) );
-		
-
-
-		// NOTE that check for auto manager has happened prior to accessing this function.
-    	if ( (!monitor && !e.isCancelled() || monitor) && 
-				e.getBlockList().size() > 0 ) {
-
-			
-	    	String eP = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
-			boolean isCEBlockExplodeEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
-
-			
-    		Block bukkitBlock = e.getBlockList().get( 0 );
-    		
-    		// Need to wrap in a Prison block so it can be used with the mines:
-    		SpigotBlock sBlock = new SpigotBlock( bukkitBlock );
-    		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
-    		
-    		BlockEventType eventType = BlockEventType.CEXplosion;
-    		String triggered = null;
-    		
-
-    		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( bukkitBlock, e.getPlayer(),
-					sBlock, sPlayer, monitor, blockEventsOnly, eventType, triggered );
-		
-    		
-    		for ( int i = 1; i < e.getBlockList().size(); i++ ) {
-    			pmEvent.getUnprocessedRawBlocks().add( e.getBlockList().get( i ) );
-    		}
-    		
-    		
-    		if ( !validateEvent( pmEvent, debugInfo ) ) {
-    			
-    			// The event has not passed validation. All logging and Errors have been recorded
-    			// so do nothing more. This is to just prevent normal processing from occurring.
-    			
-    			if ( pmEvent.isCancelOriginalEvent() ) {
-    				
-    				e.setCancelled( true );
-    			}
-    		}
-
-    		
-    		else if ( pmEvent.isMonitor() ) {
-    			// Stop here, and prevent additional processing. Monitors should never process the event beyond this.
-    		}
-    		
-
-
-    		// now process all blocks (non-monitor):
-    		else if ( isCEBlockExplodeEnabled && 
-    				( pmEvent.getMine() != null || pmEvent.getMine() == null && !isBoolean( AutoFeatures.pickupLimitToMines )) ) {
-
-
-    			if ( pmEvent.getExplodedBlocks().size() > 0 ) {
-    				
-//					String triggered = null;
-    				
-					
-					// Warning: BlastUseEvent does not identify the block the player actually hit, so the dummyBlock
-					//          is just a random first block from the explodedBlocks list and may not be the block
-					//          that initiated the explosion event.
-//					SpigotBlock dummyBlock = explodedBlocks.get( 0 );
-					
-//	    			PrisonMinesBlockBreakEvent pmbbEvent = new PrisonMinesBlockBreakEvent( dummyBlock.getWrapper(), e.getPlayer(),
-//	    												mine, dummyBlock, explodedBlocks, BlockEventType.CEXplosion, triggered );
-	                Bukkit.getServer().getPluginManager().callEvent(pmEvent);
-	                if ( pmEvent.isCancelled() ) {
-	                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled) " );
-	                }
-	                else {
-	                	
-//	                	// Cancel drops if so configured:
-//	                	if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
-//	                		
-//	                		try
-//	                		{
-//	                			e.setDropItems( false );
-//	                		}
-//	                		catch ( NoSuchMethodError e1 )
-//	                		{
-//	                			String message = String.format( 
-//	                					"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
-//	                					"is not valid for this version of Spigot. Modify the config settings and set " +
-//	                					"this value to `false`. [%s]",
-//	                					e1.getMessage() );
-//	                			Output.get().logWarn( message );
-//	                		}
-//	                	}
-	                	
-	                	if ( doAction( pmEvent, debugInfo ) ) {
-	                		
-	                		if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
-	                			
-	                			e.setCancelled( true );
-	                		}
-	                		else {
-	                			
-	                			debugInfo.append( "(event was not canceled) " );
-	                		}
-	                		
-	                		finalizeBreakTheBlocks( pmEvent );
-	                		
-	                		doBlockEvents( pmEvent );
-
-	                	}
-	                	
-	                	else {
-	                		
-	                		debugInfo.append( "(doAction failed without details) " );
-	                	}
-	                	
-	                }
-    			}
-    			
-
-    			debugInfo.append( "(normal processing) " );
-    		}
-    		else {
-    			
-    			debugInfo.append( "(logic bypass) " );
-    		}
-
-		}
-    	
-		if ( debugInfo.length() > 0 ) {
-			
-			long stop = System.nanoTime();
-			debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
-			
-			Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
-		}
-	}
-	
-
-	
-	/**
-	 * <p>Since there are multiple blocks associated with this event, pull out the player first and
-	 * get the mine, then loop through those blocks to make sure they are within the mine.
-	 * </p>
-	 * 
-	 * <p>The logic in this function is slightly different compared to genericBlockEvent() because this
-	 * event contains multiple blocks so it's far more efficient to process the player data once. 
-	 * So that basically needed a slight refactoring.
-	 * </p>
-	 * 
-	 * @param e
-	 */
-	protected void genericExplosiveEvent( PEExplosionEvent e, boolean monitor, boolean blockEventsOnly, 
-			boolean autoManager ) {
-
-		long start = System.nanoTime();
-		
-    	if ( e.isCancelled() ||  processMinesBlockBreakEvent( e, e.getPlayer(), e.getBlockBroken()) ) {
-    		return;
-    	}
-    	
-
-		// Register all external events such as mcMMO and EZBlocks:
-		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
-				
-		StringBuilder debugInfo = new StringBuilder();
-		
-		debugInfo.append( String.format( "### ** genericExplosiveEvent(PrisonEnchants - ExplosiveEvent) ** ### %s%s%s%s ",
-				(autoManager ? "autoManager " : ""),
-				(e.isCancelled() ? "CANCELED " : ""),
-				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" )) );
-		
-
-
-		// NOTE that check for auto manager has happened prior to accessing this function.
-    	if ( !monitor && !e.isCancelled() || monitor ) {
-		
-    		
-	    	String eP = getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
-			boolean isPEExplosiveEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
-
-
-    		// Need to wrap in a Prison block so it can be used with the mines:
-    		SpigotBlock sBlock = new SpigotBlock(e.getBlockBroken());
-    		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
-    		
-    		BlockEventType eventType = BlockEventType.PEExplosive;
-    		String triggered = null; // e.getTriggeredBy();
-    		
-    		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( e.getBlockBroken(), e.getPlayer(),
-    					sBlock, sPlayer, monitor, blockEventsOnly, eventType, triggered );
-    		
-    		pmEvent.setUnprocessedRawBlocks( e.getExplodedBlocks() );
-    		
-    		
-    		if ( !validateEvent( pmEvent, debugInfo ) ) {
-    			
-    			// The event has not passed validation. All logging and Errors have been recorded
-    			// so do nothing more. This is to just prevent normal processing from occurring.
-    			
-    			if ( pmEvent.isCancelOriginalEvent() ) {
-    				
-    				e.setCancelled( true );
-    			}
-    		}
-
-    		
-    		else if ( pmEvent.isMonitor() ) {
-    			// Stop here, and prevent additional processing. Monitors should never process the event beyond this.
-    		}
-    		
-
-
-    		// now process all blocks (non-monitor):
-    		else if ( isPEExplosiveEnabled && 
-    				( pmEvent.getMine() != null || pmEvent.getMine() == null && !isBoolean( AutoFeatures.pickupLimitToMines )) ) {
-    			if ( pmEvent.getExplodedBlocks().size() > 0 ) {
-    				
-//					String triggered = null;
-    				
-					
-//	    			PrisonMinesBlockBreakEvent pmbbEvent = new PrisonMinesBlockBreakEvent( dummyBlock.getWrapper(), e.getPlayer(),
-//	    												mine, dummyBlock, explodedBlocks, BlockEventType.PEExplosive, triggered );
-	                Bukkit.getServer().getPluginManager().callEvent(pmEvent);
-	                if ( pmEvent.isCancelled() ) {
-	                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled) " );
-	                }
-	                else {
-	                	
-//	                	// Cancel drops if so configured:
-//	                	if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
-//	                		
-//	                		try
-//	                		{
-//	                			e.setDropItems( false );
-//	                		}
-//	                		catch ( NoSuchMethodError e1 )
-//	                		{
-//	                			String message = String.format( 
-//	                					"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
-//	                					"is not valid for this version of Spigot. Modify the config settings and set " +
-//	                					"this value to `false`. [%s]",
-//	                					e1.getMessage() );
-//	                			Output.get().logWarn( message );
-//	                		}
-//	                	}
-	                	
-	                	if ( doAction( pmEvent, debugInfo ) ) {
-	                		
-	                		if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
-	                			
-	                			e.setCancelled( true );
-	                		}
-	                		else {
-	                			
-	                			debugInfo.append( "(event was not canceled) " );
-	                		}
-	                		
-	                		finalizeBreakTheBlocks( pmEvent );
-	                		
-	                		doBlockEvents( pmEvent );
-
-	                	}
-	                	
-	                	else {
-	                		
-	                		debugInfo.append( "(doAction failed without details) " );
-	                	}
-	                	
-	                }
-    			}
-    			
-    			
-    			debugInfo.append( "(normal processing) " );
-    		}
-    		else {
-    			
-    			debugInfo.append( "(logic bypass) " );
-    		}
-
-		}
-    	
-		if ( debugInfo.length() > 0 ) {
-			
-			long stop = System.nanoTime();
-			debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
-			
-			Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
-		}
-
-	}
-	
-	protected void genericExplosiveEvent( ExplosiveBlockBreakEvent e, boolean monitor, boolean blockEventsOnly, 
-			boolean autoManager ) {
-		
-		long start = System.nanoTime();
-		
-    	if ( e.isCancelled() ||  ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlock()) ) {
-    		return;
-    	}
-    	
-		
-		// Register all external events such as mcMMO and EZBlocks:
-		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
-		
-		StringBuilder debugInfo = new StringBuilder();
-		
-		debugInfo.append( String.format( "### ** genericExplosiveEvent(Prison's - ExplosiveBlockBreakEvent) ** ### %s%s%s%s ",
-				(autoManager ? "autoManager " : ""),
-				(e.isCancelled() ? "CANCELED " : ""),
-				(monitor ? "MONITOR " : ""), (blockEventsOnly ? "BlockEventsOnly" : "" )) );
-		
-		// NOTE that check for auto manager has happened prior to accessing this function.
-		if ( !monitor && !e.isCancelled() || monitor ) {
-			
-			
-	    	String eP = getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
-			boolean isPPrisonExplosiveBlockBreakEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
-
-			
-			// Need to wrap in a Prison block so it can be used with the mines:
-			SpigotBlock sBlock = new SpigotBlock(e.getBlock());
-			SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
-			
-			BlockEventType eventType = BlockEventType.PrisonExplosion;
-			String triggered = e.getTriggeredBy();
-			
-			PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
-					sBlock, sPlayer, monitor, blockEventsOnly, eventType, triggered );
-
-			
-			// If this event is fired, but yet there are no exploded blocks, then do not set 
-			// forceIfAirBlock to true so this event is skipped.
-			if ( e.getExplodedBlocks() != null && e.getExplodedBlocks().size() > 0 ) {
-				
-				pmEvent.setUnprocessedRawBlocks( e.getExplodedBlocks() );
-				pmEvent.setForceIfAirBlock( e.isForceIfAirBlock() );
-			}
-			
-			
-			
-			// Warning: toolInHand really needs to be defined in the event if the source is a
-			//          Mine Bomb, otherwise auto features will detect the player is holding 
-			//          a mine bomb which is not a pickaxe so the drops will be ZERO.  If they
-			//          used their last mine bomb, then auto features will detect only AIR 
-			//          in their hand.
-			if ( e.getToolInHand() != null ) {
-				pmEvent.setItemInHand( (SpigotItemStack) e.getToolInHand() );
-			}
-			
-			if ( !validateEvent( pmEvent, debugInfo ) ) {
-				
-				// The event has not passed validation. All logging and Errors have been recorded
-				// so do nothing more. This is to just prevent normal processing from occurring.
-				
-				if ( pmEvent.isCancelOriginalEvent() ) {
-					
-					e.setCancelled( true );
-				}
-			}
-			
-			
-    		else if ( pmEvent.isMonitor() ) {
-    			// Stop here, and prevent additional processing. Monitors should never process the event beyond this.
-    		}
-    		
-
-			
-			// now process all blocks (non-monitor):
-			else if ( isPPrisonExplosiveBlockBreakEnabled && 
-					( pmEvent.getMine() != null || pmEvent.getMine() == null && 
-					!isBoolean( AutoFeatures.pickupLimitToMines )) ) {
-				
-				if ( pmEvent.getExplodedBlocks().size() > 0 ) {
-					
-//					String triggered = null;
-					
-					
-//	    			PrisonMinesBlockBreakEvent pmbbEvent = new PrisonMinesBlockBreakEvent( dummyBlock.getWrapper(), e.getPlayer(),
-//	    												mine, dummyBlock, explodedBlocks, BlockEventType.PEExplosive, triggered );
-					Bukkit.getServer().getPluginManager().callEvent(pmEvent);
-					if ( pmEvent.isCancelled() ) {
-						debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled) " );
-					}
-					else {
-						
-	                	// Cancel drops if so configured:
-	                	if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
-	                		
-	                		try
-	                		{
-	                			e.setDropItems( false );
-	                		}
-	                		catch ( NoSuchMethodError e1 )
-	                		{
-	                			String message = String.format( 
-	                					"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
-	                					"is not valid for this version of Spigot. Modify the config settings and set " +
-	                					"this value to `false`. [%s]",
-	                					e1.getMessage() );
-	                			Output.get().logWarn( message );
-	                		}
-	                	}
-	                	
-						if ( doAction( pmEvent, debugInfo ) ) {
-							
-							if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
-								
-								e.setCancelled( true );
-							}
-							else {
-								
-								debugInfo.append( "(event was not canceled) " );
-							}
-							
-							finalizeBreakTheBlocks( pmEvent );
-	                		
-	                		doBlockEvents( pmEvent );
-
-						}
-						
-						else {
-							
-							debugInfo.append( "(doAction failed without details) " );
-						}
-						
-					}
-				}
-				
-				
-				debugInfo.append( "(normal processing) " );
-			}
-			else {
-				
-				debugInfo.append( "(logic bypass) " );
-			}
-			
-		}
-		
-		if ( debugInfo.length() > 0 ) {
-			
-			long stop = System.nanoTime();
-			debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
-			
-			Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
-		}
-		
-	}
-	
 
 	
 	public void doActionMonitor( SpigotBlock block, Mine mine ) {
@@ -1901,6 +960,7 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 	 * is enabled.  This function is overridden in AutoManager when auto manager is enabled.
 	 * </p>
 	 * 
+	 * Dead code?
 	 * 
 	 * @param mine
 	 * @param e
@@ -2233,12 +1293,13 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 			SpigotBlock sBlock = ((SpigotBlock) targetBlock.getMinedBlock());
 			
 			// Bonus XP:
-			xp = checkCrazyEnchant( player.getWrapper(), sBlock.getWrapper(), itemInHand );
+			xp = checkBonusXp( player.getWrapper(), sBlock.getWrapper(), itemInHand );
 			
 		}
 		return xp;
 	}
 	
+	protected abstract int checkBonusXp( Player player, Block block, ItemStack item );
 	
 	/** 
 	 * <p>Gives XP to the player, either as Orbs or directly.
@@ -2500,7 +1561,7 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 			int maxDurability = compat.getDurabilityMax( itemInHand );
 			int durability = compat.getDurability( itemInHand );
 			
-			short totalDamage = 1;  // Generally 1 unless instant break block then zero.
+			short totalDamage = 0;  // Generally 1 unless instant break block then zero.
 			
 			int durabilityLevel = 0;
 			boolean toolBreak = false;
@@ -2745,71 +1806,71 @@ protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player pl
 
 	
 	
-	private int checkCrazyEnchant( Player player, Block block, ItemStack item ) {
-		int bonusXp = 0;
-		
-		try {
-			if ( isCrazyEnchantEnabled() == null ) {
-				Class.forName( 
-						"tech.mcprison.prison.spigot.integrations.IntegrationCrazyEnchantmentsPickaxes", false, 
-						this.getClass().getClassLoader() );
-				setCrazyEnchantEnabled( Boolean.TRUE );
-			}
-			
-			if ( isCrazyEnchantEnabled() != null && isCrazyEnchantEnabled().booleanValue() && 
-					item != null && IntegrationCrazyEnchantmentsPickaxes.getInstance().isEnabled() ) {
-				
-				bonusXp = IntegrationCrazyEnchantmentsPickaxes.getInstance()
-						.getPickaxeEnchantmentExperienceBonus( player, block, item );
-			}
-		}
-		catch ( NoClassDefFoundError | Exception e ) {
-			setCrazyEnchantEnabled( Boolean.FALSE );
-		}
-		
-		return bonusXp;
-	}
-	
+//	private int checkCrazyEnchant( Player player, Block block, ItemStack item ) {
+//		int bonusXp = 0;
+//		
+//		try {
+//			if ( isCrazyEnchantEnabled() == null ) {
+//				Class.forName( 
+//						"tech.mcprison.prison.spigot.integrations.IntegrationCrazyEnchantmentsPickaxes", false, 
+//						this.getClass().getClassLoader() );
+//				setCrazyEnchantEnabled( Boolean.TRUE );
+//			}
+//			
+//			if ( isCrazyEnchantEnabled() != null && isCrazyEnchantEnabled().booleanValue() && 
+//					item != null && IntegrationCrazyEnchantmentsPickaxes.getInstance().isEnabled() ) {
+//				
+//				bonusXp = IntegrationCrazyEnchantmentsPickaxes.getInstance()
+//						.getPickaxeEnchantmentExperienceBonus( player, block, item );
+//			}
+//		}
+//		catch ( NoClassDefFoundError | Exception e ) {
+//			setCrazyEnchantEnabled( Boolean.FALSE );
+//		}
+//		
+//		return bonusXp;
+//	}
+//	
 
 
 
 
 	
-	@SuppressWarnings( "unused" )
-	private synchronized String incrementUses(Long elapsedNano) {
-		String message = null;
-		usesElapsedTimeNano += elapsedNano;
-		
-		if ( ++uses >= 100 ) {
-			double avgNano = usesElapsedTimeNano / uses;
-			double avgMs = avgNano / 1000000;
-			message = String.format( "OnBlockBreak: count= %s avgNano= %s avgMs= %s ", 
-					Integer.toString(uses), Double.toString(avgNano), Double.toString(avgMs) );
-			
-			uses = 0;
-			usesElapsedTimeNano = 0L;
-		}
-		return message;
-	}
-
-	private boolean isTeExplosionTriggerEnabled() {
-		return teExplosionTriggerEnabled;
-	}
-
-	private void setTeExplosionTriggerEnabled( boolean teExplosionTriggerEnabled ) {
-		this.teExplosionTriggerEnabled = teExplosionTriggerEnabled;
-	}
+//	@SuppressWarnings( "unused" )
+//	private synchronized String incrementUses(Long elapsedNano) {
+//		String message = null;
+//		usesElapsedTimeNano += elapsedNano;
+//		
+//		if ( ++uses >= 100 ) {
+//			double avgNano = usesElapsedTimeNano / uses;
+//			double avgMs = avgNano / 1000000;
+//			message = String.format( "OnBlockBreak: count= %s avgNano= %s avgMs= %s ", 
+//					Integer.toString(uses), Double.toString(avgNano), Double.toString(avgMs) );
+//			
+//			uses = 0;
+//			usesElapsedTimeNano = 0L;
+//		}
+//		return message;
+//	}
+//
+//	private boolean isTeExplosionTriggerEnabled() {
+//		return teExplosionTriggerEnabled;
+//	}
+//
+//	private void setTeExplosionTriggerEnabled( boolean teExplosionTriggerEnabled ) {
+//		this.teExplosionTriggerEnabled = teExplosionTriggerEnabled;
+//	}
 
 	public Random getRandom() {
 		return random;
 	}
 
-	public Boolean isCrazyEnchantEnabled() {
-		return crazyEnchantEnabled;
-	}
-	public void setCrazyEnchantEnabled( Boolean crazyEnchantEnabled ) {
-		this.crazyEnchantEnabled = crazyEnchantEnabled;
-	}
+//	public Boolean isCrazyEnchantEnabled() {
+//		return crazyEnchantEnabled;
+//	}
+//	public void setCrazyEnchantEnabled( Boolean crazyEnchantEnabled ) {
+//		this.crazyEnchantEnabled = crazyEnchantEnabled;
+//	}
 
 
 }

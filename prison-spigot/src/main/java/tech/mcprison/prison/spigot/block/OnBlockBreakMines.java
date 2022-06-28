@@ -10,17 +10,23 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.integration.CustomBlockIntegration;
+import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.modules.Module;
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.utils.BlockUtils;
 
 public class OnBlockBreakMines
+	extends OnBlockBreakEventCoreMessages
 {
 	private PrisonMines prisonMineManager;
 	private boolean mineModuleDisabled = false;
@@ -85,7 +91,7 @@ public class OnBlockBreakMines
 
 				for ( Block bBlock : altBlocksSource )
 				{
-					SpigotBlock sBlockAltBlock = new SpigotBlock( bBlock );
+					SpigotBlock sBlockAltBlock = SpigotBlock.getSpigotBlock( bBlock );
 					mine = findMineLocation( sBlockAltBlock );
 					if ( mine != null )
 					{
@@ -138,7 +144,7 @@ public class OnBlockBreakMines
 	protected MinesEventResults ignoreMinesBlockBreakEvent( Player player, Block block ) {
 		MinesEventResults results = new MinesEventResults();
 		
-		SpigotBlock sBlock = new SpigotBlock( block );
+		SpigotBlock sBlock = SpigotBlock.getSpigotBlock( block );
 		if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
 			results.setCancelEvent( true );
 			results.setIgnoreEvent( true );
@@ -156,7 +162,7 @@ public class OnBlockBreakMines
 			if ( !mine.getMineStateMutex().isMinable() ) {
 				
 				SpigotPlayer sPlayer = new SpigotPlayer( player );
-				sPlayer.setActionBar( "Mine " + mine.getTag() + " is being reset... please wait." );
+				sPlayer.setActionBar( mineIsBeingResetMsg( mine.getTag() ) );
 				results.setCancelEvent( true );
 				results.setIgnoreEvent( true );
 			}
@@ -233,46 +239,146 @@ public class OnBlockBreakMines
 		}
 	}
 	
+	
+	/**
+	 * <p>Checks only if the names match.  Does not check locations within any worlds.
+	 * </p>
+	 * @param pbTargetBlock
+	 * @param pbBlockHit
+	 * @return
+	 */
+	public boolean isBlockAMatch( MineTargetPrisonBlock targetBlock, PrisonBlock pbBlockHit )
+	{
+		boolean results = false;
+		if ( targetBlock != null ) {
+			PrisonBlockStatusData pbTargetBlock = targetBlock.getPrisonBlock();
+			
+			if ( pbTargetBlock != null && pbBlockHit != null ) {
+				
+				if ( pbTargetBlock.getBlockType() == PrisonBlockType.CustomItems ) {
+					// The pbBlockHit will never match the pbTargetBlock.. must check the actual block:
+					
+					List<CustomBlockIntegration> cbIntegrations = 
+							PrisonAPI.getIntegrationManager().getCustomBlockIntegrations();
+					
+					for ( CustomBlockIntegration customBlock : cbIntegrations )
+					{
+						String cbId = customBlock.getCustomBlockId( pbBlockHit );
+						
+						if ( cbId != null ) {
+							
+							if ( pbTargetBlock.getBlockName().equalsIgnoreCase( cbId ) ) {
+								
+								pbBlockHit.setBlockType( customBlock.getBlockType() );
+								pbBlockHit.setBlockName( cbId );
+								
+								results = true;
+								break;
+							}
+						}
+					}
+					
+				}
+				else {
+					
+					results = pbTargetBlock.equals( pbBlockHit );
+				}
+			}
+		}
+		
+		return results;
+	}
+	
 
+	/**
+	 * <p>This function is only called once it has been confirmed that the block is the correct one, that
+	 * it matches the the targetBlock.  All validation on if the block is correct, or not, has been 
+	 * removed since this is not the place for the checks.
+	 * </p>
+	 * 
+	 * <p>The function isBlockAMatch() should be used prior to calling this function.
+	 * </p>
+	 * 
+	 * @param bukkitDrops
+	 * @param targetBlock
+	 * @param itemInHand
+	 * @param sBlockMined
+	 * @return
+	 */
 	public boolean collectBukkitDrops( List<SpigotItemStack> bukkitDrops, MineTargetPrisonBlock targetBlock,
-			SpigotItemStack itemInHand, SpigotBlock sBlockMined )
+			SpigotItemStack itemInHand, SpigotBlock sBlockMined, SpigotPlayer player )
 	{
 		boolean results = false;
 
+		if ( targetBlock != null && targetBlock.getPrisonBlock().getBlockType() == PrisonBlockType.CustomItems ) {
+			
+			List<CustomBlockIntegration> cbIntegrations = 
+					PrisonAPI.getIntegrationManager().getCustomBlockIntegrations();
+			
+			for ( CustomBlockIntegration customBlock : cbIntegrations )
+			{
+				List<? extends ItemStack> drops = customBlock.getDrops( player, sBlockMined, itemInHand );
+				
+				for ( ItemStack drop : drops )
+				{
+					bukkitDrops.add( (SpigotItemStack) drop );
+					results = true;
+				}
+			}
+			
+		}
+		
+		
+		
 		// if ( sBlockMined == null && targetBlock.getMinedBlock() != null ) {
 		// sBlockMined = (SpigotBlock) targetBlock.getMinedBlock();
 		// }
 		// SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
 
 		// If in the mine, then need a targetBlock, otherwise if it's null then get drops anyway:
-		if ( sBlockMined != null && 
-				( targetBlock == null ||
-					targetBlock.getPrisonBlock().equals( sBlockMined.getPrisonBlock() )
-				   ) )
+		if ( !results && sBlockMined != null 
+//				&& ( targetBlock == null ||
+//					targetBlock.getPrisonBlock().equals( sBlockMined.getPrisonBlock() )
+//				   ) 
+				)
 		{
+			
 
-			List<SpigotItemStack> drops = SpigotUtil.getDrops( sBlockMined, itemInHand );
-
-			bukkitDrops.addAll( drops );
-
+			getSpigotDrops( bukkitDrops, sBlockMined, itemInHand );
+			
 			//// This clears the drops for the given block, so if the event is
 			//// not canceled, it will
 			//// not result in duplicate drops.
 			// if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
 			// sBlock.clearDrops();
 			// }
-
+			
 			results = true;
 
 		}
-		else if ( sBlockMined != null )
-		{
-			Output.get().logWarn( "collectBukkitDrops: block was changed and not what was expected.  " + "Block: " +
-					sBlockMined.getBlockName() + "  expecting: " + 
-					(targetBlock == null ? "(nothing)" : targetBlock.getPrisonBlock().getBlockName()) );
-		}
+//		else if ( !results && sBlockMined != null )
+//		{
+//			Output.get().logWarn( "collectBukkitDrops: block was changed and not what was expected.  " + "Block: " +
+//					sBlockMined.getBlockName() + "  expecting: " + 
+//					(targetBlock == null ? "(nothing)" : targetBlock.getPrisonBlock().getBlockName()) );
+//		}
 
 		return results;
+	}
+
+	/**
+	 * <p>This gets the bukkit drops...
+	 * </p>
+	 * 
+	 * @param bukkitDrops
+	 * @param sBlockMined
+	 * @param itemInHand
+	 */
+	private void getSpigotDrops( List<SpigotItemStack> bukkitDrops, SpigotBlock sBlockMined, SpigotItemStack itemInHand )
+	{
+		List<SpigotItemStack> drops = SpigotUtil.getDrops( sBlockMined, itemInHand );
+		
+		bukkitDrops.addAll( drops );
 	}
 	
 	
@@ -297,8 +403,12 @@ public class OnBlockBreakMines
 	 */
 	public List<SpigotItemStack> mergeDrops( List<SpigotItemStack> drops )
 	{
+		if ( drops.size() <= 1 ) {
+			return drops;
+		}
 		TreeMap<String,SpigotItemStack> results = new TreeMap<>();
 
+		boolean changed = false;
 		for ( SpigotItemStack drop : drops ) {
 			String key = drop.getName();
 			if ( !results.containsKey( key ) ) {
@@ -308,15 +418,16 @@ public class OnBlockBreakMines
 				SpigotItemStack sItemStack = results.get( key );
 				
 				sItemStack.setAmount( sItemStack.getAmount() + drop.getAmount() );
+				changed = true;
 			}
 		}
 		
-		return new ArrayList<>( results.values() );
+		return changed ?  new ArrayList<>( results.values() ) : drops;
 	}
 
 	
 	private Mine findMineLocation( SpigotBlock block ) {
-		return getPrisonMineManager() == null ? 
+		return getPrisonMineManager() == null || block == null || block.getLocation() == null ? 
 				null : getPrisonMineManager().findMineLocationExact( block.getLocation() );
 	}
 	

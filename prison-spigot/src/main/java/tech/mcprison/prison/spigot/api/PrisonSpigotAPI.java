@@ -32,9 +32,7 @@ import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
-import tech.mcprison.prison.util.MaterialType;
 
 /**
  * <p>These are some api end points to help access some core components within prison.
@@ -149,20 +147,11 @@ public class PrisonSpigotAPI {
 	public String getPrisonBlockName( String blockName ) {
 		String results = null;
 		
-        if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
-        	
-        	PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockName );
-        	if ( prisonBlock != null && prisonBlock.isBlock() ) {
-        		results = prisonBlock.getBlockName();
-        	}
-        }
-        else {
-        	
-        	BlockType blockType = BlockType.getBlock(blockName);
-        	if (blockType != null && blockType.getMaterialType() == MaterialType.BLOCK ) {
-        		results = blockType.getMaterialType().name();
-        	}
-        }
+		PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockName );
+		if ( prisonBlock != null && prisonBlock.isBlock() ) {
+			results = prisonBlock.getBlockName();
+		}
+		
 		
 		return results;
 	}
@@ -180,37 +169,42 @@ public class PrisonSpigotAPI {
 		if ( prisonBlockName != null && prisonBlockName.trim().length() > 0 ) {
 			
 			PrisonBlock prisonBlock = null;
-			BlockType blockType = null;
+//			BlockType blockType = null;
 			
-			if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
-				
-				prisonBlock = Prison.get().getPlatform().getPrisonBlock( prisonBlockName );
-				if ( prisonBlock != null && !prisonBlock.isBlock() ) {
-					prisonBlock = null;
-				}
-			}
-			else {
-				
-				blockType = BlockType.getBlock( prisonBlockName );
-				if (blockType != null && blockType.getMaterialType() != MaterialType.BLOCK ) {
-					blockType = null;
-				}
+			
+			prisonBlock = Prison.get().getPlatform().getPrisonBlock( prisonBlockName );
+			if ( prisonBlock != null && !prisonBlock.isBlock() ) {
+				prisonBlock = null;
 			}
 			
-			if ( prisonBlock != null || blockType != null ) {
+			if ( prisonBlock != null ) {
 				if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
 					MineManager mm = PrisonMines.getInstance().getMineManager();
 					
 					List<Mine> mines = mm.getMines();
 					for ( Mine mine : mines ) {
-						if ( prisonBlock != null && mine.isInMine( blockType ) ||
-								blockType != null && mine.isInMine( blockType ) ) {
+						if ( prisonBlock != null && mine.isInMine( prisonBlock ) ) {
 							results.add( mine );
 							break;
 						}
 					}
 				}
 			}
+			
+//			if ( prisonBlock != null || blockType != null ) {
+//				if ( PrisonMines.getInstance() != null && PrisonMines.getInstance().isEnabled() ) {
+//					MineManager mm = PrisonMines.getInstance().getMineManager();
+//					
+//					List<Mine> mines = mm.getMines();
+//					for ( Mine mine : mines ) {
+//						if ( prisonBlock != null && mine.isInMine( prisonBlock ) ||
+//								blockType != null && mine.isInMine( blockType ) ) {
+//							results.add( mine );
+//							break;
+//						}
+//					}
+//				}
+//			}
 		}
 		
 		return results;
@@ -289,7 +283,7 @@ public class PrisonSpigotAPI {
     		if ( isCanceledEvent && isAir || !isCanceledEvent ) {
 
     			// Need to wrap in a Prison block so it can be used with the mines:
-    			SpigotBlock spigotBlock = new SpigotBlock(block);
+    			SpigotBlock spigotBlock = SpigotBlock.getSpigotBlock(block);
     			
     			Long playerUUIDLSB = Long.valueOf( player.getUniqueId().getLeastSignificantBits() );
 
@@ -475,4 +469,159 @@ public class PrisonSpigotAPI {
 
 		return null;
 	}
+	
+	/**
+	 * <p>Gets a player's current token balance.
+	 * </p>
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public long getTokens( Player player ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		return sPlayer.getPlayerCachePlayerData().getTokens();
+	}
+	
+	/**
+	 * <p>Gets a player's total amount of tokens that they have earned.
+	 * </p>
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public long getTokensTotal( Player player ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		return sPlayer.getPlayerCachePlayerData().getTokensTotal();
+	}
+	
+	/**
+	 * <p>Gets a player's total amount of tokens given to them by admins.
+	 * </p>
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public long getTokensTotalAdminAdded( Player player ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		return sPlayer.getPlayerCachePlayerData().getTokensTotalAdminAdded();
+	}
+	
+	/**
+	 * <p>Gets a player's total amount of tokens removed from them by admins.
+	 * </p>
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public long getTokensTotalAdminRemoved( Player player ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		return sPlayer.getPlayerCachePlayerData().getTokensTotalAdminRemoved();
+	}
+
+	/**
+	 * <p>Returns a Map of a player's total tokens earned by mine.
+	 * </p>
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public TreeMap<String, Long> getTokensTotalByMine( Player player ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		return sPlayer.getPlayerCachePlayerData().getTokensByMine();
+	}
+	
+	/**
+	 * <p>Adds tokens to a player's current balance.  The tokens
+	 * will be counted as being earned under normal conditions.
+	 * </p>
+	 * 
+	 * @param player
+	 * @param amount
+	 */
+	public void addTokens( Player player, long amount ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		sPlayer.getPlayerCachePlayerData().addTokens( amount );
+	}
+	
+	/**
+	 * <p>Adds tokens to a player's balance, but will be recorded as
+	 * an adjustment made by an admin, which means the player did not
+	 * "earn" the tokens under normal conditions.
+	 * </p>
+	 * 
+	 * @param player
+	 * @param amount
+	 */
+	public void addTokensAdmin( Player player, long amount ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		sPlayer.getPlayerCachePlayerData().addTokensAdmin( amount );
+	}
+	
+	/**
+	 * <p>Removes tokens from a player's current balance.  The tokens
+	 * will be counted as being spent under normal conditions.
+	 * </p>
+	 * 
+	 * @param player
+	 * @param amount
+	 */
+	public void removeTokens( Player player, long amount ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		sPlayer.getPlayerCachePlayerData().removeTokens( amount );
+	}
+	
+	/**
+	 * <p>Removes tokens from a player's balance, but will be recorded as
+	 * an adjustment made by an admin, which means the player did not
+	 * "spend" the tokens under normal conditions.
+	 * </p>
+	 * 
+	 * @param player
+	 * @param amount
+	 */
+	public void removeTokensAdmin( Player player, long amount ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		sPlayer.getPlayerCachePlayerData().removeTokensAdmin( amount );
+	}
+	
+	/**
+	 * <p>Sets a player's current token balance.  The tokens
+	 * will be counted as being earned, or spent, under normal conditions, 
+	 * based upon the change in the original amounts.
+	 * </p>
+	 * 
+	 * @param player
+	 * @param amount
+	 */
+	public void setTokens( Player player, long amount ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		sPlayer.getPlayerCachePlayerData().setTokens( amount );
+	}
+	
+	/**
+	 * <p>Sets a player's current balance, but will be recorded as
+	 * an adjustment made by an admin, which means the player did not
+	 * "earn" or "spend" the tokens under normal conditions.
+	 * </p>
+	 * 
+	 * @param player
+	 * @param amount
+	 */
+	public void setTokensAdmin( Player player, long amount ) {
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		sPlayer.getPlayerCachePlayerData().setTokensAdmin( amount );
+	}
+	
+	
 }

@@ -7,6 +7,8 @@
 ranks: true
 mines: true
 
+sellall: true
+
 utils:
   enabled: true
   messages:

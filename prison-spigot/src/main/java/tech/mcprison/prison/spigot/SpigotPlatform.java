@@ -60,6 +60,9 @@ import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.convert.ConversionResult;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
+import tech.mcprison.prison.integration.IntegrationManager;
+import tech.mcprison.prison.integration.IntegrationType;
+import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.PlayerUtil;
 import tech.mcprison.prison.internal.Scheduler;
@@ -73,13 +76,16 @@ import tech.mcprison.prison.internal.scoreboard.ScoreboardManager;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.commands.MinesCommands;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.mines.data.MineData.MineNotificationMode;
 import tech.mcprison.prison.mines.features.MineLinerBuilder.LinerPatterns;
 import tech.mcprison.prison.mines.managers.MineManager;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
+import tech.mcprison.prison.modules.ModuleStatus;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
+import tech.mcprison.prison.output.DisplayComponent;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
@@ -96,7 +102,8 @@ import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonEnchants
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonsExplosiveBlockBreakEvents;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerTokenEnchant;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerZenchantments;
-import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
+import tech.mcprison.prison.spigot.block.BlockBreakPriority;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotCommandSender;
@@ -112,7 +119,6 @@ import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.util.ActionBarUtil;
 import tech.mcprison.prison.spigot.util.SpigotYamlFileIO;
 import tech.mcprison.prison.store.Storage;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.PrisonJarReporter;
@@ -519,7 +525,20 @@ public class SpigotPlatform
     }
     
     @Override public void dispatchCommand(tech.mcprison.prison.internal.CommandSender sender, String cmd) {
-    	Bukkit.getServer().dispatchCommand( ((SpigotCommandSender) sender).getWrapper(), cmd);
+    	
+    	if ( sender instanceof SpigotCommandSender ) {
+    		SpigotCommandSender cmdSender = (SpigotCommandSender) sender;
+
+    		Bukkit.getServer().dispatchCommand( cmdSender.getWrapper(), cmd);
+    	}
+    	else {
+
+    		Player player = getPlayer( sender.getName() ).orElse( null );
+    		if ( player != null ) {
+    			player.dispatchCommand( cmd );
+    		}
+    	}
+    	
     }
 
     @Override public Scheduler getScheduler() {
@@ -564,12 +583,24 @@ public class SpigotPlatform
     @Override 
 	public void logCore( String message )
 	{
-		ConsoleCommandSender sender = Bukkit.getConsoleSender();
-        if (sender == null) {
-            Bukkit.getLogger().info(ChatColor.stripColor(message));
-        } else {
-            sender.sendMessage(message);
-        }
+    	ConsoleCommandSender sender = Bukkit.getConsoleSender();
+
+		if ( message.contains( "U+0026" ) ) {
+			message = message.replace("U+0026", "&");
+		}
+    	
+    	String[] msgs = message.split( "\\{br\\}" );
+
+    	for ( String msg : msgs ) {
+			
+    		if (sender == null) {
+    			Bukkit.getLogger().info(ChatColor.stripColor(msg));
+    		} 
+    		else {
+    			sender.sendMessage(msg);
+    		}
+		}
+    	
 	}
     
     /**
@@ -579,10 +610,17 @@ public class SpigotPlatform
     public void logPlain( String message )
     {
     	ConsoleCommandSender sender = Bukkit.getConsoleSender();
-    	if (sender == null) {
-    		Bukkit.getLogger().info(message);
-    	} else {
-    		sender.sendMessage(message);
+    	
+    	String[] msgs = message.split( "\\{br\\}" );
+
+    	for ( String msg : msgs ) {
+    		
+    		if (sender == null) {
+    			Bukkit.getLogger().info(msg);
+    		} 
+    		else {
+    			sender.sendMessage(msg);
+    		}
     	}
     }
 
@@ -794,7 +832,12 @@ public class SpigotPlatform
 	
 	@Override
 	public YamlFileIO getYamlFileIO( File yamlFile ) {
-		return new SpigotYamlFileIO( yamlFile );
+		
+		boolean supportsDropsCanceling = 
+				( new BluesSpigetSemVerComparator().compareMCVersionTo("1.12.0") >= 0 );
+		
+		
+		return new SpigotYamlFileIO( yamlFile, supportsDropsCanceling );
 	}
 	
 	
@@ -847,33 +890,33 @@ public class SpigotPlatform
 		return ( val != null && val.trim().equalsIgnoreCase( "true" ) );
 	}
 	
-	/**
-	 * <p>Prison is now automatically enabling the new prison block model.
-	 * The old block model still exists, but it has to be explicitly 
-	 * enabled in config.yml.
-	 * </p>
-	 * 
-	 * <p>No one should ever use the old block model. If there is an issue with
-	 * the new model then it should be fixed and not avoided.  But if they 
-	 * must, then the following must be added to the `plugins/Prison/config.yml`.
-	 * </p>
-	 * 
-	 * <pre>
-	 * # Warning: The use of the OLD prison block model will be removed
-	 * #          from future releases in the near future.  This old
-	 * #          model is to be used only on an emergency basis 
-	 * #          until any issues with the new model have been resolved.
-	 * use-old-prison-block-model: true
-	 * </pre>
-	 * 
-	 * @return
-	 */
-	@Override
-	public boolean isUseNewPrisonBlockModel() {
-		
-//		return getConfigBooleanFalse( "use-new-prison-block-model" );
-		return !getConfigBooleanFalse( "use-old-prison-block-model" );
-	}
+//	/**
+//	 * <p>Prison is now automatically enabling the new prison block model.
+//	 * The old block model still exists, but it has to be explicitly 
+//	 * enabled in config.yml.
+//	 * </p>
+//	 * 
+//	 * <p>No one should ever use the old block model. If there is an issue with
+//	 * the new model then it should be fixed and not avoided.  But if they 
+//	 * must, then the following must be added to the `plugins/Prison/config.yml`.
+//	 * </p>
+//	 * 
+//	 * <pre>
+//	 * # Warning: The use of the OLD prison block model will be removed
+//	 * #          from future releases in the near future.  This old
+//	 * #          model is to be used only on an emergency basis 
+//	 * #          until any issues with the new model have been resolved.
+//	 * use-old-prison-block-model: true
+//	 * </pre>
+//	 * 
+//	 * @return
+//	 */
+//	@Override
+//	public boolean isUseNewPrisonBlockModel() {
+//		
+////		return getConfigBooleanFalse( "use-new-prison-block-model" );
+//		return !getConfigBooleanFalse( "use-old-prison-block-model" );
+//	}
 	
 	/**
 	 * <p>This returns the boolean value that is associated with the key.
@@ -1030,6 +1073,14 @@ public class SpigotPlatform
 //		return SpigotUtil.getPrisonBlock( blockName );
 	}
 	
+	
+	@Override
+	public ItemStack getItemStack( PrisonBlock prisonBlock, int blockQuantity ) {
+		
+		ItemStack results = new SpigotItemStack( blockQuantity, prisonBlock );
+		
+		return results;
+	}
 	
 	/**
 	 * ModuleElements are Mines or Ranks, and sometimes maybe even ladders.
@@ -1431,6 +1482,15 @@ public class SpigotPlatform
 		
 		for ( Mine mine : mines ) {
 			
+			mine.setNotificationMode( MineNotificationMode.radius );
+			mine.setNotificationRadius( 25 );
+			
+			mine.setSkipResetEnabled( true );
+			mine.setSkipResetPercent( 90 );
+			mine.setSkipResetBypassLimit( 24 );
+			
+			mine.setZeroBlockResetDelaySec( 0 );
+			
 			// Setup access by rank:
 			
 			if ( mine.getRank() != null ) {
@@ -1487,22 +1547,14 @@ public class SpigotPlatform
 		
 		
 		
-        if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
-        	
-        	for ( SellAllBlockData xMatCost : buildBlockListXMaterial() ) {
-        		
-        		// Add only the primary blocks to this blockList which will be used to generate the
-        		// mine's block contents:
-				if ( xMatCost.isPrimary() ) {
-					blockList.add( xMatCost.getBlock().name() );
-				}
+		for ( SellAllBlockData xMatCost : buildBlockListXMaterial() ) {
+			
+			// Add only the primary blocks to this blockList which will be used to generate the
+			// mine's block contents:
+			if ( xMatCost.isPrimary() ) {
+				blockList.add( xMatCost.getBlock().name() );
 			}
-        	
-//        	blockList = buildBlockListXMaterial();
-        }
-        else {
-        	blockList = buildBlockListBlockType();
-        }
+		}
 		
 		MineManager mm = PrisonMines.getInstance().getMineManager();
 		//List<Mine> mines = mm.getMines();
@@ -1521,7 +1573,8 @@ public class SpigotPlatform
 			
 			Mine mine = mm.getMine( mineName );
 			
-			boolean hasBlocks = mine.getPrisonBlocks().size() > 0 || mine.getBlocks().size() > 0;
+			boolean hasBlocks = mine.getPrisonBlocks().size() > 0;
+//			boolean hasBlocks = mine.getPrisonBlocks().size() > 0 || mine.getBlocks().size() > 0;
 			
 			// If the mines already has blocks, log them, then clear them since this will replace them:
 			if ( hasBlocks && !forceKeepBlocks ) {
@@ -1533,7 +1586,7 @@ public class SpigotPlatform
 				Output.get().logInfo( message );
 				
 				mine.getPrisonBlocks().clear();
-				mine.getBlocks().clear();
+//				mine.getBlocks().clear();
 			}
 			
 			else if ( hasBlocks && forceKeepBlocks ) {
@@ -1547,7 +1600,7 @@ public class SpigotPlatform
 				continue;
 			}
 			
-			 List<String> mBlocks = mineBlockList( blockList, startPos++, mineBlockSize );
+			 List<String> mBlocks = mineBlockList( blockList, startPos++, percents.size() );
 			
 			 // If startPos > percents.size(), which means we are past the initial 
 			 // ramp up to the full variety of blocks per mine.  At that point, if 
@@ -1557,57 +1610,43 @@ public class SpigotPlatform
 			 // This should only happen at the tail end of processing and will only
 			 // have a decrease by one per mine so there should never be a need to
 			 // to check more than once, or remove more than one.
-			 if ( startPos > percents.size() && percents.size() > mBlocks.size() ) {
+			 if ( startPos > percents.size() && startPos > ( blockList.size() - mineBlockSize + 1 ) ) {
 				 percents.remove( 0 );
 			 }
+//			 if ( startPos > percents.size() && percents.size() > mBlocks.size() ) {
+//				 percents.remove( 0 );
+//			 }
 			 
 			double total = 0;
 			for ( int i = 0; i < mBlocks.size(); i++ )
 			{
 				
-				if ( Prison.get().getPlatform().isUseNewPrisonBlockModel() ) {
+				PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( mBlocks.get( i ) );
+				if ( prisonBlock != null ) {
 					
-					PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( mBlocks.get( i ) );
-	            	if ( prisonBlock != null ) {
-	            	
-	            		prisonBlock.setChance( percents.get( i ) );
-	            		prisonBlock.setBlockCountTotal( 0 );
-	            		
-	            		mine.getPrisonBlocks().add( prisonBlock );
-	            		
-	            		total += prisonBlock.getChance();
-	            		
-	            		// If this is the last block and the totals are not 100%, then
-	            		// add the balance to the last block.
-	            		if ( i == (mBlocks.size() - 1) && total < 100.0d ) {
-	            			double remaining = 100.0d - total;
-	            			prisonBlock.setChance( remaining + prisonBlock.getChance() );
-	            		}
-	            	}
-	            	else {
-	            		Output.get().logInfo(
-	            				String.format( "AutoConfigure block assignment failure: New Block Model: " +
-	            						"Unable to map to a valid PrisonBlock for this version of mc. [%s]", 
-	            						mBlocks.get( i ) ) );
-	            	}
-				}
-				else {
+					double chance = percents.size() > i ? percents.get( i ) : 0;
+					prisonBlock.setChance( chance );
+					prisonBlock.setBlockCountTotal( 0 );
 					
-					tech.mcprison.prison.mines.data.BlockOld block = 
-							new tech.mcprison.prison.mines.data.BlockOld( 
-									mBlocks.get( i ), percents.get( i ), 0 );
+					mine.getPrisonBlocks().add( prisonBlock );
 					
-					mine.getBlocks().add( block );
-					
-					total += block.getChance();
+					total += prisonBlock.getChance();
 					
 					// If this is the last block and the totals are not 100%, then
 					// add the balance to the last block.
 					if ( i == (mBlocks.size() - 1) && total < 100.0d ) {
 						double remaining = 100.0d - total;
-						block.setChance( remaining + block.getChance() );
+						total += remaining;
+						prisonBlock.setChance( remaining + prisonBlock.getChance() );
 					}
 				}
+				else {
+					Output.get().logInfo(
+							String.format( "AutoConfigure block assignment failure: New Block Model: " +
+									"Unable to map to a valid PrisonBlock for this version of mc. [%s]", 
+									mBlocks.get( i ) ) );
+				}
+				
 				
 			}
 			
@@ -1682,12 +1721,37 @@ public class SpigotPlatform
 	protected List<String> mineBlockList( List<String> blockList, int startPos, int length ) {
 
 		List<String> results = new ArrayList<>();
-		for (int i = (startPos >= blockList.size() ? blockList.size() - 1 : startPos); i >= 0 && i >= startPos - length + 1; i--) {
+		int iStart = (startPos >= blockList.size() ? blockList.size() - 1 : startPos);
+		int iEnd = startPos - length + 1;
+		
+		for (int i = iStart; i >= 0 && i >= iEnd; i--) {
 			results.add( blockList.get( i ) );
 		}
 		
 		return results;
 	}
+	
+//	/**
+//	 * This function grabs a rolling sub set of blocks from the startPos and working backwards 
+//	 * up to the specified length. The result set will be less than the specified length if at
+//	 * the beginning of the list, or at the end.
+//	 * 
+//	 * @param startPos
+//	 * @param length
+//	 * @param blockList
+//	 * @return
+//	 */
+//	protected List<String> mineBlockList( int startPos, int length, List<SellAllBlockData> blockList ) {
+//		
+//		List<String> results = new ArrayList<>();
+//		int iStart = (startPos >= blockList.size() ? blockList.size() - 1 : startPos);
+//		
+//		for (int i = iStart; i >= 0 && i >= startPos - length + 1; i--) {
+//			results.add( blockList.get( i ).getBlock().name() );
+//		}
+//		
+//		return results;
+//	}
 	
 	
 	/**
@@ -1732,6 +1796,8 @@ public class SpigotPlatform
 		blockList.add( new SellAllBlockData( XMaterial.PRISMARINE, 52, true ) );
 		
 		
+		blockList.add( new SellAllBlockData( XMaterial.DARK_PRISMARINE, 54, true ) );
+
 		blockList.add( new SellAllBlockData( XMaterial.LAPIS_BLOCK, 950, true) );
 		blockList.add( new SellAllBlockData( XMaterial.REDSTONE_BLOCK, 405, true) );
 		
@@ -1739,7 +1805,6 @@ public class SpigotPlatform
 		
 		blockList.add( new SellAllBlockData( XMaterial.DIAMOND_BLOCK, 2000, true) );
 		
-		blockList.add( new SellAllBlockData( XMaterial.DARK_PRISMARINE, 54, true ) );
 		blockList.add( new SellAllBlockData( XMaterial.EMERALD_BLOCK, 2250, true) );
 		
 		
@@ -1771,7 +1836,7 @@ public class SpigotPlatform
 		
 		
 		blockList.add( new SellAllBlockData( XMaterial.QUARTZ, 34 ) );
-		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_SLAB, 68, true) );
+		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_SLAB, 68) );
 
 		blockList.add( new SellAllBlockData( XMaterial.CHISELED_QUARTZ_BLOCK, 136 ) );
 		blockList.add( new SellAllBlockData( XMaterial.QUARTZ_BRICKS, 136 ) );
@@ -1795,7 +1860,10 @@ public class SpigotPlatform
 		blockList.add( new SellAllBlockData( XMaterial.FLINT, 9 ) );
 		
 		
+		// BLUE_DYE is used as LAPIS_LAZULI for bukkit v1.8.x etc...
 		blockList.add( new SellAllBlockData( XMaterial.LAPIS_LAZULI, 14 ) );
+		blockList.add( new SellAllBlockData( XMaterial.BLUE_DYE, 14 ) );
+		
 		blockList.add( new SellAllBlockData( XMaterial.MOSSY_STONE_BRICKS, 14 ) );
 		
 		
@@ -1862,69 +1930,106 @@ public class SpigotPlatform
 		return blockList;
 	}
 	
-	/**
-	 * This listing of blocks is based strictly upon the old prison's block
-	 * model.
-	 * 
-	 * Please note, that right now these names match exactly with XMaterial only
-	 * because I renamed a few of them to make them match.  But if more are added
-	 * in the future, then there may be mismatches.
-	 * 
-	 * @return
-	 */
-	protected List<String> buildBlockListBlockType() {
-		List<String> blockList = new ArrayList<>();
-		
-		blockList.add( BlockType.COBBLESTONE.name() );
-		blockList.add( BlockType.ANDESITE.name() );
-		blockList.add( BlockType.DIORITE.name() );
-		blockList.add( BlockType.COAL_ORE.name() );
-		
-		blockList.add( BlockType.GRANITE.name() );
-		blockList.add( BlockType.STONE.name() );
-		blockList.add( BlockType.IRON_ORE.name() );
-		blockList.add( BlockType.POLISHED_ANDESITE.name() );
-		
-//		blockList.add( BlockType.POLISHED_DIORITE.name() );
-//		blockList.add( BlockType.POLISHED_GRANITE.name() );
-		blockList.add( BlockType.GOLD_ORE.name() );
-		
-		
-		blockList.add( BlockType.MOSSY_COBBLESTONE.name() );
-		blockList.add( BlockType.COAL_BLOCK.name() );
-		blockList.add( BlockType.NETHER_QUARTZ_ORE.name() );
-		blockList.add( BlockType.LAPIS_ORE.name() );
-
-		
-		blockList.add( BlockType.END_STONE.name() );
-		blockList.add( BlockType.IRON_BLOCK.name() );
-		
-		blockList.add( BlockType.REDSTONE_ORE.name() );
-		blockList.add( BlockType.DIAMOND_ORE.name() );
-		
-		blockList.add( BlockType.QUARTZ_BLOCK.name() );
-		blockList.add( BlockType.EMERALD_ORE.name() );
-		
-		blockList.add( BlockType.GOLD_BLOCK.name() );
-		blockList.add( BlockType.PRISMARINE.name() );
-		blockList.add( BlockType.LAPIS_BLOCK.name() );
-		blockList.add( BlockType.REDSTONE_BLOCK.name() );
-		
-		blockList.add( BlockType.OBSIDIAN.name() );
-		blockList.add( BlockType.DIAMOND_BLOCK.name() );
-		blockList.add( BlockType.DARK_PRISMARINE.name() );
-		blockList.add( BlockType.EMERALD_BLOCK.name() );
-		
-		return blockList;
-	}
+//	/**
+//	 * This listing of blocks is based strictly upon the old prison's block
+//	 * model.
+//	 * 
+//	 * Please note, that right now these names match exactly with XMaterial only
+//	 * because I renamed a few of them to make them match.  But if more are added
+//	 * in the future, then there may be mismatches.
+//	 * 
+//	 * @return
+//	 */
+//	protected List<String> buildBlockListBlockType() {
+//		List<String> blockList = new ArrayList<>();
+//		
+//		blockList.add( BlockType.COBBLESTONE.name() );
+//		blockList.add( BlockType.ANDESITE.name() );
+//		blockList.add( BlockType.DIORITE.name() );
+//		blockList.add( BlockType.COAL_ORE.name() );
+//		
+//		blockList.add( BlockType.GRANITE.name() );
+//		blockList.add( BlockType.STONE.name() );
+//		blockList.add( BlockType.IRON_ORE.name() );
+//		blockList.add( BlockType.POLISHED_ANDESITE.name() );
+//		
+////		blockList.add( BlockType.POLISHED_DIORITE.name() );
+////		blockList.add( BlockType.POLISHED_GRANITE.name() );
+//		blockList.add( BlockType.GOLD_ORE.name() );
+//		
+//		
+//		blockList.add( BlockType.MOSSY_COBBLESTONE.name() );
+//		blockList.add( BlockType.COAL_BLOCK.name() );
+//		blockList.add( BlockType.NETHER_QUARTZ_ORE.name() );
+//		blockList.add( BlockType.LAPIS_ORE.name() );
+//
+//		
+//		blockList.add( BlockType.END_STONE.name() );
+//		blockList.add( BlockType.IRON_BLOCK.name() );
+//		
+//		blockList.add( BlockType.REDSTONE_ORE.name() );
+//		blockList.add( BlockType.DIAMOND_ORE.name() );
+//		
+//		blockList.add( BlockType.QUARTZ_BLOCK.name() );
+//		blockList.add( BlockType.EMERALD_ORE.name() );
+//		
+//		blockList.add( BlockType.GOLD_BLOCK.name() );
+//		blockList.add( BlockType.PRISMARINE.name() );
+//		blockList.add( BlockType.LAPIS_BLOCK.name() );
+//		blockList.add( BlockType.REDSTONE_BLOCK.name() );
+//		
+//		blockList.add( BlockType.OBSIDIAN.name() );
+//		blockList.add( BlockType.DIAMOND_BLOCK.name() );
+//		blockList.add( BlockType.DARK_PRISMARINE.name() );
+//		blockList.add( BlockType.EMERALD_BLOCK.name() );
+//		
+//		return blockList;
+//	}
 	
 	@Override
-	public List<String> getActiveFeatures() {
+	public List<String> getActiveFeatures( boolean showLaddersAndRanks ) {
 		List<String> results = new ArrayList<>();
 		
 		
+		if ( showLaddersAndRanks ) {
+			
+			// Log rank related items first:
+			if ( Prison.get().getModuleManager().isModuleActive( PrisonRanks.MODULE_NAME ) ) {
+				
+				PrisonRanks pRanks = PrisonRanks.getInstance();
+				
+				results.add( 
+						pRanks.prisonRanksStatusLoadedLaddersMsg( 
+								pRanks.getladderCount() ) );
+				
+				int totalRanks = pRanks.getRankCount();
+				int defaultRanks = pRanks.getDefaultLadderRankCount();
+				int prestigesRanks = pRanks.getPrestigesLadderRankCount();
+				int otherRanks = totalRanks - defaultRanks - prestigesRanks;
+				
+				results.add( 
+						pRanks.prisonRanksStatusLoadedRanksMsg( 
+								totalRanks, defaultRanks, prestigesRanks, otherRanks ) );
+				
+				results.add( 
+						pRanks.prisonRanksStatusLoadedPlayersMsg( 
+								pRanks.getPlayersCount() ) );
+				
+				
+				// Display all Ranks in each ladder:
+				results.addAll(
+						PrisonRanks.getInstance().getRankManager().ranksByLadders() );
+				
+				results.add( " " );
+			}
+		}
+		
+		
     	
+		// Load the autoFeaturesConfig.yml and blockConvertersConfig.json files:
     	AutoFeaturesWrapper afw = AutoFeaturesWrapper.getInstance();
+    	afw.reloadConfigs();
+    	
     	
     	boolean isAutoManagerEnabled = afw.isBoolean( AutoFeatures.isAutoManagerEnabled );
     	results.add( String.format("AutoManager Enabled:&b %s", isAutoManagerEnabled) );
@@ -2144,8 +2249,183 @@ public class SpigotPlatform
 	
 	
 	@Override
+	public void prisonVersionFeatures( ChatDisplay display, boolean isBasic, 
+			boolean showLaddersAndRanks ) {
+		
+		
+	       
+        List<String> features = getActiveFeatures( showLaddersAndRanks );
+        if ( features.size() > 0 ) {
+        	
+        	display.addText("");
+        	for ( String feature : features ) {
+        		
+        		if ( !feature.startsWith( "+" ) ) {
+        			
+        			display.addText( feature );
+        		}
+        		else if ( !isBasic ) {
+        			
+        			display.addText( feature.substring( 1 ) );
+        		}
+        	}
+        }
+        
+        
+        display.addText("");
+        
+        // Active Modules:x's root Command: &3/prison");
+        
+        for ( Module module : Prison.get().getModuleManager().getModules() ) {
+        	
+        	display.addText( "&7Module: %s : %s %s", module.getName(), 
+        			module.getStatus().getStatusText(),
+        			(module.getStatus().getStatus() == ModuleStatus.Status.FAILED ? 
+        					"[" + module.getStatus().getMessage() + "]" : "")
+        			);
+        	// display.addText( ".   &7Base Commands: %s", module.getBaseCommands() );
+        }
+        
+        List<String> disabledModules = Prison.get().getModuleManager().getDisabledModules();
+        if ( disabledModules.size() > 0 ) {
+        	display.addText( "&7Disabled Module%s:", (disabledModules.size() > 1 ? "s" : ""));
+        	for ( String disabledModule : Prison.get().getModuleManager().getDisabledModules() ) {
+        		display.addText( ".   &cDisabled Module:&7 %s. Related commands and placeholders are non-functional. ",
+        				disabledModule );
+        	}
+        }
+        
+        display.addText("");
+        display.addText("&7Integrations:");
+
+        IntegrationManager im = Prison.get().getIntegrationManager();
+        String permissions =
+        		(im.hasForType(IntegrationType.PERMISSION) ?
+                " " + im.getForType(IntegrationType.PERMISSION).get().getDisplayName() :
+                "None");
+
+        display.addText(". . &7Permissions: " + permissions);
+
+        String economy =
+        		(im.hasForType(IntegrationType.ECONOMY) ?
+                " " + im.getForType(IntegrationType.ECONOMY).get().getDisplayName() : 
+                "None");
+
+        display.addText(". . &7Economy: " + economy);
+        
+        
+        List<DisplayComponent> integrationRows = im.getIntegrationComponents( isBasic );
+        for ( DisplayComponent component : integrationRows )
+		{
+        	display.addComponent( component );
+		}
+        
+        
+        display.addText("");
+        display.addText("&7Locale Settings:");
+        
+        for ( String localeInfo : Prison.get().getLocaleLoadInfo() ) {
+			display.addText( ". . " + localeInfo );
+		}
+        
+        
+        identifyRegisteredPlugins();
+        
+        List<String> registeredPlugins = Prison.get().getPrisonCommands().getRegisteredPlugins();
+        
+        
+        // NOTE: This list of plugins is good enough and the detailed does not have all the info.
+        // Display all loaded plugins:
+        if ( registeredPlugins.size() > 0 ) {
+        	display.addText("");
+        	display.addText( "&7Registered Plugins: " );
+        	
+//        	List<String> plugins = getRegisteredPlugins();
+        	Collections.sort( registeredPlugins );
+        	List<String> plugins2Cols = Text.formatColumnsFromList( registeredPlugins, 2 );
+        	
+        	for ( String rp : plugins2Cols ) {
+				
+        		display.addText( rp );
+			}
+        	
+//        	StringBuilder sb = new StringBuilder();
+//        	for ( String plugin : getRegisteredPlugins() ) {
+//        		if ( sb.length() == 0) {
+//        			sb.append( ". " );
+//        			sb.append( plugin );
+//        		} else {
+//        			sb.append( ",  " );
+//        			sb.append( plugin );
+//        			display.addText( sb.toString() );
+//        			sb.setLength( 0 );
+//        		}
+//        	}
+//        	if ( sb.length() > 0 ) {
+//        		display.addText( sb.toString());
+//        	}
+        }
+        
+        // This version of plugins does not have all the registered commands:
+//        // The new plugin listings:
+//        if ( getRegisteredPluginData().size() > 0 ) {
+//        	display.text( "&7Registered Plugins Detailed: " );
+//        	StringBuilder sb = new StringBuilder();
+//        	Set<String> keys = getRegisteredPluginData().keySet();
+//        	
+//        	for ( String key : keys ) {
+//        		RegisteredPluginsData plugin = getRegisteredPluginData().get(key);
+//        		
+//        		if ( sb.length() == 0) {
+//        			sb.append( "  " );
+//        			sb.append( plugin.formatted() );
+//        		} else {
+//        			sb.append( ",  " );
+//        			sb.append( plugin.formatted() );
+//        			display.text( sb.toString() );
+//        			sb.setLength( 0 );
+//        		}
+//        	}
+//        	if ( sb.length() > 0 ) {
+//        		display.text( sb.toString());
+//        	}
+//        }
+        
+        
+//        RegisteredPluginsData plugin = getRegisteredPluginData().get( "Prison" );
+//        String pluginDetails = plugin.getdetails();
+//        
+//        display.text( pluginDetails );
+        
+
+//        if ( !isBasic ) {
+//        	Prison.get().getPlatform().dumpEventListenersBlockBreakEvents();
+//        }
+        
+        
+        Prison.get().getPlatform().getWorldLoadErrors( display );
+
+        if ( !isBasic && Prison.get().getPrisonCommands().getPrisonStartupDetails().size() > 0 ) {
+        	display.addText("");
+        	
+        	for ( String msg : Prison.get().getPrisonCommands().getPrisonStartupDetails() ) {
+				display.addText( msg );
+			}
+        }
+
+		
+		
+	}
+	
+	
+	@Override
 	public PlayerUtil getPlayerUtil( UUID playerUuid ) {
 		return new SpigotPlayerUtil( playerUuid );
+	}
+	
+	@Override
+	public PlayerUtil getPlayerUtil( Player player ) {
+		return new SpigotPlayerUtil( player );
 	}
 	
 	
@@ -2164,14 +2444,18 @@ public class SpigotPlatform
 		
 		sb.append( "&2. . Prison Internal BlockBreakEvents: " +
 									"tech.mcprison.prison.spigot.SpigotListener\n" );
-		sb.append( "&2. . Auto Feature Core: Non-AutoManager: " +
-									"AutoManagerBlockBreakEvents$OnBlockBreakEventListenerNormal\n" );
-		sb.append( "&2. . Auto Feature Core: AutoManager: " +
+		sb.append( "&2. . Auto Features: " +
 									"AutoManagerBlockBreakEvents$AutoManagerBlockBreakEventListener\n" );
-		sb.append( "&2. . Prison MONITOR Events manages block counts, " +
-									"Mine Sweeper, and zero block conditions.\n" );
-		sb.append( "&2. . AutoManager and enchantment event listeners are " +
-									"identified by their class names.\n" );
+		sb.append( "&2. . Prison's multi-block explosions (bombs): " +
+				"AutoManagerPrisonsExplosiveBlockBreakEvents$AutoManagerExplosiveBlockBreakEventListener\n" );
+
+		
+//		sb.append( "&2. . Auto Feature Core: Non-AutoManager: " +
+//									"AutoManagerBlockBreakEvents$OnBlockBreakEventListenerNormal\n" );
+//		sb.append( "&2. . Prison MONITOR Events manages block counts, " +
+//									"Mine Sweeper, and zero block conditions.\n" );
+//		sb.append( "&2. . AutoManager and enchantment event listeners are " +
+//									"identified by their class names.\n" );
 		sb.append( "\n" );
 		
 		
@@ -2307,16 +2591,18 @@ public class SpigotPlatform
 	 */
 	public void reloadAutoFeaturesEventListeners() {
 		
-		AutoManagerBlockBreakEvents autoFeaturesEvents = new AutoManagerBlockBreakEvents();
+		SpigotPrison.getInstance().getBlockBreakEventListeners().reloadEventListeners();
 		
-		// NOTE: The unregisterListeners() will remove ALL auto features events that were
-		//       registered, no matter which listeners were enabled.
-		autoFeaturesEvents.unregisterListeners();
-
-		// NOTE: The registerEvents() will register all event listeners based upon what's 
-		//       in the auto features configuration file.
-		autoFeaturesEvents.registerEvents();
-		
+//		AutoManagerBlockBreakEvents autoFeaturesEvents = new AutoManagerBlockBreakEvents();
+//		
+//		// NOTE: The unregisterListeners() will remove ALL auto features events that were
+//		//       registered, no matter which listeners were enabled.
+//		autoFeaturesEvents.unregisterListeners();
+//
+//		// NOTE: The registerEvents() will register all event listeners based upon what's 
+//		//       in the auto features configuration file.
+//		autoFeaturesEvents.registerEvents();
+//		
 	}
 
 	/**

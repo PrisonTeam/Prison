@@ -11,17 +11,22 @@ public class PrisonDispatchCommandTask
 		implements PrisonRunnable {
 	
 	private List<String> tasks;
+	private List<Long> elapsedTimes; 
+	
 	private String errorMessage;
 	
+	private List<PrisonCommandTaskPlaceholderData> customPlaceholders;
+
 	private Player player;
 	private boolean playerTask = false;
 	
-	private List<PrisonCommandTaskPlaceholderData> customPlaceholders;
 	
 
 	public PrisonDispatchCommandTask( List<String> tasks, String errorMessage, 
 										Player player, boolean playerTask ) {
 		this.tasks = tasks;
+		this.elapsedTimes = new ArrayList<>();
+		
 		this.errorMessage = errorMessage;
 		
 		this.player = player;
@@ -36,6 +41,8 @@ public class PrisonDispatchCommandTask
 		if ( tasks != null && tasks.size() > 0 ) {
 			
 			for ( String task : tasks ) {
+				
+				long start = System.nanoTime();
 				
 				// Apply the custom placeholders:
 				for ( PrisonCommandTaskPlaceholderData cPlaceholder : getCustomPlaceholders() ) {
@@ -71,6 +78,12 @@ public class PrisonDispatchCommandTask
 					Output.get().logError( "PrisonDispatchCommand: Error trying to run task: " + errorMessage + 
 							"  Task: [" + task + "] " + e.getMessage() );
 				}
+				
+				long stop = System.nanoTime();
+				long elapsed = stop - start;
+				
+				elapsedTimes.add( Long.valueOf( elapsed ) );
+
 			}
 			
 		}

@@ -309,6 +309,11 @@ public class Localizable {
     }
 
     /**
+     * <p>Use this function to return the String value of the message using
+     * the default locale.  All supplied parameters will be applied and 
+     * this is the final product.
+     * </p>
+     * 
      * Localizes this {@link Localizable} in the owning {@link LocaleManager}'s
      * default locale.
      *

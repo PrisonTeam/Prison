@@ -1,6 +1,10 @@
 package tech.mcprison.prison.spigot.commands;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.TreeMap;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -14,7 +18,9 @@ import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.sellall.messages.SpigotVariousGuiMessages;
 import tech.mcprison.prison.spigot.SpigotPlatform;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.compat.Compatibility;
@@ -54,7 +60,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         return instance;
     }
 
-    @Command(identifier = "sellall set currency", description = "SellAll set currency command", onlyPlayers = false, permissions = "prison.sellall.currency")
+    @Command(identifier = "sellall set currency", description = "SellAll set currency command", 
+    		onlyPlayers = false, permissions = "prison.sellall.currency")
     private void sellAllCurrency(CommandSender sender,
                                  @Arg(name = "currency", description = "Currency name.", def = "default") @Wildcard String currency){
 
@@ -74,7 +81,9 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall", description = "SellAll main command", onlyPlayers = false)
+    @Command(identifier = "sellall", description = "SellAll main command", 
+    		altPermissions = {"-none-", "prison.admin"},
+    		onlyPlayers = false)
     private void sellAllCommands(CommandSender sender) {
 
         if (!isEnabled()) return;
@@ -88,7 +97,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall delay", description = "SellAll delay.", onlyPlayers = false, permissions = "prison.sellall.delay")
+    @Command(identifier = "sellall delay", description = "SellAll delay.", 
+    		onlyPlayers = false, permissions = "prison.sellall.delay")
     private void sellAllDelay(CommandSender sender,
                               @Arg(name = "boolean", description = "True to enable or false to disable.", def = "null") String enable){
 
@@ -124,7 +134,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall set delay", description = "Edit SellAll delay.", onlyPlayers = false, permissions = "prison.sellall.delay")
+    @Command(identifier = "sellall set delay", description = "Edit SellAll delay.", 
+    		onlyPlayers = false, permissions = "prison.sellall.delay")
     private void sellAllDelaySet(CommandSender sender,
                                  @Arg(name = "delay", description = "Set delay value in seconds.", def = "0") String delay){
 
@@ -148,7 +159,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall autosell", description = "Enable SellAll AutoSell.", onlyPlayers = false, permissions = "prison.autosell.edit")
+    @Command(identifier = "sellall autosell", description = "Enable SellAll AutoSell.", 
+    		onlyPlayers = false, permissions = "prison.autosell.edit")
     private void sellAllAutoSell(CommandSender sender,
                                  @Arg(name = "boolean", description = "True to enable or false to disable.", def = "null") String enable){
 
@@ -188,7 +200,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall autosell perUserToggleable", description = "Enable AutoSell perUserToggleable.", onlyPlayers = false, permissions = "prison.autosell.edit")
+    @Command(identifier = "sellall autosell perUserToggleable", description = "Enable AutoSell perUserToggleable.", 
+    		onlyPlayers = false, permissions = "prison.autosell.edit")
     private void sellAllAutoSellPerUserToggleable(CommandSender sender,
                                                   @Arg(name = "boolean", description = "True to enable or false to disable", def = "null") String enable){
 
@@ -258,7 +271,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         sellAllUtil.sellAllSell(p, false, notifications, true, true, false, true);
     }
 
-    @Command(identifier = "sellall hand", description = "Sell only what is in your hand if sellable.", onlyPlayers = true)
+    @Command(identifier = "sellall hand", description = "Sell only what is in your hand if sellable.", 
+    		onlyPlayers = true)
     public void sellAllSellHandCommand(CommandSender sender){
 
         if (!isEnabled()) return;
@@ -332,7 +346,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             "seconds and if sellall sell commands are triggered during this delay, " +
             "they will sum up to the total value that will be visible in a notification at the end of the delay. " +
             "Running more of these commands before a delay have been completed won't reset it and will do the same of /sellall sell " +
-            "without a notification (silently).", onlyPlayers = true)
+            "without a notification (silently).", 
+            onlyPlayers = true)
     public void sellAllSellWithDelayCommand(CommandSender sender){
 
         if (!isEnabled()) return;
@@ -368,7 +383,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     }
 
 
-    @Command(identifier = "sellall auto toggle", description = "Let the user enable or disable sellall auto", altPermissions = "prison.sellall.toggle", onlyPlayers = true)
+    @Command(identifier = "sellall auto toggle", description = "Let the user enable or disable sellall auto", 
+    		altPermissions = "prison.sellall.toggle", onlyPlayers = true)
     private void sellAllAutoEnableUser(CommandSender sender){
 
         if (!isEnabled()) return;
@@ -409,8 +425,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
 
     @Command(identifier = "sellall gui", 
     		description = "SellAll GUI command", 
-    		aliases = "gui sellall",
-    		altPermissions = "prison.admin", onlyPlayers = true)
+//    		aliases = "gui sellall",
+    		permissions = "prison.admin", onlyPlayers = true)
     private void sellAllGuiCommand(CommandSender sender,
     		@Arg(name = "page", description = "If there are more than 45 items, then they " +
     				"will be shown on multiple pages.  The page parameter starts with " +
@@ -434,7 +450,10 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         if (!sellAllUtil.openSellAllGUI( p, page, "sellall gui", "close" )){
             // If the sender's an admin (OP or have the prison.admin permission) it'll send an error message.
             if (p.hasPermission("prison.admin")) {
-                Output.get().sendError(sender, messages.getString(MessagesConfig.StringID.spigot_message_gui_sellall_disabled));
+            	
+            	new SpigotVariousGuiMessages().sellallIsDisabledMsg( sender );
+//                Output.get().sendError(sender, 
+//                		messages.getString(MessagesConfig.StringID.spigot_message_gui_sellall_disabled));
             }
         }
     }
@@ -442,7 +461,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     @Command(identifier = "sellall gui blocks", 
     		description = "SellAll GUI Blocks command", 
     		aliases = "gui sellall",
-    		altPermissions = "prison.admin", onlyPlayers = true)
+    		permissions = "prison.admin", onlyPlayers = true)
     private void sellAllGuiBlocksCommand(CommandSender sender,
     		@Arg(name = "page", description = "If there are more than 45 items, then they " +
     				"will be shown on multiple pages.  The page parameter starts with " +
@@ -463,7 +482,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
     	
     }
 
-    @Command(identifier = "sellall add", description = "SellAll add an item to the sellAll shop.", permissions = "prison.admin", onlyPlayers = false)
+    @Command(identifier = "sellall add", description = "SellAll add an item to the sellAll shop.", 
+    		permissions = "prison.admin", onlyPlayers = false)
     private void sellAllAddCommand(CommandSender sender,
                                    @Arg(name = "Item_ID", description = "The Item_ID or block to add to the sellAll Shop.") String itemID,
                                    @Arg(name = "Value", description = "The value of the item.") Double value){
@@ -536,7 +556,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         Output.get().logInfo("&3 ITEM [" + itemID + ", " + value + " " + messages.getString(MessagesConfig.StringID.spigot_message_sellall_item_add_success));
     }
 
-    @Command(identifier = "sellall delete", description = "SellAll delete command, remove an item from shop.", permissions = "prison.admin", onlyPlayers = false)
+    @Command(identifier = "sellall delete", description = "SellAll delete command, remove an item from shop.", 
+    		permissions = "prison.admin", onlyPlayers = false)
     private void sellAllDeleteCommand(CommandSender sender, @Arg(name = "Item_ID", description = "The Item_ID you want to remove.") String itemID){
 
         if (!isEnabled()) return;
@@ -564,7 +585,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall edit", description = "SellAll edit command, edit an item of Shop.", permissions = "prison.admin", onlyPlayers = false)
+    @Command(identifier = "sellall edit", description = "SellAll edit command, edit an item of Shop.", 
+    		permissions = "prison.admin", onlyPlayers = false)
     private void sellAllEditCommand(CommandSender sender,
                                     @Arg(name = "Item_ID", description = "The Item_ID or block to add to the sellAll Shop.") String itemID,
                                     @Arg(name = "Value", description = "The value of the item.") Double value){
@@ -610,7 +632,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall multiplier", description = "SellAll multiplier command list", permissions = "prison.admin", onlyPlayers = false)
+    @Command(identifier = "sellall multiplier list", description = "SellAll multiplier command list", 
+    		permissions = "prison.admin", onlyPlayers = false)
     private void sellAllMultiplierCommand(CommandSender sender){
 
         if (!isEnabled()) return;
@@ -625,10 +648,72 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
             return;
         }
 
-        String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall multiplier help" );
-        sender.dispatchCommand(registeredCmd);
+        
+//        String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "sellall multiplier help" );
+//        sender.dispatchCommand(registeredCmd);
+        
+        TreeMap<String, Double> mults = new TreeMap<>( sellAllUtil.getPrestigeMultipliers() );
+
+//        TreeMap<XMaterial, Double> items = new TreeMap<>( sellAllUtil.getSellAllBlocks() );
+        DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+        
+        Set<String> keys = mults.keySet();
+        
+        int maxLenKey = 0;
+        int maxLenVal = 0;
+        for ( String key : keys ) {
+			if ( key.length() > maxLenKey ) {
+				maxLenKey = key.length();
+			}
+			String val = fFmt.format( mults.get( key ) );
+			if ( val.length() > maxLenVal ) {
+				maxLenVal = val.length();
+			}
+		}
+        
+        
+        ChatDisplay chatDisplay = new ChatDisplay("&bSellall Prestige Multipliers list: &3(&b" + keys.size() + "&3)" );
+
+        int lines = 0;
+        int columns = 0;
+        StringBuilder sb = new StringBuilder();
+        for ( String key : keys ) {
+//        	boolean first = sb.length() == 0;
+
+        	Double cost = mults.get( key );
+        	
+        	if ( columns++ > 0 ) {
+        		sb.append( "    " );
+        	}
+        	
+        	sb.append( String.format( "%-" + maxLenKey + "s %" + maxLenVal + "s", 
+        			key, fFmt.format( cost ) ) );
+//        	sb.append( String.format( "%-" + maxLenKey + "s  %" + maxLenVal + "s  %-" + maxLenCode + "s", 
+//        			key.toString(), fFmt.format( cost ), key.name() ) );
+        	
+        	if ( columns > 4 ) {
+        		chatDisplay.addText( sb.toString() );
+        		
+        		if ( ++lines % 10 == 0 && lines > 1 ) {
+        			chatDisplay.addText( " " );
+        		}
+        		
+        		sb.setLength( 0 );
+        		columns = 0;
+        	}
+        }
+        if ( sb.length() > 0 ) {
+        	chatDisplay.addText( sb.toString() );
+        }
+        
+        chatDisplay.send( sender );
+
+        
+        
+        
     }
 
+    
     @Command(identifier = "sellall multiplier add", description = "SellAll add a multiplier. Permission multipliers for player's prison.sellall.multiplier.<valueHere>, example prison.sellall.multiplier.2 will add a 2x multiplier," +
             "There's also another kind of Multiplier called permission multipliers, they're permissions that you can give to players to give them a multiplier, remember that their format is prison.sellall.multiplier.2 (for example), and this example will give you a " +
             "total of 3x multiplier (1x default + 2x permission = 3x).",
@@ -652,9 +737,13 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         if (sellAllUtil.addPrestigeMultiplier(prestige, multiplier)){
             Output.get().sendInfo(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_multiplier_add_success));
         }
+        else {
+        	Output.get().sendInfo( sender, "Failed to add sellall prestige multiplier." );
+        }
     }
 
-    @Command(identifier = "sellall multiplier delete", description = "SellAll delete a multiplier.", permissions = "prison.admin", onlyPlayers = false)
+    @Command(identifier = "sellall multiplier delete", description = "SellAll delete a multiplier.", 
+    		permissions = "prison.admin", onlyPlayers = false)
     private void sellAllDeleteMultiplierCommand(CommandSender sender,
                                                 @Arg(name = "Prestige", description = "Prestige hooked to the multiplier.") String prestige){
 
@@ -685,7 +774,10 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall Trigger", description = "Toggle SellAll Shift+Right Click on a tool to trigger the /sellall sell command, true -> Enabled or False -> Disabled.", permissions = "prison.admin", onlyPlayers = false)
+    @Command(identifier = "sellall Trigger", 
+    		description = "Toggle SellAll Shift+Right Click on a tool to trigger the /sellall sell command, "
+    				+ "true -> Enabled or False -> Disabled.", 
+    				permissions = "prison.admin", onlyPlayers = false)
     private void sellAllToolsTriggerToggle(CommandSender sender,
                                            @Arg(name = "Boolean", description = "Enable or disable", def = "null") String enable){
 
@@ -726,7 +818,9 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall Trigger add", description = "Add an Item to trigger the Shift+Right Click -> /sellall sell command.", permissions = "prison.admin", onlyPlayers = false)
+    @Command(identifier = "sellall Trigger add", 
+    		description = "Add an Item to trigger the Shift+Right Click -> /sellall sell command.", 
+    		permissions = "prison.admin", onlyPlayers = false)
     private void sellAllTriggerAdd(CommandSender sender,
                                    @Arg(name = "Item", description = "Item name") String itemID){
 
@@ -765,7 +859,9 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall Trigger delete", description = "Delete an Item from the Shift+Right Click trigger -> /sellall sell command.", permissions = "prison.admin", onlyPlayers = false)
+    @Command(identifier = "sellall Trigger delete", 
+    		description = "Delete an Item from the Shift+Right Click trigger -> /sellall sell command.", 
+    		permissions = "prison.admin", onlyPlayers = false)
     private void sellAllTriggerDelete(CommandSender sender,
                                       @Arg(name = "Item", description = "Item name") String itemID){
 
@@ -803,7 +899,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall setdefault", description = "SellAll default values ready to go.", permissions = "prison.admin", onlyPlayers = false)
+    @Command(identifier = "sellall setdefault", description = "SellAll default values ready to go.", 
+    		permissions = "prison.admin", onlyPlayers = false)
     private void sellAllSetDefaultCommand(CommandSender sender){
 
         if (!isEnabled()) return;
@@ -818,4 +915,75 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
 
         Output.get().sendInfo(sender, messages.getString(MessagesConfig.StringID.spigot_message_sellall_default_values_success));
     }
+    
+    
+    @Command(identifier = "sellall list", description = "SellAll list all items", 
+    		permissions = "prison.admin", onlyPlayers = false)
+    private void sellAllListItems( CommandSender sender ) {
+
+        if (!isEnabled()) return;
+
+        SellAllUtil sellAllUtil = SellAllUtil.get();
+        if (sellAllUtil == null){
+            return;
+        }
+        
+        TreeMap<XMaterial, Double> items = new TreeMap<>( sellAllUtil.getSellAllBlocks() );
+        DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+        
+        Set<XMaterial> keys = items.keySet();
+        
+        int maxLenKey = 0;
+        int maxLenVal = 0;
+        int maxLenCode = 0;
+        for ( XMaterial key : keys ) {
+			if ( key.toString().length() > maxLenKey ) {
+				maxLenKey = key.toString().length();
+			}
+			if ( key.name().length() > maxLenCode ) {
+				maxLenCode = key.name().length();
+			}
+			String val = fFmt.format( items.get( key ) );
+			if ( val.length() > maxLenVal ) {
+				maxLenVal = val.length();
+			}
+		}
+        
+        
+        ChatDisplay chatDisplay = new ChatDisplay("&bSellall Item list: &3(&b" + keys.size() + "&3)" );
+
+        int lines = 0;
+        StringBuilder sb = new StringBuilder();
+        for ( XMaterial key : keys ) {
+        	boolean first = sb.length() == 0;
+
+        	Double cost = items.get( key );
+        	
+        	if ( !first ) {
+        		sb.append( "    " );
+        	}
+        	
+        	sb.append( String.format( "%-" + maxLenCode + "s %" + maxLenVal + "s", 
+        			key.name(), fFmt.format( cost ) ) );
+//        	sb.append( String.format( "%-" + maxLenKey + "s  %" + maxLenVal + "s  %-" + maxLenCode + "s", 
+//        			key.toString(), fFmt.format( cost ), key.name() ) );
+        	
+        	if ( !first ) {
+        		chatDisplay.addText( sb.toString() );
+        		
+        		if ( ++lines % 10 == 0 && lines > 1 ) {
+        			chatDisplay.addText( " " );
+        		}
+        		
+        		sb.setLength( 0 );
+        	}
+        }
+        if ( sb.length() > 0 ) {
+        	chatDisplay.addText( sb.toString() );
+        }
+        
+        chatDisplay.send( sender );
+        
+    }
+    
 }

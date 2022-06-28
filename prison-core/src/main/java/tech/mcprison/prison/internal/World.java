@@ -51,6 +51,7 @@ public interface World {
      */
     public Block getBlockAt(Location location);
     
+    public Block getBlockAt( Location location, boolean containsCustomBlocks );
     
     
     public void setBlock( PrisonBlock block, int x, int y, int z );
@@ -70,5 +71,6 @@ public interface World {
 	public void setBlocksSynchronously( List<MineTargetPrisonBlock> tBlocks, 
 						MineResetType resetType, 
 								PrisonStatsElapsedTimeNanos nanos );
+
 
 }

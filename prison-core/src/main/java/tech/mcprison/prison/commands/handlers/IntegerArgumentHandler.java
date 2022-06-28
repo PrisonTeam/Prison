@@ -32,6 +32,11 @@ public class IntegerArgumentHandler
     @Override 
     public Integer transform(CommandSender sender, CommandArgument argument, String value)
         throws TransformError {
+    	
+    	if ( value != null ) {
+    		value = value.replaceAll( "$|%", "" );
+    	}
+    	
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {

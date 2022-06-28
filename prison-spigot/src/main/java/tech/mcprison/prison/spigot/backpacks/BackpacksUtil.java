@@ -22,18 +22,19 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.gui.PrisonCoreGuiMessages;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.configs.BackpacksConfig;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
  * @author GABRYCA
  * */
-public class BackpacksUtil {
+public class BackpacksUtil 
+	extends PrisonCoreGuiMessages {
 
     private static BackpacksUtil instance;
     private Configuration backpacksConfig = SpigotPrison.getInstance().getBackpacksConfig();
@@ -69,9 +70,9 @@ public class BackpacksUtil {
         return getBoolean(backpacksConfig.getString("Options.Multiple-BackPacks-For-Player-Enabled"));
     }
 
-    private void backpacksConfigUpdater(){
-        backpackConfigUpdater();
-    }
+//    private void backpacksConfigUpdater(){
+//        backpackConfigUpdater();
+//    }
 
     public void removeFromOpenBackpacks(Player p){
         openBackpacks.remove(p.getName());
@@ -1281,13 +1282,14 @@ public class BackpacksUtil {
             ItemStack item;
 
             List<String> itemLore = createLore(
-                    SpigotPrison.getInstance().getMessagesConfig().getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open)
+            		guiClickToOpenMsg()
             );
 
             item = createButton(SpigotUtil.getXMaterial(backpacksConfig.getString("Options.BackPack_Item")).parseItem(), itemLore, backpacksConfig.getString("Options.BackPack_Item_Title"));
 
             if (item != null) {
                 inv.addItem(item);
+                p.updateInventory();
             }
         }
     }

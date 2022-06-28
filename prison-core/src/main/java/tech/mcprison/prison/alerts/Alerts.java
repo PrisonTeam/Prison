@@ -2,6 +2,7 @@ package tech.mcprison.prison.alerts;
 
 import com.google.common.eventbus.Subscribe;
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.events.player.PlayerJoinEvent;
 import tech.mcprison.prison.output.Output;
@@ -18,6 +19,11 @@ import java.util.UUID;
  * @since API 1.0
  */
 public class Alerts {
+	
+	public static final long DURATION_ONE_MINUTE = 20 * 60;
+	public static final long DURATION_FIVE_MINUTES = DURATION_ONE_MINUTE * 5;
+	public static final long DURATION_ONE_HOUR = DURATION_ONE_MINUTE * 60;
+	
 
     /*
      * Variables & Constants
@@ -46,6 +52,20 @@ public class Alerts {
             instance = new Alerts();
         }
         return instance;
+    }
+    
+    public void submitShowAlertsTask() {
+    	
+    	long intialDelay = DURATION_FIVE_MINUTES;
+    	long intervalToRepeat = DURATION_ONE_HOUR;
+    	
+    	PrisonAPI.getScheduler().runTaskTimerAsync( 
+    			() -> PrisonAPI.getOnlinePlayers().stream()
+    			
+                	.filter(player -> player.hasPermission("prison.admin")
+                        && Alerts.getInstance().getAlertsFor(player.getUUID()).size() > 0)
+                	
+                	.forEach(Alerts.getInstance()::showAlerts), intialDelay, intervalToRepeat );
     }
 
     public void sendAlert(String alertMsg, Object... format) {

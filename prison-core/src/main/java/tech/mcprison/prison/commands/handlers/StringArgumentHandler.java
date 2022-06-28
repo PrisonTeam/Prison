@@ -73,6 +73,11 @@ public class StringArgumentHandler extends ArgumentHandler<String> {
 
     @Override public String transform(CommandSender sender, CommandArgument argument, String value)
         throws TransformError {
+    	
+    	if ( value != null ) {
+    		value = value.replaceAll( "$|%", "" );
+    	}
+
         return value;
     }
 }

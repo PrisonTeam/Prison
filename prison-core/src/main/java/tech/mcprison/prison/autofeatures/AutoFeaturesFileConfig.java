@@ -20,6 +20,29 @@ public class AutoFeaturesFileConfig {
     
     private Map<String, ValueNode> config;
     
+    /**
+     * 
+     * <p>Pertaining to canceling a block break even, or just canceling the drops, the ability to 
+     * cancel the drops was added in v1.12.x.  Therefore v1.8 through v1.11 cannot use that technique
+     * and instead must use the even canceling.
+     * </p>
+     * 
+     * <pre>BlockBreakEvent.setDropItems(false)</p>
+     * 
+     * <p>To cancel a BlockBreakEvent use:
+     * </p>
+     * 
+     * <pre>cancelAllBlockBreakEvents: true</pre>
+     * <pre>cancelAllBlockEventBlockDrops: false</pre>
+     * 
+     * <p>To cancel the drops, just reverse those two settings' values:
+     * </p>
+     * 
+     * <pre>cancelAllBlockBreakEvents: false</pre>
+     * <pre>cancelAllBlockEventBlockDrops: true</pre>
+     * 
+     *
+     */
     public enum AutoFeatures {
 
     	
@@ -31,36 +54,65 @@ public class AutoFeaturesFileConfig {
 	    					"Otherwise this must be set to 'true' to allow any of the " +
 	    			"options to work."),
 	    	
-	    	
-    	messages,
-    	
-	    	inventoryIsFull(messages, "&cWARNING! Your inventory's full!"),
-	    	inventoryIsFullDroppingItems(messages, "&cWARNING! Your inventory's full and you're dropping items!"),
-	    	inventoryIsFullLosingItems(messages, "&cWARNING! Your inventory's full and you're losing items!"),
+// NOTE: Moved to the spigot language files:	    	
+//    	messages,
+//    	
+//	    	inventoryIsFull(messages, "&cWARNING! Your inventory's full!"),
+//	    	inventoryIsFullDroppingItems(messages, "&cWARNING! Your inventory's full and you're dropping items!"),
+//	    	inventoryIsFullLosingItems(messages, "&cWARNING! Your inventory's full and you're losing items!"),
     	
     	
     	options,
     	
     		otherPlugins(options),
 	    		
-	    		isProcessMcMMOBlockBreakEvents(otherPlugins, true),
+	    		isProcessMcMMOBlockBreakEvents(otherPlugins, false),
 	    		isProcessEZBlocksBlockBreakEvents(otherPlugins, false),
+
+	    		isProcessQuestsBlockBreakEvents(otherPlugins, false),
+	    		
+	    		otherPluginSupport__ReadMe(otherPlugins, 
+	    				"NOTE: If you are using spigot v1.12.0 or higher, then do not use these " +
+	    				"'forced' settings, instead adjust both 'cancelAllBlockBreakEvents' and " +
+	    				"'cancelAllBlockEventBlockDrops' since that will help ensure it works better."),
+	    		
+	    		
+	    		isUseCustomBlocksCustomItemsGetDrops( otherPlugins, true ),
 	    		
     		
 	    	blockBreakEvents(options),
 	    	
 	    		// Setting this to true will cancel the block break events (normal prison behavior):
+	    		// Canceling events is mandatory for Spigot v1.8 through v1.11.x.
 	    		cancelAllBlockBreakEvents(blockBreakEvents, true),
+	    		
+	    		cancelAllBlockBreakEvents__ReadMe(blockBreakEvents, 
+	    				"NOTE: If spigot v1.8.0 through 1.11.x you must use 'true' for this setting, " +
+	    				"otherwise if using Spigot v1.13.0, or higher, can use 'false'."),
+	    		
+	    		
 	    		// Setting this to false will not zero out the block drops (normal prison behavior).
 	    		// When set to true, it will zero it out so if the block break event is not canceled,
 	    		// then it will prevent double drops:
+	    		// Canceling the drops was added in Spigot v1.12.x.
 	    		cancelAllBlockEventBlockDrops(blockBreakEvents, false),
+	    		
+	    		cancelAllBlockEventBlockDrops__ReadMe(blockBreakEvents, 
+	    				"NOTE: If spigot v1.8.0 through 1.11.x you must use 'false' for this setting, " +
+	    				"otherwise if using Spigot v1.13.0, or higher, can use 'true'. " +
+	    				"This setting MUST be the opposit of 'cancelAllBlockBreakEvents'."),
+	    		
 	    		
 	    		
 	    		applyBlockBreaksThroughSyncTask(blockBreakEvents, true),
 
 	    		
 	    		blockBreakEventPriority(blockBreakEvents, "LOW"),
+	    		
+	    		ProcessPrisons_ExplosiveBlockBreakEventsPriority(blockBreakEvents, "LOW"),
+
+	    		
+	    		
 
 		    	TokenEnchantBlockExplodeEventPriority(blockBreakEvents, "DISABLED"),
 		    	
@@ -70,12 +122,11 @@ public class AutoFeaturesFileConfig {
 	    	
 		    	PrisonEnchantsExplosiveEventPriority(blockBreakEvents, "DISABLED"),
 		    	
-		    	ProcessPrisons_ExplosiveBlockBreakEventsPriority(blockBreakEvents, "DISABLED"),
 		    	
 		    	
 		    	blockBreakEvents__ReadMe(blockBreakEvents, 
 		    			"Use the following event priorities with the blockBreakEvents: " +
-		    			"DISABLED, LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR" ),
+		    			"DISABLED, LOWEST, LOW, NORMAL, HIGH, HIGHEST, BLOCKEVENTS, MONITOR" ),
 		    	
 		    	
 		    	
@@ -96,9 +147,18 @@ public class AutoFeaturesFileConfig {
 		    	
 
 				isAutoSellPerBlockBreakEnabled(inventory, false),
+				permissionAutoSellPerBlockBreakEnabled(inventory, "prison.automanager.autosell"),
+				
+				permissionAutoSellPerBlockBreakEnabled__ReadMe(inventory, 
+						"If OP then you cannot use this permission node since it would always " +
+						"be enabled. Using a value of 'disable' will turn it off for everyone."),
+//				
 //				isAutoSellPerBlockBreakInlinedEnabled(general, false),
 				
 				isAutoSellIfInventoryIsFull(inventory, true),
+				
+				isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority(inventory, false),
+				
 				
 				dropItemsIfInventoryIsFull(inventory, true),
 				
@@ -226,7 +286,10 @@ public class AutoFeaturesFileConfig {
 		    	
 		    	smeltLimitToMines(smeltFeature, true),
 		    	smeltAllBlocks(smeltFeature, true),
+		    	
+//		    	smeltConfigurations(smeltFeature, "see smeltFeatures in BlockConversionsConfig.json"),
 
+//		    	smeltTransformer(smeltFeature, NodeType.BLOCK_CONVERTER, "smelt" ),
 		    	
 		    	smeltCobblestone(smeltFeature, false),
 		    	
@@ -259,6 +322,13 @@ public class AutoFeaturesFileConfig {
 		    	blockSnowBlock(blockFeature, true),
 		    	blockGlowstone(blockFeature, true),
 		    	blockCopperBlock(blockFeature, true),
+		   
+		    	
+//		examplesOnlyNotUsed,    	
+//		    exampleOfBlockConversions(examplesOnlyNotUsed),
+//		    
+//		    	sampleBlockTransformer(exampleOfBlockConversions, NodeType.BLOCK_CONVERTER, "sample01" )
+		    
 		    	
 		    	
 //		    eventInjector(options),
@@ -286,6 +356,7 @@ public class AutoFeaturesFileConfig {
     	private final boolean isLong;
     	private final boolean isDouble;
     	private final boolean isStringList;
+//    	private final boolean isBlockConverter;
     	
     	private final String path;
     	private final String message;
@@ -294,6 +365,7 @@ public class AutoFeaturesFileConfig {
     	private final Long longValue;
     	private final Double doubleValue;
     	private final List<String> listValue;
+//    	private final TreeMap<String, BlockConverter> blockConverters;
     	
     	private AutoFeatures() {
     		this.parent = null;
@@ -304,6 +376,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = false;
     		this.isStringList = false;
+//    		this.isBlockConverter = false;
     		
     		this.path = null;
     		this.message = null;
@@ -312,6 +385,7 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
+//    		this.blockConverters = new TreeMap<>();
     	}
     	private AutoFeatures(AutoFeatures section) {
     		this.parent = section;
@@ -322,6 +396,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = false;
     		this.isStringList = false;
+//    		this.isBlockConverter = false;
 
     		this.path = section.getKey();
     		this.message = null;
@@ -330,6 +405,7 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
+//    		this.blockConverters = new TreeMap<>();
     	}
     	private AutoFeatures(AutoFeatures section, String message) {
     		this.parent = section;
@@ -340,6 +416,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = false;
     		this.isStringList = false;
+//    		this.isBlockConverter = false;
 
     		this.path = section.getKey();
     		this.message = message;
@@ -348,6 +425,7 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
+//    		this.blockConverters = new TreeMap<>();
     	}
     	private AutoFeatures(AutoFeatures section, Boolean value) {
     		this.parent = section;
@@ -358,6 +436,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = false;
     		this.isStringList = false;
+//    		this.isBlockConverter = false;
 
     		this.path = section.getKey();
     		this.message = null;
@@ -366,6 +445,7 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
+//    		this.blockConverters = new TreeMap<>();
     	}
     	private AutoFeatures(AutoFeatures section, int value) {
     		this.parent = section;
@@ -376,6 +456,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = false;
     		this.isStringList = false;
+//    		this.isBlockConverter = false;
     		
     		this.path = section.getKey();
     		this.message = null;
@@ -384,6 +465,27 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
+//    		this.blockConverters = new TreeMap<>();
+    	}
+    	private AutoFeatures(AutoFeatures section, long value) {
+    		this.parent = section;
+    		this.isSection = false;
+    		this.isBoolean = false;
+    		this.isMessage = false;
+    		this.isInteger = false;
+    		this.isLong = true;
+    		this.isDouble = false;
+    		this.isStringList = false;
+//    		this.isBlockConverter = false;
+    		
+    		this.path = section.getKey();
+    		this.message = null;
+    		this.value = null;
+    		this.intValue = null;
+    		this.longValue = value;
+    		this.doubleValue = null;
+    		this.listValue = new ArrayList<>();
+//    		this.blockConverters = new TreeMap<>();
     	}
     	private AutoFeatures(AutoFeatures section, double value) {
     		this.parent = section;
@@ -394,6 +496,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = true;
     		this.isStringList = false;
+//    		this.isBlockConverter = false;
     		
     		this.path = section.getKey();
     		this.message = null;
@@ -402,6 +505,7 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = value;
     		this.listValue = new ArrayList<>();
+//    		this.blockConverters = new TreeMap<>();
     	}
     	private AutoFeatures(AutoFeatures section, NodeType nodeType, String... values ) {
     		this.parent = section;
@@ -412,6 +516,7 @@ public class AutoFeaturesFileConfig {
     		this.isLong = false;
     		this.isDouble = false;
     		this.isStringList = (nodeType == NodeType.STRING_LIST);
+//    		this.isBlockConverter = (nodeType == NodeType.BLOCK_CONVERTER);
     		
     		this.path = section.getKey();
     		this.message = null;
@@ -420,11 +525,18 @@ public class AutoFeaturesFileConfig {
     		this.longValue = null;
     		this.doubleValue = null;
     		this.listValue = new ArrayList<>();
+//    		this.blockConverters = new TreeMap<>();
     		
-    		if ( values != null && values.length > 0 ) {
+    		if ( nodeType == NodeType.STRING_LIST ) {
     			
-    			this.listValue.addAll( Arrays.asList( values ));
+    			if ( values != null && values.length > 0 ) {
+    				
+    				this.listValue.addAll( Arrays.asList( values ));
+    			}
     		}
+//    		else if ( nodeType == NodeType.BLOCK_CONVERTER ) {
+//    			loadDefaultBlockConverters( blockConverters, Arrays.asList( values ) );
+//    		}
     	}
     	
 		public AutoFeatures getParent() {
@@ -451,6 +563,9 @@ public class AutoFeaturesFileConfig {
 		public boolean isStringList() {
 			return isStringList;
 		}
+//		public boolean isBlockConverter() {
+//			return isBlockConverter;
+//		}
 		
 		public String getPath() {
 			return path;
@@ -474,6 +589,9 @@ public class AutoFeaturesFileConfig {
 		public List<String> getListValue() {
 			return listValue;
 		}
+//		public TreeMap<String, BlockConverter> getBlockConverters() {
+//			return blockConverters;
+//		}
 		
 		public String getKey() {
     		return (path != null ? path + "." : "") + this.name();
@@ -600,6 +718,25 @@ public class AutoFeaturesFileConfig {
     	}
     	
     	
+//    	public TreeMap<String, BlockConverter> getBlockConverters( Map<String, ValueNode> conf ) {
+//    		TreeMap<String, BlockConverter> results = null;
+//    		
+//    		
+//    		if ( conf.containsKey(getKey()) && conf.get( getKey() ).isBlockConvertersNode() ) {
+//    			BlockConvertersNode blockConverters = (BlockConvertersNode) conf.get( getKey() );
+//    			results = blockConverters.getValue();
+//    		}
+////    		else if ( getListValue() != null && getListValue().size() > 0 ) {
+////    			results = getListValue();
+////    		}
+//    		
+//    		if ( results == null ) {
+//    			results = new BlockConvertersNode().getValue();
+//    		}
+//    		
+//    		return results;
+//    	}
+    	
 
     	/**
     	 * <p>Get the children nodes to the given item.
@@ -636,6 +773,17 @@ public class AutoFeaturesFileConfig {
         
     	this.config = new LinkedHashMap<>();
     	
+    	
+    	// If an AutoFeatures defines a block converter, then the actual block 
+    	// converter object, with all dependencies, needs to be stored in this
+    	// TreeMap so it can be accessed later without having to regenerate 
+    	// everything.  The enums of AutoFeatures, when they identify that the
+    	// are of type BlockConverter, needs to store the complex data outside 
+    	// of the enum.  This is it... with it being a TreeMap it will be 
+    	// fast access to it, and as many nodes as desired, can be added.
+    	// NOTE: ONE entry in this TreeMap is related to ONE entry in the enum.
+//    	this.blockConverters = new TreeMap<>();
+    	
 		
 		// The following is strictly not needed to ensure that the configs are
 		// created, but this, somehow, does ensure that the order in which 
@@ -655,6 +803,7 @@ public class AutoFeaturesFileConfig {
         // is handled within the loadYamlAutoFeatures code.
         
 		YamlFileIO yamlFileIO = Prison.get().getPlatform().getYamlFileIO( getConfigFile() );
+		
 		List<AutoFeatures> dne = yamlFileIO.loadYamlAutoFeatures( getConfig() );
 
 		dne.size();
@@ -673,8 +822,9 @@ public class AutoFeaturesFileConfig {
 
     }
 
-    
-    public void reloadConfig() {
+
+
+	public void reloadConfig() {
     	// First clear the configs:
     	getConfig().clear();
     	

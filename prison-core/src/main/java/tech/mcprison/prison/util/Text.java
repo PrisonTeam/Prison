@@ -22,6 +22,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -39,7 +40,8 @@ import tech.mcprison.prison.placeholders.PlaceholdersUtil;
  * @author Faizaan A. Datoo
  * @since API 1.0
  */
-public class Text {
+public class Text
+	extends TextMessage {
 
     private static final long millisPerSecond = 1000;
     private static final long millisPerMinute = 60 * millisPerSecond;
@@ -48,10 +50,24 @@ public class Text {
     private static final long millisPerWeek = 7 * millisPerDay;
     private static final long millisPerMonth = 31 * millisPerDay;
     private static final long millisPerYear = 365 * millisPerDay;
-    private static final Map<String, Long> unitMillis = CollectionUtil
-        .map("years", millisPerYear, "months", millisPerMonth, "weeks", millisPerWeek, "days",
-            millisPerDay, "hours", millisPerHour, "minutes", millisPerMinute, "seconds",
-            millisPerSecond);
+    
+    private static Map<String, Long> unitMillis = CollectionUtil
+        .map( 
+        		"year:years", millisPerYear, 
+        		"month:months", millisPerMonth, 
+        		"week:weeks", millisPerWeek, 
+        		"day:days", millisPerDay, 
+        		"hour:hours", millisPerHour, 
+        		"minute:minutes", millisPerMinute, 
+        		"second:seconds", millisPerSecond);
+    
+    private static String unit_time_text_prefix = "&3";
+    private static String unit_time_text_just_now = "just now";
+    private static String unit_time_text_ago = "ago";
+    private static String unit_time_text_from_now = "from now";
+    private static String unit_time_text_and = "and";
+    
+    
     private static String headingLine = repeat("-", 52);
     
     public static final char COLOR_CHAR = '\u00A7';
@@ -79,6 +95,34 @@ public class Text {
     protected Text() {
     	super();
     	
+    }
+    
+    public static void initialize() {
+    	
+    	unit_time_text_prefix = coreOutputTextJustPrefixMsg();
+    	unit_time_text_just_now = coreOutputTextJustNowMsg();
+    	unit_time_text_ago = coreOutputTextAgoMsg();
+    	unit_time_text_from_now = coreOutputTextFromNowMsg();
+    	unit_time_text_and = coreOutputTextAndMsg();
+    	
+    	String timeUnitsSingular = coreOutputTextTimeUnitsSingularMsg();
+    	String timeUnitsPlural = coreOutputTextTimeUnitsPluralMsg();
+    	
+    	String[] tuS = timeUnitsSingular.split( "," );
+    	String[] tuP = timeUnitsPlural.split( "," );
+    	
+    	if ( tuS.length == 7 && tuP.length == 7 ) {
+    		unitMillis = new LinkedHashMap<>();
+    		
+    		int i = 0;
+    		unitMillis.put( tuS[i] + ":" + tuP[i++], millisPerYear );
+    		unitMillis.put( tuS[i] + ":" + tuP[i++], millisPerMonth );
+    		unitMillis.put( tuS[i] + ":" + tuP[i++], millisPerWeek );
+    		unitMillis.put( tuS[i] + ":" + tuP[i++], millisPerDay );
+    		unitMillis.put( tuS[i] + ":" + tuP[i++], millisPerHour );
+    		unitMillis.put( tuS[i] + ":" + tuP[i++], millisPerMinute );
+    		unitMillis.put( tuS[i] + ":" + tuP[i++], millisPerSecond );
+    	}
     }
 
     /**
@@ -204,11 +248,13 @@ public class Text {
     }
 
     public static String implodeCommaAndDot(final Collection<?> objects, final String color) {
-        return implodeCommaAndDot(objects, color + ", ", color + " and ", color + ".");
+        return implodeCommaAndDot(objects, color + ", ", 
+        		color + " " + unit_time_text_and + " ", color + ".");
     }
 
     public static String implodeCommaAnd(final Collection<?> objects, final String color) {
-        return implodeCommaAndDot(objects, color + ", ", color + " and ", "");
+        return implodeCommaAndDot(objects, color + ", ", 
+        		color + " " + unit_time_text_and + " ", "");
     }
 
     public static String implodeCommaAndDot(final Collection<?> objects) {
@@ -425,6 +471,21 @@ public class Text {
     	
     	return results;
     }
+    
+    /**
+     * <p>This function will convert all amps to a unicode so they will
+     * not be translated to the color codes.  Then before the message is
+     * processed by bukkit, they are then converted back so as to 
+     * show where they are used.  This will convert the color codes
+     * that have already been converted.
+     * </p>
+     * 
+     * @param textEncoded
+     * @return
+     */
+    public static String escapeAmpCodes( String textEncoded ) {
+    	return convertToAmpColorCodes(textEncoded).replaceAll("&", "U+0026");
+    }
 
     /**
      * Converts a double (3.45) into a US-localized currency string ($3.45).
@@ -499,7 +560,7 @@ public class Text {
      * @return The human-readable string.
      */
     public static String getTimeUntilString(long millis) {
-        String ret = "";
+        String ret = unit_time_text_prefix;
 
         double millisLeft = (double) Math.abs(millis);
 
@@ -508,26 +569,31 @@ public class Text {
             if (unitCountParts.size() == 3) {
                 break;
             }
-            String unitName = entry.getKey();
+            String[] unitNames = entry.getKey().split( ":" );
+            String unitNameSingular = unitNames[0];
+            String unitNamePlural = unitNames.length > 1 ? unitNames[1] : unitNames[0];
+            
             long unitSize = entry.getValue();
             long unitCount = (long) Math.floor(millisLeft / unitSize);
             if (unitCount < 1) {
                 continue;
             }
             millisLeft -= unitSize * unitCount;
-            unitCountParts.add(unitCount + " " + unitName);
+            
+            unitCountParts.add(unitCount + " " +
+            		( unitCount == 1 ? unitNameSingular : unitNamePlural) );
         }
 
         if (unitCountParts.size() == 0) {
-            return "just now";
+            return ret + unit_time_text_just_now;
         }
 
         ret += implodeCommaAnd(unitCountParts);
         ret += " ";
         if (millis <= 0) {
-            ret += "ago";
+            ret += unit_time_text_ago;
         } else {
-            ret += "from now";
+            ret += unit_time_text_from_now;
         }
 
         return ret;

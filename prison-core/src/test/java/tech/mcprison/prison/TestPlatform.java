@@ -33,6 +33,7 @@ import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.PlayerUtil;
 import tech.mcprison.prison.internal.Scheduler;
@@ -65,7 +66,8 @@ public class TestPlatform implements Platform {
         this.suppressOutput = suppressOutput;
     }
 
-    @Override public Optional<World> getWorld(String name) {
+    @Override 
+    public Optional<World> getWorld(String name) {
         return Optional.of(new TestWorld(name));
     }
 
@@ -74,15 +76,18 @@ public class TestPlatform implements Platform {
     	
     }
     
-    @Override public Optional<Player> getPlayer(String name) {
+    @Override 
+    public Optional<Player> getPlayer(String name) {
         return null;
     }
 
-    @Override public Optional<Player> getPlayer(UUID uuid) {
+    @Override 
+    public Optional<Player> getPlayer(UUID uuid) {
         return null;
     }
 
-    @Override public List<Player> getOnlinePlayers() {
+    @Override 
+    public List<Player> getOnlinePlayers() {
         return new ArrayList<>();
     }
     @Override
@@ -101,11 +106,13 @@ public class TestPlatform implements Platform {
 		return null;
 	}
 
-	@Override public String getPluginVersion() {
+	@Override 
+	public String getPluginVersion() {
         return "Tests";
     }
 
-    @Override public File getPluginDirectory() {
+    @Override 
+    public File getPluginDirectory() {
         return pluginDirectory;
     }
 
@@ -114,7 +121,8 @@ public class TestPlatform implements Platform {
         return false;
     }
 
-    @Override public void registerCommand(PluginCommand command) {
+    @Override 
+    public void registerCommand(PluginCommand command) {
 
     }
 
@@ -128,25 +136,30 @@ public class TestPlatform implements Platform {
     	
     }
 
-    @Override public List<PluginCommand> getCommands() {
+    @Override 
+    public List<PluginCommand> getCommands() {
         return Collections.emptyList();
     }
 
-    @Override public void dispatchCommand(String cmd) {
+    @Override 
+    public void dispatchCommand(String cmd) {
     }
 
     @Override
 	public void dispatchCommand( CommandSender sender, String cmd ) {
 	}
 
-	@Override public Scheduler getScheduler() {
+	@Override 
+	public Scheduler getScheduler() {
         return new TestScheduler();
     }
 
-    @Override public void toggleDoor(Location doorLocation) {
+    @Override 
+    public void toggleDoor(Location doorLocation) {
     }
 
-    @Override public void log(String message, Object... format) {
+    @Override 
+    public void log(String message, Object... format) {
         if (suppressOutput) {
             return;
         }
@@ -166,27 +179,33 @@ public class TestPlatform implements Platform {
     	System.out.println(message);
     }
     
-    @Override public void debug(String message, Object... format) {
+    @Override 
+    public void debug(String message, Object... format) {
         log(message, format);
     }
 
-    @Override public Map<Capability, Boolean> getCapabilities() {
+    @Override 
+    public Map<Capability, Boolean> getCapabilities() {
         return null;
     }
 
-    @Override public void showTitle(Player player, String title, String subtitle, int fade) {
+    @Override 
+    public void showTitle(Player player, String title, String subtitle, int fade) {
 
     }
 
-    @Override public void showActionBar(Player player, String text, int duration) {
+    @Override 
+    public void showActionBar(Player player, String text, int duration) {
 
     }
 
-    @Override public ScoreboardManager getScoreboardManager() {
+    @Override 
+    public ScoreboardManager getScoreboardManager() {
         return null;
     }
 
-    @Override public Storage getStorage() {
+    @Override 
+    public Storage getStorage() {
         return new FileStorage(getPluginDirectory());
     }
 
@@ -205,7 +224,6 @@ public class TestPlatform implements Platform {
 		 cmdVersion.addPluginDetails( rpd2.getPluginName(), rpd2.getPluginVersion(), "justice", new ArrayList<>() );
     }
 
-    
     
     public Map<PlaceholderFlags, Integer> getPlaceholderDetailCounts() {
     	Map<PlaceholderFlags, Integer> placeholderDetails = new TreeMap<>();
@@ -246,11 +264,6 @@ public class TestPlatform implements Platform {
 	@Override
 	public String getConfigString( String key, String defaultValue ) {
 		return defaultValue;
-	}
-	
-	@Override
-	public boolean isUseNewPrisonBlockModel() {
-		return false;
 	}
 	
 	@Override
@@ -301,6 +314,11 @@ public class TestPlatform implements Platform {
 	
 	@Override
 	public PrisonBlock getPrisonBlock( String blockName ) {
+		return null;
+	}
+	
+	@Override
+	public ItemStack getItemStack( PrisonBlock prisonBlock, int blockQuantity ) {
 		return null;
 	}
 	
@@ -358,10 +376,17 @@ public class TestPlatform implements Platform {
 	}
 	
 	@Override
-	public List<String> getActiveFeatures() {
+	public List<String> getActiveFeatures( boolean showLaddersAndRanks ) {
 		List<String> results = new ArrayList<>();
 		return results;
 	}
+	
+	
+	@Override
+	public void prisonVersionFeatures( ChatDisplay display, boolean isBasic, boolean showLaddersAndRanks ) {
+		
+	}
+	
 	
 	@Override
 	public String dumpEventListenersBlockBreakEvents() {
@@ -420,6 +445,11 @@ public class TestPlatform implements Platform {
 
 	@Override
 	public PlayerUtil getPlayerUtil( UUID playerUuid ) {
+		return null;
+	}
+	
+	@Override
+	public PlayerUtil getPlayerUtil( Player player ) {
 		return null;
 	}
 	

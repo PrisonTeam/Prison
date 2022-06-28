@@ -42,11 +42,11 @@ import tech.mcprison.prison.commands.handlers.WorldArgumentHandler;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.ChatColor;
 
 public class CommandHandler {
@@ -94,7 +94,7 @@ public class CommandHandler {
       registerArgumentHandler(String.class, new StringArgumentHandler());
       registerArgumentHandler(Player.class, new PlayerArgumentHandler());
       registerArgumentHandler(World.class, new WorldArgumentHandler());
-      registerArgumentHandler(BlockType.class, new BlockArgumentHandler());
+      registerArgumentHandler(PrisonBlock.class, new BlockArgumentHandler());
   }
 
 	   
@@ -754,7 +754,7 @@ public class CommandHandler {
             return false;
         }
 
-        if (rootCommand.onlyPlayers() && !(sender instanceof Player)) {
+        if (rootCommand.isOnlyPlayers() && !(sender instanceof Player)) {
             Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
                 .sendTo(sender, LogLevel.ERROR);
             return true;

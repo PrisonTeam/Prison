@@ -142,6 +142,8 @@ public abstract class PlayerUtil
 	
 	public abstract int getItemInHandEnchantmentLuck();
 
+	public abstract String getItemInHandLore();
+
 	public UUID getPlayerUuid() {
 		return playerUuid;
 	}

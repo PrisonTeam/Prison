@@ -47,16 +47,18 @@ import tech.mcprison.prison.internal.events.player.PlayerChatEvent;
 import tech.mcprison.prison.internal.events.player.PlayerPickUpItemEvent;
 import tech.mcprison.prison.internal.events.player.PlayerSuffocationEvent;
 import tech.mcprison.prison.internal.events.player.PrisonPlayerInteractEvent;
+import tech.mcprison.prison.internal.events.player.PrisonPlayerInteractEvent.Action;
 import tech.mcprison.prison.internal.events.world.PrisonWorldLoadEvent;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener.BlockBreakPriority;
+import tech.mcprison.prison.spigot.block.BlockBreakPriority;
+import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.util.Text;
 
 /**
  * Posts Prison's internal events.
@@ -170,11 +172,11 @@ public class SpigotListener implements Listener {
 	@EventHandler 
 	public void onBlockPlace(BlockPlaceEvent e) {
         org.bukkit.Location block = e.getBlockPlaced().getLocation();
-        BlockType blockType = SpigotUtil.blockToBlockType( e.getBlock() );
+        SpigotBlock sBlock = SpigotBlock.getSpigotBlock( e.getBlock() );
         
         tech.mcprison.prison.internal.events.block.BlockPlaceEvent event =
             new tech.mcprison.prison.internal.events.block.BlockPlaceEvent(
-            		blockType,
+            		sBlock,
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
                     block.getZ()), (new SpigotPlayer(e.getPlayer())));
         Prison.get().getEventBus().post(event);
@@ -183,11 +185,11 @@ public class SpigotListener implements Listener {
 	@EventHandler 
 	public void onBlockBreak(BlockBreakEvent e) {
         org.bukkit.Location block = e.getBlock().getLocation();
-        BlockType blockType = SpigotUtil.blockToBlockType( e.getBlock() );
+        SpigotBlock sBlock = SpigotBlock.getSpigotBlock( e.getBlock() );
         
         tech.mcprison.prison.internal.events.block.BlockBreakEvent event =
             new tech.mcprison.prison.internal.events.block.BlockBreakEvent(
-            		blockType,
+            		sBlock,
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
                     block.getZ()), (new SpigotPlayer(e.getPlayer())),e.getExpToDrop());
         Prison.get().getEventBus().post(event);
@@ -204,6 +206,12 @@ public class SpigotListener implements Listener {
      */
     @EventHandler
     public void onWorldLoadEvent( WorldLoadEvent e ) {
+    	
+    	if ( Output.get().isDebug() ) {
+    		String message = String.format( 
+    				"Prison WorldLoadEvent: world: %s", e.getWorld().getName() );
+    		Output.get().logDebug( message );
+    	}
     	PrisonWorldLoadEvent pwlEvent = new PrisonWorldLoadEvent(e.getWorld().getName());
     	
     	Prison.get().getEventBus().post(pwlEvent);
@@ -214,13 +222,20 @@ public class SpigotListener implements Listener {
         // TODO Accept air events (block is null when air is clicked...)
 
         // Check to see if we support the Action
-        PrisonPlayerInteractEvent.Action[] values = PrisonPlayerInteractEvent.Action.values();
+//        PrisonPlayerInteractEvent.Action[] values = PrisonPlayerInteractEvent.Action.values();
         
-        boolean has = false;
-        for ( PrisonPlayerInteractEvent.Action value : values) {
-            if(value.name().equals(e.getAction().name())) has = true;
+//        boolean has = false;
+        
+        Action action = Action.fromString( e.getAction().name() );
+        if ( action == null ) {
+        	// We don't support this action:
+        	return;
         }
-        if(!has) return; // we don't support this Action
+        
+//        for ( PrisonPlayerInteractEvent.Action value : PrisonPlayerInteractEvent.Action.values() ) {
+//            if(value.name().equals(e.getAction().name())) has = true;
+//        }
+//        if(!has) return; // we don't support this Action
 
         // This one's a workaround for the double-interact event glitch.
         // The wand can only be used in the main hand
@@ -234,8 +249,7 @@ public class SpigotListener implements Listener {
                 new SpigotPlayer(e.getPlayer()),
                 		SpigotUtil.bukkitItemStackToPrison(
                 				SpigotCompatibility.getInstance().getItemInMainHand(e)),
-                PrisonPlayerInteractEvent.Action
-                    .valueOf(e.getAction().name()),
+                action,
                 new Location(new SpigotWorld(block.getWorld()), block.getX(), block.getY(),
                     block.getZ()));
         Prison.get().getEventBus().post(event);
@@ -289,15 +303,27 @@ public class SpigotListener implements Listener {
 			
 		@EventHandler(priority=EventPriority.NORMAL) 
 	    public void onPlayerChat(AsyncPlayerChatEvent e) {
-	        PlayerChatEvent event =
-	            new PlayerChatEvent(new SpigotPlayer(e.getPlayer()), e.getMessage(), e.getFormat());
+			String message = e.getMessage();
+			String format = e.getFormat();
+			
+			SpigotPlayer p = new SpigotPlayer( e.getPlayer() );
+			
+			String results = Prison.get().getPlatform().getPlaceholders()
+					.placeholderTranslateText( p.getUUID(), p.getName(), format );
+			
+			
+			String translated = Text.translateAmpColorCodes( results + "&r" );
+			e.setFormat( translated );
+			
+//	        PlayerChatEvent event =
+//	            new PlayerChatEvent(new SpigotPlayer(e.getPlayer()), message, format);
+//	        
+//	        Prison.get().getEventBus().post(event);
 	        
-	        Prison.get().getEventBus().post(event);
-	        
-	        e.setFormat(ChatColor.translateAlternateColorCodes('&', event.getFormat() + "&r"));
-	        e.setMessage(event.getMessage());
-	        
-	        doCancelIfShould(event, e);
+//	        e.setFormat(ChatColor.translateAlternateColorCodes('&', event.getFormat() + "&r"));
+//	        e.setMessage(event.getMessage());
+//	        
+//	        doCancelIfShould(event, e);
 	    }
 	}
 

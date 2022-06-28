@@ -76,20 +76,13 @@ public class PlaceHolderAPIIntegrationWrapper
 	@Override
 	public String onRequest(OfflinePlayer player, String identifier) {
 		
+//		if ( !identifier.toLowerCase().startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED ) ) {
+//			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
+//		}
+
 		UUID playerUuid = player.getUniqueId();
 		String results = Prison.get().getPlatform().getPlaceholders()
 									.placeholderTranslate( playerUuid, player.getName(), identifier );
-		
-//		PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-//		if ( pm != null ) {
-//			results = pm.getTranslatePlayerPlaceHolder( playerUuid, identifier );
-//		}
-//		
-//		// If it did not match on a player placeholder, then try mines:
-//		if ( results == null ) {
-//			MineManager mm = PrisonMines.getInstance().getMineManager();
-//			results = mm.getTranslateMinesPlaceHolder( identifier );
-//		}
 		
 		return results;
 	}

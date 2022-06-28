@@ -47,6 +47,7 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.integration.Integration;
+import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.mines.PrisonMines;
@@ -62,6 +63,8 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.commands.FailedRankCommands;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.managers.RankManager;
+import tech.mcprison.prison.sellall.PrisonSellall;
+import tech.mcprison.prison.sellall.commands.SellallCommands;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
 import tech.mcprison.prison.spigot.backpacks.BackpacksListeners;
@@ -74,7 +77,10 @@ import tech.mcprison.prison.spigot.commands.PrisonSpigotRanksCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
-import tech.mcprison.prison.spigot.configs.*;
+import tech.mcprison.prison.spigot.configs.BackpacksConfig;
+import tech.mcprison.prison.spigot.configs.GuiConfig;
+import tech.mcprison.prison.spigot.configs.MessagesConfig;
+import tech.mcprison.prison.spigot.configs.SellAllConfig;
 import tech.mcprison.prison.spigot.customblock.CustomItems;
 import tech.mcprison.prison.spigot.economies.EssentialsEconomy;
 import tech.mcprison.prison.spigot.economies.GemsEconomy;
@@ -92,6 +98,7 @@ import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.tasks.PrisonInitialStartupTask;
 import tech.mcprison.prison.spigot.tasks.SpigotPrisonDelayedStartupTask;
 import tech.mcprison.prison.spigot.utils.PrisonUtilsModule;
+import tech.mcprison.prison.util.Text;
 
 /**
  * The plugin class for the Spigot implementation.
@@ -116,6 +123,8 @@ public class SpigotPrison
     
     private AutoManagerFeatures autoFeatures = null;
 //    private FileConfiguration autoFeaturesConfig = null;
+    
+    private OnBlockBreakEventListener blockBreakEventListeners;
 
     private MessagesConfig messagesConfig;
     private GuiConfig guiConfig;
@@ -186,6 +195,7 @@ public class SpigotPrison
         this.saveDefaultConfig();
         this.debug = getConfig().getBoolean("debug", false);
 
+
         // Create the core directory structure if it is missing:
         initDataDir();
 
@@ -197,14 +207,24 @@ public class SpigotPrison
         // prior to starting up:
         initCommandMap();
         this.scheduler = new SpigotScheduler(this);
+        
+        SpigotPlatform platform = new SpigotPlatform(this);
+        
 
         // Show Prison's splash screen and setup the core components:
         Prison.get()
-        		.init(new SpigotPlatform(this), Bukkit.getVersion());
-        
+        		.init(platform, Bukkit.getVersion());
         
         // Enable the spigot locale manager:
         getLocaleManager();
+        
+        if ( debug ) {
+        	Output.get().setDebug( debug );
+        }
+        
+        // Load the Text's language configs:
+        Text.initialize();
+        
         
         this.compatibility = SpigotCompatibility.getInstance();
 //        initCompatibility();  Obsolete...
@@ -291,7 +311,7 @@ public class SpigotPrison
         
         
         // The BlockBreakEvents must be registered after the mines and ranks modules have been enabled:
-        new OnBlockBreakEventListener().registerAllBlockBreakEvents( this );
+        getBlockBreakEventListeners().registerAllBlockBreakEvents( this );
         
         
         initMetrics();
@@ -318,7 +338,20 @@ public class SpigotPrison
 //        	cmdVersion.getRegisteredPlugins().add( value );
 //		}
 
-		ChatDisplay cdVersion = cmdVersion.displayVersion("basic");
+        
+        ChatDisplay cdVersion = new ChatDisplay("A suppressed title");
+        cdVersion.setShowTitle( false );
+//		ChatDisplay cdVersion = cmdVersion.displayVersion("basic");
+		
+
+        // This generates the module listing, the autoFeatures overview, 
+        // the integrations listings, and the plugins listings.
+        // Used in the command: /prison version
+		boolean isBasic = true;
+		boolean showLaddersAndRanks = false;
+        Prison.get().getPlatform().prisonVersionFeatures( cdVersion, isBasic, showLaddersAndRanks );
+
+
 		cdVersion.toLog( LogLevel.INFO );
 		
 		// Provides a startup test of blocks available for the version of spigot that being used:
@@ -385,7 +418,14 @@ public class SpigotPrison
     }
     
     
-    public FileConfiguration getGuiConfig() {
+    public OnBlockBreakEventListener getBlockBreakEventListeners() {
+    	if ( blockBreakEventListeners == null ) {
+            this.blockBreakEventListeners = new OnBlockBreakEventListener();
+    	}
+		return blockBreakEventListeners;
+	}
+
+	public FileConfiguration getGuiConfig() {
     	if (guiConfig == null) {
     		guiConfig = new GuiConfig();
     	}
@@ -464,9 +504,10 @@ public class SpigotPrison
     }
 
     public static String stripColor(String format){
-    	format = format(format);
+    	return Text.stripColor(format);
+//    	format = format(format);
     	
-    	return format == null ? null : ChatColor.stripColor(format);
+//    	return format == null ? null : ChatColor.stripColor(format);
     }
     
     /**
@@ -479,38 +520,66 @@ public class SpigotPrison
         if (!getConfig().getBoolean("send-metrics", true)) {
             return; // Don't check if they don't want it
         }
-        Metrics metrics = new Metrics( this, 657 );
+        
+        int pluginId = 657;
+        Metrics metrics = new Metrics( this, pluginId );
 
         // Report the modules being used
-        metrics.addCustomChart(new SimpleBarChart("modules_used", () -> {
+        SimpleBarChart sbcModulesUsed = new SimpleBarChart("modules_used", () -> {
             Map<String, Integer> valueMap = new HashMap<>();
             for (Module m : PrisonAPI.getModuleManager().getModules()) {
                 valueMap.put(m.getName(), 1);
             }
             return valueMap;
-        }));
+        });
+        metrics.addCustomChart( sbcModulesUsed );
 
         // Report the API level
-        metrics.addCustomChart(
-                new SimplePie("api_level", () -> "API Level " + Prison.API_LEVEL));
+        SimplePie spApiLevel = 
+                new SimplePie("api_level", () -> 
+                	"API Level " + Prison.API_LEVEL + "." + Prison.API_LEVEL_MINOR );
+    	metrics.addCustomChart( spApiLevel );
+        
         
         Optional<Module> prisonMinesOpt = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
         Optional<Module> prisonRanksOpt = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
         
         int mineCount = prisonMinesOpt.map(module -> ((PrisonMines) module).getMineManager().getMines().size()).orElse(0);
         int rankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getRankCount()).orElse(0);
-        int ladderCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getladderCount()).orElse(0);
         
-        metrics.addCustomChart(new MultiLineChart("mines_ranks_and_ladders", new Callable<Map<String, Integer>>() {
+        int defaultRankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getDefaultLadderRankCount()).orElse(0);
+        int prestigesRankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getPrestigesLadderRankCount()).orElse(0);
+        int otherRankCount = rankCount - defaultRankCount - prestigesRankCount;
+        
+        int ladderCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getladderCount()).orElse(0);
+        int playerCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getPlayersCount()).orElse(0);
+        
+        MultiLineChart mlcMinesRanksAndLadders = 
+        		new MultiLineChart("mines_ranks_and_ladders", new Callable<Map<String, Integer>>() {
             @Override
             public Map<String, Integer> call() throws Exception {
                 Map<String, Integer> valueMap = new HashMap<>();
                 valueMap.put("mines", mineCount);
                 valueMap.put("ranks", rankCount);
                 valueMap.put("ladders", ladderCount);
+                valueMap.put("players", playerCount);
                 return valueMap;
             }
-        }));
+        });
+        metrics.addCustomChart( mlcMinesRanksAndLadders );
+        
+        MultiLineChart mlcPrisonRanks = new MultiLineChart("prison_ranks", new Callable<Map<String, Integer>>() {
+        	@Override
+        	public Map<String, Integer> call() throws Exception {
+        		Map<String, Integer> valueMap = new HashMap<>();
+        		valueMap.put("ranks", rankCount);
+        		valueMap.put("defaultRanks", defaultRankCount);
+        		valueMap.put("prestigesRanks", prestigesRankCount);
+        		valueMap.put("otherRanks", otherRankCount);
+        		return valueMap;
+        	}
+        });
+        metrics.addCustomChart( mlcPrisonRanks );
     }
 
     /**
@@ -676,6 +745,8 @@ public class SpigotPrison
     private void initModulesAndCommands() {
 
         YamlConfiguration modulesConf = loadConfig("modules.yml");
+        
+        boolean isRanksEnabled = false;
 
         // TODO: This business logic needs to be moved to the Module Manager:
         if (modulesConf.getBoolean("mines")) {
@@ -690,25 +761,49 @@ public class SpigotPrison
             Prison.get().getModuleManager().getDisabledModules().add( PrisonMines.MODULE_NAME );
         }
 
-        if (modulesConf.getBoolean("ranks")) {
-            Prison.get().getModuleManager()
-                    .registerModule(new PrisonRanks(getDescription().getVersion()));
+        if (modulesConf.getBoolean("ranks") ) {
+        	PrisonRanks rankModule = new PrisonRanks(getDescription().getVersion() );
+        	
+        	// Register and enable Ranks:
+            Prison.get().getModuleManager().registerModule( rankModule );
 
-            Prison.get().getCommandHandler().registerCommands( new PrisonSpigotRanksCommands() );
-            
-            // NOTE: If ranks module is enabled, then try to register prestiges commands if enabled:
-            if ( isPrisonConfig( "prestiges") || isPrisonConfig( "prestige.enabled" ) ) {
-            	// Enable the setup of the prestige related commands only if prestiges is enabled:
-            	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
+            if ( rankModule.isEnabled() && PrisonAPI.getIntegrationManager().hasForType(IntegrationType.ECONOMY) ) {
+            	
+            	isRanksEnabled = true;
             }
-            
-        } else {
+        } 
+        else {
         	Output.get().logInfo("&3Modules: &cPrison Ranks, Ladders, and Players are disabled and were not Loaded. ");
         	Output.get().logInfo("&7  Prestiges cannot be enabled without ranks being enabled. ");
         	Output.get().logInfo("&7  Prison Ranks have been disabled in &2plugins/Prison/modules.yml&7.");
         	Prison.get().getModuleManager().getDisabledModules().add( PrisonRanks.MODULE_NAME );
         }
         
+       
+        // If the sellall module is defined in modules.yml, then use that setting, otherwise
+        // use the sellall config setting within the config.yml file.
+        String moduleName = PrisonSellall.MODULE_NAME.toLowerCase();
+        boolean isDefined = modulesConf.contains(moduleName);
+        
+        if ( isDefined && modulesConf.getBoolean(moduleName) ||
+        		!isDefined && getConfig().contains("sellall") && getConfig().isBoolean("sellall") ) {
+        		
+//        		modulesConf.getBoolean( PrisonSellall.MODULE_NAME.toLowerCase(), true ) ||
+//        		getConfig().contains("sellall") && getConfig().isBoolean("sellall")) {
+        	PrisonSellall sellallModule = new PrisonSellall(getDescription().getVersion() );
+        	
+        	// Register and enable Ranks:
+            Prison.get().getModuleManager().registerModule( sellallModule );
+            
+            Prison.get().getCommandHandler().registerCommands( new SellallCommands() );
+
+        } 
+        else {
+        	Output.get().logInfo("&3Modules: &cPrison sellall module is disabled and was not Loaded. ");
+        	Prison.get().getModuleManager().getDisabledModules().add( PrisonSellall.MODULE_NAME );
+        }
+        
+
         
         // The following linkMinesAndRanks() function must be called only after the 
         // Module deferred tasks are ran.
@@ -718,9 +813,23 @@ public class SpigotPrison
 //        	linkMinesAndRanks();
 //        }
 
-        // Load sellAll if enabled
-        if (isSellAllEnabled){
-        	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotSellAllCommands() );
+        
+        // Do not enable sellall if ranks is not loaded since it uses player ranks:
+        if ( isRanksEnabled ) {
+        	
+        	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotRanksCommands() );
+        	
+        	// NOTE: If ranks module is enabled, then try to register prestiges commands if enabled:
+        	if ( isPrisonConfig( "prestiges") || isPrisonConfig( "prestige.enabled" ) ) {
+        		// Enable the setup of the prestige related commands only if prestiges is enabled:
+        		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotPrestigeCommands() );
+        	}
+        	
+        	// Load sellAll if enabled
+        	if (isSellAllEnabled){
+        		Prison.get().getCommandHandler().registerCommands( new PrisonSpigotSellAllCommands() );
+        	}
+            
         }
 
         // Load backpacks commands if enabled
@@ -728,7 +837,9 @@ public class SpigotPrison
         	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotBackpackCommands() );
         }
 
+        
         // This registers the admin's /gui commands
+        // GUI commands were updated to prevent use of ranks commands when ranks module is not loaded.
         if (getConfig().getString("prison-gui-enabled").equalsIgnoreCase("true")) {
         	Prison.get().getCommandHandler().registerCommands( new PrisonSpigotGUICommands() );
         }

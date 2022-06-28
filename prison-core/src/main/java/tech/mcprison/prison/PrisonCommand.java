@@ -35,28 +35,26 @@ import java.util.UUID;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.CommandPagedData;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.discord.PrisonPasteChat;
-import tech.mcprison.prison.integration.IntegrationManager;
-import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.modules.Module;
-import tech.mcprison.prison.modules.ModuleStatus;
 import tech.mcprison.prison.output.BulletedListComponent;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.DisplayComponent;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.Output.DebugTarget;
+import tech.mcprison.prison.placeholders.PlaceholdersStats;
 import tech.mcprison.prison.troubleshoot.TroubleshootResult;
 import tech.mcprison.prison.troubleshoot.Troubleshooter;
 import tech.mcprison.prison.util.JumboTextFont;
 import tech.mcprison.prison.util.PrisonJarReporter;
-import tech.mcprison.prison.util.Text;
 
 /**
  * Root commands for managing the platform as a whole, in-game.
@@ -274,152 +272,171 @@ public class PrisonCommand
 
         
         display.addText("");
-        
-        display.addText("&7Prison's root Command: /prison");
-        
-        for ( Module module : Prison.get().getModuleManager().getModules() ) {
-        	
-        	display.addText( "&7Module: %s : %s %s", module.getName(), 
-        			module.getStatus().getStatusText(),
-        			(module.getStatus().getStatus() == ModuleStatus.Status.FAILED ? 
-        						"[" + module.getStatus().getMessage() + "]" : "")
-        			);
-        	// display.addText( ".   &7Base Commands: %s", module.getBaseCommands() );
-        }
-        
-        List<String> disabledModules = Prison.get().getModuleManager().getDisabledModules();
-        if ( disabledModules.size() > 0 ) {
-        	display.addText( "&7Disabled Module%s:", (disabledModules.size() > 1 ? "s" : ""));
-        	for ( String disabledModule : Prison.get().getModuleManager().getDisabledModules() ) {
-        		display.addText( ".   &cDisabled Module:&7 %s. Related commands and placeholders are non-functional. ",
-        				disabledModule );
-        	}
-        }
+
+
+        // This generates the module listing, the autoFeatures overview, 
+        // the integrations listings, and the plugins listings.
+        boolean showLaddersAndRanks = true;
+        Prison.get().getPlatform().prisonVersionFeatures( display, isBasic, showLaddersAndRanks );
 
         
-        List<String> features = Prison.get().getPlatform().getActiveFeatures();
-        if ( features.size() > 0 ) {
-        	
-        	display.addText("");
-        	for ( String feature : features ) {
-        		
-        		if ( !feature.startsWith( "+" ) ) {
-        			
-        			display.addText( feature );
-        		}
-        		else if ( !isBasic ) {
-        			
-        			display.addText( feature.substring( 1 ) );
-        		}
-        	}
-        }
         
-        
-        display.addText("");
-        display.addText("&7Integrations:");
-
-        IntegrationManager im = Prison.get().getIntegrationManager();
-        String permissions =
-        		(im.hasForType(IntegrationType.PERMISSION) ?
-                " " + im.getForType(IntegrationType.PERMISSION).get().getDisplayName() :
-                "None");
-
-        display.addText(". . &7Permissions: " + permissions);
-
-        String economy =
-        		(im.hasForType(IntegrationType.ECONOMY) ?
-                " " + im.getForType(IntegrationType.ECONOMY).get().getDisplayName() : 
-                "None");
-
-        display.addText(". . &7Economy: " + economy);
-        
-        
-        List<DisplayComponent> integrationRows = im.getIntegrationComponents( isBasic );
-        for ( DisplayComponent component : integrationRows )
-		{
-        	display.addComponent( component );
-		}
-        
-        Prison.get().getPlatform().identifyRegisteredPlugins();
-        
-        // NOTE: This list of plugins is good enough and the detailed does not have all the info.
-        // Display all loaded plugins:
-        if ( getRegisteredPlugins().size() > 0 ) {
-        	display.addText("");
-        	display.addText( "&7Registered Plugins: " );
-        	
-        	List<String> plugins = getRegisteredPlugins();
-        	Collections.sort( plugins );
-        	List<String> plugins2Cols = Text.formatColumnsFromList( plugins, 2 );
-        	
-        	for ( String rp : plugins2Cols ) {
-				
-        		display.addText( rp );
-			}
-        	
-//        	StringBuilder sb = new StringBuilder();
-//        	for ( String plugin : getRegisteredPlugins() ) {
-//        		if ( sb.length() == 0) {
-//        			sb.append( ". " );
-//        			sb.append( plugin );
-//        		} else {
-//        			sb.append( ",  " );
-//        			sb.append( plugin );
-//        			display.addText( sb.toString() );
-//        			sb.setLength( 0 );
-//        		}
-//        	}
-//        	if ( sb.length() > 0 ) {
-//        		display.addText( sb.toString());
-//        	}
-        }
-        
-        // This version of plugins does not have all the registered commands:
-//        // The new plugin listings:
-//        if ( getRegisteredPluginData().size() > 0 ) {
-//        	display.text( "&7Registered Plugins Detailed: " );
-//        	StringBuilder sb = new StringBuilder();
-//        	Set<String> keys = getRegisteredPluginData().keySet();
+//        List<String> features = Prison.get().getPlatform().getActiveFeatures();
+//        if ( features.size() > 0 ) {
 //        	
-//        	for ( String key : keys ) {
-//        		RegisteredPluginsData plugin = getRegisteredPluginData().get(key);
+//        	display.addText("");
+//        	for ( String feature : features ) {
 //        		
-//        		if ( sb.length() == 0) {
-//        			sb.append( "  " );
-//        			sb.append( plugin.formatted() );
-//        		} else {
-//        			sb.append( ",  " );
-//        			sb.append( plugin.formatted() );
-//        			display.text( sb.toString() );
-//        			sb.setLength( 0 );
+//        		if ( !feature.startsWith( "+" ) ) {
+//        			
+//        			display.addText( feature );
+//        		}
+//        		else if ( !isBasic ) {
+//        			
+//        			display.addText( feature.substring( 1 ) );
 //        		}
 //        	}
-//        	if ( sb.length() > 0 ) {
-//        		display.text( sb.toString());
+//        }
+//        
+//        
+//        display.addText("");
+//        
+//        // Active Modules:
+//        display.addText("&7Prison's root Command: &3/prison");
+//        
+//        for ( Module module : Prison.get().getModuleManager().getModules() ) {
+//        	
+//        	display.addText( "&7Module: %s : %s %s", module.getName(), 
+//        			module.getStatus().getStatusText(),
+//        			(module.getStatus().getStatus() == ModuleStatus.Status.FAILED ? 
+//        					"[" + module.getStatus().getMessage() + "]" : "")
+//        			);
+//        	// display.addText( ".   &7Base Commands: %s", module.getBaseCommands() );
+//        }
+//        
+//        List<String> disabledModules = Prison.get().getModuleManager().getDisabledModules();
+//        if ( disabledModules.size() > 0 ) {
+//        	display.addText( "&7Disabled Module%s:", (disabledModules.size() > 1 ? "s" : ""));
+//        	for ( String disabledModule : Prison.get().getModuleManager().getDisabledModules() ) {
+//        		display.addText( ".   &cDisabled Module:&7 %s. Related commands and placeholders are non-functional. ",
+//        				disabledModule );
 //        	}
 //        }
-        
-        
-//        RegisteredPluginsData plugin = getRegisteredPluginData().get( "Prison" );
-//        String pluginDetails = plugin.getdetails();
 //        
-//        display.text( pluginDetails );
+//        display.addText("");
+//        display.addText("&7Integrations:");
+//
+//        IntegrationManager im = Prison.get().getIntegrationManager();
+//        String permissions =
+//        		(im.hasForType(IntegrationType.PERMISSION) ?
+//                " " + im.getForType(IntegrationType.PERMISSION).get().getDisplayName() :
+//                "None");
+//
+//        display.addText(". . &7Permissions: " + permissions);
+//
+//        String economy =
+//        		(im.hasForType(IntegrationType.ECONOMY) ?
+//                " " + im.getForType(IntegrationType.ECONOMY).get().getDisplayName() : 
+//                "None");
+//
+//        display.addText(". . &7Economy: " + economy);
+//        
+//        
+//        List<DisplayComponent> integrationRows = im.getIntegrationComponents( isBasic );
+//        for ( DisplayComponent component : integrationRows )
+//		{
+//        	display.addComponent( component );
+//		}
+//        
+//        
+//        display.addText("");
+//        display.addText("&7Locale Settings:");
+//        
+//        for ( String localeInfo : Prison.get().getLocaleLoadInfo() ) {
+//			display.addText( ". . " + localeInfo );
+//		}
         
-
-//        if ( !isBasic ) {
-//        	Prison.get().getPlatform().dumpEventListenersBlockBreakEvents();
+//        
+//        Prison.get().getPlatform().identifyRegisteredPlugins();
+//        
+//        // NOTE: This list of plugins is good enough and the detailed does not have all the info.
+//        // Display all loaded plugins:
+//        if ( getRegisteredPlugins().size() > 0 ) {
+//        	display.addText("");
+//        	display.addText( "&7Registered Plugins: " );
+//        	
+//        	List<String> plugins = getRegisteredPlugins();
+//        	Collections.sort( plugins );
+//        	List<String> plugins2Cols = Text.formatColumnsFromList( plugins, 2 );
+//        	
+//        	for ( String rp : plugins2Cols ) {
+//				
+//        		display.addText( rp );
+//			}
+//        	
+////        	StringBuilder sb = new StringBuilder();
+////        	for ( String plugin : getRegisteredPlugins() ) {
+////        		if ( sb.length() == 0) {
+////        			sb.append( ". " );
+////        			sb.append( plugin );
+////        		} else {
+////        			sb.append( ",  " );
+////        			sb.append( plugin );
+////        			display.addText( sb.toString() );
+////        			sb.setLength( 0 );
+////        		}
+////        	}
+////        	if ( sb.length() > 0 ) {
+////        		display.addText( sb.toString());
+////        	}
 //        }
-        
-        
-        Prison.get().getPlatform().getWorldLoadErrors( display );
-
-        if ( !isBasic && getPrisonStartupDetails().size() > 0 ) {
-        	display.addText("");
-        	
-        	for ( String msg : getPrisonStartupDetails() ) {
-				display.addText( msg );
-			}
-        }
+//        
+//        // This version of plugins does not have all the registered commands:
+////        // The new plugin listings:
+////        if ( getRegisteredPluginData().size() > 0 ) {
+////        	display.text( "&7Registered Plugins Detailed: " );
+////        	StringBuilder sb = new StringBuilder();
+////        	Set<String> keys = getRegisteredPluginData().keySet();
+////        	
+////        	for ( String key : keys ) {
+////        		RegisteredPluginsData plugin = getRegisteredPluginData().get(key);
+////        		
+////        		if ( sb.length() == 0) {
+////        			sb.append( "  " );
+////        			sb.append( plugin.formatted() );
+////        		} else {
+////        			sb.append( ",  " );
+////        			sb.append( plugin.formatted() );
+////        			display.text( sb.toString() );
+////        			sb.setLength( 0 );
+////        		}
+////        	}
+////        	if ( sb.length() > 0 ) {
+////        		display.text( sb.toString());
+////        	}
+////        }
+//        
+//        
+////        RegisteredPluginsData plugin = getRegisteredPluginData().get( "Prison" );
+////        String pluginDetails = plugin.getdetails();
+////        
+////        display.text( pluginDetails );
+//        
+//
+////        if ( !isBasic ) {
+////        	Prison.get().getPlatform().dumpEventListenersBlockBreakEvents();
+////        }
+//        
+//        
+//        Prison.get().getPlatform().getWorldLoadErrors( display );
+//
+//        if ( !isBasic && getPrisonStartupDetails().size() > 0 ) {
+//        	display.addText("");
+//        	
+//        	for ( String msg : getPrisonStartupDetails() ) {
+//				display.addText( msg );
+//			}
+//        }
         
         return display;
     }
@@ -767,6 +784,24 @@ public class PrisonCommand
     }
     
     
+    @Command(identifier = "prison placeholders stats", 
+    		description = "List all placeholders that have been requested since server startup.", 
+    		onlyPlayers = false, permissions = "prison.placeholder")
+    public void placeholdersStatsCommand(CommandSender sender
+    		) {
+    	
+    	ChatDisplay display = new ChatDisplay("Placeholders List");
+    	
+    	ArrayList<String> stats = PlaceholdersStats.getInstance().generatePlaceholderReport();
+    	
+    	for (String stat : stats) {
+			display.addText( stat.replace( "%", "%%") );
+		}
+    	
+    	
+    	display.send(sender);
+    }
+    
     @Command(identifier = "prison reload placeholders", 
     		description = "Placeholder reload: Regenerates all placeholders and reregisters them.", 
     		onlyPlayers = false, permissions = "prison.placeholder")
@@ -811,7 +846,7 @@ public class PrisonCommand
     		onlyPlayers = false, permissions = "prison.autofeatures")
     public void reloadAutoFeatures(CommandSender sender ) {
     	    	
-    	AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig().reloadConfig();
+    	AutoFeaturesWrapper.getInstance().reloadConfigs();
     	
     	String message = "&7AutoFeatures were reloaded. The new settings are now in effect. ";
     	sender.sendMessage( message );
@@ -820,6 +855,22 @@ public class PrisonCommand
     		String filePath = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig()
     								.getConfigFile().getCanonicalPath();
     		sender.sendMessage( filePath );
+    	}
+    	catch ( IOException e ) {
+    		// Ingore
+    	}
+    	try {
+    		
+    		if ( AutoFeaturesWrapper.getInstance().getBlockConvertersConfig() != null ) {
+    			
+    			File bcFile = AutoFeaturesWrapper.getInstance().getBlockConvertersConfig().getConfigFile();
+    			if ( bcFile != null && bcFile.exists() ) {
+    				
+    				String filePath = bcFile.getCanonicalPath();
+    				sender.sendMessage( filePath );
+    			}
+    		}
+    		
     	}
     	catch ( IOException e ) {
     		// Ingore
@@ -965,6 +1016,10 @@ public class PrisonCommand
     		display.addText( "&b " );
     		display.addText( "&b   options.isProcessMcMMOBlockBreakEvents %s", 
     				afw.isBoolean( AutoFeatures.isProcessMcMMOBlockBreakEvents ));
+    		display.addText( "&b   options.isProcessEZBlocksBlockBreakEvents %s", 
+    				afw.isBoolean( AutoFeatures.isProcessEZBlocksBlockBreakEvents ));
+    		display.addText( "&b   options.isProcessQuestsBlockBreakEvents %s", 
+    				afw.isBoolean( AutoFeatures.isProcessQuestsBlockBreakEvents ));
     		display.addText( "&b " );
     		
     		
@@ -1001,18 +1056,21 @@ public class PrisonCommand
     @Command(identifier = "prison debug", 
     		description = "Enables debugging and trouble shooting information. " +
     				"For internal use only. Do not use unless instructed.", 
-    		onlyPlayers = false, permissions = "prison.debug" )
+    		onlyPlayers = false, permissions = "prison.debug",
+    		aliases = {"prison support debug"} )
     public void toggleDebug(CommandSender sender,
     		@Wildcard(join=true)
     		@Arg(name = "targets", def = " ",
-    				description = "Optional. Enable or disable a debugging target. " +
-    					"[on, off, targets, selective, jarScan, " +
+    				description = "Optional. Enable or disable a debugging target, or set a count down timer. " +
+    					"[on, off, targets, (count-down-timer), selective, jarScan, " +
     					"testPlayerUtil, testLocale, rankup ] " +
     				"Use 'targets' to list all available targets.  Use 'on' or 'off' to toggle " +
     				"on and off individual targets, or 'all' targets if no target is specified. " +
     				"If any targets are enabled, then debug in general will be enabled. Selective will only " +
     				"activate debug with the specified targets. " +
-    				"jarScan will identify what Java version compiled the class files within the listed jars"
+    				"A positive integer value will enable the count down timer mode to enable " +
+    				"debug mode for a number of loggings, then debug mode will be turned off. " +
+    				"jarScan will identify what Java version compiled the class files within the listed jars."
     						) String targets ) {
     	
     	if ( targets != null && "jarScan".equalsIgnoreCase( targets ) ) {
@@ -1043,13 +1101,13 @@ public class PrisonCommand
     	// Applies normal and selective targets:
     	Output.get().applyDebugTargets( targets );
     	
-    	String message = "Global Debug Logging is " + (Output.get().isDebug() ? "enabled" : "disabled");
+    	String message = "&7Global Debug Logging is " + (Output.get().isDebug() ? "&3enabled" : "&cdisabled");
     	sender.sendMessage( message );
     	
     	Set<DebugTarget> activeDebugTargets = Output.get().getActiveDebugTargets();
     	
     	if ( activeDebugTargets.size() > 0 ) {
-    		message = ". Active Debug Targets:";
+    		message = ". Note: Active Debug Targets:";
     		sender.sendMessage( message );
     		
     		for ( DebugTarget target : activeDebugTargets )
@@ -1098,6 +1156,42 @@ public class PrisonCommand
     }
     
     
+	
+	@Command(identifier = "prison support runCmd", 
+			description = "For use in other plugins to force a player to run a prison command. " +
+					"Its been seen that when enabling NPCs to run commands as players, that the " +
+					"NPC is still the active entity associated with the command when it enters " +
+					"the Prison command handler.  This command will ensure the actual player is " +
+					"used.  The commands that are specified to run, do not have to prison's commands.", 
+					onlyPlayers = false, permissions = "prison.runcmd",
+					aliases = "prison utils runCmd")
+	public void runCommand(CommandSender sender,
+			@Arg(name = "player", 
+    		description = "Player to run the command as.") String playerName,
+    		
+    		@Wildcard(join=true)
+			@Arg(name = "command", description = "The command to run for the player." ) String command
+			) {
+		
+		
+    	if ( playerName == null || playerName.isEmpty() ) {
+    		
+    		coreRunCommandNameRequiredMsg(sender);
+
+    		return;
+    	}
+    	
+    	if ( command == null || command.trim().length() == 0 ) {
+    		coreRunCommandCommandRequiredMsg(sender);
+    	}
+
+    	Player player = getPlayer( playerName );
+    	
+    	PrisonAPI.dispatchCommand( player, command );
+
+	}
+	
+	
     @Command(identifier = "prison support setSupportName", 
     		description = "This sets the support name that is used with the submissions so its " +
     				"easier to track who the submissions belong to.  It is recommended that you " +
@@ -1111,14 +1205,14 @@ public class PrisonCommand
     		) {
     	
     	if ( supportName == null || supportName.trim().isEmpty() ) {
-    		Output.get().logInfo( "A value for supportName is required." );
+    		sender.sendMessage( "A value for supportName is required." );
     		return;
     	}
 
     	setSupportName( supportName );
     	
-    	Output.get().logInfo( "The support name has been set to: %s", getSupportName() );
-    	Output.get().logInfo( "You can now use the support submit options." );
+    	sender.sendMessage( String.format( "The support name has been set to: %s", getSupportName() ) );
+    	sender.sendMessage( "You can now use the support submit options." );
 
     }
     
@@ -1133,8 +1227,8 @@ public class PrisonCommand
     	
     	
     	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
-    		Output.get().logInfo( "The support name needs to be set prior to using this command." );
-    		Output.get().logInfo( "Use &7/prison support setSupportName help" );
+    		sender.sendMessage( "The support name needs to be set prior to using this command." );
+    		sender.sendMessage( "Use &7/prison support setSupportName help" );
     		
     		return;
     	}
@@ -1151,12 +1245,12 @@ public class PrisonCommand
 		
 		if ( helpURL != null ) {
 			
-			Output.get().logInfo( "Prison's support information has been pasted. Copy and " +
+			sender.sendMessage( "Prison's support information has been pasted. Copy and " +
 					"paste this URL in to Prison's Discord server." );
-			Output.get().logInfo( "Paste this URL: %s", helpURL );
+			sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
 		}
 		else {
-    		Output.get().logInfo( "There was an error trying to generate the paste.helpch.at URL." );
+			sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
 		}
 		
     	
@@ -1174,8 +1268,8 @@ public class PrisonCommand
     	
     	
     	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
-    		Output.get().logInfo( "The support name needs to be set prior to using this command." );
-    		Output.get().logInfo( "Use &7/prison support setSupportName help" );
+    		sender.sendMessage( "The support name needs to be set prior to using this command." );
+    		sender.sendMessage( "Use &7/prison support setSupportName help" );
     		
     		return;
     	}
@@ -1207,12 +1301,12 @@ public class PrisonCommand
     	
     	if ( helpURL != null ) {
     		
-    		Output.get().logInfo( "Prison's support information has been pasted. Copy and " +
+    		sender.sendMessage( "Prison's support information has been pasted. Copy and " +
     				"paste this URL in to Prison's Discord server." );
-    		Output.get().logInfo( "Paste this URL: %s", helpURL );
+    		sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
     	}
     	else {
-    		Output.get().logInfo( "There was an error trying to generate the paste.helpch.at URL." );
+    		sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
     	}
     	
     	
@@ -1228,8 +1322,8 @@ public class PrisonCommand
     	
     	
     	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
-    		Output.get().logInfo( "The support name needs to be set prior to using this command." );
-    		Output.get().logInfo( "Use &7/prison support setSupportName help" );
+    		sender.sendMessage( "The support name needs to be set prior to using this command." );
+    		sender.sendMessage( "Use &7/prison support setSupportName help" );
     		
     		return;
     	}
@@ -1261,12 +1355,12 @@ public class PrisonCommand
     	
     	if ( helpURL != null ) {
     		
-    		Output.get().logInfo( "Prison's support information has been pasted. Copy and " +
+    		sender.sendMessage( "Prison's support information has been pasted. Copy and " +
     				"paste this URL in to Prison's Discord server." );
-    		Output.get().logInfo( "Paste this URL: %s", helpURL );
+    		sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
     	}
     	else {
-    		Output.get().logInfo( "There was an error trying to generate the paste.helpch.at URL." );
+    		sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
     	}
     	
     	
@@ -1283,8 +1377,8 @@ public class PrisonCommand
     	
     	
     	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
-    		Output.get().logInfo( "The support name needs to be set prior to using this command." );
-    		Output.get().logInfo( "Use &7/prison support setSupportName help" );
+    		sender.sendMessage( "The support name needs to be set prior to using this command." );
+    		sender.sendMessage( "Use &7/prison support setSupportName help" );
     		
     		return;
     	}
@@ -1323,12 +1417,12 @@ public class PrisonCommand
     	
     	if ( helpURL != null ) {
     		
-    		Output.get().logInfo( "Prison's support information has been pasted. Copy and " +
+    		sender.sendMessage( "Prison's support information has been pasted. Copy and " +
     				"paste this URL in to Prison's Discord server." );
-    		Output.get().logInfo( "Paste this URL: %s", helpURL );
+    		sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
     	}
     	else {
-    		Output.get().logInfo( "There was an error trying to generate the paste.helpch.at URL." );
+    		sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
     	}
     	
     	
@@ -1420,8 +1514,8 @@ public class PrisonCommand
     	
     	
     	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
-    		Output.get().logInfo( "The support name needs to be set prior to using this command." );
-    		Output.get().logInfo( "Use &7/prison support setSupportName help" );
+    		sender.sendMessage( "The support name needs to be set prior to using this command." );
+    		sender.sendMessage( "Use &7/prison support setSupportName help" );
     		
     		return;
     	}
@@ -1430,7 +1524,7 @@ public class PrisonCommand
     	File latestLogFile = new File( Prison.get().getDataFolder().getParentFile().getParentFile(), 
     									"logs/latest.log");
     	
-    	Output.get().logInfo( "### log path: " + latestLogFile.getAbsolutePath() );
+    	sender.sendMessage( "### log path: " + latestLogFile.getAbsolutePath() );
     	
     	
     	StringBuilder logText = new StringBuilder();
@@ -1449,9 +1543,9 @@ public class PrisonCommand
     			
     			if ( helpURL != null ) {
     				
-    				Output.get().logInfo( "Prison's support information has been pasted. Copy and " +
+    				sender.sendMessage( "Prison's support information has been pasted. Copy and " +
     						"paste this URL in to Prison's Discord server." );
-    				Output.get().logInfo( "Paste this URL: %s", helpURL );
+    				sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
     			}
     			else {
     				// Do nothing since if helpURL is null, then it has probably
@@ -1461,7 +1555,7 @@ public class PrisonCommand
     		}
     	}
     	
-    	Output.get().logInfo( "Unable to send log file.  Unknown reason why." );
+    	sender.sendMessage( "Unable to send log file.  Unknown reason why." );
     }
 
 	private void readFileToStringBulider( File textFile, StringBuilder text )
@@ -1567,9 +1661,10 @@ public class PrisonCommand
     	if ( ( player == null || !player.isOnline() ) && 
     			( playerName == null || playerName.isEmpty() ) ) {
     		
-    		String message = "Prison Tokens: A player's name is required when used from console.";
-    		
-    		Output.get().logWarn( message );
+    		coreTokensNameRequiredMsg(sender);
+//    		String message = "Prison Tokens: A player's name is required when used from console.";
+//    		
+//    		Output.get().logWarn( message );
     		return;
     	}
     	else 
@@ -1577,9 +1672,10 @@ public class PrisonCommand
     		
     		if ( !sender.isOp() &&  
     				!sender.hasPermission( "tokens.bal.others" ) ) {
-    			String message = "Prison Tokens: You do not have permission to view other " +
-    					"player's balances.";
-    			Output.get().logWarn( message );
+    			coreTokensBalanceCannotViewOthersMsg(sender);
+//    			String message = "Prison Tokens: You do not have permission to view other " +
+//    					"player's balances.";
+//    			Output.get().logWarn( message );
     			return;
     		}
     		
@@ -1593,72 +1689,120 @@ public class PrisonCommand
     	
 //    	player.getPlayerCache()
     	
-    	DecimalFormat dFmt = new DecimalFormat("#,##0");
-
     	long tokens = player.getPlayerCachePlayerData().getTokens();
     	
-    	String tokensMsg = dFmt.format( tokens );
+    	coreTokensBalanceViewMsg( sender, player.getName(), tokens );
     	
-    	String message = String.format( "&3%s has %s tokens.", player.getName(), tokensMsg );
-    	
-    	sender.sendMessage( message );
+//    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+//    	String tokensMsg = dFmt.format( tokens );
+//    	
+//    	String message = String.format( "&3%s has %s tokens.", player.getName(), tokensMsg );
+//    	
+//    	sender.sendMessage( message );
     }
     
     @Command(identifier = "prison tokens add", 
-    		description = "Prison tokens Admin: an admins tool to give more tokens to a player", 
+    		description = "Prison tokens Admin: an admins tool to give more tokens to a player. The " +
+    				"tokens added by admin will not count as earned tokens, so they cannot be used in " +
+    				"situations where the player must earn them. This restriction can be forced to " +
+    				"be attributed to being earned by the player.", 
     		permissions = "tokens.admin.add" )
     public void tokensAdd( CommandSender sender,
     		@Arg(name = "player", 
     		description = "Player to add the tokens to.") String playerName,
     		
     		@Arg(name = "amount", verifiers = "min[1]",
-    		description = "The number of tokens to add to the player's account.") long amount
+    		description = "The number of tokens to add to the player's account.") long amount,
+    		
+    		@Wildcard(join=true)
+    		@Arg(name = "options", description = "Optional settings: [silent forcePlayer]  Silent suppresses " +
+    				"all messages related to the transaction, including failures. The option 'forcePlayer' " +
+    				"will not use the admin logging of this transaction, but instead will assign it to the " +
+    				"player as if they actually earned the tokens through normal ways. It is not advised to " +
+    				"use 'forcePlayer' since it could be used to cheat the system in some ways.",
+    				def = "") String options
     		) {
+    	
+    	boolean silent = options != null && options.toLowerCase().contains( "silent" );
+    	boolean forcePlayer = options != null && options.toLowerCase().contains( "forceplayer" );
     	
     	if ( playerName == null || playerName.isEmpty() ) {
     		
-    		String message = "Prison Tokens: A player's name is required.";
-    		Output.get().logWarn( message );
+    		if ( !silent ) {
+    			coreTokensNameRequiredMsg(sender);
+//    			String message = "Prison Tokens: A player's name is required.";
+//    			Output.get().logWarn( message );
+    		}
+    		
     		return;
     	}
 
-    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+//    	DecimalFormat dFmt = new DecimalFormat("#,##0");
     	
     	if ( amount <= 0 ) {
     		
-    		String message = 
-    				String.format( 
-	    				"Prison Tokens: Invalid amount: '%s'. Must be greater than zero.",
-	    				dFmt.format( amount ) );
-    		Output.get().logWarn( message );
+    		if ( !silent ) {
+    			coreTokensAddInvalidAmountMsg( sender, amount );
+//    			String message = 
+//    					String.format( 
+//    							"Prison Tokens: Invalid amount: '%s'. Must be greater than zero.",
+//    							dFmt.format( amount ) );
+//    			Output.get().logWarn( message );
+    		}
+    		
     		return;
     	}
     	
     	Player player = getPlayer( playerName );
+    	PlayerCachePlayerData pCache = player.getPlayerCachePlayerData();
     	
-    	player.getPlayerCachePlayerData().addTokensAdmin( amount );
+    	long tokenBal = pCache.getTokens();
     	
-    	
-    	
-    	String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
-    	
-    	String message = String.format( "&3%s now has &7%s &3tokens after adding &7%s&3.", 
-    				player.getName(),  tokens, dFmt.format( amount ) );
-    	
-    	// The person adding the tokens, or console:
-    	sender.sendMessage( message );
-    	
-    	// The player getting the tokens, if they are online:
-    	if ( player.isOnline() && !player.getName().equalsIgnoreCase( sender.getName() ) ) {
+    	if ( forcePlayer ) {
     		
-    		player.sendMessage( message );
+    		pCache.addTokens( amount );
     	}
+    	else {
+    		
+    		pCache.addTokensAdmin( amount );
+    	}
+    	
+    	if ( pCache.getTokens() != tokenBal + amount && Output.get().isDebug() ) {
+    		Output.get().logError( 
+    				String.format( 
+    						"AddTokens failure: player: %s  Tokens: %d  Should have been: %d",
+    							player.getName(), pCache.getTokens(), tokenBal + amount ));
+    	}
+    	
+    	if ( !silent ) {
+    		
+    		String message = coreTokensAddedAmountMsg( player.getName(), 
+    				pCache.getTokens(), amount );
+    		
+//    		String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
+//    		
+//    		String message = String.format( "&3%s now has &7%s &3tokens after adding &7%s&3.", 
+//    				player.getName(),  tokens, dFmt.format( amount ) );
+    		
+    		// The person adding the tokens, or console:
+    		sender.sendMessage( message );
+    		
+    		// The player getting the tokens, if they are online:
+    		if ( player.isOnline() && !player.getName().equalsIgnoreCase( sender.getName() ) ) {
+    			
+    			player.sendMessage( message );
+    		}
+    	}
+    	
     }
     
     @Command(identifier = "prison tokens remove", 
     		description = "Prison tokens Admin: an admins tool to remove tokens from a player. " +
     				"It is possible to remove more tokens than what the player has, which can " +
-    				"be treated like a debt.", 
+    				"be treated like a debt.  The " + 
+    				"tokens added by admin will not count as earned tokens, so they cannot be used in " + 
+    				"situations where the player must earn them. This restriction can be forced to " + 
+    				"be attributed to being earned by the player.", 
     		permissions = "tokens.admin.add" )
     public void tokensRemove( CommandSender sender,
     		@Arg(name = "player", 
@@ -1666,72 +1810,120 @@ public class PrisonCommand
     		
     		@Arg(name = "amount", verifiers = "min[1]",
     		description = "The number of tokens to remove from the player's account. " +
-    				"This amount must be positive. ") long amount
+    				"This amount must be positive. ") long amount,
+    		
+    		@Wildcard(join=true)
+			@Arg(name = "options", description = "Optional settings: [silent forcePlayer]  Silent suppresses " +
+					"all messages related to the transaction, including failures. The option 'forcePlayer' " +
+					"will not use the admin logging of this transaction, but instead will assign it to the " +
+					"player as if they actually earned the tokens through normal ways. It is not advised to " +
+					"use 'forcePlayer' since it could be used to cheat the system in some ways.",
+					def = "") String options
     		) {
+    	
+    	boolean silent = options != null && options.toLowerCase().contains( "silent" );
+    	boolean forcePlayer = options != null && options.toLowerCase().contains( "forceplayer" );
     	
     	if ( playerName == null || playerName.isEmpty() ) {
     		
-    		String message = "Prison Tokens: A player's name is required.";
-    		Output.get().logWarn( message );
+    		if ( !silent ) {
+    			coreTokensNameRequiredMsg(sender);
+//    			String message = "Prison Tokens: A player's name is required.";
+//    			Output.get().logWarn( message );
+    		}
+    		
     		return;
     	}
     	
-    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+//    	DecimalFormat dFmt = new DecimalFormat("#,##0");
     	
     	if ( amount <= 0 ) {
     		
-    		String message = 
-    				String.format( 
-    						"Prison Tokens: Invalid amount: '%s'. Must be greater than zero.",
-    						dFmt.format( amount ) );
-    		Output.get().logWarn( message );
+    		if ( !silent ) {
+    			coreTokensAddInvalidAmountMsg( sender, amount );
+//    			String message = 
+//    					String.format( 
+//    							"Prison Tokens: Invalid amount: '%s'. Must be greater than zero.",
+//    							dFmt.format( amount ) );
+//    			Output.get().logWarn( message );
+    		}
+    		
     		return;
     	}
     	
     	Player player = getPlayer( playerName );
     	
-    	player.getPlayerCachePlayerData().removeTokensAdmin( amount );
-    	
-    	
-    	
-    	String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
-    	
-    	String message = String.format( "&3%s now has &7%s &3tokens after removing &7%s&3.", 
-    			player.getName(),  tokens, dFmt.format( amount ) );
-    	
-    	// The person adding the tokens, or console:
-    	sender.sendMessage( message );
-    	
-    	// The player getting the tokens, if they are online:
-    	if ( player.isOnline() && !player.getName().equalsIgnoreCase( sender.getName() ) ) {
+    	if ( forcePlayer ) {
     		
-    		player.sendMessage( message );
+    		player.getPlayerCachePlayerData().removeTokens( amount );
+    	}
+    	else {
+    		
+    		player.getPlayerCachePlayerData().removeTokensAdmin( amount );
+    	}
+    	
+    	
+    	if ( !silent ) {
+    		
+    		String message = coreTokensRemovedAmountMsg( player.getName(),
+    								player.getPlayerCachePlayerData().getTokens(), amount );
+//    		String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
+//    		
+//    		String message = String.format( "&3%s now has &7%s &3tokens after removing &7%s&3.", 
+//    				player.getName(),  tokens, dFmt.format( amount ) );
+    		
+    		// The person adding the tokens, or console:
+    		sender.sendMessage( message );
+    		
+    		// The player getting the tokens, if they are online:
+    		if ( player.isOnline() && !player.getName().equalsIgnoreCase( sender.getName() ) ) {
+    			
+    			player.sendMessage( message );
+    		}
     	}
     }
     
     @Command(identifier = "prison tokens set", 
-    		description = "Prison tokens Admin: an admins tool to set number of tokens " +
+    		description = "Prison tokens Admin: an admins tool to set the number of tokens " +
     				"for a player to a specific amount. " +
-    				"It is possible to set the tokens to a negavtie amount, which can " +
-    				"be treated like a debt.", 
+    				"It is possible to set the tokens to a negative amount, which can " +
+    				"be treated like a debt.  The " + 
+    				"tokens added by admin will not count as earned tokens, so they cannot be used in " + 
+    				"situations where the player must earn them. This restriction can be forced to " + 
+    				"be attributed to being earned by the player.", 
     				permissions = "tokens.admin.add" )
     public void tokensSet( CommandSender sender,
     		@Arg(name = "player", 
-    		description = "Player to remove the tokens from.") String playerName,
+    		description = "Player to adjust their tokens balance.") String playerName,
     		
     		@Arg(name = "amount", 
     		description = "The number of tokens to set the player's account to. " +
-    				"This amount must amount can be negative. ") long amount
-    		) {
+    				"This amount can be negative. ") long amount,
+
+    		@Wildcard(join=true)
+			@Arg(name = "options", description = "Optional settings: [silent forcePlayer]  Silent suppresses " +
+					"all messages related to the transaction, including failures. The option 'forcePlayer' " +
+					"will not use the admin logging of this transaction, but instead will assign it to the " +
+					"player as if they actually earned the tokens through normal ways. It is not advised to " +
+					"use 'forcePlayer' since it could be used to cheat the system in some ways.",
+					def = "") String options 
+			) {
+    	
+    	boolean silent = options != null && options.toLowerCase().contains( "silent" );
+    	boolean forcePlayer = options != null && options.toLowerCase().contains( "forceplayer" );
     	
     	if ( playerName == null || playerName.isEmpty() ) {
     		
-    		String message = "Prison Tokens: A player's name is required.";
-    		Output.get().logWarn( message );
+    		if ( !silent ) {
+    			coreTokensNameRequiredMsg(sender);
+//    			String message = "Prison Tokens: A player's name is required.";
+//    			Output.get().logWarn( message );
+    		}
+    		
     		return;
     	}
     	
-    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+//    	DecimalFormat dFmt = new DecimalFormat("#,##0");
     	
     	Player player = getPlayer( playerName );
 
@@ -1739,22 +1931,33 @@ public class PrisonCommand
 //    	long totalTokens = player.getPlayerCachePlayerData().getTokens();
 //    	player.getPlayerCachePlayerData().removeTokensAdmin( totalTokens );
     	
-    	
-    	player.getPlayerCachePlayerData().setTokensAdmin( amount );
-    	
-    	
-    	String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
-    	
-    	String message = String.format( "&3%s now has &7%s &3tokens.", 
-    			player.getName(), tokens );
-    	
-    	// The person adding the tokens, or console:
-    	sender.sendMessage( message );
-    	
-    	// The player getting the tokens, if they are online:
-    	if ( player.isOnline() && !player.getName().equalsIgnoreCase( sender.getName() ) ) {
+    	if ( forcePlayer ) {
     		
-    		player.sendMessage( message );
+    		player.getPlayerCachePlayerData().setTokens( amount );
+    	}
+    	else {
+    		
+    		player.getPlayerCachePlayerData().setTokensAdmin( amount );
+    	}
+    	
+    	if ( !silent ) {
+    		
+    		String message = coreTokensSetAmountMsg( player.getName(), 
+    						player.getPlayerCachePlayerData().getTokens() );
+    		
+//    		String tokens = dFmt.format( player.getPlayerCachePlayerData().getTokens() );
+//    		
+//    		String message = String.format( "&3%s now has &7%s &3tokens.", 
+//    				player.getName(), tokens );
+    		
+    		// The person adding the tokens, or console:
+    		sender.sendMessage( message );
+    		
+    		// The player getting the tokens, if they are online:
+    		if ( player.isOnline() && !player.getName().equalsIgnoreCase( sender.getName() ) ) {
+    			
+    			player.sendMessage( message );
+    		}
     	}
     }
     

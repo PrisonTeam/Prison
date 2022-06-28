@@ -21,8 +21,10 @@ public class PrisonBlockTypes {
 		AIR,
 		GLASS,
 		PINK_STAINED_GLASS,
+		BLAZE_ROD,
+		LAPIS_ORE,
 		IGNORE,
-		NULL_BLOCK
+		NULL_BLOCK 
 	}
 
 	public PrisonBlockTypes() {
@@ -56,6 +58,7 @@ public class PrisonBlockTypes {
 		
 		// Add in prison's internal block types here:
 		getBlockTypes().add( PrisonBlock.IGNORE );
+//		getBlockTypes().add( PrisonBlock.NULL_BLOCK );
 
 		
 		// Map all available blocks to the blockTypesByName map:

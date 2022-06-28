@@ -36,9 +36,6 @@ permissions:
   prison.gui:
     description: Opens the Prison's GUI menu.
 
-  prison.prisonmanagergui:
-    description: Opens the Prison's GUI menu.
-
   prison.placeholder:
     description: Tools to list and test placeholders.
 
@@ -53,7 +50,6 @@ permissions:
       prison.alerts.clear: true
       prison.alerts.clear.all: true
       prison.gui: true
-      prison.prisonmanagergui: true
       prison.placeholder: true
 
   # ==================

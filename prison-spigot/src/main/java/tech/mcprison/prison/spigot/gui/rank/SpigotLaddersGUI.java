@@ -76,11 +76,13 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 
         PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), "&3RanksManager -> Ladders");
 
-        ButtonLore laddersLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open), messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete));
+        ButtonLore laddersLore = new ButtonLore(
+        		guiLeftClickToOpenMsg(), 
+        		guiRightClickShiftToDeleteMsg() );
 
         for ( RankLadder ladder : laddersDisplay ) {
 			
-        	gui.addButton(new Button(null, XMaterial.LADDER, laddersLore, SpigotPrison.format("&3" + ladder.getName())));
+        	gui.addButton(new Button(null, XMaterial.LADDER, laddersLore, "&3" + ladder.getName() ));
 		}
         
         
@@ -100,7 +102,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 ////            RankLadder ladder = lm.getLadder(i);
 //
 //            // Add the button to the inventory
-//            gui.addButton(new Button(null, XMaterial.LADDER, laddersLore, SpigotPrison.format("&3" + ladder.getName())));
+//            gui.addButton(new Button(null, XMaterial.LADDER, laddersLore, "&3" + ladder.getName())));
 //        }
 
 //        if (i < lm.getLadders().size()) {

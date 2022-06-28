@@ -6,11 +6,15 @@ import java.util.List;
 import com.jojodmo.customitems.api.CustomItemsAPI;
 
 import tech.mcprison.prison.integration.CustomBlockIntegration;
+import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.Location;
 
@@ -48,6 +52,19 @@ public class CustomItems
 							Output.get().logInfo( "####  Custom Block: " + block.toString() );
 						}
 					}
+
+					String message = String.format(
+							"Enabling CustomItems v%s: Drops are ",
+							getVersion() );
+					
+					if ( semVer.compareTo( getVersion(), "4.1.15" ) >= 0 ) {
+						this.customItemsWrapper.setSupportsDrops( true );
+
+						Output.get().logInfo( "&7" + message + "enabled." );
+					}
+					else {
+						Output.get().logInfo( "&c" + message + "not enabled. &3Upgrade to v4.1.15 or newer." );
+					}
 				}
 				else {
 					Output.get().logWarn( 
@@ -78,6 +95,12 @@ public class CustomItems
 		return customItemsWrapper.getCustomBlockId( block );
 	}
 	
+	
+	public String getCustomBlockId( org.bukkit.block.Block spigotBlock ) {
+		
+		return customItemsWrapper.getCustomBlockId( spigotBlock );
+	}
+	
 	/**
 	 * <p>This function is supposed to identify if the given block is a custom block, and 
 	 * if it is a custom block, then this function will return the correct PrisonBlock
@@ -105,10 +128,38 @@ public class CustomItems
 		if ( customBlockId != null ) {
 			results = SpigotPrison.getInstance().getPrisonBlockTypes()
 									.getBlockTypesByName( customBlockId );
+			
+			if ( results != null ) {
+				
+				Location loc = new Location( block.getLocation() );
+				results.setLocation( loc );
+			}
 		}
 		
 		return results;
 	}
+	
+//	public PrisonBlock getCustomBlock( org.bukkit.block.Block spigotBlock ) {
+//		PrisonBlock results = null;
+//		
+//		String customBlockId = getCustomBlockId( spigotBlock );
+//		
+//		if ( customBlockId != null ) {
+//			results = SpigotPrison.getInstance().getPrisonBlockTypes()
+//									.getBlockTypesByName( customBlockId );
+//			
+//			if ( results != null ) {
+//				Location loc = SpigotUtil.bukkitLocationToPrison( spigotBlock.getLocation() );
+//
+//				results.setLocation( loc );
+//			}
+//			
+//			SpigotBlock sBlock = new SpigotBlock();
+//		}
+//		
+//		return results;
+//	}
+	
 	
 	@Override
 	public Block setCustomBlockId( Block block, String customId, boolean doBlockUpdate ) {
@@ -119,6 +170,19 @@ public class CustomItems
 	@Override
 	public void setCustomBlockIdAsync( PrisonBlock prisonBlock, Location location ) {
 		customItemsWrapper.setCustomBlockIdAsync( prisonBlock, location );
+	}
+	
+	@Override
+	public List<? extends ItemStack> getDrops( Player player, PrisonBlock prisonBlock, ItemStack tool ) {
+		
+		SpigotPlayer sPlayer = player != null && player instanceof SpigotPlayer ? 
+											(SpigotPlayer) player : null;
+		SpigotItemStack sTool = tool != null && tool instanceof SpigotItemStack ?
+											(SpigotItemStack) tool : null;
+		
+		List<? extends ItemStack> results = customItemsWrapper.getDrops( prisonBlock, sPlayer, sTool );
+		
+		return results;
 	}
 	
 	@Override

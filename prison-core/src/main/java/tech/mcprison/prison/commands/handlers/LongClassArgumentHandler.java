@@ -17,6 +17,9 @@ public class LongClassArgumentHandler
     	Long results = null;
     	
     	if ( value != null ) {
+    		
+    		value = value.replaceAll( "$|%", "" );
+
     		try {
     			results = Long.parseLong(value);
     		} catch (NumberFormatException e) {

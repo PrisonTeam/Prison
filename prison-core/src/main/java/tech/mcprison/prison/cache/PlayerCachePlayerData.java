@@ -2,9 +2,7 @@ package tech.mcprison.prison.cache;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.TreeMap;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
@@ -12,7 +10,6 @@ import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.PlayerMessaging;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.PrisonBlock;
-import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 
 /**
@@ -57,7 +54,7 @@ public class PlayerCachePlayerData {
 	// lastSeenDate tries to track when the player was last on the server.
 	// This is important to know for refreshing player stats.
 	private long lastSeenDate;
-	private double lastSeenBalance;
+//	private double lastSeenBalance;
 	
 	private long onlineTimeTotal = 0L;
 
@@ -111,7 +108,7 @@ public class PlayerCachePlayerData {
 	private transient PlayerMessaging playerMessaging;
 	
 	
-	private List<Inventory> backpacks;
+//	private List<Inventory> backpacks;
 	
 	private transient boolean dirty = false;
 	
@@ -149,7 +146,7 @@ public class PlayerCachePlayerData {
 		
 		this.playerMessaging = new PlayerMessaging();
 		
-		this.backpacks = new ArrayList<>();
+//		this.backpacks = new ArrayList<>();
 		
 	}
 	
@@ -375,6 +372,7 @@ public class PlayerCachePlayerData {
 	private void addBlockByType( String blockName, int quantity ) {
 		int qty = quantity;
 		
+		blockName = blockName.toLowerCase();
 		if ( getBlocksByType().containsKey( blockName ) ) {
 			qty += getBlocksByType().get( blockName );
 		}
@@ -440,15 +438,18 @@ public class PlayerCachePlayerData {
 		
 		
 		double earningsPM = earnings;
-		if ( getEarningsPerMinute().containsKey( key )  ) {
-			earningsPM += getEarningsPerMinute().get( key );
-		}
-		getEarningsPerMinute().put( key, earningsPM );
 		
-		
-		if ( getEarningsPerMinute().size() > 5 ) {
-			getEarningsPerMinute().remove( 
-					getEarningsPerMinute().firstEntry().getKey() );
+		synchronized (earningsPerMinute) {
+			if ( getEarningsPerMinute().containsKey( key )  ) {
+				earningsPM += getEarningsPerMinute().get( key );
+			}
+			getEarningsPerMinute().put( key, earningsPM );
+			
+			
+			if ( getEarningsPerMinute().size() > 5 ) {
+				getEarningsPerMinute().remove( 
+						getEarningsPerMinute().firstEntry().getKey() );
+			}
 		}
 		
 		if ( mineName != null && sessionType != SessionType.mining ) {
@@ -480,9 +481,12 @@ public class PlayerCachePlayerData {
 		double results = 0;
 		
 		int size = 0;
-		for ( double value : earningsPerMinute.values() ) {
-			results += value;
-			size++;
+			
+		synchronized (earningsPerMinute) {
+			for ( double value : earningsPerMinute.values() ) {
+				results += value;
+				size++;
+			}
 		}
 		
 		return ( size == 0 ? 0 : ( results / size ));
@@ -680,9 +684,15 @@ public class PlayerCachePlayerData {
 		sb.append( getPlayerName() )
 			.append( " " )
 			.append( isOnline() ? "online" : "OFFLINE" )
-			.append( "  avg earnings/min: " )
-			.append( getAverageEarningsPerMinute() )
+			.append( "  avg earnings/min: " );
 		
+		synchronized (earningsPerMinute) {
+			
+			sb
+				.append( getAverageEarningsPerMinute() );
+		}
+		
+		sb
 			.append( "  TotalOnlineTime: " )
 			.append( totalTime )
 			.append( "  MiningTime: " )
@@ -766,7 +776,10 @@ public class PlayerCachePlayerData {
 		return earningsPerMinute;
 	}
 	public void setEarningsPerMinute( TreeMap<String, Double> earningsPerMinute ) {
-		this.earningsPerMinute = earningsPerMinute;
+			
+		synchronized (earningsPerMinute) {
+			this.earningsPerMinute = earningsPerMinute;
+		}
 	}
 
 	public long getOnlineTimeTotal() {
@@ -894,12 +907,12 @@ public class PlayerCachePlayerData {
 		this.playerMessaging = playerMessaging;
 	}
 
-	public List<Inventory> getBackpacks() {
-		return backpacks;
-	}
-	public void setBackpacks( List<Inventory> backpacks ) {
-		this.backpacks = backpacks;
-	}
+//	public List<Inventory> getBackpacks() {
+//		return backpacks;
+//	}
+//	public void setBackpacks( List<Inventory> backpacks ) {
+//		this.backpacks = backpacks;
+//	}
 
 	public boolean isDirty() {
 		return dirty;

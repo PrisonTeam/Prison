@@ -44,6 +44,34 @@ public class MineStateMutex
 		
 		synchronized ( this ) {
 			
+			this.mineStateSn--;
+
+			// If the state serial number is zero, then that means 
+			// this can now be unlocked.  Otherwise if non-zero it
+			// must remain locked.
+			if ( mineStateSn == 0 ) {
+				
+				this.mineState = MineState.UNLOCKED;
+			}
+			
+		}
+		
+	}
+
+	/**
+	 * <p>This function will force the release of the mutex no matter how many 
+	 * layered locks were initiated.  This should only be called when it 
+	 * certain when the task is completed.
+	 * </p>
+	 * 
+	 * 
+	 */
+	public void setMineStateResetFinishedForced() {
+		
+		synchronized ( this ) {
+			
+			this.mineStateSn = 0;
+			
 			this.mineState = MineState.UNLOCKED;
 		}
 		

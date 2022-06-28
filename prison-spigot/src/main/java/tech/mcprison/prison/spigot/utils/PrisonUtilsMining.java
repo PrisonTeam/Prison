@@ -57,9 +57,14 @@ public class PrisonUtilsMining
 			// Player cannot be null.  If it is null, then there was a failure.
 			if ( player != null && player.isOnline() ) {
 				
-				OnBlockBreakPlayerManualCore manualHandler = new OnBlockBreakPlayerManualCore();
-				manualHandler.playerSmelt( player );
+				StringBuilder debugInfo = new StringBuilder();
 				
+				OnBlockBreakPlayerManualCore manualHandler = new OnBlockBreakPlayerManualCore();
+				manualHandler.playerSmelt( player, debugInfo );
+				
+				if ( Output.get().isDebug() ) {
+					Output.get().logInfo( debugInfo.toString() );
+				}
 //				SpigotPrison.getInstance().getAutoFeatures().playerSmelt( player );
 			}
 		}
@@ -86,10 +91,14 @@ public class PrisonUtilsMining
 			// Player cannot be null.  If it is null, then there was a failure.
 			if ( player != null && player.isOnline() ) {
 				
+				StringBuilder debugInfo = new StringBuilder();
 				
 				OnBlockBreakPlayerManualCore manualHandler = new OnBlockBreakPlayerManualCore();
-				manualHandler.playerBlock( player );
+				manualHandler.playerBlock( player, debugInfo );
 				
+				if ( Output.get().isDebug() ) {
+					Output.get().logInfo( debugInfo.toString() );
+				}
 
 //				SpigotPrison.getInstance().getAutoFeatures().playerBlock( player );
 			}

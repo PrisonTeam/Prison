@@ -74,6 +74,7 @@ public class Prison
 	private static Prison instance = null;
 
     public static final int API_LEVEL = 3;
+    public static final int API_LEVEL_MINOR = 3;
     
     private String minecraftVersion;
     private List<Integer> versionMajMin;
@@ -105,10 +106,14 @@ public class Prison
     private PrisonTPS prisonTPS;
     
     
+    private List<String> localeLoadInfo;
+    
     private Prison() {
     	super();
     	
     	this.serverStartupTime = System.currentTimeMillis();
+    	
+    	this.localeLoadInfo = new ArrayList<>();
     }
 
     /**
@@ -157,6 +162,10 @@ public class Prison
     		this.moduleDataFolder = Module.setupModuleDataFolder( "core" );
     	}
         return moduleDataFolder;
+    }
+    
+    public void setupJUnitInstance( Platform platform ) {
+    	this.platform = platform;
     }
     
     /**
@@ -573,11 +582,16 @@ public class Prison
     }
 
     private void scheduleAlertNagger() {
-        // Nag the user with alerts every 5 minutes
-        PrisonAPI.getScheduler().runTaskTimerAsync(() -> PrisonAPI.getOnlinePlayers().stream()
-                .filter(player -> player.hasPermission("prison.admin")
-                        && Alerts.getInstance().getAlertsFor(player.getUUID()).size() > 0)
-                .forEach(Alerts.getInstance()::showAlerts), 60 * 20 * 5, 60 * 20 * 5);
+    	
+    	// Nag the users with the correct perms 5 mins after server starts, and every 
+    	// hour thereafter.
+    	Alerts.getInstance().submitShowAlertsTask();
+    	
+//        // Nag the user with alerts every 5 minutes
+//        PrisonAPI.getScheduler().runTaskTimerAsync(() -> PrisonAPI.getOnlinePlayers().stream()
+//                .filter(player -> player.hasPermission("prison.admin")
+//                        && Alerts.getInstance().getAlertsFor(player.getUUID()).size() > 0)
+//                .forEach(Alerts.getInstance()::showAlerts), 60 * 20 * 5, 60 * 20 * 5);
     }
 
     // End initialization steps
@@ -762,6 +776,10 @@ public class Prison
 
 	public PrisonTPS getPrisonTPS() {
 		return prisonTPS;
+	}
+
+	public List<String> getLocaleLoadInfo() {
+		return localeLoadInfo;
 	}
     
 }

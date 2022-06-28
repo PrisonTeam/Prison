@@ -1,8 +1,9 @@
 package tech.mcprison.prison.spigot.gui.rank;
 
-import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
-import tech.mcprison.prison.spigot.SpigotPrison;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
@@ -26,17 +27,18 @@ public class SpigotConfirmPrestigeGUI extends SpigotGUIComponents {
         int dimension = 9;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3Prestige -> Confirmation");
 
-        ButtonLore confirmLore = new ButtonLore(createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_confirm)), createLore(
+        ButtonLore confirmLore = new ButtonLore(createLore(
+        		guiClickToConfirmMsg()), createLore(
                 messages.getString(MessagesConfig.StringID.spigot_gui_lore_prestige_warning_1),
                 messages.getString(MessagesConfig.StringID.spigot_gui_lore_prestige_warning_2),
                 messages.getString(MessagesConfig.StringID.spigot_gui_lore_prestige_warning_3)));
 
-        ButtonLore cancelLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_cancel), null);
+        ButtonLore cancelLore = new ButtonLore( guiClickToCancelMsg(), null);
 
 
         // Create the button, set up the material, amount, lore and name
-        gui.addButton(new Button(2, XMaterial.EMERALD_BLOCK, confirmLore, SpigotPrison.format("&3Confirm: Prestige")));
-        gui.addButton(new Button(6, XMaterial.REDSTONE_BLOCK, cancelLore, SpigotPrison.format("&3Cancel: Don't Prestige")));
+        gui.addButton(new Button(2, XMaterial.EMERALD_BLOCK, confirmLore, "&3Confirm: Prestige" ));
+        gui.addButton(new Button(6, XMaterial.REDSTONE_BLOCK, cancelLore, "&3Cancel: Don't Prestige" ));
 
         gui.open();
     }

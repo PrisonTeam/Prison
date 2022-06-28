@@ -32,6 +32,6 @@ package tech.mcprison.prison.internal.block;
  */
 public interface BlockState {
 
-    Block getBlock();
+    public Block getBlock();
 
 }

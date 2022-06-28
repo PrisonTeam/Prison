@@ -19,8 +19,8 @@
 package tech.mcprison.prison.internal.events.block;
 
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.events.Cancelable;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 
 /**
@@ -29,19 +29,24 @@ import tech.mcprison.prison.util.Location;
  * @author DMP9
  * @since API 1.0
  */
-public class BlockBreakEvent implements Cancelable {
+public class BlockBreakEvent 
+	implements Cancelable 
+{
 
-    private BlockType block;
+    private PrisonBlock block;
     private Location blockLocation;
     private Player player;
     private boolean canceled = false;
     private int exp;
 
-    public BlockBreakEvent(BlockType block, Location blockLocation, Player player) {
+    public BlockBreakEvent( PrisonBlock block, Location blockLocation, Player player) {
         this(block,blockLocation,player,0);
     }
+//    public BlockBreakEvent(BlockType block, Location blockLocation, Player player) {
+//    	this(block,blockLocation,player,0);
+//    }
 
-    public BlockBreakEvent(BlockType block, Location blockLocation, Player player,int xp) {
+    public BlockBreakEvent( PrisonBlock block, Location blockLocation, Player player, int xp ) {
         this.block = block;
         this.blockLocation = blockLocation;
         this.player = player;
@@ -56,7 +61,7 @@ public class BlockBreakEvent implements Cancelable {
         this.canceled = canceled;
     }
 
-    public BlockType getBlock() {
+    public PrisonBlock getPrisonBlock() {
         return block;
     }
 

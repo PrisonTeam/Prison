@@ -19,8 +19,7 @@
 package tech.mcprison.prison.internal.events.inventory;
 
 import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.internal.block.Block;
-import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 
 /**
  * Currently undocumented.
@@ -31,14 +30,18 @@ public class FurnaceExtractEvent {
 
     private int itemAmount;
     private int expToDrop;
-    private Block block;
-    private BlockType blockType;
+    private PrisonBlock prisonBlock;
+    
+//    private Block block;
+//    private BlockType blockType;
+
+    private PrisonBlock blockType;
     private Player player;
 
-    public FurnaceExtractEvent(Player player, Block block, BlockType itemType, int itemAmount,
+    public FurnaceExtractEvent(Player player, PrisonBlock prisonBlock, PrisonBlock itemType, int itemAmount,
         int exp) {
         this.player = player;
-        this.block = block;
+        this.prisonBlock = prisonBlock;
         this.blockType = itemType;
         this.itemAmount = itemAmount;
         this.expToDrop = exp;
@@ -48,7 +51,7 @@ public class FurnaceExtractEvent {
         return itemAmount;
     }
 
-    public BlockType getItemType() {
+    public PrisonBlock getItemType() {
         return blockType;
     }
 
@@ -64,8 +67,8 @@ public class FurnaceExtractEvent {
         expToDrop = exp;
     }
 
-    public Block getBlock() {
-        return block;
+    public PrisonBlock getPrisonBlock() {
+        return prisonBlock;
     }
 
 }

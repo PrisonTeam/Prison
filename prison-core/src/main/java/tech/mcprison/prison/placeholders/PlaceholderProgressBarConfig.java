@@ -10,10 +10,12 @@ public class PlaceholderProgressBarConfig {
 	private String negativeColor;
 	private String negativeSegment;
 	
+	private boolean reverse;
+	
 	public PlaceholderProgressBarConfig() {
 		super();
 		
-		
+		this.reverse = false;
 	}
 	
 	public PlaceholderProgressBarConfig( int segments, 
@@ -28,6 +30,8 @@ public class PlaceholderProgressBarConfig {
 		
 		this.negativeColor = negativeColor;
 		this.negativeSegment = negativeSegment;
+		
+		this.reverse = false;
 	}
 
 	@Override
@@ -42,9 +46,12 @@ public class PlaceholderProgressBarConfig {
 			
 			.append(" Neg: \\Q" ).append( getNegativeColor() )
 			.append( "\\E [" ).append( getNegativeColor() )
-			.append( getNegativeSegment()).append( "&7]" )
-			;
+			.append( getNegativeSegment()).append( "&7]" );
 		
+		if ( isReverse() ) {
+			sb.append(" (Reversed)");
+		}
+			
 		return sb.toString();
 	}
 	
@@ -83,6 +90,11 @@ public class PlaceholderProgressBarConfig {
 		this.negativeSegment = negativeSegment;
 	}
 
-
+	public boolean isReverse() {
+		return reverse;
+	}
+	public void setReverse(boolean reverse) {
+		this.reverse = reverse;
+	}
 	
 }

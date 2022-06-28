@@ -1,6 +1,9 @@
 package tech.mcprison.prison.internal.block;
 
+import java.util.List;
+
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes.InternalBlockTypes;
 import tech.mcprison.prison.util.Location;
 
@@ -13,12 +16,16 @@ import tech.mcprison.prison.util.Location;
  */
 public class PrisonBlock
 			extends PrisonBlockStatusData
-			implements Comparable<PrisonBlock>, 
+			implements Block,
+				BlockState,
+				Comparable<PrisonBlock>, 
 				BlockExtendedDescription {
 	
 	public static PrisonBlock AIR;
 	public static PrisonBlock GLASS;
 	public static PrisonBlock PINK_STAINED_GLASS;
+	public static PrisonBlock BLAZE_ROD;
+	public static PrisonBlock LAPIS_ORE;
 	public static PrisonBlock IGNORE;
 	public static PrisonBlock NULL_BLOCK;
 	
@@ -40,7 +47,9 @@ public class PrisonBlock
 		AIR = new PrisonBlock( InternalBlockTypes.AIR.name(), false );
 		GLASS = new PrisonBlock( InternalBlockTypes.GLASS.name(), true );
 		PINK_STAINED_GLASS = new PrisonBlock( InternalBlockTypes.PINK_STAINED_GLASS.name(), true );
-		IGNORE = new PrisonBlock( InternalBlockTypes.IGNORE.name(), false );
+		BLAZE_ROD = new PrisonBlock( InternalBlockTypes.BLAZE_ROD.name(), false );
+		LAPIS_ORE = new PrisonBlock( InternalBlockTypes.LAPIS_ORE.name(), true );
+		IGNORE = new PrisonBlock( InternalBlockTypes.IGNORE.name(), true );
 		NULL_BLOCK = new PrisonBlock( InternalBlockTypes.NULL_BLOCK.name(), false );
 	}
 	
@@ -75,7 +84,7 @@ public class PrisonBlock
 	 * @param chance
 	 */
 	public PrisonBlock( PrisonBlockType blockType, String blockName, double chance, long blockCountTotal ) {
-		super( blockName, chance, blockCountTotal );
+		super( blockType, blockName, chance, blockCountTotal );
 
 		this.blockType = blockType;
 		
@@ -85,7 +94,10 @@ public class PrisonBlock
 	}
 	
 	public PrisonBlock( PrisonBlock clonable ) {
-		this( clonable.getBlockType(), clonable.getBlockName(), clonable.getChance(), clonable.getBlockCountTotal() );
+		this( clonable.getBlockType(), 
+				clonable.getBlockName(), 
+				clonable.getChance(), 
+				clonable.getBlockCountTotal() );
 		
 		this.useBlockTypeAsPrefix = clonable.isUseBlockTypeAsPrefix();
 		this.valid = clonable.isValid();
@@ -301,6 +313,139 @@ public class PrisonBlock
 	@Override
 	public boolean isAir() {
 		return compareTo( AIR ) == 0;
+	}
+	@Override
+	public Block getRelative( BlockFace face )
+	{
+		Block results = null;
+		
+		if ( getLocation() != null ) {
+			
+			Location loc = new Location( getLocation() );
+			
+			switch ( face )
+			{
+				case NORTH: {
+					// North is z axis in the negative direction:
+					results = loc.getBlockAtDelta( 0, 0, -1 );
+					break;
+				}
+				case SOUTH: {
+					// South is z axis in the positive direction:
+					results = loc.getBlockAtDelta( 0, 0, 1 );
+					break;
+				}
+				case EAST: {
+					// East is x axis in the positive direction:
+					results = loc.getBlockAtDelta( 1, 0, 0 );
+					break;
+				}
+				case WEST: {
+					// West is x axis in the negative direction:
+					results = loc.getBlockAtDelta( -1, 0, 0 );
+					break;
+				}
+				case TOP: 
+				case UP: {
+					// TOP and UP is y axis in the positive direction:
+					results = loc.getBlockAtDelta( 0, 1, 0 );
+					break;
+				}
+				case BOTTOM: 
+				case DOWN: {
+					// BOTTOM and DOWN is y axis in the negative direction:
+					results = loc.getBlockAtDelta( 0, -1, 0 );
+					break;
+				}
+
+				default:
+					break;
+			}
+		}
+		
+		return results;
+	}
+	
+	@Override
+	public PrisonBlock getPrisonBlock() {
+		return this;
+	}
+	@Override
+	public PrisonBlock getBlock() {
+		return this;
+	}
+	
+	@Override
+	public void setPrisonBlock( PrisonBlock prisonBlock ) {
+		
+		if ( prisonBlock != null ) {
+			
+			PrisonBlock cloned = prisonBlock.clone();
+			getLocation().setBlockAsync( cloned );
+		}
+		
+	}
+	
+	@Override
+	public void setBlockFace( BlockFace blockFace ) {
+		
+		Block relativeBlock = getRelative( blockFace );
+		
+		if ( relativeBlock != null && relativeBlock instanceof PrisonBlock ) {
+
+			(( PrisonBlock ) relativeBlock).setPrisonBlock( this );
+			
+//			PrisonBlock cloned = this.clone();
+//			
+//			(( PrisonBlock ) relativeBlock).getLocation().setBlockAsync( cloned );
+//			
+//			PrisonBlockType blockType = getBlockType();
+//			
+//			// Set that block with this block's type:
+//			(( PrisonBlock ) relativeBlock).setBlockType( blockType );
+//			(( PrisonBlock ) relativeBlock).setBlockName( getBlockName() );
+			
+		}
+	}
+	
+	@Override
+	public BlockState getState() {
+		return this.clone();
+	}
+	
+	@Override
+	public boolean breakNaturally() {
+		return false;
+	}
+	
+	
+	/**
+	 * This function needs to be overriden in the platform implementation.
+	 */
+	@Override
+	public List<ItemStack> getDrops()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+	/**
+	 * This function needs to be overriden in the platform implementation.
+	 */
+	@Override
+	public List<ItemStack> getDrops( ItemStack tool )
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+	public ItemStack getItemStack( int blockQuantity ) {
+		
+		ItemStack results = Prison.get().getPlatform().getItemStack( this, blockQuantity );
+		
+		return results;
 	}
 	
 }

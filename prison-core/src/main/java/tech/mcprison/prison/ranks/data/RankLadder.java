@@ -35,20 +35,18 @@ import tech.mcprison.prison.store.Document;
 public class RankLadder 
 		implements PrisonSortable, Comparable<RankLadder> {
 
-    /*
-     * Fields & Constants
-     */
-
+	public static final String DEFAULT = "default";
+	public static final String PRESTIGES = "prestiges";
+	
+	
     private int id;
     private String name;
     private List<Rank> ranks;
     
+    
+    
 //    private int maxPrestige;
    
-    
-//    private List<String> permissions;
-//    private List<String> permissionGroups;
- 
     
     // The commands that are run when this rank is attained.
     private List<String> rankUpCommands;
@@ -67,9 +65,6 @@ public class RankLadder
     	
     	this.ranks = new ArrayList<>();
     	
-//    	this.permissions = new ArrayList<>();
-//    	this.permissionGroups =  new ArrayList<>();
-
     }
     
     public RankLadder( int id, String name ) {
@@ -79,6 +74,16 @@ public class RankLadder
     	this.name = name;
     }
 
+
+	public boolean isDefault() {
+		return getName().equalsIgnoreCase( DEFAULT );
+	}
+
+	public boolean isPrestiges() {
+		return getName().equalsIgnoreCase( PRESTIGES );
+	}
+	
+	
 //    @SuppressWarnings( "unchecked" )
 //	public RankLadder(Document document, PrisonRanks prisonRanks) {
 //    	this();
@@ -521,21 +526,6 @@ public class RankLadder
 		this.rankUpCommands = rankUpCommands;
 	}
 
-//	public List<String> getPermissions() {
-//		return permissions;
-//	}
-//
-//	public void setPermissions( List<String> permissions ) {
-//		this.permissions = permissions;
-//	}
-//
-//	public List<String> getPermissionGroups() {
-//		return permissionGroups;
-//	}
-//	public void setPermissionGroups( List<String> permissionGroups ) {
-//		this.permissionGroups = permissionGroups;
-//	}
-
 	public double getRankCostMultiplierPerRank() {
 		return rankCostMultiplierPerRank;
 	}
@@ -549,5 +539,5 @@ public class RankLadder
 	public void setDirty( boolean dirty ) {
 		this.dirty = dirty;
 	}
-
+	
 }

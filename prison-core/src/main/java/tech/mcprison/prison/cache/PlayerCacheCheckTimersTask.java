@@ -1,9 +1,8 @@
 package tech.mcprison.prison.cache;
 
-import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 
 /**
  * <p>This periodically ran task will go through all cached players and update 
@@ -66,7 +65,7 @@ public class PlayerCacheCheckTimersTask
 			
 			try
 			{
-				List<String> keys = new ArrayList<>( pCache.getPlayers().keySet() );
+				Set<String> keys = pCache.getPlayers().keySet();
 				
 				for ( String key : keys )
 				{
@@ -76,8 +75,12 @@ public class PlayerCacheCheckTimersTask
 					}
 					processedKeys.add( key );
 					
+					PlayerCachePlayerData playerData = null;
 					
-					PlayerCachePlayerData playerData = pCache.getPlayers().get( key );
+					synchronized ( pCache.getPlayers() ) {
+						
+						playerData = pCache.getPlayers().get( key );
+					}
 					
 					if ( playerData != null ) {
 						

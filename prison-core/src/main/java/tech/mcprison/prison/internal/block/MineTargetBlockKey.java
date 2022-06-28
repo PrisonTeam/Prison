@@ -82,4 +82,33 @@ public class MineTargetBlockKey
 		
 		return result;
 	}
+	
+	@Override
+	public boolean equals( Object obj ) {
+		boolean results = false;
+		
+		if ( obj != null && obj instanceof MineTargetBlockKey ) {
+			MineTargetBlockKey mtbKey = (MineTargetBlockKey) obj;
+			
+			results = compareTo( mtbKey ) == 0;
+		}
+		return results;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int hash = getWorld().getName().hashCode();
+		
+		hash += x * 13 + y * 37 + z * 17;
+				
+		// TODO Auto-generated method stub
+//		return super.hashCode();
+		
+		return hash;
+	}
+	
+	
+	
+	
 }

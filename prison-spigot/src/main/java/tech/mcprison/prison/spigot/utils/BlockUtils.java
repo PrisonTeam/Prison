@@ -38,8 +38,12 @@ public class BlockUtils
 	
 
 	public boolean isUnbreakable( SpigotBlock block ) {
-		PrisonBlock pBlock = block.getPrisonBlock();
-		return isUnbreakable( pBlock );
+		boolean results = false;
+		if ( block != null ) {
+			PrisonBlock pBlock = block.getPrisonBlock();
+			results = isUnbreakable( pBlock );
+		}
+		return results;
 	}
 	
 	public boolean isUnbreakable( PrisonBlock block ) {
@@ -49,11 +53,21 @@ public class BlockUtils
 	}
 	
 	
-	public UnbreakableBlockData addUnbreakable( PrisonBlock block, Mine mine ) {
+	/**
+	 * <p>Adds an unbreakable block at the given location.  The block itself can be null, but the location
+	 * cannot be null since it's used as the key value.
+	 * </p>
+	 * 
+	 * @param location
+	 * @param block
+	 * @param mine
+	 * @return
+	 */
+	public UnbreakableBlockData addUnbreakable( Location location, PrisonBlock block, Mine mine ) {
 		UnbreakableBlockData data = null;
 		
-		if ( block.getLocation() != null ) {
-			data = new UnbreakableBlockData( block, mine );
+		if ( location != null ) {
+			data = new UnbreakableBlockData( location, block, mine );
 			
 			getUnbreakableBlocks().put( data.getKey(), data );
 			

@@ -1,9 +1,10 @@
 package tech.mcprison.prison.spigot.gui.backpacks;
 
-import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -39,7 +40,7 @@ public class BackpacksListPlayerGUI extends SpigotGUIComponents {
                 messages.getString(MessagesConfig.StringID.spigot_gui_lore_add_backpack_instruction_3)));
 
         // Global Strings.
-        String loreClickToOpen = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open);
+        String loreClickToOpen = guiLeftClickToOpenMsg();
 
         if (!BackpacksUtil.get().getBackpacksIDs(p).isEmpty()) {
             int slot = 0;
@@ -49,10 +50,10 @@ public class BackpacksListPlayerGUI extends SpigotGUIComponents {
 
                 if (slot < 45) {
                     if (id != null) {
-                        lore.setLoreDescription(SpigotPrison.format("&3/backpack " + id));
+                        lore.setLoreDescription( "&3/backpack " + id );
                         gui.addButton(new Button(slot, XMaterial.CHEST, lore, "&3Backpack-" + id));
                     } else {
-                        lore.setLoreDescription(SpigotPrison.format("&3/backpack"));
+                        lore.setLoreDescription( "&3/backpack" );
                         gui.addButton(new Button(slot, XMaterial.CHEST, lore, "&3Backpack"));
                     }
                     slot++;
@@ -64,7 +65,8 @@ public class BackpacksListPlayerGUI extends SpigotGUIComponents {
             gui.addButton(new Button(49, XMaterial.EMERALD_BLOCK, loreAddBackpackButton, "&aNew Backpack"));
         }
 
-        gui.addButton(new Button(dimension-1, XMaterial.RED_STAINED_GLASS_PANE, new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_close), null), "&cClose"));
+        gui.addButton(new Button(dimension-1, XMaterial.RED_STAINED_GLASS_PANE, 
+        		new ButtonLore( guiClickToCloseMsg(), null), "&cClose"));
 
         gui.open();
     }

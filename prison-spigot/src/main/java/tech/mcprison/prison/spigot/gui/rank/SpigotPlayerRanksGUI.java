@@ -12,6 +12,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import de.tr7zw.nbtapi.NBTItem;
 import me.clip.placeholderapi.PlaceholderAPI;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.modules.Module;
@@ -36,6 +37,8 @@ import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
+import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
+import tech.mcprison.prison.util.Text;
 
 /**
  * @author GABRYCA
@@ -47,7 +50,9 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
     private PrisonRanks rankPlugin;
     private RankPlayer rankPlayer;
-    private final boolean placeholderAPINotNull = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null || Bukkit.getPluginManager().getPlugin("PlaceholdersAPI") != null;
+    private final boolean placeholderAPINotNull = 
+    		Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null || 
+    		Bukkit.getPluginManager().getPlugin("PlaceholdersAPI") != null;
 //    private final List<String> configCustomLore = guiConfig.getStringList("EditableLore.Ranks");
     
     private String ladderName;
@@ -175,9 +180,10 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
         // Decimal Rank cost format.
         DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
+        DecimalFormat mFmt = new DecimalFormat("###,##0.0000");
         boolean showNumber = getBoolean(guiConfig.getString("Options.Ranks.Number_of_Rank_Player_GUI"));
 
-        PlayerRank pRank = rankPlayerFactory.getRank( getRankPlayer(), ladder );
+        PlayerRank pRank = rankPlayerFactory.getRank( getRankPlayer(), ladder, true );
         
         for ( Rank rank : ranksDisplay )
 		{
@@ -197,18 +203,19 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
             for ( String stringValue : rankLore ) {
             	
+            	String currency = (rank.getCurrency() == null || 
+        				"default".equalsIgnoreCase( rank.getCurrency()) ||
+							rank.getCurrency().trim().length() == 0  ?
+									"" : " " + rank.getCurrency() );
             	
                 stringValue = stringValue.replace("{rankPrice}", 
                 		PlaceholdersUtil.formattedKmbtSISize(
-                				rankPrice, formatDecimal, "") + 
-                			(rank.getCurrency() == null || 
-                				"default".equalsIgnoreCase( rank.getCurrency()) ||
-                						rank.getCurrency().trim().length() == 0  ?
-                					"" : " " + rank.getCurrency() )
+                				rankPrice, formatDecimal, "") + currency
                 		);
+            	
                 stringValue = stringValue.replace("{rankName}", rank.getName());
-                stringValue = stringValue.replace("{rankTag}", SpigotPrison.format(rank.getTag()));
-                stringValue = stringValue.replace("{rankMultiplier}", Double.toString( rankMultiplier ));
+                stringValue = stringValue.replace("{rankTag}", Text.translateAmpColorCodes(rank.getTag()));
+                stringValue = stringValue.replace("{rankMultiplier}", mFmt.format( rankMultiplier ));
                 stringValue = stringValue.replace("{ladderName}", rank.getLadder().getName());
                 
                 StringBuilder sbMines = new StringBuilder();
@@ -226,12 +233,17 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
             
             if ( placeholderAPINotNull ) {
             	
-                ranksLore.setLoreAction(PlaceholderAPI.setPlaceholders(
-                			Bukkit.getOfflinePlayer(player.getUniqueId()), 
-                				ranksLore.getLoreAction()));
+            	List<String> lores = PlaceholderAPI.setPlaceholders(
+            			Bukkit.getOfflinePlayer(player.getUniqueId()), 
+        				ranksLore.getLoreAction());
+            	
+                ranksLore.setLoreAction( lores );
             }
 
-            Button itemRank = new Button(null, playerHasThisRank ? materialHas : materialHasNot, showNumber ? amount : 1, ranksLore, SpigotPrison.format(rank.getTag()));
+            Button itemRank = new Button(null, 
+            		playerHasThisRank ? materialHas : materialHasNot, 
+            				showNumber ? amount : 1, ranksLore, 
+            						rank.getTag() );
 
             amount++;
 
@@ -261,9 +273,18 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
         
 
-        // Add Rankup button:
+        // Add Rankup button: Using NBTs:
+        String rankupTitle = ladderName.equalsIgnoreCase("prestiges") ? "Prestige" : "Rankup";
         ButtonLore rankupLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_rankup), messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup_if_enough_money));
-        Button rankupButton = new Button( 0, XMaterial.EMERALD_BLOCK, rankupLore, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup)));
+        Button rankupButton = new Button( 0, XMaterial.EMERALD_BLOCK, rankupLore, rankupTitle );
+        String rankupCommand = "rankup " + (ladderName.equalsIgnoreCase("default") ? "" : ladderName);
+        
+		PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
+		NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT(rankupButton.getButtonItem());
+		nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_ENABLED, "true");
+		nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_COMMAND, rankupCommand);
+		
+//        		SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup)));
         // NOTE: Button position will be properly assigned in the setButtonNextAvilable:
         gui.addButton( guiPageData.setButtonNextAvailable( rankupButton ) );
 

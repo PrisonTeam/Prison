@@ -10,10 +10,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XSound;
 
+import de.tr7zw.nbtapi.NBTItem;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.bombs.MineBombData;
@@ -28,6 +30,7 @@ import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.api.ExplosiveBlockBreakEvent;
 import tech.mcprison.prison.spigot.block.OnBlockBreakMines;
+import tech.mcprison.prison.spigot.block.PrisonItemStackNotSupportedRuntimeException;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
@@ -43,6 +46,7 @@ public class PrisonUtilsMineBombs
 	public static final String MINE_BOMBS_LORE_1 = "&4Prison Mine Bomb:";
 	public static final String MINE_BOMBS_LORE_2_PREFIX = "  &7";
 	public static final int MINE_BOMBS_COOLDOWN_TICKS = 5 * 20; // 5 seconds  // 15 seconds
+	
 	
 	private boolean enableMineBombs = false;
 	
@@ -157,6 +161,29 @@ public class PrisonUtilsMineBombs
 		}
 	}
 
+	
+
+	@Command(identifier = "prison utils bomb reload", 
+			description = "Reloads and validates the mine bombs.",
+		onlyPlayers = false, 
+		permissions = "prison.utils.bombs",
+		aliases = "prison reload bombs")
+	public void utilsMineBombsReload( CommandSender sender
+			
+			) {
+		if ( !isEnableMineBombs() ) {
+			
+			Output.get().logInfo( "Prison's utils command mine bombs is disabled in modules.yml." );
+		}
+		else {
+			
+			MineBombs mBombs = MineBombs.getInstance();
+			
+			mBombs.loadConfigJson();
+			
+			mBombs.validateMineBombs();
+		}		
+	}
 	
 
 	@Command(identifier = "prison utils bomb list", 
@@ -283,7 +310,7 @@ public class PrisonUtilsMineBombs
 				MineBombData bomb = mBombs.getConfigData().getBombs().get( key );
 				
 				String message = String.format( 
-						"%-12s    Autosell: %b   FuseDelayTicks: %d   CooldownTicks: %d", 
+						"&7%-12s    &3Autosell: &7%b   &3FuseDelayTicks: &7%d   &3CooldownTicks: &7%d", 
 						bomb.getName(), 
 						bomb.isAutosell(),
 						bomb.getFuseDelayTicks(),
@@ -302,7 +329,7 @@ public class PrisonUtilsMineBombs
 						{
 							int lenght = 1 + (bomb.getRadius() * 2);
 							messageShape = String.format( 
-									"      Shape: %s   Size: %d x %d x %d   Based on Radius: %d.5", 
+									"      &3Shape: &7%s   &3Size: &7%d &3x &7%d &3x &7%d   &3Based on Radius: &7%d.5", 
 									bomb.getExplosionShape(), 
 									lenght, lenght, lenght,
 									bomb.getRadius() );
@@ -315,7 +342,7 @@ public class PrisonUtilsMineBombs
 					case ring_z:
 					{
 						messageShape = String.format( 
-								"      Shape: %s   Radius: %d.5   RadiusInner: %d.5", 
+								"      &3Shape: &7%s   &3Radius: &7%d.5   &3RadiusInner: &7%d.5", 
 								bomb.getExplosionShape(), bomb.getRadius(), bomb.getRadiusInner() );
 						break;
 					}
@@ -326,13 +353,13 @@ public class PrisonUtilsMineBombs
 					case disk_z:
 					{
 						messageShape = String.format( 
-								"      Shape: %s   Radius: %d.5", 
+								"      &3Shape: &7%s   &3Radius: &7%d.5", 
 								bomb.getExplosionShape(), bomb.getRadius() );
 						break;
 					}
 					default:
 					{
-						messageShape = "      (no shape defined)";
+						messageShape = "      &4(no shape defined)";
 					}
 				}
 				if ( messageShape != null && !messageShape.isEmpty() ) {
@@ -342,7 +369,7 @@ public class PrisonUtilsMineBombs
 				
 				
 				String message2 = String.format( 
-						"      ToolInHand: %s  Fortune: %d  Percent Chance: %f",
+						"      &3ToolInHand: &7%s  &3Fortune: &7%d  &3Percent Chance: &7%f",
 						bomb.getToolInHandName(), 
 						bomb.getToolInHandFortuneLevel(),
 						bomb.getRemovalChance() );
@@ -350,7 +377,7 @@ public class PrisonUtilsMineBombs
 				
 				
 				String message3 = String.format( 
-						"      ItemType: %s   Glowng: %b   Gravity: %b",
+						"      &3ItemType: &7%s   &3Glowng: &7%b   &3Gravity: &7%b",
 						bomb.getItemType(), 
 						bomb.isGlowing(),
 						bomb.isGravity() );
@@ -370,7 +397,7 @@ public class PrisonUtilsMineBombs
 						
 					}
 					if ( sounds.size() > 0 ) {
-						messages.add( "    Sound Effects:" );
+						messages.add( "    &3Sound Effects:" );
 						messages.addAll( sounds );
 					}
 					
@@ -382,7 +409,7 @@ public class PrisonUtilsMineBombs
 						
 					}
 					if ( visual.size() > 0 ) {
-						messages.add( "    Visual Effects:" );
+						messages.add( "    &3Visual Effects:" );
 						messages.addAll( visual );
 					}
 					
@@ -459,17 +486,32 @@ public class PrisonUtilsMineBombs
 				
 				MineBombs mBombs = MineBombs.getInstance();
 				
-				MineBombData bomb = mBombs.getConfigData().getBombs().get( bombName );
+				MineBombData bomb = null;
+				
+				// Remove color codes from bomb's name for matching:
+				bombName = Text.stripColor( bombName );
+				
+				Set<String> keys = mBombs.getConfigData().getBombs().keySet();
+				for ( String key : keys ) {
+					MineBombData mbd = mBombs.getConfigData().getBombs().get( key );
+					String cleanedBombName = Text.stripColor( mbd.getName() );
+					if ( cleanedBombName.equalsIgnoreCase( bombName ) ) {
+						bomb = mbd;
+						break;
+					}
+				}
 				
 				if ( bomb != null ) {
 					
-					SpigotItemStack bombs = getItemStackBomb( bomb );
+					ItemStack bombs = getItemStackBomb( bomb );
 					
 					if ( bombs != null ) {
 						
 						bombs.setAmount( count );
-						player.getInventory().addItem( bombs );
+						player.getWrapper().getInventory().addItem( bombs );
 						
+						player.getWrapper().updateInventory();
+//						player.updateInventory();
 					}
 					else {
 						
@@ -577,60 +619,59 @@ public class PrisonUtilsMineBombs
 	}
 	
 	
-	public static SpigotItemStack getItemStackBomb( MineBombData bomb ) {
+	public static ItemStack getItemStackBomb( MineBombData bombData ) {
+		ItemStack sItemStack = null;
 		SpigotItemStack bombs = null;
+		NBTItem nbtItem = null;
 		
-		XMaterial xBomb = XMaterial.matchXMaterial( bomb.getItemType() ).orElse( null );
+		XMaterial xBomb = XMaterial.matchXMaterial( bombData.getItemType() ).orElse( null );
 		
 		if ( xBomb != null ) {
 			
-			bombs = new SpigotItemStack( xBomb.parseItem() );
+			
+			try {
+				
+				// Create the spigot/bukkit ItemStack:
+				sItemStack = xBomb.parseItem();
+				
+				if ( sItemStack != null ) {
+					
+					bombs = new SpigotItemStack( sItemStack );
+				}
+			} 
+			catch (PrisonItemStackNotSupportedRuntimeException e) {
+				// Ignore
+			}
+			
 			if ( bombs != null ) {
-
-				bombs.setDisplayName( bomb.getName() );
+				
+				bombs.setDisplayName( bombData.getName() );
+				
 				//bombs.setAmount( count );
 				
 //				if ( bomb.isGlowing() ) {
 //					bombs.addEnchantment(  );
 //				}
 				
-				List<String> lore = new ArrayList<>( bombs.getLore() );
+				List<String> lore = new ArrayList<>( bombData.getLore() );
 				
-				lore.add( 0, bomb.getBombItemId() );
-				
-//				lore.add( MINE_BOMBS_LORE_1 );
-//				lore.add( MINE_BOMBS_LORE_2_PREFIX + bomb.getName() );
-//				lore.add( " " );
-//				
-//				lore.add( "Size, Diameter: " + ( 1 + 2 * bomb.getRadius()) );
-//				lore.add( "Shape: " + bomb.getExplosionShape() );
-				
-//				String bombDesc = bomb.getDescription();
-//				String[] desc = ( bombDesc == null ? "" : bombDesc ).split( " " );
-//				StringBuilder sb = new StringBuilder();
-//				
-//				for ( String d : desc ) {
-//					
-//					sb.append( d ).append( " " );
-//					
-//					if ( sb.length() > 30 ) {
-//						sb.insert( 0, "  " );
-//						
-//						lore.add( sb.toString() );
-//						sb.setLength( 0 );
-//					}
-//				}
-//				if ( sb.length() > 0 ) {
-//					sb.insert( 0, "  " );
-//					
-//					lore.add( sb.toString() );
-//				}
-////				lore.add( " " + bomb.getDescription() );
-//				
-//				lore.add( " " );
+				// lore.add( 0, bombData.getLoreBombItemId() );
 				
 				bombs.setLore( lore );
+
 				
+				sItemStack = bombs.getBukkitStack();
+			}
+			
+			if ( sItemStack != null ) {
+				
+				// Set the NBT String key-value pair:
+				nbtItem = new NBTItem( sItemStack, true );
+				nbtItem.setString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY, bombData.getName() );
+
+				if ( Output.get().isDebug() && nbtItem != null ) {
+					Output.get().logInfo( "getItemStackBombs ntb: %s", nbtItem.toString() );
+				}
 			}
 			
 		}
@@ -639,12 +680,12 @@ public class PrisonUtilsMineBombs
 					"Invalid MineBomb Item: Bomb: %s  Cannot map '%s' to an XMaterial.  " +
 					"See this URL for valid XMaterial types: " +
 					"https://github.com/CryptoMorin/XSeries/blob/master/src/main/java" +
-					"/com/cryptomorin/xseries/XMaterial.java", bomb.getName(), bomb.getItemType() );
+					"/com/cryptomorin/xseries/XMaterial.java", bombData.getName(), bombData.getItemType() );
 			
 			Output.get().logError( message );
 		}
 		
-		return bombs;
+		return sItemStack;
 	}
 	
 	
@@ -655,21 +696,34 @@ public class PrisonUtilsMineBombs
 		return ( bomb != null );
 	}
 	
+	/**
+	 * <p>This takes a player, and checks to see if it is a prison mine bomb by checking the 
+	 * NBT tag in the constant: MINE_BOMBS_NBT_BOMB_KEY.  If it is, then it uses that key
+	 * value to search for the proper bomb, and if found, then it returns it.
+	 * </p>
+	 * 
+	 * 
+	 * @param player
+	 * @return MineBombData if item in hand is one, otherwise null
+	 */
 	public MineBombData getBombItem( Player player ) {
 		MineBombData bomb = null;
 		
 		SpigotItemStack itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
 		
-		if ( itemInHand != null ) {
-			List<String> lore = itemInHand.getLore();
+		if ( itemInHand != null && itemInHand.hasNBTKey( MineBombs.MINE_BOMBS_NBT_BOMB_KEY ) ) {
 			
-			if ( lore.size() > 0 ) {
-				
-				String bombItemId = lore.get( 0 );
-				
-				bomb = MineBombs.getInstance().findBombByItemId( bombItemId );
-			}
+			String bombName = itemInHand.getNBTString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY );
+			
+			bomb = getBombItem( bombName );
 		}
+		
+		return bomb;
+	}
+	
+	public MineBombData getBombItem( String bombName ) {
+		
+		MineBombData bomb = MineBombs.getInstance().findBombByName( bombName );
 		
 		return bomb;
 	}
@@ -685,12 +739,13 @@ public class PrisonUtilsMineBombs
 	 * </p>
 	 * 
 	 * @param player
+	 * @param bomb 
 	 * @return
 	 */
-	public boolean setBombInHand( Player player, SpigotBlock sBlock ) {
+	public boolean setBombInHand( Player player, MineBombData bomb, SpigotBlock sBlock ) {
 		boolean isABomb = false;
 		
-		MineBombData bomb = getBombItem( player );
+//		MineBombData bomb = getBombItem( player );
 		
 		if ( bomb != null ) {
 			
@@ -745,11 +800,15 @@ public class PrisonUtilsMineBombs
 					// Set cooldown:
 					addPlayerCooldown( playerUUID, bomb.getCooldownTicks() );
 					
-					SpigotItemStack bombs = PrisonUtilsMineBombs.getItemStackBomb( bomb );
+					SpigotItemStack bombs = new SpigotItemStack( PrisonUtilsMineBombs.getItemStackBomb( bomb ));
 					
 					if ( bombs != null ) {
 						
-						SpigotBlock bombBlock = sBlock != null ? sBlock : (SpigotBlock) player.getLocation().getBlock();
+						if ( sBlock == null ) {
+							sBlock = (SpigotBlock) sPlayer.getLocation().getBlockAt();
+						}
+						
+						SpigotBlock bombBlock = sBlock;
 						
 						
 //    						// If the clicked on block is empty, then the player probably clicked on air.  
@@ -780,7 +839,9 @@ public class PrisonUtilsMineBombs
 						boolean isAir = bombBlock.isEmpty();
 						while (  (count++ <= ( isAir ? 1 : 0 ) || bombBlock.isEmpty()) && bombBlock.getLocation().getBlockY() > 1 ) {
 							
-							Block tempBlock = bombBlock.getLocation().getBlockAtDelta( 0, -1, 0 );
+							int adjustY = bomb.getPlacementAdjustmentY();
+							
+							Block tempBlock = bombBlock.getLocation().getBlockAtDelta( 0, adjustY, 0 );
 							if ( tempBlock != null && tempBlock instanceof SpigotBlock ) {
 								bombBlock = (SpigotBlock) tempBlock;
 							}
@@ -813,21 +874,29 @@ public class PrisonUtilsMineBombs
 						bomb.setActivated( true );
 						
 						
+						
 						SpigotItemStack itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
 
 						// Remove from inventory:
-						itemInHand.setAmount( itemInHand.getAmount() - 1 );
-						
-						if ( itemInHand.getAmount() == 0 ) {
+						int inHandBombCount = itemInHand.getAmount() - 1;
+						if ( inHandBombCount == 0 ) {
 							SpigotCompatibility.getInstance()
-													.setItemInMainHand( player, null );
+										.setItemInMainHand( player, null );
+						}
+						else {
+							
+							itemInHand.setAmount( inHandBombCount );
 						}
 						
 						// Apply updates to the player's inventory:
 						player.updateInventory();
+					
+						
+						
 
 						
 						
+						@SuppressWarnings( "unused" )
 						PlacedMineBombItemTask submitPlacedMineBombItem = 
 								submitPlacedMineBombItemTask( bomb, bombBlock, bombs );
 //    						placeMineBombItem( bomb, bombBlock, bombs );

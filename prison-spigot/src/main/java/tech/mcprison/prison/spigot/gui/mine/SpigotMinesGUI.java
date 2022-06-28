@@ -77,8 +77,8 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), "&3MinesManager -> Mines");
 
         // Global Strings.
-        String loreLeftClickOpen = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_left_to_open);
-        String loreShiftRightClickToDelete = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete);
+        String loreLeftClickOpen = guiLeftClickToOpenMsg();
+        String loreShiftRightClickToDelete = guiRightClickShiftToDeleteMsg();
         String loreInfo = messages.getString(MessagesConfig.StringID.spigot_gui_lore_info);
         String loreWorld = messages.getString(MessagesConfig.StringID.spigot_gui_lore_world);
         String loreSpawnPoint = messages.getString(MessagesConfig.StringID.spigot_gui_lore_spawnpoint);
@@ -87,8 +87,6 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
         String loreVolume = messages.getString(MessagesConfig.StringID.spigot_gui_lore_volume);
         String loreBlocks = messages.getString(MessagesConfig.StringID.spigot_gui_lore_blocks);
 
-        // Global boolean.
-//        boolean useNewBlockModel = Prison.get().getPlatform().isUseNewPrisonBlockModel();
 
         for ( Mine m : minesDisplay )
 		{
@@ -164,7 +162,6 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
 //            DecimalFormat dFmt = new DecimalFormat("##0.00");
 //            double totalChance = 0.0d;
 //
-//            if (useNewBlockModel) {
 //
 //                for (PrisonBlock block : m.getPrisonBlocks()) {
 //                    double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
@@ -174,16 +171,6 @@ public class SpigotMinesGUI extends SpigotGUIComponents {
 //                            StringUtils.capitalize(block.getBlockName().replaceAll("_", " ").toLowerCase());
 //                    minesLore.addLineLoreDescription("&7" + chance + "% - " + block.getBlockName() + "   (" + blockName + ")");
 //                }
-//            } /*else {
-//
-//                for (BlockOld block : m.getBlocks()) {
-//                    double chance = Math.round(block.getChance() * 100.0d) / 100.0d;
-//                    totalChance += chance;
-//                    String blockName =
-//                            StringUtils.capitalize(block.getType().name().replaceAll("_", " ").toLowerCase());
-//                    minesLore.add(SpigotPrison.format("&7" + chance + "% - " + block.getType().name() + "   (" + blockName + ")"));
-//                }
-//            }*/
 //
 //            if (totalChance < 100.0d) {
 //                minesLore.addLineLoreDescription("&e " + dFmt.format(100.0d - totalChance) + "%  - Air");

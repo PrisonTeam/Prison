@@ -14,12 +14,12 @@ public class MineBombData {
 	private String description;
 	
 	
-	/**
-	 * <p>The 'bombItemId' is first line of the bomb's item lore, and
-	 * it really needs to be unique and not match any other bomb's id.
-	 * </p>
-	 */
-	private String bombItemId;
+//	/**
+//	 * <p>The 'bombItemId' is first line of the bomb's item lore, and
+//	 * it really needs to be unique and not match any other bomb's id.
+//	 * </p>
+//	 */
+//	private String loreBombItemId;
 	private List<String> lore;
 	
 
@@ -80,6 +80,23 @@ public class MineBombData {
 	 */
 	private int height = 0;
 	
+	
+	/**
+	 * <p>This adjusts the placement of the bomb along the y axis. By 
+	 * default, the y adjustment is -1 to drop the bomb deeper in to the 
+	 * mine to pickup more blocks.  The larger a bomb is in radius, then 
+	 * the deeper you may want to make this value to maximize the number 
+	 * of blocks that are included for the player.
+	 * </p>
+	 * 
+	 * <p>You can easily move the bomb to be sub-surface where it does not break
+	 * any top layered blocks.  That may not be so clear to the player that
+	 * the bomb went off.  It's also a risk that the bomb could be moved outside
+	 * of the mine too.
+	 * </p>
+	 */
+	private int placementAdjustmentY = -1;
+	
 	/**
 	 * <p>The chance of complete removal.  So if the explosion includes
 	 * 100 blocks, but the chance is only 50%, each block will be given
@@ -95,6 +112,10 @@ public class MineBombData {
 	private String toolInHandName;
 	
 	private int toolInHandFortuneLevel = 0;
+	
+	private int toolInHandDurabilityLevel = 0;
+
+	private int toolInHandDigSpeedLevel = 0;
 	
 	
 	private int fuseDelayTicks = 5 * 20; // 5 seconds
@@ -179,7 +200,7 @@ public class MineBombData {
 		this.explosionShape = explosionShape;
 		this.radius = radius;
 		
-		this.bombItemId = "PrisonMineBomb: " + name;
+//		this.loreBombItemId = "PrisonMineBomb: " + name;
 		
 		this.lore = new ArrayList<>();
 		
@@ -191,6 +212,8 @@ public class MineBombData {
 		
 		this.toolInHandName = null;
 		this.toolInHandFortuneLevel = 0;
+		this.toolInHandDurabilityLevel = 0;
+		this.toolInHandDigSpeedLevel = 0;
 		
 		this.removalChance = 100.0d;
 		
@@ -210,7 +233,7 @@ public class MineBombData {
 		MineBombData cloned = new MineBombData( getName(), getItemType(), getExplosionShape(),
 				getRadius() );
 		
-		cloned.setBombItemId( getBombItemId() );
+//		cloned.setLoreBombItemId( getLoreBombItemId() );
 		
 		cloned.setDescription( getDescription() );
 		
@@ -218,9 +241,13 @@ public class MineBombData {
 		
 		cloned.setToolInHandName( getToolInHandName() );
 		cloned.setToolInHandFortuneLevel( getToolInHandFortuneLevel() );
+		cloned.setToolInHandDurabilityLevel( getToolInHandDurabilityLevel() );
+		cloned.setToolInHandDigSpeedLevel( getToolInHandDigSpeedLevel() );
 		
 		cloned.setRadiusInner( getRadiusInner() );
 		cloned.setHeight( getHeight() );
+		
+		cloned.setPlacementAdjustmentY( getPlacementAdjustmentY() );
 		
 		cloned.setRemovalChance( getRemovalChance() );
 		cloned.setFuseDelayTicks( getFuseDelayTicks() );
@@ -276,12 +303,12 @@ public class MineBombData {
 		this.description = description;
 	}
 
-	public String getBombItemId() {
-		return bombItemId;
-	}
-	public void setBombItemId( String bombItemId ) {
-		this.bombItemId = bombItemId;
-	}
+//	public String getLoreBombItemId() {
+//		return loreBombItemId;
+//	}
+//	public void setLoreBombItemId( String loreBombItemId ) {
+//		this.loreBombItemId = loreBombItemId;
+//	}
 
 	public List<String> getLore() {
 		return lore;
@@ -325,6 +352,13 @@ public class MineBombData {
 		this.height = height;
 	}
 
+	public int getPlacementAdjustmentY() {
+		return placementAdjustmentY;
+	}
+	public void setPlacementAdjustmentY( int placementAdjustmentY ){
+		this.placementAdjustmentY = placementAdjustmentY;
+	}
+
 	public double getRemovalChance() {
 		return removalChance;
 	}
@@ -351,6 +385,20 @@ public class MineBombData {
 	}
 	public void setToolInHandFortuneLevel( int toolInHandFortuneLevel ) {
 		this.toolInHandFortuneLevel = toolInHandFortuneLevel;
+	}
+
+	public int getToolInHandDurabilityLevel() {
+		return toolInHandDurabilityLevel;
+	}
+	public void setToolInHandDurabilityLevel( int toolInHandDurabilityLevel ) {
+		this.toolInHandDurabilityLevel = toolInHandDurabilityLevel;
+	}
+
+	public int getToolInHandDigSpeedLevel() {
+		return toolInHandDigSpeedLevel;
+	}
+	public void setToolInHandDigSpeedLevel( int toolInHandDigSpeedLevel ) {
+		this.toolInHandDigSpeedLevel = toolInHandDigSpeedLevel;
 	}
 
 	public int getFuseDelayTicks() {

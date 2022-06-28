@@ -1,9 +1,25 @@
 package tech.mcprison.prison.spigot.block;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.modules.Module;
+
+import java.util.Optional;
+
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerCrazyEnchants;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonEnchants;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonsExplosiveBlockBreakEvents;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerTokenEnchant;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerZenchantments;
+import tech.mcprison.prison.spigot.autofeatures.events.PrisonDebugBlockInspector;
 
 /**
  * <p>This is a pivotal class that "monitors" onBlockBreak events so it can
@@ -82,42 +98,46 @@ import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEven
  *
  */
 public class OnBlockBreakEventListener 
-	extends OnBlockBreakEventCore {
+//	extends OnBlockBreakEventCore 
+	{
 
+	private AutoManagerBlockBreakEvents bbEvents;
+	private AutoManagerPrisonsExplosiveBlockBreakEvents pebbEvents;
+	private AutoManagerCrazyEnchants ceEvents;
+	
+	private AutoManagerPrisonEnchants peEvents;
+	private AutoManagerTokenEnchant teEvents;
+	private AutoManagerZenchantments zcEvents;
+
+	private PrisonDebugBlockInspector pdBlockInspector;
+	
 	
 	public OnBlockBreakEventListener() {
 		super();
 		
 	}
 	
-	
-	public enum BlockBreakPriority {
-		
-		DISABLED,
-		
-		LOWEST,
-		LOW,
-		NORMAL,
-		HIGH,
-		HIGHEST,
-		MONITOR
-		;
-		
-		public static BlockBreakPriority fromString( String value ) {
-			BlockBreakPriority results = BlockBreakPriority.LOW;
+	/**
+	 * <p>The Prison Mines module must be enabled, or these BlockBreakEvents should 
+	 * not be enabled since they are geared to work with the prison mines.
+	 * </p>
+	 * 
+	 * <p>At this time, prison's block handling is not supported outside of the mines.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public boolean isEnabled() {
+		boolean results = false;
+
+		Optional<Module> mmOptional = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
+		if ( mmOptional.isPresent() && mmOptional.get().isEnabled() ) {
+			PrisonMines prisonMines = (PrisonMines) mmOptional.get();
 			
-			if ( value != null ) {
-				
-				for ( BlockBreakPriority bbPriority : values() ) {
-					if ( bbPriority.name().equalsIgnoreCase( value )) {
-						results = bbPriority;
-						break;
-					}
-				}
-			}
-			
-			return results;
+			results = prisonMines != null;
 		}
+		
+		return results;
 	}
 	
 	public void registerAllBlockBreakEvents(SpigotPrison spigotPrison ) {
@@ -125,7 +145,7 @@ public class OnBlockBreakEventListener
 		// Only register these event listeners if these are enabled.
 		// In order to be enabled, the prison mines module must be enabled.
 		
-		if ( !isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
+		if ( !AutoFeaturesWrapper.getInstance().isBoolean(AutoFeatures.isAutoManagerEnabled) ) {
 			
 			Output.get().logWarn( "AutoMager: AutoFeatures is dsabled. " +
 					"No block break listeners are registered. " +
@@ -144,7 +164,7 @@ public class OnBlockBreakEventListener
 			
 			// This will register all events that should be enabled, for both
 			// auto manager and the normal events too.
-			new AutoManagerBlockBreakEvents().registerEvents();
+			registerEvents();
 			
 			
 		}
@@ -155,6 +175,85 @@ public class OnBlockBreakEventListener
 		}
 		
 	}
+	
+	public void reloadEventListeners() {
+		
+		// NOTE: The unregisterListeners() will remove ALL auto features events that were
+		//       registered, no matter which listeners were enabled.
+		unregisterListeners();
 
+		// NOTE: The registerEvents() will register all event listeners based upon what's 
+		//       in the auto features configuration file.
+		registerEvents();
+		
+		
+	}
+
+	/**
+	 * <p>When a listener is registered within prison's auto manager, the events
+	 * are tracked internally and can be unregistered later.  This function does not 
+	 * make it obvious the instantiated object is "stored", but it is.
+	 * </p>
+	 * 
+	 * <p>For more info on the storage of these registered events, please see:
+	 * </p>
+	 * 
+	 * <pre>SpigotPrison.getRegisteredBlockListeners()</pre>
+	 * 
+	 */
+	private void registerEvents() {
+				
+		bbEvents = new AutoManagerBlockBreakEvents();
+		bbEvents.registerEvents();
+		
+		// Prison's own internal event and listener:
+		pebbEvents = new AutoManagerPrisonsExplosiveBlockBreakEvents();
+		pebbEvents.registerEvents();
+		
+		ceEvents = new AutoManagerCrazyEnchants();
+		ceEvents.registerEvents();
+		
+		peEvents = new AutoManagerPrisonEnchants();
+		peEvents.registerEvents();
+		
+		teEvents = new AutoManagerTokenEnchant();
+		teEvents.registerEvents();
+		
+		zcEvents = new AutoManagerZenchantments();
+		zcEvents.registerEvents();
+		
+		pdBlockInspector = new PrisonDebugBlockInspector();
+		pdBlockInspector.init();
+	}
+	
+
+    /**
+     * <p>If one BlockBreak related event needs to be unregistered, then this function will
+     * unregisters all of them that has been registered through the auto features.  If 
+     * this function is called by different functions, the results will be the same. If
+     * they are ran back-to-back, then only the first call will remove all the Listeners
+     * and the other calls will do nothing since the source ArrayList will be emptied 
+     * and there would be nothing to remove.
+     * </p>
+     * 
+     */
+    public void unregisterListeners() {
+    	
+    	SpigotPrison prison = SpigotPrison.getInstance();
+    	
+    	int count = 0;
+    	while ( prison.getRegisteredBlockListeners().size() > 0 ) {
+    		Listener listener = prison.getRegisteredBlockListeners().remove( 0 );
+    		
+    		if ( listener != null ) {
+    			
+    			HandlerList.unregisterAll( listener );
+    			count++;
+    		}
+    	}
+    	
+    	Output.get().logInfo( "AutoManagerEventsManager: unregistered a total of %d event listeners.",
+    			count );
+	}
 
 }

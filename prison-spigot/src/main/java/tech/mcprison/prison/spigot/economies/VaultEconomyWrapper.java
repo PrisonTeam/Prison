@@ -1,9 +1,12 @@
 package tech.mcprison.prison.spigot.economies;
 
+import java.text.DecimalFormat;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import net.milkbowl.vault.economy.EconomyResponse;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
@@ -89,6 +92,20 @@ public class VaultEconomyWrapper
 	}
 	
 	
+	/**
+	 * <p>This gets a player's balance.
+	 * </p>
+	 * 
+	 * <p>Note that if OfflinePlayer is null, then it appears that this is a 
+	 * symptom of using a plugin, such as Citizens, and that a NPC is 
+	 * running a prison command.  So a null OfflinePlayer is not a sign
+	 * of failure, as much as a sign of usage of an NPC.  So ignore 
+	 * these conditions and no longer print an error message.
+	 * </p>
+	 * 
+	 * @param player
+	 * @return
+	 */
     @SuppressWarnings( "deprecation" )
 	public double getBalance(Player player) {
     	double results = 0;
@@ -98,16 +115,21 @@ public class VaultEconomyWrapper
         	}
         	else {
         		OfflinePlayer oPlayer = getOfflinePlayer( player );
-        		if ( oPlayer == null ) {
-        			Output.get().logInfo( "VaultEconomyWrapper.getBalance(): Error: " +
-        					"Cannot get economy for player %s so returning a value of 0. " +
-        					"Failed to get an bukkit offline player.", 
-        					player.getName());
-        			results = 0;
-        		}
-        		else {
+        		if ( oPlayer != null ) {
         			results = economy.getBalance(oPlayer);
         		}
+        		
+        		
+//        		if ( oPlayer == null ) {
+//        			Output.get().logInfo( "VaultEconomyWrapper.getBalance(): Error: " +
+//        					"Cannot get economy for player %s so returning a value of 0. " +
+//        					"Failed to get an bukkit offline player.", 
+//        					player.getName());
+//        			results = 0;
+//        		}
+//        		else {
+//        			results = economy.getBalance(oPlayer);
+//        		}
         		
         	}
 //        	if ( economy.hasBankSupport() ) {
@@ -138,12 +160,12 @@ public class VaultEconomyWrapper
         	}
         	else {
         		OfflinePlayer oPlayer = getOfflinePlayer( player );
-        		if ( oPlayer == null ) {
-        			Output.get().logInfo( "VaultEconomyWrapper.setBalance(): Error: " +
-        					"Cannot get economy for player %s so cannot set balance to %s.", 
-        					player.getName(), Double.toString( amount ));
-        		}
-        		else {
+        		if ( oPlayer != null ) {
+//        			Output.get().logInfo( "VaultEconomyWrapper.setBalance(): Error: " +
+//        					"Cannot get economy for player %s so cannot set balance to %s.", 
+//        					player.getName(), Double.toString( amount ));
+//        		}
+//        		else {
         			economy.withdrawPlayer( oPlayer, getBalance( player ) );
         			economy.depositPlayer( oPlayer, amount );
         			results = true;
@@ -164,21 +186,38 @@ public class VaultEconomyWrapper
     @SuppressWarnings( "deprecation" )
 	public boolean addBalance(Player player, double amount) {
     	boolean results = false;
-        if (economy != null) {
+    	
+    	if ( amount < 0 ) {
+    		results = removeBalance( player, amount );
+    	}
+    	else if (economy != null) {
         	if ( isPreV1_4() ) {
         		economy.depositPlayer( player.getName(), amount );
            		results = true;
         	}
         	else {
         		OfflinePlayer oPlayer = getOfflinePlayer( player );
-        		if ( oPlayer == null ) {
-        			Output.get().logInfo( "VaultEconomyWrapper.addBalance(): Error: " +
-        					"Cannot get economy for player %s so cannot add a balance of %s.", 
-        					player.getName(), Double.toString( amount ));
-        		}
-        		else {
-        			economy.depositPlayer( oPlayer, amount );
-        			results = true;
+        		if ( oPlayer != null ) {
+//        			Output.get().logInfo( "VaultEconomyWrapper.addBalance(): Error: " +
+//        					"Cannot get economy for player %s so cannot add a balance of %s.", 
+//        					player.getName(), Double.toString( amount ));
+//        		}
+//        		else {
+        			EconomyResponse response = economy.depositPlayer( oPlayer, amount );
+
+        			results = response.transactionSuccess();
+        			
+        			if ( !results ) {
+        				DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+        				String message = String.format( 
+        						"VaultEconomy.addBalance failed: %s  amount: %s  " +
+        									"balance: %s  error: %s", 
+        						oPlayer.getName(),
+        						dFmt.format(amount), dFmt.format(response.balance),
+        						response.errorMessage );
+        				Output.get().logError( message );
+        			}
+//        			results = true;
         		}
         	}
 //        	if ( economy.hasBankSupport() ) {
@@ -193,6 +232,12 @@ public class VaultEconomyWrapper
     @SuppressWarnings( "deprecation" )
 	public boolean removeBalance(Player player, double amount) {
     	boolean results = false;
+    	
+    	// Needs to be a positive amount:
+    	if ( amount < 0 ) {
+    		amount *= -1;
+    	}
+    	
     	if (economy != null) {
     		if ( isPreV1_4() ) {
     			economy.withdrawPlayer( player.getName(), amount );
@@ -200,14 +245,27 @@ public class VaultEconomyWrapper
     		}
     		else {
     			OfflinePlayer oPlayer = getOfflinePlayer( player );
-    			if ( oPlayer == null ) {
-    				Output.get().logInfo( "VaultEconomyWrapper.removeBalance(): Error: " +
-    						"Cannot get economy for player %s so cannot remove a balance of %s.", 
-    						player.getName(), Double.toString( amount ));
-    			}
-    			else {
-    				economy.withdrawPlayer( oPlayer, amount );
-    				results = true;
+    			if ( oPlayer != null ) {
+//    				Output.get().logInfo( "VaultEconomyWrapper.removeBalance(): Error: " +
+//    						"Cannot get economy for player %s so cannot remove a balance of %s.", 
+//    						player.getName(), Double.toString( amount ));
+//    			}
+//    			else {
+    				EconomyResponse response = economy.withdrawPlayer( oPlayer, amount );
+
+    				results = response.transactionSuccess();
+        			
+        			if ( !results ) {
+        				DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+        				String message = String.format( 
+        						"VaultEconomy.removeBalance failed: %s  amount: %s  " +
+        									"balance: %s  error: %s", 
+        						oPlayer.getName(),
+        						dFmt.format(amount), dFmt.format(response.balance),
+        						response.errorMessage );
+        				Output.get().logError( message );
+        			}
+//    				results = true;
     			}
     		}
 
@@ -231,13 +289,13 @@ public class VaultEconomyWrapper
     		}
     		else {
     			OfflinePlayer oPlayer = getOfflinePlayer( player );
-    			if ( oPlayer == null ) {
-    				Output.get().logInfo( "VaultEconomyWrapper.canAfford(): Error: " +
-    						"Cannot get economy for player %s so cannot tell if " +
-    						"player can afford the amount of %s.", 
-    						player.getName(), Double.toString( amount ));
-    			}
-    			else {
+    			if ( oPlayer != null ) {
+//    				Output.get().logInfo( "VaultEconomyWrapper.canAfford(): Error: " +
+//    						"Cannot get economy for player %s so cannot tell if " +
+//    						"player can afford the amount of %s.", 
+//    						player.getName(), Double.toString( amount ));
+//    			}
+//    			else {
     				results = economy.has(oPlayer, amount);
     			}
     		}

@@ -68,6 +68,8 @@ public class IntegrationMinepacksPlugin
 
     		if ( bp != null ) {
     			
+    			boolean changedBackpack = false;
+    			
     			for ( SpigotItemStack spigotItemStack : items.values() ) {
     				
     				ItemStack iStack = SpigotUtil.prisonItemStackToBukkit( spigotItemStack );
@@ -77,8 +79,14 @@ public class IntegrationMinepacksPlugin
     					ItemStack extra = bp.addItem( iStack );
     					extras.put( Integer.valueOf( extras.size() ), new SpigotItemStack(extra) );
     					
-    					bp.setChanged();
+    					changedBackpack = true;
     				}
+    			}
+    			
+    			if ( changedBackpack ) {
+    				
+    				bp.setChanged();
+    				bp.save();
     			}
     		}
     		else {
@@ -101,14 +109,22 @@ public class IntegrationMinepacksPlugin
     		
     		if ( bp != null ) {
     			
+    			boolean changedBackpack = false;
+    			
     			for ( ItemStack itemStack : items.values() ) {
     				
     				if ( itemStack != null ) {
     					ItemStack extra = bp.addItem( itemStack );
     					extras.put( Integer.valueOf( extras.size() ), extra );
-    					
-    					bp.setChanged();
+
+    					changedBackpack = true;
     				}
+    			}
+    			
+    			if ( changedBackpack ) {
+    				
+    				bp.setChanged();
+    				bp.save();
     			}
     		}
     		else {
@@ -150,6 +166,7 @@ public class IntegrationMinepacksPlugin
     					extras.putAll( addItems( player, temp ) );
 
     					bp.setChanged();
+    					bp.save();
     				}
 					
 				}
@@ -181,7 +198,9 @@ public class IntegrationMinepacksPlugin
 				removed += SpigotUtil.itemStackRemoveAll( xMat, bp.getInventory() );
 				
 				if ( removed > 0 ) {
+					
 					bp.setChanged();
+					bp.save();
 				}
 			}
 		}

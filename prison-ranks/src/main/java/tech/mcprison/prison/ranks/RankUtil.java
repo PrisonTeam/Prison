@@ -34,8 +34,8 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.events.RankUpEvent;
-import tech.mcprison.prison.tasks.PrisonCommandTask;
-import tech.mcprison.prison.tasks.PrisonCommandTask.CustomPlaceholders;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData.CustomPlaceholders;
 
 /**
  * Utilities for changing the ranks of players.
@@ -74,6 +74,8 @@ public class RankUtil
 		RANKUP_FAILURE_RANK_IS_NOT_IN_LADDER,
 		RANKUP_FAILURE_CURRENCY_IS_NOT_SUPPORTED,
 		RANKUP_FAILURE_NO_PLAYERRANK,
+		
+		RANKUP_FAILURE_ECONOMY_FAILED,
 		
 		RANKUP_EVENT_CANCELED,
 		
@@ -138,6 +140,17 @@ public class RankUtil
 		player_balance_final,
 		zero_cost_to_player,
 		
+		player_balance_refund_increased,
+		player_balance_refund_decreased,
+		
+		
+		economy_failed_to_update_player_balance,
+		economy_failed_to_reverse_player_rankup_cost,
+		economy_failed_to_apply_player_rankup_cost,
+		accuracy_out_of_range,
+		
+		
+		
 		attempting_to_delete_ladder_from_player,
 		cannot_delete_default_ladder,
 		ladder_was_removed_from_player,
@@ -159,7 +172,9 @@ public class RankUtil
 		failure_exception_caught_check_server_logs, 
 		successfully_saved_player_rank_data,
 		
-		failure_orginal_playerRank_does_not_exist
+		failure_orginal_playerRank_does_not_exist,
+		
+		failed_rankup_validation__target_rank_is_not_expected
 		
 		;
 	}
@@ -190,31 +205,38 @@ public class RankUtil
 
     
     
-    public RankupResults rankupPlayer(Player player, RankPlayer rankPlayer, String ladderName, String playerName) {
+    public RankupResults rankupPlayer(Player player, RankPlayer rankPlayer, String ladderName, String playerName, 
+    		List<PrisonCommandTaskData> cmdTasks ) {
+    	
     	return rankupPlayer(RankupCommands.rankup, player, rankPlayer, ladderName, null, 
-    					playerName, null, PromoteForceCharge.charge_player );
+    					playerName, null, PromoteForceCharge.charge_player, cmdTasks );
     }
     
     public RankupResults promotePlayer(Player player, RankPlayer rankPlayer, String ladderName, 
-    										String playerName, String executorName, PromoteForceCharge pForceCharge) {
+    										String playerName, String executorName, PromoteForceCharge pForceCharge, 
+    										List<PrisonCommandTaskData> cmdTasks ) {
+    	
     	return rankupPlayer(RankupCommands.promote, player, rankPlayer, ladderName, null, 
-    					playerName, executorName, pForceCharge);
+    					playerName, executorName, pForceCharge, cmdTasks );
     }
     
     public RankupResults demotePlayer(Player player, RankPlayer rankPlayer, String ladderName, 
-    										String playerName, String executorName, PromoteForceCharge pForceCharge) {
+    										String playerName, String executorName, PromoteForceCharge pForceCharge, 
+    										List<PrisonCommandTaskData> cmdTasks ) {
+    	
     	return rankupPlayer(RankupCommands.demote, player, rankPlayer, ladderName, null, 
-    					playerName, executorName, pForceCharge);
+    					playerName, executorName, pForceCharge, cmdTasks );
     }
     
     public RankupResults setRank(Player player, RankPlayer rankPlayer, String ladderName, String rankName, 
-    										String playerName, String executorName) {
+    										String playerName, String executorName, 
+    										List<PrisonCommandTaskData> cmdTasks ) {
     	
     	RankupCommands rankupCmd = "FirstJoinEvent".equalsIgnoreCase( executorName ) ?
     						RankupCommands.firstJoin : RankupCommands.setrank;
     	
     	return rankupPlayer( rankupCmd, player, rankPlayer, ladderName, rankName, 
-    					playerName, executorName, PromoteForceCharge.no_charge );
+    					playerName, executorName, PromoteForceCharge.no_charge, cmdTasks );
     }
     
     /**
@@ -234,7 +256,7 @@ public class RankUtil
      */
     private RankupResults rankupPlayer(RankupCommands command, Player player, RankPlayer rankPlayer, String ladderName, 
     				String rankName, String playerName, String executorName, 
-    				PromoteForceCharge pForceCharge ) {
+    				PromoteForceCharge pForceCharge, List<PrisonCommandTaskData> cmdTasks ) {
     	
     	RankupResults results = new RankupResults(command, rankPlayer, executorName, ladderName, rankName);
     	
@@ -295,12 +317,12 @@ public class RankUtil
         if ( ladderName == null ) {
         	ladderName = "default";
         	results.addTransaction(RankupTransactions.assigned_default_ladder);
-        }  	
+        } 
     	
 
     	try {
     		rankupPlayerInternal(results, command, player, rankPlayer, ladderName, 
-    				rankName, pForceCharge );
+    				rankName, pForceCharge, cmdTasks );
     	} catch (Exception e ) {
     		results.addTransaction( RankupTransactions.failure_exception_caught_check_server_logs );
     		
@@ -324,7 +346,7 @@ public class RankUtil
     private void rankupPlayerInternal(RankupResults results, 
     		RankupCommands command, Player prisonPlayer, RankPlayer rankPlayer, String ladderName, 
     		String rankName, 
-    		PromoteForceCharge pForceCharge) {
+    		PromoteForceCharge pForceCharge, List<PrisonCommandTaskData> cmdTasks ) {
 
     	Output.get().logDebug( DebugTarget.rankup, "Rankup: rankupPlayerInternal: ");
     	
@@ -482,42 +504,112 @@ public class RankUtil
         	}
         	
         	results.addTransaction( RankupTransactions.player_balance_initial );
-        	results.setBalanceInitial( rankPlayer.getBalance( targetRank.getCurrency() ) );
+        	double balanceInitial = rankPlayer.getBalance( targetRank.getCurrency() );
+        	double balanceTargetFinal = balanceInitial;
+        	
+        	results.setBalanceInitial( balanceInitial );
         	results.setCurrency( targetRank.getCurrency() );
         	
+        	boolean success = false;
+        	
         	if ( pForceCharge == PromoteForceCharge.charge_player) {
-        		if ( rankPlayer.getBalance(targetRank.getCurrency()) < nextRankCost ) {
+        		if ( balanceInitial < nextRankCost ) {
         			results.addTransaction( RankupStatus.RANKUP_CANT_AFFORD, 
         					RankupTransactions.player_cannot_afford );
         			return;
         		}
         		
+        		balanceTargetFinal -= nextRankCost;
+        		
         		results.addTransaction( RankupTransactions.player_balance_decreased );
-        		rankPlayer.removeBalance( targetRank.getCurrency(), nextRankCost );
-        	} else 
-        		if ( pForceCharge == PromoteForceCharge.refund_player) {
+        		success = rankPlayer.removeBalanceBypassCache( targetRank.getCurrency(), nextRankCost );
+        	} 
+        	else if ( pForceCharge == PromoteForceCharge.refund_player) {
         			
-    			results.addTransaction( RankupTransactions.player_balance_increased);
+        		balanceTargetFinal += nextRankCost;
+
+        		results.addTransaction( RankupTransactions.player_balance_increased);
     			if ( results.getOriginalRank() != null ) {
-    				rankPlayer.addBalance( results.getOriginalRank().getCurrency(), currentRankCost );
+    				success = rankPlayer.addBalanceBypassCache( results.getOriginalRank().getCurrency(), currentRankCost );
     			}
     		} else {
     			// Should never hit this code!!
     		}
         	
+        	if ( !success ) {
+        		
+        		results.addTransaction( RankupTransactions.economy_failed_to_apply_player_rankup_cost );
+        	}
+        	
+        	double balanceFinal = rankPlayer.getBalance( targetRank.getCurrency() );
+        	
         	results.addTransaction( RankupTransactions.player_balance_final );
-        	results.setBalanceFinal( rankPlayer.getBalance( targetRank.getCurrency() ) );
+        	results.setBalanceFinal( balanceFinal );
+        	
+        	// Check to ensure the player's balance is correct..
+        	double finalAccuracy = Math.abs( balanceTargetFinal - balanceFinal );
+        	if ( !success || finalAccuracy >= 1.0 ) {
+        		
+        		if ( finalAccuracy >= 1.0 ) {
+        			
+        			results.addTransaction( RankupTransactions.accuracy_out_of_range );
+        			results.setRankupCostFinalAccuracy( finalAccuracy );
+        		}
+        		
+        		results.addTransaction( RankupStatus.RANKUP_FAILURE_ECONOMY_FAILED, 
+    					RankupTransactions.economy_failed_to_update_player_balance );
+        		return;
+        	}
         	
         	
-        } else {
+        } 
+        else {
         	results.addTransaction( RankupTransactions.zero_cost_to_player );
         }
 
         // Actually apply the new rank here:
         rankPlayer.addRank(targetRank);
         
+        
+        // Validate that the player's rank was actually changed:
+        PlayerRank newRank = rankPlayer.getPlayerRank( ladderName );
 
+        if ( newRank.equals( originalRank ) || 
+        		!targetRank.equals( newRank.getRank() ) ) {
+        	
+        	results.setUnexpectedRank( newRank.getRank() );
+        	
+        	results.addTransaction( RankupStatus.RANKUP_FAILURE_UNABLE_TO_ASSIGN_RANK, 
+        			RankupTransactions.failed_rankup_validation__target_rank_is_not_expected );
+        	
+        	boolean success = false;
+        	
+        	// Refund charges and payments:
+        	if ( pForceCharge == PromoteForceCharge.charge_player) {
+        	
+        		results.addTransaction( RankupTransactions.player_balance_refund_increased);
+        		success = rankPlayer.addBalanceBypassCache( results.getOriginalRank().getCurrency(), currentRankCost );
+        	} 
+        	else if ( pForceCharge == PromoteForceCharge.refund_player) {
+        			
 
+    			results.addTransaction( RankupTransactions.player_balance_refund_decreased );
+    			success = rankPlayer.removeBalanceBypassCache( targetRank.getCurrency(), nextRankCost );
+    		} else {
+    			// Should never hit this code!!
+    		}
+        	
+        	if ( !success ) {
+        		// unable to reverse rankup costs or refunds
+        		results.addTransaction( RankupTransactions.economy_failed_to_reverse_player_rankup_cost );
+        	}
+        	
+        	return;
+        }
+        	
+        
+        
+        
         if ( !savePlayerRank( results, rankPlayer ) ) {
         	return;
         }
@@ -534,7 +626,9 @@ public class RankUtil
         rankupCommands.addAll( ladder.getRankUpCommands() );
         rankupCommands.addAll( targetRank.getRankUpCommands() );
         
-        for (String cmd : rankupCommands ) {
+        for ( int row = 0; row < rankupCommands.size(); row++ ) {
+        	
+        	String cmd = rankupCommands.get( row );
         	if ( cmd != null && 
         			( !cmd.contains( "{firstJoin}" ) || 
         			   cmd.contains( "{firstJoin}" ) && command == RankupCommands.firstJoin )  ) {
@@ -545,7 +639,16 @@ public class RankUtil
         		Rank oRank = results.getOriginalRank();
         		Rank tRank = results.getTargetRank();
         		
-				PrisonCommandTask cmdTask = new PrisonCommandTask( command.name() );
+        		if ( command == RankupCommands.firstJoin && cmd.contains( "{firstJoin}" ) ) {
+        			cmd = cmd.replace( "{firstJoin}", "" );
+        		}
+        		
+				PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( command.name(), cmd, row );
+				
+				cmdTask.setLadder( ladder );
+				cmdTask.setRankTarget( tpRank );
+				cmdTask.setRankOriginal( opRank );
+				
 				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.balanceInitial, Double.toString( results.getBalanceInitial()) );
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.balanceFinal, Double.toString( results.getBalanceFinal()) );
@@ -568,12 +671,11 @@ public class RankUtil
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.targetRankTag, 
 									(tRank == null ? "none" : tRank.getTag()) );
 				
-				if ( command == RankupCommands.firstJoin && cmd.contains( "{firstJoin}" ) ) {
-					cmd = cmd.replace( "{firstJoin}", "" );
-				}
 				
+				cmdTasks.add( cmdTask );
 				
-				cmdTask.submitCommandTask( prisonPlayer, cmd );
+				// Comment this out to stack the rank commands:
+				// cmdTask.submitCommandTask( prisonPlayer );
 
         		
 //        		String formatted = cmd.replace("{player}", prisonPlayer.getName())
@@ -835,6 +937,13 @@ public class RankUtil
     					
     					break;
     					
+    				case accuracy_out_of_range:
+    					sb.append( "=" );
+    					DecimalFormat sFmt = new DecimalFormat("#,##0.00000000");
+    					sb.append( sFmt.format( results.getRankupCostFinalAccuracy() ) );
+    					
+    					break;
+    					
     				case rankupCommandsStart:
     					sb.append( "=" );
     					sb.append( iFmt.format( results.getRankupCommandsAvailable() ) );
@@ -846,6 +955,8 @@ public class RankUtil
     					sb.append( iFmt.format( results.getRankupCommandsExecuted() ) );
     					
     					break;
+    					
+    				case failed_rankup_validation__target_rank_is_not_expected:
     					
     				default:
     					break;

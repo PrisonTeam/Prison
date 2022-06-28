@@ -18,6 +18,7 @@
 
 package tech.mcprison.prison.mines.events;
 
+import tech.mcprison.prison.internal.block.MineResetType;
 import tech.mcprison.prison.internal.events.Cancelable;
 import tech.mcprison.prison.mines.data.MineReset;
 
@@ -27,10 +28,13 @@ import tech.mcprison.prison.mines.data.MineReset;
 public class MineResetEvent implements Cancelable {
 
     private MineReset mine;
+    private MineResetType resetType;
     private boolean canceled = false; // false by default
 
-    public MineResetEvent(MineReset mine) {
-        this.mine = mine;
+    public MineResetEvent(MineReset mine, MineResetType resetType) {
+    	super();
+    	this.mine = mine;
+        this.resetType = resetType;
     }
 
     /**
@@ -59,4 +63,12 @@ public class MineResetEvent implements Cancelable {
     public void setCanceled(boolean canceled) {
         this.canceled = canceled;
     }
+
+	public MineResetType getResetType() {
+		return resetType;
+	}
+	public void setResetType( MineResetType resetType ) {
+		this.resetType = resetType;
+	}
+
 }

@@ -142,6 +142,13 @@ public class PlaceholderAttributeNumberFormat
 //		this.debug = debug;
 	}
 
+
+	@Override
+	public String toString() {
+		return getRaw();
+	}
+	
+	
 	@Override
 	public String format( String value ) {
 		String results = null;
@@ -199,9 +206,9 @@ public class PlaceholderAttributeNumberFormat
 					break;
 			}
 			
-			if ( results.contains( "^|^" ) ) {
-				//results = results.replace( "^|^", "&" );
-			}
+//			if ( results.contains( "^|^" ) ) {
+//				//results = results.replace( "^|^", "&" );
+//			}
 			
 		}
 		catch (Exception e ) {
@@ -226,15 +233,18 @@ public class PlaceholderAttributeNumberFormat
 		}
 		
 		if ( isDebug() ) {
-			Output.get().logInfo( 
-					String.format( "Placeholder Attribute nFormat: double value= %s " +
+			String rawResults = Text.escapeAmpCodes(results);
+			String rawAttribute = Text.escapeAmpCodes(getRaw());
+			
+			String message = String.format( "Placeholder Attribute nFormat: double value= %s " +
 							"format=[%s] spaces=%d unitType=%s  Results: [%s] " +
-							"raw: &7[&3\\R%s\\E&7]" +
+							"raw: &3[&7%s&3] &3[&7%s&3]" +
 							"(remove :debug from placeholder to disable this message)", 
 							
 							Double.toString( value ), getFormat(), getSpaces(), 
-							getUnitType(), results, getRaw()
-							));
+							getUnitType(), results, rawResults, rawAttribute
+							);
+			Output.get().logInfo( message );
 		}
 		
 		return results;

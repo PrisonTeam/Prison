@@ -147,7 +147,7 @@ private static final HandlerList handlers = new HandlerList();
 	
 	public MineTargetPrisonBlock getOriginalTargetBlock( Block bukkitBlock ) {
 		
-		SpigotBlock spigotBlock = new SpigotBlock(bukkitBlock);
+		SpigotBlock spigotBlock = SpigotBlock.getSpigotBlock(bukkitBlock);
 		
 		return getOriginalTargetBlock( spigotBlock );
 	}

@@ -10,8 +10,10 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
+import tech.mcprison.prison.spigot.block.BlockBreakPriority;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
@@ -97,14 +99,22 @@ public class PrisonMinesBlockBreakEvent
 	private boolean forceAutoSell = false;
 	
 	
-	private boolean monitor = false;
 	
+	private BlockBreakPriority bbPriority;
 	
-	// blockEventsOnly was intended to be able to run the block events when 
-	// the the AutoManager is disabled.  But now, as of 2021-11-23, if 
-	// AutoManager is disabled, then nothing related to auto features, 
-	// including block events will be active.
-	private boolean blockEventsOnly = false;
+//	@Deprecated
+//	private boolean monitor = false;
+//	// replace with BlockBreakPriority
+//	
+//	
+//	// blockEventsOnly was intended to be able to run the block events when 
+//	// the the AutoManager is disabled.  But now, as of 2021-11-23, if 
+//	// AutoManager is disabled, then nothing related to auto features, 
+//	// including block events will be active.
+//	@Deprecated
+//	private boolean blockEventsOnly = false;
+//	// replace with BlockBreakPriority bbPriority
+	
 	
 	
 	// Normally the explosion will ONLY work if the center target block was non-AIR.
@@ -119,7 +129,8 @@ public class PrisonMinesBlockBreakEvent
 
 	public PrisonMinesBlockBreakEvent( Block theBlock, Player player, 
 			SpigotBlock spigotBlock, SpigotPlayer spigotPlayer,
-			boolean monitor, boolean blockEventsOnly,
+			BlockBreakPriority bbPriority,
+//			boolean monitor, boolean blockEventsOnly,
 			BlockEventType blockEventType, String triggered) {
 		
 		super( theBlock, player );
@@ -129,8 +140,9 @@ public class PrisonMinesBlockBreakEvent
 		
 		this.itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
 		
-		this.monitor = monitor;
-		this.blockEventsOnly = blockEventsOnly;
+		this.bbPriority = bbPriority;
+//		this.monitor = monitor;
+//		this.blockEventsOnly = blockEventsOnly;
 		
 		this.blockEventType = blockEventType;
 		this.triggered = triggered;
@@ -213,7 +225,7 @@ public class PrisonMinesBlockBreakEvent
 	
 	public MineTargetPrisonBlock getOriginalTargetBlock( Block bukkitBlock ) {
 		
-		SpigotBlock spigotBlock = new SpigotBlock(bukkitBlock);
+		SpigotBlock spigotBlock = SpigotBlock.getSpigotBlock(bukkitBlock);
 		
 		return getOriginalTargetBlock( spigotBlock );
 	}
@@ -223,12 +235,22 @@ public class PrisonMinesBlockBreakEvent
 		TreeMap<String, Integer> results = new TreeMap<>();
 		
 		if ( getTargetBlock() != null ) {
-			results.put( getTargetBlock().getPrisonBlock().getBlockName(), 1 );
+			results.put( 
+					getTargetBlock().getPrisonBlock().getBlockType() == PrisonBlockType.minecraft ?
+							getTargetBlock().getPrisonBlock().getBlockName() : 
+							getTargetBlock().getPrisonBlock().getBlockType() + ":" + getTargetBlock().getPrisonBlock().getBlockName()
+					, 1 );
 		}
 		
 		for ( MineTargetPrisonBlock targetBlock : getTargetExplodedBlocks() )
 		{
-			String blockName = targetBlock.getPrisonBlock().getBlockName();
+			String blockName =
+					targetBlock.getPrisonBlock().getBlockType() == PrisonBlockType.minecraft ?
+							targetBlock.getPrisonBlock().getBlockName() : 
+								targetBlock.getPrisonBlock().getBlockType() + ":" + targetBlock.getPrisonBlock().getBlockName();
+							
+							// targetBlock.getPrisonBlock().getBlockName();
+			
 			int count = 1 + ( results.containsKey( blockName ) ? results.get( blockName ) : 0) ;
 			results.put( blockName, count );
 		}
@@ -334,19 +356,26 @@ public class PrisonMinesBlockBreakEvent
 		this.forceAutoSell = forceAutoSell;
 	}
 
-	public boolean isMonitor() {
-		return monitor;
+	public BlockBreakPriority getBbPriority() {
+		return bbPriority;
 	}
-	public void setMonitor( boolean monitor ) {
-		this.monitor = monitor;
+	public void setBbPriority( BlockBreakPriority bbPriority ) {
+		this.bbPriority = bbPriority;
 	}
-	
-	public boolean isBlockEventsOnly() {
-		return blockEventsOnly;
-	}
-	public void setBlockEventsOnly( boolean blockEventsOnly ) {
-		this.blockEventsOnly = blockEventsOnly;
-	}
+
+//	public boolean isMonitor() {
+//		return monitor;
+//	}
+//	public void setMonitor( boolean monitor ) {
+//		this.monitor = monitor;
+//	}
+//	
+//	public boolean isBlockEventsOnly() {
+//		return blockEventsOnly;
+//	}
+//	public void setBlockEventsOnly( boolean blockEventsOnly ) {
+//		this.blockEventsOnly = blockEventsOnly;
+//	}
 
 	public List<Block> getUnprocessedRawBlocks() {
 		return unprocessedRawBlocks;

@@ -19,8 +19,8 @@
 package tech.mcprison.prison.internal.events.block;
 
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.events.Cancelable;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 
 /**
@@ -30,16 +30,21 @@ import tech.mcprison.prison.util.Location;
  */
 public class BlockPlaceEvent implements Cancelable {
 
-    private BlockType block;
+    private PrisonBlock block;
     private Location blockLocation;
     private Player player;
     private boolean canceled = false;
 
-    public BlockPlaceEvent(BlockType block, Location blockLocation, Player player) {
+    public BlockPlaceEvent( PrisonBlock block, Location blockLocation, Player player) {
         this.block = block;
         this.blockLocation = blockLocation;
         this.player = player;
     }
+//    public BlockPlaceEvent(BlockType block, Location blockLocation, Player player) {
+//    	this.block = block;
+//    	this.blockLocation = blockLocation;
+//    	this.player = player;
+//    }
 
     @Override public boolean isCanceled() {
         return canceled;
@@ -49,7 +54,7 @@ public class BlockPlaceEvent implements Cancelable {
         this.canceled = canceled;
     }
 
-    public BlockType getBlock() {
+    public PrisonBlock getBlock() {
         return block;
     }
 

@@ -69,13 +69,25 @@ public class SpigotCommandSender implements CommandSender {
         return (this instanceof ConsoleCommandSender) && Bukkit.getConsoleSender() != null;
     }
 
-    @Override public void sendMessage(String message) {
-        bukkitSender.sendMessage(Text.translateAmpColorCodes(message));
+    @Override 
+    public void sendMessage(String message) {
+    	
+    	String[] msgs = Text.translateAmpColorCodes(message).split( "\\{br\\}" );
+    	
+    	for ( String msg : msgs ) {
+    		bukkitSender.sendMessage(msg);
+		}
     }
 
-    @Override public void sendMessage(String[] messages) {
-        for (String s : messages) {
-            sendMessage(s);
+    @Override 
+    public void sendMessage(String[] messages) {
+        for (String message : messages) {
+
+        	String[] msgs = Text.translateAmpColorCodes(message).split( "\\{br\\}" );
+        	for ( String msg : msgs ) {
+        		
+        		sendMessage(msg);
+        	}
         }
     }
 

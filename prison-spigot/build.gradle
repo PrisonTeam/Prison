@@ -64,6 +64,14 @@ repositories {
     }
   
 
+    maven { 
+    	url = 'https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin' 
+    	content {
+    		includeGroup 'de.tr7zw'
+    	}
+    }
+  
+
   // 	maven { url 'https://jitpack.io' }
 
 
@@ -79,10 +87,13 @@ dependencies {
     implementation project(':prison-core')
     implementation project(':prison-mines')
     implementation project(':prison-ranks')
+    implementation project(':prison-sellall')
 
 
-    implementation 'org.bstats:bstats-base:2.2.1'
-    implementation 'org.bstats:bstats-bukkit:2.2.1'
+    implementation 'org.bstats:bstats-base:3.0.0'
+    implementation 'org.bstats:bstats-bukkit:3.0.0'
+//    implementation 'org.bstats:bstats-base:2.2.1'
+//    implementation 'org.bstats:bstats-bukkit:2.2.1'
     
     
     // Repo keeps going down:
@@ -105,7 +116,7 @@ dependencies {
 //    implementation 'com.github.cryptomorin:xseries:b95d195482'
     
     // https://mvnrepository.com/artifact/com.github.cryptomorin/XSeries
-	implementation 'com.github.cryptomorin:XSeries:8.5.0.1'
+	implementation 'com.github.cryptomorin:XSeries:8.8.0'
     
 
 
@@ -133,7 +144,14 @@ dependencies {
     }
 
  //   compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.1'
+
  
+ // NOTE: This maven repo was failing to be accessable during online builds. So added to the /lib.
+	// https://www.spigotmc.org/resources/nbt-api.7939/
+	// https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin
+	implementation 'de.tr7zw:item-nbt-api-plugin:2.10.0'
+//	implementation 'de.tr7zw:item-nbt-api-plugin:2.9.2'
+
 
     compileOnly fileTree(dir: 'lib', include: ['*.jar'], 
     			exclude: ['Spiget_v1.4.2.prison-build.jar',
@@ -149,6 +167,7 @@ dependencies {
 
 //    compileOnly fileTree(dir: 'lib', include: ['*.jar'], exclude: ['TokenEnchantAPI-15.5.0.jar'])
 //    compile fileTree(dir: 'lib', include: ['TokenEnchantAPI-18.5.0.jar'])
+
 
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
@@ -182,12 +201,16 @@ shadowJar {
         include(dependency('org.apache.commons:commons-lang3:3.12.0'))
         include(dependency('com.google.code.gson:gson:2.8.6'))
         
-        include(dependency('org.bstats:bstats-base:2.2.1'))
-        include(dependency('org.bstats:bstats-bukkit:2.2.1'))
+        include(dependency('org.bstats:bstats-base:3.0.0'))
+        include(dependency('org.bstats:bstats-bukkit:3.0.0'))
+//        include(dependency('org.bstats:bstats-base:2.2.1'))
+//        include(dependency('org.bstats:bstats-bukkit:2.2.1'))
 
         include(dependency('me.clip:placeholderapi:2.10.9'))
 
-        include(dependency('com.github.cryptomorin:XSeries:8.5.0.1'))
+        include(dependency('com.github.cryptomorin:XSeries:8.8.0'))
+        
+        include(dependency('de.tr7zw:item-nbt-api-plugin:2.10.0'))
         
         //include(dependency('org.inventivetalent.spiget-update:bukkit:1.4.2-SNAPSHOT'))
         //include(dependency('me.badbones69:crazyenchantments-plugin:1.8-Dev-Build-v8'))
@@ -195,12 +218,15 @@ shadowJar {
         include(project(':prison-core'))
         include(project(':prison-mines'))
         include(project(':prison-ranks'))
+        include(project(':prison-sellall'))
     }
 
     relocate 'org.bstats', 'tech.mcprison.prison.bstats'
 
     relocate 'org.inventivetalent.update.spiget', 'tech.mcprison.prison.spiget'
     relocate 'com.cryptomorin', 'tech.mcprison.prison.cryptomorin'
+
+	relocate 'de.tr7zw.nbtapi', 'tech.mcprison.prison.nbtapi'
 
     //relocate 'me.badbones69.crazyenchantments.api.events.BlastUseEvent', 'tech.mcprison.prison.crazyenchantments.api'
 

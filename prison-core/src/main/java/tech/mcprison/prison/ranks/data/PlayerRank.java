@@ -7,6 +7,7 @@ package tech.mcprison.prison.ranks.data;
  *
  */
 public class PlayerRank
+	implements Comparable<PlayerRank>
 {
 	
 	private final Rank rank;
@@ -186,5 +187,20 @@ public class PlayerRank
 //	public void setRankCost( Double rankCost ) {
 //		this.rankCost = rankCost;
 //	}
+
+	@Override
+	public int compareTo( PlayerRank pr )
+	{
+		int results = 0;
+		
+		if ( pr == null ) {
+			results = -1;
+		}
+		else {
+			results = getRank().compareTo( pr.getRank() );
+		}
+		
+		return results;
+	}
 
 }

@@ -7,28 +7,28 @@ import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 
 public interface CompatibilityBlocks
 			extends CompatibilityPlayer {
 
-	public BlockType getBlockType(Block spigotBlock);
+//	public BlockType getBlockType(Block spigotBlock);
 
-	public PrisonBlock getPrisonBlock(Block spigotBlock);
+	public SpigotBlock getSpigotBlock(Block spigotBlock);
 	
 	public XMaterial getXMaterial( Block spigotBlock );
 	
 	public XMaterial getXMaterial( PrisonBlock prisonBlock );
 	
-	public XMaterial getXMaterial( BlockType blockType );
+//	public XMaterial getXMaterial( BlockType blockType );
 
-	public BlockType getBlockType( ItemStack spigotStack );
+//	public BlockType getBlockType( ItemStack spigotStack );
 
 	
 	
-	public void updateSpigotBlock( BlockType blockType, Block spigotBlock );
+//	public void updateSpigotBlock( BlockType blockType, Block spigotBlock );
 	
 	public void updateSpigotBlock( PrisonBlock prisonBlock, Block spigotBlock );
 	

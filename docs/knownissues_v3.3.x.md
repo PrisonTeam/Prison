@@ -3,6 +3,362 @@
 # Prison Known Issues and To Do's for v3.3.x
 
 
+
+
+# TODO Items for v3.3.0-alpha.11
+
+
+
+
+- For v3.3.0 release:
+  - BlockConverters
+    - docs
+  - Sellall - use prison blocks and not XMaterials - Move more code to the sellall module
+  - Backpacks - create a new player cache for backpacks.  Copy the current player cache.
+  - ranks and ladders
+    - auto prestiges (unlimited) based upon formulas
+    - new file formats - json ORM?
+  - archiving old players
+  - more work on top-n rankings
+  - /mines wguard - worldguard hints for mines (generate scripts to run?) - Use patterns that can be edited
+
+
+* BlockConverters 
+
+
+
+* placeholder bar debug is not showing anything useful.
+
+
+- New custom block support: Based upon holding an item or a block. `/mines custom <block/item> <namespace> <hand> <value>`
+  - Way to add custom blocks outside of the CustomItems plugin.  Capture NBT values too?  Not 100% what can easily be captured, or how to always id a custom block; has to be fast for block break handling.
+  
+  
+
+- Transaction logs - Rankup and player joins would be good to take these messages out of the console.
+
+
+
+- TEST: Add nbt support to gui menus.  Issue with rankup not getting the correct ladder name.
+  - Partially added and is working.  Expand to other menu options, which will be time consuming.
+
+
+- Print warnings if auto features configs prevent any drops. Include notice when drops don't occur due to autosell.
+  - On server startup... not sure how to best check.
+
+
+- auto pickup off, nothing was dropping.  LurgenAU
+
+
+
+- autofeatures BLOCKEVENTS priority - include backpacks on auto sell - Ryankayz
+
+- Top block and top tokens - Phoung Nguyen
+
+- (done ??) auto features autosell - tie to sellall's player toggle - Ryankayz
+
+- SQL support - Six
+
+
+
+
+- Mine Resets - Glass block not being removed - harold
+
+- Archive old players - budderman18
+  - archive all player files to a zip. Remove the originals. If player logs back on, then restore the archives. Prevent startup from adding these players back.
+
+- Placeholders - dynamic content - 
+  - custom placeholders based upon other primary placeholders?
+
+
+* Add a preformatted sellall multiplier
+* {prison_player_sellall_mutiplier::nFormat:#,##0.0000}
+
+
+- GUI forces admins to run auto configure.  Review and remove?
+
+
+* messages - split on \n character to multiple lines
+  - player messages
+  - console messages
+  
+
+* Mine bombs:
+  - glowing effect (enchantment)
+    - give madog24 stone{Enchantments:[{}]}
+    - ItemMeta.addFlags(ItemFlag.HIDE_ENCHANTMENTS)
+  - throwing... as in egg or ender pearl
+  throwableEnable: true,
+  throwVectorVelocity: 1,
+  thrownInstantExplode: true,
+
+
+
+* HiPriority: calculated infinite prestiges - Fluffy_ak47
+
+* HiPriority: sellall for custom items
+
+
+
+- In mines block list, new feature to prevent drops for that item... which then can use blockEvents, but that would bypass auto pickup and autosell. 
+
+
+- update LP docs with more info...
+ -  https://discord.com/channels/332602419483770890/943874819101982790/943905937641574420
+
+
+
+- %prison_rrt% (prison_rankup_rank_tag) Does not show the next prestige rank if you are not on the prestige ladder yet
+
+
+- Prison GUI modifications to allow customizations
+  - Notify Nick1 when changes are made
+  
+  
+
+
+- custom block support: Items Adder - No one is using it currently.
+
+- add `/mines set rank *all*`
+- add `/mines set mineAccessByRank *all*`
+- add `/mines set tpAccessByRank *all*`
+- add `/mines set resetTime *all*`
+
+
+- custom blocks not working with sellall.   Sellall is not honoring the custom block's names.
+
+- Add ItemAddr for another custom block integration
+
+- Smelt and blocking: rewrite to provide a list of conversions to eliminate current hard coding.
+
+- Auto smelt is missing some blocks?  Symadude23
+
+- placeholder attributes: Add overrides for "units".  kstance requested it for time, such as h,m,s...
+
+
+
+- Need to get CustomItems working with sellall
+
+- sellall get player multiplier needs to be rewritten - cached?  Currently goes through all perms
+
+- automatic prestiges
+
+- Docs:
+  - finish luckperms doc
+  - Placeholders details - Explain each placeholder
+
+- Rankup commands: placeholders for {promote}{demote}
+
+- Mine reset notifications logging to console - options? 
+
+
+
+* Problems with blocks:
+ - Sand or any other block that falls is no longer in original location so cannot break it. 
+   - Might have to tag the blocks with NMS?
+   - Just fixed an issue with a block that was in a mine with gravel, sand, and dirt.  MIght have been sand causing the error.  NOTE: prevent error, not fixed the actual problem.
+
+ 
+- Problem with actionBar - messages are not going through.
+ - sellall updates every second - different messages - but never show first one - PlayerMessages
+
+
+
+ 
+ - block stats based upon drops instead of breakage?? (not sure if this has merit?)
+ 
+
+
+-> Support for eco enchants:
+  - Need to add an event listener and then have a new function in EnchantmentUtils handle the event, with passing continuing to call the normal rehandleBreaking.  Maybe name it rehandleBreakingEvent?
+https://github.com/Auxilor/EcoEnchants/blob/master/eco-core/core-plugin/src/main/java/com/willfp/ecoenchants/enchantments/ecoenchants/normal/BlastMining.java
+https://github.com/Auxilor/EcoEnchants/blob/master/eco-core/core-plugin/src/main/java/com/willfp/ecoenchants/enchantments/util/EnchantmentUtils.java
+
+
+
+* calculate mine worth?
+
+
+* ShiftAndRightClickSellAll is not working
+
+-> DONE: Hook in to quests - Only on block break events so may not work as expected?
+
+* Found a problem with mcMMO, Quest, and EZBlock support... only works on BlockBreakEvents.  I added logging to identify when they are called, but if an explosion has 20,000 blocks, then it will log 20,000 times!  😂  So I need to figure out something before hooking it up to multi-block breaks.
+
+
+* sellall - ladder based sellall rank multipliers 
+  - so a ladder value of 0.05 would apply p1 = 1.05, p2 = 1.10, p3 = 1.15, etc...
+  
+
+* auto run autoConfigure upon startup.  Use autoStart as the base configuration for prison instead of nothing.
+  
+
+
+# Completed tasks
+
+
+
+- DONE: When placing a mine, it spams resets while it's setting up the liner and the primary mine.  May be an issue with zero block resets and having zero block counts remaining.  May want to initially set the block counts to something like 1, then after the mine is done being laid out, then reset it.  When it's in "tracer" mode, no blocks exist that can be broken, so a value of 1 cannot be decreased.i
+
+
+
+- DONE: percent is not being filtered from `/mines blockevent percent` and is causing errors in the formatting of the number. Percent is also not showing the list of events to get the rows...
+
+
+- Mine Bomb Issues
+  - DONE: Not dropping blocks
+  - DONE: give bombs only works with lower case... camel case not working
+  - DONE: with a stack of 2 oof bombs, setting off one removes both.
+     - The is happening when the bomb is so large that it breaks the durability on the pseudo tool, which then removes whatever is in the player's hand when it breaks the item.
+  - DONE: color names for bombs do not work - xGeorge26
+  - DONE: Control Y adjustment when setting the bomb.  Defaults to -1.
+  - DONE: armorstand appears in animation when using color coded bomb name? - xGeorge26
+  - DONE: Update to include more colorful names..
+  - DONE: Provide a "count down" placeholder function within the armor stand bomb name??
+
+- DONE: Need to externalize the time defaults... like Mine x will reset in x seconds from now.  1 seconds.  - ShockCharge
+
+- DONE: Six - air count needs to be asynch'd since it is causing server not to respond for more than 10 seconds upon startup.  
+  - Most mines are greater than 120,000 blocks.
+
+
+
+- DONE reload is doing NPE when blockconverters are not setup and disabled.
+
+- DONE mine gui - add custom lore to the configs
+  - DONE: can now use either `{mineName}` or `{mineTag}` and title is now rankTag too. fix using the mine tag and not mine name
+  
+* FIXED: GUI Ladders - Perms are not checked so anyone can run these GUIs.  But other than viewing the ladders, they cannot run successfully the /rankup ladder command.
+
+
+- FIXED: autosell not working.  McPingvin
+
+
+- FIXED: Sellall signs not working when variant is other than oak.  BOmer
+
+- DONE: placeholders are not using the time units as the mine notifications are using.  Therefore, they are continuing to use english units.  Need to fix the placeholders.  One is `prison_mines_timeleft_formatted_Mine`. kstance
+
+
+- DONE: add support for NBTs - mine bombs - ClumbsyIsNotReal
+  - having problems formatting mine bomb lore with current restrictions since it prevents bombs from working.
+ 
+
+- DONE: placeholders - show next rank is skipping p1 when no p is assigned to player. xGeorge26
+
+
+- DONE: Many errors when prison hits a standard potion. - jamo
+
+
+- DONE: autofeatures BLOCKEVENT priority - check for full inventory and perform sellall - Ryankayz
+  
+
+- DONE: Rankup - Still not working correctly. 
+ - DONE: takes money but does not rank them up?
+ - DONE: rank changes does not alter the list of players at the ranks
+ 
+
+- DONE: Top-n: hookup rank-score and penalty.
+   - Placeholders - hookup placeholders to support top=n players.
+- DONE: Top-n balance calculations using essentials - 2 mins 31 secs - Budderman18
+  - DONE: move to async thread on startup - high priority
+- Top-n - phuong Nguyen
+- CustomItems drops - harold
+- DONE: Sellall - custom blocks/items and items that have been renamed - harold & RomainD
+- DONE: sellall - no sell renamed items - RomainD
+- DONE: mine bombs - fortune not using the mine bomb's pick with fortune.. always zero - RomainD
+  - debug is showing fortune 0
+- DONE: CustomItems - not doing drops, even when drops are set - harold
+- DONE: CustomItems - Not block counting custom blocks
+- DONE: Upgrade bStats to v3.0.0
+- auto features - normal drops may not be happening. May be using auto pickup code.
+
+
+
+* DONE: The function isUnbreakable could return a null for the SpigotBlock/PrisonBlock. Change it so the primary check for that function is location, then block is optional.  This is failing because the bukkit block cannot be mapped to a XMaterial which should not be a factor.  XMaterial will be null for custom blocks.
+
+
+- (done ??) Placeholder bar is reversed.  As the player earns more money, it shrinks instead of grows. - harold
+ - prison_rankup_cost_bar_default
+ 
+  
+  
+* Mine bombs:
+  - DONE: prison reload bombs
+  - DONE: validate mine bombs when initially loading... 
+    - bomb name cannot have spaces or color formatting
+    - initial validation added
+ 
+* DONE: Works for me. HiPriority: Inventory full not producing any messages. 	alexaille
+
+
+* DONE: HiPriority: NPCs are generating a lot of errors. Real_Ganster
+ - Citizens running command `mines` as player
+` Prison |  VaultEconomyWrapper.getBalance(): Error: Cannot get economy for player vote so returning a value of 0. Failed to get an bukkit offline player.`
+ - https://pastebin.com/JusySWDs
+ 
+
+* DONE: HiPriority: Add a event priority of BLOCKEVENTS which only does the block events and counts.
+
+- DONE: **Fixed issues with vault economy and withdrawing from a player's balance.**
+It now also reports any errors that may be returned.
+
+  
+
+- DONE: placeholder for player blocks mined.  artic1409 
+  - maybe use **prison_player_total_blocks__blockname**
+  
+- DONE: update placeholderAPI with prison's updated placeholders
+
+- DONE: prison support submit are only sending to console, not the user if they are in game
+
+- DONE: When a mine reset time is disabled... it cancels/stops a /mines reset *all*
+
+
+- DONE: when rank tag = none - was showing "null" for placeholder
+
+- DONE: work on getting CustomItems working in mines again
+
+- DONE: remove this warning message:  no longer used.
+[18:58:51 INFO]: | Prison |  Cannot initialize NMS components - ClassNotFoundException - NMS is not functional - net.minecraft.server.v1_18_R1.EntityPlayer
+
+- DONE: RankPlayer addBalance cache for default currency
+- RankPlayer addBalance cache for custom currency - still needed!
+
+
+  - DONE: You cannot afford the rankup is using a NBSP for the thousand separator. Using Prison v3.2.11, Java 16, and spigot 1.16.5. Cannot reproduce. Was a server hosting config issue, but not sure why it only impacted that one message.
+
+
+ - DONE: SELLALL has huge performance issues!  It takes 2.3 ms to autosell, and full auto features block handling is 4.2 ms!!  Serious performance issue with sellall, and autosell is bypassing the command handler too!
+  - added 'autosellTiming:' stats to auto features autosell to track actual sell time using nano-seconds... initial tests show there maybe significant performance issues.
+  - autosell in auto features causing lag?  Flaco21
+    - Issue with autosell causing lag?
+  - DONE: see RankPlayer addBalance cache - 1250 times improvement! 
+
+
+- DONE: admin gui - allows them to bypass No Economy safeguards.
+
+
+* DONE: Add commands to list shop prices in console. Currently sellall is 100% gui so cannot be used offline. 
+  
+
+- DONE: lapis lazuli is not auto selling
+ 
+
+- DONE: Upon startup the first time, broadcast to everyone that they should use /ranks autoConfigure.
+  - Broadcast failed ranks too.
+
+- DONE: update CMI delayed loading docs... they are "backwards"
+
+ 
+ - DONE: No economy error message not showing
+   - works on delayed startup
+   - Fails when not delayed - gui ranks was registering on top of ranks warning
+   
+- DONE: /ranks autoConfigure - review setup and maybe enable skip resets and tweak some notification settings.
+
+
+
+
 # TODO Items for v3.2.11-alpha.13
 
 
@@ -35,10 +391,10 @@ See SelectionManager... Prison wand uses the whole items stack to identify a wan
 * Add Mine Regions - Similar to mines in a way, where they will allow players to have access to the region, have mine effects (outside of a mine)... and mine effects would also be tied to these too.
 
 
-* DONE: command handler - Ignore commands in certain worlds
-
-
 * Placing mines could triggers many resets... also placing mines may not clear all blocks.
+
+
+* DONE: command handler - Ignore commands in certain worlds
 
 
 * DONE: Player Cache - Make sure the cache is loadable otherwise a new instance may be created that could wipe out the existing data.  

@@ -15,6 +15,15 @@ public class UnbreakableBlockData
 	
 	private int taskId;
 	
+	/**
+	 * <p>The location is the key to the unbreakable block. Since it is required, 
+	 * it is supplied outside of the block, which may be nullable, or without a
+	 * valid location.
+	 * </p>
+	 * @param key
+	 * @param block
+	 * @param mine
+	 */
 	public UnbreakableBlockData( Location key, PrisonBlock block, Mine mine ) {
 		super();
 		
@@ -28,9 +37,9 @@ public class UnbreakableBlockData
 		this.taskId = 0;
 	}
 	
-	public UnbreakableBlockData( PrisonBlock block, Mine mine ) {
-		this( block.getLocation(), block, mine );
-	}
+//	public UnbreakableBlockData( PrisonBlock block, Mine mine ) {
+//		this( block.getLocation(), block, mine );
+//	}
 
 	public Location getKey() {
 		return key;

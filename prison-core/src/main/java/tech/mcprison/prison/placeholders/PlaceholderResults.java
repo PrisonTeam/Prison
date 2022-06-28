@@ -1,7 +1,21 @@
 package tech.mcprison.prison.placeholders;
 
+
+/**
+ * <p>This class is obsolete and no longer used. Please see PlaceholderIdentifier for its 
+ * replacement.  This class will be deleted shortly.
+ * </p>
+ * 
+ * <p>This class is used to store the data of mapping an identifier to the correct
+ * PlaceHolderKey.
+ * </p>
+ *
+ */
+@Deprecated
 public class PlaceholderResults
 {
+	private String identifier;
+
 	private PlaceHolderKey placeholder;
 	private String escapeLeft;
 	private String esccapeRight;
@@ -9,14 +23,23 @@ public class PlaceholderResults
 	private String numericSequencePattern;
 	private int numericSequence = -1;
 	
-	private String identifier;
 	
-
 	
-	public PlaceholderResults( PlaceHolderKey placeholder ) {
+	private String text;
+	
+//	public PlaceholderResults( PlaceHolderKey placeholder ) {
+//		super();
+//		
+//		this.placeholder = placeholder;
+//		this.text = null;
+//	}
+	public PlaceholderResults( PlaceHolderKey placeholder, String text ) {
 		super();
 		
 		this.placeholder = placeholder;
+		
+		
+		this.text = text;
 	}
 	
 	@Override
@@ -25,8 +48,11 @@ public class PlaceholderResults
 		
 		if ( getPlaceholder() != null ) {
 			sb.append( getPlaceholder().getPlaceholder().name() )
-				.append( " " ).append( getEscapeLeft() ).append( getEsccapeRight() )
-				.append( " " ).append( getIdentifier() == null ? "" : getIdentifier() );
+				.append( " " )
+				.append( getEscapeLeft() == null ? "" : getEscapeLeft() )
+				.append( getEsccapeRight() == null ? "" : getEsccapeRight() )
+				.append( " " )
+				.append( getIdentifier() == null ? "" : getIdentifier() );
 			
 		}
 		else {
@@ -60,6 +86,13 @@ public class PlaceholderResults
 		this.placeholder = placeholder;
 	}
 
+	public String getText() {
+		return text;
+	}
+	public void setText(String text) {
+		this.text = text;
+	}
+	
 	public String getIdentifier() {
 		return identifier;
 	}

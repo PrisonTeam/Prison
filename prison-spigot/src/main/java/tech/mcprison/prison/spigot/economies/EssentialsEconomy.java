@@ -105,18 +105,19 @@ public class EssentialsEconomy
     }
 
     @Override 
-    public void setBalance(Player player, double amount) {
+    public boolean setBalance(Player player, double amount) {
         wrapper.setBalance(player, amount);
+        return true;
     }
 
     @Override 
-    public void addBalance(Player player, double amount) {
-        setBalance(player, getBalance(player) + amount);
+    public boolean addBalance(Player player, double amount) {
+        return setBalance(player, getBalance(player) + amount);
     }
 
     @Override 
-    public void removeBalance(Player player, double amount) {
-        setBalance(player, getBalance(player) - amount);
+    public boolean removeBalance(Player player, double amount) {
+        return setBalance(player, getBalance(player) - amount);
     }
 
     @Override 

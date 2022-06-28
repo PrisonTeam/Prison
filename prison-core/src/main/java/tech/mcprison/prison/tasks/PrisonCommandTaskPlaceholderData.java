@@ -1,6 +1,6 @@
 package tech.mcprison.prison.tasks;
 
-import tech.mcprison.prison.tasks.PrisonCommandTask.CustomPlaceholders;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData.CustomPlaceholders;
 
 public class PrisonCommandTaskPlaceholderData {
 

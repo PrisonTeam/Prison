@@ -18,11 +18,10 @@
 
 package tech.mcprison.prison.internal.block;
 
-import tech.mcprison.prison.internal.ItemStack;
-import tech.mcprison.prison.util.BlockType;
-import tech.mcprison.prison.util.Location;
-
 import java.util.List;
+
+import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.util.Location;
 
 /**
  * Represents a block. Only one block may exist for a location in the world.
@@ -47,23 +46,23 @@ public interface Block {
      */
     Block getRelative(BlockFace face);
 
-    /**
-     * Returns the type of this block.
-     *
-     * @return The {@link BlockType}.
-     */
-    BlockType getType();
+//    /**
+//     * Returns the type of this block.
+//     *
+//     * @return The {@link BlockType}.
+//     */
+//    BlockType getType();
     
     
     public PrisonBlock getPrisonBlock();
     
 
-    /**
-     * Sets the block to a different type.
-     *
-     * @param type The new {@link BlockType}.
-     */
-    void setType(BlockType type);
+//    /**
+//     * Sets the block to a different type.
+//     *
+//     * @param type The new {@link BlockType}.
+//     */
+//    void setType(BlockType type);
     
     
     public void setPrisonBlock( PrisonBlock prisonBlock );
@@ -82,7 +81,7 @@ public interface Block {
      *
      * @return The current {@link BlockState}.
      */
-    BlockState getState();
+    public BlockState getState();
 
     /**
      * Returns whether the block is empty (i.e. the type is air).
@@ -90,7 +89,7 @@ public interface Block {
      * @return true if the block is empty, false otherwise.
      */
     default boolean isEmpty() {
-        return getType() == BlockType.AIR;
+        return getPrisonBlock().isAir();
     }
 
     /**
@@ -98,14 +97,14 @@ public interface Block {
      *
      * @return true if the is broken, false otherwise.
      */
-    boolean breakNaturally();
+    public boolean breakNaturally();
 
     /**
      * Returns a list of items which would be dropped by destroying this block.
      *
      * @return A list of dropped items for this type of block
      */
-    List<ItemStack> getDrops();
+    public List<ItemStack> getDrops();
 
     /**
      * Returns a list of items which would be dropped by destroying this block with
@@ -114,6 +113,6 @@ public interface Block {
      * @param tool The tool or item in hand used for breaking the block.
      * @return A list of dropped items for this type of block.
      */
-    List<ItemStack> getDrops(ItemStack tool);
+    public List<ItemStack> getDrops(ItemStack tool);
 
 }

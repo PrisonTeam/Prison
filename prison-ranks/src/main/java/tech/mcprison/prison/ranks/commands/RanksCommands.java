@@ -537,10 +537,11 @@ public class RanksCommands
 		}
 
 		
-		// Reload the placeholders and autoFeatures:
+		// Reload the placeholders:
 		Prison.get().getPlatform().getPlaceholders().reloadPlaceholders();
 		
-		AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig().reloadConfig();
+		// Reloads autoFeatures and blockConverters:
+		AutoFeaturesWrapper.getInstance().reloadConfigs();
 		
 		
 		// Reset all player to the first rank on the default ladder:
@@ -1334,7 +1335,8 @@ public class RanksCommands
     	
     }
 
-    @Command(identifier = "ranks set tag", description = "Modifies a ranks tag", 
+    @Command(identifier = "ranks set tag", description = "Modifies a ranks tag. If a rank does not have a " +
+    		"tag set, then the rank name will be used. You can use color codes to stylize your rank tag.", 
     							onlyPlayers = false, permissions = "ranks.set")
     public void setTag(CommandSender sender, 
     				@Arg(name = "rankName") String rankName, 
@@ -1513,7 +1515,7 @@ public class RanksCommands
 			}
 			
 			
-			RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+//			RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
 			
 			
 			Map<RankLadder, PlayerRank> rankLadders = rankPlayer.getLadderRanks();
@@ -2031,6 +2033,85 @@ public class RanksCommands
     }
     
 
+    
+    @Command(identifier = "ranks topn", description = "Shows the top-n ranked players on the server. "
+    		+ "The rankings are calculated by prestiges ladder, default ladder, and then by the "
+    		+ "player's balance which is used to generate a rank-score.  If enabled, players who "
+    		+ "do not rankup when they can, will be penalized with their excessive balance. ", 
+    		onlyPlayers = false, aliases="topn")
+    public void rankTopN(CommandSender sender,
+    			@Arg(name = "page", def = "1", 
+    				description = "Page number [1]") String pageNumber,
+    			@Arg(name = "pageSize", def = "10", 
+    				description = "Page size [10]") String pageSizeNumber,
+    			@Arg(name = "options", def = ".",
+    				description = "Options: 'alt' displays a shorter format. [alt]") String options ){
+
+    	int page = 1;
+    	int pageSize = 10;
+    	
+    	boolean alt = false;
+    	if ( pageNumber.toLowerCase().contains("alt") ||
+    			pageSizeNumber.toLowerCase().contains("alt") ||
+    			options.toLowerCase().contains("alt") ) {
+    		alt = true;
+    	}
+    	
+    	
+    	try {
+    		page = Integer.parseInt(pageNumber);
+    	}
+    	catch (NumberFormatException e ) {
+    		// Ignore: will use defaults
+    	}
+    	try {
+    		pageSize = Integer.parseInt(pageSizeNumber);
+    	}
+    	catch (NumberFormatException e ) {
+    		// Ignore: will use defaults
+    	}
+    	
+    	if ( page <= 0 ) {
+    		page = 1;
+    	}
+    	if ( pageSize <= 0 ) {
+    		pageSize = 10;
+    	}
+    	
+    	int totalPlayers = PrisonRanks.getInstance().getPlayerManager().getPlayers().size();
+    	int totalPages = (totalPlayers / pageSize) + (totalPlayers % pageSize == 0 ? 0 : 1);
+    	
+    	if ( page > totalPages ) {
+    		page = totalPages;
+    	}
+
+    	int posStart = (page - 1) * pageSize;
+    	int posEnd = posStart + pageSize;
+    	
+//    	DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+    	
+    	List<RankPlayer> topN = PrisonRanks.getInstance().getPlayerManager().getPlayersByTop();
+
+    	String header = alt ? 
+    			RankPlayer.printRankScoreLine2Header() : 
+    				RankPlayer.printRankScoreLine1Header();
+    	sender.sendMessage( header );
+    	
+    	for ( int i = posStart; i < posEnd && i < topN.size(); i++ ) {
+    		RankPlayer rPlayer = topN.get(i);
+    		
+    		String message = alt ?
+    				rPlayer.printRankScoreLine2( i + 1 ) :
+    					rPlayer.printRankScoreLine1( i + 1 );
+    		
+    		sender.sendMessage(message);
+    	}
+    	
+
+    	
+    }
+    
+    
     
 //    /**
 //     * This function is just an arbitrary test to access the various components.

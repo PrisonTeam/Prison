@@ -62,24 +62,30 @@ public class VaultEconomy
     }
 
     @Override 
-    public void setBalance(Player player, double amount) {
+    public boolean setBalance(Player player, double amount) {
+    	boolean results = false;
         if (hasIntegrated()) {
-        	econWrapper.setBalance( player, amount );
+        	results = econWrapper.setBalance( player, amount );
         }
+        return results;
     }
 
     @Override 
-    public void addBalance(Player player, double amount) {
+    public boolean addBalance(Player player, double amount) {
+    	boolean results = false;
         if (hasIntegrated()) {
-        	econWrapper.addBalance( player, amount );
+        	results = econWrapper.addBalance( player, amount );
         }
+        return results;
     }
 
     @Override
-    public void removeBalance(Player player, double amount) {
+    public boolean removeBalance(Player player, double amount) {
+    	boolean results = false;
         if (hasIntegrated()) {
-        	econWrapper.removeBalance( player, amount );
+        	results = econWrapper.removeBalance( player, amount );
         }
+        return results;
     }
 
     @Override 

@@ -4,7 +4,10 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlaceholdersUtil {
+import tech.mcprison.prison.util.Text;
+
+public class PlaceholdersUtil
+	extends PlaceholdersUtilMessage {
 
 	public static final double TIME_SECOND = 1.0;
 	public static final double TIME_MINUTE = TIME_SECOND * 60.0;
@@ -13,6 +16,8 @@ public class PlaceholdersUtil {
 	
 	
 	public static final List<String> prefixesBinary = new ArrayList<>();
+	
+	public static final List<String> prefixesTimeUnits = new ArrayList<>();
 	
 	static {
 		prefixesBinary.add( "" );
@@ -24,6 +29,22 @@ public class PlaceholdersUtil {
 		prefixesBinary.add( "EB" );
 		prefixesBinary.add( "ZB" );
 		prefixesBinary.add( "YB" );
+		
+		List<String> timeUnitsShort = coreOutputTextTimeUnitsShortArray();
+		if ( timeUnitsShort.size() == 7 ) {
+			// y,m,w,d,h,m,s
+			prefixesTimeUnits.addAll(timeUnitsShort);
+		}
+		else {
+			// y,m,w,d,h,m,s
+			prefixesTimeUnits.add( "y" );
+			prefixesTimeUnits.add( "m" );
+			prefixesTimeUnits.add( "w" );
+			prefixesTimeUnits.add( "d" );
+			prefixesTimeUnits.add( "h" );
+			prefixesTimeUnits.add( "m" );
+			prefixesTimeUnits.add( "s" );
+		}
 	}
 	
 	
@@ -36,36 +57,50 @@ public class PlaceholdersUtil {
 	 * @return
 	 */
 	public static String formattedTime( double timeSec ) {
-    	StringBuilder sb = new StringBuilder();
-    	
-    	long days = (long)(timeSec / TIME_DAY);
-    	timeSec -= (days * TIME_DAY);
-    	if ( days > 0 ) {
-    		sb.append( days );
-    		sb.append( "d " );
-    	}
-    	
-    	long hours = (long)(timeSec / TIME_HOUR);
-    	timeSec -= (hours * TIME_HOUR);
-    	if ( sb.length() > 0 || hours > 0 ) {
-    		sb.append( hours );
-    		sb.append( "h " );
-    	}
-    	
-    	long mins = (long)(timeSec / TIME_MINUTE);
-    	timeSec -= (mins * TIME_MINUTE);
-    	if ( sb.length() > 0 || mins > 0 ) {
-    		sb.append( mins );
-    		sb.append( "m " );
-    	}
-    	
-    	double secs = (double)(timeSec / TIME_SECOND);
-    	timeSec -= (secs * TIME_SECOND);
-    	DecimalFormat dFmt = new DecimalFormat("#0");
-    	sb.append( dFmt.format( secs ));
-    	sb.append( "s " );
-    	
-		return sb.toString();
+		
+		long durationMs = (long) (timeSec * 1000d);
+		String formattedTime = Text.getTimeUntilString( durationMs );
+		
+		return formattedTime;
+		
+//    	StringBuilder sb = new StringBuilder();
+//    	
+//    	long days = (long)(timeSec / TIME_DAY);
+//    	timeSec -= (days * TIME_DAY);
+//    	if ( days > 0 ) {
+//    		sb.append( days );
+//    		// y,m,w,d,h,m,s
+//    		sb.append( prefixesTimeUnits.get(3) ).append( " " );
+////    		sb.append( "d " );
+//    	}
+//    	
+//    	long hours = (long)(timeSec / TIME_HOUR);
+//    	timeSec -= (hours * TIME_HOUR);
+//    	if ( sb.length() > 0 || hours > 0 ) {
+//    		sb.append( hours );
+//    		// y,m,w,d,h,m,s
+//    		sb.append( prefixesTimeUnits.get(4) ).append( " " );
+////    		sb.append( "h " );
+//    	}
+//    	
+//    	long mins = (long)(timeSec / TIME_MINUTE);
+//    	timeSec -= (mins * TIME_MINUTE);
+//    	if ( sb.length() > 0 || mins > 0 ) {
+//    		sb.append( mins );
+//    		// y,m,w,d,h,m,s
+//    		sb.append( prefixesTimeUnits.get(5) ).append( " " );
+////    		sb.append( "m " );
+//    	}
+//    	
+//    	double secs = (double)(timeSec / TIME_SECOND);
+//    	timeSec -= (secs * TIME_SECOND);
+//    	DecimalFormat dFmt = new DecimalFormat("#0");
+//    	sb.append( dFmt.format( secs ));
+//    	// y,m,w,d,h,m,s
+//    	sb.append( prefixesTimeUnits.get(6) ).append( " " );
+////    	sb.append( "s " );
+//    	
+//		return sb.toString();
 	}
 	
 	/**

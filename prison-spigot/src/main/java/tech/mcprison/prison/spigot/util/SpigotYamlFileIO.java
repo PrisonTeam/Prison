@@ -16,8 +16,9 @@ public class SpigotYamlFileIO
 	
 	private YamlConfiguration yamlConfig;
 	
-	public SpigotYamlFileIO( File yamlFile ) {
-		super( yamlFile );
+	
+	public SpigotYamlFileIO( File yamlFile, boolean supportsDropsCanceling ) {
+		super( yamlFile, supportsDropsCanceling );
 		
 		this.yamlConfig = new YamlConfiguration();
 		
@@ -92,50 +93,50 @@ public class SpigotYamlFileIO
 	}
 	
 	
-	@Override
-	protected boolean getBoolean( String key ) {
-		return yamlConfig.getBoolean( key ) ;
-	}
-	@Override
-	protected boolean getBoolean( String key, boolean defaultValue ) {
-		return yamlConfig.getBoolean( key, defaultValue ) ;
-	}
-	
-	@Override
-	protected String getString( String key ) {
-		return yamlConfig.getString( key ) ;
-	}
-	@Override
-	protected String getString( String key, String defaultValue ) {
-		return yamlConfig.getString( key, defaultValue ) ;
-	}
-	
-	@Override
-	protected double getDouble( String key ) {
-		return yamlConfig.getDouble( key ) ;
-	}
-	@Override
-	protected double getDouble( String key, double defaultValue ) {
-		return yamlConfig.getDouble( key, defaultValue ) ;
-	}
-	
-	@Override
-	protected int getInteger( String key ) {
-		return yamlConfig.getInt( key ) ;
-	}
-	@Override
-	protected int getInteger( String key, int defaultValue ) {
-		return yamlConfig.getInt( key, defaultValue ) ;
-	}
-	
-	@Override
-	protected long getLong( String key ) {
-		return yamlConfig.getLong( key ) ;
-	}
-	@Override
-	protected long getLong( String key, long defaultValue ) {
-		return yamlConfig.getLong( key, defaultValue ) ;
-	}
+//	@Override
+//	protected boolean getBoolean( String key ) {
+//		return yamlConfig.getBoolean( key ) ;
+//	}
+//	@Override
+//	protected boolean getBoolean( String key, boolean defaultValue ) {
+//		return yamlConfig.getBoolean( key, defaultValue ) ;
+//	}
+//	
+//	@Override
+//	protected String getString( String key ) {
+//		return yamlConfig.getString( key ) ;
+//	}
+//	@Override
+//	protected String getString( String key, String defaultValue ) {
+//		return yamlConfig.getString( key, defaultValue ) ;
+//	}
+//	
+//	@Override
+//	protected double getDouble( String key ) {
+//		return yamlConfig.getDouble( key ) ;
+//	}
+//	@Override
+//	protected double getDouble( String key, double defaultValue ) {
+//		return yamlConfig.getDouble( key, defaultValue ) ;
+//	}
+//	
+//	@Override
+//	protected int getInteger( String key ) {
+//		return yamlConfig.getInt( key ) ;
+//	}
+//	@Override
+//	protected int getInteger( String key, int defaultValue ) {
+//		return yamlConfig.getInt( key, defaultValue ) ;
+//	}
+//	
+//	@Override
+//	protected long getLong( String key ) {
+//		return yamlConfig.getLong( key ) ;
+//	}
+//	@Override
+//	protected long getLong( String key, long defaultValue ) {
+//		return yamlConfig.getLong( key, defaultValue ) ;
+//	}
 
 	
 	public void test( ) {

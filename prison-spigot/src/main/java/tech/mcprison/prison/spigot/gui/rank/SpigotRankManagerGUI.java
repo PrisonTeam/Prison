@@ -12,7 +12,6 @@ import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerFactory;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
@@ -43,7 +42,7 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
         int dimension = 27;
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3Ranks -> RankManager");
 
-        ButtonLore rankupCommandsLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open), null);
+        ButtonLore rankupCommandsLore = new ButtonLore( guiLeftClickToOpenMsg(), null);
 
         // Decimal Rank cost format.
         DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
@@ -58,25 +57,28 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
         try {
             rankCost = PlaceholdersUtil.formattedKmbtSISize(pRank.getRankCost(), formatDecimal, "");
         } catch (NullPointerException ex){
-            rankCost = "Can't get";
+            rankCost = "Unavailable";
         }
 
-        ButtonLore editPriceLore = new ButtonLore(createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open)), createLore(
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_info),
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_price) + " " + rankCost));
+        ButtonLore editPriceLore = new ButtonLore(
+        		createLore( guiLeftClickToOpenMsg()), 
+        		createLore(
+        				messages.getString(MessagesConfig.StringID.spigot_gui_lore_info),
+                guiPriceMsg( rankCost) ));
 
-        ButtonLore editTagLore = new ButtonLore(createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_open)), createLore(
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_info),
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_rank_tag) + " " + rank.getTag()));
+        ButtonLore editTagLore = new ButtonLore(createLore( guiLeftClickToOpenMsg() ), 
+        		createLore(
+        				messages.getString(MessagesConfig.StringID.spigot_gui_lore_info),
+        				messages.getString(MessagesConfig.StringID.spigot_gui_lore_rank_tag) + " " + rank.getTag()));
 
 
-        ButtonLore closeGUILore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_close), null);
+        ButtonLore closeGUILore = new ButtonLore( guiClickToCloseMsg(), null);
 
         // Create the button
-        gui.addButton(new Button(26, XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, SpigotPrison.format("&cClose")));
-        gui.addButton(new Button(10, XMaterial.COMMAND_BLOCK_MINECART, rankupCommandsLore, SpigotPrison.format("&3RankupCommands" +  " " + rank.getName())));
-        gui.addButton(new Button(13, XMaterial.GOLD_NUGGET, editPriceLore, SpigotPrison.format("&3RankPrice" +  " " + rank.getName())));
-        gui.addButton(new Button(16, XMaterial.NAME_TAG, editTagLore, SpigotPrison.format("&3RankTag" +  " " + rank.getName())));
+        gui.addButton(new Button(26, XMaterial.RED_STAINED_GLASS_PANE, closeGUILore, "&cClose" ));
+        gui.addButton(new Button(10, XMaterial.COMMAND_BLOCK_MINECART, rankupCommandsLore, "&3RankupCommands" +  " " + rank.getName() ));
+        gui.addButton(new Button(13, XMaterial.GOLD_NUGGET, editPriceLore, "&3RankPrice" +  " " + rank.getName() ));
+        gui.addButton(new Button(16, XMaterial.NAME_TAG, editTagLore, "&3RankTag" +  " " + rank.getName() ));
 
         gui.open();
     }

@@ -298,7 +298,7 @@ The bar placeholder attribute only works with placeholders with the word bar in 
 
 Example of this attribute's usage is as follows, using descriptions for each parameter.
 
-`::bar:size:posColor:posSeg:negColor:negSeg:hex:hex2:debug`
+`::bar:size:posColor:posSeg:negColor:negSeg:reverse:hex:hex2:debug`
 
 
 
@@ -312,7 +312,11 @@ Example of this attribute's usage is as follows, using descriptions for each par
   						Color codes should start with an &.
 - **Negative Segment**: The value that will be used for the negative
   						segment.
-  	
+  						
+  						
+- **reverse**: **Optional.** Case sensitive. Non-positional; can be placed anywhere.
+  				When enabled, this will reverse the bar graph.
+  				
       
 - **hex**: **Optional.** Case sensitive. Non-positional; can be placed anywhere.
   				Only valid value is "hex". When enabled it will translate

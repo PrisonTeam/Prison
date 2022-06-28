@@ -29,6 +29,7 @@ public class RankupResults {
 	private PlayerRank playerRankTarget;
     private Rank originalRank;
     private Rank targetRank;
+    private Rank unexpectedRank;
     private String message;
     
     private List<RankupTransactions> transactions;
@@ -36,6 +37,7 @@ public class RankupResults {
     private double balanceInitial;
     private double balanceFinal;
     private String currency;
+    private double rankupCostFinalAccuracy;
     
     private int rankupCommandsAvailable = 0;
     private int rankupCommandsExecuted = 0;
@@ -192,6 +194,14 @@ public class RankupResults {
 	public Rank getTargetRank() {
 		return targetRank;
 	}
+	
+	public Rank getUnexpectedRank() {
+		return unexpectedRank;
+	}
+	public void setUnexpectedRank( Rank unexpectedRank ) {
+		this.unexpectedRank = unexpectedRank;
+	}
+	
 	public void setTargetRank( Rank targetRank ) {
 		this.targetRank = targetRank;
 	}
@@ -257,6 +267,13 @@ public class RankupResults {
 	}
 	public void setTimestampStop( long timestampStop ) {
 		this.timestampStop = timestampStop;
+	}
+
+	public double getRankupCostFinalAccuracy() {
+		return rankupCostFinalAccuracy;
+	}
+	public void setRankupCostFinalAccuracy(double rankupCostFinalAccuracy) {
+		this.rankupCostFinalAccuracy = rankupCostFinalAccuracy;
 	}
 	
 }

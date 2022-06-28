@@ -43,6 +43,7 @@ public class PlayerArgumentHandler extends ArgumentHandler<Player> {
 
     @Override public Player transform(CommandSender sender, CommandArgument argument, String value)
         throws TransformError {
+
         return Prison.get().getPlatform().getPlayer(value).orElseThrow(() -> new TransformError(
             Prison.get().getLocaleManager().getLocalizable("playerNotOnline")
                 .withReplacements(value).localizeFor(sender)));

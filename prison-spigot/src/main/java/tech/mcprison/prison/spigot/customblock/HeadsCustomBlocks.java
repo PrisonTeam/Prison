@@ -1,8 +1,11 @@
 package tech.mcprison.prison.spigot.customblock;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import tech.mcprison.prison.integration.CustomBlockIntegration;
+import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
@@ -55,8 +58,26 @@ public class HeadsCustomBlocks
 	@Override
 	public List<PrisonBlock> getCustomBlockList()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		List<PrisonBlock> results = new ArrayList<>();
+		
+		return results;
+	}
+
+
+//	@Override
+//	public List<? extends ItemStack> getDrops( PrisonBlock prisonBlock )
+//	{
+//		List<? extends ItemStack> results = new ArrayList<>();
+//		
+//		return results;
+//	}
+
+
+	@Override
+	public List<? extends ItemStack> getDrops(Player player, PrisonBlock prisonBlock, ItemStack tool) {
+		List<? extends ItemStack> results = new ArrayList<>();
+		
+		return results;
 	}
 	
 }

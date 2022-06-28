@@ -1,10 +1,22 @@
 package tech.mcprison.prison.spigot.configs;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.spigot.SpigotPrison;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
+/**
+ * <p>This class was supposed to use the multi-language support tools within prison, of which it does not.
+ * Therefore, it needs to be trashed and replaced with the proper tools.
+ * </p>
+ * 
+ * <p>Do not use!
+ * </p>
+ *
+ */
+@Deprecated
 public class MessagesConfig {
 
     private static MessagesConfig instance;
@@ -15,6 +27,7 @@ public class MessagesConfig {
     /**
      * Get MessagesConfig class and initialize it if necessary.
      * */
+    @Deprecated
     public static MessagesConfig get(){
         if (instance == null){
          instance = new MessagesConfig();
@@ -26,11 +39,60 @@ public class MessagesConfig {
     /**
      * Initialize the config, reading and caching data.
      * */
+    @Deprecated
     private void initConfig(){
-        try(FileInputStream data = new FileInputStream(SpigotPrison.getInstance().getDataFolder() + path + defaultLanguage + ".properties")){
+    	
+    	String pathStr = SpigotPrison.getInstance().getDataFolder() + path;
+    	File path = new File( pathStr );
+    	
+    	String enUSFileName = "en_US" + ".properties";
+    	File enUSFile = new File( path, enUSFileName );
+    	
+    	String targetFileName = defaultLanguage + ".properties";
+    	File targetFile = new File( path, targetFileName );
+    	
+    	if ( enUSFile.exists() && !targetFile.exists() ) {
+    		targetFile = enUSFile;
+    		
+			Prison.get().getLocaleLoadInfo().add( String.format( 
+					"&3pseudo-Module: &7GUI-sellall  &3Locale: &7%s  &3Warning: Locale file does not exist; using " +
+					" &7%s.properties&3.  path: %s", 
+					targetFileName, enUSFileName, pathStr ) );
+    	}
+    	else {
+    		Prison.get().getLocaleLoadInfo().add( String.format( 
+    				"&3pseudo-Module: &7GUI-sellall  &3Locale: &7%s  Using this language file with no validation.  path: %s", 
+    						targetFileName, enUSFileName, pathStr ) );
+    		
+    	}
+    	
+    	
+        try (
+        		FileInputStream is = new FileInputStream( targetFile )
+        	) {
 
             Properties temp = new Properties();
-            temp.load(new InputStreamReader(data));
+
+            // NOTE: This code is from tech.mcprison.prison.localization.LocaleManager.loadLocale(String, InputStream, boolean)
+        	
+
+            // The InputStream is part of a zipEntry so it cannot be closed, or it will close the zip stream
+            BufferedReader br = new BufferedReader( new InputStreamReader( is, Charset.forName("UTF-8") ));
+            String line = br.readLine();
+          
+            while ( line != null ) {
+            	if ( !line.startsWith( "#" ) && line.contains( "=" ) ) {
+          		
+            		String[] keyValue = line.split( "\\=" );
+            		String value = (keyValue.length > 1 ? keyValue[1] : ""); // StringEscapeUtils.escapeJava( keyValue[1] );
+            		temp.put( keyValue[0], value );
+            	}
+          	
+            	line = br.readLine();
+            }
+            
+            // WARNING: cannot use the properties.load() function since it is NOT utf-8 capable.
+//            temp.load(new InputStreamReader(data));
             properties = temp;
 
         } catch (IOException ex){
@@ -52,6 +114,7 @@ public class MessagesConfig {
     	return msg;
     }
 
+    @Deprecated
     public void reload(){
         initConfig();
     }
@@ -60,17 +123,17 @@ public class MessagesConfig {
 
         spigot_gui_lore_click_to_add,
         spigot_gui_lore_click_to_add_backpack,
-        spigot_gui_lore_click_to_cancel,
-        spigot_gui_lore_click_to_close,
-        spigot_gui_lore_click_to_confirm,
-        spigot_gui_lore_click_to_decrease,
-        spigot_gui_lore_click_to_delete,
-        spigot_gui_lore_click_to_disable,
-        spigot_gui_lore_click_to_edit,
-        spigot_gui_lore_click_to_enable,
-        spigot_gui_lore_click_to_increase,
+//        spigot_gui_lore_click_to_cancel,
+//        spigot_gui_lore_click_to_close,
+//        spigot_gui_lore_click_to_confirm,
+//        spigot_gui_lore_click_to_decrease,
+//        spigot_gui_lore_click_to_delete,
+//        spigot_gui_lore_click_to_disable,
+//        spigot_gui_lore_click_to_edit,
+//        spigot_gui_lore_click_to_enable,
+//        spigot_gui_lore_click_to_increase,
         spigot_gui_lore_click_to_manage_rank,
-        spigot_gui_lore_click_to_open,
+//        spigot_gui_lore_click_to_open,
         spigot_gui_lore_click_to_rankup,
         spigot_gui_lore_click_to_rename,
         spigot_gui_lore_click_to_select,
@@ -78,20 +141,20 @@ public class MessagesConfig {
         spigot_gui_lore_click_to_teleport,
         spigot_gui_lore_click_to_use,
 
-        spigot_gui_lore_click_left_to_confirm,
-        spigot_gui_lore_click_left_to_edit,
-        spigot_gui_lore_click_left_to_open,
-        spigot_gui_lore_click_left_to_reset,
+//        spigot_gui_lore_click_left_to_confirm,
+//        spigot_gui_lore_click_left_to_edit,
+//        spigot_gui_lore_click_left_to_open,
+//        spigot_gui_lore_click_left_to_reset,
 
-        spigot_gui_lore_click_right_to_cancel,
-        spigot_gui_lore_click_right_to_delete,
-        spigot_gui_lore_click_right_to_disable,
-        spigot_gui_lore_click_right_to_enable,
-        spigot_gui_lore_click_right_to_toggle,
+//        spigot_gui_lore_click_right_to_cancel,
+//        spigot_gui_lore_click_right_to_delete,
+//        spigot_gui_lore_click_right_to_disable,
+//        spigot_gui_lore_click_right_to_enable,
+//        spigot_gui_lore_click_right_to_toggle,
 
-        spigot_gui_lore_click_right_and_shift_to_delete,
-        spigot_gui_lore_click_right_and_shift_to_disable,
-        spigot_gui_lore_click_right_and_shift_to_toggle,
+//        spigot_gui_lore_click_right_and_shift_to_delete,
+//        spigot_gui_lore_click_right_and_shift_to_disable,
+//        spigot_gui_lore_click_right_and_shift_to_toggle,
 
         spigot_gui_lore_backpack_id,
         spigot_gui_lore_blocks,
@@ -99,18 +162,18 @@ public class MessagesConfig {
         spigot_gui_lore_chance,
         spigot_gui_lore_command,
         spigot_gui_lore_currency,
-        spigot_gui_lore_delay,
+//        spigot_gui_lore_delay,
         spigot_gui_lore_id,
         spigot_gui_lore_info,
         spigot_gui_lore_minename,
-        spigot_gui_lore_multiplier,
+//        spigot_gui_lore_multiplier,
         spigot_gui_lore_name,
         spigot_gui_lore_owner,
         spigot_gui_lore_percentage,
-        spigot_gui_lore_permission,
+//        spigot_gui_lore_permission,
         spigot_gui_lore_players_at_rank,
-        spigot_gui_lore_prestige_name,
-        spigot_gui_lore_price,
+//        spigot_gui_lore_prestige_name,
+//        spigot_gui_lore_price,
         spigot_gui_lore_radius,
         spigot_gui_lore_rank_tag,
         spigot_gui_lore_reset_time,
@@ -118,14 +181,14 @@ public class MessagesConfig {
         spigot_gui_lore_size,
         spigot_gui_lore_spawnpoint,
         spigot_gui_lore_volume,
-        spigot_gui_lore_value,
+//        spigot_gui_lore_value,
         spigot_gui_lore_world,
 
         spigot_gui_lore_disabled,
         spigot_gui_lore_enabled,
         spigot_gui_lore_locked,
-        spigot_gui_lore_next_page,
-        spigot_gui_lore_prior_page,
+//        spigot_gui_lore_next_page,
+//        spigot_gui_lore_prior_page,
         spigot_gui_lore_rankup,
         spigot_gui_lore_selected,
         spigot_gui_lore_unlocked,
@@ -250,9 +313,9 @@ public class MessagesConfig {
         spigot_message_sellall_delay_edit_success,
         spigot_message_sellall_delay_enabled,
         spigot_message_sellall_delay_not_number,
-        spigot_message_sellall_delay_wait,
+//        spigot_message_sellall_delay_wait,
         spigot_message_sellall_gui_disabled,
-        spigot_message_sellall_money_earned,
+//        spigot_message_sellall_money_earned,
         spigot_message_sellall_multiplier_add_success,
         spigot_message_sellall_multiplier_are_disabled,
         spigot_message_sellall_multiplier_cant_find,
@@ -260,9 +323,9 @@ public class MessagesConfig {
         spigot_message_sellall_multiplier_disabled,
         spigot_message_sellall_multiplier_edit_success,
         spigot_message_sellall_multiplier_enabled,
-        spigot_message_sellall_sell_empty,
-        spigot_message_sellall_sell_nothing_sellable,
-        spigot_message_sellall_sell_sign_only,
+//        spigot_message_sellall_sell_empty,
+//        spigot_message_sellall_sell_nothing_sellable,
+//        spigot_message_sellall_sell_sign_only,
         spigot_message_sellall_sell_sign_notify,
         spigot_message_sellall_trigger_already_disabled,
         spigot_message_sellall_trigger_already_enabled,
@@ -291,7 +354,7 @@ public class MessagesConfig {
         spigot_message_gui_ranks_rankup_commands_too_many,
         spigot_message_gui_ranks_too_many,
         spigot_message_gui_reload_success,
-        spigot_message_gui_sellall_disabled,
+//        spigot_message_gui_sellall_disabled,
         spigot_message_gui_sellall_empty,
         spigot_message_gui_too_high,
         spigot_message_gui_too_low_value,

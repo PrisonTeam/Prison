@@ -63,8 +63,8 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.selection.Selection;
-import tech.mcprison.prison.tasks.PrisonCommandTask;
-import tech.mcprison.prison.tasks.PrisonCommandTask.TaskMode;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData.TaskMode;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 import tech.mcprison.prison.util.Bounds;
 import tech.mcprison.prison.util.Bounds.Edges;
@@ -155,8 +155,10 @@ public class MinesCommands
     @Command(identifier = "mines block search", permissions = "mines.block", 
 					description = "Searches for a block to add to a mine.")
 	public void searchBlockCommand(CommandSender sender,
-			@Arg(name = "search", def = " ", description = "Any part of the block's name or ID.") String search,
-			@Arg(name = "page", def = "1", description = "Page of search results (optional)") String page ) {
+			@Arg(name = "search", def = " ", 
+				description = "Any part of the block's name or ID.") String search,
+			@Arg(name = "page", def = "1", 
+				description = "Page of search results (optional)") String page ) {
 		
     	super.searchBlockCommand( sender, search, page, 
     			"mines block search", 
@@ -811,18 +813,10 @@ public class MinesCommands
         CommandPagedData cmdPageData = null;
         
         
-        if ( m.isUseNewBlockModel() ) {
+        cmdPageData = new CommandPagedData(
+        		"/mines info " + m.getName(), m.getPrisonBlocks().size(),
+        		1, page );
         
-        	cmdPageData = new CommandPagedData(
-        			"/mines info " + m.getName(), m.getPrisonBlocks().size(),
-        			1, page );
-        }
-        else {
-        	
-        	cmdPageData = new CommandPagedData(
-        			"/mines info " + m.getName(), m.getBlocks().size(),
-        			1, page );
-        }
         
 //        // Same page logic as in mines block search:
 //    	int curPage = 1;
@@ -845,13 +839,8 @@ public class MinesCommands
         ChatDisplay chatDisplay = mineInfoDetails( sender, mMan.isMineStats(), m, cmdPageData );
 
         
-        int blockSize = 0;
-        if ( m.isUseNewBlockModel() ) {
-        	blockSize =  m.getPrisonBlocks().size();
-        }
-        else {
-        	blockSize = m.getBlocks().size();
-        }
+        int blockSize = m.getPrisonBlocks().size();
+        
         
         String message = blockSize != 0 ? null : " &cNo Blocks Defined";
         cmdPageData.generatePagedCommandFooter( chatDisplay, message );
@@ -1077,22 +1066,22 @@ public class MinesCommands
         		row.addTextComponent( "&3Mine Reset Count: &7%s ", 
         				dFmt.format(m.getResetCount()) );
         		
-        		if ( m.isUsePagingOnReset() ) {
-        			row.addTextComponent( "    &7-= &5Reset Paging Enabled &7=-" );
-        		}
-        		else if ( cmdPageData.isShowAll() ) {
-        			row.addTextComponent( "    &7-= &3Reset Paging Disabled &7=-" );
-        		}
+//        		if ( m.isUsePagingOnReset() ) {
+//        			row.addTextComponent( "    &7-= &5Reset Paging Enabled &7=-" );
+//        		}
+//        		else if ( cmdPageData.isShowAll() ) {
+//        			row.addTextComponent( "    &7-= &3Reset Paging Disabled &7=-" );
+//        		}
         		
         		chatDisplay.addComponent( row );
         		
-        		double resetTimeSeconds = m.getStatsResetTimeMS() / 1000.0;
-        		if ( !m.isUsePagingOnReset() && resetTimeSeconds > 0.5 ) {
-        			String resetTimeSec = PlaceholdersUtil.formattedTime( resetTimeSeconds );
-        			chatDisplay.addText("&5  Warning: &3Reset time is &7%s&3, which is high. " +
-        					"It is recommened that you try to enable &7/mines set resetPaging help",
-        					resetTimeSec );
-        		}
+//        		double resetTimeSeconds = m.getStatsResetTimeMS() / 1000.0;
+//        		if ( !m.isUsePagingOnReset() && resetTimeSeconds > 0.5 ) {
+//        			String resetTimeSec = PlaceholdersUtil.formattedTime( resetTimeSeconds );
+//        			chatDisplay.addText("&5  Warning: &3Reset time is &7%s&3, which is high. " +
+//        					"It is recommened that you try to enable &7/mines set resetPaging help",
+//        					resetTimeSec );
+//        		}
         	}
         	
         	if ( !m.isVirtual() && resetTime > 0 ) {
@@ -1247,19 +1236,11 @@ public class MinesCommands
         	
         }
 
-        if ( cmdPageData.isShowAll() ) {
-        	chatDisplay.addText( "&3Block model: &7%s", 
-        			( m.isUseNewBlockModel() ? "New" : "Old") );
-        }
         
         if ( cmdPageData.isShowAll() || cmdPageData.getCurPage() > 1 ) {
-//        	if ( cmdPageData.isDebug() ) {
-//        		chatDisplay.addText( "&3Block model: &7%s", 
-//        				( m.isUseNewBlockModel() ? "New" : "Old") );
-//        	}
+
         	chatDisplay.addText("&3Blocks:");
-        	chatDisplay.addText("&8Click on a block's name to edit its chances of appearing.%s",
-        			(m.isUseNewBlockModel() ? ".." : ""));
+        	chatDisplay.addText("&8Click on a block's name to edit its chances of appearing..." );
         	
         	BulletedListComponent list = getBlocksList(m, cmdPageData, true );
         	chatDisplay.addComponent(list);
@@ -1374,6 +1355,7 @@ public class MinesCommands
         					.withReplacements( m.getName() )
                 .sendTo(sender);
             Output.get().logError("Couldn't reset mine " + mineName, e);
+            return;
         }
 
         pMines.getMinesMessages().getLocalizable("mine_reset")
@@ -1659,11 +1641,11 @@ public class MinesCommands
                 	}
                 	
                 	
-                	if ( m.isUsePagingOnReset() ) {
-                		row.addFancy( 
-                				new FancyMessage("&5Paged ")
-                				.tooltip("&7Paging Used during Mine Reset"));
-                	}
+//                	if ( m.isUsePagingOnReset() ) {
+//                		row.addFancy( 
+//                				new FancyMessage("&5Paged ")
+//                				.tooltip("&7Paging Used during Mine Reset"));
+//                	}
 
       
             		
@@ -2044,11 +2026,63 @@ public class MinesCommands
     					String radius
         
     		) {
-        
-        if (performCheckMineExists(sender, mineName)) {
+    	
+    	
+    	MineNotificationMode noteMode = MineNotificationMode.fromString( mode, MineNotificationMode.displayOptions );
+    	
+    	if ( noteMode == MineNotificationMode.displayOptions ) {
+    		sender.sendMessage( "&7Select a Mode: &bdisabled&7, &bwithin &7the mine, &bradius " +
+    				"&7from center of mine." );
+    		return;
+    	}
+    	
+    	long noteRadius = 0L;
+    	if ( noteMode == MineNotificationMode.radius ) {
+    		if ( radius == null || radius.trim().length() == 0 ) {
+    			noteRadius = MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS;
+    		} else {
+    			try {
+    				noteRadius = Long.parseLong( radius );
+    				
+    				if ( noteRadius < 1 ) {
+    					noteRadius = MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS;
+    					DecimalFormat dFmt = new DecimalFormat("#,##0");
+    					Output.get().sendWarn( sender, "&7Invalid radius value. " +
+    							"Must be an positive non-zero integer. Using the default value: &b%s &7[&b%s&7]",
+    							dFmt.format(MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS), radius );
+    					return;
+    				}
+    			}
+    			catch ( NumberFormatException e ) {
+    				e.printStackTrace();
+    				Output.get().sendWarn( sender, "&7Invalid notification radius. " +
+    						"Must be an positive non-zero integer. [&b%s&7]",
+    						radius );
+    				return;
+    			}
+    		}
+    	}
+    	
+    	PrisonMines pMines = PrisonMines.getInstance();
+
+    	if ( "*all*".equalsIgnoreCase( mineName ) ) {
+    		
+    		int count = 0;
+    		for ( Mine m : pMines.getMines() )
+			{
+				
+    			if ( changeMineNotification( sender, mineName, noteMode, noteRadius, pMines, m, true ) ) {
+    				count++;
+    			}
+			}
+    		
+    		Output.get().sendInfo( sender, "&7Notification mode was changed for &b%d&7 mines.",
+					count );
+    	}
+    	
+    	else if (performCheckMineExists(sender, mineName)) {
         	setLastMineReferenced(mineName);
 
-        	PrisonMines pMines = PrisonMines.getInstance();
         	Mine m = pMines.getMine(mineName);
             
 //            if ( !m.isEnabled() ) {
@@ -2056,57 +2090,38 @@ public class MinesCommands
 //            	return;
 //            }
         	
-        	MineNotificationMode noteMode = MineNotificationMode.fromString( mode, MineNotificationMode.displayOptions );
         	
-        	if ( noteMode == MineNotificationMode.displayOptions ) {
-        		sender.sendMessage( "&7Select a Mode: &bdisabled&7, &bwithin &7the mine, &bradius " +
-        				"&7from center of mine." );
-        	} else {
-        		long noteRadius = 0L;
-        		if ( noteMode == MineNotificationMode.radius ) {
-        			if ( radius == null || radius.trim().length() == 0 ) {
-        				noteRadius = MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS;
-        			} else {
-        				try {
-        					noteRadius = Long.parseLong( radius );
-        					
-        					if ( noteRadius < 1 ) {
-        						noteRadius = MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS;
-        						DecimalFormat dFmt = new DecimalFormat("#,##0");
-        						Output.get().sendWarn( sender, "&7Invalid radius value for &b%s&7. " +
-            							"Must be an positive non-zero integer. Using the default value: &b%s &7[&b%s&7]",
-            							mineName, dFmt.format(MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS), radius );
-        					}
-        				}
-        				catch ( NumberFormatException e ) {
-        					e.printStackTrace();
-        					Output.get().sendWarn( sender, "&7Invalid notification radius for &b%s&7. " +
-        							"Must be an positive non-zero integer. [&b%s&7]",
-        							mineName, radius );
-        				}
-        			}
-        		}
-        		
-        		if ( m.getNotificationMode() != noteMode || m.getNotificationRadius() != noteRadius ) {
-        			m.setNotificationMode( noteMode );
-        			m.setNotificationRadius( noteRadius );
-        			
-        			pMines.getMineManager().saveMine( m );
-        			
-        			DecimalFormat dFmt = new DecimalFormat("#,##0");
-        			// message: notification mode changed
-        			Output.get().sendInfo( sender, "&7Notification mode was changed for &b%s&7: &b%s %s",
-        					mineName, m.getNotificationMode().name(), 
-        					(m.getNotificationMode() == MineNotificationMode.radius ? 
-        							dFmt.format( m.getNotificationRadius() ) : "" ));
-        			
-        		} else {
-        			// message: notification mode did not change
-        			Output.get().sendInfo( sender, "&7Notification mode was not changed for mine &b%s&7.", mineName );
-        		}
-        	}
+        	changeMineNotification( sender, mineName, noteMode, noteRadius, pMines, m, false );
         } 
     }
+
+	private boolean changeMineNotification( CommandSender sender, String mineName, 
+				MineNotificationMode noteMode, long noteRadius,
+				PrisonMines pMines, Mine m, boolean suppressMessages )
+	{
+		boolean success = false;
+		
+		if ( m.getNotificationMode() != noteMode || m.getNotificationRadius() != noteRadius ) {
+			m.setNotificationMode( noteMode );
+			m.setNotificationRadius( noteRadius );
+			
+			pMines.getMineManager().saveMine( m );
+			success = true;
+			
+			DecimalFormat dFmt = new DecimalFormat("#,##0");
+			// message: notification mode changed
+			Output.get().sendInfo( sender, "&7Notification mode was changed for &b%s&7: &b%s %s",
+					mineName, m.getNotificationMode().name(), 
+					(m.getNotificationMode() == MineNotificationMode.radius ? 
+							dFmt.format( m.getNotificationRadius() ) : "" ));
+			
+		} else if ( !suppressMessages ) {
+			// message: notification mode did not change
+			Output.get().sendInfo( sender, "&7Notification mode was not changed for mine &b%s&7.", mineName );
+		}
+		
+		return success;
+	}
 
 
     @Command(identifier = "mines set notificationPerm", permissions = "mines.notification", 
@@ -2775,48 +2790,48 @@ public class MinesCommands
     
     
 
-    @Command(identifier = "mines set resetpaging", permissions = "mines.resetpaging", 
-    		description = "Enable paging during a mine reset.")
-    public void setMineResetPagingCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
-        @Arg(name = "paging", def="disabled", 
-        		description = "Enable or disable paging [disable, enable]") 
-    					String paging
-    		) {
-        
-        if (performCheckMineExists(sender, mineName)) {
-        	setLastMineReferenced(mineName);
-
-        	PrisonMines pMines = PrisonMines.getInstance();
-        	Mine m = pMines.getMine(mineName);
-            
-//            if ( !m.isEnabled() ) {
-//            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+//    @Command(identifier = "mines set resetpaging", permissions = "mines.resetpaging", 
+//    		description = "Enable paging during a mine reset.")
+//    public void setMineResetPagingCommand(CommandSender sender,
+//        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
+//        @Arg(name = "paging", def="disabled", 
+//        		description = "Enable or disable paging [disable, enable]") 
+//    					String paging
+//    		) {
+//        
+//        if (performCheckMineExists(sender, mineName)) {
+//        	setLastMineReferenced(mineName);
+//
+//        	PrisonMines pMines = PrisonMines.getInstance();
+//        	Mine m = pMines.getMine(mineName);
+//            
+////            if ( !m.isEnabled() ) {
+////            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
+////            	return;
+////            }
+//        	
+//            if  ( paging == null || !"disable".equalsIgnoreCase( paging ) && !"enable".equalsIgnoreCase( paging ) ) {
+//            	sender.sendMessage( "&cInvalid paging option&7. Use &adisable&7 or &aenable&7" );
 //            	return;
 //            }
-        	
-            if  ( paging == null || !"disable".equalsIgnoreCase( paging ) && !"enable".equalsIgnoreCase( paging ) ) {
-            	sender.sendMessage( "&cInvalid paging option&7. Use &adisable&7 or &aenable&7" );
-            	return;
-            }
-            
-            if ( "disable".equalsIgnoreCase( paging ) && m.isUsePagingOnReset() ) {
-            	m.setUsePagingOnReset( false );
-            	pMines.getMineManager().saveMine( m );
-            	sender.sendMessage( String.format( "&7Mine Reset Paging has been disabled for mine %s.", m.getTag()) );
-            }
-            else if ( "enable".equalsIgnoreCase( paging ) && !m.isUsePagingOnReset() ) {
-            	m.setUsePagingOnReset( true );
-            	pMines.getMineManager().saveMine( m );
-            	sender.sendMessage( String.format( "&7Mine Reset Paging has been enabled for mine %s.", m.getTag()) );
-            }
-            else {
-            	sender.sendMessage( String.format( "&7Mine Reset Paging status has not changed for mine %s.", m.getTag()) );
-            	
-            }
-        	
-        } 
-    }
+//            
+//            if ( "disable".equalsIgnoreCase( paging ) && m.isUsePagingOnReset() ) {
+//            	m.setUsePagingOnReset( false );
+//            	pMines.getMineManager().saveMine( m );
+//            	sender.sendMessage( String.format( "&7Mine Reset Paging has been disabled for mine %s.", m.getTag()) );
+//            }
+//            else if ( "enable".equalsIgnoreCase( paging ) && !m.isUsePagingOnReset() ) {
+//            	m.setUsePagingOnReset( true );
+//            	pMines.getMineManager().saveMine( m );
+//            	sender.sendMessage( String.format( "&7Mine Reset Paging has been enabled for mine %s.", m.getTag()) );
+//            }
+//            else {
+//            	sender.sendMessage( String.format( "&7Mine Reset Paging status has not changed for mine %s.", m.getTag()) );
+//            	
+//            }
+//        	
+//        } 
+//    }
 
 
     @Command(identifier = "mines set mineSweeper", permissions = "mines.set", 
@@ -3467,11 +3482,11 @@ public class MinesCommands
         	
         	String placeholders = 
         			
-        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
-        					PrisonCommandTask.CommandEnvironment.all_commands ) + " " +
+        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+        					PrisonCommandTaskData.CommandEnvironment.all_commands ) + " " +
         			
-        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
-									PrisonCommandTask.CommandEnvironment.blockevent_commands );
+        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+									PrisonCommandTaskData.CommandEnvironment.blockevent_commands );
         	
         	String message = String.format( "Valid Placeholders that can be used with blockEvents: [%s]", 
         							placeholders );
@@ -4075,7 +4090,7 @@ public class MinesCommands
         if ( blockEvent != null ) {
         	
         	if ( rowBlockName == null || rowBlockName == 0 || 
-        						rowBlockName > m.getBlockEvents().size() ) {
+        						rowBlockName > m.getPrisonBlocks().size() ) {
         		
         		String commandBlockEvent = String.format( "" +
         				"%s %d ", commandRoot, rowBlockEvent );
@@ -4089,30 +4104,27 @@ public class MinesCommands
         		// Display a list of blocks for the mine:
         		int blockRow = 0;
         		
-        		// Old block model is not supported with blockEvent block filers:
-        		if ( m.isUseNewBlockModel() ) {
+        		for ( PrisonBlock block : m.getPrisonBlocks() )
+        		{
         			
-        			for ( PrisonBlock block : m.getPrisonBlocks() )
-        			{
-        	        	
-        	        	RowComponent rowB = new RowComponent();
-        	        	
-        	        	rowB.addTextComponent( " &3Row: &d%d  ", ++blockRow );
-        	        	
-        	        	String message = String.format( "&7%s %s", 
-        	        			block.getBlockName(), dFmt.format( block.getChance() ) );
-        	        	
-        	        	String command = String.format( "%s %d", commandBlockEvent, blockRow );
-        	        	
-        	        	FancyMessage msgAddBlock = new FancyMessage( message )
-								.suggest( command )
-								.tooltip("Add selected block to blockEvent - Click to Add");
-        	        	
-        	        	rowB.addFancy( msgAddBlock );
-        	        	
-        	        	display.addComponent( rowB );
-        			}
+        			RowComponent rowB = new RowComponent();
+        			
+        			rowB.addTextComponent( " &3Row: &d%d  ", ++blockRow );
+        			
+        			String message = String.format( "&7%s %s", 
+        					block.getBlockName(), dFmt.format( block.getChance() ) );
+        			
+        			String command = String.format( "%s %d", commandBlockEvent, blockRow );
+        			
+        			FancyMessage msgAddBlock = new FancyMessage( message )
+        					.suggest( command )
+        					.tooltip("Add selected block to blockEvent - Click to Add");
+        			
+        			rowB.addFancy( msgAddBlock );
+        			
+        			display.addComponent( rowB );
         		}
+        		
 
         		display.send( sender );
         		return;
@@ -4120,19 +4132,17 @@ public class MinesCommands
         	
         	
         	// Old block model is not supported with blockEvent block filers:
-        	if ( m.isUseNewBlockModel() ) {
-        		PrisonBlock block = m.getPrisonBlocks().get( rowBlockName - 1 );
+        	PrisonBlock block = m.getPrisonBlocks().get( rowBlockName - 1 );
+        	
+        	if ( block != null ) {
         		
-        		if ( block != null ) {
-
-        			blockEvent.addPrisonBlock( block );
-        			
-        			pMines.getMineManager().saveMine( m );
-        			
-        			sender.sendMessage( "Block has been added to BlockEvent" );
-        			
-        			return;
-        		}
+        		blockEvent.addPrisonBlock( block );
+        		
+        		pMines.getMineManager().saveMine( m );
+        		
+        		sender.sendMessage( "Block has been added to BlockEvent" );
+        		
+        		return;
         	}
         	
 //        	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
@@ -4256,31 +4266,28 @@ public class MinesCommands
         		// Display a list of blocks for the mine:
         		int blockRow = 0;
         		
-        		// Old block model is not supported with blockEvent block filers:
-        		if ( m.isUseNewBlockModel() ) {
+        		
+        		for ( PrisonBlock block : blockEvent.getPrisonBlocks() )
+        		{
         			
-        			for ( PrisonBlock block : blockEvent.getPrisonBlocks() )
-        			{
-        	        	
-        	        	RowComponent rowB = new RowComponent();
-        	        	
-        	        	rowB.addTextComponent( " &3Row: &d%d  ", ++blockRow );
-        	        	
-        	        	String message = String.format( "&7%s", 
-        	        			block.getBlockName() );
+        			RowComponent rowB = new RowComponent();
+        			
+        			rowB.addTextComponent( " &3Row: &d%d  ", ++blockRow );
+        			
+        			String message = String.format( "&7%s", 
+        					block.getBlockName() );
 //        	        	String message = String.format( "&7%s %s", 
 //        	        			block.getBlockName(), dFmt.format( block.getChance() ) );
-        	        	
-        	        	String command = String.format( "%s %d", commandBlockEvent, blockRow );
-        	        	
-        	        	FancyMessage msgAddBlock = new FancyMessage( message )
-								.suggest( command )
-								.tooltip("Remove a selected block from a blockEvent - Click to Remove");
-        	        	
-        	        	rowB.addFancy( msgAddBlock );
-        	        	
-        	        	display.addComponent( rowB );
-        			}
+        			
+        			String command = String.format( "%s %d", commandBlockEvent, blockRow );
+        			
+        			FancyMessage msgAddBlock = new FancyMessage( message )
+        					.suggest( command )
+        					.tooltip("Remove a selected block from a blockEvent - Click to Remove");
+        			
+        			rowB.addFancy( msgAddBlock );
+        			
+        			display.addComponent( rowB );
         		}
 
         		display.send( sender );
@@ -4288,18 +4295,15 @@ public class MinesCommands
         	}
         	
         	
-        	// Old block model is not supported with blockEvent block filers:
-        	if ( m.isUseNewBlockModel() ) {
+        	if ( blockEvent.removePrisonBlock( rowBlockName ) ) {
         		
-        		if ( blockEvent.removePrisonBlock( rowBlockName ) ) {
-
-        			pMines.getMineManager().saveMine( m );
-        			
-        			sender.sendMessage( "Block has been removed from the BlockEvent" );
-        			
-        			return;
-        		}
+        		pMines.getMineManager().saveMine( m );
+        		
+        		sender.sendMessage( "Block has been removed from the BlockEvent" );
+        		
+        		return;
         	}
+
         	
 //        	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();
 //        	PrisonBlock block = prisonBlockTypes.getBlockTypesByName( blockName );
@@ -4505,11 +4509,11 @@ private ChatDisplay minesCommandList( Mine m )
         	
         	String placeholders = 
         			
-        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
-        					PrisonCommandTask.CommandEnvironment.all_commands ) + " " +
+        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+        					PrisonCommandTaskData.CommandEnvironment.all_commands ) + " " +
         			
-        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
-									PrisonCommandTask.CommandEnvironment.mine_commands );
+        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+									PrisonCommandTaskData.CommandEnvironment.mine_commands );
         	
         	String message = String.format( "Valid Placeholders that can be used with mine commands: [%s]", 
         							placeholders );

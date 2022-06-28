@@ -1,9 +1,9 @@
 package tech.mcprison.prison.spigot.gui.guiutility;
 
-import tech.mcprison.prison.spigot.SpigotPrison;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import tech.mcprison.prison.util.Text;
 
 /**
  * @author AnonymousGCA (GABRYCA)
@@ -34,13 +34,13 @@ public class ButtonLore extends SpigotGUIComponents{
     public ButtonLore(List<String> descriptionAction, List<String> description){
         if (!descriptionAction.isEmpty()) {
             for (String dAction : descriptionAction) {
-                this.descriptionAction.add(SpigotPrison.format(colorIDAction + dAction));
+                this.descriptionAction.add( Text.translateAmpColorCodes(colorIDAction + dAction) );
             }
         }
 
         if (!description.isEmpty()) {
             for (String descriptionLore : description) {
-                this.description.add(SpigotPrison.format(colorIDDescription + descriptionLore));
+                this.description.add( Text.translateAmpColorCodes(colorIDDescription + descriptionLore) );
             }
         }
     }
@@ -63,11 +63,11 @@ public class ButtonLore extends SpigotGUIComponents{
      * */
     public ButtonLore(String descriptionAction, String description){
         if (descriptionAction != null) {
-            this.descriptionAction.add(SpigotPrison.format(colorIDAction + descriptionAction));
+            this.descriptionAction.add( Text.translateAmpColorCodes(colorIDAction + descriptionAction) );
         }
 
         if (description != null) {
-            this.description.add(SpigotPrison.format(colorIDDescription + description));
+            this.description.add( Text.translateAmpColorCodes(colorIDDescription + description) );
         }
     }
 
@@ -79,7 +79,7 @@ public class ButtonLore extends SpigotGUIComponents{
     public void setLoreAction(List<String> descriptionAction){
         this.descriptionAction.clear();
         for (String dAction : descriptionAction) {
-            this.descriptionAction.add(SpigotPrison.format(colorIDAction + dAction));
+            this.descriptionAction.add( Text.translateAmpColorCodes(colorIDAction + dAction) );
         }
     }
 
@@ -90,7 +90,7 @@ public class ButtonLore extends SpigotGUIComponents{
      * */
     public void setLoreAction(String descriptionAction){
         this.descriptionAction.clear();
-        this.descriptionAction.add(SpigotPrison.format(colorIDAction + descriptionAction));
+        this.descriptionAction.add( Text.translateAmpColorCodes(colorIDAction + descriptionAction) );
     }
 
     /**
@@ -99,7 +99,7 @@ public class ButtonLore extends SpigotGUIComponents{
      * @param line - String.
      * */
     public void addLineLoreAction(String line){
-        this.descriptionAction.add(SpigotPrison.format(colorIDAction + line));
+        this.descriptionAction.add( Text.translateAmpColorCodes(colorIDAction + line) );
     }
 
     /**
@@ -110,7 +110,8 @@ public class ButtonLore extends SpigotGUIComponents{
     public void setLoreDescription(List<String> description){
         this.description.clear();
         for (String descriptionLore : description) {
-            this.description.add(SpigotPrison.format(colorIDDescription + descriptionLore));
+        	addLineLoreDescription( descriptionLore );
+//            this.description.add( Text.translateAmpColorCodes(colorIDDescription + descriptionLore) );
         }
     }
 
@@ -121,7 +122,7 @@ public class ButtonLore extends SpigotGUIComponents{
      * */
     public void setLoreDescription(String description){
         this.description.clear();
-        this.description.add(SpigotPrison.format(colorIDDescription + description));
+        this.description.add( Text.translateAmpColorCodes(colorIDDescription + description) );
     }
 
     /**
@@ -130,7 +131,7 @@ public class ButtonLore extends SpigotGUIComponents{
      * @param line - String.
      * */
     public void addLineLoreDescription(String line){
-        this.description.add(SpigotPrison.format(colorIDDescription + line));
+        this.description.add( Text.translateAmpColorCodes(colorIDDescription + line) );
     }
 
     /**
@@ -233,9 +234,9 @@ public class ButtonLore extends SpigotGUIComponents{
 
         if (!description.isEmpty()) {
             lore.add("");
-            lore.add(SpigotPrison.format(addBracket()));
+            lore.add( addBracket() );
             lore.addAll(description);
-            lore.add(SpigotPrison.format(addBracket()));
+            lore.add( addBracket() );
         }
         return lore;
     }

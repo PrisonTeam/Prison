@@ -77,6 +77,7 @@ import tech.mcprison.prison.spigot.gui.sellall.SellAllPrestigesMultiplierGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPrestigesSetMultiplierGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPriceGUI;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
+import tech.mcprison.prison.util.Text;
 
 /**
  * @author GABRYCA
@@ -223,16 +224,17 @@ public class ListenersPrisonManager implements Listener {
             }
 
             // Check if the feature's enabled.
-            if (sellAllUtil.isSellAllSignEnabled) {
+            if (sellAllUtil.isSellAllSignEnabled && e.getClickedBlock() != null ) {
 
                 // Get clicked block.
-                Material clickedBlock = null;
-                if (e.getClickedBlock() != null) {
-                    clickedBlock = e.getClickedBlock().getType();
-                }
+                Material clickedBlock = e.getClickedBlock().getType();
+               
 
-                // Check if the clicked block's a sign
-                if (clickedBlock == Material.SIGN || clickedBlock == Material.WALL_SIGN) {
+                // Check if the clicked block's a sign. Newer spigot versions have many kinds of 
+                // signs, so check if the material name contains "sign":
+                String matName = clickedBlock.name().toLowerCase();
+                if ( matName.contains("sign")) {
+//                	if (clickedBlock == Material.SIGN || clickedBlock == Material.WALL_SIGN) {
 
                     // Get the player
                     Player p = e.getPlayer();
@@ -400,7 +402,7 @@ public class ListenersPrisonManager implements Listener {
                 buttonNameMain = SpigotPrison.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
                 parts = buttonNameMain.split(" ");
                 module = Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME).orElse(null);
-                title = compat.getGUITitle(e).substring(2);
+                title = Text.stripColor( compat.getGUITitle(e) );
             } catch (ArrayIndexOutOfBoundsException ex){
                 Output.get().sendWarn(new SpigotPlayer(p), "An error occurred while using the GUI, please check logs.");
                 ex.printStackTrace();
@@ -561,41 +563,41 @@ public class ListenersPrisonManager implements Listener {
 
                     break;
                 }
-                // Check the inventory title and do the actions.
-                case "PrisonManager -> AutoFeatures": {
+//                // Check the inventory title and do the actions.
+//                case "PrisonManager -> AutoFeatures": {
+//
+//                    // Call the method
+//                    autoFeaturesGUI(e, p, parts);
+//
+//                    break;
+//                }
 
-                    // Call the method
-                    autoFeaturesGUI(e, p, parts);
+//                // Check the title and do the actions.
+//                case "AutoFeatures -> AutoPickup": {
+//
+//                    // Call the method
+//                    autoPickupGUI(e, p, parts);
+//
+//                    break;
+//                }
 
-                    break;
-                }
+//                // Check the title and do the actions.
+//                case "AutoFeatures -> AutoSmelt": {
+//
+//                    // Call the method
+//                    autoSmeltGUI(e, p, parts);
+//
+//                    break;
+//                }
 
-                // Check the title and do the actions.
-                case "AutoFeatures -> AutoPickup": {
-
-                    // Call the method
-                    autoPickupGUI(e, p, parts);
-
-                    break;
-                }
-
-                // Check the title and do the actions.
-                case "AutoFeatures -> AutoSmelt": {
-
-                    // Call the method
-                    autoSmeltGUI(e, p, parts);
-
-                    break;
-                }
-
-                // Check the title and do the actions.
-                case "AutoFeatures -> AutoBlock": {
-
-                    // Call the method
-                    autoBlockGUI(e, p, parts);
-
-                    break;
-                }
+//                // Check the title and do the actions.
+//                case "AutoFeatures -> AutoBlock": {
+//
+//                    // Call the method
+//                    autoBlockGUI(e, p, parts);
+//
+//                    break;
+//                }
 
                 // Check the title and do the actions.
                 case "SellAll -> Blocks": {
@@ -1647,18 +1649,18 @@ public class ListenersPrisonManager implements Listener {
                 break;
             }
 
-            // Check the Item display name and do open the right GUI.
-            case "AutoManager": {
-
-                // Check if the autofeatures config isn't null.
-                if(SpigotGUIComponents.afConfig() != null) {
-                    SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
-                    gui.open();
-                } else {
-                    Output.get().sendWarn(new SpigotPlayer(p), "Can't find an autofeatures config, maybe they're disabled.");
-                }
-                break;
-            }
+//            // Check the Item display name and do open the right GUI.
+//            case "AutoManager": {
+//
+//                // Check if the autofeatures config isn't null.
+//                if(SpigotGUIComponents.afConfig() != null) {
+//                    SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
+//                    gui.open();
+//                } else {
+//                    Output.get().sendWarn(new SpigotPlayer(p), "Can't find an autofeatures config, maybe they're disabled.");
+//                }
+//                break;
+//            }
 
             // Check the Item display name and do open the right GUI.
             case "Mines": {
@@ -1892,7 +1894,8 @@ public class ListenersPrisonManager implements Listener {
     private void playerRanksGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
         // Check the buttonName and do the actions.
-        if (buttonNameMain.equals(SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup).substring(2)))){
+    	String message = Text.stripColor( messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup) );
+        if (buttonNameMain.equals(SpigotPrison.format( message ))){
             Bukkit.dispatchCommand(p, "rankup " + guiConfig.getString("Options.Ranks.Ladder"));
             p.closeInventory();
         }
@@ -2563,277 +2566,277 @@ public class ListenersPrisonManager implements Listener {
         }
     }
 
-    private void autoFeaturesGUI(InventoryClickEvent e, Player p, String[] parts) {
+//    private void autoFeaturesGUI(InventoryClickEvent e, Player p, String[] parts) {
+//
+//        // Get the config
+//        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
+//        
+//        // Output finally the buttonname and the mode explicit out of the array
+//        String buttonName = parts[0];
+//        String mode = parts[1];
+//        
+//        boolean enabled = mode.equalsIgnoreCase("Enabled");
+//
+//        // Check the clickType and do the actions
+//        if ( enabled && e.isRightClick() && e.isShiftClick() ||
+//                !enabled && e.isRightClick()){
+//
+//            if (buttonName.equalsIgnoreCase("Full-Inventory-Sound")){
+//                afConfig.setFeature( AutoFeatures.playSoundIfInventoryIsFull, !enabled );
+//                saveConfigAutoFeatures(e, p);
+//            }
+//
+//            if (buttonName.equalsIgnoreCase("Full-Inventory-ActionBar")){
+//                afConfig.setFeature(AutoFeatures.actionBarMessageIfInventoryIsFull, !enabled);
+//                saveConfigAutoFeatures(e,p);
+//            }
+//
+//            if (buttonName.equalsIgnoreCase("All")){
+//                afConfig.setFeature(AutoFeatures.isAutoManagerEnabled, !enabled);
+//                saveConfigAutoFeatures(e,p);
+//            }
+//
+//        }
+//
+//        // Check the clickType and do the actions
+//        if (enabled && e.isRightClick() && e.isShiftClick() || !enabled && e.isRightClick() || enabled && e.isLeftClick()){
+//            if (buttonName.equalsIgnoreCase("AutoPickup")){
+//                if (e.isLeftClick()){
+//                    SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+//                    gui.open();
+//                    return;
+//                }
+//                afConfig.setFeature(AutoFeatures.autoPickupEnabled, !enabled);
+//                saveConfigAutoFeatures(e,p);
+//            }
+//
+//            if (buttonName.equalsIgnoreCase("AutoSmelt")){
+//                if (e.isLeftClick()){
+//                    SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
+//                    gui.open();
+//                    return;
+//                }
+//                afConfig.setFeature(AutoFeatures.autoSmeltEnabled, !enabled);
+//                saveConfigAutoFeatures(e,p);
+//            }
+//
+//            if (buttonName.equalsIgnoreCase("AutoBlock")){
+//                if (e.isLeftClick()){
+//                    SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+//                    gui.open();
+//                    return;
+//                }
+//                afConfig.setFeature(AutoFeatures.autoBlockEnabled, !enabled);
+//                saveConfigAutoFeatures(e,p);
+//            }
+//        }
+//    }
 
-        // Get the config
-        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
-        
-        // Output finally the buttonname and the mode explicit out of the array
-        String buttonName = parts[0];
-        String mode = parts[1];
-        
-        boolean enabled = mode.equalsIgnoreCase("Enabled");
-
-        // Check the clickType and do the actions
-        if ( enabled && e.isRightClick() && e.isShiftClick() ||
-                !enabled && e.isRightClick()){
-
-            if (buttonName.equalsIgnoreCase("Full-Inventory-Sound")){
-                afConfig.setFeature( AutoFeatures.playSoundIfInventoryIsFull, !enabled );
-                saveConfigAutoFeatures(e, p);
-            }
-
-            if (buttonName.equalsIgnoreCase("Full-Inventory-ActionBar")){
-                afConfig.setFeature(AutoFeatures.actionBarMessageIfInventoryIsFull, !enabled);
-                saveConfigAutoFeatures(e,p);
-            }
-
-            if (buttonName.equalsIgnoreCase("All")){
-                afConfig.setFeature(AutoFeatures.isAutoManagerEnabled, !enabled);
-                saveConfigAutoFeatures(e,p);
-            }
-
-        }
-
-        // Check the clickType and do the actions
-        if (enabled && e.isRightClick() && e.isShiftClick() || !enabled && e.isRightClick() || enabled && e.isLeftClick()){
-            if (buttonName.equalsIgnoreCase("AutoPickup")){
-                if (e.isLeftClick()){
-                    SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
-                    gui.open();
-                    return;
-                }
-                afConfig.setFeature(AutoFeatures.autoPickupEnabled, !enabled);
-                saveConfigAutoFeatures(e,p);
-            }
-
-            if (buttonName.equalsIgnoreCase("AutoSmelt")){
-                if (e.isLeftClick()){
-                    SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
-                    gui.open();
-                    return;
-                }
-                afConfig.setFeature(AutoFeatures.autoSmeltEnabled, !enabled);
-                saveConfigAutoFeatures(e,p);
-            }
-
-            if (buttonName.equalsIgnoreCase("AutoBlock")){
-                if (e.isLeftClick()){
-                    SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
-                    gui.open();
-                    return;
-                }
-                afConfig.setFeature(AutoFeatures.autoBlockEnabled, !enabled);
-                saveConfigAutoFeatures(e,p);
-            }
-        }
-    }
-
-    private void autoPickupGUI(InventoryClickEvent e, Player p, String[] parts) {
-
-        // Get the config
-        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
-
-        // Output finally the buttonname and the mode explicit out of the array
-        String buttonname = parts[0];
-        String mode = parts[1];
-
-        boolean enabled = mode.equalsIgnoreCase("Enabled");
-        
-        // Check the click and do the actions, also the buttonName
-        if ( enabled && e.isRightClick() && e.isShiftClick() ||
-        		!enabled && e.isRightClick() ){
-
-            switch (buttonname){
-                case "All_Blocks":{
-                    afConfig.setFeature( AutoFeatures.pickupAllBlocks, !enabled );
-                    saveConfigPickup(e, p);
-                    break;
-                }
-                case "Cobblestone":{
-                    afConfig.setFeature(AutoFeatures.pickupCobbleStone, !enabled);
-                    saveConfigPickup(e,p);
-                    break;
-                }
-                case "Gold_Ore":{
-                    afConfig.setFeature( AutoFeatures.pickupGoldOre, !enabled );
-                    saveConfigPickup(e, p);
-                    break;
-                }
-                case "Iron_Ore":{
-                    afConfig.setFeature( AutoFeatures.pickupIronOre, !enabled );
-                    saveConfigPickup(e, p);
-                    break;
-                }
-                case "Coal_Ore":{
-                    afConfig.setFeature( AutoFeatures.pickupCoalOre, !enabled );
-                    saveConfigPickup(e, p);
-                    break;
-                }
-                case "Diamond_Ore":{
-                    afConfig.setFeature( AutoFeatures.pickupDiamondOre, !enabled );
-                    saveConfigPickup(e, p);
-                    break;
-                }
-                case "Redstone_Ore":{
-                    afConfig.setFeature( AutoFeatures.pickupRedStoneOre, !enabled );
-                    saveConfigPickup(e, p);
-                    break;
-                }
-                case "Emerald_Ore":{
-                    afConfig.setFeature( AutoFeatures.pickupEmeraldOre, !enabled );
-                    saveConfigPickup(e, p);
-                    break;
-                }
-                case "Quartz_Ore":{
-                    afConfig.setFeature( AutoFeatures.pickupQuartzOre, !enabled );
-                    saveConfigPickup(e, p);
-                    break;
-                }
-                case "Lapis_Ore":{
-                    afConfig.setFeature( AutoFeatures.pickupLapisOre, !enabled );
-                    saveConfigPickup(e, p);
-                    break;
-                }
-                case "Snow_Ball":{
-                    afConfig.setFeature( AutoFeatures.pickupSnowBall, !enabled );
-                    saveConfigPickup(e, p);
-                    break;
-                }
-                case "Glowstone_Dust":{
-                    afConfig.setFeature( AutoFeatures.pickupGlowstoneDust, !enabled );
-                    saveConfigPickup(e, p);
-                    break;
-                }
-                default:{
-                    break;
-                }
-
-            }
-        }
-    }
-
-    private void autoSmeltGUI(InventoryClickEvent e, Player p, String[] parts) {
-
-        // Get the config
-        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
-
-        // Output finally the buttonname and the mode explicit out of the array
-        String buttonname = parts[0];
-        String mode = parts[1];
-        
-        boolean enabled = mode.equalsIgnoreCase("Enabled");
-
-        // Check the clickType and do the actions
-        if ( enabled && e.isRightClick() && e.isShiftClick() ||
-        		!enabled && e.isRightClick()){
-
-            switch (buttonname){
-                case "Gold_Ore":{
-                    afConfig.setFeature( AutoFeatures.smeltGoldOre, !enabled );
-                    saveConfigSmelt(e, p);
-                    break;
-                }
-                case "Iron_Ore":{
-                    afConfig.setFeature( AutoFeatures.smeltIronOre, !enabled );
-                    saveConfigSmelt(e, p);
-                    break;
-                }
-                case "All_Ores":{
-                    afConfig.setFeature( AutoFeatures.smeltAllBlocks, !enabled );
-                    saveConfigSmelt(e, p);
-                    break;
-                }
-                default:{
-                    break;
-                }
-            }
-        }
-    }
-
-    private void autoBlockGUI(InventoryClickEvent e, Player p, String[] parts) {
-
-        // Get the config
-        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
-
-        // Output finally the buttonname and the mode explicit out of the array
-        String buttonname = parts[0];
-        String mode = parts[1];
-
-        boolean enabled = mode.equalsIgnoreCase("Enabled");
-
-        // Check the clickType and do the actions
-        if ( enabled && e.isRightClick() && e.isShiftClick() ||
-        		!enabled && e.isRightClick()){
-
-            switch (buttonname){
-                case "Gold_Block":{
-                    afConfig.setFeature( AutoFeatures.blockGoldBlock, !enabled );
-                    saveConfigBlock(e, p);
-                    break;
-                }
-                case "Iron_Block":{
-                    afConfig.setFeature( AutoFeatures.blockIronBlock, !enabled );
-                    saveConfigBlock(e, p);
-                    break;
-                }
-                case "Coal_Block":{
-                    afConfig.setFeature( AutoFeatures.blockCoalBlock, !enabled );
-                    saveConfigBlock(e, p);
-                    break;
-                }
-                case "Diamond_Block":{
-                    afConfig.setFeature( AutoFeatures.blockDiamondBlock, !enabled );
-                    saveConfigBlock(e, p);
-                    break;
-                }
-                case "Redstone_Block":{
-                    afConfig.setFeature( AutoFeatures.blockRedstoneBlock, !enabled );
-                    saveConfigBlock(e, p);
-                    break;
-                }
-                case "Emerald_Block":{
-                    afConfig.setFeature( AutoFeatures.blockEmeraldBlock, !enabled );
-                    saveConfigBlock(e, p);
-                    break;
-                }
-                case "Quartz_Block":{
-                    afConfig.setFeature( AutoFeatures.blockQuartzBlock, !enabled );
-                    saveConfigBlock(e, p);
-                    break;
-                }
-                case "Prismarine_Block":{
-                    afConfig.setFeature( AutoFeatures.blockPrismarineBlock, !enabled );
-                    saveConfigBlock(e, p);
-                    break;
-                }
-                case "Lapis_Block":{
-                    afConfig.setFeature( AutoFeatures.blockLapisBlock, !enabled );
-                    saveConfigBlock(e, p);
-                    break;
-                }
-                case "Snow_Block":{
-                    afConfig.setFeature( AutoFeatures.blockSnowBlock, !enabled );
-                    saveConfigBlock(e, p);
-                    break;
-                }
-                case "Glowstone_Block":{
-                    afConfig.setFeature( AutoFeatures.blockGlowstone, !enabled );
-                    saveConfigBlock(e, p);
-                    break;
-                }
-                case "All_Blocks":{
-                    afConfig.setFeature( AutoFeatures.blockAllBlocks, !enabled );
-                    saveConfigBlock(e, p);
-                    break;
-                }
-                default:{
-                    break;
-                }
-            }
-        }
-
-    }
+//    private void autoPickupGUI(InventoryClickEvent e, Player p, String[] parts) {
+//
+//        // Get the config
+//        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
+//
+//        // Output finally the buttonname and the mode explicit out of the array
+//        String buttonname = parts[0];
+//        String mode = parts[1];
+//
+//        boolean enabled = mode.equalsIgnoreCase("Enabled");
+//        
+//        // Check the click and do the actions, also the buttonName
+//        if ( enabled && e.isRightClick() && e.isShiftClick() ||
+//        		!enabled && e.isRightClick() ){
+//
+//            switch (buttonname){
+//                case "All_Blocks":{
+//                    afConfig.setFeature( AutoFeatures.pickupAllBlocks, !enabled );
+//                    saveConfigPickup(e, p);
+//                    break;
+//                }
+//                case "Cobblestone":{
+//                    afConfig.setFeature(AutoFeatures.pickupCobbleStone, !enabled);
+//                    saveConfigPickup(e,p);
+//                    break;
+//                }
+//                case "Gold_Ore":{
+//                    afConfig.setFeature( AutoFeatures.pickupGoldOre, !enabled );
+//                    saveConfigPickup(e, p);
+//                    break;
+//                }
+//                case "Iron_Ore":{
+//                    afConfig.setFeature( AutoFeatures.pickupIronOre, !enabled );
+//                    saveConfigPickup(e, p);
+//                    break;
+//                }
+//                case "Coal_Ore":{
+//                    afConfig.setFeature( AutoFeatures.pickupCoalOre, !enabled );
+//                    saveConfigPickup(e, p);
+//                    break;
+//                }
+//                case "Diamond_Ore":{
+//                    afConfig.setFeature( AutoFeatures.pickupDiamondOre, !enabled );
+//                    saveConfigPickup(e, p);
+//                    break;
+//                }
+//                case "Redstone_Ore":{
+//                    afConfig.setFeature( AutoFeatures.pickupRedStoneOre, !enabled );
+//                    saveConfigPickup(e, p);
+//                    break;
+//                }
+//                case "Emerald_Ore":{
+//                    afConfig.setFeature( AutoFeatures.pickupEmeraldOre, !enabled );
+//                    saveConfigPickup(e, p);
+//                    break;
+//                }
+//                case "Quartz_Ore":{
+//                    afConfig.setFeature( AutoFeatures.pickupQuartzOre, !enabled );
+//                    saveConfigPickup(e, p);
+//                    break;
+//                }
+//                case "Lapis_Ore":{
+//                    afConfig.setFeature( AutoFeatures.pickupLapisOre, !enabled );
+//                    saveConfigPickup(e, p);
+//                    break;
+//                }
+//                case "Snow_Ball":{
+//                    afConfig.setFeature( AutoFeatures.pickupSnowBall, !enabled );
+//                    saveConfigPickup(e, p);
+//                    break;
+//                }
+//                case "Glowstone_Dust":{
+//                    afConfig.setFeature( AutoFeatures.pickupGlowstoneDust, !enabled );
+//                    saveConfigPickup(e, p);
+//                    break;
+//                }
+//                default:{
+//                    break;
+//                }
+//
+//            }
+//        }
+//    }
+//
+//    private void autoSmeltGUI(InventoryClickEvent e, Player p, String[] parts) {
+//
+//        // Get the config
+//        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
+//
+//        // Output finally the buttonname and the mode explicit out of the array
+//        String buttonname = parts[0];
+//        String mode = parts[1];
+//        
+//        boolean enabled = mode.equalsIgnoreCase("Enabled");
+//
+//        // Check the clickType and do the actions
+//        if ( enabled && e.isRightClick() && e.isShiftClick() ||
+//        		!enabled && e.isRightClick()){
+//
+//            switch (buttonname){
+//                case "Gold_Ore":{
+//                    afConfig.setFeature( AutoFeatures.smeltGoldOre, !enabled );
+//                    saveConfigSmelt(e, p);
+//                    break;
+//                }
+//                case "Iron_Ore":{
+//                    afConfig.setFeature( AutoFeatures.smeltIronOre, !enabled );
+//                    saveConfigSmelt(e, p);
+//                    break;
+//                }
+//                case "All_Ores":{
+//                    afConfig.setFeature( AutoFeatures.smeltAllBlocks, !enabled );
+//                    saveConfigSmelt(e, p);
+//                    break;
+//                }
+//                default:{
+//                    break;
+//                }
+//            }
+//        }
+//    }
+//
+//    private void autoBlockGUI(InventoryClickEvent e, Player p, String[] parts) {
+//
+//        // Get the config
+//        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
+//
+//        // Output finally the buttonname and the mode explicit out of the array
+//        String buttonname = parts[0];
+//        String mode = parts[1];
+//
+//        boolean enabled = mode.equalsIgnoreCase("Enabled");
+//
+//        // Check the clickType and do the actions
+//        if ( enabled && e.isRightClick() && e.isShiftClick() ||
+//        		!enabled && e.isRightClick()){
+//
+//            switch (buttonname){
+//                case "Gold_Block":{
+//                    afConfig.setFeature( AutoFeatures.blockGoldBlock, !enabled );
+//                    saveConfigBlock(e, p);
+//                    break;
+//                }
+//                case "Iron_Block":{
+//                    afConfig.setFeature( AutoFeatures.blockIronBlock, !enabled );
+//                    saveConfigBlock(e, p);
+//                    break;
+//                }
+//                case "Coal_Block":{
+//                    afConfig.setFeature( AutoFeatures.blockCoalBlock, !enabled );
+//                    saveConfigBlock(e, p);
+//                    break;
+//                }
+//                case "Diamond_Block":{
+//                    afConfig.setFeature( AutoFeatures.blockDiamondBlock, !enabled );
+//                    saveConfigBlock(e, p);
+//                    break;
+//                }
+//                case "Redstone_Block":{
+//                    afConfig.setFeature( AutoFeatures.blockRedstoneBlock, !enabled );
+//                    saveConfigBlock(e, p);
+//                    break;
+//                }
+//                case "Emerald_Block":{
+//                    afConfig.setFeature( AutoFeatures.blockEmeraldBlock, !enabled );
+//                    saveConfigBlock(e, p);
+//                    break;
+//                }
+//                case "Quartz_Block":{
+//                    afConfig.setFeature( AutoFeatures.blockQuartzBlock, !enabled );
+//                    saveConfigBlock(e, p);
+//                    break;
+//                }
+//                case "Prismarine_Block":{
+//                    afConfig.setFeature( AutoFeatures.blockPrismarineBlock, !enabled );
+//                    saveConfigBlock(e, p);
+//                    break;
+//                }
+//                case "Lapis_Block":{
+//                    afConfig.setFeature( AutoFeatures.blockLapisBlock, !enabled );
+//                    saveConfigBlock(e, p);
+//                    break;
+//                }
+//                case "Snow_Block":{
+//                    afConfig.setFeature( AutoFeatures.blockSnowBlock, !enabled );
+//                    saveConfigBlock(e, p);
+//                    break;
+//                }
+//                case "Glowstone_Block":{
+//                    afConfig.setFeature( AutoFeatures.blockGlowstone, !enabled );
+//                    saveConfigBlock(e, p);
+//                    break;
+//                }
+//                case "All_Blocks":{
+//                    afConfig.setFeature( AutoFeatures.blockAllBlocks, !enabled );
+//                    saveConfigBlock(e, p);
+//                    break;
+//                }
+//                default:{
+//                    break;
+//                }
+//            }
+//        }
+//
+//    }
 
 
     private void modeAction(AsyncPlayerChatEvent e, Player p, String message) {
@@ -2919,45 +2922,45 @@ public class ListenersPrisonManager implements Listener {
         isChatEventActive = false;
     }
 
-    /**
-     * Save the auto features, and then cancel the event and close the inventory.
-     * 
-     * @param e
-     * @param player
-     */
-    private boolean saveAutoFeatures( InventoryClickEvent e, Player player ) {
-    	boolean success = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig().saveConf();
-    	e.setCancelled(true);
-    	player.closeInventory();
-    	return success;
-    }
-
-    
-    private boolean saveConfigBlock(InventoryClickEvent e, Player p) {
-    	boolean success = saveAutoFeatures( e, p );
-        SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
-        gui.open();
-        return success;
-    }
-
-    private boolean saveConfigSmelt(InventoryClickEvent e, Player p) {
-    	boolean success = saveAutoFeatures( e, p );
-        SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
-        gui.open();
-        return success;
-    }
-
-    private boolean saveConfigPickup(InventoryClickEvent e, Player p) {
-    	boolean success = saveAutoFeatures( e, p );
-        SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
-        gui.open();
-        return success;
-    }
-
-    private boolean saveConfigAutoFeatures(InventoryClickEvent e, Player p) {
-    	boolean success = saveAutoFeatures( e, p );
-        SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
-        gui.open();
-        return success;
-    }
+//    /**
+//     * Save the auto features, and then cancel the event and close the inventory.
+//     * 
+//     * @param e
+//     * @param player
+//     */
+//    private boolean saveAutoFeatures( InventoryClickEvent e, Player player ) {
+//    	boolean success = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig().saveConf();
+//    	e.setCancelled(true);
+//    	player.closeInventory();
+//    	return success;
+//    }
+//
+//    
+//    private boolean saveConfigBlock(InventoryClickEvent e, Player p) {
+//    	boolean success = saveAutoFeatures( e, p );
+//        SpigotAutoBlockGUI gui = new SpigotAutoBlockGUI(p);
+//        gui.open();
+//        return success;
+//    }
+//
+//    private boolean saveConfigSmelt(InventoryClickEvent e, Player p) {
+//    	boolean success = saveAutoFeatures( e, p );
+//        SpigotAutoSmeltGUI gui = new SpigotAutoSmeltGUI(p);
+//        gui.open();
+//        return success;
+//    }
+//
+//    private boolean saveConfigPickup(InventoryClickEvent e, Player p) {
+//    	boolean success = saveAutoFeatures( e, p );
+//        SpigotAutoPickupGUI gui = new SpigotAutoPickupGUI(p);
+//        gui.open();
+//        return success;
+//    }
+//
+//    private boolean saveConfigAutoFeatures(InventoryClickEvent e, Player p) {
+//    	boolean success = saveAutoFeatures( e, p );
+//        SpigotAutoFeaturesGUI gui = new SpigotAutoFeaturesGUI(p);
+//        gui.open();
+//        return success;
+//    }
 }

@@ -53,7 +53,7 @@ public class PrisonUtilsListeners
     public void unbreakableBlock( BlockBreakEvent e ) {
     	
     	if ( !e.isCancelled() ) {
-    		PrisonBlock block = new SpigotBlock( e.getBlock() ).getPrisonBlock();
+    		PrisonBlock block = SpigotBlock.getSpigotBlock( e.getBlock() ).getPrisonBlock();
     		
     		if ( BlockUtils.getInstance().isUnbreakable( block ) ) {
     			e.setCancelled( true );

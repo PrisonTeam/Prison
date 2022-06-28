@@ -1,17 +1,20 @@
 package tech.mcprison.prison.spigot.gui.mine;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
 import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.configs.GuiConfig;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
@@ -22,6 +25,7 @@ import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
 import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
+import tech.mcprison.prison.util.Text;
 
 /**
  * @author GABRYCA
@@ -39,6 +43,11 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
     private int page;
     private String cmdPage;
     private String cmdReturn;
+    
+    private final boolean placeholderAPINotNull = 
+    		Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null || 
+    		Bukkit.getPluginManager().getPlugin("PlaceholdersAPI") != null;
+
     
     public SpigotPlayerMinesGUI(Player p, int page, String cmdPage, String cmdReturn ) {
         this.p = p;
@@ -82,30 +91,42 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
 //            return;
 //        }
 
+        GuiConfig guiConfigClass = new GuiConfig();
+        guiConfig = guiConfigClass.getFileGuiConfig();
+        String permission = Text.translateAmpColorCodes(permissionWarpPlugin);
+
         // Create GUI.
         PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), guiConfig.getString("Options.Titles.PlayerMinesGUI"));
 
+        
+        List<String> configCustomLore = guiConfig.getStringList("EditableLore.Mines");
+        
+        
         // Make the buttons for every Mine with info
         for (Mine m : minesDisplay) {
 //        	for (Mine m : mines.getSortedList()) {
 
             // Init the lore array with default values for ladders
             ButtonLore minesLore = new ButtonLore();
+            
+
+        	String mineLoreKey = "EditableLore.Mine." + m.getName();
+        	List<String> mineLore = new ArrayList<>( configCustomLore );
+        	List<String> mineLore2 = guiConfig.getStringList( mineLoreKey );
+        	mineLore.addAll( mineLore2 );
+
 
             XMaterial xMat = XMaterial.REDSTONE_BLOCK;
             
             // Bug: Cannot safely use Material due to variants prior to bukkit v1.13:
 //            Material material;
 
-            GuiConfig guiConfigClass = new GuiConfig();
-            guiConfig = guiConfigClass.getFileGuiConfig();
-            String permission = SpigotPrison.format(permissionWarpPlugin);
 
             // Get Mine Name.
             String mineName = m.getName();
 
             // Add mineName lore for TP.
-            minesLore.addLineLoreAction(SpigotPrison.format("&3" + mineName));
+            minesLore.addLineLoreAction( "&3" + mineName );
 
 
             // If the player has permission to access the mine, then see if there is a custom
@@ -140,23 +161,52 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             	}
 
             	// material = ( mineMaterial == null ? Material.COAL_ORE : mineMaterial);
-                minesLore.addLineLoreDescription(SpigotPrison.format(statusUnlockedMine));
-                minesLore.addLineLoreAction(SpigotPrison.format(clickToTeleport));
+                minesLore.addLineLoreDescription( statusUnlockedMine );
+                minesLore.addLineLoreAction( clickToTeleport );
             } 
             else {
             	xMat = XMaterial.REDSTONE_BLOCK;
             	
 //                material = XMaterial.REDSTONE_BLOCK.parseMaterial();
-                minesLore.addLineLoreDescription(SpigotPrison.format(statusLockedMine));
+                minesLore.addLineLoreDescription( statusLockedMine );
             }
 
             // Get mine Tag, but make sure it is valid and the mine's name is not null:
             String mineTag = mineName == null ? "-no mine name-" : mineName;
-            if ( m.getTag() == null && !m.getTag().equalsIgnoreCase("null") && 
+            if ( m.getTag() != null && 
+            		!m.getTag().equalsIgnoreCase("null") && 
             		!m.getTag().equalsIgnoreCase("none") ) {
             	mineTag = m.getTag();
             }
             
+            DecimalFormat iFmt = new DecimalFormat( "#,##0" );
+            
+            for (String stringValue : mineLore) {
+            	
+            	double volume = m.getBounds().getArea();
+            	double remaining = volume * m.getPercentRemainingBlockCount() / 100.0;
+            	
+            	stringValue = stringValue.replace( "{mineName}", mineName );
+            	stringValue = stringValue.replace( "{mineTag}", mineTag );
+            	stringValue = stringValue.replace( "{mineSize}", m.getBounds().getDimensions() );
+            	stringValue = stringValue.replace( "{mineVolume}", iFmt.format( volume ));
+            	stringValue = stringValue.replace( "{mineRemaining}", iFmt.format( remaining ));
+            	stringValue = stringValue.replace( "{mineRemainingPercent}", iFmt.format( m.getPercentRemainingBlockCount() ));
+            	
+            	
+				minesLore.addLineLoreAction( stringValue );
+			}
+            
+            if ( placeholderAPINotNull ) {
+            	
+            	List<String> lores = PlaceholderAPI.setPlaceholders(
+            			Bukkit.getOfflinePlayer( p.getUniqueId()), 
+        				minesLore.getLoreAction());
+            	
+                minesLore.setLoreAction( lores );
+            }
+            
+
             // Add the button to the inventory.
             gui.addButton(new Button(null, xMat, minesLore, "&3" + mineTag));
             

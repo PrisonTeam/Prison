@@ -19,7 +19,7 @@
 package tech.mcprison.prison.internal.inventory;
 
 import tech.mcprison.prison.internal.ItemStack;
-import tech.mcprison.prison.util.BlockType;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 
 /**
  * Represents a recipe used in a furnace, consisting of an input and a result.
@@ -41,7 +41,7 @@ public interface FurnaceRecipe extends Recipe {
      *
      * @param input the input of this recipe ()
      */
-    FurnaceRecipe setInput(BlockType input);
+    FurnaceRecipe setInput( PrisonBlock input );
 
     /**
      * Gets the {@link ItemStack} created when the input is smelted.

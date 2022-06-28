@@ -29,7 +29,6 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -47,13 +46,13 @@ import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.internal.inventory.Viewable;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
+import tech.mcprison.prison.spigot.block.PrisonItemStackNotSupportedRuntimeException;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.BlockTestStats;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.integrations.IntegrationMinepacksPlugin;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 import tech.mcprison.prison.util.Vector;
@@ -81,22 +80,22 @@ public class SpigotUtil {
     	return XMaterial.matchXMaterial( materialName ).orElse( null );
     }
     
-    /**
-     * <p>Gets the XMaterial based upon the BlockType name, and if it fails to hit
-     * anything, then it falls back on to the id, of which XMaterial strips the 
-     * prefix of "minecraft:".
-     * </p>
-     * 
-     * @param prisonBlockType
-     * @return
-     */
-    public static XMaterial getXMaterial( BlockType prisonBlockType ) {
-    	
-    	XMaterial xMat = SpigotCompatibility.getInstance()
-    						.getXMaterial( prisonBlockType );
-    	
-    	return xMat;
-    }
+//    /**
+//     * <p>Gets the XMaterial based upon the BlockType name, and if it fails to hit
+//     * anything, then it falls back on to the id, of which XMaterial strips the 
+//     * prefix of "minecraft:".
+//     * </p>
+//     * 
+//     * @param prisonBlockType
+//     * @return
+//     */
+//    public static XMaterial getXMaterial( BlockType prisonBlockType ) {
+//    	
+//    	XMaterial xMat = SpigotCompatibility.getInstance()
+//    						.getXMaterial( prisonBlockType );
+//    	
+//    	return xMat;
+//    }
     
     public static XMaterial getXMaterial( PrisonBlock prisonBlock ) {
     	
@@ -105,50 +104,50 @@ public class SpigotUtil {
     	return xMat;
     }
     
-    public static Material getMaterial( BlockType prisonBlockType ) {
-    	XMaterial xMat = getXMaterial( prisonBlockType );
-    	
-    	return xMat == null ? null : xMat.parseMaterial();
-    }
+//    public static Material getMaterial( BlockType prisonBlockType ) {
+//    	XMaterial xMat = getXMaterial( prisonBlockType );
+//    	
+//    	return xMat == null ? null : xMat.parseMaterial();
+//    }
     
 
     
-	public static BlockType blockToBlockType( Block spigotBlock ) {
-		BlockType results = SpigotCompatibility.getInstance()
-				.getBlockType( spigotBlock );
-		
+//	public static BlockType blockToBlockType( Block spigotBlock ) {
+//		BlockType results = SpigotCompatibility.getInstance()
+//				.getBlockType( spigotBlock );
 //		
-//		XMaterial xMatMatch = XMaterial.matchXMaterial( material );
+////		
+////		XMaterial xMatMatch = XMaterial.matchXMaterial( material );
+////		
+////		for ( BlockType blockType : BlockType.values() ) {
+////			XMaterial xMat = getXMaterial( blockType );
+////			if ( xMat != null ) {
+////				results = blockType;
+////				break;
+////			}
+////		}
 //		
-//		for ( BlockType blockType : BlockType.values() ) {
-//			XMaterial xMat = getXMaterial( blockType );
-//			if ( xMat != null ) {
-//				results = blockType;
-//				break;
-//			}
-//		}
-		
-        return results;
-    }
+//        return results;
+//    }
 	
-	public static BlockType prisonBlockToBlockType( PrisonBlock prisonBlock ) {
-		
-		BlockType results = BlockType.getBlock( prisonBlock.getBlockName() );
-		
-		return results;
-	}
+//	public static BlockType prisonBlockToBlockType( PrisonBlock prisonBlock ) {
+//		
+//		BlockType results = BlockType.getBlock( prisonBlock.getBlockName() );
+//		
+//		return results;
+//	}
 
 	/**
-	 * <p>Returns a stack of BlockType or a stack of air.
+	 * <p>Returns a stack of PrisonBlock or a stack of air.
 	 * </p>
 	 * 
 	 * @param prisonBlockType
 	 * @param amount
 	 * @return
 	 */
-	public static ItemStack getItemStack( BlockType prisonBlockType, int amount ) {
+	public static ItemStack getItemStack( PrisonBlock prisonBlock, int amount ) {
 		ItemStack bukkitStack = null;
-        XMaterial xMat = getXMaterial( prisonBlockType );
+        XMaterial xMat = getXMaterial( prisonBlock );
         if ( xMat != null ) {
         	bukkitStack = xMat.parseItem();
         	bukkitStack.setAmount( amount );
@@ -175,7 +174,14 @@ public class SpigotUtil {
 	}
 	
 	public static SpigotItemStack getSpigotItemStack( XMaterial xMaterial, int amount ) {
-		SpigotItemStack itemStack = new SpigotItemStack( getItemStack( xMaterial, amount ) );
+		SpigotItemStack itemStack = null;
+		
+		try {
+			itemStack = new SpigotItemStack( getItemStack( xMaterial, amount ) );
+		} 
+		catch (PrisonItemStackNotSupportedRuntimeException e) {
+			// ignore
+		}
 		
 		return itemStack;
 	}
@@ -229,6 +235,7 @@ public class SpigotUtil {
 		
 		if ( itemStack != null && itemStack.getBukkitStack() != null ) {
 			HashMap<Integer, ItemStack> overflow = player.getInventory().addItem( itemStack.getBukkitStack() );
+			player.updateInventory();
 			
 			// Insert overflow in to Prison's backpack:
 			if ( BackpacksUtil.isEnabled() ) {
@@ -704,29 +711,31 @@ public class SpigotUtil {
 	 */
 	public static PrisonBlock getPrisonBlock( String blockName ) {
 		
-		PrisonBlock results = null;
-		BlockType bTypeObsolete = null;
+		PrisonBlock results = new PrisonBlock( blockName );
+		results.setValid( false );
 		
-		XMaterial xMat = getXMaterial( blockName );
-		
-		if ( xMat == null ) {
-			// Try to get the material through the old prison blocks:
-			bTypeObsolete = BlockType.getBlock( blockName );
-			
-			xMat = getXMaterial( bTypeObsolete );
-		}
-		
-		if ( xMat != null ) {
-			results = new PrisonBlock( xMat.name() );
-			
-			if ( bTypeObsolete != null ) {
-				results.setLegacyBlock( true );
-			}
-		}
-		else {
-			results = new PrisonBlock( blockName );
-			results.setValid( false );
-		}
+//		BlockType bTypeObsolete = null;
+//		
+//		XMaterial xMat = getXMaterial( blockName );
+//		
+//		if ( xMat == null ) {
+//			// Try to get the material through the old prison blocks:
+//			bTypeObsolete = BlockType.getBlock( blockName );
+//			
+//			xMat = getXMaterial( bTypeObsolete );
+//		}
+//		
+//		if ( xMat != null ) {
+//			results = new PrisonBlock( xMat.name() );
+//			
+//			if ( bTypeObsolete != null ) {
+//				results.setLegacyBlock( true );
+//			}
+//		}
+//		else {
+//			results = new PrisonBlock( blockName );
+//			results.setValid( false );
+//		}
 		return results;
 	}
 	
@@ -757,33 +766,34 @@ public class SpigotUtil {
 		int supportedBlockCountPrison = 0;
 		int supportedBlockCountXMaterial = 0;
 		
-		for ( BlockType block : BlockType.values() ) {
-			
-			if ( block.isBlock() ) {
-				XMaterial xMat = getXMaterial( block );
-				
-				if ( xMat == null ) {
-					if ( sbNoMap.length() > 0 ) {
-						sbNoMap.append( " " );
-					}
-					
-					Material mat = getMaterial( block );
-					
-					String bName = block.name() + (mat == null ? "" : "(" + mat.name() + ")");
-					sbNoMap.append( bName );
-				}
-				else if ( !xMat.isSupported() ) {
-					if ( sbNotSupported.length() > 0 ) {
-						sbNotSupported.append( " " );
-					}
-					sbNotSupported.append( block.name() );
-				}
-				else {
-					supportedBlockCountPrison++;
-				}
-			}
-		}
+//		for ( BlockType block : BlockType.values() ) {
+//			
+//			if ( block.isBlock() ) {
+//				XMaterial xMat = getXMaterial( block );
+//				
+//				if ( xMat == null ) {
+//					if ( sbNoMap.length() > 0 ) {
+//						sbNoMap.append( " " );
+//					}
+//					
+//					Material mat = getMaterial( block );
+//					
+//					String bName = block.name() + (mat == null ? "" : "(" + mat.name() + ")");
+//					sbNoMap.append( bName );
+//				}
+//				else if ( !xMat.isSupported() ) {
+//					if ( sbNotSupported.length() > 0 ) {
+//						sbNotSupported.append( " " );
+//					}
+//					sbNotSupported.append( block.name() );
+//				}
+//				else {
+//					supportedBlockCountPrison++;
+//				}
+//			}
+//		}
 		
+		// Validate which XMaterial 
 		for ( XMaterial xMat : XMaterial.values() ) {
 			if ( xMat.isSupported() ) {
 				
@@ -806,7 +816,10 @@ public class SpigotUtil {
 		for ( Material spigotMaterial : Material.values() ) {
 			
 			if ( spigotMaterial.isBlock() &&
-					BlockType.getBlock( spigotMaterial.name() ) == null ) {
+					XMaterial.matchXMaterial( spigotMaterial ) == null
+					
+//					BlockType.getBlock( spigotMaterial.name() ) == null 
+					) {
 				
 				String name = spigotMaterial.name().toLowerCase();
 				if ( !name.contains( "banner" ) && !name.contains( "button" ) && 
@@ -979,10 +992,15 @@ public class SpigotUtil {
    */
 
     public static SpigotItemStack bukkitItemStackToPrison( ItemStack bukkitStack) {
-    	SpigotItemStack results = null;
+;    	SpigotItemStack results = null;
     	
     	if ( bukkitStack != null ) {
-    		results = new SpigotItemStack( bukkitStack );
+    		try {
+				results = new SpigotItemStack( bukkitStack );
+			} 
+    		catch (PrisonItemStackNotSupportedRuntimeException e) {
+				// ignore...
+			}
     	}
     	
     	return results;
@@ -1023,21 +1041,33 @@ public class SpigotUtil {
         return bukkitStack;
     }
     
-  public static List<SpigotItemStack> getDrops(SpigotBlock block, SpigotItemStack tool) {
-	List<SpigotItemStack> ret = new ArrayList<>();
-	
-	Collection<ItemStack> drops = block.getWrapper().getDrops( tool.getBukkitStack() );
-	
-	for ( ItemStack drop : drops )
-	{
-		ret.add( SpigotUtil.bukkitItemStackToPrison(drop) );
+    
+    /**
+     * <p>Drops for lapis_ore is odd before the flattening (bukkit 1.8.x through 1.12.2) since it
+     * drops as blue_dye, but when it makes it to the player's inventory, it is then converted to
+     * lapis_lazuli.  So in order for auto sell to work, it has to sell on blue_dye and not 
+     * lapis_lazuli, or it will be placed in the player's inventory.  So it's important that
+     * blue_dye is added to the shop for the same price as lapis_lazuli.
+     * </p>
+     * 
+     * @param block
+     * @param tool
+     * @return
+     */
+	public static List<SpigotItemStack> getDrops(SpigotBlock block, SpigotItemStack tool) {
+		List<SpigotItemStack> ret = new ArrayList<>();
+		
+		Collection<ItemStack> drops = block.getWrapper().getDrops( tool.getBukkitStack() );
+		
+		for ( ItemStack drop : drops ) {
+			ret.add( SpigotUtil.bukkitItemStackToPrison(drop) );
+		}
+		
+	//	block.getWrapper().getDrops( tool.getBukkitStack() )
+	//			.forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
+		
+		return ret;
 	}
-	
-//	block.getWrapper().getDrops( tool.getBukkitStack() )
-//			.forEach(itemStack -> ret.add(SpigotUtil.bukkitItemStackToPrison(itemStack)));
-	
-	return ret;
-}
     
   
 //  public static void clearDrops(SpigotBlock block) {

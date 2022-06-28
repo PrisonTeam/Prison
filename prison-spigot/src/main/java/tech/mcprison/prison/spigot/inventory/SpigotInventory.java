@@ -28,14 +28,16 @@ import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.BeaconInventory;
 import org.bukkit.inventory.BrewerInventory;
 
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.inventory.InventoryHolder;
 import tech.mcprison.prison.internal.inventory.InventoryType;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-import tech.mcprison.prison.util.BlockType;
 
 /**
  * Created by DMP9 on 03/02/2017.
@@ -92,45 +94,57 @@ public class SpigotInventory implements Inventory {
     }
 
     @SuppressWarnings( "deprecation" )
-	@Override public String getTitle() {
+	@Override 
+	public String getTitle() {
         return wrapper.getTitle();
     }
 
-    @Override public List<Player> getViewers() {
+    @Override 
+    public List<Player> getViewers() {
         List<Player> players = new ArrayList<>();
         wrapper.getViewers()
             .forEach(x -> players.add(new SpigotPlayer((org.bukkit.entity.Player) x)));
         return players;
     }
 
-    @Override public int getSize() {
+    @Override 
+    public int getSize() {
         return wrapper.getSize();
     }
 
-    @Override public int getMaxStackSize() {
+    @Override 
+    public int getMaxStackSize() {
         return wrapper.getMaxStackSize();
     }
 
-    @Override public void setMaxStackSize(int size) {
+    @Override 
+    public void setMaxStackSize(int size) {
         wrapper.setMaxStackSize(size);
     }
 
     @SuppressWarnings( "deprecation" )
-	@Override public String getName() {
+	@Override 
+	public String getName() {
         return wrapper.getName();
     }
 
-    @Override public boolean isEmpty() {
+    @Override 
+    public boolean isEmpty() {
         return wrapper.getContents().length == 0;
     }
 
-    @Override public boolean contains(ItemStack itemStack) {
+    @Override 
+    public boolean contains(ItemStack itemStack) {
         return wrapper.contains(SpigotUtil.prisonItemStackToBukkit(itemStack));
     }
 
-    @Override public boolean contains(BlockType type) {
-    	org.bukkit.inventory.ItemStack bukkitStack = SpigotUtil.getItemStack( type, 1 );
-    	return wrapper.contains(bukkitStack);
+    @Override 
+    public boolean contains( PrisonBlock type ) {
+    	XMaterial xMat = SpigotUtil.getXMaterial( type );
+    	return wrapper.contains( xMat.parseItem() );
+    	
+//    	org.bukkit.inventory.ItemStack bukkitStack = SpigotUtil.getItemStack( type, 1 );
+//    	return wrapper.contains(bukkitStack);
 //        MaterialData materialData = SpigotUtil.blockTypeToMaterial(type);
 //        org.bukkit.inventory.ItemStack stack =
 //            new org.bukkit.inventory.ItemStack(materialData.getItemType());
@@ -138,29 +152,33 @@ public class SpigotInventory implements Inventory {
 //        return wrapper.contains(stack);
     }
 
-    @Override public Iterator<ItemStack> getIterator() {
+    @Override 
+    public Iterator<ItemStack> getIterator() {
         ArrayList<ItemStack> prisonStacks = new ArrayList<>();
         Arrays.asList(wrapper.getContents())
             .forEach(x -> prisonStacks.add(SpigotUtil.bukkitItemStackToPrison(x)));
         return prisonStacks.iterator();
     }
 
-    @Override public ItemStack[] getItems() {
+    @Override 
+    public ItemStack[] getItems() {
         ArrayList<ItemStack> prisonStacks = new ArrayList<>();
         Arrays.asList(wrapper.getContents())
             .forEach(x -> prisonStacks.add(SpigotUtil.bukkitItemStackToPrison(x)));
         return prisonStacks.toArray(new ItemStack[]{});
     }
 
-    @Override public void setItems(List<ItemStack> items) {
+    @Override 
+    public void setItems(List<ItemStack> items) {
         List<org.bukkit.inventory.ItemStack> stacks = new ArrayList<>();
         items.forEach(x -> stacks.add(SpigotUtil.prisonItemStackToBukkit(x)));
     }
 
-    @Override public HashMap<Integer, ItemStack> getItems(BlockType type) {
+    @Override 
+    public HashMap<Integer, ItemStack> getItems( PrisonBlock type ) {
         HashMap<Integer, ItemStack> result = new HashMap<>();
         List<ItemStack> items = Arrays.asList(getItems());
-        items.removeIf(x -> x.getMaterial() != type);
+        items.removeIf(x -> x.getMaterial().compareTo( type ) != 0 );
         items.forEach(y -> result.put(items.indexOf(y), y));
         return result;
     }
@@ -173,11 +191,13 @@ public class SpigotInventory implements Inventory {
         return result;
     }
 
-    @Override public ItemStack getItem(int index) {
+    @Override 
+    public ItemStack getItem(int index) {
         return SpigotUtil.bukkitItemStackToPrison(wrapper.getItem(index));
     }
 
-    @Override public void addItem(ItemStack... itemStack) {
+    @Override 
+    public void addItem(ItemStack... itemStack) {
         ArrayList<org.bukkit.inventory.ItemStack> stacks = new ArrayList<>();
         for (ItemStack stack : itemStack) {
             stacks.add(SpigotUtil.prisonItemStackToBukkit(stack));
@@ -185,7 +205,8 @@ public class SpigotInventory implements Inventory {
         wrapper.addItem(stacks.toArray(new org.bukkit.inventory.ItemStack[]{}));
     }
 
-    @Override public void removeItem(ItemStack... itemStack) {
+    @Override 
+    public void removeItem(ItemStack... itemStack) {
         ArrayList<org.bukkit.inventory.ItemStack> stacks = new ArrayList<>();
         for (ItemStack stack : itemStack) {
             stacks.add(SpigotUtil.prisonItemStackToBukkit(stack));
@@ -193,21 +214,32 @@ public class SpigotInventory implements Inventory {
         wrapper.removeItem(stacks.toArray(new org.bukkit.inventory.ItemStack[]{}));
     }
 
-    @Override public void clearAll() {
+    @Override 
+    public void clearAll() {
         wrapper.clear();
     }
 
-    @Override public void clearAll(int index) {
+    @Override 
+    public void clearAll(int index) {
         wrapper.setContents(Arrays.copyOfRange(wrapper.getContents(), 0, index));
     }
 
-    @Override public void clear(int index) {
+    @Override 
+    public void clear(int index) {
         wrapper.clear(index);
     }
 
-    @Override public void clear(BlockType type) {
-    	org.bukkit.inventory.ItemStack bukkitStack = SpigotUtil.getItemStack( type, 1 );
-    	wrapper.remove( bukkitStack );
+    @Override 
+    public void clear( PrisonBlock type ) {
+    	
+    	XMaterial xMat = SpigotUtil.getXMaterial( type );
+    	
+    	if ( xMat != null ) { 
+    		wrapper.remove( xMat.parseItem() );
+    	}
+    	
+//    	org.bukkit.inventory.ItemStack bukkitStack = SpigotUtil.getItemStack( type, 1 );
+//    	wrapper.remove( bukkitStack );
 //        MaterialData materialData = SpigotUtil.blockTypeToMaterial(type);
 //        org.bukkit.inventory.ItemStack stack =
 //            new org.bukkit.inventory.ItemStack(materialData.getItemType());
@@ -215,17 +247,29 @@ public class SpigotInventory implements Inventory {
 //        wrapper.remove(stack);
     }
 
-    @Override public void clear(ItemStack stack) {
+    @Override 
+    public void clear(ItemStack stack) {
         wrapper.remove(SpigotUtil.prisonItemStackToBukkit(stack));
     }
 
-    @Override public int first(ItemStack stack) {
+    @Override 
+    public int first(ItemStack stack) {
         return wrapper.first(SpigotUtil.prisonItemStackToBukkit(stack));
     }
 
-    @Override public int first(BlockType type) {
-    	org.bukkit.inventory.ItemStack bukkitStack = SpigotUtil.getItemStack( type, 1 );
-    	return wrapper.first(bukkitStack);
+    @Override 
+    public int first( PrisonBlock type) {
+    	int results = -1;
+    	
+    	XMaterial xMat = SpigotUtil.getXMaterial( type );
+    	
+    	if ( xMat != null ) { 
+    		results = wrapper.first( xMat.parseItem() );
+    	}
+    	
+    	return results;
+//    	org.bukkit.inventory.ItemStack bukkitStack = SpigotUtil.getItemStack( type, 1 );
+//    	return wrapper.first(bukkitStack);
 //        MaterialData materialData = SpigotUtil.blockTypeToMaterial(type);
 //        org.bukkit.inventory.ItemStack stack =
 //            new org.bukkit.inventory.ItemStack(materialData.getItemType());
@@ -233,19 +277,23 @@ public class SpigotInventory implements Inventory {
 //        return wrapper.first(stack);
     }
 
-    @Override public int firstEmpty() {
+    @Override
+    public int firstEmpty() {
         return wrapper.firstEmpty();
     }
 
-    @Override public InventoryHolder getHolder() {
+    @Override 
+    public InventoryHolder getHolder() {
         return new SpigotInventoryHolder(wrapper.getHolder());
     }
 
-    @Override public InventoryType getType() {
+    @Override 
+    public InventoryType getType() {
         return SpigotUtil.bukkitInventoryTypeToPrison(wrapper.getType());
     }
 
-    @Override public Iterator<ItemStack> iterator() {
+    @Override 
+    public Iterator<ItemStack> iterator() {
         return getIterator();
     }
 

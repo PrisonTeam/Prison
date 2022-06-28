@@ -11,10 +11,8 @@ import com.cryptomorin.xseries.XMaterial;
 import tech.mcprison.prison.internal.block.BlockFace;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
-import tech.mcprison.prison.util.BlockType;
 import tech.mcprison.prison.util.Location;
 
 public abstract class Spigot18Blocks 
@@ -22,185 +20,189 @@ public abstract class Spigot18Blocks
 	implements CompatibilityBlocks {
 
 
-	/**
-	 * <p>This function provides a minecraft v1.8 way of getting
-	 * the prison BlockType from a bukkit Block.  This function 
-	 * should be used for all block types prior to 1.13.x because
-	 * of the use of magic numbers.  The variations of types for a 
-	 * base material cannot be accessed in any other way. 
-	 * For example the item lapis lazuli, which is not a block type,
-	 * but it is one of the primary problem item.
-	 * <p>
-	 * 
-	 * <p>For versions 1.13.x and higher, a different function would
-	 * need to be used to get the BlockType.
-	 * </p>
-	 * 
-	 * @param spigotBlock
-	 * @return
-	 */
-	@SuppressWarnings( "deprecation" )
-	@Override
-	public BlockType getBlockType(Block spigotBlock) {
-		BlockType results = BlockType.NULL_BLOCK;
-		
-		if ( spigotBlock != null ) {
-			
-			int id = spigotBlock.getType().getId();
-			short data = spigotBlock.getData();
-
-			results = getCachedBlockType( spigotBlock, (byte) data );
-			if ( results == null ) {
-		
-				// NOTE: namespace is 1.13+
-//				Output.get().logInfo( "### getBlockType:  " + spigotBlock.getType().name() + "  " +
-//						spigotBlock.getType().getKey().getKey() +  "  " + 
-//						spigotBlock.getType().getKey().getNamespace() );
-
-				results = BlockType.getBlock(id, data);
-				
-				if ( results == null ) {
-					
-					results = BlockType.getBlock( spigotBlock.getType().name() );
-					
-					if ( results == null ) {
-						
-						Output.get().logWarn( "Spigot18Blocks.getBlockType() : " +
-								"Spigot block cannot be mapped to a prison BlockType : " +
-								spigotBlock.getType().name() + 
-								" id = " + id + " data = " + data +
-								"  BlockType = " + ( results == null ? "null" : results.name()));
-						
-					}
-				}
-				
-				putCachedBlockType( spigotBlock, (byte) data, results );
-			}
-		}
-		
-        return results == BlockType.NULL_BLOCK ? null : results;
-    }
+//	/**
+//	 * <p>This function provides a minecraft v1.8 way of getting
+//	 * the prison BlockType from a bukkit Block.  This function 
+//	 * should be used for all block types prior to 1.13.x because
+//	 * of the use of magic numbers.  The variations of types for a 
+//	 * base material cannot be accessed in any other way. 
+//	 * For example the item lapis lazuli, which is not a block type,
+//	 * but it is one of the primary problem item.
+//	 * <p>
+//	 * 
+//	 * <p>For versions 1.13.x and higher, a different function would
+//	 * need to be used to get the BlockType.
+//	 * </p>
+//	 * 
+//	 * @param spigotBlock
+//	 * @return
+//	 */
+//	@SuppressWarnings( "deprecation" )
+//	@Override
+//	public BlockType getBlockType(Block spigotBlock) {
+//		BlockType results = BlockType.NULL_BLOCK;
+//		
+//		if ( spigotBlock != null ) {
+//			
+//			int id = spigotBlock.getType().getId();
+//			short data = spigotBlock.getData();
+//
+//			results = getCachedBlockType( spigotBlock, (byte) data );
+//			if ( results == null ) {
+//		
+//				// NOTE: namespace is 1.13+
+////				Output.get().logInfo( "### getBlockType:  " + spigotBlock.getType().name() + "  " +
+////						spigotBlock.getType().getKey().getKey() +  "  " + 
+////						spigotBlock.getType().getKey().getNamespace() );
+//
+//				results = BlockType.getBlock(id, data);
+//				
+//				if ( results == null ) {
+//					
+//					results = BlockType.getBlock( spigotBlock.getType().name() );
+//					
+//					if ( results == null ) {
+//						
+//						Output.get().logWarn( "Spigot18Blocks.getBlockType() : " +
+//								"Spigot block cannot be mapped to a prison BlockType : " +
+//								spigotBlock.getType().name() + 
+//								" id = " + id + " data = " + data +
+//								"  BlockType = " + ( results == null ? "null" : results.name()));
+//						
+//					}
+//				}
+//				
+//				putCachedBlockType( spigotBlock, (byte) data, results );
+//			}
+//		}
+//		
+//        return results == BlockType.NULL_BLOCK ? null : results;
+//    }
 	
 	@Override
-	public PrisonBlock getPrisonBlock(Block spigotBlock) {
-		PrisonBlock pBlock = null;
-		
-		XMaterial xMat = getXMaterial( spigotBlock );
-		
-		if ( xMat != null ) {
-			pBlock = SpigotPrison.getInstance().getPrisonBlockTypes().getBlockTypesByName( xMat.name() );
-//			pBlock = new PrisonBlock( xMat.name() );
-		}
-		// ignore nulls because errors were logged in getXMaterial() so they only
-		// are logged once
-		
-		return pBlock;
+	public SpigotBlock getSpigotBlock( Block bukkitBlock ) {
+		return SpigotBlock.getSpigotBlock( bukkitBlock );
+//		SpigotBlock sBlock = null;
+//		
+//		XMaterial xMat = getXMaterial( bukkitBlock );
+//		
+//		if ( xMat != null ) {
+//			
+//			sBlock = new SpigotBlock( xMat.name(), bukkitBlock );
+//			
+////			pBlock = SpigotPrison.getInstance().getPrisonBlockTypes().getBlockTypesByName( xMat.name() );
+////			pBlock = new PrisonBlock( xMat.name() );
+//		}
+//		// ignore nulls because errors were logged in getXMaterial() so they only
+//		// are logged once
+//		
+//		return sBlock;
 	}
 	
 	
-	@SuppressWarnings( "deprecation" )
-	@Override
-	public BlockType getBlockType( ItemStack spigotStack ) {
-		BlockType results = BlockType.NULL_BLOCK;
-		
-		if ( spigotStack != null ) {
-			
-			int id = spigotStack.getType().getId();
-			short data = spigotStack.getData().getData();
-			
-			results = getCachedBlockType( spigotStack, (byte) data );
-			if ( results == null ) {
-				
-				results = BlockType.getBlock(id, data);
-				
-				if ( results == null ) {
-					
-					// NOTE: Some items may have invalid data values.  Example are with pickaxes
-					//       should have a value of zero, but could range from +- 256.
-					// Try to use XMaterial to map back to a BlockType (old block model).
-					XMaterial xMat = xMatMatchXMaterial( spigotStack );
-					
-					if ( xMat != null ) {
-						results = BlockType.getBlock( xMat.name() );
-					}
-					
-					if ( results == null ) {
-						
-						String message = String.format( "Spigot18Blocks: getBlockType(): " +
-								"Unable to map to a BlockType. XMaterial = %s :: %s %s " +
-								"Material = %s ", 
-								(xMat == null ? "null" : xMat.name()), 
-								Integer.toString( id ), Integer.toString( data ), 
-								spigotStack.getType().name() );
-						
-						Output.get().logInfo( message );
-					}
-				}
-				
-				putCachedBlockType( spigotStack, (byte) data, results );
-			}
-		}
-		
-		return results == BlockType.NULL_BLOCK ? null : results;
-	}
+//	@SuppressWarnings( "deprecation" )
+//	@Override
+//	public BlockType getBlockType( ItemStack spigotStack ) {
+//		BlockType results = BlockType.NULL_BLOCK;
+//		
+//		if ( spigotStack != null ) {
+//			
+//			int id = spigotStack.getType().getId();
+//			short data = spigotStack.getData().getData();
+//			
+//			results = getCachedBlockType( spigotStack, (byte) data );
+//			if ( results == null ) {
+//				
+//				results = BlockType.getBlock(id, data);
+//				
+//				if ( results == null ) {
+//					
+//					// NOTE: Some items may have invalid data values.  Example are with pickaxes
+//					//       should have a value of zero, but could range from +- 256.
+//					// Try to use XMaterial to map back to a BlockType (old block model).
+//					XMaterial xMat = xMatMatchXMaterial( spigotStack );
+//					
+//					if ( xMat != null ) {
+//						results = BlockType.getBlock( xMat.name() );
+//					}
+//					
+//					if ( results == null ) {
+//						
+//						String message = String.format( "Spigot18Blocks: getBlockType(): " +
+//								"Unable to map to a BlockType. XMaterial = %s :: %s %s " +
+//								"Material = %s ", 
+//								(xMat == null ? "null" : xMat.name()), 
+//								Integer.toString( id ), Integer.toString( data ), 
+//								spigotStack.getType().name() );
+//						
+//						Output.get().logInfo( message );
+//					}
+//				}
+//				
+//				putCachedBlockType( spigotStack, (byte) data, results );
+//			}
+//		}
+//		
+//		return results == BlockType.NULL_BLOCK ? null : results;
+//	}
 	
-	/**
-	 * <p>Something is causing XMaterial to throw an exception that makes no sense
-	 * since the item listed does not exist in game.
-	 * </p>
-	 * 
-	 *  <pre>
-	 *  Caused by: java.lang.IllegalArgumentException: Unsupported material from item: BED (14)
-	at tech.mcprison.prison.cryptomorin.xseries.XMaterial.lambda$matchXMaterial$1(XMaterial.java:1559) ~[?:?]
-	at tech.mcprison.prison.cryptomorin.xseries.XMaterial$$Lambda$197/0x0000000069039ff0.get(Unknown Source) ~[?:?]
-	at java.util.Optional.orElseThrow(Optional.java:290) ~[?:1.8.0_272]
-	at tech.mcprison.prison.cryptomorin.xseries.XMaterial.matchXMaterial(XMaterial.java:1559) ~[?:?]
-	at tech.mcprison.prison.spigot.compat.Spigot18Blocks.getBlockType(Spigot18Blocks.java:116) ~[?:?]
-	at tech.mcprison.prison.spigot.block.SpigotItemStack.<init>(SpigotItemStack.java:45) ~[?:?]
-	at tech.mcprison.prison.spigot.SpigotUtil.bukkitItemStackToPrison(SpigotUtil.java:583) ~[?:?]
-	at tech.mcprison.prison.spigot.SpigotListener.onPlayerInteract(SpigotListener.java:172) ~[?:?]
-	at sun.reflect.GeneratedMethodAccessor64.invoke(Unknown Source) ~[?:?]
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:1.8.0_272]
-	at java.lang.reflect.Method.invoke(Method.java:498) ~[?:1.8.0_272]
-	at org.bukkit.plugin.java.JavaPluginLoader$1.execute(JavaPluginLoader.java:302) ~[spigot-1.12.2.jar:git-Spigot-eb3d921-2b93d83]
-	... 17 more
-	 *  </pre>
-	 *  
-	 *  
-	 * NOTE: Some items may have invalid data values.  Example are with pickaxes 
-	 *     should have a value of zero, but could range from +- 256. 
-	 *     Try to use XMaterial to map back to a BlockType (old block model).
-	 *     
-	 * @param spigotStack
-	 * @return
-	 */
-	@SuppressWarnings( "deprecation" )
-	private XMaterial xMatMatchXMaterial( ItemStack spigotStack ) {
-		XMaterial xMat = null;
-		
-		if ( spigotStack != null ) {
-			
-			try {
-				xMat = XMaterial.matchXMaterial( spigotStack );
-			}
-			catch ( Exception e ) {
-				
-				int id = spigotStack.getType().getId();
-				short data = spigotStack.getData().getData();
-				
-				// Invalid type from the stack:
-				Output.get().logDebug( "Spigot188Blocks: unable to matchXMaterial.  " +
-						"Type=%s  Qty=%s  id=%s  data=%s  Error=[%s]",
-						spigotStack.getType().name(), 
-						Integer.toString( spigotStack.getAmount() ),
-						Integer.toString( id ),
-						Integer.toString( data ),
-						e.getMessage() );
-			}
-		}
-		
-		return xMat;
-	}
+//	/**
+//	 * <p>Something is causing XMaterial to throw an exception that makes no sense
+//	 * since the item listed does not exist in game.
+//	 * </p>
+//	 * 
+//	 *  <pre>
+//	 *  Caused by: java.lang.IllegalArgumentException: Unsupported material from item: BED (14)
+//	at tech.mcprison.prison.cryptomorin.xseries.XMaterial.lambda$matchXMaterial$1(XMaterial.java:1559) ~[?:?]
+//	at tech.mcprison.prison.cryptomorin.xseries.XMaterial$$Lambda$197/0x0000000069039ff0.get(Unknown Source) ~[?:?]
+//	at java.util.Optional.orElseThrow(Optional.java:290) ~[?:1.8.0_272]
+//	at tech.mcprison.prison.cryptomorin.xseries.XMaterial.matchXMaterial(XMaterial.java:1559) ~[?:?]
+//	at tech.mcprison.prison.spigot.compat.Spigot18Blocks.getBlockType(Spigot18Blocks.java:116) ~[?:?]
+//	at tech.mcprison.prison.spigot.block.SpigotItemStack.<init>(SpigotItemStack.java:45) ~[?:?]
+//	at tech.mcprison.prison.spigot.SpigotUtil.bukkitItemStackToPrison(SpigotUtil.java:583) ~[?:?]
+//	at tech.mcprison.prison.spigot.SpigotListener.onPlayerInteract(SpigotListener.java:172) ~[?:?]
+//	at sun.reflect.GeneratedMethodAccessor64.invoke(Unknown Source) ~[?:?]
+//	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:1.8.0_272]
+//	at java.lang.reflect.Method.invoke(Method.java:498) ~[?:1.8.0_272]
+//	at org.bukkit.plugin.java.JavaPluginLoader$1.execute(JavaPluginLoader.java:302) ~[spigot-1.12.2.jar:git-Spigot-eb3d921-2b93d83]
+//	... 17 more
+//	 *  </pre>
+//	 *  
+//	 *  
+//	 * NOTE: Some items may have invalid data values.  Example are with pickaxes 
+//	 *     should have a value of zero, but could range from +- 256. 
+//	 *     Try to use XMaterial to map back to a BlockType (old block model).
+//	 *     
+//	 * @param spigotStack
+//	 * @return
+//	 */
+//	@SuppressWarnings( "deprecation" )
+//	private XMaterial xMatMatchXMaterial( ItemStack spigotStack ) {
+//		XMaterial xMat = null;
+//		
+//		if ( spigotStack != null ) {
+//			
+//			try {
+//				xMat = XMaterial.matchXMaterial( spigotStack );
+//			}
+//			catch ( Exception e ) {
+//				
+//				int id = spigotStack.getType().getId();
+//				short data = spigotStack.getData().getData();
+//				
+//				// Invalid type from the stack:
+//				Output.get().logDebug( "Spigot188Blocks: unable to matchXMaterial.  " +
+//						"Type=%s  Qty=%s  id=%s  data=%s  Error=[%s]",
+//						spigotStack.getType().name(), 
+//						Integer.toString( spigotStack.getAmount() ),
+//						Integer.toString( id ),
+//						Integer.toString( data ),
+//						e.getMessage() );
+//			}
+//		}
+//		
+//		return xMat;
+//	}
 	
 	@SuppressWarnings( "deprecation" )
 	@Override
@@ -227,6 +229,14 @@ public abstract class Spigot18Blocks
 					// Last chance: try to match by id:
 					int id = spigotBlock.getType().getId();
 					results = XMaterial.matchXMaterial( id, data ).orElse( null );
+				}
+				
+				if ( results == null ) {
+					results = XMaterial.matchXMaterial(spigotBlock.getType());
+				}
+				
+				if ( results == null ) {
+					results = XMaterial.matchXMaterial( spigotBlock.getType().name() ).orElse( null );
 				}
 				
 				if ( results == null ) {
@@ -278,49 +288,49 @@ public abstract class Spigot18Blocks
 	}
 	
 
-	@Override
-	public XMaterial getXMaterial( BlockType blockType ) {
-		XMaterial results = NULL_TOKEN;
-		
-		if ( blockType != null && blockType != BlockType.IGNORE ) {
-			short data = blockType.getData();
-			
-			results = getCachedXMaterial( blockType, (byte) data );
-			if ( results == null ) {
-				
-				// First match by BlockType name:
-				results =  XMaterial.matchXMaterial( blockType.getXMaterialName() ).orElse( null );
-				
-				// do not use... redundant with blockType.getXMaterialName():
-//				results =  XMaterial.matchXMaterial( blockType.name() ).orElse( null );
-
-				if ( results == null ) {
-					
-					// Try to match on altNames if they exist:
-					for ( String altName : blockType.getXMaterialAltNames() ) {
-						
-						results =  XMaterial.matchXMaterial( altName ).orElse( null );
-						
-						if ( results != null ) {
-							break;
-						}
-					}
-					
-					if ( results == null ) {
-						
-						// Finally, Try to match on legacy name and magic number:
-						results =  XMaterial.matchXMaterial( blockType.getXMaterialNameLegacy() ).orElse( null );
-					}
-					
-					putCachedXMaterial( blockType, (byte) data, results );
-				}
-
-			}
-
-		}
-		
-		return results == NULL_TOKEN ? null : results;
-	}
+//	@Override
+//	public XMaterial getXMaterial( BlockType blockType ) {
+//		XMaterial results = NULL_TOKEN;
+//		
+//		if ( blockType != null && blockType != BlockType.IGNORE ) {
+//			short data = blockType.getData();
+//			
+//			results = getCachedXMaterial( blockType, (byte) data );
+//			if ( results == null ) {
+//				
+//				// First match by BlockType name:
+//				results =  XMaterial.matchXMaterial( blockType.getXMaterialName() ).orElse( null );
+//				
+//				// do not use... redundant with blockType.getXMaterialName():
+////				results =  XMaterial.matchXMaterial( blockType.name() ).orElse( null );
+//
+//				if ( results == null ) {
+//					
+//					// Try to match on altNames if they exist:
+//					for ( String altName : blockType.getXMaterialAltNames() ) {
+//						
+//						results =  XMaterial.matchXMaterial( altName ).orElse( null );
+//						
+//						if ( results != null ) {
+//							break;
+//						}
+//					}
+//					
+//					if ( results == null ) {
+//						
+//						// Finally, Try to match on legacy name and magic number:
+//						results =  XMaterial.matchXMaterial( blockType.getXMaterialNameLegacy() ).orElse( null );
+//					}
+//					
+//					putCachedXMaterial( blockType, (byte) data, results );
+//				}
+//
+//			}
+//
+//		}
+//		
+//		return results == NULL_TOKEN ? null : results;
+//	}
 	
 	
 //	public Material getMaterial( BlockType blockType ) {
@@ -358,19 +368,19 @@ public abstract class Spigot18Blocks
 //	}
 
 
-	@Override
-	public void updateSpigotBlock( BlockType blockType, Block spigotBlock ) {
-    	
-    	if ( blockType != null && blockType != BlockType.IGNORE && spigotBlock != null ) {
-    		
-    		XMaterial xMat = getXMaterial( blockType );
-    		
-    		if ( xMat != null ) {
-    			
-    			updateSpigotBlock( xMat, spigotBlock );
-    		}
-    	}
-    }
+//	@Override
+//	public void updateSpigotBlock( BlockType blockType, Block spigotBlock ) {
+//    	
+//    	if ( blockType != null && blockType != BlockType.IGNORE && spigotBlock != null ) {
+//    		
+//    		XMaterial xMat = getXMaterial( blockType );
+//    		
+//    		if ( xMat != null ) {
+//    			
+//    			updateSpigotBlock( xMat, spigotBlock );
+//    		}
+//    	}
+//    }
 	
 	
 	@Override
@@ -504,15 +514,19 @@ public abstract class Spigot18Blocks
 					@Override
 					public void run() {
 						
-						// No physics update:
-						Block spigotBlock = ((SpigotBlock) location.getBlockAt()).getWrapper();
+						// Using the World's location to get the block, will ensure that 
+						// the wrapper contains the bukkit's block:
+						SpigotBlock sBlock = (SpigotBlock) location.getBlockAt();
+						
+						
+						Block bBlock = sBlock.getWrapper();
 						
 						// For 1.13.x and higher:
 						// spigotblock.setType( newType, false );
 
 						
 						// No physics update:
-						BlockState bState = spigotBlock.getState();
+						BlockState bState = bBlock.getState();
 						 
 						// Set the block state with the new type and rawData:
 						bState.setType( newType );

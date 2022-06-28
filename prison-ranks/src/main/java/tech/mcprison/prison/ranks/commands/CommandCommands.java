@@ -15,7 +15,7 @@ import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
-import tech.mcprison.prison.tasks.PrisonCommandTask;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData;
 
 /**
  * @author Faizaan A. Datoo
@@ -58,11 +58,11 @@ public class CommandCommands
         	
         	String placeholders = 
         			
-        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
-        					PrisonCommandTask.CommandEnvironment.all_commands ) + " " +
+        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+        					PrisonCommandTaskData.CommandEnvironment.all_commands ) + " " +
         			
-        			PrisonCommandTask.CustomPlaceholders.listPlaceholders(
-									PrisonCommandTask.CommandEnvironment.rank_commands );
+        			PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+									PrisonCommandTaskData.CommandEnvironment.rank_commands );
         	
         	String message = ranksCommandAddPlaceholdersMsg( placeholders );
         	
@@ -123,7 +123,7 @@ public class CommandCommands
         }
 
         if ( row > rank.getRankUpCommands().size() ) {
-        	rankRowNumberTooHigh( sender, row );
+        	rankRowNumberTooHigh( sender, rank.getRankUpCommands().size(), row );
         	return;        	
         }
         
@@ -235,11 +235,11 @@ public class CommandCommands
 
         if ( ladderName != null && "placeholders".equalsIgnoreCase( ladderName ) ) {
         	
-        	String placeholders = PrisonCommandTask.CustomPlaceholders.listPlaceholders(
-											PrisonCommandTask.CommandEnvironment.all_commands ) + " " +
+        	String placeholders = PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+											PrisonCommandTaskData.CommandEnvironment.all_commands ) + " " +
         			
-									PrisonCommandTask.CustomPlaceholders.listPlaceholders(
-											PrisonCommandTask.CommandEnvironment.rank_commands );
+									PrisonCommandTaskData.CustomPlaceholders.listPlaceholders(
+											PrisonCommandTaskData.CommandEnvironment.rank_commands );
         	
         	String message = ladderCommandAddPlaceholdersMsg( placeholders );
         	
@@ -301,7 +301,7 @@ public class CommandCommands
         }
 
         if ( row > ladder.getRankUpCommands().size() ) {
-        	rankRowNumberTooHigh( sender, row );
+        	rankRowNumberTooHigh( sender, ladder.getRankUpCommands().size(), row );
         	return;        	
         }
         
@@ -369,7 +369,7 @@ public class CommandCommands
             if ( !noRemoves ) {
             	
             	FancyMessage msgRemove = new FancyMessage( " &4Remove&3" )
-            			.suggest("/ranks ladder command remove " + ladder.getName() + " " + rowNumber )
+            			.suggest("/ranks ladder command remove " + ladder.getName() + " " + (rowNumber - 1) )
             			.tooltip( ranksCommandListClickToRemoveMsg() );
             	row.addFancy( msgRemove );
             }

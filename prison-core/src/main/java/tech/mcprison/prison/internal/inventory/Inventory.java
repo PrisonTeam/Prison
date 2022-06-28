@@ -18,13 +18,13 @@
 
 package tech.mcprison.prison.internal.inventory;
 
-import tech.mcprison.prison.internal.ItemStack;
-import tech.mcprison.prison.internal.Player;
-import tech.mcprison.prison.util.BlockType;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 
 /**
  * Represents an inventory.
@@ -85,7 +85,7 @@ public interface Inventory extends Iterable<ItemStack> {
      * @param type The {@link BlockType} to look for.
      * @return true if the inventory contains the block type, false otherwise.
      */
-    boolean contains(BlockType type);
+    boolean contains( PrisonBlock prisonBlock );
 
     Iterator<ItemStack> getIterator();
 
@@ -110,7 +110,7 @@ public interface Inventory extends Iterable<ItemStack> {
      * @return a HashMap with the index of items with matching BlockTypes as the keys, and said items
      * as the values
      */
-    HashMap<Integer, ItemStack> getItems(BlockType type);
+    HashMap<Integer, ItemStack> getItems( PrisonBlock item );
 
     /**
      * Creates a {@link HashMap} with items matching the specified {@link ItemStack}
@@ -167,7 +167,7 @@ public interface Inventory extends Iterable<ItemStack> {
      *
      * @param type the {@link BlockType} to remove from the inventory
      */
-    void clear(BlockType type);
+    void clear( PrisonBlock type);
 
     /**
      * Clears all the slots matching the specified {@link ItemStack}
@@ -190,7 +190,7 @@ public interface Inventory extends Iterable<ItemStack> {
      * @param type the {@link BlockType} to get the first index of
      * @return the first index of the BlockType
      */
-    int first(BlockType type);
+    int first( PrisonBlock type);
 
     /**
      * Gets the index of the first empty slot in this inventory

@@ -18,10 +18,10 @@
 
 package tech.mcprison.prison.internal.inventory;
 
-import tech.mcprison.prison.internal.ItemStack;
-import tech.mcprison.prison.util.BlockType;
-
 import java.util.Map;
+
+import tech.mcprison.prison.internal.ItemStack;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 
 /**
  * Represents a shaped crafting recipe (a recipe that must be of a specific shape to be completed).
@@ -56,7 +56,7 @@ public interface ShapedRecipe extends Recipe {
      * @param ingredient the ingredient
      * @return this instance to allow chain calls
      */
-    ShapedRecipe setIngredient(char key, BlockType ingredient);
+    ShapedRecipe setIngredient(char key, PrisonBlock ingredient);
 
     /**
      * Sets the shape of this recipe <p><b>Example:</b> If you assign letter D to Diamond and S to

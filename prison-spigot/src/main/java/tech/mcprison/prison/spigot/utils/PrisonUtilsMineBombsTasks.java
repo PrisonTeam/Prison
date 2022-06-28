@@ -1,5 +1,6 @@
 package tech.mcprison.prison.spigot.utils;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.util.Text;
 
 public class PrisonUtilsMineBombsTasks
 	extends PrisonUtils
@@ -55,11 +57,9 @@ public class PrisonUtilsMineBombsTasks
 	}
 
 	
-	protected void setFortune( SpigotItemStack itemInHand, int fortuneLevel )
-	{
+	protected void setFortune( SpigotItemStack itemInHand, int fortuneLevel ) {
 
-		if ( itemInHand != null && itemInHand.getBukkitStack() != null && itemInHand.getBukkitStack().hasItemMeta() )
-		{
+		if ( itemInHand != null && itemInHand.getBukkitStack() != null ) {
 
 			itemInHand.getBukkitStack().addUnsafeEnchantment( Enchantment.LOOT_BONUS_BLOCKS, fortuneLevel );
 
@@ -67,9 +67,23 @@ public class PrisonUtilsMineBombsTasks
 			// meta.addEnchant( Enchantment.LOOT_BONUS_BLOCKS, fortuneLevel,
 			// true );
 			// itemInHand.getBukkitStack().setItemMeta( meta );
-
 		}
-
+	}
+	
+	protected void setUnbreaking( SpigotItemStack itemInHand, int durabilityLevel ) {
+		
+		if ( itemInHand != null && itemInHand.getBukkitStack() != null ) {
+			
+			itemInHand.getBukkitStack().addUnsafeEnchantment( Enchantment.DURABILITY, durabilityLevel );
+		}
+	}
+	
+	protected void setDigSpeed( SpigotItemStack itemInHand, int digSpeedLevel ) {
+		
+		if ( itemInHand != null && itemInHand.getBukkitStack() != null ) {
+			
+			itemInHand.getBukkitStack().addUnsafeEnchantment( Enchantment.DIG_SPEED, digSpeedLevel );
+		}
 	}
 
 	// public static boolean addPlayerCooldown( String playerUUID ) {
@@ -102,8 +116,10 @@ public class PrisonUtilsMineBombsTasks
 				@Override
 				public void run()
 				{
+					
+					Integer cooldownTicks = playerCooldowns.get( playerUUID );
 
-					int ticksRemaining = playerCooldowns.get( playerUUID ) - 10;
+					int ticksRemaining = cooldownTicks == null ? 0 : cooldownTicks - 10;
 
 					if ( ticksRemaining <= 0 )
 					{
@@ -271,6 +287,8 @@ public class PrisonUtilsMineBombsTasks
 				SpigotItemStack toolInHand = new SpigotItemStack( xMatTool.parseItem() );
 				
 				setFortune( toolInHand, bomb.getToolInHandFortuneLevel() );
+				setUnbreaking( toolInHand, bomb.getToolInHandDurabilityLevel() );
+				setDigSpeed( toolInHand, bomb.getToolInHandDigSpeedLevel() );
 				
 				
 				explodeEvent.setToolInHand( toolInHand );
@@ -451,11 +469,15 @@ public class PrisonUtilsMineBombsTasks
 		private double twoPI;
 		
 		private ArmorStand armorStand;
+		private boolean isDyanmicTag = false;
+		private String tagName;
 
 //		long ageTicks = 0L;
 		long terminateOnZeroTicks = 0L;
 				
 		private BukkitTask bukkitTask;
+		
+		private DecimalFormat dFmt;
 		
 		public PlacedMineBombItemTask( MineBombData bomb, 
 									SpigotBlock sBombBlock, SpigotItemStack item ) {
@@ -465,10 +487,16 @@ public class PrisonUtilsMineBombsTasks
 			this.sBlock = sBombBlock;
 			this.item = item;
 			
+			
 			this.twoPI = Math.PI * 2;
 			
 //			this.ageTicks = 0;
 			this.terminateOnZeroTicks = getTaskLifeSpan();
+
+			this.isDyanmicTag = bomb.getNameTag().contains( "{countdown}" );
+			this.tagName = "";
+			
+			this.dFmt = new DecimalFormat( "0.0" );
 			
 			initializeArmorStand();
 		}
@@ -524,7 +552,10 @@ public class PrisonUtilsMineBombsTasks
 				if ( tagName.contains( "{name}" ) ) {
 					tagName = tagName.replace( "{name}", bomb.getName() );
 				}
-				armorStand.setCustomName( tagName );
+				this.tagName = Text.convertToAmpColorCodes( tagName );
+				
+				//updateArmorStandCustomName();
+				armorStand.setCustomName( this.tagName );
 				armorStand.setCustomNameVisible(true);
 			}
 			else {
@@ -545,6 +576,18 @@ public class PrisonUtilsMineBombsTasks
 				armorStand.setGravity( bomb.isGravity() );
 			}
 		}
+
+		private void updateArmorStandCustomName()
+		{
+			if ( isDyanmicTag ) {
+			
+				double countdown = (terminateOnZeroTicks / 20.0d);
+				String tagName = this.tagName.replace( "{countdown}", dFmt.format( countdown) );
+				
+				armorStand.setCustomName( tagName );
+			}
+		}
+
 
 		@Override
 		public void run()
@@ -580,6 +623,8 @@ public class PrisonUtilsMineBombsTasks
 				
 				this.cancel();
 			}
+			
+			updateArmorStandCustomName();
 			
 		}
 

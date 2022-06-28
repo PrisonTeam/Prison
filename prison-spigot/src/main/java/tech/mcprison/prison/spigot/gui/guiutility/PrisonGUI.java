@@ -3,9 +3,10 @@ package tech.mcprison.prison.spigot.gui.guiutility;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.util.Text;
 
 /**
  * @author GABRYCA
@@ -25,7 +26,7 @@ public class PrisonGUI extends SpigotGUIComponents{
      * */
     public PrisonGUI(Player p, int size, String title){
         this.p = p;
-        this.inv = Bukkit.createInventory(null, size, SpigotPrison.format(title));
+        this.inv = Bukkit.createInventory(null, size, Text.translateAmpColorCodes(title));
     }
 
     /**
@@ -54,7 +55,7 @@ public class PrisonGUI extends SpigotGUIComponents{
      * @param title - Inventory title.
      * */
     public void createInventory(Player owner, int size, String title){
-        this.inv = Bukkit.createInventory(owner, size, SpigotPrison.format(title));
+        this.inv = Bukkit.createInventory(owner, size, Text.translateAmpColorCodes(title));
     }
 
     /**

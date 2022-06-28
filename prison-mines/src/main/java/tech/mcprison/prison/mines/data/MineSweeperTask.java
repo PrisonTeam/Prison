@@ -18,7 +18,7 @@ public class MineSweeperTask
 		this.mine.runMineSweeperTask();
 		
 		if ( this.callbackAsync != null ) {
-			this.mine.submitAsyncTask( callbackAsync );
+			this.mine.submitAsyncTask( callbackAsync, 0 );
 		}
 		
 

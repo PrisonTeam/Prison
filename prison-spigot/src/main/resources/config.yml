@@ -13,9 +13,15 @@
 #
 #
 
-# Note: This actually doesn't do anything. 
-#       May have done something with v3.1.1 or earlier.
-#debug: false
+
+
+# Enables Prison's debug mode as soon as prison starts.
+# Do not enable unless instructed to do so, since it will increase the amount of
+# information sent to the console.  To turn on/off debug mode, the following
+# command will toggle it on and off:
+#  /prison debug  
+debug: false
+
 
 # Upon server startup prison will check to see if a newer version has been released.
 check-updates: true
@@ -65,7 +71,9 @@ prison-gui-enabled: true
 
 # NEW: Enable or disable the SellAll command and sub-commands
 # New feature so setting to false since it will override other shop plugins.
-sellall: true
+#sellall: true
+# Note: The settings for sellall module has been moved to the modules.yml file.
+
 
 
 # NEW: Enable backpacks integrated within prison.
@@ -211,12 +219,13 @@ prison-mines:
 delayedPrisonStartup:
   enabled: false
   cooldown-secs: 5
-  max-attempts: 6
+  max-attempts: 12
   inspect-vault: true
   triggers:
     vault: true
     vault-economy-name: Economy_CMI
 
+# CMI Economy:   vault-economy-name: Economy_CMI
 # EssentialsX: <= v2.18.x    vault-economy-name: Economy_Essentials
 # EssentialsX: >= v2.19.x    vault-economy-name: VaultEconomyProvider
 

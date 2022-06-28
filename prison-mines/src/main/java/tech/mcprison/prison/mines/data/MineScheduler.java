@@ -20,10 +20,11 @@ import tech.mcprison.prison.mines.features.MineBlockEvent;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.mines.tasks.MinePagedResetAsyncTask;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.tasks.PrisonCommandTask;
-import tech.mcprison.prison.tasks.PrisonCommandTask.CustomPlaceholders;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData.CustomPlaceholders;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
+import tech.mcprison.prison.tasks.PrisonCommandTasks;
 import tech.mcprison.prison.util.Location;
 
 public abstract class MineScheduler
@@ -98,6 +99,7 @@ public abstract class MineScheduler
 	
 	public enum MineResetScheduleType {
 		NORMAL,
+		ZERO_BLOCK_RESET,
 		FORCED;
 	}
 	
@@ -268,8 +270,9 @@ public abstract class MineScheduler
 			targetResetTime = 60 * 60 * 4; // one hour * 4
 		}
 		
+		// Should always NOW use async reset action for this workflow.
 		// Determine if the sync or async reset action should be used for this workflow.
-		MineJobAction resetAction = isUsePagingOnReset() ? MineJobAction.RESET_ASYNC : MineJobAction.RESET_SYNC;
+		MineJobAction resetAction = MineJobAction.RESET_ASYNC; // : MineJobAction.RESET_SYNC;
 		
 		if ( includeMessages ) {
 			// Need to ensure that the reset warning times are sorted in ascending order:
@@ -330,14 +333,17 @@ public abstract class MineScheduler
 		// appears like it will never load?
 		//checkWorld();
 		
-		if ( getResetTime() <= 0 ) {
+		MineResetScheduleType resetScheduleType = getCurrentJob() == null ? 
+						MineResetScheduleType.NORMAL : 
+						getCurrentJob().getResetType();
+		
+		boolean forced = resetScheduleType == MineResetScheduleType.FORCED;
+		
+		if ( getResetTime() <= 0 && !forced ) {
 			
 			submitNextAction();
 			return;
 		}
-		
-		boolean forced = getCurrentJob() != null && 
-							getCurrentJob().getResetType() == MineResetScheduleType.FORCED;
 		
     	boolean skip = !forced && 
     			isSkipResetEnabled() && 
@@ -373,13 +379,15 @@ public abstract class MineScheduler
 
 				break;
 
+			case RESET_SYNC:
 			case RESET_ASYNC:
 				if ( !skip ) {
 					
 					List<MineResetActions> resetActions = getCurrentJob().getResetActions();
 
 					MinePagedResetAsyncTask resetTask = 
-								new MinePagedResetAsyncTask( (Mine) this, MineResetType.paged, resetActions );
+								new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal, resetActions, resetScheduleType );
+					
 		    		resetTask.submitTaskAsync();
 		    		
 //					resetAsynchonously();
@@ -389,23 +397,23 @@ public abstract class MineScheduler
 				
 				break;
 				
-			case RESET_SYNC:
-				// synchronous reset.  Will be phased out in the future?
-				if ( !skip ) {
-
-					List<MineResetActions> resetActions = getCurrentJob().getResetActions();
-					
-					MinePagedResetAsyncTask resetTask = 
-							new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal, resetActions );
-					
-					resetTask.submitTaskAsync();
-					
-//					resetSynchonously();
-				} else {
-					incrementSkipResetBypassCount();
-				}
-				
-				break;
+//			case RESET_SYNC:
+//				// synchronous reset.  Will be phased out in the future?
+//				if ( !skip ) {
+//
+//					List<MineResetActions> resetActions = getCurrentJob().getResetActions();
+//					
+//					MinePagedResetAsyncTask resetTask = 
+//							new MinePagedResetAsyncTask( (Mine) this, MineResetType.normal, resetActions );
+//					
+//					resetTask.submitTaskAsync();
+//					
+////					resetSynchonously();
+//				} else {
+//					incrementSkipResetBypassCount();
+//				}
+//				
+//				break;
 				
 			default:
 				break;
@@ -419,7 +427,10 @@ public abstract class MineScheduler
 //		}
 //		
 		
-		submitNextAction();
+		if ( getResetTime() > 0 ) {
+			
+			submitNextAction();
+		}
 	}
 
 	/**
@@ -539,14 +550,22 @@ public abstract class MineScheduler
 		
 		// Only one block is processed here:
 		if ( getBlockEvents().size() > 0 ) {
+			
+			List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
+			
 			Random random = new Random();
 			
+			int row = 0;
 			for ( MineBlockEvent blockEvent : getBlockEvents() ) {
 				double chance = random.nextDouble() * 100;
 				
 				processBlockEventDetails( player, prisonBlock,
-						targetBlock, eventType, chance, blockEvent, triggered );
+						targetBlock, eventType, chance, blockEvent, triggered,
+						cmdTasks, ++row );
 			}
+			
+			
+			PrisonCommandTasks.submitTasks( player, cmdTasks );
 		}
 	}
 
@@ -582,7 +601,8 @@ public abstract class MineScheduler
 	private void processBlockEventDetails( Player player, PrisonBlock prisonBlock,
 							MineTargetPrisonBlock targetBlock, BlockEventType eventType, 
 				double chance, 
-					MineBlockEvent blockEvent, String triggered )
+					MineBlockEvent blockEvent, String triggered, 
+					List<PrisonCommandTaskData> cmdTasks, int row )
 	{
 
 		boolean fireEvent = blockEvent.isFireEvent( chance, eventType, 
@@ -602,7 +622,10 @@ public abstract class MineScheduler
 				
 				PrisonBlockStatusData originalBlock = targetBlock.getPrisonBlock();
 				
-				PrisonCommandTask cmdTask = new PrisonCommandTask( "BlockEvent" );
+				String debugInfo = "BlockEvent: " + getName();
+				PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( debugInfo, blockEvent.getCommand(), row );
+				cmdTask.setTaskMode( blockEvent.getTaskMode() );
+				
 				
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.blockName, originalBlock.getBlockName() );
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.mineName, getName() );
@@ -650,8 +673,10 @@ public abstract class MineScheduler
 				cmdTask.addCustomPlaceholder( CustomPlaceholders.eventTriggered, triggered );
 				
 				
+				cmdTasks.add( cmdTask );
 				
-				cmdTask.submitCommandTask( player, blockEvent.getCommand(), blockEvent.getTaskMode() );
+				
+//				cmdTask.submitCommandTask( player, blockEvent.getCommand(), blockEvent.getTaskMode() );
 					
 //				{
 //					
@@ -714,18 +739,22 @@ public abstract class MineScheduler
 		
 		// Reset if the mine runs out of blocks:
 		
-		
-		if ( !isVirtual() && (
-				getRemainingBlockCount() <= 0 && !isZeroBlockResetDisabled() || 
-				getResetThresholdPercent() > 0 && 
-				getRemainingBlockCount() < (getBounds().getTotalBlockCount() * 
-												getResetThresholdPercent() / 100.0d)
-				)) {
+		if ( !isVirtual() && getMineStateMutex().isMinable() ) {
 			
-			// submit a manual reset since the mine is empty:
-			manualReset( MineResetScheduleType.NORMAL, getZeroBlockResetDelaySec() );
-			reset = true;
+			if (
+					getRemainingBlockCount() <= 0 && !isZeroBlockResetDisabled() || 
+					getResetThresholdPercent() > 0 && 
+					getRemainingBlockCount() < (getBounds().getTotalBlockCount() * 
+							getResetThresholdPercent() / 100.0d)
+					) {
+				
+				// submit a manual reset since the mine is empty:
+				manualReset( MineResetScheduleType.ZERO_BLOCK_RESET, getZeroBlockResetDelaySec() );
+				reset = true;
+			}
+			
 		}
+		
 		return reset;
 	}
 	
@@ -734,9 +763,9 @@ public abstract class MineScheduler
 	 * triggered by a player.
 	 * 
 	 */
-	public void manualReset() {
-		manualReset( MineResetScheduleType.FORCED );
-	}
+//	public void manualReset() {
+//		manualReset( MineResetScheduleType.FORCED );
+//	}
 	public void manualReset( MineResetScheduleType resetType ) {
 		
 		if ( !isVirtual() ) {
@@ -769,10 +798,54 @@ public abstract class MineScheduler
 	private void manualReset( MineResetScheduleType resetType, double delayActionSec, 
 			List<MineResetActions> resetActions ) {
 		
-		if ( isVirtual() ) {
-			// Nope... nothing to reset... 
+		if ( isVirtual() || !getMineStateMutex().isMinable() ) {
+			// Nope... nothing to reset...  or it's locked out already with a reset
 			return;
 		}
+		
+		synchronized ( getMineStateMutex() ) {
+
+			// The synchronized block will halt threads and will wait.  
+			// So there is a chance that more than one reset will make it in to this
+			// block, so need to check the mutex state again and exist if the mine
+			// is not minable, since that indicates an earlier thread won the 
+			// reset:
+			
+			if ( !getMineStateMutex().isMinable() ) {
+				// exit since another reset has been started. 
+				return;
+			}
+
+			
+			getMineStateMutex().setMineStateResetStart();
+
+			
+//			// Lock the mine's mutex if it's still minable.  Otherwise skip it since the
+//			// state has been incremented by one already.
+//			if ( getMineStateMutex().isMinable() ) {
+//				
+//				getMineStateMutex().setMineStateResetStart();
+//			}
+//			else if ( getMineStateMutex().getMineStateSn() > 1 ) {
+//				
+//				// synchronizing on the mutex this will allow only one thread to be
+//				// processed at a time, which will weed out extra threads from being 
+//				// wrongfully shutdown. Based upon this "technique" the last thread to
+//				// be paused by this synchronized block will be the one that will actually
+//				// initiate the reset.
+//				if ( getMineStateMutex().getMineStateSn() > 1 ) {
+//					
+//					// This may be a double submission sinc the mineStateSn should only be 1 at this 
+//					// point.  So release this lock and shutdown this duplicate submission.
+//					getMineStateMutex().setMineStateResetFinished();
+//					
+//					// duplicate reset request, so exit...
+//					return;
+//				}
+//				
+//			}
+		}
+		
 		
 		// cancel existing job:
 		if ( getTaskId() != null ) {
@@ -782,8 +855,7 @@ public abstract class MineScheduler
 		// Clear jobStack and set currentJob to run the RESET with zero delay:
 		getJobStack().clear();
 		
-		MineJobAction action = isUsePagingOnReset() ? 
-				MineJobAction.RESET_ASYNC : MineJobAction.RESET_SYNC;
+		MineJobAction action = MineJobAction.RESET_ASYNC; // : MineJobAction.RESET_SYNC;
 		
 		MineJob mineJob = new MineJob( action, delayActionSec, 0, resetType );
 		mineJob.setResetType( resetType );

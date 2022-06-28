@@ -4,8 +4,6 @@ import org.bukkit.entity.Player;
 
 import com.cryptomorin.xseries.XMaterial;
 
-import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools.GUIMenuPageData;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
@@ -49,16 +47,25 @@ public class SellAllDelayGUI extends SpigotGUIComponents {
 //        int dimension = 45;
         PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), "&3SellAll -> Delay");
 
-        ButtonLore changeDecreaseValueLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_decrease), null);
-        ButtonLore confirmButtonLore = new ButtonLore(createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_left_to_confirm), messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_to_cancel)), createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_delay) + " " + val + "s"));
-        ButtonLore changeIncreaseValueLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_increase), null);
+        ButtonLore changeDecreaseValueLore = new ButtonLore( guiClickToDecreaseMsg(), null);
+//        ButtonLore changeDecreaseValueLore = new ButtonLore(
+//        		messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_decrease), null);
+        ButtonLore confirmButtonLore = new ButtonLore(createLore(
+        		guiLeftClickToConfirmMsg(), 
+        		guiRightClickToCancelMsg() ), 
+        		
+        		createLore( guiDelayMsg( val ) ));
+        
+        ButtonLore changeIncreaseValueLore = new ButtonLore( guiClickToIncreaseMsg(), null);
+//        ButtonLore changeIncreaseValueLore = new ButtonLore(
+//        		messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_increase), null);
 
         XMaterial decreaseMat = XMaterial.REDSTONE_BLOCK;
         XMaterial increaseMat = XMaterial.EMERALD_BLOCK;
 
         // Decrease button
-        gui.addButton(new Button(1, decreaseMat, changeDecreaseValueLore, SpigotPrison.format("&3Delay " + + val + " - 1" )));
-        gui.addButton(new Button(10, decreaseMat, 10, changeDecreaseValueLore, SpigotPrison.format("&3Delay " + val + " - 10")));
+        gui.addButton(new Button(1, decreaseMat, changeDecreaseValueLore, "&3Delay " + + val + " - 1" ));
+        gui.addButton(new Button(10, decreaseMat, 10, changeDecreaseValueLore, "&3Delay " + val + " - 10" ));
         gui.addButton(new Button(19, decreaseMat, changeDecreaseValueLore, "&3Delay " + val + " - 100"));
         gui.addButton(new Button(28, decreaseMat, changeDecreaseValueLore, "&3Delay " + val + " - 1000"));
         gui.addButton(new Button(37, decreaseMat, changeDecreaseValueLore, "&3Delay " + val + " - 10000"));

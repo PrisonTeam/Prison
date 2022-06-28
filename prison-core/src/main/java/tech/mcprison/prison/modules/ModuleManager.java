@@ -18,14 +18,15 @@
 
 package tech.mcprison.prison.modules;
 
-import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.output.Output;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.modules.ModuleStatus.Status;
+import tech.mcprison.prison.output.Output;
 
 /**
  * Keeps track of each module and each module's status.
@@ -206,4 +207,17 @@ public class ModuleManager {
 
     }
 
+	public boolean isModuleActive(String moduleName) {
+		boolean results = false;
+		
+		if ( moduleName != null ) {
+			
+			Module module = getModule(moduleName).orElse(null);
+			if ( module != null ) {
+				results = module.getStatus().getStatus() == Status.ENABLED;
+			}
+		}
+		
+		return results;
+	}
 }

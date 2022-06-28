@@ -17,6 +17,7 @@
 
 package tech.mcprison.prison.ranks.data;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,8 +38,10 @@ import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
+import tech.mcprison.prison.util.Text;
 
 /**
  * Represents a player with ranks.
@@ -48,6 +51,12 @@ import tech.mcprison.prison.util.Location;
 public class RankPlayer 
 			implements Player {
 
+	public static final long DELAY_THREE_SECONDS = 20 * 3; // 3 seconds in ticks
+	
+	public static final long RANK_SCORE_COOLDOWN_MS = 1000 * 30; // 30 seconds
+	public static final double RANK_SCORE_BALANCE_THRESHOLD_PERCENT = 0.05d; // 5%
+	
+		
     /*
      * Fields & Constants
      */
@@ -71,12 +80,32 @@ public class RankPlayer
     
     // For tops processing.  Need current balance.
     private TreeMap<String, RankPlayerBalance> playerBalances;
-    //x
+
+
+    
+    private EconomyIntegration economy = null;
+    private double unsavedBalance = 0;
+    private Object unsavedBalanceLock = new Object();
+    private int ubTaskId = 0;
+    
+    private HashMap<String, EconomyIntegration> economyCustom = new HashMap<>();;
     
     
-    /*
-     * Document-related
+    
+    /**
+     * <p>The 'rankScore' fields are used to calculate the rankScore, of which
+     * the 'rankScoreBalance' is used to track the player's balance when these
+     * values were last calculated.  It is used to determine if there should 
+     * be a recalculation of the score.
+     * </p>
      */
+    private double rankScoreBalance = 0;
+    private String rankScoreCurrency = null;
+    private double rankScoreBalanceThreshold = 0;
+	private double rankScore = 0;
+	private double rankScorePenalty = 0;
+	private long rankScoreCooldown = 0L;
+    
 
     public RankPlayer() {
     	super();
@@ -335,6 +364,11 @@ public class RankPlayer
         }
         
         if ( ladderRanks.containsKey( rank.getLadder() ) ) {
+        	
+        	// Remove the player from the old rank:
+        	PlayerRank oldRank = ladderRanks.get( rank.getLadder() );
+        	oldRank.getRank().getPlayers().remove( this );
+        	
         	ladderRanks.remove( rank.getLadder() );
         }
 
@@ -343,6 +377,10 @@ public class RankPlayer
         PlayerRank pRank = new PlayerRank( rank );
         
         ladderRanks.put( rank.getLadder(), pRank );
+        
+        // Add the player to the new rank:
+        rank.getPlayers().add( this );
+        
         
         // Calculate and apply the rank multipliers:
         recalculateRankMultipliers();
@@ -529,6 +567,36 @@ public class RankPlayer
 //	public void setLadderRanks( TreeMap<RankLadder, PlayerRank> ladderRanks ) {
 //		this.ladderRanks = ladderRanks;
 //	}
+	
+	private RankLadder getRankLadder( String ladderName ) {
+		RankLadder results = null;
+		
+		for ( RankLadder rLadder : getLadderRanks().keySet() ) {
+			if ( rLadder.getName().equalsIgnoreCase( ladderName ) ) {
+				results = rLadder;
+				break;
+			}
+		}
+		
+		return results;
+	}
+	public PlayerRank getPlayerRank( String ladderName ) {
+		PlayerRank results = null;
+		
+		RankLadder rLadder = getRankLadder( ladderName );
+		
+		if ( rLadder != null ) {
+			results = getLadderRanks().get( rLadder );
+		}
+		
+		return results;
+	}
+	public PlayerRank getPlayerRankDefault() {
+		return getPlayerRank( "default" );
+	}
+	public PlayerRank getPlayerRankPrestiges() {
+		return getPlayerRank( "prestiges" );
+	}
     
     public HashMap<String, Integer> getRanksRefs(){
 		return ranksRefs ;
@@ -708,17 +776,31 @@ public class RankPlayer
 	 */
     @Override 
     public boolean isPlayer() {
-    	return false;
+    	Player player = getPlayer();
+    	return (player != null ? player.isPlayer() : false );
     }
 	
 
 	@Override
 	public void updateInventory() {
+		Player player = getPlayer();
+		if ( player != null ) {
+			
+			player.updateInventory();
+		}
 	}
 
 	@Override
 	public Inventory getInventory() {
-		return null;
+		Inventory results = null;
+		
+		Player player = getPlayer();
+		if ( player != null ) {
+			
+			results = player.getInventory();
+		}
+		
+		return results;
 	}
 
 //	@Override
@@ -876,42 +958,97 @@ public class RankPlayer
 	public double getBalance() {
 		double results = 0;
 		
-		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+		EconomyIntegration economy = getEconomy();
 		
 		if ( economy != null ) {
 			
 			results = economy.getBalance( this );
+			
+			synchronized ( unsavedBalanceLock )
+			{
+				results += getBalanceUnsaved();
+			}
+			
 			setCachedRankPlayerBalance( null, results );
 		}
 		
 		return results;
 	}
 	
+	public double getBalanceUnsaved() {
+		return unsavedBalance;
+	}
+	
 	public void addBalance( double amount ) {
-		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
+		
+		synchronized ( unsavedBalanceLock )
+		{
+			unsavedBalance += amount;
+			
+			if ( ubTaskId == 0 ) {
+				
+				ubTaskId = PrisonAPI.getScheduler().runTaskLaterAsync( 
+						() -> {
+							double tempBalance = 0;
+							synchronized ( unsavedBalanceLock )
+							{
+								tempBalance = unsavedBalance;
 
+								addBalanceEconomy( tempBalance );
+								
+								unsavedBalance = 0;
+								ubTaskId = 0;
+							}
+						}, DELAY_THREE_SECONDS );
+			}
+		}
+		
+	
+	}
+	
+	private boolean addBalanceEconomy( double amount ) {
+		boolean results = false;
+		
+		EconomyIntegration economy = getEconomy();
+		
 		if ( economy != null ) {
-			economy.addBalance( this, amount );
+			results = economy.addBalance( this, amount );
 			addCachedRankPlayerBalance( null, amount );
 		}
+		return results;
 	}
 	
 	public void removeBalance( double amount ) {
-		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
 		
-		if ( economy != null ) {
-			economy.removeBalance( this, amount );
-			addCachedRankPlayerBalance( null, -1 * amount );
-		}
+		double targetAmount = -1 * amount;
+		addBalance( targetAmount );
+		addCachedRankPlayerBalance( null, targetAmount );
+		
+//		EconomyIntegration economy = getEconomy();
+//		
+//		if ( economy != null ) {
+//			economy.removeBalance( this, amount );
+//			addCachedRankPlayerBalance( null, -1 * amount );
+//		}
 	}
 	
 	public void setBalance( double amount ) {
-		EconomyIntegration economy = PrisonAPI.getIntegrationManager().getEconomy();
 		
-		if ( economy != null ) {
-			economy.setBalance( this, amount );
-			setCachedRankPlayerBalance( null, amount );
-		}
+		// First subtract current balance:
+		double targetAmount = -1 * getBalance();
+		
+		// add current amount which will result in the correct "ajustment":
+		targetAmount += amount;
+		
+		addBalance( targetAmount );
+		addCachedRankPlayerBalance( null, targetAmount );
+		
+//		EconomyIntegration economy = getEconomy();
+//		
+//		if ( economy != null ) {
+//			economy.setBalance( this, amount );
+//			setCachedRankPlayerBalance( null, amount );
+//		}
 	}
 	
 	
@@ -958,6 +1095,73 @@ public class RankPlayer
 		}
 	}
 	
+	
+	public boolean addBalanceBypassCache( double amount ) {
+		boolean results = false;
+		
+		synchronized ( unsavedBalanceLock ) {
+			
+			results = addBalanceEconomy( amount );
+		}
+		
+		return results;
+	}
+	
+	public boolean addBalanceBypassCache( String currency, double amount ) {
+		boolean results = false;
+		
+		if ( currency == null || currency.trim().isEmpty() || "default".equalsIgnoreCase( currency ) ) {
+			
+			results = addBalanceBypassCache( amount );
+		}
+		else {
+			EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+					.getEconomyForCurrency(currency );
+			
+			if ( currencyEcon != null ) {
+				
+				synchronized ( unsavedBalanceLock ) {
+					results = currencyEcon.addBalance( this, amount, currency );
+				}
+				addCachedRankPlayerBalance( currency, amount );
+			}
+		}
+		
+		return results;
+	}
+	
+	public boolean removeBalanceBypassCache( double amount ) {
+		boolean results = false;
+		
+		double targetAmount = -1 * amount;
+		results = addBalanceBypassCache( targetAmount );
+		addCachedRankPlayerBalance( null, targetAmount );
+		
+		return results;
+	}
+
+	public boolean removeBalanceBypassCache( String currency, double amount ) {
+		boolean results = false;
+		
+		if ( currency == null || currency.trim().isEmpty() ) {
+			// No currency specified, so use the default currency:
+			results = removeBalanceBypassCache( amount );
+		}
+		else {
+			EconomyCurrencyIntegration currencyEcon = PrisonAPI.getIntegrationManager()
+					.getEconomyForCurrency(currency );
+			
+			if ( currencyEcon != null ) {
+				
+				synchronized ( unsavedBalanceLock ) {
+					results = currencyEcon.removeBalance( this, amount, currency );
+				}
+				addCachedRankPlayerBalance( currency, -1 * amount );
+			}
+		}
+		return results;
+	}
+	
 	public void removeBalance( String currency, double amount ) {
 		
 		if ( currency == null || currency.trim().isEmpty() ) {
@@ -969,7 +1173,10 @@ public class RankPlayer
 					.getEconomyForCurrency(currency );
 			
 			if ( currencyEcon != null ) {
-				currencyEcon.removeBalance( this, amount, currency );
+				
+				synchronized ( unsavedBalanceLock ) {
+					currencyEcon.removeBalance( this, amount, currency );
+				}
 				addCachedRankPlayerBalance( currency, -1 * amount );
 			}
 		}
@@ -991,6 +1198,19 @@ public class RankPlayer
 				setCachedRankPlayerBalance( currency, amount );
 			}
 		}
+	}
+	
+	/**
+	 * addBalance: original t3: 2.19 1.34 1.37 1.37 1.24 0.81 1.49 2.05 1.17 0.98 1.0 0.62
+	 * addBalance: opt Econ-localVar t3: 3.46 1.21 0.88 0.84 1.48 1.3 0.6 1.09 1.62 0.72 0.64 0.67 1.02 0.63 0.97 1.8
+	 * addBalance: cached t3: 0.0322 0.0011 0.0016 0.0012 0.0111 0.0012 0.0012 0.0018 0.0011 0.0102 0.0010 0.0013 0.0015 0.0011 
+	 * @return
+	 */
+	private EconomyIntegration getEconomy() {
+		if ( economy == null ) {
+			economy = PrisonAPI.getIntegrationManager().getEconomy();
+		}
+		return economy;
 	}
 
 	@Override
@@ -1023,5 +1243,234 @@ public class RankPlayer
 	@Override
 	public boolean isSneaking() {
 		return false;
+	}
+	
+	/**
+	 * <p>Calculates the rankScore for the player's rank on the default ladder.
+	 * The calculation is based upon how much the next rank costs.
+	 * </p>
+	 * 
+	 */
+	private void calculateRankScore() {
+		PlayerRank rankCurrent = getPlayerRankDefault();
+
+		Rank nRank = rankCurrent.getRank().getRankNext();
+		
+		// If player does not have a next rank, then try to use the next prestige rank:
+		if ( nRank == null ) {
+			PlayerRank prestigeRankCurrent = getPlayerRankPrestiges();
+			
+			// if they don't have a current prestige rank, then use the lowest rank:
+			if ( prestigeRankCurrent == null ) {
+				RankLadder rLadder = getRankLadder( RankLadder.PRESTIGES );
+				nRank = rLadder == null ? null : rLadder.getLowestRank().orElse(null);
+			}
+			
+			if ( prestigeRankCurrent != null ) {
+				nRank = prestigeRankCurrent.getRank() == null ? 
+						null : prestigeRankCurrent.getRank().getRankNext();
+			}
+			
+		}
+		
+		String rankNextCurrency = nRank == null ? "" : nRank.getCurrency();
+		
+		PlayerRank pRankNext = rankCurrent.getTargetPlayerRankForPlayer( this, nRank );
+		
+		double cost = pRankNext == null ? 0d : pRankNext.getRankCost();
+		double balance = getBalance( rankNextCurrency );
+		
+		double score = balance;
+		double penalty = 0d;
+		
+		// Do not apply the penalty if cost is zero:
+		if ( cost > 0 && isHesitancyDelayPenaltyEnabled() ) {
+			score = balance > cost ? cost : score;
+			
+			double excess = balance > cost ? balance - cost : 0d;
+			penalty = excess * 0.2d;
+		}
+		
+		score = (score - penalty);
+		
+		if ( cost > 0 ) {
+			score /= cost * 100.0d;
+		}
+		
+		double balanceThreshold = cost * RANK_SCORE_BALANCE_THRESHOLD_PERCENT;
+		
+		setRankScoreBalance( balance );
+		setRankScoreCurrency( rankNextCurrency );
+		setRankScoreBalanceThreshold( balanceThreshold );
+		setRankScore( score );
+		setRankScorePenalty( penalty );
+		
+		setRankScoreCooldown( System.currentTimeMillis() + RANK_SCORE_COOLDOWN_MS );
+	}
+
+	private void checkRecalculateRankScore() {
+		
+		if ( getRankScoreCooldown() == 0L || 
+			System.currentTimeMillis() > getRankScoreCooldown() 
+				) {
+			
+			double currentBalance = getBalance( getRankScoreCurrency() );
+			
+			if ( getRankScoreBalance() != 0 && (
+					currentBalance == getRankScoreBalance() ||
+					currentBalance >= (getRankScoreBalance() - getRankScoreBalanceThreshold()) ||
+					currentBalance <= (getRankScoreBalance() + getRankScoreBalanceThreshold() ) )) {
+				
+				// increment the cooldown since the balance is either the same, or still
+				// within the threshold range:
+				setRankScoreCooldown( System.currentTimeMillis() + RANK_SCORE_COOLDOWN_MS );
+			}
+			else {
+				calculateRankScore();
+			}
+		}
+	}
+	
+	public static String printRankScoreLine1Header() {
+		String header = String.format(
+				"Rank  %-16s %-9s  %-6s %-9s %-9s %-9s",
+					"Player",
+					"Prestiges",
+					"Rank",
+					"Balance",
+					"Rank-Score",
+					"Penalty"
+						
+				);
+		return header;
+	}
+	
+	public String printRankScoreLine1( int rankPostion ) {
+		
+		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+		
+		PlayerRank prestRank = getPlayerRankPrestiges();
+		PlayerRank defRank = getPlayerRankDefault();
+		
+		String prestRankTag = prestRank == null ? "---" : prestRank.getRank().getTag();
+		String defRankTag = defRank == null ? "---" : defRank.getRank().getTag();
+		
+		String prestRankTagNc = Text.stripColor(prestRankTag);
+		String defRankTagNc = Text.stripColor(defRankTag);
+		
+		String balanceStr = PlaceholdersUtil.formattedKmbtSISize( getBalance(), dFmt, " " );
+		String sPenaltyStr = PlaceholdersUtil.formattedKmbtSISize( getRankScorePenalty(), dFmt, " " );
+		
+		String message = String.format(
+				" %-3d  %-18s %-7s %-7s %9s %9s %9s",
+					(rankPostion > 0 ? rankPostion : ""),
+					getName(),
+					prestRankTagNc,
+					defRankTagNc,
+					balanceStr,
+					dFmt.format( getRankScore() ),
+					sPenaltyStr
+				);
+		
+		message = message
+					.replace(prestRankTagNc, prestRankTag + "&r")
+					.replace(defRankTagNc, defRankTag + "&r");
+
+		return message;
+	}
+	
+	public static String printRankScoreLine2Header() {
+		String header = String.format(
+				"Rank %s %s %-15s %9s",
+				"Ranks",
+				"Rank-Score",
+				"Player",
+				"Balance"
+				
+				);
+		return header;
+	}
+	
+	public String printRankScoreLine2( int rankPostion ) {
+		
+		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+		
+		PlayerRank prestRank = getPlayerRankPrestiges();
+		PlayerRank defRank = getPlayerRankDefault();
+		
+		String prestRankTag = prestRank == null ? "---" : prestRank.getRank().getTag();
+		String defRankTag = defRank == null ? "---" : defRank.getRank().getTag();
+		
+		String prestRankTagNc = Text.stripColor(prestRankTag);
+		String defRankTagNc = Text.stripColor(defRankTag);
+		
+		String balanceStr = PlaceholdersUtil.formattedKmbtSISize( getBalance(), dFmt, " " );
+//		String sPenaltyStr = PlaceholdersUtil.formattedKmbtSISize( getRankScorePenalty(), dFmt, " " );
+		
+		String ranks = prestRankTagNc + defRankTagNc;
+		String message = String.format(
+				" %-3d %-9s %6s %-17s %9s",
+				(rankPostion > 0 ? rankPostion : ""),
+				ranks,
+				dFmt.format( getRankScore() ),
+				getName(),
+				balanceStr
+				);
+		
+		message = message
+				.replace(prestRankTagNc, prestRankTag + "&r")
+				.replace(defRankTagNc, defRankTag + "&r");
+		
+		return message;
+	}
+	
+	public boolean isHesitancyDelayPenaltyEnabled() {
+		return Prison.get().getPlatform()
+				.getConfigBooleanTrue( "top-stats.rank-players.hesitancy-delay-penalty" );
+	}
+	
+	public double getRankScoreBalance() {
+		return rankScoreBalance;
+	}
+	public void setRankScoreBalance( double rankScoreBalance ) {
+		this.rankScoreBalance = rankScoreBalance;
+	}
+
+	public String getRankScoreCurrency() {
+		return rankScoreCurrency;
+	}
+	public void setRankScoreCurrency( String rankScoreCurrency ) {
+		this.rankScoreCurrency = rankScoreCurrency;
+	}
+
+	public double getRankScoreBalanceThreshold() {
+		return rankScoreBalanceThreshold;
+	}
+	public void setRankScoreBalanceThreshold( double rankScoreBalanceThreshold ) {
+		this.rankScoreBalanceThreshold = rankScoreBalanceThreshold;
+	}
+	public double getRankScore() {
+		
+		// check if the rankScore needs to be reset:
+		checkRecalculateRankScore();
+		
+		return rankScore;
+	}
+	public void setRankScore( double rankScore ) {
+		this.rankScore = rankScore;
+	}
+
+	public double getRankScorePenalty() {
+		return rankScorePenalty;
+	}
+	public void setRankScorePenalty( double rankScorePenalty ) {
+		this.rankScorePenalty = rankScorePenalty;
+	}
+
+	public long getRankScoreCooldown() {
+		return rankScoreCooldown;
+	}
+	public void setRankScoreCooldown( long rankScoreCooldown ) {
+		this.rankScoreCooldown = rankScoreCooldown;
 	}
 }

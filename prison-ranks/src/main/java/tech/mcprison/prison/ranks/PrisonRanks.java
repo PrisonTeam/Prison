@@ -43,7 +43,7 @@ import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
-import tech.mcprison.prison.ranks.managers.RankManager.RanksByLadderOptions;
+import tech.mcprison.prison.ranks.tasks.RanksStartupPlayerValidationsAsyncTask;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Database;
 
@@ -225,10 +225,6 @@ public class PrisonRanks
         Output.get().logInfo( "Ranks: Finished registering Rank Commands." );
         
         
-        // Check all players to see if any need to join:
-        checkAllPlayersForJoin();
-        
-        Output.get().logInfo( "Ranks: Finished First Join Checks." );
         
         
         // Load up all else
@@ -238,17 +234,33 @@ public class PrisonRanks
         ConversionManager.getInstance().registerConversionAgent(new RankConversionAgent());
 
 
-        logStartupMessage( prisonRanksStatusLoadedRanksMsg( getRankCount() ) );
-        
         logStartupMessage( prisonRanksStatusLoadedLaddersMsg( getladderCount() ) );
+        
+		int totalRanks = getRankCount();
+		int defaultRanks = getDefaultLadderRankCount();
+		int prestigesRanks = getPrestigesLadderRankCount();
+		int otherRanks = totalRanks - defaultRanks - prestigesRanks;
+
+        logStartupMessage( prisonRanksStatusLoadedRanksMsg( 
+        		totalRanks, defaultRanks, prestigesRanks, otherRanks ) );
         
         logStartupMessage( prisonRanksStatusLoadedPlayersMsg( getPlayersCount() ) );
         
 
         // Display all Ranks in each ladder:
-        PrisonRanks.getInstance().getRankManager().ranksByLadders( RanksByLadderOptions.allRanks );
+        List<String> rankDetails = PrisonRanks.getInstance().getRankManager().ranksByLadders();
+        for (String msg : rankDetails) {
+			Output.get().logInfo(msg);
+		}
 //    	boolean includeAll = true;
 //    	PrisonRanks.getInstance().getRankManager().ranksByLadders( includeAll );
+        
+        
+        
+        // Check all players to see if any need to join:
+        RanksStartupPlayerValidationsAsyncTask.submitTaskSync( this );
+//        checkAllPlayersForJoin();
+    
         
     }
 
@@ -322,6 +334,8 @@ public class PrisonRanks
         		Output.get().logInfo( prisonRankAddedAndFixedPlayers( addedPlayers, fixedPlayers ) );
         	}
         }
+        
+        Output.get().logInfo( "Ranks: Finished First Join Checks." );
 	}
 
 
@@ -451,8 +465,28 @@ public class PrisonRanks
 
     public int getRankCount() {
     	int rankCount = getRankManager() == null ||getRankManager().getRanks() == null ? 0 : 
-    			getRankManager().getRanks().size();
+    		getRankManager().getRanks().size();
     	return rankCount;
+    }
+    
+    private int getLadderRankCount( String ladderName ) {
+    	int rankCount = 0;
+    	
+    	if ( getLadderManager() != null && getLadderManager().getLadders() != null ) {
+    		RankLadder ladder = getLadderManager().getLadder( ladderName );
+    		if ( ladder != null ) {
+    			rankCount = ladder.getRanks().size();
+    		}
+    	}
+    	return rankCount;
+    }
+    
+    public int getDefaultLadderRankCount() {
+    	return getLadderRankCount( "default" );
+    }
+    
+    public int getPrestigesLadderRankCount() {
+    	return getLadderRankCount( "prestiges" );
     }
     
     public int getladderCount() {

@@ -54,6 +54,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.zip.ZipEntry;
@@ -81,6 +82,9 @@ public class LocaleManager {
     static final HashMap<String, List<String>> ALTERNATIVES = new HashMap<>();
     private static final String DEFAULT_LOCALE = "en_US";
     private static final String LOCALE_FOLDER = "lang";
+    
+    public static final String LOCALE_ERROR__CONFIG_LANG_NOT_FOUND = "local.error.configNotFound";
+    public static final String LOCALE_ERROR__FALLBACK_COUNT = "local.error.fallbackcount";
 
     static {
         // English dialects
@@ -91,24 +95,26 @@ public class LocaleManager {
         ALTERNATIVES.put("en_US", Arrays.asList("en_CA", "en_GB", "en_AU"));
 
         // Spanish dialects (not sure how accurate this is, mostly guesswork)
-        ALTERNATIVES.put("es_AR", Arrays.asList("es_UY", "es_VE", "es_MX", "es_ES"));
-        ALTERNATIVES.put("es_ES", Arrays.asList("es_MX", "es_AR", "es_UY", "es_VE"));
-        ALTERNATIVES.put("es_MX", Arrays.asList("es_ES", "es_AR", "es_UY", "es_VE"));
-        ALTERNATIVES.put("es_UY", Arrays.asList("es_AR", "es_VE", "es_MX", "es_ES"));
-        ALTERNATIVES.put("es_VE", Arrays.asList("es_AR", "es_UY", "es_MX", "es_ES"));
+        ALTERNATIVES.put("es_AR", Arrays.asList("es_UY", "es_VE", "es_MX", "es_ES", "en_US"));
+        ALTERNATIVES.put("es_ES", Arrays.asList("es_MX", "es_AR", "es_UY", "es_VE", "en_US"));
+        ALTERNATIVES.put("es_MX", Arrays.asList("es_ES", "es_AR", "es_UY", "es_VE", "en_US"));
+        ALTERNATIVES.put("es_UY", Arrays.asList("es_AR", "es_VE", "es_MX", "es_ES", "en_US"));
+        ALTERNATIVES.put("es_VE", Arrays.asList("es_AR", "es_UY", "es_MX", "es_ES", "en_US"));
 
         // French dialects
-        ALTERNATIVES.put("fr_CA", Arrays.asList("fr_FR"));
-        ALTERNATIVES.put("fr_FR", Arrays.asList("fr_CA"));
+        ALTERNATIVES.put("fr_CA", Arrays.asList("fr_FR", "en_US"));
+        ALTERNATIVES.put("fr_FR", Arrays.asList("fr_CA", "en_US"));
 
         // Norwegian dialects (not sure how accurate this is)
-        ALTERNATIVES.put("nb_NO", Arrays.asList("no_NO", "nn_NO"));
-        ALTERNATIVES.put("nn_NO", Arrays.asList("no_NO", "nb_NO"));
-        ALTERNATIVES.put("no_NO", Arrays.asList("nb_NO", "nn_NO"));
+        ALTERNATIVES.put("nb_NO", Arrays.asList("no_NO", "nn_NO", "en_US"));
+        ALTERNATIVES.put("nn_NO", Arrays.asList("no_NO", "nb_NO", "en_US"));
+        ALTERNATIVES.put("no_NO", Arrays.asList("nb_NO", "nn_NO", "en_US"));
 
         // Portugese dialects
-        ALTERNATIVES.put("pt_BR", Arrays.asList("pt_PT"));
-        ALTERNATIVES.put("pt_PT", Arrays.asList("pt_BR"));
+        ALTERNATIVES.put("pt_BR", Arrays.asList("pt_PT", "en_US"));
+        ALTERNATIVES.put("pt_PT", Arrays.asList("pt_BR", "en_US"));
+
+        ALTERNATIVES.put("ro_RO", Arrays.asList("en_US"));
     }
 
     private final PluginEntity module;
@@ -312,6 +318,12 @@ public class LocaleManager {
                 				
                 				File newFile = new File( localeFolder, jarResourceName );
                 				
+                				if ( newFile.exists() ) {
+                					// Not really sure why the pfd would fail find a resource, but the File exists, 
+                					// so archive it since there must be an issue with it.
+                					archiveOldPropertiesFile( newFile );
+                				}
+                				
                 				Files.copy( inStream, newFile.toPath() );
                 				
                 				Output.get().logInfo( "### LocalManager refreshLocalLocales(): Local did not exist. " +
@@ -473,6 +485,76 @@ public class LocaleManager {
 			    				" - not loading");
     			}
     		}
+    		
+    		
+    		// Get the English properties, and use that to ensure entries exist for all of the other
+    		// languages... if not, then copy over the english value.
+    		Properties enUS = configs.get( DEFAULT_LOCALE );
+    		if ( enUS != null ) {
+    			boolean forceDefault = false;
+    			
+    			// If the config.yml default lang does not exist in this module, copy enUS to 
+    			// be used in it's place:
+    			if ( !configs.containsKey( defaultLocale ) ) {
+    				configs.put( defaultLocale, enUS );
+    				
+    				// log it
+    				Prison.get().getLocaleLoadInfo().add( String.format( 
+    						"&3Module: &7%s  &3Locale: &7%s  &3Warning: Locale specific file does not exist for this " +
+    						"module so defaulting to &7%s.properties&3.", 
+    						module.getName(), defaultLocale, DEFAULT_LOCALE ) );
+    				forceDefault = true;
+    			}
+    			
+    			Set<String> keys = configs.keySet();
+    			for ( String key : keys )
+    			{
+    				if ( !key.equalsIgnoreCase( DEFAULT_LOCALE ) ) {
+    					Properties otherLang = configs.get( key );
+    					if ( otherLang != null ) {
+    						
+    						int fallbackCount = 0;
+    						
+    						
+    						
+    						for ( String enUSKey : enUS.stringPropertyNames() )
+							{
+    							String propValueOther = otherLang.getProperty( enUSKey );
+    							
+								if ( propValueOther == null || propValueOther.trim().length() == 0
+										) {
+									
+									// Add the english value since it is missing:
+									otherLang.put( enUSKey, enUS.getProperty( enUSKey ) );
+									fallbackCount++;
+									
+								}
+							}
+    						
+    						if ( defaultLocale.equalsIgnoreCase( key ) && !forceDefault ) {
+    							
+    							if (  fallbackCount > 0 ) {
+    				   				// log it
+    			    				Prison.get().getLocaleLoadInfo().add( String.format( 
+    			    						"&3Module: &7%s  &3Locale: &7%s  &3Warning: Locale had &7%d &3missing entries " +
+    			    						"and will fallback to settings from &7%s.properties&3.", 
+    			    						module.getName(), defaultLocale, fallbackCount, DEFAULT_LOCALE ) );
+    								
+    							}
+    							else {
+    								Prison.get().getLocaleLoadInfo().add( String.format( 
+    										"&3Module: &7%s  &3Locale language file: &7%s.properties", 
+    												module.getName(), defaultLocale ) );
+    								
+    								
+    							}
+    						}
+    					
+    					}
+    				}
+    			}
+    			
+    		}
     	}
     }
 
@@ -607,8 +689,8 @@ public class LocaleManager {
     	
         try {
 
-        	
         	Properties temp = new Properties();
+        	
 //            temp.load(is);
 
         	// The InputStream is part of a zipEntry so it cannot be closed, or it will close the zip stream

@@ -23,10 +23,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.integration.CustomBlockIntegration;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.PrisonStatsElapsedTimeNanos;
@@ -35,9 +32,10 @@ import tech.mcprison.prison.internal.block.Block;
 import tech.mcprison.prison.internal.block.MineResetType;
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock;
-import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.spigot.block.SpigotBlock;
+import tech.mcprison.prison.spigot.block.SpigotBlockGetAtLocation;
+import tech.mcprison.prison.spigot.block.SpigotBlockSetAsynchronously;
+import tech.mcprison.prison.spigot.block.SpigotBlockSetSynchronously;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.util.Location;
@@ -48,6 +46,10 @@ import tech.mcprison.prison.util.Location;
 public class SpigotWorld implements World {
 
     private org.bukkit.World bukkitWorld;
+    
+    private SpigotBlockSetAsynchronously setBlockAsync;
+    private SpigotBlockSetSynchronously setBlockSync;
+    private SpigotBlockGetAtLocation getBlockAtLocation;
 
     public SpigotWorld(org.bukkit.World bukkitWorld) {
         this.bukkitWorld = bukkitWorld;
@@ -67,20 +69,85 @@ public class SpigotWorld implements World {
     }
 
     /**
-     * <p>This does get the actual from the world, but it only reads, and does not 
+     * <p>This should be the ONLY usage in the whole Prison plugin that gets the 
+     * bukkit block from the world and converts it to a SpigotBlock..
+     * </p>
+     * 
+     * <p>This gets the actual block from the world, but it only reads, and does not 
      * update.  I cannot say this is safe to run asynchronously, but so far I have
      * not see any related problems when it is.
      * 
      */
     @Override 
-    public Block getBlockAt(Location location) {
-        return new SpigotBlock(
-        		bukkitWorld.getBlockAt(SpigotUtil.prisonLocationToBukkit(location)));
+    public Block getBlockAt( Location location, boolean containsCustomBlocks ) {
+    	
+    	if ( getBlockAtLocation == null ) {
+    		getBlockAtLocation = new SpigotBlockGetAtLocation();
+    	}
+    	
+    	return getBlockAtLocation.getBlockAt(location, containsCustomBlocks, this);
+    	
+//    	SpigotBlock sBlock = null;
+//    	
+//    	if ( location != null ) {
+//    		
+//    		org.bukkit.Location bLocation = getBukkitLocation( location );
+//    		org.bukkit.block.Block bBlock = bukkitWorld.getBlockAt( bLocation );
+//    		
+//    		
+//    		sBlock = SpigotCompatibility.getInstance().getSpigotBlock( bBlock );
+//    		
+//    		if ( sBlock == null ) {
+//    			
+//    			sBlock = new SpigotBlock( bBlock, PrisonBlock.AIR.clone() );
+//    		}
+//    		
+//    		
+//    		if ( containsCustomBlocks ) {
+//    			
+//    			List<CustomBlockIntegration> cbIntegrations = 
+//    					PrisonAPI.getIntegrationManager().getCustomBlockIntegrations();
+//    			
+//    			for ( CustomBlockIntegration customBlock : cbIntegrations )
+//    			{
+//    				PrisonBlock pBlock = customBlock.getCustomBlock( sBlock );
+//    				
+//    				if ( pBlock != null ) {
+//    					
+//    					//if ( Output.get().isDebug() ) 
+////    					{
+////    						
+////    						String message = String.format( 
+////    								"SpigotWorld.getBlockAt: customBlock: %s  " +
+////    								"spigot: %s  bukkit: %s",
+////    								pBlock.getBlockName(), sBlock.getBlockName(), 
+////    								bBlock.getType().name() );
+////    						
+////    						Output.get().logInfo( message );
+////    					}
+//    					
+//    					sBlock.setBlockName( pBlock.getBlockName() );
+//    					sBlock.setBlockType( customBlock.getBlockType() );
+//    					break;
+//    				}
+//    			}
+//    		}
+//    		
+//    		
+//    	}
+//        
+//        return sBlock;
     }
-    public SpigotBlock getSpigotBlockAt(Location location) {
-    	return new SpigotBlock(
-    			bukkitWorld.getBlockAt(SpigotUtil.prisonLocationToBukkit(location)));
+    
+    public Block getBlockAt( Location location ) {
+    	return getBlockAt( location, false );
     }
+ 
+    
+//    public SpigotBlock getSpigotBlockAt(Location location) {
+//    	return new SpigotBlock(
+//    			bukkitWorld.getBlockAt(SpigotUtil.prisonLocationToBukkit(location)));
+//    }
     
     public org.bukkit.Location getBukkitLocation(Location location) {
     	return SpigotUtil.prisonLocationToBukkit(location);
@@ -115,27 +182,11 @@ public class SpigotWorld implements World {
      */
 	public void setBlockAsync( PrisonBlock prisonBlock, Location location ) {
 		
-		switch ( prisonBlock.getBlockType() )
-		{
-			case minecraft:
-				
-				SpigotCompatibility.getInstance().updateSpigotBlockAsync( prisonBlock, location );
-				
-				break;
-
-			case CustomItems:
-				{
-					CustomBlockIntegration customItemsIntegration = 
-									PrisonAPI.getIntegrationManager().getCustomBlockIntegration( prisonBlock.getBlockType() );
-					
-					customItemsIntegration.setCustomBlockIdAsync( prisonBlock, location );
-				}
-				
-				break;
-				
-			default:
-				break;
+		if ( setBlockAsync == null ) {
+			setBlockAsync = new SpigotBlockSetAsynchronously();
 		}
+		setBlockAsync.setBlockAsync(prisonBlock, location);
+		
 	}
 	
 	
@@ -154,34 +205,77 @@ public class SpigotWorld implements World {
 	public void setBlocksSynchronously( List<MineTargetPrisonBlock> tBlocks, MineResetType resetType, 
 			PrisonStatsElapsedTimeNanos nanos ) {
 		
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				
-				long start = System.nanoTime();
-				
-				for ( MineTargetPrisonBlock tBlock : tBlocks )
-				{
-					final PrisonBlock pBlock = tBlock.getPrisonBlock( resetType );
-					
-					if ( pBlock != null ) {
-						
-						Location location = tBlock.getLocation();
-						
-						SpigotBlock sBlock = (SpigotBlock) location.getBlockAt();
-						sBlock.setPrisonBlock( pBlock );
-					}
-				}
-				
-				long elapsedNanos = System.nanoTime() - start;
-				
-					
-				if ( nanos != null ) {
-					nanos.addNanos( elapsedNanos );
-				}
-				
-			}
-		}.runTaskLater( SpigotPrison.getInstance(), 0 );
+		if ( setBlockSync == null ) {
+			setBlockSync = new SpigotBlockSetSynchronously();
+		}
+		setBlockSync.setBlocksSynchronously(tBlocks, resetType, nanos, this );
+		
+//		List<MineTargetPrisonBlock> tBlocksCloned = new ArrayList<>();
+//		for ( MineTargetPrisonBlock mtpb : tBlocks ) {
+//			
+//			tBlocksCloned.add( mtpb );
+//		}
+//		
+//		new BukkitRunnable() {
+//			@Override
+//			public void run() {
+//				
+//				long start = System.nanoTime();
+//				
+//				MineTargetPrisonBlock current = null;
+//				try
+//				{
+//					for ( MineTargetPrisonBlock tBlock : tBlocksCloned )
+//					{
+//						current = tBlock;
+//						
+//						if ( tBlock != null && tBlock.getLocation() != null ) {
+//							
+//							final PrisonBlock pBlock = tBlock.getPrisonBlock( resetType );
+//							
+//							if ( pBlock != null ) {
+//								
+//								Location location = tBlock.getLocation();
+//								
+//								SpigotBlock sBlock = (SpigotBlock) getBlockAt( location );
+////							SpigotBlock sBlock = (SpigotBlock) location.getBlockAt();
+//								
+//								sBlock.setPrisonBlock( pBlock );
+//							}
+//						}
+//						
+//					}
+//				}
+//				catch ( Exception e ) {
+//					
+//					if ( current != null ) {
+//						
+//						String blkName = current.getPrisonBlock().getBlockName();
+//						PrisonBlock pBlock = current.getPrisonBlock( resetType );
+//						String resetTypeBlockName = pBlock == null ? "null" : pBlock.getBlockName();
+//						
+//						Output.get().logError( 
+//								String.format( "SpigotWorld.setBlocksSynchronously Exception: %s  resetType: %s  %s :: %s",
+//										blkName, resetType.name(), resetTypeBlockName, e.getMessage() ), e );
+//					}
+//					else {
+//						
+//						Output.get().logError( 
+//								String.format( "SpigotWorld.setBlocksSynchronously Exception: --noBlock--  resetType: %s  " +
+//										"[unable to set 'current'] :: %s",
+//										resetType.name(), e.getMessage() ), e );
+//					}
+//				}
+//				
+//				long elapsedNanos = System.nanoTime() - start;
+//				
+//					
+//				if ( nanos != null ) {
+//					nanos.addNanos( elapsedNanos );
+//				}
+//				
+//			}
+//		}.runTaskLater( SpigotPrison.getInstance(), 0 );
 		
 	}
 

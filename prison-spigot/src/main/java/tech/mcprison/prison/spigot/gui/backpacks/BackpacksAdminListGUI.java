@@ -20,7 +20,7 @@ public class BackpacksAdminListGUI extends SpigotGUIComponents {
     private final Player p;
     private final String playerBackpackName;
     private final Configuration backpacksData = BackpacksUtil.get().getBackpacksData();
-    private final String loreShiftAndRightClickToDelete = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_right_and_shift_to_delete);
+    private final String loreShiftAndRightClickToDelete = guiRightClickShiftToDeleteMsg();
     private final String loreInfo = messages.getString(MessagesConfig.StringID.spigot_gui_lore_info);
     private final String lorePlayerOwner = messages.getString(MessagesConfig.StringID.spigot_gui_lore_owner);
     private final String loreBackpackID = messages.getString(MessagesConfig.StringID.spigot_gui_lore_backpack_id);
