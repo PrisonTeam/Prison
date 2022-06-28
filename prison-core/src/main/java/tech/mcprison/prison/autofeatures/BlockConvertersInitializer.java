@@ -53,6 +53,7 @@ public class BlockConvertersInitializer {
 			break;
 			
 		case blockFeatures:
+			loadDefaultBlockConverterAutoBlocking( blockConverters );
 			
 			break;
 
@@ -68,6 +69,7 @@ public class BlockConvertersInitializer {
 	}
 	
     
+
     private void loadDefaultBlockConverterSample01(TreeMap<String, BlockConverter> blockConverters) {
 
     	BlockConverter bc1 = new BlockConverter( "coal_ore", 9 );
@@ -149,31 +151,125 @@ public class BlockConvertersInitializer {
 		
 		
 		addSmeltBlockConverterDisabled( "potato", "baked_potato", blockConverters );
-		addSmeltBlockConverterDisabled( "kep", "dried_kelp", "1.13", blockConverters );
+		addSmeltBlockConverterDisabled( "kelp", "dried_kelp", "1.13", blockConverters );
 		
     	
 	}
 	
 	
+	private void loadDefaultBlockConverterAutoBlocking(TreeMap<String, BlockConverter> blockConverters) {
+		
+		addBlockingConverter( "gold_ingot", 9, "gold_ore", blockConverters );
+		
+		addBlockingConverter( "iron_ingot", 9, "iron_block", blockConverters );
+		
+		addSmeltBlockConverter( "iron_ore", "iron_ingot", blockConverters );
+		addSmeltBlockConverter( "deepslate_iron_ore", "iron_ingot", "1.17", blockConverters );
+		addSmeltBlockConverter( "raw_iron", "iron_ingot", "1.17", blockConverters );
+		
+		addSmeltBlockConverter( "coal_ore", "coal", blockConverters );
+		addSmeltBlockConverter( "deepslate_coal_ore", "coal", "1.17", blockConverters );
+		
+		addSmeltBlockConverter( "diamond_ore", "diamond", blockConverters );
+		addSmeltBlockConverter( "deepslate_diamond_ore", "diamond", "1.17", blockConverters );
+		
+		addSmeltBlockConverter( "emerald_ore", "emerald", blockConverters );
+		addSmeltBlockConverter( "deepslate_emerald_ore", "emerald", "1.17", blockConverters );
+		
+		addSmeltBlockConverter( "lapis_ore", "lapis_lazuli", blockConverters );
+		addSmeltBlockConverter( "deepslate_lapis_ore", "lapis_lazuli", "1.17", blockConverters );
+		
+		// NOTE: redstone dust is called redstone within XMaterials:
+		addSmeltBlockConverter( "redstone_ore", "redstone", blockConverters );
+		addSmeltBlockConverter( "deepslate_redstone_ore", "redstone", "1.17", blockConverters );
+		
+		addSmeltBlockConverter( "nether_quartz_ore", "quartz", blockConverters );
+		
+		addSmeltBlockConverterDisabled( "ancient_debris", "netherite_scrap", "1.16", blockConverters );
+		
+		addSmeltBlockConverter( "copper_ore", "copper_ingot", "1.17", blockConverters );
+		addSmeltBlockConverter( "deepslate_copper_ore", "copper_ingot", "1.17", blockConverters );
+		addSmeltBlockConverter( "raw_copper", "copper_ingot", "1.17", blockConverters );
+		
+		
+		
+	}
+	
+
+	private void addBlockingConverter(String keyBlockName, int keyBlockQuantity, String outputName,
+			TreeMap<String, BlockConverter> blockConverters) {
+
+		addBlockingConverter( keyBlockName, keyBlockQuantity, outputName, null, true, blockConverters );
+	}
+
+	private static void addBlockingConverter(String keyBlockName,  int keyBlockQuantity, String outputName,
+			String semanticVersion, 
+			boolean enabled,
+			TreeMap<String, BlockConverter> blockConverters) {
+
+		BlockConverter bc = new BlockConverter(keyBlockName, keyBlockQuantity);
+		bc.getOutputs().add( new BlockConverterOutput( outputName, 1 ) );
+
+		// All converters are auto-enabled, so only need to disable:
+		if (!enabled) {
+			bc.setEnabled(enabled);
+		}
+
+		if (semanticVersion != null && semanticVersion.trim().length() > 0) {
+			bc.setMininumSpigotSemanticVersion(semanticVersion);
+		}
+		
+		// add output name:
+
+		blockConverters.put(bc.getKeyBlockName(), bc);
+	}
+	
 	
 
 	public void loadDefaultBlockConverterAutoPickupBlocks(TreeMap<String, BlockConverter> blockConverters) {
+		
+		
+		addSAutoPickupBlockConverter("*all_blocks*", blockConverters);
+		
+		addSAutoPickupBlockConverter("*example_of_disabled_block_valid_for_1_13_and_higher*", "1.13", false, blockConverters);
 
+		
 		addSAutoPickupBlockConverter("cobblestone", blockConverters);
 		addSAutoPickupBlockConverter("stone", blockConverters);
 
 		addSAutoPickupBlockConverter("gold_ore", blockConverters);
+		addSAutoPickupBlockConverter("nether_gold_ore", blockConverters);
+		addSAutoPickupBlockConverter("deepslate_gold_ore", blockConverters);
+		addSAutoPickupBlockConverter("raw_gold", blockConverters);
+		
 		addSAutoPickupBlockConverter("iron_ore", blockConverters);
+		addSAutoPickupBlockConverter("deepslate_iron_ore", blockConverters);
+		addSAutoPickupBlockConverter("raw_iron", blockConverters);
+
 		addSAutoPickupBlockConverter("coal_ore", blockConverters);
+		addSAutoPickupBlockConverter("deepslate_coal_ore", blockConverters);
+
 		addSAutoPickupBlockConverter("diamond_ore", blockConverters);
+		addSAutoPickupBlockConverter("deepslate_diamond_ore", blockConverters);
 		
 		addSAutoPickupBlockConverter("redstone_ore", blockConverters);
+		addSAutoPickupBlockConverter("deepslate_redstone_ore", blockConverters);
+
 		addSAutoPickupBlockConverter("emerald_ore", blockConverters);
+		addSAutoPickupBlockConverter("deepslate_emerald_ore", blockConverters);
+		
 		addSAutoPickupBlockConverter("quartz_ore", blockConverters);
+
 		addSAutoPickupBlockConverter("lapis_ore", blockConverters);
+		addSAutoPickupBlockConverter("deepslate_lapis_ore", blockConverters);
 		
 		addSAutoPickupBlockConverter("snowball", blockConverters);
+		
 		addSAutoPickupBlockConverter("glowstone_dust", blockConverters);
+
+		addSAutoPickupBlockConverter("copper_ore", blockConverters);
+		addSAutoPickupBlockConverter("deepslate_copper_ore", blockConverters);
+		addSAutoPickupBlockConverter("raw_copper", blockConverters);
 
 	}
 	

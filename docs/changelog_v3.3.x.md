@@ -10,7 +10,11 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12 2022-06-27
+# 3.3.0-alpha.12 2022-06-28
+
+
+* **BlockConverters: More changes to block converters.**
+Added defaults for auto blocking, and for auto features with support for *all* blocks.
 
 
 * **Bug fix: mines gui was not able to handle virtual mines with the internal placeholders.
