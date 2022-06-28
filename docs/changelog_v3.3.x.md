@@ -10,8 +10,41 @@
 These build logs represent the work that has been going on within prison. 
 
 
+# 3.3.0-alpha.12 2022-06-27
 
-# 3.3.0-alpha.12 2022-06-25
+
+* **Bug fix: mines gui was not able to handle virtual mines with the internal placeholders.
+This bug fix was included with the deployment of alpha.12 to spigotmc.org.
+
+
+
+* **Pull Request from release.branch.v3.3.0-alpha.12 to Master - 2022-06-25**
+
+
+This represents about six months of a lot of work with many bug fixes, performance improvements, and new features that have been introduced. The last two alphas were not pulled back to main, but they were released, This PR will preserve the released alpha as it has been published.
+
+Also, this helps to ensure that this work will not be lost in the event the bleeding branch is lost/removed. Hopefully it won't be, but a lot of work has gone in to it and it will be impossible to recreate the current state of the alpha release.
+
+This version, v3.3.0-alpha.12, has 300 commits and 323 changed files. The list of actual changes since v3.2.11 is substantial and the change log should be referenced.
+
+Highlights of some of the changes include (a sparse list):
+
+*    new block model - full support for CustomItems custom blocks - updated XSeries which mean prison supports Spigot 1.19.
+*    major improvements to auto features - streamlined and new code - higher performance - many bugs eliminated - now supports drop canceling to make prison more compatible with other plugins
+*    better multi-language support - supports UTF-8
+*    Improved rankup - rankup commands are now ran in batch and will not lag the server if players spam it
+*    rewrite of the async mine resets - next to impossible for mine resets to cause lag - Uses a new intelligence design that will throttle placing blocks as the server load increases, which makes it next to impossible for it to cause lag.
+*    Enhanced debugging tools - if a server owner is having issues, prison has more useful tools and logging to better identify where the issues are - new areas are not able to log details when in debug mode - debug mode now has a "count down timer" where if debug mode is 8enabled like /prison debug 10 then it will only allow 10 debug messages to print, then it will turn off debug mode automatically. This is very useful on very heavy servers when a lot of players are active... it prevents massive flooding of the console.
+*    Major rewrite of the placeholder code that identifies which placeholder raw text is tied to, so it can then retrieve and process the data. - Pre-cache that provides mapping to raw text, so once it is mapped, it can prevent the expensive costs of finding the correct placeholder - Added the beginning of tracking stats (through the pre-cache0 and will be adding an actual placeholder cache in the near future.
+*    Mine Bombs - fixes and enhancements
+*    Starting to create a new sellall module that will support multiple shops and custom blocks (not just XMaterial names)
+*    Block Converters - Will allow full customization on all block specific things within auto features - will eliminate all hard coded block
+*    Started to add NBT support. - Used in mine bombs - Starting to use in GUI's to simplify the complexity of hooking actions up with the menu items.
+*    Added rank scores and top-n players - Rank score is a fair way to score players within a rank. It's currently the percentage of money they have to rank up (0 to 100 percent), but once they cross the 100% threshold, then 10% of the excess subtracts from their rank score. This prevents camping at levels.
+*    There is more stuff, some major, a bunch of minor, and many bug fixes along the way.
+
+
+
 
 
 * **v3.3.0-alpha.12 2022-06-25**
