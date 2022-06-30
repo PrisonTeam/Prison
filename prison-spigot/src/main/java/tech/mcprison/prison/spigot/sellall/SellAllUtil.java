@@ -57,9 +57,6 @@ public class SellAllUtil
 
     private static SellAllUtil instance;
     
-    private static final boolean isEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "sellall" );
-    
-//    private static final boolean isEnabled = getBoolean(SpigotPrison.getInstance().getConfig().getString("sellall"));
     private final Compatibility compat = SpigotPrison.getInstance().getCompatibility();
 
     private final ItemStack lapisLazuli = compat.getLapisItemStack();
@@ -122,7 +119,7 @@ public class SellAllUtil
      * @return SellAllUtil.
      * */
     public static SellAllUtil get() {
-        if (!isEnabled){
+        if ( !SpigotPrison.getInstance().isSellAllEnabled() ){
             return null;
         }
         if (instance == null){

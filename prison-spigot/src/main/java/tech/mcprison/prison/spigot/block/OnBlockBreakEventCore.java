@@ -677,7 +677,7 @@ public abstract class OnBlockBreakEventCore
 			
 			// AutoSell on full inventory when using BLOCKEVENTS:
 			if ( isBoolean( AutoFeatures.isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority ) &&
-					Prison.get().getPlatform().getConfigBooleanFalse( "sellall" ) &&
+					SpigotPrison.getInstance().isSellAllEnabled() &&
 					isPlayerAutosellEnabled &&
 					pmEvent.getSpigotPlayer().isInventoryFull() ) {
 				

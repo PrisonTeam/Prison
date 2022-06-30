@@ -40,6 +40,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatEvent;
@@ -96,6 +97,7 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
+import tech.mcprison.prison.sellall.PrisonSellall;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerCrazyEnchants;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonEnchants;
@@ -1531,7 +1533,10 @@ public class SpigotPlatform
 		
 		
 		// Turn on sellall:
-		SpigotPrison.getInstance().getConfig().set( "sellall", true );
+		YamlConfiguration modulesConf = SpigotPrison.getInstance().loadConfig("modules.yml");
+		modulesConf.set( "sellall", Boolean.TRUE );
+		SpigotPrison.getInstance().saveConfig("modules.yml", modulesConf );
+		
 		
 		
 		PrisonSpigotSellAllCommands sellall = PrisonSpigotSellAllCommands.get();
@@ -2236,7 +2241,7 @@ public class SpigotPlatform
     	
     	
     	results.add( String.format("Sellall Enabled:&b %s", 
-    										getConfigBooleanFalse( "sellall" )) );
+    										Boolean.toString( SpigotPrison.getInstance().isSellAllEnabled() )) );
     		  
     	
     	results.add( String.format("Backpacks Enabled:&b %s", 

@@ -10,7 +10,11 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12 2022-06-28
+# 3.3.0-alpha.12 2022-06-29
+
+
+* **Sellall bug fix: There wasn't a common point of refernce to check if sellall is enabled.  Many locations were directly checking config.yml, but the new setting has been moved to the modules.yml file. ** 
+If config.yml has sellall enabled in there, it will be used as a secondary setting if the sellall setting in modules.yml is not defined or set to false.  Eventually the config.yml setting will be removed.
 
 
 * **Found that bStats was erroring out with the servers hitting the rate limit so this makes a few adjustments to try to get prison to work with bstats.**

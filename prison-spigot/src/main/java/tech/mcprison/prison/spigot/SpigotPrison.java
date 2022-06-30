@@ -19,15 +19,18 @@
 package tech.mcprison.prison.spigot;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.concurrent.Callable;
 
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.DrilldownPie;
 import org.bstats.charts.MultiLineChart;
 import org.bstats.charts.SimpleBarChart;
 import org.bstats.charts.SimplePie;
@@ -45,6 +48,7 @@ import org.inventivetalent.update.spiget.UpdateCallback;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
+import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.integration.Integration;
 import tech.mcprison.prison.integration.IntegrationType;
@@ -62,6 +66,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.commands.FailedRankCommands;
 import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.sellall.PrisonSellall;
 import tech.mcprison.prison.sellall.commands.SellallCommands;
@@ -144,6 +149,7 @@ public class SpigotPrison
     
     
     private Metrics bStatsMetrics = null;
+//    private PrisonMetrics bStatsMetrics = null;
 
     
     public static SpigotPrison getInstance(){
@@ -162,7 +168,7 @@ public class SpigotPrison
     @Override
     public void onLoad() {
     	
-        // Startup bStats:
+        // Startup bStats:  Not needed with the new PrisonMetrics class.
         initMetricsOnLoad();
 
     	
@@ -292,20 +298,14 @@ public class SpigotPrison
             Bukkit.getPluginManager().registerEvents(new BackpacksListeners(), this);
         }
 
-        try {
-            isSellAllEnabled = getConfig().getBoolean("sellall");
-        } catch (NullPointerException ignored){}
-
-        if (isSellAllEnabled){
-            SellAllUtil.get();
-        }
-
         initIntegrations();
         
-        
+        // Sellall set to disabled since it will be set to the correct value in enableModulesAndCommands():
+        isSellAllEnabled = false;
         
         // This is the loader for modules and commands:
         enableModulesAndCommands();
+
         
 //        // NOTE: Put all commands within the initModulesAndCommands() function.
 //        initModulesAndCommands();
@@ -320,10 +320,6 @@ public class SpigotPrison
         
         // The BlockBreakEvents must be registered after the mines and ranks modules have been enabled:
         getBlockBreakEventListeners().registerAllBlockBreakEvents( this );
-        
-        
-        // Startup bStats:
-        initMetricsOnEnable();
         
         
         // These stats are displayed within the initDeferredModules():
@@ -367,6 +363,11 @@ public class SpigotPrison
 		if ( getConfig().getBoolean("prison-block-compatibility-report") ) {
 			SpigotUtil.testAllPrisonBlockTypes();
 		}
+
+		
+		// Startup bStats:
+		initMetricsOnEnable();
+		
 		
 		Output.get().logInfo( "Prison - Finished loading." );
 		
@@ -532,6 +533,7 @@ public class SpigotPrison
     	
     	int pluginId = 657;
     	bStatsMetrics = new Metrics( this, pluginId );
+//    	bStatsMetrics = new PrisonMetrics( this, pluginId );
     	
 //    	Metrics metrics = new Metrics( this, pluginId );
     }
@@ -546,6 +548,7 @@ public class SpigotPrison
         	int pluginId = 657;
         	
         	bStatsMetrics = new Metrics( this, pluginId );
+//        	bStatsMetrics = new PrisonMetrics( this, pluginId );
         }
 
         // Report the modules being used
@@ -604,6 +607,42 @@ public class SpigotPrison
         	}
         });
         bStatsMetrics.addCustomChart( mlcPrisonRanks );
+        
+        
+        MultiLineChart mlcPrisonladders = new MultiLineChart("prison_ladders", new Callable<Map<String, Integer>>() {
+        	@Override
+        	public Map<String, Integer> call() throws Exception {
+        		Map<String, Integer> valueMap = new HashMap<>();
+        		
+        		PrisonRanks pRanks = (PrisonRanks) prisonRanksOpt.orElseGet( null );
+        		for ( RankLadder ladder : pRanks.getLadderManager().getLadders() ) {
+        	
+        			valueMap.put( ladder.getName(), ladder.getRanks().size() );
+        		}
+        		
+        		return valueMap;
+        	}
+        });
+        bStatsMetrics.addCustomChart( mlcPrisonladders );
+
+        
+        DrilldownPie mlcPrisonPlugins = new DrilldownPie("plugins", () -> {
+        	Map<String, Map<String, Integer>> map = new HashMap<>();
+        	
+        	TreeMap<String, RegisteredPluginsData> plugins = Prison.get().getPrisonCommands().getRegisteredPluginData();
+        	
+        	for (String pluginName : plugins.keySet() ) {
+        		RegisteredPluginsData pluginData = plugins.get( pluginName );
+				
+        		Map<String, Integer> entry = new HashMap<>();
+        		entry.put( pluginData.getPluginVersion(), 1 );
+        		
+        		map.put( pluginData.getPluginName(), entry );
+			}
+        	
+        	return map;
+        });
+        bStatsMetrics.addCustomChart( mlcPrisonPlugins );
         
     }
 
@@ -807,20 +846,30 @@ public class SpigotPrison
        
         // If the sellall module is defined in modules.yml, then use that setting, otherwise
         // use the sellall config setting within the config.yml file.
-        String moduleName = PrisonSellall.MODULE_NAME.toLowerCase();
-        boolean isDefined = modulesConf.contains(moduleName);
+        String sellallModuleName = PrisonSellall.MODULE_NAME.toLowerCase();
+        boolean isDefined = modulesConf.contains(sellallModuleName);
         
-        if ( isDefined && modulesConf.getBoolean(moduleName) ||
+        // First check to see if the module is enabled (sellall):
+        if ( isDefined && modulesConf.getBoolean(sellallModuleName) ||
+        		// if not, then check to see if sellall is enabled within config.yml:
         		!isDefined && getConfig().contains("sellall") && getConfig().isBoolean("sellall") ) {
         		
-//        		modulesConf.getBoolean( PrisonSellall.MODULE_NAME.toLowerCase(), true ) ||
-//        		getConfig().contains("sellall") && getConfig().isBoolean("sellall")) {
         	PrisonSellall sellallModule = new PrisonSellall(getDescription().getVersion() );
         	
-        	// Register and enable Ranks:
+        	// Register and enable the sellall module:
             Prison.get().getModuleManager().registerModule( sellallModule );
             
             Prison.get().getCommandHandler().registerCommands( new SellallCommands() );
+            
+
+            isSellAllEnabled = true;
+            
+            
+            // If sellall is enabled, then allow it to initialize.
+            if (isSellAllEnabled){
+            	SellAllUtil.get();
+            }
+
 
         } 
         else {
@@ -999,8 +1048,23 @@ public class SpigotPrison
         return file;
     }
 
-    private YamlConfiguration loadConfig(String file) {
+    public YamlConfiguration loadConfig(String file) {
         return YamlConfiguration.loadConfiguration(getBundledFile(file));
+    }
+    
+    public void saveConfig(String fileName, YamlConfiguration config ) {
+    	if ( config != null ) {
+    		File file = getBundledFile(fileName);
+    		try {
+				config.save( file );
+			} 
+    		catch (IOException e) {
+    			String message = String.format( "Error saving config file: %s  [%s]", 
+    					file.getAbsoluteFile(), e.getMessage() );
+    			
+    			Output.get().logError( message );
+			}
+    	}
     }
 
     File getDataDirectory() {
