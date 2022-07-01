@@ -13,6 +13,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12 2022-07-01
 
 
+* **Bug fix: Placeholders search was missing the assignment of the placeholderKey, which is what would like the search results on the raw placeholders, with the actual data that is tied back to the player.**
+In otherwords, without the PlaceholderKey it was not possible to extract the player's data to be displayed within the command: /prison placeholders search.
+
+
 * **Added constants for the default and prestiges ladder name so it does not have to be duplicated all over the place, which can lead to bugs with typos.**
 
 
