@@ -272,7 +272,7 @@ public class PrisonRanks
 		
 		// If there is a default rank on the default ladder, then
         // check to see if there are any players not in prison: add them:
-        RankLadder defaultLadder = getLadderManager().getLadder( "default" );
+        RankLadder defaultLadder = getLadderManager().getLadder( LadderManager.LADDER_DEFAULT );
         if ( defaultLadder != null && defaultLadder.getRanks().size() > 0 ) {
         	int addedPlayers = 0;
         	int fixedPlayers = 0;
@@ -372,8 +372,8 @@ public class PrisonRanks
      * A default ladder is absolutely necessary on the server, so let's create it if it doesn't exist, this also create the prestiges ladder.
      */
     private void createDefaultLadder() {
-        if ( ladderManager.getLadder("default") == null ) {
-            RankLadder rankLadder = ladderManager.createLadder("default");
+        if ( ladderManager.getLadder(LadderManager.LADDER_DEFAULT) == null ) {
+            RankLadder rankLadder = ladderManager.createLadder(LadderManager.LADDER_DEFAULT);
 
             if ( rankLadder == null ) {
             	
@@ -393,8 +393,8 @@ public class PrisonRanks
             }
         }
 
-        if ( ladderManager.getLadder("prestiges") == null ) {
-            RankLadder rankLadder = ladderManager.createLadder("prestiges");
+        if ( ladderManager.getLadder(LadderManager.LADDER_PRESTIGES) == null ) {
+            RankLadder rankLadder = ladderManager.createLadder(LadderManager.LADDER_PRESTIGES);
 
             if ( rankLadder == null ) {
 
@@ -456,7 +456,11 @@ public class PrisonRanks
     }
 
     public RankLadder getDefaultLadder() {
-        return getLadderManager().getLadder("default");
+        return getLadderManager().getLadder(LadderManager.LADDER_DEFAULT);
+    }
+    
+    public RankLadder getPrestigesLadder() {
+    	return getLadderManager().getLadder(LadderManager.LADDER_PRESTIGES);
     }
 
     public Database getDatabase() {
@@ -482,11 +486,11 @@ public class PrisonRanks
     }
     
     public int getDefaultLadderRankCount() {
-    	return getLadderRankCount( "default" );
+    	return getLadderRankCount( LadderManager.LADDER_DEFAULT );
     }
     
     public int getPrestigesLadderRankCount() {
-    	return getLadderRankCount( "prestiges" );
+    	return getLadderRankCount( LadderManager.LADDER_PRESTIGES );
     }
     
     public int getladderCount() {

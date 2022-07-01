@@ -406,7 +406,8 @@ public class RanksCommands
 	        	
 	        	boolean forceRank = force && PrisonRanks.getInstance().getRankManager().getRank( rankName ) != null;
 	        	if ( forceRank ||
-	        			createRank(sender, rankName, price, "default", tag, "noPlaceholderUpdate") ) {
+	        			createRank(sender, rankName, price, 
+	        								LadderManager.LADDER_DEFAULT, tag, "noPlaceholderUpdate") ) {
 	        		
 	        		if ( forceRank ) {
 	        			countRanksForced++;
@@ -495,7 +496,7 @@ public class RanksCommands
 		for ( int i = 0; i < 10; i++ ) {
 			String name = "P" + (i + 1);
 			String tag = "&5[&d+" + (i > 0 ? i + 1 : "" ) + "&5]";
-			createRank(sender, name, (prestigeCost * (i + 1) ), "prestiges", tag, "noPlaceholderUpdate");
+			createRank(sender, name, (prestigeCost * (i + 1) ), LadderManager.LADDER_PRESTIGES, tag, "noPlaceholderUpdate");
 			prestigesCount++;
 		}
 		
@@ -516,7 +517,7 @@ public class RanksCommands
 			// Set the prestiges ladder with a 10% base rank cost multiplier
 			double rankCostMultiplier = 0.10;
 			
-			RankLadder prestiges = PrisonRanks.getInstance().getLadderManager().getLadder( "prestiges" );
+			RankLadder prestiges = PrisonRanks.getInstance().getLadderManager().getLadder( LadderManager.LADDER_PRESTIGES );
 			prestiges.setRankCostMultiplierPerRank( rankCostMultiplier );
 			PrisonRanks.getInstance().getLadderManager().save( prestiges );
 			
@@ -874,7 +875,7 @@ public class RanksCommands
         boolean first = true;
         for (Rank rank : ladder.getRanks()) {
         	
-        	boolean defaultRank = ("default".equalsIgnoreCase( ladder.getName() ) && first);
+        	boolean defaultRank = (LadderManager.LADDER_DEFAULT.equalsIgnoreCase( ladder.getName() ) && first);
         	
         	
         	// Since the formatting gets confused with color formatting, we must 
@@ -1508,7 +1509,7 @@ public class RanksCommands
 			Set<String> currencies = new LinkedHashSet<>();
 			LadderManager lm = PrisonRanks.getInstance().getLadderManager();
 			
-			for ( Rank rank : lm.getLadder( "default" ).getRanks() ) {
+			for ( Rank rank : lm.getLadder( LadderManager.LADDER_DEFAULT ).getRanks() ) {
 				if ( rank.getCurrency() != null && !currencies.contains( rank.getCurrency() )) {
 					currencies.add( rank.getCurrency() );
 				}

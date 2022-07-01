@@ -39,6 +39,9 @@ import tech.mcprison.prison.store.Document;
  */
 public class LadderManager
 		extends LadderManagerMessages {
+	
+	public static final String LADDER_DEFAULT = "default";
+	public static final String LADDER_PRESTIGES = "prestiges";
 
     /*
      * Fields & Constants

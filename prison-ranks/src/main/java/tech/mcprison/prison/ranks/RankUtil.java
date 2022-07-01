@@ -34,6 +34,7 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.events.RankUpEvent;
+import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.tasks.PrisonCommandTaskData;
 import tech.mcprison.prison.tasks.PrisonCommandTaskData.CustomPlaceholders;
 
@@ -315,7 +316,7 @@ public class RankUtil
     	
         // If ladderName is null, then assign it the default ladder:
         if ( ladderName == null ) {
-        	ladderName = "default";
+        	ladderName = LadderManager.LADDER_DEFAULT;
         	results.addTransaction(RankupTransactions.assigned_default_ladder);
         } 
     	
@@ -409,7 +410,7 @@ public class RankUtil
         if ( command == RankupCommands.setrank && "-remove-".equalsIgnoreCase( rankName ) ) {
         	results.addTransaction(RankupTransactions.attempting_to_delete_ladder_from_player);
         	
-        	if ("default".equalsIgnoreCase( ladderName ) ) {
+        	if (LadderManager.LADDER_DEFAULT.equalsIgnoreCase( ladderName ) ) {
         		results.addTransaction(RankupTransactions.cannot_delete_default_ladder);
         	}
         	else {
@@ -789,7 +790,7 @@ public class RankUtil
         		return targetRank;
         	}
         	 
-        	else if ("default".equalsIgnoreCase( results.getLadder().getName() ) && rankName == null ) {
+        	else if (LadderManager.LADDER_DEFAULT.equalsIgnoreCase( results.getLadder().getName() ) && rankName == null ) {
 	        	Optional<Rank> lowestRank = results.getLadder().getLowestRank();
 	        	if ( lowestRank.isPresent() ) {
 	        		targetRank = lowestRank.get();

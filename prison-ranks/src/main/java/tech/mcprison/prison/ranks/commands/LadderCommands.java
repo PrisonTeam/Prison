@@ -10,6 +10,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRankRefreshTask;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
+import tech.mcprison.prison.ranks.managers.LadderManager;
 
 /**
  * @author Faizaan A. Datoo
@@ -67,12 +68,12 @@ public class LadderCommands
             return;
         }
         
-        if (ladder.getName().equalsIgnoreCase( "default" )) {
+        if (ladder.getName().equalsIgnoreCase( LadderManager.LADDER_DEFAULT )) {
         	ladderDeleteCannotDeleteDefaultMsg( sender );
         	return;
         }
 
-        if (ladder.getName().equalsIgnoreCase( "prestiges" )) {
+        if (ladder.getName().equalsIgnoreCase( LadderManager.LADDER_PRESTIGES )) {
         	ladderDeleteCannotDeletePrestigesMsg( sender );
         	return;
         }

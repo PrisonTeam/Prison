@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12 2022-06-29
+# 3.3.0-alpha.12 2022-07-01
+
+
+* **Added constants for the default and prestiges ladder name so it does not have to be duplicated all over the place, which can lead to bugs with typos.**
 
 
 * **Sellall bug fix: There wasn't a common point of refernce to check if sellall is enabled.  Many locations were directly checking config.yml, but the new setting has been moved to the modules.yml file. ** 

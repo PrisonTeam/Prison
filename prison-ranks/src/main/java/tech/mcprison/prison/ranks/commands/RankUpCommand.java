@@ -129,10 +129,10 @@ public class RankUpCommand
         // RETRIEVE THE LADDER
 
         // This player has to have permission to rank up on this ladder.
-        if (!(ladder.equalsIgnoreCase("prestiges") && 
+        if (!(ladder.equalsIgnoreCase(LadderManager.LADDER_PRESTIGES) && 
         		(Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) || 
         				Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ))) && 
-		        	!ladder.equalsIgnoreCase("default") && 
+		        	!ladder.equalsIgnoreCase(LadderManager.LADDER_DEFAULT) && 
 		        	!sender.hasPermission(permission + ladder.toLowerCase())) {
 
         	Output.get().logDebug( DebugTarget.rankup, 
@@ -213,9 +213,9 @@ public class RankUpCommand
         boolean canPrestige = false;
         
         // If the player is trying to prestige, then the following must be ran to setup the prestige checks:
-        if (ladder.equalsIgnoreCase("prestiges")) {
+        if (ladder.equalsIgnoreCase(LadderManager.LADDER_PRESTIGES)) {
 
-        	RankLadder rankLadder = lm.getLadder("default");
+        	RankLadder rankLadder = lm.getLadder(LadderManager.LADDER_DEFAULT);
         	
         	if ( rankLadder == null ){
         		rankupErrorNoDefaultLadderMsg( sender );
@@ -228,7 +228,7 @@ public class RankUpCommand
         	}
         	
         	// gets the rank on the default ladder. Used if ladder is not default.
-        	PlayerRank pRankDefaultLadder = rankPlayerFactory.getRank( rankPlayer, "default");
+        	PlayerRank pRankDefaultLadder = rankPlayerFactory.getRank( rankPlayer, LadderManager.LADDER_DEFAULT);
         	if ( pRankDefaultLadder == null ) {
         		rankupErrorPlayerNotOnDefaultLadder( sender, rankPlayer );
         	}
@@ -262,7 +262,7 @@ public class RankUpCommand
         	
         	// If the last rankup attempt was successful and they are trying to rankup as many times as possible: 
         	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS && 
-        			!ladder.equals("prestiges")) {
+        			!ladder.equals(LadderManager.LADDER_PRESTIGES)) {
         		rankUpPrivate( sender, ladder, mode, permission, cmdTasks );
         	}
         	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS){
@@ -331,7 +331,9 @@ public class RankUpCommand
 				// Set the player rank to the first one of the default ladder
 				
 				// Call the function directly and skip using dispatch commands:
-				setRank( sender, player.getName(), lm.getLadder("default").getLowestRank().get().getName(), "default" );
+				setRank( sender, player.getName(), 
+						lm.getLadder(LadderManager.LADDER_DEFAULT).getLowestRank().get().getName(), 
+							LadderManager.LADDER_DEFAULT );
 				
 //				PrisonAPI.dispatchCommand("ranks set rank " + player.getName() + " " + 
 //						lm.getLadder("default").getLowestRank().get().getName() + " default");
@@ -339,13 +341,13 @@ public class RankUpCommand
 				
 				RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
 				
-				PlayerRank playerRankSecond = rankPlayerFactory.getRank( rankPlayer, "default");
+				PlayerRank playerRankSecond = rankPlayerFactory.getRank( rankPlayer, LadderManager.LADDER_DEFAULT);
 				if ( playerRankSecond != null ) {
 					
 					Rank pRankSecond = playerRankSecond.getRank();
 					// Check if the ranks match
 					
-					if (pRankSecond != lm.getLadder("default").getLowestRank().get()) {
+					if (pRankSecond != lm.getLadder(LadderManager.LADDER_DEFAULT).getLowestRank().get()) {
 						
 						rankupNotAbleToResetRankMsg( sender );
 						success = false;

@@ -13,6 +13,7 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.FirstJoinHandlerMessages;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.events.FirstJoinEvent;
+import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.util.ConversionUtil;
 
@@ -146,12 +147,12 @@ public class RankPlayerFactory
      */
     public boolean removeLadder( RankPlayer rankPlayer, String ladderName ) {
     	boolean results = false;
-        if ( !ladderName.equalsIgnoreCase("default") ) {
+        if ( !ladderName.equalsIgnoreCase(LadderManager.LADDER_DEFAULT) ) {
         	Integer id = rankPlayer.getRanksRefs().remove(ladderName);
         	results = (id != null);
         	
         	RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
-        	if ( ladder != null && !ladder.getName().equalsIgnoreCase( "default" ) ) {
+        	if ( ladder != null && !ladder.getName().equalsIgnoreCase( LadderManager.LADDER_DEFAULT ) ) {
         		rankPlayer.getLadderRanks().remove( ladder );
         	}
         }
@@ -337,7 +338,7 @@ public class RankPlayerFactory
 			
 			// Get the player's total rankMultiplier from the default ladder 
 			// because they will always have a rank there:
-			PlayerRank pRank = getRank( player, "default" );
+			PlayerRank pRank = getRank( player, LadderManager.LADDER_DEFAULT );
 			double playerMultipler = pRank == null ? 0 : pRank.getRankMultiplier();
 			
 			// So the actual rank multiplier that needs to be used, is based upon the 

@@ -582,7 +582,7 @@ public class PlayerManager
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				boolean isDefault = ladder.getName().equals( "default" ) ;
+    				boolean isDefault = ladder.getName().equals( LadderManager.LADDER_DEFAULT ) ;
     				
     				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank nextRank = pRank.getRank().getRankNext();
@@ -635,7 +635,7 @@ public class PlayerManager
 				isDefault && 
 					Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
 			
-			RankLadder rLadder = PrisonRanks.getInstance().getLadderManager().getLadder( "prestiges" );
+			RankLadder rLadder = PrisonRanks.getInstance().getLadderManager().getLadder( LadderManager.LADDER_PRESTIGES );
 			
 			if ( rLadder != null ) {
 				
@@ -668,7 +668,7 @@ public class PlayerManager
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				boolean isDefault = ladder.getName().equals( "default" ) ;
+    				boolean isDefault = ladder.getName().equals( LadderManager.LADDER_DEFAULT ) ;
     				
     				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank nextRank = pRank.getRank().getRankNext();
@@ -723,7 +723,7 @@ public class PlayerManager
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				boolean isDefault = ladder.getName().equals( "default" ) ;
+    				boolean isDefault = ladder.getName().equals( LadderManager.LADDER_DEFAULT ) ;
     				
     				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank rank = pRank.getRank();
@@ -788,7 +788,7 @@ public class PlayerManager
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				boolean isDefault = ladder.getName().equals( "default" ) ;
+    				boolean isDefault = ladder.getName().equals( LadderManager.LADDER_DEFAULT ) ;
     				
     				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank rank = pRank.getRank();
@@ -857,7 +857,7 @@ public class PlayerManager
 			if ( ladderName == null ||
 					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
 				
-				boolean isDefault = ladder.getName().equals( "default" ) ;
+				boolean isDefault = ladder.getName().equals( LadderManager.LADDER_DEFAULT ) ;
 				
 				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
 				Rank rank = pRank.getRank();
@@ -920,7 +920,7 @@ public class PlayerManager
 			  if ( ladderName == null ||
 					  ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
 
-				  boolean isDefault = ladder.getName().equals( "default" ) ;
+				  boolean isDefault = ladder.getName().equals( LadderManager.LADDER_DEFAULT ) ;
 				  
 				  PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
 				  Rank rank = pRank.getRank();
@@ -1292,7 +1292,7 @@ public class PlayerManager
     	//       from the language file to display in the place of the empty tag.
     	//       The idea is that if prestiges is enabled, then this is a way to 
     	//       indicate the player could prestige as the next step.
-    	if ( sb.length() == 0 && "default".equalsIgnoreCase( ladderName ) ) {
+    	if ( sb.length() == 0 && LadderManager.LADDER_DEFAULT.equalsIgnoreCase( ladderName ) ) {
     		String replacementText = lastRankMessageForDefaultLadder();
     		if ( replacementText != null && !replacementText.trim().isEmpty() ) {
     			
