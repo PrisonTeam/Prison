@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12 2022-07-01
+# 3.3.0-alpha.12 2022-07-02
+
+
+* **When the command handler starts up, it now logs the pluigin's root command and the command prefix which is used if there are duplicate commands found during bukkit command registration.**
 
 
 * **Bug fix: Placeholders search was missing the assignment of the placeholderKey, which is what would like the search results on the raw placeholders, with the actual data that is tied back to the player.**

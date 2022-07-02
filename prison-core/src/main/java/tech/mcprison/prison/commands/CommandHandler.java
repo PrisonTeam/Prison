@@ -95,6 +95,10 @@ public class CommandHandler {
       registerArgumentHandler(Player.class, new PlayerArgumentHandler());
       registerArgumentHandler(World.class, new WorldArgumentHandler());
       registerArgumentHandler(PrisonBlock.class, new BlockArgumentHandler());
+      
+      
+      Output.get().logInfo( "&3Root command: &7/%s   &3fallback-prefix: &7%s",
+      		DefaultSettings.COMMAND_PRIMARY_ROOT_COMMAND, DefaultSettings.COMMAND_FALLBACK_PREFIX );
   }
 
 	   
