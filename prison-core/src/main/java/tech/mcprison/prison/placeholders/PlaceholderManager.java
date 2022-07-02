@@ -57,7 +57,8 @@ public class PlaceholderManager {
     	
     	
     	SUPRESS,
-    	ALIAS
+    	ALIAS,
+    	ONLY_DEFAULT_OR_PRESTIGES
     	;
     	
     	private final boolean sequence;
@@ -188,6 +189,8 @@ public class PlaceholderManager {
 		prison_rr(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
 		prison_rrt(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS),
 
+		prison_rlrt(PlaceholderFlags.PLAYER, PlaceholderFlags.ALIAS, 
+											PlaceholderFlags.ONLY_DEFAULT_OR_PRESTIGES),
 
 		
 		
@@ -210,6 +213,9 @@ public class PlaceholderManager {
 		prison_rankup_rank_tag(prison_rrt, PlaceholderFlags.PLAYER),
 
 		
+		prison_rankup_linked_rank_tag(prison_rlrt, PlaceholderFlags.PLAYER, 
+											PlaceholderFlags.ONLY_DEFAULT_OR_PRESTIGES),
+		
 		
 		// Ladder aliases:
 		prison_r_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
@@ -229,6 +235,11 @@ public class PlaceholderManager {
 		
 		prison_rr_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
 		prison_rrt_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS),
+
+		
+		prison_rlrt_laddername(PlaceholderFlags.LADDERS, PlaceholderFlags.ALIAS, 
+											PlaceholderFlags.ONLY_DEFAULT_OR_PRESTIGES ),
+		
 		
 		
 		prison_rank_laddername(prison_r_laddername, PlaceholderFlags.LADDERS),
@@ -249,6 +260,10 @@ public class PlaceholderManager {
 		prison_rankup_rank_laddername(prison_rr_laddername, PlaceholderFlags.LADDERS),
 		prison_rankup_rank_tag_laddername(prison_rrt_laddername, PlaceholderFlags.LADDERS),
 	
+		
+		prison_rankup_linked_rank_tag_laddername(prison_rlrt_laddername, PlaceholderFlags.LADDERS, 
+											PlaceholderFlags.ONLY_DEFAULT_OR_PRESTIGES),
+
 		
 		
 		// player balances.  Both with and without ladders.

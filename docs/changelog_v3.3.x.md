@@ -13,6 +13,11 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12 2022-07-02
 
 
+* **Added a new set of intelligent placeholders: these show the tags for the default ladder and prestige ladder, for the "next" rank but are linked together.**
+They only apply to the default ladder and the prestige ladders.  The tags are only shown if the player has that rank, or if that will become their next rank.  
+These ONLY show the tags that will be appropriate when the next rank up.  So if the can still rankup on the default ladder, then only the default rank shows the next ranks tag.  If they are at the end of the default rank, then it will show the next rank on the prestiges ladder; if they do not have a rank there currently, then it will show the next prestige rank with the default rank showing the first rank on that ladder.
+
+
 * **When the command handler starts up, it now logs the pluigin's root command and the command prefix which is used if there are duplicate commands found during bukkit command registration.**
 
 

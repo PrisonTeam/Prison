@@ -1234,6 +1234,112 @@ public class PlayerManager
     	return sb.toString();
     }
     
+    
+    public String getPlayerNextLinkedRankTag( RankPlayer rankPlayer, String ladderName ) {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	// Must always have a default rank:
+    	PlayerRank pRankDefault = rankPlayer.getPlayerRankDefault();
+
+    	// Prestiges ladder may not be enabled, or this may be null because they have not yet prestiged:
+    	PlayerRank pRankPrestiges = rankPlayer.getPlayerRankPrestiges();
+    	
+    	if ( ladderName == null || ladderName.equalsIgnoreCase( LadderManager.LADDER_PRESTIGES ) ) {
+    		
+    		
+    		// If default rank is the last rank, or at the last prestiges rank,
+    		// then get next prestige rank for player:
+    		if ( pRankDefault.getRank().getRankNext() == null ) {
+    			
+    			// If the player does not have a prestiges rank, then get the first one:
+    			if ( pRankPrestiges == null && PrisonRanks.getInstance().getPrestigesLadder() != null ) {
+    				
+    				Rank firstPrestigeRank = PrisonRanks.getInstance().getPrestigesLadder().getLowestRank().orElse(null);
+    				if ( firstPrestigeRank != null ) {
+    					sb.append( firstPrestigeRank.getTag() );
+    				}
+    			}
+    			// Else if player has a prestige rank, and there is a next prestige rank, get it's tag:
+    			else if ( pRankPrestiges != null && pRankPrestiges.getRank().getRankNext() != null ) {
+    				sb.append( pRankPrestiges.getRank().getRankNext().getTag() );
+    				
+    			}
+    			
+    			// else, if player has a prestige rank, and it's the last one, then just get that tag:
+    			else if ( pRankPrestiges != null ) {
+    				sb.append( pRankPrestiges.getRank().getTag() );
+    				
+    			}
+    			
+    		}
+    		// else just get current prestige rank for player:
+    		else if ( pRankPrestiges != null ) {
+    			
+    			sb.append( pRankPrestiges.getRank().getTag() );
+    		}
+    	}
+    	if ( ladderName == null || ladderName.equalsIgnoreCase( LadderManager.LADDER_DEFAULT ) ) {
+
+    		boolean showFirstRank = false;
+    		boolean showNextRank = true;
+    		
+
+    		// If at last default rank, then get the default ladder's first rank's tag or just show current tag:
+    		if ( pRankDefault.getRank().getRankNext() == null ) {
+
+    			// Since the current default rank is the last, cannot show next default rank:
+    			showNextRank = false;
+    			
+    			Rank firstPrestigeRank = PrisonRanks.getInstance().getPrestigesLadder().getLowestRank().orElse(null);
+    			
+    			// If firstPrestigeRank is null, then prestiges is not enabled, so cannot show first rank:
+    			if ( firstPrestigeRank == null ) {
+    				showFirstRank = false;
+//    				showNextRank = false;
+    			}
+    			
+    			// If current presetiges is null, then use the first prestiges rank:
+    			else if ( pRankPrestiges == null ) {
+    				showFirstRank = true;
+//    				showNextRank = false;
+    				
+    			}
+    			else if ( pRankPrestiges.getRank().getRankNext() == null ) {
+    				// At the last presetiges rank... so do not reset the default ranks:
+    				showFirstRank = false;
+    			}
+    			
+    			else {
+    				// Presetige is possible, so show first default rank:
+    				showFirstRank = true;
+    				
+    			}
+    		
+    		}
+    		
+    		
+    		if ( !showFirstRank && !showNextRank ) {
+    			// Show current rank:
+    			
+    			sb.append( pRankDefault.getRank().getTag() );
+    		}
+    		else if ( showFirstRank ) {
+    			
+    			Rank firstDefaultRank = PrisonRanks.getInstance().getDefaultLadder().getLowestRank().orElse(null);
+    			sb.append( firstDefaultRank.getTag() );
+    		}
+    		else {
+    			// Show next rank:
+    			
+    			// Not at last default rank, so get next rank tag:
+    			sb.append( pRankDefault.getRank().getRankNext().getTag() );
+    		}
+    		
+    	}
+    	
+    	return sb.toString();
+    }
+    
     public String getPlayerNextRankTag( RankPlayer rankPlayer, String ladderName ) {
     	StringBuilder sb = new StringBuilder();
     	
@@ -1456,6 +1562,13 @@ public class PlayerManager
 					case prison_rrt_laddername:
 					case prison_rankup_rank_tag_laddername:
 						results = getPlayerNextRankTag( rankPlayer, ladderName );
+						break;
+						
+					case prison_rlrt:
+					case prison_rankup_linked_rank_tag:
+					case prison_rlrt_laddername:
+					case prison_rankup_linked_rank_tag_laddername:
+						results = getPlayerNextLinkedRankTag( rankPlayer, ladderName );
 						break;
 						
 					case prison_pb:
@@ -1837,6 +1950,15 @@ public class PlayerManager
     		List<RankLadder> ladders = PrisonRanks.getInstance().getLadderManager().getLadders();
     		for ( RankLadder ladder : ladders ) {
     			for ( PrisonPlaceHolders ph : placeHolders ) {
+    				
+    				if ( ph.hasFlag( PlaceholderFlags.ONLY_DEFAULT_OR_PRESTIGES ) && 
+    						!ladder.getName().equalsIgnoreCase( LadderManager.LADDER_DEFAULT ) &&
+    						!ladder.getName().equalsIgnoreCase( LadderManager.LADDER_PRESTIGES )
+    						) {
+    					// Placeholder is invalid for ladders that are not default or prestiges, so skip:
+    					continue;
+    				}
+    				
     				String key = ph.name().replace( 
     						PlaceholderManager.PRISON_PLACEHOLDER_LADDERNAME_SUFFIX, "_" + ladder.getName() ).
     							toLowerCase();

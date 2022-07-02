@@ -8,6 +8,17 @@
 # TODO Items for v3.3.0-alpha.11
 
 
+- DONE: Sellall enablement - needs to be in module.yml, but must enable it in config.yml?
+  - bug in alpha.12?
+
+
+- DONE: A placeholder in PLAYER that will show the next tag for both default and prestige. - surawesome
+  - but only show next prestige if on last rank in default.  Default will show first rank.
+  - {prison_rankup_linked_rank_tag} <- [p]\\[d]  
+  - {prison_rankup_linked_rank_tag_prestiges} {prison_rankup_linked_rank_tag_default}
+
+
+- Option to skip applying the rank cost multiplier to a specific ladder.
 
 
 - For v3.3.0 release:
