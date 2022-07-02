@@ -51,8 +51,8 @@ import tech.mcprison.prison.util.ChatColor;
 
 public class CommandHandler {
 
-	public static final String COMMAND_PRIMARY_ROOT_COMMAND = "prison";
-	public static final String COMMAND_FALLBACK_PREFIX = "prison";
+//	public static final String COMMAND_PRIMARY_ROOT_COMMAND = "prison";
+//	public static final String COMMAND_FALLBACK_PREFIX = "prison";
 	public static final String COMMAND_HELP_TEXT = "help";
 
 	
@@ -269,7 +269,7 @@ public class CommandHandler {
                 }
             }
             
-            if ( command.getLabel().equalsIgnoreCase( COMMAND_PRIMARY_ROOT_COMMAND ) && 
+            if ( command.getLabel().equalsIgnoreCase( DefaultSettings.COMMAND_PRIMARY_ROOT_COMMAND ) && 
             									rootCommands.size() > 1 ) {
             	
             	ArrayList<String> rootCommandsMessages = buildHelpRootCommands();
