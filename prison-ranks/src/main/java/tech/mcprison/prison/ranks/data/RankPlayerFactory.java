@@ -12,6 +12,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.FirstJoinHandlerMessages;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.commands.RankUpCommand;
 import tech.mcprison.prison.ranks.events.FirstJoinEvent;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.store.Document;
@@ -120,9 +121,15 @@ public class RankPlayerFactory
     		Optional<Rank> firstRank = defaultLadder.getLowestRank();
     		
     		if ( firstRank.isPresent() ) {
-    			Rank rank = firstRank.get();
+    			Rank defaultRank = firstRank.get();
     			
-    			rankPlayer.addRank( rank );
+    			
+    			RankUpCommand rankupCommands = PrisonRanks.getInstance().getRankManager().getRankupCommands();
+    			
+    			rankupCommands.setPlayerRank( rankPlayer, defaultRank );
+    			
+    			
+//    			rankPlayer.addRank( defaultRank );
     			
     			Prison.get().getEventBus().post(new FirstJoinEvent( rankPlayer ));
     			

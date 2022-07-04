@@ -13,6 +13,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12a 2022-07-04
 
 
+* **Possible bug fix with first join: it appears like it was inconsistant with running the rank commands.  Fixed by rewriting how the first join event is handled.**
+
+
+
 * **Prison backups: Added new features where it is generating a stats file in the root of the zip file which contains all of the "prison support submit" items.**
 This is just about ready, but lacking support for auto backups when prison versions change, or job submission to run auto backups at regular intervals.
 

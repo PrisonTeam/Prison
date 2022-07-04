@@ -587,6 +587,35 @@ public class RankUpCommand
         }
     }
     
+    /**
+     * Added on 2022-07-04... called from: 
+     * tech.mcprison.prison.ranks.data.RankPlayerFactory.firstJoin(RankPlayer)
+     * 
+     * @param rankPlayer
+     * @param pRank
+     */
+    public void setPlayerRankFirstJoin( RankPlayer rankPlayer, Rank pRank ) {
+    	
+    	if ( rankPlayer != null ) {
+    		
+    		List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
+    		
+    		RankupResults results = 
+    				new RankUtil().setRank(rankPlayer, rankPlayer, 
+    						pRank.getLadder().getName(), pRank.getName(), 
+    						rankPlayer.getName(), "FirstJoinEvent", 
+    						cmdTasks );
+    		
+    		// submit cmdTasks
+    		Player player = getPlayer( null, rankPlayer.getName() );
+    		submitCmdTasks( player, cmdTasks );
+    		
+    		processResults( rankPlayer, rankPlayer.getName(), results, 
+    				pRank.getName(), pRank.getLadder().getName(), 
+    				pRank.getCurrency() );
+    	}
+    }
+    
     
 	private void setPlayerRank( Player player, String rank, String ladderName, CommandSender sender ) {
 		UUID playerUuid = player.getUUID();
