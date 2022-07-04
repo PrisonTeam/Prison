@@ -794,7 +794,7 @@ public class RanksCommands
 			for ( Rank rank : ladderRanks )
 			{
 				
-				PrisonCommand.printFooter( sb );
+				Prison.get().getPrisonStatsUtil().printFooter( sb );
 				
 				JumboTextFont.makeJumboFontText( rank.getName(), sb );
 				sb.append( "\n" );
@@ -817,7 +817,7 @@ public class RanksCommands
 			for ( Rank rank : ranksExcluded )
 			{
 				
-				PrisonCommand.printFooter( sb );
+				Prison.get().getPrisonStatsUtil().printFooter( sb );
 				
 				JumboTextFont.makeJumboFontText( rank.getName(), sb );
 				sb.append( "\n" );
@@ -1128,7 +1128,7 @@ public class RanksCommands
     	
     	for ( Rank rank : rMan.getRanks() ) {
 
-    		PrisonCommand.printFooter( sb );
+    		Prison.get().getPrisonStatsUtil().printFooter( sb );
     		
     		JumboTextFont.makeJumboFontText( rank.getName(), sb );
     		sb.append( "\n" );
@@ -1138,7 +1138,7 @@ public class RanksCommands
     		sb.append( chatDisplay.toStringBuilder() );
 		}
 
-    	PrisonCommand.printFooter( sb );
+    	Prison.get().getPrisonStatsUtil().printFooter( sb );
     }
     
     

@@ -44,6 +44,7 @@ import tech.mcprison.prison.selection.SelectionManager;
 import tech.mcprison.prison.store.Database;
 import tech.mcprison.prison.troubleshoot.TroubleshootManager;
 import tech.mcprison.prison.util.EventExceptionHandler;
+import tech.mcprison.prison.util.PrisonStatsUtil;
 import tech.mcprison.prison.util.PrisonTPS;
 
 /**
@@ -102,7 +103,7 @@ public class Prison
     
     private Database metaDatabase;
     
-    
+    private PrisonStatsUtil statsUtil;
     private PrisonTPS prisonTPS;
     
     
@@ -186,6 +187,9 @@ public class Prison
         	Output.get().logInfo("&e&k!=&d Prison Plugin Terminated! &e&k=!&7" );
         	return false;
         }
+        
+        
+        this.statsUtil = new PrisonStatsUtil();
         
         
         this.prisonTPS = new PrisonTPS();
@@ -362,7 +366,13 @@ public class Prison
 
     }
     
-    public void displaySystemTPS( ChatDisplay display ) {
+    
+    
+    public PrisonStatsUtil getPrisonStatsUtil() {
+		return statsUtil;
+	}
+
+	public void displaySystemTPS( ChatDisplay display ) {
     	
         DecimalFormat iFmt = new DecimalFormat("#,##0");
         PrisonTPS prisonTPS = Prison.get().getPrisonTPS();

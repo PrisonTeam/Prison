@@ -19,12 +19,21 @@ public class PrisonBackups {
 	public static final String FILE_BACKUP_DIRECTORY_PATH = "backups";
 	
 	private File backupDirectory = null;
+	private Date backupStartDate;
+	private long startTimeNanos = 0L;
 	
+	
+	private String zipFilePrefix;
+	private Path sourceDirectoryPath;
+	private File zipFile;
 	
 	private ArrayList<File> filesBackups;
 	private ArrayList<File> filesToBackup;
 	private ArrayList<File> filesToDelete;
 	private ArrayList<File> filesWithErrors;
+	
+	private DecimalFormat dFmt = new DecimalFormat("#,##0.000");
+	private SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd_kk-mm" );
 	
 	
 	public enum BackupTypes {
@@ -46,29 +55,33 @@ public class PrisonBackups {
 	
 	public String startBackup( BackupTypes backupType, String notes ) {
 		
+		this.backupStartDate = new Date();
+		this.startTimeNanos = System.nanoTime();
+		
+		
 		// Reset collections:
 		this.filesBackups.clear();
 		this.filesToBackup.clear();
 		this.filesToDelete.clear();
 		this.filesWithErrors.clear();
 		
-		File zipFile = getNewBackupFile( backupType, notes );
+		this.zipFile = getNewBackupFile( backupType, notes );
 		
 		// Gather all files:
 		gatherFiles( Prison.get().getDataFolder() );
 		
 		
 		// The files in the zip file needs to be placed in a directory:
-		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd_hh-mm" );
-		String zipFilePrefix = "backup_" + sdFmt.format( new Date() );
+//		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd_kk-mm" );
+		String zipFilePrefix = "backup_" + sdFmt.format( backupStartDate );
+		this.zipFilePrefix = zipFilePrefix;
 		
 		// Save to zip file:
 		ZipFileIO zipIo = new ZipFileIO();
 		
-		zipIo.writeToZipFileBackups( Prison.get().getDataFolder().toPath(), 
-				zipFile, 
-				zipFilePrefix,
-				filesToBackup, filesWithErrors );
+		zipIo.writeToZipFileBackups(  
+				zipFile,
+				this );
 		
 		
 		// Print out the list of errors from generating the zip file:
@@ -109,13 +122,11 @@ public class PrisonBackups {
 		long size = zipFile.length();
 		double sizeKb = size / 1024.0;
 		
-		DecimalFormat nFmt = new DecimalFormat( "#,###.000" );
-		
 		String message = String.format( 
 				"Backup status: %s  %s KB   files: %d   temp files purged: %d   errors: %d",
 				zipFile.getAbsolutePath(),
-				nFmt.format( sizeKb ),
-				filesBackups.size(),
+				dFmt.format( sizeKb ),
+				filesToBackup.size(),
 				filesToDelete.size(),
 				filesWithErrors.size()
 				
@@ -125,6 +136,127 @@ public class PrisonBackups {
 	}
 	
 	
+	public String backupReport01() {
+		
+//		DecimalFormat dFmt = new DecimalFormat("#,##0.000");
+		long stop = System.nanoTime();
+		double runTimeMs = ( stop - getStartTimeNanos() ) / 1000000.0d;
+		
+//		long size = zipFile.length();
+//		double sizeKb = size / 1024.0;
+		
+		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd kk:mm:ss.SSS" );
+		
+		String msg1 = String.format(
+				"Prison backup:\n" +
+				"  Started:  %s \n" +
+				"  Compleated: %s    %s ms \n" +
+				"  %s   \n" +
+				"  files backed up: %d  \n" +
+				"  temp files: %d   (deleted) \n" + 
+				"  Errors: %d \n\n",
+				sdFmt.format( getBackupStartDate() ),
+				sdFmt.format( new Date() ),
+				dFmt.format( runTimeMs ),
+				zipFile.getAbsolutePath(),
+//				dFmt.format( sizeKb ),
+				filesBackups.size(),
+				filesToDelete.size(),
+				filesWithErrors.size()
+				);
+		
+		return msg1;
+	}
+	
+	public StringBuilder backupReportVersionData() {
+		return Prison.get().getPrisonStatsUtil().getSupportSubmitVersionData();
+	}
+	
+	public StringBuilder backupReportConfigsData() {
+		return Prison.get().getPrisonStatsUtil().getSupportSubmitConfigsData();
+	}
+	
+	public StringBuilder backupReportRanksData() {
+		return Prison.get().getPrisonStatsUtil().getSupportSubmitRanksData();
+	}
+	
+	public StringBuilder backupReportMinesData() {
+		return Prison.get().getPrisonStatsUtil().getSupportSubmitMinesData();
+	}
+	
+	public StringBuilder backupReportListenersData() {
+		return Prison.get().getPrisonStatsUtil().getSupportSubmitListenersData( "all" );
+	}
+	
+	/**
+	 * This generates a report of everything that was backed up.
+	 * 
+	 * @return
+	 */
+	public String backupReportListTemporalFiles() {
+		StringBuilder sb = new StringBuilder();
+		
+//		sb.append( "\n\n" );
+//		
+//		sb.append( "Files Backed Up:  \n- - - - - - - - - -\n" );
+//		for ( File file : filesToBackup ) {
+//			sb.append( printFileDetails(file, true) );
+//		}
+		
+		sb.append( "\n\n" );
+		
+		sb.append( "Files Deleted:  \n- - - - - - - - - -\n  Warning: They are only contained in this " + 
+						"zip file now. delete this zip file with caution.\n" );
+		for ( File file : filesToDelete ) {
+			sb.append( printFileDetails(file, true) );
+		}
+		
+		sb.append( "\n\n" );
+		
+		sb.append( "Files with Errors - Unable to backup:\n" +
+				   "- - - - - - - - - - - - - - - - - - -\n" );
+		for ( File file : filesWithErrors ) {
+			sb.append( printFileDetails(file, true) );
+		}
+		
+		sb.append( "\n\n" );
+		
+		sb.append( "Existing Backup Files (not included in zip):\n" +
+				   "- - - - - - - - - - - - - - - - - - - - - - \n" );
+		for ( File file : filesBackups ) {
+			sb.append( printFileDetails(file, true) );
+		}
+		
+		return sb.toString();
+	}
+	
+	private StringBuilder printFileDetails(File file, boolean includeZipPrefix ) {
+		StringBuilder sb = new StringBuilder();
+		
+		Path targetFile = getSourceDirectoryPath().relativize( file.toPath() );
+		
+		sb.append( "  " );
+		
+		if ( includeZipPrefix ) {
+			sb.append( getZipFilePrefix() );
+			sb.append( "/" );
+		}
+		
+		sb.append( targetFile.toString() );
+					
+		double size = file.length() / 1024.0d;
+		sb.append( "  " );
+		sb.append( dFmt.format(size) );
+		sb.append( " kb  " );
+		
+		sb.append( sdFmt.format( new Date( file.lastModified() ) ));
+		
+		sb.append( "\n" );
+		
+		return sb;
+	}
+
+
 	/**
 	 * File names able to be deleted:
 	 *   *.bu
@@ -212,7 +344,7 @@ public class PrisonBackups {
 		
 		String prisonVersion = Prison.get().getPlatform().getPluginVersion();
 		
-		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd_hh-mm" );
+//		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd_hh-mm" );
 		
 		String fileName = "prison_" + sdFmt.format( new Date() ) + 
 				"_v" + prisonVersion +
@@ -224,6 +356,70 @@ public class PrisonBackups {
 		
 		return file;
 	}
-	
+
+
+	public long getStartTimeNanos() {
+		return startTimeNanos;
+	}
+	public void setStartTimeNanos(long startTimeNanos) {
+		this.startTimeNanos = startTimeNanos;
+	}
+
+	public Date getBackupStartDate() {
+		return backupStartDate;
+	}
+	public void setBackupStartDate(Date backupStartDate) {
+		this.backupStartDate = backupStartDate;
+	}
+
+	public String getZipFilePrefix() {
+		return zipFilePrefix;
+	}
+	public void setZipFilePrefix(String zipFilePrefix) {
+		this.zipFilePrefix = zipFilePrefix;
+	}
+
+	public Path getSourceDirectoryPath() {
+		if ( sourceDirectoryPath == null ) {
+			sourceDirectoryPath = Prison.get().getDataFolder().toPath();
+		}
+		return sourceDirectoryPath;
+	}
+
+
+	public File getBackupDirectory() {
+		return backupDirectory;
+	}
+	public void setBackupDirectory(File backupDirectory) {
+		this.backupDirectory = backupDirectory;
+	}
+
+	public ArrayList<File> getFilesBackups() {
+		return filesBackups;
+	}
+	public void setFilesBackups(ArrayList<File> filesBackups) {
+		this.filesBackups = filesBackups;
+	}
+
+	public ArrayList<File> getFilesToBackup() {
+		return filesToBackup;
+	}
+	public void setFilesToBackup(ArrayList<File> filesToBackup) {
+		this.filesToBackup = filesToBackup;
+	}
+
+	public ArrayList<File> getFilesToDelete() {
+		return filesToDelete;
+	}
+	public void setFilesToDelete(ArrayList<File> filesToDelete) {
+		this.filesToDelete = filesToDelete;
+	}
+
+	public ArrayList<File> getFilesWithErrors() {
+		return filesWithErrors;
+	}
+	public void setFilesWithErrors(ArrayList<File> filesWithErrors) {
+		this.filesWithErrors = filesWithErrors;
+	}
 	
 }

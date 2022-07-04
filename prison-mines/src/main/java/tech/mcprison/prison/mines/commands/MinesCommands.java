@@ -29,7 +29,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
@@ -868,7 +867,7 @@ public class MinesCommands
     	
     	for ( Mine mine : mines ) {
 
-    		PrisonCommand.printFooter( sb );
+    		Prison.get().getPrisonStatsUtil().printFooter( sb );
     		
     		JumboTextFont.makeJumboFontText( mine.getName(), sb );
     		sb.append( "\n" );
@@ -882,7 +881,7 @@ public class MinesCommands
     		sb.append( chatDisplay.toStringBuilder() );
 		}
 
-    	PrisonCommand.printFooter( sb );
+    	Prison.get().getPrisonStatsUtil().printFooter( sb );
     }
     
     

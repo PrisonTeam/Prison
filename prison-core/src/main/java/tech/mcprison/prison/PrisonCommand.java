@@ -101,7 +101,7 @@ public class PrisonCommand
     		options = "basic";
     	}
     	
-    	ChatDisplay display = displayVersion(options);
+    	ChatDisplay display = Prison.get().getPrisonStatsUtil().displayVersion(options);
     	
         display.send(sender);
         
@@ -253,195 +253,195 @@ public class PrisonCommand
     }
     
     
-    	
-    public ChatDisplay displayVersion(String options) {
-    
-    	boolean isBasic = options == null || "basic".equalsIgnoreCase( options );
-    	
-        ChatDisplay display = new ChatDisplay("/prison version");
-        display.addText("&7Prison Version: %s", Prison.get().getPlatform().getPluginVersion());
-
-        display.addText("&7Running on Platform: %s", Prison.get().getPlatform().getClass().getName());
-        display.addText("&7Minecraft Version: %s", Prison.get().getMinecraftVersion());
-
-        
-        // System stats:
-        display.addText("");
-        
-        Prison.get().displaySystemSettings( display );
-        
-        Prison.get().displaySystemTPS( display );
-
-        
-        display.addText("");
-
-
-        // This generates the module listing, the autoFeatures overview, 
-        // the integrations listings, and the plugins listings.
-        boolean showLaddersAndRanks = true;
-        Prison.get().getPlatform().prisonVersionFeatures( display, isBasic, showLaddersAndRanks );
-
-        
-        
-//        List<String> features = Prison.get().getPlatform().getActiveFeatures();
-//        if ( features.size() > 0 ) {
-//        	
-//        	display.addText("");
-//        	for ( String feature : features ) {
-//        		
-//        		if ( !feature.startsWith( "+" ) ) {
-//        			
-//        			display.addText( feature );
-//        		}
-//        		else if ( !isBasic ) {
-//        			
-//        			display.addText( feature.substring( 1 ) );
-//        		}
-//        	}
-//        }
+//    	
+//    public ChatDisplay displayVersion(String options) {
+//    
+//    	boolean isBasic = options == null || "basic".equalsIgnoreCase( options );
+//    	
+//        ChatDisplay display = new ChatDisplay("/prison version");
+//        display.addText("&7Prison Version: %s", Prison.get().getPlatform().getPluginVersion());
+//
+//        display.addText("&7Running on Platform: %s", Prison.get().getPlatform().getClass().getName());
+//        display.addText("&7Minecraft Version: %s", Prison.get().getMinecraftVersion());
+//
 //        
-//        
+//        // System stats:
 //        display.addText("");
 //        
-//        // Active Modules:
-//        display.addText("&7Prison's root Command: &3/prison");
+//        Prison.get().displaySystemSettings( display );
 //        
-//        for ( Module module : Prison.get().getModuleManager().getModules() ) {
-//        	
-//        	display.addText( "&7Module: %s : %s %s", module.getName(), 
-//        			module.getStatus().getStatusText(),
-//        			(module.getStatus().getStatus() == ModuleStatus.Status.FAILED ? 
-//        					"[" + module.getStatus().getMessage() + "]" : "")
-//        			);
-//        	// display.addText( ".   &7Base Commands: %s", module.getBaseCommands() );
-//        }
-//        
-//        List<String> disabledModules = Prison.get().getModuleManager().getDisabledModules();
-//        if ( disabledModules.size() > 0 ) {
-//        	display.addText( "&7Disabled Module%s:", (disabledModules.size() > 1 ? "s" : ""));
-//        	for ( String disabledModule : Prison.get().getModuleManager().getDisabledModules() ) {
-//        		display.addText( ".   &cDisabled Module:&7 %s. Related commands and placeholders are non-functional. ",
-//        				disabledModule );
-//        	}
-//        }
+//        Prison.get().displaySystemTPS( display );
+//
 //        
 //        display.addText("");
-//        display.addText("&7Integrations:");
 //
-//        IntegrationManager im = Prison.get().getIntegrationManager();
-//        String permissions =
-//        		(im.hasForType(IntegrationType.PERMISSION) ?
-//                " " + im.getForType(IntegrationType.PERMISSION).get().getDisplayName() :
-//                "None");
 //
-//        display.addText(". . &7Permissions: " + permissions);
+//        // This generates the module listing, the autoFeatures overview, 
+//        // the integrations listings, and the plugins listings.
+//        boolean showLaddersAndRanks = true;
+//        Prison.get().getPlatform().prisonVersionFeatures( display, isBasic, showLaddersAndRanks );
 //
-//        String economy =
-//        		(im.hasForType(IntegrationType.ECONOMY) ?
-//                " " + im.getForType(IntegrationType.ECONOMY).get().getDisplayName() : 
-//                "None");
-//
-//        display.addText(". . &7Economy: " + economy);
 //        
 //        
-//        List<DisplayComponent> integrationRows = im.getIntegrationComponents( isBasic );
-//        for ( DisplayComponent component : integrationRows )
-//		{
-//        	display.addComponent( component );
-//		}
-//        
-//        
-//        display.addText("");
-//        display.addText("&7Locale Settings:");
-//        
-//        for ( String localeInfo : Prison.get().getLocaleLoadInfo() ) {
-//			display.addText( ". . " + localeInfo );
-//		}
-        
-//        
-//        Prison.get().getPlatform().identifyRegisteredPlugins();
-//        
-//        // NOTE: This list of plugins is good enough and the detailed does not have all the info.
-//        // Display all loaded plugins:
-//        if ( getRegisteredPlugins().size() > 0 ) {
-//        	display.addText("");
-//        	display.addText( "&7Registered Plugins: " );
-//        	
-//        	List<String> plugins = getRegisteredPlugins();
-//        	Collections.sort( plugins );
-//        	List<String> plugins2Cols = Text.formatColumnsFromList( plugins, 2 );
-//        	
-//        	for ( String rp : plugins2Cols ) {
-//				
-//        		display.addText( rp );
-//			}
-//        	
-////        	StringBuilder sb = new StringBuilder();
-////        	for ( String plugin : getRegisteredPlugins() ) {
-////        		if ( sb.length() == 0) {
-////        			sb.append( ". " );
-////        			sb.append( plugin );
-////        		} else {
-////        			sb.append( ",  " );
-////        			sb.append( plugin );
-////        			display.addText( sb.toString() );
-////        			sb.setLength( 0 );
-////        		}
-////        	}
-////        	if ( sb.length() > 0 ) {
-////        		display.addText( sb.toString());
-////        	}
-//        }
-//        
-//        // This version of plugins does not have all the registered commands:
-////        // The new plugin listings:
-////        if ( getRegisteredPluginData().size() > 0 ) {
-////        	display.text( "&7Registered Plugins Detailed: " );
-////        	StringBuilder sb = new StringBuilder();
-////        	Set<String> keys = getRegisteredPluginData().keySet();
+////        List<String> features = Prison.get().getPlatform().getActiveFeatures();
+////        if ( features.size() > 0 ) {
 ////        	
-////        	for ( String key : keys ) {
-////        		RegisteredPluginsData plugin = getRegisteredPluginData().get(key);
+////        	display.addText("");
+////        	for ( String feature : features ) {
 ////        		
-////        		if ( sb.length() == 0) {
-////        			sb.append( "  " );
-////        			sb.append( plugin.formatted() );
-////        		} else {
-////        			sb.append( ",  " );
-////        			sb.append( plugin.formatted() );
-////        			display.text( sb.toString() );
-////        			sb.setLength( 0 );
+////        		if ( !feature.startsWith( "+" ) ) {
+////        			
+////        			display.addText( feature );
+////        		}
+////        		else if ( !isBasic ) {
+////        			
+////        			display.addText( feature.substring( 1 ) );
 ////        		}
 ////        	}
-////        	if ( sb.length() > 0 ) {
-////        		display.text( sb.toString());
+////        }
+////        
+////        
+////        display.addText("");
+////        
+////        // Active Modules:
+////        display.addText("&7Prison's root Command: &3/prison");
+////        
+////        for ( Module module : Prison.get().getModuleManager().getModules() ) {
+////        	
+////        	display.addText( "&7Module: %s : %s %s", module.getName(), 
+////        			module.getStatus().getStatusText(),
+////        			(module.getStatus().getStatus() == ModuleStatus.Status.FAILED ? 
+////        					"[" + module.getStatus().getMessage() + "]" : "")
+////        			);
+////        	// display.addText( ".   &7Base Commands: %s", module.getBaseCommands() );
+////        }
+////        
+////        List<String> disabledModules = Prison.get().getModuleManager().getDisabledModules();
+////        if ( disabledModules.size() > 0 ) {
+////        	display.addText( "&7Disabled Module%s:", (disabledModules.size() > 1 ? "s" : ""));
+////        	for ( String disabledModule : Prison.get().getModuleManager().getDisabledModules() ) {
+////        		display.addText( ".   &cDisabled Module:&7 %s. Related commands and placeholders are non-functional. ",
+////        				disabledModule );
 ////        	}
 ////        }
-//        
-//        
-////        RegisteredPluginsData plugin = getRegisteredPluginData().get( "Prison" );
-////        String pluginDetails = plugin.getdetails();
 ////        
-////        display.text( pluginDetails );
+////        display.addText("");
+////        display.addText("&7Integrations:");
+////
+////        IntegrationManager im = Prison.get().getIntegrationManager();
+////        String permissions =
+////        		(im.hasForType(IntegrationType.PERMISSION) ?
+////                " " + im.getForType(IntegrationType.PERMISSION).get().getDisplayName() :
+////                "None");
+////
+////        display.addText(". . &7Permissions: " + permissions);
+////
+////        String economy =
+////        		(im.hasForType(IntegrationType.ECONOMY) ?
+////                " " + im.getForType(IntegrationType.ECONOMY).get().getDisplayName() : 
+////                "None");
+////
+////        display.addText(". . &7Economy: " + economy);
+////        
+////        
+////        List<DisplayComponent> integrationRows = im.getIntegrationComponents( isBasic );
+////        for ( DisplayComponent component : integrationRows )
+////		{
+////        	display.addComponent( component );
+////		}
+////        
+////        
+////        display.addText("");
+////        display.addText("&7Locale Settings:");
+////        
+////        for ( String localeInfo : Prison.get().getLocaleLoadInfo() ) {
+////			display.addText( ". . " + localeInfo );
+////		}
 //        
-//
-////        if ( !isBasic ) {
-////        	Prison.get().getPlatform().dumpEventListenersBlockBreakEvents();
+////        
+////        Prison.get().getPlatform().identifyRegisteredPlugins();
+////        
+////        // NOTE: This list of plugins is good enough and the detailed does not have all the info.
+////        // Display all loaded plugins:
+////        if ( getRegisteredPlugins().size() > 0 ) {
+////        	display.addText("");
+////        	display.addText( "&7Registered Plugins: " );
+////        	
+////        	List<String> plugins = getRegisteredPlugins();
+////        	Collections.sort( plugins );
+////        	List<String> plugins2Cols = Text.formatColumnsFromList( plugins, 2 );
+////        	
+////        	for ( String rp : plugins2Cols ) {
+////				
+////        		display.addText( rp );
+////			}
+////        	
+//////        	StringBuilder sb = new StringBuilder();
+//////        	for ( String plugin : getRegisteredPlugins() ) {
+//////        		if ( sb.length() == 0) {
+//////        			sb.append( ". " );
+//////        			sb.append( plugin );
+//////        		} else {
+//////        			sb.append( ",  " );
+//////        			sb.append( plugin );
+//////        			display.addText( sb.toString() );
+//////        			sb.setLength( 0 );
+//////        		}
+//////        	}
+//////        	if ( sb.length() > 0 ) {
+//////        		display.addText( sb.toString());
+//////        	}
+////        }
+////        
+////        // This version of plugins does not have all the registered commands:
+//////        // The new plugin listings:
+//////        if ( getRegisteredPluginData().size() > 0 ) {
+//////        	display.text( "&7Registered Plugins Detailed: " );
+//////        	StringBuilder sb = new StringBuilder();
+//////        	Set<String> keys = getRegisteredPluginData().keySet();
+//////        	
+//////        	for ( String key : keys ) {
+//////        		RegisteredPluginsData plugin = getRegisteredPluginData().get(key);
+//////        		
+//////        		if ( sb.length() == 0) {
+//////        			sb.append( "  " );
+//////        			sb.append( plugin.formatted() );
+//////        		} else {
+//////        			sb.append( ",  " );
+//////        			sb.append( plugin.formatted() );
+//////        			display.text( sb.toString() );
+//////        			sb.setLength( 0 );
+//////        		}
+//////        	}
+//////        	if ( sb.length() > 0 ) {
+//////        		display.text( sb.toString());
+//////        	}
+//////        }
+////        
+////        
+//////        RegisteredPluginsData plugin = getRegisteredPluginData().get( "Prison" );
+//////        String pluginDetails = plugin.getdetails();
+//////        
+//////        display.text( pluginDetails );
+////        
+////
+//////        if ( !isBasic ) {
+//////        	Prison.get().getPlatform().dumpEventListenersBlockBreakEvents();
+//////        }
+////        
+////        
+////        Prison.get().getPlatform().getWorldLoadErrors( display );
+////
+////        if ( !isBasic && getPrisonStartupDetails().size() > 0 ) {
+////        	display.addText("");
+////        	
+////        	for ( String msg : getPrisonStartupDetails() ) {
+////				display.addText( msg );
+////			}
 ////        }
 //        
-//        
-//        Prison.get().getPlatform().getWorldLoadErrors( display );
-//
-//        if ( !isBasic && getPrisonStartupDetails().size() > 0 ) {
-//        	display.addText("");
-//        	
-//        	for ( String msg : getPrisonStartupDetails() ) {
-//				display.addText( msg );
-//			}
-//        }
-        
-        return display;
-    }
+//        return display;
+//    }
 
 
 	/**
@@ -1236,8 +1236,7 @@ public class PrisonCommand
     	}
     	
     	
-    	ChatDisplay display = displayVersion("ALL");
-		StringBuilder text = display.toStringBuilder();
+    	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitVersionData();
 		
 		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
 		
@@ -1257,6 +1256,8 @@ public class PrisonCommand
 		
     	
     }
+
+
     
     @Command(identifier = "prison support submit configs", 
     		description = "For Prison support: This will copy the contents of Prison's config " +
@@ -1276,23 +1277,7 @@ public class PrisonCommand
     		return;
     	}
     	
-    	Prison.get().getPlatform().saveResource( "plugin.yml", true );
-    	
-    	String fileNames = "config.yml plugin.yml autoFeaturesConfig.yml modules.yml module_conf/mines/config.json " +
-    			"SellAllConfig.yml GuiConfig.yml backpacks/backpacksconfig.yml";
-    	List<File> files = convertNamesToFiles( fileNames );
-    	
-    	
-    	StringBuilder text = new StringBuilder();
-
-    	for ( File file : files ) {
-			
-    		addFileToText( file, text );
-    		
-    		if ( file.getName().equalsIgnoreCase( "plugin.yml" ) ) {
-    			file.delete();
-    		}
-		}
+    	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitConfigsData();
     	
 
     	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
@@ -1313,7 +1298,8 @@ public class PrisonCommand
     	
     	
     }
-    
+
+
     @Command(identifier = "prison support submit ranks", 
     		description = "For Prison support: This will copy the contents of Prison's " +
     				"ladders and ranks configs to paste.helpch.at so it can be " +
@@ -1331,22 +1317,7 @@ public class PrisonCommand
     	}
     	
     	
-    	List<File> files = listFiles( "data_storage/ranksDb/ladders/", ".json" );
-    	files.addAll( listFiles( "data_storage/ranksDb/ranks/", ".json" ) );
-    	
-    	
-    	StringBuilder text = new StringBuilder();
-    	
-    	
-    	text.append( Prison.get().getPlatform().getRanksListString() );
-    	printFooter( text );
- 
-    	
-    	for ( File file : files ) {
-    		
-    		addFileToText( file, text );
-    		
-    	}
+    	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitRanksData();
     	
     	
     	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
@@ -1367,6 +1338,7 @@ public class PrisonCommand
     	
     	
     }
+
     
     
     @Command(identifier = "prison support submit mines", 
@@ -1385,30 +1357,8 @@ public class PrisonCommand
     		return;
     	}
     	
-    	
-    	List<File> files = listFiles( "data_storage/mines/mines/", ".json" );
-    	Collections.sort( files );
-    	
-    	StringBuilder text = new StringBuilder();
-    	
-    	text.append( "\n" );
-    	text.append( "Table of contents:\n" );
-    	text.append( "  1. Mine list - All mines including virtual mines: /mines list all\n" );
-    	text.append( "  2. Mine info - All mines: /mines info <mineName> all\n" );
-    	text.append( "  3. Mine files - Raw JSON dump of all mine configuration files.\n" );
-    	text.append( "\n" );
-    	
-    	// Display a list of all mines, then display the /mines info <mineName> all for each:
-    	text.append( Prison.get().getPlatform().getMinesListString() );
-    	printFooter( text );
-    	
-    	
-    	
-    	for ( File file : files ) {
-    		
-    		addFileToText( file, text );
-    		
-    	}
+ 
+    	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitMinesData();
     	
     	
     	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
@@ -1429,83 +1379,162 @@ public class PrisonCommand
     	
     	
     }
+
+//    
+//	private StringBuilder getSupportSubmitVersionData() {
+//		ChatDisplay display = displayVersion("ALL");
+//		StringBuilder text = display.toStringBuilder();
+//		return text;
+//	}
+//    
+//	private StringBuilder getSupportSubmitConfigsData() {
+//		Prison.get().getPlatform().saveResource( "plugin.yml", true );
+//    	
+//    	String fileNames = "config.yml plugin.yml backups/versions.txt " + 
+//    			"autoFeaturesConfig.yml blockConvertersConfig.json " + 
+//    			"modules.yml module_conf/mines/config.json module_conf/mines/mineBombsConfig.json " +
+//    			"SellAllConfig.yml GuiConfig.yml backpacks/backpacksconfig.yml";
+//    	List<File> files = convertNamesToFiles( fileNames );
+//    	
+//    	
+//    	StringBuilder text = new StringBuilder();
+//
+//    	for ( File file : files ) {
+//			
+//    		addFileToText( file, text );
+//    		
+//    		if ( file.getName().equalsIgnoreCase( "plugin.yml" ) ) {
+//    			file.delete();
+//    		}
+//		}
+//		return text;
+//	}
+//    
+//
+//	private StringBuilder getSupportSubmitRanksData() {
+//		List<File> files = listFiles( "data_storage/ranksDb/ladders/", ".json" );
+//    	files.addAll( listFiles( "data_storage/ranksDb/ranks/", ".json" ) );
+//    	
+//    	
+//    	StringBuilder text = new StringBuilder();
+//    	
+//    	
+//    	text.append( Prison.get().getPlatform().getRanksListString() );
+//    	printFooter( text );
+// 
+//    	
+//    	for ( File file : files ) {
+//    		
+//    		addFileToText( file, text );
+//    		
+//    	}
+//		return text;
+//	}
+//	
+//	
+//	private StringBuilder getSupportSubmitMinesData() {
+//		List<File> files = listFiles( "data_storage/mines/mines/", ".json" );
+//    	Collections.sort( files );
+//    	
+//    	StringBuilder text = new StringBuilder();
+//    	
+//    	text.append( "\n" );
+//    	text.append( "Table of contents:\n" );
+//    	text.append( "  1. Mine list - All mines including virtual mines: /mines list all\n" );
+//    	text.append( "  2. Mine info - All mines: /mines info <mineName> all\n" );
+//    	text.append( "  3. Mine files - Raw JSON dump of all mine configuration files.\n" );
+//    	text.append( "\n" );
+//    	
+//    	// Display a list of all mines, then display the /mines info <mineName> all for each:
+//    	text.append( Prison.get().getPlatform().getMinesListString() );
+//    	printFooter( text );
+//    	
+//    	
+//    	
+//    	for ( File file : files ) {
+//    		
+//    		addFileToText( file, text );
+//    		
+//    	}
+//		return text;
+//	}
     
     
-    private List<File> listFiles( String path, String fileSuffix ) {
-    	List<File> files = new ArrayList<>();
-		
-		File dataFolder = Prison.get().getDataFolder();
-		File filePaths = new File( dataFolder, path );
-		
-		for ( File file : filePaths.listFiles() ) {
-			if ( file.getName().toLowerCase().endsWith( fileSuffix.toLowerCase() )) {
-				files.add( file );
-			}
-		}
-		
-		return files;
-	}
-
-	private void addFileToText( File file, StringBuilder sb )
-	{
-    	DecimalFormat dFmt = new DecimalFormat("#,##0");
-		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
-    	
-    	sb.append( "\n" );
-
-    	JumboTextFont.makeJumboFontText( file.getName(), sb );
-    	
-    	sb.append( "\n" );
-    	
-		sb.append( "File Name:   " ).append( file.getName() ).append( "\n" );
-		sb.append( "File Path:   " ).append( file.getAbsolutePath() ).append( "\n" );
-		sb.append( "File Size:   " ).append( dFmt.format( file.length() ) ).append( " bytes\n" );
-		sb.append( "File Date:   " ).append( sdFmt.format( new Date(file.lastModified()) ) ).append( " bytes\n" );
-		sb.append( "File Stats:  " )
-					.append( file.exists() ? "EXISTS " : "" )
-					.append( file.canRead() ? "READABLE " : "" )
-					.append( file.canWrite() ? "WRITEABLE " : "" )
-					.append( "\n" );
-		
-		sb.append( "\n" );
-		sb.append( "=== ---  ---   ---   ---   ---   ---   ---   ---  --- ===\n" );
-		sb.append( "\n" );
-
-		
-		if ( file.exists() && file.canRead() ) {
-			readFileToStringBulider( file, sb );
-		}
-		else {
-			sb.append( "Warning: The file is not readable so it cannot be included.\n" );
-		}
-		
-		
-		printFooter( sb );
-	}
+//    private List<File> listFiles( String path, String fileSuffix ) {
+//    	List<File> files = new ArrayList<>();
+//		
+//		File dataFolder = Prison.get().getDataFolder();
+//		File filePaths = new File( dataFolder, path );
+//		
+//		for ( File file : filePaths.listFiles() ) {
+//			if ( file.getName().toLowerCase().endsWith( fileSuffix.toLowerCase() )) {
+//				files.add( file );
+//			}
+//		}
+//		
+//		return files;
+//	}
+//
+//	private void addFileToText( File file, StringBuilder sb )
+//	{
+//    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+//		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+//    	
+//    	sb.append( "\n" );
+//
+//    	JumboTextFont.makeJumboFontText( file.getName(), sb );
+//    	
+//    	sb.append( "\n" );
+//    	
+//		sb.append( "File Name:   " ).append( file.getName() ).append( "\n" );
+//		sb.append( "File Path:   " ).append( file.getAbsolutePath() ).append( "\n" );
+//		sb.append( "File Size:   " ).append( dFmt.format( file.length() ) ).append( " bytes\n" );
+//		sb.append( "File Date:   " ).append( sdFmt.format( new Date(file.lastModified()) ) ).append( " bytes\n" );
+//		sb.append( "File Stats:  " )
+//					.append( file.exists() ? "EXISTS " : "" )
+//					.append( file.canRead() ? "READABLE " : "" )
+//					.append( file.canWrite() ? "WRITEABLE " : "" )
+//					.append( "\n" );
+//		
+//		sb.append( "\n" );
+//		sb.append( "=== ---  ---   ---   ---   ---   ---   ---   ---  --- ===\n" );
+//		sb.append( "\n" );
+//
+//		
+//		if ( file.exists() && file.canRead() ) {
+//			readFileToStringBulider( file, sb );
+//		}
+//		else {
+//			sb.append( "Warning: The file is not readable so it cannot be included.\n" );
+//		}
+//		
+//		
+//		printFooter( sb );
+//	}
 	
-	public static void printFooter( StringBuilder sb ) {
-		
-		sb.append( "\n\n\n" );
-		sb.append( "===  ---  ===   ---   ===   ---   ===   ---   ===  ---  ===\n" );
-		sb.append( "=== # # ### # # # ### # # # ### # # # ### # # # ### # # ===\n" );
-		sb.append( "===  ---  ===   ---   ===   ---   ===   ---   ===  ---  ===\n" );
-		sb.append( "\n\n" );
-		
-	}
-
-	private List<File> convertNamesToFiles( String fileNames )
-	{
-		List<File> files = new ArrayList<>();
-		
-		File dataFolder = Prison.get().getDataFolder();
-		
-		for ( String fileName : fileNames.split( " " )) {
-			File file = new File( dataFolder, fileName );
-			files.add( file );
-		}
-		
-		return files;
-	}
+//	public static void printFooter( StringBuilder sb ) {
+//		
+//		sb.append( "\n\n\n" );
+//		sb.append( "===  ---  ===   ---   ===   ---   ===   ---   ===  ---  ===\n" );
+//		sb.append( "=== # # ### # # # ### # # # ### # # # ### # # # ### # # ===\n" );
+//		sb.append( "===  ---  ===   ---   ===   ---   ===   ---   ===  ---  ===\n" );
+//		sb.append( "\n\n" );
+//		
+//	}
+//
+//	private List<File> convertNamesToFiles( String fileNames )
+//	{
+//		List<File> files = new ArrayList<>();
+//		
+//		File dataFolder = Prison.get().getDataFolder();
+//		
+//		for ( String fileName : fileNames.split( " " )) {
+//			File file = new File( dataFolder, fileName );
+//			files.add( file );
+//		}
+//		
+//		return files;
+//	}
 
 	@Command(identifier = "prison support submit latestLog", 
     		description = "For Prison support: This will copy the contents of `logs/latest.log` " +
@@ -1591,6 +1620,47 @@ public class PrisonCommand
 		}
 	}
     
+    
+    @Command(identifier = "prison support submit listeners", 
+    		description = "For Prison support: This will copy the server's active listeners " +
+    				"for blockBreak, chat, and playerInteracts to paste.helpch.at so it can be " +
+    				"easily shared with Prison's support staff.", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportSubmitListeners(CommandSender sender
+    		) {
+    	
+    	
+    	if ( getSupportName() == null || getSupportName().trim().isEmpty() ) {
+    		sender.sendMessage( "The support name needs to be set prior to using this command." );
+    		sender.sendMessage( "Use &7/prison support setSupportName help" );
+    		
+    		return;
+    	}
+    	
+ 
+    	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitListenersData( "all" );
+    	
+    	PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
+    	
+    	String helpURL = pasteChat.post( text.toString() );
+    	
+    	getSupportURLs().put( "Submit Listeners:", helpURL );
+    	
+    	if ( helpURL != null ) {
+    		
+    		sender.sendMessage( "Prison's support information has been pasted. Copy and " +
+    				"paste this URL in to Prison's Discord server." );
+    		sender.sendMessage( String.format( "Paste this URL: %s", helpURL ));
+    	}
+    	else {
+    		sender.sendMessage( "There was an error trying to generate the paste.helpch.at URL." );
+    	}
+    	
+    	
+    }
+
+
+    
 
 	@Command(identifier = "prison support listeners", 
     		description = "For Prison support: Provide a 'dump' of all event listeners.", 
@@ -1600,7 +1670,7 @@ public class PrisonCommand
 			description = "Provides a detailed list of all registered event listeners for" +
 					"the various event types.  BlockBreak listeners will include all " +
 					"listeners that are being monitored within auto features. " +
-				"[blockBreak, traceBlockBreak, chat, playerInteract]"
+				"[all, blockBreak, chat, playerInteract]"
 					) String listener
     		) {
 		
@@ -1610,29 +1680,31 @@ public class PrisonCommand
 			return;
 		}
 		
-		String results = null;
+		String results = Prison.get().getPrisonStatsUtil().getSupportSubmitListenersData( listener ).toString();
 		
-    	if ( "blockBreak".equalsIgnoreCase( listener ) ) {
-    		
-    		results = Prison.get().getPlatform().dumpEventListenersBlockBreakEvents();
-    	}
-    	
-    	if ( "chat".equalsIgnoreCase( listener ) ) {
-    		
-    		results = Prison.get().getPlatform().dumpEventListenersPlayerChatEvents();
-    	}
-    	
-    	if ( "traceBlockBreak".equalsIgnoreCase( listener ) ) {
-    		
-    		Prison.get().getPlatform().traceEventListenersBlockBreakEvents( sender );
-    		
-    		return;
-    	}
-    	
-    	if ( "playerInteract".equalsIgnoreCase( listener ) ) {
-    		
-    		results = Prison.get().getPlatform().dumpEventListenersPlayerInteractEvents();
-    	}
+//		String results = null;
+//		
+//    	if ( "blockBreak".equalsIgnoreCase( listener ) ) {
+//    		
+//    		results = Prison.get().getPlatform().dumpEventListenersBlockBreakEvents();
+//    	}
+//    	
+//    	if ( "chat".equalsIgnoreCase( listener ) ) {
+//    		
+//    		results = Prison.get().getPlatform().dumpEventListenersPlayerChatEvents();
+//    	}
+//    	
+//    	if ( "traceBlockBreak".equalsIgnoreCase( listener ) ) {
+//    		
+//    		Prison.get().getPlatform().traceEventListenersBlockBreakEvents( sender );
+//    		
+//    		return;
+//    	}
+//    	
+//    	if ( "playerInteract".equalsIgnoreCase( listener ) ) {
+//    		
+//    		results = Prison.get().getPlatform().dumpEventListenersPlayerInteractEvents();
+//    	}
     	
 		if ( results != null ) {
 
