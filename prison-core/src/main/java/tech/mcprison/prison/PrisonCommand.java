@@ -35,6 +35,8 @@ import java.util.UUID;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.backups.PrisonBackups;
+import tech.mcprison.prison.backups.PrisonBackups.BackupTypes;
 import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
@@ -1642,6 +1644,28 @@ public class PrisonCommand
 
 	} 
     
+	
+    @Command(identifier = "prison support backup", 
+    		description = "This will make a backup of all Prison settings by creating a new " +
+    				"zip file which will be stored in the directory plugins/Prison/backups.  " +
+    				"After creating the backup, this will delete all temp files, backup files, etc.. " +
+    				"since they will be included in the backup.", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportBackupPrison( CommandSender sender, 
+
+    		@Wildcard(join=true)
+    		@Arg(name = "notes", description = "Optional short note to append to the file name. Only the "
+    				+ "first 20 characters will be used.",
+    				def = "") String notes ) {
+    	
+    	PrisonBackups prisonBackup = new PrisonBackups();
+    	
+    	String message = prisonBackup.startBackup( BackupTypes.manual, notes );
+    	
+    	sender.sendMessage( message );
+    	sender.sendMessage( "Backup finished." );
+
+    }
 	
     @Command(identifier = "prison tokens balance", 
     		description = "Prison tokens: a player's current balance.", 

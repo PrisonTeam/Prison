@@ -10,7 +10,11 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12a 2022-07-02
+# 3.3.0-alpha.12a 2022-07-03
+
+
+* **Setup a prison backup command that will backup all files within the prison plugin folder.**
+When finished, it will delete all temp files since they have been included in the backup.
 
 
 * **v3.3.0-alpha.12a**
