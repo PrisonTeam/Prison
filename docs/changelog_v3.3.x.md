@@ -10,7 +10,11 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12a 2022-07-05
+# 3.3.0-alpha.12b 2022-07-05
+
+
+* **v3.3.0-alpha.12b**
+- Added the fix for the placeholders. See next note.
 
 
 * **Fixed an issue with placeholders not be properly evaluated; there were 3 sections and they were combined in to one so it would not bypass any.**
