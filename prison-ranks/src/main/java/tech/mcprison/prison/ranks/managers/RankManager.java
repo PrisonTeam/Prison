@@ -843,26 +843,26 @@ public class RankManager
 					
 					
 					
-				default:
-					
-					identifier.setFoundAMatch( false );
-					
-					Output.get().logInfo(
-							"RankManager TranslateRanksPlaceHolder: Warning: a placeholder '%s' (%s) was selected " +
-							"to be processed in this manager, but the placeholder is not included in the swich. " +
-							"Please report to support team.",
-							identifier.getPlaceholderKey().getPlaceholder().name(),
-							PlaceholderFlags.STATSPLAYERS.name() );
-					
-					break;
-			}
-		}
-		
-		else if ( placeHolder.hasFlag( PlaceholderFlags.STATSPLAYERS ) ) {
-				
-			identifier.setFoundAMatch( true );
-			
-			switch ( placeHolder ) {
+//				default:
+//					
+//					identifier.setFoundAMatch( false );
+//					
+//					Output.get().logInfo(
+//							"RankManager TranslateRanksPlaceHolder: Warning: a placeholder '%s' (%s) was selected " +
+//							"to be processed in this manager, but the placeholder is not included in the swich. " +
+//							"Please report to support team. (1)",
+//							identifier.getPlaceholderKey().getPlaceholder().name(),
+//							PlaceholderFlags.STATSPLAYERS.name() );
+//					
+//					break;
+//			}
+//		}
+//		
+//		else if ( placeHolder.hasFlag( PlaceholderFlags.STATSPLAYERS ) ) {
+//				
+//			identifier.setFoundAMatch( true );
+//			
+//			switch ( placeHolder ) {
 					
 				case prison_top_player_line1_headers__tp:
 				case prison_tpl1h__tp:
@@ -1081,34 +1081,81 @@ public class RankManager
 				break;
 				
 
+				
+			case prison_top_rank_balance_name_nnn_rankname: 
+			case prison_trbn_nnn_rankname:
+				{
+					StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( 1 );
+					if ( stats != null ) {
+						
+						results = stats.getPlayer() == null ? "" : stats.getPlayer().getName();
+					}
+					else {
+						results = "";
+					}
+				}
+				
+				break;
+				
+			case prison_top_rank_balance_score_nnn_rankname:
+			case prison_trbs_nnn_rankname:
+				{
+					StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( 1 );
+					if ( stats != null ) {
+						
+						results = dFmt.format( stats.getScore());
+					}
+					else {
+						results = "";
+					}
+				}
+				
+				break;
+				
+			case prison_top_rank_balance_balance_nnn_rankname:
+			case prison_trbb_nnn_rankname:
+				{
+					StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( 1 );
+					if ( stats != null ) {
+						
+						results = stats.getPlayer() == null ? "" :
+									dFmt.format( stats.getPlayer().getBalance( rank.getCurrency()) );
+					}
+					else {
+						results = "";
+					}
+				}
+				
+				break;
+
 
 					
-				default:
-					
-					identifier.setFoundAMatch( false );
-					
-					break;
-			}
-			
-			if ( attributeText != null ) {
-				
-				results = attributeText.format( results );
-				
-				Output.get().logInfo(
-						"RankManager TranslateRanksPlaceHolder: Warning: a placeholder '%s' (%s) was selected " +
-						"to be processed in this manager, but the placeholder is not included in the swich. " +
-						"Please report to support team.",
-						identifier.getPlaceholderKey().getPlaceholder().name(),
-						PlaceholderFlags.STATSPLAYERS.name() );
-			}
-		}
-
-		else if ( rank != null ) {
-			
-			identifier.setFoundAMatch( true );
-			
-			switch ( placeHolder ) {
-				
+//				default:
+//					
+//					identifier.setFoundAMatch( false );
+//					
+//					break;
+//			}
+//			
+//			if ( attributeText != null ) {
+//				
+//				results = attributeText.format( results );
+//				
+//				Output.get().logInfo(
+//						"x` Warning: a placeholder '%s' (%s) was selected " +
+//						"to be processed in this manager, but the placeholder is not included in the swich. " +
+//						"Please report to support team. (2)",
+//						identifier.getPlaceholderKey().getPlaceholder().name(),
+//						PlaceholderFlags.STATSPLAYERS.name() );
+//			}
+//		}
+//
+//		else if ( rank != null ) {
+//			
+//			identifier.setFoundAMatch( true );
+//			
+//			switch ( placeHolder ) {
+//				
 				
 				case prison_rank__name_rankname:
 				case prison_r_n_rankname:
@@ -1181,52 +1228,6 @@ public class RankManager
 					break;
 					
 					
-				case prison_top_rank_balance_name_nnn_rankname: 
-				case prison_trbn_nnn_rankname:
-					{
-						StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( 1 );
-						if ( stats != null ) {
-							
-							results = stats.getPlayer() == null ? "" : stats.getPlayer().getName();
-						}
-						else {
-							results = "";
-						}
-					}
-					
-					break;
-					
-				case prison_top_rank_balance_score_nnn_rankname:
-				case prison_trbs_nnn_rankname:
-					{
-						StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( 1 );
-						if ( stats != null ) {
-							
-							results = dFmt.format( stats.getScore());
-						}
-						else {
-							results = "";
-						}
-					}
-					
-					break;
-					
-				case prison_top_rank_balance_balance_nnn_rankname:
-				case prison_trbb_nnn_rankname:
-					{
-						StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( 1 );
-						if ( stats != null ) {
-							
-							results = stats.getPlayer() == null ? "" :
-										dFmt.format( stats.getPlayer().getBalance( rank.getCurrency()) );
-						}
-						else {
-							results = "";
-						}
-					}
-					
-					break;
-					
 
 				default:
 					
@@ -1235,7 +1236,7 @@ public class RankManager
 					Output.get().logInfo(
 							"RankManager TranslateRanksPlaceHolder: Warning: a placeholder '%s' was selected " +
 							"to be processed in this manager, but the placeholder is not included in the swich. " +
-							"Please report to support team.",
+							"Please report to support team. (3)",
 							identifier.getPlaceholderKey().getPlaceholder().name() );
 
 					
