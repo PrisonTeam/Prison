@@ -105,7 +105,8 @@ public class RankPlayerFactory
      * the default ladder.  If not, then it will add them.  
      * </p>
      * 
-     * <p>This is safe to run on anyone, even if they already are on the default ladder.
+     * <p>This is safe to run on anyone, even if they already are on the default ladder 
+     * since it will skip processing for them.
      * </p>
      * 
      * <p>Note, this will not save the player's new rank.  The save function must be
@@ -126,7 +127,7 @@ public class RankPlayerFactory
     			
     			RankUpCommand rankupCommands = PrisonRanks.getInstance().getRankManager().getRankupCommands();
     			
-    			rankupCommands.setPlayerRank( rankPlayer, defaultRank );
+    			rankupCommands.setPlayerRankFirstJoin( rankPlayer, defaultRank );
     			
     			
 //    			rankPlayer.addRank( defaultRank );
