@@ -1832,8 +1832,8 @@ public class ListenersPrisonManager implements Listener {
     private void rankManagerGUI(InventoryClickEvent e, Player p, String[] parts) {
 
         // Output finally the buttonName and the minename explicit out of the array.
-        String buttonName = parts[0];
-        String rankName = parts[1];
+        String buttonName = ( parts.length >= 1 ? parts[0] : "");
+        String rankName = (parts.length >= 2 ? parts[1] : "-rankHasNoName-");
 
         // Get the rank.
         Rank rank = PrisonRanks.getInstance().getRankManager().getRank(rankName);
@@ -1871,7 +1871,9 @@ public class ListenersPrisonManager implements Listener {
                 
                 PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, rank.getLadder() );
                 
-                SpigotRankPriceGUI gui = new SpigotRankPriceGUI(p, pRank.getRankCost().intValue(), rank.getName());
+                int costInt = pRank == null || pRank.getRankCost() == null ? 0 : pRank.getRankCost().intValue();
+                
+                SpigotRankPriceGUI gui = new SpigotRankPriceGUI(p, costInt, rank.getName());
                 gui.open();
             }
 

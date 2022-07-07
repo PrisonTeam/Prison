@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12c 2022-07-06
+# 3.3.0-alpha.12c 2022-07-07
+
+
+* **Fixed a few issues with the ranks gui where they were using the wrong message key (placeholder).**
 
 
 * **Prison v3.3.0-alpha.12c**
