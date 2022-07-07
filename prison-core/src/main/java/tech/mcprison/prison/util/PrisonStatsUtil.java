@@ -13,6 +13,7 @@ import java.util.List;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.discord.PrisonPasteChat;
+import tech.mcprison.prison.file.JsonFileIO;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
 
@@ -54,7 +55,7 @@ public class PrisonStatsUtil {
 	public StringBuilder getSupportSubmitConfigsData() {
 		Prison.get().getPlatform().saveResource("plugin.yml", true);
 
-		String fileNames = "config.yml plugin.yml backups/versions.txt "
+		String fileNames = "config.yml plugin.yml backups/versions.log "
 				+ "autoFeaturesConfig.yml blockConvertersConfig.json "
 				+ "modules.yml module_conf/mines/config.json module_conf/mines/mineBombsConfig.json "
 				+ "SellAllConfig.yml GuiConfig.yml backpacks/backpacksconfig.yml";
@@ -72,6 +73,35 @@ public class PrisonStatsUtil {
 		}
 		return text;
 	}
+	
+	
+	public void copyConfigsFiles() {
+		
+		String fileNames = "config.yml "
+				+ "autoFeaturesConfig.yml blockConvertersConfig.json "
+				+ "modules.yml module_conf/mines/mineBombsConfig.json "
+				+ "SellAllConfig.yml GuiConfig.yml backpacks/backpacksconfig.yml";
+		List<File> files = convertNamesToFiles(fileNames);
+		
+		JsonFileIO fio = new JsonFileIO();
+		
+		for (File file : files) {
+
+			if ( file.exists() ) {
+				File buFile = fio.getBackupFile( file, "newPrisonVersion", "bu" );
+				
+				try {
+					Files.copy( file.toPath(), buFile.toPath() );
+				} 
+				catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
+	}
+	
+	
 
 	public StringBuilder getSupportSubmitRanksData() {
 		List<File> files = listFiles("data_storage/ranksDb/ladders/", ".json");

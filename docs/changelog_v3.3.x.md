@@ -10,7 +10,11 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12b 2022-07-05
+# 3.3.0-alpha.12b 2022-07-06
+
+
+* **Prison backups: Created a Prison/backups/versions.log file which gets logs when a new prison version is detected on startup, which also performs a backup.**                                                                                                                                                                                      
+All backups are also logged in the versions.log file too.
 
 
 * **v3.3.0-alpha.12b**

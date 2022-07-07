@@ -50,6 +50,7 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.alerts.Alerts;
+import tech.mcprison.prison.backups.PrisonBackups;
 import tech.mcprison.prison.integration.Integration;
 import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
@@ -228,6 +229,15 @@ public class SpigotPrison
         // Show Prison's splash screen and setup the core components:
         Prison.get()
         		.init(platform, Bukkit.getVersion());
+
+        
+        
+        // If prison version is new, then make a copy of all config files that may change on startup:
+        PrisonBackups backups = new PrisonBackups();
+        backups.initialStartupVersionCheck();
+        
+
+        
         
         // Enable the spigot locale manager:
         getLocaleManager();
@@ -368,6 +378,13 @@ public class SpigotPrison
 		// Startup bStats:
 		initMetricsOnEnable();
 		
+		
+	       
+       // Force a backup if prison version is new:
+       PrisonBackups backups = new PrisonBackups();
+       backups.serverStartupVersionCheck();
+	       
+
 		
 		Output.get().logInfo( "Prison - Finished loading." );
 		

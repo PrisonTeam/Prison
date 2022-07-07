@@ -4,19 +4,27 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.cache.PlayerCacheFiles;
 import tech.mcprison.prison.file.ZipFileIO;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.util.PrisonStatsUtil;
 
 public class PrisonBackups {
 
 	public static final String FILE_BACKUP_DIRECTORY_PATH = "backups";
+	public static final String FILE_BACKUP_VERSIONS_FILE = FILE_BACKUP_DIRECTORY_PATH + "/versions.log";
+	
+	public static final String VERSIONS_FILE_VERSION_PREFIX = "New_Prison_Version:";
+	public static final String VERSIONS_FILE_BACKUP_MADE_PREFIX = "Backup:";
+	
 	
 	private File backupDirectory = null;
 	private Date backupStartDate;
@@ -34,6 +42,7 @@ public class PrisonBackups {
 	
 	private DecimalFormat dFmt = new DecimalFormat("#,##0.000");
 	private SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd_kk-mm" );
+	private SimpleDateFormat sdsFmt = new SimpleDateFormat( "yyyy-MM-dd kk:mm:ss.SSS" );
 	
 	
 	public enum BackupTypes {
@@ -52,7 +61,115 @@ public class PrisonBackups {
 		
 	}
 	
+
+	public void initialStartupVersionCheck() {
+
+		String prisonVersion = Prison.get().getPlatform().getPluginVersion();
+		String lastWrittenVersion = getLastWrittenVersion();
+		
+		
+		// Run a backup if lastWrittenVersion is null or not equal to prisonVersion:
+		if ( lastWrittenVersion == null || !prisonVersion.equalsIgnoreCase(lastWrittenVersion) ) {
+		
+			// Make backups of the following files:
+			PrisonStatsUtil psUtils = new PrisonStatsUtil();
+			psUtils.copyConfigsFiles();
+		}
+	}
 	
+	private String getLastWrittenVersion() {
+		String lastWrittenVersion = null;
+		
+		File versionsFile = new File( Prison.get().getDataFolder(), FILE_BACKUP_VERSIONS_FILE );
+		
+		if ( !versionsFile.exists() ) {
+			try {
+				Files.createFile( versionsFile.toPath() );
+				
+				List<String> lines = Files.readAllLines( versionsFile.toPath() );
+				
+				for (String line : lines) {
+					if ( line != null && line.length() > 0 && line.startsWith( VERSIONS_FILE_VERSION_PREFIX ) ) {
+						String vers[] = line.split( " " );
+						if ( vers.length >= 2 ) {
+							
+							lastWrittenVersion = vers[1];
+						}
+					}
+				}
+				
+			} 
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return lastWrittenVersion;
+	}
+	
+	public void serverStartupVersionCheck() {
+		
+		String prisonVersion = Prison.get().getPlatform().getPluginVersion();
+		String lastWrittenVersion = getLastWrittenVersion();
+		
+		File versionsFile = new File( Prison.get().getDataFolder(), FILE_BACKUP_VERSIONS_FILE );
+		
+		// Run a backup if lastWrittenVersion is null or not equal to prisonVersion:
+		if ( lastWrittenVersion == null || !prisonVersion.equalsIgnoreCase(lastWrittenVersion) ) {
+			
+			String message = String.format( 
+					"Prison detected a version change. Forcing a backup of all settings.  " +
+					"Current version: %s  Previous version: %s", 
+					prisonVersion,
+					( lastWrittenVersion == null ? "(not detected)" : lastWrittenVersion )
+					);
+			
+			Output.get().logInfo( message );
+			
+			// First write the current version to the file:
+			writeCurrentVersionToVersionsFile( versionsFile, prisonVersion );
+			
+			// Run the backup:
+			startBackup( BackupTypes.upgrade, null );
+		}
+		
+	}
+	
+	private void writeCurrentVersionToVersionsFile(File versionsFile, String prisonVersion) {
+		
+		String line = String.format( 
+				"%s %s %s :: New prison version detected. Forcing a backup.\n",
+				VERSIONS_FILE_VERSION_PREFIX, 
+				prisonVersion,
+				sdsFmt.format( new Date() )
+				);
+		try {
+			Files.write( versionsFile.toPath(), line.getBytes(), StandardOpenOption.APPEND );
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private void writeCurrentBackupInfoToVersionsFile( String message ) {
+		File versionsFile = new File( Prison.get().getDataFolder(), FILE_BACKUP_VERSIONS_FILE );
+		
+		String line = String.format( 
+				"%s :: %s \n",
+				VERSIONS_FILE_BACKUP_MADE_PREFIX, 
+				message
+				);
+		try {
+			Files.write( versionsFile.toPath(), line.getBytes(), StandardOpenOption.APPEND );
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+
 	public String startBackup( BackupTypes backupType, String notes ) {
 		
 		this.backupStartDate = new Date();
@@ -132,6 +249,8 @@ public class PrisonBackups {
 				
 				);
 		
+		writeCurrentBackupInfoToVersionsFile( message );
+		
 		return message;
 	}
 	
@@ -145,7 +264,7 @@ public class PrisonBackups {
 //		long size = zipFile.length();
 //		double sizeKb = size / 1024.0;
 		
-		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd kk:mm:ss.SSS" );
+		
 		
 		String msg1 = String.format(
 				"Prison backup:\n" +
@@ -155,8 +274,8 @@ public class PrisonBackups {
 				"  files backed up: %d  \n" +
 				"  temp files: %d   (deleted) \n" + 
 				"  Errors: %d \n\n",
-				sdFmt.format( getBackupStartDate() ),
-				sdFmt.format( new Date() ),
+				sdsFmt.format( getBackupStartDate() ),
+				sdsFmt.format( new Date() ),
 				dFmt.format( runTimeMs ),
 				zipFile.getAbsolutePath(),
 //				dFmt.format( sizeKb ),
@@ -421,5 +540,5 @@ public class PrisonBackups {
 	public void setFilesWithErrors(ArrayList<File> filesWithErrors) {
 		this.filesWithErrors = filesWithErrors;
 	}
-	
+
 }
