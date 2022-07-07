@@ -10,7 +10,15 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12b 2022-07-06
+# 3.3.0-alpha.12c 2022-07-06
+
+
+* **Prison v3.3.0-alpha.12c**
+
+
+
+* **Prison bstats: setup 4 new bstats charts for prison.  May change a few charts or add new ones in the near future.**
+Got control over the prison bstats so can now add custom stats.
 
 
 * **Prison backups: Created a Prison/backups/versions.log file which gets logs when a new prison version is detected on startup, which also performs a backup.**                                                                                                                                                                                      
