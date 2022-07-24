@@ -37,6 +37,8 @@ Prison supports Spigot 1.19.x, along with Java 17 and 18.  At this time there ha
 ### Newer features and updates in Prison:
 
 
+* Prison Backups: Prison now has a new feature that will backup (zip) all of the files within it's plugin directory.  Prison now will perform an automated backup when it detects a change in Prison's version to help preserve settings from prior versions.  See the new [Prison Backup Document](prison_docs_050_Prison_backups.md).
+
 * Auto Configure: Even if you really don't want to use auto configure when setting up your server, it may be worth trying it out just to see what it does.  If you're not happy with it, then deleting the `plugins/Prison/` directory will remove "everything" and on the next restart of your server, prison will load for the first time.  So if you are just getting started with prison, it's worth a try.
 
 
@@ -221,6 +223,9 @@ Auto configure can get you up and running with as little as two commands.  The f
 
 
 # Guides: Setting Up the Server Basics
+
+
+* [Prison Backup Document](prison_docs_050_Prison_backups.md) Automatic and manual backups of `plugins/Prison/` directory.
 
 
 * [Setting up a Spigot Server](prison_docs_010_setting_up_a_spigot_server.md)
