@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12c 2022-07-23
 
 
+* **Upgrade XSeries from v8.8.0 to v9.0.0**
+
+
 * **Fixed issue with prison version check triggering a backup upon startup.**
 It was always bypassing the previous version check, so it was always creating another backup.
 
