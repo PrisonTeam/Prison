@@ -22,16 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
 
-import org.bstats.bukkit.Metrics;
-import org.bstats.charts.DrilldownPie;
-import org.bstats.charts.SimpleBarChart;
-import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.SimpleCommandMap;
@@ -46,7 +38,6 @@ import org.inventivetalent.update.spiget.UpdateCallback;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
-import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.backups.PrisonBackups;
 import tech.mcprison.prison.integration.Integration;
@@ -65,7 +56,6 @@ import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.commands.FailedRankCommands;
 import tech.mcprison.prison.ranks.data.Rank;
-import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.managers.RankManager;
 import tech.mcprison.prison.sellall.PrisonSellall;
 import tech.mcprison.prison.sellall.commands.SellallCommands;
@@ -73,6 +63,7 @@ import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
 import tech.mcprison.prison.spigot.backpacks.BackpacksListeners;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventListener;
+import tech.mcprison.prison.spigot.bstats.PrisonBStats;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotBackpackCommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotGUICommands;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotMinesCommands;
@@ -147,7 +138,8 @@ public class SpigotPrison
     private List<Listener> registeredBlockListeners;
     
     
-    private Metrics bStatsMetrics = null;
+    private PrisonBStats prisonBStats;
+//    private Metrics bStatsMetrics = null;
 //    private PrisonMetrics bStatsMetrics = null;
 
     
@@ -168,7 +160,8 @@ public class SpigotPrison
     public void onLoad() {
     	
         // Startup bStats:  Not needed with the new PrisonMetrics class.
-        initMetricsOnLoad();
+    	this.prisonBStats = new PrisonBStats( this );
+    	prisonBStats.initMetricsOnLoad();
 
     	
     	/**
@@ -334,7 +327,8 @@ public class SpigotPrison
         //Prison.get().getPlatform().getPlaceholders().printPlaceholderStats();
         
         
-        PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
+        @SuppressWarnings("unused")
+		PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
 
 //        if (doAlertAboutConvert) {
 //            Alerts.getInstance().sendAlert(
@@ -374,7 +368,7 @@ public class SpigotPrison
 
 		
 		// Startup bStats:
-		initMetricsOnEnable();
+		prisonBStats.initMetricsOnEnable();
 		
 		
 	       
@@ -535,201 +529,302 @@ public class SpigotPrison
 //    	return format == null ? null : ChatColor.stripColor(format);
     }
     
-    /**
-     * <p>bStats reporting</p>
-     * 
-     * https://github.com/Bastian/bStats-Metrics/tree/master/base/src/main/java/org/bstats/charts
-     * 
-     */
-    private void initMetricsOnLoad() {
-    	if (!getConfig().getBoolean("send-metrics", true)) {
-    		return; // Don't check if they don't want it
-    	}
-    	
-    	int pluginId = 657;
-    	bStatsMetrics = new Metrics( this, pluginId );
-//    	bStatsMetrics = new PrisonMetrics( this, pluginId );
-    	
-//    	Metrics metrics = new Metrics( this, pluginId );
-    }
-    
-    private void initMetricsOnEnable() {
-        if (!getConfig().getBoolean("send-metrics", true)) {
-            return; // Don't check if they don't want it
-        }
-        
-        
-        if ( bStatsMetrics == null ) {
-        	int pluginId = 657;
-        	
-        	bStatsMetrics = new Metrics( this, pluginId );
-//        	bStatsMetrics = new PrisonMetrics( this, pluginId );
-        }
-
-        // Report the modules being used
-        SimpleBarChart sbcModulesUsed = new SimpleBarChart("modules_used", () -> {
-            Map<String, Integer> valueMap = new HashMap<>();
-            for (Module m : PrisonAPI.getModuleManager().getModules()) {
-                valueMap.put(m.getName(), 1);
-            }
-            return valueMap;
-        });
-        bStatsMetrics.addCustomChart( sbcModulesUsed );
-
-        // Report the API level
-        SimplePie spApiLevel = 
-                new SimplePie("api_level", () -> 
-                	"API Level " + Prison.API_LEVEL + "." + Prison.API_LEVEL_MINOR );
-        bStatsMetrics.addCustomChart( spApiLevel );
-        
-        
-        Optional<Module> prisonMinesOpt = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
-        Optional<Module> prisonRanksOpt = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
-        
-        int mineCount = prisonMinesOpt.map(module -> ((PrisonMines) module).getMineManager().getMines().size()).orElse(0);
-        int rankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getRankCount()).orElse(0);
-        
-        int defaultRankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getDefaultLadderRankCount()).orElse(0);
-        int prestigesRankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getPrestigesLadderRankCount()).orElse(0);
-        int otherRankCount = rankCount - defaultRankCount - prestigesRankCount;
-        
-        int ladderCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getladderCount()).orElse(0);
-        int playerCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getPlayersCount()).orElse(0);
-        
-        
-        
-        DrilldownPie mlcPrisonRanksAndLadders = new DrilldownPie("mines_ranks_and_ladders", () -> {
-        	Map<String, Map<String, Integer>> map = new HashMap<>();
-        	
-        	Map<String, Integer> ranks = new HashMap<>();
-        	ranks.put( Integer.toString( mineCount ), 1 );
-        	map.put( "mines", ranks );
-        	
-        	Map<String, Integer> defRanks = new HashMap<>();
-        	defRanks.put( Integer.toString( rankCount ), 1 );
-        	map.put( "ranks", defRanks );
-    	
-        	Map<String, Integer> prestigesRanks = new HashMap<>();
-        	prestigesRanks.put( Integer.toString( ladderCount ), 1 );
-        	map.put( "ladders", prestigesRanks );
-        	
-        	Map<String, Integer> otherRanks = new HashMap<>();
-        	otherRanks.put( Integer.toString( playerCount ), 1 );
-        	map.put( "players", otherRanks );
-        	
-        	return map;
-        });
-        bStatsMetrics.addCustomChart( mlcPrisonRanksAndLadders );
-        
-//        MultiLineChart mlcMinesRanksAndLadders = 
-//        		new MultiLineChart("mines_ranks_and_ladders", new Callable<Map<String, Integer>>() {
-//            @Override
-//            public Map<String, Integer> call() throws Exception {
-//                Map<String, Integer> valueMap = new HashMap<>();
-//                valueMap.put("mines", mineCount);
-//                valueMap.put("ranks", rankCount);
-//                valueMap.put("ladders", ladderCount);
-//                valueMap.put("players", playerCount);
-//                return valueMap;
-//            }
-//        });
-//        bStatsMetrics.addCustomChart( mlcMinesRanksAndLadders );
-        
-        
-        
-        DrilldownPie mlcPrisonPrisonRanks = new DrilldownPie("prison_ranks", () -> {
-        	Map<String, Map<String, Integer>> map = new HashMap<>();
-        	
-        	Map<String, Integer> ranks = new HashMap<>();
-        	ranks.put( Integer.toString( rankCount ), 1 );
-        	map.put( "ranks", ranks );
-        	
-        	Map<String, Integer> defRanks = new HashMap<>();
-        	defRanks.put( Integer.toString( defaultRankCount ), 1 );
-        	map.put( "defaultRanks", defRanks );
-    	
-        	Map<String, Integer> prestigesRanks = new HashMap<>();
-        	prestigesRanks.put( Integer.toString( prestigesRankCount ), 1 );
-        	map.put( "prestigesRanks", prestigesRanks );
-        	
-        	Map<String, Integer> otherRanks = new HashMap<>();
-        	otherRanks.put( Integer.toString( otherRankCount ), 1 );
-        	map.put( "otherRanks", otherRanks );
-        	
-        	return map;
-        });
-        bStatsMetrics.addCustomChart( mlcPrisonPrisonRanks );
-        
-//        MultiLineChart mlcPrisonRanks = new MultiLineChart("prison_ranks", new Callable<Map<String, Integer>>() {
-//        	@Override
-//        	public Map<String, Integer> call() throws Exception {
-//        		Map<String, Integer> valueMap = new HashMap<>();
-//        		valueMap.put("ranks", rankCount);
-//        		valueMap.put("defaultRanks", defaultRankCount);
-//        		valueMap.put("prestigesRanks", prestigesRankCount);
-//        		valueMap.put("otherRanks", otherRankCount);
-//        		return valueMap;
-//        	}
-//        });
-//        bStatsMetrics.addCustomChart( mlcPrisonRanks );
-        
-        
-        DrilldownPie mlcPrisonPrisonLadders = new DrilldownPie("prison_ladders", () -> {
-        	Map<String, Map<String, Integer>> map = new HashMap<>();
-        	
-    		
-    		PrisonRanks pRanks = (PrisonRanks) prisonRanksOpt.orElseGet( null );
-    		for ( RankLadder ladder : pRanks.getLadderManager().getLadders() ) {
-    	
-    			Map<String, Integer> entry = new HashMap<>();
-        		entry.put( Integer.toString( ladder.getRanks().size() ), 1 );
-        		
-        		map.put( ladder.getName(), entry );
-    		}
-        	
-        	return map;
-        });
-        bStatsMetrics.addCustomChart( mlcPrisonPrisonLadders );
-        
-        
-//        MultiLineChart mlcPrisonladders = new MultiLineChart("prison_ladders", new Callable<Map<String, Integer>>() {
-//        	@Override
-//        	public Map<String, Integer> call() throws Exception {
-//        		Map<String, Integer> valueMap = new HashMap<>();
-//        		
-//        		PrisonRanks pRanks = (PrisonRanks) prisonRanksOpt.orElseGet( null );
-//        		for ( RankLadder ladder : pRanks.getLadderManager().getLadders() ) {
+//    /**
+//     * <p>bStats reporting</p>
+//     * 
+//     * https://github.com/Bastian/bStats-Metrics/tree/master/base/src/main/java/org/bstats/charts
+//     * 
+//     */
+//    private void initMetricsOnLoad() {
+//    	if (!getConfig().getBoolean("send-metrics", true)) {
+//    		return; // Don't check if they don't want it
+//    	}
+//    	
+//    	int pluginId = 657;
+//    	bStatsMetrics = new Metrics( this, pluginId );
+////    	bStatsMetrics = new PrisonMetrics( this, pluginId );
+//    	
+////    	Metrics metrics = new Metrics( this, pluginId );
+//    }
+//    
+//    private void initMetricsOnEnable() {
+//        if (!getConfig().getBoolean("send-metrics", true)) {
+//            return; // Don't check if they don't want it
+//        }
+//        
+//        
+//        if ( bStatsMetrics == null ) {
+//        	int pluginId = 657;
 //        	
-//        			valueMap.put( ladder.getName(), ladder.getRanks().size() );
-//        		}
-//        		
-//        		return valueMap;
-//        	}
+//        	bStatsMetrics = new Metrics( this, pluginId );
+////        	bStatsMetrics = new PrisonMetrics( this, pluginId );
+//        }
+//
+//        // Report the modules being used
+//        SimpleBarChart sbcModulesUsed = new SimpleBarChart("modules_used", () -> {
+//            Map<String, Integer> valueMap = new HashMap<>();
+//            for (Module m : PrisonAPI.getModuleManager().getModules()) {
+//                valueMap.put(m.getName(), 1);
+//            }
+//            return valueMap;
 //        });
-//        bStatsMetrics.addCustomChart( mlcPrisonladders );
+//        bStatsMetrics.addCustomChart( sbcModulesUsed );
+//
+//        // Report the API level
+//        SimplePie spApiLevel = 
+//                new SimplePie("api_level", () -> 
+//                	"API Level " + Prison.API_LEVEL + "." + Prison.API_LEVEL_MINOR );
+//        bStatsMetrics.addCustomChart( spApiLevel );
+//        
+//        
+//        Optional<Module> prisonMinesOpt = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
+//        Optional<Module> prisonRanksOpt = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
+//        
+//        int mineCount = prisonMinesOpt.map(module -> ((PrisonMines) module).getMineManager().getMines().size()).orElse(0);
+//        int rankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getRankCount()).orElse(0);
+//        
+//        int defaultRankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getDefaultLadderRankCount()).orElse(0);
+//        int prestigesRankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getPrestigesLadderRankCount()).orElse(0);
+//        int otherRankCount = rankCount - defaultRankCount - prestigesRankCount;
+//        
+//        int ladderCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getladderCount()).orElse(0);
+//        int playerCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getPlayersCount()).orElse(0);
+//        
+//        
+//        
+//        DrilldownPie mlcPrisonRanksAndLadders = new DrilldownPie("mines_ranks_and_ladders", () -> {
+//        	Map<String, Map<String, Integer>> map = new HashMap<>();
+//        	
+//        	Map<String, Integer> ranks = new HashMap<>();
+//        	ranks.put( Integer.toString( mineCount ), 1 );
+//        	map.put( "mines", ranks );
+//        	
+//        	Map<String, Integer> defRanks = new HashMap<>();
+//        	defRanks.put( Integer.toString( rankCount ), 1 );
+//        	map.put( "ranks", defRanks );
+//    	
+//        	Map<String, Integer> prestigesRanks = new HashMap<>();
+//        	prestigesRanks.put( Integer.toString( ladderCount ), 1 );
+//        	map.put( "ladders", prestigesRanks );
+//        	
+//        	Map<String, Integer> otherRanks = new HashMap<>();
+//        	otherRanks.put( Integer.toString( playerCount ), 1 );
+//        	map.put( "players", otherRanks );
+//        	
+//        	return map;
+//        });
+//        bStatsMetrics.addCustomChart( mlcPrisonRanksAndLadders );
+//        
+////        MultiLineChart mlcMinesRanksAndLadders = 
+////        		new MultiLineChart("mines_ranks_and_ladders", new Callable<Map<String, Integer>>() {
+////            @Override
+////            public Map<String, Integer> call() throws Exception {
+////                Map<String, Integer> valueMap = new HashMap<>();
+////                valueMap.put("mines", mineCount);
+////                valueMap.put("ranks", rankCount);
+////                valueMap.put("ladders", ladderCount);
+////                valueMap.put("players", playerCount);
+////                return valueMap;
+////            }
+////        });
+////        bStatsMetrics.addCustomChart( mlcMinesRanksAndLadders );
+//        
+//        
+//        
+//        DrilldownPie mlcPrisonPrisonRanks = new DrilldownPie("prison_ranks", () -> {
+//        	Map<String, Map<String, Integer>> map = new HashMap<>();
+//        	
+//        	Map<String, Integer> ranks = new HashMap<>();
+//        	ranks.put( Integer.toString( rankCount ), 1 );
+//        	map.put( "ranks", ranks );
+//        	
+//        	Map<String, Integer> defRanks = new HashMap<>();
+//        	defRanks.put( Integer.toString( defaultRankCount ), 1 );
+//        	map.put( "defaultRanks", defRanks );
+//    	
+//        	Map<String, Integer> prestigesRanks = new HashMap<>();
+//        	prestigesRanks.put( Integer.toString( prestigesRankCount ), 1 );
+//        	map.put( "prestigesRanks", prestigesRanks );
+//        	
+//        	Map<String, Integer> otherRanks = new HashMap<>();
+//        	otherRanks.put( Integer.toString( otherRankCount ), 1 );
+//        	map.put( "otherRanks", otherRanks );
+//        	
+//        	return map;
+//        });
+//        bStatsMetrics.addCustomChart( mlcPrisonPrisonRanks );
+//        
+////        MultiLineChart mlcPrisonRanks = new MultiLineChart("prison_ranks", new Callable<Map<String, Integer>>() {
+////        	@Override
+////        	public Map<String, Integer> call() throws Exception {
+////        		Map<String, Integer> valueMap = new HashMap<>();
+////        		valueMap.put("ranks", rankCount);
+////        		valueMap.put("defaultRanks", defaultRankCount);
+////        		valueMap.put("prestigesRanks", prestigesRankCount);
+////        		valueMap.put("otherRanks", otherRankCount);
+////        		return valueMap;
+////        	}
+////        });
+////        bStatsMetrics.addCustomChart( mlcPrisonRanks );
+//        
+//        
+//        DrilldownPie mlcPrisonPrisonLadders = new DrilldownPie("prison_ladders", () -> {
+//        	Map<String, Map<String, Integer>> map = new HashMap<>();
+//        	
+//    		
+//    		PrisonRanks pRanks = (PrisonRanks) prisonRanksOpt.orElseGet( null );
+//    		for ( RankLadder ladder : pRanks.getLadderManager().getLadders() ) {
+//    	
+//    			Map<String, Integer> entry = new HashMap<>();
+//        		entry.put( Integer.toString( ladder.getRanks().size() ), 1 );
+//        		
+//        		map.put( ladder.getName(), entry );
+//    		}
+//        	
+//        	return map;
+//        });
+//        bStatsMetrics.addCustomChart( mlcPrisonPrisonLadders );
+//        
+//        
+////        MultiLineChart mlcPrisonladders = new MultiLineChart("prison_ladders", new Callable<Map<String, Integer>>() {
+////        	@Override
+////        	public Map<String, Integer> call() throws Exception {
+////        		Map<String, Integer> valueMap = new HashMap<>();
+////        		
+////        		PrisonRanks pRanks = (PrisonRanks) prisonRanksOpt.orElseGet( null );
+////        		for ( RankLadder ladder : pRanks.getLadderManager().getLadders() ) {
+////        	
+////        			valueMap.put( ladder.getName(), ladder.getRanks().size() );
+////        		}
+////        		
+////        		return valueMap;
+////        	}
+////        });
+////        bStatsMetrics.addCustomChart( mlcPrisonladders );
+//
+//        TreeMap<String, RegisteredPluginsData> plugins = Prison.get().getPrisonCommands().getRegisteredPluginData();
+//
+//        TreeMap<String, RegisteredPluginsData> pluginsAtoE = getSubsetOfPlugins(plugins, 'a', 'f', false );
+//        TreeMap<String, RegisteredPluginsData> pluginsFtoM = getSubsetOfPlugins(plugins, 'f', 'n', false );
+//        TreeMap<String, RegisteredPluginsData> pluginsNtoS = getSubsetOfPlugins(plugins, 'n', 't', false );
+//        TreeMap<String, RegisteredPluginsData> pluginsTto9 = getSubsetOfPlugins(plugins, 't', 'z', true );
+//        
+//        DrilldownPie mlcPrisonPlugins = new DrilldownPie("plugins", () -> {
+//        	Map<String, Map<String, Integer>> map = new HashMap<>();
+//        	
+//        	for (String pluginName : plugins.keySet() ) {
+//        		RegisteredPluginsData pluginData = plugins.get( pluginName );
+//				
+//        		Map<String, Integer> entry = new HashMap<>();
+//        		entry.put( pluginData.getPluginVersion(), 1 );
+//        		
+//        		map.put( pluginData.getPluginName(), entry );
+//			}
+//        	
+//        	return map;
+//        });
+//        bStatsMetrics.addCustomChart( mlcPrisonPlugins );
+//        
+//        
+//        DrilldownPie mlcPrisonPluginsAtoE = new DrilldownPie("plugins_a_to_e", () -> {
+//        	Map<String, Map<String, Integer>> map = new HashMap<>();
+//        	
+//        	for (String pluginName : pluginsAtoE.keySet() ) {
+//        		RegisteredPluginsData pluginData = pluginsAtoE.get( pluginName );
+//        		
+//        		Map<String, Integer> entry = new HashMap<>();
+//        		entry.put( pluginData.getPluginVersion(), 1 );
+//        		
+//        		map.put( pluginData.getPluginName(), entry );
+//        	}
+//        	
+//        	return map;
+//        });
+//        bStatsMetrics.addCustomChart( mlcPrisonPluginsAtoE );
+//        
+//        
+//        DrilldownPie mlcPrisonPluginsFtoM = new DrilldownPie("plugins_f_to_m", () -> {
+//        	Map<String, Map<String, Integer>> map = new HashMap<>();
+//        	
+//        	for (String pluginName : pluginsFtoM.keySet() ) {
+//        		RegisteredPluginsData pluginData = pluginsFtoM.get( pluginName );
+//        		
+//        		Map<String, Integer> entry = new HashMap<>();
+//        		entry.put( pluginData.getPluginVersion(), 1 );
+//        		
+//        		map.put( pluginData.getPluginName(), entry );
+//        	}
+//        	
+//        	return map;
+//        });
+//        bStatsMetrics.addCustomChart( mlcPrisonPluginsFtoM );
+//        
+//        
+//        DrilldownPie mlcPrisonPluginsNtoS = new DrilldownPie("plugins_n_to_s", () -> {
+//        	Map<String, Map<String, Integer>> map = new HashMap<>();
+//        	
+//        	for (String pluginName : pluginsNtoS.keySet() ) {
+//        		RegisteredPluginsData pluginData = pluginsNtoS.get( pluginName );
+//        		
+//        		Map<String, Integer> entry = new HashMap<>();
+//        		entry.put( pluginData.getPluginVersion(), 1 );
+//        		
+//        		map.put( pluginData.getPluginName(), entry );
+//        	}
+//        	
+//        	return map;
+//        });
+//        bStatsMetrics.addCustomChart( mlcPrisonPluginsNtoS );
+//        
+//        
+//        DrilldownPie mlcPrisonPluginsTto9 = new DrilldownPie("plugins_t_to_z_plus_others", () -> {
+//        	Map<String, Map<String, Integer>> map = new HashMap<>();
+//        	
+//        	for (String pluginName : pluginsTto9.keySet() ) {
+//        		RegisteredPluginsData pluginData = pluginsTto9.get( pluginName );
+//        		
+//        		Map<String, Integer> entry = new HashMap<>();
+//        		entry.put( pluginData.getPluginVersion(), 1 );
+//        		
+//        		map.put( pluginData.getPluginName(), entry );
+//        	}
+//        	
+//        	return map;
+//        });
+//        bStatsMetrics.addCustomChart( mlcPrisonPluginsTto9 );
+//        
+//        
+//        
+//    }
 
-        
-        DrilldownPie mlcPrisonPlugins = new DrilldownPie("plugins", () -> {
-        	Map<String, Map<String, Integer>> map = new HashMap<>();
-        	
-        	TreeMap<String, RegisteredPluginsData> plugins = Prison.get().getPrisonCommands().getRegisteredPluginData();
-        	
-        	for (String pluginName : plugins.keySet() ) {
-        		RegisteredPluginsData pluginData = plugins.get( pluginName );
-				
-        		Map<String, Integer> entry = new HashMap<>();
-        		entry.put( pluginData.getPluginVersion(), 1 );
-        		
-        		map.put( pluginData.getPluginName(), entry );
-			}
-        	
-        	return map;
-        });
-        bStatsMetrics.addCustomChart( mlcPrisonPlugins );
-        
-    }
+//    private TreeMap<String, RegisteredPluginsData> getSubsetOfPlugins(
+//    			TreeMap<String, RegisteredPluginsData> plugins,
+//    			char rangeLow, char rangeHigh,
+//    			boolean includeNonAlpha ) {
+//    	TreeMap<String, RegisteredPluginsData> results = new TreeMap<>();
+//    	
+//    	Set<String> keys = plugins.keySet();
+//    	for (String key : keys) {
+//			char keyFirstChar = key.toLowerCase().charAt(0);
+//			
+//			if ( Character.isAlphabetic(keyFirstChar) ) {
+//				
+//				if ( Character.compare(keyFirstChar, rangeLow) >= 0 && Character.compare( keyFirstChar, rangeHigh) < 0 ) {
+//					
+//					results.put( key, plugins.get(key) );
+//				}
+//			}
+//			else {
+//				
+//				// Add all non-alpha plugins to this result:
+//				results.put( key, plugins.get(key) );
+//			}
+//		}
+//    	
+//		return results;
+//	}
 
-    /**
+	/**
      * Checks to see if there is a newer version of prison that has been released.
      * It checks based upon what is deployed to spigotmc.org.
      */
@@ -1196,4 +1291,5 @@ public class SpigotPrison
 	public List<Listener> getRegisteredBlockListeners() {
 		return registeredBlockListeners;
 	}
+
 }

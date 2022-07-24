@@ -10,7 +10,11 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12c 2022-07-07
+# 3.3.0-alpha.12c 2022-07-23
+
+
+* **Update bstats by moving to its own class in its own package.**
+Added 4 new custom charts to split the plugins in to 4 parts.
 
 
 * **Fixed a few issues with the ranks gui where they were using the wrong message key (placeholder).**
