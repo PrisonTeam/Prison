@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.DrilldownPie;
@@ -14,6 +15,8 @@ import org.bstats.charts.SimplePie;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.ranks.PrisonRanks;
@@ -296,6 +299,26 @@ public class PrisonBStats {
         	return map;
         });
         getbStatsMetrics().addCustomChart( mlcPrisonPluginsTto9 );
+        
+        
+        AutoFeaturesFileConfig afConfig = AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig();
+        TreeMap<String, String> autofeaturesBstats = afConfig.getBstatsDetails();
+        
+        DrilldownPie mlcPrisonAutofeatures = new DrilldownPie("autofeatures", () -> {
+        	Map<String, Map<String, Integer>> map = new HashMap<>();
+        	
+        	for (String feature : autofeaturesBstats.keySet() ) {
+        		String detail = autofeaturesBstats.get( feature );
+        		
+        		Map<String, Integer> entry = new HashMap<>();
+        		entry.put( detail, 1 );
+        		
+        		map.put( feature, entry );
+        	}
+        	
+        	return map;
+        });
+        getbStatsMetrics().addCustomChart( mlcPrisonAutofeatures );
         
         
         

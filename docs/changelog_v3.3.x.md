@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12c 2022-07-23
+# 3.3.0-alpha.12c 2022-07-24
+
+
+* **bStats update: Added a new bstats custom chart for auto features.**
 
 
 * **Update some docs. Added docs for Prison Backups**
