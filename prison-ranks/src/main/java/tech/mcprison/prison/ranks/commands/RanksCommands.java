@@ -13,7 +13,6 @@ import java.util.Set;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.cache.PlayerCache;
@@ -836,6 +835,9 @@ public class RanksCommands
 		String rankHeader = ranksListHeaderMsg( ladder.getName() );
         ChatDisplay display = new ChatDisplay( rankHeader );
         
+        display.addText( "  " + PrisonRanks.getInstance().getLadderManager().printRankLadderInfoHeader() );
+        display.addText( "  " + PrisonRanks.getInstance().getLadderManager().printRankLadderInfoDetail(ladder) );
+
         display.addText( ranksListLadderCostMultiplierMsg( 
         							ladder.getRankCostMultiplierPerRank() ) );
         

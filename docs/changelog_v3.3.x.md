@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12c 2022-07-24
 
 
+* **Added more information on ladder listing to show name, number of ranks, and rank cost multiplier.**
+
+
 * **bStats update: Added a new bstats custom chart for auto features.**
 
 
