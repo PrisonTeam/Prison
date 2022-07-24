@@ -27,14 +27,11 @@
 
 
 # Prison Supports Spigot 1.8 through Spigot 1.18.x
-# Prison Supports Java 1.8 though Java 17
+# Prison Supports Java 1.8 though Java 19
 # Prison is created for the Spigot Platform, and works on other platforms based upon Spigot
 
 
-With the release of Spigot 1.17.x, there were a few minor changes that were needed to be made to prison to support Java 16.  These were mostly related to a couple of NMS routines that were trying to figure out the player's default language they have selected. Due to new restrictions moving forward with Spigot, the ability to correctly identify the player's default language may not be possible, but prison will still use the selected language setting in the config files.
-
-
-Prison supports both Spigot 1.17.1 and Spigot 1.18.x, along with Java 17.  At this time there hasn't been any reports of incompatibilities.  Since prison is using a library to support the correct blocks for the version of the server that you are running, we are limited to when updates are released for that library.  Luckily they have had a couple of releases and we have applied them to the latest alpha releases.  So if you are wanting to maximize the new Spigot 1.18.x experience, please upgrade to the latest alpha release as found on our discord server in the #alpha channel. 
+Prison supports Spigot 1.19.x, along with Java 17 and 18.  At this time there hasn't been any reports of incompatibilities.  Since prison is using a library to support the correct blocks for the version of the server that you are running, we are limited to when updates are released for that library.  Luckily they have had a couple of releases and we have applied them to the latest alpha releases.  So if you are wanting to maximize the new Spigot 1.19 experience, please upgrade to the latest alpha release as found on our discord server in the #alpha channel. 
 
 
 ### Newer features and updates in Prison:
@@ -57,6 +54,8 @@ Prison supports both Spigot 1.17.1 and Spigot 1.18.x, along with Java 17.  At th
 ### Features planned for the near future
 
 These new features are in the planning stages...
+
+* Block Converters:  Auto features can be controlled by enabling different blocks to perform different functions, if so desired. Currently the list of blocks is very limited and hard coded in both the configuration files, and also in the source code.  But Block Converters will remove all of that, and place the configs in a new json file.  The new format will provide a very powerful way to control all block conversions, such as smelting, blocking, and even drops.  It will support permissions on all blocks and items, so you could setup a smelting to provide multiple block types, or even provide different block and item types based upon perms.  Block Converters will take prison to the next level on mining customizations, but yet simplify auto features in both the auto features configs and code.
 
 * New backpacks:  A rewrite of the backpacks that will give a little more flexibility.  You will be ble to use them as backpacks, or as vaults.  Could even sell, or trade backpacks/vaults with their contents.  ETA is unknown since a new storage management system needs to be created.
 

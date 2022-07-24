@@ -7,7 +7,7 @@
 This document covers different aspects of placeholders within Prison.  It explains how they work, how to use them, and different ways to use them.
 
 
-*Documented updated: 2021-12-03*
+*Documented updated: 2022-06-20*
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
@@ -17,7 +17,7 @@ This document covers different aspects of placeholders within Prison.  It explai
 
 Placeholders allow the sharing of data from one plugin with another plugin, and without either plugin knowing anything about each other.
 
-On the surface they appear to be simple, but there are a lot of moving parts below the surface, and with Prison Mines, there are even more complicated things going on.
+On the surface they appear to be simple, but there are a lot of moving parts below the surface, and with Prison, there are even more complicated things going on.
 
 Add in to the mix, that different plugins deal with placeholders in slightly different ways, and you can wind up with a challenge to get them to work under different circumstances.
 
@@ -39,12 +39,35 @@ Sub-command listing of all placeholders commands:
 
 * **/prison placeholders**
 
+>  Shows a list of all of the placeholder related commands.
+
 
 * **/prison placeholders list**
+
+> Lists all placeholders that are available, including their aliases.  Placeholders are grouped by their type, of which there are 10 different kinds.  Some are player specific, rank or ladder specific, mine specific, or even hybrid combinations such as player-mine were the mine stats are based upon which mine the player is in.
+ 
+
 * **/prison placeholders search**
+
+> Provides a simple search for placeholders, optionally using a player's name, and it shows the results with actual live placeholder values.  Search values can be one or more word fragments. 
+
+
 * **/prison placeholders test**
 
+> Somewhat like search, but you have to provide the whole placeholder surrounded by escape characcters.  Can provide more than one placeholder too. This is more like testing what you would place within a chat prefix or holographic sign.
+
+
+* **/prison placeholders stats**
+
+> A new command that currently only shows what placeholders have been hitting prison and their total hit count and the total average duration to process. This tool provides a simple pre-cache to more quickly identify which is the correct placeholder to use with the raw placeholder text.  This even include bad placeholder hits so the pre-cache can bypass processing of the junk, which improves server performance.  Eventually this will also include a placeholder value cache.
+
+
+
 * **/prison placeholders reload**
+
+> Reloads and rebuilds all placeholders and then reregisters them.  This is performed when adding or removing a new mine or rank.
+
+
 
 NOTE: the `/prison placeholders reload` command only reloads and registers the placeholders with the placeholder integrations.  This would be required to enable placeholders when adding a new mine, a new rank, or a new ladder.  If you reload another plugin, such as papi, you may need to reload the placeholders which will re-register them.  Prison has been setup to survive a papi restart, but there could still be issues.
 
@@ -59,61 +82,77 @@ NOTE: Information on these command are provided in detail below.
 
 Prison has numerous placeholders, with number of different types.  Each of these types have different internal requirements and conditions of usage.  This is a high overview of the various types and their counts.
 
-* **Player Related:** 92 including aliases
+
+* **Total Available Placeholders:** 294 including aliases
+
+
+* **Player Related:** 110 including aliases
     * **Rank Related:** 8 including aliases
     * **Rankup Related:** 20 including aliases
     * **Player Balance Related:** 8 including aliases
+    * **Player Token Balance Related:** 12 including aliases
+    * **Player Blocks Totals Related: 4 including aliases
     * **Player Tool Related:** 34 including aliases
     * **Player Health Related:** 14 including aliases
     * **Player XP and Levels Related:** 6 including aliases
     * **Player Walk Speed:** 2 including aliases
 
 
-* **Ladders Related:** 30 including aliases **times** each ladder
-  A LADDERS placeholder must include the ladder's name in the placeholder and therefore is static.
+* **Ladders Related:** 32 including aliases **times** each ladder
+
+> A LADDERS placeholder must include the ladder's name in the placeholder and therefore is static.
   
 
 * **Ranks Related:** 22 including aliases **times** each rank
 
-  A RANKS placeholder needs to specify the Rank name as part of the placeholder.  Each placeholder must specify a Rank and is static.
+> A RANKS placeholder needs to specify the Rank name as part of the placeholder.  Each placeholder must specify a Rank and is static.
 
 
 * **RankPlayers Related:** 12 including aliases **times** each rank
 
-  A RANKPLAYERS placeholder is one that will change based upon the player's own Rank.  Each player could have a different rank.  Because of this relationship, these can only be used with instances of players such as scoreboards and chat prefixes; they will not work in holographic displays or with signs.
+> A RANKPLAYERS placeholder is one that will change based upon the player's own Rank.  Each player could have a different rank.  Because of this relationship, these can only be used with instances of players such as scoreboards and chat prefixes; they will not work in holographic displays or with signs.
 
 
-* **Mines Related:** 18 including aliases **times** each ladder
+* **Mines Related:** 32 including aliases **times** each ladder
+
+> A MINES placeholder must specify the Mine mine as part of the placeholder. 
 
 
 * **Player Ladder Balance Related:** 32 including aliases **times** each Mine
 
-  A MINES placeholder must specify the Mine mine as part of the placeholder.  Each placeholder must specify a mine and is static.
   
 
-* **MinePlayers Related:** 34 including aliases 
+* **MinePlayers Related:** 32 including aliases 
 
-  A MINEPLAYERS placholder is similar to a RankPlayers placeholder in that it is dynamic and you cannot specify a mine's name with it.  How it works, is that it provides the related stats for the mine in which the player is standing in.  When the player leaves the mine, then these placeholders returns an empty string value (a blank).
-
-
-* *STATSMINES Related:** 14 including aliases
-
-  These are a work in progress, but will provide access to some mine stats such as total blocks mined.
+> A MINEPLAYERS placholder is similar to a RankPlayers placeholder in that it is dynamic and you cannot specify a mine's name with it.  How it works, is that it provides the related stats for the mine in which the player is standing in.  When the player leaves the mine, then these placeholders returns an empty string value (a blank).
 
 
-* *STATSRANKS Related:** 6 including aliases
+* **PLAYERBLOCKS:** 4 including aliases
 
-  These are a work in progress, but will provide access to some rank stats such as top ranked player in that rank.
+> Every block type that a player breaks within a mine is tracked.  These provide the stats on those blocks.
 
 
+* **STATSMINES Related:** 14 including aliases
 
-**Total base Placeholders:** 240 including aliases
+> These list the blocks within a mine. They are referred to with a `_nnn_` notation where "nnn" is the line number 
+
+
+* **STATSRANKS Related:** 6 including aliases
+
+> Top-n stats for each rank.  The rank name must be specified on the placeholder.
+
+.
+* **STATSPLAYERS:** 30 including aliases
+
+> Various placeholders for the top-n ranked players.  These are over all ranks.  There are a couple of shortcut placehodlders where one placeholders contain multiple fileds for easier usage.
+
+
 
 
 
 	
 
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:7px; border:none; color:#aaf; background-color:#aaf;">
 
 
 # Requirements
@@ -122,10 +161,16 @@ There is always more than one way to do things, and the same goes for having mor
 
 **PlaceholderAPI** - [Setting up PlaceholderAPI](prison_docs_0xx_setting_up_PlaceholderAPI.md) - Strongly Suggested if using placeholders. 
 
+
+**Holographs** - There are actual a couple of holograph display plugins. Most of the references in this document refer to Holographic Displays, but some of the newer plugins can provide the same functionality, plus many new features.  
+
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
 # Placeholder Theory for Prison
+
+*(needs updating: Prison now has 10 types of placeholders including top-n variations)*
+
 
 There are few major types of placeholders in prison: Player, Ranks, Ladders, Mines, and Stats based. With the most recent releases of prison, there have been hybrids added that are a combination of the player placeholders and with mines and ranks.  For example there are now ladder based placeholder that allow targeting ranks on a specific ladder, instead of all ladders.  Also there are player mine placeholders that report on the mine stats for the mine in which the player is physically located in.  The player mine placeholders have no value when the player is not in a mine, and they will change as the player goes from mine to mine.
 
@@ -152,7 +197,7 @@ Also, internally, prison only responds to the placeholder name without the escap
 <hr style="height:6px; border:none; color:#aaf; background-color:#aaf;">
 
 
-# Placeholder Customization with Placeholder Attributes
+# Placeholder Attributes - Customize almost any Prison Placeholder
 
 *Since Prison v3.2.4-alpha.2*
 
@@ -160,10 +205,14 @@ Also, internally, prison only responds to the placeholder name without the escap
 Placeholders within prison can now be dynamically customized without having to make any changes to any configurations.  The same placeholder can be used in multiple place, each with different configurations.  This is now possible through the use of placeholder attributes and offers a large degree of customization.
 
 
-The placeholder attributes is additional text that is added at the end of a placeholder but within the escape characters.  The placeholder attribute always begins with a double colon `::` and each parameter is separated with a single colon `:`.  Some placeholders cannot use the attributes, and not all attributes can be used on a placeholder that will work with an attribute.  See additonal information below pertain to each attribute.
+The **Placeholder Attributes** is additional text that is added at the end of a placeholder but within the escape characters.  The placeholder attribute always begins with a double colon `::` and each parameter is separated with a single colon `:`.  Some placeholders cannot use the attributes, and not all attributes can be used on a placeholder.  See additional information below that pertains to each attribute.
 
 
-Here are a couple of basic placeholders, as they are listed, and as they would be used for a mine named **temp5**.
+As of v3.3.0-alpha.11h one placeholder can have more than one Placeholder Attribute, but they have to be of a different type.  At this time, this really is not beneficial since the Placeholder Attributes are specific to a certain type of data.  But this opens the door to future possibilities that are not possible currently, such as hybrid between a bar graph with a value super-imposed on top of it.
+
+
+
+The following shows how a few placeholder need to have the "minename" replaced with the actual mine's name.  For these examples, we will use a mine named **temp5**.
 
 * **prison_mines_size_minename** - `{prison_mines_size_temp5}`
 * **prison_mines_remaining_minename** - `{prison_mines_remaining_temp5}`
@@ -171,7 +220,8 @@ Here are a couple of basic placeholders, as they are listed, and as they would b
 * **prison_mines_timeleft_bar_minename** - `{prison_mines_timeleft_bar_temp5}`
 
 
-And these are some examples of using the attributes:
+
+A few Examples using Placeholder Attributes:
 
 * `{prison_mines_size_temp5::nFormat:#,##0}` - **654,321**
 * `{prison_mines_size_temp5::nFormat:#,##0:0:none}` - **654,321**
@@ -211,7 +261,7 @@ Using the command `/prison placeholders test` should be used to test and perfect
 
 
 
-## Placeholder Attribute - Numeric Formats
+## Placeholder Attribute: nFormat - Numeric Formats
 
 
 The Numeric Format attribute will only work on placeholders that return plain numbers.  If there is a "_format" version of the placeholder, then an attribute will override the default formatting.
@@ -290,7 +340,7 @@ Although it is not suggested to include color codes in the formatting of numbers
 
 
 
-## Placeholder Attribute - Bar Graphs
+## Placeholder Attribute: bar - Bar Graphs
 
 
 The bar placeholder attribute only works with placeholders with the word bar in them. 
@@ -362,7 +412,7 @@ Examples of using hex color codes in a bar graph placeholder. Try it first with 
 
 
 
-## Placeholder Attribute - Text
+## Placeholder Attribute: text - Text
 
 
 This placeholder attribute is for text formatting the placeholder results.  The only thing it does is to process the hex, hex2, and debug options.
