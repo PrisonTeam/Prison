@@ -82,10 +82,8 @@ public class PrisonBackups {
 		
 		File versionsFile = new File( Prison.get().getDataFolder(), FILE_BACKUP_VERSIONS_FILE );
 		
-		if ( !versionsFile.exists() ) {
-			try {
-				Files.createFile( versionsFile.toPath() );
-				
+		try {
+			if ( versionsFile.exists() ) {
 				List<String> lines = Files.readAllLines( versionsFile.toPath() );
 				
 				for (String line : lines) {
@@ -97,11 +95,15 @@ public class PrisonBackups {
 						}
 					}
 				}
-				
-			} 
-			catch (IOException e) {
-				e.printStackTrace();
 			}
+			else {
+				
+				Files.createFile( versionsFile.toPath() );
+			}
+			
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
 		}
 		
 		return lastWrittenVersion;

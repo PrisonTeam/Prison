@@ -13,6 +13,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12c 2022-07-23
 
 
+* **Fixed issue with prison version check triggering a backup upon startup.**
+It was always bypassing the previous version check, so it was always creating another backup.
+
+
 * **Update bstats by moving to its own class in its own package.**
 Added 4 new custom charts to split the plugins in to 4 parts.
 

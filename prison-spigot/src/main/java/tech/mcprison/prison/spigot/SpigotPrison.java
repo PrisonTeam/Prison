@@ -219,7 +219,7 @@ public class SpigotPrison
 
         // Show Prison's splash screen and setup the core components:
         Prison.get()
-        		.init(platform, Bukkit.getVersion());
+        		.init( platform, Bukkit.getVersion(), getDataFolder() );
 
         
         

@@ -175,12 +175,14 @@ public class Prison
      * <p>
      * Note that modules <b>should not call this method</b>. This is solely for the implementations.
      */
-    public boolean init(Platform platform, String minecraftVersion) {
+    public boolean init(Platform platform, String minecraftVersion, File dataFolder ) {
         long startTime = System.currentTimeMillis();
 
         
         this.platform = platform;
         this.minecraftVersion = minecraftVersion;
+        
+        this.dataFolder = dataFolder;
         
         if (!initDataFolder()) {
         	Output.get().logInfo("&cFailure: &eInitializing the Prison Data Folders!" );
@@ -540,7 +542,8 @@ public class Prison
 
     private boolean initDataFolder() {
         // Creates the /Prison directory, for core configuration.
-        this.dataFolder = getPlatform().getPluginDirectory();
+    	
+//        this.dataFolder = getPlatform().getPluginDirectory();
         return this.dataFolder.exists() || this.dataFolder.mkdirs();
     }
 
