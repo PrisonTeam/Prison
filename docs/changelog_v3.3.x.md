@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12c 2022-07-24
+# 3.3.0-alpha.12d 2022-07-25
+
+
+* **v3.3.0-alpha.12d 2022-07-25**
 
 
 * **Added more information on ladder listing to show name, number of ranks, and rank cost multiplier.**
