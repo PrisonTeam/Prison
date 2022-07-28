@@ -362,8 +362,8 @@ public class LadderManager
     			ladder.getName(),
     			dFmt.format( ladder.getRankCostMultiplierPerRank() ),
     			rankCount,
-    			firstRank.getName(),
-    			lastRank.getName()
+    			(firstRank == null ? "" : firstRank.getName()),
+    			(lastRank == null ? "" : lastRank.getName())
     			);
 		
 		return ladderInfo;

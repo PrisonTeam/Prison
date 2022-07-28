@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12d 2022-07-28
 
 
+* **Fixed issue rank null issues when showing ladder details.**
+
+
 * **Prison backups: Fixed an issue with folders not existing when running the backups the first time.**
 
 
