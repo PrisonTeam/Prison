@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12d 2022-07-25
+# 3.3.0-alpha.12d 2022-07-28
+
+
+* **Prison backups: Fixed an issue with folders not existing when running the backups the first time.**
 
 
 * **v3.3.0-alpha.12d 2022-07-25**
