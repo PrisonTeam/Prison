@@ -5,7 +5,12 @@
 
 
 
-# TODO Items for v3.3.0-alpha.11
+# TODO Items for v3.3.0-alpha.12
+
+- It looks like the following text field is no longer being used, but it should with the placeholders `prison_mines_timeleft_minename` ... looks like it's using the long version.  May want to provide a short and long format?  Long (the current default) may be way too long...
+  `core_text__time_units_short=y,m,w,d,h,m,s`
+
+- There is a potential error with the class tech.mcprison.prison.util.TextMessage in that all of the messages are using `.withReplacements( "%s" )` but yet none of the text components are using parameters.  So if a parameter is added to any of those, the `%s` could potentially cause errors!?  Need to test and if errors, then remove all of the `.withReplacements()` in that class.
 
 
 - DONE: Sellall enablement - needs to be in module.yml, but must enable it in config.yml?

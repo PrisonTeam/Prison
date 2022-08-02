@@ -51,6 +51,8 @@ public class Text
     private static final long millisPerMonth = 31 * millisPerDay;
     private static final long millisPerYear = 365 * millisPerDay;
     
+    private static String unitPrefixSpacer = " ";
+    
     private static Map<String, Long> unitMillis = CollectionUtil
         .map( 
         		"year:years", millisPerYear, 
@@ -104,6 +106,8 @@ public class Text
     	unit_time_text_ago = coreOutputTextAgoMsg();
     	unit_time_text_from_now = coreOutputTextFromNowMsg();
     	unit_time_text_and = coreOutputTextAndMsg();
+    	
+    	unitPrefixSpacer = coreOutputUnitPrefixSpacer();
     	
     	String timeUnitsSingular = coreOutputTextTimeUnitsSingularMsg();
     	String timeUnitsPlural = coreOutputTextTimeUnitsPluralMsg();
@@ -580,7 +584,7 @@ public class Text
             }
             millisLeft -= unitSize * unitCount;
             
-            unitCountParts.add(unitCount + " " +
+            unitCountParts.add(unitCount + unitPrefixSpacer +
             		( unitCount == 1 ? unitNameSingular : unitNamePlural) );
         }
 

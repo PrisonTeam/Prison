@@ -10,7 +10,12 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12e 2022-07-28
+# 3.3.0-alpha.12e 2022-08-02
+
+
+* **Added the ability to control the prefix spaces on the unit names.**
+NOTE: may need to enable the use of the `core_text__time_units_short` since the long units are not being used.  May need to create another placeholder for short/long.  It used to be short, so may need to use long with the new placeholder and convert the calcs to the short as the default.
+This was requested by PassBL.
 
 
 * **v3.3.0-alpha.12e**
