@@ -7,6 +7,23 @@
 
 # TODO Items for v3.3.0-alpha.12
 
+- Mine bombs - If at rank d and in mine w and I set off a mine bomb, it will not break any blocks, but it will lock them and prevent others at that rank from breaking them. - redonthehead
+ - player should not be able to "lock" blocks 
+ - Player should not be able to drop a mine bomb in a mine they don't have access to
+ 
+ 
+- DONE: command `/ranks topn` - does not appear to be sorting by prestiges first - redonthehead
+ - Fixed? Force sort when using the command each time.
+ - When player's rankup, should probably force a sort.  
+ - The sorting should be somewhat low cost, since if players are in the same position, it short-circuits the sorting so there is less processing.  Ie.. if nothing is sorted, it's only one quick pass.  If only one player changes, then it's only moving that player.
+ 
+ - Issue with topn Rank-Score.  When player is at top of default ladder and has not prestiged yet.
+  - Rank-score looks like it's just their money balance?
+  
+
+- admin - prevent you breaking mine liners
+
+
 - It looks like the following text field is no longer being used, but it should with the placeholders `prison_mines_timeleft_minename` ... looks like it's using the long version.  May want to provide a short and long format?  Long (the current default) may be way too long...
   `core_text__time_units_short=y,m,w,d,h,m,s`
 

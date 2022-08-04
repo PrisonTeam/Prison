@@ -10,7 +10,11 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12e 2022-08-02
+# 3.3.0-alpha.12e 2022-08-04
+
+
+* **Fixed the `/ranks topn` command (`/topn`) to sort the list of players before printing the list.**
+The list was being set a server startup time, and if someone would rankup or prestige, it was not reflecting their new position.  The list is also now sorted after each rankup.  Sorting should be a low cost operation since the list used never is regenerated so the changes made during sorting is minimal at best.
 
 
 * **Added the ability to control the prefix spaces on the unit names.**

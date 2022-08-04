@@ -2060,6 +2060,12 @@ public class RanksCommands
     		alt = true;
     	}
     	
+//    	boolean forceSort = false;
+//    	if ( pageNumber.toLowerCase().contains("sort") ||
+//    			pageSizeNumber.toLowerCase().contains("sort") ||
+//    			options.toLowerCase().contains("sort") ) {
+//    		forceSort = true;
+//    	}
     	
     	try {
     		page = Integer.parseInt(pageNumber);
@@ -2092,6 +2098,12 @@ public class RanksCommands
     	int posEnd = posStart + pageSize;
     	
 //    	DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+    	
+    	
+    	
+//    	if ( forceSort ) {
+    		PrisonRanks.getInstance().getPlayerManager().sortPlayerByTopRanked();
+//    	}
     	
     	List<RankPlayer> topN = PrisonRanks.getInstance().getPlayerManager().getPlayersByTop();
 

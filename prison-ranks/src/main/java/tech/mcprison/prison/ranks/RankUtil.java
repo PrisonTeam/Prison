@@ -701,6 +701,10 @@ public class RankUtil
         rankPlayer.recalculateRankMultipliers();
         
         
+        // Sort the Top ranked list:
+        PrisonRanks.getInstance().getPlayerManager().sortPlayerByTopRanked();
+        
+        
 //        results.addTransaction( RankupTransactions.fireRankupEvent );
 //        
 //        // Nothing can cancel a RankUpEvent:
