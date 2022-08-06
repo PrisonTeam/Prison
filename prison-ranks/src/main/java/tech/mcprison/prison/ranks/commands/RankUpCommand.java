@@ -83,7 +83,7 @@ public class RankUpCommand
     		
     		List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
     		
-			rankUpPrivate(sender, ladder, RankupModes.MAX_RANKS, "ranks.rankupmax.", cmdTasks );
+			rankUpPrivate(sender, "", ladder, RankupModes.MAX_RANKS, "ranks.rankupmax.", cmdTasks );
 			
 			// submit cmdTasks
 			Player player = getPlayer( sender, null );
@@ -102,28 +102,38 @@ public class RankUpCommand
 	@Command(identifier = "rankup", description = "Ranks up to the next rank.", 
 			permissions = "ranks.user", altPermissions = "ranks.rankup.[ladderName]", onlyPlayers = false) 
     public void rankUp(CommandSender sender,
-		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder
+		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder,
+		@Arg(name = "playerName", description = "Provides the player's name for the rankup, but" +
+				"this can only be provided by a non-player such as console or ran from a script.", def = "")  String playerName
 		) {
         
-        if ( !sender.isPlayer() ) {
+		if ( sender.isPlayer() ) {
+			playerName = "";
+		}
+		
+        if ( !sender.isPlayer() && playerName.length() == 0 ) {
         	Output.get().logInfo( rankupCannotRunFromConsoleMsg() );
         	return;
         }
+        
 		Output.get().logDebug( DebugTarget.rankup, 
-				"Rankup: cmd '/rankup %s'  Processing ranks.rankup.%s", 
-				ladder, ladder );
+				"Rankup: cmd '/rankup %s%s'  Processing ranks.rankup.%s", 
+				ladder, 
+				( playerName.length() == 0 ? "" : " " + playerName ),
+				ladder
+				);
         
 		List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
 		
-    	rankUpPrivate(sender, ladder, RankupModes.ONE_RANK, "ranks.rankup.", cmdTasks );
+    	rankUpPrivate(sender, playerName, ladder, RankupModes.ONE_RANK, "ranks.rankup.", cmdTasks );
     	
     	// submit cmdTasks
-    	Player player = getPlayer( sender, null );
+    	Player player = getPlayer( sender, playerName );
 		submitCmdTasks( player, cmdTasks );
     	
     }
 
-    private void rankUpPrivate(CommandSender sender, String ladder, RankupModes mode, 
+    private void rankUpPrivate(CommandSender sender, String playerName, String ladder, RankupModes mode, 
     		String permission, List<PrisonCommandTaskData> cmdTasks ) {
 
         // RETRIEVE THE LADDER
@@ -149,13 +159,20 @@ public class RankUpCommand
         	return;
         }
         
-        // Player will always be the player since they have to be online and must be a player:
-        Player player = getPlayer( sender, null );
         
-        if ( !sender.isPlayer() ) {
+		if ( sender.isPlayer() ) {
+			playerName = "";
+		}
+		
+        if ( !sender.isPlayer() && playerName.length() == 0 ) {
         	Output.get().logInfo( rankupCannotRunFromConsoleMsg() );
         	return;
         }
+        
+
+        // Player will always be the player since they have to be online and must be a player:
+        Player player = getPlayer( sender, playerName );
+        
 
         
         //UUID playerUuid = player.getUUID();
@@ -263,7 +280,7 @@ public class RankUpCommand
         	// If the last rankup attempt was successful and they are trying to rankup as many times as possible: 
         	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS && 
         			!ladder.equals(LadderManager.LADDER_PRESTIGES)) {
-        		rankUpPrivate( sender, ladder, mode, permission, cmdTasks );
+        		rankUpPrivate( sender, playerName, ladder, mode, permission, cmdTasks );
         	}
         	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS){
         		rankupWithSuccess = true;

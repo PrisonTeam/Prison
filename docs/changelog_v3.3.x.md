@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12e 2022-08-05
+# 3.3.0-alpha.12e 2022-08-06
+
+
+* **Added the the option for playerName to the `/rankup` command so the command can be scripted and ran from the console.**
 
 
 * **There was another issue with using `/gui` related to no ladders being loaded.**
