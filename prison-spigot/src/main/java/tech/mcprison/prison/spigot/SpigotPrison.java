@@ -38,6 +38,7 @@ import org.inventivetalent.update.spiget.UpdateCallback;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand;
+import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.alerts.Alerts;
 import tech.mcprison.prison.backups.PrisonBackups;
 import tech.mcprison.prison.integration.Integration;
@@ -250,8 +251,26 @@ public class SpigotPrison
         
     	boolean delayedPrisonStartup = getConfig().getBoolean("delayedPrisonStartup.enabled", false);
 
+    	
     	if ( !delayedPrisonStartup ) {
-    		onEnableStartup();
+    		
+    		// Check to see if CMI is an active plugin.  If it is, then let's enable the delayed startup.
+    		// It should be noted that just because CMI is detected, it does not mean that the CMI Economy
+    		// is being used.  Use a flexible startup which means it will start if any vault economy 
+    		// is found.
+    		RegisteredPluginsData cmiPlugin = platform.identifyRegisteredPlugin( "CMI" );
+    		if ( cmiPlugin != null ) {
+    			String cmiMessage = String.format( 
+    					"CMI was detected and Prison's delayed startup has been enabled: %s - %s ", 
+    					cmiPlugin.getPluginName(), cmiPlugin.getPluginVersion() );
+    			Output.get().logInfo( cmiMessage );
+    		
+    			onEnableDelayedStartFlexible();
+    		}
+    		else {
+    			
+    			onEnableStartup();
+    		}
     	}
     	else {
     		onEnableDelayedStart();
@@ -259,6 +278,13 @@ public class SpigotPrison
     	
     }
     
+    
+    protected void onEnableDelayedStartFlexible() {
+    	
+    	SpigotPrisonDelayedStartupTask delayedStartupTask = new SpigotPrisonDelayedStartupTask( this );
+    	delayedStartupTask.setUseAnyVaultEconomy( true );
+    	delayedStartupTask.submit();
+    }
     
     protected void onEnableDelayedStart() {
     	

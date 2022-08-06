@@ -206,6 +206,13 @@ prison-mines:
 # any other economy plugins using vault too.  But please do not use this 
 # unless all other options have been exhusted. 
 #
+# NOTE: Due to the high degree of CMI Economies forcing the use of this delayed 
+# start, if delayed start is disabled and if Prison detects that CMI is enabled, 
+# Prison will now force a delayed start with the any vault economy being the
+# target.  This means as long as vault has an active economy, then prison will
+# start.  IF the vault economy is found right away, then no dealy startup will 
+# be submitted, and normal startup will continue right away.
+# 
 # To use the delayed startup:
 # 1. delayedPrisonStartup.enabled: true
 # 2. Optional: cooldown-secs and max-attemps identifies how frequently and how

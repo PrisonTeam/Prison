@@ -54,6 +54,7 @@ import com.cryptomorin.xseries.messages.Titles;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonCommand;
+import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.commands.PluginCommand;
@@ -716,8 +717,29 @@ public class SpigotPlatform
         return capabilities;
     }
 
+    /**
+     * <p>This can be useful to see if a given plugin is active.  The returned 
+     * data, RegisteredPluginData, has additional information pertaining to the
+     * plugin.  If the plugin is not found, then this will return a null value.
+     * </p>
+     * 
+     * @param pluginName
+     * @return
+     */
+    public RegisteredPluginsData identifyRegisteredPlugin( String pluginName ) {
+    	identifyRegisteredPlugins( false );
+    	
+    	RegisteredPluginsData plugin = Prison.get().getPrisonCommands().getRegisteredPluginData().get( pluginName );
+    	
+    	return plugin;
+    }
+    
     @Override
 	public void identifyRegisteredPlugins() {
+    	identifyRegisteredPlugins( true );
+    }
+    
+	public void identifyRegisteredPlugins( boolean checkForWarnings ) {
 		 PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
 		 
 		 // reset so it will reload cleanly:
@@ -754,7 +776,7 @@ public class SpigotPlatform
         	}
 		}
         
-        if ( isPlugManPresent ) {
+        if ( checkForWarnings && isPlugManPresent ) {
         	ChatDisplay chatDisplay = new ChatDisplay("&d* *&5 WARNING: &d PlugMan &5 Detected! &d* *");
         	chatDisplay.addText( "&7The use of PlugMan on this Prison server will corrupt internals" );
         	chatDisplay.addText( "&7of Prison and may lead to a non-functional state, or even total" );
