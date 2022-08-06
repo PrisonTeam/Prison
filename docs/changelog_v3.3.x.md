@@ -13,7 +13,11 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12e 2022-08-05
 
 
-* **The was an issue with `/prison reload gui` causing a NPE.**
+* **There was another issue with using `/gui` related to no ladders being loaded.**
+This fixes that problem, and it appears like the issue was caused by plugman messing things up.  This does not "solve" the problem with ladders not being loaded, but prevents the NPE from happening.
+
+
+* **There was an issue with `/prison reload gui` causing a NPE.**
 
 
 * **Fixed the `/ranks topn` command (`/topn`) to sort the list of players before printing the list.**
