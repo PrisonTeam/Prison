@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12e 2022-08-06
 
 
+* **Fixed a potential NPE with giving the players overflow blocks, but not sure what the exact cause was, but looked like there was an issue with mapping to a spigot item stack.**
+
+
  **CMI delayed startup: Added new feature to try to auto enable Prison's delayed startup if CMI is detected as an active plugin, and if the delayed startup is disabled within the config.yml.**
 This is to help get more CMI users up and running without more effort, but yet still provide the ability to customize how it is triggered.
 If CMI is active, there is NO WAY to disable a delayed startup check.*
