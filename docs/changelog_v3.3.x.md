@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12e 2022-08-06
 
 
+* **minor updates for disabled mine reset times. No functional changes were  made.**
+
+
 * **Fixed a potential NPE with giving the players overflow blocks, but not sure what the exact cause was, but looked like there was an issue with mapping to a spigot item stack.**
 
 

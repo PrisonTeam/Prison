@@ -1056,7 +1056,7 @@ public class MinesCommands
         		RowComponent row = new RowComponent();
         		double rtMinutes = resetTime / 60.0D;
         		row.addTextComponent( "&3Reset time: &7%s &3Secs (&7%.2f &3Mins)", 
-        				Integer.toString(m.getResetTime()), rtMinutes );
+        				Integer.toString(resetTime), rtMinutes );
         		chatDisplay.addComponent( row );
         	}
         	
