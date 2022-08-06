@@ -215,8 +215,10 @@ public abstract class SpigotGUIComponents
      * */
     public static void updateSellAllConfig(){
         SellAllUtil util = SpigotPrison.getInstance().getSellAllUtil();
-        util.updateConfig();
-        sellAllConfig = util.sellAllConfig;
+        if ( util != null ) {
+        	util.updateConfig();
+        	sellAllConfig = util.sellAllConfig;
+        }
     }
 
     public static void updateGUIConfig(){

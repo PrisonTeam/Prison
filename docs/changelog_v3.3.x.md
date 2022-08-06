@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12e 2022-08-04
+# 3.3.0-alpha.12e 2022-08-05
+
+
+* **The was an issue with `/prison reload gui` causing a NPE.**
 
 
 * **Fixed the `/ranks topn` command (`/topn`) to sort the list of players before printing the list.**
