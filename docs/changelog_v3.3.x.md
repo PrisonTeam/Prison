@@ -13,6 +13,15 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12e 2022-08-06
 
 
+* **BlockEvents were changed to auto display the existing rows so it's easier for the end user to know which row to select.**
+All they need to do is to enter the mine's name, then press enter to submit the command, and then the existing rows details will be shown.  Then the user can select the row and complete the command.
+Updated docs on block events.
+
+
+* **BlockEvents were changed to auto display the existing rows so it's easier for the end user to know which row to select.**
+All they need to do is to enter the mine's name, then press enter to submit the command, and then the existing rows details will be shown.  Then the user can select the row and complete the command.
+
+
 * **minor updates for disabled mine reset times. No functional changes were  made.**
 
 

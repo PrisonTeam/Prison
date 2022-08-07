@@ -4,16 +4,16 @@
 
 # BlockEvents
 
-Prison's BlockEvents provides a way to fire commands when a block is broken by a player.  Every BlockEvent must have a chance which can range from 0.0000 percent to 100.0 percent.  Optionally, you can tie the block event to a permission, to an event type, and for Token Enchant explosions you can filter on the enchantment type that triggered that explosion.  You can also filter on a Crazy Enchant blast too.  Soon, BlockEvents will be able to filter on block types too.
+Prison's BlockEvents provides a way to fire commands when a block is broken by a player.  Every BlockEvent must have a chance which can range from 0.0000 percent to 100.0 percent.  Optionally, you can tie the block event to a permission, to an event type, and for Token Enchant explosions you can filter on the enchantment type that triggered that explosion.  You can also filter on a Crazy Enchant blast too.  BlockEvents can even filter on block types so you can only trigger an even on a specific block type.
 
 
-A single BlockEvent can also have more than one command that is ran together with each command separated by a semi-colon. ";" 
+A single BlockEvent can consist of more than one command that is ran together with each command separated by a semi-colon. ";" 
 
 
 BlockEvents have a taskMode that defines how the specified commands are to be ran.
 
 
-*Documented updated: 2021-12-03*
+*Documented updated: 2022-08-06*
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -22,8 +22,9 @@ BlockEvents have a taskMode that defines how the specified commands are to be ra
 BlockEvents can be access through the command prefixes of:
 
 `/mines blockEvent`
+`/mines blockEvent block`
 
-There are 9 sub-commands, which includes add and list, which are probably the most important of the commands.
+There are 10 sub-commands (two under blocks), which includes add and list, which are probably the most important of the commands.  
 
 
 <img src="images/prison_docs_115_blockevents_01.png" alt="BlockEvent Sub-Commands" title="BlockEvents Sub-Commands" width="600" /> 
@@ -38,14 +39,30 @@ The BlockEvent listings can also be included in the following command by includi
 
 ## Use of Row Numbers In The BlockEvent Commands:
 
- Due to the complexity of the blockEvent commands being deeply nested, and there could be so many of them, many of the blockEvent commands uses a **Row** identifier.  This row identifier is based upon the order of the commands as listed under the `/mines blockEvent list` command.
+ Due to the complexity of the blockEvent commands being deeply nested, and there could be so many of them, many of the blockEvent commands uses a **Row** identifier to select the blockEvent of interest.  This row identifier is based upon the order of the commands as listed under the `/mines blockEvent list` command.
+
+
+All of the blockEvent commands now supports displaying the current list of rows by completing the blockEvent command up to the required mine name.  When pressing enter to submit the incomplete command, it will then show the list of rows.
+
 
 A number of examples of a few different blockEvets is as follows.  Emphasis is on the row numbers.
+
 
 <img src="images/prison_docs_115_blockevents_02.png" alt="BlockEvent Sub-Commands" title="BlockEvents Sub-Commands" width="600" /> 
 
 
 
+# Starting with BlockEvents - Add a new BlockEvent
+
+It is strongly suggested that you first review the help on the following command:
+
+`/mines blockEvent add help`
+
+
+That will show the current information on blockEvents.  It's also important to understand that the list of **placeholders** is also critical since it provides a great deal of power and flexibility in what commands can be crafted.  See the next section on **BlockEvents Placeholders**.
+
+
+The first step of creating blockEvents, is to add them.  There are a lot of options that can be used for customizing them and they can become rather complicated, so the add function only requires a percentage value since all other options are optional, and some may not be used.
 
 
 # BlockEvents Placeholders
@@ -55,10 +72,31 @@ Within the BlockEvents commands you can use placeholders and Prison will substit
 
 For a current list of all blockEvent commands use **placeholders** keyword with the **add** command:
 
+`/mines blockEvent add help`
+
 `/mines blockEvent add placeholders`
 
 
 `{player} {player_uid} {msg} {broadcast} {title} {actionBar} {inline} {inlinePlayer} {sync} {syncPlayer} {blockName} {mineName} {locationWorld} {locationX} {locationY} {locationZ} {coordinates} {worldCoordinates} {blockCoordinates} {blockChance} {blockIsAir} {blocksPlaced} {blockRemaining} {blocksMinedTotal} {mineBlocksRemaining} {mineBlocksRemainingPercent} {mineBlocksTotalMined} {mineBlocksSize} {blockMinedName} {blockMinedNameFormal} {blockMinedBlockType} {eventType} {eventTriggered} {utilsDecay}`
+
+
+
+Some examples showing how to use placeholders in the blockEvents. 
+
+
+```
+/mines blockEvent add a 100 {utilsDecay} rainbow {blockCoordinates} AIR 40 {mineName}
+
+/mines blockevent add A 0.075 prison utils repairAll {player};{actionBar}Your items have been repaired!
+
+/mines blockevent add A 1 prison utils smelt {player}
+
+/mines blockEvent add A 5.0 prison utils potionEffect speed 90 2;prison utils potionEffect night_vision 300 1
+
+```
+
+
+<h3>Placeholders Explained</h3>
 
 
 - **{player}** Provides the player's name.
@@ -98,27 +136,11 @@ There are four **taskModes** on how BlockEvent commands run. The taskModes can b
 
 - **{syncPlayer}** This placeholder is similar to the **{sync}** placeholder, with the exception the commands are ran as the player, so the player must have access to those commands.
 
-NOTE: It is impossible to run a command asynchronously, since the execution of a command must always be in a synchronous thread. Hence you can submit an async task, but then when you run the command, it does so in a sync thread. 
+
+NOTE: It is impossible to run a command asynchronously, since the execution of a command must always be in a synchronous thread. Hence you can submit an async task, but then when you run the command, it does so in a sync thread.  This explanation may not make a lot of sense, but it creates an additional task, but fails to run in asynchronous mode since it's impossible so it's not even worth using it.
 
 
-`/mines blockEvent add help`
-`/mines blockEvent add placeholders`
 
-
-Some examples showing how to use placeholders in the blockEvents. 
-
-
-```
-
-/mines blockEvent add a 100 {utilsDecay} rainbow {blockCoordinates} AIR 40 {mineName}
-
-/mines blockevent add A 0.075 prison utils repairAll {player};{actionBar}Your items have been repaired!
-
-/mines blockevent add A 1 prison utils smelt {player}
-
-/mines blockEvent add A 5.0 prison utils potionEffect speed 90 2;prison utils potionEffect night_vision 300 1
-
-```
 
 
 - **{blockName}** The name of the block that was placed in the mine during the last mine reset.  The same name as used and provided within the command `/mines block search`.
@@ -206,7 +228,7 @@ The BlockEvent command that is used must be be runnable from the console. It is 
 The structure of the command should be the same as within the console. Do not include a a leading /.  Do not quote the command.  Use the placeholders mentioned above for referring to the players. 
 
 
-Move than one command can be chained together by using a semi-colon between the commands.  The commands do not need to end with a semi-colon.  No space needs to follow a semi-colon before the next command.  There is no limit imposed upon the length of a command, or commands, but the max length may be controlled by outside factors such as ingame text message constraints.  Hence why it may be advisable to enter long commands through the console.
+Move than one command can be chained together by using a semi-colon between the commands.  The commands do not need to end with a semi-colon.  No space needs to follow a semi-colon before the next command.  There is no limit imposed upon the length of a command, or commands, but the max length may be controlled by outside factors such as in-game text message constraints.  Hence why it may be advisable to enter long commands through the console.
 
 
 See the above examples on how to enter the commands when setting up a BlockEvent.
@@ -216,7 +238,7 @@ See the above examples on how to enter the commands when setting up a BlockEvent
 
 
 
-# BlockEvents Chance
+# BlockEvents Percent Chance
 
 
 The chance that is tied to a block event can range from 100 percent to as low as 0.0001 percent.  
@@ -324,19 +346,97 @@ You must enter the correct value for this triggered command as used by Token Enc
 # BlockEvents Blocks
 
 
-Coming soon.  Not yet available.
+You can filter blockEvents by block types.  You have to already have setup a block command to add a block filter.
 
 
-Will be able to filter block events based upon block types.  Will be able to have more than one block defined for each BlockEvent.
+For example if you only want a specific blockEvent to be fired when redstone is broken.
 
 
+The following shows the available commands:
+
+`/mines blockEvent block`
+
+
+You can only add and remove blocks. The commands will help step you through selecting the correct values.  
+
+
+First, if using the **block add** command, only enter the mine name and press enter.  Let's assume we are working with mine A:
+
+
+`/mines blockEvent block add a`
+
+
+This incomplete **block add** command will show you all of the existing block events for mine A. From the list, it will show the row number for each blockEvent.
+
+
+```
+>mines blockEvent block add a
+ --- < Add blocks to a BlockEvent for [A] > ------ (3.3.0-alpha.12e)
+ Hover over values for more information and clickable actions.
+ *  Row: 1  75.00000% [] all (sync)  'say How's it going?'
+ *                  Blocks: [cobblestone iron_ore]
+ *  Row: 2  5.00000% [] all (inline)  'prison utils potionEffect {player} night_vision 600 2'
+ *  Row: 3  25.00000% [] all (inline)  '{msg} night vision!;prison utils potionEffect {player} night_vision 600 2'
+ *  Row: 4  0.01000% [] all (inline)  '{msg}Hey this is a test Message!'
+ *  Row: 5  100.00000% [] all (inline)  '{utilsDecay} obby {blockCoordinates} AIR 40 {mineName}'
+ *                  Blocks: [cobblestone]
+ Select a BlockEvent by row number to add a block
+ /mines blockEvent block add A  [rowBlockEvent] [rowBlockName]
+
+```
+
+Press the **<Up-Arrow>** key on your keyboard and it will show last entered command.  Then just hit **<space>** then enter the row number and press **<enter>**.  For our example, let's pretend we want to add a block to the third row:
+
+
+`/mines blockEvent block add a 3`
+
+
+This incomplete **block add** command will then show the list of blocks in the mine.  You select them by choosing the row number for the desired block.  So in this example, let's choose Andesite which is row 1.
+
+
+```
+>mines blockEvent block add a 3
+ --- < Add blocks to a BlockEvent for [A] > ------ (3.3.0-alpha.12e)
+ Select a block from this mine by using the block's row number:
+   /mines blockEvent block add A  3  [rowBlockName]
+  Row: 1  andesite 5.00000
+  Row: 2  cobblestone 95.00000
+```
+
+`/mines blockEvent block add a 3 1`
+`[22:02:32] [Server thread/INFO]: Block has been added to BlockEvent`
+
+
+So if we list the block events it will now include the newly added block:
+
+
+```
+/mines blockEvent list a
+
+ --- < Add blocks to a BlockEvent for [A] > ------ (3.3.0-alpha.12e)
+ Hover over values for more information and clickable actions.
+ *  Row: 1  75.00000% [] all (sync)  'say How's it going?'
+ *                  Blocks: [cobblestone iron_ore]
+ *  Row: 2  5.00000% [] all (inline)  'prison utils potionEffect {player} night_vision 600 2'
+ *  Row: 3  25.00000% [] all (inline)  '{msg} night vision!;prison utils potionEffect {player} night_vision 600 2'
+ *                  Blocks: [andesite]
+ *  Row: 4  0.01000% [] all (inline)  '{msg}Hey this is a test Message!'
+ *  Row: 5  100.00000% [] all (inline)  '{utilsDecay} obby {blockCoordinates} AIR 40 {mineName}'
+ *                  Blocks: [cobblestone]
+```
+
+
+You can add more than one block to each block event.  Please note that in row 1 that blockEvent has two blocks tied to that filter.  Please ignore the fact that iron_ore is not in this mine (oops).
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 
 
-# BlockEvents 
+# BlockEvents ect...
+
+
+More to be added
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">

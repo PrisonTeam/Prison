@@ -7,6 +7,9 @@
 
 # TODO Items for v3.3.0-alpha.12
 
+
+- DONE: Modified the `/mine blockEvent` commands to auto show the existing rows if only the mine name is entered for the command.  It will show the list of rows, then the user can select it, then continue entering the rest of the command.  There has been a lot of confusion on how to work with the blockEvent rows since it was not obvious they had to first "list" the blockEvents for that mine.
+
 - Mine bombs - If at rank d and in mine w and I set off a mine bomb, it will not break any blocks, but it will lock them and prevent others at that rank from breaking them. - redonthehead
  - player should not be able to "lock" blocks 
  - Player should not be able to drop a mine bomb in a mine they don't have access to
