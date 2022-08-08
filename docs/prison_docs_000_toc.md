@@ -26,7 +26,7 @@
 <hr style="height:3px; border:none; color:#aaf; background-color:#aaf;">
 
 
-# Prison Supports Spigot 1.8 through Spigot 1.18.x
+# Prison Supports Spigot 1.8 through Spigot 1.19.x
 # Prison Supports Java 1.8 though Java 19
 # Prison is created for the Spigot Platform, and works on other platforms based upon Spigot
 
