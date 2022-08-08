@@ -485,6 +485,9 @@ public class Updater {
             while (e.hasMoreElements()) {
                 ZipEntry entry = e.nextElement();
                 File destinationFilePath = new File(zipPath, entry.getName());
+													if (!destinationFilePath.toPath().normalize().startsWith(zipPath)) {
+														throw new RuntimeException("Bad zip entry");
+													}
                 this.fileIOOrError(destinationFilePath.getParentFile(),
                     destinationFilePath.getParentFile().mkdirs(), true);
                 if (!entry.isDirectory()) {
