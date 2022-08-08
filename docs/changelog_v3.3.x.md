@@ -10,7 +10,11 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12e 2022-08-06
+# 3.3.0-alpha.12e 2022-08-08
+
+
+* **Added an "invalid player name" message to the rankup commands.**
+Also added missing messages to the zh_TW.properties file. 
 
 
 * **BlockEvents were changed to auto display the existing rows so it's easier for the end user to know which row to select.**

@@ -173,6 +173,10 @@ public class RankUpCommand
         // Player will always be the player since they have to be online and must be a player:
         Player player = getPlayer( sender, playerName );
         
+        if ( player == null ) {
+        	rankupInvalidPlayerNameMsg( sender, playerName );
+        	return;
+        }
 
         
         //UUID playerUuid = player.getUUID();
