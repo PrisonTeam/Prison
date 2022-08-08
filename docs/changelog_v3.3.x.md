@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12e 2022-08-08
 
 
+* **Encode color codes for the prison utils broadcast command.**
+
+
 * **Added an "invalid player name" message to the rankup commands.**
 Also added missing messages to the zh_TW.properties file. 
 

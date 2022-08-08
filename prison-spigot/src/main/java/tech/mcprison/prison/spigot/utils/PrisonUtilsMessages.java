@@ -8,6 +8,7 @@ import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
+import tech.mcprison.prison.util.Text;
 
 public class PrisonUtilsMessages
 	extends PrisonUtils
@@ -86,7 +87,9 @@ public class PrisonUtilsMessages
 		}
 		else {
 			
-			Bukkit.getServer().broadcastMessage( msg );
+			String message = Text.translateAmpColorCodes( msg );
+			
+			Bukkit.getServer().broadcastMessage( message );
 			
 		}
 	}
