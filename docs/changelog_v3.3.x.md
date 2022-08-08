@@ -13,6 +13,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12e 2022-08-08
 
 
+* **Mine Bombs: Only allow bombs to be placed when within a mine that the player has access to.**
+This will help prevent wasted bombs.
+
+
 * **Fixed an issue with nbt items not having a value for toString().**
 
 
