@@ -669,7 +669,7 @@ public class PrisonUtilsMineBombs
 				nbtItem = new NBTItem( sItemStack, true );
 				nbtItem.setString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY, bombData.getName() );
 
-				if ( Output.get().isDebug() && nbtItem != null ) {
+				if ( Output.get().isDebug() && nbtItem != null && nbtItem.toString() != null ) {
 					Output.get().logInfo( "getItemStackBombs ntb: %s", nbtItem.toString() );
 				}
 			}

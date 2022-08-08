@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12e 2022-08-08
 
 
+* **Fixed an issue with nbt items not having a value for toString().**
+
+
 * **Encode color codes for the prison utils broadcast command.**
 
 
