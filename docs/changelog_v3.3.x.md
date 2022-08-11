@@ -12,6 +12,8 @@ These build logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.12e 2022-08-08
 
+* **v3.3.0-alpha.12f 2022-08-08 ** (forgot to commit when made this version)
+
 
 * **Mine Bombs: Only allow bombs to be placed when within a mine that the player has access to.**
 This will help prevent wasted bombs.
