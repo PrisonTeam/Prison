@@ -10,7 +10,13 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12e 2022-08-08
+# 3.3.0-alpha.12e 2022-08-11
+
+* **New topN functionality: far better performance, with regular updates.**
+TopN now is a singleton and is self contained.  When the singleton is instantiated, it then loads and setup the prisonTopN.json file on the first run.  30 seconds after the initial load, it then hits all players to load their balances in an async thread.  
+The command /ranks topn, or just /topn has new parameter: "archived".  Any player who has not been online for more than 90 days will be marked as archived.  The archived option will show just the archived players.
+Setup new parameters within config.yml to control the topn behavior with the async task.
+
 
 * **v3.3.0-alpha.12f 2022-08-08 ** (forgot to commit when made this version)
 

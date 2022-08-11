@@ -254,3 +254,39 @@ prisonCommandHandler:
       tp: 
       - mines teleport
 
+
+
+
+#
+# topN Player Settings:
+# 
+# The refresh settings are for an async task that will be running to 
+# provide updates to the topN player stats.  Only online players are 
+# updated. Offline players only have their stats calculated once, then
+# they are ignored for refresh processing.
+#
+# The delay-ticks setting is the delay that prison waits before starting
+# to run the topN refresh for the first time. By default, it's 3 minutes.
+#
+# The interval-ticks is the time between runs, with 5 minutes being the
+# default value.
+#'
+# topNPlayers.refesh.delay-ticks: 600 (30 seconds)
+# topNPlayers.refresh.interval-ticks: 6000 (5 minutes)
+#
+# Archive cutoff-days is the number of days that a player must be inactive
+# on prison before they are moved to the archival vaults.  Any player that
+# has been archived will not be included in the topN calculations. If 
+# a player is archived, then they return, they will become active and 
+# their old stats will apply
+#
+# topNPlayers.archive.cutoff-days: 90 (90 days)
+
+topNPlayers:
+  archive:
+    cutoff-days: 90
+  refresh:
+    delay-ticks: 600
+    interval-ticks: 6000
+
+

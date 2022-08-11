@@ -6,12 +6,19 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import tech.mcprison.prison.error.ErrorManager;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.modules.ModuleStatus;
 import tech.mcprison.prison.output.Output;
 
 public class JsonFileIO
 		extends FileIO
 {
+	public static final String FILE_SUFFIX_JSON = ".json";
+	public static final String FILE_PREFIX_BACKUP = ".backup_";
+	public static final String FILE_SUFFIX_BACKUP = ".bu";
+	public static final String FILE_SUFFIX_TEMP = ".temp";
+	public static final String FILE_TIMESTAMP_FORMAT = "_yyyy-MM-dd_HH-mm-ss";
+
 	private final Gson gson;
 	
 	/**
@@ -33,6 +40,42 @@ public class JsonFileIO
 	public Gson getGson()
 	{
 		return gson;
+	}
+	
+    /**
+     * <p>This constructs a player file named based upon the UUID followed 
+     * by the player's name.  This format is used so it's easier to identify
+     * the correct player.
+     * </p>
+     * 
+     * <p>The format should be UUID-PlayerName.json.  The UUID is a shortened 
+     * format, which should still produce a unique id.  The name, when read, 
+     * is based upon the UUID and not the player's name, which may change.
+     * This format includes the player's name to make it easier to identify
+     * who's record is whom's.
+     * </p>
+     * 
+     * @return
+     */
+    public static String getPlayerFileName( Player player ) {
+    	
+    	String UUIDString = player.getUUID().toString();
+		String uuidFragment = getFileNamePrefix( UUIDString );
+		
+		return uuidFragment + "_" + player.getName() + FILE_SUFFIX_JSON;
+    }
+    
+	/**
+	 * <p>This function returns the first 13 characters of the supplied
+	 * file name, or UUID String. The hyphen is around the 12 or 13th position, 
+	 * so it may or may not include it.
+	 * </p>
+	 * 
+	 * @param playerFileName
+	 * @return
+	 */
+	private static String getFileNamePrefix( String UUIDString ) {
+		return UUIDString.substring( 0, 14 );
 	}
 	
 	/**

@@ -174,6 +174,13 @@ public class PlayerRank
 		return rank;
 	}
 
+	public String getCurrency() {
+		
+		String currency = getRank() == null ? "" : getRank().getCurrency();
+		
+		return currency;
+	}
+	
 	public Double getRankMultiplier() {
 		return rankMultiplier;
 	}

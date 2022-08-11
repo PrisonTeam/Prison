@@ -29,10 +29,10 @@ public class RanksStartupPlayerValidationsAsyncTask
 		pRanks.checkAllPlayersForJoin();
 		
 		
-		// The following can take awhile to run if there are a lot of players
-		// and if they need to load their balance.  This is impacted moreso if
-		// there is a high cost to get the balance.
-		pRanks.getPlayerManager().sortPlayerByTopRanked();
+//		// The following can take awhile to run if there are a lot of players
+//		// and if they need to load their balance.  This is impacted more so if
+//		// there is a high cost to get the balance.
+//		pRanks.getPlayerManager().sortPlayerByTopRanked();
 		
 	}
 }

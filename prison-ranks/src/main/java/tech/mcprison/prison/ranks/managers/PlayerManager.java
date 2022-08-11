@@ -20,7 +20,6 @@ package tech.mcprison.prison.ranks.managers;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -71,8 +70,11 @@ public class PlayerManager
     private List<RankPlayer> players;
     private TreeMap<String, RankPlayer> playersByName;
     
-    private RankPlayerSortOrderTopRanked sorterTopN;
-    private List<RankPlayer> playersByTop;
+    
+//    private final TopNPlayers topNPlayers;
+    
+//    private RankPlayerSortOrderTopRanked sorterTopN;
+//    private List<RankPlayer> playersByTop;
 
     
     private List<PlaceHolderKey> translatedPlaceHolderKeys;
@@ -87,11 +89,9 @@ public class PlayerManager
         this.players = new ArrayList<>();
         this.playersByName = new TreeMap<>();
         
-        this.sorterTopN = new RankPlayerSortOrderTopRanked();
-        this.playersByTop= new ArrayList<>();
-        
         this.playerErrors = new HashSet<>();
-
+        
+        
         Prison.get().getEventBus().register(this);
     }
 
@@ -149,25 +149,17 @@ public class PlayerManager
             	
             }
             
-            playersByTop.add( rankPlayer );
-            
 		}
-        
-        // NOTE: The following is very expensive operation if the players balance
-        //       needs to be retrieved:
-        // sortPlayerByTopRanked();
         
 
 //        players.forEach(
 //        		document -> 
 //        			this.players.add(
 //        					rankPlayerFactory.createRankPlayer(document) ));
+        
     }
     
-    public void sortPlayerByTopRanked() {
-    	
-    	Collections.sort( playersByTop, sorterTopN );
-    }
+    
 
     /**
      * Saves a {@link RankPlayer} to disk.
@@ -253,9 +245,9 @@ public class PlayerManager
 		return playersByName;
 	}
 
-	public List<RankPlayer> getPlayersByTop() {
-		return playersByTop;
-	}
+//	public List<RankPlayer> getPlayersByTop() {
+//		return playersByTop;
+//	}
 
 	public Set<String> getPlayerErrors() {
 		return playerErrors;

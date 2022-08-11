@@ -42,12 +42,29 @@ public interface Player
     /**
      * Returns the unique identifier for this player.
      */
-    UUID getUUID();
+    public UUID getUUID();
 
     /**
      * Returns the player's display name (nickname), which may include colors.
      */
-    String getDisplayName();
+    public String getDisplayName();
+    
+    /**
+     * <p>This constructs a player file named based upon the UUID followed 
+     * by the player's name.  This format is used so it's easier to identify
+     * the correct player.
+     * </p>
+     * 
+     * <p>The format should be UUID-PlayerName.json.  The UUID is a shortened 
+     * format, which should still produce a unique id.  The name, when read, 
+     * is based upon the UUID and not the player's name, which may change.
+     * This format includes the player's name to make it easier to identify
+     * who's record is whom's.
+     * </p>
+     * 
+     * @return
+     */
+    public String getPlayerFileName();
 
     public String toString();
     
@@ -56,7 +73,7 @@ public interface Player
      *
      * @param newDisplayName The new display name. May include colors, amp-prefixed.
      */
-    void setDisplayName(String newDisplayName);
+    public void setDisplayName(String newDisplayName);
 
     /**
      * Adds an {@link ItemStack} to the player's inventory.

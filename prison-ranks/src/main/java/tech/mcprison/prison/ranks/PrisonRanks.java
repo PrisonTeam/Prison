@@ -40,6 +40,7 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerFactory;
+import tech.mcprison.prison.ranks.data.TopNPlayers;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
@@ -198,11 +199,14 @@ public class PrisonRanks
         }
 
 
-        
         // Hook up all players to the ranks:
         playerManager.connectPlayersToRanks( false );
         
         Output.get().logInfo( "Ranks: Finished Connecting Players to Ranks." );
+        
+        
+        // Start up the TopNPlayer's collections after all players have been loaded:
+        TopNPlayers.getInstance();
         
         
         // Load up the commands

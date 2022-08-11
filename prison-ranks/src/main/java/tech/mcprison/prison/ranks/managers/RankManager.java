@@ -54,6 +54,7 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.data.StatsRankPlayerBalanceData;
+import tech.mcprison.prison.ranks.data.TopNPlayers;
 import tech.mcprison.prison.store.Collection;
 import tech.mcprison.prison.store.Document;
 
@@ -1259,15 +1260,8 @@ public class RankManager
 
     
     private RankPlayer getTopNRankPlayer( int rankPosition ) {
-    	RankPlayer topRankPlayer = null;
     	
-    	PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
-    	if ( rankPosition >= 0 && rankPosition < pm.getPlayersByTop().size() ) {
-    		
-    		topRankPlayer = pm.getPlayersByTop().get(rankPosition);
-    	}
-		
-		return topRankPlayer;
+    	return TopNPlayers.getInstance().getTopNRankPlayer( rankPosition );
     }
   
 

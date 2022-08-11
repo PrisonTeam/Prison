@@ -33,6 +33,7 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerFactory;
+import tech.mcprison.prison.ranks.data.TopNPlayers;
 import tech.mcprison.prison.ranks.events.RankUpEvent;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.tasks.PrisonCommandTaskData;
@@ -702,7 +703,8 @@ public class RankUtil
         
         
         // Sort the Top ranked list:
-        PrisonRanks.getInstance().getPlayerManager().sortPlayerByTopRanked();
+//        rankPlayer.forcePlayerToRecalculateRankScore();
+        TopNPlayers.getInstance().updatePlayerData(rankPlayer);
         
         
 //        results.addTransaction( RankupTransactions.fireRankupEvent );

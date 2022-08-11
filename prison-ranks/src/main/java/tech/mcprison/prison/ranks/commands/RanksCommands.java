@@ -45,6 +45,7 @@ import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.data.RankPlayerName;
+import tech.mcprison.prison.ranks.data.TopNPlayers;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
@@ -2047,25 +2048,24 @@ public class RanksCommands
     				description = "Page number [1]") String pageNumber,
     			@Arg(name = "pageSize", def = "10", 
     				description = "Page size [10]") String pageSizeNumber,
+    			@Wildcard(join=true)
     			@Arg(name = "options", def = ".",
-    				description = "Options: 'alt' displays a shorter format. [alt]") String options ){
+    				description = "Options: 'alt' displays a shorter format. [alt archived]") String options ){
 
     	int page = 1;
     	int pageSize = 10;
     	
-    	boolean alt = false;
-    	if ( pageNumber.toLowerCase().contains("alt") ||
-    			pageSizeNumber.toLowerCase().contains("alt") ||
-    			options.toLowerCase().contains("alt") ) {
-    		alt = true;
-    	}
-    	
-//    	boolean forceSort = false;
-//    	if ( pageNumber.toLowerCase().contains("sort") ||
-//    			pageSizeNumber.toLowerCase().contains("sort") ||
-//    			options.toLowerCase().contains("sort") ) {
-//    		forceSort = true;
+    	boolean alt = contains( "alt", pageNumber, pageSizeNumber, options );
+//    	if ( pageNumber.toLowerCase().contains("alt") ||
+//    			pageSizeNumber.toLowerCase().contains("alt") ||
+//    			options.toLowerCase().contains("alt") ) {
+//    		alt = true;
 //    	}
+    	
+    	// Since it's contains, "archive" will hit on archived, archives, etc...
+    	boolean archived = contains( "archive", pageNumber, pageSizeNumber, options );
+    	
+//    	boolean sort = contains( "sort", pageNumber, pageSizeNumber, options );
     	
     	try {
     		page = Integer.parseInt(pageNumber);
@@ -2087,10 +2087,15 @@ public class RanksCommands
     		pageSize = 10;
     	}
     	
-    	int totalPlayers = PrisonRanks.getInstance().getPlayerManager().getPlayers().size();
+    	int totalPlayers = 
+    			archived ? 
+    					TopNPlayers.getInstance().getArchivedSize() :
+    					TopNPlayers.getInstance().getTopNSize();
+    	
+//    	int totalPlayers = PrisonRanks.getInstance().getPlayerManager().getPlayers().size();
     	int totalPages = (totalPlayers / pageSize) + (totalPlayers % pageSize == 0 ? 0 : 1);
     	
-    	if ( page > totalPages ) {
+    	if ( page > 1 && totalPages > 1 && page > totalPages ) {
     		page = totalPages;
     	}
 
@@ -2100,32 +2105,69 @@ public class RanksCommands
 //    	DecimalFormat dFmt = new DecimalFormat("#,##0.00");
     	
     	
-    	
-//    	if ( forceSort ) {
-    		PrisonRanks.getInstance().getPlayerManager().sortPlayerByTopRanked();
+//    	if ( sort ) {
+//    		
+//    		if ( sender.isOp() || !sender.isPlayer() ) {
+//    			
+////    			PrisonRanks.getInstance().getPlayerManager().sortPlayerByTopRanked();
+////    			PrisonRanks.getInstance().getPlayerManager().sortPlayerByTopRankedNoRankScoreUpdate();
+//    			sender.sendMessage( "&3Sorting has been submitted." );
+//    		}
+//    		else {
+//    			sender.sendMessage( "&3Only admins can force a sorting of the topn players." );
+//    			
+//    		}
+//    		
 //    	}
+
     	
-    	List<RankPlayer> topN = PrisonRanks.getInstance().getPlayerManager().getPlayersByTop();
+    	
+    	
+//    	List<TopNPlayersData> topN = PrisonRanks.getInstance().getPlayerManager().getTopNPlayers().getTopNList();
 
     	String header = alt ? 
     			RankPlayer.printRankScoreLine2Header() : 
     				RankPlayer.printRankScoreLine1Header();
     	sender.sendMessage( header );
     	
-    	for ( int i = posStart; i < posEnd && i < topN.size(); i++ ) {
-    		RankPlayer rPlayer = topN.get(i);
+    	for ( int i = posStart; i < posEnd; i++ ) {
     		
-    		String message = alt ?
-    				rPlayer.printRankScoreLine2( i + 1 ) :
-    					rPlayer.printRankScoreLine1( i + 1 );
+    		RankPlayer rPlayer =
+        			archived ? 
+        					TopNPlayers.getInstance().getTopNRankArchivedPlayer( i ) :
+        					TopNPlayers.getInstance().getTopNRankPlayer( i );
+    				
+    				
+//    				PrisonRanks.getInstance().getPlayerManager().getTopNRankPlayer( i );
     		
-    		sender.sendMessage(message);
+    		if ( rPlayer != null ) {
+    			
+    			String message = alt ?
+    					rPlayer.printRankScoreLine2( i + 1 ) :
+    						rPlayer.printRankScoreLine1( i + 1 );
+    			
+    			sender.sendMessage(message);
+    		}
     	}
-    	
 
     	
     }
     
+    
+    private boolean contains( String search, String... values ) {
+    	boolean results = false;
+    	
+    	if ( values != null ) {
+    		for (String val : values) {
+				if ( val.toLowerCase().contains(search) ) {
+					results = true;
+					break;
+				}
+			}
+    	}
+    	
+    	return results;
+    }
     
     
 //    /**

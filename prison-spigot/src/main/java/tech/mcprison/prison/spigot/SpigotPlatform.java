@@ -290,7 +290,8 @@ public class SpigotPlatform
 
     @Override public List<Player> getOnlinePlayers() {
         return Bukkit.getOnlinePlayers().stream()
-            .map(player -> getPlayer(player.getUniqueId()).get()).collect(Collectors.toList());
+            .map(player -> getPlayer(player.getUniqueId()).get())
+            .collect(Collectors.toList());
     }
 
     @Override
