@@ -68,15 +68,16 @@ public class PrisonBombListener
         	// NOTE: Because we're just checking, do not auto update the itemstack.
         	NBTItem nbtItem = new NBTItem( event.getItem() );
         	
-			if ( Output.get().isDebug() && nbtItem != null ) {
-				Output.get().logInfo( "PrisonBombListener.onInteract ntb: %s", nbtItem.toString() );
-			}
-        	
         	if ( !nbtItem.hasKey( MineBombs.MINE_BOMBS_NBT_BOMB_KEY ) ) {
         		return;
         	}
         	
         	String bombName = nbtItem.getString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY );
+        	
+        	if ( Output.get().isDebug() && nbtItem != null ) {
+        		Output.get().logInfo( "PrisonBombListener.onInteract ntb: %s :: %s", 
+        				bombName, nbtItem.toString() );
+        	}
         	
         	Player player = event.getPlayer();
         	

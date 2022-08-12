@@ -10,7 +10,12 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12e 2022-08-11
+# 3.3.0-alpha.12e 2022-08-12
+
+
+* **Mine bombs: Fixed an issue with the mine bomb names not always working with color codes.**
+Honestly the wrong function was being used so how it even worked I don't know. lol
+
 
 * **New topN functionality: far better performance, with regular updates.**
 TopN now is a singleton and is self contained.  When the singleton is instantiated, it then loads and setup the prisonTopN.json file on the first run.  30 seconds after the initial load, it then hits all players to load their balances in an async thread.  
