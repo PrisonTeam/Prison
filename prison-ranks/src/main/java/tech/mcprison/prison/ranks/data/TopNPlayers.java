@@ -222,6 +222,7 @@ public class TopNPlayers
 		// Since the last seen date may have changed, it may be added to a different
 		// collection, hence why it needs to be first removed.
 		if ( getTopNMap().containsKey( topN.getKey() ) ) {
+			
 			TopNPlayersData temp = getTopNMap().remove( topN.getKey() );
 			getTopNList().remove( temp );
 
@@ -229,6 +230,7 @@ public class TopNPlayers
 		}
 		
 		if ( getArchivedMap().containsKey( topN.getKey() ) ) {
+			
 			TopNPlayersData temp = getArchivedMap().remove( topN.getKey() );
 			getArchivedList().remove( temp );
 
@@ -315,9 +317,23 @@ public class TopNPlayers
 			
 		}
 		
+		ArrayList<TopNPlayersData> newTopNList = new ArrayList<>();
+		newTopNList.addAll( getTopNMap().values() );
 		
-		// sort:
-		sortTopN();
+		ArrayList<TopNPlayersData> newArchivedList = new ArrayList<>();
+		newArchivedList.addAll( getArchivedMap().values() );
+				
+		
+		TopNPlayersData comparator = new TopNPlayersData();
+
+		Collections.sort( newTopNList, comparator );
+		Collections.sort( newArchivedList, comparator );
+		
+		setTopNList(newTopNList);
+		setArchivedList(newArchivedList);
+		
+//		// sort:
+//		sortTopN();
 		
 		// If there has been any changes since the last save, then 
 		// save it:
@@ -378,12 +394,35 @@ public class TopNPlayers
 		// Recalculate the rankScore for the player:
 		rPlayer.calculateRankScore();
 		
-		TopNPlayersData topN = new TopNPlayersData( rPlayer );
+		TopNPlayersData topN = getTopNPlayer( rPlayer );
+		
 		
 		addPlayerData( topN );
 		
 	}
 	
+	private TopNPlayersData getTopNPlayer(RankPlayer rPlayer) {
+		
+		TopNPlayersData topN = null;
+		
+		String key = rPlayer.getPlayerFileName();
+		
+		if ( getTopNMap().containsKey( key ) ) {
+			
+			topN = getTopNMap().get( key );
+		}
+		else if ( getArchivedMap().containsKey( key ) ) {
+			
+			topN = getArchivedMap().get( key );
+		}
+		else {
+			
+			topN = new TopNPlayersData( rPlayer );
+		}
+		
+		return topN;
+	}
+
 	/**
 	 * <p>This function will update, or add, a player's information within topN.  and when
 	 * The first thing this function does, is to calculate the rankScore for the RankPlayer.
@@ -428,7 +467,7 @@ public class TopNPlayers
      * @return
      */
     private RankPlayer getTopNRankPlayer( int rankPosition, boolean archived ) {
-    	RankPlayer topRankPlayer = null;
+    	RankPlayer rPlayer = null;
     	
     	ArrayList<TopNPlayersData> tList = 
     			archived ? 
@@ -439,17 +478,32 @@ public class TopNPlayers
     		
     		TopNPlayersData topN = tList.get( rankPosition );
     		
-    		topRankPlayer = topN.getrPlayer();
+    		rPlayer = topN.getrPlayer();
     		
-    		if ( topRankPlayer == null ) {
+    		if ( rPlayer == null ) {
     			
     			UUID nullUuid = null;
-    			topRankPlayer = PrisonRanks.getInstance().getPlayerManager()
+    			rPlayer = PrisonRanks.getInstance().getPlayerManager()
     							.getPlayer( nullUuid, topN.getName() );
     		}
+    		
+    		// The topN has the last extracted values, so copy them to the rPlayer if 
+    		// it has not been updated.  This would be good for the archives.
+    		if ( rPlayer != null && topN.getRankScore() != 0 && rPlayer.getRankScore() == 0 ) {
+
+    			rPlayer.setRankScore( topN.getRankScore() );
+    			rPlayer.setRankScorePenalty( topN.getRankScorePenalty() );
+    			
+    			rPlayer.setRankScoreBalance( topN.getBalance() );
+    			rPlayer.setRankScoreCurrency( topN.getBalanceCurrency() );
+    			
+    		}
+    		
     	}
     	
-		return topRankPlayer;
+    	
+    	
+		return rPlayer;
     }
 	
 	

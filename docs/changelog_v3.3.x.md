@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12e 2022-08-12
 
 
+* **TopN : a few more adjustments to fix a few issues with duplicates and also with using values from within the topN to include in the report to help minimize the need to recalculate everything especially with archived entries.**
+
+
 * **Mine bombs: Fixed an issue with the mine bomb names not always working with color codes.**
 Honestly the wrong function was being used so how it even worked I don't know. lol
 
