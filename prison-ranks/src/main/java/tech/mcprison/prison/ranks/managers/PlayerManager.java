@@ -71,12 +71,6 @@ public class PlayerManager
     private TreeMap<String, RankPlayer> playersByName;
     
     
-//    private final TopNPlayers topNPlayers;
-    
-//    private RankPlayerSortOrderTopRanked sorterTopN;
-//    private List<RankPlayer> playersByTop;
-
-    
     private List<PlaceHolderKey> translatedPlaceHolderKeys;
     
     private transient Set<String> playerErrors;

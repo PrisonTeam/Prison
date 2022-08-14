@@ -1266,48 +1266,196 @@ public class RankManager
   
 
     
-	private double calculateRankCost( RankPlayer rankPlayer, Rank rank )
+	private double calculateRankCost( RankPlayer rankPlayer, Rank targetRank )
 	{
 		double cost = 0;
 		// Get player's rank:
 		
 		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
 		
-		PlayerRank playerRank = rankPlayerFactory.getRank( rankPlayer, rank.getLadder() );
-		if ( playerRank != null ) {
-			
-			
-			// If the player is at a higher rank, or the same rank, then the cost will be 
-			// zero for the rank that is being passed in, since the player has
-			// already paid for that rank.
-			if ( rank.getPosition() <= playerRank.getRank().getPosition() ) {
-				cost = 0;
-			}
-			else {
-				//cost = playerRank.getRankCost();
-				Rank nextRank = playerRank.getRank();
+		Rank rankDefault = rankPlayer.getPlayerRankDefault().getRank();
+		
+		Rank rankPrestige = null;
+		PlayerRank prPrestige = rankPlayer.getPlayerRankPrestiges();
+		if ( prPrestige != null ) {
+			rankPrestige = prPrestige.getRank();
+		}
+		
+		// Only continue with the processing if the target rank is a higher rank than
+		// either the current default rank or the current prestige rank.  If it's not, 
+		// then the player has already bought that rank so their cost will be zero:
+		if ( rankDefault.getLadder().equals( targetRank.getLadder()) && 
+				rankDefault.getPosition() < targetRank.getPosition() ||
 				
-				while ( nextRank != null &&
-						nextRank.getPosition() <= rank.getPosition() ) {
+			// They have not yet prestiged:
+			rankPrestige == null || 
+			
+			// Trying to calculate a prestige rank higher than their current prestige rank:
+			rankPrestige.getLadder().equals( targetRank.getLadder()) && 
+				rankPrestige.getPosition() < targetRank.getPosition()
+				) {
+
+			ArrayList<Rank> ranksList = getAllRanks( rankPlayer, rankDefault, rankPrestige, targetRank );
+			
+			
+			for (Rank rank : ranksList) {
+				
+				PlayerRank pR = rankPlayerFactory.getTargetPlayerRankForPlayer( 
+								rankPlayer.getPlayerRankDefault(), rankPlayer, rank );
+				
+				if ( pR != null ) {
 					
-					// Need to calculate the next PlayerRank value for the next rank:
-					
-					// This calculates the target rank, and takes in to consideration the player's existing rank:
-					playerRank = playerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
-					
-					
-//					playerRank = rankPlayerFactory.createPlayerRank( nextRank );
-//					playerRank = new PlayerRank(nextRank);
-					
-					cost += playerRank.getRankCost();
-					nextRank = nextRank.getRankNext();
+					cost += pR.getRankCost();
 				}
 			}
+			
 		}
+		
+//		PlayerRank playerRank = rankPlayerFactory.getRank( rankPlayer, targetRank.getLadder() );
+
+				
+//		if ( playerRank != null ) {
+//			
+//			
+////			List<Rank> 
+//			
+//			
+//			// If the player is at a higher rank, or the same rank, then the cost will be 
+//			// zero for the rank that is being passed in, since the player has
+//			// already paid for that rank.
+//			if ( rank.getPosition() <= playerRank.getRank().getPosition() ) {
+//				cost = 0;
+//			}
+//			else {
+//				//cost = playerRank.getRankCost();
+//				Rank nextRank = playerRank.getRank();
+//				
+//				while ( nextRank != null &&
+//						nextRank.getPosition() <= targetRank.getPosition() ) {
+//					
+//					// Need to calculate the next PlayerRank value for the next rank:
+//					
+//					// This calculates the target rank, and takes in to consideration the player's existing rank:
+//					playerRank = playerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+//					
+//					
+////					playerRank = rankPlayerFactory.createPlayerRank( nextRank );
+////					playerRank = new PlayerRank(nextRank);
+//					
+//					cost += playerRank.getRankCost();
+//					nextRank = nextRank.getRankNext();
+//				}
+//			}
+//		}
 		return cost;
 	}
 
 
+
+	private ArrayList<Rank> getAllRanks( RankPlayer rPlayer, 
+					Rank rankDefault, Rank rankPrestige, Rank targetRank ) {
+		
+		ArrayList<Rank> totalRanks = new ArrayList<>();
+		
+		// rankDefault is the current default rank for the player. So if rankDefault
+		// is the same as the targetRank, then exit because they already paid for the
+		// current rank, so there is no need to calculate anything else.
+		if ( !rankDefault.equals( targetRank ) && rankDefault.getRankNext() != null ) {
+			
+			// We cannot add the current default rank to the totalRanks, so get the next 
+			// rank then continue.  From here on out, all ranks have to be added to the
+			// the totalRanks including the targetRank.
+			Rank nextRank = rankDefault.getRankNext();
+			
+			
+			findNextRank( nextRank, rankPrestige, targetRank, totalRanks);
+		}
+		
+		return totalRanks;
+	}
+
+
+	/**
+	 * <p>This function will take the default rank (result parameter) and the rankPrestige
+	 * and use them to talk the ladders to find a match for the targetRank.
+	 * </p>
+	 * 
+	 * <p>The result Rank that is returned from this function is only useful for 
+	 * internal use since it will prevent the clearing of the totalRanks list
+	 * when coming out of recursion.  When outside of this function, then real 
+	 * value is within totalRanks.
+	 * </p>
+	 * 
+	 * @param result
+	 * @param rankPrestige
+	 * @param targetRank
+	 * @param totalRanks
+	 * @return
+	 */
+	private Rank findNextRank( Rank result, Rank rankPrestige, Rank targetRank, ArrayList<Rank> totalRanks) {
+
+		// Search for the targetRank in the rest of the default ranks:
+		result = findNextRanksOnDefaultLadder( result, targetRank, totalRanks );
+		
+		// if result is null, then not found and we must jump to the next prestige rank:
+		if ( result == null ) {
+			rankPrestige = rankPrestige == null ? 
+					PrisonRanks.getInstance().getLadderManager()
+					.getLadderPrestiges().getLowestRank().orElse(null) : 
+						rankPrestige.getRankNext();
+			result = rankPrestige;
+			
+			if ( result != null ) {
+				
+				// Need to add the result rank to the totalRanks:
+				totalRanks.add( result );
+				
+				if ( !result.equals( targetRank ) ) {
+					
+					// Have not found it... Set result to rank A and start over searching:
+					result = PrisonRanks.getInstance().getLadderManager()
+							.getLadderDefault().getLowestRank().orElse(null);
+					
+					if ( result != null ) {
+						// recursively call it again...
+						result = findNextRank( result, rankPrestige, targetRank, totalRanks);
+					}
+				}
+			}
+		}
+		
+		if ( result == null || !result.equals( targetRank ) ) {
+			// Warning: We have gone through all ranks and all prestige ranks and have not 
+			//          found the targetRank.  That means the player has already reached
+			//          the targetRank.  So we MUST clear the totalRanks list so there will
+			//          be no charges.
+			totalRanks.clear();
+		}
+		
+		return result;
+	}
+
+	private Rank findNextRanksOnDefaultLadder( Rank rankDefault, Rank targetRank, ArrayList<Rank> totalRanks ) {
+		
+		Rank result = rankDefault;
+		
+		if ( rankDefault != null ) {
+			
+			// We need to add the current rankDefault before getting the next ranks:
+			totalRanks.add( result );
+			
+			while ( result != null && !result.equals( targetRank ) ) {
+				result = result.getRankNext();
+				
+				if ( result != null ) {
+					
+					totalRanks.add( result );
+				}
+			}
+		}
+		
+		return result;
+	}
     
 	@Override
     public List<PlaceHolderKey> getTranslatedPlaceHolderKeys() {
