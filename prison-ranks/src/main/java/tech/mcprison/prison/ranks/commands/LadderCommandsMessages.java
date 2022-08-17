@@ -216,4 +216,27 @@ public class LadderCommandsMessages
 		.sendTo( sender );
 	}
 	
+	protected void ladderApplyRankCostMultiplierNoChangeMsg( CommandSender sender, String ladderName, 
+			boolean applyRCM ) {
+		
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_LadderCommands__ladder_apply_rank_cost_multiplier_no_change" )
+		.withReplacements( 
+				ladderName, 
+				applyRCM ? "apply" : "disabled" )
+		.sendTo( sender );
+	}
+	
+	protected void ladderApplyRankCostMultiplierSavedMsg( CommandSender sender, String ladderName, 
+			boolean applyRCM, boolean applyRCMOld ) {
+		
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_LadderCommands__ladder_apply_rank_cost_multiplier_saved" )
+		.withReplacements( 
+				ladderName, 
+				applyRCM ? "apply" : "disabled",
+				applyRCMOld ? "apply" : "disabled" )
+		.sendTo( sender );
+	}
+	
 }

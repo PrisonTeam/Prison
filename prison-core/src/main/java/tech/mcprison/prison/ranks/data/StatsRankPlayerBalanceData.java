@@ -44,7 +44,8 @@ public class StatsRankPlayerBalanceData
 			if ( rank.getRankNext() != null ) {
 				
 				// This calculates the target rank, and takes in to consideration the player's existing rank:
-				PlayerRank pRankNext = pRank.getTargetPlayerRankForPlayer( player, rank.getRankNext() );
+				PlayerRank pRankNext = player.calculateTargetPlayerRank( rank.getRankNext() );
+//				PlayerRank pRankNext = pRank.getTargetPlayerRankForPlayer( player, rank.getRankNext() );
 				
 				//PlayerRank pRankNext = new PlayerRank( rank.getRankNext(), pRank.getRankMultiplier() );
 				cost = pRankNext.getRankCost();

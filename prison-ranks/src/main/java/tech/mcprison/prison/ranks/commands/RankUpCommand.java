@@ -212,12 +212,17 @@ public class RankUpCommand
         // default rank for the ladder to be their next rank.
         if ( playerRankCurrent == null ) {
         	
-        	playerRankTarget = rankPlayerFactory.createPlayerRank( 
+        	playerRankTarget = rankPlayer.calculateTargetPlayerRank( 
         			targetLadder.getLowestRank().get() );
+        	
+//        	playerRankTarget = rankPlayerFactory.createPlayerRank( 
+//        			targetLadder.getLowestRank().get() );
         }
         else {
-        	playerRankTarget = playerRankCurrent.getTargetPlayerRankForPlayer( rankPlayer, 
-        					playerRankCurrent.getRank() );
+        	
+        	playerRankTarget = rankPlayer.calculateTargetPlayerRank( playerRankCurrent.getRank() );
+//        	playerRankTarget = playerRankCurrent.getTargetPlayerRankForPlayer( rankPlayer, 
+//        					playerRankCurrent.getRank() );
         }
         
         		

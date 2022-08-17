@@ -134,6 +134,20 @@ public class RankPlayer
     	
     	checkName( playerName );
     }
+    
+//    public RankPlayer clone() {
+//    	RankPlayer clone = new RankPlayer( getUUID() );
+//    	
+//    	clone.setBalance( getBalance() );
+//    	
+//    	Set<RankLadder> keys = getLadderRanks().keySet();
+//    	for (RankLadder key : keys) {
+//			
+//    		clone.ladderRanks.put( key, getLadderRanks().get( key ) );
+//		}
+//    	
+//    	return clone;
+//    }
 
 //    @SuppressWarnings( "unchecked" )
 //	public RankPlayer(Document document) {
@@ -411,14 +425,40 @@ public class RankPlayer
         recalculateRankMultipliers();
     }
 
+    /**
+     * <p>This will calculate the total multipliers and set that multiplier
+     * on all of the player's current ranks.  This is for their 
+     * actual ranks and ladders.
+     * </p>
+     * 
+     */
     public void recalculateRankMultipliers() {
+    	
+    	recalculateRankMultipliers( getLadderRanks() );
+
+    }
+
+    /**
+     * <p>This function will use a **targetLadderRanks** TreeMap and will
+     * calculate it's total multipliers for the ranks and ladders that are
+     * within this TreeMap.
+     * </p>
+     * 
+     * <p>This can be used to calculate the cost of a given target rank, based
+     * upon just changing that target rank's ladder entry to the target rank.
+     * </p>
+     * 
+     * @param targetLadderRanks
+     */
+    public void recalculateRankMultipliers( 
+    				TreeMap<RankLadder, PlayerRank> targetLadderRanks ) {
     	double multiplier = 0;
     	
     	// First gather and calculate the multipliers:
-    	Set<RankLadder> keys = ladderRanks.keySet();
+    	Set<RankLadder> keys = targetLadderRanks.keySet();
     	for ( RankLadder rankLadder : keys )
 		{
-    		PlayerRank pRank = ladderRanks.get( rankLadder );
+    		PlayerRank pRank = targetLadderRanks.get( rankLadder );
     		
     		double rankMultiplier = pRank.getLadderBasedRankMultiplier();
     		multiplier += rankMultiplier;
@@ -427,12 +467,64 @@ public class RankPlayer
     	// We now have the multipliers, so apply them to all ranks:
     	for ( RankLadder rankLadder : keys )
 		{
-    		PlayerRank pRank = ladderRanks.get( rankLadder );
+    		PlayerRank pRank = targetLadderRanks.get( rankLadder );
 			
     		pRank.applyMultiplier( multiplier );
 //    		pRank.setRankCost( pRank.getRank().getCost() * (1.0 + multiplier) );
 		}
+    }
+    
+    
+    /**
+     * <p>This function will taken any rank, on any ladder, and will 
+     * properly calculate it's multiplier (which is based upon all ladders
+     * and the ranks within those ladders, and the targetRank's rank cost.
+     * </p>
+     * 
+     * <p>This is the ONLY valid way to calculate target rank costs for a player.
+     * </p>
+     * 
+     * @param targetRank
+     * @return
+     */
+    public PlayerRank calculateTargetPlayerRank( Rank targetRank ) {
+    	PlayerRank targetPlayerRank = null;
+
+    	// Can only process if the target rank is not null and it has a ladder:
+    	if ( targetRank != null && targetRank.getLadder() != null ) {
+
+    		// Need to get the targetRank's ladder.  Not all ranks have ladders.
+    		RankLadder targetLadder = targetRank.getLadder();
+
+    		// Create a new PlayerRank object for this target rank. 
+    		// Ignore rank cost multipliers since that will be applied later.
+    		targetPlayerRank = new PlayerRank( targetRank );
+    		
+    		// Create a new temp targetLadderRanks TreeMap:
+    		TreeMap<RankLadder, PlayerRank> targetLadderRanks = new TreeMap<>();
+    				
+    		// Copy the player's actual ladderRanks to the targetLadderRanks:
+    		Set<RankLadder> keys = getLadderRanks().keySet();
+    		for (RankLadder key : keys) {
+    			PlayerRank pRank = getLadderRanks().get( key );
+    			
+    			targetLadderRanks.put( key, pRank );
+    		}		
     	
+    		// Now add our targetPlayerRank to the targetLadderRanks:
+    		targetLadderRanks.put( targetLadder, targetPlayerRank );
+    		
+    		
+    		// Now recalculate all multipliers and the rank costs for the targetPlayerRank:
+    		recalculateRankMultipliers( targetLadderRanks );
+
+    	}
+    	
+    	// The targetPlayerRank now has the correct total multiplier from all 
+    	// ladders, and it's Rank Cost is based upon those multipliers and if
+    	// the ladder should apply the multipliers or not:
+		
+    	return targetPlayerRank;
     }
     
     /**
@@ -1330,7 +1422,8 @@ public class RankPlayer
 			
 		}
 		
-		PlayerRank pRankNext = rankCurrent.getTargetPlayerRankForPlayer( this, nRank );
+		PlayerRank pRankNext = calculateTargetPlayerRank( nRank );
+//		PlayerRank pRankNext = rankCurrent.getTargetPlayerRankForPlayer( this, nRank );
 
 		return pRankNext;
 	}

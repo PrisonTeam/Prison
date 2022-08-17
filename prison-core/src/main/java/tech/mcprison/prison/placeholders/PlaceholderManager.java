@@ -62,7 +62,9 @@ public class PlaceholderManager {
     	;
     	
     	private final boolean sequence;
-    	private final String desc;
+    	
+    	@SuppressWarnings("unused")
+		private final String desc;
     	
     	private PlaceholderFlags() {
     		this.sequence = false;

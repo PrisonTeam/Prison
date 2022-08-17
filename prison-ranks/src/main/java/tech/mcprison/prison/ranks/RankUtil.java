@@ -447,17 +447,18 @@ public class RankUtil
         // This calculates the target rank, and takes in to consideration the player's existing rank:
         PlayerRank pRankNext =
         			originalRank == null ? null :
-        				originalRank.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
+        				rankPlayer.calculateTargetPlayerRank( targetRank );
+//				        originalRank.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
 //        		new PlayerRank( targetRank, originalRank.getRankMultiplier() );
 		
         // If player does not have a rank on this ladder, then grab the first rank on the ladder since they need
         // to be added to the ladder.
-        if ( pRankNext == null ) {
-        	
-        	pRankNext = rankPlayerFactory.createPlayerRank( targetRank );
-        	
-//        	pRankNext = originalRank.getTargetPlayerRankForPlayer( rankPlayer, ladder.getLowestRank().get() );
-        }
+//        if ( pRankNext == null ) {
+//        	
+//        	pRankNext = rankPlayerFactory.createPlayerRank( targetRank );
+//        	
+////        	pRankNext = originalRank.getTargetPlayerRankForPlayer( rankPlayer, ladder.getLowestRank().get() );
+//        }
         
         	
 		results.setPlayerRankTarget( pRankNext );

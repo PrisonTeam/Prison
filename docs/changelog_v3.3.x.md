@@ -10,7 +10,15 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12g 2022-08-14
+# 3.3.0-alpha.12g 2022-08-17
+
+
+* **Ladder: apply rank cost multiplier to a ladder or not.**
+This new feature enables you to disable all rank cost multipliers for a specific ladder.  Normally that rank cost multiplier applies to all ladders, but now you can suppress it.  It's for the whole ladder, and not on a per rank basis.
+
+
+* **Fixed an issue with calculating the player's rank cost when they already on the presetiges ladder and calculating the higher prestige ranks.**
+Appears as if this becomes an issue when at the last rank on the default ladder.
 
 
 * **v3.3.0-alpha12g 2022-08-14**

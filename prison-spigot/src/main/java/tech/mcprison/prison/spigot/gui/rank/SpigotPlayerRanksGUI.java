@@ -25,7 +25,6 @@ import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
-import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -151,7 +150,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         
         
         // Get many parameters
-        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+//        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
 //        Rank rank = ladder.getLowestRank().get();
 //        PlayerRank playerRankRank = rankPlayerFactory.getRank( getRankPlayer(), guiConfig.getString("Options.Ranks.Ladder"));
         
@@ -183,7 +182,7 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         DecimalFormat mFmt = new DecimalFormat("###,##0.0000");
         boolean showNumber = getBoolean(guiConfig.getString("Options.Ranks.Number_of_Rank_Player_GUI"));
 
-        PlayerRank pRank = rankPlayerFactory.getRank( getRankPlayer(), ladder, true );
+//        PlayerRank pRank = rankPlayerFactory.getRank( getRankPlayer(), ladder, true );
         
         for ( Rank rank : ranksDisplay )
 		{
@@ -197,7 +196,9 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         	
             ButtonLore ranksLore = new ButtonLore();
 
-            PlayerRank calPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, rank );
+            PlayerRank calPRank = rankPlayer.calculateTargetPlayerRank( rank );
+//            PlayerRank calPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, rank );
+            
             double rankPrice = calPRank.getRankCost();
             double rankMultiplier = calPRank.getRankMultiplier();
 

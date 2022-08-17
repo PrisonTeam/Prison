@@ -1,7 +1,5 @@
 package tech.mcprison.prison.ranks.commands;
 
-import java.text.DecimalFormat;
-
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
@@ -379,5 +377,60 @@ public class LadderCommands
 		}
 	}
 
+	
+	@Command( identifier = "ranks ladder applyRankCostMultiplier", 
+			description = "Controls if the rank costs multiplier should apply to the" +
+					"ranks on this ladder.  If the ladder has a rank cost multipiler " +
+					"enabled, this setting will not effect its contribution to other " +
+					"the multiplier.", 
+					onlyPlayers = false, permissions = "ranks.ladder" )
+	public void ladderApplyRankCostMultiplier( CommandSender sender, 
+			@Arg( name = "ladderName" ) String ladderName,
+			@Arg( name = "applyRankCostMultiplier", def = "apply", 
+			description = "Applies or disables the ranks on this ladder "
+					+ "from applying the rank multiplier to the rank cost for players."
+					) 
+			String applyRankCostMultiplier )
+	{
+		RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
+		
+		if ( ladder == null )
+		{
+			ladderDoesNotExistsMsg( sender, ladderName );
+			return;
+		}
+		
+		boolean applyRCM = applyRankCostMultiplier != null && 
+				applyRankCostMultiplier.equalsIgnoreCase( "apply" );
+		
+		boolean applyRCMOld = ladder.isApplyRankCostMultiplierToLadder();
+		
+		
+		if ( applyRCMOld == applyRCM ) {
+			// No change:
+			
+			ladderApplyRankCostMultiplierNoChangeMsg( sender, ladderName, applyRCM );
+			
+			return;
+		}
+		
+		ladder.setApplyRankCostMultiplierToLadder(applyRCM);
+		
+		
+		if ( PrisonRanks.getInstance().getLadderManager().save( ladder ) )
+		{
+			ladderApplyRankCostMultiplierSavedMsg( sender, ladderName, 
+					applyRCM, applyRCMOld );
+			
+			// Recalculate the ladder's base rank cost multiplier:
+			PlayerRankRefreshTask rankRefreshTask = new PlayerRankRefreshTask();
+			rankRefreshTask.submitAsyncTPSTask();
+		}
+		else
+		{
+			ladderErrorSavingMsg( sender );
+		}
+	}
+	
   
 }

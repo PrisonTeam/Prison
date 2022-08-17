@@ -842,6 +842,10 @@ public class RanksCommands
         display.addText( ranksListLadderCostMultiplierMsg( 
         							ladder.getRankCostMultiplierPerRank() ) );
         
+        display.addText( ranksListLadderApplyRankCostMultiplierMsg(
+        							ladder.isApplyRankCostMultiplierToLadder() ));
+        
+        
         if ( hasPerm ) {
         	display.addText( ranksListClickToEditMsg() );
         }
@@ -915,9 +919,13 @@ public class RanksCommands
 
         	}
         	else {
-        		pRank = rankPlayerFactory.createPlayerRank( rank );
-
-        		pRank = pRank.getTargetPlayerRankForPlayer( pRank, rPlayer, rank );
+        		
+        		pRank = rPlayer.calculateTargetPlayerRank( rank );
+        		
+//        		pRank = rankPlayerFactory.createPlayerRank( rank );
+//
+//        		
+//        		pRank = pRank.getTargetPlayerRankForPlayer( pRank, rPlayer, rank );
         		rankCost = pRank.getRankCost();
         		
         		rMulti = pRank.getRankMultiplier();
@@ -1531,7 +1539,9 @@ public class RanksCommands
 				Rank nextRank = rank.getRankNext();
 				
 		        // This calculates the target rank, and takes in to consideration the player's existing rank:
-				PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+				PlayerRank nextPRank = rankPlayer.calculateTargetPlayerRank( nextRank );
+
+				//				PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 //				PlayerRank nextPRank = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //				PlayerRank nextPRank = nextRank == null ? null :

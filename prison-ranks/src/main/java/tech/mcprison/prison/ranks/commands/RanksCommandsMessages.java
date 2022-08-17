@@ -254,6 +254,19 @@ public class RanksCommandsMessages
 				.localize();
 	}
 	
+	protected String ranksListLadderApplyRankCostMultiplierMsg( boolean applyRankCostMultiplier ) {
+		
+		// Apply global Rank Cost Multipliers to this Rank? 
+		
+		return PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_rankCommands__ranks_list_ladder_apply_ranks_cost_multplier" )
+				.withReplacements(
+						Boolean.toString( applyRankCostMultiplier )	)
+				.localize();
+	}
+	
+	
+	
 	protected String ranksListEditLadderCostMultiplierMsg() {
 		
 		return PrisonRanks.getInstance().getRanksMessages()

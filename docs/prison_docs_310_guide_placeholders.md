@@ -7,7 +7,7 @@
 This document covers different aspects of placeholders within Prison.  It explains how they work, how to use them, and different ways to use them.
 
 
-*Documented updated: 2022-06-20*
+*Documented updated: 2022-08-14*
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
@@ -101,31 +101,68 @@ Prison has numerous placeholders, with number of different types.  Each of these
 * **Ladders Related:** 32 including aliases **times** each ladder
 
 > A LADDERS placeholder must include the ladder's name in the placeholder and therefore is static.
-  
+
+> The ladder based placeholders end with `_laddername`, but they include the following possible prefixes, which may not be exclusive to ladder based placeholders.
+
+> Ladder placeholder prefixes:
+ * `prison_rank_`
+ * `prison_rankup_`
+ * `prison_player_`
+
+
 
 * **Ranks Related:** 22 including aliases **times** each rank
 
 > A RANKS placeholder needs to specify the Rank name as part of the placeholder.  Each placeholder must specify a Rank and is static.
+
+> The ranks based placeholders end with `_rankname` but do not require a player to work.  They also have a prefix of `prison_rank__` but these prefixes and suffixes are also shared with **RankPlayers** placeholders.  See them for specifics.
+
+> Ranks placeholder prefixes:
+ * `prison_rank__`
 
 
 * **RankPlayers Related:** 12 including aliases **times** each rank
 
 > A RANKPLAYERS placeholder is one that will change based upon the player's own Rank.  Each player could have a different rank.  Because of this relationship, these can only be used with instances of players such as scoreboards and chat prefixes; they will not work in holographic displays or with signs.
 
+> RankPlayers placeholders are very similar to the Rank placeholders in respect to the prefixes and suffixes, but these placeholders MUST include a player or they cannot work.  Without a player, they cannot return a valid value, and therefore will return either a blank or zero.
 
-* **Mines Related:** 32 including aliases **times** each ladder
+> What makes these placeholders stand out from rank placeholders is the prefix includes `player_`.  For example:
 
-> A MINES placeholder must specify the Mine mine as part of the placeholder. 
+> RankPlayers placeholder prefixes:
+ * `prison_rank__player_`
+ 
+ 
+> **Performance Warning:** There is a high risk of performance issues when calculating a full GUI page of items that includes the use of placeholders that are based upon the placeholders: `prison_rank__player_cost_rankname`.  The reason for this is related to a progressively great number of calculations required to calculate high ranked prestige ranks.  The performance impact can include processing and memory usages.
+
+> For example, if there are 26 default ranks, and the player is at rank A with no prestiges, then to calculate rank P4 would include the following ranks:
+b --> z + p1 + a --> z + p2 + a --> z + p3 + a --> z + p4.  
+This results in a total of 107 ranks that must be collected, then the player's cost for each rank will have to be calculated.  Then all of these must be added together to get the player's cost on rank P4.
+
+> So if there are thousands of prestige ranks, then the calculations will be numerous for each placeholder. 
 
 
 * **Player Ladder Balance Related:** 32 including aliases **times** each Mine
 
   
+* **Mines Related:** 32 including aliases **times** each ladder
+
+> A MINES placeholder must specify the Mine mine as part of the placeholder. 
+
+> The Mines related placeholders have the following prefixes, but they are also shared with the MinePlayers placeholders.
+* `prison_mines_`
+* `prison_top_mine_`
+
+
 
 * **MinePlayers Related:** 32 including aliases 
 
 > A MINEPLAYERS placholder is similar to a RankPlayers placeholder in that it is dynamic and you cannot specify a mine's name with it.  How it works, is that it provides the related stats for the mine in which the player is standing in.  When the player leaves the mine, then these placeholders returns an empty string value (a blank).
 
+> The MinePLayers placeholders includ the following prefixes, but they are also similar to the Mines related placeholder too:
+ * `prison_player_`
+ * `prison_mines_`
+ 
 
 * **PLAYERBLOCKS:** 4 including aliases
 
@@ -141,7 +178,7 @@ Prison has numerous placeholders, with number of different types.  Each of these
 
 > Top-n stats for each rank.  The rank name must be specified on the placeholder.
 
-.
+
 * **STATSPLAYERS:** 30 including aliases
 
 > Various placeholders for the top-n ranked players.  These are over all ranks.  There are a couple of shortcut placehodlders where one placeholders contain multiple fileds for easier usage.

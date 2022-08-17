@@ -1191,8 +1191,10 @@ public class RankManager
 				case prison_rank__cost_multiplier_rankname:
 				case prison_r_cm_rankname:
 					
-					RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
-					PlayerRank pRank = rankPlayerFactory.createPlayerRank( rank );
+					PlayerRank pRank = rankPlayer.calculateTargetPlayerRank( rank );
+
+//					RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+//					PlayerRank pRank = rankPlayerFactory.createPlayerRank( rank );
 					
 					results = Double.toString( pRank.getLadderBasedRankMultiplier() );
 					break;
@@ -1360,14 +1362,13 @@ public class RankManager
 		// rankDefault is the current default rank for the player. So if rankDefault
 		// is the same as the targetRank, then exit because they already paid for the
 		// current rank, so there is no need to calculate anything else.
-		if ( !rankDefault.equals( targetRank ) && rankDefault.getRankNext() != null ) {
+		if ( !rankDefault.equals( targetRank ) ) {
 			
 			// We cannot add the current default rank to the totalRanks, so get the next 
 			// rank then continue.  From here on out, all ranks have to be added to the
 			// the totalRanks including the targetRank.
 			Rank nextRank = rankDefault.getRankNext();
-			
-			
+						
 			findNextRank( nextRank, rankPrestige, targetRank, totalRanks);
 		}
 		
@@ -1397,7 +1398,8 @@ public class RankManager
 		// Search for the targetRank in the rest of the default ranks:
 		result = findNextRanksOnDefaultLadder( result, targetRank, totalRanks );
 		
-		// if result is null, then not found and we must jump to the next prestige rank:
+		// if result is null, then not found on the default ladder, so then
+		// we must jump to the next prestige rank:
 		if ( result == null ) {
 			rankPrestige = rankPrestige == null ? 
 					PrisonRanks.getInstance().getLadderManager()

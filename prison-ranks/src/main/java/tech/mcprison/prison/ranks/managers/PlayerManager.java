@@ -579,7 +579,8 @@ public class PlayerManager
     					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
-    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+    			        PlayerRank nextPRank = rankPlayer.calculateTargetPlayerRank( nextRank );
+//    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
     					//PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
@@ -665,7 +666,8 @@ public class PlayerManager
     					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
-    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+    			        PlayerRank nextPRank =  rankPlayer.calculateTargetPlayerRank( nextRank );
+//    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 // 						PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     			        
@@ -721,7 +723,8 @@ public class PlayerManager
     					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
-    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+    			        PlayerRank nextPRank = rankPlayer.calculateTargetPlayerRank( nextRank );
+//    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
@@ -786,7 +789,8 @@ public class PlayerManager
     					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
-    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+    			        PlayerRank nextPRank = rankPlayer.calculateTargetPlayerRank( nextRank );
+//    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
@@ -855,7 +859,8 @@ public class PlayerManager
 					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
 					
 			        // This calculates the target rank, and takes in to consideration the player's existing rank:
-			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+			        PlayerRank nextPRank = rankPlayer.calculateTargetPlayerRank( nextRank );
+//			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
 					
@@ -919,7 +924,8 @@ public class PlayerManager
 	  					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
 					  
   			          // This calculates the target rank, and takes in to consideration the player's existing rank:
-  			          PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+  			          PlayerRank nextPRank = rankPlayer.calculateTargetPlayerRank( nextRank );
+//  			          PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //					  PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
 					  
