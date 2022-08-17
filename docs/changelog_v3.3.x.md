@@ -10,7 +10,19 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12e 2022-08-12
+# 3.3.0-alpha.12g 2022-08-14
+
+
+* **v3.3.0-alpha12g 2022-08-14**
+
+
+* **Fxing of the calculations of the placeholder prison_rank__player_cost_rankname and related placeholders.**
+The original implementation did not take in to consideration the prestige ranks in relation to the default rank.  
+The improvements in this calculation now generates a list of all ranks between the current rank and the target rank.  So if a few prestige ranks out from the player's current prestige rank will result in calculating every rank in between including multiple passes through all default ranks.  So if there are 26 default ranks, and the player is at rank A with no prestiges, then to calculate rank P4 would include the following ranks:
+b --> z + p1 + a --> z + p2 + a --> z + p3 + a --> z + p4.  
+This results in a total of 107 ranks that must be collected, then the player's cost for each rank will have to be calculated.  Then all of these must be added together to get the player's cost on rank P4.
+This calculation has to be performed for each rank in it's entirety
+Warning: this calculation on high prestige ranks will be a performance issue. If this becomes a problem on any particular server, then the only recommendation that can be provided is not to use any of the prison_rank__player_cost placeholders.
 
 
 * **TopN : a few more adjustments to fix a few issues with duplicates and also with using values from within the topN to include in the report to help minimize the need to recalculate everything especially with archived entries.**
