@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12g 2022-08-18
 
 
+* **Rankup costs: Minor clean up of existing code. Using the calculateTargetPlayerRank function within the RankPlayer object.**
+
+
 * **PAPI Placeholders: Force color code translations on all resulting placeholders.**
 There were a few issues where placeholder color codes were not being properly translated.  This was not consistent with everyone.  Not sure why it was working for most.
 These changes are more in line with how chat handlers and MVdW placeholders works.

@@ -914,6 +914,7 @@ public class RanksCommands
         		rankCost = rank.getRawRankCost();
         		
         		pRank = rankPlayerFactory.createPlayerRank( rank );
+//        		pRank = rankPlayerFactory.createPlayerRank( rank );
         		
         		rMulti = pRank.getLadderBasedRankMultiplier();
 
@@ -1057,7 +1058,8 @@ public class RanksCommands
 						
 						Rank r = rPlayer.getLadderRanks().get( rLadder ).getRank();
 						
-						PlayerRank rpRank = rankPlayerFactory.createPlayerRank( r );
+						PlayerRank rpRank = rPlayer.calculateTargetPlayerRank( r );
+//						PlayerRank rpRank = rankPlayerFactory.createPlayerRank( r );
 						
 						display.addText( "&3  BaseMult: &7%7s  &3CurrMult: &7%7s  &7%s  &7%s  ", 
 								fFmt.format( rLadder.getRankCostMultiplierPerRank() ),
@@ -1214,8 +1216,12 @@ public class RanksCommands
         
         // The following is the rank adjusted rank multiplier
         
+//        PlayerManager pm = PrisonRanks.getInstance().getPlayerManager();
+//        RankPlayer rPlayer = pm.getPlayer(player.getUUID(), player.getName());
+        
         RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
         PlayerRank pRank = rankPlayerFactory.createPlayerRank( rank );
+        
         
         double rankCostMultiplier = pRank.getLadderBasedRankMultiplier();
         double ladderBaseMultiplier = rank.getLadder() == null ? 0 : rank.getLadder().getRankCostMultiplierPerRank();
