@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12g 2022-08-18
+# 3.3.0-alpha.12h 2022-08-19
+
+
+* **v3.3.0-alpha.12h 2022-08-19**
 
 
 * **Rankup costs: Minor clean up of existing code. Using the calculateTargetPlayerRank function within the RankPlayer object.**
