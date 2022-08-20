@@ -40,7 +40,6 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerFactory;
-import tech.mcprison.prison.ranks.data.TopNPlayers;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.ranks.managers.RankManager;
@@ -204,10 +203,7 @@ public class PrisonRanks
         
         Output.get().logInfo( "Ranks: Finished Connecting Players to Ranks." );
         
-        
-        // Start up the TopNPlayer's collections after all players have been loaded:
-        TopNPlayers.getInstance();
-        
+  
         
         // Load up the commands
 
@@ -260,6 +256,12 @@ public class PrisonRanks
 //    	PrisonRanks.getInstance().getRankManager().ranksByLadders( includeAll );
         
         
+        
+        // Start up the TopNPlayer's collections after all players have been loaded:
+        // NOTE: getting the instance of TopNPlayers must be done "after" player validation.
+        //       So that thread needs to initiate it after done validating and fixing all players.
+//        TopNPlayers.getInstance();
+      
         
         // Check all players to see if any need to join:
         RanksStartupPlayerValidationsAsyncTask.submitTaskSync( this );

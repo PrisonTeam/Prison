@@ -166,6 +166,33 @@ public class TopNPlayers
 		}
 	}
 	
+	public void forceReloadAllPlayers() {
+		
+		getTopNList().clear();
+		getTopNMap().clear();
+		
+		getArchivedList().clear();
+		getArchivedMap().clear();
+
+		
+		// load from file was not successful, probably because there is no file.
+		// So create a new collection of players from the PlayerManager:
+		List<RankPlayer> players = PrisonRanks.getInstance().getPlayerManager().getPlayers();
+		
+		for (RankPlayer rankPlayer : players) {
+			
+			addPlayerData( rankPlayer );
+		}
+		
+		this.dirty = true;
+		
+		// Sort:
+		sortTopN();
+		
+		saveToJson();
+		
+	}
+	
 	public void saveToJson() {
 		JsonFileIO jfio = new JsonFileIO();
 

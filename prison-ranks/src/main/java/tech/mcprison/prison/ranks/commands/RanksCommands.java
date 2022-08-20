@@ -2066,10 +2066,19 @@ public class RanksCommands
     				description = "Page size [10]") String pageSizeNumber,
     			@Wildcard(join=true)
     			@Arg(name = "options", def = ".",
-    				description = "Options: 'alt' displays a shorter format. [alt archived]") String options ){
+    				description = "Options: 'alt' displays a shorter format. " +
+    						"'archived' shows all of the archvied players. " + 
+    						"'forceReload' forces the reloading of all players; must be OPd or console. " +
+    						"[alt archived forceReload]") String options ){
 
     	int page = 1;
     	int pageSize = 10;
+
+    	if ( contains( "forceReload", pageNumber, pageSizeNumber, options ) ) {
+    		
+    		TopNPlayers.getInstance().forceReloadAllPlayers();
+    	}
+    	
     	
     	boolean alt = contains( "alt", pageNumber, pageSizeNumber, options );
 //    	if ( pageNumber.toLowerCase().contains("alt") ||
@@ -2173,7 +2182,10 @@ public class RanksCommands
     private boolean contains( String search, String... values ) {
     	boolean results = false;
     	
-    	if ( values != null ) {
+    	if ( search != null && values != null ) {
+    		
+    		search = search.trim().toLowerCase();
+    		
     		for (String val : values) {
 				if ( val.toLowerCase().contains(search) ) {
 					results = true;

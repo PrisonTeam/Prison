@@ -13,6 +13,12 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12h 2022-08-19
 
 
+
+
+* **TopN players - fixed an issue where topN was being processed before the offline players were validated and fixed.**
+There was an issue with processing an invalid player that did not have a default rank.
+
+
 * **v3.3.0-alpha.12h 2022-08-19**
 
 
