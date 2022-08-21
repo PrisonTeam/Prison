@@ -10,11 +10,17 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.12i 2022-08-19
+# 3.3.0-alpha.12i 2022-08-21
 
 
 
 
+
+
+* **Update bstats to remove old custom reports that are not wanted/needed anymore.**
+Added 6 new placeholder reports that classifies placeholders ini various categories related to how they are used within prison.  Any placeholder that appears in these lists, will not be included in the generic 4-category placeholder lists.
+Added a few more simple pie charts to cover a lot of the details on ranks, ladders, and players.  Simple is better so you can just glance at all of them, without having to drill down on each one.
+ 
 
 * **v3.3.0-alpha.12i 2022-09-19**
 

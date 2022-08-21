@@ -23,10 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -55,7 +52,6 @@ import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.placeholders.PlaceholdersStats;
 import tech.mcprison.prison.troubleshoot.TroubleshootResult;
 import tech.mcprison.prison.troubleshoot.Troubleshooter;
-import tech.mcprison.prison.util.JumboTextFont;
 import tech.mcprison.prison.util.PrisonJarReporter;
 
 /**
