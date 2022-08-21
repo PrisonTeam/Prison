@@ -19,6 +19,9 @@ import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.integration.Integration;
+import tech.mcprison.prison.integration.IntegrationManager;
+import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.ranks.PrisonRanks;
@@ -35,7 +38,7 @@ public class PrisonBStats {
 	private List<String> reportPermissions;
 	private List<String> reportEconomy;
 	private List<String> reportPlaceholders;
-	private List<String> reportVault;
+//	private List<String> reportVault;
 	private List<String> reportEnchantments;
 	private List<String> reportAdminTools;
 	
@@ -54,7 +57,7 @@ public class PrisonBStats {
 
 		this.reportEconomy = new ArrayList<>();
 		this.reportPlaceholders = new ArrayList<>();
-		this.reportVault = new ArrayList<>();
+//		this.reportVault = new ArrayList<>();
 		this.reportEnchantments = new ArrayList<>();
 		this.reportAdminTools = new ArrayList<>();
 		
@@ -345,6 +348,35 @@ public class PrisonBStats {
 //        	return map;
 //        });
 //        getbStatsMetrics().addCustomChart( mlcPrisonPlugins );
+        
+        
+        
+        DrilldownPie mlcPrisonVaultPlugins = new DrilldownPie("prison_vault_plugins", () -> {
+        	Map<String, Map<String, Integer>> map = new HashMap<>();
+     
+
+            IntegrationManager im = Prison.get().getIntegrationManager();
+            
+            Set<IntegrationType> inTypeKeys = im.getIntegrations().keySet();
+            for (IntegrationType inTypeKey  : inTypeKeys ) {
+            	List<Integration> integrations = im.getIntegrations().get( inTypeKey );
+            	
+            	for (Integration integration : integrations) {
+    				
+            		if ( integration.getDisplayName().toLowerCase().contains( "(vault)") ) {
+            			
+            			Map<String, Integer> entry = new HashMap<>();
+                		entry.put( integration.getDisplayName(), 1 );
+                		
+                		map.put( integration.getType().name(), entry );
+            		}
+            		
+    			}
+    		}
+        	
+        	return map;
+        });
+        getbStatsMetrics().addCustomChart( mlcPrisonVaultPlugins );
         
         
         DrilldownPie mlcPrisonPluginsAtoE = new DrilldownPie("plugins_a_to_e", () -> {

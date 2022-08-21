@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -62,6 +63,7 @@ import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.convert.ConversionResult;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
+import tech.mcprison.prison.integration.Integration;
 import tech.mcprison.prison.integration.IntegrationManager;
 import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.ItemStack;
@@ -2326,6 +2328,18 @@ public class SpigotPlatform
         display.addText("&7Integrations:");
 
         IntegrationManager im = Prison.get().getIntegrationManager();
+        
+//        Set<IntegrationType> inTypeKeys = im.getIntegrations().keySet();
+//        for (IntegrationType inTypeKey  : inTypeKeys ) {
+//        	List<Integration> integrations = im.getIntegrations().get( inTypeKey );
+//        	
+//        	for (Integration integration : integrations) {
+//				
+//        		
+//        		
+//			}
+//		}
+        
         String permissions =
         		(im.hasForType(IntegrationType.PERMISSION) ?
                 " " + im.getForType(IntegrationType.PERMISSION).get().getDisplayName() :

@@ -273,7 +273,8 @@ public class IntegrationManager {
 						activeIntegration = true;
 						
 						String pluginUrl = plugin.getPluginSourceURL();
-						String msg = String.format( "&a. . %s <%s> %s", plugin.getDisplayName(),
+						String msg = String.format( "&a. . %s <%s> %s", 
+								plugin.getDisplayName(),
 								( plugin.hasIntegrated() ? "Active" : "Inactive"),
 								( pluginUrl == null ? "" : "&7[URL]"));
 						FancyMessage fancy = new FancyMessage( msg );
@@ -423,6 +424,14 @@ public class IntegrationManager {
 		integration.disableIntegration();
 		
 		integrations.get( integration.getType() ).remove( integration );
+	}
+
+
+	public Map<IntegrationType, List<Integration>> getIntegrations() {
+		return integrations;
+	}
+	public void setIntegrations(Map<IntegrationType, List<Integration>> integrations) {
+		this.integrations = integrations;
 	}
 
 

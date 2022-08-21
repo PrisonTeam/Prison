@@ -15,6 +15,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12j 2022-08-21
 
 
+* **Added the custom bstats report for Prison Vault Plugins.**
+This reports all plugins that have been integrated through Vault.  This report does not impact any other plugins report.  This is segmented by integration type.
+
 
 * **Fixed bug when server starts up when no player ranks exist.**
 It will now bypass the player validation until ranks have been configured.
