@@ -2812,4 +2812,10 @@ public class SpigotPlatform
 	public int compareServerVerisonTo( String comparisonVersion ) {
 		return new BluesSpigetSemVerComparator().compareMCVersionTo( comparisonVersion );
 	}
+	
+	@Override
+	public void checkPlayerDefaultRank( RankPlayer rPlayer ) {
+	
+		PrisonRanks.getInstance().getPlayerManager().checkPlayerDefaultRank( rPlayer );
+	}
 }

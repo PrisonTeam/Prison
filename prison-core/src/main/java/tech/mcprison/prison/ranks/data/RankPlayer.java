@@ -413,7 +413,7 @@ public class RankPlayer
 
         ranksRefs.put(ladderName, rank.getId());
         
-        PlayerRank pRank = new PlayerRank( rank );
+        PlayerRank pRank = createPlayerRank( rank );
         
         ladderRanks.put( rank.getLadder(), pRank );
         
@@ -423,6 +423,20 @@ public class RankPlayer
         
         // Calculate and apply the rank multipliers:
         recalculateRankMultipliers();
+    }
+    
+    /**
+     * <p>This does not update the RankPlayer with the passed rank or the generated PlayerRank.
+     * This only crates a new PlayerRank object without setting the multiplier.
+     * </p>
+     * 
+     * @param rank
+     * @return
+     */
+    public PlayerRank createPlayerRank( Rank rank ) {
+    	PlayerRank pRank = new PlayerRank( rank, 1.0 );
+    	
+    	return pRank;
     }
 
     /**
@@ -1402,6 +1416,13 @@ public class RankPlayer
 	
 	public PlayerRank getNextPlayerRank() {
 		PlayerRank rankCurrent = getPlayerRankDefault();
+		
+		// If player does not have a default rank, then assign them one:
+		if ( rankCurrent == null ) {
+			Prison.get().getPlatform().checkPlayerDefaultRank( this );
+			
+			rankCurrent = getPlayerRankDefault();
+		}
 		
 		if ( rankCurrent == null ) {
 			Output.get().logError(  

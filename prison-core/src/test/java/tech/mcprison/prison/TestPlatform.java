@@ -48,6 +48,7 @@ import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceholderFlags;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.placeholders.Placeholders;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.ChatColor;
@@ -494,5 +495,10 @@ public class TestPlatform implements Platform {
 	@Override
 	public int compareServerVerisonTo( String comparisonVersion ) {
 		return 0;
+	}
+	
+	@Override
+	public void checkPlayerDefaultRank( RankPlayer rPlayer ) {
+		
 	}
 }

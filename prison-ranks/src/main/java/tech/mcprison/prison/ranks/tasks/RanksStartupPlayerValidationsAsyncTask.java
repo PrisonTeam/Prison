@@ -1,5 +1,6 @@
 package tech.mcprison.prison.ranks.tasks;
 
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.TopNPlayers;
 import tech.mcprison.prison.tasks.PrisonRunnable;
@@ -18,10 +19,18 @@ public class RanksStartupPlayerValidationsAsyncTask
 	
 	public static void submitTaskSync( PrisonRanks pRanks ) {
 		
-		RanksStartupPlayerValidationsAsyncTask rspvaTask = 
-							new RanksStartupPlayerValidationsAsyncTask( pRanks );
-
-		PrisonTaskSubmitter.runTaskLaterAsync( rspvaTask, 0 );
+		if ( PrisonRanks.getInstance().getDefaultLadderRankCount() != 0 ) {
+			
+			RanksStartupPlayerValidationsAsyncTask rspvaTask = 
+					new RanksStartupPlayerValidationsAsyncTask( pRanks );
+			
+			PrisonTaskSubmitter.runTaskLaterAsync( rspvaTask, 0 );
+		}
+		else {
+			Output.get().logInfo( "Bypassing player validation task since no ranks have been " + 
+					"defined yet.");
+		}
+		
 	}
 	
 	@Override

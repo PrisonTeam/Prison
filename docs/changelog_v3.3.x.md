@@ -10,9 +10,15 @@
 These build logs represent the work that has been going on within prison. 
 
 
+**v3.3.0-alpha.13 2022-08-19**
 
+* Rewrote topN and rankCost features to improve performance substantially and to fix some obscure issues with placeholders using these features.
 
 # 3.3.0-alpha.12j 2022-08-21
+
+
+* **Fixed an issue when starting the server an no ranks exist.  Also fixes an issue when starting the server an a player has no rank.**
+Was using a mix of really old code, and the latest code, which caused a conflict since neither was doing what it was really supposed to.
 
 
 * **Added the custom bstats report for Prison Vault Plugins.**

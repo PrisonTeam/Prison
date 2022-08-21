@@ -445,20 +445,37 @@ public class RankUtil
         
 
         // This calculates the target rank, and takes in to consideration the player's existing rank:
-        PlayerRank pRankNext =
-        			originalRank == null ? null :
-        				rankPlayer.calculateTargetPlayerRank( targetRank );
+        
+        // Warning the following won't work if the player has no default rank since it will become a 
+        // circular reference:
+//        PlayerRank pRankNext = rankPlayer.getNextPlayerRank();
+
+        PlayerRank pRankNext = null;
+        
+        if ( originalRank == null ) {
+        	Rank nextRank = PrisonRanks.getInstance().getDefaultLadder().getLowestRank().orElse( null );
+        	pRankNext = rankPlayer.createPlayerRank(nextRank);
+        }
+        else {
+        	
+        	pRankNext = rankPlayer.calculateTargetPlayerRank( targetRank );
+        }
 //				        originalRank.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
 //        		new PlayerRank( targetRank, originalRank.getRankMultiplier() );
 		
         // If player does not have a rank on this ladder, then grab the first rank on the ladder since they need
         // to be added to the ladder.
-//        if ( pRankNext == null ) {
-//        	
+        if ( pRankNext == null ) {
+        	
+        	results.addTransaction( RankupStatus.RANKUP_FAILURE_RANK_DOES_NOT_EXIST, 
+        			RankupTransactions.failed_rank_not_in_ladder );
+        	return;
+        	
+        		
 //        	pRankNext = rankPlayerFactory.createPlayerRank( targetRank );
-//        	
-////        	pRankNext = originalRank.getTargetPlayerRankForPlayer( rankPlayer, ladder.getLowestRank().get() );
-//        }
+        	
+//        	pRankNext = originalRank.getTargetPlayerRankForPlayer( rankPlayer, ladder.getLowestRank().get() );
+        }
         
         	
 		results.setPlayerRankTarget( pRankNext );
@@ -466,7 +483,9 @@ public class RankUtil
         
         
 //        String currency = "";
-        double nextRankCost = pRankNext.getRankCost();
+        double nextRankCost = pRankNext == null || pRankNext.getRankCost() == null ? 
+        				0.0d : pRankNext.getRankCost();
+        
         double currentRankCost = ( results.getPlayerRankOriginal() == null ? 0 : 
         				results.getPlayerRankOriginal().getRankCost() );
         
@@ -994,7 +1013,8 @@ public class RankUtil
     			(oRank == null || oRank.getCurrency() == null ? "" : " " + oRank.getCurrency()),
     			
     			(tRank == null ? "none" : tRank.getName()), 
-    			(tpRank == null ? "" : " " + dFmt.format( tpRank.getRankCost())), 
+    			(tpRank == null || tpRank.getRankCost() == null ? 
+    								"" : " " + dFmt.format( tpRank.getRankCost())), 
     			(tRank == null || tRank.getCurrency() == null ? "" : " " + tRank.getCurrency()),
 				
 				iFmt.format( results.getElapsedTime() ),

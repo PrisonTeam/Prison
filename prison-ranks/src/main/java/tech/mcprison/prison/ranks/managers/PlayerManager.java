@@ -212,6 +212,26 @@ public class PlayerManager
     }
     
     /**
+     * <p>If the player does not have a default rank, then assign it to them and
+     * then save their new settings.
+     * </p>
+     * 
+     * @param rPlayer
+     */
+	public void checkPlayerDefaultRank( RankPlayer rPlayer ) {
+
+		if ( rPlayer.getPlayerRankDefault() == null ) {
+
+			 // Try to perform the first join processing to give them the default rank:
+	        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+	        rankPlayerFactory.firstJoin( rPlayer );
+
+	        PrisonRanks.getInstance().getPlayerManager().savePlayer( rPlayer );
+			
+		}
+	}
+    
+    /**
      * <p>This function will add all the players to all of the ranks they
      * are associated with.
      * </p>
@@ -1990,4 +2010,6 @@ public class PlayerManager
     	// Regenerate the translated placeholders:
     	getTranslatedPlaceHolderKeys();
     }
+
+
 }
