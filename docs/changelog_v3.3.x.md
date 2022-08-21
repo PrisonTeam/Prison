@@ -16,6 +16,9 @@ These build logs represent the work that has been going on within prison.
 
 
 
+* **Fixed bug when server starts up when no player ranks exist.**
+It will now bypass the player validation until ranks have been configured.
+
 
 * **v3.3.0-alpha.12j 2022-08-21**
 

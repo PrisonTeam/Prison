@@ -301,6 +301,17 @@ public class PrisonRanks
         	// If any player does not have a rank on the default ladder, then add the default 
         	// ladder and rank:
         	Rank defaultRank = defaultLadder.getLowestRank().get();
+        	
+        	if ( defaultRank == null ) {
+        		Output.get().logInfo( 
+        				"PrisonRanks.checkAllPlayersForJoin: Warning: No default rank exists, so bypassing " +
+        					"the player checks.  There may be players online without a rank which could " + 
+        					"cause problems.  Create a default rank and then restart the server to validate and " +
+        					"repair all players.");
+        		return;
+        	}
+        	
+        	
         	for ( RankPlayer rPlayer : playerManager.getPlayers() ) {
         		
         		@SuppressWarnings( "unused" )

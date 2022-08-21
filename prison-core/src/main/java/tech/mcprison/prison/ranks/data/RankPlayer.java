@@ -1403,6 +1403,22 @@ public class RankPlayer
 	public PlayerRank getNextPlayerRank() {
 		PlayerRank rankCurrent = getPlayerRankDefault();
 		
+		if ( rankCurrent == null ) {
+			Output.get().logError(  
+					String.format(
+							"ERROR Player has no default ladder rank: %s  A player should never be without a " + 
+							"rank on the default ladder. Something corrupted prison.  Contact prison support. " + 
+							"Make sure you do not manually modify any of the config files, which can lead to corruption. ",
+							getName()
+							));
+			Output.get().logError(  
+					String.format(
+							"NOTE: Restarting the server could allow prison to repair players that are corrupted. " +
+							"Please try restarting the server to see if that fixes the problem before contacting " +
+							"prison's support team.  Thanks!"
+								));
+		}
+		
 		Rank nRank = rankCurrent.getRank().getRankNext();
 		
 		// If player does not have a next rank, then try to use the next prestige rank:
