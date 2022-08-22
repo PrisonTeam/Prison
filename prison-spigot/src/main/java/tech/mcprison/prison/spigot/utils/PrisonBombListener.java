@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 import de.tr7zw.nbtapi.NBTItem;
 import tech.mcprison.prison.bombs.MineBombData;
@@ -139,8 +140,10 @@ public class PrisonBombListener
         		return;
         	}
         	
+        	EquipmentSlot hand = event.getHand();
+        	
 //        	Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  02 " );
-        	if ( getPrisonUtilsMineBombs().setBombInHand( player, bomb, sBlock ) ) {
+        	if ( getPrisonUtilsMineBombs().setBombInHand( player, bomb, sBlock, hand ) ) {
         		
         		// The item was a bomb and it was activated.
         		// Cancel the event so the item will not be placed or processed farther.

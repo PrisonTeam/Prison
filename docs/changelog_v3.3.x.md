@@ -17,6 +17,8 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12k 2022-08-21
 
 
+* **If the player is holding the mine bomb in their offf hand, then remove the inventory from their off hand.**
+
 
 * **v3.3.0-alpha.12k**
 
