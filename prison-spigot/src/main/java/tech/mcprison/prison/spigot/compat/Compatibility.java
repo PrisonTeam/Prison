@@ -49,6 +49,8 @@ public interface Compatibility
     public SpigotItemStack getPrisonItemInMainHand(PlayerInteractEvent e);
     
     public SpigotItemStack getPrisonItemInMainHand(Player player);
+
+    public SpigotItemStack getPrisonItemInOffHand(Player player);
     
     public ItemStack getItemInOffHand(PlayerInteractEvent e);
 

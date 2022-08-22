@@ -877,7 +877,11 @@ public class PrisonUtilsMineBombs
 						bomb.setActivated( true );
 						
 						
-						SpigotItemStack itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
+						SpigotItemStack itemInHand = 
+								hand == EquipmentSlot.HAND ? 
+										SpigotCompatibility.getInstance().getPrisonItemInMainHand( player ) :
+											SpigotCompatibility.getInstance().getPrisonItemInOffHand( player )
+											;
 						
 						// Remove from inventory:
 						int inHandBombCount = itemInHand.getAmount() - 1;

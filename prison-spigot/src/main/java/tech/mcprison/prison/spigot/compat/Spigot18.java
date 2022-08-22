@@ -68,6 +68,10 @@ public class Spigot18
     public SpigotItemStack getPrisonItemInMainHand(Player player) {
     	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player ) );
     }
+    
+    public SpigotItemStack getPrisonItemInOffHand(Player player) {
+    	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player ) );
+    }
 
 	@Override 
 	public ItemStack getItemInOffHand(PlayerInteractEvent e) {
