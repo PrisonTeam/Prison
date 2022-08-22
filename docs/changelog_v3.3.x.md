@@ -14,7 +14,11 @@ These build logs represent the work that has been going on within prison.
 
 * Rewrote topN and rankCost features to improve performance substantially and to fix some obscure issues with placeholders using these features.
 
-# 3.3.0-alpha.12j 2022-08-21
+# 3.3.0-alpha.12k 2022-08-21
+
+
+
+* **v3.3.0-alpha.12k**
 
 
 * **Fixed an issue when starting the server an no ranks exist.  Also fixes an issue when starting the server an a player has no rank.**
