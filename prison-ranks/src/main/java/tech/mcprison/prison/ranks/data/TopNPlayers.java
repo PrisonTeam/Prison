@@ -241,7 +241,7 @@ public class TopNPlayers
 	 * 
 	 * @param topN
 	 */
-	private void addPlayerData( TopNPlayersData topN ) {
+	private void addPlayerData( TopNPlayersData topN, PlayerState activePlayerState ) {
 		
 		long archiveDate = System.currentTimeMillis() - archiveCutoffDaysMS;
 		
@@ -256,6 +256,7 @@ public class TopNPlayers
 			setDirty( true );
 		}
 		
+		// Remove the player from both the archive map and list:
 		if ( getArchivedMap().containsKey( topN.getKey() ) ) {
 			
 			TopNPlayersData temp = getArchivedMap().remove( topN.getKey() );
@@ -265,6 +266,7 @@ public class TopNPlayers
 		}
 		
 		
+		// If they were last seen past the archive date, then archive them:
 		if ( topN.getLastSeen() < archiveDate ) {
 			topN.setPlayerState( PlayerState.archived );
 			
@@ -275,9 +277,7 @@ public class TopNPlayers
 		}
 		else {
 			
-			// Add the playerState of offline.  When refreshing calcs and
-			// accessing online players, then change to online only when they are.
-			topN.setPlayerState( PlayerState.offline );
+			topN.setPlayerState( activePlayerState );
 			
 			getTopNList().add(topN);
 			getTopNMap().put( topN.getKey(), topN );
@@ -300,9 +300,12 @@ public class TopNPlayers
 		// Get online players:
 		List<Player> onlinePlayer = Prison.get().getPlatform().getOnlinePlayers();
 		
+		
+		
 		// Set all topNList entries to offline:
 		for ( TopNPlayersData topN : topNList ) {
 			if ( topN.getPlayerState() == PlayerState.online ) {
+				
 				topN.setPlayerState( PlayerState.offline );
 			}
 		}
@@ -321,11 +324,25 @@ public class TopNPlayers
 			if ( getTopNMap().containsKey(key) ) {
 				topN = getTopNMap().get(key);
 				
+				// Set the RankPlayer object if it has not been set already:
 				if ( topN.getrPlayer() == null ) {
 					topN.setrPlayer( rPlayer );
 				}
 
 				topN.updateRankPlayer( rPlayer );
+			}
+			if ( getArchivedMap().containsKey(key) ) {
+				// The player was archived.  Remove them from the archive and add them back
+				// to the topN:
+				topN = getArchivedMap().get(key);
+				
+				// Set the RankPlayer object if it has not been set already:
+				if ( topN.getrPlayer() == null ) {
+					topN.setrPlayer( rPlayer );
+				}
+
+				topN.updateRankPlayer( rPlayer );
+				
 			}
 			else {
 				// Player is online, but yet they are not in the topN:
@@ -335,9 +352,11 @@ public class TopNPlayers
 			// Set last seen date:
 			topN.setLastSeen( System.currentTimeMillis() );
 			
-			addPlayerData( topN );
+			addPlayerData( topN, PlayerState.online );
 			
-			topN.setPlayerState( PlayerState.online );
+			// Add player will always set the PlayerState to offline, so need to set it to
+			// online after addPlayerData() is called;
+//			topN.setPlayerState( PlayerState.online );
 			
 			
 			setDirty( true );
@@ -423,8 +442,9 @@ public class TopNPlayers
 		
 		TopNPlayersData topN = getTopNPlayer( rPlayer );
 		
-		
-		addPlayerData( topN );
+		// Since this is used when the players are being loaded, assume all are offline for now.
+		// The recurring task of processing online players will set them to online.
+		addPlayerData( topN, PlayerState.offline );
 		
 	}
 	

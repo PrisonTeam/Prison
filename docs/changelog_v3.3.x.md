@@ -17,7 +17,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12k 2022-08-21
 
 
-* **If the player is holding the mine bomb in their offf hand, then remove the inventory from their off hand.**
+* **TopN bug fix: If a player was in an archived state, they were not being moved to active when they would login.**
+
+
+* **If the player is holding the mine bomb in their off hand, then remove the inventory from their off hand.**
 
 
 * **v3.3.0-alpha.12k**
