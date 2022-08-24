@@ -14,7 +14,10 @@ These build logs represent the work that has been going on within prison.
 
 * Rewrote topN and rankCost features to improve performance substantially and to fix some obscure issues with placeholders using these features.
 
-# 3.3.0-alpha.12k 2022-08-21
+# 3.3.0-alpha.12k 2022-08-23
+
+
+* **There was an unused updated tool in prison.  It's against my policy to auto update this plugin, which would need to be consented to anyway, but I feel that admins need to be in full control of updates and know what is included in the updates. There was identified a potential exploit called zip-slip-vulnerability that could hijack a server if malicious zip is extracted.  Prison never used this tool, so it's been fully disabled with no intention of reenabling.  It may be deleted in the near future.**
 
 
 * **TopN bug fix: If a player was in an archived state, they were not being moved to active when they would login.**
