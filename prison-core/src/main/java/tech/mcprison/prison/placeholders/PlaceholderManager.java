@@ -522,6 +522,7 @@ public class PlaceholderManager {
 		prison_r_id_rankname(PlaceholderFlags.RANKS, PlaceholderFlags.ALIAS),
 		prison_r_pc_rankname(PlaceholderFlags.RANKS, PlaceholderFlags.ALIAS),
 		prison_r_lm_rankname(PlaceholderFlags.RANKS, PlaceholderFlags.ALIAS),
+		prison_r_lmt_rankname(PlaceholderFlags.RANKS, PlaceholderFlags.ALIAS),
 		
 		
 
@@ -538,6 +539,7 @@ public class PlaceholderManager {
 		prison_rank__id_rankname(prison_r_id_rankname, PlaceholderFlags.RANKS),
 		prison_rank__player_count_rankname(prison_r_pc_rankname, PlaceholderFlags.RANKS),
 		prison_rank__linked_mines_rankname(prison_r_lm_rankname, PlaceholderFlags.RANKS),
+		prison_rank__linked_mines_tag_rankname(prison_r_lmt_rankname, PlaceholderFlags.RANKS),
 		
 		
 		

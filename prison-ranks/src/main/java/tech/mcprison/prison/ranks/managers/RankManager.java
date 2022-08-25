@@ -1219,15 +1219,32 @@ public class RankManager
 					
 				case prison_rank__linked_mines_rankname:
 				case prison_r_lm_rankname:
-					StringBuilder sb = new StringBuilder();
-					for ( ModuleElement mine : rank.getMines() ) {
-						if ( sb.length() > 0 ) {
-							sb.append( ", " );
+					{
+						StringBuilder sb = new StringBuilder();
+						for ( ModuleElement mine : rank.getMines() ) {
+							if ( sb.length() > 0 ) {
+								sb.append( ", " );
+							}
+							sb.append( mine.getName() );
 						}
-						sb.append( mine.getName() );
+						
+						results = sb.toString();
 					}
+					break;
 					
-					results = sb.toString();
+				case prison_rank__linked_mines_tag_rankname:
+				case prison_r_lmt_rankname:
+					{
+						StringBuilder sb = new StringBuilder();
+						for ( ModuleElement mine : rank.getMines() ) {
+							if ( sb.length() > 0 ) {
+								sb.append( ", " );
+							}
+							sb.append( mine.getTag() );
+						}
+						
+						results = sb.toString();
+					}
 					break;
 					
 					
