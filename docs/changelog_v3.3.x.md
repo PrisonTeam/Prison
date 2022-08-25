@@ -17,6 +17,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.12L 2022-08-25
 
 
+* **Player Mine GUI had the wrong calculation for volume which also threw off blocks remaining and percent remaining.**
+The calculation for volume was using the surface area and not the total number of blocks.
+
+
 **v3.3.0-alpha.12L 2022-08-25**
 
 
