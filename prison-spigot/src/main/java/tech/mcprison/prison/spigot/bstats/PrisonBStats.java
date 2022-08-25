@@ -561,7 +561,7 @@ public class PrisonBStats {
         		
         		entry.put( detailNameVersion, 1 );
         		
-        		map.put( pluginData.getPluginName(), entry );
+        		map.put( pluginName, entry );
         	}
         	
         	return map;
@@ -575,7 +575,6 @@ public class PrisonBStats {
 
 		reportPrisonCore.add( "Prison" );
 		reportPrisonCore.add( "Essentials" );
-		reportPrisonCore.add( "EssentialsChat" );
 		reportPrisonCore.add( "Vault" );
 		reportPrisonCore.add( "ProtocolLib" );
 		reportPrisonCore.add( "Minepacks" );
@@ -607,6 +606,7 @@ public class PrisonBStats {
 		reportPlaceholders.add( "HolographicExtension" );
 		reportPlaceholders.add( "RealScoreboard" );
 		reportPlaceholders.add( "Scoreboard-revision" );
+		reportPlaceholders.add( "RealScoreboard" );
 		reportPlaceholders.add( "TAB" );
 		reportPlaceholders.add( "TabList" );
 		
@@ -620,17 +620,26 @@ public class PrisonBStats {
 		reportEnchantments.add( "TimTheEnchanter" );
 		reportEnchantments.add( "Zenchantments" );
 		reportEnchantments.add( "PrisonEnchants" );
-		reportEnchantments.add( "" );
+		reportEnchantments.add( "RevEnchants" );
+
 		
 		reportAdminTools.add( "WorldEdit" );
 		reportAdminTools.add( "WorldGuard" );
 		reportAdminTools.add( "Multiverse-Core" );
 		reportAdminTools.add( "Multiverse" );
 		reportAdminTools.add( "Multiworld" );
+		reportAdminTools.add( "MyCommand" );
 		reportAdminTools.add( "CMI" );
 		reportAdminTools.add( "CMIEInjector" );
 		reportAdminTools.add( "FastAsyncWorldEdit" );
 		reportAdminTools.add( "VoidGen" );
+		reportAdminTools.add( "Skript" );
+		reportAdminTools.add( "PlugMan" ); // Just to get an idea of how many may be causing issues
+		reportAdminTools.add( "ViaBackwards" );
+		reportAdminTools.add( "ViaRewind" );
+		reportAdminTools.add( "ViaVersion" );
+		reportAdminTools.add( "Citizens" );
+		reportAdminTools.add( "NBTAPI" );
 
 	}
 	public Metrics getbStatsMetrics() {
