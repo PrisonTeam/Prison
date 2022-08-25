@@ -14,7 +14,10 @@ These build logs represent the work that has been going on within prison.
 
 * Rewrote topN and rankCost features to improve performance substantially and to fix some obscure issues with placeholders using these features.
 
-# 3.3.0-alpha.12k 2022-08-24
+# 3.3.0-alpha.12k 2022-08-25
+
+
+* **Mine TP list: use mine tags and clickable mines to teleport to them.**
 
 
 * **Mines TP list.  Added a new options to mines tp command to list all mines that the player actually has access to.**

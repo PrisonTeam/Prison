@@ -58,6 +58,7 @@ import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.convert.ConversionResult;
@@ -91,6 +92,7 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.DisplayComponent;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.commands.RanksCommands;
 import tech.mcprison.prison.ranks.data.PlayerRank;
@@ -2824,7 +2826,7 @@ public class SpigotPlatform
 	public void listAllMines(tech.mcprison.prison.internal.CommandSender sender, Player player) {
 
 		RankPlayer rPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(player);
-		List<String> mines = new ArrayList<>();
+		List<Mine> mines = new ArrayList<>();
 		
 		if ( rPlayer != null ) {
 			
@@ -2838,18 +2840,45 @@ public class SpigotPlatform
 			
 			if ( mines.size() > 0 ) {
 				
+				// String builder will be used to track what the "real" text width is:
 				StringBuilder sb = new StringBuilder();
 				
-				for ( String mineName : mines ) {
-					sb.append( mineName ).append( " " );
+				RowComponent row = new RowComponent();
+				row.addTextComponent( "&3Mines: " );
+				sb.append( "&3Mines: " );
+
+				for ( Mine mine : mines ) {
 					
-					if ( sb.length() > 50 ) {
-						sender.sendMessage( sb.toString() );
+		        	FancyMessage msgMine = new FancyMessage( String.format( "%s", mine.getTag() ) )
+		        			.suggest( "/mines tp " + mine.getName() )
+		        			.tooltip("Click to teleport to mine");
+		        	
+		        	row.addFancy( msgMine );
+		        	sb.append( mine.getTag() );
+					
+		        	row.addTextComponent( "   " );
+		        	sb.append( "   " );
+		        	
+		        	String noColor = Text.stripColor( sb.toString() );
+					
+					if ( noColor.length()  > 50 ) {
+
+						// Send the player the mines list:
+						row.send( sender );
+						
+						// Reset the row and sb to start on the next row of mines:
+						row = new RowComponent();
 						sb.setLength( 0 );
+
+						// Setup the start of the row:
+						row.addTextComponent( "&3Mines: " );
+						sb.append( "&3Mines: " );
+						
 					}
 				}
 				if ( sb.length() > 0 ) {
-					sender.sendMessage( sb.toString() );
+					// Send the player the mines list:
+					row.send( sender );
 				}
 			}
 			
@@ -2857,7 +2886,7 @@ public class SpigotPlatform
 	}
 
 	private void listMines(tech.mcprison.prison.internal.CommandSender sender, 
-							Player player, PlayerRank pRank, List<String> mines ) {
+							Player player, PlayerRank pRank, List<Mine> mines ) {
 
 		Rank rank = pRank.getRank();
 		
@@ -2867,7 +2896,7 @@ public class SpigotPlatform
 				Mine mine = PrisonMines.getInstance().getMine( mElement.getName() );
 
 				if ( mine.hasMiningAccess( player ) ) {
-					mines.add( mine.getName() );
+					mines.add( mine );
 				}
 			}
 			
