@@ -63,7 +63,6 @@ import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.convert.ConversionResult;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
-import tech.mcprison.prison.integration.Integration;
 import tech.mcprison.prison.integration.IntegrationManager;
 import tech.mcprison.prison.integration.IntegrationType;
 import tech.mcprison.prison.internal.ItemStack;
@@ -96,6 +95,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.commands.RanksCommands;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
@@ -2818,4 +2818,62 @@ public class SpigotPlatform
 	
 		PrisonRanks.getInstance().getPlayerManager().checkPlayerDefaultRank( rPlayer );
 	}
+	
+
+	@Override
+	public void listAllMines(tech.mcprison.prison.internal.CommandSender sender, Player player) {
+
+		RankPlayer rPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(player);
+		List<String> mines = new ArrayList<>();
+		
+		if ( rPlayer != null ) {
+			
+			Set<RankLadder> keys = rPlayer.getLadderRanks().keySet();
+			for ( RankLadder key : keys ) {
+				PlayerRank pRank = rPlayer.getLadderRanks().get(key);
+				
+				listMines( sender, player, pRank, mines );
+			}
+			
+			
+			if ( mines.size() > 0 ) {
+				
+				StringBuilder sb = new StringBuilder();
+				
+				for ( String mineName : mines ) {
+					sb.append( mineName ).append( " " );
+					
+					if ( sb.length() > 50 ) {
+						sender.sendMessage( sb.toString() );
+						sb.setLength( 0 );
+					}
+				}
+				if ( sb.length() > 0 ) {
+					sender.sendMessage( sb.toString() );
+				}
+			}
+			
+		}
+	}
+
+	private void listMines(tech.mcprison.prison.internal.CommandSender sender, 
+							Player player, PlayerRank pRank, List<String> mines ) {
+
+		Rank rank = pRank.getRank();
+		
+		while ( rank != null ) {
+			
+			for ( ModuleElement mElement : rank.getMines() ) {
+				Mine mine = PrisonMines.getInstance().getMine( mElement.getName() );
+
+				if ( mine.hasMiningAccess( player ) ) {
+					mines.add( mine.getName() );
+				}
+			}
+			
+			rank = rank.getRankPrior();
+		}
+	}
+	
+	
 }

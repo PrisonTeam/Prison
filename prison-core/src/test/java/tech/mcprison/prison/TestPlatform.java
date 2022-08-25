@@ -501,4 +501,9 @@ public class TestPlatform implements Platform {
 	public void checkPlayerDefaultRank( RankPlayer rPlayer ) {
 		
 	}
+	
+	@Override
+	public void listAllMines(CommandSender sender, Player player) {
+		
+	}
 }

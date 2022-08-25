@@ -441,4 +441,7 @@ public interface Platform {
 	
 	public void checkPlayerDefaultRank( RankPlayer rPlayer );
 
+
+	public void listAllMines(CommandSender sender, Player player);
+
 }

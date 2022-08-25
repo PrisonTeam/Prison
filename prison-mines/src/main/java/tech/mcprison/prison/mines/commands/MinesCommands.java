@@ -2883,14 +2883,16 @@ public class MinesCommands
     
 
     @Command(identifier = "mines tp", description = "TP to the mine. Will default to the mine's " +
-    		"spawn location if set, but can specify the target [spawn, mine]. OPs and console can " +
+    		"spawn location if set, but can specify the target [spawn, mine]. Instead of a mine " +
+    		"name, 'list' will show all mines you have access to. OPs and console can " +
     		"TP other online players to a specified mine. Access for non-OPs can be setup through " +
     		"'/mines set tpAccessByRank help` is preferred over permissions.", 
     		aliases = "mtp",
     		altPermissions = {"access-by-rank", "mines.tp", "mines.tp.[mineName]"})
     public void mineTp(CommandSender sender,
         @Arg(name = "mineName", def="",
-        		description = "The name of the mine to teleport to.") String mineName,
+        		description = "The name of the mine to teleport to, or 'list' to show all "
+        				+ "mines that you have access to.") String mineName,
         
 		@Arg(name = "player", def = "", description = "Player name to TP - " +
 				"Only console or rank command can include this parameter") String playerName,
@@ -2899,6 +2901,28 @@ public class MinesCommands
 						"the mine. [spawn, mine]")
     			String target
     		) {
+    	
+    	
+    	if ( mineName != null && 
+    			"list".equals( mineName )) {
+    		
+        	Player player = getPlayer( sender, playerName );
+        	
+//        	Player playerAlt = getPlayer( playerName );
+//        	
+//        	if ( playerAlt != null ) {
+//        		player = playerAlt;
+//        	}
+        	
+        	if ( player == null ) {
+        		Output.get().logInfo( "Mine TP List: You must either be a player, or refer to a valid player." );
+        		return;
+        	}
+    		
+        	Prison.get().getPlatform().listAllMines( sender, player );
+        	
+    		return;
+    	}
     	
     	
     	if ( mineName != null && 

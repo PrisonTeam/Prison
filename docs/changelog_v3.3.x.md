@@ -14,7 +14,11 @@ These build logs represent the work that has been going on within prison.
 
 * Rewrote topN and rankCost features to improve performance substantially and to fix some obscure issues with placeholders using these features.
 
-# 3.3.0-alpha.12k 2022-08-23
+# 3.3.0-alpha.12k 2022-08-24
+
+
+* **Mines TP list.  Added a new options to mines tp command to list all mines that the player actually has access to.**
+Not finished with it... will add clickable links to them when in game.
 
 
 * **There was an unused updated tool in prison.  It's against my policy to auto update this plugin, which would need to be consented to anyway, but I feel that admins need to be in full control of updates and know what is included in the updates. There was identified a potential exploit called zip-slip-vulnerability that could hijack a server if malicious zip is extracted.  Prison never used this tool, so it's been fully disabled with no intention of reenabling.  It may be deleted in the near future.**
