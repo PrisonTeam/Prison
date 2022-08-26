@@ -10,14 +10,37 @@
 These build logs represent the work that has been going on within prison. 
 
 
-**v3.3.0-alpha.13 2022-08-19**
-
-* Rewrote topN and rankCost features to improve performance substantially and to fix some obscure issues with placeholders using these features.
-
-# 3.3.0-alpha.12L 2022-08-25
 
 
-* **Minor addtion to bstats.**
+# 3.3.0-alpha.13 2022-08-25
+
+
+**3.3.0-alpha.13 2022-08-25**
+
+Highlights of some of the changes included in this alpha.13 release. Please see the change logs for all details.
+
+
+* Added a new tool: `mines tp list` which will show a player all of the mines they have access to.  They can also click on a listed mine to generate the TP command.  This command can also be ran from the console to inspect what players have access to.
+* Fixed a recently introduced bug where if the server starts up, but someone has no ranks, it was not able to properly assign them their first default rank. It was leading to circular references.
+* Fixed an issue with color codes not being translated correctly with placeholderAPI.   
+* Prison has a rank cost multiplier where ranks on different ladders can increase, or decrease, the cost of all ranks the player buys.  So when they prestige, it makes ranks A-Z cost more each time.  What's new is that now you can control which ladders these rank cost multipliers are applied to, such as not on prestiges, but only on default.
+* Fixed calculations of the placeholder `prison_rank__player_cost_rankname`.  It was not fully working with every possible rank on every possible ladder.  Now it works correctly if trying to get the player's cost for even many prestige ranks out (it includes cals for all A-Z mines at multiple passes).
+* Mine bombs: Changed to only allow mine bombs to be setoff withn mines the player has access to. Fixed an issue with color codes within the mine bomb's tags.
+* Fixes issues with NBT, color codes with prison broadcast commands.
+* Rewrote topN for better performance: `/topn`. Older players are archived within topN and can be queried: `/topn archive`. 
+* Update ladder details on a few commands.
+* Update XSeries from v8.8.0 to v9.0.0 so prison now supports 1.19.x blocks.
+* Bug fixes with first join events.  Bug fix with a few guis.
+* CMI update: If CMI is detected at startup, and delayed startup is not enabled, prison will go in a simple delayed startup mode to allow CMI a chance to enable it's economy through vault.  This reduces the learning curve with CMI users.
+* New feature: Prison will now make an auto backup of all files in it's directory when it detects a change in version.  Can manually backup too. The backup stores temp files then removes them from the server, this helps keep the server clean.
+* Update bstats: Gained control of the account and started to add useful custom reports to help zero in on what we need to help support.
+* More work on block converts. Will be added in the next alpha releases.
+* Bug fixes: mines gui fixes for virtual mines.  Sellall bug fixes. Placeholders fixes.
+
+
+
+
+* **Minor addition to bstats.**
 
 
 * **Player Mine GUI had the wrong calculation for volume which also threw off blocks remaining and percent remaining.**
