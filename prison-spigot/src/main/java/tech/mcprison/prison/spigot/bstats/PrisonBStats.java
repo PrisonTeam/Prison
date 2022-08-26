@@ -593,6 +593,7 @@ public class PrisonBStats {
 		reportEconomy.add( "SaneEconomy" );
 		reportEconomy.add( "Tokens" );
 		reportEconomy.add( "Ultimate_Economy" );
+		reportEconomy.add( "XConomy" );
 		
 		
 		reportPlaceholders.add( "PlaceholderAPI" );
