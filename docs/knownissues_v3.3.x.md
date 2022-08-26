@@ -5,26 +5,46 @@
 
 
 
-# TODO Items for v3.3.0-alpha.12
+# TODO Items for v3.3.0-alpha.13
 
 
-- DONE: Modified the `/mine blockEvent` commands to auto show the existing rows if only the mine name is entered for the command.  It will show the list of rows, then the user can select it, then continue entering the rest of the command.  There has been a lot of confusion on how to work with the blockEvent rows since it was not obvious they had to first "list" the blockEvents for that mine.
+- In the GUI menu, the config setting: Enchantment_effect_current_rank is off by 1.  If D rank it shows E being unlocked. - CITYJD
 
-- Mine bombs - If at rank d and in mine w and I set off a mine bomb, it will not break any blocks, but it will lock them and prevent others at that rank from breaking them. - redonthehead
- - player should not be able to "lock" blocks 
- - Player should not be able to drop a mine bomb in a mine they don't have access to
+
+- Add `*all*` to `/mines set notification` - CITYJD
+
+
+- Auto-Forced-Rankups and prestiges when the player has enough money.  Kikiisyourfriend
+ - a new autoFeatures entry
  
- 
-- DONE: command `/ranks topn` - does not appear to be sorting by prestiges first - redonthehead
- - Fixed? Force sort when using the command each time.
- - When player's rankup, should probably force a sort.  
- - The sorting should be somewhat low cost, since if players are in the same position, it short-circuits the sorting so there is less processing.  Ie.. if nothing is sorted, it's only one quick pass.  If only one player changes, then it's only moving that player.
- 
- - Issue with topn Rank-Score.  When player is at top of default ladder and has not prestiged yet.
-  - Rank-score looks like it's just their money balance?
+- Enable Access to prior mines - kikiisyourfriend
+ - disable to prevent going back to prior rank mines.
+
+
+- DONE: prison_rank__linked_mines_rankname prison_r_lm_rankname provide a placeholder for the mine's tags.  B0mer
+
+
+- DONE: Mines tp: option to list all available mines per rank? Thaysa
+
+
+- bStats:
+ - DONE: Remove Plugins & Prison Ladders
+ - DONE: Add: modules, Economy (integrations), Perms (integrations), Placeholder (intg)
+ - DONE: Add: Language
+ - 
+
+
+- `/ranks player` is not including all of the info for rank multipliers like it should have.
+  - add them
+  - List total rank multiplier. Show the multiplier per ladder.
+  
   
 
-- admin - prevent you breaking mine liners
+- Custom mine shapes - Chain / darragh
+
+
+
+- admin - prevent you breaking mine liners - me... on other people's servers. lol
 
 
 - It looks like the following text field is no longer being used, but it should with the placeholders `prison_mines_timeleft_minename` ... looks like it's using the long version.  May want to provide a short and long format?  Long (the current default) may be way too long...
@@ -33,17 +53,9 @@
 - There is a potential error with the class tech.mcprison.prison.util.TextMessage in that all of the messages are using `.withReplacements( "%s" )` but yet none of the text components are using parameters.  So if a parameter is added to any of those, the `%s` could potentially cause errors!?  Need to test and if errors, then remove all of the `.withReplacements()` in that class.
 
 
-- DONE: Sellall enablement - needs to be in module.yml, but must enable it in config.yml?
-  - bug in alpha.12?
 
 
-- DONE: A placeholder in PLAYER that will show the next tag for both default and prestige. - surawesome
-  - but only show next prestige if on last rank in default.  Default will show first rank.
-  - {prison_rankup_linked_rank_tag} <- [p]\\[d]  
-  - {prison_rankup_linked_rank_tag_prestiges} {prison_rankup_linked_rank_tag_default}
-
-
-- Option to skip applying the rank cost multiplier to a specific ladder.
+- DONE: Option to skip applying the rank cost multiplier to a specific ladder.
 
 
 - For v3.3.0 release:
@@ -54,8 +66,8 @@
   - ranks and ladders
     - auto prestiges (unlimited) based upon formulas
     - new file formats - json ORM?
-  - archiving old players
-  - more work on top-n rankings
+  - DONE usind topn: archiving old players
+  - DONE: more work on top-n rankings
   - /mines wguard - worldguard hints for mines (generate scripts to run?) - Use patterns that can be edited
 
 
@@ -89,7 +101,9 @@
 
 - autofeatures BLOCKEVENTS priority - include backpacks on auto sell - Ryankayz
 
-- Top block and top tokens - Phoung Nguyen
+
+- TopN for tokens - Phoung Nguyen
+
 
 - (done ??) auto features autosell - tie to sellall's player toggle - Ryankayz
 
@@ -100,8 +114,10 @@
 
 - Mine Resets - Glass block not being removed - harold
 
-- Archive old players - budderman18
+- DONE?:  Archive old players - budderman18
   - archive all player files to a zip. Remove the originals. If player logs back on, then restore the archives. Prevent startup from adding these players back.
+  - Archiving players in topN - this may address the archive needs.  Part of the issue was related to performance calculations upon startup, which the new topn does address.
+  
 
 - Placeholders - dynamic content - 
   - custom placeholders based upon other primary placeholders?
@@ -232,6 +248,47 @@ https://github.com/Auxilor/EcoEnchants/blob/master/eco-core/core-plugin/src/main
 
 # Completed tasks
 
+. DONE: Use of placeholders in gui mines is not working correctly - PassBl
+ - Trying to use: - '&7Test Cost P1:  &3%prison_rank__player_cost_formatted_p1%'
+ - Using deluxe menus - may not be sending player info with placeholders?
+ - Fixed: complex new calculations for `prison_rank__player_cost` calculations.
+ 
+
+- DONE: Mine Bomb Name and tags not showing color - Thaysa
+  - Works with 1.8.8
+  - Fails with 1.18.2 - colors are fine in GUIs and commands
+  
+
+- DONE: Modified the `/mine blockEvent` commands to auto show the existing rows if only the mine name is entered for the command.  It will show the list of rows, then the user can select it, then continue entering the rest of the command.  There has been a lot of confusion on how to work with the blockEvent rows since it was not obvious they had to first "list" the blockEvents for that mine.
+
+
+- DONE: If prison cannot hook in to the economy, prison should see if CMI is a plugin on the server, then it should try to enable the delayed startup for CMI.  Kind of a forced-auto-enable if CMI is detected.
+
+
+- DONE: Mine bombs - If at rank d and in mine w and I set off a mine bomb, it will not break any blocks, but it will lock them and prevent others at that rank from breaking them. - redonthehead
+ - player should not be able to "lock" blocks 
+ - DONE: Player should not be able to drop a mine bomb in a mine they don't have access to
+ 
+ 
+- DONE: command `/ranks topn` - does not appear to be sorting by prestiges first - redonthehead
+ - Fixed? Force sort when using the command each time.
+ - When player's rankup, should probably force a sort.  
+ - The sorting should be somewhat low cost, since if players are in the same position, it short-circuits the sorting so there is less processing.  Ie.. if nothing is sorted, it's only one quick pass.  If only one player changes, then it's only moving that player.
+ 
+ - DONE: Issue with topn Rank-Score.  When player is at top of default ladder and has not prestiged yet.
+  - Rank-score looks like it's just their money balance?
+  
+
+- DONE: Sellall enablement - needs to be in module.yml, but must enable it in config.yml?
+  - bug in alpha.12?
+
+
+- DONE: A placeholder in PLAYER that will show the next tag for both default and prestige. - surawesome
+  - but only show next prestige if on last rank in default.  Default will show first rank.
+  - {prison_rankup_linked_rank_tag} <- [p]\\[d]  
+  - {prison_rankup_linked_rank_tag_prestiges} {prison_rankup_linked_rank_tag_default}
+
+- DONE: Top block and top tokens - Phoung Nguyen
 
 
 - DONE: When placing a mine, it spams resets while it's setting up the liner and the primary mine.  May be an issue with zero block resets and having zero block counts remaining.  May want to initially set the block counts to something like 1, then after the mine is done being laid out, then reset it.  When it's in "tracer" mode, no blocks exist that can be broken, so a value of 1 cannot be decreased.i

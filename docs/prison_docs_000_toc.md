@@ -328,6 +328,11 @@ Get your prison setup quickly by running the command `/ranks autoCommand` which 
 
 
 
+* [Setting up Mine Bombs](prison_docs_130_Prison_Mine_Bombs.md)	
+    A work in progress: How to use and setup Prison Mine Bombs.
+
+
+
 * [Setting up Backpacks](prison_docs_117_setting_up_backpacks.md)	
     How to enable backpacks.
 
