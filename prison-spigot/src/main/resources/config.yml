@@ -164,7 +164,7 @@ prison-mines:
     enabled: false
     movementMaxDistance: 1.0
     delayInTicks: 20
-    
+  access-to-prior-mines: true
 
 
 # Warning: Do not use the following option. This could break the natural Bukkit 

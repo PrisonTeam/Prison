@@ -267,6 +267,13 @@ public class RankUpCommand
         		return;
         	}
         	
+        	// If force sellall, then perform the sellall here:
+        	if ( Prison.get().getPlatform().getConfigBooleanFalse( "prestige.force-sellall" ) ) {
+        		
+        		Prison.get().getPlatform().sellall( rankPlayer );
+        	}
+        	
+        	
         	// IF everything's ready, this will be true if and only if pRank is not null,
         	// and the prestige method will start
         	canPrestige = true;

@@ -782,6 +782,13 @@ public class RankPlayer
      * it finds a match with the target rank.
      * </p>
      * 
+     * <p>If the setting prison-mines.access-to-prior-mines is true, as found in the
+     * config.yml file, then prior ranks on the target ladder is search if the
+     * current rank is not a match to the targetRank.  Setting this setting to 
+     * false will allow admins to use Mine Access by Rank but only for their 
+     * current rank.
+     * </p>
+     * 
      * @param targetRank
      * @return
      */
@@ -800,13 +807,21 @@ public class RankPlayer
     					rank.getLadder().equals( targetRank.getLadder() ) ) {
     				
     				hasAccess = rank.equals( targetRank );
-    				Rank priorRank = rank.getRankPrior();
-    				
-    				while ( !hasAccess && priorRank != null ) {
+
+    				// If access-to-prior-mines is enabled (defaults to true if does not exist), 
+    				// then search prior ranks on this ladder until a match with target is found.
+    				if ( Prison.get().getPlatform()
+    							.getConfigBooleanTrue( "prison-mines.access-to-prior-mines" ) ) {
     					
-    					hasAccess = priorRank.equals( targetRank );
-    					priorRank = priorRank.getRankPrior();
+    					Rank priorRank = rank.getRankPrior();
+    					
+    					while ( !hasAccess && priorRank != null ) {
+    						
+    						hasAccess = priorRank.equals( targetRank );
+    						priorRank = priorRank.getRankPrior();
+    					}
     				}
+    				
     			}
     		}
     	}

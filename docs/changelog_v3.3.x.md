@@ -15,6 +15,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13 2022-08-27
 
 
+* **Enable access to prior mines, or prevent access to prior mines, based upon the player's rank.**
+See `prison-mines.access-to-prior-mines` in config.yml
+
 
 * **New feature for Prestige: Force a sellall before processing the prestige.**
 This prevents the player from stashing a ton of high-value blocks in their inventory before prestiging.

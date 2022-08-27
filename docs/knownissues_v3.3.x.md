@@ -9,6 +9,7 @@
 
 
 - In the GUI menu, the config setting: Enchantment_effect_current_rank is off by 1.  If D rank it shows E being unlocked. - CITYJD
+- DONE: Force sellall before prestiges - kikiisyourfriend
 
 
 - Add `*all*` to `/mines set notification` - CITYJD
@@ -17,8 +18,10 @@
 - Auto-Forced-Rankups and prestiges when the player has enough money.  Kikiisyourfriend
  - a new autoFeatures entry
  
-- Enable Access to prior mines - kikiisyourfriend
+ 
+- DONE: Enable Access to prior mines - kikiisyourfriend
  - disable to prevent going back to prior rank mines.
+ - See `prison-mines.access-to-prior-mines` in config.yml
 
 
 - DONE: prison_rank__linked_mines_rankname prison_r_lm_rankname provide a placeholder for the mine's tags.  B0mer
