@@ -444,4 +444,7 @@ public interface Platform {
 
 	public void listAllMines(CommandSender sender, Player player);
 
+
+	public void sellall(RankPlayer rankPlayer);
+
 }

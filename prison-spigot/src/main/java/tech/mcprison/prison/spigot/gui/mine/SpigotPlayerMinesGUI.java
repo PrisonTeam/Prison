@@ -128,12 +128,30 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             // Add mineName lore for TP.
             minesLore.addLineLoreAction( "&3" + mineName );
 
+            
+            boolean hasMineAccess = m.hasMiningAccess(spigotPlayer);
+            String permMineAccess = permission + m.getName();
+            boolean hasPermMine = p.hasPermission( permMineAccess );
+            String permAccess = permission.substring(0, permission.length() - 1);
+            boolean hasPerm = p.hasPermission( permAccess );
 
             // If the player has permission to access the mine, then see if there is a custom
             // block set for the mine... otherwise it will use XMaterial.COAL_ORE:
-            if (m.hasMiningAccess(spigotPlayer) || p.hasPermission(permission + m.getName()) ||
-                    p.hasPermission(permission.substring(0, permission.length() - 1))) 
+            if ( hasMineAccess || 
+            		hasPermMine ||
+            		hasPerm ) 
             {
+            	
+            	if ( !hasMineAccess ) {
+            		Output.get().logInfo( 
+            				"GUI Player Mines: Has access to mine %s through perms: %s=%s  OR  %s=%s",
+            				m.getName(), 
+            				permMineAccess, Boolean.toString(hasPermMine),
+            				permAccess, Boolean.toString(hasPerm)
+            				);
+            	}
+            	
+            	
             	// Default to COAL_ORE since the player has access to the mine:
             	xMat = XMaterial.COAL_ORE;
             	

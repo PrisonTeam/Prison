@@ -19,6 +19,7 @@
 package tech.mcprison.prison.spigot;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -121,6 +122,7 @@ import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.placeholder.SpigotPlaceholders;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
 import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.util.ActionBarUtil;
 import tech.mcprison.prison.spigot.util.SpigotYamlFileIO;
@@ -2905,4 +2907,31 @@ public class SpigotPlatform
 	}
 	
 	
+	@Override
+	public void sellall( RankPlayer rankPlayer ) {
+		
+		if ( SpigotPrison.getInstance().isSellAllEnabled() ) {
+			
+			Player player = getPlayer( rankPlayer.getUUID() ).orElse(null);
+			
+			if ( player != null ) {
+				
+				SpigotPlayer sPlayer = (SpigotPlayer) player;
+				
+				final long nanoStart = System.nanoTime();
+				boolean success = SellAllUtil.get().sellAllSell( sPlayer.getWrapper(), 
+						false, false, false, true, true, false);
+				final long nanoStop = System.nanoTime();
+				double milliTime = (nanoStop - nanoStart) / 1000000d;
+				
+				if ( Output.get().isDebug() ) {
+					
+					DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+					Output.get().logDebug( "(SpigotPlatform autosell: " + (success ? "success" : "failed") + 
+							" ms: " + dFmt.format( milliTime ) + ") ");
+				}
+				
+			}
+		}
+	}
 }

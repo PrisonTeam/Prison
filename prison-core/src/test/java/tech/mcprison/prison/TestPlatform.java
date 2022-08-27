@@ -506,4 +506,9 @@ public class TestPlatform implements Platform {
 	public void listAllMines(CommandSender sender, Player player) {
 		
 	}
+	
+	@Override
+	public void sellall( RankPlayer rankPlayer ) {
+		
+	}
 }

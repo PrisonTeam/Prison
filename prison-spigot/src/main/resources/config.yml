@@ -53,6 +53,7 @@ prestige:
   resetDefaultLadder: true
   confirmation-enabled: true
   prestige-confirm-gui: true
+  force-sellall: false
 
 
 
@@ -141,7 +142,6 @@ top-stats:
     hesitancy-delay-penalty: true
 
 
-# NEW: 
 # Prison mines reset gap is the number of milliseconds that are used to 
 # space out the mine resets when starting the server.  This value should 
 # not be changed unless you understand what you are doing. This value

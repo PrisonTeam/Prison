@@ -12,7 +12,13 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13 2022-08-25
+# 3.3.0-alpha.13 2022-08-27
+
+
+
+* **New feature for Prestige: Force a sellall before processing the prestige.**
+This prevents the player from stashing a ton of high-value blocks in their inventory before prestiging.
+This will not prevent the player from stashing blocks elsewhere.
 
 
 **3.3.0-alpha.13 2022-08-25**
