@@ -1053,6 +1053,11 @@ public abstract class MineData
 		this.hasSpawn = hasSpawn;
 	}
 
+	/*
+	 * <p>This is the reset time for the mine, in seconds.
+	 * A value of -1 means no timed resets.  They will have to be done manually.
+	 * </p>
+	 */
 	public int getResetTime() {
 		return resetTime;
 	}

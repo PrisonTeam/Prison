@@ -303,7 +303,7 @@ public class SpigotListener implements Listener {
 			
 		@EventHandler(priority=EventPriority.NORMAL) 
 	    public void onPlayerChat(AsyncPlayerChatEvent e) {
-			String message = e.getMessage();
+//			String message = e.getMessage();
 			String format = e.getFormat();
 			
 			SpigotPlayer p = new SpigotPlayer( e.getPlayer() );

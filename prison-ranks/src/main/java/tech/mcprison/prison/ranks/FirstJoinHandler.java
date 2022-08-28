@@ -21,7 +21,6 @@ import com.google.common.eventbus.Subscribe;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.ranks.data.RankPlayer;
-import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.events.FirstJoinEvent;
 
 /**
@@ -46,17 +45,15 @@ public class FirstJoinHandler
 
     @Subscribe public void onFirstJoin(FirstJoinEvent event) {
         RankPlayer player = event.getPlayer();
+        
+        PrisonRanks.getInstance().getPlayerManager().checkPlayerDefaultRank(player);
 
-        // Try to perform the first join processing to give them the default rank:
-        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
-        rankPlayerFactory.firstJoin( player );
+//        // Try to perform the first join processing to give them the default rank:
+//        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+//        rankPlayerFactory.firstJoin( player );
+//
+//        PrisonRanks.getInstance().getPlayerManager().savePlayer(player);
 
-        PrisonRanks.getInstance().getPlayerManager().savePlayer(player);
-//        try {
-//        } catch (IOException e) {
-//        	
-//        	Output.get().logError( firstJoinErrorCouldNotSavePlayer(), e );
-//        }
     }
 
 }

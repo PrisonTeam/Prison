@@ -114,7 +114,18 @@ public class RankLadderFactory
 	        Double rankCostMultiplier = (Double) document.get( "rankCostMultiplierPerRank" );
 	        rankLadder.setRankCostMultiplierPerRank( rankCostMultiplier == null ? 0 : rankCostMultiplier );
 	        
+			Boolean applyRankCostMultiplierToLadder = (Boolean) document.get( "applyRankCostMultiplierToLadder" );
+			if ( applyRankCostMultiplierToLadder != null ) {
+				
+				rankLadder.setApplyRankCostMultiplierToLadder( applyRankCostMultiplierToLadder );
+			}
+			else {
+				rankLadder.setApplyRankCostMultiplierToLadder( true );
+				isDirty = true;
+			}
 			
+	        
+	        
 //			getPermissions().clear();
 //			Object perms = document.get( "permissions" );
 //			if ( perms != null ) {

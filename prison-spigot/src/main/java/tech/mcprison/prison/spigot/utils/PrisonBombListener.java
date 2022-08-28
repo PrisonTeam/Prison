@@ -8,11 +8,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 import de.tr7zw.nbtapi.NBTItem;
 import tech.mcprison.prison.bombs.MineBombData;
 import tech.mcprison.prison.bombs.MineBombs;
+import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.spigot.block.OnBlockBreakMines;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.util.Location;
@@ -34,10 +37,14 @@ public class PrisonBombListener
 	
 	private PrisonUtilsMineBombs prisonUtilsMineBombs;
 	
+	private OnBlockBreakMines blockBreakMines;
+	
 	public PrisonBombListener( PrisonUtilsMineBombs utilsMineBombs ) {
 		super();
 		
-		prisonUtilsMineBombs = utilsMineBombs;
+		this.prisonUtilsMineBombs = utilsMineBombs;
+		
+		this.blockBreakMines = new OnBlockBreakMines();
 	}
 
     @EventHandler( priority = EventPriority.LOW )
@@ -48,6 +55,7 @@ public class PrisonBombListener
 
         //Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  01 " );
         
+    	
         if ( (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || 
         		event.getAction().equals(Action.RIGHT_CLICK_AIR)) && 
         		event.getItem() != null && event.getItem().getType() != Material.AIR ) {
@@ -61,15 +69,16 @@ public class PrisonBombListener
         	// NOTE: Because we're just checking, do not auto update the itemstack.
         	NBTItem nbtItem = new NBTItem( event.getItem() );
         	
-			if ( Output.get().isDebug() && nbtItem != null ) {
-				Output.get().logInfo( "PrisonBombListener.onInteract ntb: %s", nbtItem.toString() );
-			}
-        	
         	if ( !nbtItem.hasKey( MineBombs.MINE_BOMBS_NBT_BOMB_KEY ) ) {
         		return;
         	}
         	
         	String bombName = nbtItem.getString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY );
+        	
+        	if ( Output.get().isDebug() && nbtItem != null ) {
+        		Output.get().logInfo( "PrisonBombListener.onInteract ntb: %s :: %s", 
+        				bombName, nbtItem.toString() );
+        	}
         	
         	Player player = event.getPlayer();
         	
@@ -101,11 +110,11 @@ public class PrisonBombListener
         	
         	SpigotBlock sBlock = null;
         	
+        	SpigotPlayer sPlayer = new SpigotPlayer( player );
         	
         	// If clicking AIR, then event.getClickedBlock() will be null...
         	// so if null, then use the player's location for placing the bomb.
         	if ( event.getClickedBlock() == null ) {
-        		SpigotPlayer sPlayer = new SpigotPlayer( player );
         		Location loc = sPlayer.getLocation();
         		
         		// Get the block 3 away from the player, in the direction (vector) in which
@@ -117,9 +126,24 @@ public class PrisonBombListener
         	}
         	
         	
+        	Mine mine = blockBreakMines.findMine(player, sBlock, null, null);
+        	if ( mine == null ) {
+        		// player is not in a mine, so do not allow them to trigger a mine bomb:
+        		
+        		event.setCancelled( true );
+        		return;
+        	}
+        	else if ( !mine.hasMiningAccess( sPlayer ) ) {
+        		// Player does not have access to the mine, so don't allow them to trigger a mine bomb:
+        		
+        		event.setCancelled( true );
+        		return;
+        	}
+        	
+        	EquipmentSlot hand = event.getHand();
         	
 //        	Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  02 " );
-        	if ( getPrisonUtilsMineBombs().setBombInHand( player, bomb, sBlock ) ) {
+        	if ( getPrisonUtilsMineBombs().setBombInHand( player, bomb, sBlock, hand ) ) {
         		
         		// The item was a bomb and it was activated.
         		// Cancel the event so the item will not be placed or processed farther.

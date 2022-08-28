@@ -18,6 +18,7 @@
 package tech.mcprison.prison.ranks.managers;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +40,9 @@ import tech.mcprison.prison.store.Document;
  */
 public class LadderManager
 		extends LadderManagerMessages {
+	
+	public static final String LADDER_DEFAULT = "default";
+	public static final String LADDER_PRESTIGES = "prestiges";
 
     /*
      * Fields & Constants
@@ -329,4 +333,40 @@ public class LadderManager
 		return results;
 	}
 
+	
+	public String printRankLadderInfoHeader() {
+		
+        String header = String.format( 
+        		"&d%-12s   %16s   %5s   %-12s   %-12s",
+        		"Ladder",
+        		"Rank Cost Mult",
+        		"Ranks",
+        		"First Rank",
+        		"Last Rank"
+        		);
+        
+        return header;
+	}
+	
+	public String printRankLadderInfoDetail( RankLadder ladder ) {
+		
+		DecimalFormat dFmt = new DecimalFormat( "#,##0.0000" );
+		
+		int rankCount = ladder.getRanks() == null ? 0 : ladder.getRanks().size();
+    	
+    	Rank firstRank = rankCount == 0 ? null : ladder.getRanks().get(0);
+    	Rank lastRank = rankCount == 0 ? null : ladder.getRanks().get( rankCount - 1 );
+    	
+    	String ladderInfo = String.format(
+    			"&7%-12s   %16s   %5d   %-12s   %-12s", 
+    			ladder.getName(),
+    			dFmt.format( ladder.getRankCostMultiplierPerRank() ),
+    			rankCount,
+    			(firstRank == null ? "" : firstRank.getName()),
+    			(lastRank == null ? "" : lastRank.getName())
+    			);
+		
+		return ladderInfo;
+	}
+	
 }

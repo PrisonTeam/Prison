@@ -40,6 +40,7 @@ import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.placeholders.Placeholders;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.Location;
 
@@ -436,5 +437,11 @@ public interface Platform {
 
 
 	public int compareServerVerisonTo( String comparisonVersion );
+	
+	
+	public void checkPlayerDefaultRank( RankPlayer rPlayer );
+
+
+	public void listAllMines(CommandSender sender, Player player);
 
 }

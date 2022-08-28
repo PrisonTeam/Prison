@@ -29,7 +29,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
@@ -868,7 +867,7 @@ public class MinesCommands
     	
     	for ( Mine mine : mines ) {
 
-    		PrisonCommand.printFooter( sb );
+    		Prison.get().getPrisonStatsUtil().printFooter( sb );
     		
     		JumboTextFont.makeJumboFontText( mine.getName(), sb );
     		sb.append( "\n" );
@@ -882,7 +881,7 @@ public class MinesCommands
     		sb.append( chatDisplay.toStringBuilder() );
 		}
 
-    	PrisonCommand.printFooter( sb );
+    	Prison.get().getPrisonStatsUtil().printFooter( sb );
     }
     
     
@@ -1057,7 +1056,7 @@ public class MinesCommands
         		RowComponent row = new RowComponent();
         		double rtMinutes = resetTime / 60.0D;
         		row.addTextComponent( "&3Reset time: &7%s &3Secs (&7%.2f &3Mins)", 
-        				Integer.toString(m.getResetTime()), rtMinutes );
+        				Integer.toString(resetTime), rtMinutes );
         		chatDisplay.addComponent( row );
         	}
         	
@@ -2884,14 +2883,16 @@ public class MinesCommands
     
 
     @Command(identifier = "mines tp", description = "TP to the mine. Will default to the mine's " +
-    		"spawn location if set, but can specify the target [spawn, mine]. OPs and console can " +
+    		"spawn location if set, but can specify the target [spawn, mine]. Instead of a mine " +
+    		"name, 'list' will show all mines you have access to. OPs and console can " +
     		"TP other online players to a specified mine. Access for non-OPs can be setup through " +
     		"'/mines set tpAccessByRank help` is preferred over permissions.", 
     		aliases = "mtp",
     		altPermissions = {"access-by-rank", "mines.tp", "mines.tp.[mineName]"})
     public void mineTp(CommandSender sender,
         @Arg(name = "mineName", def="",
-        		description = "The name of the mine to teleport to.") String mineName,
+        		description = "The name of the mine to teleport to, or 'list' to show all "
+        				+ "mines that you have access to.") String mineName,
         
 		@Arg(name = "player", def = "", description = "Player name to TP - " +
 				"Only console or rank command can include this parameter") String playerName,
@@ -2900,6 +2901,28 @@ public class MinesCommands
 						"the mine. [spawn, mine]")
     			String target
     		) {
+    	
+    	
+    	if ( mineName != null && 
+    			"list".equals( mineName )) {
+    		
+        	Player player = getPlayer( sender, playerName );
+        	
+//        	Player playerAlt = getPlayer( playerName );
+//        	
+//        	if ( playerAlt != null ) {
+//        		player = playerAlt;
+//        	}
+        	
+        	if ( player == null ) {
+        		Output.get().logInfo( "Mine TP List: You must either be a player, or refer to a valid player." );
+        		return;
+        	}
+    		
+        	Prison.get().getPlatform().listAllMines( sender, player );
+        	
+    		return;
+    	}
     	
     	
     	if ( mineName != null && 
@@ -3389,25 +3412,33 @@ public class MinesCommands
 	@Command(identifier = "mines blockEvent remove", description = "Removes a BlockEvent command from a mine.", 
     		onlyPlayers = false, permissions = "mines.set")
     public void blockEventRemove(CommandSender sender, 
-    				@Arg(name = "mineName") String mineName,
-    				@Arg(name = "row") Integer row) {
+    				@Arg(name = "mineName" ) String mineName,
+    				@Arg(name = "row", def = "0") Integer row) {
+		
+		if (!performCheckMineExists(sender, mineName)) {
+			return;
+		}
+		
+		setLastMineReferenced(mineName);
+		
+		PrisonMines pMines = PrisonMines.getInstance();
+		Mine m = pMines.getMine(mineName);
     	
         if ( row == null || row <= 0 ) {
-        	sender.sendMessage( 
-        			String.format("&7Please provide a valid row number greater than zero. " +
+        	
+            ChatDisplay display = new ChatDisplay("BlockEvent Commands for " + m.getTag());
+            display.addText("&8Hover over values for more information and clickable actions.");
+            generateBlockEventListing( m, display, true );
+
+            display.addText( 
+            		"&7Please provide a valid row number greater than zero. " +
         					"Was row=[&b%d&7]",
-        					(row == null ? "null" : row) ));
+        					(row == null ? "null" : row) );
+            
+            display.send(sender);
+            
         	return;        	
         }
-        
-        if (!performCheckMineExists(sender, mineName)) {
-            return;
-        }
-        
-        setLastMineReferenced(mineName);
-        
-        PrisonMines pMines = PrisonMines.getInstance();
-        Mine m = pMines.getMine(mineName);
         
         
         if (m.getBlockEvents() == null || m.getBlockEvents().size() == 0) {
@@ -3448,7 +3479,7 @@ public class MinesCommands
 			"For each block that is broke there will be a chance to run one of these commands. \n" +
 			"To send messages use {msg}, {broadcast}, {actionBar}, or {title} followed by the formatted message. " +
 			"Can use placeholders {player} and {player_uid}. Use ; between multiple commands. \n" +
-			"Example: &7\\Q'token give {player} 1;{msg} &7You got &31 &7token!;tpa a'\\E&3 \n" +
+			"Example: &7\\Q'token give {player} 1;{msg} &7You got &31 &7token!;mtp a'\\E&3 \n" +
 			"This command defaults to no permission and 'sync' task mode; " +
 			"see '/mines blockEvent' for more blockEvent options.", 
     		onlyPlayers = false, permissions = "mines.set", 
@@ -3616,20 +3647,55 @@ public class MinesCommands
     		onlyPlayers = false, permissions = "mines.set")
     public void blockEventPercent(CommandSender sender, 
     			@Arg(name = "mineName") String mineName,
-    			@Arg(name = "row") Integer row,
+    			@Arg(name = "row", def = "0") Integer row,
     			@Arg(name = "percent",
-    					description = "Percent chance between 0.0000 and 100.0") Double chance) {
+    					description = "Percent chance between 0.0000 and 100.0",
+    					def = "100") Double chance) {
     	
         if (!performCheckMineExists(sender, mineName)) {
             return;
         }
+
+        setLastMineReferenced(mineName);
+        
+        PrisonMines pMines = PrisonMines.getInstance();
+//    	MineManager mMan = pMines.getMineManager();
+        Mine m = pMines.getMine(mineName);
+        
         
         if ( row == null || row <= 0 ) {
-        	sender.sendMessage( 
-        			String.format("&7Please provide a valid row number greater than zero. " +
+            ChatDisplay display = new ChatDisplay("BlockEvent Commands for " + m.getTag());
+            display.addText("&8Hover over values for more information and clickable actions.");
+            generateBlockEventListing( m, display, true );
+
+            display.addText( 
+            		"&7Please provide a valid row number greater than zero. " +
         					"Was row=[&b%d&7]",
-        					(row == null ? "null" : row) ));
-        	return;        	
+        					(row == null ? "null" : row) );
+            
+  
+            
+            String commandRoot = String.format( "" +
+    				"/mines blockEvent percent %s", m.getName() );
+            
+            display.addText( "&7Select a BlockEvent by row number to set the percentage" );
+            
+            // try to "suggest" reading this command: 
+            // mines blockEvent percent <mineName> [row] [percent]
+        	FancyMessage msgAddBlock = new FancyMessage( String.format( 
+        									"&7%s [row] [percent]", 
+        										commandRoot ) )
+					.suggest( commandRoot + " [row] [percent]" )
+					.tooltip("Change the percent for the blockEvent - Click to change");
+            
+        	RowComponent rowFancy = new RowComponent();
+        	rowFancy.addFancy( msgAddBlock );
+        	display.addComponent( rowFancy );
+
+            
+            display.send(sender);
+
+            return;        	
         }
         
         if ( chance <= 0d || chance > 100.0d ) {
@@ -3640,12 +3706,6 @@ public class MinesCommands
         	return;
         }
                 
-        setLastMineReferenced(mineName);
-        
-        PrisonMines pMines = PrisonMines.getInstance();
-//    	MineManager mMan = pMines.getMineManager();
-        Mine m = pMines.getMine(mineName);
-        
         if ( row > m.getBlockEvents().size() ) {
         	sender.sendMessage( 
         			String.format("&7Please provide a valid row number no greater than &b%d&7. " +
@@ -3680,9 +3740,9 @@ public class MinesCommands
     		onlyPlayers = false, permissions = "mines.set")
     public void blockEventPermission(CommandSender sender, 
     			@Arg(name = "mineName") String mineName,
-    			@Arg(name = "row") Integer row,
+    			@Arg(name = "row", def = "0") Integer row,
     			@Arg(name = "permission", def = "none",
-    					description = "Optional permission that the player must have, or [none] for no perm." 
+    					description = "Optional permission that the player must have, or [none] for no perm."
     								) String perm
     			) {
     	
@@ -3691,12 +3751,48 @@ public class MinesCommands
             return;
         }
         
+        setLastMineReferenced(mineName);
+        
+        PrisonMines pMines = PrisonMines.getInstance();
+//    	MineManager mMan = pMines.getMineManager();
+        Mine m = pMines.getMine(mineName);
+        
+        
         
         if ( row == null || row <= 0 ) {
-        	sender.sendMessage( 
-        			String.format("&7Please provide a valid row number greater than zero. " +
+
+            ChatDisplay display = new ChatDisplay("BlockEvent Commands for " + m.getTag());
+            display.addText("&8Hover over values for more information and clickable actions.");
+            generateBlockEventListing( m, display, true );
+
+            display.addText( 
+            		"&7Please provide a valid row number greater than zero. " +
         					"Was row=[&b%d&7]",
-        					(row == null ? "null" : row) ));
+        					(row == null ? "null" : row) );
+            
+  
+            
+            String commandRoot = String.format( "" +
+    				"/mines blockEvent permission %s", m.getName() );
+            
+            display.addText( "&7Select a BlockEvent by row number to set the permission" );
+            
+            // try to "suggest" reading this command: 
+            // mines blockEvent permission <mineName> [row] [permission]
+        	FancyMessage msgAddBlock = new FancyMessage( String.format( 
+        									"&7%s [row] [permission]", 
+        										commandRoot ) )
+					.suggest( commandRoot + " [row] [permission]" )
+					.tooltip("Change the permission for the blockEvent - Click to change");
+            
+        	RowComponent rowFancy = new RowComponent();
+        	rowFancy.addFancy( msgAddBlock );
+        	display.addComponent( rowFancy );
+
+            
+        	
+            display.send(sender);
+            
         	return;        	
         }
         
@@ -3704,13 +3800,6 @@ public class MinesCommands
         if ( perm == null || perm.trim().length() == 0 || "none".equalsIgnoreCase( perm ) ) {
         	perm = "";
         }
-        
-        
-        setLastMineReferenced(mineName);
-        
-        PrisonMines pMines = PrisonMines.getInstance();
-//    	MineManager mMan = pMines.getMineManager();
-        Mine m = pMines.getMine(mineName);
         
         if ( row > m.getBlockEvents().size() ) {
         	sender.sendMessage( 
@@ -3751,7 +3840,7 @@ public class MinesCommands
     		onlyPlayers = false, permissions = "mines.set")
     public void blockEventEventType(CommandSender sender, 
     			@Arg(name = "mineName") String mineName,
-    			@Arg(name = "row") Integer row,
+    			@Arg(name = "row", def = "0") Integer row,
     			@Arg(name = "eventType", def = "all",
 					description = "EventType to trigger BlockEvent: " +
 										"[all, blockBreak, PrisonExplosion, PEExplosive, " +
@@ -3764,12 +3853,45 @@ public class MinesCommands
             return;
         }
         
+        setLastMineReferenced(mineName);
+        
+        PrisonMines pMines = PrisonMines.getInstance();
+//    	MineManager mMan = pMines.getMineManager();
+        Mine m = pMines.getMine(mineName);
+        
         
         if ( row == null || row <= 0 ) {
-        	sender.sendMessage( 
-        			String.format("&7Please provide a valid row number greater than zero. " +
+            ChatDisplay display = new ChatDisplay("BlockEvent Commands for " + m.getTag());
+            display.addText("&8Hover over values for more information and clickable actions.");
+            generateBlockEventListing( m, display, true );
+
+            display.addText( 
+            		"&7Please provide a valid row number greater than zero. " +
         					"Was row=[&b%d&7]",
-        					(row == null ? "null" : row) ));
+        					(row == null ? "null" : row) );
+            
+            
+            String commandRoot = String.format( "" +
+    				"/mines blockEvent eventType %s", m.getName() );
+            
+            display.addText( "&7Select a BlockEvent by row number to set the eventType" );
+            
+            // try to "suggest" reading this command: 
+            // mines blockEvent eventType <mineName> [row] [eventType]
+        	FancyMessage msgAddBlock = new FancyMessage( String.format( 
+        									"&7%s [row] [eventType]", 
+        										commandRoot ) )
+					.suggest( commandRoot + " [row] [eventType]" )
+					.tooltip("Change the eventtype for the blockEvent - Click to change");
+            
+        	RowComponent rowFancy = new RowComponent();
+        	rowFancy.addFancy( msgAddBlock );
+        	display.addComponent( rowFancy );
+
+            
+        	
+            display.send(sender);
+            
         	return;        	
         }
         
@@ -3782,12 +3904,6 @@ public class MinesCommands
         					"[%s]",
         					eventType, BlockEventType.getPrimaryEventTypes() ));
         }
-        
-        setLastMineReferenced(mineName);
-        
-        PrisonMines pMines = PrisonMines.getInstance();
-//    	MineManager mMan = pMines.getMineManager();
-        Mine m = pMines.getMine(mineName);
         
         if ( row > m.getBlockEvents().size() ) {
         	sender.sendMessage( 
@@ -3841,7 +3957,7 @@ public class MinesCommands
 			onlyPlayers = false, permissions = "mines.set")
 	public void blockEventTriggered(CommandSender sender, 
 			@Arg(name = "mineName") String mineName,
-			@Arg(name = "row") Integer row,
+			@Arg(name = "row", def = "0") Integer row,
 			@Arg(name = "triggered", def = "none",
 					description = "The enchantment that Triggered the explosion event. Use 'none' to " +
 							"remove it. [none, ...]"
@@ -3853,22 +3969,48 @@ public class MinesCommands
 			return;
 		}
 		
-		
-		if ( row == null || row <= 0 ) {
-			sender.sendMessage( 
-					String.format("&7Please provide a valid row number greater than zero. " +
-							"Was row=[&b%d&7]",
-							(row == null ? "null" : row) ));
-			return;        	
-		}
-		
-		
 		setLastMineReferenced(mineName);
 		
 		PrisonMines pMines = PrisonMines.getInstance();
 //    	MineManager mMan = pMines.getMineManager();
 		Mine m = pMines.getMine(mineName);
 		
+		
+		if ( row == null || row <= 0 ) {
+
+            ChatDisplay display = new ChatDisplay("BlockEvent Commands for " + m.getTag());
+            display.addText("&8Hover over values for more information and clickable actions.");
+            generateBlockEventListing( m, display, true );
+
+            display.addText( 
+            		"&7Please provide a valid row number greater than zero. " +
+        					"Was row=[&b%d&7]",
+        					(row == null ? "null" : row) );
+            
+            
+            String commandRoot = String.format( "" +
+    				"/mines blockEvent triggered %s", m.getName() );
+            
+            display.addText( "&7Select a BlockEvent by row number to set the triggered source" );
+            
+            // try to "suggest" reading this command: 
+            // mines blockEvent triggered <mineName> [row] [triggered]
+        	FancyMessage msgAddBlock = new FancyMessage( String.format( 
+        									"&7%s [row] [triggered]", 
+        										commandRoot ) )
+					.suggest( commandRoot + " [row] [triggered]" )
+					.tooltip("Change the triggered source for the blockEvent - Click to change");
+            
+        	RowComponent rowFancy = new RowComponent();
+        	rowFancy.addFancy( msgAddBlock );
+        	display.addComponent( rowFancy );
+
+            
+            
+            display.send(sender);
+			
+			return;        	
+		}
 
 		
 		if ( row > m.getBlockEvents().size() ) {
@@ -3932,7 +4074,7 @@ public class MinesCommands
     		onlyPlayers = false, permissions = "mines.set")
     public void blockEventJobMode(CommandSender sender, 
     			@Arg(name = "mineName") String mineName,
-    			@Arg(name = "row") Integer row,
+    			@Arg(name = "row", def = "0") Integer row,
     	        @Arg(name = "taskMode", description = "Processing task mode to run the task: " +
     	        		"[inline, inlinePlayer, sync, syncPlayer]",
     					def = "inline") String mode
@@ -3942,12 +4084,45 @@ public class MinesCommands
             return;
         }
         
+        setLastMineReferenced(mineName);
+        
+        PrisonMines pMines = PrisonMines.getInstance();
+//    	MineManager mMan = pMines.getMineManager();
+        Mine m = pMines.getMine(mineName);
+        
         
         if ( row == null || row <= 0 ) {
-        	sender.sendMessage( 
-        			String.format("&7Please provide a valid row number greater than zero. " +
+        	
+            ChatDisplay display = new ChatDisplay("BlockEvent Commands for " + m.getTag());
+            display.addText("&8Hover over values for more information and clickable actions.");
+            generateBlockEventListing( m, display, true );
+
+            display.addText( 
+            		"&7Please provide a valid row number greater than zero. " +
         					"Was row=[&b%d&7]",
-        					(row == null ? "null" : row) ));
+        					(row == null ? "null" : row) );
+            
+            
+            String commandRoot = String.format( "" +
+    				"/mines blockEvent taskMode % ", m.getName() );
+            
+            display.addText( "&7Select a BlockEvent by row number to set the taskMode" );
+            
+            // try to "suggest" reading this command: 
+            // mines blockEvent taskMode <mineName> [row] [taskMode]
+        	FancyMessage msgAddBlock = new FancyMessage( String.format( 
+        									"&7%s [row] [taskMode]", 
+        										commandRoot ) )
+					.suggest( commandRoot + " [row] [taskMode]" )
+					.tooltip("Change the taskMode for the blockEvent - Click to change");
+            
+        	RowComponent rowFancy = new RowComponent();
+        	rowFancy.addFancy( msgAddBlock );
+        	display.addComponent( rowFancy );
+
+            
+            display.send(sender);
+            
         	return;        	
         }
         
@@ -3970,12 +4145,6 @@ public class MinesCommands
 //        	return;
 //        }
         
-        
-        setLastMineReferenced(mineName);
-        
-        PrisonMines pMines = PrisonMines.getInstance();
-//    	MineManager mMan = pMines.getMineManager();
-        Mine m = pMines.getMine(mineName);
         
         if ( row > m.getBlockEvents().size() ) {
         	sender.sendMessage( 
@@ -4043,7 +4212,7 @@ public class MinesCommands
         
         
         String commandRoot = String.format( "" +
-				"/mines blockEvent block add %s ", m.getName() );
+				"/mines blockEvent block add %s", m.getName() );
         
         /// if row is less than 1, then we need to display a list of BlockEvents:
         if ( rowBlockEvent == null || rowBlockEvent <= 0 ) {
@@ -4058,7 +4227,7 @@ public class MinesCommands
             display.addText( "&7Select a BlockEvent by row number to add a block" );
             
             // try to "suggest" reading this command: 
-            // mines blockEvent block add [row] [search} [block]
+            // mines blockEvent block add <mineName> [row] [search} [block]
         	FancyMessage msgAddBlock = new FancyMessage( String.format( 
         									"&7%s [rowBlockEvent] [rowBlockName]", 
         										commandRoot ) )
@@ -4202,7 +4371,7 @@ public class MinesCommands
 
         
         String commandRoot = String.format( "" +
-				"/mines blockEvent block remove %s ", m.getName() );
+				"/mines blockEvent block remove %s", m.getName() );
         
         
         /// if row is less than 1, then we need to display a list of BlockEvents:
@@ -4219,7 +4388,7 @@ public class MinesCommands
             display.addText( "&7Select a BlockEvent by row number to remove a block" );
             
             // try to "suggest" reading this command: 
-            // mines blockEvent block add [row] [search} [block]
+            // mines blockEvent block add <mineName> [row] [search} [block]
         	FancyMessage msgRemoveBlock = new FancyMessage( String.format( 
         									"&7%s [rowBlockEvent] [rowBlockName]", 
         										commandRoot ) )

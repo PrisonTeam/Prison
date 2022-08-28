@@ -339,6 +339,9 @@ public abstract class MineScheduler
 		
 		boolean forced = resetScheduleType == MineResetScheduleType.FORCED;
 		
+		// If not a manual reset, and if the resetTime is -1, which means never reset 
+		// based upon time, then exit and trigger the next action.  This should never
+		// happen, since the task will never advance to this state, but just in case.
 		if ( getResetTime() <= 0 && !forced ) {
 			
 			submitNextAction();
@@ -427,6 +430,8 @@ public abstract class MineScheduler
 //		}
 //		
 		
+		// this may be an issue for disabled resetTimes... may still need to be submitted?
+		// disabled resets may not need to be submitted at all.
 		if ( getResetTime() > 0 ) {
 			
 			submitNextAction();

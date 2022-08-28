@@ -40,14 +40,17 @@ public class SpigotItemStack
 	private void setupBukkitStack( org.bukkit.inventory.ItemStack bukkitStack ) {
 		XMaterial xMat = null;
 		
-		try {
-			xMat = XMaterial.matchXMaterial( bukkitStack );
-		} catch (Exception e) {
+		if ( bukkitStack != null ) {
 			
-			String message = String.format( 
-					"Unsupported ItemStack type: %s",
-					e.getMessage() );
-			throw new PrisonItemStackNotSupportedRuntimeException( message );
+			try {
+				xMat = XMaterial.matchXMaterial( bukkitStack );
+			} catch (Exception e) {
+				
+				String message = String.format( 
+						"Unsupported ItemStack type: %s",
+						e.getMessage() );
+				throw new PrisonItemStackNotSupportedRuntimeException( message );
+			}
 		}
 		
 //		if ( xMat != XMaterial.AIR ) {

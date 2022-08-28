@@ -167,7 +167,7 @@ public class MineBombs
 					int oldVersion = configs.getDataFormatVersion();
 					
 					String backupTag = "ver_" + oldVersion;
-					File backupFile = fio.getBackupFile( configFile, backupTag, "json" );
+					File backupFile = fio.getBackupFile( configFile, backupTag, ".bu" );
 
 					boolean renamed = configFile.renameTo( backupFile );
 					

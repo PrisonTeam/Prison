@@ -33,7 +33,9 @@ import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerFactory;
+import tech.mcprison.prison.ranks.data.TopNPlayers;
 import tech.mcprison.prison.ranks.events.RankUpEvent;
+import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.tasks.PrisonCommandTaskData;
 import tech.mcprison.prison.tasks.PrisonCommandTaskData.CustomPlaceholders;
 
@@ -315,7 +317,7 @@ public class RankUtil
     	
         // If ladderName is null, then assign it the default ladder:
         if ( ladderName == null ) {
-        	ladderName = "default";
+        	ladderName = LadderManager.LADDER_DEFAULT;
         	results.addTransaction(RankupTransactions.assigned_default_ladder);
         } 
     	
@@ -409,7 +411,7 @@ public class RankUtil
         if ( command == RankupCommands.setrank && "-remove-".equalsIgnoreCase( rankName ) ) {
         	results.addTransaction(RankupTransactions.attempting_to_delete_ladder_from_player);
         	
-        	if ("default".equalsIgnoreCase( ladderName ) ) {
+        	if (LadderManager.LADDER_DEFAULT.equalsIgnoreCase( ladderName ) ) {
         		results.addTransaction(RankupTransactions.cannot_delete_default_ladder);
         	}
         	else {
@@ -443,16 +445,34 @@ public class RankUtil
         
 
         // This calculates the target rank, and takes in to consideration the player's existing rank:
-        PlayerRank pRankNext =
-        			originalRank == null ? null :
-        				originalRank.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
+        
+        // Warning the following won't work if the player has no default rank since it will become a 
+        // circular reference:
+//        PlayerRank pRankNext = rankPlayer.getNextPlayerRank();
+
+        PlayerRank pRankNext = null;
+        
+        if ( originalRank == null ) {
+        	Rank nextRank = PrisonRanks.getInstance().getDefaultLadder().getLowestRank().orElse( null );
+        	pRankNext = rankPlayer.createPlayerRank(nextRank);
+        }
+        else {
+        	
+        	pRankNext = rankPlayer.calculateTargetPlayerRank( targetRank );
+        }
+//				        originalRank.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
 //        		new PlayerRank( targetRank, originalRank.getRankMultiplier() );
 		
         // If player does not have a rank on this ladder, then grab the first rank on the ladder since they need
         // to be added to the ladder.
         if ( pRankNext == null ) {
         	
-        	pRankNext = rankPlayerFactory.createPlayerRank( targetRank );
+        	results.addTransaction( RankupStatus.RANKUP_FAILURE_RANK_DOES_NOT_EXIST, 
+        			RankupTransactions.failed_rank_not_in_ladder );
+        	return;
+        	
+        		
+//        	pRankNext = rankPlayerFactory.createPlayerRank( targetRank );
         	
 //        	pRankNext = originalRank.getTargetPlayerRankForPlayer( rankPlayer, ladder.getLowestRank().get() );
         }
@@ -463,7 +483,9 @@ public class RankUtil
         
         
 //        String currency = "";
-        double nextRankCost = pRankNext.getRankCost();
+        double nextRankCost = pRankNext == null || pRankNext.getRankCost() == null ? 
+        				0.0d : pRankNext.getRankCost();
+        
         double currentRankCost = ( results.getPlayerRankOriginal() == null ? 0 : 
         				results.getPlayerRankOriginal().getRankCost() );
         
@@ -700,6 +722,11 @@ public class RankUtil
         rankPlayer.recalculateRankMultipliers();
         
         
+        // Sort the Top ranked list:
+//        rankPlayer.forcePlayerToRecalculateRankScore();
+        TopNPlayers.getInstance().updatePlayerData(rankPlayer);
+        
+        
 //        results.addTransaction( RankupTransactions.fireRankupEvent );
 //        
 //        // Nothing can cancel a RankUpEvent:
@@ -789,7 +816,7 @@ public class RankUtil
         		return targetRank;
         	}
         	 
-        	else if ("default".equalsIgnoreCase( results.getLadder().getName() ) && rankName == null ) {
+        	else if (LadderManager.LADDER_DEFAULT.equalsIgnoreCase( results.getLadder().getName() ) && rankName == null ) {
 	        	Optional<Rank> lowestRank = results.getLadder().getLowestRank();
 	        	if ( lowestRank.isPresent() ) {
 	        		targetRank = lowestRank.get();
@@ -986,7 +1013,8 @@ public class RankUtil
     			(oRank == null || oRank.getCurrency() == null ? "" : " " + oRank.getCurrency()),
     			
     			(tRank == null ? "none" : tRank.getName()), 
-    			(tpRank == null ? "" : " " + dFmt.format( tpRank.getRankCost())), 
+    			(tpRank == null || tpRank.getRankCost() == null ? 
+    								"" : " " + dFmt.format( tpRank.getRankCost())), 
     			(tRank == null || tRank.getCurrency() == null ? "" : " " + tRank.getCurrency()),
 				
 				iFmt.format( results.getElapsedTime() ),

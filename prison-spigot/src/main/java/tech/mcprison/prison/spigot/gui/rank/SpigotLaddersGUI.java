@@ -52,7 +52,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
         LadderManager lm = PrisonRanks.getInstance().getLadderManager();
 
         // If the inventory is empty
-        if (lm.getLadders().size() == 0){
+        if (lm == null || lm.getLadders().size() == 0){
             Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_ladder_empty));
             p.closeInventory();
             return;

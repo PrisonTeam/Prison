@@ -164,12 +164,14 @@ public class RankupResults {
 				getOriginalRank() != null && getOriginalRank().getRankNext() != null &&
 				targetRank != null ) {
 
-			RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+//			RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
 			
-			PlayerRank pRank = rankPlayerFactory.createPlayerRank( getOriginalRank() );
+//			PlayerRank pRank = rankPlayerFactory.createPlayerRank( getOriginalRank() );
 
 	        // This calculates the target rank, and takes in to consideration the player's existing rank:
-			playerRankTarget = pRank.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
+			playerRankTarget = rankPlayer.calculateTargetPlayerRank( targetRank );
+			
+//			playerRankTarget = pRank.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
 //	        playerRankTarget = PlayerRank.getTargetPlayerRankForPlayer( rankPlayer, targetRank );
 			
 //			PlayerRank pRank = rankPlayer.getRank( originalRank.getLadder() );

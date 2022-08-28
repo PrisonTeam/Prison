@@ -206,6 +206,13 @@ prison-mines:
 # any other economy plugins using vault too.  But please do not use this 
 # unless all other options have been exhusted. 
 #
+# NOTE: Due to the high degree of CMI Economies forcing the use of this delayed 
+# start, if delayed start is disabled and if Prison detects that CMI is enabled, 
+# Prison will now force a delayed start with the any vault economy being the
+# target.  This means as long as vault has an active economy, then prison will
+# start.  IF the vault economy is found right away, then no dealy startup will 
+# be submitted, and normal startup will continue right away.
+# 
 # To use the delayed startup:
 # 1. delayedPrisonStartup.enabled: true
 # 2. Optional: cooldown-secs and max-attemps identifies how frequently and how
@@ -246,4 +253,40 @@ prisonCommandHandler:
     mines:
       tp: 
       - mines teleport
+
+
+
+
+#
+# topN Player Settings:
+# 
+# The refresh settings are for an async task that will be running to 
+# provide updates to the topN player stats.  Only online players are 
+# updated. Offline players only have their stats calculated once, then
+# they are ignored for refresh processing.
+#
+# The delay-ticks setting is the delay that prison waits before starting
+# to run the topN refresh for the first time. By default, it's 3 minutes.
+#
+# The interval-ticks is the time between runs, with 5 minutes being the
+# default value.
+#'
+# topNPlayers.refesh.delay-ticks: 600 (30 seconds)
+# topNPlayers.refresh.interval-ticks: 6000 (5 minutes)
+#
+# Archive cutoff-days is the number of days that a player must be inactive
+# on prison before they are moved to the archival vaults.  Any player that
+# has been archived will not be included in the topN calculations. If 
+# a player is archived, then they return, they will become active and 
+# their old stats will apply
+#
+# topNPlayers.archive.cutoff-days: 90 (90 days)
+
+topNPlayers:
+  archive:
+    cutoff-days: 90
+  refresh:
+    delay-ticks: 600
+    interval-ticks: 6000
+
 

@@ -21,6 +21,7 @@ public class SpigotPrisonDelayedStartupTask
 	private long cooldownInTicks;
 	private int maxAttempts;
 	private String targetVaultEconomyName;
+	private boolean useAnyVaultEconomy = false;
 	
 	private final SpigotPrison prison;
 	private Economy econ = null;
@@ -50,7 +51,8 @@ public class SpigotPrisonDelayedStartupTask
 		if ( isVaultEconomyIntegrated() && 
 				econ != null && econ.isEnabled() &&
 				vaultEconomyName != null &&
-						( vaultEconomyName.equalsIgnoreCase( targetVaultEconomyName ) || 
+						( isUseAnyVaultEconomy() ||
+								vaultEconomyName.equalsIgnoreCase( targetVaultEconomyName ) || 
 								isEssentialsEconomy( vaultEconomyName ) && isEssentialsEconomy( targetVaultEconomyName )
 								)
 				 ) {
@@ -58,8 +60,9 @@ public class SpigotPrisonDelayedStartupTask
 			// It's enabled now, so don't submit, just go ahead and startup prison:
 			
 			Output.get().logInfo( 
-					String.format( "&7Prison Delayed Enablement: &3A Vault economy is available. " +
-							"Skipping delayed start. Starting Prison now." ));
+					String.format( "&7Prison Delayed Enablement: &3A Vault economy is available: %s. " +
+							"Skipping delayed start. Starting Prison now.",
+							vaultEconomyName ));
 			
 			prison.onEnableStartup();
 			
@@ -180,6 +183,14 @@ public class SpigotPrisonDelayedStartupTask
 				prison.onEnableFail();
 			}
 		}
+	}
+
+
+	public boolean isUseAnyVaultEconomy() {
+		return useAnyVaultEconomy;
+	}
+	public void setUseAnyVaultEconomy(boolean useAnyVaultEconomy) {
+		this.useAnyVaultEconomy = useAnyVaultEconomy;
 	}
 
 }

@@ -552,7 +552,7 @@ public class PrisonUtilsMineBombsTasks
 				if ( tagName.contains( "{name}" ) ) {
 					tagName = tagName.replace( "{name}", bomb.getName() );
 				}
-				this.tagName = Text.convertToAmpColorCodes( tagName );
+				this.tagName = Text.translateAmpColorCodes( tagName );
 				
 				//updateArmorStandCustomName();
 				armorStand.setCustomName( this.tagName );

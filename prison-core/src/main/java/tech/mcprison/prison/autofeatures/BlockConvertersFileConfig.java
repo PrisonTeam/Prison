@@ -20,6 +20,9 @@ public class BlockConvertersFileConfig
 	private transient File configFile;
 	
 	private TreeMap<BlockConverterTypes, TreeMap<String, BlockConverter>> blockConverters;
+	
+	private TreeMap<String, Boolean> processAutoFeaturesAllBlocks = null;
+	
 
 	public enum BlockConverterTypes {
 		aSample01,
@@ -34,6 +37,18 @@ public class BlockConvertersFileConfig
 		
 		this.blockConverters = new TreeMap<>();
 		
+		this.processAutoFeaturesAllBlocks = new TreeMap<>();
+		
+	}
+	
+	public boolean processAutoFeaturesForBlock( RankPlayer player, String blockName ) {
+		boolean results = isProcessAutoFeaturesAllBlocks( player );
+		
+		if ( !results ) {
+			
+		}
+
+		return results;
 	}
 
 	public BlockConverterResults getBlockConverterItemStacks( RankPlayer player, 
@@ -48,30 +63,37 @@ public class BlockConvertersFileConfig
 			
 			if ( bc != null && blockQuantity >= bc.getKeyQuantity() ) {
 				
-				// getBlockConverterOutputs applies chance, perms, etc...
-				List<BlockConverterOutput> outputs = getBlockConverterOutputs( player, bc );
-				
 				int multiplier = blockQuantity / bc.getKeyQuantity();
 				
-				results.setResultsQuantityConsumed( bc.getKeyQuantity() * multiplier );
-				
-				for (BlockConverterOutput output : outputs) {
+				// Make sure there is enough of a quantity match, which must be 1 or more.
+				if ( multiplier >= 1 ) {
+
+					results.setBlockConverter( bc );
 					
-					String blkName = output.getBlockName();
-					int blkQuanity = output.getQuantity();
+					// getBlockConverterOutputs applies chance, perms, etc...
+					List<BlockConverterOutput> outputs = getBlockConverterOutputs( player, bc );
 					
-					PrisonBlock pBlock = Prison.get().getPlatform().getPrisonBlock( blkName );
-					if ( pBlock != null ) {
+					results.setResultsQuantityConsumed( bc.getKeyQuantity() * multiplier );
+					
+					for (BlockConverterOutput output : outputs) {
 						
-						ItemStack pItemStack = pBlock.getItemStack( blkQuanity );
+						String blkName = output.getBlockName();
+						int blkQuanity = output.getQuantity();
 						
-						if ( pItemStack != null ) {
-							results.getResultsItemStack().add( pItemStack );
+						PrisonBlock pBlock = Prison.get().getPlatform().getPrisonBlock( blkName );
+						if ( pBlock != null ) {
+							
+							ItemStack pItemStack = pBlock.getItemStack( blkQuanity );
+							
+							if ( pItemStack != null ) {
+								results.getResultsItemStack().add( pItemStack );
+							}
 						}
 					}
+					
+					results.setResultsSuccess( true );
 				}
 				
-				results.setResultsSuccess( true );
 			}
 		}
 		
@@ -247,5 +269,35 @@ public class BlockConvertersFileConfig
 	public void setBlockConverters(TreeMap<BlockConverterTypes, TreeMap<String, BlockConverter>> blockConverters) {
 		this.blockConverters = blockConverters;
 	}
+
+	/**
+	 * <p>This function will take a player, and check if that player should have the ability to process all
+	 * blocks under auto features.  This is the "global" setting that bypasses checking individual block types.
+	 * </p>
+	 * 
+	 * <p>If the auto features settings `options.autoFeatures.isAutoFeaturesEnabled: false` is 
+	 * disabled (set to false), then this will apply to the normal drops if 
+	 * `options.normalDrop.handleNormalDropsEvents: true' is enabled (set to true).
+	 * If both of those are set to disabled, then no blocks will be processed.
+	 * </p> 
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public Boolean isProcessAutoFeaturesAllBlocks( RankPlayer player ) {
+		
+		if ( !processAutoFeaturesAllBlocks.containsKey( player.getName() ) ) {
+			BlockConverterResults allBlocksBCR = getBlockConverterItemStacks( player, "*all*", 1, BlockConverterTypes.autoPickupFeatures );
+			
+			BlockConverter allBlocks = allBlocksBCR.getBlockConverter();
+
+			boolean playerAllBlocks = ( allBlocks != null && allBlocks.isEnabled() );
+			
+			processAutoFeaturesAllBlocks.put( player.getName(), playerAllBlocks );
+		}
+		
+		return processAutoFeaturesAllBlocks.get( player.getName() );
+	}
+
 
 }

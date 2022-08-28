@@ -8,6 +8,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.placeholders.PlaceholderManager;
+import tech.mcprison.prison.util.ChatColor;
 
 public class PlaceHolderAPIIntegrationUppercaseWrapper 
 	extends PlaceholderExpansion 
@@ -86,6 +87,6 @@ public class PlaceHolderAPIIntegrationUppercaseWrapper
 									.placeholderTranslate( playerUuid, player.getName(), identifier );
 
 		
-		return results;
+		return ChatColor.translateAlternateColorCodes( '&', results);
 	}
 }

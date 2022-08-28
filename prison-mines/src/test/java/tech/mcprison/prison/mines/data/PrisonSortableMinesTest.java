@@ -8,6 +8,7 @@ import java.util.TreeSet;
 
 import org.junit.Test;
 
+@SuppressWarnings("deprecation")
 public class PrisonSortableMinesTest
 		extends PrisonSortableMines
 {

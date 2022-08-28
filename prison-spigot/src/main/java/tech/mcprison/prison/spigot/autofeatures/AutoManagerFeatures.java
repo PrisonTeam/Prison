@@ -544,20 +544,25 @@ public abstract class AutoManagerFeatures
 			
 			long nanoTime = 0L;
 			
+			boolean isSellallEnabled = SpigotPrison.getInstance().isSellAllEnabled();
+			
+			// This is true if the player cannot toggle the autosell, and it's
+			// true if they can, and the have it enabled:
+			boolean isPlayerAutosellEnabled = isSellallEnabled &&
+					SellAllUtil.get() != null && 
+					SellAllUtil.get().checkIfPlayerAutosellIsActive( 
+							pmEvent.getSpigotPlayer().getWrapper() ) 
+					;
+			
+			
 			for ( SpigotItemStack itemStack : drops ) {
 				
 				count += itemStack.getAmount();
 				
-	
-				// This is true if the player cannot toggle the autosell, and it's
-				// true if they can, and the have it enabled:
-				boolean isPlayerAutosellEnabled = SellAllUtil.get() != null && 
-						SellAllUtil.get().checkIfPlayerAutosellIsActive( 
-								pmEvent.getSpigotPlayer().getWrapper() ) 
-						;
 						
 				// Try to autosell if enabled:
-				if ( Prison.get().getPlatform().getConfigBooleanFalse( "sellall" ) &&
+				if ( isSellallEnabled &&
+						
 						(isBoolean(AutoFeatures.isAutoSellPerBlockBreakEnabled) &&
 								isPlayerAutosellEnabled || 
 						pmEvent.isForceAutoSell() || 
@@ -597,7 +602,7 @@ public abstract class AutoManagerFeatures
 				// it will have an amount of more than 0.
 				if ( itemStack.getAmount() > 0 ) {
 					
-					if ( Output.get().isDebug() && Prison.get().getPlatform().getConfigBooleanFalse( "sellall" ) ) {
+					if ( Output.get().isDebug() && isSellallEnabled ) {
 						
 						// Just get the calculated value for the drops... do not sell:
 						double amount = SellAllUtil.get().getSellMoney( player, itemStack );
@@ -996,7 +1001,8 @@ public abstract class AutoManagerFeatures
 				 player.getInventory().firstEmpty() == -1
 				)) {
 			
-			if ( Prison.get().getPlatform().getConfigBooleanFalse( "sellall" ) ) {
+//			if ( SpigotPrison.getInstance().isSellAllEnabled() ) 
+			{
 				
 				
 				SellAllUtil sellAllUtil = SellAllUtil.get();

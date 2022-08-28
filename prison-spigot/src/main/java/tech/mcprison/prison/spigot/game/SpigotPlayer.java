@@ -32,6 +32,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import tech.mcprison.prison.autofeatures.PlayerMessaging.MessageType;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.cache.PlayerCachePlayerData;
+import tech.mcprison.prison.file.JsonFileIO;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.inventory.Inventory;
@@ -64,6 +65,26 @@ public class SpigotPlayer
         this.bukkitPlayer = bukkitPlayer;
     }
 
+    /**
+     * <p>This constructs a player file named based upon the UUID followed 
+     * by the player's name.  This format is used so it's easier to identify
+     * the correct player.
+     * </p>
+     * 
+     * <p>The format should be UUID-PlayerName.json.  The UUID is a shortened 
+     * format, which should still produce a unique id.  The name, when read, 
+     * is based upon the UUID and not the player's name, which may change.
+     * This format includes the player's name to make it easier to identify
+     * who's record is whom's.
+     * </p>
+     * 
+     * @return
+     */
+    public String getPlayerFileName() {
+    	
+    	return JsonFileIO.getPlayerFileName( this );
+    }
+    
     @Override 
     public UUID getUUID() {
         return bukkitPlayer.getUniqueId();

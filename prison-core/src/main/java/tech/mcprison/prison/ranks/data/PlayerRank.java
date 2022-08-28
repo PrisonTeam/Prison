@@ -51,7 +51,15 @@ public class PlayerRank
 	
 	protected void setRankCost( double rankMultiplier ) {
 		
-		this.rankCost = rank.getCost() * (1.0 + rankMultiplier);
+		boolean applyMultiplier = rank.getLadder().isApplyRankCostMultiplierToLadder();
+		
+		if ( applyMultiplier ) {
+			
+			this.rankCost = rank.getCost() * (1.0 + rankMultiplier);
+		}
+		else {
+			this.rankCost = rank.getCost();
+		}
 	}
 	
 	public double getLadderBasedRankMultiplier() {
@@ -108,72 +116,81 @@ public class PlayerRank
 //	}
 
 	
-	public PlayerRank getTargetPlayerRankForPlayer( RankPlayer player, Rank targetRank ) {
-		return getTargetPlayerRankForPlayer( this, player, targetRank );
-	}
+//	public PlayerRank getTargetPlayerRankForPlayer( RankPlayer player, Rank targetRank ) {
+//		return getTargetPlayerRankForPlayer( this, player, targetRank );
+//	}
 	
-	public PlayerRank getTargetPlayerRankForPlayer( PlayerRank playerRank, RankPlayer player, Rank targetRank )
-	{
-		PlayerRank targetPlayerRank = null;
+//	public PlayerRank getTargetPlayerRankForPlayer( PlayerRank playerRank, RankPlayer player, Rank targetRank )
+//	{
+//		PlayerRank targetPlayerRank = null;
+//	
+//		if ( targetRank != null )
+//		{
+//			
+//			double targetRankMultiplier = playerRank.getLadderBasedRankMultiplier( targetRank );
+//	
+//			
+//			PlayerRank pRankForPLayer = player.getLadderRanks().get( targetRank.getLadder() );
+//			
+//	//		PlayerRank pRankForPLayer = getRank( player, targetRank.getLadder() );
+//			double existingRankMultiplier = pRankForPLayer == null ? 0
+//					: playerRank.getLadderBasedRankMultiplier( pRankForPLayer.getRank() );
+//	
+//			// Get the player's total rankMultiplier from the default ladder
+//			// because they will always have a rank there:
+//			RankLadder defaultLadder = getDefaultLadder( player );
+//			
+//			PlayerRank pRank = player.getLadderRanks().get( defaultLadder );
+////			PlayerRank pRank = getRank( player, "default" );
+//			double playerMultipler = pRank == null ? 0 : pRank.getRankMultiplier();
+//	
+//			// So the actual rank multiplier that needs to be used, is based upon
+//			// the
+//			// Player's current multiplier PLUS the multiplier for the target rank
+//			// AND MINUS the multiplier for the current rank the player has within
+//			// the
+//			// target rank's ladder.
+//			double rankMultiplier = playerMultipler + targetRankMultiplier - existingRankMultiplier;
+//	
+//			targetPlayerRank = createPlayerRank( targetRank, rankMultiplier );
+//		}
+//	
+//		return targetPlayerRank;
+//	}
 	
-		if ( targetRank != null )
-		{
 	
-			double targetRankMultiplier = playerRank.getLadderBasedRankMultiplier( targetRank );
-	
-			
-			PlayerRank pRankForPLayer = player.getLadderRanks().get( targetRank.getLadder() );
-			
-	//		PlayerRank pRankForPLayer = getRank( player, targetRank.getLadder() );
-			double existingRankMultiplier = pRankForPLayer == null ? 0
-					: playerRank.getLadderBasedRankMultiplier( pRankForPLayer.getRank() );
-	
-			// Get the player's total rankMultiplier from the default ladder
-			// because they will always have a rank there:
-			RankLadder defaultLadder = getDefaultLadder( player );
-			
-			PlayerRank pRank = player.getLadderRanks().get( defaultLadder );
-//			PlayerRank pRank = getRank( player, "default" );
-			double playerMultipler = pRank == null ? 0 : pRank.getRankMultiplier();
-	
-			// So the actual rank multiplier that needs to be used, is based upon
-			// the
-			// Player's current multiplier PLUS the multiplier for the target rank
-			// AND MINUS the multiplier for the current rank the player has within
-			// the
-			// target rank's ladder.
-			double rankMultiplier = playerMultipler + targetRankMultiplier - existingRankMultiplier;
-	
-			targetPlayerRank = createPlayerRank( targetRank, rankMultiplier );
-		}
-	
-		return targetPlayerRank;
-	}
-	
-	private RankLadder getDefaultLadder( RankPlayer player )
-	{
-		RankLadder defaultLadder = null;
-		
-		for ( RankLadder ladder : player.getLadderRanks().keySet() )
-		{
-			if ( ladder.getName().equalsIgnoreCase( "default" ) ) {
-				defaultLadder = ladder;
-			}
-		}
-		
-		return defaultLadder;
-	}
+//	private RankLadder getDefaultLadder( RankPlayer player )
+//	{
+//		return player.getPlayerRankDefault().getRank().getLadder();
+////		RankLadder defaultLadder = null;
+////		
+////		for ( RankLadder ladder : player.getLadderRanks().keySet() )
+////		{
+////			if ( ladder.getName().equalsIgnoreCase( "default" ) ) {
+////				defaultLadder = ladder;
+////			}
+////		}
+////		
+////		return defaultLadder;
+//	}
 
-	private PlayerRank createPlayerRank( Rank rank, double rankMultiplier ) {
-		PlayerRank results = new PlayerRank( rank, rankMultiplier );
-		
-		return results;
-	}
+//	private PlayerRank createPlayerRank( Rank rank, double rankMultiplier ) {
+//		PlayerRank results = new PlayerRank( rank, rankMultiplier );
+//		
+//		return results;
+//	}
 
 	public Rank getRank() {
 		return rank;
 	}
 
+	public String getCurrency() {
+		
+		String currency = getRank() == null ? "" : getRank().getCurrency();
+		
+		return currency;
+	}
+	
 	public Double getRankMultiplier() {
 		return rankMultiplier;
 	}

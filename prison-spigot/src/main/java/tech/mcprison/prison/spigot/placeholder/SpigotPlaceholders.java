@@ -470,6 +470,7 @@ public class SpigotPlaceholders
 				
 				PlaceholderIdentifier identifier = new PlaceholderIdentifier( placeholder );
 				identifier.setPlayer(playerUuid, playerName);
+				identifier.setPlaceholderKey(placeHolderKey);
 				
 				
 				String value = processPlaceholderHavePlaceholderKey( identifier );

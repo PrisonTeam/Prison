@@ -183,12 +183,14 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             
             for (String stringValue : mineLore) {
             	
-            	double volume = m.getBounds().getArea();
+            	double volume = ( m.isVirtual() ? 0 : m.getBounds().getTotalBlockCount() );
             	double remaining = volume * m.getPercentRemainingBlockCount() / 100.0;
+            	
+            	String dimensions = ( m.isVirtual() ? "virtual" : m.getBounds().getDimensions() );
             	
             	stringValue = stringValue.replace( "{mineName}", mineName );
             	stringValue = stringValue.replace( "{mineTag}", mineTag );
-            	stringValue = stringValue.replace( "{mineSize}", m.getBounds().getDimensions() );
+            	stringValue = stringValue.replace( "{mineSize}", dimensions );
             	stringValue = stringValue.replace( "{mineVolume}", iFmt.format( volume ));
             	stringValue = stringValue.replace( "{mineRemaining}", iFmt.format( remaining ));
             	stringValue = stringValue.replace( "{mineRemainingPercent}", iFmt.format( m.getPercentRemainingBlockCount() ));

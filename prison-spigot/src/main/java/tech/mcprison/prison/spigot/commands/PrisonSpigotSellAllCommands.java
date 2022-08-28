@@ -2,7 +2,6 @@ package tech.mcprison.prison.spigot.commands;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -44,7 +43,8 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
      * Check if SellAll's enabled.
      * */
     public static boolean isEnabled(){
-        return SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true");
+    	
+    	return SpigotPrison.getInstance().isSellAllEnabled();
     }
 
     /**

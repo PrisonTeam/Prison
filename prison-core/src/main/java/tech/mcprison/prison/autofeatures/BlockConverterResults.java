@@ -10,6 +10,8 @@ public class BlockConverterResults {
 	private String sourceBlockName;
 	private int sourceBlockQuantity;
 	
+	private BlockConverter blockConverter;
+	
 	// Results:
 	private boolean resultsSuccess;
 	
@@ -21,6 +23,8 @@ public class BlockConverterResults {
 		
 		this.sourceBlockName = blockName;
 		this.sourceBlockQuantity = blockQuanty;
+		
+		this.blockConverter = null;
 		
 		this.resultsSuccess = false;
 		this.resultsItemStack = new ArrayList<>();
@@ -39,6 +43,13 @@ public class BlockConverterResults {
 	}
 	public void setSourceBlockQuantity(int sourceBlockQuantity) {
 		this.sourceBlockQuantity = sourceBlockQuantity;
+	}
+
+	public BlockConverter getBlockConverter() {
+		return blockConverter;
+	}
+	public void setBlockConverter(BlockConverter blockConverter) {
+		this.blockConverter = blockConverter;
 	}
 
 	public boolean isResultsSuccess() {

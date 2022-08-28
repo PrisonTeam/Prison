@@ -51,8 +51,8 @@ import tech.mcprison.prison.util.ChatColor;
 
 public class CommandHandler {
 
-	public static final String COMMAND_PRIMARY_ROOT_COMMAND = "prison";
-	public static final String COMMAND_FALLBACK_PREFIX = "prison";
+//	public static final String COMMAND_PRIMARY_ROOT_COMMAND = "prison";
+//	public static final String COMMAND_FALLBACK_PREFIX = "prison";
 	public static final String COMMAND_HELP_TEXT = "help";
 
 	
@@ -95,6 +95,10 @@ public class CommandHandler {
       registerArgumentHandler(Player.class, new PlayerArgumentHandler());
       registerArgumentHandler(World.class, new WorldArgumentHandler());
       registerArgumentHandler(PrisonBlock.class, new BlockArgumentHandler());
+      
+      
+      Output.get().logInfo( "&3Root command: &7/%s   &3fallback-prefix: &7%s",
+      		DefaultSettings.COMMAND_PRIMARY_ROOT_COMMAND, DefaultSettings.COMMAND_FALLBACK_PREFIX );
   }
 
 	   
@@ -269,7 +273,7 @@ public class CommandHandler {
                 }
             }
             
-            if ( command.getLabel().equalsIgnoreCase( COMMAND_PRIMARY_ROOT_COMMAND ) && 
+            if ( command.getLabel().equalsIgnoreCase( DefaultSettings.COMMAND_PRIMARY_ROOT_COMMAND ) && 
             									rootCommands.size() > 1 ) {
             	
             	ArrayList<String> rootCommandsMessages = buildHelpRootCommands();

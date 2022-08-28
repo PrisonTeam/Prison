@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.ValueNode.NodeType;
@@ -981,4 +982,80 @@ public class AutoFeaturesFileConfig {
 		this.config = config;
 	}
 
+
+
+	public TreeMap<String, String> getBstatsDetails() {
+		TreeMap<String, String> tm = new TreeMap<>();
+		
+		bStatsDetailBoolean( AutoFeatures.isAutoFeaturesEnabled, tm );
+		
+		if ( isFeatureBoolean( AutoFeatures.isAutoFeaturesEnabled )) {
+			
+			bStatsDetailBoolean( AutoFeatures.cancelAllBlockBreakEvents, tm );
+			
+			bStatsDetailBoolean( AutoFeatures.cancelAllBlockEventBlockDrops, tm );
+			bStatsDetailBoolean( AutoFeatures.applyBlockBreaksThroughSyncTask, tm );
+
+			
+			bStatsDetailPriority( AutoFeatures.blockBreakEventPriority, tm );
+			bStatsDetailPriority( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority, tm );
+			bStatsDetailPriority( AutoFeatures.TokenEnchantBlockExplodeEventPriority, tm );
+			bStatsDetailPriority( AutoFeatures.CrazyEnchantsBlastUseEventPriority, tm );
+			bStatsDetailPriority( AutoFeatures.ZenchantmentsBlockShredEventPriority, tm );
+			bStatsDetailPriority( AutoFeatures.PrisonEnchantsExplosiveEventPriority, tm );
+
+			
+			bStatsDetailBoolean( AutoFeatures.isCalculateFoodExhustion, tm );
+			bStatsDetailBoolean( AutoFeatures.isCalculateXPEnabled, tm );
+			bStatsDetailBoolean( AutoFeatures.givePlayerXPAsOrbDrops, tm );
+			
+			bStatsDetailBoolean( AutoFeatures.isAutoSellPerBlockBreakEnabled, tm );
+			bStatsDetailBoolean( AutoFeatures.isAutoSellIfInventoryIsFull, tm );
+			bStatsDetailBoolean( AutoFeatures.dropItemsIfInventoryIsFull, tm );
+			
+			
+			bStatsDetailBoolean( AutoFeatures.isAutoFeaturesEnabled, tm );
+			if ( isFeatureBoolean( AutoFeatures.isAutoFeaturesEnabled ) ) {
+				
+				bStatsDetailBoolean( AutoFeatures.autoPickupEnabled, tm );
+				bStatsDetailBoolean( AutoFeatures.autoSmeltEnabled, tm );
+				bStatsDetailBoolean( AutoFeatures.autoBlockEnabled, tm );
+			}
+
+			bStatsDetailBoolean( AutoFeatures.handleNormalDropsEvents, tm );
+			if ( isFeatureBoolean( AutoFeatures.handleNormalDropsEvents ) ) {
+				
+				bStatsDetailBoolean( AutoFeatures.normalDropSmelt, tm );
+				bStatsDetailBoolean( AutoFeatures.normalDropBlock, tm );
+			}
+
+			
+			
+			bStatsDetailBoolean( AutoFeatures.tokensEnabled, tm );
+
+			bStatsDetailBoolean( AutoFeatures.isCalculateDurabilityEnabled, tm );
+			bStatsDetailBoolean( AutoFeatures.isPreventToolBreakage, tm );
+			bStatsDetailBoolean( AutoFeatures.isCalculateFortuneEnabled, tm );
+			bStatsDetailBoolean( AutoFeatures.isExtendBukkitFortuneCalculationsEnabled, tm );
+			bStatsDetailBoolean( AutoFeatures.isCalculateAltFortuneEnabled, tm );
+			bStatsDetailBoolean( AutoFeatures.isCalculateAltFortuneOnAllBlocksEnabled, tm );
+			
+		}
+		
+		return tm;
+	}
+	
+	private void bStatsDetailBoolean( AutoFeatures af, TreeMap<String, String> tm ) {
+		tm.put( af.name(), Boolean.toString( isFeatureBoolean( af )) );
+	}
+
+	private void bStatsDetailPriority( AutoFeatures af, TreeMap<String, String> tm ) {
+		
+		String priority = getFeatureMessage( af );
+		if ( !"DISABLED".equalsIgnoreCase( priority ) ) {
+			
+			tm.put( af.name(), priority );
+		}
+	}
+	
 }

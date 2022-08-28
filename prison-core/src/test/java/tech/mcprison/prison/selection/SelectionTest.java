@@ -21,6 +21,8 @@ package tech.mcprison.prison.selection;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -47,7 +49,7 @@ public class SelectionTest {
     @Before public void setUp() throws Exception {
     	TestPlatform testPlatform = new TestPlatform(temporaryFolder.newFolder("test"), false);
         Prison.get()
-        		.init(testPlatform, "1.12.X-test.1");
+        		.init(testPlatform, "1.12.X-test.1", new File("plugins/Prison"));
     }
 
     @Test public void testSelection() throws Exception {

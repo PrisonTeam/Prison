@@ -12,7 +12,9 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.FirstJoinHandlerMessages;
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.commands.RankUpCommand;
 import tech.mcprison.prison.ranks.events.FirstJoinEvent;
+import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.store.Document;
 import tech.mcprison.prison.util.ConversionUtil;
 
@@ -103,7 +105,8 @@ public class RankPlayerFactory
      * the default ladder.  If not, then it will add them.  
      * </p>
      * 
-     * <p>This is safe to run on anyone, even if they already are on the default ladder.
+     * <p>This is safe to run on anyone, even if they already are on the default ladder 
+     * since it will skip processing for them.
      * </p>
      * 
      * <p>Note, this will not save the player's new rank.  The save function must be
@@ -119,9 +122,15 @@ public class RankPlayerFactory
     		Optional<Rank> firstRank = defaultLadder.getLowestRank();
     		
     		if ( firstRank.isPresent() ) {
-    			Rank rank = firstRank.get();
+    			Rank defaultRank = firstRank.get();
     			
-    			rankPlayer.addRank( rank );
+    			
+    			RankUpCommand rankupCommands = PrisonRanks.getInstance().getRankManager().getRankupCommands();
+    			
+    			rankupCommands.setPlayerRankFirstJoin( rankPlayer, defaultRank );
+    			
+    			
+//    			rankPlayer.addRank( defaultRank );
     			
     			Prison.get().getEventBus().post(new FirstJoinEvent( rankPlayer ));
     			
@@ -146,12 +155,12 @@ public class RankPlayerFactory
      */
     public boolean removeLadder( RankPlayer rankPlayer, String ladderName ) {
     	boolean results = false;
-        if ( !ladderName.equalsIgnoreCase("default") ) {
+        if ( !ladderName.equalsIgnoreCase(LadderManager.LADDER_DEFAULT) ) {
         	Integer id = rankPlayer.getRanksRefs().remove(ladderName);
         	results = (id != null);
         	
         	RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
-        	if ( ladder != null && !ladder.getName().equalsIgnoreCase( "default" ) ) {
+        	if ( ladder != null && !ladder.getName().equalsIgnoreCase( LadderManager.LADDER_DEFAULT ) ) {
         		rankPlayer.getLadderRanks().remove( ladder );
         	}
         }
@@ -253,6 +262,15 @@ public class RankPlayerFactory
 //    }
 
     
+    /**
+     * <p>This function is used when setting up a RankPlayer after loading from the 
+     * file system.  This takes the magic numbers that are used for ranks/ladders and
+     * finds the correct matches, which results in actual Rank objects.  These ranks are
+     * then saved within the RankPlayer object for each player.
+     * </p>
+     * 
+     * @param rankPlayer
+     */
     public void setupLadderRanks( RankPlayer rankPlayer ) {
     	
     	if ( rankPlayer.getLadderRanks().isEmpty() && !rankPlayer.getRanksRefs().isEmpty() ) {
@@ -270,7 +288,8 @@ public class RankPlayerFactory
     	        	for ( Rank rank : ladder.getRanks() ) {
     	        		if ( rank.getId() == rankId ) {
     	        			
-    	        			PlayerRank pRank = createPlayerRank( rank );
+    	        			PlayerRank pRank = rankPlayer.calculateTargetPlayerRank( rank );
+//    	        			PlayerRank pRank = createPlayerRank( rank );
     	        			rankPlayer.getLadderRanks().put( ladder, pRank );
     	        			
     	        			break;
@@ -279,7 +298,7 @@ public class RankPlayerFactory
     			}
     		}
     		
-    		// Need to recalculate all rank multipliers:
+    		// Need to recalculate all rank multipliers: This may be redundant.
     		rankPlayer.recalculateRankMultipliers();
     	}
 
@@ -307,6 +326,19 @@ public class RankPlayerFactory
     }
     
     
+    /**
+     * <p>This function will create a PlayerRank without a player.  This is to be 
+     * used only with caution and where a player cannot be created, such as 
+     * a command to list generic PlayerRanks.
+     * </p>
+     * 
+     * <p>This is only used in one location: 
+     * tech.mcprison.prison.ranks.commands.RanksCommands.rankInfoDetails(CommandSender, Rank, String)
+     * </p>
+     * 
+     * @param rank
+     * @return
+     */
     public PlayerRank createPlayerRank( Rank rank ) {
     	PlayerRank results = new PlayerRank( rank );
     	
@@ -317,37 +349,37 @@ public class RankPlayerFactory
     	return results;
     }
     
-    private PlayerRank createPlayerRank( Rank rank, double rankMultiplier ) {
-    	PlayerRank results = new PlayerRank( rank, rankMultiplier );
-    	
-    	return results;
-    }
+//    private PlayerRank createPlayerRank( Rank rank, double rankMultiplier ) {
+//    	PlayerRank results = new PlayerRank( rank, rankMultiplier );
+//    	
+//    	return results;
+//    }
     
 	public PlayerRank getTargetPlayerRankForPlayer( PlayerRank playerRank, 
 						RankPlayer player, Rank targetRank ) {
-		PlayerRank targetPlayerRank = null;
+		PlayerRank targetPlayerRank = player.calculateTargetPlayerRank( targetRank );
 		
-		if ( targetRank != null ) {
-			
-			double targetRankMultiplier = playerRank.getLadderBasedRankMultiplier( targetRank );
-			
-			PlayerRank pRankForPLayer = getRank( player, targetRank.getLadder() );
-			double existingRankMultiplier = pRankForPLayer == null ? 0 : 
-							playerRank.getLadderBasedRankMultiplier( pRankForPLayer.getRank() );
-			
-			// Get the player's total rankMultiplier from the default ladder 
-			// because they will always have a rank there:
-			PlayerRank pRank = getRank( player, "default" );
-			double playerMultipler = pRank == null ? 0 : pRank.getRankMultiplier();
-			
-			// So the actual rank multiplier that needs to be used, is based upon the 
-			// Player's current multiplier PLUS the multiplier for the target rank 
-			// AND MINUS the multiplier for the current rank the player has within the 
-			// target rank's ladder.
-			double rankMultiplier = playerMultipler + targetRankMultiplier - existingRankMultiplier;
-			
-			targetPlayerRank = createPlayerRank( targetRank, rankMultiplier );
-		}
+//		if ( targetRank != null ) {
+//			
+//			double targetRankMultiplier = playerRank.getLadderBasedRankMultiplier( targetRank );
+//			
+//			PlayerRank pRankForPLayer = getRank( player, targetRank.getLadder() );
+//			double existingRankMultiplier = pRankForPLayer == null ? 0 : 
+//							playerRank.getLadderBasedRankMultiplier( pRankForPLayer.getRank() );
+//			
+//			// Get the player's total rankMultiplier from the default ladder 
+//			// because they will always have a rank there:
+//			PlayerRank pRank = getRank( player, LadderManager.LADDER_DEFAULT );
+//			double playerMultipler = pRank == null ? 0 : pRank.getRankMultiplier();
+//			
+//			// So the actual rank multiplier that needs to be used, is based upon the 
+//			// Player's current multiplier PLUS the multiplier for the target rank 
+//			// AND MINUS the multiplier for the current rank the player has within the 
+//			// target rank's ladder.
+//			double rankMultiplier = playerMultipler + targetRankMultiplier - existingRankMultiplier;
+//			
+//			targetPlayerRank = createPlayerRank( targetRank, rankMultiplier );
+//		}
 		
 		return targetPlayerRank;
 	}

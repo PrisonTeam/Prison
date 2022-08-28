@@ -53,7 +53,7 @@ public class RankLadder
 
     
     private double rankCostMultiplierPerRank = 0.0d;
-    
+    private boolean applyRankCostMultiplierToLadder = true;
     
     private boolean dirty = false;
 
@@ -65,6 +65,7 @@ public class RankLadder
     	
     	this.ranks = new ArrayList<>();
     	
+    	this.applyRankCostMultiplierToLadder = true;
     }
     
     public RankLadder( int id, String name ) {
@@ -241,6 +242,8 @@ public class RankLadder
         
         
         ret.put( "rankCostMultiplierPerRank", getRankCostMultiplierPerRank() );
+        
+        ret.put( "applyRankCostMultiplierToLadder", isApplyRankCostMultiplierToLadder() );
         
 //        ret.put("maxPrestige", this.maxPrestige);
         
@@ -531,6 +534,13 @@ public class RankLadder
 	}
 	public void setRankCostMultiplierPerRank( double rankCostMultiplierPerRank ) {
 		this.rankCostMultiplierPerRank = rankCostMultiplierPerRank;
+	}
+
+	public boolean isApplyRankCostMultiplierToLadder() {
+		return applyRankCostMultiplierToLadder;
+	}
+	public void setApplyRankCostMultiplierToLadder(boolean applyRankCostMultiplierToLadder) {
+		this.applyRankCostMultiplierToLadder = applyRankCostMultiplierToLadder;
 	}
 
 	public boolean isDirty() {

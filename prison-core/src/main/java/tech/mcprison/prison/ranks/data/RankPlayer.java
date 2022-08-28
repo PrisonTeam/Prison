@@ -30,6 +30,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.cache.PlayerCachePlayerData;
+import tech.mcprison.prison.file.JsonFileIO;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.integration.EconomyIntegration;
 import tech.mcprison.prison.internal.ItemStack;
@@ -53,8 +54,9 @@ public class RankPlayer
 
 	public static final long DELAY_THREE_SECONDS = 20 * 3; // 3 seconds in ticks
 	
-	public static final long RANK_SCORE_COOLDOWN_MS = 1000 * 30; // 30 seconds
-	public static final double RANK_SCORE_BALANCE_THRESHOLD_PERCENT = 0.05d; // 5%
+	// The cooldown time for when the rank score will be recalculated
+//	public static final long RANK_SCORE_COOLDOWN_MS = 1000 * 60 * 5; // 5 minutes
+//	public static final double RANK_SCORE_BALANCE_THRESHOLD_PERCENT = 0.05d; // 5%
 	
 		
     /*
@@ -88,7 +90,7 @@ public class RankPlayer
     private Object unsavedBalanceLock = new Object();
     private int ubTaskId = 0;
     
-    private HashMap<String, EconomyIntegration> economyCustom = new HashMap<>();;
+//    private HashMap<String, EconomyIntegration> economyCustom = new HashMap<>();;
     
     
     
@@ -99,12 +101,13 @@ public class RankPlayer
      * be a recalculation of the score.
      * </p>
      */
-    private double rankScoreBalance = 0;
-    private String rankScoreCurrency = null;
-    private double rankScoreBalanceThreshold = 0;
 	private double rankScore = 0;
 	private double rankScorePenalty = 0;
-	private long rankScoreCooldown = 0L;
+    private double rankScoreBalance = 0;
+    private String rankScoreCurrency = null;
+	
+//    private double rankScoreBalanceThreshold = 0;
+//	private long rankScoreCooldown = 0L;
     
 
     public RankPlayer() {
@@ -131,6 +134,20 @@ public class RankPlayer
     	
     	checkName( playerName );
     }
+    
+//    public RankPlayer clone() {
+//    	RankPlayer clone = new RankPlayer( getUUID() );
+//    	
+//    	clone.setBalance( getBalance() );
+//    	
+//    	Set<RankLadder> keys = getLadderRanks().keySet();
+//    	for (RankLadder key : keys) {
+//			
+//    		clone.ladderRanks.put( key, getLadderRanks().get( key ) );
+//		}
+//    	
+//    	return clone;
+//    }
 
 //    @SuppressWarnings( "unchecked" )
 //	public RankPlayer(Document document) {
@@ -200,6 +217,28 @@ public class RankPlayer
     	return getName() + " " + getRanks();
     }
     
+    
+    /**
+     * <p>This constructs a player file named based upon the UUID followed 
+     * by the player's name.  This format is used so it's easier to identify
+     * the correct player.
+     * </p>
+     * 
+     * <p>The format should be UUID-PlayerName.json.  The UUID is a shortened 
+     * format, which should still produce a unique id.  The name, when read, 
+     * is based upon the UUID and not the player's name, which may change.
+     * This format includes the player's name to make it easier to identify
+     * who's record is whom's.
+     * </p>
+     * 
+     * @return
+     */
+    public String getPlayerFileName() {
+    	
+    	return JsonFileIO.getPlayerFileName( this );
+    }
+    
+	
     public String getRanks() {
     	StringBuilder sb  = new StringBuilder();
     	
@@ -374,7 +413,7 @@ public class RankPlayer
 
         ranksRefs.put(ladderName, rank.getId());
         
-        PlayerRank pRank = new PlayerRank( rank );
+        PlayerRank pRank = createPlayerRank( rank );
         
         ladderRanks.put( rank.getLadder(), pRank );
         
@@ -385,15 +424,55 @@ public class RankPlayer
         // Calculate and apply the rank multipliers:
         recalculateRankMultipliers();
     }
+    
+    /**
+     * <p>This does not update the RankPlayer with the passed rank or the generated PlayerRank.
+     * This only crates a new PlayerRank object without setting the multiplier.
+     * </p>
+     * 
+     * @param rank
+     * @return
+     */
+    public PlayerRank createPlayerRank( Rank rank ) {
+    	PlayerRank pRank = new PlayerRank( rank, 1.0 );
+    	
+    	return pRank;
+    }
 
+    /**
+     * <p>This will calculate the total multipliers and set that multiplier
+     * on all of the player's current ranks.  This is for their 
+     * actual ranks and ladders.
+     * </p>
+     * 
+     */
     public void recalculateRankMultipliers() {
+    	
+    	recalculateRankMultipliers( getLadderRanks() );
+
+    }
+
+    /**
+     * <p>This function will use a **targetLadderRanks** TreeMap and will
+     * calculate it's total multipliers for the ranks and ladders that are
+     * within this TreeMap.
+     * </p>
+     * 
+     * <p>This can be used to calculate the cost of a given target rank, based
+     * upon just changing that target rank's ladder entry to the target rank.
+     * </p>
+     * 
+     * @param targetLadderRanks
+     */
+    public void recalculateRankMultipliers( 
+    				TreeMap<RankLadder, PlayerRank> targetLadderRanks ) {
     	double multiplier = 0;
     	
     	// First gather and calculate the multipliers:
-    	Set<RankLadder> keys = ladderRanks.keySet();
+    	Set<RankLadder> keys = targetLadderRanks.keySet();
     	for ( RankLadder rankLadder : keys )
 		{
-    		PlayerRank pRank = ladderRanks.get( rankLadder );
+    		PlayerRank pRank = targetLadderRanks.get( rankLadder );
     		
     		double rankMultiplier = pRank.getLadderBasedRankMultiplier();
     		multiplier += rankMultiplier;
@@ -402,12 +481,64 @@ public class RankPlayer
     	// We now have the multipliers, so apply them to all ranks:
     	for ( RankLadder rankLadder : keys )
 		{
-    		PlayerRank pRank = ladderRanks.get( rankLadder );
+    		PlayerRank pRank = targetLadderRanks.get( rankLadder );
 			
     		pRank.applyMultiplier( multiplier );
 //    		pRank.setRankCost( pRank.getRank().getCost() * (1.0 + multiplier) );
 		}
+    }
+    
+    
+    /**
+     * <p>This function will taken any rank, on any ladder, and will 
+     * properly calculate it's multiplier (which is based upon all ladders
+     * and the ranks within those ladders, and the targetRank's rank cost.
+     * </p>
+     * 
+     * <p>This is the ONLY valid way to calculate target rank costs for a player.
+     * </p>
+     * 
+     * @param targetRank
+     * @return
+     */
+    public PlayerRank calculateTargetPlayerRank( Rank targetRank ) {
+    	PlayerRank targetPlayerRank = null;
+
+    	// Can only process if the target rank is not null and it has a ladder:
+    	if ( targetRank != null && targetRank.getLadder() != null ) {
+
+    		// Need to get the targetRank's ladder.  Not all ranks have ladders.
+    		RankLadder targetLadder = targetRank.getLadder();
+
+    		// Create a new PlayerRank object for this target rank. 
+    		// Ignore rank cost multipliers since that will be applied later.
+    		targetPlayerRank = new PlayerRank( targetRank );
+    		
+    		// Create a new temp targetLadderRanks TreeMap:
+    		TreeMap<RankLadder, PlayerRank> targetLadderRanks = new TreeMap<>();
+    				
+    		// Copy the player's actual ladderRanks to the targetLadderRanks:
+    		Set<RankLadder> keys = getLadderRanks().keySet();
+    		for (RankLadder key : keys) {
+    			PlayerRank pRank = getLadderRanks().get( key );
+    			
+    			targetLadderRanks.put( key, pRank );
+    		}		
     	
+    		// Now add our targetPlayerRank to the targetLadderRanks:
+    		targetLadderRanks.put( targetLadder, targetPlayerRank );
+    		
+    		
+    		// Now recalculate all multipliers and the rank costs for the targetPlayerRank:
+    		recalculateRankMultipliers( targetLadderRanks );
+
+    	}
+    	
+    	// The targetPlayerRank now has the correct total multiplier from all 
+    	// ladders, and it's Rank Cost is based upon those multipliers and if
+    	// the ladder should apply the multipliers or not:
+		
+    	return targetPlayerRank;
     }
     
     /**
@@ -598,6 +729,44 @@ public class RankPlayer
 		return getPlayerRank( "prestiges" );
 	}
     
+	/**
+	 * <p>Always return the default rank's position.
+	 * This has a value of >= 0 and <= the highest rank's position on the 
+	 * default ladder.  Rank positions are zero based.
+	 * </p>
+	 * 
+	 * <p>Since all players must have a default rank, this can never
+	 * return a value of negative one.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public int getRankPositonDefault() {
+
+		int pos = getPlayerRankDefault().getRank().getPosition();
+		return pos;
+	}
+	
+	/**
+	 * <p>This returns the rank position for the prestiges ladder, with
+	 * a value of negative one if the player does not have a prestige rank.
+	 * This has a value of >= -1 and <= the highest rank position on the
+	 * prestiges ladder. Rank positions are zero based.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public int getRankPositonPrestiges() {
+		PlayerRank rankPres = getPlayerRankPrestiges();
+		
+		int pos = rankPres == null ? 
+					-1 :
+					rankPres.getRank().getPosition();
+		
+		return pos;
+	}
+	
+	
     public HashMap<String, Integer> getRanksRefs(){
 		return ranksRefs ;
 	}
@@ -1245,15 +1414,32 @@ public class RankPlayer
 		return false;
 	}
 	
-	/**
-	 * <p>Calculates the rankScore for the player's rank on the default ladder.
-	 * The calculation is based upon how much the next rank costs.
-	 * </p>
-	 * 
-	 */
-	private void calculateRankScore() {
+	public PlayerRank getNextPlayerRank() {
 		PlayerRank rankCurrent = getPlayerRankDefault();
-
+		
+		// If player does not have a default rank, then assign them one:
+		if ( rankCurrent == null ) {
+			Prison.get().getPlatform().checkPlayerDefaultRank( this );
+			
+			rankCurrent = getPlayerRankDefault();
+		}
+		
+		if ( rankCurrent == null ) {
+			Output.get().logError(  
+					String.format(
+							"ERROR Player has no default ladder rank: %s  A player should never be without a " + 
+							"rank on the default ladder. Something corrupted prison.  Contact prison support. " + 
+							"Make sure you do not manually modify any of the config files, which can lead to corruption. ",
+							getName()
+							));
+			Output.get().logError(  
+					String.format(
+							"NOTE: Restarting the server could allow prison to repair players that are corrupted. " +
+							"Please try restarting the server to see if that fixes the problem before contacting " +
+							"prison's support team.  Thanks!"
+								));
+		}
+		
 		Rank nRank = rankCurrent.getRank().getRankNext();
 		
 		// If player does not have a next rank, then try to use the next prestige rank:
@@ -1273,21 +1459,103 @@ public class RankPlayer
 			
 		}
 		
-		String rankNextCurrency = nRank == null ? "" : nRank.getCurrency();
+		PlayerRank pRankNext = calculateTargetPlayerRank( nRank );
+//		PlayerRank pRankNext = rankCurrent.getTargetPlayerRankForPlayer( this, nRank );
+
+		return pRankNext;
+	}
+	
+	/**
+	 * <p>Calculates the rankScore for the player's rank on the default ladder.
+	 * The calculation is based upon how much the next rank costs.
+	 * </p>
+	 * 
+	 */
+	public void calculateRankScore() {
+
+		PlayerRank pRankNext = getNextPlayerRank();
 		
-		PlayerRank pRankNext = rankCurrent.getTargetPlayerRankForPlayer( this, nRank );
+		String rankNextCurrency = pRankNext == null ? "" : pRankNext.getCurrency();
 		
 		double cost = pRankNext == null ? 0d : pRankNext.getRankCost();
+		
 		double balance = getBalance( rankNextCurrency );
 		
-		double score = balance;
+//		RankPlayerBalance cachedBalance = getCachedRankPlayerBalance( rankNextCurrency, true );
+//		
+//		double balance = cachedBalance.getBalance();
+		
+		calculateRankScore( rankNextCurrency, cost, balance );
+
+		
+//		PlayerRank rankCurrent = getPlayerRankDefault();
+		
+//		Rank nRank = rankCurrent.getRank().getRankNext();
+//		
+//		// If player does not have a next rank, then try to use the next prestige rank:
+//		if ( nRank == null ) {
+//			PlayerRank prestigeRankCurrent = getPlayerRankPrestiges();
+//			
+//			// if they don't have a current prestige rank, then use the lowest rank:
+//			if ( prestigeRankCurrent == null ) {
+//				RankLadder rLadder = getRankLadder( RankLadder.PRESTIGES );
+//				nRank = rLadder == null ? null : rLadder.getLowestRank().orElse(null);
+//			}
+//			
+//			if ( prestigeRankCurrent != null ) {
+//				nRank = prestigeRankCurrent.getRank() == null ? 
+//						null : prestigeRankCurrent.getRank().getRankNext();
+//			}
+//			
+//		}
+//		
+//		
+//		PlayerRank pRankNext = rankCurrent.getTargetPlayerRankForPlayer( this, nRank );
+		
+//		String rankNextCurrency = nRank == null ? "" : nRank.getCurrency();
+//		double balance = getBalance( rankNextCurrency );
+		
+		
+//		double balance = getBalance( rankNextCurrency );
+//		double score = balance;
+//		double penalty = 0d;
+//		
+//		// Do not apply the penalty if cost is zero:
+//		if ( cost > 0 && isHesitancyDelayPenaltyEnabled() ) {
+//			score = balance > cost ? cost : score;
+//			
+//			double excess = balance > cost ? balance - cost : 0d;
+//			penalty = excess * 0.2d;
+//		}
+//		
+//		score = (score - penalty);
+//		
+//		if ( cost > 0 ) {
+//			score /= cost * 100.0d;
+//		}
+//		
+////		double balanceThreshold = cost * RANK_SCORE_BALANCE_THRESHOLD_PERCENT;
+//		
+////		setRankScoreBalance( balance );
+////		setRankScoreCurrency( rankNextCurrency );
+////		setRankScoreBalanceThreshold( balanceThreshold );
+//		setRankScore( score );
+//		setRankScorePenalty( penalty );
+//		
+////		setRankScoreCooldown( System.currentTimeMillis() + RANK_SCORE_COOLDOWN_MS );
+	}
+
+	private void calculateRankScore( String currency, double cost, double playerBalance ) {
+		
+		double score = playerBalance;
+		
 		double penalty = 0d;
 		
 		// Do not apply the penalty if cost is zero:
 		if ( cost > 0 && isHesitancyDelayPenaltyEnabled() ) {
-			score = balance > cost ? cost : score;
+			score = playerBalance > cost ? cost : playerBalance;
 			
-			double excess = balance > cost ? balance - cost : 0d;
+			double excess = playerBalance > cost ? playerBalance - cost : 0d;
 			penalty = excess * 0.2d;
 		}
 		
@@ -1297,39 +1565,47 @@ public class RankPlayer
 			score /= cost * 100.0d;
 		}
 		
-		double balanceThreshold = cost * RANK_SCORE_BALANCE_THRESHOLD_PERCENT;
-		
-		setRankScoreBalance( balance );
-		setRankScoreCurrency( rankNextCurrency );
-		setRankScoreBalanceThreshold( balanceThreshold );
 		setRankScore( score );
 		setRankScorePenalty( penalty );
-		
-		setRankScoreCooldown( System.currentTimeMillis() + RANK_SCORE_COOLDOWN_MS );
+		setRankScoreBalance( playerBalance );
+		setRankScoreCurrency( currency );
 	}
-
-	private void checkRecalculateRankScore() {
-		
-		if ( getRankScoreCooldown() == 0L || 
-			System.currentTimeMillis() > getRankScoreCooldown() 
-				) {
-			
-			double currentBalance = getBalance( getRankScoreCurrency() );
-			
-			if ( getRankScoreBalance() != 0 && (
-					currentBalance == getRankScoreBalance() ||
-					currentBalance >= (getRankScoreBalance() - getRankScoreBalanceThreshold()) ||
-					currentBalance <= (getRankScoreBalance() + getRankScoreBalanceThreshold() ) )) {
-				
-				// increment the cooldown since the balance is either the same, or still
-				// within the threshold range:
-				setRankScoreCooldown( System.currentTimeMillis() + RANK_SCORE_COOLDOWN_MS );
-			}
-			else {
-				calculateRankScore();
-			}
-		}
-	}
+	
+//	private void checkRecalculateRankScore() {
+//		
+//		calculateRankScore();
+//		
+////		if ( getRankScoreCooldown() == 0L || 
+////			System.currentTimeMillis() > getRankScoreCooldown() 
+////				) {
+////			
+////			double currentBalance = getBalance( getRankScoreCurrency() );
+////			
+////			if ( getRankScoreBalance() != 0 && (
+////					currentBalance == getRankScoreBalance() ||
+////					currentBalance >= (getRankScoreBalance() - getRankScoreBalanceThreshold()) ||
+////					currentBalance <= (getRankScoreBalance() + getRankScoreBalanceThreshold() ) )) {
+////				
+////				// increment the cooldown since the balance is either the same, or still
+////				// within the threshold range:
+////				setRankScoreCooldown( System.currentTimeMillis() + RANK_SCORE_COOLDOWN_MS );
+////			}
+////			else {
+////				calculateRankScore( currentBalance );
+////			}
+////		}
+//	}
+	
+//	/**
+//	 * <p>By setting rankScoreCooldown to zero, it will force that player to have it's 
+//	 * rank score to be recalculated.  The most expensive part is getting the player's 
+//	 * balance from Vault.
+//	 * </p>
+//	 * 
+//	 */
+//	public void forcePlayerToRecalculateRankScore() {
+//		rankScoreCooldown = 0L;
+//	}
 	
 	public static String printRankScoreLine1Header() {
 		String header = String.format(
@@ -1358,7 +1634,7 @@ public class RankPlayer
 		String prestRankTagNc = Text.stripColor(prestRankTag);
 		String defRankTagNc = Text.stripColor(defRankTag);
 		
-		String balanceStr = PlaceholdersUtil.formattedKmbtSISize( getBalance(), dFmt, " " );
+		String balanceStr = PlaceholdersUtil.formattedKmbtSISize( getRankScoreBalance(), dFmt, " " );
 		String sPenaltyStr = PlaceholdersUtil.formattedKmbtSISize( getRankScorePenalty(), dFmt, " " );
 		
 		String message = String.format(
@@ -1404,7 +1680,7 @@ public class RankPlayer
 		String prestRankTagNc = Text.stripColor(prestRankTag);
 		String defRankTagNc = Text.stripColor(defRankTag);
 		
-		String balanceStr = PlaceholdersUtil.formattedKmbtSISize( getBalance(), dFmt, " " );
+		String balanceStr = PlaceholdersUtil.formattedKmbtSISize( getRankScoreBalance(), dFmt, " " );
 //		String sPenaltyStr = PlaceholdersUtil.formattedKmbtSISize( getRankScorePenalty(), dFmt, " " );
 		
 		String ranks = prestRankTagNc + defRankTagNc;
@@ -1443,16 +1719,17 @@ public class RankPlayer
 		this.rankScoreCurrency = rankScoreCurrency;
 	}
 
-	public double getRankScoreBalanceThreshold() {
-		return rankScoreBalanceThreshold;
-	}
-	public void setRankScoreBalanceThreshold( double rankScoreBalanceThreshold ) {
-		this.rankScoreBalanceThreshold = rankScoreBalanceThreshold;
-	}
+//	public double getRankScoreBalanceThreshold() {
+//		return rankScoreBalanceThreshold;
+//	}
+//	public void setRankScoreBalanceThreshold( double rankScoreBalanceThreshold ) {
+//		this.rankScoreBalanceThreshold = rankScoreBalanceThreshold;
+//	}
+	
 	public double getRankScore() {
 		
 		// check if the rankScore needs to be reset:
-		checkRecalculateRankScore();
+//		checkRecalculateRankScore();
 		
 		return rankScore;
 	}
@@ -1467,10 +1744,10 @@ public class RankPlayer
 		this.rankScorePenalty = rankScorePenalty;
 	}
 
-	public long getRankScoreCooldown() {
-		return rankScoreCooldown;
-	}
-	public void setRankScoreCooldown( long rankScoreCooldown ) {
-		this.rankScoreCooldown = rankScoreCooldown;
-	}
+//	public long getRankScoreCooldown() {
+//		return rankScoreCooldown;
+//	}
+//	public void setRankScoreCooldown( long rankScoreCooldown ) {
+//		this.rankScoreCooldown = rankScoreCooldown;
+//	}
 }

@@ -8,6 +8,8 @@ import java.util.TreeSet;
 
 import org.junit.Test;
 
+import tech.mcprison.prison.ranks.managers.LadderManager;
+
 public class PrisonSortableLaddersTest
 		extends PrisonSortableLadders
 {
@@ -16,9 +18,9 @@ public class PrisonSortableLaddersTest
 	public void testGetSortedSet()
 	{
 		RankLadder ladderDefault = new RankLadder();
-		ladderDefault.setName( "default" );
+		ladderDefault.setName( LadderManager.LADDER_DEFAULT );
 		RankLadder ladderPrestige = new RankLadder();
-		ladderPrestige.setName( "prestige" );
+		ladderPrestige.setName( LadderManager.LADDER_PRESTIGES );
 		
 		RankLadder ladderMods = new RankLadder();
 		ladderMods.setName( "mods" );
@@ -41,7 +43,7 @@ public class PrisonSortableLaddersTest
 
 		assertEquals( "ZaPpS", unsortedList.get( 0 ).getName() );
 		assertEquals( "Donors", unsortedList.get( 1 ).getName() );
-		assertEquals( "prestige", unsortedList.get( 2 ).getName() );
+		assertEquals( "prestiges", unsortedList.get( 2 ).getName() );
 		assertEquals( "mods", unsortedList.get( 3 ).getName() );
 		assertEquals( "Animals", unsortedList.get( 4 ).getName() );
 		assertEquals( "default", unsortedList.get( 5 ).getName() );
@@ -62,7 +64,7 @@ public class PrisonSortableLaddersTest
 		assertEquals( "Donors", sortedList.get( 2 ).getName() );
 		assertEquals( "mods", sortedList.get( 3 ).getName() );
 		assertEquals( "ZaPpS", sortedList.get( 4 ).getName() );
-		assertEquals( "prestige", sortedList.get( 5 ).getName() );
+		assertEquals( "prestiges", sortedList.get( 5 ).getName() );
 		
 		
 	}

@@ -54,6 +54,14 @@ public class TextMessage
 				.localize();
 	}
 	
+	protected static String coreOutputUnitPrefixSpacer() {
+		return Prison.get().getLocaleManager()
+				.getLocalizable( "core_text__time_units_prefix_spacer" )
+				.withReplacements( "%s" )
+				.setFailSilently()
+				.localize();
+	}
+	
 	protected static String coreOutputTextTimeUnitsSingularMsg() {
 		return Prison.get().getLocaleManager()
 				.getLocalizable( "core_text__time_units_singular" )

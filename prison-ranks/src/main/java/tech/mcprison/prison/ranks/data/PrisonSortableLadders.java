@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.sorting.PrisonSorter;
 
 public class PrisonSortableLadders
@@ -26,10 +27,10 @@ public class PrisonSortableLadders
 			else if ( l2 == null ) {
 				results = 1;
 			}
-			else if ( "default".equalsIgnoreCase( l1.getName() ) ) {
+			else if ( LadderManager.LADDER_DEFAULT.equalsIgnoreCase( l1.getName() ) ) {
 				results = -999999;
 			} 
-			else if ( "prestige".equalsIgnoreCase( l1.getName() )) {
+			else if ( LadderManager.LADDER_PRESTIGES.equalsIgnoreCase( l1.getName() )) {
 				results = 999999;
 			} 
 			else {

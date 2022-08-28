@@ -86,57 +86,6 @@ public class SpigotWorld implements World {
     	}
     	
     	return getBlockAtLocation.getBlockAt(location, containsCustomBlocks, this);
-    	
-//    	SpigotBlock sBlock = null;
-//    	
-//    	if ( location != null ) {
-//    		
-//    		org.bukkit.Location bLocation = getBukkitLocation( location );
-//    		org.bukkit.block.Block bBlock = bukkitWorld.getBlockAt( bLocation );
-//    		
-//    		
-//    		sBlock = SpigotCompatibility.getInstance().getSpigotBlock( bBlock );
-//    		
-//    		if ( sBlock == null ) {
-//    			
-//    			sBlock = new SpigotBlock( bBlock, PrisonBlock.AIR.clone() );
-//    		}
-//    		
-//    		
-//    		if ( containsCustomBlocks ) {
-//    			
-//    			List<CustomBlockIntegration> cbIntegrations = 
-//    					PrisonAPI.getIntegrationManager().getCustomBlockIntegrations();
-//    			
-//    			for ( CustomBlockIntegration customBlock : cbIntegrations )
-//    			{
-//    				PrisonBlock pBlock = customBlock.getCustomBlock( sBlock );
-//    				
-//    				if ( pBlock != null ) {
-//    					
-//    					//if ( Output.get().isDebug() ) 
-////    					{
-////    						
-////    						String message = String.format( 
-////    								"SpigotWorld.getBlockAt: customBlock: %s  " +
-////    								"spigot: %s  bukkit: %s",
-////    								pBlock.getBlockName(), sBlock.getBlockName(), 
-////    								bBlock.getType().name() );
-////    						
-////    						Output.get().logInfo( message );
-////    					}
-//    					
-//    					sBlock.setBlockName( pBlock.getBlockName() );
-//    					sBlock.setBlockType( customBlock.getBlockType() );
-//    					break;
-//    				}
-//    			}
-//    		}
-//    		
-//    		
-//    	}
-//        
-//        return sBlock;
     }
     
     public Block getBlockAt( Location location ) {
@@ -209,73 +158,6 @@ public class SpigotWorld implements World {
 			setBlockSync = new SpigotBlockSetSynchronously();
 		}
 		setBlockSync.setBlocksSynchronously(tBlocks, resetType, nanos, this );
-		
-//		List<MineTargetPrisonBlock> tBlocksCloned = new ArrayList<>();
-//		for ( MineTargetPrisonBlock mtpb : tBlocks ) {
-//			
-//			tBlocksCloned.add( mtpb );
-//		}
-//		
-//		new BukkitRunnable() {
-//			@Override
-//			public void run() {
-//				
-//				long start = System.nanoTime();
-//				
-//				MineTargetPrisonBlock current = null;
-//				try
-//				{
-//					for ( MineTargetPrisonBlock tBlock : tBlocksCloned )
-//					{
-//						current = tBlock;
-//						
-//						if ( tBlock != null && tBlock.getLocation() != null ) {
-//							
-//							final PrisonBlock pBlock = tBlock.getPrisonBlock( resetType );
-//							
-//							if ( pBlock != null ) {
-//								
-//								Location location = tBlock.getLocation();
-//								
-//								SpigotBlock sBlock = (SpigotBlock) getBlockAt( location );
-////							SpigotBlock sBlock = (SpigotBlock) location.getBlockAt();
-//								
-//								sBlock.setPrisonBlock( pBlock );
-//							}
-//						}
-//						
-//					}
-//				}
-//				catch ( Exception e ) {
-//					
-//					if ( current != null ) {
-//						
-//						String blkName = current.getPrisonBlock().getBlockName();
-//						PrisonBlock pBlock = current.getPrisonBlock( resetType );
-//						String resetTypeBlockName = pBlock == null ? "null" : pBlock.getBlockName();
-//						
-//						Output.get().logError( 
-//								String.format( "SpigotWorld.setBlocksSynchronously Exception: %s  resetType: %s  %s :: %s",
-//										blkName, resetType.name(), resetTypeBlockName, e.getMessage() ), e );
-//					}
-//					else {
-//						
-//						Output.get().logError( 
-//								String.format( "SpigotWorld.setBlocksSynchronously Exception: --noBlock--  resetType: %s  " +
-//										"[unable to set 'current'] :: %s",
-//										resetType.name(), e.getMessage() ), e );
-//					}
-//				}
-//				
-//				long elapsedNanos = System.nanoTime() - start;
-//				
-//					
-//				if ( nanos != null ) {
-//					nanos.addNanos( elapsedNanos );
-//				}
-//				
-//			}
-//		}.runTaskLater( SpigotPrison.getInstance(), 0 );
 		
 	}
 

@@ -157,7 +157,7 @@ public class PrisonCoreGuiMessages {
 	protected String guiPriceMsg( String price ) {
 		
 		return Prison.get().getLocaleManager()
-				.getLocalizable( "sellall_spigot_utils__money_earned" )
+				.getLocalizable( "core_gui__price" )
 				.withReplacements( price )
 				.localize();
 	}
@@ -215,7 +215,7 @@ public class PrisonCoreGuiMessages {
 	protected String guiPermissionMsg( String prestigeName ) {
 		
 		return Prison.get().getLocaleManager()
-				.getLocalizable( "core_gui__puermission" )
+				.getLocalizable( "core_gui__permission" )
 				.withReplacements( prestigeName )
 				.localize();
 	}

@@ -8,6 +8,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.placeholders.PlaceholderManager;
+import tech.mcprison.prison.util.ChatColor;
 
 public class PlaceHolderAPIIntegrationWrapper
 	extends PlaceholderExpansion 
@@ -83,7 +84,7 @@ public class PlaceHolderAPIIntegrationWrapper
 		UUID playerUuid = player.getUniqueId();
 		String results = Prison.get().getPlatform().getPlaceholders()
 									.placeholderTranslate( playerUuid, player.getName(), identifier );
-		
-		return results;
+
+		return ChatColor.translateAlternateColorCodes( '&', results);
 	}
 }

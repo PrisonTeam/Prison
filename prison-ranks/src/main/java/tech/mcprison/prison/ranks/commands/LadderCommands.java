@@ -10,6 +10,7 @@ import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRankRefreshTask;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
+import tech.mcprison.prison.ranks.managers.LadderManager;
 
 /**
  * @author Faizaan A. Datoo
@@ -67,12 +68,12 @@ public class LadderCommands
             return;
         }
         
-        if (ladder.getName().equalsIgnoreCase( "default" )) {
+        if (ladder.getName().equalsIgnoreCase( LadderManager.LADDER_DEFAULT )) {
         	ladderDeleteCannotDeleteDefaultMsg( sender );
         	return;
         }
 
-        if (ladder.getName().equalsIgnoreCase( "prestiges" )) {
+        if (ladder.getName().equalsIgnoreCase( LadderManager.LADDER_PRESTIGES )) {
         	ladderDeleteCannotDeletePrestigesMsg( sender );
         	return;
         }
@@ -94,11 +95,42 @@ public class LadderCommands
     								onlyPlayers = false, permissions = "ranks.ladder")
     public void ladderList(CommandSender sender) {
         ChatDisplay display = new ChatDisplay("Ladders");
+        
         BulletedListComponent.BulletedListBuilder list =
-            new BulletedListComponent.BulletedListBuilder();
+        					new BulletedListComponent.BulletedListBuilder();
+        
+//        DecimalFormat dFmt = new DecimalFormat( "#,##0.0000" );
+        
+//        String header = String.format( 
+//        		"&d%-12s   %16s   %5s   %12s   %12s",
+//        		"Ladder",
+//        		"Rank Cost Mult",
+//        		"Ranks",
+//        		"First Rank",
+//        		"Last Rank"
+//        		);
+        
+        list.add( PrisonRanks.getInstance().getLadderManager().printRankLadderInfoHeader() );
+        
         for (RankLadder ladder : PrisonRanks.getInstance().getLadderManager().getLadders()) {
-            list.add(ladder.getName());
+        	
+//        	int rankCount = ladder.getRanks() == null ? 0 : ladder.getRanks().size();
+//        	
+//        	Rank firstRank = rankCount == 0 ? null : ladder.getRanks().get(0);
+//        	Rank lastRank = rankCount == 0 ? null : ladder.getRanks().get( rankCount - 1 );
+//        	
+//        	String ladderInfo = String.format(
+//        			"&7%-12s   %16s   %4d   %-12s   %-12s", 
+//        			ladder.getName(),
+//        			dFmt.format( ladder.getRankCostMultiplierPerRank() ),
+//        			rankCount,
+//        			firstRank.getName(),
+//        			lastRank.getName()
+//        			);
+        	
+            list.add( PrisonRanks.getInstance().getLadderManager().printRankLadderInfoDetail( ladder ) );
         }
+        
         display.addComponent(list.build());
 
         display.send(sender);
@@ -345,5 +377,60 @@ public class LadderCommands
 		}
 	}
 
+	
+	@Command( identifier = "ranks ladder applyRankCostMultiplier", 
+			description = "Controls if the rank costs multiplier should apply to the" +
+					"ranks on this ladder.  If the ladder has a rank cost multipiler " +
+					"enabled, this setting will not effect its contribution to other " +
+					"the multiplier.", 
+					onlyPlayers = false, permissions = "ranks.ladder" )
+	public void ladderApplyRankCostMultiplier( CommandSender sender, 
+			@Arg( name = "ladderName" ) String ladderName,
+			@Arg( name = "applyRankCostMultiplier", def = "apply", 
+			description = "Applies or disables the ranks on this ladder "
+					+ "from applying the rank multiplier to the rank cost for players."
+					) 
+			String applyRankCostMultiplier )
+	{
+		RankLadder ladder = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
+		
+		if ( ladder == null )
+		{
+			ladderDoesNotExistsMsg( sender, ladderName );
+			return;
+		}
+		
+		boolean applyRCM = applyRankCostMultiplier != null && 
+				applyRankCostMultiplier.equalsIgnoreCase( "apply" );
+		
+		boolean applyRCMOld = ladder.isApplyRankCostMultiplierToLadder();
+		
+		
+		if ( applyRCMOld == applyRCM ) {
+			// No change:
+			
+			ladderApplyRankCostMultiplierNoChangeMsg( sender, ladderName, applyRCM );
+			
+			return;
+		}
+		
+		ladder.setApplyRankCostMultiplierToLadder(applyRCM);
+		
+		
+		if ( PrisonRanks.getInstance().getLadderManager().save( ladder ) )
+		{
+			ladderApplyRankCostMultiplierSavedMsg( sender, ladderName, 
+					applyRCM, applyRCMOld );
+			
+			// Recalculate the ladder's base rank cost multiplier:
+			PlayerRankRefreshTask rankRefreshTask = new PlayerRankRefreshTask();
+			rankRefreshTask.submitAsyncTPSTask();
+		}
+		else
+		{
+			ladderErrorSavingMsg( sender );
+		}
+	}
+	
   
 }

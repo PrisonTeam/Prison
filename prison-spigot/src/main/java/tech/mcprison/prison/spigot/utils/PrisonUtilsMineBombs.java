@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
@@ -36,6 +37,7 @@ import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
+import tech.mcprison.prison.spigot.inventory.SpigotPlayerInventory;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
@@ -669,7 +671,7 @@ public class PrisonUtilsMineBombs
 				nbtItem = new NBTItem( sItemStack, true );
 				nbtItem.setString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY, bombData.getName() );
 
-				if ( Output.get().isDebug() && nbtItem != null ) {
+				if ( Output.get().isDebug() && nbtItem != null && nbtItem.toString() != null ) {
 					Output.get().logInfo( "getItemStackBombs ntb: %s", nbtItem.toString() );
 				}
 			}
@@ -742,7 +744,8 @@ public class PrisonUtilsMineBombs
 	 * @param bomb 
 	 * @return
 	 */
-	public boolean setBombInHand( Player player, MineBombData bomb, SpigotBlock sBlock ) {
+	public boolean setBombInHand( Player player, 
+					MineBombData bomb, SpigotBlock sBlock, EquipmentSlot hand ) {
 		boolean isABomb = false;
 		
 //		MineBombData bomb = getBombItem( player );
@@ -874,19 +877,36 @@ public class PrisonUtilsMineBombs
 						bomb.setActivated( true );
 						
 						
+						SpigotItemStack itemInHand = 
+								hand == EquipmentSlot.HAND ? 
+										SpigotCompatibility.getInstance().getPrisonItemInMainHand( player ) :
+											SpigotCompatibility.getInstance().getPrisonItemInOffHand( player )
+											;
 						
-						SpigotItemStack itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
-
 						// Remove from inventory:
 						int inHandBombCount = itemInHand.getAmount() - 1;
 						if ( inHandBombCount == 0 ) {
-							SpigotCompatibility.getInstance()
-										.setItemInMainHand( player, null );
+							if ( hand == EquipmentSlot.HAND ) {
+								
+								SpigotCompatibility.getInstance()
+											.setItemInMainHand( player, null );
+							}
+							else {
+								
+								SpigotPlayerInventory sInventory = (SpigotPlayerInventory) sPlayer.getInventory();
+								SpigotItemStack sItemStack = null;
+								
+								SpigotCompatibility.getInstance()
+											.setItemStackInOffHand( sInventory, sItemStack );
+							}
 						}
 						else {
 							
 							itemInHand.setAmount( inHandBombCount );
 						}
+
+
+						
 						
 						// Apply updates to the player's inventory:
 						player.updateInventory();

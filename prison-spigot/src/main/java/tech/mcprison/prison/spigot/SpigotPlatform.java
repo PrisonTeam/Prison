@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -40,6 +41,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatEvent;
@@ -53,8 +55,10 @@ import com.cryptomorin.xseries.messages.Titles;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonCommand;
+import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.convert.ConversionManager;
 import tech.mcprison.prison.convert.ConversionResult;
@@ -88,10 +92,12 @@ import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.DisplayComponent;
 import tech.mcprison.prison.output.LogLevel;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.output.RowComponent;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.commands.RanksCommands;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
+import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
@@ -287,7 +293,8 @@ public class SpigotPlatform
 
     @Override public List<Player> getOnlinePlayers() {
         return Bukkit.getOnlinePlayers().stream()
-            .map(player -> getPlayer(player.getUniqueId()).get()).collect(Collectors.toList());
+            .map(player -> getPlayer(player.getUniqueId()).get())
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -714,8 +721,29 @@ public class SpigotPlatform
         return capabilities;
     }
 
+    /**
+     * <p>This can be useful to see if a given plugin is active.  The returned 
+     * data, RegisteredPluginData, has additional information pertaining to the
+     * plugin.  If the plugin is not found, then this will return a null value.
+     * </p>
+     * 
+     * @param pluginName
+     * @return
+     */
+    public RegisteredPluginsData identifyRegisteredPlugin( String pluginName ) {
+    	identifyRegisteredPlugins( false );
+    	
+    	RegisteredPluginsData plugin = Prison.get().getPrisonCommands().getRegisteredPluginData().get( pluginName );
+    	
+    	return plugin;
+    }
+    
     @Override
 	public void identifyRegisteredPlugins() {
+    	identifyRegisteredPlugins( true );
+    }
+    
+	public void identifyRegisteredPlugins( boolean checkForWarnings ) {
 		 PrisonCommand cmdVersion = Prison.get().getPrisonCommands();
 		 
 		 // reset so it will reload cleanly:
@@ -752,7 +780,7 @@ public class SpigotPlatform
         	}
 		}
         
-        if ( isPlugManPresent ) {
+        if ( checkForWarnings && isPlugManPresent ) {
         	ChatDisplay chatDisplay = new ChatDisplay("&d* *&5 WARNING: &d PlugMan &5 Detected! &d* *");
         	chatDisplay.addText( "&7The use of PlugMan on this Prison server will corrupt internals" );
         	chatDisplay.addText( "&7of Prison and may lead to a non-functional state, or even total" );
@@ -1531,7 +1559,10 @@ public class SpigotPlatform
 		
 		
 		// Turn on sellall:
-		SpigotPrison.getInstance().getConfig().set( "sellall", true );
+		YamlConfiguration modulesConf = SpigotPrison.getInstance().loadConfig("modules.yml");
+		modulesConf.set( "sellall", Boolean.TRUE );
+		SpigotPrison.getInstance().saveConfig("modules.yml", modulesConf );
+		
 		
 		
 		PrisonSpigotSellAllCommands sellall = PrisonSpigotSellAllCommands.get();
@@ -2236,7 +2267,7 @@ public class SpigotPlatform
     	
     	
     	results.add( String.format("Sellall Enabled:&b %s", 
-    										getConfigBooleanFalse( "sellall" )) );
+    										Boolean.toString( SpigotPrison.getInstance().isSellAllEnabled() )) );
     		  
     	
     	results.add( String.format("Backpacks Enabled:&b %s", 
@@ -2299,6 +2330,18 @@ public class SpigotPlatform
         display.addText("&7Integrations:");
 
         IntegrationManager im = Prison.get().getIntegrationManager();
+        
+//        Set<IntegrationType> inTypeKeys = im.getIntegrations().keySet();
+//        for (IntegrationType inTypeKey  : inTypeKeys ) {
+//        	List<Integration> integrations = im.getIntegrations().get( inTypeKey );
+//        	
+//        	for (Integration integration : integrations) {
+//				
+//        		
+//        		
+//			}
+//		}
+        
         String permissions =
         		(im.hasForType(IntegrationType.PERMISSION) ?
                 " " + im.getForType(IntegrationType.PERMISSION).get().getDisplayName() :
@@ -2771,4 +2814,95 @@ public class SpigotPlatform
 	public int compareServerVerisonTo( String comparisonVersion ) {
 		return new BluesSpigetSemVerComparator().compareMCVersionTo( comparisonVersion );
 	}
+	
+	@Override
+	public void checkPlayerDefaultRank( RankPlayer rPlayer ) {
+	
+		PrisonRanks.getInstance().getPlayerManager().checkPlayerDefaultRank( rPlayer );
+	}
+	
+
+	@Override
+	public void listAllMines(tech.mcprison.prison.internal.CommandSender sender, Player player) {
+
+		RankPlayer rPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer(player);
+		List<Mine> mines = new ArrayList<>();
+		
+		if ( rPlayer != null ) {
+			
+			Set<RankLadder> keys = rPlayer.getLadderRanks().keySet();
+			for ( RankLadder key : keys ) {
+				PlayerRank pRank = rPlayer.getLadderRanks().get(key);
+				
+				listMines( sender, player, pRank, mines );
+			}
+			
+			
+			if ( mines.size() > 0 ) {
+				
+				// String builder will be used to track what the "real" text width is:
+				StringBuilder sb = new StringBuilder();
+				
+				RowComponent row = new RowComponent();
+				row.addTextComponent( "&3Mines: " );
+				sb.append( "&3Mines: " );
+
+				for ( Mine mine : mines ) {
+					
+		        	FancyMessage msgMine = new FancyMessage( String.format( "%s", mine.getTag() ) )
+		        			.suggest( "/mines tp " + mine.getName() )
+		        			.tooltip("Click to teleport to mine");
+		        	
+		        	row.addFancy( msgMine );
+		        	sb.append( mine.getTag() );
+					
+		        	row.addTextComponent( "   " );
+		        	sb.append( "   " );
+		        	
+		        	String noColor = Text.stripColor( sb.toString() );
+					
+					if ( noColor.length()  > 50 ) {
+
+						// Send the player the mines list:
+						row.send( sender );
+						
+						// Reset the row and sb to start on the next row of mines:
+						row = new RowComponent();
+						sb.setLength( 0 );
+
+						// Setup the start of the row:
+						row.addTextComponent( "&3Mines: " );
+						sb.append( "&3Mines: " );
+						
+					}
+				}
+				if ( sb.length() > 0 ) {
+					// Send the player the mines list:
+					row.send( sender );
+				}
+			}
+			
+		}
+	}
+
+	private void listMines(tech.mcprison.prison.internal.CommandSender sender, 
+							Player player, PlayerRank pRank, List<Mine> mines ) {
+
+		Rank rank = pRank.getRank();
+		
+		while ( rank != null ) {
+			
+			for ( ModuleElement mElement : rank.getMines() ) {
+				Mine mine = PrisonMines.getInstance().getMine( mElement.getName() );
+
+				if ( mine.hasMiningAccess( player ) ) {
+					mines.add( mine );
+				}
+			}
+			
+			rank = rank.getRankPrior();
+		}
+	}
+	
+	
 }

@@ -20,7 +20,6 @@ package tech.mcprison.prison.ranks.managers;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -71,9 +70,6 @@ public class PlayerManager
     private List<RankPlayer> players;
     private TreeMap<String, RankPlayer> playersByName;
     
-    private RankPlayerSortOrderTopRanked sorterTopN;
-    private List<RankPlayer> playersByTop;
-
     
     private List<PlaceHolderKey> translatedPlaceHolderKeys;
     
@@ -87,11 +83,9 @@ public class PlayerManager
         this.players = new ArrayList<>();
         this.playersByName = new TreeMap<>();
         
-        this.sorterTopN = new RankPlayerSortOrderTopRanked();
-        this.playersByTop= new ArrayList<>();
-        
         this.playerErrors = new HashSet<>();
-
+        
+        
         Prison.get().getEventBus().register(this);
     }
 
@@ -149,25 +143,17 @@ public class PlayerManager
             	
             }
             
-            playersByTop.add( rankPlayer );
-            
 		}
-        
-        // NOTE: The following is very expensive operation if the players balance
-        //       needs to be retrieved:
-        // sortPlayerByTopRanked();
         
 
 //        players.forEach(
 //        		document -> 
 //        			this.players.add(
 //        					rankPlayerFactory.createRankPlayer(document) ));
+        
     }
     
-    public void sortPlayerByTopRanked() {
-    	
-    	Collections.sort( playersByTop, sorterTopN );
-    }
+    
 
     /**
      * Saves a {@link RankPlayer} to disk.
@@ -226,6 +212,26 @@ public class PlayerManager
     }
     
     /**
+     * <p>If the player does not have a default rank, then assign it to them and
+     * then save their new settings.
+     * </p>
+     * 
+     * @param rPlayer
+     */
+	public void checkPlayerDefaultRank( RankPlayer rPlayer ) {
+
+		if ( rPlayer.getPlayerRankDefault() == null ) {
+
+			 // Try to perform the first join processing to give them the default rank:
+	        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+	        rankPlayerFactory.firstJoin( rPlayer );
+
+	        PrisonRanks.getInstance().getPlayerManager().savePlayer( rPlayer );
+			
+		}
+	}
+    
+    /**
      * <p>This function will add all the players to all of the ranks they
      * are associated with.
      * </p>
@@ -253,9 +259,9 @@ public class PlayerManager
 		return playersByName;
 	}
 
-	public List<RankPlayer> getPlayersByTop() {
-		return playersByTop;
-	}
+//	public List<RankPlayer> getPlayersByTop() {
+//		return playersByTop;
+//	}
 
 	public Set<String> getPlayerErrors() {
 		return playerErrors;
@@ -582,7 +588,7 @@ public class PlayerManager
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				boolean isDefault = ladder.getName().equals( "default" ) ;
+    				boolean isDefault = ladder.getName().equals( LadderManager.LADDER_DEFAULT ) ;
     				
     				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank nextRank = pRank.getRank().getRankNext();
@@ -593,7 +599,8 @@ public class PlayerManager
     					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
-    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+    			        PlayerRank nextPRank = rankPlayer.calculateTargetPlayerRank( nextRank );
+//    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
     					//PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
@@ -635,7 +642,7 @@ public class PlayerManager
 				isDefault && 
 					Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ) ) {
 			
-			RankLadder rLadder = PrisonRanks.getInstance().getLadderManager().getLadder( "prestiges" );
+			RankLadder rLadder = PrisonRanks.getInstance().getLadderManager().getLadder( LadderManager.LADDER_PRESTIGES );
 			
 			if ( rLadder != null ) {
 				
@@ -668,7 +675,7 @@ public class PlayerManager
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				boolean isDefault = ladder.getName().equals( "default" ) ;
+    				boolean isDefault = ladder.getName().equals( LadderManager.LADDER_DEFAULT ) ;
     				
     				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank nextRank = pRank.getRank().getRankNext();
@@ -679,7 +686,8 @@ public class PlayerManager
     					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
-    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+    			        PlayerRank nextPRank =  rankPlayer.calculateTargetPlayerRank( nextRank );
+//    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 // 						PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     			        
@@ -723,7 +731,7 @@ public class PlayerManager
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				boolean isDefault = ladder.getName().equals( "default" ) ;
+    				boolean isDefault = ladder.getName().equals( LadderManager.LADDER_DEFAULT ) ;
     				
     				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank rank = pRank.getRank();
@@ -735,7 +743,8 @@ public class PlayerManager
     					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
-    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+    			        PlayerRank nextPRank = rankPlayer.calculateTargetPlayerRank( nextRank );
+//    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
@@ -788,7 +797,7 @@ public class PlayerManager
     			if ( ladderName == null ||
     					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
     				
-    				boolean isDefault = ladder.getName().equals( "default" ) ;
+    				boolean isDefault = ladder.getName().equals( LadderManager.LADDER_DEFAULT ) ;
     				
     				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
     				Rank rank = pRank.getRank();
@@ -800,7 +809,8 @@ public class PlayerManager
     					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
     					
     			        // This calculates the target rank, and takes in to consideration the player's existing rank:
-    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+    			        PlayerRank nextPRank = rankPlayer.calculateTargetPlayerRank( nextRank );
+//    			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //    					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
     					
@@ -857,7 +867,7 @@ public class PlayerManager
 			if ( ladderName == null ||
 					ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
 				
-				boolean isDefault = ladder.getName().equals( "default" ) ;
+				boolean isDefault = ladder.getName().equals( LadderManager.LADDER_DEFAULT ) ;
 				
 				PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
 				Rank rank = pRank.getRank();
@@ -869,7 +879,8 @@ public class PlayerManager
 					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
 					
 			        // This calculates the target rank, and takes in to consideration the player's existing rank:
-			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+			        PlayerRank nextPRank = rankPlayer.calculateTargetPlayerRank( nextRank );
+//			        PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //					PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
 					
@@ -920,7 +931,7 @@ public class PlayerManager
 			  if ( ladderName == null ||
 					  ladderName != null && ladder.getName().equalsIgnoreCase( ladderName )) {
 
-				  boolean isDefault = ladder.getName().equals( "default" ) ;
+				  boolean isDefault = ladder.getName().equals( LadderManager.LADDER_DEFAULT ) ;
 				  
 				  PlayerRank pRank = rankPlayerFactory.getRank( rankPlayer, ladder );
 				  Rank rank = pRank.getRank();
@@ -933,7 +944,8 @@ public class PlayerManager
 	  					nextRank = getNextPrestigeRank( rankPlayer, isDefault, nextRank );
 					  
   			          // This calculates the target rank, and takes in to consideration the player's existing rank:
-  			          PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
+  			          PlayerRank nextPRank = rankPlayer.calculateTargetPlayerRank( nextRank );
+//  			          PlayerRank nextPRank = pRank.getTargetPlayerRankForPlayer( rankPlayer, nextRank );
 
 //					  PlayerRank nextPRank = new PlayerRank( nextRank, pRank.getRankMultiplier() );
 					  
@@ -1234,6 +1246,112 @@ public class PlayerManager
     	return sb.toString();
     }
     
+    
+    public String getPlayerNextLinkedRankTag( RankPlayer rankPlayer, String ladderName ) {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	// Must always have a default rank:
+    	PlayerRank pRankDefault = rankPlayer.getPlayerRankDefault();
+
+    	// Prestiges ladder may not be enabled, or this may be null because they have not yet prestiged:
+    	PlayerRank pRankPrestiges = rankPlayer.getPlayerRankPrestiges();
+    	
+    	if ( ladderName == null || ladderName.equalsIgnoreCase( LadderManager.LADDER_PRESTIGES ) ) {
+    		
+    		
+    		// If default rank is the last rank, or at the last prestiges rank,
+    		// then get next prestige rank for player:
+    		if ( pRankDefault.getRank().getRankNext() == null ) {
+    			
+    			// If the player does not have a prestiges rank, then get the first one:
+    			if ( pRankPrestiges == null && PrisonRanks.getInstance().getPrestigesLadder() != null ) {
+    				
+    				Rank firstPrestigeRank = PrisonRanks.getInstance().getPrestigesLadder().getLowestRank().orElse(null);
+    				if ( firstPrestigeRank != null ) {
+    					sb.append( firstPrestigeRank.getTag() );
+    				}
+    			}
+    			// Else if player has a prestige rank, and there is a next prestige rank, get it's tag:
+    			else if ( pRankPrestiges != null && pRankPrestiges.getRank().getRankNext() != null ) {
+    				sb.append( pRankPrestiges.getRank().getRankNext().getTag() );
+    				
+    			}
+    			
+    			// else, if player has a prestige rank, and it's the last one, then just get that tag:
+    			else if ( pRankPrestiges != null ) {
+    				sb.append( pRankPrestiges.getRank().getTag() );
+    				
+    			}
+    			
+    		}
+    		// else just get current prestige rank for player:
+    		else if ( pRankPrestiges != null ) {
+    			
+    			sb.append( pRankPrestiges.getRank().getTag() );
+    		}
+    	}
+    	if ( ladderName == null || ladderName.equalsIgnoreCase( LadderManager.LADDER_DEFAULT ) ) {
+
+    		boolean showFirstRank = false;
+    		boolean showNextRank = true;
+    		
+
+    		// If at last default rank, then get the default ladder's first rank's tag or just show current tag:
+    		if ( pRankDefault.getRank().getRankNext() == null ) {
+
+    			// Since the current default rank is the last, cannot show next default rank:
+    			showNextRank = false;
+    			
+    			Rank firstPrestigeRank = PrisonRanks.getInstance().getPrestigesLadder().getLowestRank().orElse(null);
+    			
+    			// If firstPrestigeRank is null, then prestiges is not enabled, so cannot show first rank:
+    			if ( firstPrestigeRank == null ) {
+    				showFirstRank = false;
+//    				showNextRank = false;
+    			}
+    			
+    			// If current presetiges is null, then use the first prestiges rank:
+    			else if ( pRankPrestiges == null ) {
+    				showFirstRank = true;
+//    				showNextRank = false;
+    				
+    			}
+    			else if ( pRankPrestiges.getRank().getRankNext() == null ) {
+    				// At the last presetiges rank... so do not reset the default ranks:
+    				showFirstRank = false;
+    			}
+    			
+    			else {
+    				// Presetige is possible, so show first default rank:
+    				showFirstRank = true;
+    				
+    			}
+    		
+    		}
+    		
+    		
+    		if ( !showFirstRank && !showNextRank ) {
+    			// Show current rank:
+    			
+    			sb.append( pRankDefault.getRank().getTag() );
+    		}
+    		else if ( showFirstRank ) {
+    			
+    			Rank firstDefaultRank = PrisonRanks.getInstance().getDefaultLadder().getLowestRank().orElse(null);
+    			sb.append( firstDefaultRank.getTag() );
+    		}
+    		else {
+    			// Show next rank:
+    			
+    			// Not at last default rank, so get next rank tag:
+    			sb.append( pRankDefault.getRank().getRankNext().getTag() );
+    		}
+    		
+    	}
+    	
+    	return sb.toString();
+    }
+    
     public String getPlayerNextRankTag( RankPlayer rankPlayer, String ladderName ) {
     	StringBuilder sb = new StringBuilder();
     	
@@ -1292,7 +1410,7 @@ public class PlayerManager
     	//       from the language file to display in the place of the empty tag.
     	//       The idea is that if prestiges is enabled, then this is a way to 
     	//       indicate the player could prestige as the next step.
-    	if ( sb.length() == 0 && "default".equalsIgnoreCase( ladderName ) ) {
+    	if ( sb.length() == 0 && LadderManager.LADDER_DEFAULT.equalsIgnoreCase( ladderName ) ) {
     		String replacementText = lastRankMessageForDefaultLadder();
     		if ( replacementText != null && !replacementText.trim().isEmpty() ) {
     			
@@ -1456,6 +1574,13 @@ public class PlayerManager
 					case prison_rrt_laddername:
 					case prison_rankup_rank_tag_laddername:
 						results = getPlayerNextRankTag( rankPlayer, ladderName );
+						break;
+						
+					case prison_rlrt:
+					case prison_rankup_linked_rank_tag:
+					case prison_rlrt_laddername:
+					case prison_rankup_linked_rank_tag_laddername:
+						results = getPlayerNextLinkedRankTag( rankPlayer, ladderName );
 						break;
 						
 					case prison_pb:
@@ -1837,6 +1962,15 @@ public class PlayerManager
     		List<RankLadder> ladders = PrisonRanks.getInstance().getLadderManager().getLadders();
     		for ( RankLadder ladder : ladders ) {
     			for ( PrisonPlaceHolders ph : placeHolders ) {
+    				
+    				if ( ph.hasFlag( PlaceholderFlags.ONLY_DEFAULT_OR_PRESTIGES ) && 
+    						!ladder.getName().equalsIgnoreCase( LadderManager.LADDER_DEFAULT ) &&
+    						!ladder.getName().equalsIgnoreCase( LadderManager.LADDER_PRESTIGES )
+    						) {
+    					// Placeholder is invalid for ladders that are not default or prestiges, so skip:
+    					continue;
+    				}
+    				
     				String key = ph.name().replace( 
     						PlaceholderManager.PRISON_PLACEHOLDER_LADDERNAME_SUFFIX, "_" + ladder.getName() ).
     							toLowerCase();
@@ -1876,4 +2010,6 @@ public class PlayerManager
     	// Regenerate the translated placeholders:
     	getTranslatedPlaceHolderKeys();
     }
+
+
 }

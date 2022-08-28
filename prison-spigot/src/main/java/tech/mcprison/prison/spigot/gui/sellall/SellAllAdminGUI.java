@@ -41,7 +41,7 @@ public class SellAllAdminGUI extends SpigotGUIComponents {
 
     public void open() {
 
-        if (!SpigotPrison.getInstance().getConfig().getString("sellall").equalsIgnoreCase("true")){
+        if ( !SpigotPrison.getInstance().isSellAllEnabled() ){
         	
         	new SpigotVariousGuiMessages().sellallIsDisabledMsg( new SpigotCommandSender(p) );
         	

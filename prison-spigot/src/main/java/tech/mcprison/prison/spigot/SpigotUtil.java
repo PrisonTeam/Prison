@@ -278,7 +278,14 @@ public class SpigotUtil {
 			
 			// Cannot stick it anywhere else, so return the extras:
 			for ( Integer key : overflow.keySet() ) {
-				results.put(key, new SpigotItemStack(overflow.get(key)));
+				ItemStack iStack = overflow.get(key);
+				if ( iStack != null ) {
+					SpigotItemStack siStack = new SpigotItemStack(iStack);
+					if ( siStack != null ) {
+						
+						results.put(key, siStack);
+					}
+				}
 			}
 		}
 		

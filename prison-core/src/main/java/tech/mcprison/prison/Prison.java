@@ -44,6 +44,7 @@ import tech.mcprison.prison.selection.SelectionManager;
 import tech.mcprison.prison.store.Database;
 import tech.mcprison.prison.troubleshoot.TroubleshootManager;
 import tech.mcprison.prison.util.EventExceptionHandler;
+import tech.mcprison.prison.util.PrisonStatsUtil;
 import tech.mcprison.prison.util.PrisonTPS;
 
 /**
@@ -102,7 +103,7 @@ public class Prison
     
     private Database metaDatabase;
     
-    
+    private PrisonStatsUtil statsUtil;
     private PrisonTPS prisonTPS;
     
     
@@ -174,18 +175,23 @@ public class Prison
      * <p>
      * Note that modules <b>should not call this method</b>. This is solely for the implementations.
      */
-    public boolean init(Platform platform, String minecraftVersion) {
+    public boolean init(Platform platform, String minecraftVersion, File dataFolder ) {
         long startTime = System.currentTimeMillis();
 
         
         this.platform = platform;
         this.minecraftVersion = minecraftVersion;
         
+        this.dataFolder = dataFolder;
+        
         if (!initDataFolder()) {
         	Output.get().logInfo("&cFailure: &eInitializing the Prison Data Folders!" );
         	Output.get().logInfo("&e&k!=&d Prison Plugin Terminated! &e&k=!&7" );
         	return false;
         }
+        
+        
+        this.statsUtil = new PrisonStatsUtil();
         
         
         this.prisonTPS = new PrisonTPS();
@@ -362,7 +368,13 @@ public class Prison
 
     }
     
-    public void displaySystemTPS( ChatDisplay display ) {
+    
+    
+    public PrisonStatsUtil getPrisonStatsUtil() {
+		return statsUtil;
+	}
+
+	public void displaySystemTPS( ChatDisplay display ) {
     	
         DecimalFormat iFmt = new DecimalFormat("#,##0");
         PrisonTPS prisonTPS = Prison.get().getPrisonTPS();
@@ -530,7 +542,8 @@ public class Prison
 
     private boolean initDataFolder() {
         // Creates the /Prison directory, for core configuration.
-        this.dataFolder = getPlatform().getPluginDirectory();
+    	
+//        this.dataFolder = getPlatform().getPluginDirectory();
         return this.dataFolder.exists() || this.dataFolder.mkdirs();
     }
 

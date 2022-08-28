@@ -11,7 +11,327 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.12 2022-06-25
+
+# 3.3.0-alpha.13 2022-08-25
+
+
+**3.3.0-alpha.13 2022-08-25**
+
+Highlights of some of the changes included in this alpha.13 release. Please see the change logs for all details.
+
+
+* Added a new tool: `mines tp list` which will show a player all of the mines they have access to.  They can also click on a listed mine to generate the TP command.  This command can also be ran from the console to inspect what players have access to.
+* Fixed a recently introduced bug where if the server starts up, but someone has no ranks, it was not able to properly assign them their first default rank. It was leading to circular references.
+* Fixed an issue with color codes not being translated correctly with placeholderAPI.   
+* Prison has a rank cost multiplier where ranks on different ladders can increase, or decrease, the cost of all ranks the player buys.  So when they prestige, it makes ranks A-Z cost more each time.  What's new is that now you can control which ladders these rank cost multipliers are applied to, such as not on prestiges, but only on default.
+* Fixed calculations of the placeholder `prison_rank__player_cost_rankname`.  It was not fully working with every possible rank on every possible ladder.  Now it works correctly if trying to get the player's cost for even many prestige ranks out (it includes cals for all A-Z mines at multiple passes).
+* Mine bombs: Changed to only allow mine bombs to be setoff withn mines the player has access to. Fixed an issue with color codes within the mine bomb's tags.
+* Fixes issues with NBT, color codes with prison broadcast commands.
+* Rewrote topN for better performance: `/topn`. Older players are archived within topN and can be queried: `/topn archive`. 
+* Update ladder details on a few commands.
+* Update XSeries from v8.8.0 to v9.0.0 so prison now supports 1.19.x blocks.
+* Bug fixes with first join events.  Bug fix with a few guis.
+* CMI update: If CMI is detected at startup, and delayed startup is not enabled, prison will go in a simple delayed startup mode to allow CMI a chance to enable it's economy through vault.  This reduces the learning curve with CMI users.
+* New feature: Prison will now make an auto backup of all files in it's directory when it detects a change in version.  Can manually backup too. The backup stores temp files then removes them from the server, this helps keep the server clean.
+* Update bstats: Gained control of the account and started to add useful custom reports to help zero in on what we need to help support.
+* More work on block converts. Will be added in the next alpha releases.
+* Bug fixes: mines gui fixes for virtual mines.  Sellall bug fixes. Placeholders fixes.
+
+
+
+
+* **Minor addition to bstats.**
+
+
+* **Player Mine GUI had the wrong calculation for volume which also threw off blocks remaining and percent remaining.**
+The calculation for volume was using the surface area and not the total number of blocks.
+
+
+**v3.3.0-alpha.12L 2022-08-25**
+
+
+* **Updates to the bstats....**
+
+
+* **New placeholders: `prison_rank__linked_mine_tag_rankname` and alias `prison_r_lmt_rankname`.**
+Similar to `prison_rank__linked_mine_rankname` but uses the mine's tag instead of the mine's name.
+
+
+* **Mine TP list: use mine tags and clickable mines to teleport to them.**
+
+
+* **Mines TP list.  Added a new options to mines tp command to list all mines that the player actually has access to.**
+Not finished with it... will add clickable links to them when in game.
+
+
+* **There was an unused updated tool in prison.  It's against my policy to auto update this plugin, which would need to be consented to anyway, but I feel that admins need to be in full control of updates and know what is included in the updates. There was identified a potential exploit called zip-slip-vulnerability that could hijack a server if malicious zip is extracted.  Prison never used this tool, so it's been fully disabled with no intention of reenabling.  It may be deleted in the near future.**
+
+
+* **TopN bug fix: If a player was in an archived state, they were not being moved to active when they would login.**
+
+
+* **If the player is holding the mine bomb in their off hand, then remove the inventory from their off hand.**
+
+
+* **v3.3.0-alpha.12k**
+
+
+* **Fixed an issue when starting the server an no ranks exist.  Also fixes an issue when starting the server an a player has no rank.**
+Was using a mix of really old code, and the latest code, which caused a conflict since neither was doing what it was really supposed to.
+
+
+* **Added the custom bstats report for Prison Vault Plugins.**
+This reports all plugins that have been integrated through Vault.  This report does not impact any other plugins report.  This is segmented by integration type.
+
+
+* **Fixed bug when server starts up when no player ranks exist.**
+It will now bypass the player validation until ranks have been configured.
+
+
+* **v3.3.0-alpha.12j 2022-08-21**
+
+
+* **Update bstats to remove old custom reports that are not wanted/needed anymore.**
+Added 6 new placeholder reports that classifies placeholders ini various categories related to how they are used within prison.  Any placeholder that appears in these lists, will not be included in the generic 4-category placeholder lists.
+Added a few more simple pie charts to cover a lot of the details on ranks, ladders, and players.  Simple is better so you can just glance at all of them, without having to drill down on each one.
+ 
+
+* **v3.3.0-alpha.12i 2022-09-19**
+
+
+* **TopN players - fixed an issue where topN was being processed before the offline players were validated and fixed.**
+There was an issue with processing an invalid player that did not have a default rank.
+
+
+* **v3.3.0-alpha.12h 2022-08-19**
+
+
+* **Rankup costs: Minor clean up of existing code. Using the calculateTargetPlayerRank function within the RankPlayer object.**
+
+
+* **PAPI Placeholders: Force color code translations on all resulting placeholders.**
+There were a few issues where placeholder color codes were not being properly translated.  This was not consistent with everyone.  Not sure why it was working for most.
+These changes are more in line with how chat handlers and MVdW placeholders works.
+
+
+* **Ladder: apply rank cost multiplier to a ladder or not.**
+This new feature enables you to disable all rank cost multipliers for a specific ladder.  Normally that rank cost multiplier applies to all ladders, but now you can suppress it.  It's for the whole ladder, and not on a per rank basis.
+
+
+* **Fixed an issue with calculating the player's rank cost when they already on the presetiges ladder and calculating the higher prestige ranks.**
+Appears as if this becomes an issue when at the last rank on the default ladder.
+
+
+* **v3.3.0-alpha12g 2022-08-14**
+
+
+* **Fxing of the calculations of the placeholder prison_rank__player_cost_rankname and related placeholders.**
+The original implementation did not take in to consideration the prestige ranks in relation to the default rank.  
+The improvements in this calculation now generates a list of all ranks between the current rank and the target rank.  So if a few prestige ranks out from the player's current prestige rank will result in calculating every rank in between including multiple passes through all default ranks.  So if there are 26 default ranks, and the player is at rank A with no prestiges, then to calculate rank P4 would include the following ranks:
+b --> z + p1 + a --> z + p2 + a --> z + p3 + a --> z + p4.  
+This results in a total of 107 ranks that must be collected, then the player's cost for each rank will have to be calculated.  Then all of these must be added together to get the player's cost on rank P4.
+This calculation has to be performed for each rank in it's entirety
+Warning: this calculation on high prestige ranks will be a performance issue. If this becomes a problem on any particular server, then the only recommendation that can be provided is not to use any of the prison_rank__player_cost placeholders.
+
+
+* **TopN : a few more adjustments to fix a few issues with duplicates and also with using values from within the topN to include in the report to help minimize the need to recalculate everything especially with archived entries.**
+
+
+* **Mine bombs: Fixed an issue with the mine bomb names not always working with color codes.**
+Honestly the wrong function was being used so how it even worked I don't know. lol
+
+
+* **New topN functionality: far better performance, with regular updates.**
+TopN now is a singleton and is self contained.  When the singleton is instantiated, it then loads and setup the prisonTopN.json file on the first run.  30 seconds after the initial load, it then hits all players to load their balances in an async thread.  
+The command /ranks topn, or just /topn has new parameter: "archived".  Any player who has not been online for more than 90 days will be marked as archived.  The archived option will show just the archived players.
+Setup new parameters within config.yml to control the topn behavior with the async task.
+
+
+* **v3.3.0-alpha.12f 2022-08-08 ** (forgot to commit when made this version)
+
+
+* **Mine Bombs: Only allow bombs to be placed when within a mine that the player has access to.**
+This will help prevent wasted bombs.
+
+
+* **Fixed an issue with nbt items not having a value for toString().**
+
+
+* **Encode color codes for the prison utils broadcast command.**
+
+
+* **Added an "invalid player name" message to the rankup commands.**
+Also added missing messages to the zh_TW.properties file. 
+
+
+* **BlockEvents were changed to auto display the existing rows so it's easier for the end user to know which row to select.**
+All they need to do is to enter the mine's name, then press enter to submit the command, and then the existing rows details will be shown.  Then the user can select the row and complete the command.
+Updated docs on block events.
+
+
+* **BlockEvents were changed to auto display the existing rows so it's easier for the end user to know which row to select.**
+All they need to do is to enter the mine's name, then press enter to submit the command, and then the existing rows details will be shown.  Then the user can select the row and complete the command.
+
+
+* **minor updates for disabled mine reset times. No functional changes were  made.**
+
+
+* **Fixed a potential NPE with giving the players overflow blocks, but not sure what the exact cause was, but looked like there was an issue with mapping to a spigot item stack.**
+
+
+ **CMI delayed startup: Added new feature to try to auto enable Prison's delayed startup if CMI is detected as an active plugin, and if the delayed startup is disabled within the config.yml.**
+This is to help get more CMI users up and running without more effort, but yet still provide the ability to customize how it is triggered.
+If CMI is active, there is NO WAY to disable a delayed startup check.*
+
+* **Added the the option for playerName to the `/rankup` command so the command can be scripted and ran from the console.**
+
+
+* **There was another issue with using `/gui` related to no ladders being loaded.**
+This fixes that problem, and it appears like the issue was caused by plugman messing things up.  This does not "solve" the problem with ladders not being loaded, but prevents the NPE from happening.
+
+
+* **There was an issue with `/prison reload gui` causing a NPE.**
+
+
+* **Fixed the `/ranks topn` command (`/topn`) to sort the list of players before printing the list.**
+The list was being set a server startup time, and if someone would rankup or prestige, it was not reflecting their new position.  The list is also now sorted after each rankup.  Sorting should be a low cost operation since the list used never is regenerated so the changes made during sorting is minimal at best.
+
+
+* **Added the ability to control the prefix spaces on the unit names.**
+NOTE: may need to enable the use of the `core_text__time_units_short` since the long units are not being used.  May need to create another placeholder for short/long.  It used to be short, so may need to use long with the new placeholder and convert the calcs to the short as the default.
+This was requested by PassBL.
+
+
+* **v3.3.0-alpha.12e**
+
+
+* **Fixed issue rank null issues when showing ladder details.**
+
+
+* **Prison backups: Fixed an issue with folders not existing when running the backups the first time.**
+
+
+* **v3.3.0-alpha.12d 2022-07-25**
+
+
+* **Added more information on ladder listing to show name, number of ranks, and rank cost multiplier.**
+
+
+* **bStats update: Added a new bstats custom chart for auto features.**
+
+
+* **Update some docs. Added docs for Prison Backups**
+[Prison Backup Document](prison_docs_050_Prison_backups.md)
+
+
+* **Upgrade XSeries from v8.8.0 to v9.0.0**
+
+
+* **Fixed issue with prison version check triggering a backup upon startup.**
+It was always bypassing the previous version check, so it was always creating another backup.
+
+
+* **Update bstats by moving to its own class in its own package.**
+Added 4 new custom charts to split the plugins in to 4 parts.
+
+
+* **Fixed a few issues with the ranks gui where they were using the wrong message key (placeholder).**
+
+
+* **Prison v3.3.0-alpha.12c**
+
+
+
+* **Prison bstats: setup 4 new bstats charts for prison.  May change a few charts or add new ones in the near future.**
+Got control over the prison bstats so can now add custom stats.
+
+
+* **Prison backups: Created a Prison/backups/versions.log file which gets logs when a new prison version is detected on startup, which also performs a backup.**                                                                                                                                                                                      
+All backups are also logged in the versions.log file too.
+
+
+* **v3.3.0-alpha.12b**
+- Added the fix for the placeholders. See next note.
+
+
+* **Fixed an issue with placeholders not be properly evaluated; there were 3 sections and they were combined in to one so it would not bypass any.**
+
+
+* **Possible bug fix with first join: it appears like it was inconsistant with running the rank commands.  Fixed by rewriting how the first join event is handled.**
+
+
+
+* **Prison backups: Added new features where it is generating a stats file in the root of the zip file which contains all of the "prison support submit" items.**
+This is just about ready, but lacking support for auto backups when prison versions change, or job submission to run auto backups at regular intervals.
+
+
+* **Setup a prison backup command that will backup all files within the prison plugin folder.**
+When finished, it will delete all temp files since they have been included in the backup.
+The new command is `/prison support backup help`.
+
+
+* **v3.3.0-alpha.12a**
+
+
+* **Added a new set of intelligent placeholders: these show the tags for the default ladder and prestige ladder, for the "next" rank but are linked together.**
+They only apply to the default ladder and the prestige ladders.  The tags are only shown if the player has that rank, or if that will become their next rank.  
+These ONLY show the tags that will be appropriate when the next rank up.  So if the can still rankup on the default ladder, then only the default rank shows the next ranks tag.  If they are at the end of the default rank, then it will show the next rank on the prestiges ladder; if they do not have a rank there currently, then it will show the next prestige rank with the default rank showing the first rank on that ladder.
+
+
+* **When the command handler starts up, it now logs the pluigin's root command and the command prefix which is used if there are duplicate commands found during bukkit command registration.**
+
+
+* **Bug fix: Placeholders search was missing the assignment of the placeholderKey, which is what would like the search results on the raw placeholders, with the actual data that is tied back to the player.**
+In otherwords, without the PlaceholderKey it was not possible to extract the player's data to be displayed within the command: /prison placeholders search.
+
+
+* **Added constants for the default and prestiges ladder name so it does not have to be duplicated all over the place, which can lead to bugs with typos.**
+
+
+* **Sellall bug fix: There wasn't a common point of refernce to check if sellall is enabled.  Many locations were directly checking config.yml, but the new setting has been moved to the modules.yml file. ** 
+If config.yml has sellall enabled in there, it will be used as a secondary setting if the sellall setting in modules.yml is not defined or set to false.  Eventually the config.yml setting will be removed.
+
+
+* **Found that bStats was erroring out with the servers hitting the rate limit so this makes a few adjustments to try to get prison to work with bstats.**
+Basically plugins that load last will be unable to report their stats since every single plugin that is using bstats submits on it's own, and therefore it quickly reaches the limits.
+
+
+* **BlockConverters: More changes to block converters.**
+Added defaults for auto blocking, and for auto features with support for *all* blocks.
+
+
+* **Bug fix: mines gui was not able to handle virtual mines with the internal placeholders.
+This bug fix was included with the deployment of alpha.12 to spigotmc.org.
+
+
+
+* **Pull Request from release.branch.v3.3.0-alpha.12 to Master - 2022-06-25**
+
+
+This represents about six months of a lot of work with many bug fixes, performance improvements, and new features that have been introduced. The last two alphas were not pulled back to main, but they were released, This PR will preserve the released alpha as it has been published.
+
+Also, this helps to ensure that this work will not be lost in the event the bleeding branch is lost/removed. Hopefully it won't be, but a lot of work has gone in to it and it will be impossible to recreate the current state of the alpha release.
+
+This version, v3.3.0-alpha.12, has 300 commits and 323 changed files. The list of actual changes since v3.2.11 is substantial and the change log should be referenced.
+
+Highlights of some of the changes include (a sparse list):
+
+*    new block model - full support for CustomItems custom blocks - updated XSeries which mean prison supports Spigot 1.19.
+*    major improvements to auto features - streamlined and new code - higher performance - many bugs eliminated - now supports drop canceling to make prison more compatible with other plugins
+*    better multi-language support - supports UTF-8
+*    Improved rankup - rankup commands are now ran in batch and will not lag the server if players spam it
+*    rewrite of the async mine resets - next to impossible for mine resets to cause lag - Uses a new intelligence design that will throttle placing blocks as the server load increases, which makes it next to impossible for it to cause lag.
+*    Enhanced debugging tools - if a server owner is having issues, prison has more useful tools and logging to better identify where the issues are - new areas are not able to log details when in debug mode - debug mode now has a "count down timer" where if debug mode is 8enabled like /prison debug 10 then it will only allow 10 debug messages to print, then it will turn off debug mode automatically. This is very useful on very heavy servers when a lot of players are active... it prevents massive flooding of the console.
+*    Major rewrite of the placeholder code that identifies which placeholder raw text is tied to, so it can then retrieve and process the data. - Pre-cache that provides mapping to raw text, so once it is mapped, it can prevent the expensive costs of finding the correct placeholder - Added the beginning of tracking stats (through the pre-cache0 and will be adding an actual placeholder cache in the near future.
+*    Mine Bombs - fixes and enhancements
+*    Starting to create a new sellall module that will support multiple shops and custom blocks (not just XMaterial names)
+*    Block Converters - Will allow full customization on all block specific things within auto features - will eliminate all hard coded block
+*    Started to add NBT support. - Used in mine bombs - Starting to use in GUI's to simplify the complexity of hooking actions up with the menu items.
+*    Added rank scores and top-n players - Rank score is a fair way to score players within a rank. It's currently the percentage of money they have to rank up (0 to 100 percent), but once they cross the 100% threshold, then 10% of the excess subtracts from their rank score. This prevents camping at levels.
+*    There is more stuff, some major, a bunch of minor, and many bug fixes along the way.
+
+
+
 
 
 * **v3.3.0-alpha.12 2022-06-25**

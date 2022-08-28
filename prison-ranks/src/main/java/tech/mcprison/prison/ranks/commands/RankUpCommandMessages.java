@@ -37,6 +37,13 @@ public class RankUpCommandMessages
     			.localize();
 	}
 	
+	protected void rankupInvalidPlayerNameMsg(CommandSender sender, String playerName) {
+		PrisonRanks.getInstance().getRanksMessages()
+				.getLocalizable( "ranks_rankup__invalid_player_name" )
+				.withReplacements( playerName )
+				.sendTo(sender);
+	}
+	
 	protected String rankupInternalFailureMsg() {
 		return PrisonRanks.getInstance().getRanksMessages()
     			.getLocalizable( "ranks_rankup__internal_failure" )

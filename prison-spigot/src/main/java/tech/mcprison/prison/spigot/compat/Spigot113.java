@@ -49,6 +49,11 @@ public class Spigot113
     public SpigotItemStack getPrisonItemInMainHand(Player player) {
     	return SpigotUtil.bukkitItemStackToPrison( getItemInMainHand( player ) );
     }
+	
+	@Override
+	public SpigotItemStack getPrisonItemInOffHand(Player player) {
+		return SpigotUtil.bukkitItemStackToPrison( getItemInOffHand( player ) );
+	}
     
 	@Override 
 	public ItemStack getItemInOffHand(PlayerInteractEvent e) {
@@ -80,8 +85,10 @@ public class Spigot113
     @Override
     public void setItemStackInOffHand( SpigotPlayerInventory inventory, SpigotItemStack itemStack ) {
     	
+    	ItemStack iStack = itemStack == null ? null : itemStack.getBukkitStack();
+    	
     	((org.bukkit.inventory.PlayerInventory) inventory.getWrapper())
-    	.setItemInOffHand( itemStack.getBukkitStack() );
+    			.setItemInOffHand( iStack );
     }
     
     @Override 
