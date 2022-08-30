@@ -23,7 +23,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
 
-import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.internal.block.PrisonBlock;
@@ -41,6 +40,7 @@ import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
+import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -1064,6 +1064,9 @@ public abstract class AutoManagerFeatures
 							}
 							
 							debugInfo.append( " ] " );
+							
+							SpigotPlayer sPlayer = new SpigotPlayer( player );
+							PlayerAutoRankupTask.autoSubmitPlayerRankupTask( sPlayer, debugInfo );
 						}
 						
 					}
