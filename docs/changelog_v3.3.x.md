@@ -12,7 +12,12 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13 2022-08-27
+# 3.3.0-alpha.13 2022-08-29
+
+
+* **New feature: Auto Forced Rankup.  When using autosell, it will auto rankup the player when they have enough money.**
+This includes both normal /rankup and /prestige.
+This configuration setting is set within config.yml in prison-mines.forced-auto-rankups: true.
 
 
 * **Enable access to prior mines, or prevent access to prior mines, based upon the player's rank.**

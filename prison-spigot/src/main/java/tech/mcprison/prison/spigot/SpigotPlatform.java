@@ -126,6 +126,7 @@ import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.util.ActionBarUtil;
 import tech.mcprison.prison.spigot.util.SpigotYamlFileIO;
+import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.Location;
@@ -2930,6 +2931,8 @@ public class SpigotPlatform
 					Output.get().logDebug( "(SpigotPlatform autosell: " + (success ? "success" : "failed") + 
 							" ms: " + dFmt.format( milliTime ) + ") ");
 				}
+				
+				PlayerAutoRankupTask.autoSubmitPlayerRankupTask( sPlayer, null );
 				
 			}
 		}

@@ -77,6 +77,7 @@ import tech.mcprison.prison.spigot.gui.sellall.SellAllPrestigesMultiplierGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPrestigesSetMultiplierGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPriceGUI;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
+import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -212,9 +213,17 @@ public class ListenersPrisonManager implements Listener {
                             for (XMaterial xMaterialConf : items) {
                                 if (xMaterialConf == inHandXMaterial) {
                                     sellAllUtil.sellAllSell(p, false, false, true, false, false, true);
+
+                                    SpigotPlayer sPlayer = new SpigotPlayer( p );
+                                    PlayerAutoRankupTask.autoSubmitPlayerRankupTask( sPlayer, null );
+                                    
                                     return;
                                 } else if (xMaterialConf == SpigotUtil.getXMaterial(p.getInventory().getItemInMainHand().getType())) {
                                     sellAllUtil.sellAllSell(p, false, false, true, false, false, true);
+                                    
+                                    SpigotPlayer sPlayer = new SpigotPlayer( p );
+                                    PlayerAutoRankupTask.autoSubmitPlayerRankupTask( sPlayer, null );
+                                    
                                     return;
                                 }
                             }

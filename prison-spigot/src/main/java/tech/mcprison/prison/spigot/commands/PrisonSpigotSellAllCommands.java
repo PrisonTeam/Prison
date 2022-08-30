@@ -28,6 +28,7 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminBlocksGUI;
 import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
+import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
 
 /**
  * @author GABRYCA
@@ -269,6 +270,9 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         boolean notifications = (notification != null && "silent".equalsIgnoreCase( notification ));
 
         sellAllUtil.sellAllSell(p, false, notifications, true, true, false, true);
+        
+        SpigotPlayer sPlayer = new SpigotPlayer( p );
+        PlayerAutoRankupTask.autoSubmitPlayerRankupTask( sPlayer, null );
     }
 
     @Command(identifier = "sellall hand", description = "Sell only what is in your hand if sellable.", 
@@ -340,6 +344,11 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
 
         sellAllUtil.sellAllSell(p, true, false, true, true, false, true);
+        
+        
+        SpigotPlayer sPlayer = new SpigotPlayer( p );
+        PlayerAutoRankupTask.autoSubmitPlayerRankupTask( sPlayer, null );
+		
     }
 
     @Command(identifier = "sellall delaysell", description = "Like SellAll Sell command but this will be delayed for some " +
@@ -380,6 +389,9 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
 
         sellAllUtil.sellAllSell(p, false, false, false, false, true, false);
+        
+        SpigotPlayer sPlayer = new SpigotPlayer( p );
+        PlayerAutoRankupTask.autoSubmitPlayerRankupTask( sPlayer, null );
     }
 
 

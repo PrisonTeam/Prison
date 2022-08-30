@@ -34,6 +34,7 @@ import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.utils.BlockUtils;
+import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
 import tech.mcprison.prison.util.Text;
 
 public abstract class OnBlockBreakEventCore
@@ -692,6 +693,8 @@ public abstract class OnBlockBreakEventCore
 				debugInfo.append( "(autosellBLOCKEVENTS: " + (success ? "success" : "failed") + 
 						" ms: " + dFmt.format( milliTime ) + ") ");
 				
+				PlayerAutoRankupTask.autoSubmitPlayerRankupTask( pmEvent.getSpigotPlayer(), debugInfo );
+				
 			}
 			
 			String triggered = null;
@@ -988,6 +991,8 @@ public abstract class OnBlockBreakEventCore
 		// calculates the durability, applies food exhaustion:
 		processBlockBreakage( pmEvent, debugInfo );
 
+		
+//		forcedAutoRankups( pmEvent, debugInfo );
 
 //		autosellPerBlockBreak( pmEvent.getPlayer() );
 		
@@ -1004,6 +1009,12 @@ public abstract class OnBlockBreakEventCore
 	
 
 	
+//	private void forcedAutoRankups(PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo) {
+//
+//		PlayerAutoRankupTask.autoSubmitPlayerRankupTask( pmEvent.getSpigotPlayer(), debugInfo );
+//		
+//	}
+
 //	/**
 //	 * <p>This function is processed when auto manager is disabled and process crazy enchant explosions
 //	 * is enabled.  This function is overridden in AutoManager when auto manager is enabled.
@@ -1086,7 +1097,7 @@ public abstract class OnBlockBreakEventCore
 	
 
 	
-	public void processBlockBreakage( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo )
+	private void processBlockBreakage( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo )
 	{
 		
 		// If this block is not in the mine (if null) and it has not been broke before
