@@ -1429,6 +1429,19 @@ public class RankPlayer
 		return false;
 	}
 	
+	
+	/**
+	 * <p>This function will return the next rank that they player will have upon
+	 * rankup.  This includes going from the end of the default ladder to the next
+	 * rank on prestiges ladder.
+	 * </p>
+	 * 
+	 * <p>If this function return a null value, then the player has reached the
+	 * end of the game, and they are at the top-most rank.
+	 * </p>
+	 * 
+	 * @return
+	 */
 	public PlayerRank getNextPlayerRank() {
 		PlayerRank rankCurrent = getPlayerRankDefault();
 		
@@ -1463,7 +1476,12 @@ public class RankPlayer
 			
 			// if they don't have a current prestige rank, then use the lowest rank:
 			if ( prestigeRankCurrent == null ) {
-				RankLadder rLadder = getRankLadder( RankLadder.PRESTIGES );
+
+				RankLadder rLadder = Prison.get().getPlatform().getRankLadder( RankLadder.PRESTIGES );
+				
+				// If the player does not have a presetige rank, the getRankLadder will return null.
+				
+//				RankLadder rLadder = getRankLadder( RankLadder.PRESTIGES );
 				nRank = rLadder == null ? null : rLadder.getLowestRank().orElse(null);
 			}
 			

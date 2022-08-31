@@ -15,6 +15,11 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13 2022-08-31
 
 
+* **Fixed an issue with the RankPlayer.getNextPlayerRank() which was not returning the first prestige rank if at end of default and no prestiges.**
+Had to hook in to the LadderManager, routing through Platform, to get the presetiges ladder to pull the first prestige rank.
+Adding this capability expands the functional usefulness of this function greatly.  Now if this function returns a null, then it means the player is at the last possible rank.
+
+
 * **Add to the platform the ability to get a specific RankLadder.**
 
 
