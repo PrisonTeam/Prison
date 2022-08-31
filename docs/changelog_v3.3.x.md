@@ -12,7 +12,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13 2022-08-29
+# 3.3.0-alpha.13 2022-08-31
+
+
+* **Add to the platform the ability to get a specific RankLadder.**
 
 
 * **New feature: Auto Forced Rankup.  When using autosell, it will auto rankup the player when they have enough money.**

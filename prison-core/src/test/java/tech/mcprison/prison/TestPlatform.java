@@ -48,6 +48,7 @@ import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceholderFlags;
+import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.placeholders.Placeholders;
 import tech.mcprison.prison.store.Storage;
@@ -510,5 +511,10 @@ public class TestPlatform implements Platform {
 	@Override
 	public void sellall( RankPlayer rankPlayer ) {
 		
+	}
+
+	@Override
+	public RankLadder getRankLadder(String ladderName) {
+		return null;
 	}
 }

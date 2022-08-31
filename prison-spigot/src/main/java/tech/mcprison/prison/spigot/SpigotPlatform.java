@@ -2937,4 +2937,12 @@ public class SpigotPlatform
 			}
 		}
 	}
+	
+
+	@Override
+	public RankLadder getRankLadder(String ladderName) {
+		
+		RankLadder results = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
+		return results;
+	}
 }
