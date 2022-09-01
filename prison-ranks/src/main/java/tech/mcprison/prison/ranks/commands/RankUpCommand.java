@@ -85,22 +85,25 @@ public class RankUpCommand
     		boolean success = false;
     		
     		List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
+    		StringBuilder sbRanks = new StringBuilder();
+    		
+    		
     		RankupModes mode = RankupModes.MAX_RANKS;
     		
     		if ( !LadderManager.LADDER_PRESTIGES.equalsIgnoreCase( ladder ) && 
     				!LadderManager.LADDER_DEFAULT.equalsIgnoreCase( ladder )) {
     			
-    			success = rankUpPrivate(sender, "", ladder, mode, perms, cmdTasks );
+    			success = rankUpPrivate(sender, "", ladder, mode, perms, cmdTasks, sbRanks );
     		}
     		else {
     			
     			// Run rankupmax on the default ladder only:
-    			success = rankUpPrivate(sender, "", LadderManager.LADDER_DEFAULT, mode, perms, cmdTasks );
+    			success = rankUpPrivate(sender, "", LadderManager.LADDER_DEFAULT, mode, perms, cmdTasks, sbRanks );
     			
     			// If they specified the prestiges ladder, then try to prestige that one rank:
     			if ( success && LadderManager.LADDER_PRESTIGES.equalsIgnoreCase( ladder ) ) {
     				
-    				success = rankUpPrivate(sender, "", LadderManager.LADDER_PRESTIGES, mode, perms, cmdTasks );
+    				success = rankUpPrivate(sender, "", LadderManager.LADDER_PRESTIGES, RankupModes.ONE_RANK, perms, cmdTasks, sbRanks );
     			}
     		}
     		
@@ -113,6 +116,10 @@ public class RankUpCommand
 				submitCmdTasks( player, cmdTasks );
 			}
 			
+			
+			if ( sbRanks.length() > 0 ) {
+				ranksRankupMaxSuccessMsg( sender, sbRanks );
+			}
 			
 			// If the ran rankupmax for prestiges, and the last prestige was successful, then
 			// try it all again!
@@ -155,7 +162,7 @@ public class RankUpCommand
         
 		List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
 		
-    	rankUpPrivate(sender, playerName, ladder, RankupModes.ONE_RANK, "ranks.rankup.", cmdTasks );
+    	rankUpPrivate(sender, playerName, ladder, RankupModes.ONE_RANK, "ranks.rankup.", cmdTasks, null );
     	
     	// submit cmdTasks
     	Player player = getPlayer( sender, playerName );
@@ -164,7 +171,9 @@ public class RankUpCommand
     }
 
     private boolean rankUpPrivate(CommandSender sender, String playerName, String ladder, RankupModes mode, 
-    		String permission, List<PrisonCommandTaskData> cmdTasks ) {
+    		String permission, 
+    		List<PrisonCommandTaskData> cmdTasks, 
+    		StringBuilder sbRanks ) {
 
     	boolean rankupSuccess = false;
     	
@@ -305,7 +314,7 @@ public class RankUpCommand
         // If a player has a rank on the ladder get their rank, otherwise null:
         Rank pRankTarget = playerRankTarget.getRank();
         
-        Rank pRankAfter = null;
+//        Rank pRankAfter = null;
         boolean canPrestige = false;
         
         // If the player is trying to prestige, then the following must be ran to setup the prestige checks:
@@ -361,14 +370,14 @@ public class RankUpCommand
         						sender.getName(), cmdTasks );
         	
         	
-        	processResults( sender, player.getName(), results, null, ladder, currency );
+        	processResults( sender, player.getName(), results, null, ladder, currency, sbRanks );
         	
         	// If the last rankup attempt was successful and they are trying to rankup as many times as possible: 
         	// Note they used to restrict rankupmax from working on prestige ladder... 
         	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS ) {
 //    		if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS && 
 //    				!ladder.equals(LadderManager.LADDER_PRESTIGES)) {
-        		rankUpPrivate( sender, playerName, ladder, mode, permission, cmdTasks );
+        		rankUpPrivate( sender, playerName, ladder, mode, permission, cmdTasks, sbRanks );
         	}
         	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS){
         		rankupSuccess = true;
@@ -376,19 +385,20 @@ public class RankUpCommand
         	
         	
         	// Get the player rank after
-        	PlayerRank playerRankAfter = rankPlayer.getNextPlayerRank();
+//        	PlayerRank playerRankAfter = rankPlayer.getNextPlayerRank();
 //        	PlayerRank playerRankAfter = rankPlayerFactory.getRank( rankPlayer, ladder );
         	
-        	if ( playerRankAfter != null ) {
-        		
-        		pRankAfter = playerRankAfter.getRank();
-        	}
+//        	if ( playerRankAfter != null ) {
+//        		
+//        		pRankAfter = playerRankAfter.getRank();
+//        	}
         	
         	// Prestige method if canPrestige and a successful rankup. 
         	// pRankTarget now contains the target rank prior to processing the rankup.  SO it should be
         	// the same as pRankAfter, but if it is wrong, then rankupWithSuccess will not be true.  So ignore...
-        	if ( canPrestige && rankupSuccess && pRankAfter != null ) {
-        		prestigePlayer( sender, player, rankPlayer, pRankAfter, lm );
+        	if ( canPrestige && rankupSuccess ) {
+        		prestigePlayer( sender, rankPlayer, lm, cmdTasks, sbRanks );
+//        		prestigePlayer( sender, player, rankPlayer, pRankAfter, lm );
         		
         	}
         	else if ( canPrestige ) {
@@ -422,8 +432,10 @@ public class RankUpCommand
      * @param pRankAfter
      * @param lm
      */
-	private void prestigePlayer(CommandSender sender, Player player, RankPlayer rankPlayer, 
-						Rank pRankAfter, LadderManager lm ) {
+	private void prestigePlayer(CommandSender sender, RankPlayer rankPlayer, 
+//						Rank pRankAfter, 
+						LadderManager lm, 
+						List<PrisonCommandTaskData> cmdTasks, StringBuilder sbRanks ) {
 		
        	Output.get().logDebug( DebugTarget.rankup, "Rankup: prestigePlayer: ");
 
@@ -439,24 +451,33 @@ public class RankUpCommand
 //			if (willPrestige && rankupWithSuccess && pRankAfter != null && pRank != pRankAfter) {
 				// Set the player rank to the first one of the default ladder
 				
+			
+			RankLadder ladder = lm.getLadder(LadderManager.LADDER_DEFAULT);
+			Rank dRank = ladder.getLowestRank().get();
+			setPlayerRank( rankPlayer, ladder, dRank, sender, cmdTasks, sbRanks );
+
+			
+//			String ladderName = LadderManager.LADDER_DEFAULT;
+//			String defaultRank = lm.getLadder(LadderManager.LADDER_DEFAULT).getLowestRank().get().getName();
+//			
+//			setPlayerRank( rankPlayer, defaultRank, ladderName, sender );
+			
 				// Call the function directly and skip using dispatch commands:
-				setRank( sender, player.getName(), 
-						lm.getLadder(LadderManager.LADDER_DEFAULT).getLowestRank().get().getName(), 
-							LadderManager.LADDER_DEFAULT );
+//				setRank( sender, player.getName(), 
+//						lm.getLadder(LadderManager.LADDER_DEFAULT).getLowestRank().get().getName(), 
+//							LadderManager.LADDER_DEFAULT );
 				
-//				PrisonAPI.dispatchCommand("ranks set rank " + player.getName() + " " + 
-//						lm.getLadder("default").getLowestRank().get().getName() + " default");
-				// Get that rank
 				
-				RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+				PlayerRank playerRankSecond = rankPlayer.getPlayerRankDefault();
 				
-				PlayerRank playerRankSecond = rankPlayerFactory.getRank( rankPlayer, LadderManager.LADDER_DEFAULT);
+
+				
 				if ( playerRankSecond != null ) {
 					
 					Rank pRankSecond = playerRankSecond.getRank();
 					// Check if the ranks match
 					
-					if (pRankSecond != lm.getLadder(LadderManager.LADDER_DEFAULT).getLowestRank().get()) {
+					if ( !pRankSecond.equals( lm.getLadder(LadderManager.LADDER_DEFAULT).getLowestRank().get()) ) {
 						
 						rankupNotAbleToResetRankMsg( sender );
 						success = false;
@@ -477,7 +498,16 @@ public class RankUpCommand
 			prestigePlayerBalanceSetToZeroMsg( sender );
 		}
 		
-		String title = pRankAfter.getTag() == null ? pRankAfter.getName() : pRankAfter.getTag();
+		
+		
+		PlayerRank newPrestigeRank = rankPlayer.getPlayerRankPrestiges();
+		Rank newPRank = newPrestigeRank == null || newPrestigeRank.getRank() == null ? 
+							null :
+							newPrestigeRank.getRank();
+		
+		String title = newPRank == null || newPRank.getTag() == null ? 
+							newPRank.getName() : 
+							newPRank.getTag();
 		if ( success ) {
 			// Send a message to the player because he did prestige!
 
@@ -540,7 +570,7 @@ public class RankUpCommand
         		// submit cmdTasks...
     			submitCmdTasks( player, cmdTasks );
         		
-        		processResults( sender, player.getName(), results, null, ladder, currency );
+        		processResults( sender, player.getName(), results, null, ladder, currency, null );
         	}
         }
         else {
@@ -601,7 +631,7 @@ public class RankUpCommand
         		// submit cmdTasks
     			submitCmdTasks( player, cmdTasks );
         		
-        		processResults( sender, player.getName(), results, null, ladder, currency );
+        		processResults( sender, player.getName(), results, null, ladder, currency, null );
         	}
         }
         else {
@@ -692,7 +722,7 @@ public class RankUpCommand
         	
         	processResults( rankPlayer, rankPlayer.getName(), results, 
         			pRank.getName(), pRank.getLadder().getName(), 
-        			pRank.getCurrency() );
+        			pRank.getCurrency(), null );
         }
     }
     
@@ -721,10 +751,28 @@ public class RankUpCommand
     		
     		processResults( rankPlayer, rankPlayer.getName(), results, 
     				pRank.getName(), pRank.getLadder().getName(), 
-    				pRank.getCurrency() );
+    				pRank.getCurrency(), null );
     	}
     }
     
+    
+    private void setPlayerRank( RankPlayer rankPlayer, RankLadder ladder, Rank pRank,
+    		CommandSender sender, 
+    		List<PrisonCommandTaskData> cmdTasks, StringBuilder sbRanks ) {
+    	
+    	// Get currency if it exists, otherwise it will be null if the Rank has no currency:
+    	String currency = rankPlayer == null || pRank == null ? null : pRank.getCurrency();
+    	
+    	
+    	RankupResults results = new RankUtil().setRank( rankPlayer, rankPlayer, 
+    			ladder.getName(), pRank.getName(), 
+    			rankPlayer.getName(), sender.getName(), cmdTasks );
+    	
+    	
+    	processResults( sender, rankPlayer.getName(), results, pRank.getName(), ladder.getName(), 
+    			currency, sbRanks );
+    	
+    }
     
 	private void setPlayerRank( Player player, String rank, String ladderName, CommandSender sender ) {
 		UUID playerUuid = player.getUUID();
@@ -752,7 +800,7 @@ public class RankUpCommand
         	// submit cmdTasks
 			submitCmdTasks( player, cmdTasks );
         	
-        	processResults( sender, player.getName(), results, rank, ladderName, currency );
+        	processResults( sender, player.getName(), results, rank, ladderName, currency, null );
         }
 	}
 
@@ -789,16 +837,18 @@ public class RankUpCommand
 
 	public void processResults( CommandSender sender, String playerName, 
 					RankupResults results, 
-					String rank, String ladder, String currency ) {
+					String rank, String ladder, String currency, 
+					StringBuilder sbRanks ) {
 	
 		switch (results.getStatus()) {
             case RANKUP_SUCCESS:
-            	ranksRankupSuccessMsg( sender, playerName, results );
+            	
+            	ranksRankupSuccessMsg( sender, playerName, results, sbRanks );
             	
             	break;
             	
             case DEMOTE_SUCCESS:
-            	ranksRankupSuccessMsg( sender, playerName, results );
+            	ranksRankupSuccessMsg( sender, playerName, results, null );
 
                 break;
             case RANKUP_CANT_AFFORD:

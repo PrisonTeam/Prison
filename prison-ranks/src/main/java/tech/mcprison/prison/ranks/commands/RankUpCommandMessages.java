@@ -168,8 +168,20 @@ public class RankUpCommandMessages
 	
 	
 	protected void ranksRankupSuccessMsg( CommandSender sender, String playerName, 
-			RankupResults results ) {
+			RankupResults results, 
+			StringBuilder sbRanks ) {
 		
+//		PlayerRank tpRank = results.getPlayerRankTarget();
+		Rank tRank = results.getTargetRank();
+		
+		
+		// If sbRanks is not null, then just log the rank tag and exit.  
+		// Do not generate any other messages.
+		if ( sbRanks != null && tRank != null ) {
+			
+			sbRanks.append( tRank.getTag() ).append( " " );
+			return;
+		}
 		
        	String messageId = results.getStatus() == RankupStatus.DEMOTE_SUCCESS ? 
        					"ranks_rankup__demote_success" :
@@ -177,10 +189,6 @@ public class RankUpCommandMessages
 
     	String messagNoPlayerName = PrisonRanks.getInstance().getRanksMessages()
     			.getLocalizable( "ranks_rankup__rankup_no_player_name" ).localize();
-    	
-//		PlayerRank tpRank = results.getPlayerRankTarget();
-		Rank tRank = results.getTargetRank();
-		
     	
     	Localizable localManager = PrisonRanks.getInstance().getRanksMessages()
     			.getLocalizable( messageId )
@@ -216,6 +224,30 @@ public class RankUpCommandMessages
     	}
     	else {
     		localManager.sendTo( sender );
+    	}
+	}
+
+	protected void ranksRankupMaxSuccessMsg( CommandSender sender, StringBuilder ranks ) {
+		
+    	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+    			.getLocalizable( "ranks_rankup__log_rank_change" )
+    			.withReplacements(
+    					
+    					sender.getName(), ranks.toString()
+    				);
+    	
+    	// Print to console for record:
+    	Output.get().logInfo( localManagerLog.localize() );
+    	
+    	
+    	if ( Prison.get().getPlatform().getConfigBooleanFalse( "broadcast-rankups" ) ) {
+    		
+    		localManagerLog.broadcast();
+    		
+    	}
+    	else {
+    		
+    		localManagerLog.sendTo( sender );
     	}
 	}
 	
