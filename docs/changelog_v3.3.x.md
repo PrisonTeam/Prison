@@ -15,6 +15,11 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13 2022-08-31
 
 
+* **Redone how the command `/rankupmax` works.**
+The command `/rankupmax` and `/rankupmax default` has not changed, but has been improved to supply the correct next rank using the newer getNextRank function to ensure consistency.
+The command `/rankupmax prestiges` used to only provide the same behavior as `/prestige` and `/rankup prestiges`.  The new behavior is that `/rankupmax prestiges` will first perform `/rankupmax` then it will try `/rankup prestiges`. If completes successfully, then it will repeat both the rankupmax and prestiges, and etc.
+
+
 * **Fixed an issue with the RankPlayer.getNextPlayerRank() which was not returning the first prestige rank if at end of default and no prestiges.**
 Had to hook in to the LadderManager, routing through Platform, to get the presetiges ladder to pull the first prestige rank.
 Adding this capability expands the functional usefulness of this function greatly.  Now if this function returns a null, then it means the player is at the last possible rank.
