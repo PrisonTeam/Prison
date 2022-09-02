@@ -15,6 +15,11 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13 2022-09-01
 
 
+
+
+* **v3.3.0-alpha.13a 2022-09-01**
+
+
 * **Cleaned up the /rankupmax command to improve on the messaging so it's not as spammy.**
 Improvements with the /rankupmax prestiges command too.
 
