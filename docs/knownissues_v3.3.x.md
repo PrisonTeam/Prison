@@ -8,16 +8,34 @@
 # TODO Items for v3.3.0-alpha.13
 
 
-- In the GUI menu, the config setting: Enchantment_effect_current_rank is off by 1.  If D rank it shows E being unlocked. - CITYJD
-- DONE: Force sellall before prestiges - kikiisyourfriend
+- DONE: prison commands if using ; for multi-commands, and if a space follows ; then it's not working.
 
+
+- The command `/rankupmax` needs to be fixed - redonthehead
+  - `/rankupmax`, or `/rankupmax default` is fine, but replaced getting the next rank with the new code so it works better.
+  - `/rankupmax prestiges` is the same as `/prestige` and `/rankup prestiges`.  Change so it will go through the default ladder, then prestige, then repeat if enough money.
+  
+  
+
+- when testing the block breakage with the SHIFT-click with the mine wand, I also saw that it processed the same block twice.  The first time looked as if the drop was being canceled, then the second time the event was being canceled.  Or vice-a-versa.  I don't remember setting it up both ways.
+
+
+
+
+
+- NOT AN ISSUE: In the GUI menu, the config setting: Enchantment_effect_current_rank is off by 1.  If D rank it shows E being unlocked. - CITYJD
+  - Looking at the code where this is used (player ranks and prestiges), the intention of this setting is to highlight the player's next rank.  So the settings name is wrong... It should be `Enchantment_effect_next_rank: true`
+  - Locate docs that covers this topic and make a note explaing what this is for and why the settings name is wrong.
+  
+  
 
 - Add `*all*` to `/mines set notification` - CITYJD
 
 
-- Auto-Forced-Rankups and prestiges when the player has enough money.  Kikiisyourfriend
+- DONE: Force sellall before prestiges - kikiisyourfriend
+
+- DONE: Auto-Forced-Rankups and prestiges when the player has enough money.  Kikiisyourfriend
  - a new autoFeatures entry
- 
  
 - DONE: Enable Access to prior mines - kikiisyourfriend
  - disable to prevent going back to prior rank mines.
@@ -26,7 +44,7 @@
 
 - DONE: prison_rank__linked_mines_rankname prison_r_lm_rankname provide a placeholder for the mine's tags.  B0mer
 
-
+ 
 - DONE: Mines tp: option to list all available mines per rank? Thaysa
 
 
@@ -34,7 +52,9 @@
  - DONE: Remove Plugins & Prison Ladders
  - DONE: Add: modules, Economy (integrations), Perms (integrations), Placeholder (intg)
  - DONE: Add: Language
- - 
+ - Eliminate zero counts (don't report)
+ - validate that plugins listed in other reports are being removed from plugins a-z.
+
 
 
 - `/ranks player` is not including all of the info for rank multipliers like it should have.
@@ -69,7 +89,7 @@
   - ranks and ladders
     - auto prestiges (unlimited) based upon formulas
     - new file formats - json ORM?
-  - DONE usind topn: archiving old players
+  - DONE using topn: archiving old players
   - DONE: more work on top-n rankings
   - /mines wguard - worldguard hints for mines (generate scripts to run?) - Use patterns that can be edited
 

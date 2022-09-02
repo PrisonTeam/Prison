@@ -428,6 +428,11 @@ public class PrisonCommandTaskData {
 				
 				long start = System.nanoTime();
 				
+				
+				// was failing with leading spaces after spliting after a ";" so trim to fix it:
+				task = task == null ? "" : task.trim();
+				
+				
 				// Apply the custom placeholders:
 				for ( PrisonCommandTaskPlaceholderData cPlaceholder : getCustomPlaceholders() ) {
 					if ( cPlaceholder.contains( task ) ) {

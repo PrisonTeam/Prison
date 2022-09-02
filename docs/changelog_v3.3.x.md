@@ -12,9 +12,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13 2022-09-01
+# 3.3.0-alpha.13 2022-09-02
 
 
+
+* **Fix an issue with leading spaces in prison commands, especially right after using semi-colons to chain multiple commands.**
 
 
 * **v3.3.0-alpha.13a 2022-09-01**
