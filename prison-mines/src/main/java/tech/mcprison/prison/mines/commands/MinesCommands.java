@@ -128,8 +128,10 @@ public class MinesCommands
     
     
     @Override
-    @Command(identifier = "mines block set", permissions = "mines.block", onlyPlayers = false, 
-			description = "Changes the percentage of a block in a mine.")
+    @Command(identifier = "mines block setChance", permissions = "mines.block", onlyPlayers = false, 
+			description = "Changes the percent chance of a block spawning within in a mine.  "
+					+ "This chance is not cryptographically precise.  The actual percentage will "
+					+ "also vary based upon block constraints and other factors.")
 	public void setBlockCommand(CommandSender sender,
 			@Arg(name = "mineName", description = "The name of the mine to edit.") 
 					String mineName,
@@ -152,7 +154,11 @@ public class MinesCommands
     }
     
     @Command(identifier = "mines block search", permissions = "mines.block", 
-					description = "Searches for a block to add to a mine.")
+					description = "Searches for a block to add to a mine.  "
+							+ "This does not include items: see the command '/mines block searchAll'.  "
+							+ "These block and item names are based upon XSeries's XMaterial block names "
+							+ "and are used to provide a uniform and consistant naming convention for "
+							+ "all versions of minecraft & spigot.")
 	public void searchBlockCommand(CommandSender sender,
 			@Arg(name = "search", def = " ", 
 				description = "Any part of the block's name or ID.") String search,
@@ -179,7 +185,7 @@ public class MinesCommands
     
     @Override
     @Command(identifier = "mines block list", permissions = "mines.block", 
-    				description = "Searches for a block to add to a mine.")
+    				description = "Lists all of the blocks assigned to a mine.")
     public void listBlockCommand(CommandSender sender,
     		@Arg(name = "mineName", description = "The name of the mine to view.") String mineName ) {
 
@@ -1788,17 +1794,78 @@ public class MinesCommands
         @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
         @Arg(name = "time", description = "Time in seconds for the mine to auto reset. " +
         		"With a minimum value of "+ MineData.MINE_RESET__TIME_SEC__MINIMUM + " seconds. " +
-        				"Using 'disable' will turn off the auto reset." ) String time
+        				"Using '*disable*' will turn off the auto reset.  Use of "
+        				+ "*default* will set the time to " + 
+        				MineData.MINE_RESET__TIME_SEC__DEFAULT + " seconds. "
+        						+ "[*default* *disable*]" ) String time
         
     		) {
+
+    	int resetTime = MineData.MINE_RESET__TIME_SEC__DEFAULT;
+
+    	PrisonMines pMines = PrisonMines.getInstance();
         
+    	if ( "*disable*".equalsIgnoreCase( time ) ) {
+    		resetTime = -1;
+    	}
+    	else if ( "*default*".equalsIgnoreCase( time ) ) {
+    		// use the default time
+    	}
+    	else {
+    		try {
+    			if ( time != null && time.trim().length() > 0 ) {
+        			resetTime = Integer.parseInt( time );
+        		}
+    		}
+    		catch ( NumberFormatException e ) {
+				Output.get().sendWarn( sender, 
+						"&7Invalid resetTime value for &b%s&7. Must be an integer value of &b%d &7or greater. [&b%s&7]",
+						mineName, MineData.MINE_RESET__TIME_SEC__MINIMUM, time );
+				return;
+			}
+    	}
+    	if ( resetTime < MineData.MINE_RESET__TIME_SEC__MINIMUM ) {
+    		Output.get().sendWarn( sender, 
+    				"&7Invalid resetTime value for &b%s&7. Must be an integer value of &b%d&7 or greater. [&b%d&7]",
+    				mineName, MineData.MINE_RESET__TIME_SEC__MINIMUM, resetTime );
+    		return;
+    	}
+    	
+    	if ( "*all*".equalsIgnoreCase( mineName ) ) {
+    		
+    		for ( Mine mine : pMines.getMines() ) {
+    			if ( mine.getResetTime() != resetTime ) {
+    				
+    				mine.setResetTime( resetTime );
+    				
+    				pMines.getMineManager().saveMine( mine );
+    				
+    				if ( resetTime == -1 ) {
+    					
+    					Output.get().logInfo( "&7Automatic resets have been disabled for mine %s.", mine.getTag() );
+    				}
+    				else {
+    					// User's message:
+    	        		Output.get().sendInfo( sender, "&7mines set resettime: &b%s &7resetTime set to &b%d", 
+    	        				mine.getTag(), resetTime );
+    	        		
+    	        		// Server Log message:
+    	        		Player player = getPlayer( sender );
+    	        		Output.get().logInfo( "&bmines set resettime&7: &b%s &7set &b%s &7resetTime to &b%d", 
+    	        				(player == null ? "console" : player.getDisplayName()), mine.getTag(), resetTime  );
+    				}
+    			}
+    		}
+    		
+    		return;
+    	}
+    	
         if (performCheckMineExists(sender, mineName)) {
         	setLastMineReferenced(mineName);
         	
-        	PrisonMines pMines = PrisonMines.getInstance();
         	Mine m = pMines.getMine(mineName);
         	
-        	if ( "disable".equalsIgnoreCase( time ) ) {
+        	if ( "*disable*".equalsIgnoreCase( time ) ) {
         		
         		m.setResetTime( -1 );
         		
@@ -1809,41 +1876,31 @@ public class MinesCommands
         		return;
         	}
 
-        	try {
-        		int resetTime = MineData.MINE_RESET__TIME_SEC__DEFAULT;
-
-        		if ( time != null && time.trim().length() > 0 ) {
-        			resetTime = Integer.parseInt( time );
-        		}
-
-				if ( resetTime < MineData.MINE_RESET__TIME_SEC__MINIMUM ) {
-					Output.get().sendWarn( sender, 
-							"&7Invalid resetTime value for &b%s&7. Must be an integer value of &b%d&7 or greater. [&b%d&7]",
-							mineName, MineData.MINE_RESET__TIME_SEC__MINIMUM, resetTime );
-				} else {
+        	
+//        	if ( resetTime < MineData.MINE_RESET__TIME_SEC__MINIMUM ) {
+//        		Output.get().sendWarn( sender, 
+//        				"&7Invalid resetTime value for &b%s&7. Must be an integer value of &b%d&7 or greater. [&b%d&7]",
+//        				mineName, MineData.MINE_RESET__TIME_SEC__MINIMUM, resetTime );
+//        	} else 
+        	{
 //			        if ( !m.isEnabled() ) {
 //			        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
 //			        	return;
 //			        }
-					
-					m.setResetTime( resetTime );
-					
-        			pMines.getMineManager().saveMine( m );
-        								
-					// User's message:
-					Output.get().sendInfo( sender, "&7mines set resettime: &b%s &7resetTime set to &b%d", m.getTag(), resetTime );
-					
-					// Server Log message:
-					Player player = getPlayer( sender );
-					Output.get().logInfo( "&bmines set resettime&7: &b%s &7set &b%s &7resetTime to &b%d", 
-							(player == null ? "console" : player.getDisplayName()), m.getTag(), resetTime  );
-				}
-			}
-			catch ( NumberFormatException e ) {
-				Output.get().sendWarn( sender, 
-						"&7Invalid resetTime value for &b%s&7. Must be an integer value of &b%d &7or greater. [&b%s&7]",
-						mineName, MineData.MINE_RESET__TIME_SEC__MINIMUM, time );
-			}
+        		
+        		m.setResetTime( resetTime );
+        		
+        		pMines.getMineManager().saveMine( m );
+        		
+        		// User's message:
+        		Output.get().sendInfo( sender, "&7mines set resettime: &b%s &7resetTime set to &b%d", m.getTag(), resetTime );
+        		
+        		// Server Log message:
+        		Player player = getPlayer( sender );
+        		Output.get().logInfo( "&bmines set resettime&7: &b%s &7set &b%s &7resetTime to &b%d", 
+        				(player == null ? "console" : player.getDisplayName()), m.getTag(), resetTime  );
+        	}
+
         } 
     }
 
@@ -2018,8 +2075,10 @@ public class MinesCommands
     @Command(identifier = "mines set notification", permissions = "mines.notification", 
     		description = "Set a mine's notification mode.")
     public void setNotificationCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
-        @Arg(name = "mode", def="displayOptions", description = "The notification mode to use: disabled, within, radius") 
+        @Arg(name = "mineName", description = "The name of the mine to edit, or '*all*' to "
+        		+ "apply to all mines. [*all*]") String mineName,
+        @Arg(name = "mode", def="displayOptions", description = "The notification mode "
+        		+ "to use: disabled, within, radius") 
     					String mode,
         @Arg(name = "radius", def="0", description = "The distance from the center of the mine to notify players of a reset." ) 
     					String radius
@@ -2233,17 +2292,53 @@ public class MinesCommands
     @Command(identifier = "mines set rank", permissions = "mines.set", 
     		description = "Links a mine to a rank or removes the rank.")
     public void setMineRankCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine.") String mineName,
-        @Arg(name = "rankName", description = "Then rank name to link to this mine. " +
-        		"Use 'none' to remove the rank.") 
+        @Arg(name = "mineName", description = "The name of the mine, or '*all*' for all mines.") String mineName,
+        @Arg(name = "rankName", def="*mine*", description = "Then rank name to link to this mine. " +
+        		"Use '*none*' to remove the rank. If using '*all*' for mine name, then rank name defaults to "
+        		+ "*mineName* and will try to set the given rank name to the mine name. This is an "
+        		+ "automatic assignment when '*all*' is used for the mine name. If a rank name does "
+        		+ "not exist that matches the mine name, then it will be skipped. [*none* *mineName*]") 
     					String rankName
         
     		) {
+    	
+    	PrisonMines pMines = PrisonMines.getInstance();
+
+    	if ( mineName != null && "*all*".equalsIgnoreCase( mineName ) ) {
+    		
+    		for ( Mine mine : pMines.getMines() ) {
+				if ( "*none*".equalsIgnoreCase( rankName ) && mine.getRank() != null ) {
+					// First unlink the preexisting mine and rank:
+	            	String removedRankName = mine.getRank().getName();
+	            	
+	            	// unlinkModuleElement will do the saving
+	            	Prison.get().getPlatform().unlinkModuleElements( mine, mine.getRank() );
+	            	
+	            	sender.sendMessage( String.format( "&3Rank &7%s &3has been removed from mine &7%s", 
+	        				removedRankName, mine.getTag() ));
+				}
+				else if ( "*mineName*".equalsIgnoreCase( rankName ) ) {
+					
+					boolean success = Prison.get().getPlatform().linkModuleElements( mine, 
+	            			ModuleElementType.RANK, mine.getName() );
+	            	
+	            	if ( !success ) {
+	            		sender.sendMessage( String.format( 
+	            				"&3Invalid Rank Name for mine %s: &7%s", mine.getName(), mine.getName() ));
+	            	}
+	            	else {
+	            		sender.sendMessage( String.format( "&3Rank &7%s &3has been linked to mine &7%s", 
+	            				rankName, mine.getTag() ));
+	            	}
+				}
+			}
+    		
+    		return;
+    	}
         
         if (performCheckMineExists(sender, mineName)) {
         	setLastMineReferenced(mineName);
 
-        	PrisonMines pMines = PrisonMines.getInstance();
         	Mine m = pMines.getMine(mineName);
             
             
@@ -2265,7 +2360,7 @@ public class MinesCommands
 
             }
             
-            if ( !"none".equalsIgnoreCase( rankName ) ) {
+            if ( !"*none*".equalsIgnoreCase( rankName ) ) {
             	
             	boolean success = Prison.get().getPlatform().linkModuleElements( m, 
             			ModuleElementType.RANK, rankName );
@@ -2844,23 +2939,43 @@ public class MinesCommands
     				"the submission delay will be. Enable '/mines stats' to monitor run time of " +
     				"the sweep, then use '/mines info' to view them.")
     public void setMineSweeperCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
+        @Arg(name = "mineName", description = "The name of the mine to edit, or '*all*' to "
+        		+ "apply the change to all mines. [*all*]") String mineName,
         @Arg(name = "mineSweeper", def="disabled", 
         		description = "Enable or disable the mineSweeper tasks [disable, enable]") 
     					String mineSweeper
     		) {
+    	
+    	if  ( mineSweeper == null || !"disable".equalsIgnoreCase( mineSweeper ) && 
+    			!"enable".equalsIgnoreCase( mineSweeper ) ) {
+    		sender.sendMessage( "&cInvalid paging option&7. Use &adisable&7 or &aenable&7" );
+    		return;
+    	}
+    	
+    	PrisonMines pMines = PrisonMines.getInstance();
+
+    	if ( mineName != null && "*all*".equalsIgnoreCase( mineName ) ) {
+    		
+    		for ( Mine mine : pMines.getMines() ) {
+    			if ( "disable".equalsIgnoreCase( mineSweeper ) && mine.isMineSweeperEnabled() ) {
+    				mine.setMineSweeperEnabled( false );
+    				pMines.getMineManager().saveMine( mine );
+    				sender.sendMessage( String.format( "&7Mine Sweeper has been disabled for mine %s.", mine.getTag()) );
+    			}
+    			else if ( "enable".equalsIgnoreCase( mineSweeper ) && !mine.isMineSweeperEnabled() ) {
+    				mine.setMineSweeperEnabled( true );
+    				pMines.getMineManager().saveMine( mine );
+    				sender.sendMessage( String.format( "&7Mine Sweeper has been enabled for mine %s.", mine.getTag()) );
+    			}
+    		}
+    		
+    		return;
+    	}
         
         if (performCheckMineExists(sender, mineName)) {
         	setLastMineReferenced(mineName);
 
-        	PrisonMines pMines = PrisonMines.getInstance();
         	Mine m = pMines.getMine(mineName);
-            
-            if  ( mineSweeper == null || !"disable".equalsIgnoreCase( mineSweeper ) && 
-            									!"enable".equalsIgnoreCase( mineSweeper ) ) {
-            	sender.sendMessage( "&cInvalid paging option&7. Use &adisable&7 or &aenable&7" );
-            	return;
-            }
             
             if ( "disable".equalsIgnoreCase( mineSweeper ) && m.isMineSweeperEnabled() ) {
             	m.setMineSweeperEnabled( false );

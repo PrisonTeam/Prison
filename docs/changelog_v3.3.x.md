@@ -15,6 +15,8 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13 2022-09-02
 
 
+* **Modified a number of mines commands to add a global *all* feature to allow easier management of applying commands to more than one name at a time.**
+
 
 * **Fix an issue with leading spaces in prison commands, especially right after using semi-colons to chain multiple commands.**
 
