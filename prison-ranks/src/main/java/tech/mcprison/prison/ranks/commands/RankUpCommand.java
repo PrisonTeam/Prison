@@ -67,20 +67,28 @@ public class RankUpCommand
     			description = "Ranks up to the max rank that the player can afford. If the player has the " +
     					"perm ranks.rankupmax.prestige it will try to rankup prestige once it maxes out " +
     					"on the default ladder.", 
-    			altPermissions = {"ranks.rankupmax.[ladderName]", "ranks.rankupmax.prestige"},
+    			altPermissions = {"ranks.rankupmax.default", "ranks.rankupmax.prestige", "ranks.rankupmax.[ladderName]"},
     			onlyPlayers = false) 
     public void rankUpMax(CommandSender sender,
     		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder 
     		) {
 
-    	// Not supposed to check perms here... But it is a simple check, and it if works...
     	String perms = "ranks.rankupmax.";
-    	if ( sender.hasPermission( perms + ladder) 
-    			// || sender.hasPermission("ranks.rankupmax.prestiges")
+    	String permsLadder = perms + ladder;
+    	
+		boolean isPrestigesEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) || 
+				Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" );
+		
+		boolean isLadderPrestiges = ladder.equalsIgnoreCase(LadderManager.LADDER_PRESTIGES);
+//		boolean isLadderDefault = ladder.equalsIgnoreCase(LadderManager.LADDER_DEFAULT);
+    	
+    	if ( (isPrestigesEnabled && isLadderPrestiges ||
+    			!isLadderPrestiges ) && 
+    			sender.hasPermission( permsLadder) 
     			) {
     		Output.get().logDebug( DebugTarget.rankup, 
-    				"Rankup: cmd '/rankupmax %s'  Passed perm check: ranks.rankupmax.%s", 
-    				ladder, ladder );
+    				"Rankup: cmd '/rankupmax %s'  Passed perm check: %s", 
+    				ladder, permsLadder );
     		
     		boolean success = false;
     		
@@ -136,10 +144,14 @@ public class RankUpCommand
     }
 
 
-	@Command(identifier = "rankup", description = "Ranks up to the next rank.", 
-			permissions = "ranks.user", altPermissions = "ranks.rankup.[ladderName]", onlyPlayers = false) 
+	@Command(identifier = "rankup", description = "Ranks up to the next rank. All players have access to " +
+			"the ability to rankup on the default ladder so no perms are required, but any other ladder " +
+			"requires the correct perms.", 
+			permissions = "ranks.user", 
+			altPermissions = {"ranks.rankup.default", "ranks.rankup.prestiges", "ranks.rankup.[ladderName]"}, 
+			onlyPlayers = false) 
     public void rankUp(CommandSender sender,
-		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder,
+		@Arg(name = "ladder", description = "The ladder to rank up on. Defaults to 'default'.", def = "default")  String ladder,
 		@Arg(name = "playerName", description = "Provides the player's name for the rankup, but" +
 				"this can only be provided by a non-player such as console or ran from a script.", def = "")  String playerName
 		) {
@@ -153,21 +165,50 @@ public class RankUpCommand
         	return;
         }
         
-		Output.get().logDebug( DebugTarget.rankup, 
-				"Rankup: cmd '/rankup %s%s'  Processing ranks.rankup.%s", 
-				ladder, 
-				( playerName.length() == 0 ? "" : " " + playerName ),
-				ladder
-				);
-        
-		List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
+        String perms = "ranks.rankup.";
+        String permsLadder = perms + ladder;
+    	
+		boolean isPrestigesEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) || 
+				Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" );
 		
-    	rankUpPrivate(sender, playerName, ladder, RankupModes.ONE_RANK, "ranks.rankup.", cmdTasks, null );
+		boolean isLadderPrestiges = ladder.equalsIgnoreCase(LadderManager.LADDER_PRESTIGES);
+		boolean isLadderDefault = ladder.equalsIgnoreCase(LadderManager.LADDER_DEFAULT);
     	
-    	// submit cmdTasks
-    	Player player = getPlayer( sender, playerName );
-		submitCmdTasks( player, cmdTasks );
-    	
+    	if ( isLadderDefault ||
+    			
+    			(isPrestigesEnabled && isLadderPrestiges ||
+    			!isLadderPrestiges ) && 
+    			sender.hasPermission( permsLadder) 
+    			) {
+    		Output.get().logDebug( DebugTarget.rankup, 
+    				"Rankup: cmd '/rankup %s%s'  Passed perm check: %s", 
+    				ladder, 
+    				( playerName.length() == 0 ? "" : " " + playerName ),
+    				permsLadder );
+        
+        	
+//        	Output.get().logDebug( DebugTarget.rankup, 
+//        			"Rankup: cmd '/rankup %s%s'  Processing %s", 
+//        			ladder, 
+//        			( playerName.length() == 0 ? "" : " " + playerName ),
+//        			permsLadder
+//        			);
+        	
+        	List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
+        	
+        	rankUpPrivate(sender, playerName, ladder, RankupModes.ONE_RANK, perms, cmdTasks, null );
+        	
+        	// submit cmdTasks
+        	Player player = getPlayer( sender, playerName );
+        	submitCmdTasks( player, cmdTasks );
+        }
+    	else {
+    		Output.get().logDebug( DebugTarget.rankup, 
+    				"Rankup: Failed: cmd '/rankup %s'  Does not have the permission %s", 
+    				ladder, permsLadder );
+    		rankupMaxNoPermissionMsg( sender, permsLadder );
+    	}
+        
     }
 
     private boolean rankUpPrivate(CommandSender sender, String playerName, String ladder, RankupModes mode, 
@@ -178,27 +219,34 @@ public class RankUpCommand
     	boolean rankupSuccess = false;
     	
         // RETRIEVE THE LADDER
-
-    	boolean isPrestigesEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) || 
-									 Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" );
-    	boolean isLadderPrestiges = ladder.equalsIgnoreCase(LadderManager.LADDER_PRESTIGES);
-    	boolean isLadderDefault = ladder.equalsIgnoreCase(LadderManager.LADDER_DEFAULT);
-    	String permCheck = permission + ladder.toLowerCase();
     	
-        // This player has to have permission to rank up on this ladder, but
-    	// ignore if either the default or prestiges ladder.  This only is to check for
-    	//  other ladders.
-        if (!( isLadderPrestiges && isPrestigesEnabled ) && 
-		        	!isLadderDefault && 
-		        	!sender.hasPermission( permCheck )) {
-
-        	Output.get().logDebug( DebugTarget.rankup, 
-        			"Rankup: rankUpPrivate: failed rankup perm check. Missing perm: %s",
-        				permCheck );
-        	
-        	rankupMaxNoPermissionMsg( sender, permCheck );
-            return false;
-        }
+//    	// Perms have already been checked on the RankupModes.MAX_RANKS:
+//    	if ( mode != RankupModes.MAX_RANKS ) {
+//    		
+//    		boolean isPrestigesEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) || 
+//    				Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" );
+//    		
+//    		boolean isLadderPrestiges = ladder.equalsIgnoreCase(LadderManager.LADDER_PRESTIGES);
+//    		boolean isLadderDefault = ladder.equalsIgnoreCase(LadderManager.LADDER_DEFAULT);
+//    		
+//    		String permCheck = permission + ladder.toLowerCase();
+//    		
+//    		// This player has to have permission to rank up on this ladder, but
+//    		// ignore if either the default or prestiges ladder.  This only is to check for
+//    		//  other ladders.
+//    		if (!( isLadderPrestiges && isPrestigesEnabled ) && 
+//    				!isLadderDefault && 
+//    				!sender.hasPermission( permCheck )) {
+//    			
+//    			Output.get().logDebug( DebugTarget.rankup, 
+//    					"Rankup: rankUpPrivate: failed rankup perm check. Missing perm: %s",
+//    					permCheck );
+//    			
+//    			rankupMaxNoPermissionMsg( sender, permCheck );
+//    			return false;
+//    		}
+//    		
+//    	}
 
         
         // 
