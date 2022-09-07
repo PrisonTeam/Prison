@@ -8,44 +8,14 @@
 # TODO Items for v3.3.0-alpha.13
 
 
-- DONE: prison commands if using ; for multi-commands, and if a space follows ; then it's not working.
+- Prestige - needs improvements
+  - Confirmation does not perform any prechecks to confirm if the player can even prestige
+  - Confirmation does not reflect prestige settins. It always shows that rank and balance will be reset, even if that is disabled.
+  - It's not clear how to confirm via chat
 
-
-- The command `/rankupmax` needs to be fixed - redonthehead
-  - `/rankupmax`, or `/rankupmax default` is fine, but replaced getting the next rank with the new code so it works better.
-  - `/rankupmax prestiges` is the same as `/prestige` and `/rankup prestiges`.  Change so it will go through the default ladder, then prestige, then repeat if enough money.
-  
-  
 
 - when testing the block breakage with the SHIFT-click with the mine wand, I also saw that it processed the same block twice.  The first time looked as if the drop was being canceled, then the second time the event was being canceled.  Or vice-a-versa.  I don't remember setting it up both ways.
 
-
-
-
-
-- NOT AN ISSUE: In the GUI menu, the config setting: Enchantment_effect_current_rank is off by 1.  If D rank it shows E being unlocked. - CITYJD
-  - Looking at the code where this is used (player ranks and prestiges), the intention of this setting is to highlight the player's next rank.  So the settings name is wrong... It should be `Enchantment_effect_next_rank: true`
-  - Locate docs that covers this topic and make a note explaing what this is for and why the settings name is wrong.
-  
-  
-
-- Add `*all*` to `/mines set notification` - CITYJD
-
-
-- DONE: Force sellall before prestiges - kikiisyourfriend
-
-- DONE: Auto-Forced-Rankups and prestiges when the player has enough money.  Kikiisyourfriend
- - a new autoFeatures entry
- 
-- DONE: Enable Access to prior mines - kikiisyourfriend
- - disable to prevent going back to prior rank mines.
- - See `prison-mines.access-to-prior-mines` in config.yml
-
-
-- DONE: prison_rank__linked_mines_rankname prison_r_lm_rankname provide a placeholder for the mine's tags.  B0mer
-
- 
-- DONE: Mines tp: option to list all available mines per rank? Thaysa
 
 
 - bStats:
@@ -78,7 +48,7 @@
 
 
 
-- DONE: Option to skip applying the rank cost multiplier to a specific ladder.
+
 
 
 - For v3.3.0 release:
@@ -136,6 +106,8 @@
 
 
 - Mine Resets - Glass block not being removed - harold
+
+
 
 - DONE?:  Archive old players - budderman18
   - archive all player files to a zip. Remove the originals. If player logs back on, then restore the archives. Prevent startup from adding these players back.
@@ -270,6 +242,47 @@ https://github.com/Auxilor/EcoEnchants/blob/master/eco-core/core-plugin/src/main
 
 
 # Completed tasks
+
+
+
+- DONE: prison commands if using ; for multi-commands, and if a space follows ; then it's not working.
+
+
+- DONE: The command `/rankupmax` needs to be fixed - redonthehead
+  - DONE: `/rankupmax`, or `/rankupmax default` is fine, but replaced getting the next rank with the new code so it works better.
+  - DONE: `/rankupmax prestiges` is the same as `/prestige` and `/rankup prestiges`.  Change so it will go through the default ladder, then prestige, then repeat if enough money.
+  
+  
+- NOT AN ISSUE: In the GUI menu, the config setting: Enchantment_effect_current_rank is off by 1.  If D rank it shows E being unlocked. - CITYJD
+  - Looking at the code where this is used (player ranks and prestiges), the intention of this setting is to highlight the player's next rank.  So the settings name is wrong... It should be `Enchantment_effect_next_rank: true`
+  - Locate docs that covers this topic and make a note explaing what this is for and why the settings name is wrong.
+  
+  
+
+- DONE: Add `*all*` to `/mines set notification` - CITYJD
+ - Fixed a few other commands too to provide applying the command to all mines.
+ 
+ 
+
+- DONE: Force sellall before prestiges - kikiisyourfriend
+
+- DONE: Auto-Forced-Rankups and prestiges when the player has enough money.  Kikiisyourfriend
+ - a new autoFeatures entry
+ 
+- DONE: Enable Access to prior mines - kikiisyourfriend
+ - disable to prevent going back to prior rank mines.
+ - See `prison-mines.access-to-prior-mines` in config.yml
+
+
+- DONE: prison_rank__linked_mines_rankname prison_r_lm_rankname provide a placeholder for the mine's tags.  B0mer
+
+ 
+- DONE: Mines tp: option to list all available mines per rank? Thaysa
+
+
+- DONE: Option to skip applying the rank cost multiplier to a specific ladder.
+
+
 
 . DONE: Use of placeholders in gui mines is not working correctly - PassBl
  - Trying to use: - '&7Test Cost P1:  &3%prison_rank__player_cost_formatted_p1%'

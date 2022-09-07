@@ -268,6 +268,11 @@ The sound and visual effects are played at different points within the explosion
 
 
 
+
+**offsetTicks** Depending upon what **effectState** is active, this value could be zero, negative, or positive.  The purpose of the offsetTicks is to string out multiple effects that are played over time which will layer the visuals and audio effects to make them more intense and unique.
+
+
+
 **volumne**: Yeah, there's a typo in there... lol
 
 Default volume is 1.0.  Less is quieter and higher is louder.

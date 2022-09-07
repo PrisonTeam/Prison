@@ -337,6 +337,9 @@ Get your prison setup quickly by running the command `/ranks autoCommand` which 
     How to enable backpacks.
 
 
+* [Troubleshooting](prison_docs_900_troubleshooting.md) 
+    Mining issues.
+    
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
