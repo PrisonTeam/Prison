@@ -1,5 +1,6 @@
 package tech.mcprison.prison;
 
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
 
 /**
@@ -20,6 +21,16 @@ public class TestScheduler implements Scheduler {
 
     @Override public int runTaskTimerAsync(Runnable run, long delay, long interval) {
         return 0;
+    }
+    
+    @Override
+    public void dispatchCommand(Player player, String command) {
+    	
+    }
+    
+    @Override
+    public void performCommand(Player player, String command) {
+    	
     }
 
     @Override public void cancelTask(int taskId) {

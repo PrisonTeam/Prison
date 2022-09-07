@@ -18,8 +18,13 @@
 
 package tech.mcprison.prison.spigot;
 
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitScheduler;
+
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.Scheduler;
+import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 /**
  * @author Faizaan A. Datoo
@@ -52,6 +57,32 @@ public class SpigotScheduler implements Scheduler {
     @Override 
     public int runTaskTimerAsync(Runnable run, long delay, long interval) {
         return scheduler.runTaskTimerAsynchronously(plugin, run, delay, interval).getTaskId();
+    }
+    
+    @Override
+    public void dispatchCommand(Player player, String command) {
+    	
+    	if ( player != null && player instanceof SpigotPlayer ) {
+    		SpigotPlayer sPlayer = (SpigotPlayer) player;
+    		
+    		Bukkit.dispatchCommand( sPlayer.getWrapper(), command );
+    	}
+    }
+    
+    @Override
+    public void performCommand(Player player, String command) {
+    	
+    	if ( player != null ) {
+    		
+    		Player p = Prison.get().getPlatform().getPlayer( player.getUUID() ).orElse( null );
+    		
+    		if ( p != null && p instanceof SpigotPlayer ) {
+    			
+    			SpigotPlayer sPlayer = (SpigotPlayer) p;
+    			
+    			sPlayer.getWrapper().performCommand( command );
+    		}
+    	}
     }
 
     @Override 

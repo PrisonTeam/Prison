@@ -104,7 +104,7 @@ public class ListenersPrisonManager implements Listener {
     public enum ChatMode{
         RankName,
         MineName,
-        Prestige,
+//        Prestige,
         SellAll_Currency
     }
 
@@ -1815,25 +1815,53 @@ public class ListenersPrisonManager implements Listener {
 
     private void prestigeConfirmationGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
+    	String playerName = p.getName();
+
         // Check the button name and do the actions.
         if (buttonNameMain.equalsIgnoreCase("Confirm: Prestige")){
-        	Output.get().logDebug( DebugTarget.rankup, "rankup: GUI: 'Confirm: Prestige'   calling: '/rankup prestiges'" );
+        	
+        	Output.get().logDebug( DebugTarget.rankup, "rankup: /gui prestigeConfirm: Prestige has been Confirmed. "
+        			+ "  calling: '/prestige " + playerName + " confirm'" );
         	
         	// Execute the command.
-        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "rankup" );
+        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "prestige" );
 
-            Bukkit.dispatchCommand(p, registeredCmd + " prestiges");
-            // Close the inventory.
-            p.closeInventory();
-        } else if (buttonNameMain.equalsIgnoreCase("Cancel: Don't Prestige")){
-        	Output.get().logDebug( DebugTarget.rankup, "rankup: GUI/: 'Cancel: Don't Prestige'   sendInfo: 'cancelled'" );
-
+        	String command = registeredCmd + " " + playerName + " confirm";
+        	
+            Bukkit.dispatchCommand(p, command );
+            
+        } 
+        else if (buttonNameMain.equalsIgnoreCase("Cancel: Don't Prestige")){
+        	
+        	Output.get().logDebug( DebugTarget.rankup, "rankup: /gui prestigeConfirm: Prestige has been canceled " + 
+        				"for " + playerName + "." );
+        	
         	// Send a message to the player.
-            Output.get().sendInfo(new SpigotPlayer(p), "&cCancelled");
-            // Close the inventory.
-            p.closeInventory();
+//            Output.get().sendInfo(new SpigotPlayer(p), "&cCancelled");
         }
 
+        // Close the inventory.
+        p.closeInventory();
+
+//        // Check the button name and do the actions.
+//        if (buttonNameMain.equalsIgnoreCase("Confirm: Prestige")){
+//        	Output.get().logDebug( DebugTarget.rankup, "rankup: GUI: 'Confirm: Prestige'   calling: '/rankup prestiges'" );
+//        	
+//        	// Execute the command.
+//        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "rankup" );
+//        	
+//        	Bukkit.dispatchCommand(p, registeredCmd + " prestiges");
+//        	// Close the inventory.
+//        	p.closeInventory();
+//        } else if (buttonNameMain.equalsIgnoreCase("Cancel: Don't Prestige")){
+//        	Output.get().logDebug( DebugTarget.rankup, "rankup: GUI/: 'Cancel: Don't Prestige'   sendInfo: 'cancelled'" );
+//        	
+//        	// Send a message to the player.
+//        	Output.get().sendInfo(new SpigotPlayer(p), "&cCancelled");
+//        	// Close the inventory.
+//        	p.closeInventory();
+//        }
+//        
         // Cancel the event.
         e.setCancelled(true);
     }
@@ -2852,10 +2880,10 @@ public class ListenersPrisonManager implements Listener {
 
     private void modeAction(AsyncPlayerChatEvent e, Player p, String message) {
         switch(mode){
-            case Prestige:{
-                prestigeAction(e, p, message);
-                break;
-            }
+//            case Prestige:{
+//                prestigeAction(e, p, message);
+//                break;
+//            }
             case SellAll_Currency:{
                 sellAllCurrencyChat(e, p, message);
                 break;
@@ -2892,21 +2920,21 @@ public class ListenersPrisonManager implements Listener {
         isChatEventActive = false;
     }
 
-    private void prestigeAction(AsyncPlayerChatEvent e, Player p, String message) {
-
-        // Check the chat message and do the actions
-        if (message.equalsIgnoreCase("cancel")) {
-            Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_prestiges_cancelled));
-        } else if (message.equalsIgnoreCase("confirm")) {
-            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "rankup prestiges"));
-        } else {
-            Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_prestiges_cancelled_wrong_keyword));
-        }
-        // Cancel the event
-        e.setCancelled(true);
-        // Set the event to false, because it got deactivated
-        isChatEventActive = false;
-    }
+//    private void prestigeAction(AsyncPlayerChatEvent e, Player p, String message) {
+//
+//        // Check the chat message and do the actions
+//        if (message.equalsIgnoreCase("cancel")) {
+//            Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_prestiges_cancelled));
+//        } else if (message.equalsIgnoreCase("confirm")) {
+//            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "rankup prestiges"));
+//        } else {
+//            Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_prestiges_cancelled_wrong_keyword));
+//        }
+//        // Cancel the event
+//        e.setCancelled(true);
+//        // Set the event to false, because it got deactivated
+//        isChatEventActive = false;
+//    }
 
     private void mineAction(AsyncPlayerChatEvent e, Player p, String message) {
 

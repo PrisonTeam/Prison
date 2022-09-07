@@ -279,7 +279,9 @@ public class PlayerManager
     	RankPlayer results = null;
     	boolean dirty = false;
     	
-    	if ( playerName != null && getPlayersByName().containsKey( playerName ) ) {
+    	playerName = playerName == null ? "" : playerName.trim();
+    	
+    	if ( !playerName.isEmpty() && getPlayersByName().containsKey( playerName ) ) {
     		results = getPlayersByName().get( playerName );
     	}
     	
@@ -287,7 +289,8 @@ public class PlayerManager
     		
     		for ( RankPlayer rankPlayer : players ) {
     			if ( uid != null && rankPlayer.getUUID().equals(uid) || 
-    					uid == null && playerName != null && playerName.trim().isEmpty() &&
+    					
+    					!playerName.isEmpty() &&
     					rankPlayer.getDisplayName() != null &&
     					rankPlayer.getDisplayName().equalsIgnoreCase( playerName ) ) {
     				
@@ -317,20 +320,7 @@ public class PlayerManager
     	// Save if dirty (change or new):
     	if ( dirty && results != null ) {
     		savePlayer( results );
-//    		try {
-//			}
-//			catch ( IOException e ) {
-//				
-//				String errorMessage = cannotAddNewPlayer( playerName, e.getMessage() );
-//				
-//    			if ( !getPlayerErrors().contains( errorMessage ) ) {
-//    				
-//    				getPlayerErrors().add( errorMessage );
-//    				Output.get().logError( errorMessage );
-//    			}
-//			}
     	}
-    	
     	
     	return results;
     }

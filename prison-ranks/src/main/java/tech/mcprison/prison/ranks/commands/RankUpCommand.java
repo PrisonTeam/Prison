@@ -26,6 +26,7 @@ import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.Output.DebugTarget;
@@ -210,6 +211,143 @@ public class RankUpCommand
     	}
         
     }
+	
+
+	@Command(identifier = "prestige", description = "This will prestige the player. Prestiging is generally when "
+			+ "the player's default rank is reset to the lowest rank, their money is rest to zero, and they "
+			+ "start the mining and the ranking up process all over again. As a trade off for their reset "
+			+ "of ranks, they get a new prestige rank with the costs of the default ranks being increased.", 
+			permissions = "ranks.user", 
+			altPermissions = {"ranks.rankup.prestiges"}, 
+			onlyPlayers = false) 
+    public void prestigeCmd(CommandSender sender,
+		@Arg(name = "playerName", def = "", 
+				description = "Provides the player's name for the prestige, but " +
+				"this can only be provided by a non-player such as console or ran from a script. " +
+				"Players cannot run Prestige for other players.") 
+    			String playerName,
+    	@Arg(name = "confirm", def = "",
+    			description = "If confirmations are enabled, then the prestige command " + 
+    			"must be repeated with the addition of 'confirm'. If the prestige command is ran by a "
+    			+ "non-player, such as console or from script, then the confirmation will be skipped, or "
+    			+ "the word 'confirm' can be appended to the initial command. If 'confirm' is supplied, even "
+    			+ "if the setting 'prestige.confirmation-enabled: true' is enabled, then confirmations will "
+    			+ "be skipped (acts like a bypass)." )
+    			String confirm
+		) {
+        
+		boolean isConfirmed = ( confirm != null && confirm.toLowerCase().contains("confirm") );
+		if ( !isConfirmed && playerName != null && playerName.toLowerCase().equals( "confirm" ) ) {
+			isConfirmed = true;
+			playerName = "";
+		}
+		
+		boolean isPlayer = sender.isPlayer();
+		
+		if ( isPlayer ) {
+			playerName = sender.getName();
+		}
+		
+		
+        if ( !isPlayer && playerName.length() == 0 ) {
+        	Output.get().logInfo( rankupCannotRunFromConsoleMsg() );
+        	return;
+        }
+        
+        RankPlayer rPlayer = getRankPlayer(sender, null, playerName);
+        
+        if ( rPlayer == null ) {
+        	rankupInvalidPlayerNameMsg( sender, playerName );
+        	return;
+        }
+        
+        
+        String perms = "ranks.rankup.";
+        String permsLadder = perms + LadderManager.LADDER_PRESTIGES;
+
+		boolean isPrestigesEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) || 
+				Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" );
+		
+		boolean isResetDefaultLadder = Prison.get().getPlatform().getConfigBooleanFalse( "prestige.resetDefaultLadder" );
+		boolean isResetMoney = Prison.get().getPlatform().getConfigBooleanFalse( "prestige.resetMoney" );
+		boolean isConfirmationEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "prestige.confirmation-enabled" );
+		boolean isConfirmGUI = Prison.get().getPlatform().getConfigBooleanFalse( "prestige.prestige-confirm-gui" );
+		//boolean isforceSellall  = Prison.get().getPlatform().getConfigBooleanFalse( "prestige.force-sellall" );
+		
+//		boolean isLadderPrestiges = ladder.equalsIgnoreCase(LadderManager.LADDER_PRESTIGES);
+    	
+		PlayerRank nextRank = rPlayer.getNextPlayerRank();
+		Rank nRank = nextRank == null ? null : nextRank.getRank();
+		
+		if ( nRank == null ) {
+			// You're at the last possible rank.
+			rankupNotAbleToPrestigeMsg( sender );
+			rankupAtLastRankMsg( sender );
+			return;
+		}
+		
+		if ( !nRank.getLadder().getName().equals( LadderManager.LADDER_PRESTIGES ) ) {
+			
+			// your next rank is not a Prestiges rank
+			rankupNotAbleToPrestigeMsg( sender );
+			rankupNotAtLastRankMsg( sender );
+			
+			return;
+		}
+		
+		String currency = nextRank.getCurrency();
+		
+		if ( rPlayer.getBalance( currency ) < nextRank.getRankCost() ) {
+			
+			// You do not have enough to prestige yet
+			ranksRankupCannotAffordMsg( sender, nextRank );
+			ranksRankupPlayerBalanceMsg( sender, rPlayer.getBalance( currency ), currency );
+			return;
+		}
+
+		if ( isConfirmationEnabled && !isConfirmed ) {
+			if ( isConfirmGUI && isPlayer ) {
+				
+				// call the gui prestige confirmation:
+//				callGuiPrestigeConfirmation( sender, );
+				String guiConfirmParms = 
+						prestigeConfirmationGUIMsg( sender, rPlayer, nextRank, isResetDefaultLadder, isResetMoney );
+				
+				String guiConfirmCmd = "gui prestigeConfirm " + guiConfirmParms;
+//				Output.get().logInfo( guiConfirmCmd );
+				
+				submitCmdTask( rPlayer, guiConfirmCmd );
+				
+			}
+			else {
+				
+				prestigeConfirmationMsg( sender, rPlayer, nextRank, isResetDefaultLadder, isResetMoney, isPlayer );
+			}
+			return;
+		}
+		
+		if ( isPrestigesEnabled &&  
+    			sender.hasPermission( permsLadder) 
+    			) {
+    		Output.get().logDebug( DebugTarget.rankup, 
+    				"Rankup: cmd '/prestige %s%s'  Passed perm check: %s", 
+    				(playerName.length() == 0 ? "" : " " + playerName ),
+    				(confirm == null ? "" : " " + confirm ),
+    				permsLadder );
+        
+        	
+        	List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
+        	
+        	String ladder = nRank.getLadder().getName();
+        	rankUpPrivate(sender, playerName, ladder, RankupModes.ONE_RANK, perms, cmdTasks, null );
+        	
+        	// submit cmdTasks
+        	Player player = getPlayer( sender, playerName );
+        	submitCmdTasks( player, cmdTasks );
+        }
+        
+    }
+
 
     private boolean rankUpPrivate(CommandSender sender, String playerName, String ladder, RankupModes mode, 
     		String permission, 
@@ -975,6 +1113,16 @@ public class RankUpCommand
         }
 	}
 
+	private void submitCmdTask( Player player, String command ) {
+		
+		Scheduler scheduler = Prison.get().getPlatform().getScheduler();
+		
+		scheduler.performCommand( player, command );
+//		scheduler.dispatchCommand( player, command );
+		
+//		PrisonCommandTaskData task = new PrisonCommandTaskData( errorPrefix, command );
+//		PrisonCommandTasks.submitTasks( player, task );
+	}
 	
     private void submitCmdTasks( Player player, List<PrisonCommandTaskData> cmdTasks )
 	{

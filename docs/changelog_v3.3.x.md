@@ -12,11 +12,16 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13 2022-09-04
+# 3.3.0-alpha.13a 2022-09-07
+
+
+* **Prestige: Rewrote the prestige commands to move them from the generic spigot module to the ranks module where it should belong with the other rank related commands.**
+All rank and prestige related logic was removed from the GUI.  The new /prestige command was created in the ranks module. It now performs a precheck to ensure the player is able to prestige, and it now reflects the correct configurations as far as showing the player if their default ranks and monies will be reset.  Confirmations were also fixed, where they were not working with the prior chat confirmation.  The new gui uses a simplified process where it is given the default settings for the displayed lore.  The only behavior the gui now has, is that if the player clicks on confirm, then it will rerun the prestige command with "confirm" added so the confirmation is bypassed.
+This is working far better now.
 
 
 * **Fixes issues with /rankupmax.**
-Confirmation on prestigeing does not work.
+Confirmation on prestiging does not work.
 
 
 * **Modified a number of mines commands to add a global *all* feature to allow easier management of applying commands to more than one name at a time.**
