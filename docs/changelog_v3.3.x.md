@@ -12,7 +12,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13a 2022-09-07
+# 3.3.0-alpha.13b 2022-09-07
+
+
+* **v3.3.0-alpha.13b 2022-09-07**
 
 
 * **Prestige: Rewrote the prestige commands to move them from the generic spigot module to the ranks module where it should belong with the other rank related commands.**
