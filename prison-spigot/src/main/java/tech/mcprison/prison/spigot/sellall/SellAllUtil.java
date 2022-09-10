@@ -558,7 +558,9 @@ public class SellAllUtil
                     xMaterialIntegerHashMap = addInventoryToHashMap(xMaterialIntegerHashMap, backpacksUtil.getBackpack(p, id));
                 }
             } else {
-                xMaterialIntegerHashMap = addInventoryToHashMap(xMaterialIntegerHashMap, backpacksUtil.getBackpack(p));
+            	String id = null;
+                xMaterialIntegerHashMap = addInventoryToHashMap(xMaterialIntegerHashMap, 
+                		backpacksUtil.getBackpack(p, id));
             }
         }
 
@@ -1459,7 +1461,8 @@ public class SellAllUtil
                     backpacksUtil.setInventory(p, removeSellableItems(p, backpacksUtil.getBackpack(p, id)), id);
                 }
             } else {
-                backpacksUtil.setInventory(p, removeSellableItems(p, backpacksUtil.getBackpack(p)));
+            	String id = null;
+                backpacksUtil.setInventory(p, removeSellableItems(p, backpacksUtil.getBackpack(p, id)));
             }
         }
 

@@ -249,19 +249,20 @@ public class SpigotUtil {
 						if (bpUtil.isMultipleBackpacksEnabled()) {
 							for (String id : bpUtil.getBackpacksIDs(player)) {
 								if (overflow.size() > 0) {
-									if (id == null) {
-										Inventory inv = bpUtil.getBackpack(player);
-										overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
-										bpUtil.setInventory(player, inv);
-									} else {
+//									if (id == null) {
+//										Inventory inv = bpUtil.getBackpack(player);
+//										overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
+//										bpUtil.setInventory(player, inv);
+//									} else {
 										Inventory inv = bpUtil.getBackpack(player, id);
 										overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
 										bpUtil.setInventory(player, inv, id);
-									}
+//									}
 								}
 							}
 						} else {
-							Inventory inv = bpUtil.getBackpack(player);
+							String id = null;
+							Inventory inv = bpUtil.getBackpack(player, id);
 							overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
 							bpUtil.setInventory(player, inv);
 						}
@@ -386,7 +387,8 @@ public class SpigotUtil {
 		// Insert overflow in to Prison's backpack:
 		if ( SpigotPrison.getInstance().getConfig().getString("backpacks").equalsIgnoreCase("true")) {
 		
-			Inventory inv = BackpacksUtil.get().getBackpack(player);
+			String id = null;
+			Inventory inv = BackpacksUtil.get().getBackpack(player, id);
 			removed += itemStackRemoveAll( xMat, inv );
 			BackpacksUtil.get().setInventory( player, inv );
 		}

@@ -15,6 +15,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13b 2022-09-10
 
 
+* **Refactor Prison's old backpacks to reduce duplicate code to prepare for use of the BackpackCache.**
+
+
 * **Changed the command `/mines set notification` to work with both disable and disabled.**
 
 

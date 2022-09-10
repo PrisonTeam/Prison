@@ -273,7 +273,8 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
 
     @Command(identifier = "gui backpack", description = "Backpack as a GUI", onlyPlayers = true)
     private void backpackGUIOpenCommand(CommandSender sender,
-                                        @Arg(name = "Backpack-ID", def = "null", description = "If user have more than backpack, he'll be able to choose another backpack on ID") String id){
+        @Arg(name = "Backpack-ID", def = "null", 
+        description = "If user have more than backpack, he'll be able to choose another backpack on ID") String id){
 
         Player p = getSpigotPlayer(sender);
 
@@ -303,7 +304,7 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
         if (!id.equalsIgnoreCase("null") && getBoolean(BackpacksUtil.get().getBackpacksConfig().getString("Options.Multiple-BackPacks-For-Player-Enabled"))){
             BackpacksUtil.get().openBackpack(p, id);
         } else {
-            BackpacksUtil.get().openBackpack(p);
+            BackpacksUtil.get().openBackpack(p, (String) null );
         }
     }
 
