@@ -164,6 +164,7 @@ public abstract class MineData
 
     public enum MineNotificationMode {
     	disabled,
+    	disable,
     	within,
     	radius,
     	
@@ -182,6 +183,10 @@ public abstract class MineData
     					results = mnm;
     				}
     			}
+    		}
+    		
+    		if ( results == disable ) {
+    			results = disabled;
     		}
     		
     		return results;

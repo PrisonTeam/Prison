@@ -15,6 +15,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13b 2022-09-10
 
 
+* **Changed the command `/mines set notification` to work with both disable and disabled.**
+
+
 * **Initial setup of BackpackCache code.  Not test.  Not hooked up yet to anything.  But the cache should be functional.**
 
 

@@ -2078,7 +2078,7 @@ public class MinesCommands
         @Arg(name = "mineName", description = "The name of the mine to edit, or '*all*' to "
         		+ "apply to all mines. [*all*]") String mineName,
         @Arg(name = "mode", def="displayOptions", description = "The notification mode "
-        		+ "to use: disabled, within, radius") 
+        		+ "to use: [disabled within radius]") 
     					String mode,
         @Arg(name = "radius", def="0", description = "The distance from the center of the mine to notify players of a reset." ) 
     					String radius
