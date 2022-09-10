@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.cache.PlayerCacheFiles;
+import tech.mcprison.prison.cache.CoreCacheFiles;
 import tech.mcprison.prison.file.ZipFileIO;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.PrisonStatsUtil;
@@ -407,8 +407,8 @@ public class PrisonBackups {
 				String fName = file.getName();
 				
 				boolean isDeleteable = 
-						fName.endsWith( PlayerCacheFiles.FILE_SUFFIX_BACKUP ) ||
-						fName.endsWith( PlayerCacheFiles.FILE_SUFFIX_TEMP ) ||
+						fName.endsWith( CoreCacheFiles.FILE_SUFFIX_BACKUP ) ||
+						fName.endsWith( CoreCacheFiles.FILE_SUFFIX_TEMP ) ||
 						fName.endsWith( ".del" ) ||
 						fName.startsWith( "_archived_" ) ||
 						fName.contains( ".json.ver_" ) && fName.endsWith( ".txt" )
