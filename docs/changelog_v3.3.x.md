@@ -12,7 +12,12 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13b 2022-09-14
+# 3.3.0-alpha.13b 2022-09-15
+
+
+* **Removed support for MVdWPlaceholder plugin.**
+It generates way too many entries in the log, and there is zero support for it from the providers.
+It's also unneeded since PlaceholderAPI works perfectly fine with it, so it's 100% pointless.
 
 
 * **More refactoring of the old backpacks to get rid of bad code to make it easier to integrate in to a newer backpack framework.**
