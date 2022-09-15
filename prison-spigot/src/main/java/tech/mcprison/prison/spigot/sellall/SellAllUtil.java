@@ -1462,7 +1462,7 @@ public class SellAllUtil
                 }
             } else {
             	String id = null;
-                backpacksUtil.setInventory(p, removeSellableItems(p, backpacksUtil.getBackpack(p, id)));
+                backpacksUtil.setInventory(p, removeSellableItems(p, backpacksUtil.getBackpack(p, id)), id);
             }
         }
 

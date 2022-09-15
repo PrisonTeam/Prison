@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -120,17 +121,18 @@ public class BackpacksUtil
         return getOfflinePlayer(name);
     }
 
-    /**
-     * Get Backpack owner OfflinePlayer by name and backpack ID.
-     *
-     * @param name - PlayerName
-     * @param id - InventoryID
-     *
-     * @return OfflinePlayer
-     * */
-    public OfflinePlayer getBackpackOwnerOffline(String name, String id){
-        return getOfflinePlayer(name, id);
-    }
+    // The following is exactly the same as the function without the id.... 
+//    /**
+//     * Get Backpack owner OfflinePlayer by name and backpack ID.
+//     *
+//     * @param name - PlayerName
+//     * @param id - InventoryID
+//     *
+//     * @return OfflinePlayer
+//     * */
+//    public OfflinePlayer getBackpackOwnerOffline(String name, String id){
+//        return getOfflinePlayer(name, id);
+//    }
 
     /**
      * Get Backpack Player by name.
@@ -403,15 +405,15 @@ public class BackpacksUtil
         return getBackpackCustom(p, inv);
     }
 
-    /**
-     * Merge another inventory into the backpack inventory.
-     *
-     * @param p - player
-     * @param inv - Inventory
-     * */
-    public void setInventory(Player p, Inventory inv){
-        saveInventory(p, inv);
-    }
+//    /**
+//     * Merge another inventory into the backpack inventory.
+//     *
+//     * @param p - player
+//     * @param inv - Inventory
+//     * */
+//    public void setInventory(Player p, Inventory inv){
+//        saveInventory(p, inv, null);
+//    }
 
     /**
      * Merge another inventory into the backpack inventory by ID.
@@ -424,29 +426,29 @@ public class BackpacksUtil
         saveInventory(p, inv, id);
     }
 
-    /**
-     * Add an item to the backpack inventory
-     * NOT TESTED!
-     *
-     * RECOMMENDED WAY:
-     * If you need to modify the inventory you can do it just by using BackPacksUtil getInventory(player),
-     * modify your inventory as you'd usually with spigot inventories,
-     * and then use BackPacksUtil setInventory(player, inventory) is recommended.
-     *
-     * EXAMPLE for adding item:
-     * Inventory inv = BackPacksUtil.getInventory(p);
-     * ItemStack item = new ItemStack(Material.COAL_ORE, 1);
-     * inv.addItem(item);
-     * BackPacksUtil.setInventory(inv);
-     *
-     * @param p - player
-     * @param item - itemstack
-     *
-     * @return HashMap with items that didn't fit.
-     * */
-    public HashMap<Integer, ItemStack> addItem(Player p, ItemStack item){
-        return addItemToBackpack(p, item);
-    }
+//    /**
+//     * Add an item to the backpack inventory
+//     * NOT TESTED!
+//     *
+//     * RECOMMENDED WAY:
+//     * If you need to modify the inventory you can do it just by using BackPacksUtil getInventory(player),
+//     * modify your inventory as you'd usually with spigot inventories,
+//     * and then use BackPacksUtil setInventory(player, inventory) is recommended.
+//     *
+//     * EXAMPLE for adding item:
+//     * Inventory inv = BackPacksUtil.getInventory(p);
+//     * ItemStack item = new ItemStack(Material.COAL_ORE, 1);
+//     * inv.addItem(item);
+//     * BackPacksUtil.setInventory(inv);
+//     *
+//     * @param p - player
+//     * @param item - itemstack
+//     *
+//     * @return HashMap with items that didn't fit.
+//     * */
+//    public HashMap<Integer, ItemStack> addItem(Player p, ItemStack item){
+//        return addItemToBackpack(p, item, null);
+//    }
 
     /**
      * Add an item to the backpack inventory
@@ -473,29 +475,29 @@ public class BackpacksUtil
         return addItemToBackpack(p, item, id);
     }
 
-    /**
-     * Remove item from backpack
-     * NOT TESTED!
-     *
-     * RECOMMENDED WAY:
-     * If you need to modify the inventory you can do it just by using BackPacksUtil getInventory(player),
-     * modify your inventory as you'd usually with spigot inventories,
-     * and then use BackPacksUtil setInventory(player, inventory) is recommended.
-     *
-     * EXAMPLE for removing item:
-     * Inventory inv = BackPacksUtil.getInventory(p);
-     * ItemStack item = new ItemStack(Material.COAL_ORE, 1);
-     * inv.removeItem(item);
-     * BackPacksUtil.setInventory(inv);
-     *
-     * @param p - player
-     * @param item - itemstack
-     *
-     * @return HashMap with items that couldn't be removed.
-     * */
-    public HashMap<Integer, ItemStack> removeItem(Player p, ItemStack item){
-        return removeItemFromBackpack(p, item);
-    }
+//    /**
+//     * Remove item from backpack
+//     * NOT TESTED!
+//     *
+//     * RECOMMENDED WAY:
+//     * If you need to modify the inventory you can do it just by using BackPacksUtil getInventory(player),
+//     * modify your inventory as you'd usually with spigot inventories,
+//     * and then use BackPacksUtil setInventory(player, inventory) is recommended.
+//     *
+//     * EXAMPLE for removing item:
+//     * Inventory inv = BackPacksUtil.getInventory(p);
+//     * ItemStack item = new ItemStack(Material.COAL_ORE, 1);
+//     * inv.removeItem(item);
+//     * BackPacksUtil.setInventory(inv);
+//     *
+//     * @param p - player
+//     * @param item - itemstack
+//     *
+//     * @return HashMap with items that couldn't be removed.
+//     * */
+//    public HashMap<Integer, ItemStack> removeItem(Player p, ItemStack item){
+//        return removeItemFromBackpack(p, item, null);
+//    }
 
     /**
      * Remove item from backpack
@@ -1117,60 +1119,60 @@ public class BackpacksUtil
         return inv;
     }
 
-    private void saveInventory(Player p, Inventory inv) {
-        updateCachedBackpack();
-
-        // Set dimensions if null or error.
-        boolean needToSetNewDimensions = checkDimensionError(p, null);
-        boolean needToSetNewOwner = checkBackpackOwnerMissing(p);
-        boolean needToSetNewOwnerID = checkBackpackOwnerIDMissing(p);
-
-        if (inv.getContents() != null){
-
-            int backpackSize = getBackpackSize(p, null);
-            int slot = 0;
-
-            try {
-                backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items", null);
-                backpacksDataConfig.save(backpacksFile);
-            } catch (IOException ex){
-                ex.printStackTrace();
-                return;
-            }
-
-            updateCachedBackpack();
-
-            backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items.Size", backpackSize);
-
-            for (ItemStack item : inv.getContents()){
-                if (item != null){
-
-                    backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items." + slot + ".ITEMSTACK", item);
-
-                    slot++;
-                }
-            }
-
-            oldDataVersionUpdater(p, null, false, true, true);
-
-            try {
-                backpacksDataConfig.save(backpacksFile);
-            } catch (IOException ex){
-                ex.printStackTrace();
-            }
-        } else {
-            // If it's null just delete the whole stored inventory.
-            oldDataVersionUpdater(p, null, needToSetNewDimensions, needToSetNewOwner, needToSetNewOwnerID);
-            try {
-                backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items", null);
-                backpacksDataConfig.save(backpacksFile);
-            } catch (IOException ex){
-                ex.printStackTrace();
-            }
-        }
-
-        updateCachedBackpack();
-    }
+//    private void saveInventory(Player p, Inventory inv) {
+//        updateCachedBackpack();
+//
+//        // Set dimensions if null or error.
+//        boolean needToSetNewDimensions = checkDimensionError(p, null);
+//        boolean needToSetNewOwner = checkBackpackOwnerMissing(p);
+//        boolean needToSetNewOwnerID = checkBackpackOwnerIDMissing(p);
+//
+//        if (inv.getContents() != null){
+//
+//            int backpackSize = getBackpackSize(p, null);
+//            int slot = 0;
+//
+//            try {
+//                backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items", null);
+//                backpacksDataConfig.save(backpacksFile);
+//            } catch (IOException ex){
+//                ex.printStackTrace();
+//                return;
+//            }
+//
+//            updateCachedBackpack();
+//
+//            backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items.Size", backpackSize);
+//
+//            for (ItemStack item : inv.getContents()){
+//                if (item != null){
+//
+//                    backpacksDataConfig.set("Inventories." + p.getUniqueId() + ".Items." + slot + ".ITEMSTACK", item);
+//
+//                    slot++;
+//                }
+//            }
+//
+//            oldDataVersionUpdater(p, null, false, true, true);
+//
+//            try {
+//                backpacksDataConfig.save(backpacksFile);
+//            } catch (IOException ex){
+//                ex.printStackTrace();
+//            }
+//        } else {
+//            // If it's null just delete the whole stored inventory.
+//            oldDataVersionUpdater(p, null, needToSetNewDimensions, needToSetNewOwner, needToSetNewOwnerID);
+//            try {
+//                backpacksDataConfig.set("Inventories." + p.getUniqueId().toString() + ".Items", null);
+//                backpacksDataConfig.save(backpacksFile);
+//            } catch (IOException ex){
+//                ex.printStackTrace();
+//            }
+//        }
+//
+//        updateCachedBackpack();
+//    }
 
     private void saveInventory(Player p, Inventory inv, String id) {
     	String backpackId = id == null ? 
@@ -1260,13 +1262,13 @@ public class BackpacksUtil
         }
     }
 
-    private HashMap<Integer, ItemStack> addItemToBackpack(Player p, ItemStack item) {
-    	String id = null;
-        Inventory inv = getBackpack(p, id);
-        HashMap<Integer, ItemStack> overflow = inv.addItem(item);
-        setInventory(p, inv);
-        return overflow;
-    }
+//    private HashMap<Integer, ItemStack> addItemToBackpack(Player p, ItemStack item) {
+//    	String id = null;
+//        Inventory inv = getBackpack(p, id);
+//        HashMap<Integer, ItemStack> overflow = inv.addItem(item);
+//        setInventory(p, inv);
+//        return overflow;
+//    }
 
     private HashMap<Integer, ItemStack> addItemToBackpack(Player p, ItemStack item, String id) {
         Inventory inv = getBackpack(p, id);
@@ -1275,13 +1277,13 @@ public class BackpacksUtil
         return overflow;
     }
 
-    private HashMap<Integer, ItemStack> removeItemFromBackpack(Player p, ItemStack item) {
-    	String id = null;
-        Inventory inv = getBackpack(p, id );
-        HashMap<Integer, ItemStack> underflow = inv.removeItem(item);
-        setInventory(p, inv);
-        return underflow;
-    }
+//    private HashMap<Integer, ItemStack> removeItemFromBackpack(Player p, ItemStack item) {
+//    	String id = null;
+//        Inventory inv = getBackpack(p, id );
+//        HashMap<Integer, ItemStack> underflow = inv.removeItem(item);
+//        setInventory(p, inv);
+//        return underflow;
+//    }
 
     private HashMap<Integer, ItemStack> removeItemFromBackpack(Player p, ItemStack item, String id) {
         Inventory inv = getBackpack(p, id);
@@ -1440,28 +1442,33 @@ public class BackpacksUtil
 //        return backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".UniqueID") == null;
 //    }
 
+//    private OfflinePlayer getOfflinePlayer(String name) {
+//        if (name != null) {
+//            updateCachedBackpack();
+//            if (backpacksDataConfig.getConfigurationSection("Inventories") != null) {
+//                for (String uniqueID : backpacksDataConfig.getConfigurationSection("Inventories").getKeys(false)) {
+//                    if (backpacksDataConfig.getString("Inventories." + uniqueID + ".PlayerName").equalsIgnoreCase(name) && backpacksDataConfig.getString("Inventories." + uniqueID + ".UniqueID") != null) {
+//                        return Bukkit.getOfflinePlayer(UUID.fromString(backpacksDataConfig.getString("Inventories." + uniqueID + ".UniqueID")));
+//                    }
+//                }
+//            }
+//        }
+//        return null;
+//    }
+
+    // what the hell? two functions with different parms but the damn exact same code????
+//    private OfflinePlayer getOfflinePlayer(String name, String id) {
     private OfflinePlayer getOfflinePlayer(String name) {
         if (name != null) {
             updateCachedBackpack();
-            if (backpacksDataConfig.getConfigurationSection("Inventories") != null) {
-                for (String uniqueID : backpacksDataConfig.getConfigurationSection("Inventories").getKeys(false)) {
-                    if (backpacksDataConfig.getString("Inventories." + uniqueID + ".PlayerName").equalsIgnoreCase(name) && backpacksDataConfig.getString("Inventories." + uniqueID + ".UniqueID") != null) {
-                        return Bukkit.getOfflinePlayer(UUID.fromString(backpacksDataConfig.getString("Inventories." + uniqueID + ".UniqueID")));
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    private OfflinePlayer getOfflinePlayer(String name, String id) {
-        if (name != null) {
-            updateCachedBackpack();
-            if (backpacksDataConfig.getConfigurationSection("Inventories") != null) {
-                for (String uniqueID : backpacksDataConfig.getConfigurationSection("Inventories").getKeys(false)) {
-                    if (backpacksDataConfig.getString("Inventories." + uniqueID + ".PlayerName") != null && backpacksDataConfig.getString("Inventories." + uniqueID + ".UniqueID") != null){
-                        if (backpacksDataConfig.getString("Inventories." + uniqueID + ".PlayerName").equalsIgnoreCase(name)){
-                            return Bukkit.getOfflinePlayer(UUID.fromString(backpacksDataConfig.getString("Inventories." + uniqueID + ".UniqueID")));
+            ConfigurationSection inventories = backpacksDataConfig.getConfigurationSection("Inventories");
+            if (inventories != null) {
+                for (String uniqueID : inventories.getKeys(false)) {
+                	String playerName = inventories.getString(uniqueID + ".PlayerName");
+                	String uuid = inventories.getString(uniqueID + ".UniqueID");
+                    if (playerName != null && uuid != null){
+                        if (playerName.equalsIgnoreCase(name)){
+                            return Bukkit.getOfflinePlayer(UUID.fromString(uuid));
                         }
                     }
                 }

@@ -264,7 +264,7 @@ public class SpigotUtil {
 							String id = null;
 							Inventory inv = bpUtil.getBackpack(player, id);
 							overflow = inv.addItem(overflow.values().toArray(new ItemStack[0]));
-							bpUtil.setInventory(player, inv);
+							bpUtil.setInventory(player, inv, id);
 						}
 					}
 				}
@@ -390,7 +390,7 @@ public class SpigotUtil {
 			String id = null;
 			Inventory inv = BackpacksUtil.get().getBackpack(player, id);
 			removed += itemStackRemoveAll( xMat, inv );
-			BackpacksUtil.get().setInventory( player, inv );
+			BackpacksUtil.get().setInventory( player, inv, id );
 		}
 		
 		

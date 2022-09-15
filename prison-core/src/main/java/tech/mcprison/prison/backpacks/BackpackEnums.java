@@ -18,6 +18,11 @@ public class BackpackEnums {
 		enablePlayerToggle, // player pickup toggleable  
 		enableSellallToggle, // player sellall toggleable  
 		enchanted, // show enchant glow on item 
-		placeable; // Able to place backpack as a chest - may need to supply empty chests
+		placeable, // Able to place backpack as a chest - may need to supply empty chests
+		
+		allowMultiples, // If this feature is not set, then a player can only have one backpack of a given type
+		loreStats, // Update lore on backpack item with stats: blocks and counts
+		restrictView, // Prevent viewing through open inventory. Use with loreStats.
+		allowRename, // Allow players to rename their backpacks
 	}
 }

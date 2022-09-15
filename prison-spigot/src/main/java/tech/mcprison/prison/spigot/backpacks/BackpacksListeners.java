@@ -81,17 +81,17 @@ public class BackpacksListeners implements Listener {
                     id = title.substring(e.getPlayer().getName().length() + 13);
                 }
             } catch (IndexOutOfBoundsException ignored){}
-            if (id != null){
+//            if (id != null){
                 if (BackpacksUtil.backpackEdited.contains(e.getPlayer().getName())){
                     BackpacksUtil.get().setInventory((Player) e.getPlayer(), e.getInventory(), id);
                     BackpacksUtil.get().removeFromEditedBackpack((Player) e.getPlayer());
                 }
-            } else {
-                if (BackpacksUtil.backpackEdited.contains(e.getPlayer().getName())) {
-                    BackpacksUtil.get().setInventory((Player) e.getPlayer(), e.getInventory());
-                    BackpacksUtil.get().removeFromEditedBackpack((Player) e.getPlayer());
-                }
-            }
+//            } else {
+//                if (BackpacksUtil.backpackEdited.contains(e.getPlayer().getName())) {
+//                    BackpacksUtil.get().setInventory((Player) e.getPlayer(), e.getInventory(), null);
+//                    BackpacksUtil.get().removeFromEditedBackpack((Player) e.getPlayer());
+//                }
+//            }
         }
     }
 
@@ -107,15 +107,17 @@ public class BackpacksListeners implements Listener {
                     id = title.substring(e.getWhoClicked().getName().length() + 13);
                 }
             } catch (IndexOutOfBoundsException ignored){}
-            if (id != null){
-                if (title.equalsIgnoreCase(e.getWhoClicked().getName() + " -> Backpack-" + id)){
+        	String backpackId = id == null ? 
+        			"" : "-" + id;
+//            if (id != null){
+                if (title.equalsIgnoreCase(e.getWhoClicked().getName() + " -> Backpack" + backpackId)){
                     BackpacksUtil.get().addToEditedBackpack((Player) e.getWhoClicked());
                 }
-            } else {
-                if (title != null && title.equalsIgnoreCase(e.getWhoClicked().getName() + " -> Backpack")) {
-                    BackpacksUtil.get().addToEditedBackpack((Player) e.getWhoClicked());
-                }
-            }
+//            } else {
+//                if (title != null && title.equalsIgnoreCase(e.getWhoClicked().getName() + " -> Backpack")) {
+//                    BackpacksUtil.get().addToEditedBackpack((Player) e.getWhoClicked());
+//                }
+//            }
         }
     }
 

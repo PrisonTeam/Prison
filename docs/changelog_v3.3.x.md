@@ -12,7 +12,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13b 2022-09-10
+# 3.3.0-alpha.13b 2022-09-14
+
+
+* **More refactoring of the old backpacks to get rid of bad code to make it easier to integrate in to a newer backpack framework.**
+No behavioral changes should have occurred with this commit, and the prior commit too.
 
 
 * **Refactor Prison's old backpacks to reduce duplicate code to prepare for use of the BackpackCache.**

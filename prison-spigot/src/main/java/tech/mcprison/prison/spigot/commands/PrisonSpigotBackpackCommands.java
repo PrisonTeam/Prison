@@ -25,7 +25,8 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
 
     @Command(identifier = "backpack", description = "Backpacks", onlyPlayers = false)
     private void backpackMainCommand(CommandSender sender,
-    @Arg(name = "ID", def = "null", description = "Leave empty if you want to open your main backpack, add an ID if you've more than one.") String id){
+	    @Arg(name = "ID", def = "null", 
+	    description = "Leave empty if you want to open your main backpack, add an ID if you've more than one.") String id){
 
         if (sender.hasPermission("prison.admin") || sender.isOp()){
         	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand("backpack help");
@@ -96,7 +97,7 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
             if (isOnlinePlayer) {
                 success = BackpacksUtil.get().resetBackpack(Bukkit.getPlayerExact(name), id);
             } else {
-                success = BackpacksUtil.get().resetBackpack(BackpacksUtil.get().getBackpackOwnerOffline(name, id), id);
+                success = BackpacksUtil.get().resetBackpack(BackpacksUtil.get().getBackpackOwnerOffline(name), id);
             }
         }
         if (success) {
@@ -108,9 +109,9 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
 
     @Command(identifier = "backpack set size", description = "Resize a player's backpack.", permissions = "prison.admin", onlyPlayers = false)
     private void resizeBackpackCommand(CommandSender sender,
-                                       @Arg(name = "Owner", description = "The backpack owner name", def = "null") String name,
-                                       @Arg(name = "Backpack size", description = "Backpack size multiple of 9", def = "9") String size,
-                                       @Arg(name = "id", description = "The backpack ID optional", def = "null") String id){
+       @Arg(name = "Owner", description = "The backpack owner name", def = "null") String name,
+       @Arg(name = "Backpack size", description = "Backpack size multiple of 9", def = "9") String size,
+       @Arg(name = "id", description = "The backpack ID optional", def = "null") String id){
 
         if (name.equalsIgnoreCase("null")){
             Output.get().sendWarn(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_backpack_missing_playername)));
@@ -149,7 +150,7 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
 
             } else {
 
-                BackpacksUtil.get().setBackpackSize(BackpacksUtil.get().getBackpackOwnerOffline(name, id), sizeInt, id);
+                BackpacksUtil.get().setBackpackSize(BackpacksUtil.get().getBackpackOwnerOffline(name), sizeInt, id);
 
             }
         }
@@ -157,15 +158,17 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_backpack_resize_success)));
     }
 
-    @Command(identifier = "backpack limit", permissions = "prison.admin", description = "Backpacks limit for player, to use this multiple backpacks must be enabled from the backpacks config or it won't have effect.", onlyPlayers = false)
+    @Command(identifier = "backpack limit", permissions = "prison.admin", 
+    		description = "Backpacks limit for player, to use this multiple backpacks must be enabled from the backpacks config or it won't have effect.", onlyPlayers = false)
     private void backpackLimitMainCommand(CommandSender sender){
         sender.dispatchCommand("backpack limit help");
     }
 
-    @Command(identifier = "backpack limit set", permissions = "prison.admin", description = "Set backpacks limit of a player, to use this multiple backpacks must be enabled or it won't have effect.", onlyPlayers = false)
+    @Command(identifier = "backpack limit set", 
+    		permissions = "prison.admin", description = "Set backpacks limit of a player, to use this multiple backpacks must be enabled or it won't have effect.", onlyPlayers = false)
     private void setBackpackLimitCommand(CommandSender sender,
-                                         @Arg(name = "Owner", description = "The backpack owner name", def = "null") String name,
-                                         @Arg(name = "Limit", description = "The Backpacks limit that a player can own", def = "null") String limit) {
+         @Arg(name = "Owner", description = "The backpack owner name", def = "null") String name,
+         @Arg(name = "Limit", description = "The Backpacks limit that a player can own", def = "null") String limit) {
 
         if (name.equalsIgnoreCase("null") || limit.equalsIgnoreCase("null")){
             Output.get().sendWarn(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_command_wrong_format)));
@@ -189,10 +192,12 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_backpack_limit_edit_success)));
     }
 
-    @Command(identifier = "backpack limit add", permissions = "prison.admin", description = "Increment backpacks limit of a player, multiple backpacks must be enabled or this won't take effect.", onlyPlayers = false)
+    @Command(identifier = "backpack limit add", 
+    		permissions = "prison.admin", 
+    		description = "Increment backpacks limit of a player, multiple backpacks must be enabled or this won't take effect.", onlyPlayers = false)
     private void addBackpackLimitCommand(CommandSender sender,
-                                         @Arg(name = "Owner", description = "The backpack owner name", def = "null") String name,
-                                         @Arg(name = "Limit", description = "The Backpacks increment value", def = "null") String limit) {
+         @Arg(name = "Owner", description = "The backpack owner name", def = "null") String name,
+         @Arg(name = "Limit", description = "The Backpacks increment value", def = "null") String limit) {
 
         if (name.equalsIgnoreCase("null") || limit.equalsIgnoreCase("null")){
             Output.get().sendWarn(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_command_wrong_format)));
@@ -218,10 +223,11 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_backpack_limit_edit_success)));
     }
 
-    @Command(identifier = "backpack limit decrement", permissions = "prison.admin", description = "Decrement backpacks limit of a player, to use this multiple backpacks must be enabled or it won't have effect.", onlyPlayers = false)
+    @Command(identifier = "backpack limit decrement", permissions = "prison.admin", 
+    		description = "Decrement backpacks limit of a player, to use this multiple backpacks must be enabled or it won't have effect.", onlyPlayers = false)
     private void decrementBackpackLimitCommand(CommandSender sender,
-                                         @Arg(name = "Owner", description = "The backpack owner name", def = "null") String name,
-                                         @Arg(name = "Value", description = "The Backpacks decrement value", def = "null") String limit) {
+         @Arg(name = "Owner", description = "The backpack owner name", def = "null") String name,
+         @Arg(name = "Value", description = "The Backpacks decrement value", def = "null") String limit) {
 
         if (name.equalsIgnoreCase("null") || limit.equalsIgnoreCase("null")){
             Output.get().sendWarn(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_command_wrong_format)));
@@ -257,7 +263,8 @@ public class PrisonSpigotBackpackCommands extends PrisonSpigotBaseCommands {
         Output.get().sendInfo(sender, SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_message_backpack_limit_edit_success)));
     }
 
-    @Command(identifier = "backpack admin", description = "Open backpack admin GUI", permissions = "prison.admin", onlyPlayers = true)
+    @Command(identifier = "backpack admin", description = "Open backpack admin GUI", 
+    		permissions = "prison.admin", onlyPlayers = true)
     private void openBackpackAdminGUI(CommandSender sender){
 
         Player p = getSpigotPlayer(sender);
