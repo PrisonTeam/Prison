@@ -56,6 +56,13 @@ prestige:
   force-sellall: false
 
 
+ranks:
+  gui-default-include-rankup-button: true
+  gui-prestiges-include-rankup-button: true
+  gui-others-include-rankup-button: true
+  
+
+
 
 # NEW: This enables new physics to be applied when jumpping on slime blocks.
 # When holding different items, like some block types or picks, the player can

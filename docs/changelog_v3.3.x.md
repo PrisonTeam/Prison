@@ -15,6 +15,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13b 2022-09-20
 
 
+* **Add config settings to control the gui rankup buttons.**
+
+
 * **Update many gui messages to use the newer message handler so the old deprecated functions can be removed eventually.**
 There are still many more to do, but this covers a good start.
 
