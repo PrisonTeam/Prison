@@ -597,6 +597,7 @@ public class PrisonCommand
         
     	
     	builder.add( String.format( "&7  Original:   \\Q%s\\E", text));
+    	
     	builder.add( String.format( "&7  Translated: %s", translated));
     	
     	display.addComponent(builder.build());
