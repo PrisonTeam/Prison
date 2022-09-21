@@ -1,6 +1,5 @@
 package tech.mcprison.prison.spigot.utils;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +42,7 @@ import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
 public class PrisonUtilsMineBombs
-		extends PrisonUtilsMineBombsTasks
+		extends PrisonUtilsMineBombsMessages 
 {
 	public static final String MINE_BOMBS_LORE_1 = "&4Prison Mine Bomb:";
 	public static final String MINE_BOMBS_LORE_2_PREFIX = "  &7";
@@ -958,13 +957,15 @@ public class PrisonUtilsMineBombs
 				
 				else {
 					
-					float cooldownSeconds = cooldownTicks / 20.0f;
-					DecimalFormat dFmt = new DecimalFormat( "0.0" );
+					mineBombsCoolDownMsg( sPlayer, cooldownTicks );
 					
-					String message = 
-							String.format( "You cannot use another Prison Mine Bomb for %s seconds.", 
-									dFmt.format( cooldownSeconds ) );
-					sPlayer.sendMessage( message );
+//					float cooldownSeconds = cooldownTicks / 20.0f;
+//					DecimalFormat dFmt = new DecimalFormat( "0.0" );
+//					
+//					String message = 
+//							String.format( "You cannot use another Prison Mine Bomb for %s seconds.", 
+//									dFmt.format( cooldownSeconds ) );
+//					sPlayer.sendMessage( message );
 					
 				}
 				
