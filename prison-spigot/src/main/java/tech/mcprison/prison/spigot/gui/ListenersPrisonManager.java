@@ -25,9 +25,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
-import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
-import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.modules.Module;
@@ -46,14 +43,9 @@ import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
-import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
-import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoPickupGUI;
-import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoSmeltGUI;
 import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminGUI;
 import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminListGUI;
 import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminPlayerListGUI;
-import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 import tech.mcprison.prison.spigot.gui.mine.SpigotBlocksListGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotBlocksMineListGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotMineBlockPercentageGUI;
@@ -69,6 +61,7 @@ import tech.mcprison.prison.spigot.gui.rank.SpigotRankManagerGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankPriceGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankUPCommandsGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMessages;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminAutoSellGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminBlocksGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
@@ -84,7 +77,9 @@ import tech.mcprison.prison.util.Text;
  * @author GABRYCA
  * @author RoyalBlueRanger
  */
-public class ListenersPrisonManager implements Listener {
+public class ListenersPrisonManager 
+	extends SpigotGUIMessages 
+	implements Listener {
 
     private static ListenersPrisonManager instance;
     public static List<String> activeGui = new ArrayList<>();
@@ -1285,7 +1280,7 @@ public class ListenersPrisonManager implements Listener {
                 } else {
 
                     if (sellAllConfig.getConfigurationSection("Multiplier").getKeys(false).size() == 0) {
-                        Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_error_empty));
+                    	guiRanksErrorEmptyMsg( new SpigotPlayer(p) );
                         e.setCancelled(true);
                         return;
                     } else {

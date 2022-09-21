@@ -6,24 +6,21 @@ import org.bukkit.entity.Player;
 
 import com.cryptomorin.xseries.XMaterial;
 
-import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.managers.LadderManager;
-import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools.GUIMenuPageData;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
-import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 /**
  * @author GABRYCA
  */
-public class SpigotLaddersGUI extends SpigotGUIComponents {
+public class SpigotLaddersGUI 
+	extends SpigotGUIMessages {
 
     private final Player p;
     
@@ -53,7 +50,7 @@ public class SpigotLaddersGUI extends SpigotGUIComponents {
 
         // If the inventory is empty
         if (lm == null || lm.getLadders().size() == 0){
-            Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_ladder_empty));
+        	guiRanksLadderIsEmptyMsg( new SpigotPlayer(p), "" );
             p.closeInventory();
             return;
         }

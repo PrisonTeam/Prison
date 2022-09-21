@@ -10,16 +10,16 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
-import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
+import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMessages;
 
 /**
  * @author GABRYCA
  */
-public class SpigotBlocksListGUI extends SpigotGUIComponents {
+public class SpigotBlocksListGUI 
+	extends SpigotGUIMessages {
 
     private final Player p;
     private final String mineName;
@@ -40,7 +40,7 @@ public class SpigotBlocksListGUI extends SpigotGUIComponents {
         // Create the inventory
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3Mines -> BlocksList");
 
-        ButtonLore lore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_start_block_setup), null);
+        ButtonLore lore = new ButtonLore(guiRanksLoreClickToStartBlockSetupMsg(), null);
 
         // This will skip all BlockTypes that are invalid for the versions of MC that the server is running:
     	PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();

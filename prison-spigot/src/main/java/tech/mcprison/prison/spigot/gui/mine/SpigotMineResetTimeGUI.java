@@ -1,17 +1,19 @@
 package tech.mcprison.prison.spigot.gui.mine;
 
-import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.entity.Player;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
-import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
+import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMessages;
 
 /**
  * @author GABRYCA
  */
-public class SpigotMineResetTimeGUI extends SpigotGUIComponents {
+public class SpigotMineResetTimeGUI 
+	extends SpigotGUIMessages {
 
     private final Player p;
     private final String mineName;
@@ -35,7 +37,7 @@ public class SpigotMineResetTimeGUI extends SpigotGUIComponents {
         ButtonLore confirmButtonLore = new ButtonLore(createLore(
         		guiLeftClickToConfirmMsg(), 
         		guiRightClickToCancelMsg() ), 
-        		createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_reset_time) + " " + val));
+        		createLore( guiRanksLoreResetTimeMsg() + " " + val));
         
         ButtonLore changeIncreaseValueLore = new ButtonLore( guiClickToIncreaseMsg(), null);
 

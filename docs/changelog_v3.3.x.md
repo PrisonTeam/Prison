@@ -12,7 +12,14 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13b 2022-09-15
+# 3.3.0-alpha.13b 2022-09-20
+
+
+* **Update many gui messages to use the newer message handler so the old deprecated functions can be removed eventually.**
+There are still many more to do, but this covers a good start.
+
+
+* **Move the mine bombs cooldown message to the spigot language files.**
 
 
 * **Removed support for MVdWPlaceholder plugin.**

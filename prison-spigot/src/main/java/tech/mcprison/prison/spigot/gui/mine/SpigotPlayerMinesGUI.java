@@ -17,28 +17,28 @@ import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.configs.GuiConfig;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools.GUIMenuPageData;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
-import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
+import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMessages;
 import tech.mcprison.prison.util.Text;
 
 /**
  * @author GABRYCA
  * @author RoyalBlueRanger (rBluer)
  */
-public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
+public class SpigotPlayerMinesGUI 
+	extends SpigotGUIMessages {
 
     private final Player p;
     private final SpigotPlayer spigotPlayer;
     private final String permissionWarpPlugin = guiConfig.getString("Options.Mines.PermissionWarpPlugin");
-    private final String statusUnlockedMine = messages.getString(MessagesConfig.StringID.spigot_gui_lore_unlocked);
-    private final String clickToTeleport = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_teleport);
-    private final String statusLockedMine = messages.getString(MessagesConfig.StringID.spigot_gui_lore_locked);
+    private final String statusUnlockedMine = guiRanksLoreUnlockedMsg();
+    private final String clickToTeleport = guiRanksLoreClickToTeleportMsg();
+    private final String statusLockedMine = guiRanksLoreLockedMsg();
 
     private int page;
     private String cmdPage;

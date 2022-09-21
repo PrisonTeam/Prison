@@ -6,18 +6,18 @@ import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools.GUIMenuPageData;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
-import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
+import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMessages;
 
 /**
  * @author GABRYCA
  */
-public class SpigotMineInfoGUI extends SpigotGUIComponents {
+public class SpigotMineInfoGUI 
+	extends SpigotGUIMessages {
 
     private final Player p;
 	private final Mine mine;
@@ -43,29 +43,36 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         		guiLeftClickToResetMsg(),
         		guiRightClickToToggleMsg(),
         		guiRightClickShiftToToggleMsg() ),
-                createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_skip_reset_instruction_1),
-                        messages.getString(MessagesConfig.StringID.spigot_gui_lore_skip_reset_instruction_2),
-                        messages.getString(MessagesConfig.StringID.spigot_gui_lore_skip_reset_instruction_3),
+                createLore(
+                		guiRanksLoreSkipResetInstruction1Msg(),
+                		guiRanksLoreSkipResetInstruction2Msg(),
+                		guiRanksLoreSkipResetInstruction3Msg(),
                         "",
-                        messages.getString(MessagesConfig.StringID.spigot_gui_lore_set_mine_delay_instruction_1),
-                        messages.getString(MessagesConfig.StringID.spigot_gui_lore_set_mine_delay_instruction_2),
-                        messages.getString(MessagesConfig.StringID.spigot_gui_lore_set_mine_delay_instruction_3)));
+                        guiRanksLoreSetMineDelayInstruction1Msg(),
+                        guiRanksLoreSetMineDelayInstruction2Msg(),
+                        guiRanksLoreSetMineDelayInstruction3Msg() ));
 
-        ButtonLore mineSpawnLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_use), messages.getString(MessagesConfig.StringID.spigot_gui_lore_spawnpoint));
+        ButtonLore mineSpawnLore = new ButtonLore(
+        			guiRanksLoreClickToUseMsg(), 
+        			guiRanksLoreSpawnPointMsg());
 
         ButtonLore minesNotificationsLore = new ButtonLore( guiClickToOpenMsg(), guiClickToEditMsg() );
         
-        ButtonLore minesTpLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_teleport), messages.getString(MessagesConfig.StringID.spigot_gui_lore_tp_to_mine));
+        ButtonLore minesTpLore = new ButtonLore(
+        			guiRanksLoreClickToTeleportMsg(), 
+        			guiRanksLoreTpToMineMsg() );
         
         ButtonLore blocksOfTheMineLore = new ButtonLore(
         		guiClickToOpenMsg(), 
-        		messages.getString(MessagesConfig.StringID.spigot_gui_lore_blocks));
+        		guiRanksLoreBlocksMsg());
         
         ButtonLore mineResetTimeLore = new ButtonLore(createLore( guiClickToOpenMsg() ), 
         		createLore(
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_reset_time) + " &7" + mine.getResetTime()));
+        				guiRanksLoreResetTimeMsg() + " &7" + mine.getResetTime()));
         
-        ButtonLore mineRenameLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_rename), messages.getString(MessagesConfig.StringID.spigot_gui_lore_minename) + " " + mineName);
+        ButtonLore mineRenameLore = new ButtonLore(
+        		guiRanksLoreClickToRenameMsg(), 
+        		guiRanksLoreMineNameMsg() + " " + mineName);
 //        ButtonLore closeGUILore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_close), null);
 
         // Create the button, set the material, amount, lore and name
@@ -91,10 +98,10 @@ public class SpigotMineInfoGUI extends SpigotGUIComponents {
         // Lore
         ButtonLore mineShowItemLore = new ButtonLore(createLore( guiClickToEditMsg() ), 
         		createLore(
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_show_item) + " &7" + xMaterial.name(),
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_show_item_description_1),
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_show_item_description_2),
-                messages.getString(MessagesConfig.StringID.spigot_gui_lore_show_item_description_3)
+        				guiRanksLoreShowItemMsg() + " &7" + xMaterial.name(),
+        				guiRanksLoreShowItemDescription1Msg(),
+        				guiRanksLoreShowItemDescription2Msg(),
+        				guiRanksLoreShowItemDescription3Msg()
         ));
 
         // ItemStack
