@@ -12,7 +12,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13b 2022-09-20
+# 3.3.0-alpha.13b 2022-09-22
+
+
+* **For some of the gui commands, like `/gui ranks`, `/gui prestiges`, and `/gui mines` the button now closes the gui instead of trying to run the command `/gui`.**
 
 
 * **Add config settings to control the gui rankup buttons.**
