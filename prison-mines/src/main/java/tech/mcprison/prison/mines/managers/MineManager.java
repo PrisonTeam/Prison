@@ -788,7 +788,9 @@ public class MineManager
 				mine = getMine( placeHolderKey.getData() );
 			}
 
-			if ( mine != null || placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.PLAYERBLOCKS )) {
+			if ( mine != null || 
+					placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.PLAYERBLOCKS ) || 
+					placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINEPLAYERS )) {
 				DecimalFormat dFmt = new DecimalFormat("#,##0.00");
 				DecimalFormat iFmt = new DecimalFormat("#,##0");
 //				DecimalFormat fFmt = new DecimalFormat("#,##0.00");
@@ -800,7 +802,10 @@ public class MineManager
 					case prison_mines_name_minename:
 					case prison_mn_pm:
 					case prison_mines_name_playermines:
-						results = mine.getName();
+						if ( mine != null ) {
+							results = mine.getName();
+						}
+						
 						break;
 						
 					case prison_mt_minename:
@@ -808,14 +813,17 @@ public class MineManager
 					case prison_mt_pm:
 					case prison_mines_tag_playermines:
 						// getTag() now defaults to the mine's name if it does not exist:
-						results = mine.getTag();
+						if ( mine != null ) {
+							results = mine.getTag();
+						}
+						
 						break;
 						
 					case prison_mi_minename:
 					case prison_mines_interval_minename:
 					case prison_mi_pm:
 					case prison_mines_interval_playermines:
-						{
+						if ( mine != null ) {
 	        				if ( attributeNFormat != null ) {
 
 	        					results = attributeNFormat.format( (long) mine.getResetTime() );
@@ -833,7 +841,7 @@ public class MineManager
 					case prison_mif_pm:
 					case prison_mines_interval_formatted_playermines:
 						
-						{
+						if ( mine != null ) {
 	        				if ( attributeNFormat != null ) {
 
 	        					results = attributeNFormat.format( (long) mine.getResetTime() );
@@ -852,7 +860,7 @@ public class MineManager
 					case prison_mines_timeleft_playermines:
 						// NOTE: timeleft can vary based upon server loads:
 						
-						if ( !mine.isVirtual() )
+						if ( mine != null && !mine.isVirtual() )
 						{
 	        				if ( attributeNFormat != null ) {
 
@@ -869,7 +877,7 @@ public class MineManager
 					case prison_mtlb_pm:
 					case prison_mines_timeleft_bar_playermines:
 						// NOTE: timeleft can vary based upon server loads:
-						if ( !mine.isVirtual() ) {
+						if ( mine != null && !mine.isVirtual() ) {
 							results = getRemainingTimeBar( mine, attributeBar );
 						}
 						
@@ -881,7 +889,7 @@ public class MineManager
 					case prison_mines_timeleft_formatted_playermines:
 						// NOTE: timeleft can vary based upon server loads:
 						
-						if ( !mine.isVirtual() )
+						if ( mine != null && !mine.isVirtual() )
 						{
 	        				if ( attributeNFormat != null ) {
 
@@ -899,7 +907,7 @@ public class MineManager
 					case prison_ms_pm:
 					case prison_mines_size_playermines:
 						
-						if ( !mine.isVirtual() )
+						if ( mine != null && !mine.isVirtual() )
 						{
 	        				if ( attributeNFormat != null ) {
 
@@ -918,7 +926,7 @@ public class MineManager
 					case prison_mr_pm:
 					case prison_mines_remaining_playermines:
 						
-						if ( !mine.isVirtual() ) {
+						if ( mine != null && !mine.isVirtual() ) {
 							
 							int remainingBlocks = mine.getRemainingBlockCount();
 							{
@@ -940,7 +948,7 @@ public class MineManager
 					case prison_mrb_pm:
 					case prison_mines_remaining_bar_playermines:
 						
-						if ( !mine.isVirtual() ) {
+						if ( mine != null && !mine.isVirtual() ) {
 							
 							int totalBlocks = mine.getBounds().getTotalBlockCount();
 							int blocksRemaining = mine.getRemainingBlockCount();
@@ -957,7 +965,7 @@ public class MineManager
 					case prison_mines_percent_playermines:
 						// mine.refreshAirCount(); // async & delayed : Very high cost
 						
-						if ( !mine.isVirtual() ) {
+						if ( mine != null && !mine.isVirtual() ) {
 							
 							double percentRemaining = mine.getPercentRemainingBlockCount();
 							results = dFmt.format( percentRemaining );
@@ -968,7 +976,7 @@ public class MineManager
 					case prison_mines_player_count_minename:
 					case prison_mpc_pm:
 					case prison_mines_player_count_playermines:
-						if ( !mine.isVirtual() )
+						if ( mine != null && !mine.isVirtual() )
 						{
 	        				if ( attributeNFormat != null ) {
 	        					
@@ -985,7 +993,7 @@ public class MineManager
 					case prison_mines_blocks_mined_minename:
 					case prison_mbm_pm:
 					case prison_mines_blocks_mined_playermines:
-						if ( !mine.isVirtual() )
+						if ( mine != null && !mine.isVirtual() )
 						{
 //							getBlockBreakCount();
 							
@@ -1005,7 +1013,7 @@ public class MineManager
 					case prison_mines_reset_count_minename:
 					case prison_mrc_pm:
 					case prison_mines_reset_count_playermines:
-						{
+						if ( mine != null ){
 	        				if ( attributeNFormat != null ) {
 	        					
 	        					results = attributeNFormat.format( (long) mine.getResetCount() );
@@ -1237,7 +1245,7 @@ public class MineManager
 					case prison_player_blocks_total_minename:
 					case prison_pbtr_minename:
 					case prison_player_blocks_total_raw_minename:
-						if ( !mine.isVirtual() && player != null )
+						if ( mine != null && !mine.isVirtual() && player != null )
 						{
     						long blocksTotalByMine = PlayerCache.getInstance()
     												.getPlayerBlocksTotalByMine( player, mine.getName() );

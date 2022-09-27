@@ -12,7 +12,14 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13b 2022-09-22
+# 3.3.0-alpha.13b 2022-09-27
+
+
+* **Fixed an issue with MINEPLAYER placeholders which resulted in false fast-fails when players would leave a mine.**
+Once a placeholder would fail, even if it was working before, it would be impossible to reenable the placeholder value from being evaluated in the future due to the nature and purpose of the fast-fail.
+The MINEPLAYER placeholders actually has three states: invalid placeholder (any invalid placeholder string), valid with mine object, and valid without mine object.  So the valid without mine object was getting translated as invalid placeholder.
+The fix was to allow even valid without mines to be processed by their respective block of code, but within each block of code had to add if-not-null checks to prevent other null pointer failures.
+**Note:** This issue may have been related to other recent placeholder issues that have not been able to be resolved.
 
 
 * **For some of the gui commands, like `/gui ranks`, `/gui prestiges`, and `/gui mines` the button now closes the gui instead of trying to run the command `/gui`.**
