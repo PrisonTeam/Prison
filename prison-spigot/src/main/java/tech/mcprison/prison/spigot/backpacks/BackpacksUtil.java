@@ -26,6 +26,7 @@ import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.gui.PrisonCoreGuiMessages;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -973,29 +974,65 @@ public class BackpacksUtil
 //        return getBackpackPermSize(p, backPackSize);
 //    }
 
-    private int getSize(Player p, String id) {
+    public int getBackpackSize( UUID playerUuid, String id ) {
     	String backpackId = id == null ? 
     			"" : "-" + id;
     	
+    	int backpackSize = backpackDefaultSize;
+    	
+    	try {
+    		String size = backpacksDataConfig.getString("Inventories." + playerUuid + ".Items" + backpackId + ".Size");
+    		
+    		backpackSize = Integer.parseInt( size );
+    	} catch (NumberFormatException ignored){}
+    	
+    	if (backpackSize % 9 != 0){
+    		backpackSize = (int) Math.ceil( backpackSize / 9.0d ) * 9;
+    	}
+    	
+    	if (backpackSize == 0) backpackSize = 9;
+    	
+    	return backpackSize;
+    }
+    
+    private int getSize(Player p, String id) {
+//    	String backpackId = id == null ? 
+//    			"" : "-" + id;
+    	
         updateCachedBackpack();
 
-        int backPackSize = backpackDefaultSize;
-
-        try {
-        	String size = backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Items" + backpackId + ".Size");
-        	
-            backPackSize = Integer.parseInt( size );
-        } catch (NumberFormatException ignored){}
-
-        if (backPackSize % 9 != 0){
-            backPackSize = (int) Math.ceil((float)backPackSize / 9) * 9;
-        }
-
-        if (backPackSize == 0) backPackSize = 9;
+        int backPackSize = getBackpackSize( p.getUniqueId(), id );
+        
+//        int backPackSize = backpackDefaultSize;
+//
+//        try {
+//        	String size = backpacksDataConfig.getString("Inventories." + p.getUniqueId() + ".Items" + backpackId + ".Size");
+//        	
+//            backPackSize = Integer.parseInt( size );
+//        } catch (NumberFormatException ignored){}
+//
+//        if (backPackSize % 9 != 0){
+//            backPackSize = (int) Math.ceil((float)backPackSize / 9) * 9;
+//        }
+//
+//        if (backPackSize == 0) backPackSize = 9;
 
         return getBackpackPermSize(p, backPackSize);
     }
 
+    /**
+     * <p>This function will check for the largest backpack size permitted
+     * for a player by using the perm `prison.backpack.size.<size>`.  If a perm
+     * exists, then it will set a max size for the player, which will set the 
+     * max size for the backpack if the backpack size is greater than the perm.
+     * If a player does not have this perm, then the backpack size will not be
+     * limited.
+     * </p>
+     * 
+     * @param p
+     * @param backPackSize
+     * @return
+     */
     private int getBackpackPermSize(Player p, int backPackSize) {
         SpigotPlayer sPlayer = new SpigotPlayer(p);
         List<String> perms = sPlayer.getPermissions("prison.backpack.size.");
@@ -1042,38 +1079,82 @@ public class BackpacksUtil
 //        return inv;
 //    }
 
+    /**
+     * <p>This function returns prison based objects.
+     * </p>
+     * 
+     * @param player
+     * @param id
+     * @return
+     */
+    public List<tech.mcprison.prison.internal.ItemStack> getPrisonBackpackContents( UUID playerUuid, String id ) {
+    	List<tech.mcprison.prison.internal.ItemStack> contents = new ArrayList<>();
+
+    	String backpackId = id == null ? 
+    			"" : "-" + id;
+    	
+    	updateCachedBackpack();
+    	
+    	int size = getBackpackSize( playerUuid, id);
+    	
+    	// Get the Items config section
+    	Set<String> slots;
+    	try {
+    		slots = backpacksDataConfig.getConfigurationSection(
+    				"Inventories." + playerUuid + ".Items" + backpackId).getKeys(false);
+    	} catch (NullPointerException ex){
+    		return contents;
+    	}
+    	
+    	if (slots.size() != 0) {
+    		for (String slot : slots) {
+    			ItemStack finalItem = backpacksDataConfig.getItemStack(
+    					"Inventories." + playerUuid + ".Items" + backpackId + "." + slot + ".ITEMSTACK");
+    			if (finalItem != null) {
+    				int slotNumber = Integer.parseInt(slot);
+    				if (size > slotNumber) {
+    					
+    					contents.add( new SpigotItemStack( finalItem ));
+    				}
+    			}
+    		}
+    	}
+    	
+    	return contents;
+    }
+    
     private Inventory getBackpackOwn(Player p, String id) {
     	String backpackId = id == null ? 
     			"" : "-" + id;
     	
-        updateCachedBackpack();
-
-        int size = getBackpackSize(p, id);
-        
-        Inventory inv = Bukkit.createInventory(p, size, SpigotPrison.format("&3" + p.getName() + " -> Backpack" + backpackId));
-
-        // Get the Items config section
-        Set<String> slots;
-        try {
-            slots = backpacksDataConfig.getConfigurationSection(
-            					"Inventories." + p.getUniqueId() + ".Items" + backpackId).getKeys(false);
-        } catch (NullPointerException ex){
-            return inv;
-        }
-        if (slots.size() != 0) {
-            for (String slot : slots) {
-                ItemStack finalItem = backpacksDataConfig.getItemStack(
-                				"Inventories." + p.getUniqueId() + ".Items" + backpackId + "." + slot + ".ITEMSTACK");
-                if (finalItem != null) {
-                    int slotNumber = Integer.parseInt(slot);
-                    if (size > slotNumber) {
-                        inv.setItem(slotNumber, finalItem);
-                    }
-                }
-            }
-        }
-
-        return inv;
+    	updateCachedBackpack();
+    	
+    	int size = getBackpackSize(p, id);
+    	
+    	Inventory inv = Bukkit.createInventory(p, size, SpigotPrison.format("&3" + p.getName() + " -> Backpack" + backpackId));
+    	
+    	// Get the Items config section
+    	Set<String> slots;
+    	try {
+    		slots = backpacksDataConfig.getConfigurationSection(
+    				"Inventories." + p.getUniqueId() + ".Items" + backpackId).getKeys(false);
+    	} catch (NullPointerException ex){
+    		return inv;
+    	}
+    	if (slots.size() != 0) {
+    		for (String slot : slots) {
+    			ItemStack finalItem = backpacksDataConfig.getItemStack(
+    					"Inventories." + p.getUniqueId() + ".Items" + backpackId + "." + slot + ".ITEMSTACK");
+    			if (finalItem != null) {
+    				int slotNumber = Integer.parseInt(slot);
+    				if (size > slotNumber) {
+    					inv.setItem(slotNumber, finalItem);
+    				}
+    			}
+    		}
+    	}
+    	
+    	return inv;
     }
 
 //    private void openBackpackMethod(Player p) {

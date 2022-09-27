@@ -1,11 +1,13 @@
 package tech.mcprison.prison.backpacks;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 
 import tech.mcprison.prison.backpacks.BackpackEnums.BackpackFeatures;
 import tech.mcprison.prison.backpacks.BackpackEnums.BackpackType;
-import tech.mcprison.prison.internal.inventory.PlayerInventory;
+import tech.mcprison.prison.internal.ItemStack;
 
 public class PlayerBackpack {
 	
@@ -20,7 +22,8 @@ public class PlayerBackpack {
 	// either inventory or silos... not both... not neither:
 	private BackpackType backpackType;
 	
-	private PlayerInventory inventory;
+	private List<ItemStack> inventory;
+//	private Inventory inventory;
 	private int inventorySize;
 	
 	
@@ -34,6 +37,7 @@ public class PlayerBackpack {
 	public PlayerBackpack() {
 		super();
 		
+		this.inventory = new ArrayList<>();
 		this.silos = new TreeMap<>();
 		
 	}
@@ -93,10 +97,10 @@ public class PlayerBackpack {
 		this.backpackType = backpackType;
 	}
 
-	public PlayerInventory getInventory() {
+	public List<ItemStack> getInventory() {
 		return inventory;
 	}
-	public void setInventory(PlayerInventory inventory) {
+	public void setInventory(List<ItemStack> inventory) {
 		this.inventory = inventory;
 	}
 

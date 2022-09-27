@@ -25,6 +25,19 @@ public class PlaceholderStatsData {
 		this.failedMatch = false;
 	}
 
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("PlaceholderStatsData: ").append( placeholderId )
+			.append( "  placeholderKey: " ).append(
+					placeholderKey == null ? "-null-" :
+						placeholderKey.getKey() + ":" + placeholderKey.getPlaceholder().name()
+					);
+		sb.append( " failedMatch: " ).append( failedMatch );
+		
+		return sb.toString();
+	}
+	
 	public void logHit( long nanoStart, long nanoEnd ) {
 		long durationNano = nanoEnd - nanoStart;
 		

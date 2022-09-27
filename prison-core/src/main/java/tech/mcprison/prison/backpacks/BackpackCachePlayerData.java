@@ -1,6 +1,7 @@
 package tech.mcprison.prison.backpacks;
 
 import java.io.File;
+import java.util.Set;
 import java.util.TreeMap;
 
 import tech.mcprison.prison.cache.CoreCacheData;
@@ -50,6 +51,24 @@ public class BackpackCachePlayerData
 		
 		this.playerFile = playerFile;
 		
+	}
+	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append( getPlayerName() ).append( ": " );
+		
+		Set<String> keys = getBackpacks().keySet();
+		for (String key : keys) {
+			PlayerBackpack bp = getBackpacks().get(key);
+
+			sb.append( "[" ).append( bp.getBackpackType() )
+				.append( " " ).append( bp.getName() )
+				.append( " size: ").append( bp.getInventorySize() )
+				.append( "] " );
+		}
+		
+		return sb.toString();
 	}
 	
 	protected Player getPlayer() {

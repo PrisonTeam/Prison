@@ -15,6 +15,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13b 2022-09-27
 
 
+* **New prison backpacks: More work on getting them setup for testing the BackpackCache.**
+Adding hooks to load from the old prison backpacks.
+
+
 * **Fixed an issue with MINEPLAYER placeholders which resulted in false fast-fails when players would leave a mine.**
 Once a placeholder would fail, even if it was working before, it would be impossible to reenable the placeholder value from being evaluated in the future due to the nature and purpose of the fast-fail.
 The MINEPLAYER placeholders actually has three states: invalid placeholder (any invalid placeholder string), valid with mine object, and valid without mine object.  So the valid without mine object was getting translated as invalid placeholder.

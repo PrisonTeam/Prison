@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.TreeSet;
 import java.util.UUID;
 
+import tech.mcprison.prison.backpacks.PlayerBackpack;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.internal.CommandSender;
@@ -450,5 +451,8 @@ public interface Platform {
 	
 	
 	public RankLadder getRankLadder( String ladderName );
+	
+	
+	public List<PlayerBackpack> getPlayerOldBackpacks( Player player );
 
 }

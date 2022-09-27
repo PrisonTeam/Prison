@@ -18,11 +18,15 @@ import tech.mcprison.prison.internal.OfflineMcPlayer;
 import tech.mcprison.prison.internal.inventory.Inventory;
 import tech.mcprison.prison.internal.scoreboard.Scoreboard;
 import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.ranks.PrisonRanks;
+import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.util.Gamemode;
 import tech.mcprison.prison.util.Location;
 
 public class SpigotOfflinePlayer
 	implements OfflineMcPlayer {
+	
+	private RankPlayer rankPlayer;
 	
 	private OfflinePlayer offlinePlayer;
 	
@@ -324,6 +328,13 @@ public class SpigotOfflinePlayer
 	public void setActionBar( String actionBar ) {
 	}
 
+	public RankPlayer getRankPlayer() {
+		if ( rankPlayer == null ) {
+			rankPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( this );
+		}
+		return rankPlayer;
+	}
+	
 	@Override
 	public PlayerCache getPlayerCache() {
 		return PlayerCache.getInstance();

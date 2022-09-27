@@ -29,6 +29,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
+import tech.mcprison.prison.backpacks.PlayerBackpack;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.FileStorage;
 import tech.mcprison.prison.file.YamlFileIO;
@@ -48,9 +49,9 @@ import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.placeholders.PlaceholderManager.PlaceholderFlags;
+import tech.mcprison.prison.placeholders.Placeholders;
 import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
-import tech.mcprison.prison.placeholders.Placeholders;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.Location;
@@ -515,6 +516,11 @@ public class TestPlatform implements Platform {
 
 	@Override
 	public RankLadder getRankLadder(String ladderName) {
+		return null;
+	}
+	
+	@Override
+	public List<PlayerBackpack> getPlayerOldBackpacks( Player player ) {
 		return null;
 	}
 }

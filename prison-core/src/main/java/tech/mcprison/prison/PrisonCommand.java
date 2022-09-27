@@ -32,6 +32,7 @@ import java.util.UUID;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.backpacks.BackpackConverterOldPrisonBackpacks;
 import tech.mcprison.prison.backups.PrisonBackups;
 import tech.mcprison.prison.backups.PrisonBackups.BackupTypes;
 import tech.mcprison.prison.cache.PlayerCachePlayerData;
@@ -1377,6 +1378,26 @@ public class PrisonCommand
     	
     }
 
+    
+    
+    
+    @Command(identifier = "prison backpacks listOld", 
+    		description = "Using the new prison backpack cache interface, this will list existing "
+    				+ "backpacks under the old prison backpack system. ", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void backpacksListOldCmd(CommandSender sender
+    		) {
+    	
+    	BackpackConverterOldPrisonBackpacks converter = new BackpackConverterOldPrisonBackpacks();
+    	
+    	converter.convertOldBackpacks();
+    
+    	
+    }
+
+    
+    
+    
 //    
 //	private StringBuilder getSupportSubmitVersionData() {
 //		ChatDisplay display = displayVersion("ALL");

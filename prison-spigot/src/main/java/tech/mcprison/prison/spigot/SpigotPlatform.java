@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -59,6 +60,8 @@ import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.backpacks.BackpackEnums.BackpackType;
+import tech.mcprison.prison.backpacks.PlayerBackpack;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.convert.ConversionManager;
@@ -109,6 +112,7 @@ import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonEnchants
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonsExplosiveBlockBreakEvents;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerTokenEnchant;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerZenchantments;
+import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
@@ -2945,4 +2949,44 @@ public class SpigotPlatform
 		RankLadder results = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
 		return results;
 	}
+	
+	
+	@Override
+	public List<PlayerBackpack> getPlayerOldBackpacks( Player player ) {
+		List<PlayerBackpack> backpacks = new ArrayList<>();
+		
+		
+
+		SpigotPlayer sPlayer = (SpigotPlayer) 
+							getPlayer( player.getName() ).orElse(null);
+				
+		
+		if ( sPlayer != null && getConfigBooleanFalse( "backpacks" ) && BackpacksUtil.isEnabled() ) {
+			
+			BackpacksUtil backpackUtil = BackpacksUtil.get();
+			
+			UUID playerUuid = player.getUUID();
+			
+			for ( String backpackId : backpackUtil.getBackpacksIDs( sPlayer.getWrapper() ) ) {
+				
+				PlayerBackpack backpack = new PlayerBackpack( player.getName(), playerUuid.toString(), 
+						BackpackType.inventory,
+						backpackId, XMaterial.CHEST.name() );
+				
+				int size = backpackUtil.getBackpackSize( playerUuid, backpackId );
+				backpack.setInventorySize(size);
+
+				List<ItemStack> inventory = backpackUtil.getPrisonBackpackContents( playerUuid, backpackId );
+				backpack.setInventory( inventory );
+				
+				
+				
+				backpacks.add( backpack );
+				
+			}
+		}
+		
+		return backpacks;
+	}
+	
 }
