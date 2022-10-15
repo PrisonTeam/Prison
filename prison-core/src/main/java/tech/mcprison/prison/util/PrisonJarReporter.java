@@ -207,14 +207,20 @@ public class PrisonJarReporter {
 				}
 				
 			}
-			catch ( ZipException e )
+			catch ( Exception e )
 			{
-				e.printStackTrace();
+				// Ignore all errors.  
+				// These are not our plugins, so if there is a problem, then it really does not matter
+				
 			}
-			catch ( IOException e )
-			{
-				e.printStackTrace();
-			}
+//			catch ( ZipException e )
+//			{
+//				e.printStackTrace();
+//			}
+//			catch ( IOException e )
+//			{
+//				e.printStackTrace();
+//			}
 			
 			
 		}

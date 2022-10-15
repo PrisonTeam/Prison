@@ -12,7 +12,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13b 2022-09-27
+# 3.3.0-alpha.13b 2022-10-15
+
+
+* **If inspection of other plugin's jars fail, then just ignore this issue and continue on processing.**
 
 
 * **New prison backpacks: More work on getting them setup for testing the BackpackCache.**
