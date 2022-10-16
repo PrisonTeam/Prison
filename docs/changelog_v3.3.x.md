@@ -12,7 +12,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13b 2022-10-15
+# 3.3.0-alpha.13b 2022-10-16
+
+
+* **Bug: Found a major bug in calculating a vector's length since x should have been squared, but instead it was multiplied by y.**
+The use of vectors is limited within Prison, but when used, this could cause issues.
 
 
 * **If inspection of other plugin's jars fail, then just ignore this issue and continue on processing.**
