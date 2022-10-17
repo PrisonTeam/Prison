@@ -12,7 +12,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13b 2022-10-17
+# 3.3.0-alpha.13c 2022-10-17
+
+
+**3.3.0-alpha.13c 2022-10-17**
+NOTE: Changes to PrisonBlock structures have been stashed and are not included in this alpha.13c release.
 
 
 * **Small updates to help prepare for the internal change to how PrisonBlocks are structured.**
