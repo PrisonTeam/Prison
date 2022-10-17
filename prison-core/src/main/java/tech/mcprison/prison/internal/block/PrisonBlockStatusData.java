@@ -345,37 +345,37 @@ public abstract class PrisonBlockStatusData {
 			
 			switch ( blockName )
 			{
-			case "sand":
-			case "red_sand":
-			case "gravel":
-				
-			case "white_concrete_powder":
-			case "orange_concrete_powder":
-			case "magenta_concrete_powder":
-			case "light_blue_concrete_powder":
-			case "yellow_concrete_powder":
-			case "lime_concrete_powder":
-			case "pink_concrete_powder":
-			case "gray_concrete_powder":
-			case "light_gray_concrete_powder":
-			case "cyan_concrete_powder":
-			case "purple_concrete_powder":
-			case "blue_concrete_powder":
-			case "brown_concrete_powder":
-			case "green_concrete_powder":
-			case "red_concrete_powder":
-			case "black_concrete_powder":
-				
-			case "anvil":
-			case "chipped_anvil":
-			case "damaged_anvil":
-				
-			case "scaffolding":
-			case "pointed_dripstone":
-			case "dragon_egg":
-			{
-				results = true;
-			}
+				case "sand":
+				case "red_sand":
+				case "gravel":
+					
+				case "white_concrete_powder":
+				case "orange_concrete_powder":
+				case "magenta_concrete_powder":
+				case "light_blue_concrete_powder":
+				case "yellow_concrete_powder":
+				case "lime_concrete_powder":
+				case "pink_concrete_powder":
+				case "gray_concrete_powder":
+				case "light_gray_concrete_powder":
+				case "cyan_concrete_powder":
+				case "purple_concrete_powder":
+				case "blue_concrete_powder":
+				case "brown_concrete_powder":
+				case "green_concrete_powder":
+				case "red_concrete_powder":
+				case "black_concrete_powder":
+					
+				case "anvil":
+				case "chipped_anvil":
+				case "damaged_anvil":
+					
+				case "scaffolding":
+				case "pointed_dripstone":
+				case "dragon_egg":
+				{
+					results = true;
+				}
 			}
 		}
 		return results;

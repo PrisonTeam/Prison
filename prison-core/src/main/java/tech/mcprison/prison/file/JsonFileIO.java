@@ -42,6 +42,17 @@ public class JsonFileIO
 		return gson;
 	}
 	
+	public Gson getGsonExposed()
+	{
+		return  new GsonBuilder()
+				.excludeFieldsWithoutExposeAnnotation()
+				.disableHtmlEscaping()
+				.setPrettyPrinting()
+				.create();
+	}
+	
+	
+	
     /**
      * <p>This constructs a player file named based upon the UUID followed 
      * by the player's name.  This format is used so it's easier to identify
@@ -95,6 +106,16 @@ public class JsonFileIO
 		{
 			String json = getGson().toJson( data );
 
+			saveFile( file, json );	
+		}
+	}
+	
+	public void saveJsonExposedFile( File file, FileIOData data ) 
+	{
+		if ( file != null && data != null )
+		{
+			String json = getGsonExposed().toJson( data );
+			
 			saveFile( file, json );	
 		}
 	}

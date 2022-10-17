@@ -148,6 +148,14 @@ public class Location {
     	world.setBlockAsync( prisonBlock, this );
     }
 
+    /**
+     * <p>The edge identifies if a block is along the edge, or corner, of a mine. 
+     * It's these blocks that becomes the pink glass tracer blocks when 
+     * when enabling the tracer on a mine.
+     * </p>
+     * 
+     * @return
+     */
     public boolean isEdge() {
 		return isEdge;
 	}

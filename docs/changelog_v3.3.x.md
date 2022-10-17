@@ -12,7 +12,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13b 2022-10-16
+# 3.3.0-alpha.13b 2022-10-17
+
+
+* **Small updates to help prepare for the internal change to how PrisonBlocks are structured.**
 
 
 * **Bug: Found a major bug in calculating a vector's length since x should have been squared, but instead it was multiplied by y.**

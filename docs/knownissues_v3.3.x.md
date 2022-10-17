@@ -8,10 +8,34 @@
 # TODO Items for v3.3.0-alpha.13
 
 
+- File save to new format - OmarG
+  - pre-req for turning off TP
+  - pre-req for custom mine shapes
+  
+
+- Ability to turn of TP on mine resets.  OmarG
+  - Maybe have a special value for spawn to indicate it should TP?
+  - Could still have a spawn point, but just not tp during resets.
+
+
+- custom mine shapes - Chain and Fiba1 and OmarG
+ - Have a new command to edit and save the mine's shapes
+ - edit would spawn red/yellow wool - remove blocks - save would only save the wool blocks.
+ 
+
+- fix gui ranks to remove italics from the rank names.  This may be the gui ranks and/or the gui prestiges.  - Bryton
+  Cannot reproduce - No italics are being added by prison.
+
+
+- DONE: Gui prestiges - option to remove the gui prestige button.  Not sure if any of the options in the config.sys really supports that.  - Bryton
+
+
+
 - Prestige - needs improvements
-  - Confirmation does not perform any prechecks to confirm if the player can even prestige
-  - Confirmation does not reflect prestige settins. It always shows that rank and balance will be reset, even if that is disabled.
-  - It's not clear how to confirm via chat
+    DONE: rewrote the prestige handling to exist in the ranks module. Everything is handled properly now. The GUI is passed the correct lore so no rankup logic is in the gui anymore. Prechecks are now enabled too.
+  - DONE: Confirmation does not perform any prechecks to confirm if the player can even prestige
+  - DONE: Confirmation does not reflect prestige settins. It always shows that rank and balance will be reset, even if that is disabled.
+  - DONE: It's not clear how to confirm via chat
 
 
 - when testing the block breakage with the SHIFT-click with the mine wand, I also saw that it processed the same block twice.  The first time looked as if the drop was being canceled, then the second time the event was being canceled.  Or vice-a-versa.  I don't remember setting it up both ways.

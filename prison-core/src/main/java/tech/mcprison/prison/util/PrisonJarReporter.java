@@ -14,7 +14,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import tech.mcprison.prison.Prison;

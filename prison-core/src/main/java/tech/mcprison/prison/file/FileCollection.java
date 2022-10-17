@@ -38,7 +38,11 @@ public class FileCollection
         return collDir.getName();
     }
 
-    /**
+    public File getCollDir() {
+		return collDir;
+	}
+
+	/**
      * <p>Refresh is a function that will clear the databaseMap collection if it contains anything,
      * then load all possible FileDatabase objects, ignoring those that been virtually deleted.
      * </p>
