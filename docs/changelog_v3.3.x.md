@@ -12,7 +12,12 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13c 2022-10-17
+# 3.3.0-alpha.13c 2022-11-01
+
+
+* **Mine Bombs bug fix: Was using a function that was incompatible with bukkit 1.8.8 and this fixes that issue.**
+Using a prison compatibility function to provide the compatibility.
+Added more information on why mine bombs are not working when prison is in debug mode.
 
 
 **3.3.0-alpha.13c 2022-10-17**

@@ -8,7 +8,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
 
 import de.tr7zw.nbtapi.NBTItem;
 import tech.mcprison.prison.bombs.MineBombData;
@@ -17,6 +16,8 @@ import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.block.OnBlockBreakMines;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
+import tech.mcprison.prison.spigot.compat.Compatibility.EquipmentSlot;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.util.Location;
 
@@ -75,9 +76,10 @@ public class PrisonBombListener
         	
         	String bombName = nbtItem.getString( MineBombs.MINE_BOMBS_NBT_BOMB_KEY );
         	
-        	if ( Output.get().isDebug() && nbtItem != null ) {
-        		Output.get().logInfo( "PrisonBombListener.onInteract ntb: %s :: %s", 
-        				bombName, nbtItem.toString() );
+        	if ( Output.get().isDebug() ) {
+        		Output.get().logInfo( "PrisonBombListener.onInteract bombName: &7%s&r &3::  nbt: &r%s", 
+        				bombName, 
+        				(nbtItem == null ? "&a-no-nbt-" : nbtItem.toString()) );
         	}
         	
         	Player player = event.getPlayer();
@@ -104,7 +106,10 @@ public class PrisonBombListener
         	
         	
         	if ( bomb == null ) {
-        		
+            	if ( Output.get().isDebug() ) {
+        			Output.get().logInfo( "MineBombs: The bomb named '%s' cannot be mapped to a mine bomb.",
+        					bombName );
+        		}
         		return;
         	}
         	
@@ -130,17 +135,28 @@ public class PrisonBombListener
         	if ( mine == null ) {
         		// player is not in a mine, so do not allow them to trigger a mine bomb:
         		
+        		if ( Output.get().isDebug() ) {
+        			Output.get().logInfo( "MineBombs: Cannot mine bombs use outside of mines." );
+        		}
+        		
         		event.setCancelled( true );
         		return;
         	}
         	else if ( !mine.hasMiningAccess( sPlayer ) ) {
         		// Player does not have access to the mine, so don't allow them to trigger a mine bomb:
         		
+        		if ( Output.get().isDebug() ) {
+        			Output.get().logInfo( "MineBombs: Player %s&r does not have access to Mine %s&r.",
+        					sPlayer.getName(), mine.getName());
+        		}
+        		
         		event.setCancelled( true );
         		return;
         	}
         	
-        	EquipmentSlot hand = event.getHand();
+        	// getHand() is not available with bukkit 1.8.8 so use the compatibility functions:
+        	EquipmentSlot hand = SpigotCompatibility.getInstance().getHand(event);
+//        	EquipmentSlot hand = event.getHand();
         	
 //        	Output.get().logInfo( "### PrisonBombListener: PlayerInteractEvent  02 " );
         	if ( getPrisonUtilsMineBombs().setBombInHand( player, bomb, sBlock, hand ) ) {
@@ -153,8 +169,6 @@ public class PrisonBombListener
         	}
         	
         	
-        	
- 
         	
         }
     }

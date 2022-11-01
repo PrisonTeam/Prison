@@ -9,7 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
+//import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
@@ -33,6 +33,7 @@ import tech.mcprison.prison.spigot.block.OnBlockBreakMines;
 import tech.mcprison.prison.spigot.block.PrisonItemStackNotSupportedRuntimeException;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
+import tech.mcprison.prison.spigot.compat.Compatibility.EquipmentSlot;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
@@ -744,7 +745,8 @@ public class PrisonUtilsMineBombs
 	 * @return
 	 */
 	public boolean setBombInHand( Player player, 
-					MineBombData bomb, SpigotBlock sBlock, EquipmentSlot hand ) {
+					MineBombData bomb, SpigotBlock sBlock, 
+					tech.mcprison.prison.spigot.compat.Compatibility.EquipmentSlot hand ) {
 		boolean isABomb = false;
 		
 //		MineBombData bomb = getBombItem( player );
