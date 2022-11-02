@@ -152,10 +152,17 @@ All of Prison's placeholders have an alias.  An alias is a shortened name for a 
   NOTE: You may also need to install the follow plugin for full support: ProtocolLib.
 
 
-* **MVdWPlaceholder** - Suggested to Avoid - Prison does support this plugin, but since it is used mostly with premium plugins, we have no way to fully test this plugin to ensure it actually works correctly.  We've heard very few people have used this plugin, but we've heard it does work well. Use at your own risk. 
-With this plugin, all placeholders are registered with it automatically when prison starts up, and all placeholders should be used as all lower case.  Because prison has so many placeholders, with many that are expanded based upon ladders, ranks, and mine names, a modest prison server could generate and register well over 1000 placeholders.  MVdWPlaceholder appears to be very verbose so you will see a lot of logging in the console when it starts up.
+* **MVdWPlaceholder** - Not supported.
 
-  It should also be noted that because of some of the limitations of MVdW, not all features of Prison's placeholder support will be supported.  For example, you may not be able to reload placeholders, or use placeholder attributes to customize how placeholders are used.
+**NOTE: Prison no longer supports MVdWPlaceholder** because it could not support all of the advanced features with placeholders that prison uses.  Also, since prison generates so many possible placeholders, MVdW pollutes the console log with thousands of lines of useless information stating each variant of a placeholder has been registered.  We also dropped support for this plugin because there is no way to contact the developer because they hide behind a pay-wall, and I'm not about to buy one of their other plugins to just tell them their so-called-free plugin is not working properly.
+
+But perhaps the biggest reason why I dropped support for MVdW is because it's 100% pointless.  **PlaceholderAPI** works flawlessly with MVdW so there is absolutely no reason why prison needs to support MVdW anymore.  If you need to use MVdW, then please keep using it, it works great with their other plugins.  But you can use PlaceholderAPI along with it too.  So there are zero reasons why you cannot use PlaceholderAPI, and everyone is happy.
+
+~~Suggested to Avoid - Prison does support this plugin, but since it is used mostly with premium plugins, we have no way to fully test this plugin to ensure it actually works correctly.  We've heard very few people have used this plugin, but we've heard it does work well. Use at your own risk.~~
+
+~~With this plugin, all placeholders are registered with it automatically when prison starts up, and all placeholders should be used as all lower case.  Because prison has so many placeholders, with many that are expanded based upon ladders, ranks, and mine names, a modest prison server could generate and register well over 1000 placeholders.  MVdWPlaceholder appears to be very verbose so you will see a lot of logging in the console when it starts up.~~
+
+~~  It should also be noted that because of some of the limitations of MVdW, not all features of Prison's placeholder support will be supported.  For example, you may not be able to reload placeholders, or use placeholder attributes to customize how placeholders are used.~~
 
 
 
