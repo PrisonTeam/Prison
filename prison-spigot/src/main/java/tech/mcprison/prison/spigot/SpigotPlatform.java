@@ -2063,6 +2063,38 @@ public class SpigotPlatform
 		}
 		
 		
+        Module minesModule = Prison.get().getModuleManager().getModule( "Mines" ).orElseGet( null );
+        if ( minesModule != null && 
+        		minesModule.getStatus().getStatus() == ModuleStatus.Status.ENABLED ) {
+        	
+        	DecimalFormat dFmt = new DecimalFormat("#,##0");
+        	
+        	int minesEnabled = 0;
+        	int minesVirtual = 0;
+        	int minesDeleted = 0;
+        	int minesBlocks = 0;
+        	
+        	List<Mine> mines = PrisonMines.getInstance().getMines();
+        	for (Mine mine : mines) {
+        		
+        		minesEnabled += mine.isEnabled() ? 1 : 0;
+				minesVirtual += mine.isVirtual() ? 1 : 0;
+				minesDeleted += mine.isDeleted() ? 1 : 0;
+				
+				minesBlocks += mine.isEnabled() ? mine.getBounds().getTotalBlockCount() : 0;
+			}
+        	
+        	double blksPerMine = minesEnabled == 0 ? 0 : minesBlocks / (double) minesEnabled;
+        	
+        	String mineDetails = String.format( 
+        			"&7Mines Info:  &9Enabled: &b%d  &9Virtual: &b%d  &9Deleted: &b%d  &9AvgBlocks/Mine: &b%s",
+        			minesEnabled, minesVirtual, minesDeleted, 
+        			dFmt.format(blksPerMine) );
+        	
+        	results.add( mineDetails );
+        }
+        
+        
     	
 		// Load the autoFeaturesConfig.yml and blockConvertersConfig.json files:
     	AutoFeaturesWrapper afw = AutoFeaturesWrapper.getInstance();
@@ -2311,6 +2343,7 @@ public class SpigotPlatform
         
         
         display.addText("");
+
         
         // Active Modules:x's root Command: &3/prison");
         

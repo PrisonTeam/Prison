@@ -12,7 +12,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13c 2022-11-01
+# 3.3.0-alpha.13c 2022-11-02
+
+
+* **Added some mine info to the `/prison version command.***
 
 
 * **Mine Bombs bug fix: Was using a function that was incompatible with bukkit 1.8.8 and this fixes that issue.**
