@@ -6,14 +6,22 @@
 
 This document provides some highlights to how to setup mines.  It is a work in progress so check back for more information.
 
+*Documented updated: 2022-11-05*
+
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
 # Overview
 
-This document should be able to provide the basic information to get your mines configured.  There are many options available within Prison, and also through the use of other plugins, and these advanced topics are beyond the scope of this document.
+This document should be able to provide the basic information to get your mines configured.  There are many options available within Prison, and also through the use of other plugins, so advanced topics that blend multiple plugins, and their various settings, are beyond the scope of this document.
+
+
+Prison has a list of suggested plugins that works well with Prison, and a few that do not work at all with Prison.  Please see the following document for a list of suggested plugins.  If you have a favorite plugin that works well with Prison and it's not in that list, then please reach out to us in our discord server and make a suggestion for it to be added. 
+[Setting up Prison - The Basics](prison_docs_012_setting_up_prison_basics.md)
+
 
 
 Items to add to this document:
+* Use of ***/mines backup help** this command will make an individual backup of a mine's config settings on the server's file system.  This backup can manually be used to rollback any changes to a mine.  Prison has a command **/prison support backup help** that will make a backup of all files within the server directory **plugins/Prison/**, of which it will include all mine backup files, then remove them from file system.  Contact support on our discord server for help.
 * Use of **/mines set area** to change the mine size without deleting it.
 * Use of **/mines delete** how it works and how to recover a deleted mine.
 * Use of **/mines list**
@@ -29,10 +37,15 @@ Items to add to this document:
 
 Prison now has a new set of features that can help you get up and running faster than ever!  `/ranks autoConfigure`. It can auto create your ranks and virtual mines, A through Z, it will link the mines to the ranks, setup the basic rank commands to provide basic access permissions for your players, and assign blocks of increasing values to all mines.  This command also enables the Mine Access Permission so it will be easier to control player's access to mining.
 
-The Prison auto configure also now enables prison's **sellall** features and preloads about 98 default items to make it easier to get started with your sellall shop.
+The Prison auto configure enables prison's **sellall** features and preloads about 98 default items to make it easier to get started with your sellall shop.  It also enable the most popular auto features and links the generated mines to the generated ranks to simplify enabling access for the players.
 
+The auto configure will generate both ranks and mines with the names A through Z, and will link the ranks to the mines of the same names.  Prison will setup all the generated mines as virtual mines, which includes the basic configurations that are most commonly used, plus it assigns blocks to each mine, in an increasing range of values.  The accessMinesByRanks will also be enabled, which will help bypass the need to generate a WorldGuard region for players to have access to the mines, and will help reduce the need to configure so many perms since Prison will handle the complex relationships for you.  
+
+If you are trying to use Prison with another plugin, such as an enchantment plugin, then you may need to create WG regions because the other plugins would require them.
 
 Once the the auto configure command is completed, all you need to do is to use the command `/mines set area` on all mines to make them physical mines.  Plus there are a new features to help provide the finishing touches in almost no time, such as setting liners for your mines.
+
+The Prison auto configure is very powerful and allows you get up and running much faster, but it does not prevent you from customizing any aspect that you would desire.  We strongly encourage everyone to at least start off with the auto configure, play around with it to see what prison can do with these simple setups, then it can help give you an idea of other customizations.  It should be noted that auto configure only uses about 10% of the features available within Prison, so as useful as it may be in showing you how to get up and running quickly, there are many other possibilities available where your imagination may be the limiting factor on how your server can be customized to your desires.
 
 
 Some of the commands of interest:
@@ -43,10 +56,8 @@ Some of the commands of interest:
  - `/mines set size help`
  - `/mines set liner help`
  
-Documentation pertaining to the use of the auto configuration will be coming soon.
 
-
-Keep in mind that in order to use the command `/ranks autoConfigure` you cannot have any mines or ranks defined yet.  So before you create a test mine, go ahead and run the auto configure so at least that is complete.  There is an option to force the generation of auto configure, but when forcing the generation, it will skip over any rank and any mine that is already configured, so it could cause a mess.
+Keep in mind that in order to use the command `/ranks autoConfigure` you should not have any mines or ranks defined yet, which may cause some conflicts with mines and their ranks.  So before you create a test mine, go ahead and run the auto configure so at least that is complete.  There is an option to force the generation of auto configure, but when forcing the generation, it will skip over any rank and any mine that is already configured, so it could cause a mess.
  
  
 One thing you need to keep in mind, if you are using something like LuckPerm groups, you must define the groups within LuckPerms before you can actually use them, such as through a rankup command being ran.
@@ -61,15 +72,17 @@ One thing you need to keep in mind, if you are using something like LuckPerm gro
 
 Please review the Prison's [Table of Contents](prison_docs_000_toc.md) for information on how to configure your server, and which plugins are required, or at least suggested.  
 
-It is also strongly suggested that you review the documentation on [Configuring and Using WorldGuard with LuckPerms to Protect Mines](prison_docs_626_configuring_worldguard_regions.md) since that explains a lot on how to setup the basics with your world, which will not be covered here. There will be references to this document, but this will be the only link provided. 
+
+Prison now uses **mineAccessByRank** which eliminates the need to setup WorldGuard regions, unless you are using other plugins that require them.  If you have a need to setup regions that will work with prison, then it is strongly suggested that you review the documentation on [Configuring and Using WorldGuard with LuckPerms to Protect Mines](prison_docs_626_configuring_worldguard_regions.md) since that explains a lot on how to setup the basics with your world, which will not be covered here. There will be references to this document, but this will be the only link provided. 
 
 These instructions assume you are OP'd since that is part of the above document pertaining to WorldGuard. If not, go ahead and OP yourself.
 
-To follow along with this documentation, you may want to crate your first mine as a test, with intentions of deleting it later.  It may be easier to remove it, than to convert it over to a final product.  The instructions here are informational, not focused on perfection.  So after you figure out how to create your mines, you may want to provide more attention to the details to ensure they are perfect.  But for now, the focus is on the commands.
+To follow along with this documentation, you may want to crate your first mine as a test, with intentions of deleting it later.  It may be easier to remove it, than to convert it over to a final product.  The instructions here are informational, not focused on perfection.  So after you figure out how to create your mines, you may want to provide more attention to the details to ensure they are perfect.  But for now, the focus is on the commands and better understanding what is possible.
 
-Please note that all command provide in this document will be written as if they were entered within the game.  If you use some of them from the console, then do not include the slash prefix.  I always include the slash prefix in the documentation so the commands stand out as being commands.
+Please note that all command provide in this document will be written as if they were entered within the game and will require the leading slash: `/`.  If you use these commands within the console, then do not include the slash prefix.  I always include the slash prefix in the documentation so the commands stand out as being commands.  Personally, I actually prefer to use most commands in the console since there is more room to view the details.
 
-It should also be strongly noted that you should never modify the save files for the mines, ranks, or ladders, since that could easily lead to corruption and undefined failures and problems.  We cannot support misuse of the files.
+It should also be strongly noted that you should never manually modify the save files for the mines, ranks, or ladders, since that could easily lead to corruption and undefined failures and problems.  We cannot support misuse of the files.  The primary reason for this concern is that Prison has a rich command interface that provides many checks and balances to ensure the commands are setup correctly.  When prison starts up and the configuration files are loaded, those same validations are not performed so serious conflict could be caused by hand modification.  That said, if you do adjust the commands by hand, keep in mind these file format of these save files are either yaml or json and therefore if your changes results in invalid yaml or json, then they will not be able to be loaded.  We do not support hand edited config issues, but if we have time, we can possibly help identify where the errors are.  Keep in mind that if you are having issues, copy and paste the config file that is having issues in to an online lint application:  https://jsonlint.com/ or https://codebeautify.org/yaml-validator.  There are many to choose from, and they usually help point out where the issue are and provide suggestions on how to fix the errors.
+
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -78,7 +91,10 @@ It should also be strongly noted that you should never modify the save files for
 
 Being OP'd, find a good location for your mines.
 
-Also the following commands may help setup the environment.  Optional of course.  Having some block in your inventory can be useful for use as scaffolding or selecting.  I personally like to use sealanterns because they are not a common block and they stand out well in low light conditions and are easier to see in screen prints. Giving yourself `/fly` and `/god` may not be necessary, but it could help if you need to find a good location, or if there are mobs in the area when you drop out of creative mode and back in to survival.
+Also the following commands may help setup the environment.  Optional of course.  Having some block in your inventory can be useful for use as scaffolding or selecting.  I personally like to use `sealanterns` because they are not a common block and they stand out well in low light conditions and are easier to see in screen prints. Giving yourself `/fly` and `/god` may not be necessary, but it could help if you need to find a good location, or if there are mobs in the area when you drop out of creative mode and back in to survival.
+
+
+A few useful commands as OP:
 
 ```
 /op <yourIGN>
@@ -90,6 +106,13 @@ Also the following commands may help setup the environment.  Optional of course.
 
 ```
 
+<h3>Command: /ranks autoConfigure</>
+
+If you ran the command `/ranks autoConfigure` then all of your mines have been generated and are virtual mines.  A virtual mine is one that is fully configured, but it has not been "physically" placed in any world yet.  So you can tweak the configurations on the mine, except for setting that relate to any locations within a world.  All you have to do with these virtual mines, is to place them.  
+
+Below are some of the settings for creating a mine, but since they are already created, you can skip over some of these settings and just jump to placing the mines.
+
+
 <h3>The wand</h3>
 
 Now give yourself a Prison wand.
@@ -98,10 +121,16 @@ Now give yourself a Prison wand.
 /mines wand
 ```
 
+A mine wand will allow you to set the coordinates of a mine by clicking on a block.  You cannot click in air, so you may have to place a block to define the coordinates.
+
+
+A mine wand can also be used for debugging block break actions within a mine.  If you are having issues with getting mines to work, it's one of the many built-in support tools that can help figure out what's going wrong, since a prison server can become very complex, especially when factoring in other plugins.  Please contact us through our discord server for additional help if needed.
+
+
 
 <h3>Laying Out the New Mine</h3>
 
-For the sake of this document, and to keep things simple, the mines we are creating will be very small and will not be deep within the ground.
+For the sake of this document, and to keep things simple, the mines we are creating in these examples and screen prints will be very small and will not be deep within the ground.  This will allow for easier understanding of the general layout of what is being created.
 
 
 First mark out the dimensions of your mine. As you can see here, I've marked my first mine out with sealanterns to show you how big it will be.  You really only need to mark opposing corners since that defines a cuboidal region. I've cleared away some of the dirt so you can see the lower blocks.  This mine will be 5 x 5 x 5 in size.
@@ -123,7 +152,10 @@ Then create the mine with:
 /mines create test1
 ```
 
-It will default to 100% air.  So then follow up creating the new mine with a reset to confirm everything is replaced with air.
+NOTE: the command `/mines create help` is intended for creating new mines.  If you ran `/rank autoConfigure` then the mines already exist, and instead of using `/mines create` you just need to "set" or place the mines with `/mines set area help`. 
+
+
+It will default to 100% air.  So then follow up creating the new mine with a reset to confirm everything is replaced with air.  Mines that are precreated with `/ranks autoConfigure` already have assigned blocks.
 
 
 
@@ -181,35 +213,49 @@ Some of the highlights of these commands are as follows:
 * `/mines whereami` : Shows you what mine you are in, or how far away you are from other mines in the area.  If you have a lot of mines, it's easy to lose track of where you are, and this may help get your bearings.
 
 
+
 * `/mines block add` : Add a new block type to a mine.  It's easier to start off with `/mines block search` and have it fill in the commands for you.
+* `/mines block constraint` : Controls block generation within a mine, such as minimum number, maximum number, or which layers it can spawn at.
+* `/mines block list` : Shows all blocks within a mine, including the constraints that have been placed on specific blocks.  This command is also included in the command `/mines info <mineName> all`. 
 * `/mines block remove` : Remove a block type from a mine.
+* `/mines block searchAll` : Search for a block type or item type based up on a search string. This includes all blocks, but also all items too.
 * `/mines block search` : Search for a block type based up on a search string.
-* `/mines block set` : Edit the block's percentage within the mine.  A percent of zero will remove.  If the block does not already exist, it will be added. (Can replace add and remove).
+* `/mines block setChance` : Edit the block's percentage within the mine.  A percent of zero will remove the block as if the command `/mines block remove` was used.  If the block does not already exist, it will be added. (Can replace add and remove).
 
 
-* `/mines blockEvent add` : 
-* `/mines blockEvent block add` : 
-* `/mines blockEvent block list` : 
+
+* `/mines blockEvent add` : This adds one or more commands to a block event.  To add multiple commands, just add a semi-colon between the commands: `;`.
+* `/mines blockEvent add placeholders` : This command lists all placeholders that can be used within a block event's commands.  These placeholders will expand the flexibility of what other commands can be used.
+* `/mines blockEvent block add` : Adding block type to a blockEvent acts as a filter and will only use this block even on a block type that is listed.
 * `/mines blockEvent block remove` : 
 * `/mines blockEvent eventType` : 
-* `/mines blockEvent list` : 
-* `/mines blockEvent mode` : 
-* `/mines blockEvent percent` : 
-* `/mines blockEvent permission` : 
+* `/mines blockEvent list` : Use list to how all of the available blockEvents for a given mine. These blockEvent commands that edits a blockEvent are based upon the row number as listed with this command.
+* `/mines blockEvent percent` : Sets the **percent** chance of running this blockEvent.  Valid ranges are 100 % which is always ran (if it passes the filters), to as low as 0.00001 percent.
+* `/mines blockEvent permission` : A BlockEvent permission will only allow a blockEvent to be ran if the player has this permission.  This filter can be used with other filters, such as "triggered" and "blocks".
 * `/mines blockEvent remove` : 
-* `/mines blockEvent triggered` : 
+* `/mines blockEvent taskMode` : Identifies how a blockEvent is ran. Options are [inline, inlinePlayer, sync, syncPlayer].  "Player" modes runs the command as if the player entered the command and runs under their perms, while non-player modes run as admin as if ran from the console.  Inline and sync mode may, or maynot be selectable.  Most blockEvents are now ran in another thread and will not hang the BlockBreakEvent anymore, so inline or sync may not have an impact.
+* `/mines blockEvent triggered` : For plugins such as TokenEnchant, their explosion event identifies which enchantment of theirs triggered the event.  So this filter can apply a blockEvent to a very specific enchantment.
 
 
-* `/mines set area` : Redefine the area of the mine.  Careful, this can wipe out builds if set incorrectly.  This is a required command to set the area of the mine.  A new feature is to use the current location of your feet to define a 1 x 1 x 1 region with `/mines set area <mineName> feet`.  Then you can use `/mines set size` to make it any size you want.
+* `/mines set area` : This command places a virtual mine, or it allows you to redefine the area of the mine.  Careful, this can wipe out builds if set incorrectly.  This is a required command to set the area of the mine.  A new feature is to use the current location of your feet to define a 1 x 1 x 1 region with `/mines set area <mineName> feet`.  Then you can use `/mines set size` to make it any size you want.
+* `/mines set area <mine> virtual` : This command will remove a mine from a world, and make it virtual.  A virtual mine can then be placed somewhere else, or even in a different world.  Virtual mines will not try to go through resets, so it's a safe way to disable a mine if you're not ready for it to be active.
+
+
+* `/mines set accessPermission` : Uses permission to enable access to the mine.  This does not use the player's rank, which is the suggested method so as to reduce the number of perms that need to be configured and managed.
+* `/mines set mineAccessByRank` : Uses the player's rank to control access to the mines.  This is the preferred method of controlling access since it reduces the number of perms that Prison has to manage, and can help bypass the need of using WorldGuard regions to control the players.
+* `/mines set tpAccessByRank` : Uses the player's rank to control the player's ability to teleport to the mine.  See the command `/mines tp`.
+
+
 * `/mines set liner` : A quick way to wrap your mine with a 2D Pattern in 3D space.  This command also will `repair` the area around a mine, and will effectively erase a liner.  There are six directions that can be specified for change: `north`, `south`, `east`, `west`, `top`, and `bottom`. `walls` also is a shortcut for `north`, `south`, `east`, and `west`.  The patterns available are listed by the command.  There is even a `force` setting that will allow the mine to be wrapped when in air, since the wrappings normally needs blocks in contact with the mine so it is able to conform to the terrain.
-* `/mines set move` is a new command that is not yet enabled. It is still in development, but will be active soon.  This command will move a whole mine as a single unit, be it a few blocks or many (not recommended).
-* **Removed:** `/mines set norank` : Disconnect the mine from a rank. **Note:** This command has been changed to `/mines set rank <mineName> none` to delete the rank from the mine.
+* `/mines set mineSweeper` : If all else fails to get Prison to monitor and track blocks that are broken within a mine, mostly due to conflicts with other plugins, then this option can provide a last chance effort to monitor the progress within a mine.  It is very rare that you would have to use this setting and the chances are that there are better ways to get the mines working correctly.  The larger the mine, the more costly this setting is to enable.
+* **Removed:** `/mines set move` is a new command that is not yet enabled. It is still in development, but will be active soon.  This command will move a whole mine as a single unit, be it a few blocks or many (not recommended).  The same effect of moving a mine can be done through the command: `/mine set size` but note it will possibly damage or destory the surrounding builds if not careful.
+* **Removed:** `/mines set norank` : Disconnect the mine from a rank. **Note:** This command has been changed to `/mines set rank <mineName> *none*` to delete the rank from the mine.
 * `/mines set notificationPerm` : Enables or Disables notifications pertaining to mine resets to be seen only by players who have permission to that mine.  The permissions used are `mines.notification.[mineName]` in all lower case.
 * `/mines set notification` : Can turn off the notifications on a per-mine basis.  Or set the notification radius, or only notify players within the mine.  This command cannot change the message.
 * `/mines set rank <rankName>` : Links a mine to a rank, otherwise there is no way within prison to identify which mines should be associated with a given rank. If **rankName** is **none** then it removes the associated rank from the mine (deletes the rank).  This is not yet needed, but it will be used in the near future with new features, or enhancements to existing features.
 * `/mines set resetThreshold` : This allows you to set a percent remaining in the mine to use as a threshold for resets. For example if you set it to 20.5% then the mine will reset when it reaches 25.5% blocks remaining.  When the mine resets, it will initiate the `zeroBlockResetDelay` functionality, of which it's not exactly "zero blocks" anymore.
 * `/mines set resetTime` : Changes the time between resets, as expressed in seconds. Applies to each mine independently.
-* `/mines set resetPaging` : This is an advanced feature that can eliminate lag that might be experienced with the resetting of enormous large mines. A mine could be millions of blocks in size and without this setting it may take a few seconds, or longer to reset, and it could cause the ticks to fall far behind, even to the point of forcing a shutdown.  This command instead will breakdown the mine's reset in to very small chunks that will prevent the TPS from slowing down, and it will allow other critical tasks to continue to run.  The total length of time for the rest may be increased, but it will not hurt the server. Prison does not use async resets due to eventual corruption of the bukkit and spigot components.
+* **Removed:** `/mines set resetPaging` :  This no longer is a setting, since Prison always uses a more advanced type of paging that dynamically prevents server lag. This is an advanced feature that can eliminate lag that might be experienced with the resetting of enormous large mines. A mine could be millions of blocks in size and without this setting it may take a few seconds, or longer to reset, and it could cause the ticks to fall far behind, even to the point of forcing a shutdown.  This command instead will breakdown the mine's reset in to very small chunks that will prevent the TPS from slowing down, and it will allow other critical tasks to continue to run.  The total length of time for the rest may be increased, but it will not hurt the server. Prison does not use async resets due to eventual corruption of the bukkit and spigot components.
 * `/mines set size` : Allows you to resize a mine without redefining it with the prison selection wand. Just specify which direction to increase or decrease. It also uses the `/mines set liner <mineName> repair` feature to fill in voids when reducing an edge. 
 * `/mines set skipReset` : When enabled, can prevent a mine from resetting if it has no activity.  Can set a threshold before the mine is reset, such as 80% will require 20% of the blocks be mined before being reset.  Can also set a bypassLimit so that if the reset is skipped X number of times, it will force a reset anyway.
 * `/mines set sortOrder` : Mines can be sorted for view within `/mines list` or the GUI.  Setting the sortOrder allows you manually set the order in which the mines are listed.  There is even the option to suppress (hide) mines from that list too by setting the sort order to a -1.
@@ -217,6 +263,8 @@ Some of the highlights of these commands are as follows:
 * `/mines set tag` : Set a mine tag value that can be used with placeholders.
 * `/mines set tracer` : Removes all blocks in a mine and replaces them with air, with the exception of the corners, of which are replace with pink_stained_glass.  This function allows for easy viewing of the full mine without the blocks getting in the way.  It also helps when setting the liner of the mine.  Using `/mines reset` returns the mine to normal functionality, or it will reset on its own.
 * `/mines set zeroBlockResetDelay` : If the mine runs out of blocks, when enabled, it will force a manual reset after the specified delay. The delay can be zero for instant reset.
+
+
 
 Adding the term `help` to the end of any of the above listed commands will display additional information that is available for each command, including the parameters and also all permissions that are associated with the commands.
 
@@ -239,6 +287,7 @@ Let's first take a quick look at the new mine with this command.  Let's view it 
 <img src="images/prison_docs_101_setting_up_mines_05.png" alt="Info on test1 mine" title="Info on test1 mine" width="600" />  
 
 
+The command `/mines info <mine> all` provides more details such as the block lists, the commands tied to the mine, and blockEvents for the mine.
 
 
 <h3>Select a Few Blocks</h3>
@@ -249,7 +298,10 @@ The easiest way to select blocks is to search for them.  Let's add a few such as
 /mines block search cobble
 ```
 
-<img src="images/prison_docs_101_setting_up_mines_06.png" alt="Block search for cobble" title="Block search for cobble" width="600" />  
+<img src="images/prison_docs_101_setting_up_mines_06.png" alt="Block search for cobble" title="Block search for cobble" width="600" />
+
+Note: `/mines block searchAll` will also include items in the search results. Item are used with the sellall shop and the creation of Mine Bombs items.
+
 
 When using the console with block search limits what you can do with the block search.  If you are in game, you can click on a block type that is displayed, and it will auto fill out the block add command for you, such that all you need to do is add the percentage at then end of the command.  Also in game, you can page through the results.  
 
@@ -311,18 +363,13 @@ Note: The new command `/mines set move` is not yet enabled. It is still in devel
 
 # Large Mines - Preventing Lag
 
-Large mines present their special own special challenges, one of which is that they can take a long time to reset.  Since bukkit cannot handle async resets of blocks because of world corruption, the updates must happen synchronously in the main server thread.  For large mines, that can mean causing a significant amount of lag. 
+Large mines present their special own special challenges, one of which is that they can take a long time to reset.  Since bukkit cannot handle async resets of blocks because of world corruption, the updates must happen synchronously in the main server thread.  For large mines, that can mean causing a significant amount of lag.
 
-To prevent lagging the server, Prison has a feature that can prevent any lag from happening while performing the reset.  This feature is called **Reset Paging**.  This feature doesn't have to be used with just large mines, but the reset process is a little more complex. When testing, it was actually found to be slightly faster than the normal reset method.
+To prevent causing lag, Prison now implements a reset paging for all mines.  This is an advanced feature that actively monitors the system performance and will auto page when the server load increases, or if the current reset is taking too long.  Since this is an active paging feature, that dynamically adjusts for server loads, resetting a lot of mines at the same time, even super-huge mines, would be difficult to cause lag.  Even if a lot of other tasks are running on the server, a mine reset cannot lockup the server.  As the load increases, the mine resets may take longer to perform, but the ticks per second will not drop by much to cause lag.
 
-To enable reset paging use the following commands to enable and disable it.
+Paging is where the number of blocks that need to be reset, are broken up in to smaller chunks, or pages. The page sizes are defined to be a certain size, but if performance becomes an issue, then those chunk sizes can be reduced to allow more of the other tasks to run so lag is minimized.  This process is active and responds to dynamic server loads as they occur at any stage of the reset.  This even will behave well if many mines try to reset at the same time... it can be viewed as like shuffling a deck of cards where one mine will reset a few blocks, then the other mine, and they will take turns until the mines are fully reset.  In between each mine, other system tasks, or other plugins can get a chance to run so as to not hog all of the CPU power, which would otherwise lead to lag.
 
-```
-/mines set resetPaging <mineName> enable
-/mines set resetPaging <mineName> disable
-```
-
-The way it works, is that it performs small pages of block updates and keeps an eye on how long it's taking.  If the update goes beyond a set amount of time, such as 50 milliseconds, it stops the updates, and then schedules the remaining updates to run later, with no delay.  That means if nothing else is trying to run within the main server thread, then it will continue to perform block updates.  But if something else was waiting to run, then the mine update will pause and allow the other process to finish.  This will prevent vital tasks from backing up because the mine reset yields to other tasks that need to run.
+Prison's paging for mine resets are very much similar to Preemtive Multi-tasking, but instead of bukkit managing the paging, prison itself is managing it's own use of the server's processor to ensure other bukkit tasks, and other plugins, are able to get processing time.  It when the bukkit tasks and other plugins are unable to get processing time is when lag becomes an issue and is obvious.
 
 
 
@@ -475,6 +522,14 @@ With it enabled, it shows stats on mine resets in mine list, mine info, and when
 
 
 .
+
+
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+
+
+# Virtual Mines and Disabling Mines
+
+Mines can be change to virtual mines or disabled.  More information to be provided on these subjects.  Please contact us on our discord server for help if needed.
 
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
