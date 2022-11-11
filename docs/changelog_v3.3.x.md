@@ -12,7 +12,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13d 2022-11-02
+# 3.3.0-alpha.13d 2022-11-10
+
+
+***Fix issue with world not being removed, or replaced when the mine is converted to a virtual mine, or when the mine is moved to another world.**
+The problem would be the config settings for the mine would save correctly, but upon the server restart, it would revert to the old world. The problem was with the non-saved world field not being reset correctly.  This fixes the issue correctly so it's should work properly under all situations.
 
 
 **3.3.0-alpha.13d 2022-11-02**

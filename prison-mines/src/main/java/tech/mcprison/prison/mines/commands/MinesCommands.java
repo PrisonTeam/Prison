@@ -2499,10 +2499,15 @@ public class MinesCommands
         		return;
         	}
         	
+        	// Setting bounds to null will also set spawn to null, the two world fields to null, and 
+        	// make the mine virtual and disale the mine too:
         	m.setBounds( null );
-        	m.setSpawn( null );
-        	
-        	m.setVirtual( true );
+//        	m.setSpawn( null );
+//        	
+//        	m.setWorld( null );
+//    		m.setWorldName( null );
+//    		
+//        	m.setVirtual( true );
         	
         	m.getJobStack().clear();
         	
@@ -2533,6 +2538,15 @@ public class MinesCommands
         DecimalFormat dFmt = new DecimalFormat("#,##0");
         Bounds selectedBounds = selection.asBounds();
         
+        if ( Output.get().isDebug() ) {
+        	String msg = String.format( "MinesSetArea Preset: Mine: %s  Bounds: %s - %s ",
+        			m.getName(), 
+        			selectedBounds.getMin().toWorldCoordinates(), 
+        			selectedBounds.getMax().toWorldCoordinates()
+        			);
+        	Output.get().logInfo( msg );
+        }
+        
         if ( selectedBounds.getTotalBlockCount() > 50000 && 
         		(options == null || !options.toLowerCase().contains( "confirm" ) &&
         		!options.toLowerCase().contains( "yes" )) ) {
@@ -2554,9 +2568,21 @@ public class MinesCommands
         
         boolean wasVirtual = m.isVirtual();
         
-        // Setting the bounds when it's virtual will configure all the internals:
+
+        // Before setting the bounds, clear everything by setting them to nulls:
         
+        // Setting bounds to null will also set spawn to null, the two world fields to null, and 
+    	// make the mine virtual and disable the mine too:
+        m.setBounds( null );
+
+        m.getJobStack().clear();
+        
+
+        // Setting the bounds when it's virtual will configure all the internals:
         m.setBounds(selectedBounds);
+        
+    	
+
         
         if ( wasVirtual ) {
         	
@@ -2579,44 +2605,47 @@ public class MinesCommands
         //pMines.getMineManager().clearCache();
         
         // adjustSize to zero to reset set all liners:
-        m.adjustSize( Edges.walls, 0 );
-        
-        if ( options.length() > 0 ) {
-        	String[] opts = options.split( " " );
+        if ( m.getLinerData() != null ) {
         	
-        	// Try to set the size of the wall: Increase by:
-        	if ( opts.length > 0 ) {
-        		try {
-        			int size = Integer.parseInt( opts[0] );
-        			setSizeCommand( sender, mineName, "walls", size );
+        	m.adjustSize( Edges.walls, 0 );
+        	
+        	if ( options.length() > 0 ) {
+        		String[] opts = options.split( " " );
+        		
+        		// Try to set the size of the wall: Increase by:
+        		if ( opts.length > 0 ) {
+        			try {
+        				int size = Integer.parseInt( opts[0] );
+        				setSizeCommand( sender, mineName, "walls", size );
+        			}
+        			catch ( Exception e ) {
+        				// ignore error
+        			}
         		}
-        		catch ( Exception e ) {
-        			// ignore error
+        		
+        		// Try to set the size of the bottom: Increase by:
+        		if ( opts.length > 1 ) {
+        			try {
+        				int size = Integer.parseInt( opts[1] );
+        				setSizeCommand( sender, mineName, "bottom", size );
+        			}
+        			catch ( Exception e ) {
+        				// ignore error
+        			}
         		}
+        		
+        		// Try to set the size of the wall: Increase by:
+        		if ( opts.length > 2 ) {
+        			try {
+        				int size = Integer.parseInt( opts[2] );
+        				setSizeCommand( sender, mineName, "top", size );
+        			}
+        			catch ( Exception e ) {
+        				// ignore error
+        			}
+        		}
+        		
         	}
-        	
-        	// Try to set the size of the bottom: Increase by:
-        	if ( opts.length > 1 ) {
-        		try {
-        			int size = Integer.parseInt( opts[1] );
-        			setSizeCommand( sender, mineName, "bottom", size );
-        		}
-        		catch ( Exception e ) {
-        			// ignore error
-        		}
-        	}
-        	
-        	// Try to set the size of the wall: Increase by:
-        	if ( opts.length > 2 ) {
-        		try {
-        			int size = Integer.parseInt( opts[2] );
-        			setSizeCommand( sender, mineName, "top", size );
-        		}
-        		catch ( Exception e ) {
-        			// ignore error
-        		}
-        	}
-        	
         }
     }
 

@@ -410,8 +410,16 @@ public abstract class MineData
      * <p>(Re)defines the boundaries for this mine.
      * </p>
      * 
+     * <p>If the bounds is null, then need to clear both world fields, set to a 
+     * virtual mine, and then disable the mine.  Failure to clean this up by changing
+     * these fields actually will lock the mine in to a specific world and would not
+     * allow it to be moved to another world.  If bounds is set to null, then 
+     * spawn is also set to null because a virtual mine cannot have a spawn location.
+     * </p>
+     * 
      * <p>This function used to set the world name every time the bounds would 
-     * change.  The world name MUST NEVER be changed.  If world is null then it will screw
+     * change.  The world name MUST NEVER be changed, unless bounds is null.  
+     * If world is null then it will screw
      *  up the original location of when the was created.  World name is set
      *  in the document loader under Mine.loadFromDocument as the first field
      *  that is set when restoring from the file.
@@ -422,9 +430,20 @@ public abstract class MineData
     public void setBounds(Bounds bounds) {
     	this.bounds = bounds;
     	
-    	if ( bounds != null && ( isVirtual() || !getWorld().isPresent() ||
+    	// if Bounds is null, then clear out the world fields and set mine to virtual and disable the mine:
+    	if ( bounds == null ) {
+    		
+    		setSpawn( null );
+    		
+    		setWorld( null );
+    		setWorldName( null );
+    		setVirtual( true );
+    		setEnabled( false );
+    	}
+    	
+    	else if ( isVirtual() || !getWorld().isPresent() ||
     			getWorldName() == null || getWorldName().trim().length() == 0 ||
-    			getWorldName().equalsIgnoreCase( "Virtually-Undefined" )) ) {
+    			getWorldName().equalsIgnoreCase( "Virtually-Undefined" ) ) {
     		 
         	World world = bounds.getMin().getWorld();
         	
@@ -447,7 +466,7 @@ public abstract class MineData
     	}
         
     	// The world name MUST NEVER be changed.  If world is null then it will screw
-    	// up the original location of when the was created.  World name is set
+    	// up the original location of when the mine was created.  World name is set
     	// in the document loader under Mine.loadFromDocument as the first field
     	// that is set when restoring from the file.
     	//this.worldName = bounds.getMin().getWorld().getName();
