@@ -12,7 +12,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13d 2022-11-10
+# 3.3.0-alpha.13d 2022-11-11
+
+
+* **Add the ability to format the percentage of prison_rankup_cost_percent with the NFormat placeholder attribute.**
 
 
 ***Fix issue with world not being removed, or replaced when the mine is converted to a virtual mine, or when the mine is moved to another world.**

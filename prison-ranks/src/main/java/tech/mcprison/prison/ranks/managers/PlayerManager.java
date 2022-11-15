@@ -652,7 +652,8 @@ public class PlayerManager
 		return results;
 	}
         
-    public String getPlayerNextRankCostPercent( RankPlayer rankPlayer, String ladderName ) {
+    public String getPlayerNextRankCostPercent( RankPlayer rankPlayer, String ladderName, 
+    				PlaceholderAttributeNumberFormat attributeNFormat ) {
     	StringBuilder sb = new StringBuilder();
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
@@ -696,7 +697,15 @@ public class PlayerManager
     			        		(cost == 0.0d || balance > cost ? 100.0 : 
     			        			balance / cost * 100.0 )
     			        			);
-    			        	sb.append( dFmt.format( percent ));
+    			        	
+    			        	if ( attributeNFormat != null ) {
+    			        		
+    			        		sb.append( attributeNFormat.format( cost ) );
+    			        	}
+    			        	else {
+    			        		
+    			        		sb.append( dFmt.format( percent ));
+    			        	}
     			        }
     				}
     			}
@@ -1512,7 +1521,7 @@ public class PlayerManager
 					case prison_rankup_cost_percent:
 					case prison_rcp_laddername:
 					case prison_rankup_cost_percent_laddername:
-						results = getPlayerNextRankCostPercent( rankPlayer, ladderName );
+						results = getPlayerNextRankCostPercent( rankPlayer, ladderName, attributeNFormat );
 						break;
 						
 					case prison_rcb:
