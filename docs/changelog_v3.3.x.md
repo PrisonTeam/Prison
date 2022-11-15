@@ -12,7 +12,11 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13d 2022-11-11
+# 3.3.0-alpha.13d 2022-11-14
+
+
+* **New feature: Prestiges placeholder name and tag now can be assigned to a non-blank space for players that do not have a prestige rank.**
+This applies to the base placeholders: prison_rank, prison_rank_laddername, prison_rank_tag, and prison_rank_tag_laddername.
 
 
 * **Add the ability to format the percentage of prison_rankup_cost_percent with the NFormat placeholder attribute.**

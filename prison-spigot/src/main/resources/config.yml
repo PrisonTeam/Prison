@@ -47,6 +47,9 @@ show-alerts: true
 # Confirmation requires action from the player. If GUI is disabled, then it will use 
 # the command based confiration.  If confirm-enabled is false, then no confirmation
 # will be used.
+# The value for prestige.no-prestige-value is use when a player has no prestige rank with
+# the base placeholders: prison_rank, prison_rank_laddername, prison_rank_tag, and
+# prison_rank_tag_laddername. If not defined, an empty String is used.
 prestige:
   enabled: true
   resetMoney: true
@@ -54,6 +57,7 @@ prestige:
   confirmation-enabled: true
   prestige-confirm-gui: true
   force-sellall: false
+  no-prestige-value: ""
 
 
 ranks:

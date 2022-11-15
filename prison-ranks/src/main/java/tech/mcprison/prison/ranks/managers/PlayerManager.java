@@ -439,6 +439,13 @@ public class PlayerManager
 			}
 		}
 
+		if ( sb.length() == 0 && LadderManager.LADDER_PRESTIGES.equals( ladderName ) ) {
+			// Use config setting for no-prestige-value ladder rank:
+			
+			String prestigeEmpty = Prison.get().getPlatform().getConfigString("prestige.no-prestige-value", "");
+			sb.append( prestigeEmpty );
+		}
+		
 		return sb.toString();
     }
     
@@ -528,6 +535,13 @@ public class PlayerManager
     		}
     	}
     	
+		if ( sb.length() == 0 && LadderManager.LADDER_PRESTIGES.equals( ladderName ) ) {
+			// Use config setting for no-prestige-value ladder rank:
+			
+			String prestigeEmpty = Prison.get().getPlatform().getConfigString("prestige.no-prestige-value", "");
+			sb.append( prestigeEmpty );
+		}
+		
     	return sb.toString();
     }
     
