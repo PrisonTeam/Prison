@@ -1003,6 +1003,9 @@ public abstract class OnBlockBreakEventCore
 		if ( totalDrops > 0 ) {
 			success = true;
 		}
+		else {
+			debugInfo.append( "(fail:totalDrops=0) ");
+		}
 		
 		return success;
 	}

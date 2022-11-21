@@ -12,7 +12,10 @@ These build logs represent the work that has been going on within prison.
 
 
 
-# 3.3.0-alpha.13e 2022-11-16
+# 3.3.0-alpha.13e 2022-11-21
+
+
+* **AutoFeatures: add failure reason when prison is unable to successfully process a block break event due to zero drops.**
 
 
 **3.3.0-alpha.13e 2022-11-16**
