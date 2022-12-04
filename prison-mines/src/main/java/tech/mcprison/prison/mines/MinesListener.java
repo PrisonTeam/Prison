@@ -42,17 +42,23 @@ public class MinesListener {
     	if ( mine != null ) {
     		e.setCanceled( true );
     		
-    		// Submit the teleport task to run in 3 ticks.  This will allow the suffocation
-    		// event to be canceled.  If the player moves then they don't need to be teleported
-    		// so it will be canceled.
-    		MineTeleportWarmUpTask mineTeleportWarmUp = new MineTeleportWarmUpTask( 
-    							player, mine, "spawn", 0.5 );
-    		mineTeleportWarmUp.setMessageSuccess( 
-    							"&7You have been teleported out of the mine to prevent suffocating." );
-    		mineTeleportWarmUp.setMessageFailed( null );
     		
-    		PrisonTaskSubmitter.runTaskLater( mineTeleportWarmUp, 3 );
-//    		mine.teleportPlayerOut( player );
+	    		
+	    	if ( Prison.get().getPlatform().getConfigBooleanTrue( "prison-mines.tp-to-spawn-on-mine-resets" ) ) {
+	
+	    		// Submit the teleport task to run in 3 ticks.  This will allow the suffocation
+	    		// event to be canceled.  If the player moves then they don't need to be teleported
+	    		// so it will be canceled.
+	    		MineTeleportWarmUpTask mineTeleportWarmUp = new MineTeleportWarmUpTask( 
+	    				player, mine, "spawn", 0.5 );
+	    		mineTeleportWarmUp.setMessageSuccess( 
+	    				"&7You have been teleported out of the mine to prevent suffocating." );
+	    		mineTeleportWarmUp.setMessageFailed( null );
+	    		
+	    		PrisonTaskSubmitter.runTaskLater( mineTeleportWarmUp, 3 );
+//    			mine.teleportPlayerOut( player );
+	    	}
+
 //    		
 //    		
 //    		// To "move" the player out of the mine, they are elevated by one block above the surface

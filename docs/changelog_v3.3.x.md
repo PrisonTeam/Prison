@@ -10,12 +10,13 @@
 These build logs represent the work that has been going on within prison. 
 
 
+# 3.3.0-alpha.13e 2022-12-03
+
+
+* **Mine reset teleportation can now be controlled within the config.yml file.**
 
 * **Prison API: Add support for direct prison placeholder support.**
 Two new functions: one translates only one prison placeholder.  The other function takes full text message and will translate multiple prison placeholders if they are wrapped in placeholder escape characters.
-
-
-# 3.3.0-alpha.13e 2022-11-21
 
 
 * **AutoFeatures: add failure reason when prison is unable to successfully process a block break event due to zero drops.**

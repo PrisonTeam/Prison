@@ -893,8 +893,12 @@ public abstract class MineReset
 		// such as could happen if there is lag or a lot going on within the server, 
 		// this will TP anyone out who would otherwise suffocate.  I hope! lol
     	
-    	MineTeleportTask teleportTask = new MineTeleportTask( (Mine) this );
-		teleportTask.submitTaskSync();
+    		
+    	if ( Prison.get().getPlatform().getConfigBooleanTrue( "prison-mines.tp-to-spawn-on-mine-resets" ) ) {
+    		MineTeleportTask teleportTask = new MineTeleportTask( (Mine) this );
+    		teleportTask.submitTaskSync();
+    	}
+    	
 		
 //		teleportAllPlayersOut();
 //		setStatsTeleport2TimeMS(
@@ -986,8 +990,12 @@ public abstract class MineReset
 			canceled = event.isCanceled();
 			if (!canceled) {
 				
-				MineTeleportTask teleportTask = new MineTeleportTask( (Mine) this );
-				teleportTask.submitTaskSync();
+	    		
+		    	if ( Prison.get().getPlatform().getConfigBooleanTrue( "prison-mines.tp-to-spawn-on-mine-resets" ) ) {
+		    		MineTeleportTask teleportTask = new MineTeleportTask( (Mine) this );
+		    		teleportTask.submitTaskSync();
+		    	}
+
 //				try {
 //					teleportAllPlayersOut();
 ////					setStatsTeleport1TimeMS(

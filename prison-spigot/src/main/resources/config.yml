@@ -161,6 +161,19 @@ top-stats:
 # if more than one mine tries to reset at the same time, or close to each
 # other.  This may be changed to ticks in the near future.
 #prison-mines-reset-gap: 5000
+#
+# The tp-warmup will delay the player's attempt to teleport out of a mine,
+# where the delay is in ticks and if they move more than the max distance
+# in blocks, then the TP will be canceled.
+#
+# access-to-prior-mines defaults to true, and if enabled, players will
+# have access to mine in the mines that are tied to ranks that preceeded
+# their current rank.  Note, that mines must be tied to ranks to allow 
+# this to work.,
+#
+# tp-to-spawn-on-mine-resets: if enabled, players will be TP'd to the mine's
+# spawn location when the mine resets or if they suffocate in the mine.
+# If spawn is not set, then they will be tp'd to the top center of the mine.
 
 prison-mines:
   reset-gap-ms: 5000
@@ -177,6 +190,7 @@ prison-mines:
     delayInTicks: 20
   forced-auto-rankups: false
   access-to-prior-mines: true
+  tp-to-spawn-on-mine-resets: true
 
 
 # Warning: Do not use the following option. This could break the natural Bukkit 
