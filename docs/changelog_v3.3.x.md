@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13e 2022-12-03
 
 
+* **Mine suffocation can now be enabled so if you turn off teleportation, then the players can now die.**
+
+
 * **Mine reset teleportation can now be controlled within the config.yml file.**
 
 * **Prison API: Add support for direct prison placeholder support.**

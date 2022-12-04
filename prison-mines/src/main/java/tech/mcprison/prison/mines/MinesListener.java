@@ -2,6 +2,7 @@ package tech.mcprison.prison.mines;
 
 import com.google.common.eventbus.Subscribe;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.events.player.PlayerSuffocationEvent;
 import tech.mcprison.prison.internal.events.world.PrisonWorldLoadEvent;
@@ -33,6 +34,14 @@ public class MinesListener {
     	
     }
     
+    
+    /**
+     * <p>If a player is suffocating, and if they are within a mine, then based upon the config
+     * settings, the play may not experience suffocation, and they may be teleported to
+     * the mine's spawn location, or the center of the mine.
+     * </p>
+     * @param e
+     */
     @Subscribe
     public void onPlayerSuffocationListener( PlayerSuffocationEvent e ) {
     	
@@ -40,8 +49,12 @@ public class MinesListener {
     	Mine mine = PrisonMines.getInstance().findMineLocation( player );
 
     	if ( mine != null ) {
-    		e.setCanceled( true );
     		
+    		// If players can't be suffocated in mines, then cancel the suffocation event:
+    		if ( !Prison.get().getPlatform().getConfigBooleanFalse( "prison-mines.enable-suffocation-in-mines" ) ) {
+    		
+    			e.setCanceled( true );
+    		}    		
     		
 	    		
 	    	if ( Prison.get().getPlatform().getConfigBooleanTrue( "prison-mines.tp-to-spawn-on-mine-resets" ) ) {
