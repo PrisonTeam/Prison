@@ -43,7 +43,6 @@ import org.bukkit.plugin.PluginManager;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.events.Cancelable;
-import tech.mcprison.prison.internal.events.player.PlayerChatEvent;
 import tech.mcprison.prison.internal.events.player.PlayerPickUpItemEvent;
 import tech.mcprison.prison.internal.events.player.PlayerSuffocationEvent;
 import tech.mcprison.prison.internal.events.player.PrisonPlayerInteractEvent;
@@ -56,7 +55,6 @@ import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
-import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 

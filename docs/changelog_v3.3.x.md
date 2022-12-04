@@ -11,6 +11,9 @@ These build logs represent the work that has been going on within prison.
 
 
 
+* **Prison API: Add support for direct prison placeholder support.**
+Two new functions: one translates only one prison placeholder.  The other function takes full text message and will translate multiple prison placeholders if they are wrapped in placeholder escape characters.
+
 
 # 3.3.0-alpha.13e 2022-11-21
 
