@@ -3,8 +3,10 @@ package tech.mcprison.prison.mines.data;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 
 public class MineLevelBlockListData
 {
@@ -15,7 +17,7 @@ public class MineLevelBlockListData
 	
 	private Random random;
 	
-	private List<PrisonBlock> selectedBlocks;
+	private List<PrisonBlockStatusData> selectedBlocks;
 	
 	private double totalChance = 0d;
 	
@@ -41,35 +43,39 @@ public class MineLevelBlockListData
 		
 		
 		// PrisonBlocks contains the percent chance of spawning:
-		for ( PrisonBlock pBlock : mine.getPrisonBlocks() )
+		Set<String> keys = mine.getBlockStats().keySet();
+		
+		for ( String key : keys  )
 		{
+			PrisonBlockStatusData blockStats = mine.getBlockStats().get( key );
+			
 			// First calculate the total percent chance:
-			totalChance += pBlock.getChance();
+			totalChance += blockStats.getChance();
 			
 			// If the block has no constraints, or if the block is within the 
 			// mine constraints, add it to our list:
-			if ( pBlock.getConstraintExcludeTopLayers() == 0 && 
-					pBlock.getConstraintExcludeBottomLayers() == 0 ||
+			if ( blockStats.getConstraintExcludeTopLayers() == 0 && 
+					blockStats.getConstraintExcludeBottomLayers() == 0 ||
 					
-					pBlock.getConstraintExcludeTopLayers() <= currentMineLevel && 
-						(pBlock.getConstraintExcludeBottomLayers() == 0 || 
-						pBlock.getConstraintExcludeBottomLayers() > currentMineLevel) ) {
+					blockStats.getConstraintExcludeTopLayers() <= currentMineLevel && 
+						(blockStats.getConstraintExcludeBottomLayers() == 0 || 
+								blockStats.getConstraintExcludeBottomLayers() > currentMineLevel) ) {
 				
 				// Sum the selected blocks:
-				selectedChance += pBlock.getChance();
+				selectedChance += blockStats.getChance();
 				
 				// Add the selected blocks to our list:
-				selectedBlocks.add( pBlock );
+				selectedBlocks.add( blockStats );
 				
 				
 				// If exclude top layers is enabled, then only try to set the 
 				// rangeBlockCountLowLimit once since we need the lowest possible 
 				// value.  The initial value for getRangeBlockCountLowLimit is -1.
-				if ( pBlock.getRangeBlockCountLowLimit() <= 0 &&
-						currentMineLevel > pBlock.getConstraintExcludeTopLayers() ) {
+				if ( blockStats.getRangeBlockCountLowLimit() <= 0 &&
+						currentMineLevel > blockStats.getConstraintExcludeTopLayers() ) {
 					
 					int targetBlockPosition = mine.getMineTargetPrisonBlocks().size();
-					pBlock.setRangeBlockCountLowLimit( targetBlockPosition );
+					blockStats.setRangeBlockCountLowLimit( targetBlockPosition );
 				}
 				
 				
@@ -77,16 +83,16 @@ public class MineLevelBlockListData
 				// until the currentLevel exceeds the getConstraintExcludeBottomLayers value.
 				// If exclude top layers, then do not record for the bottom layers until 
 				// the top layers is cleared.
-				if ( (pBlock.getConstraintExcludeTopLayers() > 0 && 
-						currentMineLevel > pBlock.getConstraintExcludeTopLayers() ||
-						pBlock.getConstraintExcludeTopLayers() == 0) &&
+				if ( (blockStats.getConstraintExcludeTopLayers() > 0 && 
+						currentMineLevel > blockStats.getConstraintExcludeTopLayers() ||
+						blockStats.getConstraintExcludeTopLayers() == 0) &&
 						
-						pBlock.getConstraintExcludeBottomLayers() > 0 && 
-						pBlock.getConstraintExcludeBottomLayers() < currentMineLevel 
+						blockStats.getConstraintExcludeBottomLayers() > 0 && 
+						blockStats.getConstraintExcludeBottomLayers() < currentMineLevel 
 						) { 
 					
 					int targetBlockPosition = mine.getMineTargetPrisonBlocks().size();
-					pBlock.setRangeBlockCountHighLimit( targetBlockPosition );
+					blockStats.setRangeBlockCountHighLimit( targetBlockPosition );
 					
 				}
 
@@ -104,7 +110,7 @@ public class MineLevelBlockListData
 			
 			airBlock.setChance( airChance );
 			
-			selectedBlocks.add( airBlock );
+			selectedBlocks.add( new PrisonBlockStatusData( airBlock ) );
 		}
 		
 		
@@ -119,22 +125,22 @@ public class MineLevelBlockListData
 	 */
 	public void checkSelectedBlockExcludeFromBottomLayers() {
 		
-		for ( PrisonBlock pBlock : selectedBlocks )
+		for ( PrisonBlockStatusData blockStats : selectedBlocks )
 		{
 			// If exclude bottom layer is enabled, then we need to track every number
 			// until the currentLevel exceeds the getConstraintExcludeBottomLayers value.
 			// If exclude top layers, then do not record for the bottom layers until 
 			// the top layers is cleared.
-			if ( (pBlock.getConstraintExcludeTopLayers() > 0 && 
-					currentMineLevel > pBlock.getConstraintExcludeTopLayers() ||
-					pBlock.getConstraintExcludeTopLayers() == 0) &&
+			if ( (blockStats.getConstraintExcludeTopLayers() > 0 && 
+					currentMineLevel > blockStats.getConstraintExcludeTopLayers() ||
+					blockStats.getConstraintExcludeTopLayers() == 0) &&
 					
-					pBlock.getConstraintExcludeBottomLayers() > 0 && 
-					pBlock.getConstraintExcludeBottomLayers() < currentMineLevel 
+					blockStats.getConstraintExcludeBottomLayers() > 0 && 
+					blockStats.getConstraintExcludeBottomLayers() < currentMineLevel 
 					) { 
 				
 				int targetBlockPosition = mine.getMineTargetPrisonBlocks().size();
-				pBlock.setRangeBlockCountHighLimit( targetBlockPosition );
+				blockStats.setRangeBlockCountHighLimit( targetBlockPosition );
 				
 			}
 

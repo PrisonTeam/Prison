@@ -29,10 +29,13 @@ import java.util.UUID;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.cache.PlayerCache;
+import tech.mcprison.prison.file.FileDatabase;
+import tech.mcprison.prison.file.JsonFileIO;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.MineScheduler.MineResetActions;
@@ -382,6 +385,26 @@ public class MineManager
     	}
     }
     
+    public File getMineNewFormatFileName( Mine mine ) {
+    	PrisonMines pMines = PrisonMines.getInstance();
+    	
+    	FileDatabase fd = (FileDatabase) pMines.getDb();
+    	
+    	String fileName = mine.getMineFileName();
+    	
+    	File file = new File( fd.getDbDir(), fileName );
+    	
+    	return file;
+    }
+    
+    public void saveMineNewFormat( Mine mine ) {
+    	JsonFileIO io = new JsonFileIO();
+
+    	File file = getMineNewFormatFileName( mine );
+    	
+    	io.saveJsonExposedFile(file, mine);
+    	
+    }
 
     /**
      * <p>Creates a backup of a mine's save file. Similar to a virtual delete
@@ -1047,15 +1070,17 @@ public class MineManager
 								
 								if ( block != null ) {
 									
+									PrisonBlockStatusData blockStats = mine.getBlockStats( block.getBlockName() );
+									
 									String message = String.format( 
 											"%-13s %6.2f  %7d   %7d %8s", 
 											
 											block.getBlockName(),
 											block.getChance(),
-											((long) block.getBlockPlacedCount() ),
-											((long) block.getBlockPlacedCount() - block.getBlockCountUnsaved() ),
+											((long) blockStats.getBlockPlacedCount() ),
+											((long) blockStats.getBlockPlacedCount() - blockStats.getBlockCountUnsaved() ),
 											
-											PlaceholdersUtil.formattedKmbtSISize( block.getBlockCountTotal(), iFmt, "" )
+											PlaceholdersUtil.formattedKmbtSISize( blockStats.getBlockCountTotal(), iFmt, "" )
 											);
 									
 									results = message;
@@ -1077,10 +1102,12 @@ public class MineManager
 							
 							for ( PrisonBlock pBlock : blocks ) {
 								tChance += pBlock.getChance();
+
+								PrisonBlockStatusData blockStats = mine.getBlockStats( pBlock.getBlockName() );
 								
-								tPlaced += pBlock.getBlockPlacedCount();
-								tRemoved += (pBlock.getBlockPlacedCount() - pBlock.getBlockCountUnsaved());
-								tTotals += pBlock.getBlockCountTotal();
+								tPlaced += blockStats.getBlockPlacedCount();
+								tRemoved += (blockStats.getBlockPlacedCount() - blockStats.getBlockCountUnsaved());
+								tTotals += blockStats.getBlockCountTotal();
 							}
 							
 							String message = String.format( 
@@ -1145,13 +1172,15 @@ public class MineManager
 								PrisonBlock block = blocks.get( sequence - 1 );
 								
 								if ( block != null ) {
+									PrisonBlockStatusData blockStats = mine.getBlockStats( block.getBlockName() );
+
 									if ( attributeNFormat != null ) {
 
-										results = attributeNFormat.format( (long) block.getBlockPlacedCount() );
+										results = attributeNFormat.format( (long) blockStats.getBlockPlacedCount() );
 			        				}
 			        				else {
 			        					
-			        					results = iFmt.format( block.getBlockPlacedCount() );
+			        					results = iFmt.format( blockStats.getBlockPlacedCount() );
 			        				}
 								}
 							}
@@ -1167,14 +1196,16 @@ public class MineManager
 								PrisonBlock block = blocks.get( sequence - 1 );
 								
 								if ( block != null ) {
+									PrisonBlockStatusData blockStats = mine.getBlockStats( block.getBlockName() );
+
 									if ( attributeNFormat != null ) {
 
 										results = attributeNFormat.format( (long) 
-			        								block.getBlockPlacedCount() - block.getBlockCountUnsaved() );
+												blockStats.getBlockPlacedCount() - blockStats.getBlockCountUnsaved() );
 			        				}
 			        				else {
 			        					
-			        					results = iFmt.format( block.getBlockPlacedCount() - block.getBlockCountUnsaved() );
+			        					results = iFmt.format( blockStats.getBlockPlacedCount() - blockStats.getBlockCountUnsaved() );
 			        				}
 								}
 							}
@@ -1190,8 +1221,10 @@ public class MineManager
 								PrisonBlock block = blocks.get( sequence - 1 );
 								
 								if ( block != null ) {
-									int placed = block.getBlockPlacedCount();
-									long removed = block.getBlockCountUnsaved();
+									PrisonBlockStatusData blockStats = mine.getBlockStats( block.getBlockName() );
+
+									int placed = blockStats.getBlockPlacedCount();
+									long removed = blockStats.getBlockCountUnsaved();
 									
 									results = PlaceholderManagerUtils.getInstance().
 											getProgressBar( ((double) removed), ((double) placed), 
@@ -1210,13 +1243,15 @@ public class MineManager
 								PrisonBlock block = blocks.get( sequence - 1 );
 								
 								if ( block != null ) {
+									PrisonBlockStatusData blockStats = mine.getBlockStats( block.getBlockName() );
+
 									if ( attributeNFormat != null ) {
 										
-			        					results = attributeNFormat.format( (long) block.getBlockCountTotal() );
+			        					results = attributeNFormat.format( (long) blockStats.getBlockCountTotal() );
 			        				}
 			        				else {
 			        					
-			        					results = iFmt.format( block.getBlockCountTotal() );
+			        					results = iFmt.format( blockStats.getBlockCountTotal() );
 			        				}
 								}
 							}

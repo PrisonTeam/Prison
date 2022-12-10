@@ -4873,4 +4873,31 @@ private ChatDisplay minesCommandList( Mine m )
 
     }
     
+	
+
+	@Command(identifier = "mines experimental save", 
+			description = "Saves a mine using new code.", 
+    		onlyPlayers = false, permissions = "mines.command")
+    public void commandSaveNew(CommandSender sender, 
+    			@Arg(name = "mineName", description = "mine name") String mineName ) {
+		
+
+        if (!performCheckMineExists(sender, mineName)) {
+            return;
+        }
+        
+        setLastMineReferenced(mineName);
+        
+        PrisonMines pMines = PrisonMines.getInstance();
+//    	MineManager mMan = pMines.getMineManager();
+        Mine m = pMines.getMine(mineName);
+        
+
+        pMines.getMineManager().saveMineNewFormat( m );
+        
+        sender.sendMessage(
+        		String.format( "&7Mine saved using new method: '&b%s&7'.", 
+        		m.getTag()) );
+
+    }
 }

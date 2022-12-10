@@ -13,6 +13,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13e 2022-12-03
 
 
+**Related to the new mine file format**
+* **Initial changes for setting up the new data structure for the new mine file format.  This does not work correctly yet, since mining does not break blocks.  I'm thinking that the block list type is not setup correctly with the PrisonBlockStatusData and therefore reference to the actual block types are being lost and prison is unable to properly match blocks when mining.  The problem is that everything appears to work but the player is unable to break blocks within the mine.***
+
+
 * **Mine suffocation can now be enabled so if you turn off teleportation, then the players can now die.**
 
 

@@ -18,7 +18,7 @@
 
 package tech.mcprison.prison.mines.data;
 
-import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
+import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.util.ObsoleteBlockType;
 
@@ -29,7 +29,8 @@ import tech.mcprison.prison.util.ObsoleteBlockType;
  */
 public class BlockOld
 			extends PrisonBlockStatusData
-			implements Comparable<BlockOld> {
+//			implements Comparable<BlockOld> 
+{
 	
 	public static final BlockOld AIR = new BlockOld( ObsoleteBlockType.AIR );
 	public static final BlockOld IGNORE = new BlockOld( ObsoleteBlockType.IGNORE );
@@ -53,7 +54,8 @@ public class BlockOld
      * Assigns the type and chance
      */
     public BlockOld(ObsoleteBlockType block, double chance, long blockCountTotal) {
-    	super( PrisonBlockType.minecraft, (block == null ? BlockOld.AIR.getBlockName() : block.name()), chance, blockCountTotal);
+    	super( PrisonBlockType.minecraft, 
+    			(block == null ? BlockOld.AIR.getBlockName() : block.name()), chance, blockCountTotal);
     			
         this.type = block;
 //        this.chance = chance;
@@ -89,11 +91,11 @@ public class BlockOld
 	}
 	
 	@Override
-	public int compareTo( BlockOld block )
+	public int compareTo( PrisonBlock block )
 	{
 		int results = 0;
 		
-		if ( block == null ) {
+		if ( block == null || !(block instanceof BlockOld) ) {
 			results = 1;
 		}
 		else {

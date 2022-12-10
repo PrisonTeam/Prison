@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -76,6 +75,7 @@ import tech.mcprison.prison.internal.PlayerUtil;
 import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.internal.platform.Capability;
 import tech.mcprison.prison.internal.platform.HandlerList;
@@ -1664,9 +1664,6 @@ public class SpigotPlatform
 					
 					double chance = percents.size() > i ? percents.get( i ) : 0;
 					prisonBlock.setChance( chance );
-					prisonBlock.setBlockCountTotal( 0 );
-					
-					mine.getPrisonBlocks().add( prisonBlock );
 					
 					total += prisonBlock.getChance();
 					
@@ -1677,6 +1674,12 @@ public class SpigotPlatform
 						total += remaining;
 						prisonBlock.setChance( remaining + prisonBlock.getChance() );
 					}
+
+					mine.getPrisonBlocks().add( prisonBlock );
+					
+					
+					PrisonBlockStatusData blockStat = new PrisonBlockStatusData( prisonBlock );
+					mine.getBlockStats().put( blockStat.getBlockName(), blockStat );
 				}
 				else {
 					Output.get().logInfo(

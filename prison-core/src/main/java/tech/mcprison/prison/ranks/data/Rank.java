@@ -20,6 +20,8 @@ package tech.mcprison.prison.ranks.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.annotations.Expose;
+
 import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.sorting.PrisonSortable;
@@ -38,13 +40,19 @@ public class Rank
 //	// This is to help eliminate RankLadder.PositionRank object:
 	private transient int position = -1; 
 
+	@Expose
+	private ModuleElementType moduleElementType = ModuleElementType.RANK;
+	
     // The unique identifier used to distinguish this rank from others - this never changes.
+	@Expose
     private int id;
 
     // The name of this rank, which is used with the user to identify ranks.
+	@Expose
     private String name;
 
     // The tag that this rank has. It can be used as either a prefix or a suffix, depending on user preferences.
+	@Expose
     private String tag;
 
     // The general cost of this rank, unit-independent. This value holds true for both XP and cost.
@@ -527,7 +535,7 @@ public class Rank
 
 	@Override
 	public ModuleElementType getModuleElementType() {
-		return ModuleElementType.RANK;
+		return moduleElementType;
 	}
 
 	public List<ModuleElement> getMines() {

@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.google.gson.annotations.Expose;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.World;
@@ -33,11 +35,15 @@ public abstract class MineData
 	public static final String MINE_NOTIFICATION_PERMISSION_PREFIX = "mines.notification.";
 	
 	private transient final ModuleElementType elementType;
-		
+	
+	@Expose
 	private String name;
+	@Expose
 	private String tag;
 	
+	@Expose
 	private boolean enabled = false;
+	@Expose
 	private boolean virtual = false;
 	
 	
@@ -45,13 +51,18 @@ public abstract class MineData
 	private MineStateMutex mineStateMutex;
 	
 	
+	@Expose
 	private MineType mineType;
+	@Expose
 	private MineGroup mineGroup;
 	
+	@Expose
 	private String accessPermission = null;
 	
 	
+	@Expose
 	private boolean tpAccessByRank = false;
+	@Expose
 	private boolean mineAccessByRank = false;
 	
 	
@@ -60,17 +71,26 @@ public abstract class MineData
 	 * An example would be for private mines or child mines where you only want the
 	 * parent listed.
 	 */
+	@Expose
 	private int sortOrder = 0;
 	
+	@Expose
 	private Bounds bounds;
 
+	@Expose
 	private Location spawn;
+	@Expose
     private String worldName;
+	@Expose
     private boolean hasSpawn = false;
 
+	@Expose
     private int resetTime;
+    @Expose
     private MineNotificationMode notificationMode;
+    @Expose
 	private long notificationRadius;
+    @Expose
 	private boolean useNotificationPermission = false;
     
 	private long targetResetTime;
@@ -78,16 +98,16 @@ public abstract class MineData
 	
 	private long lastResetTimeLong = 0;
 	
-	/**
-	 * These blocks are obsolete, and are no longer used in prison, but they
-	 * are preserved for now.  Will be removed in the future.
-	 * 
-	 * This list of blocks represents the old Prison block model. It is being
-	 * phased out since it has limited flexibility and complex issues with 
-	 * supporting magic values with the older bukkit versions.
-	 */
-    @SuppressWarnings( "deprecation" )
-	private List<BlockOld> blocks;
+//	/**
+//	 * These blocks are obsolete, and are no longer used in prison, but they
+//	 * are preserved for now.  Will be removed in the future.
+//	 * 
+//	 * This list of blocks represents the old Prison block model. It is being
+//	 * phased out since it has limited flexibility and complex issues with 
+//	 * supporting magic values with the older bukkit versions.
+//	 */
+//    @SuppressWarnings( "deprecation" )
+//	private List<BlockOld> blocks;
     
     /**
      * This list of PrisonBlocks represents the new Prison block model. Its 
@@ -95,6 +115,7 @@ public abstract class MineData
      * the core bukkit blocks are based upon Cryptomorin's XSeries' XMaterial
      * for greater flexibility and cross version support.
      */
+	@Expose
     private List<PrisonBlock> prisonBlocks;
     
     /**
@@ -104,9 +125,11 @@ public abstract class MineData
      * are used in this mine.  That way it's a simple and fast check to see if,
      * and more importantly, which custom block plugin needs to be checked.
      */
-    private transient Set<PrisonBlockType> prisonBlockTypes;
+//	@Expose
+    private Set<PrisonBlockType> prisonBlockTypes;
     
     
+	@Expose
     private TreeMap<String, PrisonBlockStatusData> blockStats;
     
     /**
@@ -124,42 +147,56 @@ public abstract class MineData
     private transient PrisonBlock tempGravityBlock = null;
     
     
+    @Expose
 	private int blockBreakCount = 0;
+    @Expose
     private long totalBlocksMined = 0;
+    @Expose
     private double zeroBlockResetDelaySec;
 
+    @Expose
     private double resetThresholdPercent = 0;
     
     
+    @Expose
     private boolean skipResetEnabled = false;
+    @Expose
     private double skipResetPercent;
+    @Expose
     private int skipResetBypassLimit;
+//    @Expose
     private transient int skipResetBypassCount;
     
+    @Expose
     private List<String> resetCommands;
     
 //    private boolean usePagingOnReset = false;
     
-    private ModuleElement rank;
+    private transient ModuleElement rank;
     /**
      * When loading mines, ranks will not have been loaded yet, so must
      * save the rankString to be paired to the Ranks later.
      * The rankString are the components of the ModuleElement.
      */
+    @Expose
     private String rankString;
 
     
+    @Expose
     private List<MineBlockEvent> blockEvents;
     
+    @Expose
     private MineLinerData linerData;
     
     
+    @Expose
     private boolean mineSweeperEnabled;
     private int mineSweeperCount;
     private long mineSweeperTotalMs;
     private long mineSweeperBlocksChanged;
     
-    private transient boolean isDeleted = false; 
+    @Expose
+    private boolean isDeleted = false; 
     
 
     public enum MineNotificationMode {
@@ -201,7 +238,7 @@ public abstract class MineData
     	
     	this.tag = null;
     	
-    	this.blocks = new ArrayList<>();
+//    	this.blocks = new ArrayList<>();
     	this.prisonBlocks = new ArrayList<>();
     	this.prisonBlockTypes = new HashSet<>();
     	
@@ -264,9 +301,22 @@ public abstract class MineData
      */
 	protected void initialize() {
     	
+		
     }
     
-  
+
+	/**
+	 * <p>This function should be called if loaded from a json file, which sets up
+	 * internal fields.
+	 * </p>
+	 */
+	public void onLoad() {
+		
+		if ( getBounds() != null ) {
+			getBounds().setFields();
+		}
+		
+	}
 	
   
     public boolean isEnabled() {
@@ -322,6 +372,16 @@ public abstract class MineData
     	this.sortOrder = sortOrder;
     }
     
+    
+    public String getMineFileName() {
+    	String prefix = getMineType().getFileNamePrefix();
+    	
+    	String fileName = prefix + getName() + Mine.MINE_FILE_NAME_SUFFIX;
+    	
+    	return fileName;
+    }
+    
+ 
 
 	/**
      * Mines do not use an id.  So these will always
@@ -474,19 +534,19 @@ public abstract class MineData
 
     
     
-    /**
-     * <p>This is the old block model's blocks and is depreacated for now.
-     * We don't want to purge the old blocks yet, but they won't be used in
-     * any source code in Prison.
-     * </p>
-     * 
-     * @deprecated
-     * @return
-     */
-    @SuppressWarnings( "deprecation" )
-	public List<BlockOld> getBlocks() {
-        return blocks;
-    }
+//    /**
+//     * <p>This is the old block model's blocks and is depreacated for now.
+//     * We don't want to purge the old blocks yet, but they won't be used in
+//     * any source code in Prison.
+//     * </p>
+//     * 
+//     * @deprecated
+//     * @return
+//     */
+//    @SuppressWarnings( "deprecation" )
+//	public List<BlockOld> getBlocks() {
+//        return blocks;
+//    }
     
 
     public List<PrisonBlock> getPrisonBlocks() {
@@ -501,8 +561,19 @@ public abstract class MineData
 	public void addPrisonBlock( PrisonBlock prisonBlock ) {
 		if ( prisonBlock != null && !isInMine( prisonBlock )) {
 			
-			getPrisonBlocks().add( prisonBlock );
-			addPrisonBlockType( prisonBlock );
+			PrisonBlockStatusData statusData = new PrisonBlockStatusData( prisonBlock );
+
+			addPrisonBlock( statusData );
+		}
+	}
+	
+	public void addPrisonBlock( PrisonBlockStatusData statusData ) {
+		if ( statusData != null && !isInMine( statusData.getPrisonBlock() )) {
+			
+			getPrisonBlocks().add( statusData.getPrisonBlock()  );
+			addPrisonBlockType( statusData.getPrisonBlock()  );
+			
+			getBlockStats().put( statusData.getBlockName(), statusData );
 		}
 	}
 	
@@ -776,17 +847,19 @@ public abstract class MineData
 
     public void resetResetBlockCounts() {
 
-    	for ( PrisonBlockStatusData block : getBlocks() ) {
-			
-    		// Reset the block count for the reset event since the mine will be regenerated:
-    		block.setBlockPlacedCount( 0 );
-    		block.setRangeBlockCountLow( -1 );
-    		block.setRangeBlockCountHigh( -1 );
-    		block.setRangeBlockCountLowLimit( -1 );
-    		block.setRangeBlockCountHighLimit( -1 );
-		}
+//    	for ( PrisonBlockStatusData block : getBlocks() ) {
+//			
+//    		// Reset the block count for the reset event since the mine will be regenerated:
+//    		block.setBlockPlacedCount( 0 );
+//    		block.setRangeBlockCountLow( -1 );
+//    		block.setRangeBlockCountHigh( -1 );
+//    		block.setRangeBlockCountLowLimit( -1 );
+//    		block.setRangeBlockCountHighLimit( -1 );
+//		}
     	
-    	for ( PrisonBlockStatusData block : getPrisonBlocks() ) {
+    	Set<String> keys = getBlockStats().keySet();
+    	for ( String key : keys ) {
+    		PrisonBlockStatusData block = getBlockStats().get(key);
     		
     		// Reset the block count for the reset event since the mine will be regenerated:
     		block.setBlockPlacedCount( 0 );
@@ -809,9 +882,9 @@ public abstract class MineData
      * 
      * @param statsBlock
      */
-    public PrisonBlockStatusData incrementResetBlockCount( PrisonBlockStatusData statsBlock ) {
+    protected PrisonBlockStatusData incrementResetBlockCount( PrisonBlock pBlock ) {
     	
-    	PrisonBlockStatusData sBlock = getBlockStats( statsBlock );
+    	PrisonBlockStatusData sBlock = getBlockStats( pBlock.getBlockName() );
     	if ( sBlock != null ) {
     		
     		sBlock.incrementResetBlockCount();
@@ -820,7 +893,7 @@ public abstract class MineData
     	return sBlock;
     }
     
-    public PrisonBlockStatusData getBlockStats( PrisonBlockStatusData statsBlock ) {
+    protected PrisonBlockStatusData getBlockStats( PrisonBlockStatusData statsBlock ) {
     	return getBlockStats( statsBlock.getBlockName() );
     }
     
@@ -833,9 +906,10 @@ public abstract class MineData
 
     			for ( PrisonBlock block : getPrisonBlocks() ) {
     				if ( block.getBlockName().equalsIgnoreCase( blockName ) ) {
-    					getBlockStats().put( block.getBlockName(), block );
     					
-    					results = block;
+    					results = new PrisonBlockStatusData( block );
+    					getBlockStats().put( block.getBlockName(), results );
+    					
     					break;
     				}
     			}
@@ -1338,9 +1412,11 @@ public abstract class MineData
 	public void checkGravityAffectedBlocks() {
 		setHasGravityAffectedBlocks( false );
 		
-		for ( PrisonBlock pBlock : getPrisonBlocks() ) {
+		Set<String> keys = getBlockStats().keySet();
+		for ( String key : keys ) {
+			 PrisonBlockStatusData blockStat = getBlockStats().get(key);
 			
-			if ( pBlock.isGravity() ) {
+			if ( blockStat.isGravity() ) {
 				setHasGravityAffectedBlocks( true );
 				break;
 			}

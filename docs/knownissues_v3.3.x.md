@@ -8,6 +8,18 @@
 # TODO Items for v3.3.0-alpha.13
 
 
+- SimpleNumberFormat not always using the US location.  So UK uses NBSP (non-breaking spaces) for the thousands separator, but minecraft cannot display that unicode properly.  Minecraft shows a square box with NB on line one, and SP on line two.
+Setup a global function within something like Prison, and have everything call that to get a SimpleNumberFormat object.  This way, there is only one line of code controlling it all.  Also can use the config setting to control it with the default being US.  So if someone really wants to change it to another country, then they can.
+
+
+-mine bombs - access only works with mineAccessByRank? SailDrag
+  - Expand to other access, like access by perms?
+  - maybe have a mine bomb config that enables access checking so it can be disabled if they are not using prison's access controls.
+
+
+- Add support for `{actionBar}` in the language support messages - riquour
+
+
 - File save to new format - OmarG
   - pre-req for turning off TP
   - pre-req for custom mine shapes

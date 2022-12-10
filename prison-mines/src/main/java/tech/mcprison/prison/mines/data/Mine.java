@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.file.FileIOData;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
@@ -47,14 +48,25 @@ import tech.mcprison.prison.util.ObsoleteBlockType;
 @SuppressWarnings( "deprecation" )
 public class Mine 
 	extends MineScheduler 
-	implements PrisonSortable, Comparable<Mine> {
+	implements PrisonSortable, Comparable<Mine>,
+			FileIOData {
 	
+	public static final String MINE_FILE_NAME_SUFFIX = ".json";
 	
 	public enum MineType {
-		primary,
-		playerMines
+		primary("mine_"),
+		playerMines("playermine_")
 		;
 		
+		private final String fileNamePrefix;
+		private MineType( String fileNamePrefix ) {
+			this.fileNamePrefix = fileNamePrefix;
+		}
+		
+		public String getFileNamePrefix() {
+			return fileNamePrefix;
+		}
+
 		public static MineType fromString( String mineType ) {
 			MineType results = primary;
 			
@@ -321,8 +333,12 @@ public class Mine
         // This is a validation set to ensure only one block type is loaded file system.
         // Must keep the first one loaded.
         Set<String> validateBlockNames = new HashSet<>();
-        getBlocks().clear();
+//        getBlocks().clear();
 
+        // "blocks" are obsolete and cannot be loaded in to the obsolete structure.
+        // They will be converted to the new block types instead of being lost.
+        List<BlockOld> obsoleteBlocks = new ArrayList<>();
+        
         List<String> docBlocks = (List<String>) document.get("blocks");
 		for (String docBlock : docBlocks) {
 			
@@ -388,7 +404,11 @@ public class Mine
 //						block.setConstraintMin( constraintMin );
 //						block.setConstraintMax( constraintMax );
 
-						getBlocks().add(block);
+						// Temp store blocks for conversion to new blocks later:
+						obsoleteBlocks.add(block);
+						
+						// Cannot store obsolete blocks in the mineData anymore:
+//						getBlocks().add(block);
 					}
 					else {
 						String message = String.format( "Failure in loading block type from %s mine's " +
@@ -424,34 +444,38 @@ public class Mine
 				
 				if ( docBlock != null ) {
 					
-					PrisonBlock prisonBlock = PrisonBlockStatusData.parseFromSaveFileFormat( docBlock );
+					PrisonBlockStatusData prisonBlockStatus = PrisonBlockStatusData.parseFromSaveFileFormat( docBlock );
 					
 					// If the server version is less than 1.13.0, and if the block is a "_wood" block, 
 					// then it needs to be remapped to "_planks" so the resulting block will work properly.
 					// Versions prior to 1.13.0, _WOOD is identical to _PLANKS.
-					if ( prisonBlock != null && 
-							prisonBlock.getBlockName().toLowerCase().contains( "_wood" ) &&
+					if ( prisonBlockStatus != null && 
+							prisonBlockStatus.getBlockName().toLowerCase().contains( "_wood" ) &&
 							Prison.get().getPlatform().compareServerVerisonTo( "1.13.0" ) < 0 ) {
 						String fixedName = docBlock.toLowerCase().replace( "_wood", "_planks" );
 						
-						prisonBlock = PrisonBlockStatusData.parseFromSaveFileFormat( fixedName );
+						prisonBlockStatus = PrisonBlockStatusData.parseFromSaveFileFormat( fixedName );
 						dirty = true;
 					}
 					
-					if ( prisonBlock != null ) {
+					if ( prisonBlockStatus != null ) {
 						
-						totalBlockCount += prisonBlock.getBlockCountTotal();
+						// NOTE: the prison blocks have not been saved yet, so cannot get them with this 
+						//       Function.  What we get from the save file is alread a PrisonBlockStatusData object.
+//	        			PrisonBlockStatusData blockStats = getBlockStats( prisonBlock.getBlockName() );
+
+						totalBlockCount += prisonBlockStatus.getBlockCountTotal();
 						
-						if ( !validateBlockNames.contains( prisonBlock.getBlockName() )) {
+						if ( !validateBlockNames.contains( prisonBlockStatus.getBlockName() )) {
 							
-							if ( prisonBlock.isLegacyBlock() ) {
+							if ( prisonBlockStatus.isLegacyBlock() ) {
 								dirty = true;
 							}
-							addPrisonBlock( prisonBlock );
+							addPrisonBlock( prisonBlockStatus );
 							
-							validateBlockNames.add( prisonBlock.getBlockName() );
+							validateBlockNames.add( prisonBlockStatus.getBlockName() );
 						}
-						else if ( validateBlockNames.contains( prisonBlock.getBlockName() ) ) {
+						else if ( validateBlockNames.contains( prisonBlockStatus.getBlockName() ) ) {
 							// Detected and fixed a duplication so mark as dirty so fixed block list is saved:
 							dirty = true;
 							inconsistancy = true;
@@ -517,10 +541,12 @@ public class Mine
 		// Using the Obsolete old block model for conversion to the new block model
 		// NOTE: This is the ONLY place were we are allowed to use the old block model! ;)
         if ( // isUseNewBlockModel() && 
-        		getPrisonBlocks().size() == 0 && getBlocks().size() > 0 ) {
+        		getPrisonBlocks().size() == 0 && obsoleteBlocks.size() > 0 ) {
+//        	getPrisonBlocks().size() == 0 && getBlocks().size() > 0 ) {
         	// Need to perform the initial conversion: 
         	
-        	for ( BlockOld blockOld : getBlocks() ) {
+        	for ( BlockOld blockOld : obsoleteBlocks ) {
+//        		for ( BlockOld blockOld : getBlocks() ) {
         		PrisonBlock prisonBlock = Prison.get().getPlatform().getPrisonBlock( blockOld.getType().name() );
 
         		if ( prisonBlock == null ) {
@@ -535,8 +561,10 @@ public class Mine
         		
         		if ( prisonBlock != null ) {
             		
+        			PrisonBlockStatusData blockStats = getBlockStats( prisonBlock.getBlockName() );
+					
             		// This transfers all the stats over so none are lost.
-            		prisonBlock.transferStats( blockOld );
+        			blockStats.transferStats( blockOld );
             		
             		addPrisonBlock( prisonBlock );
 
@@ -662,24 +690,26 @@ public class Mine
         // This is a validation set to ensure only one block is written to file system:
         Set<String> validateBlockNames = new HashSet<>();
 
-        // NOTE: This is using the obsolete old block model!!
-        // This is the ONLY SECOND place where we can use the old block model!
-        // We want to "preserve" the old blocks that may have been setup up in the mines
-        // originally.  In a future release, these may be purged.
-        List<String> blockStrings = new ArrayList<>();
-        for (BlockOld block : getBlocks()) {
-        	if ( !validateBlockNames.contains( block.getType().name() )) {
-        		
-        		blockStrings.add( block.toSaveFileFormat() );
-        		
-//        		// Use the BlockType.name() to save the block type to the file:
-//        		blockStrings.add(block.getType().name() + "-" + block.getChance());
-//            blockStrings.add(block.getType().getId() + "-" + block.getChance());
-        		validateBlockNames.add( block.getType().name() );
-        	}
-        }
-        
-        ret.put("blocks", blockStrings);
+        // These old obsolete blocks no longer exist and cannot be saved anymore:
+//        // NOTE: This is using the obsolete old block model!!
+//        // This is the ONLY SECOND place where we can use the old block model!
+//        // We want to "preserve" the old blocks that may have been setup up in the mines
+//        // originally.  In a future release, these may be purged.
+//        List<String> blockStrings = new ArrayList<>();
+//    	for (BlockOld block : getBlocks()) {
+//        	if ( !validateBlockNames.contains( block.getType().name() )) {
+//        		
+//        		blockStrings.add( block.toSaveFileFormat() );
+//        		
+////        		// Use the BlockType.name() to save the block type to the file:
+////        		blockStrings.add(block.getType().name() + "-" + block.getChance());
+////            blockStrings.add(block.getType().getId() + "-" + block.getChance());
+//        		validateBlockNames.add( block.getType().name() );
+//        	}
+//        }
+//        
+//        ret.put("blocks", blockStrings);
+
 
         // reset validation for next block list:
         validateBlockNames.clear();
@@ -688,7 +718,9 @@ public class Mine
         for (PrisonBlock pBlock : getPrisonBlocks() ) {
         	if ( !validateBlockNames.contains( pBlock.getBlockName()) ) {
         		
-        		prisonBlockStrings.add( pBlock.toSaveFileFormat() );
+    			PrisonBlockStatusData blockStats = getBlockStats( pBlock.getBlockName() );
+        		
+        		prisonBlockStrings.add( blockStats.toSaveFileFormat() );
         		
 //        		prisonBlockStrings.add(pBlock.getBlockNameFormal() + "-" + pBlock.getChance());
         		validateBlockNames.add( pBlock.getBlockNameFormal() );

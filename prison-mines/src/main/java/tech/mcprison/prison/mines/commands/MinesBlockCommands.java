@@ -2,6 +2,7 @@ package tech.mcprison.prison.mines.commands;
 
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Set;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.chat.FancyMessage;
@@ -134,25 +135,30 @@ public class MinesBlockCommands
 				existingPrisonBlock.setChance( chance );
 			}
 			
-        	// Check if one of the blocks is effected by gravity, and if so, set that indicator.
-    		m.checkGravityAffectedBlocks();
-
-			pMines.getMineManager().saveMine( m );
-
-			pMines.getMinesMessages().getLocalizable("block_set")
-						.withReplacements( existingPrisonBlock.getBlockName(), m.getTag()).sendTo(sender);
 		}
 		else {
 			prisonBlock.setChance( chance );
-			m.addPrisonBlock( prisonBlock );
 			
-        	// Check if one of the blocks is effected by gravity, and if so, set that indicator.
-    		m.checkGravityAffectedBlocks();
+			// NOTE: addPrisonBlock will add the prisonBlock, the prisonBlockType, and 
+			//       the PrisonBlockStatusData which is created within that function.
+			m.addPrisonBlock( prisonBlock );
 
-			pMines.getMineManager().saveMine( m );
+		}
 
+		// Check if one of the blocks is effected by gravity, and if so, set that indicator.
+		m.checkGravityAffectedBlocks();
+		
+		pMines.getMineManager().saveMine( m );
+
+		if ( existingPrisonBlock != null ) {
+			
+			pMines.getMinesMessages().getLocalizable("block_set")
+			.withReplacements( existingPrisonBlock.getBlockName(), m.getTag()).sendTo(sender);
+		}
+		else {
 			pMines.getMinesMessages().getLocalizable("block_added")
-						.withReplacements(prisonBlock.getBlockName(), m.getTag()).sendTo(sender);
+			.withReplacements(prisonBlock.getBlockName(), m.getTag()).sendTo(sender);
+			
 		}
 	}
 
@@ -166,7 +172,7 @@ public class MinesBlockCommands
 		double totalChance = 0.0d;
 		int count = 0;
 
-		PrisonBlock totals = new PrisonBlock( "Totals" );
+		PrisonBlockStatusData totals = new PrisonBlockStatusData( new PrisonBlock( "Totals" ) );
 
 		int maxBlockNameLength = 8;
 		
@@ -184,12 +190,19 @@ public class MinesBlockCommands
 			double chance = Math.round( block.getChance() * 100.0d ) / 100.0d;
 			totalChance += chance;
 			
-			totals.addStats( block );
+		}
+		
+		Set<String> keys = m.getBlockStats().keySet();
+		for (String key : keys) {
+			PrisonBlockStatusData blockStat = m.getBlockStats().get( key );
 			
-			if ( cmdPageData == null || count++ >= cmdPageData.getPageStart() && count <= cmdPageData.getPageEnd() )
+			totals.addStats( blockStat );
+			
+			if ( cmdPageData == null || count++ >= cmdPageData.getPageStart() && 
+					count <= cmdPageData.getPageEnd() )
 			{
 				
-				addBlockStats( m, block, maxBlockNameLength, iFmt, dFmt, builder );
+				addBlockStats( m, blockStat, maxBlockNameLength, iFmt, dFmt, builder );
 				
 			}
 		}
@@ -761,71 +774,71 @@ public class MinesBlockCommands
         
         
         
-    	PrisonBlockStatusData block = null;
+    	PrisonBlockStatusData blockStats = null;
     	
-    	block = m.getPrisonBlock( blockName );
+    	blockStats = m.getBlockStats().get( blockName );
 
         
 
     	if ( "min".equalsIgnoreCase( constraint ) ) {
-    		if ( block.getConstraintMax() != 0 && value > block.getConstraintMax() ) {
+    		if ( blockStats.getConstraintMax() != 0 && value > blockStats.getConstraintMax() ) {
             	sender.sendMessage( 
             			String.format( "&7The specified value for the min constraint cannot " +
             					"be more than the max constraint value.  value = [%s]  max= %s  " +
             					"Please try again.", 
             					Integer.toString( value ), 
-            					Integer.toString( block.getConstraintMax() ) ));
+            					Integer.toString( blockStats.getConstraintMax() ) ));
             	listBlockCommand(sender, m.getTag() );
             	return;
 
     		}
-    		block.setConstraintMin( value );
+    		blockStats.setConstraintMin( value );
     	}
     	if ( "max".equalsIgnoreCase( constraint ) ) {
-    		if ( block.getConstraintMin() != 0 && value < block.getConstraintMin() ) {
+    		if ( blockStats.getConstraintMin() != 0 && value < blockStats.getConstraintMin() ) {
     			sender.sendMessage( 
     					String.format( "&7The specified value for the max constraint cannot " +
     							"be less than the min constraint value.  value = [%s]  min= %s  " +
     							"Please try again.", 
     							Integer.toString( value ), 
-    							Integer.toString( block.getConstraintMin() ) ));
+    							Integer.toString( blockStats.getConstraintMin() ) ));
     			listBlockCommand(sender, m.getTag() );
     			return;
     			
     		}
-    		block.setConstraintMax( value );
+    		blockStats.setConstraintMax( value );
     	}
     	if ( "excludeTop".equalsIgnoreCase( constraint ) ) {
-    		if ( block.getConstraintExcludeBottomLayers() != 0 &&
-    				value > block.getConstraintExcludeBottomLayers() ) {
+    		if ( blockStats.getConstraintExcludeBottomLayers() != 0 &&
+    				value > blockStats.getConstraintExcludeBottomLayers() ) {
     			sender.sendMessage( 
     					String.format( "&7The specified value for the ExcludeTop layers constraint cannot " +
     							"be more than the ExcludeBottom layers constraint value.  " +
     							"value = [%s]  ExcludeBottom layers= %s  " +
     							"Please try again.", 
     							Integer.toString( value ), 
-    							Integer.toString( block.getConstraintExcludeBottomLayers() ) ));
+    							Integer.toString( blockStats.getConstraintExcludeBottomLayers() ) ));
     			listBlockCommand(sender, m.getTag() );
     			return;
     			
     		}
-    		block.setConstraintExcludeTopLayers( value );
+    		blockStats.setConstraintExcludeTopLayers( value );
     	}
     	if ( "excludeBottom".equalsIgnoreCase( constraint ) ) {
-    		if ( block.getConstraintExcludeTopLayers() != 0 &&
-    						value < block.getConstraintExcludeTopLayers() ) {
+    		if ( blockStats.getConstraintExcludeTopLayers() != 0 &&
+    						value < blockStats.getConstraintExcludeTopLayers() ) {
     			sender.sendMessage( 
     					String.format( "&7The specified value for the ExcludeBottom layers constraint cannot " +
     							"be less than the ExcludeTop layers constraint value.  " +
     							"value = [%s]  ExcludeTop layers= %s  " +
     							"Please try again.", 
     							Integer.toString( value ), 
-    							Integer.toString( block.getConstraintExcludeTopLayers() ) ));
+    							Integer.toString( blockStats.getConstraintExcludeTopLayers() ) ));
     			listBlockCommand(sender, m.getTag() );
     			return;
     			
     		}
-    		block.setConstraintExcludeBottomLayers( value );
+    		blockStats.setConstraintExcludeBottomLayers( value );
     	}
         
         

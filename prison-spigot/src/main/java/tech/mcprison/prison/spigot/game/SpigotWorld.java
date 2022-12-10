@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 
+import com.google.gson.annotations.Expose;
+
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.PrisonStatsElapsedTimeNanos;
@@ -45,6 +47,9 @@ import tech.mcprison.prison.util.Location;
  */
 public class SpigotWorld implements World {
 
+	@Expose
+	private String name;
+	
     private org.bukkit.World bukkitWorld;
     
     private SpigotBlockSetAsynchronously setBlockAsync;
@@ -52,11 +57,15 @@ public class SpigotWorld implements World {
     private SpigotBlockGetAtLocation getBlockAtLocation;
 
     public SpigotWorld(org.bukkit.World bukkitWorld) {
+    	
+    	this.name = bukkitWorld.getName();
+    	
         this.bukkitWorld = bukkitWorld;
     }
 
-    @Override public String getName() {
-        return bukkitWorld.getName();
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override public List<Player> getPlayers() {

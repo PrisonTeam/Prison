@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
@@ -596,8 +597,8 @@ public abstract class MineReset
 					boolean isEdge = xEdge && yEdge || xEdge && zEdge ||
 									 yEdge && zEdge;
 					
-					Location targetBlock = new Location(world, x, y, z);
-					targetBlock.setEdge( isEdge );
+					Location targetBlockLocation = new Location(world, x, y, z);
+					targetBlockLocation.setEdge( isEdge );
 					
 //					MineTargetBlock mtb = null;
 					
@@ -609,9 +610,9 @@ public abstract class MineReset
 //						PrisonBlock prisonBlock = randomlySelectPrisonBlock( random, currentLevel );
 					
 					// Increment the mine's block count. This block is one of the control blocks:
-					incrementResetBlockCount( prisonBlock );
+					PrisonBlockStatusData blockStats = incrementResetBlockCount( prisonBlock );
 					
-					addMineTargetPrisonBlock( prisonBlock, targetBlock );
+					addMineTargetPrisonBlock( blockStats, targetBlockLocation );
 //						mtb = new MineTargetPrisonBlock( prisonBlock, x, y, z);
 					
 					if ( prisonBlock.equals( PrisonBlock.AIR ) ) {
@@ -1345,7 +1346,7 @@ public abstract class MineReset
 	}
 	
 	
-	public void refreshAirCountSyncTaskSetLocation( Location targetBlock, 
+	public void refreshAirCountSyncTaskSetLocation( Location targetBlockLocation, 
 					OnStartupRefreshBlockBreakCountSyncTask stats ) {
 		
 		try {
@@ -1353,7 +1354,7 @@ public abstract class MineReset
 			
 			boolean containsCustomBlocks = getPrisonBlockTypes().contains( PrisonBlockType.CustomItems );
 
-			Block tBlock = targetBlock.getBlockAt( containsCustomBlocks );
+			Block tBlock = targetBlockLocation.getBlockAt( containsCustomBlocks );
 			
 			
 			
@@ -1362,7 +1363,12 @@ public abstract class MineReset
 			if ( pBlock != null ) {
 				
 				// Increment the mine's block count. This block is one of the control blocks:
-				addMineTargetPrisonBlock( incrementResetBlockCount( pBlock ), targetBlock );
+				PrisonBlockStatusData blockStats = incrementResetBlockCount( pBlock );
+					
+				if ( blockStats != null ) {
+					
+					addMineTargetPrisonBlock( blockStats, targetBlockLocation );
+				}
 				
 			}
 			
@@ -1380,7 +1386,9 @@ public abstract class MineReset
 			// If there are no entities, it will be fine, but they could cause issues with async 
 			// access of unloaded chunks.
 			String coords = String.format( "%d.%d.%d ", 
-						targetBlock.getBlockX(), targetBlock.getBlockY(), targetBlock.getBlockZ() );
+					targetBlockLocation.getBlockX(), 
+					targetBlockLocation.getBlockY(), 
+					targetBlockLocation.getBlockZ() );
 			
 			if ( stats.getErrorCount() == 0 ) {
 				String message = String.format( 
@@ -1704,8 +1712,11 @@ public abstract class MineReset
     
 	
 	private void constraintsApplyMin() {
+		Set<String> keys = getBlockStats().keySet();
 		
-		for ( PrisonBlockStatusData block : getPrisonBlocks() ) {
+		for ( String key : keys ) {
+			
+			PrisonBlockStatusData block = getBlockStats().get( key );
 			constraintsApplyMin( block );
 		}
 	}
@@ -1879,9 +1890,11 @@ public abstract class MineReset
 	
 	
 	
-	private void addMineTargetPrisonBlock( PrisonBlockStatusData block, Location targetBlock ) {
+	private void addMineTargetPrisonBlock( PrisonBlockStatusData blockStats, Location targetBlock ) {
 		
-		MineTargetPrisonBlock mtpb = new MineTargetPrisonBlock( block, getWorld().get(), 
+//		PrisonBlockStatusData blockStats = getBlockStats( pBlock.getBlockName() );
+		
+		MineTargetPrisonBlock mtpb = new MineTargetPrisonBlock( blockStats, getWorld().get(), 
 				targetBlock.getBlockX(), targetBlock.getBlockY(), targetBlock.getBlockZ(), 
 				targetBlock.isEdge() );
 		

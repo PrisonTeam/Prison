@@ -1757,6 +1757,24 @@ public class PrisonCommand
 
     }
 	
+//    
+//    @Command(identifier = "prison support troubleshoot cannot-mine", 
+//    		description = "Troubleshoot why a player cannot mine or break blocks.", 
+//    				onlyPlayers = false, permissions = "prison.debug" )
+//    public void supportTroubleshootCannotMine( CommandSender sender, 
+//    		
+//    		@Wildcard(join=true)
+//    		@Arg(name = "options", description = "Options.",
+//    		def = "") String options ) {
+//    	
+//    	
+//    	sender.sendMessage( "Not implemented yet." );
+//    	
+//    }
+//    
+//    
+    
+    
     @Command(identifier = "prison tokens balance", 
     		description = "Prison tokens: a player's current balance.", 
     		// aliases = "tokens bal",

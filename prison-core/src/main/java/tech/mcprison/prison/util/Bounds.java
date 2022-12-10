@@ -18,6 +18,8 @@
 
 package tech.mcprison.prison.util;
 
+import com.google.gson.annotations.Expose;
+
 import tech.mcprison.prison.internal.World;
 
 /**
@@ -28,13 +30,18 @@ import tech.mcprison.prison.internal.World;
  */
 public class Bounds {
 
-    private final Location min, max, center;
+	@Expose
+    private final Location min;
+	@Expose
+    private final Location max;
     
-    private final int xBlockMin, xBlockMax, yBlockMin, yBlockMax, zBlockMin, zBlockMax; 
+    private Location center;
+    
+    private int xBlockMin, xBlockMax, yBlockMin, yBlockMax, zBlockMin, zBlockMax; 
 
-    private final double xMin, xMax, yMin, yMax, zMin, zMax;
+    private double xMin, xMax, yMin, yMax, zMin, zMax;
     
-    private final int totalBlockCount;
+    private int totalBlockCount;
 
     
 	public enum Edges {
@@ -110,34 +117,36 @@ public class Bounds {
         this.min = min;
         this.max = max;
         
-        this.xBlockMax = Math.max(min.getBlockX(), max.getBlockX());
-        this.xBlockMin = Math.min(min.getBlockX(), max.getBlockX());
+        setFields();
         
-        this.yBlockMax = Math.max(min.getBlockY(), max.getBlockY());
-        this.yBlockMin = Math.min(min.getBlockY(), max.getBlockY());
-        
-        this.zBlockMax = Math.max(min.getBlockZ(), max.getBlockZ());
-        this.zBlockMin = Math.min(min.getBlockZ(), max.getBlockZ());
-        
-        this.xMin = Math.min(min.getX(), max.getX());
-        this.xMax = Math.max(min.getX(), max.getX());
-        
-        this.yMin = Math.min(min.getY(), max.getY());
-        this.yMax = Math.max(min.getY(), max.getY());
-        
-        this.zMin = Math.min(min.getZ(), max.getZ());
-        this.zMax = Math.max(min.getZ(), max.getZ());
-        
-        double centerX = (xBlockMin + xBlockMax) / 2.0d;
-        double centerY = (yBlockMin + yBlockMax) / 2.0d;
-        double centerZ = (zBlockMin + zBlockMax) / 2.0d;
-        
-        this.center = new Location(this.min.getWorld(), centerX, centerY, centerZ );
-
-        this.totalBlockCount = 
-        			(getyBlockMax() - getyBlockMin() + 1) *
-        			(getxBlockMax() - getxBlockMin() + 1) *
-        			(getzBlockMax() - getzBlockMin() + 1);
+//        this.xBlockMax = Math.max(min.getBlockX(), max.getBlockX());
+//        this.xBlockMin = Math.min(min.getBlockX(), max.getBlockX());
+//        
+//        this.yBlockMax = Math.max(min.getBlockY(), max.getBlockY());
+//        this.yBlockMin = Math.min(min.getBlockY(), max.getBlockY());
+//        
+//        this.zBlockMax = Math.max(min.getBlockZ(), max.getBlockZ());
+//        this.zBlockMin = Math.min(min.getBlockZ(), max.getBlockZ());
+//        
+//        this.xMin = Math.min(min.getX(), max.getX());
+//        this.xMax = Math.max(min.getX(), max.getX());
+//        
+//        this.yMin = Math.min(min.getY(), max.getY());
+//        this.yMax = Math.max(min.getY(), max.getY());
+//        
+//        this.zMin = Math.min(min.getZ(), max.getZ());
+//        this.zMax = Math.max(min.getZ(), max.getZ());
+//        
+//        double centerX = (xBlockMin + xBlockMax) / 2.0d;
+//        double centerY = (yBlockMin + yBlockMax) / 2.0d;
+//        double centerZ = (zBlockMin + zBlockMax) / 2.0d;
+//        
+//        this.center = new Location(this.min.getWorld(), centerX, centerY, centerZ );
+//
+//        this.totalBlockCount = 
+//        			(getyBlockMax() - getyBlockMin() + 1) *
+//        			(getxBlockMax() - getxBlockMin() + 1) *
+//        			(getzBlockMax() - getzBlockMin() + 1);
     }
 
     
@@ -251,36 +260,47 @@ public class Bounds {
         this.min = min;
         this.max = max;
         
-        this.xBlockMax = Math.max(min.getBlockX(), max.getBlockX());
-        this.xBlockMin = Math.min(min.getBlockX(), max.getBlockX());
-        
-        this.yBlockMax = Math.max(min.getBlockY(), max.getBlockY());
-        this.yBlockMin = Math.min(min.getBlockY(), max.getBlockY());
-        
-        this.zBlockMax = Math.max(min.getBlockZ(), max.getBlockZ());
-        this.zBlockMin = Math.min(min.getBlockZ(), max.getBlockZ());
-        
-        this.xMin = Math.min(min.getX(), max.getX());
-        this.xMax = Math.max(min.getX(), max.getX());
-        
-        this.yMin = Math.min(min.getY(), max.getY());
-        this.yMax = Math.max(min.getY(), max.getY());
-        
-        this.zMin = Math.min(min.getZ(), max.getZ());
-        this.zMax = Math.max(min.getZ(), max.getZ());
-        
-        double centerX = (xBlockMin + xBlockMax) / 2.0d;
-        double centerY = (yBlockMin + yBlockMax) / 2.0d;
-        double centerZ = (zBlockMin + zBlockMax) / 2.0d;
-        
-        this.center = new Location(this.min.getWorld(), centerX, centerY, centerZ );
-
-        this.totalBlockCount = 
-        			(getyBlockMax() - getyBlockMin() + 1) *
-        			(getxBlockMax() - getxBlockMin() + 1) *
-        			(getzBlockMax() - getzBlockMin() + 1);
+        setFields();
     }
 
+    
+    /**
+     * <p>This function will use the min and max Locations to calculate
+     * and set all of the other fields within this Bounds object.
+     * This should be called if restoring the object from a json file.
+     * </p>
+     */
+    public void setFields() {
+    	
+    	this.xBlockMax = Math.max(min.getBlockX(), max.getBlockX());
+    	this.xBlockMin = Math.min(min.getBlockX(), max.getBlockX());
+    	
+    	this.yBlockMax = Math.max(min.getBlockY(), max.getBlockY());
+    	this.yBlockMin = Math.min(min.getBlockY(), max.getBlockY());
+    	
+    	this.zBlockMax = Math.max(min.getBlockZ(), max.getBlockZ());
+    	this.zBlockMin = Math.min(min.getBlockZ(), max.getBlockZ());
+    	
+    	this.xMin = Math.min(min.getX(), max.getX());
+    	this.xMax = Math.max(min.getX(), max.getX());
+    	
+    	this.yMin = Math.min(min.getY(), max.getY());
+    	this.yMax = Math.max(min.getY(), max.getY());
+    	
+    	this.zMin = Math.min(min.getZ(), max.getZ());
+    	this.zMax = Math.max(min.getZ(), max.getZ());
+    	
+    	double centerX = (xBlockMin + xBlockMax) / 2.0d;
+    	double centerY = (yBlockMin + yBlockMax) / 2.0d;
+    	double centerZ = (zBlockMin + zBlockMax) / 2.0d;
+    	
+    	this.center = new Location(this.min.getWorld(), centerX, centerY, centerZ );
+    	
+    	this.totalBlockCount = 
+    			(getyBlockMax() - getyBlockMin() + 1) *
+    			(getxBlockMax() - getxBlockMin() + 1) *
+    			(getzBlockMax() - getzBlockMin() + 1);
+    }
     
     public void setWorld( World world ) {
     	if ( world != null ) {
@@ -304,6 +324,9 @@ public class Bounds {
      * @return A double.
      */
     public double getWidth() {
+    	if ( center == null ) {
+    		setFields();
+    	}
         return (getxMax() - getxMin()) + 1;
     }
 
@@ -314,6 +337,9 @@ public class Bounds {
      * @return A double.
      */
     public double getHeight() {
+    	if ( center == null ) {
+    		setFields();
+    	}
         return (getyMax() - getyMin()) + 1;
     }
 
@@ -324,6 +350,9 @@ public class Bounds {
      * @return A double.
      */
     public double getLength() {
+    	if ( center == null ) {
+    		setFields();
+    	}
         return (getzMax() - getzMin()) + 1;
     }
 
@@ -334,6 +363,9 @@ public class Bounds {
      */
     // A=2(wl+hl+hw)
     public double getArea() {
+    	if ( center == null ) {
+    		setFields();
+    	}
         return 2 * (getWidth() * getLength() + getHeight() * getLength()
             + getHeight() * getWidth());
     }
@@ -359,6 +391,10 @@ public class Bounds {
      */
     private boolean within(Location location, boolean includeTopOfMine, boolean includeOneBelowMine ) {
     	boolean results = false;
+
+    	if ( center == null ) {
+    		setFields();
+    	}
     	
     	if ( withinSameWorld( location )) {
 
@@ -376,6 +412,9 @@ public class Bounds {
     }
     
     public boolean withinSameWorld(Location location) {
+    	if ( center == null ) {
+    		setFields();
+    	}
     	return getCenter().getWorld() != null && location.getWorld() != null &&
     			getCenter().getWorld().getName().equalsIgnoreCase( 
     						location.getWorld().getName() );
@@ -399,6 +438,10 @@ public class Bounds {
     public boolean within(Location location, long radius) {
     	boolean results = false;
     	
+    	if ( center == null ) {
+    		setFields();
+    	}
+    	
     	if ( withinSameWorld( location ) ) {
     		
     		// Ignore y since this is radius from the center axis of the mine:
@@ -416,6 +459,9 @@ public class Bounds {
      * @return
      */
     public double getDistance() {
+    	if ( center == null ) {
+    		setFields();
+    	}
     	double deltaX = getMin().getX() - getMax().getX();
     	double deltaZ = getMin().getZ() - getMax().getZ();
     	double distance = Math.sqrt( (deltaX * deltaX)  + (deltaZ * deltaZ) );
@@ -423,6 +469,9 @@ public class Bounds {
     }
     
     public double getDistance3d() {
+    	if ( center == null ) {
+    		setFields();
+    	}
     	double deltaX = getMin().getX() - getMax().getX();
     	double deltaY = getMin().getY() - getMax().getY();
     	double deltaZ = getMin().getZ() - getMax().getZ();
@@ -431,6 +480,9 @@ public class Bounds {
     }
   
     public double getDistance(Location location) {
+    	if ( center == null ) {
+    		setFields();
+    	}
     	double deltaX = getCenter().getX() - location.getX();
     	double deltaZ = getCenter().getZ() - location.getZ();
     	double distance = Math.sqrt( (deltaX * deltaX)  + (deltaZ * deltaZ) );
@@ -438,6 +490,9 @@ public class Bounds {
     }    	
     
     public double getDistance3d(Location location) {
+    	if ( center == null ) {
+    		setFields();
+    	}
     	double deltaX = getCenter().getX() - location.getX();
     	double deltaY = getCenter().getY() - location.getY();
     	double deltaZ = getCenter().getZ() - location.getZ();
@@ -446,28 +501,46 @@ public class Bounds {
     }    	
 
     public String getDimensions() {
+    	if ( center == null ) {
+    		setFields();
+    	}
     	return "&7" + Math.round(getWidth()) + "&8x&7" +
                 Math.round(getHeight()) + "&8x&7" + Math.round(getLength());
     }
     
     public Location getMin() {
+    	if ( center == null ) {
+    		setFields();
+    	}
         return min;
     }
 
     public Location getMax() {
+    	if ( center == null ) {
+    		setFields();
+    	}
         return max;
     }
 
     public Location getCenter()
 	{
+    	if ( center == null ) {
+    		setFields();
+    	}
 		return center;
 	}
 
 	@Override public String toString() {
+		if ( center == null ) {
+			setFields();
+		}
         return "Bounds{" + "min=" + min.toCoordinates() + ", max=" + max.toCoordinates() + '}';
     }
 
     @Override public boolean equals(Object o) {
+    	if ( center == null ) {
+    		setFields();
+    	}
         if (this == o) {
             return true;
         }
@@ -482,72 +555,114 @@ public class Bounds {
     }
 
     @Override public int hashCode() {
+    	if ( center == null ) {
+    		setFields();
+    	}
         int result = min != null ? min.hashCode() : 0;
         result = 31 * result + (max != null ? max.hashCode() : 0);
         return result;
     }
 
 	public int getxBlockMin() {
+		if ( center == null ) {
+			setFields();
+		}
 		return xBlockMin;
 	}
 
 	public int getxBlockMax()
 	{
+		if ( center == null ) {
+			setFields();
+		}
 		return xBlockMax;
 	}
 	
 	public int getyBlockMin()
 	{
+		if ( center == null ) {
+			setFields();
+		}
 		return yBlockMin;
 	}
 
 	public int getyBlockMax()
 	{
+		if ( center == null ) {
+			setFields();
+		}
 		return yBlockMax;
 	}
 
 	public int getzBlockMin()
 	{
+		if ( center == null ) {
+			setFields();
+		}
 		return zBlockMin;
 	}
 
 	public int getzBlockMax()
 	{
+		if ( center == null ) {
+			setFields();
+		}
 		return zBlockMax;
 	}
 
 	public double getxMin()
 	{
+		if ( center == null ) {
+			setFields();
+		}
 		return xMin;
 	}
 
 	public double getxMax()
 	{
+		if ( center == null ) {
+			setFields();
+		}
 		return xMax;
 	}
 
 	public double getyMin()
 	{
+		if ( center == null ) {
+			setFields();
+		}
 		return yMin;
 	}
 
 	public double getyMax()
 	{
+		if ( center == null ) {
+			setFields();
+		}
 		return yMax;
 	}
 
 	public double getzMin()
 	{
+		if ( center == null ) {
+			setFields();
+		}
 		return zMin;
 	}
 
 	public double getzMax()
 	{
+		if ( center == null ) {
+			setFields();
+		}
 		return zMax;
 	}
 
 	public int getTotalBlockCount()
 	{
+		if ( center == null ) {
+			setFields();
+		}
 		return totalBlockCount;
 	}
 

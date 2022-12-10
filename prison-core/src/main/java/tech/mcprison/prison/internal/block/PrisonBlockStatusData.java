@@ -2,22 +2,28 @@ package tech.mcprison.prison.internal.block;
 
 import java.text.DecimalFormat;
 
+import com.google.gson.annotations.Expose;
+
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 
-public abstract class PrisonBlockStatusData {
+public class PrisonBlockStatusData
+	extends PrisonBlock {
 
 	// blockName is more of an internal reference:
-	private PrisonBlockType blockType;
-	private String blockName;
+//	private PrisonBlockType blockType;
+//	private String blockName;
 	
-	private double chance;
+//	private double chance;
 	
+	@Expose
 	private int constraintMin;
+	@Expose
 	private int constraintMax;
 
+	@Expose
 	private int constraintExcludeTopLayers;
+	@Expose
 	private int constraintExcludeBottomLayers;
 	
 	private int blockPlacedCount;
@@ -35,16 +41,22 @@ public abstract class PrisonBlockStatusData {
 	private int rangeBlockCountHighLimit;
 	
 	
+	@Expose
 	private boolean gravity = false;
 	
+	public PrisonBlockStatusData( PrisonBlock prisonBlock ) {
+		this( prisonBlock.getBlockType(), prisonBlock.getBlockName(), prisonBlock.getChance(), 0 );
+		
+	}
 	
-	public PrisonBlockStatusData( PrisonBlockType blockType, String blockName, double chance, long blockCountTotal ) {
-		super();
+	public PrisonBlockStatusData( PrisonBlockType blockType, String blockName, 
+			double chance, long blockCountTotal ) {
+		super( blockType, blockName, chance );
 		
-		this.blockType = blockType;
-		this.blockName = blockName;
-		
-		this.chance = chance;
+//		this.blockType = blockType;
+//		this.blockName = blockName;
+//		
+//		this.chance = chance;
 		
 		this.constraintMin = 0;
 		this.constraintMax = 0;
@@ -110,9 +122,9 @@ public abstract class PrisonBlockStatusData {
 	}
 	
 	
-	public static PrisonBlock parseFromSaveFileFormat( String blockString ) {
+	public static PrisonBlockStatusData parseFromSaveFileFormat( String blockString ) {
 		
-		PrisonBlock results = null;
+		PrisonBlockStatusData results = null;
 		
 		String[] split = blockString.split("-");
 		if ( split != null && split.length > 0 ) {
@@ -124,9 +136,11 @@ public abstract class PrisonBlockStatusData {
 			
 			// The new way to get the PrisonBlocks:  
 			//   The blocks return are cloned so they have their own instance:
-			results = Prison.get().getPlatform().getPrisonBlock( blockTypeName );
+			PrisonBlock pBlock = Prison.get().getPlatform().getPrisonBlock( blockTypeName );
 			
-			if ( results != null ) {
+			if ( pBlock != null ) {
+				
+				results = new PrisonBlockStatusData( pBlock );
 				
 				results.parseFromSaveFileFormatStats( blockString );
 				
@@ -392,29 +406,29 @@ public abstract class PrisonBlockStatusData {
 		return sb.toString();
 	}
 	
-	public abstract boolean isAir();
+//	public abstract boolean isAir();
 	
 	
-	public String getBlockName(){
-		return blockName;
-	}
-	public void setBlockName( String blockName ) {
-		this.blockName = blockName;
-	}
-
-	public PrisonBlockType getBlockType() {
-		return blockType;
-	}
-	public void setBlockType( PrisonBlockType blockType ) {
-		this.blockType = blockType;
-	}
-
-	public double getChance() {
-		return chance;
-	}
-	public void setChance( double chance ) {
-		this.chance = chance;
-	}
+//	public String getBlockName(){
+//		return blockName;
+//	}
+//	public void setBlockName( String blockName ) {
+//		this.blockName = blockName;
+//	}
+//
+//	public PrisonBlockType getBlockType() {
+//		return blockType;
+//	}
+//	public void setBlockType( PrisonBlockType blockType ) {
+//		this.blockType = blockType;
+//	}
+//
+//	public double getChance() {
+//		return chance;
+//	}
+//	public void setChance( double chance ) {
+//		this.chance = chance;
+//	}
 
 	public int getBlockPlacedCount() {
 		return blockPlacedCount;

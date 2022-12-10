@@ -18,6 +18,8 @@
 
 package tech.mcprison.prison.util;
 
+import com.google.gson.annotations.Expose;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.World;
 import tech.mcprison.prison.internal.block.Block;
@@ -31,12 +33,23 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
  */
 public class Location {
 
+	@Expose
     private World world;
-    private double x, y, z;
-    private float pitch, yaw;
-    
+	@Expose
+	private double x, y, z;
+	@Expose
+	private float pitch, yaw;
+	
+	/**
+	 * <p>The direction is a vector that is used to throw, or 
+	 * drop, an item or object.  Since this is temporal, and
+	 * should not be stored, it is not exposed to be saved
+	 * in a json output file.
+	 * </p>
+	 */
     private Vector direction;
     
+	@Expose
     private boolean isEdge;
 
     public Location(World world, double x, double y, double z, float pitch, float yaw, Vector direction) {

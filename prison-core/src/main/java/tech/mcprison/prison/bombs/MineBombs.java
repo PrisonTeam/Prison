@@ -6,6 +6,7 @@ import java.util.List;
 
 import tech.mcprison.prison.file.JsonFileIO;
 import tech.mcprison.prison.internal.block.PrisonBlock;
+import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
@@ -256,7 +257,7 @@ public class MineBombs
 				
 			}
 			
-			PrisonBlock item = PrisonBlock.parseFromSaveFileFormat( bomb.getItemType() );
+			PrisonBlockStatusData item = PrisonBlockStatusData.parseFromSaveFileFormat( bomb.getItemType() );
 			if ( item == null ) {
 				
 				errors.add( String.format( 
