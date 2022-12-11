@@ -2,6 +2,7 @@ package tech.mcprison.prison.spigot.utils;
 
 import java.text.DecimalFormat;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.spigot.SpigotPrison;
 
@@ -32,7 +33,7 @@ public abstract class PrisonUtilsMineBombsMessages
 	protected void mineBombsCoolDownMsg( CommandSender sender, double cooldownTicks ) {
 		
 		double cooldownSeconds = cooldownTicks / 20.0f;
-		DecimalFormat dFmt = new DecimalFormat( "0.0" );
+		DecimalFormat dFmt = Prison.get().getDecimalFormat( "0.0" );
 		
 		SpigotPrison.getInstance().getLocaleManager()
 				.getLocalizable( "spigot_minebombs__cooldown_delay" )

@@ -374,7 +374,7 @@ public class SellAllUtil
         multiplier += multiplierExtraByPerms;
 
 //        long tPoint3 = System.nanoTime();
-//        DecimalFormat dFmt = new DecimalFormat( "0.0000" );
+//        DecimalFormat dFmt = Prison.get().getDecimalFormat( "0.0000" );
 //        String debugMsg = "{sellallMult::" + dFmt.format( multiplier ) + ":t1=" + 
 //        				dFmt.format( (tPoint2 - tPoint1)/1000000d ) +
 //        				":t2=" + dFmt.format( (tPoint3 - tPoint2)/1000000 ) + "}";
@@ -440,7 +440,7 @@ public class SellAllUtil
         double total = earned * multiplier;
         
         if ( debug ) {
-        	DecimalFormat dFmt = new DecimalFormat( "#,##0.00" );
+        	DecimalFormat dFmt = Prison.get().getDecimalFormat( "#,##0.00" );
         	sb.append( " earned: " ).append( dFmt.format(earned) )
         	  .append( " mult: " ).append( dFmt.format(multiplier) )
         	  .append( " total: " ).append( dFmt.format(total) );
@@ -1497,7 +1497,7 @@ public class SellAllUtil
     public void removeFromAutoSellDelayAndNotify(Player p){
         if (autoSellEarningsNotificationWaiting.containsKey(p) && autoSellEarningsNotificationWaiting.get(p) > 0.00){
         	
-        	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+        	DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
         	String amt = fFmt.format( autoSellEarningsNotificationWaiting.get(p) );
         	
         	String message = sellallAmountEarnedMsg( amt );
@@ -1805,7 +1805,7 @@ public class SellAllUtil
                     
                     addDelayedEarningAutoSellNotification(p, money);
                 } else if (notifyPlayerEarned){
-                	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+                	DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
                 	String amt = fFmt.format( money );
                 	
                 	String message = sellallAmountEarnedMsg( amt );
@@ -1889,7 +1889,7 @@ public class SellAllUtil
     				addDelayedEarningAutoSellNotification(p, money);
     			} 
     			else if (notifyPlayerEarned){
-    				DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+    				DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
     	        	String amt = fFmt.format( money );
     	        	
     	        	String message = sellallAmountEarnedMsg( amt ) ;
@@ -1905,7 +1905,7 @@ public class SellAllUtil
     	}
     	
 
-//        DecimalFormat dFmt = new DecimalFormat( "0.0000" );
+//        DecimalFormat dFmt = Prison.get().getDecimalFormat( "0.0000" );
 //        String debugMsg = "{sellAllSell::" + dFmt.format( money ) + 
 //        				":t1=" + dFmt.format( (tPoint2 - tPoint1)/1000000d ) +
 //        				":t2=" + dFmt.format( (tPoint3 - tPoint2)/1000000d ) + 
@@ -2018,7 +2018,7 @@ public class SellAllUtil
                         addDelayedEarningAutoSellNotification(p, money);
                     }
                 } else if (notifyPlayerEarned){
-                	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+                	DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
                 	String amt = fFmt.format( money );
                 	
                 	String message = sellallAmountEarnedMsg( amt );

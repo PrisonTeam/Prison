@@ -7,6 +7,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import net.milkbowl.vault.economy.EconomyResponse;
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
@@ -208,7 +209,7 @@ public class VaultEconomyWrapper
         			results = response.transactionSuccess();
         			
         			if ( !results ) {
-        				DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+        				DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
         				String message = String.format( 
         						"VaultEconomy.addBalance failed: %s  amount: %s  " +
         									"balance: %s  error: %s", 
@@ -256,7 +257,7 @@ public class VaultEconomyWrapper
     				results = response.transactionSuccess();
         			
         			if ( !results ) {
-        				DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+        				DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
         				String message = String.format( 
         						"VaultEconomy.removeBalance failed: %s  amount: %s  " +
         									"balance: %s  error: %s", 

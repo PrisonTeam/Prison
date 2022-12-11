@@ -962,7 +962,7 @@ public class PrisonUtilsMineBombs
 					mineBombsCoolDownMsg( sPlayer, cooldownTicks );
 					
 //					float cooldownSeconds = cooldownTicks / 20.0f;
-//					DecimalFormat dFmt = new DecimalFormat( "0.0" );
+//					DecimalFormat dFmt = Prison.get().getDecimalFormat( "0.0" );
 //					
 //					String message = 
 //							String.format( "You cannot use another Prison Mine Bomb for %s seconds.", 

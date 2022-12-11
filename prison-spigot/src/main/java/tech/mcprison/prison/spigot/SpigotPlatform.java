@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -2067,7 +2066,7 @@ public class SpigotPlatform
         if ( minesModule != null && 
         		minesModule.getStatus().getStatus() == ModuleStatus.Status.ENABLED ) {
         	
-        	DecimalFormat dFmt = new DecimalFormat("#,##0");
+        	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
         	
         	int minesEnabled = 0;
         	int minesVirtual = 0;
@@ -2964,7 +2963,7 @@ public class SpigotPlatform
 				
 				if ( Output.get().isDebug() ) {
 					
-					DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+					DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 					Output.get().logDebug( "(SpigotPlatform autosell: " + (success ? "success" : "failed") + 
 							" ms: " + dFmt.format( milliTime ) + ") ");
 				}

@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
@@ -82,7 +83,7 @@ public class SpigotRanksGUI
         String lorePlayersWithRank = guiRanksLorePlayersWithRankMsg();
 
         // Decimal Rank cost format.
-        DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
+        DecimalFormat formatDecimal = Prison.get().getDecimalFormat("###,##0.00");
 
         // Only loop over the blocks that we need to show:
         for ( Rank rank : ranksDisplay )

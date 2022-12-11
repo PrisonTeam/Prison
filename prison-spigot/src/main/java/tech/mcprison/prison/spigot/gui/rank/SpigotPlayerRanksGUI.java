@@ -177,8 +177,8 @@ public class SpigotPlayerRanksGUI
         boolean enchantmentEffectEnabled = getBoolean(guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank"));
 
         // Decimal Rank cost format.
-        DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
-        DecimalFormat mFmt = new DecimalFormat("###,##0.0000");
+        DecimalFormat formatDecimal = Prison.get().getDecimalFormat("###,##0.00");
+        DecimalFormat mFmt = Prison.get().getDecimalFormat("###,##0.0000");
         boolean showNumber = getBoolean(guiConfig.getString("Options.Ranks.Number_of_Rank_Player_GUI"));
 
 //        PlayerRank pRank = rankPlayerFactory.getRank( getRankPlayer(), ladder, true );

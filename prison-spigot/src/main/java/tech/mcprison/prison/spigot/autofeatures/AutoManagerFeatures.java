@@ -23,6 +23,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.internal.block.PrisonBlock;
@@ -536,8 +537,8 @@ public abstract class AutoManagerFeatures
 			}
 			
 			
-			DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
-			DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+			DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.0000");
+			DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 			
 			double autosellTotal = 0;
 			double autosellUnsellableCount = 0;
@@ -1051,8 +1052,8 @@ public abstract class AutoManagerFeatures
 						
 						if ( amount > 0d ) {
 							
-							DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
-							DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+							DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.0000");
+							DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 							
 							debugInfo.append( "[dropExtra sellall: value: " + dFmt.format( amount )  );
 							

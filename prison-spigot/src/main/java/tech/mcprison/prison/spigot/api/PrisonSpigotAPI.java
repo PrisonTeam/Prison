@@ -33,7 +33,6 @@ import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
-import tech.mcprison.prison.spigot.placeholder.SpigotPlaceholders;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.Location;

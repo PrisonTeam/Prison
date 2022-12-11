@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import com.cryptomorin.xseries.XMaterial;
 
 import me.clip.placeholderapi.PlaceholderAPI;
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
@@ -197,7 +198,7 @@ public class SpigotPlayerMinesGUI
             	mineTag = m.getTag();
             }
             
-            DecimalFormat iFmt = new DecimalFormat( "#,##0" );
+            DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
             
             for (String stringValue : mineLore) {
             	

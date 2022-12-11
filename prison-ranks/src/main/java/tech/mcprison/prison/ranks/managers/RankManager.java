@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.TreeMap;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.internal.CommandSender;
@@ -679,7 +680,7 @@ public class RankManager
 		double cost = rank.getRawRankCost();
 		
 		String resultsx = null;
-		DecimalFormat dFmt = new DecimalFormat("#,##0");
+		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 		if ( attributeNFormat != null ) {
 			resultsx = attributeNFormat.format( cost );
 		}
@@ -720,7 +721,7 @@ public class RankManager
 		String results = null;
 		PrisonPlaceHolders placeHolder = placeHolderKey.getPlaceholder();
 		
-		DecimalFormat dFmt = new DecimalFormat("#,##0");
+		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 		
 		
 		if ( !placeHolder.hasFlag( PlaceholderFlags.STATSPLAYERS ) &&

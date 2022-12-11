@@ -667,7 +667,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         TreeMap<String, Double> mults = new TreeMap<>( sellAllUtil.getPrestigeMultipliers() );
 
 //        TreeMap<XMaterial, Double> items = new TreeMap<>( sellAllUtil.getSellAllBlocks() );
-        DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+        DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
         
         Set<String> keys = mults.keySet();
         
@@ -941,7 +941,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
         
         TreeMap<XMaterial, Double> items = new TreeMap<>( sellAllUtil.getSellAllBlocks() );
-        DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+        DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
         
         Set<XMaterial> keys = items.keySet();
         

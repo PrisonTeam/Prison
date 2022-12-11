@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRank;
@@ -44,7 +45,7 @@ public class SpigotRankManagerGUI
         ButtonLore rankupCommandsLore = new ButtonLore( guiLeftClickToOpenMsg(), null);
 
         // Decimal Rank cost format.
-        DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
+        DecimalFormat formatDecimal = Prison.get().getDecimalFormat("###,##0.00");
 
         RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
         

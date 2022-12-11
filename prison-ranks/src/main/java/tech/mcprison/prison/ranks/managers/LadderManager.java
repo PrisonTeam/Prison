@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.Rank;
@@ -350,7 +351,7 @@ public class LadderManager
 	
 	public String printRankLadderInfoDetail( RankLadder ladder ) {
 		
-		DecimalFormat dFmt = new DecimalFormat( "#,##0.0000" );
+		DecimalFormat dFmt = Prison.get().getDecimalFormat( "#,##0.0000" );
 		
 		int rankCount = ladder.getRanks() == null ? 0 : ladder.getRanks().size();
     	

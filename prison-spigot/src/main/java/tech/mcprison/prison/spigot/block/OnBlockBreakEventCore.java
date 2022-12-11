@@ -689,7 +689,7 @@ public abstract class OnBlockBreakEventCore
 				final long nanoStop = System.nanoTime();
 				double milliTime = (nanoStop - nanoStart) / 1000000d;
 				
-				DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+				DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 				debugInfo.append( "(autosellBLOCKEVENTS: " + (success ? "success" : "failed") + 
 						" ms: " + dFmt.format( milliTime ) + ") ");
 				

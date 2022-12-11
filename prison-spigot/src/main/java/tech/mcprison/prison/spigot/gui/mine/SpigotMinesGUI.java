@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
@@ -111,7 +112,7 @@ public class SpigotMinesGUI
             minesLore.addLineLoreDescription("&7" + loreBlocks);
 
             // Init some variables and do the actions
-            DecimalFormat dFmt = new DecimalFormat("##0.00");
+            DecimalFormat dFmt = Prison.get().getDecimalFormat("##0.00");
             double totalChance = 0.0d;
 
             for (PrisonBlock block : m.getPrisonBlocks()) {
@@ -159,7 +160,7 @@ public class SpigotMinesGUI
 //            minesLore.addLineLoreDescription("&7" + loreBlocks);
 //
 //            // Init some variables and do the actions
-//            DecimalFormat dFmt = new DecimalFormat("##0.00");
+//            DecimalFormat dFmt = Prison.get().getDecimalFormat("##0.00");
 //            double totalChance = 0.0d;
 //
 //
