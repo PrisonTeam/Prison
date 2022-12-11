@@ -111,7 +111,8 @@ public class Prison
     
     private List<String> localeLoadInfo;
     
-    private DecimalFormatSymbols dfSym;
+    private static DecimalFormatSymbols dfSym;
+    private static boolean dfSymStatic = false;
     
     private Prison() {
     	super();
@@ -136,7 +137,6 @@ public class Prison
 
     public DecimalFormat getDecimalFormat( String format ) {
     	DecimalFormat dFmt = new DecimalFormat( format, getDecimalFormatSymbols() );
-//    	DecimalFormat dFmt = new DecimalFormat( format );
     	return dFmt;
     }
     public DecimalFormat getDecimalFormatInt() {
@@ -144,6 +144,16 @@ public class Prison
     }
     public DecimalFormat getDecimalFormatDouble() {
     	return getDecimalFormat("#,##0.000");
+    }
+    public static DecimalFormat getDecimalFormatStatic( String format ) {
+    	DecimalFormat dFmt = new DecimalFormat( format, getDecimalFormatSymbolsStatic() );
+    	return dFmt;
+    }
+    public static DecimalFormat getDecimalFormatStaticInt() {
+    	return getDecimalFormatStatic("#,##0");
+    }
+    public static DecimalFormat getDecimalFormatStaticDouble() {
+    	return getDecimalFormatStatic("#,##0.000");
     }
 
     /**
@@ -164,17 +174,27 @@ public class Prison
      * @return
      */
     private DecimalFormatSymbols getDecimalFormatSymbols() {
-    	if ( dfSym == null ) {
+    	if ( dfSym == null || dfSymStatic ) {
     		
-    		String location = getPlatform().getConfigString( "number-format-location", "en_US" );
+     		String location = getPlatform().getConfigString( "number-format-location", "en_US" );
     		String[] loc = location.split("_");
     		
     		Locale locale = new Locale( 
     				loc != null && loc.length >= 1 ? loc[0] : "en",
-    				loc != null && loc.length >= 2 ? loc[1] : "US" );
+    						loc != null && loc.length >= 2 ? loc[1] : "US" );
     		
 //    		Locale locale = new Locale( "en", "US" );
-    		this.dfSym = new DecimalFormatSymbols( locale );
+    		dfSym = new DecimalFormatSymbols( locale );
+    		dfSymStatic = false;
+    	}
+    	return dfSym;
+    }
+    private static DecimalFormatSymbols getDecimalFormatSymbolsStatic() {
+    	if ( dfSym == null ) {
+    		
+    		Locale locale = new Locale( "en", "US" );
+    		dfSym = new DecimalFormatSymbols( locale );
+    		dfSymStatic = true;
     	}
     	return dfSym;
     }

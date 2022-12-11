@@ -89,10 +89,14 @@ public class Text
     //#([A-Fa-f0-9]){6}
     
     
-	private static DecimalFormat dFmt = new DecimalFormat("#,##0.00");
-	private static DecimalFormat iFmt = new DecimalFormat("#,##0");
+	private static DecimalFormat dFmt = Prison.getDecimalFormatStatic("#,##0.00");
+	private static DecimalFormat iFmt = Prison.getDecimalFormatStaticInt();
 
-    
+    static {
+    	if ( Prison.get() != null ) {
+    		
+    	}
+    }
     
     protected Text() {
     	super();
@@ -627,8 +631,8 @@ public class Text
     
     public static String formatTimeDaysHhMmSs( long timeMs ) {
     	
-    	DecimalFormat iFmt = new DecimalFormat("#,##0");
-    	DecimalFormat tFmt = new DecimalFormat("00");
+    	DecimalFormat iFmt = Prison.getDecimalFormatStaticInt();
+    	DecimalFormat tFmt = Prison.getDecimalFormatStatic("00");
 //    	SimpleDateFormat sdFmt = new SimpleDateFormat( "HH:mm:ss" );
     	
 //    	long _sec = 1000;
