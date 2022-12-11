@@ -131,6 +131,29 @@ placeholder:
 default-language: en_US
 
 
+
+# Prison defaults to a location code of en_US for the formatting of numbers 
+# which uses a "." for the decimal position, and "," for the thousands separator.
+# Prison overries the use of the server's and Java's location code, for the
+# exclusive purpose of formatting numbers, of which may not be
+# controllable by admins if they are using a hosted server. 
+# This allows separation between the default_language codes and the
+# number formatting language code.
+# The problem with using some other locations, such as en_UK, is that they
+# may use a Non-Blanking SPace (NBSP) for the thousands separator, of which
+# Minecraft cannot display that uni-code correctly and shows it as a 
+# squre with the letters NB on the first line, and SP on the second.
+# Examples of number formatting patterns and the results: 
+#       #,##0  and  #,##0.000 
+#       1,000  and  1,000.123
+# This controls number formatting of the symbols used throughout all of 
+# prison. This is the only way to control the symbols used. This does not
+# change the use of any of the number formatting patterns.
+number-format-location: en_US
+
+
+
+
 # The storage engine that Prison should use to store data.
 # The only valid storageType is json. 
 storageType: "json"

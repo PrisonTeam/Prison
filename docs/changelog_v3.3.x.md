@@ -10,7 +10,11 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.13e 2022-12-03
+# 3.3.0-alpha.13e 2022-12-10
+
+
+
+* **Setup the control over number formatting by using Prison as the single source of constructing a DecimalFormat object.  This is done through manually setting the DecimalFormatSymbols to use en_US.  It has also been enabled in config.yml to allow setting the language code that is used, to any value the admin may wish to use.  It's a problem when en_US is not used, but someone may have a specific reason not to use en_US.  Mostly the primary trouble is related to Minecraft not being able to properly display NBSP unicode characters.**
 
 
 * **Mine suffocation can now be enabled so if you turn off teleportation, then the players can now die.**
