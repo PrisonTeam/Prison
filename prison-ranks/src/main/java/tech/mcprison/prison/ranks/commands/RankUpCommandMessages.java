@@ -135,7 +135,7 @@ public class RankUpCommandMessages
 					RankPlayer rPlayer, PlayerRank targetRank,
 					boolean isResetDefaultLadder, boolean isConfirmationEnabled ) {
 		StringBuilder sb = new StringBuilder();
-		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 		
 		String currency = targetRank.getCurrency();
 		double balance = rPlayer.getBalance( currency );
@@ -182,7 +182,7 @@ public class RankUpCommandMessages
 					RankPlayer rPlayer, PlayerRank targetRank,
 						boolean isResetDefaultLadder, boolean isResetMoney,
 						boolean isPlayer ) {
-		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 		
 		String currency = targetRank.getCurrency();
 		double balance = rPlayer.getBalance( currency );
@@ -241,7 +241,7 @@ public class RankUpCommandMessages
 	
 	protected void ranksRankupPlayerBalanceMsg( CommandSender sender, 
 			double balance, String currency ) {
-		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 
 		LocaleManager rMsg = PrisonRanks.getInstance().getRanksMessages();
 		
@@ -390,7 +390,7 @@ public class RankUpCommandMessages
 	protected void ranksRankupCannotAffordMsg( CommandSender sender, 
 			PlayerRank tpRank ) {
 			
-		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
     	
 		Rank tRank = tpRank.getRank();
 		
