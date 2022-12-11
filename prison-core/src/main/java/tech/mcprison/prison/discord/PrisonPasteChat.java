@@ -17,6 +17,7 @@ import javax.net.ssl.HttpsURLConnection;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.Text;
 
@@ -163,7 +164,7 @@ public class PrisonPasteChat {
 		
 //		// Injects the size back in to the text without changing the total length of the text:
 //		int size = cleanedText.length();
-//		DecimalFormat dFmt = new DecimalFormat("#,##0");
+//		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 //		String sizeString = (dFmt.format( size ) + " bytes                        ")
 //									.substring( 0, SUBMISSION_SIZE_PLACEHOLDER.length() );
 //		
@@ -179,7 +180,7 @@ public class PrisonPasteChat {
 		// Injects the size back in to the text without changing the total length of the text:
 		int size = text.length();
 		
-		DecimalFormat dFmt = new DecimalFormat("#,##0");
+		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 		String sizeString = (dFmt.format( size ) + " bytes                        ")
 									.substring( 0, SUBMISSION_SIZE_PLACEHOLDER.length() );
 		

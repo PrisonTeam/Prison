@@ -43,7 +43,7 @@ core_tokens__set_amount=&3%1 now has &7%2 &3tokens.
 	
 	protected void coreTokensBalanceViewMsg( CommandSender sender, String name, long tokens ) {
 		
-		DecimalFormat dFmt = new DecimalFormat("#,##0");
+		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
     	String tokensMsg = dFmt.format( tokens );
     	
 		Prison.get().getLocaleManager()
@@ -55,7 +55,7 @@ core_tokens__set_amount=&3%1 now has &7%2 &3tokens.
 	
 	protected void coreTokensAddInvalidAmountMsg( CommandSender sender, long tokens ) {
 		
-		DecimalFormat dFmt = new DecimalFormat("#,##0");
+		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 		String tokensMsg = dFmt.format( tokens );
 		
 		Prison.get().getLocaleManager()
@@ -68,7 +68,7 @@ core_tokens__set_amount=&3%1 now has &7%2 &3tokens.
 	protected String coreTokensAddedAmountMsg(  
 			String name, long tokens, long amount ) {
 		
-		DecimalFormat dFmt = new DecimalFormat("#,##0");
+		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 		String tokensMsg = dFmt.format( tokens );
 		String amountMsg = dFmt.format( amount );
 		
@@ -82,7 +82,7 @@ core_tokens__set_amount=&3%1 now has &7%2 &3tokens.
 	protected String coreTokensRemovedAmountMsg(  
 			String name, long tokens, long amount ) {
 		
-		DecimalFormat dFmt = new DecimalFormat("#,##0");
+		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 		String tokensMsg = dFmt.format( tokens );
 		String amountMsg = dFmt.format( amount );
 		
@@ -96,7 +96,7 @@ core_tokens__set_amount=&3%1 now has &7%2 &3tokens.
 	protected String coreTokensSetAmountMsg(  
 			String name, long tokens ) {
 		
-		DecimalFormat dFmt = new DecimalFormat("#,##0");
+		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 		String tokensMsg = dFmt.format( tokens );
 		
 		return Prison.get().getLocaleManager()

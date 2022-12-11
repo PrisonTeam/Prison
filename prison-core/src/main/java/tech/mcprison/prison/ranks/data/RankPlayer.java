@@ -1656,7 +1656,7 @@ public class RankPlayer
 	
 	public String printRankScoreLine1( int rankPostion ) {
 		
-		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 		
 		PlayerRank prestRank = getPlayerRankPrestiges();
 		PlayerRank defRank = getPlayerRankDefault();
@@ -1702,7 +1702,7 @@ public class RankPlayer
 	
 	public String printRankScoreLine2( int rankPostion ) {
 		
-		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 		
 		PlayerRank prestRank = getPlayerRankPrestiges();
 		PlayerRank defRank = getPlayerRankDefault();

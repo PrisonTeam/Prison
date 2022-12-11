@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.util.Text;
 
 public class PlaceholdersUtil
@@ -94,7 +95,7 @@ public class PlaceholdersUtil
 //    	
 //    	double secs = (double)(timeSec / TIME_SECOND);
 //    	timeSec -= (secs * TIME_SECOND);
-//    	DecimalFormat dFmt = new DecimalFormat("#0");
+//    	DecimalFormat dFmt = Prison.get().getDecimalFormat("#0");
 //    	sb.append( dFmt.format( secs ));
 //    	// y,m,w,d,h,m,s
 //    	sb.append( prefixesTimeUnits.get(6) ).append( " " );
@@ -116,7 +117,7 @@ public class PlaceholdersUtil
 	 */
 	public static String formattedMetricSISize( double amount ) { 
 		
-		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 		return formattedMetricSISize( amount, dFmt, " " );
 	}
 	
@@ -156,7 +157,7 @@ public class PlaceholdersUtil
 	
 	public static String formattedPrefixBinarySize( double amount ) { 
 		
-		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 		return formattedIPrefixBinarySize( amount, dFmt, " " );
 	}
 	

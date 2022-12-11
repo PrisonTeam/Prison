@@ -726,7 +726,7 @@ public class PrisonCommand
         }
         
         
-        DecimalFormat dFmt = new DecimalFormat("#,##0");
+        DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
         builder.add( String.format( "&7  Results: &c%s  &7Original patterns:  &3%s", 
         		dFmt.format(placeholders.size()), patterns ));
     	
@@ -1495,7 +1495,7 @@ public class PrisonCommand
 //
 //	private void addFileToText( File file, StringBuilder sb )
 //	{
-//    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+//    	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 //		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
 //    	
 //    	sb.append( "\n" );
@@ -1807,7 +1807,7 @@ public class PrisonCommand
     	
     	coreTokensBalanceViewMsg( sender, player.getName(), tokens );
     	
-//    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+//    	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 //    	String tokensMsg = dFmt.format( tokens );
 //    	
 //    	String message = String.format( "&3%s has %s tokens.", player.getName(), tokensMsg );
@@ -1851,7 +1851,7 @@ public class PrisonCommand
     		return;
     	}
 
-//    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+//    	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
     	
     	if ( amount <= 0 ) {
     		
@@ -1949,7 +1949,7 @@ public class PrisonCommand
     		return;
     	}
     	
-//    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+//    	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
     	
     	if ( amount <= 0 ) {
     		
@@ -2037,7 +2037,7 @@ public class PrisonCommand
     		return;
     	}
     	
-//    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+//    	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
     	
     	Player player = getPlayer( playerName );
 

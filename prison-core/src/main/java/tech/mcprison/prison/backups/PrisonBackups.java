@@ -40,7 +40,7 @@ public class PrisonBackups {
 	private ArrayList<File> filesToDelete;
 	private ArrayList<File> filesWithErrors;
 	
-	private DecimalFormat dFmt = new DecimalFormat("#,##0.000");
+	private DecimalFormat dFmt;
 	private SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd_kk-mm" );
 	private SimpleDateFormat sdsFmt = new SimpleDateFormat( "yyyy-MM-dd kk:mm:ss.SSS" );
 	
@@ -53,6 +53,8 @@ public class PrisonBackups {
 	
 	public PrisonBackups() {
 		super();
+		
+		this.dFmt = Prison.get().getDecimalFormatDouble();
 		
 		this.filesBackups = new ArrayList<>();
 		this.filesToBackup = new ArrayList<>();
@@ -261,7 +263,7 @@ public class PrisonBackups {
 	
 	public String backupReport01() {
 		
-//		DecimalFormat dFmt = new DecimalFormat("#,##0.000");
+//		DecimalFormat dFmt = Prison.get().getDecimalFormatDouble();
 		long stop = System.nanoTime();
 		double runTimeMs = ( stop - getStartTimeNanos() ) / 1000000.0d;
 		

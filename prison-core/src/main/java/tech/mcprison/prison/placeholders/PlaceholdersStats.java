@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.TreeMap;
 
+import tech.mcprison.prison.Prison;
+
 public class PlaceholdersStats {
 
 	private static PlaceholdersStats stats; 
@@ -113,8 +115,8 @@ public class PlaceholdersStats {
 	public ArrayList<String> generatePlaceholderReport() {
 		ArrayList<String> results = new ArrayList<>();
 		
-		DecimalFormat iFmt = new DecimalFormat( "#,##0" );
-		DecimalFormat dFmt = new DecimalFormat( "#,##0.0000" );
+		DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
+		DecimalFormat dFmt = Prison.get().getDecimalFormat( "#,##0.0000" );
 		
 		results.add( 
 				"&7  Hits      Avg/Hit ms  Placeholder" );

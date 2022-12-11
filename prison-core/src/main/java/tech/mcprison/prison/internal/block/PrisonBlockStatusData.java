@@ -201,8 +201,8 @@ public abstract class PrisonBlockStatusData {
 	public String toPlaceholderString() {
 		StringBuilder sb = new StringBuilder();
 		
-    	DecimalFormat dFmt = new DecimalFormat("#,##0");
-    	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+    	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
+    	DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
 
     	String percent = fFmt.format(getChance());
     	

@@ -142,14 +142,14 @@ public class PrisonCoreGuiMessages {
 	
 	protected String guiPriceMsg( Double price ) {
 		
-		DecimalFormat dFmt = new DecimalFormat( "#,##0.00" );
+		DecimalFormat dFmt = Prison.get().getDecimalFormat( "#,##0.00" );
 		String value = price == null ? dFmt.format(0) : dFmt.format(price);
 		
 		return guiPriceMsg( value );
 	}
 	protected String guiPriceMsg( Integer price ) {
 		
-		DecimalFormat dFmt = new DecimalFormat( "#,##0" );
+		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 		String value = price == null ? dFmt.format(0) : dFmt.format(price);
 		
 		return guiPriceMsg( value );
@@ -165,7 +165,7 @@ public class PrisonCoreGuiMessages {
 	
 	protected String guiConfirmMsg( String prestigeName, double value ) {
 		
-		DecimalFormat dFmt = new DecimalFormat( "#,##0.0" );
+		DecimalFormat dFmt = Prison.get().getDecimalFormat( "#,##0.0" );
 		String valueStr = dFmt.format(value);
 		
 		return Prison.get().getLocaleManager()
@@ -176,7 +176,7 @@ public class PrisonCoreGuiMessages {
 	
 	
 	protected String guiDelayMsg( int value ) {
-		DecimalFormat dFmt = new DecimalFormat( "#,##0" );
+		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 		String valueStr = dFmt.format(value);
 		
 		return guiDelayMsg( valueStr );
@@ -191,7 +191,7 @@ public class PrisonCoreGuiMessages {
 	
 	protected String guiMultiplierMsg( double value ) {
 		
-		DecimalFormat dFmt = new DecimalFormat( "#,##0.0" );
+		DecimalFormat dFmt = Prison.get().getDecimalFormat( "#,##0.0" );
 		String valueStr = dFmt.format(value);
 		
 		return guiMultiplierMsg( valueStr );
