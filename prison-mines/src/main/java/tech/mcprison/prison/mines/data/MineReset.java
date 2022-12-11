@@ -197,7 +197,7 @@ public abstract class MineReset
 //		
 //		// Tie to the command stats mode so it logs it if stats are enabled:
 //		if ( PrisonMines.getInstance().getMineManager().isMineStats() ) {
-//			DecimalFormat dFmt = new DecimalFormat("#,##0");
+//			DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 //			Output.get().logInfo("&cMine reset: &7" + getTag() + 
 //					"&c  Blocks: &7" + dFmt.format( getBounds().getTotalBlockCount() ) + 
 //					statsMessage() );
@@ -340,8 +340,8 @@ public abstract class MineReset
     
     public String statsMessage() {
     	StringBuilder sb = new StringBuilder();
-    	DecimalFormat dFmt = new DecimalFormat("#,##0.000");
-    	DecimalFormat iFmt = new DecimalFormat("#,##0");
+    	DecimalFormat dFmt = Prison.get().getDecimalFormatDouble();
+    	DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
     	
     	sb.append( "&3 ResetTime: &7" );
     	sb.append( dFmt.format(getStatsResetTimeMS() / 1000.0d )).append( " s " );
@@ -819,7 +819,7 @@ public abstract class MineReset
 ////                // Tie to the command stats mode so it logs it if stats are enabled:
 ////                if ( PrisonMines.getInstance().getMineManager().isMineStats() || 
 ////                		getCurrentJob().getResetActions().contains( MineResetActions.DETAILS ) ) {
-////                	DecimalFormat dFmt = new DecimalFormat("#,##0");
+////                	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 ////                	Output.get().logInfo("&cMine reset: &7" + getTag() + 
 ////                			"&c  Blocks: &7" + dFmt.format( getBounds().getTotalBlockCount() ) + 
 ////                			statsMessage() );
@@ -950,7 +950,7 @@ public abstract class MineReset
         // Tie to the command stats mode so it logs it if stats are enabled:
         if ( PrisonMines.getInstance().getMineManager().isMineStats() || 
         		getCurrentJob().getResetActions().contains( MineResetActions.DETAILS ) ) {
-        	DecimalFormat dFmt = new DecimalFormat("#,##0");
+        	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
         	Output.get().logInfo("&cMine reset: &7" + getTag() + 
         			"&c  Blocks: &7" + dFmt.format( getBounds().getTotalBlockCount() ) + 
         			statsMessage() );

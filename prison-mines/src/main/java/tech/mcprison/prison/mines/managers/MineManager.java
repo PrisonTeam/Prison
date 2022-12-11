@@ -791,9 +791,9 @@ public class MineManager
 			if ( mine != null || 
 					placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.PLAYERBLOCKS ) || 
 					placeHolderKey.getPlaceholder().hasFlag( PlaceholderFlags.MINEPLAYERS )) {
-				DecimalFormat dFmt = new DecimalFormat("#,##0.00");
-				DecimalFormat iFmt = new DecimalFormat("#,##0");
-//				DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+				DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+				DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
+//				DecimalFormat fFmt = Prison.get().getDecimalForma("#,##0.00");
 				
 				identifier.setFoundAMatch( true );
 				

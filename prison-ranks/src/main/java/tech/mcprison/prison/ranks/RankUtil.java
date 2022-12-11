@@ -900,8 +900,8 @@ public class RankUtil
     private void logTransactionResults( RankupResults results )
 	{
     	StringBuilder sb = new StringBuilder();
-    	DecimalFormat dFmt = new DecimalFormat("#,##0.00");
-    	DecimalFormat iFmt = new DecimalFormat("#,##0");
+    	DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+    	DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
 
     	Rank oRank = results.getOriginalRank();
     	PlayerRank opRank = results.getPlayerRankOriginal();
@@ -966,7 +966,7 @@ public class RankUtil
     					
     				case accuracy_out_of_range:
     					sb.append( "=" );
-    					DecimalFormat sFmt = new DecimalFormat("#,##0.00000000");
+    					DecimalFormat sFmt = Prison.get().getDecimalFormat("#,##0.00000000");
     					sb.append( sFmt.format( results.getRankupCostFinalAccuracy() ) );
     					
     					break;

@@ -3,6 +3,7 @@ package tech.mcprison.prison.mines.data;
 import java.text.DecimalFormat;
 import java.util.List;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.util.Location;
@@ -110,8 +111,8 @@ public class OnStartupRefreshBlockBreakCountSyncTask
 			mine.setAirCountTimestamp( System.currentTimeMillis() );
 			
 			if ( Output.get().isDebug() ) {
-				DecimalFormat dFmt = new DecimalFormat("#,##0.000");
-				DecimalFormat iFmt = new DecimalFormat("#,##0");
+				DecimalFormat dFmt = Prison.get().getDecimalFormatDouble();
+				DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
 				String message = String.format( 
 						"MineReset startup air-count: Mine: %-6s  " +
 								"   blocks: %10s  pages: %s  elapsed %s ms", 

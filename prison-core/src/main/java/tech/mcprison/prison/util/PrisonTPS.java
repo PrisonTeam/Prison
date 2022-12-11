@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.tasks.PrisonRunnable;
 import tech.mcprison.prison.tasks.PrisonTaskSubmitter;
 
@@ -200,7 +201,7 @@ public class PrisonTPS
 	
 	private transient long lastPollNano = System.nanoTime();
 	
-	private final DecimalFormat tpsFmt = new DecimalFormat("#,##0.00");
+	private final DecimalFormat tpsFmt = Prison.get().getDecimalFormat("#,##0.00");
 	
 	public static final Object tpsLock = new Object();
 	

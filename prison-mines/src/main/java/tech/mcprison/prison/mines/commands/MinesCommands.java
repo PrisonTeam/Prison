@@ -893,8 +893,8 @@ public class MinesCommands
     
 	private ChatDisplay mineInfoDetails( CommandSender sender, boolean isMineStats, Mine m, CommandPagedData cmdPageData )
 	{
-		DecimalFormat dFmt = new DecimalFormat("#,##0");
-        DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
+        DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
         
         ChatDisplay chatDisplay = new ChatDisplay("&bMine: &3" + m.getName());
 
@@ -1467,8 +1467,8 @@ public class MinesCommands
     			new BulletedListComponent.BulletedListBuilder();
     	
     	    	
-    	DecimalFormat dFmt = new DecimalFormat("#,##0");
-    	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+    	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
+    	DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
     	
     	int count = 0;
     	 
@@ -1963,7 +1963,7 @@ public class MinesCommands
     			
     			pMines.getMineManager().saveMine( m );
     			
-    			DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+    			DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
     			// User's message:
     			if ( m.isZeroBlockResetDisabled() ) {
     				Output.get().sendInfo( sender, "&7Mine &b%s Zero Block Reset Delay: &cDISABLED", 
@@ -2052,8 +2052,8 @@ public class MinesCommands
         						m.getBounds().getTotalBlockCount() * 
 									m.getResetThresholdPercent() / 100.0d;
         	
-            DecimalFormat dFmt = new DecimalFormat("#,##0");
-            DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+            DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
+            DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
             
         	// User's message:
         	String message = String.format( "&7The Reset Threshold Percent for mine &b%s&7 was set to &b%s&7, " +
@@ -2104,7 +2104,7 @@ public class MinesCommands
     				
     				if ( noteRadius < 1 ) {
     					noteRadius = MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS;
-    					DecimalFormat dFmt = new DecimalFormat("#,##0");
+    					DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
     					Output.get().sendWarn( sender, "&7Invalid radius value. " +
     							"Must be an positive non-zero integer. Using the default value: &b%s &7[&b%s&7]",
     							dFmt.format(MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS), radius );
@@ -2166,7 +2166,7 @@ public class MinesCommands
 			pMines.getMineManager().saveMine( m );
 			success = true;
 			
-			DecimalFormat dFmt = new DecimalFormat("#,##0");
+			DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 			// message: notification mode changed
 			Output.get().sendInfo( sender, "&7Notification mode was changed for &b%s&7: &b%s %s",
 					mineName, m.getNotificationMode().name(), 
@@ -2535,7 +2535,7 @@ public class MinesCommands
             return;
         }
         
-        DecimalFormat dFmt = new DecimalFormat("#,##0");
+        DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
         Bounds selectedBounds = selection.asBounds();
         
         if ( Output.get().isDebug() ) {
@@ -3338,7 +3338,7 @@ public class MinesCommands
     	
     	if ( lookingAtMine != null ) {
     		double distance = lookingAtMine.getBounds().getDistance3d( player.getLocation() );
-    		DecimalFormat dFmt = new DecimalFormat("#,##0.0");
+    		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.0");
     		sender.sendMessage( String.format( "&3You are looking at mine &7%s &3which is &7%s &3blocks away.", 
     					lookingAtMine.getTag(), dFmt.format( distance ) ) );
     	}
@@ -3446,7 +3446,7 @@ public class MinesCommands
 		BulletedListComponent.BulletedListBuilder builder =
         					new BulletedListComponent.BulletedListBuilder();
 
-        DecimalFormat dFmt = new DecimalFormat("0.00000");
+        DecimalFormat dFmt = Prison.get().getDecimalFormat("0.00000");
         
         int rowNumber = 0;
         for (MineBlockEvent blockEvent : m.getBlockEvents()) {
@@ -3868,7 +3868,7 @@ public class MinesCommands
         // Save the mine:
         pMines.getMineManager().saveMine( m );
         
-        DecimalFormat dFmt = new DecimalFormat("0.00000");
+        DecimalFormat dFmt = Prison.get().getDecimalFormat("0.00000");
         Output.get().sendInfo(sender, "&7BlockEvent percentage &b%s&7 was changed for mine '&b%s&7'. " +
         		"Was &b%s&7. Command '&b%s&7'", 
         		dFmt.format( chance ), m.getTag(), 
@@ -4412,7 +4412,7 @@ public class MinesCommands
                 display.addText("&8Select a block from this mine by using the block's row number:");
                 display.addText("&8  " + commandBlockEvent + " [rowBlockName]");
                 
-                DecimalFormat dFmt = new DecimalFormat("0.00000");
+                DecimalFormat dFmt = Prison.get().getDecimalFormat("0.00000");
                 
         		// Display a list of blocks for the mine:
         		int blockRow = 0;
@@ -4574,7 +4574,7 @@ public class MinesCommands
                 display.addText("&8Select a block filter from this mine by using the block's row number:");
                 display.addText("&8  " + commandBlockEvent + " [rowBlockName]");
                 
-//                DecimalFormat dFmt = new DecimalFormat("0.00000");
+//                DecimalFormat dFmt = Prison.get().getDecimalFormat("0.00000");
                 
         		// Display a list of blocks for the mine:
         		int blockRow = 0;

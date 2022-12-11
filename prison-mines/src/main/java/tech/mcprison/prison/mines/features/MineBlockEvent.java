@@ -151,7 +151,7 @@ public class MineBlockEvent {
 		}
 		nFmt.format( getChance() );
 		
-//		DecimalFormat dFmt = new DecimalFormat("0.00000");
+//		DecimalFormat dFmt = Prison.get().getDecimalFormat("0.00000");
 		
 		return nFmt.format( getChance() ) + "|" + 
 				(getPermission() == null || getPermission().trim().length() == 0 ? 

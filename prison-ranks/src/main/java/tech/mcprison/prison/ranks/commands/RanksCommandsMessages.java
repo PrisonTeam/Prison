@@ -2,6 +2,7 @@ package tech.mcprison.prison.ranks.commands;
 
 import java.text.DecimalFormat;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.LogLevel;
@@ -138,7 +139,7 @@ public class RanksCommandsMessages
 	
 	protected void autoConfigLadderRankCostMultiplierInfoMsg( CommandSender sender,
 			double rankCostMultiplier ) {
-		DecimalFormat dFmt = new DecimalFormat("0.0000");
+		DecimalFormat dFmt = Prison.get().getDecimalFormat("0.0000");
 		
 		PrisonRanks.getInstance().getRanksMessages()
 		.getLocalizable( "ranks_rankCommands__auto_config_ladder_rank_cost_multiplier_info" )
@@ -245,7 +246,7 @@ public class RanksCommandsMessages
 	
 	protected String ranksListLadderCostMultiplierMsg( double multiplier ) {
 		
-		DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
+		DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.0000");
 		
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_list_ladder_cost_multplier" )
@@ -369,7 +370,7 @@ public class RanksCommandsMessages
 	}
 	
 	protected String ranksInfoCostMsg( double cost ) {
-		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_info_cost" )
 				.withReplacements( 
@@ -386,7 +387,7 @@ public class RanksCommandsMessages
 	}
 	
 	protected String ranksInfoPlayersWithRankMsg( double playerCount ) {
-		DecimalFormat dFmt = new DecimalFormat("#,##0");
+		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 		return PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__ranks_info_players_with_rank" )
 				.withReplacements( 
@@ -416,7 +417,7 @@ public class RanksCommandsMessages
 	
 	protected void rankSetCostSuccessfulMsg( CommandSender sender, 
 			String rankName, double cost ) {
-		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankCommands__rank_set_cost_success" )
 				.withReplacements( 
