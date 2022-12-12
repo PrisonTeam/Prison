@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.13e 2022-12-11
+# 3.3.0-alpha.13f 2022-12-12
+
+
+* **Set version to v3.3.0-alpha.13f - 2022-12-12**
 
 
 * **Setup a static version of DecimalFormat which is needed to be used within all static functions.**  If the DecimalFormatSymbols variable is set by a static function, then it will be replaced at the first chance by a non-static call.  The static usage, if not set first by the non--static calls, cannot access the config.yml settings.  This really is not a problem, since it would only be through unit tests when the gradle build is being processed that will need the alternative settings.
