@@ -456,8 +456,11 @@ public class SpigotItemStack
 				if ( sbE.length() > 0 ) {
 					sbE.append(",");
 				}
+				String name = key.toString();
+				name = name.substring(name.indexOf(" ") + 1, name.length() - 1);
+				
 				Integer level = meta.getEnchants().get(key);
-				sbE.append( key );
+				sbE.append( name );
 				sbE.append(":");
 				sbE.append( level );
 			}

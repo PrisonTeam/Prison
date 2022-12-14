@@ -12,6 +12,8 @@ These build logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.13f 2022-12-14
 
+* **cleaned up the enchantment names**
+
 
 * **Enabled more detailed logging when block break events are being ignored by the auto features.**
 Mostly related to either the player not holding a pickaxe, or the block has already been broke, or exploded.
