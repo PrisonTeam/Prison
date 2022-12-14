@@ -255,6 +255,8 @@ public class AutoManagerBlockBreakEvents
     				
     				e.setCancelled( true );
     			}
+    			
+    			debugInfo.append( "(doAction failed validation) " );
     		}
     		
     		else if ( pmEvent.getBbPriority() == BlockBreakPriority.MONITOR ) {

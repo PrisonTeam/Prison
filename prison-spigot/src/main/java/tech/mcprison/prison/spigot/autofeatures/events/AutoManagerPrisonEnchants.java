@@ -268,6 +268,8 @@ public class AutoManagerPrisonEnchants
     				
     				e.setCancelled( true );
     			}
+    			
+    			debugInfo.append( "(doAction failed validation) " );
     		}
 
     		

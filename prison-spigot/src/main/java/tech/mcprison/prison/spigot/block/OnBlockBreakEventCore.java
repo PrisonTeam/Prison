@@ -299,6 +299,12 @@ public abstract class OnBlockBreakEventCore
 		
 		debugInfo.append( sBlockHit.getLocation().toWorldCoordinates() ).append( " " );
 		
+		
+		SpigotItemStack itemInHand = pmEvent.getItemInHand();
+		debugInfo.append( "itemInHand=[" +
+					( itemInHand == null ? "AIR" : itemInHand.getDebugInfo()) + "] ");
+		
+		
 		// Since BlastUseEvent (crazy enchant) does not identify the block that is initially 
 		// broke, an explosion for them is greater than 1.
 		boolean isExplosionEvent = pmEvent.getUnprocessedRawBlocks().size() > 
@@ -331,7 +337,16 @@ public abstract class OnBlockBreakEventCore
 			if ( targetBlock != null && 
 					(targetBlock.isIgnoreAllBlockEvents() || 
 					 targetBlock.isExploded()) ) {
-				debugInfo.setLength( 0 );
+				
+//				debugInfo.setLength( 0 );
+				debugInfo.append( "(Primary TargetBlock forcedFastFail validateEvent [ ");
+				if ( targetBlock.isIgnoreAllBlockEvents() ) {
+					debugInfo.append( "ignoreAllBlockEvents " );
+				}
+				if ( targetBlock.isExploded() ) {
+					debugInfo.append( "alreadyExploded" );
+				}
+				debugInfo.append( "]) " );
 				
 				pmEvent.setForceIfAirBlock( false );
 				
@@ -620,7 +635,9 @@ public abstract class OnBlockBreakEventCore
 				pmEvent.setCancelOriginalEvent( true );
 
 				// Ignore event and clear debugInfo:
-				debugInfo.setLength( 0 );
+//				debugInfo.setLength( 0 );
+				
+				debugInfo.append( "(TargetBlock forcedFastFail validateEvent [BlockAlreadyMined]) " );
 				
 				return results;
 			}

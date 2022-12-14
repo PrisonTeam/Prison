@@ -268,6 +268,8 @@ public class AutoManagerCrazyEnchants
     				
     				e.setCancelled( true );
     			}
+    			
+    			debugInfo.append( "(doAction failed validation) " );
     		}
 
     		

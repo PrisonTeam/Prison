@@ -259,6 +259,8 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 					
 					e.setCancelled( true );
 				}
+				
+				debugInfo.append( "(doAction failed validation) " );
 			}
 			
 			

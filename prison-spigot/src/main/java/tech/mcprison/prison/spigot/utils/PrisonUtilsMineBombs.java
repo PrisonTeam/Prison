@@ -131,7 +131,12 @@ public class PrisonUtilsMineBombs
 				
 				int radius = 3;
 				
-				radius = Integer.parseInt( radiusSize );
+				try {
+					radius = Integer.parseInt( radiusSize );
+				} catch (NumberFormatException e) {
+					Output.get().logInfo( "Prison utils bomb: invalid value for radius [%s] defaulting to %d", 
+							radiusSize, radius);
+				}
 
 				MineBombs mBombs = MineBombs.getInstance();
 
