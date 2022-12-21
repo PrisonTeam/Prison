@@ -10,7 +10,12 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.13f 2022-12-14
+# 3.3.0-alpha.13f 2022-12-20
+
+
+* **Chinese Translation Added!**
+Thanks to M1032 on github #240, prison now has full Simplified Chinese translations!  To use this translation, set the language code to zh-CH.
+
 
 * **cleaned up the enchantment names**
 
