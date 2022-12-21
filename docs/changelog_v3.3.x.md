@@ -10,7 +10,11 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.13f 2022-12-20
+# 3.3.0-alpha.13f 2022-12-21
+
+
+* **Sellall sell can now be ran from a command or the console by specifying the player's name.**
+The player must be online for this work.  An offline player cannot have their inventory modified or sold.
 
 
 * **Chinese Translation Added!**

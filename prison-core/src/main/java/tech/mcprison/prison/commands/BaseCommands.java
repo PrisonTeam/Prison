@@ -71,6 +71,25 @@ public abstract class BaseCommands
 		return result;
 	}
 	
+	public Player getOnlinePlayer( CommandSender sender, String playerName ) {
+		Player result = null;
+		
+		playerName = playerName != null && !playerName.trim().isEmpty() ? 
+				playerName : sender != null ? sender.getName() : null;
+		
+		//Output.get().logInfo("RanksCommands.getPlayer :: playerName = " + playerName );
+		
+		if ( playerName != null ) {
+			Optional<Player> opt = Prison.get().getPlatform().getPlayer( playerName );
+
+			if ( opt.isPresent() ) {
+				result = opt.get();
+			}
+			
+		}
+		return result;
+	}
+	
 	
 //	public double getPlayerBalance( Player player ) {
 //		
