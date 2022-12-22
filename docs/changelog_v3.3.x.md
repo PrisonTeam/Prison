@@ -12,6 +12,9 @@ These build logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.13f 2022-12-22
 
+* **Enhancements to the player's gui for ranks and mines so it's less hard coded and now with more options.**
+Parts of the GuiConfig.yml file will need to be removed so the new content can be generated the next time the gui configs are loaded.
+
 
 * **Eliminate the stack trace because it makes it appear as if there is a non-handled error in prison.  The error is already being shown in more detail.**
 

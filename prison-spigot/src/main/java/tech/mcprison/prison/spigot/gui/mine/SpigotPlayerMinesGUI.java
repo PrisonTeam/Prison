@@ -96,10 +96,11 @@ public class SpigotPlayerMinesGUI
         guiConfig = guiConfigClass.getFileGuiConfig();
         String permission = Text.translateAmpColorCodes(permissionWarpPlugin);
 
-        // Create GUI.
+        // Create GUI but use the gui title as defined within the ConfigGui.yml file:
         PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), guiConfig.getString("Options.Titles.PlayerMinesGUI"));
 
-        
+
+        // Load the generic mine LORE that would be displayed first:
         List<String> configCustomLore = guiConfig.getStringList("EditableLore.Mines");
         
         
@@ -111,6 +112,7 @@ public class SpigotPlayerMinesGUI
             ButtonLore minesLore = new ButtonLore();
             
 
+            // If a mine has custom LORE, then try to load it:
         	String mineLoreKey = "EditableLore.Mine." + m.getName();
         	List<String> mineLore = new ArrayList<>( configCustomLore );
         	List<String> mineLore2 = guiConfig.getStringList( mineLoreKey );
@@ -126,8 +128,8 @@ public class SpigotPlayerMinesGUI
             // Get Mine Name.
             String mineName = m.getName();
 
-            // Add mineName lore for TP.
-            minesLore.addLineLoreAction( "&3" + mineName );
+//            // Add mineName lore for TP.
+//            minesLore.addLineLoreAction( "&3" + mineName );
 
             
             boolean hasMineAccess = m.hasMiningAccess(spigotPlayer);
@@ -135,6 +137,8 @@ public class SpigotPlayerMinesGUI
             boolean hasPermMine = p.hasPermission( permMineAccess );
             String permAccess = permission.substring(0, permission.length() - 1);
             boolean hasPerm = p.hasPermission( permAccess );
+            
+            String lockStatus = statusLockedMine;
 
             // If the player has permission to access the mine, then see if there is a custom
             // block set for the mine... otherwise it will use XMaterial.COAL_ORE:
@@ -179,15 +183,17 @@ public class SpigotPlayerMinesGUI
             		}
             	}
 
+            	lockStatus = statusUnlockedMine;
+            	
             	// material = ( mineMaterial == null ? Material.COAL_ORE : mineMaterial);
-                minesLore.addLineLoreDescription( statusUnlockedMine );
-                minesLore.addLineLoreAction( clickToTeleport );
+//                minesLore.addLineLoreDescription( statusUnlockedMine );
+//                minesLore.addLineLoreAction( clickToTeleport );
             } 
             else {
             	xMat = XMaterial.REDSTONE_BLOCK;
             	
 //                material = XMaterial.REDSTONE_BLOCK.parseMaterial();
-                minesLore.addLineLoreDescription( statusLockedMine );
+//                minesLore.addLineLoreDescription( statusLockedMine );
             }
 
             // Get mine Tag, but make sure it is valid and the mine's name is not null:
@@ -213,6 +219,18 @@ public class SpigotPlayerMinesGUI
             	stringValue = stringValue.replace( "{mineVolume}", iFmt.format( volume ));
             	stringValue = stringValue.replace( "{mineRemaining}", iFmt.format( remaining ));
             	stringValue = stringValue.replace( "{mineRemainingPercent}", iFmt.format( m.getPercentRemainingBlockCount() ));
+            	
+            	stringValue = stringValue.replace( "{clickToTeleport}", clickToTeleport );
+            	stringValue = stringValue.replace( "{lockStatus}", lockStatus );
+
+            	stringValue = stringValue.replace( "{playerCount}", iFmt.format( m.getPlayerCount()) );
+            	
+            	if ( m.getRank() == null ) {
+            		stringValue = stringValue.replace( "{linkedRank}", "Not linked" );
+            	}
+            	else {
+            		stringValue = stringValue.replace( "{linkedRank}", m.getRankString() );
+            	}
             	
             	
 				minesLore.addLineLoreAction( stringValue );

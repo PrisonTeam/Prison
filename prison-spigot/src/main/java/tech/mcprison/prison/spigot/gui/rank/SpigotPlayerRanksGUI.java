@@ -201,6 +201,20 @@ public class SpigotPlayerRanksGUI
             double rankPrice = calPRank.getRankCost();
             double rankMultiplier = calPRank.getRankMultiplier();
 
+            StringBuilder sbMines = new StringBuilder();
+            if ( rank.getMines() != null && rank.getMines().size() > 0 ) {
+            	
+            	for (ModuleElement mine : rank.getMines() ) {
+            		if ( sbMines.length() > 0 ) {
+            			sbMines.append( " " );
+            		}
+            		sbMines.append( mine.getTag() );
+            	}
+            }
+            else {
+            	sbMines.append( "&3None" );
+            }
+
             for ( String stringValue : rankLore ) {
             	
             	String currency = (rank.getCurrency() == null || 
@@ -218,14 +232,6 @@ public class SpigotPlayerRanksGUI
                 stringValue = stringValue.replace("{rankMultiplier}", mFmt.format( rankMultiplier ));
                 stringValue = stringValue.replace("{ladderName}", rank.getLadder().getName());
                 
-                StringBuilder sbMines = new StringBuilder();
-                for ( ModuleElement mine : rank.getMines() )
-				{
-                	if ( sbMines.length() > 0 ) {
-                		sbMines.append( ", " );
-                	}
-					sbMines.append( mine.getName() );
-				}
                 stringValue = stringValue.replace("{linkedMines}", sbMines.toString() );
                 
                 ranksLore.addLineLoreAction(stringValue);
