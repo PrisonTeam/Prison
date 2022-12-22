@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.13f 2022-12-21
+# 3.3.0-alpha.13f 2022-12-22
+
+
+* **Eliminate the stack trace because it makes it appear as if there is a non-handled error in prison.  The error is already being shown in more detail.**
 
 
 * **Sellall sell can now be ran from a command or the console by specifying the player's name.**

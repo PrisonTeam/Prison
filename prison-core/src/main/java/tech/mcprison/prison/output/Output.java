@@ -260,14 +260,15 @@ public class Output
 				String errorMessage = "Error with Java format usage (eg %s): " +
 						" LogLevel: " + level.name() + 
 						" message: [" + message + "] params: [" + sb.toString() + "]" +
-						" error: [" + e.getMessage() + "]";
+						" error: [" + e.getMessage() + "] " +
+						" Escape with backslash or double percent [\\b \\n \\f \\r \\t \\\\ %%]";
 				
 				Prison.get().getPlatform().logCore(
 						prefixTemplatePrison + " " + 
 						getLogColorCode(LogLevel.ERROR) +
 						errorMessage );
 
-				e.printStackTrace();
+				//e.printStackTrace();
     		}
     	}
     }
