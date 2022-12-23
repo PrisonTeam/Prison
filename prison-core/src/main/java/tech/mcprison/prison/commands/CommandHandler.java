@@ -20,6 +20,7 @@ package tech.mcprison.prison.commands;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -747,7 +748,94 @@ public class CommandHandler {
     	}
 		return results;
 	}
+    
+    /***
+     * <p>
+     * This function is strictly for non-ops, and if a player has a given perm that
+     * is specified in the config file, then it will lock that player out of that
+     * command.  This is intended to force overrides on commands for the commands 
+     * that do not have their own perms.
+     * </p>
+     * @return
+     */
+    private boolean hasCommandAccess( CommandSender sender, RegisteredCommand rootCommand, 
+    		String label, String[] args ) {
+    	boolean results = true;
+    	
+    	if ( !sender.isOp() ) {
+    		
+    		// Must first check to see if the command is setup for excludes, and if 
+    		// not then exit with a value of true:
+    		String configKey = "prisonCommandHandler.exclude-non-ops." + label.replace( " ", "." );
+    		List<?> excludePerms = Prison.get().getPlatform().getConfigStringArray( configKey );
+    		
+    		if ( excludePerms != null && excludePerms.size() > 0 ) {
 
+    			// first check the command perms first:
+    			for ( String perm : rootCommand.getPermissions() ) {
+    				
+    				if ( sender.hasPermission( perm ) ) {
+    					results = false;
+    					break;
+    				}
+    			}
+    			
+    			if ( results ) {
+    				
+    				// first check the command altPerms next:
+    				for ( String perm : rootCommand.getPermissions() ) {
+    					
+    					if ( sender.hasPermission( perm ) ) {
+    						results = false;
+    						break;
+    					}
+    				}
+    			}
+    			
+    			// If results has not been set to false, then check the exclude-non-ops:
+    			if ( results ) {
+    				
+    				if ( excludePerms != null && excludePerms.size() > 0 && excludePerms.get( 0 ) instanceof String ) {
+    					
+    					for ( Object permObj : excludePerms) {
+    						if ( permObj instanceof String ) {
+    							if ( sender.hasPermission( permObj.toString() ) ) {
+    								results = false;
+    								break;
+    							}
+    						}
+    					}
+    				}
+    				
+    			}
+    		}
+    		
+
+    	}
+    	
+    	// If we get to this point, and the result is true (the player has access the
+    	// specified command so far), and there are more args, we need to next
+    	// take the args[0] and append it to the label, and then test it again.
+    	// This needs to continue until the generated command is rejected, or
+    	// it passes it's clean and the player has full access to the command(s).
+    	if ( results && args.length > 0 ) {
+    		String newSuffix = args[0];
+    		String newLabel = label + " " + newSuffix;
+    		String[] newArgs = Arrays.copyOfRange( args, 1, args.length );
+    		
+    		RegisteredCommand newSuffixCommand = rootCommand.getSuffixCommand( newSuffix );
+    		
+    		if ( newSuffixCommand != null ) {
+    			
+    			results = hasCommandAccess( sender, newSuffixCommand, 
+    					newLabel, newArgs );
+    		}
+    	}
+    	
+    	return results;
+    }
+
+    
 	public boolean onCommand(CommandSender sender, PluginCommand command, String label,
     								String[] args) {
     	
@@ -757,11 +845,17 @@ public class CommandHandler {
         			" : No root command found. " );
             return false;
         }
-
+        
         if (rootCommand.isOnlyPlayers() && !(sender instanceof Player)) {
             Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
                 .sendTo(sender, LogLevel.ERROR);
             return true;
+        }
+        
+        else if ( !hasCommandAccess( sender, rootCommand, label, args ) ) {
+        	// The player does not have access to this command.
+        	// Who cares!  Just exit and do nothing. Never log this.
+        	return true;
         }
         
         else {

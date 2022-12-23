@@ -303,6 +303,10 @@ prisonCommandHandler:
   exclude-worlds:
   - lobby
   - plotWorld
+  exclude-non-ops:
+    mines:
+      tp:
+      - prison.exclude.test
   aliases:
     mines:
       tp: 

@@ -10,7 +10,13 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.13f 2022-12-22
+# 3.3.0-alpha.13f 2022-12-23
+
+
+* **New feature: command lockout for users based upon perms set in the config.yml.**
+This is the first stage of getting this setup, where it locks out the running of a command.
+Need to lockout the help next, which is what generates the command lists.
+
 
 * **Enhancements to the player's gui for ranks and mines so it's less hard coded and now with more options.**
 Parts of the GuiConfig.yml file will need to be removed so the new content can be generated the next time the gui configs are loaded.

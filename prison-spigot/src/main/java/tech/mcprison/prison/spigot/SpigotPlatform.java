@@ -416,6 +416,28 @@ public class SpigotPlatform
     				command.getUsage(),
     				Collections.emptyList() ) {
 
+        		/**
+        		 * <p>This is the entry point where bukkit passes control over to prison for the
+        		 * commands to be executed.
+        		 * </p>
+        		 * 
+        		 * <p>This will prevent any command that a player is using from being ran in the
+        		 * the excluded worlds.  See config.yml file and the section:
+        		 * `prisonCommandHandler.exclude-worlds`
+        		 * </p>
+        		 * 
+        		 * <p>There are two types of players that run commands... The primary one is
+        		 * an online player.  Otherwise it's a CommandSender.
+        		 * </p>
+        		 * 
+        		 * <p>When the command is actually resolved and the onCommmand() is ran, the 
+        		 * first thing it checks is to ensure that the command is not within the
+        		 * `prisonCommandHander.exclude-non-ops` list of commands, and if it is, then 
+        		 * it will check all perms agains the CommandSender.  The perms it checks are 
+        		 * the perms tied to the command and the perms listed under the 
+        		 * `prisonCommandHandler.exclude-non-ops`.
+        		 * </p>
+        		 */
                 @Override 
                 public boolean execute(CommandSender sender, String commandLabel, String[] args) {
                     if (sender instanceof org.bukkit.entity.Player) {
