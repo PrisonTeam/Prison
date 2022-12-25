@@ -299,14 +299,46 @@ prison-events:
     priority: LOW
 
 
+
+# The prisonCommandHander allows you to fine tune the Prison Command Handler
+# by adding aliases for any command, prevent non-op players from using specific
+# commands, viewing the command's' help, or list the blocked commands. 
+#
+# Commands must be listed in a hierarchy format. For example the command
+# `/mines tp` must be listed under the appropreiate sections as:
+#    mines:
+#      tp:
+#
+# For the exclude-non-ops there is a global setting that will apply the
+# restriction to specified command, plus their aliases.  If set to false,
+# then each alias would have to be listed for them to be excluded.
+#
+# For each exclude-non-ops entry, you can specify the includeCmdPerms and
+# the includeCmdAltPerms, both of which defaults to true.  You would have
+# to explicity negate them to prevent them from applying.
+# For the includeCmdPerms, all perms included in the command are tested for
+# each player, and if there is a hit then the command is excluded for that player.
+# For the includeCmdAltPerms all are tested too, but no translations are
+# applied so most may not produce any hits.
+# The listed perms for each command are tested as is, with no translations.
+# If the given player has a hit on the perm, then they are excluded from 
+# being able to use the command.
+#
+# OPs, including console, are bypassed and cannot be excluded from any command.
+#
 prisonCommandHandler:
   exclude-worlds:
   - lobby
   - plotWorld
   exclude-non-ops:
-    mines:
-      tp:
-      - prison.exclude.test
+    exclude-related-aliases: true
+    commands:
+      mines:
+        tp:
+          includeCmdPerms: true
+          includeCmdAltPerms: true
+          perms:
+          - prison.exclude.test
   aliases:
     mines:
       tp: 

@@ -154,6 +154,12 @@ public class RegisteredCommand
      * @param args
      */
     void execute(CommandSender sender, String[] args) {
+    	
+    	// First ensure the player is not locked out of this command:
+    	if ( !handler.hasCommandAccess(sender, this, getLabel(), args) ) {
+    		return;
+    	}
+    	
         if (!testPermission(sender)) {
             Prison.get().getLocaleManager().getLocalizable("noPermission")
                 .sendTo(sender, LogLevel.ERROR);
@@ -304,8 +310,8 @@ public class RegisteredCommand
         return flags;
     }
 
-    public ChatDisplay getHelpMessage() {
-        return handler.getHelpHandler().getHelpMessage(this);
+    public ChatDisplay getHelpMessage( CommandSender sender ) {
+        return handler.getHelpHandler().getHelpMessage( sender, this );
     }
 
     public String getLabel() {
@@ -387,7 +393,11 @@ public class RegisteredCommand
 
     public void sendHelpMessage(CommandSender sender) {
     	
-    	getHelpMessage().send( sender );
+    	ChatDisplay chatDisp = getHelpMessage( sender );
+    	
+    	if ( chatDisp != null ) {
+    		chatDisp.send( sender );
+    	}
     }
 
     void set(Object methodInstance, Method method) {

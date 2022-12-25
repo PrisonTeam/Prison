@@ -136,7 +136,11 @@ public class CommandHandler {
         }
 
         @Override 
-        public ChatDisplay getHelpMessage(RegisteredCommand command) {
+        public ChatDisplay getHelpMessage(CommandSender sender, RegisteredCommand command) {
+        	
+        	if ( !hasCommandAccess(sender, command, command.getLabel(), new String[0] ) ) {
+        		return null;
+        	}
         	
             ChatDisplay chatDisplay = new ChatDisplay(
             		String.format( "Cmd: &7%s", 
@@ -253,24 +257,36 @@ public class CommandHandler {
 
             List<RegisteredCommand> subcommands = command.getSuffixes();
             if (subcommands.size() > 0) {
-            	chatDisplay.addText(ChatColor.DARK_AQUA + "Subcommands:");
+            	
                 // Force a sorting by use of a TreeSet. Collections.sort() would not work.
                 TreeSet<String> subCommandSet = new TreeSet<>();
                 for (RegisteredCommand scommand : subcommands) {
-                	String subCmd = scommand.getUsage();
-
-                	int subCmdSubCnt = scommand.getSuffixes().size();
-                	String subCommands = (subCmdSubCnt == 0 ? "" : 
-            							ChatColor.DARK_AQUA + "(" + subCmdSubCnt + " Subcommands)");
                 	
-                	String isAlias = scommand.isAlias() ? ChatColor.DARK_AQUA + "  Alias" : "";
+                	String sLabel = scommand.getCompleteLabel();
                 	
-                	subCommandSet.add(  
-                			String.format( "%s %s %s", subCmd, subCommands, isAlias ));
+                	if ( hasCommandAccess(sender, scommand, sLabel, new String[0] ) ) {
+                		
+                		String subCmd = scommand.getUsage();
+                		
+                		int subCmdSubCnt = scommand.getSuffixes().size();
+                		String subCommands = (subCmdSubCnt == 0 ? "" : 
+                			ChatColor.DARK_AQUA + "(" + subCmdSubCnt + " Subcommands)");
+                		
+                		String isAlias = scommand.isAlias() ? ChatColor.DARK_AQUA + "  Alias" : "";
+                		
+                		subCommandSet.add(  
+                				String.format( "%s %s %s", subCmd, subCommands, isAlias ));
+                	}
+                	
                 }
-                
-                for (String subCmd : subCommandSet) {
-                	chatDisplay.addText(subCmd);
+
+                // Only if there are entries to show, then include the header and the details
+                if ( subCommandSet.size() > 0 ) {
+                	chatDisplay.addText(ChatColor.DARK_AQUA + "Subcommands:");
+                	
+                	for (String subCmd : subCommandSet) {
+                		chatDisplay.addText(subCmd);
+                	}
                 }
             }
             
@@ -758,58 +774,25 @@ public class CommandHandler {
      * </p>
      * @return
      */
-    private boolean hasCommandAccess( CommandSender sender, RegisteredCommand rootCommand, 
+    public boolean hasCommandAccess( CommandSender sender, RegisteredCommand rootCommand, 
     		String label, String[] args ) {
     	boolean results = true;
     	
     	if ( !sender.isOp() ) {
     		
-    		// Must first check to see if the command is setup for excludes, and if 
-    		// not then exit with a value of true:
-    		String configKey = "prisonCommandHandler.exclude-non-ops." + label.replace( " ", "." );
-    		List<?> excludePerms = Prison.get().getPlatform().getConfigStringArray( configKey );
+        	String exRAKey = "prisonCommandHandler.exclude-non-ops.exclude-related-aliases";
+        	boolean excludeRelatedAliases = getConfigBoolean( exRAKey );
+        			
+        	String sLabelAlias = !excludeRelatedAliases || rootCommand.getParentOfAlias() == null ? 
+        			null : rootCommand.getParentOfAlias().getCompleteLabel();
+        	
+    		    		
+    		results = commandAccessPermChecks(sender, rootCommand, label, results);
     		
-    		if ( excludePerms != null && excludePerms.size() > 0 ) {
+    		if ( results && sLabelAlias != null ) {
 
-    			// first check the command perms first:
-    			for ( String perm : rootCommand.getPermissions() ) {
-    				
-    				if ( sender.hasPermission( perm ) ) {
-    					results = false;
-    					break;
-    				}
-    			}
-    			
-    			if ( results ) {
-    				
-    				// first check the command altPerms next:
-    				for ( String perm : rootCommand.getPermissions() ) {
-    					
-    					if ( sender.hasPermission( perm ) ) {
-    						results = false;
-    						break;
-    					}
-    				}
-    			}
-    			
-    			// If results has not been set to false, then check the exclude-non-ops:
-    			if ( results ) {
-    				
-    				if ( excludePerms != null && excludePerms.size() > 0 && excludePerms.get( 0 ) instanceof String ) {
-    					
-    					for ( Object permObj : excludePerms) {
-    						if ( permObj instanceof String ) {
-    							if ( sender.hasPermission( permObj.toString() ) ) {
-    								results = false;
-    								break;
-    							}
-    						}
-    					}
-    				}
-    				
-    			}
+    			results = commandAccessPermChecks(sender, rootCommand.getParentOfAlias(), sLabelAlias, results);
     		}
-    		
 
     	}
     	
@@ -835,6 +818,68 @@ public class CommandHandler {
     	return results;
     }
 
+	private boolean commandAccessPermChecks(CommandSender sender, RegisteredCommand rootCommand, String label,
+			boolean results) {
+		// Must first check to see if the command is setup for excludes, and if 
+		// not then exit with a value of true:
+		String configKey = "prisonCommandHandler.exclude-non-ops.commands" + 
+					label.replace( " ", "." );
+		List<?> excludePerms = getConfigStringArray( configKey + ".perms" );
+		boolean includeCommandPerms = getConfigBoolean( configKey + ".includeCmdPerms" );
+		boolean includeCommandAltPerms = getConfigBoolean( configKey + ".includeCmdAltPerms" );
+		
+		if ( excludePerms != null && excludePerms.size() > 0 ) {
+
+			// first check the command perms first:
+			if ( includeCommandPerms ) {
+				
+				for ( String perm : rootCommand.getPermissions() ) {
+					
+					if ( sender.hasPermission( perm ) ) {
+						results = false;
+						break;
+					}
+				}
+			}
+			
+			if ( results && includeCommandAltPerms ) {
+				
+				// first check the command altPerms next:
+				for ( String perm : rootCommand.getPermissions() ) {
+					
+					if ( sender.hasPermission( perm ) ) {
+						results = false;
+						break;
+					}
+				}
+			}
+			
+			// If results has not been set to false, then check the exclude-non-ops:
+			if ( results ) {
+				
+				if ( excludePerms != null && excludePerms.size() > 0 && excludePerms.get( 0 ) instanceof String ) {
+					
+					for ( Object permObj : excludePerms) {
+						if ( permObj instanceof String ) {
+							if ( sender.hasPermission( permObj.toString() ) ) {
+								results = false;
+								break;
+							}
+						}
+					}
+				}
+				
+			}
+		}
+		return results;
+	}
+
+    private boolean getConfigBoolean( String configKey ) {
+    	return Prison.get().getPlatform().getConfigBooleanFalse( configKey );
+    }
+    private List<?> getConfigStringArray( String configKey ) {
+    	return Prison.get().getPlatform().getConfigStringArray( configKey );
+    }
     
 	public boolean onCommand(CommandSender sender, PluginCommand command, String label,
     								String[] args) {

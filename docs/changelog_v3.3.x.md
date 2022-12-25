@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13f 2022-12-23
 
 
+* **New Feature: command lockout:** expanded to get this to work for commands, help listings, and aliases. There is now a setting where if enabled, it will expand the lockout from a command to all aliases of that command.  Also on each command, it will will allow enabling (enabled by default) if either the command parms or parmAlts are used to exclude a player from a command.
+
+
 * **New feature: command lockout for users based upon perms set in the config.yml.**
 This is the first stage of getting this setup, where it locks out the running of a command.
 Need to lockout the help next, which is what generates the command lists.

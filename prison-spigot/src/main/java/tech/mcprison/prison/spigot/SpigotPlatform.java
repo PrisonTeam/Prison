@@ -432,10 +432,10 @@ public class SpigotPlatform
         		 * 
         		 * <p>When the command is actually resolved and the onCommmand() is ran, the 
         		 * first thing it checks is to ensure that the command is not within the
-        		 * `prisonCommandHander.exclude-non-ops` list of commands, and if it is, then 
+        		 * `prisonCommandHander.exclude-non-ops.commands` list of commands, and if it is, then 
         		 * it will check all perms agains the CommandSender.  The perms it checks are 
         		 * the perms tied to the command and the perms listed under the 
-        		 * `prisonCommandHandler.exclude-non-ops`.
+        		 * `prisonCommandHandler.exclude-non-ops.commands`.
         		 * </p>
         		 */
                 @Override 

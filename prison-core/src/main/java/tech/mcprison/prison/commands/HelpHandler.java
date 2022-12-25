@@ -18,11 +18,12 @@
 
 package tech.mcprison.prison.commands;
 
+import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.output.ChatDisplay;
 
 public interface HelpHandler {
 
-    public ChatDisplay getHelpMessage(RegisteredCommand command);
+    public ChatDisplay getHelpMessage(CommandSender sender, RegisteredCommand command);
 
     public String getUsageNoParameters(RegisteredCommand command);
     
