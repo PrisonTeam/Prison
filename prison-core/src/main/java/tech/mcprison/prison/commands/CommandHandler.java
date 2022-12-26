@@ -776,7 +776,28 @@ public class CommandHandler {
      */
     public boolean hasCommandAccess( CommandSender sender, RegisteredCommand rootCommand, 
     		String label, String[] args ) {
-    	boolean results = true;
+
+    	CommandAccessResults results = new CommandAccessResults( sender );
+    	
+    	hasCommandAccess( sender, rootCommand, label, args, results );
+    	
+    	if ( results.isAccess() ) {
+    		results.setAccessPermitted();
+    	}
+    	
+    	if ( !results.isAccess() ) {
+    		// Debug logging if prison is in debug mode:
+    		results.debugAccess();
+    	}
+    	
+    	return results.isAccess();
+    }
+    
+    private void hasCommandAccess( CommandSender sender, RegisteredCommand rootCommand, 
+    			String label, String[] args,
+    			CommandAccessResults results ) {
+    		
+//    	boolean results = true;
     	
     	if ( !sender.isOp() ) {
     		
@@ -787,11 +808,11 @@ public class CommandHandler {
         			null : rootCommand.getParentOfAlias().getCompleteLabel();
         	
     		    		
-    		results = commandAccessPermChecks(sender, rootCommand, label, results);
+    		commandAccessPermChecks( sender, rootCommand, label, results );
     		
-    		if ( results && sLabelAlias != null ) {
+    		if ( results.isAccess() && sLabelAlias != null ) {
 
-    			results = commandAccessPermChecks(sender, rootCommand.getParentOfAlias(), sLabelAlias, results);
+    			commandAccessPermChecks( sender, rootCommand.getParentOfAlias(), sLabelAlias, results );
     		}
 
     	}
@@ -801,7 +822,7 @@ public class CommandHandler {
     	// take the args[0] and append it to the label, and then test it again.
     	// This needs to continue until the generated command is rejected, or
     	// it passes it's clean and the player has full access to the command(s).
-    	if ( results && args.length > 0 ) {
+    	if ( results.isAccess() && args.length > 0 ) {
     		String newSuffix = args[0];
     		String newLabel = label + " " + newSuffix;
     		String[] newArgs = Arrays.copyOfRange( args, 1, args.length );
@@ -810,20 +831,21 @@ public class CommandHandler {
     		
     		if ( newSuffixCommand != null ) {
     			
-    			results = hasCommandAccess( sender, newSuffixCommand, 
-    					newLabel, newArgs );
+    			hasCommandAccess( sender, newSuffixCommand, 
+    					newLabel, newArgs, results );
     		}
     	}
     	
-    	return results;
     }
 
-	private boolean commandAccessPermChecks(CommandSender sender, RegisteredCommand rootCommand, String label,
-			boolean results) {
+	private void commandAccessPermChecks(CommandSender sender, RegisteredCommand rootCommand, String label,
+			CommandAccessResults results) {
+		
 		// Must first check to see if the command is setup for excludes, and if 
 		// not then exit with a value of true:
-		String configKey = "prisonCommandHandler.exclude-non-ops.commands" + 
+		String configKey = "prisonCommandHandler.exclude-non-ops.commands." + 
 					label.replace( " ", "." );
+		
 		List<?> excludePerms = getConfigStringArray( configKey + ".perms" );
 		boolean includeCommandPerms = getConfigBoolean( configKey + ".includeCmdPerms" );
 		boolean includeCommandAltPerms = getConfigBoolean( configKey + ".includeCmdAltPerms" );
@@ -836,33 +858,33 @@ public class CommandHandler {
 				for ( String perm : rootCommand.getPermissions() ) {
 					
 					if ( sender.hasPermission( perm ) ) {
-						results = false;
+						results.rejectCommandPermission( label, perm );
 						break;
 					}
 				}
 			}
 			
-			if ( results && includeCommandAltPerms ) {
+			if ( results.isAccess() && includeCommandAltPerms ) {
 				
 				// first check the command altPerms next:
-				for ( String perm : rootCommand.getPermissions() ) {
+				for ( String altPerm : rootCommand.getAltPermissions() ) {
 					
-					if ( sender.hasPermission( perm ) ) {
-						results = false;
+					if ( sender.hasPermission( altPerm ) ) {
+						results.rejectCommandAltPermission( label, altPerm );
 						break;
 					}
 				}
 			}
 			
 			// If results has not been set to false, then check the exclude-non-ops:
-			if ( results ) {
+			if ( results.isAccess() ) {
 				
 				if ( excludePerms != null && excludePerms.size() > 0 && excludePerms.get( 0 ) instanceof String ) {
 					
 					for ( Object permObj : excludePerms) {
 						if ( permObj instanceof String ) {
 							if ( sender.hasPermission( permObj.toString() ) ) {
-								results = false;
+								results.rejectConfigYaml( label, permObj.toString() );
 								break;
 							}
 						}
@@ -871,7 +893,6 @@ public class CommandHandler {
 				
 			}
 		}
-		return results;
 	}
 
     private boolean getConfigBoolean( String configKey ) {

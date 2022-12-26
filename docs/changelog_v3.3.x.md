@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.13f 2022-12-23
+# 3.3.0-alpha.13f 2022-12-26
+
+
+* **New Feature: command lockout:** Updated to add debugging information to identify why a command is rejected for a player through logging in the console when prison is in debug mode.
 
 
 * **New Feature: command lockout:** expanded to get this to work for commands, help listings, and aliases. There is now a setting where if enabled, it will expand the lockout from a command to all aliases of that command.  Also on each command, it will will allow enabling (enabled by default) if either the command parms or parmAlts are used to exclude a player from a command.
