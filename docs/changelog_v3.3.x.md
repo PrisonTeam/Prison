@@ -13,6 +13,12 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13f 2022-12-28
 
 
+* **There is a growing problem with the use of % symbols being processed multiple times with the Java String.format() which results in format escape error.**
+First, the use of Output is new setup to handle it's own custom version of String.formatIO that will take any remaining percent symbol and encode it so it does not cause errors anymore, then right before passing it to bukkit, it will convert it back.  This allows it to pass through as many String.format() functions as needed without resulting in to any problems.
+The other fix, which is probably more significant, is that the Output functions no longer tries to run all messages through String.format() if there are no parameters to apply.  This was causing the most issues.
+To properly ensure the more complex message handling works correctly, the use of Output.stringFormat(() should be use to enable to the encoding of the percent symbols.
+
+
 * **Fixed a typo in the config.yml that covered what the default values were for the includeCmdAltPerms and includeCmdPerms settings.**
 
 
