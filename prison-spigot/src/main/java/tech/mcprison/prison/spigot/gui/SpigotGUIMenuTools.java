@@ -27,6 +27,9 @@ public class SpigotGUIMenuTools
 
 	public static final String GUI_MENU_TOOLS_NBT_ENABLED = "guiNBT";
 	public static final String GUI_MENU_TOOLS_NBT_COMMAND = "guiNBTCommand";
+
+	public static final String GUI_MENU_TOOLS_NBT_RANK_NAME = "guiNBTRankName";
+	public static final String GUI_MENU_TOOLS_NBT_MINE_NAME = "guiNBTMineName";
 	
 	
 	private static SpigotGUIMenuTools instance;

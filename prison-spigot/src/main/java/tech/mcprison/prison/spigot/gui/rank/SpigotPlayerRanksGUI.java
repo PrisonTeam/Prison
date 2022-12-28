@@ -266,6 +266,15 @@ public class SpigotPlayerRanksGUI
                 }
             }
 
+
+            // Before adding the button, add an NBT tag for the command and rank name:
+			PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
+			NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT( itemRank.getButtonItem());
+			nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_ENABLED, "true");
+//			nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_COMMAND, noCommmand );
+			nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_RANK_NAME, rank.getName() );
+			
+            
             gui.addButton(itemRank);
             
 //            rank = rank.getRankNext();

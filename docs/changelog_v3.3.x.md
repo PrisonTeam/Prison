@@ -10,7 +10,12 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.13f 2022-12-26
+# 3.3.0-alpha.13f 2022-12-28
+
+
+* **Player GUI for mines and ranks was changed to include within the NBT codes, and enabled the mines TP command to be set in the NBT command tag.** 
+This will allow the NBT handler within the SpigotGUIMenuTools.processGUIPage(), of which it would just run the supplied command.  This bypasses the need of using special code to extract the mine name or rank name to reconstruct a command.  In short, this allows the TP On Click action to be self contained without the need for special handlers.
+This is a fix for the fully customizable ranks and mines GUI menus for the players, where the mine name on lore line 1 was eliminated, and hence the old way was unable to identify what mine should initiate the tp event.  But having the plain mine name on line one resulted in multiple redundancies of the mine's name, along with the mine's tag and the item's header.
 
 
 * **New Feature: command lockout:** Updated to add debugging information to identify why a command is rejected for a player through logging in the console when prison is in debug mode.
