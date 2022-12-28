@@ -12,6 +12,13 @@ These build logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.13f 2022-12-28
 
+* **Added Finnish translations to prison!**
+Thearex12 contributed a number of Finnish translations for prison in the following 
+modules: core (partial), mines, and sellall.  More updates are in progress.
+If anyone else would like to contribute another translation, please ping me, 
+RoyalBlueRanger, on our discord server.  It can be a complete translation, or 
+a partial.  Thanks!
+
 
 * **There is a growing problem with the use of % symbols being processed multiple times with the Java String.format() which results in format escape error.**
 First, the use of Output is new setup to handle it's own custom version of String.formatIO that will take any remaining percent symbol and encode it so it does not cause errors anymore, then right before passing it to bukkit, it will convert it back.  This allows it to pass through as many String.format() functions as needed without resulting in to any problems.
