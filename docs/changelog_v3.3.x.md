@@ -13,6 +13,13 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13g 2022-12-29
 
 
+* **Fixed the prison command stats to show the correct number of commands listed.**
+
+
+* **Fix the use of `{br}` when using `/prison support submit version` so that it is now treated as `\n`.
+Added to the `/prison support submit version` all listeners and the command stats too.**
+
+
 * **Added a new command `/prison support cmdStats` which shows some basic stats on command usage.**8
 
 
