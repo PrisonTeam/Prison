@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
@@ -39,6 +40,7 @@ import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.CommandPagedData;
+import tech.mcprison.prison.commands.RegisteredCommand;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.discord.PrisonPasteChat;
 import tech.mcprison.prison.internal.CommandSender;
@@ -1155,6 +1157,46 @@ public class PrisonCommand
     			command, registered );
     }
     
+	
+
+	@Command(identifier = "prison support cmdStats", 
+    		description = "Stats on Prison command stats. Only shows actual commands that are used.", 
+    		onlyPlayers = false, permissions = "prison.debug" )
+    public void statsCommand(CommandSender sender ) {
+    	
+    	List<String> cmds = getCommandStats();
+    	for (String cmd : cmds) {
+			
+    		Output.get().logInfo( cmd );
+		}
+    }
+	
+	private List<String> getCommandStats() {
+		List<String> results = new ArrayList<>();
+		
+		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
+		
+    	TreeSet<RegisteredCommand> allCmds = Prison.get().getCommandHandler().getAllRegisteredCommands();
+    	
+    	results.add( "Prison Command Statss:" );
+    	
+    	int totals = 0;
+    	for (RegisteredCommand cmd : allCmds) {
+			
+    		if ( cmd.getUsageCount() > 0 ) {
+    			results.add( Output.stringFormat( "    &3/%-40s  &7%7s",
+    					cmd.getCompleteLabel(), 
+    					dFmt.format( cmd.getUsageCount() )) );
+    			totals += cmd.getUsageCount();
+    		}
+		}
+    	
+    	results.add( Output.stringFormat("  &3Total Registered Prison Commands: &7%9s", dFmt.format( allCmds.size() )) );
+    	results.add( Output.stringFormat("  &3Total Prison Commands Listed:     &7%9s", dFmt.format( allCmds.size() )) );
+    	results.add( Output.stringFormat("  &3Total Prison Command Usage:       &7%9s", dFmt.format( totals )) );
+		
+		return results;
+	}
     
 	
 	@Command(identifier = "prison support runCmd", 

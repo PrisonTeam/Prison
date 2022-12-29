@@ -42,6 +42,8 @@ public class RegisteredCommand
     private RegisteredCommand parent;
     private boolean alias = false;
     
+    private int usageCount;
+    
     private String junitTest = null;
     
     private String description;
@@ -78,6 +80,8 @@ public class RegisteredCommand
         this.parent = parent;
         
         this.registeredAliases = new ArrayList<>();
+        
+        this.usageCount = 0;
     }
 
     /**
@@ -153,7 +157,7 @@ public class RegisteredCommand
      * @param sender
      * @param args
      */
-    void execute(CommandSender sender, String[] args) {
+    protected void execute(CommandSender sender, String[] args) {
     	
     	// First ensure the player is not locked out of this command:
     	if ( !handler.hasCommandAccess(sender, this, getLabel(), args) ) {
@@ -188,21 +192,26 @@ public class RegisteredCommand
 //                			(args == null ? "null" : args.length) +
 //                			"  args[0] == " + args[0]);
 
-                executeMethod(sender, args);
+            	// all checks were passed, and this is where the 
+            	// command is executed...
+                executeMethod( sender, args );
             } 
             else {
             	// Strip first arg, then recursively try again
                 String[] nargs = new String[args.length - 1];
                 System.arraycopy(args, 1, nargs, 0, args.length - 1);
-                command.execute(sender, nargs);
+                command.execute( sender, nargs );
             }
-        } else {
-            executeMethod(sender, args);
+        } 
+        else {
+        	// all checks were passed, and this is where the 
+        	// command is executed...
+            executeMethod( sender, args );
         }
 
     }
 
-    private void executeMethod(CommandSender sender, String[] args) {
+    private void executeMethod(CommandSender sender, String[] args ) {
         if (!set) {
             sendHelpMessage(sender);
             return;
@@ -233,6 +242,12 @@ public class RegisteredCommand
 
         try {
             try {
+            	// The command is ran here with the invoke...
+            	
+            	// Record that the command has been "ran", which does not mean it was successful:
+            	incrementUsageCount();
+            	
+            	
                 method.invoke(getMethodInstance(), resultArgs.toArray());
             } 
             catch ( IllegalArgumentException | InvocationTargetException e) {
@@ -576,6 +591,17 @@ public class RegisteredCommand
 	public int compareTo( RegisteredCommand arg0 )
 	{
 		return getUsage().compareTo( arg0.getUsage() );
+	}
+	
+    
+    public void incrementUsageCount() {
+		usageCount++;
+	}
+    public int getUsageCount() {
+    	return usageCount;
+    }
+	public void setUsageCount(int usageCount) {
+		this.usageCount = usageCount;
 	}
 	
 }

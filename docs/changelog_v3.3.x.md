@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.13g 2022-12-28
+# 3.3.0-alpha.13g 2022-12-29
+
+
+* **Added a new command `/prison support cmdStats` which shows some basic stats on command usage.**8
 
 
 * **v3.3.0-alpha.13g 2022-12-28**

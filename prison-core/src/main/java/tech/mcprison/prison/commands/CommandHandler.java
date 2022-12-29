@@ -687,25 +687,25 @@ public class CommandHandler {
         
         RegisteredCommand mainCommand = getRootCommands().get( rootPluginCommand );
         
-            for (int i = 1; i < identifiers.length; i++) {
-            	
-                String suffix = identifiers[i];
-                if ( mainCommand.doesSuffixCommandExist(suffix) ) {
-                    mainCommand = mainCommand.getSuffixCommand(suffix);
-                } 
-                else {
-                    RegisteredCommand newCommand = new RegisteredCommand(suffix, this, mainCommand);
-                    newCommand.setAlias( alias != null );
-                    mainCommand.addSuffixCommand(suffix, newCommand);
-                
-	                // Must add all new RegisteredCommand objects to both getAllRegisteredCommands() and
-	                // getTabCompleterData().
-	                getAllRegisteredCommands().add( newCommand );
-	                getTabCompleaterData().add( newCommand );
+        for (int i = 1; i < identifiers.length; i++) {
+        	
+            String suffix = identifiers[i];
+            if ( mainCommand.doesSuffixCommandExist(suffix) ) {
+                mainCommand = mainCommand.getSuffixCommand(suffix);
+            } 
+            else {
+                RegisteredCommand newCommand = new RegisteredCommand(suffix, this, mainCommand );
+                newCommand.setAlias( alias != null );
+                mainCommand.addSuffixCommand(suffix, newCommand);
+            
+                // Must add all new RegisteredCommand objects to both getAllRegisteredCommands() and
+                // getTabCompleterData().
+                getAllRegisteredCommands().add( newCommand );
+                getTabCompleaterData().add( newCommand );
 
-                    mainCommand = newCommand;
-                }
+                mainCommand = newCommand;
             }
+        }
 
         // Associate the last RegisteredCommand (mainCommand) with the rootPCommand since that is
         // the leaf-node that will be tied to the registered command, especially with aliases:
