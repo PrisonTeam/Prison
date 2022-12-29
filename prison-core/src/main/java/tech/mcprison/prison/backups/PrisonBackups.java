@@ -20,7 +20,8 @@ import tech.mcprison.prison.util.PrisonStatsUtil;
 public class PrisonBackups {
 
 	public static final String FILE_BACKUP_DIRECTORY_PATH = "backups";
-	public static final String FILE_BACKUP_VERSIONS_FILE = FILE_BACKUP_DIRECTORY_PATH + "/versions.log";
+	public static final String FILEBACKUP_VERSIONS_FILE_NAME = "/versions.log";
+	public static final String FILE_BACKUP_VERSIONS_FILE = FILE_BACKUP_DIRECTORY_PATH + FILEBACKUP_VERSIONS_FILE_NAME;
 	
 	public static final String VERSIONS_FILE_VERSION_PREFIX = "New_Prison_Version:";
 	public static final String VERSIONS_FILE_BACKUP_MADE_PREFIX = "Backup:";
@@ -292,6 +293,27 @@ public class PrisonBackups {
 		
 		return msg1;
 	}
+	
+	
+	public List<String> backupReport02BackupLog() {
+		List<String> results = new ArrayList<>();
+
+		File backupDir = getBackupDirectoryFile();
+		
+		File backupLogFile = new File( backupDir, FILEBACKUP_VERSIONS_FILE_NAME );
+
+		try {
+			results = Files.readAllLines( backupLogFile.toPath() );
+		} 
+		catch (IOException e) {
+			results.add( 
+					Output.stringFormat( "\n\nError reading %s.  [%s]",
+							backupLogFile.toString(), e.getMessage() ) );
+		}
+		
+		return results;
+	}
+	
 	
 	public StringBuilder backupReportVersionData() {
 		return Prison.get().getPrisonStatsUtil().getSupportSubmitVersionData();

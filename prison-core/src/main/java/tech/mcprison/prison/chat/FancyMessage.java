@@ -612,6 +612,9 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
         }
         jsonString = string.toString();
         dirty = false;
+        
+        jsonString = Output.decodePercentEncoding(jsonString);
+        
         return jsonString;
     }
 

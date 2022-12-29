@@ -236,6 +236,13 @@ public class Output
 		return msg;
     }
     
+    public static String decodePercentEncoding( String message ) {
+		if ( message.contains( PERCENT_ENCODING ) ) {
+			message = message.replace( PERCENT_ENCODING, PERCENT_DECODING );
+		}
+		return message;
+    }
+    
     /**
      * Log a message with a specified {@link LogLevel}
      */
@@ -267,9 +274,10 @@ public class Output
     					message : 
     						String.format(message, args);
     			
-    			if ( msg.contains( PERCENT_ENCODING ) ) {
-    				msg = msg.replace( PERCENT_ENCODING, PERCENT_DECODING );
-    			}
+    			msg = decodePercentEncoding( msg );
+//    			if ( msg.contains( PERCENT_ENCODING ) ) {
+//    				msg = msg.replace( PERCENT_ENCODING, PERCENT_DECODING );
+//    			}
     			
 				Prison.get().getPlatform().log(
 						prefixTemplatePrison + " " + 

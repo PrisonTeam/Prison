@@ -1303,6 +1303,17 @@ public class PrisonCommand
 		}
 		
     	
+    	
+    	// Include Prison backup logs:
+    	text.append( "\n\n" );
+    	text.append( "Prison Backup Logs:" ).append( "\n" );
+    	List<String> backupLogs = getPrisonBackupLogs();
+    	
+    	for (String log : backupLogs) {
+    		text.append( Output.decodePercentEncoding(log) ).append( "\n" );
+		}
+    	
+    	
 		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
 		
 		String helpURL = pasteChat.post( text.toString() );
@@ -1802,7 +1813,7 @@ public class PrisonCommand
 	} 
     
 	
-    @Command(identifier = "prison support backup", 
+    @Command(identifier = "prison support backup save", 
     		description = "This will make a backup of all Prison settings by creating a new " +
     				"zip file which will be stored in the directory plugins/Prison/backups.  " +
     				"After creating the backup, this will delete all temp files, backup files, etc.. " +
@@ -1823,7 +1834,32 @@ public class PrisonCommand
     	sender.sendMessage( "Backup finished." );
 
     }
+    
+    @Command(identifier = "prison support backup logs", 
+    		description = "This will list Prison backup  logs that are in the file "
+    				+ "`plugins/Prison/backup/versions.log`", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportBackupList( CommandSender sender  ) {
+    	
+    	ChatDisplay display = new ChatDisplay("Prison Backup Logs:");
+    	
+    	List<String> backupLogs = getPrisonBackupLogs();
+    	
+    	for (String log : backupLogs) {
+			display.addText(log);
+		}
+    	
+    	display.send(sender);
+    	
+    }
+    
+    private List<String> getPrisonBackupLogs() {
+    	PrisonBackups prisonBackup = new PrisonBackups();
+    	List<String> backupLogs = prisonBackup.backupReport02BackupLog();
+    	return backupLogs;
+    }
 	
+    
     @Command(identifier = "prison tokens balance", 
     		description = "Prison tokens: a player's current balance.", 
     		// aliases = "tokens bal",

@@ -31,7 +31,7 @@ public class TextComponent extends DisplayComponent {
     protected String text;
 
     public TextComponent(String text, Object... args) {
-        this.text = String.format(text, args);
+        this.text = Output.stringFormat(text, args);
     }
 
     @Override public String text() {
