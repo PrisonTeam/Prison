@@ -12,6 +12,12 @@ These build logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.13g 2022-12-29
 
+* **Update various libraries used in the gradle build:**
+placeholderApi: v2.10.9 to v2.11.2
+XSeries: v9.0.0 to v9.2.0
+item-nbt-api: v2.10.0 to v2.11.1
+removal of mvdw from the gradle build since it was removed from prison a few months ago
+
 
 * **Added a prison backup save command (renamed the original prison backup) and added a prison backup logs command that shows all entries in the backup log file.**
 The contents of the backup log file has been added to the /prison support submit version command too.
