@@ -1180,6 +1180,7 @@ public class PrisonCommand
     	
     	results.add( "Prison Command Statss:" );
     	
+    	int count = 0;
     	int totals = 0;
     	for (RegisteredCommand cmd : allCmds) {
 			
@@ -1187,12 +1188,13 @@ public class PrisonCommand
     			results.add( Output.stringFormat( "    &3/%-40s  &7%7s",
     					cmd.getCompleteLabel(), 
     					dFmt.format( cmd.getUsageCount() )) );
+    			count++;
     			totals += cmd.getUsageCount();
     		}
 		}
     	
     	results.add( Output.stringFormat("  &3Total Registered Prison Commands: &7%9s", dFmt.format( allCmds.size() )) );
-    	results.add( Output.stringFormat("  &3Total Prison Commands Listed:     &7%9s", dFmt.format( allCmds.size() )) );
+    	results.add( Output.stringFormat("  &3Total Prison Commands Listed:     &7%9s", dFmt.format( count )) );
     	results.add( Output.stringFormat("  &3Total Prison Command Usage:       &7%9s", dFmt.format( totals )) );
 		
 		return results;
