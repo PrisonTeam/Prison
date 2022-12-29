@@ -7,7 +7,7 @@
 This document provides an overview to help setup LuckPerms groups and tracks.
 
 
-*Documented updated: 2022-06-19*
+*Documented updated: 2022-12-29*
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
