@@ -8,6 +8,15 @@
 # TODO Items for v3.3.0-alpha.13
 
 
+- On the new cmdStats details, add nano run times for commands so we can include avg run times.
+
+
+- Add a command usage count to commands.  Then a simple report to list what commands were used, along with total command count of active commands.
+
+
+- Expand upon the config.yml command lockout so that if the player does not have access to a command, then suppress that command from all players, including command listings.  Not all commands will be able to reject access due to the nature of the commands (all access to everyone) and/or the use of alt-perms (programmatic evaluation to the commands).  - Josh-65
+
+
 - File save to new format - OmarG
   - pre-req for turning off TP
   - pre-req for custom mine shapes

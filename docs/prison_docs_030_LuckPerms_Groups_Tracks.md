@@ -386,19 +386,45 @@ There should be no configuration changes needed for the plugin, and it should ju
 <hr style="height:10px; border:none; color:#aaf; background-color:#aaf;">
 
 
+# Special Variation: Accessing Only One Mine at a Time by using MineAccessByRank
+
+_Warning: This is a non-standard way of configuring access to your mines. These settings will only allow a player to access only the current mine and will exclude them from accessing prior mines._
+
+This setting will only allow players to access mines that are linked to their current rank.  For example, if a player is at Rank C, then they cannot access the prior mines A nor B.  This is a very restrictive configuration and is not generally typical of a prison server.  
+
+
+Enable MineAccesByRank on all mines:
+
+`/mines set mineAccessByRank *all* enable`
+
+Then in the Prison `config.yml` file, enable this setting, using a value of *false*:
+
+```yaml
+prison-mines:
+  access-to-prior-mines: false
+```
+
+
+<hr style="height:10px; border:none; color:#aaf; background-color:#aaf;">
+
+
 # Special Variation: Accessing Only One Mine at a Time by using Permissions
+
+_Warning: This is a non-standard way of configuring access to your mines. These settings will only allow a player to access only the current mine and will exclude them from accessing prior mines._
+
+_Warning: It is not recommended to use Mine Access by Permissions; instead use MineAccessByRank._
 
 One special variation in configuring your server, would be if players can "only" access mines that are tied to their current rank.  For example, if a player is at Rank C, then they cannot access the prior mines A nor B.  This is a very restrictive configuration, which requires managing the permissions.
 
 
-If you are using permissions for access, then the two you need to know about are: `mines.<mineName>` and `mine.<mineName>.tp`.  Such that mine A would require: `mines.a` and `mines.a.tp`.
+If you are using permissions for access, then the two you need to know about are: `mines.<mineName>` and `mine.tp.<mineName>`.  Such that mine A would require: `mines.a` and `mines.tp.a`.
 
 
 Add these two perms to all LuckPerm groups.  You can use the LP editor, or manually with the following commands.  Repeat for all groups.
 
 ```
 /lp group a permission set mines.a true
-/lp group a permission set mines.a.tp true
+/lp group a permission set mines.tp.a true
 ```
 
 
