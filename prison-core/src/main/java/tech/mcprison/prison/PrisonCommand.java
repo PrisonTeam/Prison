@@ -1174,29 +1174,46 @@ public class PrisonCommand
 	private List<String> getCommandStats() {
 		List<String> results = new ArrayList<>();
 		
-		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
+		DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
+		DecimalFormat dFmt = Prison.get().getDecimalFormatDouble();
 		
     	TreeSet<RegisteredCommand> allCmds = Prison.get().getCommandHandler().getAllRegisteredCommands();
     	
-    	results.add( "Prison Command Statss:" );
+    	results.add( "Prison Command Stats:" );
+    	results.add( 
+    			Output.stringFormat( "    &a&n%-40s&r  &a&n%7s&r  &a&n%-11s&r", 
+    					" Commands     ", " Usage ", "  Avg ms  ") );
     	
     	int count = 0;
     	int totals = 0;
+    	double totalDuration = 0d;
     	for (RegisteredCommand cmd : allCmds) {
 			
     		if ( cmd.getUsageCount() > 0 ) {
-    			results.add( Output.stringFormat( "    &3/%-40s  &7%7s",
+    			
+    			double duration = cmd.getUsageRunTimeNanos() / (double) cmd.getUsageCount() / 1000000.0d;
+    			
+    			results.add( Output.stringFormat( "    &2%-40s  &2%7s  &2%11s",
     					cmd.getCompleteLabel(), 
-    					dFmt.format( cmd.getUsageCount() )) );
+    					iFmt.format( cmd.getUsageCount() ),
+    					dFmt.format( duration )
+    					) );
     			count++;
     			totals += cmd.getUsageCount();
+    			totalDuration += cmd.getUsageRunTimeNanos();
     		}
 		}
     	
-    	results.add( Output.stringFormat("  &3Total Registered Prison Commands: &7%9s", dFmt.format( allCmds.size() )) );
-    	results.add( Output.stringFormat("  &3Total Prison Commands Listed:     &7%9s", dFmt.format( count )) );
-    	results.add( Output.stringFormat("  &3Total Prison Command Usage:       &7%9s", dFmt.format( totals )) );
-		
+    	results.add( Output.stringFormat("  &3Total Registered Prison Commands: &7%9s", iFmt.format( allCmds.size() )) );
+    	results.add( Output.stringFormat("  &3Total Prison Commands Listed:     &7%9s", iFmt.format( count )) );
+    	results.add( Output.stringFormat("  &3Total Prison Command Usage:       &7%9s", iFmt.format( totals )) );
+    	
+    	double avgDuration = totalDuration / (double) count / 1000000.0d;
+    	results.add( Output.stringFormat("  &3Average Command Duration ms:      &7%9s", dFmt.format( avgDuration )) );
+    	
+    	results.add( "  &d&oNOTE: Async Commands like '/mines reset' will not show actual runtime values. " );
+
+    	
 		return results;
 	}
     

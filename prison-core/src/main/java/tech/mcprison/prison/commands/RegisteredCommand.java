@@ -43,6 +43,7 @@ public class RegisteredCommand
     private boolean alias = false;
     
     private int usageCount;
+    private long usageRunTimeNanos;
     
     private String junitTest = null;
     
@@ -82,6 +83,7 @@ public class RegisteredCommand
         this.registeredAliases = new ArrayList<>();
         
         this.usageCount = 0;
+        this.usageRunTimeNanos = 0;
     }
 
     /**
@@ -220,6 +222,9 @@ public class RegisteredCommand
         ArrayList<Object> resultArgs = new ArrayList<Object>();
         resultArgs.add(sender);
 
+        long nanosStart = 0;
+        long nanosEnd = 0;
+        
         Arguments arguments;
         try {
             arguments = new Arguments(args, flagsByName);
@@ -246,12 +251,24 @@ public class RegisteredCommand
             	
             	// Record that the command has been "ran", which does not mean it was successful:
             	incrementUsageCount();
-            	
+            	nanosStart = System.nanoTime();
             	
                 method.invoke(getMethodInstance(), resultArgs.toArray());
+                
+                nanosEnd = System.nanoTime();
+                
+                long nanosDuration = nanosEnd - nanosStart;
+                this.usageRunTimeNanos += nanosDuration;
+                
             } 
             catch ( IllegalArgumentException | InvocationTargetException e) {
-                if (e.getCause() instanceof CommandError) {
+
+            	nanosEnd = System.nanoTime();
+                
+            	long nanosDuration = nanosEnd - nanosStart;
+            	this.usageRunTimeNanos += nanosDuration;
+            	
+            	if (e.getCause() instanceof CommandError) {
                     CommandError ce = (CommandError) e.getCause();
                     Output.get().sendError(sender, ce.getColorizedMessage());
                     if (ce.showUsage()) {
@@ -602,6 +619,13 @@ public class RegisteredCommand
     }
 	public void setUsageCount(int usageCount) {
 		this.usageCount = usageCount;
+	}
+
+	public long getUsageRunTimeNanos() {
+		return usageRunTimeNanos;
+	}
+	public void setUsageRunTimeNanos(long usageRunTimeNanos) {
+		this.usageRunTimeNanos = usageRunTimeNanos;
 	}
 	
 }

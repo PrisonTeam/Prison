@@ -12,6 +12,10 @@ These build logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.13g 2022-12-29
 
+
+* **Added the tracking of command run times to the `/prison support cmdStats`.**
+
+
 * **Update various libraries used in the gradle build:**
 placeholderApi: v2.10.9 to v2.11.2
 XSeries: v9.0.0 to v9.2.0
