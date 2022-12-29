@@ -1277,7 +1277,30 @@ public class PrisonCommand
     	
     	
     	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitVersionData();
+    	
+    	int idx = text.indexOf("{br}");
+    	while ( idx != -1 ) {
+    		// Convert `{br}` to `\n`:
+    		text.replace(idx, idx+4, "\n");
+    		
+    		idx = text.indexOf("{br}");
+    	}
+    	
 		
+		// Add all of the listeners details:
+    	text.append( "\n\n" );
+    	text.append(
+    				Prison.get().getPrisonStatsUtil().getSupportSubmitListenersData( "all" )
+					);
+    	
+    	// Include the command stats:
+    	text.append( "\n\n" );
+    	List<String> cmdStats = getCommandStats();
+    	for (String cmd : cmdStats) {
+			text.append( cmd ).append( "\n" );
+		}
+		
+    	
 		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
 		
 		String helpURL = pasteChat.post( text.toString() );
