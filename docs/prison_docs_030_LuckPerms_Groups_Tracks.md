@@ -487,7 +487,185 @@ To review a player's rank within prison use `/ranks player <playerName>`.
 
 
 
+<hr style="height:6px; border:none; color:#aaf; background-color:#aaf;">
 
+
+# Example of LuckPerms Commands to setup Tracks/Groups
+
+The following is a list of LuckPerm Commands, listed in order, that will setup the correct Tracks/Groups within LuckPerms.  Then there is a prison command that will apply the correct LP Track to all existing players.
+
+This will allow perms to be inherited from lower ranks.
+
+
+```
+/lp creategroup a
+/lp group a setdisplayname A
+
+/lp creategroup b
+/lp group b setdisplayname B
+/lp group b parent add a
+
+/lp creategroup c
+/lp group c setdisplayname C
+/lp group c parent add b
+
+/lp creategroup d
+/lp group d setdisplayname D
+/lp group d parent add c
+
+/lp creategroup e
+/lp group e setdisplayname E
+/lp group e parent add d
+
+/lp creategroup f
+/lp group f setdisplayname F
+/lp group f parent add e
+
+/lp creategroup g
+/lp group g setdisplayname G
+/lp group g parent add f
+
+/lp creategroup h
+/lp group h setdisplayname H
+/lp group h parent add g
+
+/lp creategroup i
+/lp group i setdisplayname I
+/lp group i parent add h
+
+/lp creategroup j
+/lp group j setdisplayname J
+/lp group j parent add i
+
+/lp creategroup k
+/lp group k setdisplayname K
+/lp group k parent add j
+
+/lp creategroup l
+/lp group l setdisplayname L
+/lp group l parent add k
+
+/lp creategroup m
+/lp group m setdisplayname M
+/lp group m parent add l
+
+/lp creategroup n
+/lp group n setdisplayname N
+/lp group n parent add m
+
+/lp creategroup o
+/lp group o setdisplayname O
+/lp group o parent add n
+
+/lp creategroup p
+/lp group p setdisplayname P
+/lp group p parent add o
+
+/lp creategroup q
+/lp group q setdisplayname Q
+/lp group q parent add p
+
+/lp creategroup r
+/lp group r setdisplayname R
+/lp group r parent add q
+
+/lp creategroup s
+/lp group s setdisplayname S
+/lp group s parent add r
+
+/lp creategroup t
+/lp group t setdisplayname T
+/lp group t parent add s
+
+/lp creategroup u
+/lp group u setdisplayname U
+/lp group u parent add t
+
+/lp creategroup v
+/lp group v setdisplayname V
+/lp group v parent add u
+
+/lp creategroup w
+/lp group w setdisplayname W
+/lp group w parent add v
+
+/lp creategroup x
+/lp group x setdisplayname X
+/lp group x parent add w
+
+/lp creategroup y
+/lp group y setdisplayname Y
+/lp group y parent add x
+
+/lp creategroup z
+/lp group z setdisplayname Z
+/lp group z parent add y
+
+/lp createtrack mine-ranks
+
+/lp track mine-ranks append a
+/lp track mine-ranks append b
+/lp track mine-ranks append c
+/lp track mine-ranks append d
+/lp track mine-ranks append e
+/lp track mine-ranks append f
+/lp track mine-ranks append g
+/lp track mine-ranks append h
+/lp track mine-ranks append i
+/lp track mine-ranks append j
+/lp track mine-ranks append k
+/lp track mine-ranks append l
+/lp track mine-ranks append m
+/lp track mine-ranks append n
+/lp track mine-ranks append o
+/lp track mine-ranks append p
+/lp track mine-ranks append q
+/lp track mine-ranks append r
+/lp track mine-ranks append s
+/lp track mine-ranks append t
+/lp track mine-ranks append u
+/lp track mine-ranks append v
+/lp track mine-ranks append w
+/lp track mine-ranks append x
+/lp track mine-ranks append y
+/lp track mine-ranks append z
+/lp track mine-ranks append a
+/lp track mine-ranks append b
+/lp track mine-ranks append c
+/lp track mine-ranks append d
+/lp track mine-ranks append e
+/lp track mine-ranks append f
+/lp track mine-ranks append g
+/lp track mine-ranks append h
+/lp track mine-ranks append i
+/lp track mine-ranks append j
+/lp track mine-ranks append k
+/lp track mine-ranks append l
+/lp track mine-ranks append m
+/lp track mine-ranks append n
+/lp track mine-ranks append o
+/lp track mine-ranks append p
+/lp track mine-ranks append q
+/lp track mine-ranks append r
+/lp track mine-ranks append s
+/lp track mine-ranks append t
+/lp track mine-ranks append u
+/lp track mine-ranks append v
+/lp track mine-ranks append w
+/lp track mine-ranks append x
+/lp track mine-ranks append y
+/lp track mine-ranks append z
+
+
+/ranks ladder command add default lp user {player} parent settrack mine-ranks {targetRank}
+
+```
+
+To apply these to all preexisting players, the following command will reset everyone's current rank to their current rank, thus triggering the **ladder commands** to be ran so they will be setup with the correct LP Track.
+
+```
+/ranks set rank *all* *same*
+```
 
 <hr style="height:6px; border:none; color:#aaf; background-color:#aaf;">
 
