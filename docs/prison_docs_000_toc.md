@@ -2,6 +2,7 @@
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
+*Documented updated: 2022-12-30*
 
 ## Project Related
 
@@ -130,7 +131,36 @@ Auto configure can get you up and running with as little as two commands.  The f
  [Prison Auto Configure / Prison Quick Start Guide!](prison_docs_100_setting_up_auto_configure.md)
 
 
- 
+<hr style="height:5px; border:none; color:#aaf; background-color:#aaf;">
+
+# A Quick Word About the Prison Command Handler
+
+Prison has an advanced command handler that manages all of the commands. Programmatically, 
+the commands are not setup the same as a normal bukkit command, but instead, there are a
+lot of more powerful features available through the Prison Command Handler.
+
+All commands will respond to the **help** keyword.  It will show a list of all of the parameters
+for the command, any permissions tied to the command, and other details too.  If a document is
+associated with the command, it can show a clickable link when used in-game (not many commands
+have been linked to their docs yet).
+
+The Prison Command Handler also manages aliases, auto complete (tab complete), organizing 
+commands in a hierarchy so you can explore what commands are available by starting with the 
+root commands.  For example, `/prison` is the core root command, and it will also show you 
+a listing of all other root commands.  So `/prison` is a great place to begin exploring 
+the commands that are available.
+
+For the latest alpha releases, there is an exciting new command: `/prison support cmdStats`.
+This new command will show you every prison command that was ran since the server was started,
+along with how many times the command was used, and the average milliseconds it took Prison
+to handle that command.  Some commands, such as `/mines reset` are submitted and ran
+asynchronously and so their average run times will not be able to be reflected in that
+command. The `cmdStats` does not track "command" usage if it bypasses the Prison
+Command Handler, such as when a mine automatically resets since the internal calls bypass the 
+Prison Command Handler.  
+
+This is useful to give you an idea what commands your players and mods may be using.
+
 
 <hr style="height:5px; border:none; color:#aaf; background-color:#aaf;">
 
