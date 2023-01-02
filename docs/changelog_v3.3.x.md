@@ -10,7 +10,11 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.13g 2023-01-01
+# 3.3.0-alpha.13g 2023-01-02
+
+
+* **Bug fix: Fixed an issue with the top-n player's balance not being hooked up to the return value of the function that was retrieving it.**
+
 
 * **Issue with vault not working: Fixed a problem where prison was not able to communicate with an older version of vault** (spigot 1.12.2) while prison test servers could not duplicate the issue.
 The allows an admin to configure their server to disable the use of vault when using the essentialsEconomy, SaneEconomy, or GemsEconomy.  This will not work for any other economy.

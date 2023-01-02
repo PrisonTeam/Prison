@@ -63,7 +63,7 @@ public class StatsRankPlayerBalance
 			// check to see if the stats should be refreshed:
 			refresh();
 			
-			playerStats.get( position - 1 );
+			stats = playerStats.get( position - 1 );
 		}
 		return stats;
 	}
