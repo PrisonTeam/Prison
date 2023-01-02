@@ -67,6 +67,29 @@ ranks:
   
 
 
+# WARNING: Never use the following setting to disable the vault-economy
+#   integration unless directed by Prison support to do so.
+# WARNING: Prison will not allow the Ranks module to be enabled if a valid
+#   economy cannot be found and enabled succesfully.  Use of this setting 
+#   may prevent prison from finding a workable economy to use.
+# This setting, integrations.prevent-economy-vault-usage, will prevent
+# the use of vault for any economy transactions. Prison primarily uses vault, 
+# so enabling this setting could be dangerous. 
+# Where it can be useful, is if prison cannot communicate through vault, 
+# but is able to successfully communicate directly with the 
+# EssentialsEconomy, SaneEconomy, or GemsEconomy.  Enabling this setting
+# will NOT work for any other plugins.
+# To test vault, run the following commands when vault economy has been
+# succesfully loaded.  Run these command in the console:
+#   /balance <player>
+#   /ranks player <player>
+# Compare the total balance for the specified player from both commands.
+# They should match. If not, then there is an issue with vault.
+# Please contact the Prison support team through our discord server.
+integrations:
+  prevent-economy-vault-usage: false
+
+
 
 # NEW: This enables new physics to be applied when jumpping on slime blocks.
 # When holding different items, like some block types or picks, the player can

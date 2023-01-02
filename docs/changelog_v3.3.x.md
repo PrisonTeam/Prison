@@ -12,6 +12,10 @@ These build logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.13g 2023-01-01
 
+* **Issue with vault not working: Fixed a problem where prison was not able to communicate with an older version of vault** (spigot 1.12.2) while prison test servers could not duplicate the issue.
+The allows an admin to configure their server to disable the use of vault when using the essentialsEconomy, SaneEconomy, or GemsEconomy.  This will not work for any other economy.
+Since vault was the problem, bypassing vault allows prison to communicate directly with the selected economies, which fixes the problem.
+
 
 * **Prison Command Handler: Tab Completer:** Lockout players from the commands that have been excluded from players based upon perms.  Such commands are now excluded from the suggested commands when the player is using the tab-complete.
 

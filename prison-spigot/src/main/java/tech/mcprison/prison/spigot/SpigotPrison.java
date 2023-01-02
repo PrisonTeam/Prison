@@ -906,7 +906,13 @@ public class SpigotPrison
 
 	private void initIntegrations() {
 
-    	registerIntegration(new VaultEconomy());
+		String preventEconomyVaultUsageKey = "integrations.prevent-economy-vault-usage";
+		boolean preventEconomyVaultUsage = Prison.get().getPlatform().getConfigBooleanFalse(preventEconomyVaultUsageKey);
+		
+		if ( !preventEconomyVaultUsage ) {
+			registerIntegration(new VaultEconomy());
+		}
+		
         registerIntegration(new EssentialsEconomy());
         registerIntegration(new SaneEconomy());
         registerIntegration(new GemsEconomy());
