@@ -10,7 +10,12 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.13g 2022-12-29
+# 3.3.0-alpha.13g 2023-01-01
+
+
+* **Mines GUI bug fixes:**
+Fixes an issue with the command `/mines tp` which was setup to test an alias on a test server, but was not changed back to the correct command.
+Fixes the proper display of the linked rank to the mine.  It was showing the "object" which was dumping more than just the rank tag to the GUI's lore.  It now shows just the rank tag.
 
 
 * **Added the tracking of command run times to the `/prison support cmdStats`.**

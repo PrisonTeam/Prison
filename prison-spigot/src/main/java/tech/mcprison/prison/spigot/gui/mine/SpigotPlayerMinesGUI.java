@@ -231,7 +231,7 @@ public class SpigotPlayerMinesGUI
             		stringValue = stringValue.replace( "{linkedRank}", "Not linked" );
             	}
             	else {
-            		stringValue = stringValue.replace( "{linkedRank}", m.getRankString() );
+            		stringValue = stringValue.replace( "{linkedRank}", m.getRank().getTag() );
             	}
             	
             	
@@ -252,7 +252,7 @@ public class SpigotPlayerMinesGUI
             
             String mineTeleportCommand = 
             		Output.stringFormat( 
-            				"mines teleport %s %s",
+            				"mines tp %s %s",
             				m.getName(),
             				p.getName() );
             
