@@ -3,9 +3,11 @@ package tech.mcprison.prison.placeholders;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.TreeMap;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.output.Output;
 
 public class PlaceholdersStats {
 
@@ -148,6 +150,33 @@ public class PlaceholdersStats {
 		
 		return results;
 	}
+	
+	public void clearCache(boolean resetCache, boolean removeErrors) {
+
+		List<String> removeKeys = new ArrayList<>();
+		
+		ArrayList<String> keys = new ArrayList<>( getPlaceholders().keySet() );
+		for (String key : keys) {
+			PlaceholderStatsData stats = getPlaceholders().get(key);
+			
+			if ( resetCache || removeErrors && stats.isFailedMatch() ) {
+				removeKeys.add( key );
+			}
+		}
+
+		for (String key : removeKeys) {
+			getPlaceholders().remove( key );
+		}
+		
+		
+		Output.get().logInfo( "PlaceholderStats: Cache was purged of %s placeholders. Removed: %s ", 
+				resetCache ? "all" : 
+					removeErrors ? "invalid" : "some",
+				Prison.getDecimalFormatStaticInt().format( removeKeys.size() )
+				);
+		
+	}
+	
 
 	public TreeMap<String, PlaceholderStatsData> getPlaceholders() {
 		return placeholders;
@@ -155,6 +184,5 @@ public class PlaceholdersStats {
 	public void setPlaceholders(TreeMap<String, PlaceholderStatsData> placeholders) {
 		this.placeholders = placeholders;
 	}
-	
 	
 }

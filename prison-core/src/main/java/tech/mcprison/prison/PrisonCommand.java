@@ -789,10 +789,23 @@ public class PrisonCommand
     @Command(identifier = "prison placeholders stats", 
     		description = "List all placeholders that have been requested since server startup.", 
     		onlyPlayers = false, permissions = "prison.placeholder")
-    public void placeholdersStatsCommand(CommandSender sender
+    public void placeholdersStatsCommand(CommandSender sender,
+    		@Arg(name = "options", description = "Options for the cache.  "
+    				+ "[resetCache] this will clear the placeholder "
+    				+ "cache of all placeholders and all placeholders will have to be reidentified. "
+    				+ "[removeErrors] all cached placeholders that have been marked as invalid will "
+    				+ "be removed from the cache and will have to be reevaluated if used again.", 
+			def = "." ) String options
     		) {
     	
     	ChatDisplay display = new ChatDisplay("Placeholders List");
+    	
+    	if ( options != null && !".".equals(options) ) {
+    		boolean resetCache = "resetCache".equalsIgnoreCase( options );
+    		boolean removeErrors = "removeErrors".equalsIgnoreCase( options );
+
+    		PlaceholdersStats.getInstance().clearCache( resetCache, removeErrors );
+    	}
     	
     	ArrayList<String> stats = PlaceholdersStats.getInstance().generatePlaceholderReport();
     	

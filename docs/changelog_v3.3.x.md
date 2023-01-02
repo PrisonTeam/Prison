@@ -12,6 +12,9 @@ These build logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.13g 2023-01-02
 
+* **Placeholder Cache: Provide a way to clear the cache of all entries or just the invalid entries.**
+This helps to debug potential issues since it does not require restarting the server to force a reassignment of mapped placeholderKeys.
+
 
 * **Bug fix: Fixed an issue with the top-n player's balance not being hooked up to the return value of the function that was retrieving it.**
 
