@@ -723,9 +723,13 @@ public class RankManager
 		
 		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 		
+		boolean isStatsPlayers = placeHolder.hasFlag( PlaceholderFlags.STATSPLAYERS );
+		boolean isStatsRank = placeHolder.hasFlag( PlaceholderFlags.STATSRANKS );
 		
-		if ( !placeHolder.hasFlag( PlaceholderFlags.STATSPLAYERS ) &&
-				rank != null && rankPlayer != null ) {
+		if ( !( isStatsPlayers ) &&
+				rank != null && 
+				( rankPlayer != null || 
+				  rankPlayer == null && isStatsRank ) ) {
 			
 			identifier.setFoundAMatch( true );
 			
@@ -1087,7 +1091,7 @@ public class RankManager
 			case prison_top_rank_balance_name_nnn_rankname: 
 			case prison_trbn_nnn_rankname:
 				{
-					StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( 1 );
+					StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( sequence );
 					if ( stats != null ) {
 						
 						results = stats.getPlayer() == null ? "" : stats.getPlayer().getName();
@@ -1102,7 +1106,7 @@ public class RankManager
 			case prison_top_rank_balance_score_nnn_rankname:
 			case prison_trbs_nnn_rankname:
 				{
-					StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( 1 );
+					StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( sequence );
 					if ( stats != null ) {
 						
 						results = dFmt.format( stats.getScore());
@@ -1117,7 +1121,7 @@ public class RankManager
 			case prison_top_rank_balance_balance_nnn_rankname:
 			case prison_trbb_nnn_rankname:
 				{
-					StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( 1 );
+					StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( sequence );
 					if ( stats != null ) {
 						
 						results = stats.getPlayer() == null ? "" :

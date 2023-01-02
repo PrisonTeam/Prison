@@ -12,6 +12,9 @@ These build logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.13g 2023-01-02
 
+* **Placeholders bug fix: prison_top_rank_balance_* placeholders were fixed both in enabling processing for these placeholders, and also enabling the sequence.**
+
+
 * **Placeholder Cache: Provide a way to clear the cache of all entries or just the invalid entries.**
 This helps to debug potential issues since it does not require restarting the server to force a reassignment of mapped placeholderKeys.
 
