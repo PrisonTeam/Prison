@@ -461,8 +461,9 @@ public class SpigotPlatform
 				public List<String> tabComplete( CommandSender sender, String alias, String[] args )
 						throws IllegalArgumentException
 				{
+    				SpigotCommandSender pSender = new SpigotCommandSender( sender );
     				
-    				List<String> results = Prison.get().getCommandHandler().getTabCompleaterData().check( alias, args );
+    				List<String> results = Prison.get().getCommandHandler().getTabCompleaterData().check( pSender, alias, args );
     				
     				
 //    				StringBuilder sb = new StringBuilder();

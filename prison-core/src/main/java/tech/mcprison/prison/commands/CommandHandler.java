@@ -944,6 +944,32 @@ public class CommandHandler {
 
         return true;
     }
+	
+	/**
+	 * <p>This function is similar to onCommand, but it does not run any commands.
+	 * It only validates if a player has access to the commands.
+	 * </p>
+	 * @param registeredCommand 
+	 * 
+	 * @return
+	 */
+	public boolean checkCommand( CommandSender sender, 
+					RegisteredCommand registeredCommand, 
+					String label, String... args ) {
+		boolean hasAccess = true;
+				
+		if ( sender != null &&
+				registeredCommand != null &&
+				!hasCommandAccess( sender, registeredCommand, label, args ) ) {
+			
+			// The player does not have access to this command.
+			// Who cares!  Just exit and do nothing. Never log this.
+			hasAccess = false;
+		}
+		
+		
+		return hasAccess;
+	}
     
 	public Map<String, Object> getRegisteredCommands() {
 		return registeredCommands;

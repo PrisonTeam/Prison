@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.internal.CommandSender;
+
 public class TabCompleaterData
 {
 	private String name;
@@ -13,8 +16,12 @@ public class TabCompleaterData
 	
 	private boolean leafNode;
 	
+	private RegisteredCommand registeredCommand;
+	
 	public TabCompleaterData() {
 		this( "", null );
+		
+		this.registeredCommand = null;
 		
 		setLeafNode( false );
 	}
@@ -26,9 +33,13 @@ public class TabCompleaterData
 		
 		this.leafNode = ( args == null || args.length == 0 );
 		
-		if ( !this.leafNode ) {
-			add( args );
-		}
+		this.registeredCommand = null;
+
+		// Cannot build out child nodes here... has to be done within the
+		// addCommand() function.
+//		if ( !this.leafNode ) {
+//			add( args );
+//		}
 	}
 
 	/**
@@ -48,21 +59,34 @@ public class TabCompleaterData
 	 * 
 	 * @param usage
 	 */
-	private void add( String... usage ) {
+	private void addCommand( RegisteredCommand registeredCommand, String... usage ) {
 		
 		if ( usage.length > 0 ) {
 			String name = usage[0];
 			String key = name.toLowerCase();
 			
+			
 			String[] subArray = Arrays.copyOfRange( usage, 1, usage.length );
 			
+			// If getData() does not contain a key, then add it before processing it:
 			if ( !getData().containsKey( key ) ) {
 				TabCompleaterData tcd = new TabCompleaterData( name, subArray );
 				getData().put( key, tcd );
 			}
-			else {
-				getData().get( key ).add( subArray );
+			
+//			else {
+//				TabCompleaterData tcd = getData().get( key );
+//				tcd.addCommand( registeredCommand, subArray );
+//			}
+			
+			TabCompleaterData tcd = getData().get( key );
+			tcd.addCommand( registeredCommand, subArray );
+
+			boolean storeRegisteredCommand = usage.length == 1;
+			if ( storeRegisteredCommand ) {
+				tcd.setRegisteredCommand( registeredCommand );
 			}
+			
 		}
 	
 
@@ -86,7 +110,7 @@ public class TabCompleaterData
 		
 		String[] usage = usageStr.split( " " );
 		
-		add( usage );
+		addCommand( registeredCommand, usage );
 		
 //		if ( usage.length > 0 ) {
 //			String key = usage[0];
@@ -116,11 +140,15 @@ public class TabCompleaterData
 	 * @return
 	 */
 	public List<String> check( String alias, String... args ) {
+		return check( null, alias, args );
+	}
+		
+	public List<String> check( CommandSender commandSender, String alias, String... args ) {
 		List<String> results = new ArrayList<>();
 		
 		if ( alias != null ) {
 			if ( getData().containsKey( alias ) ) {
-				results.addAll( getData().get( alias.toLowerCase() ).check( args ) );
+				results.addAll( getData().get( alias.toLowerCase() ).checkLabel( commandSender, alias, args ) );
 			}
 			
 		}
@@ -130,8 +158,10 @@ public class TabCompleaterData
 	}
 	
 	
-	private List<String> check( String... args ) {
+	private List<String> checkLabel( CommandSender commandSender, String label, String... args ) {
 		List<String> results = new ArrayList<>();
+		
+		String newLabel = label + " ";
 		
 		if ( args == null || args.length == 0 || 
 				args.length == 1 && args[0].length() == 0 ) {
@@ -140,7 +170,14 @@ public class TabCompleaterData
 			// Must get each child's name:
 			Set<String> keys = getData().keySet();
 			for ( String key : keys ) {
-				results.add( getData().get( key ).getName() );
+				
+				TabCompleaterData tabComplete = getData().get( key );
+
+				if ( tabComplete.validateAccess( commandSender, newLabel + key, "" ) ) {
+					
+					results.add( getData().get( key ).getName() );
+				}
+				
 			}
 
 		}
@@ -158,7 +195,9 @@ public class TabCompleaterData
 				
 				String[] subArray = Arrays.copyOfRange( args, 1, args.length );
 
-				results.addAll( getData().get( key ).check( subArray ) );
+				TabCompleaterData tabComplete = getData().get( key );
+
+				results.addAll( tabComplete.checkLabel( commandSender, newLabel + key, subArray ) );
 			}
 		}
 		else {
@@ -171,13 +210,33 @@ public class TabCompleaterData
 			for ( String key : keys ) {
 				if ( key.startsWith( prefix )) {
 					
-					results.add( getData().get( key ).getName() );
+					TabCompleaterData tabComplete = getData().get( key );
+					
+					String[] subArray = Arrays.copyOfRange( args, 1, args.length );
+					if ( tabComplete.validateAccess( commandSender, newLabel + key, subArray ) ) {
+						
+						results.add( getData().get( key ).getName() );
+					}
+					
 				}
 			}
 		}
 	
 		return results;
 
+	}
+	
+	private boolean validateAccess( CommandSender commandSender, String label, String... args ) {
+		boolean hasAccess = true;
+
+		// Unit tests will have null for commandSender so skip the command access validation:
+		if ( commandSender != null && !commandSender.isOp() ) {
+			
+			hasAccess = Prison.get().getCommandHandler()
+							.checkCommand(commandSender, getRegisteredCommand(), label, args );
+		}
+		
+		return hasAccess;
 	}
 
 	
@@ -200,6 +259,13 @@ public class TabCompleaterData
 	}
 	public void setLeafNode( boolean leafNode ) {
 		this.leafNode = leafNode;
+	}
+	
+	public RegisteredCommand getRegisteredCommand() {
+		return registeredCommand;
+	}
+	public void setRegisteredCommand(RegisteredCommand registeredCommand) {
+		this.registeredCommand = registeredCommand;
 	}
 	
 }
