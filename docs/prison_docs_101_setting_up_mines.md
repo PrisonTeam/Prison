@@ -159,7 +159,7 @@ It will default to 100% air.  So then follow up creating the new mine with a res
 
 
 
-<h3>Reset the New Mine to Test it Exists</h3>
+<h3>Reset the New Mine to Test if it Exists</h3>
 
 Go ahead and reset the mine.  All of the sealanterns that were used to mark the mine are now gone, and so are the two layers of dirt.  That confirms success with our first mine since the only default block that exists in the mines when created is air.
 
@@ -171,7 +171,7 @@ Go ahead and reset the mine.  All of the sealanterns that were used to mark the 
 
 
 
-<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
+<hr style="height:1px; border:none; color:#aaf; background-color:#aaf;" />
 
 
 
