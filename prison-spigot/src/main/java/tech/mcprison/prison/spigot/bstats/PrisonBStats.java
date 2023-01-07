@@ -41,6 +41,7 @@ public class PrisonBStats {
 //	private List<String> reportVault;
 	private List<String> reportEnchantments;
 	private List<String> reportAdminTools;
+	private List<String> reportConflicts;
 	
 	
 	private TreeSet<String> pluginsUsed;
@@ -60,6 +61,7 @@ public class PrisonBStats {
 //		this.reportVault = new ArrayList<>();
 		this.reportEnchantments = new ArrayList<>();
 		this.reportAdminTools = new ArrayList<>();
+		this.reportConflicts = new ArrayList<>();
 		
 		this.pluginsUsed = new TreeSet<>();
 		
@@ -322,15 +324,16 @@ public class PrisonBStats {
         createNewBstatReport( "enchantment_plugins", reportEnchantments, plugins, pluginsUsed );
         createNewBstatReport( "admin_tools_plugins", reportAdminTools, plugins, pluginsUsed );
         
+        createNewBstatReport( "potential_conflicts_plugins", reportConflicts, plugins, pluginsUsed );
 
         
 		//this.reportVault = new ArrayList<>(); "prison_integrated_vault_plugins"
 
 
-        TreeMap<String, RegisteredPluginsData> pluginsAtoE = getSubsetOfPlugins(plugins, 'a', 'f', false, pluginsUsed );
-        TreeMap<String, RegisteredPluginsData> pluginsFtoM = getSubsetOfPlugins(plugins, 'f', 'n', false, pluginsUsed );
-        TreeMap<String, RegisteredPluginsData> pluginsNtoS = getSubsetOfPlugins(plugins, 'n', 't', false, pluginsUsed );
-        TreeMap<String, RegisteredPluginsData> pluginsTto9 = getSubsetOfPlugins(plugins, 't', 'z', true, pluginsUsed );
+//        TreeMap<String, RegisteredPluginsData> pluginsAtoE = getSubsetOfPlugins(plugins, 'a', 'f', false, pluginsUsed );
+//        TreeMap<String, RegisteredPluginsData> pluginsFtoM = getSubsetOfPlugins(plugins, 'f', 'n', false, pluginsUsed );
+//        TreeMap<String, RegisteredPluginsData> pluginsNtoS = getSubsetOfPlugins(plugins, 'n', 't', false, pluginsUsed );
+//        TreeMap<String, RegisteredPluginsData> pluginsTto9 = getSubsetOfPlugins(plugins, 't', 'z', true, pluginsUsed );
         
         // Remove "plugins" - Too much info on one report
 //        DrilldownPie mlcPrisonPlugins = new DrilldownPie("plugins", () -> {
@@ -379,72 +382,72 @@ public class PrisonBStats {
         getbStatsMetrics().addCustomChart( mlcPrisonVaultPlugins );
         
         
-        DrilldownPie mlcPrisonPluginsAtoE = new DrilldownPie("plugins_a_to_e", () -> {
-        	Map<String, Map<String, Integer>> map = new HashMap<>();
-        	
-        	for (String pluginName : pluginsAtoE.keySet() ) {
-        		RegisteredPluginsData pluginData = pluginsAtoE.get( pluginName );
-        		
-        		Map<String, Integer> entry = new HashMap<>();
-        		entry.put( pluginData.getPluginVersion(), 1 );
-        		
-        		map.put( pluginData.getPluginName(), entry );
-        	}
-        	
-        	return map;
-        });
-        getbStatsMetrics().addCustomChart( mlcPrisonPluginsAtoE );
+//        DrilldownPie mlcPrisonPluginsAtoE = new DrilldownPie("plugins_a_to_e", () -> {
+//        	Map<String, Map<String, Integer>> map = new HashMap<>();
+//        	
+//        	for (String pluginName : pluginsAtoE.keySet() ) {
+//        		RegisteredPluginsData pluginData = pluginsAtoE.get( pluginName );
+//        		
+//        		Map<String, Integer> entry = new HashMap<>();
+//        		entry.put( pluginData.getPluginVersion(), 1 );
+//        		
+//        		map.put( pluginData.getPluginName(), entry );
+//        	}
+//        	
+//        	return map;
+//        });
+//        getbStatsMetrics().addCustomChart( mlcPrisonPluginsAtoE );
         
         
-        DrilldownPie mlcPrisonPluginsFtoM = new DrilldownPie("plugins_f_to_m", () -> {
-        	Map<String, Map<String, Integer>> map = new HashMap<>();
-        	
-        	for (String pluginName : pluginsFtoM.keySet() ) {
-        		RegisteredPluginsData pluginData = pluginsFtoM.get( pluginName );
-        		
-        		Map<String, Integer> entry = new HashMap<>();
-        		entry.put( pluginData.getPluginVersion(), 1 );
-        		
-        		map.put( pluginData.getPluginName(), entry );
-        	}
-        	
-        	return map;
-        });
-        getbStatsMetrics().addCustomChart( mlcPrisonPluginsFtoM );
+//        DrilldownPie mlcPrisonPluginsFtoM = new DrilldownPie("plugins_f_to_m", () -> {
+//        	Map<String, Map<String, Integer>> map = new HashMap<>();
+//        	
+//        	for (String pluginName : pluginsFtoM.keySet() ) {
+//        		RegisteredPluginsData pluginData = pluginsFtoM.get( pluginName );
+//        		
+//        		Map<String, Integer> entry = new HashMap<>();
+//        		entry.put( pluginData.getPluginVersion(), 1 );
+//        		
+//        		map.put( pluginData.getPluginName(), entry );
+//        	}
+//        	
+//        	return map;
+//        });
+//        getbStatsMetrics().addCustomChart( mlcPrisonPluginsFtoM );
         
         
-        DrilldownPie mlcPrisonPluginsNtoS = new DrilldownPie("plugins_n_to_s", () -> {
-        	Map<String, Map<String, Integer>> map = new HashMap<>();
-        	
-        	for (String pluginName : pluginsNtoS.keySet() ) {
-        		RegisteredPluginsData pluginData = pluginsNtoS.get( pluginName );
-        		
-        		Map<String, Integer> entry = new HashMap<>();
-        		entry.put( pluginData.getPluginVersion(), 1 );
-        		
-        		map.put( pluginData.getPluginName(), entry );
-        	}
-        	
-        	return map;
-        });
-        getbStatsMetrics().addCustomChart( mlcPrisonPluginsNtoS );
+//        DrilldownPie mlcPrisonPluginsNtoS = new DrilldownPie("plugins_n_to_s", () -> {
+//        	Map<String, Map<String, Integer>> map = new HashMap<>();
+//        	
+//        	for (String pluginName : pluginsNtoS.keySet() ) {
+//        		RegisteredPluginsData pluginData = pluginsNtoS.get( pluginName );
+//        		
+//        		Map<String, Integer> entry = new HashMap<>();
+//        		entry.put( pluginData.getPluginVersion(), 1 );
+//        		
+//        		map.put( pluginData.getPluginName(), entry );
+//        	}
+//        	
+//        	return map;
+//        });
+//        getbStatsMetrics().addCustomChart( mlcPrisonPluginsNtoS );
         
         
-        DrilldownPie mlcPrisonPluginsTto9 = new DrilldownPie("plugins_t_to_z_plus_others", () -> {
-        	Map<String, Map<String, Integer>> map = new HashMap<>();
-        	
-        	for (String pluginName : pluginsTto9.keySet() ) {
-        		RegisteredPluginsData pluginData = pluginsTto9.get( pluginName );
-        		
-        		Map<String, Integer> entry = new HashMap<>();
-        		entry.put( pluginData.getPluginVersion(), 1 );
-        		
-        		map.put( pluginData.getPluginName(), entry );
-        	}
-        	
-        	return map;
-        });
-        getbStatsMetrics().addCustomChart( mlcPrisonPluginsTto9 );
+//        DrilldownPie mlcPrisonPluginsTto9 = new DrilldownPie("plugins_t_to_z_plus_others", () -> {
+//        	Map<String, Map<String, Integer>> map = new HashMap<>();
+//        	
+//        	for (String pluginName : pluginsTto9.keySet() ) {
+//        		RegisteredPluginsData pluginData = pluginsTto9.get( pluginName );
+//        		
+//        		Map<String, Integer> entry = new HashMap<>();
+//        		entry.put( pluginData.getPluginVersion(), 1 );
+//        		
+//        		map.put( pluginData.getPluginName(), entry );
+//        	}
+//        	
+//        	return map;
+//        });
+//        getbStatsMetrics().addCustomChart( mlcPrisonPluginsTto9 );
         
         
         
@@ -471,58 +474,58 @@ public class PrisonBStats {
         
     }
 	
-    /**
-     * <p>This function will split up a list of active plugins in to sub-groups.
-     * This is controlled by the <b>rangeLow</b> through <b>rangeHigh</b> parameters.
-     * The parameter <b>includeNonAlpha</b> will include all other plugins where their
-     * names do not begin with an alpha character; this is a catch-all to prevent plugins
-     * from being omitted.
-     * </p>
-     * 
-     * <p>The parameter <b>pluginsUsed</b> is a set plugins that have already been 
-     * included in other reports so therefore should be omitted from these reports.
-     * </p>
-     * 
-     * @param plugins
-     * @param rangeLow
-     * @param rangeHigh
-     * @param includeNonAlpha
-     * @param pluginsUsed
-     * @return
-     */
-    private TreeMap<String, RegisteredPluginsData> getSubsetOfPlugins(
-			TreeMap<String, RegisteredPluginsData> plugins,
-			char rangeLow, char rangeHigh,
-			boolean includeNonAlpha, 
-			TreeSet<String> pluginsUsed ) {
-    	
-		TreeMap<String, RegisteredPluginsData> results = new TreeMap<>();
-		
-		Set<String> keys = plugins.keySet();
-		for (String key : keys) {
-			
-			if ( !pluginsUsed.contains( key ) ) {
-				
-				char keyFirstChar = key.toLowerCase().charAt(0);
-				
-				if ( Character.isAlphabetic(keyFirstChar) ) {
-					
-					if ( Character.compare(keyFirstChar, rangeLow) >= 0 && Character.compare( keyFirstChar, rangeHigh) < 0 ) {
-						
-						results.put( key, plugins.get(key) );
-					}
-				}
-				else {
-					
-					// Add all non-alpha plugins to this result:
-					results.put( key, plugins.get(key) );
-				}
-			}
-			
-		}
-		
-		return results;
-	}
+//    /**
+//     * <p>This function will split up a list of active plugins in to sub-groups.
+//     * This is controlled by the <b>rangeLow</b> through <b>rangeHigh</b> parameters.
+//     * The parameter <b>includeNonAlpha</b> will include all other plugins where their
+//     * names do not begin with an alpha character; this is a catch-all to prevent plugins
+//     * from being omitted.
+//     * </p>
+//     * 
+//     * <p>The parameter <b>pluginsUsed</b> is a set plugins that have already been 
+//     * included in other reports so therefore should be omitted from these reports.
+//     * </p>
+//     * 
+//     * @param plugins
+//     * @param rangeLow
+//     * @param rangeHigh
+//     * @param includeNonAlpha
+//     * @param pluginsUsed
+//     * @return
+//     */
+//    private TreeMap<String, RegisteredPluginsData> getSubsetOfPlugins(
+//			TreeMap<String, RegisteredPluginsData> plugins,
+//			char rangeLow, char rangeHigh,
+//			boolean includeNonAlpha, 
+//			TreeSet<String> pluginsUsed ) {
+//    	
+//		TreeMap<String, RegisteredPluginsData> results = new TreeMap<>();
+//		
+//		Set<String> keys = plugins.keySet();
+//		for (String key : keys) {
+//			
+//			if ( !pluginsUsed.contains( key ) ) {
+//				
+//				char keyFirstChar = key.toLowerCase().charAt(0);
+//				
+//				if ( Character.isAlphabetic(keyFirstChar) ) {
+//					
+//					if ( Character.compare(keyFirstChar, rangeLow) >= 0 && Character.compare( keyFirstChar, rangeHigh) < 0 ) {
+//						
+//						results.put( key, plugins.get(key) );
+//					}
+//				}
+//				else {
+//					
+//					// Add all non-alpha plugins to this result:
+//					results.put( key, plugins.get(key) );
+//				}
+//			}
+//			
+//		}
+//		
+//		return results;
+//	}
     
     
     /**
@@ -586,12 +589,14 @@ public class PrisonBStats {
 		reportPermissions.add( "LPC" );
 		reportPermissions.add( "PermissionsEx" );
 		
+		
 		reportEconomy.add( "Essentials" );
 		reportEconomy.add( "Economy_CMI" );
+		reportEconomy.add( "CMIEInjector" );
 		reportEconomy.add( "GemsEconomy" );
 		reportEconomy.add( "SDFEconomy" );
 		reportEconomy.add( "SaneEconomy" );
-		reportEconomy.add( "Tokens" );
+//		reportEconomy.add( "Tokens" );
 		reportEconomy.add( "Ultimate_Economy" );
 		reportEconomy.add( "XConomy" );
 		
@@ -602,6 +607,7 @@ public class PrisonBStats {
 		reportPlaceholders.add( "AnimatedScoreboard" );
 		reportPlaceholders.add( "DecentHolograms" );
 		reportPlaceholders.add( "DeluxeMenus" );
+		reportPlaceholders.add( "EconomyShopGUI" );
 		reportPlaceholders.add( "EssentialsChat" );
 		reportPlaceholders.add( "HolographicDisplays" );
 		reportPlaceholders.add( "HolographicExtension" );
@@ -610,9 +616,10 @@ public class PrisonBStats {
 		reportPlaceholders.add( "RealScoreboard" );
 		reportPlaceholders.add( "TAB" );
 		reportPlaceholders.add( "TabList" );
+
+		reportPlaceholders.add( "ajLeaderBoards" );
+		reportPlaceholders.add( "FeatherBoard" );
 		
-		
-		//reportVault.add( "" );
 		
 		
 		reportEnchantments.add( "AdvancedEnchantmens" );
@@ -623,26 +630,60 @@ public class PrisonBStats {
 		reportEnchantments.add( "PrisonEnchants" );
 		reportEnchantments.add( "RevEnchants" );
 
+		reportEnchantments.add( "mcMMO" );
 		
-		reportAdminTools.add( "WorldEdit" );
-		reportAdminTools.add( "WorldGuard" );
+		
+		
+		reportAdminTools.add( "Citizens" );
+		reportAdminTools.add( "CoreProtect" );
+		reportAdminTools.add( "CMI" );
+		reportAdminTools.add( "CMILib" );
+		reportAdminTools.add( "EssentialsSpawn" );
+		reportAdminTools.add( "FastAsyncWorldEdit" );
 		reportAdminTools.add( "Multiverse-Core" );
 		reportAdminTools.add( "Multiverse" );
 		reportAdminTools.add( "Multiworld" );
 		reportAdminTools.add( "MyCommand" );
-		reportAdminTools.add( "CMI" );
-		reportAdminTools.add( "CMIEInjector" );
-		reportAdminTools.add( "FastAsyncWorldEdit" );
-		reportAdminTools.add( "VoidGen" );
+		reportAdminTools.add( "NBTAPI" );
+		reportAdminTools.add( "PlayerKits" );
+		reportAdminTools.add( "PlotSquared" );
+		reportAdminTools.add( "SkinsRestorer" );
 		reportAdminTools.add( "Skript" );
-		reportAdminTools.add( "PlugMan" ); // Just to get an idea of how many may be causing issues
 		reportAdminTools.add( "ViaBackwards" );
 		reportAdminTools.add( "ViaRewind" );
 		reportAdminTools.add( "ViaVersion" );
-		reportAdminTools.add( "Citizens" );
-		reportAdminTools.add( "NBTAPI" );
+		reportAdminTools.add( "VoidGen" );
+		reportAdminTools.add( "WorldEdit" );
+		reportAdminTools.add( "WorldGuard" );
+		reportAdminTools.add( "WorldGuardExtraFlags" );
+
+		reportAdminTools.add( "ConsoleSpamFix" );
+		reportAdminTools.add( "GriefPrevention" );
+		
+		
+		
+		reportConflicts.add( "AutoSell" );
+		reportConflicts.add( "CataMines" );
+		reportConflicts.add( "DeluxeMines" );
+		reportConflicts.add( "EZPrestige" );
+		reportConflicts.add( "EZRanksPro" );
+		reportConflicts.add( "JetsPrisonCells" );
+		reportConflicts.add( "MineCrates" );
+		reportConflicts.add( "MineBomb" );
+		reportConflicts.add( "MineBuddy" );
+		reportConflicts.add( "MineChess" );
+		reportConflicts.add( "MineResetLite" );
+		reportConflicts.add( "MineResetLitePlus" );
+		reportConflicts.add( "NonSquareMines" );
+		reportConflicts.add( "PlugMan" ); // Just to get an idea of how many may be causing issues
+		reportConflicts.add( "PrisonControl" );
+		reportConflicts.add( "PrisonGames" );
+		reportConflicts.add( "PrivateMines" );
+		reportConflicts.add( "Rankup" );
+		reportConflicts.add( "Tokens" );
 
 	}
+    
 	public Metrics getbStatsMetrics() {
 		return bStatsMetrics;
 	}

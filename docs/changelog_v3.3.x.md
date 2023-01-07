@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.13g 2023-01-06
+# 3.3.0-alpha.13g 2023-01-07
+
+
+* **Update bstats... will have to update the reports on the bstats page too.***
 
 
 * **Updated the language files to replace a bad text message which was missing.**
