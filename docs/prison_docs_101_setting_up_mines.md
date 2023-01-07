@@ -106,7 +106,7 @@ A few useful commands as OP:
 
 ```
 
-<h3>Command: /ranks autoConfigure</>
+<h3>Command: /ranks autoConfigure</h3>
 
 If you ran the command `/ranks autoConfigure` then all of your mines have been generated and are virtual mines.  A virtual mine is one that is fully configured, but it has not been "physically" placed in any world yet.  So you can tweak the configurations on the mine, except for setting that relate to any locations within a world.  All you have to do with these virtual mines, is to place them.  
 
