@@ -10,7 +10,11 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.13g 2023-01-02
+# 3.3.0-alpha.13g 2023-01-06
+
+
+* **Updated the language files to replace a bad text message which was missing.**
+
 
 * **Placeholders bug fix: prison_top_rank_balance_* placeholders were fixed both in enabling processing for these placeholders, and also enabling the sequence.**
 
