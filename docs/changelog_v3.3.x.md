@@ -13,6 +13,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13h 2023-01-11
 
 
+
+**v3.3.0-alpha.13h2 2023-01-11**
+
+
 * **Prison placeholder bug fix: the placeholder cache was causing placeholders to be rejected and locked out under certain conditions which were being triggered by new players joining the server for the first time.**
 The cache was fixed by better identifying what constitutes a failed placeholder identifier.  Enhanced the stats report to include fails too, which can be useful in finding internal errors with specific placeholders.
 
