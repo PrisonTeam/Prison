@@ -222,14 +222,18 @@ public class SpigotPlaceholders
     	
     	String results = null;
     	
+    	// If past usage of this identifier resulted in a failure (no placeholderKey) then
+    	// skip processing...
     	if ( !stats.isFailedMatch() ) {
     		
     		if ( identifier.getPlaceholderKey() == null ) {
     			
+    			// Lookup the correct placeholderKey:
     			results = processPlaceholderSearchForPlaceholderKey( identifier );
     		}
     		else {
     			
+    			// Use the existing placeholderKey:
     			results = processPlaceholderHavePlaceholderKey( identifier );
     		}
     		
@@ -237,6 +241,8 @@ public class SpigotPlaceholders
 
     	long nanoEnd = System.nanoTime();
     	
+    	// Save the stats to the placeholderCache, and store the placeholderKey if not already
+    	// stored in the cache.
     	PlaceholdersStats.getInstance().setStats( identifier, stats, nanoStart, nanoEnd );
     	
     	
