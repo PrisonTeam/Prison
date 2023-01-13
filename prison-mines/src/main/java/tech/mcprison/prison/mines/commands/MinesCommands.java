@@ -1830,7 +1830,7 @@ public class MinesCommands
      * @param mineName
      * @param time
      */
-    @Command(identifier = "mines set resetTime", permissions = "mines.resettime", 
+    @Command(identifier = "mines set resetTime", permissions = "mines.set", 
     		description = "Set a mine's auto reset time as expressed in seconds.")
     public void resetTimeCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
@@ -1964,7 +1964,7 @@ public class MinesCommands
      * @param mineName
      * @param time
      */
-    @Command(identifier = "mines set zeroBlockResetDelay", permissions = "mines.zeroblockresetdelay", 
+    @Command(identifier = "mines set resetDelay", permissions = "mines.set", 
     		description = "Set a mine's delay before reset when it reaches zero blocks.")
     public void zeroBlockResetDelayCommand(CommandSender sender,
     		@Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
@@ -2043,7 +2043,7 @@ public class MinesCommands
      * @param mineName
      * @param time
      */
-    @Command(identifier = "mines set resetThreshold", permissions = "mines.resetThreshold", 
+    @Command(identifier = "mines set resetThreshold", permissions = "mines.set", 
     		description = "Triggers a mine reset once this threshold is crossed and the remaining " +
     				"block percentage is less than or equal to this value")
     public void resetThresholdPercentCommand(CommandSender sender,
@@ -2114,7 +2114,7 @@ public class MinesCommands
 
 
 
-    @Command(identifier = "mines set notification", permissions = "mines.notification", 
+    @Command(identifier = "mines set notification", permissions = "mines.set", 
     		description = "Set a mine's notification mode.")
     public void setNotificationCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to edit, or '*all*' to "
@@ -2224,7 +2224,7 @@ public class MinesCommands
 	}
 
 
-    @Command(identifier = "mines set notificationPerm", permissions = "mines.notification", 
+    @Command(identifier = "mines set notificationPerm", permissions = "mines.set", 
     		description = "Enable or disable a mine's notification permission. If enabled, then players " +
     					"must have the mine's permission to get messages for reset. This filter " +
     					"can be combined with the other notification settings.", 
@@ -4718,7 +4718,7 @@ public class MinesCommands
 
 
 	@Command(identifier = "mines command list", description = "Lists the commands for a mine.", 
-    						onlyPlayers = false, permissions = "mines.command")
+    						onlyPlayers = false, permissions = "mines.set")
     public void commandList(CommandSender sender, 
     				@Arg(name = "mineName") String mineName) {
     	
@@ -4785,7 +4785,7 @@ private ChatDisplay minesCommandList( Mine m )
 
 
 	@Command(identifier = "mines command remove", description = "Removes a command from a mine.", 
-    		onlyPlayers = false, permissions = "mines.command")
+    		onlyPlayers = false, permissions = "mines.set")
     public void commandRemove(CommandSender sender, 
     				@Arg(name = "mineName") String mineName,
     				@Arg(name = "row", 
@@ -4851,7 +4851,7 @@ private ChatDisplay minesCommandList( Mine m )
     }
 
 	@Command(identifier = "mines command add", description = "Adds a command to a mine with NO placeholders.", 
-    		onlyPlayers = false, permissions = "mines.command")
+    		onlyPlayers = false, permissions = "mines.set")
     public void commandAdd(CommandSender sender, 
     			@Arg(name = "mineName", description = "mine name, or 'placeholders' for a list of possible placeholders that " +
     					"you can use with blockEvents") String mineName,

@@ -63,7 +63,7 @@ permissions:
     description: Access to the /mines rename command.
   
   mines.set:
-    description: Access to the /mines set command.
+    description: Access to various /mines set commands.
 
   mines.block:
     description: Access to the /mines block command.
@@ -83,29 +83,17 @@ permissions:
   mines.list:
     description: Access to the /mines list command.
 
-  mines.skipreset:
-    description: Access to the /mines set skipReset command.
-
-  mines.zeroblockresetdelay:
-    description: Access to the /mines set zeroBlockResetDelay command.
-
   mines.stats:
     description: Access to the /mines stats command.
 
   mines.whereami:
     description: Access to the /mines whereami command.
     
-  mines.resettime:
-    description: Access to the /mines set resetTime command.
-
   mines.notification:
     description: Access to the /mines set notification command.
     
   mines.tp:
     description: Access to the /mines tp command.
-
-  mines.command:
-    description: Access to the /mines command command.
 
   mines.admin:
     description: Contains all the commands for managing mines.
@@ -120,11 +108,8 @@ permissions:
       mines.wand: true
       mines.list: true
       mines.reset: true
-      mines.skipreset: true
-      mines.zeroblockresetdelay: true
       mines.stats: true
       mines.whereami: true
-      mines.resettime: true
       mines.notification: true
       mines.tp: true
       mines.command: true
