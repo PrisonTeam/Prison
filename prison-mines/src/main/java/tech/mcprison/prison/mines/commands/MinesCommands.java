@@ -948,7 +948,7 @@ public class MinesCommands
         	
         	if ( !mineAccessByRank ) {
         		RowComponent row = new RowComponent();
-        		row.addTextComponent( "&3Mine Access Permission: &7%s   &3(Should use Access by Rank)", 
+        		row.addTextComponent( "&3Mine Access Permission: &7%s   &3(Consider using Access by Rank)", 
         				( m.getAccessPermission() == null ? "&2none" : m.getAccessPermission() ) );
         		chatDisplay.addComponent( row );
         	}
@@ -973,8 +973,7 @@ public class MinesCommands
         	}
         	
         	
-        	if ( !m.isVirtual() ) {
-        	}
+
         	
         	
         	if ( !m.isVirtual() ) {
@@ -995,16 +994,10 @@ public class MinesCommands
         		String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
         		chatDisplay.addText("&3Spawnpoint: &7%s", spawnPoint);
         		
-        		if ( cmdPageData.isShowAll() || isMineStats ) {
-        			RowComponent rowStats = new RowComponent();
-        			rowStats.addTextComponent( "  -- &7 Stats :: " );
-        			rowStats.addTextComponent( m.statsMessage() );
-        			
-        			chatDisplay.addComponent(rowStats);
-        		}
         	}
         	
 
+        	
         	
 //          chatDisplay.text("&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
 //              Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()));
@@ -1061,33 +1054,36 @@ public class MinesCommands
           	else {
         		RowComponent row = new RowComponent();
         		double rtMinutes = resetTime / 60.0D;
-        		row.addTextComponent( "&3Reset time: &7%s &3Secs (&7%.2f &3Mins)", 
-        				Integer.toString(resetTime), rtMinutes );
+        		row.addTextComponent( 
+        				"&3Reset time: &7%s &3Secs (&7%.2f &3Mins)  Reset Count: &7%s ", 
+        				Integer.toString(resetTime), 
+        				rtMinutes,
+        				dFmt.format(m.getResetCount()) );
         		chatDisplay.addComponent( row );
         	}
         	
-        	{
-        		RowComponent row = new RowComponent();
-        		row.addTextComponent( "&3Mine Reset Count: &7%s ", 
-        				dFmt.format(m.getResetCount()) );
-        		
-//        		if ( m.isUsePagingOnReset() ) {
-//        			row.addTextComponent( "    &7-= &5Reset Paging Enabled &7=-" );
-//        		}
-//        		else if ( cmdPageData.isShowAll() ) {
-//        			row.addTextComponent( "    &7-= &3Reset Paging Disabled &7=-" );
-//        		}
-        		
-        		chatDisplay.addComponent( row );
-        		
-//        		double resetTimeSeconds = m.getStatsResetTimeMS() / 1000.0;
-//        		if ( !m.isUsePagingOnReset() && resetTimeSeconds > 0.5 ) {
-//        			String resetTimeSec = PlaceholdersUtil.formattedTime( resetTimeSeconds );
-//        			chatDisplay.addText("&5  Warning: &3Reset time is &7%s&3, which is high. " +
-//        					"It is recommened that you try to enable &7/mines set resetPaging help",
-//        					resetTimeSec );
-//        		}
-        	}
+//        	{
+//        		RowComponent row = new RowComponent();
+//        		row.addTextComponent( "&3Mine Reset Count: &7%s ", 
+//        				dFmt.format(m.getResetCount()) );
+//        		
+////        		if ( m.isUsePagingOnReset() ) {
+////        			row.addTextComponent( "    &7-= &5Reset Paging Enabled &7=-" );
+////        		}
+////        		else if ( cmdPageData.isShowAll() ) {
+////        			row.addTextComponent( "    &7-= &3Reset Paging Disabled &7=-" );
+////        		}
+//        		
+//        		chatDisplay.addComponent( row );
+//        		
+////        		double resetTimeSeconds = m.getStatsResetTimeMS() / 1000.0;
+////        		if ( !m.isUsePagingOnReset() && resetTimeSeconds > 0.5 ) {
+////        			String resetTimeSec = PlaceholdersUtil.formattedTime( resetTimeSeconds );
+////        			chatDisplay.addText("&5  Warning: &3Reset time is &7%s&3, which is high. " +
+////        					"It is recommened that you try to enable &7/mines set resetPaging help",
+////        					resetTimeSec );
+////        		}
+//        	}
         	
         	if ( !m.isVirtual() && resetTime > 0 ) {
         		RowComponent row = new RowComponent();
@@ -1097,55 +1093,12 @@ public class MinesCommands
         			(targetResetTime - System.currentTimeMillis()) / 1000d);
         		double rtMinutes = remaining / 60.0D;
         		
-        		row.addTextComponent( "&3Time Remaining Until Reset: &7%s &3Secs (&7%.2f &3Mins)", 
+        		row.addTextComponent( "&3Time Until Next Reset: &7%s &3Secs (&7%.2f &3Mins)", 
         				dFmt.format( remaining ), rtMinutes );
         		chatDisplay.addComponent( row );
         	}
         	
-        	if ( resetTime > 0 )
-        	{
-        		RowComponent row = new RowComponent();
-        		row.addTextComponent( "&3Notification Mode: &7%s &7%s", 
-        				m.getNotificationMode().name(), 
-        				( m.getNotificationMode() == MineNotificationMode.radius ? 
-        						dFmt.format( m.getNotificationRadius() ) + " blocks" : "" ) );
-        		chatDisplay.addComponent( row );
-        	}
         	
-        	if ( resetTime > 0 && m.isUseNotificationPermission() || 
-        		 resetTime > 0 && !m.isUseNotificationPermission() && cmdPageData.isShowAll() ) {
-        		RowComponent row = new RowComponent();
-        		row.addTextComponent( "&3Notifications Filtered by Permissions: %s", 
-        				( m.isUseNotificationPermission() ?
-        						m.getMineNotificationPermissionName() : "&dDisabled" ) );
-        		chatDisplay.addComponent( row );
-        	}
-        	
-        	
-        	
-
-        	
-        	{
-
-        		if ( m.isZeroBlockResetDisabled() && cmdPageData.isShowAll() ) {
-        			RowComponent row = new RowComponent();
-        			row.addTextComponent( "&3Zero Blocks Reset Delay: &cDISABLED");
-        			chatDisplay.addComponent( row );
-        		} 
-        		else if ( !m.isZeroBlockResetDisabled() ) {
-        			RowComponent row = new RowComponent();
-        			if ( m.getResetThresholdPercent() == 0 ) {
-        				row.addTextComponent( "&3Zero Blocks Reset Delay: &7%s &3Seconds",
-        						fFmt.format( m.getZeroBlockResetDelaySec() ));
-        			}
-        			else {
-        				row.addTextComponent( "&7Threshold &3Reset Delay: &7%s &3Seconds",
-        						fFmt.format( m.getZeroBlockResetDelaySec() ));
-        			}
-        			chatDisplay.addComponent( row );
-        		}
-        		
-        	}
         	
         	
         	if ( !m.isVirtual() ) {
@@ -1167,26 +1120,79 @@ public class MinesCommands
         		
         	}
         	
+
+        	
+        	{
+
+        		if ( m.isZeroBlockResetDisabled() && cmdPageData.isShowAll() ) {
+        			RowComponent row = new RowComponent();
+        			row.addTextComponent( "&3Reset Delay: &cDISABLED");
+        			chatDisplay.addComponent( row );
+        		} 
+        		else if ( !m.isZeroBlockResetDisabled() ) {
+        			RowComponent row = new RowComponent();
+        			if ( m.getResetThresholdPercent() == 0 ) {
+        				row.addTextComponent( "&3Reset Delay (zero blocks): &7%s &3Seconds",
+        						fFmt.format( m.getZeroBlockResetDelaySec() ));
+        			}
+        			else {
+        				row.addTextComponent( "&3Reset Delay (&s Percent Threshold): &7%s &3Seconds",
+        						fFmt.format( m.getResetThresholdPercent() ),
+        						fFmt.format( m.getZeroBlockResetDelaySec() ));
+        			}
+        			chatDisplay.addComponent( row );
+        		}
+        		
+        	}
+        	
+
+        	
         	
         	if ( resetTime > 0 && m.isSkipResetEnabled() ) {
         		RowComponent row = new RowComponent();
-        		row.addTextComponent( "&3Skip Reset: &2Enabled&3: &3Threshold: &7%s  &3Skip Limit: &7%s",
-        				fFmt.format( m.getSkipResetPercent() ), dFmt.format( m.getSkipResetBypassLimit() ));
+        		row.addTextComponent( 
+        				"&3Reset Skip: &2Enabled&3: &3Threshold: &7%s  &3SkipLimit: &7%s  &3SkipCount: &7%s",
+        				fFmt.format( m.getSkipResetPercent() ), 
+        				dFmt.format( m.getSkipResetBypassLimit() ),
+        				dFmt.format( m.getSkipResetBypassCount() ) );
         		chatDisplay.addComponent( row );
         		
-        		if ( m.getSkipResetBypassCount() > 0 ) {
-        			RowComponent row2 = new RowComponent();
-        			row2.addTextComponent( "    &3Skipping Enabled: Skip Count: &7%s",
-        					dFmt.format( m.getSkipResetBypassCount() ));
-        			chatDisplay.addComponent( row2 );
-        		}
+//        		if ( m.getSkipResetBypassCount() > 0 ) {
+//        			RowComponent row2 = new RowComponent();
+//        			row2.addTextComponent( "    &3Skipping Enabled: Skip Count: &7%s",
+//        					dFmt.format( m.getSkipResetBypassCount() ));
+//        			chatDisplay.addComponent( row2 );
+//        		}
         	} 
         	else if ( resetTime > 0 && cmdPageData.isShowAll() ) {
         		RowComponent row = new RowComponent();
-        		row.addTextComponent( "&3Skip Mine Reset if no Activity: &cnot set");
+        		row.addTextComponent( "&3Reset Skip if no Mining Activity: &cnot enabled");
         		chatDisplay.addComponent( row );
         	}
         	
+        	
+        	
+        	if ( resetTime > 0 )
+        	{
+        		RowComponent row = new RowComponent();
+        		row.addTextComponent( "&3Notification Mode: &7%s &7%s", 
+        				m.getNotificationMode().name(), 
+        				( m.getNotificationMode() == MineNotificationMode.radius ? 
+        						dFmt.format( m.getNotificationRadius() ) + " blocks" : "" ) );
+        		chatDisplay.addComponent( row );
+        	}
+        	
+        	if ( resetTime > 0 && m.isUseNotificationPermission() || 
+        		 resetTime > 0 && !m.isUseNotificationPermission() && cmdPageData.isShowAll() ) {
+        		RowComponent row = new RowComponent();
+        		row.addTextComponent( "&3Notifications Filtered by Permissions: %s", 
+        				( m.isUseNotificationPermission() ?
+        						m.getMineNotificationPermissionName() : "&dDisabled" ) );
+        		chatDisplay.addComponent( row );
+        	}
+        	
+        	
+
         	
         	
         	if ( m.isMineSweeperEnabled() ) {
@@ -1219,6 +1225,43 @@ public class MinesCommands
         		chatDisplay.addComponent( row );
         	}
         	
+        	
+        	
+        	
+        	String statsMsg = m.statsMessage();
+        	if ( !m.isVirtual() && (cmdPageData.isShowAll() || isMineStats) &&
+        			statsMsg != null && statsMsg.length() > 0 ) {
+        		
+        		int idx = statsMsg.indexOf("BlockUpdateTime:");
+        		int idx2 = statsMsg.indexOf("ResetPages:", idx);
+        		
+        		String stats1 = statsMsg.substring(0, idx );
+        		String stats2 = statsMsg.substring( idx, idx2 );
+        		String stats3 = statsMsg.substring( idx2 );
+        		
+        		{
+        			RowComponent rowStats = new RowComponent();
+        			rowStats.addTextComponent( "  -- &7 Reset Stats :: &3" );
+        			rowStats.addTextComponent( stats1 );
+        			chatDisplay.addComponent(rowStats);
+        		}
+        		{
+        			RowComponent rowStats = new RowComponent();
+        			rowStats.addTextComponent( "  -- &7 Reset Stats ::  &3" );
+        			rowStats.addTextComponent( stats2 );
+        			chatDisplay.addComponent(rowStats);
+        		}
+        		{
+        			RowComponent rowStats = new RowComponent();
+        			rowStats.addTextComponent( "  -- &7 Reset Stats ::  &3" );
+        			rowStats.addTextComponent( stats3 );
+        			chatDisplay.addComponent(rowStats);
+        		}
+        		
+        		
+//        		rowStats.addTextComponent( m.statsMessage() );
+        	}
+
         	
         	
         	if ( m.getResetCommands() != null && m.getResetCommands().size() > 0 ) {
@@ -1721,8 +1764,14 @@ public class MinesCommands
         		def = "10") String bypassLimit
     		) {
         
-        if (performCheckMineExists(sender, mineName)) {
-        	setLastMineReferenced(mineName);
+        if ( "*all*".equalsIgnoreCase( mineName ) ||
+        		performCheckMineExists(sender, mineName)
+        		) {
+        	
+        	if ( !"*all*".equalsIgnoreCase( mineName ) ) {
+        		
+        		setLastMineReferenced(mineName);
+        	}
         	
         	if ( enabled == null || !
         			!"enabled".equalsIgnoreCase( enabled ) && 

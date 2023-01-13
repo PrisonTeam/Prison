@@ -6,7 +6,7 @@
 
 This document provides some highlights to how to setup mines.  It is a work in progress so check back for more information.
 
-*Documented updated: 2022-11-05*
+*Documented updated: 2023-01-13*
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -200,6 +200,8 @@ Some of the highlights of these commands are as follows:
 * `/mines list` : Displays all mines on your server.
 * `/mines playerInventory` : Shows your current inventory in the console. Intended strictly for admins.
 * `/mines rename` : Renames a mine.
+
+
 * `/mines reset <mineName> <options>` : Resets the mine. Forces a regeneration of all the blocks, even if the mine is in skip reset mode.  `<mineName>` should be the name of the mine, but can also be ** *all* ** to force all the mines to reset one after the other.  If such action is performed, then all mine resets will be done through a submission with a slight delay between each reset, and it will prevent the running of the mine reset commands to prevent possible looping.  `<options>` should not be use directly without understanding what they do. 
 * `/mines stats` : Toggles the display of stats that pertain to how long it takes to reset the mines.  View /mines info or /mines list to see the stats.  Use this command again to turn it off.
 
@@ -249,6 +251,7 @@ Some of the highlights of these commands are as follows:
 * `/mines set liner` : A quick way to wrap your mine with a 2D Pattern in 3D space.  This command also will `repair` the area around a mine, and will effectively erase a liner.  There are six directions that can be specified for change: `north`, `south`, `east`, `west`, `top`, and `bottom`. `walls` also is a shortcut for `north`, `south`, `east`, and `west`.  The patterns available are listed by the command.  There is even a `force` setting that will allow the mine to be wrapped when in air, since the wrappings normally needs blocks in contact with the mine so it is able to conform to the terrain.
 * `/mines set mineSweeper` : If all else fails to get Prison to monitor and track blocks that are broken within a mine, mostly due to conflicts with other plugins, then this option can provide a last chance effort to monitor the progress within a mine.  It is very rare that you would have to use this setting and the chances are that there are better ways to get the mines working correctly.  The larger the mine, the more costly this setting is to enable.
 * **Removed:** `/mines set move` is a new command that is not yet enabled. It is still in development, but will be active soon.  This command will move a whole mine as a single unit, be it a few blocks or many (not recommended).  The same effect of moving a mine can be done through the command: `/mine set size` but note it will possibly damage or destory the surrounding builds if not careful.
+
 * **Removed:** `/mines set norank` : Disconnect the mine from a rank. **Note:** This command has been changed to `/mines set rank <mineName> *none*` to delete the rank from the mine.
 * `/mines set notificationPerm` : Enables or Disables notifications pertaining to mine resets to be seen only by players who have permission to that mine.  The permissions used are `mines.notification.[mineName]` in all lower case.
 * `/mines set notification` : Can turn off the notifications on a per-mine basis.  Or set the notification radius, or only notify players within the mine.  This command cannot change the message.
@@ -257,7 +260,9 @@ Some of the highlights of these commands are as follows:
 * `/mines set resetTime` : Changes the time between resets, as expressed in seconds. Applies to each mine independently.
 * **Removed:** `/mines set resetPaging` :  This no longer is a setting, since Prison always uses a more advanced type of paging that dynamically prevents server lag. This is an advanced feature that can eliminate lag that might be experienced with the resetting of enormous large mines. A mine could be millions of blocks in size and without this setting it may take a few seconds, or longer to reset, and it could cause the ticks to fall far behind, even to the point of forcing a shutdown.  This command instead will breakdown the mine's reset in to very small chunks that will prevent the TPS from slowing down, and it will allow other critical tasks to continue to run.  The total length of time for the rest may be increased, but it will not hurt the server. Prison does not use async resets due to eventual corruption of the bukkit and spigot components.
 * `/mines set size` : Allows you to resize a mine without redefining it with the prison selection wand. Just specify which direction to increase or decrease. It also uses the `/mines set liner <mineName> repair` feature to fill in voids when reducing an edge. 
-* `/mines set skipReset` : When enabled, can prevent a mine from resetting if it has no activity.  Can set a threshold before the mine is reset, such as 80% will require 20% of the blocks be mined before being reset.  Can also set a bypassLimit so that if the reset is skipped X number of times, it will force a reset anyway.
+
+* `/mines set resetSkip` : When enabled, can prevent a mine from resetting if it has no activity.  Can set a threshold before the mine is reset, such as 80% will require 20% of the blocks be mined before being reset.  Can also set a bypassLimit so that if the reset is skipped X number of times, it will force a mine reset.  This command is good for reducing server load for mines that are not that busy.
+
 * `/mines set sortOrder` : Mines can be sorted for view within `/mines list` or the GUI.  Setting the sortOrder allows you manually set the order in which the mines are listed.  There is even the option to suppress (hide) mines from that list too by setting the sort order to a -1.
 * `/mines set spawn` : Sets the mines spawn point. Whatever you are looking at is what the players will be looking at when they tp to that spot.
 * `/mines set tag` : Set a mine tag value that can be used with placeholders.
