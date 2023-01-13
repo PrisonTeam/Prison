@@ -10,8 +10,11 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.13h 2023-01-11
+# 3.3.0-alpha.13h 2023-01-13
 
+
+* **Change command from '/mines set skipReset` to `/mines set resetSkip` to try to better align similar commands.**
+Improved the help for the command too.  Added support for '*all*' mines too.
 
 
 **v3.3.0-alpha.13h2 2023-01-11**

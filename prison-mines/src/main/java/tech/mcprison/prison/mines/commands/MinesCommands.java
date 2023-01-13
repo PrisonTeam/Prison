@@ -1692,43 +1692,60 @@ public class MinesCommands
 	}
 
 	/**
-     * <p>The following command will change the mine's time between resets. But it will
-     * not be applied until after the next reset.
+     * <p>The following command will skip the mines normally scheduled reset.
      * </p>
      * 
      * @param sender
      * @param mineName
      * @param time
      */
-    @Command(identifier = "mines set skipReset", permissions = "mines.skipreset", 
-    		description = "Set a mine to skip the reset if not enough blocks have been mined.")
+    @Command(identifier = "mines set resetSkip", permissions = "mines.set", 
+    		description = "Set a mine to skip the reset if not enough blocks have been mined. "
+    				+ "The threshold value should be higher than the resetThreshold.  If the "
+    				+ "percent remaining is higher than the resetSkip threshold, then Prison will"
+    				+ "skip the current reset.  After skipping the reset 'bypassLimit' number of times, "
+    				+ "then prison will reset the mine to return it to a clean state. "
+    				+ "The reset skipping is not influenced by the 'resetThreshold' or the 'resetDelay', "
+    				+ "but all of them are related to fine tuning a mine's behavior. "
+    				+ "Also see '/mines set resetThreshold help' and "
+    				+ "'/mines set resetDelay'.")
     public void skipResetCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
-        @Arg(name = "enabled", description = "Enable the skip reset processing: 'Enabled' or 'Disable'", 
+        @Arg(name = "mineName", description = "The mine name to edit, "
+        		+ "or '*all*' to apply to all mines.") String mineName,
+        @Arg(name = "enabled", description = "Enable the skip reset processing: 'Enabled' or 'Disabled' "
+        		+ "[enable, enabled, disable, disabled]", 
         		def = "disabled") String enabled,
-        @Arg(name = "percent", description = "Percent threshold before resetting.", def = "80" ) String percent,
-        @Arg(name = "bypassLimit", description = "Limit number of skips before bypassing and performing a reset",
-        		def = "50") String bypassLimit
+        @Arg(name = "percent", description = "If percent remaining in the mine is higher than "
+        		+ "this threshold percentage, then the reset will be skipped.", def = "80" ) String percent,
+        @Arg(name = "bypassLimit", description = "Max number of resets that are bypassed before forcing a reset",
+        		def = "10") String bypassLimit
     		) {
         
         if (performCheckMineExists(sender, mineName)) {
         	setLastMineReferenced(mineName);
         	
-        	if ( enabled == null || !"enabled".equalsIgnoreCase( enabled ) && !"disabled".equalsIgnoreCase( enabled )) {
-        		Output.get().sendWarn( sender,"&7Invalid &benabled&7 value. Must be either &benabled&7 or " +
-        				"&bdisabled&7.  Was &b%s&7.", (enabled == null ? "&c-blank-" : enabled) );
+        	if ( enabled == null || !
+        			!"enabled".equalsIgnoreCase( enabled ) && 
+        			!"enable".equalsIgnoreCase( enabled ) && 
+        			!"disabled".equalsIgnoreCase( enabled ) && 
+        			!"disable".equalsIgnoreCase( enabled ) 
+        			) {
+        		
+        		Output.get().sendWarn( sender,"&7Invalid &benabled&7 value. Must be ["
+        				+ "&benable&7, &benabled&7, &bdisable&7, &bdisabled&7].  "
+        				+ "Was &b%s&7.", (enabled == null ? "&c-blank-" : enabled) );
         		return;
         	}
 
         	PrisonMines pMines = PrisonMines.getInstance();
-        	Mine m = pMines.getMine(mineName);
+        	
             
 //            if ( !m.isEnabled() ) {
 //            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
 //            	return;
 //            }
             
-        	boolean skipEnabled = "enabled".equalsIgnoreCase( enabled );
+        	boolean skipEnabled = "enabled".equalsIgnoreCase( enabled ) || "enable".equalsIgnoreCase( enabled );
         	double skipPercent = 80.0d;
         	int skipBypassLimit = 50;
         	
@@ -1757,17 +1774,42 @@ public class MinesCommands
 						"Was &b%s&7.", (bypassLimit == null ? "-blank-" : bypassLimit) );
 			}
         	
-        	m.setSkipResetEnabled( skipEnabled );
-        	m.setSkipResetPercent( skipPercent );
-        	m.setSkipResetBypassLimit( skipBypassLimit );
+        	int updates = 0;
+        	String mName = "&7*all*&r";
         	
-        	pMines.getMineManager().saveMine( m );
+        	if ( "*all*".equalsIgnoreCase(mineName) ) {
+        		
+        		for ( Mine m : pMines.getMines() ) {
+        			
+        			m.setSkipResetEnabled( skipEnabled );
+        			m.setSkipResetPercent( skipPercent );
+        			m.setSkipResetBypassLimit( skipBypassLimit );
+        			
+        			pMines.getMineManager().saveMine( m );
+        			updates++;
+        		}
+        	}
+        	else {
+        		
+        		Mine m = pMines.getMine(mineName);
+        		m.setSkipResetEnabled( skipEnabled );
+        		m.setSkipResetPercent( skipPercent );
+        		m.setSkipResetBypassLimit( skipBypassLimit );
+        		
+        		mName = m.getTag();
+        		
+        		pMines.getMineManager().saveMine( m );
+        		updates++;
+        	}
+        	
         	
         	// User's message:
         	String message = String.format( "&7mines skipreset for &b%s&7: &b%s&7  " +
-					        			"threshold: &b%.2f&7 percent  bypassLimit: &b%d", 
-					        			m.getTag(), (skipEnabled ? "enabled" : "disabled"),
-					        			skipPercent, skipBypassLimit );
+					        			"threshold: &b%.2f&7 percent  bypassLimit: &b%d  "
+					        			+ "Mines Updated: %d", 
+					        			mName, (skipEnabled ? "enabled" : "disabled"),
+					        			skipPercent, skipBypassLimit,
+					        			updates );
         	Output.get().sendInfo( sender, message );
         	
         	// Server Log message:
