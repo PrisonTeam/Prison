@@ -13,7 +13,7 @@ Buildtools also allows easy setup of many test environments since all you
 would need to do is to just change the version.
 
 
-*Documented updated: 2021-12-03*
+*Documented updated: 2023-01-14*
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -25,7 +25,7 @@ there are many good resources out there.
 
 *  First install a copy of Java that is accessible from the command line.
     - The current version of Java is version 17. Even if you are using jars and other plugins that were compiled with Java 1.8.x, it is recommended to use Java 17.  
-	- If you feel like you must use Java 1.8, it’s strongly suggested to use only the latest version 1.8.0_x.
+	- If you feel like you must use Java 1.8, it's strongly suggested to use only the latest version 1.8.0_x.
     
     
 *  You can download it from [Sun SE Development Kit 8]https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html) for product that you need.
@@ -59,7 +59,8 @@ there are many good resources out there.
   java -jar BuildTools.jar --rev 1.15.2
   java -jar BuildTools.jar --rev 1.16.5
   java -jar BuildTools.jar --rev 1.17.1
-  java -jar BuildTools.jar --rev 1.18
+  java -jar BuildTools.jar --rev 1.18.2
+  java -jar BuildTools.jar --rev 1.19.3
 ```
 
 *  For example, with BuildTools.jar being in a root directory, create a subdirectory and then start a build within that directory.  The benefit is that you can use the same BuildTools.jar to build multiple different versions of spigot.  This example starts off with building a v1.17.1 instance and then builds a 1.8.8 instance.  Normally you wouldn't build multiple versions of spigot, but this shows how easy and flexible it is to build any version of spigot that has been released.
@@ -67,12 +68,12 @@ there are many good resources out there.
 ```
   mkdir spigot-1.17.1
   cd spigot-1.17.1
-  java -jar ../BuildTools.jar –rev 1.17.1
+  java -jar ../BuildTools.jar --rev 1.17.1
   
   cd ..
   mkdir spigot-1.8.8
   cd spigot-1.8.8
-  java -jar ../BuildTools.jar –rev 1.8.8
+  java -jar ../BuildTools.jar --rev 1.8.8
 ```
 
 *  **Updating BuildTools:** Once in a while you will be prompted to update the BuildTools.jar file. To do update it, all you need to do is to just download it, and replace the older one you were using.  
@@ -92,7 +93,7 @@ there are many good resources out there.
 *  NOTE: At the time when this document was updated, Spigot 1.18 was just released.  Because 1.18 requires Java 17, it is advisable to use that version of Java.  Prison, because it is still being ran on older servers and under older environments, it must try to support the widest array of Spigot versions; therefore it is built with the latest version of Java 1.8.x, and built using Spigot 1.13.2.  The environments in which Prison is built, should not impact how you build and run your server, of which it could easily be with Java 17 and Spigot 18.
 
 
-*  Windows example, if you’re still in the build directory:
+*  Windows example, if you're still in the build directory:
 
 ```
   cd ../..
@@ -100,7 +101,7 @@ there are many good resources out there.
   copy /B builds\spigot-1.17.1\spigot-1.17.1.jar spigot-1.17.1_server
 ```
 
-*  Linux example, if you’re still in the build directory:
+*  Linux example, if you're still in the build directory:
 
 ```
   cd ../..
@@ -119,7 +120,7 @@ there are many good resources out there.
     pause
 ```
 
-*  Let the server fully start for the first time, then stop it by entering “stop” in the open server console.  The server is now ready to be customized.
+*  Let the server fully start for the first time, then stop it by entering 'stop' in the open server console.  The server is now ready to be customized.
 
 
 This should give you a functional server for which to run the Prison plugin.  
