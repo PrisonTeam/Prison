@@ -13,6 +13,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.pulsi_.prisonenchants.events.PEExplosionEvent;
+import me.revils.revenchants.events.ExplosiveEvent;
+import me.revils.revenchants.events.JackHammerEvent;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
@@ -164,6 +166,36 @@ public abstract class OnBlockBreakEventCore
 		return eventResults.isIgnoreEvent();
 	}
 	
+	/**
+	 * <p>Note that this function is required since ExplosiveEvent does not implement the 
+	 * interface Cancellable.
+	 * </p>
+	 * 
+	 * @param event
+	 * @param player
+	 * @param block
+	 * @return
+	 */
+	protected boolean ignoreMinesBlockBreakEvent( ExplosiveEvent event, Player player, Block block ) {
+		
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
+		
+		if ( eventResults.isCancelEvent() ) {
+			event.setCancelled( eventResults.isCancelEvent() );
+		}
+		return eventResults.isIgnoreEvent();
+	}
+	
+	protected boolean ignoreMinesBlockBreakEvent( JackHammerEvent event, Player player, Block block ) {
+		
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
+		
+		if ( eventResults.isCancelEvent() ) {
+			event.setCancelled( eventResults.isCancelEvent() );
+		}
+		return eventResults.isIgnoreEvent();
+	}
+	
 	protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player player, Block block ) {
 		
 		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
@@ -173,6 +205,8 @@ public abstract class OnBlockBreakEventCore
 		}
 		return eventResults.isIgnoreEvent();
 	}
+	
+
 	
 
 	/**

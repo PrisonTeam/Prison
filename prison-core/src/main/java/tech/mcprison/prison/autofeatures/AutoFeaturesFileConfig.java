@@ -119,6 +119,9 @@ public class AutoFeaturesFileConfig {
 		    	
 		    	CrazyEnchantsBlastUseEventPriority(blockBreakEvents, "DISABLED"),
 
+		    	RevEnchantsExplosiveEventPriority(blockBreakEvents, "DISABLED"),
+		    	RevEnchantsJackHammerEventPriority(blockBreakEvents, "DISABLED"),
+
 		    	ZenchantmentsBlockShredEventPriority(blockBreakEvents, "DISABLED"),
 	    	
 		    	PrisonEnchantsExplosiveEventPriority(blockBreakEvents, "DISABLED"),
@@ -1001,6 +1004,9 @@ public class AutoFeaturesFileConfig {
 			bStatsDetailPriority( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority, tm );
 			bStatsDetailPriority( AutoFeatures.TokenEnchantBlockExplodeEventPriority, tm );
 			bStatsDetailPriority( AutoFeatures.CrazyEnchantsBlastUseEventPriority, tm );
+			bStatsDetailPriority( AutoFeatures.RevEnchantsExplosiveEventPriority, tm );
+			bStatsDetailPriority( AutoFeatures.RevEnchantsJackHammerEventPriority, tm );
+			
 			bStatsDetailPriority( AutoFeatures.ZenchantmentsBlockShredEventPriority, tm );
 			bStatsDetailPriority( AutoFeatures.PrisonEnchantsExplosiveEventPriority, tm );
 

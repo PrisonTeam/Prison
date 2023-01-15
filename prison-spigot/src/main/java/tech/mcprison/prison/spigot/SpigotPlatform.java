@@ -2179,6 +2179,26 @@ public class SpigotPlatform
     				(isTebeEnabled ? "&2Enabled" : "&cDisabled")
     				) );
     		
+    		
+    		String reeePriority = afw.getMessage( AutoFeatures.RevEnchantsExplosiveEventPriority );
+    		boolean isReeeEnabled = reeePriority != null && !"DISABLED".equalsIgnoreCase( reeePriority );
+    		BlockBreakPriority reeEventPriority = BlockBreakPriority.fromString( reeePriority );
+    		results.add( String.format("%s.   RevEnchant '&7ExplosiveEvent&3' Priority:&b %s %s", 
+    				(isReeeEnabled ? "" : "+" ), 
+    				reeEventPriority.name(),
+    				(isReeeEnabled ? "&2Enabled" : "&cDisabled")
+    				) );
+    		
+    		String rejhePriority = afw.getMessage( AutoFeatures.RevEnchantsJackHammerEventPriority );
+    		boolean isRejheEnabled = rejhePriority != null && !"DISABLED".equalsIgnoreCase( rejhePriority );
+    		BlockBreakPriority rejhEventPriority = BlockBreakPriority.fromString( rejhePriority );
+    		results.add( String.format("%s.   RevEnchant '&7JackHammerEvent&3' Priority:&b %s %s", 
+    				(isRejheEnabled ? "" : "+" ), 
+    				rejhEventPriority.name(),
+    				(isRejheEnabled ? "&2Enabled" : "&cDisabled")
+    				) );
+    		
+    		
     		String cebuePriority = afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
     		boolean isCebueEnabled = cebuePriority != null && !"DISABLED".equalsIgnoreCase( cebuePriority );
     		BlockBreakPriority cebuEventPriority = BlockBreakPriority.fromString( cebuePriority );

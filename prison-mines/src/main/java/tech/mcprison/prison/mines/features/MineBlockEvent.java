@@ -36,9 +36,16 @@ public class MineBlockEvent {
 		PEExplosive, // PrisonEnchant: Pulsi_'s plugin
 		PrisonExplosion,
 		
+		RevEnExplosion,
+		RevEnJackHammer,
+		
 		eventTypeAll( all ),
 		eventBlockBreak( blockBreak ),
-		eventTEXplosion( TEXplosion )
+		eventTEXplosion( TEXplosion ), 
+		
+		eventRevEnExplosion( RevEnExplosion ),
+		eventRevEnJackHammer( RevEnJackHammer ),
+		
 		;
 		
 		private final BlockEventType primaryEventType;

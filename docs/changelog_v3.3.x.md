@@ -10,7 +10,11 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.13h 2023-01-13
+# 3.3.0-alpha.13h 2023-01-14
+
+
+* **Added support for RevEnchants ExplosiveEvent and JackHammerEvent.**
+
 
 * **Adjustments to improve readability of the '/mines info' command.**
 

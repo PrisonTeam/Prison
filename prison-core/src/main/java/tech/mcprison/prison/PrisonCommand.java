@@ -980,6 +980,12 @@ public class PrisonCommand
     		display.addText( "&b    options.blockBreakEvents.CrazyEnchantsBlastUseEventPriority:  %s", 
     				afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority ) );
     		
+    		display.addText( "&b    options.blockBreakEvents.RevEnchantsExplosiveEventPriority:  %s", 
+    				afw.getMessage( AutoFeatures.RevEnchantsExplosiveEventPriority ) );
+
+    		display.addText( "&b    options.blockBreakEvents.RevEnchantsJackHammerEventPriority:  %s", 
+    				afw.getMessage( AutoFeatures.RevEnchantsJackHammerEventPriority ) );
+    		
     		display.addText( "&b    options.blockBreakEvents.ZenchantmentsBlockShredEventPriority:  %s", 
     				afw.getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority ) );
     		
