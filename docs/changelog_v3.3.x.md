@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13h 2023-01-15
 
 
+* **AutoFeatures: Prepare for a few new priorities for the event listeners.**
+
+
 * **AutoFeatures: Bug fix.  Found that all events that were canceled were automatically being ignored, which was causing the MONITOR priority to be bypassed since MONITOR should be able to process what it needs to even on a canceled event.**
 
 

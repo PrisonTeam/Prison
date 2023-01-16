@@ -27,11 +27,16 @@ public enum BlockBreakPriority {
 	DISABLED( null ),
 	BLOCKEVENTS( EventPriority.HIGHEST ),
 	
+	ACCESS( EventPriority.LOWEST ),
+	ACCESSBLOCKEVENTS( EventPriority.HIGHEST ),
+	ACCESSMONITOR( EventPriority.MONITOR ),
+	
 	LOWEST( EventPriority.LOWEST ),
 	LOW( EventPriority.LOW ),
 	NORMAL( EventPriority.NORMAL ),
 	HIGH( EventPriority.HIGH ),
 	HIGHEST( EventPriority.HIGHEST ),
+	
 	MONITOR( EventPriority.MONITOR )
 	;
 	
@@ -59,7 +64,9 @@ public enum BlockBreakPriority {
 
 	public boolean isMonitor() {
 		return this == MONITOR || 
-			   this == BLOCKEVENTS 
+			   this == BLOCKEVENTS ||
+			   this == ACCESSBLOCKEVENTS ||
+			   this == ACCESSMONITOR
 			   ;
 	}
 	
