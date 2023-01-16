@@ -132,6 +132,13 @@ public class AutoFeaturesFileConfig {
 		    			"Use the following event priorities with the blockBreakEvents: " +
 		    			"DISABLED, LOWEST, LOW, NORMAL, HIGH, HIGHEST, BLOCKEVENTS, MONITOR" ),
 		    	
+		    	blockBreakEvents__ReadMe2(blockBreakEvents, 
+		    			"MONITOR: Processed even if event is canceled. Includes block counts, "
+		    			+ "Mine Sweeper, and check reset-threshold (zero-block) conditions "
+		    			+ "to force a mine reset. "
+		    			+ "BLOCKEVENTS: Similar to MONITOR but includes Prison Block Events, "
+		    			+ "and sellall on full inventory if enabled." ),
+		    	
 		    	
 		    	
 	    	general(options),

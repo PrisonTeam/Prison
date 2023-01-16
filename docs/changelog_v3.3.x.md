@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13h 2023-01-15
 
 
+* **Expand the comments to better explain the roles of MONITOR and BLOCKEVENTS priorities.**
+
+
 * **Fix a problem with MONITOR and BLOCKEVENTS priorities where they were failing to process the event if the block was broke, of which should be permitted.**
 
 
