@@ -184,14 +184,18 @@ public class PrisonBStats {
         }) );
         
         getbStatsMetrics().addCustomChart( new SimplePie( "prison_total_active_player_counts", () -> {
-        	
-        	int playerCountActive = TopNPlayers.getInstance().getTopNSize();
+
+        	int playerCountActive = PrisonRanks.getInstance().getPlayerManager() == null ?
+        			-1 : 
+        			TopNPlayers.getInstance().getTopNSize();
         	return Integer.toString( playerCountActive );
         }) );
         
         getbStatsMetrics().addCustomChart( new SimplePie( "prison_total_archived_player_counts", () -> {
 
-        	int playerCountArchived = TopNPlayers.getInstance().getArchivedSize();
+        	int playerCountArchived = PrisonRanks.getInstance().getPlayerManager() == null ?
+        			-1 : 
+        			TopNPlayers.getInstance().getArchivedSize();
         	return Integer.toString( playerCountArchived );
         }) );
         

@@ -101,15 +101,26 @@ public class TopNPlayers
 		return saveFile;
 	}
 	
+	/**
+	 * <p>Starts the async task to process the topN players on a regular basis.
+	 * This task can only be submitted if the Ranks module is enabled, which will
+	 * mean that the PlayerManager will be not null.
+	 * </p>
+	 * 
+	 */
 	private void launchTopNPlayerUpdateAsyncTask() {
 		
-		Long delayTicks = Prison.get().getPlatform().getConfigLong( 
-						"topNPlayers.refresh.delay-ticks", DELAY_THIRTY_SECONDS_TICKS );
-		Long intervalTicks = Prison.get().getPlatform().getConfigLong( 
-						"topNPlayers.refresh.interval-ticks", INTERVAL_FIVE_MINUTES_TICKS );
-
+		if ( PrisonRanks.getInstance().getPlayerManager() != null ) {
+			
+			Long delayTicks = Prison.get().getPlatform().getConfigLong( 
+					"topNPlayers.refresh.delay-ticks", DELAY_THIRTY_SECONDS_TICKS );
+			Long intervalTicks = Prison.get().getPlatform().getConfigLong( 
+					"topNPlayers.refresh.interval-ticks", INTERVAL_FIVE_MINUTES_TICKS );
+			
+			
+			TopNPlayerUpdateAsyncTask.submitTaskTimerAsync( this, delayTicks, intervalTicks );
+		}
 		
-		TopNPlayerUpdateAsyncTask.submitTaskTimerAsync( this, delayTicks, intervalTicks );
 	}
 	
 	/**
@@ -123,8 +134,28 @@ public class TopNPlayers
 	 * then this class will be marked as <b>dirty</b> so this loader would know that
 	 * it needs to update the save file.  It will then save it changes.
 	 * </p>
+	 * 
+	 * <p>Since topN players is tied to the Ranks module, if the Ranks module is not
+	 * active, then do not try to load the save file since topN cannot work without
+	 * Prison actively processing, and managing, a player and their Prison Rank.
+	 * </p>
+	 * 
 	 */
 	public void loadSaveFile() {
+		
+		// If Ranks module is not loaded, then do not try to load any save file:
+		if ( PrisonRanks.getInstance().getPlayerManager() != null ) {
+			// Ranks is not loaded, so reset to empties:
+			
+			// Load from file was successful!
+			setTopNList( new ArrayList<>() );
+			setTopNMap( new TreeMap<>() );
+			setArchivedList( new ArrayList<>() );
+			setArchivedMap( new TreeMap<>() );
+			
+			return;
+		}
+		
 		JsonFileIO jfio = new JsonFileIO();
 		
 		TopNPlayers temp = (TopNPlayers) jfio.readJsonFile( getSaveFile(), this );
@@ -142,7 +173,7 @@ public class TopNPlayers
 			// Since loading from a file, some players may now need to be archived:
 			checkArchives();
 		}
-		else {
+		else  {
 			// load from file was not successful, probably because there is no file.
 			// So create a new collection of players from the PlayerManager:
 			List<RankPlayer> players = PrisonRanks.getInstance().getPlayerManager().getPlayers();
@@ -156,7 +187,6 @@ public class TopNPlayers
 			// when adding the player data.
 		}
 		
-		
 		// Sort:
 		sortTopN();
 		
@@ -166,30 +196,44 @@ public class TopNPlayers
 		}
 	}
 	
+	/**
+	 * <p>This function will force a reload of all players. If something should happen and the
+	 * stats for a player(s) gets messed up, then this would help reset and recalculate everything.
+	 * </p>
+	 * 
+	 * <p>TopN is only available if the Ranks module is loaded.  If the Ranks Module is not
+	 * active, then this function will bypass any calculation, or reloading of anything.
+	 * </p>
+	 * 
+	 */
 	public void forceReloadAllPlayers() {
 		
-		getTopNList().clear();
-		getTopNMap().clear();
-		
-		getArchivedList().clear();
-		getArchivedMap().clear();
-
-		
-		// load from file was not successful, probably because there is no file.
-		// So create a new collection of players from the PlayerManager:
-		List<RankPlayer> players = PrisonRanks.getInstance().getPlayerManager().getPlayers();
-		
-		for (RankPlayer rankPlayer : players) {
+		if ( PrisonRanks.getInstance().getPlayerManager() != null ) {
 			
-			addPlayerData( rankPlayer );
+			getTopNList().clear();
+			getTopNMap().clear();
+			
+			getArchivedList().clear();
+			getArchivedMap().clear();
+			
+			
+			// load from file was not successful, probably because there is no file.
+			// So create a new collection of players from the PlayerManager:
+			List<RankPlayer> players = PrisonRanks.getInstance().getPlayerManager().getPlayers();
+			
+			for (RankPlayer rankPlayer : players) {
+				
+				addPlayerData( rankPlayer );
+			}
+			
+			this.dirty = true;
+			
+			// Sort:
+			sortTopN();
+			
+			saveToJson();
+			
 		}
-		
-		this.dirty = true;
-		
-		// Sort:
-		sortTopN();
-		
-		saveToJson();
 		
 	}
 	
@@ -288,6 +332,10 @@ public class TopNPlayers
 	}
 	
 	public void refreshAndSort() {
+		
+		if ( PrisonRanks.getInstance().getPlayerManager() == null ) {
+			return;
+		}
 		
 		if ( !calculatedRankScores ) {
 			
@@ -391,23 +439,26 @@ public class TopNPlayers
 	
 	private void calculateAllRankScores( ArrayList<TopNPlayersData> topNList ) {
 
-		for ( TopNPlayersData topN : topNList ) {
+		if ( PrisonRanks.getInstance().getPlayerManager() != null ) {
 			
-			RankPlayer rPlayer = topN.getrPlayer();
-			
-			if ( rPlayer == null ) {
-				UUID nullUuid = null;
-				rPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( nullUuid, topN.getName() );
-				topN.setrPlayer(rPlayer);
-			}
-			
-			if ( rPlayer != null ) {
-				rPlayer.calculateRankScore();
+			for ( TopNPlayersData topN : topNList ) {
 				
-				// This will not update lastSeen:
-				topN.updateRankPlayer( rPlayer );
+				RankPlayer rPlayer = topN.getrPlayer();
+				
+				if ( rPlayer == null ) {
+					UUID nullUuid = null;
+					rPlayer = PrisonRanks.getInstance().getPlayerManager().getPlayer( nullUuid, topN.getName() );
+					topN.setrPlayer(rPlayer);
+				}
+				
+				if ( rPlayer != null ) {
+					rPlayer.calculateRankScore();
+					
+					// This will not update lastSeen:
+					topN.updateRankPlayer( rPlayer );
+				}
+				
 			}
-			
 		}
 	}
 
@@ -480,13 +531,19 @@ public class TopNPlayers
 	 * any of the other player's balances or status, so this has a low-cost sorting.
 	 * </p>
 	 * 
+	 * <p>If the Ranks module is not loaded, then this function will be ignored.
+	 * </p>
+	 * 
 	 * @param rPlayer
 	 */
 	public void updatePlayerData( RankPlayer rPlayer ) {
 		
-		addPlayerData( rPlayer);
-
-		sortTopN();
+		if ( PrisonRanks.getInstance().getPlayerManager() != null ) {
+			
+			addPlayerData( rPlayer);
+			
+			sortTopN();
+		}
 	}
 	
 	public int getTopNSize() {
@@ -510,44 +567,51 @@ public class TopNPlayers
      * a null value.
      * </p>
      * 
+     * <p>Since TopN is only available when the Ranks module is active, this function
+     * will bypass any processing if the Ranks module is not loaded, and it will return
+     * a null value.
+     * </p>
+     * 
      * @param rankPosition
      * @return
      */
     private RankPlayer getTopNRankPlayer( int rankPosition, boolean archived ) {
     	RankPlayer rPlayer = null;
     	
-    	ArrayList<TopNPlayersData> tList = 
-    			archived ? 
-    					getArchivedList() :
-    					getTopNList();
-    	
-    	if ( rankPosition >= 0 && tList.size() > rankPosition ) {
+    	if ( PrisonRanks.getInstance().getPlayerManager() != null ) {
     		
-    		TopNPlayersData topN = tList.get( rankPosition );
+    		ArrayList<TopNPlayersData> tList = 
+    				archived ? 
+    						getArchivedList() :
+    							getTopNList();
     		
-    		rPlayer = topN.getrPlayer();
-    		
-    		if ( rPlayer == null ) {
+    		if ( rankPosition >= 0 && tList.size() > rankPosition ) {
     			
-    			UUID nullUuid = null;
-    			rPlayer = PrisonRanks.getInstance().getPlayerManager()
-    							.getPlayer( nullUuid, topN.getName() );
+    			TopNPlayersData topN = tList.get( rankPosition );
+    			
+    			rPlayer = topN.getrPlayer();
+    			
+    			if ( rPlayer == null && PrisonRanks.getInstance().getPlayerManager() != null ) {
+    				
+    				UUID nullUuid = null;
+    				rPlayer = PrisonRanks.getInstance().getPlayerManager()
+    						.getPlayer( nullUuid, topN.getName() );
+    			}
+    			
+    			// The topN has the last extracted values, so copy them to the rPlayer if 
+    			// it has not been updated.  This would be good for the archives.
+    			if ( rPlayer != null && topN.getRankScore() != 0 && rPlayer.getRankScore() == 0 ) {
+    				
+    				rPlayer.setRankScore( topN.getRankScore() );
+    				rPlayer.setRankScorePenalty( topN.getRankScorePenalty() );
+    				
+    				rPlayer.setRankScoreBalance( topN.getBalance() );
+    				rPlayer.setRankScoreCurrency( topN.getBalanceCurrency() );
+    				
+    			}
+    			
     		}
-    		
-    		// The topN has the last extracted values, so copy them to the rPlayer if 
-    		// it has not been updated.  This would be good for the archives.
-    		if ( rPlayer != null && topN.getRankScore() != 0 && rPlayer.getRankScore() == 0 ) {
-
-    			rPlayer.setRankScore( topN.getRankScore() );
-    			rPlayer.setRankScorePenalty( topN.getRankScorePenalty() );
-    			
-    			rPlayer.setRankScoreBalance( topN.getBalance() );
-    			rPlayer.setRankScoreCurrency( topN.getBalanceCurrency() );
-    			
-    		}
-    		
     	}
-    	
     	
     	
 		return rPlayer;
