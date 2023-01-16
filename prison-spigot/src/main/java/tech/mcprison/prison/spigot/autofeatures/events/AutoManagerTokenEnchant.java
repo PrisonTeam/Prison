@@ -293,9 +293,10 @@ public class AutoManagerTokenEnchant
 				) );
 		
 		
-		
-    	if ( bbPriority != BlockBreakPriority.MONITOR && !e.isCancelled() || bbPriority == BlockBreakPriority.MONITOR ) {
-
+		// Process all priorities if the event has not been canceled, and 
+		// process the MONITOR priority even if the event was canceled:
+    	if ( !bbPriority.isMonitor() && !e.isCancelled() || 
+    			bbPriority.isMonitor() ) {
 
 
     		
@@ -334,8 +335,13 @@ public class AutoManagerTokenEnchant
     			debugInfo.append( "(doAction failed validation) " );
     		}
     		
-    		else if ( pmEvent.getBbPriority() == BlockBreakPriority.MONITOR ) {
-    			// Stop here, and prevent additional processing. Monitors should never process the event beyond this.
+    		
+
+    		// The validation was successful, but stop processing for the MONITOR priorities.
+    		// Note that BLOCKEVENTS processing occured already within validateEvent():
+    		else if ( pmEvent.getBbPriority().isMonitor() ) {
+    			// Stop here, and prevent additional processing. 
+    			// Monitors should never process the event beyond this.
     		}
     		
 

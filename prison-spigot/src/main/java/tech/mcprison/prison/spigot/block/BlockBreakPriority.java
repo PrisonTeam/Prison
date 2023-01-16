@@ -57,6 +57,12 @@ public enum BlockBreakPriority {
 		return results;
 	}
 
+	public boolean isMonitor() {
+		return this == MONITOR || 
+			   this == BLOCKEVENTS 
+			   ;
+	}
+	
 	public EventPriority getBukkitEventPriority() {
 		return bukkitEventPriority;
 	}

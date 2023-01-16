@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13h 2023-01-15
 
 
+* **Setup a function to check if a BlockBreakPriority is considered a monitor level priority, which is useful when adding more non-block breaking priorities.**
+
+
 * **Expand the comments to better explain the roles of MONITOR and BLOCKEVENTS priorities.**
 
 

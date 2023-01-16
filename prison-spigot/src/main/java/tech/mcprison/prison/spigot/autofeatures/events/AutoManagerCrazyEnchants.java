@@ -232,7 +232,11 @@ public class AutoManagerCrazyEnchants
 		
 		
 		// NOTE that check for auto manager has happened prior to accessing this function.
-    	if ( bbPriority != BlockBreakPriority.MONITOR && !e.isCancelled() || bbPriority == BlockBreakPriority.MONITOR &&
+
+		// Process all priorities if the event has not been canceled, and 
+		// process the MONITOR priority even if the event was canceled:
+    	if ( !bbPriority.isMonitor() && !e.isCancelled() || 
+    			bbPriority.isMonitor() &&
     			e.getBlockList().size() > 0 ) {
 
 			
@@ -273,8 +277,12 @@ public class AutoManagerCrazyEnchants
     		}
 
     		
-    		else if ( pmEvent.getBbPriority() == BlockBreakPriority.MONITOR ) {
-    			// Stop here, and prevent additional processing. Monitors should never process the event beyond this.
+
+    		// The validation was successful, but stop processing for the MONITOR priorities.
+    		// Note that BLOCKEVENTS processing occured already within validateEvent():
+    		else if ( pmEvent.getBbPriority().isMonitor() ) {
+    			// Stop here, and prevent additional processing. 
+    			// Monitors should never process the event beyond this.
     		}
     		
 

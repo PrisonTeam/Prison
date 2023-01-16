@@ -226,7 +226,7 @@ public class AutoManagerBlockBreakEvents
 		
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "&9### ** genericBlockEvent ** ### " +
+		debugInfo.append( String.format( "&9### ** handleBlockBreakEvent ** ### " +
 				"(event: BlockBreakEvent, config: %s, priority: %s, canceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),
@@ -234,7 +234,10 @@ public class AutoManagerBlockBreakEvents
 				) );
 		
 		
-    	if ( bbPriority != BlockBreakPriority.MONITOR && !e.isCancelled() || bbPriority == BlockBreakPriority.MONITOR ) {
+		// Process all priorities if the event has not been canceled, and 
+		// process the MONITOR priority even if the event was canceled:
+    	if ( !bbPriority.isMonitor() && !e.isCancelled() || 
+    			bbPriority.isMonitor() ) {
 
     		// Need to wrap in a Prison block so it can be used with the mines:
     		SpigotBlock sBlock = SpigotBlock.getSpigotBlock(e.getBlock());
@@ -246,6 +249,7 @@ public class AutoManagerBlockBreakEvents
     		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
     					sBlock, sPlayer, bbPriority, eventType, triggered );
     		
+    		// Validate the event. 
     		if ( !validateEvent( pmEvent, debugInfo ) ) {
     			
     			// The event has not passed validation. All logging and Errors have been recorded
@@ -259,9 +263,14 @@ public class AutoManagerBlockBreakEvents
     			debugInfo.append( "(doAction failed validation) " );
     		}
     		
-    		else if ( pmEvent.getBbPriority() == BlockBreakPriority.MONITOR ) {
-    			// Stop here, and prevent additional processing. Monitors should never process the event beyond this.
+    		
+    		// The validation was successful, but stop processing for the MONITOR priorities.
+    		// Note that BLOCKEVENTS processing occured already within validateEvent():
+    		else if ( pmEvent.getBbPriority().isMonitor() ) {
+    			// Stop here, and prevent additional processing. 
+    			// Monitors should never process the event beyond this.
     		}
+    		
     		
     		// This is where the processing actually happens:
     		else if ( pmEvent.getMine() != null || pmEvent.getMine() == null && 
@@ -286,7 +295,7 @@ public class AutoManagerBlockBreakEvents
 //    							pmEvent.getMine(), sBlock, explodedBlocks, BlockEventType.blockBreak, triggered );
                 Bukkit.getServer().getPluginManager().callEvent( pmEvent );
                 if ( pmEvent.isCancelled() ) {
-                	debugInfo.append( "(normal processing: &6PrisonMinesBlockBreakEvent was canceled&9) " );
+                	debugInfo.append( "(normal processing: &6PrisonMinesBlockBreakEvent was canceled by another plugin&9) " );
                 }
                 else {
                 	
