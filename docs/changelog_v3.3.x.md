@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13h 2023-01-15
 
 
+* **Fix a problem with MONITOR and BLOCKEVENTS priorities where they were failing to process the event if the block was broke, of which should be permitted.**
+
+
 * **Added RevEnchant's events to the special condition of not being able to identify the original block that was broken.**
 
 

@@ -364,12 +364,24 @@ public abstract class OnBlockBreakEventCore
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlockHit );
 			pmEvent.setTargetBlock( targetBlock );
 			
+			// NOTE: I have no idea why 25 blocks and less should be bypassed for validation:
 			boolean bypassMatchedBlocks = pmEvent.getMine().getBounds().getTotalBlockCount() <= 25;
 			if ( bypassMatchedBlocks ) {
 				debugInfo.append( "(TargetBlock match requirement is disabled [blocks<=25]) " );
 			}
 			
 			boolean matchedBlocks = isBlockAMatch( targetBlock, sBlockHit );
+			
+			// If MONITOR or BLOCKEVENTS and block does not match, and if the block is AIR,
+			// and the block has not been mined before, then allow the breakage by 
+			// setting bypassMatchedBlocks to true to allow normal processing:
+			if ( !matchedBlocks &&
+					!targetBlock.isMined() && 
+					sBlockHit.isAir() &&
+					( pmEvent.getBbPriority() == BlockBreakPriority.MONITOR || 
+					  pmEvent.getBbPriority() == BlockBreakPriority.BLOCKEVENTS ) ) {
+				bypassMatchedBlocks = true;
+			}
 			
 			// If ignore all block events has been set on this target block, then shutdown.
 			// Same if this block was already included in an explosion... prevent it from spawning
