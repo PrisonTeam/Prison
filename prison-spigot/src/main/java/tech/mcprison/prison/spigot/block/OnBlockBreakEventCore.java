@@ -341,8 +341,14 @@ public abstract class OnBlockBreakEventCore
 		
 		// Since BlastUseEvent (crazy enchant) does not identify the block that is initially 
 		// broke, an explosion for them is greater than 1.
+		// Same applies to the RevEnchant events where they do not identify the original block
+		// that caused the "explosion".
+		boolean hasOriginalBLockIncluded = 
+						pmEvent.getBlockEventType() == BlockEventType.CEXplosion ||
+						pmEvent.getBlockEventType() == BlockEventType.RevEnExplosion ||
+						pmEvent.getBlockEventType() == BlockEventType.RevEnJackHammer;
 		boolean isExplosionEvent = pmEvent.getUnprocessedRawBlocks().size() > 
-					(pmEvent.getBlockEventType() == BlockEventType.CEXplosion ? 0 : 1);
+					(hasOriginalBLockIncluded ? 0 : 1);
 		
 		// validate the blocks, if there are some.  Add them to the exploded blocks list
 		if ( mine != null ) {
