@@ -219,7 +219,14 @@ public class AutoManagerPrisonEnchants
 
 		long start = System.nanoTime();
 		
-    	if ( e.isCancelled() ||  processMinesBlockBreakEvent( e, e.getPlayer(), e.getBlockBroken()) ) {
+		// If the event is canceled, it still needs to be processed because of the 
+		// MONITOR events:
+		// An event will be "canceled" and "ignored" if the block 
+		// BlockUtils.isUnbreakable(), or if the mine is activly resetting.
+		// The event will also be ignored if the block is outside of a mine
+		// or if the targetBlock has been set to ignore all block events which 
+		// means the block has already been processed.
+    	if ( processMinesBlockBreakEvent( e, e.getPlayer(), e.getBlockBroken()) ) {
     		return;
     	}
     	
@@ -230,7 +237,7 @@ public class AutoManagerPrisonEnchants
 		StringBuilder debugInfo = new StringBuilder();
 		
 		
-		debugInfo.append( String.format( "### ** genericExplosiveEvent (Pulsi) ** ### " +
+		debugInfo.append( String.format( "### ** handlePEEExplosionEvent (Pulsi) ** ### " +
 				"(event: PEExplosionEvent, config: %s, priority: %s, canceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),

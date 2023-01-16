@@ -221,7 +221,14 @@ public class AutoManagerZenchantments
 		
     	long start = System.nanoTime();
 
-    	if ( e.isCancelled() ||  ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlock()) ) {
+		// If the event is canceled, it still needs to be processed because of the 
+		// MONITOR events:
+		// An event will be "canceled" and "ignored" if the block 
+		// BlockUtils.isUnbreakable(), or if the mine is activly resetting.
+		// The event will also be ignored if the block is outside of a mine
+		// or if the targetBlock has been set to ignore all block events which 
+		// means the block has already been processed.
+    	if ( ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlock()) ) {
     		return;
     	}
 
@@ -231,7 +238,7 @@ public class AutoManagerZenchantments
 		
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "### ** genericBlockEvent ** ### " +
+		debugInfo.append( String.format( "### ** handleZenchantmentsBlockBreakEvent ** ### " +
 				"(event: BlockBreakEvent, config: %s, priority: %s, canceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),

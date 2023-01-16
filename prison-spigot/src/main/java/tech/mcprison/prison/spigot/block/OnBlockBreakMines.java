@@ -41,9 +41,18 @@ public class OnBlockBreakMines
 	public class MinesEventResults {
 		private boolean cancelEvent = false;
 		private boolean ignoreEvent = false;
+		private Mine mine = null;
 		
 		public MinesEventResults() {
 			super();
+		}
+
+		
+		public Mine getMine() {
+			return mine;
+		}
+		public void setMine(Mine mine) {
+			this.mine = mine;
 		}
 
 		public boolean isCancelEvent() {
@@ -141,7 +150,21 @@ public class OnBlockBreakMines
 //	}
 
 		
+	/**
+	 * <p> If the event is canceled, it still needs to be processed because of the MONITOR events: 
+	 * An event will be "canceled" and "ignored" if the block 
+	 * BlockUtils.isUnbreakable(), or if the mine is activly resetting.
+	 * The event will also be ignored if the block is outside of a mine
+	 * or if the targetBlock has been set to ignore all block events which 
+	 * means the block has already been processed.
+	 * </p>
+	 * 
+	 * @param player
+	 * @param block
+	 * @return
+	 */
 	protected MinesEventResults ignoreMinesBlockBreakEvent( Player player, Block block ) {
+		
 		MinesEventResults results = new MinesEventResults();
 		
 		SpigotBlock sBlock = SpigotBlock.getSpigotBlock( block );
@@ -151,6 +174,7 @@ public class OnBlockBreakMines
 		}
 		
 		Mine mine = findMine( player, sBlock,  null, null ); 
+		results.setMine( mine );
 		
 		if ( mine == null ) {
 			// Prison is unable to process blocks outside of mines right now, so exit:

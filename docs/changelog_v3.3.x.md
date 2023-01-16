@@ -13,6 +13,12 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13h 2023-01-15
 
 
+* **AutoFeatures: Bug fix.  Found that all events that were canceled were automatically being ignored, which was causing the MONITOR priority to be bypassed since MONITOR should be able to process what it needs to even on a canceled event.**
+
+
+* **AutoFeatures: Have the external events register when the AutoManager is being setup.  This eliminates the need to have it always check for registration on each event call.**
+
+
 * **There was a report that TopN was failing with a NPE when Ranks was disabled.  This was related to the PlayerManager not being initialized.**
 Added code to ensure that TopN is shutdown, and does not try to run, if the Ranks Module, or PlayerManager is not loaded.
 It looks like it could have been called through the bStats reporting... which is now fixed.
