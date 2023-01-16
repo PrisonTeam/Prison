@@ -223,16 +223,26 @@ public abstract class OnBlockBreakEventCore
 
 		if ( pmEvent.getMine() != null ) {
 			
-			// apply to ALL blocks including exploded:
-			applyBlockFinalizations( pmEvent, pmEvent.getTargetBlock() );
+			// Count the blocks that were mined:
+			countBlocksMined( pmEvent, pmEvent.getTargetBlock() );
+			
+			// process the prison blockEvents commands:
+			processPrisonBlockEventCommands( pmEvent, pmEvent.getTargetBlock() );
 
 			
 			for ( MineTargetPrisonBlock teBlock : pmEvent.getTargetExplodedBlocks() ) {
 				
-				applyBlockFinalizations( pmEvent, teBlock );
+				// Count the blocks that were mined:
+				countBlocksMined( pmEvent, teBlock );
+				
+				// process the prison blockEvents commands:
+				processPrisonBlockEventCommands( pmEvent, teBlock );
 			}
 			
 			checkZeroBlockReset( pmEvent.getMine() );
+			
+			// Check Mine Sweeper:
+			checkMineSweeper( pmEvent.getMine() );
 		}
 	}
 
@@ -372,14 +382,13 @@ public abstract class OnBlockBreakEventCore
 			
 			boolean matchedBlocks = isBlockAMatch( targetBlock, sBlockHit );
 			
-			// If MONITOR or BLOCKEVENTS and block does not match, and if the block is AIR,
+			// If MONITOR or BLOCKEVENTS or etc... and block does not match, and if the block is AIR,
 			// and the block has not been mined before, then allow the breakage by 
 			// setting bypassMatchedBlocks to true to allow normal processing:
 			if ( !matchedBlocks &&
 					!targetBlock.isMined() && 
 					sBlockHit.isAir() &&
-					( pmEvent.getBbPriority() == BlockBreakPriority.MONITOR || 
-					  pmEvent.getBbPriority() == BlockBreakPriority.BLOCKEVENTS ) ) {
+					pmEvent.getBbPriority().isMonitor() ) {
 				bypassMatchedBlocks = true;
 			}
 			
@@ -734,87 +743,153 @@ public abstract class OnBlockBreakEventCore
 		}
 		
 		
-		
-		if ( results && pmEvent.getBbPriority() == BlockBreakPriority.BLOCKEVENTS ) {
-
-			
-			// This is true if the player cannot toggle the autosell, and it's
-			// true if they can, and the have it enabled:
-			boolean isPlayerAutosellEnabled = SellAllUtil.get() != null && 
-					SellAllUtil.get().checkIfPlayerAutosellIsActive( 
-							pmEvent.getSpigotPlayer().getWrapper() ) 
-					;
-			
-			// AutoSell on full inventory when using BLOCKEVENTS:
-			if ( isBoolean( AutoFeatures.isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority ) &&
-					SpigotPrison.getInstance().isSellAllEnabled() &&
-					isPlayerAutosellEnabled &&
-					pmEvent.getSpigotPlayer().isInventoryFull() ) {
-				
-				
-				final long nanoStart = System.nanoTime();
-				boolean success = SellAllUtil.get().sellAllSell( pmEvent.getPlayer(), 
-										false, false, false, true, true, false);
-				final long nanoStop = System.nanoTime();
-				double milliTime = (nanoStop - nanoStart) / 1000000d;
-				
-				DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
-				debugInfo.append( "(autosellBLOCKEVENTS: " + (success ? "success" : "failed") + 
-						" ms: " + dFmt.format( milliTime ) + ") ");
-				
-				PlayerAutoRankupTask.autoSubmitPlayerRankupTask( pmEvent.getSpigotPlayer(), debugInfo );
-				
-			}
-			
-			String triggered = null;
-			
-			doActionBlockEventOnly( sBlockHit, mine, pmEvent.getPlayer(), 
-					BlockEventType.blockBreak, triggered );
-
-			debugInfo.append( "(actionBlockEventOnly singluar) " );
-			
-			if ( pmEvent.getExplodedBlocks().size() > 0 ) {
-				
-				for ( SpigotBlock sBlock : pmEvent.getExplodedBlocks() ) {
-					
-					doActionBlockEventOnly( sBlock, mine, pmEvent.getPlayer(), 
-							pmEvent.getBlockEventType(), pmEvent.getTriggered() );
-				}
-				
-				debugInfo.append( "(actionBlockEventOnly - " + 
-						pmEvent.getExplodedBlocks().size() +
-							" Exploded Blocks - finalized) " );
-			}
-			
-			results = false;
-		}
-		else if ( results && pmEvent.getBbPriority() == BlockBreakPriority.MONITOR && mine == null ) {
+//		// Process BLOCKEVENTS and ACCESSBLOCKEVENTs here... 
+//		// Include autosell on full inventory if isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority 
+//		// is enabled. 
+//		// Includes running block events, mine sweeper, and zero-block (reset-threshold) reset.
+//		if ( results && 
+//				(pmEvent.getBbPriority() == BlockBreakPriority.BLOCKEVENTS || 
+//				 pmEvent.getBbPriority() == BlockBreakPriority.ACCESSBLOCKEVENTS ) ) {
+//
+//			debugInfo.append( "(BLOCKEVENTS processing) " );
+//			
+//			// This is true if the player cannot toggle the autosell, and it's
+//			// true if they can, and the have it enabled:
+//			boolean isPlayerAutosellEnabled = SellAllUtil.get() != null && 
+//					SellAllUtil.get().checkIfPlayerAutosellIsActive( 
+//							pmEvent.getSpigotPlayer().getWrapper() ) 
+//					;
+//			
+//			// AutoSell on full inventory when using BLOCKEVENTS:
+//			if ( isBoolean( AutoFeatures.isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority ) &&
+//					SpigotPrison.getInstance().isSellAllEnabled() &&
+//					isPlayerAutosellEnabled &&
+//					pmEvent.getSpigotPlayer().isInventoryFull() ) {
+//				
+//				
+//				final long nanoStart = System.nanoTime();
+//				boolean success = SellAllUtil.get().sellAllSell( pmEvent.getPlayer(), 
+//										false, false, false, true, true, false);
+//				final long nanoStop = System.nanoTime();
+//				double milliTime = (nanoStop - nanoStart) / 1000000d;
+//				
+//				DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+//				debugInfo.append( "(autosell BLOCKEVENTS: " + (success ? "success" : "failed") + 
+//						" ms: " + dFmt.format( milliTime ) + ") ");
+//				
+//				PlayerAutoRankupTask.autoSubmitPlayerRankupTask( pmEvent.getSpigotPlayer(), debugInfo );
+//				
+//			}
+//			
+//
+//			// Process block counts and then block events:
+//			countBlocksMined( pmEvent, sBlockHit );
+//			processPrisonBlockEventCommands( pmEvent, sBlockHit );
+//
+//			debugInfo.append( "(primary block: block counts and block events) " );
+//			
+//			if ( pmEvent.getExplodedBlocks().size() > 0 ) {
+//				
+//				for ( SpigotBlock sBlock : pmEvent.getExplodedBlocks() ) {
+//					
+//					countBlocksMined( pmEvent, sBlock );
+//					processPrisonBlockEventCommands( pmEvent, sBlock );
+//				}
+//				
+//				debugInfo.append( "(" + 
+//						pmEvent.getExplodedBlocks().size() +
+//							" Exploded Blocks: block counts and block events) " );
+//			}
+//			
+//			// Check Mine Sweeper:
+//			checkMineSweeper( pmEvent.getMine() );
+//			
+//			// Check zero-block reset (reset-threshold):
+//			checkZeroBlockReset( pmEvent.getMine() );
+//			
+//			// why return false?
+////			results = false;
+//		}
+		else if ( results && pmEvent.getBbPriority().isMonitor() && mine == null ) {
 			// bypass all processing since the block break is outside any mine:
 			
-			debugInfo.append( "(bypassed monitor no mine) " );
+			debugInfo.append( "(MONITOR bypassed: no mine) " );
 			results = false;
 		}
-		else if ( results && pmEvent.getBbPriority() == BlockBreakPriority.MONITOR && mine != null ) {
+		
+		// Performs the MONITOR block counts, zero-block, and mine sweeper:
+		else if ( results && pmEvent.getBbPriority().isMonitor() && mine != null ) {
 			
-			doActionMonitor( sBlockHit, mine );
 			
-			debugInfo.append( "(monitor - singular) " );
+			// Process BLOCKEVENTS and ACCESSBLOCKEVENTs here... 
+			// Include autosell on full inventory if isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority 
+			// is enabled. 
+			// Includes running block events, mine sweeper, and zero-block (reset-threshold) reset.
+			if ( pmEvent.getBbPriority() == BlockBreakPriority.BLOCKEVENTS || 
+					 pmEvent.getBbPriority() == BlockBreakPriority.ACCESSBLOCKEVENTS ) {
+
+				debugInfo.append( "(BLOCKEVENTS processing) " );
+				
+				// This is true if the player cannot toggle the autosell, and it's
+				// true if they can, and the have it enabled:
+				boolean isPlayerAutosellEnabled = SellAllUtil.get() != null && 
+						SellAllUtil.get().checkIfPlayerAutosellIsActive( 
+								pmEvent.getSpigotPlayer().getWrapper() ) 
+						;
+				
+				// AutoSell on full inventory when using BLOCKEVENTS:
+				if ( isBoolean( AutoFeatures.isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority ) &&
+						SpigotPrison.getInstance().isSellAllEnabled() &&
+						isPlayerAutosellEnabled &&
+						pmEvent.getSpigotPlayer().isInventoryFull() ) {
+					
+					
+					final long nanoStart = System.nanoTime();
+					boolean success = SellAllUtil.get().sellAllSell( pmEvent.getPlayer(), 
+											false, false, false, true, true, false);
+					final long nanoStop = System.nanoTime();
+					double milliTime = (nanoStop - nanoStart) / 1000000d;
+					
+					DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+					debugInfo.append( "(autosell BLOCKEVENTS: " + (success ? "success" : "failed") + 
+							" ms: " + dFmt.format( milliTime ) + ") ");
+					
+					PlayerAutoRankupTask.autoSubmitPlayerRankupTask( pmEvent.getSpigotPlayer(), debugInfo );
+					
+				}
+			}
+			
+			countBlocksMined( pmEvent, sBlockHit );
+			processPrisonBlockEventCommands( pmEvent, sBlockHit );
+			
+			debugInfo.append( "(MONITOR - singular) " );
 			
 			if ( pmEvent.getExplodedBlocks().size() > 0 ) {
 				
 				for ( SpigotBlock sBlock : pmEvent.getExplodedBlocks() ) {
     				
-					doActionMonitor( sBlock, mine );
+					countBlocksMined( pmEvent, sBlock );
+					processPrisonBlockEventCommands( pmEvent, sBlock );
     			}
 
-    			debugInfo.append( "(monitor - " + 
+    			debugInfo.append( "(MONITOR - " + 
 						pmEvent.getExplodedBlocks().size() +
 							" Exploded Blocks - finalized) " );
 			}
 
-			// should be true at this point:
+			
+			// submit a mine sweeper task.  It will only run if it is enabled and another 
+			// mine sweeper task has not been submitted.
+			mine.submitMineSweeperTask();
+			
+			// Checks to see if the mine ran out of blocks, and if it did, then
+			// it will reset the mine:
+			mine.checkZeroBlockReset();
+			
+			// should be true at this point: (already is true):
 			//results = true;
 		}
+		
 		
 		
 		if ( results && isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
@@ -933,56 +1008,98 @@ public abstract class OnBlockBreakEventCore
 
 
 
+
+
 	
-	public void doActionMonitor( SpigotBlock block, Mine mine ) {
-		if ( mine != null ) {
+	
+	/**
+	 * <p>Performs block counts.
+	 * </p>
+	 * 
+	 * @param block
+	 * @param mine
+	 */
+	private void countBlocksMined( PrisonMinesBlockBreakEvent pmEvent, SpigotBlock block ) {
+		
+		if ( pmEvent.getMine() != null && block != null ) {
+			
+			Mine mine = pmEvent.getMine();
 			
 			// Good chance the block was already counted, but just in case it wasn't:
 			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( block );
 			
-			// Record the block break:
-			if ( mine.incrementBlockMiningCount( targetBlock ) ) {
-				
-				// submit a mine sweeper task.  It will only run if it is enabled and another 
-				// mine sweeper task has not been submitted.
-				mine.submitMineSweeperTask();
-				
-				// Checks to see if the mine ran out of blocks, and if it did, then
-				// it will reset the mine:
-				mine.checkZeroBlockReset();
-			}
+			// Record the block break counts:
+			countBlocksMined( pmEvent, targetBlock );
 
 		}
 	}
 	
-	public void doActionBlockEventOnly( SpigotBlock spigotBlock, Mine mine, Player player, 
-													BlockEventType blockEventType, String triggered ) {
-		if ( mine != null && spigotBlock != null ) {
+	private boolean countBlocksMined( PrisonMinesBlockBreakEvent pmEvent, 
+					MineTargetPrisonBlock targetBlock ) {
+		boolean results = false;
+		
+		if ( targetBlock != null && 
+				pmEvent.getMine() != null &&
+				targetBlock.getPrisonBlock() != null && 
+				!targetBlock.isCounted() ) {
 			
-			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( spigotBlock );
+			Mine mine = pmEvent.getMine();
 			
-			if ( targetBlock != null && targetBlock.getPrisonBlock() != null && !targetBlock.isCounted() ) {
-				
-				
-//				String targetBlockName =  mine == null ? 
-//						spigotBlock.getPrisonBlock().getBlockName()
-//						: targetBlock.getPrisonBlock().getBlockName();
-						
-				// Process mine block break events:
-				
-				if ( mine.incrementBlockMiningCount( targetBlock ) ) {
-					
-					SpigotPlayer sPlayer = new SpigotPlayer( player );
-					PlayerCache.getInstance().addPlayerBlocks( sPlayer, mine.getName(), targetBlock.getPrisonBlock(), 1 );
-					
-					
-					PrisonBlock prisonBlock = spigotBlock.getPrisonBlock();
-					mine.processBlockBreakEventCommands( prisonBlock, targetBlock, sPlayer, blockEventType, triggered );
-				}
 
+			// Increment the block break counts if they have not been processed before.
+			// Since the function return true if it can count the block, then we can 
+			// then have the player counts be incremented.
+			if ( mine.incrementBlockMiningCount( targetBlock ) ) {
+				results = true;
+				
+				// Now in AutoManagerFeatures.autoPickup and calculateNormalDrop:
+				PlayerCache.getInstance().addPlayerBlocks( pmEvent.getSpigotPlayer(), 
+						mine.getName(), targetBlock.getPrisonBlock(), 1 );
 				
 			}
 		}
+		return results;
+	}
+	
+	
+	private void processPrisonBlockEventCommands( 
+			PrisonMinesBlockBreakEvent pmEvent, SpigotBlock spigotBlock ) {
+		
+		if ( pmEvent.getMine() != null && spigotBlock != null ) {
+			
+			Mine mine = pmEvent.getMine();
+
+			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( spigotBlock );
+			
+			if ( targetBlock != null ) {
+				
+				processPrisonBlockEventCommands( pmEvent, targetBlock );
+				
+			}
+		}
+	}
+	
+	private void processPrisonBlockEventCommands( PrisonMinesBlockBreakEvent pmEvent, 
+					MineTargetPrisonBlock targetBlock ) {
+
+		// Do not allow MONITOR or ACCESSMONITOR to process the block events:
+		if ( targetBlock != null && pmEvent.getMine() != null &&
+				pmEvent.getBbPriority() != BlockBreakPriority.MONITOR &&
+				pmEvent.getBbPriority() != BlockBreakPriority.ACCESSMONITOR ) {
+			
+			Mine mine = pmEvent.getMine();
+			
+			SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
+			PrisonBlock pBlock = sBlock == null ? null : sBlock.getPrisonBlock();
+			
+			mine.processBlockBreakEventCommands( pBlock,
+					targetBlock, 
+					pmEvent.getSpigotPlayer(), 
+					pmEvent.getBlockEventType(), 
+					pmEvent.getTriggered() );
+			
+		}
+		
 	}
 	
 	
@@ -1284,34 +1401,43 @@ public abstract class OnBlockBreakEventCore
 //			mine.checkZeroBlockReset();
 //		}
 //	}
-	
-	private void applyBlockFinalizations( PrisonMinesBlockBreakEvent pmEvent, MineTargetPrisonBlock targetBlock ) {
-
-		if ( targetBlock != null ) {
-			
-			Mine mine = pmEvent.getMine();
-
-			// Increment the block break counts if they have not been processed before.
-			// Since the function return true if it can count the block, then we can 
-			// then have the player counts be incremented.
-			if ( mine.incrementBlockMiningCount( targetBlock ) ) {
-				
-				// Now in AutoManagerFeatures.autoPickup and calculateNormalDrop:
+//	
+//	private void applyBlockFinalizations( PrisonMinesBlockBreakEvent pmEvent, 
+//					MineTargetPrisonBlock targetBlock ) {
+//
+//		if ( targetBlock != null ) {
+//			
+//			Mine mine = pmEvent.getMine();
+//
+//			// Increment the block break counts if they have not been processed before.
+//			// Since the function return true if it can count the block, then we can 
+//			// then have the player counts be incremented.
+//			if ( mine.incrementBlockMiningCount( targetBlock ) ) {
+//				
+//				// Now in AutoManagerFeatures.autoPickup and calculateNormalDrop:
 //				PlayerCache.getInstance().addPlayerBlocks( pmEvent.getSpigotPlayer(), 
 //						mine.getName(), targetBlock.getPrisonBlock(), 1 );
-				
-			}
-			
-			
-			SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
-			PrisonBlock pBlock = sBlock == null ? null : sBlock.getPrisonBlock();
-			
-			mine.processBlockBreakEventCommands( pBlock,
-					targetBlock, pmEvent.getSpigotPlayer(), pmEvent.getBlockEventType(), pmEvent.getTriggered() );
-			
-		}
-	}
-	
+//				
+//			}
+//			
+//			// Do not allow MONITOR or ACCESSMONITOR to process the block events:
+//			if ( pmEvent.getBbPriority() != BlockBreakPriority.MONITOR &&
+//					pmEvent.getBbPriority() != BlockBreakPriority.ACCESSMONITOR ) {
+//				
+//				SpigotBlock sBlock = (SpigotBlock) targetBlock.getMinedBlock();
+//				PrisonBlock pBlock = sBlock == null ? null : sBlock.getPrisonBlock();
+//				
+//				mine.processBlockBreakEventCommands( pBlock,
+//						targetBlock, pmEvent.getSpigotPlayer(), pmEvent.getBlockEventType(), pmEvent.getTriggered() );
+//				
+//			}
+//			
+//		}
+//		
+//		//TODO What about zero-block reset and mine sweeper?
+//		
+//	}
+//	
 	protected int xpCalculateXP( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo ) {
 		int xp = 0;
 		

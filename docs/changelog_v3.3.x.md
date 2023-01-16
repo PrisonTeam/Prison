@@ -13,6 +13,11 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13h 2023-01-15
 
 
+* **AutoFeatures refactoring: Cleaned up a lot of the code related to blockCounts, blockEvents, and zero-block resets (reset thresholds) and code related to the "monitor" priorities to better ensure they are handled correctly and better documented.**
+This may fix a few obscure bugs, but not 100% sure if they have been encountered.
+This also unbundles some of the functions so they are not hidden so deeply... this makes the code much easier to read and to know what's happening.
+
+
 * **Setup a function to check if a BlockBreakPriority is considered a monitor level priority, which is useful when adding more non-block breaking priorities.**
 
 
