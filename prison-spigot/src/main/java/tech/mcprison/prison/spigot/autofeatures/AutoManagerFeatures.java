@@ -35,6 +35,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventCore;
+import tech.mcprison.prison.spigot.block.OnBlockBreakExternalEvents;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
@@ -69,6 +70,10 @@ public abstract class AutoManagerFeatures
 
 
 	private void setup() {
+
+		
+		// Register all external events such as mcMMO, EZBlocks, and Quests:
+		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 
 	}
 

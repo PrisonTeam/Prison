@@ -223,7 +223,7 @@ public class AutoManagerRevEnchantsExplosiveEvent
     	
 		
 		// Register all external events such as mcMMO and EZBlocks:
-		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
+//		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 				
 		StringBuilder debugInfo = new StringBuilder();
 		
