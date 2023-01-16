@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.13h 2023-01-14
+# 3.3.0-alpha.13h 2023-01-15
+
+
+* **Doc updates.  Update info on Essentials Economy bypassing Vault and adding RevEnchants to the list of supported enchantment plugins have been added.**
 
 
 * **Added support for RevEnchants ExplosiveEvent and JackHammerEvent.**

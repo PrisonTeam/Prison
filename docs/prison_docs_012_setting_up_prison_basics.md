@@ -7,7 +7,7 @@
 This document provides a quick overview on how to install Prison and get it running.
 
 
-*Documented updated: 2021-12-03*
+*Documented updated: 2023-01-14*
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -122,6 +122,13 @@ Prison actually uses bukkit's permission interfaces.  This makes it simple for P
 * **NOTE: A permissions plugin of your choice** - Required - Prison works with many different permission plugins through Vault.  I strongly suggest LuckPerms since it is free and is under active development so bugs and performance issues will be addressed if they ever become an issue.  If you choose to use another permission plugin, then please consider ones that work with Vault; Prison uses Vault to provide the flexibility of choosing from many different plugins.
 
 
+* **NOTE: A Warning about Vault and Essentials Economy** - There was a problem where essential's economy was refusing to work thought vault.  Since prison is able to directly support essentials economy, there is a new feature that can disable the use of vault for the economy, which will allow prison to directly communicate with Essentials Economy.  Make sure your `config.yml` has the following configuration.  It will be added to new prison installs, otherwise just copy and past it in anywhere.  Also, if you rename the `config.yml` file and restart the server, prison will auto generate a new copy with these settings.
+
+```yaml
+integrations:
+  prevent-economy-vault-usage: true
+```
+
 * **Other Permission Plugins** There are many out there, and as developer of Prison, and through providing support, we don't hear of any issues with other permission plugins.  The reason for this is because they probably just work well to begin with, and that Prison uses bukkit's permission interfaces.  So it keeps things simple for setting up Prison.  If you are just getting started with building a server, then we suggested keeping it simple with something like LuckPerms, but there are other permission plugins out there that can provide a whole new experience with your server, such as jobs and careers for your players.   
 
 
@@ -202,6 +209,10 @@ But perhaps the biggest reason why I dropped support for MVdW is because it's 10
 
 * **Crazy Enchantments** - Optional - Some support is provided for Crazy Enchantments, but it may not be at 100% in all areas. This is an open source project and supports Spigot 1.8 through 1.16.
 [https://www.spigotmc.org/resources/crazy-enchantments.16470/](https://www.spigotmc.org/resources/crazy-enchantments.16470/)
+
+
+* **RevEnchants** - Prison now supports RevEnchants through their ExplosiveEvent and JackHammerEvent!  To enable prison to work better with RevEnchants, you can enable it within the `autoFeaturesConfig.yml` file.  Prison supports RevEnchants v11.2 or newer.  It may work with older versions, but if there are issues, we cannot provide support if the older version of RevEnchants is missing either of the events.
+
 
 
 * **Zenchantments** - Optional - Some support is provided for zen, but it may not be 100%.  More work needs to be done to improve the integration in to prison.  This is an open source project.  It identifies that it supports spigot 1.9 through 1.14 (different versions).  [https://www.spigotmc.org/resources/zenchantments.12948/](https://www.spigotmc.org/resources/zenchantments.12948/).
