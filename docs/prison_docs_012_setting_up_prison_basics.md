@@ -226,6 +226,8 @@ If you purchase this plugin to use on your server, do so with great caution sinc
 
 ### Enchantment Plugin Features Supported
 
+This table of supported Enchantment Plugins should help explain how they are supported within Prison.  It should be noted that all of these events are related to block breakage, and originate from the original bukkit's **BlockBreakEvent**, but the other plugins takes the single block, then applies "effects" that expands the one block breakage to multiple blocks.  These events are the mechanism for conveying the list of included blocks to Prison so Prison can do what it needs to do with the blocks.
+
 
 |     Plugin     | Event | Settings ID | Cancel <br> Events | Cancel <br/> Drops | Run <br /> External | 
 |       ---      |  ---  | ----------- |        :---:       |       :----:       |        :----:       |
@@ -243,7 +245,7 @@ If you purchase this plugin to use on your server, do so with great caution sinc
 **Notes:**
 1. A value of *No* for **Cancel Drops** will always use **Cancel Event** instead.
 2. **Cancel Drops** was added in Spigot 1.12.x so older versions of Spigot *must* use **Cancel Events**
-3. **Run External** refers to custom hooks in to mcMMO, EZBlock, and Quests.  See config settings within **AutoFeaturesConfig.yml**. It's strongly suggested to use **Cancel Drops** instead.
+3. **Run External** refers to custom hooks in to mcMMO, EZBlock, and Quests.  See config settings within **AutoFeaturesConfig.yml**. It's strongly suggested to use **Cancel Drops** instead so you won't have to enable these features.  These provides a hacky-fix for the limitations when using **Cancel Events** and may not be perfect.
 4. Zenchantments is very flexible in how it's **BlockShredEvent** works, mostly because it extends the bukkit **BlockBreakEvent**, which is pretty brilliant. 
 5. It may take some effort to find the ideal priorities to use for your environment to ensure everything works as you envision it.
 
@@ -253,26 +255,29 @@ If you purchase this plugin to use on your server, do so with great caution sinc
 The above listed supported Events are assigned one of the available Prison Event Priorities.  This table illustrates what features are associated with each priority, which can be somewhat complex and confusing.
 
 
-| Priority          | Access  | In <br/> Mine | In <br /> World | Block<br/> Break | Block<br/> Count | Reset<br/> Threshold | Block<br/> Events | Mine<br/> Sweeper | AutoSell |
+| Priority          | Access  | In <br/> Mine | In <br /> World | Ignores<br/> Canceled<br/> Events | Block<br/> Break | Block<br/> Count | Reset<br/> Threshold | Block<br/> Events | Mine<br/> Sweeper | AutoSell |
 |    ---            |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |
-| DISABLED          | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    |
-| ACCESS            | **Yes** | **Yes** | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    |
-| ACCESSBLOCKEVENTS | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
-| ACCESSMONITOR     | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | *No*    | **Yes** | *No*    |
-| LOWEST            | **Yes** | **Yes** | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
-| LOW               | **Yes** | **Yes** | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
-| NORMAL            | **Yes** | **Yes** | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
-| HIGH              | **Yes** | **Yes** | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
-| HIGHEST           | **Yes** | **Yes** | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
-| BLOCKEVENTS       | *No*    | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
-| MONITOR           | *No*    | **Yes** | *No*    | *No*    | **Yes** | **Yes** | *No*    | **Yes** | *No*    |
-| MONITOR           | Access  | In Mine | IN Wrld | Blk Brk | Blk Cnt | ResetTh | BlkEvnt | MineSwp | AutoSel |
+| DISABLED          | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    |
+| ACCESS            | **Yes** | **Yes** | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    |
+| ACCESSBLOCKEVENTS | **Yes** | **Yes** | *No*    | *NoYes* | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| ACCESSMONITOR     | **Yes** | **Yes** | *No*    | *NoYes* | *No*    | **Yes** | **Yes** | *No*    | **Yes** | *No*    |
+| LOWEST            | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| LOW               | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| NORMAL            | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| HIGH              | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| HIGHEST           | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| BLOCKEVENTS       | *No*    | **Yes** | *No*    | **Yes** | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| MONITOR           | *No*    | **Yes** | *No*    | **Yes** | *No*    | **Yes** | **Yes** | *No*    | **Yes** | *No*    |
+| *priority temp*   | Access  | In Mine | IN Wrld | IgCanEv | Blk Brk | Blk Cnt | ResetTh | BlkEvnt | MineSwp | AutoSel |
 
 
 **Notes:**
 1. **DISABLED** will prevent a listener from starting, and it will prevent any processing of that event.
 2. **Access** managed by Prison requires the use of Access by Rank (perferred) or Access by Perms.  It also will vary in effectives based upon the priority level in relation to other plugins, where any plugin that has a lower priority than Prison will bypass Prison's attempts to control access.
-3. **Mine Sweeper** should never be used unless there is no other way to count all the broken blocks.
+3. **ACCESSBLOCKEVENTS** and **ACCESSMONITOR** are able to have a duel behavior because these priorities will create two different listeners, each at a different priority, and each having a different purpose.
+4. **Mine Sweeper** should never be used unless there is no other way to count all the broken blocks.
+5. Support for outside of the mine for auto features maybe added soon.  The way it will probably be supported would be through a list of worlds in which it should be active, plus the use of WG regions too.
+6. The **MONITOR** priority, including ***BLOCKEVENTS*** will ignore all events that have been canceled and will process them anyway.  Therefore **ACCESSBLOCKEVENTS** and **ACCESSMONITOR** will fail on the "access" part and will deny access to the mines, but it will also still process the events if they are canceled.
 
 
 
