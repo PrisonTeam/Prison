@@ -227,17 +227,24 @@ If you purchase this plugin to use on your server, do so with great caution sinc
 ### Enchantment Plugin Features Supported
 
 
-|  Plugin | Event | Settings ID | Cancel <br> Event | Cancel <br/> Drops | Run \n External | 
-|         |       |             |  Event |  Drops |
-| ------- | ----- | ----------- | :----: | :----: |
-| Spigot  | **BlockBreakEvent** | `blockBreakEventPriority` | **Yes** | **Yes** | **Yes** |
-| Prison  | **ExplosiveBlockBreakEvent** | `ProcessPrisons_ExplosiveBlockBreakEventsPriority` | **Yes** | *No* | *No* |
-| TokenEnchant | **TEBlockExplodeEvent** | `TokenEnchantBlockExplodeEventPriority` | **Yes** | *No* | *No* |
+|     Plugin     | Event | Settings ID | Cancel <br> Events | Cancel <br/> Drops | Run <br /> External | 
+|       ---      |  ---  | ----------- |        :---:       |       :----:       |        :----:       |
+| Spigot         | **BlockBreakEvent** | `blockBreakEventPriority` | **Yes** | **Yes** | **Yes** |
+| Prison         | **ExplosiveBlockBreakEvent** | `ProcessPrisons_ExplosiveBlockBreakEventsPriority` | **Yes** | *No* | *No* |
+| TokenEnchant   | **TEBlockExplodeEvent** | `TokenEnchantBlockExplodeEventPriority` | **Yes** | *No* | *No* |
+| CrazyEnchants  | **BlastUseEvent** | `CrazyEnchantsBlastUseEventPriority` | **Yes** | *No* | *No* |
+| PrisonEnchants | **PEExplosionEvent** | `PrisonEnchantsExplosiveEventPriority` | **Yes** | *No* | *No* |
+| RevEnchants    | **ExplosiveEvent** | `RevEnchantsExplosiveEventPriority` | **Yes** | *No* | *No* |
+| RevEnchants    | **JackHammerEvent** | `RevEnchantsJackHammerEventPriority` | **Yes** | *No* | *No* |
+| Zenchantments  | **BlockShredEvent** | `ZenchantmentsBlockShredEventPriority` | **Yes** | **Yes** | **Yes** |
+
 
 
 **Notes:**
 1. A value of *No* for **Cancel Drops** will always use **Cancel Event** instead.
-2. **Run External** refers to custom hooks in to mcMMO, EZBlock, and Quests.  See config settings within **AutoFeaturesConfig.yml**. It's strongly suggested to use **Cancel Drops** instead.
+2. **Cancel Drops** was added in Spigot 1.12.x so older versions of Spigot *must* use **Cancel Events**
+3. **Run External** refers to custom hooks in to mcMMO, EZBlock, and Quests.  See config settings within **AutoFeaturesConfig.yml**. It's strongly suggested to use **Cancel Drops** instead.
+4. Zenchantments is very flexible in how it's **BlockShredEvent** works, mostly because it extends the bukkit **BlockBreakEvent**, which is pretty brilliant. 
 
 
  
