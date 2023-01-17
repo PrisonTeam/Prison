@@ -7,12 +7,14 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
@@ -22,7 +24,6 @@ import tech.mcprison.prison.spigot.api.ExplosiveBlockBreakEvent;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
-import tech.mcprison.prison.spigot.block.OnBlockBreakExternalEvents;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
@@ -61,7 +62,8 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onPrisonsExplosiveBlockBreakEvent( ExplosiveBlockBreakEvent e, BlockBreakPriority bbPriority ) {
 			
-			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ) {
+			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ||
+					bbPriority.isDisabled() ) {
 				return;
 			}
 
@@ -215,8 +217,11 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
     			bbPriority.isMonitor() ) {
 		
 			
-	    	String eP = getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
-			boolean isPPrisonExplosiveBlockBreakEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
+    		// a disabled event listener should never reach this codde:
+//    		boolean isEventListenerEnabled = bbPriority == BlockBreakPriority.DISABLED;
+    		
+//	    	String eP = getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
+//			boolean isPPrisonExplosiveBlockBreakEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 	
 			
 			// Need to wrap in a Prison block so it can be used with the mines:
@@ -282,76 +287,118 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
     			// Monitors should never process the event beyond this.
     		}
 			
-	
 			
-			// now process all blocks (non-monitor):
-			else if ( isPPrisonExplosiveBlockBreakEnabled && 
-					( pmEvent.getMine() != null || pmEvent.getMine() == null && 
-					!isBoolean( AutoFeatures.pickupLimitToMines )) ) {
-				
-				if ( pmEvent.getExplodedBlocks().size() > 0 ) {
-					
-	//				String triggered = null;
-					
-					
-	//    			PrisonMinesBlockBreakEvent pmbbEvent = new PrisonMinesBlockBreakEvent( dummyBlock.getWrapper(), e.getPlayer(),
-	//    												mine, dummyBlock, explodedBlocks, BlockEventType.PEExplosive, triggered );
-					Bukkit.getServer().getPluginManager().callEvent(pmEvent);
-					if ( pmEvent.isCancelled() ) {
-						debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled) " );
+    		// This is where the processing actually happens:
+    		else {
+    			
+//    			debugInfo.append( "(normal processing initiating) " );
+    			
+    			// check all external events such as mcMMO and EZBlocks:
+    			if ( e instanceof BlockBreakEvent ) {
+    				processPMBBExternalEvents( pmEvent, debugInfo, e );
+    			}
+    			
+    			
+    			EventListenerCancelBy cancelBy = EventListenerCancelBy.none; 
+    			
+    			cancelBy = processPMBBEvent( pmEvent, sBlock, debugInfo );
+
+    			
+    			if ( cancelBy == EventListenerCancelBy.event ) {
+    				
+    				e.setCancelled( true );
+    				debugInfo.append( "(event canceled) " );
+    			}
+    			else if ( cancelBy == EventListenerCancelBy.drops ) {
+					try
+					{
+						e.setDropItems( false );
+						debugInfo.append( "(drop canceled) " );
 					}
-					else {
+					catch ( NoSuchMethodError e1 )
+					{
+						String message = String.format( 
+								"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
+										"is not valid for this version of Spigot. It's only vaid for spigot v1.12.x and higher. " +
+										"Modify the config settings and set this value to `false`.  For now, it is temporarily " +
+										"disabled. [%s]",
+										e1.getMessage() );
+						Output.get().logWarn( message );
 						
-	                	// Cancel drops if so configured:
-	                	if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
-	                		
-	                		try
-	                		{
-	                			e.setDropItems( false );
-	                		}
-	                		catch ( NoSuchMethodError e1 )
-	                		{
-	                			String message = String.format( 
-	                					"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
-	                					"is not valid for this version of Spigot. Modify the config settings and set " +
-	                					"this value to `false`. [%s]",
-	                					e1.getMessage() );
-	                			Output.get().logWarn( message );
-	                		}
-	                	}
-	                	
-						if ( doAction( pmEvent, debugInfo ) ) {
-							
-							if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
-								
-								e.setCancelled( true );
-							}
-							else {
-								
-								debugInfo.append( "(event was not canceled) " );
-							}
-							
-							finalizeBreakTheBlocks( pmEvent );
-	                		
-	                		doBlockEvents( pmEvent );
-	
-						}
-						
-						else {
-							
-							debugInfo.append( "(doAction failed without details) " );
-						}
-						
+						AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig()
+								.setFeature( AutoFeatures.cancelAllBlockEventBlockDrops, false );
 					}
-				}
-				
-				
-				debugInfo.append( "(normal processing) " );
-			}
-			else {
-				
-				debugInfo.append( "(logic bypass) " );
-			}
+
+    			}
+    		}
+			
+//			// now process all blocks (non-monitor):
+//			else if ( pmEvent.getMine() != null || pmEvent.getMine() == null && 
+//					!isBoolean( AutoFeatures.pickupLimitToMines ) ) {
+//				
+//				if ( pmEvent.getExplodedBlocks().size() > 0 ) {
+//					
+//	//				String triggered = null;
+//					
+//					
+//	//    			PrisonMinesBlockBreakEvent pmbbEvent = new PrisonMinesBlockBreakEvent( dummyBlock.getWrapper(), e.getPlayer(),
+//	//    												mine, dummyBlock, explodedBlocks, BlockEventType.PEExplosive, triggered );
+//					Bukkit.getServer().getPluginManager().callEvent(pmEvent);
+//					if ( pmEvent.isCancelled() ) {
+//						debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled) " );
+//					}
+//					else {
+//						
+//	                	// Cancel drops if so configured:
+//	                	if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
+//	                		
+//	                		try
+//	                		{
+//	                			e.setDropItems( false );
+//	                		}
+//	                		catch ( NoSuchMethodError e1 )
+//	                		{
+//	                			String message = String.format( 
+//	                					"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
+//	                					"is not valid for this version of Spigot. Modify the config settings and set " +
+//	                					"this value to `false`. [%s]",
+//	                					e1.getMessage() );
+//	                			Output.get().logWarn( message );
+//	                		}
+//	                	}
+//	                	
+//						if ( doAction( pmEvent, debugInfo ) ) {
+//							
+//							if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
+//								
+//								e.setCancelled( true );
+//							}
+//							else {
+//								
+//								debugInfo.append( "(event was not canceled) " );
+//							}
+//							
+//							finalizeBreakTheBlocks( pmEvent );
+//	                		
+//	                		doBlockEvents( pmEvent );
+//	
+//						}
+//						
+//						else {
+//							
+//							debugInfo.append( "(doAction failed without details) " );
+//						}
+//						
+//					}
+//				}
+//				
+//				
+//				debugInfo.append( "(normal processing) " );
+//			}
+//			else {
+//				
+//				debugInfo.append( "(logic bypass) " );
+//			}
 			
 		}
 		

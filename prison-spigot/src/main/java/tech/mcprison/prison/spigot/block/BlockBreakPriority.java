@@ -69,6 +69,10 @@ public enum BlockBreakPriority {
 			   this == ACCESSMONITOR
 			   ;
 	}
+
+	public boolean isDisabled() {
+		return this == DISABLED;
+	}
 	
 	public EventPriority getBukkitEventPriority() {
 		return bukkitEventPriority;

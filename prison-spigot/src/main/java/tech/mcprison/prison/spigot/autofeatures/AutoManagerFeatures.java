@@ -18,6 +18,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -68,6 +69,11 @@ public abstract class AutoManagerFeatures
 		setup();
 	}
 
+	public enum EventListenerCancelBy {
+		none,
+		event,
+		drops;
+	}
 
 	private void setup() {
 
@@ -77,7 +83,108 @@ public abstract class AutoManagerFeatures
 
 	}
 
+	
+	/**
+	 * <p>For the event handlers that implement the BlockBreakEvent, this allows 
+	 * the other plugins to also process the event if forced.
+	 * </p>
+	 * 
+	 * @param pmEvent
+	 * @param debugInfo
+	 * @param e
+	 */
+	protected void processPMBBExternalEvents( PrisonMinesBlockBreakEvent pmEvent, 
+			StringBuilder debugInfo, BlockBreakEvent e ) {
+		
+		if ( pmEvent.getMine() != null || pmEvent.getMine() == null && 
+				!isBoolean( AutoFeatures.pickupLimitToMines ) ) {
+			
+			// check all external events such as mcMMO and EZBlocks:
+			debugInfo.append( 
+					OnBlockBreakExternalEvents.getInstance().checkAllExternalEvents( e ) );
+			
+		}
 
+	}
+	
+
+	protected EventListenerCancelBy processPMBBEvent(PrisonMinesBlockBreakEvent pmEvent, 
+			SpigotBlock sBlock, StringBuilder debugInfo ) {
+		
+		EventListenerCancelBy cancelBy = EventListenerCancelBy.none;
+		
+		// This is where the processing actually happens:
+		if ( pmEvent.getMine() != null || pmEvent.getMine() == null && 
+				!isBoolean( AutoFeatures.pickupLimitToMines ) ) {
+			
+			debugInfo.append( "(normal processing initiating) " );
+			
+			// Set the mine's PrisonBlockTypes for the block. Used to identify custom blocks.
+			// Needed since processing of the block will lose track of which mine it came from.
+			if ( pmEvent.getMine() != null ) {
+				sBlock.setPrisonBlockTypes( pmEvent.getMine().getPrisonBlockTypes() );
+			}
+			
+			// check all external events such as mcMMO and EZBlocks:
+//			debugInfo.append( 
+//					OnBlockBreakExternalEvents.getInstance().checkAllExternalEvents( e ) );
+			
+			List<SpigotBlock> explodedBlocks = new ArrayList<>();
+			pmEvent.setExplodedBlocks( explodedBlocks );
+//    			String triggered = null;
+			
+//    			PrisonMinesBlockBreakEvent pmbbEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
+//    							pmEvent.getMine(), sBlock, explodedBlocks, BlockEventType.blockBreak, triggered );
+			Bukkit.getServer().getPluginManager().callEvent( pmEvent );
+			if ( pmEvent.isCancelled() ) {
+				debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled by another plugin!) " );
+			}
+			else {
+				
+				// Cancel drops if so configured:
+				if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
+					
+					cancelBy = EventListenerCancelBy.drops;
+					
+				}
+				
+				// doAction returns a boolean that indicates if the event should be canceled or not:
+				if ( doAction( pmEvent, debugInfo ) ) {
+//                	if ( doAction( sBlock, pmEvent.getMine(), pmEvent.getPlayer(), debugInfo ) ) {
+					
+					if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
+						cancelBy = EventListenerCancelBy.event;
+					}
+					else {
+						
+						debugInfo.append( "(event not canceled) " );
+					}
+					
+					finalizeBreakTheBlocks( pmEvent );
+					
+					doBlockEvents( pmEvent );
+					
+				}
+				else {
+					
+					debugInfo.append( "(doAction failed without details) " );
+				}
+				
+			}
+			
+			
+			debugInfo.append( "(normal processing completed) " );
+		}
+		else {
+			
+			debugInfo.append( "(logic bypass) " );
+		}
+		return cancelBy;
+	}
+
+
+
+	
 	/**
 	 * <p>If the fortune level is zero, then this function will always return a value of one.
 	 * </p>
