@@ -227,10 +227,17 @@ If you purchase this plugin to use on your server, do so with great caution sinc
 ### Enchantment Plugin Features Supported
 
 
-|  Plugin | Event | Settings ID | Cancel | Cancel |
-|  Plugin | Event | Settings ID |  Event |  Drops |
+|  Plugin | Event | Settings ID | Cancel <br> Event | Cancel <br/> Drops | Run \n External | 
+|         |       |             |  Event |  Drops |
 | ------- | ----- | ----------- | :----: | :----: |
-| Spigot  | **BlockBreakEvent** | `blockBreakEventPriority` | **Yes** | **Yes** |
+| Spigot  | **BlockBreakEvent** | `blockBreakEventPriority` | **Yes** | **Yes** | **Yes** |
+| Prison  | **ExplosiveBlockBreakEvent** | `ProcessPrisons_ExplosiveBlockBreakEventsPriority` | **Yes** | *No* | *No* |
+| TokenEnchant | **TEBlockExplodeEvent** | `TokenEnchantBlockExplodeEventPriority` | **Yes** | *No* | *No* |
+
+
+**Notes:**
+1. A value of *No* for **Cancel Drops** will always use **Cancel Event** instead.
+2. **Run External** refers to custom hooks in to mcMMO, EZBlock, and Quests.  See config settings within **AutoFeaturesConfig.yml**. It's strongly suggested to use **Cancel Drops** instead.
 
 
  
