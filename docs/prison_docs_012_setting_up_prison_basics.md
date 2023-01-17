@@ -223,6 +223,16 @@ Warning: People have paid for this plugin only to find out after the fact that i
 If you purchase this plugin to use on your server, do so with great caution since it is not supported and it may not integrate with prison.
 [ * Not supported * Tokens * Not supported * ](https://www.spigotmc.org/resources/%E2%9A%A1%EF%B8%8F-tokens-%E2%9A%A1%EF%B8%8F-40-enchantments-%E2%AD%95-free-expansions-%E2%AD%95-25-off.79668/)
 
+
+### Enchantment Plugin Features Supported
+
+
+|  Plugin | Event | Settings ID | Cancel | Cancel |
+|  Plugin | Event | Settings ID |  Event |  Drops |
+| ------- | ----- | ----------- | :----: | :----: |
+| Spigot  | **BlockBreakEvent** | `blockBreakEventPriority` | **Yes** | **Yes** |
+
+
  
 ### Other Plugins
  

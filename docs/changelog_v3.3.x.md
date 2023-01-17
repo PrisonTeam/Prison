@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13h 2023-01-16
 
 
+* **Update docs to see if it supports GFM tables**
+
+
 * **AutoFeatures Event Listeners: refactored how a the event is processed so they share more of the same code base.  This helps to eliminate the chances for bugs to happen for a few listeners, and it also help to ensure that the behavior for all of the listeners are identical.**
 If a event is marked as DISABLED, then the listener should never be loaded, but if it is, then it will quickly end the processing instead of allowing it to filter through all of the code.
 
