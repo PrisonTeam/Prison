@@ -24,10 +24,8 @@ import tech.mcprison.prison.spigot.api.ExplosiveBlockBreakEvent;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
-import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 public class AutoManagerPrisonsExplosiveBlockBreakEvents
 	extends AutoManagerFeatures 
@@ -192,9 +190,14 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 		// The event will also be ignored if the block is outside of a mine
 		// or if the targetBlock has been set to ignore all block events which 
 		// means the block has already been processed.
-    	if ( ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlock()) ) {
+    	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
+				e.getPlayer(), e.getBlock());
+		if ( eventResults.isIgnoreEvent() ) {
 			return;
 		}
+//    	if ( ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlock()) ) {
+//			return;
+//		}
 		
 		
 		// Register all external events such as mcMMO and EZBlocks:
@@ -225,14 +228,18 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 	
 			
 			// Need to wrap in a Prison block so it can be used with the mines:
-			SpigotBlock sBlock = SpigotBlock.getSpigotBlock(e.getBlock());
-			SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
+//			SpigotBlock sBlock = SpigotBlock.getSpigotBlock(e.getBlock());
+//			SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
 			
 			BlockEventType eventType = BlockEventType.PrisonExplosion;
 			String triggered = e.getTriggeredBy();
 			
-			PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
-					sBlock, sPlayer, bbPriority, eventType, triggered );
+			PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( 
+						e.getBlock(), 
+						e.getPlayer(),
+						eventResults.getMine(),
+//						sBlock, sPlayer, 
+						bbPriority, eventType, triggered );
 	
 			
 			// If this event is fired, but yet there are no exploded blocks, then do not set 
@@ -301,7 +308,7 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
     			
     			EventListenerCancelBy cancelBy = EventListenerCancelBy.none; 
     			
-    			cancelBy = processPMBBEvent( pmEvent, sBlock, debugInfo );
+    			cancelBy = processPMBBEvent( pmEvent, debugInfo );
 
     			
     			if ( cancelBy == EventListenerCancelBy.event ) {

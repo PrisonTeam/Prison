@@ -127,16 +127,24 @@ public class PrisonMinesBlockBreakEvent
 	private List<Block> unprocessedRawBlocks;
 	
 
-	public PrisonMinesBlockBreakEvent( Block theBlock, Player player, 
-			SpigotBlock spigotBlock, SpigotPlayer spigotPlayer,
-			BlockBreakPriority bbPriority,
-//			boolean monitor, boolean blockEventsOnly,
-			BlockEventType blockEventType, String triggered) {
+	public PrisonMinesBlockBreakEvent( 
+				Block theBlock, Player player, 
+				Mine mine,
+//				SpigotBlock spigotBlock, SpigotPlayer spigotPlayer,
+				BlockBreakPriority bbPriority,
+//				boolean monitor, boolean blockEventsOnly,
+				BlockEventType blockEventType, String triggered) {
 		
 		super( theBlock, player );
 
-		this.spigotBlock = spigotBlock;
-		this.spigotPlayer = spigotPlayer;
+		this.mine = mine;
+		
+		// Need to wrap in a Prison block so it can be used with the mines:
+		SpigotBlock sBlock = SpigotBlock.getSpigotBlock( theBlock );
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+
+		this.spigotBlock = sBlock;
+		this.spigotPlayer = sPlayer;
 		
 		this.itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
 		

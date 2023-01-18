@@ -22,9 +22,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
-import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.integrations.IntegrationCrazyEnchantmentsPickaxes;
 
 public class AutoManagerCrazyEnchants
@@ -220,9 +218,14 @@ public class AutoManagerCrazyEnchants
 		// The event will also be ignored if the block is outside of a mine
 		// or if the targetBlock has been set to ignore all block events which 
 		// means the block has already been processed.
-    	if ( ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlockList().get( 0 )) ) {
+    	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
+    										e.getPlayer(), e.getBlockList().get( 0 ) );
+    	if ( eventResults.isIgnoreEvent() ) {
     		return;
     	}
+//    	if ( ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlockList().get( 0 )) ) {
+//    		return;
+//    	}
     	
 		
 		// Register all external events such as mcMMO and EZBlocks:
@@ -256,15 +259,19 @@ public class AutoManagerCrazyEnchants
     		Block bukkitBlock = e.getBlockList().get( 0 );
     		
     		// Need to wrap in a Prison block so it can be used with the mines:
-    		SpigotBlock sBlock = SpigotBlock.getSpigotBlock( bukkitBlock );
-    		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
+//    		SpigotBlock sBlock = SpigotBlock.getSpigotBlock( bukkitBlock );
+//    		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
     		
     		BlockEventType eventType = BlockEventType.CEXplosion;
     		String triggered = null;
     		
 
-    		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( bukkitBlock, e.getPlayer(),
-					sBlock, sPlayer, bbPriority, eventType, triggered );
+    		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( 
+    				bukkitBlock, 
+    				e.getPlayer(),
+    				eventResults.getMine(),
+//    					sBlock, sPlayer, 
+    					bbPriority, eventType, triggered );
 		
     		
     		for ( int i = 1; i < e.getBlockList().size(); i++ ) {
@@ -311,7 +318,7 @@ public class AutoManagerCrazyEnchants
     			
     			EventListenerCancelBy cancelBy = EventListenerCancelBy.none; 
     			
-    			cancelBy = processPMBBEvent( pmEvent, sBlock, debugInfo );
+    			cancelBy = processPMBBEvent( pmEvent, debugInfo );
 
     			
     			// NOTE: you cannot cancel a crazy enchant's drops, so this will 

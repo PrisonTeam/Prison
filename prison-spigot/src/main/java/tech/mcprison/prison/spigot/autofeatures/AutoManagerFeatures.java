@@ -109,7 +109,7 @@ public abstract class AutoManagerFeatures
 	
 
 	protected EventListenerCancelBy processPMBBEvent(PrisonMinesBlockBreakEvent pmEvent, 
-			SpigotBlock sBlock, StringBuilder debugInfo ) {
+			StringBuilder debugInfo ) {
 		
 		EventListenerCancelBy cancelBy = EventListenerCancelBy.none;
 		
@@ -122,7 +122,7 @@ public abstract class AutoManagerFeatures
 			// Set the mine's PrisonBlockTypes for the block. Used to identify custom blocks.
 			// Needed since processing of the block will lose track of which mine it came from.
 			if ( pmEvent.getMine() != null ) {
-				sBlock.setPrisonBlockTypes( pmEvent.getMine().getPrisonBlockTypes() );
+				pmEvent.getSpigotBlock().setPrisonBlockTypes( pmEvent.getMine().getPrisonBlockTypes() );
 			}
 			
 			// check all external events such as mcMMO and EZBlocks:

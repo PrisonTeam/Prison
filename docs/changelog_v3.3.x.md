@@ -13,6 +13,11 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13h3 2023-01-18
 
 
+* **AutoFeatures refactoring: changes the setup of how the events deals with finding the mine the player is in.**
+The code was looking up the mine twice, now it only searches for the mine once and reused it more efficiently. 
+This simplifies how some of the code works and allows for more simplification too.
+
+
 * **Fix a few things with the RevEnchants listeners.**
 They were not hooked up for the `/prison support listeners blockevents` and they were not being registered to actually enable.
 

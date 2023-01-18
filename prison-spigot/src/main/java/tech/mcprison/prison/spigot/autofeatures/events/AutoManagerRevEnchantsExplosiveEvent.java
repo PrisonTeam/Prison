@@ -22,9 +22,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
-import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 public class AutoManagerRevEnchantsExplosiveEvent 
 	extends AutoManagerFeatures
@@ -220,13 +218,18 @@ public class AutoManagerRevEnchantsExplosiveEvent
 		// If the event is canceled, it still needs to be processed because of the 
 		// MONITOR events:
 		// An event will be "canceled" and "ignored" if the block 
-		// BlockUtils.isUnbreakable(), or if the mine is activly resetting.
+		// BlockUtils.isUnbreakable(), or if the mine is actively resetting.
 		// The event will also be ignored if the block is outside of a mine
 		// or if the targetBlock has been set to ignore all block events which 
 		// means the block has already been processed.
-    	if ( ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlocks().get( 0 )) ) {
-    		return;
-    	}
+    	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
+    							e.getPlayer(),  e.getBlocks().get( 0 ) );
+		if ( eventResults.isIgnoreEvent() ) {
+			return;
+		}
+//		if ( ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlocks().get( 0 )) ) {
+//    		return;
+//    	}
     	
 		
 		// Register all external events such as mcMMO and EZBlocks:
@@ -261,15 +264,19 @@ public class AutoManagerRevEnchantsExplosiveEvent
     		Block bukkitBlock = e.getBlocks().get( 0 );
     		
     		// Need to wrap in a Prison block so it can be used with the mines:
-    		SpigotBlock sBlock = SpigotBlock.getSpigotBlock( bukkitBlock );
-    		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
+//    		SpigotBlock sBlock = SpigotBlock.getSpigotBlock( bukkitBlock );
+//    		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
     		
     		BlockEventType eventType = BlockEventType.RevEnExplosion;
     		String triggered = null;
     		
 
-    		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( bukkitBlock, e.getPlayer(),
-					sBlock, sPlayer, bbPriority, eventType, triggered );
+    		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( 
+    					bukkitBlock, 
+    					e.getPlayer(),
+    					eventResults.getMine(),
+//    					sBlock, sPlayer, 
+    					bbPriority, eventType, triggered );
 		
     		
     		for ( int i = 1; i < e.getBlocks().size(); i++ ) {
@@ -314,7 +321,7 @@ public class AutoManagerRevEnchantsExplosiveEvent
     			
     			EventListenerCancelBy cancelBy = EventListenerCancelBy.none; 
     			
-    			cancelBy = processPMBBEvent( pmEvent, sBlock, debugInfo );
+    			cancelBy = processPMBBEvent( pmEvent, debugInfo );
 
     			
     			if ( cancelBy != EventListenerCancelBy.none ) {

@@ -156,14 +156,16 @@ public abstract class OnBlockBreakEventCore
 	
 	
 
-	protected boolean ignoreMinesBlockBreakEvent( Cancellable event, Player player, Block block ) {
+	protected MinesEventResults ignoreMinesBlockBreakEvent( Cancellable event, Player player, Block block ) {
 	
 		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
 		
 		if ( eventResults.isCancelEvent() ) {
 			event.setCancelled( eventResults.isCancelEvent() );
 		}
-		return eventResults.isIgnoreEvent();
+		
+//		return eventResults.isIgnoreEvent();
+		return eventResults;
 	}
 	
 	/**
@@ -176,34 +178,37 @@ public abstract class OnBlockBreakEventCore
 	 * @param block
 	 * @return
 	 */
-	protected boolean ignoreMinesBlockBreakEvent( ExplosiveEvent event, Player player, Block block ) {
+	protected MinesEventResults ignoreMinesBlockBreakEvent( ExplosiveEvent event, Player player, Block block ) {
 		
 		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
 		
 		if ( eventResults.isCancelEvent() ) {
 			event.setCancelled( eventResults.isCancelEvent() );
 		}
-		return eventResults.isIgnoreEvent();
+//		return eventResults.isIgnoreEvent();
+		return eventResults;
 	}
 	
-	protected boolean ignoreMinesBlockBreakEvent( JackHammerEvent event, Player player, Block block ) {
+	protected MinesEventResults ignoreMinesBlockBreakEvent( JackHammerEvent event, Player player, Block block ) {
 		
 		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
 		
 		if ( eventResults.isCancelEvent() ) {
 			event.setCancelled( eventResults.isCancelEvent() );
 		}
-		return eventResults.isIgnoreEvent();
+//		return eventResults.isIgnoreEvent();
+		return eventResults;
 	}
 	
-	protected boolean processMinesBlockBreakEvent( PEExplosionEvent event, Player player, Block block ) {
+	protected MinesEventResults ignoreMinesBlockBreakEvent( PEExplosionEvent event, Player player, Block block ) {
 		
 		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
 		
 		if ( eventResults.isCancelEvent() ) {
 			event.setCancelled( eventResults.isCancelEvent() );
 		}
-		return eventResults.isIgnoreEvent();
+//		return eventResults.isIgnoreEvent();
+		return eventResults;
 	}
 	
 
@@ -333,11 +338,13 @@ public abstract class OnBlockBreakEventCore
 		
 
 		SpigotBlock sBlockHit = pmEvent.getSpigotBlock();
-		
-		Mine mine = findMine( pmEvent.getPlayer(), sBlockHit, 
-				pmEvent.getUnprocessedRawBlocks(), pmEvent );
-		
-		pmEvent.setMine( mine );
+
+		// Mine should already be set:
+		//		Mine mine = findMine( pmEvent.getPlayer(), sBlockHit, 
+//				pmEvent.getUnprocessedRawBlocks(), pmEvent );
+//		
+//		pmEvent.setMine( mine );
+		Mine mine = pmEvent.getMine();
 		
 		debugInfo.append( "mine=" + (mine == null ? "none" : mine.getName()) + " " );
 		

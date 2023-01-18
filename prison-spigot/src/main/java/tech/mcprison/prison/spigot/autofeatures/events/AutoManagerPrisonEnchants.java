@@ -22,9 +22,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
-import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 public class AutoManagerPrisonEnchants
 	extends AutoManagerFeatures 
@@ -226,9 +224,14 @@ public class AutoManagerPrisonEnchants
 		// The event will also be ignored if the block is outside of a mine
 		// or if the targetBlock has been set to ignore all block events which 
 		// means the block has already been processed.
-    	if ( processMinesBlockBreakEvent( e, e.getPlayer(), e.getBlockBroken()) ) {
+    	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
+    			e.getPlayer(), e.getBlockBroken());
+    	if ( eventResults.isIgnoreEvent() ) {
     		return;
     	}
+//		if ( processMinesBlockBreakEvent( e, e.getPlayer(), e.getBlockBroken()) ) {
+//    		return;
+//    	}
     	
 
 		// Register all external events such as mcMMO and EZBlocks:
@@ -259,14 +262,18 @@ public class AutoManagerPrisonEnchants
 
 
     		// Need to wrap in a Prison block so it can be used with the mines:
-    		SpigotBlock sBlock = SpigotBlock.getSpigotBlock(e.getBlockBroken());
-    		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
+//    		SpigotBlock sBlock = SpigotBlock.getSpigotBlock(e.getBlockBroken());
+//    		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
     		
     		BlockEventType eventType = BlockEventType.PEExplosive;
     		String triggered = null; // e.getTriggeredBy();
     		
-    		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( e.getBlockBroken(), e.getPlayer(),
-    					sBlock, sPlayer, bbPriority, eventType, triggered );
+    		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( 
+    					e.getBlockBroken(), 
+    					e.getPlayer(),
+    					eventResults.getMine(),
+//    					sBlock, sPlayer, 
+    					bbPriority, eventType, triggered );
     		
     		pmEvent.setUnprocessedRawBlocks( e.getExplodedBlocks() );
     		
@@ -307,7 +314,7 @@ public class AutoManagerPrisonEnchants
     			
     			EventListenerCancelBy cancelBy = EventListenerCancelBy.none; 
     			
-    			cancelBy = processPMBBEvent( pmEvent, sBlock, debugInfo );
+    			cancelBy = processPMBBEvent( pmEvent, debugInfo );
 
     			
     			if ( cancelBy != EventListenerCancelBy.none ) {

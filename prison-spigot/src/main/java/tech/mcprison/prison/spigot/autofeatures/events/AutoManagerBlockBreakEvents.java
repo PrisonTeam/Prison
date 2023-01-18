@@ -23,9 +23,7 @@ import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
-import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.game.SpigotHandlerList;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
 
 public class AutoManagerBlockBreakEvents 
@@ -220,7 +218,9 @@ public class AutoManagerBlockBreakEvents
 		// The event will also be ignored if the block is outside of a mine
 		// or if the targetBlock has been set to ignore all block events which 
 		// means the block has already been processed.
-    	if ( ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlock()) ) {
+    	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
+    						e.getPlayer(), e.getBlock());
+    	if ( eventResults.isIgnoreEvent() ) {
     		return;
     	}
 
@@ -244,14 +244,18 @@ public class AutoManagerBlockBreakEvents
     			bbPriority.isMonitor() ) {
 
     		// Need to wrap in a Prison block so it can be used with the mines:
-    		SpigotBlock sBlock = SpigotBlock.getSpigotBlock(e.getBlock());
-    		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
+//    		SpigotBlock sBlock = SpigotBlock.getSpigotBlock(e.getBlock());
+//    		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
     		
     		BlockEventType eventType = BlockEventType.blockBreak;
     		String triggered = null;
     		
-    		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
-    					sBlock, sPlayer, bbPriority, eventType, triggered );
+    		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( 
+    				e.getBlock(), 
+    				e.getPlayer(),
+    				eventResults.getMine(),
+//    					sBlock, sPlayer, 
+    					bbPriority, eventType, triggered );
     		
     		// Validate the event. 
     		if ( !validateEvent( pmEvent, debugInfo ) ) {
@@ -289,7 +293,7 @@ public class AutoManagerBlockBreakEvents
     			
     			EventListenerCancelBy cancelBy = EventListenerCancelBy.none; 
     			
-    			cancelBy = processPMBBEvent( pmEvent, sBlock, debugInfo );
+    			cancelBy = processPMBBEvent( pmEvent, debugInfo );
 
     			
     			if ( cancelBy == EventListenerCancelBy.event ) {
