@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13h 2023-01-18
 
 
+* **Enhanced the command `/prison support listeners help` to format the columns for name and priority so they all align.**
+
+
 * **Comment on an issue within EssenialsX that is purposefully generating stack traces within the console, and there is nothing prison can do about it.**
 Plus, everything is working fine.
 https://github.com/EssentialsX/Essentials/issues/3956

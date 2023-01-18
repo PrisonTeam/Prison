@@ -2671,12 +2671,26 @@ public class SpigotPlatform
 
 		results.add( String.format( "&8All registered EventListeners (%d):", listeners.length ));
 		
+		int nMaxLen = 0;
+		int pMaxLen = 0;
+		// First find the max length of the name and priority: 
+		for ( RegisteredListener eventListner : listeners ) {
+			String plugin = eventListner.getPlugin().getName();
+			EventPriority priority = eventListner.getPriority();
+			if ( plugin.length() > nMaxLen ) {
+				nMaxLen = plugin.length();
+			}
+			if ( priority.name().length() > pMaxLen ) {
+				pMaxLen = priority.name().length();
+			}
+		}
+		
 		for ( RegisteredListener eventListner : listeners ) {
 			String plugin = eventListner.getPlugin().getName();
 			EventPriority priority = eventListner.getPriority();
 			String listener = eventListner.getListener().getClass().getName();
 			
-			String message = String.format( "&3. Plugin: &7%s   %s  &3(%s)", 
+			String message = String.format( "&3. Plugin: &7%-" + nMaxLen + "s   %-" + pMaxLen + "s  &3(%s)", 
 					plugin, priority.name(), listener);
 			
 			results.add( message );
