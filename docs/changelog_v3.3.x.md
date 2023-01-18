@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13h3 2023-01-18
 
 
+* **Fix a few things with the RevEnchants listeners.**
+They were not hooked up for the `/prison support listeners blockevents` and they were not being registered to actually enable.
+
 
 **v3.3.0-alpha.13h3 2023-01-18**
 

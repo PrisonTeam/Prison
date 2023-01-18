@@ -109,6 +109,8 @@ import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEven
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerCrazyEnchants;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonEnchants;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonsExplosiveBlockBreakEvents;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerRevEnchantsExplosiveEvent;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerRevEnchantsJackHammerEvent;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerTokenEnchant;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerZenchantments;
 import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
@@ -2598,6 +2600,12 @@ public class SpigotPlatform
 		AutoManagerTokenEnchant tokenEnchant = new AutoManagerTokenEnchant();
 		tokenEnchant.dumpEventListeners( sb );
 
+		AutoManagerRevEnchantsExplosiveEvent revEnchExplosive = new AutoManagerRevEnchantsExplosiveEvent();
+		revEnchExplosive.dumpEventListeners( sb );
+		
+		AutoManagerRevEnchantsJackHammerEvent revEnchJackHammer = new AutoManagerRevEnchantsJackHammerEvent();
+		revEnchJackHammer.dumpEventListeners( sb );
+		
 		AutoManagerZenchantments zenchantments = new AutoManagerZenchantments();
 		zenchantments.dumpEventListeners( sb );
 		
