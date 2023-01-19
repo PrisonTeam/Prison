@@ -109,27 +109,21 @@ public class AutoManagerCrazyEnchants
 			Output.get().logInfo( "AutoManager: Trying to register CrazyEnchants" );
 			
 			
-			SpigotPrison prison = SpigotPrison.getInstance();
-			PluginManager pm = Bukkit.getServer().getPluginManager();
-			EventPriority ePriority = getBbPriority().getBukkitEventPriority(); 
-			
-			
-			AutoManagerBlastUseEventListener autoManagerlListener = 
-					new AutoManagerBlastUseEventListener( bbPriority );
-			
-			pm.registerEvent(BlastUseEvent.class, autoManagerlListener, ePriority,
-					new EventExecutor() {
-				public void execute(Listener l, Event e) { 
-					
-					BlastUseEvent buEvent = (BlastUseEvent) e;
-					
-					((AutoManagerBlastUseEventListener)l)
-									.onCrazyEnchantsBlockExplode( buEvent, getBbPriority() );
-				}
-			},
-					prison);
-			prison.getRegisteredBlockListeners().add( autoManagerlListener );
-			
+			if ( getBbPriority() != BlockBreakPriority.DISABLED ) {
+    			if ( bbPriority.isComponentCompound() ) {
+    				
+    				for (BlockBreakPriority subBBPriority : bbPriority.getComponentPriorities()) {
+						
+    					createListener( subBBPriority );
+					}
+    			}
+    			else {
+    				
+    				createListener(bbPriority);
+    			}
+    			
+    		}
+
 			
 		}
 		catch ( ClassNotFoundException e ) {
@@ -139,6 +133,32 @@ public class AutoManagerCrazyEnchants
 		catch ( Exception e ) {
 			Output.get().logInfo( "AutoManager: CrazyEnchants failed to load. [%s]", e.getMessage() );
 		}
+	}
+
+
+	private void createListener(BlockBreakPriority bbPriority) {
+		
+		SpigotPrison prison = SpigotPrison.getInstance();
+		PluginManager pm = Bukkit.getServer().getPluginManager();
+		EventPriority ePriority = bbPriority.getBukkitEventPriority(); 
+		
+		
+		AutoManagerBlastUseEventListener autoManagerListener = 
+				new AutoManagerBlastUseEventListener( bbPriority );
+		
+		pm.registerEvent(BlastUseEvent.class, autoManagerListener, ePriority,
+				new EventExecutor() {
+					public void execute(Listener l, Event e) { 
+						
+						BlastUseEvent buEvent = (BlastUseEvent) e;
+						
+						((AutoManagerBlastUseEventListener)l)
+										.onCrazyEnchantsBlockExplode( buEvent, getBbPriority() );
+					}
+				},
+				prison);
+		
+		prison.getRegisteredBlockListeners().add( autoManagerListener );
 	}
    
 	
@@ -197,6 +217,23 @@ public class AutoManagerCrazyEnchants
 			if ( eventDisplay != null ) {
 				sb.append( eventDisplay.toStringBuilder() );
 				sb.append( "\n" );
+			}
+			
+			
+			if ( bbPriority.isComponentCompound() ) {
+				StringBuilder sbCP = new StringBuilder();
+				for ( BlockBreakPriority bbp : bbPriority.getComponentPriorities() ) {
+					if ( sbCP.length() > 0 ) {
+						sbCP.append( ", " );
+					}
+					sbCP.append( "'" ).append( bbp.name() ).append( "'" );
+				}
+				
+				String msg = String.format( "Note '%s' is a compound of: [%s]",
+						bbPriority.name(),
+						sbCP );
+				
+				sb.append( msg ).append( "\n" );
 			}
 		}
 		catch ( ClassNotFoundException e ) {

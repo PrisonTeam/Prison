@@ -104,30 +104,20 @@ public class AutoManagerZenchantments
     		
     		Output.get().logInfo( "AutoManager: Trying to register Zenchantments" );
     		
-    		SpigotPrison prison = SpigotPrison.getInstance();
-    		PluginManager pm = Bukkit.getServer().getPluginManager();
-    		EventPriority ePriority = getBbPriority().getBukkitEventPriority();    
-    		
-    		AutoManagerBlockShredEventListener autoManagerlListener = 
-    							new AutoManagerBlockShredEventListener( bbPriority );
-    		
-    		pm.registerEvent(BlockShredEvent.class, autoManagerlListener, ePriority,
-    				new EventExecutor() {
-    			public void execute(Listener l, Event e) { 
-    				if ( l instanceof AutoManagerBlockShredEventListener && 
-    						e instanceof BlockShredEvent ) {
-    					
-    					AutoManagerBlockShredEventListener lmon = 
-    												(AutoManagerBlockShredEventListener) l;
-    					
-    					BlockShredEvent event = (BlockShredEvent) e;
-    					lmon.onBlockShredBreak( event, getBbPriority() );
-    				}
+    		if ( getBbPriority() != BlockBreakPriority.DISABLED ) {
+    			if ( bbPriority.isComponentCompound() ) {
+    				
+    				for (BlockBreakPriority subBBPriority : bbPriority.getComponentPriorities()) {
+						
+    					createListener( subBBPriority );
+					}
     			}
-    		},
-    				prison);
-    		prison.getRegisteredBlockListeners().add( autoManagerlListener );
-    		
+    			else {
+    				
+    				createListener(bbPriority);
+    			}
+    			
+    		}
     		
     	}
     	catch ( ClassNotFoundException e ) {
@@ -138,6 +128,33 @@ public class AutoManagerZenchantments
     		Output.get().logInfo( "AutoManager: Zenchantments failed to load. [%s]", e.getMessage() );
     	}
     }
+
+	private void createListener( BlockBreakPriority bbPriority ) {
+		
+		SpigotPrison prison = SpigotPrison.getInstance();
+		PluginManager pm = Bukkit.getServer().getPluginManager();
+		EventPriority ePriority = bbPriority.getBukkitEventPriority();    
+		
+		AutoManagerBlockShredEventListener autoManagerListener = 
+							new AutoManagerBlockShredEventListener( bbPriority );
+		
+		pm.registerEvent(BlockShredEvent.class, autoManagerListener, ePriority,
+				new EventExecutor() {
+			public void execute(Listener l, Event e) { 
+				if ( l instanceof AutoManagerBlockShredEventListener && 
+						e instanceof BlockShredEvent ) {
+							
+							AutoManagerBlockShredEventListener lmon = 
+														(AutoManagerBlockShredEventListener) l;
+							
+							BlockShredEvent event = (BlockShredEvent) e;
+							lmon.onBlockShredBreak( event, getBbPriority() );
+						}
+					}
+				},
+				prison);
+		prison.getRegisteredBlockListeners().add( autoManagerListener );
+	}
     
     @Override
     public void unregisterListeners() {
@@ -197,6 +214,22 @@ public class AutoManagerZenchantments
     					"listeners are combined due to this bug.\n" );
     			sb.append( "\n" );
     		}
+    		
+			if ( bbPriority.isComponentCompound() ) {
+				StringBuilder sbCP = new StringBuilder();
+				for ( BlockBreakPriority bbp : bbPriority.getComponentPriorities() ) {
+					if ( sbCP.length() > 0 ) {
+						sbCP.append( ", " );
+					}
+					sbCP.append( "'" ).append( bbp.name() ).append( "'" );
+				}
+				
+				String msg = String.format( "Note '%s' is a compound of: [%s]",
+						bbPriority.name(),
+						sbCP );
+				
+				sb.append( msg ).append( "\n" );
+			}
     	}
     	catch ( ClassNotFoundException e ) {
     		// Zenchantments is not loaded... so ignore.

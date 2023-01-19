@@ -109,29 +109,20 @@ public class AutoManagerPrisonEnchants
 			Output.get().logInfo( "AutoManager: Trying to register Pulsi_'s PrisonEnchants" );
 			
 			
-			
-			
-			SpigotPrison prison = SpigotPrison.getInstance();
-			PluginManager pm = Bukkit.getServer().getPluginManager();
-			EventPriority ePriority = getBbPriority().getBukkitEventPriority(); 
-			
-			AutoManagerPEExplosiveEventListener autoManagerlListener = 
-					new AutoManagerPEExplosiveEventListener( bbPriority );
-			
-			pm.registerEvent(PEExplosionEvent.class, autoManagerlListener, ePriority,
-					new EventExecutor() {
-				public void execute(Listener l, Event e) { 
-					
-					PEExplosionEvent peeEvent = (PEExplosionEvent) e;
-					
-					((AutoManagerPEExplosiveEventListener)l)
-					.onPrisonEnchantsExplosiveEvent( peeEvent, getBbPriority() );
-				}
-			},
-					prison);
-			prison.getRegisteredBlockListeners().add( autoManagerlListener );
-			
-			
+    		if ( getBbPriority() != BlockBreakPriority.DISABLED ) {
+    			if ( bbPriority.isComponentCompound() ) {
+    				
+    				for (BlockBreakPriority subBBPriority : bbPriority.getComponentPriorities()) {
+						
+    					createListener( subBBPriority );
+					}
+    			}
+    			else {
+    				
+    				createListener(bbPriority);
+    			}
+    			
+    		}
 			
 		}
 		catch ( ClassNotFoundException e ) {
@@ -141,6 +132,29 @@ public class AutoManagerPrisonEnchants
 		catch ( Exception e ) {
 			Output.get().logInfo( "AutoManager: Pulsi_'s PrisonEnchants failed to load. [%s]", e.getMessage() );
 		}
+	}
+
+	private void createListener(BlockBreakPriority bbPriority) {
+		
+		SpigotPrison prison = SpigotPrison.getInstance();
+		PluginManager pm = Bukkit.getServer().getPluginManager();
+		EventPriority ePriority = bbPriority.getBukkitEventPriority(); 
+		
+		AutoManagerPEExplosiveEventListener autoManagerListener = 
+				new AutoManagerPEExplosiveEventListener( bbPriority );
+		
+		pm.registerEvent(PEExplosionEvent.class, autoManagerListener, ePriority,
+				new EventExecutor() {
+			public void execute(Listener l, Event e) { 
+				
+				PEExplosionEvent peeEvent = (PEExplosionEvent) e;
+				
+				((AutoManagerPEExplosiveEventListener)l)
+				.onPrisonEnchantsExplosiveEvent( peeEvent, getBbPriority() );
+			}
+		},
+				prison);
+		prison.getRegisteredBlockListeners().add( autoManagerListener );
 	}
 
    
@@ -199,6 +213,23 @@ public class AutoManagerPrisonEnchants
 			if ( eventDisplay != null ) {
 				sb.append( eventDisplay.toStringBuilder() );
 				sb.append( "\n" );
+			}
+			
+			
+			if ( bbPriority.isComponentCompound() ) {
+				StringBuilder sbCP = new StringBuilder();
+				for ( BlockBreakPriority bbp : bbPriority.getComponentPriorities() ) {
+					if ( sbCP.length() > 0 ) {
+						sbCP.append( ", " );
+					}
+					sbCP.append( "'" ).append( bbp.name() ).append( "'" );
+				}
+				
+				String msg = String.format( "Note '%s' is a compound of: [%s]",
+						bbPriority.name(),
+						sbCP );
+				
+				sb.append( msg ).append( "\n" );
 			}
 		}
 		catch ( ClassNotFoundException e ) {

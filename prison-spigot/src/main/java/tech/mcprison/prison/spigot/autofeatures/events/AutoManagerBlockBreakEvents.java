@@ -34,7 +34,6 @@ public class AutoManagerBlockBreakEvents
 	
 	public AutoManagerBlockBreakEvents() {
         super();
-   
     }
 	public AutoManagerBlockBreakEvents( BlockBreakPriority bbPriority ) {
 		super();
@@ -54,7 +53,6 @@ public class AutoManagerBlockBreakEvents
 	public void registerEvents() {
 	
 		initialize();
-		
 	}
 	
 	
@@ -75,12 +73,10 @@ public class AutoManagerBlockBreakEvents
 			}
 			
 			handleBlockBreakEvent( e, bbPriority );
-//			genericBlockEventAutoManager( e );
 		}
 
 		@Override
 		protected int checkBonusXp(Player player, Block block, ItemStack item) {
-			// TODO Auto-generated method stub
 			return 0;
 		}
 	}
@@ -103,31 +99,19 @@ public class AutoManagerBlockBreakEvents
     		
     		setBbPriority( bbPriority );
     		
+    		
     		if ( getBbPriority() != BlockBreakPriority.DISABLED ) {
-    			
-    			SpigotPrison prison = SpigotPrison.getInstance();
-    			PluginManager pm = Bukkit.getServer().getPluginManager();
-    			EventPriority ePriority = getBbPriority().getBukkitEventPriority();           
-    			
-    			AutoManagerBlockBreakEventListener autoManagerlListener = 
-    								new AutoManagerBlockBreakEventListener( bbPriority );
-    			
-    			
-    			pm.registerEvent(BlockBreakEvent.class, autoManagerlListener, ePriority,
-    					new EventExecutor() {
-    				public void execute(Listener l, Event e) {
-    					if ( l instanceof AutoManagerBlockBreakEventListener && 
-    							e instanceof BlockBreakEvent ) {
-    						
-    						((AutoManagerBlockBreakEventListener)l)
-    						.onBlockBreak( (BlockBreakEvent)e, getBbPriority() );
-    					}
-    				}
-    			},
-    					prison);
-    			
-    			prison.getRegisteredBlockListeners().add( autoManagerlListener );
-    			
+    			if ( bbPriority.isComponentCompound() ) {
+    				
+    				for (BlockBreakPriority subBBPriority : bbPriority.getComponentPriorities()) {
+						
+    					createListener( subBBPriority );
+					}
+    			}
+    			else {
+    				
+    				createListener(bbPriority);
+    			}
     			
     		}
     		
@@ -136,6 +120,32 @@ public class AutoManagerBlockBreakEvents
     		Output.get().logInfo( "AutoManager: BlockBreakEvent failed to load. [%s]", e.getMessage() );
     	}
     }
+    
+	private void createListener( BlockBreakPriority bbPriority ) {
+		
+		SpigotPrison prison = SpigotPrison.getInstance();
+		PluginManager pm = Bukkit.getServer().getPluginManager();
+		EventPriority ePriority = bbPriority.getBukkitEventPriority();           
+		
+		AutoManagerBlockBreakEventListener autoManagerListener = 
+							new AutoManagerBlockBreakEventListener( bbPriority );
+		
+		
+		pm.registerEvent(BlockBreakEvent.class, autoManagerListener, ePriority,
+				new EventExecutor() {
+					public void execute(Listener l, Event e) {
+						if ( l instanceof AutoManagerBlockBreakEventListener && 
+								e instanceof BlockBreakEvent ) {
+							
+							((AutoManagerBlockBreakEventListener)l)
+									.onBlockBreak( (BlockBreakEvent)e, getBbPriority() );
+						}
+					}
+				},
+				prison);
+		
+		prison.getRegisteredBlockListeners().add( autoManagerListener );
+	}
     
     
 //    /**
@@ -193,6 +203,22 @@ public class AutoManagerBlockBreakEvents
 			if ( eventDisplay != null ) {
 				sb.append( eventDisplay.toStringBuilder() );
 				sb.append( "\n" );
+			}
+			
+			if ( bbPriority.isComponentCompound() ) {
+				StringBuilder sbCP = new StringBuilder();
+				for ( BlockBreakPriority bbp : bbPriority.getComponentPriorities() ) {
+					if ( sbCP.length() > 0 ) {
+						sbCP.append( ", " );
+					}
+					sbCP.append( "'" ).append( bbp.name() ).append( "'" );
+				}
+				
+				String msg = String.format( "Note '%s' is a compound of: [%s]",
+						bbPriority.name(),
+						sbCP );
+				
+				sb.append( msg ).append( "\n" );
 			}
 		}
 		catch ( Exception e ) {
