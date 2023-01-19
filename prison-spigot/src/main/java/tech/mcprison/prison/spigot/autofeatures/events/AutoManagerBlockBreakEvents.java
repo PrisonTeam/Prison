@@ -36,6 +36,11 @@ public class AutoManagerBlockBreakEvents
         super();
    
     }
+	public AutoManagerBlockBreakEvents( BlockBreakPriority bbPriority ) {
+		super();
+		
+		this.bbPriority = bbPriority;
+	}
 
 	
 	public BlockBreakPriority getBbPriority() {
@@ -56,6 +61,10 @@ public class AutoManagerBlockBreakEvents
     public class AutoManagerBlockBreakEventListener 
 	    extends AutoManagerBlockBreakEvents
 	    implements Listener {
+    	
+    	public AutoManagerBlockBreakEventListener( BlockBreakPriority bbPriority ) {
+    		super( bbPriority );
+    	}
 		
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onBlockBreak( BlockBreakEvent e, BlockBreakPriority bbPriority ) {
@@ -90,7 +99,9 @@ public class AutoManagerBlockBreakEvents
     		Output.get().logInfo( "AutoManager: Trying to register BlockBreakEvent" );
     		
     		String eP = getMessage( AutoFeatures.blockBreakEventPriority );
-    		setBbPriority( BlockBreakPriority.fromString( eP ) );
+    		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+    		
+    		setBbPriority( bbPriority );
     		
     		if ( getBbPriority() != BlockBreakPriority.DISABLED ) {
     			
@@ -99,7 +110,7 @@ public class AutoManagerBlockBreakEvents
     			EventPriority ePriority = getBbPriority().getBukkitEventPriority();           
     			
     			AutoManagerBlockBreakEventListener autoManagerlListener = 
-    								new AutoManagerBlockBreakEventListener();
+    								new AutoManagerBlockBreakEventListener( bbPriority );
     			
     			
     			pm.registerEvent(BlockBreakEvent.class, autoManagerlListener, ePriority,

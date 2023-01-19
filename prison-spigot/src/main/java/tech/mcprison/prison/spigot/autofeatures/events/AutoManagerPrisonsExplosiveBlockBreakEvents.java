@@ -37,6 +37,12 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 		super();
 	}
 
+	public AutoManagerPrisonsExplosiveBlockBreakEvents( BlockBreakPriority bbPriority ) {
+		super();
+		
+		this.bbPriority = bbPriority;
+	}
+
 	
 	public BlockBreakPriority getBbPriority() {
 		return bbPriority;
@@ -56,7 +62,11 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 	public class AutoManagerExplosiveBlockBreakEventListener 
 		extends AutoManagerPrisonsExplosiveBlockBreakEvents
 		implements Listener {
-		
+    	
+    	public AutoManagerExplosiveBlockBreakEventListener( BlockBreakPriority bbPriority ) {
+    		super( bbPriority );
+    	}
+    	
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onPrisonsExplosiveBlockBreakEvent( ExplosiveBlockBreakEvent e, BlockBreakPriority bbPriority ) {
 			
@@ -74,7 +84,9 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 	public void initialize() {
 		
 		String eP = getMessage( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority );
-  		setBbPriority( BlockBreakPriority.fromString( eP ) );
+		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+		
+		setBbPriority( bbPriority );
 		
 //		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 
@@ -93,7 +105,7 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 			
 			
 			AutoManagerExplosiveBlockBreakEventListener autoManagerlListener = 
-					new AutoManagerExplosiveBlockBreakEventListener();
+					new AutoManagerExplosiveBlockBreakEventListener( bbPriority );
 			
 			pm.registerEvent(ExplosiveBlockBreakEvent.class, autoManagerlListener, ePriority,
 					new EventExecutor() {

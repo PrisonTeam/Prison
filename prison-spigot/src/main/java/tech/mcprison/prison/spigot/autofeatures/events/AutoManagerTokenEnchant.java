@@ -39,6 +39,12 @@ public class AutoManagerTokenEnchant
         this.teExplosionTriggerEnabled = true;
     }
 	
+	public AutoManagerTokenEnchant( BlockBreakPriority bbPriority ) {
+		this();
+		
+		this.bbPriority = bbPriority;
+	}
+	
 	
 	public BlockBreakPriority getBbPriority() {
 		return bbPriority;
@@ -58,6 +64,10 @@ public class AutoManagerTokenEnchant
 		extends AutoManagerTokenEnchant
 		implements Listener {
     	
+    	public AutoManagerTokenEnchantEventListener( BlockBreakPriority bbPriority ) {
+    		super( bbPriority );
+    	}
+    	
         @EventHandler(priority=EventPriority.LOW) 
         public void onTEBlockExplode( TEBlockExplodeEvent e, BlockBreakPriority bbPriority) {
 			if ( isDisabled( e.getBlock().getLocation().getWorld().getName() ) ||
@@ -75,7 +85,9 @@ public class AutoManagerTokenEnchant
     public void initialize() {
 
     	String eP = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
-    	setBbPriority( BlockBreakPriority.fromString( eP ) );
+		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+		
+		setBbPriority( bbPriority );
     	
 //		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 
@@ -98,7 +110,7 @@ public class AutoManagerTokenEnchant
     		
     		
     		AutoManagerTokenEnchantEventListener autoManagerlListener = 
-    				new AutoManagerTokenEnchantEventListener();
+    				new AutoManagerTokenEnchantEventListener( bbPriority );
     		
     		pm.registerEvent(TEBlockExplodeEvent.class, autoManagerlListener, ePriority,
     				new EventExecutor() {
@@ -320,7 +332,7 @@ public class AutoManagerTokenEnchant
 //    		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
     		
     		BlockEventType eventType = BlockEventType.TEXplosion;
-    		String triggered = checkCEExplosionTriggered( e );
+    		String triggered = checkTEBlockExplodeEventTriggered( e );
     		
     		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( 
     					e.getBlock(), 
@@ -491,7 +503,7 @@ public class AutoManagerTokenEnchant
 		}
 	}
 
-	private String checkCEExplosionTriggered( TEBlockExplodeEvent e )
+	private String checkTEBlockExplodeEventTriggered( TEBlockExplodeEvent e )
 	{
 		String triggered = null;
 		

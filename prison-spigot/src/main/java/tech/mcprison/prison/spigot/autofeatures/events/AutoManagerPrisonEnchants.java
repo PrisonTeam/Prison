@@ -33,7 +33,13 @@ public class AutoManagerPrisonEnchants
 	public AutoManagerPrisonEnchants() {
 		super();
 	}
-
+	
+	public AutoManagerPrisonEnchants( BlockBreakPriority bbPriority ) {
+		super();
+		
+		this.bbPriority = bbPriority;
+	}
+	
 	
 	public BlockBreakPriority getBbPriority() {
 		return bbPriority;
@@ -57,6 +63,10 @@ public class AutoManagerPrisonEnchants
 		extends AutoManagerPrisonEnchants
 		implements Listener {
 		
+    	public AutoManagerPEExplosiveEventListener( BlockBreakPriority bbPriority ) {
+    		super( bbPriority );
+    	}
+    	
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onPrisonEnchantsExplosiveEvent( PEExplosionEvent e, BlockBreakPriority bbPriority ) {
 			
@@ -79,7 +89,9 @@ public class AutoManagerPrisonEnchants
 	public void initialize() {
 
 		String eP = getMessage( AutoFeatures.PrisonEnchantsExplosiveEventPriority );
-		setBbPriority( BlockBreakPriority.fromString( eP ) );
+		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+		
+		setBbPriority( bbPriority );
 		
 //		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 
@@ -104,7 +116,7 @@ public class AutoManagerPrisonEnchants
 			EventPriority ePriority = getBbPriority().getBukkitEventPriority(); 
 			
 			AutoManagerPEExplosiveEventListener autoManagerlListener = 
-					new AutoManagerPEExplosiveEventListener();
+					new AutoManagerPEExplosiveEventListener( bbPriority );
 			
 			pm.registerEvent(PEExplosionEvent.class, autoManagerlListener, ePriority,
 					new EventExecutor() {

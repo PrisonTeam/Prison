@@ -31,12 +31,14 @@ public class AutoManagerRevEnchantsExplosiveEvent
 
 	private BlockBreakPriority bbPriority;
 	
-	private Boolean revEnchantsExplosiveEventEnabled;
-	
 	public AutoManagerRevEnchantsExplosiveEvent() {
 		super();
+	}
+	
+	public AutoManagerRevEnchantsExplosiveEvent( BlockBreakPriority bbPriority ) {
+		super();
 		
-		this.revEnchantsExplosiveEventEnabled = null;
+		this.bbPriority = bbPriority;
 	}
 	
 	
@@ -58,7 +60,11 @@ public class AutoManagerRevEnchantsExplosiveEvent
 	public class AutoManagerRevEnchantsExplosiveEventListener
 		extends AutoManagerRevEnchantsExplosiveEvent
 		implements Listener {
-		
+    	
+    	public AutoManagerRevEnchantsExplosiveEventListener( BlockBreakPriority bbPriority ) {
+    		super( bbPriority );
+    	}
+    	
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onRevEnchantsExplosive( 
 				ExplosiveEvent e, BlockBreakPriority bbPriority) {
@@ -77,7 +83,9 @@ public class AutoManagerRevEnchantsExplosiveEvent
 	public void initialize() {
 
 		String eP = getMessage( AutoFeatures.RevEnchantsExplosiveEventPriority );
-		setBbPriority( BlockBreakPriority.fromString( eP ) );
+		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+		
+		setBbPriority( bbPriority );
 		
 //		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 		
@@ -101,7 +109,7 @@ public class AutoManagerRevEnchantsExplosiveEvent
 			
 			
 			AutoManagerRevEnchantsExplosiveEventListener autoManagerlListener = 
-					new AutoManagerRevEnchantsExplosiveEventListener();
+					new AutoManagerRevEnchantsExplosiveEventListener( bbPriority );
 			
 			pm.registerEvent(
 					ExplosiveEvent.class, 
@@ -470,14 +478,6 @@ public class AutoManagerRevEnchantsExplosiveEvent
 //		
 //		return bonusXp;
 //	}
-
-
-	public Boolean isRevEnchantsExplosiveEventEnabled() {
-		return revEnchantsExplosiveEventEnabled;
-	}
-	public void setRevEnchantsExplosiveEventEnabled(Boolean revEnchantsExplosiveEventEnabled) {
-		this.revEnchantsExplosiveEventEnabled = revEnchantsExplosiveEventEnabled;
-	}
 
 
 }

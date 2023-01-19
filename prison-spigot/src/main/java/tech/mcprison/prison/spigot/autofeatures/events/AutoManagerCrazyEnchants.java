@@ -40,6 +40,15 @@ public class AutoManagerCrazyEnchants
 	}
 	
 	
+	public AutoManagerCrazyEnchants( BlockBreakPriority bbPriority ) {
+		super();
+		
+		this.crazyEnchantEnabled = null;
+		
+		this.bbPriority = bbPriority;
+	}
+	
+	
 	public BlockBreakPriority getBbPriority() {
 		return bbPriority;
 	}
@@ -58,6 +67,10 @@ public class AutoManagerCrazyEnchants
 	public class AutoManagerBlastUseEventListener
 		extends AutoManagerCrazyEnchants
 		implements Listener {
+    	
+    	public AutoManagerBlastUseEventListener( BlockBreakPriority bbPriority ) {
+    		super( bbPriority );
+    	}
 		
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onCrazyEnchantsBlockExplode( BlastUseEvent e, BlockBreakPriority bbPriority) {
@@ -76,11 +89,13 @@ public class AutoManagerCrazyEnchants
 	public void initialize() {
 
 		String eP = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
-		setBbPriority( BlockBreakPriority.fromString( eP ) );
+		
+		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+		setBbPriority( bbPriority );
 		
 //		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 		
-		if ( getBbPriority() == BlockBreakPriority.DISABLED ) {
+		if ( bbPriority == BlockBreakPriority.DISABLED ) {
 			return;
 		}
 		
@@ -100,7 +115,7 @@ public class AutoManagerCrazyEnchants
 			
 			
 			AutoManagerBlastUseEventListener autoManagerlListener = 
-					new AutoManagerBlastUseEventListener();
+					new AutoManagerBlastUseEventListener( bbPriority );
 			
 			pm.registerEvent(BlastUseEvent.class, autoManagerlListener, ePriority,
 					new EventExecutor() {

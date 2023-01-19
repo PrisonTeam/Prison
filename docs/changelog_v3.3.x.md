@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13h3 2023-01-18
 
 
+* **AutoManager event listeners: refactored to prepare for the ACCESS priorities.**
+
+
 * **AutoFeatures Event Listeners: More refactoring to simplify how the debugInfo is passed around.**
 
 

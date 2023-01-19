@@ -36,6 +36,12 @@ public class AutoManagerZenchantments
 		super();
 	}
 	
+	public AutoManagerZenchantments( BlockBreakPriority bbPriority ) {
+		super();
+		
+		this.bbPriority = bbPriority;
+	}
+	
 	
 	public BlockBreakPriority getBbPriority() {
 		return bbPriority;
@@ -56,6 +62,10 @@ public class AutoManagerZenchantments
 	    extends AutoManagerZenchantments
 	    implements Listener {
     	
+    	public AutoManagerBlockShredEventListener( BlockBreakPriority bbPriority ) {
+    		super( bbPriority );
+    	}
+	
     	@EventHandler(priority=EventPriority.NORMAL) 
     	public void onBlockShredBreak( BlockShredEvent e, BlockBreakPriority bbPriority ) {
     		
@@ -75,7 +85,9 @@ public class AutoManagerZenchantments
     public void initialize() {
     	
     	String eP = getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority );
-		setBbPriority( BlockBreakPriority.fromString( eP ) );
+		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+		
+		setBbPriority( bbPriority );
 		
 //		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 
@@ -97,7 +109,7 @@ public class AutoManagerZenchantments
     		EventPriority ePriority = getBbPriority().getBukkitEventPriority();    
     		
     		AutoManagerBlockShredEventListener autoManagerlListener = 
-    							new AutoManagerBlockShredEventListener();
+    							new AutoManagerBlockShredEventListener( bbPriority );
     		
     		pm.registerEvent(BlockShredEvent.class, autoManagerlListener, ePriority,
     				new EventExecutor() {

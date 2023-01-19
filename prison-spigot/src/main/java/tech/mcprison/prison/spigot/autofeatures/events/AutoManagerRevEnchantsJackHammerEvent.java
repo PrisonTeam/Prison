@@ -28,15 +28,16 @@ public class AutoManagerRevEnchantsJackHammerEvent
 	extends AutoManagerFeatures
 	implements PrisonEventManager {
 
-
 	private BlockBreakPriority bbPriority;
-	
-	private Boolean revEnchantsJackHammerEventEnabled;
 	
 	public AutoManagerRevEnchantsJackHammerEvent() {
 		super();
+	}
+	
+	public AutoManagerRevEnchantsJackHammerEvent( BlockBreakPriority bbPriority ) {
+		super();
 		
-		this.revEnchantsJackHammerEventEnabled = null;
+		this.bbPriority = bbPriority;
 	}
 	
 	
@@ -59,7 +60,11 @@ public class AutoManagerRevEnchantsJackHammerEvent
 	public class AutoManagerRevEnchantsJackHammerEventListener
 		extends AutoManagerRevEnchantsJackHammerEvent
 		implements Listener {
-		
+    	
+    	public AutoManagerRevEnchantsJackHammerEventListener( BlockBreakPriority bbPriority ) {
+    		super( bbPriority );
+    	}
+    	
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onRevEnchantsJackHammer( 
 				JackHammerEvent e, BlockBreakPriority bbPriority) {
@@ -78,7 +83,10 @@ public class AutoManagerRevEnchantsJackHammerEvent
 	public void initialize() {
 	
 		String eP = getMessage( AutoFeatures.RevEnchantsJackHammerEventPriority );
-		setBbPriority( BlockBreakPriority.fromString( eP ) );
+		
+		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+		
+		setBbPriority( bbPriority );
 		
 	//	boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 		
@@ -102,7 +110,7 @@ public class AutoManagerRevEnchantsJackHammerEvent
 			
 			
 			AutoManagerRevEnchantsJackHammerEventListener autoManagerlListener = 
-					new AutoManagerRevEnchantsJackHammerEventListener();
+					new AutoManagerRevEnchantsJackHammerEventListener( bbPriority );
 			
 			pm.registerEvent(
 					JackHammerEvent.class, 
@@ -445,41 +453,6 @@ public class AutoManagerRevEnchantsJackHammerEvent
 		return bonusXp;
 	}
 
-
-	//@Override
-	//protected int checkBonusXp( Player player, Block block, ItemStack item ) {
-	//	int bonusXp = 0;
-	//	
-	//	try {
-	//		if ( isRevEnchantsJackHammerEventEnabled() == null ) {
-	//			Class.forName( 
-	//					"tech.mcprison.prison.spigot.integrations.IntegrationCrazyEnchantmentsPickaxes", false, 
-	//					this.getClass().getClassLoader() );
-	//			setRevEnchantsJackHammerEventEnabled( Boolean.TRUE );
-	//		}
-	//		
-	//		if ( isRevEnchantsJackHammerEventEnabled() != null && isRevEnchantsJackHammerEventEnabled().booleanValue() && 
-	//				item != null && IntegrationCrazyEnchantmentsPickaxes.getInstance().isEnabled() ) {
-	//			
-	//			bonusXp = IntegrationCrazyEnchantmentsPickaxes.getInstance()
-	//					.getPickaxeEnchantmentExperienceBonus( player, block, item );
-	//		}
-	//	}
-	//	catch ( NoClassDefFoundError | Exception e ) {
-	//		setRevEnchantsJackHammerEventEnabled( Boolean.FALSE );
-	//	}
-	//	
-	//	return bonusXp;
-	//}
-	
-
-	public Boolean getRevEnchantsJackHammerEventEnabled() {
-		return revEnchantsJackHammerEventEnabled;
-	}
-	public void setRevEnchantsJackHammerEventEnabled(Boolean revEnchantsJackHammerEventEnabled) {
-		this.revEnchantsJackHammerEventEnabled = revEnchantsJackHammerEventEnabled;
-	}
-	
 
 
 }
