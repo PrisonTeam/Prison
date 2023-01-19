@@ -189,6 +189,7 @@ public class SpigotBlock
 //    	return results;
     }
     
+	@SuppressWarnings("unused")
 	private PrisonBlock getPrisonBlockFromCustomBlockIntegration( PrisonBlockType blockType ) {
 		PrisonBlock results = null;
     	

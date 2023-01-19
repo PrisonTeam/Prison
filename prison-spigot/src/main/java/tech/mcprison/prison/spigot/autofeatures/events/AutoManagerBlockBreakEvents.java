@@ -18,7 +18,6 @@ import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
@@ -226,6 +225,8 @@ public class AutoManagerBlockBreakEvents
 		}
 	}
     
+    
+
 
     /**
      * <p>This genericBlockEvent handles the basics of a BlockBreakEvent to see if it has happened
@@ -239,13 +240,11 @@ public class AutoManagerBlockBreakEvents
      */
 	private void handleBlockBreakEvent( BlockBreakEvent e, BlockBreakPriority bbPriority ) {
 			
-//			boolean monitor, boolean blockEventsOnly, 
-//			boolean autoManager ) {
-		
 		if ( e instanceof PrisonMinesBlockBreakEvent ) {
 			return;
 		}
 		
+		PrisonMinesBlockBreakEvent pmEvent = null;
     	long start = System.nanoTime();
 
 		// If the event is canceled, it still needs to be processed because of the 
@@ -287,13 +286,24 @@ public class AutoManagerBlockBreakEvents
     		BlockEventType eventType = BlockEventType.blockBreak;
     		String triggered = null;
     		
-    		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( 
+    		pmEvent = new PrisonMinesBlockBreakEvent( 
     				e.getBlock(), 
     				e.getPlayer(),
     				eventResults.getMine(),
 //    					sBlock, sPlayer, 
     					bbPriority, eventType, triggered,
     					debugInfo );
+    		
+
+        	// NOTE: Check for the ACCESS priority and if someone does not have access, then return 
+        	//       with a cancel on the event.  Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be
+        	//       converted to just ACCESS at this point, and the other part will run under either
+        	//       BLOCKEVENTS or MONITOR.
+        	if ( checkIfNoAccess( pmEvent, start ) ) {
+        		
+        		e.setCancelled( true );
+        		return;
+        	}
     		
     		// Validate the event. 
     		if ( !validateEvent( pmEvent ) ) {
@@ -438,14 +448,8 @@ public class AutoManagerBlockBreakEvents
 //    		}
     		
     	}
-    	
-		if ( debugInfo.length() > 0 ) {
-			
-			long stop = System.nanoTime();
-			debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
-			
-			Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
-		}
+
+		printDebugInfo( pmEvent, start );
 	}
 	
 	protected int checkBonusXp( Player player, Block block, ItemStack item ) {

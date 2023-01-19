@@ -35,6 +35,7 @@ import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
+import tech.mcprison.prison.spigot.block.BlockBreakPriority;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventCore;
 import tech.mcprison.prison.spigot.block.OnBlockBreakExternalEvents;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
@@ -83,6 +84,59 @@ public abstract class AutoManagerFeatures
 
 	}
 
+
+    /**
+     * <p> NOTE: Check for the ACCESS priority and if someone does not have access, then return 
+     * with a cancel on the event.  Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be 
+     * converted to just ACCESS at this point, and the other part will run under either 
+     * BLOCKEVENTS or MONITOR.
+     * </p>
+     * 
+     * @param pmEvent
+     * @param start
+     * @return
+     */
+    protected boolean checkIfNoAccess( PrisonMinesBlockBreakEvent pmEvent, double start ) {
+    	boolean results = false;
+    	
+    	// NOTE: Check for the ACCESS priority and if someone does not have access, then return 
+    	//       with a cancel on the event.  Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be
+    	//       converted to just ACCESS at this point, and the other part will run under either
+    	//       BLOCKEVENTS or MONITOR.
+    	if ( pmEvent.getBbPriority() == BlockBreakPriority.ACCESS && pmEvent.getMine() != null && 
+    			!pmEvent.getMine().hasMiningAccess( pmEvent.getSpigotPlayer() )) {
+    		
+    		String message = String.format( "(&cACCESS fail: player %s does not have access to "
+    												+ "mine %s&3. Event canceled) ",
+    						pmEvent.getSpigotPlayer().getName(),
+    						pmEvent.getMine().getTag() );
+    		pmEvent.getDebugInfo().append( message );
+
+    		printDebugInfo( pmEvent, start );
+
+    		results = true;
+    	}
+    	
+    	return results;
+    }
+    
+	/**
+	 * <p>Prints out the debugInfo if it has anything to print.
+	 * </p>
+	 * 
+	 * @param pmEvent
+	 * @param start
+	 */
+    protected void printDebugInfo(  PrisonMinesBlockBreakEvent pmEvent, double start ) {
+		if ( pmEvent != null && pmEvent.getDebugInfo().length() > 0 ) {
+			
+			long stop = System.nanoTime();
+			pmEvent.getDebugInfo().append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
+			
+			Output.get().logDebug( DebugTarget.blockBreak, pmEvent.getDebugInfo().toString() );
+		}
+    }
+    
 	
 	/**
 	 * <p>For the event handlers that implement the BlockBreakEvent, this allows 

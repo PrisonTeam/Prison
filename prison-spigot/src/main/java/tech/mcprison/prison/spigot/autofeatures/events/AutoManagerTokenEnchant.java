@@ -18,7 +18,6 @@ import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
@@ -312,9 +311,7 @@ public class AutoManagerTokenEnchant
 	 */
 	public void handleTEBlockExplodeEvent( TEBlockExplodeEvent e, BlockBreakPriority bbPriority ) {
 	
-//	, boolean monitor, boolean blockEventsOnly, 
-//			boolean autoManager ) {
-
+		PrisonMinesBlockBreakEvent pmEvent = null;
 		long start = System.nanoTime();
 		
 		// If the event is canceled, it still needs to be processed because of the 
@@ -329,16 +326,9 @@ public class AutoManagerTokenEnchant
     	if ( eventResults.isIgnoreEvent() ) {
     		return;
     	}
-//    	if ( ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlock()) ) {
-//    		return;
-//    	}
-    	
 
-		// Register all external events such as mcMMO and EZBlocks:
-//		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
-		
+    	
 		StringBuilder debugInfo = new StringBuilder();
-		
 		
 		debugInfo.append( String.format( "### ** genericBlockExplodeEvent ** ### " +
 				"(event: TEBlockExplodeEvent, config: %s, priority: %s, canceled: %s) ",
@@ -354,27 +344,28 @@ public class AutoManagerTokenEnchant
     			bbPriority.isMonitor() ) {
 
 
-//    		boolean isEventListenerEnabled = bbPriority == BlockBreakPriority.DISABLED;
-    		
-//	    	String eP = getMessage( AutoFeatures.TokenEnchantBlockExplodeEventPriority );
-//			boolean isTEExplosiveEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
-
-
-    		// Need to wrap in a Prison block so it can be used with the mines:
-//    		SpigotBlock sBlock = SpigotBlock.getSpigotBlock(e.getBlock());
-//    		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
-    		
     		BlockEventType eventType = BlockEventType.TEXplosion;
     		String triggered = checkTEBlockExplodeEventTriggered( e );
     		
-    		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( 
+    		pmEvent = new PrisonMinesBlockBreakEvent( 
     					e.getBlock(), 
     					e.getPlayer(),
     					eventResults.getMine(),
-//    					sBlock, sPlayer, 
     					bbPriority, eventType, triggered,
     					debugInfo );
     		
+
+        	// NOTE: Check for the ACCESS priority and if someone does not have access, then return 
+        	//       with a cancel on the event.  Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be
+        	//       converted to just ACCESS at this point, and the other part will run under either
+        	//       BLOCKEVENTS or MONITOR.
+        	if ( checkIfNoAccess( pmEvent, start ) ) {
+        		
+        		e.setCancelled( true );
+        		return;
+        	}
+        	
+        	
     		// NOTE: Token Enchant will pass the event's block to prison, but that block may 
     		//       have already been processed by prison.  Therefore the PrisonMinesBlockBreakEvent
     		//       must enable the feature setForceIfAirBlock( true ).  That block will not be used a 
@@ -451,89 +442,10 @@ public class AutoManagerTokenEnchant
 //    			}
     		}
     		
-    		
-//    		// now process all blocks (non-monitor):
-//    		else if ( isEventListenerEnabled && 
-//    				( pmEvent.getMine() != null || pmEvent.getMine() == null && 
-//    									!isBoolean( AutoFeatures.pickupLimitToMines )) ) {
-//
-//    			
-//    			if ( pmEvent.getExplodedBlocks().size() > 0 ) {
-//    				
-////					String triggered = checkCEExplosionTriggered( e );
-////					
-////
-////					PrisonMinesBlockBreakEvent pmbbEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
-////	    												mine, block, explodedBlocks, BlockEventType.TEXplosion, triggered );
-//	                Bukkit.getServer().getPluginManager().callEvent( pmEvent );
-//	                if ( pmEvent.isCancelled() ) {
-//	                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled) " );
-//	                }
-//	                else {
-//	                	
-//	                	// Cancel drops if so configured:
-//	                	if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
-//	                		
-//	                		try
-//	                		{
-//	                			e.setYield( 0 );
-////	                			e.setDropItems( false );
-//	                		}
-//	                		catch ( NoSuchMethodError e1 )
-//	                		{
-//	                			String message = String.format( 
-//	                					"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
-//	                					"is not valid for this version of Spigot. Modify the config settings and set " +
-//	                					"this value to `false`. [%s]",
-//	                					e1.getMessage() );
-//	                			Output.get().logWarn( message );
-//	                		}
-//	                	}
-//	                	
-//	                	// This is where the processing actually happens:
-//	                	if ( doAction( pmEvent, debugInfo ) ) {
-//	                		
-//	                		if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
-//	                			
-//	                			e.setCancelled( true );
-//	                		}
-//	                		else {
-//	                			
-//	                			debugInfo.append( "(event was not canceled) " );
-//	                		}
-//	                		
-//	                		finalizeBreakTheBlocks( pmEvent );
-//	                		
-//	                		doBlockEvents( pmEvent );
-//
-//	                	}
-//	                	
-//	                	else {
-//	                		
-//	                		debugInfo.append( "(doAction failed without details) " );
-//	                	}
-//	                	
-//	                }
-//    				
-//    			}
-//    			
-//    			
-//    			debugInfo.append( "(normal processing) " );
-//   			}
-//    		else {
-//    			
-//    			debugInfo.append( "(logic bypass) " );
-//    		}
     			
     	}
     	
-		if ( debugInfo.length() > 0 ) {
-			
-			long stop = System.nanoTime();
-			debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
-			
-			Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
-		}
+    	printDebugInfo( pmEvent, start );
 	}
 
 	private String checkTEBlockExplodeEventTriggered( TEBlockExplodeEvent e )

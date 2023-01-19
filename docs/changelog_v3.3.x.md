@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13h3 2023-01-19
 
 
+* **AutoFeatures event listeners: ACCESS priority: Hooked up ACCESS processing and cleaned up the code a little more.**
+
+
 * **AutoFeatures event listeners: More work on getting ACCESS setup, focused on support for `/prison support listeners blockBreak` and to generate multiple listeners for the compounded priorities such as ACCESSBLOCKBREAKS and ACCESSMONITOR.**
 Tested successfully the creation of multiple listeners.  Have not yet hooked up the support for ACCESS.
 

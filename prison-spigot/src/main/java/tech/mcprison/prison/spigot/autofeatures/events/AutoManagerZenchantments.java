@@ -18,7 +18,6 @@ import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
@@ -251,13 +250,11 @@ public class AutoManagerZenchantments
      */
 	private void handleZenchantmentsBlockBreakEvent( BlockBreakEvent e, BlockBreakPriority bbPriority ) {
 			
-//			boolean monitor, boolean blockEventsOnly, 
-//			boolean autoManager ) {
-		
 		if ( e instanceof PrisonMinesBlockBreakEvent ) {
 			return;
 		}
 		
+		PrisonMinesBlockBreakEvent pmEvent = null;
     	long start = System.nanoTime();
 
 		// If the event is canceled, it still needs to be processed because of the 
@@ -272,13 +269,6 @@ public class AutoManagerZenchantments
     	if ( eventResults.isIgnoreEvent() ) {
     		return;
     	}
-//    	if ( ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlock()) ) {
-//    		return;
-//    	}
-
-		
-		// Register all external events such as mcMMO and EZBlocks:
-//		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 		
 		StringBuilder debugInfo = new StringBuilder();
 		
@@ -296,21 +286,28 @@ public class AutoManagerZenchantments
     			bbPriority.isMonitor() ) {
 
 
-    		// Need to wrap in a Prison block so it can be used with the mines:
-//    		SpigotBlock sBlock = SpigotBlock.getSpigotBlock(e.getBlock());
-//    		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
-    		
     		BlockEventType eventType = BlockEventType.blockBreak;
     		String triggered = null;
     		
-    		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( 
+    		pmEvent = new PrisonMinesBlockBreakEvent( 
     						e.getBlock(), 
     						e.getPlayer(),
     						eventResults.getMine(),
-//    						sBlock, sPlayer, 
     						bbPriority, eventType, triggered,
         					debugInfo );
     		
+
+        	// NOTE: Check for the ACCESS priority and if someone does not have access, then return 
+        	//       with a cancel on the event.  Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be
+        	//       converted to just ACCESS at this point, and the other part will run under either
+        	//       BLOCKEVENTS or MONITOR.
+        	if ( checkIfNoAccess( pmEvent, start ) ) {
+        		
+        		e.setCancelled( true );
+        		return;
+        	}
+        	
+        	
     		if ( !validateEvent( pmEvent ) ) {
     			
     			// The event has not passed validation. All logging and Errors have been recorded
@@ -376,91 +373,11 @@ public class AutoManagerZenchantments
     		}
     		
     		
-    		
     	}
     	
-		if ( debugInfo.length() > 0 ) {
-			
-			long stop = System.nanoTime();
-			debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
-			
-			Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
-		}
+    	printDebugInfo( pmEvent, start );
 	}
 
-
-//	private EventListenerCancelBy processBlockBreaks(PrisonMinesBlockBreakEvent pmEvent, 
-//			SpigotBlock sBlock, StringBuilder debugInfo ) {
-//		
-//		EventListenerCancelBy cancelBy = EventListenerCancelBy.none;
-//		
-//		// This is where the processing actually happens:
-//		if ( pmEvent.getMine() != null || pmEvent.getMine() == null && 
-//				!isBoolean( AutoFeatures.pickupLimitToMines ) ) {
-//			debugInfo.append( "(normal processing initiating) " );
-//			
-//			// Set the mine's PrisonBlockTypes for the block. Used to identify custom blocks.
-//			// Needed since processing of the block will lose track of which mine it came from.
-//			if ( pmEvent.getMine() != null ) {
-//				sBlock.setPrisonBlockTypes( pmEvent.getMine().getPrisonBlockTypes() );
-//			}
-//			
-//			// check all external events such as mcMMO and EZBlocks:
-////			debugInfo.append( 
-////					OnBlockBreakExternalEvents.getInstance().checkAllExternalEvents( e ) );
-//			
-//			List<SpigotBlock> explodedBlocks = new ArrayList<>();
-//			pmEvent.setExplodedBlocks( explodedBlocks );
-////    			String triggered = null;
-//			
-////    			PrisonMinesBlockBreakEvent pmbbEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
-////    							pmEvent.getMine(), sBlock, explodedBlocks, BlockEventType.blockBreak, triggered );
-//			Bukkit.getServer().getPluginManager().callEvent( pmEvent );
-//			if ( pmEvent.isCancelled() ) {
-//				debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled by another plugin!) " );
-//			}
-//			else {
-//				
-//				// Cancel drops if so configured:
-//				if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
-//					
-//					cancelBy = EventListenerCancelBy.drops;
-//					
-//				}
-//				
-//				// doAction returns a boolean that indicates if the event should be canceled or not:
-//				if ( doAction( pmEvent, debugInfo ) ) {
-////                	if ( doAction( sBlock, pmEvent.getMine(), pmEvent.getPlayer(), debugInfo ) ) {
-//					
-//					if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
-//						cancelBy = EventListenerCancelBy.event;
-//					}
-//					else {
-//						
-//						debugInfo.append( "(event was not canceled) " );
-//					}
-//					
-//					finalizeBreakTheBlocks( pmEvent );
-//					
-//					doBlockEvents( pmEvent );
-//					
-//				}
-//				else {
-//					
-//					debugInfo.append( "(doAction failed without details) " );
-//				}
-//				
-//			}
-//			
-//			
-//			debugInfo.append( "(normal processing completed) " );
-//		}
-//		else {
-//			
-//			debugInfo.append( "(logic bypass) " );
-//		}
-//		return cancelBy;
-//	}
 	
 	@Override
 	protected int checkBonusXp( Player player, Block block, ItemStack item ) {
@@ -468,4 +385,5 @@ public class AutoManagerZenchantments
 		
 		return bonusXp;
 	}
+	
 }

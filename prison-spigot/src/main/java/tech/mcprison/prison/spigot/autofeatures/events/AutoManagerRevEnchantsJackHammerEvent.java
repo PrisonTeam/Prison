@@ -17,7 +17,6 @@ import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
@@ -252,9 +251,7 @@ public class AutoManagerRevEnchantsJackHammerEvent
 	 */
 	public void handleRevEnchantsJackHammerEvent( JackHammerEvent e, BlockBreakPriority bbPriority ) {
 			
-	//		boolean monitor, boolean blockEventsOnly, 
-	//		boolean autoManager ) {
-	
+		PrisonMinesBlockBreakEvent pmEvent = null;
 		long start = System.nanoTime();
 		
 		// If the event is canceled, it still needs to be processed because of the 
@@ -269,14 +266,8 @@ public class AutoManagerRevEnchantsJackHammerEvent
 		if ( eventResults.isIgnoreEvent() ) {
 			return;
 		}
-//    	if ( ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlocks().get( 0 )) ) {
-//			return;
-//		}
 		
 		
-		// Register all external events such as mcMMO and EZBlocks:
-//		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
-				
 		StringBuilder debugInfo = new StringBuilder();
 		
 		debugInfo.append( String.format( "### ** handleRevEnchantsJackHammerEvent ** ### " +
@@ -296,30 +287,30 @@ public class AutoManagerRevEnchantsJackHammerEvent
 				e.getBlocks().size() > 0 ) {
 	
 			
-    		// if event listener is disabled, then this code should never be reachable:
-//    		boolean isEventListenerEnabled = bbPriority == BlockBreakPriority.DISABLED;
-    		
-//	    	String reEx = getMessage( AutoFeatures.RevEnchantsJackHammerEventPriority );
-//			boolean isREJackHammerEnabled = reEx != null && !"DISABLED".equalsIgnoreCase( reEx );
-	
 			
 			Block bukkitBlock = e.getBlocks().get( 0 );
-			
-			// Need to wrap in a Prison block so it can be used with the mines:
-//			SpigotBlock sBlock = SpigotBlock.getSpigotBlock( bukkitBlock );
-//			SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
 			
 			BlockEventType eventType = BlockEventType.RevEnJackHammer;
 			String triggered = null;
 			
 	
-			PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( 
+			pmEvent = new PrisonMinesBlockBreakEvent( 
 						bukkitBlock, e.getPlayer(),
 						eventResults.getMine(),
-//						sBlock, sPlayer, 
 						bbPriority, eventType, triggered,
     					debugInfo );
-		
+    		
+
+        	// NOTE: Check for the ACCESS priority and if someone does not have access, then return 
+        	//       with a cancel on the event.  Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be
+        	//       converted to just ACCESS at this point, and the other part will run under either
+        	//       BLOCKEVENTS or MONITOR.
+        	if ( checkIfNoAccess( pmEvent, start ) ) {
+        		
+        		e.setCancelled( true );
+        		return;
+        	}
+        	
 			
 			for ( int i = 1; i < e.getBlocks().size(); i++ ) {
 				pmEvent.getUnprocessedRawBlocks().add( e.getBlocks().get( i ) );
@@ -394,89 +385,9 @@ public class AutoManagerRevEnchantsJackHammerEvent
     		}
 			
 	
-//			// now process all blocks (non-monitor):
-//			else if ( pmEvent.getMine() != null || 
-//					pmEvent.getMine() == null && !isBoolean( AutoFeatures.pickupLimitToMines ) ) {
-//	
-//	
-//				if ( pmEvent.getExplodedBlocks().size() > 0 ) {
-//					
-//	//				String triggered = null;
-//					
-//					
-//					// Warning: BlastUseEvent does not identify the block the player actually hit, so the dummyBlock
-//					//          is just a random first block from the explodedBlocks list and may not be the block
-//					//          that initiated the explosion event.
-//	//				SpigotBlock dummyBlock = explodedBlocks.get( 0 );
-//					
-//	//    			PrisonMinesBlockBreakEvent pmbbEvent = new PrisonMinesBlockBreakEvent( dummyBlock.getWrapper(), e.getPlayer(),
-//	//    												mine, dummyBlock, explodedBlocks, BlockEventType.CEXplosion, triggered );
-//	                Bukkit.getServer().getPluginManager().callEvent(pmEvent);
-//	                if ( pmEvent.isCancelled() ) {
-//	                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled) " );
-//	                }
-//	                else {
-//	                	
-//	//                	// Cancel drops if so configured:
-//	//                	if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
-//	//                		
-//	//                		try
-//	//                		{
-//	//                			e.setDropItems( false );
-//	//                		}
-//	//                		catch ( NoSuchMethodError e1 )
-//	//                		{
-//	//                			String message = String.format( 
-//	//                					"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
-//	//                					"is not valid for this version of Spigot. Modify the config settings and set " +
-//	//                					"this value to `false`. [%s]",
-//	//                					e1.getMessage() );
-//	//                			Output.get().logWarn( message );
-//	//                		}
-//	//                	}
-//	                	
-//	                	if ( doAction( pmEvent, debugInfo ) ) {
-//	                		
-//	                		if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
-//	                			
-//	                			e.setCancelled( true );
-//	                		}
-//	                		else {
-//	                			
-//	                			debugInfo.append( "(event was not canceled) " );
-//	                		}
-//	                		
-//	                		finalizeBreakTheBlocks( pmEvent );
-//	                		
-//	                		doBlockEvents( pmEvent );
-//	
-//	                	}
-//	                	
-//	                	else {
-//	                		
-//	                		debugInfo.append( "(doAction failed without details) " );
-//	                	}
-//	                	
-//	                }
-//				}
-//				
-//	
-//				debugInfo.append( "(normal processing) " );
-//			}
-//			else {
-//				
-//				debugInfo.append( "(logic bypass) " );
-//			}
-	
 		}
 		
-		if ( debugInfo.length() > 0 ) {
-			
-			long stop = System.nanoTime();
-			debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
-			
-			Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
-		}
+    	printDebugInfo( pmEvent, start );
 	}
 
 	@Override
@@ -485,7 +396,5 @@ public class AutoManagerRevEnchantsJackHammerEvent
 		
 		return bonusXp;
 	}
-
-
 
 }
