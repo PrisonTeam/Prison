@@ -239,7 +239,8 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 						e.getPlayer(),
 						eventResults.getMine(),
 //						sBlock, sPlayer, 
-						bbPriority, eventType, triggered );
+						bbPriority, eventType, triggered,
+    					debugInfo );
 	
 			
 			// If this event is fired, but yet there are no exploded blocks, then do not set 
@@ -272,7 +273,7 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 				pmEvent.setCalculateDurability( false );
 			}
 			
-			if ( !validateEvent( pmEvent, debugInfo ) ) {
+			if ( !validateEvent( pmEvent ) ) {
 				
 				// The event has not passed validation. All logging and Errors have been recorded
 				// so do nothing more. This is to just prevent normal processing from occurring.
@@ -302,13 +303,13 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
     			
     			// check all external events such as mcMMO and EZBlocks:
     			if ( e instanceof BlockBreakEvent ) {
-    				processPMBBExternalEvents( pmEvent, debugInfo, e );
+    				processPMBBExternalEvents( pmEvent, e );
     			}
     			
     			
     			EventListenerCancelBy cancelBy = EventListenerCancelBy.none; 
     			
-    			cancelBy = processPMBBEvent( pmEvent, debugInfo );
+    			cancelBy = processPMBBEvent( pmEvent );
 
     			
     			if ( cancelBy == EventListenerCancelBy.event ) {

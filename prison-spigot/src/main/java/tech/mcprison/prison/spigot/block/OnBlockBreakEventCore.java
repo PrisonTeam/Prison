@@ -332,10 +332,11 @@ public abstract class OnBlockBreakEventCore
 	 * @param debugInfo
 	 * @return
 	 */
-	protected boolean validateEvent( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo )
+	protected boolean validateEvent( PrisonMinesBlockBreakEvent pmEvent )
 	{
 		boolean results = true;
 		
+		StringBuilder debugInfo = pmEvent.getDebugInfo();
 
 		SpigotBlock sBlockHit = pmEvent.getSpigotBlock();
 
@@ -1162,27 +1163,27 @@ public abstract class OnBlockBreakEventCore
 	 * @param e
 	 * @param teExplosiveBlocks
 	 */
-	public boolean doAction( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo ) {
+	public boolean doAction( PrisonMinesBlockBreakEvent pmEvent ) {
 		
 		AutoManagerFeatures aMan = SpigotPrison.getInstance().getAutoFeatures();
-		int totalDrops = aMan.calculateNormalDrop( pmEvent, debugInfo );
+		int totalDrops = aMan.calculateNormalDrop( pmEvent );
 		
-		debugInfo.append( "(normalDrops totalDrops: " + totalDrops + ") ");
+		pmEvent.getDebugInfo().append( "(normalDrops totalDrops: " + totalDrops + ") ");
 		
-		return applyDropsBlockBreakage( pmEvent, totalDrops, debugInfo );
+		return applyDropsBlockBreakage( pmEvent, totalDrops );
 	}
 	
 	
-	public boolean applyDropsBlockBreakage( PrisonMinesBlockBreakEvent pmEvent, int totalDrops, StringBuilder debugInfo ) {
+	public boolean applyDropsBlockBreakage( PrisonMinesBlockBreakEvent pmEvent, int totalDrops ) {
 		boolean success = false;
 	
 		// The explodedBlocks list have already been validated as being within the mine:
-		debugInfo.append( "(applyDropsBlockBreakage multi-blocks: " + pmEvent.getTargetExplodedBlocks().size() + ") ");
+		pmEvent.getDebugInfo().append( "(applyDropsBlockBreakage multi-blocks: " + pmEvent.getTargetExplodedBlocks().size() + ") ");
 		
 
 		// Process the blockBreakage which actually breaks the block, calculates and gives the player xp, 
 		// calculates the durability, applies food exhaustion:
-		processBlockBreakage( pmEvent, debugInfo );
+		processBlockBreakage( pmEvent );
 
 		
 //		forcedAutoRankups( pmEvent, debugInfo );
@@ -1197,7 +1198,7 @@ public abstract class OnBlockBreakEventCore
 			success = true;
 		}
 		else {
-			debugInfo.append( "(fail:totalDrops=0) ");
+			pmEvent.getDebugInfo().append( "(fail:totalDrops=0) ");
 		}
 		
 		return success;
@@ -1293,7 +1294,7 @@ public abstract class OnBlockBreakEventCore
 	
 
 	
-	private void processBlockBreakage( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo )
+	private void processBlockBreakage( PrisonMinesBlockBreakEvent pmEvent )
 	{
 		
 		// If this block is not in the mine (if null) and it has not been broke before
@@ -1304,8 +1305,8 @@ public abstract class OnBlockBreakEventCore
 
 			
 			// Calculate XP for all blocks if enabled:
-			int totalXp = xpCalculateXP( pmEvent, debugInfo );
-			xpGivePlayerXp( pmEvent.getSpigotPlayer(), totalXp, debugInfo );
+			int totalXp = xpCalculateXP( pmEvent );
+			xpGivePlayerXp( pmEvent.getSpigotPlayer(), totalXp, pmEvent.getDebugInfo() );
 
 			
 			int blocksMined = (pmEvent.getTargetBlock() == null ? 0 : 1 ) + pmEvent.getTargetExplodedBlocks().size();
@@ -1326,7 +1327,9 @@ public abstract class OnBlockBreakEventCore
 				}
 				
 				calculateAndApplyDurability( pmEvent.getPlayer(), pmEvent.getItemInHand(), 
-															blocksMined, durabilityResistance, debugInfo );
+															blocksMined, 
+															durabilityResistance, 
+															pmEvent.getDebugInfo() );
 			}
 			
 			
@@ -1445,7 +1448,7 @@ public abstract class OnBlockBreakEventCore
 //		
 //	}
 //	
-	protected int xpCalculateXP( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo ) {
+	protected int xpCalculateXP( PrisonMinesBlockBreakEvent pmEvent ) {
 		int xp = 0;
 		
 		if (isBoolean(AutoFeatures.isCalculateXPEnabled) ) {
@@ -1478,7 +1481,7 @@ public abstract class OnBlockBreakEventCore
 				String message = String.format( "(XP calcs:  blocks: %d  xp: %d  bonusXp: %d) ",
 						totalBlocks, totalXp, totalBonusXp );
 				
-				debugInfo.append( message );
+				pmEvent.getDebugInfo().append( message );
 
 			}
 		}
@@ -1500,7 +1503,8 @@ public abstract class OnBlockBreakEventCore
 		}
 		return xp;
 	}
-	private int xpCalculateBonusXP( MineTargetPrisonBlock targetBlock, SpigotPlayer player, ItemStack itemInHand )
+	private int xpCalculateBonusXP( MineTargetPrisonBlock targetBlock, SpigotPlayer player, 
+				ItemStack itemInHand )
 	{
 		int xp = 0;
 		

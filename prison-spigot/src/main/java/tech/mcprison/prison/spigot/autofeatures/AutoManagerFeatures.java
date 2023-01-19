@@ -94,13 +94,13 @@ public abstract class AutoManagerFeatures
 	 * @param e
 	 */
 	protected void processPMBBExternalEvents( PrisonMinesBlockBreakEvent pmEvent, 
-			StringBuilder debugInfo, BlockBreakEvent e ) {
+			BlockBreakEvent e ) {
 		
 		if ( pmEvent.getMine() != null || pmEvent.getMine() == null && 
 				!isBoolean( AutoFeatures.pickupLimitToMines ) ) {
 			
 			// check all external events such as mcMMO and EZBlocks:
-			debugInfo.append( 
+			pmEvent.getDebugInfo().append( 
 					OnBlockBreakExternalEvents.getInstance().checkAllExternalEvents( e ) );
 			
 		}
@@ -108,8 +108,7 @@ public abstract class AutoManagerFeatures
 	}
 	
 
-	protected EventListenerCancelBy processPMBBEvent(PrisonMinesBlockBreakEvent pmEvent, 
-			StringBuilder debugInfo ) {
+	protected EventListenerCancelBy processPMBBEvent(PrisonMinesBlockBreakEvent pmEvent ) {
 		
 		EventListenerCancelBy cancelBy = EventListenerCancelBy.none;
 		
@@ -117,7 +116,7 @@ public abstract class AutoManagerFeatures
 		if ( pmEvent.getMine() != null || pmEvent.getMine() == null && 
 				!isBoolean( AutoFeatures.pickupLimitToMines ) ) {
 			
-			debugInfo.append( "(normal processing initiating) " );
+			pmEvent.getDebugInfo().append( "(normal processing initiating) " );
 			
 			// Set the mine's PrisonBlockTypes for the block. Used to identify custom blocks.
 			// Needed since processing of the block will lose track of which mine it came from.
@@ -137,7 +136,8 @@ public abstract class AutoManagerFeatures
 //    							pmEvent.getMine(), sBlock, explodedBlocks, BlockEventType.blockBreak, triggered );
 			Bukkit.getServer().getPluginManager().callEvent( pmEvent );
 			if ( pmEvent.isCancelled() ) {
-				debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled by another plugin!) " );
+				pmEvent.getDebugInfo().append( 
+						"(normal processing: PrisonMinesBlockBreakEvent was canceled by another plugin!) " );
 			}
 			else {
 				
@@ -149,7 +149,7 @@ public abstract class AutoManagerFeatures
 				}
 				
 				// doAction returns a boolean that indicates if the event should be canceled or not:
-				if ( doAction( pmEvent, debugInfo ) ) {
+				if ( doAction( pmEvent ) ) {
 //                	if ( doAction( sBlock, pmEvent.getMine(), pmEvent.getPlayer(), debugInfo ) ) {
 					
 					if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
@@ -157,7 +157,7 @@ public abstract class AutoManagerFeatures
 					}
 					else {
 						
-						debugInfo.append( "(event not canceled) " );
+						pmEvent.getDebugInfo().append( "(event not canceled) " );
 					}
 					
 					finalizeBreakTheBlocks( pmEvent );
@@ -167,17 +167,17 @@ public abstract class AutoManagerFeatures
 				}
 				else {
 					
-					debugInfo.append( "(doAction failed without details) " );
+					pmEvent.getDebugInfo().append( "(doAction failed without details) " );
 				}
 				
 			}
 			
 			
-			debugInfo.append( "(normal processing completed) " );
+			pmEvent.getDebugInfo().append( "(normal processing completed) " );
 		}
 		else {
 			
-			debugInfo.append( "(logic bypass) " );
+			pmEvent.getDebugInfo().append( "(logic bypass) " );
 		}
 		return cancelBy;
 	}
@@ -280,8 +280,8 @@ public abstract class AutoManagerFeatures
      * 
      */
     @Override
-    public boolean doAction( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo ) {
-    	return applyAutoEvents( pmEvent, debugInfo );
+    public boolean doAction( PrisonMinesBlockBreakEvent pmEvent ) {
+    	return applyAutoEvents( pmEvent );
     }
 	
 
@@ -318,7 +318,7 @@ public abstract class AutoManagerFeatures
 
 	
 	
-	private int applyAutoEventsDetails( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo ) {
+	private int applyAutoEventsDetails( PrisonMinesBlockBreakEvent pmEvent ) {
 		int totalDrops = 0;
 		
 		Player player = pmEvent.getPlayer();
@@ -367,15 +367,15 @@ public abstract class AutoManagerFeatures
 		
 		if ( Output.get().isDebug( DebugTarget.blockBreak ) ) {
 			
-			debugInfo.append( "(applyAutoEvents: " )
+			pmEvent.getDebugInfo().append( "(applyAutoEvents: " )
 				.append( pmEvent.getSpigotBlock().getBlockName() );
 			
 			if ( !isAutoFeaturesEnabled ) {
-				debugInfo.append("isAutoFeaturesEnabled=false (disabled)");
+				pmEvent.getDebugInfo().append("isAutoFeaturesEnabled=false (disabled)");
 			}
 			else {
 				
-				debugInfo
+				pmEvent.getDebugInfo()
 				.append( " Pickup [")
 				.append( isAutoPickup ? "enabled: " : "disabled:" )
 				.append( lorePickup ? "lore " : "" )
@@ -402,7 +402,7 @@ public abstract class AutoManagerFeatures
 				
 			}
 			
-			debugInfo
+			pmEvent.getDebugInfo()
 				.append( ")" );
 		}
 		
@@ -415,7 +415,7 @@ public abstract class AutoManagerFeatures
 			if ( isAutoPickup ) {
 				
 				// processing auto pickup
-				totalDrops = autoFeaturePickup( pmEvent, isAutoSmelt, isAutoBlock, debugInfo );
+				totalDrops = autoFeaturePickup( pmEvent, isAutoSmelt, isAutoBlock, pmEvent.getDebugInfo() );
 //			count = autoFeaturePickup( pmEvent.getSpigotBlock(), player, itemInHand, isAutoSmelt, isAutoBlock, debugInfo );
 				
 				// Cannot set to air yet, or auto smelt and auto block will only get AIR:
@@ -425,7 +425,7 @@ public abstract class AutoManagerFeatures
 				// Need to check to see if normal drops should be processed:
 				
 				if ( configNormalDrop ) {
-					debugInfo
+					pmEvent.getDebugInfo()
 						.append( "(NormalDrop handling enabled: " )
 						.append( "normalDropSmelt[" )
 						.append( configNormalDropSmelt ? "enabled" : "disabled" )
@@ -437,11 +437,11 @@ public abstract class AutoManagerFeatures
 					
 					// process normal drops here:
 					
-					totalDrops = calculateNormalDrop( pmEvent, debugInfo );
+					totalDrops = calculateNormalDrop( pmEvent );
 
 				}
 				else {
-					debugInfo.append(" [Warning: normalDrop handling is disabled] " );
+					pmEvent.getDebugInfo().append(" [Warning: normalDrop handling is disabled] " );
 				}
 				
 			}
@@ -519,14 +519,14 @@ public abstract class AutoManagerFeatures
 	 * @param e
 	 * @param mine
 	 */
-	private boolean applyAutoEvents( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo ) {
+	private boolean applyAutoEvents( PrisonMinesBlockBreakEvent pmEvent ) {
 //		boolean success = false;
 		
-		int totalDrops = applyAutoEventsDetails( pmEvent, debugInfo );
+		int totalDrops = applyAutoEventsDetails( pmEvent );
 
-		debugInfo.append( "(autoEvents totalDrops: " + totalDrops + ") ");
+		pmEvent.getDebugInfo().append( "(autoEvents totalDrops: " + totalDrops + ") ");
 
-		return applyDropsBlockBreakage( pmEvent, totalDrops, debugInfo );
+		return applyDropsBlockBreakage( pmEvent, totalDrops );
 		
 //		debugInfo.append( "(doAction autoManager applyAutoEvents multi-blocks: " + pmEvent.getExplodedBlocks().size() + ") ");
 //		
@@ -787,7 +787,7 @@ public abstract class AutoManagerFeatures
 
 
 
-	public int calculateNormalDrop( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo ) {
+	public int calculateNormalDrop( PrisonMinesBlockBreakEvent pmEvent ) {
 		
 		// Count should be the total number of items that are to be "dropped".
 		// So effectively it will be the sum of all bukkitDrops counts.
@@ -809,7 +809,7 @@ public abstract class AutoManagerFeatures
 		
 		if (drops != null && drops.size() > 0 ) {
 			
-			debugInfo.append( "[normalDrops]" );
+			pmEvent.getDebugInfo().append( "[normalDrops]" );
 
 			// Need better drop calculation that is not using the getDrops function.
 			short fortuneLevel = getFortune( pmEvent.getItemInHand() );
@@ -836,13 +836,13 @@ public abstract class AutoManagerFeatures
 			
 			
 			if ( isBoolean( AutoFeatures.normalDropSmelt ) ) {
-				debugInfo.append( "(normSmelting: itemStacks)" );
+				pmEvent.getDebugInfo().append( "(normSmelting: itemStacks)" );
 				normalDropSmelt( drops );
 			}
 			
 			
 			if ( isBoolean( AutoFeatures.normalDropBlock ) ) {
-				debugInfo.append( "(normBlocking: itemStacks)" );
+				pmEvent.getDebugInfo().append( "(normBlocking: itemStacks)" );
 				normalDropBlock( drops );
 			}
 			
@@ -876,7 +876,7 @@ public abstract class AutoManagerFeatures
 					autosellTotal += amount;
 					
 					if ( amount != 0 ) {
-						debugInfo.append( "(sold: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
+						pmEvent.getDebugInfo().append( "(sold: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
 						
 						// Set to zero quantity since they have all been sold.
 						itemStack.setAmount( 0 );
@@ -894,7 +894,7 @@ public abstract class AutoManagerFeatures
 						double amount = SellAllUtil.get().sellAllSell( player, itemStack, true, false, false );
 						autosellTotal += amount;
 						
-						debugInfo.append( "(adding: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
+						pmEvent.getDebugInfo().append( "(adding: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
 					}
 					
 					dropAtBlock( itemStack, pmEvent.getSpigotBlock() );
@@ -906,7 +906,7 @@ public abstract class AutoManagerFeatures
 			
 			if ( count > 0 || autosellTotal > 0 ) {
 				
-				debugInfo.append( "[normalDrops total: qty: " + count + " value: " + autosellTotal + ") ");
+				pmEvent.getDebugInfo().append( "[normalDrops total: qty: " + count + " value: " + autosellTotal + ") ");
 				
 			}
 			

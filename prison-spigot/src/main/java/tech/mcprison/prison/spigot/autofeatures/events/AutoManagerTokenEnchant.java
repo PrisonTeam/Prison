@@ -327,7 +327,8 @@ public class AutoManagerTokenEnchant
     					e.getPlayer(),
     					eventResults.getMine(),
 //    					sBlock, sPlayer, 
-    					bbPriority, eventType, triggered );
+    					bbPriority, eventType, triggered,
+    					debugInfo );
     		
     		// NOTE: Token Enchant will pass the event's block to prison, but that block may 
     		//       have already been processed by prison.  Therefore the PrisonMinesBlockBreakEvent
@@ -337,7 +338,7 @@ public class AutoManagerTokenEnchant
     		
     		pmEvent.setUnprocessedRawBlocks( e.blockList() );
     		
-    		if ( !validateEvent( pmEvent, debugInfo ) ) {
+    		if ( !validateEvent( pmEvent ) ) {
     			
     			// The event has not passed validation. All logging and Errors have been recorded
     			// so do nothing more. This is to just prevent normal processing from occurring.
@@ -374,7 +375,7 @@ public class AutoManagerTokenEnchant
     			
     			EventListenerCancelBy cancelBy = EventListenerCancelBy.none; 
     			
-    			cancelBy = processPMBBEvent( pmEvent, debugInfo );
+    			cancelBy = processPMBBEvent( pmEvent );
 
     			
     			if ( cancelBy != EventListenerCancelBy.none ) {

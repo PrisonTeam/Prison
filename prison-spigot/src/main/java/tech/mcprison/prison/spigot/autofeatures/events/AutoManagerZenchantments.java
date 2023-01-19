@@ -263,9 +263,10 @@ public class AutoManagerZenchantments
     						e.getPlayer(),
     						eventResults.getMine(),
 //    						sBlock, sPlayer, 
-    						bbPriority, eventType, triggered );
+    						bbPriority, eventType, triggered,
+        					debugInfo );
     		
-    		if ( !validateEvent( pmEvent, debugInfo ) ) {
+    		if ( !validateEvent( pmEvent ) ) {
     			
     			// The event has not passed validation. All logging and Errors have been recorded
     			// so do nothing more. This is to just prevent normal processing from occurring.
@@ -291,14 +292,14 @@ public class AutoManagerZenchantments
     			
     			
     			if ( e instanceof BlockBreakEvent ) {
-    				processPMBBExternalEvents( pmEvent, debugInfo, e );
+    				processPMBBExternalEvents( pmEvent, e );
     			}
     			
     			
     			
     			EventListenerCancelBy cancelBy = EventListenerCancelBy.none; 
     			
-    			cancelBy = processPMBBEvent( pmEvent, debugInfo );
+    			cancelBy = processPMBBEvent( pmEvent );
 
     			
     			if ( cancelBy == EventListenerCancelBy.event ) {

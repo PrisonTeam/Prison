@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13h3 2023-01-18
 
 
+* **AutoFeatures Event Listeners: More refactoring to simplify how the debugInfo is passed around.**
+
+
 * **AutoFeatures refactoring: changes the setup of how the events deals with finding the mine the player is in.**
 The code was looking up the mine twice, now it only searches for the mine once and reused it more efficiently. 
 This simplifies how some of the code works and allows for more simplification too.

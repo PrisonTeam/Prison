@@ -276,7 +276,8 @@ public class AutoManagerRevEnchantsJackHammerEvent
 						bukkitBlock, e.getPlayer(),
 						eventResults.getMine(),
 //						sBlock, sPlayer, 
-						bbPriority, eventType, triggered );
+						bbPriority, eventType, triggered,
+    					debugInfo );
 		
 			
 			for ( int i = 1; i < e.getBlocks().size(); i++ ) {
@@ -284,7 +285,7 @@ public class AutoManagerRevEnchantsJackHammerEvent
 			}
 			
 			
-			if ( !validateEvent( pmEvent, debugInfo ) ) {
+			if ( !validateEvent( pmEvent ) ) {
 				
 				// The event has not passed validation. All logging and Errors have been recorded
 				// so do nothing more. This is to just prevent normal processing from occurring.
@@ -320,7 +321,7 @@ public class AutoManagerRevEnchantsJackHammerEvent
     			
     			EventListenerCancelBy cancelBy = EventListenerCancelBy.none; 
     			
-    			cancelBy = processPMBBEvent( pmEvent, debugInfo );
+    			cancelBy = processPMBBEvent( pmEvent );
 
     			
     			if ( cancelBy != EventListenerCancelBy.none ) {

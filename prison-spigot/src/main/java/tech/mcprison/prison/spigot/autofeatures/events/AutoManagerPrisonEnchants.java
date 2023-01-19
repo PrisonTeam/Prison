@@ -273,12 +273,13 @@ public class AutoManagerPrisonEnchants
     					e.getPlayer(),
     					eventResults.getMine(),
 //    					sBlock, sPlayer, 
-    					bbPriority, eventType, triggered );
+    					bbPriority, eventType, triggered,
+    					debugInfo );
     		
     		pmEvent.setUnprocessedRawBlocks( e.getExplodedBlocks() );
     		
     		
-    		if ( !validateEvent( pmEvent, debugInfo ) ) {
+    		if ( !validateEvent( pmEvent ) ) {
     			
     			// The event has not passed validation. All logging and Errors have been recorded
     			// so do nothing more. This is to just prevent normal processing from occurring.
@@ -314,7 +315,7 @@ public class AutoManagerPrisonEnchants
     			
     			EventListenerCancelBy cancelBy = EventListenerCancelBy.none; 
     			
-    			cancelBy = processPMBBEvent( pmEvent, debugInfo );
+    			cancelBy = processPMBBEvent( pmEvent );
 
     			
     			if ( cancelBy != EventListenerCancelBy.none ) {
