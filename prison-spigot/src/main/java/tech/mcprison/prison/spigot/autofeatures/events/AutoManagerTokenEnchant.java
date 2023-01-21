@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.EventExecutor;
@@ -13,16 +14,13 @@ import org.bukkit.plugin.PluginManager;
 
 import com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent;
 
-import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
-import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
-import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 
 public class AutoManagerTokenEnchant 
 	extends AutoManagerFeatures 
@@ -257,37 +255,47 @@ public class AutoManagerTokenEnchant
 			Class.forName( "com.vk2gpz.tokenenchant.event.TEBlockExplodeEvent", false, 
 							this.getClass().getClassLoader() );
 			
+			
+			HandlerList handlers = TEBlockExplodeEvent.getHandlerList();
+			
+//    		String eP = getMessage( AutoFeatures.blockBreakEventPriority );
     		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
 
-			String title = String.format( 
-					"TEBlockExplodeEvent (%s)", 
-					( bbPriority == null ? "--none--" : bbPriority.name()) );
-			
-			ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
-					title, 
-					new SpigotHandlerList( TEBlockExplodeEvent.getHandlerList()) );
-
-			if ( eventDisplay != null ) {
-				sb.append( eventDisplay.toStringBuilder() );
-				sb.append( "\n" );
-			}
-			
-			
-			if ( bbPriority.isComponentCompound() ) {
-				StringBuilder sbCP = new StringBuilder();
-				for ( BlockBreakPriority bbp : bbPriority.getComponentPriorities() ) {
-					if ( sbCP.length() > 0 ) {
-						sbCP.append( ", " );
-					}
-					sbCP.append( "'" ).append( bbp.name() ).append( "'" );
-				}
-				
-				String msg = String.format( "Note '%s' is a compound of: [%s]",
-						bbPriority.name(),
-						sbCP );
-				
-				sb.append( msg ).append( "\n" );
-			}
+    		dumpEventListenersCore( "BlockBreakEvent", handlers, bbPriority, sb );
+    		
+  
+    		
+//    		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+//
+//			String title = String.format( 
+//					"TEBlockExplodeEvent (%s)", 
+//					( bbPriority == null ? "--none--" : bbPriority.name()) );
+//			
+//			ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
+//					title, 
+//					new SpigotHandlerList( TEBlockExplodeEvent.getHandlerList()) );
+//
+//			if ( eventDisplay != null ) {
+//				sb.append( eventDisplay.toStringBuilder() );
+//				sb.append( "\n" );
+//			}
+//			
+//			
+//			if ( bbPriority.isComponentCompound() ) {
+//				StringBuilder sbCP = new StringBuilder();
+//				for ( BlockBreakPriority bbp : bbPriority.getComponentPriorities() ) {
+//					if ( sbCP.length() > 0 ) {
+//						sbCP.append( ", " );
+//					}
+//					sbCP.append( "'" ).append( bbp.name() ).append( "'" );
+//				}
+//				
+//				String msg = String.format( "Note '%s' is a compound of: [%s]",
+//						bbPriority.name(),
+//						sbCP );
+//				
+//				sb.append( msg ).append( "\n" );
+//			}
 		}
 		catch ( ClassNotFoundException e ) {
 			// TokenEnchant is not loaded... so ignore.

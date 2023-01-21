@@ -2572,9 +2572,11 @@ public class SpigotPlatform
 		sb.append( "&2. . Prison Internal BlockBreakEvents: " +
 									"tech.mcprison.prison.spigot.SpigotListener\n" );
 		sb.append( "&2. . Auto Features: " +
-									"AutoManagerBlockBreakEvents$AutoManagerBlockBreakEventListener\n" );
+									"tmpsae.AutoManagerBlockBreakEvents$AutoManagerBlockBreakEventListener\n" );
 		sb.append( "&2. . Prison's multi-block explosions (bombs): " +
-				"AutoManagerPrisonsExplosiveBlockBreakEvents$AutoManagerExplosiveBlockBreakEventListener\n" );
+				"tmpsae.AutoManagerPrisonsExplosiveBlockBreakEvents$AutoManagerExplosiveBlockBreakEventListener\n" );
+		sb.append( "&2. . Prison Abbrv: '&3tmps.&2' = '&3tech..==..mcprison.prison.spigot.&2' & " +
+				"'&3tmpsae.&2' = '&3tmps..==..autofeatures.events.&2'\n" );
 
 		
 //		sb.append( "&2. . Auto Feature Core: Non-AutoManager: " +
@@ -2609,7 +2611,16 @@ public class SpigotPlatform
 		AutoManagerZenchantments zenchantments = new AutoManagerZenchantments();
 		zenchantments.dumpEventListeners( sb );
 		
-		return sb.toString();
+		
+		// Shorten the prison package names:
+		// 'tmps.' = 'tech.mcprison.prison.spigot.' 
+		// 'tmpsae.' = 'tmps.autofeatures.events.'
+		String results = sb.toString()
+				.replace( "tech.mcprison.prison.spigot.", "tmps." )
+				.replace( "tmps.autofeatures.events.",  "tmpsae." )
+				.replace( "..==..", "." );
+		
+		return results;
 	}
 	
 	@Override

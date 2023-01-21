@@ -18,6 +18,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -30,6 +31,7 @@ import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.spigot.SpigotPrison;
@@ -41,6 +43,7 @@ import tech.mcprison.prison.spigot.block.OnBlockBreakExternalEvents;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
+import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
@@ -137,6 +140,51 @@ public abstract class AutoManagerFeatures
 		}
     }
     
+    
+    /**
+     * <p>This provides for the basic dump of the event listeners.
+     * </p>
+     * 
+     * @param handlers
+     * @param bbPriority
+     * @param sb
+     */
+    protected void dumpEventListenersCore( String title, HandlerList handlers, BlockBreakPriority bbPriority,
+    			StringBuilder sb ) {
+    	
+		String cdTitle = String.format( 
+				"%s (&7%s&2)", 
+				title,
+				( bbPriority == null ? "--none--" : bbPriority.name()) );
+		
+		ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
+				cdTitle, 
+				new SpigotHandlerList( handlers ) );
+
+		if ( eventDisplay != null ) {
+			sb.append( eventDisplay.toStringBuilder() );
+			sb.append( "\n" );
+		}
+
+		
+		if ( bbPriority.isComponentCompound() ) {
+			StringBuilder sbCP = new StringBuilder();
+			for ( BlockBreakPriority bbp : bbPriority.getComponentPriorities() ) {
+				if ( sbCP.length() > 0 ) {
+					sbCP.append( ", " );
+				}
+				sbCP.append( "'" ).append( bbp.name() ).append( "'" );
+			}
+			
+			String msg = String.format( "&2Note '&7%s&2' is a compound of: [&7%s&2]",
+					bbPriority.name(),
+					sbCP );
+			
+			sb.append( msg ).append( "\n" );
+		}
+
+
+    }
 	
 	/**
 	 * <p>For the event handlers that implement the BlockBreakEvent, this allows 
