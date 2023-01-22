@@ -190,19 +190,24 @@ public class OnBlockBreakMines
 				results.setCancelEvent( true );
 				results.setIgnoreEvent( true );
 			}
-			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
-			
-			// If ignore all block events, then exit this function without logging anything:
-			if ( targetBlock != null && targetBlock.isIgnoreAllBlockEvents() ) {
+			else {
 				
-				// Do not cancel the event... let other plugins deal with it... prison does not care about this block.
-				//event.setCancelled( true );
-				results.setIgnoreEvent( true );
+				MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
+				
+				// If ignore all block events, then exit this function without logging anything:
+				if ( targetBlock != null && targetBlock.isIgnoreAllBlockEvents() ) {
+					
+					// Do not cancel the event... let other plugins deal with it... prison does not care about this block.
+					//event.setCancelled( true );
+					results.setIgnoreEvent( true );
+				}
 			}
+			
 		}
 		
 		return results;
 	}
+	
 	
 //	/**
 //	 * <p>Warning... this is a temp copy of the real function and will be removed

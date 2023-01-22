@@ -367,6 +367,9 @@ public class AutoManagerTokenEnchant
         	//       with a cancel on the event.  Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be
         	//       converted to just ACCESS at this point, and the other part will run under either
         	//       BLOCKEVENTS or MONITOR.
+    		// This check has to be performed after creating the pmEvent object since it uses
+    		// a lot of the internal variables and objects.  There is not much of an impact since
+    		// the validateEvent() has not been ran yet.
         	if ( checkIfNoAccess( pmEvent, start ) ) {
         		
         		e.setCancelled( true );

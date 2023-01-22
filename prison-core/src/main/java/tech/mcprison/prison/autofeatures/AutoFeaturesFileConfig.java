@@ -139,6 +139,13 @@ public class AutoFeaturesFileConfig {
 		    			+ "BLOCKEVENTS: Similar to MONITOR but includes Prison Block Events, "
 		    			+ "and sellall on full inventory if enabled." ),
 		    	
+		    	blockBreakEvents__ReadMe3(blockBreakEvents, 
+		    			"ACCESS: Processed as a LOWEST priority and will check to see if the "
+		    			+ "player has access to the mine. If they do not have access, then the "
+		    			+ "event will be canceled. No other processing is performed. "
+		    			+ "ACCESSBLOCKEVENTS combines two priorities: ACCESS and BLOCKEVENTS. "
+		    			+ "ACCESSMONITOR combines two priorities: ACCESS and MONITOR." ),
+		    	
 		    	
 		    	
 	    	general(options),
