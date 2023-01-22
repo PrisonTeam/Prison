@@ -48,6 +48,9 @@ import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData.TaskMode;
+import tech.mcprison.prison.tasks.PrisonCommandTasks;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -117,6 +120,24 @@ public abstract class AutoManagerFeatures
 
     		printDebugInfo( pmEvent, start );
 
+    		
+    		if ( pmEvent.getSpigotPlayer() != null &&
+    				isBoolean( AutoFeatures.eventPriorityACCESSFailureTPToCurrentMine ) ) {
+    			// run the `/mines tp` command for the player which will TP them to a 
+    			// mine they can access:
+    			
+				String debugInfo = String.format(
+								"ACCESS failed: teleport %s to valid mine.", 
+								pmEvent.getSpigotPlayer().getName() );
+				
+				PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( debugInfo, 
+								"mines tp", 0 );
+				cmdTask.setTaskMode( TaskMode.syncPlayer );
+
+    			PrisonCommandTasks.submitTasks( pmEvent.getSpigotPlayer(), cmdTask );
+    			
+    		}
+    		
     		results = true;
     	}
     	

@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.13h3 2023-01-21
 
 
+* **AutoFeatures Event Listeners: Minor tweaks to the ACCESS priority. Testing has been going well.**
+
+
 * **AutoFeatures Event Listeners: Improved the reporting and refactored to reduce duplicate code.**
 
 
