@@ -12,6 +12,8 @@ These build logs represent the work that has been going on within prison.
 
 # 3.3.0-alpha.13h3 2023-01-22
 
+* **Misc NBT stuff... Did not work out as planned so it has been commented out for now.**
+
 
 * **Start to setup support for ItemsAdder but it's not hooked up yet so it does not do anything.**
 Most of the parts are hooked up, but it just needs to support the ItemsAdder's event that lets other plugins know when everything is fully loaded and it's ready.
