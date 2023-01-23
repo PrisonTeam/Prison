@@ -359,7 +359,8 @@ public class OnBlockBreakMines
 	{
 		boolean results = false;
 
-		if ( targetBlock != null && targetBlock.getPrisonBlock().getBlockType() == PrisonBlockType.CustomItems ) {
+		if ( targetBlock != null && 
+				targetBlock.getPrisonBlock().getBlockType().isCustomBlockType() ) {
 			
 			List<CustomBlockIntegration> cbIntegrations = 
 					PrisonAPI.getIntegrationManager().getCustomBlockIntegrations();

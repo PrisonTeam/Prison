@@ -199,6 +199,7 @@ public class SpigotBlock
 				// No special processing for minecraft types since that will be the fallback later on:
 
 			case CustomItems:
+			case ItemsAdder:
 				{
 					CustomBlockIntegration customItemsIntegration = 
 									PrisonAPI.getIntegrationManager().getCustomBlockIntegration( blockType );
@@ -211,6 +212,19 @@ public class SpigotBlock
 				
 				break;
 				
+//			case ItemsAdder:
+//			{
+//				CustomBlockIntegration customItemsIntegration = 
+//						PrisonAPI.getIntegrationManager().getCustomBlockIntegration( blockType );
+//				// NOTE: This would be the situation where the admin added the Custom Items plugin, added blocks
+//				//       then removed the plugin.  So if it's null, ignore it.
+//				if ( customItemsIntegration != null ) {
+//					results = customItemsIntegration.getCustomBlock( this );
+//				}
+//			}
+//			
+//			break;
+			
 			default:
 				break;
 		}
@@ -247,6 +261,7 @@ public class SpigotBlock
 				break;
 
 			case CustomItems:
+			case ItemsAdder:
 				{
 					CustomBlockIntegration customItemsIntegration = 
 									PrisonAPI.getIntegrationManager().getCustomBlockIntegration( prisonBlock.getBlockType() );

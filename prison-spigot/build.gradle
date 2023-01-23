@@ -74,7 +74,7 @@ repositories {
     }
   
 
-  // 	maven { url 'https://jitpack.io' }
+   	maven { url 'https://jitpack.io' }
 
 
   // maven { url = 'https://repo.pcgamingfreaks.at/repository/maven-everything' }
@@ -157,6 +157,12 @@ dependencies {
 	implementation 'de.tr7zw:item-nbt-api-plugin:2.11.1'
 //	implementation 'de.tr7zw:item-nbt-api-plugin:2.10.0'
 //	implementation 'de.tr7zw:item-nbt-api-plugin:2.9.2'
+
+
+	// https://github.com/LoneDev6/API-ItemsAdder#-packages
+	// https://github.com/LoneDev6/API-ItemsAdder/tags
+	compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.2.5'
+
 
 
     compileOnly fileTree(dir: 'lib', include: ['*.jar'], 

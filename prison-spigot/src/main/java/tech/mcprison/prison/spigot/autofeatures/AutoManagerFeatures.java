@@ -1962,7 +1962,8 @@ public abstract class AutoManagerFeatures
 		Set<XMaterial> xMats = new HashSet<>();
 		for ( SpigotItemStack sItemStack : drops ) {
 			
-			if ( sItemStack.getMaterial().getBlockType() == PrisonBlockType.CustomItems ) {
+			if ( sItemStack.getMaterial().getBlockType() == PrisonBlockType.CustomItems ||
+				 sItemStack.getMaterial().getBlockType() == PrisonBlockType.ItemsAdder	) {
 				// cannot smelt custom blocks so skip XMaterial:
 				continue;
 			}
@@ -2103,7 +2104,8 @@ public abstract class AutoManagerFeatures
 		Set<XMaterial> xMats = new HashSet<>();
 		for ( SpigotItemStack sItemStack : drops ) {
 			
-			if ( sItemStack.getMaterial().getBlockType() == PrisonBlockType.CustomItems ) {
+			if ( sItemStack.getMaterial().getBlockType() == PrisonBlockType.CustomItems ||
+					sItemStack.getMaterial().getBlockType() == PrisonBlockType.ItemsAdder	) {
 				// cannot block custom blocks so skip XMaterial:
 				continue;
 			}

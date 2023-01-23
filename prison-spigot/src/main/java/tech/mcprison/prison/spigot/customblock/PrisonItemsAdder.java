@@ -3,8 +3,6 @@ package tech.mcprison.prison.spigot.customblock;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jojodmo.customitems.api.CustomItemsAPI;
-
 import tech.mcprison.prison.integration.CustomBlockIntegration;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.Player;
@@ -13,65 +11,47 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.Location;
 
-/**
- * Custom Items 3.7.11 New API features
-This version adds two new features to the Custom Items API: listCustomItemIDs and listBlockCustomItemIDs
- *
- */
-public class CustomItems
-		extends CustomBlockIntegration {
+public class PrisonItemsAdder 		
+	extends CustomBlockIntegration {
 
-	private CustomItemsWrapper customItemsWrapper;
+	private PrisonItemsAdderWrapper itemsAdderWrapper;
 	
-	public CustomItems() {
-		super("CustomItems", "CustomItems", PrisonBlockType.CustomItems, "cui:" );
+	public PrisonItemsAdder() {
+		super("ItemsAdder", "ItemsAdder", PrisonBlockType.ItemsAdder, "itemsadder:" );
     }
 	
+	
+	
+
 	@Override
 	public void integrate() {
 
-		BluesSpigetSemVerComparator semVer = new BluesSpigetSemVerComparator();
+		// BluesSpigetSemVerComparator semVer = new BluesSpigetSemVerComparator();
 
 		if ( isRegistered()) {
 			try {
 				
-				if ( semVer.compareTo( getVersion(), "3.7.11" ) >= 0 ) {
-					
-					if ( CustomItemsAPI.isEnabled() ) {
-						
-						this.customItemsWrapper = new CustomItemsWrapper();
-						
-						List<PrisonBlock> prisonBlocks = getCustomBlockList();
-						for ( PrisonBlock block : prisonBlocks )
-						{
-							Output.get().logInfo( "####  Custom Block: " + block.toString() );
-						}
-					}
-
-					String message = String.format(
-							"Enabling CustomItems v%s: Drops are ",
-							getVersion() );
-					
-					if ( semVer.compareTo( getVersion(), "4.1.15" ) >= 0 ) {
-						this.customItemsWrapper.setSupportsDrops( true );
-
-						Output.get().logInfo( "&7" + message + "enabled." );
-					}
-					else {
-						Output.get().logInfo( "&c" + message + "not enabled. &3Upgrade to v4.1.15 or newer." );
-					}
+				this.itemsAdderWrapper = new PrisonItemsAdderWrapper();
+				
+				
+				List<PrisonBlock> prisonBlocks = getCustomBlockList();
+				for ( PrisonBlock block : prisonBlocks )
+				{
+					Output.get().logInfo( "####  Custom Block: " + block.toString() );
 				}
-				else {
-					Output.get().logWarn( 
-							String.format( "&cWarning: &3The plugin &7CustomItems v%s &3is enabled, " +
-									"but is too old and is not supported. Must " +
-									"use at least &7v3.7.11 &3or newer.", getVersion() ) );
-				}
+				
+				String message = String.format(
+						"Enabling ItemsAdder v%s   custom blocks loaded: %d",
+						getVersion(),
+						prisonBlocks.size() );
+				
+				Output.get().logInfo( "&7" + message + "enabled." );
+
 				
 			}
 			catch ( NoClassDefFoundError | IllegalStateException e ) {
@@ -87,18 +67,18 @@ public class CustomItems
     
     @Override
     public boolean hasIntegrated() {
-        return (customItemsWrapper != null);
+        return (itemsAdderWrapper != null);
     }
 	
 	@Override
 	public String getCustomBlockId( Block block ) {
-		return customItemsWrapper.getCustomBlockId( block );
+		return itemsAdderWrapper.getCustomBlockId( block );
 	}
 	
 	
 	public String getCustomBlockId( org.bukkit.block.Block spigotBlock ) {
 		
-		return customItemsWrapper.getCustomBlockId( spigotBlock );
+		return itemsAdderWrapper.getCustomBlockId( spigotBlock );
 	}
 	
 	/**
@@ -139,37 +119,37 @@ public class CustomItems
 		return results;
 	}
 	
-//	public PrisonBlock getCustomBlock( org.bukkit.block.Block spigotBlock ) {
-//		PrisonBlock results = null;
-//		
-//		String customBlockId = getCustomBlockId( spigotBlock );
-//		
-//		if ( customBlockId != null ) {
-//			results = SpigotPrison.getInstance().getPrisonBlockTypes()
-//									.getBlockTypesByName( customBlockId );
-//			
-//			if ( results != null ) {
-//				Location loc = SpigotUtil.bukkitLocationToPrison( spigotBlock.getLocation() );
-//
-//				results.setLocation( loc );
-//			}
-//			
+	public PrisonBlock getCustomBlock( org.bukkit.block.Block spigotBlock ) {
+		PrisonBlock results = null;
+		
+		String customBlockId = getCustomBlockId( spigotBlock );
+		
+		if ( customBlockId != null ) {
+			results = SpigotPrison.getInstance().getPrisonBlockTypes()
+									.getBlockTypesByName( customBlockId );
+			
+			if ( results != null ) {
+				Location loc = SpigotUtil.bukkitLocationToPrison( spigotBlock.getLocation() );
+
+				results.setLocation( loc );
+			}
+			
 //			SpigotBlock sBlock = new SpigotBlock();
-//		}
-//		
-//		return results;
-//	}
+		}
+		
+		return results;
+	}
 	
 	
 	@Override
 	public Block setCustomBlockId( Block block, String customId, boolean doBlockUpdate ) {
-		return customItemsWrapper.setCustomBlockId( block, customId, doBlockUpdate );
+		return itemsAdderWrapper.setCustomBlockId( block, customId, doBlockUpdate );
 	}
 	
 	
 	@Override
 	public void setCustomBlockIdAsync( PrisonBlock prisonBlock, Location location ) {
-		customItemsWrapper.setCustomBlockIdAsync( prisonBlock, location );
+		itemsAdderWrapper.setCustomBlockIdAsync( prisonBlock, location );
 	}
 	
 	@Override
@@ -180,7 +160,7 @@ public class CustomItems
 		SpigotItemStack sTool = tool != null && tool instanceof SpigotItemStack ?
 											(SpigotItemStack) tool : null;
 		
-		List<? extends ItemStack> results = customItemsWrapper.getDrops( prisonBlock, sPlayer, sTool );
+		List<? extends ItemStack> results = itemsAdderWrapper.getDrops( prisonBlock, sPlayer, sTool );
 		
 		return results;
 	}
@@ -190,7 +170,7 @@ public class CustomItems
 	{
 		List<PrisonBlock> results = new ArrayList<>();
 		
-		for ( String block : customItemsWrapper.getCustomBlockList() ) {
+		for ( String block : itemsAdderWrapper.getCustomBlockList() ) {
 			
 			PrisonBlock prisonBlock = new PrisonBlock( getBlockType(), block );
 
@@ -207,6 +187,8 @@ public class CustomItems
 
 	@Override
 	public String getPluginSourceURL() {
-		return "https://polymart.org/resource/custom-items.1";
+		return "https://polymart.org/resource/itemsadder-custom-items-etc.1851";
 	}
+
+
 }

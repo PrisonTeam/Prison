@@ -56,7 +56,12 @@ public class PrisonBlock
 	public enum PrisonBlockType {
 		minecraft,
 		CustomItems,
-		heads
+		ItemsAdder,
+		heads;
+		
+		public boolean isCustomBlockType() {
+			return this != minecraft;
+		}
 	}
 	
 	/**

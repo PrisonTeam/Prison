@@ -966,7 +966,7 @@ public class SpigotPrison
 		ph2.deferredInitialization();
 	}
     
-    private void registerIntegration(Integration integration) {
+    public void registerIntegration(Integration integration) {
 
     	boolean isRegistered = isIntegrationRegistered( integration );
     	String version = ( isRegistered ? Bukkit.getPluginManager()

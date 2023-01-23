@@ -1351,7 +1351,9 @@ public abstract class MineReset
 		try {
 //			Location targetBlock = new Location(world, x, y, z);
 			
-			boolean containsCustomBlocks = getPrisonBlockTypes().contains( PrisonBlockType.CustomItems );
+			boolean containsCustomBlocks = 
+					getPrisonBlockTypes().contains( PrisonBlockType.CustomItems ) ||
+					getPrisonBlockTypes().contains( PrisonBlockType.ItemsAdder );
 
 			Block tBlock = targetBlock.getBlockAt( containsCustomBlocks );
 			

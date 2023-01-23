@@ -28,6 +28,7 @@ public class SpigotBlockSetAsynchronously {
 				break;
 
 			case CustomItems:
+			case ItemsAdder:
 				{
 					CustomBlockIntegration customItemsIntegration = 
 									PrisonAPI.getIntegrationManager().getCustomBlockIntegration( prisonBlock.getBlockType() );
