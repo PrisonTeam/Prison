@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14 2023-01-23
 
 
+* Changed the example world names in the config.yml file where Prison is disabled. Too many people were running in to the problem where they just happened to have those worlds, and that's where they were trying to use prison.  So they were thinking Prison was not working instead of Prison being disable in those worlds because that's what was in the configs.
+
+
 **Prison v3.3.0-alpha.14 2023-01-23**
 
 
