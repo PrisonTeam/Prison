@@ -18,6 +18,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -29,18 +31,26 @@ import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlock.PrisonBlockType;
 import tech.mcprison.prison.mines.data.Mine;
+import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
+import tech.mcprison.prison.spigot.block.BlockBreakPriority;
 import tech.mcprison.prison.spigot.block.OnBlockBreakEventCore;
+import tech.mcprison.prison.spigot.block.OnBlockBreakExternalEvents;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
+import tech.mcprison.prison.spigot.game.SpigotHandlerList;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
+import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData.TaskMode;
+import tech.mcprison.prison.tasks.PrisonCommandTasks;
 import tech.mcprison.prison.util.Text;
 
 /**
@@ -66,12 +76,238 @@ public abstract class AutoManagerFeatures
 		setup();
 	}
 
+	public enum EventListenerCancelBy {
+		none,
+		event,
+		drops;
+	}
 
 	private void setup() {
+
+		
+		// Register all external events such as mcMMO, EZBlocks, and Quests:
+		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 
 	}
 
 
+    /**
+     * <p> NOTE: Check for the ACCESS priority and if someone does not have access, then return 
+     * with a cancel on the event.  Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be 
+     * converted to just ACCESS at this point, and the other part will run under either 
+     * BLOCKEVENTS or MONITOR.
+     * </p>
+     * 
+     * @param pmEvent
+     * @param start
+     * @return
+     */
+    protected boolean checkIfNoAccess( PrisonMinesBlockBreakEvent pmEvent, double start ) {
+    	boolean results = false;
+    	
+    	// NOTE: Check for the ACCESS priority and if someone does not have access, then return 
+    	//       with a cancel on the event.  Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be
+    	//       converted to just ACCESS at this point, and the other part will run under either
+    	//       BLOCKEVENTS or MONITOR.
+    	if ( pmEvent.getBbPriority() == BlockBreakPriority.ACCESS && pmEvent.getMine() != null && 
+    			!pmEvent.getMine().hasMiningAccess( pmEvent.getSpigotPlayer() )) {
+    		
+    		String message = String.format( "(&cACCESS fail: player %s does not have access to "
+    												+ "mine %s&3. Event canceled) ",
+    						pmEvent.getSpigotPlayer().getName(),
+    						pmEvent.getMine().getTag() );
+    		pmEvent.getDebugInfo().append( message );
+
+    		printDebugInfo( pmEvent, start );
+
+    		
+    		if ( pmEvent.getSpigotPlayer() != null &&
+    				isBoolean( AutoFeatures.eventPriorityACCESSFailureTPToCurrentMine ) ) {
+    			// run the `/mines tp` command for the player which will TP them to a 
+    			// mine they can access:
+    			
+				String debugInfo = String.format(
+								"ACCESS failed: teleport %s to valid mine.", 
+								pmEvent.getSpigotPlayer().getName() );
+				
+				PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( debugInfo, 
+								"mines tp", 0 );
+				cmdTask.setTaskMode( TaskMode.syncPlayer );
+
+    			PrisonCommandTasks.submitTasks( pmEvent.getSpigotPlayer(), cmdTask );
+    			
+    		}
+    		
+    		results = true;
+    	}
+    	
+    	return results;
+    }
+    
+	/**
+	 * <p>Prints out the debugInfo if it has anything to print.
+	 * </p>
+	 * 
+	 * @param pmEvent
+	 * @param start
+	 */
+    protected void printDebugInfo(  PrisonMinesBlockBreakEvent pmEvent, double start ) {
+		if ( pmEvent != null && pmEvent.getDebugInfo().length() > 0 ) {
+			
+			long stop = System.nanoTime();
+			pmEvent.getDebugInfo().append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
+			
+			Output.get().logDebug( DebugTarget.blockBreak, pmEvent.getDebugInfo().toString() );
+		}
+    }
+    
+    
+    /**
+     * <p>This provides for the basic dump of the event listeners.
+     * </p>
+     * 
+     * @param handlers
+     * @param bbPriority
+     * @param sb
+     */
+    protected void dumpEventListenersCore( String title, HandlerList handlers, BlockBreakPriority bbPriority,
+    			StringBuilder sb ) {
+    	
+		String cdTitle = String.format( 
+				"%s (&7%s&2)", 
+				title,
+				( bbPriority == null ? "--none--" : bbPriority.name()) );
+		
+		ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
+				cdTitle, 
+				new SpigotHandlerList( handlers ) );
+
+		if ( eventDisplay != null ) {
+			sb.append( eventDisplay.toStringBuilder() );
+			sb.append( "\n" );
+		}
+
+		
+		if ( bbPriority.isComponentCompound() ) {
+			StringBuilder sbCP = new StringBuilder();
+			for ( BlockBreakPriority bbp : bbPriority.getComponentPriorities() ) {
+				if ( sbCP.length() > 0 ) {
+					sbCP.append( ", " );
+				}
+				sbCP.append( "'" ).append( bbp.name() ).append( "'" );
+			}
+			
+			String msg = String.format( "&2Note '&7%s&2' is a compound of: [&7%s&2]",
+					bbPriority.name(),
+					sbCP );
+			
+			sb.append( msg ).append( "\n" );
+		}
+
+
+    }
+	
+	/**
+	 * <p>For the event handlers that implement the BlockBreakEvent, this allows 
+	 * the other plugins to also process the event if forced.
+	 * </p>
+	 * 
+	 * @param pmEvent
+	 * @param debugInfo
+	 * @param e
+	 */
+	protected void processPMBBExternalEvents( PrisonMinesBlockBreakEvent pmEvent, 
+			BlockBreakEvent e ) {
+		
+		if ( pmEvent.getMine() != null || pmEvent.getMine() == null && 
+				!isBoolean( AutoFeatures.pickupLimitToMines ) ) {
+			
+			// check all external events such as mcMMO and EZBlocks:
+			pmEvent.getDebugInfo().append( 
+					OnBlockBreakExternalEvents.getInstance().checkAllExternalEvents( e ) );
+			
+		}
+
+	}
+	
+
+	protected EventListenerCancelBy processPMBBEvent(PrisonMinesBlockBreakEvent pmEvent ) {
+		
+		EventListenerCancelBy cancelBy = EventListenerCancelBy.none;
+		
+		// This is where the processing actually happens:
+		if ( pmEvent.getMine() != null || pmEvent.getMine() == null && 
+				!isBoolean( AutoFeatures.pickupLimitToMines ) ) {
+			
+			pmEvent.getDebugInfo().append( "(normal processing initiating) " );
+			
+			// Set the mine's PrisonBlockTypes for the block. Used to identify custom blocks.
+			// Needed since processing of the block will lose track of which mine it came from.
+			if ( pmEvent.getMine() != null ) {
+				pmEvent.getSpigotBlock().setPrisonBlockTypes( pmEvent.getMine().getPrisonBlockTypes() );
+			}
+			
+			// check all external events such as mcMMO and EZBlocks:
+//			debugInfo.append( 
+//					OnBlockBreakExternalEvents.getInstance().checkAllExternalEvents( e ) );
+			
+			List<SpigotBlock> explodedBlocks = new ArrayList<>();
+			pmEvent.setExplodedBlocks( explodedBlocks );
+//    			String triggered = null;
+			
+//    			PrisonMinesBlockBreakEvent pmbbEvent = new PrisonMinesBlockBreakEvent( e.getBlock(), e.getPlayer(),
+//    							pmEvent.getMine(), sBlock, explodedBlocks, BlockEventType.blockBreak, triggered );
+			Bukkit.getServer().getPluginManager().callEvent( pmEvent );
+			if ( pmEvent.isCancelled() ) {
+				pmEvent.getDebugInfo().append( 
+						"(normal processing: PrisonMinesBlockBreakEvent was canceled by another plugin!) " );
+			}
+			else {
+				
+				// Cancel drops if so configured:
+				if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
+					
+					cancelBy = EventListenerCancelBy.drops;
+					
+				}
+				
+				// doAction returns a boolean that indicates if the event should be canceled or not:
+				if ( doAction( pmEvent ) ) {
+//                	if ( doAction( sBlock, pmEvent.getMine(), pmEvent.getPlayer(), debugInfo ) ) {
+					
+					if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
+						cancelBy = EventListenerCancelBy.event;
+					}
+					else {
+						
+						pmEvent.getDebugInfo().append( "(event not canceled) " );
+					}
+					
+					finalizeBreakTheBlocks( pmEvent );
+					
+					doBlockEvents( pmEvent );
+					
+				}
+				else {
+					
+					pmEvent.getDebugInfo().append( "(doAction failed without details) " );
+				}
+				
+			}
+			
+			
+			pmEvent.getDebugInfo().append( "(normal processing completed) " );
+		}
+		else {
+			
+			pmEvent.getDebugInfo().append( "(logic bypass) " );
+		}
+		return cancelBy;
+	}
+
+
+
+	
 	/**
 	 * <p>If the fortune level is zero, then this function will always return a value of one.
 	 * </p>
@@ -167,8 +403,8 @@ public abstract class AutoManagerFeatures
      * 
      */
     @Override
-    public boolean doAction( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo ) {
-    	return applyAutoEvents( pmEvent, debugInfo );
+    public boolean doAction( PrisonMinesBlockBreakEvent pmEvent ) {
+    	return applyAutoEvents( pmEvent );
     }
 	
 
@@ -205,7 +441,7 @@ public abstract class AutoManagerFeatures
 
 	
 	
-	private int applyAutoEventsDetails( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo ) {
+	private int applyAutoEventsDetails( PrisonMinesBlockBreakEvent pmEvent ) {
 		int totalDrops = 0;
 		
 		Player player = pmEvent.getPlayer();
@@ -254,15 +490,15 @@ public abstract class AutoManagerFeatures
 		
 		if ( Output.get().isDebug( DebugTarget.blockBreak ) ) {
 			
-			debugInfo.append( "(applyAutoEvents: " )
+			pmEvent.getDebugInfo().append( "(applyAutoEvents: " )
 				.append( pmEvent.getSpigotBlock().getBlockName() );
 			
 			if ( !isAutoFeaturesEnabled ) {
-				debugInfo.append("isAutoFeaturesEnabled=false (disabled)");
+				pmEvent.getDebugInfo().append("isAutoFeaturesEnabled=false (disabled)");
 			}
 			else {
 				
-				debugInfo
+				pmEvent.getDebugInfo()
 				.append( " Pickup [")
 				.append( isAutoPickup ? "enabled: " : "disabled:" )
 				.append( lorePickup ? "lore " : "" )
@@ -289,7 +525,7 @@ public abstract class AutoManagerFeatures
 				
 			}
 			
-			debugInfo
+			pmEvent.getDebugInfo()
 				.append( ")" );
 		}
 		
@@ -302,7 +538,7 @@ public abstract class AutoManagerFeatures
 			if ( isAutoPickup ) {
 				
 				// processing auto pickup
-				totalDrops = autoFeaturePickup( pmEvent, isAutoSmelt, isAutoBlock, debugInfo );
+				totalDrops = autoFeaturePickup( pmEvent, isAutoSmelt, isAutoBlock, pmEvent.getDebugInfo() );
 //			count = autoFeaturePickup( pmEvent.getSpigotBlock(), player, itemInHand, isAutoSmelt, isAutoBlock, debugInfo );
 				
 				// Cannot set to air yet, or auto smelt and auto block will only get AIR:
@@ -312,7 +548,7 @@ public abstract class AutoManagerFeatures
 				// Need to check to see if normal drops should be processed:
 				
 				if ( configNormalDrop ) {
-					debugInfo
+					pmEvent.getDebugInfo()
 						.append( "(NormalDrop handling enabled: " )
 						.append( "normalDropSmelt[" )
 						.append( configNormalDropSmelt ? "enabled" : "disabled" )
@@ -324,11 +560,11 @@ public abstract class AutoManagerFeatures
 					
 					// process normal drops here:
 					
-					totalDrops = calculateNormalDrop( pmEvent, debugInfo );
+					totalDrops = calculateNormalDrop( pmEvent );
 
 				}
 				else {
-					debugInfo.append(" [Warning: normalDrop handling is disabled] " );
+					pmEvent.getDebugInfo().append(" [Warning: normalDrop handling is disabled] " );
 				}
 				
 			}
@@ -406,14 +642,14 @@ public abstract class AutoManagerFeatures
 	 * @param e
 	 * @param mine
 	 */
-	private boolean applyAutoEvents( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo ) {
+	private boolean applyAutoEvents( PrisonMinesBlockBreakEvent pmEvent ) {
 //		boolean success = false;
 		
-		int totalDrops = applyAutoEventsDetails( pmEvent, debugInfo );
+		int totalDrops = applyAutoEventsDetails( pmEvent );
 
-		debugInfo.append( "(autoEvents totalDrops: " + totalDrops + ") ");
+		pmEvent.getDebugInfo().append( "(autoEvents totalDrops: " + totalDrops + ") ");
 
-		return applyDropsBlockBreakage( pmEvent, totalDrops, debugInfo );
+		return applyDropsBlockBreakage( pmEvent, totalDrops );
 		
 //		debugInfo.append( "(doAction autoManager applyAutoEvents multi-blocks: " + pmEvent.getExplodedBlocks().size() + ") ");
 //		
@@ -536,8 +772,8 @@ public abstract class AutoManagerFeatures
 			}
 			
 			
-			DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
-			DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+			DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.0000");
+			DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 			
 			double autosellTotal = 0;
 			double autosellUnsellableCount = 0;
@@ -674,7 +910,7 @@ public abstract class AutoManagerFeatures
 
 
 
-	public int calculateNormalDrop( PrisonMinesBlockBreakEvent pmEvent, StringBuilder debugInfo ) {
+	public int calculateNormalDrop( PrisonMinesBlockBreakEvent pmEvent ) {
 		
 		// Count should be the total number of items that are to be "dropped".
 		// So effectively it will be the sum of all bukkitDrops counts.
@@ -696,7 +932,7 @@ public abstract class AutoManagerFeatures
 		
 		if (drops != null && drops.size() > 0 ) {
 			
-			debugInfo.append( "[normalDrops]" );
+			pmEvent.getDebugInfo().append( "[normalDrops]" );
 
 			// Need better drop calculation that is not using the getDrops function.
 			short fortuneLevel = getFortune( pmEvent.getItemInHand() );
@@ -723,13 +959,13 @@ public abstract class AutoManagerFeatures
 			
 			
 			if ( isBoolean( AutoFeatures.normalDropSmelt ) ) {
-				debugInfo.append( "(normSmelting: itemStacks)" );
+				pmEvent.getDebugInfo().append( "(normSmelting: itemStacks)" );
 				normalDropSmelt( drops );
 			}
 			
 			
 			if ( isBoolean( AutoFeatures.normalDropBlock ) ) {
-				debugInfo.append( "(normBlocking: itemStacks)" );
+				pmEvent.getDebugInfo().append( "(normBlocking: itemStacks)" );
 				normalDropBlock( drops );
 			}
 			
@@ -763,7 +999,7 @@ public abstract class AutoManagerFeatures
 					autosellTotal += amount;
 					
 					if ( amount != 0 ) {
-						debugInfo.append( "(sold: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
+						pmEvent.getDebugInfo().append( "(sold: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
 						
 						// Set to zero quantity since they have all been sold.
 						itemStack.setAmount( 0 );
@@ -781,7 +1017,7 @@ public abstract class AutoManagerFeatures
 						double amount = SellAllUtil.get().sellAllSell( player, itemStack, true, false, false );
 						autosellTotal += amount;
 						
-						debugInfo.append( "(adding: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
+						pmEvent.getDebugInfo().append( "(adding: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
 					}
 					
 					dropAtBlock( itemStack, pmEvent.getSpigotBlock() );
@@ -793,7 +1029,7 @@ public abstract class AutoManagerFeatures
 			
 			if ( count > 0 || autosellTotal > 0 ) {
 				
-				debugInfo.append( "[normalDrops total: qty: " + count + " value: " + autosellTotal + ") ");
+				pmEvent.getDebugInfo().append( "[normalDrops total: qty: " + count + " value: " + autosellTotal + ") ");
 				
 			}
 			
@@ -1051,8 +1287,8 @@ public abstract class AutoManagerFeatures
 						
 						if ( amount > 0d ) {
 							
-							DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
-							DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+							DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.0000");
+							DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 							
 							debugInfo.append( "[dropExtra sellall: value: " + dFmt.format( amount )  );
 							
@@ -1064,6 +1300,9 @@ public abstract class AutoManagerFeatures
 							}
 							
 							debugInfo.append( " ] " );
+							
+							SpigotPlayer sPlayer = new SpigotPlayer( player );
+							PlayerAutoRankupTask.autoSubmitPlayerRankupTask( sPlayer, debugInfo );
 						}
 						
 					}
@@ -1723,7 +1962,8 @@ public abstract class AutoManagerFeatures
 		Set<XMaterial> xMats = new HashSet<>();
 		for ( SpigotItemStack sItemStack : drops ) {
 			
-			if ( sItemStack.getMaterial().getBlockType() == PrisonBlockType.CustomItems ) {
+			if ( sItemStack.getMaterial().getBlockType() == PrisonBlockType.CustomItems ||
+				 sItemStack.getMaterial().getBlockType() == PrisonBlockType.ItemsAdder	) {
 				// cannot smelt custom blocks so skip XMaterial:
 				continue;
 			}
@@ -1864,7 +2104,8 @@ public abstract class AutoManagerFeatures
 		Set<XMaterial> xMats = new HashSet<>();
 		for ( SpigotItemStack sItemStack : drops ) {
 			
-			if ( sItemStack.getMaterial().getBlockType() == PrisonBlockType.CustomItems ) {
+			if ( sItemStack.getMaterial().getBlockType() == PrisonBlockType.CustomItems ||
+					sItemStack.getMaterial().getBlockType() == PrisonBlockType.ItemsAdder	) {
 				// cannot block custom blocks so skip XMaterial:
 				continue;
 			}

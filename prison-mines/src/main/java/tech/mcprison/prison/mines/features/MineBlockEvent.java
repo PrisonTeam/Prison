@@ -36,9 +36,16 @@ public class MineBlockEvent {
 		PEExplosive, // PrisonEnchant: Pulsi_'s plugin
 		PrisonExplosion,
 		
+		RevEnExplosion,
+		RevEnJackHammer,
+		
 		eventTypeAll( all ),
 		eventBlockBreak( blockBreak ),
-		eventTEXplosion( TEXplosion )
+		eventTEXplosion( TEXplosion ), 
+		
+		eventRevEnExplosion( RevEnExplosion ),
+		eventRevEnJackHammer( RevEnJackHammer ),
+		
 		;
 		
 		private final BlockEventType primaryEventType;
@@ -151,7 +158,7 @@ public class MineBlockEvent {
 		}
 		nFmt.format( getChance() );
 		
-//		DecimalFormat dFmt = new DecimalFormat("0.00000");
+//		DecimalFormat dFmt = Prison.get().getDecimalFormat("0.00000");
 		
 		return nFmt.format( getChance() ) + "|" + 
 				(getPermission() == null || getPermission().trim().length() == 0 ? 

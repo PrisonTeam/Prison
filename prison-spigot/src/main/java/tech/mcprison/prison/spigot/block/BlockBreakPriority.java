@@ -1,5 +1,8 @@
 package tech.mcprison.prison.spigot.block;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.event.EventPriority;
 
 /**
@@ -25,20 +28,37 @@ import org.bukkit.event.EventPriority;
 public enum BlockBreakPriority {
 	
 	DISABLED( null ),
-	BLOCKEVENTS( EventPriority.HIGHEST ),
 	
 	LOWEST( EventPriority.LOWEST ),
 	LOW( EventPriority.LOW ),
 	NORMAL( EventPriority.NORMAL ),
 	HIGH( EventPriority.HIGH ),
 	HIGHEST( EventPriority.HIGHEST ),
-	MONITOR( EventPriority.MONITOR )
+	
+	BLOCKEVENTS( EventPriority.HIGHEST ),
+	MONITOR( EventPriority.MONITOR ),
+	
+	ACCESS( EventPriority.LOWEST ),
+	ACCESSBLOCKEVENTS( EventPriority.HIGHEST, ACCESS, BLOCKEVENTS ),
+	ACCESSMONITOR( EventPriority.MONITOR, ACCESS, MONITOR ),
 	;
 	
 	private final EventPriority bukkitEventPriority;
+	private final List<BlockBreakPriority> componentPriorities;
+	
 	private BlockBreakPriority( EventPriority bukkitEventPriority ) {
 		
 		this.bukkitEventPriority = bukkitEventPriority;
+
+		this.componentPriorities = new ArrayList<>();
+	}
+	
+	private BlockBreakPriority( EventPriority bukkitEventPriority, BlockBreakPriority... components ) {
+		this( bukkitEventPriority );
+
+		for (BlockBreakPriority bbPriority : components) {
+			this.componentPriorities.add( bbPriority );
+		}
 	}
 	
 	public static BlockBreakPriority fromString( String value ) {
@@ -57,7 +77,28 @@ public enum BlockBreakPriority {
 		return results;
 	}
 
+	public boolean isMonitor() {
+		return this == MONITOR || 
+			   this == BLOCKEVENTS ||
+			   this == ACCESSBLOCKEVENTS ||
+			   this == ACCESSMONITOR
+			   ;
+	}
+
+	public boolean isDisabled() {
+		return this == DISABLED;
+	}
+	
+	public boolean isComponentCompound() {
+		return getComponentPriorities().size() > 0
+			   ;
+	}
+	
 	public EventPriority getBukkitEventPriority() {
 		return bukkitEventPriority;
+	}
+
+	public List<BlockBreakPriority> getComponentPriorities() {
+		return componentPriorities;
 	}
 }

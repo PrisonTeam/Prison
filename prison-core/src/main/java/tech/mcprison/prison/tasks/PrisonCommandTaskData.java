@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.output.Output;
@@ -300,7 +301,7 @@ public class PrisonCommandTaskData {
 		
 		long nanoTotal = 0;
 		
-		DecimalFormat dFmt = new DecimalFormat( "#,000.0000" );
+		DecimalFormat dFmt = Prison.get().getDecimalFormat( "#,000.0000" );
 		
 		for ( Long elapsedNano : elapsedTimes )
 		{
@@ -427,6 +428,11 @@ public class PrisonCommandTaskData {
 			for ( String task : tasks ) {
 				
 				long start = System.nanoTime();
+				
+				
+				// was failing with leading spaces after spliting after a ";" so trim to fix it:
+				task = task == null ? "" : task.trim();
+				
 				
 				// Apply the custom placeholders:
 				for ( PrisonCommandTaskPlaceholderData cPlaceholder : getCustomPlaceholders() ) {

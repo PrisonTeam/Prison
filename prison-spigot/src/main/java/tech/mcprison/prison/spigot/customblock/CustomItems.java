@@ -19,7 +19,7 @@ import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.util.Location;
 
 /**
- * Custom Items 3.7.11 — New API features
+ * Custom Items 3.7.11 New API features
 This version adds two new features to the Custom Items API: listCustomItemIDs and listBlockCustomItemIDs
  *
  */

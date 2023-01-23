@@ -7,23 +7,22 @@ import org.bukkit.entity.Player;
 
 import com.cryptomorin.xseries.XMaterial;
 
-import tech.mcprison.prison.output.Output;
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankLadder;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools.GUIMenuPageData;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
-import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 /**
  * @author GABRYCA
  */
-public class SpigotRanksGUI extends SpigotGUIComponents {
+public class SpigotRanksGUI 
+	extends SpigotGUIMessages {
 
     private final Player p;
     private final RankLadder ladder;
@@ -53,7 +52,7 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
         // Get the dimensions and if needed increases them
         if (ladder == null || ladder.getRanks().size() == 0) {
-            Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_ranks_empty));
+        	guiRanksNoRanksMsg( new SpigotPlayer(p) );
             return;
         }
         
@@ -75,16 +74,16 @@ public class SpigotRanksGUI extends SpigotGUIComponents {
 
         // Global Strings.
         String loreShiftRightClickDelete = guiRightClickShiftToDeleteMsg();
-        String loreClickToManageRank = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_manage_rank);
-        String loreInfo = messages.getString(MessagesConfig.StringID.spigot_gui_lore_info);
-        String loreId = messages.getString(MessagesConfig.StringID.spigot_gui_lore_id);
-        String loreName = messages.getString(MessagesConfig.StringID.spigot_gui_lore_name);
-        String loreTag2 = messages.getString(MessagesConfig.StringID.spigot_gui_lore_rank_tag);
+        String loreClickToManageRank = guiRanksClickToManageRankMsg();
+        String loreInfo = guiRanksLoreInfoMsg();
+        String loreId = guiRanksLoreIdMsg(); 
+        String loreName = guiRanksLoreNameMsg();
+        String loreTag2 = guiRanksLoreRankTagMsg();
 //        String lorePrice3 = messages.getString(MessagesConfig.StringID.spigot_gui_lore_price);
-        String lorePlayersWithRank = messages.getString(MessagesConfig.StringID.spigot_gui_lore_players_at_rank);
+        String lorePlayersWithRank = guiRanksLorePlayersWithRankMsg();
 
         // Decimal Rank cost format.
-        DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
+        DecimalFormat formatDecimal = Prison.get().getDecimalFormat("###,##0.00");
 
         // Only loop over the blocks that we need to show:
         for ( Rank rank : ranksDisplay )

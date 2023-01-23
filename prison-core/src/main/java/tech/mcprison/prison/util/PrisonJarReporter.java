@@ -14,7 +14,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import tech.mcprison.prison.Prison;
@@ -207,14 +206,20 @@ public class PrisonJarReporter {
 				}
 				
 			}
-			catch ( ZipException e )
+			catch ( Exception e )
 			{
-				e.printStackTrace();
+				// Ignore all errors.  
+				// These are not our plugins, so if there is a problem, then it really does not matter
+				
 			}
-			catch ( IOException e )
-			{
-				e.printStackTrace();
-			}
+//			catch ( ZipException e )
+//			{
+//				e.printStackTrace();
+//			}
+//			catch ( IOException e )
+//			{
+//				e.printStackTrace();
+//			}
 			
 			
 		}

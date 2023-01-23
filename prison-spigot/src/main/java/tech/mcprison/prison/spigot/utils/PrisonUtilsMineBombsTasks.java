@@ -20,6 +20,7 @@ import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XSound;
 import com.cryptomorin.xseries.particles.ParticleDisplay;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.bombs.MineBombData;
 import tech.mcprison.prison.bombs.MineBombEffectsData;
 import tech.mcprison.prison.bombs.MineBombEffectsData.EffectState;
@@ -496,7 +497,7 @@ public class PrisonUtilsMineBombsTasks
 			this.isDyanmicTag = bomb.getNameTag().contains( "{countdown}" );
 			this.tagName = "";
 			
-			this.dFmt = new DecimalFormat( "0.0" );
+			this.dFmt = Prison.get().getDecimalFormat( "0.0" );
 			
 			initializeArmorStand();
 		}

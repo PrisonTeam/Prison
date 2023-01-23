@@ -623,7 +623,7 @@ public abstract class MineScheduler
 					perms.trim().length() == 0
 					) {
 				
-				DecimalFormat dFmt = new DecimalFormat( "#,##0.0000" );
+				DecimalFormat dFmt = Prison.get().getDecimalFormat( "#,##0.0000" );
 				
 				PrisonBlockStatusData originalBlock = targetBlock.getPrisonBlock();
 				

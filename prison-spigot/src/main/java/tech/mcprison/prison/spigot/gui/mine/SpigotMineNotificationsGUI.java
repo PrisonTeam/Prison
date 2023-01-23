@@ -7,16 +7,16 @@ import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
-import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
+import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMessages;
 
 /**
  * @author GABRYCA
  */
-public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
+public class SpigotMineNotificationsGUI 
+	extends SpigotGUIMessages {
 
     private final Player p;
     private final String mineName;
@@ -37,9 +37,12 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
         Mine m = pMines.getMine(mineName);
         String enabledOrDisabled = m.getNotificationMode().name();
 
-        ButtonLore modeWithinLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_select), messages.getString(MessagesConfig.StringID.spigot_gui_lore_enable_within_mode));
-        ButtonLore modeRadiusLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_select), messages.getString(MessagesConfig.StringID.spigot_gui_lore_enable_radius_mode));
-        ButtonLore disabledModeLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_select), messages.getString(MessagesConfig.StringID.spigot_gui_lore_disable_notifications));
+        ButtonLore modeWithinLore = new ButtonLore(
+        		guiRanksLoreClickToSelectMsg(), guiRanksLoreEnableWithinModeMsg() );
+        ButtonLore modeRadiusLore = new ButtonLore(
+        		guiRanksLoreClickToSelectMsg(), guiRanksLoreEnableRadiusModeMsg() );
+        ButtonLore disabledModeLore = new ButtonLore(
+        		guiRanksLoreClickToSelectMsg(), guiRanksLoreDisableNotificationsMsg() );
         ButtonLore closeGUILore = new ButtonLore( guiClickToCloseMsg(), null);
 
         // Add button.
@@ -49,17 +52,17 @@ public class SpigotMineNotificationsGUI extends SpigotGUIComponents {
         if (enabledOrDisabled.equalsIgnoreCase("disabled")){
 
             // Add the selected lore
-            disabledModeLore.addLineLoreDescription( messages.getString(MessagesConfig.StringID.spigot_gui_lore_selected) );
+            disabledModeLore.addLineLoreDescription( guiRanksLoreSelecteMsg() );
 
         } else if (enabledOrDisabled.equalsIgnoreCase("within")){
 
             // Add the selected lore
-            modeWithinLore.addLineLoreDescription( messages.getString(MessagesConfig.StringID.spigot_gui_lore_selected) );
+            modeWithinLore.addLineLoreDescription( guiRanksLoreSelecteMsg() );
 
         } else if (enabledOrDisabled.equalsIgnoreCase("radius")){
 
             // Add the selected lore
-            modeRadiusLore.addLineLoreDescription( messages.getString(MessagesConfig.StringID.spigot_gui_lore_selected) );
+            modeRadiusLore.addLineLoreDescription( guiRanksLoreSelecteMsg() );
 
         }
 

@@ -4,15 +4,130 @@
 
 ## Build logs
  - **[v3.3.0-alpha - Current](changelog_v3.3.x.md)**
- - [v3.2.0 through v3.2.10](prison_changelogs.md)
+ - [v3.2.0 through v3.3.0-alpha.14](prison_changelogs.md)
  
 
 These build logs represent the work that has been going on within prison. 
 
 
+# 3.3.0-alpha.14 2023-01-23
 
 
-# 3.3.0-alpha.13 2022-08-25
+**Prison v3.3.0-alpha.14 2023-01-23**
+
+
+The following are significant changes that are included in the alpha.14 release since the alpha.13 release was posted.
+
+* Support for RevEnchants
+
+
+* Added more flexibility in supporting Prison Event Listener priorities for block break events so prison is better suited to support more enchantment plugins under more conditions. Added ACCESS, ACCESSBLOCKBREAKS, and ACCESSMONITOR to provide far more flexibility when prison is NOT managing the block breakage.
+
+
+* General improvements in how Auto Features manages the event listeners for all of the block break events. Includes some bug fixes and performance improvements too.
+
+
+* Preparing to support ItemsAdder... will be available in next alpha release.*
+
+
+* Prison Placeholders: Added a few more, fixed a few bugs, and improved documentation so its easier to understand how to use them. Added more features to the command `/prison placeholders stats`.  The stats command can actually be used to troubleshoot issues with third-party plugins trying to use prison placeholders.
+
+
+* Top-n reports and placeholders: bug fixes and added a few more features.
+
+
+* Mine commands: refactor and improvements to some of the general mine commands.
+
+
+* Prison Placeholders: general bug fixes and performance improvements with the placeholder cache.
+
+
+* Prison's bstats: Expanded the reports that are being included.
+
+
+* Prison Command Handler: ability to lockout players from commands and tab-completes based upon perms.
+
+
+* Mines GUI Bug fixes: fixed a few issues.
+
+
+* Issue with vault not working with essentials: Not able to access player's balances through vault and provided alternative paths to resolve this issue.
+
+
+* Prison support new feature: tracking command usage along with average run times: `/prison support cmdStats`. 
+
+
+* Updates to a number of libraries that prison uses: 
+placeholderApi: v2.10.9 to v2.11.2
+XSeries: v9.0.0 to v9.2.0
+item-nbt-api: v2.10.0 to v2.11.1
+
+
+* Removal of support for MVDW placeholders since it's not able to support some of prison's advanced features, plus it's 100% redundant since PlaceholderAPI works in conjunction with it. No loss of service since PAPI is a better solution and works with MVDW.
+
+
+* Added a Prison Backup feature that can make a backup of all the settings within prison's plugin directory (small zip file backups).  It is setup to make a backup whenever it detects a change in the prison versions.  In the future, it could be automated to make snapshots of all settings and player status so there can be abilities to "rollback" to a prior instance.
+
+
+* Added new translations: Finnish, Chinese, 
+
+
+* Enhanced the player GUIs for mines and ranks to use NBT to control the options to simplify how the options work. Eliminated a lot of old code and added more flexibility.
+
+
+* Enable the sellall command to be ran from the console or from a prison command.
+
+
+* Enhanced the debug logging detail related to the auto features. Provides better logging for troubleshooting.
+
+
+* Using a static global setting for decimal formatting to better control how numeric formatting works with various language settings.
+
+
+* Able to now control suffocation in the mines, so you can now allow players to die if they logged out within a mine and they log back buried in rock.
+
+
+* Able to control mine reset teleportation controls.
+
+
+* Added direct support for translating placeholders through the Prison API so its easier to use externally through another plugin.
+
+
+* Now able to set a prestige rank tag to use for players that do not have a prestige rank. This allows for better customization for chat prefixes.
+
+
+* Fixed a bug when trying to move a mine from one world to another world.  There was a conflict with an internal value not being cleared/reset.
+
+
+* Fixed a Prison Mine Bomb bug that was making them incompatible with bukkit 1.8.8.
+
+
+* Fixed a bug with how a vector's length was being calculated. Not sure how frequently this would have been used.
+
+
+* Refactoring Prison Backpacks. Getting ready to hook them up to a new internal backpack cache to improve performance.  Not yet completed.
+
+
+* Fixed bug with /rankupmax and rewrote prestiges to better align it with the ranks module instead of relying upon the GUI code to manage it.
+
+
+* Enhanced many mine and rank commands to apply changes to all ranks or all mines with one command to make it easier to customize prison.
+
+
+* New feature setting (optional): Forced rankup as soon as the player earns enough money through sellall.
+
+
+* New feature setting (optional): Forced sellall before performing a prestige.
+
+
+* New feature setting (optional): Prevent access to prior mines when ranking up. This foces the player to only have access to mines that are linked to the current rank.  This feature allows the use of Mine and TP access by rank instead of having to setup complex settings with perms through a permission plugin.
+
+
+
+---------------------------
+
+
+
 
 
 **3.3.0-alpha.13 2022-08-25**

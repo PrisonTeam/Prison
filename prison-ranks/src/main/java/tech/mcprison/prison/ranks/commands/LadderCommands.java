@@ -99,7 +99,7 @@ public class LadderCommands
         BulletedListComponent.BulletedListBuilder list =
         					new BulletedListComponent.BulletedListBuilder();
         
-//        DecimalFormat dFmt = new DecimalFormat( "#,##0.0000" );
+//        DecimalFormat dFmt = Prison.get().getDecimalFormat( "#,##0.0000" );
         
 //        String header = String.format( 
 //        		"&d%-12s   %16s   %5s   %12s   %12s",

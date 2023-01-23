@@ -7,7 +7,7 @@
 This document provides a quick overview on how to install Prison and get it running.
 
 
-*Documented updated: 2021-12-03*
+*Documented updated: 2023-01-14*
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -122,6 +122,13 @@ Prison actually uses bukkit's permission interfaces.  This makes it simple for P
 * **NOTE: A permissions plugin of your choice** - Required - Prison works with many different permission plugins through Vault.  I strongly suggest LuckPerms since it is free and is under active development so bugs and performance issues will be addressed if they ever become an issue.  If you choose to use another permission plugin, then please consider ones that work with Vault; Prison uses Vault to provide the flexibility of choosing from many different plugins.
 
 
+* **NOTE: A Warning about Vault and Essentials Economy** - There was a problem where essential's economy was refusing to work thought vault.  Since prison is able to directly support essentials economy, there is a new feature that can disable the use of vault for the economy, which will allow prison to directly communicate with Essentials Economy.  Make sure your `config.yml` has the following configuration.  It will be added to new prison installs, otherwise just copy and past it in anywhere.  Also, if you rename the `config.yml` file and restart the server, prison will auto generate a new copy with these settings.
+
+```yaml
+integrations:
+  prevent-economy-vault-usage: true
+```
+
 * **Other Permission Plugins** There are many out there, and as developer of Prison, and through providing support, we don't hear of any issues with other permission plugins.  The reason for this is because they probably just work well to begin with, and that Prison uses bukkit's permission interfaces.  So it keeps things simple for setting up Prison.  If you are just getting started with building a server, then we suggested keeping it simple with something like LuckPerms, but there are other permission plugins out there that can provide a whole new experience with your server, such as jobs and careers for your players.   
 
 
@@ -152,10 +159,17 @@ All of Prison's placeholders have an alias.  An alias is a shortened name for a 
   NOTE: You may also need to install the follow plugin for full support: ProtocolLib.
 
 
-* **MVdWPlaceholder** - Suggested to Avoid - Prison does support this plugin, but since it is used mostly with premium plugins, we have no way to fully test this plugin to ensure it actually works correctly.  We've heard very few people have used this plugin, but we've heard it does work well. Use at your own risk. 
-With this plugin, all placeholders are registered with it automatically when prison starts up, and all placeholders should be used as all lower case.  Because prison has so many placeholders, with many that are expanded based upon ladders, ranks, and mine names, a modest prison server could generate and register well over 1000 placeholders.  MVdWPlaceholder appears to be very verbose so you will see a lot of logging in the console when it starts up.
+* **MVdWPlaceholder** - Not supported.
 
-  It should also be noted that because of some of the limitations of MVdW, not all features of Prison's placeholder support will be supported.  For example, you may not be able to reload placeholders, or use placeholder attributes to customize how placeholders are used.
+**NOTE: Prison no longer supports MVdWPlaceholder** because it could not support all of the advanced features with placeholders that prison uses.  Also, since prison generates so many possible placeholders, MVdW pollutes the console log with thousands of lines of useless information stating each variant of a placeholder has been registered.  We also dropped support for this plugin because there is no way to contact the developer because they hide behind a pay-wall, and I'm not about to buy one of their other plugins to just tell them their so-called-free plugin is not working properly.
+
+But perhaps the biggest reason why I dropped support for MVdW is because it's 100% pointless.  **PlaceholderAPI** works flawlessly with MVdW so there is absolutely no reason why prison needs to support MVdW anymore.  If you need to use MVdW, then please keep using it, it works great with their other plugins.  But you can use PlaceholderAPI along with it too.  So there are zero reasons why you cannot use PlaceholderAPI, and everyone is happy.
+
+~~Suggested to Avoid - Prison does support this plugin, but since it is used mostly with premium plugins, we have no way to fully test this plugin to ensure it actually works correctly.  We've heard very few people have used this plugin, but we've heard it does work well. Use at your own risk.~~
+
+~~With this plugin, all placeholders are registered with it automatically when prison starts up, and all placeholders should be used as all lower case.  Because prison has so many placeholders, with many that are expanded based upon ladders, ranks, and mine names, a modest prison server could generate and register well over 1000 placeholders.  MVdWPlaceholder appears to be very verbose so you will see a lot of logging in the console when it starts up.~~
+
+~~It should also be noted that because of some of the limitations of MVdW, not all features of Prison's placeholder support will be supported.  For example, you may not be able to reload placeholders, or use placeholder attributes to customize how placeholders are used.~~
 
 
 
@@ -197,6 +211,10 @@ With this plugin, all placeholders are registered with it automatically when pri
 [https://www.spigotmc.org/resources/crazy-enchantments.16470/](https://www.spigotmc.org/resources/crazy-enchantments.16470/)
 
 
+* **RevEnchants** - Prison now supports RevEnchants through their ExplosiveEvent and JackHammerEvent!  To enable prison to work better with RevEnchants, you can enable it within the `autoFeaturesConfig.yml` file.  Prison supports RevEnchants v11.2 or newer.  It may work with older versions, but if there are issues, we cannot provide support if the older version of RevEnchants is missing either of the events.
+
+
+
 * **Zenchantments** - Optional - Some support is provided for zen, but it may not be 100%.  More work needs to be done to improve the integration in to prison.  This is an open source project.  It identifies that it supports spigot 1.9 through 1.14 (different versions).  [https://www.spigotmc.org/resources/zenchantments.12948/](https://www.spigotmc.org/resources/zenchantments.12948/).
 
 
@@ -204,6 +222,65 @@ With this plugin, all placeholders are registered with it automatically when pri
 Warning: People have paid for this plugin only to find out after the fact that it is not supported and they mistook it for *TokenEnchant* (see above).  This plugin does not have a block explosion event that prison can hook in to, so it can never be supported.  The developers have been asked a few times to add such an event, but they refused stating they did not see a purpose to add something like that.  Hopefully in the future they will add support, and when they do, then we can add it to Prison.
 If you purchase this plugin to use on your server, do so with great caution since it is not supported and it may not integrate with prison.
 [ * Not supported * Tokens * Not supported * ](https://www.spigotmc.org/resources/%E2%9A%A1%EF%B8%8F-tokens-%E2%9A%A1%EF%B8%8F-40-enchantments-%E2%AD%95-free-expansions-%E2%AD%95-25-off.79668/)
+
+
+### Enchantment Plugin Features Supported
+
+This table of supported Enchantment Plugins are plugins that have an event that Prison is able to hook in to for the purpose of communicating multiple block breakage.  It should be noted that all of these events are related to block breakage, and originate from the original bukkit's **BlockBreakEvent**, but the other plugins takes the single block, then applies "effects" that expands the one block breakage to multiple blocks.  These events are the mechanism for conveying the list of included blocks to Prison so Prison can do what it needs to do with the blocks.
+
+
+|     Plugin     | Event | Settings ID | Cancel <br> Events | Cancel <br/> Drops | External <br /> Hooks | 
+|       ---      |  ---  | ----------- |        :---:       |       :----:       |        :----:       |
+| Bukkit/Spigot  | **BlockBreakEvent** | `blockBreakEventPriority` | **Yes** | **Yes** | **Yes** |
+| Prison         | **ExplosiveBlockBreakEvent** | `ProcessPrisons_ExplosiveBlockBreakEventsPriority` | **Yes** | *No* | *No* |
+| TokenEnchant   | **TEBlockExplodeEvent** | `TokenEnchantBlockExplodeEventPriority` | **Yes** | *No* | *No* |
+| CrazyEnchants  | **BlastUseEvent** | `CrazyEnchantsBlastUseEventPriority` | **Yes** | *No* | *No* |
+| PrisonEnchants | **PEExplosionEvent** | `PrisonEnchantsExplosiveEventPriority` | **Yes** | *No* | *No* |
+| RevEnchants    | **ExplosiveEvent** | `RevEnchantsExplosiveEventPriority` | **Yes** | *No* | *No* |
+| RevEnchants    | **JackHammerEvent** | `RevEnchantsJackHammerEventPriority` | **Yes** | *No* | *No* |
+| Zenchantments  | **BlockShredEvent** | `ZenchantmentsBlockShredEventPriority` | **Yes** | **Yes** | **Yes** |
+
+
+
+**Notes:**
+1. A value of *No* for **Cancel Drops** will always use **Cancel Event** instead.
+2. **Cancel Drops** was added in Spigot 1.12.x so older versions of Spigot *must* use **Cancel Events**
+3. **External Hooks** refers to custom hooks in to mcMMO, EZBlock, and Quests.  See config settings within **AutoFeaturesConfig.yml**. It's strongly suggested to use **Cancel Drops** instead so you won't have to enable these features.  These provides a hacky-fix for the limitations when using **Cancel Events** and may not be perfect.
+4. Zenchantments is flexible in how it's **BlockShredEvent** works, mostly because it extends the bukkit **BlockBreakEvent**.  The events can possibly mix with normal **BlockBreakEvent**s. 
+5. It may take some effort to find the ideal priorities to use for your environment to ensure everything works as you envision it.
+
+
+### Event Listener Priorities
+
+The above listed supported Events are assigned one of the available Prison Event Priorities.  This table illustrates what features are associated with each priority, which can be somewhat complex and confusing.
+
+
+| Priority          | Access  | In <br/> Mine | In <br /> World | Ignores<br/> Canceled<br/> Events | Block<br/> Break | Block<br/> Count | Reset<br/> Threshold | Block<br/> Events | Mine<br/> Sweeper | AutoSell |
+|    ---            |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |  :---:  |
+| DISABLED          | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    |
+| ACCESS            | **Yes** | **Yes** | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    | *No*    |
+| ACCESSBLOCKEVENTS | **Yes** | **Yes** | *No*    | *NoYes* | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| ACCESSMONITOR     | **Yes** | **Yes** | *No*    | *NoYes* | *No*    | **Yes** | **Yes** | *No*    | **Yes** | *No*    |
+| LOWEST            | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| LOW               | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| NORMAL            | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| HIGH              | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| HIGHEST           | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| BLOCKEVENTS       | *No*    | **Yes** | *No*    | **Yes** | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| MONITOR           | *No*    | **Yes** | *No*    | **Yes** | *No*    | **Yes** | **Yes** | *No*    | **Yes** | *No*    |
+| *priority temp*   | Access  | In Mine | IN Wrld | IgCanEv | Blk Brk | Blk Cnt | ResetTh | BlkEvnt | MineSwp | AutoSel |
+
+
+**Notes:**
+1. **DISABLED** will prevent a listener from starting, and it will prevent any processing of that event.
+2. **Access** managed by Prison requires the use of Access by Rank (perferred) or Access by Perms.  It also will vary in effectives based upon the priority level in relation to other plugins, where any plugin that has a lower priority than Prison will bypass Prison's attempts to control access.
+3. **ACCESSBLOCKEVENTS** and **ACCESSMONITOR** are able to have a duel behavior because these priorities will create two different listeners, each at a different priority, and each having a different purpose.
+4. **Block Break** refers to Prison handling the whole block break processing and drops.
+5. **Mine Sweeper** should never be used unless there is no other way to count all the broken blocks.
+6. Support for outside of the mine for auto features maybe added soon.  The way it will probably be supported would be through a list of worlds in which it should be active, plus the use of WG regions too.
+7. The **MONITOR** priority, including ***BLOCKEVENTS*** will ignore all events that have been canceled and will process them anyway.  Therefore **ACCESSBLOCKEVENTS** and **ACCESSMONITOR** will fail on the "access" part if the event is canceled when Prison gets ahold of it the first time, which will deny access to the mines, but it will also still process the event under the priority of MONITOR or BLOCKEVENTS.
+
+
 
  
 ### Other Plugins

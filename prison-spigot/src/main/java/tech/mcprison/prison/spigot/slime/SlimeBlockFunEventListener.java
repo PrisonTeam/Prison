@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 
@@ -131,7 +132,7 @@ public class SlimeBlockFunEventListener
 		
 		
 		if ( velocityY > 1024.0 ) {
-			DecimalFormat f4Fmt = new DecimalFormat("#,##0.0000");
+			DecimalFormat f4Fmt = Prison.get().getDecimalFormat("#,##0.0000");
 			
 			player.sendMessage( "SlimeFun: Exceeded max velocity!! velY:" + 
 						f4Fmt.format( velocityY ) );

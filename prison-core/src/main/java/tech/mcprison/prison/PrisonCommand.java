@@ -28,16 +28,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.backpacks.BackpackConverterOldPrisonBackpacks;
 import tech.mcprison.prison.backups.PrisonBackups;
 import tech.mcprison.prison.backups.PrisonBackups.BackupTypes;
 import tech.mcprison.prison.cache.PlayerCachePlayerData;
 import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.commands.CommandPagedData;
+import tech.mcprison.prison.commands.RegisteredCommand;
 import tech.mcprison.prison.commands.Wildcard;
 import tech.mcprison.prison.discord.PrisonPasteChat;
 import tech.mcprison.prison.internal.CommandSender;
@@ -597,6 +600,7 @@ public class PrisonCommand
         
     	
     	builder.add( String.format( "&7  Original:   \\Q%s\\E", text));
+    	
     	builder.add( String.format( "&7  Translated: %s", translated));
     	
     	display.addComponent(builder.build());
@@ -724,7 +728,7 @@ public class PrisonCommand
         }
         
         
-        DecimalFormat dFmt = new DecimalFormat("#,##0");
+        DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
         builder.add( String.format( "&7  Results: &c%s  &7Original patterns:  &3%s", 
         		dFmt.format(placeholders.size()), patterns ));
     	
@@ -762,8 +766,9 @@ public class PrisonCommand
     	ChatDisplay display = new ChatDisplay("Placeholders List");
     	
     	display.addText( "&a    Placeholders are case insensitive, but are registered in all lowercase.");
-    	display.addText( "&a    Chat based placeholders use { }, but others may use other escape codes like %% %%.");
-    	display.addText( "&a    Mine based placeholders uses the mine name to replace 'minename'.");
+    	display.addText( "&a    Placeholder escape characters may be { } or % %. If one does not work, try the other.");
+    	display.addText( "&a    Placeholders that include 'rankname', 'laddername', or 'minename' should be");
+    	display.addText( "&a    replaced with the appropriate rank names, ladder names, or mine names.");
     	
     	for ( String disabledModule : Prison.get().getModuleManager().getDisabledModules() ) {
     		display.addText( "&a    &cDisabled Module: &7%s&a. Related placeholders maybe listed but are non-functional. ",
@@ -785,10 +790,23 @@ public class PrisonCommand
     @Command(identifier = "prison placeholders stats", 
     		description = "List all placeholders that have been requested since server startup.", 
     		onlyPlayers = false, permissions = "prison.placeholder")
-    public void placeholdersStatsCommand(CommandSender sender
+    public void placeholdersStatsCommand(CommandSender sender,
+    		@Arg(name = "options", description = "Options for the cache.  "
+    				+ "[resetCache] this will clear the placeholder "
+    				+ "cache of all placeholders and all placeholders will have to be reidentified. "
+    				+ "[removeErrors] all cached placeholders that have been marked as invalid will "
+    				+ "be removed from the cache and will have to be reevaluated if used again.", 
+			def = "." ) String options
     		) {
     	
     	ChatDisplay display = new ChatDisplay("Placeholders List");
+    	
+    	if ( options != null && !".".equals(options) ) {
+    		boolean resetCache = "resetCache".equalsIgnoreCase( options );
+    		boolean removeErrors = "removeErrors".equalsIgnoreCase( options );
+
+    		PlaceholdersStats.getInstance().clearCache( resetCache, removeErrors );
+    	}
     	
     	ArrayList<String> stats = PlaceholdersStats.getInstance().generatePlaceholderReport();
     	
@@ -962,6 +980,12 @@ public class PrisonCommand
     		
     		display.addText( "&b    options.blockBreakEvents.CrazyEnchantsBlastUseEventPriority:  %s", 
     				afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority ) );
+    		
+    		display.addText( "&b    options.blockBreakEvents.RevEnchantsExplosiveEventPriority:  %s", 
+    				afw.getMessage( AutoFeatures.RevEnchantsExplosiveEventPriority ) );
+
+    		display.addText( "&b    options.blockBreakEvents.RevEnchantsJackHammerEventPriority:  %s", 
+    				afw.getMessage( AutoFeatures.RevEnchantsJackHammerEventPriority ) );
     		
     		display.addText( "&b    options.blockBreakEvents.ZenchantmentsBlockShredEventPriority:  %s", 
     				afw.getMessage( AutoFeatures.ZenchantmentsBlockShredEventPriority ) );
@@ -1153,6 +1177,65 @@ public class PrisonCommand
     			command, registered );
     }
     
+	
+
+	@Command(identifier = "prison support cmdStats", 
+    		description = "Stats on Prison command stats. Only shows actual commands that are used.", 
+    		onlyPlayers = false, permissions = "prison.debug" )
+    public void statsCommand(CommandSender sender ) {
+    	
+    	List<String> cmds = getCommandStats();
+    	for (String cmd : cmds) {
+			
+    		Output.get().logInfo( cmd );
+		}
+    }
+	
+	private List<String> getCommandStats() {
+		List<String> results = new ArrayList<>();
+		
+		DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
+		DecimalFormat dFmt = Prison.get().getDecimalFormatDouble();
+		
+    	TreeSet<RegisteredCommand> allCmds = Prison.get().getCommandHandler().getAllRegisteredCommands();
+    	
+    	results.add( "Prison Command Stats:" );
+    	results.add( 
+    			Output.stringFormat( "    &a&n%-40s&r  &a&n%7s&r  &a&n%-11s&r", 
+    					" Commands     ", " Usage ", "  Avg ms  ") );
+    	
+    	int count = 0;
+    	int totals = 0;
+    	double totalDuration = 0d;
+    	for (RegisteredCommand cmd : allCmds) {
+			
+    		if ( cmd.getUsageCount() > 0 ) {
+    			
+    			double duration = cmd.getUsageRunTimeNanos() / (double) cmd.getUsageCount() / 1000000.0d;
+    			
+    			results.add( Output.stringFormat( "    &2%-40s  &2%7s  &2%11s",
+    					cmd.getCompleteLabel(), 
+    					iFmt.format( cmd.getUsageCount() ),
+    					dFmt.format( duration )
+    					) );
+    			count++;
+    			totals += cmd.getUsageCount();
+    			totalDuration += cmd.getUsageRunTimeNanos();
+    		}
+		}
+    	
+    	results.add( Output.stringFormat("  &3Total Registered Prison Commands: &7%9s", iFmt.format( allCmds.size() )) );
+    	results.add( Output.stringFormat("  &3Total Prison Commands Listed:     &7%9s", iFmt.format( count )) );
+    	results.add( Output.stringFormat("  &3Total Prison Command Usage:       &7%9s", iFmt.format( totals )) );
+    	
+    	double avgDuration = totalDuration / (double) count / 1000000.0d;
+    	results.add( Output.stringFormat("  &3Average Command Duration ms:      &7%9s", dFmt.format( avgDuration )) );
+    	
+    	results.add( "  &d&oNOTE: Async Commands like '/mines reset' will not show actual runtime values. " );
+
+    	
+		return results;
+	}
     
 	
 	@Command(identifier = "prison support runCmd", 
@@ -1233,7 +1316,41 @@ public class PrisonCommand
     	
     	
     	StringBuilder text = Prison.get().getPrisonStatsUtil().getSupportSubmitVersionData();
+    	
+    	int idx = text.indexOf("{br}");
+    	while ( idx != -1 ) {
+    		// Convert `{br}` to `\n`:
+    		text.replace(idx, idx+4, "\n");
+    		
+    		idx = text.indexOf("{br}");
+    	}
+    	
 		
+		// Add all of the listeners details:
+    	text.append( "\n\n" );
+    	text.append(
+    				Prison.get().getPrisonStatsUtil().getSupportSubmitListenersData( "all" )
+					);
+    	
+    	// Include the command stats:
+    	text.append( "\n\n" );
+    	List<String> cmdStats = getCommandStats();
+    	for (String cmd : cmdStats) {
+			text.append( cmd ).append( "\n" );
+		}
+		
+    	
+    	
+    	// Include Prison backup logs:
+    	text.append( "\n\n" );
+    	text.append( "Prison Backup Logs:" ).append( "\n" );
+    	List<String> backupLogs = getPrisonBackupLogs();
+    	
+    	for (String log : backupLogs) {
+    		text.append( Output.decodePercentEncoding(log) ).append( "\n" );
+		}
+    	
+    	
 		PrisonPasteChat pasteChat = new PrisonPasteChat( getSupportName(), getSupportURLs() );
 		
 		String helpURL = pasteChat.post( text.toString() );
@@ -1376,6 +1493,26 @@ public class PrisonCommand
     	
     }
 
+    
+    
+    
+    @Command(identifier = "prison backpacks listOld", 
+    		description = "Using the new prison backpack cache interface, this will list existing "
+    				+ "backpacks under the old prison backpack system. ", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void backpacksListOldCmd(CommandSender sender
+    		) {
+    	
+    	BackpackConverterOldPrisonBackpacks converter = new BackpackConverterOldPrisonBackpacks();
+    	
+    	converter.convertOldBackpacks();
+    
+    	
+    }
+
+    
+    
+    
 //    
 //	private StringBuilder getSupportSubmitVersionData() {
 //		ChatDisplay display = displayVersion("ALL");
@@ -1473,7 +1610,7 @@ public class PrisonCommand
 //
 //	private void addFileToText( File file, StringBuilder sb )
 //	{
-//    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+//    	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 //		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
 //    	
 //    	sb.append( "\n" );
@@ -1713,7 +1850,7 @@ public class PrisonCommand
 	} 
     
 	
-    @Command(identifier = "prison support backup", 
+    @Command(identifier = "prison support backup save", 
     		description = "This will make a backup of all Prison settings by creating a new " +
     				"zip file which will be stored in the directory plugins/Prison/backups.  " +
     				"After creating the backup, this will delete all temp files, backup files, etc.. " +
@@ -1734,7 +1871,32 @@ public class PrisonCommand
     	sender.sendMessage( "Backup finished." );
 
     }
+    
+    @Command(identifier = "prison support backup logs", 
+    		description = "This will list Prison backup  logs that are in the file "
+    				+ "`plugins/Prison/backup/versions.log`", 
+    				onlyPlayers = false, permissions = "prison.debug" )
+    public void supportBackupList( CommandSender sender  ) {
+    	
+    	ChatDisplay display = new ChatDisplay("Prison Backup Logs:");
+    	
+    	List<String> backupLogs = getPrisonBackupLogs();
+    	
+    	for (String log : backupLogs) {
+			display.addText(log);
+		}
+    	
+    	display.send(sender);
+    	
+    }
+    
+    private List<String> getPrisonBackupLogs() {
+    	PrisonBackups prisonBackup = new PrisonBackups();
+    	List<String> backupLogs = prisonBackup.backupReport02BackupLog();
+    	return backupLogs;
+    }
 	
+    
     @Command(identifier = "prison tokens balance", 
     		description = "Prison tokens: a player's current balance.", 
     		// aliases = "tokens bal",
@@ -1785,7 +1947,7 @@ public class PrisonCommand
     	
     	coreTokensBalanceViewMsg( sender, player.getName(), tokens );
     	
-//    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+//    	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 //    	String tokensMsg = dFmt.format( tokens );
 //    	
 //    	String message = String.format( "&3%s has %s tokens.", player.getName(), tokensMsg );
@@ -1829,7 +1991,7 @@ public class PrisonCommand
     		return;
     	}
 
-//    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+//    	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
     	
     	if ( amount <= 0 ) {
     		
@@ -1927,7 +2089,7 @@ public class PrisonCommand
     		return;
     	}
     	
-//    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+//    	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
     	
     	if ( amount <= 0 ) {
     		
@@ -2015,7 +2177,7 @@ public class PrisonCommand
     		return;
     	}
     	
-//    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+//    	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
     	
     	Player player = getPlayer( playerName );
 

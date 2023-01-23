@@ -89,10 +89,14 @@ public class Text
     //#([A-Fa-f0-9]){6}
     
     
-	private static DecimalFormat dFmt = new DecimalFormat("#,##0.00");
-	private static DecimalFormat iFmt = new DecimalFormat("#,##0");
+	private static DecimalFormat dFmt = Prison.getDecimalFormatStatic("#,##0.00");
+	private static DecimalFormat iFmt = Prison.getDecimalFormatStaticInt();
 
-    
+    static {
+    	if ( Prison.get() != null ) {
+    		
+    	}
+    }
     
     protected Text() {
     	super();
@@ -336,12 +340,16 @@ public class Text
     }
 
     /**
-     * Translates color codes (a-f) (A-F) (0-9), prefixed by an ampersand, into Minecraft-readable
-     * color codes. <p> <p>Use of this method is discouraged. Implementations are recommended to
+     * <p>Translates color codes (a-f) (A-F) (0-9), prefixed by an ampersand, into Minecraft-readable
+     * color codes. 
+     * </p> 
+     * 
+     * <p>Use of this method is discouraged. Implementations are recommended to
      * translate color codes using their native internal's APIs. This assumes that the server mod will
      * accept vanilla Minecraft color codes, although implementations such as Sponge do not do this.
      * However, because there are some practical uses for a method like this, it exists in a
      * non-deprecated but discouraged state.
+     * </p>
      *
      * @param text The text to translate.
      * @return The translated string.
@@ -623,8 +631,8 @@ public class Text
     
     public static String formatTimeDaysHhMmSs( long timeMs ) {
     	
-    	DecimalFormat iFmt = new DecimalFormat("#,##0");
-    	DecimalFormat tFmt = new DecimalFormat("00");
+    	DecimalFormat iFmt = Prison.getDecimalFormatStaticInt();
+    	DecimalFormat tFmt = Prison.getDecimalFormatStatic("00");
 //    	SimpleDateFormat sdFmt = new SimpleDateFormat( "HH:mm:ss" );
     	
 //    	long _sec = 1000;

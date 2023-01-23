@@ -2,6 +2,7 @@ package tech.mcprison.prison.mines;
 
 import com.google.common.eventbus.Subscribe;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.Player;
 import tech.mcprison.prison.internal.events.player.PlayerSuffocationEvent;
 import tech.mcprison.prison.internal.events.world.PrisonWorldLoadEvent;
@@ -33,6 +34,14 @@ public class MinesListener {
     	
     }
     
+    
+    /**
+     * <p>If a player is suffocating, and if they are within a mine, then based upon the config
+     * settings, the play may not experience suffocation, and they may be teleported to
+     * the mine's spawn location, or the center of the mine.
+     * </p>
+     * @param e
+     */
     @Subscribe
     public void onPlayerSuffocationListener( PlayerSuffocationEvent e ) {
     	
@@ -40,19 +49,29 @@ public class MinesListener {
     	Mine mine = PrisonMines.getInstance().findMineLocation( player );
 
     	if ( mine != null ) {
-    		e.setCanceled( true );
     		
-    		// Submit the teleport task to run in 3 ticks.  This will allow the suffocation
-    		// event to be canceled.  If the player moves then they don't need to be teleported
-    		// so it will be canceled.
-    		MineTeleportWarmUpTask mineTeleportWarmUp = new MineTeleportWarmUpTask( 
-    							player, mine, "spawn", 0.5 );
-    		mineTeleportWarmUp.setMessageSuccess( 
-    							"&7You have been teleported out of the mine to prevent suffocating." );
-    		mineTeleportWarmUp.setMessageFailed( null );
+    		// If players can't be suffocated in mines, then cancel the suffocation event:
+    		if ( !Prison.get().getPlatform().getConfigBooleanFalse( "prison-mines.enable-suffocation-in-mines" ) ) {
     		
-    		PrisonTaskSubmitter.runTaskLater( mineTeleportWarmUp, 3 );
-//    		mine.teleportPlayerOut( player );
+    			e.setCanceled( true );
+    		}    		
+    		
+	    		
+	    	if ( Prison.get().getPlatform().getConfigBooleanTrue( "prison-mines.tp-to-spawn-on-mine-resets" ) ) {
+	
+	    		// Submit the teleport task to run in 3 ticks.  This will allow the suffocation
+	    		// event to be canceled.  If the player moves then they don't need to be teleported
+	    		// so it will be canceled.
+	    		MineTeleportWarmUpTask mineTeleportWarmUp = new MineTeleportWarmUpTask( 
+	    				player, mine, "spawn", 0.5 );
+	    		mineTeleportWarmUp.setMessageSuccess( 
+	    				"&7You have been teleported out of the mine to prevent suffocating." );
+	    		mineTeleportWarmUp.setMessageFailed( null );
+	    		
+	    		PrisonTaskSubmitter.runTaskLater( mineTeleportWarmUp, 3 );
+//    			mine.teleportPlayerOut( player );
+	    	}
+
 //    		
 //    		
 //    		// To "move" the player out of the mine, they are elevated by one block above the surface

@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.internal.CommandSender;
+import tech.mcprison.prison.localization.LocaleManager;
 import tech.mcprison.prison.localization.Localizable;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.ranks.PrisonRanks;
@@ -90,6 +91,12 @@ public class RankUpCommandMessages
 				.sendTo( sender );
 	}
 	
+	protected void rankupAtLastRankMsg( CommandSender sender ) {
+		PrisonRanks.getInstance().getRanksMessages()
+		.getLocalizable( "ranks_rankup__at_last_rank" )
+		.sendTo( sender );
+	}
+	
 	protected void rankupNotAbleToPrestigeMsg( CommandSender sender ) {
 		PrisonRanks.getInstance().getRanksMessages()
 				.getLocalizable( "ranks_rankup__not_able_to_prestige" )
@@ -124,6 +131,127 @@ public class RankUpCommandMessages
 				.sendTo( sender );
 	}
 
+	protected String prestigeConfirmationGUIMsg( CommandSender sender, 
+					RankPlayer rPlayer, PlayerRank targetRank,
+					boolean isResetDefaultLadder, boolean isConfirmationEnabled ) {
+		StringBuilder sb = new StringBuilder();
+		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+		
+		String currency = targetRank.getCurrency();
+		double balance = rPlayer.getBalance( currency );
+				
+		LocaleManager rMsg = PrisonRanks.getInstance().getRanksMessages();
+		
+		String tag = targetRank.getRank().getTag();
+		if ( tag == null ) {
+			tag = targetRank.getRank().getName();
+		}
+		sb.append( rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_1" )
+				.withReplacements( tag )
+					.localize().replace(" ", "_") ).append( " " );
+		
+		sb.append( rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_2" )
+				.withReplacements( 
+						dFmt.format( targetRank.getRankCost()) )
+				.localize().replace(" ", "_") ).append( " " );
+		
+		sb.append( rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_3" )
+				.withReplacements( 
+						dFmt.format( balance),
+						currency == null || currency.trim().length() == 0 ? 
+								"" : " " + currency )
+				.localize().replace(" ", "_") ).append( " " );
+
+		if ( isResetDefaultLadder ) {
+			sb.append( rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_4" )
+					.localize().replace(" ", "_") ).append( " " );
+		}
+
+		if ( isConfirmationEnabled ) {
+			sb.append( rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_5" )
+					.localize().replace(" ", "_") ).append( " " );
+		}
+
+		sb.append( rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_7" )
+				.localize().replace(" ", "_") );
+		
+		return sb.toString();
+	}
+	
+	protected void prestigeConfirmationMsg( CommandSender sender, 
+					RankPlayer rPlayer, PlayerRank targetRank,
+						boolean isResetDefaultLadder, boolean isResetMoney,
+						boolean isPlayer ) {
+		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+		
+		String currency = targetRank.getCurrency();
+		double balance = rPlayer.getBalance( currency );
+				
+		LocaleManager rMsg = PrisonRanks.getInstance().getRanksMessages();
+		
+
+		String tag = targetRank.getRank().getTag();
+		if ( tag == null ) {
+			tag = targetRank.getRank().getName();
+		}
+		rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_1" )
+			.withReplacements( tag )
+			.sendTo( sender );
+		
+		
+		rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_2" )
+			.withReplacements( 
+				dFmt.format( targetRank.getRankCost()) )
+			.sendTo( sender );
+		
+		rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_3" )
+		.withReplacements( 
+				dFmt.format( balance),
+				currency == null || currency.trim().length() == 0 ? 
+						"" : " " + currency )
+			.sendTo( sender );
+
+		if ( isResetDefaultLadder ) {
+			rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_4" )
+				.sendTo( sender );
+		}
+
+		if ( isResetMoney ) {
+			rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_4" )
+				.sendTo( sender );
+		}
+		
+		rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_5" )
+			.sendTo( sender );
+		
+		String playerName = !isPlayer ? rPlayer.getName() + " " : "";
+		rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_6" )
+			.withReplacements( playerName )
+			.sendTo( sender );
+
+		
+//		ranks_rankup__confirm_prestige_line_1=&3Confirm Prestige: %s
+//				ranks_rankup__confirm_prestige_line_2=&3  Cost: &7%1
+//				ranks_rankup__confirm_prestige_line_3=&3  Default Rank will be reset.
+//				ranks_rankup__confirm_prestige_line_4=&3  Balance will be reset.
+//				ranks_rankup__confirm_prestige_line_5=&3Confirm with command: '&7/prestiges confirm&3'
+//				ranks_rankup__confirm_prestige_line_6=&3Confirm by clicking on the green block
+
+	}
+	
+	protected void ranksRankupPlayerBalanceMsg( CommandSender sender, 
+			double balance, String currency ) {
+		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+
+		LocaleManager rMsg = PrisonRanks.getInstance().getRanksMessages();
+		
+		rMsg.getLocalizable( "ranks_rankup__confirm_prestige_line_3" )
+		.withReplacements( 
+				dFmt.format( balance),
+				currency == null || currency.trim().length() == 0 ? 
+						"" : " " + currency )
+			.sendTo( sender );
+	}
 	
 	protected void ranksPromotePlayerMustBeOnlineMsg( CommandSender sender ) {
 		PrisonRanks.getInstance().getRanksMessages()
@@ -168,8 +296,20 @@ public class RankUpCommandMessages
 	
 	
 	protected void ranksRankupSuccessMsg( CommandSender sender, String playerName, 
-			RankupResults results ) {
+			RankupResults results, 
+			StringBuilder sbRanks ) {
 		
+//		PlayerRank tpRank = results.getPlayerRankTarget();
+		Rank tRank = results.getTargetRank();
+		
+		
+		// If sbRanks is not null, then just log the rank tag and exit.  
+		// Do not generate any other messages.
+		if ( sbRanks != null && tRank != null ) {
+			
+			sbRanks.append( tRank.getTag() ).append( " " );
+			return;
+		}
 		
        	String messageId = results.getStatus() == RankupStatus.DEMOTE_SUCCESS ? 
        					"ranks_rankup__demote_success" :
@@ -177,10 +317,6 @@ public class RankUpCommandMessages
 
     	String messagNoPlayerName = PrisonRanks.getInstance().getRanksMessages()
     			.getLocalizable( "ranks_rankup__rankup_no_player_name" ).localize();
-    	
-//		PlayerRank tpRank = results.getPlayerRankTarget();
-		Rank tRank = results.getTargetRank();
-		
     	
     	Localizable localManager = PrisonRanks.getInstance().getRanksMessages()
     			.getLocalizable( messageId )
@@ -218,21 +354,53 @@ public class RankUpCommandMessages
     		localManager.sendTo( sender );
     	}
 	}
+
+	protected void ranksRankupMaxSuccessMsg( CommandSender sender, StringBuilder ranks ) {
+		
+    	Localizable localManagerLog = PrisonRanks.getInstance().getRanksMessages()
+    			.getLocalizable( "ranks_rankup__log_rank_change" )
+    			.withReplacements(
+    					
+    					sender.getName(), ranks.toString()
+    				);
+    	
+    	// Print to console for record:
+    	Output.get().logInfo( localManagerLog.localize() );
+    	
+    	
+    	if ( Prison.get().getPlatform().getConfigBooleanFalse( "broadcast-rankups" ) ) {
+    		
+    		localManagerLog.broadcast();
+    		
+    	}
+    	else {
+    		
+    		localManagerLog.sendTo( sender );
+    	}
+	}
 	
 	protected void ranksRankupCannotAffordMsg( CommandSender sender, 
 			RankupResults results ) {
 		
-		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
-    	
 		PlayerRank tpRank = results.getPlayerRankTarget();
-		Rank tRank = results.getTargetRank();
+		
+		ranksRankupCannotAffordMsg( sender, tpRank );
+	}
+	
+	protected void ranksRankupCannotAffordMsg( CommandSender sender, 
+			PlayerRank tpRank ) {
+			
+		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+    	
+		Rank tRank = tpRank.getRank();
 		
     	PrisonRanks.getInstance().getRanksMessages()
 	    		.getLocalizable( "ranks_rankup__rankup_cant_afford" )
 	    		.withReplacements(
 				
     				dFmt.format( tpRank == null ? 0 : tpRank.getRankCost()), 
-    				tRank == null || tRank.getCurrency() == null ? "" : results.getTargetRank().getCurrency()
+    				tRank == null || tRank.getCurrency() == null ? "" : 
+    					" " +tRank.getCurrency()
 				)
 	    		.sendTo( sender );
 	}

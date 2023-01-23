@@ -69,7 +69,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     				"prestiges are shown on multiple pages.  The page parameter starts with " +
     				"page 1.", def = "1" ) int page
     		) {
-    	cmdPrisonManagerPrestiges( sender, page, "gui prestiges", "gui" );
+    	cmdPrisonManagerPrestiges( sender, page, "gui prestiges", "close" );
     }
     protected void cmdPrisonManagerPrestiges( CommandSender sender, int page, String cmdPage, String cmdReturn ) {
 
@@ -122,7 +122,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     				"page 1.", def = "1" ) int page
     		) {
 
-    	cmdPrisonManagerMines( sender, page, "gui mines", "gui" );
+    	cmdPrisonManagerMines( sender, page, "gui mines", "close" );
     }
     
     protected void cmdPrisonManagerMines( CommandSender sender, int page, String cmdPage, String cmdReturn ) {
@@ -205,7 +205,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     				"page 1.", def = "1" ) int page
     		) {
     	
-    	cmdPrisonManagerRanks( sender, page, "gui ranks", "gui" );
+    	cmdPrisonManagerRanks( sender, page, "gui ranks", "close" );
     }
     protected void cmdPrisonManagerRanks(CommandSender sender, int page, String cmdPage, String cmdReturn ) {
         Player player = getSpigotPlayer(sender);
@@ -323,7 +323,7 @@ public class PrisonSpigotGUICommands extends PrisonSpigotBaseCommands {
     				"page 1.", def = "1" ) int page
     		) {
     	
-    	cmdPrisonManagerLadders( sender, page, "gui ladders", "gui" );
+    	cmdPrisonManagerLadders( sender, page, "gui ladders", "close" );
     }
     protected void cmdPrisonManagerLadders(CommandSender sender, int page, String cmdPage, String cmdReturn ) {
     	

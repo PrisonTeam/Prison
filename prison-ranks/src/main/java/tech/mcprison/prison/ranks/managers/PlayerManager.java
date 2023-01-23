@@ -279,7 +279,9 @@ public class PlayerManager
     	RankPlayer results = null;
     	boolean dirty = false;
     	
-    	if ( playerName != null && getPlayersByName().containsKey( playerName ) ) {
+    	playerName = playerName == null ? "" : playerName.trim();
+    	
+    	if ( !playerName.isEmpty() && getPlayersByName().containsKey( playerName ) ) {
     		results = getPlayersByName().get( playerName );
     	}
     	
@@ -287,7 +289,8 @@ public class PlayerManager
     		
     		for ( RankPlayer rankPlayer : players ) {
     			if ( uid != null && rankPlayer.getUUID().equals(uid) || 
-    					uid == null && playerName != null && playerName.trim().isEmpty() &&
+    					
+    					!playerName.isEmpty() &&
     					rankPlayer.getDisplayName() != null &&
     					rankPlayer.getDisplayName().equalsIgnoreCase( playerName ) ) {
     				
@@ -317,20 +320,7 @@ public class PlayerManager
     	// Save if dirty (change or new):
     	if ( dirty && results != null ) {
     		savePlayer( results );
-//    		try {
-//			}
-//			catch ( IOException e ) {
-//				
-//				String errorMessage = cannotAddNewPlayer( playerName, e.getMessage() );
-//				
-//    			if ( !getPlayerErrors().contains( errorMessage ) ) {
-//    				
-//    				getPlayerErrors().add( errorMessage );
-//    				Output.get().logError( errorMessage );
-//    			}
-//			}
     	}
-    	
     	
     	return results;
     }
@@ -449,6 +439,13 @@ public class PlayerManager
 			}
 		}
 
+		if ( sb.length() == 0 && LadderManager.LADDER_PRESTIGES.equals( ladderName ) ) {
+			// Use config setting for no-prestige-value ladder rank:
+			
+			String prestigeEmpty = Prison.get().getPlatform().getConfigString("prestige.no-prestige-value", "");
+			sb.append( prestigeEmpty );
+		}
+		
 		return sb.toString();
     }
     
@@ -538,6 +535,13 @@ public class PlayerManager
     		}
     	}
     	
+		if ( sb.length() == 0 && LadderManager.LADDER_PRESTIGES.equals( ladderName ) ) {
+			// Use config setting for no-prestige-value ladder rank:
+			
+			String prestigeEmpty = Prison.get().getPlatform().getConfigString("prestige.no-prestige-value", "");
+			sb.append( prestigeEmpty );
+		}
+		
     	return sb.toString();
     }
     
@@ -579,7 +583,7 @@ public class PlayerManager
     	StringBuilder sb = new StringBuilder();
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
-    		DecimalFormat dFmt = new DecimalFormat("#,##0");
+    		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
     		
     		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
     		
@@ -662,11 +666,12 @@ public class PlayerManager
 		return results;
 	}
         
-    public String getPlayerNextRankCostPercent( RankPlayer rankPlayer, String ladderName ) {
+    public String getPlayerNextRankCostPercent( RankPlayer rankPlayer, String ladderName, 
+    				PlaceholderAttributeNumberFormat attributeNFormat ) {
     	StringBuilder sb = new StringBuilder();
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
-    		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+    		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
     		
     		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
     		
@@ -706,7 +711,15 @@ public class PlayerManager
     			        		(cost == 0.0d || balance > cost ? 100.0 : 
     			        			balance / cost * 100.0 )
     			        			);
-    			        	sb.append( dFmt.format( percent ));
+    			        	
+    			        	if ( attributeNFormat != null ) {
+    			        		
+    			        		sb.append( attributeNFormat.format( cost ) );
+    			        	}
+    			        	else {
+    			        		
+    			        		sb.append( dFmt.format( percent ));
+    			        	}
     			        }
     				}
     			}
@@ -722,7 +735,7 @@ public class PlayerManager
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
     		
-//    		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+//    		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
     		
     		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
 
@@ -788,7 +801,7 @@ public class PlayerManager
     	StringBuilder sb = new StringBuilder();
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
-    		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+    		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
     		
     		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
 
@@ -858,7 +871,7 @@ public class PlayerManager
   	StringBuilder sb = new StringBuilder();
   	
   	if ( !rankPlayer.getLadderRanks().isEmpty()) {
-  		DecimalFormat dFmt = new DecimalFormat("#,##0");
+  		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
   		
   		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
   		
@@ -922,7 +935,7 @@ public class PlayerManager
 	  StringBuilder sb = new StringBuilder();
 
 	  if ( !rankPlayer.getLadderRanks().isEmpty()) {
-		  //		  DecimalFormat dFmt = new DecimalFormat("#,##0");
+		  //		  DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 
 		  RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
 		  
@@ -1019,7 +1032,7 @@ public class PlayerManager
 //    	}
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
-    		DecimalFormat dFmt = new DecimalFormat("#,##0");
+    		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
     		
     		RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
     		
@@ -1062,7 +1075,7 @@ public class PlayerManager
     	
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
-    		DecimalFormat dFmt = new DecimalFormat("#,##0");
+    		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
     		
     		double epm = PlayerCache.getInstance().getPlayerEarningsPerMinute( rankPlayer );
     		
@@ -1088,7 +1101,7 @@ public class PlayerManager
     						int formatMode, PlaceholderAttributeNumberFormat attributeNFormat ) {
     	StringBuilder sb = new StringBuilder();
     	
-    	DecimalFormat dFmt = new DecimalFormat("#,##0");
+    	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
     	
     	long tokens = rankPlayer.getPlayerCachePlayerData().getTokens();
     	
@@ -1137,7 +1150,7 @@ public class PlayerManager
     	
     	
     	if ( !rankPlayer.getLadderRanks().isEmpty()) {
-    		DecimalFormat dFmt = new DecimalFormat("#,##0");
+    		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
     		
     		
     		double tpm = rankPlayer.getPlayerCachePlayerData().getAverageTokensPerMinute();
@@ -1522,7 +1535,7 @@ public class PlayerManager
 					case prison_rankup_cost_percent:
 					case prison_rcp_laddername:
 					case prison_rankup_cost_percent_laddername:
-						results = getPlayerNextRankCostPercent( rankPlayer, ladderName );
+						results = getPlayerNextRankCostPercent( rankPlayer, ladderName, attributeNFormat );
 						break;
 						
 					case prison_rcb:
@@ -1666,7 +1679,7 @@ public class PlayerManager
     						if ( placeHolder == PrisonPlaceHolders.prison_pbtf || 
     								placeHolder == PrisonPlaceHolders.prison_player_blocks_total_formatted ) {
     							
-    							DecimalFormat iFmt = new DecimalFormat("#,##0");
+    							DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
     							results = iFmt.format( blocksTotal );
     						}
     						else {

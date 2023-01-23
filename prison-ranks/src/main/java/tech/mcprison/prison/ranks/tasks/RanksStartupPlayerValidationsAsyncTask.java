@@ -42,6 +42,9 @@ public class RanksStartupPlayerValidationsAsyncTask
         // Start up the TopNPlayer's collections after all players have been loaded:
         // NOTE: getting the instance of TopNPlayers must be done "after" player validation.
         //       So that thread needs to initiate it after done validating and fixing all players.
+		// NOTE: since TopN is based upon Ranks and the associated players, if Ranks module
+		//       is disabled, TopN will not run.  Make sure 100% that the PlayerManager has been
+		//       setup before trying to call TopNPlayers.getInstance() or it will never work/start.
         TopNPlayers.getInstance();
 
 		

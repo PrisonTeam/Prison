@@ -2,6 +2,7 @@
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
+*Documented updated: 2022-12-30*
 
 ## Project Related
 
@@ -35,6 +36,10 @@ Prison supports Spigot 1.19.x, along with Java 17 and 18.  At this time there ha
 
 
 ### Newer features and updates in Prison:
+
+* Prison's AutoFeatures was redesigned to support more Event Listener Priorities.  This means prison is more flexible and will work with more plugins, using them the way you want to.  Some of the new priorities are `ACCESS` so you can use Prison's Mine and Teleport Access by Rank without having to use Prison's block handlers.  This bypasses the need to configure WorldGuard regions for access to the mines that are linked to Prison Ranks.
+
+* Now supports RevEnchants, both with Prison handling the block break events, and with RevEnchants handling the events.
 
 
 * Prison Backups: Prison now has a new feature that will backup (zip) all of the files within it's plugin directory.  Prison now will perform an automated backup when it detects a change in Prison's version to help preserve settings from prior versions.  See the new [Prison Backup Document](prison_docs_050_Prison_backups.md).
@@ -130,7 +135,36 @@ Auto configure can get you up and running with as little as two commands.  The f
  [Prison Auto Configure / Prison Quick Start Guide!](prison_docs_100_setting_up_auto_configure.md)
 
 
- 
+<hr style="height:5px; border:none; color:#aaf; background-color:#aaf;">
+
+# A Quick Word About the Prison Command Handler
+
+Prison has an advanced command handler that manages all of the commands. Programmatically, 
+the commands are not setup the same as a normal bukkit command, but instead, there are a
+lot of more powerful features available through the Prison Command Handler.
+
+All commands will respond to the **help** keyword.  It will show a list of all of the parameters
+for the command, any permissions tied to the command, and other details too.  If a document is
+associated with the command, it can show a clickable link when used in-game (not many commands
+have been linked to their docs yet).
+
+The Prison Command Handler also manages aliases, auto complete (tab complete), organizing 
+commands in a hierarchy so you can explore what commands are available by starting with the 
+root commands.  For example, `/prison` is the core root command, and it will also show you 
+a listing of all other root commands.  So `/prison` is a great place to begin exploring 
+the commands that are available.
+
+For the latest alpha releases, there is an exciting new command: `/prison support cmdStats`.
+This new command will show you every prison command that was ran since the server was started,
+along with how many times the command was used, and the average milliseconds it took Prison
+to handle that command.  Some commands, such as `/mines reset` are submitted and ran
+asynchronously and so their average run times will not be able to be reflected in that
+command. The `cmdStats` does not track "command" usage if it bypasses the Prison
+Command Handler, such as when a mine automatically resets since the internal calls bypass the 
+Prison Command Handler.  
+
+This is useful to give you an idea what commands your players and mods may be using.
+
 
 <hr style="height:5px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -337,6 +371,9 @@ Get your prison setup quickly by running the command `/ranks autoCommand` which 
     How to enable backpacks.
 
 
+* [Troubleshooting](prison_docs_900_troubleshooting.md) 
+    Mining issues.
+    
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 

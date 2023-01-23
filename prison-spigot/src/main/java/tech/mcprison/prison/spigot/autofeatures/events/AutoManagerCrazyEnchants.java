@@ -6,26 +6,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
 
 import me.badbones69.crazyenchantments.api.events.BlastUseEvent;
-import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
-import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.output.Output;
-import tech.mcprison.prison.output.Output.DebugTarget;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
-import tech.mcprison.prison.spigot.block.OnBlockBreakExternalEvents;
-import tech.mcprison.prison.spigot.block.SpigotBlock;
-import tech.mcprison.prison.spigot.game.SpigotHandlerList;
-import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.integrations.IntegrationCrazyEnchantmentsPickaxes;
 
 public class AutoManagerCrazyEnchants
@@ -40,6 +34,15 @@ public class AutoManagerCrazyEnchants
 		super();
 		
 		this.crazyEnchantEnabled = null;
+	}
+	
+	
+	public AutoManagerCrazyEnchants( BlockBreakPriority bbPriority ) {
+		super();
+		
+		this.crazyEnchantEnabled = null;
+		
+		this.bbPriority = bbPriority;
 	}
 	
 	
@@ -61,11 +64,16 @@ public class AutoManagerCrazyEnchants
 	public class AutoManagerBlastUseEventListener
 		extends AutoManagerCrazyEnchants
 		implements Listener {
+    	
+    	public AutoManagerBlastUseEventListener( BlockBreakPriority bbPriority ) {
+    		super( bbPriority );
+    	}
 		
 		@EventHandler(priority=EventPriority.NORMAL) 
 		public void onCrazyEnchantsBlockExplode( BlastUseEvent e, BlockBreakPriority bbPriority) {
 	
-			if ( isDisabled( e.getPlayer().getLocation().getWorld().getName() ) ) {
+			if ( isDisabled( e.getPlayer().getLocation().getWorld().getName() ) ||
+					bbPriority.isDisabled() ) {
 				return;
 			}
 			
@@ -78,11 +86,13 @@ public class AutoManagerCrazyEnchants
 	public void initialize() {
 
 		String eP = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
-		setBbPriority( BlockBreakPriority.fromString( eP ) );
+		
+		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+		setBbPriority( bbPriority );
 		
 //		boolean isEventEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
 		
-		if ( getBbPriority() == BlockBreakPriority.DISABLED ) {
+		if ( bbPriority == BlockBreakPriority.DISABLED ) {
 			return;
 		}
 		
@@ -96,27 +106,21 @@ public class AutoManagerCrazyEnchants
 			Output.get().logInfo( "AutoManager: Trying to register CrazyEnchants" );
 			
 			
-			SpigotPrison prison = SpigotPrison.getInstance();
-			PluginManager pm = Bukkit.getServer().getPluginManager();
-			EventPriority ePriority = getBbPriority().getBukkitEventPriority(); 
-			
-			
-			AutoManagerBlastUseEventListener autoManagerlListener = 
-					new AutoManagerBlastUseEventListener();
-			
-			pm.registerEvent(BlastUseEvent.class, autoManagerlListener, ePriority,
-					new EventExecutor() {
-				public void execute(Listener l, Event e) { 
-					
-					BlastUseEvent buEvent = (BlastUseEvent) e;
-					
-					((AutoManagerBlastUseEventListener)l)
-									.onCrazyEnchantsBlockExplode( buEvent, getBbPriority() );
-				}
-			},
-					prison);
-			prison.getRegisteredBlockListeners().add( autoManagerlListener );
-			
+			if ( getBbPriority() != BlockBreakPriority.DISABLED ) {
+    			if ( bbPriority.isComponentCompound() ) {
+    				
+    				for (BlockBreakPriority subBBPriority : bbPriority.getComponentPriorities()) {
+						
+    					createListener( subBBPriority );
+					}
+    			}
+    			else {
+    				
+    				createListener(bbPriority);
+    			}
+    			
+    		}
+
 			
 		}
 		catch ( ClassNotFoundException e ) {
@@ -126,6 +130,32 @@ public class AutoManagerCrazyEnchants
 		catch ( Exception e ) {
 			Output.get().logInfo( "AutoManager: CrazyEnchants failed to load. [%s]", e.getMessage() );
 		}
+	}
+
+
+	private void createListener(BlockBreakPriority bbPriority) {
+		
+		SpigotPrison prison = SpigotPrison.getInstance();
+		PluginManager pm = Bukkit.getServer().getPluginManager();
+		EventPriority ePriority = bbPriority.getBukkitEventPriority(); 
+		
+		
+		AutoManagerBlastUseEventListener autoManagerListener = 
+				new AutoManagerBlastUseEventListener( bbPriority );
+		
+		pm.registerEvent(BlastUseEvent.class, autoManagerListener, ePriority,
+				new EventExecutor() {
+					public void execute(Listener l, Event e) { 
+						
+						BlastUseEvent buEvent = (BlastUseEvent) e;
+						
+						((AutoManagerBlastUseEventListener)l)
+										.onCrazyEnchantsBlockExplode( buEvent, getBbPriority() );
+					}
+				},
+				prison);
+		
+		prison.getRegisteredBlockListeners().add( autoManagerListener );
 	}
    
 	
@@ -170,21 +200,47 @@ public class AutoManagerCrazyEnchants
 			Class.forName( "me.badbones69.crazyenchantments.api.events.BlastUseEvent", false, 
 					this.getClass().getClassLoader() );
 			
+			
+			HandlerList handlers = BlastUseEvent.getHandlerList();
+			
+//    		String eP = getMessage( AutoFeatures.blockBreakEventPriority );
     		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
 
+    		dumpEventListenersCore( "BlastUseEvent", handlers, bbPriority, sb );
+    		
 			
-			String title = String.format( 
-					"BlastUseEvent (%s)", 
-					( bbPriority == null ? "--none--" : bbPriority.name()) );
-			
-			ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
-					title, 
-					new SpigotHandlerList( BlastUseEvent.getHandlerList()) );
-			
-			if ( eventDisplay != null ) {
-				sb.append( eventDisplay.toStringBuilder() );
-				sb.append( "\n" );
-			}
+//    		BlockBreakPriority bbPriority = BlockBreakPriority.fromString( eP );
+//
+//			
+//			String title = String.format( 
+//					"BlastUseEvent (%s)", 
+//					( bbPriority == null ? "--none--" : bbPriority.name()) );
+//			
+//			ChatDisplay eventDisplay = Prison.get().getPlatform().dumpEventListenersChatDisplay( 
+//					title, 
+//					new SpigotHandlerList( BlastUseEvent.getHandlerList()) );
+//			
+//			if ( eventDisplay != null ) {
+//				sb.append( eventDisplay.toStringBuilder() );
+//				sb.append( "\n" );
+//			}
+//			
+//			
+//			if ( bbPriority.isComponentCompound() ) {
+//				StringBuilder sbCP = new StringBuilder();
+//				for ( BlockBreakPriority bbp : bbPriority.getComponentPriorities() ) {
+//					if ( sbCP.length() > 0 ) {
+//						sbCP.append( ", " );
+//					}
+//					sbCP.append( "'" ).append( bbp.name() ).append( "'" );
+//				}
+//				
+//				String msg = String.format( "Note '%s' is a compound of: [%s]",
+//						bbPriority.name(),
+//						sbCP );
+//				
+//				sb.append( msg ).append( "\n" );
+//			}
 		}
 		catch ( ClassNotFoundException e ) {
 			// CrazyEnchants is not loaded... so ignore.
@@ -208,22 +264,25 @@ public class AutoManagerCrazyEnchants
 	 */
 	public void handleBlastUseEvent( BlastUseEvent e, BlockBreakPriority bbPriority ) {
 			
-//			boolean monitor, boolean blockEventsOnly, 
-//			boolean autoManager ) {
-
+		PrisonMinesBlockBreakEvent pmEvent = null;
 		long start = System.nanoTime();
 		
-    	if ( e.isCancelled() ||  ignoreMinesBlockBreakEvent( e, e.getPlayer(), e.getBlockList().get( 0 )) ) {
+		// If the event is canceled, it still needs to be processed because of the 
+		// MONITOR events:
+		// An event will be "canceled" and "ignored" if the block 
+		// BlockUtils.isUnbreakable(), or if the mine is activly resetting.
+		// The event will also be ignored if the block is outside of a mine
+		// or if the targetBlock has been set to ignore all block events which 
+		// means the block has already been processed.
+    	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
+    										e.getPlayer(), e.getBlockList().get( 0 ) );
+    	if ( eventResults.isIgnoreEvent() ) {
     		return;
     	}
-    	
-		
-		// Register all external events such as mcMMO and EZBlocks:
-		OnBlockBreakExternalEvents.getInstance().registerAllExternalEvents();
 				
 		StringBuilder debugInfo = new StringBuilder();
 		
-		debugInfo.append( String.format( "### ** genericBlastUseEvent ** ### " +
+		debugInfo.append( String.format( "### ** handleBlastUseEvent ** ### " +
 				"(event: BlastUseEvent, config: %s, priority: %s, canceled: %s) ",
 				bbPriority.name(),
 				bbPriority.getBukkitEventPriority().name(),
@@ -232,34 +291,47 @@ public class AutoManagerCrazyEnchants
 		
 		
 		// NOTE that check for auto manager has happened prior to accessing this function.
-    	if ( bbPriority != BlockBreakPriority.MONITOR && !e.isCancelled() || bbPriority == BlockBreakPriority.MONITOR &&
+
+		// Process all priorities if the event has not been canceled, and 
+		// process the MONITOR priority even if the event was canceled:
+    	if ( !bbPriority.isMonitor() && !e.isCancelled() || 
+    			bbPriority.isMonitor() &&
     			e.getBlockList().size() > 0 ) {
 
-			
-	    	String eP = getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
-			boolean isCEBlockExplodeEnabled = eP != null && !"DISABLED".equalsIgnoreCase( eP );
-
-			
-    		Block bukkitBlock = e.getBlockList().get( 0 );
     		
-    		// Need to wrap in a Prison block so it can be used with the mines:
-    		SpigotBlock sBlock = SpigotBlock.getSpigotBlock( bukkitBlock );
-    		SpigotPlayer sPlayer = new SpigotPlayer(e.getPlayer());
+    		Block bukkitBlock = e.getBlockList().get( 0 );
     		
     		BlockEventType eventType = BlockEventType.CEXplosion;
     		String triggered = null;
     		
 
-    		PrisonMinesBlockBreakEvent pmEvent = new PrisonMinesBlockBreakEvent( bukkitBlock, e.getPlayer(),
-					sBlock, sPlayer, bbPriority, eventType, triggered );
-		
+    		pmEvent = new PrisonMinesBlockBreakEvent( 
+    				bukkitBlock, 
+    				e.getPlayer(),
+    				eventResults.getMine(),
+   					bbPriority, eventType, triggered,
+   					debugInfo );
+    		
+
+        	// NOTE: Check for the ACCESS priority and if someone does not have access, then return 
+        	//       with a cancel on the event.  Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be
+        	//       converted to just ACCESS at this point, and the other part will run under either
+        	//       BLOCKEVENTS or MONITOR.
+    		// This check has to be performed after creating the pmEvent object since it uses
+    		// a lot of the internal variables and objects.  There is not much of an impact since
+    		// the validateEvent() has not been ran yet.
+    		if ( checkIfNoAccess( pmEvent, start ) ) {
+        		
+        		e.setCancelled( true );
+        		return;
+        	}
     		
     		for ( int i = 1; i < e.getBlockList().size(); i++ ) {
     			pmEvent.getUnprocessedRawBlocks().add( e.getBlockList().get( i ) );
     		}
     		
     		
-    		if ( !validateEvent( pmEvent, debugInfo ) ) {
+    		if ( !validateEvent( pmEvent ) ) {
     			
     			// The event has not passed validation. All logging and Errors have been recorded
     			// so do nothing more. This is to just prevent normal processing from occurring.
@@ -268,98 +340,70 @@ public class AutoManagerCrazyEnchants
     				
     				e.setCancelled( true );
     			}
+    			
+    			debugInfo.append( "(doAction failed validation) " );
     		}
 
     		
-    		else if ( pmEvent.getBbPriority() == BlockBreakPriority.MONITOR ) {
-    			// Stop here, and prevent additional processing. Monitors should never process the event beyond this.
+
+    		// The validation was successful, but stop processing for the MONITOR priorities.
+    		// Note that BLOCKEVENTS processing occured already within validateEvent():
+    		else if ( pmEvent.getBbPriority().isMonitor() ) {
+    			// Stop here, and prevent additional processing. 
+    			// Monitors should never process the event beyond this.
     		}
     		
-
 
     		// now process all blocks (non-monitor):
-    		else if ( isCEBlockExplodeEnabled && 
-    				( pmEvent.getMine() != null || pmEvent.getMine() == null && !isBoolean( AutoFeatures.pickupLimitToMines )) ) {
-
-
-    			if ( pmEvent.getExplodedBlocks().size() > 0 ) {
-    				
-//					String triggered = null;
-    				
-					
-					// Warning: BlastUseEvent does not identify the block the player actually hit, so the dummyBlock
-					//          is just a random first block from the explodedBlocks list and may not be the block
-					//          that initiated the explosion event.
-//					SpigotBlock dummyBlock = explodedBlocks.get( 0 );
-					
-//	    			PrisonMinesBlockBreakEvent pmbbEvent = new PrisonMinesBlockBreakEvent( dummyBlock.getWrapper(), e.getPlayer(),
-//	    												mine, dummyBlock, explodedBlocks, BlockEventType.CEXplosion, triggered );
-	                Bukkit.getServer().getPluginManager().callEvent(pmEvent);
-	                if ( pmEvent.isCancelled() ) {
-	                	debugInfo.append( "(normal processing: PrisonMinesBlockBreakEvent was canceled) " );
-	                }
-	                else {
-	                	
-//	                	// Cancel drops if so configured:
-//	                	if ( isBoolean( AutoFeatures.cancelAllBlockEventBlockDrops ) ) {
-//	                		
-//	                		try
-//	                		{
-//	                			e.setDropItems( false );
-//	                		}
-//	                		catch ( NoSuchMethodError e1 )
-//	                		{
-//	                			String message = String.format( 
-//	                					"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
-//	                					"is not valid for this version of Spigot. Modify the config settings and set " +
-//	                					"this value to `false`. [%s]",
-//	                					e1.getMessage() );
-//	                			Output.get().logWarn( message );
-//	                		}
-//	                	}
-	                	
-	                	if ( doAction( pmEvent, debugInfo ) ) {
-	                		
-	                		if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
-	                			
-	                			e.setCancelled( true );
-	                		}
-	                		else {
-	                			
-	                			debugInfo.append( "(event was not canceled) " );
-	                		}
-	                		
-	                		finalizeBreakTheBlocks( pmEvent );
-	                		
-	                		doBlockEvents( pmEvent );
-
-	                	}
-	                	
-	                	else {
-	                		
-	                		debugInfo.append( "(doAction failed without details) " );
-	                	}
-	                	
-	                }
-    			}
-    			
-
-    			debugInfo.append( "(normal processing) " );
-    		}
     		else {
     			
-    			debugInfo.append( "(logic bypass) " );
+    			// This is where the processing actually happens:
+    			
+//    			if ( e instanceof BlockBreakEvent ) {
+//    				processPMBBExternalEvents( pmEvent, debugInfo, e );
+//    			}
+    			
+    			
+    			
+    			EventListenerCancelBy cancelBy = EventListenerCancelBy.none; 
+    			
+    			cancelBy = processPMBBEvent( pmEvent );
+
+    			
+    			// NOTE: you cannot cancel a crazy enchant's drops, so this will 
+    			//       always cancel the event.
+    			if ( cancelBy != EventListenerCancelBy.none ) {
+    				
+    				e.setCancelled( true );
+    				debugInfo.append( "(event canceled) " );
+    			}
+//    			else if ( cancelBy == EventListenerCancelBy.drops ) {
+//					try
+//					{
+//						e.setDropItems( false );
+//						debugInfo.append( "(drop canceled) " );
+//					}
+//					catch ( NoSuchMethodError e1 )
+//					{
+//						String message = String.format( 
+//								"Warning: The autoFeaturesConfig.yml setting `cancelAllBlockEventBlockDrops` " +
+//										"is not valid for this version of Spigot. It's only vaid for spigot v1.12.x and higher. " +
+//										"Modify the config settings and set this value to `false`.  For now, it is temporarily " +
+//										"disabled. [%s]",
+//										e1.getMessage() );
+//						Output.get().logWarn( message );
+//						
+//						AutoFeaturesWrapper.getInstance().getAutoFeaturesConfig()
+//								.setFeature( AutoFeatures.cancelAllBlockEventBlockDrops, false );
+//					}
+//
+//    			}
     		}
+    				
 
 		}
     	
-		if ( debugInfo.length() > 0 ) {
-			
-			long stop = System.nanoTime();
-			debugInfo.append( " [" ).append( (stop - start) / 1000000d ).append( " ms]" );
-			
-			Output.get().logDebug( DebugTarget.blockBreak, debugInfo.toString() );
-		}
+    	printDebugInfo( pmEvent, start );
 	}
 
 	@Override

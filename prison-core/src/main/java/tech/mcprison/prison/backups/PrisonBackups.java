@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.cache.PlayerCacheFiles;
+import tech.mcprison.prison.cache.CoreCacheFiles;
 import tech.mcprison.prison.file.ZipFileIO;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.util.PrisonStatsUtil;
@@ -20,7 +20,8 @@ import tech.mcprison.prison.util.PrisonStatsUtil;
 public class PrisonBackups {
 
 	public static final String FILE_BACKUP_DIRECTORY_PATH = "backups";
-	public static final String FILE_BACKUP_VERSIONS_FILE = FILE_BACKUP_DIRECTORY_PATH + "/versions.log";
+	public static final String FILEBACKUP_VERSIONS_FILE_NAME = "/versions.log";
+	public static final String FILE_BACKUP_VERSIONS_FILE = FILE_BACKUP_DIRECTORY_PATH + FILEBACKUP_VERSIONS_FILE_NAME;
 	
 	public static final String VERSIONS_FILE_VERSION_PREFIX = "New_Prison_Version:";
 	public static final String VERSIONS_FILE_BACKUP_MADE_PREFIX = "Backup:";
@@ -40,7 +41,7 @@ public class PrisonBackups {
 	private ArrayList<File> filesToDelete;
 	private ArrayList<File> filesWithErrors;
 	
-	private DecimalFormat dFmt = new DecimalFormat("#,##0.000");
+	private DecimalFormat dFmt;
 	private SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd_kk-mm" );
 	private SimpleDateFormat sdsFmt = new SimpleDateFormat( "yyyy-MM-dd kk:mm:ss.SSS" );
 	
@@ -53,6 +54,8 @@ public class PrisonBackups {
 	
 	public PrisonBackups() {
 		super();
+		
+		this.dFmt = Prison.get().getDecimalFormatDouble();
 		
 		this.filesBackups = new ArrayList<>();
 		this.filesToBackup = new ArrayList<>();
@@ -261,7 +264,7 @@ public class PrisonBackups {
 	
 	public String backupReport01() {
 		
-//		DecimalFormat dFmt = new DecimalFormat("#,##0.000");
+//		DecimalFormat dFmt = Prison.get().getDecimalFormatDouble();
 		long stop = System.nanoTime();
 		double runTimeMs = ( stop - getStartTimeNanos() ) / 1000000.0d;
 		
@@ -290,6 +293,27 @@ public class PrisonBackups {
 		
 		return msg1;
 	}
+	
+	
+	public List<String> backupReport02BackupLog() {
+		List<String> results = new ArrayList<>();
+
+		File backupDir = getBackupDirectoryFile();
+		
+		File backupLogFile = new File( backupDir, FILEBACKUP_VERSIONS_FILE_NAME );
+
+		try {
+			results = Files.readAllLines( backupLogFile.toPath() );
+		} 
+		catch (IOException e) {
+			results.add( 
+					Output.stringFormat( "\n\nError reading %s.  [%s]",
+							backupLogFile.toString(), e.getMessage() ) );
+		}
+		
+		return results;
+	}
+	
 	
 	public StringBuilder backupReportVersionData() {
 		return Prison.get().getPrisonStatsUtil().getSupportSubmitVersionData();
@@ -407,8 +431,8 @@ public class PrisonBackups {
 				String fName = file.getName();
 				
 				boolean isDeleteable = 
-						fName.endsWith( PlayerCacheFiles.FILE_SUFFIX_BACKUP ) ||
-						fName.endsWith( PlayerCacheFiles.FILE_SUFFIX_TEMP ) ||
+						fName.endsWith( CoreCacheFiles.FILE_SUFFIX_BACKUP ) ||
+						fName.endsWith( CoreCacheFiles.FILE_SUFFIX_TEMP ) ||
 						fName.endsWith( ".del" ) ||
 						fName.startsWith( "_archived_" ) ||
 						fName.contains( ".json.ver_" ) && fName.endsWith( ".txt" )

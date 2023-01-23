@@ -858,7 +858,7 @@ public class RanksCommands
         BulletedListComponent.BulletedListBuilder builder =
         		new BulletedListComponent.BulletedListBuilder();
         
-        DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
+        DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.0000");
         
         // Here's the deal... With color codes, Java's String.format() cannot detect the correct
         // length of a tag. So go through all tags, strip the colors, and see how long they are.
@@ -1212,7 +1212,7 @@ public class RanksCommands
         
         
         // Add the raw ladder rank multiplier here:
-        DecimalFormat fFmt = new DecimalFormat("#,##0.0000");
+        DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.0000");
         
         // The following is the rank adjusted rank multiplier
         
@@ -1472,10 +1472,10 @@ public class RanksCommands
 
     	List<String> msgs = new ArrayList<>();
 
-    	DecimalFormat iFmt = new DecimalFormat("#,##0");
-    	DecimalFormat dFmt = new DecimalFormat("#,##0.00");
-    	DecimalFormat fFmt = new DecimalFormat("0.0000");
-    	DecimalFormat pFmt = new DecimalFormat("#,##0.0000");
+    	DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
+    	DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+    	DecimalFormat fFmt = Prison.get().getDecimalFormat("0.0000");
+    	DecimalFormat pFmt = Prison.get().getDecimalFormat("#,##0.0000");
 		SimpleDateFormat sdFmt = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
     	
     	
@@ -1518,7 +1518,7 @@ public class RanksCommands
 		
 		
 		if ( rankPlayer != null ) {
-//			DecimalFormat iFmt = new DecimalFormat("#,##0");
+//			DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
 //			
 //			SimpleDateFormat sdFmt = new SimpleDateFormat( "HH:mm:ss" );
 			
@@ -1804,8 +1804,8 @@ public class RanksCommands
     
 //    private String formatTimeMs( long timeMs ) {
 //    	
-//    	DecimalFormat iFmt = new DecimalFormat("#,##0");
-//    	DecimalFormat tFmt = new DecimalFormat("00");
+//    	DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
+//    	DecimalFormat tFmt = Prison.get().getDecimalFormat("00");
 ////    	SimpleDateFormat sdFmt = new SimpleDateFormat( "HH:mm:ss" );
 //    	
 //    	long _sec = 1000;
@@ -2127,7 +2127,7 @@ public class RanksCommands
     	int posStart = (page - 1) * pageSize;
     	int posEnd = posStart + pageSize;
     	
-//    	DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+//    	DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
     	
     	
 //    	if ( sort ) {

@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.cryptomorin.xseries.XMaterial;
@@ -17,6 +19,7 @@ import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
+import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.util.Text;
 
 public class SpigotItemStack
@@ -427,5 +430,71 @@ public class SpigotItemStack
 		results.put( "isBlock", isBlock() );
 		
 		return results;
+	}
+
+	/**
+	 * <p>This function will return information on the item in the item stack, which is for 
+	 * debugging purposes, such as displayed within the autoFeatures debug info.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public String getDebugInfo() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append( getName() );
+
+		ItemMeta meta = getMeta();
+		if ( meta != null && 
+				meta.getEnchants() != null &&
+				meta.getEnchants().size() > 0 ) {
+			sb.append( " " );
+			
+			StringBuilder sbE = new StringBuilder();
+			Set<Enchantment> keys = meta.getEnchants().keySet();
+			for (Enchantment key : keys) {
+				if ( sbE.length() > 0 ) {
+					sbE.append(",");
+				}
+				String name = key.toString();
+				name = name.substring(name.indexOf(" ") + 1, name.length() - 1);
+				
+				Integer level = meta.getEnchants().get(key);
+				sbE.append( name );
+				sbE.append(":");
+				sbE.append( level );
+			}
+			
+			if ( sbE.length() > 0 ) {
+				sb.append("(");
+				sb.append( sbE );
+				sb.append(")");
+			}
+		}
+		
+		if ( SpigotCompatibility.getInstance().hasDurability( this ) ) {
+			int durabilityMax = SpigotCompatibility.getInstance().getDurabilityMax( this );
+			int durability = SpigotCompatibility.getInstance().getDurability( this );
+			
+			sb.append(" durability:");
+			sb.append(durabilityMax);
+			sb.append(":");
+			sb.append(durability);
+		}
+		
+		if ( getAmount() != 1 ) {
+			sb.append( " amount=" );
+			sb.append( getAmount() );
+		}
+			
+		sb.append( " " );
+		if ( isAir() ) {
+			sb.append( "::AIR" );
+		}
+		else if ( isBlock() ) {
+			sb.append( "::BLOCK" );
+		}
+		
+		return sb.toString();
 	}
 }

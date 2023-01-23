@@ -24,19 +24,18 @@ import tech.mcprison.prison.ranks.data.RankPlayerFactory;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools.GUIMenuPageData;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
-import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 /**
  * @author GABRYCA
  */
-public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
+public class SpigotPlayerPrestigesGUI 
+	extends SpigotGUIMessages {
 
     private final Player player;
     private PrisonRanks rankPlugin;
@@ -144,7 +143,8 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
 //         Create the inventory and set up the owner, dimensions or number of slots, and title
 //        int dimension = (int) (Math.ceil(ladder.getRanks().size() / 9D) * 9) + 9;
 
-        PrisonGUI gui = new PrisonGUI(getPlayer(), guiPageData.getDimension(), guiConfig.getString("Options.Titles.PlayerPrestigesGUI"));
+        PrisonGUI gui = new PrisonGUI(getPlayer(), guiPageData.getDimension(), 
+        				guiConfig.getString("Options.Titles.PlayerPrestigesGUI"));
 
         // dead code:
 //        if ( ladder == null ){
@@ -153,7 +153,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
 //        }
 
         if (!ladder.getLowestRank().isPresent()){
-            Output.get().sendWarn(new SpigotPlayer(player), messages.getString(MessagesConfig.StringID.spigot_message_prestiges_empty));
+        	guiRanksPrestigesLadderIsEmptyMsg( new SpigotPlayer(player) );
             return;
         }
 
@@ -181,7 +181,7 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         int hackyCounterEnchant = 0;
 
         // Global strings.
-        String loreInfo = messages.getString(MessagesConfig.StringID.spigot_gui_lore_info);
+        String loreInfo = guiRanksLoreInfoMsg();
 //        String lorePrice3 = messages.getString(MessagesConfig.StringID.spigot_gui_lore_price);
 
         // Global boolean.
@@ -242,12 +242,17 @@ public class SpigotPlayerPrestigesGUI extends SpigotGUIComponents {
         SpigotGUIMenuTools.getInstance().addMenuPageButtonsStandard( gui, guiPageData );
 
         
+			
+        if (Prison.get().getPlatform().getConfigBooleanTrue( "ranks.gui-prestiges-include-rankup-button") ) {
+			
+			ButtonLore rankupLore = new ButtonLore( guiRanksLoreClickToRankupMsg(), 
+					guiRanksLoreRankupIfEnoughMoneyMsg() );
+			Button rankupButton = new Button(0, XMaterial.EMERALD_BLOCK, rankupLore, "&aPrestige" );
+			// NOTE: Button position will be properly assigned in the setButtonNextAvilable:
+			gui.addButton( guiPageData.setButtonNextAvailable( rankupButton ) );
+			
+		}
 
-        ButtonLore rankupLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_rankup), messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup_if_enough_money));
-        Button rankupButton = new Button(0, XMaterial.EMERALD_BLOCK, rankupLore, "&aPrestige" );
-        // NOTE: Button position will be properly assigned in the setButtonNextAvilable:
-        gui.addButton( guiPageData.setButtonNextAvailable( rankupButton ) );
-        
         
         
         // Open GUI.

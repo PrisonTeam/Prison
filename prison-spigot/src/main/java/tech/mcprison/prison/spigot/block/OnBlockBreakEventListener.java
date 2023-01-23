@@ -17,6 +17,8 @@ import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEven
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerCrazyEnchants;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonEnchants;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonsExplosiveBlockBreakEvents;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerRevEnchantsExplosiveEvent;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerRevEnchantsJackHammerEvent;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerTokenEnchant;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerZenchantments;
 import tech.mcprison.prison.spigot.autofeatures.events.PrisonDebugBlockInspector;
@@ -108,6 +110,10 @@ public class OnBlockBreakEventListener
 	private AutoManagerPrisonEnchants peEvents;
 	private AutoManagerTokenEnchant teEvents;
 	private AutoManagerZenchantments zcEvents;
+	
+	private AutoManagerRevEnchantsExplosiveEvent reEEvents;
+	private AutoManagerRevEnchantsJackHammerEvent reJHEvents;
+
 
 	private PrisonDebugBlockInspector pdBlockInspector;
 	
@@ -221,6 +227,12 @@ public class OnBlockBreakEventListener
 		
 		zcEvents = new AutoManagerZenchantments();
 		zcEvents.registerEvents();
+		
+		reEEvents = new AutoManagerRevEnchantsExplosiveEvent();
+		reEEvents.registerEvents();
+		
+		reJHEvents = new AutoManagerRevEnchantsJackHammerEvent();
+		reJHEvents.registerEvents();
 		
 		pdBlockInspector = new PrisonDebugBlockInspector();
 		pdBlockInspector.init();

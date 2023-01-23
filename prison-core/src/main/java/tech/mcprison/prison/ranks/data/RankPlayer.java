@@ -782,6 +782,13 @@ public class RankPlayer
      * it finds a match with the target rank.
      * </p>
      * 
+     * <p>If the setting prison-mines.access-to-prior-mines is true, as found in the
+     * config.yml file, then prior ranks on the target ladder is search if the
+     * current rank is not a match to the targetRank.  Setting this setting to 
+     * false will allow admins to use Mine Access by Rank but only for their 
+     * current rank.
+     * </p>
+     * 
      * @param targetRank
      * @return
      */
@@ -800,13 +807,21 @@ public class RankPlayer
     					rank.getLadder().equals( targetRank.getLadder() ) ) {
     				
     				hasAccess = rank.equals( targetRank );
-    				Rank priorRank = rank.getRankPrior();
-    				
-    				while ( !hasAccess && priorRank != null ) {
+
+    				// If access-to-prior-mines is enabled (defaults to true if does not exist), 
+    				// then search prior ranks on this ladder until a match with target is found.
+    				if ( Prison.get().getPlatform()
+    							.getConfigBooleanTrue( "prison-mines.access-to-prior-mines" ) ) {
     					
-    					hasAccess = priorRank.equals( targetRank );
-    					priorRank = priorRank.getRankPrior();
+    					Rank priorRank = rank.getRankPrior();
+    					
+    					while ( !hasAccess && priorRank != null ) {
+    						
+    						hasAccess = priorRank.equals( targetRank );
+    						priorRank = priorRank.getRankPrior();
+    					}
     				}
+    				
     			}
     		}
     	}
@@ -1414,6 +1429,19 @@ public class RankPlayer
 		return false;
 	}
 	
+	
+	/**
+	 * <p>This function will return the next rank that they player will have upon
+	 * rankup.  This includes going from the end of the default ladder to the next
+	 * rank on prestiges ladder.
+	 * </p>
+	 * 
+	 * <p>If this function return a null value, then the player has reached the
+	 * end of the game, and they are at the top-most rank.
+	 * </p>
+	 * 
+	 * @return
+	 */
 	public PlayerRank getNextPlayerRank() {
 		PlayerRank rankCurrent = getPlayerRankDefault();
 		
@@ -1448,7 +1476,12 @@ public class RankPlayer
 			
 			// if they don't have a current prestige rank, then use the lowest rank:
 			if ( prestigeRankCurrent == null ) {
-				RankLadder rLadder = getRankLadder( RankLadder.PRESTIGES );
+
+				RankLadder rLadder = Prison.get().getPlatform().getRankLadder( RankLadder.PRESTIGES );
+				
+				// If the player does not have a presetige rank, the getRankLadder will return null.
+				
+//				RankLadder rLadder = getRankLadder( RankLadder.PRESTIGES );
 				nRank = rLadder == null ? null : rLadder.getLowestRank().orElse(null);
 			}
 			
@@ -1623,7 +1656,7 @@ public class RankPlayer
 	
 	public String printRankScoreLine1( int rankPostion ) {
 		
-		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 		
 		PlayerRank prestRank = getPlayerRankPrestiges();
 		PlayerRank defRank = getPlayerRankDefault();
@@ -1669,7 +1702,7 @@ public class RankPlayer
 	
 	public String printRankScoreLine2( int rankPostion ) {
 		
-		DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 		
 		PlayerRank prestRank = getPlayerRankPrestiges();
 		PlayerRank defRank = getPlayerRankDefault();

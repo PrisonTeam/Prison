@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.placeholders.PlaceholderManager.NumberTransformationUnitTypes;
 import tech.mcprison.prison.util.Text;
@@ -182,7 +183,7 @@ public class PlaceholderAttributeNumberFormat
 		try {
 			// & will not work in the DecimalFormat so replace it with ^|^ then replace after formatting:
 			String fmt = getFormat();//.replace( "&", "^|^" );
-			DecimalFormat dFmt = new DecimalFormat( fmt );
+			DecimalFormat dFmt = Prison.get().getDecimalFormat( fmt );
 
 			switch ( getUnitType() )
 			{

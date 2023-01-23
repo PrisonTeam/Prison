@@ -3,7 +3,11 @@ package tech.mcprison.prison.placeholders;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.TreeMap;
+
+import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.output.Output;
 
 public class PlaceholdersStats {
 
@@ -32,6 +36,19 @@ public class PlaceholdersStats {
 	}
 	
 	
+	/**
+	 * <p>This function will take the initial PlaceholderIdentifier, which has not yet been
+	 * mapped to a placeholderKey, and try to see if there is an entry within the 
+	 * placeholder cache.  If there is, then it will use the cache version, and if that
+	 * cache version contains a placeholderKey, then it will be copied to the pId.
+	 * </p>
+	 * 
+	 * <p>If there is no cache entry, then one will be created, but it will be lacking
+	 * a placeholderKey initially.
+	 * </p>
+	 * @param pId
+	 * @return
+	 */
 	public PlaceholderStatsData getStats( PlaceholderIdentifier pId ) {
 		PlaceholderStatsData results = null;
 		
@@ -39,23 +56,28 @@ public class PlaceholdersStats {
 		if ( pId != null ) {
 			String key = pId.getIdentifier();
 			
+			// If there is a placeholder cache entry, then get it from the cache:
 			if ( getPlaceholders().containsKey(key) ) {
 				results = getPlaceholders().get( key );
-				
-				if ( results.getPlaceholderKey() != null ) {
+
+				// NOTE: the results may have a placeholderKey assigned, if it does, then 
+				//       assign to the pId:
+				if ( results != null && results.getPlaceholderKey() != null ) {
 					pId.setPlaceholderKey( results.getPlaceholderKey() );
 				}
-				
 			}
 			else {
+				// Else create a new cache entry:
+				
 				results = new PlaceholderStatsData( key );
-				getPlaceholders().put( key, results );
+//				getPlaceholders().put( key, results );
 				
 				// Store this new stats object in the cache.  If there is a placeholder fail, then
 				// this will help prevent going through all of the calculations for future
 				// hits.
 				getPlaceholders().put( key, results );
 			}
+			
 			
 		}
 		
@@ -84,26 +106,9 @@ public class PlaceholdersStats {
 		
 		
 		if ( pId != null && stats != null ) {
-			//String key = pId.getIdentifier();
 			
-			if ( stats.getPlaceholderKey() == null && pId.getPlaceholderKey() != null ) {
-				stats.setPlaceholderKey( pId.getPlaceholderKey() );
-			}
-			
-			stats.logHit( nanoStart, nanoEnd );
-			
-			
-			if ( !pId.isFoundAMatch() ) {
-				stats.setFailedMatch( true );
-			}
-			
-			
-//			// If it contains
-//			if ( !getPlaceholders().containsKey(key) ) {
-//			
-//				
-//			}
-			
+			// Update all of the stats details, including if it should mark the stats as a failure.
+			stats.updateStats( pId, nanoStart, nanoEnd );
 		}
 		
 		return results;
@@ -113,11 +118,11 @@ public class PlaceholdersStats {
 	public ArrayList<String> generatePlaceholderReport() {
 		ArrayList<String> results = new ArrayList<>();
 		
-		DecimalFormat iFmt = new DecimalFormat( "#,##0" );
-		DecimalFormat dFmt = new DecimalFormat( "#,##0.0000" );
+		DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
+		DecimalFormat dFmt = Prison.get().getDecimalFormat( "#,##0.0000" );
 		
 		results.add( 
-				"&7  Hits      Avg/Hit ms  Placeholder" );
+				"&7 &n     Hits&r  &n    Fails&r  &nAvg/Hit ms&r  &nPlaceholder used:internal           &r" );
 		
 		ArrayList<String> keys = new ArrayList<>( getPlaceholders().keySet() );
 		Collections.sort( keys );
@@ -125,16 +130,21 @@ public class PlaceholdersStats {
 			PlaceholderStatsData stats = getPlaceholders().get(key);
 			
 			int hits = stats.getHits();
+			int fails = stats.getFailHits();
 			long totalDurationNano = stats.getTotalDurationNanos();
-			double avgMs = totalDurationNano / (double) hits / 1000000d;
+			double avgMs = totalDurationNano / (double) (hits + fails) / 1000000d;
 			
 			boolean valid = stats.getPlaceholderKey() != null;
 			
 			String message = String.format( 
-					"&3%10s  %10s  %s  %s",
+					"&3%10s %10s  %10s  &2%s%s &c%s",
 					iFmt.format( hits ),
+					iFmt.format( fails ),
 					dFmt.format( avgMs ),
 					key,
+					stats.getPlaceholderKey() == null ? 
+						"" : 
+						"&7:&b" + stats.getPlaceholderKey().getPlaceholder().name(),
 					( valid ? "" :
 						stats.isFailedMatch() ? 
 								"&cInvalid: bypassing lookups." :
@@ -146,6 +156,33 @@ public class PlaceholdersStats {
 		
 		return results;
 	}
+	
+	public void clearCache(boolean resetCache, boolean removeErrors) {
+
+		List<String> removeKeys = new ArrayList<>();
+		
+		ArrayList<String> keys = new ArrayList<>( getPlaceholders().keySet() );
+		for (String key : keys) {
+			PlaceholderStatsData stats = getPlaceholders().get(key);
+			
+			if ( resetCache || removeErrors && stats.isFailedMatch() ) {
+				removeKeys.add( key );
+			}
+		}
+
+		for (String key : removeKeys) {
+			getPlaceholders().remove( key );
+		}
+		
+		
+		Output.get().logInfo( "PlaceholderStats: Cache was purged of %s placeholders. Removed: %s ", 
+				resetCache ? "all" : 
+					removeErrors ? "invalid" : "some",
+				Prison.getDecimalFormatStaticInt().format( removeKeys.size() )
+				);
+		
+	}
+	
 
 	public TreeMap<String, PlaceholderStatsData> getPlaceholders() {
 		return placeholders;
@@ -153,6 +190,5 @@ public class PlaceholdersStats {
 	public void setPlaceholders(TreeMap<String, PlaceholderStatsData> placeholders) {
 		this.placeholders = placeholders;
 	}
-	
 	
 }

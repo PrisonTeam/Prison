@@ -25,9 +25,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.Prison;
-import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig;
-import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
-import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.modules.Module;
@@ -46,14 +43,9 @@ import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
-import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoBlockGUI;
-import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoFeaturesGUI;
-import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoPickupGUI;
-import tech.mcprison.prison.spigot.gui.autofeatures.SpigotAutoSmeltGUI;
 import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminGUI;
 import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminListGUI;
 import tech.mcprison.prison.spigot.gui.backpacks.BackpacksAdminPlayerListGUI;
-import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 import tech.mcprison.prison.spigot.gui.mine.SpigotBlocksListGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotBlocksMineListGUI;
 import tech.mcprison.prison.spigot.gui.mine.SpigotMineBlockPercentageGUI;
@@ -69,6 +61,7 @@ import tech.mcprison.prison.spigot.gui.rank.SpigotRankManagerGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankPriceGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRankUPCommandsGUI;
 import tech.mcprison.prison.spigot.gui.rank.SpigotRanksGUI;
+import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMessages;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminAutoSellGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminBlocksGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminGUI;
@@ -77,13 +70,16 @@ import tech.mcprison.prison.spigot.gui.sellall.SellAllPrestigesMultiplierGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPrestigesSetMultiplierGUI;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllPriceGUI;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
+import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
 import tech.mcprison.prison.util.Text;
 
 /**
  * @author GABRYCA
  * @author RoyalBlueRanger
  */
-public class ListenersPrisonManager implements Listener {
+public class ListenersPrisonManager 
+	extends SpigotGUIMessages 
+	implements Listener {
 
     private static ListenersPrisonManager instance;
     public static List<String> activeGui = new ArrayList<>();
@@ -103,7 +99,7 @@ public class ListenersPrisonManager implements Listener {
     public enum ChatMode{
         RankName,
         MineName,
-        Prestige,
+//        Prestige,
         SellAll_Currency
     }
 
@@ -212,9 +208,17 @@ public class ListenersPrisonManager implements Listener {
                             for (XMaterial xMaterialConf : items) {
                                 if (xMaterialConf == inHandXMaterial) {
                                     sellAllUtil.sellAllSell(p, false, false, true, false, false, true);
+
+                                    SpigotPlayer sPlayer = new SpigotPlayer( p );
+                                    PlayerAutoRankupTask.autoSubmitPlayerRankupTask( sPlayer, null );
+                                    
                                     return;
                                 } else if (xMaterialConf == SpigotUtil.getXMaterial(p.getInventory().getItemInMainHand().getType())) {
                                     sellAllUtil.sellAllSell(p, false, false, true, false, false, true);
+                                    
+                                    SpigotPlayer sPlayer = new SpigotPlayer( p );
+                                    PlayerAutoRankupTask.autoSubmitPlayerRankupTask( sPlayer, null );
+                                    
                                     return;
                                 }
                             }
@@ -833,7 +837,8 @@ public class ListenersPrisonManager implements Listener {
             }
 
         } else if (buttonNameMain.equalsIgnoreCase("Backpack")){
-            BackpacksUtil.get().openBackpack(p);
+        	String id = null;
+            BackpacksUtil.get().openBackpack(p, id);
         } else {
             BackpacksUtil.get().openBackpack(p, buttonNameMain.substring(9));
         }
@@ -1275,7 +1280,7 @@ public class ListenersPrisonManager implements Listener {
                 } else {
 
                     if (sellAllConfig.getConfigurationSection("Multiplier").getKeys(false).size() == 0) {
-                        Output.get().sendWarn(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_gui_error_empty));
+                    	guiRanksErrorEmptyMsg( new SpigotPlayer(p) );
                         e.setCancelled(true);
                         return;
                     } else {
@@ -1806,25 +1811,53 @@ public class ListenersPrisonManager implements Listener {
 
     private void prestigeConfirmationGUI(InventoryClickEvent e, Player p, String buttonNameMain) {
 
+    	String playerName = p.getName();
+
         // Check the button name and do the actions.
         if (buttonNameMain.equalsIgnoreCase("Confirm: Prestige")){
-        	Output.get().logDebug( DebugTarget.rankup, "rankup: GUI: 'Confirm: Prestige'   calling: '/rankup prestiges'" );
+        	
+        	Output.get().logDebug( DebugTarget.rankup, "rankup: /gui prestigeConfirm: Prestige has been Confirmed. "
+        			+ "  calling: '/prestige " + playerName + " confirm'" );
         	
         	// Execute the command.
-        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "rankup" );
+        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "prestige" );
 
-            Bukkit.dispatchCommand(p, registeredCmd + " prestiges");
-            // Close the inventory.
-            p.closeInventory();
-        } else if (buttonNameMain.equalsIgnoreCase("Cancel: Don't Prestige")){
-        	Output.get().logDebug( DebugTarget.rankup, "rankup: GUI/: 'Cancel: Don't Prestige'   sendInfo: 'cancelled'" );
-
+        	String command = registeredCmd + " " + playerName + " confirm";
+        	
+            Bukkit.dispatchCommand(p, command );
+            
+        } 
+        else if (buttonNameMain.equalsIgnoreCase("Cancel: Don't Prestige")){
+        	
+        	Output.get().logDebug( DebugTarget.rankup, "rankup: /gui prestigeConfirm: Prestige has been canceled " + 
+        				"for " + playerName + "." );
+        	
         	// Send a message to the player.
-            Output.get().sendInfo(new SpigotPlayer(p), "&cCancelled");
-            // Close the inventory.
-            p.closeInventory();
+//            Output.get().sendInfo(new SpigotPlayer(p), "&cCancelled");
         }
 
+        // Close the inventory.
+        p.closeInventory();
+
+//        // Check the button name and do the actions.
+//        if (buttonNameMain.equalsIgnoreCase("Confirm: Prestige")){
+//        	Output.get().logDebug( DebugTarget.rankup, "rankup: GUI: 'Confirm: Prestige'   calling: '/rankup prestiges'" );
+//        	
+//        	// Execute the command.
+//        	String registeredCmd = Prison.get().getCommandHandler().findRegisteredCommand( "rankup" );
+//        	
+//        	Bukkit.dispatchCommand(p, registeredCmd + " prestiges");
+//        	// Close the inventory.
+//        	p.closeInventory();
+//        } else if (buttonNameMain.equalsIgnoreCase("Cancel: Don't Prestige")){
+//        	Output.get().logDebug( DebugTarget.rankup, "rankup: GUI/: 'Cancel: Don't Prestige'   sendInfo: 'cancelled'" );
+//        	
+//        	// Send a message to the player.
+//        	Output.get().sendInfo(new SpigotPlayer(p), "&cCancelled");
+//        	// Close the inventory.
+//        	p.closeInventory();
+//        }
+//        
         // Cancel the event.
         e.setCancelled(true);
     }
@@ -2843,10 +2876,10 @@ public class ListenersPrisonManager implements Listener {
 
     private void modeAction(AsyncPlayerChatEvent e, Player p, String message) {
         switch(mode){
-            case Prestige:{
-                prestigeAction(e, p, message);
-                break;
-            }
+//            case Prestige:{
+//                prestigeAction(e, p, message);
+//                break;
+//            }
             case SellAll_Currency:{
                 sellAllCurrencyChat(e, p, message);
                 break;
@@ -2883,21 +2916,21 @@ public class ListenersPrisonManager implements Listener {
         isChatEventActive = false;
     }
 
-    private void prestigeAction(AsyncPlayerChatEvent e, Player p, String message) {
-
-        // Check the chat message and do the actions
-        if (message.equalsIgnoreCase("cancel")) {
-            Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_prestiges_cancelled));
-        } else if (message.equalsIgnoreCase("confirm")) {
-            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "rankup prestiges"));
-        } else {
-            Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_prestiges_cancelled_wrong_keyword));
-        }
-        // Cancel the event
-        e.setCancelled(true);
-        // Set the event to false, because it got deactivated
-        isChatEventActive = false;
-    }
+//    private void prestigeAction(AsyncPlayerChatEvent e, Player p, String message) {
+//
+//        // Check the chat message and do the actions
+//        if (message.equalsIgnoreCase("cancel")) {
+//            Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_prestiges_cancelled));
+//        } else if (message.equalsIgnoreCase("confirm")) {
+//            Bukkit.getScheduler().runTask(SpigotPrison.getInstance(), () -> Bukkit.getServer().dispatchCommand(p, "rankup prestiges"));
+//        } else {
+//            Output.get().sendInfo(new SpigotPlayer(p), messages.getString(MessagesConfig.StringID.spigot_message_prestiges_cancelled_wrong_keyword));
+//        }
+//        // Cancel the event
+//        e.setCancelled(true);
+//        // Set the event to false, because it got deactivated
+//        isChatEventActive = false;
+//    }
 
     private void mineAction(AsyncPlayerChatEvent e, Player p, String message) {
 

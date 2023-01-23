@@ -161,8 +161,8 @@ public class MinesBlockCommands
 
 		BulletedListComponent.BulletedListBuilder builder = new BulletedListComponent.BulletedListBuilder();
 
-		DecimalFormat iFmt = new DecimalFormat( "#,##0" );
-		DecimalFormat dFmt = new DecimalFormat( "#,##0.00" );
+		DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
+		DecimalFormat dFmt = Prison.get().getDecimalFormat( "#,##0.00" );
 		double totalChance = 0.0d;
 		int count = 0;
 
@@ -658,8 +658,8 @@ public class MinesBlockCommands
         	return;
         }
         
-        DecimalFormat dFmt = new DecimalFormat("#,##0");
-        DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+        DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
+        DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
         
         
         ChatDisplay chatDisplay = new ChatDisplay("&bMine: &3" + m.getName());

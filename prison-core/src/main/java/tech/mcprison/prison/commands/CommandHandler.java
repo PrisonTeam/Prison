@@ -20,6 +20,7 @@ package tech.mcprison.prison.commands;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -135,7 +136,11 @@ public class CommandHandler {
         }
 
         @Override 
-        public ChatDisplay getHelpMessage(RegisteredCommand command) {
+        public ChatDisplay getHelpMessage(CommandSender sender, RegisteredCommand command) {
+        	
+        	if ( !hasCommandAccess(sender, command, command.getLabel(), new String[0] ) ) {
+        		return null;
+        	}
         	
             ChatDisplay chatDisplay = new ChatDisplay(
             		String.format( "Cmd: &7%s", 
@@ -252,24 +257,36 @@ public class CommandHandler {
 
             List<RegisteredCommand> subcommands = command.getSuffixes();
             if (subcommands.size() > 0) {
-            	chatDisplay.addText(ChatColor.DARK_AQUA + "Subcommands:");
+            	
                 // Force a sorting by use of a TreeSet. Collections.sort() would not work.
                 TreeSet<String> subCommandSet = new TreeSet<>();
                 for (RegisteredCommand scommand : subcommands) {
-                	String subCmd = scommand.getUsage();
-
-                	int subCmdSubCnt = scommand.getSuffixes().size();
-                	String subCommands = (subCmdSubCnt == 0 ? "" : 
-            							ChatColor.DARK_AQUA + "(" + subCmdSubCnt + " Subcommands)");
                 	
-                	String isAlias = scommand.isAlias() ? ChatColor.DARK_AQUA + "  Alias" : "";
+                	String sLabel = scommand.getCompleteLabel();
                 	
-                	subCommandSet.add(  
-                			String.format( "%s %s %s", subCmd, subCommands, isAlias ));
+                	if ( hasCommandAccess(sender, scommand, sLabel, new String[0] ) ) {
+                		
+                		String subCmd = scommand.getUsage();
+                		
+                		int subCmdSubCnt = scommand.getSuffixes().size();
+                		String subCommands = (subCmdSubCnt == 0 ? "" : 
+                			ChatColor.DARK_AQUA + "(" + subCmdSubCnt + " Subcommands)");
+                		
+                		String isAlias = scommand.isAlias() ? ChatColor.DARK_AQUA + "  Alias" : "";
+                		
+                		subCommandSet.add(  
+                				String.format( "%s %s %s", subCmd, subCommands, isAlias ));
+                	}
+                	
                 }
-                
-                for (String subCmd : subCommandSet) {
-                	chatDisplay.addText(subCmd);
+
+                // Only if there are entries to show, then include the header and the details
+                if ( subCommandSet.size() > 0 ) {
+                	chatDisplay.addText(ChatColor.DARK_AQUA + "Subcommands:");
+                	
+                	for (String subCmd : subCommandSet) {
+                		chatDisplay.addText(subCmd);
+                	}
                 }
             }
             
@@ -670,25 +687,25 @@ public class CommandHandler {
         
         RegisteredCommand mainCommand = getRootCommands().get( rootPluginCommand );
         
-            for (int i = 1; i < identifiers.length; i++) {
-            	
-                String suffix = identifiers[i];
-                if ( mainCommand.doesSuffixCommandExist(suffix) ) {
-                    mainCommand = mainCommand.getSuffixCommand(suffix);
-                } 
-                else {
-                    RegisteredCommand newCommand = new RegisteredCommand(suffix, this, mainCommand);
-                    newCommand.setAlias( alias != null );
-                    mainCommand.addSuffixCommand(suffix, newCommand);
-                
-	                // Must add all new RegisteredCommand objects to both getAllRegisteredCommands() and
-	                // getTabCompleterData().
-	                getAllRegisteredCommands().add( newCommand );
-	                getTabCompleaterData().add( newCommand );
+        for (int i = 1; i < identifiers.length; i++) {
+        	
+            String suffix = identifiers[i];
+            if ( mainCommand.doesSuffixCommandExist(suffix) ) {
+                mainCommand = mainCommand.getSuffixCommand(suffix);
+            } 
+            else {
+                RegisteredCommand newCommand = new RegisteredCommand(suffix, this, mainCommand );
+                newCommand.setAlias( alias != null );
+                mainCommand.addSuffixCommand(suffix, newCommand);
+            
+                // Must add all new RegisteredCommand objects to both getAllRegisteredCommands() and
+                // getTabCompleterData().
+                getAllRegisteredCommands().add( newCommand );
+                getTabCompleaterData().add( newCommand );
 
-                    mainCommand = newCommand;
-                }
+                mainCommand = newCommand;
             }
+        }
 
         // Associate the last RegisteredCommand (mainCommand) with the rootPCommand since that is
         // the leaf-node that will be tied to the registered command, especially with aliases:
@@ -747,7 +764,144 @@ public class CommandHandler {
     	}
 		return results;
 	}
+    
+    /***
+     * <p>
+     * This function is strictly for non-ops, and if a player has a given perm that
+     * is specified in the config file, then it will lock that player out of that
+     * command.  This is intended to force overrides on commands for the commands 
+     * that do not have their own perms.
+     * </p>
+     * @return
+     */
+    public boolean hasCommandAccess( CommandSender sender, RegisteredCommand rootCommand, 
+    		String label, String[] args ) {
 
+    	CommandAccessResults results = new CommandAccessResults( sender );
+    	
+    	hasCommandAccess( sender, rootCommand, label, args, results );
+    	
+    	if ( results.isAccess() ) {
+    		results.setAccessPermitted();
+    	}
+    	
+    	if ( !results.isAccess() ) {
+    		// Debug logging if prison is in debug mode:
+    		results.debugAccess();
+    	}
+    	
+    	return results.isAccess();
+    }
+    
+    private void hasCommandAccess( CommandSender sender, RegisteredCommand rootCommand, 
+    			String label, String[] args,
+    			CommandAccessResults results ) {
+    		
+//    	boolean results = true;
+    	
+    	if ( !sender.isOp() ) {
+    		
+        	String exRAKey = "prisonCommandHandler.exclude-non-ops.exclude-related-aliases";
+        	boolean excludeRelatedAliases = getConfigBoolean( exRAKey );
+        			
+        	String sLabelAlias = !excludeRelatedAliases || rootCommand.getParentOfAlias() == null ? 
+        			null : rootCommand.getParentOfAlias().getCompleteLabel();
+        	
+    		    		
+    		commandAccessPermChecks( sender, rootCommand, label, results );
+    		
+    		if ( results.isAccess() && sLabelAlias != null ) {
+
+    			commandAccessPermChecks( sender, rootCommand.getParentOfAlias(), sLabelAlias, results );
+    		}
+
+    	}
+    	
+    	// If we get to this point, and the result is true (the player has access the
+    	// specified command so far), and there are more args, we need to next
+    	// take the args[0] and append it to the label, and then test it again.
+    	// This needs to continue until the generated command is rejected, or
+    	// it passes it's clean and the player has full access to the command(s).
+    	if ( results.isAccess() && args.length > 0 ) {
+    		String newSuffix = args[0];
+    		String newLabel = label + " " + newSuffix;
+    		String[] newArgs = Arrays.copyOfRange( args, 1, args.length );
+    		
+    		RegisteredCommand newSuffixCommand = rootCommand.getSuffixCommand( newSuffix );
+    		
+    		if ( newSuffixCommand != null ) {
+    			
+    			hasCommandAccess( sender, newSuffixCommand, 
+    					newLabel, newArgs, results );
+    		}
+    	}
+    	
+    }
+
+	private void commandAccessPermChecks(CommandSender sender, RegisteredCommand rootCommand, String label,
+			CommandAccessResults results) {
+		
+		// Must first check to see if the command is setup for excludes, and if 
+		// not then exit with a value of true:
+		String configKey = "prisonCommandHandler.exclude-non-ops.commands." + 
+					label.replace( " ", "." );
+		
+		List<?> excludePerms = getConfigStringArray( configKey + ".perms" );
+		boolean includeCommandPerms = getConfigBoolean( configKey + ".includeCmdPerms" );
+		boolean includeCommandAltPerms = getConfigBoolean( configKey + ".includeCmdAltPerms" );
+		
+		if ( excludePerms != null && excludePerms.size() > 0 ) {
+
+			// first check the command perms first:
+			if ( includeCommandPerms ) {
+				
+				for ( String perm : rootCommand.getPermissions() ) {
+					
+					if ( sender.hasPermission( perm ) ) {
+						results.rejectCommandPermission( label, perm );
+						break;
+					}
+				}
+			}
+			
+			if ( results.isAccess() && includeCommandAltPerms ) {
+				
+				// first check the command altPerms next:
+				for ( String altPerm : rootCommand.getAltPermissions() ) {
+					
+					if ( sender.hasPermission( altPerm ) ) {
+						results.rejectCommandAltPermission( label, altPerm );
+						break;
+					}
+				}
+			}
+			
+			// If results has not been set to false, then check the exclude-non-ops:
+			if ( results.isAccess() ) {
+				
+				if ( excludePerms != null && excludePerms.size() > 0 && excludePerms.get( 0 ) instanceof String ) {
+					
+					for ( Object permObj : excludePerms) {
+						if ( permObj instanceof String ) {
+							if ( sender.hasPermission( permObj.toString() ) ) {
+								results.rejectConfigYaml( label, permObj.toString() );
+								break;
+							}
+						}
+					}
+				}
+				
+			}
+		}
+	}
+
+    private boolean getConfigBoolean( String configKey ) {
+    	return Prison.get().getPlatform().getConfigBooleanFalse( configKey );
+    }
+    private List<?> getConfigStringArray( String configKey ) {
+    	return Prison.get().getPlatform().getConfigStringArray( configKey );
+    }
+    
 	public boolean onCommand(CommandSender sender, PluginCommand command, String label,
     								String[] args) {
     	
@@ -757,11 +911,17 @@ public class CommandHandler {
         			" : No root command found. " );
             return false;
         }
-
+        
         if (rootCommand.isOnlyPlayers() && !(sender instanceof Player)) {
             Prison.get().getLocaleManager().getLocalizable("cantAsConsole")
                 .sendTo(sender, LogLevel.ERROR);
             return true;
+        }
+        
+        else if ( !hasCommandAccess( sender, rootCommand, label, args ) ) {
+        	// The player does not have access to this command.
+        	// Who cares!  Just exit and do nothing. Never log this.
+        	return true;
         }
         
         else {
@@ -784,6 +944,32 @@ public class CommandHandler {
 
         return true;
     }
+	
+	/**
+	 * <p>This function is similar to onCommand, but it does not run any commands.
+	 * It only validates if a player has access to the commands.
+	 * </p>
+	 * @param registeredCommand 
+	 * 
+	 * @return
+	 */
+	public boolean checkCommand( CommandSender sender, 
+					RegisteredCommand registeredCommand, 
+					String label, String... args ) {
+		boolean hasAccess = true;
+				
+		if ( sender != null &&
+				registeredCommand != null &&
+				!hasCommandAccess( sender, registeredCommand, label, args ) ) {
+			
+			// The player does not have access to this command.
+			// Who cares!  Just exit and do nothing. Never log this.
+			hasAccess = false;
+		}
+		
+		
+		return hasAccess;
+	}
     
 	public Map<String, Object> getRegisteredCommands() {
 		return registeredCommands;

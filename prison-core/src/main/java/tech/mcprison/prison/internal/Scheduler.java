@@ -65,6 +65,11 @@ public interface Scheduler {
      */
     public int runTaskTimerAsync(Runnable run, long delay, long interval);
 
+    
+    public void dispatchCommand( Player player, String command );
+    
+    public void performCommand( Player player, String command );
+    
     /**
      * Cancel a certain task.
      *

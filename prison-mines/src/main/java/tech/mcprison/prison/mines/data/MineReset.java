@@ -197,7 +197,7 @@ public abstract class MineReset
 //		
 //		// Tie to the command stats mode so it logs it if stats are enabled:
 //		if ( PrisonMines.getInstance().getMineManager().isMineStats() ) {
-//			DecimalFormat dFmt = new DecimalFormat("#,##0");
+//			DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 //			Output.get().logInfo("&cMine reset: &7" + getTag() + 
 //					"&c  Blocks: &7" + dFmt.format( getBounds().getTotalBlockCount() ) + 
 //					statsMessage() );
@@ -340,8 +340,8 @@ public abstract class MineReset
     
     public String statsMessage() {
     	StringBuilder sb = new StringBuilder();
-    	DecimalFormat dFmt = new DecimalFormat("#,##0.000");
-    	DecimalFormat iFmt = new DecimalFormat("#,##0");
+    	DecimalFormat dFmt = Prison.get().getDecimalFormatDouble();
+    	DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
     	
     	sb.append( "&3 ResetTime: &7" );
     	sb.append( dFmt.format(getStatsResetTimeMS() / 1000.0d )).append( " s " );
@@ -819,7 +819,7 @@ public abstract class MineReset
 ////                // Tie to the command stats mode so it logs it if stats are enabled:
 ////                if ( PrisonMines.getInstance().getMineManager().isMineStats() || 
 ////                		getCurrentJob().getResetActions().contains( MineResetActions.DETAILS ) ) {
-////                	DecimalFormat dFmt = new DecimalFormat("#,##0");
+////                	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 ////                	Output.get().logInfo("&cMine reset: &7" + getTag() + 
 ////                			"&c  Blocks: &7" + dFmt.format( getBounds().getTotalBlockCount() ) + 
 ////                			statsMessage() );
@@ -893,8 +893,12 @@ public abstract class MineReset
 		// such as could happen if there is lag or a lot going on within the server, 
 		// this will TP anyone out who would otherwise suffocate.  I hope! lol
     	
-    	MineTeleportTask teleportTask = new MineTeleportTask( (Mine) this );
-		teleportTask.submitTaskSync();
+    		
+    	if ( Prison.get().getPlatform().getConfigBooleanTrue( "prison-mines.tp-to-spawn-on-mine-resets" ) ) {
+    		MineTeleportTask teleportTask = new MineTeleportTask( (Mine) this );
+    		teleportTask.submitTaskSync();
+    	}
+    	
 		
 //		teleportAllPlayersOut();
 //		setStatsTeleport2TimeMS(
@@ -946,7 +950,7 @@ public abstract class MineReset
         // Tie to the command stats mode so it logs it if stats are enabled:
         if ( PrisonMines.getInstance().getMineManager().isMineStats() || 
         		getCurrentJob().getResetActions().contains( MineResetActions.DETAILS ) ) {
-        	DecimalFormat dFmt = new DecimalFormat("#,##0");
+        	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
         	Output.get().logInfo("&cMine reset: &7" + getTag() + 
         			"&c  Blocks: &7" + dFmt.format( getBounds().getTotalBlockCount() ) + 
         			statsMessage() );
@@ -986,8 +990,12 @@ public abstract class MineReset
 			canceled = event.isCanceled();
 			if (!canceled) {
 				
-				MineTeleportTask teleportTask = new MineTeleportTask( (Mine) this );
-				teleportTask.submitTaskSync();
+	    		
+		    	if ( Prison.get().getPlatform().getConfigBooleanTrue( "prison-mines.tp-to-spawn-on-mine-resets" ) ) {
+		    		MineTeleportTask teleportTask = new MineTeleportTask( (Mine) this );
+		    		teleportTask.submitTaskSync();
+		    	}
+
 //				try {
 //					teleportAllPlayersOut();
 ////					setStatsTeleport1TimeMS(
@@ -1343,7 +1351,9 @@ public abstract class MineReset
 		try {
 //			Location targetBlock = new Location(world, x, y, z);
 			
-			boolean containsCustomBlocks = getPrisonBlockTypes().contains( PrisonBlockType.CustomItems );
+			boolean containsCustomBlocks = 
+					getPrisonBlockTypes().contains( PrisonBlockType.CustomItems ) ||
+					getPrisonBlockTypes().contains( PrisonBlockType.ItemsAdder );
 
 			Block tBlock = targetBlock.getBlockAt( containsCustomBlocks );
 			

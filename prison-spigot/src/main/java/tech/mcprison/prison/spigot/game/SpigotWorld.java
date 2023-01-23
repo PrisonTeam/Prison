@@ -161,6 +161,61 @@ public class SpigotWorld implements World {
 		
 	}
 
+	
+//	public String getBlockSignature( Location location ) {
+//		String results = null;
+//		
+//		if ( getWrapper() != null ) {
+//			
+//			SpigotBlock block = (SpigotBlock) getBlockAt( location );
+//			
+//			 StringBuilder sb = new StringBuilder();
+//			 sb.append( block.getWrapper().getType().name() )
+//			 	.append( ":" )
+////			 	.append( location.toWorldCoordinates() )
+////			 	.append( "::" )
+//			 	.append( block.getWrapper().getBlockData() );
+//			 
+//			 results = sb.toString();
+//		}
+//		
+//		return results;
+//	}
+	
+//	public void getTestBlock() {
+//		
+//		PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
+//		
+//		NBTItem nbtItemStack = nbtUtil.getNBT( bstack );
+//		
+//		nbtItemStack.
+//	}
+	
+//	public void setBlockFromString( String blockString, Location location ) {
+//		
+//		String[] parts = blockString.split("::");
+//		String blockNameFormal = parts[0];
+//		String worldCoordinates = parts[1];
+//		String blockData = parts[2];
+//		
+//		Location targetLocation = location;
+//		if ( targetLocation == null ) {
+//			targetLocation = Location.decodeWorldCoordinates(worldCoordinates);
+//		}
+//		
+//		SpigotBlock block = (SpigotBlock) getBlockAt( targetLocation );
+//		
+//		Prison.get().getPlatform().getPrisonBlock(blockNameFormal);
+////		block.setType(Material.getMaterial(parts[0]));
+//		
+//		BlockData targetBlockData = 
+//				SpigotPrison.getInstance().getServer().createBlockData( blockData );
+//		
+//		block.getWrapper().setBlockData( targetBlockData );
+//		
+//	}
+	
+	
     public org.bukkit.World getWrapper() {
         return bukkitWorld;
     }

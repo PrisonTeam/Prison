@@ -1,6 +1,5 @@
 package tech.mcprison.prison.spigot.utils;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,7 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
+//import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import com.cryptomorin.xseries.XMaterial;
@@ -34,6 +33,7 @@ import tech.mcprison.prison.spigot.block.OnBlockBreakMines;
 import tech.mcprison.prison.spigot.block.PrisonItemStackNotSupportedRuntimeException;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
+import tech.mcprison.prison.spigot.compat.Compatibility.EquipmentSlot;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
@@ -43,7 +43,7 @@ import tech.mcprison.prison.util.Location;
 import tech.mcprison.prison.util.Text;
 
 public class PrisonUtilsMineBombs
-		extends PrisonUtilsMineBombsTasks
+		extends PrisonUtilsMineBombsMessages 
 {
 	public static final String MINE_BOMBS_LORE_1 = "&4Prison Mine Bomb:";
 	public static final String MINE_BOMBS_LORE_2_PREFIX = "  &7";
@@ -131,7 +131,12 @@ public class PrisonUtilsMineBombs
 				
 				int radius = 3;
 				
-				radius = Integer.parseInt( radiusSize );
+				try {
+					radius = Integer.parseInt( radiusSize );
+				} catch (NumberFormatException e) {
+					Output.get().logInfo( "Prison utils bomb: invalid value for radius [%s] defaulting to %d", 
+							radiusSize, radius);
+				}
 
 				MineBombs mBombs = MineBombs.getInstance();
 
@@ -745,7 +750,8 @@ public class PrisonUtilsMineBombs
 	 * @return
 	 */
 	public boolean setBombInHand( Player player, 
-					MineBombData bomb, SpigotBlock sBlock, EquipmentSlot hand ) {
+					MineBombData bomb, SpigotBlock sBlock, 
+					tech.mcprison.prison.spigot.compat.Compatibility.EquipmentSlot hand ) {
 		boolean isABomb = false;
 		
 //		MineBombData bomb = getBombItem( player );
@@ -958,13 +964,15 @@ public class PrisonUtilsMineBombs
 				
 				else {
 					
-					float cooldownSeconds = cooldownTicks / 20.0f;
-					DecimalFormat dFmt = new DecimalFormat( "0.0" );
+					mineBombsCoolDownMsg( sPlayer, cooldownTicks );
 					
-					String message = 
-							String.format( "You cannot use another Prison Mine Bomb for %s seconds.", 
-									dFmt.format( cooldownSeconds ) );
-					sPlayer.sendMessage( message );
+//					float cooldownSeconds = cooldownTicks / 20.0f;
+//					DecimalFormat dFmt = Prison.get().getDecimalFormat( "0.0" );
+//					
+//					String message = 
+//							String.format( "You cannot use another Prison Mine Bomb for %s seconds.", 
+//									dFmt.format( cooldownSeconds ) );
+//					sPlayer.sendMessage( message );
 					
 				}
 				

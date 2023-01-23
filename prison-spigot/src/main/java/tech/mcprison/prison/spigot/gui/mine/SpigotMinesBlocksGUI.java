@@ -8,17 +8,17 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
-import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
+import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMessages;
 
 /**
  * @author GABRYCA
  * @author RoyalBlueRanger (rBluer)
  */
-public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
+public class SpigotMinesBlocksGUI 
+	extends SpigotGUIMessages {
 
     private final Player p;
     private final String mineName;
@@ -26,9 +26,9 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
     // Global Strings.
     private final String loreShiftRightClickToDelete = guiRightClickShiftToDeleteMsg();
     private final String loreClickToEditBlock = guiClickToEditMsg();
-    private final String loreInfo = messages.getString(MessagesConfig.StringID.spigot_gui_lore_info);
-    private final String loreChance = messages.getString(MessagesConfig.StringID.spigot_gui_lore_chance);
-    private final String loreBlockType = messages.getString(MessagesConfig.StringID.spigot_gui_lore_blocktype);
+    private final String loreInfo = guiRanksLoreInfoMsg();
+    private final String loreChance = guiRanksLoreChanceMsg();
+    private final String loreBlockType = guiRanksLoreBlockTypeMsg();
 
     public SpigotMinesBlocksGUI(Player p, String mineName){
         this.p = p;
@@ -43,7 +43,7 @@ public class SpigotMinesBlocksGUI extends SpigotGUIComponents {
         // Get Mine
         Mine m = PrisonMines.getInstance().getMine(mineName);
 
-        ButtonLore addBlockLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_add), null);
+        ButtonLore addBlockLore = new ButtonLore( guiRanksLoreClickToAddMsg(), null);
 
         // Add the button to the GUI.
         gui.addButton(new Button(dimension - 1, XMaterial.LIME_STAINED_GLASS_PANE, addBlockLore, "&aAdd " + mineName));

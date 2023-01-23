@@ -1,23 +1,25 @@
 package tech.mcprison.prison.spigot.gui.mine;
 
-import com.cryptomorin.xseries.XMaterial;
+import java.util.List;
+
 import org.bukkit.entity.Player;
+
+import com.cryptomorin.xseries.XMaterial;
+
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.internal.block.PrisonBlockTypes;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
-import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
-
-import java.util.List;
+import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMessages;
 
 /**
  * @author GABRYCA
  */
-public class SpigotBlocksMineListGUI extends SpigotGUIComponents {
+public class SpigotBlocksMineListGUI 
+	extends SpigotGUIMessages {
 
     private final Player p;
     private final String mineName;
@@ -38,7 +40,7 @@ public class SpigotBlocksMineListGUI extends SpigotGUIComponents {
         // Create the inventory
         PrisonGUI gui = new PrisonGUI(p, dimension, "&3Select -> ShowBlock");
 
-        ButtonLore lore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_select), null);
+        ButtonLore lore = new ButtonLore( guiRanksLoreClickToSelectMsg(), null);
 
         // This will skip all BlockTypes that are invalid for the versions of MC that the server is running:
         PrisonBlockTypes prisonBlockTypes = Prison.get().getPlatform().getPrisonBlockTypes();

@@ -26,6 +26,7 @@ import tech.mcprison.prison.commands.Arg;
 import tech.mcprison.prison.commands.Command;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.internal.Player;
+import tech.mcprison.prison.internal.Scheduler;
 import tech.mcprison.prison.internal.platform.Platform;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.output.Output.DebugTarget;
@@ -67,28 +68,73 @@ public class RankUpCommand
     			description = "Ranks up to the max rank that the player can afford. If the player has the " +
     					"perm ranks.rankupmax.prestige it will try to rankup prestige once it maxes out " +
     					"on the default ladder.", 
-    			altPermissions = {"ranks.rankupmax.[ladderName]", "ranks.rankupmax.prestige"},
+    			altPermissions = {"ranks.rankupmax.default", "ranks.rankupmax.prestige", "ranks.rankupmax.[ladderName]"},
     			onlyPlayers = false) 
     public void rankUpMax(CommandSender sender,
     		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder 
     		) {
 
-    	// Not supposed to check perms here... But it is a simple check, and it if works...
-    	if ( sender.hasPermission("ranks.rankupmax." + ladder) 
-    			// || sender.hasPermission("ranks.rankupmax.prestiges")
+    	String perms = "ranks.rankupmax.";
+    	String permsLadder = perms + ladder;
+    	
+		boolean isPrestigesEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) || 
+				Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" );
+		
+		boolean isLadderPrestiges = ladder.equalsIgnoreCase(LadderManager.LADDER_PRESTIGES);
+//		boolean isLadderDefault = ladder.equalsIgnoreCase(LadderManager.LADDER_DEFAULT);
+    	
+    	if ( (isPrestigesEnabled && isLadderPrestiges ||
+    			!isLadderPrestiges ) && 
+    			sender.hasPermission( permsLadder) 
     			) {
     		Output.get().logDebug( DebugTarget.rankup, 
-    				"Rankup: cmd '/rankupmax %s'  Passed perm check: ranks.rankupmax.%s", 
-    				ladder, ladder );
+    				"Rankup: cmd '/rankupmax %s'  Passed perm check: %s", 
+    				ladder, permsLadder );
+    		
+    		boolean success = false;
     		
     		List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
+    		StringBuilder sbRanks = new StringBuilder();
     		
-			rankUpPrivate(sender, "", ladder, RankupModes.MAX_RANKS, "ranks.rankupmax.", cmdTasks );
+    		
+    		RankupModes mode = RankupModes.MAX_RANKS;
+    		
+    		if ( !LadderManager.LADDER_PRESTIGES.equalsIgnoreCase( ladder ) && 
+    				!LadderManager.LADDER_DEFAULT.equalsIgnoreCase( ladder )) {
+    			
+    			success = rankUpPrivate(sender, "", ladder, mode, perms, cmdTasks, sbRanks );
+    		}
+    		else {
+    			
+    			// Run rankupmax on the default ladder only:
+    			success = rankUpPrivate(sender, "", LadderManager.LADDER_DEFAULT, mode, perms, cmdTasks, sbRanks );
+    			
+    			// If they specified the prestiges ladder, then try to prestige that one rank:
+    			if ( success && LadderManager.LADDER_PRESTIGES.equalsIgnoreCase( ladder ) ) {
+    				
+    				success = rankUpPrivate(sender, "", LadderManager.LADDER_PRESTIGES, RankupModes.ONE_RANK, perms, cmdTasks, sbRanks );
+    			}
+    		}
+    		
+			
 			
 			// submit cmdTasks
-			Player player = getPlayer( sender, null );
-			submitCmdTasks( player, cmdTasks );
+			if ( cmdTasks.size() > 0 ) {
+				
+				Player player = getPlayer( sender, null );
+				submitCmdTasks( player, cmdTasks );
+			}
 			
+			
+			if ( sbRanks.length() > 0 ) {
+				ranksRankupMaxSuccessMsg( sender, sbRanks );
+			}
+			
+			// If the ran rankupmax for prestiges, and the last prestige was successful, then
+			// try it all again!
+			if ( success && LadderManager.LADDER_PRESTIGES.equalsIgnoreCase( ladder ) ) {
+				rankUpMax( sender, ladder );
+			}
 		}
     	else {
     		Output.get().logDebug( DebugTarget.rankup, 
@@ -99,10 +145,14 @@ public class RankUpCommand
     }
 
 
-	@Command(identifier = "rankup", description = "Ranks up to the next rank.", 
-			permissions = "ranks.user", altPermissions = "ranks.rankup.[ladderName]", onlyPlayers = false) 
+	@Command(identifier = "rankup", description = "Ranks up to the next rank. All players have access to " +
+			"the ability to rankup on the default ladder so no perms are required, but any other ladder " +
+			"requires the correct perms.", 
+			permissions = "ranks.user", 
+			altPermissions = {"ranks.rankup.default", "ranks.rankup.prestiges", "ranks.rankup.[ladderName]"}, 
+			onlyPlayers = false) 
     public void rankUp(CommandSender sender,
-		@Arg(name = "ladder", description = "The ladder to rank up on.", def = "default")  String ladder,
+		@Arg(name = "ladder", description = "The ladder to rank up on. Defaults to 'default'.", def = "default")  String ladder,
 		@Arg(name = "playerName", description = "Provides the player's name for the rankup, but" +
 				"this can only be provided by a non-player such as console or ran from a script.", def = "")  String playerName
 		) {
@@ -116,47 +166,231 @@ public class RankUpCommand
         	return;
         }
         
-		Output.get().logDebug( DebugTarget.rankup, 
-				"Rankup: cmd '/rankup %s%s'  Processing ranks.rankup.%s", 
-				ladder, 
-				( playerName.length() == 0 ? "" : " " + playerName ),
-				ladder
-				);
-        
-		List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
+        String perms = "ranks.rankup.";
+        String permsLadder = perms + ladder;
+    	
+		boolean isPrestigesEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) || 
+				Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" );
 		
-    	rankUpPrivate(sender, playerName, ladder, RankupModes.ONE_RANK, "ranks.rankup.", cmdTasks );
+		boolean isLadderPrestiges = ladder.equalsIgnoreCase(LadderManager.LADDER_PRESTIGES);
+		boolean isLadderDefault = ladder.equalsIgnoreCase(LadderManager.LADDER_DEFAULT);
     	
-    	// submit cmdTasks
-    	Player player = getPlayer( sender, playerName );
-		submitCmdTasks( player, cmdTasks );
+    	if ( isLadderDefault ||
+    			
+    			(isPrestigesEnabled && isLadderPrestiges ||
+    			!isLadderPrestiges ) && 
+    			sender.hasPermission( permsLadder) 
+    			) {
+    		Output.get().logDebug( DebugTarget.rankup, 
+    				"Rankup: cmd '/rankup %s%s'  Passed perm check: %s", 
+    				ladder, 
+    				( playerName.length() == 0 ? "" : " " + playerName ),
+    				permsLadder );
+        
+        	
+//        	Output.get().logDebug( DebugTarget.rankup, 
+//        			"Rankup: cmd '/rankup %s%s'  Processing %s", 
+//        			ladder, 
+//        			( playerName.length() == 0 ? "" : " " + playerName ),
+//        			permsLadder
+//        			);
+        	
+        	List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
+        	
+        	rankUpPrivate(sender, playerName, ladder, RankupModes.ONE_RANK, perms, cmdTasks, null );
+        	
+        	// submit cmdTasks
+        	Player player = getPlayer( sender, playerName );
+        	submitCmdTasks( player, cmdTasks );
+        }
+    	else {
+    		Output.get().logDebug( DebugTarget.rankup, 
+    				"Rankup: Failed: cmd '/rankup %s'  Does not have the permission %s", 
+    				ladder, permsLadder );
+    		rankupMaxNoPermissionMsg( sender, permsLadder );
+    	}
+        
+    }
+	
+
+	@Command(identifier = "prestige", description = "This will prestige the player. Prestiging is generally when "
+			+ "the player's default rank is reset to the lowest rank, their money is rest to zero, and they "
+			+ "start the mining and the ranking up process all over again. As a trade off for their reset "
+			+ "of ranks, they get a new prestige rank with the costs of the default ranks being increased.", 
+			permissions = "ranks.user", 
+			altPermissions = {"ranks.rankup.prestiges"}, 
+			onlyPlayers = false) 
+    public void prestigeCmd(CommandSender sender,
+		@Arg(name = "playerName", def = "", 
+				description = "Provides the player's name for the prestige, but " +
+				"this can only be provided by a non-player such as console or ran from a script. " +
+				"Players cannot run Prestige for other players.") 
+    			String playerName,
+    	@Arg(name = "confirm", def = "",
+    			description = "If confirmations are enabled, then the prestige command " + 
+    			"must be repeated with the addition of 'confirm'. If the prestige command is ran by a "
+    			+ "non-player, such as console or from script, then the confirmation will be skipped, or "
+    			+ "the word 'confirm' can be appended to the initial command. If 'confirm' is supplied, even "
+    			+ "if the setting 'prestige.confirmation-enabled: true' is enabled, then confirmations will "
+    			+ "be skipped (acts like a bypass)." )
+    			String confirm
+		) {
+        
+		boolean isConfirmed = ( confirm != null && confirm.toLowerCase().contains("confirm") );
+		if ( !isConfirmed && playerName != null && playerName.toLowerCase().equals( "confirm" ) ) {
+			isConfirmed = true;
+			playerName = "";
+		}
+		
+		boolean isPlayer = sender.isPlayer();
+		
+		if ( isPlayer ) {
+			playerName = sender.getName();
+		}
+		
+		
+        if ( !isPlayer && playerName.length() == 0 ) {
+        	Output.get().logInfo( rankupCannotRunFromConsoleMsg() );
+        	return;
+        }
+        
+        RankPlayer rPlayer = getRankPlayer(sender, null, playerName);
+        
+        if ( rPlayer == null ) {
+        	rankupInvalidPlayerNameMsg( sender, playerName );
+        	return;
+        }
+        
+        
+        String perms = "ranks.rankup.";
+        String permsLadder = perms + LadderManager.LADDER_PRESTIGES;
+
+		boolean isPrestigesEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) || 
+				Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" );
+		
+		boolean isResetDefaultLadder = Prison.get().getPlatform().getConfigBooleanFalse( "prestige.resetDefaultLadder" );
+		boolean isResetMoney = Prison.get().getPlatform().getConfigBooleanFalse( "prestige.resetMoney" );
+		boolean isConfirmationEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "prestige.confirmation-enabled" );
+		boolean isConfirmGUI = Prison.get().getPlatform().getConfigBooleanFalse( "prestige.prestige-confirm-gui" );
+		//boolean isforceSellall  = Prison.get().getPlatform().getConfigBooleanFalse( "prestige.force-sellall" );
+		
+//		boolean isLadderPrestiges = ladder.equalsIgnoreCase(LadderManager.LADDER_PRESTIGES);
     	
+		PlayerRank nextRank = rPlayer.getNextPlayerRank();
+		Rank nRank = nextRank == null ? null : nextRank.getRank();
+		
+		if ( nRank == null ) {
+			// You're at the last possible rank.
+			rankupNotAbleToPrestigeMsg( sender );
+			rankupAtLastRankMsg( sender );
+			return;
+		}
+		
+		if ( !nRank.getLadder().getName().equals( LadderManager.LADDER_PRESTIGES ) ) {
+			
+			// your next rank is not a Prestiges rank
+			rankupNotAbleToPrestigeMsg( sender );
+			rankupNotAtLastRankMsg( sender );
+			
+			return;
+		}
+		
+		String currency = nextRank.getCurrency();
+		
+		if ( rPlayer.getBalance( currency ) < nextRank.getRankCost() ) {
+			
+			// You do not have enough to prestige yet
+			ranksRankupCannotAffordMsg( sender, nextRank );
+			ranksRankupPlayerBalanceMsg( sender, rPlayer.getBalance( currency ), currency );
+			return;
+		}
+
+		if ( isConfirmationEnabled && !isConfirmed ) {
+			if ( isConfirmGUI && isPlayer ) {
+				
+				// call the gui prestige confirmation:
+//				callGuiPrestigeConfirmation( sender, );
+				String guiConfirmParms = 
+						prestigeConfirmationGUIMsg( sender, rPlayer, nextRank, isResetDefaultLadder, isResetMoney );
+				
+				String guiConfirmCmd = "gui prestigeConfirm " + guiConfirmParms;
+//				Output.get().logInfo( guiConfirmCmd );
+				
+				submitCmdTask( rPlayer, guiConfirmCmd );
+				
+			}
+			else {
+				
+				prestigeConfirmationMsg( sender, rPlayer, nextRank, isResetDefaultLadder, isResetMoney, isPlayer );
+			}
+			return;
+		}
+		
+		if ( isPrestigesEnabled &&  
+    			sender.hasPermission( permsLadder) 
+    			) {
+    		Output.get().logDebug( DebugTarget.rankup, 
+    				"Rankup: cmd '/prestige %s%s'  Passed perm check: %s", 
+    				(playerName.length() == 0 ? "" : " " + playerName ),
+    				(confirm == null ? "" : " " + confirm ),
+    				permsLadder );
+        
+        	
+        	List<PrisonCommandTaskData> cmdTasks = new ArrayList<>();
+        	
+        	String ladder = nRank.getLadder().getName();
+        	rankUpPrivate(sender, playerName, ladder, RankupModes.ONE_RANK, perms, cmdTasks, null );
+        	
+        	// submit cmdTasks
+        	Player player = getPlayer( sender, playerName );
+        	submitCmdTasks( player, cmdTasks );
+        }
+        
     }
 
-    private void rankUpPrivate(CommandSender sender, String playerName, String ladder, RankupModes mode, 
-    		String permission, List<PrisonCommandTaskData> cmdTasks ) {
 
+    private boolean rankUpPrivate(CommandSender sender, String playerName, String ladder, RankupModes mode, 
+    		String permission, 
+    		List<PrisonCommandTaskData> cmdTasks, 
+    		StringBuilder sbRanks ) {
+
+    	boolean rankupSuccess = false;
+    	
         // RETRIEVE THE LADDER
-
-        // This player has to have permission to rank up on this ladder.
-        if (!(ladder.equalsIgnoreCase(LadderManager.LADDER_PRESTIGES) && 
-        		(Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) || 
-        				Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" ))) && 
-		        	!ladder.equalsIgnoreCase(LadderManager.LADDER_DEFAULT) && 
-		        	!sender.hasPermission(permission + ladder.toLowerCase())) {
-
-        	Output.get().logDebug( DebugTarget.rankup, 
-        			"Rankup: rankUpPrivate: failed rankup perm check");
-        	
-        	rankupMaxNoPermissionMsg( sender, permission + ladder );
-            return;
-        }
+    	
+//    	// Perms have already been checked on the RankupModes.MAX_RANKS:
+//    	if ( mode != RankupModes.MAX_RANKS ) {
+//    		
+//    		boolean isPrestigesEnabled = Prison.get().getPlatform().getConfigBooleanFalse( "prestiges" ) || 
+//    				Prison.get().getPlatform().getConfigBooleanFalse( "prestige.enabled" );
+//    		
+//    		boolean isLadderPrestiges = ladder.equalsIgnoreCase(LadderManager.LADDER_PRESTIGES);
+//    		boolean isLadderDefault = ladder.equalsIgnoreCase(LadderManager.LADDER_DEFAULT);
+//    		
+//    		String permCheck = permission + ladder.toLowerCase();
+//    		
+//    		// This player has to have permission to rank up on this ladder, but
+//    		// ignore if either the default or prestiges ladder.  This only is to check for
+//    		//  other ladders.
+//    		if (!( isLadderPrestiges && isPrestigesEnabled ) && 
+//    				!isLadderDefault && 
+//    				!sender.hasPermission( permCheck )) {
+//    			
+//    			Output.get().logDebug( DebugTarget.rankup, 
+//    					"Rankup: rankUpPrivate: failed rankup perm check. Missing perm: %s",
+//    					permCheck );
+//    			
+//    			rankupMaxNoPermissionMsg( sender, permCheck );
+//    			return false;
+//    		}
+//    		
+//    	}
 
         
         // 
         if ( mode == null ) {
         	Output.get().logInfo( rankupInternalFailureMsg() );
-        	return;
+        	return false;
         }
         
         
@@ -166,7 +400,7 @@ public class RankUpCommand
 		
         if ( !sender.isPlayer() && playerName.length() == 0 ) {
         	Output.get().logInfo( rankupCannotRunFromConsoleMsg() );
-        	return;
+        	return false;
         }
         
 
@@ -175,7 +409,7 @@ public class RankUpCommand
         
         if ( player == null ) {
         	rankupInvalidPlayerNameMsg( sender, playerName );
-        	return;
+        	return false;
         }
 
         
@@ -184,7 +418,7 @@ public class RankUpCommand
 		ladder = confirmLadder( sender, ladder );
 		if ( ladder == null ) {
 			// ladder cannot be null, 
-			return;
+			return false;
 		}
 
 		LadderManager lm = PrisonRanks.getInstance().getLadderManager();
@@ -192,38 +426,69 @@ public class RankUpCommand
 		
        	if ( targetLadder == null ){
     		rankupErrorNoLadderMsg( sender, ladder );
-    		return;
+    		return false;
     	}
     	
     	if (!targetLadder.getLowestRank().isPresent()){
     		rankupErrorNoRankOnLadderMsg( sender, ladder );
-    		return;
+    		return false;
     	}
 		
 
-    	RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
     	
         RankPlayer rankPlayer = getRankPlayer( sender, player.getUUID(), player.getName() );
-        PlayerRank playerRankCurrent = rankPlayerFactory.getRank( rankPlayer, ladder );
         
-        PlayerRank playerRankTarget = null;
         
-        // If the player does not have a rank on the current ladder, then assign the
-        // default rank for the ladder to be their next rank.
-        if ( playerRankCurrent == null ) {
+        
+        // Get the player's next rank on default ladder, or if at end then it will return the next
+        // prestiges rank.
+        PlayerRank playerRankTarget = rankPlayer.getNextPlayerRank();
+        
+        
+        // If the nextRank is null or the ladder does not match selected ladder, then exit:
+        if ( playerRankTarget == null || playerRankTarget.getRank() == null  ||
+        		!playerRankTarget.getRank().getLadder().getName().equalsIgnoreCase( ladder )	) {
         	
-        	playerRankTarget = rankPlayer.calculateTargetPlayerRank( 
-        			targetLadder.getLowestRank().get() );
+        	return false;
+        }
+        
+        
+        RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+        
+        
+        
+        // If the target ladder is either default or prestiges, then use the getNextPlayerRank() value
+        // that is provided.  Only use the following code if not these two ladders.
+        if ( !ladder.equalsIgnoreCase( LadderManager.LADDER_DEFAULT ) && 
+        		!ladder.equalsIgnoreCase( LadderManager.LADDER_PRESTIGES ) ) {
         	
+
+        	PlayerRank playerRankCurrent = rankPlayerFactory.getRank( rankPlayer, ladder );
+//        PlayerRank playerRankCurrent = rankPlayer.getPlayerRankDefault();
+
+        	
+        	// If the player does not have a rank on the current ladder, then assign the
+        	// default rank for the ladder to be their next rank.
+        	if ( playerRankCurrent == null ) {
+        		
+        		playerRankTarget = rankPlayer.calculateTargetPlayerRank( 
+        				targetLadder.getLowestRank().get() );
+        		
 //        	playerRankTarget = rankPlayerFactory.createPlayerRank( 
 //        			targetLadder.getLowestRank().get() );
-        }
-        else {
-        	
-        	playerRankTarget = rankPlayer.calculateTargetPlayerRank( playerRankCurrent.getRank() );
+        	}
+        	else {
+        		
+        		playerRankTarget = rankPlayer.calculateTargetPlayerRank( playerRankCurrent.getRank() );
 //        	playerRankTarget = playerRankCurrent.getTargetPlayerRankForPlayer( rankPlayer, 
 //        					playerRankCurrent.getRank() );
+        	}
+        
         }
+        
+
+        
+        
         
         		
         
@@ -235,7 +500,7 @@ public class RankUpCommand
         // If a player has a rank on the ladder get their rank, otherwise null:
         Rank pRankTarget = playerRankTarget.getRank();
         
-        Rank pRankAfter = null;
+//        Rank pRankAfter = null;
         boolean canPrestige = false;
         
         // If the player is trying to prestige, then the following must be ran to setup the prestige checks:
@@ -245,12 +510,12 @@ public class RankUpCommand
         	
         	if ( rankLadder == null ){
         		rankupErrorNoDefaultLadderMsg( sender );
-        		return;
+        		return false;
         	}
         	
         	if (!rankLadder.getLowestRank().isPresent()){
         		rankupErrorNoLowerRankMsg( sender );
-        		return;
+        		return false;
         	}
         	
         	// gets the rank on the default ladder. Used if ladder is not default.
@@ -264,8 +529,15 @@ public class RankUpCommand
         	// The last rank will never have a rankNext (it will be null):
         	if ( playersRankOnDefaultLadder.getRankNext() != null ) {
         		rankupNotAtLastRankMsg( sender );
-        		return;
+        		return false;
         	}
+        	
+        	// If force sellall, then perform the sellall here:
+        	if ( Prison.get().getPlatform().getConfigBooleanFalse( "prestige.force-sellall" ) ) {
+        		
+        		Prison.get().getPlatform().sellall( rankPlayer );
+        	}
+        	
         	
         	// IF everything's ready, this will be true if and only if pRank is not null,
         	// and the prestige method will start
@@ -276,7 +548,6 @@ public class RankUpCommand
         // Get currency if it exists, otherwise it will be null if the Rank has no currency:
         String currency = rankPlayer == null || pRankTarget == null ? null : pRankTarget.getCurrency();
         
-        boolean rankupWithSuccess = false;
         
         if (rankPlayer != null ) {
         	
@@ -284,37 +555,45 @@ public class RankUpCommand
         	RankupResults results = new RankUtil().rankupPlayer(player, rankPlayer, ladder, 
         						sender.getName(), cmdTasks );
         	
-        	processResults( sender, player.getName(), results, null, ladder, currency );
+        	
+        	processResults( sender, player.getName(), results, null, ladder, currency, sbRanks );
         	
         	// If the last rankup attempt was successful and they are trying to rankup as many times as possible: 
-        	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS && 
-        			!ladder.equals(LadderManager.LADDER_PRESTIGES)) {
-        		rankUpPrivate( sender, playerName, ladder, mode, permission, cmdTasks );
+        	// Note they used to restrict rankupmax from working on prestige ladder... 
+        	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS ) {
+//    		if (results.getStatus() == RankupStatus.RANKUP_SUCCESS && mode == RankupModes.MAX_RANKS && 
+//    				!ladder.equals(LadderManager.LADDER_PRESTIGES)) {
+        		rankUpPrivate( sender, playerName, ladder, mode, permission, cmdTasks, sbRanks );
         	}
         	if (results.getStatus() == RankupStatus.RANKUP_SUCCESS){
-        		rankupWithSuccess = true;
+        		rankupSuccess = true;
         	}
         	
         	
         	// Get the player rank after
-        	PlayerRank playerRankAfter = rankPlayerFactory.getRank( rankPlayer, ladder );
+//        	PlayerRank playerRankAfter = rankPlayer.getNextPlayerRank();
+//        	PlayerRank playerRankAfter = rankPlayerFactory.getRank( rankPlayer, ladder );
         	
-        	if ( playerRankAfter != null ) {
-        		
-        		pRankAfter = playerRankAfter.getRank();
-        	}
+//        	if ( playerRankAfter != null ) {
+//        		
+//        		pRankAfter = playerRankAfter.getRank();
+//        	}
         	
         	// Prestige method if canPrestige and a successful rankup. 
         	// pRankTarget now contains the target rank prior to processing the rankup.  SO it should be
         	// the same as pRankAfter, but if it is wrong, then rankupWithSuccess will not be true.  So ignore...
-        	if ( canPrestige && rankupWithSuccess && pRankAfter != null ) {
-        		prestigePlayer( sender, player, rankPlayer, pRankAfter, lm );
+        	if ( canPrestige && rankupSuccess ) {
+        		prestigePlayer( sender, rankPlayer, lm, cmdTasks, sbRanks );
+//        		prestigePlayer( sender, player, rankPlayer, pRankAfter, lm );
+        		
         	}
         	else if ( canPrestige ) {
         		rankupNotAbleToPrestigeMsg( sender );
         	}
         	
         }
+        
+        return rankupSuccess;
 	}
 
     /**
@@ -339,8 +618,10 @@ public class RankUpCommand
      * @param pRankAfter
      * @param lm
      */
-	private void prestigePlayer(CommandSender sender, Player player, RankPlayer rankPlayer, 
-						Rank pRankAfter, LadderManager lm ) {
+	private void prestigePlayer(CommandSender sender, RankPlayer rankPlayer, 
+//						Rank pRankAfter, 
+						LadderManager lm, 
+						List<PrisonCommandTaskData> cmdTasks, StringBuilder sbRanks ) {
 		
        	Output.get().logDebug( DebugTarget.rankup, "Rankup: prestigePlayer: ");
 
@@ -356,24 +637,33 @@ public class RankUpCommand
 //			if (willPrestige && rankupWithSuccess && pRankAfter != null && pRank != pRankAfter) {
 				// Set the player rank to the first one of the default ladder
 				
+			
+			RankLadder ladder = lm.getLadder(LadderManager.LADDER_DEFAULT);
+			Rank dRank = ladder.getLowestRank().get();
+			setPlayerRank( rankPlayer, ladder, dRank, sender, cmdTasks, sbRanks );
+
+			
+//			String ladderName = LadderManager.LADDER_DEFAULT;
+//			String defaultRank = lm.getLadder(LadderManager.LADDER_DEFAULT).getLowestRank().get().getName();
+//			
+//			setPlayerRank( rankPlayer, defaultRank, ladderName, sender );
+			
 				// Call the function directly and skip using dispatch commands:
-				setRank( sender, player.getName(), 
-						lm.getLadder(LadderManager.LADDER_DEFAULT).getLowestRank().get().getName(), 
-							LadderManager.LADDER_DEFAULT );
+//				setRank( sender, player.getName(), 
+//						lm.getLadder(LadderManager.LADDER_DEFAULT).getLowestRank().get().getName(), 
+//							LadderManager.LADDER_DEFAULT );
 				
-//				PrisonAPI.dispatchCommand("ranks set rank " + player.getName() + " " + 
-//						lm.getLadder("default").getLowestRank().get().getName() + " default");
-				// Get that rank
 				
-				RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
+				PlayerRank playerRankSecond = rankPlayer.getPlayerRankDefault();
 				
-				PlayerRank playerRankSecond = rankPlayerFactory.getRank( rankPlayer, LadderManager.LADDER_DEFAULT);
+
+				
 				if ( playerRankSecond != null ) {
 					
 					Rank pRankSecond = playerRankSecond.getRank();
 					// Check if the ranks match
 					
-					if (pRankSecond != lm.getLadder(LadderManager.LADDER_DEFAULT).getLowestRank().get()) {
+					if ( !pRankSecond.equals( lm.getLadder(LadderManager.LADDER_DEFAULT).getLowestRank().get()) ) {
 						
 						rankupNotAbleToResetRankMsg( sender );
 						success = false;
@@ -394,7 +684,16 @@ public class RankUpCommand
 			prestigePlayerBalanceSetToZeroMsg( sender );
 		}
 		
-		String title = pRankAfter.getTag() == null ? pRankAfter.getName() : pRankAfter.getTag();
+		
+		
+		PlayerRank newPrestigeRank = rankPlayer.getPlayerRankPrestiges();
+		Rank newPRank = newPrestigeRank == null || newPrestigeRank.getRank() == null ? 
+							null :
+							newPrestigeRank.getRank();
+		
+		String title = newPRank == null || newPRank.getTag() == null ? 
+							newPRank.getName() : 
+							newPRank.getTag();
 		if ( success ) {
 			// Send a message to the player because he did prestige!
 
@@ -457,7 +756,7 @@ public class RankUpCommand
         		// submit cmdTasks...
     			submitCmdTasks( player, cmdTasks );
         		
-        		processResults( sender, player.getName(), results, null, ladder, currency );
+        		processResults( sender, player.getName(), results, null, ladder, currency, null );
         	}
         }
         else {
@@ -518,7 +817,7 @@ public class RankUpCommand
         		// submit cmdTasks
     			submitCmdTasks( player, cmdTasks );
         		
-        		processResults( sender, player.getName(), results, null, ladder, currency );
+        		processResults( sender, player.getName(), results, null, ladder, currency, null );
         	}
         }
         else {
@@ -609,7 +908,7 @@ public class RankUpCommand
         	
         	processResults( rankPlayer, rankPlayer.getName(), results, 
         			pRank.getName(), pRank.getLadder().getName(), 
-        			pRank.getCurrency() );
+        			pRank.getCurrency(), null );
         }
     }
     
@@ -638,10 +937,28 @@ public class RankUpCommand
     		
     		processResults( rankPlayer, rankPlayer.getName(), results, 
     				pRank.getName(), pRank.getLadder().getName(), 
-    				pRank.getCurrency() );
+    				pRank.getCurrency(), null );
     	}
     }
     
+    
+    private void setPlayerRank( RankPlayer rankPlayer, RankLadder ladder, Rank pRank,
+    		CommandSender sender, 
+    		List<PrisonCommandTaskData> cmdTasks, StringBuilder sbRanks ) {
+    	
+    	// Get currency if it exists, otherwise it will be null if the Rank has no currency:
+    	String currency = rankPlayer == null || pRank == null ? null : pRank.getCurrency();
+    	
+    	
+    	RankupResults results = new RankUtil().setRank( rankPlayer, rankPlayer, 
+    			ladder.getName(), pRank.getName(), 
+    			rankPlayer.getName(), sender.getName(), cmdTasks );
+    	
+    	
+    	processResults( sender, rankPlayer.getName(), results, pRank.getName(), ladder.getName(), 
+    			currency, sbRanks );
+    	
+    }
     
 	private void setPlayerRank( Player player, String rank, String ladderName, CommandSender sender ) {
 		UUID playerUuid = player.getUUID();
@@ -669,7 +986,7 @@ public class RankUpCommand
         	// submit cmdTasks
 			submitCmdTasks( player, cmdTasks );
         	
-        	processResults( sender, player.getName(), results, rank, ladderName, currency );
+        	processResults( sender, player.getName(), results, rank, ladderName, currency, null );
         }
 	}
 
@@ -706,16 +1023,18 @@ public class RankUpCommand
 
 	public void processResults( CommandSender sender, String playerName, 
 					RankupResults results, 
-					String rank, String ladder, String currency ) {
+					String rank, String ladder, String currency, 
+					StringBuilder sbRanks ) {
 	
 		switch (results.getStatus()) {
             case RANKUP_SUCCESS:
-            	ranksRankupSuccessMsg( sender, playerName, results );
+            	
+            	ranksRankupSuccessMsg( sender, playerName, results, sbRanks );
             	
             	break;
             	
             case DEMOTE_SUCCESS:
-            	ranksRankupSuccessMsg( sender, playerName, results );
+            	ranksRankupSuccessMsg( sender, playerName, results, null );
 
                 break;
             case RANKUP_CANT_AFFORD:
@@ -794,6 +1113,16 @@ public class RankUpCommand
         }
 	}
 
+	private void submitCmdTask( Player player, String command ) {
+		
+		Scheduler scheduler = Prison.get().getPlatform().getScheduler();
+		
+		scheduler.performCommand( player, command );
+//		scheduler.dispatchCommand( player, command );
+		
+//		PrisonCommandTaskData task = new PrisonCommandTaskData( errorPrefix, command );
+//		PrisonCommandTasks.submitTasks( player, task );
+	}
 	
     private void submitCmdTasks( Player player, List<PrisonCommandTaskData> cmdTasks )
 	{

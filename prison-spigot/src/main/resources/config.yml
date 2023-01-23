@@ -47,12 +47,47 @@ show-alerts: true
 # Confirmation requires action from the player. If GUI is disabled, then it will use 
 # the command based confiration.  If confirm-enabled is false, then no confirmation
 # will be used.
+# The value for prestige.no-prestige-value is use when a player has no prestige rank with
+# the base placeholders: prison_rank, prison_rank_laddername, prison_rank_tag, and
+# prison_rank_tag_laddername. If not defined, an empty String is used.
 prestige:
   enabled: true
   resetMoney: true
   resetDefaultLadder: true
   confirmation-enabled: true
   prestige-confirm-gui: true
+  force-sellall: false
+  no-prestige-value: ""
+
+
+ranks:
+  gui-default-include-rankup-button: true
+  gui-prestiges-include-rankup-button: true
+  gui-others-include-rankup-button: true
+  
+
+
+# WARNING: Never use the following setting to disable the vault-economy
+#   integration unless directed by Prison support to do so.
+# WARNING: Prison will not allow the Ranks module to be enabled if a valid
+#   economy cannot be found and enabled succesfully.  Use of this setting 
+#   may prevent prison from finding a workable economy to use.
+# This setting, integrations.prevent-economy-vault-usage, will prevent
+# the use of vault for any economy transactions. Prison primarily uses vault, 
+# so enabling this setting could be dangerous. 
+# Where it can be useful, is if prison cannot communicate through vault, 
+# but is able to successfully communicate directly with the 
+# EssentialsEconomy, SaneEconomy, or GemsEconomy.  Enabling this setting
+# will NOT work for any other plugins.
+# To test vault, run the following commands when vault economy has been
+# succesfully loaded.  Run these command in the console:
+#   /balance <player>
+#   /ranks player <player>
+# Compare the total balance for the specified player from both commands.
+# They should match. If not, then there is an issue with vault.
+# Please contact the Prison support team through our discord server.
+integrations:
+  prevent-economy-vault-usage: false
 
 
 
@@ -119,6 +154,29 @@ placeholder:
 default-language: en_US
 
 
+
+# Prison defaults to a location code of en_US for the formatting of numbers 
+# which uses a "." for the decimal position, and "," for the thousands separator.
+# Prison overries the use of the server's and Java's location code, for the
+# exclusive purpose of formatting numbers, of which may not be
+# controllable by admins if they are using a hosted server. 
+# This allows separation between the default_language codes and the
+# number formatting language code.
+# The problem with using some other locations, such as en_UK, is that they
+# may use a Non-Blanking SPace (NBSP) for the thousands separator, of which
+# Minecraft cannot display that uni-code correctly and shows it as a 
+# squre with the letters NB on the first line, and SP on the second.
+# Examples of number formatting patterns and the results: 
+#       #,##0  and  #,##0.000 
+#       1,000  and  1,000.123
+# This controls number formatting of the symbols used throughout all of 
+# prison. This is the only way to control the symbols used. This does not
+# change the use of any of the number formatting patterns.
+number-format-location: en_US
+
+
+
+
 # The storage engine that Prison should use to store data.
 # The only valid storageType is json. 
 storageType: "json"
@@ -141,7 +199,6 @@ top-stats:
     hesitancy-delay-penalty: true
 
 
-# NEW: 
 # Prison mines reset gap is the number of milliseconds that are used to 
 # space out the mine resets when starting the server.  This value should 
 # not be changed unless you understand what you are doing. This value
@@ -150,6 +207,23 @@ top-stats:
 # if more than one mine tries to reset at the same time, or close to each
 # other.  This may be changed to ticks in the near future.
 #prison-mines-reset-gap: 5000
+#
+# The tp-warmup will delay the player's attempt to teleport out of a mine,
+# where the delay is in ticks and if they move more than the max distance
+# in blocks, then the TP will be canceled.
+#
+# access-to-prior-mines defaults to true, and if enabled, players will
+# have access to mine in the mines that are tied to ranks that preceeded
+# their current rank.  Note, that mines must be tied to ranks to allow 
+# this to work.,
+#
+# tp-to-spawn-on-mine-resets: if enabled, players will be TP'd to the mine's
+# spawn location when the mine resets or if they suffocate in the mine.
+# If spawn is not set, then they will be tp'd to the top center of the mine.
+#
+# enable-suffocation-in-mines: defaults to false so players will not suffocate
+# if they get stuck in a block. Normally this is not an issue since they will
+# be TP'd out, but if that is disabled, then they risk suffocation.
 
 prison-mines:
   reset-gap-ms: 5000
@@ -164,7 +238,10 @@ prison-mines:
     enabled: false
     movementMaxDistance: 1.0
     delayInTicks: 20
-    
+  forced-auto-rankups: false
+  access-to-prior-mines: true
+  tp-to-spawn-on-mine-resets: true
+  enable-suffocation-in-mines: false
 
 
 # Warning: Do not use the following option. This could break the natural Bukkit 
@@ -245,10 +322,47 @@ prison-events:
     priority: LOW
 
 
+
+# The prisonCommandHander allows you to fine tune the Prison Command Handler
+# by adding aliases for any command, prevent non-op players from using specific
+# commands, viewing the command's' help, or list the blocked commands. 
+#
+# Commands must be listed in a hierarchy format. For example the command
+# `/mines tp` must be listed under the appropreiate sections as:
+#    mines:
+#      tp:
+#
+# For the exclude-non-ops there is a global setting that will apply the
+# restriction to specified command, plus their aliases.  If set to false,
+# then each alias would have to be listed for them to be excluded.
+#
+# For each exclude-non-ops entry, you can specify the includeCmdPerms and
+# the includeCmdAltPerms, both of which defaults to false.  You would have
+# to explicity enable them to prevent them from applying; use a value of true.
+#
+# For the includeCmdPerms, all perms included in the command are tested for
+# each player, and if there is a hit then the command is excluded for that player.
+# For the includeCmdAltPerms all are tested too, but no translations are
+# applied so most may not produce any hits.
+# The listed perms for each command are tested as is, with no translations.
+# If the given player has a hit on the perm, then they are excluded from 
+# being able to use the command.
+#
+# OPs, including console, are bypassed and cannot be excluded from any command.
+#
 prisonCommandHandler:
   exclude-worlds:
   - lobby
   - plotWorld
+  exclude-non-ops:
+    exclude-related-aliases: true
+    commands:
+      mines:
+        tp:
+          includeCmdPerms: true
+          includeCmdAltPerms: true
+          perms:
+          - prison.exclude.test
   aliases:
     mines:
       tp: 

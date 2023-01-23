@@ -24,10 +24,12 @@ import tech.mcprison.prison.spigot.SpigotPlatform;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.compat.Compatibility;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
+import tech.mcprison.prison.spigot.game.SpigotOfflinePlayer;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.sellall.SellAllAdminBlocksGUI;
 import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
+import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
 
 /**
  * @author GABRYCA
@@ -236,20 +238,57 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
     }
 
-    @Command(identifier = "sellall sell", description = "SellAll sell command.", onlyPlayers = true)
+    @Command(identifier = "sellall sell", description = "SellAll sell command.", onlyPlayers = false)
     public void sellAllSellCommand(CommandSender sender,
-                                   @Arg(name = "notification", def="",
-                                           description = "Notification about the sellall transaction. Defaults to normal. " +
-                                                   "'silent' suppresses results. [silent]") String notification ){
+    		@Arg(name = "player", def = "", description = "An online player name to sell their inventory - " +
+    				"Only console or prison commands can include this parameter") String playerName,
+            @Arg(name = "notification", def="",
+                    description = "Notification about the sellall transaction. Defaults to normal. " +
+                    "'silent' suppresses results. [silent]") String notification ){
 
         if (!isEnabled()) return;
 
         Player p = getSpigotPlayer(sender);
+        
 
-        if (p == null){
-            Output.get().sendInfo(sender, "&cSorry but you can't use that from the console!");
+        boolean isOp = sender.isOp();
+        
+        tech.mcprison.prison.internal.Player sPlayerAlt = getOnlinePlayer( sender, playerName );
+        if ( sPlayerAlt == null ){
+        	// If sPlayerAlt is null then the value in playerName is really intended for notification:
+        	notification = playerName;
+        }
+
+        if ( isOp && !sender.isPlayer() && sPlayerAlt != null ) {
+        	// Only if OP and a valid player name was provided, then OP is trying to run this
+        	// for another player
+        	
+        	if ( !sPlayerAlt.isOnline() ) {
+        		sender.sendMessage( "Player is not online." );
+        		return;
+        	}
+        	
+        	// Set the active player to who OP specified:
+        	p = ((SpigotPlayer) sPlayerAlt).getWrapper();
+        }
+        
+
+        else if (p == null){
+        	
+        	if ( getPlayer( sender, playerName ) != null ) {
+        		
+        		Output.get().sendInfo(sender, "&cSorry but the specified player must be online "
+        				+ "[/sellall sell %s]", playerName );
+        	}
+        	else {
+        		
+        		Output.get().sendInfo(sender, "&cSorry but you can't use that from the console!");
+        	}
+            
+            
             return;
         }
+        
 
         SellAllUtil sellAllUtil = SellAllUtil.get();
         if (sellAllUtil == null){
@@ -269,6 +308,9 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         boolean notifications = (notification != null && "silent".equalsIgnoreCase( notification ));
 
         sellAllUtil.sellAllSell(p, false, notifications, true, true, false, true);
+        
+        SpigotPlayer sPlayer = new SpigotPlayer( p );
+        PlayerAutoRankupTask.autoSubmitPlayerRankupTask( sPlayer, null );
     }
 
     @Command(identifier = "sellall hand", description = "Sell only what is in your hand if sellable.", 
@@ -340,6 +382,11 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
 
         sellAllUtil.sellAllSell(p, true, false, true, true, false, true);
+        
+        
+        SpigotPlayer sPlayer = new SpigotPlayer( p );
+        PlayerAutoRankupTask.autoSubmitPlayerRankupTask( sPlayer, null );
+		
     }
 
     @Command(identifier = "sellall delaysell", description = "Like SellAll Sell command but this will be delayed for some " +
@@ -375,11 +422,14 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
 
         if (!sellAllUtil.isAutoSellEarningNotificationDelayEnabled){
-            sellAllSellCommand(sender, "silent");
+            sellAllSellCommand(sender, null, "silent");
             return;
         }
 
         sellAllUtil.sellAllSell(p, false, false, false, false, true, false);
+        
+        SpigotPlayer sPlayer = new SpigotPlayer( p );
+        PlayerAutoRankupTask.autoSubmitPlayerRankupTask( sPlayer, null );
     }
 
 
@@ -655,7 +705,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         TreeMap<String, Double> mults = new TreeMap<>( sellAllUtil.getPrestigeMultipliers() );
 
 //        TreeMap<XMaterial, Double> items = new TreeMap<>( sellAllUtil.getSellAllBlocks() );
-        DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+        DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
         
         Set<String> keys = mults.keySet();
         
@@ -929,7 +979,7 @@ public class PrisonSpigotSellAllCommands extends PrisonSpigotBaseCommands {
         }
         
         TreeMap<XMaterial, Double> items = new TreeMap<>( sellAllUtil.getSellAllBlocks() );
-        DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+        DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
         
         Set<XMaterial> keys = items.keySet();
         

@@ -25,7 +25,11 @@ public class FileDatabase
         refresh();
     }
     
-    /**
+    public File getDbDir() {
+		return dbDir;
+	}
+
+	/**
      * <p>Refresh is a function that will clear the collectionMap collection if it contains anything,
      * then load all possible FileCollection objects, ignoring those that been virtually deleted.
      * </p>

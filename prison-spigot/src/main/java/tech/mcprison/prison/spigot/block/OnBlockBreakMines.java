@@ -41,9 +41,18 @@ public class OnBlockBreakMines
 	public class MinesEventResults {
 		private boolean cancelEvent = false;
 		private boolean ignoreEvent = false;
+		private Mine mine = null;
 		
 		public MinesEventResults() {
 			super();
+		}
+
+		
+		public Mine getMine() {
+			return mine;
+		}
+		public void setMine(Mine mine) {
+			this.mine = mine;
 		}
 
 		public boolean isCancelEvent() {
@@ -141,7 +150,21 @@ public class OnBlockBreakMines
 //	}
 
 		
+	/**
+	 * <p> If the event is canceled, it still needs to be processed because of the MONITOR events: 
+	 * An event will be "canceled" and "ignored" if the block 
+	 * BlockUtils.isUnbreakable(), or if the mine is activly resetting.
+	 * The event will also be ignored if the block is outside of a mine
+	 * or if the targetBlock has been set to ignore all block events which 
+	 * means the block has already been processed.
+	 * </p>
+	 * 
+	 * @param player
+	 * @param block
+	 * @return
+	 */
 	protected MinesEventResults ignoreMinesBlockBreakEvent( Player player, Block block ) {
+		
 		MinesEventResults results = new MinesEventResults();
 		
 		SpigotBlock sBlock = SpigotBlock.getSpigotBlock( block );
@@ -151,6 +174,7 @@ public class OnBlockBreakMines
 		}
 		
 		Mine mine = findMine( player, sBlock,  null, null ); 
+		results.setMine( mine );
 		
 		if ( mine == null ) {
 			// Prison is unable to process blocks outside of mines right now, so exit:
@@ -166,19 +190,24 @@ public class OnBlockBreakMines
 				results.setCancelEvent( true );
 				results.setIgnoreEvent( true );
 			}
-			MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
-			
-			// If ignore all block events, then exit this function without logging anything:
-			if ( targetBlock != null && targetBlock.isIgnoreAllBlockEvents() ) {
+			else {
 				
-				// Do not cancel the event... let other plugins deal with it... prison does not care about this block.
-				//event.setCancelled( true );
-				results.setIgnoreEvent( true );
+				MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
+				
+				// If ignore all block events, then exit this function without logging anything:
+				if ( targetBlock != null && targetBlock.isIgnoreAllBlockEvents() ) {
+					
+					// Do not cancel the event... let other plugins deal with it... prison does not care about this block.
+					//event.setCancelled( true );
+					results.setIgnoreEvent( true );
+				}
 			}
+			
 		}
 		
 		return results;
 	}
+	
 	
 //	/**
 //	 * <p>Warning... this is a temp copy of the real function and will be removed
@@ -226,18 +255,38 @@ public class OnBlockBreakMines
 //		return processEvent;
 //	}
 	
+	/**
+	 * <p>If mine is not null, then it will check for a zero-block reset (reset-threshold).
+	 * </p>
+	 * 
+	 * @param mine
+	 */
 	public void checkZeroBlockReset( Mine mine ) {
 		if ( mine != null ) {
-			
-			// submit a mine sweeper task.  It will only run if it is enabled and another 
-			// mine sweeper task has not been submitted.
-			mine.submitMineSweeperTask();
 			
 			// Checks to see if the mine ran out of blocks, and if it did, then
 			// it will reset the mine:
 			mine.checkZeroBlockReset();
 		}
 	}
+	
+	
+	/**
+	 * <p>If mine is not null, then it will perform a mine sweeper 
+	 * for the mine, if it is enabled.
+	 * </p>
+	 * 
+	 * @param mine
+	 */
+	public void checkMineSweeper( Mine mine ) {
+		if ( mine != null ) {
+			
+			// submit a mine sweeper task.  It will only run if it is enabled and another 
+			// mine sweeper task has not been submitted.
+			mine.submitMineSweeperTask();
+		}
+	}
+	
 	
 	
 	/**
@@ -310,7 +359,8 @@ public class OnBlockBreakMines
 	{
 		boolean results = false;
 
-		if ( targetBlock != null && targetBlock.getPrisonBlock().getBlockType() == PrisonBlockType.CustomItems ) {
+		if ( targetBlock != null && 
+				targetBlock.getPrisonBlock().getBlockType().isCustomBlockType() ) {
 			
 			List<CustomBlockIntegration> cbIntegrations = 
 					PrisonAPI.getIntegrationManager().getCustomBlockIntegrations();

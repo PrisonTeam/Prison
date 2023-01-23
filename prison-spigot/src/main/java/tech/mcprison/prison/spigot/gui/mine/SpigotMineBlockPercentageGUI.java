@@ -6,16 +6,16 @@ import com.cryptomorin.xseries.XMaterial;
 
 import tech.mcprison.prison.internal.block.PrisonBlock;
 import tech.mcprison.prison.spigot.SpigotUtil;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
-import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
+import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMessages;
 
 /**
  * @author GABRYCA (AnonymousGCA)
  */
-public class SpigotMineBlockPercentageGUI extends SpigotGUIComponents {
+public class SpigotMineBlockPercentageGUI 
+	extends SpigotGUIMessages {
 
     private final Player p;
     private final String mineName;
@@ -40,7 +40,7 @@ public class SpigotMineBlockPercentageGUI extends SpigotGUIComponents {
         ButtonLore confirmButtonLore = new ButtonLore(createLore(
         		guiClickToConfirmMsg(), 
         		guiRightClickToCancelMsg() ), 
-        		createLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_percentage) + " " + val));
+        		createLore( guiRanksLorePercentageMsg() + " " + val));
         
         ButtonLore changeIncreaseValueLore = new ButtonLore( guiClickToIncreaseMsg(), null);
 

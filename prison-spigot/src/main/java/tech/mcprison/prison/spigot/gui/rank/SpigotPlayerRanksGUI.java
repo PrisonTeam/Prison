@@ -28,14 +28,12 @@ import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.managers.LadderManager;
 import tech.mcprison.prison.ranks.managers.PlayerManager;
 import tech.mcprison.prison.spigot.SpigotPrison;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools.GUIMenuPageData;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
-import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
 import tech.mcprison.prison.util.Text;
 
@@ -43,7 +41,8 @@ import tech.mcprison.prison.util.Text;
  * @author GABRYCA
  * @author RoyalBlueRanger (rBluer)
  */
-public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
+public class SpigotPlayerRanksGUI 
+	extends SpigotGUIMessages {
 
     private final Player player;
 
@@ -130,14 +129,14 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
 
         // Ensure ladder is present and that it has a rank:
         if ( ladder == null || !ladder.getLowestRank().isPresent()){
-            Output.get().sendWarn(new SpigotPlayer(getPlayer()), messages.getString(MessagesConfig.StringID.spigot_message_gui_ladder_empty) + " [" + guiConfig.getString("Options.Ranks.Ladder") + "]");
+        	guiRanksLadderIsEmptyMsg( new SpigotPlayer(getPlayer()), guiConfig.getString("Options.Ranks.Ladder") );
             getPlayer().closeInventory();
             return;
         }
 
         // Get the dimensions and if needed increases them
         if (ladder.getRanks().size() == 0) {
-            Output.get().sendWarn(new SpigotPlayer(getPlayer()), messages.getString(MessagesConfig.StringID.spigot_message_gui_ranks_empty));
+        	guiRanksNoRanksMsg( new SpigotPlayer(getPlayer()) );
             return;
         }
         
@@ -178,8 +177,8 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         boolean enchantmentEffectEnabled = getBoolean(guiConfig.getString("Options.Ranks.Enchantment_effect_current_rank"));
 
         // Decimal Rank cost format.
-        DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
-        DecimalFormat mFmt = new DecimalFormat("###,##0.0000");
+        DecimalFormat formatDecimal = Prison.get().getDecimalFormat("###,##0.00");
+        DecimalFormat mFmt = Prison.get().getDecimalFormat("###,##0.0000");
         boolean showNumber = getBoolean(guiConfig.getString("Options.Ranks.Number_of_Rank_Player_GUI"));
 
 //        PlayerRank pRank = rankPlayerFactory.getRank( getRankPlayer(), ladder, true );
@@ -202,6 +201,20 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
             double rankPrice = calPRank.getRankCost();
             double rankMultiplier = calPRank.getRankMultiplier();
 
+            StringBuilder sbMines = new StringBuilder();
+            if ( rank.getMines() != null && rank.getMines().size() > 0 ) {
+            	
+            	for (ModuleElement mine : rank.getMines() ) {
+            		if ( sbMines.length() > 0 ) {
+            			sbMines.append( " " );
+            		}
+            		sbMines.append( mine.getTag() );
+            	}
+            }
+            else {
+            	sbMines.append( "&3None" );
+            }
+
             for ( String stringValue : rankLore ) {
             	
             	String currency = (rank.getCurrency() == null || 
@@ -219,14 +232,6 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
                 stringValue = stringValue.replace("{rankMultiplier}", mFmt.format( rankMultiplier ));
                 stringValue = stringValue.replace("{ladderName}", rank.getLadder().getName());
                 
-                StringBuilder sbMines = new StringBuilder();
-                for ( ModuleElement mine : rank.getMines() )
-				{
-                	if ( sbMines.length() > 0 ) {
-                		sbMines.append( ", " );
-                	}
-					sbMines.append( mine.getName() );
-				}
                 stringValue = stringValue.replace("{linkedMines}", sbMines.toString() );
                 
                 ranksLore.addLineLoreAction(stringValue);
@@ -261,6 +266,15 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
                 }
             }
 
+
+            // Before adding the button, add an NBT tag for the command and rank name:
+			PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
+			NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT( itemRank.getButtonItem());
+			nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_ENABLED, "true");
+//			nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_COMMAND, noCommmand );
+			nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_RANK_NAME, rank.getName() );
+			
+            
             gui.addButton(itemRank);
             
 //            rank = rank.getRankNext();
@@ -273,23 +287,35 @@ public class SpigotPlayerRanksGUI extends SpigotGUIComponents {
         SpigotGUIMenuTools.getInstance().addMenuPageButtonsStandard( gui, guiPageData );
 
         
-
-        // Add Rankup button: Using NBTs:
-        String rankupTitle = ladderName.equalsIgnoreCase("prestiges") ? "Prestige" : "Rankup";
-        ButtonLore rankupLore = new ButtonLore(messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_rankup), messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup_if_enough_money));
-        Button rankupButton = new Button( 0, XMaterial.EMERALD_BLOCK, rankupLore, rankupTitle );
-        String rankupCommand = "rankup " + (ladderName.equalsIgnoreCase("default") ? "" : ladderName);
-        
-		PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
-		NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT(rankupButton.getButtonItem());
-		nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_ENABLED, "true");
-		nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_COMMAND, rankupCommand);
-		
+		if ( LadderManager.LADDER_DEFAULT.equalsIgnoreCase( ladderName ) &&
+        		Prison.get().getPlatform().getConfigBooleanTrue( "ranks.gui-default-include-rankup-button") ||
+        	 LadderManager.LADDER_PRESTIGES.equalsIgnoreCase( ladderName ) &&
+        		Prison.get().getPlatform().getConfigBooleanTrue( "ranks.gui-prestiges-include-rankup-button") ||
+        	 !LadderManager.LADDER_DEFAULT.equalsIgnoreCase( ladderName ) &&
+        	 	!LadderManager.LADDER_PRESTIGES.equalsIgnoreCase( ladderName ) &&
+        	 	Prison.get().getPlatform().getConfigBooleanTrue( "ranks.gui-others-include-rankup-button")
+        		) {
+        	
+			// Add Rankup button: Using NBTs:
+			String rankupTitle = ladderName.equalsIgnoreCase("prestiges") ? "Prestige" : "Rankup";
+			
+			ButtonLore rankupLore = new ButtonLore( guiRanksLoreClickToRankupMsg(), 
+					guiRanksLoreRankupIfEnoughMoneyMsg());
+			
+			Button rankupButton = new Button( 0, XMaterial.EMERALD_BLOCK, rankupLore, rankupTitle );
+			String rankupCommand = "rankup " + (ladderName.equalsIgnoreCase("default") ? "" : ladderName);
+			
+			PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
+			NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT(rankupButton.getButtonItem());
+			nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_ENABLED, "true");
+			nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_COMMAND, rankupCommand);
+			
 //        		SpigotPrison.format(messages.getString(MessagesConfig.StringID.spigot_gui_lore_rankup)));
-        // NOTE: Button position will be properly assigned in the setButtonNextAvilable:
-        gui.addButton( guiPageData.setButtonNextAvailable( rankupButton ) );
-
-        
+			// NOTE: Button position will be properly assigned in the setButtonNextAvilable:
+			gui.addButton( guiPageData.setButtonNextAvailable( rankupButton ) );
+			
+        }
+        	
         
         // Open GUI.
         gui.open();

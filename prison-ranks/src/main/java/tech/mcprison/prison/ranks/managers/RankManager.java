@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.TreeMap;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
 import tech.mcprison.prison.integration.EconomyCurrencyIntegration;
 import tech.mcprison.prison.internal.CommandSender;
@@ -679,7 +680,7 @@ public class RankManager
 		double cost = rank.getRawRankCost();
 		
 		String resultsx = null;
-		DecimalFormat dFmt = new DecimalFormat("#,##0");
+		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 		if ( attributeNFormat != null ) {
 			resultsx = attributeNFormat.format( cost );
 		}
@@ -720,11 +721,15 @@ public class RankManager
 		String results = null;
 		PrisonPlaceHolders placeHolder = placeHolderKey.getPlaceholder();
 		
-		DecimalFormat dFmt = new DecimalFormat("#,##0");
+		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 		
+		boolean isStatsPlayers = placeHolder.hasFlag( PlaceholderFlags.STATSPLAYERS );
+		boolean isStatsRank = placeHolder.hasFlag( PlaceholderFlags.STATSRANKS );
 		
-		if ( !placeHolder.hasFlag( PlaceholderFlags.STATSPLAYERS ) &&
-				rank != null && rankPlayer != null ) {
+		if ( !( isStatsPlayers ) &&
+				rank != null && 
+				( rankPlayer != null || 
+				  rankPlayer == null && isStatsRank ) ) {
 			
 			identifier.setFoundAMatch( true );
 			
@@ -1086,7 +1091,7 @@ public class RankManager
 			case prison_top_rank_balance_name_nnn_rankname: 
 			case prison_trbn_nnn_rankname:
 				{
-					StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( 1 );
+					StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( sequence );
 					if ( stats != null ) {
 						
 						results = stats.getPlayer() == null ? "" : stats.getPlayer().getName();
@@ -1101,7 +1106,7 @@ public class RankManager
 			case prison_top_rank_balance_score_nnn_rankname:
 			case prison_trbs_nnn_rankname:
 				{
-					StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( 1 );
+					StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( sequence );
 					if ( stats != null ) {
 						
 						results = dFmt.format( stats.getScore());
@@ -1116,7 +1121,7 @@ public class RankManager
 			case prison_top_rank_balance_balance_nnn_rankname:
 			case prison_trbb_nnn_rankname:
 				{
-					StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( 1 );
+					StatsRankPlayerBalanceData stats = rank.getStatsPlayerBlance().getTopStats( sequence );
 					if ( stats != null ) {
 						
 						results = stats.getPlayer() == null ? "" :

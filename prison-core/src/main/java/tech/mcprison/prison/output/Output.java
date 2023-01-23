@@ -37,6 +37,9 @@ import tech.mcprison.prison.internal.CommandSender;
  */
 public class Output 
 		extends OutputMessages {
+	
+	public static final String PERCENT_ENCODING = "&percnt;";
+	public static final String PERCENT_DECODING = "%";
 
     private static Output instance;
     
@@ -202,6 +205,45 @@ public class Output
     }
 
     /**
+     * <p>This version of String format should be used in place of the standard
+     * Java String.format() function since if there is a percent remaining in
+     * the results, it will then encode it so it does not trigger a Java 
+     * format error where it thinks the % is an escape character for the 
+     * the String.format() command.  This class, when actually logging the
+     * message, will convert the encoded percent back to a normal percent.
+     * </p>
+     * 
+     * <p>This is a potential problem due to the number of times one message
+     * may be passed through a String.format().  This prevents a properly
+     * escaped percent, of `%%` from being a single percent to be used as
+     * a encoded escape for formatting.
+     * </p>
+     * 
+     * @param message
+     * @param args
+     * @return
+     */
+    public static String stringFormat( String message, Object... args ) {
+    	
+		String msg = args == null || args.length == 0 ?
+				message : 
+					String.format(message, args);
+		
+		if ( msg.contains( PERCENT_ENCODING ) ) {
+			msg = msg.replace( PERCENT_DECODING, PERCENT_ENCODING );
+		}
+		
+		return msg;
+    }
+    
+    public static String decodePercentEncoding( String message ) {
+		if ( message.contains( PERCENT_ENCODING ) ) {
+			message = message.replace( PERCENT_ENCODING, PERCENT_DECODING );
+		}
+		return message;
+    }
+    
+    /**
      * Log a message with a specified {@link LogLevel}
      */
     public void log(String message, LogLevel level, Object... args) {
@@ -227,10 +269,20 @@ public class Output
     	} 
     	else {
     		try {
+    			
+    			String msg = args == null || args.length == 0 ?
+    					message : 
+    						String.format(message, args);
+    			
+    			msg = decodePercentEncoding( msg );
+//    			if ( msg.contains( PERCENT_ENCODING ) ) {
+//    				msg = msg.replace( PERCENT_ENCODING, PERCENT_DECODING );
+//    			}
+    			
 				Prison.get().getPlatform().log(
 						prefixTemplatePrison + " " + 
 						getLogColorCode(level) +
-						String.format(message, args));
+						msg);
 			}
 			catch ( MissingFormatArgumentException e )
 			{
@@ -260,14 +312,15 @@ public class Output
 				String errorMessage = "Error with Java format usage (eg %s): " +
 						" LogLevel: " + level.name() + 
 						" message: [" + message + "] params: [" + sb.toString() + "]" +
-						" error: [" + e.getMessage() + "]";
+						" error: [" + e.getMessage() + "] " +
+						" Escape with backslash or double percent [\\b \\n \\f \\r \\t \\\\ %%]";
 				
 				Prison.get().getPlatform().logCore(
 						prefixTemplatePrison + " " + 
 						getLogColorCode(LogLevel.ERROR) +
 						errorMessage );
 
-				e.printStackTrace();
+				//e.printStackTrace();
     		}
     	}
     }

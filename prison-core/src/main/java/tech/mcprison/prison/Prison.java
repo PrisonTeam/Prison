@@ -20,9 +20,11 @@ package tech.mcprison.prison;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import com.google.common.eventbus.EventBus;
@@ -109,6 +111,9 @@ public class Prison
     
     private List<String> localeLoadInfo;
     
+    private static DecimalFormatSymbols dfSym;
+    private static boolean dfSymStatic = false;
+    
     private Prison() {
     	super();
     	
@@ -130,7 +135,70 @@ public class Prison
         return instance;
     }
 
+    public DecimalFormat getDecimalFormat( String format ) {
+    	DecimalFormat dFmt = new DecimalFormat( format, getDecimalFormatSymbols() );
+    	return dFmt;
+    }
+    public DecimalFormat getDecimalFormatInt() {
+    	return getDecimalFormat("#,##0");
+    }
+    public DecimalFormat getDecimalFormatDouble() {
+    	return getDecimalFormat("#,##0.000");
+    }
+    public static DecimalFormat getDecimalFormatStatic( String format ) {
+    	DecimalFormat dFmt = new DecimalFormat( format, getDecimalFormatSymbolsStatic() );
+    	return dFmt;
+    }
+    public static DecimalFormat getDecimalFormatStaticInt() {
+    	return getDecimalFormatStatic("#,##0");
+    }
+    public static DecimalFormat getDecimalFormatStaticDouble() {
+    	return getDecimalFormatStatic("#,##0.000");
+    }
 
+    /**
+     * <p>This returns the prison's DecimalFormatSymbols, which controls how the
+     * DecimalFormat is used for various language settings.  The en_US language
+     * settings uses a period for decimal place, and a comma for thousands separator.
+     * The issue is with UK, and other countries, that are using a non-breaking
+     * space for the thousands separator since minecraft cannot display that uni-code.
+     * It is shown as a square with NB on the first line, and SP on the second line.
+     * </p>
+     * 
+     * <p>For now, this hard codes prison to use en_US if the config.yml file does not
+     * have a setting "number-format-location: en_US".  
+	 * It should not use the "default-language" 
+     * setting since there needs to be control between the two.
+     * </p>
+     * 
+     * @return
+     */
+    private DecimalFormatSymbols getDecimalFormatSymbols() {
+    	if ( dfSym == null || dfSymStatic ) {
+    		
+     		String location = getPlatform().getConfigString( "number-format-location", "en_US" );
+    		String[] loc = location.split("_");
+    		
+    		Locale locale = new Locale( 
+    				loc != null && loc.length >= 1 ? loc[0] : "en",
+    						loc != null && loc.length >= 2 ? loc[1] : "US" );
+    		
+//    		Locale locale = new Locale( "en", "US" );
+    		dfSym = new DecimalFormatSymbols( locale );
+    		dfSymStatic = false;
+    	}
+    	return dfSym;
+    }
+    private static DecimalFormatSymbols getDecimalFormatSymbolsStatic() {
+    	if ( dfSym == null ) {
+    		
+    		Locale locale = new Locale( "en", "US" );
+    		dfSym = new DecimalFormatSymbols( locale );
+    		dfSymStatic = true;
+    	}
+    	return dfSym;
+    }
+    
     /**
      * Lazy load LocalManager which ensures Prison is already loaded so 
      * can get the default language to use from the plugin configs.
@@ -285,7 +353,7 @@ public class Prison
         long memoryFree = runtime.freeMemory();
         long memoryUsed = memoryTotal - memoryFree;
         
-        DecimalFormat dFmt = new DecimalFormat("#,##0.000");
+        DecimalFormat dFmt = getDecimalFormatDouble();
         String memMax = PlaceholdersUtil.formattedIPrefixBinarySize( memoryMax, dFmt, " " );
         String memTotal = PlaceholdersUtil.formattedIPrefixBinarySize( memoryTotal, dFmt, " " );
         String memFree = PlaceholdersUtil.formattedIPrefixBinarySize( memoryFree, dFmt, " " );
@@ -329,7 +397,7 @@ public class Prison
         long memoryFree = runtime.freeMemory();
         long memoryUsed = memoryTotal - memoryFree;
         
-        DecimalFormat dFmt = new DecimalFormat("#,##0.000");
+        DecimalFormat dFmt = getDecimalFormatDouble();
         String memMax = PlaceholdersUtil.formattedIPrefixBinarySize( memoryMax, dFmt, " " );
         String memTotal = PlaceholdersUtil.formattedIPrefixBinarySize( memoryTotal, dFmt, " " );
         String memFree = PlaceholdersUtil.formattedIPrefixBinarySize( memoryFree, dFmt, " " );
@@ -376,7 +444,7 @@ public class Prison
 
 	public void displaySystemTPS( ChatDisplay display ) {
     	
-        DecimalFormat iFmt = new DecimalFormat("#,##0");
+        DecimalFormat iFmt = getDecimalFormatInt();
         PrisonTPS prisonTPS = Prison.get().getPrisonTPS();
         display.addText( "&7Prison TPS Average: %s  Min: %s  Max: %s%s   " +
         					"Interval: %s ticks  Samples: %s",
@@ -398,7 +466,7 @@ public class Prison
     }
     public void getSystemTPS( LinkedHashMap<String, String> fields ) {
     	
-    	//DecimalFormat iFmt = new DecimalFormat("#,##0");
+    	//DecimalFormat iFmt = getDecimalFormatInt();
     	PrisonTPS prisonTPS = Prison.get().getPrisonTPS();
     	
     	fields.put( "tps", prisonTPS.getAverageTPSFormatted() );
@@ -426,8 +494,8 @@ public class Prison
 		
 		calculatePrisonDiskUsage( diskStats, prisonFolder );
 		
-		DecimalFormat dFmt = new DecimalFormat("#,##0.000");
-		DecimalFormat iFmt = new DecimalFormat("#,##0");
+		DecimalFormat dFmt = getDecimalFormatDouble();
+		DecimalFormat iFmt = getDecimalFormatInt();
 		
 		String prisonFileCount = iFmt.format( diskStats.getFileCount() );
 		String prisonFolderCount = iFmt.format( diskStats.getFolderCount() );
@@ -450,8 +518,8 @@ public class Prison
     	
     	calculatePrisonDiskUsage( diskStats, prisonFolder );
     	
-    	DecimalFormat dFmt = new DecimalFormat("#,##0.000");
-    	DecimalFormat iFmt = new DecimalFormat("#,##0");
+    	DecimalFormat dFmt = getDecimalFormatDouble();
+    	DecimalFormat iFmt = getDecimalFormatInt();
     	
     	String prisonFileCount = iFmt.format( diskStats.getFileCount() );
 //    	String prisonFolderCount = iFmt.format( diskStats.getFolderCount() );

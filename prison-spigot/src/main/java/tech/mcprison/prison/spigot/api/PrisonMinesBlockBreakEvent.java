@@ -126,17 +126,29 @@ public class PrisonMinesBlockBreakEvent
 	
 	private List<Block> unprocessedRawBlocks;
 	
+	
+	private StringBuilder debugInfo;
+	
 
-	public PrisonMinesBlockBreakEvent( Block theBlock, Player player, 
-			SpigotBlock spigotBlock, SpigotPlayer spigotPlayer,
-			BlockBreakPriority bbPriority,
-//			boolean monitor, boolean blockEventsOnly,
-			BlockEventType blockEventType, String triggered) {
+	public PrisonMinesBlockBreakEvent( 
+				Block theBlock, Player player, 
+				Mine mine,
+//				SpigotBlock spigotBlock, SpigotPlayer spigotPlayer,
+				BlockBreakPriority bbPriority,
+//				boolean monitor, boolean blockEventsOnly,
+				BlockEventType blockEventType, String triggered,
+				StringBuilder debugInfo ) {
 		
 		super( theBlock, player );
 
-		this.spigotBlock = spigotBlock;
-		this.spigotPlayer = spigotPlayer;
+		this.mine = mine;
+		
+		// Need to wrap in a Prison block so it can be used with the mines:
+		SpigotBlock sBlock = SpigotBlock.getSpigotBlock( theBlock );
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+
+		this.spigotBlock = sBlock;
+		this.spigotPlayer = sPlayer;
 		
 		this.itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
 		
@@ -154,13 +166,17 @@ public class PrisonMinesBlockBreakEvent
 		
 		this.bukkitDrops = new ArrayList<>();
 		
+		this.debugInfo = debugInfo;
+		
 	}
 	
 	public PrisonMinesBlockBreakEvent( Block theBlock, Player player, 
 			Mine mine, SpigotBlock spigotBlock, 
 			List<SpigotBlock> explodedBlocks, 
 			BlockEventType blockEventType,
-			String triggered )
+			String triggered,
+			StringBuilder debugInfo
+			)
 	{
 		super( theBlock, player );
 		
@@ -179,6 +195,8 @@ public class PrisonMinesBlockBreakEvent
 		this.triggered = triggered;
 		
 		this.bukkitDrops = new ArrayList<>();
+		
+		this.debugInfo = debugInfo;
 		
 	}
 
@@ -398,5 +416,12 @@ public class PrisonMinesBlockBreakEvent
     public static HandlerList getHandlerList() {
         return handlers;
     }
+
+	public StringBuilder getDebugInfo() {
+		return debugInfo;
+	}
+	public void setDebugInfo(StringBuilder debugInfo) {
+		this.debugInfo = debugInfo;
+	}
 
 }

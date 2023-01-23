@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 
 import org.bukkit.entity.Player;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.util.Text;
 
 public class SlimeBlockFunEventData {
@@ -23,8 +24,8 @@ public class SlimeBlockFunEventData {
 	private double recordBoost = 0.0;
 	private double recordVelocity = 0.0;
 	
-	private DecimalFormat sFmt = new DecimalFormat("#,##0.0");
-	private DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+	private DecimalFormat sFmt = Prison.get().getDecimalFormat("#,##0.0");
+	private DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
 	
 	public SlimeBlockFunEventData( Long playerUUIDLSB, double y ) {
 		super();

@@ -24,7 +24,8 @@ import tech.mcprison.prison.placeholders.PlaceholdersUtil;
  * @author RoyalBlueRanger
  *
  */
-public class PlayerCachePlayerData {
+public class PlayerCachePlayerData
+	implements CoreCacheData {
 	
 	public static final long SESSION_TIMEOUT_MINING_MS = 1000 * 15; // 15 seconds
 

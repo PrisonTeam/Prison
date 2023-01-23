@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -32,6 +34,7 @@ import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
+import tech.mcprison.prison.util.ChatColor;
 import tech.mcprison.prison.util.Location;
 
 /**
@@ -623,5 +626,50 @@ public class PrisonSpigotAPI {
 		sPlayer.getPlayerCachePlayerData().setTokensAdmin( amount );
 	}
 	
+	
+	/**
+	 * <p>This function will translate placeholders, but only the specified placeholder.
+	 * This cannot contain any placeholder escape characters. 
+	 * </p>
+	 * 
+	 * @param player
+	 * @param identifier
+	 * @return
+	 */
+	public String getPrisonPlaceholder( OfflinePlayer player, String identifier) {
+		
+//		if ( !identifier.toLowerCase().startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED ) ) {
+//			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
+//		}
+
+		UUID playerUuid = player.getUniqueId();
+		String results = Prison.get().getPlatform().getPlaceholders()
+									.placeholderTranslate( playerUuid, player.getName(), identifier );
+
+		return ChatColor.translateAlternateColorCodes( '&', results);
+	}
+	
+	/**
+	 * <p>This function will translate placeholders, and text with placeholders within the text.
+	 * You can use any placeholder escape character as long as they are: `% %` or `{ }`.
+	 * This can contain multiple placeholders too.  This can also include placeholder attributes.
+	 * </p>
+	 * 
+	 * @param player
+	 * @param identifier
+	 * @return
+	 */
+	public String getPrisonPlaceholderFullText( OfflinePlayer player, String identifier) {
+		
+//		if ( !identifier.toLowerCase().startsWith( PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED ) ) {
+//			identifier = PlaceholderManager.PRISON_PLACEHOLDER_PREFIX_EXTENDED + identifier;
+//		}
+		
+		UUID playerUuid = player.getUniqueId();
+		String results = Prison.get().getPlatform().getPlaceholders()
+				.placeholderTranslateText( playerUuid, player.getName(), identifier );
+		
+		return ChatColor.translateAlternateColorCodes( '&', results);
+	}
 	
 }

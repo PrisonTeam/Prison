@@ -119,6 +119,9 @@ public class AutoFeaturesFileConfig {
 		    	
 		    	CrazyEnchantsBlastUseEventPriority(blockBreakEvents, "DISABLED"),
 
+		    	RevEnchantsExplosiveEventPriority(blockBreakEvents, "DISABLED"),
+		    	RevEnchantsJackHammerEventPriority(blockBreakEvents, "DISABLED"),
+
 		    	ZenchantmentsBlockShredEventPriority(blockBreakEvents, "DISABLED"),
 	    	
 		    	PrisonEnchantsExplosiveEventPriority(blockBreakEvents, "DISABLED"),
@@ -129,6 +132,27 @@ public class AutoFeaturesFileConfig {
 		    			"Use the following event priorities with the blockBreakEvents: " +
 		    			"DISABLED, LOWEST, LOW, NORMAL, HIGH, HIGHEST, BLOCKEVENTS, MONITOR" ),
 		    	
+		    	blockBreakEvents__ReadMe2(blockBreakEvents, 
+		    			"MONITOR: Processed even if event is canceled. Includes block counts, "
+		    			+ "Mine Sweeper, and check reset-threshold (zero-block) conditions "
+		    			+ "to force a mine reset. "
+		    			+ "BLOCKEVENTS: Similar to MONITOR but includes Prison Block Events, "
+		    			+ "and sellall on full inventory if enabled." ),
+		    	
+		    	blockBreakEvents__ReadMe3(blockBreakEvents, 
+		    			"ACCESS: Processed as a LOWEST priority and will check to see if the "
+		    			+ "player has access to the mine. If they do not have access, then the "
+		    			+ "event will be canceled. No other processing is performed. "
+		    			+ "ACCESSBLOCKEVENTS combines two priorities: ACCESS and BLOCKEVENTS. "
+		    			+ "ACCESSMONITOR combines two priorities: ACCESS and MONITOR." ),
+		    	
+		    	
+		    	eventPriorityACCESSFailureTPToCurrentMine(blockBreakEvents, true ),
+		    	
+		    	blockBreakEvents__ReadMe4(blockBreakEvents, 
+		    			"ACCESS failure: if 'TPToCurrentMine' is enabled, then a failure with the "
+		    			+ "ACCESS priority will TP the player back to the mine that is linked to "
+		    			+ "their current rank using '/mines tp' with no mine specified." ),
 		    	
 		    	
 	    	general(options),
@@ -1001,6 +1025,9 @@ public class AutoFeaturesFileConfig {
 			bStatsDetailPriority( AutoFeatures.ProcessPrisons_ExplosiveBlockBreakEventsPriority, tm );
 			bStatsDetailPriority( AutoFeatures.TokenEnchantBlockExplodeEventPriority, tm );
 			bStatsDetailPriority( AutoFeatures.CrazyEnchantsBlastUseEventPriority, tm );
+			bStatsDetailPriority( AutoFeatures.RevEnchantsExplosiveEventPriority, tm );
+			bStatsDetailPriority( AutoFeatures.RevEnchantsJackHammerEventPriority, tm );
+			
 			bStatsDetailPriority( AutoFeatures.ZenchantmentsBlockShredEventPriority, tm );
 			bStatsDetailPriority( AutoFeatures.PrisonEnchantsExplosiveEventPriority, tm );
 

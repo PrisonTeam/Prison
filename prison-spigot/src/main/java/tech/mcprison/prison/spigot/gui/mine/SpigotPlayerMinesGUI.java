@@ -9,7 +9,9 @@ import org.bukkit.entity.Player;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import de.tr7zw.nbtapi.NBTItem;
 import me.clip.placeholderapi.PlaceholderAPI;
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.mines.data.PrisonSortableResults;
@@ -17,28 +19,29 @@ import tech.mcprison.prison.mines.managers.MineManager.MineSortOrder;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.configs.GuiConfig;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools;
 import tech.mcprison.prison.spigot.gui.SpigotGUIMenuTools.GUIMenuPageData;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
-import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
+import tech.mcprison.prison.spigot.gui.rank.SpigotGUIMessages;
+import tech.mcprison.prison.spigot.nbt.PrisonNBTUtil;
 import tech.mcprison.prison.util.Text;
 
 /**
  * @author GABRYCA
  * @author RoyalBlueRanger (rBluer)
  */
-public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
+public class SpigotPlayerMinesGUI 
+	extends SpigotGUIMessages {
 
     private final Player p;
     private final SpigotPlayer spigotPlayer;
     private final String permissionWarpPlugin = guiConfig.getString("Options.Mines.PermissionWarpPlugin");
-    private final String statusUnlockedMine = messages.getString(MessagesConfig.StringID.spigot_gui_lore_unlocked);
-    private final String clickToTeleport = messages.getString(MessagesConfig.StringID.spigot_gui_lore_click_to_teleport);
-    private final String statusLockedMine = messages.getString(MessagesConfig.StringID.spigot_gui_lore_locked);
+    private final String statusUnlockedMine = guiRanksLoreUnlockedMsg();
+    private final String clickToTeleport = guiRanksLoreClickToTeleportMsg();
+    private final String statusLockedMine = guiRanksLoreLockedMsg();
 
     private int page;
     private String cmdPage;
@@ -95,10 +98,11 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
         guiConfig = guiConfigClass.getFileGuiConfig();
         String permission = Text.translateAmpColorCodes(permissionWarpPlugin);
 
-        // Create GUI.
+        // Create GUI but use the gui title as defined within the ConfigGui.yml file:
         PrisonGUI gui = new PrisonGUI(p, guiPageData.getDimension(), guiConfig.getString("Options.Titles.PlayerMinesGUI"));
 
-        
+
+        // Load the generic mine LORE that would be displayed first:
         List<String> configCustomLore = guiConfig.getStringList("EditableLore.Mines");
         
         
@@ -110,6 +114,7 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             ButtonLore minesLore = new ButtonLore();
             
 
+            // If a mine has custom LORE, then try to load it:
         	String mineLoreKey = "EditableLore.Mine." + m.getName();
         	List<String> mineLore = new ArrayList<>( configCustomLore );
         	List<String> mineLore2 = guiConfig.getStringList( mineLoreKey );
@@ -125,15 +130,35 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             // Get Mine Name.
             String mineName = m.getName();
 
-            // Add mineName lore for TP.
-            minesLore.addLineLoreAction( "&3" + mineName );
+//            // Add mineName lore for TP.
+//            minesLore.addLineLoreAction( "&3" + mineName );
 
+            
+            boolean hasMineAccess = m.hasMiningAccess(spigotPlayer);
+            String permMineAccess = permission + m.getName();
+            boolean hasPermMine = p.hasPermission( permMineAccess );
+            String permAccess = permission.substring(0, permission.length() - 1);
+            boolean hasPerm = p.hasPermission( permAccess );
+            
+            String lockStatus = statusLockedMine;
 
             // If the player has permission to access the mine, then see if there is a custom
             // block set for the mine... otherwise it will use XMaterial.COAL_ORE:
-            if (m.hasMiningAccess(spigotPlayer) || p.hasPermission(permission + m.getName()) ||
-                    p.hasPermission(permission.substring(0, permission.length() - 1))) 
+            if ( hasMineAccess || 
+            		hasPermMine ||
+            		hasPerm ) 
             {
+            	
+            	if ( !hasMineAccess ) {
+            		Output.get().logInfo( 
+            				"GUI Player Mines: Has access to mine %s through perms: %s=%s  OR  %s=%s",
+            				m.getName(), 
+            				permMineAccess, Boolean.toString(hasPermMine),
+            				permAccess, Boolean.toString(hasPerm)
+            				);
+            	}
+            	
+            	
             	// Default to COAL_ORE since the player has access to the mine:
             	xMat = XMaterial.COAL_ORE;
             	
@@ -160,15 +185,17 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             		}
             	}
 
+            	lockStatus = statusUnlockedMine;
+            	
             	// material = ( mineMaterial == null ? Material.COAL_ORE : mineMaterial);
-                minesLore.addLineLoreDescription( statusUnlockedMine );
-                minesLore.addLineLoreAction( clickToTeleport );
+//                minesLore.addLineLoreDescription( statusUnlockedMine );
+//                minesLore.addLineLoreAction( clickToTeleport );
             } 
             else {
             	xMat = XMaterial.REDSTONE_BLOCK;
             	
 //                material = XMaterial.REDSTONE_BLOCK.parseMaterial();
-                minesLore.addLineLoreDescription( statusLockedMine );
+//                minesLore.addLineLoreDescription( statusLockedMine );
             }
 
             // Get mine Tag, but make sure it is valid and the mine's name is not null:
@@ -179,7 +206,7 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             	mineTag = m.getTag();
             }
             
-            DecimalFormat iFmt = new DecimalFormat( "#,##0" );
+            DecimalFormat iFmt = Prison.get().getDecimalFormatInt();
             
             for (String stringValue : mineLore) {
             	
@@ -195,6 +222,18 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             	stringValue = stringValue.replace( "{mineRemaining}", iFmt.format( remaining ));
             	stringValue = stringValue.replace( "{mineRemainingPercent}", iFmt.format( m.getPercentRemainingBlockCount() ));
             	
+            	stringValue = stringValue.replace( "{clickToTeleport}", clickToTeleport );
+            	stringValue = stringValue.replace( "{lockStatus}", lockStatus );
+
+            	stringValue = stringValue.replace( "{playerCount}", iFmt.format( m.getPlayerCount()) );
+            	
+            	if ( m.getRank() == null ) {
+            		stringValue = stringValue.replace( "{linkedRank}", "Not linked" );
+            	}
+            	else {
+            		stringValue = stringValue.replace( "{linkedRank}", m.getRank().getTag() );
+            	}
+            	
             	
 				minesLore.addLineLoreAction( stringValue );
 			}
@@ -207,10 +246,26 @@ public class SpigotPlayerMinesGUI extends SpigotGUIComponents {
             	
                 minesLore.setLoreAction( lores );
             }
+
             
+            Button itemMine = new Button(null, xMat, minesLore, "&3" + mineTag);
+            
+            String mineTeleportCommand = 
+            		Output.stringFormat( 
+            				"mines tp %s %s",
+            				m.getName(),
+            				p.getName() );
+            
+            // Before adding the button, add an NBT tag for the command and rank name:
+			PrisonNBTUtil nbtUtil = new PrisonNBTUtil();
+			NBTItem nbtItem = nbtUtil == null ? null : nbtUtil.getNBT( itemMine.getButtonItem());
+			nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_ENABLED, "true");
+			nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_COMMAND, mineTeleportCommand );
+			nbtUtil.setNBTString(nbtItem, SpigotGUIMenuTools.GUI_MENU_TOOLS_NBT_MINE_NAME, m.getName() );
+			
 
             // Add the button to the inventory.
-            gui.addButton(new Button(null, xMat, minesLore, "&3" + mineTag));
+            gui.addButton( itemMine );
             
             
 //            String mineTag = m.getTag();

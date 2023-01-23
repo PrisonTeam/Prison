@@ -220,7 +220,7 @@ public class PrisonStatsUtil {
 	}
 
 	private void addFileToText(File file, StringBuilder sb) {
-		DecimalFormat dFmt = new DecimalFormat("#,##0");
+		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 		SimpleDateFormat sdFmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		sb.append("\n");

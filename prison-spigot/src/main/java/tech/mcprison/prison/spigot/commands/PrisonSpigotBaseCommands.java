@@ -3,6 +3,7 @@ package tech.mcprison.prison.spigot.commands;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 
+import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.configs.MessagesConfig;
@@ -11,10 +12,15 @@ import tech.mcprison.prison.spigot.game.SpigotCommandSender;
 /**
  * @author RoyalBlueRanger
  */
-public class PrisonSpigotBaseCommands {
+public class PrisonSpigotBaseCommands 
+	extends BaseCommands {
 
 	private final MessagesConfig messages = SpigotPrison.getInstance().getMessagesConfig();
 
+	public PrisonSpigotBaseCommands() {
+		super( "SpigotBaseCommands");                                                                                                                                                                                                        
+	}
+	
     public MessagesConfig getMessages() {
 		return messages;
 	}

@@ -2,6 +2,7 @@ package tech.mcprison.prison.ranks.commands;
 
 import java.text.DecimalFormat;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.commands.BaseCommands;
 import tech.mcprison.prison.internal.CommandSender;
 import tech.mcprison.prison.ranks.PrisonRanks;
@@ -178,7 +179,7 @@ public class LadderCommandsMessages
 			double rankCostMultiplier, double oldRankCostMultiplier )
 	{
 
-		DecimalFormat fFmt = new DecimalFormat("#,##0.00000");
+		DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00000");
 		
 		PrisonRanks.getInstance().getRanksMessages()
 		.getLocalizable( "ranks_LadderCommands__ladder_set_rank_cost_multiplier" )
@@ -193,7 +194,7 @@ public class LadderCommandsMessages
 			double rankCostMultiplier )
 	{
 
-		DecimalFormat fFmt = new DecimalFormat("#,##0.00000");
+		DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00000");
 		
 		PrisonRanks.getInstance().getRanksMessages()
 		.getLocalizable( "ranks_LadderCommands__ladder_rank_cost_multiplier_no_change" )
@@ -207,7 +208,7 @@ public class LadderCommandsMessages
 			double rankCostMultiplier )
 	{
 		
-		DecimalFormat fFmt = new DecimalFormat("#,##0.00000");
+		DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00000");
 		
 		PrisonRanks.getInstance().getRanksMessages()
 		.getLocalizable( "ranks_LadderCommands__ladder_rank_cost_multiplier_out_of_range" )

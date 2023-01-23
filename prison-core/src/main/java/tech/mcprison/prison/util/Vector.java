@@ -236,7 +236,7 @@ public class Vector implements Cloneable {
      * @return the magnitude
      */
     public double lengthSquared() {
-        return x * y + y * y + z * z;
+        return x * x + y * y + z * z;
     }
 
     /**

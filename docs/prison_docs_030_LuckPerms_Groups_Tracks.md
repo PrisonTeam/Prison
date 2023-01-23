@@ -7,7 +7,7 @@
 This document provides an overview to help setup LuckPerms groups and tracks.
 
 
-*Documented updated: 2022-06-19*
+*Documented updated: 2022-12-29*
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -386,19 +386,45 @@ There should be no configuration changes needed for the plugin, and it should ju
 <hr style="height:10px; border:none; color:#aaf; background-color:#aaf;">
 
 
+# Special Variation: Accessing Only One Mine at a Time by using MineAccessByRank
+
+_Warning: This is a non-standard way of configuring access to your mines. These settings will only allow a player to access only the current mine and will exclude them from accessing prior mines._
+
+This setting will only allow players to access mines that are linked to their current rank.  For example, if a player is at Rank C, then they cannot access the prior mines A nor B.  This is a very restrictive configuration and is not generally typical of a prison server.  
+
+
+Enable MineAccesByRank on all mines:
+
+`/mines set mineAccessByRank *all* enable`
+
+Then in the Prison `config.yml` file, enable this setting, using a value of *false*:
+
+```yaml
+prison-mines:
+  access-to-prior-mines: false
+```
+
+
+<hr style="height:10px; border:none; color:#aaf; background-color:#aaf;">
+
+
 # Special Variation: Accessing Only One Mine at a Time by using Permissions
+
+_Warning: This is a non-standard way of configuring access to your mines. These settings will only allow a player to access only the current mine and will exclude them from accessing prior mines._
+
+_Warning: It is not recommended to use Mine Access by Permissions; instead use MineAccessByRank._
 
 One special variation in configuring your server, would be if players can "only" access mines that are tied to their current rank.  For example, if a player is at Rank C, then they cannot access the prior mines A nor B.  This is a very restrictive configuration, which requires managing the permissions.
 
 
-If you are using permissions for access, then the two you need to know about are: `mines.<mineName>` and `mine.<mineName>.tp`.  Such that mine A would require: `mines.a` and `mines.a.tp`.
+If you are using permissions for access, then the two you need to know about are: `mines.<mineName>` and `mine.tp.<mineName>`.  Such that mine A would require: `mines.a` and `mines.tp.a`.
 
 
 Add these two perms to all LuckPerm groups.  You can use the LP editor, or manually with the following commands.  Repeat for all groups.
 
 ```
 /lp group a permission set mines.a true
-/lp group a permission set mines.a.tp true
+/lp group a permission set mines.tp.a true
 ```
 
 
@@ -461,7 +487,185 @@ To review a player's rank within prison use `/ranks player <playerName>`.
 
 
 
+<hr style="height:6px; border:none; color:#aaf; background-color:#aaf;">
 
+
+# Example of LuckPerms Commands to setup Tracks/Groups
+
+The following is a list of LuckPerm Commands, listed in order, that will setup the correct Tracks/Groups within LuckPerms.  Then there is a prison command that will apply the correct LP Track to all existing players.
+
+This will allow perms to be inherited from lower ranks.
+
+
+```
+/lp creategroup a
+/lp group a setdisplayname A
+
+/lp creategroup b
+/lp group b setdisplayname B
+/lp group b parent add a
+
+/lp creategroup c
+/lp group c setdisplayname C
+/lp group c parent add b
+
+/lp creategroup d
+/lp group d setdisplayname D
+/lp group d parent add c
+
+/lp creategroup e
+/lp group e setdisplayname E
+/lp group e parent add d
+
+/lp creategroup f
+/lp group f setdisplayname F
+/lp group f parent add e
+
+/lp creategroup g
+/lp group g setdisplayname G
+/lp group g parent add f
+
+/lp creategroup h
+/lp group h setdisplayname H
+/lp group h parent add g
+
+/lp creategroup i
+/lp group i setdisplayname I
+/lp group i parent add h
+
+/lp creategroup j
+/lp group j setdisplayname J
+/lp group j parent add i
+
+/lp creategroup k
+/lp group k setdisplayname K
+/lp group k parent add j
+
+/lp creategroup l
+/lp group l setdisplayname L
+/lp group l parent add k
+
+/lp creategroup m
+/lp group m setdisplayname M
+/lp group m parent add l
+
+/lp creategroup n
+/lp group n setdisplayname N
+/lp group n parent add m
+
+/lp creategroup o
+/lp group o setdisplayname O
+/lp group o parent add n
+
+/lp creategroup p
+/lp group p setdisplayname P
+/lp group p parent add o
+
+/lp creategroup q
+/lp group q setdisplayname Q
+/lp group q parent add p
+
+/lp creategroup r
+/lp group r setdisplayname R
+/lp group r parent add q
+
+/lp creategroup s
+/lp group s setdisplayname S
+/lp group s parent add r
+
+/lp creategroup t
+/lp group t setdisplayname T
+/lp group t parent add s
+
+/lp creategroup u
+/lp group u setdisplayname U
+/lp group u parent add t
+
+/lp creategroup v
+/lp group v setdisplayname V
+/lp group v parent add u
+
+/lp creategroup w
+/lp group w setdisplayname W
+/lp group w parent add v
+
+/lp creategroup x
+/lp group x setdisplayname X
+/lp group x parent add w
+
+/lp creategroup y
+/lp group y setdisplayname Y
+/lp group y parent add x
+
+/lp creategroup z
+/lp group z setdisplayname Z
+/lp group z parent add y
+
+/lp createtrack mine-ranks
+
+/lp track mine-ranks append a
+/lp track mine-ranks append b
+/lp track mine-ranks append c
+/lp track mine-ranks append d
+/lp track mine-ranks append e
+/lp track mine-ranks append f
+/lp track mine-ranks append g
+/lp track mine-ranks append h
+/lp track mine-ranks append i
+/lp track mine-ranks append j
+/lp track mine-ranks append k
+/lp track mine-ranks append l
+/lp track mine-ranks append m
+/lp track mine-ranks append n
+/lp track mine-ranks append o
+/lp track mine-ranks append p
+/lp track mine-ranks append q
+/lp track mine-ranks append r
+/lp track mine-ranks append s
+/lp track mine-ranks append t
+/lp track mine-ranks append u
+/lp track mine-ranks append v
+/lp track mine-ranks append w
+/lp track mine-ranks append x
+/lp track mine-ranks append y
+/lp track mine-ranks append z
+/lp track mine-ranks append a
+/lp track mine-ranks append b
+/lp track mine-ranks append c
+/lp track mine-ranks append d
+/lp track mine-ranks append e
+/lp track mine-ranks append f
+/lp track mine-ranks append g
+/lp track mine-ranks append h
+/lp track mine-ranks append i
+/lp track mine-ranks append j
+/lp track mine-ranks append k
+/lp track mine-ranks append l
+/lp track mine-ranks append m
+/lp track mine-ranks append n
+/lp track mine-ranks append o
+/lp track mine-ranks append p
+/lp track mine-ranks append q
+/lp track mine-ranks append r
+/lp track mine-ranks append s
+/lp track mine-ranks append t
+/lp track mine-ranks append u
+/lp track mine-ranks append v
+/lp track mine-ranks append w
+/lp track mine-ranks append x
+/lp track mine-ranks append y
+/lp track mine-ranks append z
+
+
+/ranks ladder command add default lp user {player} parent settrack mine-ranks {targetRank}
+
+```
+
+To apply these to all preexisting players, the following command will reset everyone's current rank to their current rank, thus triggering the **ladder commands** to be ran so they will be setup with the correct LP Track.
+
+```
+/ranks set rank *all* *same*
+```
 
 <hr style="height:6px; border:none; color:#aaf; background-color:#aaf;">
 

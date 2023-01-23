@@ -6,23 +6,23 @@ import org.bukkit.entity.Player;
 
 import com.cryptomorin.xseries.XMaterial;
 
+import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.placeholders.PlaceholdersUtil;
 import tech.mcprison.prison.ranks.PrisonRanks;
 import tech.mcprison.prison.ranks.data.PlayerRank;
 import tech.mcprison.prison.ranks.data.Rank;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.ranks.data.RankPlayerFactory;
-import tech.mcprison.prison.spigot.configs.MessagesConfig;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.gui.guiutility.Button;
 import tech.mcprison.prison.spigot.gui.guiutility.ButtonLore;
 import tech.mcprison.prison.spigot.gui.guiutility.PrisonGUI;
-import tech.mcprison.prison.spigot.gui.guiutility.SpigotGUIComponents;
 
 /**
  * @author GABRYCA
  */
-public class SpigotRankManagerGUI extends SpigotGUIComponents {
+public class SpigotRankManagerGUI 
+	extends SpigotGUIMessages {
 
     private final Player p;
     private final Rank rank;
@@ -45,7 +45,7 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
         ButtonLore rankupCommandsLore = new ButtonLore( guiLeftClickToOpenMsg(), null);
 
         // Decimal Rank cost format.
-        DecimalFormat formatDecimal = new DecimalFormat("###,##0.00");
+        DecimalFormat formatDecimal = Prison.get().getDecimalFormat("###,##0.00");
 
         RankPlayerFactory rankPlayerFactory = new RankPlayerFactory();
         
@@ -62,14 +62,12 @@ public class SpigotRankManagerGUI extends SpigotGUIComponents {
 
         ButtonLore editPriceLore = new ButtonLore(
         		createLore( guiLeftClickToOpenMsg()), 
-        		createLore(
-        				messages.getString(MessagesConfig.StringID.spigot_gui_lore_info),
+        		createLore( guiRanksLoreInfoMsg(),
                 guiPriceMsg( rankCost) ));
 
         ButtonLore editTagLore = new ButtonLore(createLore( guiLeftClickToOpenMsg() ), 
-        		createLore(
-        				messages.getString(MessagesConfig.StringID.spigot_gui_lore_info),
-        				messages.getString(MessagesConfig.StringID.spigot_gui_lore_rank_tag) + " " + rank.getTag()));
+        		createLore( guiRanksLoreInfoMsg(),
+        				guiRanksLoreRankTagMsg() + " " + rank.getTag()));
 
 
         ButtonLore closeGUILore = new ButtonLore( guiClickToCloseMsg(), null);

@@ -128,8 +128,10 @@ public class MinesCommands
     
     
     @Override
-    @Command(identifier = "mines block set", permissions = "mines.block", onlyPlayers = false, 
-			description = "Changes the percentage of a block in a mine.")
+    @Command(identifier = "mines block setChance", permissions = "mines.block", onlyPlayers = false, 
+			description = "Changes the percent chance of a block spawning within in a mine.  "
+					+ "This chance is not cryptographically precise.  The actual percentage will "
+					+ "also vary based upon block constraints and other factors.")
 	public void setBlockCommand(CommandSender sender,
 			@Arg(name = "mineName", description = "The name of the mine to edit.") 
 					String mineName,
@@ -152,7 +154,11 @@ public class MinesCommands
     }
     
     @Command(identifier = "mines block search", permissions = "mines.block", 
-					description = "Searches for a block to add to a mine.")
+					description = "Searches for a block to add to a mine.  "
+							+ "This does not include items: see the command '/mines block searchAll'.  "
+							+ "These block and item names are based upon XSeries's XMaterial block names "
+							+ "and are used to provide a uniform and consistant naming convention for "
+							+ "all versions of minecraft & spigot.")
 	public void searchBlockCommand(CommandSender sender,
 			@Arg(name = "search", def = " ", 
 				description = "Any part of the block's name or ID.") String search,
@@ -179,7 +185,7 @@ public class MinesCommands
     
     @Override
     @Command(identifier = "mines block list", permissions = "mines.block", 
-    				description = "Searches for a block to add to a mine.")
+    				description = "Lists all of the blocks assigned to a mine.")
     public void listBlockCommand(CommandSender sender,
     		@Arg(name = "mineName", description = "The name of the mine to view.") String mineName ) {
 
@@ -887,8 +893,8 @@ public class MinesCommands
     
 	private ChatDisplay mineInfoDetails( CommandSender sender, boolean isMineStats, Mine m, CommandPagedData cmdPageData )
 	{
-		DecimalFormat dFmt = new DecimalFormat("#,##0");
-        DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+		DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
+        DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
         
         ChatDisplay chatDisplay = new ChatDisplay("&bMine: &3" + m.getName());
 
@@ -942,7 +948,7 @@ public class MinesCommands
         	
         	if ( !mineAccessByRank ) {
         		RowComponent row = new RowComponent();
-        		row.addTextComponent( "&3Mine Access Permission: &7%s   &3(Should use Access by Rank)", 
+        		row.addTextComponent( "&3Mine Access Permission: &7%s   &3(Consider using Access by Rank)", 
         				( m.getAccessPermission() == null ? "&2none" : m.getAccessPermission() ) );
         		chatDisplay.addComponent( row );
         	}
@@ -967,8 +973,7 @@ public class MinesCommands
         	}
         	
         	
-        	if ( !m.isVirtual() ) {
-        	}
+
         	
         	
         	if ( !m.isVirtual() ) {
@@ -989,16 +994,10 @@ public class MinesCommands
         		String spawnPoint = m.getSpawn() != null ? m.getSpawn().toBlockCoordinates() : "&cnot set";
         		chatDisplay.addText("&3Spawnpoint: &7%s", spawnPoint);
         		
-        		if ( cmdPageData.isShowAll() || isMineStats ) {
-        			RowComponent rowStats = new RowComponent();
-        			rowStats.addTextComponent( "  -- &7 Stats :: " );
-        			rowStats.addTextComponent( m.statsMessage() );
-        			
-        			chatDisplay.addComponent(rowStats);
-        		}
         	}
         	
 
+        	
         	
 //          chatDisplay.text("&3Size: &7%d&8x&7%d&8x&7%d", Math.round(m.getBounds().getWidth()),
 //              Math.round(m.getBounds().getHeight()), Math.round(m.getBounds().getLength()));
@@ -1055,33 +1054,36 @@ public class MinesCommands
           	else {
         		RowComponent row = new RowComponent();
         		double rtMinutes = resetTime / 60.0D;
-        		row.addTextComponent( "&3Reset time: &7%s &3Secs (&7%.2f &3Mins)", 
-        				Integer.toString(resetTime), rtMinutes );
+        		row.addTextComponent( 
+        				"&3Reset time: &7%s &3Secs (&7%.2f &3Mins)  Reset Count: &7%s ", 
+        				Integer.toString(resetTime), 
+        				rtMinutes,
+        				dFmt.format(m.getResetCount()) );
         		chatDisplay.addComponent( row );
         	}
         	
-        	{
-        		RowComponent row = new RowComponent();
-        		row.addTextComponent( "&3Mine Reset Count: &7%s ", 
-        				dFmt.format(m.getResetCount()) );
-        		
-//        		if ( m.isUsePagingOnReset() ) {
-//        			row.addTextComponent( "    &7-= &5Reset Paging Enabled &7=-" );
-//        		}
-//        		else if ( cmdPageData.isShowAll() ) {
-//        			row.addTextComponent( "    &7-= &3Reset Paging Disabled &7=-" );
-//        		}
-        		
-        		chatDisplay.addComponent( row );
-        		
-//        		double resetTimeSeconds = m.getStatsResetTimeMS() / 1000.0;
-//        		if ( !m.isUsePagingOnReset() && resetTimeSeconds > 0.5 ) {
-//        			String resetTimeSec = PlaceholdersUtil.formattedTime( resetTimeSeconds );
-//        			chatDisplay.addText("&5  Warning: &3Reset time is &7%s&3, which is high. " +
-//        					"It is recommened that you try to enable &7/mines set resetPaging help",
-//        					resetTimeSec );
-//        		}
-        	}
+//        	{
+//        		RowComponent row = new RowComponent();
+//        		row.addTextComponent( "&3Mine Reset Count: &7%s ", 
+//        				dFmt.format(m.getResetCount()) );
+//        		
+////        		if ( m.isUsePagingOnReset() ) {
+////        			row.addTextComponent( "    &7-= &5Reset Paging Enabled &7=-" );
+////        		}
+////        		else if ( cmdPageData.isShowAll() ) {
+////        			row.addTextComponent( "    &7-= &3Reset Paging Disabled &7=-" );
+////        		}
+//        		
+//        		chatDisplay.addComponent( row );
+//        		
+////        		double resetTimeSeconds = m.getStatsResetTimeMS() / 1000.0;
+////        		if ( !m.isUsePagingOnReset() && resetTimeSeconds > 0.5 ) {
+////        			String resetTimeSec = PlaceholdersUtil.formattedTime( resetTimeSeconds );
+////        			chatDisplay.addText("&5  Warning: &3Reset time is &7%s&3, which is high. " +
+////        					"It is recommened that you try to enable &7/mines set resetPaging help",
+////        					resetTimeSec );
+////        		}
+//        	}
         	
         	if ( !m.isVirtual() && resetTime > 0 ) {
         		RowComponent row = new RowComponent();
@@ -1091,55 +1093,12 @@ public class MinesCommands
         			(targetResetTime - System.currentTimeMillis()) / 1000d);
         		double rtMinutes = remaining / 60.0D;
         		
-        		row.addTextComponent( "&3Time Remaining Until Reset: &7%s &3Secs (&7%.2f &3Mins)", 
+        		row.addTextComponent( "&3Time Until Next Reset: &7%s &3Secs (&7%.2f &3Mins)", 
         				dFmt.format( remaining ), rtMinutes );
         		chatDisplay.addComponent( row );
         	}
         	
-        	if ( resetTime > 0 )
-        	{
-        		RowComponent row = new RowComponent();
-        		row.addTextComponent( "&3Notification Mode: &7%s &7%s", 
-        				m.getNotificationMode().name(), 
-        				( m.getNotificationMode() == MineNotificationMode.radius ? 
-        						dFmt.format( m.getNotificationRadius() ) + " blocks" : "" ) );
-        		chatDisplay.addComponent( row );
-        	}
         	
-        	if ( resetTime > 0 && m.isUseNotificationPermission() || 
-        		 resetTime > 0 && !m.isUseNotificationPermission() && cmdPageData.isShowAll() ) {
-        		RowComponent row = new RowComponent();
-        		row.addTextComponent( "&3Notifications Filtered by Permissions: %s", 
-        				( m.isUseNotificationPermission() ?
-        						m.getMineNotificationPermissionName() : "&dDisabled" ) );
-        		chatDisplay.addComponent( row );
-        	}
-        	
-        	
-        	
-
-        	
-        	{
-
-        		if ( m.isZeroBlockResetDisabled() && cmdPageData.isShowAll() ) {
-        			RowComponent row = new RowComponent();
-        			row.addTextComponent( "&3Zero Blocks Reset Delay: &cDISABLED");
-        			chatDisplay.addComponent( row );
-        		} 
-        		else if ( !m.isZeroBlockResetDisabled() ) {
-        			RowComponent row = new RowComponent();
-        			if ( m.getResetThresholdPercent() == 0 ) {
-        				row.addTextComponent( "&3Zero Blocks Reset Delay: &7%s &3Seconds",
-        						fFmt.format( m.getZeroBlockResetDelaySec() ));
-        			}
-        			else {
-        				row.addTextComponent( "&7Threshold &3Reset Delay: &7%s &3Seconds",
-        						fFmt.format( m.getZeroBlockResetDelaySec() ));
-        			}
-        			chatDisplay.addComponent( row );
-        		}
-        		
-        	}
         	
         	
         	if ( !m.isVirtual() ) {
@@ -1161,26 +1120,79 @@ public class MinesCommands
         		
         	}
         	
+
+        	
+        	{
+
+        		if ( m.isZeroBlockResetDisabled() && cmdPageData.isShowAll() ) {
+        			RowComponent row = new RowComponent();
+        			row.addTextComponent( "&3Reset Delay: &cDISABLED");
+        			chatDisplay.addComponent( row );
+        		} 
+        		else if ( !m.isZeroBlockResetDisabled() ) {
+        			RowComponent row = new RowComponent();
+        			if ( m.getResetThresholdPercent() == 0 ) {
+        				row.addTextComponent( "&3Reset Delay (zero blocks): &7%s &3Seconds",
+        						fFmt.format( m.getZeroBlockResetDelaySec() ));
+        			}
+        			else {
+        				row.addTextComponent( "&3Reset Delay (&s Percent Threshold): &7%s &3Seconds",
+        						fFmt.format( m.getResetThresholdPercent() ),
+        						fFmt.format( m.getZeroBlockResetDelaySec() ));
+        			}
+        			chatDisplay.addComponent( row );
+        		}
+        		
+        	}
+        	
+
+        	
         	
         	if ( resetTime > 0 && m.isSkipResetEnabled() ) {
         		RowComponent row = new RowComponent();
-        		row.addTextComponent( "&3Skip Reset: &2Enabled&3: &3Threshold: &7%s  &3Skip Limit: &7%s",
-        				fFmt.format( m.getSkipResetPercent() ), dFmt.format( m.getSkipResetBypassLimit() ));
+        		row.addTextComponent( 
+        				"&3Reset Skip: &2Enabled&3: &3Threshold: &7%s  &3SkipLimit: &7%s  &3SkipCount: &7%s",
+        				fFmt.format( m.getSkipResetPercent() ), 
+        				dFmt.format( m.getSkipResetBypassLimit() ),
+        				dFmt.format( m.getSkipResetBypassCount() ) );
         		chatDisplay.addComponent( row );
         		
-        		if ( m.getSkipResetBypassCount() > 0 ) {
-        			RowComponent row2 = new RowComponent();
-        			row2.addTextComponent( "    &3Skipping Enabled: Skip Count: &7%s",
-        					dFmt.format( m.getSkipResetBypassCount() ));
-        			chatDisplay.addComponent( row2 );
-        		}
+//        		if ( m.getSkipResetBypassCount() > 0 ) {
+//        			RowComponent row2 = new RowComponent();
+//        			row2.addTextComponent( "    &3Skipping Enabled: Skip Count: &7%s",
+//        					dFmt.format( m.getSkipResetBypassCount() ));
+//        			chatDisplay.addComponent( row2 );
+//        		}
         	} 
         	else if ( resetTime > 0 && cmdPageData.isShowAll() ) {
         		RowComponent row = new RowComponent();
-        		row.addTextComponent( "&3Skip Mine Reset if no Activity: &cnot set");
+        		row.addTextComponent( "&3Reset Skip if no Mining Activity: &cnot enabled");
         		chatDisplay.addComponent( row );
         	}
         	
+        	
+        	
+        	if ( resetTime > 0 )
+        	{
+        		RowComponent row = new RowComponent();
+        		row.addTextComponent( "&3Notification Mode: &7%s &7%s", 
+        				m.getNotificationMode().name(), 
+        				( m.getNotificationMode() == MineNotificationMode.radius ? 
+        						dFmt.format( m.getNotificationRadius() ) + " blocks" : "" ) );
+        		chatDisplay.addComponent( row );
+        	}
+        	
+        	if ( resetTime > 0 && m.isUseNotificationPermission() || 
+        		 resetTime > 0 && !m.isUseNotificationPermission() && cmdPageData.isShowAll() ) {
+        		RowComponent row = new RowComponent();
+        		row.addTextComponent( "&3Notifications Filtered by Permissions: %s", 
+        				( m.isUseNotificationPermission() ?
+        						m.getMineNotificationPermissionName() : "&dDisabled" ) );
+        		chatDisplay.addComponent( row );
+        	}
+        	
+        	
+
         	
         	
         	if ( m.isMineSweeperEnabled() ) {
@@ -1213,6 +1225,43 @@ public class MinesCommands
         		chatDisplay.addComponent( row );
         	}
         	
+        	
+        	
+        	
+        	String statsMsg = m.statsMessage();
+        	if ( !m.isVirtual() && (cmdPageData.isShowAll() || isMineStats) &&
+        			statsMsg != null && statsMsg.length() > 0 ) {
+        		
+        		int idx = statsMsg.indexOf("BlockUpdateTime:");
+        		int idx2 = statsMsg.indexOf("ResetPages:", idx);
+        		
+        		String stats1 = statsMsg.substring(0, idx );
+        		String stats2 = statsMsg.substring( idx, idx2 );
+        		String stats3 = statsMsg.substring( idx2 );
+        		
+        		{
+        			RowComponent rowStats = new RowComponent();
+        			rowStats.addTextComponent( "  -- &7 Reset Stats :: &3" );
+        			rowStats.addTextComponent( stats1 );
+        			chatDisplay.addComponent(rowStats);
+        		}
+        		{
+        			RowComponent rowStats = new RowComponent();
+        			rowStats.addTextComponent( "  -- &7 Reset Stats ::  &3" );
+        			rowStats.addTextComponent( stats2 );
+        			chatDisplay.addComponent(rowStats);
+        		}
+        		{
+        			RowComponent rowStats = new RowComponent();
+        			rowStats.addTextComponent( "  -- &7 Reset Stats ::  &3" );
+        			rowStats.addTextComponent( stats3 );
+        			chatDisplay.addComponent(rowStats);
+        		}
+        		
+        		
+//        		rowStats.addTextComponent( m.statsMessage() );
+        	}
+
         	
         	
         	if ( m.getResetCommands() != null && m.getResetCommands().size() > 0 ) {
@@ -1461,8 +1510,8 @@ public class MinesCommands
     			new BulletedListComponent.BulletedListBuilder();
     	
     	    	
-    	DecimalFormat dFmt = new DecimalFormat("#,##0");
-    	DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+    	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
+    	DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
     	
     	int count = 0;
     	 
@@ -1686,43 +1735,66 @@ public class MinesCommands
 	}
 
 	/**
-     * <p>The following command will change the mine's time between resets. But it will
-     * not be applied until after the next reset.
+     * <p>The following command will skip the mines normally scheduled reset.
      * </p>
      * 
      * @param sender
      * @param mineName
      * @param time
      */
-    @Command(identifier = "mines set skipReset", permissions = "mines.skipreset", 
-    		description = "Set a mine to skip the reset if not enough blocks have been mined.")
+    @Command(identifier = "mines set resetSkip", permissions = "mines.set", 
+    		description = "Set a mine to skip the reset if not enough blocks have been mined. "
+    				+ "The threshold value should be higher than the resetThreshold.  If the "
+    				+ "percent remaining is higher than the resetSkip threshold, then Prison will"
+    				+ "skip the current reset.  After skipping the reset 'bypassLimit' number of times, "
+    				+ "then prison will reset the mine to return it to a clean state. "
+    				+ "The reset skipping is not influenced by the 'resetThreshold' or the 'resetDelay', "
+    				+ "but all of them are related to fine tuning a mine's behavior. "
+    				+ "Also see '/mines set resetThreshold help' and "
+    				+ "'/mines set resetDelay'.")
     public void skipResetCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
-        @Arg(name = "enabled", description = "Enable the skip reset processing: 'Enabled' or 'Disable'", 
+        @Arg(name = "mineName", description = "The mine name to edit, "
+        		+ "or '*all*' to apply to all mines.") String mineName,
+        @Arg(name = "enabled", description = "Enable the skip reset processing: 'Enabled' or 'Disabled' "
+        		+ "[enable, enabled, disable, disabled]", 
         		def = "disabled") String enabled,
-        @Arg(name = "percent", description = "Percent threshold before resetting.", def = "80" ) String percent,
-        @Arg(name = "bypassLimit", description = "Limit number of skips before bypassing and performing a reset",
-        		def = "50") String bypassLimit
+        @Arg(name = "percent", description = "If percent remaining in the mine is higher than "
+        		+ "this threshold percentage, then the reset will be skipped.", def = "80" ) String percent,
+        @Arg(name = "bypassLimit", description = "Max number of resets that are bypassed before forcing a reset",
+        		def = "10") String bypassLimit
     		) {
         
-        if (performCheckMineExists(sender, mineName)) {
-        	setLastMineReferenced(mineName);
+        if ( "*all*".equalsIgnoreCase( mineName ) ||
+        		performCheckMineExists(sender, mineName)
+        		) {
         	
-        	if ( enabled == null || !"enabled".equalsIgnoreCase( enabled ) && !"disabled".equalsIgnoreCase( enabled )) {
-        		Output.get().sendWarn( sender,"&7Invalid &benabled&7 value. Must be either &benabled&7 or " +
-        				"&bdisabled&7.  Was &b%s&7.", (enabled == null ? "&c-blank-" : enabled) );
+        	if ( !"*all*".equalsIgnoreCase( mineName ) ) {
+        		
+        		setLastMineReferenced(mineName);
+        	}
+        	
+        	if ( enabled == null || !
+        			!"enabled".equalsIgnoreCase( enabled ) && 
+        			!"enable".equalsIgnoreCase( enabled ) && 
+        			!"disabled".equalsIgnoreCase( enabled ) && 
+        			!"disable".equalsIgnoreCase( enabled ) 
+        			) {
+        		
+        		Output.get().sendWarn( sender,"&7Invalid &benabled&7 value. Must be ["
+        				+ "&benable&7, &benabled&7, &bdisable&7, &bdisabled&7].  "
+        				+ "Was &b%s&7.", (enabled == null ? "&c-blank-" : enabled) );
         		return;
         	}
 
         	PrisonMines pMines = PrisonMines.getInstance();
-        	Mine m = pMines.getMine(mineName);
+        	
             
 //            if ( !m.isEnabled() ) {
 //            	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
 //            	return;
 //            }
             
-        	boolean skipEnabled = "enabled".equalsIgnoreCase( enabled );
+        	boolean skipEnabled = "enabled".equalsIgnoreCase( enabled ) || "enable".equalsIgnoreCase( enabled );
         	double skipPercent = 80.0d;
         	int skipBypassLimit = 50;
         	
@@ -1751,17 +1823,42 @@ public class MinesCommands
 						"Was &b%s&7.", (bypassLimit == null ? "-blank-" : bypassLimit) );
 			}
         	
-        	m.setSkipResetEnabled( skipEnabled );
-        	m.setSkipResetPercent( skipPercent );
-        	m.setSkipResetBypassLimit( skipBypassLimit );
+        	int updates = 0;
+        	String mName = "&7*all*&r";
         	
-        	pMines.getMineManager().saveMine( m );
+        	if ( "*all*".equalsIgnoreCase(mineName) ) {
+        		
+        		for ( Mine m : pMines.getMines() ) {
+        			
+        			m.setSkipResetEnabled( skipEnabled );
+        			m.setSkipResetPercent( skipPercent );
+        			m.setSkipResetBypassLimit( skipBypassLimit );
+        			
+        			pMines.getMineManager().saveMine( m );
+        			updates++;
+        		}
+        	}
+        	else {
+        		
+        		Mine m = pMines.getMine(mineName);
+        		m.setSkipResetEnabled( skipEnabled );
+        		m.setSkipResetPercent( skipPercent );
+        		m.setSkipResetBypassLimit( skipBypassLimit );
+        		
+        		mName = m.getTag();
+        		
+        		pMines.getMineManager().saveMine( m );
+        		updates++;
+        	}
+        	
         	
         	// User's message:
         	String message = String.format( "&7mines skipreset for &b%s&7: &b%s&7  " +
-					        			"threshold: &b%.2f&7 percent  bypassLimit: &b%d", 
-					        			m.getTag(), (skipEnabled ? "enabled" : "disabled"),
-					        			skipPercent, skipBypassLimit );
+					        			"threshold: &b%.2f&7 percent  bypassLimit: &b%d  "
+					        			+ "Mines Updated: %d", 
+					        			mName, (skipEnabled ? "enabled" : "disabled"),
+					        			skipPercent, skipBypassLimit,
+					        			updates );
         	Output.get().sendInfo( sender, message );
         	
         	// Server Log message:
@@ -1782,23 +1879,84 @@ public class MinesCommands
      * @param mineName
      * @param time
      */
-    @Command(identifier = "mines set resetTime", permissions = "mines.resettime", 
+    @Command(identifier = "mines set resetTime", permissions = "mines.set", 
     		description = "Set a mine's auto reset time as expressed in seconds.")
     public void resetTimeCommand(CommandSender sender,
         @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
         @Arg(name = "time", description = "Time in seconds for the mine to auto reset. " +
         		"With a minimum value of "+ MineData.MINE_RESET__TIME_SEC__MINIMUM + " seconds. " +
-        				"Using 'disable' will turn off the auto reset." ) String time
+        				"Using '*disable*' will turn off the auto reset.  Use of "
+        				+ "*default* will set the time to " + 
+        				MineData.MINE_RESET__TIME_SEC__DEFAULT + " seconds. "
+        						+ "[*default* *disable*]" ) String time
         
     		) {
+
+    	int resetTime = MineData.MINE_RESET__TIME_SEC__DEFAULT;
+
+    	PrisonMines pMines = PrisonMines.getInstance();
         
+    	if ( "*disable*".equalsIgnoreCase( time ) ) {
+    		resetTime = -1;
+    	}
+    	else if ( "*default*".equalsIgnoreCase( time ) ) {
+    		// use the default time
+    	}
+    	else {
+    		try {
+    			if ( time != null && time.trim().length() > 0 ) {
+        			resetTime = Integer.parseInt( time );
+        		}
+    		}
+    		catch ( NumberFormatException e ) {
+				Output.get().sendWarn( sender, 
+						"&7Invalid resetTime value for &b%s&7. Must be an integer value of &b%d &7or greater. [&b%s&7]",
+						mineName, MineData.MINE_RESET__TIME_SEC__MINIMUM, time );
+				return;
+			}
+    	}
+    	if ( resetTime < MineData.MINE_RESET__TIME_SEC__MINIMUM ) {
+    		Output.get().sendWarn( sender, 
+    				"&7Invalid resetTime value for &b%s&7. Must be an integer value of &b%d&7 or greater. [&b%d&7]",
+    				mineName, MineData.MINE_RESET__TIME_SEC__MINIMUM, resetTime );
+    		return;
+    	}
+    	
+    	if ( "*all*".equalsIgnoreCase( mineName ) ) {
+    		
+    		for ( Mine mine : pMines.getMines() ) {
+    			if ( mine.getResetTime() != resetTime ) {
+    				
+    				mine.setResetTime( resetTime );
+    				
+    				pMines.getMineManager().saveMine( mine );
+    				
+    				if ( resetTime == -1 ) {
+    					
+    					Output.get().logInfo( "&7Automatic resets have been disabled for mine %s.", mine.getTag() );
+    				}
+    				else {
+    					// User's message:
+    	        		Output.get().sendInfo( sender, "&7mines set resettime: &b%s &7resetTime set to &b%d", 
+    	        				mine.getTag(), resetTime );
+    	        		
+    	        		// Server Log message:
+    	        		Player player = getPlayer( sender );
+    	        		Output.get().logInfo( "&bmines set resettime&7: &b%s &7set &b%s &7resetTime to &b%d", 
+    	        				(player == null ? "console" : player.getDisplayName()), mine.getTag(), resetTime  );
+    				}
+    			}
+    		}
+    		
+    		return;
+    	}
+    	
         if (performCheckMineExists(sender, mineName)) {
         	setLastMineReferenced(mineName);
         	
-        	PrisonMines pMines = PrisonMines.getInstance();
         	Mine m = pMines.getMine(mineName);
         	
-        	if ( "disable".equalsIgnoreCase( time ) ) {
+        	if ( "*disable*".equalsIgnoreCase( time ) ) {
         		
         		m.setResetTime( -1 );
         		
@@ -1809,41 +1967,31 @@ public class MinesCommands
         		return;
         	}
 
-        	try {
-        		int resetTime = MineData.MINE_RESET__TIME_SEC__DEFAULT;
-
-        		if ( time != null && time.trim().length() > 0 ) {
-        			resetTime = Integer.parseInt( time );
-        		}
-
-				if ( resetTime < MineData.MINE_RESET__TIME_SEC__MINIMUM ) {
-					Output.get().sendWarn( sender, 
-							"&7Invalid resetTime value for &b%s&7. Must be an integer value of &b%d&7 or greater. [&b%d&7]",
-							mineName, MineData.MINE_RESET__TIME_SEC__MINIMUM, resetTime );
-				} else {
+        	
+//        	if ( resetTime < MineData.MINE_RESET__TIME_SEC__MINIMUM ) {
+//        		Output.get().sendWarn( sender, 
+//        				"&7Invalid resetTime value for &b%s&7. Must be an integer value of &b%d&7 or greater. [&b%d&7]",
+//        				mineName, MineData.MINE_RESET__TIME_SEC__MINIMUM, resetTime );
+//        	} else 
+        	{
 //			        if ( !m.isEnabled() ) {
 //			        	sender.sendMessage( "&cMine is disabled&7. Use &a/mines info &7for possible cause." );
 //			        	return;
 //			        }
-					
-					m.setResetTime( resetTime );
-					
-        			pMines.getMineManager().saveMine( m );
-        								
-					// User's message:
-					Output.get().sendInfo( sender, "&7mines set resettime: &b%s &7resetTime set to &b%d", m.getTag(), resetTime );
-					
-					// Server Log message:
-					Player player = getPlayer( sender );
-					Output.get().logInfo( "&bmines set resettime&7: &b%s &7set &b%s &7resetTime to &b%d", 
-							(player == null ? "console" : player.getDisplayName()), m.getTag(), resetTime  );
-				}
-			}
-			catch ( NumberFormatException e ) {
-				Output.get().sendWarn( sender, 
-						"&7Invalid resetTime value for &b%s&7. Must be an integer value of &b%d &7or greater. [&b%s&7]",
-						mineName, MineData.MINE_RESET__TIME_SEC__MINIMUM, time );
-			}
+        		
+        		m.setResetTime( resetTime );
+        		
+        		pMines.getMineManager().saveMine( m );
+        		
+        		// User's message:
+        		Output.get().sendInfo( sender, "&7mines set resettime: &b%s &7resetTime set to &b%d", m.getTag(), resetTime );
+        		
+        		// Server Log message:
+        		Player player = getPlayer( sender );
+        		Output.get().logInfo( "&bmines set resettime&7: &b%s &7set &b%s &7resetTime to &b%d", 
+        				(player == null ? "console" : player.getDisplayName()), m.getTag(), resetTime  );
+        	}
+
         } 
     }
 
@@ -1865,7 +2013,7 @@ public class MinesCommands
      * @param mineName
      * @param time
      */
-    @Command(identifier = "mines set zeroBlockResetDelay", permissions = "mines.zeroblockresetdelay", 
+    @Command(identifier = "mines set resetDelay", permissions = "mines.set", 
     		description = "Set a mine's delay before reset when it reaches zero blocks.")
     public void zeroBlockResetDelayCommand(CommandSender sender,
     		@Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
@@ -1906,7 +2054,7 @@ public class MinesCommands
     			
     			pMines.getMineManager().saveMine( m );
     			
-    			DecimalFormat dFmt = new DecimalFormat("#,##0.00");
+    			DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
     			// User's message:
     			if ( m.isZeroBlockResetDisabled() ) {
     				Output.get().sendInfo( sender, "&7Mine &b%s Zero Block Reset Delay: &cDISABLED", 
@@ -1944,7 +2092,7 @@ public class MinesCommands
      * @param mineName
      * @param time
      */
-    @Command(identifier = "mines set resetThreshold", permissions = "mines.resetThreshold", 
+    @Command(identifier = "mines set resetThreshold", permissions = "mines.set", 
     		description = "Triggers a mine reset once this threshold is crossed and the remaining " +
     				"block percentage is less than or equal to this value")
     public void resetThresholdPercentCommand(CommandSender sender,
@@ -1995,8 +2143,8 @@ public class MinesCommands
         						m.getBounds().getTotalBlockCount() * 
 									m.getResetThresholdPercent() / 100.0d;
         	
-            DecimalFormat dFmt = new DecimalFormat("#,##0");
-            DecimalFormat fFmt = new DecimalFormat("#,##0.00");
+            DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
+            DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.00");
             
         	// User's message:
         	String message = String.format( "&7The Reset Threshold Percent for mine &b%s&7 was set to &b%s&7, " +
@@ -2015,11 +2163,13 @@ public class MinesCommands
 
 
 
-    @Command(identifier = "mines set notification", permissions = "mines.notification", 
+    @Command(identifier = "mines set notification", permissions = "mines.set", 
     		description = "Set a mine's notification mode.")
     public void setNotificationCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
-        @Arg(name = "mode", def="displayOptions", description = "The notification mode to use: disabled, within, radius") 
+        @Arg(name = "mineName", description = "The name of the mine to edit, or '*all*' to "
+        		+ "apply to all mines. [*all*]") String mineName,
+        @Arg(name = "mode", def="displayOptions", description = "The notification mode "
+        		+ "to use: [disabled within radius]") 
     					String mode,
         @Arg(name = "radius", def="0", description = "The distance from the center of the mine to notify players of a reset." ) 
     					String radius
@@ -2045,7 +2195,7 @@ public class MinesCommands
     				
     				if ( noteRadius < 1 ) {
     					noteRadius = MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS;
-    					DecimalFormat dFmt = new DecimalFormat("#,##0");
+    					DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
     					Output.get().sendWarn( sender, "&7Invalid radius value. " +
     							"Must be an positive non-zero integer. Using the default value: &b%s &7[&b%s&7]",
     							dFmt.format(MineData.MINE_RESET__BROADCAST_RADIUS_BLOCKS), radius );
@@ -2107,7 +2257,7 @@ public class MinesCommands
 			pMines.getMineManager().saveMine( m );
 			success = true;
 			
-			DecimalFormat dFmt = new DecimalFormat("#,##0");
+			DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
 			// message: notification mode changed
 			Output.get().sendInfo( sender, "&7Notification mode was changed for &b%s&7: &b%s %s",
 					mineName, m.getNotificationMode().name(), 
@@ -2123,7 +2273,7 @@ public class MinesCommands
 	}
 
 
-    @Command(identifier = "mines set notificationPerm", permissions = "mines.notification", 
+    @Command(identifier = "mines set notificationPerm", permissions = "mines.set", 
     		description = "Enable or disable a mine's notification permission. If enabled, then players " +
     					"must have the mine's permission to get messages for reset. This filter " +
     					"can be combined with the other notification settings.", 
@@ -2233,17 +2383,53 @@ public class MinesCommands
     @Command(identifier = "mines set rank", permissions = "mines.set", 
     		description = "Links a mine to a rank or removes the rank.")
     public void setMineRankCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine.") String mineName,
-        @Arg(name = "rankName", description = "Then rank name to link to this mine. " +
-        		"Use 'none' to remove the rank.") 
+        @Arg(name = "mineName", description = "The name of the mine, or '*all*' for all mines.") String mineName,
+        @Arg(name = "rankName", def="*mine*", description = "Then rank name to link to this mine. " +
+        		"Use '*none*' to remove the rank. If using '*all*' for mine name, then rank name defaults to "
+        		+ "*mineName* and will try to set the given rank name to the mine name. This is an "
+        		+ "automatic assignment when '*all*' is used for the mine name. If a rank name does "
+        		+ "not exist that matches the mine name, then it will be skipped. [*none* *mineName*]") 
     					String rankName
         
     		) {
+    	
+    	PrisonMines pMines = PrisonMines.getInstance();
+
+    	if ( mineName != null && "*all*".equalsIgnoreCase( mineName ) ) {
+    		
+    		for ( Mine mine : pMines.getMines() ) {
+				if ( "*none*".equalsIgnoreCase( rankName ) && mine.getRank() != null ) {
+					// First unlink the preexisting mine and rank:
+	            	String removedRankName = mine.getRank().getName();
+	            	
+	            	// unlinkModuleElement will do the saving
+	            	Prison.get().getPlatform().unlinkModuleElements( mine, mine.getRank() );
+	            	
+	            	sender.sendMessage( String.format( "&3Rank &7%s &3has been removed from mine &7%s", 
+	        				removedRankName, mine.getTag() ));
+				}
+				else if ( "*mineName*".equalsIgnoreCase( rankName ) ) {
+					
+					boolean success = Prison.get().getPlatform().linkModuleElements( mine, 
+	            			ModuleElementType.RANK, mine.getName() );
+	            	
+	            	if ( !success ) {
+	            		sender.sendMessage( String.format( 
+	            				"&3Invalid Rank Name for mine %s: &7%s", mine.getName(), mine.getName() ));
+	            	}
+	            	else {
+	            		sender.sendMessage( String.format( "&3Rank &7%s &3has been linked to mine &7%s", 
+	            				rankName, mine.getTag() ));
+	            	}
+				}
+			}
+    		
+    		return;
+    	}
         
         if (performCheckMineExists(sender, mineName)) {
         	setLastMineReferenced(mineName);
 
-        	PrisonMines pMines = PrisonMines.getInstance();
         	Mine m = pMines.getMine(mineName);
             
             
@@ -2265,7 +2451,7 @@ public class MinesCommands
 
             }
             
-            if ( !"none".equalsIgnoreCase( rankName ) ) {
+            if ( !"*none*".equalsIgnoreCase( rankName ) ) {
             	
             	boolean success = Prison.get().getPlatform().linkModuleElements( m, 
             			ModuleElementType.RANK, rankName );
@@ -2404,10 +2590,15 @@ public class MinesCommands
         		return;
         	}
         	
+        	// Setting bounds to null will also set spawn to null, the two world fields to null, and 
+        	// make the mine virtual and disale the mine too:
         	m.setBounds( null );
-        	m.setSpawn( null );
-        	
-        	m.setVirtual( true );
+//        	m.setSpawn( null );
+//        	
+//        	m.setWorld( null );
+//    		m.setWorldName( null );
+//    		
+//        	m.setVirtual( true );
         	
         	m.getJobStack().clear();
         	
@@ -2435,8 +2626,17 @@ public class MinesCommands
             return;
         }
         
-        DecimalFormat dFmt = new DecimalFormat("#,##0");
+        DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
         Bounds selectedBounds = selection.asBounds();
+        
+        if ( Output.get().isDebug() ) {
+        	String msg = String.format( "MinesSetArea Preset: Mine: %s  Bounds: %s - %s ",
+        			m.getName(), 
+        			selectedBounds.getMin().toWorldCoordinates(), 
+        			selectedBounds.getMax().toWorldCoordinates()
+        			);
+        	Output.get().logInfo( msg );
+        }
         
         if ( selectedBounds.getTotalBlockCount() > 50000 && 
         		(options == null || !options.toLowerCase().contains( "confirm" ) &&
@@ -2459,9 +2659,21 @@ public class MinesCommands
         
         boolean wasVirtual = m.isVirtual();
         
-        // Setting the bounds when it's virtual will configure all the internals:
+
+        // Before setting the bounds, clear everything by setting them to nulls:
         
+        // Setting bounds to null will also set spawn to null, the two world fields to null, and 
+    	// make the mine virtual and disable the mine too:
+        m.setBounds( null );
+
+        m.getJobStack().clear();
+        
+
+        // Setting the bounds when it's virtual will configure all the internals:
         m.setBounds(selectedBounds);
+        
+    	
+
         
         if ( wasVirtual ) {
         	
@@ -2484,44 +2696,47 @@ public class MinesCommands
         //pMines.getMineManager().clearCache();
         
         // adjustSize to zero to reset set all liners:
-        m.adjustSize( Edges.walls, 0 );
-        
-        if ( options.length() > 0 ) {
-        	String[] opts = options.split( " " );
+        if ( m.getLinerData() != null ) {
         	
-        	// Try to set the size of the wall: Increase by:
-        	if ( opts.length > 0 ) {
-        		try {
-        			int size = Integer.parseInt( opts[0] );
-        			setSizeCommand( sender, mineName, "walls", size );
+        	m.adjustSize( Edges.walls, 0 );
+        	
+        	if ( options.length() > 0 ) {
+        		String[] opts = options.split( " " );
+        		
+        		// Try to set the size of the wall: Increase by:
+        		if ( opts.length > 0 ) {
+        			try {
+        				int size = Integer.parseInt( opts[0] );
+        				setSizeCommand( sender, mineName, "walls", size );
+        			}
+        			catch ( Exception e ) {
+        				// ignore error
+        			}
         		}
-        		catch ( Exception e ) {
-        			// ignore error
+        		
+        		// Try to set the size of the bottom: Increase by:
+        		if ( opts.length > 1 ) {
+        			try {
+        				int size = Integer.parseInt( opts[1] );
+        				setSizeCommand( sender, mineName, "bottom", size );
+        			}
+        			catch ( Exception e ) {
+        				// ignore error
+        			}
         		}
+        		
+        		// Try to set the size of the wall: Increase by:
+        		if ( opts.length > 2 ) {
+        			try {
+        				int size = Integer.parseInt( opts[2] );
+        				setSizeCommand( sender, mineName, "top", size );
+        			}
+        			catch ( Exception e ) {
+        				// ignore error
+        			}
+        		}
+        		
         	}
-        	
-        	// Try to set the size of the bottom: Increase by:
-        	if ( opts.length > 1 ) {
-        		try {
-        			int size = Integer.parseInt( opts[1] );
-        			setSizeCommand( sender, mineName, "bottom", size );
-        		}
-        		catch ( Exception e ) {
-        			// ignore error
-        		}
-        	}
-        	
-        	// Try to set the size of the wall: Increase by:
-        	if ( opts.length > 2 ) {
-        		try {
-        			int size = Integer.parseInt( opts[2] );
-        			setSizeCommand( sender, mineName, "top", size );
-        		}
-        		catch ( Exception e ) {
-        			// ignore error
-        		}
-        	}
-        	
         }
     }
 
@@ -2844,23 +3059,43 @@ public class MinesCommands
     				"the submission delay will be. Enable '/mines stats' to monitor run time of " +
     				"the sweep, then use '/mines info' to view them.")
     public void setMineSweeperCommand(CommandSender sender,
-        @Arg(name = "mineName", description = "The name of the mine to edit.") String mineName,
+        @Arg(name = "mineName", description = "The name of the mine to edit, or '*all*' to "
+        		+ "apply the change to all mines. [*all*]") String mineName,
         @Arg(name = "mineSweeper", def="disabled", 
         		description = "Enable or disable the mineSweeper tasks [disable, enable]") 
     					String mineSweeper
     		) {
+    	
+    	if  ( mineSweeper == null || !"disable".equalsIgnoreCase( mineSweeper ) && 
+    			!"enable".equalsIgnoreCase( mineSweeper ) ) {
+    		sender.sendMessage( "&cInvalid paging option&7. Use &adisable&7 or &aenable&7" );
+    		return;
+    	}
+    	
+    	PrisonMines pMines = PrisonMines.getInstance();
+
+    	if ( mineName != null && "*all*".equalsIgnoreCase( mineName ) ) {
+    		
+    		for ( Mine mine : pMines.getMines() ) {
+    			if ( "disable".equalsIgnoreCase( mineSweeper ) && mine.isMineSweeperEnabled() ) {
+    				mine.setMineSweeperEnabled( false );
+    				pMines.getMineManager().saveMine( mine );
+    				sender.sendMessage( String.format( "&7Mine Sweeper has been disabled for mine %s.", mine.getTag()) );
+    			}
+    			else if ( "enable".equalsIgnoreCase( mineSweeper ) && !mine.isMineSweeperEnabled() ) {
+    				mine.setMineSweeperEnabled( true );
+    				pMines.getMineManager().saveMine( mine );
+    				sender.sendMessage( String.format( "&7Mine Sweeper has been enabled for mine %s.", mine.getTag()) );
+    			}
+    		}
+    		
+    		return;
+    	}
         
         if (performCheckMineExists(sender, mineName)) {
         	setLastMineReferenced(mineName);
 
-        	PrisonMines pMines = PrisonMines.getInstance();
         	Mine m = pMines.getMine(mineName);
-            
-            if  ( mineSweeper == null || !"disable".equalsIgnoreCase( mineSweeper ) && 
-            									!"enable".equalsIgnoreCase( mineSweeper ) ) {
-            	sender.sendMessage( "&cInvalid paging option&7. Use &adisable&7 or &aenable&7" );
-            	return;
-            }
             
             if ( "disable".equalsIgnoreCase( mineSweeper ) && m.isMineSweeperEnabled() ) {
             	m.setMineSweeperEnabled( false );
@@ -3194,7 +3429,7 @@ public class MinesCommands
     	
     	if ( lookingAtMine != null ) {
     		double distance = lookingAtMine.getBounds().getDistance3d( player.getLocation() );
-    		DecimalFormat dFmt = new DecimalFormat("#,##0.0");
+    		DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.0");
     		sender.sendMessage( String.format( "&3You are looking at mine &7%s &3which is &7%s &3blocks away.", 
     					lookingAtMine.getTag(), dFmt.format( distance ) ) );
     	}
@@ -3302,7 +3537,7 @@ public class MinesCommands
 		BulletedListComponent.BulletedListBuilder builder =
         					new BulletedListComponent.BulletedListBuilder();
 
-        DecimalFormat dFmt = new DecimalFormat("0.00000");
+        DecimalFormat dFmt = Prison.get().getDecimalFormat("0.00000");
         
         int rowNumber = 0;
         for (MineBlockEvent blockEvent : m.getBlockEvents()) {
@@ -3724,7 +3959,7 @@ public class MinesCommands
         // Save the mine:
         pMines.getMineManager().saveMine( m );
         
-        DecimalFormat dFmt = new DecimalFormat("0.00000");
+        DecimalFormat dFmt = Prison.get().getDecimalFormat("0.00000");
         Output.get().sendInfo(sender, "&7BlockEvent percentage &b%s&7 was changed for mine '&b%s&7'. " +
         		"Was &b%s&7. Command '&b%s&7'", 
         		dFmt.format( chance ), m.getTag(), 
@@ -4268,7 +4503,7 @@ public class MinesCommands
                 display.addText("&8Select a block from this mine by using the block's row number:");
                 display.addText("&8  " + commandBlockEvent + " [rowBlockName]");
                 
-                DecimalFormat dFmt = new DecimalFormat("0.00000");
+                DecimalFormat dFmt = Prison.get().getDecimalFormat("0.00000");
                 
         		// Display a list of blocks for the mine:
         		int blockRow = 0;
@@ -4430,7 +4665,7 @@ public class MinesCommands
                 display.addText("&8Select a block filter from this mine by using the block's row number:");
                 display.addText("&8  " + commandBlockEvent + " [rowBlockName]");
                 
-//                DecimalFormat dFmt = new DecimalFormat("0.00000");
+//                DecimalFormat dFmt = Prison.get().getDecimalFormat("0.00000");
                 
         		// Display a list of blocks for the mine:
         		int blockRow = 0;
@@ -4532,7 +4767,7 @@ public class MinesCommands
 
 
 	@Command(identifier = "mines command list", description = "Lists the commands for a mine.", 
-    						onlyPlayers = false, permissions = "mines.command")
+    						onlyPlayers = false, permissions = "mines.set")
     public void commandList(CommandSender sender, 
     				@Arg(name = "mineName") String mineName) {
     	
@@ -4599,7 +4834,7 @@ private ChatDisplay minesCommandList( Mine m )
 
 
 	@Command(identifier = "mines command remove", description = "Removes a command from a mine.", 
-    		onlyPlayers = false, permissions = "mines.command")
+    		onlyPlayers = false, permissions = "mines.set")
     public void commandRemove(CommandSender sender, 
     				@Arg(name = "mineName") String mineName,
     				@Arg(name = "row", 
@@ -4665,7 +4900,7 @@ private ChatDisplay minesCommandList( Mine m )
     }
 
 	@Command(identifier = "mines command add", description = "Adds a command to a mine with NO placeholders.", 
-    		onlyPlayers = false, permissions = "mines.command")
+    		onlyPlayers = false, permissions = "mines.set")
     public void commandAdd(CommandSender sender, 
     			@Arg(name = "mineName", description = "mine name, or 'placeholders' for a list of possible placeholders that " +
     					"you can use with blockEvents") String mineName,

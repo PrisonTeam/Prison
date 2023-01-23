@@ -86,7 +86,6 @@ import tech.mcprison.prison.spigot.gui.ListenersPrisonManager;
 import tech.mcprison.prison.spigot.permissions.LuckPermissions;
 import tech.mcprison.prison.spigot.permissions.LuckPerms5;
 import tech.mcprison.prison.spigot.permissions.VaultPermissions;
-import tech.mcprison.prison.spigot.placeholder.MVdWPlaceholderIntegration;
 import tech.mcprison.prison.spigot.placeholder.PlaceHolderAPIIntegration;
 import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.slime.SlimeBlockFunEventListener;
@@ -907,7 +906,13 @@ public class SpigotPrison
 
 	private void initIntegrations() {
 
-    	registerIntegration(new VaultEconomy());
+		String preventEconomyVaultUsageKey = "integrations.prevent-economy-vault-usage";
+		boolean preventEconomyVaultUsage = Prison.get().getPlatform().getConfigBooleanFalse(preventEconomyVaultUsageKey);
+		
+		if ( !preventEconomyVaultUsage ) {
+			registerIntegration(new VaultEconomy());
+		}
+		
         registerIntegration(new EssentialsEconomy());
         registerIntegration(new SaneEconomy());
         registerIntegration(new GemsEconomy());
@@ -916,7 +921,7 @@ public class SpigotPrison
         registerIntegration(new LuckPerms5());
         registerIntegration(new LuckPermissions());
 
-        registerIntegration(new MVdWPlaceholderIntegration());
+//        registerIntegration(new MVdWPlaceholderIntegration());
         registerIntegration(new PlaceHolderAPIIntegration());
         
         registerIntegration(new CustomItems());
@@ -951,17 +956,17 @@ public class SpigotPrison
 	 */
 	public void reloadIntegrationsPlaceholders() {
 		
-		MVdWPlaceholderIntegration ph1 = new MVdWPlaceholderIntegration();
+//		MVdWPlaceholderIntegration ph1 = new MVdWPlaceholderIntegration();
 		PlaceHolderAPIIntegration ph2 = new PlaceHolderAPIIntegration();
 		
-		registerIntegration(ph1);
+//		registerIntegration(ph1);
 		registerIntegration(ph2);
 		
-		ph1.deferredInitialization();
+//		ph1.deferredInitialization();
 		ph2.deferredInitialization();
 	}
     
-    private void registerIntegration(Integration integration) {
+    public void registerIntegration(Integration integration) {
 
     	boolean isRegistered = isIntegrationRegistered( integration );
     	String version = ( isRegistered ? Bukkit.getPluginManager()

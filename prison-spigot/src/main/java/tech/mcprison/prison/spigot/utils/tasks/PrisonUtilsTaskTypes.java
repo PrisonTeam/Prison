@@ -144,6 +144,7 @@ public interface PrisonUtilsTaskTypes
 			return false;
 		}
 
+		@SuppressWarnings("unused")
 		private Player getPlayer() {
 			return player;
 		}

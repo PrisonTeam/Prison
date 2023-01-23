@@ -58,12 +58,20 @@ public class GuiConfig extends SpigotConfigComponents{
             changeCount++;
         }
 
-        if ( conf.getList( "EditableLore.README" ) == null ) {
+        if ( conf.getList( "EditableLore.README-Updated-2022-12-22" ) == null ) {
         	 List<String> lore = new ArrayList<>();
              lore.add(" ");
              lore.add("&8-----------------------");
              lore.add("&7 WARNING!! DO NOT EDIT THESE!!");
-             lore.add("&7 THESE ARE JUST INFORMATIONAL NOTES AND WILL BE IGNORED BY PRISON.");
+             lore.add("&7  - THESE ARE JUST INFORMATIONAL NOTES AND WILL BE IGNORED BY PRISON.");
+             lore.add(" ");
+             lore.add("&7 PLEASE READ - IMPORTANT CHANGESE!!");
+             lore.add("&7  - You can safely remove other 'EditableLore.README*' notes since they ");
+             lore.add("&7      are now obsolete.");
+             lore.add("&7  - Remove everything under 'EditableLore.Mines' and then reload the GUI: ");
+             lore.add("&7      /prison reload gui ");
+             lore.add("&7    The Mines LORE layout has been updated and this will help apply the ");
+             lore.add("&7      new update to your configs");
              lore.add("&8-----------------------");
              lore.add("&7 There are three types of placeholders that will work with EditableLore:");
              lore.add("&7 1. GUI placeholders");
@@ -74,11 +82,14 @@ public class GuiConfig extends SpigotConfigComponents{
              lore.add("&7so they can be nested in the prison placeholders: ");
              lore.add("&7  ");
              lore.add("&7 For Ranks ONLY: ");
-             lore.add("&7   {rankName} {rankTag} {rankPrice} {rankMultiplier} {ladderName} {linkedMines}");
-             lore.add("&7   Not yet available in Ranks: {mineName} {mineTag} ");
+             lore.add("&7   {rankName} {rankTag} {rankPrice} {rankMultiplier}");
+             lore.add("&7   {ladderName} {linkedMines}");
+             lore.add("&7   {linkedMines}");
              lore.add("&7  ");
              lore.add("&7 For Mines ONLY: ");
-             lore.add("&7   {mineName} {mineTag} {mineSize} {mineVolume} {mineRemaining} {mineRemaingPercent} ");
+             lore.add("&7   {mineName} {mineTag} {mineSize} {mineVolume} ");
+             lore.add("&7   {mineRemaining} {mineRemaingPercent} ");
+             lore.add("&7   {clickToTeleport} {lockStatus} {playerCount} {linkedRank} ");
              lore.add("&8-----------------------");
              lore.add("&7Prison placeholders can include any that are within these placeholder ");
              lore.add("&7Groups: PLAYER, RANKS, RANKPLAYERS, MINES, STATSMINES, and STATSRANKS");
@@ -94,7 +105,7 @@ public class GuiConfig extends SpigotConfigComponents{
              lore.add("&8-----------------------");
         	
 
-             conf.set("EditableLore.README", lore);
+             conf.set("EditableLore.README-Updated-2022-12-22", lore);
              changeCount++;
         }
         
@@ -140,11 +151,15 @@ public class GuiConfig extends SpigotConfigComponents{
             lore.add(" ");
             lore.add("&8-----------------------");
             lore.add("&3Mine:   &a{mineName} &r{mineTag}");
+            lore.add("&3Rank:   &a{linkedRank}");
             lore.add(" ");
             lore.add("&3Size:   &a{mineSize}");
             lore.add("&3Volume: &a{mineVolume}");
             lore.add("&3Blocks Remaining: &a{mineRemaining} &a{mineRemainingPercent}%");
+            lore.add("&3Players in Mine: &a{playerCount}");
             lore.add(" ");
+            lore.add("  {clickToTeleport}");
+            lore.add("  {lockStatus}");
             lore.add("&8-----------------------");
             
             conf.set("EditableLore.Mines", lore);

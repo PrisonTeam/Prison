@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.TreeSet;
 import java.util.UUID;
 
+import tech.mcprison.prison.backpacks.PlayerBackpack;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.file.YamlFileIO;
 import tech.mcprison.prison.internal.CommandSender;
@@ -40,6 +41,7 @@ import tech.mcprison.prison.modules.ModuleElement;
 import tech.mcprison.prison.modules.ModuleElementType;
 import tech.mcprison.prison.output.ChatDisplay;
 import tech.mcprison.prison.placeholders.Placeholders;
+import tech.mcprison.prison.ranks.data.RankLadder;
 import tech.mcprison.prison.ranks.data.RankPlayer;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.Location;
@@ -443,5 +445,14 @@ public interface Platform {
 
 
 	public void listAllMines(CommandSender sender, Player player);
+
+
+	public void sellall(RankPlayer rankPlayer);
+	
+	
+	public RankLadder getRankLadder( String ladderName );
+	
+	
+	public List<PlayerBackpack> getPlayerOldBackpacks( Player player );
 
 }

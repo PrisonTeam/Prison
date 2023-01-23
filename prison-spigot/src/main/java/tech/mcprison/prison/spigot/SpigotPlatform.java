@@ -19,6 +19,7 @@
 package tech.mcprison.prison.spigot;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -58,6 +59,8 @@ import tech.mcprison.prison.PrisonCommand;
 import tech.mcprison.prison.PrisonCommand.RegisteredPluginsData;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.backpacks.BackpackEnums.BackpackType;
+import tech.mcprison.prison.backpacks.PlayerBackpack;
 import tech.mcprison.prison.chat.FancyMessage;
 import tech.mcprison.prison.commands.PluginCommand;
 import tech.mcprison.prison.convert.ConversionManager;
@@ -106,8 +109,11 @@ import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEven
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerCrazyEnchants;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonEnchants;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerPrisonsExplosiveBlockBreakEvents;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerRevEnchantsExplosiveEvent;
+import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerRevEnchantsJackHammerEvent;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerTokenEnchant;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerZenchantments;
+import tech.mcprison.prison.spigot.backpacks.BackpacksUtil;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
 import tech.mcprison.prison.spigot.commands.PrisonSpigotSellAllCommands;
@@ -121,9 +127,11 @@ import tech.mcprison.prison.spigot.game.SpigotWorld;
 import tech.mcprison.prison.spigot.placeholder.SpigotPlaceholders;
 import tech.mcprison.prison.spigot.scoreboard.SpigotScoreboardManager;
 import tech.mcprison.prison.spigot.sellall.SellAllBlockData;
+import tech.mcprison.prison.spigot.sellall.SellAllUtil;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.util.ActionBarUtil;
 import tech.mcprison.prison.spigot.util.SpigotYamlFileIO;
+import tech.mcprison.prison.spigot.utils.tasks.PlayerAutoRankupTask;
 import tech.mcprison.prison.store.Storage;
 import tech.mcprison.prison.util.Bounds.Edges;
 import tech.mcprison.prison.util.Location;
@@ -410,6 +418,28 @@ public class SpigotPlatform
     				command.getUsage(),
     				Collections.emptyList() ) {
 
+        		/**
+        		 * <p>This is the entry point where bukkit passes control over to prison for the
+        		 * commands to be executed.
+        		 * </p>
+        		 * 
+        		 * <p>This will prevent any command that a player is using from being ran in the
+        		 * the excluded worlds.  See config.yml file and the section:
+        		 * `prisonCommandHandler.exclude-worlds`
+        		 * </p>
+        		 * 
+        		 * <p>There are two types of players that run commands... The primary one is
+        		 * an online player.  Otherwise it's a CommandSender.
+        		 * </p>
+        		 * 
+        		 * <p>When the command is actually resolved and the onCommmand() is ran, the 
+        		 * first thing it checks is to ensure that the command is not within the
+        		 * `prisonCommandHander.exclude-non-ops.commands` list of commands, and if it is, then 
+        		 * it will check all perms agains the CommandSender.  The perms it checks are 
+        		 * the perms tied to the command and the perms listed under the 
+        		 * `prisonCommandHandler.exclude-non-ops.commands`.
+        		 * </p>
+        		 */
                 @Override 
                 public boolean execute(CommandSender sender, String commandLabel, String[] args) {
                     if (sender instanceof org.bukkit.entity.Player) {
@@ -433,8 +463,9 @@ public class SpigotPlatform
 				public List<String> tabComplete( CommandSender sender, String alias, String[] args )
 						throws IllegalArgumentException
 				{
+    				SpigotCommandSender pSender = new SpigotCommandSender( sender );
     				
-    				List<String> results = Prison.get().getCommandHandler().getTabCompleaterData().check( alias, args );
+    				List<String> results = Prison.get().getCommandHandler().getTabCompleaterData().check( pSender, alias, args );
     				
     				
 //    				StringBuilder sb = new StringBuilder();
@@ -2056,6 +2087,38 @@ public class SpigotPlatform
 		}
 		
 		
+        Module minesModule = Prison.get().getModuleManager().getModule( "Mines" ).orElseGet( null );
+        if ( minesModule != null && 
+        		minesModule.getStatus().getStatus() == ModuleStatus.Status.ENABLED ) {
+        	
+        	DecimalFormat dFmt = Prison.get().getDecimalFormatInt();
+        	
+        	int minesEnabled = 0;
+        	int minesVirtual = 0;
+        	int minesDeleted = 0;
+        	int minesBlocks = 0;
+        	
+        	List<Mine> mines = PrisonMines.getInstance().getMines();
+        	for (Mine mine : mines) {
+        		
+        		minesEnabled += mine.isEnabled() ? 1 : 0;
+				minesVirtual += mine.isVirtual() ? 1 : 0;
+				minesDeleted += mine.isDeleted() ? 1 : 0;
+				
+				minesBlocks += mine.isEnabled() ? mine.getBounds().getTotalBlockCount() : 0;
+			}
+        	
+        	double blksPerMine = minesEnabled == 0 ? 0 : minesBlocks / (double) minesEnabled;
+        	
+        	String mineDetails = String.format( 
+        			"&7Mines Info:  &9Enabled: &b%d  &9Virtual: &b%d  &9Deleted: &b%d  &9AvgBlocks/Mine: &b%s",
+        			minesEnabled, minesVirtual, minesDeleted, 
+        			dFmt.format(blksPerMine) );
+        	
+        	results.add( mineDetails );
+        }
+        
+        
     	
 		// Load the autoFeaturesConfig.yml and blockConvertersConfig.json files:
     	AutoFeaturesWrapper afw = AutoFeaturesWrapper.getInstance();
@@ -2117,6 +2180,26 @@ public class SpigotPlatform
     				tebEventPriority.name(),
     				(isTebeEnabled ? "&2Enabled" : "&cDisabled")
     				) );
+    		
+    		
+    		String reeePriority = afw.getMessage( AutoFeatures.RevEnchantsExplosiveEventPriority );
+    		boolean isReeeEnabled = reeePriority != null && !"DISABLED".equalsIgnoreCase( reeePriority );
+    		BlockBreakPriority reeEventPriority = BlockBreakPriority.fromString( reeePriority );
+    		results.add( String.format("%s.   RevEnchant '&7ExplosiveEvent&3' Priority:&b %s %s", 
+    				(isReeeEnabled ? "" : "+" ), 
+    				reeEventPriority.name(),
+    				(isReeeEnabled ? "&2Enabled" : "&cDisabled")
+    				) );
+    		
+    		String rejhePriority = afw.getMessage( AutoFeatures.RevEnchantsJackHammerEventPriority );
+    		boolean isRejheEnabled = rejhePriority != null && !"DISABLED".equalsIgnoreCase( rejhePriority );
+    		BlockBreakPriority rejhEventPriority = BlockBreakPriority.fromString( rejhePriority );
+    		results.add( String.format("%s.   RevEnchant '&7JackHammerEvent&3' Priority:&b %s %s", 
+    				(isRejheEnabled ? "" : "+" ), 
+    				rejhEventPriority.name(),
+    				(isRejheEnabled ? "&2Enabled" : "&cDisabled")
+    				) );
+    		
     		
     		String cebuePriority = afw.getMessage( AutoFeatures.CrazyEnchantsBlastUseEventPriority );
     		boolean isCebueEnabled = cebuePriority != null && !"DISABLED".equalsIgnoreCase( cebuePriority );
@@ -2304,6 +2387,7 @@ public class SpigotPlatform
         
         
         display.addText("");
+
         
         // Active Modules:x's root Command: &3/prison");
         
@@ -2488,9 +2572,11 @@ public class SpigotPlatform
 		sb.append( "&2. . Prison Internal BlockBreakEvents: " +
 									"tech.mcprison.prison.spigot.SpigotListener\n" );
 		sb.append( "&2. . Auto Features: " +
-									"AutoManagerBlockBreakEvents$AutoManagerBlockBreakEventListener\n" );
+									"tmpsae.AutoManagerBlockBreakEvents$AutoManagerBlockBreakEventListener\n" );
 		sb.append( "&2. . Prison's multi-block explosions (bombs): " +
-				"AutoManagerPrisonsExplosiveBlockBreakEvents$AutoManagerExplosiveBlockBreakEventListener\n" );
+				"tmpsae.AutoManagerPrisonsExplosiveBlockBreakEvents$AutoManagerExplosiveBlockBreakEventListener\n" );
+		sb.append( "&2. . Prison Abbrv: '&3tmps.&2' = '&3tech..==..mcprison.prison.spigot.&2' & " +
+				"'&3tmpsae.&2' = '&3tmps..==..autofeatures.events.&2'\n" );
 
 		
 //		sb.append( "&2. . Auto Feature Core: Non-AutoManager: " +
@@ -2516,10 +2602,25 @@ public class SpigotPlatform
 		AutoManagerTokenEnchant tokenEnchant = new AutoManagerTokenEnchant();
 		tokenEnchant.dumpEventListeners( sb );
 
+		AutoManagerRevEnchantsExplosiveEvent revEnchExplosive = new AutoManagerRevEnchantsExplosiveEvent();
+		revEnchExplosive.dumpEventListeners( sb );
+		
+		AutoManagerRevEnchantsJackHammerEvent revEnchJackHammer = new AutoManagerRevEnchantsJackHammerEvent();
+		revEnchJackHammer.dumpEventListeners( sb );
+		
 		AutoManagerZenchantments zenchantments = new AutoManagerZenchantments();
 		zenchantments.dumpEventListeners( sb );
 		
-		return sb.toString();
+		
+		// Shorten the prison package names:
+		// 'tmps.' = 'tech.mcprison.prison.spigot.' 
+		// 'tmpsae.' = 'tmps.autofeatures.events.'
+		String results = sb.toString()
+				.replace( "tech.mcprison.prison.spigot.", "tmps." )
+				.replace( "tmps.autofeatures.events.",  "tmpsae." )
+				.replace( "..==..", "." );
+		
+		return results;
 	}
 	
 	@Override
@@ -2589,12 +2690,26 @@ public class SpigotPlatform
 
 		results.add( String.format( "&8All registered EventListeners (%d):", listeners.length ));
 		
+		int nMaxLen = 0;
+		int pMaxLen = 0;
+		// First find the max length of the name and priority: 
+		for ( RegisteredListener eventListner : listeners ) {
+			String plugin = eventListner.getPlugin().getName();
+			EventPriority priority = eventListner.getPriority();
+			if ( plugin.length() > nMaxLen ) {
+				nMaxLen = plugin.length();
+			}
+			if ( priority.name().length() > pMaxLen ) {
+				pMaxLen = priority.name().length();
+			}
+		}
+		
 		for ( RegisteredListener eventListner : listeners ) {
 			String plugin = eventListner.getPlugin().getName();
 			EventPriority priority = eventListner.getPriority();
 			String listener = eventListner.getListener().getClass().getName();
 			
-			String message = String.format( "&3. Plugin: &7%s   %s  &3(%s)", 
+			String message = String.format( "&3. Plugin: &7%-" + nMaxLen + "s   %-" + pMaxLen + "s  &3(%s)", 
 					plugin, priority.name(), listener);
 			
 			results.add( message );
@@ -2904,5 +3019,82 @@ public class SpigotPlatform
 		}
 	}
 	
+	
+	@Override
+	public void sellall( RankPlayer rankPlayer ) {
+		
+		if ( SpigotPrison.getInstance().isSellAllEnabled() ) {
+			
+			Player player = getPlayer( rankPlayer.getUUID() ).orElse(null);
+			
+			if ( player != null ) {
+				
+				SpigotPlayer sPlayer = (SpigotPlayer) player;
+				
+				final long nanoStart = System.nanoTime();
+				boolean success = SellAllUtil.get().sellAllSell( sPlayer.getWrapper(), 
+						false, false, false, true, true, false);
+				final long nanoStop = System.nanoTime();
+				double milliTime = (nanoStop - nanoStart) / 1000000d;
+				
+				if ( Output.get().isDebug() ) {
+					
+					DecimalFormat dFmt = Prison.get().getDecimalFormat("#,##0.00");
+					Output.get().logDebug( "(SpigotPlatform autosell: " + (success ? "success" : "failed") + 
+							" ms: " + dFmt.format( milliTime ) + ") ");
+				}
+				
+				PlayerAutoRankupTask.autoSubmitPlayerRankupTask( sPlayer, null );
+				
+			}
+		}
+	}
+	
+
+	@Override
+	public RankLadder getRankLadder(String ladderName) {
+		
+		RankLadder results = PrisonRanks.getInstance().getLadderManager().getLadder( ladderName );
+		return results;
+	}
+	
+	
+	@Override
+	public List<PlayerBackpack> getPlayerOldBackpacks( Player player ) {
+		List<PlayerBackpack> backpacks = new ArrayList<>();
+		
+		
+
+		SpigotPlayer sPlayer = (SpigotPlayer) 
+							getPlayer( player.getName() ).orElse(null);
+				
+		
+		if ( sPlayer != null && getConfigBooleanFalse( "backpacks" ) && BackpacksUtil.isEnabled() ) {
+			
+			BackpacksUtil backpackUtil = BackpacksUtil.get();
+			
+			UUID playerUuid = player.getUUID();
+			
+			for ( String backpackId : backpackUtil.getBackpacksIDs( sPlayer.getWrapper() ) ) {
+				
+				PlayerBackpack backpack = new PlayerBackpack( player.getName(), playerUuid.toString(), 
+						BackpackType.inventory,
+						backpackId, XMaterial.CHEST.name() );
+				
+				int size = backpackUtil.getBackpackSize( playerUuid, backpackId );
+				backpack.setInventorySize(size);
+
+				List<ItemStack> inventory = backpackUtil.getPrisonBackpackContents( playerUuid, backpackId );
+				backpack.setInventory( inventory );
+				
+				
+				
+				backpacks.add( backpack );
+				
+			}
+		}
+		
+		return backpacks;
+	}
 	
 }
