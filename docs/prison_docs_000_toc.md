@@ -37,6 +37,10 @@ Prison supports Spigot 1.19.x, along with Java 17 and 18.  At this time there ha
 
 ### Newer features and updates in Prison:
 
+* Prison's AutoFeatures was redesigned to support more Event Listener Priorities.  This means prison is more flexible and will work with more plugins, using them the way you want to.  Some of the new priorities are `ACCESS` so you can use Prison's Mine and Teleport Access by Rank without having to use Prison's block handlers.  This bypasses the need to configure WorldGuard regions for access to the mines that are linked to Prison Ranks.
+
+* Now supports RevEnchants, both with Prison handling the block break events, and with RevEnchants handling the events.
+
 
 * Prison Backups: Prison now has a new feature that will backup (zip) all of the files within it's plugin directory.  Prison now will perform an automated backup when it detects a change in Prison's version to help preserve settings from prior versions.  See the new [Prison Backup Document](prison_docs_050_Prison_backups.md).
 

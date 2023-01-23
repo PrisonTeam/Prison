@@ -10,7 +10,13 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.13h3 2023-01-21
+# 3.3.0-alpha.13h3 2023-01-22
+
+* **Prison placeholders: Added details to help understand how to use some of the more confusing placeholders.**
+Fixed the grouping of two `prison_top_mine_block_line_` placeholders.
+
+
+* **AutoFeatures Event Listeners: Add new feature where if a player tries to mine in a mine they don't have access to, that it will teleport them to a mine that is linked to their current rank.**
 
 
 * **AutoFeatures Event Listeners: Minor tweaks to the ACCESS priority. Testing has been going well.**

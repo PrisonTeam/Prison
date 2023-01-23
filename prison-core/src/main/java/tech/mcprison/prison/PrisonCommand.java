@@ -766,8 +766,9 @@ public class PrisonCommand
     	ChatDisplay display = new ChatDisplay("Placeholders List");
     	
     	display.addText( "&a    Placeholders are case insensitive, but are registered in all lowercase.");
-    	display.addText( "&a    Chat based placeholders use { }, but others may use other escape codes like %% %%.");
-    	display.addText( "&a    Mine based placeholders uses the mine name to replace 'minename'.");
+    	display.addText( "&a    Placeholder escape characters may be { } or % %. If one does not work, try the other.");
+    	display.addText( "&a    Placeholders that include 'rankname', 'laddername', or 'minename' should be");
+    	display.addText( "&a    replaced with the appropriate rank names, ladder names, or mine names.");
     	
     	for ( String disabledModule : Prison.get().getModuleManager().getDisabledModules() ) {
     		display.addText( "&a    &cDisabled Module: &7%s&a. Related placeholders maybe listed but are non-functional. ",

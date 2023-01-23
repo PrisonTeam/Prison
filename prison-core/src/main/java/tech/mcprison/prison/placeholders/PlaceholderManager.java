@@ -566,9 +566,9 @@ public class PlaceholderManager {
 		
 		
 		
-		prison_tmbl_header_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_tmbl_header_minename(PlaceholderFlags.STATSMINES, PlaceholderFlags.ALIAS),
 		prison_tmbl_nnn_minename(PlaceholderFlags.STATSMINES, PlaceholderFlags.ALIAS),
-		prison_tmbl_totals_minename(PlaceholderFlags.MINES, PlaceholderFlags.ALIAS),
+		prison_tmbl_totals_minename(PlaceholderFlags.STATSMINES, PlaceholderFlags.ALIAS),
 
 		prison_tmbn_nnn_minename(PlaceholderFlags.STATSMINES, PlaceholderFlags.ALIAS),
 		prison_tmbc_nnn_minename(PlaceholderFlags.STATSMINES, PlaceholderFlags.ALIAS),
@@ -578,9 +578,9 @@ public class PlaceholderManager {
 		prison_tmbt_nnn_minename(PlaceholderFlags.STATSMINES, PlaceholderFlags.ALIAS),
 		
 		
-		prison_top_mine_block_line_header_minename(prison_tmbl_header_minename, PlaceholderFlags.MINES),
+		prison_top_mine_block_line_header_minename(prison_tmbl_header_minename, PlaceholderFlags.STATSMINES),
 		prison_top_mine_block_line_nnn_minename(prison_tmbl_nnn_minename, PlaceholderFlags.STATSMINES),
-		prison_top_mine_block_line_totals_minename(prison_tmbl_totals_minename, PlaceholderFlags.MINES),
+		prison_top_mine_block_line_totals_minename(prison_tmbl_totals_minename, PlaceholderFlags.STATSMINES),
 
 		prison_top_mine_block_name_nnn_minename(prison_tmbn_nnn_minename, PlaceholderFlags.STATSMINES),
 		prison_top_mine_block_chance_nnn_minename(prison_tmbc_nnn_minename, PlaceholderFlags.STATSMINES),
@@ -786,6 +786,35 @@ public class PlaceholderManager {
 				
 				int pos = results.size();
 				results.add( "  &7" + type.name() );
+
+				// placeholders are per-player specific, and do not work on entities or in Holographic Displays
+				if ( type == PlaceholderFlags.PLAYER ) {
+					results.add( "    &cNOTE: PLAYER placeholders are player specific and do not "
+							+ "work on entities or with Holographic Displays.");
+					results.add( "          &cThe rankup costs are based only on the player's rank, "
+							+ "and not their current balance (see RANKPLAYERS).");
+				}
+				else if ( type == PlaceholderFlags.MINEPLAYERS ) {
+					results.add( "    &cNOTE: MINEPLAYERS placeholders are player specific and do not "
+							+ "work on entities or with Holographic Displays.");
+				}
+				else if ( type == PlaceholderFlags.RANKPLAYERS ) {
+					results.add( "    &cNOTE: RANKPLAYERS placeholders are player specific and do not "
+							+ "work on entities or with Holographic Displays.");
+					results.add( "            &cThese placeholders provide adjusted rank cost values that "
+							+ "are player specific unlike the PLAYER placeholders.");
+				}
+				else if ( type == PlaceholderFlags.STATSPLAYERS ) {
+					results.add( "    &cNOTE: 'prison_top_player_' placeholders are ranked by "
+							+ "Prestige Ranks, Default Ranks, then player's rank score..");
+					results.add( "            &cRank score is based upon their balance, but if "
+							+ "the player can rankup, but choses not to, then their " );
+					results.add( "            &crank score is penalized to prevent rank-camping.");
+				}
+				else if ( type == PlaceholderFlags.STATSRANKS ) {
+					results.add( "    &cNOTE: 'prison_top_rank_' is similar to 'prison_top_player_' "
+							+ "(see STATSPLAYERS) but for the named rank.");
+				}
 				
 
 				int count = 0;
