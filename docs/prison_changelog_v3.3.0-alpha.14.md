@@ -13,8 +13,6 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14 2023-01-23
 
 
-**Prison v3.3.0-alpha.14 2023-01-23**
-
 
 The following are significant changes that are included in the alpha.14 release since the alpha.13 release was posted.
 
@@ -124,10 +122,393 @@ item-nbt-api: v2.10.0 to v2.11.1
 
 
 
----------------------------
+
+**Prison v3.3.0-alpha.14 2023-01-23**
 
 
+* **Misc NBT stuff... Did not work out as planned so it has been commented out for now.**
 
+
+* **Start to setup support for ItemsAdder but it's not hooked up yet so it does not do anything.**
+Most of the parts are hooked up, but it just needs to support the ItemsAdder's event that lets other plugins know when everything is fully loaded and it's ready.
+
+
+* **Prison placeholders: Added details to help understand how to use some of the more confusing placeholders.**
+Fixed the grouping of two `prison_top_mine_block_line_` placeholders.
+
+
+* **AutoFeatures Event Listeners: Add new feature where if a player tries to mine in a mine they don't have access to, that it will teleport them to a mine that is linked to their current rank.**
+
+
+* **AutoFeatures Event Listeners: Minor tweaks to the ACCESS priority. Testing has been going well.**
+
+
+* **AutoFeatures Event Listeners: Improved the reporting and refactored to reduce duplicate code.**
+
+
+* **AutoFeatures event listeners: ACCESS priority: Hooked up ACCESS processing and cleaned up the code a little more.**
+
+
+* **AutoFeatures event listeners: More work on getting ACCESS setup, focused on support for `/prison support listeners blockBreak` and to generate multiple listeners for the compounded priorities such as ACCESSBLOCKBREAKS and ACCESSMONITOR.**
+Tested successfully the creation of multiple listeners.  Have not yet hooked up the support for ACCESS.
+
+
+* **AutoManager event listeners: refactored to prepare for the ACCESS priorities.**
+
+
+* **AutoFeatures Event Listeners: More refactoring to simplify how the debugInfo is passed around.**
+
+
+* **AutoFeatures refactoring: changes the setup of how the events deals with finding the mine the player is in.**
+The code was looking up the mine twice, now it only searches for the mine once and reused it more efficiently. 
+This simplifies how some of the code works and allows for more simplification too.
+
+
+* **Fix a few things with the RevEnchants listeners.**
+They were not hooked up for the `/prison support listeners blockevents` and they were not being registered to actually enable.
+
+
+**v3.3.0-alpha.13h3 2023-01-18**
+
+
+* **Enhanced the command `/prison support listeners help` to format the columns for name and priority so they all align.**
+
+
+* **Comment on an issue within EssenialsX that is purposefully generating stack traces within the console, and there is nothing prison can do about it.**
+Plus, everything is working fine.
+https://github.com/EssentialsX/Essentials/issues/3956
+
+
+* **Update docs to see if it supports GFM tables**
+
+
+* **AutoFeatures Event Listeners: refactored how a the event is processed so they share more of the same code base.  This helps to eliminate the chances for bugs to happen for a few listeners, and it also help to ensure that the behavior for all of the listeners are identical.**
+If a event is marked as DISABLED, then the listener should never be loaded, but if it is, then it will quickly end the processing instead of allowing it to filter through all of the code.
+
+
+* **AutoFeatures: Prepare for a few new priorities for the event listeners.**
+
+
+* **AutoFeatures: Bug fix.  Found that all events that were canceled were automatically being ignored, which was causing the MONITOR priority to be bypassed since MONITOR should be able to process what it needs to even on a canceled event.**
+
+
+* **AutoFeatures: Have the external events register when the AutoManager is being setup.  This eliminates the need to have it always check for registration on each event call.**
+
+
+* **There was a report that TopN was failing with a NPE when Ranks was disabled.  This was related to the PlayerManager not being initialized.**
+Added code to ensure that TopN is shutdown, and does not try to run, if the Ranks Module, or PlayerManager is not loaded.
+It looks like it could have been called through the bStats reporting... which is now fixed.
+
+
+* **AutoFeatures refactoring: Cleaned up a lot of the code related to blockCounts, blockEvents, and zero-block resets (reset thresholds) and code related to the "monitor" priorities to better ensure they are handled correctly and better documented.**
+This may fix a few obscure bugs, but not 100% sure if they have been encountered.
+This also unbundles some of the functions so they are not hidden so deeply... this makes the code much easier to read and to know what's happening.
+
+
+* **Setup a function to check if a BlockBreakPriority is considered a monitor level priority, which is useful when adding more non-block breaking priorities.**
+
+
+* **Expand the comments to better explain the roles of MONITOR and BLOCKEVENTS priorities.**
+
+
+* **Fix a problem with MONITOR and BLOCKEVENTS priorities where they were failing to process the event if the block was broke, of which should be permitted.**
+
+
+* **Added RevEnchant's events to the special condition of not being able to identify the original block that was broken.**
+
+
+* **Doc updates.  Update info on Essentials Economy bypassing Vault and adding RevEnchants to the list of supported enchantment plugins have been added.**
+
+
+* **Added support for RevEnchants ExplosiveEvent and JackHammerEvent.**
+
+
+* **Adjustments to improve readability of the '/mines info' command.**
+
+
+* **Simplify a few mine related commands to use the permission mines.set.**
+
+
+* **Change command from '/mines set skipReset` to `/mines set resetSkip` to try to better align similar commands.**
+Improved the help for the command too.  Added support for '*all*' mines too.
+
+
+**v3.3.0-alpha.13h2 2023-01-11**
+
+
+* **Prison placeholder bug fix: the placeholder cache was causing placeholders to be rejected and locked out under certain conditions which were being triggered by new players joining the server for the first time.**
+The cache was fixed by better identifying what constitutes a failed placeholder identifier.  Enhanced the stats report to include fails too, which can be useful in finding internal errors with specific placeholders.
+
+
+**v3.3.0-alpha.13h 2023-01-07**
+
+
+* **Update bstats... will have to update the reports on the bstats page too.***
+
+
+* **Updated the language files to replace a bad text message which was missing.**
+
+
+* **Placeholders bug fix: prison_top_rank_balance_* placeholders were fixed both in enabling processing for these placeholders, and also enabling the sequence.**
+
+
+* **Placeholder Cache: Provide a way to clear the cache of all entries or just the invalid entries.**
+This helps to debug potential issues since it does not require restarting the server to force a reassignment of mapped placeholderKeys.
+
+
+* **Bug fix: Fixed an issue with the top-n player's balance not being hooked up to the return value of the function that was retrieving it.**
+
+
+* **Issue with vault not working: Fixed a problem where prison was not able to communicate with an older version of vault** (spigot 1.12.2) while prison test servers could not duplicate the issue.
+The allows an admin to configure their server to disable the use of vault when using the essentialsEconomy, SaneEconomy, or GemsEconomy.  This will not work for any other economy.
+Since vault was the problem, bypassing vault allows prison to communicate directly with the selected economies, which fixes the problem.
+
+
+* **Prison Command Handler: Tab Completer:** Lockout players from the commands that have been excluded from players based upon perms.  Such commands are now excluded from the suggested commands when the player is using the tab-complete.
+
+
+* **Mines GUI bug fixes:**
+Fixes an issue with the command `/mines tp` which was setup to test an alias on a test server, but was not changed back to the correct command.
+Fixes the proper display of the linked rank to the mine.  It was showing the "object" which was dumping more than just the rank tag to the GUI's lore.  It now shows just the rank tag.
+
+
+* **Added the tracking of command run times to the `/prison support cmdStats`.**
+
+
+* **Update various libraries used in the gradle build:**
+placeholderApi: v2.10.9 to v2.11.2
+XSeries: v9.0.0 to v9.2.0
+item-nbt-api: v2.10.0 to v2.11.1
+removal of mvdw from the gradle build since it was removed from prison a few months ago
+
+
+* **Added a prison backup save command (renamed the original prison backup) and added a prison backup logs command that shows all entries in the backup log file.**
+The contents of the backup log file has been added to the /prison support submit version command too.
+
+
+* **Fixed the prison command stats to show the correct number of commands listed.**
+
+
+* **Fix the use of `{br}` when using `/prison support submit version` so that it is now treated as `\n`.
+Added to the `/prison support submit version` all listeners and the command stats too.**
+
+
+* **Added a new command `/prison support cmdStats` which shows some basic stats on command usage.**8
+
+
+* **v3.3.0-alpha.13g 2022-12-28**
+
+
+* **Added Finnish translations to prison!**
+Thearex12 contributed a number of Finnish translations for prison in the following 
+modules: core (partial), mines, and sellall.  More updates are in progress.
+If anyone else would like to contribute another translation, please ping me, 
+RoyalBlueRanger, on our discord server.  It can be a complete translation, or 
+a partial.  Thanks!
+
+
+* **There is a growing problem with the use of % symbols being processed multiple times with the Java String.format() which results in format escape error.**
+First, the use of Output is new setup to handle it's own custom version of String.formatIO that will take any remaining percent symbol and encode it so it does not cause errors anymore, then right before passing it to bukkit, it will convert it back.  This allows it to pass through as many String.format() functions as needed without resulting in to any problems.
+The other fix, which is probably more significant, is that the Output functions no longer tries to run all messages through String.format() if there are no parameters to apply.  This was causing the most issues.
+To properly ensure the more complex message handling works correctly, the use of Output.stringFormat(() should be use to enable to the encoding of the percent symbols.
+
+
+* **Fixed a typo in the config.yml that covered what the default values were for the includeCmdAltPerms and includeCmdPerms settings.**
+
+
+* **Player GUI for mines and ranks was changed to include within the NBT codes, and enabled the mines TP command to be set in the NBT command tag.** 
+This will allow the NBT handler within the SpigotGUIMenuTools.processGUIPage(), of which it would just run the supplied command.  This bypasses the need of using special code to extract the mine name or rank name to reconstruct a command.  In short, this allows the TP On Click action to be self contained without the need for special handlers.
+This is a fix for the fully customizable ranks and mines GUI menus for the players, where the mine name on lore line 1 was eliminated, and hence the old way was unable to identify what mine should initiate the tp event.  But having the plain mine name on line one resulted in multiple redundancies of the mine's name, along with the mine's tag and the item's header.
+
+
+* **New Feature: command lockout:** Updated to add debugging information to identify why a command is rejected for a player through logging in the console when prison is in debug mode.
+
+
+* **New Feature: command lockout:** expanded to get this to work for commands, help listings, and aliases. There is now a setting where if enabled, it will expand the lockout from a command to all aliases of that command.  Also on each command, it will will allow enabling (enabled by default) if either the command parms or parmAlts are used to exclude a player from a command.
+
+
+* **New feature: command lockout for users based upon perms set in the config.yml.**
+This is the first stage of getting this setup, where it locks out the running of a command.
+Need to lockout the help next, which is what generates the command lists.
+
+
+* **Enhancements to the player's gui for ranks and mines so it's less hard coded and now with more options.**
+Parts of the GuiConfig.yml file will need to be removed so the new content can be generated the next time the gui configs are loaded.
+
+
+* **Eliminate the stack trace because it makes it appear as if there is a non-handled error in prison.  The error is already being shown in more detail.**
+
+
+* **Sellall sell can now be ran from a command or the console by specifying the player's name.**
+The player must be online for this work.  An offline player cannot have their inventory modified or sold.
+
+
+* **Chinese Translation Added!**
+Thanks to M1032 on github #240, prison now has full Simplified Chinese translations!  To use this translation, set the language code to zh-CH.
+
+
+* **cleaned up the enchantment names**
+
+
+* **Enabled more detailed logging when block break events are being ignored by the auto features.**
+Mostly related to either the player not holding a pickaxe, or the block has already been broke, or exploded.
+Now also showing information on what the player is holding, which will help identify why a block break event is behaving the way it is.
+
+
+* **Set version to v3.3.0-alpha.13f - 2022-12-12**
+
+
+* **Setup a static version of DecimalFormat which is needed to be used within all static functions.**  If the DecimalFormatSymbols variable is set by a static function, then it will be replaced at the first chance by a non-static call.  The static usage, if not set first by the non--static calls, cannot access the config.yml settings.  This really is not a problem, since it would only be through unit tests when the gradle build is being processed that will need the alternative settings.
+
+
+* **Setup the control over number formatting by using Prison as the single source of constructing a DecimalFormat object.**
+This is done through manually setting the DecimalFormatSymbols to use en_US.  It has also been enabled in config.yml to allow setting the language code that is used, to any value the admin may wish to use.  It's a problem when en_US is not used, but someone may have a specific reason not to use en_US.  Mostly the primary trouble is related to Minecraft not being able to properly display NBSP unicode characters.
+
+
+* **Mine suffocation can now be enabled so if you turn off teleportation, then the players can now die.**
+
+
+* **Mine reset teleportation can now be controlled within the config.yml file.**
+
+* **Prison API: Add support for direct prison placeholder support.**
+Two new functions: one translates only one prison placeholder.  The other function takes full text message and will translate multiple prison placeholders if they are wrapped in placeholder escape characters.
+
+
+* **AutoFeatures: add failure reason when prison is unable to successfully process a block break event due to zero drops.**
+
+
+**3.3.0-alpha.13e 2022-11-16**
+
+
+* **New feature: Prestiges placeholder name and tag now can be assigned to a non-blank space for players that do not have a prestige rank.**
+This applies to the base placeholders: prison_rank, prison_rank_laddername, prison_rank_tag, and prison_rank_tag_laddername.
+
+
+* **Add the ability to format the percentage of prison_rankup_cost_percent with the NFormat placeholder attribute.**
+
+
+***Fix issue with world not being removed, or replaced when the mine is converted to a virtual mine, or when the mine is moved to another world.**
+The problem would be the config settings for the mine would save correctly, but upon the server restart, it would revert to the old world. The problem was with the non-saved world field not being reset correctly.  This fixes the issue correctly so it's should work properly under all situations.
+
+
+**3.3.0-alpha.13d 2022-11-02**
+NOTE: Changes to PrisonBlock structures have been stashed and are not included in this alpha.13d release.
+
+
+* **Added some mine info to the `/prison version command.***
+
+
+* **Mine Bombs bug fix: Was using a function that was incompatible with bukkit 1.8.8 and this fixes that issue.**
+Using a prison compatibility function to provide the compatibility.
+Added more information on why mine bombs are not working when prison is in debug mode.
+
+
+**3.3.0-alpha.13c 2022-10-17**
+NOTE: Changes to PrisonBlock structures have been stashed and are not included in this alpha.13c release.
+
+
+* **Small updates to help prepare for the internal change to how PrisonBlocks are structured.**
+
+
+* **Bug: Found a major bug in calculating a vector's length since x should have been squared, but instead it was multiplied by y.**
+The use of vectors is limited within Prison, but when used, this could cause issues.
+
+
+* **If inspection of other plugin's jars fail, then just ignore this issue and continue on processing.**
+
+
+* **New prison backpacks: More work on getting them setup for testing the BackpackCache.**
+Adding hooks to load from the old prison backpacks.
+
+
+* **Fixed an issue with MINEPLAYER placeholders which resulted in false fast-fails when players would leave a mine.**
+Once a placeholder would fail, even if it was working before, it would be impossible to reenable the placeholder value from being evaluated in the future due to the nature and purpose of the fast-fail.
+The MINEPLAYER placeholders actually has three states: invalid placeholder (any invalid placeholder string), valid with mine object, and valid without mine object.  So the valid without mine object was getting translated as invalid placeholder.
+The fix was to allow even valid without mines to be processed by their respective block of code, but within each block of code had to add if-not-null checks to prevent other null pointer failures.
+**Note:** This issue may have been related to other recent placeholder issues that have not been able to be resolved.
+
+
+* **For some of the gui commands, like `/gui ranks`, `/gui prestiges`, and `/gui mines` the button now closes the gui instead of trying to run the command `/gui`.**
+
+
+* **Add config settings to control the gui rankup buttons.**
+
+
+* **Update many gui messages to use the newer message handler so the old deprecated functions can be removed eventually.**
+There are still many more to do, but this covers a good start.
+
+
+* **Move the mine bombs cooldown message to the spigot language files.**
+
+
+* **Removed support for MVdWPlaceholder plugin.**
+It generates way too many entries in the log, and there is zero support for it from the providers.
+It's also unneeded since PlaceholderAPI works perfectly fine with it, so it's 100% pointless.
+
+
+* **More refactoring of the old backpacks to get rid of bad code to make it easier to integrate in to a newer backpack framework.**
+No behavioral changes should have occurred with this commit, and the prior commit too.
+
+
+* **Refactor Prison's old backpacks to reduce duplicate code to prepare for use of the BackpackCache.**
+
+
+* **Changed the command `/mines set notification` to work with both disable and disabled.**
+
+
+* **Initial setup of BackpackCache code.  Not test.  Not hooked up yet to anything.  But the cache should be functional.**
+
+
+* **v3.3.0-alpha.13b 2022-09-07**
+
+
+* **Prestige: Rewrote the prestige commands to move them from the generic spigot module to the ranks module where it should belong with the other rank related commands.**
+All rank and prestige related logic was removed from the GUI.  The new /prestige command was created in the ranks module. It now performs a precheck to ensure the player is able to prestige, and it now reflects the correct configurations as far as showing the player if their default ranks and monies will be reset.  Confirmations were also fixed, where they were not working with the prior chat confirmation.  The new gui uses a simplified process where it is given the default settings for the displayed lore.  The only behavior the gui now has, is that if the player clicks on confirm, then it will rerun the prestige command with "confirm" added so the confirmation is bypassed.
+This is working far better now.
+
+
+* **Fixes issues with /rankupmax.**
+Confirmation on prestiging does not work.
+
+
+* **Modified a number of mines commands to add a global *all* feature to allow easier management of applying commands to more than one name at a time.**
+
+
+* **Fix an issue with leading spaces in prison commands, especially right after using semi-colons to chain multiple commands.**
+
+
+* **v3.3.0-alpha.13a 2022-09-01**
+
+
+* **Cleaned up the /rankupmax command to improve on the messaging so it's not as spammy.**
+Improvements with the /rankupmax prestiges command too.
+
+
+* **Redone how the command `/rankupmax` works.**
+The command `/rankupmax` and `/rankupmax default` has not changed, but has been improved to supply the correct next rank using the newer getNextRank function to ensure consistency.
+The command `/rankupmax prestiges` used to only provide the same behavior as `/prestige` and `/rankup prestiges`.  The new behavior is that `/rankupmax prestiges` will first perform `/rankupmax` then it will try `/rankup prestiges`. If completes successfully, then it will repeat both the rankupmax and prestiges, and etc.
+
+
+* **Fixed an issue with the RankPlayer.getNextPlayerRank() which was not returning the first prestige rank if at end of default and no prestiges.**
+Had to hook in to the LadderManager, routing through Platform, to get the presetiges ladder to pull the first prestige rank.
+Adding this capability expands the functional usefulness of this function greatly.  Now if this function returns a null, then it means the player is at the last possible rank.
+
+
+* **Add to the platform the ability to get a specific RankLadder.**
+
+
+* **New feature: Auto Forced Rankup.  When using autosell, it will auto rankup the player when they have enough money.**
+This includes both normal /rankup and /prestige.
+This configuration setting is set within config.yml in prison-mines.forced-auto-rankups: true.
+
+
+* **Enable access to prior mines, or prevent access to prior mines, based upon the player's rank.**
+See `prison-mines.access-to-prior-mines` in config.yml
+
+
+* **New feature for Prestige: Force a sellall before processing the prestige.**
+This prevents the player from stashing a ton of high-value blocks in their inventory before prestiging.
+This will not prevent the player from stashing blocks elsewhere.
 
 
 **3.3.0-alpha.13 2022-08-25**
