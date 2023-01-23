@@ -55,6 +55,9 @@ The following are significant changes that are included in the alpha.14 release 
 * Prison support new feature: tracking command usage along with average run times: `/prison support cmdStats`. 
 
 
+* Improved some of the `/prison support submit` features to include more of the newer data that prison is using.
+
+
 * Updates to a number of libraries that prison uses: 
 placeholderApi: v2.10.9 to v2.11.2
 XSeries: v9.0.0 to v9.2.0
