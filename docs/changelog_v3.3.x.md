@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14 2023-01-26
 
 
+* **Mine BlockEvents: Enables the use of pipes in commands and messages now.**
+
+
 * **MineBombs: Added a new field specifically for the item name for the bomb.**
 The mine bombs now auto load upon startup and will auto update now if there is a change in mine data versions.
 
