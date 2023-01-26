@@ -10,7 +10,11 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14 2023-01-23
+# 3.3.0-alpha.14 2023-01-26
+
+
+* **MineBombs: Added a new field specifically for the item name for the bomb.**
+The mine bombs now auto load upon startup and will auto update now if there is a change in mine data versions.
 
 
 * Changed the example world names in the config.yml file where Prison is disabled. Too many people were running in to the problem where they just happened to have those worlds, and that's where they were trying to use prison.  So they were thinking Prison was not working instead of Prison being disable in those worlds because that's what was in the configs.

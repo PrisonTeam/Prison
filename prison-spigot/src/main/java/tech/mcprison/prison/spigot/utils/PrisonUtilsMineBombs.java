@@ -52,11 +52,26 @@ public class PrisonUtilsMineBombs
 	
 	private boolean enableMineBombs = false;
 	
+	private static PrisonUtilsMineBombs instance;
 	
 	
 	public PrisonUtilsMineBombs() {
 		super();
 		
+		instance = this;
+	}
+	
+	public static PrisonUtilsMineBombs getInstance() {
+		if ( instance == null ) {
+			synchronized ( PrisonUtilsMineBombs.class ) {
+				
+				if ( instance == null ) {
+					new PrisonUtilsMineBombs();
+				}
+			}
+		}
+		
+		return instance;
 	}
 	
 	/**
@@ -190,6 +205,17 @@ public class PrisonUtilsMineBombs
 			
 			mBombs.validateMineBombs();
 		}		
+	}
+	
+	/**
+	 * <p>Just a wrapper to reload mine bombs so it does not have to pass a null value.
+	 * This can also be used for initially loading the configs to force data updates.
+	 * </p>
+	 * 
+	 */
+	public void reloadPrisonMineBombs() {
+		
+		utilsMineBombsReload( null );
 	}
 	
 
@@ -653,6 +679,12 @@ public class PrisonUtilsMineBombs
 			if ( bombs != null ) {
 				
 				bombs.setDisplayName( bombData.getName() );
+
+				if ( bombData.getItemName() != null ) {
+					String itemName = bombData.getItemName().replace("{name}", bombData.getName() );
+					
+					bombs.setDisplayName( itemName );
+				}
 				
 				//bombs.setAmount( count );
 				

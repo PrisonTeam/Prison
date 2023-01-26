@@ -9,6 +9,8 @@ import tech.mcprison.prison.internal.block.PrisonBlock;
 
 public class MineBombData {
 
+	public static final String MINE_BOMB_DEFAULT_ITEM_NAME = "&c-= &7{name}&c =-";
+	
 	private String name;
 	
 	private String description;
@@ -30,6 +32,20 @@ public class MineBombData {
 	 * </p>
 	 */
 	private String nameTag;
+	
+	
+	/**
+	 * <p>The itemName is the displayname that is used for the items.
+	 * This can be customized without impacting the bomb's name, the bomb's nameTag, 
+	 * etc...
+	 * </p>
+	 * 
+	 * <p>If no value is provided, then the name will be used.
+	 * </p>
+	 * 
+	 */
+	private String itemName;
+	
 	
 	/**
 	 * <p>The String name of an XMaterial item to use as the "bomb".
@@ -193,9 +209,11 @@ public class MineBombData {
 		this();
 		
 		this.name = name;
-		this.itemType = itemType;
-		
 		this.nameTag = "{name}";
+
+		this.itemType = itemType;
+		this.itemName = MINE_BOMB_DEFAULT_ITEM_NAME;
+		
 		
 		this.explosionShape = explosionShape;
 		this.radius = radius;
@@ -238,6 +256,8 @@ public class MineBombData {
 		cloned.setDescription( getDescription() );
 		
 		cloned.setNameTag( getNameTag() );
+		
+		cloned.setItemName( getItemName() );
 		
 		cloned.setToolInHandName( getToolInHandName() );
 		cloned.setToolInHandFortuneLevel( getToolInHandFortuneLevel() );
@@ -322,6 +342,16 @@ public class MineBombData {
 	}
 	public void setItemType( String itemType ) {
 		this.itemType = itemType;
+	}
+
+	public String getItemName() {
+		if ( itemName == null ) {
+			itemName = MINE_BOMB_DEFAULT_ITEM_NAME;
+		}
+		return itemName;
+	}
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
 	}
 
 	public PrisonBlock getItem() {

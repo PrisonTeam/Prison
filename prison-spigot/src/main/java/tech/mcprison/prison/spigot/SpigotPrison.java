@@ -92,6 +92,7 @@ import tech.mcprison.prison.spigot.slime.SlimeBlockFunEventListener;
 import tech.mcprison.prison.spigot.spiget.BluesSpigetSemVerComparator;
 import tech.mcprison.prison.spigot.tasks.PrisonInitialStartupTask;
 import tech.mcprison.prison.spigot.tasks.SpigotPrisonDelayedStartupTask;
+import tech.mcprison.prison.spigot.utils.PrisonUtilsMineBombs;
 import tech.mcprison.prison.spigot.utils.PrisonUtilsModule;
 import tech.mcprison.prison.util.Text;
 
@@ -392,17 +393,22 @@ public class SpigotPrison
 		}
 
 		
-		// Startup bStats:
-		prisonBStats.initMetricsOnEnable();
-		
-		
-	       
        // Force a backup if prison version is new:
        PrisonBackups backups = new PrisonBackups();
        backups.serverStartupVersionCheck();
 	       
 
+       
+       // Setup mine bombs:
+       PrisonUtilsMineBombs.getInstance().reloadPrisonMineBombs();
+       
+
 		
+       // Startup bStats:
+       prisonBStats.initMetricsOnEnable();
+       
+       
+       
 		Output.get().logInfo( "Prison - Finished loading." );
 		
 		
