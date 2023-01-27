@@ -77,6 +77,13 @@ public enum BlockBreakPriority {
 		return results;
 	}
 
+	public boolean isAccess() {
+		return this == ACCESS ||
+			   this == ACCESSBLOCKEVENTS ||
+			   this == ACCESSMONITOR
+			   ;
+	}
+	
 	public boolean isMonitor() {
 		return this == MONITOR || 
 			   this == BLOCKEVENTS ||

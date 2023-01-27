@@ -745,8 +745,13 @@ public abstract class OnBlockBreakEventCore
 			// The player does not have permission to access this mine, so do not process 
 			// 
 			
+			String accessType = mine.isMineAccessByRank() ? "Rank" : 
+				mine.isAccessPermissionEnabled() ? "Perms" : "Other?";
+			
 			pmEvent.setCancelOriginalEvent( true );
-			debugInfo.append( "ACCESS_DENIED (event canceled - Access by rank/perm/perms) " );
+			debugInfo.append( "ACCESS_DENIED (event canceled - Access by " )
+						.append( accessType )
+						.append( ") " );
 			results = false;
 		}
 		
@@ -828,13 +833,14 @@ public abstract class OnBlockBreakEventCore
 		// Performs the MONITOR block counts, zero-block, and mine sweeper:
 		else if ( results && pmEvent.getBbPriority().isMonitor() && mine != null ) {
 			
+			boolean isBlockEvents = pmEvent.getBbPriority() == BlockBreakPriority.BLOCKEVENTS || 
+					 pmEvent.getBbPriority() == BlockBreakPriority.ACCESSBLOCKEVENTS;
 			
 			// Process BLOCKEVENTS and ACCESSBLOCKEVENTs here... 
 			// Include autosell on full inventory if isAutoSellIfInventoryIsFullForBLOCKEVENTSPriority 
 			// is enabled. 
 			// Includes running block events, mine sweeper, and zero-block (reset-threshold) reset.
-			if ( pmEvent.getBbPriority() == BlockBreakPriority.BLOCKEVENTS || 
-					 pmEvent.getBbPriority() == BlockBreakPriority.ACCESSBLOCKEVENTS ) {
+			if ( isBlockEvents ) {
 
 				debugInfo.append( "(BLOCKEVENTS processing) " );
 				
@@ -868,7 +874,10 @@ public abstract class OnBlockBreakEventCore
 			}
 			
 			countBlocksMined( pmEvent, sBlockHit );
-			processPrisonBlockEventCommands( pmEvent, sBlockHit );
+				
+			if ( isBlockEvents ) {
+				processPrisonBlockEventCommands( pmEvent, sBlockHit );
+			}
 			
 			debugInfo.append( "(MONITOR - singular) " );
 			
@@ -877,7 +886,10 @@ public abstract class OnBlockBreakEventCore
 				for ( SpigotBlock sBlock : pmEvent.getExplodedBlocks() ) {
     				
 					countBlocksMined( pmEvent, sBlock );
-					processPrisonBlockEventCommands( pmEvent, sBlock );
+						
+					if ( isBlockEvents ) {
+						processPrisonBlockEventCommands( pmEvent, sBlock );
+					}
     			}
 
     			debugInfo.append( "(MONITOR - " + 

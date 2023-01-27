@@ -310,7 +310,6 @@ public class AutoManagerBlockBreakEvents
         	if ( checkIfNoAccess( pmEvent, start ) ) {
         		
         		e.setCancelled( true );
-
         		return;
         	}
     		

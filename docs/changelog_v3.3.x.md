@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14 2023-01-26
+# 3.3.0-alpha.14 2023-01-27
+
+
+* **Some adjustments to AutoFeatures and monitor priority... it was processing block events under some conditions.**
 
 
 * **Mine BlockEvents: Enables the use of pipes in commands and messages now.**

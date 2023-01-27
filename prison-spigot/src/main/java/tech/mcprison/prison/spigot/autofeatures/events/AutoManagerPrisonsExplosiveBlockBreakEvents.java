@@ -333,7 +333,7 @@ public class AutoManagerPrisonsExplosiveBlockBreakEvents
 			
 
     		// The validation was successful, but stop processing for the MONITOR priorities.
-    		// Note that BLOCKEVENTS processing occured already within validateEvent():
+    		// Note that BLOCKEVENTS processing occurred already within validateEvent():
     		else if ( pmEvent.getBbPriority().isMonitor() ) {
     			// Stop here, and prevent additional processing. 
     			// Monitors should never process the event beyond this.

@@ -106,10 +106,8 @@ public abstract class AutoManagerFeatures
     	boolean results = false;
     	
     	// NOTE: Check for the ACCESS priority and if someone does not have access, then return 
-    	//       with a cancel on the event.  Both ACCESSBLOCKEVENTS and ACCESSMONITOR will be
-    	//       converted to just ACCESS at this point, and the other part will run under either
-    	//       BLOCKEVENTS or MONITOR.
-    	if ( pmEvent.getBbPriority() == BlockBreakPriority.ACCESS && pmEvent.getMine() != null && 
+    	//       with a cancel on the event.
+    	if ( pmEvent.getBbPriority().isAccess() && pmEvent.getMine() != null && 
     			!pmEvent.getMine().hasMiningAccess( pmEvent.getSpigotPlayer() )) {
     		
     		String message = String.format( "(&cACCESS fail: player %s does not have access to "
