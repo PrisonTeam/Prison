@@ -10,7 +10,12 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14 2023-01-27
+# 3.3.0-alpha.14 2023-01-28
+
+
+* **Gui Player Mine config settings:  Added `Options.Mines.MaterialType.NoMineAccess` which defaults to REDSTONE_BLOCK.**
+If it does not exist in a player's GuiConfig.yml file, it will now be auto added.
+Also if the `Options.Mines.MaterialType` block list of material types to use for each mine does not exist, it will auto add them, using the first block in the mine's block list.
 
 
 * **Some adjustments to AutoFeatures and monitor priority... it was processing block events under some conditions.**

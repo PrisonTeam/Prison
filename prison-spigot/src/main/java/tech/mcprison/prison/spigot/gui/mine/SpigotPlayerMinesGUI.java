@@ -105,6 +105,7 @@ public class SpigotPlayerMinesGUI
         // Load the generic mine LORE that would be displayed first:
         List<String> configCustomLore = guiConfig.getStringList("EditableLore.Mines");
         
+        String noMineAccessBlockType = guiConfig.getString( "Options.Mines.MaterialType.NoMineAccess" );
         
         // Make the buttons for every Mine with info
         for (Mine m : minesDisplay) {
@@ -121,7 +122,8 @@ public class SpigotPlayerMinesGUI
         	mineLore.addAll( mineLore2 );
 
 
-            XMaterial xMat = XMaterial.REDSTONE_BLOCK;
+            XMaterial xMat = XMaterial.valueOf( noMineAccessBlockType );
+//            XMaterial xMat = XMaterial.REDSTONE_BLOCK;
             
             // Bug: Cannot safely use Material due to variants prior to bukkit v1.13:
 //            Material material;
