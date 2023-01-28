@@ -271,7 +271,8 @@ public class AutoManagerPrisonEnchants
 		// or if the targetBlock has been set to ignore all block events which 
 		// means the block has already been processed.
     	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
-    			e.getPlayer(), e.getBlockBroken());
+    			e.getPlayer(), e.getBlockBroken(),
+    			bbPriority );
     	if ( eventResults.isIgnoreEvent() ) {
     		return;
     	}
@@ -286,6 +287,8 @@ public class AutoManagerPrisonEnchants
 				(e.isCancelled() ? "TRUE " : "FALSE")
 				) );
 		
+		debugInfo.append( eventResults.getDebugInfo() );
+		
 		
 		// Process all priorities if the event has not been canceled, and 
 		// process the MONITOR priority even if the event was canceled:
@@ -297,10 +300,13 @@ public class AutoManagerPrisonEnchants
     		String triggered = null; // e.getTriggeredBy();
     		
     		pmEvent = new PrisonMinesBlockBreakEvent( 
-    					e.getBlockBroken(), 
-    					e.getPlayer(),
-    					eventResults.getMine(),
-    					bbPriority, eventType, triggered,
+    					eventResults,
+//    					e.getBlockBroken(), 
+//    					e.getPlayer(),
+//    					eventResults.getMine(),
+//    					bbPriority, 
+    					eventType, 
+    					triggered,
     					debugInfo );
     		
 

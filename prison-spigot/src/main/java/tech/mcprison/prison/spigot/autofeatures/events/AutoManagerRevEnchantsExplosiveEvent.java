@@ -268,7 +268,8 @@ public class AutoManagerRevEnchantsExplosiveEvent
 		// or if the targetBlock has been set to ignore all block events which 
 		// means the block has already been processed.
     	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
-    							e.getPlayer(),  e.getBlocks().get( 0 ) );
+    							e.getPlayer(),  e.getBlocks().get( 0 ),
+    							bbPriority );
 		if ( eventResults.isIgnoreEvent() ) {
 			return;
 		}
@@ -283,6 +284,8 @@ public class AutoManagerRevEnchantsExplosiveEvent
 				(e.isCancelled() ? "TRUE " : "FALSE")
 				) );
 		
+		debugInfo.append( eventResults.getDebugInfo() );
+		
 		
 		// NOTE that check for auto manager has happened prior to accessing this function.
 		
@@ -294,17 +297,19 @@ public class AutoManagerRevEnchantsExplosiveEvent
 
 		
 			
-    		Block bukkitBlock = e.getBlocks().get( 0 );
+//    		Block bukkitBlock = e.getBlocks().get( 0 );
     		
     		BlockEventType eventType = BlockEventType.RevEnExplosion;
     		String triggered = null;
     		
 
     		pmEvent = new PrisonMinesBlockBreakEvent( 
-    					bukkitBlock, 
-    					e.getPlayer(),
-    					eventResults.getMine(),
-    					bbPriority, eventType, triggered,
+    					eventResults,
+//    					bukkitBlock, 
+//    					e.getPlayer(),
+//    					eventResults.getMine(),
+//    					bbPriority, 
+    					eventType, triggered,
     					debugInfo );
     		
 

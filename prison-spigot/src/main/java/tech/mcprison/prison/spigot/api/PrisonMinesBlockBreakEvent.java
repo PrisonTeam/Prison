@@ -16,6 +16,7 @@ import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
 import tech.mcprison.prison.spigot.block.SpigotBlock;
 import tech.mcprison.prison.spigot.block.SpigotItemStack;
+import tech.mcprison.prison.spigot.block.OnBlockBreakMines.MinesEventResults;
 import tech.mcprison.prison.spigot.compat.SpigotCompatibility;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 
@@ -131,28 +132,36 @@ public class PrisonMinesBlockBreakEvent
 	
 
 	public PrisonMinesBlockBreakEvent( 
-				Block theBlock, Player player, 
-				Mine mine,
+				MinesEventResults eventResults,
+//				Block theBlock, Player player, 
+//				Mine mine,
 //				SpigotBlock spigotBlock, SpigotPlayer spigotPlayer,
-				BlockBreakPriority bbPriority,
+//				BlockBreakPriority bbPriority,
 //				boolean monitor, boolean blockEventsOnly,
-				BlockEventType blockEventType, String triggered,
+				BlockEventType blockEventType, 
+				String triggered,
 				StringBuilder debugInfo ) {
 		
-		super( theBlock, player );
+		super( eventResults.getBlock(), eventResults.getSpigotPlayer().getWrapper() );
+//		super( theBlock, player );
 
-		this.mine = mine;
+		this.mine = eventResults.getMine();
+//		this.mine = mine;
 		
 		// Need to wrap in a Prison block so it can be used with the mines:
-		SpigotBlock sBlock = SpigotBlock.getSpigotBlock( theBlock );
-		SpigotPlayer sPlayer = new SpigotPlayer( player );
+//		SpigotBlock sBlock = SpigotBlock.getSpigotBlock( theBlock );
+//		SpigotPlayer sPlayer = new SpigotPlayer( player );
 
-		this.spigotBlock = sBlock;
-		this.spigotPlayer = sPlayer;
+		this.spigotBlock = eventResults.getSpigotBlock();
+		this.spigotPlayer = eventResults.getSpigotPlayer();
+//		this.spigotBlock = sBlock;
+//		this.spigotPlayer = sPlayer;
 		
-		this.itemInHand = SpigotCompatibility.getInstance().getPrisonItemInMainHand( player );
+		this.itemInHand = SpigotCompatibility.getInstance()
+				.getPrisonItemInMainHand( eventResults.getSpigotPlayer().getWrapper() );
 		
-		this.bbPriority = bbPriority;
+		this.bbPriority = eventResults.getBbPriority();
+//		this.bbPriority = bbPriority;
 //		this.monitor = monitor;
 //		this.blockEventsOnly = blockEventsOnly;
 		

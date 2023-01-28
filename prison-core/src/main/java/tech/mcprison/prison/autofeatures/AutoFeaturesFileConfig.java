@@ -168,6 +168,8 @@ public class AutoFeaturesFileConfig {
 		    	
 		    	ifBlockIsAlreadyCountedThenCancelEvent(general, true),
 		    	
+		    	processMonitorEventsOnlyIfPrimaryBlockIsAIR(general, true),
+		    	
 		    	
 		    inventory(options),
 		    	

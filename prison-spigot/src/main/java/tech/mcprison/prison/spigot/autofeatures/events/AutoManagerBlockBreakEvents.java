@@ -260,7 +260,7 @@ public class AutoManagerBlockBreakEvents
 		// or if the targetBlock has been set to ignore all block events which 
 		// means the block has already been processed.
     	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
-    						e.getPlayer(), e.getBlock() );
+    						e.getPlayer(), e.getBlock(), bbPriority );
     	if ( eventResults.isIgnoreEvent() ) {
     		return;
     	}
@@ -278,6 +278,7 @@ public class AutoManagerBlockBreakEvents
 				(e.isCancelled() ? "TRUE " : "FALSE")
 				) );
 		
+		debugInfo.append( eventResults.getDebugInfo() );
 		
 		// Process all priorities if the event has not been canceled, and 
 		// process the MONITOR priority even if the event was canceled:
@@ -292,11 +293,14 @@ public class AutoManagerBlockBreakEvents
     		String triggered = null;
     		
     		pmEvent = new PrisonMinesBlockBreakEvent( 
-    				e.getBlock(), 
-    				e.getPlayer(),
-    				eventResults.getMine(),
-//    					sBlock, sPlayer, 
-    					bbPriority, eventType, triggered,
+    				eventResults,
+//    				e.getBlock(), 
+//    				e.getPlayer(),
+//    				eventResults.getMine(),
+////    					sBlock, sPlayer, 
+//    					bbPriority, 
+    					eventType, 
+    					triggered,
     					debugInfo );
     		
 

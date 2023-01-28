@@ -12,7 +12,7 @@
 
 - DONE: change BLOCKEVENTS to use MONITOR priority - PrinceHatem
 
-- add option to allow AIR when at MONITOR priority - PrinceHatem
+- DONE: add option to allow AIR when at MONITOR priority - PrinceHatem
   - issue with when a break is canceled on RevEn such as when durability is zero.
   
 

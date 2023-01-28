@@ -22,6 +22,7 @@ import tech.mcprison.prison.internal.block.PrisonBlockStatusData;
 import tech.mcprison.prison.mines.PrisonMines;
 import tech.mcprison.prison.mines.data.Mine;
 import tech.mcprison.prison.modules.Module;
+import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
@@ -33,6 +34,19 @@ public class OnBlockBreakMines
 	private PrisonMines prisonMineManager;
 	private boolean mineModuleDisabled = false;
 
+	enum EventResultsReasons {
+		result_reason_not_yet_set,
+		cancel_event__block_is_locked, 
+		ignore_event__block_is_not_in_a_mine, 
+		cancel_event__mine_mutex__mine_resetting, 
+		ignore_event__target_block_ignore_all_events, 
+		ignore_event__block_already_counted, 
+		cancel_event__block_already_counted, 
+		ignore_event__monitor_priority_but_not_AIR
+		;
+		
+	}
+	
 	public OnBlockBreakMines() {
 		super();
 		
@@ -41,15 +55,93 @@ public class OnBlockBreakMines
 	}
 	
 	public class MinesEventResults {
+		
+		private EventResultsReasons resultsReason = EventResultsReasons.result_reason_not_yet_set;
+		
 		private boolean cancelEvent = false;
 		private boolean ignoreEvent = false;
-		private Mine mine = null;
 		
-		public MinesEventResults() {
+		BlockBreakPriority bbPriority;
+		private Mine mine = null;
+		private SpigotPlayer sPlayer;
+		
+		private Block block;
+		private SpigotBlock spigotBlock;
+		
+		
+		public MinesEventResults( BlockBreakPriority bbPriority, SpigotPlayer sPlayer, Block block ) {
 			super();
+			
+			this.bbPriority = bbPriority;
+			this.sPlayer = sPlayer;
+			this.block = block;
+		}
+		
+		public void logDebugInfo() {
+			if ( isIgnoreEvent() && 
+					Output.get().isDebug() ) {
+				
+				String blockName = getSpigotBlock() == null ? 
+						"noPrisonBlock" : 
+						getSpigotBlock().getBlockName();
+				String blockLocation = getSpigotBlock() == null ? 
+						"" : 
+						getSpigotBlock().getLocation().toWorldCoordinates();
+				
+				Output.get().logInfo( "Prison AutoFeatures Fast-Fail: %s %s %s %s %s%s", 
+						getResultsReason().name(),
+						getBbPriority().name(),
+						getSpigotPlayer().getName(),
+						
+						getMine() == null ? "noMine" : getMine().getName(),
+						blockName,
+						blockLocation
+						);
+			}
+		}
+		
+
+		public String getDebugInfo() {
+			
+			String blockName = getSpigotBlock() == null ? 
+					"noPrisonBlock" : 
+						getSpigotBlock().getBlockName();
+			String blockLocation = getSpigotBlock() == null ? 
+					"" : 
+						getSpigotBlock().getLocation().toWorldCoordinates();
+			
+			return String.format( 
+					"Prison AutoFeatures: %s %s %s %s %s%s", 
+					getResultsReason().name(),
+					getBbPriority().name(),
+					getSpigotPlayer().getName(),
+					
+					getMine() == null ? "noMine" : getMine().getName(),
+					blockName,
+					blockLocation );
+		}
+		
+		public EventResultsReasons getResultsReason() {
+			return resultsReason;
+		}
+		public void setResultsReason(EventResultsReasons resultsReason) {
+			this.resultsReason = resultsReason;
+		}
+		
+		public BlockBreakPriority getBbPriority() {
+			return bbPriority;
+		}
+		public void setBbPriority(BlockBreakPriority bbPriority) {
+			this.bbPriority = bbPriority;
 		}
 
-		
+		public SpigotPlayer getSpigotPlayer() {
+			return sPlayer;
+		}
+		public void setSpigotPlayer(SpigotPlayer sPlayer) {
+			this.sPlayer = sPlayer;
+		}
+
 		public Mine getMine() {
 			return mine;
 		}
@@ -70,6 +162,21 @@ public class OnBlockBreakMines
 		public void setIgnoreEvent( boolean ignoreEvent ) {
 			this.ignoreEvent = ignoreEvent;
 		}
+
+		public Block getBlock() {
+			return block;
+		}
+		public void setBlock(Block block) {
+			this.block = block;
+		}
+
+		public SpigotBlock getSpigotBlock() {
+			return spigotBlock;
+		}
+		public void setSpigotBlock(SpigotBlock spigotBlock) {
+			this.spigotBlock = spigotBlock;
+		}
+
 	}
 	
 	public Mine findMine( Player player, SpigotBlock sBlock, List<Block> altBlocksSource, PrisonMinesBlockBreakEvent pmEvent )
@@ -83,7 +190,7 @@ public class OnBlockBreakMines
 
 		// Get the cached mine, if it exists:
 		Mine mine = getPlayerCache().get( playerUUIDLSB );
-
+		
 		if ( mine == null || sBlock != null && !mine.isInMineExact( sBlock.getLocation() ) )
 		{
 			// Look for the correct mine to use.
@@ -165,65 +272,92 @@ public class OnBlockBreakMines
 	 * @param block
 	 * @return
 	 */
-	protected MinesEventResults ignoreMinesBlockBreakEvent( Player player, Block block ) {
+	protected MinesEventResults ignoreMinesBlockBreakEvent( Player player, Block block, 
+			BlockBreakPriority bbPriority ) {
 		
-		MinesEventResults results = new MinesEventResults();
+		SpigotPlayer sPlayer = new SpigotPlayer( player );
+		
+		MinesEventResults results = new MinesEventResults( bbPriority, sPlayer, block );
 		
 		SpigotBlock sBlock = SpigotBlock.getSpigotBlock( block );
+		results.setSpigotBlock( sBlock );
+		
 		if ( BlockUtils.getInstance().isUnbreakable( sBlock ) ) {
+			results.setResultsReason( EventResultsReasons.cancel_event__block_is_locked );
+			
 			results.setCancelEvent( true );
 			results.setIgnoreEvent( true );
 		}
-		
-		Mine mine = findMine( player, sBlock,  null, null ); 
-		results.setMine( mine );
-		
-		if ( mine == null ) {
-			// Prison is unable to process blocks outside of mines right now, so exit:
+		else if ( bbPriority.isMonitor() && !sBlock.isEmpty() && 
+				AutoFeaturesWrapper.getInstance().isBoolean( 
+						AutoFeatures.processMonitorEventsOnlyIfPrimaryBlockIsAIR ) ) {
+
+			results.setResultsReason( EventResultsReasons.ignore_event__monitor_priority_but_not_AIR );
+			
 			results.setIgnoreEvent( true );
 		}
 		else {
 			
-			// If not minable, then display message and exit.
-			if ( !mine.getMineStateMutex().isMinable() ) {
+			Mine mine = findMine( player, sBlock,  null, null ); 
+			results.setMine( mine );
+			
+			if ( mine == null ) {
+				// Prison is unable to process blocks outside of mines right now, so exit:
+				results.setResultsReason( EventResultsReasons.ignore_event__block_is_not_in_a_mine );
 				
-				SpigotPlayer sPlayer = new SpigotPlayer( player );
-				sPlayer.setActionBar( mineIsBeingResetMsg( mine.getTag() ) );
 				results.setIgnoreEvent( true );
-				results.setCancelEvent( true );
-				
 			}
 			else {
 				
-				MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
-				
-				if ( targetBlock != null ) {
+				// If not minable, then display message and exit.
+				if ( !mine.getMineStateMutex().isMinable() ) {
+					results.setResultsReason( EventResultsReasons.cancel_event__mine_mutex__mine_resetting );
 					
-					// If ignore all block events, then exit this function without logging anything:
-					if ( targetBlock.isIgnoreAllBlockEvents() ) {
-						
-						// Do not cancel the event... let other plugins deal with it... prison does not care about this block.
-						//event.setCancelled( true );
-						results.setIgnoreEvent( true );
-					}
+					sPlayer.setActionBar( mineIsBeingResetMsg( mine.getTag() ) );
+					results.setIgnoreEvent( true );
+					results.setCancelEvent( true );
 					
-					// If the block's already been counted, then can ignore the event:
-					else if ( targetBlock.isCounted() ) {
+				}
+				else {
+					
+					MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
+					
+					if ( targetBlock != null ) {
 						
-						results.setIgnoreEvent( true );
-						
-						// Cancel the event if the setting is enabled:
-						if ( AutoFeaturesWrapper.getInstance().isBoolean( 
-								AutoFeatures.ifBlockIsAlreadyCountedThenCancelEvent ) ) {
+						// If ignore all block events, then exit this function without logging anything:
+						if ( targetBlock.isIgnoreAllBlockEvents() ) {
 							
-							results.setCancelEvent( true );
+							// Do not cancel the event... let other plugins deal with it... prison does not care about this block.
+							results.setResultsReason( EventResultsReasons.ignore_event__target_block_ignore_all_events );
+							
+							//event.setCancelled( true );
+							results.setIgnoreEvent( true );
+						}
+						
+						// If the block's already been counted, then can ignore the event:
+						else if ( targetBlock.isCounted() ) {
+							
+							results.setResultsReason( EventResultsReasons.ignore_event__block_already_counted );
+							
+							results.setIgnoreEvent( true );
+							
+							// Cancel the event if the setting is enabled:
+							if ( AutoFeaturesWrapper.getInstance().isBoolean( 
+									AutoFeatures.ifBlockIsAlreadyCountedThenCancelEvent ) ) {
+								
+								results.setResultsReason( EventResultsReasons.cancel_event__block_already_counted );
+								
+								results.setCancelEvent( true );
+							}
 						}
 					}
 				}
+				
+				
 			}
-			
-			
 		}
+		
+		results.logDebugInfo();
 		
 		return results;
 	}

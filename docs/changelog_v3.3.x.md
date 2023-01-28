@@ -13,6 +13,11 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14 2023-01-28
 
 
+* **AutoFeatures: new feature to process MONITOR and BLOCKEVENTS only if the block is AIR.**
+The reason for this is that if we are monitoring a blockbreak event, then we can assume that the block should be AIR.  This setting is important for enchantment plugins handling the block break events, since a non-AIR value would indicate that the player was not successful in breaking the block.  
+Added more detailed debugging logging if the event is fast-failed or under normal conditions.
+
+
 * **Change the block break priority BLOCKEVENTS to MONITOR.  Updated the docs too.**
 
 

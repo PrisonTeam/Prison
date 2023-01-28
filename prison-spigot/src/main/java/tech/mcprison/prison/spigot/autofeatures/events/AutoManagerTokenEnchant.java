@@ -330,7 +330,7 @@ public class AutoManagerTokenEnchant
 		// or if the targetBlock has been set to ignore all block events which 
 		// means the block has already been processed.
     	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, e.getPlayer(), 
-    									e.getBlock());
+    									e.getBlock(), bbPriority );
     	if ( eventResults.isIgnoreEvent() ) {
     		return;
     	}
@@ -345,6 +345,8 @@ public class AutoManagerTokenEnchant
 				(e.isCancelled() ? "TRUE " : "FALSE")
 				) );
 		
+		debugInfo.append( eventResults.getDebugInfo() );
+		
 		
 		// Process all priorities if the event has not been canceled, and 
 		// process the MONITOR priority even if the event was canceled:
@@ -356,10 +358,13 @@ public class AutoManagerTokenEnchant
     		String triggered = checkTEBlockExplodeEventTriggered( e );
     		
     		pmEvent = new PrisonMinesBlockBreakEvent( 
-    					e.getBlock(), 
-    					e.getPlayer(),
-    					eventResults.getMine(),
-    					bbPriority, eventType, triggered,
+    					eventResults,
+//    					e.getBlock(), 
+//    					e.getPlayer(),
+//    					eventResults.getMine(),
+//    					bbPriority, 
+    					eventType, 
+    					triggered,
     					debugInfo );
     		
 

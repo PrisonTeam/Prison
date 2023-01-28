@@ -275,7 +275,8 @@ public class AutoManagerCrazyEnchants
 		// or if the targetBlock has been set to ignore all block events which 
 		// means the block has already been processed.
     	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
-    										e.getPlayer(), e.getBlockList().get( 0 ) );
+    							e.getPlayer(), e.getBlockList().get( 0 ),
+    							bbPriority );
     	if ( eventResults.isIgnoreEvent() ) {
     		return;
     	}
@@ -289,6 +290,8 @@ public class AutoManagerCrazyEnchants
 				(e.isCancelled() ? "TRUE " : "FALSE")
 				) );
 		
+		debugInfo.append( eventResults.getDebugInfo() );
+		
 		
 		// NOTE that check for auto manager has happened prior to accessing this function.
 
@@ -299,17 +302,20 @@ public class AutoManagerCrazyEnchants
     			e.getBlockList().size() > 0 ) {
 
     		
-    		Block bukkitBlock = e.getBlockList().get( 0 );
+//    		Block bukkitBlock = e.getBlockList().get( 0 );
     		
     		BlockEventType eventType = BlockEventType.CEXplosion;
     		String triggered = null;
     		
 
     		pmEvent = new PrisonMinesBlockBreakEvent( 
-    				bukkitBlock, 
-    				e.getPlayer(),
-    				eventResults.getMine(),
-   					bbPriority, eventType, triggered,
+    				eventResults,
+//    				bukkitBlock, 
+//    				e.getPlayer(),
+//    				eventResults.getMine(),
+//   					bbPriority, 
+    				eventType, 
+    				triggered,
    					debugInfo );
     		
 

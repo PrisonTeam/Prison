@@ -156,9 +156,10 @@ public abstract class OnBlockBreakEventCore
 	
 	
 
-	protected MinesEventResults ignoreMinesBlockBreakEvent( Cancellable event, Player player, Block block ) {
+	protected MinesEventResults ignoreMinesBlockBreakEvent( Cancellable event, Player player, 
+			Block block, BlockBreakPriority bbPriority ) {
 	
-		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block, bbPriority );
 		
 		if ( eventResults.isCancelEvent() ) {
 			event.setCancelled( eventResults.isCancelEvent() );
@@ -178,20 +179,10 @@ public abstract class OnBlockBreakEventCore
 	 * @param block
 	 * @return
 	 */
-	protected MinesEventResults ignoreMinesBlockBreakEvent( ExplosiveEvent event, Player player, Block block ) {
+	protected MinesEventResults ignoreMinesBlockBreakEvent( ExplosiveEvent event, Player player, 
+			Block block, BlockBreakPriority bbPriority ) {
 		
-		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
-		
-		if ( eventResults.isCancelEvent() ) {
-			event.setCancelled( eventResults.isCancelEvent() );
-		}
-//		return eventResults.isIgnoreEvent();
-		return eventResults;
-	}
-	
-	protected MinesEventResults ignoreMinesBlockBreakEvent( JackHammerEvent event, Player player, Block block ) {
-		
-		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block, bbPriority );
 		
 		if ( eventResults.isCancelEvent() ) {
 			event.setCancelled( eventResults.isCancelEvent() );
@@ -200,9 +191,22 @@ public abstract class OnBlockBreakEventCore
 		return eventResults;
 	}
 	
-	protected MinesEventResults ignoreMinesBlockBreakEvent( PEExplosionEvent event, Player player, Block block ) {
+	protected MinesEventResults ignoreMinesBlockBreakEvent( JackHammerEvent event, Player player, 
+			Block block, BlockBreakPriority bbPriority ) {
 		
-		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block );
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block, bbPriority );
+		
+		if ( eventResults.isCancelEvent() ) {
+			event.setCancelled( eventResults.isCancelEvent() );
+		}
+//		return eventResults.isIgnoreEvent();
+		return eventResults;
+	}
+	
+	protected MinesEventResults ignoreMinesBlockBreakEvent( PEExplosionEvent event, Player player, 
+			Block block, BlockBreakPriority bbPriority ) {
+		
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block, bbPriority );
 		
 		if ( eventResults.isCancelEvent() ) {
 			event.setCancelled( eventResults.isCancelEvent() );
@@ -347,9 +351,9 @@ public abstract class OnBlockBreakEventCore
 //		pmEvent.setMine( mine );
 		Mine mine = pmEvent.getMine();
 		
-		debugInfo.append( "mine=" + (mine == null ? "none" : mine.getName()) + " " );
+//		debugInfo.append( "mine=" + (mine == null ? "none" : mine.getName()) + " " );
 		
-		debugInfo.append( sBlockHit.getLocation().toWorldCoordinates() ).append( " " );
+//		debugInfo.append( sBlockHit.getLocation().toWorldCoordinates() ).append( " " );
 		
 		
 		SpigotItemStack itemInHand = pmEvent.getItemInHand();
@@ -373,6 +377,7 @@ public abstract class OnBlockBreakEventCore
 			int unbreakable = 0;
 			int outsideOfMine = 0;
 			int alreadyMined = 0;
+			int monitorNotAir = 0;
 			int noTargetBlock = 0;
 			int blockTypeNotExpected = 0;
 			
@@ -560,6 +565,11 @@ public abstract class OnBlockBreakEventCore
 						else if ( sBlockMined.isEmpty() ) {
 							alreadyMined++;
 						}
+						else if ( pmEvent.getBbPriority().isMonitor() && sBlockMined.isEmpty() &&
+							isBoolean( AutoFeatures.processMonitorEventsOnlyIfPrimaryBlockIsAIR ) ) {
+							
+							monitorNotAir++;
+						}
 						else {
 							
 							// Get the mine's targetBlock:
@@ -668,6 +678,11 @@ public abstract class OnBlockBreakEventCore
 			if ( alreadyMined > 0 ) {
 				
 				debugInfo.append( "BLOCKS_ALREADY_MINED (" + alreadyMined + 
+						" ) " );
+			}
+			if ( monitorNotAir > 0 ) {
+				
+				debugInfo.append( "MONITOR_BLOCKS_NOT_AIR (" + monitorNotAir + 
 						" ) " );
 			}
 			if ( noTargetBlock > 0 ) {
