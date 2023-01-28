@@ -194,7 +194,7 @@ public class GuiConfig extends SpigotConfigComponents{
         	changeCount++;
         }
         
-        if ( conf.getMapList( "Options.Mines.MaterialType" ) == null ) {
+        if ( conf.get( "Options.Mines.MaterialType" ) == null ) {
         	
         	if ( PrisonMines.getInstance() != null ) {
 
@@ -212,7 +212,7 @@ public class GuiConfig extends SpigotConfigComponents{
         		changeCount++;
         	}
         }
-        else if ( conf.getMapList( "Options.Mines.MaterialType.NoMineAccess" ) == null ) {
+        else if ( conf.get( "Options.Mines.MaterialType.NoMineAccess" ) == null ) {
         	
         	String noMineAccess = XMaterial.REDSTONE_BLOCK.name();
         	

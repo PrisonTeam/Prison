@@ -398,6 +398,10 @@ public class SpigotPrison
        backups.serverStartupVersionCheck();
 	       
 
+       // Reload guiConfigs since ranks and mines have now been loaded:
+       guiConfig.initialize();
+       
+       
        
        // Setup mine bombs:
        PrisonUtilsMineBombs.getInstance().reloadPrisonMineBombs();

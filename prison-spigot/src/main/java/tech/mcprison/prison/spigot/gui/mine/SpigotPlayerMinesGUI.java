@@ -106,7 +106,19 @@ public class SpigotPlayerMinesGUI
         List<String> configCustomLore = guiConfig.getStringList("EditableLore.Mines");
         
         String noMineAccessBlockType = guiConfig.getString( "Options.Mines.MaterialType.NoMineAccess" );
-        
+        if ( noMineAccessBlockType == null ) {
+        	noMineAccessBlockType = XMaterial.REDSTONE_BLOCK.name();
+        }
+        else {
+        	// Validate that it is valid, otherwise use redstone_block:
+        	try {
+				XMaterial.valueOf( noMineAccessBlockType );
+			} 
+        	catch (Exception e) {
+				noMineAccessBlockType = XMaterial.REDSTONE_BLOCK.name();
+			}
+        }
+        	
         // Make the buttons for every Mine with info
         for (Mine m : minesDisplay) {
 //        	for (Mine m : mines.getSortedList()) {
