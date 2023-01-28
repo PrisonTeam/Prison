@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14 2023-01-28
 
 
+* **Change the block break priority BLOCKEVENTS to MONITOR.  Updated the docs too.**
+
+
 * **Add new autoFeature setting to allow non-prison placed blocks to be handled by bukkit: ifBlockIsAlreadyCountedThenCancelEvent: true. (default setting).**
 Prison was canceling the event if it found a block placed in the mine that it did not place during a mine reset.  This would allow players to place blocks and then remove them if they have the worldguard perms to do block breaks.
 These blocks are not tracked in prison and are not handled.  Prison just ignores them.

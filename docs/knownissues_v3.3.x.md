@@ -8,6 +8,14 @@
 # TODO Items for v3.3.0-alpha.13
 
 
+- break one block but blocks counts register 2 - Aimatt
+
+- DONE: change BLOCKEVENTS to use MONITOR priority - PrinceHatem
+
+- add option to allow AIR when at MONITOR priority - PrinceHatem
+  - issue with when a break is canceled on RevEn such as when durability is zero.
+  
+
 - On the new cmdStats details, add nano run times for commands so we can include avg run times.
 
 

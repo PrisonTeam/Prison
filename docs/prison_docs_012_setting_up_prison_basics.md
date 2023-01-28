@@ -7,7 +7,7 @@
 This document provides a quick overview on how to install Prison and get it running.
 
 
-*Documented updated: 2023-01-26*
+*Documented updated: 2023-01-28*
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -281,15 +281,15 @@ The above listed supported Events are assigned one of the available Prison Event
 
 * **DISABED** - The event is not enabled within Prison's event monitoring.  The event will not be included in the command `/prison support listeners blockBreak` command.
 
-* **ACCESS** - Access uses the identified block within the event to identify which mine the player is in, and if the player has access to the mine.  If the player does not have access, then the event is canceled. If the event has more than one block in the event, and it does not specifically identify which block was broken, it will use the first block in the provided block list.  Therefore, it may make the most sense that this priority, and it's variations, are best suited to be used with the Bukkit/Spigot's **BlockBreakEvent** since all other events originate through this event.
+* **ACCESS** - Access uses the identified block within the event to identify which mine the player is in, and if the player has access to the mine.  This Prison priority will run at the bukkit priority of `LOWEST`.  If the player does not have access, then the event is canceled. If the event has more than one block in the event, and it does not specifically identify which block was broken, it will use the first block in the provided block list.  Therefore, it may make the most sense that this priority, and it's variations, are best suited to be used with the Bukkit/Spigot's **BlockBreakEvent** since all other events originate through this event.
 
-* **ACCESSBLOCKEVENTS** - Same as ACCESS in that it generates a listener that for just mine access, but it also creates another  listener for BLOCKEVENTS.  This will be seen as two different listeners.
+* **ACCESSBLOCKEVENTS** - Same as ACCESS in that it generates a listener that for just mine access, but it also creates another listener for BLOCKEVENTS.  This will be seen as two different listeners.
 
 * **ACCESSMONITOR** - Same as ACCESS in that it generates a listener that for just mine access, but it also creates another  listener for MONITOR.  This will be seen as two different listeners.
 
 * **LOWEST** - **HIGHEST** - These are the normal bukkit event priorities.  The lower the priority, then it will handle the event before other plugins with higher priorities.
 
-* **BLOCKEVENTS** - Same as MONITOR, but also includes the processing of the Prison Block Events and sellall (auto sell) if enabled for full inventory.
+* **BLOCKEVENTS** - Same as MONITOR, but also includes the processing of the Prison Block Events and sellall (auto sell) if enabled for full inventory. This Prison priority will run at the bukkit priority of `MONITOR`.
 
 * **MONITOR** - Monitor performs no block handling within prison, but it will try to update the block counts. MONITOR will process the event even if it is canceled. 
 
@@ -305,20 +305,21 @@ The above listed supported Events are assigned one of the available Prison Event
 | NORMAL            | NORMAL  | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
 | HIGH              | HIGH    | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
 | HIGHEST           | HIGHEST | **Yes** | **Yes** | *No*    | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
-| BLOCKEVENTS       | HIGHEST | *No*    | **Yes** | *No*    | **Yes** | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
+| BLOCKEVENTS       | MONITOR | *No*    | **Yes** | *No*    | **Yes** | *No*    | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
 | MONITOR           | MONITOR | *No*    | **Yes** | *No*    | **Yes** | *No*    | **Yes** | **Yes** | *No*    | **Yes** | *No*    |
 | *headers*         | EvntPri | Access  | In Mine | IN Wrld | IgCanEv | Blk Brk | Blk Cnt | ResetTh | BlkEvnt | MineSwp | AutoSel |
 
 
 **Notes:**
-1. **DISABLED** will not have an actual event priority. **ACCESSBLOCKEVENTS** will have two processes; see actual priorities for ACCESS and BLOCKEVENTS.  **ACCESSMONITOR** will have two processes; see actual priorities for ACCESS and MONITOR.
-2. **DISABLED** will prevent a listener from starting, and it will prevent any processing of that event.
-3. **Access** managed by Prison requires the use of Access by Rank (preferred) or Access by Perms.  It also will vary in effectives based upon the priority level in relation to other plugins, where any plugin that has a lower priority than Prison will bypass Prison's attempts to control access.
-4. **ACCESSBLOCKEVENTS** and **ACCESSMONITOR** are able to have a duel behavior because these priorities will create two different listeners, each at a different priority, and each having a different purpose.
-5. **Block Break** refers to Prison handling the whole block break processing and drops.
-6. **Mine Sweeper** should never be used unless there is no other way to count all the broken blocks.
-7. Support for outside of the mine for auto features maybe added soon.  The way it will probably be supported would be through a list of worlds in which it should be active, plus the use of WG regions too.
-8. The **MONITOR** priority, including ***BLOCKEVENTS*** will ignore all events that have been canceled and will process them anyway.  Therefore **ACCESSBLOCKEVENTS** and **ACCESSMONITOR** will fail on the "access" part if the event is canceled when Prison gets ahold of it the first time, which will deny access to the mines, but it will also still process the event under the priority of MONITOR or BLOCKEVENTS.
+1. **ACCESSBLOCKEVENTS** and **ACCESSMONITOR** will run two events.  One of which will be **ACCESS** which will have an actual bukkit priority of `LOWEST`.  And the other listener will run a **BLOCKEVENTS** or **MONITOR** Prison priority which both will have an actual bukkit priority of `MONITOR`. 
+2. **DISABLED** will not have an actual event priority. **ACCESSBLOCKEVENTS** will have two processes; see actual priorities for ACCESS and BLOCKEVENTS.  **ACCESSMONITOR** will have two processes; see actual priorities for ACCESS and MONITOR.
+3. **DISABLED** will prevent a listener from starting, and it will prevent any processing of that event.
+4. **Access** managed by Prison requires the use of Access by Rank (preferred) or Access by Perms.  It also will vary in effectives based upon the priority level in relation to other plugins, where any plugin that has a lower priority than Prison will bypass Prison's attempts to control access.
+5. **ACCESSBLOCKEVENTS** and **ACCESSMONITOR** are able to have a duel behavior because these priorities will create two different listeners, each at a different priority, and each having a different purpose.
+6. **Block Break** refers to Prison handling the whole block break processing and drops.
+7. **Mine Sweeper** should never be used unless there is no other way to count all the broken blocks.
+8. Support for outside of the mine for auto features maybe added soon.  The way it will probably be supported would be through a list of worlds in which it should be active, plus the use of WG regions too.
+9. The **MONITOR** priority, including ***BLOCKEVENTS** will ignore all events that have been canceled and will process them anyway.  Therefore **ACCESSBLOCKEVENTS** and **ACCESSMONITOR** will fail on the "access" part if the event is canceled when Prison gets a hold of it the first time, which will deny access to the mines, but it will also still process the event under the priority of MONITOR or BLOCKEVENTS.
 
 
 
