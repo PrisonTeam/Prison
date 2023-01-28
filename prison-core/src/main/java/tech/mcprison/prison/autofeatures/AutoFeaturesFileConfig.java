@@ -166,6 +166,7 @@ public class AutoFeaturesFileConfig {
 		    	isCalculateXPEnabled(general, true),
 		    	givePlayerXPAsOrbDrops(general, false),
 		    	
+		    	ifBlockIsAlreadyCountedThenCancelEvent(general, true),
 		    	
 		    	
 		    inventory(options),

@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.integration.CustomBlockIntegration;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
@@ -187,21 +189,39 @@ public class OnBlockBreakMines
 				
 				SpigotPlayer sPlayer = new SpigotPlayer( player );
 				sPlayer.setActionBar( mineIsBeingResetMsg( mine.getTag() ) );
-				results.setCancelEvent( true );
 				results.setIgnoreEvent( true );
+				results.setCancelEvent( true );
+				
 			}
 			else {
 				
 				MineTargetPrisonBlock targetBlock = mine.getTargetPrisonBlock( sBlock );
 				
-				// If ignore all block events, then exit this function without logging anything:
-				if ( targetBlock != null && targetBlock.isIgnoreAllBlockEvents() ) {
+				if ( targetBlock != null ) {
 					
-					// Do not cancel the event... let other plugins deal with it... prison does not care about this block.
-					//event.setCancelled( true );
-					results.setIgnoreEvent( true );
+					// If ignore all block events, then exit this function without logging anything:
+					if ( targetBlock.isIgnoreAllBlockEvents() ) {
+						
+						// Do not cancel the event... let other plugins deal with it... prison does not care about this block.
+						//event.setCancelled( true );
+						results.setIgnoreEvent( true );
+					}
+					
+					// If the block's already been counted, then can ignore the event:
+					else if ( targetBlock.isCounted() ) {
+						
+						results.setIgnoreEvent( true );
+						
+						// Cancel the event if the setting is enabled:
+						if ( AutoFeaturesWrapper.getInstance().isBoolean( 
+								AutoFeatures.ifBlockIsAlreadyCountedThenCancelEvent ) ) {
+							
+							results.setCancelEvent( true );
+						}
+					}
 				}
 			}
+			
 			
 		}
 		
