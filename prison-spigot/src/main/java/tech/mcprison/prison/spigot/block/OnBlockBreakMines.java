@@ -36,6 +36,7 @@ public class OnBlockBreakMines
 
 	enum EventResultsReasons {
 		result_reason_not_yet_set,
+		results_passed,
 		cancel_event__block_is_locked, 
 		ignore_event__block_is_not_in_a_mine, 
 		cancel_event__mine_mutex__mine_resetting, 
@@ -111,7 +112,7 @@ public class OnBlockBreakMines
 						getSpigotBlock().getLocation().toWorldCoordinates();
 			
 			return String.format( 
-					"Prison AutoFeatures: %s %s %s %s %s%s", 
+					"AutoFeatures: %s %s %s %s %s%s ", 
 					getResultsReason().name(),
 					getBbPriority().name(),
 					getSpigotPlayer().getName(),
@@ -355,6 +356,10 @@ public class OnBlockBreakMines
 				
 				
 			}
+		}
+		
+		if ( results.getResultsReason() == EventResultsReasons.result_reason_not_yet_set ) {
+			results.setResultsReason( EventResultsReasons.results_passed );
 		}
 		
 		results.logDebugInfo();

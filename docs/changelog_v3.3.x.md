@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14 2023-01-31
 
 
+* **Minor improvements to the EventResultsReasons to show a success and more detailed debug logging.**
+
+
 * **Relocate the ACCESS failure which will trigger a TP to an accessible mine...**
 this is relocated because it's not an event, but a behavior triggered by an event condition.
 
