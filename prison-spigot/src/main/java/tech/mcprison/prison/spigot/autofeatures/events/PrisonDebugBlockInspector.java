@@ -27,7 +27,13 @@ import tech.mcprison.prison.util.Location;
 public class PrisonDebugBlockInspector
 //	extends OnBlockBreakMines
 {
-	OnBlockBreakMines obbMines;
+	private OnBlockBreakMines obbMines;
+	
+	public enum EventDropsStatus {
+		normal,
+		canceled,
+		notSupported;
+	}
 	
 	public PrisonDebugBlockInspector() {
 		super();
@@ -36,11 +42,46 @@ public class PrisonDebugBlockInspector
 	}
 
     public void init() {
+    	
+    	
         Prison.get().getEventBus().register(this);
+        
+        
+    	
+//    	// Check to see if the class BlockBreakEvent even exists:
+//    	try {
+//    		
+//    		Output.get().logInfo( "AutoManager: Trying to register PrisonDebugBlockInspector" );
+//    		
+//
+//
+//    		
+//    		
+//    		if ( getBbPriority() != BlockBreakPriority.DISABLED ) {
+//    			if ( bbPriority.isComponentCompound() ) {
+//    				
+//    				for (BlockBreakPriority subBBPriority : bbPriority.getComponentPriorities()) {
+//						
+//    					createListener( subBBPriority );
+//					}
+//    			}
+//    			else {
+//    				
+//    				createListener(bbPriority);
+//    			}
+//    			
+//    		}
+//    		
+//    	}
+//    	catch ( Exception e ) {
+//    		Output.get().logInfo( "AutoManager: BlockBreakEvent failed to load. [%s]", e.getMessage() );
+//    	}
     }
 
     @Subscribe
     public void onPlayerInteract( PrisonPlayerInteractEvent e ) {
+    	
+    	
         ItemStack ourItem = e.getItemInHand();
         ItemStack toolItem = SelectionManager.SELECTION_TOOL;
 
@@ -143,9 +184,8 @@ public class PrisonDebugBlockInspector
 //        					) );
         	
         	// Debug the block break events:
-        	
+
         	dumpBlockBreakEvent( player, sBlock, targetBlock );
-        		
         	
         }
         	
@@ -251,10 +291,18 @@ public class PrisonDebugBlockInspector
     	
     	printEventStatus( bbe, "-initial-", "", checkBlock, targetBlock, tool, output, player );
     	
+    	
     	for ( RegisteredListener listener : bbe.getHandlers().getRegisteredListeners() ) {
     		
     		try {
-				listener.callEvent( bbe );
+//    			boolean isPrison = listener.getPlugin().getName().equalsIgnoreCase( "Prison" );
+//    			boolean isSpigotListener = isPrison && listener.getListener() instanceof SpigotListener;
+    			
+//    			if ( !isSpigotListener ) {
+    				
+    				listener.callEvent( bbe );
+//    			}
+    			
 			}
 			catch ( EventException e ) {
 				output.add(
@@ -308,14 +356,24 @@ public class PrisonDebugBlockInspector
     
     private void printEventStatus( BlockBreakEvent bbe,
     		String plugin, String priority, 
-    		SpigotBlock sBlock, MineTargetPrisonBlock targetBlock,
+    		SpigotBlock sBlock, 
+    		MineTargetPrisonBlock targetBlock,
     		SpigotItemStack tool,
-    		List<String> output, SpigotPlayer player ) {
+    		List<String> output, 
+    		SpigotPlayer player ) {
+    	
     	StringBuilder sb = new StringBuilder();
     	sb.append( "  " );
     	
     	boolean isCanceled = bbe.isCancelled();
-    	boolean isDropItems = isDropItems( bbe );
+    	EventDropsStatus isDropCanceled = isDropCanceled( bbe );
+    	String dropStats = "&7" + isDropCanceled.name();
+    	if ( isDropCanceled == EventDropsStatus.canceled ) {
+    		dropStats = "&4" + isDropCanceled.name();
+    	}
+    	else if ( isDropCanceled == EventDropsStatus.notSupported ) {
+    		dropStats = "&d" + isDropCanceled.name();
+    	}
     	
     	// Get a fresh copy of the block to ensure we pickup the latest status:
     	SpigotBlock sBlk = (SpigotBlock) sBlock.getLocation().getBlockAt();
@@ -324,56 +382,73 @@ public class PrisonDebugBlockInspector
     	obbMines.collectBukkitDrops( bukkitDrops, targetBlock, tool, sBlk, player );
     	bukkitDrops = obbMines.mergeDrops( bukkitDrops );
     	
-    	sb.append( " &3Plugin: &7" ).append( plugin ).append( " " )
-    		.append( priority == null ? "" : priority ).append( " " );
     	
-    	sb.append( "&3Canceled: " ).append( isCanceled ? "&c" : "&a" )
-    		.append( isCanceled ? "true " : "false" );
+    	String msg = String.format( " &3Plugin: &7%-15s &2EventPriority: &7%-9s  "
+    			+ "&2EventCanceled: &7%5s  &2DropsCanceled: &7%s",
+    			plugin,
+    			( priority == null ? "$dnone" : priority ),
+    			( isCanceled ? "&4true " : "false" ),
+    			dropStats
+    			);
+    	sb.append( msg );
+    	
+    	
 
-//    	if ( !sBlock.getBlockName().equalsIgnoreCase( sBlk.getBlockName() )) {
-//    		
-//    		sb.append( " &a" ).append( sBlk.getBlockName() ).append( " " );
-//    	}
-    	
-
-    	
-    	if ( !isDropItems ) {
-    		
-    		sb.append( " &3No Drops" );
-    	}
     	
     	output.add( sb.toString() );
+    	sb.setLength( 0 );
     	
-    	if ( isDropItems ) {
-    		sb.setLength( 0 );
+    	SpigotBlock eventBlock = SpigotBlock.getSpigotBlock( bbe.getBlock() );
+
+    	String msg2 = String.format( "                           &aEventBlock: &b%s  ",
+    			eventBlock == null ? 
+    					"&4none" : 
+    					eventBlock.getBlockNameFormal() );
+    	sb.append( msg2 );
+    	
+    	sb.append( "    &aDrops:" );
+    	if ( bukkitDrops.size() > 0 ) {
     		
-    		sb.append( "    &3Drops:" );
 //    		List<ItemStack> drops = sBlk.getDrops( tool );
     		for ( ItemStack itemStack : bukkitDrops )
     		{
-    			sb.append( " &a" ).append( itemStack.getName() );
+//    			SpigotItemStack sis = (SpigotItemStack) itemStack;
+    			
+    			sb.append( " &b" ).append( itemStack.getName() );
     			if ( itemStack.getAmount() > 0 ) {
-    				sb.append( "&3(&2" ).append( itemStack.getAmount() ).append( "&3)" );
+    				sb.append( "&a(&b" ).append( itemStack.getAmount() ).append( "&a)" );
     			}
     		}
-    		
-    		if ( bukkitDrops.size() > 0 ) {
-    			output.add( sb.toString() );
-    		}
     	}
+    	else { 
+    		sb.append( "&4none" );
+    	}
+
+    	if ( sb.length() > 0 ) {
+    		output.add( sb.toString() );
+    		sb.setLength( 0 );
+    	}
+    	
     }
     
-    private boolean isDropItems( BlockBreakEvent bbe ) {
-    	boolean results = true;
+    private EventDropsStatus isDropCanceled( BlockBreakEvent bbe ) {
+    	EventDropsStatus results = EventDropsStatus.normal;
     	
     	try {
-			results = bbe.isDropItems();
+			if ( bbe.isDropItems() ) {
+				results = EventDropsStatus.canceled;
+			}
+			else {
+				results = EventDropsStatus.normal;
+			}
 		}
     	catch ( NoSuchMethodError e ) {
     		// ignore.... not supported in this version of spigot:
+    		results = EventDropsStatus.notSupported;
     	}
 		catch ( Exception e ) {
 			// ignore.... not supported in this version of spigot:
+			results = EventDropsStatus.notSupported;
 		}
     	
     	return results;

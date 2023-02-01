@@ -10,7 +10,11 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14 2023-01-31
+# 3.3.0-alpha.14 2023-02-01
+
+
+* **Prison Debug Block Inspector: Expand and enhanced the prison tool to provide an inspection of the block break events.**
+Added event block details and drops being canceled for each listener. Reformatted to make it easier to read.
 
 
 * **Remove the optional from getModule functions since java 17.0.6 was failing.**
