@@ -407,6 +407,8 @@ public class SpigotPrison
        PrisonUtilsMineBombs.getInstance().reloadPrisonMineBombs();
        
 
+       // Enable Temp spigot commands:
+       new SpigotCommand();
 		
        // Startup bStats:
        prisonBStats.initMetricsOnEnable();
