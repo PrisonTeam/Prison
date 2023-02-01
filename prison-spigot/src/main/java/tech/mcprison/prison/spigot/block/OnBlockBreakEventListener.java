@@ -1,16 +1,13 @@
 package tech.mcprison.prison.spigot.block;
 
-import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
-import tech.mcprison.prison.mines.PrisonMines;
-import tech.mcprison.prison.modules.Module;
-
-import java.util.Optional;
-
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
 import tech.mcprison.prison.Prison;
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
 import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
+import tech.mcprison.prison.mines.PrisonMines;
+import tech.mcprison.prison.modules.Module;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
 import tech.mcprison.prison.spigot.autofeatures.events.AutoManagerBlockBreakEvents;
@@ -136,9 +133,10 @@ public class OnBlockBreakEventListener
 	public boolean isEnabled() {
 		boolean results = false;
 
-		Optional<Module> mmOptional = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
-		if ( mmOptional.isPresent() && mmOptional.get().isEnabled() ) {
-			PrisonMines prisonMines = (PrisonMines) mmOptional.get();
+		Module module = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
+		
+		if ( module != null && module.isEnabled() ) {
+			PrisonMines prisonMines = (PrisonMines) module;
 			
 			results = prisonMines != null;
 		}

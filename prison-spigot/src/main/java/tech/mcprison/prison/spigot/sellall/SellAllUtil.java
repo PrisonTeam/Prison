@@ -901,7 +901,8 @@ public class SellAllUtil
      * */
     public boolean addPrestigeMultiplier(String prestigeName, double multiplier){
 
-        PrisonRanks rankPlugin = (PrisonRanks) (Prison.get().getModuleManager() == null ? null : Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME).orElse(null));
+        PrisonRanks rankPlugin = (PrisonRanks) (Prison.get().getModuleManager() == null ? 
+        		null : Prison.get().getModuleManager().getModule(PrisonRanks.MODULE_NAME) );
         if (rankPlugin == null) {
             return false;
         }

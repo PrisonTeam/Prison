@@ -2,7 +2,6 @@ package tech.mcprison.prison.spigot.block;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -11,8 +10,8 @@ import org.bukkit.entity.Player;
 
 import tech.mcprison.prison.Prison;
 import tech.mcprison.prison.PrisonAPI;
-import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.integration.CustomBlockIntegration;
 import tech.mcprison.prison.internal.ItemStack;
 import tech.mcprison.prison.internal.block.MineTargetPrisonBlock;
@@ -649,9 +648,11 @@ public class OnBlockBreakMines
 
 	private PrisonMines getPrisonMineManager() {
 		if ( prisonMineManager == null && !isMineModuleDisabled() ) {
-			Optional<Module> mmOptional = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
-			if ( mmOptional.isPresent() && mmOptional.get().isEnabled() ) {
-				PrisonMines prisonMines = (PrisonMines) mmOptional.get();
+			
+			Module module = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
+			
+			if ( module != null && module.isEnabled() ) {
+				PrisonMines prisonMines = (PrisonMines) module;
 				this.prisonMineManager = prisonMines;
 			} else {
 				setMineModuleDisabled( true );

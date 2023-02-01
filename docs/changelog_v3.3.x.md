@@ -13,6 +13,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14 2023-01-31
 
 
+* **Remove the optional from getModule functions since java 17.0.6 was failing.**
+Not sure if it's an actual java issue, or a problem caused by another plugin, or etc... this works well with java 17.0.2.
+
+
 * **Minor improvements to the EventResultsReasons to show a success and more detailed debug logging.**
 
 

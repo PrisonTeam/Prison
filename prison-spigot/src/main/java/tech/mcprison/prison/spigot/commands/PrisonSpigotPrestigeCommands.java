@@ -2,7 +2,6 @@ package tech.mcprison.prison.spigot.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.bukkit.entity.Player;
 
@@ -34,8 +33,9 @@ public class PrisonSpigotPrestigeCommands
 			return;
 		}
 		
-        Optional<Module> ranksModule = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
-        if ( !ranksModule.isPresent() || ranksModule.isPresent() && !ranksModule.get().isEnabled() ) {
+        Module ranksModule = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
+        
+        if ( ranksModule == null || ranksModule != null && !ranksModule.isEnabled() ) {
         	
         	Output.get().sendWarn( sender, "The command '/prestiges' is disabled because the Ranks module is not active." );
         	return;

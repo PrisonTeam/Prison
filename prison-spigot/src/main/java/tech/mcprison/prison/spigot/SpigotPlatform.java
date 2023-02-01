@@ -236,10 +236,10 @@ public class SpigotPlatform
     @Override 
     public void getWorldLoadErrors( ChatDisplay display ) {
     
-    	Optional<Module> prisonMinesOpt = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
+    	Module prisonMinesModule = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
     	
-    	if ( prisonMinesOpt.isPresent() ) {
-    		MineManager mineManager = ((PrisonMines) prisonMinesOpt.get()).getMineManager();
+    	if ( prisonMinesModule != null ) {
+    		MineManager mineManager = ((PrisonMines) prisonMinesModule).getMineManager();
     		
     		// When finished loading the mines, then if there are any worlds that
     		// could not be loaded, dump the details:
@@ -2087,7 +2087,7 @@ public class SpigotPlatform
 		}
 		
 		
-        Module minesModule = Prison.get().getModuleManager().getModule( "Mines" ).orElseGet( null );
+        Module minesModule = Prison.get().getModuleManager().getModule( "Mines" ); //.orElseGet( null );
         if ( minesModule != null && 
         		minesModule.getStatus().getStatus() == ModuleStatus.Status.ENABLED ) {
         	

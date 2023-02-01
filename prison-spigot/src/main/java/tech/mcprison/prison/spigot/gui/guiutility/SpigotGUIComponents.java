@@ -150,7 +150,7 @@ public abstract class SpigotGUIComponents
      * @param p
      * */
     protected boolean checkRanks(Player p){
-        Module module = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME ).orElse( null );
+        Module module = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
         if(!(module instanceof PrisonRanks)){
             Output.get().sendWarn(new SpigotPlayer(p), "&c[ERROR] The GUI can't open because the &3Ranks module &cisn't loaded");
             p.closeInventory();

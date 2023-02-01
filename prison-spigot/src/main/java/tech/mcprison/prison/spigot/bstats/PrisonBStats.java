@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -119,8 +118,8 @@ public class PrisonBStats {
         getbStatsMetrics().addCustomChart( spApiLevel );
         
         
-        Optional<Module> prisonMinesOpt = Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
-        Optional<Module> prisonRanksOpt = Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
+        PrisonMines prisonMines = (PrisonMines) Prison.get().getModuleManager().getModule( PrisonMines.MODULE_NAME );
+        PrisonRanks prisonRanks = (PrisonRanks) Prison.get().getModuleManager().getModule( PrisonRanks.MODULE_NAME );
         
         
         // delete: "prison_ranks"
@@ -143,43 +142,46 @@ public class PrisonBStats {
         // or they will never update their values when bstats runs them during their intervals!!
         
         getbStatsMetrics().addCustomChart( new SimplePie( "prison_default_rank_counts", () -> {
-        	int defaultRankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getDefaultLadderRankCount()).orElse(0);
+        	
+        	int defaultRankCount = prisonRanks.getDefaultLadderRankCount();
+        	
+//        	int defaultRankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getDefaultLadderRankCount()).orElse(0);
         	return Integer.toString( defaultRankCount );
         }) );
         
         getbStatsMetrics().addCustomChart( new SimplePie( "prison_prestiges_rank_counts", () -> {
-        	int prestigesRankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getPrestigesLadderRankCount()).orElse(0);
+        	int prestigesRankCount = prisonRanks.getPrestigesLadderRankCount();
         	return Integer.toString( prestigesRankCount );
         }) );
         
         getbStatsMetrics().addCustomChart( new SimplePie( "prison_other_rank_counts", () -> {
-        	int rankCountTotal = prisonRanksOpt.map(module -> ((PrisonRanks) module).getRankCount()).orElse(0);
-        	int defaultRankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getDefaultLadderRankCount()).orElse(0);
-        	int prestigesRankCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getPrestigesLadderRankCount()).orElse(0);
+        	int rankCountTotal = prisonRanks.getRankCount();
+        	int defaultRankCount = prisonRanks.getDefaultLadderRankCount();
+        	int prestigesRankCount = prisonRanks.getPrestigesLadderRankCount();
         	
         	int otherRankCount = rankCountTotal - defaultRankCount - prestigesRankCount;
         	return Integer.toString( otherRankCount );
         }) );
         
         getbStatsMetrics().addCustomChart( new SimplePie( "prison_total_rank_counts", () -> {
-        	int rankCountTotal = prisonRanksOpt.map(module -> ((PrisonRanks) module).getRankCount()).orElse(0);
+        	int rankCountTotal = prisonRanks.getRankCount();
         	return Integer.toString( rankCountTotal );
         }) );
         
         getbStatsMetrics().addCustomChart( new SimplePie( "prison_total_ladder_counts", () -> {
-        	int ladderCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getladderCount()).orElse(0);
+        	int ladderCount = prisonRanks.getladderCount();
         	return Integer.toString( ladderCount );
         }) );
         
         getbStatsMetrics().addCustomChart( new SimplePie( "prison_total_mine_counts", () -> {
 
-        	int mineCount = prisonMinesOpt.map(module -> ((PrisonMines) module).getMineManager().getMines().size()).orElse(0);
+        	int mineCount = prisonMines.getMineManager().getMines().size();
         	return Integer.toString( mineCount );
         }) );
         
         getbStatsMetrics().addCustomChart( new SimplePie( "prison_total_player_counts", () -> {
         	
-        	int playerCount = prisonRanksOpt.map(module -> ((PrisonRanks) module).getPlayersCount()).orElse(0);
+        	int playerCount = prisonRanks.getPlayersCount();
         	return Integer.toString( playerCount );
         }) );
         
