@@ -147,13 +147,6 @@ public class AutoFeaturesFileConfig {
 		    			+ "ACCESSMONITOR combines two priorities: ACCESS and MONITOR." ),
 		    	
 		    	
-		    	eventPriorityACCESSFailureTPToCurrentMine(blockBreakEvents, true ),
-		    	
-		    	blockBreakEvents__ReadMe4(blockBreakEvents, 
-		    			"ACCESS failure: if 'TPToCurrentMine' is enabled, then a failure with the "
-		    			+ "ACCESS priority will TP the player back to the mine that is linked to "
-		    			+ "their current rank using '/mines tp' with no mine specified." ),
-		    	
 		    	
 	    	general(options),
 	    	
@@ -169,6 +162,14 @@ public class AutoFeaturesFileConfig {
 		    	ifBlockIsAlreadyCountedThenCancelEvent(general, true),
 		    	
 		    	processMonitorEventsOnlyIfPrimaryBlockIsAIR(general, true),
+		    	
+		    	
+		    	eventPriorityACCESSFailureTPToCurrentMine(general, true ),
+		    	
+		    	general__ReadMe1(general, 
+		    			"ACCESS failure: if 'TPToCurrentMine' is enabled, then a failure with the "
+		    					+ "ACCESS priority will TP the player back to the mine that is linked to "
+		    					+ "their current rank using '/mines tp' with no mine specified." ),
 		    	
 		    	
 		    inventory(options),

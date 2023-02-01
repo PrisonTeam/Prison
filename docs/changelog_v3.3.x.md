@@ -13,6 +13,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14 2023-01-31
 
 
+* **Relocate the ACCESS failure which will trigger a TP to an accessible mine...**
+this is relocated because it's not an event, but a behavior triggered by an event condition.
+
+
 * **Setup a temp test to test ItemsAdder.**
 
 
