@@ -13,6 +13,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14 2023-02-01
 
 
+
+* **Update google guava from v19.0 to v31.1-jre.  Guava is used for internal event listeners.**
+
+
 * **Prison Debug Block Inspector: Expand and enhanced the prison tool to provide an inspection of the block break events.**
 Added event block details and drops being canceled for each listener. Reformatted to make it easier to read.
 
