@@ -13,6 +13,8 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14 2023-02-01
 
 
+* **Update google gson (json IO tool) from v2.8.6 to v2.10.1**
+
 
 * **Update google guava from v19.0 to v31.1-jre.  Guava is used for internal event listeners.**
 

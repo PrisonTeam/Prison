@@ -211,8 +211,11 @@ processResources {
 shadowJar {
     dependencies {
         include(dependency('org.apache.commons:commons-lang3:3.12.0'))
-        include(dependency('com.google.code.gson:gson:2.8.6'))
-        
+
+        // https://mvnrepository.com/artifact/com.google.code.gson/gson
+		include(dependency('com.google.code.gson:gson:2.10.1'))
+        //include(dependency('com.google.code.gson:gson:2.8.6'))
+                
         include(dependency('org.bstats:bstats-base:3.0.0'))
         include(dependency('org.bstats:bstats-bukkit:3.0.0'))
 //        include(dependency('org.bstats:bstats-base:2.2.1'))
