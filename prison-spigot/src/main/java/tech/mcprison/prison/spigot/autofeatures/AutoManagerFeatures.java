@@ -989,7 +989,7 @@ public abstract class AutoManagerFeatures
 				count += itemStack.getAmount();
 				
 				// Since this is not auto pickup, then only autosell if set in the pmEvent:
-				if ( pmEvent.isForceAutoSell() ) {
+				if ( pmEvent.isForceAutoSell() && SellAllUtil.get() != null ) {
 					
 					Player player = pmEvent.getPlayer();
 
@@ -1005,7 +1005,7 @@ public abstract class AutoManagerFeatures
 					
 				}
 				
-				if ( itemStack.getAmount() != 0 ) {
+				if ( itemStack.getAmount() != 0 && SellAllUtil.get() != null ) {
 					
 					if ( Output.get().isDebug() ) {
 						

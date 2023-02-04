@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14 2023-02-01
+# 3.3.0-alpha.14 2023-02-03
+
+
+* **Bug Fix autosell: was trying to access autosell when it was disabled.**
 
 
 * **Update google gson (json IO tool) from v2.8.6 to v2.10.1**
