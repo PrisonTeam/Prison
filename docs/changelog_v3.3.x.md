@@ -13,6 +13,11 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14 2023-02-03
 
 
+* **Enable silk touch enchantment by dropping the actual blocks that are being broke.**
+If alt fortune is being used, then fortune will apply to these silked drops.
+If players place silked blocks back in the mines (fi that feature is enabled), prison will ignore those blocks and won't break them... it will let bukkit or another plugin deal with them, but it will not apply any fortune to them. 
+
+
 * **Bug Fix autosell: was trying to access autosell when it was disabled.**
 
 

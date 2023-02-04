@@ -700,6 +700,10 @@ public abstract class AutoManagerFeatures
 		Player player = pmEvent.getPlayer();
 		SpigotItemStack itemInHand = pmEvent.getItemInHand();
 //		SpigotBlock block = pmEvent.getSpigotBlock();
+		
+		// Calculate silkTouch drops before processing drops:
+		calculateSilkTouch( pmEvent );
+		
 		List<SpigotItemStack> drops = pmEvent.getBukkitDrops();
 				
 		// The following may not be the correct drops for all versions of spigot,
@@ -720,7 +724,7 @@ public abstract class AutoManagerFeatures
 			
 			// Need better drop calculation that is not using the getDrops function.
 			
-			calculateSilkTouch( itemInHand, drops );
+//			calculateSilkTouch( pmEvent, itemInHand, drops );
 			
 			// Adds in additional drop items: Add Flint with gravel drops:
 			calculateDropAdditions( itemInHand, drops );
@@ -925,6 +929,8 @@ public abstract class AutoManagerFeatures
 //			block.clearDrops();
 //		}
 		
+		calculateSilkTouch( pmEvent );
+
 		List<SpigotItemStack> drops = pmEvent.getBukkitDrops();
 		
 		
@@ -935,7 +941,7 @@ public abstract class AutoManagerFeatures
 			// Need better drop calculation that is not using the getDrops function.
 			short fortuneLevel = getFortune( pmEvent.getItemInHand() );
 
-			calculateSilkTouch( pmEvent.getItemInHand(), drops );
+//			calculateSilkTouch( pmEvent.getItemInHand(), drops );
 			
 			// Adds in additional drop items: Add Flint with gravel drops:
 			calculateDropAdditions( pmEvent.getItemInHand(), drops );
@@ -2732,23 +2738,41 @@ public abstract class AutoManagerFeatures
 	}
 
 	/**
+	 * <p>If silk touch is enabled, then use block-for-block block mined is the blocks dropped.
+	 * No provision is provided for the block types.
+	 * </p>
+	 * 
 	 * <p>This function has yet to be implemented, but it should implement behavior if
 	 * silk touch is enabled for the tool.
 	 * </p>
 	 *
-	 * @param itemInHand
-	 * @param drops
+	 *	https://minecraft.fandom.com/wiki/Silk_Touch
+	 *
+	 * @param pmEvent
 	 */
-	@SuppressWarnings( "unused" )
-	private void calculateSilkTouch(SpigotItemStack itemInHand, List<SpigotItemStack> drops) {
+	private void calculateSilkTouch( PrisonMinesBlockBreakEvent pmEvent ) {
+		
+		SpigotItemStack itemInHand = pmEvent.getItemInHand();
 		
 		if ( isBoolean( AutoFeatures.isCalculateSilkEnabled ) && hasSilkTouch( itemInHand )) {
+
+			List<SpigotItemStack> stacks = new ArrayList<>();
 			
-			for (SpigotItemStack itemStack : drops) {
+			SpigotBlock sBlock = pmEvent.getSpigotBlock();
+			
+			String lore = null;
+			stacks.add( new SpigotItemStack( 1, sBlock, lore) );
+			
+			for ( SpigotBlock spBlock : pmEvent.getExplodedBlocks() ) {
 				
-				// If stack is gravel, then there is a 10% chance of dropping flint.
-				
+				stacks.add( new SpigotItemStack( 1, spBlock, lore) );
 			}
+			
+			// Merge all of the single quantity item stacks together, then 
+			// set as the new drops:
+			pmEvent.setBukkitDrops( mergeDrops( stacks ) );
+			
+
 		}
 	}
 
