@@ -115,4 +115,10 @@ public interface Block {
      */
     public List<ItemStack> getDrops(ItemStack tool);
 
+    
+	public String getBlockName();
+	
+	public void setBlockName( String blockName );
+	
+	
 }

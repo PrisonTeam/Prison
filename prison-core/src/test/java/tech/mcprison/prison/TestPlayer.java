@@ -236,4 +236,20 @@ public class TestPlayer
 		return false;
 	}
 	
+	@Override
+	public boolean isMinecraftStatisticsEnabled() {
+		return false;
+	}
+	
+
+	@Override
+	public void incrementMinecraftStatsMineBlock( Player player, String blockName, int quantity) {
+		
+	}
+	
+	@Override
+	public void incrementMinecraftStatsDropCount( Player player, String blockName, int quantity) {
+		
+	}
+	
 }

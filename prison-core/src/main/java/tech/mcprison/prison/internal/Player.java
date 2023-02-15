@@ -170,4 +170,11 @@ public interface Player
 	
 	public boolean isSneaking();
 	
+	
+	public boolean isMinecraftStatisticsEnabled();
+	
+	public void incrementMinecraftStatsMineBlock( Player player, String blockName, int quantity );
+	
+	public void incrementMinecraftStatsDropCount( Player player, String blockName, int quantity);
+	
 }

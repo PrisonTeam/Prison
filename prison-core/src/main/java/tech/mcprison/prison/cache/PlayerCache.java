@@ -424,6 +424,11 @@ public class PlayerCache {
 //		}
 		
 		playerData.addBlock( mine, blockName, quantity );
+		
+		if ( player.isMinecraftStatisticsEnabled() ) {
+			
+			player.incrementMinecraftStatsMineBlock( player, blockName, quantity );
+		}
 	}
 	
 	/**

@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14 2023-02-03
+# 3.3.0-alpha.14 2023-02-15
+
+
+* **Setup minecraft statistics so prison can report block mining through a new setting within the auto features.**
 
 
 * **Enable silk touch enchantment by dropping the actual blocks that are being broke.**

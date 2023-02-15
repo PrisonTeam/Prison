@@ -164,6 +164,9 @@ public class AutoFeaturesFileConfig {
 		    	processMonitorEventsOnlyIfPrimaryBlockIsAIR(general, true),
 		    	
 		    	
+		    	isMinecraftStatsReportingEnabled(general, true),
+		    	
+		    	
 		    	eventPriorityACCESSFailureTPToCurrentMine(general, true ),
 		    	
 		    	general__ReadMe1(general, 

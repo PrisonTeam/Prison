@@ -25,10 +25,15 @@ import java.util.UUID;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import com.cryptomorin.xseries.XMaterial;
+
+import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.autofeatures.AutoFeaturesWrapper;
 import tech.mcprison.prison.autofeatures.PlayerMessaging.MessageType;
 import tech.mcprison.prison.cache.PlayerCache;
 import tech.mcprison.prison.cache.PlayerCachePlayerData;
@@ -723,7 +728,60 @@ public class SpigotPlayer
 		}
 		return sneaking;
 	}
+	
+	
+	@Override
+	public boolean isMinecraftStatisticsEnabled() {
+		return AutoFeaturesWrapper.getInstance().isBoolean( AutoFeatures.isMinecraftStatsReportingEnabled );
+	}
 
+	@Override
+	public void incrementMinecraftStatsMineBlock( Player player, String blockName, int quantity) {
+		
+//		Statistic.BREAK_ITEM;
+//		Statistic.DROP_COUNT;
+//		Statistic.MINE_BLOCK;
+//		Statistic.PICKUP;
+		
+		XMaterial xMat = XMaterial.matchXMaterial( blockName ).orElse( null );
+//		XMaterial xMat = SpigotCompatibility.getInstance().getXMaterial( block );
+		
+		if ( xMat != null ) {
+			Material mat = xMat.parseMaterial();
+			
+			if ( mat != null ) {
+				
+				getWrapper().incrementStatistic( Statistic.MINE_BLOCK, xMat.parseMaterial(), quantity );
+				
+			}
+		}
+		
+//		Statistic.MINE_BLOCK;
+//		player.setStatistic(null, count);
+//		player.incrementStatistic(null, null);
+//		player.incrementStatistic(null, null, count);
+//		player.statistic
+		
+	}
+	
+	@Override
+	public void incrementMinecraftStatsDropCount( Player player, String blockName, int quantity) {
+		
+		XMaterial xMat = XMaterial.matchXMaterial( blockName ).orElse( null );
+		
+		if ( xMat != null ) {
+			Material mat = xMat.parseMaterial();
+			
+			if ( mat != null ) {
+				
+				getWrapper().incrementStatistic( Statistic.DROP_COUNT, xMat.parseMaterial(), quantity );
+				
+			}
+		}
+		
+	}
+	
+	
 	public boolean isInventoryFull() {
 		boolean results = false;
 		
@@ -737,5 +795,6 @@ public class SpigotPlayer
 		
 		return results;
 	}
-	
+
+
 }
