@@ -270,7 +270,8 @@ public class AutoManagerRevEnchantsExplosiveEvent
     	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
     							e.getPlayer(),  e.getBlocks().get( 0 ),
     							bbPriority );
-		if ( eventResults.isIgnoreEvent() ) {
+    	
+    	if ( eventResults.isIgnoreEvent() ) {
 			return;
 		}
     	

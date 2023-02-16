@@ -265,14 +265,15 @@ public class AutoManagerRevEnchantsJackHammerEvent
 		// If the event is canceled, it still needs to be processed because of the 
 		// MONITOR events:
 		// An event will be "canceled" and "ignored" if the block 
-		// BlockUtils.isUnbreakable(), or if the mine is activly resetting.
+		// BlockUtils.isUnbreakable(), or if the mine is actively resetting.
 		// The event will also be ignored if the block is outside of a mine
 		// or if the targetBlock has been set to ignore all block events which 
 		// means the block has already been processed.
     	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
 								e.getPlayer(), e.getBlocks().get( 0 ),
 								bbPriority );
-		if ( eventResults.isIgnoreEvent() ) {
+    	
+    	if ( eventResults.isIgnoreEvent() ) {
 			return;
 		}
 		

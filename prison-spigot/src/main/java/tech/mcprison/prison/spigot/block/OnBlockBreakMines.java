@@ -26,6 +26,9 @@ import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.game.SpigotPlayer;
 import tech.mcprison.prison.spigot.utils.BlockUtils;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData;
+import tech.mcprison.prison.tasks.PrisonCommandTasks;
+import tech.mcprison.prison.tasks.PrisonCommandTaskData.TaskMode;
 
 public class OnBlockBreakMines
 	extends OnBlockBreakEventCoreMessages
@@ -42,7 +45,8 @@ public class OnBlockBreakMines
 		ignore_event__target_block_ignore_all_events, 
 		ignore_event__block_already_counted, 
 		cancel_event__block_already_counted, 
-		ignore_event__monitor_priority_but_not_AIR
+		ignore_event__monitor_priority_but_not_AIR, 
+		cancel_event__player_has_no_access
 		;
 		
 	}
@@ -317,6 +321,31 @@ public class OnBlockBreakMines
 					results.setIgnoreEvent( true );
 					results.setCancelEvent( true );
 					
+				}
+				else if ( bbPriority.isAccess() && !mine.hasMiningAccess(sPlayer) ) {
+					
+					results.setResultsReason( EventResultsReasons.cancel_event__player_has_no_access );
+					results.setIgnoreEvent( true );
+					results.setCancelEvent( true );
+					
+		    		if ( sPlayer != null &&
+		    				AutoFeaturesWrapper.getInstance()
+		    					.isBoolean( AutoFeatures.eventPriorityACCESSFailureTPToCurrentMine ) ) {
+		    			// run the `/mines tp` command for the player which will TP them to a 
+		    			// mine they can access:
+		    			
+						String debugInfo = String.format(
+										"ACCESS failed: teleport %s to valid mine.", 
+										sPlayer.getName() );
+						
+						PrisonCommandTaskData cmdTask = new PrisonCommandTaskData( debugInfo, 
+										"mines tp", 0 );
+						cmdTask.setTaskMode( TaskMode.syncPlayer );
+
+		    			PrisonCommandTasks.submitTasks( sPlayer, cmdTask );
+		    			
+		    		}
+
 				}
 				else {
 					

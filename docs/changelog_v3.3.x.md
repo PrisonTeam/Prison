@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14 2023-02-15
+# 3.3.0-alpha.14 2023-02-16
+
+
+* **Move the check for access to the OnBlockBreakMines.ignoreMinesBlockBreakEvent so it is logged with the other conditions.**
 
 
 * **Setup minecraft statistics so prison can report block mining through a new setting within the auto features.**
