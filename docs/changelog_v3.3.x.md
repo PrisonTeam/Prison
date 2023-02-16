@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14 2023-02-16
 
 
+* **French support added by Maxcension. Thanks Maxcension!**
+
+
 * **Move the check for access to the OnBlockBreakMines.ignoreMinesBlockBreakEvent so it is logged with the other conditions.**
 
 
