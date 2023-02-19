@@ -271,7 +271,9 @@ public class AutoFeaturesFileConfig {
     		fortuneFeature(options),
     			
 	    		isCalculateFortuneEnabled(fortuneFeature, true),
+
 	    		
+	    		fortuneMultiplierGlobal(fortuneFeature, 1.0 ),
 	    		fortuneMultiplierMax(fortuneFeature, 0 ),
 
 	    		

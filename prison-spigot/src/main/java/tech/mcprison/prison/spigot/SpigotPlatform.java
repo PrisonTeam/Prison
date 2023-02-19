@@ -2273,6 +2273,8 @@ public class SpigotPlatform
     		
     		boolean isCalcFortune = afw.isBoolean( AutoFeatures.isCalculateFortuneEnabled );
     		results.add( String.format(".   Calculate Fortune:&b %s", isCalcFortune) );
+    		results.add( String.format("+.  .  Fortune Multiplier:&b %s", 
+    				afw.getInteger( AutoFeatures.fortuneMultiplierGlobal )) );
     		results.add( String.format("+.  .  Max Fortune Level:&b %s  &3(0 = no max Level)", 
     				afw.getInteger( AutoFeatures.fortuneMultiplierMax )) );
     		

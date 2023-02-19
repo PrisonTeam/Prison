@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14 2023-02-16
+# 3.3.0-alpha.14 2023-02-19
+
+
+* **Added a fortune multiplier that is applied to all fortune calculations, which allows for increasing or decreasing the results of the fortune.**
 
 
 * **French support added by Maxcension. Thanks Maxcension!**

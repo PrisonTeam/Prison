@@ -381,7 +381,9 @@ public abstract class AutoManagerFeatures
 			results = (short) maxFortuneLevel;
 		}
 		
-		return results;
+		double fortuneMultiplierGlobal = getDouble( AutoFeatures.fortuneMultiplierGlobal );
+		
+		return (short) (results * fortuneMultiplierGlobal);
 	}
 
 	
@@ -1263,7 +1265,7 @@ public abstract class AutoManagerFeatures
 						final long nanoStart = System.nanoTime();
 						
 						// bypass delay (cooldown), no sound
-						SellAllUtil.get().sellAllSell(player, false, !saNote, saNote, false, false, false, amounts );
+						sellAllUtil.sellAllSell(player, false, !saNote, saNote, false, false, false, amounts );
 						final long nanoStop = System.nanoTime();
 						long nanoTime = nanoStop - nanoStart;
 						
@@ -2380,8 +2382,10 @@ public abstract class AutoManagerFeatures
 						multiplier = fortuneMultiplierMax;
 					}
 					
+					double fortuneMultiplierGlobal = getDouble( AutoFeatures.fortuneMultiplierGlobal );
+					
 					// add the multiplier to the count:
-					count += multiplier;
+					count += (multiplier * fortuneMultiplierGlobal);
 
 				}
 				
@@ -2518,19 +2522,25 @@ public abstract class AutoManagerFeatures
 					adjFortuneMultiplierCapped = fortuneMultiplierMax;
 				}
 				
+				double fortuneMultiplierGlobal = getDouble( AutoFeatures.fortuneMultiplierGlobal );
 				
-				bukkitExtendedFortuneBlockCount = (int) (blocks.getAmount() * adjFortuneMultiplierCapped);
+				bukkitExtendedFortuneBlockCount = (int) (blocks.getAmount() * 
+													adjFortuneMultiplierCapped *
+													fortuneMultiplierGlobal );
 				
 					
 				if ( Output.get().isDebug( DebugTarget.blockBreakFortune ) ) {
 					
 					String message = "### calculateBukkitExtendedFortuneBlockCount ### " +
 							"fortuneLevel: %d  defaultBlocks: %d  fortMult: %f  " +
+							"fortMultGlobal: %f  " +
 							"rndRngLow: %f  rndRngHigh: %f  rndFactor: %f  adjFortMult: %f  " +
 							"maxMultiplier: %f   extendedFortuneBlockCount= %d";
 					message = String.format(  message, 
 							fortuneLevel, blocks.getAmount(),
-							fortuneMultiplier, randomFactorRangeLow, randomFactorRangeHigh, 
+							fortuneMultiplier, 
+							fortuneMultiplierGlobal,
+							randomFactorRangeLow, randomFactorRangeHigh, 
 							randomFactor, adjustedFortuneMultiplier, 
 							adjFortuneMultiplierCapped, bukkitExtendedFortuneBlockCount );
 					
@@ -2733,8 +2743,11 @@ public abstract class AutoManagerFeatures
 			multiplier = fortuneMultiplierMax;
 		}
 		
+
+		double fortuneMultiplierGlobal = getDouble( AutoFeatures.fortuneMultiplierGlobal );
+
 		
-		return multiplier;
+		return (int) (multiplier * fortuneMultiplierGlobal);
 	}
 
 	/**
