@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14 2023-02-19
+# 3.3.0-alpha.14 2023-02-23
+
+
+* **Fixed an issue with player counts being doubled.  Counts should no longer be done within the auto pickup or the normal drops... it's being handled at a higher level for consistency with other priorities.**
 
 
 * **Added a fortune multiplier that is applied to all fortune calculations, which allows for increasing or decreasing the results of the fortune.**

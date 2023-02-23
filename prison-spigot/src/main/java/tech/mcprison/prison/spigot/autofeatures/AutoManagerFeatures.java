@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -767,13 +766,13 @@ public abstract class AutoManagerFeatures
 			String mineName = pmEvent.getMine() == null ? null : pmEvent.getMine().getName();
 			
 			// PlayerCache log block breaks:
-			TreeMap<String, Integer> targetBlockCounts = pmEvent.getTargetBlockCounts();
-			for ( Entry<String, Integer> targetBlockCount : targetBlockCounts.entrySet() )
-			{
-				
-				PlayerCache.getInstance().addPlayerBlocks( pmEvent.getSpigotPlayer(), mineName, 
-						targetBlockCount.getKey(), targetBlockCount.getValue().intValue() );
-			}
+//			TreeMap<String, Integer> targetBlockCounts = pmEvent.getTargetBlockCounts();
+//			for ( Entry<String, Integer> targetBlockCount : targetBlockCounts.entrySet() )
+//			{
+//				
+//				PlayerCache.getInstance().addPlayerBlocks( pmEvent.getSpigotPlayer(), mineName, 
+//						targetBlockCount.getKey(), targetBlockCount.getValue().intValue() );
+//			}
 			
 			
 			DecimalFormat fFmt = Prison.get().getDecimalFormat("#,##0.0000");
@@ -976,16 +975,16 @@ public abstract class AutoManagerFeatures
 			}
 			
 			
-			String mineName = pmEvent.getMine() == null ? null : pmEvent.getMine().getName();
+//			String mineName = pmEvent.getMine() == null ? null : pmEvent.getMine().getName();
 			
-			// PlayerCache log block breaks:
-			TreeMap<String, Integer> targetBlockCounts = pmEvent.getTargetBlockCounts();
-			for ( Entry<String, Integer> targetBlockCount : targetBlockCounts.entrySet() )
-			{
-				
-				PlayerCache.getInstance().addPlayerBlocks( pmEvent.getSpigotPlayer(), mineName, 
-						targetBlockCount.getKey(), targetBlockCount.getValue().intValue() );
-			}
+//			// PlayerCache log block breaks:
+//			TreeMap<String, Integer> targetBlockCounts = pmEvent.getTargetBlockCounts();
+//			for ( Entry<String, Integer> targetBlockCount : targetBlockCounts.entrySet() )
+//			{
+//				
+//				PlayerCache.getInstance().addPlayerBlocks( pmEvent.getSpigotPlayer(), mineName, 
+//						targetBlockCount.getKey(), targetBlockCount.getValue().intValue() );
+//			}
 			
 			
 			

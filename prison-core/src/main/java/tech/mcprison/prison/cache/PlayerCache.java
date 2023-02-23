@@ -412,7 +412,7 @@ public class PlayerCache {
 //	public void addPlayerBlocks( Player player, String mine, PrisonBlock block, int quantity ) {
 //		addPlayerBlocks( player, mine, block.getBlockName(), quantity );
 //	}
-	public void addPlayerBlocks( Player player, String mine, String blockName, int quantity ) {
+	private void addPlayerBlocks( Player player, String mine, String blockName, int quantity ) {
 		PlayerCachePlayerData playerData = getPlayer( player );
 		
 //		Output.get().logInfo( "### addPlayerBlock: mine= " + (mine == null ? "null" : mine) +
