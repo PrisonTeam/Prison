@@ -13,6 +13,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14 2023-02-24
 
 
+* **Updated the formatting on the prison's mine wand for debug reporting of which blocks are clicked on.**
+The information has been cleaned up to be easier to read and follow.  It's now being logged in the console too so the details can more easily be reported back for troubleshooting.
+
+
 * **Updated the auto features config file to include the ACCESS priorities in the list of priorities so its better understood what the real options are.**
 
 

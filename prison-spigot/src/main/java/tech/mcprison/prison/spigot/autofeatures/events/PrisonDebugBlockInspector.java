@@ -124,15 +124,16 @@ public class PrisonDebugBlockInspector
 //        	// Check if it's a custom block, if it is, then change PrisonBlockType and blockName:
 //        	checkForCustomBlock( sBlock, targetBlock );
         	
-        	
-        	player.sendMessage( 
-        			String.format(
+        	String m1 = String.format(
         					"&dDebugBlockInfo:  &3Mine &7%s  &3Rank: &7%s  " +
 			    			"&5%s  &7%s",
 			    			mine.getName(),
 			    			(mine.getRank() == null ? "---" : mine.getRank().getName()),
 			    			sBlock.getBlockName(), 
-			    			location.toWorldCoordinates()) );
+			    			location.toWorldCoordinates());
+        	
+        	player.sendMessage( m1 );
+        	Output.get().logInfo( m1 );
         	
 			// Get the mine's targetBlock:
 //			MineTargetPrisonBlock tBlock = mine.getTargetPrisonBlock( sBlock );
@@ -145,7 +146,7 @@ public class PrisonDebugBlockInspector
         	}
         	else {
         		
-        		String message = String.format( "&3TargetBlock: &7%s  " +
+        		String message = String.format( "    &3TargetBlock: &7%s  " +
         				"&3Mined: %s%b  &3Broke: &7%b", 
         				targetBlock.getPrisonBlock().getBlockName(),
         				(targetBlock.isMined() ? "&d" : "&2"),
@@ -154,9 +155,10 @@ public class PrisonDebugBlockInspector
         				);
         		
         		player.sendMessage( message );
+        		Output.get().logInfo( message );
         		
         		String message2 = String.format( "    &3Counted: &7%b  &3Edge: &7%b  " +
-        				"&3Exploded: %s%b &3IgnorAllEvents: &7%b", 
+        				"&3Exploded: %s%b &3IgnoreAllEvents: &7%b", 
         				targetBlock.isCounted(),
         				targetBlock.isEdge(),
         				(targetBlock.isExploded() ? "&d" : "&2"),
@@ -165,6 +167,7 @@ public class PrisonDebugBlockInspector
         				);
         		
         		player.sendMessage( message2 );
+        		Output.get().logInfo( message2 );
         		
         	}
         }
@@ -173,7 +176,7 @@ public class PrisonDebugBlockInspector
         if ( !isSneaking ) {
         	player.sendMessage(
         			String.format(
-	        			"&dDebugBlockInfo: &7Sneak to test BlockBreakEvent with block."
+	        			"  &d(&7Sneak to test BlockBreakEvent with block.&d)"
 	        			) );
         }
         
