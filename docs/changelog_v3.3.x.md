@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14 2023-02-24
 
 
+* **Updated the auto features config file to include the ACCESS priorities in the list of priorities so its better understood what the real options are.**
+
+
 * **Enhanced some of the auto features logging related to fortune, silk touch, and event and drop canceling to eliminate ambiguity and provide more specific details.**
 
 
