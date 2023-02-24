@@ -360,13 +360,13 @@ public class AutoManagerBlockBreakEvents
     			if ( cancelBy == EventListenerCancelBy.event ) {
     				
     				e.setCancelled( true );
-    				debugInfo.append( "(event canceled) " );
+    				debugInfo.append( "(cancelByEvent) " );
     			}
     			else if ( cancelBy == EventListenerCancelBy.drops ) {
 					try
 					{
 						e.setDropItems( false );
-						debugInfo.append( "(drop canceled) " );
+						debugInfo.append( "(cancelByDrop) " );
 					}
 					catch ( NoSuchMethodError e1 )
 					{

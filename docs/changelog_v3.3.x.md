@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14 2023-02-23
+# 3.3.0-alpha.14 2023-02-24
+
+
+* **Enhanced some of the auto features logging related to fortune, silk touch, and event and drop canceling to eliminate ambiguity and provide more specific details.**
 
 
 * **Fixed an issue with player counts being doubled.  Counts should no longer be done within the auto pickup or the normal drops... it's being handled at a higher level for consistency with other priorities.**

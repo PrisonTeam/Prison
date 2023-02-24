@@ -275,10 +275,10 @@ public abstract class AutoManagerFeatures
 					if ( isBoolean( AutoFeatures.cancelAllBlockBreakEvents ) ) {
 						cancelBy = EventListenerCancelBy.event;
 					}
-					else {
-						
-						pmEvent.getDebugInfo().append( "(event not canceled) " );
-					}
+//					else {
+//						
+//						pmEvent.getDebugInfo().append( "(event not canceled) " );
+//					}
 					
 					finalizeBreakTheBlocks( pmEvent );
 					
@@ -359,15 +359,15 @@ public abstract class AutoManagerFeatures
 		return results;
 	}
 	
-	protected short getFortune(SpigotItemStack itemInHand){
-		short results = (short) 0;
+	protected short getFortune(SpigotItemStack itemInHand, StringBuilder debugInfo ){
+		short fortLevel = (short) 0;
 		
 		try {
 			if ( itemInHand != null && 
 					itemInHand.getBukkitStack() != null && 
 					itemInHand.getBukkitStack().containsEnchantment( Enchantment.LOOT_BONUS_BLOCKS ) &&
 					itemInHand.getBukkitStack().getEnchantments() != null ) {
-				results = (short) itemInHand.getBukkitStack().getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
+				fortLevel = (short) itemInHand.getBukkitStack().getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
 			}
 		}
 		catch ( NullPointerException e ) {
@@ -375,14 +375,28 @@ public abstract class AutoManagerFeatures
 			// It throws this exception:  Caused by: java.lang.NullPointerException: null key in entry: null=5
 		}
 		
+		short results = (short) fortLevel;
+		
 		int maxFortuneLevel = getInteger( AutoFeatures.fortuneMultiplierMax );
-		if ( maxFortuneLevel > 0 && results > maxFortuneLevel ) {
+		String maxFort = "";
+		if ( maxFortuneLevel > 0 && fortLevel > maxFortuneLevel ) {
 			results = (short) maxFortuneLevel;
+			maxFort = String.format("max=%d ", maxFortuneLevel);
 		}
 		
 		double fortuneMultiplierGlobal = getDouble( AutoFeatures.fortuneMultiplierGlobal );
 		
-		return (short) (results * fortuneMultiplierGlobal);
+		results *= fortuneMultiplierGlobal;
+		
+		String fortInfo = String.format( "(calcFort: fort=%d %sglbMult=%d final=%d) ",
+				fortLevel, 
+				maxFort,
+				fortuneMultiplierGlobal, 
+				results);
+		
+		debugInfo.append( fortInfo );
+		
+		return results;
 	}
 
 	
@@ -728,14 +742,14 @@ public abstract class AutoManagerFeatures
 //			calculateSilkTouch( pmEvent, itemInHand, drops );
 			
 			// Adds in additional drop items: Add Flint with gravel drops:
-			calculateDropAdditions( itemInHand, drops );
+			calculateDropAdditions( itemInHand, drops, pmEvent.getDebugInfo() );
 			
 			
 			// Add fortune to the items in the inventory
 			if ( isBoolean( AutoFeatures.isCalculateFortuneEnabled ) ) {
-				short fortuneLevel = getFortune(itemInHand);
+				short fortuneLevel = getFortune(itemInHand, debugInfo );
 
-				debugInfo.append( "(calculateFortune: fort " + fortuneLevel + ")" );
+//				debugInfo.append( "(calculateFortune: fort " + fortuneLevel + ")" );
 				
 				for ( SpigotItemStack itemStack : drops ) {
 					
@@ -940,12 +954,12 @@ public abstract class AutoManagerFeatures
 			pmEvent.getDebugInfo().append( "[normalDrops]" );
 
 			// Need better drop calculation that is not using the getDrops function.
-			short fortuneLevel = getFortune( pmEvent.getItemInHand() );
+			short fortuneLevel = getFortune( pmEvent.getItemInHand(), pmEvent.getDebugInfo() );
 
 //			calculateSilkTouch( pmEvent.getItemInHand(), drops );
 			
 			// Adds in additional drop items: Add Flint with gravel drops:
-			calculateDropAdditions( pmEvent.getItemInHand(), drops );
+			calculateDropAdditions( pmEvent.getItemInHand(), drops, pmEvent.getDebugInfo() );
 
 			
 			if ( isBoolean( AutoFeatures.isCalculateFortuneEnabled ) ) {
@@ -2784,7 +2798,13 @@ public abstract class AutoManagerFeatures
 			// set as the new drops:
 			pmEvent.setBukkitDrops( mergeDrops( stacks ) );
 			
-
+			int count = 0;
+			for ( SpigotItemStack sItemStack : pmEvent.getBukkitDrops() ) {
+				count += sItemStack.getAmount();
+			}
+			String msg = String.format( "(SilkDrops: %d) " , count );
+			
+			pmEvent.getDebugInfo().append( msg );
 		}
 	}
 
@@ -2810,7 +2830,8 @@ public abstract class AutoManagerFeatures
 	 * @param itemInHand
 	 * @param drops
 	 */
-	private void calculateDropAdditions(SpigotItemStack itemInHand, List<SpigotItemStack> drops) {
+	private void calculateDropAdditions(SpigotItemStack itemInHand, List<SpigotItemStack> drops,
+						StringBuilder debugInfo ) {
 		
 		if ( isBoolean( AutoFeatures.isCalculateDropAdditionsEnabled ) ) {
 			
@@ -2821,7 +2842,7 @@ public abstract class AutoManagerFeatures
 				// If gravel and has the 10% chance whereas rnd is zero, which is 1 out of 10.
 				// But if has silk touch, then never drop flint.
 				adds.addAll( 
-						calculateDropAdditionsGravelFlint( itemInHand, itemStack, drops ) );
+						calculateDropAdditionsGravelFlint( itemInHand, itemStack, drops, debugInfo ) );
 			}
 			
 			if ( adds.size() > 0 ) {
@@ -2848,7 +2869,8 @@ public abstract class AutoManagerFeatures
 	 */
 	private List<SpigotItemStack> calculateDropAdditionsGravelFlint(SpigotItemStack itemInHand, 
 											SpigotItemStack itemStack,
-												   List<SpigotItemStack> drops ) {
+												   List<SpigotItemStack> drops, 
+												   StringBuilder debugInfo  ) {
 		List<SpigotItemStack> adds = new ArrayList<SpigotItemStack>();
 		
 		PrisonBlock gravel = SpigotUtil.getPrisonBlock( XMaterial.GRAVEL );
@@ -2860,7 +2882,7 @@ public abstract class AutoManagerFeatures
 
 			// If fortune is enabled on the tool, then increase drop odds by:
 			//  1 = 14%, 2 = 25%, 3+ = 100%
-			int fortune = getFortune(itemInHand);
+			int fortune = getFortune(itemInHand, debugInfo);
 			switch (fortune) {
 				case 0:
 					// No additional threshold when fortune is zero:
