@@ -376,23 +376,24 @@ public abstract class AutoManagerFeatures
 		}
 		
 		short results = (short) fortLevel;
+//		DecimalFormat dFmt = new DecimalFormat( "#,##0.0000" );
+		DecimalFormat iFmt = new DecimalFormat( "#,##0" );
 		
 		int maxFortuneLevel = getInteger( AutoFeatures.fortuneMultiplierMax );
 		String maxFort = "";
 		if ( maxFortuneLevel > 0 && fortLevel > maxFortuneLevel ) {
 			results = (short) maxFortuneLevel;
-			maxFort = String.format("max=%d ", maxFortuneLevel);
+			maxFort = String.format(" max=%s result=%s", 
+					iFmt.format( maxFortuneLevel ),
+					iFmt.format( results ));
 		}
 		
-		double fortuneMultiplierGlobal = getDouble( AutoFeatures.fortuneMultiplierGlobal );
+//		double fortuneMultiplierGlobal = getDouble( AutoFeatures.fortuneMultiplierGlobal );
+//		results *= fortuneMultiplierGlobal;
 		
-		results *= fortuneMultiplierGlobal;
-		
-		String fortInfo = String.format( "(calcFort: fort=%d %sglbMult=%d final=%d) ",
-				fortLevel, 
-				maxFort,
-				fortuneMultiplierGlobal, 
-				results);
+		String fortInfo = String.format( "(getToolFort: fort=%s%s) ",
+				iFmt.format( fortLevel ), 
+				maxFort );
 		
 		debugInfo.append( fortInfo );
 		
@@ -517,7 +518,7 @@ public abstract class AutoManagerFeatures
 				.append( lorePickup ? "lore " : "" )
 				.append( permPickup ? "perm " : "" )
 				.append( configPickup ? "config " : "" )
-				.append( limit2minesPickup ? "limit2mines" : "noLimit" )
+				.append( limit2minesPickup ? "mines" : "noLimit" )
 				.append( "] ")
 				
 				.append( " Smelt [")
@@ -525,7 +526,7 @@ public abstract class AutoManagerFeatures
 				.append( loreSmelt ? "lore " : "" )
 				.append( permSmelt ? "perm " : "" )
 				.append( configSmelt ? "config " : "" )
-				.append( limit2minesSmelt ? "limit2mines" : "noLimit" )
+				.append( limit2minesSmelt ? "mines" : "noLimit" )
 				.append( "] ")
 				
 				.append( " Block [")
@@ -533,7 +534,7 @@ public abstract class AutoManagerFeatures
 				.append( loreBlock ? "lore " : "" )
 				.append( permBlock ? "perm " : "" )
 				.append( configBlock ? "config " : "" )
-				.append( limit2minesBlock ? "limit2mines" : "noLimit" )
+				.append( limit2minesBlock ? "mines" : "noLimit" )
 				.append( "] ");
 				
 			}
@@ -754,7 +755,7 @@ public abstract class AutoManagerFeatures
 				for ( SpigotItemStack itemStack : drops ) {
 					
 					// calculateFortune directly modifies the quantity on the blocks ItemStack:
-					calculateFortune( itemStack, fortuneLevel );
+					calculateFortune( itemStack, fortuneLevel, pmEvent.getDebugInfo() );
 				}
 			}
 			
@@ -968,7 +969,7 @@ public abstract class AutoManagerFeatures
 				for ( SpigotItemStack itemStack : drops ) {
 					
 					// calculateFortune directly modifies the quantity on the blocks ItemStack:
-					calculateFortune( itemStack, fortuneLevel );
+					calculateFortune( itemStack, fortuneLevel, pmEvent.getDebugInfo() );
 				}
 			}
 			
@@ -2315,12 +2316,36 @@ public abstract class AutoManagerFeatures
 	 * @param blocks
 	 * @param fortuneLevel
 	 */
-	protected void calculateFortune(SpigotItemStack blocks, int fortuneLevel) {
+	protected void calculateFortune(SpigotItemStack blocks, int fortuneLevelOriginal, StringBuilder debugInfo ) {
 
 		
-		if (fortuneLevel > 0) {
+		if (fortuneLevelOriginal > 0) {
 			
-			int count = blocks.getAmount();
+			StringBuilder debugSb = new StringBuilder();
+			
+			
+			DecimalFormat dFmt = new DecimalFormat( "#,##0.0000" );
+			DecimalFormat iFmt = new DecimalFormat( "#,##0" );
+			
+			int blockCount = blocks.getAmount();
+			
+			// Apply max fortune level if setup:
+			int fortuneLevel = fortuneLevelOriginal;
+			
+			double fortuneMultiplierGlobal = getDouble( AutoFeatures.fortuneMultiplierGlobal );
+			
+			// If the adjustedfortuneMultipler is greater than the permitted max value then use the max value.
+			// A zero value for fortuneMultiplierMax indicates no max should be used.
+			int fortuneMultiplierMax = getInteger( AutoFeatures.fortuneMultiplierMax );
+			String maxFort = "";
+			if ( fortuneMultiplierMax != 0d && fortuneLevel > fortuneMultiplierMax ) {
+				fortuneLevel = fortuneMultiplierMax;
+				maxFort = String.format("max=%s ", iFmt.format( fortuneMultiplierMax ));
+			}
+			
+			
+			int count = blockCount;
+			int multiplier = 1;
 			
 			if ( isBoolean( AutoFeatures.isExtendBukkitFortuneCalculationsEnabled ) ) {
 				
@@ -2336,12 +2361,21 @@ public abstract class AutoManagerFeatures
 					// The count has the final value so set it as the amount:
 					blocks.setAmount( count );
 				}
-				return;
+				
+				String msg = String.format( 
+						"(calcExtdBukkitFortune: oDrops=%s mult= %sglbMult=%s drops=%s %s) ", 
+						iFmt.format( blockCount ),
+//						iFmt.format( multiplier ),
+						maxFort,
+						dFmt.format( fortuneMultiplierGlobal ),
+						iFmt.format( count ),
+						debugSb
+					);
+				debugInfo.append( msg );
 			}
 			
-			if ( isBoolean( AutoFeatures.isCalculateAltFortuneEnabled ) ) {
+			else if ( isBoolean( AutoFeatures.isCalculateAltFortuneEnabled ) ) {
 
-				int multiplier = 1;
 				
 				// Due to variations with gold and wood PickAxe need to use a dynamic
 				// Material name selection which will fit for the version of MC that is
@@ -2367,6 +2401,8 @@ public abstract class AutoManagerFeatures
 						xMat == XMaterial.POTATO ||
 						xMat == XMaterial.GRASS ||
 						xMat == XMaterial.WHEAT ) {
+
+					
 					multiplier = getRandom().nextInt( fortuneLevel );
 					
 					// limits slightly greater than standard:
@@ -2388,17 +2424,17 @@ public abstract class AutoManagerFeatures
 					}
 					
 					
-					// If the adjustedfortuneMultipler is greater than the permitted max value then use the max value.
-					// A zero value for fortuneMultiplierMax indicates no max should be used.
-					int fortuneMultiplierMax = getInteger( AutoFeatures.fortuneMultiplierMax );
-					if ( fortuneMultiplierMax != 0d && multiplier > fortuneMultiplierMax ) {
-						multiplier = fortuneMultiplierMax;
-					}
+//					// If the adjustedfortuneMultipler is greater than the permitted max value then use the max value.
+//					// A zero value for fortuneMultiplierMax indicates no max should be used.
+//					int fortuneMultiplierMax = getInteger( AutoFeatures.fortuneMultiplierMax );
+//					if ( fortuneMultiplierMax != 0d && multiplier > fortuneMultiplierMax ) {
+//						multiplier = fortuneMultiplierMax;
+//					}
 					
-					double fortuneMultiplierGlobal = getDouble( AutoFeatures.fortuneMultiplierGlobal );
+					
 					
 					// add the multiplier to the count:
-					count += (multiplier * fortuneMultiplierGlobal);
+					count *= (multiplier * fortuneMultiplierGlobal);
 
 				}
 				
@@ -2455,17 +2491,33 @@ public abstract class AutoManagerFeatures
 						xMat == XMaterial.SNOW_BLOCK
 						) {
 					
-					multiplier = calculateFortuneMultiplier( fortuneLevel, multiplier );
 					
-					// multiply the multiplier:
-					count *= multiplier;
+					multiplier = calculateFortuneMultiplier( fortuneLevel, debugSb );
+					
+//					// multiply the multiplier:
+//					count *= multiplier;
+					
+					// add the multiplier to the count:
+					count *= (multiplier * fortuneMultiplierGlobal);
 					
 				}
 				
+				// The count has the final value so set it as the amount:
+				blocks.setAmount( count );
+				
+				
+				String msg = String.format( 
+						"(calcAltFortune: blks=%s mult=%s %sglbMult=%s drops=%s %s) ", 
+						iFmt.format( blockCount ),
+						iFmt.format( multiplier ),
+						maxFort,
+						dFmt.format( fortuneMultiplierGlobal ),
+						iFmt.format( count ),
+						debugSb
+						);
+				debugInfo.append( msg );
 			}
 
-			// The count has the final value so set it as the amount:
-			blocks.setAmount( count );
 		}
 
 	}
@@ -2633,13 +2685,26 @@ public abstract class AutoManagerFeatures
 	 *   </li>
 	 * </ul
 	 * 
+	 * 
+	 * <p>The results of this function will be the number of drops with an input value of one.
+	 * So without fortune, it's is assumed the number of drops for breaking one block will always
+	 * be one.  So the results of this function are the number of drops that should be used instead.
+	 * But since multiple blocks can be broken and processed with this function, the results of this
+	 * function should be multiplied the quantity of drops that are calculated without fortune.
+	 * For example, if the results is 3, that means that 3 items should be dropped, but if there were
+	 * 10 input blocks from an explosion event, then it needs to be multiplied by 3 for a total drop 
+	 * value of 30.
+	 * </p>
+	 * 
 	 * @param fortuneLevel
 	 * @param multiplier
-	 * @return
+	 * @return Drop quantity to apply for 1 block breakage.  
 	 */
-	private int calculateFortuneMultiplier(int fortuneLevel, int multiplier) {
+	private int calculateFortuneMultiplier(int fortuneLevel, StringBuilder debugInfo) {
 		int rnd = getRandom().nextInt( 100 );
-
+		
+		int multiplier = 1;
+		
 		switch (fortuneLevel) {
 			case 0:
 				break;
@@ -2731,6 +2796,8 @@ public abstract class AutoManagerFeatures
 				// Use a random number that is a double:
 				double rndD = getRandom().nextDouble() * 100d;
 				
+				DecimalFormat dFmt = new DecimalFormat( "#,##0.0000" );
+
 				if ( rndD <= threshold ) {
 					// Passed the threshold, so calculate the multiplier.
 					
@@ -2744,23 +2811,26 @@ public abstract class AutoManagerFeatures
 					// The multiplier is the floor of units. Do not round up.
 					multiplier = 1 + (int) Math.floor( units );
 					
+					
+					debugInfo.append( " [rnd: " + dFmt.format( rndD ) )
+								.append( " / threshold: " + threshold )
+								.append( " / fort: " + fortuneLevel )
+								.append( " =: " + multiplier )
+								.append( "] " );
 				}
-				
+				else {
+					
+					debugInfo.append( " [multNotApplied rnd: " + dFmt.format( rndD ) )
+								.append( " threshold: " + threshold )
+								.append( " fort: " + fortuneLevel )
+								.append( " mult: " + multiplier )
+								.append( "] " );
+				}
+
 		}
 		
 		
-		// If the adjustedfortuneMultipler is greater than the permitted max value then use the max value.
-		// A zero value for fortuneMultiplierMax indicates no max should be used.
-		int fortuneMultiplierMax = getInteger( AutoFeatures.fortuneMultiplierMax );
-		if ( fortuneMultiplierMax != 0d && multiplier > fortuneMultiplierMax ) {
-			multiplier = fortuneMultiplierMax;
-		}
-		
-
-		double fortuneMultiplierGlobal = getDouble( AutoFeatures.fortuneMultiplierGlobal );
-
-		
-		return (int) (multiplier * fortuneMultiplierGlobal);
+		return (int) multiplier;
 	}
 
 	/**
@@ -2877,12 +2947,14 @@ public abstract class AutoManagerFeatures
 		
 		if (itemStack.getMaterial().compareTo( gravel ) == 0 && !hasSilkTouch(itemInHand)) {
 
+			StringBuilder debugSb = new StringBuilder();
+			
 			int quantity = 1;
 			int threshold = 10;
 
 			// If fortune is enabled on the tool, then increase drop odds by:
 			//  1 = 14%, 2 = 25%, 3+ = 100%
-			int fortune = getFortune(itemInHand, debugInfo);
+			int fortune = getFortune(itemInHand, debugSb);
 			switch (fortune) {
 				case 0:
 					// No additional threshold when fortune is zero:
@@ -2916,7 +2988,14 @@ public abstract class AutoManagerFeatures
 				PrisonBlock flint = SpigotUtil.getPrisonBlock( XMaterial.FLINT );
 				SpigotItemStack flintStack = new SpigotItemStack( quantity, flint );
 				adds.add(flintStack);
+
+				debugInfo.append( "(add flint drop: qty=" )
+						.append( quantity )
+						.append( " [)" )
+						.append( debugSb )
+						.append( "])" );
 			}
+			
 		}
 		return adds;
 	}

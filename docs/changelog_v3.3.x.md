@@ -10,7 +10,10 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14 2023-02-24
+# 3.3.0-alpha.14 2023-02-25
+
+
+* **Enhanced the debug reporting for fortune calculations and fixed a few uses of the newer fortune settings, some of which were used in the wrong locations.**
 
 
 * **Updated the formatting on the prison's mine wand for debug reporting of which blocks are clicked on.**
