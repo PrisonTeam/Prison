@@ -2433,8 +2433,9 @@ public abstract class AutoManagerFeatures
 					
 					
 					
-					// add the multiplier to the count:
-					count *= (multiplier * fortuneMultiplierGlobal);
+//					// add the multiplier to the count:
+//					count *= (multiplier * fortuneMultiplierGlobal);
+					
 
 				}
 				
@@ -2497,9 +2498,17 @@ public abstract class AutoManagerFeatures
 //					// multiply the multiplier:
 //					count *= multiplier;
 					
-					// add the multiplier to the count:
-					count *= (multiplier * fortuneMultiplierGlobal);
-					
+//					// add the multiplier to the count:
+//					count *= (multiplier * fortuneMultiplierGlobal);
+//					
+				}
+				
+				// add the multiplier to the count:
+				count *= (multiplier * fortuneMultiplierGlobal);
+				
+				// Ensure that there are no ZERO drops:
+				if ( count <= 1 ) {
+					count = 1;
 				}
 				
 				// The count has the final value so set it as the amount:

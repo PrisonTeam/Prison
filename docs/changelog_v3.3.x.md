@@ -13,6 +13,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14a 2023-02-26
 
 
+* **AutoFeatures bug fix: If global fortune multiplier is set to a value lower than 1, then there is a risk of zero drops; this prevents zero drops and returns a drop of one.**
+
+
+
 * **Fixed an issue with the initial event check for events that will break multiple blocks.**
 The issue is that the initial check will ignore the event if the primary block is air.  The issue is that since the events are fired based upon the BlockBreakEvent then the odds of the primary block is AIR is very high.  So for those events, the primary block should not be checked for AIR to be bypassed.  This fix allows things like explosions to work.
 
