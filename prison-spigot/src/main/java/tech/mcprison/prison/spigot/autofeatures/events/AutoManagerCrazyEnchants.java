@@ -276,7 +276,7 @@ public class AutoManagerCrazyEnchants
 		// means the block has already been processed.
     	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
     							e.getPlayer(), e.getBlockList().get( 0 ),
-    							bbPriority );
+    							bbPriority, true );
     	
     	if ( eventResults.isIgnoreEvent() ) {
     		return;

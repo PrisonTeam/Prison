@@ -157,9 +157,11 @@ public abstract class OnBlockBreakEventCore
 	
 
 	protected MinesEventResults ignoreMinesBlockBreakEvent( Cancellable event, Player player, 
-			Block block, BlockBreakPriority bbPriority ) {
+			Block block, BlockBreakPriority bbPriority,
+			boolean ignoreBlockReuse ) {
 	
-		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block, bbPriority );
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block, 
+						bbPriority, ignoreBlockReuse );
 		
 		if ( eventResults.isCancelEvent() ) {
 			event.setCancelled( eventResults.isCancelEvent() );
@@ -180,9 +182,11 @@ public abstract class OnBlockBreakEventCore
 	 * @return
 	 */
 	protected MinesEventResults ignoreMinesBlockBreakEvent( ExplosiveEvent event, Player player, 
-			Block block, BlockBreakPriority bbPriority ) {
+			Block block, BlockBreakPriority bbPriority,
+			boolean ignoreBlockReuse ) {
 		
-		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block, bbPriority );
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block, 
+						bbPriority, ignoreBlockReuse );
 		
 		if ( eventResults.isCancelEvent() ) {
 			event.setCancelled( eventResults.isCancelEvent() );
@@ -192,9 +196,11 @@ public abstract class OnBlockBreakEventCore
 	}
 	
 	protected MinesEventResults ignoreMinesBlockBreakEvent( JackHammerEvent event, Player player, 
-			Block block, BlockBreakPriority bbPriority ) {
+			Block block, BlockBreakPriority bbPriority,
+			boolean ignoreBlockReuse ) {
 		
-		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block, bbPriority );
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block, 
+						bbPriority, ignoreBlockReuse );
 		
 		if ( eventResults.isCancelEvent() ) {
 			event.setCancelled( eventResults.isCancelEvent() );
@@ -204,9 +210,11 @@ public abstract class OnBlockBreakEventCore
 	}
 	
 	protected MinesEventResults ignoreMinesBlockBreakEvent( PEExplosionEvent event, Player player, 
-			Block block, BlockBreakPriority bbPriority ) {
+			Block block, BlockBreakPriority bbPriority,
+			boolean ignoreBlockReuse ) {
 		
-		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block, bbPriority );
+		MinesEventResults eventResults = ignoreMinesBlockBreakEvent( player, block, 
+						bbPriority, ignoreBlockReuse );
 		
 		if ( eventResults.isCancelEvent() ) {
 			event.setCancelled( eventResults.isCancelEvent() );

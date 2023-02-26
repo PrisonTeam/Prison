@@ -271,7 +271,7 @@ public class AutoManagerRevEnchantsJackHammerEvent
 		// means the block has already been processed.
     	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
 								e.getPlayer(), e.getBlocks().get( 0 ),
-								bbPriority );
+								bbPriority, true );
     	
     	if ( eventResults.isIgnoreEvent() ) {
 			return;

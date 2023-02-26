@@ -276,8 +276,10 @@ public class OnBlockBreakMines
 	 * @param block
 	 * @return
 	 */
-	protected MinesEventResults ignoreMinesBlockBreakEvent( Player player, Block block, 
-			BlockBreakPriority bbPriority ) {
+	protected MinesEventResults ignoreMinesBlockBreakEvent( Player player, 
+				Block block, 
+				BlockBreakPriority bbPriority,
+				boolean ignoreBlockReuse ) {
 		
 		SpigotPlayer sPlayer = new SpigotPlayer( player );
 		
@@ -364,7 +366,7 @@ public class OnBlockBreakMines
 						}
 						
 						// If the block's already been counted, then can ignore the event:
-						else if ( targetBlock.isCounted() ) {
+						else if ( !ignoreBlockReuse && targetBlock.isCounted() ) {
 							
 							results.setResultsReason( EventResultsReasons.ignore_event__block_already_counted );
 							

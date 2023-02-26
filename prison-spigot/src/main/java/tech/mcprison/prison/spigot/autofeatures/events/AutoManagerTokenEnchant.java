@@ -330,7 +330,7 @@ public class AutoManagerTokenEnchant
 		// or if the targetBlock has been set to ignore all block events which 
 		// means the block has already been processed.
     	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, e.getPlayer(), 
-    									e.getBlock(), bbPriority );
+    									e.getBlock(), bbPriority, true );
     	
     	if ( eventResults.isIgnoreEvent() ) {
     		return;

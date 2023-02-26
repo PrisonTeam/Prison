@@ -260,7 +260,7 @@ public class AutoManagerBlockBreakEvents
 		// or if the targetBlock has been set to ignore all block events which 
 		// means the block has already been processed.
     	MinesEventResults eventResults = ignoreMinesBlockBreakEvent( e, 
-    						e.getPlayer(), e.getBlock(), bbPriority );
+    						e.getPlayer(), e.getBlock(), bbPriority, false );
     	
     	if ( eventResults.isIgnoreEvent() ) {
     		return;
