@@ -10,11 +10,15 @@
 These build logs represent the work that has been going on within prison. 
 
 
-# 3.3.0-alpha.14a 2023-02-26
+# 3.3.0-alpha.14b 2023-02-26
+
+
+
+
+**Update to v3.3.0-alpha.14b** 2023-02-26
 
 
 * **AutoFeatures bug fix: If global fortune multiplier is set to a value lower than 1, then there is a risk of zero drops; this prevents zero drops and returns a drop of one.**
-
 
 
 * **Fixed an issue with the initial event check for events that will break multiple blocks.**
