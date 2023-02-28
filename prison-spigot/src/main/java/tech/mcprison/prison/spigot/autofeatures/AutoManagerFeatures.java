@@ -736,7 +736,38 @@ public abstract class AutoManagerFeatures
 		
 		if (drops != null && drops.size() > 0 ) {
 			
-			debugInfo.append( "[autoPickupDrops]" );
+			DecimalFormat drFmt = Prison.get().getDecimalFormat("#,##0.0000");
+			double bukkitDropsMultiplier =  
+							isBoolean( AutoFeatures.isCalculateFortuneEnabled ) ?
+									getDouble( AutoFeatures.fortuneBukkitDropsMultiplier ) :
+									1.0d;			
+			StringBuilder sb = new StringBuilder();
+			for (SpigotItemStack sItemStack : drops) {
+				if ( sb.length() > 0 ) {
+					sb.append( "," );
+				}
+				int amtBukkit = sItemStack.getAmount();
+				int amt = (int) (amtBukkit * bukkitDropsMultiplier);
+				if ( amt < 1 ) {
+					amt = 1;
+				}
+				sb.append( sItemStack.getName() ).append( ":" )
+					.append( amt );
+				if ( amt != amtBukkit ) {
+					sItemStack.setAmount( amt );
+					sb.append( "(").append( amtBukkit ).append( ")" );
+				}
+			}
+			if ( bukkitDropsMultiplier != 1.0d ) {
+				sb.insert( 0, ": " );
+				sb.insert( 0, drFmt.format( bukkitDropsMultiplier) );
+				sb.insert( 0, "bukkitDropMult=" );
+			}
+			
+			debugInfo.append( "[autoPickupDrops:: " ).append( sb ).append( "] ");
+			
+			
+			
 			
 			// Need better drop calculation that is not using the getDrops function.
 			
@@ -952,7 +983,37 @@ public abstract class AutoManagerFeatures
 		
 		if (drops != null && drops.size() > 0 ) {
 			
-			pmEvent.getDebugInfo().append( "[normalDrops]" );
+			DecimalFormat drFmt = Prison.get().getDecimalFormat("#,##0.0000");
+			double bukkitDropsMultiplier =  
+							isBoolean( AutoFeatures.isCalculateFortuneEnabled ) ?
+									getDouble( AutoFeatures.fortuneBukkitDropsMultiplier ) :
+									1.0d;
+			
+			StringBuilder sb = new StringBuilder();
+			for (SpigotItemStack sItemStack : drops) {
+				if ( sb.length() > 0 ) {
+					sb.append( "," );
+				}
+				int amtBukkit = sItemStack.getAmount();
+				int amt = (int) (amtBukkit * bukkitDropsMultiplier);
+				if ( amt < 1 ) {
+					amt = 1;
+				}
+				sb.append( sItemStack.getName() ).append( ":" )
+					.append( amt );
+				if ( amt != amtBukkit ) {
+					sItemStack.setAmount( amt );
+					sb.append( "(").append( amtBukkit ).append( ")" );
+				}
+			}
+			if ( bukkitDropsMultiplier != 1.0d ) {
+				sb.insert( 0, ": " );
+				sb.insert( 0, drFmt.format( bukkitDropsMultiplier) );
+				sb.insert( 0, "bukkitDropMult=" );
+			}
+			
+			pmEvent.getDebugInfo().append( "[normalDrops:: " ).append( sb ).append( "] ");
+			
 
 			// Need better drop calculation that is not using the getDrops function.
 			short fortuneLevel = getFortune( pmEvent.getItemInHand(), pmEvent.getDebugInfo() );

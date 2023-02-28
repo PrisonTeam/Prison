@@ -19,7 +19,7 @@ AutoManager is Prison's block handler.  It provides support for breaking blocks 
 Extensive work has been done with auto manager to improve the performance, and to extend the compatibility with other plugins.  Many plugins have direct support (Auto Manager has event listeners for their custom events), but prison has been modified to work with many plugins that do not provide custom events too.
 
 
-*Documented updated: 2023-02-20*
+*Documented updated: 2023-02-28*
 
 <hr style="height:1px; border:none; color:#aaf; background-color:#aaf;">
 
@@ -380,15 +380,22 @@ Both types of fortune calculations are able to use fortune multipliers, the defa
 
 `fortuneMultiplierGlobal: 1.0`
 `fortuneMultiplierMax: 0`
+`fortuneBukkitDropsMultiplier: 1.0`
 
 
-The `fortuneMultiplierGlobal` is a multiplier that is applied to all calculations that determine how many blocks are included in the drops.  A value of **1.0** changes none of the calculations and allows them to be applied as they are calculated.  A value less than one will reduce the amount of the drops.  A value greater than one will increase the value of the drops.  All drops are forced to integer values (you won't get fractional drops).  If you set this value too low, and the calculated drops is less than a value of ONE, then the drops will be zero, so be careful when using lower values.
-
-This is a great way to globally shift drops up or down based upon your feelings of how generous you want Prison to be with the drops.
+The `fortuneMultiplierGlobal` is a multiplier that is applied to all calculations that determine how many blocks are included in the drops. This is applied after calculating the fortune.  A value of **1.0** changes none of the calculations and allows them to be applied as they are calculated.  A value less than one will reduce the amount of the drops.  A value greater than one will increase the value of the drops.  All drops are forced to integer values (you won't get fractional drops).  The lowest value that can be returned from this adjustment is ONE; cannot return a zero value. 
 
 
 
 The setting `fortuneMultiplierMax` is a way to prevent OP (over powered) tools with super high fortune enchantment levels from destroying the game play, or the economy.  What it does, is it sets the maximum permitted fortune level on tools, such that if a tool has a fortune level higher than that value, then the max value is used for all fortune calculations.  For example, if you set it to a value of 200 and someone has a pickaxe with a fortune of 379, then all calculations will be performed with a fortune level of **200**.  A max value of ZERO disables the fortune max limit and any value will be valid, even if it's well above 1000.
+
+
+The new setting `fortuneBukkitDropsMultiplier` has a default value of 1.0 and is applied to the bukkit drops before any fortune is applied. This actually adjusts the bukkit drops so if bukkit is dropping too many items or ores compared to normal blocks, this can help reduce those amounts before the fortune calculations.  This is a good way to control fortune on drops that are too plentiful since it can reduce the amount that spigot is suggesting.  Use a value of 1.0 (the default) to prevent the drops from being modified.  
+
+Use a value less than one to reduce the drops, or a value greater than one to increase the drops. The minimal result value is set to one; cannot be zero.  The drops are expressed in integers and no rounding is performed so a calculated value of 1.9 will have a drop of 1.
+
+
+The use of `fortuneBukkitDropsMultiplier` is a great way to control how much bukkit drops, to keep the drops closer to a value of one per block.  And then with the use of `fortuneMultiplierGlobal` it controls how generous all the calculated drops are.  A combination of settings can help reduce how many redstone drop, without hurting the normal block drops.
 
 
 
@@ -437,10 +444,12 @@ If you want to use the alternative fortune calculations, then you need to disabl
 The limitations of the bukkit fortunes, is that they will never apply fortune to some blocks, such as diamond_block, emerald_block, or other solid blocks that may not be naturally occurring in the wild.
 
 
+The alt fortune is initially based upon the bukkit drops.  Therefore there is a risk that ores, such as redstone or lapis, could drop huge amounts when processed by the alt fortune.  This can be controlled by the `fortuneBukkitDropsMultiplier` to lower the range of the bukkit drops, and also use `fortuneMultiplierGlobal` to adjust the final calculations.
+
 The alt fortune calculations are based upon the formulas provided within the Minecraft Wiki's for standard fortune levels.  The big difference is that it applies to all blocks, not just a select few.  But some blocks, such as diamond_ore and redstone_ore, gets higher multipliers as with their vanilla counter parts.  Also Prison's alt fortune provides higher fortune levels and will support an unlimited high fortune.
 
 
-Remember that both the settings for `fortuneMultiplierGlobal` and `fortuneMultiplierMax` apply too, so you can have some better control over the overall drop amounts.
+Remember that the settings for `fortuneBukkitDropsMultiplier`, `fortuneMultiplierGlobal` and `fortuneMultiplierMax` apply too, so you can have some better control over the overall drop amounts.
 
 
 

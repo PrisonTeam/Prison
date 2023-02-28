@@ -276,6 +276,7 @@ public class AutoFeaturesFileConfig {
 	    		
 	    		fortuneMultiplierGlobal(fortuneFeature, 1.0 ),
 	    		fortuneMultiplierMax(fortuneFeature, 0 ),
+	    		fortuneBukkitDropsMultiplier(fortuneFeature, 1.0 ),
 
 	    		
 	    		isExtendBukkitFortuneCalculationsEnabled(fortuneFeature, true),
