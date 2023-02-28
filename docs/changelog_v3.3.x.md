@@ -13,6 +13,9 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14b 2023-02-28
 
 
+* **BugFix: Fixes an issue with sellall where it is trying to sell an invalid ItemStack.**
+As a result, the sellall pays the player for the itemstack but the itemstack is not removed.  This fixes it by not trying to sell the questionable itemstacks.
+
 
 * **AutoFeatures: Add a bukkit drops multiplier which is applied to the bukkit drops before the fortune calculations are performed.**
 This can be used to reduce the total number of drops if a value less than 1.0 is used.  A value of 1.0 does nothing.  A value greater than one will increase the bukkit drops.  All values are floored and are integers.
