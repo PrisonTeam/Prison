@@ -13,6 +13,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14b 2023-02-28
 
 
+* **AutoFeatures: Rev Enchants JackHammerEvent: Bug fix: The jackhammer event was not returning a list of all of the blocks involved in the event, which could be excluding hundreds if not more than 1000 blocks.**
+The fix, uses the two points to calculate which blocks to include, and then include them through that cuboid instead of getting a list of blocks from the event.
+
+
 * **BugFix: Fixes an issue with sellall where it is trying to sell an invalid ItemStack.**
 As a result, the sellall pays the player for the itemstack but the itemstack is not removed.  This fixes it by not trying to sell the questionable itemstacks.
 

@@ -465,6 +465,52 @@ public class MineBombs
 		return results;
 	}
 	
+	
+	public List<Location> calculateCube( Location loc1, Location loc2 ) {
+		List<Location> results = new ArrayList<>();
+		
+		// get all x, y, & z:
+		int xLoc1 = loc1.getBlockX();
+		int xLoc2 = loc2.getBlockX();
+		int yLoc1 = loc1.getBlockY();
+		int yLoc2 = loc2.getBlockY();
+		int zLoc1 = loc1.getBlockZ();
+		int zLoc2 = loc2.getBlockZ();
+		
+		// loc1 must be less than loc2... it does not matter if x, y, or z gets
+		// switched around:
+		if ( xLoc1 > xLoc2 ) {
+			int x = xLoc1;
+			xLoc1 = xLoc2;
+			xLoc2 = x;
+		}
+		if ( yLoc1 > yLoc2 ) {
+			int y = yLoc1;
+			yLoc1 = yLoc2;
+			yLoc2 = y;
+		}
+		if ( zLoc1 > zLoc2 ) {
+			int z = zLoc1;
+			zLoc1 = zLoc2;
+			zLoc2 = z;
+		}
+		
+		for ( int x = xLoc1 ; x <= xLoc2 ; x++ ) {
+			for ( int y = yLoc1 ; y <= yLoc2; y++ ) {
+				for ( int z = zLoc1 ; z <= zLoc2 ; z++ ) {
+					
+					Location l = new Location( loc1.getWorld(), x, y, z );
+					results.add( l );
+					
+				}
+			}
+		}
+		
+		return results;
+	}
+	
+	
+	
 //	
 //	@SuppressWarnings( "unused" )
 //	public void setupDefaultMineBombData()

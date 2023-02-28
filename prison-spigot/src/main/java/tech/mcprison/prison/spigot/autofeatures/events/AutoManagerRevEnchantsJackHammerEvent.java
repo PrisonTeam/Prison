@@ -1,5 +1,7 @@
 package tech.mcprison.prison.spigot.autofeatures.events;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -14,12 +16,16 @@ import org.bukkit.plugin.PluginManager;
 
 import me.revils.revenchants.events.JackHammerEvent;
 import tech.mcprison.prison.autofeatures.AutoFeaturesFileConfig.AutoFeatures;
+import tech.mcprison.prison.bombs.MineBombs;
 import tech.mcprison.prison.mines.features.MineBlockEvent.BlockEventType;
 import tech.mcprison.prison.output.Output;
 import tech.mcprison.prison.spigot.SpigotPrison;
+import tech.mcprison.prison.spigot.SpigotUtil;
 import tech.mcprison.prison.spigot.api.PrisonMinesBlockBreakEvent;
 import tech.mcprison.prison.spigot.autofeatures.AutoManagerFeatures;
 import tech.mcprison.prison.spigot.block.BlockBreakPriority;
+import tech.mcprison.prison.spigot.block.SpigotBlock;
+import tech.mcprison.prison.util.Location;
 
 public class AutoManagerRevEnchantsJackHammerEvent
 	extends AutoManagerFeatures
@@ -329,10 +335,29 @@ public class AutoManagerRevEnchantsJackHammerEvent
         		return;
         	}
         	
-			
-			for ( int i = 1; i < e.getBlocks().size(); i++ ) {
-				pmEvent.getUnprocessedRawBlocks().add( e.getBlocks().get( i ) );
+    		Location loc1 = SpigotUtil.bukkitLocationToPrison( e.getPoint1() );
+    		Location loc2 = SpigotUtil.bukkitLocationToPrison( e.getPoint2() );
+    				
+    		List<Location> blocks = MineBombs.getInstance().calculateCube( loc1, loc2 );
+    		
+    		String msg = String.format( 
+    				"(JackHammerEvent: e.blocks=%d  locationBlocks=%d  %s %s) ", 
+    					e.getBlocks().size(),
+    					blocks.size(),
+    					loc1.toWorldCoordinates(),
+    					loc2.toWorldCoordinates()
+    					);
+    		debugInfo.append( msg );
+    		
+    		for (Location loc : blocks) {
+				SpigotBlock block = (SpigotBlock) loc.getBlockAt();
+				
+				pmEvent.getUnprocessedRawBlocks().add( block.getWrapper() );
 			}
+			
+//			for ( int i = 1; i < blocks.size(); i++ ) {
+//				pmEvent.getUnprocessedRawBlocks().add( blocks.get( i ) );
+//			}
 			
 			
 			if ( !validateEvent( pmEvent ) ) {
