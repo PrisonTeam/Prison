@@ -1088,17 +1088,22 @@ public abstract class AutoManagerFeatures
 					
 				}
 				
-				if ( itemStack.getAmount() != 0 && SellAllUtil.get() != null ) {
+				if ( itemStack.getAmount() != 0 ) {
 					
 					if ( Output.get().isDebug() ) {
 						
 						// Just get the calculated value for the drops... do not sell:
 						Player player = pmEvent.getPlayer();
 					
-						double amount = SellAllUtil.get().sellAllSell( player, itemStack, true, false, false );
-						autosellTotal += amount;
+						pmEvent.getDebugInfo().append( "(dropping: " + itemStack.getName() + " qty: " + itemStack.getAmount() );
 						
-						pmEvent.getDebugInfo().append( "(adding: " + itemStack.getName() + " qty: " + itemStack.getAmount() + " value: " + amount + ") ");
+						if ( SellAllUtil.get() != null ) {
+							
+							double amount = SellAllUtil.get().sellAllSell( player, itemStack, true, false, false );
+							autosellTotal += amount;
+							pmEvent.getDebugInfo().append( " value: " + amount );
+						}
+						pmEvent.getDebugInfo().append( ") ");
 					}
 					
 					dropAtBlock( itemStack, pmEvent.getSpigotBlock() );

@@ -13,6 +13,10 @@ These build logs represent the work that has been going on within prison.
 # 3.3.0-alpha.14b 2023-02-28
 
 
+* **AutoFeatures bug fix: If normal drops is enabled (no auto pickup), and sellall was disabled, then normal drops were being disabled.**
+The location of checking for if sellall was active was in the wrong location, which was preventing prison from actually dropping the blocks for the player.
+
+
 * **Fixed an issue with prison utils potions where if the player was null, then it was throwing an NPE.  **
 
 
